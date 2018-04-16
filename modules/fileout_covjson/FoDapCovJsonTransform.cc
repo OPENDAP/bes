@@ -66,14 +66,26 @@ using std::istringstream;
 
 const int int_64_precision = 15; // 15 digits to the right of the decimal point.
 
+
+/**
+ * @brief Writes each of the variables in a given container to the CovJSON stream.
+ *    For each variable in the DDS, write out that variable as CovJSON.
+ *
+ * @param ostrm Write the CovJSON to this output stream
+ * @param values Source array of type T which we want to write to stream
+ * @param indx variable for storing the current indexed value
+ * @param shape a vector storing the shape's dimensional values
+ * @param currentDim the current dimension we are printing values from
+ *
+ * @returns the most recently completed index
+ */
 template<typename T>
 unsigned int FoDapCovJsonTransform::covjsonSimpleTypeArrayWorker(ostream *strm, T *values, unsigned int indx,
     vector<unsigned int> *shape, unsigned int currentDim)
 {
-    *strm << "[";
-
     unsigned int currentDimSize = (*shape)[currentDim];
 
+    *strm << "[";
     for (unsigned int i = 0; i < currentDimSize; i++) {
         if (currentDim < shape->size() - 1) {
             BESDEBUG(FoDapCovJsonTransform_debug_key,
@@ -98,9 +110,24 @@ unsigned int FoDapCovJsonTransform::covjsonSimpleTypeArrayWorker(ostream *strm, 
     return indx;
 }
 
+
 /**
- * Writes the CovJSON representation of the passed DAP Array of simple types. If the
- * parameter "sendData" evaluates to true then data will also be sent.
+ * @brief Writes the CovJSON representation of the passed DAP Array of simple types.
+ *   If the parameter "sendData" evaluates to true then data will also be sent.
+ *
+ * For each variable in the DDS, write out that variable and its
+ * attributes as CovJSON. Each OPeNDAP data type translates into a
+ * particular CovJSON type. Also write out any global attributes stored at the
+ * top level of the DataDDS.
+ *
+ * @note If sendData is true but the DDS does not contain data, the result
+ * is undefined.
+ *
+ * @param ostrm Write the CovJSON to this stream
+ * @param a Source data array - write out data or metadata from or about this array
+ * @param indent Indent the output so humans can make sense of it
+ * @param sendData true: send data; false: send metadata
+ * @param isAxes True: print Axes value format; false: print parameter value format
  */
 template<typename T>
 void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array *a, string indent,
@@ -128,6 +155,7 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
         *strm << "]," << endl;
     }
 
+    //sendData = false;
     if (sendData) {
         *strm << childindent << "\"values\": ";
         unsigned int indx = 0;
@@ -157,17 +185,29 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
         assert(length == indx);
     }
 
-    //*strm << endl << indent << "}";
+    *strm << endl << indent << "}";
 }
 
+
 /**
- * String version of covjsonSimpleTypeArray(). This version exists because of the differing
- * type signatures of the libdap::Vector::value() methods for numeric and c++ string types.
+ * @brief Writes the CovJSON representation of the passed DAP Array of string types.
+ *   If the parameter "sendData" evaluates to true, then data will also be sent.
  *
- * @param strm Write to this stream
- * @param a Source Array - write out data or metadata from or about this Array
+ * For each variable in the DDS, write out that variable and its
+ * attributes as CovJSON. Each OPeNDAP data type translates into a
+ * particular CovJSON type. Also write out any global attributes stored at the
+ * top level of the DataDDS.
+ *
+ * @note This version exists because of the differing type signatures of the
+ *   libdap::Vector::value() methods for numeric and c++ string types.
+ *
+ * @note If sendData is true but the DDS does not contain data, the result
+ *   is undefined.
+ *
+ * @param strm Write to this output stream
+ * @param a Source data array - write out data or metadata from or about this array
  * @param indent Indent the output so humans can make sense of it
- * @param sendData True: send data; false: send metadata
+ * @param sendData true: send data; false: send metadata
  */
 void FoDapCovJsonTransform::covjsonStringArray(std::ostream *strm, libdap::Array *a, string indent, bool sendData)
 {
@@ -206,22 +246,17 @@ void FoDapCovJsonTransform::covjsonStringArray(std::ostream *strm, libdap::Array
     *strm << endl << indent << "}";
 }
 
-/**
- * Writes the CovJSON opener for the Dataset, including name and top level DAP attributes.
- */
-void FoDapCovJsonTransform::writeDatasetMetadata(ostream *strm, libdap::DDS *dds, string indent)
-{
-    // Name
-    *strm << indent << "\"name\": \"" << dds->get_dataset_name() << "\"," << endl;
-
-    //Attributes
-    transform(strm, dds->get_attr_table(), indent);
-    *strm << "," << endl;
-}
 
 /**
- * Writes CovJSON opener for a DAP object that is seen as a "leaf" in w10n semantics.
- * Header includes object name. attributes, and  type.
+ * @brief Writes the current Axis's name and formatting to the CovJSON stream.
+ *
+ * Gets the current Axis's attributes, and prints the Axis's metadata to then
+ * writes the name with format to the CovJSON output stream. The scope of what
+ * metadata is retrieved is determined by getAxisAttributes().
+ *
+ * @param ostrm Write the CovJSON to this stream
+ * @param bt Pointer to a BaseType vector containing Axis attributes
+ * @param indent Indent the output so humans can make sense of it
  */
 void FoDapCovJsonTransform::writeAxesMetadata(ostream *strm, libdap::BaseType *bt, string indent)
 {
@@ -232,9 +267,19 @@ void FoDapCovJsonTransform::writeAxesMetadata(ostream *strm, libdap::BaseType *b
     *strm << indent << "\"" << currAxis << "\": {" << endl;
 }
 
+
 /**
- * Writes CovJSON opener for a DAP object that is seen as a "node" in w10n semantics.
- * Header includes object name and attributes
+ * @brief Writes the current Parameter's name and attribute metadata to the
+ *   CovJSON stream.
+ *
+ * Gets the current Parameter's attributes, prints the Parameter's metadata, then
+ * writes the name, type, description, units, symbols, and observedProperties with
+ * format to the CovJSON output stream. The scope of what metadata is retrieved
+ * is determined by getParameterAttributes().
+ *
+ * @param ostrm Write the CovJSON to this stream
+ * @param bt Pointer to a BaseType vector containing Parameter attributes
+ * @param indent Indent the output so humans can make sense of it
  */
 void FoDapCovJsonTransform::writeParameterMetadata(ostream *strm, libdap::BaseType *bt, string indent)
 {
@@ -252,17 +297,17 @@ void FoDapCovJsonTransform::writeParameterMetadata(ostream *strm, libdap::BaseTy
     *strm << child_indent1 << "\"description\": \"" << bt->name() << "\"," << endl;
     *strm << child_indent1 << "\"unit\": {" << endl;
     *strm << child_indent2 << "\"label\": {" << endl;
-    *strm << child_indent3 << "\"en\": \"" << currUnit << "\"" << endl;
+    *strm << child_indent3 << "\"en\": \"" << paramUnit << "\"" << endl;
     *strm << child_indent2 << "}" << endl;
     *strm << child_indent1 << "}," << endl;
     *strm << child_indent1 << "\"symbol\": {" << endl;
-    *strm << child_indent2 << "\"value\": \"" << currUnit << "\"," << endl;
+    *strm << child_indent2 << "\"value\": \"" << paramUnit << "\"," << endl;
     *strm << child_indent2 << "\"type\": \"\"," << endl;
     *strm << child_indent1 << "}," << endl;
     *strm << child_indent1 << "\"observedProperty\": {" << endl;
     *strm << child_indent2 << "\"id\": null," << endl;
     *strm << child_indent2 << "\"label\": {" << endl;
-    *strm << child_indent3 << "\"en\": \"" << currLongName << "\"" << endl;
+    *strm << child_indent3 << "\"en\": \"" << paramLongName << "\"" << endl;
     *strm << child_indent2 << "}" << endl;
     *strm << child_indent1 << "}" << endl;
     *strm << indent << "}" << endl;
@@ -276,8 +321,26 @@ void FoDapCovJsonTransform::writeParameterMetadata(ostream *strm, libdap::BaseTy
     *strm << child_indent1 << "\"axisNames\": [\"t\", \"y\", \"x\"]," << endl;
 }
 
+
 /**
- * will find value name x,y,z,t for the axis of the coverage and return it.
+ * @brief Gets an Axis's name and attribute metadata and stores them to private
+ *   class variables to make them accessible for printing.
+ *
+ * Gets the current Axis's attribute values and stores the metadata the data in
+ * the corresponding private class variables (currAxis). Will logically search
+ * for value names (ie "longitude") and store them as x, y, z, and t as required.
+ *
+ * @note currAxis is the only private class variable affected by this function
+ *   at this time.
+ *
+ * @note logic to determine z axis does not yet exist
+ *
+ * @note strm is included here for debugging purposes. Otherwise, there is no
+ *   absolute need to require it as an argument. May remove strm as an arg if
+ *   necessary.
+ *
+ * @param ostrm Write the CovJSON to this stream (TEST/DEBUGGING)
+ * @param attr_table Reference to an AttrTable containing Axis attribute values
  */
 void FoDapCovJsonTransform::getAxisAttributes(ostream *strm, libdap::AttrTable &attr_table)
 {
@@ -297,10 +360,13 @@ void FoDapCovJsonTransform::getAxisAttributes(ostream *strm, libdap::AttrTable &
             }
             default: {
                 vector<std::string> *values = attr_table.get_attr_vector(at_iter);
-                // write values
+
                 for (std::vector<std::string>::size_type i = 0; i < values->size(); i++) {
                     string currName = attr_table.get_name(at_iter);
                     string currValue = (*values)[i];
+
+                    // FOR TESTING AND DEBUGGING PURPOSES
+                    //*strm << "\"currName\": \"" << currName << "\", \"currValue\": \"" << currValue << "\"" << endl;
 
                     if((currValue.compare("lon") == 0) || (currValue.compare("longitude") == 0)
                         || (currValue.compare("LONGITUDE") == 0) || (currValue.compare("Longitude") == 0)
@@ -337,8 +403,21 @@ void FoDapCovJsonTransform::getAxisAttributes(ostream *strm, libdap::AttrTable &
     }
 }
 
+
 /**
- *  Will find value name x, y, z, t for the axis of the coverage and return it
+ * @brief Gets a Parameter's name and attribute metadata and stores them
+ *   to private class variables.
+ *
+ * Gets the current Parameter's attribute values and stores the metadata the data in
+ * the corresponding private class variables (paramUnit, paramLongName). Will logically
+ * search for value names (ie "units") and store them as required.
+ *
+ * @note strm is included here for debugging purposes. Otherwise, there is no
+ *   absolute need to require it as an argument. May remove strm as an arg if
+ *   necessary.
+ *
+ * @param ostrm Write the CovJSON to this stream (TEST/DEBUGGING)
+ * @param attr_table Reference to an AttrTable containing Axis attribute values
  */
 void FoDapCovJsonTransform::getParameterAttributes(ostream *strm, libdap::AttrTable &attr_table)
 {
@@ -358,16 +437,19 @@ void FoDapCovJsonTransform::getParameterAttributes(ostream *strm, libdap::AttrTa
             }
             default: {
                 vector<std::string> *values = attr_table.get_attr_vector(at_iter);
-                // Write values
+
                 for (std::vector<std::string>::size_type i = 0; i < values->size(); i++) {
                     string currAttrName = attr_table.get_name(at_iter);
                     string currAttrValue = (*values)[i];
 
+                    // FOR TESTING AND DEBUGGING PURPOSES
+                    //*strm << "\"currAttrName\": \"" << currAttrName << "\", \"currAttrValue\": \"" << currAttrValue << "\"" << endl;
+
                     if(currAttrName.compare("units") == 0) {
-                        currUnit = currAttrValue;
+                        paramUnit = currAttrValue;
                     }
                     else if(currAttrName.compare("long_name") == 0) {
-                        currLongName = currAttrValue;
+                        paramLongName = currAttrValue;
                     }
                 }
                 break;
@@ -376,6 +458,7 @@ void FoDapCovJsonTransform::getParameterAttributes(ostream *strm, libdap::AttrTa
         }
     }
 }
+
 
 /**
  * @brief Get the CovJSON encoding for a DDS
@@ -386,9 +469,9 @@ void FoDapCovJsonTransform::getParameterAttributes(ostream *strm, libdap::AttrTa
  * response.
  *
  * @note The 'transform' method is used to build the response and a
- * bool flag is passed to it to select data or metadata. However, if
- * that flag is true and the DDS does not already contain data, the
- * result is undefined.
+ *   bool flag is passed to it to select data or metadata. However, if
+ *   that flag is true and the DDS does not already contain data, the
+ *   result is undefined.
  *
  * @param dds DDS object
  * @throws BESInternalError if the DDS* is null or if localfile is empty.
@@ -398,8 +481,10 @@ FoDapCovJsonTransform::FoDapCovJsonTransform(libdap::DDS *dds) : _dds(dds), _ind
     if (!_dds) throw BESInternalError("File out COVJSON, null DDS passed to constructor", __FILE__, __LINE__);
 }
 
-/** @brief dumps information about this transformation object for debugging
- * purposes
+
+/**
+ * @brief Dumps information about this transformation object for debugging
+ *   purposes
  *
  * Displays the pointer value of this instance plus instance data,
  * including all of the FoJson objects converted from DAP objects that are
@@ -417,6 +502,7 @@ void FoDapCovJsonTransform::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
+
 /**
  * @brief Transforms each of the marked variables of the DDS to CovJSON
  *
@@ -425,20 +511,33 @@ void FoDapCovJsonTransform::dump(ostream &strm) const
  * particular CovJSON type. Also write out any global attributes stored at the
  * top level of the DataDDS.
  *
- * @note If sendData is true but the DDS does not contain data, the result
- * is undefined.
- *
  * @param ostrm Write the CovJSON to this stream
  * @param sendData True if data should be sent, False to send only metadata.
+ * @param fv Pointer to a FDCJValidation object which contains value metadata
+ *   used in printing to CovJSON output stream.
  */
 void FoDapCovJsonTransform::transform(ostream &ostrm, bool sendData, FoDapCovJsonValidation fv)
 {
     transform(&ostrm, _dds, "", sendData, fv);
 }
 
+
 /**
- * DAP Constructor types are semantically equivalent to a w10n node type so they
- * must be represented as a collection of child nodes and leaves.
+ * @brief Contructs a new set of leaves and nodes derived from a previous set of nodes.
+ *
+ * Contructs a new set of leaves and nodes derived from a previous set of nodes, then
+ * runs the transformRangesWorker() on the new set of leaves so that the range values
+ * can be printed to the CovJSON output stream.
+ *
+ * @note The new derived nodes vector is not used for anything at this time.
+ *
+ * @note DAP Constructor types are semantically equivalent to a w10n node type so they
+ *   must be represented as a collection of child nodes and leaves.
+ *
+ * @param strm Write to this output stream
+ * @param cnstrctr a new collection of child nodes and leaves
+ * @param indent Indent the output so humans can make sense of it
+ * @param sendData true: send data; false: send metadata
  */
 void FoDapCovJsonTransform::transform(ostream *strm, libdap::Constructor *cnstrctr, string indent, bool sendData)
 {
@@ -466,13 +565,19 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::Constructor *cnstrc
         }
     }
 
-    // Write this parameter's metadata (name & attributes)
+    // Write this parameter's range values to the CovJSON
     transformRangesWorker(strm, leaves, child_indent, sendData);
 }
 
+
 /**
- * This worker method allows us to recursively traverse a "node" variables contents and
- * any child nodes will be traversed as well.
+ * @brief Worker method allows us to recursively traverse an Axis's variable
+ *   contents and any child nodes will be traversed as well.
+ *
+ * @param strm Write to this output stream
+ * @param leaves Pointer to a vector of BaseTypes, which represent w10n leaves
+ * @param indent Indent the output so humans can make sense of it
+ * @param sendData true: send data; false: send metadata
  */
 void FoDapCovJsonTransform::transformAxesWorker(ostream *strm, vector<libdap::BaseType *> leaves,
     string indent, bool sendData)
@@ -493,15 +598,21 @@ void FoDapCovJsonTransform::transformAxesWorker(ostream *strm, vector<libdap::Ba
     if (leaves.size() > 0) *strm << endl << indent;
 }
 
+
 /**
- * This worker method allows us to recursively traverse a "node" variable's contents and
- * any child nodes will be traversed as well.
+ * @brief Worker method allows us to recursively traverse a Parameter's variable
+ *   contents and any child nodes will be traversed as well.
+ *
+ * @param strm Write to this output stream
+ * @param nodes Pointer to a vector of BaseTypes, which represent w10n nodes
+ * @param indent Indent the output so humans can make sense of it
+ * @param sendData true: send data; false: send metadata
  */
 void FoDapCovJsonTransform::transformParametersWorker(ostream *strm, vector<libdap::BaseType *> nodes,
     string indent, bool sendData)
 {
     // Write down the parameters and values
-    *strm << indent << "\"parameters\": {";
+    *strm << indent << "\"parameters\": {" << endl;
     for (std::vector<libdap::BaseType *>::size_type n = 0; n < nodes.size(); n++) {
         libdap::BaseType *v = nodes[n];
         BESDEBUG(FoDapCovJsonTransform_debug_key, "Processing PARAMETERS: " << v->name() << endl);
@@ -509,6 +620,16 @@ void FoDapCovJsonTransform::transformParametersWorker(ostream *strm, vector<libd
     }
 }
 
+
+/**
+ * @brief Worker method allows us to print out CovJSON Axes reference metadata to
+ *   the CovJSON output stream.
+ *
+ * @param strm Write to this output stream
+ * @param indent Indent the output so humans can make sense of it
+ * @param fv Pointer to a FDCJValidation object which contains value metadata
+ *   used in printing to CovJSON output stream.
+ */
 void FoDapCovJsonTransform::transformReferenceWorker(ostream *strm, string indent, FoDapCovJsonValidation fv)
 {
     string child_indent1 = indent + _indent_increment;
@@ -554,9 +675,15 @@ void FoDapCovJsonTransform::transformReferenceWorker(ostream *strm, string inden
     *strm << _indent_increment << "}," << endl;
 }
 
+
 /**
- * This worker method allows us to recursively traverse a "node" variable's contents and
- * any child nodes will be traversed as well.
+ * @brief Worker method allows us to recursively traverse a Parameter's range
+ *    of values and print them to the CovJSON output stream.
+ *
+ * @param strm Write to this output stream
+ * @param leaves Pointer to a vector of BaseTypes, which represent w10n leaves
+ * @param indent Indent the output so humans can make sense of it
+ * @param sendData true: send data; false: send metadata
  */
 void FoDapCovJsonTransform::transformRangesWorker(ostream *strm, vector<libdap::BaseType *> leaves,
     string indent, bool sendData)
@@ -565,21 +692,30 @@ void FoDapCovJsonTransform::transformRangesWorker(ostream *strm, vector<libdap::
     if (leaves.size() > 0) *strm << endl;
     if (leaves.size() > 0) {
         libdap::BaseType *v = leaves[0];
-        BESDEBUG(FoDapCovJsonTransform_debug_key, "Processing LEAF: " << v->name() << endl);
+        BESDEBUG(FoDapCovJsonTransform_debug_key, "Processing RANGES: " << v->name() << endl);
         transform(strm, v, _indent_increment + _indent_increment, sendData, false);
     }
     if (leaves.size() > 0) *strm << endl << indent;
 }
 
+
 /**
- * Writes a CovJSON representation of the DDS to the passed stream. Data is sent if the sendData
- * flag is true. Otherwise, only metadata is sent.
+ * @brief Writes a CovJSON representation of the DDS to the passed stream. Data
+ *   is sent if the sendData flag is true. Otherwise, only metadata is sent.
+ *
+ * @note w10 sees the world in terms of leaves and nodes. Leaves have data, nodes
+ *   have other nodes and leaves.
+ *
+ * @param strm Write to this output stream
+ * @param dds Pointer to a DDS vector, which contains both w10n leaves and nodes
+ * @param indent Indent the output so humans can make sense of it
+ * @param sendData true: send data; false: send metadata
+ * @param fv Pointer to a FDCJValidation object which contains value metadata
+ *   used in printing to CovJSON output stream.
  */
-void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string indent, bool sendData, FoDapCovJsonValidation fv)
+void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string indent, bool sendData,
+    FoDapCovJsonValidation fv)
 {
-    /*
-     * w10 sees the world in terms of leaves and nodes. Leaves have data, nodes have other nodes and leaves.
-     */
     vector<libdap::BaseType *> leaves;
     vector<libdap::BaseType *> nodes;
 
@@ -604,7 +740,7 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
     string child_indent1 = indent + _indent_increment;
     string child_indent2 = child_indent1 + _indent_increment;
 
-    *strm << indent << "{" << endl; // beginning of the file
+    *strm << indent << "{" << endl; // beginning of the output file
     *strm << child_indent1 << "\"type\": \"Coverage\"," << endl;
     *strm << child_indent1 << "\"domain\": {" << endl;
 
@@ -638,12 +774,22 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
     transformParametersWorker(strm, nodes, child_indent1, sendData);
 
     *strm << endl << _indent_increment << "}" << endl;
-    *strm << "}" << endl; // end of the file
+    *strm << "}" << endl; // end of the output file
 }
 
+
 /**
- * Write the CovJSON representation of the passed BaseType instance. If the
- * parameter sendData is true then include the data.
+ * @brief  Write the CovJSON representation of the passed BaseType instance. If the
+ *   parameter sendData is true then include the data. Otherwise, only metadata is
+ *   sent.
+ *
+ * @note Structure, Grid, and Sequence cases are not implemented at this time.
+ *
+ * @param strm Write to this output stream
+ * @param bt Pointer to a BaseType vector containing values and/or attributes
+ * @param indent Indent the output so humans can make sense of it
+ * @param sendData true: send data; false: send metadata
+ * @param isAxes True: print Axes value format; false: print parameter value format
  */
 void FoDapCovJsonTransform::transform(ostream *strm, libdap::BaseType *bt, string indent,
     bool sendData, bool isAxes)
@@ -697,9 +843,19 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::BaseType *bt, strin
     }
 }
 
+
 /**
- * Write the CovJSON representation of the passed BaseType instance - which had better be one of the
- * atomic DAP types. If the parameter sendData is true then include the data.
+ * @brief  Write the CovJSON representation of the passed BaseType instance,
+ *   which had better be one of the atomic DAP types. If the parameter sendData
+ *   is true then include the data.
+ *
+ * @note writeLeafMetadata() no longer exists, thus it is commented out. It
+ *   should be replaced with a different metadata writing function.
+ *
+ * @param strm Write to this output stream
+ * @param b Pointer to a BaseType vector containing atomic type variables
+ * @param indent Indent the output so humans can make sense of it
+ * @param sendData true: send data; false: send metadata
  */
 void FoDapCovJsonTransform::transformAtomic(ostream *strm, libdap::BaseType *b, string indent, bool sendData)
 {
@@ -712,7 +868,7 @@ void FoDapCovJsonTransform::transformAtomic(ostream *strm, libdap::BaseType *b, 
     *strm << childindent << "\"shape\": [1]," << endl;
 
     if (sendData) {
-        // Data
+        // Print Data
         *strm << childindent << "\"values\": [";
 
         if (b->type() == libdap::dods_str_c || b->type() == libdap::dods_url_c) {
@@ -728,9 +884,17 @@ void FoDapCovJsonTransform::transformAtomic(ostream *strm, libdap::BaseType *b, 
     }
 }
 
+
 /**
- * Write the CovJSON representation of the passed DAP Array instance - which had better be one of
- * atomic DAP types. If the parameter sendData is true then include the data.
+ * @brief  Write the CovJSON representation of the passed DAP Array instance,
+ *   which had better be one of the atomic DAP types. If the parameter sendData
+ *   is true then include the data.
+ *
+ * @param strm Write to this output stream
+ * @param a Pointer to an Array containing atomic type variables
+ * @param indent Indent the output so humans can make sense of it
+ * @param sendData true: send data; false: send metadata
+ * @param isAxes True: print Axes value format; false: print parameter value format
  */
 void FoDapCovJsonTransform::transform(ostream *strm, libdap::Array *a, string indent,
     bool sendData, bool isAxes)
@@ -813,10 +977,18 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::Array *a, string in
     }
 }
 
-/**
- * Write the CovJSON representation of the passed DAP AttrTable instance.
- * Supports multi-valued attributes and nested attributes.
- */
+
+ /**
+  * @brief  Write the CovJSON representation of the passed DAP AttrTable instance.
+  *   Supports multi-valued attributes and nested attributes.
+  *
+  * @note This function may be completed removed at some point.
+  *
+  * @param strm Write to this output stream
+  * @param attr_table Reference to an AttrTable containing attribute values
+  * @param a Pointer to an Array containing atomic type variables
+  * @param indent Indent the output so humans can make sense of it
+  */
 void FoDapCovJsonTransform::transform(ostream *strm, libdap::AttrTable &attr_table, string indent)
 {
     string child_indent = indent + _indent_increment;

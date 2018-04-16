@@ -59,8 +59,6 @@ private:
     std::string _returnAs;
     std::string _indent_increment;
     std::string currAxis;
-    std::string currUnit;
-    std::string currLongName;
 
     /*
     * if:
@@ -69,16 +67,13 @@ private:
     * 2 Coverage
     */
     std::string paramType;
-    std::string paramName;
-    std::string paramUnits;
+    std::string paramUnit;
     std::string paramLongName;
-    std::string paramHistory;
 
     enum domains { Grid = 0, VerticalProfile = 1, PointSeries = 2, Point = 3 };
 
     void writeAxesMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);
     void writeParameterMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);
-    void writeDatasetMetadata(std::ostream *strm, libdap::DDS *dds, std::string indent);
 
     void getAxisAttributes(std::ostream *strm, libdap::AttrTable &attr_table);
     void getParameterAttributes(std::ostream *strm, libdap::AttrTable &attr_table);
