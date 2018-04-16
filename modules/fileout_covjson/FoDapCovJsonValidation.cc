@@ -1,4 +1,3 @@
-
 // -*- mode: c++; c-basic-offset:4 -*-
 //
 // FoDapCovJsonValidation.cc
