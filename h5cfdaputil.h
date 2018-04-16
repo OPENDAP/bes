@@ -38,6 +38,7 @@
 #include <iomanip>
 #include <TheBESKeys.h>
 #include <BESUtil.h>
+#include <D4Attributes.h>
 
 #define NC_JAVA_STR_SIZE_LIMIT 32767
 
@@ -60,5 +61,9 @@ struct HDF5CFDAPUtil {
 
     /// Helper function for escattr
     static string octstring(unsigned char val);
+
+    /// Helper function to obtain the DAP4 attribute type. 
+    /// We deliberately duplicates the same function for the default option to separate the handling of CF .
+    static D4AttributeType daptype_strrep_to_dap4_attrtype(std::string s);
 };
 #endif

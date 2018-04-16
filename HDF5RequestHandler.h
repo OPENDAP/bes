@@ -42,6 +42,7 @@ namespace libdap {
 
     class DAS;
     class DDS;
+    class DMR;
     class DataDDS;
 
 }
@@ -72,6 +73,9 @@ class HDF5RequestHandler:public BESRequestHandler {
     static bool get_drop_long_string() { return _drop_long_string;}
     static bool get_fillvalue_check() { return _fillvalue_check;}
     static bool get_check_ignore_obj() { return _check_ignore_obj;}
+
+    static void set_dmr_64bit_int(DMR *dmr) { dmr_int64 = dmr;}
+    static DMR* get_dmr_64bit_int() {return dmr_int64;}
 
     // Handling Memory Cache
     static string get_stp_east_filename() {return _stp_east_filename;}
@@ -147,6 +151,7 @@ class HDF5RequestHandler:public BESRequestHandler {
      static string _stp_east_filename;
      static string _stp_north_filename;
      
+     static DMR *dmr_int64;
      static bool _use_disk_cache;
      static string _disk_cache_dir;
      static string _disk_cachefile_prefix;

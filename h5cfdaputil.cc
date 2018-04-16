@@ -109,6 +109,8 @@ string HDF5CFDAPUtil::print_type(H5DataType type) {
     string DAPUINT32 ="Uint32";
     string DAPFLOAT32 ="Float32";
     string DAPFLOAT64 ="Float64";
+    string DAP4INT64  ="Int64";
+    string DAP4UINT64 ="UInt64";
     string DAPSTRING = "String";
 
     switch (type) {
@@ -141,7 +143,9 @@ string HDF5CFDAPUtil::print_type(H5DataType type) {
         case H5VSTRING:
             return DAPSTRING;
         case H5INT64:
+            return DAP4INT64;
         case H5UINT64:
+            return DAP4UINT64;
         case H5REFERENCE:
         case H5COMPOUND:
         case H5ARRAY:
@@ -173,6 +177,8 @@ HDF5CFDAPUtil:: print_attr(H5DataType type, int loc, void *vals)
         unsigned short *usp;
         int   *ip;
         unsigned int *uip;
+        long long *llp;
+        unsigned long long *ullp;
         float *fp;
         double *dp;
     } gp;
@@ -233,6 +239,20 @@ HDF5CFDAPUtil:: print_attr(H5DataType type, int loc, void *vals)
             rep << *(gp.uip+loc);
             return rep.str();
         }
+    case H5INT64:
+        {
+            gp.llp = (long long *) vals;
+            rep << *(gp.llp+loc);
+            return rep.str();
+        }
+
+    case H5UINT64:
+        {
+            gp.ullp = (unsigned long long *) vals;
+            rep << *(gp.ullp+loc);
+            return rep.str();
+        }
+
 
 
     case H5FLOAT32:
@@ -276,4 +296,41 @@ HDF5CFDAPUtil:: print_attr(H5DataType type, int loc, void *vals)
     }
 
 }
+
+D4AttributeType HDF5CFDAPUtil::daptype_strrep_to_dap4_attrtype(std::string s){
+    
+    if (s == "Byte")
+        return attr_byte_c;
+    else if (s == "Int8")
+        return attr_int8_c;
+    else if (s == "UInt8") // This may never be used.
+        return attr_uint8_c;
+    else if (s == "Int16")
+        return attr_int16_c;
+    else if (s == "UInt16")
+        return attr_uint16_c;
+    else if (s == "Int32")
+        return attr_int32_c;
+    else if (s == "UInt32")
+        return attr_uint32_c;
+    else if (s == "Int64")
+        return attr_int64_c;
+    else if (s == "UInt64")
+        return attr_uint64_c;
+    else if (s == "Float32")
+        return attr_float32_c;
+    else if (s == "Float64")
+        return attr_float64_c;
+    else if (s == "String")
+        return attr_str_c;
+    else if (s == "Url")
+        return attr_url_c;
+    //else if (s == "otherxml")
+    //    return attr_otherxml_c;
+    else
+        return attr_null_c;
+
+
+}
+
 

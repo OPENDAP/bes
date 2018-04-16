@@ -166,6 +166,8 @@ long HDF5RequestHandler::_latlon_disk_cache_size        =0;
 string HDF5RequestHandler::_latlon_disk_cache_dir       ="";
 string HDF5RequestHandler::_latlon_disk_cachefile_prefix="";
 
+DMR* HDF5RequestHandler::dmr_int64 = 0;
+
 
 //BaseTypeFactory factory;
 //libdap::DDS HDF5RequestHandler::hd_dds(&factory,"");
@@ -359,6 +361,8 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
                         throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
                     }
 
+                    if(HDF5RequestHandler::get_dmr_64bit_int()!=NULL)
+                        HDF5RequestHandler::set_dmr_64bit_int(NULL);
                     read_cfdas( *das,filename,cf_fileid);
                     H5Fclose(cf_fileid);
                 }
@@ -491,6 +495,8 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
                     invalid_file_msg +=" distributor.";
                     throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
                 }
+                if(HDF5RequestHandler::get_dmr_64bit_int() != NULL)
+                    HDF5RequestHandler::set_dmr_64bit_int(NULL);
                 read_cfdds(*dds,filename,cf_fileid);
             }
             else {
@@ -1081,6 +1087,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
 
                 DAS das;
 
+                HDF5RequestHandler::set_dmr_64bit_int(dmr);
                 read_cfdds( dds,filename,cf_fileid);
                 if (!dds.check_semantics()) {   // DDS didn't comply with the DAP semantics 
                     dds.print(cerr);

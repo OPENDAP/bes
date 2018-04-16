@@ -35,6 +35,7 @@
 
 #include <string>
 
+#include <DMR.h>
 #include <DDS.h>
 #include <DAS.h>
 #include "hdf5.h"
@@ -63,5 +64,8 @@ void gen_dap_special_oneobj_das(AttrTable*, const HDF5CF::Attribute*, const HDF5
 bool is_fvalue_valid(H5DataType, const HDF5CF::Attribute*);
 void gen_dap_str_attr(AttrTable*, const HDF5CF::Attribute *);
 void add_ll_valid_range(AttrTable*, bool is_lat);
+void map_cfh5_attrs_to_dap4(const HDF5CF::Var*var,BaseType*new_var);
+bool need_attr_values_for_dap4(const HDF5CF::Var*var);
+void check_update_int64_attr(const string &, const HDF5CF::Attribute *);
 
 #endif

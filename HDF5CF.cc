@@ -738,6 +738,13 @@ void File::Retrieve_H5_Supported_Attr_Values() throw (Exception)
     }
 }
 
+void File::Retrieve_H5_Var_Attr_Values(Var *var) throw (Exception)
+{
+    for (vector<Attribute *>::iterator ira = var->attrs.begin(); ira != var->attrs.end(); ++ira) {
+        Retrieve_H5_Attr_Value(*ira, var->fullpath);
+    }
+}
+
 // Retrieve the values of a specific HDF5 attribute.
 void File::Retrieve_H5_Attr_Value(Attribute *attr, string obj_name) throw (Exception)
 {

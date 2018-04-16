@@ -434,6 +434,8 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
         case H5INT16:
         case H5INT32:
         case H5UINT32:
+        case H5INT64:
+        case H5UINT64:
         case H5FLOAT32:
         case H5FLOAT64:
         
@@ -1142,6 +1144,85 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
                 }
                     break;
 
+                case H5INT64:
+                {
+#if 0
+                    vector<unsigned int>total_val;
+                    total_val.resize(total_read/dtype_size);
+                    memcpy(&total_val[0],(void*)&buf[0],total_read);
+
+                    vector<unsigned int>final_val;
+                    subset<unsigned int>(
+                                      &total_val[0],
+                                      rank,
+                                      dimsizes,
+                                      &cd_start[0],
+                                      &cd_step[0],
+                                      &cd_count[0],
+                                      &final_val,
+                                      cd_pos,
+                                      0
+                                     );
+#endif
+
+                    vector<long long >final_val;
+                    subset<long long >(
+                                      &buf[0],
+                                      rank,
+                                      dimsizes,
+                                      &cd_start[0],
+                                      &cd_step[0],
+                                      &cd_count[0],
+                                      &final_val,
+                                      cd_pos,
+                                      0
+                                     );
+
+                    set_value ((dods_int64 *) &final_val[0], nelms_to_send);
+                }
+                    break;
+
+
+
+                case H5UINT64:
+                {
+#if 0
+                    vector<unsigned int>total_val;
+                    total_val.resize(total_read/dtype_size);
+                    memcpy(&total_val[0],(void*)&buf[0],total_read);
+
+                    vector<unsigned int>final_val;
+                    subset<unsigned int>(
+                                      &total_val[0],
+                                      rank,
+                                      dimsizes,
+                                      &cd_start[0],
+                                      &cd_step[0],
+                                      &cd_count[0],
+                                      &final_val,
+                                      cd_pos,
+                                      0
+                                     );
+#endif
+
+                    vector<unsigned long long >final_val;
+                    subset<unsigned long long >(
+                                      &buf[0],
+                                      rank,
+                                      dimsizes,
+                                      &cd_start[0],
+                                      &cd_step[0],
+                                      &cd_count[0],
+                                      &final_val,
+                                      cd_pos,
+                                      0
+                                     );
+
+                    set_value ((dods_uint64 *) &final_val[0], nelms_to_send);
+                }
+                    break;
+
+
                 case H5FLOAT32:
                 {
 #if 0
@@ -1529,7 +1610,54 @@ void HDF5CFArray::read_data_from_mem_cache(void*buf) {
     return;
 }
 #endif
+// We don't inherit libdap Array Class's transform_to_dap4 method since CF option is still using it.
+BaseType* HDF5CFArray::h5cfdims_transform_to_dap4(D4Group *grp) {
 
+    Array *dest = static_cast<HDF5CFArray*>(ptr_duplicate());
+
+    // If there is just a size, don't make
+    // a D4Dimension (In DAP4 you cannot share a dimension unless it has
+    // a name). jhrg 3/18/14
+
+    for (Array::Dim_iter d = dest->dim_begin(), e = dest->dim_end(); d != e; ++d) {
+        if (false == (*d).name.empty()) {
+
+            D4Group *temp_grp   = grp;
+            D4Dimension *d4_dim = NULL;
+            while(temp_grp) {
+
+                D4Dimensions *temp_dims = temp_grp->dims();
+
+                // Check if the dimension is defined in this group
+                d4_dim = temp_dims->find_dim((*d).name);
+                if(d4_dim) { 
+                  (*d).dim = d4_dim;
+                  break;
+                }
+
+                if(temp_grp->get_parent()) 
+                    temp_grp = static_cast<D4Group*>(temp_grp->get_parent());
+                else 
+                    temp_grp = 0;
+
+            }
+
+            // Not find this dimension in any of the ancestor groups, add it to this group.
+            if(d4_dim == NULL) {
+                d4_dim = new D4Dimension((*d).name, (*d).size);
+//cerr<<"FQN name is "<<d4_dim->fully_qualified_name() <<endl;
+                D4Dimensions * dims = grp->dims();
+                dims->add_dim_nocopy(d4_dim);
+                (*d).dim = d4_dim;
+            }
+        }
+    }
+
+    dest->set_is_dap4(true);
+
+    return dest;
+
+}
 #if 0
 // parse constraint expr. and make hdf5 coordinate point location.
 // return number of elements to read. 

@@ -30,7 +30,7 @@ main (void)
     hid_t       aspace_vstr,aspace_fstr;
     hsize_t     dimd[2],dims[2];     /* dataset dimensions */
     hid_t       aid;    						/* dataspace identifiers */
-    hid_t       attr_u64, attr_vs,attr_fs; /* attribute identifiers */
+    hid_t       attr_u64, attr_u64s,attr_vs,attr_fs; /* attribute identifiers */
     hid_t       grp_id;
     herr_t      status;
     uint64_t    data_uint64[2],data_uint64_sca; 		/* data to write*/
@@ -106,8 +106,12 @@ main (void)
     status = H5LTset_attribute_int(file,"/d64","attr_int",data_int,2);
 
     status = H5LTset_attribute_long_long(file,"/du64","attr_int64",(const long long *)data_int64,2);
+    status = H5LTset_attribute_long_long(file,"/du64s","attr_int64s",(const long long *)data_int64,2);
     status = H5LTset_attribute_char(file,"/du64","attr_int8",(const char*)&data_int8_sca,1);
 
+    attr_u64s   = H5Acreate2(dset_s, "attr_uint64s", H5T_NATIVE_ULLONG, space_s, H5P_DEFAULT, H5P_DEFAULT);
+    status  = H5Awrite(attr_u64s, H5T_NATIVE_ULLONG, &data_uint64_sca);
+    H5Aclose(attr_u64s);
 
     attr_u64   = H5Acreate2(dset_d, "attr_uint64", H5T_NATIVE_ULLONG, space_s, H5P_DEFAULT, H5P_DEFAULT);
     status  = H5Awrite(attr_u64, H5T_NATIVE_ULLONG, &data_uint64_sca);
@@ -124,8 +128,10 @@ main (void)
     /* 64-bit intger group and root attributes */
 
     status = H5LTset_attribute_long_long(file,"/","root_attr_int64",(const long long *)data_int64,2);
+    status = H5LTset_attribute_long_long(file,"/","root_attr_int64_scalar",(const long long *)&data_int64_sca,1);
     grp_id = H5Gcreate2(file,"grp_int64",H5P_DEFAULT,H5P_DEFAULT,H5P_DEFAULT);
     status = H5LTset_attribute_long_long(file,"/grp_int64","grp_attr_int64",(const long long *)data_int64,2);
+    status = H5LTset_attribute_long_long(file,"/grp_int64","grp_attr_int64_scalar",(const long long *)&data_int64_sca,1);
     /*
      * Close/release resources.
      */

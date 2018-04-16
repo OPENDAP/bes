@@ -293,6 +293,45 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
         }
             break;
 
+        case H5INT64:
+        {
+            vector<long long>val;
+            subset<long long>(
+			buf,
+			ndims,
+			h5_dimsizes,
+			&offset[0],
+			&step[0],
+			&count[0],
+			&val,
+			pos,
+			0
+			);
+
+            set_value ((dods_int64 *) &val[0], nelms);
+        } // case H5INT32
+            break;
+
+        case H5UINT64:
+        {
+            vector<unsigned long long>val;
+            subset<unsigned long long>(
+				buf,
+				ndims,
+				h5_dimsizes,
+				&offset[0],
+				&step[0],
+				&count[0],
+				&val,
+				pos,
+				0
+				);
+
+            set_value ((dods_uint64 *) &val[0], nelms);
+        }
+            break;
+
+
         case H5FLOAT32:
         {
             vector<float>val;

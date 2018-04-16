@@ -50,10 +50,14 @@
 #include "HDF5CFInt32.h"
 #include "HDF5CFFloat32.h"
 #include "HDF5CFFloat64.h"
+#include "HDF5CFInt64.h"
+#include "HDF5CFUInt64.h"
 #include "HDF5CFStr.h"
 #include "HDF5CFArray.h"
 #include "HDF5CFGeoCF1D.h"
 #include "HDF5CFGeoCFProj.h"
+
+#include "HDF5Int64.h"
 
 using namespace HDF5CF;
 
@@ -62,13 +66,46 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
 {
 
     BESDEBUG("h5", "Coming to gen_dap_onevar_dds()  "<<endl);
-
     const vector<HDF5CF::Dimension *>& dims = var->getDimensions();
 
     if (0 == dims.size()) {
         // Adding 64-bit integer support for DMR 
         if (H5INT64 == var->getType() || H5UINT64 == var->getType()){
-            return;
+            DMR * dmr = HDF5RequestHandler::get_dmr_64bit_int();
+            if(dmr == NULL)
+                return;
+            else {
+                D4Group* root_grp = dmr->root();
+                if(H5INT64 == var->getType()) {
+                    HDF5CFInt64 *sca_int64 = NULL;
+                    try {
+                        sca_int64 = new HDF5CFInt64(var->getNewName(), var->getFullPath(), filename);
+                    }
+                    catch (...) {
+                        throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFInt64.");
+                    }
+                    sca_int64->set_is_dap4(true);
+                    map_cfh5_attrs_to_dap4(var,sca_int64);
+                    root_grp->add_var_nocopy(sca_int64);
+                    //delete sca_int64;
+ 
+                }
+                else if(H5UINT64 == var->getType()) {
+                    HDF5CFUInt64 *sca_uint64 = NULL;
+                    try {
+                        sca_uint64 = new HDF5CFUInt64(var->getNewName(), var->getFullPath(), filename);
+                    }
+                    catch (...) {
+                        throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFInt64.");
+                    }
+                    sca_uint64->set_is_dap4(true);
+                    map_cfh5_attrs_to_dap4(var,sca_uint64);
+                    root_grp->add_var_nocopy(sca_uint64);
+                    //delete sca_int64;
+ 
+                }
+
+            }
         }
         else if (H5FSTRING == var->getType() || H5VSTRING == var->getType()) {
             HDF5CFStr *sca_str = NULL;
@@ -180,10 +217,36 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
     else {
 
         // 64-bit integer support
-        if(var->getType() == H5INT64 || var->getType()==H5UINT64) 
-            return;
+        // DMR CHECK
+        bool dap4_int64 = false;
+        if(var->getType() == H5INT64 || var->getType()==H5UINT64) { 
+            DMR * dmr = HDF5RequestHandler::get_dmr_64bit_int();
+            if(dmr == NULL)
+                return;
+            else 
+                dap4_int64 = true;
+        }
+
+#if 0
+            else {
+                D4Group* root_grp = dmr->root();
+                BaseType *bt = NULL;
+                bt = new(HDF5Int64)(var->getNewName(),var->getFullPath(),filename);
+                bt->transform_to_dap4(root_grp,root_grp);
+                delete bt;
+                return;
+            }
+#endif
         BaseType *bt = NULL;
 
+        if(true == dap4_int64) {
+            if(var->getType() == H5INT64)
+                bt = new(HDF5CFInt64)(var->getNewName(),var->getFullPath());
+            else if(var->getType() == H5UINT64)
+                bt = new(HDF5CFUInt64)(var->getNewName(),var->getFullPath());
+        }
+
+        else {
         switch (var->getType()) {
 #define HANDLE_CASE(tid,type)                                  \
             case tid:                                           \
@@ -213,6 +276,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
             throw InternalErr(__FILE__, __LINE__, "unsupported data type.");
 #undef HANDLE_CASE
         }
+        }
 
         vector<HDF5CF::Dimension*>::const_iterator it_d;
         vector<size_t> dimsizes;
@@ -237,7 +301,16 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
                 ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
         }
 
-        dds.add_var(ar);
+        if(dap4_int64 == true) {
+            DMR * dmr = HDF5RequestHandler::get_dmr_64bit_int();
+            D4Group* root_grp = dmr->root();
+            BaseType* d4_var = ar->h5cfdims_transform_to_dap4(root_grp);
+            map_cfh5_attrs_to_dap4(var,d4_var);
+            root_grp->add_var_nocopy(d4_var);
+        }
+        else 
+            dds.add_var(ar);
+
         delete bt;
         delete ar;
     }
@@ -809,5 +882,107 @@ void add_ll_valid_range(AttrTable* at, bool is_lat) {
     else {
         at->append_attr("valid_min", "Float64","-180.0");
         at->append_attr("valid_max", "Float64","180.0");
+    }
+}
+
+bool need_attr_values_for_dap4(const HDF5CF::Var *var) {
+    bool ret_value = false;
+    if(HDF5RequestHandler::get_dmr_64bit_int()!=NULL)
+        if(H5INT64 == var->getType() || H5UINT64 == var->getType())
+            ret_value = true;
+    return ret_value;
+}
+
+void map_cfh5_attrs_to_dap4(const HDF5CF::Var *var,BaseType* d4_var) {
+
+    vector<HDF5CF::Attribute *>::const_iterator it_ra;
+    for (it_ra = var->getAttributes().begin();
+        it_ra != var->getAttributes().end(); ++it_ra) {
+        // HDF5 Native Char maps to DAP INT16(DAP doesn't have the corresponding datatype), so needs to
+        // obtain the mem datatype. 
+        size_t mem_dtype_size = ((*it_ra)->getBufSize()) / ((*it_ra)->getCount());
+        H5DataType mem_dtype = HDF5CFDAPUtil::get_mem_dtype((*it_ra)->getType(), mem_dtype_size);
+
+        string dap2_attrtype = HDF5CFDAPUtil::print_type(mem_dtype);
+        D4AttributeType dap4_attrtype = HDF5CFDAPUtil::daptype_strrep_to_dap4_attrtype(dap2_attrtype);
+        D4Attribute *d4_attr = new D4Attribute((*it_ra)->getNewName(),dap4_attrtype);
+        if(dap4_attrtype == attr_str_c) {
+            const vector<size_t>& strsize = (*it_ra)->getStrSize();
+            unsigned int temp_start_pos = 0;
+            for (unsigned int loc = 0; loc < (*it_ra)->getCount(); loc++) {
+                if (strsize[loc] != 0) {
+                    string tempstring((*it_ra)->getValue().begin() + temp_start_pos,
+                                      (*it_ra)->getValue().begin() + temp_start_pos + strsize[loc]);
+                    temp_start_pos += strsize[loc];
+                    if (((*it_ra)->getNewName() != "origname") && ((*it_ra)->getNewName() != "fullnamepath")) 
+                        tempstring = HDF5CFDAPUtil::escattr(tempstring);
+                    d4_attr->add_value(tempstring);
+                }
+            }
+        }
+        else {
+            for (unsigned int loc = 0; loc < (*it_ra)->getCount(); loc++) {
+                string print_rep = HDF5CFDAPUtil::print_attr(mem_dtype, loc, (void*) &((*it_ra)->getValue()[0]));
+                d4_attr->add_value(print_rep);
+                //at->append_attr((*it_ra)->getNewName(), HDF5CFDAPUtil::print_type((*it_ra)->getType()), print_rep);
+            }
+        }
+        d4_var->attributes()->add_attribute_nocopy(d4_attr);
+    }
+
+}
+
+void check_update_int64_attr(const string & obj_name, const HDF5CF::Attribute * attr) {
+    if(attr->getType() == H5INT64 || attr->getType() == H5UINT64) { 
+        DMR * dmr = HDF5RequestHandler::get_dmr_64bit_int();
+        if(dmr != NULL) {
+            string dap2_attrtype = HDF5CFDAPUtil::print_type(attr->getType());
+            D4AttributeType dap4_attrtype = HDF5CFDAPUtil::daptype_strrep_to_dap4_attrtype(dap2_attrtype);
+            D4Attribute *d4_attr = new D4Attribute(attr->getNewName(),dap4_attrtype);
+            for (unsigned int loc = 0; loc < attr->getCount(); loc++) {
+                string print_rep = HDF5CFDAPUtil::print_attr(attr->getType(), loc, (void*) &(attr->getValue()[0]));
+                d4_attr->add_value(print_rep);
+                //at->append_attr((*it_ra)->getNewName(), HDF5CFDAPUtil::print_type((*it_ra)->getType()), print_rep);
+            }
+            D4Group * root_grp = dmr->root();
+            D4Attribute *d4_hg_container; 
+            if(root_grp->attributes()->empty() == true){
+            //D4Attribute *d4_hg_container = root_grp->attributes()->find("HDF5_GLOBAL");
+            //if(d4_hg_container == NULL) {
+                d4_hg_container = new D4Attribute;
+                d4_hg_container->set_name("HDF5_GLOBAL_integer_64");
+                d4_hg_container->set_type(attr_container_c);
+                root_grp->attributes()->add_attribute_nocopy(d4_hg_container);
+            }
+            else 
+                d4_hg_container = root_grp->attributes()->get("HDF5_GLOBAL_integer_64");
+            if(obj_name != "") {
+                string test_obj_name = "HDF5_GLOBAL_integer_64."+obj_name;
+                //D4Attribute *d4_container = root_grp->attributes()->find(obj_name);
+                //D4Attribute *d4_container = root_grp->attributes()->get(obj_name);
+                D4Attribute *d4_container = root_grp->attributes()->get(test_obj_name);
+                // ISSUES need to search the attributes 
+                //
+                //D4Attribute *d4_container = d4_hg_container->attributes()->find(obj_name);
+                if(d4_container == NULL) {
+                    d4_container = new D4Attribute;
+                    d4_container->set_name(obj_name);
+                    d4_container->set_type(attr_container_c);
+
+                    //if(d4_hg_container->attributes()->empty()==true)
+                    //    cerr<<"global container is empty"<<endl;
+                    //d4_hg_container->attributes()->add_attribute_nocopy(d4_container);
+                    //cerr<<"end of d4_container "<<endl;
+                }
+                d4_container->attributes()->add_attribute_nocopy(d4_attr);
+                //root_grp->attributes()->add_attribute_nocopy(d4_container);
+//#if 0
+                if(d4_hg_container->attributes()->get(obj_name)==NULL)
+                    d4_hg_container->attributes()->add_attribute_nocopy(d4_container);
+//#endif
+            }
+            else 
+                d4_hg_container->attributes()->add_attribute_nocopy(d4_attr);
+        }
     }
 }

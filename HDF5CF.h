@@ -591,6 +591,9 @@ public:
     /// Retrieve attribute values for the supported HDF5 datatypes.
     virtual void Retrieve_H5_Supported_Attr_Values() throw (Exception);
 
+    /// Retrieve attribute values for a variable
+    virtual void Retrieve_H5_Var_Attr_Values(Var *var) throw (Exception);
+
     /// Retrieve coordinate variable attributes.
     virtual void Retrieve_H5_CVar_Supported_Attr_Values() = 0;
 

@@ -296,6 +296,8 @@ void gen_gmh5_cfdds( DDS & dds, HDF5CF:: GMFile *f) {
 
     for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
         BESDEBUG("h5","variable full path= "<< (*it_v)->getFullPath() <<endl);
+        if(need_attr_values_for_dap4(*it_v) == true) 
+            f->Retrieve_H5_Var_Attr_Values(*it_v);
         gen_dap_onevar_dds(dds,*it_v,fileid, filename);
     }
     for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
@@ -344,6 +346,7 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
             at = das.add_table(FILE_ATTR_TABLE_NAME, new AttrTable);
 
         for (it_ra = root_attrs.begin(); it_ra != root_attrs.end(); ++it_ra) {
+            check_update_int64_attr("",*it_ra);
             gen_dap_oneobj_das(at,*it_ra,NULL);
         }
     }
@@ -357,6 +360,7 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
 
             for (it_ra = (*it_g)->getAttributes().begin();
                  it_ra != (*it_g)->getAttributes().end(); ++it_ra) {
+                check_update_int64_attr((*it_g)->getNewName(),*it_ra);
                 gen_dap_oneobj_das(at,*it_ra,NULL);
             }
         }
@@ -376,8 +380,11 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
                 at = das.add_table((*it_v)->getNewName(), new AttrTable);
 
             for (it_ra = (*it_v)->getAttributes().begin();
-                 it_ra != (*it_v)->getAttributes().end(); ++it_ra) 
+                 it_ra != (*it_v)->getAttributes().end(); ++it_ra) {
                 gen_dap_oneobj_das(at,*it_ra,*it_v);
+            }
+            // If a var has integer-64 bit datatype attributes, we have to duplicate all 
+            // the var in dmr and delete this var from dds. 
                     
         }
 
