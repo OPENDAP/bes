@@ -978,17 +978,17 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::Array *a, string in
 }
 
 
- /**
-  * @brief  Write the CovJSON representation of the passed DAP AttrTable instance.
-  *   Supports multi-valued attributes and nested attributes.
-  *
-  * @note This function may be completed removed at some point.
-  *
-  * @param strm Write to this output stream
-  * @param attr_table Reference to an AttrTable containing attribute values
-  * @param a Pointer to an Array containing atomic type variables
-  * @param indent Indent the output so humans can make sense of it
-  */
+/**
+ * @brief  Write the CovJSON representation of the passed DAP AttrTable instance.
+ *   Supports multi-valued attributes and nested attributes.
+ *
+ * @note This function may be completed removed at some point.
+ *
+ * @param strm Write to this output stream
+ * @param attr_table Reference to an AttrTable containing attribute values
+ * @param a Pointer to an Array containing atomic type variables
+ * @param indent Indent the output so humans can make sense of it
+ */
 void FoDapCovJsonTransform::transform(ostream *strm, libdap::AttrTable &attr_table, string indent)
 {
     string child_indent = indent + _indent_increment;

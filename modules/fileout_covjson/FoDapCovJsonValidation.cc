@@ -29,6 +29,7 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 // (c) COPYRIGHT URI/MIT 1995-1999
 // Please read the full copyright statement in the file COPYRIGHT_URI.
+//
 
 #include "config.h"
 
@@ -64,8 +65,10 @@ using std::istringstream;
 
 #define FoDapCovJsonValidation_debug_key "focovjson"
 
-/** @brief dumps information about this transformation object for debugging
- * purposes
+
+/**
+ * @brief Dumps information about this transformation object for debugging
+ *   purposes
  *
  * Displays the pointer value of this instance plus instance data,
  * including all of the FoJson objects converted from DAP objects that are
@@ -83,14 +86,38 @@ void FoDapCovJsonValidation::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
+
+/**
+ * @brief Get the CovJSON encoding for a DDS
+ *
+ * Set up the CovJSON output transform object. This constructor builds
+ * an object that will build a CovJSON encoding for a DDS. This class can
+ * return both the entire DDS, including data, and a metadata-only
+ * response.
+ *
+ * @note The 'transform' method is used to build the response and a
+ *   bool flag is passed to it to select data or metadata. However, if
+ *   that flag is true and the DDS does not already contain data, the
+ *   result is undefined.
+ *
+ * @param dds DDS object
+ * @throws BESInternalError if the DDS* is null or if localfile is empty.
+ */
 FoDapCovJsonValidation::FoDapCovJsonValidation(libdap::DDS *dds) : _dds(dds)
 {
     if (!_dds) throw BESInternalError("File out COVJSON, null DDS passed to constructor", __FILE__, __LINE__);
 }
 
-/*
-* This method is for validating a dds to see if it is possible to convert the dataset into the CoverageJson format
-*/
+
+/**
+ * @brief For validating a DDS to see if it is possible to convert the dataset
+ *   into the CoverageJson format
+ *
+ * This function will determine what axis have been provided in the given dds
+ * object. Storing this data will help us to build a CovJSON encoding for a DDS.
+ *
+ * @note Uses global _.
+ */
 void FoDapCovJsonValidation::validateDataset()
 {
     hasX = false;
@@ -101,9 +128,15 @@ void FoDapCovJsonValidation::validateDataset()
     validateDataset(_dds);
 }
 
+
 /**
- * Writes json opener for a DAP object that is seen as a "leaf" in w10n semantics.
- * Header includes object name. attributes, and  type.
+ * @brief Prints leaf metadata to dds.log file for testing and debugging purposes.
+ *
+ * Gets the current leaf's attributes, prints the metadata, then runs checkAttribute()
+ * format to the CovJSON output stream. The scope of what metadata is retrieved
+ * to determine what axis variables we have to work with (t, x, y, and z).
+ *
+ * @param bt Pointer to a BaseType vector containing values/attributes
  */
 void FoDapCovJsonValidation::writeLeafMetadata(libdap::BaseType *bt)
 {
@@ -117,42 +150,19 @@ void FoDapCovJsonValidation::writeLeafMetadata(libdap::BaseType *bt)
     }
 
     // See if the actual array name matches up
-    checkAttribute("",bt->name());
+    checkAttribute("", bt->name());
     tempOut.close();
 }
 
-template<typename T>
-unsigned int FoDapCovJsonValidation::covjsonSimpleTypeArrayWorker(T *values, unsigned int indx,
-    vector<unsigned int> *shape, unsigned int currentDim)
-{
-    fstream tempOut;
-    string tempFileName = "/home/ubuntu/hyrax/dds.log";
 
-    if(tempOut.fail()) {
-       cout << "Could not open " << tempFileName << endl;
-       exit(EXIT_FAILURE);
-    }
-
-    unsigned int currentDimSize = (*shape)[currentDim];
-
-    for (unsigned int i = 0; i < currentDimSize; i++) {
-        if (currentDim < shape->size() - 1) {
-            BESDEBUG(FoDapCovJsonValidation_debug_key,
-                "covjsonSimpleTypeArrayWorker() - Recursing! indx:  " << indx << " currentDim: " << currentDim << " currentDimSize: " << currentDimSize << endl);
-            indx = covjsonSimpleTypeArrayWorker<T>(values, indx, shape, currentDim + 1);
-        }
-        else {
-            if (typeid(T) == typeid(std::string)) {
-                // Strings need to be escaped to be included in a CovJSON object.
-                string val = reinterpret_cast<string*>(values)[indx++];
-            }
-        }
-    }
-
-    tempOut.close();
-    return indx;
-}
-
+/**
+ * @brief Validates for a CovJSON representation of the DDS to the passed stream.
+ *
+ * @note w10 sees the world in terms of leaves and nodes. Leaves have data, nodes
+ *   have other nodes and leaves.
+ *
+ * @param dds Pointer to a DDS vector, which contains both w10n leaves and nodes
+ */
 void FoDapCovJsonValidation::validateDataset(libdap::DDS *dds)
 {
     vector<libdap::BaseType *> leaves;
@@ -178,6 +188,14 @@ void FoDapCovJsonValidation::validateDataset(libdap::DDS *dds)
     transformNodeWorker(leaves, nodes);
 }
 
+
+/**
+ * @brief Worker method allows us to recursively traverse a node's range
+ *    of values.
+ *
+ * @param leaves Pointer to a vector of BaseTypes, which represent w10n leaves
+ * @param nodes Pointer to a vector of BaseTypes, which represent w10n nodes
+ */
 void FoDapCovJsonValidation::transformNodeWorker(vector<libdap::BaseType *> leaves, vector<libdap::BaseType *> nodes)
 {
     for (std::vector<libdap::BaseType *>::size_type l = 0; l < leaves.size(); l++) {
@@ -193,6 +211,12 @@ void FoDapCovJsonValidation::transformNodeWorker(vector<libdap::BaseType *> leav
 
 }
 
+
+/**
+ * @brief Validates for a CovJSON representation of the DDS to the passed stream.
+ *
+ * @param bt Pointer to a BaseType vector containing values/attributes
+ */
 void FoDapCovJsonValidation::validateDataset(libdap::BaseType *bt)
 {
     switch (bt->type()) {
@@ -245,9 +269,14 @@ void FoDapCovJsonValidation::validateDataset(libdap::BaseType *bt)
     }
 }
 
+
 /**
- * DAP Constructor types are semantically equivalent to a w10n node type so they
- * must be represented as a collection of child nodes and leaves.
+ * @brief Contructs a new set of leaves and nodes derived from a previous set of nodes.
+ *
+ * @note DAP Constructor types are semantically equivalent to a w10n node type so they
+ *   must be represented as a collection of child nodes and leaves.
+ *
+ * @param cnstrctr a new collection of child nodes and leaves
  */
 void FoDapCovJsonValidation::validateDataset(libdap::Constructor *cnstrctr)
 {
@@ -279,6 +308,18 @@ void FoDapCovJsonValidation::validateDataset(libdap::Constructor *cnstrctr)
     transformNodeWorker(leaves, nodes);
 }
 
+
+/**
+ * @brief Writes the CovJSON representation of the passed DAP Array of string types
+ *   to the dds.log file.
+ *
+ * For each variable in the DDS, write out that variable and its
+ * attributes as CovJSON. Each OPeNDAP data type translates into a
+ * particular CovJSON type. Also write out any global attributes stored at the
+ * top level of the DataDDS.
+ *
+ * @param a Source data array - write out data or metadata from or about this array
+ */
 void FoDapCovJsonValidation::covjsonStringArray(libdap::Array *a)
 {
     ofstream tempOut;
@@ -306,9 +347,14 @@ void FoDapCovJsonValidation::covjsonStringArray(libdap::Array *a)
     tempOut.close();
 }
 
+
 /**
- * Write the json representation of the passed DAP Array instance - which had better be one of
- * atomic DAP types. If the parameter sendData is true then include the data.
+ * @brief Validates for a CovJSON representation of the DDS to the passed stream.
+ *
+ * Write the CovJSON representation of the passed DAP Array instance - which had better be one
+ * of the atomic DAP types.
+ *
+ * @param a Source data array containing simple type values
  */
 void FoDapCovJsonValidation::validateDataset(libdap::Array *a)
 {
@@ -391,6 +437,18 @@ void FoDapCovJsonValidation::validateDataset(libdap::Array *a)
     }
 }
 
+
+/**
+ * @brief Writes the CovJSON representation of the passed DAP Array of simple types
+ *   to the dds.log file.
+ *
+ * For each variable in the DDS, write out that variable and its
+ * attributes as CovJSON. Each OPeNDAP data type translates into a
+ * particular CovJSON type. Also write out any global attributes stored at the
+ * top level of the DataDDS.
+ *
+ * @param a Source data array - write out data or metadata from or about this array
+ */
 template<typename T>
 void FoDapCovJsonValidation::covjsonSimpleTypeArray(libdap::Array *a)
 {
@@ -415,6 +473,18 @@ void FoDapCovJsonValidation::covjsonSimpleTypeArray(libdap::Array *a)
     validateDataset(a->get_attr_table());
 }
 
+
+/**
+ * @brief  Validates for a CovJSON representation of the DDS to the to the dds.log
+ *   file.
+ *
+ * Write the CovJSON representation of the passed DAP AttrTable instance.
+ * Supports multi-valued attributes and nested attributes.
+ *
+ * @note This function may be completely removed at some point.
+ *
+ * @param attr_table Reference to an AttrTable containing attribute values
+ */
 void FoDapCovJsonValidation::validateDataset(libdap::AttrTable &attr_table)
 {
     ofstream tempOut;
@@ -453,9 +523,14 @@ void FoDapCovJsonValidation::validateDataset(libdap::AttrTable &attr_table)
     tempOut.close();
 }
 
-/*
-This function checks the passed in attribute to see if it is one of the required attributes for covjson
-*/
+
+/**
+ * @brief Validates the passed in attribute name and value to see if it is one of the
+ *    required attributes for a CoverageJSON file.
+ *
+ * @param name an attribute's name
+ * @param value an attribute's value
+ */
 void FoDapCovJsonValidation::checkAttribute(std::string name, std::string value)
 {
     if(value == "lon" || value == "longitude"|| value == "LONGITUDE"|| value == "Longitude"|| value == "x"){
@@ -494,20 +569,13 @@ void FoDapCovJsonValidation::checkAttribute(std::string name, std::string value)
     shapeOrig = NULL;
 }
 
-/*
-This function checks to see if the attributes needed to create covjson have been found
-*/
+
+/**
+ * @brief Validates the passed in attribute names and values to ensure the necessary
+ *   attributes are present for generating a CoverageJSON file.
+ */
 bool FoDapCovJsonValidation::canConvert()
 {
-    ofstream tempOut;
-    string tempFileName = "/home/ubuntu/hyrax/dds.log";
-    tempOut.open(tempFileName.c_str(), ios::app);
-
-    if(tempOut.fail()) {
-       cout << "Could not open " << tempFileName << endl;
-       exit(EXIT_FAILURE);
-    }
-
     bool canConvert = false;
 
     if(hasX && hasY && hasT) {
@@ -528,6 +596,5 @@ bool FoDapCovJsonValidation::canConvert()
             canConvert = true;
         }
     }
-    tempOut.close();
     return canConvert;
 }

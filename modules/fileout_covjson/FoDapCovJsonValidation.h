@@ -75,10 +75,6 @@ private:
     template<typename T>
     void covjsonSimpleTypeArray(libdap::Array *a);
 
-    template<typename T>
-    unsigned int covjsonSimpleTypeArrayWorker(T *values, unsigned int indx,
-        std::vector<unsigned int> *shape, unsigned int currentDim);
-
 public:
     bool hasX;
     bool hasY;
