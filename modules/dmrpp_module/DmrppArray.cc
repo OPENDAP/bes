@@ -680,8 +680,12 @@ bool DmrppArray::insert_constrained_chunk(unsigned int dim, vector<unsigned int>
             // this mehtod twice - once to queue the reads and once to decompress and 'insert'
             // the data from the chunks into the array's data buffer.
             // jhrg 4/10/18
+#if 0
             chunk->read(is_deflate_compression(), get_chunk_size_in_elements() * var()->width(),
                 is_shuffle_compression(), var()->width());
+#endif
+
+            chunk->read(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(), var()->width());
             char * source_buffer = chunk->get_rbuf();
 
             if (thisDim.stride == 1) {
