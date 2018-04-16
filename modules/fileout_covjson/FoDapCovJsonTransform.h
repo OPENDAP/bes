@@ -50,8 +50,8 @@ class BESDataHandlerInterface;
 
 /**
  * Used to transform a DDS into a w10n CovJSON metadata or w10n CovJSON data document.
- * The output is written to a local file whose name is passed as a parameter
- * to the constructor.
+ * The output is written to a local file whose name is passed as a parameter to the
+ * constructor.
  */
 class FoDapCovJsonTransform: public BESObj {
 private:

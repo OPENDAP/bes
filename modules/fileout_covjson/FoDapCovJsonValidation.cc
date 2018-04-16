@@ -116,7 +116,7 @@ FoDapCovJsonValidation::FoDapCovJsonValidation(libdap::DDS *dds) : _dds(dds)
  * This function will determine what axis have been provided in the given dds
  * object. Storing this data will help us to build a CovJSON encoding for a DDS.
  *
- * @note Uses global _.
+ * @note Uses global _dds.
  */
 void FoDapCovJsonValidation::validateDataset()
 {
@@ -208,7 +208,6 @@ void FoDapCovJsonValidation::transformNodeWorker(vector<libdap::BaseType *> leav
         libdap::BaseType *v = nodes[n];
         validateDataset(v);
     }
-
 }
 
 
@@ -238,7 +237,7 @@ void FoDapCovJsonValidation::validateDataset(libdap::BaseType *bt)
         break;
 
     case libdap::dods_grid_c:
-        //validateDataset((libdap::Grid *) bt);
+        validateDataset((libdap::Grid *) bt);
         break;
 
     case libdap::dods_sequence_c:
@@ -535,38 +534,38 @@ void FoDapCovJsonValidation::checkAttribute(std::string name, std::string value)
 {
     if(value == "lon" || value == "longitude"|| value == "LONGITUDE"|| value == "Longitude"|| value == "x"){
         hasX = true;
-        if(shapeOrig != NULL) {
+        if(shapeOrig != 0) {
             shapeX = shapeOrig;
         }
     }
     else if(name=="units" && value == "degrees_east") {
         hasX = true;
-        if(shapeOrig != NULL) {
+        if(shapeOrig != 0) {
             shapeX = shapeOrig;
         }
     }
 
     if(value == "lat" || value == "latitude" || value == "LATITUDE" || value == "Latitude" || value == "y") {
-        if(shapeOrig != NULL) {
+        if(shapeOrig != 0) {
             shapeY = shapeOrig;
         }
         hasY = true;
     }
     else if(name == "units" && value =="degrees_north") {
-        if(shapeOrig != NULL) {
+        if(shapeOrig != 0) {
             shapeY = shapeOrig;
         }
         hasY = true;
     }
 
     if (value == "t" || value == "TIME" || value == "time" || value == "s" || value == "seconds" || value == "Seconds"){
-        if(shapeOrig != NULL) {
+        if(shapeOrig != 0) {
             shapeT = shapeOrig;
         }
         hasT = true;
     }
 
-    shapeOrig = NULL;
+    shapeOrig = 0;
 }
 
 

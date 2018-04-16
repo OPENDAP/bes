@@ -30,8 +30,8 @@
 // Please read the full copyright statement in the file COPYRIGHT_URI.
 //
 
-#ifndef A_FoDapCovJsonValidation_h
-#define A_FoDapCovJsonValidation_h 1
+#ifndef A_FODAPCOVJSONVALIDATION_H
+#define A_FODAPCOVJSONVALIDATION_H 1
 
 #include <string>
 #include <vector>
@@ -47,9 +47,6 @@ class Array;
 
 class BESDataHandlerInterface;
 
-/*
-* This class is for validating a dds to see if it is possible to convert the dataset to the coverageJson format
-*/
 class FoDapCovJsonValidation: public BESObj {
 private:
     libdap::DDS *_dds;
@@ -106,4 +103,4 @@ public:
     bool canConvert();
 };
 
-#endif // A_FoDapCovJsonValidation_h
+#endif // A_FODAPCOVJSONVALIDATION_H
