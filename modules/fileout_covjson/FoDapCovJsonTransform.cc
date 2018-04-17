@@ -33,7 +33,6 @@
 #include "config.h"
 
 #include <cassert>
-
 #include <sstream>
 #include <iostream>
 #include <fstream>
