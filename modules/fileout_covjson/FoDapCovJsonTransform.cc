@@ -52,12 +52,9 @@ using std::istringstream;
 #include <Float64.h>
 #include <Str.h>
 #include <Url.h>
-
 #include <BESDebug.h>
 #include <BESInternalError.h>
-
 #include <DapFunctionUtils.h>
-
 #include "FoDapCovJsonTransform.h"
 #include "focovjson_utils.h"
 
