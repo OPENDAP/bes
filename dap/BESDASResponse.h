@@ -58,9 +58,13 @@ public:
 
     virtual void dump(ostream &strm) const;
 
-    libdap::DAS * get_das()
+    virtual libdap::DAS * get_das()
     {
         return _das;
+    }
+    virtual void set_das(libdap::DAS *das)
+    {
+        _das = das;
     }
 };
 

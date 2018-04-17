@@ -35,7 +35,7 @@
 #include <BESDebug.h>
 #include <BESUtil.h>
 
-#include "H4ByteStream.h"
+#include "Chunk.h"
 #include "DmrppArray.h"
 #include "DmrppByte.h"
 #include "DmrppCommon.h"
@@ -68,6 +68,7 @@
 using namespace libdap;
 
 static bool debug = false;
+static bool parser_debug = false;
 
 namespace dmrpp {
 
@@ -104,7 +105,6 @@ public:
      */
     void checkGroupsAndVars(D4Group *grp, string name, int expectedNumGrps, int expectedNumVars)
     {
-
         CPPUNIT_ASSERT(grp);
         BESDEBUG("dmrpp", "Checking D4Group '" << grp->name() << "'" << endl);
 
@@ -117,7 +117,6 @@ public:
         int numVars = grp->var_end() - grp->var_begin();
         BESDEBUG("dmrpp", "The D4Group '" << grp->name() << "' has " << numVars << " child variables." << endl);
         CPPUNIT_ASSERT(numVars == expectedNumVars);
-
     }
 
     /**
@@ -126,25 +125,28 @@ public:
      * xml:base URLs. Here we make these full paths on the file system
      * so that the source data files can be located at test runtime.
      */
-    void set_data_url_in_chunks(DmrppCommon *dc){
+    void set_data_url_in_chunks(DmrppCommon *dc)
+    {
         // Get the chunks and make sure there's at least one
-        vector<H4ByteStream> *chunks = dc->get_chunk_vec();
-        CPPUNIT_ASSERT((*chunks).size() > 0);
+        vector<Chunk> &chunks = dc->get_chunk_vec();
+        CPPUNIT_ASSERT(chunks.size() > 0);
         // Tweak the data URLs for the test
-        for(unsigned int i=0; i<(*chunks).size() ;i++){
-            BESDEBUG("dmrpp", "chunk_refs[" << i << "]: " << (*chunks)[i].to_string() << endl);
+        for (unsigned int i = 0; i < chunks.size(); i++) {
+            BESDEBUG("dmrpp", "chunk_refs[" << i << "]: " << chunks[i].to_string() << endl);
         }
-        for(unsigned int i=0; i<(*chunks).size() ;i++){
-            string data_url = BESUtil::assemblePath(TEST_DMRPP_CATALOG,(*chunks)[i].get_data_url(),true);
-            data_url =  "file://" + data_url;  // Can't use assemblePath() because we need 3 "/" chars in a row.
-            (*chunks)[i].set_data_url(data_url);
+        for (unsigned int i = 0; i < chunks.size(); i++) {
+            string data_url = BESUtil::assemblePath(TEST_DMRPP_CATALOG, chunks[i].get_data_url(), true);
+            data_url = "file://" + data_url;  // Can't use assemblePath() because we need 3 "/" chars in a row.
+            chunks[i].set_data_url(data_url);
 
         }
-        for(unsigned int i=0; i<(*chunks).size() ;i++){
-            BESDEBUG("dmrpp", "altered chunk_refs[" << i << "]: " << (*chunks)[i].to_string() << endl);
+        for (unsigned int i = 0; i < chunks.size(); i++) {
+            BESDEBUG("dmrpp", "altered chunk_refs[" << i << "]: " << chunks[i].to_string() << endl);
         }
     }
-    void read_var_check_name_and_length(DmrppArray *array, string name, int length){
+
+    void read_var_check_name_and_length(DmrppArray *array, string name, int length)
+    {
         BESDEBUG("dmrpp", "array->name(): " << array->name() << endl);
         CPPUNIT_ASSERT(array->name() == name);
 
@@ -156,7 +158,6 @@ public:
         CPPUNIT_ASSERT(array->length() == length);
     }
 
-
     void test_integer_scalar() {
         auto_ptr<DMR> dmr(new DMR);
         DmrppTypeFactory dtf;
@@ -166,7 +167,7 @@ public:
         BESDEBUG("dmrpp", "Opening: " << int_h5 << endl);
 
         ifstream in(int_h5.c_str());
-        parser.intern(in, dmr.get(), debug);
+        parser.intern(in, dmr.get(), parser_debug);
         BESDEBUG("dmrpp", "Parsing complete"<< endl);
 
         D4Group *root = dmr->root();
@@ -180,7 +181,6 @@ public:
         CPPUNIT_ASSERT(di32);
 
         try {
-
             // Hack for libcurl
         	set_data_url_in_chunks(di32);
             di32->read();
@@ -871,13 +871,16 @@ int main(int argc, char*argv[])
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "d");
+    GetOpt getopt(argc, argv, "dp");
     int option_char;
     while ((option_char = getopt()) != -1)
         switch (option_char) {
         case 'd':
-            debug = true;  // debug is a static global
-            break;
+             debug = true;  // debug is a static global
+             break;
+        case 'p':
+             parser_debug = true;
+             break;
         default:
             break;
         }

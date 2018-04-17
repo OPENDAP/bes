@@ -31,7 +31,7 @@ namespace dmrpp {
 
 size_t h4bytestream_write_data(void *buffer, size_t size, size_t nmemb, void *data);
 
-void curl_read_byte_stream(const std::string &url, const std::string& range, void *user_data);
+void curl_read_byte_stream(const std::string &url, const std::string &range, void *user_data);
 
 void inflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len);
 
