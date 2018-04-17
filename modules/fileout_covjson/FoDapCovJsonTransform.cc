@@ -764,7 +764,7 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
         *strm << child_indent2 << "\"domainType\": \"Point\"," << endl;
     }
     else {
-		    throw BESInternalError("File out COVJSON, Could not define a domainType", __FILE__, __LINE__);
+        throw BESInternalError("File out COVJSON, Could not define a domainType", __FILE__, __LINE__);
     }
 
     // The axes are the first 3 leaves - the transformAxesWorker call will parse and
