@@ -716,6 +716,36 @@ public:
          DBG(cerr << __func__ << " - END" << endl);
      }
 
+    void get_dds_object_test() {
+        DBG(cerr << __func__ << " - BEGIN" << endl);
+
+        try {
+            init_dds_and_mds();
+
+            // Store it - this will work if the the code is cleaning the cache.
+            bool stored = d_mds->add_responses(d_test_dds, d_test_dds->get_dataset_name());
+
+            CPPUNIT_ASSERT(stored);
+
+#if 0
+            DDS *dds = d_mds->get_dds_object(d_test_dds->get_dataset_name());
+
+            CPPUNIT_ASSERT(dds);
+
+            DBG(cerr << "DDS: " << dds->get << endl);
+            ostringstream oss;
+            dds->print_xml(oss, false);
+            cerr << oss.str();
+#endif
+
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL(e.get_message());
+        }
+
+        DBG(cerr << __func__ << " - END" << endl);
+    }
+
     CPPUNIT_TEST_SUITE( GlobalMetadataStoreTest );
 
     CPPUNIT_TEST(ctor_test_1);
@@ -738,6 +768,8 @@ public:
     CPPUNIT_TEST(cache_a_das_response_dmr);
     CPPUNIT_TEST(cache_a_dmr_response_dmr);
     CPPUNIT_TEST(add_response_dmr_test);
+
+    CPPUNIT_TEST(get_dds_object_test);
 
     CPPUNIT_TEST_SUITE_END();
 };

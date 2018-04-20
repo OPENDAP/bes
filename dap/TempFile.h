@@ -33,7 +33,7 @@
 
 namespace bes {
 
-const std::string default_tmp_file_template = "TMP_DIR/opendapXXXXXX";
+const std::string default_tmp_file_template = "/tmp/opendapXXXXXX";
 
 /**
  * @brief Get a new temporary file

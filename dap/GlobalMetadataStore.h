@@ -266,13 +266,8 @@ public:
 
     virtual bool remove_responses(const std::string &name);
 
-#if 1
     virtual libdap::DDS *get_dds_object(const std::string &name);
-#endif
-#if 1
     virtual libdap::DMR *get_dmr_object(const std::string &name);
-#endif
-
 };
 
 } // namespace bes
