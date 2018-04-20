@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <Dataset 
     xmlns="http://xml.opendap.org/ns/DAP/4.0#" 
-    xmlns:h4="http://www.hdfgroup.org/HDF4/XML/schema/HDF4map/1.0.1" 
+xmlns:dmrpp="http://www.opendap.org/dmrpp/schema/dmrpp/1.0.0#"
     dapVersion="4.0" 
     dmrVersion="1.0" 
     name="chunked_gzipped_twoD.h5"
-    xml:base="data/dmrpp/chunked_gzipped_twoD.h5">
+    dmrpp:href="data/dmrpp/chunked_gzipped_twoD.h5">
   <Float32 name="d_4_gzipped_chunks">
     <Dim size="100"/>
     <Dim size="100"/>
@@ -15,12 +15,12 @@
     <Attribute name="fullnamepath" type="String">
       <Value>/d_4_gzipped_chunks</Value>
     </Attribute>
-    <h4:chunks deflate_level="6" compressionType="deflate">
-      <h4:chunkDimensionSizes>50 50</h4:chunkDimensionSizes>
-      <h4:byteStream nBytes="2949" chunkPositionInArray="[0,0]" offset="4016" md5="2a7c8a494dc85a7cc696a697ed778f60" uuid="d47d0848-f212-4726-bc67-e4f10a84d8ed"/>
-      <h4:byteStream nBytes="2973" chunkPositionInArray="[0,50]" offset="6965" md5="2d3d6c2b81e7ff3a546b25ded4bc4ec7" uuid="2aa9a04c-7118-4300-9447-316e18076e64"/>
-      <h4:byteStream nBytes="3020" chunkPositionInArray="[50,0]" offset="9938" md5="cb29efd938338763c7f1c41580e2cc28" uuid="734108ae-0864-40a4-a6d5-e316c640d8bd"/>
-      <h4:byteStream nBytes="3022" chunkPositionInArray="[50,50]" offset="12958" md5="ec5089904e7869b57a51c9908102062e" uuid="a3b8145a-207b-4789-9213-fcfcd231b1ff"/>
-    </h4:chunks>
+    <dmrpp:chunks deflate_level="6" compressionType="deflate">
+      <dmrpp:chunkDimensionSizes>50 50</dmrpp:chunkDimensionSizes>
+      <dmrpp:chunk nBytes="2949" chunkPositionInArray="[0,0]" offset="4016"  />
+      <dmrpp:chunk nBytes="2973" chunkPositionInArray="[0,50]" offset="6965"  />
+      <dmrpp:chunk nBytes="3020" chunkPositionInArray="[50,0]" offset="9938"  />
+      <dmrpp:chunk nBytes="3022" chunkPositionInArray="[50,50]" offset="12958"  />
+    </dmrpp:chunks>
   </Float32>
 </Dataset>
