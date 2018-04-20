@@ -749,6 +749,7 @@ GlobalMetadataStore::remove_responses(const string &name)
  * @exception BESInternalError is thrown if \arg name does not have a
  * cached DMR response.
  */
+#if 1
 DMR *
 GlobalMetadataStore::get_dmr_object(const string &name)
 {
@@ -765,6 +766,8 @@ GlobalMetadataStore::get_dmr_object(const string &name)
 
     return dmr.release();
 }
+#endif
+
 
 /**
  * @brief Build a DDS object from the cached Response
@@ -779,6 +782,7 @@ GlobalMetadataStore::get_dmr_object(const string &name)
  * @exception BESInternalError is thrown if \arg name does not have a
  * cached DDS or DAS response.
  */
+#if 1
 DDS *
 GlobalMetadataStore::get_dds_object(const string &name)
 {
@@ -794,7 +798,7 @@ GlobalMetadataStore::get_dds_object(const string &name)
 
     TempFile das_tmp;
     fstream das_fs(das_tmp.get_name().c_str(), std::fstream::out);
-    get_das_response(name, das_fs);    // throws BESInternalError if not found
+    get_das_response(name, das_fs);// throws BESInternalError if not found
 
     auto_ptr<DAS> das(new DAS());
     das->parse();
@@ -804,4 +808,6 @@ GlobalMetadataStore::get_dds_object(const string &name)
 
     return dds.release();
 }
+#endif
+
 
