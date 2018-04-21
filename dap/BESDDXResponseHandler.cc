@@ -32,19 +32,21 @@
 
 #include <DDS.h>
 
+#include "GlobalMetadataStore.h"
 #include "BESDDXResponseHandler.h"
-#include "BESDASResponse.h"
+// #include "BESDASResponse.h"
 #include "BESDDSResponse.h"
 #include "BESDapNames.h"
-#include "BESDataNames.h"
+//#include "BESDataNames.h"
 #include "BESRequestHandlerList.h"
 
 #include "BESDebug.h"
 
 using namespace libdap;
+using namespace bes;
 
 BESDDXResponseHandler::BESDDXResponseHandler(const string &name) :
-        BESResponseHandler(name)
+    BESResponseHandler(name)
 {
 }
 
@@ -68,49 +70,34 @@ BESDDXResponseHandler::~BESDDXResponseHandler()
  */
 void BESDDXResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
-    BESDEBUG( "dap", "Entering BESDDXResponseHandler::execute" << endl );
+    BESDEBUG("dap", "Entering BESDDXResponseHandler::execute" << endl);
 
     dhi.action_name = DDX_RESPONSE_STR;
-    // Create the DDS.
-    // NOTE: It is the responsibility of the specific request handler to set
-    // the BaseTypeFactory. It is set to NULL here
-    DDS *dds = new DDS(NULL, "virtual");
+
+    GlobalMetadataStore *mds = GlobalMetadataStore::get_instance();
+    GlobalMetadataStore::MDSReadLock lock;
+
+    dhi.first_container();
+    if (mds) lock = mds->is_dds_available(dhi.container->get_real_name());
+
+    DDS *dds = 0;
+
+    if (mds && lock()) {
+        dds = mds->get_dds_object(dhi.container->get_real_name());
+    }
+    else {
+        // Make a blank DDS. It is the responsibility of the specific request
+        // handler to set the BaseTypeFactory. It is set to NULL here
+        dds = new DDS(NULL, "virtual");
+    }
 
     BESDDSResponse *bdds = new BESDDSResponse(dds);
     d_response_object = bdds;
     d_response_name = DDS_RESPONSE;
     dhi.action = DDS_RESPONSE;
 
-    BESDEBUG( "bes", "about to set dap version to: " << bdds->get_dap_client_protocol() << endl);
-    BESDEBUG( "bes", "about to set xml:base to: " << bdds->get_request_xml_base() << endl);
-
-#if 0
-    // I added these two lines from BESDDXResponse. jhrg 10/05/09
-    // Note that the get_dap_client_protocol(), ..., methods
-    // are defined in BESDapResponse - these are not the methods of the
-    // same name in DDS. 2/23/11 jhrg
-
-    // Set the DAP protocol version requested by the client. 2/25/11 jhrg
-
-    dhi.first_container();
-    BESDEBUG("version", "Initial CE: " << dhi.container->get_constraint() << endl);
-    dhi.container->set_constraint(dds->get_keywords().parse_keywords(dhi.container->get_constraint()));
-    BESDEBUG("version", "CE after keyword processing: " << dhi.container->get_constraint() << endl);
-
-    if (dds->get_keywords().has_keyword("dap")) {
-        BESDEBUG("version",
-            "Has keyword 'dap', setting version to: " << dds->get_keywords().get_keyword_value("dap") << endl);
-        dds->set_dap_version(dds->get_keywords().get_keyword_value("dap"));
-    }
-    else if (!bdds->get_dap_client_protocol().empty()) {
-        BESDEBUG("version",
-            "Has non-empty dap version info in bdds, setting version to: " << bdds->get_dap_client_protocol() << endl);
-        dds->set_dap_version(bdds->get_dap_client_protocol());
-    }
-    else {
-        BESDEBUG("version", "Has no clue about dap version, using default." << endl);
-    }
-#endif
+    BESDEBUG("bes", "about to set dap version to: " << bdds->get_dap_client_protocol() << endl);
+    BESDEBUG("bes", "about to set xml:base to: " << bdds->get_request_xml_base() << endl);
 
     if (!bdds->get_dap_client_protocol().empty()) {
         dds->set_dap_version(bdds->get_dap_client_protocol());
@@ -123,7 +110,7 @@ void BESDDXResponseHandler::execute(BESDataHandlerInterface &dhi)
     dhi.action = DDX_RESPONSE;
     d_response_object = bdds;
 
-    BESDEBUG( "dap", "Leaving BESDDXResponseHandler::execute" << endl);
+    BESDEBUG("dap", "Leaving BESDDXResponseHandler::execute" << endl);
 }
 
 /** @brief transmit the response object built by the execute command

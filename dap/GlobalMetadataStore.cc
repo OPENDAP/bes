@@ -772,10 +772,14 @@ GlobalMetadataStore::get_dmr_object(const string &name)
  * Read the DDS and DAS responses, build a DDS using their information
  * and return the binary DDS response. The variables are built using
  * the default BaseTypeFactory but the DDS object has the factory set
- * to null when it is returned.
+ * to null when it is returned. The DDS is 'loaded' with attribute information
+ * as well, so it can be used to return the DDX response.
+ *
+ * @note This method uses temporary files to hold the responses and then
+ * parses them to build the DDS object
  *
  * @todo If/When the DDS can be serialized, we should be able to replace
- * this implementation with something far better - and soemthing that can
+ * this implementation with something far better - and something that can
  * include information in specialized BaseTypes and DDS classes.
  *
  * @param name Name of the dataset
@@ -792,10 +796,8 @@ GlobalMetadataStore::get_dds_object(const string &name)
     get_dds_response(name, dds_fs);     // throws BESInternalError if not found
     dds_fs.close();
 
-    // Write the stuff
     BaseTypeFactory btf;
     auto_ptr<DDS> dds(new DDS(&btf));
-
     dds->parse(dds_tmp.get_name());
 
     TempFile das_tmp(get_cache_directory() + "/opendapXXXXXX");
