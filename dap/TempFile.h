@@ -46,24 +46,35 @@ const std::string default_tmp_file_template = "/tmp/opendapXXXXXX";
 class TempFile {
 private:
     int d_fd;
-    //std::vector<char> d_name;
     std::string d_fname;
+    bool d_keep_temps;
+
     static std::map<std::string, int> *open_files;
     static struct sigaction cached_sigpipe_handler;
+    static void sigpipe_handler(int signal);
 
 public:
+#if 0
     static void sigpipe_handler(int signal);
+#endif
+
+#if 0
     /**
      * @brief Build a temporary file using a default template.
      *
      * The temporary file will be in TMP_DIR (likely /tmp) and will have
      * a name like 'opendapXXXXXX' where the Xs are numbers or letters.
      */
+
+    // Badness: Don't do this - this is not how to reuse ctor code in another ctor.
     TempFile(): d_fd(0) {
         TempFile(default_tmp_file_template);
     }
+#endif
 
-    TempFile(const std::string &path_template);
+
+    TempFile(const std::string &path_template = default_tmp_file_template, bool keep_temps = false);
+
     ~TempFile();
 
     /** @return The temporary file's file descriptor */

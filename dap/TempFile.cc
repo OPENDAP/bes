@@ -51,7 +51,8 @@ struct sigaction TempFile::cached_sigpipe_handler;
  * bad things happen. So far, SIGPIPE is the only bad thing we know about
  * at least with respect to the TempFile class.
  */
-void TempFile::sigpipe_handler(int sig) {
+void TempFile::sigpipe_handler(int sig)
+{
     if (sig == SIGPIPE) {
         std::map<string, int>::iterator it;
         for (it = open_files->begin(); it != open_files->end(); ++it) {
@@ -59,12 +60,11 @@ void TempFile::sigpipe_handler(int sig) {
         }
         // Files cleaned up? Sweet! Time to bail...
         // FIXME Should we set this to the cached_sigpipe_handler? Or just the default?
-        sigaction(SIGPIPE,  &cached_sigpipe_handler, 0);
+        sigaction(SIGPIPE, &cached_sigpipe_handler, 0);
         // signal(SIGPIPE, SIG_DFL);
         raise(SIGPIPE);
     }
 }
-
 
 /**
  * @brief Get a new temporary file
@@ -78,10 +78,11 @@ void TempFile::sigpipe_handler(int sig) {
  * @param path_template Template passed to mkstemp() to build the temporary
  * file pathname.
  */
-TempFile::TempFile(const std::string &path_template) {
+TempFile::TempFile(const std::string &path_template, bool keep_temps)
+    : d_keep_temps(keep_temps)
+{
     char tmp_name[path_template.length() + 1];
-    std::string::size_type len = path_template.copy(tmp_name,
-            path_template.length());
+    std::string::size_type len = path_template.copy(tmp_name, path_template.length());
     tmp_name[len] = '\0';
 
     // cover the case where older versions of mkstemp() create the file using
@@ -90,15 +91,12 @@ TempFile::TempFile(const std::string &path_template) {
     d_fd = mkstemp(tmp_name);
     umask(original_mode);
 
-    if (d_fd == -1)
-        throw BESInternalError("Failed to open the temporary file.", __FILE__,
-                __LINE__);
+    if (d_fd == -1) throw BESInternalError("Failed to open the temporary file.", __FILE__, __LINE__);
 
     d_fname.assign(tmp_name);
-    //cerr << __func__ << "() - Created '" << d_fname << "' fd: "<< d_fd << endl;
 
+    // only register the SIGPIPE handler once. First time, size() is zero.
     if (open_files->size() == 0) {
-        //cerr << __func__ << "() - Opening first temp file. Replacing SIGPIPE handler with our TempFile version, caching existing SIGPIPE handler." << endl;
         struct sigaction act;
         sigemptyset(&act.sa_mask);
         sigaddset(&act.sa_mask, SIGPIPE);
@@ -107,11 +105,10 @@ TempFile::TempFile(const std::string &path_template) {
         act.sa_handler = bes::TempFile::sigpipe_handler;
 
         if (sigaction(SIGPIPE, &act, &cached_sigpipe_handler)) {
-            throw BESInternalFatalError(
-                    "Could not register a handler to catch SIGPIPE.", __FILE__,
-                    __LINE__);
+            throw BESInternalFatalError("Could not register a handler to catch SIGPIPE.", __FILE__, __LINE__);
         }
     }
+
     open_files->insert(std::pair<string, int>(d_fname, d_fd));
 }
 
@@ -120,37 +117,30 @@ TempFile::TempFile(const std::string &path_template) {
  *
  * Close the open descriptor and delete (unlink) the file name.
  */
-TempFile::~TempFile() {
-    //cerr << __func__ << "() - BEGIN The end is nigh!" << endl;
+TempFile::~TempFile()
+{
     try {
-        //cerr << __func__ << "() -  Closing '" << d_fname << "'  fd: " << d_fd << endl;
         if (!close(d_fd)) {
-            ERROR(
-                    string("Error closing temporary file: '").append(d_fname).append("'  msg: ").append(strerror(errno)).append("\n"));
+            ERROR(string("Error closing temporary file: '").append(d_fname).append("': ").append(strerror(errno)));
         }
-        // cerr << __func__ << "() -  Unlinking '" << fname << "'  fd: " << fd << endl;
-        if (!unlink(d_fname.c_str())) {
-            ERROR(
-                    string("Error unlinking temporary file: '").append(d_fname).append("' msg: ").append(strerror(errno)).append("\n"));
+        if (!d_keep_temps) {
+            if (!unlink(d_fname.c_str())) {
+                ERROR(string("Error unlinking temporary file: '").append(d_fname).append("': ").append(strerror(errno)));
+            }
         }
     }
     catch (...) {
         // Do nothing. This just protects against BESLog (i.e., ERROR)
         // throwing an exception
     }
-    //cerr << __func__ << "() -  Dropping file '" << d_fname  << "'  from open_files list" << endl;
+
     open_files->erase(d_fname);
 
     if (open_files->size() == 0) {
-        //cerr << __func__ << "() - Last temp file was closed. Replacing SIGPIPE handler with previously cached handler." << endl;
-
         if (sigaction(SIGPIPE, &cached_sigpipe_handler, 0)) {
-            throw BESInternalFatalError(
-                    "Could not register a handler to catch SIGPIPE.", __FILE__,
-                    __LINE__);
+            throw BESInternalFatalError("Could not register a handler to catch SIGPIPE.", __FILE__, __LINE__);
         }
     }
-    //cerr << __func__ << "() - END" << endl;
 }
 
 } // namespace bes

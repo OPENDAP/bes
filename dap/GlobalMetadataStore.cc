@@ -786,9 +786,11 @@ GlobalMetadataStore::get_dmr_object(const string &name)
 DDS *
 GlobalMetadataStore::get_dds_object(const string &name)
 {
-    TempFile dds_tmp(default_cache_dir + "/opendapXXXXXX");
+    TempFile dds_tmp(get_cache_directory() + "/opendapXXXXXX");
+
     fstream dds_fs(dds_tmp.get_name().c_str(), std::fstream::out);
     get_dds_response(name, dds_fs);     // throws BESInternalError if not found
+    dds_fs.close();
 
     // Write the stuff
     BaseTypeFactory btf;
@@ -796,12 +798,13 @@ GlobalMetadataStore::get_dds_object(const string &name)
 
     dds->parse(dds_tmp.get_name());
 
-    TempFile das_tmp(default_cache_dir + "/opendapXXXXXX");
+    TempFile das_tmp(get_cache_directory() + "/opendapXXXXXX");
     fstream das_fs(das_tmp.get_name().c_str(), std::fstream::out);
     get_das_response(name, das_fs);     // throws BESInternalError if not found
+    das_fs.close();
 
     auto_ptr<DAS> das(new DAS());
-    das->parse();
+    das->parse(das_tmp.get_name());
 
     dds->transfer_attributes(das.get());
     dds->set_factory(0);

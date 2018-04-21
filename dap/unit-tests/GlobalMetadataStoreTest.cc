@@ -727,24 +727,79 @@ public:
 
             CPPUNIT_ASSERT(stored);
 
-#if 0
             DDS *dds = d_mds->get_dds_object(d_test_dds->get_dataset_name());
 
             CPPUNIT_ASSERT(dds);
 
-            DBG(cerr << "DDS: " << dds->get << endl);
+            DBG(cerr << "DDS: " << dds->get_dataset_name() << endl);
+
             ostringstream oss;
             dds->print_xml(oss, false);
-            cerr << oss.str();
-#endif
+
+            string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "SimpleTypes2.ddx";
+            DBG(cerr << "Reading baseline: " << baseline_name << endl);
+            CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
+
+            string SimpleTypes_ddx_baseline = read_test_baseline(baseline_name);
+
+            CPPUNIT_ASSERT(SimpleTypes_ddx_baseline == oss.str());
 
         }
         catch (BESError &e) {
             CPPUNIT_FAIL(e.get_message());
         }
+        catch(Error &e) {
+            CPPUNIT_FAIL(e.get_error_message());
+        }
+        catch (std::exception &e) {
+            CPPUNIT_FAIL(e.what());
+        }
 
         DBG(cerr << __func__ << " - END" << endl);
     }
+
+    void get_dmr_object_test() {
+         DBG(cerr << __func__ << " - BEGIN" << endl);
+
+         try {
+             init_dmr_and_mds();
+
+             // Store it - this will work if the the code is cleaning the cache.
+             bool stored = d_mds->add_responses(d_test_dmr, d_test_dmr->name());
+
+             CPPUNIT_ASSERT(stored);
+
+             DMR *dmr = d_mds->get_dmr_object(d_test_dmr->name());
+
+             CPPUNIT_ASSERT(dmr);
+
+             DBG(cerr << "DMR: " << dmr->name() << endl);
+
+             ostringstream oss;
+             XMLWriter writer;
+             dmr->print_dap4(writer);
+             oss << writer.get_doc();
+
+             string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "test_01.dmr_r";
+             DBG(cerr << "Reading baseline: " << baseline_name << endl);
+             CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
+
+             string test_01_dmr_baseline = read_test_baseline(baseline_name);
+
+             CPPUNIT_ASSERT(test_01_dmr_baseline == oss.str());
+         }
+         catch (BESError &e) {
+             CPPUNIT_FAIL(e.get_message());
+         }
+         catch(Error &e) {
+             CPPUNIT_FAIL(e.get_error_message());
+         }
+         catch (std::exception &e) {
+             CPPUNIT_FAIL(e.what());
+         }
+
+         DBG(cerr << __func__ << " - END" << endl);
+     }
 
     CPPUNIT_TEST_SUITE( GlobalMetadataStoreTest );
 
@@ -770,6 +825,7 @@ public:
     CPPUNIT_TEST(add_response_dmr_test);
 
     CPPUNIT_TEST(get_dds_object_test);
+    CPPUNIT_TEST(get_dmr_object_test);
 
     CPPUNIT_TEST_SUITE_END();
 };
