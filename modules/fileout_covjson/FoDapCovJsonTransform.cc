@@ -151,7 +151,7 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
         *strm << "]," << endl;
     }
 
-    //sendData = false;
+    sendData = false;
     if (sendData) {
         *strm << childindent << "\"values\": ";
         unsigned int indx = 0;
