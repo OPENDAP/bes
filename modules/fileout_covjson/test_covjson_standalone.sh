@@ -1,8 +1,10 @@
 #!/bin/bash
 
-rm test_output.txt
+rm coads_climatology.covjson
+#rm cyg-ddmi-grid-wind-a10-d20.covjson
 
-touch test_output.txt
+touch coads_climatology.covjson
+#touch cyg-ddmi-grid-wind-a10-d20.covjson
 
-#sudo ./build/bin/besstandalone -c ./bes/modules/fileout_covjson/tests/bes.conf -i ./bes/modules/fileout_covjson/tests/covjson/coads_climatology_abstract_object_DATA.bescmd > test_output.txt
-sudo ./../../../build/bin/besstandalone -c ./tests/bes.conf -i ./tests/covjson/coads_climatology_abstract_object_DATA.bescmd > test_output.txt
+sudo ./../../../build/bin/besstandalone -c ./tests/bes.conf -i ./tests/covjson/coads_climatology_abstract_object_DATA.bescmd > coads_climatology.covjson
+#sudo ./../../../build/bin/besstandalone -c ./tests/bes.conf -i ./tests/covjson/cyg-ddmi-grid-wind-a10-d20_abstract_object_DATA.bescmd > cyg-ddmi-grid-wind-a10-d20.covjson
