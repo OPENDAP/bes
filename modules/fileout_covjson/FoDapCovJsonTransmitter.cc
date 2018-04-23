@@ -65,6 +65,7 @@
 
 #include "FoDapCovJsonTransmitter.h"
 #include "FoDapCovJsonTransform.h"
+#include "FoDapCovJsonValidation.h"
 
 using namespace ::libdap;
 
@@ -94,11 +95,11 @@ FoDapCovJsonTransmitter::FoDapCovJsonTransmitter() : BESTransmitter()
         string key = "FoCovJson.Tempdir";
         TheBESKeys::TheKeys()->get_value(key, FoDapCovJsonTransmitter::temp_dir, found);
         if (!found || FoDapCovJsonTransmitter::temp_dir.empty()) {
-        	FoDapCovJsonTransmitter::temp_dir = FO_COVJSON_TEMP_DIR;
+            FoDapCovJsonTransmitter::temp_dir = FO_COVJSON_TEMP_DIR;
         }
         string::size_type len = FoDapCovJsonTransmitter::temp_dir.length();
         if (FoDapCovJsonTransmitter::temp_dir[len - 1] == '/') {
-        	FoDapCovJsonTransmitter::temp_dir = FoDapCovJsonTransmitter::temp_dir.substr(0, len - 1);
+            FoDapCovJsonTransmitter::temp_dir = FoDapCovJsonTransmitter::temp_dir.substr(0, len - 1);
         }
     }
 }
@@ -144,7 +145,29 @@ void FoDapCovJsonTransmitter::send_data(BESResponseObject *obj, BESDataHandlerIn
 
         FoDapCovJsonTransform ft(loaded_dds);
 
-        ft.transform(o_strm, true /* send data */);
+        FoDapCovJsonValidation fv(loaded_dds);
+        fv.validateDataset();
+
+        ofstream tempOut;
+        string tempFileName = "/home/ubuntu/hyrax/dds.log";
+        tempOut.open(tempFileName.c_str(), ios::trunc);
+        if(tempOut.fail()) {cout << "Could not open " << tempFileName << endl;exit(EXIT_FAILURE);}
+
+        tempOut << "hasX-" << fv.hasX << endl;
+        tempOut << "hasY-" << fv.hasY << endl;
+        tempOut << "hasT-" << fv.hasT << endl;
+        tempOut << "shapeX-" << fv.shapeX << endl;
+        tempOut << "shapeY-" << fv.shapeY << endl;
+        tempOut << "shapeT-" << fv.shapeT << endl;
+        
+        tempOut.close();
+
+
+        if(fv.canConvert()){
+            //means we can convert, found x, y and time
+            ft.transform(o_strm, true /* send data */, fv);
+        }
+
     }
     catch (Error &e) {
         throw BESDapError("Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
@@ -192,13 +215,16 @@ void FoDapCovJsonTransmitter::send_metadata(BESResponseObject *obj, BESDataHandl
             throw BESInternalError("Output stream is not set, can not return as COVJSON", __FILE__, __LINE__);
 
         FoDapCovJsonTransform ft(processed_dds);
-
+        FoDapCovJsonValidation fv(processed_dds);
+        fv.validateDataset();
         // Now that we are ready to start building the response data we
         // cancel any pending timeout alarm according to the configuration.
         BESUtil::conditional_timeout_cancel();
-
-        ft.transform(o_strm, false /* do not send data */);
-    }
+        if(fv.canConvert()){
+                //means we can convert, found x, y and time
+                ft.transform(o_strm, false /* send data */, fv);
+            }
+        }
     catch (Error &e) {
         throw BESDapError("Failed to transform data to COVJSON: " + e.get_error_message(), false, e.get_error_code(),
             __FILE__, __LINE__);

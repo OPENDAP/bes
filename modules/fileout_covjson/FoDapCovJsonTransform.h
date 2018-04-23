@@ -38,6 +38,7 @@
 #include <map>
 
 #include <BESObj.h>
+#include "FoDapCovJsonValidation.h"
 
 namespace libdap {
 class BaseType;
@@ -48,49 +49,66 @@ class Array;
 class BESDataHandlerInterface;
 
 /**
- * Used to transform a DDS into a w10n JSON metadata or w10n JSON data document.
- * The output is written to a local file whose name is passed as a parameter
- * to the constructor.
+ * Used to transform a DDS into a w10n CovJSON metadata or w10n CovJSON data document.
+ * The output is written to a local file whose name is passed as a parameter to the
+ * constructor.
  */
 class FoDapCovJsonTransform: public BESObj {
 private:
     libdap::DDS *_dds;
     std::string _returnAs;
     std::string _indent_increment;
+    std::string currAxis;
+    bool zExists;
 
-    void writeNodeMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);
-    void writeLeafMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);
-    void writeDatasetMetadata(std::ostream *strm, libdap::DDS *dds, std::string indent);
+    /*
+    * if:
+    * 0 NdArray
+    * 1 TiledNdArray
+    * 2 Coverage
+    */
+    std::string paramType;
+    std::string paramUnit;
+    std::string paramLongName;
+
+    enum domains { Grid = 0, VerticalProfile = 1, PointSeries = 2, Point = 3 };
+
+    void writeAxesMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);
+    void writeParameterMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);
+
+    void getAxisAttributes(std::ostream *strm, libdap::AttrTable &attr_table);
+    void getParameterAttributes(std::ostream *strm, libdap::AttrTable &attr_table);
 
     void transformAtomic(std::ostream *strm, libdap::BaseType *bt, std::string indent, bool sendData);
 
-    void transform(std::ostream *strm, libdap::DDS *dds, std::string indent, bool sendData);
-    void transform(std::ostream *strm, libdap::BaseType *bt, std::string indent, bool sendData);
-
-    //void transform(std::ostream *strm, Structure *s,string indent );
-    //void transform(std::ostream *strm, Grid *g, string indent);
-    //void transform(std::ostream *strm, Sequence *s, string indent);
+    void transform(std::ostream *strm, libdap::DDS *dds, std::string indent, bool sendData, FoDapCovJsonValidation fv);
+    void transform(std::ostream *strm, libdap::BaseType *bt, std::string indent, bool sendData, bool isAxes);
     void transform(std::ostream *strm, libdap::Constructor *cnstrctr, std::string indent, bool sendData);
-    void transform_node_worker(std::ostream *strm, std::vector<libdap::BaseType *> leaves,
-        std::vector<libdap::BaseType *> nodes, std::string indent, bool sendData);
-
-    void transform(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
+    void transform(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData, bool isAxes);
     void transform(std::ostream *strm, libdap::AttrTable &attr_table, std::string indent);
 
-    template<typename T>
-    void covjson_simple_type_array(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
+    void transformAxesWorker(std::ostream *strm, std::vector<libdap::BaseType *> leaves, std::string indent, bool sendData);
+    void transformReferenceWorker(std::ostream *strm, std::string indent, FoDapCovJsonValidation fv);
+    void transformParametersWorker(std::ostream *strm, std::vector<libdap::BaseType *> nodes, std::string indent,
+        bool sendData);
+    void transformRangesWorker(std::ostream *strm, std::vector<libdap::BaseType *> leaves,
+            std::string indent, bool sendData);
 
-    void covjson_string_array(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
+    template<typename T>
+    void covjsonSimpleTypeArray(std::ostream *strm, libdap::Array *a, std::string indent,
+        bool sendData, bool isAxes);
+    void covjsonStringArray(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
 
     template<typename T>
-    unsigned int covjson_simple_type_array_worker(std::ostream *strm, T *values, unsigned int indx,
+    unsigned int covjsonSimpleTypeArrayWorker(std::ostream *strm, T *values, unsigned int indx,
         std::vector<unsigned int> *shape, unsigned int currentDim);
+
 public:
     FoDapCovJsonTransform(libdap::DDS *dds);
 
     virtual ~FoDapCovJsonTransform() { }
 
-    virtual void transform(std::ostream &ostrm, bool sendData);
+    virtual void transform(std::ostream &ostrm, bool sendData, FoDapCovJsonValidation fv);
 
     virtual void dump(std::ostream &strm) const;
 };

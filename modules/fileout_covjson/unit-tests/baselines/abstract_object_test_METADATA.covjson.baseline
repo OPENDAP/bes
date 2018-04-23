@@ -1,92 +1,150 @@
 {
-  "type" : "CoverageCollection",
-  "domainType" : "VerticalProfile",
-  "parameters" : {
-    "PSAL": {
-      "type" : "Parameter",
-      "description" : {
-        "en": "The measured salinity, in practical salinity units (psu) of the sea water"
+  "type": "Coverage",
+  "domain": {
+    "domainType": "Grid",
+    "axes": {
+      "x": {
+
       },
-      "unit" : {
-        "symbol" : "psu"
+      "y": {
+
       },
-      "observedProperty" : {
-        "id": "http://vocab.nerc.ac.uk/standard_name/sea_water_salinity/",
-        "label" : {
-          "en": "Sea Water Salinity"
+      "t": {
+
+      }
+    },
+    "referencing": [{
+      "coordinates": ["t"],
+      "system": {
+        "type": "TemporalRS",
+        "calendar": "Gregorian",
+      }
+    },
+    {
+      "coordinates": ["x", "y"],
+      "system": {
+        "type": "GeographicCRS",
+        "id": "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+      }
+    }]
+  },
+  "parameters": {
+
+    "SST": {
+      "type": "Parameter",
+      "description": "SST",
+      "unit": {
+        "label": {
+          "en": "Deg C"
+        }
+      },
+      "symbol": {
+        "value": "Deg C",
+        "type": "",
+      },
+      "observedProperty": {
+        "id": null,
+        "label": {
+          "en": "SEA SURFACE TEMPERATURE"
         }
       }
     }
   },
-  "referencing": [{
-    "coordinates": ["x","y"],
-    "system": {
-      "type": "GeographicCRS",
-      "id": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+  "ranges": {
+    "SST": {
+      "type": "NdArray",
+      "dataType": "float",
+      "axisNames": ["t", "y", "x"],
+      "shape": [12, 90, 180],
+
     }
-  }, {
-    "coordinates": ["z"],
-    "system": {
-      "type": "VerticalCRS",
-      "cs": {
-        "csAxes": [{
-          "name": {
-            "en": "Pressure"
-          },
-          "direction": "down",
-          "unit": {
-            "symbol": "Pa"
-          }
-        }]
-      }
-    }
-  }, {
-    "coordinates": ["t"],
-    "system": {
-      "type": "TemporalRS",
-      "calendar": "Gregorian"
-    }
-  }],
-  "coverages": [
-    {
-      "type" : "Coverage",
-      "domain" : {
-        "type": "Domain",
-        "axes": {
-          "x": { "values": [] },
-          "y": { "values": [] },
-          "z": { "values": [] },
-          "t": { "values": [] }
+
+    "AIRT": {
+      "type": "Parameter",
+      "description": "AIRT",
+      "unit": {
+        "label": {
+          "en": "DEG C"
         }
       },
-      "ranges" : {
-        "PSAL" : {
-          "type" : "NdArray",
-          "dataType": ,
-          "shape": [],
-          "axisNames": [],
-          "values" : []
+      "symbol": {
+        "value": "DEG C",
+        "type": "",
+      },
+      "observedProperty": {
+        "id": null,
+        "label": {
+          "en": "AIR TEMPERATURE"
         }
       }
-    }, {
-      "type" : "Coverage",
-      "domain" : {
-        "type": "Domain",
-        "axes": {
-          "x": { "values": [] },
-          "y": { "values": [] },
-          "z": { "values": [] },
-          "t": { "values": [] }
+    }
+  },
+  "ranges": {
+    "AIRT": {
+      "type": "NdArray",
+      "dataType": "float",
+      "axisNames": ["t", "y", "x"],
+      "shape": [12, 90, 180],
+
+    }
+
+    "UWND": {
+      "type": "Parameter",
+      "description": "UWND",
+      "unit": {
+        "label": {
+          "en": "M/S"
         }
       },
-      "ranges" : {
-        "PSAL" : {
-          "type" : "NdArray",
-          "dataType": ,
-          "shape": [],
-          "axisNames": [],
-          "values" : []
+      "symbol": {
+        "value": "M/S",
+        "type": "",
+      },
+      "observedProperty": {
+        "id": null,
+        "label": {
+          "en": "ZONAL WIND"
         }
       }
-    }]
+    }
+  },
+  "ranges": {
+    "UWND": {
+      "type": "NdArray",
+      "dataType": "float",
+      "axisNames": ["t", "y", "x"],
+      "shape": [12, 90, 180],
+
+    }
+
+    "VWND": {
+      "type": "Parameter",
+      "description": "VWND",
+      "unit": {
+        "label": {
+          "en": "M/S"
+        }
+      },
+      "symbol": {
+        "value": "M/S",
+        "type": "",
+      },
+      "observedProperty": {
+        "id": null,
+        "label": {
+          "en": "MERIDIONAL WIND"
+        }
+      }
+    }
+  },
+  "ranges": {
+    "VWND": {
+      "type": "NdArray",
+      "dataType": "float",
+      "axisNames": ["t", "y", "x"],
+      "shape": [12, 90, 180],
+
+    }
+
+  }
 }
