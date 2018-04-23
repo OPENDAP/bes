@@ -59,6 +59,7 @@ private:
     std::string _returnAs;
     std::string _indent_increment;
     std::string currAxis;
+    bool zExists;
 
     /*
     * if:

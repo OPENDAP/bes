@@ -177,8 +177,10 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
         else {
             indx = covjsonSimpleTypeArrayWorker(strm, &src[0], 0, &shape, 0);
         }
-
         assert(length == indx);
+    }
+    else {
+        *strm << childindent << "\"values\": []";
     }
 
     *strm << endl << indent << "}";
@@ -273,6 +275,10 @@ void FoDapCovJsonTransform::writeAxesMetadata(ostream *strm, libdap::BaseType *b
  * format to the CovJSON output stream. The scope of what metadata is retrieved
  * is determined by getParameterAttributes().
  *
+ * @note still need to implement logic for determining range type and dataType.
+ *   Right now it is hard-coded with NdArray for range type and float for dataType.
+ *   This needs to be updated in the future to compute dynamically.
+ *
  * @param ostrm Write the CovJSON to this stream
  * @param bt Pointer to a BaseType vector containing Parameter attributes
  * @param indent Indent the output so humans can make sense of it
@@ -283,8 +289,14 @@ void FoDapCovJsonTransform::writeParameterMetadata(ostream *strm, libdap::BaseTy
     string child_indent2 = child_indent1 + _indent_increment;
     string child_indent3 = child_indent2 + _indent_increment;
 
+    string axisNames = "\"t\", ";
+    if(zExists) {
+        axisNames += "\"z\", ";
+    }
+    axisNames += "\"y\", \"x\"";
+
     // Name
-    *strm << indent << "\"" << bt->name() << "\": {" << endl;
+    *strm << endl << indent << "\"" << bt->name() << "\": {" << endl;
 
     // Attributes
     getParameterAttributes(strm, bt->get_attr_table());
@@ -314,7 +326,7 @@ void FoDapCovJsonTransform::writeParameterMetadata(ostream *strm, libdap::BaseTy
     *strm << indent << "\"" << bt->name() << "\": {" << endl;
     *strm << child_indent1 << "\"type\": \"NdArray\"," << endl;
     *strm << child_indent1 << "\"dataType\": \"float\"," << endl;
-    *strm << child_indent1 << "\"axisNames\": [\"t\", \"y\", \"x\"]," << endl;
+    *strm << child_indent1 << "\"axisNames\": [" << axisNames << "]," << endl;
 }
 
 
@@ -537,10 +549,9 @@ void FoDapCovJsonTransform::transform(ostream &ostrm, bool sendData, FoDapCovJso
  */
 void FoDapCovJsonTransform::transform(ostream *strm, libdap::Constructor *cnstrctr, string indent, bool sendData)
 {
-    string child_indent = indent + _indent_increment;
     vector<libdap::BaseType *> leaves;
     vector<libdap::BaseType *> nodes;
-    // Sort the variables into two sets/
+    // Sort the variables into two sets
     libdap::DDS::Vars_iter vi = cnstrctr->var_begin();
     libdap::DDS::Vars_iter ve = cnstrctr->var_end();
 
@@ -561,8 +572,8 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::Constructor *cnstrc
         }
     }
 
-    // Write this parameter's range values to the CovJSON
-    transformRangesWorker(strm, leaves, child_indent, sendData);
+    // Write this parameter's range values to the CovJSON stream
+    transformRangesWorker(strm, leaves, indent, sendData);
 }
 
 
@@ -589,7 +600,7 @@ void FoDapCovJsonTransform::transformAxesWorker(ostream *strm, vector<libdap::Ba
             *strm << ",";
             *strm << endl;
         }
-        transform(strm, v, indent + _indent_increment, sendData, true);
+        transform(strm, v, indent + _indent_increment, sendData, true); // send true - is Axes
     }
     if (leaves.size() > 0) *strm << endl << indent;
 }
@@ -608,7 +619,7 @@ void FoDapCovJsonTransform::transformParametersWorker(ostream *strm, vector<libd
     string indent, bool sendData)
 {
     // Write down the parameters and values
-    *strm << indent << "\"parameters\": {" << endl;
+    *strm << indent << "\"parameters\": {";
     for (std::vector<libdap::BaseType *>::size_type n = 0; n < nodes.size(); n++) {
         libdap::BaseType *v = nodes[n];
         BESDEBUG(FoDapCovJsonTransform_debug_key, "Processing PARAMETERS: " << v->name() << endl);
@@ -636,7 +647,11 @@ void FoDapCovJsonTransform::transformReferenceWorker(ostream *strm, string inden
     // or not there is a z coordinate variable.
     string coordVars = "\"x\", \"y\"";
     if(fv.hasZ == true) {
+        zExists = true;
         coordVars += ", \"z\"";
+    }
+    else {
+        zExists = false;
     }
 
     // "referencing": [{
@@ -685,13 +700,11 @@ void FoDapCovJsonTransform::transformRangesWorker(ostream *strm, vector<libdap::
     string indent, bool sendData)
 {
     // Write the axes to strm
-    if (leaves.size() > 0) *strm << endl;
     if (leaves.size() > 0) {
         libdap::BaseType *v = leaves[0];
         BESDEBUG(FoDapCovJsonTransform_debug_key, "Processing RANGES: " << v->name() << endl);
-        transform(strm, v, _indent_increment + _indent_increment, sendData, false);
+        transform(strm, v, indent, sendData, false); // send false - is not Axes
     }
-    if (leaves.size() > 0) *strm << endl << indent;
 }
 
 
@@ -766,7 +779,9 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
     // The axes are the first 3 leaves - the transformAxesWorker call will parse and
     // print these values. We need to ensure they're formatted correctly.
     transformAxesWorker(strm, leaves, child_indent2, sendData);
+    // Prints the references for the given Axes
     transformReferenceWorker(strm, child_indent2, fv);
+    // Prints parameter metadata and range values
     transformParametersWorker(strm, nodes, child_indent1, sendData);
 
     *strm << endl << _indent_increment << "}" << endl;
