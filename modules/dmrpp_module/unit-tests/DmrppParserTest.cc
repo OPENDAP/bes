@@ -449,7 +449,7 @@ int main(int argc, char*argv[])
 
     GetOpt getopt(argc, argv, "d");
     int option_char;
-    while ((option_char = getopt()) != -1)
+    while ((option_char = getopt()) != -1){
         switch (option_char) {
         case 'd':
             debug = true;  // debug is a static global
@@ -457,6 +457,7 @@ int main(int argc, char*argv[])
         default:
             break;
         }
+    }
 
     bool wasSuccessful = true;
     string test = "";
@@ -467,14 +468,12 @@ int main(int argc, char*argv[])
     }
     else {
         while (i < argc) {
-            test = string("dmrpp::DmrppParserTest::") + argv[i++];
-
-            cerr << endl << "Running test " << test << endl << endl;
-
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = dmrpp::DmrppParserTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
+        ++i;
         }
     }
-
     return wasSuccessful ? 0 : 1;
 }
 

@@ -292,13 +292,11 @@ int main(int argc, char*argv[])
     }
     else {
         while (i < argc) {
-            test = string("dmrpp::DmrppUtilTest::") + argv[i++];
-
-            cerr << endl << "Running test " << test << endl << endl;
-
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = dmrpp::DmrppUtilTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
+        ++i;
         }
     }
-
     return wasSuccessful ? 0 : 1;
 }
