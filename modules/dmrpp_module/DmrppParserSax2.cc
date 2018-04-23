@@ -57,7 +57,7 @@
 #include "DmrppCommon.h"
 
 static const string module = "dmrpp:2";
-static const string dmrpp_namespace = "http://www.opendap.org/dmrpp/schema/dmrpp/1.0.0#";
+static const string dmrpp_namespace = "http://xml.opendap.org/dap/dmrpp/1.0.0#";
 
 using namespace libdap;
 using namespace std;
