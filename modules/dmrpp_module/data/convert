@@ -6,7 +6,7 @@ outfile=$2
 echo "input file:  ${infile}"
 echo "output file: ${outfile}"
 
-dmrppNamespace="xmlns:dmrpp=\"http://www.opendap.org/dmrpp/schema/dmrpp/1.0.0#\""
+dmrppNamespace="xmlns:dmrpp=\"http://xml.opendap.org/dap/dmrpp/1.0.0#\""
 echo "dmrppNamespace: ${dmrppNamespace}"
 
 #       <h4:byteStream offset="5304" nBytes="32000" uuid="ec77e116-5c0c-4f92-9f21-592479a2bbb0" md5="a06ab7cf03daed2e76209059b8001d76"/>
