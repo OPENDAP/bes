@@ -408,6 +408,9 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_3d.h5.data.subset_last.bescmd])
 #CF DAP4 test
 AT_BESCMD_RESPONSE_TEST([grid_1_2d.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST([grid_1_2d.h5.dap.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_int64_dap4.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([t_int64_dap4.h5.dap.bescmd])
+
 #AT_BESCMD_DAP4DATA_RESPONSE_TEST([grid_1_2d.h5.dap_ce_1.bescmd])
 #AT_BESCMD_DAP4DATA_RESPONSE_TEST([grid_1_2d.h5.dap_ce_2.bescmd])
 
