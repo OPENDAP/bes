@@ -117,7 +117,7 @@ TemporaryFileTest_OBJS = ../TempFile.o
 TemporaryFileTest_LDADD = $(TemporaryFileTest_OBJS) $(LDADD)
 
 GlobalMetadataStoreTest_SOURCES = GlobalMetadataStoreTest.cc $(TEST_SRC)
-GlobalMetadataStoreTest_OBJS = ../GlobalMetadataStore.o
+GlobalMetadataStoreTest_OBJS = ../GlobalMetadataStore.o ../TempFile.o
 GlobalMetadataStoreTest_LDADD = $(GlobalMetadataStoreTest_OBJS) $(LDADD)
 
 # StoredDap2ResultTest_SOURCES = StoredDap2ResultTest.cc  $(TEST_SRC)

@@ -35,15 +35,20 @@
 #include <fstream>
 #include <sstream>
 #include <functional>
+#include <memory>
 
 #include <DapObj.h>
 #include <DDS.h>
+#include <DAS.h>
 #include <DMR.h>
+#include <D4ParserSax2.h>
 #include <XMLWriter.h>
+#include <BaseTypeFactory.h>
 #include <D4BaseTypeFactory.h>
 
 #include "PicoSHA2/picosha2.h"
 
+#include "TempFile.h"
 #include "TheBESKeys.h"
 #include "BESUtil.h"
 #include "BESLog.h"
@@ -730,5 +735,82 @@ GlobalMetadataStore::remove_responses(const string &name)
 #else
      return  (removed_dds || removed_das || removed_dmr);
 #endif
+}
+
+/**
+ * @brief Build a DMR object from the cached Response
+ *
+ * Read and parse a DMR response , building a binary DMR object. The
+ * object is returned with a null factory. The variables are built using
+ * the default DAP4 type factory.
+ *
+ * @param name Name of the dataset
+ * @return A pointer to the DMR object; the caller must delete this object.
+ * @exception BESInternalError is thrown if \arg name does not have a
+ * cached DMR response.
+ */
+DMR *
+GlobalMetadataStore::get_dmr_object(const string &name)
+{
+    stringstream oss;
+    get_dmr_response(name, oss);    // throws BESInternalError if not found
+
+    D4BaseTypeFactory d4_btf;
+    auto_ptr<DMR> dmr(new DMR(&d4_btf, "mds"));
+
+    D4ParserSax2 parser;
+    parser.intern(oss.str(), dmr.get());
+
+    dmr->set_factory(0);
+
+    return dmr.release();
+}
+
+/**
+ * @brief Build a DDS object from the cached Response
+ *
+ * Read the DDS and DAS responses, build a DDS using their information
+ * and return the binary DDS response. The variables are built using
+ * the default BaseTypeFactory but the DDS object has the factory set
+ * to null when it is returned. The DDS is 'loaded' with attribute information
+ * as well, so it can be used to return the DDX response.
+ *
+ * @note This method uses temporary files to hold the responses and then
+ * parses them to build the DDS object
+ *
+ * @todo If/When the DDS can be serialized, we should be able to replace
+ * this implementation with something far better - and something that can
+ * include information in specialized BaseTypes and DDS classes.
+ *
+ * @param name Name of the dataset
+ * @return A pointer to the DDS object; the caller must delete this object.
+ * @exception BESInternalError is thrown if \arg name does not have a
+ * cached DDS or DAS response.
+ */
+DDS *
+GlobalMetadataStore::get_dds_object(const string &name)
+{
+    TempFile dds_tmp(get_cache_directory() + "/opendapXXXXXX");
+
+    fstream dds_fs(dds_tmp.get_name().c_str(), std::fstream::out);
+    get_dds_response(name, dds_fs);     // throws BESInternalError if not found
+    dds_fs.close();
+
+    BaseTypeFactory btf;
+    auto_ptr<DDS> dds(new DDS(&btf));
+    dds->parse(dds_tmp.get_name());
+
+    TempFile das_tmp(get_cache_directory() + "/opendapXXXXXX");
+    fstream das_fs(das_tmp.get_name().c_str(), std::fstream::out);
+    get_das_response(name, das_fs);     // throws BESInternalError if not found
+    das_fs.close();
+
+    auto_ptr<DAS> das(new DAS());
+    das->parse(das_tmp.get_name());
+
+    dds->transfer_attributes(das.get());
+    dds->set_factory(0);
+
+    return dds.release();
 }
 
