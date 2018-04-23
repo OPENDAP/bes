@@ -91,7 +91,8 @@ public:
     // Called before each test
     void setUp()
     {
-        if (debug) BESDebug::SetUp("cerr,dmrpp");
+        if (debug) BESDebug::SetUp("cerr,all");
+        BESDEBUG("dmrpp","BES debug enabled."<< endl);
     }
 
     // Called after each test
@@ -209,7 +210,7 @@ public:
         BESDEBUG("dmrpp", "Opening: " << int_h5 << endl);
 
         ifstream in(int_h5.c_str());
-        parser.intern(in, dmr.get(), debug);
+        parser.intern(in, dmr.get(), parser_debug);
         BESDEBUG("dmrpp", "Parsing complete"<< endl);
 
         D4Group *root = dmr->root();
@@ -300,7 +301,7 @@ public:
         BESDEBUG("dmrpp", "Opening: " << grid_h5 << endl);
 
         ifstream in(grid_h5.c_str());
-        parser.intern(in, dmr.get(), debug);
+        parser.intern(in, dmr.get(), parser_debug);
         BESDEBUG("dmrpp", "Parsing complete"<< endl);
 
         D4Group *root = dmr->root();
@@ -411,7 +412,7 @@ public:
         BESDEBUG("dmrpp", "Opening: " << grid_h5 << endl);
 
         ifstream in(grid_h5.c_str());
-        parser.intern(in, dmr.get(), debug);
+        parser.intern(in, dmr.get(), parser_debug);
         BESDEBUG("dmrpp", "Parsing complete"<< endl);
 
         D4Group *root = dmr->root();
@@ -576,7 +577,7 @@ public:
         BESDEBUG("dmrpp", "Opening: " << coads << endl);
 
         ifstream in(coads.c_str());
-        parser.intern(in, dmr.get(), debug);
+        parser.intern(in, dmr.get(), parser_debug);
         BESDEBUG("dmrpp", "Parsing complete"<< endl);
 
         // Check to make sure we have something that smells like coads_climatology
@@ -796,7 +797,7 @@ public:
         string coads = string(TEST_DATA_DIR).append("/").append("coads_climatology.dmrpp");
         BESDEBUG("dmrpp", "Opening: " << coads << endl);
         ifstream in(coads.c_str());
-        parser.intern(in, dmr.get(), debug);
+        parser.intern(in, dmr.get(), parser_debug);
         BESDEBUG("dmrpp", "Parsing complete"<< endl);
         // Check to make sure we have something that smells like coads_climatology
         D4Group *root = dmr->root();
@@ -894,14 +895,17 @@ int main(int argc, char*argv[])
     }
     else {
         while (i < argc) {
-            test = string("dmrpp::DmrppTypeReadTest::") + argv[i++];
-
-            cerr << endl << "Running test " << test << endl << endl;
-
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = dmrpp::DmrppTypeReadTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
+        ++i;
         }
     }
 
     return wasSuccessful ? 0 : 1;
+
+
+
+
 }
 

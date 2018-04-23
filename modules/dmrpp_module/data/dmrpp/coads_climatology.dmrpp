@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Dataset 
     xmlns="http://xml.opendap.org/ns/DAP/4.0#"
-    xmlns:h4="http://www.hdfgroup.org/HDF4/XML/schema/HDF4map/1.0.1" 
+    xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#"
     dapVersion="4.0" 
     dmrVersion="1.0" 
     name="coads_climatology"
-    xml:base="data/dmrpp/coads_climatology.bin">
+    dmrpp:href="data/dmrpp/coads_climatology.bin">
         
     <Dimension name="COADSX" size="180"/>
     <Dimension name="COADSY" size="90"/>
@@ -21,8 +21,8 @@
         <Attribute name="point_spacing" type="String">
             <Value>even</Value>
         </Attribute>
-        <!-- h4:byteStream offset="0" nBytes="1440" uuid="COADSX.COADSX" md5="foo"/ -->
-        <h4:byteStream offset="3110400" nBytes="1440" uuid="COADSX.COADSX" md5="foo"/>
+        <!-- dmrpp:byteStream offset="0" nBytes="1440" uuid="COADSX.COADSX" md5="foo"/ -->
+        <dmrpp:chunk offset="3110400" nBytes="1440"  />
     </Float64>
     <Float64 name="COADSY">
         <Dim name="/COADSY"/>
@@ -32,7 +32,7 @@
         <Attribute name="point_spacing" type="String">
             <Value>even</Value>
         </Attribute>
-         <h4:byteStream offset="3111840" nBytes="720" uuid="COADSY.COADSY" md5="foo"/>
+         <dmrpp:chunk offset="3111840" nBytes="720"  />
     </Float64>
     <Float64 name="TIME">
         <Dim name="/TIME"/>
@@ -45,7 +45,7 @@
         <Attribute name="modulo" type="String">
             <Value> </Value>
         </Attribute>
-         <h4:byteStream offset="3112560" nBytes="96" uuid="TIME.TIME" md5="foo"/>
+         <dmrpp:chunk offset="3112560" nBytes="96"  />
     </Float64>
     <Float32 name="SST">
         <Dim name="/TIME"/>
@@ -69,7 +69,7 @@
         <Map name="TIME"/>
         <Map name="COADSY"/>
         <Map name="COADSX"/>
-        <h4:byteStream offset="0" nBytes="777600" uuid="SST.SST" md5="foo"/>
+        <dmrpp:chunk offset="0" nBytes="777600"  />
     </Float32>
     <Float32 name="AIRT">
         <Dim name="/TIME"/>
@@ -93,7 +93,7 @@
         <Map name="TIME"/>
         <Map name="COADSY"/>
         <Map name="COADSX"/>
-        <h4:byteStream offset="777600" nBytes="777600" uuid="AIRT.AIRT" md5="foo"/>
+        <dmrpp:chunk offset="777600" nBytes="777600"  />
     </Float32>
     <Float32 name="UWND">
         <Dim name="/TIME"/>
@@ -117,7 +117,7 @@
         <Map name="TIME"/>
         <Map name="COADSY"/>
         <Map name="COADSX"/>
-        <h4:byteStream offset="1555200" nBytes="777600" uuid="UWND.UWND" md5="foo"/>
+        <dmrpp:chunk offset="1555200" nBytes="777600"  />
     </Float32>
     <Float32 name="VWND">
         <Dim name="/TIME"/>
@@ -141,7 +141,7 @@
         <Map name="TIME"/>
         <Map name="COADSY"/>
         <Map name="COADSX"/>
-         <h4:byteStream offset="2332800" nBytes="777600" uuid="VWND.VWND" md5="foo"/>
+         <dmrpp:chunk offset="2332800" nBytes="777600"  />
    </Float32>
     <Attribute name="NC_GLOBAL" type="Container">
         <Attribute name="history" type="String">

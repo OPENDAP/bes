@@ -52,7 +52,7 @@ class D4Dimension;
 namespace dmrpp {
 /**
  * Hacked DMR parser copied from libdap. This version of the parser processes
- * h4:byteStream elements and stores their information (xml attributes) in
+ * dmrpp:chunk elements and stores their information (xml attributes) in
  * Dmrpp BaseTypes.
  */
 class DmrppParserSax2
@@ -90,10 +90,10 @@ private:
 
         // inside_sequence, Removed from merged code jhrg 5/2/14
 
-        // FIXMEinside_h4_byte_stream,
+        // FIXMEinside_dmrpp_byte_stream,
         not_dap4_element,
-        inside_h4_object,
-        inside_h4_chunkDimensionSizes_element,
+        inside_dmrpp_object,
+        inside_dmrpp_chunkDimensionSizes_element,
 
         parser_unknown,
         parser_error,
@@ -165,6 +165,8 @@ private:
 
     bool d_strict;
 
+    string dmrpp_dataset_href;
+
     class XMLAttribute {
         public:
         string prefix;
@@ -232,7 +234,7 @@ private:
     bool process_group(const char *name, const xmlChar **attrs, int nb_attributes);
     bool process_enum_def(const char *name, const xmlChar **attrs, int nb_attributes);
     bool process_enum_const(const char *name, const xmlChar **attrs, int nb_attributes);
-    bool process_h4_object(const char *name, const xmlChar **attrs, int nb_attributes);
+    bool process_dmrpp_object(const char *name, const xmlChar **attrs, int nb_attributes);
 
     void finish_variable(const char *tag, libdap::Type t, const char *expected);
     //@}
@@ -245,7 +247,8 @@ public:
         other_xml(""), other_xml_depth(0), unknown_depth(0),
         error_msg(""), context(0),
         dods_attr_name(""), dods_attr_type(""),
-        char_data(""), root_ns(""), d_debug(false), d_strict(true)
+        char_data(""), root_ns(""), d_debug(false), d_strict(true),
+        dmrpp_dataset_href("")
     {
         //xmlSAXHandler ddx_sax_parser;
         memset(&ddx_sax_parser, 0, sizeof(xmlSAXHandler));
