@@ -33,7 +33,7 @@
 
 namespace bes {
 
-const std::string default_tmp_file_template = "TMP_DIR/opendapXXXXXX";
+const std::string default_tmp_file_template = "/tmp/opendapXXXXXX";
 
 /**
  * @brief Get a new temporary file
@@ -46,24 +46,21 @@ const std::string default_tmp_file_template = "TMP_DIR/opendapXXXXXX";
 class TempFile {
 private:
     int d_fd;
-    //std::vector<char> d_name;
     std::string d_fname;
+    bool d_keep_temps;
+
     static std::map<std::string, int> *open_files;
     static struct sigaction cached_sigpipe_handler;
 
-public:
-    static void sigpipe_handler(int signal);
-    /**
-     * @brief Build a temporary file using a default template.
-     *
-     * The temporary file will be in TMP_DIR (likely /tmp) and will have
-     * a name like 'opendapXXXXXX' where the Xs are numbers or letters.
-     */
-    TempFile(): d_fd(0) {
-        TempFile(default_tmp_file_template);
-    }
+    friend class TemporaryFileTest;
 
-    TempFile(const std::string &path_template);
+public:
+    // Odd, but even with TemporaryFileTest declared as a friend, the tests won't
+    // compile unless this is declared public.
+    static void sigpipe_handler(int signal);
+
+    TempFile(const std::string &path_template = default_tmp_file_template, bool keep_temps = false);
+
     ~TempFile();
 
     /** @return The temporary file's file descriptor */
