@@ -38,45 +38,44 @@ CurlHandlePool::get_easy_handle(const std::string &url)
     if (i != d_easy_handles.end()) {
         return (*i).second->d_easy_handle;
     }
-    else {
-        CurlHandlePool::easy_handle *handle = new CurlHandlePool::easy_handle();
-        if (handle->d_easy_handle) {
-            handle->d_in_use = true;
 
-            // Set the URL and other parameters that are invariant for the same URL.
-
-            CURLcode res = curl_easy_setopt(handle->d_easy_handle, CURLOPT_URL, url.c_str());
-            if (res != CURLE_OK) throw BESInternalError(string(curl_easy_strerror(res)), __FILE__, __LINE__);
-
-            res = curl_easy_setopt(handle->d_easy_handle, CURLOPT_ERRORBUFFER, handle.d_error_buf);
-            if (res != CURLE_OK)
-                throw BESInternalError(string(curl_easy_strerror(res)), __FILE__, __LINE__);
-
-#if 0
-            // get the offset to offset + size bytes
-            if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_RANGE, range.c_str() /*"0-199"*/))
-            throw BESError(string("HTTP Error: ").append(buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
-#endif
-
-            // Pass all data to the 'write_data' function
-            if (CURLE_OK != curl_easy_setopt(handle->d_easy_handle, CURLOPT_WRITEFUNCTION, chunk_write_data))
-                throw BESInternalError(string("HTTP Error: ").append(buf), __FILE__, __LINE__);
-
-            // Pass this to write_data as the fourth argument
-            if (CURLE_OK != curl_easy_setopt(handle->d_easy_handle, CURLOPT_WRITEDATA, reinterpret_cast<void*>(chunk)))
-                throw BESInternalError(string("HTTP Error: ").append(buf), __FILE__, __LINE__);
-
-            d_easy_handles.insert(make_pair<string, CurlHandlePool::easy_handle*>(url, handle));
-
-            return handle->d_easy_handle;
-        }
-        else {
-            throw BESInternalError("Could not allocate CURL handle", __FILE__, __LINE__);
-        }
+    CurlHandlePool::easy_handle *handle = new CurlHandlePool::easy_handle();
+    if (!handle->d_easy_handle) {
+        throw BESInternalError("Could not allocate CURL handle", __FILE__, __LINE__);
     }
 
+    handle->d_in_use = true;
 
+    // Set the URL and other parameters that are invariant for the same URL.
+
+    CURLcode res = curl_easy_setopt(handle->d_easy_handle, CURLOPT_URL, url.c_str());
+    if (res != CURLE_OK) throw BESInternalError(string(curl_easy_strerror(res)), __FILE__, __LINE__);
+
+    res = curl_easy_setopt(handle->d_easy_handle, CURLOPT_ERRORBUFFER, handle.d_error_buf);
+    if (res != CURLE_OK) throw BESInternalError(string(curl_easy_strerror(res)), __FILE__, __LINE__);
+
+#if 0
+    // get the offset to offset + size bytes
+    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_RANGE, range.c_str() /*"0-199"*/))
+    throw BESError(string("HTTP Error: ").append(buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+#endif
+
+    // Pass all data to the 'write_data' function
+    if (CURLE_OK != curl_easy_setopt(handle->d_easy_handle, CURLOPT_WRITEFUNCTION, chunk_write_data))
+        throw BESInternalError(string("HTTP Error: ").append(buf), __FILE__, __LINE__);
+
+    // Pass this to write_data as the fourth argument
+    if (CURLE_OK != curl_easy_setopt(handle->d_easy_handle, CURLOPT_WRITEDATA, reinterpret_cast<void*>(chunk)))
+        throw BESInternalError(string("HTTP Error: ").append(buf), __FILE__, __LINE__);
+
+    d_easy_handles.insert(make_pair<string, CurlHandlePool::easy_handle*>(url, handle));
+
+    return handle->d_easy_handle;
 }
 
 
+void CurlHandlePool::release_handle(const std::string &url, CURL *h)
+{
+    // FIXME
+}
 

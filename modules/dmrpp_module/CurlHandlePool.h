@@ -60,14 +60,18 @@ class CurlHandlePool {
     std::multimap<std::string, easy_handle*> d_easy_handles;
 
 public:
-    CurlHandlePool();
+    CurlHandlePool() { }
+
     ~CurlHandlePool() {
         // delete all of the easy_handle things FIXME
+        for (eh_iter i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
+            delete (*i).second; // calls curl_easy_cleanup()
+        }
     }
 
     CURL *get_easy_handle(const std::string &url);
 
-    void release_handle(CURL *h);
+    void release_handle(const std::string &url, CURL *h);
 };
 
 } // namespace dmrpp
