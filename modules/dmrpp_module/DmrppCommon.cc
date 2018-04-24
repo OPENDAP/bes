@@ -53,11 +53,6 @@ void DmrppCommon::ingest_chunk_dimension_sizes(string chunk_dim_sizes_string)
 {
     if (chunk_dim_sizes_string.empty()) return;
 
-    // Clear the thing if it's got stuff in it.
-#if 0
-    if (d_chunk_dimension_sizes.size()) d_chunk_dimension_sizes.clear();
-#endif
-
     d_chunk_dimension_sizes.clear();
 
     // TODO use istringstream. jhrg 4/10/18
@@ -87,40 +82,40 @@ void DmrppCommon::ingest_compression_type(string compression_type_string)
     if (compression_type_string.empty()) return;
 
     // Clear previous state
-    d_compression_type_deflate = false;
-    d_compression_type_shuffle = false;
+    d_deflate = false;
+    d_shuffle = false;
 
     string deflate("deflate");
     string shuffle("shuffle");
 
     // Process content
     if (compression_type_string.find(deflate) != string::npos) {
-        d_compression_type_deflate = true;
+        d_deflate = true;
     }
 
     if (compression_type_string.find(shuffle) != string::npos) {
-        d_compression_type_shuffle = true;
+        d_shuffle = true;
     }
 
     BESDEBUG("dmrpp", "Processed compressionType string. " "d_compression_type_shuffle: "
-        << (d_compression_type_shuffle?"true":"false") << "d_compression_type_deflate: "
-        << (d_compression_type_deflate?"true":"false") << endl);
+        << (d_shuffle?"true":"false") << "d_compression_type_deflate: "
+        << (d_deflate?"true":"false") << endl);
 }
 
 /**
  * @brief Add a new chunk as defined by an h4:byteStream element
  * @return The number of chunk refs (byteStreams) held.
  */
-unsigned long DmrppCommon::add_chunk(std::string data_url, unsigned long long size, unsigned long long offset,
-        /*std::string md5, std::string uuid,*/ std::string position_in_array)
+unsigned long DmrppCommon::add_chunk(string data_url, unsigned long long size, unsigned long long offset,
+    string position_in_array)
 {
 
-    d_chunk_refs.push_back(Chunk(data_url, size, offset, /*md5, uuid,*/ position_in_array));
+    d_chunks.push_back(Chunk(data_url, size, offset, position_in_array));
 
     BESDEBUG("dmrpp",
-            "DmrppCommon::add_chunk() - Added chunk " << d_chunk_refs.size() << ": " << d_chunk_refs.back().to_string() << endl);
+            "DmrppCommon::add_chunk() - Added chunk " << d_chunks.size() << ": " << d_chunks.back().to_string() << endl);
 
-    return d_chunk_refs.size();
+    return d_chunks.size();
 }
 
 /**
@@ -140,31 +135,29 @@ DmrppCommon::read_atomic(const string &name)
     }
 
     // For now we only handle the one chunk case.
-    Chunk &h4_byte_stream = chunk_refs[0];
-    h4_byte_stream.set_rbuf_to_size();
+    Chunk &c = chunk_refs[0];
+    c.set_rbuf_to_size();
 
+#if 0
     // First cut at subsetting; read the whole thing and then subset that.
-    curl_read_byte_stream(h4_byte_stream.get_data_url(), h4_byte_stream.get_curl_range_arg_string(), &h4_byte_stream);
+    curl_read_chunk(c.get_data_url(), c.get_curl_range_arg_string(), &c);
+#endif
+    curl_read_chunk(&c);
 
     // If the expected byte count was not read, it's an error.
-    if (h4_byte_stream.get_size() != h4_byte_stream.get_bytes_read()) {
+    if (c.get_size() != c.get_bytes_read()) {
         ostringstream oss;
-        oss << "Wrong number of bytes read for '" << name << "'; expected " << h4_byte_stream.get_size()
-            << " but found " << h4_byte_stream.get_bytes_read();
+        oss << "Wrong number of bytes read for '" << name << "'; expected " << c.get_size()
+            << " but found " << c.get_bytes_read();
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
 
-    return h4_byte_stream.get_rbuf();
+    return c.get_rbuf();
 }
 
 void DmrppCommon::dump(ostream & strm) const
 {
     strm << BESIndent::LMarg << "is_deflate:             " << (is_deflate_compression() ? "true" : "false") << endl;
-
-#if 0
-    strm << BESIndent::LMarg << "deflate_level:          " << (get_deflate_level() ? "true" : "false") << endl;
-#endif
-
     strm << BESIndent::LMarg << "is_shuffle_compression: " << (is_shuffle_compression() ? "true" : "false") << endl;
 
     vector<unsigned int> chunk_dim_sizes = get_chunk_dimension_sizes();
@@ -183,6 +176,7 @@ void DmrppCommon::dump(ostream & strm) const
         chunk_refs[i].dump(strm);
         strm << endl;
     }
+
     BESIndent::UnIndent();
 }
 

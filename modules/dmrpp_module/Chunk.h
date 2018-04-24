@@ -42,11 +42,6 @@ private:
     std::string d_data_url;
     unsigned long long d_size;
     unsigned long long d_offset;
-#if 0
-    // TODO Remove these
-    std::string d_md5;
-    std::string d_uuid;
-#endif
 
     bool d_is_read;
     std::vector<unsigned int> d_chunk_position_in_array;
@@ -57,11 +52,6 @@ private:
     unsigned long long d_bytes_read;
     char *d_read_buffer;
     unsigned long long d_read_buffer_size;
-
-#if 0
-    unsigned long long d_read_pointer;
-#endif
-
 
     CURL *d_curl_handle;
     char d_curl_error_buf[CURL_ERROR_SIZE];
@@ -80,10 +70,6 @@ protected:
         d_bytes_read = 0;
         d_read_buffer = 0;
         d_read_buffer_size = 0;
-#if 0
-        d_read_pointer = 0;
-#endif
-
         d_is_read = false;
         d_curl_handle = 0;
         d_is_in_multi_queue = false;
@@ -109,10 +95,6 @@ protected:
         // These vars are easy to duplicate.
         d_size = bs.d_size;
         d_offset = bs.d_offset;
-#if 0
-        d_md5 = bs.d_md5;
-        d_uuid = bs.d_uuid;
-#endif
         d_data_url = bs.d_data_url;
         d_chunk_position_in_array = bs.d_chunk_position_in_array;
     }
@@ -134,18 +116,6 @@ public:
     {
         ingest_position_in_array(position_in_array);
     }
-
-#if 0
-    Chunk(std::string data_url, unsigned long long size, unsigned long long offset, std::string md5,
-        std::string uuid, std::string position_in_array = "") :
-    d_data_url(data_url), d_size(size), d_offset(offset), d_md5(md5), d_uuid(uuid),
-    d_is_read(false), d_bytes_read(0), d_read_buffer(0), d_read_buffer_size(0), // TODO  d_read_pointer(0),
-    d_curl_handle(0), d_is_in_multi_queue(false)
-    {
-        ingest_position_in_array(position_in_array);
-    }
-#endif
-
 
     Chunk(const Chunk &h4bs)
     {
@@ -170,24 +140,6 @@ public:
 
         return *this;
     }
-
-#if 0
-    void reset_read_pointer()
-    {
-        d_read_pointer = 0;
-    }
-
-    void increment_read_pointer(unsigned long long size)
-    {
-        d_read_pointer += size;
-    }
-
-    char *get_read_pointer()
-    {
-        return get_rbuf() + d_read_pointer;
-    }
-#endif
-
 
     virtual CURL *get_curl_handle() const
     {
@@ -262,27 +214,6 @@ public:
         d_bytes_read = bytes_read;
     }
 
-#if 0
-    /**
-     * @brief Sets the size of the internal read buffer.
-     * @deprecated
-     * @see set_rbuf_to_size()
-     * @param size Size of the internal read buffer.
-     */
-    virtual void rbuf_size(unsigned long long size)
-    {
-        // Calling delete on a null pointer is fine, so we don't need to check
-        // to see if this is the first call.
-        delete[] d_read_buffer;
-        d_read_buffer_size = 0;
-
-        d_read_buffer = new char[size];
-        d_read_buffer_size = size;
-        set_bytes_read(0);
-    }
-#endif
-
-
     /**
      * @brief Allocates the intenal read buffer to be d_size bytes
      *
@@ -293,19 +224,12 @@ public:
      */
     virtual void set_rbuf_to_size()
     {
-#if 0
-        rbuf_size(d_size);
-#endif
-
-        // Calling delete on a null pointer is fine, so we don't need to check
-        // to see if this is the first call.
         delete[] d_read_buffer;
         d_read_buffer_size = 0;
 
         d_read_buffer = new char[d_size];
         d_read_buffer_size = d_size;
         set_bytes_read(0);
-
     }
 
     /**
@@ -330,8 +254,6 @@ public:
      */
     virtual void set_rbuf(char *buf, unsigned int size)
     {
-        // Calling delete on a null pointer is fine, so we don't need to check
-        // to see if this is the first call.
         delete[] d_read_buffer;
         d_read_buffer_size = 0;
 
@@ -342,7 +264,7 @@ public:
         // correct number of bytes were actually read. I think this is patched, but we
         // should think about what this field really means - the number of bytes read or
         // the size of the current read_buffer? For now this works given a mod in
-        //Chunk::read(...). jhrg 1/18/17
+        // Chunk::read(...). jhrg 1/18/17
         set_bytes_read(size);
     }
 

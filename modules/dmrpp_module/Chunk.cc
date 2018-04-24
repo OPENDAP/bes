@@ -140,16 +140,6 @@ std::string Chunk::get_curl_range_arg_string()
     return range.str();
 }
 
-#if 0
-bool Chunk::is_read()
-{
-    return d_is_read;
-}
-
-void Chunk::set_is_read(bool state) {d_is_read = state;}
-
-#endif
-
 /**
  * @brief Modify the \arg data_access_url so that it include tracking info
  *
@@ -225,7 +215,7 @@ void Chunk::add_to_multi_read_queue(CURLM *multi_handle)
         throw BESInternalError(string("HTTP Error: ").append(d_curl_error_buf), __FILE__, __LINE__);
 
     // Pass all data to the 'write_data' function
-    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, h4bytestream_write_data))
+    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, chunk_write_data))
         throw BESInternalError(string("HTTP Error: ").append(d_curl_error_buf), __FILE__, __LINE__);
 
     // Pass this to write_data as the fourth argument
@@ -339,119 +329,19 @@ void Chunk::read(bool deflate, bool shuffle, unsigned int chunk_size, unsigned i
 
         BESDEBUG(debug,"Chunk::"<< __func__ <<"() - data_access_url "<< data_access_url << endl);
 
-        #if 0
-        /** - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-         * Cloudydap test hack where we tag the S3 URLs with a query string for the S3 log
-         * in order to track S3 requests. The tag is submitted as a BESContext with the
-         * request. Here we check to see if the request is for an AWS S3 object, if
-         * it is AND we have the magic BESContext "cloudydap" then we add a query
-         * parameter to the S3 URL for tracking purposes.
-         *
-         * Should this be a function? FFS why? This is the ONLY place where this needs
-         * happen, as close to the curl call as possible and we can just turn it off
-         * down the road. - ndp 1/20/17 (EOD)
-         */
-        std::string aws_s3_url("https://s3.amazonaws.com/");
-        // Is it an AWS S3 access?
-        if (!data_access_url.compare(0, aws_s3_url.size(), aws_s3_url)){
-            // Yup, headed to S3.
-            string cloudydap_context("cloudydap");
-
-            BESDEBUG(debug,"Chunk::"<< __func__ <<"() - data_access_url is pointed at "
-                    "AWS S3. Checking for '"<< cloudydap_context << "' context key..." << endl);
-
-            bool found;
-            string cloudydap_context_value;
-            cloudydap_context_value = BESContextManager::TheManager()->get_context(cloudydap_context, found);
-            if (found) {
-                BESDEBUG(debug,"Chunk::"<< __func__ <<"() - Found '"<<
-                        cloudydap_context << "' context key. value: " << cloudydap_context_value << endl);
-                data_access_url += "?cloudydap=" + cloudydap_context_value;
-            }
-            else {
-                BESDEBUG(debug,"Chunk::"<< __func__ <<"() - The context "
-                        "key '" << cloudydap_context << "' was not found. S3 url unchanged." << endl);
-            }
-        }
-        /** - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-        #endif
-
         add_tracking_query_param(data_access_url);
 
         BESDEBUG(debug,
                 "Chunk::"<< __func__ <<"() - Reading  " << get_size() << " bytes "
                         "from "<< data_access_url << ": " << get_curl_range_arg_string() << endl);
 
-        curl_read_byte_stream(data_access_url, get_curl_range_arg_string(), this);
+        curl_read_chunk(this);
     }
 
     complete_read(deflate, shuffle, chunk_size, elem_width);
 
-#if 0
-    // If the expected byte count was not read, it's an error.
-    if (get_size() != get_bytes_read()) {
-        ostringstream oss;
-        oss << "Chunk: Wrong number of bytes read for '" << to_string() << "'; expected " << get_size()
-        << " but found " << get_bytes_read() << endl;
-        throw BESInternalError("oss.str()", __FILE__, __LINE__);
-    }
-
-    // If data are compressed/encoded, then decode them here.
-    // At this point, the bytes_read property would be changed.
-    // The file that implements the deflate filter is H5Zdeflate.c in the hdf5 source.
-    // The file that implements the shuffle filter is H5Zshuffle.c.
-
-    // TODO This code is pretty naive - there are apparently a number of
-    // different ways HDF5 can compress data, and it does also use a scheme
-    // where several algorithms can be applied in sequence. For now, get
-    // simple zlib deflate working.jhrg 1/15/17
-    // Added support for shuffle. Assuming unshuffle always is applied _after_
-    // inflating the data (reversing the shuffle --> deflate process). It is
-    // possible that data could just be deflated or shuffled (because we
-    // have test data that use only shuffle). jhrg 1/20/17
-
-    if (deflate) {
-        char *dest = new char[chunk_size];  // TODO unique_ptr<>. jhrg 1/15/17
-        try {
-            inflate(dest, chunk_size, get_rbuf(), get_rbuf_size());
-            // This replaces (and deletes) the original read_buffer with dest.
-            set_rbuf(dest, chunk_size);
-        }
-        catch (...) {
-            delete[] dest;
-            throw;
-        }
-    }
-
-    if (shuffle) {
-        // The internal buffer is chunk's full size at this point.
-        char *dest = new char[get_rbuf_size()];
-        try {
-            unshuffle(dest, get_rbuf(), get_rbuf_size(), elem_width);
-            set_rbuf(dest, get_rbuf_size());
-        }
-        catch (...) {
-            delete[] dest;
-            throw;
-        }
-    }
-#endif
-
     d_is_in_multi_queue = false;
-#if 0
-    d_is_read = true;
-#endif
 }
-
-#if 0
-// moved to header
-void Chunk::cleanup_curl_handle()
-{
-    if (d_curl_handle != 0) curl_easy_cleanup(d_curl_handle);
-    d_curl_handle = 0;
-}
-#endif
-
 
 /**
  *
@@ -470,10 +360,6 @@ void Chunk::dump(ostream &oss) const
     oss << "[data_url='" << d_data_url << "']";
     oss << "[offset=" << d_offset << "]";
     oss << "[size=" << d_size << "]";
-#if 0
-    oss << "[md5=" << d_md5 << "]";
-    oss << "[uuid=" << d_uuid << "]";
-#endif
     oss << "[chunk_position_in_array=(";
     for (unsigned long i = 0; i < d_chunk_position_in_array.size(); i++) {
         if (i) oss << ",";
