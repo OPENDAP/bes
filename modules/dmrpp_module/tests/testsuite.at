@@ -4,7 +4,7 @@ AT_INIT([DMR++])
 
 m4_include([../../handler_tests_macros.m4])
 
-
+dnl Using the file:/... URLs
 AT_BESCMD_RESPONSE_TEST([bescmd/t_int_scalar.h5.dmr])
 AT_BESCMD_RESPONSE_TEST([bescmd/t_int_scalar.h5.das])
 AT_BESCMD_RESPONSE_TEST([bescmd/t_int_scalar.h5.dds])
@@ -20,10 +20,9 @@ AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([bescmd/d_int.h5.dods])
 AT_BESCMD_RESPONSE_TEST([bescmd/grid_2_2d.h5.dmr])
 AT_BESCMD_RESPONSE_TEST([bescmd/grid_2_2d.h5.das])
 AT_BESCMD_RESPONSE_TEST([bescmd/grid_2_2d.h5.dds])
-
-dnl Broken. FIXME
-dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bescmd/grid_2_2d.h5.dap])
-dnl AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([bescmd/grid_2_2d.h5.dods])
+dnl Broken. Fix these by implementing DmrppStr. jhrg 4/25/18
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bescmd/grid_2_2d.h5.dap], xfail)
+AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([bescmd/grid_2_2d.h5.dods], xfail)
 
 AT_BESCMD_RESPONSE_TEST([bescmd/coads_climatology.dmr])
 AT_BESCMD_RESPONSE_TEST([bescmd/coads_climatology.das])
@@ -31,6 +30,24 @@ AT_BESCMD_RESPONSE_TEST([bescmd/coads_climatology.dds])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bescmd/coads_climatology.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([bescmd/coads_climatology.dods])
 
-dnl Constrained responses
+dnl Constrained data responses
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bescmd/coads_climatology2.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([bescmd/coads_climatology2.dods])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bescmd/grid_2_2d.h5.2.dap])
+AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([bescmd/grid_2_2d.h5.2.dods])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bescmd/grid_2_2d.h5.3.dap])
+AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([bescmd/grid_2_2d.h5.3.dods])
+
+dnl Using http://... URLs (data are in an S3 bucket)
+AT_BESCMD_RESPONSE_TEST([bescmd/http_t_int_scalar.h5.dmr])
+AT_BESCMD_RESPONSE_TEST([bescmd/http_t_int_scalar.h5.das])
+AT_BESCMD_RESPONSE_TEST([bescmd/http_t_int_scalar.h5.dds])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bescmd/http_t_int_scalar.h5.dap])
+AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([bescmd/http_t_int_scalar.h5.dods])
+
+AT_BESCMD_RESPONSE_TEST([bescmd/http_d_int.h5.dmr])
+AT_BESCMD_RESPONSE_TEST([bescmd/http_d_int.h5.das])
+AT_BESCMD_RESPONSE_TEST([bescmd/http_d_int.h5.dds])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bescmd/http_d_int.h5.dap])
+AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([bescmd/http_d_int.h5.dods])
+
