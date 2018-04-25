@@ -16,3 +16,18 @@ AT_BESCMD_RESPONSE_TEST([bescmd/d_int.h5.das])
 AT_BESCMD_RESPONSE_TEST([bescmd/d_int.h5.dds])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bescmd/d_int.h5.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([bescmd/d_int.h5.dods])
+
+AT_BESCMD_RESPONSE_TEST([bescmd/grid_2_2d.h5.dmr])
+AT_BESCMD_RESPONSE_TEST([bescmd/grid_2_2d.h5.das])
+AT_BESCMD_RESPONSE_TEST([bescmd/grid_2_2d.h5.dds])
+
+dnl Broken. FIXME
+dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bescmd/grid_2_2d.h5.dap])
+dnl AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([bescmd/grid_2_2d.h5.dods])
+
+AT_BESCMD_RESPONSE_TEST([bescmd/coads_climatology.dmr])
+AT_BESCMD_RESPONSE_TEST([bescmd/coads_climatology.das])
+AT_BESCMD_RESPONSE_TEST([bescmd/coads_climatology.dds])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bescmd/coads_climatology.dap])
+AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([bescmd/coads_climatology.dods])
+
