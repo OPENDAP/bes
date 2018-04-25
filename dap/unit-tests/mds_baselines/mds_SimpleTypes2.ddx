@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="SimpleTypes" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Byte name="b">
+        <Attribute name="Description" type="String">
+            <value>A test byte</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>unknown</value>
+        </Attribute>
+        <Attribute name="Facility" type="Container">
+            <Attribute name="PrincipleInvestigator" type="String">
+                <value>Mark Abbott</value>
+                <value>Ph.D</value>
+            </Attribute>
+            <Attribute name="DataCenter" type="String">
+                <value>COAS Environmental Computer Facility</value>
+            </Attribute>
+            <Attribute name="DrifterType" type="String">
+                <value>MetOcean WOCE/OCM</value>
+            </Attribute>
+        </Attribute>
+    </Byte>
+    <Int32 name="i32">
+        <Attribute name="Description" type="String">
+            <value>A test byte</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>unknown</value>
+        </Attribute>
+        <Attribute name="Facility" type="Container">
+            <Attribute name="PrincipleInvestigator" type="String">
+                <value>Mark Abbott</value>
+                <value>Ph.D</value>
+            </Attribute>
+            <Attribute name="DataCenter" type="String">
+                <value>COAS Environmental Computer Facility</value>
+            </Attribute>
+            <Attribute name="DrifterType" type="String">
+                <value>MetOcean WOCE/OCM</value>
+            </Attribute>
+        </Attribute>
+    </Int32>
+    <UInt32 name="ui32">
+        <Attribute name="Description" type="String">
+            <value>A test byte</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>unknown</value>
+        </Attribute>
+        <Attribute name="Facility" type="Container">
+            <Attribute name="PrincipleInvestigator" type="String">
+                <value>Mark Abbott</value>
+                <value>Ph.D</value>
+            </Attribute>
+            <Attribute name="DataCenter" type="String">
+                <value>COAS Environmental Computer Facility</value>
+            </Attribute>
+            <Attribute name="DrifterType" type="String">
+                <value>MetOcean WOCE/OCM</value>
+            </Attribute>
+        </Attribute>
+    </UInt32>
+    <Int16 name="i16">
+        <Attribute name="Description" type="String">
+            <value>A test byte</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>unknown</value>
+        </Attribute>
+        <Attribute name="Facility" type="Container">
+            <Attribute name="PrincipleInvestigator" type="String">
+                <value>Mark Abbott</value>
+                <value>Ph.D</value>
+            </Attribute>
+            <Attribute name="DataCenter" type="String">
+                <value>COAS Environmental Computer Facility</value>
+            </Attribute>
+            <Attribute name="DrifterType" type="String">
+                <value>MetOcean WOCE/OCM</value>
+            </Attribute>
+        </Attribute>
+    </Int16>
+    <UInt16 name="ui16">
+        <Attribute name="Description" type="String">
+            <value>A test byte</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>unknown</value>
+        </Attribute>
+        <Attribute name="Facility" type="Container">
+            <Attribute name="PrincipleInvestigator" type="String">
+                <value>Mark Abbott</value>
+                <value>Ph.D</value>
+            </Attribute>
+            <Attribute name="DataCenter" type="String">
+                <value>COAS Environmental Computer Facility</value>
+            </Attribute>
+            <Attribute name="DrifterType" type="String">
+                <value>MetOcean WOCE/OCM</value>
+            </Attribute>
+        </Attribute>
+    </UInt16>
+    <Float32 name="f32">
+        <Attribute name="Description" type="String">
+            <value>A test byte</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>unknown</value>
+        </Attribute>
+        <Attribute name="Facility" type="Container">
+            <Attribute name="PrincipleInvestigator" type="String">
+                <value>Mark Abbott</value>
+                <value>Ph.D</value>
+            </Attribute>
+            <Attribute name="DataCenter" type="String">
+                <value>COAS Environmental Computer Facility</value>
+            </Attribute>
+            <Attribute name="DrifterType" type="String">
+                <value>MetOcean WOCE/OCM</value>
+            </Attribute>
+        </Attribute>
+    </Float32>
+    <Float64 name="f64">
+        <Attribute name="Description" type="String">
+            <value>A test byte</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>unknown</value>
+        </Attribute>
+        <Attribute name="Facility" type="Container">
+            <Attribute name="PrincipleInvestigator" type="String">
+                <value>Mark Abbott</value>
+                <value>Ph.D</value>
+            </Attribute>
+            <Attribute name="DataCenter" type="String">
+                <value>COAS Environmental Computer Facility</value>
+            </Attribute>
+            <Attribute name="DrifterType" type="String">
+                <value>MetOcean WOCE/OCM</value>
+            </Attribute>
+        </Attribute>
+    </Float64>
+    <String name="s">
+        <Attribute name="Description" type="String">
+            <value>A test byte</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>unknown</value>
+        </Attribute>
+        <Attribute name="Facility" type="Container">
+            <Attribute name="PrincipleInvestigator" type="String">
+                <value>Mark Abbott</value>
+                <value>Ph.D</value>
+            </Attribute>
+            <Attribute name="DataCenter" type="String">
+                <value>COAS Environmental Computer Facility</value>
+            </Attribute>
+            <Attribute name="DrifterType" type="String">
+                <value>MetOcean WOCE/OCM</value>
+            </Attribute>
+        </Attribute>
+    </String>
+    <Url name="u">
+        <Attribute name="Description" type="String">
+            <value>A test byte</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>unknown</value>
+        </Attribute>
+        <Attribute name="Facility" type="Container">
+            <Attribute name="PrincipleInvestigator" type="String">
+                <value>Mark Abbott</value>
+                <value>Ph.D</value>
+            </Attribute>
+            <Attribute name="DataCenter" type="String">
+                <value>COAS Environmental Computer Facility</value>
+            </Attribute>
+            <Attribute name="DrifterType" type="String">
+                <value>MetOcean WOCE/OCM</value>
+            </Attribute>
+        </Attribute>
+    </Url>
+    <dataBLOB href=""/>
+</Dataset>
