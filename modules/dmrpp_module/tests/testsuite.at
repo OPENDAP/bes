@@ -1,0 +1,12 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+
+AT_INIT([DMR++])
+
+m4_include([../../handler_tests_macros.m4])
+
+
+AT_BESCMD_RESPONSE_TEST([bescmd/t_int_scalar.h5.dmr])
+AT_BESCMD_RESPONSE_TEST([bescmd/t_int_scalar.h5.das])
+AT_BESCMD_RESPONSE_TEST([bescmd/t_int_scalar.h5.dds])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bescmd/t_int_scalar.h5.dap])
+AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([bescmd/t_int_scalar.h5.dods])
