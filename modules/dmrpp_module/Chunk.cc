@@ -60,8 +60,12 @@ void Chunk::set_position_in_array(const string &pia)
     if (d_chunk_position_in_array.size()) d_chunk_position_in_array.clear();
 
     // Assume input is [x,y,...,z] where x, ..., are integers; modest syntax checking
-    if (pia.find('[') == string::npos && pia.find(']') == string::npos)
+    // [1] is a minimal 'position in array' string.
+    if (pia.find('[') == string::npos || pia.find(']') == string::npos || pia.length() < 3)
         throw BESInternalError("while parsing a DMR++, chunk position string malformed", __FILE__, __LINE__);
+
+    if (pia.find_first_not_of("[]1234567890,") != string::npos)
+        throw BESInternalError("while parsing a DMR++, chunk position string illegal character(s)", __FILE__, __LINE__);
 
     // string off []; iss holds x,y,...,z
     istringstream iss(pia.substr(1, pia.length()-2));
@@ -70,12 +74,11 @@ void Chunk::set_position_in_array(const string &pia)
     unsigned int i;
     while (!iss.eof() ) {
         iss >> i; // read an integer
+
         d_chunk_position_in_array.push_back(i);
 
         iss >> c; // read a separator (,)
     }
-
-    assert(d_chunk_position_in_array.size() > 0);
 }
 
 #if 0
