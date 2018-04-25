@@ -139,26 +139,13 @@ DmrppCommon::read_atomic(const string &name)
     Chunk &c = chunk_refs[0];
     c.set_rbuf_to_size();
 
-#if 0
     curl_read_chunk(&c);
-#endif
 
-
+#if 1
     CURL *curl = DmrppRequestHandler::curl_handle_pool->get_easy_handle(c.get_data_url(), &c);
-    // Perform the request
-#if 0
-    CURLcode curl_code = curl_easy_perform(curl);
-    if (CURLE_OK != curl_code) {
-        throw BESInternalError(string("HTTP Error: ").append(string(curl_easy_strerror(curl_code))), __FILE__, __LINE__);
-    }
+
+    DmrppRequestHandler::curl_handle_pool->release_handle(c.get_data_url(), curl);
 #endif
-
-
-#if 0
-    char buf[CURL_ERROR_SIZE];  // FIXME Hack jhrg
-    read_using_curl(buf, c.get_data_url(), curl, &c);
-#endif
-
 
     // If the expected byte count was not read, it's an error.
     if (c.get_size() != c.get_bytes_read()) {
