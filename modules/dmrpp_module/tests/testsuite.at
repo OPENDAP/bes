@@ -31,3 +31,6 @@ AT_BESCMD_RESPONSE_TEST([bescmd/coads_climatology.dds])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bescmd/coads_climatology.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([bescmd/coads_climatology.dods])
 
+dnl Constrained responses
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([bescmd/coads_climatology2.dap])
+AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([bescmd/coads_climatology2.dods])
