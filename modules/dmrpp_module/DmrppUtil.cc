@@ -90,6 +90,70 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
     return nbytes;
 }
 
+void read_using_curl(char buf[CURL_ERROR_SIZE], const string& url, CURL* curl, Chunk* chunk)
+{
+    // Perform the request
+    long curl_code = curl_easy_perform(curl);
+    if (CURLE_OK != curl_code) {
+        curl_easy_cleanup(curl);
+        throw BESError(string("HTTP Error: ").append(buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+    }
+
+    BESDEBUG("dmrpp", __func__ << "() - curl_easy_perform() finished. exit_code: " << curl_code << endl);
+    string file_url("file://");
+    if (!url.compare(0, file_url.size(), file_url)) {
+        // If it's a file URL then we don't need to dink around with the HTTP noise..
+        BESDEBUG("dmrpp", __func__ << "() Retrieved file URL, no http status to check. url: " << url << endl);
+    }
+    else {
+        // If it's not a file URL then we'll assume it's an http(s) URL and
+        // we handle the various HTTP mischief.
+        long http_code = 0;
+        long curl_info_code = curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
+        if (http_code == 200 && curl_code != CURLE_ABORTED_BY_CALLBACK && curl_info_code == CURLE_OK) {
+            BESDEBUG("dmrpp", __func__ << "() - SUCCEEDED!"<< endl);
+        }
+        else if (http_code == 206) {
+            BESDEBUG("dmrpp", __func__ << "() -  206 " << endl);
+            double dwnld_length;
+            ostringstream oss;
+            curl_info_code = curl_easy_getinfo(curl, CURLINFO_SIZE_DOWNLOAD, &dwnld_length);
+            if (curl_info_code != CURLE_OK) {
+                oss << "Missing_Http_Content_Length_Header";
+            }
+            else {
+                oss << dwnld_length;
+            }
+            BESDEBUG("dmrpp", __func__ << "() - Host Returned \"Partial-Content\" (206) length: " << oss.str() << endl);
+        }
+        else {
+            std::ostringstream oss;
+            oss << __func__ << "() - ERROR curl request failed! " << "http-status: " << http_code << endl;
+            char* ctype;
+            string content_type;
+            curl_info_code = curl_easy_getinfo(curl, CURLINFO_CONTENT_TYPE, &ctype);
+            if (curl_info_code != CURLE_OK || ctype == NULL) {
+                content_type = "No_Content_Type_Found";
+            }
+            else {
+                content_type = string(ctype);
+            }
+            oss << " content-type: " << content_type;
+            long bytes_read = chunk->get_bytes_read();
+            oss << " bytes_read: " << bytes_read;
+            if (content_type.find("text") != string::npos || content_type.find("xml") != string::npos
+                || content_type.find("json") != string::npos) {
+                chunk->get_rbuf()[bytes_read] = 0;
+                string message(chunk->get_rbuf());
+                oss << endl << message;
+            }
+            BESDEBUG("dmrpp", oss.str() << endl);
+            curl_easy_cleanup(curl);
+            throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+        }
+    }
+}
+
 /**
  * @brief Read data using HTTP/File Range GET
  *
@@ -129,71 +193,7 @@ void curl_read_chunk(Chunk *chunk)
             throw BESError(string("HTTP Error: ").append(buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
 
         // Perform the request
-        long curl_code = curl_easy_perform(curl);
-        if (CURLE_OK != curl_code) {
-            curl_easy_cleanup(curl);
-            throw BESError(string("HTTP Error: ").append(buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
-        }
-		BESDEBUG("dmrpp", __func__ << "() - curl_easy_perform() finished. exit_code: " << curl_code << endl);
-
-        string file_url("file://");
-        if (!url.compare(0, file_url.size(), file_url)) {
-            // If it's a file URL then we don't need to dink around with the HTTP noise..
-            BESDEBUG("dmrpp", __func__ << "() Retrieved file URL, no http status to check. url: " << url << endl);
-        }
-        else {
-            // If it's not a file URL then we'll assume it's an http(s) URL and
-            // we handle the various HTTP mischief.
-            long http_code = 0;
-            long curl_info_code = curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
-            if (http_code == 200 && curl_code != CURLE_ABORTED_BY_CALLBACK && curl_info_code == CURLE_OK) {
-                BESDEBUG("dmrpp", __func__ << "() - SUCCEEDED!"<< endl);
-            }
-            else if (http_code == 206) {
-                BESDEBUG("dmrpp", __func__ << "() -  206 " << endl);
-
-                double dwnld_length;
-                ostringstream oss;
-                curl_info_code = curl_easy_getinfo(curl, CURLINFO_SIZE_DOWNLOAD, &dwnld_length);
-                if (curl_info_code != CURLE_OK) {
-                    oss << "Missing_Http_Content_Length_Header";
-                }
-                else {
-                    oss << dwnld_length;
-                }
-                BESDEBUG("dmrpp",
-                    __func__ << "() - Host Returned \"Partial-Content\" (206) length: " << oss.str() << endl);
-            }
-            else {
-                std::ostringstream oss;
-                oss << __func__ << "() - ERROR curl request failed! " << "http-status: " << http_code << endl;
-                char *ctype;
-                string content_type;
-                curl_info_code = curl_easy_getinfo(curl, CURLINFO_CONTENT_TYPE, &ctype);
-                if (curl_info_code != CURLE_OK || ctype == NULL) {
-                    content_type = "No_Content_Type_Found";
-                }
-                else {
-                    content_type = string(ctype);
-                }
-
-                oss << " content-type: " << content_type;
-
-                long bytes_read = chunk->get_bytes_read();
-                oss << " bytes_read: " << bytes_read;
-
-                if (content_type.find("text") != string::npos || content_type.find("xml") != string::npos
-                    || content_type.find("json") != string::npos) {
-                    chunk->get_rbuf()[bytes_read] = 0;
-                    string message(chunk->get_rbuf());
-                    oss << endl << message;
-                }
-
-                BESDEBUG("dmrpp", oss.str() << endl);
-                curl_easy_cleanup(curl);
-                throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
-            }
-        }
+        read_using_curl(buf, url, curl, chunk);
 
         curl_easy_cleanup(curl);
     }

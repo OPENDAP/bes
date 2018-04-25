@@ -64,52 +64,32 @@
 #include "DmrppTypeFactory.h"
 #include "DmrppParserSax2.h"
 #include "DmrppRequestHandler.h"
+#include "CurlHandlePool.h"
 
 using namespace libdap;
 using namespace std;
 
 #define NC_NAME "nc"
 
-
 namespace dmrpp {
 
 const string module = "dmrpp";
 
+// These are not used. See the netcdf handler for an example of their use.
+// jhrg 4/24/18
 ObjMemCache *DmrppRequestHandler::das_cache = 0;
 ObjMemCache *DmrppRequestHandler::dds_cache = 0;
 ObjMemCache *DmrppRequestHandler::dmr_cache = 0;
 
-
-#if 0
-static void read_key_value(const std::string &key_name, bool &key_value, bool &is_key_set)
-{
-    if (is_key_set == false) {
-        bool key_found = false;
-        string doset;
-        TheBESKeys::TheKeys()->get_value(key_name, doset, key_found);
-        if (key_found) {
-            // It was set in the conf file
-            is_key_set = true;
-
-            doset = BESUtil::lowercase(doset);
-            key_value = (doset == "true" || doset == "yes");
-        }
-    }
-}
-
-static bool extension_match(const string &data_source, const string &extension)
-{
-    string::size_type pos = data_source.rfind(extension);
-    return pos != string::npos && pos + extension.length() == data_source.length();
-}
-#endif
+// This is used... jhrg
+CurlHandlePool *DmrppRequestHandler::curl_handle_pool = 0;
 
 /**
  * Here we register all of our handler functions so that the BES Dispatch machinery
  * knows what kinds of things we handle.
  */
 DmrppRequestHandler::DmrppRequestHandler(const string &name) :
-        BESRequestHandler(name)
+    BESRequestHandler(name)
 {
 #if DAP2
     add_handler(DAS_RESPONSE, dap_build_das);
@@ -131,11 +111,15 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     read_key_value("DR.UseSeriesValues", d_use_series_values, d_use_series_values_set);
 #endif
 
+    if (!curl_handle_pool)
+        curl_handle_pool = new CurlHandlePool();
+
     curl_global_init(CURL_GLOBAL_DEFAULT);
 }
 
 DmrppRequestHandler::~DmrppRequestHandler()
 {
+    delete curl_handle_pool;
     curl_global_cleanup();
 }
 
@@ -241,37 +225,30 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
     return false;
 }
 
-
 /**
  * Produce a DAP2 Data Response (.dods) response from a DMRPP file.
  */
-bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi) {
+bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi)
+{
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG))
-        sw.start("DmrppRequestHandler::dap_build_dap2data()", dhi.data[REQUEST_ID]);
+    if (BESISDEBUG(TIMING_LOG)) sw.start("DmrppRequestHandler::dap_build_dap2data()", dhi.data[REQUEST_ID]);
 
     BESDEBUG(module, __func__ << "() - BEGIN" << endl);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *>(response);
-    if (!bdds)
-        throw BESInternalError("cast error", __FILE__, __LINE__);
+    if (!bdds) throw BESInternalError("cast error", __FILE__, __LINE__);
 
     try {
-        string container_name_str =
-                bdds->get_explicit_containers() ?
-                        dhi.container->get_symbolic_name() : "";
+        string container_name_str = bdds->get_explicit_containers() ? dhi.container->get_symbolic_name() : "";
 
         DDS *dds = bdds->get_dds();
-        if (!container_name_str.empty())
-            dds->container_name(container_name_str);
+        if (!container_name_str.empty()) dds->container_name(container_name_str);
         string accessed = dhi.container->access();
-
 
         // Look in memory cache, if it's initialized
         DDS *cached_dds_ptr = 0;
-        if (dds_cache
-                && (cached_dds_ptr = static_cast<DDS*>(dds_cache->get(accessed)))) {
+        if (dds_cache && (cached_dds_ptr = static_cast<DDS*>(dds_cache->get(accessed)))) {
             // copy the cached DAS into the BES response object
             BESDEBUG(module, "DDS Cached hit for : " << accessed << endl);
             *dds = *cached_dds_ptr;
@@ -289,7 +266,6 @@ bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi) {
             // assign the new one.
             dds = dmr->getDDS();
 
-
             // Stuff it into the response.
             bdds->set_dds(dds);
             bdds->set_constraint(dhi);
@@ -297,8 +273,7 @@ bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi) {
             // Cache it, if the cache is active.
             if (dds_cache) {
                 // add a copy
-                BESDEBUG(module, __func__ << "() - " <<
-                        "DDS added to the cache for : " << accessed << endl);
+                BESDEBUG(module, __func__ << "() - " << "DDS added to the cache for : " << accessed << endl);
                 dds_cache->add(new DDS(*dds), accessed);
             }
         }
@@ -309,12 +284,12 @@ bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi) {
     }
     catch (InternalErr & e) {
         BESDapError ex(e.get_error_message(), true, e.get_error_code(),
-                __FILE__, __LINE__);
+        __FILE__, __LINE__);
         throw ex;
     }
     catch (Error & e) {
         BESDapError ex(e.get_error_message(), false, e.get_error_code(),
-                __FILE__, __LINE__);
+        __FILE__, __LINE__);
         throw ex;
     }
     catch (std::exception &e) {
@@ -332,36 +307,30 @@ bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi) {
     return true;
 }
 
-
 /**
  * Produce a DAP2 DDS response from a DMRPP file.
  */
-bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi) {
+bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi)
+{
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG))
-        sw.start("DmrppRequestHandler::dap_build_dds()", dhi.data[REQUEST_ID]);
+    if (BESISDEBUG(TIMING_LOG)) sw.start("DmrppRequestHandler::dap_build_dds()", dhi.data[REQUEST_ID]);
 
     BESDEBUG(module, __func__ << "() - BEGIN" << endl);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDDSResponse *bdds = dynamic_cast<BESDDSResponse *>(response);
-    if (!bdds)
-        throw BESInternalError("cast error", __FILE__, __LINE__);
+    if (!bdds) throw BESInternalError("cast error", __FILE__, __LINE__);
 
     try {
-        string container_name_str =
-                bdds->get_explicit_containers() ?
-                        dhi.container->get_symbolic_name() : "";
+        string container_name_str = bdds->get_explicit_containers() ? dhi.container->get_symbolic_name() : "";
 
         DDS *dds = bdds->get_dds();
-        if (!container_name_str.empty())
-            dds->container_name(container_name_str);
+        if (!container_name_str.empty()) dds->container_name(container_name_str);
         string accessed = dhi.container->access();
 
         // Look in memory cache, if it's initialized
         DDS *cached_dds_ptr = 0;
-        if (dds_cache
-                && (cached_dds_ptr = static_cast<DDS*>(dds_cache->get(accessed)))) {
+        if (dds_cache && (cached_dds_ptr = static_cast<DDS*>(dds_cache->get(accessed)))) {
             // copy the cached DAS into the BES response object
             BESDEBUG(module, "DDS Cached hit for : " << accessed << endl);
             *dds = *cached_dds_ptr;
@@ -385,8 +354,7 @@ bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi) {
             // Cache it, if the cache is active.
             if (dds_cache) {
                 // add a copy
-                BESDEBUG(module, __func__ << "() - " <<
-                        "DDS added to the cache for : " << accessed << endl);
+                BESDEBUG(module, __func__ << "() - " << "DDS added to the cache for : " << accessed << endl);
                 dds_cache->add(new DDS(*dds), accessed);
             }
         }
@@ -397,12 +365,12 @@ bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi) {
     }
     catch (InternalErr & e) {
         BESDapError ex(e.get_error_message(), true, e.get_error_code(),
-                __FILE__, __LINE__);
+        __FILE__, __LINE__);
         throw ex;
     }
     catch (Error & e) {
         BESDapError ex(e.get_error_message(), false, e.get_error_code(),
-                __FILE__, __LINE__);
+        __FILE__, __LINE__);
         throw ex;
     }
     catch (std::exception &e) {
@@ -420,38 +388,32 @@ bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi) {
     return true;
 }
 
-
 /**
  * Produce a DAP2 DAS response from a DMRPP data set.
  *
  */
-bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi) {
+bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi)
+{
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG))
-        sw.start("DmrppRequestHandler::dap_build_das()", dhi.data[REQUEST_ID]);
+    if (BESISDEBUG(TIMING_LOG)) sw.start("DmrppRequestHandler::dap_build_das()", dhi.data[REQUEST_ID]);
 
     BESDEBUG(module, __func__ << "() - BEGIN" << endl);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDASResponse *bdas = dynamic_cast<BESDASResponse *>(response);
-    if (!bdas)
-        throw BESInternalError("cast error", __FILE__, __LINE__);
+    if (!bdas) throw BESInternalError("cast error", __FILE__, __LINE__);
 
     try {
-        string container_name_str =
-                bdas->get_explicit_containers() ?
-                        dhi.container->get_symbolic_name() : "";
+        string container_name_str = bdas->get_explicit_containers() ? dhi.container->get_symbolic_name() : "";
 
         DAS *das = bdas->get_das();
-        if (!container_name_str.empty())
-            das->container_name(container_name_str);
+        if (!container_name_str.empty()) das->container_name(container_name_str);
         string accessed = dhi.container->access();
         BESDEBUG(module, __func__ << "() - accessed: "<< accessed << endl);
 
         // Look in memory cache (if it's initialized)
         DAS *cached_das_ptr = 0;
-        if (das_cache
-                && (cached_das_ptr = static_cast<DAS*>(das_cache->get(accessed)))) {
+        if (das_cache && (cached_das_ptr = static_cast<DAS*>(das_cache->get(accessed)))) {
             // copy the cached DAS into the BES response object
             BESDEBUG(module, __func__ << "() - DAS Cached hit for : " << accessed << endl);
             *das = *cached_das_ptr;
@@ -468,7 +430,7 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi) {
             DDS *dds = dmr->getDDS();
             BESDEBUG(module, __func__ << "() - DDS retrieved from DMR." << endl);
             // Print the DDS
-            if(BESDebug::IsSet(module)){
+            if (BESDebug::IsSet(module)) {
                 BESDEBUG(module, __func__ << "() - DDS: " << endl);
                 dds->print(*BESDebug::GetStrm());
             }
@@ -476,7 +438,7 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi) {
             // Load the BESDASResponse DAS from the DDS
             dds->get_das(das);
             // Print the DAS
-            if(BESDebug::IsSet(module)){
+            if (BESDebug::IsSet(module)) {
                 BESDEBUG(module, __func__ << "() -  " << "DAS: " << endl);
                 das->print(*(BESDebug::GetStrm()), false);
             }
@@ -488,8 +450,7 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi) {
             // Add to cache if cache is active
             if (das_cache) {
                 // add a copy
-                BESDEBUG(module,
-                        "DAS added to the cache for : " << accessed << endl);
+                BESDEBUG(module, "DAS added to the cache for : " << accessed << endl);
                 das_cache->add(new DAS(*das), accessed);
             }
         }
@@ -500,12 +461,12 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi) {
     }
     catch (InternalErr & e) {
         BESDapError ex(e.get_error_message(), true, e.get_error_code(),
-                __FILE__, __LINE__);
+        __FILE__, __LINE__);
         throw ex;
     }
     catch (Error & e) {
         BESDapError ex(e.get_error_message(), false, e.get_error_code(),
-                __FILE__, __LINE__);
+        __FILE__, __LINE__);
         throw ex;
     }
     catch (std::exception &e) {
@@ -523,7 +484,6 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi) {
     return true;
 }
 
-
 #if DAP2
 /**
  * This method will look at the extension on the input file and assume
@@ -540,7 +500,6 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface &dhi)
 
     return true;
 }
-
 
 bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface &dhi)
 {

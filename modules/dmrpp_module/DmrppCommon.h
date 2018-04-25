@@ -29,6 +29,7 @@
 #include <vector>
 
 #include "Chunk.h"
+#include "CurlHandlePool.h"
 
 namespace libdap {
     class BaseType;

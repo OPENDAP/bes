@@ -25,15 +25,20 @@
 #define _HandlePool_h 1
 
 #include <string>
+#if 0
 #include <map>
+#endif
 
 #include <curl/curl.h>
 
 namespace dmrpp {
 
+class Chunk;
+
 /**
- * Maintain a pool of CURL handles. Reusing the CURL handles enables the
- * libcurl connection pooling scheme.
+ * Wrapper for a single libcurl 'easy' handle. Expand to multiple handles later.
+ *
+ * @note This is a singleton
  */
 class CurlHandlePool {
 
@@ -42,34 +47,42 @@ class CurlHandlePool {
      */
     struct easy_handle {
         bool d_in_use;
-        CURL *d_easy_handle;
+        CURL *d_handle;
         char d_error_buf[CURL_ERROR_SIZE];
 
         easy_handle() {
-            d_easy_handle = curl_easy_init();
+            d_handle = curl_easy_init();
             d_in_use = false;
         }
 
         ~easy_handle() {
-            curl_easy_cleanup(d_easy_handle);
+            curl_easy_cleanup(d_handle);
         }
     };
 
+#if 0
     typedef std::multimap<std::string, easy_handle*>::iterator eh_iter;
 
     std::multimap<std::string, easy_handle*> d_easy_handles;
+#endif
+
+    easy_handle *d_easy_handle;
 
 public:
-    CurlHandlePool() { }
+
+    CurlHandlePool() : d_easy_handle(0) { }
 
     ~CurlHandlePool() {
+#if 0
         // delete all of the easy_handle things FIXME
         for (eh_iter i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
             delete (*i).second; // calls curl_easy_cleanup()
         }
+#endif
+        delete d_easy_handle;
     }
 
-    CURL *get_easy_handle(const std::string &url);
+    CURL *get_easy_handle(const std::string &url, Chunk *chunk);
 
     void release_handle(const std::string &url, CURL *h);
 };

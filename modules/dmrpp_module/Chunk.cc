@@ -55,25 +55,30 @@ namespace dmrpp {
  */
 void Chunk::set_position_in_array(const string &pia)
 {
-    assert(!pia.empty());
+    if (pia.empty()) return;
 
-    // Assume input is [x,y,...,z] where x, ..., is an integer
-    // iss holds x , y , ... , z <eof>
-    istringstream iss(pia.substr(1, pia.size() - 2));
+    if (d_chunk_position_in_array.size()) d_chunk_position_in_array.clear();
+
+    // Assume input is [x,y,...,z] where x, ..., are integers; modest syntax checking
+    if (pia.find('[') == string::npos && pia.find(']') == string::npos)
+        throw BESInternalError("while parsing a DMR++, chunk position string malformed", __FILE__, __LINE__);
+
+    // string off []; iss holds x,y,...,z
+    istringstream iss(pia.substr(1, pia.length()-2));
 
     char c;
     unsigned int i;
-    while (!iss.eof()) {
+    while (!iss.eof() ) {
         iss >> i; // read an integer
         d_chunk_position_in_array.push_back(i);
 
-        iss >> c; // read a separator or the ending ']'
-        assert(c == ',' || iss.eof());
+        iss >> c; // read a separator (,)
     }
 
     assert(d_chunk_position_in_array.size() > 0);
 }
 
+#if 0
 // FIXME Replace value param that is modified with a istringstream
 void Chunk::ingest_position_in_array(string pia)
 {
@@ -125,6 +130,7 @@ void Chunk::ingest_position_in_array(string pia)
 
     BESDEBUG(debug, "Chunk::ingest_position_in_array() -  END" << " -  Parsed " << pia << "'" << endl);
 }
+#endif
 
 /**
  * @brief Returns a curl range argument.

@@ -26,12 +26,13 @@
 #include <vector>
 #include <cstdlib>
 
-#include <cstdlib>
+#include <curl/curl.h>
 
 #include "BESIndent.h"
 #include "BESDebug.h"
 #include "BESInternalError.h"
 
+#include "DmrppRequestHandler.h"
 #include "DmrppCommon.h"
 #include "DmrppUtil.h"
 #include "Chunk.h"
@@ -138,11 +139,19 @@ DmrppCommon::read_atomic(const string &name)
     Chunk &c = chunk_refs[0];
     c.set_rbuf_to_size();
 
-#if 0
-    // First cut at subsetting; read the whole thing and then subset that.
-    curl_read_chunk(c.get_data_url(), c.get_curl_range_arg_string(), &c);
-#endif
     curl_read_chunk(&c);
+
+    CURL *curl = DmrppRequestHandler::curl_handle_pool->get_easy_handle(c.get_data_url(), &c);
+    // Perform the request
+    CURLcode curl_code = curl_easy_perform(curl);
+    if (CURLE_OK != curl_code) {
+        throw BESInternalError(string("HTTP Error: ").append(string(curl_easy_strerror(curl_code))), __FILE__, __LINE__);
+    }
+
+#if 0
+   read_using_curl(buf, c.get_data_url(), curl, &c);
+#endif
+
 
     // If the expected byte count was not read, it's an error.
     if (c.get_size() != c.get_bytes_read()) {

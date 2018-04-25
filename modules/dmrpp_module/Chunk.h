@@ -102,19 +102,20 @@ protected:
 public:
 
     Chunk() :
-            d_data_url(""), d_size(0), d_offset(0), // TODO d_md5(""), d_uuid(""),
-            d_is_read(false), d_bytes_read(0),
-            d_read_buffer(0), d_read_buffer_size(0), // TODO d_read_pointer(0),
-            d_curl_handle(0), d_is_in_multi_queue(false)
+        d_data_url(""), d_size(0), d_offset(0), d_is_read(false), d_bytes_read(0), d_read_buffer(0),
+        d_read_buffer_size(0), d_curl_handle(0), d_is_in_multi_queue(false)
     {
     }
 
     Chunk(std::string data_url, unsigned long long size, unsigned long long offset, std::string position_in_array = "") :
-            d_data_url(data_url), d_size(size), d_offset(offset), // TODO d_md5(""), d_uuid(""),
-            d_is_read(false), d_bytes_read(0), d_read_buffer(0), d_read_buffer_size(0),
-            d_curl_handle(0), d_is_in_multi_queue(false)
+        d_data_url(data_url), d_size(size), d_offset(offset), d_is_read(false), d_bytes_read(0), d_read_buffer(0),
+        d_read_buffer_size(0), d_curl_handle(0), d_is_in_multi_queue(false)
     {
+#if 0
         ingest_position_in_array(position_in_array);
+#else
+        set_position_in_array(position_in_array);
+#endif
     }
 
     Chunk(const Chunk &h4bs)
@@ -165,21 +166,6 @@ public:
     virtual unsigned long long get_offset() const
     {
         return d_offset;
-    }
-    /**
-     * @brief Get the md5 string for this byteStream's data block
-     */
-    virtual std::string get_md5() const
-    {
-        return ""; // TODO d_md5;
-
-    }
-    /**
-     * @brief Get the uuid string for this byteStream's data block
-     */
-    virtual std::string get_uuid() const
-    {
-        return ""; // TODO d_uuid;
     }
 
     /**
@@ -281,6 +267,7 @@ public:
         return d_chunk_position_in_array;
     }
 
+
     /**
      * @brief Parse the dimension string store the sizes in an internal vector.
      *
@@ -292,7 +279,9 @@ public:
      *
      * @param pia The dimension string
      */
+#if 0
     virtual void ingest_position_in_array(std::string pia);
+#endif
 
     /**
      * @brief An alternate impl of ingest_position_in_array
