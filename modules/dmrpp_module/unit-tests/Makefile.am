@@ -3,14 +3,15 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir)/modules/dmrpp_module -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)/modules/dmrpp_module -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS) \
+ -I$(top_srcdir)/modules/hdf5_handler 
 
 # Added -lz for ubuntu
-LIBADD = $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_EXTRA_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
+LIBADD = $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_EXTRA_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(H%_LIBS) -lz
 
 
 if CPPUNIT
-AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
+AM_CPPFLAGS += $(CPPUNIT_CFLAGS) 
 LIBADD += $(CPPUNIT_LIBS)
 endif
 

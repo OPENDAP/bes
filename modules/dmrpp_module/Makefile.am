@@ -1,7 +1,8 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = $(DAP_CFLAGS) $(BES_CPPFLAGS) -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch
+AM_CPPFLAGS = $(GCTP_CPPFLAGS) $(H5_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+
 ACLOCAL_AMFLAGS = -I conf
 AM_CXXFLAGS = 
 
@@ -53,7 +54,7 @@ $(top_builddir)/dispatch/libbes_dispatch.la
 
 libdmrpp_module_la_SOURCES = $(BES_HDRS) $(BES_SRCS)
 libdmrpp_module_la_LDFLAGS = -avoid-version -module 
-libdmrpp_module_la_LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types 
+libdmrpp_module_la_LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(H5_LIBS) -ltest-types 
 
 EXTRA_PROGRAMS = 
 

@@ -64,6 +64,12 @@
 #include "test_config.h"
 #include "util.h"
 
+#include "H5Ppublic.h"
+#include "HDF5RequestHandler.h"
+#include "h5get.h"
+
+
+
 using namespace libdap;
 
 static bool debug = false;
@@ -95,6 +101,60 @@ public:
     // Called after each test
     void tearDown()
     {
+    }
+
+    void test_chunked_hdf5()
+    {
+        hid_t file; /* handles */
+        string filename = "SDSextendible.h5";
+        BESDEBUG("dmrpp", "filename =  '" << filename<< "'" << endl);
+        /*
+         * Open the file and the dataset.
+         */
+        hid_t fileid = get_fileid(filename.c_str());
+        BESDEBUG("dmrpp", "fileid =  '" << fileid<< "'" << endl);
+        if (fileid < 0) {
+            string invalid_file_msg="Could not open this HDF5 file ";
+            invalid_file_msg +=filename;
+            invalid_file_msg +=". It is very possible that this file is not an HDF5 file ";
+            invalid_file_msg +=" but with the .h5/.HDF5 suffix. Please check with the data";
+            invalid_file_msg +=" distributor.";
+            throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+
+        }
+
+        /*
+         * Get dataset rank and dimension.
+         */
+
+//        filespace = H5Dget_space(dataset); /* Get filespace handle first. */
+//        rank = H5Sget_simple_extent_ndims(filespace);
+//        status_n = H5Sget_simple_extent_dims(filespace, dims, NULL);
+//        printf("dataset rank %d, dimensions %lu x %lu\n", rank, (unsigned long) (dims[0]), (unsigned long) (dims[1]));
+//
+//        /*
+//         * Define the memory space to read dataset.
+//         */
+//        memspace = H5Screate_simple(RANK, dims, NULL);
+//
+//        /*
+//         * Read dataset back and display.
+//         */
+//        status = H5Dread(dataset, H5T_NATIVE_INT, memspace, filespace,
+//        H5P_DEFAULT, data_out);
+//        printf("\n");
+//        printf("Dataset: \n");
+//        for (int j = 0; j < (int)dims[0]; j++) {
+//            for (int i = 0; i < (int)dims[1]; i++)
+//                printf("%d ", data_out[j][i]);
+//            printf("\n");
+//        }
+//
+//        /*
+//         * Close/release resources.
+//         */
+//        H5Sclose(memspace);
+
     }
 
     /**
@@ -592,6 +652,7 @@ public:
 
     CPPUNIT_TEST(test_a2_local_twoD_chunked_array);
     CPPUNIT_TEST(test_a3_local_twoD_chunked_array);
+    CPPUNIT_TEST(test_chunked_hdf5);
 #endif
 
 
@@ -605,20 +666,29 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DmrppChunkedReadTest);
 
 int main(int argc, char*argv[])
 {
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
-
-    GetOpt getopt(argc, argv, "d");
+    GetOpt getopt(argc, argv, "dh");
     int option_char;
     while ((option_char = getopt()) != -1){
         switch (option_char) {
         case 'd':
             debug = true;  // debug is a static global
             break;
+        case 'h': {     // help - show test names
+            std::cerr << "Usage: DmrppChunkedReadTest has the following tests:" << std::endl;
+            const std::vector<CppUnit::Test*> &tests = dmrpp::DmrppChunkedReadTest::suite()->getTests();
+            unsigned int prefix_len = dmrpp::DmrppChunkedReadTest::suite()->getName().append("::").length();
+            for (std::vector<CppUnit::Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                std::cerr << (*i)->getName().replace(0, prefix_len, "") << std::endl;
+            }
+            break;
+        }
         default:
             break;
         }
     }
+
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     bool wasSuccessful = true;
     string test = "";
