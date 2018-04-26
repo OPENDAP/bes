@@ -60,6 +60,7 @@ private:
     DmrppArray::dimension get_dimension(unsigned int dim_num);
 
     virtual bool read_no_chunks();
+    virtual bool read_chunks_serial();
     virtual bool read_chunks();
 
     void insert_constrained_no_chunk(
@@ -67,7 +68,7 @@ private:
 			unsigned long *target_index,
 			std::vector<unsigned int> &subsetAddress,
 			const std::vector<unsigned int> &array_shape,
-			Chunk *h4bytestream);
+			char *data);
 
     virtual bool insert_constrained_chunk(
     		unsigned int dim,
@@ -75,6 +76,9 @@ private:
     		std::vector<unsigned int> *chunk_source_address,
     		Chunk *chunk,
     		CURLM *multi_handle);
+
+    virtual bool insert_chunk_serial(unsigned int dim, vector<unsigned int> *target_element_address,
+        vector<unsigned int> *chunk_source_address, Chunk *chunk);
 
     void multi_finish(CURLM *curl_multi_handle, std::vector<Chunk> *chunk_refs);
 

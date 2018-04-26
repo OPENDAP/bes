@@ -33,6 +33,7 @@
 
 #include "Chunk.h"
 #include "DmrppUtil.h"
+#include "DmrppRequestHandler.h"
 
 const string debug = "dmrpp";
 
@@ -80,60 +81,6 @@ void Chunk::set_position_in_array(const string &pia)
         iss >> c; // read a separator (,)
     }
 }
-
-#if 0
-// FIXME Replace value param that is modified with a istringstream
-void Chunk::ingest_position_in_array(string pia)
-{
-    BESDEBUG(debug, "Chunk::ingest_position_in_array() -  BEGIN" << " -  Parsing: " << pia << "'" << endl);
-
-    if (!pia.empty()) {
-        BESDEBUG(debug, "Chunk::ingest_position_in_array() -  string '"<< pia << "' is not empty." << endl);
-        // Clear the thing if it's got stuff in it.
-        if (d_chunk_position_in_array.size()) d_chunk_position_in_array.clear();
-
-        string open_sqr_brckt("[");
-        string close_sqr_brckt("]");
-        string comma(",");
-        size_t strPos = 0;
-        string strVal;
-
-        // Drop leading square bracket
-        if (!pia.compare(0, 1, open_sqr_brckt)) {
-            pia.erase(0, 1);
-            BESDEBUG(debug,
-                    "Chunk::ingest_position_in_array() -  dropping leading '[' result: '"<< pia << "'" << endl);
-        }
-
-        // Drop trailing square bracket
-        if (!pia.compare(pia.length() - 1, 1, close_sqr_brckt)) {
-            pia.erase(pia.length() - 1, 1);
-            BESDEBUG(debug,
-                    "Chunk::ingest_position_in_array() -  dropping trailing ']' result: '"<< pia << "'" << endl);
-        }
-
-        // Is it multi-valued? We check for commas  to find out.
-        if ((strPos = pia.find(comma)) != string::npos) {
-            BESDEBUG(debug,
-                    "Chunk::ingest_position_in_array() -  Position string appears to contain multiple values..." << endl);
-            // Process comma delimited content
-            while ((strPos = pia.find(comma)) != string::npos) {
-                strVal = pia.substr(0, strPos);
-                BESDEBUG(debug, __PRETTY_FUNCTION__ << " -  Parsing: " << strVal << endl);
-                d_chunk_position_in_array.push_back(strtol(strVal.c_str(), NULL, 10));
-                pia.erase(0, strPos + comma.length());
-            }
-        }
-        // A single value, remains after multi-valued processing, or there was only
-        // Every a single value, so let's ingest that!
-        BESDEBUG(debug,
-                "Chunk::ingest_position_in_array() -  Position string appears to have a single value..." << endl);
-        d_chunk_position_in_array.push_back(strtol(pia.c_str(), NULL, 10));
-    }
-
-    BESDEBUG(debug, "Chunk::ingest_position_in_array() -  END" << " -  Parsed " << pia << "'" << endl);
-}
-#endif
 
 /**
  * @brief Returns a curl range argument.
@@ -245,17 +192,8 @@ void Chunk::add_to_multi_read_queue(CURLM *multi_handle)
     BESDEBUG(debug, __func__ <<"() - END  "<< to_string() << endl);
 }
 
-void Chunk::complete_read(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width)
+void Chunk::inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width)
 {
-
-    // If the expected byte count was not read, it's an error.
-    if (get_size() != get_bytes_read()) {
-        ostringstream oss;
-        oss << "Chunk: Wrong number of bytes read for '" << to_string() << "'; expected " << get_size()
-                << " but found " << get_bytes_read() << endl;
-        throw BESInternalError("oss.str()", __FILE__, __LINE__);
-    }
-
     // If data are compressed/encoded, then decode them here.
     // At this point, the bytes_read property would be changed.
     // The file that implements the deflate filter is H5Zdeflate.c in the hdf5 source.
@@ -310,8 +248,6 @@ void Chunk::complete_read(bool deflate, bool shuffle, unsigned int chunk_size, u
         }
     }
 #endif
-
-    d_is_read = true;
 }
 
 /**
@@ -324,7 +260,6 @@ void Chunk::complete_read(bool deflate, bool shuffle, unsigned int chunk_size, u
  */
 void Chunk::read(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width)
 {
-    //  is_deflate, is_shuffle, chunk_size_in elements, var width)
     if (d_is_read) {
         BESDEBUG("dmrpp", "Chunk::"<< __func__ <<"() - Already been read! Returning." << endl);
         return;
@@ -333,23 +268,54 @@ void Chunk::read(bool deflate, bool shuffle, unsigned int chunk_size, unsigned i
     if (!d_is_in_multi_queue) {
         // This call uses the internal size param and allocates the buffer's memory
         set_rbuf_to_size();
-
-        string data_access_url = get_data_url();
-
-        BESDEBUG(debug,"Chunk::"<< __func__ <<"() - data_access_url "<< data_access_url << endl);
-
-        add_tracking_query_param(data_access_url);
-
-        BESDEBUG(debug,
-                "Chunk::"<< __func__ <<"() - Reading  " << get_size() << " bytes "
-                        "from "<< data_access_url << ": " << get_curl_range_arg_string() << endl);
-
+#if 0
+        add_tracking_query_param(get_data_url());
+#endif
+#if 0
         curl_read_chunk(this);
+#endif
+
+        CURL *curl = DmrppRequestHandler::curl_handle_pool->get_easy_handle(this);
+        if (!curl) throw BESInternalError("Error getting curl handle.", __FILE__, __LINE__);
+
+        // Perform the request
+        CURLcode curl_code = curl_easy_perform(curl);
+        if (CURLE_OK != curl_code) {
+            throw BESInternalError(string("Data transfer error: ").append(curl_easy_strerror(curl_code)), __FILE__, __LINE__);
+        }
+
+        ostringstream oss;
+        // For HTTP, check the return code, for the file protocol, if curl_code is OK, that's good enough
+        string http_url("http://");
+        if (get_data_url().compare(0, http_url.size(), http_url) == 0 /*equal*/) {
+            long http_code = 0;
+            curl_code = curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
+            if (CURLE_OK != curl_code) {
+                throw BESInternalError(string("Error getting HTTP response code: ").append(curl_easy_strerror(curl_code)), __FILE__, __LINE__);
+            }
+
+            if (http_code != 200) {
+                oss << "HTTP status error. Expected an OK status, but got: ";
+                oss << http_code;
+                throw BESInternalError(oss.str(), __FILE__, __LINE__);
+            }
+        }
+
+        DmrppRequestHandler::curl_handle_pool->release_handle(curl);
+
+        // If the expected byte count was not read, it's an error.
+        if (get_size() != get_bytes_read()) {
+            oss << "Wrong number of bytes read for chunk; read: " << get_bytes_read() << ", expected: " << get_size();
+            throw BESInternalError(oss.str(), __FILE__, __LINE__);
+        }
     }
 
-    complete_read(deflate, shuffle, chunk_size, elem_width);
+    if (deflate || shuffle)
+        inflate_chunk(deflate, shuffle, chunk_size, elem_width);
 
     d_is_in_multi_queue = false;
+
+    d_is_read = true;
 }
 
 /**

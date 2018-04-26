@@ -34,8 +34,11 @@ class Chunk;
 
 size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data);
 
+#if 0
 void curl_read_chunk(Chunk *chunk);
 void read_using_curl(char buf[CURL_ERROR_SIZE], const string& url, CURL* curl, Chunk* chunk);
+#endif
+
 
 void inflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len);
 

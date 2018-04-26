@@ -53,8 +53,10 @@ private:
     char *d_read_buffer;
     unsigned long long d_read_buffer_size;
 
+#if 1
     CURL *d_curl_handle;
     char d_curl_error_buf[CURL_ERROR_SIZE];
+#endif
 
     bool d_is_in_multi_queue;
 
@@ -73,24 +75,6 @@ protected:
         d_is_read = false;
         d_curl_handle = 0;
         d_is_in_multi_queue = false;
-
-#if 0
-        // For some reason, the assignment of a vector<Chunk> fails
-        // but an assignment of a reference to a vector<Chunk> works.
-        // I thought it was something in the code above - something missing
-        // in _duplicate(), but no. jhrg 4/10/18
-        d_bytes_read = bs.d_bytes_read;
-
-        d_read_buffer = new char[bs.d_read_buffer_size];
-        d_read_buffer_size = bs.d_read_buffer_size;
-        memcpy(d_read_buffer, bs.d_read_buffer, bs.d_read_buffer_size);
-
-        d_read_pointer = bs.d_read_pointer;
-        d_is_read = bs.d_is_read;
-
-        d_curl_handle = bs.d_curl_handle;
-        d_is_in_multi_queue = bs.d_is_in_multi_queue;
-#endif
 
         // These vars are easy to duplicate.
         d_size = bs.d_size;
@@ -267,22 +251,6 @@ public:
         return d_chunk_position_in_array;
     }
 
-
-    /**
-     * @brief Parse the dimension string store the sizes in an internal vector.
-     *
-     * The dimension information is a string of the form '[x,y,...,z]' Parse the
-     * integer dimension sizes and store them in the d_position_in_array vector.
-     * Since this is essentially a setter method any previous postion_in_array
-     * content is discarded. If the passed string parameter is empty then nothing
-     * is done.
-     *
-     * @param pia The dimension string
-     */
-#if 0
-    virtual void ingest_position_in_array(std::string pia);
-#endif
-
     /**
      * @brief An alternate impl of ingest_position_in_array
      *
@@ -308,7 +276,8 @@ public:
     }
 
     virtual void read(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_size);
-    void complete_read(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width);
+
+    void inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width);
 
     virtual void add_to_multi_read_queue(CURLM *multi_handle);
 

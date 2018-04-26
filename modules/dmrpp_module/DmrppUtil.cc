@@ -91,26 +91,27 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
     return nbytes;
 }
 
-void read_using_curl(char buf[CURL_ERROR_SIZE], const string& url, CURL* curl, Chunk* chunk)
+#if 0
+void read_using_curl(CURL* curl, Chunk* chunk)
 {
     // Perform the request
-    long curl_code = curl_easy_perform(curl);
+    CURLcode curl_code = curl_easy_perform(curl);
     if (CURLE_OK != curl_code) {
-        curl_easy_cleanup(curl);
-        throw BESError(string("HTTP Error: ").append(buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+        throw BESInternalError(string("Data transfer error: ").append(curl_easy_strerror(curl_code)), __FILE__, __LINE__);
     }
 
     BESDEBUG("dmrpp", __func__ << "() - curl_easy_perform() finished. exit_code: " << curl_code << endl);
+
     string file_url("file://");
-    if (!url.compare(0, file_url.size(), file_url)) {
+    if (!chunk->get_data_url().compare(0, file_url.size(), file_url)) {
         // If it's a file URL then we don't need to dink around with the HTTP noise..
-        BESDEBUG("dmrpp", __func__ << "() Retrieved file URL, no http status to check. url: " << url << endl);
+        BESDEBUG("dmrpp", __func__ << "() Retrieved file URL, no http status to check. url: " << chunk->get_data_url() << endl);
     }
     else {
         // If it's not a file URL then we'll assume it's an http(s) URL and
         // we handle the various HTTP mischief.
         long http_code = 0;
-        long curl_info_code = curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
+        CURLcode curl_info_code = curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
         if (http_code == 200 && curl_code != CURLE_ABORTED_BY_CALLBACK && curl_info_code == CURLE_OK) {
             BESDEBUG("dmrpp", __func__ << "() - SUCCEEDED!"<< endl);
         }
@@ -155,76 +156,21 @@ void read_using_curl(char buf[CURL_ERROR_SIZE], const string& url, CURL* curl, C
     }
 }
 
-#if 0
-/**
- * @brief Read data using HTTP/File Range GET
- *
- * @see https://curl.haxx.se/libcurl/c/libcurl.html
- * @param url Get dat from this URL
- * @param range ...and this byte range
- * @param user_data A pointer to a Chunk instance
- */
 void curl_read_chunk(Chunk *chunk)
 {
-    string url = chunk->get_data_url();
-    string range = chunk->get_curl_range_arg_string();
+    CURL *curl = DmrppRequestHandler::curl_handle_pool->get_easy_handle(chunk);
 
-    // See https://curl.haxx.se/libcurl/c/CURLOPT_RANGE.html, etc.
-    BESDEBUG("dmrpp", __func__ << "() - BEGIN " << " url: " << url << " range: " << range << endl);
-
-    CURL* curl = curl_easy_init();
     if (curl) {
-        CURLcode res = curl_easy_setopt(curl, CURLOPT_URL, url.c_str() /*"http://example.com"*/);
-        if (res != CURLE_OK) throw BESError(string(curl_easy_strerror(res)), BES_INTERNAL_ERROR, __FILE__, __LINE__);
-
-        // Use CURLOPT_ERRORBUFFER for a human-readable message
-        char buf[CURL_ERROR_SIZE];
-        res = curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, buf);
-        if (res != CURLE_OK) throw BESError(string(curl_easy_strerror(res)), BES_INTERNAL_ERROR, __FILE__, __LINE__);
-
-        // get the offset to offset + size bytes
-        if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_RANGE, range.c_str() /*"0-199"*/))
-        throw BESError(string("HTTP Error: ").append(buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
-
-        // Pass all data to the 'write_data' function
-        if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, chunk_write_data))
-        throw BESError(string("HTTP Error: ").append(buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
-
-        // Pass this to write_data as the fourth argument
-        if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_WRITEDATA, reinterpret_cast<void*>(chunk)))
-        throw BESError(string("HTTP Error: ").append(buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
-
         // Perform the request
-        read_using_curl(buf, url, curl, chunk);
+        read_using_curl(curl, chunk);
 
-        curl_easy_cleanup(curl);
+        DmrppRequestHandler::curl_handle_pool->release_handle(curl);
     }
 
     BESDEBUG("dmrpp", __func__ << "() - END " << endl);
 }
 #endif
 
-
-void curl_read_chunk(Chunk *chunk)
-{
-    string url = chunk->get_data_url();
-    string range = chunk->get_curl_range_arg_string();
-
-    CURL *curl = DmrppRequestHandler::curl_handle_pool->get_easy_handle(url, chunk);
-
-    if (curl) {
-
-        // Use CURLOPT_ERRORBUFFER for a human-readable message
-        char buf[CURL_ERROR_SIZE];
-
-        // Perform the request
-        read_using_curl(buf, url, curl, chunk);
-
-        DmrppRequestHandler::curl_handle_pool->release_handle(url, curl);
-    }
-
-    BESDEBUG("dmrpp", __func__ << "() - END " << endl);
-}
 
 /**
  * @brief Deflate data. This is the zlib algorithm.

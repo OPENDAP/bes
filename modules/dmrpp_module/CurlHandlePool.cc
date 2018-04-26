@@ -31,7 +31,6 @@
 
 #include "CurlHandlePool.h"
 #include "Chunk.h"
-#include "DmrppUtil.h"
 
 using namespace dmrpp;
 
@@ -54,7 +53,6 @@ CurlHandlePool *CurlHandlePool::get_curl_handle_pool()
 }
 #endif
 
-
 /**
  * Get a CURL easy handle to transfer data from \arg url into the given \arg chunk.
  *
@@ -63,65 +61,35 @@ CurlHandlePool *CurlHandlePool::get_curl_handle_pool()
  * @return A CURL easy handle configured to transfer data.
  */
 CURL *
-CurlHandlePool::get_easy_handle(const string &url, Chunk *chunk)
+CurlHandlePool::get_easy_handle(Chunk *chunk)
 {
     // Get the next available CurlHandlePool::easy_handle
-    if (d_easy_handle) {
-        if (d_easy_handle->d_in_use) throw BESInternalError("CURL handle in use", __FILE__, __LINE__);
-        //d_easy_handle->d_in_use = true;
-        // return d_easy_handle->d_handle;
+    if (!d_easy_handle) {
+        d_easy_handle = new CurlHandlePool::easy_handle();
     }
     else {
-        d_easy_handle = new CurlHandlePool::easy_handle();
-        if (!d_easy_handle->d_handle) {
-            throw BESInternalError("Could not allocate CURL handle", __FILE__, __LINE__);
-        }
+        if (d_easy_handle->d_in_use) throw BESInternalError("CURL handle in use", __FILE__, __LINE__);
     }
 
     // Once here, d_easy_handle holds a CURL* we can use.
 
     d_easy_handle->d_in_use = true;
 
-    CURLcode res = curl_easy_setopt(d_easy_handle->d_handle, CURLOPT_URL, url.c_str());
-    if (res != CURLE_OK) throw BESInternalError(string(curl_easy_strerror(res)), __FILE__, __LINE__);
-
-    res = curl_easy_setopt(d_easy_handle->d_handle, CURLOPT_ERRORBUFFER, d_easy_handle->d_error_buf);
+    CURLcode res = curl_easy_setopt(d_easy_handle->d_handle, CURLOPT_URL, chunk->get_data_url().c_str());
     if (res != CURLE_OK) throw BESInternalError(string(curl_easy_strerror(res)), __FILE__, __LINE__);
 
     // get the offset to offset + size bytes
-    string range = chunk->get_curl_range_arg_string();
-    if (CURLE_OK != curl_easy_setopt(d_easy_handle->d_handle, CURLOPT_RANGE, range.c_str() /*"0-199"*/))
+    if (CURLE_OK != curl_easy_setopt(d_easy_handle->d_handle, CURLOPT_RANGE, chunk->get_curl_range_arg_string().c_str()))
         throw BESInternalError(string("HTTP Error: ").append(d_easy_handle->d_error_buf), __FILE__, __LINE__);
-
-    // Pass all data to the 'write_data' function
-    if (CURLE_OK != curl_easy_setopt(d_easy_handle->d_handle, CURLOPT_WRITEFUNCTION, chunk_write_data))
-        throw BESInternalError(string("CURL Error: ").append(d_easy_handle->d_error_buf), __FILE__, __LINE__);
 
     // Pass this to write_data as the fourth argument
     if (CURLE_OK != curl_easy_setopt(d_easy_handle->d_handle, CURLOPT_WRITEDATA, reinterpret_cast<void*>(chunk)))
         throw BESInternalError(string("CURL Error: ").append(d_easy_handle->d_error_buf), __FILE__, __LINE__);
 
-    /* enable TCP keep-alive for this transfer */
-    if (CURLE_OK != curl_easy_setopt(d_easy_handle->d_handle, CURLOPT_TCP_KEEPALIVE, 1L))
-        throw string("CURL Error: ").append(d_easy_handle->d_error_buf);
-
-    /* keep-alive idle time to 120 seconds */
-    if (CURLE_OK != curl_easy_setopt(d_easy_handle->d_handle, CURLOPT_TCP_KEEPIDLE, 120L))
-        throw string("CURL Error: ").append(d_easy_handle->d_error_buf);
-
-    /* interval time between keep-alive probes: 60 seconds */
-    if (CURLE_OK != curl_easy_setopt(d_easy_handle->d_handle, CURLOPT_TCP_KEEPINTVL, 60L))
-        throw string("CURL Error: ").append(d_easy_handle->d_error_buf);
-
-#if 0
-    d_easy_handles.insert(make_pair<string, CurlHandlePool::easy_handle*>(url, handle));
-#endif
-
     return d_easy_handle->d_handle;
 }
 
-
-void CurlHandlePool::release_handle(const string &, CURL *)
+void CurlHandlePool::release_handle(CURL *)
 {
     d_easy_handle->d_in_use = false;
 }

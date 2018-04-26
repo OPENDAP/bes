@@ -31,6 +31,10 @@
 
 #include <curl/curl.h>
 
+#include "BESInternalError.h"
+
+#include "DmrppUtil.h"
+
 namespace dmrpp {
 
 class Chunk;
@@ -50,12 +54,35 @@ class CurlHandlePool {
         CURL *d_handle;
         char d_error_buf[CURL_ERROR_SIZE];
 
-        easy_handle() {
+        easy_handle()
+        {
             d_handle = curl_easy_init();
+            if (!d_handle) throw BESInternalError("Could not allocate CURL handle", __FILE__, __LINE__);
+
+            CURLcode res = curl_easy_setopt(d_handle, CURLOPT_ERRORBUFFER, d_error_buf);
+            if (res != CURLE_OK) throw BESInternalError(string(curl_easy_strerror(res)), __FILE__, __LINE__);
+
+            // Pass all data to the 'write_data' function
+            if (CURLE_OK != curl_easy_setopt(d_handle, CURLOPT_WRITEFUNCTION, chunk_write_data))
+                throw BESInternalError(string("CURL Error: ").append(d_error_buf), __FILE__, __LINE__);
+
+            /* enable TCP keep-alive for this transfer */
+            if (CURLE_OK != curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPALIVE, 1L))
+                throw string("CURL Error: ").append(d_error_buf);
+
+            /* keep-alive idle time to 120 seconds */
+            if (CURLE_OK != curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPIDLE, 120L))
+                throw string("CURL Error: ").append(d_error_buf);
+
+            /* interval time between keep-alive probes: 60 seconds */
+            if (CURLE_OK != curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPINTVL, 60L))
+                throw string("CURL Error: ").append(d_error_buf);
+
             d_in_use = false;
         }
 
-        ~easy_handle() {
+        ~easy_handle()
+        {
             curl_easy_cleanup(d_handle);
         }
     };
@@ -82,9 +109,9 @@ public:
         delete d_easy_handle;
     }
 
-    CURL *get_easy_handle(const std::string &url, Chunk *chunk);
+    CURL *get_easy_handle(Chunk *chunk);
 
-    void release_handle(const std::string &url, CURL *h);
+    void release_handle(CURL *h);
 };
 
 } // namespace dmrpp

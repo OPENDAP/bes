@@ -122,6 +122,11 @@ unsigned long DmrppCommon::add_chunk(string data_url, unsigned long long size, u
 /**
  * @brief read method for the atomic types
  *
+ * This method is used by the specializations of BaseType::read() in the
+ * 'atomic' type classes (libdap::Byte, libdap::In32, ...) to read data
+ * when those data are contained in a single chunk (i.e., using HDF5
+ * contiguous storage). It is assumed that those data are never compressed.
+ *
  * @param name The name of the variable, used for error messages
  * @return Pointer to a char buffer holding the data.
  * @exception BESInternalError on error.
@@ -131,25 +136,50 @@ DmrppCommon::read_atomic(const string &name)
 {
     vector<Chunk> &chunk_refs = get_chunk_vec();
 
-    if (chunk_refs.size() == 0) {
-        throw BESInternalError(string("Unable to obtain ByteStream objects for ") + name, __FILE__, __LINE__);
+    if (chunk_refs.size() != 1) {
+        throw BESInternalError(string("Expected only a single chunk for variable ") + name, __FILE__, __LINE__);
     }
 
-    // For now we only handle the one chunk case.
-    Chunk &c = chunk_refs[0];
-    c.set_rbuf_to_size();
+    Chunk &chunk = chunk_refs[0];
 
-    curl_read_chunk(&c);
+    chunk.set_rbuf_to_size();
+
+    CURL *curl = DmrppRequestHandler::curl_handle_pool->get_easy_handle(&chunk);
+    if (!curl) throw BESInternalError("Error getting curl handle.", __FILE__, __LINE__);
+
+    // Perform the request
+    CURLcode curl_code = curl_easy_perform(curl);
+    if (CURLE_OK != curl_code) {
+        throw BESInternalError(string("Data transfer error: ").append(curl_easy_strerror(curl_code)), __FILE__, __LINE__);
+    }
+
+    ostringstream oss;
+    // For HTTP, check the return code, for the file protocol, if curl_code is OK, that's good enough
+    string http_url("http://");
+    if (chunk.get_data_url().compare(0, http_url.size(), http_url) == 0 /*equal*/) {
+        long http_code = 0;
+        curl_code = curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
+        if (CURLE_OK != curl_code) {
+            throw BESInternalError(string("Error getting HTTP response code: ").append(curl_easy_strerror(curl_code)), __FILE__, __LINE__);
+        }
+
+        if (http_code != 200) {
+            oss << "HTTP status error. Expected an OK status, but got: ";
+            oss << http_code;
+            throw BESInternalError(oss.str(), __FILE__, __LINE__);
+        }
+    }
+
+    DmrppRequestHandler::curl_handle_pool->release_handle(curl);
 
     // If the expected byte count was not read, it's an error.
-    if (c.get_size() != c.get_bytes_read()) {
-        ostringstream oss;
-        oss << "Wrong number of bytes read for '" << name << "'; expected " << c.get_size()
-            << " but found " << c.get_bytes_read();
+    if (chunk.get_size() != chunk.get_bytes_read()) {
+        oss << "Wrong number of bytes read for '" << name << "'; expected " << chunk.get_size()
+            << " but found " << chunk.get_bytes_read();
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
 
-    return c.get_rbuf();
+    return chunk.get_rbuf();
 }
 
 void DmrppCommon::dump(ostream & strm) const
