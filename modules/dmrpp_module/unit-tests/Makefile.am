@@ -54,7 +54,7 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 #
 
 if CPPUNIT
-UNIT_TESTS = DmrppParserTest DmrppTypeReadTest DmrppChunkedReadTest \
+UNIT_TESTS = DmrppParserTest DmrppChunkedReadTest \
 DmrppHttpReadTest DmrppUtilTest
 else
 UNIT_TESTS =
@@ -94,10 +94,8 @@ OBJS = ../*.o
 DmrppParserTest_SOURCES = DmrppParserTest.cc
 DmrppParserTest_LDADD   =  $(OBJS) $(LIBADD) 
 
-# -L\$(abs_top_builddir)/modules/dmrpp_module -ldmrpp_module
-
-DmrppTypeReadTest_SOURCES = DmrppTypeReadTest.cc
-DmrppTypeReadTest_LDADD   = $(OBJS) $(LIBADD)
+# DmrppTypeReadTest_SOURCES = DmrppTypeReadTest.cc
+# DmrppTypeReadTest_LDADD   = $(OBJS) $(LIBADD)
 
 DmrppChunkedReadTest_SOURCES = DmrppChunkedReadTest.cc
 DmrppChunkedReadTest_LDADD   = $(OBJS) $(LIBADD)
