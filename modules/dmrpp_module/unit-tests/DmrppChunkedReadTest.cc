@@ -105,55 +105,32 @@ public:
 
     void test_chunked_hdf5()
     {
-        hid_t file; /* handles */
         string filename = "SDSextendible.h5";
         BESDEBUG("dmrpp", "filename =  '" << filename<< "'" << endl);
         /*
          * Open the file and the dataset.
          */
-        hid_t fileid = get_fileid(filename.c_str());
-        BESDEBUG("dmrpp", "fileid =  '" << fileid<< "'" << endl);
-        if (fileid < 0) {
+        DMR *dmr = new DMR();
+
+        // For the time being, separate CF file ID from the default file ID(mainly for debugging)
+        hid_t cf_fileid = -1;
+
+        H5Eset_auto2(H5E_DEFAULT,NULL,NULL);
+        D4BaseTypeFactory MyD4TypeFactory;
+        dmr->set_factory(&MyD4TypeFactory);
+
+        cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+        if (cf_fileid < 0){
             string invalid_file_msg="Could not open this HDF5 file ";
             invalid_file_msg +=filename;
             invalid_file_msg +=". It is very possible that this file is not an HDF5 file ";
             invalid_file_msg +=" but with the .h5/.HDF5 suffix. Please check with the data";
             invalid_file_msg +=" distributor.";
             throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
-
         }
-
         /*
          * Get dataset rank and dimension.
          */
-
-//        filespace = H5Dget_space(dataset); /* Get filespace handle first. */
-//        rank = H5Sget_simple_extent_ndims(filespace);
-//        status_n = H5Sget_simple_extent_dims(filespace, dims, NULL);
-//        printf("dataset rank %d, dimensions %lu x %lu\n", rank, (unsigned long) (dims[0]), (unsigned long) (dims[1]));
-//
-//        /*
-//         * Define the memory space to read dataset.
-//         */
-//        memspace = H5Screate_simple(RANK, dims, NULL);
-//
-//        /*
-//         * Read dataset back and display.
-//         */
-//        status = H5Dread(dataset, H5T_NATIVE_INT, memspace, filespace,
-//        H5P_DEFAULT, data_out);
-//        printf("\n");
-//        printf("Dataset: \n");
-//        for (int j = 0; j < (int)dims[0]; j++) {
-//            for (int i = 0; i < (int)dims[1]; i++)
-//                printf("%d ", data_out[j][i]);
-//            printf("\n");
-//        }
-//
-//        /*
-//         * Close/release resources.
-//         */
-//        H5Sclose(memspace);
 
     }
 
