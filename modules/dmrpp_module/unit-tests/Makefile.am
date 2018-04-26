@@ -91,7 +91,7 @@ endif
 OBJS = ../*.o 
 
 ChunkTest_SOURCES = ChunkTest.cc
-ChunkTest_LDADD = ../Chunk.o ../DmrppUtil.o $(LIBADD)
+ChunkTest_LDADD = $(OBJS) $(LIBADD)
 
 DmrppParserTest_SOURCES = DmrppParserTest.cc
 DmrppParserTest_LDADD   =  $(OBJS) $(LIBADD) 
