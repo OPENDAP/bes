@@ -39,6 +39,7 @@
 #include "DmrppCommon.h"
 #include "Chunk.h"
 #include "DmrppUtil.h"
+#include "DmrppRequestHandler.h"
 
 using namespace std;
 
@@ -154,6 +155,7 @@ void read_using_curl(char buf[CURL_ERROR_SIZE], const string& url, CURL* curl, C
     }
 }
 
+#if 0
 /**
  * @brief Read data using HTTP/File Range GET
  *
@@ -182,20 +184,43 @@ void curl_read_chunk(Chunk *chunk)
 
         // get the offset to offset + size bytes
         if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_RANGE, range.c_str() /*"0-199"*/))
-            throw BESError(string("HTTP Error: ").append(buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+        throw BESError(string("HTTP Error: ").append(buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
 
         // Pass all data to the 'write_data' function
         if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, chunk_write_data))
-            throw BESError(string("HTTP Error: ").append(buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+        throw BESError(string("HTTP Error: ").append(buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
 
         // Pass this to write_data as the fourth argument
         if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_WRITEDATA, reinterpret_cast<void*>(chunk)))
-            throw BESError(string("HTTP Error: ").append(buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
+        throw BESError(string("HTTP Error: ").append(buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
 
         // Perform the request
         read_using_curl(buf, url, curl, chunk);
 
         curl_easy_cleanup(curl);
+    }
+
+    BESDEBUG("dmrpp", __func__ << "() - END " << endl);
+}
+#endif
+
+
+void curl_read_chunk(Chunk *chunk)
+{
+    string url = chunk->get_data_url();
+    string range = chunk->get_curl_range_arg_string();
+
+    CURL *curl = DmrppRequestHandler::curl_handle_pool->get_easy_handle(url, chunk);
+
+    if (curl) {
+
+        // Use CURLOPT_ERRORBUFFER for a human-readable message
+        char buf[CURL_ERROR_SIZE];
+
+        // Perform the request
+        read_using_curl(buf, url, curl, chunk);
+
+        DmrppRequestHandler::curl_handle_pool->release_handle(url, curl);
     }
 
     BESDEBUG("dmrpp", __func__ << "() - END " << endl);

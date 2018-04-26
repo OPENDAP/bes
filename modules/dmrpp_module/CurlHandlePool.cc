@@ -65,20 +65,20 @@ CurlHandlePool *CurlHandlePool::get_curl_handle_pool()
 CURL *
 CurlHandlePool::get_easy_handle(const string &url, Chunk *chunk)
 {
+    // Get the next available CurlHandlePool::easy_handle
     if (d_easy_handle) {
-        if (d_easy_handle->d_in_use)
-            throw BESInternalError("CURL handle in use", __FILE__, __LINE__);
-        d_easy_handle->d_in_use = true;
-        return d_easy_handle->d_handle;
+        if (d_easy_handle->d_in_use) throw BESInternalError("CURL handle in use", __FILE__, __LINE__);
+        //d_easy_handle->d_in_use = true;
+        // return d_easy_handle->d_handle;
+    }
+    else {
+        d_easy_handle = new CurlHandlePool::easy_handle();
+        if (!d_easy_handle->d_handle) {
+            throw BESInternalError("Could not allocate CURL handle", __FILE__, __LINE__);
+        }
     }
 
-    d_easy_handle = new CurlHandlePool::easy_handle();
-    if (!d_easy_handle->d_handle) {
-        throw BESInternalError("Could not allocate CURL handle", __FILE__, __LINE__);
-    }
-
-    // No handle for the given URL and a new handle was made successfully
-    // Set the URL and other parameters that are invariant for the same URL.
+    // Once here, d_easy_handle holds a CURL* we can use.
 
     d_easy_handle->d_in_use = true;
 
@@ -88,11 +88,10 @@ CurlHandlePool::get_easy_handle(const string &url, Chunk *chunk)
     res = curl_easy_setopt(d_easy_handle->d_handle, CURLOPT_ERRORBUFFER, d_easy_handle->d_error_buf);
     if (res != CURLE_OK) throw BESInternalError(string(curl_easy_strerror(res)), __FILE__, __LINE__);
 
-#if 0
     // get the offset to offset + size bytes
-    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_RANGE, range.c_str() /*"0-199"*/))
-    throw BESError(string("HTTP Error: ").append(buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
-#endif
+    string range = chunk->get_curl_range_arg_string();
+    if (CURLE_OK != curl_easy_setopt(d_easy_handle->d_handle, CURLOPT_RANGE, range.c_str() /*"0-199"*/))
+        throw BESInternalError(string("HTTP Error: ").append(d_easy_handle->d_error_buf), __FILE__, __LINE__);
 
     // Pass all data to the 'write_data' function
     if (CURLE_OK != curl_easy_setopt(d_easy_handle->d_handle, CURLOPT_WRITEFUNCTION, chunk_write_data))

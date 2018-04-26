@@ -141,12 +141,6 @@ DmrppCommon::read_atomic(const string &name)
 
     curl_read_chunk(&c);
 
-#if 1
-    CURL *curl = DmrppRequestHandler::curl_handle_pool->get_easy_handle(c.get_data_url(), &c);
-
-    DmrppRequestHandler::curl_handle_pool->release_handle(c.get_data_url(), curl);
-#endif
-
     // If the expected byte count was not read, it's an error.
     if (c.get_size() != c.get_bytes_read()) {
         ostringstream oss;
