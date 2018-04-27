@@ -7,8 +7,8 @@ noinst_DATA = bes.conf
 
 CLEANFILES = bes.conf bes.log $(srcdir)/package.m4 $(TESTSUITE) 
 
-EXTRA_DIST = bescmd $(TESTSUITE) $(TESTSUITE).at atlocal.in \
-bes.conf.in $(srcdir)/package.m4
+EXTRA_DIST = contiguous chunked $(TESTSUITE) $(TESTSUITE).at \
+atlocal.in bes.conf.in $(srcdir)/package.m4
 
 DISTCLEANFILES = atconfig
 
@@ -38,7 +38,7 @@ clean-local:
 
 %: %.at 
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
-	
+
 $(TESTSUITE): $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
 
 # The `:;' works around a Bash 3.2 bug when the output is not writeable.
