@@ -55,9 +55,19 @@ dnl Read chunked data
 
 AT_BESCMD_RESPONSE_TEST([chunked/chunked_oneD.h5.dmr])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_oneD.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_oneD.h5.2.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_oneD.h5.3.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_oneD.h5.4.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_oneD.h5.5.dap])
+
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([chunked/chunked_oneD.h5.dods])
 
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_oneD_uneven.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_oneD_uneven.h5.2.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_oneD_uneven.h5.3.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_oneD_uneven.h5.4.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_oneD_uneven.h5.5.dap])
+
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([chunked/chunked_oneD_uneven.h5.dods])
 
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_twoD.h5.dap])
@@ -71,12 +81,15 @@ AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([chunked/chunked_twoD_uneven.h5.dods])
 
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_threeD.h5.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([chunked/chunked_threeD.h5.dods])
+AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([chunked/chunked_threeD.h5.2.dods])
+AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([chunked/chunked_threeD.h5.3.dods])
 
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_threeD_asymmetric.h5.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([chunked/chunked_threeD_asymmetric.h5.dods])
 
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_threeD_asymmetric_uneven.h5.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([chunked/chunked_threeD_asymmetric_uneven.h5.dods])
+AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([chunked/chunked_threeD_asymmetric_uneven.h5.2.dods])
 
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_fourD.h5.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([chunked/chunked_fourD.h5.dods])
