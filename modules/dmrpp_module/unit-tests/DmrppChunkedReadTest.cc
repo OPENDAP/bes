@@ -67,6 +67,7 @@
 #include "H5Ppublic.h"
 #include "HDF5RequestHandler.h"
 #include "h5get.h"
+#include "HDF5CF.h"
 
 
 
@@ -105,7 +106,7 @@ public:
 
     void test_chunked_hdf5()
     {
-        string filename = "SDSextendible.h5";
+        string filename = "/Users/vskorole/opendap/hyrax/bes/modules/dmrpp_module/data/dmrpp/chunked_fourD.h5";
         BESDEBUG("dmrpp", "filename =  '" << filename<< "'" << endl);
         /*
          * Open the file and the dataset.
@@ -131,6 +132,12 @@ public:
         /*
          * Get dataset rank and dimension.
          */
+        bool include_attr = true;
+        H5GCFProduct product_type = check_product(cf_fileid);
+        GMPattern  gproduct_pattern = OTHERGMS;
+        HDF5CF::GMFile * f = NULL;
+        f = new HDF5CF::GMFile(filename.c_str(),cf_fileid,product_type,gproduct_pattern);
+        f->Retrieve_H5_Info(filename.c_str(),cf_fileid,include_attr);
 
     }
 
