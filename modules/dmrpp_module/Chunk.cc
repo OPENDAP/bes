@@ -268,12 +268,6 @@ void Chunk::read(bool deflate, bool shuffle, unsigned int chunk_size, unsigned i
     if (!d_is_in_multi_queue) {
         // This call uses the internal size param and allocates the buffer's memory
         set_rbuf_to_size();
-#if 0
-        add_tracking_query_param(get_data_url());
-#endif
-#if 0
-        curl_read_chunk(this);
-#endif
 
         CURL *curl = DmrppRequestHandler::curl_handle_pool->get_easy_handle(this);
         if (!curl) throw BESInternalError("Error getting curl handle.", __FILE__, __LINE__);
@@ -314,6 +308,69 @@ void Chunk::read(bool deflate, bool shuffle, unsigned int chunk_size, unsigned i
         inflate_chunk(deflate, shuffle, chunk_size, elem_width);
 
     d_is_in_multi_queue = false;
+
+    d_is_read = true;
+}
+
+/**
+ * Version of Chunk::read() for use with DmrppArray::read_chunk_serial()
+ *
+ * This method is for reading one chunk after the other, using a CURL handle
+ * from the CurlHandlePool.
+ *
+ * @param deflate
+ * @param shuffle
+ * @param chunk_size
+ * @param elem_width
+ */
+void Chunk::read_serial(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width)
+{
+    assert(!d_is_in_multi_queue);   // Never call this code when using the multi handles
+
+    if (d_is_read) {
+        BESDEBUG("dmrpp", "Chunk::"<< __func__ <<"() - Already been read! Returning." << endl);
+        return;
+    }
+
+    set_rbuf_to_size();
+
+    CURL *curl = DmrppRequestHandler::curl_handle_pool->get_easy_handle(this);
+    if (!curl) throw BESInternalError("Error getting curl handle.", __FILE__, __LINE__);
+
+    // Perform the request
+    CURLcode curl_code = curl_easy_perform(curl);
+    if (CURLE_OK != curl_code) {
+        throw BESInternalError(string("Data transfer error: ").append(curl_easy_strerror(curl_code)), __FILE__,
+            __LINE__);
+    }
+
+    ostringstream oss;
+    // For HTTP, check the return code, for the file protocol, if curl_code is OK, that's good enough
+    string http_url("http://");
+    if (get_data_url().compare(0, http_url.size(), http_url) == 0 /*equal*/) {
+        long http_code = 0;
+        curl_code = curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
+        if (CURLE_OK != curl_code) {
+            throw BESInternalError(string("Error getting HTTP response code: ").append(curl_easy_strerror(curl_code)),
+                __FILE__, __LINE__);
+        }
+
+        if (http_code != 200) {
+            oss << "HTTP status error. Expected an OK status, but got: ";
+            oss << http_code;
+            throw BESInternalError(oss.str(), __FILE__, __LINE__);
+        }
+    }
+
+    DmrppRequestHandler::curl_handle_pool->release_handle(curl);
+
+    // If the expected byte count was not read, it's an error.
+    if (get_size() != get_bytes_read()) {
+        oss << "Wrong number of bytes read for chunk; read: " << get_bytes_read() << ", expected: " << get_size();
+        throw BESInternalError(oss.str(), __FILE__, __LINE__);
+    }
+
+    if (deflate || shuffle) inflate_chunk(deflate, shuffle, chunk_size, elem_width);
 
     d_is_read = true;
 }

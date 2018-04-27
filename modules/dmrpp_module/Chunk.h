@@ -95,11 +95,7 @@ public:
         d_data_url(data_url), d_size(size), d_offset(offset), d_is_read(false), d_bytes_read(0), d_read_buffer(0),
         d_read_buffer_size(0), d_curl_handle(0), d_is_in_multi_queue(false)
     {
-#if 0
-        ingest_position_in_array(position_in_array);
-#else
         set_position_in_array(position_in_array);
-#endif
     }
 
     Chunk(const Chunk &h4bs)
@@ -276,6 +272,8 @@ public:
     }
 
     virtual void read(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_size);
+
+    virtual void read_serial(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_size);
 
     void inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width);
 

@@ -61,7 +61,7 @@ private:
 
     virtual bool read_no_chunks();
     virtual bool read_chunks_serial();
-    virtual bool read_chunks();
+    virtual bool read_chunks_multi();
 
     void insert_constrained_no_chunk(
 			Dim_iter p,

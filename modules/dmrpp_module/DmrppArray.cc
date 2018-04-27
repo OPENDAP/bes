@@ -315,36 +315,6 @@ bool DmrppArray::read_chunks_serial()
                 " and " << (chunk.is_read()?"READ":"NOT_READ") << ") flag: "<< flag << endl);
     }
 
-#if 0
-    /*
-     * Now that we have all of the curl_easy handles for all the chunks of this array
-     * that we need to read in our curl_multi handle
-     * we dive into multi_finish() to get all of the chunks read.
-     */
-    multi_finish(curl_multi_handle, &chunk_refs);
-
-    /*
-     * The chunks are all read, so we jump back into the recursive code to copy the
-     * correct values out of each chunk and into the array memory.
-     */
-    for (unsigned long i = 0; i < chunk_refs.size(); i++) {
-        Chunk &h4bs = chunk_refs[i];
-        BESDEBUG("dmrpp",
-            "DmrppArray::" << __func__ <<"(): BEGIN Processing chunk[" << i << "]: " << h4bs.to_string() << endl);
-        vector<unsigned int> target_element_address = h4bs.get_position_in_array();
-        vector<unsigned int> chunk_source_address(dimensions(), 0);
-        // Recursive insertion operation.
-        // Note that curl_multi_handle is now null. This 'triggers,' incombination
-        // with the logic in Chunk, the 'decompress and insert the data' mode
-        // of insert_constrained_chunk(). jhrg 4/10/18
-        bool flag = insert_constrained_chunk(0, &target_element_address, &chunk_source_address, &h4bs, 0);
-        BESDEBUG("dmrpp",
-            "DmrppArray::" << __func__ <<"(): END Processing chunk[" << i << "]  (chunk was " << (h4bs.is_read()?"READ":"SKIPPED") << ") flag: "<< flag << endl);
-    }
-    //##############################################################################
-
-#endif
-
     set_read_p(true);
 
     BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() for " << name() << " END"<< endl);
@@ -410,45 +380,61 @@ bool DmrppArray::insert_chunk_serial(unsigned int dim, vector<unsigned int> *tar
     unsigned long long chunk_end = end_element - chunk_origin[dim];
 
     if (dim == last_dim) {
-        BESDEBUG("dmrpp", __func__  << " dim: "<< dim << " THIS IS THE INNER-MOST DIM. "<< endl);
+        BESDEBUG("dmrpp", __func__ << " dim: "<< dim << " THIS IS THE INNER-MOST DIM. "<< endl);
+        // Read and Process chunk
 
-            BESDEBUG("dmrpp", __func__ << " Reading " << chunk->to_string() << endl);
+        chunk->read_serial(is_deflate_compression(), is_shuffle_compression(),
+            get_chunk_size_in_elements(), var()->width());
 
-            // Read and Process chunk
+        char * source_buffer = chunk->get_rbuf();
 
-            // Trick: if multi_handle is false but d_is_in_multi_queue is true, then this chunk
-            // has been read. The chunk->read() call looks for that and skips calling
-            // curl_read_byte_stream() from DmrppUtil.cc. It _will_, however, decompress
-            // the chunk, putting the dat in the rbuf, clearing d_is_in_multi_queue and
-            // setting d_is_read.
-            //
-            // That is why the 'multi' read() method for this class (read_chunks()) calls
-            // this method twice - once to queue the reads and once to decompress and 'insert'
-            // the data from the chunks into the array's data buffer.
-            // jhrg 4/10/18
+        if (thisDim.stride == 1) {
+            //#############################################################################
+            // ND - inner_stride == 1
 
-            chunk->read(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(), var()->width());
-            char * source_buffer = chunk->get_rbuf();
+            // Compute how much we are going to copy
+            unsigned long long chunk_constrained_inner_dim_elements = end_element - start_element + 1;
 
-            if (thisDim.stride == 1) {
-                //#############################################################################
-                // ND - inner_stride == 1
+            unsigned long long chunk_constrained_inner_dim_bytes = chunk_constrained_inner_dim_elements
+                * prototype()->width();
 
-                // Compute how much we are going to copy
-                unsigned long long chunk_constrained_inner_dim_elements = end_element - start_element + 1;
+            // Compute where we need to put it.
+            (*target_element_address)[dim] = (start_element - thisDim.start) / thisDim.stride;
 
-                unsigned long long chunk_constrained_inner_dim_bytes = chunk_constrained_inner_dim_elements
-                    * prototype()->width();
+            unsigned int target_start_element_index = get_index(*target_element_address, get_shape(true));
 
+            unsigned int target_char_start_index = target_start_element_index * prototype()->width();
+
+            // Compute where we are going to read it from
+            (*chunk_source_address)[dim] = first_element_offset;
+
+            unsigned int chunk_start_element_index = get_index(*chunk_source_address, chunk_shape);
+
+            unsigned int chunk_char_start_index = chunk_start_element_index * prototype()->width();
+
+            char *target_buffer = get_buf();
+
+            // Copy the bytes
+            memcpy(target_buffer + target_char_start_index, source_buffer + chunk_char_start_index,
+                chunk_constrained_inner_dim_bytes);
+        }
+        else {
+            //#############################################################################
+            // inner_stride != 1
+            unsigned long long chunk_start = start_element - chunk_origin[dim];
+
+            unsigned long long chunk_end = end_element - chunk_origin[dim];
+
+            for (unsigned int chunk_index = chunk_start; chunk_index <= chunk_end; chunk_index += thisDim.stride) {
                 // Compute where we need to put it.
-                (*target_element_address)[dim] = (start_element - thisDim.start) / thisDim.stride;
+                (*target_element_address)[dim] = (chunk_index + chunk_origin[dim] - thisDim.start) / thisDim.stride;
 
                 unsigned int target_start_element_index = get_index(*target_element_address, get_shape(true));
 
                 unsigned int target_char_start_index = target_start_element_index * prototype()->width();
 
                 // Compute where we are going to read it from
-                (*chunk_source_address)[dim] = first_element_offset;
+                (*chunk_source_address)[dim] = chunk_index;
 
                 unsigned int chunk_start_element_index = get_index(*chunk_source_address, chunk_shape);
 
@@ -457,40 +443,11 @@ bool DmrppArray::insert_chunk_serial(unsigned int dim, vector<unsigned int> *tar
                 char *target_buffer = get_buf();
 
                 // Copy the bytes
-                 memcpy(target_buffer + target_char_start_index, source_buffer + chunk_char_start_index,
-                    chunk_constrained_inner_dim_bytes);
-            }
-            else {
-                //#############################################################################
-                // inner_stride != 1
-                unsigned long long chunk_start = start_element - chunk_origin[dim];
-
-                unsigned long long chunk_end = end_element - chunk_origin[dim];
-
-                for (unsigned int chunk_index = chunk_start; chunk_index <= chunk_end; chunk_index += thisDim.stride) {
-                    // Compute where we need to put it.
-                    (*target_element_address)[dim] = (chunk_index + chunk_origin[dim] - thisDim.start) / thisDim.stride;
-
-                    unsigned int target_start_element_index = get_index(*target_element_address, get_shape(true));
-
-                    unsigned int target_char_start_index = target_start_element_index * prototype()->width();
-
-                    // Compute where we are going to read it from
-                    (*chunk_source_address)[dim] = chunk_index;
-
-                    unsigned int chunk_start_element_index = get_index(*chunk_source_address, chunk_shape);
-
-                    unsigned int chunk_char_start_index = chunk_start_element_index * prototype()->width();
-
-                    char *target_buffer = get_buf();
-
-                    // Copy the bytes
-                    memcpy(target_buffer + target_char_start_index, source_buffer + chunk_char_start_index,
-                        prototype()->width());
-                }
+                memcpy(target_buffer + target_char_start_index, source_buffer + chunk_char_start_index,
+                    prototype()->width());
             }
         }
-
+    }
     else {
         // Not the last dimension, so we continue to proceed down the Recursion Branch.
         for (unsigned int dim_index = chunk_start; dim_index <= chunk_end; dim_index += thisDim.stride) {
@@ -499,8 +456,7 @@ bool DmrppArray::insert_chunk_serial(unsigned int dim, vector<unsigned int> *tar
 
             // Re-entry here:
             bool flag = insert_chunk_serial(dim + 1, target_element_address, chunk_source_address, chunk);
-            if (flag)
-                return true;
+            if (flag) return true;
         }
     }
 
@@ -518,7 +474,7 @@ bool DmrppArray::insert_chunk_serial(unsigned int dim, vector<unsigned int> *tar
  * read and in memory the code then initiates a copy of the results into the
  * array variable's internal buffer.
  */
-bool DmrppArray::read_chunks()
+bool DmrppArray::read_chunks_multi()
 {
     BESDEBUG("dmrpp", __FUNCTION__ << " for variable '" << name() << "' - BEGIN" << endl);
 
@@ -911,7 +867,7 @@ bool DmrppArray::read()
         return read_no_chunks();    // Throws on various errors
     }
     else {  // Handle the more complex case where the data is chunked.
-        return read_chunks();
+        return read_chunks_serial();
     }
 }
 
