@@ -5,16 +5,16 @@
   <bes:setContext name="errors">xml</bes:setContext>
   <bes:setContext name="max_response_size">0</bes:setContext>
   
-  <bes:setContainer name="c" space="catalog">/data/dmrpp/chunked_shufzip_fourD.h5.dmrpp</bes:setContainer>
+  <bes:setContainer name="c" space="catalog">/data/dmrpp/chunked_fourD.h5.dmrpp</bes:setContainer>
   
   <bes:define name="d1" space="default">
     <bes:container name="c">
-      <bes:constraint>
-	       d_16_shufzip_chunks[0:5][0:4][0:3][0:2]
-      </bes:constraint>
+      <bes:dap4constraint>
+	       d_16_chunks[0:5][0:4][0:3][39]
+      </bes:dap4constraint>
     </bes:container>
   </bes:define>
   
-  <bes:get type="dods" definition="d1" />
+  <bes:get type="dap" definition="d1" />
   
 </bes:request>

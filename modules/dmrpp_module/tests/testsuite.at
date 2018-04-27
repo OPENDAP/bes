@@ -91,8 +91,26 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_threeD_asymmetric_uneven.h5
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([chunked/chunked_threeD_asymmetric_uneven.h5.dods])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([chunked/chunked_threeD_asymmetric_uneven.h5.2.dods])
 
+dnl The four dim files make output so large that the print representation of the
+dnl values does not work on linux - it switches to scientific notation at some
+dnl point. Constrain these accesses to limit the size. I have verified that the
+dnl data access does work. jhrg 4/27/18
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_fourD.h5.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([chunked/chunked_fourD.h5.dods])
+
+dnl These tests look at subsetting one dimension to a single value, the start
+dnl index and the end index.jhrg 4/27/18
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_fourD.h5.2.dap])
+
+dnl This test is a good idea, but the float representations are not reliable
+dnl across different machines. I set the CEs so that nly integer values are
+dnl extracted to simplify the testing. jhrg 4/27/18
+
+dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_fourD.h5.3.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_fourD.h5.4.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_fourD.h5.5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_fourD.h5.6.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_fourD.h5.7.dap])
 
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_gzipped_fourD.h5.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([chunked/chunked_gzipped_fourD.h5.dods])
