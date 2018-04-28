@@ -1,3 +1,0 @@
-Dataset {
-    Int32 scalar;
-} t_int_scalar.h5;

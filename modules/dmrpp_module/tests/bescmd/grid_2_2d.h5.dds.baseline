@@ -1,5 +1,0 @@
-Dataset {
-    Float32 /HDFEOS/GRIDS/GeoGrid1/Data%20Fields/temperature[4][8];
-    Float32 /HDFEOS/GRIDS/GeoGrid2/Data%20Fields/temperature[4][8];
-    String /HDFEOS%20INFORMATION/StructMetadata.0;
-} grid_2_2d.h5;

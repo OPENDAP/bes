@@ -1,0 +1,5 @@
+Attributes {
+    scalar {
+        Int32 value 45;
+    }
+}
