@@ -62,8 +62,9 @@
 #include "focovjson_utils.h"
 
 #include "FoDapCovJsonTransform.h"
+#include "FoDapCovJsonValidation.h"
 
-static bool debug = false;
+static bool debug = true;
 
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
@@ -146,6 +147,9 @@ CPPUNIT_TEST_SUITE( FoCovJsonTest );
 
             FoDapCovJsonTransform ft(test_DDS);
 
+            FoDapCovJsonValidation fv(test_DDS);
+            fv.validateDataset();
+
             DBG(
                 cerr
                     << "FoCovJsonTest::test_abstract_object_metadata_representation() - Calling FoDapCovJsonTransform::transform(false) - Send metadata"
@@ -153,7 +157,7 @@ CPPUNIT_TEST_SUITE( FoCovJsonTest );
 
             fstream output;
             output.open(tmpFile.c_str(), std::fstream::out);
-            ft.transform(output, false);
+            ft.transform(output, false, fv);
 
             // Compare the result with the baseline file.
             string baseline = fileToString(
@@ -180,7 +184,7 @@ CPPUNIT_TEST_SUITE( FoCovJsonTest );
 
             delete test_DDS;
 
-            DBG(cerr << " FoCovJsonTest::test_abstract_object_metadata_representation() - END" << endl);
+            DBG(cerr << "FoCovJsonTest::test_abstract_object_metadata_representation() - END" << endl);
         }
         catch (BESInternalError &e) {
             cerr << "BESInternalError: " << e.get_message() << endl;
@@ -212,6 +216,9 @@ CPPUNIT_TEST_SUITE( FoCovJsonTest );
 
             FoDapCovJsonTransform ft(test_DDS);
 
+            FoDapCovJsonValidation fv(test_DDS);
+            fv.validateDataset();
+
             DBG(
                 cerr
                     << "FoCovJsonTest::test_abstract_object_data_representation() - Calling FoDapCovJsonTransform::transform(true) - Send data."
@@ -219,7 +226,7 @@ CPPUNIT_TEST_SUITE( FoCovJsonTest );
 
             fstream output;
             output.open(tmpFile.c_str(), std::fstream::out);
-            ft.transform(output, true);
+            ft.transform(output, true, fv);
 
             delete test_DDS;    // CPPUNIT_ASSERT throws. jhrg 2/20/15
 
@@ -247,7 +254,7 @@ CPPUNIT_TEST_SUITE( FoCovJsonTest );
                     << "FoCovJsonTest::test_abstract_object_data_representation() - FoDapCovJsonTransform::transform() SUCCESS. Deleting DDS..."
                     << endl);
 
-            DBG(cerr << " FoCovJsonTest::test_abstract_object_data_representation() - END" << endl);
+            DBG(cerr << "FoCovJsonTest::test_abstract_object_data_representation() - END" << endl);
         }
         catch (BESInternalError &e) {
             cerr << "BESInternalError: " << e.get_message() << endl;
@@ -579,4 +586,3 @@ int main(int argc, char*argv[])
 
     return wasSuccessful ? 0 : 1;
 }
-

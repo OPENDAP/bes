@@ -773,7 +773,10 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
         *strm << child_indent2 << "\"domainType\": \"Point\"," << endl;
     }
     else {
-        throw BESInternalError("File out COVJSON, Could not define a domainType", __FILE__, __LINE__);
+        // Ideally, we want throw an BESInternalError here, but for now, we
+        // will just force domainType to "Grid"
+        *strm << child_indent2 << "\"domainType\": \"Grid\"," << endl;
+        //throw BESInternalError("File out COVJSON, Could not define a domainType", __FILE__, __LINE__);
     }
 
     // The axes are the first 3 leaves - the transformAxesWorker call will parse and
@@ -816,7 +819,9 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::BaseType *bt, strin
     case libdap::dods_float64_c:
     case libdap::dods_str_c:
     case libdap::dods_url_c:
-        transformAtomic(strm, bt, indent, sendData);
+        if(isAxes == true) {
+            transformAtomic(strm, bt, indent, sendData);
+        }
         break;
 
     case libdap::dods_structure_c:
@@ -872,11 +877,7 @@ void FoDapCovJsonTransform::transformAtomic(ostream *strm, libdap::BaseType *b, 
 {
     string childindent = indent + _indent_increment;
 
-    *strm << indent << "{" << endl;
-
-    //writeLeafMetadata(strm, b, indent);
-
-    *strm << childindent << "\"shape\": [1]," << endl;
+    *strm << indent << "\"\": {" << endl;
 
     if (sendData) {
         // Print Data
@@ -891,7 +892,10 @@ void FoDapCovJsonTransform::transformAtomic(ostream *strm, libdap::BaseType *b, 
             b->print_val(*strm, "", false);
         }
 
-        *strm << "]";
+        *strm << "]" << endl << indent << "}";
+    }
+    else {
+        *strm << childindent << "\"values\": []" << endl << indent << "}";
     }
 }
 
