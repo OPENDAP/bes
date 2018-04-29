@@ -641,7 +641,8 @@ bool DmrppArray::read_chunks_parallel()
         vector<unsigned int> chunk_source_address(dimensions(), 0);
 
         Chunk *c = find_needed_chunks(0, &target_element_address, &chunk_source_address, &chunk);
-        chunks_to_read.push_back(c);
+        if (c)
+            chunks_to_read.push_back(c);
     }
 
     // FIXME this is a serial reader right now... jhrg 4/28/18
