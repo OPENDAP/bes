@@ -61,6 +61,8 @@ private:
 
     virtual bool read_no_chunks();
     virtual bool read_chunks_serial();
+    virtual bool read_chunks_parallel();
+
     virtual bool read_chunks_multi();
 
     void insert_constrained_no_chunk(
@@ -77,10 +79,18 @@ private:
     		Chunk *chunk,
     		CURLM *multi_handle);
 
-    virtual bool insert_chunk_serial(unsigned int dim, vector<unsigned int> *target_element_address,
-        vector<unsigned int> *chunk_source_address, Chunk *chunk);
+    virtual void insert_chunk_serial(unsigned int dim, std::vector<unsigned int> *target_element_address,
+        std::vector<unsigned int> *chunk_source_address, Chunk *chunk);
 
-    void multi_finish(CURLM *curl_multi_handle, std::vector<Chunk> *chunk_refs);
+    virtual void insert_chunk(unsigned int dim, std::vector<unsigned int> *target_element_address,
+        std::vector<unsigned int> *chunk_element_address, Chunk *chunk);
+
+void multi_finish(CURLM *curl_multi_handle, std::vector<Chunk> *chunk_refs);
+
+    unsigned int get_first_element_offset(unsigned int dim, const std::vector<unsigned int>& chunk_origin);
+    Chunk *find_needed_chunks(unsigned int dim, std::vector<unsigned int> *target_element_address,
+        std::vector<unsigned int> *chunk_element_address, Chunk *chunk);
+
 
 public:
     DmrppArray(const std::string &n, libdap::BaseType *v);
