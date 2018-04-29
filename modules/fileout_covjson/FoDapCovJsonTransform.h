@@ -104,6 +104,43 @@ private:
         std::vector<unsigned int> *shape, unsigned int currentDim);
 
 public:
+
+    string getCurrAxis() {
+        return this->currAxis;
+    }
+
+    void setCurrAxis(std::string newCurrAxis) {
+        this->currAxis = newCurrAxis;
+    }
+
+    void clearCurrAxis() {
+        this->currAxis.clear();
+    }
+
+    string getParamType() {
+        return this->paramType;
+    }
+
+    void setParamType(std::string newParamType) {
+        this->paramType = newParamType;
+    }
+
+    string getParamUnit() {
+        return this->paramUnit;
+    }
+
+    void setParamUnit(std::string newParamUnit) {
+        this->paramUnit = newParamUnit;
+    }
+
+    string getParamLongName() {
+        return this->paramLongName;
+    }
+
+    void setParamLongName(std::string newParamLongName) {
+        this->paramLongName = newParamLongName;
+    }
+
     FoDapCovJsonTransform(libdap::DDS *dds);
 
     virtual ~FoDapCovJsonTransform() { }
@@ -111,6 +148,14 @@ public:
     virtual void transform(std::ostream &ostrm, bool sendData, FoDapCovJsonValidation fv);
 
     virtual void dump(std::ostream &strm) const;
+
+    virtual void testWriteAxesMetadata(std::ostream &ostrm, libdap::BaseType *bt, std::string indent) {
+        writeAxesMetadata(&ostrm, bt, indent);
+    }
+
+    virtual void testWriteParameterMetadata(std::ostream &ostrm, libdap::BaseType *bt, std::string indent) {
+        writeParameterMetadata(&ostrm, bt, indent);
+    }
 };
 
 #endif /* FODAPCOVJSONTRANSFORM_H_ */

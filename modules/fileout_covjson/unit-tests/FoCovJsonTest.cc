@@ -64,7 +64,7 @@
 #include "FoDapCovJsonTransform.h"
 #include "FoDapCovJsonValidation.h"
 
-static bool debug = false;
+static bool debug = true;
 
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
@@ -130,6 +130,16 @@ public:
     // Add unit test functions to the FoCovJsonTest test suite here
     CPPUNIT_TEST(testAbstractObjectMetadataRepresentation);
     CPPUNIT_TEST(testAbstractObjectDataRepresentation);
+    CPPUNIT_TEST(testWriteAxesMetadata);
+    CPPUNIT_TEST(testWriteParameterMetadata);
+    //CPPUNIT_TEST(testGetParameterAttributes);
+    //CPPUNIT_TEST(testTransformAtomic);
+    //CPPUNIT_TEST(testTransformAxesWorker);
+    //CPPUNIT_TEST(testTransformReferenceWorker);
+    //CPPUNIT_TEST(testTransformParametersWorker);
+    //CPPUNIT_TEST(testTransformRangesWorker);
+    //CPPUNIT_TEST(testCovjsonSimpleTypeArray);
+    //CPPUNIT_TEST(testCovjsonStringArray);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -162,10 +172,14 @@ public:
             string baseline = fileToString((string)TEST_SRC_DIR + "/baselines/abstract_object_test_METADATA.covjson.baseline");
             string result = fileToString(tmpFile);
 
-            DBG(cerr << "FoCovJsonTest::testAbstractObjectMetadataRepresentation() - baseline: " << endl << baseline << endl);
-            DBG(cerr << "FoCovJsonTest::testAbstractObjectMetadataRepresentation() - result: " << endl << result << endl);
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectMetadataRepresentation() - baseline: " << endl << endl << baseline << endl);
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectMetadataRepresentation() - result: " << endl << endl << result << endl);
             DBG(cerr << "FoCovJsonTest::testAbstractObjectMetadataRepresentation() - baseline.compare(result): " << baseline.compare(result) << endl);
 
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectMetadataRepresentation() - baseline length: " << baseline.length() << endl);
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectMetadataRepresentation() - result length: " << result.length() << endl);
+
+            CPPUNIT_ASSERT(baseline.length() == result.length());
             CPPUNIT_ASSERT(baseline.compare(result) == 0);
 
             DBG(cerr << "FoCovJsonTest::testAbstractObjectMetadataRepresentation() - FoDapCovJsonTransform::transform() SUCCESS. Deleting DDS..." << endl);
@@ -182,9 +196,12 @@ public:
             cerr << "Error: " << e.get_error_message() << endl;
             CPPUNIT_ASSERT(false);
         }
+        catch (std::exception &e) {
+            DBG(cerr << "std::exception: " << e.what() << endl);
+            CPPUNIT_FAIL("Caught std::exception");
+        }
         catch (...) {
-            cerr << "Unknown Error." << endl;
-            CPPUNIT_ASSERT(false);
+            CPPUNIT_FAIL("Unknown Error!");
         }
     }
 
@@ -217,9 +234,12 @@ public:
             string baseline = fileToString((string)TEST_SRC_DIR + "/baselines/abstract_object_test_DATA.covjson.baseline");
             string result = fileToString(tmpFile);
 
-            DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - baseline:" << endl << baseline << endl);
-            DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - result:" << endl << result << endl);
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - baseline:" << endl << endl << baseline << endl);
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - result:" << endl << endl << result << endl);
             DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - baseline.compare(result): " << baseline.compare(result) << endl);
+
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - baseline length: " << baseline.length() << endl);
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - result length: " << result.length() << endl);
 
             CPPUNIT_ASSERT(baseline.length() == result.length());
             CPPUNIT_ASSERT(baseline.compare(result) == 0);
@@ -243,8 +263,204 @@ public:
             CPPUNIT_FAIL("Caught std::exception");
         }
         catch (...) {
-            CPPUNIT_FAIL("Unknown Error.");
+            CPPUNIT_FAIL("Unknown Error!");
         }
+    }
+
+    /**
+     * @brief
+     */
+    void testWriteAxesMetadata()
+    {
+        DBG(cerr << endl);
+        try {
+            libdap::DataDDS *test_DDS = makeTestDDS();
+            libdap::DDS::Vars_iter vi = test_DDS->var_begin();
+            libdap::BaseType *bt = *vi;
+            string indent = "";
+
+            //############################# DATA TEST ####################################
+            DBG(cerr << endl << "FoCovJsonTest::testWriteAxesMetadata() - BEGIN" << endl);
+            DBG(cerr << "FoCovJsonTest::testWriteAxesMetadata() - d_tmpDir: " << d_tmpDir << endl);
+            string tmpFile(d_tmpDir + "/test_write_axes_metadata.covjson");
+            DBG(cerr << "FoCovJsonTest::testWriteAxesMetadata() - tmpFile: " << tmpFile << endl);
+
+            FoDapCovJsonTransform ft(test_DDS);
+            FoDapCovJsonValidation fv(test_DDS);
+            fv.validateDataset();
+
+            DBG(cerr << "FoCovJsonTest::testWriteAxesMetadata() - Calling FoDapCovJsonTransform::testWriteAxesMetadata()" << endl);
+
+            fstream output;
+            output.open(tmpFile.c_str(), std::fstream::out);
+
+            ft.testWriteAxesMetadata(output, bt, indent);
+
+            // Compare the result with the baseline file.
+            string baseline = fileToString((string)TEST_SRC_DIR + "/baselines/test_write_axes_metadata.covjson.baseline");
+            string result = fileToString(tmpFile);
+
+            DBG(cerr << "FoCovJsonTest::testWriteAxesMetadata() - baseline:" << endl << endl << baseline << endl);
+            DBG(cerr << "FoCovJsonTest::testWriteAxesMetadata() - result:" << endl << endl << result << endl);
+            DBG(cerr << "FoCovJsonTest::testWriteAxesMetadata() - baseline.compare(result): " << baseline.compare(result) << endl);
+
+            DBG(cerr << "FoCovJsonTest::testWriteAxesMetadata() - baseline length: " << baseline.length() << endl);
+            DBG(cerr << "FoCovJsonTest::testWriteAxesMetadata() - result length: " << result.length() << endl);
+
+            CPPUNIT_ASSERT(baseline.length() == result.length());
+            CPPUNIT_ASSERT(baseline.compare(result) == 0);
+
+            DBG(cerr << "FoCovJsonTest::testWriteAxesMetadata() - FoDapCovJsonTransform::transform() SUCCESS. Deleting DDS..." << endl);
+
+            delete test_DDS;
+
+            DBG(cerr << "FoCovJsonTest::testWriteAxesMetadata() - END" << endl);
+        }
+        catch (BESInternalError &e) {
+            cerr << "BESInternalError: " << e.get_message() << endl;
+            CPPUNIT_ASSERT(false);
+        }
+        catch (libdap::Error &e) {
+            cerr << "Error: " << e.get_error_message() << endl;
+            CPPUNIT_ASSERT(false);
+        }
+        catch (std::exception &e) {
+            DBG(cerr << "std::exception: " << e.what() << endl);
+            CPPUNIT_FAIL("Caught std::exception");
+        }
+        catch (...) {
+            CPPUNIT_FAIL("Unknown Error!");
+        }
+    }
+
+    /**
+     * @brief
+     */
+    void testWriteParameterMetadata()
+    {
+        DBG(cerr << endl);
+        try {
+            libdap::DataDDS *test_DDS = makeTestDDS();
+            libdap::DDS::Vars_iter vi = test_DDS->var_begin();
+            libdap::BaseType *bt = *vi;
+            string indent = "";
+
+            //############################# DATA TEST ####################################
+            DBG(cerr << endl << "FoCovJsonTest::testWriteParameterMetadata() - BEGIN" << endl);
+            DBG(cerr << "FoCovJsonTest::testWriteParameterMetadata() - d_tmpDir: " << d_tmpDir << endl);
+            string tmpFile(d_tmpDir + "/test_write_parameter_metadata.covjson");
+            DBG(cerr << "FoCovJsonTest::testWriteParameterMetadata() - tmpFile: " << tmpFile << endl);
+
+            FoDapCovJsonTransform ft(test_DDS);
+            FoDapCovJsonValidation fv(test_DDS);
+            fv.validateDataset();
+
+            DBG(cerr << "FoCovJsonTest::testWriteParameterMetadata() - Calling FoDapCovJsonTransform::testWriteParameterMetadata()" << endl);
+
+            fstream output;
+            output.open(tmpFile.c_str(), std::fstream::out);
+
+            ft.testWriteParameterMetadata(output, bt, indent);
+
+            // Compare the result with the baseline file.
+            string baseline = fileToString((string)TEST_SRC_DIR + "/baselines/test_write_parameter_metadata.covjson.baseline");
+            string result = fileToString(tmpFile);
+
+            DBG(cerr << "FoCovJsonTest::testWriteParameterMetadata() - baseline:" << endl << endl << baseline << endl);
+            DBG(cerr << "FoCovJsonTest::testWriteParameterMetadata() - result:" << endl << endl << result << endl);
+            DBG(cerr << "FoCovJsonTest::testWriteParameterMetadata() - baseline.compare(result): " << baseline.compare(result) << endl);
+
+            DBG(cerr << "FoCovJsonTest::testWriteParameterMetadata() - baseline length: " << baseline.length() << endl);
+            DBG(cerr << "FoCovJsonTest::testWriteParameterMetadata() - result length: " << result.length() << endl);
+
+            CPPUNIT_ASSERT(baseline.length() == result.length());
+            CPPUNIT_ASSERT(baseline.compare(result) == 0);
+
+            DBG(cerr << "FoCovJsonTest::testWriteParameterMetadata() - FoDapCovJsonTransform::transform() SUCCESS. Deleting DDS..." << endl);
+
+            delete test_DDS;
+
+            DBG(cerr << "FoCovJsonTest::testWriteParameterMetadata() - END" << endl);
+        }
+        catch (BESInternalError &e) {
+            cerr << "BESInternalError: " << e.get_message() << endl;
+            CPPUNIT_ASSERT(false);
+        }
+        catch (libdap::Error &e) {
+            cerr << "Error: " << e.get_error_message() << endl;
+            CPPUNIT_ASSERT(false);
+        }
+        catch (std::exception &e) {
+            DBG(cerr << "std::exception: " << e.what() << endl);
+            CPPUNIT_FAIL("Caught std::exception");
+        }
+        catch (...) {
+            CPPUNIT_FAIL("Unknown Error!");
+        }
+    }
+
+    /**
+     * @brief
+     */
+    void testGetParameterAttributes()
+    {
+
+    }
+
+    /**
+     * @brief
+     */
+    void testTransformAtomic()
+    {
+
+    }
+
+    /**
+     * @brief
+     */
+    void testTransformAxesWorker()
+    {
+
+    }
+
+    /**
+     * @brief
+     */
+    void testTransformReferenceWorker()
+    {
+
+    }
+
+    /**
+     * @brief
+     */
+    void testTransformParametersWorker()
+    {
+
+    }
+
+    /**
+     * @brief
+     */
+    void testTransformRangesWorker()
+    {
+
+    }
+
+    /**
+     * @brief
+     */
+    void testCovjsonSimpleTypeArray()
+    {
+
+    }
+
+    /**
+     * @brief
+     */
+    void testCovjsonStringArray()
+    {
+
     }
 
     /**
