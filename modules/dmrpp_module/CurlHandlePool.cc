@@ -79,12 +79,12 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
     if (res != CURLE_OK) throw BESInternalError(string(curl_easy_strerror(res)), __FILE__, __LINE__);
 
     // get the offset to offset + size bytes
-    if (CURLE_OK != curl_easy_setopt(d_easy_handle->d_handle, CURLOPT_RANGE, chunk->get_curl_range_arg_string().c_str()))
-        throw BESInternalError(string("HTTP Error: ").append(d_easy_handle->d_error_buf), __FILE__, __LINE__);
+    if (CURLE_OK != (res = curl_easy_setopt(d_easy_handle->d_handle, CURLOPT_RANGE, chunk->get_curl_range_arg_string().c_str())))
+        throw BESInternalError(string("HTTP Error: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
 
     // Pass this to write_data as the fourth argument
-    if (CURLE_OK != curl_easy_setopt(d_easy_handle->d_handle, CURLOPT_WRITEDATA, reinterpret_cast<void*>(chunk)))
-        throw BESInternalError(string("CURL Error: ").append(d_easy_handle->d_error_buf), __FILE__, __LINE__);
+    if (CURLE_OK != (res = curl_easy_setopt(d_easy_handle->d_handle, CURLOPT_WRITEDATA, reinterpret_cast<void*>(chunk))))
+        throw BESInternalError(string("CURL Error: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
 
     return d_easy_handle->d_handle;
 }

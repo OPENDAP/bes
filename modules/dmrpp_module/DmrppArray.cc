@@ -523,6 +523,7 @@ DmrppArray::find_needed_chunks(unsigned int dim, vector<unsigned int> *target_el
                 ostream_iterator<unsigned int>(*BESDebug::GetStrm(), " "));
         }
 #endif
+        // Potential optimization: record target_element_address in the chunk
         return chunk;
     }
     else {

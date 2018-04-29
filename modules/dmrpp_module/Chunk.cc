@@ -268,7 +268,10 @@ void Chunk::read(bool deflate, bool shuffle, unsigned int chunk_size, unsigned i
         return;
     }
 
+#if 0
     if (!d_is_in_multi_queue) {
+#endif
+
         // This call uses the internal size param and allocates the buffer's memory
         set_rbuf_to_size();
 
@@ -305,12 +308,18 @@ void Chunk::read(bool deflate, bool shuffle, unsigned int chunk_size, unsigned i
             oss << "Wrong number of bytes read for chunk; read: " << get_bytes_read() << ", expected: " << get_size();
             throw BESInternalError(oss.str(), __FILE__, __LINE__);
         }
-    }
+#if 0
+}
+#endif
+
 
     if (deflate || shuffle)
         inflate_chunk(deflate, shuffle, chunk_size, elem_width);
 
+#if 0
     d_is_in_multi_queue = false;
+#endif
+
 
     d_is_read = true;
 }
@@ -328,7 +337,10 @@ void Chunk::read(bool deflate, bool shuffle, unsigned int chunk_size, unsigned i
  */
 void Chunk::read_serial(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width)
 {
+#if 0
     assert(!d_is_in_multi_queue);   // Never call this code when using the multi handles
+#endif
+
 
     if (d_is_read) {
         BESDEBUG("dmrpp", "Chunk::"<< __func__ <<"() - Already been read! Returning." << endl);
@@ -402,7 +414,10 @@ void Chunk::dump(ostream &oss) const
     }
     oss << ")]";
     oss << "[is_read=" << d_is_read << "]";
+#if 0
     oss << "[is_in_multi_queue=" << d_is_in_multi_queue << "]";
+#endif
+
 }
 
 string Chunk::to_string() const

@@ -43,7 +43,6 @@ private:
     unsigned long long d_size;
     unsigned long long d_offset;
 
-    bool d_is_read;
     std::vector<unsigned int> d_chunk_position_in_array;
 
     // These are used only during the libcurl callback;
@@ -52,13 +51,17 @@ private:
     unsigned long long d_bytes_read;
     char *d_read_buffer;
     unsigned long long d_read_buffer_size;
+    bool d_is_read;
 
 #if 0
     CURL *d_curl_handle;
     char d_curl_error_buf[CURL_ERROR_SIZE];
 #endif
 
+#if 0
     bool d_is_in_multi_queue;
+#endif
+
 
     void add_tracking_query_param(std::string& data_access_url);
 
@@ -77,9 +80,10 @@ protected:
         d_curl_handle = 0;
 #endif
 
+#if 0
         d_is_in_multi_queue = false;
+#endif
 
-        // These vars are easy to duplicate.
         d_size = bs.d_size;
         d_offset = bs.d_offset;
         d_data_url = bs.d_data_url;
@@ -89,14 +93,14 @@ protected:
 public:
 
     Chunk() :
-        d_data_url(""), d_size(0), d_offset(0), d_is_read(false), d_bytes_read(0), d_read_buffer(0),
-        d_read_buffer_size(0), /*d_curl_handle(0),*/ d_is_in_multi_queue(false)
+        d_data_url(""), d_size(0), d_offset(0), d_bytes_read(0), d_read_buffer(0),
+        d_read_buffer_size(0), d_is_read(false)
     {
     }
 
     Chunk(std::string data_url, unsigned long long size, unsigned long long offset, std::string position_in_array = "") :
-        d_data_url(data_url), d_size(size), d_offset(offset), d_is_read(false), d_bytes_read(0), d_read_buffer(0),
-        d_read_buffer_size(0), /*d_curl_handle(0),*/ d_is_in_multi_queue(false)
+        d_data_url(data_url), d_size(size), d_offset(offset), d_bytes_read(0), d_read_buffer(0),
+        d_read_buffer_size(0), d_is_read(false)
     {
         set_position_in_array(position_in_array);
     }
@@ -253,18 +257,9 @@ public:
         return d_chunk_position_in_array;
     }
 
-    /**
-     * @brief An alternate impl of ingest_position_in_array
-     *
-     * @note It would be much easier to parse this string if it didn't have the
-     * unneeded [, ], and comma (,) characters. The integers could be separated
-     * by whitespace. Then an istringstream and a while loop would be all that's
-     * needed.
-     *
-     * @param pia The dimension string.
-     */
     virtual void set_position_in_array(const std::string &pia);
 
+#if 0
     /**
      * @brief default version of read() for types that are not chunked
      *
@@ -276,6 +271,8 @@ public:
     virtual void read() {
         read(false, false, 0, 0);   // default values for no compression
     }
+#endif
+
 
     virtual void read(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_size);
 
@@ -288,7 +285,10 @@ public:
 #endif
 
 
-    virtual bool is_started() const { return d_is_in_multi_queue; };
+#if 0
+    virtual bool is_started() const {return d_is_in_multi_queue;};
+#endif
+
     virtual bool is_read() const { return d_is_read;  }
 
     virtual void set_is_read(bool state) { d_is_read = state; }

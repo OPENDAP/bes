@@ -52,31 +52,35 @@ class CurlHandlePool {
     struct easy_handle {
         bool d_in_use;
         CURL *d_handle;
+#if 0
         char d_error_buf[CURL_ERROR_SIZE];
+#endif
 
         easy_handle()
         {
             d_handle = curl_easy_init();
             if (!d_handle) throw BESInternalError("Could not allocate CURL handle", __FILE__, __LINE__);
 
+            CURLcode res;
+#if 0
             CURLcode res = curl_easy_setopt(d_handle, CURLOPT_ERRORBUFFER, d_error_buf);
             if (res != CURLE_OK) throw BESInternalError(string(curl_easy_strerror(res)), __FILE__, __LINE__);
-
+#endif
             // Pass all data to the 'write_data' function
-            if (CURLE_OK != curl_easy_setopt(d_handle, CURLOPT_WRITEFUNCTION, chunk_write_data))
-                throw BESInternalError(string("CURL Error: ").append(d_error_buf), __FILE__, __LINE__);
+            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_WRITEFUNCTION, chunk_write_data)))
+                throw BESInternalError(string("CURL Error: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
 
             /* enable TCP keep-alive for this transfer */
-            if (CURLE_OK != curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPALIVE, 1L))
-                throw string("CURL Error: ").append(d_error_buf);
+            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPALIVE, 1L)))
+                throw string("CURL Error: ").append(curl_easy_strerror(res));
 
             /* keep-alive idle time to 120 seconds */
-            if (CURLE_OK != curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPIDLE, 120L))
-                throw string("CURL Error: ").append(d_error_buf);
+            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPIDLE, 120L)))
+                throw string("CURL Error: ").append(curl_easy_strerror(res));
 
             /* interval time between keep-alive probes: 60 seconds */
-            if (CURLE_OK != curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPINTVL, 60L))
-                throw string("CURL Error: ").append(d_error_buf);
+            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPINTVL, 60L)))
+                throw string("CURL Error: ").append(curl_easy_strerror(res));
 
             d_in_use = false;
         }
@@ -92,6 +96,8 @@ class CurlHandlePool {
 
     std::multimap<std::string, easy_handle*> d_easy_handles;
 #endif
+
+    unsigned int d_num_easy_handles;
 
     easy_handle *d_easy_handle;
 
