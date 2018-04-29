@@ -125,66 +125,51 @@ public:
     {
     }
 
-CPPUNIT_TEST_SUITE( FoCovJsonTest );
+    CPPUNIT_TEST_SUITE(FoCovJsonTest);
 
-    CPPUNIT_TEST(test_abstract_object_metadata_representation);
-    CPPUNIT_TEST(test_abstract_object_data_representation);
+    // Add unit test functions to the FoCovJsonTest test suite here
+    CPPUNIT_TEST(testAbstractObjectMetadataRepresentation);
+    CPPUNIT_TEST(testAbstractObjectDataRepresentation);
 
     CPPUNIT_TEST_SUITE_END();
 
-    void test_abstract_object_metadata_representation()
+    void testAbstractObjectMetadataRepresentation()
     {
         DBG(cerr << endl);
         try {
             libdap::DataDDS *test_DDS = makeTestDDS();
 
-            DBG(cerr << "FoCovJsonTest::test_abstract_object_metadata_representation() - BEGIN" << endl);
-            DBG(cerr << "FoCovJsonTest::test_abstract_object_metadata_representation() - d_tmpDir: " << d_tmpDir << endl);
-
             //############################# DATA TEST ####################################
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectMetadataRepresentation() - BEGIN" << endl);
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectMetadataRepresentation() - d_tmpDir: " << d_tmpDir << endl);
             string tmpFile(d_tmpDir + "/test_abstract_object_representation_METADATA.covjson");
-            DBG(cerr << "FoCovJsonTest::test_abstract_object_metadata_representation() - tmpFile: " << tmpFile << endl);
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectMetadataRepresentation() - tmpFile: " << tmpFile << endl);
 
             FoDapCovJsonTransform ft(test_DDS);
-
             FoDapCovJsonValidation fv(test_DDS);
             fv.validateDataset();
 
-            DBG(
-                cerr
-                    << "FoCovJsonTest::test_abstract_object_metadata_representation() - Calling FoDapCovJsonTransform::transform(false) - Send metadata"
-                    << endl);
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectMetadataRepresentation() - Calling FoDapCovJsonTransform::transform(false) - Send metadata" << endl);
 
             fstream output;
             output.open(tmpFile.c_str(), std::fstream::out);
             ft.transform(output, false, fv);
 
             // Compare the result with the baseline file.
-            string baseline = fileToString(
-                (string) TEST_SRC_DIR + "/baselines/abstract_object_test_METADATA.covjson.baseline");
+            string baseline = fileToString((string)TEST_SRC_DIR + "/baselines/abstract_object_test_METADATA.covjson.baseline");
             string result = fileToString(tmpFile);
 
-            DBG(
-                cerr << "FoCovJsonTest::test_abstract_object_metadata_representation() - baseline: " << endl << baseline
-                    << endl);
-            DBG(
-                cerr << "FoCovJsonTest::test_abstract_object_metadata_representation() - result: " << endl << result
-                    << endl);
-
-            DBG(
-                cerr << "FoCovJsonTest::test_abstract_object_metadata_representation() - baseline.compare(result): "
-                    << baseline.compare(result) << endl);
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectMetadataRepresentation() - baseline: " << endl << baseline << endl);
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectMetadataRepresentation() - result: " << endl << result << endl);
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectMetadataRepresentation() - baseline.compare(result): " << baseline.compare(result) << endl);
 
             CPPUNIT_ASSERT(baseline.compare(result) == 0);
 
-            DBG(
-                cerr
-                    << "FoCovJsonTest::test_abstract_object_metadata_representation() - FoDapCovJsonTransform::transform() SUCCESS. Deleting DDS..."
-                    << endl);
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectMetadataRepresentation() - FoDapCovJsonTransform::transform() SUCCESS. Deleting DDS..." << endl);
 
             delete test_DDS;
 
-            DBG(cerr << "FoCovJsonTest::test_abstract_object_metadata_representation() - END" << endl);
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectMetadataRepresentation() - END" << endl);
         }
         catch (BESInternalError &e) {
             cerr << "BESInternalError: " << e.get_message() << endl;
@@ -198,63 +183,45 @@ CPPUNIT_TEST_SUITE( FoCovJsonTest );
             cerr << "Unknown Error." << endl;
             CPPUNIT_ASSERT(false);
         }
-
     }
 
-    void test_abstract_object_data_representation()
+    void testAbstractObjectDataRepresentation()
     {
         DBG(cerr << endl);
         try {
             libdap::DataDDS *test_DDS = makeTestDDS();
 
-            DBG(cerr << "FoCovJsonTest::test_abstract_object_data_representation() - BEGIN" << endl);
-            DBG(cerr << "FoCovJsonTest::test_abstract_object_data_representation() - d_tmpDir: " << d_tmpDir << endl);
-
             //############################# DATA TEST ####################################
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - BEGIN" << endl);
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - d_tmpDir: " << d_tmpDir << endl);
             string tmpFile(d_tmpDir + "/test_abstract_object_representation_DATA.covjson");
-            DBG(cerr << "FoCovJsonTest::test_abstract_object_data_representation() - tmpFile: " << tmpFile << endl);
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - tmpFile: " << tmpFile << endl);
 
             FoDapCovJsonTransform ft(test_DDS);
-
             FoDapCovJsonValidation fv(test_DDS);
             fv.validateDataset();
 
-            DBG(
-                cerr
-                    << "FoCovJsonTest::test_abstract_object_data_representation() - Calling FoDapCovJsonTransform::transform(true) - Send data."
-                    << endl);
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - Calling FoDapCovJsonTransform::transform(true) - Send data." << endl);
 
             fstream output;
             output.open(tmpFile.c_str(), std::fstream::out);
             ft.transform(output, true, fv);
 
-            delete test_DDS;    // CPPUNIT_ASSERT throws. jhrg 2/20/15
+            delete test_DDS;
 
             // Compare the result with the baseline file.
-            string baseline = fileToString(
-                (string) TEST_SRC_DIR + "/baselines/abstract_object_test_DATA.covjson.baseline");
+            string baseline = fileToString((string)TEST_SRC_DIR + "/baselines/abstract_object_test_DATA.covjson.baseline");
             string result = fileToString(tmpFile);
 
-            DBG(
-                cerr << "FoCovJsonTest::test_abstract_object_data_representation() - baseline:" << endl << "'" << baseline
-                    << "'" << endl);
-            DBG(
-                cerr << "FoCovJsonTest::test_abstract_object_data_representation() - result:" << endl << "'" << result
-                    << "'" << endl);
-
-            DBG(
-                cerr << "FoCovJsonTest::test_abstract_object_data_representation() - baseline.compare(result): "
-                    << baseline.compare(result) << endl);
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - baseline:" << endl << "'" << baseline << "'" << endl);
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - result:" << endl << "'" << result << "'" << endl);
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - baseline.compare(result): " << baseline.compare(result) << endl);
 
             CPPUNIT_ASSERT(baseline.length() == result.length());
             CPPUNIT_ASSERT(baseline.compare(result) == 0);
 
-            DBG(
-                cerr
-                    << "FoCovJsonTest::test_abstract_object_data_representation() - FoDapCovJsonTransform::transform() SUCCESS. Deleting DDS..."
-                    << endl);
-
-            DBG(cerr << "FoCovJsonTest::test_abstract_object_data_representation() - END" << endl);
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - FoDapCovJsonTransform::transform() SUCCESS. Deleting DDS..." << endl);
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - END" << endl);
         }
         catch (BESInternalError &e) {
             cerr << "BESInternalError: " << e.get_message() << endl;
@@ -271,13 +238,11 @@ CPPUNIT_TEST_SUITE( FoCovJsonTest );
         catch (...) {
             CPPUNIT_FAIL("Unknown Error.");
         }
-
     }
 
     libdap::DataDDS *makeSimpleTypesDDS()
     {
-        // build a DataDDS of simple types and set values for each of the
-        // simple types.
+        // Build a DataDDS of simple types and set values for each of the simple types.
         libdap::DataDDS *dds = new libdap::DataDDS(NULL, "SimpleTypes");
 
         libdap::Byte b("byte");
@@ -325,8 +290,7 @@ CPPUNIT_TEST_SUITE( FoCovJsonTest );
 
     libdap::DataDDS *makeTestDDS()
     {
-        // build a DataDDS of simple types and set values for each of the
-        // simple types.
+        // build a DataDDS of simple types and set values for each of the simple types.
         libdap::DataDDS *dds = new libdap::DataDDS(NULL, "TestDataset");
 
         // ###################  SIMPLE TYPES ###################
@@ -378,8 +342,9 @@ CPPUNIT_TEST_SUITE( FoCovJsonTest );
         int dim1Size = 2;
         double pi = atan(1) * 4;
         libdap::dods_float64 oneDdata[dim1Size];
-        for (long i = 0; i < dim1Size; i++)
+        for (long i = 0; i < dim1Size; i++) {
             oneDdata[i] = pi * (i * 0.1);
+        }
 
         oneDArrayF64.append_dim(dim1Size, "dim1");
         oneDArrayF64.set_value(oneDdata, dim1Size);
@@ -392,8 +357,9 @@ CPPUNIT_TEST_SUITE( FoCovJsonTest );
         int dim2Size = 4;
         int totalSize = dim1Size * dim2Size;
         libdap::dods_float64 twoDdata[totalSize];
-        for (long i = 0; i < totalSize; i++)
+        for (long i = 0; i < totalSize; i++) {
             twoDdata[i] = pi * (i * 0.01);
+        }
 
         twoDArrayF64.append_dim(dim1Size, "dim1");
         twoDArrayF64.append_dim(dim2Size, "dim2");
@@ -424,8 +390,9 @@ CPPUNIT_TEST_SUITE( FoCovJsonTest );
         int dim3Size = 5;
         totalSize = dim1Size * dim2Size * dim3Size;
         libdap::dods_float64 threeDdata[totalSize];
-        for (long i = 0; i < totalSize; i++)
+        for (long i = 0; i < totalSize; i++) {
             threeDdata[i] = pi * (i * 0.001);
+        }
 
         threeDArrayF64.append_dim(dim1Size, "dim1");
         threeDArrayF64.append_dim(dim2Size, "dim2");
@@ -494,10 +461,7 @@ CPPUNIT_TEST_SUITE( FoCovJsonTest );
         libdap::dods_float64 testData[totalSize];
         libdap::dods_float64 latData[latSize];
         libdap::dods_float64 lngData[lngSize];
-        //unsigned int val = 0;
-        //for(long i=0; i<totalSize ;i++){
-        //	sstData[i] = pi * (i * 0.01);
-        //}
+
         int i = 0;
         for (int lngVal = 0; lngVal < lngSize; lngVal++) {
             lngData[lngVal] = (lngVal - lngSize / 2) + 0.0;
@@ -507,6 +471,7 @@ CPPUNIT_TEST_SUITE( FoCovJsonTest );
                 i++;
             }
         }
+
         sstArray.append_dim(lngSize, "longitude");
         sstArray.append_dim(latSize, "latitude");
         sstArray.set_value(testData, totalSize);  // creates space and uses memcopy to transfer values.
@@ -549,7 +514,7 @@ int main(int argc, char*argv[])
             debug = 1;  // debug is a static global
             cerr << "##### DEBUG is ON" << endl;
             break;
-        case 'h': {     // help - show test names
+        case 'h': {     // Help - show test names
             std::cerr << "Usage: FoCovJsonTest has the following tests:" << std::endl;
             const std::vector<CppUnit::Test*> &tests = focovjson::FoCovJsonTest::suite()->getTests();
             unsigned int prefix_len = focovjson::FoCovJsonTest::suite()->getName().append("::").length();
@@ -559,8 +524,7 @@ int main(int argc, char*argv[])
             break;
         }
         default:
-            // I'd like the output to be clean unless -d is on so
-            // nightly builds are easier to read/understand. jhrg 2/20/15
+            // KEEP THE NIGHTLY BUILD CLEAN!!!
             // cerr << "##### DEBUG is OFF" << endl;
             break;
         }
@@ -572,15 +536,17 @@ int main(int argc, char*argv[])
     string test = "";
     int i = getopt.optind;
     if (i == argc) {
-        // run them all
+        // Run them all
         wasSuccessful = runner.run("");
     }
     else {
         while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
+            if (debug) {
+                cerr << "Running " << argv[i] << endl;
+            }
             test = focovjson::FoCovJsonTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
-	    ++i;
+            ++i;
         }
     }
 
