@@ -1,0 +1,26 @@
+
+"byte": {
+  "type": "Parameter",
+  "description": "byte",
+  "unit": {
+    "label": {
+      "en": ""
+    }
+  },
+  "symbol": {
+    "value": "",
+    "type": "",
+  },
+  "observedProperty": {
+    "id": null,
+    "label": {
+      "en": ""
+    }
+  }
+}
+  },
+  "ranges": {
+"byte": {
+  "type": "NdArray",
+  "dataType": "float",
+  "axisNames": ["t", "y", "x"],
