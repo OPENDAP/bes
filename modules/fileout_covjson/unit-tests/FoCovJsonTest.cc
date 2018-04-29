@@ -64,7 +64,7 @@
 #include "FoDapCovJsonTransform.h"
 #include "FoDapCovJsonValidation.h"
 
-static bool debug = true;
+static bool debug = false;
 
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
@@ -133,6 +133,9 @@ public:
 
     CPPUNIT_TEST_SUITE_END();
 
+    /**
+     * @brief
+     */
     void testAbstractObjectMetadataRepresentation()
     {
         DBG(cerr << endl);
@@ -185,6 +188,9 @@ public:
         }
     }
 
+    /**
+     * @brief
+     */
     void testAbstractObjectDataRepresentation()
     {
         DBG(cerr << endl);
@@ -207,8 +213,6 @@ public:
             output.open(tmpFile.c_str(), std::fstream::out);
             ft.transform(output, true, fv);
 
-            delete test_DDS;
-
             // Compare the result with the baseline file.
             string baseline = fileToString((string)TEST_SRC_DIR + "/baselines/abstract_object_test_DATA.covjson.baseline");
             string result = fileToString(tmpFile);
@@ -221,6 +225,9 @@ public:
             CPPUNIT_ASSERT(baseline.compare(result) == 0);
 
             DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - FoDapCovJsonTransform::transform() SUCCESS. Deleting DDS..." << endl);
+
+            delete test_DDS;
+
             DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - END" << endl);
         }
         catch (BESInternalError &e) {
@@ -240,6 +247,9 @@ public:
         }
     }
 
+    /**
+     * @brief
+     */
     libdap::DataDDS *makeSimpleTypesDDS()
     {
         // Build a DataDDS of simple types and set values for each of the simple types.
@@ -288,6 +298,9 @@ public:
         return dds;
     }
 
+    /**
+     * @brief
+     */
     libdap::DataDDS *makeTestDDS()
     {
         // build a DataDDS of simple types and set values for each of the simple types.
@@ -335,7 +348,6 @@ public:
         dds->add_var(&s);
 
         // ###################  ARRAYS OF SIMPLE TYPES ###################
-
         libdap::Float64 tmplt("oneDArrayF64");
         libdap::Array oneDArrayF64("oneDArrayF64", &tmplt);
 
@@ -474,24 +486,22 @@ public:
 
         sstArray.append_dim(lngSize, "longitude");
         sstArray.append_dim(latSize, "latitude");
-        sstArray.set_value(testData, totalSize);  // creates space and uses memcopy to transfer values.
+        sstArray.set_value(testData, totalSize); // creates space and uses memcopy to transfer values.
         sstArray.set_send_p(true);
         grid.add_var(&sstArray, libdap::array); // add a copy
 
         lngArray.append_dim(lngSize, "longitude");
-        lngArray.set_value(lngData, lngSize);  // creates space and uses memcopy to transfer values.
+        lngArray.set_value(lngData, lngSize); // creates space and uses memcopy to transfer values.
         lngArray.set_send_p(true);
-        //grid.add_var(&lngArray, maps);   // add a copy
         grid.add_map(&lngArray, true);
 
         latArray.append_dim(latSize, "latitude");
-        latArray.set_value(latData, latSize);  // creates space and uses memcopy to transfer values.
+        latArray.set_value(latData, latSize); // creates space and uses memcopy to transfer values.
         latArray.set_send_p(true);
-        //grid.add_var(&latArray, maps);   // add a copy
         grid.add_map(&latArray, true);
 
         grid.set_send_p(true);
-        dds->add_var(&grid);       // add a copy
+        dds->add_var(&grid); // add a copy
 
         DBG(cerr << "FoCovJsonTest::makeTestDDS(): " << endl);
         DBG(dds->print_constrained(cerr));
