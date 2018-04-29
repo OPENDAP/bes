@@ -143,7 +143,7 @@ public:
             libdap::DataDDS *test_DDS = makeTestDDS();
 
             //############################# DATA TEST ####################################
-            DBG(cerr << "FoCovJsonTest::testAbstractObjectMetadataRepresentation() - BEGIN" << endl);
+            DBG(cerr << endl << "FoCovJsonTest::testAbstractObjectMetadataRepresentation() - BEGIN" << endl);
             DBG(cerr << "FoCovJsonTest::testAbstractObjectMetadataRepresentation() - d_tmpDir: " << d_tmpDir << endl);
             string tmpFile(d_tmpDir + "/test_abstract_object_representation_METADATA.covjson");
             DBG(cerr << "FoCovJsonTest::testAbstractObjectMetadataRepresentation() - tmpFile: " << tmpFile << endl);
@@ -198,7 +198,7 @@ public:
             libdap::DataDDS *test_DDS = makeTestDDS();
 
             //############################# DATA TEST ####################################
-            DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - BEGIN" << endl);
+            DBG(cerr << endl << "FoCovJsonTest::testAbstractObjectDataRepresentation() - BEGIN" << endl);
             DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - d_tmpDir: " << d_tmpDir << endl);
             string tmpFile(d_tmpDir + "/test_abstract_object_representation_DATA.covjson");
             DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - tmpFile: " << tmpFile << endl);
@@ -217,8 +217,8 @@ public:
             string baseline = fileToString((string)TEST_SRC_DIR + "/baselines/abstract_object_test_DATA.covjson.baseline");
             string result = fileToString(tmpFile);
 
-            DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - baseline:" << endl << "'" << baseline << "'" << endl);
-            DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - result:" << endl << "'" << result << "'" << endl);
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - baseline:" << endl << baseline << endl);
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - result:" << endl << result << endl);
             DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - baseline.compare(result): " << baseline.compare(result) << endl);
 
             CPPUNIT_ASSERT(baseline.length() == result.length());
