@@ -53,7 +53,7 @@ private:
     char *d_read_buffer;
     unsigned long long d_read_buffer_size;
 
-#if 1
+#if 0
     CURL *d_curl_handle;
     char d_curl_error_buf[CURL_ERROR_SIZE];
 #endif
@@ -73,7 +73,10 @@ protected:
         d_read_buffer = 0;
         d_read_buffer_size = 0;
         d_is_read = false;
+#if 0
         d_curl_handle = 0;
+#endif
+
         d_is_in_multi_queue = false;
 
         // These vars are easy to duplicate.
@@ -87,13 +90,13 @@ public:
 
     Chunk() :
         d_data_url(""), d_size(0), d_offset(0), d_is_read(false), d_bytes_read(0), d_read_buffer(0),
-        d_read_buffer_size(0), d_curl_handle(0), d_is_in_multi_queue(false)
+        d_read_buffer_size(0), /*d_curl_handle(0),*/ d_is_in_multi_queue(false)
     {
     }
 
     Chunk(std::string data_url, unsigned long long size, unsigned long long offset, std::string position_in_array = "") :
         d_data_url(data_url), d_size(size), d_offset(offset), d_is_read(false), d_bytes_read(0), d_read_buffer(0),
-        d_read_buffer_size(0), d_curl_handle(0), d_is_in_multi_queue(false)
+        d_read_buffer_size(0), /*d_curl_handle(0),*/ d_is_in_multi_queue(false)
     {
         set_position_in_array(position_in_array);
     }
@@ -122,6 +125,7 @@ public:
         return *this;
     }
 
+#if 0
     virtual CURL *get_curl_handle() const
     {
         return d_curl_handle;
@@ -132,6 +136,8 @@ public:
         if (d_curl_handle != 0) curl_easy_cleanup(d_curl_handle);
         d_curl_handle = 0;
     }
+#endif
+
 
     /**
      * @brief Get the size of this byteStream's data block on disk
@@ -277,7 +283,10 @@ public:
 
     void inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width);
 
+#if 0
     virtual void add_to_multi_read_queue(CURLM *multi_handle);
+#endif
+
 
     virtual bool is_started() const { return d_is_in_multi_queue; };
     virtual bool is_read() const { return d_is_read;  }

@@ -130,6 +130,7 @@ void Chunk::add_tracking_query_param(string &data_access_url)
     }
 }
 
+#if 0
 void Chunk::add_to_multi_read_queue(CURLM *multi_handle)
 {
     BESDEBUG(debug,"Chunk::"<< __func__ <<"() - BEGIN  " << to_string() << endl);
@@ -168,15 +169,15 @@ void Chunk::add_to_multi_read_queue(CURLM *multi_handle)
 
     // get the offset to offset + size bytes
     if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_RANGE, range.c_str() /*"0-199"*/))
-        throw BESInternalError(string("HTTP Error: ").append(d_curl_error_buf), __FILE__, __LINE__);
+    throw BESInternalError(string("HTTP Error: ").append(d_curl_error_buf), __FILE__, __LINE__);
 
     // Pass all data to the 'write_data' function
     if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, chunk_write_data))
-        throw BESInternalError(string("HTTP Error: ").append(d_curl_error_buf), __FILE__, __LINE__);
+    throw BESInternalError(string("HTTP Error: ").append(d_curl_error_buf), __FILE__, __LINE__);
 
     // Pass this to write_data as the fourth argument
     if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_WRITEDATA, this))
-        throw BESInternalError(string("HTTP Error: ").append(d_curl_error_buf), __FILE__, __LINE__);
+    throw BESInternalError(string("HTTP Error: ").append(d_curl_error_buf), __FILE__, __LINE__);
 
     /* add the individual transfers */
     curl_multi_add_handle(multi_handle, curl);
@@ -191,6 +192,8 @@ void Chunk::add_to_multi_read_queue(CURLM *multi_handle)
 
     BESDEBUG(debug, __func__ <<"() - END  "<< to_string() << endl);
 }
+#endif
+
 
 void Chunk::inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width)
 {

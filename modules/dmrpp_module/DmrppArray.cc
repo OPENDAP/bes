@@ -40,6 +40,8 @@
 #include "DmrppArray.h"
 #include "DmrppUtil.h"
 
+static const string dmrpp_3 = "dmrpp:3";
+
 using namespace libdap;
 using namespace std;
 
@@ -143,7 +145,7 @@ void DmrppArray::insert_constrained_no_chunk(Dim_iter dimIter, unsigned long *ta
     // char *sourceBuf = src_buf; // ->get_rbuf();
     char *dest_buf = get_buf();
 
-    unsigned int start = this->dimension_start(dimIter, true);    // TODO typo? should 'start' be the constrained value. jhrg 4/10/18
+    unsigned int start = this->dimension_start(dimIter, true);
     unsigned int stop = this->dimension_stop(dimIter, true);
     unsigned int stride = this->dimension_stride(dimIter, true);
 
@@ -209,7 +211,7 @@ void DmrppArray::insert_constrained_no_chunk(Dim_iter dimIter, unsigned long *ta
  *
  * @return Always returns true, matching the libdap::Array::read() behavior.
  */
-bool DmrppArray::read_no_chunks()
+bool DmrppArray::read_contiguous()
 {
     BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() for " << name() << " BEGIN" << endl);
 
@@ -288,10 +290,7 @@ bool DmrppArray::read_chunks_serial()
         throw BESInternalError(string("Expected one or more chunks for variable ") + name(), __FILE__, __LINE__);
 
     // Allocate target memory.
-    // FIXME - I think this needs to be the constrained size! Or no bigger than
-    // the sum of the sizes of the chunks when they are uncompressed. jhrg 4/10/18
-    reserve_value_capacity(length());
-    // vector<unsigned int> array_shape = get_shape(false);
+    reserve_value_capacity(get_size(true));
 
     /*
      * Find the chunks to be read, make curl_easy handles for them, and
@@ -307,10 +306,6 @@ bool DmrppArray::read_chunks_serial()
 
         // Recursive insertion operation.
         insert_chunk_serial(0, &target_element_address, &chunk_source_address, &chunk);
-
-        BESDEBUG("dmrpp:2", "END Processing chunk[" << i << "]  "
-                "(chunk was " << (chunk.is_started()?"QUEUED":"NOT_QUEUED") <<
-                " and " << (chunk.is_read()?"READ":"NOT_READ") << endl);
     }
 
     set_read_p(true);
@@ -332,12 +327,12 @@ bool DmrppArray::read_chunks_serial()
  * @param chunk_origin The chunk's position in the array
  * @return The first _element_ of the chunk to transfer.
  */
-unsigned int DmrppArray::get_first_element_offset(unsigned int dim, const vector<unsigned int>& chunk_origin)
+unsigned long long DmrppArray::get_chunk_start(unsigned int dim, const vector<unsigned int>& chunk_origin)
 {
     dimension thisDim = this->get_dimension(dim);
 
     // What's the first element that we are going to access for this dimension of the chunk?
-    unsigned int first_element_offset = 0; // start with 0
+    unsigned long long first_element_offset = 0; // start with 0
     if ((unsigned) (thisDim.start) < chunk_origin[dim]) {
         // If the start is behind this chunk, then it's special.
         if (thisDim.stride != 1) {
@@ -391,7 +386,7 @@ void DmrppArray::insert_chunk_serial(unsigned int dim, vector<unsigned int> *tar
     }
 
     // What's the first element that we are going to access for this dimension of the chunk?
-    unsigned int first_element_offset = get_first_element_offset(dim, chunk_origin);
+    unsigned int first_element_offset = get_chunk_start(dim, chunk_origin);
 
     // Is the next point to be sent in this chunk at all? If no, return.
     if (first_element_offset > chunk_shape[dim]) {
@@ -474,19 +469,26 @@ void DmrppArray::insert_chunk_serial(unsigned int dim, vector<unsigned int> *tar
 
 /**
  * @brief Look at all the chunks and mark those that should be read.
+ *
+ * @todo Save the target element address with the chunk for use in the
+ * insert code.
+ *
  * @param dim
  * @param target_element_address
  * @param chunk_element_address
  * @param chunk
  */
 Chunk *
-DmrppArray::find_needed_chunks(unsigned int dim, vector<unsigned int> *target_element_address,
-    vector<unsigned int> *chunk_element_address, Chunk *chunk)
+DmrppArray::find_needed_chunks(unsigned int dim, vector<unsigned int> *target_element_address, Chunk *chunk)
 {
+    BESDEBUG(dmrpp_3, __func__ << " BEGIN, dim: " << dim << endl);
+
     // The size, in elements, of each of the chunk's dimensions.
+    // TODO Edit get_chunk_dimension_sizes to return a reference
     vector<unsigned int> chunk_shape = get_chunk_dimension_sizes();
 
     // The chunk's origin point a.k.a. its "position in array".
+    // TODO Edit get_position_in_array to return a reference
     vector<unsigned int> chunk_origin = chunk->get_position_in_array();
 
     dimension thisDim = this->get_dimension(dim);
@@ -498,10 +500,10 @@ DmrppArray::find_needed_chunks(unsigned int dim, vector<unsigned int> *target_el
     }
 
     // What's the first element that we are going to access for this dimension of the chunk?
-    unsigned int first_element_offset = get_first_element_offset(dim, chunk_origin);
+    unsigned long long chunk_start = get_chunk_start(dim, chunk_origin);
 
     // Is the next point to be sent in this chunk at all? If no, return.
-    if (first_element_offset > chunk_shape[dim]) {
+    if (chunk_start > chunk_shape[dim]) {
         return 0;
     }
 
@@ -511,21 +513,27 @@ DmrppArray::find_needed_chunks(unsigned int dim, vector<unsigned int> *target_el
         end_element = thisDim.stop;
     }
 
-    unsigned long long chunk_start = first_element_offset; //start_element - chunk_origin[dim];
     unsigned long long chunk_end = end_element - chunk_origin[dim];
 
     unsigned int last_dim = chunk_shape.size() - 1;
     if (dim == last_dim) {
+#ifndef NDEBUG
+        if (BESDebug::IsSet(dmrpp_3)) {
+            std::copy(target_element_address->begin(), target_element_address->end(),
+                ostream_iterator<unsigned int>(*BESDebug::GetStrm(), " "));
+        }
+#endif
         return chunk;
     }
     else {
         // Not the last dimension, so we continue to proceed down the Recursion Branch.
         for (unsigned int chunk_index = chunk_start; chunk_index <= chunk_end; chunk_index += thisDim.stride) {
             (*target_element_address)[dim] = (chunk_index + chunk_origin[dim] - thisDim.start) / thisDim.stride;
-            (*chunk_element_address)[dim] = chunk_index;
 
             // Re-entry here:
-            return find_needed_chunks(dim + 1, target_element_address, chunk_element_address, chunk);
+            Chunk *needed = find_needed_chunks(dim + 1, target_element_address, /*chunk_element_address,*/ chunk);
+            if (needed)
+                return needed;
         }
     }
 
@@ -550,10 +558,10 @@ void DmrppArray::insert_chunk(unsigned int dim, vector<unsigned int> *target_ele
     }
 
     // What's the first element that we are going to access for this dimension of the chunk?
-    unsigned int first_element_offset = get_first_element_offset(dim, chunk_origin);
+    unsigned long long chunk_start = get_chunk_start(dim, chunk_origin);
 
     // Is the next point to be sent in this chunk at all? If no, return. FIXME Exception
-    if (first_element_offset > chunk_shape[dim]) {
+    if (chunk_start > chunk_shape[dim]) {
         return;
     }
 
@@ -563,7 +571,6 @@ void DmrppArray::insert_chunk(unsigned int dim, vector<unsigned int> *target_ele
         end_element = thisDim.stop;
     }
 
-    unsigned long long chunk_start = first_element_offset;
     unsigned long long chunk_end = end_element - chunk_origin[dim];
     vector<unsigned int> constrained_array_shape = get_shape(true);
 
@@ -577,14 +584,14 @@ void DmrppArray::insert_chunk(unsigned int dim, vector<unsigned int> *target_ele
 #if STRIDE_OPT
         if (thisDim.stride == 1) {
             // The start element in this array
-            unsigned long long start_element = chunk_origin[dim] + first_element_offset;
+            unsigned long long start_element = chunk_origin[dim] + chunk_start;
            // Compute how much we are going to copy
             unsigned long long chunk_constrained_inner_dim_bytes = (end_element - start_element + 1) * elem_width;
 
             // Compute where we need to put it.
             (*target_element_address)[dim] = (start_element - thisDim.start) / thisDim.stride;
             // Compute where we are going to read it from
-            (*chunk_element_address)[dim] = first_element_offset;
+            (*chunk_element_address)[dim] = chunk_start;
 
             unsigned int target_char_start_index = get_index(*target_element_address, constrained_array_shape) * elem_width;
             unsigned int chunk_char_start_index = get_index(*chunk_element_address, chunk_shape) * elem_width;
@@ -594,7 +601,6 @@ void DmrppArray::insert_chunk(unsigned int dim, vector<unsigned int> *target_ele
         }
         else {
 #endif
-
             // Stride != 1
             for (unsigned int chunk_index = chunk_start; chunk_index <= chunk_end; chunk_index += thisDim.stride) {
                 // Compute where we need to put it.
@@ -620,7 +626,7 @@ void DmrppArray::insert_chunk(unsigned int dim, vector<unsigned int> *target_ele
             (*chunk_element_address)[dim] = chunk_index;
 
             // Re-entry here:
-            insert_chunk_serial(dim + 1, target_element_address, chunk_element_address, chunk);
+            insert_chunk(dim + 1, target_element_address, chunk_element_address, chunk);
         }
     }
 }
@@ -634,15 +640,13 @@ bool DmrppArray::read_chunks_parallel()
     // Find all the chunks to read
     vector<Chunk *>chunks_to_read;
 
-    for (unsigned long i = 0; i < chunk_refs.size(); i++) {
-        Chunk &chunk = chunk_refs[i];
+    for (vector<Chunk>::iterator c = chunk_refs.begin(), e = chunk_refs.end(); c != e; ++c) {
+        Chunk &chunk = *c;
 
         vector<unsigned int> target_element_address = chunk.get_position_in_array();
-        vector<unsigned int> chunk_source_address(dimensions(), 0);
-
-        Chunk *c = find_needed_chunks(0, &target_element_address, &chunk_source_address, &chunk);
-        if (c)
-            chunks_to_read.push_back(c);
+        Chunk *needed = find_needed_chunks(0 /* dimension */, &target_element_address, &chunk);
+        if (needed)
+            chunks_to_read.push_back(needed);
     }
 
     // FIXME this is a serial reader right now... jhrg 4/28/18
@@ -650,7 +654,7 @@ bool DmrppArray::read_chunks_parallel()
         (*i)->read(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(), var()->width());
     }
 
-    reserve_value_capacity(length());   // FIXME
+    reserve_value_capacity(get_size(true));   // FIXME
 
     for (vector<Chunk *>::iterator i = chunks_to_read.begin(), e = chunks_to_read.end(); i != e; ++i) {
         Chunk *chunk = *i;
@@ -663,6 +667,39 @@ bool DmrppArray::read_chunks_parallel()
 
     return true;
 }
+
+/**
+ * Reads chunked array data from the relevant sources (as indicated by each
+ * Chunk object) for this array.
+ */
+bool DmrppArray::read()
+{
+    if (read_p()) return true;
+
+    if (get_chunk_dimension_sizes().empty()) {
+        return read_contiguous();    // Throws on various errors
+    }
+    else {  // Handle the more complex case where the data is chunked.
+#if 0
+        return read_chunks_serial();
+#endif
+
+        return read_chunks_parallel();
+    }
+}
+
+void DmrppArray::dump(ostream & strm) const
+{
+    strm << BESIndent::LMarg << "DmrppArray::" << __func__ << "(" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    DmrppCommon::dump(strm);
+    Array::dump(strm);
+    strm << BESIndent::LMarg << "value: " << "----" << /*d_buf <<*/endl;
+    BESIndent::UnIndent();
+}
+
+} // namespace dmrpp
+
 
 #if 0
 
@@ -784,6 +821,7 @@ void DmrppArray::insert_chunk_serial(unsigned int dim, vector<unsigned int> *tar
 #endif
 
 
+#if 0
 /**
  * Reads a the chunks that make up this array's content and copies just the
  * relevant values into the array's memory buffer.
@@ -801,7 +839,7 @@ bool DmrppArray::read_chunks_multi()
 
     vector<Chunk> &chunk_refs = get_chunk_vec();
     if (chunk_refs.size() == 0)
-        throw BESInternalError(string("Expected one or more chunks for variable ") + name(), __FILE__, __LINE__);
+    throw BESInternalError(string("Expected one or more chunks for variable ") + name(), __FILE__, __LINE__);
 
     // Allocate target memory.
     // FIXME - I think this needs to be the constrained size! Or no bigger than
@@ -830,8 +868,8 @@ bool DmrppArray::read_chunks_multi()
 
         BESDEBUG("dmrpp:2",
             "DmrppArray::" << __func__ <<"(): END Processing chunk[" << i << "]  "
-                "(chunk was " << (chunk.is_started()?"QUEUED":"NOT_QUEUED") <<
-                " and " << (chunk.is_read()?"READ":"NOT_READ") << ") flag: "<< flag << endl);
+            "(chunk was " << (chunk.is_started()?"QUEUED":"NOT_QUEUED") <<
+            " and " << (chunk.is_read()?"READ":"NOT_READ") << ") flag: "<< flag << endl);
     }
 
     /*
@@ -927,9 +965,9 @@ void DmrppArray::multi_finish(CURLM *multi_handle, vector<Chunk> *chunk_refs)
             }
         }
         else
-            repeats = 0;
+        repeats = 0;
 
-    } while (still_running);
+    }while (still_running);
 
     BESDEBUG("dmrpp",
         "DmrppArray::" << __func__ <<"() CURL-MULTI has finished! laps: " << lap_counter << "  still_running: "<< still_running << endl);
@@ -962,7 +1000,7 @@ void DmrppArray::multi_finish(CURLM *multi_handle, vector<Chunk> *chunk_refs)
             else {
                 ostringstream oss;
                 oss << "DmrppArray::" << __func__ << "() Chunk Read Did Not Complete. CURLMsg.msg: " << msg->msg
-                    << " Chunk: " << h4bs_str;
+                << " Chunk: " << h4bs_str;
                 BESDEBUG("dmrpp", oss.str() << endl);
                 throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
             }
@@ -987,7 +1025,6 @@ void DmrppArray::multi_finish(CURLM *multi_handle, vector<Chunk> *chunk_refs)
 
     BESDEBUG("dmrpp", "DmrppArray::" << __func__ <<"() END" << endl);
 }
-
 
 /**
  * @brief This recursive call inserts a (previously read) chunk's data into the
@@ -1031,7 +1068,7 @@ bool DmrppArray::insert_constrained_chunk(unsigned int dim, vector<unsigned int>
     dimension thisDim = this->get_dimension(dim);
 
     // What's the first element that we are going to access for this dimension of the chunk?
-    unsigned int first_element_offset = 0; // start with 0
+    unsigned int first_element_offset = 0;// start with 0
     if ((unsigned) thisDim.start < chunk_origin[dim]) {
         // If the start is behind this chunk, then it's special.
         if (thisDim.stride != 1) {
@@ -1108,7 +1145,7 @@ bool DmrppArray::insert_constrained_chunk(unsigned int dim, vector<unsigned int>
                 unsigned long long chunk_constrained_inner_dim_elements = end_element - start_element + 1;
 
                 unsigned long long chunk_constrained_inner_dim_bytes = chunk_constrained_inner_dim_elements
-                    * prototype()->width();
+                * prototype()->width();
 
                 // Compute where we need to put it.
                 (*target_element_address)[dim] = (start_element - thisDim.start) / thisDim.stride;
@@ -1127,7 +1164,7 @@ bool DmrppArray::insert_constrained_chunk(unsigned int dim, vector<unsigned int>
                 char *target_buffer = get_buf();
 
                 // Copy the bytes
-                 memcpy(target_buffer + target_char_start_index, source_buffer + chunk_char_start_index,
+                memcpy(target_buffer + target_char_start_index, source_buffer + chunk_char_start_index,
                     chunk_constrained_inner_dim_bytes);
             }
             else {
@@ -1170,40 +1207,11 @@ bool DmrppArray::insert_constrained_chunk(unsigned int dim, vector<unsigned int>
             // Re-entry here:
             bool flag = insert_constrained_chunk(dim + 1, target_element_address, chunk_source_address, chunk, multi_handle);
             if (flag)
-                return true;
+            return true;
         }
     }
     return false;
 }
-
-/**
- * Reads chunked array data from the relevant sources (as indicated by each
- * Chunk object) for this array.
- */
-bool DmrppArray::read()
-{
-    if (read_p()) return true;
-
-    if (get_chunk_dimension_sizes().empty()) {
-        return read_no_chunks();    // Throws on various errors
-    }
-    else {  // Handle the more complex case where the data is chunked.
-#if 0
-        return read_chunks_serial();
 #endif
 
-        return read_chunks_parallel();
-    }
-}
 
-void DmrppArray::dump(ostream & strm) const
-{
-    strm << BESIndent::LMarg << "DmrppArray::" << __func__ << "(" << (void *) this << ")" << endl;
-    BESIndent::Indent();
-    DmrppCommon::dump(strm);
-    Array::dump(strm);
-    strm << BESIndent::LMarg << "value: " << "----" << /*d_buf <<*/endl;
-    BESIndent::UnIndent();
-}
-
-} // namespace dmrpp

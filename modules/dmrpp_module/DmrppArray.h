@@ -59,11 +59,14 @@ class DmrppArray: public libdap::Array, public DmrppCommon {
 private:
     DmrppArray::dimension get_dimension(unsigned int dim_num);
 
-    virtual bool read_no_chunks();
+    virtual bool read_contiguous();
     virtual bool read_chunks_serial();
     virtual bool read_chunks_parallel();
 
+#if 0
     virtual bool read_chunks_multi();
+#endif
+
 
     void insert_constrained_no_chunk(
 			Dim_iter p,
@@ -72,25 +75,31 @@ private:
 			const std::vector<unsigned int> &array_shape,
 			char *data);
 
+#if 0
     virtual bool insert_constrained_chunk(
-    		unsigned int dim,
-    		std::vector<unsigned int> *target_address,
-    		std::vector<unsigned int> *chunk_source_address,
-    		Chunk *chunk,
-    		CURLM *multi_handle);
+        unsigned int dim,
+        std::vector<unsigned int> *target_address,
+        std::vector<unsigned int> *chunk_source_address,
+        Chunk *chunk,
+        CURLM *multi_handle);
+#endif
+
 
     virtual void insert_chunk_serial(unsigned int dim, std::vector<unsigned int> *target_element_address,
         std::vector<unsigned int> *chunk_source_address, Chunk *chunk);
 
-    virtual void insert_chunk(unsigned int dim, std::vector<unsigned int> *target_element_address,
-        std::vector<unsigned int> *chunk_element_address, Chunk *chunk);
+#if 0
+    void multi_finish(CURLM *curl_multi_handle, std::vector<Chunk> *chunk_refs);
+#endif
 
-void multi_finish(CURLM *curl_multi_handle, std::vector<Chunk> *chunk_refs);
 
-    unsigned int get_first_element_offset(unsigned int dim, const std::vector<unsigned int>& chunk_origin);
+    unsigned long long get_chunk_start(unsigned int dim, const std::vector<unsigned int>& chunk_origin);
+
     Chunk *find_needed_chunks(unsigned int dim, std::vector<unsigned int> *target_element_address,
-        std::vector<unsigned int> *chunk_element_address, Chunk *chunk);
+        /*std::vector<unsigned int> *chunk_element_address,*/ Chunk *chunk);
 
+    void insert_chunk(unsigned int dim, std::vector<unsigned int> *target_element_address,
+        std::vector<unsigned int> *chunk_element_address, Chunk *chunk);
 
 public:
     DmrppArray(const std::string &n, libdap::BaseType *v);
