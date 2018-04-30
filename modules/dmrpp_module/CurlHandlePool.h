@@ -25,6 +25,7 @@
 #define _HandlePool_h 1
 
 #include <string>
+#include <vector>
 #if 0
 #include <map>
 #endif
@@ -40,11 +41,15 @@ namespace dmrpp {
 class Chunk;
 
 /**
- * Wrapper for a single libcurl 'easy' handle. Expand to multiple handles later.
+ * Get a CURL easy handle, assign a URL and other values, use the handler, return
+ * it to the pool. This class helps take advantage of libculr's built-in reuse
+ * capabilities (connection keep-alive, DNS pooling, etc.).
  *
- * @note This is a singleton
+ * See d_max_handles below for the limit on the total number of easy handles.
  */
 class CurlHandlePool {
+
+    const static unsigned int d_max_handles = 5;
 
     /**
      * Bundle an easy handle and an 'in use' flag.
@@ -52,9 +57,6 @@ class CurlHandlePool {
     struct easy_handle {
         bool d_in_use;
         CURL *d_handle;
-#if 0
-        char d_error_buf[CURL_ERROR_SIZE];
-#endif
 
         easy_handle()
         {
@@ -62,10 +64,7 @@ class CurlHandlePool {
             if (!d_handle) throw BESInternalError("Could not allocate CURL handle", __FILE__, __LINE__);
 
             CURLcode res;
-#if 0
-            CURLcode res = curl_easy_setopt(d_handle, CURLOPT_ERRORBUFFER, d_error_buf);
-            if (res != CURLE_OK) throw BESInternalError(string(curl_easy_strerror(res)), __FILE__, __LINE__);
-#endif
+
             // Pass all data to the 'write_data' function
             if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_WRITEFUNCTION, chunk_write_data)))
                 throw BESInternalError(string("CURL Error: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
@@ -91,27 +90,24 @@ class CurlHandlePool {
         }
     };
 
-#if 0
-    typedef std::multimap<std::string, easy_handle*>::iterator eh_iter;
-
-    std::multimap<std::string, easy_handle*> d_easy_handles;
-#endif
-
-    unsigned int d_num_easy_handles;
+    std::vector<easy_handle*> d_available;
+    std::vector<easy_handle*> d_in_use;
 
     easy_handle *d_easy_handle;
 
 public:
 
-    CurlHandlePool() : d_easy_handle(0) { }
-
-    ~CurlHandlePool() {
+    CurlHandlePool() : d_easy_handle(0)
+    {
 #if 0
-        // delete all of the easy_handle things FIXME
-        for (eh_iter i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
-            delete (*i).second; // calls curl_easy_cleanup()
+        for (int i = 0; i < d_max_handles; ++i) {
+            d_available.push_back(new CurlHandlePool::easy_handle());
         }
 #endif
+
+    }
+
+    ~CurlHandlePool() {
         delete d_easy_handle;
     }
 
