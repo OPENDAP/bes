@@ -64,7 +64,7 @@
 #include "FoDapCovJsonTransform.h"
 #include "FoDapCovJsonValidation.h"
 
-static bool debug = true;
+static bool debug = false;
 
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
