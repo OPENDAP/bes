@@ -53,16 +53,6 @@ private:
     unsigned long long d_read_buffer_size;
     bool d_is_read;
 
-#if 0
-    CURL *d_curl_handle;
-    char d_curl_error_buf[CURL_ERROR_SIZE];
-#endif
-
-#if 0
-    bool d_is_in_multi_queue;
-#endif
-
-
     void add_tracking_query_param(std::string& data_access_url);
 
     friend class ChunkTest;
@@ -76,13 +66,6 @@ protected:
         d_read_buffer = 0;
         d_read_buffer_size = 0;
         d_is_read = false;
-#if 0
-        d_curl_handle = 0;
-#endif
-
-#if 0
-        d_is_in_multi_queue = false;
-#endif
 
         d_size = bs.d_size;
         d_offset = bs.d_offset;
@@ -128,20 +111,6 @@ public:
 
         return *this;
     }
-
-#if 0
-    virtual CURL *get_curl_handle() const
-    {
-        return d_curl_handle;
-    }
-
-    virtual void cleanup_curl_handle()
-    {
-        if (d_curl_handle != 0) curl_easy_cleanup(d_curl_handle);
-        d_curl_handle = 0;
-    }
-#endif
-
 
     /**
      * @brief Get the size of this byteStream's data block on disk
@@ -191,7 +160,7 @@ public:
     }
 
     /**
-     * @brief Allocates the intenal read buffer to be d_size bytes
+     * @brief Allocates the internal read buffer to be d_size bytes
      *
      * The memory of the read buffer is managed internally by this method.
      * Calling this method will release any previously allocated read buffer
@@ -201,7 +170,6 @@ public:
     virtual void set_rbuf_to_size()
     {
         delete[] d_read_buffer;
-        d_read_buffer_size = 0;
 
         d_read_buffer = new char[d_size];
         d_read_buffer_size = d_size;
@@ -231,7 +199,6 @@ public:
     virtual void set_rbuf(char *buf, unsigned int size)
     {
         delete[] d_read_buffer;
-        d_read_buffer_size = 0;
 
         d_read_buffer = buf;
         d_read_buffer_size = size;
@@ -260,34 +227,13 @@ public:
     virtual void set_position_in_array(const std::string &pia);
 
 #if 0
-    /**
-     * @brief default version of read() for types that are not chunked
-     *
-     * This function does the simple read operation for variables that are
-     * not chunked. We treat 'not-chunked' as 'stored in a single chunk.'
-     * An assumption is that data that are 'not-chunked' are also not compressed
-     * in any way.
-     */
-    virtual void read() {
-        read(false, false, 0, 0);   // default values for no compression
-    }
+    virtual void read(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_size);
 #endif
 
-
-    virtual void read(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_size);
 
     virtual void read_serial(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_size);
 
     void inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width);
-
-#if 0
-    virtual void add_to_multi_read_queue(CURLM *multi_handle);
-#endif
-
-
-#if 0
-    virtual bool is_started() const {return d_is_in_multi_queue;};
-#endif
 
     virtual bool is_read() const { return d_is_read;  }
 

@@ -641,6 +641,7 @@ bool DmrppArray::read_chunks_parallel()
     // Find all the chunks to read
     vector<Chunk *>chunks_to_read;
 
+    // Look at all the chunks
     for (vector<Chunk>::iterator c = chunk_refs.begin(), e = chunk_refs.end(); c != e; ++c) {
         Chunk &chunk = *c;
 
@@ -650,18 +651,18 @@ bool DmrppArray::read_chunks_parallel()
             chunks_to_read.push_back(needed);
     }
 
-    // FIXME this is a serial reader right now... jhrg 4/28/18
-    for (vector<Chunk *>::iterator i = chunks_to_read.begin(), e = chunks_to_read.end(); i != e; ++i) {
-        (*i)->read(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(), var()->width());
-    }
+    reserve_value_capacity(get_size(true));
 
-    reserve_value_capacity(get_size(true));   // FIXME
-
+    // Look only at the chunks we need, found above.
     for (vector<Chunk *>::iterator i = chunks_to_read.begin(), e = chunks_to_read.end(); i != e; ++i) {
         Chunk *chunk = *i;
+
+        chunk->read_serial(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(),
+            var()->width());
+
         vector<unsigned int> target_element_address = chunk->get_position_in_array();
         vector<unsigned int> chunk_source_address(dimensions(), 0);
-        insert_chunk(0, &target_element_address, &chunk_source_address, chunk);
+        insert_chunk(0 /* dimension */, &target_element_address, &chunk_source_address, chunk);
     }
 
     set_read_p(true);
