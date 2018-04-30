@@ -149,12 +149,28 @@ public:
 
     virtual void dump(std::ostream &strm) const;
 
-    virtual void testWriteAxesMetadata(std::ostream &ostrm, libdap::BaseType *bt, std::string indent) {
+    virtual void writeAxesMetadata(std::ostream &ostrm, libdap::BaseType *bt, std::string indent) {
         writeAxesMetadata(&ostrm, bt, indent);
     }
 
-    virtual void testWriteParameterMetadata(std::ostream &ostrm, libdap::BaseType *bt, std::string indent) {
+    virtual void writeParameterMetadata(std::ostream &ostrm, libdap::BaseType *bt, std::string indent) {
         writeParameterMetadata(&ostrm, bt, indent);
+    }
+
+    virtual void transformAxesWorker(std::ostream &ostrm, std::vector<libdap::BaseType *> leaves, std::string indent, bool sendData) {
+        transformAxesWorker(&ostrm, leaves, indent, sendData);
+    }
+
+    virtual void transformReferenceWorker(std::ostream &ostrm, std::string indent, FoDapCovJsonValidation fv) {
+        transformReferenceWorker(&ostrm, indent, fv);
+    }
+
+    virtual void transformParametersWorker(std::ostream &ostrm, std::vector<libdap::BaseType *> nodes, std::string indent, bool sendData) {
+        transformParametersWorker(&ostrm, nodes, indent, sendData);
+    }
+
+    virtual void transformRangesWorker(std::ostream &ostrm, std::vector<libdap::BaseType *> leaves, std::string indent, bool sendData) {
+        transformRangesWorker(&ostrm, leaves, indent, sendData);
     }
 };
 

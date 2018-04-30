@@ -132,14 +132,10 @@ public:
     CPPUNIT_TEST(testAbstractObjectDataRepresentation);
     CPPUNIT_TEST(testWriteAxesMetadata);
     CPPUNIT_TEST(testWriteParameterMetadata);
-    //CPPUNIT_TEST(testGetParameterAttributes);
-    //CPPUNIT_TEST(testTransformAtomic);
-    //CPPUNIT_TEST(testTransformAxesWorker);
+    CPPUNIT_TEST(testTransformAxesWorker);
     //CPPUNIT_TEST(testTransformReferenceWorker);
     //CPPUNIT_TEST(testTransformParametersWorker);
     //CPPUNIT_TEST(testTransformRangesWorker);
-    //CPPUNIT_TEST(testCovjsonSimpleTypeArray);
-    //CPPUNIT_TEST(testCovjsonStringArray);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -282,19 +278,21 @@ public:
             //############################# DATA TEST ####################################
             DBG(cerr << endl << "FoCovJsonTest::testWriteAxesMetadata() - BEGIN" << endl);
             DBG(cerr << "FoCovJsonTest::testWriteAxesMetadata() - d_tmpDir: " << d_tmpDir << endl);
+
             string tmpFile(d_tmpDir + "/test_write_axes_metadata.covjson");
+
             DBG(cerr << "FoCovJsonTest::testWriteAxesMetadata() - tmpFile: " << tmpFile << endl);
 
             FoDapCovJsonTransform ft(test_DDS);
             FoDapCovJsonValidation fv(test_DDS);
             fv.validateDataset();
 
-            DBG(cerr << "FoCovJsonTest::testWriteAxesMetadata() - Calling FoDapCovJsonTransform::testWriteAxesMetadata()" << endl);
+            DBG(cerr << "FoCovJsonTest::testWriteAxesMetadata() - Calling FoDapCovJsonTransform::writeAxesMetadata()" << endl);
 
             fstream output;
             output.open(tmpFile.c_str(), std::fstream::out);
 
-            ft.testWriteAxesMetadata(output, bt, indent);
+            ft.writeAxesMetadata(output, bt, indent);
 
             // Compare the result with the baseline file.
             string baseline = fileToString((string)TEST_SRC_DIR + "/baselines/test_write_axes_metadata.covjson.baseline");
@@ -310,7 +308,7 @@ public:
             CPPUNIT_ASSERT(baseline.length() == result.length());
             CPPUNIT_ASSERT(baseline.compare(result) == 0);
 
-            DBG(cerr << "FoCovJsonTest::testWriteAxesMetadata() - FoDapCovJsonTransform::transform() SUCCESS. Deleting DDS..." << endl);
+            DBG(cerr << "FoCovJsonTest::testWriteAxesMetadata() - FoDapCovJsonTransform::writeAxesMetadata() SUCCESS. Deleting DDS..." << endl);
 
             delete test_DDS;
 
@@ -348,19 +346,21 @@ public:
             //############################# DATA TEST ####################################
             DBG(cerr << endl << "FoCovJsonTest::testWriteParameterMetadata() - BEGIN" << endl);
             DBG(cerr << "FoCovJsonTest::testWriteParameterMetadata() - d_tmpDir: " << d_tmpDir << endl);
+
             string tmpFile(d_tmpDir + "/test_write_parameter_metadata.covjson");
+
             DBG(cerr << "FoCovJsonTest::testWriteParameterMetadata() - tmpFile: " << tmpFile << endl);
 
             FoDapCovJsonTransform ft(test_DDS);
             FoDapCovJsonValidation fv(test_DDS);
             fv.validateDataset();
 
-            DBG(cerr << "FoCovJsonTest::testWriteParameterMetadata() - Calling FoDapCovJsonTransform::testWriteParameterMetadata()" << endl);
+            DBG(cerr << "FoCovJsonTest::testWriteParameterMetadata() - Calling FoDapCovJsonTransform::writeParameterMetadata()" << endl);
 
             fstream output;
             output.open(tmpFile.c_str(), std::fstream::out);
 
-            ft.testWriteParameterMetadata(output, bt, indent);
+            ft.writeParameterMetadata(output, bt, indent);
 
             // Compare the result with the baseline file.
             string baseline = fileToString((string)TEST_SRC_DIR + "/baselines/test_write_parameter_metadata.covjson.baseline");
@@ -376,7 +376,7 @@ public:
             CPPUNIT_ASSERT(baseline.length() == result.length());
             CPPUNIT_ASSERT(baseline.compare(result) == 0);
 
-            DBG(cerr << "FoCovJsonTest::testWriteParameterMetadata() - FoDapCovJsonTransform::transform() SUCCESS. Deleting DDS..." << endl);
+            DBG(cerr << "FoCovJsonTest::testWriteParameterMetadata() - FoDapCovJsonTransform::writeParameterMetadata() SUCCESS. Deleting DDS..." << endl);
 
             delete test_DDS;
 
@@ -402,25 +402,69 @@ public:
     /**
      * @brief
      */
-    void testGetParameterAttributes()
-    {
-
-    }
-
-    /**
-     * @brief
-     */
-    void testTransformAtomic()
-    {
-
-    }
-
-    /**
-     * @brief
-     */
     void testTransformAxesWorker()
     {
+        DBG(cerr << endl);
+        try {
+            libdap::DataDDS *test_DDS = makeTestDDS();
+            //libdap::DDS::Vars_iter vi = test_DDS->var_begin();
+            //libdap::BaseType *bt = *vi;
+            //string indent = "";
 
+            //############################# DATA TEST ####################################
+            DBG(cerr << endl << "FoCovJsonTest::testTransformAxesWorker() - BEGIN" << endl);
+            DBG(cerr << "FoCovJsonTest::testTransformAxesWorker() - d_tmpDir: " << d_tmpDir << endl);
+
+            string tmpFile(d_tmpDir + "/test_transform_axes_worker.covjson");
+
+            DBG(cerr << "FoCovJsonTest::testTransformAxesWorker() - tmpFile: " << tmpFile << endl);
+
+            FoDapCovJsonTransform ft(test_DDS);
+            FoDapCovJsonValidation fv(test_DDS);
+            fv.validateDataset();
+
+            DBG(cerr << "FoCovJsonTest::testTransformAxesWorker() - Calling FoDapCovJsonTransform::transformAxesWorker()" << endl);
+
+            fstream output;
+            output.open(tmpFile.c_str(), std::fstream::out);
+
+            //ft.transformAxesWorker(output, bt, indent);
+
+            // Compare the result with the baseline file.
+            // string baseline = fileToString((string)TEST_SRC_DIR + "/baselines/test_write_parameter_metadata.covjson.baseline");
+            // string result = fileToString(tmpFile);
+            //
+            // DBG(cerr << "FoCovJsonTest::testTransformAxesWorker() - baseline:" << endl << endl << baseline << endl);
+            // DBG(cerr << "FoCovJsonTest::testTransformAxesWorker() - result:" << endl << endl << result << endl);
+            // DBG(cerr << "FoCovJsonTest::testTransformAxesWorker() - baseline.compare(result): " << baseline.compare(result) << endl);
+            //
+            // DBG(cerr << "FoCovJsonTest::testTransformAxesWorker() - baseline length: " << baseline.length() << endl);
+            // DBG(cerr << "FoCovJsonTest::testTransformAxesWorker() - result length: " << result.length() << endl);
+            //
+            // CPPUNIT_ASSERT(baseline.length() == result.length());
+            // CPPUNIT_ASSERT(baseline.compare(result) == 0);
+
+            DBG(cerr << "FoCovJsonTest::testTransformAxesWorker() - FoDapCovJsonTransform::transformAxesWorker() SUCCESS. Deleting DDS..." << endl);
+
+            delete test_DDS;
+
+            DBG(cerr << "FoCovJsonTest::testTransformAxesWorker() - END" << endl);
+        }
+        catch (BESInternalError &e) {
+            cerr << "BESInternalError: " << e.get_message() << endl;
+            CPPUNIT_ASSERT(false);
+        }
+        catch (libdap::Error &e) {
+            cerr << "Error: " << e.get_error_message() << endl;
+            CPPUNIT_ASSERT(false);
+        }
+        catch (std::exception &e) {
+            DBG(cerr << "std::exception: " << e.what() << endl);
+            CPPUNIT_FAIL("Caught std::exception");
+        }
+        catch (...) {
+            CPPUNIT_FAIL("Unknown Error!");
+        }
     }
 
     /**
@@ -428,7 +472,67 @@ public:
      */
     void testTransformReferenceWorker()
     {
+        DBG(cerr << endl);
+        try {
+            libdap::DataDDS *test_DDS = makeTestDDS();
+            //libdap::DDS::Vars_iter vi = test_DDS->var_begin();
+            //libdap::BaseType *bt = *vi;
+            //string indent = "";
 
+            //############################# DATA TEST ####################################
+            DBG(cerr << endl << "FoCovJsonTest::testTransformReferenceWorker() - BEGIN" << endl);
+            DBG(cerr << "FoCovJsonTest::testTransformReferenceWorker() - d_tmpDir: " << d_tmpDir << endl);
+
+            string tmpFile(d_tmpDir + "/test_transform_reference_worker.covjson");
+
+            DBG(cerr << "FoCovJsonTest::testTransformReferenceWorker() - tmpFile: " << tmpFile << endl);
+
+            FoDapCovJsonTransform ft(test_DDS);
+            FoDapCovJsonValidation fv(test_DDS);
+            fv.validateDataset();
+
+            DBG(cerr << "FoCovJsonTest::testTransformReferenceWorker() - Calling FoDapCovJsonTransform::transformReferenceWorker()" << endl);
+
+            fstream output;
+            output.open(tmpFile.c_str(), std::fstream::out);
+
+            //ft.transformReferenceWorker(output, bt, indent);
+
+            // Compare the result with the baseline file.
+            // string baseline = fileToString((string)TEST_SRC_DIR + "/baselines/test_write_parameter_metadata.covjson.baseline");
+            // string result = fileToString(tmpFile);
+            //
+            // DBG(cerr << "FoCovJsonTest::testTransformAxesWorker() - baseline:" << endl << endl << baseline << endl);
+            // DBG(cerr << "FoCovJsonTest::testTransformAxesWorker() - result:" << endl << endl << result << endl);
+            // DBG(cerr << "FoCovJsonTest::testTransformAxesWorker() - baseline.compare(result): " << baseline.compare(result) << endl);
+            //
+            // DBG(cerr << "FoCovJsonTest::testTransformAxesWorker() - baseline length: " << baseline.length() << endl);
+            // DBG(cerr << "FoCovJsonTest::testTransformAxesWorker() - result length: " << result.length() << endl);
+            //
+            // CPPUNIT_ASSERT(baseline.length() == result.length());
+            // CPPUNIT_ASSERT(baseline.compare(result) == 0);
+
+            DBG(cerr << "FoCovJsonTest::testTransformReferenceWorker() - FoDapCovJsonTransform::transformReferenceWorker() SUCCESS. Deleting DDS..." << endl);
+
+            delete test_DDS;
+
+            DBG(cerr << "FoCovJsonTest::testTransformReferenceWorker() - END" << endl);
+        }
+        catch (BESInternalError &e) {
+            cerr << "BESInternalError: " << e.get_message() << endl;
+            CPPUNIT_ASSERT(false);
+        }
+        catch (libdap::Error &e) {
+            cerr << "Error: " << e.get_error_message() << endl;
+            CPPUNIT_ASSERT(false);
+        }
+        catch (std::exception &e) {
+            DBG(cerr << "std::exception: " << e.what() << endl);
+            CPPUNIT_FAIL("Caught std::exception");
+        }
+        catch (...) {
+            CPPUNIT_FAIL("Unknown Error!");
+        }
     }
 
     /**
@@ -436,7 +540,67 @@ public:
      */
     void testTransformParametersWorker()
     {
+        DBG(cerr << endl);
+        try {
+            libdap::DataDDS *test_DDS = makeTestDDS();
+            //libdap::DDS::Vars_iter vi = test_DDS->var_begin();
+            //libdap::BaseType *bt = *vi;
+            //string indent = "";
 
+            //############################# DATA TEST ####################################
+            DBG(cerr << endl << "FoCovJsonTest::testTransformParametersWorker() - BEGIN" << endl);
+            DBG(cerr << "FoCovJsonTest::testTransformParametersWorker() - d_tmpDir: " << d_tmpDir << endl);
+
+            string tmpFile(d_tmpDir + "/test_transform_parameters_worker.covjson");
+
+            DBG(cerr << "FoCovJsonTest::testTransformParametersWorker() - tmpFile: " << tmpFile << endl);
+
+            FoDapCovJsonTransform ft(test_DDS);
+            FoDapCovJsonValidation fv(test_DDS);
+            fv.validateDataset();
+
+            DBG(cerr << "FoCovJsonTest::testTransformParametersWorker() - Calling FoDapCovJsonTransform::transformParametersWorker()" << endl);
+
+            fstream output;
+            output.open(tmpFile.c_str(), std::fstream::out);
+
+            //ft.transformParametersWorker(output, bt, indent);
+
+            // Compare the result with the baseline file.
+            // string baseline = fileToString((string)TEST_SRC_DIR + "/baselines/test_write_parameter_metadata.covjson.baseline");
+            // string result = fileToString(tmpFile);
+            //
+            // DBG(cerr << "FoCovJsonTest::testTransformAxesWorker() - baseline:" << endl << endl << baseline << endl);
+            // DBG(cerr << "FoCovJsonTest::testTransformAxesWorker() - result:" << endl << endl << result << endl);
+            // DBG(cerr << "FoCovJsonTest::testTransformAxesWorker() - baseline.compare(result): " << baseline.compare(result) << endl);
+            //
+            // DBG(cerr << "FoCovJsonTest::testTransformAxesWorker() - baseline length: " << baseline.length() << endl);
+            // DBG(cerr << "FoCovJsonTest::testTransformAxesWorker() - result length: " << result.length() << endl);
+            //
+            // CPPUNIT_ASSERT(baseline.length() == result.length());
+            // CPPUNIT_ASSERT(baseline.compare(result) == 0);
+
+            DBG(cerr << "FoCovJsonTest::testTransformParametersWorker() - FoDapCovJsonTransform::transformParametersWorker() SUCCESS. Deleting DDS..." << endl);
+
+            delete test_DDS;
+
+            DBG(cerr << "FoCovJsonTest::testTransformParametersWorker() - END" << endl);
+        }
+        catch (BESInternalError &e) {
+            cerr << "BESInternalError: " << e.get_message() << endl;
+            CPPUNIT_ASSERT(false);
+        }
+        catch (libdap::Error &e) {
+            cerr << "Error: " << e.get_error_message() << endl;
+            CPPUNIT_ASSERT(false);
+        }
+        catch (std::exception &e) {
+            DBG(cerr << "std::exception: " << e.what() << endl);
+            CPPUNIT_FAIL("Caught std::exception");
+        }
+        catch (...) {
+            CPPUNIT_FAIL("Unknown Error!");
+        }
     }
 
     /**
@@ -444,23 +608,67 @@ public:
      */
     void testTransformRangesWorker()
     {
+        DBG(cerr << endl);
+        try {
+            libdap::DataDDS *test_DDS = makeTestDDS();
+            //libdap::DDS::Vars_iter vi = test_DDS->var_begin();
+            //libdap::BaseType *bt = *vi;
+            //string indent = "";
 
-    }
+            //############################# DATA TEST ####################################
+            DBG(cerr << endl << "FoCovJsonTest::testTransformRangesWorker() - BEGIN" << endl);
+            DBG(cerr << "FoCovJsonTest::testTransformRangesWorker() - d_tmpDir: " << d_tmpDir << endl);
 
-    /**
-     * @brief
-     */
-    void testCovjsonSimpleTypeArray()
-    {
+            string tmpFile(d_tmpDir + "/test_transform_ranges_worker.covjson");
 
-    }
+            DBG(cerr << "FoCovJsonTest::testTransformRangesWorker() - tmpFile: " << tmpFile << endl);
 
-    /**
-     * @brief
-     */
-    void testCovjsonStringArray()
-    {
+            FoDapCovJsonTransform ft(test_DDS);
+            FoDapCovJsonValidation fv(test_DDS);
+            fv.validateDataset();
 
+            DBG(cerr << "FoCovJsonTest::testTransformRangesWorker() - Calling FoDapCovJsonTransform::transformRangesWorker()" << endl);
+
+            fstream output;
+            output.open(tmpFile.c_str(), std::fstream::out);
+
+            //ft.transformRangesWorker(output, bt, indent);
+
+            // Compare the result with the baseline file.
+            // string baseline = fileToString((string)TEST_SRC_DIR + "/baselines/test_write_parameter_metadata.covjson.baseline");
+            // string result = fileToString(tmpFile);
+            //
+            // DBG(cerr << "FoCovJsonTest::testTransformAxesWorker() - baseline:" << endl << endl << baseline << endl);
+            // DBG(cerr << "FoCovJsonTest::testTransformAxesWorker() - result:" << endl << endl << result << endl);
+            // DBG(cerr << "FoCovJsonTest::testTransformAxesWorker() - baseline.compare(result): " << baseline.compare(result) << endl);
+            //
+            // DBG(cerr << "FoCovJsonTest::testTransformAxesWorker() - baseline length: " << baseline.length() << endl);
+            // DBG(cerr << "FoCovJsonTest::testTransformAxesWorker() - result length: " << result.length() << endl);
+            //
+            // CPPUNIT_ASSERT(baseline.length() == result.length());
+            // CPPUNIT_ASSERT(baseline.compare(result) == 0);
+
+            DBG(cerr << "FoCovJsonTest::testTransformRangesWorker() - FoDapCovJsonTransform::transformRangesWorker() SUCCESS. Deleting DDS..." << endl);
+
+            delete test_DDS;
+
+            DBG(cerr << "FoCovJsonTest::testTransformRangesWorker() - END" << endl);
+        }
+        catch (BESInternalError &e) {
+            cerr << "BESInternalError: " << e.get_message() << endl;
+            CPPUNIT_ASSERT(false);
+        }
+        catch (libdap::Error &e) {
+            cerr << "Error: " << e.get_error_message() << endl;
+            CPPUNIT_ASSERT(false);
+        }
+        catch (std::exception &e) {
+            DBG(cerr << "std::exception: " << e.what() << endl);
+            CPPUNIT_FAIL("Caught std::exception");
+        }
+        catch (...) {
+            CPPUNIT_FAIL("Unknown Error!");
+        }
     }
 
     /**
