@@ -203,9 +203,13 @@ void Chunk::read_chunk()
 
     set_rbuf_to_size();
 
-    dmrpp_easy_handle *curl = DmrppRequestHandler::curl_handle_pool->get_easy_handle(this);
-    curl->read_data();  // throws BESInternalError if error
-    DmrppRequestHandler::curl_handle_pool->release_handle(curl);
+    dmrpp_easy_handle *handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(this);
+    if (!handle)
+        throw BESInternalError("No more libcurl handles.", __FILE__, __LINE__);
+
+    handle->read_data();  // throws BESInternalError if error
+
+    DmrppRequestHandler::curl_handle_pool->release_handle(handle);
 
     // If the expected byte count was not read, it's an error.
     if (get_size() != get_bytes_read()) {

@@ -134,56 +134,43 @@ void dmrpp_multi_handle::read_data()
             CURL *eh = msg->easy_handle;
 
             CURLcode res = msg->data.result;
-            if (res != CURLE_OK) {
-                cerr << "CURL error code: " << msg->data.result << endl;
-                continue;
-            }
+            if (res != CURLE_OK)
+                throw BESInternalError(string("Error HTTP: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
 
-#if 1
             dmrpp_easy_handle *dmrpp_easy_handle = 0;
             res = curl_easy_getinfo(eh, CURLINFO_PRIVATE, &dmrpp_easy_handle);
             if (res != CURLM_OK)
-            throw BESInternalError(string("Could not access easy handle: ").append(curl_easy_strerror(res)),
-                __FILE__, __LINE__);
-#endif
+                throw BESInternalError(string("Could not access easy handle: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
 
-#if 1
-            // This code has to work with both http: and file: protocols. The file: protocol
-            // does not return HTTP status code in libcurl, so the code uses CURLE_OK
+            // This code has to work with both http: and file: protocols. Here we check the
+            // HTTP status code. If the protocol is not HTTP, we assume since msg->data.result
+            // returned CURLE_OK, that the transfer worked. jhrg 5/1/18
             ostringstream oss;
             string http_url("http://");
             if (dmrpp_easy_handle->d_url.compare(0, http_url.size(), http_url) == 0 /*equal*/) {
                 long http_code = 0;
                 res = curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_code);
                 if (CURLE_OK != res) {
-                    throw BESInternalError(string("Error getting HTTP response code: ").append(curl_easy_strerror(res)),
-                        __FILE__, __LINE__);
+                    throw BESInternalError(string("Error getting HTTP response code: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
                 }
 
                 if (http_code != 200) {
-                    oss << "HTTP status error. Expected an OK status, but got: ";
+                    oss << "HTTP status error: Expected an OK status, but got: ";
                     oss << http_code;
                     throw BESInternalError(oss.str(), __FILE__, __LINE__);
                 }
             }
-#endif
-
 
             // If we are here, the request (file: or http:) was successful.
-
-#if 1
             dmrpp_easy_handle->d_chunk->set_is_read(true);
             DmrppRequestHandler::curl_handle_pool->release_handle(dmrpp_easy_handle);
-#endif
-
 
             mres = curl_multi_remove_handle(d_multi, eh);
             if (mres != CURLM_OK)
-                throw BESInternalError(string("Could not remove libcurl handle: ").append(curl_multi_strerror(mres)),
-                    __FILE__, __LINE__);
+                throw BESInternalError(string("Could not remove libcurl handle: ").append(curl_multi_strerror(mres)),  __FILE__, __LINE__);
         }
         else {  // != CURLMSG_DONE
-            cerr << "error: after curl_multi_info_read(), CURLMsg: " << msg->msg << endl;
+            throw BESInternalError("Error getting HTTP or FILE responses.", __FILE__, __LINE__);
         }
     }
 }
@@ -193,11 +180,13 @@ void dmrpp_multi_handle::read_data()
  *
  * @param url
  * @param chunk
- * @return A CURL easy handle configured to transfer data.
+ * @return A CURL easy handle configured to transfer data, or null if there are no more handles
+ * in the pool.
  */
 dmrpp_easy_handle *
 CurlHandlePool::get_easy_handle(Chunk *chunk)
 {
+#if 0
     // Get the next available CurlHandlePool::easy_handle
     if (!d_easy_handle) {
         d_easy_handle = new dmrpp_easy_handle();
@@ -205,41 +194,46 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
     else {
         if (d_easy_handle->d_in_use) throw BESInternalError("CURL handle in use", __FILE__, __LINE__);
     }
+#endif
 
-    // Once here, d_easy_handle holds a CURL* we can use.
-    d_easy_handle->d_in_use = true;
-    d_easy_handle->d_url = chunk->get_data_url();
-    d_easy_handle->d_chunk = chunk;
+    dmrpp_easy_handle *handle = 0;
+    for (vector<dmrpp_easy_handle *>::iterator i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
+        if (!(*i)->d_in_use)
+            handle = *i;
+    }
 
-    CURLcode res = curl_easy_setopt(d_easy_handle->d_handle, CURLOPT_URL, chunk->get_data_url().c_str());
-    if (res != CURLE_OK) throw BESInternalError(string(curl_easy_strerror(res)), __FILE__, __LINE__);
+    if (handle) {
+        // Once here, d_easy_handle holds a CURL* we can use.
+        handle->d_in_use = true;
+        handle->d_url = chunk->get_data_url();
+        handle->d_chunk = chunk;
 
-    // get the offset to offset + size bytes
-    if (CURLE_OK
-        != (res = curl_easy_setopt(d_easy_handle->d_handle, CURLOPT_RANGE, chunk->get_curl_range_arg_string().c_str())))
-        throw BESInternalError(string("HTTP Error setting Range: ").append(curl_easy_strerror(res)), __FILE__,
+        CURLcode res = curl_easy_setopt(handle->d_handle, CURLOPT_URL, chunk->get_data_url().c_str());
+        if (res != CURLE_OK) throw BESInternalError(string(curl_easy_strerror(res)), __FILE__, __LINE__);
+
+        // get the offset to offset + size bytes
+        if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_RANGE, chunk->get_curl_range_arg_string().c_str())))
+            throw BESInternalError(string("HTTP Error setting Range: ").append(curl_easy_strerror(res)), __FILE__,
             __LINE__);
 
-    // Pass this to write_data as the fourth argument
-    if (CURLE_OK != (res = curl_easy_setopt(d_easy_handle->d_handle, CURLOPT_WRITEDATA, reinterpret_cast<void*>(chunk))))
-        throw BESInternalError(string("CURL Error setting chunk as data buffer: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
+        // Pass this to write_data as the fourth argument
+        if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_WRITEDATA, reinterpret_cast<void*>(chunk))))
+            throw BESInternalError(string("CURL Error setting chunk as data buffer: ").append(curl_easy_strerror(res)),
+            __FILE__, __LINE__);
 
-    // store the easy_handle so that we can call release_handle in multi_handle::read_data()
-#if 1
-    if (CURLE_OK != (res = curl_easy_setopt(d_easy_handle->d_handle, CURLOPT_PRIVATE, reinterpret_cast<void*>(d_easy_handle))))
-    throw BESInternalError(
-        string("CURL Error setting easy_handle as private data: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
-#endif
+        // store the easy_handle so that we can call release_handle in multi_handle::read_data()
+        if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_PRIVATE, reinterpret_cast<void*>(handle))))
+            throw BESInternalError(string("CURL Error setting easy_handle as private data: ").append(curl_easy_strerror(res)), __FILE__,
+            __LINE__);
+    }
 
-
-    return d_easy_handle;
+    return handle;
 }
 
-void CurlHandlePool::release_handle(dmrpp_easy_handle *)
+void CurlHandlePool::release_handle(dmrpp_easy_handle *handle)
 {
-    d_easy_handle->d_in_use = false;
-#if 0
-    d_easy_handle->d_chunk->set_is_read(true);
-#endif
+    handle->d_in_use = false;
+    handle->d_url = "";
+    handle->d_chunk = 0;
 
 }

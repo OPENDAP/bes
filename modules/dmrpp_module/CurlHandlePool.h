@@ -39,7 +39,12 @@ namespace dmrpp {
 class Chunk;
 
 /**
- * Bundle an easy handle and an 'in use' flag.
+ * @brief Bundle a libcurl easy handle to other information.
+ *
+ * Provide an object that encapsulates a libcurl easy handle, a URL and
+ * a DMR++ handler 'chunk.' This can be used with the libcurl 'easy' API
+ * for serial data access or with the 'multi' API and a libcurl multi
+ * handle for parallel (round robin) data transfers.
  */
 class dmrpp_easy_handle {
     bool d_in_use;      ///< Is this easy_handle in use?
@@ -57,6 +62,9 @@ public:
     void read_data();
 };
 
+/**
+ * @brief Encapsulate a libcurl multi handle.
+ */
 class dmrpp_multi_handle {
     CURLM *d_multi;
 
@@ -88,20 +96,31 @@ public:
  */
 class CurlHandlePool {
 private:
-    const static unsigned int d_max_easy_handles = 1;
+    const static unsigned int d_max_easy_handles = 5;
 
     dmrpp_easy_handle *d_easy_handle;
+
+    std::vector<dmrpp_easy_handle *> d_easy_handles;
     dmrpp_multi_handle *d_multi_handle;
 
 public:
     CurlHandlePool() : d_easy_handle(0), d_multi_handle(0)
     {
         d_multi_handle = new dmrpp_multi_handle();
+
+        for (unsigned int i = 0; i < d_max_easy_handles; ++i) {
+            d_easy_handles.push_back(new dmrpp_easy_handle());
+        }
+
         d_easy_handle = new dmrpp_easy_handle();
     }
 
     ~CurlHandlePool()
     {
+        for (std::vector<dmrpp_easy_handle *>::iterator i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
+            delete *i;
+        }
+
         delete d_easy_handle;
         delete d_multi_handle;
     }
