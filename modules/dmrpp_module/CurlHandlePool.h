@@ -26,11 +26,9 @@
 
 #include <string>
 #include <vector>
-#if 0
-#include <map>
-#endif
 
 #include <curl/curl.h>
+#include <curl/multi.h>
 
 #include "BESInternalError.h"
 
@@ -41,79 +39,86 @@ namespace dmrpp {
 class Chunk;
 
 /**
+ * Bundle an easy handle and an 'in use' flag.
+ */
+class easy_handle {
+    bool d_in_use;      ///< Is this easy_handle in use?
+    std::string d_url;  ///< The libcurl handle reads from this URL.
+    Chunk *d_chunk;     ///< This easy_handle reads the data for \arg chunk.
+    CURL *d_handle;     ///< The libcurl handle object.
+
+    friend class CurlHandlePool;
+    friend class multi_handle;
+
+public:
+    easy_handle();
+    ~easy_handle();
+
+    void read_data();
+};
+
+class multi_handle {
+    CURLM *d_multi;
+
+public:
+    multi_handle()
+    {
+        d_multi = curl_multi_init();
+    }
+
+    ~multi_handle()
+    {
+        curl_multi_cleanup(d_multi);
+    }
+
+    void add_easy_handle(easy_handle *eh)
+    {
+        curl_multi_add_handle(d_multi, eh->d_handle);
+    }
+
+    void read_data();
+};
+
+/**
  * Get a CURL easy handle, assign a URL and other values, use the handler, return
  * it to the pool. This class helps take advantage of libculr's built-in reuse
  * capabilities (connection keep-alive, DNS pooling, etc.).
  *
- * See d_max_handles below for the limit on the total number of easy handles.
+ * See d_max_easy_handles below for the limit on the total number of easy handles.
  */
 class CurlHandlePool {
-
-    const static unsigned int d_max_handles = 5;
-
-    /**
-     * Bundle an easy handle and an 'in use' flag.
-     */
-    struct easy_handle {
-        bool d_in_use;
-        CURL *d_handle;
-
-        easy_handle()
-        {
-            d_handle = curl_easy_init();
-            if (!d_handle) throw BESInternalError("Could not allocate CURL handle", __FILE__, __LINE__);
-
-            CURLcode res;
-
-            // Pass all data to the 'write_data' function
-            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_WRITEFUNCTION, chunk_write_data)))
-                throw BESInternalError(string("CURL Error: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
-
-            /* enable TCP keep-alive for this transfer */
-            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPALIVE, 1L)))
-                throw string("CURL Error: ").append(curl_easy_strerror(res));
-
-            /* keep-alive idle time to 120 seconds */
-            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPIDLE, 120L)))
-                throw string("CURL Error: ").append(curl_easy_strerror(res));
-
-            /* interval time between keep-alive probes: 60 seconds */
-            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPINTVL, 60L)))
-                throw string("CURL Error: ").append(curl_easy_strerror(res));
-
-            d_in_use = false;
-        }
-
-        ~easy_handle()
-        {
-            curl_easy_cleanup(d_handle);
-        }
-    };
-
-    std::vector<easy_handle*> d_available;
-    std::vector<easy_handle*> d_in_use;
+private:
+    const static unsigned int d_max_easy_handles = 1;
 
     easy_handle *d_easy_handle;
+    multi_handle *d_multi_handle;
 
 public:
-
-    CurlHandlePool() : d_easy_handle(0)
+    CurlHandlePool() : d_easy_handle(0), d_multi_handle(0)
     {
-#if 0
-        for (int i = 0; i < d_max_handles; ++i) {
-            d_available.push_back(new CurlHandlePool::easy_handle());
-        }
-#endif
-
+        d_multi_handle = new multi_handle();
+        d_easy_handle = new easy_handle();
     }
 
-    ~CurlHandlePool() {
+    ~CurlHandlePool()
+    {
         delete d_easy_handle;
+        delete d_multi_handle;
     }
 
-    CURL *get_easy_handle(Chunk *chunk);
+    unsigned int get_max_handles() const
+    {
+        return d_max_easy_handles;
+    }
 
-    void release_handle(CURL *h);
+    multi_handle *get_multi_handle()
+    {
+        return d_multi_handle;
+    }
+
+    easy_handle *get_easy_handle(Chunk *chunk);
+
+    void release_handle(easy_handle *h);
 };
 
 } // namespace dmrpp

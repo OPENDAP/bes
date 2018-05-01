@@ -230,8 +230,7 @@ public:
     virtual void read(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_size);
 #endif
 
-
-    virtual void read_serial(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_size);
+    virtual void read_chunk();
 
     void inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width);
 

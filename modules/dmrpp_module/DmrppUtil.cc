@@ -62,22 +62,12 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
 {
     Chunk *c_ptr = reinterpret_cast<Chunk*>(data);
 
-    BESDEBUG("dmrpp", __func__ << "() - BEGIN chunk: " << c_ptr->to_string() << endl);
-
     // rbuf: |******++++++++++----------------------|
     //              ^        ^ bytes_read + nbytes
     //              | bytes_read
 
     unsigned long long bytes_read = c_ptr->get_bytes_read();
     size_t nbytes = size * nmemb;
-
-    BESDEBUG("dmrpp", __func__ << "() -"
-			<< " bytes_read: " << bytes_read
-			<< ", size: " << size
-			<< ", nmemb: " << nmemb
-			<< ", nbytes: " << nbytes
-			<< ", rbuf_size: " << c_ptr->get_rbuf_size()
-			<< endl);
 
     // If this fails, the code will write beyond the buffer.
     assert(bytes_read + nbytes <= c_ptr->get_rbuf_size());
@@ -86,91 +76,8 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
 
     c_ptr->set_bytes_read(bytes_read + nbytes);
 
-    BESDEBUG("dmrpp", __func__ << "() - END bytes_read: " << c_ptr->get_bytes_read() << endl);
-
     return nbytes;
 }
-
-#if 0
-void read_using_curl(CURL* curl, Chunk* chunk)
-{
-    // Perform the request
-    CURLcode curl_code = curl_easy_perform(curl);
-    if (CURLE_OK != curl_code) {
-        throw BESInternalError(string("Data transfer error: ").append(curl_easy_strerror(curl_code)), __FILE__, __LINE__);
-    }
-
-    BESDEBUG("dmrpp", __func__ << "() - curl_easy_perform() finished. exit_code: " << curl_code << endl);
-
-    string file_url("file://");
-    if (!chunk->get_data_url().compare(0, file_url.size(), file_url)) {
-        // If it's a file URL then we don't need to dink around with the HTTP noise..
-        BESDEBUG("dmrpp", __func__ << "() Retrieved file URL, no http status to check. url: " << chunk->get_data_url() << endl);
-    }
-    else {
-        // If it's not a file URL then we'll assume it's an http(s) URL and
-        // we handle the various HTTP mischief.
-        long http_code = 0;
-        CURLcode curl_info_code = curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
-        if (http_code == 200 && curl_code != CURLE_ABORTED_BY_CALLBACK && curl_info_code == CURLE_OK) {
-            BESDEBUG("dmrpp", __func__ << "() - SUCCEEDED!"<< endl);
-        }
-        else if (http_code == 206) {
-            BESDEBUG("dmrpp", __func__ << "() -  206 " << endl);
-            double dwnld_length;
-            ostringstream oss;
-            curl_info_code = curl_easy_getinfo(curl, CURLINFO_SIZE_DOWNLOAD, &dwnld_length);
-            if (curl_info_code != CURLE_OK) {
-                oss << "Missing_Http_Content_Length_Header";
-            }
-            else {
-                oss << dwnld_length;
-            }
-            BESDEBUG("dmrpp", __func__ << "() - Host Returned \"Partial-Content\" (206) length: " << oss.str() << endl);
-        }
-        else {
-            std::ostringstream oss;
-            oss << __func__ << "() - ERROR curl request failed! " << "http-status: " << http_code << endl;
-            char* ctype;
-            string content_type;
-            curl_info_code = curl_easy_getinfo(curl, CURLINFO_CONTENT_TYPE, &ctype);
-            if (curl_info_code != CURLE_OK || ctype == NULL) {
-                content_type = "No_Content_Type_Found";
-            }
-            else {
-                content_type = string(ctype);
-            }
-            oss << " content-type: " << content_type;
-            long bytes_read = chunk->get_bytes_read();
-            oss << " bytes_read: " << bytes_read;
-            if (content_type.find("text") != string::npos || content_type.find("xml") != string::npos
-                || content_type.find("json") != string::npos) {
-                chunk->get_rbuf()[bytes_read] = 0;
-                string message(chunk->get_rbuf());
-                oss << endl << message;
-            }
-            BESDEBUG("dmrpp", oss.str() << endl);
-            curl_easy_cleanup(curl);
-            throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
-        }
-    }
-}
-
-void curl_read_chunk(Chunk *chunk)
-{
-    CURL *curl = DmrppRequestHandler::curl_handle_pool->get_easy_handle(chunk);
-
-    if (curl) {
-        // Perform the request
-        read_using_curl(curl, chunk);
-
-        DmrppRequestHandler::curl_handle_pool->release_handle(curl);
-    }
-
-    BESDEBUG("dmrpp", __func__ << "() - END " << endl);
-}
-#endif
-
 
 /**
  * @brief Deflate data. This is the zlib algorithm.
@@ -202,7 +109,7 @@ void inflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len)
 
     /* Initialize the uncompression routines */
     if (Z_OK != inflateInit(&z_strm))
-        throw BESError("Failed to initialize deflate software.", BES_INTERNAL_ERROR, __FILE__, __LINE__);
+        throw BESError("Failed to initialize inflate software.", BES_INTERNAL_ERROR, __FILE__, __LINE__);
 
     /* Loop to uncompress the buffer */
     int status = Z_OK;
@@ -216,7 +123,7 @@ void inflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len)
         /* Check for error */
         if (Z_OK != status) {
             (void) inflateEnd(&z_strm);
-            throw BESError("Failed to deflate data chunk.", BES_INTERNAL_ERROR, __FILE__, __LINE__);
+            throw BESError("Failed to inflate data chunk.", BES_INTERNAL_ERROR, __FILE__, __LINE__);
         }
         else {
             /* If we're not done and just ran out of buffer space, it's an error.
@@ -233,7 +140,7 @@ void inflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len)
                 nalloc *= 2;
                 if (NULL == (new_outbuf = H5MM_realloc(outbuf, nalloc))) {
                     (void) inflateEnd(&z_strm);
-                    HGOTO_ERROR(H5E_RESOURCE, H5E_NOSPACE, 0, "memory allocation failed for deflate uncompression")
+                    HGOTO_ERROR(H5E_RESOURCE, H5E_NOSPACE, 0, "memory allocation failed for inflate decompression")
                 } /* end if */
                 outbuf = new_outbuf;
 
