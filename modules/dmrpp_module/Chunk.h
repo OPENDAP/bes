@@ -219,7 +219,7 @@ public:
         return d_read_buffer_size;
     }
 
-    virtual std::vector<unsigned int> get_position_in_array() const
+    virtual const std::vector<unsigned int> &get_position_in_array() const
     {
         return d_chunk_position_in_array;
     }

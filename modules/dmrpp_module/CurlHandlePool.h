@@ -41,37 +41,37 @@ class Chunk;
 /**
  * Bundle an easy handle and an 'in use' flag.
  */
-class easy_handle {
+class dmrpp_easy_handle {
     bool d_in_use;      ///< Is this easy_handle in use?
     std::string d_url;  ///< The libcurl handle reads from this URL.
     Chunk *d_chunk;     ///< This easy_handle reads the data for \arg chunk.
     CURL *d_handle;     ///< The libcurl handle object.
 
     friend class CurlHandlePool;
-    friend class multi_handle;
+    friend class dmrpp_multi_handle;
 
 public:
-    easy_handle();
-    ~easy_handle();
+    dmrpp_easy_handle();
+    ~dmrpp_easy_handle();
 
     void read_data();
 };
 
-class multi_handle {
+class dmrpp_multi_handle {
     CURLM *d_multi;
 
 public:
-    multi_handle()
+    dmrpp_multi_handle()
     {
         d_multi = curl_multi_init();
     }
 
-    ~multi_handle()
+    ~dmrpp_multi_handle()
     {
         curl_multi_cleanup(d_multi);
     }
 
-    void add_easy_handle(easy_handle *eh)
+    void add_easy_handle(dmrpp_easy_handle *eh)
     {
         curl_multi_add_handle(d_multi, eh->d_handle);
     }
@@ -90,14 +90,14 @@ class CurlHandlePool {
 private:
     const static unsigned int d_max_easy_handles = 1;
 
-    easy_handle *d_easy_handle;
-    multi_handle *d_multi_handle;
+    dmrpp_easy_handle *d_easy_handle;
+    dmrpp_multi_handle *d_multi_handle;
 
 public:
     CurlHandlePool() : d_easy_handle(0), d_multi_handle(0)
     {
-        d_multi_handle = new multi_handle();
-        d_easy_handle = new easy_handle();
+        d_multi_handle = new dmrpp_multi_handle();
+        d_easy_handle = new dmrpp_easy_handle();
     }
 
     ~CurlHandlePool()
@@ -111,14 +111,14 @@ public:
         return d_max_easy_handles;
     }
 
-    multi_handle *get_multi_handle()
+    dmrpp_multi_handle *get_multi_handle()
     {
         return d_multi_handle;
     }
 
-    easy_handle *get_easy_handle(Chunk *chunk);
+    dmrpp_easy_handle *get_easy_handle(Chunk *chunk);
 
-    void release_handle(easy_handle *h);
+    void release_handle(dmrpp_easy_handle *h);
 };
 
 } // namespace dmrpp

@@ -308,10 +308,10 @@ void DmrppArray::insert_chunk_serial(unsigned int dim, vector<unsigned int> *tar
     BESDEBUG("dmrpp", __func__ << " dim: "<< dim << " BEGIN "<< endl);
 
     // The size, in elements, of each of the chunk's dimensions.
-    vector<unsigned int> chunk_shape = get_chunk_dimension_sizes();
+    const vector<unsigned int> &chunk_shape = get_chunk_dimension_sizes();
 
     // The chunk's origin point a.k.a. its "position in array".
-    vector<unsigned int> chunk_origin = chunk->get_position_in_array();
+    const vector<unsigned int> &chunk_origin = chunk->get_position_in_array();
 
     dimension thisDim = this->get_dimension(dim);
 
@@ -494,12 +494,10 @@ DmrppArray::find_needed_chunks(unsigned int dim, vector<unsigned int> *target_el
     BESDEBUG(dmrpp_3, __func__ << " BEGIN, dim: " << dim << endl);
 
     // The size, in elements, of each of the chunk's dimensions.
-    // TODO Edit get_chunk_dimension_sizes to return a reference
-    vector<unsigned int> chunk_shape = get_chunk_dimension_sizes();
+    const vector<unsigned int> &chunk_shape = get_chunk_dimension_sizes();
 
     // The chunk's origin point a.k.a. its "position in array".
-    // TODO Edit get_position_in_array to return a reference
-    vector<unsigned int> chunk_origin = chunk->get_position_in_array();
+    const vector<unsigned int> &chunk_origin = chunk->get_position_in_array();
 
     dimension thisDim = this->get_dimension(dim);
 
@@ -555,26 +553,30 @@ void DmrppArray::insert_chunk(unsigned int dim, vector<unsigned int> *target_ele
     vector<unsigned int> *chunk_element_address, Chunk *chunk)
 {
     // The size, in elements, of each of the chunk's dimensions.
-    vector<unsigned int> chunk_shape = get_chunk_dimension_sizes();
+    const vector<unsigned int> &chunk_shape = get_chunk_dimension_sizes();
 
     // The chunk's origin point a.k.a. its "position in array".
-    vector<unsigned int> chunk_origin = chunk->get_position_in_array();
+    const vector<unsigned int> &chunk_origin = chunk->get_position_in_array();
 
     dimension thisDim = this->get_dimension(dim);
 
+#if 0
     // Do we even want this chunk? FIXME This should be an exception
     if ((unsigned) thisDim.start > (chunk_origin[dim] + chunk_shape[dim])
         || (unsigned) thisDim.stop < chunk_origin[dim]) {
         return; // No. No, we do not. Skip this.
     }
+#endif
 
     // What's the first element that we are going to access for this dimension of the chunk?
     unsigned long long chunk_start = get_chunk_start(dim, chunk_origin);
 
+#if 0
     // Is the next point to be sent in this chunk at all? If no, return. FIXME Exception
     if (chunk_start > chunk_shape[dim]) {
         return;
     }
+#endif
 
     // Now we figure out the correct last element, based on the subset expression
     unsigned long long end_element = chunk_origin[dim] + chunk_shape[dim] - 1;
@@ -682,19 +684,57 @@ bool DmrppArray::read_chunks_parallel()
     }
 #else
     unsigned int max_handles = DmrppRequestHandler::curl_handle_pool->get_max_handles();
-    multi_handle *mhandle = DmrppRequestHandler::curl_handle_pool->get_multi_handle();
+    dmrpp_multi_handle *mhandle = DmrppRequestHandler::curl_handle_pool->get_multi_handle();
 
     while (chunks_to_read.size() > 0) {
 
-        vector<Chunk*> chunks_to_insert(max_handles);
-        easy_handle *handle = 0;
+        queue<Chunk*> chunks_to_insert;
+#if 0
+        dmrpp_easy_handle *handle = 0;
+#endif
+
 
         for (unsigned int i = 0; i < max_handles && chunks_to_read.size() > 0; ++i) {
             Chunk *chunk = chunks_to_read.front();
             chunks_to_read.pop();
 
             chunk->set_rbuf_to_size();
-            /*easy_handle */ handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(chunk);
+            dmrpp_easy_handle *handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(chunk);
+            mhandle->add_easy_handle(handle);
+
+            chunks_to_insert.push(chunk);
+        }
+
+        mhandle->read_data(); // read and decompress all chunks
+
+#if 0
+        DmrppRequestHandler::curl_handle_pool->release_handle(handle);  // FIXME HACK there's only one handle
+#endif
+
+
+        //for (vector<Chunk *>::iterator i = chunks_to_insert.begin(), e = chunks_to_insert.end(); i != e; ++i) {
+        while (chunks_to_insert.size() > 0) {
+            Chunk *chunk = chunks_to_insert.front();
+            chunks_to_insert.pop();
+
+            chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(),
+                var()->width());
+
+            vector<unsigned int> target_element_address = chunk->get_position_in_array();
+            vector<unsigned int> chunk_source_address(dimensions(), 0);
+            insert_chunk(0 /* dimension */, &target_element_address, &chunk_source_address, chunk);
+        }
+
+#if 0
+        vector<Chunk*> chunks_to_insert(max_handles);
+        dmrpp_easy_handle *handle = 0;
+
+        for (unsigned int i = 0; i < max_handles && chunks_to_read.size() > 0; ++i) {
+            Chunk *chunk = chunks_to_read.front();
+            chunks_to_read.pop();
+
+            chunk->set_rbuf_to_size();
+            /*easy_handle */handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(chunk);
             mhandle->add_easy_handle(handle);
 
             chunks_to_insert.push_back(chunk);
@@ -702,7 +742,7 @@ bool DmrppArray::read_chunks_parallel()
 
         mhandle->read_data(); // read and decompress all chunks
 
-        DmrppRequestHandler::curl_handle_pool->release_handle(handle);  // FIXME HACK there's only one handle
+        DmrppRequestHandler::curl_handle_pool->release_handle(handle);// FIXME HACK there's only one handle
 
         for (vector<Chunk *>::iterator i = chunks_to_insert.begin(), e = chunks_to_insert.end(); i != e; ++i) {
             Chunk *chunk = *i;
@@ -711,6 +751,9 @@ bool DmrppArray::read_chunks_parallel()
             vector<unsigned int> chunk_source_address(dimensions(), 0);
             insert_chunk(0 /* dimension */, &target_element_address, &chunk_source_address, chunk);
         }
+#endif
+
+
     }
 #endif
 

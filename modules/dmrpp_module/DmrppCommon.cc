@@ -151,7 +151,7 @@ void DmrppCommon::dump(ostream & strm) const
     strm << BESIndent::LMarg << "is_deflate:             " << (is_deflate_compression() ? "true" : "false") << endl;
     strm << BESIndent::LMarg << "is_shuffle_compression: " << (is_shuffle_compression() ? "true" : "false") << endl;
 
-    vector<unsigned int> chunk_dim_sizes = get_chunk_dimension_sizes();
+    const vector<unsigned int> &chunk_dim_sizes = get_chunk_dimension_sizes();
 
     strm << BESIndent::LMarg << "chunk dimension sizes:  [";
     for (unsigned int i = 0; i < chunk_dim_sizes.size(); i++) {

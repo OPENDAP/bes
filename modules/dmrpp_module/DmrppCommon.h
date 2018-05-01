@@ -106,7 +106,7 @@ public:
     	return d_chunks;
     }
 
-    virtual std::vector<unsigned int> get_chunk_dimension_sizes() const {
+    virtual const std::vector<unsigned int> &get_chunk_dimension_sizes() const {
     	return d_chunk_dimension_sizes;
     }
 

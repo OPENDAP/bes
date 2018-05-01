@@ -130,79 +130,9 @@ void Chunk::add_tracking_query_param(string &data_access_url)
     }
 }
 
-#if 0
-void Chunk::add_to_multi_read_queue(CURLM *multi_handle)
-{
-    BESDEBUG(debug,"Chunk::"<< __func__ <<"() - BEGIN  " << to_string() << endl);
-
-    if (d_is_read || d_is_in_multi_queue) {
-        BESDEBUG("dmrpp", "Chunk::"<< __func__ <<"() - Chunk has been " << (d_is_in_multi_queue?"queued to be ":"") << "read! Returning." << endl);
-        return;
-    }
-
-    // This call uses the internal size param and allocates the buffer's memory
-    set_rbuf_to_size();
-
-    string data_access_url = get_data_url();
-
-    BESDEBUG(debug,"Chunk::"<< __func__ <<"() - data_access_url "<< data_access_url << endl);
-
-    add_tracking_query_param(data_access_url);
-
-    string range = get_curl_range_arg_string();
-
-    BESDEBUG(debug,
-        __func__ <<" - Retrieve  " << get_size() << " bytes " "from "<< data_access_url << ": " << range << endl);
-
-    CURL* curl = curl_easy_init();
-    if (!curl) {
-        throw BESInternalError("Unable to initialize curl handle", __FILE__, __LINE__);
-    }
-
-    CURLcode res = curl_easy_setopt(curl, CURLOPT_URL, data_access_url.c_str());
-    if (res != CURLE_OK) throw BESInternalError("string(curl_easy_strerror(res))", __FILE__, __LINE__);
-
-    // Use CURLOPT_ERRORBUFFER for a human-readable message
-    //
-    res = curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, d_curl_error_buf);
-    if (res != CURLE_OK) throw BESInternalError("string(curl_easy_strerror(res))", __FILE__, __LINE__);
-
-    // get the offset to offset + size bytes
-    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_RANGE, range.c_str() /*"0-199"*/))
-    throw BESInternalError(string("HTTP Error: ").append(d_curl_error_buf), __FILE__, __LINE__);
-
-    // Pass all data to the 'write_data' function
-    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, chunk_write_data))
-    throw BESInternalError(string("HTTP Error: ").append(d_curl_error_buf), __FILE__, __LINE__);
-
-    // Pass this to write_data as the fourth argument
-    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_WRITEDATA, this))
-    throw BESInternalError(string("HTTP Error: ").append(d_curl_error_buf), __FILE__, __LINE__);
-
-    /* add the individual transfers */
-    curl_multi_add_handle(multi_handle, curl);
-
-    BESDEBUG(debug, "Chunk::"<< __func__ <<"() - Added to multi_handle: "<< to_string() << endl);
-
-    /* we start some action by calling perform right away */
-    // int still_running;
-    //  curl_multi_perform(multi_handle, &still_running);
-    d_curl_handle = curl;
-    d_is_in_multi_queue = true;
-
-    BESDEBUG(debug, __func__ <<"() - END  "<< to_string() << endl);
-}
-#endif
-
-
 void Chunk::inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width)
 {
-    // If data are compressed/encoded, then decode them here.
-    // At this point, the bytes_read property would be changed.
-    // The file that implements the deflate filter is H5Zdeflate.c in the hdf5 source.
-    // The file that implements the shuffle filter is H5Zshuffle.c.
-
-    // TODO This code is pretty naive - there are apparently a number of
+    // This code is pretty naive - there are apparently a number of
     // different ways HDF5 can compress data, and it does also use a scheme
     // where several algorithms can be applied in sequence. For now, get
     // simple zlib deflate working.jhrg 1/15/17
@@ -210,11 +140,13 @@ void Chunk::inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, u
     // inflating the data (reversing the shuffle --> deflate process). It is
     // possible that data could just be deflated or shuffled (because we
     // have test data are use only shuffle). jhrg 1/20/17
+    // The file that implements the deflate filter is H5Zdeflate.c in the hdf5 source.
+    // The file that implements the shuffle filter is H5Zshuffle.c.
 
     chunk_size *= elem_width;
 
     if (deflate) {
-        char *dest = new char[chunk_size];  // TODO unique_ptr<>. jhrg 1/15/17
+        char *dest = new char[chunk_size];
         try {
             inflate(dest, chunk_size, get_rbuf(), get_rbuf_size());
             // This replaces (and deletes) the original read_buffer with dest.
@@ -254,8 +186,6 @@ void Chunk::inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, u
 }
 
 /**
- * Version of Chunk::read() for use with DmrppArray::read_chunk_serial()
- *
  * This method is for reading one chunk after the other, using a CURL handle
  * from the CurlHandlePool.
  *
@@ -273,7 +203,7 @@ void Chunk::read_chunk()
 
     set_rbuf_to_size();
 
-    easy_handle *curl = DmrppRequestHandler::curl_handle_pool->get_easy_handle(this);
+    dmrpp_easy_handle *curl = DmrppRequestHandler::curl_handle_pool->get_easy_handle(this);
     curl->read_data();  // throws BESInternalError if error
     DmrppRequestHandler::curl_handle_pool->release_handle(curl);
 
@@ -311,10 +241,6 @@ void Chunk::dump(ostream &oss) const
     }
     oss << ")]";
     oss << "[is_read=" << d_is_read << "]";
-#if 0
-    oss << "[is_in_multi_queue=" << d_is_in_multi_queue << "]";
-#endif
-
 }
 
 string Chunk::to_string() const
