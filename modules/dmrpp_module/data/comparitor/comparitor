@@ -8,8 +8,6 @@ ebs_base="${service_base}/ebs";
 default_request="airs/AIRS.2015.01.05.L3.RetStd_IR001.v6.0.11.0.G15007130423.nc.h5.dmrpp.ascii?O3_VMR_TqJ_D"
 
 
-
-
 reps=$1;
 if [ ! "$reps" ] && [  ! -n "$reps" ]; then reps=10; fi
 echo "reps: ${reps}";
