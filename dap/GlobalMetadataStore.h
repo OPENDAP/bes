@@ -266,12 +266,8 @@ public:
 
     virtual bool remove_responses(const std::string &name);
 
-#if 0
-    // These 'get' methods return null if the thing is not in the store.
-    virtual libdap::DDS *get_dds_object(const std::string &name) { }
-    virtual libdap::DMR *get_dmr_object(const std::string &name) { }
-#endif
-
+    virtual libdap::DDS *get_dds_object(const std::string &name);
+    virtual libdap::DMR *get_dmr_object(const std::string &name);
 };
 
 } // namespace bes
