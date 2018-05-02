@@ -372,8 +372,7 @@ void DmrppArray::insert_chunk_serial(unsigned int dim, vector<unsigned int> *tar
         // Read and Process chunk
         chunk->read_chunk();
 
-        if (is_deflate_compression() || is_shuffle_compression())
-            chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(), var()->width());
+        chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(), var()->width());
 
         char *source_buffer = chunk->get_rbuf();
         char *target_buffer = get_buf();
@@ -524,7 +523,7 @@ DmrppArray::find_needed_chunks(unsigned int dim, vector<unsigned int> *target_el
             (*target_element_address)[dim] = (chunk_index + chunk_origin[dim] - thisDim.start) / thisDim.stride;
 
             // Re-entry here:
-            Chunk *needed = find_needed_chunks(dim + 1, target_element_address, /*chunk_element_address,*/chunk);
+            Chunk *needed = find_needed_chunks(dim + 1, target_element_address, chunk);
             if (needed) return needed;
         }
     }
@@ -544,7 +543,7 @@ DmrppArray::find_needed_chunks(unsigned int dim, vector<unsigned int> *target_el
  * location in this array where
  *
  * @note Only call this method when it is know that \arg chunk should be inserted
- * into the array.
+ * into the array. The chunk be both read and decompressed.
  *
  * @param dim
  * @param target_element_address
