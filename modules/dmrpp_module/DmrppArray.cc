@@ -647,59 +647,67 @@ void DmrppArray::read_chunks_parallel()
     // TODO A potential optimization of this code would be to run the insert_chunk()
     // method in a child thread than will let the main thread return to reading more
     // data.
-#define SERIAL_READ 0
-#if SERIAL_READ
-    // Look only at the chunks we need, found above. jhrg 4/30/18
-    // This version is the 'serial' version of the code. It reads a chunk, inserts it,
-    // reads the next one, and so on.
-    while (chunks_to_read.size() > 0) {
-        Chunk *chunk = chunks_to_read.front();
-        chunks_to_read.pop();
+    BESDEBUG(dmrpp_3, "d_use_parallel_transfers: " << DmrppRequestHandler::d_use_parallel_transfers << endl);
+    if (DmrppRequestHandler::d_use_parallel_transfers) {
+        // This is the parallel version of the code. It reads a set of chunks in parallel
+        // using the multi curl API, then inserts them, then reads the next set, ... jhrg 5/1/18
+        unsigned int max_handles = DmrppRequestHandler::curl_handle_pool->get_max_handles();
+        dmrpp_multi_handle *mhandle = DmrppRequestHandler::curl_handle_pool->get_multi_handle();
 
-        chunk->read_chunk();
+       // Look only at the chunks we need, found above. jhrg 4/30/18
+       while (chunks_to_read.size() > 0) {
+            queue<Chunk*> chunks_to_insert;
+            for (unsigned int i = 0; i < max_handles && chunks_to_read.size() > 0; ++i) {
+                Chunk *chunk = chunks_to_read.front();
+                chunks_to_read.pop();
 
-        chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(),
-            var()->width());
+                chunk->set_rbuf_to_size();
+                dmrpp_easy_handle *handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(chunk);
+                if (!handle) throw BESInternalError("No more libcurl handles.", __FILE__, __LINE__);
 
-        vector<unsigned int> target_element_address = chunk->get_position_in_array();
-        vector<unsigned int> chunk_source_address(dimensions(), 0);
-        insert_chunk(0 /* dimension */, &target_element_address, &chunk_source_address, chunk);
+                BESDEBUG(dmrpp_3, "Queuing: " << chunk->to_string() << endl);
+                mhandle->add_easy_handle(handle);
+
+                chunks_to_insert.push(chunk);
+            }
+
+            mhandle->read_data(); // read and decompress chunks, then remove the easy_handles
+
+            while (chunks_to_insert.size() > 0) {
+                Chunk *chunk = chunks_to_insert.front();
+                chunks_to_insert.pop();
+
+                chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(),
+                    var()->width());
+
+                vector<unsigned int> target_element_address = chunk->get_position_in_array();
+                vector<unsigned int> chunk_source_address(dimensions(), 0);
+
+                BESDEBUG(dmrpp_3, "Inserting: " << chunk->to_string() << endl);
+                insert_chunk(0 /* dimension */, &target_element_address, &chunk_source_address, chunk);
+            }
+        }
     }
-#else
-    // This is the parallel version of the code. It reads a set of chunks in parallel
-    // using the multi curl API, then inserts them, then reads the next set, ... jhrg 5/1/18
-    unsigned int max_handles = DmrppRequestHandler::curl_handle_pool->get_max_handles();
-    dmrpp_multi_handle *mhandle = DmrppRequestHandler::curl_handle_pool->get_multi_handle();
-
-    while (chunks_to_read.size() > 0) {
-        queue<Chunk*> chunks_to_insert;
-        for (unsigned int i = 0; i < max_handles && chunks_to_read.size() > 0; ++i) {
+    else {
+        // This version is the 'serial' version of the code. It reads a chunk, inserts it,
+        // reads the next one, and so on.
+        while (chunks_to_read.size() > 0) {
             Chunk *chunk = chunks_to_read.front();
             chunks_to_read.pop();
 
-            chunk->set_rbuf_to_size();
-            dmrpp_easy_handle *handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(chunk);
-            if (!handle) throw BESInternalError("No more libcurl handles.", __FILE__, __LINE__);
+            BESDEBUG(dmrpp_3, "Reading: " << chunk->to_string() << endl);
+            chunk->read_chunk();
 
-            mhandle->add_easy_handle(handle);
-
-            chunks_to_insert.push(chunk);
-        }
-
-        mhandle->read_data(); // read and decompress all chunks, then removes the easy_handles
-
-        while (chunks_to_insert.size() > 0) {
-            Chunk *chunk = chunks_to_insert.front();
-            chunks_to_insert.pop();
-
-            chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(), var()->width());
+            chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(),
+                var()->width());
 
             vector<unsigned int> target_element_address = chunk->get_position_in_array();
             vector<unsigned int> chunk_source_address(dimensions(), 0);
+
+            BESDEBUG(dmrpp_3, "Inserting: " << chunk->to_string() << endl);
             insert_chunk(0 /* dimension */, &target_element_address, &chunk_source_address, chunk);
         }
     }
-#endif
 
     set_read_p(true);
 }

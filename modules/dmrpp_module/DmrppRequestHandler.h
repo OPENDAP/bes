@@ -56,12 +56,8 @@ public:
 	virtual ~DmrppRequestHandler();
 
     static CurlHandlePool *curl_handle_pool;
-
-#if DAP2
-	static bool dap_build_das(BESDataHandlerInterface &dhi);
-	static bool dap_build_dds(BESDataHandlerInterface &dhi);
-	static bool dap_build_data(BESDataHandlerInterface &dhi);
-#endif
+    static bool d_use_parallel_transfers;
+    static bool d_use_parallel_transfers_set;
 
 	static bool dap_build_dmr(BESDataHandlerInterface &dhi);
 	static bool dap_build_dap4data(BESDataHandlerInterface &dhi);

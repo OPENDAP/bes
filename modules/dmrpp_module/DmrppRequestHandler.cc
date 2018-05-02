@@ -81,22 +81,30 @@ ObjMemCache *DmrppRequestHandler::das_cache = 0;
 ObjMemCache *DmrppRequestHandler::dds_cache = 0;
 ObjMemCache *DmrppRequestHandler::dmr_cache = 0;
 
-// This is used... jhrg
+// This is used to maintain a pool of reusable curl handles that enable connection
+// reuse. jhrg
 CurlHandlePool *DmrppRequestHandler::curl_handle_pool = 0;
 
-/**
+bool DmrppRequestHandler::d_use_parallel_transfers = true;
+
+static void read_key_value(const std::string &key_name, bool &key_value)
+{
+    bool key_found = false;
+    string value;
+    TheBESKeys::TheKeys()->get_value(key_name, value, key_found);
+    if (key_found) {
+        value = BESUtil::lowercase(value);
+        key_value = (value == "true" || value == "yes");
+    }
+}
+
+/* **
  * Here we register all of our handler functions so that the BES Dispatch machinery
  * knows what kinds of things we handle.
  */
 DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     BESRequestHandler(name)
 {
-#if DAP2
-    add_handler(DAS_RESPONSE, dap_build_das);
-    add_handler(DDS_RESPONSE, dap_build_dds);
-    add_handler(DATA_RESPONSE, dap_build_data);
-#endif
-
     add_handler(DMR_RESPONSE, dap_build_dmr);
     add_handler(DAP4DATA_RESPONSE, dap_build_dap4data);
     add_handler(DAS_RESPONSE, dap_build_das);
@@ -106,13 +114,10 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     add_handler(VERS_RESPONSE, dap_build_vers);
     add_handler(HELP_RESPONSE, dap_build_help);
 
-#if 0
-    read_key_value("DR.UseTestTypes", d_use_test_types, d_use_test_types_set);
-    read_key_value("DR.UseSeriesValues", d_use_series_values, d_use_series_values_set);
-#endif
+    read_key_value("DMRPP.UseParallelTransfers", d_use_parallel_transfers);
 
     if (!curl_handle_pool)
-        curl_handle_pool = new CurlHandlePool();
+    curl_handle_pool = new CurlHandlePool();
 
     curl_global_init(CURL_GLOBAL_DEFAULT);
 }
