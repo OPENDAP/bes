@@ -33,7 +33,6 @@
 #include "BESInternalError.h"
 
 #include "DmrppRequestHandler.h"
-#include "DmrppUtil.h"
 
 namespace dmrpp {
 
@@ -99,13 +98,11 @@ class CurlHandlePool {
 private:
     unsigned int d_max_easy_handles;
 
-    dmrpp_easy_handle *d_easy_handle;
-
     std::vector<dmrpp_easy_handle *> d_easy_handles;
     dmrpp_multi_handle *d_multi_handle;
 
 public:
-    CurlHandlePool() : d_easy_handle(0), d_multi_handle(0)
+    CurlHandlePool() : d_multi_handle(0)
     {
         d_max_easy_handles = DmrppRequestHandler::d_max_parallel_transfers;
 
@@ -114,8 +111,6 @@ public:
         for (unsigned int i = 0; i < d_max_easy_handles; ++i) {
             d_easy_handles.push_back(new dmrpp_easy_handle());
         }
-
-        d_easy_handle = new dmrpp_easy_handle();
     }
 
     ~CurlHandlePool()
@@ -124,7 +119,6 @@ public:
             delete *i;
         }
 
-        delete d_easy_handle;
         delete d_multi_handle;
     }
 

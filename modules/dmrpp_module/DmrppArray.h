@@ -31,6 +31,8 @@
 
 #include "DmrppCommon.h"
 
+#undef USE_READ_SERIAL
+
 namespace dmrpp {
 
 /**
@@ -55,19 +57,18 @@ private:
 
     void insert_constrained_contiguous(Dim_iter p, unsigned long *target_index, std::vector<unsigned int> &subsetAddress,
         const std::vector<unsigned int> &array_shape, char *data);
+    virtual void read_contiguous();
 
+#ifdef USE_READ_SERIAL
     virtual void insert_chunk_serial(unsigned int dim, std::vector<unsigned int> *target_element_address,
         std::vector<unsigned int> *chunk_source_address, Chunk *chunk);
+    virtual void read_chunks_serial();
+#endif
 
     unsigned long long get_chunk_start(unsigned int dim, const std::vector<unsigned int>& chunk_origin);
-
     Chunk *find_needed_chunks(unsigned int dim, std::vector<unsigned int> *target_element_address, Chunk *chunk);
-
     void insert_chunk(unsigned int dim, std::vector<unsigned int> *target_element_address, std::vector<unsigned int> *chunk_element_address,
         Chunk *chunk);
-
-    virtual void read_contiguous();
-    virtual void read_chunks_serial();
     virtual void read_chunks_parallel();
 
 public:

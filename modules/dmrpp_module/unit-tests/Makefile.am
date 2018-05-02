@@ -56,7 +56,7 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 #
 
 if CPPUNIT
-UNIT_TESTS = ChunkTest DmrppParserTest DmrppUtilTest
+UNIT_TESTS = ChunkTest DmrppParserTest
 # DmrppChunkedReadTest
 else
 UNIT_TESTS =
@@ -87,6 +87,6 @@ DmrppParserTest_LDADD   =  $(OBJS) $(LIBADD)
 # DmrppHttpReadTest_SOURCES = DmrppHttpReadTest.cc
 # DmrppHttpReadTest_LDADD   = $(OBJS) $(LIBADD)
 
-DmrppUtilTest_SOURCES = DmrppUtilTest.cc
-DmrppUtilTest_LDADD   = $(OBJS) $(LIBADD)
+# DmrppUtilTest_SOURCES = DmrppUtilTest.cc
+# DmrppUtilTest_LDADD   = $(OBJS) $(LIBADD)
 

@@ -38,7 +38,6 @@
 #include "BESDebug.h"
 
 #include "DmrppArray.h"
-#include "DmrppUtil.h"
 #include "DmrppRequestHandler.h"
 
 static const string dmrpp_3 = "dmrpp:3";
@@ -317,6 +316,8 @@ unsigned long long DmrppArray::get_chunk_start(unsigned int dim, const vector<un
     return first_element_offset;
 }
 
+
+#ifdef USE_READ_SERIAL
 /**
  * Insert data from \arg chunk into the array given the current constraint
  *
@@ -324,6 +325,13 @@ unsigned long long DmrppArray::get_chunk_start(unsigned int dim, const vector<un
  * \arg chunk_element_address. These vectors start out with \arg dim elements,
  * the \arg chunk_element_address holds 0, 0, ..., 0 and the \arg target_element_address
  * holds the index of the first value of this chunk in the target array
+ *
+ * @note This method will be called several time for any given chunk, so the
+ * chunk_read() and chunk_inflate() methods 'protect' the chunk against being read
+ * or decompressed more than once. For reading this is not a fatal error (but a waste
+ * of time), but it is a fatal error decompression. The code in read_chunk_parallel()
+ * does not have this problem (but it uses the same read and inflate code and thus
+ * I've left in the tracking booleans.
  *
  * @param dim
  * @param target_element_address
@@ -452,6 +460,7 @@ void DmrppArray::read_chunks_serial()
 
     BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() for " << name() << " END"<< endl);
 }
+#endif
 
 /**
  * @brief Look at all the chunks and mark those that should be read.
@@ -732,13 +741,7 @@ bool DmrppArray::read()
         read_contiguous();    // Throws on various errors
     }
     else {  // Handle the more complex case where the data is chunked.
-#if 0
-        // Broken; does not process compressed chunks correctly (but did
-        // prior to 4/30/18). jhrg
-        read_chunks_serial();
-#else
         read_chunks_parallel();
-#endif
     }
 
     return true;

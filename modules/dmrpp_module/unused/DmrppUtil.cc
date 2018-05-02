@@ -45,6 +45,7 @@ using namespace std;
 
 namespace dmrpp {
 
+#if 0
 /**
  * @brief Callback passed to libcurl to handle reading a single byte.
  *
@@ -78,7 +79,10 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
 
     return nbytes;
 }
+#endif
 
+
+#if 0
 /**
  * @brief Deflate data. This is the zlib algorithm.
  *
@@ -109,7 +113,7 @@ void inflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len)
 
     /* Initialize the uncompression routines */
     if (Z_OK != inflateInit(&z_strm))
-        throw BESError("Failed to initialize inflate software.", BES_INTERNAL_ERROR, __FILE__, __LINE__);
+    throw BESError("Failed to initialize inflate software.", BES_INTERNAL_ERROR, __FILE__, __LINE__);
 
     /* Loop to uncompress the buffer */
     int status = Z_OK;
@@ -150,7 +154,7 @@ void inflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len)
 #endif
             } /* end if */
         } /* end else */
-    } while (status == Z_OK);
+    }while (status == Z_OK);
 
     /* Finish uncompressing the stream */
     (void) inflateEnd(&z_strm);
@@ -207,12 +211,12 @@ void unshuffle(char *dest, const char *src, unsigned int src_size, unsigned int 
             }
 #else /* DUFFS_DEVICE */
             {
-                size_t duffs_index = (elems + 7) / 8;   /* Counting index for Duff's device */
+                size_t duffs_index = (elems + 7) / 8; /* Counting index for Duff's device */
                 switch (elems % 8) {
-                default:
+                    default:
                     assert(0 && "This Should never be executed!");
                     break;
-                case 0:
+                    case 0:
                     do {
                         // This macro saves repeating the same line 8 times
 #define DUFF_GUTS       *_dest = *_src++; _dest += width;
@@ -232,7 +236,7 @@ void unshuffle(char *dest, const char *src, unsigned int src_size, unsigned int 
                         DUFF_GUTS
                         case 1:
                         DUFF_GUTS
-                    } while (--duffs_index > 0);
+                    }while (--duffs_index > 0);
                 } /* end switch */
             } /* end block */
 #endif /* DUFFS_DEVICE */
@@ -250,5 +254,7 @@ void unshuffle(char *dest, const char *src, unsigned int src_size, unsigned int 
         }
     } /* end if width and elems both > 1 */
 }
+#endif
+
 
 }    // namespace dmrpp

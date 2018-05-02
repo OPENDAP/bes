@@ -73,6 +73,9 @@ dmrpp_easy_handle::~dmrpp_easy_handle()
     curl_easy_cleanup(d_handle);
 }
 
+/**
+ * @brief This is the read_data() method for serial transfers
+ */
 void dmrpp_easy_handle::read_data()
 {
     CURL *curl = d_handle;
@@ -105,6 +108,9 @@ void dmrpp_easy_handle::read_data()
     d_chunk->set_is_read(true);
 }
 
+/**
+ * @brief The read_data() method for parallel transfers
+ */
 void dmrpp_multi_handle::read_data()
 {
     int still_running = 0;
@@ -162,7 +168,8 @@ void dmrpp_multi_handle::read_data()
             }
 
             // If we are here, the request (file: or http:) was successful.
-            dmrpp_easy_handle->d_chunk->set_is_read(true);
+
+            dmrpp_easy_handle->d_chunk->set_is_read(true);  // Set the is_read() property for chunk here.
             DmrppRequestHandler::curl_handle_pool->release_handle(dmrpp_easy_handle);
 
             mres = curl_multi_remove_handle(d_multi, eh);
@@ -178,24 +185,14 @@ void dmrpp_multi_handle::read_data()
 /**
  * Get a CURL easy handle to transfer data from \arg url into the given \arg chunk.
  *
- * @param url
- * @param chunk
- * @return A CURL easy handle configured to transfer data, or null if there are no more handles
- * in the pool.
+ * @param chunk Use this Chunk to set a libcurl easy handle so that it
+ * will fetch the Chunk's data.
+ * @return A CURL easy handle configured to transfer data, or null if
+ * there are no more handles in the pool.
  */
 dmrpp_easy_handle *
 CurlHandlePool::get_easy_handle(Chunk *chunk)
 {
-#if 0
-    // Get the next available CurlHandlePool::easy_handle
-    if (!d_easy_handle) {
-        d_easy_handle = new dmrpp_easy_handle();
-    }
-    else {
-        if (d_easy_handle->d_in_use) throw BESInternalError("CURL handle in use", __FILE__, __LINE__);
-    }
-#endif
-
     dmrpp_easy_handle *handle = 0;
     for (vector<dmrpp_easy_handle *>::iterator i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
         if (!(*i)->d_in_use)
@@ -230,10 +227,15 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
     return handle;
 }
 
+/**
+ * Release a DMR++ easy_handle. This returns the handle to the pool of handles
+ * that can be used for serial transfers or, with multi curl, for parallel transfers.
+ *
+ * @param handle
+ */
 void CurlHandlePool::release_handle(dmrpp_easy_handle *handle)
 {
     handle->d_in_use = false;
     handle->d_url = "";
     handle->d_chunk = 0;
-
 }

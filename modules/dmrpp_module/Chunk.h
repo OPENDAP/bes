@@ -27,14 +27,15 @@
 #include <string>
 #include <vector>
 
-#include <curl/curl.h>
-
 namespace dmrpp {
+
+// Callback function used by chunk readers
+size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data);
 
 /**
  * This class is used to encapsulate the state and behavior needed for reading
  * chunked data associated with a DAP variable. In particular it is based on the
- * semantics of an hdf4:byteStream object, which is used to represent a chunk of
+ * semantics of an hdf4:Chunk object, which is used to represent a chunk of
  * data in a (potentially complex) HDF4/HDF5 file.
  */
 class Chunk {
@@ -52,6 +53,7 @@ private:
     char *d_read_buffer;
     unsigned long long d_read_buffer_size;
     bool d_is_read;
+    bool d_is_inflated;
 
     void add_tracking_query_param(std::string& data_access_url);
 
@@ -66,6 +68,7 @@ protected:
         d_read_buffer = 0;
         d_read_buffer_size = 0;
         d_is_read = false;
+        d_is_inflated = false;
 
         d_size = bs.d_size;
         d_offset = bs.d_offset;
@@ -77,13 +80,13 @@ public:
 
     Chunk() :
         d_data_url(""), d_size(0), d_offset(0), d_bytes_read(0), d_read_buffer(0),
-        d_read_buffer_size(0), d_is_read(false)
+        d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
     {
     }
 
     Chunk(std::string data_url, unsigned long long size, unsigned long long offset, std::string position_in_array = "") :
         d_data_url(data_url), d_size(size), d_offset(offset), d_bytes_read(0), d_read_buffer(0),
-        d_read_buffer_size(0), d_is_read(false)
+        d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
     {
         set_position_in_array(position_in_array);
     }
@@ -113,14 +116,14 @@ public:
     }
 
     /**
-     * @brief Get the size of this byteStream's data block on disk
+     * @brief Get the size of this Chunk's data block on disk
      */
     virtual unsigned long long get_size() const
     {
         return d_size;
     }
     /**
-     * @brief Get the offset to this byteStream's data block
+     * @brief Get the offset to this Chunk's data block
      */
     virtual unsigned long long get_offset() const
     {
@@ -128,14 +131,14 @@ public:
     }
 
     /**
-     * @brief Get the data url string for this byteStream's data block
+     * @brief Get the data url string for this Chunk's data block
      */
     virtual std::string get_data_url() const
     {
         return d_data_url;
     }
     /**
-     * @brief Get the data url string for this byteStream's data block
+     * @brief Get the data url string for this Chunk's data block
      */
     virtual void set_data_url(const std::string &data_url)
     {
@@ -143,7 +146,7 @@ public:
     }
 
     /**
-     * @brief Get the size of the data block associated with this byteStream.
+     * @brief Get the number of bytes read so far for this Chunk.
      */
     virtual unsigned long long get_bytes_read() const
     {
@@ -151,7 +154,7 @@ public:
     }
 
     /**
-     * @brief Set the size of this byteStream's data block
+     * @brief Set the size of this Chunk's data block
      * @param size Size of the data in bytes
      */
     virtual void set_bytes_read(unsigned long long bytes_read)
@@ -177,7 +180,7 @@ public:
     }
 
     /**
-     * Returns a pointer to the memory buffer for this byteStream. The
+     * Returns a pointer to the memory buffer for this Chunk. The
      * return value is NULL if no memory has been allocated.
      */
     virtual char *get_rbuf()
@@ -190,7 +193,7 @@ public:
      *
      * Transfer control of the buffer to this object. The buffer must have been
      * allocated using 'new char[size]'. This object will delete any previously
-     * allocated buffer and take control of the one passes in with this method.
+     * allocated buffer and take control of the one passed in with this method.
      * The size and number of bytes read are set to the value of 'size.'
      *
      * @param buf The new buffer to be used by this instance.
@@ -203,16 +206,11 @@ public:
         d_read_buffer = buf;
         d_read_buffer_size = size;
 
-        // FIXME Setting d_byes_read to 'size' may break code that tests to see that the
-        // correct number of bytes were actually read. I think this is patched, but we
-        // should think about what this field really means - the number of bytes read or
-        // the size of the current read_buffer? For now this works given a mod in
-        // Chunk::read(...). jhrg 1/18/17
         set_bytes_read(size);
     }
 
     /**
-     * Returns the size, in bytes, of the read buffer for this byteStream.
+     * Returns the size, in bytes, of the read buffer for this Chunk.
      */
     virtual unsigned long long get_rbuf_size() const
     {
@@ -226,15 +224,9 @@ public:
 
     virtual void set_position_in_array(const std::string &pia);
 
-#if 0
-    virtual void read(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_size);
-#endif
-
     virtual void read_chunk();
 
     void inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width);
-
-    virtual bool is_read() const { return d_is_read;  }
 
     virtual void set_is_read(bool state) { d_is_read = state; }
 
