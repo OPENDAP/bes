@@ -27,9 +27,7 @@
 #include <ostream>
 
 #include "BESRequestHandler.h"
-#include "CurlHandlePool.h"
 
-#undef DAP2
 class ObjMemCache;  // in bes/dap
 
 namespace libdap {
@@ -38,6 +36,8 @@ namespace libdap {
 }
 
 namespace dmrpp {
+
+class CurlHandlePool;
 
 class DmrppRequestHandler: public BESRequestHandler {
 
@@ -56,8 +56,9 @@ public:
 	virtual ~DmrppRequestHandler();
 
     static CurlHandlePool *curl_handle_pool;
+
     static bool d_use_parallel_transfers;
-    static bool d_use_parallel_transfers_set;
+    static int d_max_parallel_transfers;
 
 	static bool dap_build_dmr(BESDataHandlerInterface &dhi);
 	static bool dap_build_dap4data(BESDataHandlerInterface &dhi);

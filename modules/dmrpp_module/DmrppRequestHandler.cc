@@ -86,6 +86,7 @@ ObjMemCache *DmrppRequestHandler::dmr_cache = 0;
 CurlHandlePool *DmrppRequestHandler::curl_handle_pool = 0;
 
 bool DmrppRequestHandler::d_use_parallel_transfers = true;
+int DmrppRequestHandler::d_max_parallel_transfers = 8;
 
 static void read_key_value(const std::string &key_name, bool &key_value)
 {
@@ -95,6 +96,17 @@ static void read_key_value(const std::string &key_name, bool &key_value)
     if (key_found) {
         value = BESUtil::lowercase(value);
         key_value = (value == "true" || value == "yes");
+    }
+}
+
+static void read_key_value(const std::string &key_name, int &key_value)
+{
+    bool key_found = false;
+    string value;
+    TheBESKeys::TheKeys()->get_value(key_name, value, key_found);
+    if (key_found) {
+        istringstream iss(value);
+        iss >> key_value;
     }
 }
 
@@ -115,9 +127,10 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     add_handler(HELP_RESPONSE, dap_build_help);
 
     read_key_value("DMRPP.UseParallelTransfers", d_use_parallel_transfers);
+    read_key_value("DMRPP.MaxParallelTransfers", d_max_parallel_transfers);
 
     if (!curl_handle_pool)
-    curl_handle_pool = new CurlHandlePool();
+        curl_handle_pool = new CurlHandlePool();
 
     curl_global_init(CURL_GLOBAL_DEFAULT);
 }

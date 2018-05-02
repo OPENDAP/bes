@@ -33,6 +33,7 @@
 
 #include "Chunk.h"
 #include "DmrppUtil.h"
+#include "CurlHandlePool.h"
 #include "DmrppRequestHandler.h"
 
 const string debug = "dmrpp";

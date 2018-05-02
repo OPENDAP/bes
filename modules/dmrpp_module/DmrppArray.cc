@@ -648,6 +648,8 @@ void DmrppArray::read_chunks_parallel()
     // method in a child thread than will let the main thread return to reading more
     // data.
     BESDEBUG(dmrpp_3, "d_use_parallel_transfers: " << DmrppRequestHandler::d_use_parallel_transfers << endl);
+    BESDEBUG(dmrpp_3, "d_max_parallel_transfers: " << DmrppRequestHandler::d_max_parallel_transfers << endl);
+
     if (DmrppRequestHandler::d_use_parallel_transfers) {
         // This is the parallel version of the code. It reads a set of chunks in parallel
         // using the multi curl API, then inserts them, then reads the next set, ... jhrg 5/1/18
