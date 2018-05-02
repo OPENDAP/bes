@@ -145,7 +145,7 @@ void dmrpp_multi_handle::read_data()
 
             dmrpp_easy_handle *dmrpp_easy_handle = 0;
             res = curl_easy_getinfo(eh, CURLINFO_PRIVATE, &dmrpp_easy_handle);
-            if (res != CURLM_OK)
+            if (res != CURLE_OK)
                 throw BESInternalError(string("Could not access easy handle: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
 
             // This code has to work with both http: and file: protocols. Here we check the

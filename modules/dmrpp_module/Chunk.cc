@@ -25,6 +25,7 @@
 
 #include <sstream>
 #include <cstdlib>
+#include <cstring>
 #include <cassert>
 
 #include <zlib.h>
