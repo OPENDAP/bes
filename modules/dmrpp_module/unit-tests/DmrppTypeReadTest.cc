@@ -92,7 +92,7 @@ public:
     void setUp()
     {
         if (debug) BESDebug::SetUp("cerr,all");
-        BESDEBUG("dmrpp","BES debug enabled."<< endl);
+        BESDEBUG("dmrpp", "BES debug enabled."<< endl);
     }
 
     // Called after each test
@@ -159,7 +159,8 @@ public:
         CPPUNIT_ASSERT(array->length() == length);
     }
 
-    void test_integer_scalar() {
+    void test_integer_scalar()
+    {
         auto_ptr<DMR> dmr(new DMR);
         DmrppTypeFactory dtf;
         dmr->set_factory(&dtf);
@@ -183,7 +184,7 @@ public:
 
         try {
             // Hack for libcurl
-        	set_data_url_in_chunks(di32);
+            set_data_url_in_chunks(di32);
             di32->read();
             BESDEBUG("dmrpp", "Value: " << di32->value() << endl);
             CPPUNIT_ASSERT(di32->value() == 45);
@@ -201,7 +202,8 @@ public:
         CPPUNIT_ASSERT("Passed");
     }
 
-    void test_integer_arrays() {
+    void test_integer_arrays()
+    {
         auto_ptr<DMR> dmr(new DMR);
         DmrppTypeFactory dtf;
         dmr->set_factory(&dtf);
@@ -231,7 +233,7 @@ public:
             da->read();
 #endif
 
-            read_var_check_name_and_length(da,"d16_1",2);
+            read_var_check_name_and_length(da, "d16_1", 2);
 
             CPPUNIT_ASSERT(da->length() == 2);
 
@@ -244,7 +246,7 @@ public:
             ++v;    // next
             da = dynamic_cast<DmrppArray*>(*v);
             CPPUNIT_ASSERT(da);
-            read_var_check_name_and_length(da,"d16_2",4);
+            read_var_check_name_and_length(da, "d16_2", 4);
             vector<dods_int16> v16_2(da->length());
             da->value(&v16_2[0]);
 
@@ -257,7 +259,7 @@ public:
             da = dynamic_cast<DmrppArray*>(*v);
 
             CPPUNIT_ASSERT(da);
-            read_var_check_name_and_length(da,"d32_1",8);
+            read_var_check_name_and_length(da, "d32_1", 8);
             vector<dods_int32> v32(da->length());
             da->value(&v32[0]);
 
@@ -270,7 +272,7 @@ public:
             da = dynamic_cast<DmrppArray*>(*v);
 
             CPPUNIT_ASSERT(da);
-            read_var_check_name_and_length(da,"d32_2",32);
+            read_var_check_name_and_length(da, "d32_2", 32);
             vector<dods_int32> v32_2(da->length());
             da->value(&v32_2[0]);
 
@@ -292,7 +294,8 @@ public:
         CPPUNIT_ASSERT("Passed");
     }
 
-    void test_float_grids() {
+    void test_float_grids()
+    {
         auto_ptr<DMR> dmr(new DMR);
         DmrppTypeFactory dtf;
         dmr->set_factory(&dtf);
@@ -314,31 +317,31 @@ public:
         D4Group::groupsIter root_gIter = root->grp_begin();
 
         try {
-        	// Now we drill down into the Group Hierarchy
-        	// First, the top Level HDFEOS group
+            // Now we drill down into the Group Hierarchy
+            // First, the top Level HDFEOS group
 
-        	// TODO move this to a different test. jhrg
+            // TODO move this to a different test. jhrg
             // TODO I fail to see why you would want to remove this. Drilling down
             // TODO through the complex HDF5 Group stack requires that
             // TODO we check to see if each layer contains the expected content.
             // TODO Otherwise we can;t be sure we're looking at the right thing
             // TODO Also: null pointer exceptions. ndp
-        	D4Group *grp_hdfeos = dynamic_cast<D4Group*>(*root_gIter);
+            D4Group *grp_hdfeos = dynamic_cast<D4Group*>(*root_gIter);
             checkGroupsAndVars(grp_hdfeos, "HDFEOS", 2, 0);
 
             // Look at the child groups
             D4Group::groupsIter hdfeos_gIter = grp_hdfeos->grp_begin();
-        	D4Group *grp_additional = dynamic_cast<D4Group*>(*hdfeos_gIter);
+            D4Group *grp_additional = dynamic_cast<D4Group*>(*hdfeos_gIter);
             checkGroupsAndVars(grp_additional, "ADDITIONAL", 1, 0);
 
-        	hdfeos_gIter++;
-        	D4Group *grp_grids = dynamic_cast<D4Group*>(*hdfeos_gIter);
+            hdfeos_gIter++;
+            D4Group *grp_grids = dynamic_cast<D4Group*>(*hdfeos_gIter);
             checkGroupsAndVars(grp_grids, "GRIDS", 2, 0);
 
             // Drill into the GRIDS group
             D4Group::groupsIter grids_gIter = grp_grids->grp_begin();
             //First child is GeoGrid1
-        	D4Group *grp_geogrid_1 = dynamic_cast<D4Group*>(*grids_gIter);
+            D4Group *grp_geogrid_1 = dynamic_cast<D4Group*>(*grids_gIter);
             checkGroupsAndVars(grp_geogrid_1, "GeoGrid1", 1, 0);
 
             D4Group *grp_data_fields = dynamic_cast<D4Group*>(*grp_geogrid_1->grp_begin());
@@ -346,20 +349,20 @@ public:
 
             // TODO This is where the read() test starts. jhrg
             // "Data Fields" contains a single Float32 var called temperature
-			DmrppArray *temperature = dynamic_cast<DmrppArray*>(*grp_data_fields->var_begin());
-			CPPUNIT_ASSERT(temperature);
-			read_var_check_name_and_length(temperature,"temperature",32);
+            DmrppArray *temperature = dynamic_cast<DmrppArray*>(*grp_data_fields->var_begin());
+            CPPUNIT_ASSERT(temperature);
+            read_var_check_name_and_length(temperature, "temperature", 32);
             {
-            vector<dods_float32> f32(temperature->length());
-            temperature->value(&f32[0]);
-            BESDEBUG("dmrpp", "temperature[0]:  " << f32[0] << endl);
-            CPPUNIT_ASSERT(f32[0] == 10);
-            BESDEBUG("dmrpp", "temperature[8]:  " << f32[8] << endl);
-            CPPUNIT_ASSERT(f32[8] == 11);
-            BESDEBUG("dmrpp", "temperature[16]: " << f32[16] << endl);
-            CPPUNIT_ASSERT(f32[16] == 12);
-            BESDEBUG("dmrpp", "temperature[24]: " << f32[24] << endl);
-            CPPUNIT_ASSERT(f32[24] == 13);
+                vector<dods_float32> f32(temperature->length());
+                temperature->value(&f32[0]);
+                BESDEBUG("dmrpp", "temperature[0]:  " << f32[0] << endl);
+                CPPUNIT_ASSERT(f32[0] == 10);
+                BESDEBUG("dmrpp", "temperature[8]:  " << f32[8] << endl);
+                CPPUNIT_ASSERT(f32[8] == 11);
+                BESDEBUG("dmrpp", "temperature[16]: " << f32[16] << endl);
+                CPPUNIT_ASSERT(f32[16] == 12);
+                BESDEBUG("dmrpp", "temperature[24]: " << f32[24] << endl);
+                CPPUNIT_ASSERT(f32[24] == 13);
             }
 
             // Next child of  GRIDS group
@@ -367,27 +370,27 @@ public:
             // TODO Same as above. just test read() jhrg
 
             grids_gIter++;
-        	D4Group *grp_geogrid_2 = dynamic_cast<D4Group*>(*grids_gIter);
+            D4Group *grp_geogrid_2 = dynamic_cast<D4Group*>(*grids_gIter);
             checkGroupsAndVars(grp_geogrid_2, "GeoGrid2", 1, 0);
 
             grp_data_fields = dynamic_cast<D4Group*>(*grp_geogrid_2->grp_begin());
             checkGroupsAndVars(grp_data_fields, "Data Fields", 0, 1);
 
             // "Data Fields" contains a single Float32 var called temperature
-			temperature = dynamic_cast<DmrppArray*>(*grp_data_fields->var_begin());
-			CPPUNIT_ASSERT(temperature);
-			read_var_check_name_and_length(temperature,"temperature",32);
+            temperature = dynamic_cast<DmrppArray*>(*grp_data_fields->var_begin());
+            CPPUNIT_ASSERT(temperature);
+            read_var_check_name_and_length(temperature, "temperature", 32);
             {
-            vector<dods_float32> f32(temperature->length());
-            temperature->value(&f32[0]);
-            BESDEBUG("dmrpp", "temperature[0]:  " << f32[0] << endl);
-            CPPUNIT_ASSERT(f32[0] == 10);
-            BESDEBUG("dmrpp", "temperature[8]:  " << f32[8] << endl);
-            CPPUNIT_ASSERT(f32[8] == 11);
-            BESDEBUG("dmrpp", "temperature[16]: " << f32[16] << endl);
-            CPPUNIT_ASSERT(f32[16] == 12);
-            BESDEBUG("dmrpp", "temperature[24]: " << f32[24] << endl);
-            CPPUNIT_ASSERT(f32[24] == 13);
+                vector<dods_float32> f32(temperature->length());
+                temperature->value(&f32[0]);
+                BESDEBUG("dmrpp", "temperature[0]:  " << f32[0] << endl);
+                CPPUNIT_ASSERT(f32[0] == 10);
+                BESDEBUG("dmrpp", "temperature[8]:  " << f32[8] << endl);
+                CPPUNIT_ASSERT(f32[8] == 11);
+                BESDEBUG("dmrpp", "temperature[16]: " << f32[16] << endl);
+                CPPUNIT_ASSERT(f32[16] == 12);
+                BESDEBUG("dmrpp", "temperature[24]: " << f32[24] << endl);
+                CPPUNIT_ASSERT(f32[24] == 13);
             }
 
         }
@@ -403,7 +406,8 @@ public:
         CPPUNIT_ASSERT("Passed");
     }
 
-    void test_constrained_arrays() {
+    void test_constrained_arrays()
+    {
         auto_ptr<DMR> dmr(new DMR);
         DmrppTypeFactory dtf;
         dmr->set_factory(&dtf);
@@ -419,96 +423,92 @@ public:
 
         // (D4Group *grp, string group_name, int expectedNumGrps, int expectedNumVars)
 
-
         checkGroupsAndVars(root, "/", 2, 0);
 
         // Root group iterator
         D4Group::groupsIter root_gIter = root->grp_begin();
 
         try {
-        	// Now we drill down into the Group Hierarchy
-        	// Firswt, the top Level HDFEOS group
-        	D4Group *grp_hdfeos = dynamic_cast<D4Group*>(*root_gIter);
+            // Now we drill down into the Group Hierarchy
+            // Firswt, the top Level HDFEOS group
+            D4Group *grp_hdfeos = dynamic_cast<D4Group*>(*root_gIter);
             checkGroupsAndVars(grp_hdfeos, "HDFEOS", 2, 0);
 
             // Look at the child groups
             D4Group::groupsIter hdfeos_gIter = grp_hdfeos->grp_begin();
-        	D4Group *grp_additional = dynamic_cast<D4Group*>(*hdfeos_gIter);
+            D4Group *grp_additional = dynamic_cast<D4Group*>(*hdfeos_gIter);
             checkGroupsAndVars(grp_additional, "ADDITIONAL", 1, 0);
 
-        	hdfeos_gIter++;
-        	D4Group *grp_grids = dynamic_cast<D4Group*>(*hdfeos_gIter);
+            hdfeos_gIter++;
+            D4Group *grp_grids = dynamic_cast<D4Group*>(*hdfeos_gIter);
             checkGroupsAndVars(grp_grids, "GRIDS", 2, 0);
 
             // Drill into the GRIDS group
             D4Group::groupsIter grids_gIter = grp_grids->grp_begin();
             //First child is GeoGrid1
-        	D4Group *grp_geogrid_1 = dynamic_cast<D4Group*>(*grids_gIter);
+            D4Group *grp_geogrid_1 = dynamic_cast<D4Group*>(*grids_gIter);
             checkGroupsAndVars(grp_geogrid_1, "GeoGrid1", 1, 0);
 
             D4Group *grp_data_fields = dynamic_cast<D4Group*>(*grp_geogrid_1->grp_begin());
             checkGroupsAndVars(grp_data_fields, "Data Fields", 0, 1);
 
             // "Data Fields" contains a single Float32 var called temperature
-			DmrppArray *temperature = dynamic_cast<DmrppArray*>(*grp_data_fields->var_begin());
-			CPPUNIT_ASSERT(temperature);
-			CPPUNIT_ASSERT(temperature->name() == "temperature");
+            DmrppArray *temperature = dynamic_cast<DmrppArray*>(*grp_data_fields->var_begin());
+            CPPUNIT_ASSERT(temperature);
+            CPPUNIT_ASSERT(temperature->name() == "temperature");
 
-			// TODO Change this. Do one dimension then two dims. separeate tests. make up data if needed jhrg
+            // TODO Change this. Do one dimension then two dims. separeate tests. make up data if needed jhrg
 
             BESDEBUG("dmrpp", "temperature->dimensions(): " << temperature->dimensions() << endl);
             CPPUNIT_ASSERT(temperature->dimensions() == 2);
 
-            for(DmrppArray::Dim_iter dimIter = temperature->dim_begin();
-            		dimIter!=temperature->dim_end(); dimIter++){
-                BESDEBUG("dmrpp", "Dimension name: '" <<
-                		temperature->dimension_name(dimIter) <<
-						"' size: " << temperature->dimension_size(dimIter,true) <<
-						endl);
+            for (DmrppArray::Dim_iter dimIter = temperature->dim_begin(); dimIter != temperature->dim_end();
+                dimIter++) {
+                BESDEBUG("dmrpp",
+                    "Dimension name: '" << temperature->dimension_name(dimIter) << "' size: " << temperature->dimension_size(dimIter,true) << endl);
             }
-
 
             // Now we constrain the temperature array
             DmrppArray::Dim_iter dimIter = temperature->dim_begin();
-            temperature->add_constraint(dimIter,1,1,2);
+            temperature->add_constraint(dimIter, 1, 1, 2);
 
             {
-            ostringstream ss;
-            ss  << "[" << temperature->dimension_start(dimIter,true) <<
-                               ":" << temperature->dimension_stride(dimIter,true) <<
-							   ":" << temperature->dimension_stop(dimIter,true) << "]";
-            dimIter++;
-            temperature->add_constraint(dimIter,1,2,5);
-            ss  << "[" << temperature->dimension_start(dimIter,true) <<
-                               ":" << temperature->dimension_stride(dimIter,true) <<
-							   ":" << temperature->dimension_stop(dimIter,true) << "]";
+                ostringstream ss;
+                ss << "[" << temperature->dimension_start(dimIter, true) << ":"
+                    << temperature->dimension_stride(dimIter, true) << ":" << temperature->dimension_stop(dimIter, true)
+                    << "]";
+                dimIter++;
+                temperature->add_constraint(dimIter, 1, 2, 5);
+                ss << "[" << temperature->dimension_start(dimIter, true) << ":"
+                    << temperature->dimension_stride(dimIter, true) << ":" << temperature->dimension_stop(dimIter, true)
+                    << "]";
 
-            BESDEBUG("dmrpp", "Constrained array temperature" << ss.str() << endl);
+                BESDEBUG("dmrpp", "Constrained array temperature" << ss.str() << endl);
             }
 
-			read_var_check_name_and_length(temperature,"temperature",6);
+            read_var_check_name_and_length(temperature, "temperature", 6);
             {
-            vector<dods_float32> f32(temperature->length());
-            temperature->value(&f32[0]);
-            BESDEBUG("dmrpp", "temperature[0]: " << f32[0] << endl);
-            CPPUNIT_ASSERT(f32[0] == 11);
-            BESDEBUG("dmrpp", "temperature[1]:  " << f32[1] << endl);
-            CPPUNIT_ASSERT(f32[1] == 11);
-            BESDEBUG("dmrpp", "temperature[2]:  " << f32[2] << endl);
-            CPPUNIT_ASSERT(f32[2] == 11);
-            BESDEBUG("dmrpp", "temperature[3]: " << f32[3] << endl);
-            CPPUNIT_ASSERT(f32[3] == 12);
-            BESDEBUG("dmrpp", "temperature[4]: " << f32[4] << endl);
-            CPPUNIT_ASSERT(f32[4] == 12);
-            BESDEBUG("dmrpp", "temperature[5]: " << f32[5] << endl);
-            CPPUNIT_ASSERT(f32[5] == 12);
+                vector<dods_float32> f32(temperature->length());
+                temperature->value(&f32[0]);
+                BESDEBUG("dmrpp", "temperature[0]: " << f32[0] << endl);
+                CPPUNIT_ASSERT(f32[0] == 11);
+                BESDEBUG("dmrpp", "temperature[1]:  " << f32[1] << endl);
+                CPPUNIT_ASSERT(f32[1] == 11);
+                BESDEBUG("dmrpp", "temperature[2]:  " << f32[2] << endl);
+                CPPUNIT_ASSERT(f32[2] == 11);
+                BESDEBUG("dmrpp", "temperature[3]: " << f32[3] << endl);
+                CPPUNIT_ASSERT(f32[3] == 12);
+                BESDEBUG("dmrpp", "temperature[4]: " << f32[4] << endl);
+                CPPUNIT_ASSERT(f32[4] == 12);
+                BESDEBUG("dmrpp", "temperature[5]: " << f32[5] << endl);
+                CPPUNIT_ASSERT(f32[5] == 12);
             }
 
             BESDEBUG("dmrpp", "------------------------" << endl);
 
             // Next child of  GRIDS group
             grids_gIter++;
-        	D4Group *grp_geogrid_2 = dynamic_cast<D4Group*>(*grids_gIter);
+            D4Group *grp_geogrid_2 = dynamic_cast<D4Group*>(*grids_gIter);
             checkGroupsAndVars(grp_geogrid_2, "GeoGrid2", 1, 0);
 
             grp_data_fields = dynamic_cast<D4Group*>(*grp_geogrid_2->grp_begin());
@@ -516,38 +516,35 @@ public:
 
             // "Data Fields" contains a single Float32 var called temperature
             DmrppArray *t2 = dynamic_cast<DmrppArray*>(*grp_data_fields->var_begin());
-			CPPUNIT_ASSERT(t2);
-			CPPUNIT_ASSERT(t2->name() == "temperature");
-
+            CPPUNIT_ASSERT(t2);
+            CPPUNIT_ASSERT(t2->name() == "temperature");
 
             dimIter = t2->dim_begin();
-            t2->add_constraint(dimIter,0,1,3);
+            t2->add_constraint(dimIter, 0, 1, 3);
             {
-            ostringstream ss;
-            ss  << "[" << t2->dimension_start(dimIter,true) <<
-                               ":" << t2->dimension_stride(dimIter,true) <<
-							   ":" << t2->dimension_stop(dimIter,true) << "]";
-            dimIter++;
-            t2->add_constraint(dimIter,0,1,0);
-            ss  << "[" << t2->dimension_start(dimIter,true) <<
-                               ":" << t2->dimension_stride(dimIter,true) <<
-							   ":" << t2->dimension_stop(dimIter,true) << "]";
+                ostringstream ss;
+                ss << "[" << t2->dimension_start(dimIter, true) << ":" << t2->dimension_stride(dimIter, true) << ":"
+                    << t2->dimension_stop(dimIter, true) << "]";
+                dimIter++;
+                t2->add_constraint(dimIter, 0, 1, 0);
+                ss << "[" << t2->dimension_start(dimIter, true) << ":" << t2->dimension_stride(dimIter, true) << ":"
+                    << t2->dimension_stop(dimIter, true) << "]";
 
-            BESDEBUG("dmrpp", "Constrained array t2" << ss.str() << endl);
+                BESDEBUG("dmrpp", "Constrained array t2" << ss.str() << endl);
             }
 
-			read_var_check_name_and_length(t2,"temperature",4);
+            read_var_check_name_and_length(t2, "temperature", 4);
             {
-            vector<dods_float32> f32(t2->length());
-            t2->value(&f32[0]);
-            BESDEBUG("dmrpp", "t2[0]:  " << f32[0] << endl);
-            CPPUNIT_ASSERT(f32[0] == 10);
-            BESDEBUG("dmrpp", "t2[1]:  " << f32[1] << endl);
-            CPPUNIT_ASSERT(f32[1] == 11);
-            BESDEBUG("dmrpp", "t2[2]: " << f32[2] << endl);
-            CPPUNIT_ASSERT(f32[2] == 12);
-            BESDEBUG("dmrpp", "t2[3]: " << f32[3] << endl);
-            CPPUNIT_ASSERT(f32[3] == 13);
+                vector<dods_float32> f32(t2->length());
+                t2->value(&f32[0]);
+                BESDEBUG("dmrpp", "t2[0]:  " << f32[0] << endl);
+                CPPUNIT_ASSERT(f32[0] == 10);
+                BESDEBUG("dmrpp", "t2[1]:  " << f32[1] << endl);
+                CPPUNIT_ASSERT(f32[1] == 11);
+                BESDEBUG("dmrpp", "t2[2]: " << f32[2] << endl);
+                CPPUNIT_ASSERT(f32[2] == 12);
+                BESDEBUG("dmrpp", "t2[3]: " << f32[3] << endl);
+                CPPUNIT_ASSERT(f32[3] == 13);
             }
 
         }
@@ -563,9 +560,8 @@ public:
         CPPUNIT_ASSERT("Passed");
     }
 
-
-
-    void test_read_coads_climatology() {
+    void test_read_coads_climatology()
+    {
         auto_ptr<DMR> dmr(new DMR);
         DmrppTypeFactory dtf;
         dmr->set_factory(&dtf);
@@ -589,192 +585,212 @@ public:
             // ######################################
             // Check COADSX variable
             DmrppArray *coadsx = dynamic_cast<DmrppArray*>(*vIter);
-            read_var_check_name_and_length(coadsx,"COADSX",180);
+            read_var_check_name_and_length(coadsx, "COADSX", 180);
             vector<dods_float64> coadsx_vals(coadsx->length());
             coadsx->value(&coadsx_vals[0]);
             // first element
             index = 0;
             test_float64 = 21.0;
-            BESDEBUG("dmrpp", "coadsx_vals[" << index << "]: " << coadsx_vals[index] << "  test_float64: " << test_float64 << endl);
-            CPPUNIT_ASSERT(double_eq(coadsx_vals[index], test_float64 ));
+            BESDEBUG("dmrpp",
+                "coadsx_vals[" << index << "]: " << coadsx_vals[index] << "  test_float64: " << test_float64 << endl);
+            CPPUNIT_ASSERT(double_eq(coadsx_vals[index], test_float64));
             // last element
             index = 179;
             test_float64 = 379.0;
-            BESDEBUG("dmrpp", "coadsx_vals[" << index << "]: " << coadsx_vals[index] << "  test_float64: " << test_float64 << endl);
-            CPPUNIT_ASSERT(double_eq(coadsx_vals[index], test_float64 ));
+            BESDEBUG("dmrpp",
+                "coadsx_vals[" << index << "]: " << coadsx_vals[index] << "  test_float64: " << test_float64 << endl);
+            CPPUNIT_ASSERT(double_eq(coadsx_vals[index], test_float64));
 
             // ######################################
             // Check COADSY variable
             vIter++;
             DmrppArray *coadsy = dynamic_cast<DmrppArray*>(*vIter);
-            read_var_check_name_and_length(coadsy,"COADSY",90);
+            read_var_check_name_and_length(coadsy, "COADSY", 90);
             vector<dods_float64> coadsy_vals(coadsy->length());
             coadsy->value(&coadsy_vals[0]);
             // first element
             index = 0;
             test_float64 = -89.0;
-            BESDEBUG("dmrpp", "coadsy_vals[" << index << "]: " << coadsy_vals[index] << "  test_float64: " << test_float64 << endl);
-            CPPUNIT_ASSERT(double_eq(coadsy_vals[index], test_float64 ));
+            BESDEBUG("dmrpp",
+                "coadsy_vals[" << index << "]: " << coadsy_vals[index] << "  test_float64: " << test_float64 << endl);
+            CPPUNIT_ASSERT(double_eq(coadsy_vals[index], test_float64));
             // last element
             index = 89;
             test_float64 = 89.0;
-            BESDEBUG("dmrpp", "coadsy_vals[" << index << "]: " << coadsy_vals[index] << "  test_float64: " << test_float64 << endl);
-            CPPUNIT_ASSERT(double_eq(coadsy_vals[index], test_float64 ));
+            BESDEBUG("dmrpp",
+                "coadsy_vals[" << index << "]: " << coadsy_vals[index] << "  test_float64: " << test_float64 << endl);
+            CPPUNIT_ASSERT(double_eq(coadsy_vals[index], test_float64));
 
             // ######################################
             // Check TIME variable
             vIter++;
             DmrppArray *time = dynamic_cast<DmrppArray*>(*vIter);
-            read_var_check_name_and_length(time,"TIME",12);
+            read_var_check_name_and_length(time, "TIME", 12);
             vector<dods_float64> time_vals(time->length());
             time->value(&time_vals[0]);
             // first element
             index = 0;
             test_float64 = 366.0;
-            BESDEBUG("dmrpp", "time_vals[" << index << "]: " << time_vals[index] << "  test_float64: " << test_float64 << endl);
-            CPPUNIT_ASSERT(double_eq(time_vals[index], test_float64 ));
+            BESDEBUG("dmrpp",
+                "time_vals[" << index << "]: " << time_vals[index] << "  test_float64: " << test_float64 << endl);
+            CPPUNIT_ASSERT(double_eq(time_vals[index], test_float64));
             // last element
             index = 11;
             test_float64 = 8401.335;
-            BESDEBUG("dmrpp", "time_vals[" << index << "]: " << time_vals[index] << "  test_float64: " << test_float64 << endl);
-            CPPUNIT_ASSERT(double_eq(time_vals[index], test_float64 ));
-
+            BESDEBUG("dmrpp",
+                "time_vals[" << index << "]: " << time_vals[index] << "  test_float64: " << test_float64 << endl);
+            CPPUNIT_ASSERT(double_eq(time_vals[index], test_float64));
 
             // ######################################
             // Check SST variable
             vIter++;
             DmrppArray *sst = dynamic_cast<DmrppArray*>(*vIter);
-            read_var_check_name_and_length(sst,"SST",194400);
+            read_var_check_name_and_length(sst, "SST", 194400);
             vector<dods_float32> sst_vals(sst->length());
             sst->value(&sst_vals[0]);
 
             // check [0][0][0]
             index = 0;
             test_float32 = -1e+34;
-            BESDEBUG("dmrpp", "sst_vals["<< index << "]: " << sst_vals[index] << "  test_float32: " << test_float32 << endl);
-            CPPUNIT_ASSERT(double_eq(sst_vals[index], test_float32 ));
+            BESDEBUG("dmrpp",
+                "sst_vals["<< index << "]: " << sst_vals[index] << "  test_float32: " << test_float32 << endl);
+            CPPUNIT_ASSERT(double_eq(sst_vals[index], test_float32));
 
             // check [0][13][0]
-            index =  13*180;
+            index = 13 * 180;
             test_float32 = 0.88125;
-            BESDEBUG("dmrpp", "sst_vals["<< index << "]: " << sst_vals[index] << "  test_float32: " << test_float32 << endl);
-            CPPUNIT_ASSERT(double_eq(sst_vals[index], test_float32 ));
+            BESDEBUG("dmrpp",
+                "sst_vals["<< index << "]: " << sst_vals[index] << "  test_float32: " << test_float32 << endl);
+            CPPUNIT_ASSERT(double_eq(sst_vals[index], test_float32));
 
             // check [11][15][2]
-            index =  11*90*180  + 15*180 + 2;
+            index = 11 * 90 * 180 + 15 * 180 + 2;
             test_float32 = -0.3675;
-            BESDEBUG("dmrpp", "sst_vals["<< index << "]: " << sst_vals[index] << "  test_float32: " << test_float32 << endl);
-            CPPUNIT_ASSERT(double_eq(sst_vals[index], test_float32 ));
+            BESDEBUG("dmrpp",
+                "sst_vals["<< index << "]: " << sst_vals[index] << "  test_float32: " << test_float32 << endl);
+            CPPUNIT_ASSERT(double_eq(sst_vals[index], test_float32));
 
             // check [11][89][179]
-            index =  12*90*180 - 1 ;
+            index = 12 * 90 * 180 - 1;
             test_float32 = -1e+34;
-            BESDEBUG("dmrpp", "sst_vals["<< index << "]: " << sst_vals[index] << "  test_float32: " << test_float32 << endl);
-            CPPUNIT_ASSERT(double_eq(sst_vals[index], test_float32 ));
+            BESDEBUG("dmrpp",
+                "sst_vals["<< index << "]: " << sst_vals[index] << "  test_float32: " << test_float32 << endl);
+            CPPUNIT_ASSERT(double_eq(sst_vals[index], test_float32));
 
             // ######################################
             // Check AIRT variable
             vIter++;
             DmrppArray *airt = dynamic_cast<DmrppArray*>(*vIter);
-            read_var_check_name_and_length(airt,"AIRT",194400);
+            read_var_check_name_and_length(airt, "AIRT", 194400);
             vector<dods_float32> airt_vals(airt->length());
             airt->value(&airt_vals[0]);
 
             // check [0][0][0]
             index = 0;
             test_float32 = -1e+34;
-            BESDEBUG("dmrpp", "airt_vals["<< index << "]: " << airt_vals[index] << "  test_float32: " << test_float32 << endl);
-            CPPUNIT_ASSERT(double_eq(airt_vals[index], test_float32 ));
+            BESDEBUG("dmrpp",
+                "airt_vals["<< index << "]: " << airt_vals[index] << "  test_float32: " << test_float32 << endl);
+            CPPUNIT_ASSERT(double_eq(airt_vals[index], test_float32));
 
             // check [3][73][0]
-            index =  3*90*180  + 73*180 + 0;
+            index = 3 * 90 * 180 + 73 * 180 + 0;
             test_float32 = 3.3;
-            BESDEBUG("dmrpp", "airt_vals["<< index << "]: " << airt_vals[index] << "  test_float32: " << test_float32 << endl);
-            CPPUNIT_ASSERT(double_eq(airt_vals[index], test_float32 ));
+            BESDEBUG("dmrpp",
+                "airt_vals["<< index << "]: " << airt_vals[index] << "  test_float32: " << test_float32 << endl);
+            CPPUNIT_ASSERT(double_eq(airt_vals[index], test_float32));
 
             // check [9][24][0]
-            index =  9*90*180  + 24*180 + 0;
+            index = 9 * 90 * 180 + 24 * 180 + 0;
             test_float32 = 14.764;
-            BESDEBUG("dmrpp", "airt_vals["<< index << "]: " << airt_vals[index] << "  test_float32: " << test_float32 << endl);
-            CPPUNIT_ASSERT(double_eq(airt_vals[index], test_float32 ));
+            BESDEBUG("dmrpp",
+                "airt_vals["<< index << "]: " << airt_vals[index] << "  test_float32: " << test_float32 << endl);
+            CPPUNIT_ASSERT(double_eq(airt_vals[index], test_float32));
 
             // check [11][89][179]
-            index =  12*90*180 - 1 ;
+            index = 12 * 90 * 180 - 1;
             test_float32 = -1e+34;
-            BESDEBUG("dmrpp", "airt_vals["<< index << "]: " << airt_vals[index] << "  test_float32: " << test_float32 << endl);
-            CPPUNIT_ASSERT(double_eq(airt_vals[index], test_float32 ));
+            BESDEBUG("dmrpp",
+                "airt_vals["<< index << "]: " << airt_vals[index] << "  test_float32: " << test_float32 << endl);
+            CPPUNIT_ASSERT(double_eq(airt_vals[index], test_float32));
 
             // ######################################
             // Check UWND variable
             vIter++;
             DmrppArray *uwnd = dynamic_cast<DmrppArray*>(*vIter);
-            read_var_check_name_and_length(uwnd,"UWND",194400);
+            read_var_check_name_and_length(uwnd, "UWND", 194400);
             vector<dods_float32> uwnd_vals(uwnd->length());
             uwnd->value(&uwnd_vals[0]);
 
             // check [0][0][0]
             index = 0;
             test_float32 = -1e+34;
-            BESDEBUG("dmrpp", "uwnd_vals["<< index << "]: " << uwnd_vals[index] << "  test_float32: " << test_float32 << endl);
-            CPPUNIT_ASSERT(double_eq(uwnd_vals[index], test_float32 ));
+            BESDEBUG("dmrpp",
+                "uwnd_vals["<< index << "]: " << uwnd_vals[index] << "  test_float32: " << test_float32 << endl);
+            CPPUNIT_ASSERT(double_eq(uwnd_vals[index], test_float32));
 
             // check [5][77][0]
-            index =  5*90*180  + 77*180 + 0;
-            test_float32 =  0.42;
-            BESDEBUG("dmrpp", "uwnd_vals["<< index << "]: " << uwnd_vals[index] << "  test_float32: " << test_float32 << endl);
-            CPPUNIT_ASSERT(double_eq(uwnd_vals[index], test_float32 ));
+            index = 5 * 90 * 180 + 77 * 180 + 0;
+            test_float32 = 0.42;
+            BESDEBUG("dmrpp",
+                "uwnd_vals["<< index << "]: " << uwnd_vals[index] << "  test_float32: " << test_float32 << endl);
+            CPPUNIT_ASSERT(double_eq(uwnd_vals[index], test_float32));
 
             // check [5][77][1]
-            index =  index + 1;
+            index = index + 1;
             test_float32 = 1.38103;
-            BESDEBUG("dmrpp", "uwnd_vals["<< index << "]: " << uwnd_vals[index] << " test_float32: " << test_float32 << endl);
-            CPPUNIT_ASSERT(double_eq(uwnd_vals[index], test_float32 ));
+            BESDEBUG("dmrpp",
+                "uwnd_vals["<< index << "]: " << uwnd_vals[index] << " test_float32: " << test_float32 << endl);
+            CPPUNIT_ASSERT(double_eq(uwnd_vals[index], test_float32));
 
             // check [9][60][0]
-            index =  9*90*180  + 60*180 + 0;
-            test_float32 =  0.5075;
-            BESDEBUG("dmrpp", "uwnd_vals["<< index << "]: " << uwnd_vals[index] << "  test_float32: " << test_float32 << endl);
-            CPPUNIT_ASSERT(double_eq(uwnd_vals[index], test_float32 ));
+            index = 9 * 90 * 180 + 60 * 180 + 0;
+            test_float32 = 0.5075;
+            BESDEBUG("dmrpp",
+                "uwnd_vals["<< index << "]: " << uwnd_vals[index] << "  test_float32: " << test_float32 << endl);
+            CPPUNIT_ASSERT(double_eq(uwnd_vals[index], test_float32));
 
             // check [11][89][179]
-            index =  12*90*180 - 1 ;
+            index = 12 * 90 * 180 - 1;
             test_float32 = -1e+34;
-            BESDEBUG("dmrpp", "uwnd_vals["<< index << "]: " << uwnd_vals[index] << "  test_float32: " << test_float32 << endl);
-            CPPUNIT_ASSERT(double_eq(uwnd_vals[index], test_float32 ));
+            BESDEBUG("dmrpp",
+                "uwnd_vals["<< index << "]: " << uwnd_vals[index] << "  test_float32: " << test_float32 << endl);
+            CPPUNIT_ASSERT(double_eq(uwnd_vals[index], test_float32));
 
             // ######################################
             // Check VWND variable
             vIter++;
             DmrppArray *vwnd = dynamic_cast<DmrppArray*>(*vIter);
-            read_var_check_name_and_length(vwnd,"VWND",194400);
+            read_var_check_name_and_length(vwnd, "VWND", 194400);
             vector<dods_float32> vwnd_vals(vwnd->length());
             vwnd->value(&vwnd_vals[0]);
 
             // check [0][0][0]
             index = 0;
             test_float32 = -1e+34;
-            BESDEBUG("dmrpp", "vwnd_vals["<< index << "]: " << vwnd_vals[index] << "  test_float32: " << test_float32 << endl);
-            CPPUNIT_ASSERT(double_eq(vwnd_vals[index], test_float32 ));
+            BESDEBUG("dmrpp",
+                "vwnd_vals["<< index << "]: " << vwnd_vals[index] << "  test_float32: " << test_float32 << endl);
+            CPPUNIT_ASSERT(double_eq(vwnd_vals[index], test_float32));
 
             // check [2][37][13]
-            index = 2*90*180 + 37*180 + 13;
+            index = 2 * 90 * 180 + 37 * 180 + 13;
             test_float32 = 0.3;
-            BESDEBUG("dmrpp", "vwnd_vals["<< index << "]: " << vwnd_vals[index] << "  test_float32: " << test_float32 << endl);
-            CPPUNIT_ASSERT(double_eq(vwnd_vals[index], test_float32 ));
+            BESDEBUG("dmrpp",
+                "vwnd_vals["<< index << "]: " << vwnd_vals[index] << "  test_float32: " << test_float32 << endl);
+            CPPUNIT_ASSERT(double_eq(vwnd_vals[index], test_float32));
 
             // check [4][36][8]
-            index = 4*90*180 + 36*180 + 8;
+            index = 4 * 90 * 180 + 36 * 180 + 8;
             test_float32 = 3.35;
-            BESDEBUG("dmrpp", "vwnd_vals["<< index << "]: " << vwnd_vals[index] << "  test_float32: " << test_float32 << endl);
-            CPPUNIT_ASSERT(double_eq(vwnd_vals[index], test_float32 ));
+            BESDEBUG("dmrpp",
+                "vwnd_vals["<< index << "]: " << vwnd_vals[index] << "  test_float32: " << test_float32 << endl);
+            CPPUNIT_ASSERT(double_eq(vwnd_vals[index], test_float32));
 
             // check [11][89][179]
-            index =  12*90*180 - 1 ;
+            index = 12 * 90 * 180 - 1;
             test_float32 = -1e+34;
-            BESDEBUG("dmrpp", "vwnd_vals["<< index << "]: " << vwnd_vals[index] << "  test_float32: " << test_float32 << endl);
-            CPPUNIT_ASSERT(double_eq(vwnd_vals[index], test_float32 ));
-
-
+            BESDEBUG("dmrpp",
+                "vwnd_vals["<< index << "]: " << vwnd_vals[index] << "  test_float32: " << test_float32 << endl);
+            CPPUNIT_ASSERT(double_eq(vwnd_vals[index], test_float32));
 
         }
         catch (BESError &e) {
@@ -790,7 +806,8 @@ public:
         CPPUNIT_ASSERT("Passed");
     }
 
-    void test_constrained_coads_climatology() {
+    void test_constrained_coads_climatology()
+    {
         auto_ptr<DMR> dmr(new DMR);
         DmrppTypeFactory dtf;
         dmr->set_factory(&dtf);
@@ -808,33 +825,29 @@ public:
         vIter++; // TIME
         vIter++; // SST  (woot! we'll work on this one)
         try {
-        	DmrppArray *sst = dynamic_cast<DmrppArray*>(*vIter);
+            DmrppArray *sst = dynamic_cast<DmrppArray*>(*vIter);
             DmrppArray::Dim_iter dimIter = sst->dim_begin();
             // Set TIME constraint and bump dim
-            sst->add_constraint(dimIter++,3,5,8);
+            sst->add_constraint(dimIter++, 3, 5, 8);
             // Set COADSY constraint and bump dim
-            sst->add_constraint(dimIter++,23,15,53);
+            sst->add_constraint(dimIter++, 23, 15, 53);
             // Set COADSX constraint and bump dim
-            sst->add_constraint(dimIter++,0,36,179);
+            sst->add_constraint(dimIter++, 0, 36, 179);
             CPPUNIT_ASSERT(dimIter == sst->dim_end());
             // Read constrained var
-        	read_var_check_name_and_length(sst,"SST",30);
-        	// Grab the stuff
+            read_var_check_name_and_length(sst, "SST", 30);
+            // Grab the stuff
             vector<dods_float32> sst_vals(sst->length());
             sst->value(&sst_vals[0]);
             // Check the values against expected result
-            dods_float32 sst_expected[] = {
-				13.43333, 12.61500, 15.27133, 13.46167, 15.03625,
-				-1e+34, 27.77918, 28.75823, 26.95918, -1e+34,
-				-1e+34, 28.91667, 26.78999, 23.47861, 25.63762,
-				11.00667, 10.79999, 12.37750, -1e+34, 11.34231,
-				-1e+34, 26.57110, 27.13167, 25.05054, -1e+34,
-				-1e+34, 28.27059, 29.01156, 26.86975, 27.83860
-            };
-            for(int i=0; i<sst->length(); i++){
+            dods_float32 sst_expected[] = { 13.43333, 12.61500, 15.27133, 13.46167, 15.03625, -1e+34, 27.77918,
+                28.75823, 26.95918, -1e+34, -1e+34, 28.91667, 26.78999, 23.47861, 25.63762, 11.00667, 10.79999,
+                12.37750, -1e+34, 11.34231, -1e+34, 26.57110, 27.13167, 25.05054, -1e+34, -1e+34, 28.27059, 29.01156,
+                26.86975, 27.83860 };
+            for (int i = 0; i < sst->length(); i++) {
                 // fprintf(stderr,"%4.6f \n",sst_vals[i]);
-                BESDEBUG("dmrpp", "sst_vals["<< i << "]: " << sst_vals[i] <<
-                		    " sst_expected[" << i << "]: " << sst_expected[i] << endl);
+                BESDEBUG("dmrpp",
+                    "sst_vals["<< i << "]: " << sst_vals[i] << " sst_expected[" << i << "]: " << sst_expected[i] << endl);
                 CPPUNIT_ASSERT(double_eq(sst_vals[i], sst_expected[i]));
             }
         }
@@ -850,7 +863,7 @@ public:
         CPPUNIT_ASSERT("Passed");
     }
 
-    CPPUNIT_TEST_SUITE( DmrppTypeReadTest );
+CPPUNIT_TEST_SUITE( DmrppTypeReadTest );
 
     CPPUNIT_TEST(test_integer_scalar);
     CPPUNIT_TEST(test_integer_arrays);
@@ -858,7 +871,6 @@ public:
     CPPUNIT_TEST(test_constrained_arrays);
     CPPUNIT_TEST(test_read_coads_climatology);
     CPPUNIT_TEST(test_constrained_coads_climatology);
-
 
     CPPUNIT_TEST_SUITE_END();
 };
@@ -877,11 +889,11 @@ int main(int argc, char*argv[])
     while ((option_char = getopt()) != -1)
         switch (option_char) {
         case 'd':
-             debug = true;  // debug is a static global
-             break;
+            debug = true;  // debug is a static global
+            break;
         case 'p':
-             parser_debug = true;
-             break;
+            parser_debug = true;
+            break;
         default:
             break;
         }

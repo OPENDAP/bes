@@ -1,4 +1,3 @@
-
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of the BES
@@ -27,16 +26,12 @@
 
 #include <string>
 #include <vector>
-#if 0
-#include <map>
-#endif
 
 #include <Array.h>
 
 #include "DmrppCommon.h"
-#if 0
-#include "Odometer.h"
-#endif
+
+#undef USE_READ_SERIAL
 
 namespace dmrpp {
 
@@ -52,38 +47,38 @@ namespace dmrpp {
  * methods, one for the 'no chunks' case and one for arrays 'with chunks.'
  */
 class DmrppArray: public libdap::Array, public DmrppCommon {
+
+private:
     void _duplicate(const DmrppArray &ts);
 
     bool is_projected();
 
-private:
     DmrppArray::dimension get_dimension(unsigned int dim_num);
 
-    virtual bool read_no_chunks();
-    virtual bool read_chunks();
+    void insert_constrained_contiguous(Dim_iter p, unsigned long *target_index, std::vector<unsigned int> &subsetAddress,
+        const std::vector<unsigned int> &array_shape, char *data);
+    virtual void read_contiguous();
 
-    void insert_constrained_no_chunk(
-			Dim_iter p,
-			unsigned long *target_index,
-			std::vector<unsigned int> &subsetAddress,
-			const std::vector<unsigned int> &array_shape,
-			Chunk *h4bytestream);
+#ifdef USE_READ_SERIAL
+    virtual void insert_chunk_serial(unsigned int dim, std::vector<unsigned int> *target_element_address,
+        std::vector<unsigned int> *chunk_source_address, Chunk *chunk);
+    virtual void read_chunks_serial();
+#endif
 
-    virtual bool insert_constrained_chunk(
-    		unsigned int dim,
-    		std::vector<unsigned int> *target_address,
-    		std::vector<unsigned int> *chunk_source_address,
-    		Chunk *chunk,
-    		CURLM *multi_handle);
-
-    void multi_finish(CURLM *curl_multi_handle, std::vector<Chunk> *chunk_refs);
+    unsigned long long get_chunk_start(unsigned int dim, const std::vector<unsigned int>& chunk_origin);
+    Chunk *find_needed_chunks(unsigned int dim, std::vector<unsigned int> *target_element_address, Chunk *chunk);
+    void insert_chunk(unsigned int dim, std::vector<unsigned int> *target_element_address, std::vector<unsigned int> *chunk_element_address,
+        Chunk *chunk);
+    virtual void read_chunks_parallel();
 
 public:
     DmrppArray(const std::string &n, libdap::BaseType *v);
     DmrppArray(const std::string &n, const std::string &d, libdap::BaseType *v);
     DmrppArray(const DmrppArray &rhs);
 
-    virtual ~DmrppArray() {}
+    virtual ~DmrppArray()
+    {
+    }
 
     DmrppArray &operator=(const DmrppArray &rhs);
 
@@ -93,7 +88,7 @@ public:
 
     virtual void dump(ostream & strm) const;
 
-    virtual unsigned long long get_size(bool constrained=false);
+    virtual unsigned long long get_size(bool constrained = false);
     virtual std::vector<unsigned int> get_shape(bool constrained);
 };
 

@@ -26,16 +26,29 @@
 #define MODULES_DMRPP_MODULE_DMRPPUTIL_H_
 
 #include <string>
+#include <curl/curl.h>
 
 namespace dmrpp {
 
-size_t h4bytestream_write_data(void *buffer, size_t size, size_t nmemb, void *data);
+class Chunk;
 
-void curl_read_byte_stream(const std::string &url, const std::string &range, void *user_data);
+#if 0
+size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data);
+#endif
 
+
+#if 0
+void curl_read_chunk(Chunk *chunk);
+void read_using_curl(char buf[CURL_ERROR_SIZE], const string& url, CURL* curl, Chunk* chunk);
+#endif
+
+
+#if 0
 void inflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len);
 
 void unshuffle(char *dest, const char *src, unsigned int src_size, unsigned int width);
+#endif
+
 
 } // namespace dmrpp
 
