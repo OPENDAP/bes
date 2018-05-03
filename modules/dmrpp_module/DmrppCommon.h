@@ -38,8 +38,16 @@ namespace libdap {
 namespace dmrpp {
 
 /**
- * Interface for the size and offset information of data described by
- * DMR++ files.
+ * @brief Size and offset information of data included in DMR++ files.
+ *
+ * A mixin class the provides common behavior for the libdap types
+ * when they are used with teh DMR++ handler. This includes instances
+ * of the Chunk object, code to help the parser break apart the info
+ * in the DMR++ XML documents, and other stuff.
+ *
+ * Included in this class is the read_atomic() method that reads the
+ * atomic types like Byte, Int32, ... Str.
+ *
  */
 class DmrppCommon {
 
