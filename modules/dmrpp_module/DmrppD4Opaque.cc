@@ -25,6 +25,7 @@
 #include "config.h"
 
 #include <string>
+#include <queue>
 
 #include <BESError.h>
 #include <BESDebug.h>
@@ -75,102 +76,22 @@ DmrppD4Opaque::operator=(const DmrppD4Opaque &rhs)
     return *this;
 }
 
-/**
- * @brief Insert a chunk into this array
- *
- * This method inserts the given chunk into the array. Unlike other versions of this
- * method, it _does not_ first check to see if the chunk should be inserted.
- *
- * This method is called recursively, with successive values of \arg dim, until
- * dim is equal to the rank of the array (act. rank - 1). The \arg target_element_address
- * and \arg chunk_element_address are the addresses, in 'element space' of the
- * location in this array where
- *
- * @note Only call this method when it is know that \arg chunk should be inserted
- * into the array. The chunk be both read and decompressed.
- *
- * @param dim
- * @param target_element_address
- * @param chunk_element_address
- * @param chunk
- */
-void DmrppD4Opaque::insert_chunk(unsigned int dim, vector<unsigned int> *target_element_address, vector<unsigned int> *chunk_element_address,
-    Chunk *chunk)
+void DmrppD4Opaque::insert_chunk(Chunk *chunk)
 {
     // The size, in elements, of each of the chunk's dimensions.
     const vector<unsigned int> &chunk_shape = get_chunk_dimension_sizes();
+    if (chunk_shape.size() != 1) throw BESInternalError("Opaque variables' chunks can only have one dimension.", __FILE__, __LINE__);
 
     // The chunk's origin point a.k.a. its "position in array".
     const vector<unsigned int> &chunk_origin = chunk->get_position_in_array();
 
-    dimension thisDim = this->get_dimension(dim);
+    char *source_buffer = chunk->get_rbuf();
+    unsigned char *target_buffer = get_buf();
 
-    // What's the first element that we are going to access for this dimension of the chunk?
-    unsigned long long chunk_start = get_chunk_start(dim, chunk_origin);
-
-    // Now we figure out the correct last element, based on the subset expression
-    unsigned long long end_element = chunk_origin[dim] + chunk_shape[dim] - 1;
-    if ((unsigned) thisDim.stop < end_element) {
-        end_element = thisDim.stop;
-    }
-
-    unsigned long long chunk_end = end_element - chunk_origin[dim];
-    vector<unsigned int> constrained_array_shape = get_shape(true);
-
-    unsigned int last_dim = chunk_shape.size() - 1;
-    if (dim == last_dim) {
-        char *source_buffer = chunk->get_rbuf();
-        char *target_buffer = get_buf();
-        unsigned int elem_width = prototype()->width();
-
-        if (thisDim.stride == 1) {
-            // The start element in this array
-            unsigned long long start_element = chunk_origin[dim] + chunk_start;
-            // Compute how much we are going to copy
-            unsigned long long chunk_constrained_inner_dim_bytes = (end_element - start_element + 1) * elem_width;
-
-            // Compute where we need to put it.
-            (*target_element_address)[dim] = (start_element - thisDim.start) / thisDim.stride;
-            // Compute where we are going to read it from
-            (*chunk_element_address)[dim] = chunk_start;
-
-            unsigned int target_char_start_index = get_index(*target_element_address, constrained_array_shape) * elem_width;
-            unsigned int chunk_char_start_index = get_index(*chunk_element_address, chunk_shape) * elem_width;
-
-            memcpy(target_buffer + target_char_start_index, source_buffer + chunk_char_start_index, chunk_constrained_inner_dim_bytes);
-        }
-        else {
-            // Stride != 1
-            for (unsigned int chunk_index = chunk_start; chunk_index <= chunk_end; chunk_index += thisDim.stride) {
-                // Compute where we need to put it.
-                (*target_element_address)[dim] = (chunk_index + chunk_origin[dim] - thisDim.start) / thisDim.stride;
-
-                // Compute where we are going to read it from
-                (*chunk_element_address)[dim] = chunk_index;
-
-                unsigned int target_char_start_index = get_index(*target_element_address, constrained_array_shape) * elem_width;
-                unsigned int chunk_char_start_index = get_index(*chunk_element_address, chunk_shape) * elem_width;
-
-                memcpy(target_buffer + target_char_start_index, source_buffer + chunk_char_start_index, elem_width);
-            }
-        }
-    }
-#if 0
-    else {
-        // Not the last dimension, so we continue to proceed down the Recursion Branch.
-        for (unsigned int chunk_index = chunk_start; chunk_index <= chunk_end; chunk_index += thisDim.stride) {
-            (*target_element_address)[dim] = (chunk_index + chunk_origin[dim] - thisDim.start) / thisDim.stride;
-            (*chunk_element_address)[dim] = chunk_index;
-
-            // Re-entry here:
-            insert_chunk(dim + 1, target_element_address, chunk_element_address, chunk);
-        }
-    }
-#endif
-
+    memcpy(target_buffer + chunk_origin[0], source_buffer, chunk_shape[0]);
 }
 
-void DmrppD4Opaque::read_chunks()
+void DmrppD4Opaque::read_chunks_parallel()
 {
     vector<Chunk> &chunk_refs = get_chunk_vec();
     if (chunk_refs.size() == 0) throw BESInternalError(string("Expected one or more chunks for variable ") + name(), __FILE__, __LINE__);
@@ -178,16 +99,14 @@ void DmrppD4Opaque::read_chunks()
     // This is not needed here - Opaque is never constrained - but using it
     // means we can reuse the DmrppArray::read_chunks_parallel() method's logic.
     // TODO Replace with a more efficient version. jhrg 5/3/18
-    queue<Chunk *> chunks_to_read;
+    queue<Chunk*> chunks_to_read;
 
     // Look at all the chunks
     for (vector<Chunk>::iterator c = chunk_refs.begin(), e = chunk_refs.end(); c != e; ++c) {
-        Chunk &chunk = *c;
-
-        chunks_to_read.push(c);
+        chunks_to_read.push(&*c);
     }
 
-    reserve_value_capacity(get_size(true));
+    // FIXME Call the new resize() method using num_of_chunks * chunk_size here
 
     if (DmrppRequestHandler::d_use_parallel_transfers) {
         // This is the parallel version of the code. It reads a set of chunks in parallel
@@ -206,7 +125,6 @@ void DmrppD4Opaque::read_chunks()
                 dmrpp_easy_handle *handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(chunk);
                 if (!handle) throw BESInternalError("No more libcurl handles.", __FILE__, __LINE__);
 
-                BESDEBUG(dmrpp_3, "Queuing: " << chunk->to_string() << endl);
                 mhandle->add_easy_handle(handle);
 
                 chunks_to_insert.push(chunk);
@@ -218,13 +136,9 @@ void DmrppD4Opaque::read_chunks()
                 Chunk *chunk = chunks_to_insert.front();
                 chunks_to_insert.pop();
 
-                chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(), 1);
+                chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(), 1 /*elem width*/);
 
-                vector<unsigned int> target_element_address = chunk->get_position_in_array();
-                vector<unsigned int> chunk_source_address(dimensions(), 0);
-
-                BESDEBUG(dmrpp_3, "Inserting: " << chunk->to_string() << endl);
-                insert_chunk(0 /* dimension */, &target_element_address, &chunk_source_address, chunk);
+                insert_chunk(chunk);
             }
         }
     }
@@ -235,16 +149,11 @@ void DmrppD4Opaque::read_chunks()
             Chunk *chunk = chunks_to_read.front();
             chunks_to_read.pop();
 
-            BESDEBUG(dmrpp_3, "Reading: " << chunk->to_string() << endl);
             chunk->read_chunk();
 
-            chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(), 1);
+            chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(), 1 /*elem width*/);
 
-            vector<unsigned int> target_element_address = chunk->get_position_in_array();
-            vector<unsigned int> chunk_source_address(dimensions(), 0);
-
-            BESDEBUG(dmrpp_3, "Inserting: " << chunk->to_string() << endl);
-            insert_chunk(0 /* dimension */, &target_element_address, &chunk_source_address, chunk);
+            insert_chunk(chunk);
         }
     }
 
