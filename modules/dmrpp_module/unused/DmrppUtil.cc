@@ -39,11 +39,13 @@
 #include "DmrppCommon.h"
 #include "Chunk.h"
 #include "DmrppUtil.h"
+#include "DmrppRequestHandler.h"
 
 using namespace std;
 
 namespace dmrpp {
 
+#if 0
 /**
  * @brief Callback passed to libcurl to handle reading a single byte.
  *
@@ -57,151 +59,30 @@ namespace dmrpp {
  * @param data Pointer to this
  * @return The number of bytes read
  */
-size_t h4bytestream_write_data(void *buffer, size_t size, size_t nmemb, void *data)
+size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
 {
-    Chunk *h4bs = reinterpret_cast<Chunk*>(data);
-
-    BESDEBUG("dmrpp", __func__ << "() - BEGIN  chunk: " << h4bs->to_string() << endl);
+    Chunk *c_ptr = reinterpret_cast<Chunk*>(data);
 
     // rbuf: |******++++++++++----------------------|
     //              ^        ^ bytes_read + nbytes
     //              | bytes_read
 
-    unsigned long long bytes_read = h4bs->get_bytes_read();
+    unsigned long long bytes_read = c_ptr->get_bytes_read();
     size_t nbytes = size * nmemb;
 
-    BESDEBUG("dmrpp", __func__ << "() -"
-			<< " bytes_read: " << bytes_read
-			<< ", size: " << size
-			<< ", nmemb: " << nmemb
-			<< ", nbytes: " << nbytes
-			<< ", rbuf_size: " << h4bs->get_rbuf_size()
-			<< endl);
-
     // If this fails, the code will write beyond the buffer.
-    assert(bytes_read + nbytes <= h4bs->get_rbuf_size());
+    assert(bytes_read + nbytes <= c_ptr->get_rbuf_size());
 
-    memcpy(h4bs->get_rbuf() + bytes_read, buffer, nbytes);
+    memcpy(c_ptr->get_rbuf() + bytes_read, buffer, nbytes);
 
-    h4bs->set_bytes_read(bytes_read + nbytes);
-
-    BESDEBUG("dmrpp", __func__ << "() - END "
-			<< " bytes_read: " << h4bs->get_bytes_read() << endl);
+    c_ptr->set_bytes_read(bytes_read + nbytes);
 
     return nbytes;
 }
+#endif
 
-/**
- * @brief Read data using HTTP/File Range GET
- *
- * @see https://curl.haxx.se/libcurl/c/libcurl.html
- * @param url Get dat from this URL
- * @param range ...and this byte range
- * @param user_data A pointer to a Chunk instance
- */
-void curl_read_byte_stream(const string &url, const string &range, void *user_data)
-{
-    // See https://curl.haxx.se/libcurl/c/CURLOPT_RANGE.html, etc.
-    BESDEBUG("dmrpp", __func__ << "() - BEGIN "
-    		<< " url: " << url
-    		<< " range: " << range
-			<< endl);
 
-    CURL* curl = curl_easy_init();
-    if (curl) {
-        CURLcode res = curl_easy_setopt(curl, CURLOPT_URL, url.c_str() /*"http://example.com"*/);
-        if (res != CURLE_OK) throw BESError(string(curl_easy_strerror(res)), BES_INTERNAL_ERROR, __FILE__, __LINE__);
-
-        // Use CURLOPT_ERRORBUFFER for a human-readable message
-        char buf[CURL_ERROR_SIZE];
-        res = curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, buf);
-        if (res != CURLE_OK) throw BESError(string(curl_easy_strerror(res)), BES_INTERNAL_ERROR, __FILE__, __LINE__);
-
-        // get the offset to offset + size bytes
-        if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_RANGE, range.c_str() /*"0-199"*/)) throw BESError(
-                string("HTTP Error: ").append(buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
-
-        // Pass all data to the 'write_data' function
-        if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, h4bytestream_write_data)) throw BESError(
-                string("HTTP Error: ").append(buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
-
-        // Pass this to write_data as the fourth argument
-        if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_WRITEDATA, user_data)) throw BESError(
-                string("HTTP Error: ").append(buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
-
-        // Perform the request
-        long curl_code = curl_easy_perform(curl);
-        if (CURLE_OK != curl_code) {
-            curl_easy_cleanup(curl);
-            throw BESError(string("HTTP Error: ").append(buf), BES_INTERNAL_ERROR, __FILE__, __LINE__);
-        }
-		BESDEBUG("dmrpp", __func__ << "() - curl_easy_perform() finished. exit_code: " << curl_code << endl);
-
-		string file_url("file://");
-		if( ! url.compare(0, file_url.size(), file_url) ){
-			// If it's a file URL then we don't need to dink around with the HTTP noise..
-			BESDEBUG("dmrpp", __func__ << "() Retrieved file URL, no http status to check. url: " << url << endl);
-		}
-		else {
-			// If it's not a file URL then we'll assume it's an http(s) URL and
-			// we handle the various HTTP mischief.
-			long http_code = 0;
-			long curl_info_code = curl_easy_getinfo (curl, CURLINFO_RESPONSE_CODE, &http_code);
-			if (http_code == 200 && curl_code != CURLE_ABORTED_BY_CALLBACK && curl_info_code==CURLE_OK)
-			{
-				BESDEBUG("dmrpp", __func__ << "() - SUCCEEDED!"<< endl);
-			}
-			else if(http_code==206){
-				BESDEBUG("dmrpp", __func__ << "() -  206 " << endl);
-
-				double dwnld_length;
-				ostringstream oss;
-				curl_info_code =  curl_easy_getinfo(curl, CURLINFO_SIZE_DOWNLOAD, &dwnld_length);
-				if(curl_info_code != CURLE_OK){
-					oss << "Missing_Http_Content_Length_Header";
-				}
-				else {
-					oss << dwnld_length;
-				}
-				BESDEBUG("dmrpp", __func__ << "() - Host Returned \"Partial-Content\" (206) length: " << oss.str() << endl);
-			}
-			else
-			{
-				std::ostringstream oss;
-				oss <<  __func__ << "() - ERROR curl request failed! " << "http-status: " << http_code << endl;
-				char *ctype;
-				string content_type;
-				curl_info_code = curl_easy_getinfo (curl, CURLINFO_CONTENT_TYPE, &ctype);
-				if(curl_info_code != CURLE_OK || ctype==NULL) {
-					content_type = "No_Content_Type_Found";
-				}
-				else{
-					content_type =  string(ctype);
-				}
-				oss << " content-type: " << content_type;
-
-				Chunk *h4bs = reinterpret_cast<Chunk*>(user_data);
-				long bytes_read = h4bs->get_bytes_read();
-				oss << " bytes_read: " << bytes_read;
-
-				if(content_type.find("text")!=string::npos ||
-						content_type.find("xml")!=string::npos ||
-						content_type.find("json")!=string::npos) {
-					Chunk *h4bs = reinterpret_cast<Chunk*>(user_data);
-					h4bs->get_rbuf()[bytes_read] = 0;
-					string message(h4bs->get_rbuf());
-					oss << endl << message;
-				}
-				BESDEBUG("dmrpp", oss.str() << endl);
-				curl_easy_cleanup(curl);
-				throw BESError(oss.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
-			}
-		}
-        curl_easy_cleanup(curl);
-    }
-    BESDEBUG("dmrpp", __func__ << "() - END " << endl);
-}
-
+#if 0
 /**
  * @brief Deflate data. This is the zlib algorithm.
  *
@@ -232,7 +113,7 @@ void inflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len)
 
     /* Initialize the uncompression routines */
     if (Z_OK != inflateInit(&z_strm))
-        throw BESError("Failed to initialize deflate software.", BES_INTERNAL_ERROR, __FILE__, __LINE__);
+    throw BESError("Failed to initialize inflate software.", BES_INTERNAL_ERROR, __FILE__, __LINE__);
 
     /* Loop to uncompress the buffer */
     int status = Z_OK;
@@ -246,7 +127,7 @@ void inflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len)
         /* Check for error */
         if (Z_OK != status) {
             (void) inflateEnd(&z_strm);
-            throw BESError("Failed to deflate data chunk.", BES_INTERNAL_ERROR, __FILE__, __LINE__);
+            throw BESError("Failed to inflate data chunk.", BES_INTERNAL_ERROR, __FILE__, __LINE__);
         }
         else {
             /* If we're not done and just ran out of buffer space, it's an error.
@@ -263,7 +144,7 @@ void inflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len)
                 nalloc *= 2;
                 if (NULL == (new_outbuf = H5MM_realloc(outbuf, nalloc))) {
                     (void) inflateEnd(&z_strm);
-                    HGOTO_ERROR(H5E_RESOURCE, H5E_NOSPACE, 0, "memory allocation failed for deflate uncompression")
+                    HGOTO_ERROR(H5E_RESOURCE, H5E_NOSPACE, 0, "memory allocation failed for inflate decompression")
                 } /* end if */
                 outbuf = new_outbuf;
 
@@ -273,7 +154,7 @@ void inflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len)
 #endif
             } /* end if */
         } /* end else */
-    } while (status == Z_OK);
+    }while (status == Z_OK);
 
     /* Finish uncompressing the stream */
     (void) inflateEnd(&z_strm);
@@ -330,12 +211,12 @@ void unshuffle(char *dest, const char *src, unsigned int src_size, unsigned int 
             }
 #else /* DUFFS_DEVICE */
             {
-                size_t duffs_index = (elems + 7) / 8;   /* Counting index for Duff's device */
+                size_t duffs_index = (elems + 7) / 8; /* Counting index for Duff's device */
                 switch (elems % 8) {
-                default:
+                    default:
                     assert(0 && "This Should never be executed!");
                     break;
-                case 0:
+                    case 0:
                     do {
                         // This macro saves repeating the same line 8 times
 #define DUFF_GUTS       *_dest = *_src++; _dest += width;
@@ -355,7 +236,7 @@ void unshuffle(char *dest, const char *src, unsigned int src_size, unsigned int 
                         DUFF_GUTS
                         case 1:
                         DUFF_GUTS
-                    } while (--duffs_index > 0);
+                    }while (--duffs_index > 0);
                 } /* end switch */
             } /* end block */
 #endif /* DUFFS_DEVICE */
@@ -373,5 +254,7 @@ void unshuffle(char *dest, const char *src, unsigned int src_size, unsigned int 
         }
     } /* end if width and elems both > 1 */
 }
+#endif
+
 
 }    // namespace dmrpp

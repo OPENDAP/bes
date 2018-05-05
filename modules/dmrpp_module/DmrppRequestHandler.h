@@ -28,7 +28,6 @@
 
 #include "BESRequestHandler.h"
 
-#undef DAP2
 class ObjMemCache;  // in bes/dap
 
 namespace libdap {
@@ -38,13 +37,16 @@ namespace libdap {
 
 namespace dmrpp {
 
+class CurlHandlePool;
+
 class DmrppRequestHandler: public BESRequestHandler {
 
 private:
+    // These are not used. See the netcdf handler for an example of their use.
+    // jhrg 4/24/18
     static ObjMemCache *das_cache;
     static ObjMemCache *dds_cache;
     static ObjMemCache *dmr_cache;
-
 
 	// These are static because they are used by the static public methods.
 	static void build_dmr_from_file(const std::string& accessed, bool explicit_containers, libdap::DMR* dmr);
@@ -53,11 +55,10 @@ public:
 	DmrppRequestHandler(const std::string &name);
 	virtual ~DmrppRequestHandler();
 
-#if DAP2
-	static bool dap_build_das(BESDataHandlerInterface &dhi);
-	static bool dap_build_dds(BESDataHandlerInterface &dhi);
-	static bool dap_build_data(BESDataHandlerInterface &dhi);
-#endif
+    static CurlHandlePool *curl_handle_pool;
+
+    static bool d_use_parallel_transfers;
+    static int d_max_parallel_transfers;
 
 	static bool dap_build_dmr(BESDataHandlerInterface &dhi);
 	static bool dap_build_dap4data(BESDataHandlerInterface &dhi);

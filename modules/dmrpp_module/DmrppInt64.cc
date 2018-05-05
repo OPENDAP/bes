@@ -25,13 +25,10 @@
 #include "config.h"
 
 #include <string>
-#include <sstream>
-#include <cassert>
 
 #include <BESError.h>
 #include <BESDebug.h>
 
-#include "DmrppUtil.h"
 #include "DmrppInt64.h"
 
 using namespace libdap;
