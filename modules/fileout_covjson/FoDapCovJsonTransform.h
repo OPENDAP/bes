@@ -60,18 +60,104 @@ private:
     std::string _indent_increment;
     std::string currAxis;
     bool zExists;
+    bool isParam;
+    bool isAxis;
 
-    /*
-    * if:
-    * 0 NdArray
-    * 1 TiledNdArray
-    * 2 Coverage
-    */
-    std::string paramType;
-    std::string paramUnit;
-    std::string paramLongName;
+    class FoDapCovJsonAxis: public BESObj {
+    private:
+        std::string name;
+        std::string values;
+
+    public:
+        FoDapCovJsonAxis() { }
+
+        FoDapCovJsonAxis(std::string newName, std::string newValues) {
+            this->name = newName;
+            this->values = newValues;
+        }
+
+        ~FoDapCovJsonAxis() { }
+
+        string getAxisName() {
+            return this->name;
+        }
+
+        void setAxisName(std::string newAxisName) {
+            this->name = newAxisName;
+        }
+
+        string getAxisValues() {
+            return this->values;
+        }
+
+        void setAxisValues(std::string newValues) {
+            this->values = newValues;
+        }
+
+        void addToAxisValues(std::string newValuesToAdd) {
+            this->values += newValuesToAdd;
+        }
+    };
+
+    class FoDapCovJsonParameter: public BESObj {
+    private:
+        std::string type;
+        std::string unit;
+        std::string longName;
+        std::string values;
+
+    public:
+        FoDapCovJsonParameter() { }
+
+        FoDapCovJsonParameter(std::string newUnit, std::string newLongName, std::string newValues)
+        : type("Parameter"), unit(newUnit), longName(newLongName), values(newValues) { }
+
+        ~FoDapCovJsonParameter() { }
+
+        string getParameterType() {
+            return this->type;
+        }
+
+        void setParameterType(std::string newType) {
+            this->type = newType;
+        }
+
+        string getParameterUnit() {
+            return this->unit;
+        }
+
+        void setParameterUnit(std::string newUnit) {
+            this->unit = newUnit;
+        }
+
+        string getParameterLongName() {
+            return this->longName;
+        }
+
+        void setParameterLongName(std::string newLongName) {
+            this->longName = newLongName;
+        }
+
+        string getParameterValues() {
+            return this->values;
+        }
+
+        void setParameterValues(std::string newValues) {
+            this->longName = newValues;
+        }
+
+        void addToParameterValues(std::string newValuesToAdd) {
+            this->values += newValuesToAdd;
+        }
+    };
+
+    vector<FoDapCovJsonAxis *> axes;
+    vector<FoDapCovJsonParameter *> parameters;
 
     enum domains { Grid = 0, VerticalProfile = 1, PointSeries = 2, Point = 3 };
+
+    void getNodeMetadata(ostream *strm, libdap::BaseType *bt, string indent);
+    void getLeafMetadata(ostream *strm, libdap::BaseType *bt, string indent);
 
     void writeAxesMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);
     void writeParameterMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);
@@ -87,6 +173,8 @@ private:
     void transform(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData, bool isAxes);
     void transform(std::ostream *strm, libdap::AttrTable &attr_table, std::string indent);
 
+    void transformNodeWorker(ostream *strm, vector<libdap::BaseType *> leaves, vector<libdap::BaseType *> nodes,
+        string indent, bool sendData);
     void transformAxesWorker(std::ostream *strm, std::vector<libdap::BaseType *> leaves, std::string indent, bool sendData);
     void transformReferenceWorker(std::ostream *strm, std::string indent, FoDapCovJsonValidation fv);
     void transformParametersWorker(std::ostream *strm, std::vector<libdap::BaseType *> nodes, std::string indent,
@@ -104,43 +192,6 @@ private:
         std::vector<unsigned int> *shape, unsigned int currentDim);
 
 public:
-
-    string getCurrAxis() {
-        return this->currAxis;
-    }
-
-    void setCurrAxis(std::string newCurrAxis) {
-        this->currAxis = newCurrAxis;
-    }
-
-    void clearCurrAxis() {
-        this->currAxis.clear();
-    }
-
-    string getParamType() {
-        return this->paramType;
-    }
-
-    void setParamType(std::string newParamType) {
-        this->paramType = newParamType;
-    }
-
-    string getParamUnit() {
-        return this->paramUnit;
-    }
-
-    void setParamUnit(std::string newParamUnit) {
-        this->paramUnit = newParamUnit;
-    }
-
-    string getParamLongName() {
-        return this->paramLongName;
-    }
-
-    void setParamLongName(std::string newParamLongName) {
-        this->paramLongName = newParamLongName;
-    }
-
     FoDapCovJsonTransform(libdap::DDS *dds);
 
     virtual ~FoDapCovJsonTransform() { }

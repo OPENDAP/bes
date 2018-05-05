@@ -246,6 +246,51 @@ void FoDapCovJsonTransform::covjsonStringArray(std::ostream *strm, libdap::Array
 
 
 /**
+ * @brief Gets the current Node's metadata.
+ *
+ * @param ostrm Write the CovJSON to this stream
+ * @param bt Pointer to a BaseType vector containing Axis attributes
+ * @param indent Indent the output so humans can make sense of it
+ */
+void FoDapCovJsonTransform::getNodeMetadata(ostream *strm, libdap::BaseType *bt, string indent)
+{
+    // // Name
+    // *strm << indent << "\"name\": \"" << bt->name() << "\"," << endl;
+    //
+    // //Attributes
+    // transform(strm, bt->get_attr_table(), indent);
+    // *strm << "," << endl;
+}
+
+
+/**
+ * @brief Gets the current Leaf's metadata.
+ *
+ * @param ostrm Write the CovJSON to this stream
+ * @param bt Pointer to a BaseType vector containing Axis attributes
+ * @param indent Indent the output so humans can make sense of it
+ */
+void FoDapCovJsonTransform::getLeafMetadata(ostream *strm, libdap::BaseType *bt, string indent)
+{
+    // // Name
+    // *strm << indent << "\"name\": \"" << bt->name() << "\"," << endl;
+    //
+    // // Type
+    // if (bt->type() == libdap::dods_array_c) {
+    //     libdap::Array *a = (libdap::Array *) bt;
+    //     *strm << indent << "\"type\": \"" << a->var()->type_name() << "\"," << endl;
+    // }
+    // else {
+    //     *strm << indent << "\"type\": \"" << bt->type_name() << "\"," << endl;
+    // }
+    //
+    // //Attributes
+    // transform(strm, bt->get_attr_table(), indent);
+    // *strm << "," << endl;
+}
+
+
+/**
  * @brief Writes the current Axis's name and formatting to the CovJSON stream.
  *
  * Gets the current Axis's attributes, and prints the Axis's metadata to then
@@ -262,7 +307,7 @@ void FoDapCovJsonTransform::writeAxesMetadata(ostream *strm, libdap::BaseType *b
     getAxisAttributes(strm, bt->get_attr_table());
 
     // Axis name (x, y, or z)
-    *strm << indent << "\"" << getCurrAxis() << "\": {" << endl;
+    //*strm << indent << "\"" << getCurrAxis() << "\": {" << endl;
 }
 
 
@@ -305,17 +350,17 @@ void FoDapCovJsonTransform::writeParameterMetadata(ostream *strm, libdap::BaseTy
     *strm << child_indent1 << "\"description\": \"" << bt->name() << "\"," << endl;
     *strm << child_indent1 << "\"unit\": {" << endl;
     *strm << child_indent2 << "\"label\": {" << endl;
-    *strm << child_indent3 << "\"en\": \"" << getParamUnit() << "\"" << endl;
+    //*strm << child_indent3 << "\"en\": \"" << getParamUnit() << "\"" << endl;
     *strm << child_indent2 << "}" << endl;
     *strm << child_indent1 << "}," << endl;
     *strm << child_indent1 << "\"symbol\": {" << endl;
-    *strm << child_indent2 << "\"value\": \"" << getParamUnit() << "\"," << endl;
+    //*strm << child_indent2 << "\"value\": \"" << getParamUnit() << "\"," << endl;
     *strm << child_indent2 << "\"type\": \"\"," << endl;
     *strm << child_indent1 << "}," << endl;
     *strm << child_indent1 << "\"observedProperty\": {" << endl;
     *strm << child_indent2 << "\"id\": null," << endl;
     *strm << child_indent2 << "\"label\": {" << endl;
-    *strm << child_indent3 << "\"en\": \"" << getParamLongName() << "\"" << endl;
+    //*strm << child_indent3 << "\"en\": \"" << getParamLongName() << "\"" << endl;
     *strm << child_indent2 << "}" << endl;
     *strm << child_indent1 << "}" << endl;
     *strm << indent << "}" << endl;
@@ -352,7 +397,7 @@ void FoDapCovJsonTransform::writeParameterMetadata(ostream *strm, libdap::BaseTy
  */
 void FoDapCovJsonTransform::getAxisAttributes(ostream *strm, libdap::AttrTable &attr_table)
 {
-    clearCurrAxis();
+    //clearCurrAxis();
     // Only do more if there are actually attributes in the table
     if (attr_table.get_size() != 0) {
         libdap::AttrTable::Attr_iter begin = attr_table.attr_begin();
@@ -379,29 +424,41 @@ void FoDapCovJsonTransform::getAxisAttributes(ostream *strm, libdap::AttrTable &
                     if((currValue.compare("lon") == 0) || (currValue.compare("longitude") == 0)
                         || (currValue.compare("LONGITUDE") == 0) || (currValue.compare("Longitude") == 0)
                         || (currValue.compare("x") == 0) || (currValue.compare("X") == 0)) {
-                        setCurrAxis("x");
+                        //setCurrAxis("x");
+
+
                     }
                     else if((currName.compare("units") == 0) && (currValue.compare("degrees_east") == 0))  {
-                        setCurrAxis("x");
+                        //setCurrAxis("x");
+
+
                     }
 
                     if((currValue.compare("lat") == 0) || (currValue.compare("latitude") == 0)
                         || (currValue.compare("LATITUDE") == 0) || (currValue.compare("Latitude") == 0)
                         || (currValue.compare("y") == 0) || (currValue.compare("Y") == 0)) {
-                        setCurrAxis("y");
+                        //setCurrAxis("y");
+
+
                     }
                     else if((currName.compare("units") == 0) && (currValue.compare("degrees_north") == 0)) {
-                        setCurrAxis("y");
+                        //setCurrAxis("y");
+
+
                     }
 
                     if ((currValue.compare("t") == 0) || (currValue.compare("TIME") == 0)
                         || (currValue.compare("time") == 0) || (currValue.compare("s") == 0)
                         || (currValue.compare("seconds") == 0) || (currValue.compare("Seconds") == 0)
                         || (currValue.compare("time_origin") == 0)) {
-                        setCurrAxis("t");
+                        //setCurrAxis("t");
+
+
                     }
                     else if((currAxis.compare("x") != 0) && (currAxis.compare("y") != 0)) {
-                        setCurrAxis("t");
+                        //setCurrAxis("t");
+
+
                     }
                 }
                 break;
@@ -454,10 +511,16 @@ void FoDapCovJsonTransform::getParameterAttributes(ostream *strm, libdap::AttrTa
                     //*strm << "\"currAttrName\": \"" << currAttrName << "\", \"currAttrValue\": \"" << currAttrValue << "\"" << endl;
 
                     if(currAttrName.compare("units") == 0) {
-                        setParamUnit(currAttrValue);
+                        //setParamUnit(currAttrValue);
+
+
+
                     }
                     else if(currAttrName.compare("long_name") == 0) {
-                        setParamLongName(currAttrValue);
+                        //setParamLongName(currAttrValue);
+
+
+
                     }
                 }
                 break;
@@ -573,7 +636,49 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::Constructor *cnstrc
     }
 
     // Write this parameter's range values to the CovJSON stream
-    transformRangesWorker(strm, leaves, indent, sendData);
+    //transformRangesWorker(strm, leaves, indent, sendData);
+    transformNodeWorker(strm, leaves, nodes, indent, sendData);
+}
+
+
+/**
+ * @brief Worker method allows us to recursively traverse an Node's variable
+ *   contents and any child nodes will be traversed as well.
+ *
+ * @param strm Write to this output stream
+ * @param leaves Pointer to a vector of BaseTypes, which represent w10n leaves
+ * @param leaves Pointer to a vector of BaseTypes, which represent w10n nodes
+ * @param indent Indent the output so humans can make sense of it
+ * @param sendData true: send data; false: send metadata
+ */
+void FoDapCovJsonTransform::transformNodeWorker(ostream *strm, vector<libdap::BaseType *> leaves,
+    vector<libdap::BaseType *> nodes, string indent, bool sendData)
+{
+    // Write down this nodes leaves
+    *strm << indent << "\"leaves\": [";
+    if (leaves.size() > 0) *strm << endl;
+    for (std::vector<libdap::BaseType *>::size_type l = 0; l < leaves.size(); l++) {
+        libdap::BaseType *v = leaves[l];
+        BESDEBUG(FoDapCovJsonTransform_debug_key, "Processing LEAF: " << v->name() << endl);
+        if (l > 0) {
+            *strm << ",";
+            *strm << endl;
+        }
+        transform(strm, v, indent + _indent_increment, sendData, true);
+    }
+    if (leaves.size() > 0) *strm << endl << indent;
+    *strm << "]," << endl;
+
+    // Write down this nodes child nodes
+    *strm << indent << "\"nodes\": [";
+    if (nodes.size() > 0) *strm << endl;
+    for (std::vector<libdap::BaseType *>::size_type n = 0; n < nodes.size(); n++) {
+        libdap::BaseType *v = nodes[n];
+        transform(strm, v, indent + _indent_increment, sendData, false);
+    }
+    if (nodes.size() > 0) *strm << endl << indent;
+
+    *strm << "]" << endl;
 }
 
 
@@ -749,9 +854,9 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
     string child_indent1 = indent + _indent_increment;
     string child_indent2 = child_indent1 + _indent_increment;
 
-    *strm << indent << "{" << endl; // beginning of the output file
-    *strm << child_indent1 << "\"type\": \"Coverage\"," << endl;
-    *strm << child_indent1 << "\"domain\": {" << endl;
+    //*strm << indent << "{" << endl; // beginning of the output file
+    //*strm << child_indent1 << "\"type\": \"Coverage\"," << endl;
+    //*strm << child_indent1 << "\"domain\": {" << endl;
 
     /*
     * if:
@@ -761,31 +866,33 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
     * 3 - Point
     */
     if(fv.domainType == Grid) {
-        *strm << child_indent2 << "\"domainType\": \"Grid\"," << endl;
+        //*strm << child_indent2 << "\"domainType\": \"Grid\"," << endl;
     }
     else if(fv.domainType == VerticalProfile) {
-        *strm << child_indent2 << "\"domainType\": \"VerticalProfile\"," << endl;
+        //*strm << child_indent2 << "\"domainType\": \"VerticalProfile\"," << endl;
     }
     else if(fv.domainType == PointSeries) {
-        *strm << child_indent2 << "\"domainType\": \"PointSeries\"," << endl;
+        //*strm << child_indent2 << "\"domainType\": \"PointSeries\"," << endl;
     }
     else if(fv.domainType == Point) {
-        *strm << child_indent2 << "\"domainType\": \"Point\"," << endl;
+        //*strm << child_indent2 << "\"domainType\": \"Point\"," << endl;
     }
     else {
         // Ideally, we want throw an BESInternalError here, but for now, we
         // will just force domainType to "Grid"
-        *strm << child_indent2 << "\"domainType\": \"Grid\"," << endl;
+        //*strm << child_indent2 << "\"domainType\": \"Grid\"," << endl;
         //throw BESInternalError("File out COVJSON, Could not define a domainType", __FILE__, __LINE__);
     }
 
+    transformNodeWorker(strm, leaves, nodes, child_indent2, sendData);
+
     // The axes are the first 3 leaves - the transformAxesWorker call will parse and
     // print these values. We need to ensure they're formatted correctly.
-    transformAxesWorker(strm, leaves, child_indent2, sendData);
+    //transformAxesWorker(strm, leaves, child_indent2, sendData);
     // Prints the references for the given Axes
-    transformReferenceWorker(strm, child_indent2, fv);
+    //transformReferenceWorker(strm, child_indent2, fv);
     // Prints parameter metadata and range values
-    transformParametersWorker(strm, nodes, child_indent1, sendData);
+    //transformParametersWorker(strm, nodes, child_indent1, sendData);
 
     *strm << endl << _indent_increment << "}" << endl;
     *strm << "}" << endl; // end of the output file
