@@ -58,122 +58,53 @@ private:
     libdap::DDS *_dds;
     std::string _returnAs;
     std::string _indent_increment;
-    std::string currAxis;
+    bool axesSet;
+    bool xExists;
+    bool yExists;
     bool zExists;
+    bool tExists;
     bool isParam;
     bool isAxis;
 
-    class FoDapCovJsonAxis: public BESObj {
-    private:
+    struct Axis {
         std::string name;
         std::string values;
-
-    public:
-        FoDapCovJsonAxis() { }
-
-        FoDapCovJsonAxis(std::string newName, std::string newValues) {
-            this->name = newName;
-            this->values = newValues;
-        }
-
-        ~FoDapCovJsonAxis() { }
-
-        string getAxisName() {
-            return this->name;
-        }
-
-        void setAxisName(std::string newAxisName) {
-            this->name = newAxisName;
-        }
-
-        string getAxisValues() {
-            return this->values;
-        }
-
-        void setAxisValues(std::string newValues) {
-            this->values = newValues;
-        }
-
-        void addToAxisValues(std::string newValuesToAdd) {
-            this->values += newValuesToAdd;
-        }
     };
 
-    class FoDapCovJsonParameter: public BESObj {
-    private:
+    struct Parameter {
+        std::string name;
         std::string type;
         std::string unit;
         std::string longName;
+        std::string shape;
         std::string values;
-
-    public:
-        FoDapCovJsonParameter() { }
-
-        FoDapCovJsonParameter(std::string newUnit, std::string newLongName, std::string newValues)
-        : type("Parameter"), unit(newUnit), longName(newLongName), values(newValues) { }
-
-        ~FoDapCovJsonParameter() { }
-
-        string getParameterType() {
-            return this->type;
-        }
-
-        void setParameterType(std::string newType) {
-            this->type = newType;
-        }
-
-        string getParameterUnit() {
-            return this->unit;
-        }
-
-        void setParameterUnit(std::string newUnit) {
-            this->unit = newUnit;
-        }
-
-        string getParameterLongName() {
-            return this->longName;
-        }
-
-        void setParameterLongName(std::string newLongName) {
-            this->longName = newLongName;
-        }
-
-        string getParameterValues() {
-            return this->values;
-        }
-
-        void setParameterValues(std::string newValues) {
-            this->longName = newValues;
-        }
-
-        void addToParameterValues(std::string newValuesToAdd) {
-            this->values += newValuesToAdd;
-        }
     };
 
-    vector<FoDapCovJsonAxis *> axes;
-    vector<FoDapCovJsonParameter *> parameters;
+    unsigned int axisCount;
+    std::vector<Axis *> axes;
+    unsigned int parameterCount;
+    std::vector<Parameter *> parameters;
 
     enum domains { Grid = 0, VerticalProfile = 1, PointSeries = 2, Point = 3 };
 
-    void getNodeMetadata(ostream *strm, libdap::BaseType *bt, string indent);
-    void getLeafMetadata(ostream *strm, libdap::BaseType *bt, string indent);
+    // void getNodeMetadata(std::ostream *strm, libdap::BaseType *bt, string indent);
+    // void getLeafMetadata(std::ostream *strm, libdap::BaseType *bt, string indent);
 
-    void writeAxesMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);
-    void writeParameterMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);
+    // void writeAxesMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);
+    // void writeParameterMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);
 
-    void getAxisAttributes(std::ostream *strm, libdap::AttrTable &attr_table);
-    void getParameterAttributes(std::ostream *strm, libdap::AttrTable &attr_table);
+    void getAttributes(std::ostream *strm, libdap::AttrTable &attr_table, std::string name,
+        bool *axisRetrieved, bool *parameterRetrieved);
 
     void transformAtomic(std::ostream *strm, libdap::BaseType *bt, std::string indent, bool sendData);
 
     void transform(std::ostream *strm, libdap::DDS *dds, std::string indent, bool sendData, FoDapCovJsonValidation fv);
-    void transform(std::ostream *strm, libdap::BaseType *bt, std::string indent, bool sendData, bool isAxes);
+    void transform(std::ostream *strm, libdap::BaseType *bt, std::string indent, bool sendData);
     void transform(std::ostream *strm, libdap::Constructor *cnstrctr, std::string indent, bool sendData);
-    void transform(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData, bool isAxes);
+    void transform(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
     void transform(std::ostream *strm, libdap::AttrTable &attr_table, std::string indent);
 
-    void transformNodeWorker(ostream *strm, vector<libdap::BaseType *> leaves, vector<libdap::BaseType *> nodes,
+    void transformNodeWorker(std::ostream *strm, vector<libdap::BaseType *> leaves, vector<libdap::BaseType *> nodes,
         string indent, bool sendData);
     void transformAxesWorker(std::ostream *strm, std::vector<libdap::BaseType *> leaves, std::string indent, bool sendData);
     void transformReferenceWorker(std::ostream *strm, std::string indent, FoDapCovJsonValidation fv);
@@ -183,13 +114,16 @@ private:
             std::string indent, bool sendData);
 
     template<typename T>
-    void covjsonSimpleTypeArray(std::ostream *strm, libdap::Array *a, std::string indent,
-        bool sendData, bool isAxes);
+    void covjsonSimpleTypeArray(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
     void covjsonStringArray(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
 
     template<typename T>
     unsigned int covjsonSimpleTypeArrayWorker(std::ostream *strm, T *values, unsigned int indx,
-        std::vector<unsigned int> *shape, unsigned int currentDim);
+        std::vector<unsigned int> *shape, unsigned int currentDim, struct Axis *a);
+
+    template<typename T>
+    unsigned int covjsonSimpleTypeArrayWorker(std::ostream *strm, T *values, unsigned int indx,
+        std::vector<unsigned int> *shape, unsigned int currentDim, struct Parameter *p);
 
 public:
     FoDapCovJsonTransform(libdap::DDS *dds);
@@ -200,13 +134,13 @@ public:
 
     virtual void dump(std::ostream &strm) const;
 
-    virtual void writeAxesMetadata(std::ostream &ostrm, libdap::BaseType *bt, std::string indent) {
-        writeAxesMetadata(&ostrm, bt, indent);
-    }
-
-    virtual void writeParameterMetadata(std::ostream &ostrm, libdap::BaseType *bt, std::string indent) {
-        writeParameterMetadata(&ostrm, bt, indent);
-    }
+    // virtual void writeAxesMetadata(std::ostream &ostrm, libdap::BaseType *bt, std::string indent) {
+    //     writeAxesMetadata(&ostrm, bt, indent);
+    // }
+    //
+    // virtual void writeParameterMetadata(std::ostream &ostrm, libdap::BaseType *bt, std::string indent) {
+    //     writeParameterMetadata(&ostrm, bt, indent);
+    // }
 
     virtual void transformAxesWorker(std::ostream &ostrm, std::vector<libdap::BaseType *> leaves, std::string indent, bool sendData) {
         transformAxesWorker(&ostrm, leaves, indent, sendData);
