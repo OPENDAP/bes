@@ -4,7 +4,13 @@ AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = $(DAP_CFLAGS) $(BES_CPPFLAGS) -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch
 AM_CXXFLAGS = 
 
-noinst_PROGRAMS = endian_convert multiball keepalive2
+noinst_PROGRAMS = build_dmrpp endian_convert multiball keepalive2
+
+build_dmrpp_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)/modules/dmrpp_module -I$(top_srcdir)/dispatch \
+-I$(top_srcdir)/dap $(DAP_CFLAGS)
+build_dmrpp_SOURCES = build_dmrpp.cc
+build_dmrpp_LDADD = $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_EXTRA_LIBS) $(H5_LDFLAGS) $(H5_LIBS) \
+$(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
 
 endian_convert_SOURCES = endian_convert.cc
 endian_convert_LDADD = $(DAP_SERVER_LIBS)
