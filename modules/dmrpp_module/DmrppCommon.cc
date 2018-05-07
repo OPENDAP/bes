@@ -35,6 +35,7 @@
 #include "DmrppRequestHandler.h"
 #include "DmrppCommon.h"
 #include "Chunk.h"
+#include <XMLWriter.h>
 
 using namespace std;
 
@@ -66,7 +67,7 @@ void DmrppCommon::ingest_chunk_dimension_sizes(string chunk_dim_sizes_string)
         // Process space delimited content
         while ((strPos = chunk_dim_sizes_string.find(space)) != string::npos) {
             strVal = chunk_dim_sizes_string.substr(0, strPos);
-            BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " -  Parsing: " << strVal << endl);
+//            BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " -  Parsing: " << strVal << endl);
             d_chunk_dimension_sizes.push_back(strtol(strVal.c_str(), NULL, 10));
             chunk_dim_sizes_string.erase(0, strPos + space.length());
         }
@@ -112,8 +113,8 @@ unsigned long DmrppCommon::add_chunk(string data_url, unsigned long long size, u
 
     d_chunks.push_back(Chunk(data_url, size, offset, position_in_array));
 
-    BESDEBUG("dmrpp",
-            "DmrppCommon::add_chunk() - Added chunk " << d_chunks.size() << ": " << d_chunks.back().to_string() << endl);
+//    BESDEBUG("dmrpp",
+//            "DmrppCommon::add_chunk() - Added chunk " << d_chunks.size() << ": " << d_chunks.back().to_string() << endl);
 
     return d_chunks.size();
 }
@@ -168,6 +169,12 @@ void DmrppCommon::dump(ostream & strm) const
     }
 
     BESIndent::UnIndent();
+}
+
+void print_dmrpp(libdap::XMLWriter &xml)
+{
+    if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar*)"Dataset") < 0)
+            throw BESInternalError("Could not write Dataset element", __FILE__, __LINE__);
 }
 
 } // namepsace dmrpp

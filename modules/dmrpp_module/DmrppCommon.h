@@ -31,8 +31,16 @@
 #include "Chunk.h"
 #include "CurlHandlePool.h"
 
+
 namespace libdap {
-    class BaseType;
+class DMR;
+class BaseType;
+class D4BaseTypeFactory;
+class D4Group;
+class D4Attributes;
+class D4EnumDef;
+class D4Dimension;
+class XMLWriter;
 }
 
 namespace dmrpp {
@@ -44,7 +52,7 @@ namespace dmrpp {
 class DmrppCommon {
 
 	friend class DmrppTypeReadTest;
-	friend class DmrppChunkedReadTest;
+	friend class DmrppParserTest;
 
 private:
 	bool d_deflate;
@@ -138,6 +146,11 @@ public:
     virtual void ingest_compression_type(std::string compression_type_string);
 
     virtual void dump(std::ostream & strm) const;
+
+    /**
+     * @brief Prints the text content of the dmrpp XML.
+     */
+    void print_dmrpp(libdap::XMLWriter &xml);
 };
 
 } // namepsace dmrpp
