@@ -63,7 +63,7 @@ using std::istringstream;
 #define FoDapCovJsonTransform_debug_key "focovjson"
 
 const int int_64_precision = 15; // 15 digits to the right of the decimal point.
-const int max_axes = 4; // (x, y , z, and t) :: if axisCount == max_axes, the axesSet = true
+const int max_axes = 4; // (x, y , z, and t) :: if axisCount <= max_axes
 
 
 /**
@@ -581,7 +581,7 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
  * @throws BESInternalError if the DDS* is null or if localfile is empty.
  */
 FoDapCovJsonTransform::FoDapCovJsonTransform(libdap::DDS *dds)
-    : _dds(dds), _indent_increment("  "), axesSet(false), xExists(false), yExists(false), zExists(false), tExists(false), isParam(false), isAxis(false), axisCount(0), parameterCount(0)
+    : _dds(dds), _indent_increment("  "), xExists(false), yExists(false), zExists(false), tExists(false), isParam(false), isAxis(false), axisCount(0), parameterCount(0)
 {
     if (!_dds) throw BESInternalError("File out COVJSON, null DDS passed to constructor", __FILE__, __LINE__);
 }

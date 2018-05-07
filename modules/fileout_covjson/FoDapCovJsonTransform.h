@@ -58,7 +58,6 @@ private:
     std::string _returnAs;
     std::string _indent_increment;
     int domainType;
-    bool axesSet;
     bool xExists;
     bool yExists;
     bool zExists;
