@@ -24,12 +24,13 @@
 
 #include "config.h"
 
+#include <cstring>
+
 #include <string>
 #include <queue>
 
 #include <BESError.h>
 #include <BESDebug.h>
-
 
 #include "DmrppD4Opaque.h"
 
