@@ -125,7 +125,12 @@ unsigned long DmrppCommon::add_chunk(string data_url, unsigned long long size, u
  * This method is used by the specializations of BaseType::read() in the
  * 'atomic' type classes (libdap::Byte, libdap::In32, ...) to read data
  * when those data are contained in a single chunk (i.e., using HDF5
- * contiguous storage). It is assumed that those data are never compressed.
+ * contiguous storage).
+ *
+ * @note It is assumed that these data are never compressed. However,
+ * it is possible to call Chunk::inflate_chunk(...) after calling this
+ * method and then call Chunk::get_rbuf() to access the decompressed
+ * data.
  *
  * @param name The name of the variable, used for error messages
  * @return Pointer to a char buffer holding the data.
