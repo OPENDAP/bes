@@ -130,29 +130,25 @@ public:
 
     virtual void dump(std::ostream &strm) const;
 
-    // virtual void writeAxesMetadata(std::ostream &ostrm, libdap::BaseType *bt, std::string indent) {
-    //     writeAxesMetadata(&ostrm, bt, indent);
-    // }
-    //
-    // virtual void writeParameterMetadata(std::ostream &ostrm, libdap::BaseType *bt, std::string indent) {
-    //     writeParameterMetadata(&ostrm, bt, indent);
-    // }
-    //
-    // virtual void transformAxesWorker(std::ostream &ostrm, std::vector<libdap::BaseType *> leaves, std::string indent, bool sendData) {
-    //     transformAxesWorker(&ostrm, leaves, indent, sendData);
-    // }
-    //
-    // virtual void transformReferenceWorker(std::ostream &ostrm, std::string indent, FoDapCovJsonValidation fv) {
-    //     transformReferenceWorker(&ostrm, indent, fv);
-    // }
-    //
-    // virtual void transformParametersWorker(std::ostream &ostrm, std::vector<libdap::BaseType *> nodes, std::string indent, bool sendData) {
-    //     transformParametersWorker(&ostrm, nodes, indent, sendData);
-    // }
-    //
-    // virtual void transformRangesWorker(std::ostream &ostrm, std::vector<libdap::BaseType *> leaves, std::string indent, bool sendData) {
-    //     transformRangesWorker(&ostrm, leaves, indent, sendData);
-    // }
+    virtual void printCoverageHeaderWorker(std::ostream &ostrm, std::string indent) {
+        printCoverageHeaderWorker(&ostrm, indent);
+    }
+
+    virtual void printAxesWorker(std::ostream &ostrm, std::string indent) {
+        printAxesWorker(&ostrm, indent);
+    }
+
+    virtual void printReferenceWorker(std::ostream &ostrm, std::string indent) {
+        printReferenceWorker(&ostrm, indent);
+    }
+
+    virtual void printParametersWorker(std::ostream &ostrm, std::string indent) {
+        printParametersWorker(&ostrm, indent);
+    }
+
+    virtual void printCoverageFooterWorker(std::ostream &ostrm, std::string indent) {
+        printCoverageFooterWorker(&ostrm, indent);
+    }
 };
 
 #endif /* FODAPCOVJSONTRANSFORM_H_ */

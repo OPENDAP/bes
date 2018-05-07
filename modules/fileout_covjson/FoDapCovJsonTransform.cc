@@ -242,10 +242,10 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
     *parameterRetrieved = false;
     getAttributes(strm, a->get_attr_table(), a->name(), axisRetrieved, parameterRetrieved);
 
-    sendData = false; // For testing purposes
+    // sendData = false; // For testing purposes
 
     // If we are dealing with an Axis
-    if(*axisRetrieved == true && *parameterRetrieved == false) {
+    if((*axisRetrieved == true && *parameterRetrieved == false) && (axisCount <= max_axes)) {
         struct Axis *currAxis;
         currAxis = axes[axisCount - 1];
 
