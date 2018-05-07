@@ -23,50 +23,30 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
+#include <iostream>
 #include <memory>
-#include <stdlib.h>
+
+#include <cstdlib>
+
+#include <H5Ppublic.h>
+#include <H5Dpublic.h>
+#include <H5Epublic.h>
 
 #include <DMR.h>
 #include <GetOpt.h>
 
 #include <BESUtil.h>
 #include <BESError.h>
-//#include <BESDebug.h>
+#include <BESInternalError.h>
 
-#include "Chunk.h"
-#include "DmrppArray.h"
-#include "DmrppByte.h"
-#include "DmrppCommon.h"
-#include "DmrppD4Enum.h"
-#include "DmrppD4Group.h"
-#include "DmrppD4Opaque.h"
-#include "DmrppD4Sequence.h"
-#include "DmrppFloat32.h"
-#include "DmrppFloat64.h"
-#include "DmrppInt16.h"
-#include "DmrppInt32.h"
-#include "DmrppInt64.h"
-#include "DmrppInt8.h"
-#include "DmrppModule.h"
-#include "DmrppStr.h"
-#include "DmrppStructure.h"
-#include "DmrppUInt16.h"
-#include "DmrppUInt32.h"
-#include "DmrppUInt64.h"
-#include "DmrppUrl.h"
-
-#include "DmrppParserSax2.h"
-#include "DmrppRequestHandler.h"
-#include "DmrppTypeFactory.h"
-
-#include "H5Ppublic.h"
-#include "H5Dpublic.h"
-#include "H5Epublic.h"
-
-using namespace libdap;
+using namespace std;
 
 /**
  * @brief Print information about the data type
+ *
+ * @note Calling this indicates that the build_dmrpp utility could not
+ * get chunk information, and is probably an error, but I'm not sure
+ * that's always the case. jhrg 5/7/18
  *
  * @param dataset
  * @param layout_type
@@ -192,8 +172,11 @@ static void print_dataset_type_info(hid_t dataset, uint8_t layout_type)
 /**
  * @brief Get chunk information for a HDF5 dataset in a file
  *
- * @todo Under construction
- * @todo Throw BESError on error
+ * @todo Needs to get information about compression used by the dataset
+ *
+ * @param file The open HDF5 file
+ * @param The path name of the dataset in the open hdf5 file
+ * @exception BESError is thrown on error.
  */
 void get_variable_chunk_info(hid_t file, const string &h5_dset_path)
 {
@@ -223,8 +206,6 @@ void get_variable_chunk_info(hid_t file, const string &h5_dset_path)
                 hsize_t cont_size = 0;
                 cerr << "Storage: contiguous" << endl;
                 if (H5Dget_dataset_contiguous_storage_info(dataset, &cont_addr, &cont_size) < 0) {
-                    H5Dclose(dataset);
-
                     throw BESInternalError("Cannot obtain the contiguous storage info.", __FILE__, __LINE__);
                 }
                 cerr << "    Addr: " << cont_addr << endl;
@@ -235,15 +216,12 @@ void get_variable_chunk_info(hid_t file, const string &h5_dset_path)
                 cerr << "   Number of chunks is " << num_chunk << endl;
 
                 /* Allocate the memory for the struct to obtain the chunk storage information */
-                // TODO Use vector<H5D_chunk_storage_info_t> ? jhrg 5/7/18
-                H5D_chunk_storage_info_t *chunk_st_ptr = (H5D_chunk_storage_info_t*) calloc(num_chunk, sizeof(H5D_chunk_storage_info_t));
-                if (!chunk_st_ptr) {
-                     throw BESInternalError("Cannot allocate the memory to store the chunked storage info.", __FILE__, __LINE__);
-                }
+                //H5D_chunk_storage_info_t *chunk_st_ptr = (H5D_chunk_storage_info_t*) calloc(num_chunk, sizeof(H5D_chunk_storage_info_t));
+                // Replaced with C++ vector<> jhrg 5/7/18
+                vector<H5D_chunk_storage_info_t> chunk_st_ptr(num_chunk);
 
                 unsigned int num_chunk_dims = 0;
-                if (H5Dget_dataset_chunk_storage_info(dataset, chunk_st_ptr, &num_chunk_dims) < 0) {
-                    free(chunk_st_ptr);
+                if (H5Dget_dataset_chunk_storage_info(dataset, &chunk_st_ptr[0], &num_chunk_dims) < 0) {
                     throw BESInternalError("Cannot get HDF5 chunk storage info. successfully.", __FILE__, __LINE__);
                 }
 
@@ -257,8 +235,6 @@ void get_variable_chunk_info(hid_t file, const string &h5_dset_path)
                     cerr << "" << endl;
                     cerr << "      Physical offset: " << chunk_st_ptr[i].chunk_addr << endl;
                 }
-
-                free(chunk_st_ptr);
             }
             else if (layout_type == 3) {/* Compact storage */
                 cerr << "Storage: compact" << endl;
@@ -289,7 +265,7 @@ int main(int argc, char*argv[])
     while ((option_char = getopt()) != -1) {
         switch (option_char) {
         case 'v':
-            verbose = true;
+            verbose = true; // verbose hdf5 errors
             break;
         case 'd':
             h5_dset_path = getopt.optarg;
@@ -330,8 +306,6 @@ int main(int argc, char*argv[])
     catch (std::exception &e) {
         cerr << "Error: " << e.what() << endl;
     }
-
-
 
     return 0;
 }

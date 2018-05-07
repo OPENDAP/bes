@@ -433,128 +433,127 @@ public:
     		  "62569081-e56e-47b5-ab10-ea9132cc8ef2");
   }
 
-  void print_dmrpp(XMLWriter &xml, DMR dmr)
-  {
-      D4Group *g = dmr.root();
-      D4Group::Vars_iter v = g->var_begin();
-      DmrppCommon *dc = dynamic_cast<DmrppCommon*>(*v);
-      // Compression type:
-      string deflate("deflate");
-      string shuffle("shuffle");
-      string compressionType("");
-      string deflate_level("6");  // TODO: ????
-      if(dc->is_deflate_compression()) compressionType=deflate;
-      if(dc->is_shuffle_compression()) compressionType=shuffle;
-      int chunk_num = (int) dc->get_immutable_chunks().size();
-      int chunk_dim_num = (int) dc->get_chunk_dimension_sizes().size();
-      vector<unsigned int> dims = dc->get_chunk_dimension_sizes();
-      std::stringstream sd;
-      string chunkDimensionSizes;
-      string delim = "";
-      for (int d = 0; d < chunk_dim_num; d++){
-          sd << delim << to_string(dims[d]);
-          delim = " ";
-      }
-      chunkDimensionSizes = sd.str();
+void print_dmrpp(XMLWriter &xml, DMR dmr)
+{
+    D4Group *g = dmr.root();
+    D4Group::Vars_iter v = g->var_begin();
+    DmrppCommon *dc = dynamic_cast<DmrppCommon*>(*v);
+    // Compression type:
+    string deflate("deflate");
+    string shuffle("shuffle");
+    string compressionType("");
+    string deflate_level("6");// TODO: ????
+    if(dc->is_deflate_compression()) compressionType=deflate;
+    if(dc->is_shuffle_compression()) compressionType=shuffle;
+    int chunk_num = (int) dc->get_immutable_chunks().size();
+    int chunk_dim_num = (int) dc->get_chunk_dimension_sizes().size();
+    vector<unsigned int> dims = dc->get_chunk_dimension_sizes();
+    std::stringstream sd;
+    string chunkDimensionSizes;
+    string delim = "";
+    for (int d = 0; d < chunk_dim_num; d++) {
+        sd << delim << to_string(dims[d]);
+        delim = " ";
+    }
+    chunkDimensionSizes = sd.str();
 
-      // Start element "dataset" with namespaces:
-      if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar*)"Dataset") < 0)
-                  throw BESInternalError("Could not write Dataset element", __FILE__, __LINE__);
+    // Start element "dataset" with namespaces:
+    if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar*)"Dataset") < 0)
+    throw BESInternalError("Could not write Dataset element", __FILE__, __LINE__);
 
-      if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "xmlns", (const xmlChar*) dmr.get_namespace().c_str()) < 0)
-              throw BESInternalError("Could not write attribute for xmlns", __FILE__, __LINE__);
+    if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "xmlns", (const xmlChar*) dmr.get_namespace().c_str()) < 0)
+    throw BESInternalError("Could not write attribute for xmlns", __FILE__, __LINE__);
 
-      if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "dmrpp", (const xmlChar*)"http://xml.opendap.org/dap/dmrpp/1.0.0#") < 0)
-              throw BESInternalError("Could not write attribute for dmrpp", __FILE__, __LINE__);
+    if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "dmrpp", (const xmlChar*)"http://xml.opendap.org/dap/dmrpp/1.0.0#") < 0)
+    throw BESInternalError("Could not write attribute for dmrpp", __FILE__, __LINE__);
 
-      if (!dmr.request_xml_base().empty()) {
-          if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "xml:base",
-                  (const xmlChar*)dmr.request_xml_base().c_str()) < 0)
-              throw BESInternalError("Could not write attribute for xml:base", __FILE__, __LINE__);
-      }
+    if (!dmr.request_xml_base().empty()) {
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "xml:base",
+                (const xmlChar*)dmr.request_xml_base().c_str()) < 0)
+        throw BESInternalError("Could not write attribute for xml:base", __FILE__, __LINE__);
+    }
 
-      if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "dapVersion",  (const xmlChar*)dmr.dap_version().c_str()) < 0)
-          throw BESInternalError("Could not write attribute for dapVersion", __FILE__, __LINE__);
+    if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "dapVersion", (const xmlChar*)dmr.dap_version().c_str()) < 0)
+    throw BESInternalError("Could not write attribute for dapVersion", __FILE__, __LINE__);
 
-      if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "dmrVersion", (const xmlChar*)dmr.dmr_version().c_str()) < 0)
-          throw BESInternalError("Could not write attribute for dapVersion", __FILE__, __LINE__);
+    if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "dmrVersion", (const xmlChar*)dmr.dmr_version().c_str()) < 0)
+    throw BESInternalError("Could not write attribute for dapVersion", __FILE__, __LINE__);
 
-      if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "name", (const xmlChar*)dmr.name().c_str()) < 0)
-          throw BESInternalError("Could not write attribute for name", __FILE__, __LINE__);
+    if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "name", (const xmlChar*)dmr.name().c_str()) < 0)
+    throw BESInternalError("Could not write attribute for name", __FILE__, __LINE__);
 
-      // Start BaseType elements:
-      dmr.root()->print_dap4(xml,false,false);
+    // Start BaseType elements:
+    dmr.root()->print_dap4(xml,false,false);
 
-      // Start element "chunks" with dmrpp namespace and attributes:
-      if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar*) "dmrpp", (const xmlChar*) "chunks", NULL) < 0)
-                  throw BESInternalError("Could not write namespace for name chunks", __FILE__, __LINE__);
+    // Start element "chunks" with dmrpp namespace and attributes:
+    if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar*) "dmrpp", (const xmlChar*) "chunks", NULL) < 0)
+    throw BESInternalError("Could not write namespace for name chunks", __FILE__, __LINE__);
 
-      if (dc->is_deflate_compression()) {
-          if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "deflate_level", (const xmlChar*) deflate_level.c_str()) < 0)
-              throw BESInternalError("Could not write attribute for dapVersion", __FILE__, __LINE__);
-      }
+    if (dc->is_deflate_compression()) {
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "deflate_level", (const xmlChar*) deflate_level.c_str()) < 0)
+        throw BESInternalError("Could not write attribute for dapVersion", __FILE__, __LINE__);
+    }
 
-      if (dc->is_shuffle_compression() || dc->is_deflate_compression()) {
-          if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "compressionType", (const xmlChar*) compressionType.c_str()) < 0)
-              throw BESInternalError("Could not write attribute for name", __FILE__, __LINE__);
-      }
+    if (dc->is_shuffle_compression() || dc->is_deflate_compression()) {
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "compressionType", (const xmlChar*) compressionType.c_str()) < 0)
+        throw BESInternalError("Could not write attribute for name", __FILE__, __LINE__);
+    }
 
+    // Write element "chunkDimensionSizes" with dmrpp namespace:
+    if (xmlTextWriterWriteElementNS(xml.get_writer(), (const xmlChar*) "dmrpp", (const xmlChar*) "chunkDimensionSizes", NULL, (const xmlChar*) chunkDimensionSizes.c_str())< 0)
+    throw BESInternalError("Could not write namespace for name chunks", __FILE__, __LINE__);
 
-      // Write element "chunkDimensionSizes" with dmrpp namespace:
-      if (xmlTextWriterWriteElementNS(xml.get_writer(), (const xmlChar*) "dmrpp", (const xmlChar*) "chunkDimensionSizes", NULL, (const xmlChar*) chunkDimensionSizes.c_str())< 0)
-                        throw BESInternalError("Could not write namespace for name chunks", __FILE__, __LINE__);
+    // Start elements "chunk" with dmrpp namespace and attributes:
+    vector<Chunk> &chunk_refs = dc->get_chunk_vec();
+    for (int i = 0; i < chunk_num; i++)
+    {
+        Chunk &chunk = chunk_refs[i];
 
-      // Start elements "chunk" with dmrpp namespace and attributes:
-      vector<Chunk> &chunk_refs = dc->get_chunk_vec();
-      for (int i = 0; i < chunk_num; i++)
-      {
-          Chunk &chunk = chunk_refs[i];
+        // Get offset string:
+        std::stringstream so;
+        string offset;
+        so << chunk.get_offset();
+        offset = so.str();
 
-          // Get offset string:
-          std::stringstream so;
-          string offset;
-          so << chunk.get_offset();
-          offset = so.str();
+        // Get nBytes string:
+        string nBytes;
+        std::stringstream sb;
+        sb << chunk.get_offset();
+        nBytes = sb.str();
 
-          // Get nBytes string:
-          string nBytes;
-          std::stringstream sb;
-          sb << chunk.get_offset();
-          nBytes = sb.str();
+        // Get position in array string:
+        vector<unsigned int> pos = chunk.get_position_in_array();
+        std::stringstream sp;
+        string chunkPositionInArray;
+        string delim = "";
+        for (int j = 0; j < chunk_dim_num; j++) {
+            sp << delim << to_string(pos[j]);
+            delim = ",";
+        }
+        chunkPositionInArray = sp.str();
 
-          // Get position in array string:
-          vector<unsigned int> pos = chunk.get_position_in_array();
-          std::stringstream sp;
-          string chunkPositionInArray;
-          string delim = "";
-          for (int j = 0; j < chunk_dim_num; j++) {
-              sp << delim << to_string(pos[j]);
-              delim = ",";
-          }
-          chunkPositionInArray = sp.str();
+        if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar*) "dmrpp", (const xmlChar*) "chunk", NULL) < 0)
+        throw BESInternalError("Could not write name chunks", __FILE__, __LINE__);
 
-          if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar*) "dmrpp", (const xmlChar*) "chunk", NULL) < 0)
-                           throw BESInternalError("Could not write name chunks", __FILE__, __LINE__);
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "offset", (const xmlChar*) offset.c_str()) < 0)
+        throw BESInternalError("Could not write attribute for dapVersion", __FILE__, __LINE__);
 
-          if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "offset", (const xmlChar*) offset.c_str()) < 0)
-                    throw BESInternalError("Could not write attribute for dapVersion", __FILE__, __LINE__);
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "nBytes", (const xmlChar*) nBytes.c_str()) < 0)
+        throw BESInternalError("Could not write attribute for dapVersion", __FILE__, __LINE__);
 
-          if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "nBytes", (const xmlChar*) nBytes.c_str()) < 0)
-                    throw BESInternalError("Could not write attribute for dapVersion", __FILE__, __LINE__);
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "chunkPositionInArray", (const xmlChar*) chunkPositionInArray.c_str()) <0)
+        throw BESInternalError("Could not write attribute for dapVersion", __FILE__, __LINE__);
 
-          if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "chunkPositionInArray", (const xmlChar*) chunkPositionInArray.c_str()) <0)
-                    throw BESInternalError("Could not write attribute for dapVersion", __FILE__, __LINE__);
+        // End element "chunk":
+        if (xmlTextWriterEndElement(xml.get_writer()) < 0)
+        throw BESInternalError("Could not end the top-level Group element", __FILE__, __LINE__);
 
-          // End element "chunk":
-          if (xmlTextWriterEndElement(xml.get_writer()) < 0)
-                          throw BESInternalError("Could not end the top-level Group element", __FILE__, __LINE__);
+    }
+    // End element "dataset"
+    if (xmlTextWriterEndElement(xml.get_writer()) < 0)
+    throw BESInternalError("Could not end the top-level Group element", __FILE__, __LINE__);
 
-      }
-      // End element "dataset"
-      if (xmlTextWriterEndElement(xml.get_writer()) < 0)
-                throw BESInternalError("Could not end the top-level Group element", __FILE__, __LINE__);
-
-  }
+}
 
   /******************************************************
    *
