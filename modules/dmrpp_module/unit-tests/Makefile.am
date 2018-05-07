@@ -3,8 +3,10 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)/modules/dmrpp_module -I$(top_srcdir)/modules/hdf5_handler \
+AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)/modules/dmrpp_module \
 -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+
+# -I$(top_srcdir)/modules/hdf5_handler
 
 # Added -lz for ubuntu
 LIBADD = $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_EXTRA_LIBS) \
@@ -56,8 +58,7 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 #
 
 if CPPUNIT
-UNIT_TESTS = ChunkTest DmrppParserTest
-# DmrppChunkedReadTest
+UNIT_TESTS = ChunkTest DmrppParserTest DmrppChunkedReadTest
 else
 UNIT_TESTS =
 
@@ -81,8 +82,8 @@ DmrppParserTest_LDADD   =  $(OBJS) $(LIBADD)
 # DmrppTypeReadTest_SOURCES = DmrppTypeReadTest.cc
 # DmrppTypeReadTest_LDADD   = $(OBJS) $(LIBADD)
 
-# DmrppChunkedReadTest_SOURCES = DmrppChunkedReadTest.cc
-# DmrppChunkedReadTest_LDADD   = $(OBJS) $(LIBADD)
+DmrppChunkedReadTest_SOURCES = DmrppChunkedReadTest.cc
+DmrppChunkedReadTest_LDADD   = $(OBJS) $(LIBADD)
 
 # DmrppHttpReadTest_SOURCES = DmrppHttpReadTest.cc
 # DmrppHttpReadTest_LDADD   = $(OBJS) $(LIBADD)

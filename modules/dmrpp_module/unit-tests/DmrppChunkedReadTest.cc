@@ -66,15 +66,13 @@
 #include "util.h"
 
 #include "H5Ppublic.h"
-#include "HDF5RequestHandler.h"
-#include "h5get.h"
-#include "HDF5CF.h"
+//#include "HDF5RequestHandler.h"
+//#include "h5get.h"
+//#include "HDF5CF.h"
 #include "H5Dpublic.h"
 
-
-
 using namespace libdap;
-using namespace HDF5CF;
+//using namespace HDF5CF;
 
 static bool debug = false;
 
@@ -111,7 +109,7 @@ public:
     {
         BESDEBUG("dmrpp", "Use: ./h5dstoreinfo h5_file_name h5_dset_path." << endl);
 
-        string h5_file_name = "/Users/vskorole/opendap/hyrax/bes/modules/dmrpp_module/data/dmrpp/chunked_fourD.h5";
+        string h5_file_name = string(TEST_DATA_DIR).append("/chunked_fourD.h5");
         //TODO: How to get h5_dset_path?
         string h5_dset_path = "d_16_chunks";
         hid_t file = -1; /* handles */
@@ -352,6 +350,7 @@ public:
         H5Fclose(file);
     }
 
+#if 0
     /**
      * Evaluates a D4Group against exected values for the name, number of child
      * groups and the number of child variables.
@@ -447,7 +446,7 @@ public:
                 test_float32 = a_index;
                 if (!double_eq(values[a_index], test_float32))
                 BESDEBUG("dmrpp",
-                        "values[" << a_index << "]: " << values[a_index] << "  test_float32: " << test_float32 << endl);
+                    "values[" << a_index << "]: " << values[a_index] << "  test_float32: " << test_float32 << endl);
                 CPPUNIT_ASSERT(double_eq(values[a_index], test_float32));
             }
         }
@@ -519,7 +518,7 @@ public:
                 test_float32 = a_index * stride + start;
                 if (!double_eq(values[a_index], test_float32))
                 BESDEBUG("dmrpp",
-                        "values[" << a_index << "]: " << values[a_index] << "  test_float32: " << test_float32 << endl);
+                    "values[" << a_index << "]: " << values[a_index] << "  test_float32: " << test_float32 << endl);
                 CPPUNIT_ASSERT(double_eq(values[a_index], test_float32));
             }
         }
@@ -593,7 +592,7 @@ public:
                 test_float32 = a_index + 10;
                 if (!double_eq(values[a_index], test_float32))
                 BESDEBUG("dmrpp",
-                        "values[" << a_index << "]: " << values[a_index] << "  test_float32: " << test_float32 << endl);
+                    "values[" << a_index << "]: " << values[a_index] << "  test_float32: " << test_float32 << endl);
                 CPPUNIT_ASSERT(double_eq(values[a_index], test_float32));
             }
         }
@@ -681,8 +680,6 @@ public:
         check_f32_test_array(chnkd_fourD, "d_16_gzipped_chunks", 40*40*40*40);
     }
 
-
-
     void test_chunked_gzipped_oneD_CE_00()
     {
         string chnkd_oneD = test_data_dir + "/chunked_gzipped_oneD.h5.dmrpp";
@@ -733,7 +730,7 @@ public:
                 test_float32 = a_index * stride + start;
                 if (!double_eq(values[a_index], test_float32))
                 BESDEBUG("dmrpp",
-                        "values[" << a_index << "]: " << values[a_index] << "  test_float32: " << test_float32 << endl);
+                    "values[" << a_index << "]: " << values[a_index] << "  test_float32: " << test_float32 << endl);
                 CPPUNIT_ASSERT(double_eq(values[a_index], test_float32));
             }
         }
@@ -749,7 +746,6 @@ public:
 
         CPPUNIT_ASSERT("Passed");
     }
-
 
     void test_chunked_shuffled_oneD()
     {
@@ -795,8 +791,6 @@ public:
         check_f32_test_array(chnkd_fourD, "d_16_shufzip_chunks", 2560000);
     }
 
-
-
     void test_a2_local_twoD_chunked_array()
     {
         string chnkd_twoD = string(TEST_DATA_DIR).append("/").append("a2_local_twoD.h5.dmrpp");
@@ -808,14 +802,11 @@ public:
         string chnkd_twoD = string(TEST_DATA_DIR).append("/").append("a3_local_twoD.h5.dmrpp");
         check_f32_test_array(chnkd_twoD, "d_4_shufzip_chunks", 10000);
     }
-
-
-
-
+#endif
 
     CPPUNIT_TEST_SUITE( DmrppChunkedReadTest );
 
-
+#if 0
     CPPUNIT_TEST(test_read_oneD_chunked_array);
     CPPUNIT_TEST(test_read_twoD_chunked_array);
     CPPUNIT_TEST(test_read_twoD_chunked_asymmetric_array);
@@ -839,7 +830,6 @@ public:
     CPPUNIT_TEST(test_chunked_shuffled_threeD);
     CPPUNIT_TEST(test_chunked_shuffled_fourD);
 
-
     CPPUNIT_TEST(test_chunked_shuffled_zipped_oneD);
     CPPUNIT_TEST(test_chunked_shuffled_zipped_twoD);
     CPPUNIT_TEST(test_chunked_shuffled_zipped_threeD);
@@ -849,8 +839,9 @@ public:
     CPPUNIT_TEST(test_a3_local_twoD_chunked_array);
     CPPUNIT_TEST(test_chunked_hdf5);
 #endif
+#endif
 
-
+    CPPUNIT_TEST(test_chunked_hdf5);
 
     CPPUNIT_TEST_SUITE_END();
 };
