@@ -38,7 +38,6 @@
 #include <map>
 
 #include <BESObj.h>
-#include "FoDapCovJsonValidation.h"
 
 namespace libdap {
 class BaseType;
@@ -58,6 +57,7 @@ private:
     libdap::DDS *_dds;
     std::string _returnAs;
     std::string _indent_increment;
+    int domainType;
     bool axesSet;
     bool xExists;
     bool yExists;
@@ -84,34 +84,30 @@ private:
     std::vector<Axis *> axes;
     unsigned int parameterCount;
     std::vector<Parameter *> parameters;
+    unsigned int shapeValsCount;
+    std::vector<int> shapeVals;
 
     enum domains { Grid = 0, VerticalProfile = 1, PointSeries = 2, Point = 3 };
 
-    // void getNodeMetadata(std::ostream *strm, libdap::BaseType *bt, string indent);
-    // void getLeafMetadata(std::ostream *strm, libdap::BaseType *bt, string indent);
-
-    // void writeAxesMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);
-    // void writeParameterMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);
+    bool canConvert();
 
     void getAttributes(std::ostream *strm, libdap::AttrTable &attr_table, std::string name,
         bool *axisRetrieved, bool *parameterRetrieved);
 
-    void transformAtomic(std::ostream *strm, libdap::BaseType *bt, std::string indent, bool sendData);
-
-    void transform(std::ostream *strm, libdap::DDS *dds, std::string indent, bool sendData, FoDapCovJsonValidation fv);
+    void transform(std::ostream *strm, libdap::DDS *dds, std::string indent, bool sendData);
     void transform(std::ostream *strm, libdap::BaseType *bt, std::string indent, bool sendData);
     void transform(std::ostream *strm, libdap::Constructor *cnstrctr, std::string indent, bool sendData);
     void transform(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
-    void transform(std::ostream *strm, libdap::AttrTable &attr_table, std::string indent);
 
+    void transformAtomic(std::ostream *strm, libdap::BaseType *bt, std::string indent, bool sendData);
     void transformNodeWorker(std::ostream *strm, vector<libdap::BaseType *> leaves, vector<libdap::BaseType *> nodes,
         string indent, bool sendData);
-    void transformAxesWorker(std::ostream *strm, std::vector<libdap::BaseType *> leaves, std::string indent, bool sendData);
-    void transformReferenceWorker(std::ostream *strm, std::string indent, FoDapCovJsonValidation fv);
-    void transformParametersWorker(std::ostream *strm, std::vector<libdap::BaseType *> nodes, std::string indent,
-        bool sendData);
-    void transformRangesWorker(std::ostream *strm, std::vector<libdap::BaseType *> leaves,
-            std::string indent, bool sendData);
+
+    void printCoverageHeaderWorker(std::ostream *strm, std::string indent);
+    void printAxesWorker(std::ostream *strm, std::string indent);
+    void printReferenceWorker(std::ostream *strm, std::string indent);
+    void printParametersWorker(std::ostream *strm, std::string indent);
+    void printCoverageFooterWorker(std::ostream *strm, std::string indent);
 
     template<typename T>
     void covjsonSimpleTypeArray(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
@@ -130,7 +126,7 @@ public:
 
     virtual ~FoDapCovJsonTransform() { }
 
-    virtual void transform(std::ostream &ostrm, bool sendData, FoDapCovJsonValidation fv);
+    virtual void transform(std::ostream &ostrm, bool sendData);
 
     virtual void dump(std::ostream &strm) const;
 
@@ -141,22 +137,22 @@ public:
     // virtual void writeParameterMetadata(std::ostream &ostrm, libdap::BaseType *bt, std::string indent) {
     //     writeParameterMetadata(&ostrm, bt, indent);
     // }
-
-    virtual void transformAxesWorker(std::ostream &ostrm, std::vector<libdap::BaseType *> leaves, std::string indent, bool sendData) {
-        transformAxesWorker(&ostrm, leaves, indent, sendData);
-    }
-
-    virtual void transformReferenceWorker(std::ostream &ostrm, std::string indent, FoDapCovJsonValidation fv) {
-        transformReferenceWorker(&ostrm, indent, fv);
-    }
-
-    virtual void transformParametersWorker(std::ostream &ostrm, std::vector<libdap::BaseType *> nodes, std::string indent, bool sendData) {
-        transformParametersWorker(&ostrm, nodes, indent, sendData);
-    }
-
-    virtual void transformRangesWorker(std::ostream &ostrm, std::vector<libdap::BaseType *> leaves, std::string indent, bool sendData) {
-        transformRangesWorker(&ostrm, leaves, indent, sendData);
-    }
+    //
+    // virtual void transformAxesWorker(std::ostream &ostrm, std::vector<libdap::BaseType *> leaves, std::string indent, bool sendData) {
+    //     transformAxesWorker(&ostrm, leaves, indent, sendData);
+    // }
+    //
+    // virtual void transformReferenceWorker(std::ostream &ostrm, std::string indent, FoDapCovJsonValidation fv) {
+    //     transformReferenceWorker(&ostrm, indent, fv);
+    // }
+    //
+    // virtual void transformParametersWorker(std::ostream &ostrm, std::vector<libdap::BaseType *> nodes, std::string indent, bool sendData) {
+    //     transformParametersWorker(&ostrm, nodes, indent, sendData);
+    // }
+    //
+    // virtual void transformRangesWorker(std::ostream &ostrm, std::vector<libdap::BaseType *> leaves, std::string indent, bool sendData) {
+    //     transformRangesWorker(&ostrm, leaves, indent, sendData);
+    // }
 };
 
 #endif /* FODAPCOVJSONTRANSFORM_H_ */
