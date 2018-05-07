@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><templates><template autoinsert="false" context="org.eclipse.cdt.ui.text.templates.c" deleted="false" description="Exclude code via the preprocessor" enabled="true" name="#if 0">#if 0
+${line_selection}
+#endif${cursor}</template></templates>

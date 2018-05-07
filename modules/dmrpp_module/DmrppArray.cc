@@ -632,6 +632,12 @@ void DmrppArray::insert_chunk(unsigned int dim, vector<unsigned int> *target_ele
     }
 }
 
+/**
+ * @brief Read chunked data
+ *
+ * Read chunked data, using either parallel or serial data transfers, depending on
+ * the DMR++ handler configuration parameters.
+ */
 void DmrppArray::read_chunks_parallel()
 {
     vector<Chunk> &chunk_refs = get_chunk_vec();

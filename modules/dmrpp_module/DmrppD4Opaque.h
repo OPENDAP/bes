@@ -35,6 +35,9 @@ namespace dmrpp {
 class DmrppD4Opaque: public libdap::D4Opaque, public DmrppCommon {
     void _duplicate(const DmrppD4Opaque &ts);
 
+    void insert_chunk(Chunk *chunk);
+    void read_chunks_parallel();
+
 public:
     DmrppD4Opaque(const std::string &n);
     DmrppD4Opaque(const std::string &n, const std::string &d);
@@ -45,6 +48,27 @@ public:
     DmrppD4Opaque &operator=(const DmrppD4Opaque &rhs);
 
     virtual libdap::BaseType *ptr_duplicate();
+
+    /**
+     * @brief Get a pointer to start of the Opaque data buffer
+     * @note This returns a pointer to the internal memory managed by
+     * libdap::D4Opaque. Make sure that the \arg d_buf field has enough
+     * memory allocated. There is no method in the libdap::D4Opaque
+     * class to allocate memory. This class must do that.
+     */
+    virtual unsigned char *get_buf()
+    {
+        return &d_buf[0];
+    }
+
+    /**
+     * @brief Allocate \arg size bytes for the opaque data
+     * @param size
+     */
+    virtual void resize(unsigned long long size)
+    {
+        d_buf.resize(size);
+    }
 
     virtual bool read();
 
