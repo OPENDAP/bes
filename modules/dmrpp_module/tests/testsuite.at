@@ -21,8 +21,8 @@ AT_BESCMD_RESPONSE_TEST([contiguous/grid_2_2d.h5.dmr])
 AT_BESCMD_RESPONSE_TEST([contiguous/grid_2_2d.h5.das])
 AT_BESCMD_RESPONSE_TEST([contiguous/grid_2_2d.h5.dds])
 dnl Broken. Fix these by implementing DmrppStr. jhrg 4/25/18
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/grid_2_2d.h5.dap], xfail)
-AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([contiguous/grid_2_2d.h5.dods], xfail)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/grid_2_2d.h5.dap], xpass)
+AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([contiguous/grid_2_2d.h5.dods], xpass)
 
 AT_BESCMD_RESPONSE_TEST([contiguous/coads_climatology.dmr])
 AT_BESCMD_RESPONSE_TEST([contiguous/coads_climatology.das])
