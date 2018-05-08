@@ -180,7 +180,7 @@ static void print_dataset_type_info(hid_t dataset, uint8_t layout_type)
  */
 void get_variable_chunk_info(hid_t file, const string &h5_dset_path)
 {
-    hid_t dataset = H5_DLL::H5Dopen2(file, h5_dset_path.c_str(), H5P_DEFAULT);
+    hid_t dataset = H5Dopen2(file, h5_dset_path.c_str(), H5P_DEFAULT);
     if (dataset < 0)
         throw BESError("HDF5 dataset '" + h5_dset_path + "' cannot be opened.", BES_NOT_FOUND_ERROR, __FILE__, __LINE__);
 
@@ -254,13 +254,127 @@ void get_variable_chunk_info(hid_t file, const string &h5_dset_path)
     H5Dclose(dataset);
 }
 
+#if 0
+void build_dmr_w_chunk_info(hid_t file)
+{
+    // Get chunks info:
+    //string filename = string(TEST_DATA_DIR).append("/").append("chunked_fourD.h5");
+    /* Will be used to store the chunking info. */
+
+    // Get dmr:
+    string dmr_file = string(TEST_DATA_DIR).append("/").append("chunked_fourD.h5h.dmr");
+    auto_ptr<DMR> dmr(new DMR);
+    DmrppTypeFactory dtf;
+    dmr->set_factory(&dtf);
+
+    ifstream in(dmr_file.c_str());
+    parser.intern(in, dmr.get(), false);
+
+    H5D_chunk_storage_info_t* chunk_st_ptr = 0;
+    chunk_st_ptr = get_hdf5_chunkes_info(filename, "d_16_chunks", chunk_st_ptr, false);
+    BESDEBUG("dmrpp", "H5D_chunk_storage_info_t nbytes[0] = " << to_string(chunk_st_ptr[0].nbytes) << endl);
+
+    D4Group *g = dmr->root();
+
+    D4Group::Vars_iter v = g->var_begin();
+    DmrppCommon *dc = dynamic_cast<DmrppCommon*>(*v);
+//            // Compression type:
+//              string deflate("deflate");
+//              string shuffle("shuffle");
+//              string compressionType("");
+//              string deflate_level("6");  // TODO: ????
+//              if(dc->is_deflate_compression()) compressionType=deflate;
+//              if(dc->is_shuffle_compression()) compressionType=shuffle;
+    int chunk_num = (int) dc->get_immutable_chunks().size();
+    int chunk_dim_num = (int) dc->get_chunk_dimension_sizes().size();
+    vector<unsigned int> dims = dc->get_chunk_dimension_sizes();
+    std::stringstream sd;
+    string chunkDimensionSizes;
+    string delim = "";
+    for (int d = 0; d < chunk_dim_num; d++) {
+        sd << delim << to_string(dims[d]);
+        delim = " ";
+    }
+    chunkDimensionSizes = sd.str();
+    dc->ingest_chunk_dimension_sizes(chunkDimensionSizes);
+
+    vector<Chunk> &chunk_refs = dc->get_chunk_vec();
+    for (int i = 0; i < chunk_num; i++) {
+        Chunk &chunk = chunk_refs[i];
+
+        // Get offset string:
+        std::stringstream so;
+        string offset;
+        so << chunk.get_offset();
+        offset = so.str();
+
+        // Get nBytes string:
+        string nBytes;
+        std::stringstream sb;
+        sb << chunk.get_offset();
+        nBytes = sb.str();
+
+        // Get position in array string:
+        vector<unsigned int> pos = chunk.get_position_in_array();
+        std::stringstream sp;
+        string chunkPositionInArray;
+        string delim = "";
+        for (int j = 0; j < chunk_dim_num; j++) {
+            sp << delim << to_string(pos[j]);
+            delim = ",";
+        }
+        chunkPositionInArray = sp.str();
+
+        dc->add_chunk(chunk.get_data_url(), chunk.get_size(), chunk.get_offset(), chunkPositionInArray);
+    }
+
+    dc->dump(cout);
+
+    //XML output
+    XMLWriter xml;
+    print_dmrpp(xml, *dmr);
+    string dmr_src = string(xml.get_doc());
+    BESDEBUG("dmrpp", "DMR SRC: " << endl << dmr_src << endl);
+}
+
+#endif
+
+#include <fstream>
+#include <BaseType.h>
+#include <DMR.h>
+#include <D4ParserSax2.h>
+
+#include "DmrppTypeFactory.h"
+#include "DmrppD4Group.h"
+
+using namespace libdap;
+using namespace dmrpp;
+
+void get_chunks_for_all_variables(hid_t file, D4Group *group)
+{
+    // variables in the group
+    Constructor::Vars_iter v = group->var_begin();
+    Constructor::Vars_iter ve = group->var_end();
+    while (v != ve) {
+        cerr << (*v)->FQN() << endl;
+        get_variable_chunk_info(file, (*v++)->FQN());
+    }
+
+    // all groups in the group
+    D4Group::groupsIter g = group->grp_begin();
+    D4Group::groupsIter ge = group->grp_end();
+    while (g != ge)
+        get_chunks_for_all_variables(file, *g);
+}
+
 int main(int argc, char*argv[])
 {
     bool verbose = false;
-    string h5_file_name;
-    string h5_dset_path;
+    string h5_file_name = "";
+    string h5_dset_path = "";
+    string dmr_name = "";
 
-    GetOpt getopt(argc, argv, "f:o:d:hv");
+    GetOpt getopt(argc, argv, "f:o:d:r:hv");
     int option_char;
     while ((option_char = getopt()) != -1) {
         switch (option_char) {
@@ -273,32 +387,58 @@ int main(int argc, char*argv[])
         case 'f':
             h5_file_name = getopt.optarg;
             break;
+        case 'r':
+            dmr_name = getopt.optarg;
+            break;
         case 'o':
             // FIXME
             break;
         case 'h':
-            cerr << "build_dmrpp [-v] -f <input> -o <output> | build_dmrpp -h" << endl;
+            cerr << "build_dmrpp [-v] -f <input> -r <dmr> -o <output> | build_dmrpp -h" << endl;
             exit(1);
         default:
             break;
         }
-
     }
 
-    // Turn off automatic hdf5 error printing.
-    // See: https://support.hdfgroup.org/HDF5/doc1.8/RM/RM_H5E.html#Error-SetAuto2
-    if (!verbose)
-        H5Eset_auto2(H5E_DEFAULT, NULL, NULL);
-
-    // Open the hdf5 file
-    hid_t file = H5_DLL::H5Fopen(h5_file_name.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
-    if (file < 0) {
-        cerr << "Error: HDF5 file '" + h5_file_name + "' cannot be opened." << endl;
+    if (h5_file_name.empty()) {
+        cerr << "HDF5 file name must be given." << endl;
         return 1;
     }
 
+    hid_t file = 0;
     try {
-        get_variable_chunk_info(file, h5_dset_path);
+        // Turn off automatic hdf5 error printing.
+        // See: https://support.hdfgroup.org/HDF5/doc1.8/RM/RM_H5E.html#Error-SetAuto2
+        if (!verbose) H5Eset_auto2(H5E_DEFAULT, NULL, NULL);
+
+        // Open the hdf5 file
+        file = H5Fopen(h5_file_name.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+        if (file < 0) {
+            cerr << "Error: HDF5 file '" + h5_file_name + "' cannot be opened." << endl;
+            return 1;
+        }
+
+        if (!dmr_name.empty()) {
+            // Get dmr:
+            auto_ptr<DMR> dmr(new DMR);
+            DmrppTypeFactory dtf;
+            dmr->set_factory(&dtf);
+
+            ifstream in(dmr_name.c_str());
+            D4ParserSax2 parser;
+            parser.intern(in, dmr.get(), false);
+
+            // iterate over all the variables in the DMR
+            get_chunks_for_all_variables(file, dmr->root());
+        }
+        else if (!h5_dset_path.empty()) {
+            get_variable_chunk_info(file, h5_dset_path);
+        }
+        else {
+            cerr << "Error: One of -d <hdf5 dataset name> or -r <DAP4 DMR name> must be given." << endl;
+            return 1;
+        }
     }
     catch (BESError &e) {
         cerr << "Error: " << e.get_message() << endl;
@@ -306,6 +446,8 @@ int main(int argc, char*argv[])
     catch (std::exception &e) {
         cerr << "Error: " << e.what() << endl;
     }
+
+    H5Fclose(file);
 
     return 0;
 }
