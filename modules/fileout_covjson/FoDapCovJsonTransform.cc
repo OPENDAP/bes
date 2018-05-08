@@ -1048,6 +1048,14 @@ void FoDapCovJsonTransform::printRangesWorker(ostream *strm, string indent)
  */
 void FoDapCovJsonTransform::printCoverageFooterWorker(std::ostream *strm, std::string indent)
 {
+    string child_indent1 = indent + _indent_increment;
+    string child_indent2 = child_indent1 + _indent_increment;
+
+    if(parameterCount > 1) {
+        *strm << child_indent2 << "}" << endl;
+        *strm << child_indent1 << "}]" << endl;
+    }
+
     *strm << indent << "}" << endl;
 }
 
