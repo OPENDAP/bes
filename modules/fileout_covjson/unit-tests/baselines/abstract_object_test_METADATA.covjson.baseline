@@ -3,14 +3,41 @@
   "domain": {
     "domainType": "Grid",
     "axes": {
-      "x": {
-
+      "": {
+        "values": []
       },
-      "y": {
-
+      "": {
+        "values": []
       },
-      "t": {
-
+      "": {
+        "values": []
+      },
+      "": {
+        "values": []
+      },
+      "": {
+        "values": []
+      },
+      "": {
+        "values": []
+      },
+      "": {
+        "values": []
+      },
+      "": {
+        "values": []
+      },
+      "": {
+        "values": []
+      },
+      "": {
+        "values": []
+      },
+      "": {
+        "values": []
+      },
+      "": {
+        "values": []
       }
     },
     "referencing": [{
@@ -29,122 +56,33 @@
     }]
   },
   "parameters": {
-
-    "SST": {
+    "test_grid": {
       "type": "Parameter",
-      "description": "SST",
+      "description": "test_grid",
       "unit": {
         "label": {
-          "en": "Deg C"
+          "en": ""
         }
       },
       "symbol": {
-        "value": "Deg C",
+        "value": "",
         "type": "",
       },
       "observedProperty": {
         "id": null,
         "label": {
-          "en": "SEA SURFACE TEMPERATURE"
+          "en": ""
         }
       }
     }
   },
   "ranges": {
-    "SST": {
+    "test_grid": {
       "type": "NdArray",
       "dataType": "float",
       "axisNames": ["t", "y", "x"],
-      "shape": [12, 90, 180],
-
+      "shape": [36, 18],
+      "values": []
     }
-
-    "AIRT": {
-      "type": "Parameter",
-      "description": "AIRT",
-      "unit": {
-        "label": {
-          "en": "DEG C"
-        }
-      },
-      "symbol": {
-        "value": "DEG C",
-        "type": "",
-      },
-      "observedProperty": {
-        "id": null,
-        "label": {
-          "en": "AIR TEMPERATURE"
-        }
-      }
-    }
-  },
-  "ranges": {
-    "AIRT": {
-      "type": "NdArray",
-      "dataType": "float",
-      "axisNames": ["t", "y", "x"],
-      "shape": [12, 90, 180],
-
-    }
-
-    "UWND": {
-      "type": "Parameter",
-      "description": "UWND",
-      "unit": {
-        "label": {
-          "en": "M/S"
-        }
-      },
-      "symbol": {
-        "value": "M/S",
-        "type": "",
-      },
-      "observedProperty": {
-        "id": null,
-        "label": {
-          "en": "ZONAL WIND"
-        }
-      }
-    }
-  },
-  "ranges": {
-    "UWND": {
-      "type": "NdArray",
-      "dataType": "float",
-      "axisNames": ["t", "y", "x"],
-      "shape": [12, 90, 180],
-
-    }
-
-    "VWND": {
-      "type": "Parameter",
-      "description": "VWND",
-      "unit": {
-        "label": {
-          "en": "M/S"
-        }
-      },
-      "symbol": {
-        "value": "M/S",
-        "type": "",
-      },
-      "observedProperty": {
-        "id": null,
-        "label": {
-          "en": "MERIDIONAL WIND"
-        }
-      }
-    }
-  },
-  "ranges": {
-    "VWND": {
-      "type": "NdArray",
-      "dataType": "float",
-      "axisNames": ["t", "y", "x"],
-      "shape": [12, 90, 180],
-
-    }
-
   }
 }
