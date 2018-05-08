@@ -67,30 +67,104 @@ const int max_axes = 4; // (x, y , z, and t) :: if axisCount <= max_axes
 
 
 /**
- * @brief Checks the spacial/temporal dimensions that we've obtained can be
- *    used to convert to a CovJSON file.
+ * @brief Checks the spacial/temporal dimensions that we've obtained, if we've
+ *    obtained any at all, can be used to convert to a CovJSON file. If x, y,
+ *    and t exist, then we determine domainType based on the shape values and we
+ *    return true. If x, y, and/or t don't exist, we simply return false
  *
  * @note also sets the domainType based on the given dimensions
+ *
+ * @note see CovJSON domain type spec: https://covjson.org/domain-types/ for
+ *    further details on determining domain type
  *
  * @returns true if can convert to CovJSON, false if cannot convert
  */
 bool FoDapCovJsonTransform::canConvert()
 {
-    if(xExists && yExists && tExists) {
-        if(shapeVals[0] > 1 && shapeVals[1] > 1 && shapeVals[2] >= 0) {
-            domainType = 0; // Grid
+    // If x, y, z, and t all exist
+    // We are assuming the following is true:
+    //    - shapeVals[0] = x axis
+    //    - shapeVals[1] = y axis
+    //    - shapeVals[2] = z axis
+    //    - shapeVals[3] = t axis
+    if(xExists && yExists && zExists && tExists) {
+        // A domain with Grid domain type MUST have the axes "x" and "y"
+        // and MAY have the axes "z" and "t".
+        if((shapeVals[0] > 1) && (shapeVals[1] > 1) && (shapeVals[2] >= 1) && (shapeVals[3] >= 0)) {
+            domainType = Grid;
             return true;
         }
-        else if(shapeVals[0] == 1 && shapeVals[1] == 1 && (shapeVals[2] <= 1 && shapeVals[2] >= 0)) {
-            domainType = 1; // Vertical Profile
+
+        // A domain with VerticalProfile domain type MUST have the axes "x",
+        // "y", and "z", where "x" and "y" MUST have a single coordinate only.
+        else if((shapeVals[0] == 1) && (shapeVals[1] == 1) && (shapeVals[2] >= 1) && ((shapeVals[3] <= 1) && (shapeVals[3] >= 0))) {
+            domainType = VerticalProfile;
             return true;
         }
-        else if(shapeVals[0] == 1 && shapeVals[1] == 1 && shapeVals[2] >= 0) {
-            domainType = 2; // Point Series
+
+        // A domain with PointSeries domain type MUST have the axes "x", "y",
+        // and "t" where "x" and "y" MUST have a single coordinate only. A
+        // domain with PointSeries domain type MAY have the axis "z" which
+        // MUST have a single coordinate only.
+        else if((shapeVals[0] == 1) && (shapeVals[1] == 1) && (shapeVals[2] == 1) && (shapeVals[3] >= 0)) {
+            domainType = PointSeries;
             return true;
         }
-        else if(shapeVals[0] == 1 && shapeVals[1] == 1 && shapeVals[2] >= 0) {
-            domainType = 3; // Point
+
+        // A domain with Point domain type MUST have the axes "x" and "y" and MAY
+        // have the axes "z" and "t" where all MUST have a single coordinate only.
+        else if((shapeVals[0] == 1) && (shapeVals[1] == 1) && (shapeVals[2] == 1) && (shapeVals[3] == 1)) {
+            domainType = Point;
+            return true;
+        }
+    }
+
+    // If just x, y, and t exist
+    // We are assuming the following is true:
+    //    - shapeVals[0] = x axis
+    //    - shapeVals[1] = y axis
+    //    - shapeVals[2] = t axis
+    else if(xExists && yExists && !zExists && tExists) {
+        // A domain with Grid domain type MUST have the axes "x" and "y"
+        // and MAY have the axes "z" and "t".
+        if((shapeVals[0] > 1) && (shapeVals[1] > 1) && (shapeVals[2] >= 0)) {
+            domainType = Grid;
+            return true;
+        }
+
+        // A domain with PointSeries domain type MUST have the axes "x", "y",
+        // and "t" where "x" and "y" MUST have a single coordinate only. A
+        // domain with PointSeries domain type MAY have the axis "z" which
+        // MUST have a single coordinate only.
+        else if((shapeVals[0] == 1) && (shapeVals[1] == 1) && (shapeVals[2] >= 0)) {
+            domainType = PointSeries;
+            return true;
+        }
+
+        // A domain with Point domain type MUST have the axes "x" and "y" and MAY
+        // have the axes "z" and "t" where all MUST have a single coordinate only.
+        else if((shapeVals[0] == 1) && (shapeVals[1] == 1) && (shapeVals[2] == 1)) {
+            domainType = Point;
+            return true;
+        }
+    }
+
+    // If just x and y exist
+    // We are assuming the following is true:
+    //    - shapeVals[0] = x axis
+    //    - shapeVals[1] = y axis
+    else if(xExists && yExists && !zExists && !tExists) {
+        // A domain with Grid domain type MUST have the axes "x" and "y"
+        // and MAY have the axes "z" and "t".
+        if((shapeVals[0] > 1) && (shapeVals[1] > 1)) {
+            domainType = Grid;
+            return true;
+        }
+
+        // A domain with Point domain type MUST have the axes "x" and "y" and MAY
+        // have the axes "z" and "t" where all MUST have a single coordinate only.
+        else if((shapeVals[0] == 1) && (shapeVals[1] == 1)) {
+            domainType = Point;
             return true;
         }
     }
@@ -426,7 +500,7 @@ void FoDapCovJsonTransform::covjsonStringArray(std::ostream *strm, libdap::Array
  * the corresponding private class variables . Will logically search
  * for value names (ie "longitude") and store them as required.
  *
- * @note logic to determine z axis does not yet exist
+ @ @note TODO Add logic for determining the presence of z axis variable
  *
  * @note strm is included here for debugging purposes. Otherwise, there is no
  *   absolute need to require it as an argument. May remove strm as an arg if
@@ -467,6 +541,10 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
 
                     // FOR TESTING AND DEBUGGING PURPOSES
                     // *strm << "\"currName\": \"" << currName << "\", \"currValue\": \"" << currValue << "\"" << endl;
+
+                    // Parse the attribute table values and try to determine what variables AND
+                    // metadata are present -- its not an exact science, and its a little dirty.
+                    // @ TODO -- Add logic for determining the presence of z axis variable
 
                     if(((currValue.compare("lon") == 0) || (currValue.compare("longitude") == 0)
                         || (currValue.compare("LONGITUDE") == 0) || (currValue.compare("Longitude") == 0)
@@ -524,6 +602,9 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
                         isParam = true;
                         currParameterLongName = currValue;
                     }
+
+                    // @TODO -- Add logic for determining the presence of a z axis variable here
+
                     else {
                         isAxis = false;
                         isParam = false;
@@ -531,6 +612,7 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
                 }
 
                 if(isAxis == true && isParam == false) {
+                    // Push a new axis
                     if(currAxisName.compare("") != 0) {
                         struct Axis *newAxis = new Axis;
                         newAxis->name = currAxisName;
@@ -541,6 +623,7 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
                     }
                 }
                 else if(isAxis == false && isParam == true) {
+                    // Push a new parameter
                     if(currParameterUnit.compare("") != 0 && currParameterLongName.compare("") != 0) {
                         struct Parameter *newParameter = new Parameter;
                         newParameter->name = name;
@@ -706,30 +789,70 @@ void FoDapCovJsonTransform::transformNodeWorker(ostream *strm, vector<libdap::Ba
  *
  * @param strm Write to this output stream
  * @param indent Indent the output so humans can make sense of it
+ * @param isCoverageCollection true if CoverageCollection format needed, false if normal Coverage
  */
-void FoDapCovJsonTransform::printCoverageHeaderWorker(ostream *strm, string indent)
+void FoDapCovJsonTransform::printCoverageHeaderWorker(ostream *strm, string indent, bool isCoverageCollection)
 {
     string child_indent1 = indent + _indent_increment;
     string child_indent2 = child_indent1 + _indent_increment;
 
-    *strm << indent << "{" << endl;
-    *strm << child_indent1 << "\"type\": \"Coverage\"," << endl;
-    *strm << child_indent1 << "\"domain\": {" << endl;
+    if(parameterCount > 1 && isCoverageCollection) {
+        *strm << indent << "{" << endl;
+        *strm << child_indent1 << "\"type\": \"CoverageCollection\"," << endl;
+    }
 
-    if(domainType == Grid) {
-        *strm << child_indent2 << "\"domainType\": \"Grid\"," << endl;
+    else if(parameterCount > 1 && !isCoverageCollection) {
+        *strm << indent << "\"coverages\": [{" << endl;
+        *strm << child_indent1 << "\"type\": \"Coverage\"," << endl;
     }
-    else if(domainType == VerticalProfile) {
-        *strm << child_indent2 << "\"domainType\": \"Vertical Profile\"," << endl;
-    }
-    else if(domainType == PointSeries) {
-        *strm << child_indent2 << "\"domainType\": \"Point Series\"," << endl;
-    }
-    else if(domainType == Point) {
-        *strm << child_indent2 << "\"domainType\": \"Point\"," << endl;
-    }
+
     else {
-        *strm << child_indent2 << "\"domainType\": \"Grid\"," << endl;
+        *strm << indent << "{" << endl;
+        *strm << child_indent1 << "\"type\": \"Coverage\"," << endl;
+    }
+
+    if(parameterCount > 1 && !isCoverageCollection) {
+        *strm << child_indent1 << "\"type\" : \"Domain\"," << endl;
+    }
+
+    else if(parameterCount == 1 && !isCoverageCollection) {
+        *strm << child_indent1 << "\"domain\": {" << endl;
+    }
+
+    if(parameterCount == 1 && !isCoverageCollection) {
+        if(domainType == Grid) {
+            *strm << child_indent2 << "\"domainType\": \"Grid\"," << endl;
+        }
+        else if(domainType == VerticalProfile) {
+            *strm << child_indent2 << "\"domainType\": \"Vertical Profile\"," << endl;
+        }
+        else if(domainType == PointSeries) {
+            *strm << child_indent2 << "\"domainType\": \"Point Series\"," << endl;
+        }
+        else if(domainType == Point) {
+            *strm << child_indent2 << "\"domainType\": \"Point\"," << endl;
+        }
+        else {
+            *strm << child_indent2 << "\"domainType\": \"Unknown\"," << endl;
+        }
+    }
+
+    else if(parameterCount > 1 && isCoverageCollection) {
+        if(domainType == Grid) {
+            *strm << child_indent1 << "\"domainType\": \"Grid\"," << endl;
+        }
+        else if(domainType == VerticalProfile) {
+            *strm << child_indent1 << "\"domainType\": \"Vertical Profile\"," << endl;
+        }
+        else if(domainType == PointSeries) {
+            *strm << child_indent1 << "\"domainType\": \"Point Series\"," << endl;
+        }
+        else if(domainType == Point) {
+            *strm << child_indent1 << "\"domainType\": \"Point\"," << endl;
+        }
+        else {
+            *strm << child_indent1 << "\"domainType\": \"Unknown\"," << endl;
+        }
     }
 }
 
@@ -813,8 +936,17 @@ void FoDapCovJsonTransform::printReferenceWorker(ostream *strm, string indent)
     *strm << child_indent2 << "\"type\": \"GeographicCRS\"," << endl;
     *strm << child_indent2 << "\"id\": \"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"," << endl;
     *strm << child_indent1 << "}" << endl;
-    *strm << indent << "}]" << endl;
-    *strm << _indent_increment << "}," << endl;
+
+    if(parameterCount > 1) {
+        *strm << indent << "}]," << endl;
+    }
+    else {
+        *strm << indent << "}]" << endl;
+    }
+
+    if(parameterCount == 1) {
+        *strm << _indent_increment << "}," << endl;
+    }
 }
 
 
@@ -833,15 +965,9 @@ void FoDapCovJsonTransform::printParametersWorker(ostream *strm, string indent)
 
     BESDEBUG(FoDapCovJsonTransform_debug_key, "Printing PARAMETERS" << endl);
 
-    string axisNames = "\"t\", ";
-    if(zExists) {
-        axisNames += "\"z\", ";
-    }
-    axisNames += "\"y\", \"x\"";
-
     // Write down the parameters and values
+    *strm << indent << "\"parameters\": {" << endl;
     for(unsigned int i = 0; i < parameterCount; i++) {
-        *strm << indent << "\"parameters\": {" << endl;
         *strm << child_indent1 << "\"" << parameters[i]->name << "\": {" << endl;
         *strm << child_indent2 << "\"type\": \"Parameter\"," << endl;
         *strm << child_indent2 << "\"description\": \"" << parameters[i]->name << "\"," << endl;
@@ -860,26 +986,56 @@ void FoDapCovJsonTransform::printParametersWorker(ostream *strm, string indent)
         *strm << child_indent4 << "\"en\": \"" << parameters[i]->longName << "\"" << endl;
         *strm << child_indent3 << "}" << endl;
         *strm << child_indent2 << "}" << endl;
-        *strm << child_indent1 << "}" << endl;
-        *strm << indent << "}," << endl;
 
-        // Axis name (x, y, or z)
-        *strm << indent << "\"ranges\": {" << endl;
+        if(i == parameterCount - 1) {
+            *strm << child_indent1 << "}" << endl;
+        }
+        else {
+            *strm << child_indent1 << "}," << endl;
+        }
+    }
+    if(parameterCount > 1) {
+        *strm << indent << "}," << endl;
+    }
+}
+
+
+/**
+ * @brief Worker method prints the CoverageJSON file Parameter's ranges to stream
+ *
+ * @param strm Write to this output stream
+ * @param indent Indent the output so humans can make sense of it
+ */
+void FoDapCovJsonTransform::printRangesWorker(ostream *strm, string indent)
+{
+    string child_indent1 = indent + _indent_increment;
+    string child_indent2 = child_indent1 + _indent_increment;
+    string child_indent3 = child_indent2 + _indent_increment;
+
+    BESDEBUG(FoDapCovJsonTransform_debug_key, "Printing RANGES" << endl);
+
+    string axisNames = "\"t\", ";
+    if(zExists) {
+        axisNames += "\"z\", ";
+    }
+    axisNames += "\"y\", \"x\"";
+
+    // Axis name (x, y, or z)
+    *strm << indent << "\"ranges\": {" << endl;
+    for(unsigned int i = 0; i < parameterCount; i++) {
         *strm << child_indent1 << "\"" << parameters[i]->name << "\": {" << endl;
         *strm << child_indent2 << "\"type\": \"NdArray\"," << endl;
         *strm << child_indent2 << "\"dataType\": \"float\"," << endl;
         *strm << child_indent2 << "\"axisNames\": [" << axisNames << "]," << endl;
         *strm << child_indent2 << parameters[i]->shape << endl;
         *strm << child_indent2 << parameters[i]->values << endl;
-        *strm << child_indent1 << "}" << endl;
 
         if(i == parameterCount - 1) {
-            *strm << indent << "}" << endl;
+            *strm << child_indent1 << "}" << endl;
         }
         else {
-            *strm << indent << "}," << endl;
+            *strm << child_indent1 << "}," << endl;
         }
-
     }
 }
 
@@ -912,7 +1068,6 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
 {
     string child_indent1 = indent + _indent_increment;
     string child_indent2 = child_indent1 + _indent_increment;
-
     vector<libdap::BaseType *> leaves;
     vector<libdap::BaseType *> nodes;
 
@@ -934,29 +1089,62 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
         }
     }
 
+    // Read through the leaves and nodes and extract all axes and parameter data
     transformNodeWorker(strm, leaves, nodes, child_indent2, sendData);
 
+    // Determine if the attribute values we read can be converted to CovJSON
     bool canConvertToCovJson = canConvert();
 
-    // Only print to stream if this file can be converted to CovJSON
+    // Only print if this file can be converted to CovJSON
     if (canConvertToCovJson) {
-        // Print header and domain type
-        printCoverageHeaderWorker(strm, indent);
+        // If we have more than one parameter, we are dealing with a
+        // Coverage Collection, so we must print accordingly.
+        if(parameterCount > 1) {
+            // Prints header and domain type
+            printCoverageHeaderWorker(strm, indent, true);
 
-        // Prints the axes metadata and range values
-        printAxesWorker(strm, child_indent2);
+            // Prints parameter metadata
+            printParametersWorker(strm, child_indent1);
 
-        // Prints the references for the given Axes
-        printReferenceWorker(strm, child_indent2);
+            // Prints the references for the given Axes
+            printReferenceWorker(strm, child_indent1);
 
-        // Prints parameter metadata and range values
-        printParametersWorker(strm, child_indent1);
+            // Prints header and domain type
+            printCoverageHeaderWorker(strm, child_indent1, false);
 
-        // Print footer
-        printCoverageFooterWorker(strm, indent);
+            // Prints the axes metadata and range values
+            printAxesWorker(strm, child_indent2);
+
+            // Prints the parameter range values
+            printRangesWorker(strm, child_indent2);
+
+            // Prints footer
+            printCoverageFooterWorker(strm, indent);
+        }
+        else {
+            // Prints header and domain type
+            printCoverageHeaderWorker(strm, indent, false);
+
+            // Prints the axes metadata and range values
+            printAxesWorker(strm, child_indent2);
+
+            // Prints the references for the given Axes
+            printReferenceWorker(strm, child_indent2);
+
+            // Prints parameter metadata
+            printParametersWorker(strm, child_indent1);
+
+            // Prints the parameter range values
+            printRangesWorker(strm, child_indent1);
+
+            // Prints footer
+            printCoverageFooterWorker(strm, indent);
+        }
     }
     else {
-        // @TODO Do nothing?? Or throw BESInternalError?? hmmm
+        // If this file can't be converted, then its failing spacial/temporal requirements
+        *strm << "This file cannot be converted to COVJSON format due to missing axes!" << endl;
+        throw BESInternalError("File cannot be converted to COVJSON format, missing axes", __FILE__, __LINE__);
     }
 }
 

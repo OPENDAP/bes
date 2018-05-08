@@ -86,7 +86,7 @@ private:
     unsigned int shapeValsCount;
     std::vector<int> shapeVals;
 
-    enum domains { Grid = 0, VerticalProfile = 1, PointSeries = 2, Point = 3 };
+    enum domains { Grid = 0, VerticalProfile = 1, PointSeries = 2, Point = 3, CoverageCollection = 4 };
 
     bool canConvert();
 
@@ -102,10 +102,11 @@ private:
     void transformNodeWorker(std::ostream *strm, vector<libdap::BaseType *> leaves, vector<libdap::BaseType *> nodes,
         string indent, bool sendData);
 
-    void printCoverageHeaderWorker(std::ostream *strm, std::string indent);
+    void printCoverageHeaderWorker(std::ostream *strm, std::string indent, bool isCoverageCollection);
     void printAxesWorker(std::ostream *strm, std::string indent);
     void printReferenceWorker(std::ostream *strm, std::string indent);
     void printParametersWorker(std::ostream *strm, std::string indent);
+    void printRangesWorker(std::ostream *strm, std::string indent);
     void printCoverageFooterWorker(std::ostream *strm, std::string indent);
 
     template<typename T>
@@ -129,8 +130,8 @@ public:
 
     virtual void dump(std::ostream &strm) const;
 
-    virtual void printCoverageHeaderWorker(std::ostream &ostrm, std::string indent) {
-        printCoverageHeaderWorker(&ostrm, indent);
+    virtual void printCoverageHeaderWorker(std::ostream &ostrm, std::string indent, bool isCoverageCollection) {
+        printCoverageHeaderWorker(&ostrm, indent, isCoverageCollection);
     }
 
     virtual void printAxesWorker(std::ostream &ostrm, std::string indent) {
