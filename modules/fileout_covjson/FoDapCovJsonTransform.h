@@ -38,7 +38,6 @@
 #include <map>
 
 #include <BESObj.h>
-#include "FoDapCovJsonValidation.h"
 
 namespace libdap {
 class BaseType;
@@ -58,119 +57,97 @@ private:
     libdap::DDS *_dds;
     std::string _returnAs;
     std::string _indent_increment;
-    std::string currAxis;
+    int domainType;
+    bool xExists;
+    bool yExists;
     bool zExists;
+    bool tExists;
+    bool isParam;
+    bool isAxis;
 
-    /*
-    * if:
-    * 0 NdArray
-    * 1 TiledNdArray
-    * 2 Coverage
-    */
-    std::string paramType;
-    std::string paramUnit;
-    std::string paramLongName;
+    struct Axis {
+        std::string name;
+        std::string values;
+    };
 
-    enum domains { Grid = 0, VerticalProfile = 1, PointSeries = 2, Point = 3 };
+    struct Parameter {
+        std::string name;
+        std::string type;
+        std::string unit;
+        std::string longName;
+        std::string shape;
+        std::string values;
+    };
 
-    void writeAxesMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);
-    void writeParameterMetadata(std::ostream *strm, libdap::BaseType *bt, std::string indent);
+    unsigned int axisCount;
+    std::vector<Axis *> axes;
+    unsigned int parameterCount;
+    std::vector<Parameter *> parameters;
+    unsigned int shapeValsCount;
+    std::vector<int> shapeVals;
 
-    void getAxisAttributes(std::ostream *strm, libdap::AttrTable &attr_table);
-    void getParameterAttributes(std::ostream *strm, libdap::AttrTable &attr_table);
+    enum domains { Grid = 0, VerticalProfile = 1, PointSeries = 2, Point = 3, CoverageCollection = 4 };
+
+    bool canConvert();
+
+    void getAttributes(std::ostream *strm, libdap::AttrTable &attr_table, std::string name,
+        bool *axisRetrieved, bool *parameterRetrieved);
+
+    void transform(std::ostream *strm, libdap::DDS *dds, std::string indent, bool sendData);
+    void transform(std::ostream *strm, libdap::BaseType *bt, std::string indent, bool sendData);
+    void transform(std::ostream *strm, libdap::Constructor *cnstrctr, std::string indent, bool sendData);
+    void transform(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
 
     void transformAtomic(std::ostream *strm, libdap::BaseType *bt, std::string indent, bool sendData);
+    void transformNodeWorker(std::ostream *strm, vector<libdap::BaseType *> leaves, vector<libdap::BaseType *> nodes,
+        string indent, bool sendData);
 
-    void transform(std::ostream *strm, libdap::DDS *dds, std::string indent, bool sendData, FoDapCovJsonValidation fv);
-    void transform(std::ostream *strm, libdap::BaseType *bt, std::string indent, bool sendData, bool isAxes);
-    void transform(std::ostream *strm, libdap::Constructor *cnstrctr, std::string indent, bool sendData);
-    void transform(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData, bool isAxes);
-    void transform(std::ostream *strm, libdap::AttrTable &attr_table, std::string indent);
-
-    void transformAxesWorker(std::ostream *strm, std::vector<libdap::BaseType *> leaves, std::string indent, bool sendData);
-    void transformReferenceWorker(std::ostream *strm, std::string indent, FoDapCovJsonValidation fv);
-    void transformParametersWorker(std::ostream *strm, std::vector<libdap::BaseType *> nodes, std::string indent,
-        bool sendData);
-    void transformRangesWorker(std::ostream *strm, std::vector<libdap::BaseType *> leaves,
-            std::string indent, bool sendData);
+    void printCoverageHeaderWorker(std::ostream *strm, std::string indent, bool isCoverageCollection);
+    void printAxesWorker(std::ostream *strm, std::string indent);
+    void printReferenceWorker(std::ostream *strm, std::string indent);
+    void printParametersWorker(std::ostream *strm, std::string indent);
+    void printRangesWorker(std::ostream *strm, std::string indent);
+    void printCoverageFooterWorker(std::ostream *strm, std::string indent);
 
     template<typename T>
-    void covjsonSimpleTypeArray(std::ostream *strm, libdap::Array *a, std::string indent,
-        bool sendData, bool isAxes);
+    void covjsonSimpleTypeArray(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
     void covjsonStringArray(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
 
     template<typename T>
     unsigned int covjsonSimpleTypeArrayWorker(std::ostream *strm, T *values, unsigned int indx,
-        std::vector<unsigned int> *shape, unsigned int currentDim);
+        std::vector<unsigned int> *shape, unsigned int currentDim, struct Axis *a);
+
+    template<typename T>
+    unsigned int covjsonSimpleTypeArrayWorker(std::ostream *strm, T *values, unsigned int indx,
+        std::vector<unsigned int> *shape, unsigned int currentDim, struct Parameter *p);
 
 public:
-
-    string getCurrAxis() {
-        return this->currAxis;
-    }
-
-    void setCurrAxis(std::string newCurrAxis) {
-        this->currAxis = newCurrAxis;
-    }
-
-    void clearCurrAxis() {
-        this->currAxis.clear();
-    }
-
-    string getParamType() {
-        return this->paramType;
-    }
-
-    void setParamType(std::string newParamType) {
-        this->paramType = newParamType;
-    }
-
-    string getParamUnit() {
-        return this->paramUnit;
-    }
-
-    void setParamUnit(std::string newParamUnit) {
-        this->paramUnit = newParamUnit;
-    }
-
-    string getParamLongName() {
-        return this->paramLongName;
-    }
-
-    void setParamLongName(std::string newParamLongName) {
-        this->paramLongName = newParamLongName;
-    }
-
     FoDapCovJsonTransform(libdap::DDS *dds);
 
     virtual ~FoDapCovJsonTransform() { }
 
-    virtual void transform(std::ostream &ostrm, bool sendData, FoDapCovJsonValidation fv);
+    virtual void transform(std::ostream &ostrm, bool sendData);
 
     virtual void dump(std::ostream &strm) const;
 
-    virtual void writeAxesMetadata(std::ostream &ostrm, libdap::BaseType *bt, std::string indent) {
-        writeAxesMetadata(&ostrm, bt, indent);
+    virtual void printCoverageHeaderWorker(std::ostream &ostrm, std::string indent, bool isCoverageCollection) {
+        printCoverageHeaderWorker(&ostrm, indent, isCoverageCollection);
     }
 
-    virtual void writeParameterMetadata(std::ostream &ostrm, libdap::BaseType *bt, std::string indent) {
-        writeParameterMetadata(&ostrm, bt, indent);
+    virtual void printAxesWorker(std::ostream &ostrm, std::string indent) {
+        printAxesWorker(&ostrm, indent);
     }
 
-    virtual void transformAxesWorker(std::ostream &ostrm, std::vector<libdap::BaseType *> leaves, std::string indent, bool sendData) {
-        transformAxesWorker(&ostrm, leaves, indent, sendData);
+    virtual void printReferenceWorker(std::ostream &ostrm, std::string indent) {
+        printReferenceWorker(&ostrm, indent);
     }
 
-    virtual void transformReferenceWorker(std::ostream &ostrm, std::string indent, FoDapCovJsonValidation fv) {
-        transformReferenceWorker(&ostrm, indent, fv);
+    virtual void printParametersWorker(std::ostream &ostrm, std::string indent) {
+        printParametersWorker(&ostrm, indent);
     }
 
-    virtual void transformParametersWorker(std::ostream &ostrm, std::vector<libdap::BaseType *> nodes, std::string indent, bool sendData) {
-        transformParametersWorker(&ostrm, nodes, indent, sendData);
-    }
-
-    virtual void transformRangesWorker(std::ostream &ostrm, std::vector<libdap::BaseType *> leaves, std::string indent, bool sendData) {
-        transformRangesWorker(&ostrm, leaves, indent, sendData);
+    virtual void printCoverageFooterWorker(std::ostream &ostrm, std::string indent) {
+        printCoverageFooterWorker(&ostrm, indent);
     }
 };
 
