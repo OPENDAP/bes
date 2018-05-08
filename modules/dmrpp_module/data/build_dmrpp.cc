@@ -24,6 +24,8 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <memory>
 
 #include <cstdlib>
@@ -33,13 +35,23 @@
 #include <H5Epublic.h>
 
 #include <DMR.h>
+#include <BaseType.h>
+#include <D4ParserSax2.h>
 #include <GetOpt.h>
 
 #include <BESUtil.h>
 #include <BESError.h>
 #include <BESInternalError.h>
 
+#include "DmrppTypeFactory.h"
+#include "DmrppD4Group.h"
+
 using namespace std;
+using namespace libdap;
+using namespace dmrpp;
+
+static bool verbose = false;
+#define VERBOSE(x) do { if (verbose) x; } while(false)
 
 /**
  * @brief Print information about the data type
@@ -175,10 +187,12 @@ static void print_dataset_type_info(hid_t dataset, uint8_t layout_type)
  * @todo Needs to get information about compression used by the dataset
  *
  * @param file The open HDF5 file
- * @param The path name of the dataset in the open hdf5 file
+ * @param h5_dset_path The path name of the dataset in the open hdf5 file
+ * @param dc if not null, put the information in this variable (DmrppCommon)
+ *
  * @exception BESError is thrown on error.
  */
-void get_variable_chunk_info(hid_t file, const string &h5_dset_path)
+static void get_variable_chunk_info(hid_t file, const string &h5_dset_path, DmrppCommon *dc)
 {
     hid_t dataset = H5Dopen2(file, h5_dset_path.c_str(), H5P_DEFAULT);
     if (dataset < 0)
@@ -204,16 +218,18 @@ void get_variable_chunk_info(hid_t file, const string &h5_dset_path)
             if (layout_type == 1) {/* Contiguous storage */
                 haddr_t cont_addr = 0;
                 hsize_t cont_size = 0;
-                cerr << "Storage: contiguous" << endl;
+                VERBOSE(cerr << "Storage: contiguous" << endl);
                 if (H5Dget_dataset_contiguous_storage_info(dataset, &cont_addr, &cont_size) < 0) {
                     throw BESInternalError("Cannot obtain the contiguous storage info.", __FILE__, __LINE__);
                 }
-                cerr << "    Addr: " << cont_addr << endl;
-                cerr << "    Size: " << cont_size << endl;
+                VERBOSE(cerr << "    Addr: " << cont_addr << endl);
+                VERBOSE(cerr << "    Size: " << cont_size << endl);
+
+                dc->add_chunk("", cont_size, cont_addr, "" /*pos in array*/);
             }
             else if (layout_type == 2) {/*chunking storage */
-                cerr << "storage: chunked." << endl;
-                cerr << "   Number of chunks is " << num_chunk << endl;
+                VERBOSE(cerr << "storage: chunked." << endl);
+                VERBOSE(cerr << "Number of chunks is " << num_chunk << endl);
 
                 /* Allocate the memory for the struct to obtain the chunk storage information */
                 //H5D_chunk_storage_info_t *chunk_st_ptr = (H5D_chunk_storage_info_t*) calloc(num_chunk, sizeof(H5D_chunk_storage_info_t));
@@ -225,24 +241,31 @@ void get_variable_chunk_info(hid_t file, const string &h5_dset_path)
                     throw BESInternalError("Cannot get HDF5 chunk storage info. successfully.", __FILE__, __LINE__);
                 }
 
-                cerr << "   Number of dimensions in a chunk is " << num_chunk_dims - 1 << endl;
+                VERBOSE(cerr << "    Number of dimensions in a chunk is " << num_chunk_dims - 1 << endl);
+
                 for (hsize_t i = 0; i < num_chunk; i++) {
-                    cerr << "    Chunk index:  " << i << endl;
-                    cerr << "      Number of bytes: " << chunk_st_ptr[i].nbytes << endl;
-                    cerr << "      Logical offset: ";
-                    for (unsigned int j = 0; j < num_chunk_dims - 1; j++)
-                        cerr << "[" << chunk_st_ptr[i].chunk_offset[j] << "]";
-                    cerr << "" << endl;
-                    cerr << "      Physical offset: " << chunk_st_ptr[i].chunk_addr << endl;
+                    VERBOSE(cerr << "    Chunk index:  " << i << endl);
+                    VERBOSE(cerr << "    Number of bytes: " << chunk_st_ptr[i].nbytes << endl);
+                    VERBOSE(cerr << "    Physical offset: " << chunk_st_ptr[i].chunk_addr << endl);
+                    VERBOSE(cerr << "    Logical offset: ");
+
+                    vector<unsigned int> chunk_pos_in_array;
+                     for (unsigned int j = 0; j < num_chunk_dims - 1; j++)
+                         chunk_pos_in_array.push_back(chunk_st_ptr[i].chunk_offset[j]);
+
+                    VERBOSE(copy(chunk_pos_in_array.begin(), chunk_pos_in_array.end(), ostream_iterator<unsigned int>(cerr, " ")));
+                    VERBOSE(cerr << endl);
+
+                    dc->add_chunk("", chunk_st_ptr[i].nbytes, chunk_st_ptr[i].chunk_addr, chunk_pos_in_array);
                 }
             }
             else if (layout_type == 3) {/* Compact storage */
-                cerr << "Storage: compact" << endl;
+                VERBOSE(cerr << "Storage: compact" << endl);
                 size_t comp_size = 0;
                 if (H5Dget_dataset_compact_storage_info(dataset, &comp_size) < 0) {
                     throw BESInternalError("Cannot obtain the compact storage info.", __FILE__, __LINE__);
                 }
-                cerr << "   Size: " << comp_size << endl;
+                VERBOSE(cerr << "   Size: " << comp_size << endl);
             }
         }
     }
@@ -254,110 +277,15 @@ void get_variable_chunk_info(hid_t file, const string &h5_dset_path)
     H5Dclose(dataset);
 }
 
-#if 0
-void build_dmr_w_chunk_info(hid_t file)
-{
-    // Get chunks info:
-    //string filename = string(TEST_DATA_DIR).append("/").append("chunked_fourD.h5");
-    /* Will be used to store the chunking info. */
-
-    // Get dmr:
-    string dmr_file = string(TEST_DATA_DIR).append("/").append("chunked_fourD.h5h.dmr");
-    auto_ptr<DMR> dmr(new DMR);
-    DmrppTypeFactory dtf;
-    dmr->set_factory(&dtf);
-
-    ifstream in(dmr_file.c_str());
-    parser.intern(in, dmr.get(), false);
-
-    H5D_chunk_storage_info_t* chunk_st_ptr = 0;
-    chunk_st_ptr = get_hdf5_chunkes_info(filename, "d_16_chunks", chunk_st_ptr, false);
-    BESDEBUG("dmrpp", "H5D_chunk_storage_info_t nbytes[0] = " << to_string(chunk_st_ptr[0].nbytes) << endl);
-
-    D4Group *g = dmr->root();
-
-    D4Group::Vars_iter v = g->var_begin();
-    DmrppCommon *dc = dynamic_cast<DmrppCommon*>(*v);
-//            // Compression type:
-//              string deflate("deflate");
-//              string shuffle("shuffle");
-//              string compressionType("");
-//              string deflate_level("6");  // TODO: ????
-//              if(dc->is_deflate_compression()) compressionType=deflate;
-//              if(dc->is_shuffle_compression()) compressionType=shuffle;
-    int chunk_num = (int) dc->get_immutable_chunks().size();
-    int chunk_dim_num = (int) dc->get_chunk_dimension_sizes().size();
-    vector<unsigned int> dims = dc->get_chunk_dimension_sizes();
-    std::stringstream sd;
-    string chunkDimensionSizes;
-    string delim = "";
-    for (int d = 0; d < chunk_dim_num; d++) {
-        sd << delim << to_string(dims[d]);
-        delim = " ";
-    }
-    chunkDimensionSizes = sd.str();
-    dc->ingest_chunk_dimension_sizes(chunkDimensionSizes);
-
-    vector<Chunk> &chunk_refs = dc->get_chunk_vec();
-    for (int i = 0; i < chunk_num; i++) {
-        Chunk &chunk = chunk_refs[i];
-
-        // Get offset string:
-        std::stringstream so;
-        string offset;
-        so << chunk.get_offset();
-        offset = so.str();
-
-        // Get nBytes string:
-        string nBytes;
-        std::stringstream sb;
-        sb << chunk.get_offset();
-        nBytes = sb.str();
-
-        // Get position in array string:
-        vector<unsigned int> pos = chunk.get_position_in_array();
-        std::stringstream sp;
-        string chunkPositionInArray;
-        string delim = "";
-        for (int j = 0; j < chunk_dim_num; j++) {
-            sp << delim << to_string(pos[j]);
-            delim = ",";
-        }
-        chunkPositionInArray = sp.str();
-
-        dc->add_chunk(chunk.get_data_url(), chunk.get_size(), chunk.get_offset(), chunkPositionInArray);
-    }
-
-    dc->dump(cout);
-
-    //XML output
-    XMLWriter xml;
-    print_dmrpp(xml, *dmr);
-    string dmr_src = string(xml.get_doc());
-    BESDEBUG("dmrpp", "DMR SRC: " << endl << dmr_src << endl);
-}
-
-#endif
-
-#include <fstream>
-#include <BaseType.h>
-#include <DMR.h>
-#include <D4ParserSax2.h>
-
-#include "DmrppTypeFactory.h"
-#include "DmrppD4Group.h"
-
-using namespace libdap;
-using namespace dmrpp;
-
-void get_chunks_for_all_variables(hid_t file, D4Group *group)
+static void get_chunks_for_all_variables(hid_t file, D4Group *group)
 {
     // variables in the group
     Constructor::Vars_iter v = group->var_begin();
     Constructor::Vars_iter ve = group->var_end();
     while (v != ve) {
         cerr << (*v)->FQN() << endl;
-        get_variable_chunk_info(file, (*v++)->FQN());
+        get_variable_chunk_info(file, (*v)->FQN(), dynamic_cast<DmrppCommon*>(*v));
+        ++v;
     }
 
     // all groups in the group
@@ -369,7 +297,6 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group)
 
 int main(int argc, char*argv[])
 {
-    bool verbose = false;
     string h5_file_name = "";
     string h5_dset_path = "";
     string dmr_name = "";
@@ -394,7 +321,7 @@ int main(int argc, char*argv[])
             // FIXME
             break;
         case 'h':
-            cerr << "build_dmrpp [-v] -f <input> -r <dmr> -o <output> | build_dmrpp -h" << endl;
+            cerr << "build_dmrpp [-v] -f <input> [-r <dmr> | -d <dset anme>] -o <output> | build_dmrpp -h" << endl;
             exit(1);
         default:
             break;
@@ -402,7 +329,7 @@ int main(int argc, char*argv[])
     }
 
     if (h5_file_name.empty()) {
-        cerr << "HDF5 file name must be given." << endl;
+        cerr << "HDF5 file name must be given (-f <input>)." << endl;
         return 1;
     }
 
@@ -419,6 +346,8 @@ int main(int argc, char*argv[])
             return 1;
         }
 
+        // For a given HDF5, get info for all the HDF5 datasets in a DMR or for a
+        // given HDF5 dataset
         if (!dmr_name.empty()) {
             // Get dmr:
             auto_ptr<DMR> dmr(new DMR);
@@ -433,7 +362,7 @@ int main(int argc, char*argv[])
             get_chunks_for_all_variables(file, dmr->root());
         }
         else if (!h5_dset_path.empty()) {
-            get_variable_chunk_info(file, h5_dset_path);
+            get_variable_chunk_info(file, h5_dset_path, 0);
         }
         else {
             cerr << "Error: One of -d <hdf5 dataset name> or -r <DAP4 DMR name> must be given." << endl;
@@ -445,6 +374,9 @@ int main(int argc, char*argv[])
     }
     catch (std::exception &e) {
         cerr << "Error: " << e.what() << endl;
+    }
+    catch (...) {
+        cerr << "Unknown error." << endl;
     }
 
     H5Fclose(file);

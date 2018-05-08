@@ -113,10 +113,11 @@ public:
         return d_shuffle;
     }
 
-    virtual unsigned long add_chunk(std::string data_url,
-    		unsigned long long size,
-			unsigned long long offset,
-			std::string position_in_array = "");
+    virtual unsigned long add_chunk(std::string data_url, unsigned long long size, unsigned long long offset,
+        std::string position_in_array = "");
+
+    virtual unsigned long add_chunk(string data_url, unsigned long long size, unsigned long long offset,
+        const std::vector<unsigned int> &position_in_array);
 
     virtual const std::vector<Chunk> &get_immutable_chunks() const {
     	return d_chunks;

@@ -110,11 +110,14 @@ void DmrppCommon::ingest_compression_type(string compression_type_string)
 unsigned long DmrppCommon::add_chunk(string data_url, unsigned long long size, unsigned long long offset,
     string position_in_array)
 {
-
     d_chunks.push_back(Chunk(data_url, size, offset, position_in_array));
 
-//    BESDEBUG("dmrpp",
-//            "DmrppCommon::add_chunk() - Added chunk " << d_chunks.size() << ": " << d_chunks.back().to_string() << endl);
+    return d_chunks.size();
+}
+unsigned long DmrppCommon::add_chunk(string data_url, unsigned long long size, unsigned long long offset,
+    const vector<unsigned int> &position_in_array)
+{
+    d_chunks.push_back(Chunk(data_url, size, offset, position_in_array));
 
     return d_chunks.size();
 }

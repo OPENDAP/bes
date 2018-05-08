@@ -291,6 +291,15 @@ void Chunk::set_position_in_array(const string &pia)
     }
 }
 
+void Chunk::set_position_in_array(const std::vector<unsigned int> &pia)
+{
+    if (pia.size() == 0) return;
+
+    if (d_chunk_position_in_array.size()) d_chunk_position_in_array.clear();
+
+    d_chunk_position_in_array = pia;
+}
+
 /**
  * @brief Returns a curl range argument.
  * The libcurl requires a string argument for range-ge activitys, this method

@@ -84,11 +84,18 @@ public:
     {
     }
 
-    Chunk(std::string data_url, unsigned long long size, unsigned long long offset, std::string position_in_array = "") :
+    Chunk(const std::string &data_url, unsigned long long size, unsigned long long offset, std::string pia = "") :
         d_data_url(data_url), d_size(size), d_offset(offset), d_bytes_read(0), d_read_buffer(0),
         d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
     {
-        set_position_in_array(position_in_array);
+        set_position_in_array(pia);
+    }
+
+    Chunk(const std::string &data_url, unsigned long long size, unsigned long long offset, const std::vector<unsigned int> &pia) :
+        d_data_url(data_url), d_size(size), d_offset(offset), d_bytes_read(0), d_read_buffer(0),
+        d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
+    {
+        set_position_in_array(pia);
     }
 
     Chunk(const Chunk &h4bs)
@@ -223,6 +230,7 @@ public:
     }
 
     virtual void set_position_in_array(const std::string &pia);
+    virtual void set_position_in_array(const std::vector<unsigned int> &pia);
 
     virtual void read_chunk();
 
