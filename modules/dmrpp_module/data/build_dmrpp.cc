@@ -34,7 +34,7 @@
 #include <H5Dpublic.h>
 #include <H5Epublic.h>
 
-#include <DMR.h>
+#include <DMRpp.h>
 #include <BaseType.h>
 #include <D4ParserSax2.h>
 #include <GetOpt.h>
@@ -359,16 +359,16 @@ int main(int argc, char*argv[])
         // given HDF5 dataset
         if (!dmr_name.empty()) {
             // Get dmr:
-            auto_ptr<DMR> dmr(new DMR);
+            auto_ptr<DMRpp> dmrpp(new DMRpp);
             DmrppTypeFactory dtf;
-            dmr->set_factory(&dtf);
+            dmrpp->set_factory(&dtf);
 
             ifstream in(dmr_name.c_str());
             D4ParserSax2 parser;
-            parser.intern(in, dmr.get(), false);
+            parser.intern(in, dmrpp.get(), false);
 
             // iterate over all the variables in the DMR
-            get_chunks_for_all_variables(file, dmr->root());
+            get_chunks_for_all_variables(file, dmrpp->root());
 
 #if 0
             // Build a DOM representation for the DMR
@@ -376,7 +376,7 @@ int main(int argc, char*argv[])
 #endif
 
             XMLWriter writer;
-            dmr->print_dap4(writer, false /*constrained*/);
+            dmrpp->print_dap4(writer, false /*constrained*/);
             cout << writer.get_doc();
         }
         else if (!h5_dset_path.empty()) {

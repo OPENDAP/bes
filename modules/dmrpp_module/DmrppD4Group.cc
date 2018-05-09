@@ -74,16 +74,6 @@ DmrppD4Group::operator=(const DmrppD4Group &rhs)
     return *this;
 }
 
-#if 0
-bool
-DmrppD4Group::read()
-{
-    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
-
-    throw BESError("Unsupported type libdap::D4Group (dmrpp::DmrppGroup)",BES_INTERNAL_ERROR, __FILE__, __LINE__);
-}
-#endif
-
 void DmrppD4Group::dump(ostream & strm) const
 {
     strm << BESIndent::LMarg << "DmrppD4Group::dump - (" << (void *) this << ")" << endl;

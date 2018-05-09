@@ -22,13 +22,10 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-#ifndef _dmrpp_uint64_h
-#define _dmrpp_uint64_h 1
+#ifndef MODULES_DMRPP_MODULE_DMRPP_H_
+#define MODULES_DMRPP_MODULE_DMRPP_H_
 
-#include <string>
-
-#include <UInt64.h>
-#include "DmrppCommon.h"
+#include <DMR.h>
 
 namespace libdap {
 class XMLWriter;
@@ -36,30 +33,14 @@ class XMLWriter;
 
 namespace dmrpp {
 
-class DmrppUInt64: public libdap::UInt64, public DmrppCommon {
-    void _duplicate(const DmrppUInt64 &ts);
-
+class DMRpp : public libdap::DMR {
 public:
-    DmrppUInt64(const std::string &n);
-    DmrppUInt64(const std::string &n, const std::string &d);
-    DmrppUInt64(const DmrppUInt64 &rhs);
+    DMRpp() { }
+    virtual ~DMRpp() { }
 
-    virtual ~DmrppUInt64() {}
-
-    DmrppUInt64 &operator=(const DmrppUInt64 &rhs);
-
-    virtual libdap::BaseType *ptr_duplicate();
-
-    virtual bool read();
-
-    virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false)
-    {
-        DmrppCommon::print_dap4(writer, constrained);
-    }
-
-    virtual void dump(ostream & strm) const;
+    virtual void print_dap4(libdap::XMLWriter &xml, bool constrained = false);
 };
 
-} // namespace dmrpp
+} /* namespace dmrpp */
 
-#endif // _dmrpp_uint64_h
+#endif /* MODULES_DMRPP_MODULE_DMRPP_H_ */

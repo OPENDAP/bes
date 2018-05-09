@@ -26,7 +26,7 @@ SUBDIRS = . unit-tests tests data
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libdmrpp_module.la
 
-BES_SRCS = DmrppCommon.cc Chunk.cc CurlHandlePool.cc \
+BES_SRCS = DMRpp.cc DmrppCommon.cc Chunk.cc CurlHandlePool.cc \
 DmrppModule.cc DmrppRequestHandler.cc DmrppByte.cc DmrppArray.cc \
 DmrppFloat32.cc DmrppFloat64.cc DmrppInt16.cc DmrppInt32.cc DmrppInt64.cc \
 DmrppInt8.cc DmrppUInt16.cc DmrppUInt32.cc DmrppUInt64.cc DmrppStr.cc  \
@@ -35,7 +35,7 @@ DmrppD4Sequence.cc  DmrppTypeFactory.cc DmrppParserSax2.cc
 
 # Odometer.cc 
 
-BES_HDRS = DmrppCommon.h Chunk.h  CurlHandlePool.h \
+BES_HDRS = DMRpp.h DmrppCommon.h Chunk.h  CurlHandlePool.h \
 DmrppModule.h DmrppRequestHandler.h DmrppByte.h \
 DmrppArray.h DmrppFloat32.h DmrppFloat64.h DmrppInt16.h DmrppInt32.h \
 DmrppInt64.h DmrppInt8.h DmrppUInt16.h DmrppUInt32.h DmrppUInt64.h \

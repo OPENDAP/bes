@@ -30,6 +30,10 @@
 #include <Byte.h>
 #include "DmrppCommon.h"
 
+namespace libdap {
+class XMLWriter;
+}
+
 namespace dmrpp {
 
 class DmrppByte: public libdap::Byte, public DmrppCommon {
@@ -47,6 +51,11 @@ public:
     virtual libdap::BaseType *ptr_duplicate();
 
     virtual bool read();
+
+    virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false)
+    {
+        DmrppCommon::print_dap4(writer, constrained);
+    }
 
     virtual void dump(ostream & strm) const;
 };

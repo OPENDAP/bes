@@ -28,6 +28,8 @@
 
 #include <curl/curl.h>
 
+#include <BaseType.h>
+#include <D4Attributes.h>
 #include <XMLWriter.h>
 
 #include <BESIndent.h>
@@ -185,51 +187,77 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
         if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "compressionType", (const xmlChar*) compression.c_str()) < 0)
             throw BESInternalError("Could not write compression attribute.", __FILE__, __LINE__);
 
-    // Write element "chunkDimensionSizes" with dmrpp namespace:
-    ostringstream oss;
-    copy(d_chunk_dimension_sizes.begin(), d_chunk_dimension_sizes.end(), ostream_iterator<unsigned int>(oss, " "));
-    string sizes = oss.str();
-    if (sizes.size() > 0) sizes.erase(sizes.size()-1, 1);    // trim the trailing space
+    if (d_chunk_dimension_sizes.size() > 0) {
+        // Write element "chunkDimensionSizes" with dmrpp namespace:
+        ostringstream oss;
+        copy(d_chunk_dimension_sizes.begin(), d_chunk_dimension_sizes.end(), ostream_iterator<unsigned int>(oss, " "));
+        string sizes = oss.str();
+        sizes.erase(sizes.size() - 1, 1);    // trim the trailing space
 
-    if (xmlTextWriterWriteElementNS(xml.get_writer(), (const xmlChar*)name_space.c_str(), (const xmlChar*) "chunkDimensionSizes", NULL,
-            (const xmlChar*) sizes.c_str()) < 0)
-        throw BESInternalError("Could not write chunkDimensionSizes attribute.", __FILE__, __LINE__);
+        if (xmlTextWriterWriteElementNS(xml.get_writer(), (const xmlChar*) name_space.c_str(), (const xmlChar*) "chunkDimensionSizes", NULL,
+            (const xmlChar*) sizes.c_str()) < 0) throw BESInternalError("Could not write chunkDimensionSizes attribute.", __FILE__, __LINE__);
+    }
 
     // Start elements "chunk" with dmrpp namespace and attributes:
     for (vector<Chunk>::iterator i = get_chunk_vec().begin(), e = get_chunk_vec().end(); i != e; ++i) {
         Chunk &chunk = *i;
 
-        // Get offset string:
-        ostringstream offset;
-        offset << chunk.get_offset();
-
-        // Get nBytes string:
-        ostringstream nBytes;
-        nBytes << chunk.get_offset();
-
-        // Get position in array string:
-        vector<unsigned int> pia = chunk.get_position_in_array();
-        ostringstream oss;
-        oss << "[";
-        copy(pia.begin(), pia.end(), ostream_iterator<unsigned int>(oss, ","));
-        string pia_str = oss.str();
-        if (pia.size() > 0) pia_str.replace(pia_str.size()-1, 1, "]"); // replace the trailing ',' with ']'
-
         if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar*)name_space.c_str(), (const xmlChar*) "chunk", NULL) < 0)
             throw BESInternalError("Could not start element chunk", __FILE__, __LINE__);
 
+        // Get offset string:
+        ostringstream offset;
+        offset << chunk.get_offset();
         if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "offset", (const xmlChar*) offset.str().c_str()) < 0)
             throw BESInternalError("Could not write attribute offset", __FILE__, __LINE__);
 
+        // Get nBytes string:
+        ostringstream nBytes;
+        nBytes << chunk.get_size();
         if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "nBytes", (const xmlChar*) nBytes.str().c_str()) < 0)
             throw BESInternalError("Could not write attribute nBytes", __FILE__, __LINE__);
 
-        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "chunkPositionInArray", (const xmlChar*) pia_str.c_str()) < 0)
-            throw BESInternalError("Could not write attribute position in array", __FILE__, __LINE__);
+        if (chunk.get_position_in_array().size() > 0) {
+            // Get position in array string:
+            vector<unsigned int> pia = chunk.get_position_in_array();
+            ostringstream oss;
+            oss << "[";
+            copy(pia.begin(), pia.end(), ostream_iterator<unsigned int>(oss, ","));
+            string pia_str = oss.str();
+            if (pia.size() > 0) pia_str.replace(pia_str.size() - 1, 1, "]"); // replace the trailing ',' with ']'
+            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "chunkPositionInArray", (const xmlChar*) pia_str.c_str()) < 0)
+                throw BESInternalError("Could not write attribute position in array", __FILE__, __LINE__);
+        }
 
         // End element "chunk":
         if (xmlTextWriterEndElement(xml.get_writer()) < 0) throw BESInternalError("Could not end chunk element", __FILE__, __LINE__);
     }
+}
+
+void DmrppCommon::print_dap4(XMLWriter &xml, bool constrained /*false*/)
+{
+    BaseType &bt = dynamic_cast<BaseType&>(*this);
+    if (constrained && !bt.send_p())
+        return;
+
+    if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar*)bt.type_name().c_str()) < 0)
+        throw InternalErr(__FILE__, __LINE__, "Could not write " + bt.type_name() + " element");
+
+    if (!bt.name().empty())
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "name", (const xmlChar*)bt.name().c_str()) < 0)
+            throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
+
+    if (bt.is_dap4())
+        bt.attributes()->print_dap4(xml);
+
+    if (!bt.is_dap4() && bt.get_attr_table().get_size() > 0)
+        bt.get_attr_table().print_xml_writer(xml);
+
+    if (get_immutable_chunks().size() > 0)
+        print_chunks_element(xml, "dmrpp");
+
+    if (xmlTextWriterEndElement(xml.get_writer()) < 0)
+        throw InternalErr(__FILE__, __LINE__, "Could not end " + bt.type_name() + " element");
 }
 
 void DmrppCommon::dump(ostream & strm) const

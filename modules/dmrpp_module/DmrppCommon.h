@@ -73,7 +73,7 @@ protected:
     	d_deflate = dc.d_deflate;
     	d_shuffle = dc.d_shuffle;
     	d_chunk_dimension_sizes = dc.d_chunk_dimension_sizes;
-    	d_chunks =  dc.d_chunks;
+    	d_chunks = dc.d_chunks;
     }
 
     /**
@@ -137,6 +137,8 @@ public:
     }
 
     void print_chunks_element(libdap::XMLWriter &xml, const std::string &name_space = "");
+
+    void print_dap4(libdap::XMLWriter &writer, bool constrained = false);
 
     virtual void ingest_chunk_dimension_sizes(std::string chunk_dim_sizes_string);
 

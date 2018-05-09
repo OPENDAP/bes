@@ -34,6 +34,12 @@
 
 #include <unistd.h>
 
+#include <D4Enum.h>
+#include <D4EnumDefs.h>
+#include <D4Attributes.h>
+#include <D4Maps.h>
+#include <D4Group.h>
+
 #include "BESInternalError.h"
 #include "BESDebug.h"
 
@@ -753,10 +759,124 @@ bool DmrppArray::read()
     return true;
 }
 
-void DmrppArray::print_dap4(XMLWriter &writer, bool constrained /*false*/)
+/**
+ * Classes used with the STL for_each() algorithm; stolen from libdap::Array.
+ */
+///@{
+class PrintD4ArrayDimXMLWriter: public unary_function<Array::dimension&, void> {
+    XMLWriter &xml;
+    // Was this variable constrained using local/direct slicing? i.e., is d_local_constraint set?
+    // If so, don't use shared dimensions; instead emit Dim elements that are anonymous.
+    bool d_constrained;
+public:
+
+    PrintD4ArrayDimXMLWriter(XMLWriter &xml, bool c) : xml(xml), d_constrained(c) { }
+
+    void operator()(Array::dimension &d)
+    {
+        // This duplicates code in D4Dimensions (where D4Dimension::print_dap4() is defined
+        // because of the need to print the constrained size of a dimension. I think that
+        // the constraint information has to be kept here and not in the dimension (since they
+        // are shared dims). Could hack print_dap4() to take the constrained size, however.
+        if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar*) "Dim") < 0)
+            throw InternalErr(__FILE__, __LINE__, "Could not write Dim element");
+
+        string name = (d.dim) ? d.dim->fully_qualified_name() : d.name;
+        // If there is a name, there must be a Dimension (named dimension) in scope
+        // so write its name but not its size.
+        if (!d_constrained && !name.empty()) {
+            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "name", (const xmlChar*) name.c_str())
+                    < 0) throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
+        }
+        else if (d.use_sdim_for_slice) {
+            assert(!name.empty());
+            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "name", (const xmlChar*) name.c_str())
+                    < 0) throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
+        }
+        else {
+            ostringstream size;
+            size << (d_constrained ? d.c_size : d.size);
+            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "size",
+                    (const xmlChar*) size.str().c_str()) < 0)
+                throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
+        }
+
+        if (xmlTextWriterEndElement(xml.get_writer()) < 0)
+            throw InternalErr(__FILE__, __LINE__, "Could not end Dim element");
+    }
+};
+
+class PrintD4ConstructorVarXMLWriter: public unary_function<BaseType*, void> {
+    XMLWriter &xml;
+    bool d_constrained;
+public:
+    PrintD4ConstructorVarXMLWriter(XMLWriter &xml, bool c) : xml(xml), d_constrained(c) { }
+
+    void operator()(BaseType *btp)
+    {
+        btp->print_dap4(xml, d_constrained);
+    }
+};
+
+class PrintD4MapXMLWriter: public unary_function<D4Map*, void> {
+    XMLWriter &xml;
+
+public:
+    PrintD4MapXMLWriter(XMLWriter &xml) : xml(xml) { }
+
+    void operator()(D4Map *m)
+    {
+        m->print_dap4(xml);
+    }
+};
+///@}
+
+void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
 {
+#if USE_LIBDAP_PRINT_DAP4
     Array::print_dap4(writer, constrained);
-    // print_chunks_element(writer, "dmrpp");
+#else
+    if (constrained && !send_p()) return;
+
+    if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar*) var()->type_name().c_str()) < 0)
+        throw InternalErr(__FILE__, __LINE__, "Could not write " + type_name() + " element");
+
+    if (!name().empty())
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "name", (const xmlChar*)name().c_str()) < 0)
+            throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
+
+    // Hack job... Copied from D4Enum::print_xml_writer. jhrg 11/12/13
+    if (var()->type() == dods_enum_c) {
+        D4Enum *e = static_cast<D4Enum*>(var());
+        string path = e->enumeration()->name();
+        if (e->enumeration()->parent()) {
+            // print the FQN for the enum def; D4Group::FQN() includes the trailing '/'
+            path = static_cast<D4Group*>(e->enumeration()->parent()->parent())->FQN() + path;
+        }
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "enum", (const xmlChar*)path.c_str()) < 0)
+            throw InternalErr(__FILE__, __LINE__, "Could not write attribute for enum");
+    }
+
+    if (prototype()->is_constructor_type()) {
+        Constructor &c = static_cast<Constructor&>(*prototype());
+        for_each(c.var_begin(), c.var_end(), PrintD4ConstructorVarXMLWriter(xml, constrained));
+        // bind2nd(mem_fun_ref(&BaseType::print_dap4), xml));
+    }
+
+    // Drop the local_constraint which is per-array and use a per-dimension on instead
+    for_each(dim_begin(), dim_end(), PrintD4ArrayDimXMLWriter(xml, constrained));
+
+    attributes()->print_dap4(xml);
+
+    for_each(maps()->map_begin(), maps()->map_end(), PrintD4MapXMLWriter(xml));
+
+    // Only print the chunks info if there.
+    if (get_immutable_chunks().size() > 0)
+        print_chunks_element(xml, "dmrpp");
+
+    if (xmlTextWriterEndElement(xml.get_writer()) < 0)
+        throw InternalErr(__FILE__, __LINE__, "Could not end " + type_name() + " element");
+#endif
 }
 
 void DmrppArray::dump(ostream & strm) const

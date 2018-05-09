@@ -74,16 +74,6 @@ DmrppStructure::operator=(const DmrppStructure &rhs)
     return *this;
 }
 
-#if 0
-bool
-DmrppStructure::read()
-{
-    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
-
-    throw BESError("Unsupported type libdap::D4Structure (dmrpp::DmrppStructure)",BES_INTERNAL_ERROR, __FILE__, __LINE__);
-}
-#endif
-
 void DmrppStructure::dump(ostream & strm) const
 {
     strm << BESIndent::LMarg << "DmrppStructure::dump - (" << (void *) this << ")" << endl;

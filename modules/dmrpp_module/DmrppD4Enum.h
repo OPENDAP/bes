@@ -30,6 +30,10 @@
 #include <D4Enum.h>
 #include "DmrppCommon.h"
 
+namespace libdap {
+class XMLWriter;
+}
+
 namespace dmrpp {
 
 class DmrppD4Enum: public libdap::D4Enum, public DmrppCommon {
@@ -49,6 +53,11 @@ public:
     virtual libdap::BaseType *ptr_duplicate();
 
     virtual bool read();
+
+    virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false)
+    {
+        DmrppCommon::print_dap4(writer, constrained);
+    }
 
     virtual void dump(ostream & strm) const;
 };
