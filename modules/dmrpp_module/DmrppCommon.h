@@ -69,7 +69,7 @@ private:
 	std::vector<Chunk> d_chunks;
 
 protected:
-    void _duplicate(const DmrppCommon &dc) {
+    void m_duplicate_common(const DmrppCommon &dc) {
     	d_deflate = dc.d_deflate;
     	d_shuffle = dc.d_shuffle;
     	d_chunk_dimension_sizes = dc.d_chunk_dimension_sizes;
@@ -92,7 +92,7 @@ public:
 
     DmrppCommon(const DmrppCommon &dc)
     {
-        _duplicate(dc);
+        m_duplicate_common(dc);
     }
 
     virtual ~DmrppCommon()
@@ -136,7 +136,7 @@ public:
         return elements;
     }
 
-    void print_chunks_element(libdap::XMLWriter &xml, const string &name_space = "");
+    void print_chunks_element(libdap::XMLWriter &xml, const std::string &name_space = "");
 
     virtual void ingest_chunk_dimension_sizes(std::string chunk_dim_sizes_string);
 

@@ -69,7 +69,7 @@ DmrppStructure::operator=(const DmrppStructure &rhs)
     dynamic_cast<Structure &>(*this) = rhs; // run Constructor=
 
     _duplicate(rhs);
-    DmrppCommon::_duplicate(rhs);
+    DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }

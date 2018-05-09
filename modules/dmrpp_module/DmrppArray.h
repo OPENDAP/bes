@@ -33,6 +33,10 @@
 
 #undef USE_READ_SERIAL
 
+namespace libdap {
+class XMLWriter;
+}
+
 namespace dmrpp {
 
 /**
@@ -86,10 +90,12 @@ public:
 
     virtual bool read();
 
-    virtual void dump(ostream & strm) const;
-
     virtual unsigned long long get_size(bool constrained = false);
     virtual std::vector<unsigned int> get_shape(bool constrained);
+
+    virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false);
+
+    virtual void dump(ostream & strm) const;
 };
 
 } // namespace dmrpp

@@ -69,7 +69,7 @@ DmrppUInt16::operator=(const DmrppUInt16 &rhs)
     dynamic_cast<UInt16 &>(*this) = rhs; // run Constructor=
 
     _duplicate(rhs);
-    DmrppCommon::_duplicate(rhs);
+    DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }

@@ -74,7 +74,7 @@ DmrppD4Enum::operator=(const DmrppD4Enum &rhs)
     dynamic_cast<D4Enum &>(*this) = rhs; // run Constructor=
 
     _duplicate(rhs);
-    DmrppCommon::_duplicate(rhs);
+    DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }

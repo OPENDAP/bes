@@ -81,7 +81,7 @@ DmrppArray::operator=(const DmrppArray &rhs)
     dynamic_cast<Array &>(*this) = rhs; // run Constructor=
 
     _duplicate(rhs);
-    DmrppCommon::_duplicate(rhs);
+    DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }
@@ -751,6 +751,12 @@ bool DmrppArray::read()
     }
 
     return true;
+}
+
+void DmrppArray::print_dap4(XMLWriter &writer, bool constrained /*false*/)
+{
+    Array::print_dap4(writer, constrained);
+    // print_chunks_element(writer, "dmrpp");
 }
 
 void DmrppArray::dump(ostream & strm) const

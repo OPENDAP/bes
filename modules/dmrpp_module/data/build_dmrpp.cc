@@ -279,6 +279,13 @@ static void get_variable_chunk_info(hid_t file, const string &h5_dset_path, Dmrp
     H5Dclose(dataset);
 }
 
+/**
+ * @brief Iterate over all the variables in a DMR and get their chunk info
+ *
+ * @param file The open HDF5 file; passed through to get_variable_chunk_info
+ * @param group Read variables from this DAP4 Group. Call with the root Group
+ * to process all the variables in the DMR
+ */
 static void get_chunks_for_all_variables(hid_t file, D4Group *group)
 {
     // variables in the group
@@ -362,6 +369,11 @@ int main(int argc, char*argv[])
 
             // iterate over all the variables in the DMR
             get_chunks_for_all_variables(file, dmr->root());
+
+#if 0
+            // Build a DOM representation for the DMR
+            xmlDocPtr dmr_doc = xmlReadFile(dmr_name.c_str(), NULL/*encoding*/, 0/*options*/);
+#endif
 
             XMLWriter writer;
             dmr->print_dap4(writer, false /*constrained*/);

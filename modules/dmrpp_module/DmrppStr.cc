@@ -69,7 +69,7 @@ DmrppStr::operator=(const DmrppStr &rhs)
     dynamic_cast<Str &>(*this) = rhs; // run Constructor=
 
     _duplicate(rhs);
-    DmrppCommon::_duplicate(rhs);
+    DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }

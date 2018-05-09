@@ -69,7 +69,7 @@ DmrppFloat64::operator=(const DmrppFloat64 &rhs)
     dynamic_cast<Float64 &>(*this) = rhs; // run Constructor=
 
     _duplicate(rhs);
-    DmrppCommon::_duplicate(rhs);
+    DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }

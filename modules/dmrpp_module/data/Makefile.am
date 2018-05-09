@@ -6,12 +6,15 @@ AM_CXXFLAGS =
 
 noinst_PROGRAMS = build_dmrpp endian_convert multiball keepalive2
 
+VPATH = ..
+
 build_dmrpp_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)/modules/dmrpp_module -I$(top_srcdir)/dispatch \
 -I$(top_srcdir)/dap $(DAP_CFLAGS)
 
 build_dmrpp_SOURCES = build_dmrpp.cc
 
 DMRPP_MODULE = -L$(top_builddir)/modules/dmrpp_module -ldmrpp_module
+
 build_dmrpp_LDADD = $(DMRPP_MODULE) $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_EXTRA_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
 

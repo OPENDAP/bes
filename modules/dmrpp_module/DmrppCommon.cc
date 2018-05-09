@@ -189,7 +189,7 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
     ostringstream oss;
     copy(d_chunk_dimension_sizes.begin(), d_chunk_dimension_sizes.end(), ostream_iterator<unsigned int>(oss, " "));
     string sizes = oss.str();
-    sizes.erase(sizes.size()-1, 1);    // trim the trailing space
+    if (sizes.size() > 0) sizes.erase(sizes.size()-1, 1);    // trim the trailing space
 
     if (xmlTextWriterWriteElementNS(xml.get_writer(), (const xmlChar*)name_space.c_str(), (const xmlChar*) "chunkDimensionSizes", NULL,
             (const xmlChar*) sizes.c_str()) < 0)
@@ -213,7 +213,7 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
         oss << "[";
         copy(pia.begin(), pia.end(), ostream_iterator<unsigned int>(oss, ","));
         string pia_str = oss.str();
-        pia_str.replace(pia_str.size()-1, 1, "]"); // replace the trailing ',' with ']'
+        if (pia.size() > 0) pia_str.replace(pia_str.size()-1, 1, "]"); // replace the trailing ',' with ']'
 
         if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar*)name_space.c_str(), (const xmlChar*) "chunk", NULL) < 0)
             throw BESInternalError("Could not start element chunk", __FILE__, __LINE__);
