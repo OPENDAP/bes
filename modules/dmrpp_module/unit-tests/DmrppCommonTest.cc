@@ -29,20 +29,26 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <XMLWriter.h>
+#include <GetOpt.h>
+#include <util.h>
+#include <debug.h>
 
 #include <BESError.h>
 #include <BESDebug.h>
 
 #include "DmrppCommon.h"
 
-#include "GetOpt.h"
+#include "read_test_baseline.h"
 #include "test_config.h"
-#include "util.h"
 
 using namespace libdap;
+using namespace bes;
 
 static bool debug = false;
 static bool bes_debug = false;
+
+#undef DBG
+#define DBG(x) do { if (debug) x; } while(false)
 
 namespace dmrpp {
 
@@ -181,17 +187,20 @@ public:
         CPPUNIT_ASSERT(c.d_chunk_position_in_array.at(1) == 20);
     }
 
-    void test_print_dmrpp_1()
+    void test_print_chunks_element_1()
     {
         d_dc.ingest_chunk_dimension_sizes("51 17");
         d_dc.add_chunk("url", 100, 200, "[10,20]");
 
         XMLWriter writer;
-        d_dc.print_dmrpp(writer, "dmrpp");
-        cerr << writer.get_doc() << endl;
+        d_dc.print_chunks_element(writer, "dmrpp");
+
+        string baseline = read_test_baseline(string(TEST_SRC_DIR).append("/baselines/print_chunks_element_1.xml"));
+        DBG(cerr << writer.get_doc() << endl);
+        CPPUNIT_ASSERT(baseline == string (writer.get_doc()));
     }
 
-    void test_print_dmrpp_2()
+    void test_print_chunks_element_2()
     {
         d_dc.ingest_chunk_dimension_sizes("51 17");
         d_dc.add_chunk("url", 100, 200, "[10,20]");
@@ -200,11 +209,14 @@ public:
         CPPUNIT_ASSERT(size == 2);
 
         XMLWriter writer;
-        d_dc.print_dmrpp(writer, "dmrpp_2");
-        cerr << writer.get_doc() << endl;
+        d_dc.print_chunks_element(writer, "dmrpp_2");
+
+        string baseline = read_test_baseline(string(TEST_SRC_DIR).append("/baselines/print_chunks_element_2.xml"));
+        DBG(cerr << writer.get_doc() << endl);
+        CPPUNIT_ASSERT(baseline == string (writer.get_doc()));
     }
 
-    void test_print_dmrpp_3()
+    void test_print_chunks_element_3()
     {
         d_dc.d_deflate = true;
         d_dc.ingest_chunk_dimension_sizes("51 17");
@@ -214,11 +226,14 @@ public:
         CPPUNIT_ASSERT(size == 2);
 
         XMLWriter writer;
-        d_dc.print_dmrpp(writer, "dmrpp");
-        cerr << writer.get_doc() << endl;
+        d_dc.print_chunks_element(writer, "dmrpp");
+
+        string baseline = read_test_baseline(string(TEST_SRC_DIR).append("/baselines/print_chunks_element_3.xml"));
+        DBG(cerr << writer.get_doc() << endl);
+        CPPUNIT_ASSERT(baseline == string (writer.get_doc()));
     }
 
-    void test_print_dmrpp_4()
+    void test_print_chunks_element_4()
     {
         d_dc.d_deflate = true;
         d_dc.d_shuffle = true;
@@ -229,11 +244,14 @@ public:
         CPPUNIT_ASSERT(size == 2);
 
         XMLWriter writer;
-        d_dc.print_dmrpp(writer, "dmrpp");
-        cerr << writer.get_doc() << endl;
+        d_dc.print_chunks_element(writer, "dmrpp");
+
+        string baseline = read_test_baseline(string(TEST_SRC_DIR).append("/baselines/print_chunks_element_4.xml"));
+        DBG(cerr << writer.get_doc() << endl);
+        CPPUNIT_ASSERT(baseline == string (writer.get_doc()));
     }
 
-    void test_print_dmrpp_5()
+    void test_print_chunks_element_5()
     {
         d_dc.d_deflate = false;
         d_dc.d_shuffle = true;
@@ -244,8 +262,11 @@ public:
         CPPUNIT_ASSERT(size == 2);
 
         XMLWriter writer;
-        d_dc.print_dmrpp(writer, "DMRpp");
-        cerr << writer.get_doc() << endl;
+        d_dc.print_chunks_element(writer, "DMRpp");
+
+        string baseline = read_test_baseline(string(TEST_SRC_DIR).append("/baselines/print_chunks_element_5.xml"));
+        DBG(cerr << writer.get_doc() << endl);
+        CPPUNIT_ASSERT(baseline == string (writer.get_doc()));
     }
 
     CPPUNIT_TEST_SUITE( DmrppCommonTest );
@@ -265,19 +286,11 @@ public:
     CPPUNIT_TEST(test_add_chunk_1);
     CPPUNIT_TEST(test_add_chunk_2);
 
-    CPPUNIT_TEST(test_print_dmrpp_1);
-    CPPUNIT_TEST(test_print_dmrpp_2);
-    CPPUNIT_TEST(test_print_dmrpp_3);
-    CPPUNIT_TEST(test_print_dmrpp_4);
-    CPPUNIT_TEST(test_print_dmrpp_5);
-
-#if 0
-    CPPUNIT_TEST_EXCEPTION(set_position_in_array_test_3, BESError);
-    CPPUNIT_TEST_EXCEPTION(set_position_in_array_test_4, BESError);
-    CPPUNIT_TEST_EXCEPTION(set_position_in_array_test_5, BESError);
-
-    CPPUNIT_TEST_FAIL(set_position_in_array_test_6);
-#endif
+    CPPUNIT_TEST(test_print_chunks_element_1);
+    CPPUNIT_TEST(test_print_chunks_element_2);
+    CPPUNIT_TEST(test_print_chunks_element_3);
+    CPPUNIT_TEST(test_print_chunks_element_4);
+    CPPUNIT_TEST(test_print_chunks_element_5);
 
     CPPUNIT_TEST_SUITE_END();
 };

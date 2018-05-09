@@ -167,7 +167,7 @@ DmrppCommon::read_atomic(const string &name)
  * @brief Print the Chunk information.
  */
 void
-DmrppCommon::print_dmrpp(XMLWriter &xml, const string &name_space)
+DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
 {
     // Start element "chunks" with dmrpp namespace and attributes:
     if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar*)name_space.c_str(), (const xmlChar*) "chunks", NULL) < 0)

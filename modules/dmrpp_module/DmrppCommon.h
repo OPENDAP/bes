@@ -136,7 +136,7 @@ public:
         return elements;
     }
 
-    void print_dmrpp(libdap::XMLWriter &xml, const string &name_space = "");
+    void print_chunks_element(libdap::XMLWriter &xml, const string &name_space = "");
 
     virtual void ingest_chunk_dimension_sizes(std::string chunk_dim_sizes_string);
 
