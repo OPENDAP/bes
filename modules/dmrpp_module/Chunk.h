@@ -57,7 +57,7 @@ private:
 
     void add_tracking_query_param(std::string& data_access_url);
 
-    friend class ChunkTest;
+    friend class DmrppCommonTest;
 
 protected:
 
@@ -78,24 +78,45 @@ protected:
 
 public:
 
+    /**
+     * @brief Get an empty chunk
+     */
     Chunk() :
         d_data_url(""), d_size(0), d_offset(0), d_bytes_read(0), d_read_buffer(0),
         d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
     {
     }
 
-    Chunk(const std::string &data_url, unsigned long long size, unsigned long long offset, std::string pia = "") :
+    /**
+     * @brief Get a chunk initialized with values
+     *
+     * @param data_url Where to read this chunk's data
+     * @param size The number of bytes to read
+     * @param offset Read \arg size bytes starting from this offset
+     * @param pia_str A string that provides the logical position of this chunk
+     * in an Array. Has the syntax '[1,2,3,4]'.
+     */
+    Chunk(const std::string &data_url, unsigned long long size, unsigned long long offset, std::string pia_str = "") :
         d_data_url(data_url), d_size(size), d_offset(offset), d_bytes_read(0), d_read_buffer(0),
         d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
     {
-        set_position_in_array(pia);
+        set_position_in_array(pia_str);
     }
 
-    Chunk(const std::string &data_url, unsigned long long size, unsigned long long offset, const std::vector<unsigned int> &pia) :
+    /**
+     * @brief Get a chunk initialized with values
+     *
+     * @param data_url Where to read this chunk's data
+     * @param size The number of bytes to read
+     * @param offset Read \arg size bytes starting from this offset
+     * @param pia_vec The logical position of this chunk in an Array; a std::vector
+     * of unsigned ints.
+     */
+    Chunk(const std::string &data_url, unsigned long long size, unsigned long long offset, const std::vector<unsigned int> &pia_vec) :
         d_data_url(data_url), d_size(size), d_offset(offset), d_bytes_read(0), d_read_buffer(0),
         d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
     {
-        set_position_in_array(pia);
+        set_position_in_array(pia_vec);
     }
 
     Chunk(const Chunk &h4bs)

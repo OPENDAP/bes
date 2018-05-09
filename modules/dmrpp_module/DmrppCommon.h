@@ -59,7 +59,7 @@ namespace dmrpp {
  */
 class DmrppCommon {
 
-	friend class DmrppTypeReadTest;
+	friend class DmrppCommonTest;
 	friend class DmrppParserTest;
 
 private:
@@ -113,12 +113,6 @@ public:
         return d_shuffle;
     }
 
-    virtual unsigned long add_chunk(std::string data_url, unsigned long long size, unsigned long long offset,
-        std::string position_in_array = "");
-
-    virtual unsigned long add_chunk(string data_url, unsigned long long size, unsigned long long offset,
-        const std::vector<unsigned int> &position_in_array);
-
     virtual const std::vector<Chunk> &get_immutable_chunks() const {
     	return d_chunks;
     }
@@ -142,24 +136,19 @@ public:
         return elements;
     }
 
-    /**
-     * @brief Parses the text content of the XML element h4:chunkDimensionSizes
-     * into the internal vector<unsigned int> representation.
-     */
+    void print_dmrpp(libdap::XMLWriter &xml, const string &name_space = "");
+
     virtual void ingest_chunk_dimension_sizes(std::string chunk_dim_sizes_string);
 
-    /**
-     * @brief Parses the text content of the XML element h4:chunkDimensionSizes
-     * into the internal vector<unsigned int> representation.
-     */
     virtual void ingest_compression_type(std::string compression_type_string);
 
-    virtual void dump(std::ostream & strm) const;
+    virtual unsigned long add_chunk(const std::string &data_url, unsigned long long size, unsigned long long offset,
+        std::string position_in_array = "");
 
-    /**
-     * @brief Prints the text content of the dmrpp XML.
-     */
-    void print_dmrpp(libdap::XMLWriter &xml);
+    virtual unsigned long add_chunk(const string &data_url, unsigned long long size, unsigned long long offset,
+        const std::vector<unsigned int> &position_in_array);
+
+    virtual void dump(std::ostream & strm) const;
 };
 
 } // namepsace dmrpp

@@ -28,16 +28,18 @@
 
 #include <curl/curl.h>
 
-#include "BESIndent.h"
-#include "BESDebug.h"
-#include "BESInternalError.h"
+#include <XMLWriter.h>
+
+#include <BESIndent.h>
+#include <BESDebug.h>
+#include <BESInternalError.h>
 
 #include "DmrppRequestHandler.h"
 #include "DmrppCommon.h"
 #include "Chunk.h"
-#include <XMLWriter.h>
 
 using namespace std;
+using namespace libdap;
 
 namespace dmrpp {
 
@@ -48,36 +50,46 @@ namespace dmrpp {
  * represent the dimensions of a chunk. Parse that string and store
  * the integers in this instance.
  *
- * @param chunk_dim_sizes_string
+ * @param chunk_dims The sizes as a list of integers separated by spaces, e.g., '50 50'
  */
-void DmrppCommon::ingest_chunk_dimension_sizes(string chunk_dim_sizes_string)
+void DmrppCommon::ingest_chunk_dimension_sizes(string chunk_dims)
 {
-    if (chunk_dim_sizes_string.empty()) return;
-
     d_chunk_dimension_sizes.clear();
 
-    // TODO use istringstream. jhrg 4/10/18
+    if (chunk_dims.empty()) return;
+
+    // If the input is anything other than integers and spaces, throw
+    if (chunk_dims.find_first_not_of("1234567890 ") != string::npos)
+        throw BESInternalError("while processing chunk dimension information, illegal character(s)", __FILE__, __LINE__);
+
+    // istringstream can parse this kind of input more easily. jhrg 4/10/18
 
     string space(" ");
     size_t strPos = 0;
     string strVal;
 
     // Are there spaces or multiple values?
-    if (chunk_dim_sizes_string.find(space) != string::npos) {
+    if (chunk_dims.find(space) != string::npos) {
         // Process space delimited content
-        while ((strPos = chunk_dim_sizes_string.find(space)) != string::npos) {
-            strVal = chunk_dim_sizes_string.substr(0, strPos);
-//            BESDEBUG("dmrpp", __PRETTY_FUNCTION__ << " -  Parsing: " << strVal << endl);
+        while ((strPos = chunk_dims.find(space)) != string::npos) {
+            strVal = chunk_dims.substr(0, strPos);
+
             d_chunk_dimension_sizes.push_back(strtol(strVal.c_str(), NULL, 10));
-            chunk_dim_sizes_string.erase(0, strPos + space.length());
+            chunk_dims.erase(0, strPos + space.length());
         }
     }
 
     // If it's multi valued there's still one more value left to process
     // If it's single valued the same is true, so let's ingest that.
-    d_chunk_dimension_sizes.push_back(strtol(chunk_dim_sizes_string.c_str(), NULL, 10));
+    d_chunk_dimension_sizes.push_back(strtol(chunk_dims.c_str(), NULL, 10));
 }
 
+/**
+ * @brief Parses the text content of the XML element h4:chunkDimensionSizes
+ * into the internal vector<unsigned int> representation.
+ *
+ * @param compression_type_string One of "deflate" or "shuffle."
+ */
 void DmrppCommon::ingest_compression_type(string compression_type_string)
 {
     if (compression_type_string.empty()) return;
@@ -97,24 +109,21 @@ void DmrppCommon::ingest_compression_type(string compression_type_string)
     if (compression_type_string.find(shuffle) != string::npos) {
         d_shuffle = true;
     }
-
-    BESDEBUG("dmrpp", "Processed compressionType string. " "d_compression_type_shuffle: "
-        << (d_shuffle?"true":"false") << "d_compression_type_deflate: "
-        << (d_deflate?"true":"false") << endl);
 }
 
 /**
  * @brief Add a new chunk as defined by an h4:byteStream element
  * @return The number of chunk refs (byteStreams) held.
  */
-unsigned long DmrppCommon::add_chunk(string data_url, unsigned long long size, unsigned long long offset,
+unsigned long DmrppCommon::add_chunk(const string &data_url, unsigned long long size, unsigned long long offset,
     string position_in_array)
 {
     d_chunks.push_back(Chunk(data_url, size, offset, position_in_array));
 
     return d_chunks.size();
 }
-unsigned long DmrppCommon::add_chunk(string data_url, unsigned long long size, unsigned long long offset,
+
+unsigned long DmrppCommon::add_chunk(const string &data_url, unsigned long long size, unsigned long long offset,
     const vector<unsigned int> &position_in_array)
 {
     d_chunks.push_back(Chunk(data_url, size, offset, position_in_array));
@@ -154,6 +163,75 @@ DmrppCommon::read_atomic(const string &name)
     return chunk.get_rbuf();
 }
 
+/**
+ * @brief Print the Chunk information.
+ */
+void
+DmrppCommon::print_dmrpp(XMLWriter &xml, const string &name_space)
+{
+    // Start element "chunks" with dmrpp namespace and attributes:
+    if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar*)name_space.c_str(), (const xmlChar*) "chunks", NULL) < 0)
+        throw BESInternalError("Could not start chunks element.", __FILE__, __LINE__);
+
+    string compression = "";
+    if (is_shuffle_compression() && is_deflate_compression())
+        compression = "deflate shuffle";
+    else if (is_shuffle_compression())
+        compression.append("shuffle");
+    else if (is_deflate_compression())
+        compression.append("deflate");
+
+    if (!compression.empty())
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "compressionType", (const xmlChar*) compression.c_str()) < 0)
+            throw BESInternalError("Could not write compression attribute.", __FILE__, __LINE__);
+
+    // Write element "chunkDimensionSizes" with dmrpp namespace:
+    ostringstream oss;
+    copy(d_chunk_dimension_sizes.begin(), d_chunk_dimension_sizes.end(), ostream_iterator<unsigned int>(oss, " "));
+    string sizes = oss.str();
+    sizes.erase(sizes.size()-1, 1);    // trim the trailing space
+
+    if (xmlTextWriterWriteElementNS(xml.get_writer(), (const xmlChar*)name_space.c_str(), (const xmlChar*) "chunkDimensionSizes", NULL,
+            (const xmlChar*) sizes.c_str()) < 0)
+        throw BESInternalError("Could not write chunkDimensionSizes attribute.", __FILE__, __LINE__);
+
+    // Start elements "chunk" with dmrpp namespace and attributes:
+    for (vector<Chunk>::iterator i = get_chunk_vec().begin(), e = get_chunk_vec().end(); i != e; ++i) {
+        Chunk &chunk = *i;
+
+        // Get offset string:
+        ostringstream offset;
+        offset << chunk.get_offset();
+
+        // Get nBytes string:
+        ostringstream nBytes;
+        nBytes << chunk.get_offset();
+
+        // Get position in array string:
+        vector<unsigned int> pia = chunk.get_position_in_array();
+        ostringstream oss;
+        oss << "[";
+        copy(pia.begin(), pia.end(), ostream_iterator<unsigned int>(oss, ","));
+        string pia_str = oss.str();
+        pia_str.replace(pia_str.size()-1, 1, "]"); // replace the trailing ',' with ']'
+
+        if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar*)name_space.c_str(), (const xmlChar*) "chunk", NULL) < 0)
+            throw BESInternalError("Could not start element chunk", __FILE__, __LINE__);
+
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "offset", (const xmlChar*) offset.str().c_str()) < 0)
+            throw BESInternalError("Could not write attribute offset", __FILE__, __LINE__);
+
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "nBytes", (const xmlChar*) nBytes.str().c_str()) < 0)
+            throw BESInternalError("Could not write attribute nBytes", __FILE__, __LINE__);
+
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "chunkPositionInArray", (const xmlChar*) pia_str.c_str()) < 0)
+            throw BESInternalError("Could not write attribute position in array", __FILE__, __LINE__);
+
+        // End element "chunk":
+        if (xmlTextWriterEndElement(xml.get_writer()) < 0) throw BESInternalError("Could not end chunk element", __FILE__, __LINE__);
+    }
+}
+
 void DmrppCommon::dump(ostream & strm) const
 {
     strm << BESIndent::LMarg << "is_deflate:             " << (is_deflate_compression() ? "true" : "false") << endl;
@@ -177,12 +255,6 @@ void DmrppCommon::dump(ostream & strm) const
     }
 
     BESIndent::UnIndent();
-}
-
-void print_dmrpp(libdap::XMLWriter &xml)
-{
-    if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar*)"Dataset") < 0)
-            throw BESInternalError("Could not write Dataset element", __FILE__, __LINE__);
 }
 
 } // namepsace dmrpp

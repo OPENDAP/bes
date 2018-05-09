@@ -225,7 +225,8 @@ static void get_variable_chunk_info(hid_t file, const string &h5_dset_path, Dmrp
                 VERBOSE(cerr << "    Addr: " << cont_addr << endl);
                 VERBOSE(cerr << "    Size: " << cont_size << endl);
 
-                dc->add_chunk("", cont_size, cont_addr, "" /*pos in array*/);
+                if (dc)
+                    dc->add_chunk("", cont_size, cont_addr, "" /*pos in array*/);
             }
             else if (layout_type == 2) {/*chunking storage */
                 VERBOSE(cerr << "storage: chunked." << endl);
@@ -256,7 +257,8 @@ static void get_variable_chunk_info(hid_t file, const string &h5_dset_path, Dmrp
                     VERBOSE(copy(chunk_pos_in_array.begin(), chunk_pos_in_array.end(), ostream_iterator<unsigned int>(cerr, " ")));
                     VERBOSE(cerr << endl);
 
-                    dc->add_chunk("", chunk_st_ptr[i].nbytes, chunk_st_ptr[i].chunk_addr, chunk_pos_in_array);
+                    if (dc)
+                        dc->add_chunk("", chunk_st_ptr[i].nbytes, chunk_st_ptr[i].chunk_addr, chunk_pos_in_array);
                 }
             }
             else if (layout_type == 3) {/* Compact storage */
@@ -360,6 +362,10 @@ int main(int argc, char*argv[])
 
             // iterate over all the variables in the DMR
             get_chunks_for_all_variables(file, dmr->root());
+
+            XMLWriter writer;
+            dmr->print_dap4(writer, false /*constrained*/);
+            cout << writer.get_doc();
         }
         else if (!h5_dset_path.empty()) {
             get_variable_chunk_info(file, h5_dset_path, 0);

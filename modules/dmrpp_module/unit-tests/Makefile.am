@@ -58,7 +58,7 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 #
 
 if CPPUNIT
-UNIT_TESTS = ChunkTest DmrppParserTest
+UNIT_TESTS = ChunkTest DmrppParserTest DmrppCommonTest
 # DmrppChunkedReadTest
 else
 UNIT_TESTS =
@@ -72,7 +72,7 @@ check-local:
 	@echo ""
 endif
 
-OBJS = ../*.o 
+OBJS = ../*.o
 
 ChunkTest_SOURCES = ChunkTest.cc
 ChunkTest_LDADD = $(OBJS) $(LIBADD)
@@ -80,6 +80,9 @@ ChunkTest_LDADD = $(OBJS) $(LIBADD)
 DmrppParserTest_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/modules/hdf5_handler
 DmrppParserTest_SOURCES = DmrppParserTest.cc
 DmrppParserTest_LDADD   =  $(OBJS) $(LIBADD) 
+
+DmrppCommonTest_SOURCES = DmrppCommonTest.cc
+DmrppCommonTest_LDADD =  $(OBJS) $(LIBADD)
 
 # DmrppTypeReadTest_SOURCES = DmrppTypeReadTest.cc
 # DmrppTypeReadTest_LDADD   = $(OBJS) $(LIBADD)
