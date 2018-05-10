@@ -80,7 +80,7 @@ public:
 
     void test_ingest_chunk_dimension_sizes_1()
     {
-        d_dc.ingest_chunk_dimension_sizes("51 17");
+        d_dc.parse_chunk_dimension_sizes("51 17");
         CPPUNIT_ASSERT(d_dc.d_chunk_dimension_sizes.size() == 2);
         CPPUNIT_ASSERT(d_dc.d_chunk_dimension_sizes.at(0) == 51);
         CPPUNIT_ASSERT(d_dc.d_chunk_dimension_sizes.at(1) == 17);
@@ -88,14 +88,14 @@ public:
 
     void test_ingest_chunk_dimension_sizes_2()
     {
-        d_dc.ingest_chunk_dimension_sizes("51");
+        d_dc.parse_chunk_dimension_sizes("51");
         CPPUNIT_ASSERT(d_dc.d_chunk_dimension_sizes.size() == 1);
         CPPUNIT_ASSERT(d_dc.d_chunk_dimension_sizes.at(0) == 51);
     }
 
     void test_ingest_chunk_dimension_sizes_3()
     {
-        d_dc.ingest_chunk_dimension_sizes("51,17");
+        d_dc.parse_chunk_dimension_sizes("51,17");
         CPPUNIT_ASSERT(d_dc.d_chunk_dimension_sizes.size() == 2);
         CPPUNIT_ASSERT(d_dc.d_chunk_dimension_sizes.at(0) == 51);
         CPPUNIT_ASSERT(d_dc.d_chunk_dimension_sizes.at(1) == 17);
@@ -103,7 +103,7 @@ public:
 
     void test_ingest_chunk_dimension_sizes_4()
     {
-        d_dc.ingest_chunk_dimension_sizes("[51,17]");
+        d_dc.parse_chunk_dimension_sizes("[51,17]");
         CPPUNIT_ASSERT(d_dc.d_chunk_dimension_sizes.size() == 2);
         CPPUNIT_ASSERT(d_dc.d_chunk_dimension_sizes.at(0) == 51);
         CPPUNIT_ASSERT(d_dc.d_chunk_dimension_sizes.at(1) == 17);
@@ -111,7 +111,7 @@ public:
 
     void test_ingest_chunk_dimension_sizes_5()
     {
-        d_dc.ingest_chunk_dimension_sizes("");
+        d_dc.parse_chunk_dimension_sizes("");
         CPPUNIT_ASSERT(d_dc.d_chunk_dimension_sizes.size() == 0);
     }
 
@@ -189,7 +189,7 @@ public:
 
     void test_print_chunks_element_1()
     {
-        d_dc.ingest_chunk_dimension_sizes("51 17");
+        d_dc.parse_chunk_dimension_sizes("51 17");
         d_dc.add_chunk("url", 100, 200, "[10,20]");
 
         XMLWriter writer;
@@ -202,7 +202,7 @@ public:
 
     void test_print_chunks_element_2()
     {
-        d_dc.ingest_chunk_dimension_sizes("51 17");
+        d_dc.parse_chunk_dimension_sizes("51 17");
         d_dc.add_chunk("url", 100, 200, "[10,20]");
         int size = d_dc.add_chunk("url", 100, 300, "[20,30]");
 
@@ -219,7 +219,7 @@ public:
     void test_print_chunks_element_3()
     {
         d_dc.d_deflate = true;
-        d_dc.ingest_chunk_dimension_sizes("51 17");
+        d_dc.parse_chunk_dimension_sizes("51 17");
         d_dc.add_chunk("url", 100, 200, "[10,20]");
         int size = d_dc.add_chunk("url", 100, 300, "[20,30]");
 
@@ -237,7 +237,7 @@ public:
     {
         d_dc.d_deflate = true;
         d_dc.d_shuffle = true;
-        d_dc.ingest_chunk_dimension_sizes("51 17");
+        d_dc.parse_chunk_dimension_sizes("51 17");
         d_dc.add_chunk("url", 100, 200, "[10,20]");
         int size = d_dc.add_chunk("url", 100, 300, "[20,30]");
 
@@ -255,7 +255,7 @@ public:
     {
         d_dc.d_deflate = false;
         d_dc.d_shuffle = true;
-        d_dc.ingest_chunk_dimension_sizes("51 17");
+        d_dc.parse_chunk_dimension_sizes("51 17");
         d_dc.add_chunk("url", 100, 200, "[10,20]");
         int size = d_dc.add_chunk("url", 100, 300, "[20,30]");
 

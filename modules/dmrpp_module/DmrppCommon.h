@@ -28,6 +28,8 @@
 #include <string>
 #include <vector>
 
+#include <H5Ppublic.h>
+
 #include "Chunk.h"
 #include "CurlHandlePool.h"
 
@@ -144,7 +146,15 @@ public:
 
     void print_dmrpp(libdap::XMLWriter &writer, bool constrained = false);
 
-    virtual void ingest_chunk_dimension_sizes(std::string chunk_dim_sizes_string);
+    void set_chunk_dimension_sizes(const std::vector<hsize_t> &chunk_dims)
+    {
+        // tried using copy(chunk_dims.begin(), chunk_dims.end(), d_chunk_dimension_sizes.begin())
+        for (std::vector<hsize_t>::const_iterator i = chunk_dims.begin(), e = chunk_dims.end(); i != e; ++i) {
+            d_chunk_dimension_sizes.push_back(*i);
+        }
+    }
+
+    virtual void parse_chunk_dimension_sizes(std::string chunk_dim_sizes_string);
 
     virtual void ingest_compression_type(std::string compression_type_string);
 

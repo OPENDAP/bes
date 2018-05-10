@@ -58,7 +58,7 @@ string DmrppCommon::d_ns_prefix = "dmrpp";
  *
  * @param chunk_dims The sizes as a list of integers separated by spaces, e.g., '50 50'
  */
-void DmrppCommon::ingest_chunk_dimension_sizes(string chunk_dims)
+void DmrppCommon::parse_chunk_dimension_sizes(string chunk_dims)
 {
     d_chunk_dimension_sizes.clear();
 
