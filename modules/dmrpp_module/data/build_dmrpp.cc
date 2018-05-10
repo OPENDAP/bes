@@ -278,9 +278,8 @@ static void get_variable_chunk_info(hid_t file, const string &h5_dset_path, Dmrp
 
                 VERBOSE(cerr << "    Chunk dimensions: " << rank_chunk << endl);
                 VERBOSE(copy(chunk_dims.begin(), chunk_dims.end(), ostream_iterator<hsize_t>(cerr, " ")));
-#if 1
+
                 dc->set_chunk_dimension_sizes(chunk_dims);
-#endif
 
                 for (hsize_t i = 0; i < num_chunk; i++) {
                     VERBOSE(cerr << "    Chunk index:  " << i << endl);
@@ -359,8 +358,9 @@ int main(int argc, char*argv[])
     string h5_file_name = "";
     string h5_dset_path = "";
     string dmr_name = "";
+    string url_name = "";
 
-    GetOpt getopt(argc, argv, "f:o:d:r:hv");
+    GetOpt getopt(argc, argv, "f:o:d:r:u:hv");
     int option_char;
     while ((option_char = getopt()) != -1) {
         switch (option_char) {
@@ -376,11 +376,14 @@ int main(int argc, char*argv[])
         case 'r':
             dmr_name = getopt.optarg;
             break;
+        case 'u':
+            url_name = getopt.optarg;
+            break;
         case 'o':
             // FIXME
             break;
         case 'h':
-            cerr << "build_dmrpp [-v] -f <input> [-r <dmr> | -d <dset anme>] -o <output> | build_dmrpp -h" << endl;
+            cerr << "build_dmrpp [-v] -f <input> [-r <dmr> | -d <dset name>] [-u <url>]-o <output> | build_dmrpp -h" << endl;
             exit(1);
         default:
             break;
@@ -421,7 +424,8 @@ int main(int argc, char*argv[])
             get_chunks_for_all_variables(file, dmrpp->root());
 
             XMLWriter writer;
-            dmrpp->print_dmrpp(writer);
+            dmrpp->print_dmrpp(writer, url_name);
+
             cout << writer.get_doc();
         }
         else if (!h5_dset_path.empty()) {

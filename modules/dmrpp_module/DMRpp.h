@@ -25,6 +25,7 @@
 #ifndef MODULES_DMRPP_MODULE_DMRPP_H_
 #define MODULES_DMRPP_MODULE_DMRPP_H_
 
+#include <string>
 #include <DMR.h>
 
 namespace libdap {
@@ -41,7 +42,7 @@ public:
     DMRpp() { }
     virtual ~DMRpp() { }
 
-    virtual void print_dmrpp(libdap::XMLWriter &xml, bool constrained = false, bool print_chunks = true);
+    virtual void print_dmrpp(libdap::XMLWriter &xml, const std::string &href ="", bool constrained = false, bool print_chunks = true);
 };
 
 } /* namespace dmrpp */

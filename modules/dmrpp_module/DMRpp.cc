@@ -56,6 +56,9 @@ const string dmrpp_namespace = "http://xml.opendap.org/dap/dmrpp/1.0.0#";
  * value on exit.
  *
  * @param xml Writer the XML to this instance of XMLWriter
+ * @param href When writing the XML root element, include this as the href attribute.
+ * This href will be used as the data source when other code reads the raw (e.g.,
+ * chunked) data. Default is the empty string and the attribute will not be printed.
  * @param constrained Should the DMR++ be constrained, in the same sense that the
  * DMR::print_dap4() method can print a constrained DMR. False by default.
  * @param print_chunks Print the chunks? This parameter sets the DmrppCommon::d_print_chunks
@@ -65,7 +68,7 @@ const string dmrpp_namespace = "http://xml.opendap.org/dap/dmrpp/1.0.0#";
  * @see DmrppArray::print_dap4()
  * @see DmrppCommon::print_dmrpp()
  */
-void DMRpp::print_dmrpp(XMLWriter &xml, bool constrained, bool print_chunks)
+void DMRpp::print_dmrpp(XMLWriter &xml, const string &href, bool constrained, bool print_chunks)
 {
     bool pc_initial_value = DmrppCommon::d_print_chunks;
     DmrppCommon::d_print_chunks = print_chunks;
@@ -101,6 +104,11 @@ void DMRpp::print_dmrpp(XMLWriter &xml, bool constrained, bool print_chunks)
 
         if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "name", (const xmlChar*) name().c_str()) < 0)
             throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
+
+        if (!href.empty())
+            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*)string(DmrppCommon::d_ns_prefix).append(":href").c_str(),
+                (const xmlChar*) href.c_str()) < 0)
+                throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
 
         root()->print_dap4(xml, constrained);
 
