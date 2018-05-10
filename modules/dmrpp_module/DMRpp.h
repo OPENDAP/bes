@@ -38,7 +38,7 @@ public:
     DMRpp() { }
     virtual ~DMRpp() { }
 
-    virtual void print_dap4(libdap::XMLWriter &xml, bool constrained = false);
+    virtual void print_dmrpp(libdap::XMLWriter &xml, bool constrained = false, bool print_chunks = false);
 };
 
 } /* namespace dmrpp */

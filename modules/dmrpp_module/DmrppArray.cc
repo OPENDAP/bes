@@ -871,7 +871,7 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
     for_each(maps()->map_begin(), maps()->map_end(), PrintD4MapXMLWriter(xml));
 
     // Only print the chunks info if there.
-    if (get_immutable_chunks().size() > 0)
+    if (DmrppCommon::d_print_chunks && get_immutable_chunks().size() > 0)
         print_chunks_element(xml, "dmrpp");
 
     if (xmlTextWriterEndElement(xml.get_writer()) < 0)

@@ -28,54 +28,61 @@
 #include <InternalErr.h>
 
 #include "DMRpp.h"
+#include "DmrppCommon.h"
 
 using namespace libdap;
 
 namespace dmrpp {
 
-#if 0
-DMRpp::DMRpp()
+const string dmrpp_namespace = "http://xml.opendap.org/dap/dmrpp/1.0.0#";
+
+void DMRpp::print_dmrpp(XMLWriter &xml, bool constrained, bool print_chunks)
 {
-    // TODO Auto-generated constructor stub
+    bool pc_initial_value = DmrppCommon::d_print_chunks;
+    DmrppCommon::d_print_chunks = print_chunks;
 
-}
+    try {
+        if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar*) "Dataset") < 0)
+            throw InternalErr(__FILE__, __LINE__, "Could not write Dataset element");
 
-DMRpp::~DMRpp()
-{
-    // TODO Auto-generated destructor stub
-}
-#endif
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "xmlns",
+            (const xmlChar*) get_namespace().c_str()) < 0)
+            throw InternalErr(__FILE__, __LINE__, "Could not write attribute for xmlns");
 
-void
-DMRpp::print_dap4(XMLWriter &xml, bool constrained)
-{
-    if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar*) "Dataset") < 0)
-        throw InternalErr(__FILE__, __LINE__, "Could not write Dataset element");
+        // The dmrpp namespace
+        if (DmrppCommon::d_print_chunks)
+            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "xmlns:dmrpp",
+                (const xmlChar*) dmrpp_namespace.c_str()) < 0)
+                throw InternalErr(__FILE__, __LINE__, "Could not write attribute for xmlns:dmrpp");
 
-    if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "xmlns", (const xmlChar*) get_namespace().c_str()) < 0)
-        throw InternalErr(__FILE__, __LINE__, "Could not write attribute for xmlns");
+        if (!request_xml_base().empty()) {
+            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "xml:base",
+                (const xmlChar*) request_xml_base().c_str()) < 0)
+                throw InternalErr(__FILE__, __LINE__, "Could not write attribute for xml:base");
+        }
 
-    // FIXME add the dmrpp namespace
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "dapVersion",
+            (const xmlChar*) dap_version().c_str()) < 0)
+            throw InternalErr(__FILE__, __LINE__, "Could not write attribute for dapVersion");
 
-    if (!request_xml_base().empty()) {
-        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "xml:base",
-                (const xmlChar*)request_xml_base().c_str()) < 0)
-            throw InternalErr(__FILE__, __LINE__, "Could not write attribute for xml:base");
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "dmrVersion",
+            (const xmlChar*) dmr_version().c_str()) < 0)
+            throw InternalErr(__FILE__, __LINE__, "Could not write attribute for dapVersion");
+
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "name", (const xmlChar*) name().c_str()) < 0)
+            throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
+
+        root()->print_dap4(xml, constrained);
+
+        if (xmlTextWriterEndElement(xml.get_writer()) < 0)
+            throw InternalErr(__FILE__, __LINE__, "Could not end the top-level Group element");
+    }
+    catch (...) {
+        DmrppCommon::d_print_chunks = pc_initial_value;
+        throw;
     }
 
-    if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "dapVersion",  (const xmlChar*)dap_version().c_str()) < 0)
-        throw InternalErr(__FILE__, __LINE__, "Could not write attribute for dapVersion");
-
-    if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "dmrVersion", (const xmlChar*)dmr_version().c_str()) < 0)
-        throw InternalErr(__FILE__, __LINE__, "Could not write attribute for dapVersion");
-
-    if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "name", (const xmlChar*)name().c_str()) < 0)
-        throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
-
-    root()->print_dap4(xml, constrained);
-
-    if (xmlTextWriterEndElement(xml.get_writer()) < 0)
-        throw InternalErr(__FILE__, __LINE__, "Could not end the top-level Group element");
+    DmrppCommon::d_print_chunks = pc_initial_value;
 }
 
 } /* namespace dmrpp */

@@ -370,13 +370,8 @@ int main(int argc, char*argv[])
             // iterate over all the variables in the DMR
             get_chunks_for_all_variables(file, dmrpp->root());
 
-#if 0
-            // Build a DOM representation for the DMR
-            xmlDocPtr dmr_doc = xmlReadFile(dmr_name.c_str(), NULL/*encoding*/, 0/*options*/);
-#endif
-
             XMLWriter writer;
-            dmrpp->print_dap4(writer, false /*constrained*/);
+            dmrpp->print_dmrpp(writer, false /*constrained*/, true /*print_chunks*/);
             cout << writer.get_doc();
         }
         else if (!h5_dset_path.empty()) {

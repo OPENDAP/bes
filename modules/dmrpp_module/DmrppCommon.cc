@@ -45,6 +45,8 @@ using namespace libdap;
 
 namespace dmrpp {
 
+bool DmrppCommon::d_print_chunks = false;
+
 /**
  * @brief Set the dimension sizes for a chunk
  *
@@ -253,7 +255,7 @@ void DmrppCommon::print_dap4(XMLWriter &xml, bool constrained /*false*/)
     if (!bt.is_dap4() && bt.get_attr_table().get_size() > 0)
         bt.get_attr_table().print_xml_writer(xml);
 
-    if (get_immutable_chunks().size() > 0)
+    if (DmrppCommon::d_print_chunks && get_immutable_chunks().size() > 0)
         print_chunks_element(xml, "dmrpp");
 
     if (xmlTextWriterEndElement(xml.get_writer()) < 0)

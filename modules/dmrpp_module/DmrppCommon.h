@@ -86,6 +86,8 @@ protected:
     virtual char *read_atomic(const std::string &name);
 
 public:
+    static bool d_print_chunks; ///< if true, print_dap4() prints chunk elements
+
     DmrppCommon() : d_deflate(false), d_shuffle(false)
     {
     }
