@@ -33,6 +33,7 @@
 #include <H5Ppublic.h>
 #include <H5Dpublic.h>
 #include <H5Epublic.h>
+#include <H5Zpublic.h>  // Constants for compression filters
 
 #include <DMRpp.h>
 #include <BaseType.h>
@@ -76,96 +77,102 @@ static void print_dataset_type_info(hid_t dataset, uint8_t layout_type)
             throw BESInternalError("Cannot obtain the HDF5 dataset creation property list.", __FILE__, __LINE__);
         }
 
-        // TODO Wrap the resources like dcpl_id in try/catch blocks so that the
-        // calls to H5Pclose(dcpl_id) for each error can be removed. jhrg 5/7/18
-        H5D_fill_value_t fvalue_status;
-        if (H5Pfill_value_defined(dcpl_id, &fvalue_status) < 0) {
-            H5Pclose(dcpl_id);
-            throw BESInternalError("Cannot obtain the fill value status.", __FILE__, __LINE__);
-        }
-        if (fvalue_status == H5D_FILL_VALUE_UNDEFINED) {
-            // TODO Replace with switch(), here and elsewhere. jhrg 5/7/18
-            if (layout_type == 1)
-                cerr << " The storage size is 0 and the storge type is contiguous." << endl;
-            else if (layout_type == 2)
-                cerr << " The storage size is 0 and the storage type is chunking." << endl;
-            else if (layout_type == 3)
-                cerr << " The storage size is 0 and the storage type is compact." << endl;
-
-            cerr << " The Fillvalue is undefined ." << endl;
-        }
-        else {
-            if (layout_type == 1)
-                cerr << " The storage size is 0 and the storage type is contiguous." << endl;
-            else if (layout_type == 2)
-                cerr << " The storage size is 0 and the storage type is chunking." << endl;
-            else if (layout_type == 3)
-                cerr << " The storage size is 0 and the storage type is compact." << endl;
-
-            char* fvalue = NULL;
-            size_t fv_size = H5Tget_size(dtype_id);
-            if (fv_size == 1)
-                fvalue = (char*) (malloc(1));
-            else if (fv_size == 2)
-                fvalue = (char*) (malloc(2));
-            else if (fv_size == 4)
-                fvalue = (char*) (malloc(4));
-            else if (fv_size == 8) fvalue = (char*) (malloc(8));
-
-            if (fv_size <= 8) {
-                if (H5Pget_fill_value(dcpl_id, dtype_id, (void*) (fvalue)) < 0) {
-                    H5Pclose(dcpl_id);
-                    throw BESInternalError("Cannot obtain the fill value status.", __FILE__, __LINE__);
-                }
-                if (H5Tget_class(dtype_id) == H5T_INTEGER) {
-                    H5T_sign_t fv_sign = H5Tget_sign(dtype_id);
-                    if (fv_size == 1) {
-                        if (fv_sign == H5T_SGN_NONE) {
-                            cerr << "This dataset's datatype is unsigned char " << endl;
-                            cerr << "and the fillvalue is " << *fvalue << endl;
-                        }
-                        else {
-                            cerr << "This dataset's datatype is char and the fillvalue is " << *fvalue << endl;
-                        }
-                    }
-                    else if (fv_size == 2) {
-                        if (fv_sign == H5T_SGN_NONE) {
-                            cerr << "This dataset's datatype is unsigned short and the fillvalue is " << *fvalue << endl;
-                        }
-                        else {
-                            cerr << "This dataset's datatype is short and the fillvalue is " << *fvalue << endl;
-                        }
-                    }
-                    else if (fv_size == 4) {
-                        if (fv_sign == H5T_SGN_NONE) {
-                            cerr << "This dataset's datatype is unsigned int and the fillvalue is " << *fvalue << endl;
-                        }
-                        else {
-                            cerr << "This dataset's datatype is int and the fillvalue is " << *fvalue << endl;
-                        }
-                    }
-                    else if (fv_size == 8) {
-                        if (fv_sign == H5T_SGN_NONE) {
-                            cerr << "This dataset's datatype is unsigned long long and the fillvalue is " << *fvalue << endl;
-                        }
-                        else {
-                            cerr << "This dataset's datatype is long long and the fillvalue is " << *fvalue << endl;
-                        }
-                    }
-                }
-                if (H5Tget_class(dtype_id) == H5T_FLOAT) {
-                    if (fv_size == 4) {
-                        cerr << "This dataset's datatype is float and the fillvalue is " << *fvalue << endl;
-                    }
-                    else if (fv_size == 8) {
-                        cerr << "This dataset's datatype is double and the fillvalue is " << *fvalue << endl;
-                    }
-                }
-
-                if (fvalue != NULL) free(fvalue);
+        try {
+            // Wrap the resources like dcpl_id in try/catch blocks so that the
+            // calls to H5Pclose(dcpl_id) for each error can be removed. jhrg 5/7/18
+            H5D_fill_value_t fvalue_status;
+            if (H5Pfill_value_defined(dcpl_id, &fvalue_status) < 0) {
+                H5Pclose(dcpl_id);
+                throw BESInternalError("Cannot obtain the fill value status.", __FILE__, __LINE__);
             }
-            else
-                cerr << "The size of the datatype is greater than 8 bytes, Use HDF5 API H5Pget_fill_value() to retrieve the fill value of this dataset." << endl;
+            if (fvalue_status == H5D_FILL_VALUE_UNDEFINED) {
+                // TODO Replace with switch(), here and elsewhere. jhrg 5/7/18
+                if (layout_type == 1)
+                    cerr << " The storage size is 0 and the storge type is contiguous." << endl;
+                else if (layout_type == 2)
+                    cerr << " The storage size is 0 and the storage type is chunking." << endl;
+                else if (layout_type == 3) cerr << " The storage size is 0 and the storage type is compact." << endl;
+
+                cerr << " The Fillvalue is undefined ." << endl;
+            }
+            else {
+                if (layout_type == 1)
+                    cerr << " The storage size is 0 and the storage type is contiguous." << endl;
+                else if (layout_type == 2)
+                    cerr << " The storage size is 0 and the storage type is chunking." << endl;
+                else if (layout_type == 3) cerr << " The storage size is 0 and the storage type is compact." << endl;
+
+                char* fvalue = NULL;
+                size_t fv_size = H5Tget_size(dtype_id);
+                if (fv_size == 1)
+                    fvalue = (char*) (malloc(1));
+                else if (fv_size == 2)
+                    fvalue = (char*) (malloc(2));
+                else if (fv_size == 4)
+                    fvalue = (char*) (malloc(4));
+                else if (fv_size == 8) fvalue = (char*) (malloc(8));
+
+                if (fv_size <= 8) {
+                    if (H5Pget_fill_value(dcpl_id, dtype_id, (void*) (fvalue)) < 0) {
+                        H5Pclose(dcpl_id);
+                        throw BESInternalError("Cannot obtain the fill value status.", __FILE__, __LINE__);
+                    }
+                    if (H5Tget_class(dtype_id) == H5T_INTEGER) {
+                        H5T_sign_t fv_sign = H5Tget_sign(dtype_id);
+                        if (fv_size == 1) {
+                            if (fv_sign == H5T_SGN_NONE) {
+                                cerr << "This dataset's datatype is unsigned char " << endl;
+                                cerr << "and the fillvalue is " << *fvalue << endl;
+                            }
+                            else {
+                                cerr << "This dataset's datatype is char and the fillvalue is " << *fvalue << endl;
+                            }
+                        }
+                        else if (fv_size == 2) {
+                            if (fv_sign == H5T_SGN_NONE) {
+                                cerr << "This dataset's datatype is unsigned short and the fillvalue is " << *fvalue << endl;
+                            }
+                            else {
+                                cerr << "This dataset's datatype is short and the fillvalue is " << *fvalue << endl;
+                            }
+                        }
+                        else if (fv_size == 4) {
+                            if (fv_sign == H5T_SGN_NONE) {
+                                cerr << "This dataset's datatype is unsigned int and the fillvalue is " << *fvalue << endl;
+                            }
+                            else {
+                                cerr << "This dataset's datatype is int and the fillvalue is " << *fvalue << endl;
+                            }
+                        }
+                        else if (fv_size == 8) {
+                            if (fv_sign == H5T_SGN_NONE) {
+                                cerr << "This dataset's datatype is unsigned long long and the fillvalue is " << *fvalue << endl;
+                            }
+                            else {
+                                cerr << "This dataset's datatype is long long and the fillvalue is " << *fvalue << endl;
+                            }
+                        }
+                    }
+                    if (H5Tget_class(dtype_id) == H5T_FLOAT) {
+                        if (fv_size == 4) {
+                            cerr << "This dataset's datatype is float and the fillvalue is " << *fvalue << endl;
+                        }
+                        else if (fv_size == 8) {
+                            cerr << "This dataset's datatype is double and the fillvalue is " << *fvalue << endl;
+                        }
+                    }
+
+                    if (fvalue != NULL) free(fvalue);
+                }
+                else
+                    cerr
+                        << "The size of the datatype is greater than 8 bytes, Use HDF5 API H5Pget_fill_value() to retrieve the fill value of this dataset."
+                        << endl;
+            }
+        }
+        catch (...) {
+            H5Pclose(dcpl_id);
+            throw;
         }
         H5Pclose(dcpl_id);
     }
@@ -174,11 +181,68 @@ static void print_dataset_type_info(hid_t dataset, uint8_t layout_type)
             cerr << " The storage size is 0 and the storage type is contiguous." << endl;
         else if (layout_type == 2)
             cerr << " The storage size is 0 and the storage type is chunking." << endl;
-        else if (layout_type == 3)
-            cerr << " The storage size is 0 and the storage type is compact." << endl;
+        else if (layout_type == 3) cerr << " The storage size is 0 and the storage type is compact." << endl;
 
         cerr << "The datatype is neither float nor integer,use HDF5 API H5Pget_fill_value() to retrieve the fill value of this dataset." << endl;
     }
+}
+
+#if 0
+/* Filter IDs */
+#define H5Z_FILTER_ERROR    (-1)    /*no filter         */
+#define H5Z_FILTER_NONE     0   /*reserved indefinitely     */
+#define H5Z_FILTER_DEFLATE  1   /*deflation like gzip           */
+#define H5Z_FILTER_SHUFFLE      2       /*shuffle the data              */
+#define H5Z_FILTER_FLETCHER32   3       /*fletcher32 checksum of EDC    */
+#define H5Z_FILTER_SZIP         4       /*szip compression              */
+#define H5Z_FILTER_NBIT         5       /*nbit compression              */
+#define H5Z_FILTER_SCALEOFFSET  6       /*scale+offset compression      */
+#define H5Z_FILTER_RESERVED     256 /*filter ids below this value are reserved for library use */
+#endif
+
+/**
+ * @brief Set compression info
+ *
+ * @param dataset_id The HDF5 dataset id
+ * @param dc A pointer to the DmrppCommon instance for that dataset_id
+ */
+static void set_filter_information(hid_t dataset_id, DmrppCommon *dc)
+{
+    hid_t plist_id = H5Dget_create_plist(dataset_id);
+
+    try {
+        int numfilt = H5Pget_nfilters(plist_id);
+        VERBOSE(cerr << "Number of filters associated with dataset: " << numfilt << endl);
+
+        for (int i = 0; i < numfilt; i++) {
+            size_t nelmts = 0;
+            unsigned int flags, filter_info;
+            H5Z_filter_t filter_type = H5Pget_filter2(plist_id, 0, &flags, &nelmts, NULL, 0, NULL, &filter_info);
+            VERBOSE(cerr << "Filter Type: ");
+
+            switch (filter_type) {
+            case H5Z_FILTER_DEFLATE:
+                VERBOSE(cerr << "H5Z_FILTER_DEFLATE ");
+                dc->ingest_compression_type("defalte");
+                break;
+            case H5Z_FILTER_SHUFFLE:
+                VERBOSE(cerr << "H5Z_FILTER_SHUFFLE ");
+                dc->ingest_compression_type("shuffle");
+                break;
+            default: {
+                ostringstream oss("Unsupported HDF5 filter: ");
+                oss << filter_type;
+                throw BESInternalError(oss.str(), __FILE__, __LINE__);
+            }
+            }
+        }
+    }
+    catch (...) {
+        H5Pclose(plist_id);
+        throw;
+    }
+
+    H5Pclose(plist_id);
 }
 
 /**
@@ -195,12 +259,7 @@ static void print_dataset_type_info(hid_t dataset, uint8_t layout_type)
 static void get_variable_chunk_info(hid_t file, const string &h5_dset_path, DmrppCommon *dc)
 {
     hid_t dataset = H5Dopen2(file, h5_dset_path.c_str(), H5P_DEFAULT);
-    if (dataset < 0)
-        throw BESError("HDF5 dataset '" + h5_dset_path + "' cannot be opened.", BES_NOT_FOUND_ERROR, __FILE__, __LINE__);
-
-#if 0
-    status = H5Pset_deflate (plist_id, 6);
-#endif
+    if (dataset < 0) throw BESError("HDF5 dataset '" + h5_dset_path + "' cannot be opened.", BES_NOT_FOUND_ERROR, __FILE__, __LINE__);
 
     try {
         uint8_t layout_type = 0;
@@ -222,7 +281,6 @@ static void get_variable_chunk_info(hid_t file, const string &h5_dset_path, Dmrp
             switch (layout_type) {
 
             case H5D_CONTIGUOUS: { /* Contiguous storage */
-                // if (layout_type == 1)
                 haddr_t cont_addr = 0;
                 hsize_t cont_size = 0;
                 VERBOSE(cerr << "Storage: contiguous" << endl);
@@ -237,65 +295,74 @@ static void get_variable_chunk_info(hid_t file, const string &h5_dset_path, Dmrp
                 break;
             }
             case H5D_CHUNKED: { /*chunking storage */
-                // else if (layout_type == 2) {
                 VERBOSE(cerr << "storage: chunked." << endl);
                 VERBOSE(cerr << "Number of chunks is " << num_chunk << endl);
 
+                set_filter_information(dataset, dc);
+
                 // Get the chunk dimensions
                 hid_t cparms = H5Dget_create_plist(dataset);
+                if (cparms < 0) throw BESInternalError("Could not open a property list for '" + h5_dset_path + "'.", __FILE__, __LINE__);
 
+                try {
 #if 0
-                // Property list pointer TODO clean up after this
-                H5P_genplist_t *plist = H5P_object_verify(cparms, H5P_DATASET_CREATE);
-                if (!plist)
-                throw BESInternalError("Could not open a property list for '" + h5_dset_path + "'.", __FILE__, __LINE__);
+                    // Property list pointer TODO clean up after this
+                    H5P_genplist_t *plist = H5P_object_verify(cparms, H5P_DATASET_CREATE);
+                    if (!plist)
+                    throw BESInternalError("Could not open a property list for '" + h5_dset_path + "'.", __FILE__, __LINE__);
 
-                /* Get layout property */
-                H5O_layout_t layout; /* Layout property */
-                if (H5P_get(plist, H5D_CRT_LAYOUT_NAME, &layout) < 0)
-                throw BESInternalError("Could not get the layout for '" + h5_dset_path + "'.", __FILE__, __LINE__);
+                    /* Get layout property */
+                    H5O_layout_t layout; /* Layout property */
+                    if (H5P_get(plist, H5D_CRT_LAYOUT_NAME, &layout) < 0)
+                    throw BESInternalError("Could not get the layout for '" + h5_dset_path + "'.", __FILE__, __LINE__);
 
-                // layout.u.chunk.ndims
+                    // layout.u.chunk.ndims
 #endif
 
-                // Allocate the memory for the struct to obtain the chunk storage information. Kent Yang
-                // wrote the H5Dget_dataset_chunk_storage_info() function; the alternative is to use the
-                // layout object above. jhrg 5/10/18
-                vector<H5D_chunk_storage_info_t> chunk_st_ptr(num_chunk);
-                unsigned int num_chunk_dims = 0;
-                if (H5Dget_dataset_chunk_storage_info(dataset, &chunk_st_ptr[0], &num_chunk_dims) < 0)
-                    throw BESInternalError("Cannot get HDF5 chunk storage info.", __FILE__, __LINE__);
+                    // Allocate the memory for the struct to obtain the chunk storage information. Kent Yang
+                    // wrote the H5Dget_dataset_chunk_storage_info() function; the alternative is to use the
+                    // layout object above. jhrg 5/10/18
+                    vector<H5D_chunk_storage_info_t> chunk_st_ptr(num_chunk);
+                    unsigned int num_chunk_dims = 0;
+                    if (H5Dget_dataset_chunk_storage_info(dataset, &chunk_st_ptr[0], &num_chunk_dims) < 0)
+                        throw BESInternalError("Cannot get HDF5 chunk storage info.", __FILE__, __LINE__);
 
-                num_chunk_dims -= 1; // num_chunk_dims is rank + 1. not sure why. jhrg 5/10/18
-                VERBOSE(cerr << "    Number of dimensions in a chunk is " << num_chunk_dims << endl);
+                    num_chunk_dims -= 1; // num_chunk_dims is rank + 1. not sure why. jhrg 5/10/18
+                    VERBOSE(cerr << "    Number of dimensions in a chunk is " << num_chunk_dims << endl);
 
-                // Get chunking information: rank and dimensions
-                vector<hsize_t> chunk_dims(num_chunk_dims);
-                unsigned int rank_chunk = H5Pget_chunk(cparms, num_chunk_dims, &chunk_dims[0]);
+                    // Get chunking information: rank and dimensions
+                    vector<hsize_t> chunk_dims(num_chunk_dims);
+                    unsigned int rank_chunk = H5Pget_chunk(cparms, num_chunk_dims, &chunk_dims[0]);
 
-                if (rank_chunk != num_chunk_dims)
-                    throw BESInternalError("Unexpected chunk dimension mismatch.", __FILE__, __LINE__);
+                    if (rank_chunk != num_chunk_dims) throw BESInternalError("Unexpected chunk dimension mismatch.", __FILE__, __LINE__);
 
-                VERBOSE(cerr << "    Chunk dimensions: " << rank_chunk << endl);
-                VERBOSE(copy(chunk_dims.begin(), chunk_dims.end(), ostream_iterator<hsize_t>(cerr, " ")));
+                    VERBOSE(cerr << "    Chunk dimensions: " << rank_chunk << endl);
+                    VERBOSE(copy(chunk_dims.begin(), chunk_dims.end(), ostream_iterator<hsize_t>(cerr, " ")));
 
-                dc->set_chunk_dimension_sizes(chunk_dims);
+                    dc->set_chunk_dimension_sizes(chunk_dims);
 
-                for (hsize_t i = 0; i < num_chunk; i++) {
-                    VERBOSE(cerr << "    Chunk index:  " << i << endl);
-                    VERBOSE(cerr << "    Number of bytes: " << chunk_st_ptr[i].nbytes << endl);
-                    VERBOSE(cerr << "    Physical offset: " << chunk_st_ptr[i].chunk_addr << endl);
-                    VERBOSE(cerr << "    Logical offset: ");
+                    for (hsize_t i = 0; i < num_chunk; i++) {
+                        VERBOSE(cerr << "    Chunk index:  " << i << endl);
+                        VERBOSE(cerr << "    Number of bytes: " << chunk_st_ptr[i].nbytes << endl);
+                        VERBOSE(cerr << "    Physical offset: " << chunk_st_ptr[i].chunk_addr << endl);
+                        VERBOSE(cerr << "    Logical offset: ");
 
-                    vector<unsigned int> chunk_pos_in_array;
-                    for (unsigned int j = 0; j < num_chunk_dims; j++)
-                        chunk_pos_in_array.push_back(chunk_st_ptr[i].chunk_offset[j]);
+                        vector<unsigned int> chunk_pos_in_array;
+                        for (unsigned int j = 0; j < num_chunk_dims; j++)
+                            chunk_pos_in_array.push_back(chunk_st_ptr[i].chunk_offset[j]);
 
-                    VERBOSE(copy(chunk_pos_in_array.begin(), chunk_pos_in_array.end(), ostream_iterator<unsigned int>(cerr, " ")));
-                    VERBOSE(cerr << endl);
+                        VERBOSE(copy(chunk_pos_in_array.begin(), chunk_pos_in_array.end(), ostream_iterator<unsigned int>(cerr, " ")));
+                        VERBOSE(cerr << endl);
 
-                    if (dc) dc->add_chunk("", chunk_st_ptr[i].nbytes, chunk_st_ptr[i].chunk_addr, chunk_pos_in_array);
+                        if (dc) dc->add_chunk("", chunk_st_ptr[i].nbytes, chunk_st_ptr[i].chunk_addr, chunk_pos_in_array);
+                    }
                 }
+                catch (...) {
+                    H5Pclose(cparms);
+                    throw;
+                }
+
+                H5Pclose(cparms);
 
                 break;
             }
