@@ -248,7 +248,7 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
  * @param constrained If true, print the constrained DMR. False by default.
  * @see DmrppArray::print_dap4()
  */
-void DmrppCommon::print_dap4(XMLWriter &xml, bool constrained /*false*/)
+void DmrppCommon::print_dmrpp(XMLWriter &xml, bool constrained /*false*/)
 {
     BaseType &bt = dynamic_cast<BaseType&>(*this);
     if (constrained && !bt.send_p())

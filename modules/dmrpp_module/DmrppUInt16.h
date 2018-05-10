@@ -54,7 +54,7 @@ public:
 
     virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false)
     {
-        DmrppCommon::print_dap4(writer, constrained);
+        DmrppCommon::print_dmrpp(writer, constrained);
     }
 
     virtual void dump(ostream & strm) const;

@@ -142,7 +142,7 @@ public:
 
     void print_chunks_element(libdap::XMLWriter &xml, const std::string &name_space = "");
 
-    void print_dap4(libdap::XMLWriter &writer, bool constrained = false);
+    void print_dmrpp(libdap::XMLWriter &writer, bool constrained = false);
 
     virtual void ingest_chunk_dimension_sizes(std::string chunk_dim_sizes_string);
 
