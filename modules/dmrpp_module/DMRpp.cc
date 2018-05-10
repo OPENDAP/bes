@@ -27,7 +27,6 @@
 #include <D4Group.h>
 #include <InternalErr.h>
 
-
 #include "DMRpp.h"
 
 using namespace libdap;

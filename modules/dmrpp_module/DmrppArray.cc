@@ -833,7 +833,7 @@ public:
 
 void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
 {
-#if USE_LIBDAP_PRINT_DAP4
+#if USE_LIBDAP_print_dap4
     Array::print_dap4(writer, constrained);
 #else
     if (constrained && !send_p()) return;

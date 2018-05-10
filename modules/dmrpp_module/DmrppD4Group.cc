@@ -26,6 +26,13 @@
 
 #include <string>
 
+#include <D4Enum.h>
+#include <D4EnumDefs.h>
+#include <D4Attributes.h>
+#include <D4Maps.h>
+#include <D4Group.h>
+#include <XMLWriter.h>
+
 #include <BESError.h>
 #include <BESDebug.h>
 
@@ -73,6 +80,53 @@ DmrppD4Group::operator=(const DmrppD4Group &rhs)
 
     return *this;
 }
+
+#if 0
+void
+DmrppD4Group::print_dap4(XMLWriter &xml, bool constrained)
+{
+    if (!name().empty() && name() != "/") {
+        // For named groups, if constrained is true only print if this group
+        // has variables that are marked for transmission. For the root group
+        // this test is not made.
+        if (constrained && !send_p())
+        return;
+
+        if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar*) type_name().c_str()) < 0)
+        throw InternalErr(__FILE__, __LINE__, "Could not write " + type_name() + " element");
+
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "name", (const xmlChar*) name().c_str()) < 0)
+        throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
+    }
+
+    // dims
+    if (!dims()->empty())
+    dims()->print_dap4(xml, constrained);
+
+    // enums
+    if (!enum_defs()->empty())
+    enum_defs()->print_dap4(xml, constrained);
+
+    // variables
+    Constructor::Vars_iter v = var_begin();
+    while (v != var_end())
+    (*v++)->print_dap4(xml, constrained);
+
+    // attributes
+    attributes()->print_dap4(xml);
+
+    // groups
+    groupsIter g = d_groups.begin();
+    while (g != d_groups.end())
+    (*g++)->print_dap4(xml, constrained);
+
+    if (!name().empty() && name() != "/") {
+        if (xmlTextWriterEndElement(xml.get_writer()) < 0)
+        throw InternalErr(__FILE__, __LINE__, "Could not end " + type_name() + " element");
+    }
+}
+#endif
+
 
 void DmrppD4Group::dump(ostream & strm) const
 {

@@ -26,6 +26,8 @@
 
 #include <string>
 
+#include <XMLWriter.h>
+
 #include <BESError.h>
 #include <BESDebug.h>
 
@@ -73,6 +75,45 @@ DmrppStructure::operator=(const DmrppStructure &rhs)
 
     return *this;
 }
+
+#if 0
+class PrintDAP4FieldXMLWriter : public unary_function<BaseType *, void>
+{
+    XMLWriter &d_xml;
+    bool d_constrained;
+public:
+    PrintDAP4FieldXMLWriter(XMLWriter &x, bool c) : d_xml(x), d_constrained(c) {}
+
+    void operator()(BaseType *btp)
+    {
+        btp->print_dap4(d_xml, d_constrained);
+    }
+};
+
+void
+DmrppStructure::print_dap4(XMLWriter &xml, bool constrained)
+{
+    if (constrained && !send_p())
+    return;
+
+    if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar*)type_name().c_str()) < 0)
+    throw InternalErr(__FILE__, __LINE__, "Could not write " + type_name() + " element");
+
+    if (!name().empty())
+    if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "name", (const xmlChar*)name().c_str()) < 0)
+    throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
+
+    bool has_variables = (var_begin() != var_end());
+    if (has_variables)
+    for_each(var_begin(), var_end(), PrintDAP4FieldXMLWriter(xml, constrained));
+
+    attributes()->print_dap4(xml);
+
+    if (xmlTextWriterEndElement(xml.get_writer()) < 0)
+    throw InternalErr(__FILE__, __LINE__, "Could not end " + type_name() + " element");
+}
+#endif
+
 
 void DmrppStructure::dump(ostream & strm) const
 {
