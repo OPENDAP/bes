@@ -371,7 +371,7 @@ int main(int argc, char*argv[])
             get_chunks_for_all_variables(file, dmrpp->root());
 
             XMLWriter writer;
-            dmrpp->print_dmrpp(writer, false /*constrained*/, true /*print_chunks*/);
+            dmrpp->print_dmrpp(writer);
             cout << writer.get_doc();
         }
         else if (!h5_dset_path.empty()) {
