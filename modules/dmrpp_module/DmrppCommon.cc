@@ -46,6 +46,8 @@ using namespace libdap;
 namespace dmrpp {
 
 bool DmrppCommon::d_print_chunks = false;
+string DmrppCommon::d_dmrpp_ns = "http://xml.opendap.org/dap/dmrpp/1.0.0#";
+string DmrppCommon::d_ns_prefix = "dmrpp";
 
 /**
  * @brief Set the dimension sizes for a chunk
@@ -236,6 +238,16 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
     }
 }
 
+/**
+ * @brief Print the DMR++ response for the Scalar types
+ *
+ * @note See DmrppArray::print_dap4() for a discussion about the design of
+ * this, and related, method.
+ *
+ * @param xml Write the XML to this instance of XMLWriter
+ * @param constrained If true, print the constrained DMR. False by default.
+ * @see DmrppArray::print_dap4()
+ */
 void DmrppCommon::print_dap4(XMLWriter &xml, bool constrained /*false*/)
 {
     BaseType &bt = dynamic_cast<BaseType&>(*this);
@@ -255,8 +267,9 @@ void DmrppCommon::print_dap4(XMLWriter &xml, bool constrained /*false*/)
     if (!bt.is_dap4() && bt.get_attr_table().get_size() > 0)
         bt.get_attr_table().print_xml_writer(xml);
 
+    // This is the code added to libdap::BaseType::print_dap4(). jhrg 5/10/18
     if (DmrppCommon::d_print_chunks && get_immutable_chunks().size() > 0)
-        print_chunks_element(xml, "dmrpp");
+        print_chunks_element(xml, DmrppCommon::d_ns_prefix);
 
     if (xmlTextWriterEndElement(xml.get_writer()) < 0)
         throw InternalErr(__FILE__, __LINE__, "Could not end " + bt.type_name() + " element");

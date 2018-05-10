@@ -46,6 +46,7 @@
 #include "DmrppArray.h"
 #include "DmrppRequestHandler.h"
 
+// Used with BESDEBUG
 static const string dmrpp_3 = "dmrpp:3";
 
 using namespace libdap;
@@ -213,7 +214,7 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dimIter, unsigned long *
         subsetAddress.pop_back();
 
         // Copy data block from start_index to stop_index
-        // FIXME Replace this loop with a call to std::memcpy()
+        // TODO Replace this loop with a call to std::memcpy()
         for (unsigned long sourceIndex = start_index; sourceIndex <= stop_index; sourceIndex++) {
             unsigned long target_byte = *target_index * bytesPerElt;
             unsigned long source_byte = sourceIndex * bytesPerElt;
@@ -483,10 +484,6 @@ void DmrppArray::read_chunks_serial()
  * vector `target_element_address` is built up for the given chunk.
  * When \arg dim is the array's rank, `target_element_address` will
  * have a value for all but the rightmost dimension.
- *
- * @todo Save the target element address with the chunk for use in the
- * insert code. It might be useful to compute the last (rightmost)
- * component of the `target_element_address.`
  *
  * @param dim Starting with 0, compute values for this dimension of the array
  * @param target_element_address Initially empty, this becomes the location
@@ -831,11 +828,31 @@ public:
 };
 ///@}
 
+/**
+ * @brief Shadow libdap::Array::print_dap4() - optionally prints DMR++ chunk information
+ *
+ * This version of libdap::BaseType::print_dap4() will print information about
+ * HDF5 chunks when the value of the static class filed dmrpp::DmrppCommon::d_print_chunks
+ * is true. The method DMRpp::print_dmrpp() will set the _d_pprint_chunks_ field to
+ * true causing this method to include the _chunks_ elements in its output. When
+ * the field's value is false, this method prints the same output as libdap::Array.
+ *
+ * @note There are, no doubt, better ways to do this than using what is essentially a
+ * global flag; one way is to  synchronize access to a DMR C++ object and a DOM
+ * tree for the same DMR document. The chunk information can be read from the DMR and
+ * inserted into the DOM tree, which then printed. If the
+ * approach I took here becomes an issue (i.e., if we have to fix problems in libdap and
+ * here because of code duplication), we should probably recode this and the related
+ * methods to use the 'DOM tree approach.'
+ *
+ * @param xml Write the XML to this instance of XMLWriter
+ * @param constrained True if the response should be constrained. False by default
+ *
+ * @see DmrppCommon::print_dmrpp()
+ * @see DMRpp::print_dmrpp()
+ */
 void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
 {
-#if USE_LIBDAP_print_dap4
-    Array::print_dap4(writer, constrained);
-#else
     if (constrained && !send_p()) return;
 
     if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar*) var()->type_name().c_str()) < 0)
@@ -870,13 +887,13 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
 
     for_each(maps()->map_begin(), maps()->map_end(), PrintD4MapXMLWriter(xml));
 
-    // Only print the chunks info if there.
+    // Only print the chunks info if there. This is the code added to libdap::Array::print_dap4().
+    // jhrg 5/10/18
     if (DmrppCommon::d_print_chunks && get_immutable_chunks().size() > 0)
-        print_chunks_element(xml, "dmrpp");
+        print_chunks_element(xml, DmrppCommon::d_ns_prefix);
 
     if (xmlTextWriterEndElement(xml.get_writer()) < 0)
         throw InternalErr(__FILE__, __LINE__, "Could not end " + type_name() + " element");
-#endif
 }
 
 void DmrppArray::dump(ostream & strm) const

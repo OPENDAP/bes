@@ -31,6 +31,13 @@
 
 #include "DmrppCommon.h"
 
+// The 'read_serial()' method is more closely related to the original code
+// used to read data when the DMR++ handler was initial developed for NASA.
+// I modified that code for a while when we built the prototype version of
+// the handler, but then morphed that into a version that would support parallel
+// access. Defining this symbol will include the old code in the handler,
+// although the DmrppArray::read() method will still have to be hacked to
+// use it. jhrg 5/10/18
 #undef USE_READ_SERIAL
 
 namespace libdap {

@@ -34,8 +34,37 @@ using namespace libdap;
 
 namespace dmrpp {
 
+#if 0
+/**
+ * @brief The DMR++ namespace.
+ */
 const string dmrpp_namespace = "http://xml.opendap.org/dap/dmrpp/1.0.0#";
+#endif
 
+
+/**
+ * @brief Print the DMR++ response
+ *
+ * This is a clone of DMR::print_dap4() modified to include the DMR++ namespace
+ * and to print the DMR++ XML which is the standard DMR XML with the addition of
+ * new elements that include information about the 'chunks' that hold data values.
+
+ * It uses a static field defined in DmrppCommon to control whether the
+ * chunk information should be printed. The third argument \arg print_chunks
+ * will set this static class member to true or false, which controls the
+ * output of the chunk information. This method resets the field to its previous
+ * value on exit.
+ *
+ * @param xml Writer the XML to this instance of XMLWriter
+ * @param constrained Should the DMR++ be constrained, in the same sense that the
+ * DMR::print_dap4() method can print a constrained DMR. False by default.
+ * @param print_chunks Print the chunks? This parameter sets the DmrppCommon::d_print_chunks
+ * static field. That field is used by other methods in the Dmrpp<Type> classes to
+ * control if they print the chunk information. True by default.
+ *
+ * @see DmrppArray::print_dap4()
+ * @see DmrppCommon::print_dmrpp()
+ */
 void DMRpp::print_dmrpp(XMLWriter &xml, bool constrained, bool print_chunks)
 {
     bool pc_initial_value = DmrppCommon::d_print_chunks;
@@ -51,8 +80,9 @@ void DMRpp::print_dmrpp(XMLWriter &xml, bool constrained, bool print_chunks)
 
         // The dmrpp namespace
         if (DmrppCommon::d_print_chunks)
-            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "xmlns:dmrpp",
-                (const xmlChar*) dmrpp_namespace.c_str()) < 0)
+            if (xmlTextWriterWriteAttribute(xml.get_writer(),
+                (const xmlChar*)string("xmlns:").append(DmrppCommon::d_ns_prefix).c_str(),
+                (const xmlChar*)DmrppCommon::d_dmrpp_ns.c_str()) < 0)
                 throw InternalErr(__FILE__, __LINE__, "Could not write attribute for xmlns:dmrpp");
 
         if (!request_xml_base().empty()) {
