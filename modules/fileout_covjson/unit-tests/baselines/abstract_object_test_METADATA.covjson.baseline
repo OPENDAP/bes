@@ -1,44 +1,34 @@
-{
+      "": {
+        "values": []
+      }      "": {
+        "values": []
+      }      "": {
+        "values": []
+      }      "": {
+        "values": []
+      }      "": {
+        "values": []
+      }      "": {
+        "values": []
+      }      "": {
+        "values": []
+      }      "": {
+        "values": []
+      }        "": {
+          "values": []
+        }        "": {
+          "values": []
+        }        "": {
+          "values": []
+        }        "": {
+          "values": []
+        }        "": {
+          "values": []
+        }        "": {
+          "values": []
+        }{
   "type": "Coverage",
-  "domain": {
-    "domainType": "Grid",
     "axes": {
-      "": {
-        "values": []
-      },
-      "": {
-        "values": []
-      },
-      "": {
-        "values": []
-      },
-      "": {
-        "values": []
-      },
-      "": {
-        "values": []
-      },
-      "": {
-        "values": []
-      },
-      "": {
-        "values": []
-      },
-      "": {
-        "values": []
-      },
-      "": {
-        "values": []
-      },
-      "": {
-        "values": []
-      },
-      "": {
-        "values": []
-      },
-      "": {
-        "values": []
-      }
     },
     "referencing": [{
       "coordinates": ["t"],
@@ -54,35 +44,6 @@
         "id": "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
       }
     }]
-  },
   "parameters": {
-    "test_grid": {
-      "type": "Parameter",
-      "description": "test_grid",
-      "unit": {
-        "label": {
-          "en": ""
-        }
-      },
-      "symbol": {
-        "value": "",
-        "type": "",
-      },
-      "observedProperty": {
-        "id": null,
-        "label": {
-          "en": ""
-        }
-      }
-    }
-  },
   "ranges": {
-    "test_grid": {
-      "type": "NdArray",
-      "dataType": "float",
-      "axisNames": ["t", "y", "x"],
-      "shape": [36, 18],
-      "values": []
-    }
-  }
 }

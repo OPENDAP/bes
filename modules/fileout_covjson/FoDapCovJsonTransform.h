@@ -64,6 +64,7 @@ private:
     bool tExists;
     bool isParam;
     bool isAxis;
+    bool canConvertToCovJson;
 
     struct Axis {
         std::string name;
@@ -93,7 +94,7 @@ private:
     void getAttributes(std::ostream *strm, libdap::AttrTable &attr_table, std::string name,
         bool *axisRetrieved, bool *parameterRetrieved);
 
-    void transform(std::ostream *strm, libdap::DDS *dds, std::string indent, bool sendData);
+    void transform(std::ostream *strm, libdap::DDS *dds, std::string indent, bool sendData, bool testOverride);
     void transform(std::ostream *strm, libdap::BaseType *bt, std::string indent, bool sendData);
     void transform(std::ostream *strm, libdap::Constructor *cnstrctr, std::string indent, bool sendData);
     void transform(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
@@ -126,9 +127,33 @@ public:
 
     virtual ~FoDapCovJsonTransform() { }
 
-    virtual void transform(std::ostream &ostrm, bool sendData);
+    virtual void transform(std::ostream &ostrm, bool sendData, bool testOverride);
 
     virtual void dump(std::ostream &strm) const;
+
+    // FOR TESTING PURPOSES
+    virtual void addAxis(std::string name, std::string values) {
+        struct Axis *newAxis = new Axis;
+
+        newAxis->name = name;
+        newAxis->values = values;
+
+        axes.push_back(newAxis);
+    }
+
+    virtual void addParameter(std::string name, std::string type, std::string unit, std::string longName,
+            std::string shape, std::string values) {
+        struct Parameter *newParameter = new Parameter;
+
+        newParameter->name = name;
+        newParameter->type = type;
+        newParameter->unit = unit;
+        newParameter->longName = longName;
+        newParameter->shape = shape;
+        newParameter->values = values;
+
+        parameters.push_back(newParameter);
+    }
 
     virtual void printCoverageHeaderWorker(std::ostream &ostrm, std::string indent, bool isCoverageCollection) {
         printCoverageHeaderWorker(&ostrm, indent, isCoverageCollection);

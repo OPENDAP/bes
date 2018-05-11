@@ -72,8 +72,6 @@ const int max_axes = 4; // (x, y , z, and t) :: if axisCount <= max_axes
  *    and t exist, then we determine domainType based on the shape values and we
  *    return true. If x, y, and/or t don't exist, we simply return false
  *
- * @note also sets the domainType based on the given dimensions
- *
  * @note see CovJSON domain type spec: https://covjson.org/domain-types/ for
  *    further details on determining domain type
  *
@@ -702,9 +700,9 @@ void FoDapCovJsonTransform::dump(ostream &strm) const
  * @param ostrm Write the CovJSON to this stream
  * @param sendData True if data should be sent, False to send only metadata.
  */
-void FoDapCovJsonTransform::transform(ostream &ostrm, bool sendData)
+void FoDapCovJsonTransform::transform(ostream &ostrm, bool sendData, bool testOverride)
 {
-    transform(&ostrm, _dds, "", sendData);
+    transform(&ostrm, _dds, "", sendData, testOverride);
 }
 
 
@@ -1072,7 +1070,7 @@ void FoDapCovJsonTransform::printCoverageFooterWorker(std::ostream *strm, std::s
  * @param indent Indent the output so humans can make sense of it
  * @param sendData true: send data; false: send metadata
  */
-void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string indent, bool sendData)
+void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string indent, bool sendData, bool testOverride)
 {
     string child_indent1 = indent + _indent_increment;
     string child_indent2 = child_indent1 + _indent_increment;
@@ -1101,7 +1099,12 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
     transformNodeWorker(strm, leaves, nodes, child_indent2, sendData);
 
     // Determine if the attribute values we read can be converted to CovJSON
-    bool canConvertToCovJson = canConvert();
+    if(testOverride) {
+        canConvertToCovJson = true;
+    }
+    else {
+        canConvertToCovJson = canConvert();
+    }
 
     // Only print if this file can be converted to CovJSON
     if (canConvertToCovJson) {
