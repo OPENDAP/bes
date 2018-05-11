@@ -459,6 +459,10 @@ int main(int argc, char*argv[])
         return 1;
     }
 
+#if 0
+    HDF5RequestHandler *hdf5_handler = new HDF5RequestHandler("h5");
+#endif
+
     hid_t file = 0;
     try {
         // Turn off automatic hdf5 error printing.
