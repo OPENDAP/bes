@@ -1,0 +1,4 @@
+The data:
+Float32 /HDFEOS/GRIDS/GeoGrid1/Data%20Fields/temperature[2][3] = {{11, 11, 11},{12, 12, 12}};
+Float32 /HDFEOS/GRIDS/GeoGrid2/Data%20Fields/temperature[4][1] = {{10},{11},{12},{13}};
+

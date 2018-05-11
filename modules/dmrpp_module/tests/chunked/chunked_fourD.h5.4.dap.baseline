@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="chunked_fourD.h5">
+    <Float32 name="d_16_chunks">
+        <Dim size="6"/>
+        <Dim size="1"/>
+        <Dim size="4"/>
+        <Dim size="3"/>
+        <Attribute name="origname" type="String">
+            <Value>d_16_chunks</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/d_16_chunks</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </Float32>
+</Dataset>
+
+The data:
+Float32 d_16_chunks[6][1][4][3] = {{{{0, 1, 2},{40, 41, 42},{80, 81, 82},{120, 121, 122}}},{{{64000, 64001, 64002},{64040, 64041, 64042},{64080, 64081, 64082},{64120, 64121, 64122}}},{{{128000, 128001, 128002},{128040, 128041, 128042},{128080, 128081, 128082},{128120, 128121, 128122}}},{{{192000, 192001, 192002},{192040, 192041, 192042},{192080, 192081, 192082},{192120, 192121, 192122}}},{{{256000, 256001, 256002},{256040, 256041, 256042},{256080, 256081, 256082},{256120, 256121, 256122}}},{{{320000, 320001, 320002},{320040, 320041, 320042},{320080, 320081, 320082},{320120, 320121, 320122}}}};
+

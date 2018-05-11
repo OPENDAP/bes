@@ -25,14 +25,11 @@
 #include "config.h"
 
 #include <string>
-#include <sstream>
-#include <cassert>
 
 #include <BESError.h>
 #include <BESDebug.h>
 
 #include "DmrppD4Group.h"
-#include "DmrppUtil.h"
 
 using namespace libdap;
 using namespace std;
@@ -77,6 +74,7 @@ DmrppD4Group::operator=(const DmrppD4Group &rhs)
     return *this;
 }
 
+#if 0
 bool
 DmrppD4Group::read()
 {
@@ -84,6 +82,7 @@ DmrppD4Group::read()
 
     throw BESError("Unsupported type libdap::D4Group (dmrpp::DmrppGroup)",BES_INTERNAL_ERROR, __FILE__, __LINE__);
 }
+#endif
 
 void DmrppD4Group::dump(ostream & strm) const
 {

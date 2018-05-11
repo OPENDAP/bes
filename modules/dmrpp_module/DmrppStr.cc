@@ -25,14 +25,11 @@
 #include "config.h"
 
 #include <string>
-#include <sstream>
-#include <cassert>
 
 #include <BESError.h>
 #include <BESDebug.h>
 
 #include "DmrppStr.h"
-#include "DmrppUtil.h"
 
 using namespace libdap;
 using namespace std;
@@ -80,9 +77,14 @@ DmrppStr::operator=(const DmrppStr &rhs)
 bool
 DmrppStr::read()
 {
-    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
+    if (read_p())
+        return true;
 
-    throw BESError("Unsupported type libdap::Str (dmrpp::DmrppStr)",BES_INTERNAL_ERROR, __FILE__, __LINE__);
+    string value = read_atomic(name());
+
+    set_value(value);   // sets read_p too
+
+    return true;
 }
 
 void DmrppStr::dump(ostream & strm) const
