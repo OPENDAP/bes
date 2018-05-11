@@ -78,9 +78,7 @@ protected:
     	d_chunks = dc.d_chunks;
     }
 
-    /**
-     * @brief Returns a reference to the internal Chunk vector.
-     */
+    /// @brief Returns a reference to the internal Chunk vector.
     virtual std::vector<Chunk> &get_chunk_vec() {
     	return d_chunks;
     }
@@ -105,18 +103,24 @@ public:
     {
     }
 
-    /**
-     * @brief Returns true if this object utilizes deflate compression.
-     */
+    /// @brief Returns true if this object utilizes deflate compression.
     virtual bool is_deflate_compression() const {
         return d_deflate;
     }
 
-    /**
-     * @brief Returns true if this object utilizes shuffle compression.
-     */
+    /// @brief Set the value of the deflate property
+    void set_deflate(bool value) {
+        d_deflate = value;
+    }
+
+    /// @brief Returns true if this object utilizes shuffle compression.
     virtual bool is_shuffle_compression() const {
         return d_shuffle;
+    }
+
+    /// @brief Set the value of the shuffle property
+    void set_shuffle(bool value) {
+        d_shuffle = value;
     }
 
     virtual const std::vector<Chunk> &get_immutable_chunks() const {
@@ -146,9 +150,11 @@ public:
 
     void print_dmrpp(libdap::XMLWriter &writer, bool constrained = false);
 
+    /// @brief Set the value of the chunk dimension sizes given a vector of HDF5 hsize_t
     void set_chunk_dimension_sizes(const std::vector<hsize_t> &chunk_dims)
     {
         // tried using copy(chunk_dims.begin(), chunk_dims.end(), d_chunk_dimension_sizes.begin())
+        // it didn't work, maybe because of the differing element types?
         for (std::vector<hsize_t>::const_iterator i = chunk_dims.begin(), e = chunk_dims.end(); i != e; ++i) {
             d_chunk_dimension_sizes.push_back(*i);
         }

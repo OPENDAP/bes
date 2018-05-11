@@ -187,18 +187,16 @@ static void print_dataset_type_info(hid_t dataset, uint8_t layout_type)
     }
 }
 
-#if 0
-/* Filter IDs */
-#define H5Z_FILTER_ERROR    (-1)    /*no filter         */
-#define H5Z_FILTER_NONE     0   /*reserved indefinitely     */
-#define H5Z_FILTER_DEFLATE  1   /*deflation like gzip           */
-#define H5Z_FILTER_SHUFFLE      2       /*shuffle the data              */
-#define H5Z_FILTER_FLETCHER32   3       /*fletcher32 checksum of EDC    */
-#define H5Z_FILTER_SZIP         4       /*szip compression              */
-#define H5Z_FILTER_NBIT         5       /*nbit compression              */
-#define H5Z_FILTER_SCALEOFFSET  6       /*scale+offset compression      */
-#define H5Z_FILTER_RESERVED     256 /*filter ids below this value are reserved for library use */
-#endif
+// FYI: Filter IDs
+// H5Z_FILTER_ERROR         (-1) no filter
+// H5Z_FILTER_NONE          0   reserved indefinitely
+// H5Z_FILTER_DEFLATE       1   deflation like gzip
+// H5Z_FILTER_SHUFFLE       2   shuffle the data
+// H5Z_FILTER_FLETCHER32    3   fletcher32 checksum of EDC
+// H5Z_FILTER_SZIP          4   szip compression
+// H5Z_FILTER_NBIT          5   nbit compression
+// H5Z_FILTER_SCALEOFFSET   6   scale+offset compression
+// H5Z_FILTER_RESERVED      256 filter ids below this value are reserved for library use
 
 /**
  * @brief Set compression info
@@ -214,20 +212,20 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc)
         int numfilt = H5Pget_nfilters(plist_id);
         VERBOSE(cerr << "Number of filters associated with dataset: " << numfilt << endl);
 
-        for (int i = 0; i < numfilt; i++) {
+        for (int filter = 0; filter < numfilt; filter++) {
             size_t nelmts = 0;
             unsigned int flags, filter_info;
-            H5Z_filter_t filter_type = H5Pget_filter2(plist_id, 0, &flags, &nelmts, NULL, 0, NULL, &filter_info);
+            H5Z_filter_t filter_type = H5Pget_filter2(plist_id, filter, &flags, &nelmts, NULL, 0, NULL, &filter_info);
             VERBOSE(cerr << "Filter Type: ");
 
             switch (filter_type) {
             case H5Z_FILTER_DEFLATE:
-                VERBOSE(cerr << "H5Z_FILTER_DEFLATE ");
-                dc->ingest_compression_type("defalte");
+                VERBOSE(cerr << "H5Z_FILTER_DEFLATE" << endl);
+                dc->set_deflate(true);
                 break;
             case H5Z_FILTER_SHUFFLE:
-                VERBOSE(cerr << "H5Z_FILTER_SHUFFLE ");
-                dc->ingest_compression_type("shuffle");
+                VERBOSE(cerr << "H5Z_FILTER_SHUFFLE" << endl);
+                dc->set_shuffle(true);
                 break;
             default: {
                 ostringstream oss("Unsupported HDF5 filter: ");
@@ -247,8 +245,6 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc)
 
 /**
  * @brief Get chunk information for a HDF5 dataset in a file
- *
- * @todo Needs to get information about compression used by the dataset
  *
  * @param file The open HDF5 file
  * @param h5_dset_path The path name of the dataset in the open hdf5 file
@@ -306,7 +302,7 @@ static void get_variable_chunk_info(hid_t file, const string &h5_dset_path, Dmrp
 
                 try {
 #if 0
-                    // Property list pointer TODO clean up after this
+                    // Property list pointer
                     H5P_genplist_t *plist = H5P_object_verify(cparms, H5P_DATASET_CREATE);
                     if (!plist)
                     throw BESInternalError("Could not open a property list for '" + h5_dset_path + "'.", __FILE__, __LINE__);
@@ -318,7 +314,6 @@ static void get_variable_chunk_info(hid_t file, const string &h5_dset_path, Dmrp
 
                     // layout.u.chunk.ndims
 #endif
-
                     // Allocate the memory for the struct to obtain the chunk storage information. Kent Yang
                     // wrote the H5Dget_dataset_chunk_storage_info() function; the alternative is to use the
                     // layout object above. jhrg 5/10/18
@@ -354,6 +349,8 @@ static void get_variable_chunk_info(hid_t file, const string &h5_dset_path, Dmrp
                         VERBOSE(copy(chunk_pos_in_array.begin(), chunk_pos_in_array.end(), ostream_iterator<unsigned int>(cerr, " ")));
                         VERBOSE(cerr << endl);
 
+                        // Note that the data_url is an empty string; use the root element href attribute for this value.
+                        // Each chunk has the same data_url in 'architecture #2.' jhrg 5/10/18
                         if (dc) dc->add_chunk("", chunk_st_ptr[i].nbytes, chunk_st_ptr[i].chunk_addr, chunk_pos_in_array);
                     }
                 }
