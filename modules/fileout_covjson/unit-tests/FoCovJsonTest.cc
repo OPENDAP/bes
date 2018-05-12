@@ -100,7 +100,6 @@ private:
     }
 
 public:
-
     // Called once before everything gets tested
     FoCovJsonTest() :
         d_tmpDir(string(TEST_BUILD_DIR) + "/tmp")
@@ -500,7 +499,7 @@ public:
     }
 
     /**
-     * @brief For testing the FoDapCovJsonTransform::printReferenceWorker
+     * @brief For testing the FoDapCovJsonTransform::printParametersWorker
      */
     void testPrintParametersWorker()
     {
