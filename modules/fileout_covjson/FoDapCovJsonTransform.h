@@ -57,6 +57,7 @@ private:
     libdap::DDS *_dds;
     std::string _returnAs;
     std::string _indent_increment;
+    std::string atomicVals;
     int domainType;
     bool xExists;
     bool yExists;
@@ -64,6 +65,7 @@ private:
     bool tExists;
     bool isParam;
     bool isAxis;
+    bool canConvertToCovJson;
 
     struct Axis {
         std::string name;
@@ -93,12 +95,12 @@ private:
     void getAttributes(std::ostream *strm, libdap::AttrTable &attr_table, std::string name,
         bool *axisRetrieved, bool *parameterRetrieved);
 
-    void transform(std::ostream *strm, libdap::DDS *dds, std::string indent, bool sendData);
+    void transform(std::ostream *strm, libdap::DDS *dds, std::string indent, bool sendData, bool testOverride);
     void transform(std::ostream *strm, libdap::BaseType *bt, std::string indent, bool sendData);
     void transform(std::ostream *strm, libdap::Constructor *cnstrctr, std::string indent, bool sendData);
     void transform(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
 
-    void transformAtomic(std::ostream *strm, libdap::BaseType *bt, std::string indent, bool sendData);
+    void transformAtomic(libdap::BaseType *bt, std::string indent, bool sendData);
     void transformNodeWorker(std::ostream *strm, vector<libdap::BaseType *> leaves, vector<libdap::BaseType *> nodes,
         string indent, bool sendData);
 
@@ -121,14 +123,70 @@ private:
     unsigned int covjsonSimpleTypeArrayWorker(std::ostream *strm, T *values, unsigned int indx,
         std::vector<unsigned int> *shape, unsigned int currentDim, struct Parameter *p);
 
+    // FOR TESTING PURPOSES ------------------------------------------------------------------------------------
+    void addAxis(std::string name, std::string values) {
+        struct Axis *newAxis = new Axis;
+
+        newAxis->name = name;
+        newAxis->values = values;
+
+        this->axes.push_back(newAxis);
+        this->axisCount++;
+    }
+
+    void addParameter(std::string name, std::string type, std::string unit, std::string longName,
+            std::string shape, std::string values) {
+        struct Parameter *newParameter = new Parameter;
+
+        newParameter->name = name;
+        newParameter->type = type;
+        newParameter->unit = unit;
+        newParameter->longName = longName;
+        newParameter->shape = shape;
+        newParameter->values = values;
+
+        this->parameters.push_back(newParameter);
+        this->parameterCount++;
+    }
+
+    void setAxesExistence(bool x, bool y, bool z, bool t) {
+        this->xExists = x;
+        this->yExists = y;
+        this->zExists = z;
+        this->tExists = t;
+    }
+
+    void setDomainType(int domainType) {
+        this->domainType = domainType;
+    }
+    // ---------------------------------------------------------------------------------------------------------
+
 public:
+    // FOR TESTING PURPOSES ------------------------------------------------------------------------------------
     FoDapCovJsonTransform(libdap::DDS *dds);
 
     virtual ~FoDapCovJsonTransform() { }
 
-    virtual void transform(std::ostream &ostrm, bool sendData);
+    virtual void transform(std::ostream &ostrm, bool sendData, bool testOverride);
 
     virtual void dump(std::ostream &strm) const;
+
+    virtual void addTestAxis(std::string name, std::string values) {
+        addAxis(name, values);
+    }
+
+    virtual void addTestParameter(std::string name, std::string type, std::string unit, std::string longName,
+            std::string shape, std::string values) {
+        addParameter(name, type, unit, longName, shape, values);
+    }
+
+    virtual void setTestAxesExistence(bool x, bool y, bool z, bool t) {
+        setAxesExistence(x, y, z, t);
+    }
+
+    virtual void setTestDomainType(int domainType) {
+        setDomainType(domainType);
+    }
 
     virtual void printCoverageHeaderWorker(std::ostream &ostrm, std::string indent, bool isCoverageCollection) {
         printCoverageHeaderWorker(&ostrm, indent, isCoverageCollection);
@@ -146,9 +204,14 @@ public:
         printParametersWorker(&ostrm, indent);
     }
 
+    virtual void printRangesWorker(std::ostream &ostrm, std::string indent) {
+        printRangesWorker(&ostrm, indent);
+    }
+
     virtual void printCoverageFooterWorker(std::ostream &ostrm, std::string indent) {
         printCoverageFooterWorker(&ostrm, indent);
     }
+    // ---------------------------------------------------------------------------------------------------------
 };
 
 #endif /* FODAPCOVJSONTRANSFORM_H_ */
