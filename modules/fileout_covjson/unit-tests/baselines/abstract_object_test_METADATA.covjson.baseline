@@ -1,6 +1,48 @@
 {
   "type": "Coverage",
     "axes": {
+      "test": {
+        "values": []
+      },
+      "test": {
+        "values": []
+      },
+      "test": {
+        "values": []
+      },
+      "test": {
+        "values": []
+      },
+      "test": {
+        "values": []
+      },
+      "test": {
+        "values": []
+      },
+      "test": {
+        "values": []
+      },
+      "test": {
+        "values": []
+      },
+      "test": {
+        "values": []
+      },
+      "test": {
+        "values": []
+      },
+      "test": {
+        "values": []
+      },
+      "test": {
+        "values": []
+      },
+      "test": {
+        "values": []
+      },
+      "test": {
+        "values": []
+      }
     },
     "referencing": [{
       "coordinates": ["t"],

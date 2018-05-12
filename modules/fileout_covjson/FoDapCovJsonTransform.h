@@ -123,7 +123,7 @@ private:
     unsigned int covjsonSimpleTypeArrayWorker(std::ostream *strm, T *values, unsigned int indx,
         std::vector<unsigned int> *shape, unsigned int currentDim, struct Parameter *p);
 
-    // FOR TESTING PURPOSES
+    // FOR TESTING PURPOSES ------------------------------------------------------------------------------------
     void addAxis(std::string name, std::string values) {
         struct Axis *newAxis = new Axis;
 
@@ -131,6 +131,7 @@ private:
         newAxis->values = values;
 
         this->axes.push_back(newAxis);
+        this->axisCount++;
     }
 
     void addParameter(std::string name, std::string type, std::string unit, std::string longName,
@@ -145,6 +146,7 @@ private:
         newParameter->values = values;
 
         this->parameters.push_back(newParameter);
+        this->parameterCount++;
     }
 
     void setAxesExistence(bool x, bool y, bool z, bool t) {
@@ -154,7 +156,13 @@ private:
         this->tExists = t;
     }
 
+    void setDomainType(int domainType) {
+        this->domainType = domainType;
+    }
+    // ---------------------------------------------------------------------------------------------------------
+
 public:
+    // FOR TESTING PURPOSES ------------------------------------------------------------------------------------
     FoDapCovJsonTransform(libdap::DDS *dds);
 
     virtual ~FoDapCovJsonTransform() { }
@@ -163,7 +171,6 @@ public:
 
     virtual void dump(std::ostream &strm) const;
 
-    // FOR TESTING PURPOSES
     virtual void addTestAxis(std::string name, std::string values) {
         addAxis(name, values);
     }
@@ -175,6 +182,10 @@ public:
 
     virtual void setTestAxesExistence(bool x, bool y, bool z, bool t) {
         setAxesExistence(x, y, z, t);
+    }
+
+    virtual void setTestDomainType(int domainType) {
+        setDomainType(domainType);
     }
 
     virtual void printCoverageHeaderWorker(std::ostream &ostrm, std::string indent, bool isCoverageCollection) {
@@ -200,6 +211,7 @@ public:
     virtual void printCoverageFooterWorker(std::ostream &ostrm, std::string indent) {
         printCoverageFooterWorker(&ostrm, indent);
     }
+    // ---------------------------------------------------------------------------------------------------------
 };
 
 #endif /* FODAPCOVJSONTRANSFORM_H_ */

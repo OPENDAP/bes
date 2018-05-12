@@ -1,6 +1,48 @@
 {
   "type": "Coverage",
     "axes": {
+      "test": {
+        "values": [28]
+      },
+      "test": {
+        "values": [-2048]
+      },
+      "test": {
+        "values": [-105467]
+      },
+      "test": {
+        "values": [2048]
+      },
+      "test": {
+        "values": [105467]
+      },
+      "test": {
+        "values": [5.7866]
+      },
+      "test": {
+        "values": [10245.1234]
+      },
+      "test": {
+        "values": ["This is a String Value"]
+      },
+      "test": {
+        "values": [238]
+      },
+      "test": {
+        "values": [-1041]
+      },
+      "test": {
+        "values": ["This is the structure foo string."]
+      },
+      "test": {
+        "values": [238]
+      },
+      "test": {
+        "values": [-1041]
+      },
+      "test": {
+        "values": ["This is the sequence foo string."]
+      }
     },
     "referencing": [{
       "coordinates": ["t"],

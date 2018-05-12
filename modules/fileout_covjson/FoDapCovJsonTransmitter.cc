@@ -143,7 +143,7 @@ void FoDapCovJsonTransmitter::send_data(BESResponseObject *obj, BESDataHandlerIn
             throw BESInternalError("Output stream is not set, can not return as COVJSON", __FILE__, __LINE__);
 
         FoDapCovJsonTransform ft(loaded_dds);
-        ft.transform(o_strm, true, false); // Send metadata and data, test override is false
+        ft.transform(o_strm, true, false); // Send metadata and data; Test override false
     }
     catch (Error &e) {
         throw BESDapError("Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
@@ -196,7 +196,7 @@ void FoDapCovJsonTransmitter::send_metadata(BESResponseObject *obj, BESDataHandl
         // cancel any pending timeout alarm according to the configuration.
         BESUtil::conditional_timeout_cancel();
 
-        ft.transform(o_strm, false, false); // Send metadata only, test override is false
+        ft.transform(o_strm, false, false); // Send metadata only; Test override false
     }
     catch (Error &e) {
         throw BESDapError("Failed to transform data to COVJSON: " + e.get_error_message(), false, e.get_error_code(),

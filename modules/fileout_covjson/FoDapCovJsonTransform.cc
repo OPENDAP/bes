@@ -1283,6 +1283,15 @@ void FoDapCovJsonTransform::transformAtomic(libdap::BaseType *b, string indent, 
             newAxis->values += focovjson::escape_for_covjson(tmpString);
             newAxis->values += "\"";
         }
+        else {
+            ostringstream otemp;
+            istringstream itemp;
+            int tempVal = 0;
+            b->print_val(otemp, "", false);
+            istringstream (otemp.str());
+            istringstream (otemp.str()) >> tempVal;
+            newAxis->values += otemp.str();
+        }
         newAxis->values += "]";
     }
     else {
@@ -1290,6 +1299,7 @@ void FoDapCovJsonTransform::transformAtomic(libdap::BaseType *b, string indent, 
     }
 
     axes.push_back(newAxis);
+    axisCount++;
 }
 
 
