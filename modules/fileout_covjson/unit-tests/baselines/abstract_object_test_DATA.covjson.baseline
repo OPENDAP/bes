@@ -1,32 +1,4 @@
-      "": {
-        "values": [28]
-      }      "": {
-        "values": [-2048]
-      }      "": {
-        "values": [-105467]
-      }      "": {
-        "values": [2048]
-      }      "": {
-        "values": [105467]
-      }      "": {
-        "values": [5.7866]
-      }      "": {
-        "values": [10245.1234]
-      }      "": {
-        "values": ["This is a String Value"]
-      }        "": {
-          "values": [238]
-        }        "": {
-          "values": [-1041]
-        }        "": {
-          "values": ["This is the structure foo string."]
-        }        "": {
-          "values": [238]
-        }        "": {
-          "values": [-1041]
-        }        "": {
-          "values": ["This is the sequence foo string."]
-        }{
+{
   "type": "Coverage",
     "axes": {
     },

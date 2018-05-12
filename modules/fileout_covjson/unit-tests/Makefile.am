@@ -63,7 +63,7 @@ check-local:
 	@echo ""
 endif
 
-OBJS = ../FoDapCovJsonTransform.o ../FoDapCovJsonValidation.o ../focovjson_utils.o
+OBJS = ../FoDapCovJsonTransform.o ../focovjson_utils.o
 
 FoCovJsonTest_SOURCES = FoCovJsonTest.cc
 FoCovJsonTest_LDADD = $(OBJS) $(LIBADD)
