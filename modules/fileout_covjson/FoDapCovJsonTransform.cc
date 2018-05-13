@@ -928,6 +928,7 @@ void FoDapCovJsonTransform::printReferenceWorker(ostream *strm, string indent)
         coordVars += ", \"z\"";
     }
 
+
     // "referencing": [{
     //   "coordinates": ["t"],
     //   "system": {
@@ -947,14 +948,14 @@ void FoDapCovJsonTransform::printReferenceWorker(ostream *strm, string indent)
     *strm << child_indent1 << "\"coordinates\": [\"t\"]," << endl;
     *strm << child_indent1 << "\"system\": {" << endl;
     *strm << child_indent2 << "\"type\": \"TemporalRS\"," << endl;
-    *strm << child_indent2 << "\"calendar\": \"Gregorian\"," << endl;
+    *strm << child_indent2 << "\"calendar\": \"Gregorian\"" << endl;
     *strm << child_indent1 << "}" << endl;
     *strm << indent << "}," << endl;
     *strm << indent << "{" << endl;
     *strm << child_indent1 << "\"coordinates\": [" << coordVars << "]," << endl;
     *strm << child_indent1 << "\"system\": {" << endl;
     *strm << child_indent2 << "\"type\": \"GeographicCRS\"," << endl;
-    *strm << child_indent2 << "\"id\": \"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"," << endl;
+    *strm << child_indent2 << "\"id\": \"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"" << endl;
     *strm << child_indent1 << "}" << endl;
 
     if(parameterCount > 1) {
@@ -998,7 +999,7 @@ void FoDapCovJsonTransform::printParametersWorker(ostream *strm, string indent)
         *strm << child_indent2 << "}," << endl;
         *strm << child_indent2 << "\"symbol\": {" << endl;
         *strm << child_indent3 << "\"value\": \"" << parameters[i]->unit << "\"," << endl;
-        *strm << child_indent3 << "\"type\": \"\"," << endl;
+        *strm << child_indent3 << "\"type\": \"\"" << endl;
         *strm << child_indent2 << "}," << endl;
         *strm << child_indent2 << "\"observedProperty\": {" << endl;
         *strm << child_indent3 << "\"id\": null," << endl;
@@ -1041,9 +1042,7 @@ void FoDapCovJsonTransform::printRangesWorker(ostream *strm, string indent)
     axisNames += "\"y\", \"x\"";
 
     // Axis name (x, y, or z)
-    if(parameterCount > 1) {
-        *strm << indent << "}," << endl;
-    }
+    *strm << indent << "}," << endl;
     *strm << indent << "\"ranges\": {" << endl;
     for(unsigned int i = 0; i < parameterCount; i++) {
         *strm << child_indent1 << "\"" << parameters[i]->name << "\": {" << endl;

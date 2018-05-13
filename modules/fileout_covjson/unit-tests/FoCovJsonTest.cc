@@ -289,12 +289,12 @@ public:
 
             ft.setTestAxesExistence(true, true, false, true);
 
-            ft.addTestParameter("testParam1", "Parameter", "Celsius", "THIS IS A LONG NAME", "[3, 3, 3]", "[32765.2, 25222.7, 1431516.9, 3289741.2, 328974268.3]");
+            ft.addTestParameter("testParam1", "Parameter", "float", "Celsius", "THIS IS A LONG NAME", "[3, 3, 3]", "[32765.2, 25222.7, 1431516.9, 3289741.2, 328974268.3]");
 
             // Should print a single Coverage
             ft.printCoverageHeaderWorker(output, "", true);
 
-            ft.addTestParameter("testParam2", "Parameter", "Fahrenheit", "THIS IS A LONGER NAME", "[1, 2, 3]", "[372, 142, 1142, 12, 45233]");
+            ft.addTestParameter("testParam2", "Parameter", "integer", "Fahrenheit", "THIS IS A LONGER NAME", "[1, 2, 3]", "[372, 142, 1142, 12, 45233]");
 
             // Should print a Coverage Collection
             ft.printCoverageHeaderWorker(output, "", true);
@@ -377,7 +377,7 @@ public:
 
             ft.setTestAxesExistence(true, true, false, true);
 
-            ft.addTestParameter("testParam1", "Parameter", "Celsius", "THIS IS A LONG NAME", "[3, 3, 3]", "[32765.2, 25222.7, 1431516.9, 3289741.2, 328974268.3]");
+            ft.addTestParameter("testParam1", "Parameter", "float", "Celsius", "THIS IS A LONG NAME", "[3, 3, 3]", "[32765.2, 25222.7, 1431516.9, 3289741.2, 328974268.3]");
 
             ft.printAxesWorker(output, "");
 
@@ -452,7 +452,7 @@ public:
 
             ft.setTestAxesExistence(true, true, false, true);
 
-            ft.addTestParameter("testParam1", "Parameter", "Celsius", "THIS IS A LONG NAME", "[3, 3, 3]", "[32765.2, 25222.7, 1431516.9, 3289741.2, 328974268.3]");
+            ft.addTestParameter("testParam1", "Parameter", "float", "Celsius", "THIS IS A LONG NAME", "[3, 3, 3]", "[32765.2, 25222.7, 1431516.9, 3289741.2, 328974268.3]");
 
             ft.printReferenceWorker(output, "");
 
@@ -526,15 +526,15 @@ public:
 
             ft.setTestAxesExistence(true, true, false, true);
 
-            ft.addTestParameter("testParam1", "Parameter", "Celsius", "THIS IS A LONG NAME", "[3, 3, 3]", "[32765.2, 25222.7, 1431516.9, 3289741.2, 328974268.3]");
+            ft.addTestParameter("testParam1", "Parameter", "float", "Celsius", "THIS IS A LONG NAME", "[3, 3, 3]", "[32765.2, 25222.7, 1431516.9, 3289741.2, 328974268.3]");
 
             ft.printParametersWorker(output, "");
 
-            ft.addTestParameter("testParam2", "Parameter", "Fahrenheit", "THIS IS A LONGER NAME", "[1, 2, 3]", "[372, 142, 1142, 12, 45233]");
+            ft.addTestParameter("testParam2", "Parameter", "integer", "Fahrenheit", "THIS IS A LONGER NAME", "[1, 2, 3]", "[372, 142, 1142, 12, 45233]");
 
             ft.printParametersWorker(output, "");
 
-            ft.addTestParameter("testParam3", "Parameter", "Kelvin", "THIS IS THE LONGEST NAME", "[3, 2, 1]", "[32521, 576784, 345765, 343455, 8900645]");
+            ft.addTestParameter("testParam3", "Parameter", "integer", "Kelvin", "THIS IS THE LONGEST NAME", "[3, 2, 1]", "[32521, 576784, 345765, 343455, 8900645]");
 
             ft.printParametersWorker(output, "");
 
@@ -603,7 +603,7 @@ public:
 
             ft.setTestAxesExistence(true, true, false, true);
 
-            ft.addTestParameter("testParam1", "Parameter", "Celsius", "THIS IS A LONG NAME", "[3, 3, 3]", "[32765.2, 25222.7, 1431516.9, 3289741.2, 328974268.3]");
+            ft.addTestParameter("testParam1", "Parameter", "float", "Celsius", "THIS IS A LONG NAME", "[3, 3, 3]", "[32765.2, 25222.7, 1431516.9, 3289741.2, 328974268.3]");
 
             ft.printRangesWorker(output, "");
 
@@ -672,11 +672,11 @@ public:
 
             ft.setTestAxesExistence(true, true, false, true);
 
-            ft.addTestParameter("testParam1", "Parameter", "Celsius", "THIS IS A LONG NAME", "[3, 3, 3]", "[32765.2, 25222.7, 1431516.9, 3289741.2, 328974268.3]");
+            ft.addTestParameter("testParam1", "Parameter", "float", "Celsius", "THIS IS A LONG NAME", "[3, 3, 3]", "[32765.2, 25222.7, 1431516.9, 3289741.2, 328974268.3]");
 
             ft.printCoverageFooterWorker(output, "");
 
-            ft.addTestParameter("testParam2", "Parameter", "Fahrenheit", "THIS IS A LONGER NAME", "[1, 2, 3]", "[372, 142, 1142, 12, 45233]");
+            ft.addTestParameter("testParam2", "Parameter", "integer", "Fahrenheit", "THIS IS A LONGER NAME", "[1, 2, 3]", "[372, 142, 1142, 12, 45233]");
 
             ft.printCoverageFooterWorker(output, "");
 

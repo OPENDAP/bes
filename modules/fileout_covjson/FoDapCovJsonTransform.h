@@ -136,12 +136,13 @@ private:
         this->axisCount++;
     }
 
-    void addParameter(std::string name, std::string type, std::string unit, std::string longName,
-            std::string shape, std::string values) {
+    void addParameter(std::string name, std::string type, std::string dataType, std::string unit,
+            std::string longName, std::string shape, std::string values) {
         struct Parameter *newParameter = new Parameter;
 
         newParameter->name = name;
         newParameter->type = type;
+        newParameter->dataType = dataType;
         newParameter->unit = unit;
         newParameter->longName = longName;
         newParameter->shape = shape;
@@ -177,9 +178,9 @@ public:
         addAxis(name, values);
     }
 
-    virtual void addTestParameter(std::string name, std::string type, std::string unit, std::string longName,
-            std::string shape, std::string values) {
-        addParameter(name, type, unit, longName, shape, values);
+    virtual void addTestParameter(std::string name, std::string type, std::string dataType, std::string unit,
+            std::string longName, std::string shape, std::string values) {
+        addParameter(name, type, dataType, unit, longName, shape, values);
     }
 
     virtual void setTestAxesExistence(bool x, bool y, bool z, bool t) {
