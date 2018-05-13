@@ -1,5 +1,6 @@
 {
   "type": "Coverage",
+  "domain": {
     "axes": {
       "test": {
         "values": []
@@ -43,7 +44,7 @@
       "test": {
         "values": []
       }
-    },
+    }
     "referencing": [{
       "coordinates": ["t"],
       "system": {
