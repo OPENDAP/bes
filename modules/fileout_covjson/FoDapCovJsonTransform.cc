@@ -295,6 +295,7 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
     bool *parameterRetrieved = new bool;
     *axisRetrieved = false;
     *parameterRetrieved = false;
+    currDataType = a->var()->type_name();
 
     getAttributes(strm, a->get_attr_table(), a->name(), axisRetrieved, parameterRetrieved);
 
@@ -597,7 +598,7 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
                         currAxisName = "t";
                     }
                     else if((currName.compare("units") == 0) && (currValue.find("hour") || currValue.find("hours")
-                        || currValue.find("seconds") || currValue.find("time")) && !tExists) {
+                        || currValue.find("minutes") || currValue.find("seconds") || currValue.find("time")) && !tExists) {
                         tExists = true;
                         isAxis = true;
                         isParam = false;
@@ -638,6 +639,7 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
                     if(currParameterUnit.compare("") != 0 && currParameterLongName.compare("") != 0) {
                         struct Parameter *newParameter = new Parameter;
                         newParameter->name = name;
+                        newParameter->dataType = currDataType;
                         newParameter->unit = currParameterUnit;
                         newParameter->longName = currParameterLongName;
                         parameters.push_back(newParameter);
@@ -817,23 +819,19 @@ void FoDapCovJsonTransform::printCoverageHeaderWorker(ostream *strm, string inde
         *strm << indent << "{" << endl;
         *strm << child_indent1 << "\"type\": \"CoverageCollection\"," << endl;
     }
-
     else if(parameterCount > 1 && !isCoverageCollection) {
         *strm << indent << "\"coverages\": [{" << endl;
         *strm << child_indent1 << "\"type\": \"Coverage\"," << endl;
+        *strm << child_indent1 << "\"domain\": {" << endl;
     }
-
     else {
         *strm << indent << "{" << endl;
         *strm << child_indent1 << "\"type\": \"Coverage\"," << endl;
+        *strm << child_indent1 << "\"domain\": {" << endl;
     }
 
     if(parameterCount > 1 && !isCoverageCollection) {
-        *strm << child_indent1 << "\"type\" : \"Domain\"," << endl;
-    }
-
-    else if(parameterCount == 1 && !isCoverageCollection) {
-        *strm << child_indent1 << "\"domain\": {" << endl;
+        *strm << child_indent2 << "\"type\" : \"Domain\"," << endl;
     }
 
     if(parameterCount == 1 && !isCoverageCollection) {
@@ -900,7 +898,12 @@ void FoDapCovJsonTransform::printAxesWorker(ostream *strm, string indent)
             *strm << child_indent1 << "}," << endl;
         }
     }
-    *strm << indent << "}," << endl;
+    if(parameterCount == 1) {
+        *strm << indent << "}," << endl;
+    }
+    else {
+        *strm << indent << "}" << endl;
+    }
 }
 
 
@@ -1038,11 +1041,14 @@ void FoDapCovJsonTransform::printRangesWorker(ostream *strm, string indent)
     axisNames += "\"y\", \"x\"";
 
     // Axis name (x, y, or z)
+    if(parameterCount > 1) {
+        *strm << indent << "}," << endl;
+    }
     *strm << indent << "\"ranges\": {" << endl;
     for(unsigned int i = 0; i < parameterCount; i++) {
         *strm << child_indent1 << "\"" << parameters[i]->name << "\": {" << endl;
         *strm << child_indent2 << "\"type\": \"NdArray\"," << endl;
-        *strm << child_indent2 << "\"dataType\": \"float\"," << endl;
+        *strm << child_indent2 << "\"dataType\": \"" << parameters[i]->dataType << "\", " << endl;
         *strm << child_indent2 << "\"axisNames\": [" << axisNames << "]," << endl;
         *strm << child_indent2 << parameters[i]->shape << endl;
         *strm << child_indent2 << parameters[i]->values << endl;
@@ -1098,6 +1104,7 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
 {
     string child_indent1 = indent + _indent_increment;
     string child_indent2 = child_indent1 + _indent_increment;
+    string child_indent3 = child_indent2 + _indent_increment;
     // Sort the variables into two sets
     vector<libdap::BaseType *> leaves;
     vector<libdap::BaseType *> nodes;
@@ -1121,7 +1128,7 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
     }
 
     // Read through the source DDS leaves and nodes, extract all axes and
-    // parameter data, and store that data as Axjs and
+    // parameter data, and store that data as Axis and Parameters
     transformNodeWorker(strm, leaves, nodes, child_indent2, sendData);
 
     // Determine if the attribute values we read can be converted to CovJSON.
@@ -1152,7 +1159,7 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
             printCoverageHeaderWorker(strm, child_indent1, false);
 
             // Prints the axes metadata and range values
-            printAxesWorker(strm, child_indent2);
+            printAxesWorker(strm, child_indent3);
 
             // Prints the parameter range values
             printRangesWorker(strm, child_indent2);

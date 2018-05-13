@@ -58,6 +58,7 @@ private:
     std::string _returnAs;
     std::string _indent_increment;
     std::string atomicVals;
+    std::string currDataType;
     int domainType;
     bool xExists;
     bool yExists;
@@ -75,6 +76,7 @@ private:
     struct Parameter {
         std::string name;
         std::string type;
+        std::string dataType;
         std::string unit;
         std::string longName;
         std::string shape;
