@@ -236,6 +236,8 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
         // End element "chunk":
         if (xmlTextWriterEndElement(xml.get_writer()) < 0) throw BESInternalError("Could not end chunk element", __FILE__, __LINE__);
     }
+
+    if (xmlTextWriterEndElement(xml.get_writer()) < 0) throw BESInternalError("Could not end chunks element", __FILE__, __LINE__);
 }
 
 /**
