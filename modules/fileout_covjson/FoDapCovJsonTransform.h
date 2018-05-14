@@ -118,12 +118,8 @@ private:
     void covjsonStringArray(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
 
     template<typename T>
-    unsigned int covjsonSimpleTypeArrayWorker(std::ostringstream *strm, T *values, unsigned int indx,
-        std::vector<unsigned int> *shape, unsigned int currentDim, struct Axis *a);
-
-    template<typename T>
     unsigned int covjsonSimpleTypeArrayWorker(std::ostream *strm, T *values, unsigned int indx,
-        std::vector<unsigned int> *shape, unsigned int currentDim, struct Parameter *p);
+        std::vector<unsigned int> *shape, unsigned int currentDim);
 
     // FOR TESTING PURPOSES ------------------------------------------------------------------------------------
     void addAxis(std::string name, std::string values) {
