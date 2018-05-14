@@ -180,39 +180,36 @@ bool FoDapCovJsonTransform::canConvert()
  * @returns the most recently completed index
  */
 template<typename T>
-unsigned int FoDapCovJsonTransform::covjsonSimpleTypeArrayWorker(ostream *strm, T *values, unsigned int indx,
+unsigned int FoDapCovJsonTransform::covjsonSimpleTypeArrayWorker(ostringstream *strm, T *values, unsigned int indx,
     vector<unsigned int> *shape, unsigned int currentDim, struct Axis *a)
 {
     unsigned int currentDimSize = (*shape)[currentDim];
-    ostringstream newValues;
 
-    newValues << "[";
+    *strm << "[";
     for(unsigned int i = 0; i < currentDimSize; i++) {
         if(currentDim < shape->size() - 1) {
             BESDEBUG(FoDapCovJsonTransform_debug_key,
                 "covjsonSimpleTypeArrayWorker() - Recursing! indx:  " << indx << " currentDim: " << currentDim << " currentDimSize: " << currentDimSize << endl);
             indx = covjsonSimpleTypeArrayWorker<T>(strm, values, indx, shape, currentDim + 1, a);
             if(i + 1 != currentDimSize) {
-                newValues << ", ";
+                *strm << ", ";
             }
         }
         else {
             if(i) {
-                newValues << ", ";
+                *strm << ", ";
             }
             if(typeid(T) == typeid(string)) {
                 // Strings need to be escaped to be included in a CovJSON object.
                 string val = reinterpret_cast<string*>(values)[indx++];
-                newValues << "\"" << focovjson::escape_for_covjson(val) << "\"";
+                *strm << "\"" << focovjson::escape_for_covjson(val) << "\"";
             }
             else {
-                newValues << values[indx++];
+                *strm << values[indx++];
             }
         }
     }
-    newValues << "]";
-
-    a->values += newValues.str();
+    *strm << "]";
 
     return indx;
 }
@@ -236,35 +233,32 @@ unsigned int FoDapCovJsonTransform::covjsonSimpleTypeArrayWorker(ostream *strm, 
     vector<unsigned int> *shape, unsigned int currentDim, struct Parameter *p)
 {
     unsigned int currentDimSize = (*shape)[currentDim];
-    ostringstream newValues;
 
-    newValues << "[";
+    *strm << "[";
     for(unsigned int i = 0; i < currentDimSize; i++) {
         if(currentDim < shape->size() - 1) {
             BESDEBUG(FoDapCovJsonTransform_debug_key,
                 "covjsonSimpleTypeArrayWorker() - Recursing! indx:  " << indx << " currentDim: " << currentDim << " currentDimSize: " << currentDimSize << endl);
             indx = covjsonSimpleTypeArrayWorker<T>(strm, values, indx, shape, currentDim + 1, p);
             if(i + 1 != currentDimSize) {
-                newValues << ", ";
+                *strm << ", ";
             }
         }
         else {
             if(i) {
-                newValues << ", ";
+                *strm << ", ";
             }
             if(typeid(T) == typeid(string)) {
                 // Strings need to be escaped to be included in a CovJSON object.
                 string val = reinterpret_cast<string*>(values)[indx++];
-                newValues << "\"" << focovjson::escape_for_covjson(val) << "\"";
+                *strm << "\"" << focovjson::escape_for_covjson(val) << "\"";
             }
             else {
-                newValues << values[indx++];
+                *strm << values[indx++];
             }
         }
     }
-    newValues << "]";
-
-    p->values += newValues.str();
+    *strm << "]";
 
     return indx;
 }
@@ -282,13 +276,13 @@ unsigned int FoDapCovJsonTransform::covjsonSimpleTypeArrayWorker(ostream *strm, 
  * @note If sendData is true but the DDS does not contain data, the result
  * is undefined.
  *
- * @param ostrm Write the CovJSON to this stream
+ * @param ostrm Write the CovJSON to this stream (for debugging purposes)
  * @param a Source data array - write out data or metadata from or about this array
  * @param indent Indent the output so humans can make sense of it
  * @param sendData true: send data; false: send metadata
  */
 template<typename T>
-void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array *a, string indent, bool sendData)
+void FoDapCovJsonTransform::covjsonSimpleTypeArray(std::ostream *strm, libdap::Array *a, string indent, bool sendData)
 {
     string childindent = indent + _indent_increment;
     bool *axisRetrieved = new bool;
@@ -317,7 +311,10 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
             a->value(&src[0]);
 
             try {
-                indx = covjsonSimpleTypeArrayWorker(strm, &src[0], 0, &shape, 0, currAxis);
+                ostringstream *astrm = new ostringstream;
+                indx = covjsonSimpleTypeArrayWorker(astrm, &src[0], 0, &shape, 0, currAxis);
+                currAxis->values += astrm->str();
+                free(astrm);
             }
             catch(...) {
                 throw;
@@ -366,7 +363,10 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
             a->value(&src[0]);
 
             try {
-                indx = covjsonSimpleTypeArrayWorker(strm, &src[0], 0, &shape, 0, currParameter);
+                ostringstream *pstrm = new ostringstream;
+                indx = covjsonSimpleTypeArrayWorker(pstrm, &src[0], 0, &shape, 0, currParameter);
+                currParameter->values += pstrm->str();
+                free(pstrm);
             }
             catch(...) {
                 throw;
@@ -435,7 +435,10 @@ void FoDapCovJsonTransform::covjsonStringArray(std::ostream *strm, libdap::Array
             a->value(sourceValues);
 
             try {
-                indx = covjsonSimpleTypeArrayWorker(strm, (std::string *) (&sourceValues[0]), 0, &shape, 0, currAxis);
+                ostringstream *astrm = new ostringstream;
+                indx = covjsonSimpleTypeArrayWorker(astrm, (std::string *) (&sourceValues[0]), 0, &shape, 0, currAxis);
+                currAxis->values += astrm->str();
+                free(astrm);
             }
             catch(...) {
                 throw;
@@ -484,7 +487,10 @@ void FoDapCovJsonTransform::covjsonStringArray(std::ostream *strm, libdap::Array
             a->value(sourceValues);
 
             try {
-                indx = covjsonSimpleTypeArrayWorker(strm, (std::string *) (&sourceValues[0]), 0, &shape, 0, currParameter);
+                ostringstream *pstrm = new ostringstream;
+                indx = covjsonSimpleTypeArrayWorker(pstrm, (std::string *) (&sourceValues[0]), 0, &shape, 0, currParameter);
+                currParameter->values += pstrm->str();
+                free(pstrm);
             }
             catch(...) {
                 throw;
@@ -1058,6 +1064,9 @@ void FoDapCovJsonTransform::printRangesWorker(ostream *strm, string indent)
         else {
             *strm << child_indent1 << "}," << endl;
         }
+    }
+    if(parameterCount == 1) {
+        *strm << indent << "}" << endl;
     }
 }
 
