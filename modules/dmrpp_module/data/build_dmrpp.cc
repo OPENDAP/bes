@@ -36,6 +36,7 @@
 #include <H5Zpublic.h>  // Constants for compression filters
 
 #include <DMRpp.h>
+#include <D4Attributes.h>
 #include <BaseType.h>
 #include <D4ParserSax2.h>
 #include <GetOpt.h>
@@ -86,7 +87,7 @@ static void print_dataset_type_info(hid_t dataset, uint8_t layout_type)
                 throw BESInternalError("Cannot obtain the fill value status.", __FILE__, __LINE__);
             }
             if (fvalue_status == H5D_FILL_VALUE_UNDEFINED) {
-                // TODO Replace with switch(), here and elsewhere. jhrg 5/7/18
+                // Replace with switch(), here and elsewhere. jhrg 5/7/18
                 if (layout_type == 1)
                     cerr << " The storage size is 0 and the storge type is contiguous." << endl;
                 else if (layout_type == 2)
@@ -248,14 +249,17 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc)
  *
  * @param file The open HDF5 file
  * @param h5_dset_path The path name of the dataset in the open hdf5 file
+ * @param dataset The open HDF5 dataset object
  * @param dc if not null, put the information in this variable (DmrppCommon)
  *
  * @exception BESError is thrown on error.
  */
-static void get_variable_chunk_info(hid_t file, const string &h5_dset_path, DmrppCommon *dc)
+static void get_variable_chunk_info(hid_t dataset /*const string &h5_dset_path*/, DmrppCommon *dc)
 {
+#if 0
     hid_t dataset = H5Dopen2(file, h5_dset_path.c_str(), H5P_DEFAULT);
     if (dataset < 0) throw BESError("HDF5 dataset '" + h5_dset_path + "' cannot be opened.", BES_NOT_FOUND_ERROR, __FILE__, __LINE__);
+#endif
 
     try {
         uint8_t layout_type = 0;
@@ -267,7 +271,7 @@ static void get_variable_chunk_info(hid_t file, const string &h5_dset_path, Dmrp
             throw BESInternalError("Cannot get HDF5 dataset storage info.", __FILE__, __LINE__);
         }
 
-        // TODO Replace this with a 'not found' error? It seems that chunk information
+        // Replace this with a 'not found' error? It seems that chunk information
         // is found only when storage_status != 0. jhrg 5/7/18
         if (storage_status == 0) {
             print_dataset_type_info(dataset, layout_type);
@@ -298,7 +302,7 @@ static void get_variable_chunk_info(hid_t file, const string &h5_dset_path, Dmrp
 
                 // Get the chunk dimensions
                 hid_t cparms = H5Dget_create_plist(dataset);
-                if (cparms < 0) throw BESInternalError("Could not open a property list for '" + h5_dset_path + "'.", __FILE__, __LINE__);
+                if (cparms < 0) throw BESInternalError("Could not open a property list for the HDF5 dataset.", __FILE__, __LINE__);
 
                 try {
 #if 0
@@ -323,7 +327,7 @@ static void get_variable_chunk_info(hid_t file, const string &h5_dset_path, Dmrp
                         throw BESInternalError("Cannot get HDF5 chunk storage info.", __FILE__, __LINE__);
 
                     num_chunk_dims -= 1; // num_chunk_dims is rank + 1. not sure why. jhrg 5/10/18
-                    VERBOSE(cerr << "    Number of dimensions in a chunk is " << num_chunk_dims << endl);
+                    VERBOSE(cerr << "Number of dimensions in a chunk is " << num_chunk_dims << endl);
 
                     // Get chunking information: rank and dimensions
                     vector<hsize_t> chunk_dims(num_chunk_dims);
@@ -331,8 +335,10 @@ static void get_variable_chunk_info(hid_t file, const string &h5_dset_path, Dmrp
 
                     if (rank_chunk != num_chunk_dims) throw BESInternalError("Unexpected chunk dimension mismatch.", __FILE__, __LINE__);
 
-                    VERBOSE(cerr << "    Chunk dimensions: " << rank_chunk << endl);
+                    VERBOSE(cerr << "Chunk rank: " << rank_chunk << endl);
+                    VERBOSE(cerr << "Chunk dimension sizes: ");
                     VERBOSE(copy(chunk_dims.begin(), chunk_dims.end(), ostream_iterator<hsize_t>(cerr, " ")));
+                    VERBOSE(cerr << endl);
 
                     dc->set_chunk_dimension_sizes(chunk_dims);
 
@@ -402,13 +408,35 @@ static void get_variable_chunk_info(hid_t file, const string &h5_dset_path, Dmrp
 static void get_chunks_for_all_variables(hid_t file, D4Group *group)
 {
     // variables in the group
-    Constructor::Vars_iter v = group->var_begin();
-    Constructor::Vars_iter ve = group->var_end();
-    while (v != ve) {
-        VERBOSE(cerr << "Working on: " << (*v)->FQN() << endl);
-        get_variable_chunk_info(file, (*v)->FQN(), dynamic_cast<DmrppCommon*>(*v));
-        ++v;
-    }
+    for (Constructor::Vars_iter v = group->var_begin(), ve = group->var_end(); v != ve; ++v) {
+        // if this variable has a 'fullnamepath' attribute, use that and not the
+        // FQN value.
+        D4Attributes *d4_attrs = (*v)->attributes();
+        if (!d4_attrs)
+            throw BESInternalError("Expected to find an attribute table for " + (*v)->name() + " but did not.", __FILE__, __LINE__);
+
+        // Look for the full name path for this variable
+        // If one was not given via an attribute, use BaseType::FQN() which
+        // relies on the varaible's position in the DAP dataset hierarchy.
+        D4Attribute *attr = d4_attrs->get("fullnamepath");
+        string FQN;
+        if (attr && attr->num_values() == 1)
+            FQN = attr->value(0);
+        else
+            FQN = (*v)->FQN();
+
+        VERBOSE(cerr << "Working on: " << FQN << endl);
+        hid_t dataset = H5Dopen2(file, FQN.c_str(), H5P_DEFAULT);
+        // It's not an error if a DAP variable in a DMR from the hdf5 handler
+        // doesn't exist in the file _if_ there's no 'fullnamepath' because
+        // that variable was synthesized (likely for CF compliance)
+        if (dataset < 0 && attr == 0)
+            continue;
+        else if (dataset < 0)
+            throw BESInternalError("HDF5 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
+
+        get_variable_chunk_info(dataset, dynamic_cast<DmrppCommon*>(*v));
+     }
 
     // all groups in the group
     D4Group::groupsIter g = group->grp_begin();
@@ -424,7 +452,7 @@ int main(int argc, char*argv[])
     string dmr_name = "";
     string url_name = "";
 
-    GetOpt getopt(argc, argv, "f:o:d:r:u:hv");
+    GetOpt getopt(argc, argv, "f:d:r:u:hv");
     int option_char;
     while ((option_char = getopt()) != -1) {
         switch (option_char) {
@@ -443,11 +471,8 @@ int main(int argc, char*argv[])
         case 'u':
             url_name = getopt.optarg;
             break;
-        case 'o':
-            // FIXME
-            break;
         case 'h':
-            cerr << "build_dmrpp [-v] -f <input> [-r <dmr> | -d <dset name>] [-u <url>]-o <output> | build_dmrpp -h" << endl;
+            cerr << "build_dmrpp [-v] -f <input> [-r <dmr> | -d <dset name>] [-u <url>] | build_dmrpp -h" << endl;
             exit(1);
         default:
             break;
@@ -497,8 +522,13 @@ int main(int argc, char*argv[])
             cout << writer.get_doc();
         }
         else if (!h5_dset_path.empty()) {
-            VERBOSE(cerr << "Getting chunk inforamtion for: " << h5_dset_path << endl);
-            get_variable_chunk_info(file, h5_dset_path, 0);
+            VERBOSE(cerr << "Getting chunk information for: " << h5_dset_path << endl);
+
+            hid_t dataset = H5Dopen2(file, h5_dset_path.c_str(), H5P_DEFAULT);
+            if (dataset < 0)
+                throw BESError("HDF5 dataset '" + h5_dset_path + "' cannot be opened.", BES_NOT_FOUND_ERROR, __FILE__, __LINE__);
+
+            get_variable_chunk_info(dataset, 0);
         }
         else {
             cerr << "Error: One of -d <hdf5 dataset name> or -r <DAP4 DMR name> must be given." << endl;
