@@ -30,6 +30,9 @@ sed -e "s%[@]hdf5_root_directory[@]%$hdf5_root_directory%" < bes.hdf5.cf.templat
 # use besstandalone to get the DMR
 besstandalone -c $temp_conf -i $temp_cmd > $temp_dmr
 
+echo "DMR: "
+cat $temp_dmr
+
 ./build_dmrpp -f $hdf5_file -r $temp_dmr
 
 # TODO Use trap to ensure these are really removed

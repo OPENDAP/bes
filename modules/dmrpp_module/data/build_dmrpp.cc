@@ -497,6 +497,7 @@ int main(int argc, char*argv[])
             cout << writer.get_doc();
         }
         else if (!h5_dset_path.empty()) {
+            VERBOSE(cerr << "Getting chunk inforamtion for: " << h5_dset_path << endl);
             get_variable_chunk_info(file, h5_dset_path, 0);
         }
         else {
