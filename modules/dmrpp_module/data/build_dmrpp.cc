@@ -405,7 +405,7 @@ static void get_chunks_for_all_variables(hid_t file, D4Group *group)
     Constructor::Vars_iter v = group->var_begin();
     Constructor::Vars_iter ve = group->var_end();
     while (v != ve) {
-        cerr << (*v)->FQN() << endl;
+        VERBOSE(cerr << "Working on: " << (*v)->FQN() << endl);
         get_variable_chunk_info(file, (*v)->FQN(), dynamic_cast<DmrppCommon*>(*v));
         ++v;
     }
@@ -414,7 +414,7 @@ static void get_chunks_for_all_variables(hid_t file, D4Group *group)
     D4Group::groupsIter g = group->grp_begin();
     D4Group::groupsIter ge = group->grp_end();
     while (g != ge)
-        get_chunks_for_all_variables(file, *g);
+        get_chunks_for_all_variables(file, *g++);
 }
 
 int main(int argc, char*argv[])
