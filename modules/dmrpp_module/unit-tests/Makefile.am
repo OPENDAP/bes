@@ -6,8 +6,6 @@ AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)/modules -I$(top_srcdir)/modules/dmrpp_module \
 -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 
-# -I$(top_srcdir)/modules/hdf5_handler
-
 # Added -lz for ubuntu
 LIBADD = $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_EXTRA_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
@@ -35,9 +33,7 @@ TESTS = $(UNIT_TESTS)
 
 noinst_HEADERS = test_config.h
 
-DIRS_EXTRA = 
-
-EXTRA_DIST = 
+EXTRA_DIST = baselines
 
 CLEANFILES = *.gcda *.gcno *.strm *.file test_config.h tmp.txt
 
@@ -59,7 +55,6 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 
 if CPPUNIT
 UNIT_TESTS = ChunkTest DmrppParserTest DmrppCommonTest
-# DmrppChunkedReadTest
 else
 UNIT_TESTS =
 
@@ -83,16 +78,3 @@ DmrppParserTest_LDADD   =  $(OBJS) $(LIBADD)
 
 DmrppCommonTest_SOURCES = DmrppCommonTest.cc $(top_srcdir)/modules/read_test_baseline.cc
 DmrppCommonTest_LDADD =  $(OBJS) $(LIBADD)
-
-# DmrppTypeReadTest_SOURCES = DmrppTypeReadTest.cc
-# DmrppTypeReadTest_LDADD   = $(OBJS) $(LIBADD)
-
-# DmrppChunkedReadTest_SOURCES = DmrppChunkedReadTest.cc
-# DmrppChunkedReadTest_LDADD   = $(OBJS) $(LIBADD)
-
-# DmrppHttpReadTest_SOURCES = DmrppHttpReadTest.cc
-# DmrppHttpReadTest_LDADD   = $(OBJS) $(LIBADD)
-
-# DmrppUtilTest_SOURCES = DmrppUtilTest.cc
-# DmrppUtilTest_LDADD   = $(OBJS) $(LIBADD)
-
