@@ -179,6 +179,13 @@ string GlobalMetadataStore::get_cache_dir_from_config()
  * @name Get an instance of GlobalMetadataStore
  * @brief  There are two ways to get an instance of GlobalMetadataStore singleton.
  *
+ * @note If the cache_dir parameter is the empty string, get_instance() will return null
+ * for the pointer to the singleton and caching is disabled. This means that if the cache
+ * directory is not set in the bes.conf file(s), then the cache will be disabled. If
+ * the cache directory is given (or set in bes.conf) but the prefix or size is not,
+ * that's an error. If the directory is named but does not exist, it will
+ * be made. If the BES cannot make it, then an error will be signaled.
+ *
  * @return A pointer to a GlobalMetadataStore object; null if the cache is disabled.
  */
 ///@{
@@ -188,13 +195,6 @@ string GlobalMetadataStore::get_cache_dir_from_config()
  * This class is a singleton, so the first call to any of two 'get_instance()' methods
  * makes an instance and subsequent calls return a pointer to that instance.
  *
- * @note If the cache_dir parameter is the empty string, get_instance() will return null
- * for the pointer to the singleton and caching is disabled. This means that if the cache
- * directory is not set in the bes.conf file(s), then the cache will be disabled. If
- * the cache directory is given (or set in bes.conf) but the prefix or size is not,
- * that's an error. Similarly, if the directory is named but does not exist, it will
- * be made. If the BES cannot make it, then an error will be signaled.
- *
  * @param cache_dir_key Key to use to get the value of the cache directory. If this is
  * the empty string, return null right away.
  * @param prefix_key Key for the item/file prefix. Each item added to the cache uses this
@@ -202,9 +202,9 @@ string GlobalMetadataStore::get_cache_dir_from_config()
  * several caches or /tmp is used for the cache.
  * @param size_key The maximum size of the data stored in the cache, in megabytes
  *
- * @return A pointer to a GlobalMetadataStore object. If the cache is disabled (because the
- * directory is not set or does not exist), then the pointer returned will be null and
- * the cache will be marked as not enabled. Subsequent calls will return immediately.
+ * @return A pointer to a GlobalMetadataStore object. If the cache is disabled, then
+ * the pointer returned will be null and the cache will be marked as not enabled.
+ * Subsequent calls will return immediately.
  */
 GlobalMetadataStore *
 GlobalMetadataStore::get_instance(const string &cache_dir, const string &prefix, unsigned long long size)
@@ -353,8 +353,11 @@ GlobalMetadataStore::get_hash(const string &name)
 }
 
 /**
+ * @brief Use an object (DDS or DMR) to write data to the MDS.
+ *
  * Specialization of StreamDAP that prints a DMR using the information
- * in a DDS instance.
+ * in a DDS or DMR instance, depending on which object s used to make the
+ * StreamDMR instance.
  *
  * Look at the GlobalMetadataStore class definition to see how the StreamDAP
  * functor is used to parameterize writing the DAP metadata response for the
@@ -365,7 +368,7 @@ GlobalMetadataStore::get_hash(const string &name)
  * worked for the most part, but highlighted some differences between the
  * two protocol versions that make it hard to produce identical responses
  * using both the DDS or DMR from the same dataset. This made testing hard
- * and meant that the result was unpredictable for some edge cases. The symbol
+ * and meant that the result was 'unpredictable' for some edge cases. The symbol
  * SYMETRIC_ADD_RESPONSES controls if this feature is on or not; currently it
  * is turned off.
  *
@@ -416,9 +419,9 @@ void GlobalMetadataStore::StreamDAS::operator()(ostream &os) {
 /**
  * Store the DAP metadata responses
  *
- * @param writer A child instance of StreamDAP, instantiated using a DDS.
- * An instance of StreamDDS will write a DDS response, StreamDAS a DAS
- * response and StreamDMR a DMR response.
+ * @param writer A child instance of StreamDAP, instantiated using a DDS or DMR.
+ * An instance of StreamDDS will write a DDS response, StreamDAS writes a DAS
+ * response,and StreamDMR writes a DMR response.
  * @param key Unique Id for this response; used to store the response in the
  * MDS.
  * @param name The granule/file name or pathname
@@ -491,7 +494,34 @@ GlobalMetadataStore::store_dap_response(StreamDAP &writer, const string &key, co
 }
 
 // Documented in the header file - I could not get doxygen comments to work
-// for these two methods in ths file (but al the others are fine). jhrg 2.28.18
+// for these two methods in this file (but all the others are fine). jhrg 2.28.18
+/**
+ * @name Add responses to the GlobalMetadataStore
+ * @brief Use a DDS or DMR to populate DAP metadata responses in the MDS
+ *
+ * These methods use a DDS or DMR object to generate the DDS, DAS and DMR responses
+ * for DAP (2 and 4). They store those in the MDS and then update the
+ * MDS ledger file with the operation (add), the kind of object used
+ * to build the responses (DDS or DMR), name of the granule and hashes/names
+ * for each of the three files in the MDS that hold the responses.
+ *
+ * If verbose logging is on, the bes log also will hold information about
+ * the operation. If there is an error, that will always be recorded in
+ * the bes log.
+ */
+///@{
+
+/**
+ * @brief Add the DAP2 metadata responses using a DDS
+ *
+ * This method adds only the DDS and DAS unless the code was compiled with
+ * the symbol SYMETRIC_ADD_RESPONSES defined.
+ *
+ * @param name The granule name or identifier
+ * @param dds A DDS built from the granule
+ * @return True if all of the cache/store entries were written, False if any
+ * could not be written.
+ */
 bool
 GlobalMetadataStore::add_responses(DDS *dds, const string &name)
 {
@@ -523,6 +553,17 @@ GlobalMetadataStore::add_responses(DDS *dds, const string &name)
 #endif
 }
 
+/**
+ * @brief Add the DAP4 metadata responses using a DMR
+ *
+ * This method adds only the DMR unless the code was compiled with
+ * the symbol SYMETRIC_ADD_RESPONSES defined.
+ *
+ * @param name The granule name or identifier
+ * @param dmr A DMR built from the granule
+ * @return True if all of the cache/store entry was written, False if any
+ * could not be written.
+ */
 bool
 GlobalMetadataStore::add_responses(DMR *dmr, const string &name)
 {
@@ -553,15 +594,18 @@ GlobalMetadataStore::add_responses(DMR *dmr, const string &name)
     return(stored_dmr);
 #endif
 }
+///@}
 
 /**
- * Common code to acquire a read lock on a MDS item. The caller must use unlock_and_close().
+ * Common code to acquire a read lock on a MDS item. This method locks
+ * the response for reading. When the MDSReadLock goes out of scope, the
+ * response is unlocked.
  *
- * This method logs (using LOG, note VERBOSE) cache hits and misses.
+ * This method logs (using LOG, not VERBOSE) cache hits and misses.
  *
  * @param name Granule name
  * @param suffix One of 'dds_r', 'das_r' or 'dmr_r'
- * @param object_name One of DDS, DAS or DMR (used for verbose logging only)
+ * @param object_name One of DDS, DAS or DMR (used for logging only)
  * @return True if the object was locked, false otherwise
  */
 GlobalMetadataStore::MDSReadLock

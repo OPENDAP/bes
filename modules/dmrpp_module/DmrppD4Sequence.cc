@@ -69,7 +69,7 @@ DmrppD4Sequence::operator=(const DmrppD4Sequence &rhs)
     dynamic_cast<D4Sequence &>(*this) = rhs; // run Constructor=
 
     _duplicate(rhs);
-    DmrppCommon::_duplicate(rhs);
+    DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }

@@ -205,53 +205,8 @@ public:
     {
     }
 
-    // I moved this from the .cc file where it really belongs to here because
-    // the docs were not getting built when the comments were in the the .cc
-    // file (only these two methods).
-    /**
-     * @name Add responses to the GlobalMetadataStore
-     * @brief Use a DDS or DMR to populate DAP metadata responses in the MDS
-     *
-     * These methods uses a DDS or DMR object to generate the DDS, DAS and DMR responses
-     * for DAP (2 and 4). They store those in the MDS and then update the
-     * MDS ledger file with the operation (add), the kind of object used
-     * to build the responses (DDS or DMR), name of the granule and hashes/names
-     * for each of the three files in the MDS that hold the responses.
-     *
-     * If verbose logging is on, the bes log also will hold information about
-     * the operation. If there is an error, that will always be recorded in
-     * the bes log.
-     *
-     * @return True if the DDS, DAS or DMR were added to the MDS
-     */
-    ///@{
-
-    /**
-     * @brief Add the DAP2 metadata responses using a DDS
-     *
-     * This method adds only the DDS and DAS unless the code was compiled with
-     * the symbol SYMETRIC_ADD_RESPONSES defined.
-     *
-     * @param name The granule name or identifier
-     * @param dds A DDS built from the granule
-     * @return True if all of the cache/store entries were written, False if any
-     * could not be written.
-     */
     virtual bool add_responses(libdap::DDS *dds, const std::string &name);
-
-    /**
-     * @brief Add the DAP4 metadata responses using a DMR
-     *
-     * This method adds only the DMR unless the code was compiled with
-     * the symbol SYMETRIC_ADD_RESPONSES defined.
-     *
-     * @param name The granule name or identifier
-     * @param dmr A DMR built from the granule
-     * @return True if all of the cache/store entry was written, False if any
-     * could not be written.
-     */
     virtual bool add_responses(libdap::DMR *dmr, const std::string &name);
-    ///@}
 
     virtual MDSReadLock is_dmr_available(const std::string &name);
     virtual MDSReadLock is_dds_available(const std::string &name);

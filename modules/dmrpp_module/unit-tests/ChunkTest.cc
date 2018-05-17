@@ -44,18 +44,18 @@ static bool bes_debug = false;
 
 namespace dmrpp {
 
-class ChunkTest: public CppUnit::TestFixture {
+class DmrppCommonTest: public CppUnit::TestFixture {
 private:
     Chunk d_chunk;
 
 public:
     // Called once before everything gets tested
-    ChunkTest()
+    DmrppCommonTest()
     {
     }
 
     // Called at the end of the test
-    ~ChunkTest()
+    ~DmrppCommonTest()
     {
     }
 
@@ -114,7 +114,7 @@ public:
         CPPUNIT_FAIL("set_position_in_array() should throw on bad values");
     }
 
-    CPPUNIT_TEST_SUITE( ChunkTest );
+    CPPUNIT_TEST_SUITE( DmrppCommonTest );
 
     CPPUNIT_TEST(set_position_in_array_test);
     CPPUNIT_TEST(set_position_in_array_test_2);
@@ -128,7 +128,7 @@ public:
     CPPUNIT_TEST_SUITE_END();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(ChunkTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(DmrppCommonTest);
 
 } // namespace dmrpp
 
@@ -162,7 +162,7 @@ int main(int argc, char*argv[])
     else {
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            test = dmrpp::ChunkTest::suite()->getName().append("::").append(argv[i]);
+            test = dmrpp::DmrppCommonTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
             ++i;
         }

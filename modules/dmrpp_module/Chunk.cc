@@ -261,7 +261,7 @@ void unshuffle(char *dest, const char *src, unsigned int src_size, unsigned int 
  * will be much simpler since istringstream is designed to deal with exactly
  * that form of input.
  *
- * @param pia The chunk position string.
+ * @param pia The chunk position string. Syntax parsed: "[1,2,3,4]"
  */
 void Chunk::set_position_in_array(const string &pia)
 {
@@ -292,13 +292,30 @@ void Chunk::set_position_in_array(const string &pia)
 }
 
 /**
+ * @brief Set the chunk's position in the Array
+ *
+ * Use this method when the vector<unsigned int> is known.
+ *
+ * @see Chunk::set_position_in_array(const string &pia)
+ * @param pia A vector of unsigned ints.
+ */
+void Chunk::set_position_in_array(const std::vector<unsigned int> &pia)
+{
+    if (pia.size() == 0) return;
+
+    if (d_chunk_position_in_array.size()) d_chunk_position_in_array.clear();
+
+    d_chunk_position_in_array = pia;
+}
+
+/**
  * @brief Returns a curl range argument.
  * The libcurl requires a string argument for range-ge activitys, this method
  * constructs one in the required syntax from the offset and size information
  * for this byteStream.
  *
  */
-std::string Chunk::get_curl_range_arg_string()
+string Chunk::get_curl_range_arg_string()
 {
     ostringstream range;   // range-get needs a string arg for the range
     range << d_offset << "-" << d_offset + d_size - 1;
