@@ -88,7 +88,8 @@ void WWWOutput::write_disposition(string url, bool netcdf3_file_response, bool n
 <h3>\n\
 <a href=\"opendap_form_help.html#disposition\" target=\"help\">Action:</a></h3>\n\
 <td>\n\
-<input type=\"button\" value=\"Get ASCII\" onclick=\"ascii_button()\">\n";
+<input type=\"button\" value=\"Get ASCII\" onclick=\"ascii_button()\">\n\
+<input type=\"button\" value=\"Get CovJson\" onclick=\"binary_button('covjson')\">\n";
 
     // Add new netcdf_button call here jhrg 2/9/09
     if (netcdf3_file_response)
