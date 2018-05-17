@@ -25,22 +25,20 @@
 
 #include <XMLWriter.h>
 #include <D4Group.h>
+#include <D4BaseTypeFactory.h>
 #include <InternalErr.h>
 
 #include "DMRpp.h"
 #include "DmrppCommon.h"
+#include "DmrppTypeFactory.h"
 
 using namespace libdap;
 
 namespace dmrpp {
 
-#if 0
-/**
- * @brief The DMR++ namespace.
- */
-const string dmrpp_namespace = "http://xml.opendap.org/dap/dmrpp/1.0.0#";
-#endif
-
+DMRpp::DMRpp(DmrppTypeFactory *factory, const std::string &name) : DMR(factory, name)
+{
+}
 
 /**
  * @brief Print the DMR++ response

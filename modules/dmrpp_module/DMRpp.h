@@ -34,12 +34,18 @@ class XMLWriter;
 
 namespace dmrpp {
 
+class DmrppTypeFactory;
+
 /**
  * @brief Provide a way to print the DMR++ response
  */
 class DMRpp : public libdap::DMR {
 public:
-    DMRpp() { }
+    DMRpp() : DMR() { }
+    DMRpp(const DMRpp &dmrpp) : DMR(dmrpp) { }
+
+    DMRpp(DmrppTypeFactory *factory, const std::string &name = "");
+
     virtual ~DMRpp() { }
 
     virtual void print_dmrpp(libdap::XMLWriter &xml, const std::string &href ="", bool constrained = false, bool print_chunks = true);
