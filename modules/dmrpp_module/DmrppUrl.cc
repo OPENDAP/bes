@@ -69,7 +69,7 @@ DmrppUrl::operator=(const DmrppUrl &rhs)
     dynamic_cast<Url &>(*this) = rhs; // run Constructor=
 
     _duplicate(rhs);
-    DmrppCommon::_duplicate(rhs);
+    DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }

@@ -34,12 +34,19 @@
 
 #include <unistd.h>
 
+#include <D4Enum.h>
+#include <D4EnumDefs.h>
+#include <D4Attributes.h>
+#include <D4Maps.h>
+#include <D4Group.h>
+
 #include "BESInternalError.h"
 #include "BESDebug.h"
 
 #include "DmrppArray.h"
 #include "DmrppRequestHandler.h"
 
+// Used with BESDEBUG
 static const string dmrpp_3 = "dmrpp:3";
 
 using namespace libdap;
@@ -81,7 +88,7 @@ DmrppArray::operator=(const DmrppArray &rhs)
     dynamic_cast<Array &>(*this) = rhs; // run Constructor=
 
     _duplicate(rhs);
-    DmrppCommon::_duplicate(rhs);
+    DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }
@@ -207,7 +214,7 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dimIter, unsigned long *
         subsetAddress.pop_back();
 
         // Copy data block from start_index to stop_index
-        // FIXME Replace this loop with a call to std::memcpy()
+        // TODO Replace this loop with a call to std::memcpy()
         for (unsigned long sourceIndex = start_index; sourceIndex <= stop_index; sourceIndex++) {
             unsigned long target_byte = *target_index * bytesPerElt;
             unsigned long source_byte = sourceIndex * bytesPerElt;
@@ -478,10 +485,6 @@ void DmrppArray::read_chunks_serial()
  * When \arg dim is the array's rank, `target_element_address` will
  * have a value for all but the rightmost dimension.
  *
- * @todo Save the target element address with the chunk for use in the
- * insert code. It might be useful to compute the last (rightmost)
- * component of the `target_element_address.`
- *
  * @param dim Starting with 0, compute values for this dimension of the array
  * @param target_element_address Initially empty, this becomes the location
  * in the array where data should be written.
@@ -751,6 +754,146 @@ bool DmrppArray::read()
     }
 
     return true;
+}
+
+/**
+ * Classes used with the STL for_each() algorithm; stolen from libdap::Array.
+ */
+///@{
+class PrintD4ArrayDimXMLWriter: public unary_function<Array::dimension&, void> {
+    XMLWriter &xml;
+    // Was this variable constrained using local/direct slicing? i.e., is d_local_constraint set?
+    // If so, don't use shared dimensions; instead emit Dim elements that are anonymous.
+    bool d_constrained;
+public:
+
+    PrintD4ArrayDimXMLWriter(XMLWriter &xml, bool c) : xml(xml), d_constrained(c) { }
+
+    void operator()(Array::dimension &d)
+    {
+        // This duplicates code in D4Dimensions (where D4Dimension::print_dap4() is defined
+        // because of the need to print the constrained size of a dimension. I think that
+        // the constraint information has to be kept here and not in the dimension (since they
+        // are shared dims). Could hack print_dap4() to take the constrained size, however.
+        if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar*) "Dim") < 0)
+            throw InternalErr(__FILE__, __LINE__, "Could not write Dim element");
+
+        string name = (d.dim) ? d.dim->fully_qualified_name() : d.name;
+        // If there is a name, there must be a Dimension (named dimension) in scope
+        // so write its name but not its size.
+        if (!d_constrained && !name.empty()) {
+            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "name", (const xmlChar*) name.c_str())
+                    < 0) throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
+        }
+        else if (d.use_sdim_for_slice) {
+            assert(!name.empty());
+            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "name", (const xmlChar*) name.c_str())
+                    < 0) throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
+        }
+        else {
+            ostringstream size;
+            size << (d_constrained ? d.c_size : d.size);
+            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "size",
+                    (const xmlChar*) size.str().c_str()) < 0)
+                throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
+        }
+
+        if (xmlTextWriterEndElement(xml.get_writer()) < 0)
+            throw InternalErr(__FILE__, __LINE__, "Could not end Dim element");
+    }
+};
+
+class PrintD4ConstructorVarXMLWriter: public unary_function<BaseType*, void> {
+    XMLWriter &xml;
+    bool d_constrained;
+public:
+    PrintD4ConstructorVarXMLWriter(XMLWriter &xml, bool c) : xml(xml), d_constrained(c) { }
+
+    void operator()(BaseType *btp)
+    {
+        btp->print_dap4(xml, d_constrained);
+    }
+};
+
+class PrintD4MapXMLWriter: public unary_function<D4Map*, void> {
+    XMLWriter &xml;
+
+public:
+    PrintD4MapXMLWriter(XMLWriter &xml) : xml(xml) { }
+
+    void operator()(D4Map *m)
+    {
+        m->print_dap4(xml);
+    }
+};
+///@}
+
+/**
+ * @brief Shadow libdap::Array::print_dap4() - optionally prints DMR++ chunk information
+ *
+ * This version of libdap::BaseType::print_dap4() will print information about
+ * HDF5 chunks when the value of the static class filed dmrpp::DmrppCommon::d_print_chunks
+ * is true. The method DMRpp::print_dmrpp() will set the _d_pprint_chunks_ field to
+ * true causing this method to include the _chunks_ elements in its output. When
+ * the field's value is false, this method prints the same output as libdap::Array.
+ *
+ * @note There are, no doubt, better ways to do this than using what is essentially a
+ * global flag; one way is to  synchronize access to a DMR C++ object and a DOM
+ * tree for the same DMR document. The chunk information can be read from the DMR and
+ * inserted into the DOM tree, which then printed. If the
+ * approach I took here becomes an issue (i.e., if we have to fix problems in libdap and
+ * here because of code duplication), we should probably recode this and the related
+ * methods to use the 'DOM tree approach.'
+ *
+ * @param xml Write the XML to this instance of XMLWriter
+ * @param constrained True if the response should be constrained. False by default
+ *
+ * @see DmrppCommon::print_dmrpp()
+ * @see DMRpp::print_dmrpp()
+ */
+void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
+{
+    if (constrained && !send_p()) return;
+
+    if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar*) var()->type_name().c_str()) < 0)
+        throw InternalErr(__FILE__, __LINE__, "Could not write " + type_name() + " element");
+
+    if (!name().empty())
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "name", (const xmlChar*)name().c_str()) < 0)
+            throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
+
+    // Hack job... Copied from D4Enum::print_xml_writer. jhrg 11/12/13
+    if (var()->type() == dods_enum_c) {
+        D4Enum *e = static_cast<D4Enum*>(var());
+        string path = e->enumeration()->name();
+        if (e->enumeration()->parent()) {
+            // print the FQN for the enum def; D4Group::FQN() includes the trailing '/'
+            path = static_cast<D4Group*>(e->enumeration()->parent()->parent())->FQN() + path;
+        }
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "enum", (const xmlChar*)path.c_str()) < 0)
+            throw InternalErr(__FILE__, __LINE__, "Could not write attribute for enum");
+    }
+
+    if (prototype()->is_constructor_type()) {
+        Constructor &c = static_cast<Constructor&>(*prototype());
+        for_each(c.var_begin(), c.var_end(), PrintD4ConstructorVarXMLWriter(xml, constrained));
+        // bind2nd(mem_fun_ref(&BaseType::print_dap4), xml));
+    }
+
+    // Drop the local_constraint which is per-array and use a per-dimension on instead
+    for_each(dim_begin(), dim_end(), PrintD4ArrayDimXMLWriter(xml, constrained));
+
+    attributes()->print_dap4(xml);
+
+    for_each(maps()->map_begin(), maps()->map_end(), PrintD4MapXMLWriter(xml));
+
+    // Only print the chunks info if there. This is the code added to libdap::Array::print_dap4().
+    // jhrg 5/10/18
+    if (DmrppCommon::d_print_chunks && get_immutable_chunks().size() > 0)
+        print_chunks_element(xml, DmrppCommon::d_ns_prefix);
+
+    if (xmlTextWriterEndElement(xml.get_writer()) < 0)
+        throw InternalErr(__FILE__, __LINE__, "Could not end " + type_name() + " element");
 }
 
 void DmrppArray::dump(ostream & strm) const

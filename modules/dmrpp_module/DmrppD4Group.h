@@ -30,6 +30,10 @@
 #include <D4Group.h>
 #include "DmrppCommon.h"
 
+namespace libdap {
+class XMLWriter;
+}
+
 namespace dmrpp {
 
 class DmrppD4Group: public libdap::D4Group, public DmrppCommon {
@@ -45,6 +49,11 @@ public:
     DmrppD4Group &operator=(const DmrppD4Group &rhs);
 
     virtual libdap::BaseType *ptr_duplicate();
+
+#if 0
+    void print_dap4(libdap::XMLWriter &xml, bool constrained);
+#endif
+
 
     virtual void dump(ostream & strm) const;
 };

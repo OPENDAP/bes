@@ -30,6 +30,10 @@
 #include <Structure.h>
 #include "DmrppCommon.h"
 
+namespace libdap {
+class XMLWriter;
+}
+
 namespace dmrpp {
 
 class DmrppStructure: public libdap::Structure, public DmrppCommon {
@@ -45,6 +49,11 @@ public:
     DmrppStructure &operator=(const DmrppStructure &rhs);
 
     virtual libdap::BaseType *ptr_duplicate();
+
+#if 0
+    virtual void print_dap4(libdap::XMLWriter &xml, bool constrained);
+#endif
+
 
     virtual void dump(ostream & strm) const;
 };

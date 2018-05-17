@@ -1262,7 +1262,7 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
             throw BESInternalError("Could not cast BaseType to DmrppType in the drmpp handler.", __FILE__, __LINE__);
         string element_text(parser->char_data);
         if (parser->debug()) cerr << "chunkDimensionSizes element_text: '" << element_text << "'" << endl;
-        dc->ingest_chunk_dimension_sizes(element_text);
+        dc->parse_chunk_dimension_sizes(element_text);
         parser->char_data = ""; // Null this after use.
         parser->pop_state();
         break;

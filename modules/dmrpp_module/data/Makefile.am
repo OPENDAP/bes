@@ -4,7 +4,32 @@ AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = $(DAP_CFLAGS) $(BES_CPPFLAGS) -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch
 AM_CXXFLAGS = 
 
-noinst_PROGRAMS = endian_convert multiball keepalive2
+noinst_PROGRAMS = build_dmrpp endian_convert multiball keepalive2
+
+# VPATH = ..
+
+# -I$(top_srcdir)/modules/hdf5_handler
+
+build_dmrpp_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)/modules/dmrpp_module \
+-I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+
+build_dmrpp_SOURCES = build_dmrpp.cc
+
+# I tried linking with the HDF5 module, but that didn't work. The error was
+# "... file was built for archive which is not the architecture being linked."
+# jhrg 5/11/18
+#
+# HDF5_MODULE = $(H5_LDFLAGS) $(H5_LIBS) $(GCTP_LIBS) -L$(top_builddir)/modules/hdf5_handler -lhdf5_module
+
+# Explictily linking with the .a archive removes the warnings about the .so
+# being a module and not a real library. jhrg 5/11/18
+#
+# DMRPP_MODULE = -L$(top_builddir)/modules/dmrpp_module -ldmrpp_module
+
+DMRPP_MODULE = $(top_builddir)/modules/dmrpp_module/.libs/libdmrpp_module.a
+BESDAP_MODULE = $(top_builddir)/dap/.libs/libdap_module.a
+build_dmrpp_LDADD = $(HDF5_MODULE) $(DMRPP_MODULE) $(BES_DISPATCH_LIB) $(BESDAP_MODULE) $(BES_EXTRA_LIBS) \
+$(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
 
 endian_convert_SOURCES = endian_convert.cc
 endian_convert_LDADD = $(DAP_SERVER_LIBS)
@@ -15,12 +40,22 @@ multiball_LDADD = $(DAP_SERVER_LIBS) $(CURL_LIBS)
 keepalive2_SOURCES = keepalive2.cc 
 keepalive2_LDADD = $(DAP_SERVER_LIBS) $(CURL_LIBS) $(PTHREAD_LIBS)
 
-noinst_SCRIPTS = keepalive_stats.sh mtest.sh shreddit.sh test_reuse.sh
+noinst_SCRIPTS = keepalive_stats.sh mtest.sh shreddit.sh test_reuse.sh \
+get_dmrpp.sh
+
+# Build the bes.conf used for testing so that the value substituted for
+# @abs_top_srcdir@ does not contain '../'. This happens when using 
+# configure's value for the parameter when running the distcheck target.
+%.conf : %.conf.in
+	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
+		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
+		-e "s%[@]modulesdir[@]%${modulesdir}%" $< > $@
 
 EXTRA_PROGRAMS = 
 
 EXTRA_DIST = keepalive_stats.sh mtest.sh shreddit.sh test_reuse.sh \
-mkChunkedTestData.py README dmrpp
+mkChunkedTestData.py get_dmrpp.sh README dmrpp
 
 CLEANFILES = *~
 

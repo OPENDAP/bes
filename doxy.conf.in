@@ -833,9 +833,9 @@ EXCLUDE_SYMLINKS       = NO
 
 EXCLUDE_PATTERNS       = */old/* \
 */not-used/* \
+*/unused/* \
 */tests/* \
 */unit-tests/* \
-*/modules/* \
 */templates/* \
 */apache/* \
 */bin/* \
@@ -848,6 +848,8 @@ Test*.cc \
 Test*.h \
 *Test.cc \
 *T.cc
+
+# This was excluded. jhrg 5/10/18 */modules/* \ 
                          
 # The EXCLUDE_SYMBOLS tag can be used to specify one or more symbol names
 # (namespaces, classes, functions, etc.) that should be excluded from the

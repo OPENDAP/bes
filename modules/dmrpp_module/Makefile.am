@@ -1,7 +1,9 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = $(DAP_CFLAGS) $(BES_CPPFLAGS) -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch
+AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+# Removed: $(GCTP_CPPFLAGS) 
+
 ACLOCAL_AMFLAGS = -I conf
 AM_CXXFLAGS = 
 
@@ -24,7 +26,7 @@ SUBDIRS = . unit-tests tests data
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libdmrpp_module.la
 
-BES_SRCS = DmrppCommon.cc Chunk.cc CurlHandlePool.cc \
+BES_SRCS = DMRpp.cc DmrppCommon.cc Chunk.cc CurlHandlePool.cc \
 DmrppModule.cc DmrppRequestHandler.cc DmrppByte.cc DmrppArray.cc \
 DmrppFloat32.cc DmrppFloat64.cc DmrppInt16.cc DmrppInt32.cc DmrppInt64.cc \
 DmrppInt8.cc DmrppUInt16.cc DmrppUInt32.cc DmrppUInt64.cc DmrppStr.cc  \
@@ -33,7 +35,7 @@ DmrppD4Sequence.cc  DmrppTypeFactory.cc DmrppParserSax2.cc
 
 # Odometer.cc 
 
-BES_HDRS = DmrppCommon.h Chunk.h  CurlHandlePool.h \
+BES_HDRS = DMRpp.h DmrppCommon.h Chunk.h  CurlHandlePool.h \
 DmrppModule.h DmrppRequestHandler.h DmrppByte.h \
 DmrppArray.h DmrppFloat32.h DmrppFloat64.h DmrppInt16.h DmrppInt32.h \
 DmrppInt64.h DmrppInt8.h DmrppUInt16.h DmrppUInt32.h DmrppUInt64.h \
@@ -52,7 +54,7 @@ $(top_builddir)/dispatch/libbes_dispatch.la
 
 libdmrpp_module_la_SOURCES = $(BES_HDRS) $(BES_SRCS)
 libdmrpp_module_la_LDFLAGS = -avoid-version -module 
-libdmrpp_module_la_LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -ltest-types 
+libdmrpp_module_la_LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(H5_LDFLAGS) $(H5_LIBS) -ltest-types 
 
 EXTRA_PROGRAMS = 
 

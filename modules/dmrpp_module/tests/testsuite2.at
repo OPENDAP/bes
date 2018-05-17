@@ -1,0 +1,71 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+
+AT_INIT([DMR++])
+
+AT_TESTED([build_dmrpp])
+
+AT_ARG_OPTION_ARG([baselines],
+    [--baselines=yes|no   Build the baseline file for parser test 'arg'],
+    [echo "baselines set to $at_arg_baselines";
+     baselines=$at_arg_baselines],[baselines=])
+
+# Usage: _AT_TEST_*(<bescmd source>, <baseline file>, <xpass/xfail> [default is xpass] <repeat|cached> [default is no])
+
+dnl Given a filename, remove any date-time string of the form "yyyy-mm-dd hh:mm:ss" 
+dnl in that file and put "removed date-time" in its place. This hack keeps the baselines
+dnl more or less true to form without the obvious issue of baselines being broken 
+dnl one second after they are written.
+dnl  
+dnl Note that the macro depends on the baseline being a file.
+dnl
+dnl jhrg 6/3/16
+ 
+m4_define([REMOVE_DATE_TIME], [dnl
+    sed 's@[[0-9]]\{4\}-[[0-9]]\{2\}-[[0-9]]\{2\} [[0-9]]\{2\}:[[0-9]]\{2\}:[[0-9]]\{2\}@removed date-time@g' < $1 > $1.sed
+    dnl '
+    mv $1.sed $1
+])
+
+dnl Given a filename, remove the <Value> element of a DAP4 data response as
+dnl printed by getdap4 so that we don't have issues with comparing data values
+dnl on big- and little-endian machines. The value of the checksum is a function
+dnl of the bytes, so different word orders produce different checksums. jhrg 4/25/18
+
+m4_define([REMOVE_DAP4_CHECKSUM], [dnl
+    sed 's@<Value>[[0-9a-f]]\{8\}</Value>@removed checksum@g' < $1 > $1.sed
+    dnl '
+    mv $1.sed $1
+])
+
+m4_define([_AT_BUILD_DMRPP_TEST],  [dnl
+
+    AT_SETUP([./build_dmrpp $1])
+    AT_KEYWORDS([build_dmrpp])
+    
+    hdf5=$1
+    dmr=$2
+    baseline=$3
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([build_dmrpp -f $hdf5 -r $dmr], [0], [stdout])
+        dnl REMOVE_DAP4_CHECKSUM([stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        dnl build_dmrpp -f dmrpp/chunked_shufzip_twoD.h5 -r dmrpp/chunked_shufzip_twoD.h5.dmr
+        AT_CHECK([build_dmrpp -f $hdf5 -r $dmr], [0], [stdout])
+        dnl REMOVE_DAP4_CHECKSUM([stdout])
+        AT_CHECK([diff -b -B $baseline stdout])
+        AT_XFAIL_IF([test "$4" = "xfail"])
+        ])
+
+    AT_CLEANUP
+])
+
+m4_define([BUILD_DMRPP_TEST],
+[_AT_BUILD_DMRPP_TEST([$abs_srcdir/$1], [$abs_srcdir/$2], [$abs_srcdir/$2.baseline], [$3])])
+
+
+_AT_BUILD_DMRPP_TEST([chunked/chunked_shufzip_twoD.h5.dap])
+

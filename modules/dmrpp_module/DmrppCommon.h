@@ -28,11 +28,21 @@
 #include <string>
 #include <vector>
 
+#include <H5Ppublic.h>
+
 #include "Chunk.h"
 #include "CurlHandlePool.h"
 
+
 namespace libdap {
-    class BaseType;
+class DMR;
+class BaseType;
+class D4BaseTypeFactory;
+class D4Group;
+class D4Attributes;
+class D4EnumDef;
+class D4Dimension;
+class XMLWriter;
 }
 
 namespace dmrpp {
@@ -51,8 +61,8 @@ namespace dmrpp {
  */
 class DmrppCommon {
 
-	friend class DmrppTypeReadTest;
-	friend class DmrppChunkedReadTest;
+	friend class DmrppCommonTest;
+	friend class DmrppParserTest;
 
 private:
 	bool d_deflate;
@@ -61,16 +71,14 @@ private:
 	std::vector<Chunk> d_chunks;
 
 protected:
-    void _duplicate(const DmrppCommon &dc) {
+    void m_duplicate_common(const DmrppCommon &dc) {
     	d_deflate = dc.d_deflate;
     	d_shuffle = dc.d_shuffle;
     	d_chunk_dimension_sizes = dc.d_chunk_dimension_sizes;
-    	d_chunks =  dc.d_chunks;
+    	d_chunks = dc.d_chunks;
     }
 
-    /**
-     * @brief Returns a reference to the internal Chunk vector.
-     */
+    /// @brief Returns a reference to the internal Chunk vector.
     virtual std::vector<Chunk> &get_chunk_vec() {
     	return d_chunks;
     }
@@ -78,37 +86,42 @@ protected:
     virtual char *read_atomic(const std::string &name);
 
 public:
+    static bool d_print_chunks;     ///< if true, print_dap4() prints chunk elements
+    static string d_dmrpp_ns;       ///< The DMR++ XML namespace
+    static string d_ns_prefix;      ///< The XML namespace prefix to use
+
     DmrppCommon() : d_deflate(false), d_shuffle(false)
     {
     }
 
     DmrppCommon(const DmrppCommon &dc)
     {
-        _duplicate(dc);
+        m_duplicate_common(dc);
     }
 
     virtual ~DmrppCommon()
     {
     }
 
-    /**
-     * @brief Returns true if this object utilizes deflate compression.
-     */
+    /// @brief Returns true if this object utilizes deflate compression.
     virtual bool is_deflate_compression() const {
         return d_deflate;
     }
 
-    /**
-     * @brief Returns true if this object utilizes shuffle compression.
-     */
+    /// @brief Set the value of the deflate property
+    void set_deflate(bool value) {
+        d_deflate = value;
+    }
+
+    /// @brief Returns true if this object utilizes shuffle compression.
     virtual bool is_shuffle_compression() const {
         return d_shuffle;
     }
 
-    virtual unsigned long add_chunk(std::string data_url,
-    		unsigned long long size,
-			unsigned long long offset,
-			std::string position_in_array = "");
+    /// @brief Set the value of the shuffle property
+    void set_shuffle(bool value) {
+        d_shuffle = value;
+    }
 
     virtual const std::vector<Chunk> &get_immutable_chunks() const {
     	return d_chunks;
@@ -133,17 +146,29 @@ public:
         return elements;
     }
 
-    /**
-     * @brief Parses the text content of the XML element h4:chunkDimensionSizes
-     * into the internal vector<unsigned int> representation.
-     */
-    virtual void ingest_chunk_dimension_sizes(std::string chunk_dim_sizes_string);
+    void print_chunks_element(libdap::XMLWriter &xml, const std::string &name_space = "");
 
-    /**
-     * @brief Parses the text content of the XML element h4:chunkDimensionSizes
-     * into the internal vector<unsigned int> representation.
-     */
+    void print_dmrpp(libdap::XMLWriter &writer, bool constrained = false);
+
+    /// @brief Set the value of the chunk dimension sizes given a vector of HDF5 hsize_t
+    void set_chunk_dimension_sizes(const std::vector<hsize_t> &chunk_dims)
+    {
+        // tried using copy(chunk_dims.begin(), chunk_dims.end(), d_chunk_dimension_sizes.begin())
+        // it didn't work, maybe because of the differing element types?
+        for (std::vector<hsize_t>::const_iterator i = chunk_dims.begin(), e = chunk_dims.end(); i != e; ++i) {
+            d_chunk_dimension_sizes.push_back(*i);
+        }
+    }
+
+    virtual void parse_chunk_dimension_sizes(std::string chunk_dim_sizes_string);
+
     virtual void ingest_compression_type(std::string compression_type_string);
+
+    virtual unsigned long add_chunk(const std::string &data_url, unsigned long long size, unsigned long long offset,
+        std::string position_in_array = "");
+
+    virtual unsigned long add_chunk(const string &data_url, unsigned long long size, unsigned long long offset,
+        const std::vector<unsigned int> &position_in_array);
 
     virtual void dump(std::ostream & strm) const;
 };
