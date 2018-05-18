@@ -33,6 +33,8 @@ TESTS = $(UNIT_TESTS)
 
 noinst_HEADERS = test_config.h
 
+noinst_DATA = bes.conf
+
 EXTRA_DIST = baselines
 
 CLEANFILES = *.gcda *.gcno *.strm *.file test_config.h tmp.txt
@@ -40,6 +42,8 @@ CLEANFILES = *.gcda *.gcno *.strm *.file test_config.h tmp.txt
 DISTCLEANFILES = 
 
 BUILT_SOURCES = test_config.h
+
+BES_CONF_IN = bes.conf.in
 
 test_config.h: $(srcdir)/test_config.h.in Makefile
 	@mod_abs_srcdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
@@ -49,12 +53,20 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 	    -e "s%[@]abs_top_srcdir[@]%$${mod_abs_top_srcdir}%" \
 	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
 
+# Build the bes.conf used for testing so that the value substituted for
+# @abs_top_srcdir@ does not contain '../'. This happens when using 
+# configure's value for the parameter when running the distcheck target.
+bes.conf: $(srcdir)/$(BES_CONF_IN) $(top_srcdir)/configure.ac
+	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
+	    -e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
+
 ############################################################################
 # Unit Tests
 #
 
 if CPPUNIT
-UNIT_TESTS = ChunkTest DmrppParserTest DmrppCommonTest
+UNIT_TESTS = ChunkTest DmrppParserTest DmrppCommonTest DmrppMetadataStoreTest
 else
 UNIT_TESTS =
 
@@ -67,6 +79,9 @@ check-local:
 	@echo ""
 endif
 
+clean-local:
+	-rm -rf mds
+
 OBJS = ../*.o
 
 ChunkTest_SOURCES = ChunkTest.cc
@@ -74,7 +89,10 @@ ChunkTest_LDADD = $(OBJS) $(LIBADD)
 
 DmrppParserTest_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/modules/hdf5_handler
 DmrppParserTest_SOURCES = DmrppParserTest.cc
-DmrppParserTest_LDADD   =  $(OBJS) $(LIBADD) 
+DmrppParserTest_LDADD = $(OBJS) $(LIBADD) 
 
 DmrppCommonTest_SOURCES = DmrppCommonTest.cc $(top_srcdir)/modules/read_test_baseline.cc
-DmrppCommonTest_LDADD =  $(OBJS) $(LIBADD)
+DmrppCommonTest_LDADD = $(OBJS) $(LIBADD)
+
+DmrppMetadataStoreTest_SOURCES = DmrppMetadataStoreTest.cc $(top_srcdir)/modules/read_test_baseline.cc
+DmrppMetadataStoreTest_LDADD = $(OBJS) $(LIBADD)

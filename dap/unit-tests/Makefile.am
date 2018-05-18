@@ -8,7 +8,8 @@ AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch $(DAP_CFLAGS) \
 -I$(top_srcdir)/modules/dmrpp_module
 
-LDADD =  $(top_builddir)/dispatch/libbes_dispatch.la $(top_builddir)/modules/dmrpp_module/libdmrpp_module.la -ltest-types $(DAP_LIBS) $(LIBS)
+LDADD = $(top_builddir)/dispatch/libbes_dispatch.la \
+$(top_builddir)/modules/dmrpp_module/libdmrpp_module.la -ltest-types $(DAP_LIBS) $(LIBS)
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)

@@ -219,7 +219,7 @@ protected:
     static string get_cache_prefix_from_config();
     static unsigned long get_cache_size_from_config();
 
-    friend class GlobalMetadataStoreTest;
+    friend class DmrppMetadataStoreTest;
 
 public:
     static GlobalMetadataStore *get_instance(const std::string &cache_dir, const std::string &prefix,

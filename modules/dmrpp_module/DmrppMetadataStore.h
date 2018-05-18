@@ -84,6 +84,8 @@ private:
         d_instance = 0;
     }
 
+    friend class DmrppMetadataStoreTest;
+
 protected:
 #if 0
     struct StreamDAP : public std::unary_function<libdap::DapObj*, void> {
