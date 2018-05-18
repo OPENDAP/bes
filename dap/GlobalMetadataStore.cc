@@ -59,7 +59,10 @@
 
 #include "GlobalMetadataStore.h"
 
+#if 0
 #include "DMRpp.h"
+#endif
+
 
 #define DEBUG_KEY "metadata_store"
 #define MAINTAIN_STORE_SIZE_EVEN_WHEN_UNLIMITED 0
@@ -264,21 +267,10 @@ GlobalMetadataStore::get_instance()
 ///@}
 
 /**
- * Private constructor that calls BESFileLockingCache's constructor;
- * lookup cache directory, item prefix and max cache size in BESKeys
- *
- * @note Use the get_instance() methods to get a pointer to the singleton for
- * this class. Do not use this method except in derived classes. This method
- * either builds a valid object or throws an exception.
- *
- * @param cache_dir key to find cache dir
- * @param prefix key to find the cache prefix
- * @param size key to find the cache size (in MBytes)
- * @throws BESSyntaxUserError if the keys are not set in the BESKeys, if the key
- * are either the empty string or zero, respectively, or if the cache directory does not exist.
+ * @brief Configure the ledger using LEDGER_KEY and LOCAL_TIME_KEY.
  */
-GlobalMetadataStore::GlobalMetadataStore(const string &cache_dir, const string &prefix,
-    unsigned long long size) : BESFileLockingCache(cache_dir, prefix, size)
+void
+GlobalMetadataStore::initialize()
 {
     bool found;
 
@@ -295,6 +287,51 @@ GlobalMetadataStore::GlobalMetadataStore(const string &cache_dir, const string &
     TheBESKeys::TheKeys()->get_value(LOCAL_TIME_KEY, local_time, found);
     d_use_local_time = (local_time == "YES" || local_time == "Yes" || local_time == "yes");
 }
+
+/**
+ * Private constructors that call BESFileLockingCache's constructor;
+ * lookup cache directory, item prefix and max cache size in BESKeys
+ *
+ * @note Use the get_instance() methods to get a pointer to the singleton for
+ * this class. Do not use this method except in derived classes. This method
+ * either builds a valid object or throws an exception.
+ *
+ * @param cache_dir key to find cache dir
+ * @param prefix key to find the cache prefix
+ * @param size key to find the cache size (in MBytes)
+ * @throws BESSyntaxUserError if the keys are not set in the BESKeys, if the key
+ * are either the empty string or zero, respectively, or if the cache directory does not exist.
+ */
+///@{
+GlobalMetadataStore::GlobalMetadataStore()
+    : BESFileLockingCache(get_cache_dir_from_config(), get_cache_prefix_from_config(), get_cache_size_from_config())
+{
+    initialize();
+}
+
+GlobalMetadataStore::GlobalMetadataStore(const string &cache_dir, const string &prefix,
+    unsigned long long size) : BESFileLockingCache(cache_dir, prefix, size)
+{
+    initialize();
+
+#if 0
+    bool found;
+
+    TheBESKeys::TheKeys()->get_value(LEDGER_KEY, d_ledger_name, found);
+    if (found) {
+        BESDEBUG(DEBUG_KEY, "Located BES key " << LEDGER_KEY << "=" << d_ledger_name << endl);
+    }
+    else {
+        d_ledger_name = default_ledger_name;
+    }
+
+    // By default, use UTC in the logs.
+    string local_time = "no";
+    TheBESKeys::TheKeys()->get_value(LOCAL_TIME_KEY, local_time, found);
+    d_use_local_time = (local_time == "YES" || local_time == "Yes" || local_time == "yes");
+#endif
+}
+///@}
 
 /**
  * Copied from BESLog, where that code writes to an internal object, not a stream.
@@ -331,6 +368,7 @@ void
 GlobalMetadataStore::write_ledger()
 {
     // TODO open just once
+    // FIXME Protect this with an exclusive lock!
     ofstream of(d_ledger_name.c_str(), ios::app);
     if (of) {
         dump_time(of, d_use_local_time);
@@ -389,6 +427,7 @@ void GlobalMetadataStore::StreamDMR::operator()(ostream &os)
     }
 }
 
+#if 0
 void GlobalMetadataStore::StreamDMRpp::operator()(ostream &os)
 {
     // Even though StreamDMRpp is-a StreamDAP and the latter has a d_dds
@@ -406,6 +445,8 @@ void GlobalMetadataStore::StreamDMRpp::operator()(ostream &os)
 
     }
 }
+#endif
+
 
 /// @see GlobalMetadataStore::StreamDAP
 void GlobalMetadataStore::StreamDDS::operator()(ostream &os) {
@@ -594,6 +635,7 @@ GlobalMetadataStore::add_responses(DMR *dmr, const string &name)
     StreamDMR write_the_dmr_response(dmr);
     bool stored_dmr = store_dap_response(write_the_dmr_response, get_hash(name + "dmr_r"), name, "DMR");
 
+#if 0
     bool stored_dmrpp = false;
     if (typeid(*dmr) == typeid(dmrpp::DMRpp)) {
         StreamDMRpp write_the_dmrpp_response(dmr);
@@ -602,13 +644,15 @@ GlobalMetadataStore::add_responses(DMR *dmr, const string &name)
     else {
         stored_dmrpp = true;    // if dmr is not a DMRpp, not writing the object is 'success.'
     }
+#endif
+
 
     write_ledger(); // write the index line
 
 #if SYMETRIC_ADD_RESPONSES
     return (stored_dds && stored_das && stored_dmr);
 #else
-    return(stored_dmr && stored_dmrpp);
+    return(stored_dmr /* && stored_dmrpp */);
 #endif
 }
 ///@}

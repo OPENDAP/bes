@@ -52,9 +52,11 @@
 
 #include "GlobalMetadataStore.h"
 
+#if 0
 #include "DMRpp.h"
 #include "DmrppTypeFactory.h"
 #include "DmrppParserSax2.h"
+#endif
 
 #include "test_utils.h"
 #include "test_config.h"
@@ -71,7 +73,10 @@ static bool clean = true;
 using namespace CppUnit;
 using namespace std;
 using namespace libdap;
+#if 0
 using namespace dmrpp;
+#endif
+
 
 namespace bes {
 
@@ -160,6 +165,7 @@ private:
         }
     }
 
+#if 0
     void init_dmrpp_and_mds()
     {
         try {
@@ -191,6 +197,7 @@ private:
             CPPUNIT_FAIL(e.what());
         }
     }
+#endif
 
 public:
     GlobalMetadataStoreTest() :
@@ -400,6 +407,7 @@ public:
         DBG(cerr << __func__ << " - END" << endl);
     }
 
+#if 0
     void cache_a_dmrpp_response()
     {
         DBG(cerr << __func__ << " - BEGIN" << endl);
@@ -434,6 +442,7 @@ public:
 
         DBG(cerr << __func__ << " - END" << endl);
     }
+#endif
 
     void add_response_test()
      {
@@ -882,7 +891,9 @@ public:
     CPPUNIT_TEST(cache_a_dds_response);
     CPPUNIT_TEST(cache_a_das_response);
     CPPUNIT_TEST(cache_a_dmr_response);
+#if 0
     CPPUNIT_TEST(cache_a_dmrpp_response);
+#endif
 
     CPPUNIT_TEST(add_response_test);
 

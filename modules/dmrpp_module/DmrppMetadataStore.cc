@@ -1,0 +1,383 @@
+// -*- mode: c++; c-basic-offset:4 -*-
+
+// This file is part of HYrax, A C++ implementation of the OPeNDAP Data
+// Access Protocol.
+
+// Copyright (c) 2018 OPeNDAP, Inc.
+// Author: James Gallagher <jgallagher@opendap.org>
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+//
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+
+#include "config.h"
+
+#include <fcntl.h>
+#include <unistd.h>
+
+#include <cerrno>
+#include <cstring>
+
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <functional>
+#include <memory>
+
+#include <DapObj.h>
+#include <DDS.h>
+#include <DAS.h>
+#include <DMR.h>
+#include <D4ParserSax2.h>
+#include <XMLWriter.h>
+#include <BaseTypeFactory.h>
+#include <D4BaseTypeFactory.h>
+
+#include "PicoSHA2/picosha2.h"
+
+#include "TempFile.h"
+#include "TheBESKeys.h"
+#include "BESUtil.h"
+#include "BESLog.h"
+#include "BESDebug.h"
+
+#include "BESInternalError.h"
+#include "BESInternalFatalError.h"
+
+#include "DmrppMetadataStore.h"
+
+#include "DMRpp.h"
+
+
+#define DEBUG_KEY "dmrpp_store"
+#define MAINTAIN_STORE_SIZE_EVEN_WHEN_UNLIMITED 0
+
+#ifdef HAVE_ATEXIT
+#define AT_EXIT(x) atexit((x))
+#else
+#define AT_EXIT(x)
+#endif
+
+/// If SYMETRIC_ADD_RESPONSES is defined and a true value, then add_responses()
+/// will add all of DDS, DAS and DMR when called with _either_ the DDS or DMR
+/// objects. If it is not defined (or false), add_responses() called with a DDS
+/// will add only the DDS and DAS and add_responses() called with a DMR will add
+/// only a DMR.
+///
+/// There are slight differences in the DAS objects build by the DMR and DDS,
+/// especially when the underlying dataset contains types that can be encoded
+/// in the DMR (DAP4) but not the DDS (DAP2). jhrg 3/20/18
+#undef SYMETRIC_ADD_RESPONSES
+
+using namespace std;
+using namespace libdap;
+using namespace bes;
+
+using namespace dmrpp;
+
+#if 0
+static const unsigned int default_cache_size = 20; // 20 GB
+static const string default_cache_prefix = "mds";
+static const string default_cache_dir = "";// I'm making the default empty so that no key == no caching. jhrg 9.26.16
+static const string default_ledger_name = "mds_ledger.txt";///< In the CWD of the BES process
+
+static const string PATH_KEY = "DAP.DmrppMetadataStore.path";
+static const string PREFIX_KEY = "DAP.DmrppMetadataStore.prefix";
+static const string SIZE_KEY = "DAP.DmrppMetadataStore.size";
+static const string LEDGER_KEY = "DAP.DmrppMetadataStore.ledger";
+static const string LOCAL_TIME_KEY = "BES.LogTimeLocal";
+#endif
+
+
+DmrppMetadataStore *DmrppMetadataStore::d_instance = 0;
+bool DmrppMetadataStore::d_enabled = true;
+
+/**
+ * @name Get an instance of DmrppMetadataStore
+ * @brief  There are two ways to get an instance of DmrppMetadataStore singleton.
+ *
+ * @note If the cache_dir parameter is the empty string, get_instance() will return null
+ * for the pointer to the singleton and caching is disabled. This means that if the cache
+ * directory is not set in the bes.conf file(s), then the cache will be disabled. If
+ * the cache directory is given (or set in bes.conf) but the prefix or size is not,
+ * that's an error. If the directory is named but does not exist, it will
+ * be made. If the BES cannot make it, then an error will be signaled.
+ *
+ * @return A pointer to a DmrppMetadataStore object; null if the cache is disabled.
+ */
+///@{
+/**
+ * @brief Get an instance of the DmrppMetadataStore object.
+ *
+ * This class is a singleton, so the first call to any of two 'get_instance()' methods
+ * makes an instance and subsequent calls return a pointer to that instance.
+ *
+ * @param cache_dir_key Key to use to get the value of the cache directory. If this is
+ * the empty string, return null right away.
+ * @param prefix_key Key for the item/file prefix. Each item added to the cache uses this
+ * as a prefix so cached items can be easily identified when the same directory is used for
+ * several caches or /tmp is used for the cache.
+ * @param size_key The maximum size of the data stored in the cache, in megabytes
+ *
+ * @return A pointer to a DmrppMetadataStore object. If the cache is disabled, then
+ * the pointer returned will be null and the cache will be marked as not enabled.
+ * Subsequent calls will return immediately.
+ */
+DmrppMetadataStore *
+DmrppMetadataStore::get_instance(const string &cache_dir, const string &prefix, unsigned long long size)
+{
+    if (d_enabled && d_instance == 0) {
+        d_instance = new DmrppMetadataStore(cache_dir, prefix, size); // never returns null_ptr
+        d_enabled = d_instance->cache_enabled();
+        if (!d_enabled) {
+            delete d_instance;
+            d_instance = 0;
+
+            BESDEBUG(DEBUG_KEY, "DmrppMetadataStore::"<<__func__ << "() - " << "Cache is DISABLED"<< endl);
+        }
+        else {
+            AT_EXIT(delete_instance);
+
+            BESDEBUG(DEBUG_KEY, "DmrppMetadataStore::"<<__func__ << "() - " << "Cache is ENABLED"<< endl);
+        }
+    }
+
+    BESDEBUG(DEBUG_KEY, "DmrppMetadataStore::get_instance(dir,prefix,size) - d_instance: " << d_instance << endl);
+
+    return d_instance;
+}
+
+/**
+ * Get an instance of the DmrppMetadataStore using the default values for the cache directory,
+ * prefix and size.
+ *
+ * @return A pointer to a DmrppMetadataStore object; null if the cache is disabled.
+ */
+DmrppMetadataStore *
+DmrppMetadataStore::get_instance()
+{
+    if (d_enabled && d_instance == 0) {
+        d_instance = new DmrppMetadataStore();
+        d_enabled = d_instance->cache_enabled();
+        if (!d_enabled) {
+            delete d_instance;
+            d_instance = NULL;
+            BESDEBUG(DEBUG_KEY, "DmrppMetadataStore::"<<__func__ << "() - " << "Cache is DISABLED"<< endl);
+        }
+        else {
+            AT_EXIT(delete_instance);
+
+            BESDEBUG(DEBUG_KEY, "DmrppMetadataStore::"<<__func__ << "() - " << "Cache is ENABLED"<< endl);
+        }
+    }
+
+    BESDEBUG(DEBUG_KEY, "DmrppMetadataStore::get_instance() - d_instance: " << (void *) d_instance << endl);
+
+    return d_instance;
+}
+///@}
+
+void DmrppMetadataStore::StreamDMRpp::operator()(ostream &os)
+{
+    // Even though StreamDMRpp is-a StreamDAP and the latter has a d_dds
+    // field, we cannot use it for this version of the output operator.
+    // jhrg 5/17/18
+    if (d_dmr && typeid(*d_dmr) == typeid(dmrpp::DMRpp)) {
+        XMLWriter xml;
+        // FIXME This is where we will add the href that points toward the data file in S3. jhrg 5/17/18
+        string href = "";
+        static_cast<dmrpp::DMRpp*>(d_dmr)->print_dmrpp(xml, href);
+        os << xml.get_doc();
+    }
+    else {
+        throw BESInternalFatalError("StreamDMRpp output operator call with non-DMRpp instance.", __FILE__, __LINE__);
+    }
+}
+
+
+/**
+ * @name Add responses to the DmrppMetadataStore
+ *
+ * These methods use a DDS or DMR object to generate the DDS, DAS and DMR responses
+ * for DAP (2 and 4). They store those in the MDS and then update the
+ * MDS ledger file with the operation (add), the kind of object used
+ * to build the responses (DDS or DMR), name of the granule and hashes/names
+ * for each of the three files in the MDS that hold the responses.
+ *
+ * If verbose logging is on, the bes log also will hold information about
+ * the operation. If there is an error, that will always be recorded in
+ * the bes log.
+ */
+///@{
+
+
+/**
+ * @brief Add the DAP4 metadata responses using a DMR
+ *
+ * This method adds only the DMR unless the code was compiled with
+ * the symbol SYMETRIC_ADD_RESPONSES defined.
+ *
+ * @param name The granule name or identifier
+ * @param dmr A DMR built from the granule
+ * @return True if all of the cache/store entry was written, False if any
+ * could not be written.
+ */
+bool
+DmrppMetadataStore::add_responses(DMR *dmr, const string &name)
+{
+    // Start the index entry
+    // FIXME d_ledger_entry is private: d_ledger_entry = string("add DMR ").append(name);
+
+    // I'm appending the 'dds r' string to the name before hashing so that
+    // the different hashes for the file's DDS, DAS, ..., are all very different.
+    // This will be useful if we use S3 instead of EFS for the Metadata Store.
+    //
+    // The helper() also updates the ledger string.
+#if SYMETRIC_ADD_RESPONSES
+    StreamDDS write_the_dds_response(dmr);
+    bool stored_dds = store_dap_response(write_the_dds_response, get_hash(name + "dds_r"), name, "DDS");
+
+    StreamDAS write_the_das_response(dmr);
+    bool stored_das = store_dap_response(write_the_das_response, get_hash(name + "das_r"), name, "DAS");
+#endif
+
+    StreamDMR write_the_dmr_response(dmr);
+    bool stored_dmr = store_dap_response(write_the_dmr_response, get_hash(name + "dmr_r"), name, "DMR");
+
+#if 1
+    bool stored_dmrpp = false;
+    if (typeid(*dmr) == typeid(dmrpp::DMRpp)) {
+        StreamDMRpp write_the_dmrpp_response(dmr);
+        stored_dmrpp = store_dap_response(write_the_dmrpp_response, get_hash(name + "dmrpp_r"), name, "DMRpp");
+    }
+    else {
+        stored_dmrpp = true;    // if dmr is not a DMRpp, not writing the object is 'success.'
+    }
+#endif
+
+
+    write_ledger(); // write the index line
+
+#if SYMETRIC_ADD_RESPONSES
+    return (stored_dds && stored_das && stored_dmr);
+#else
+    return(stored_dmr && stored_dmrpp);
+#endif
+}
+///@}
+
+
+#if 0
+/**
+ * @brief Is the DMR response for \arg name in the MDS?
+ *
+ * Look in the MDS to see if the DMR response has been stored/cached for
+ * \arg name.
+ *
+ * @note This method and the matching methods for the DDS and DAS use LOG()
+ * to record cache hits and misses. Other methods also record information
+ * about cache hits, but only using VERBOSE(), so that output will not show
+ * up in a normal log.
+ *
+ * @param name Find the DMR response for \arg name.
+ * @return A MDSReadLock object. This object is true if the item was found
+ * (and a read lock was obtained), false if either of those things are not
+ * true. When the MDSReadLock object goes out of scope, the read lock is
+ * released.
+ */
+DmrppMetadataStore::MDSReadLock
+DmrppMetadataStore::is_dmr_available(const string &name)
+{
+    return get_read_lock_helper(name, "dmr_r", "DMR");
+}
+#endif
+
+#if 0
+/**
+ * @brief Write the stored DMR response to a stream
+ *
+ * @param name The (path)name of the granule
+ * @param os Write to this stream
+ */
+void
+DmrppMetadataStore::get_dmr_response(const std::string &name, ostream &os)
+{
+    get_response_helper(name, os, "dmr_r", "DMR");
+}
+#endif
+
+#if 0
+/**
+ * @brief Remove all cached responses and objects for a granule
+ *
+ * @param name
+ * @return
+ */
+bool
+DmrppMetadataStore::remove_responses(const string &name)
+{
+    // Start the index entry
+    d_ledger_entry = string("remove ").append(name);
+
+    bool removed_dds = remove_response_helper(name, "dds_r", "DDS");
+
+    bool removed_das = remove_response_helper(name, "das_r", "DAS");
+
+    bool removed_dmr = remove_response_helper(name, "dmr_r", "DMR");
+
+    write_ledger();// write the index line
+
+#if SYMETRIC_ADD_RESPONSES
+    return (removed_dds && removed_das && removed_dmr);
+#else
+    return (removed_dds || removed_das || removed_dmr);
+#endif
+}
+#endif
+
+
+#if 0
+/**
+ * @brief Build a DMR object from the cached Response
+ *
+ * Read and parse a DMR response , building a binary DMR object. The
+ * object is returned with a null factory. The variables are built using
+ * the default DAP4 type factory.
+ *
+ * @param name Name of the dataset
+ * @return A pointer to the DMR object; the caller must delete this object.
+ * @exception BESInternalError is thrown if \arg name does not have a
+ * cached DMR response.
+ */
+DMR *
+DmrppMetadataStore::get_dmr_object(const string &name)
+{
+    stringstream oss;
+    get_dmr_response(name, oss);    // throws BESInternalError if not found
+
+    D4BaseTypeFactory d4_btf;
+    auto_ptr<DMR> dmr(new DMR(&d4_btf, "mds"));
+
+    D4ParserSax2 parser;
+    parser.intern(oss.str(), dmr.get());
+
+    dmr->set_factory(0);
+
+    return dmr.release();
+}
+#endif
+
+

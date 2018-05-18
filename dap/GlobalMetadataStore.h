@@ -31,7 +31,10 @@
 #include "BESFileLockingCache.h"
 #include "BESInternalFatalError.h"
 
+#if 0
 #include "DMRpp.h"
+#endif
+
 
 namespace libdap {
 class DapObj;
@@ -39,9 +42,12 @@ class DDS;
 class DMR;
 }
 
+#if 0
 namespace dmrpp {
-class DMRpp;    // Added for DMR++ support. jhrg 5/17.18
+    class DMRpp;    // Added for DMR++ support. jhrg 5/17.18
 }
+#endif
+
 
 namespace bes {
 
@@ -99,6 +105,7 @@ private:
         d_instance = 0;
     }
 
+protected:
     void write_ledger();
 
     std::string get_hash(const std::string &name);
@@ -156,21 +163,11 @@ private:
         virtual void operator()(ostream &os);
     };
 
+#if 0
     /// Hack use a DMR to write a DMR++ response. WIP
     struct StreamDMRpp : public StreamDAP {
         // Making a StreamDMRpp with a DDS or DMR is not supported.
         StreamDMRpp(libdap::DMR *dmrpp) : StreamDAP(dmrpp) {}
-
-        virtual void operator()(ostream &os);
-    };
-#if 0
-    /// Instantiate with a DMRpp and write the DMRpp response.
-    /// @note this can only be built using a DMRpp, not a DDS or DMR.
-    /// DMRpp is a child of DMR, so teh StreamDAP parent can store the
-    /// DMRpp in the DMR* field.
-    struct StreamDMRpp : public StreamDAP {
-        // Making a StreamDMRpp with a DDS or DMR is not supported.
-        StreamDMRpp(dmrpp::DMRpp *dmrpp) : StreamDAP(dmrpp) {}
 
         virtual void operator()(ostream &os);
     };
@@ -205,14 +202,16 @@ public:
 
     typedef struct MDSReadLock MDSReadLock;
 
-private:
+protected:
     MDSReadLock get_read_lock_helper(const string &name, const string &suffix, const string &object_name);
 
     // Suppress the automatic generation of these ctors
-    GlobalMetadataStore();
     GlobalMetadataStore(const GlobalMetadataStore &src);
 
+    void initialize();
+
     // Only get_instance() should be used to instantiate this class
+    GlobalMetadataStore();
     GlobalMetadataStore(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
 
     // these are static because they are called by the static method get_instance()
