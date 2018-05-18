@@ -52,6 +52,10 @@
 
 #include "GlobalMetadataStore.h"
 
+#include "DMRpp.h"
+#include "DmrppTypeFactory.h"
+#include "DmrppParserSax2.h"
+
 #include "test_utils.h"
 #include "test_config.h"
 
@@ -67,6 +71,7 @@ static bool clean = true;
 using namespace CppUnit;
 using namespace std;
 using namespace libdap;
+using namespace dmrpp;
 
 namespace bes {
 
@@ -142,6 +147,38 @@ private:
             dp.intern(in, d_test_dmr);
 
             DBG(cerr << "DMR Name: " << d_test_dmr->name() << endl);
+            CPPUNIT_ASSERT(d_test_dmr);
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL(e.get_message());
+        }
+        catch (Error &e) {
+            CPPUNIT_FAIL(e.get_error_message());
+        }
+        catch (std::exception &e) {
+            CPPUNIT_FAIL(e.what());
+        }
+    }
+
+    void init_dmrpp_and_mds()
+    {
+        try {
+            // Stock code to get the d_test_dds and d_mds objects used by many
+            // of the tests.
+            d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
+            DBG(cerr << "Retrieved GlobalMetadataStore object: " << d_mds << endl);
+
+            // Get a DMRpp to cache.
+            string file_name = string(TEST_SRC_DIR).append("/input-files/chunked_fourD.h5.dmrpp");
+
+            DmrppTypeFactory dmrpp_factory;
+            d_test_dmr = new DMRpp(&dmrpp_factory);
+            DmrppParserSax2 dp;
+            DBG(cerr << "DMRpp file to be parsed: " << file_name << endl);
+            fstream in(file_name.c_str(), ios::in|ios::binary);
+            dp.intern(in, d_test_dmr);
+
+            DBG(cerr << "DMRpp Name: " << d_test_dmr->name() << endl);
             CPPUNIT_ASSERT(d_test_dmr);
         }
         catch (BESError &e) {
@@ -355,6 +392,41 @@ public:
             string stored_response = read_test_baseline(response_name);
 
             CPPUNIT_ASSERT(stored_response == test_05_dmr_baseline);
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL(e.get_message());
+        }
+
+        DBG(cerr << __func__ << " - END" << endl);
+    }
+
+    void cache_a_dmrpp_response()
+    {
+        DBG(cerr << __func__ << " - BEGIN" << endl);
+
+        try {
+            init_dmrpp_and_mds();
+
+            // Store it - this will work if the the code is cleaning the cache.
+            GlobalMetadataStore::StreamDMRpp write_the_dmrpp_response(d_test_dmr);
+            bool stored = d_mds->store_dap_response(write_the_dmrpp_response, d_test_dmr->name() + ".dmrpp_r", d_test_dmr->name(), "DMRpp");
+
+            CPPUNIT_ASSERT(stored);
+
+            // Now check the file
+            string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "chunked_fourD.h5.dmrpp_r";
+            DBG(cerr << "Reading baseline: " << baseline_name << endl);
+            CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
+
+            string chunked_4d_dmrpp_baseline = read_test_baseline(baseline_name);
+
+            string response_name = d_mds_dir + "/" + c_mds_prefix + "chunked_fourD.h5.dmrpp_r";
+            DBG(cerr << "Reading response: " << response_name << endl);
+            CPPUNIT_ASSERT(access(response_name.c_str(), R_OK) == 0);
+
+            string stored_response = read_test_baseline(response_name);
+
+            CPPUNIT_ASSERT(stored_response == chunked_4d_dmrpp_baseline);
         }
         catch (BESError &e) {
             CPPUNIT_FAIL(e.get_message());
@@ -810,7 +882,10 @@ public:
     CPPUNIT_TEST(cache_a_dds_response);
     CPPUNIT_TEST(cache_a_das_response);
     CPPUNIT_TEST(cache_a_dmr_response);
+    CPPUNIT_TEST(cache_a_dmrpp_response);
+
     CPPUNIT_TEST(add_response_test);
+
     CPPUNIT_TEST(get_dds_response_test);
     CPPUNIT_TEST(get_das_response_test);
     CPPUNIT_TEST(get_dmr_response_test);

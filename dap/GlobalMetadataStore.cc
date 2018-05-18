@@ -59,6 +59,8 @@
 
 #include "GlobalMetadataStore.h"
 
+#include "DMRpp.h"
+
 #define DEBUG_KEY "metadata_store"
 #define MAINTAIN_STORE_SIZE_EVEN_WHEN_UNLIMITED 0
 
@@ -363,15 +365,6 @@ GlobalMetadataStore::get_hash(const string &name)
  * functor is used to parameterize writing the DAP metadata response for the
  * store_dap_response() method.
  *
- * @note These classes were written so that either the DDS _or_ DMR could be
- * used to write all of the three DAP2/4 metadata responses. That feature
- * worked for the most part, but highlighted some differences between the
- * two protocol versions that make it hard to produce identical responses
- * using both the DDS or DMR from the same dataset. This made testing hard
- * and meant that the result was 'unpredictable' for some edge cases. The symbol
- * SYMETRIC_ADD_RESPONSES controls if this feature is on or not; currently it
- * is turned off.
- *
  * @param os Write the DMR to this stream
  * @see StreamDAP
  * @see StreamDDS
@@ -396,7 +389,25 @@ void GlobalMetadataStore::StreamDMR::operator()(ostream &os)
     }
 }
 
-/// @see GlobalMetadataStore::StreamDMR
+void GlobalMetadataStore::StreamDMRpp::operator()(ostream &os)
+{
+    // Even though StreamDMRpp is-a StreamDAP and the latter has a d_dds
+    // field, we cannot use it for this version of the output operator.
+    // jhrg 5/17/18
+    if (d_dmr && typeid(*d_dmr) == typeid(dmrpp::DMRpp)) {
+        XMLWriter xml;
+        // FIXME This is where we will add the href that points toward the data file in S3. jhrg 5/17/18
+        string href = "";
+        static_cast<dmrpp::DMRpp*>(d_dmr)->print_dmrpp(xml, href);
+        os << xml.get_doc();
+    }
+    else {
+        throw BESInternalFatalError("StreamDMRpp output operator call with non-DMRpp instance.", __FILE__, __LINE__);
+
+    }
+}
+
+/// @see GlobalMetadataStore::StreamDAP
 void GlobalMetadataStore::StreamDDS::operator()(ostream &os) {
     if (d_dds)
         d_dds->print(os);
@@ -406,7 +417,7 @@ void GlobalMetadataStore::StreamDDS::operator()(ostream &os) {
         throw BESInternalFatalError("Unknown DAP object type.", __FILE__, __LINE__);
 }
 
-/// @see GlobalMetadataStore::StreamDMR
+/// @see GlobalMetadataStore::StreamDAP
 void GlobalMetadataStore::StreamDAS::operator()(ostream &os) {
     if (d_dds)
         d_dds->print_das(os);
@@ -493,11 +504,8 @@ GlobalMetadataStore::store_dap_response(StreamDAP &writer, const string &key, co
     }
 }
 
-// Documented in the header file - I could not get doxygen comments to work
-// for these two methods in this file (but all the others are fine). jhrg 2.28.18
 /**
  * @name Add responses to the GlobalMetadataStore
- * @brief Use a DDS or DMR to populate DAP metadata responses in the MDS
  *
  * These methods use a DDS or DMR object to generate the DDS, DAS and DMR responses
  * for DAP (2 and 4). They store those in the MDS and then update the
@@ -586,12 +594,21 @@ GlobalMetadataStore::add_responses(DMR *dmr, const string &name)
     StreamDMR write_the_dmr_response(dmr);
     bool stored_dmr = store_dap_response(write_the_dmr_response, get_hash(name + "dmr_r"), name, "DMR");
 
+    bool stored_dmrpp = false;
+    if (typeid(*dmr) == typeid(dmrpp::DMRpp)) {
+        StreamDMRpp write_the_dmrpp_response(dmr);
+        stored_dmrpp = store_dap_response(write_the_dmrpp_response, get_hash(name + "dmrpp_r"), name, "DMRpp");
+    }
+    else {
+        stored_dmrpp = true;    // if dmr is not a DMRpp, not writing the object is 'success.'
+    }
+
     write_ledger(); // write the index line
 
 #if SYMETRIC_ADD_RESPONSES
     return (stored_dds && stored_das && stored_dmr);
 #else
-    return(stored_dmr);
+    return(stored_dmr && stored_dmrpp);
 #endif
 }
 ///@}

@@ -5,8 +5,10 @@ AUTOMAKE_OPTIONS = foreign
 
 # Headers in 'tests' are used by the arrayT unit tests.
 
-AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch $(DAP_CFLAGS) 
-LDADD =  $(top_builddir)/dispatch/libbes_dispatch.la -ltest-types $(DAP_LIBS) $(LIBS)
+AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch $(DAP_CFLAGS) \
+-I$(top_srcdir)/modules/dmrpp_module
+
+LDADD =  $(top_builddir)/dispatch/libbes_dispatch.la $(top_builddir)/modules/dmrpp_module/libdmrpp_module.la -ltest-types $(DAP_LIBS) $(LIBS)
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
@@ -118,7 +120,7 @@ TemporaryFileTest_LDADD = $(TemporaryFileTest_OBJS) $(LDADD)
 
 GlobalMetadataStoreTest_SOURCES = GlobalMetadataStoreTest.cc $(TEST_SRC)
 GlobalMetadataStoreTest_OBJS = ../GlobalMetadataStore.o ../TempFile.o
-GlobalMetadataStoreTest_LDADD = $(GlobalMetadataStoreTest_OBJS) $(LDADD)
+GlobalMetadataStoreTest_LDADD = $(GlobalMetadataStoreTest_OBJS) ../libdap_module.la $(LDADD)
 
 # StoredDap2ResultTest_SOURCES = StoredDap2ResultTest.cc  $(TEST_SRC)
 # StoredDap2ResultTest_LDADD = $(LDADD)

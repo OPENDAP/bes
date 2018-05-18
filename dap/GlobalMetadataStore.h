@@ -31,10 +31,16 @@
 #include "BESFileLockingCache.h"
 #include "BESInternalFatalError.h"
 
+#include "DMRpp.h"
+
 namespace libdap {
 class DapObj;
 class DDS;
 class DMR;
+}
+
+namespace dmrpp {
+class DMRpp;    // Added for DMR++ support. jhrg 5/17.18
 }
 
 namespace bes {
@@ -104,9 +110,14 @@ private:
      * StreamDAS and StreamDMR are instantiated and passed to
      * store_dap_response().
      *
-     * @note These classes were written to so either the DDS or DMR could be
-     * used to build all of the (three) metadata responses. See comments
-     * elsewhere about this and why it's turned off for now.
+     * @note These classes were written so that either the DDS _or_ DMR could be
+     * used to write all of the three DAP2/4 metadata responses. That feature
+     * worked for the most part, but highlighted some differences between the
+     * two protocol versions that make it hard to produce identical responses
+     * using both the DDS or DMR from the same dataset. This made testing hard
+     * and meant that the result was 'unpredictable' for some edge cases. The symbol
+     * SYMETRIC_ADD_RESPONSES controls if this feature is on or not; currently it
+     * is turned off.
      */
     struct StreamDAP : public std::unary_function<libdap::DapObj*, void> {
         libdap::DDS *d_dds;
@@ -121,9 +132,7 @@ private:
         virtual void operator()(std::ostream &os) = 0;
     };
 
-    /**
-     * Instantiate with a DDS or DMR and use to write the DDS response.
-     */
+    /// Instantiate with a DDS or DMR and use to write the DDS response.
     struct StreamDDS : public StreamDAP {
         StreamDDS(libdap::DDS *dds) : StreamDAP(dds) { }
         StreamDDS(libdap::DMR *dmr) : StreamDAP(dmr) { }
@@ -131,9 +140,7 @@ private:
         virtual void operator()(ostream &os);
     };
 
-    /**
-     * Instantiate with a DDS or DMR and use to write the DAS response.
-     */
+    /// Instantiate with a DDS or DMR and use to write the DAS response.
     struct StreamDAS : public StreamDAP {
         StreamDAS(libdap::DDS *dds) : StreamDAP(dds) { }
         StreamDAS(libdap::DMR *dmr) : StreamDAP(dmr) { }
@@ -141,15 +148,34 @@ private:
         virtual void operator()(ostream &os);
     };
 
-    /**
-     * Instantiate with a DDS or DMR and use to write the DMR response.
-     */
+    /// Instantiate with a DDS or DMR and use to write the DMR response.
     struct StreamDMR : public StreamDAP {
         StreamDMR(libdap::DDS *dds) : StreamDAP(dds) { }
         StreamDMR(libdap::DMR *dmr) : StreamDAP(dmr) { }
-        // Implementation in .cc since it uses libdap headers.
+
         virtual void operator()(ostream &os);
     };
+
+    /// Hack use a DMR to write a DMR++ response. WIP
+    struct StreamDMRpp : public StreamDAP {
+        // Making a StreamDMRpp with a DDS or DMR is not supported.
+        StreamDMRpp(libdap::DMR *dmrpp) : StreamDAP(dmrpp) {}
+
+        virtual void operator()(ostream &os);
+    };
+#if 0
+    /// Instantiate with a DMRpp and write the DMRpp response.
+    /// @note this can only be built using a DMRpp, not a DDS or DMR.
+    /// DMRpp is a child of DMR, so teh StreamDAP parent can store the
+    /// DMRpp in the DMR* field.
+    struct StreamDMRpp : public StreamDAP {
+        // Making a StreamDMRpp with a DDS or DMR is not supported.
+        StreamDMRpp(dmrpp::DMRpp *dmrpp) : StreamDAP(dmrpp) {}
+
+        virtual void operator()(ostream &os);
+    };
+#endif
+
 
     bool store_dap_response(StreamDAP &writer, const std::string &key, const string &name, const string &response_name);
 
