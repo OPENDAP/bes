@@ -127,9 +127,9 @@ public:
 
     virtual bool add_responses(libdap::DMR *dmrpp, const std::string &name);
 
-#if 0
     virtual MDSReadLock is_dmrpp_available(const std::string &name);
 
+#if 0
     // Add a third parameter to enable changing the value of xmlbase in this response.
     // jhrg 2.28.18
     virtual void get_dmrpp_response(const std::string &name, std::ostream &os);

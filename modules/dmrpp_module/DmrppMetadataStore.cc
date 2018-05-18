@@ -279,31 +279,28 @@ DmrppMetadataStore::add_responses(DMR *dmr, const string &name)
 }
 ///@}
 
-
-#if 0
 /**
- * @brief Is the DMR response for \arg name in the MDS?
+ * @brief Is the DMR++ response for \arg name in the MDS?
  *
- * Look in the MDS to see if the DMR response has been stored/cached for
+ * Look in the MDS to see if the DMR++ response has been stored/cached for
  * \arg name.
  *
- * @note This method and the matching methods for the DDS and DAS use LOG()
+ * @note This method uses LOG()
  * to record cache hits and misses. Other methods also record information
  * about cache hits, but only using VERBOSE(), so that output will not show
  * up in a normal log.
  *
- * @param name Find the DMR response for \arg name.
+ * @param name Find the DMR++ response for \arg name.
  * @return A MDSReadLock object. This object is true if the item was found
  * (and a read lock was obtained), false if either of those things are not
  * true. When the MDSReadLock object goes out of scope, the read lock is
  * released.
  */
 DmrppMetadataStore::MDSReadLock
-DmrppMetadataStore::is_dmr_available(const string &name)
+DmrppMetadataStore::is_dmrpp_available(const string &name)
 {
-    return get_read_lock_helper(name, "dmr_r", "DMR");
+    return get_read_lock_helper(name, "dmrpp_r", "DMR++");
 }
-#endif
 
 #if 0
 /**

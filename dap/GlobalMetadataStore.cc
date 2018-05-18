@@ -59,11 +59,6 @@
 
 #include "GlobalMetadataStore.h"
 
-#if 0
-#include "DMRpp.h"
-#endif
-
-
 #define DEBUG_KEY "metadata_store"
 #define MAINTAIN_STORE_SIZE_EVEN_WHEN_UNLIMITED 0
 
@@ -313,23 +308,6 @@ GlobalMetadataStore::GlobalMetadataStore(const string &cache_dir, const string &
     unsigned long long size) : BESFileLockingCache(cache_dir, prefix, size)
 {
     initialize();
-
-#if 0
-    bool found;
-
-    TheBESKeys::TheKeys()->get_value(LEDGER_KEY, d_ledger_name, found);
-    if (found) {
-        BESDEBUG(DEBUG_KEY, "Located BES key " << LEDGER_KEY << "=" << d_ledger_name << endl);
-    }
-    else {
-        d_ledger_name = default_ledger_name;
-    }
-
-    // By default, use UTC in the logs.
-    string local_time = "no";
-    TheBESKeys::TheKeys()->get_value(LOCAL_TIME_KEY, local_time, found);
-    d_use_local_time = (local_time == "YES" || local_time == "Yes" || local_time == "yes");
-#endif
 }
 ///@}
 
@@ -426,27 +404,6 @@ void GlobalMetadataStore::StreamDMR::operator()(ostream &os)
         throw BESInternalFatalError("Unknown DAP object type.", __FILE__, __LINE__);
     }
 }
-
-#if 0
-void GlobalMetadataStore::StreamDMRpp::operator()(ostream &os)
-{
-    // Even though StreamDMRpp is-a StreamDAP and the latter has a d_dds
-    // field, we cannot use it for this version of the output operator.
-    // jhrg 5/17/18
-    if (d_dmr && typeid(*d_dmr) == typeid(dmrpp::DMRpp)) {
-        XMLWriter xml;
-        // FIXME This is where we will add the href that points toward the data file in S3. jhrg 5/17/18
-        string href = "";
-        static_cast<dmrpp::DMRpp*>(d_dmr)->print_dmrpp(xml, href);
-        os << xml.get_doc();
-    }
-    else {
-        throw BESInternalFatalError("StreamDMRpp output operator call with non-DMRpp instance.", __FILE__, __LINE__);
-
-    }
-}
-#endif
-
 
 /// @see GlobalMetadataStore::StreamDAP
 void GlobalMetadataStore::StreamDDS::operator()(ostream &os) {
@@ -634,18 +591,6 @@ GlobalMetadataStore::add_responses(DMR *dmr, const string &name)
 
     StreamDMR write_the_dmr_response(dmr);
     bool stored_dmr = store_dap_response(write_the_dmr_response, get_hash(name + "dmr_r"), name, "DMR");
-
-#if 0
-    bool stored_dmrpp = false;
-    if (typeid(*dmr) == typeid(dmrpp::DMRpp)) {
-        StreamDMRpp write_the_dmrpp_response(dmr);
-        stored_dmrpp = store_dap_response(write_the_dmrpp_response, get_hash(name + "dmrpp_r"), name, "DMRpp");
-    }
-    else {
-        stored_dmrpp = true;    // if dmr is not a DMRpp, not writing the object is 'success.'
-    }
-#endif
-
 
     write_ledger(); // write the index line
 
