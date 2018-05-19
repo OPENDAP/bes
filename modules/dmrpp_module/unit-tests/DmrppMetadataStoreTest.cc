@@ -405,7 +405,7 @@ public:
 
     }
 
-    void get_dmr_response_test() {
+    void write_dmr_response_test() {
         DBG(cerr << __func__ << " - BEGIN" << endl);
 
         try {
@@ -436,42 +436,29 @@ public:
         DBG(cerr << __func__ << " - END" << endl);
     }
 
-#if 0
-    void remove_object_test()
-    {
+    void write_dmrpp_response_test() {
         DBG(cerr << __func__ << " - BEGIN" << endl);
 
         try {
-            init_dds_and_mds();
+            init_dmrpp_and_mds();
 
             // Store it - this will work if the the code is cleaning the cache.
-            bool stored = d_mds->add_responses(d_test_dds, d_test_dds->get_dataset_name());
+            bool stored = d_mds->add_responses(d_test_dmr, d_test_dmr->name());
 
             CPPUNIT_ASSERT(stored);
 
-            // look for the files
-            string dds_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dds->get_dataset_name().append("dds_r")), false /*mangle*/);
-            DBG(cerr << __func__ << " - dds_cache_name: " << dds_cache_name << endl);
-            CPPUNIT_ASSERT(access(dds_cache_name.c_str(), R_OK) == 0);
+            // Now lets read the object from the cache
+            ostringstream oss;
+            d_mds->write_dmrpp_response(d_test_dmr->name(), oss);
+            DBG(cerr << "DMR++ response: " << endl << oss.str() << endl);
 
-            string das_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dds->get_dataset_name().append("das_r")), false /*mangle*/);
-            DBG(cerr << __func__ << " - das_cache_name: " << das_cache_name << endl);
-            CPPUNIT_ASSERT(access(das_cache_name.c_str(), R_OK) == 0);
+            string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "chunked_fourD.h5.dmrpp_r";
+            DBG(cerr << "Reading baseline: " << baseline_name << endl);
+            CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
 
-#if SYMETRIC_ADD_RESPONSES
-            string dmr_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dds->get_dataset_name().append("dmr_r")), false /*mangle*/);
-            DBG(cerr << __func__ << " - dmr_cache_name: " << dmr_cache_name << endl);
-            CPPUNIT_ASSERT(access(dmr_cache_name.c_str(), R_OK) == 0);
-#endif
+            string test_05_dmr_baseline = read_test_baseline(baseline_name);
 
-            bool removed = d_mds->remove_responses(d_test_dds->get_dataset_name());
-            CPPUNIT_ASSERT(removed);
-
-            CPPUNIT_ASSERT(access(dds_cache_name.c_str(), R_OK) != 0);
-            CPPUNIT_ASSERT(access(das_cache_name.c_str(), R_OK) != 0);
-#if SYMETRIC_ADD_RESPONSES
-            CPPUNIT_ASSERT(access(dmr_cache_name.c_str(), R_OK) != 0);
-#endif
+            CPPUNIT_ASSERT(test_05_dmr_baseline == oss.str());
         }
         catch (BESError &e) {
             CPPUNIT_FAIL(e.get_message());
@@ -479,7 +466,40 @@ public:
 
         DBG(cerr << __func__ << " - END" << endl);
     }
-#endif
+
+    void remove_object_test()
+    {
+        DBG(cerr << __func__ << " - BEGIN" << endl);
+
+        try {
+            init_dmrpp_and_mds();
+
+            // Store it - this will work if the the code is cleaning the cache.
+            bool stored = d_mds->add_responses(d_test_dmr, d_test_dmr->name());
+
+            CPPUNIT_ASSERT(stored);
+
+            // look for the files
+            string dmr_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dmr->name().append("dmr_r")), false /*mangle*/);
+            DBG(cerr << __func__ << " - dmr_cache_name: " << dmr_cache_name << endl);
+            CPPUNIT_ASSERT(access(dmr_cache_name.c_str(), R_OK) == 0);
+
+            string dmrpp_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dmr->name().append("dmrpp_r")), false /*mangle*/);
+            DBG(cerr << __func__ << " - dmrpp_cache_name: " << dmrpp_cache_name << endl);
+            CPPUNIT_ASSERT(access(dmrpp_cache_name.c_str(), R_OK) == 0);
+
+            bool removed = d_mds->remove_responses(d_test_dmr->name());
+            CPPUNIT_ASSERT(removed);
+
+            CPPUNIT_ASSERT(access(dmr_cache_name.c_str(), R_OK) != 0);
+            CPPUNIT_ASSERT(access(dmrpp_cache_name.c_str(), R_OK) != 0);
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL(e.get_message());
+        }
+
+        DBG(cerr << __func__ << " - END" << endl);
+    }
 
     void get_dmr_object_test() {
         DBG(cerr << __func__ << " - BEGIN" << endl);
@@ -533,11 +553,14 @@ public:
     CPPUNIT_TEST(cache_a_dmr_response);
     CPPUNIT_TEST(cache_a_dmrpp_response);
 
-    CPPUNIT_TEST(get_dmr_response_test);
+    CPPUNIT_TEST(write_dmr_response_test);
     CPPUNIT_TEST(add_response_test);
     CPPUNIT_TEST(add_response_test_2);
 
     CPPUNIT_TEST(is_dmrpp_available_test);
+    CPPUNIT_TEST(write_dmrpp_response_test);
+
+    CPPUNIT_TEST(remove_object_test);
 
     CPPUNIT_TEST(get_dmr_object_test);
 

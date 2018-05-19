@@ -813,12 +813,14 @@ GlobalMetadataStore::remove_responses(const string &name)
 
      bool removed_dmr = remove_response_helper(name, "dmr_r", "DMR");
 
+     bool removed_dmrpp = remove_response_helper(name, "dmrpp_r", "DMR++");
+
      write_ledger(); // write the index line
 
 #if SYMETRIC_ADD_RESPONSES
      return  (removed_dds && removed_das && removed_dmr);
 #else
-     return  (removed_dds || removed_das || removed_dmr);
+     return  (removed_dds || removed_das || removed_dmr || removed_dmrpp);
 #endif
 }
 

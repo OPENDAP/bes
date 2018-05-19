@@ -545,7 +545,7 @@ public:
          DBG(cerr << __func__ << " - END" << endl);
     }
 
-    void get_dmr_response_test() {
+    void write_dmr_response_test() {
         DBG(cerr << __func__ << " - BEGIN" << endl);
 
          try {
@@ -899,7 +899,7 @@ public:
 
     CPPUNIT_TEST(get_dds_response_test);
     CPPUNIT_TEST(get_das_response_test);
-    CPPUNIT_TEST(get_dmr_response_test);
+    CPPUNIT_TEST(write_dmr_response_test);
 #if SYMETRIC_ADD_RESPONSES
     CPPUNIT_TEST(get_dmr_response_test_2);
 #endif

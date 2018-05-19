@@ -89,9 +89,9 @@ private:
 protected:
     /// Hack use a DMR to write a DMR++ response. WIP
     struct StreamDMRpp : public StreamDAP {
-        // Making a StreamDMRpp with a DDS or DMR is not supported.
         StreamDMRpp(libdap::DMR *dmrpp) : StreamDAP(dmrpp) {}
-
+        // Use the DMR to write the DMR++ when the DMR has variables of the correct
+        // type. Look for this by checking the type of the object at runtime.
         virtual void operator()(std::ostream &os);
     };
 
@@ -112,10 +112,7 @@ public:
 
     virtual bool add_responses(libdap::DMR *dmrpp, const std::string &name);
 
-#if 0
     virtual dmrpp::DMRpp *get_dmrpp_object(const std::string &name);
-#endif
-
 };
 
 } // namespace bes

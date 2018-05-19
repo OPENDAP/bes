@@ -24,39 +24,20 @@
 
 #include "config.h"
 
-#include <fcntl.h>
-#include <unistd.h>
-
-#include <cerrno>
-#include <cstring>
-
 #include <iostream>
 #include <string>
-#include <fstream>
 #include <sstream>
-#include <functional>
 #include <memory>
 
-#include <DapObj.h>
-#include <DDS.h>
-#include <DAS.h>
 #include <DMR.h>
-#include <D4ParserSax2.h>
 #include <XMLWriter.h>
-#include <BaseTypeFactory.h>
-#include <D4BaseTypeFactory.h>
 
-#include "PicoSHA2/picosha2.h"
-
-#include "TempFile.h"
-#include "TheBESKeys.h"
-#include "BESUtil.h"
-#include "BESLog.h"
 #include "BESDebug.h"
 
-#include "BESInternalError.h"
 #include "BESInternalFatalError.h"
 
+#include "DmrppParserSax2.h"
+#include "DmrppTypeFactory.h"
 #include "DmrppMetadataStore.h"
 
 #include "DMRpp.h"
@@ -243,34 +224,34 @@ DmrppMetadataStore::add_responses(DMR *dmr, const string &name)
 #endif
 }
 
-#if 0
+#if 1
 /**
- * @brief Build a DMR object from the cached Response
+ * @brief Build a DMR++ object from the cached Response
  *
- * Read and parse a DMR response , building a binary DMR object. The
+ * Read and parse a DMR++ response , building a binary DMR++ object. The
  * object is returned with a null factory. The variables are built using
- * the default DAP4 type factory.
+ * DmrppTypeFactory
  *
  * @param name Name of the dataset
  * @return A pointer to the DMR object; the caller must delete this object.
  * @exception BESInternalError is thrown if \arg name does not have a
  * cached DMR response.
  */
-DMR *
-DmrppMetadataStore::get_dmr_object(const string &name)
+DMRpp *
+DmrppMetadataStore::get_dmrpp_object(const string &name)
 {
     stringstream oss;
-    get_dmr_response(name, oss);    // throws BESInternalError if not found
+    write_dmrpp_response(name, oss);    // throws BESInternalError if not found
 
-    D4BaseTypeFactory d4_btf;
-    auto_ptr<DMR> dmr(new DMR(&d4_btf, "mds"));
+    DmrppTypeFactory dmrpp_btf;
+    auto_ptr<DMRpp> dmrpp(new DMRpp(&dmrpp_btf, "mds"));
 
-    D4ParserSax2 parser;
-    parser.intern(oss.str(), dmr.get());
+    DmrppParserSax2 parser;
+    parser.intern(oss.str(), dmrpp.get());
 
-    dmr->set_factory(0);
+    dmrpp->set_factory(0);
 
-    return dmr.release();
+    return dmrpp.release();
 }
 #endif
 
