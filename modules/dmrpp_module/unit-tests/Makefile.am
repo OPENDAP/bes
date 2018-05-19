@@ -35,7 +35,7 @@ noinst_HEADERS = test_config.h
 
 noinst_DATA = bes.conf
 
-EXTRA_DIST = baselines
+EXTRA_DIST = baselines input-files
 
 CLEANFILES = *.gcda *.gcno *.strm *.file test_config.h tmp.txt
 
