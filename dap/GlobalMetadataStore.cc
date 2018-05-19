@@ -619,7 +619,7 @@ GlobalMetadataStore::get_read_lock_helper(const string &name, const string &suff
 {
     string item_name = get_cache_file_name(get_hash(name + suffix), false);
     int fd;
-    MDSReadLock lock(item_name, get_read_lock(item_name, fd));
+    MDSReadLock lock(item_name, get_read_lock(item_name, fd), this);
     BESDEBUG(DEBUG_KEY, __func__ << " MDS lock for  " << item_name << ": " << lock() <<  endl);
 
     if (lock())
@@ -678,6 +678,29 @@ GlobalMetadataStore::is_das_available(const string &name)
 }
 
 /**
+ * @brief Is the DMR++ response for \arg name in the MDS?
+ *
+ * Look in the MDS to see if the DMR++ response has been stored/cached for
+ * \arg name.
+ *
+ * @note This method uses LOG()
+ * to record cache hits and misses. Other methods also record information
+ * about cache hits, but only using VERBOSE(), so that output will not show
+ * up in a normal log.
+ *
+ * @param name Find the DMR++ response for \arg name.
+ * @return A MDSReadLock object. This object is true if the item was found
+ * (and a read lock was obtained), false if either of those things are not
+ * true. When the MDSReadLock object goes out of scope, the read lock is
+ * released.
+ */
+GlobalMetadataStore::MDSReadLock
+GlobalMetadataStore::is_dmrpp_available(const string &name)
+{
+    return get_read_lock_helper(name, "dmrpp_r", "DMR++");
+}
+
+/**
  * Common code to copy a response to an output stream.
  *
  * @param name Granule name
@@ -686,7 +709,7 @@ GlobalMetadataStore::is_das_available(const string &name)
  * @param object_name One of DDS, DAS or DMR
  */
 void
-GlobalMetadataStore::get_response_helper(const string &name, ostream &os, const string &suffix, const string &object_name)
+GlobalMetadataStore::write_response_helper(const string &name, ostream &os, const string &suffix, const string &object_name)
 {
     string item_name = get_cache_file_name(get_hash(name + suffix), false);
     int fd; // value-result parameter;
@@ -708,9 +731,9 @@ GlobalMetadataStore::get_response_helper(const string &name, ostream &os, const 
  * @param os Write to this stream
  */
 void
-GlobalMetadataStore::get_dds_response(const std::string &name, ostream &os)
+GlobalMetadataStore::write_dds_response(const std::string &name, ostream &os)
 {
-    get_response_helper(name, os, "dds_r", "DDS");
+    write_response_helper(name, os, "dds_r", "DDS");
 }
 
 /**
@@ -720,9 +743,9 @@ GlobalMetadataStore::get_dds_response(const std::string &name, ostream &os)
  * @param os Write to this stream
  */
 void
-GlobalMetadataStore::get_das_response(const std::string &name, ostream &os)
+GlobalMetadataStore::write_das_response(const std::string &name, ostream &os)
 {
-    get_response_helper(name, os, "das_r", "DAS");
+    write_response_helper(name, os, "das_r", "DAS");
 }
 
 /**
@@ -732,9 +755,21 @@ GlobalMetadataStore::get_das_response(const std::string &name, ostream &os)
  * @param os Write to this stream
  */
 void
-GlobalMetadataStore::get_dmr_response(const std::string &name, ostream &os)
+GlobalMetadataStore::write_dmr_response(const std::string &name, ostream &os)
 {
-    get_response_helper(name, os, "dmr_r", "DMR");
+    write_response_helper(name, os, "dmr_r", "DMR");
+}
+
+/**
+ * @brief Write the stored DMR++ response to a stream
+ *
+ * @param name The (path)name of the granule
+ * @param os Write to this stream
+ */
+void
+GlobalMetadataStore::write_dmrpp_response(const std::string &name, ostream &os)
+{
+    write_response_helper(name, os, "dmrpp_r", "DMR++");
 }
 
 /**
@@ -803,7 +838,7 @@ DMR *
 GlobalMetadataStore::get_dmr_object(const string &name)
 {
     stringstream oss;
-    get_dmr_response(name, oss);    // throws BESInternalError if not found
+    write_dmr_response(name, oss);    // throws BESInternalError if not found
 
     D4BaseTypeFactory d4_btf;
     auto_ptr<DMR> dmr(new DMR(&d4_btf, "mds"));
@@ -843,7 +878,7 @@ GlobalMetadataStore::get_dds_object(const string &name)
     TempFile dds_tmp(get_cache_directory() + "/opendapXXXXXX");
 
     fstream dds_fs(dds_tmp.get_name().c_str(), std::fstream::out);
-    get_dds_response(name, dds_fs);     // throws BESInternalError if not found
+    write_dds_response(name, dds_fs);     // throws BESInternalError if not found
     dds_fs.close();
 
     BaseTypeFactory btf;
@@ -852,7 +887,7 @@ GlobalMetadataStore::get_dds_object(const string &name)
 
     TempFile das_tmp(get_cache_directory() + "/opendapXXXXXX");
     fstream das_fs(das_tmp.get_name().c_str(), std::fstream::out);
-    get_das_response(name, das_fs);     // throws BESInternalError if not found
+    write_das_response(name, das_fs);     // throws BESInternalError if not found
     das_fs.close();
 
     auto_ptr<DAS> das(new DAS());

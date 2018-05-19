@@ -125,7 +125,6 @@ private:
         }
     }
 
-#if 1
     void init_dmrpp_and_mds()
     {
         try {
@@ -156,7 +155,6 @@ private:
             CPPUNIT_FAIL(e.what());
         }
     }
-#endif
 
 public:
     DmrppMetadataStoreTest() :
@@ -289,7 +287,6 @@ public:
         DBG(cerr << __func__ << " - END" << endl);
     }
 
-#if 1
     void cache_a_dmrpp_response()
     {
         DBG(cerr << __func__ << " - BEGIN" << endl);
@@ -324,40 +321,28 @@ public:
 
         DBG(cerr << __func__ << " - END" << endl);
     }
-#endif
 
-#if 0
     void add_response_test()
     {
         DBG(cerr << __func__ << " - BEGIN" << endl);
 
         try {
-            init_dds_and_mds();
+            init_dmr_and_mds();
 
             // Store it - this will work if the the code is cleaning the cache.
-            bool stored = d_mds->add_responses(d_test_dds, d_test_dds->get_dataset_name());
+            bool stored = d_mds->add_responses(d_test_dmr, d_test_dmr->name());
 
             CPPUNIT_ASSERT(stored);
 
-            // look for the files
-            string dds_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dds->get_dataset_name().append("dds_r")), false /*mangle*/);
-            DBG(cerr << __func__ << " - dds_cache_name: " << dds_cache_name << endl);
-            CPPUNIT_ASSERT(access(dds_cache_name.c_str(), R_OK) == 0);
-
-            string das_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dds->get_dataset_name().append("das_r")), false /*mangle*/);
-            DBG(cerr << __func__ << " - das_cache_name: " << das_cache_name << endl);
-            CPPUNIT_ASSERT(access(das_cache_name.c_str(), R_OK) == 0);
-
-            /// Previously the MDS built all three metadata responses using
-            /// either the DDS or DMR. Now it only does that when SYMETRIC_ADD_RESPONSES
-            /// is defined. When that is not defined (the default) the DDS
-            /// builds only the DAP2 responses and the DMR builds only the
-            /// DAP4 responses. jhrg 3/20/18
-#if SYMETRIC_ADD_RESPONSES
-            string dmr_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dds->get_dataset_name().append("dmr_r")), false /*mangle*/);
-            DBG(cerr << __func__ << " - dmr_cache_name: " << das_cache_name << endl);
+            string dmr_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dmr->name().append("dmr_r")), false /*mangle*/);
+            DBG(cerr << __func__ << " - dmr_cache_name: " << dmr_cache_name << endl);
             CPPUNIT_ASSERT(access(dmr_cache_name.c_str(), R_OK) == 0);
-#endif
+
+            // There should be no DMR++ in the MDS
+            string dmrpp_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dmr->name().append("dmrpp_r")), false /*mangle*/);
+            DBG(cerr << __func__ << " - dmrpp_cache_name: " << dmrpp_cache_name << endl);
+            CPPUNIT_ASSERT(access(dmrpp_cache_name.c_str(), R_OK) != 0);
+
         }
         catch (BESError &e) {
             CPPUNIT_FAIL(e.get_message());
@@ -365,9 +350,61 @@ public:
 
         DBG(cerr << __func__ << " - END" << endl);
     }
-#endif
 
-#if 0
+    // Make a DMR++. add_responses() should add both the DMR and DMR++
+    void add_response_test_2()
+    {
+        DBG(cerr << __func__ << " - BEGIN" << endl);
+
+        try {
+            init_dmrpp_and_mds();
+
+            // Store it - this will work if the the code is cleaning the cache.
+            bool stored = d_mds->add_responses(d_test_dmr, d_test_dmr->name());
+
+            CPPUNIT_ASSERT(stored);
+
+            string dmr_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dmr->name().append("dmr_r")), false /*mangle*/);
+            DBG(cerr << __func__ << " - dmr_cache_name: " << dmr_cache_name << endl);
+            CPPUNIT_ASSERT(access(dmr_cache_name.c_str(), R_OK) == 0);
+
+            string dmrpp_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dmr->name().append("dmrpp_r")), false /*mangle*/);
+            DBG(cerr << __func__ << " - dmrpp_cache_name: " << dmrpp_cache_name << endl);
+            CPPUNIT_ASSERT(access(dmrpp_cache_name.c_str(), R_OK) == 0);
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL(e.get_message());
+        }
+
+        DBG(cerr << __func__ << " - END" << endl);
+    }
+
+    void is_dmrpp_available_test()
+    {
+        DBG(cerr << __func__ << " - BEGIN" << endl);
+
+        try {
+            init_dmrpp_and_mds();
+
+            // Store it - this will work if the the code is cleaning the cache.
+            bool stored = d_mds->add_responses(d_test_dmr, d_test_dmr->name());
+
+            CPPUNIT_ASSERT(stored);
+
+            GlobalMetadataStore::MDSReadLock dmr = d_mds->is_dmr_available(d_test_dmr->name());
+            CPPUNIT_ASSERT(dmr());
+
+            DmrppMetadataStore::MDSReadLock dmrpp = d_mds->is_dmrpp_available(d_test_dmr->name());
+            CPPUNIT_ASSERT(dmrpp());
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL(e.get_message());
+        }
+
+        DBG(cerr << __func__ << " - END" << endl);
+
+    }
+
     void get_dmr_response_test() {
         DBG(cerr << __func__ << " - BEGIN" << endl);
 
@@ -381,10 +418,10 @@ public:
 
             // Now lets read the object from the cache
             ostringstream oss;
-            d_mds->get_dmr_response(d_test_dmr->name(), oss);
+            d_mds->write_dmr_response(d_test_dmr->name(), oss);
             DBG(cerr << "DMR response: " << endl << oss.str() << endl);
 
-            string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "test_01.dmr_r";
+            string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "test_array_4.dmr_r";
             DBG(cerr << "Reading baseline: " << baseline_name << endl);
             CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
 
@@ -398,8 +435,6 @@ public:
 
         DBG(cerr << __func__ << " - END" << endl);
     }
-
-#endif
 
 #if 0
     void remove_object_test()
@@ -446,77 +481,6 @@ public:
     }
 #endif
 
-#if 0
-    void cache_a_dmr_response_dmr()
-    {
-        DBG(cerr << __func__ << " - BEGIN" << endl);
-
-        try {
-            init_dmr_and_mds();
-
-            // Store it - this will work if the the code is cleaning the cache.
-            DmrppMetadataStore::StreamDMR write_the_dmr_response(d_test_dmr);
-            bool stored = d_mds->store_dap_response(write_the_dmr_response,
-                d_test_dmr->name() + ".dmr_r", d_test_dmr->name(), "DMR");
-
-            CPPUNIT_ASSERT(stored);
-
-            // Now check the file
-            string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "test_array_4.dmr_r";
-            DBG(cerr << "Reading baseline: " << baseline_name << endl);
-            CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
-
-            string test_01_dmr_baseline = read_test_baseline(baseline_name);
-
-            string response_name = d_mds_dir + "/" + c_mds_prefix + "test_array_4.dmr_r";
-            // read_test_baseline() just reads stuff from a file - it will work for the response, too.
-            DBG(cerr << "Reading response: " << response_name << endl);
-            CPPUNIT_ASSERT(access(response_name.c_str(), R_OK) == 0);
-
-            string stored_response = read_test_baseline(response_name);
-
-            CPPUNIT_ASSERT(stored_response == test_01_dmr_baseline);
-        }
-        catch (BESError &e) {
-            CPPUNIT_FAIL(e.get_message());
-        }
-
-        DBG(cerr << __func__ << " - END" << endl);
-    }
-
-    void add_response_dmr_test()
-    {
-        DBG(cerr << __func__ << " - BEGIN" << endl);
-
-        try {
-            init_dmr_and_mds();
-
-            // Store it - this will work if the the code is cleaning the cache.
-            bool stored = d_mds->add_responses(d_test_dmr, d_test_dmr->name());
-
-            CPPUNIT_ASSERT(stored);
-
-#if SYMETRIC_ADD_RESPONSES
-            // look for the files
-            string dds_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dmr->name().append("dds_r")), false /*mangle*/);
-            DBG(cerr << __func__ << " - dds_cache_name: " << dds_cache_name << endl);
-            CPPUNIT_ASSERT(access(dds_cache_name.c_str(), R_OK) == 0);
-
-            string das_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dmr->name().append("das_r")), false /*mangle*/);
-            DBG(cerr << __func__ << " - das_cache_name: " << das_cache_name << endl);
-            CPPUNIT_ASSERT(access(das_cache_name.c_str(), R_OK) == 0);
-#endif
-            string dmr_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dmr->name().append("dmr_r")), false /*mangle*/);
-            DBG(cerr << __func__ << " - dmr_cache_name: " << dmr_cache_name << endl);
-            CPPUNIT_ASSERT(access(dmr_cache_name.c_str(), R_OK) == 0);
-        }
-        catch (BESError &e) {
-            CPPUNIT_FAIL(e.get_message());
-        }
-
-        DBG(cerr << __func__ << " - END" << endl);
-    }
-
     void get_dmr_object_test() {
         DBG(cerr << __func__ << " - BEGIN" << endl);
 
@@ -539,7 +503,7 @@ public:
             dmr->print_dap4(writer);
             oss << writer.get_doc();
 
-            string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "test_01.dmr_r";
+            string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "test_array_4.dmr_r";
             DBG(cerr << "Reading baseline: " << baseline_name << endl);
             CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
 
@@ -559,8 +523,6 @@ public:
 
         DBG(cerr << __func__ << " - END" << endl);
     }
-#endif
-
 
     CPPUNIT_TEST_SUITE( DmrppMetadataStoreTest );
 
@@ -570,6 +532,14 @@ public:
 
     CPPUNIT_TEST(cache_a_dmr_response);
     CPPUNIT_TEST(cache_a_dmrpp_response);
+
+    CPPUNIT_TEST(get_dmr_response_test);
+    CPPUNIT_TEST(add_response_test);
+    CPPUNIT_TEST(add_response_test_2);
+
+    CPPUNIT_TEST(is_dmrpp_available_test);
+
+    CPPUNIT_TEST(get_dmr_object_test);
 
     CPPUNIT_TEST_SUITE_END();
 };

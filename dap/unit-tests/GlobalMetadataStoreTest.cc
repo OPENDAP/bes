@@ -496,7 +496,7 @@ public:
 
              // Now lets read the object from the cache
              ostringstream oss;
-             d_mds->get_dds_response(d_test_dds->get_dataset_name(), oss);
+             d_mds->write_dds_response(d_test_dds->get_dataset_name(), oss);
              DBG(cerr << "DDS response: " << endl << oss.str() << endl);
 
              string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "SimpleTypes.dds_r";
@@ -527,7 +527,7 @@ public:
 
              // Now lets read the object from the cache
              ostringstream oss;
-             d_mds->get_das_response(d_test_dds->get_dataset_name(), oss);
+             d_mds->write_das_response(d_test_dds->get_dataset_name(), oss);
              DBG(cerr << "DAS response: " << endl << oss.str() << endl);
 
              string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "SimpleTypes.das_r";
@@ -558,7 +558,7 @@ public:
 
              // Now lets read the object from the cache
              ostringstream oss;
-             d_mds->get_dmr_response(d_test_dmr->name(), oss);
+             d_mds->write_dmr_response(d_test_dmr->name(), oss);
              DBG(cerr << "DMR response: " << endl << oss.str() << endl);
 
              string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "test_01.dmr_r";
@@ -590,7 +590,7 @@ public:
 
              // Now lets read the object from the cache
              ostringstream oss;
-             d_mds->get_dmr_response(d_test_dds->get_dataset_name(), oss);
+             d_mds->write_dmr_response(d_test_dds->get_dataset_name(), oss);
              DBG(cerr << "DMR response: " << endl << oss.str() << endl);
 
              string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "SimpleTypes.dmr_r";

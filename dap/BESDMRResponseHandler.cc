@@ -92,7 +92,7 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
         // FIXME Does not work for constrained DMR requests
         BESDEBUG("dmr", __func__ << " Locked: " << dhi.container->get_real_name() << endl);
         // send the response
-        mds->get_dmr_response(dhi.container->get_real_name(), dhi.get_output_stream());
+        mds->write_dmr_response(dhi.container->get_real_name(), dhi.get_output_stream());
         // suppress transmitting a ResponseObject in transmit()
         d_response_object = 0;
     }
@@ -101,7 +101,7 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
     // however. And there are other things that are breaking still... jhrg 3/19/18
     else if (mds && lock() && !dhi.container->get_dap4_constraint().empty()) {  // with CE
         stringstream oss;
-        mds->get_dmr_response(dhi.container->get_real_name(), oss);
+        mds->write_dmr_response(dhi.container->get_real_name(), oss);
 
         DMR *dmr = new DMR(new D4BaseTypeFactory, "mds");
 

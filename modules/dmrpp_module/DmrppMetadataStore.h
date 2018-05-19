@@ -87,21 +87,6 @@ private:
     friend class DmrppMetadataStoreTest;
 
 protected:
-#if 0
-    struct StreamDAP : public std::unary_function<libdap::DapObj*, void> {
-        libdap::DDS *d_dds;
-        libdap::DMR *d_dmr;
-
-        StreamDAP() {
-            throw BESInternalFatalError("Unknown DAP object type.", __FILE__, __LINE__);
-        }
-        StreamDAP(libdap::DDS *dds) : d_dds(dds), d_dmr(0) {}
-        StreamDAP(libdap::DMR *dmr) : d_dds(0), d_dmr(dmr) {}
-
-        virtual void operator()(std::ostream &os) = 0;
-    };
-#endif
-
     /// Hack use a DMR to write a DMR++ response. WIP
     struct StreamDMRpp : public StreamDAP {
         // Making a StreamDMRpp with a DDS or DMR is not supported.
@@ -127,15 +112,7 @@ public:
 
     virtual bool add_responses(libdap::DMR *dmrpp, const std::string &name);
 
-    virtual MDSReadLock is_dmrpp_available(const std::string &name);
-
 #if 0
-    // Add a third parameter to enable changing the value of xmlbase in this response.
-    // jhrg 2.28.18
-    virtual void get_dmrpp_response(const std::string &name, std::ostream &os);
-
-    virtual bool remove_responses(const std::string &name);
-
     virtual dmrpp::DMRpp *get_dmrpp_object(const std::string &name);
 #endif
 

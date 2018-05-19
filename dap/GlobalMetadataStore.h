@@ -31,23 +31,11 @@
 #include "BESFileLockingCache.h"
 #include "BESInternalFatalError.h"
 
-#if 0
-#include "DMRpp.h"
-#endif
-
-
 namespace libdap {
 class DapObj;
 class DDS;
 class DMR;
 }
-
-#if 0
-namespace dmrpp {
-    class DMRpp;    // Added for DMR++ support. jhrg 5/17.18
-}
-#endif
-
 
 namespace bes {
 
@@ -104,6 +92,9 @@ private:
         delete d_instance;
         d_instance = 0;
     }
+
+    friend class DmrppMetadataStoreTest;
+    friend class GlobalMetadataStoreTest;
 
 protected:
     void write_ledger();
@@ -163,20 +154,9 @@ protected:
         virtual void operator()(ostream &os);
     };
 
-#if 0
-    /// Hack use a DMR to write a DMR++ response. WIP
-    struct StreamDMRpp : public StreamDAP {
-        // Making a StreamDMRpp with a DDS or DMR is not supported.
-        StreamDMRpp(libdap::DMR *dmrpp) : StreamDAP(dmrpp) {}
-
-        virtual void operator()(ostream &os);
-    };
-#endif
-
-
     bool store_dap_response(StreamDAP &writer, const std::string &key, const string &name, const string &response_name);
 
-    void get_response_helper(const std::string &name, std::ostream &os, const std::string &suffix,
+    void write_response_helper(const std::string &name, std::ostream &os, const std::string &suffix,
         const std::string &object_name);
 
     bool remove_response_helper(const std::string& name, const std::string &suffix, const std::string &object_name);
@@ -186,14 +166,19 @@ public:
      * @brief Unlock and close the MDS item when the ReadLock goes out of scope.
      * @note This needs to be public because software that uses the MDS needs to
      * hold instances of the MDSReadLock.
+     * @note Passing in a pointer to an instance of GlobalMetadataStore makes
+     * GlobalMetadataStore easier to subclass. If _get_instance()_ is called
+     * in this code, then only a GlobalMetadataStore, and not the subclass,
+     * will be used to unlock the item.
      */
     struct MDSReadLock : public std::unary_function<std::string, bool> {
         std::string name;
         bool locked;
-        MDSReadLock() : name(""), locked(false) { }
-        MDSReadLock(const std::string n, bool l): name(n), locked(l) { }
+        GlobalMetadataStore *mds;
+        MDSReadLock() : name(""), locked(false), mds(0) { }
+        MDSReadLock(const std::string n, bool l, GlobalMetadataStore *store): name(n), locked(l), mds(store) { }
         ~MDSReadLock() {
-            if (locked) get_instance()->unlock_and_close(name);
+            if (locked) mds->unlock_and_close(name);
             locked = false;
         }
 
@@ -219,8 +204,6 @@ protected:
     static string get_cache_prefix_from_config();
     static unsigned long get_cache_size_from_config();
 
-    friend class DmrppMetadataStoreTest;
-
 public:
     static GlobalMetadataStore *get_instance(const std::string &cache_dir, const std::string &prefix,
         unsigned long long size);
@@ -236,13 +219,15 @@ public:
     virtual MDSReadLock is_dmr_available(const std::string &name);
     virtual MDSReadLock is_dds_available(const std::string &name);
     virtual MDSReadLock is_das_available(const std::string &name);
+    virtual MDSReadLock is_dmrpp_available(const std::string &name);
 
-    virtual void get_dds_response(const std::string &name, std::ostream &os);
-    virtual void get_das_response(const std::string &name, std::ostream &os);
+    virtual void write_dds_response(const std::string &name, std::ostream &os);
+    virtual void write_das_response(const std::string &name, std::ostream &os);
 
     // Add a third parameter to enable changing the value of xmlbase in this response.
     // jhrg 2.28.18
-    virtual void get_dmr_response(const std::string &name, std::ostream &os);
+    virtual void write_dmr_response(const std::string &name, std::ostream &os);
+    virtual void write_dmrpp_response(const std::string &name, std::ostream &os);
 
     virtual bool remove_responses(const std::string &name);
 

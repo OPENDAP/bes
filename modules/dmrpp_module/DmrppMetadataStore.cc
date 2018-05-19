@@ -61,7 +61,6 @@
 
 #include "DMRpp.h"
 
-
 #define DEBUG_KEY "dmrpp_store"
 #define MAINTAIN_STORE_SIZE_EVEN_WHEN_UNLIMITED 0
 
@@ -87,20 +86,6 @@ using namespace libdap;
 using namespace bes;
 
 using namespace dmrpp;
-
-#if 0
-static const unsigned int default_cache_size = 20; // 20 GB
-static const string default_cache_prefix = "mds";
-static const string default_cache_dir = "";// I'm making the default empty so that no key == no caching. jhrg 9.26.16
-static const string default_ledger_name = "mds_ledger.txt";///< In the CWD of the BES process
-
-static const string PATH_KEY = "DAP.DmrppMetadataStore.path";
-static const string PREFIX_KEY = "DAP.DmrppMetadataStore.prefix";
-static const string SIZE_KEY = "DAP.DmrppMetadataStore.size";
-static const string LEDGER_KEY = "DAP.DmrppMetadataStore.ledger";
-static const string LOCAL_TIME_KEY = "BES.LogTimeLocal";
-#endif
-
 
 DmrppMetadataStore *DmrppMetadataStore::d_instance = 0;
 bool DmrppMetadataStore::d_enabled = true;
@@ -207,23 +192,6 @@ void DmrppMetadataStore::StreamDMRpp::operator()(ostream &os)
     }
 }
 
-
-/**
- * @name Add responses to the DmrppMetadataStore
- *
- * These methods use a DDS or DMR object to generate the DDS, DAS and DMR responses
- * for DAP (2 and 4). They store those in the MDS and then update the
- * MDS ledger file with the operation (add), the kind of object used
- * to build the responses (DDS or DMR), name of the granule and hashes/names
- * for each of the three files in the MDS that hold the responses.
- *
- * If verbose logging is on, the bes log also will hold information about
- * the operation. If there is an error, that will always be recorded in
- * the bes log.
- */
-///@{
-
-
 /**
  * @brief Add the DAP4 metadata responses using a DMR
  *
@@ -241,7 +209,7 @@ DmrppMetadataStore::add_responses(DMR *dmr, const string &name)
     // Start the index entry
     // FIXME d_ledger_entry is private: d_ledger_entry = string("add DMR ").append(name);
 
-    // I'm appending the 'dds r' string to the name before hashing so that
+    // I'm appending the 'dds_r' string to the name before hashing so that
     // the different hashes for the file's DDS, DAS, ..., are all very different.
     // This will be useful if we use S3 instead of EFS for the Metadata Store.
     //
@@ -257,7 +225,6 @@ DmrppMetadataStore::add_responses(DMR *dmr, const string &name)
     StreamDMR write_the_dmr_response(dmr);
     bool stored_dmr = store_dap_response(write_the_dmr_response, get_hash(name + "dmr_r"), name, "DMR");
 
-#if 1
     bool stored_dmrpp = false;
     if (typeid(*dmr) == typeid(dmrpp::DMRpp)) {
         StreamDMRpp write_the_dmrpp_response(dmr);
@@ -266,8 +233,6 @@ DmrppMetadataStore::add_responses(DMR *dmr, const string &name)
     else {
         stored_dmrpp = true;    // if dmr is not a DMRpp, not writing the object is 'success.'
     }
-#endif
-
 
     write_ledger(); // write the index line
 
@@ -277,74 +242,6 @@ DmrppMetadataStore::add_responses(DMR *dmr, const string &name)
     return(stored_dmr && stored_dmrpp);
 #endif
 }
-///@}
-
-/**
- * @brief Is the DMR++ response for \arg name in the MDS?
- *
- * Look in the MDS to see if the DMR++ response has been stored/cached for
- * \arg name.
- *
- * @note This method uses LOG()
- * to record cache hits and misses. Other methods also record information
- * about cache hits, but only using VERBOSE(), so that output will not show
- * up in a normal log.
- *
- * @param name Find the DMR++ response for \arg name.
- * @return A MDSReadLock object. This object is true if the item was found
- * (and a read lock was obtained), false if either of those things are not
- * true. When the MDSReadLock object goes out of scope, the read lock is
- * released.
- */
-DmrppMetadataStore::MDSReadLock
-DmrppMetadataStore::is_dmrpp_available(const string &name)
-{
-    return get_read_lock_helper(name, "dmrpp_r", "DMR++");
-}
-
-#if 0
-/**
- * @brief Write the stored DMR response to a stream
- *
- * @param name The (path)name of the granule
- * @param os Write to this stream
- */
-void
-DmrppMetadataStore::get_dmr_response(const std::string &name, ostream &os)
-{
-    get_response_helper(name, os, "dmr_r", "DMR");
-}
-#endif
-
-#if 0
-/**
- * @brief Remove all cached responses and objects for a granule
- *
- * @param name
- * @return
- */
-bool
-DmrppMetadataStore::remove_responses(const string &name)
-{
-    // Start the index entry
-    d_ledger_entry = string("remove ").append(name);
-
-    bool removed_dds = remove_response_helper(name, "dds_r", "DDS");
-
-    bool removed_das = remove_response_helper(name, "das_r", "DAS");
-
-    bool removed_dmr = remove_response_helper(name, "dmr_r", "DMR");
-
-    write_ledger();// write the index line
-
-#if SYMETRIC_ADD_RESPONSES
-    return (removed_dds && removed_das && removed_dmr);
-#else
-    return (removed_dds || removed_das || removed_dmr);
-#endif
-}
-#endif
-
 
 #if 0
 /**
