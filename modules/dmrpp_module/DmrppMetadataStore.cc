@@ -28,6 +28,7 @@
 #include <string>
 #include <sstream>
 #include <memory>
+#include <typeinfo>
 
 #include <DMR.h>
 #include <XMLWriter.h>
