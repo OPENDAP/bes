@@ -39,7 +39,7 @@ EXTRA_DIST = baselines input-files
 
 CLEANFILES = *.gcda *.gcno *.strm *.file test_config.h tmp.txt
 
-DISTCLEANFILES = 
+DISTCLEANFILES = bes.conf bes.log
 
 BUILT_SOURCES = test_config.h
 
