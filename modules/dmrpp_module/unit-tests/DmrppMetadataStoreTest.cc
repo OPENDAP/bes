@@ -425,9 +425,9 @@ public:
             DBG(cerr << "Reading baseline: " << baseline_name << endl);
             CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
 
-            string test_05_dmr_baseline = read_test_baseline(baseline_name);
+            string test_array_4_dmr_baseline = read_test_baseline(baseline_name);
 
-            CPPUNIT_ASSERT(test_05_dmr_baseline == oss.str());
+            CPPUNIT_ASSERT(test_array_4_dmr_baseline == oss.str());
         }
         catch (BESError &e) {
             CPPUNIT_FAIL(e.get_message());
@@ -587,6 +587,61 @@ public:
         DBG(cerr << __func__ << " - END" << endl);
     }
 
+    void use_dmrpp_response_test()
+    {
+        DBG(cerr << __func__ << " - BEGIN" << endl);
+
+        try {
+            init_dmrpp_and_mds();
+
+            // Store it - this will work if the the code is cleaning the cache.
+            bool stored = d_mds->add_responses(d_test_dmr, d_test_dmr->name());
+
+            CPPUNIT_ASSERT(stored);
+
+            string dmr_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dmr->name().append("dmr_r")), false /*mangle*/);
+            DBG(cerr << __func__ << " - dmr_cache_name: " << dmr_cache_name << endl);
+            CPPUNIT_ASSERT(access(dmr_cache_name.c_str(), R_OK) == 0);
+
+            string dmrpp_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dmr->name().append("dmrpp_r")), false /*mangle*/);
+            DBG(cerr << __func__ << " - dmrpp_cache_name: " << dmrpp_cache_name << endl);
+            CPPUNIT_ASSERT(access(dmrpp_cache_name.c_str(), R_OK) == 0);
+
+            // So the DMR++ response is in the cache and an instance of DmrppMetadataStore can
+            // access it. What about am instance of GlobalMetadataStore?
+
+            // This will use the same parameters as the Dmrpp M S.
+            GlobalMetadataStore *gms = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
+
+            string gms_dmr_cache_name = gms->get_cache_file_name(gms->get_hash(d_test_dmr->name().append("dmr_r")), false /*mangle*/);
+            DBG(cerr << __func__ << " - gms_dmr_cache_name: " << gms_dmr_cache_name << endl);
+            CPPUNIT_ASSERT(access(gms_dmr_cache_name.c_str(), R_OK) == 0);
+
+            string gms_dmrpp_cache_name = gms->get_cache_file_name(gms->get_hash(d_test_dmr->name().append("dmrpp_r")), false /*mangle*/);
+            DBG(cerr << __func__ << " - gms_dmrpp_cache_name: " << gms_dmrpp_cache_name << endl);
+            CPPUNIT_ASSERT(access(gms_dmrpp_cache_name.c_str(), R_OK) == 0);
+
+            // Now lets read the object from the cache
+            ostringstream oss;
+            gms->write_dmrpp_response(d_test_dmr->name(), oss);
+            DBG(cerr << "DMR++ response: " << endl << oss.str() << endl);
+
+            string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "chunked_fourD.h5.dmrpp_r";
+            DBG(cerr << "Reading baseline: " << baseline_name << endl);
+            CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
+
+            string chunked_fourD_dmrpp_baseline = read_test_baseline(baseline_name);
+
+            CPPUNIT_ASSERT(chunked_fourD_dmrpp_baseline == oss.str());
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL(e.get_message());
+        }
+
+        DBG(cerr << __func__ << " - END" << endl);
+    }
+
+
     CPPUNIT_TEST_SUITE( DmrppMetadataStoreTest );
 
     CPPUNIT_TEST(ctor_test_1);
@@ -607,6 +662,8 @@ public:
 
     CPPUNIT_TEST(get_dmr_object_test);
     CPPUNIT_TEST(get_dmrpp_object_test);
+
+    CPPUNIT_TEST(use_dmrpp_response_test);
 
     CPPUNIT_TEST_SUITE_END();
 };
