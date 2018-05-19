@@ -187,44 +187,24 @@ void DmrppMetadataStore::StreamDMRpp::operator()(ostream &os)
 bool
 DmrppMetadataStore::add_responses(DMR *dmr, const string &name)
 {
-    // Start the index entry
-    // FIXME d_ledger_entry is private: d_ledger_entry = string("add DMR ").append(name);
-
-    // I'm appending the 'dds_r' string to the name before hashing so that
-    // the different hashes for the file's DDS, DAS, ..., are all very different.
-    // This will be useful if we use S3 instead of EFS for the Metadata Store.
-    //
-    // The helper() also updates the ledger string.
-#if SYMETRIC_ADD_RESPONSES
-    StreamDDS write_the_dds_response(dmr);
-    bool stored_dds = store_dap_response(write_the_dds_response, get_hash(name + "dds_r"), name, "DDS");
-
-    StreamDAS write_the_das_response(dmr);
-    bool stored_das = store_dap_response(write_the_das_response, get_hash(name + "das_r"), name, "DAS");
-#endif
-
-    StreamDMR write_the_dmr_response(dmr);
-    bool stored_dmr = store_dap_response(write_the_dmr_response, get_hash(name + "dmr_r"), name, "DMR");
+    bool stored_dmr = GlobalMetadataStore::add_responses(dmr, name);
 
     bool stored_dmrpp = false;
     if (typeid(*dmr) == typeid(dmrpp::DMRpp)) {
+        d_ledger_entry = string("add DMR++ ").append(name);
+
         StreamDMRpp write_the_dmrpp_response(dmr);
         stored_dmrpp = store_dap_response(write_the_dmrpp_response, get_hash(name + "dmrpp_r"), name, "DMRpp");
+
+        write_ledger(); // write the index line
     }
     else {
         stored_dmrpp = true;    // if dmr is not a DMRpp, not writing the object is 'success.'
     }
 
-    write_ledger(); // write the index line
-
-#if SYMETRIC_ADD_RESPONSES
-    return (stored_dds && stored_das && stored_dmr);
-#else
     return(stored_dmr && stored_dmrpp);
-#endif
 }
 
-#if 1
 /**
  * @brief Build a DMR++ object from the cached Response
  *
@@ -253,6 +233,3 @@ DmrppMetadataStore::get_dmrpp_object(const string &name)
 
     return dmrpp.release();
 }
-#endif
-
-

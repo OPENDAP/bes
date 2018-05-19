@@ -80,7 +80,7 @@ check-local:
 endif
 
 clean-local:
-	-rm -rf mds
+	-rm -rf mds mds_ledger.txt
 
 OBJS = ../*.o
 

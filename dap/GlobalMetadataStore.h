@@ -82,7 +82,6 @@ class GlobalMetadataStore: public BESFileLockingCache {
 private:
     bool d_use_local_time;      // Base on BES.LogTimeLocal
     std::string d_ledger_name;  // Name of the ledger file
-    std::string d_ledger_entry; // Built up as info is added, written on success
 
     static bool d_enabled;
     static GlobalMetadataStore *d_instance;
@@ -97,6 +96,7 @@ private:
     friend class GlobalMetadataStoreTest;
 
 protected:
+    std::string d_ledger_entry; // Built up as info is added, written on success
     void write_ledger();
 
     std::string get_hash(const std::string &name);
