@@ -544,6 +544,49 @@ public:
         DBG(cerr << __func__ << " - END" << endl);
     }
 
+    void get_dmrpp_object_test() {
+        DBG(cerr << __func__ << " - BEGIN" << endl);
+
+        try {
+            init_dmrpp_and_mds();
+
+            // Store it - this will work if the the code is cleaning the cache.
+            bool stored = d_mds->add_responses(d_test_dmr, d_test_dmr->name());
+
+            CPPUNIT_ASSERT(stored);
+
+            DMRpp *dmrpp = d_mds->get_dmrpp_object(d_test_dmr->name());
+
+            CPPUNIT_ASSERT(dmrpp);
+
+            DBG(cerr << "DMR++: " << dmrpp->name() << endl);
+
+            ostringstream oss;
+            XMLWriter writer;
+            dmrpp->print_dmrpp(writer); // no href passed, using the default which is ""
+            oss << writer.get_doc();
+
+            string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "chunked_fourD.h5.dmrpp_r";
+            DBG(cerr << "Reading baseline: " << baseline_name << endl);
+            CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
+
+            string chunked_fourD_dmrpp_baseline = read_test_baseline(baseline_name);
+
+            CPPUNIT_ASSERT(chunked_fourD_dmrpp_baseline == oss.str());
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL(e.get_message());
+        }
+        catch(Error &e) {
+            CPPUNIT_FAIL(e.get_error_message());
+        }
+        catch (std::exception &e) {
+            CPPUNIT_FAIL(e.what());
+        }
+
+        DBG(cerr << __func__ << " - END" << endl);
+    }
+
     CPPUNIT_TEST_SUITE( DmrppMetadataStoreTest );
 
     CPPUNIT_TEST(ctor_test_1);
@@ -563,6 +606,7 @@ public:
     CPPUNIT_TEST(remove_object_test);
 
     CPPUNIT_TEST(get_dmr_object_test);
+    CPPUNIT_TEST(get_dmrpp_object_test);
 
     CPPUNIT_TEST_SUITE_END();
 };
