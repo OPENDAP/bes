@@ -299,7 +299,7 @@ static void get_variable_chunk_info(hid_t dataset /*const string &h5_dset_path*/
                 VERBOSE(cerr << "storage: chunked." << endl);
                 VERBOSE(cerr << "Number of chunks is " << num_chunk << endl);
 
-                set_filter_information(dataset, dc);
+                if (dc) set_filter_information(dataset, dc);
 
                 // Get the chunk dimensions
                 hid_t cparms = H5Dget_create_plist(dataset);
@@ -341,7 +341,7 @@ static void get_variable_chunk_info(hid_t dataset /*const string &h5_dset_path*/
                     VERBOSE(copy(chunk_dims.begin(), chunk_dims.end(), ostream_iterator<hsize_t>(cerr, " ")));
                     VERBOSE(cerr << endl);
 
-                    dc->set_chunk_dimension_sizes(chunk_dims);
+                    if (dc) dc->set_chunk_dimension_sizes(chunk_dims);
 
                     for (hsize_t i = 0; i < num_chunk; i++) {
                         VERBOSE(cerr << "    Chunk index:  " << i << endl);
