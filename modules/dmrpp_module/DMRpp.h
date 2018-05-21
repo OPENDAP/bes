@@ -40,6 +40,10 @@ class DmrppTypeFactory;
  * @brief Provide a way to print the DMR++ response
  */
 class DMRpp : public libdap::DMR {
+private:
+    std::string d_href;
+    bool d_print_chunks;
+
 public:
     DMRpp() : DMR() { }
     DMRpp(const DMRpp &dmrpp) : DMR(dmrpp) { }
@@ -47,6 +51,14 @@ public:
     DMRpp(DmrppTypeFactory *factory, const std::string &name = "");
 
     virtual ~DMRpp() { }
+
+    virtual std::string get_href() const { return d_href; }
+    virtual void set_href(const std::string &h) { d_href = h; }
+
+    virtual bool get_print_chunks() const { return d_print_chunks; }
+    virtual void set_print_chunks(bool pc) { d_print_chunks = pc; }
+
+    virtual void print_dap4(libdap::XMLWriter &xml, bool constrained = false);
 
     virtual void print_dmrpp(libdap::XMLWriter &xml, const std::string &href ="", bool constrained = false, bool print_chunks = true);
 };

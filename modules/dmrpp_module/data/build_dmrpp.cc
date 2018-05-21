@@ -48,6 +48,7 @@
 
 #include "DmrppTypeFactory.h"
 #include "DmrppD4Group.h"
+#include "DmrppMetadataStore.h"
 
 using namespace std;
 using namespace libdap;
@@ -257,11 +258,6 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc)
  */
 static void get_variable_chunk_info(hid_t dataset /*const string &h5_dset_path*/, DmrppCommon *dc)
 {
-#if 0
-    hid_t dataset = H5Dopen2(file, h5_dset_path.c_str(), H5P_DEFAULT);
-    if (dataset < 0) throw BESError("HDF5 dataset '" + h5_dset_path + "' cannot be opened.", BES_NOT_FOUND_ERROR, __FILE__, __LINE__);
-#endif
-
     try {
         uint8_t layout_type = 0;
         uint8_t storage_status = 0;
@@ -485,10 +481,6 @@ int main(int argc, char*argv[])
         return 1;
     }
 
-#if 0
-    HDF5RequestHandler *hdf5_handler = new HDF5RequestHandler("h5");
-#endif
-
     hid_t file = 0;
     try {
         // Turn off automatic hdf5 error printing.
@@ -501,6 +493,8 @@ int main(int argc, char*argv[])
             cerr << "Error: HDF5 file '" + h5_file_name + "' cannot be opened." << endl;
             return 1;
         }
+
+        bes::DmrppMetadataStore *mds = bes::DmrppMetadataStore::get_instance();
 
         // For a given HDF5, get info for all the HDF5 datasets in a DMR or for a
         // given HDF5 dataset
@@ -530,6 +524,24 @@ int main(int argc, char*argv[])
                 throw BESError("HDF5 dataset '" + h5_dset_path + "' cannot be opened.", BES_NOT_FOUND_ERROR, __FILE__, __LINE__);
 
             get_variable_chunk_info(dataset, 0);
+        }
+        else if (mds) {
+            bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_name);
+            if (lock()) {
+                // parse the DMR into a DMRpp (that uses the DmrppTypes)
+                auto_ptr<DMRpp> dmrpp(mds->get_dmrpp_object(h5_file_name));
+
+                get_chunks_for_all_variables(file, dmrpp->root());
+
+                mds->add_dmrpp_response(dmrpp.get(), h5_file_name);
+
+                XMLWriter writer;
+                dmrpp->set_href(url_name);
+                dmrpp->set_print_chunks(true);
+                dmrpp->print_dap4(writer);
+
+                cout << writer.get_doc();
+            }
         }
         else {
             cerr << "Error: One of -d <hdf5 dataset name> or -r <DAP4 DMR name> must be given." << endl;

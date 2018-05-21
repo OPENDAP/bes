@@ -43,17 +43,24 @@ class DMRpp;
 namespace bes {
 
 /**
- * @brief Store the DAP metadata responses.
+ * @brief Store the DAP DMR++ metadata responses.
  *
- * Provide a global persistent store for the DAP metadata responses. Using either
- * a DDS or a DMR, write the three DAP metadata responses to the global metadata
- * store. This class also provides methods to get those responses and write them
- * to an output stream and a method to remove the responses.
+ * Provide a way to add DMR++ responses to the Global MDS (see GlobalMetadataStore).
+ * This specialization of the MDS adds the ability to add DMR++ responses and
+ * extract DMR++ objects. This code is accessible only in the DMR++ handler, while
+ * the Global MDS is available anywhere (it's defined in bes/dap). Because the
+ * BES framework needs to determine if DMR++ responses are included in the MDS,
+ * the Global MDS class has methods to test for that and to 'write' that response.
  *
- * The class maintains a ledger of 'add' and 'remove' operations.
+ * In order for the BES to work with a DMR++ _object_, however, it will need to
+ * transfer control to the DMR++ Handler and, if it is going to use the response
+ * in the MDS, use this specialization to read from the MDS.
  *
  * The class is implemented as a singleton; use the get_instance() methods to
- * get an instance of the metadata store.
+ * get an instance of the DMR++ metadata store. It uses _the same_ configuration
+ * parameters as the Global MDS, so if the defaults are uses, both the singleton
+ * Global MDS and this DMR++ MDS will be using the same directory, file prefix and
+ * size limit.
  *
  * BES Keys used:
  * - _DAP.GlobalMetadataStore.path_: store root directory (assumes the store is
@@ -111,6 +118,7 @@ public:
     }
 
     virtual bool add_responses(libdap::DMR *dmrpp, const std::string &name);
+    virtual bool add_dmrpp_response(libdap::DMR *dmrpp, const std::string &name);
 
     virtual dmrpp::DMRpp *get_dmrpp_object(const std::string &name);
 };

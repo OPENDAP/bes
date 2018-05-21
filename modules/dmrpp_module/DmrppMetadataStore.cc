@@ -163,10 +163,18 @@ void DmrppMetadataStore::StreamDMRpp::operator()(ostream &os)
     // field, we cannot use it for this version of the output operator.
     // jhrg 5/17/18
     if (d_dmr && typeid(*d_dmr) == typeid(dmrpp::DMRpp)) {
-        XMLWriter xml;
         // FIXME This is where we will add the href that points toward the data file in S3. jhrg 5/17/18
+        DMRpp *dmrpp = static_cast<dmrpp::DMRpp*>(d_dmr);
+        dmrpp->set_print_chunks(true);
+        dmrpp->set_href("");
+        XMLWriter xml;
+        dmrpp->print_dap4(xml);
+
+#if 0
         string href = "";
         static_cast<dmrpp::DMRpp*>(d_dmr)->print_dmrpp(xml, href);
+#endif
+
         os << xml.get_doc();
     }
     else {
@@ -204,6 +212,25 @@ DmrppMetadataStore::add_responses(DMR *dmr, const string &name)
     }
 
     return(stored_dmr && stored_dmrpp);
+}
+
+bool
+DmrppMetadataStore::add_dmrpp_response(libdap::DMR *dmrpp, const std::string &name)
+{
+    bool stored_dmrpp = false;
+    if (typeid(*dmrpp) == typeid(dmrpp::DMRpp)) {
+        d_ledger_entry = string("add DMR++ ").append(name);
+
+        StreamDMRpp write_the_dmrpp_response(dmrpp);
+        stored_dmrpp = store_dap_response(write_the_dmrpp_response, get_hash(name + "dmrpp_r"), name, "DMRpp");
+
+        write_ledger(); // write the index line
+    }
+    else {
+        stored_dmrpp = true;    // if dmr is not a DMRpp, not writing the object is 'success.'
+    }
+
+    return(stored_dmrpp);
 }
 
 /**

@@ -66,6 +66,7 @@ DMRpp::DMRpp(DmrppTypeFactory *factory, const std::string &name) : DMR(factory, 
  * @see DmrppArray::print_dap4()
  * @see DmrppCommon::print_dmrpp()
  */
+
 void DMRpp::print_dmrpp(XMLWriter &xml, const string &href, bool constrained, bool print_chunks)
 {
     bool pc_initial_value = DmrppCommon::d_print_chunks;
@@ -119,6 +120,18 @@ void DMRpp::print_dmrpp(XMLWriter &xml, const string &href, bool constrained, bo
     }
 
     DmrppCommon::d_print_chunks = pc_initial_value;
+}
+
+/**
+ * @brief override DMR::print_dap4() so the chunk info will print too.
+ *
+ * @param xml
+ * @param constrained
+ */
+void
+DMRpp::print_dap4(XMLWriter &xml, bool constrained /* false */)
+{
+    print_dmrpp(xml, get_href(), constrained, get_print_chunks());
 }
 
 } /* namespace dmrpp */

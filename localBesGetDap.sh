@@ -42,9 +42,7 @@ show_usage () {
     echo "    -c  file   Specifies the BES configuration file"
     echo ""
     echo "OPeNDAP              December 9, 2015"
-
 }
-
 
 OPTIND=1         # Reset in case getopts has been used previously in the shell.
 
@@ -64,6 +62,7 @@ while getopts "h?vd:i:c:" opt; do
         ;;
     c)  BES_CONF=$OPTARG
         ;;
+    D)  BES_DEBUG='-d "cerr,all"'
     esac
 done
 
@@ -112,7 +111,7 @@ then
         echo "  2. Setting the environment variable $prefix to the install"
         echo "     location of the BES."
         echo ""
-        echo "  3. Placing the bes.conf file in the "well known" location"
+        echo "  3. Placing the bes.conf file in the well known location"
         echo "         /etc/bes/bes.conf"
         echo ""
         echo "The command line parameter is the recommended usage."        
@@ -124,16 +123,11 @@ then
     fi
 fi
 
-
-
-
-
 if [ $verbose = 1 ]
 then
     echo "REQUESTED_DAP_OBJ: $REQUESTED_DAP_OBJ"
     echo "RESOURCE_ID: $RESOURCE_ID"
 fi
-
 
 cmdDoc=`cat <<EOF 
 <?xml version="1.0" encoding="UTF-8"?>
@@ -151,7 +145,6 @@ cmdDoc=`cat <<EOF
 EOF
 `
 
-
 COMMAND_FILE=$(mktemp -t getDAP_$$)
 if [ $verbose = 1 ]
 then
@@ -159,12 +152,7 @@ then
 fi
 
 echo $cmdDoc > $COMMAND_FILE
-# echo "cmdFile: " `cat $cmdFile`
 
 besstandalone -c $BES_CONF -i $COMMAND_FILE
 
-
-
-
-
-
+rm $COMMAND_FILE

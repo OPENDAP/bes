@@ -32,6 +32,31 @@ DAP.Help.HTML=@pkgdatadir@/dap_help.html
 DAP.Help.XML=@pkgdatadir@/dap_help.xml
 
 #-----------------------------------------------------------------------#
+# Metadata Store parameters                                             #
+#-----------------------------------------------------------------------#
+
+# Control the Metadata Response Store. Here, DAP metadata responses
+# are stored/cached so that they can be returned by the server w/o
+# having to touch the data files/objects. Setting the 'path' to null
+# disables uses of the MDS. Setting 'size' to zero makes the MDS
+# hold objects forever; setting a positive non-zero size makes the
+# MDS behave like a cache, purging responses when the size is exceeded.
+
+# FIXME This will need to be modified for the DMR++ responses when
+# when enable Arch #2 since regenerating the DMR++ will be more
+# expensive than regenerating other responses from files
+
+DAP.GlobalMetadataStore.path = @datadir@/mds
+DAP.GlobalMetadataStore.prefix = mds
+DAP.GlobalMetadataStore.size = 0
+
+# The MDS writes a ledger of additions and removals. By default the
+# ledger is kept in 'mds_ledger.txt' in the directory used to start
+# the BES.
+
+DAP.GlobalMetadataStore.ledger = @datadir@/mds/mds_ledger.txt
+
+#-----------------------------------------------------------------------#
 # Response cache parameters                                             #
 #-----------------------------------------------------------------------#
 
