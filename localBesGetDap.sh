@@ -1,11 +1,28 @@
 #!/bin/sh
-
-#export REQUESTED_DAP_OBJ=`echo $1 | awk '{print tolower($0)}' -`
-#export RESOURCE_ID=$2
-
-export REQUESTED_DAP_OBJ="dds"
-export RESOURCE_ID="/data/nc/fnoc1.nc"
-
+#
+# -*- mode: bash; -*-
+#
+# This file is part of the Back End Server component of the
+# Hyrax Data Server.
+#
+# Copyright (c) 2015 OPeNDAP, Inc.
+# Author: Nathan David Potter <ndp@opendap.org>
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+#
+# You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 show_usage () { 
     echo ""
@@ -62,7 +79,6 @@ while getopts "h?vd:i:c:" opt; do
         ;;
     c)  BES_CONF=$OPTARG
         ;;
-    D)  BES_DEBUG='-d "cerr,all"'
     esac
 done
 
@@ -70,6 +86,9 @@ shift $((OPTIND-1))
 
 [ "$1" = "--" ] && shift
 
+# [ -z $REQUESTED_DAP_OBJ ] && { echo "You must supply a requested DAP response."; exit 1 }
+
+# [ -z $RESOURCE_ID ] && { echo "You must supply a resource (file)."; exit 1 }
 
 if [ -z $BES_CONF ]
 then 
@@ -153,6 +172,6 @@ fi
 
 echo $cmdDoc > $COMMAND_FILE
 
-besstandalone -c $BES_CONF -i $COMMAND_FILE
+besstandalone -d "cerr,metadata_store" -c $BES_CONF -i $COMMAND_FILE
 
 rm $COMMAND_FILE

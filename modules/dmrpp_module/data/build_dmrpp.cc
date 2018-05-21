@@ -42,7 +42,9 @@
 #include <D4ParserSax2.h>
 #include <GetOpt.h>
 
+#include <TheBESKeys.h>
 #include <BESUtil.h>
+#include <BESDebug.h>
 #include <BESError.h>
 #include <BESInternalError.h>
 
@@ -56,6 +58,10 @@ using namespace dmrpp;
 
 static bool verbose = false;
 #define VERBOSE(x) do { if (verbose) x; } while(false)
+
+#define DEBUG_KEY "metadata_store,dmrpp_store,dmrpp"
+#define ROOT_DIRECTORY "BES.Catalog.catalog.RootDirectory"
+
 
 /**
  * @brief Print information about the data type
@@ -449,31 +455,65 @@ int main(int argc, char*argv[])
     string dmr_name = "";
     string url_name = "";
 
-    GetOpt getopt(argc, argv, "f:d:r:u:hv");
+    GetOpt getopt(argc, argv, "c:f:u:dhv");
     int option_char;
     while ((option_char = getopt()) != -1) {
         switch (option_char) {
         case 'v':
             verbose = true; // verbose hdf5 errors
             break;
+
         case 'd':
-            h5_dset_path = getopt.optarg;
+            BESDebug::SetUp(string("cerr,").append(DEBUG_KEY));
             break;
+
         case 'f':
             h5_file_name = getopt.optarg;
             break;
+#if 0
         case 'r':
-            dmr_name = getopt.optarg;
-            break;
+        dmr_name = getopt.optarg;
+        break;
+#endif
+
         case 'u':
             url_name = getopt.optarg;
             break;
+        case 'c':
+            TheBESKeys::ConfigFile = getopt.optarg;
+            break;
+#if 0
+        case 'b':
+        bes_data_root = getopt.optarg;
+        break;
+        case 'm':
+        mds_path = getopt.optarg;
+        break;
+        case 'p':
+        mds_prefix = getopt.optarg;
+        break;
+#endif
+
         case 'h':
-            cerr << "build_dmrpp [-v] -f <input> [-r <dmr> | -d <dset name>] [-u <url>] | build_dmrpp -h" << endl;
+            cerr << "build_dmrpp [-v] -c <bes.conf> -f <input>  [-u <url>] | build_dmrpp -h" << endl;
             exit(1);
         default:
             break;
         }
+    }
+
+    bool found;
+    string bes_data_root;
+    try {
+        TheBESKeys::TheKeys()->get_value(ROOT_DIRECTORY, bes_data_root, found);
+        if (!found) {
+            cerr << "Error: Could not find the BES root directory key." << endl;
+            return 1;
+        }
+    }
+    catch (BESError &e) {
+        cerr << "Error: " << e.get_message() << endl;
+        return 1;
     }
 
     if (h5_file_name.empty()) {
@@ -488,14 +528,14 @@ int main(int argc, char*argv[])
         if (!verbose) H5Eset_auto2(H5E_DEFAULT, NULL, NULL);
 
         // Open the hdf5 file
-        file = H5Fopen(h5_file_name.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+        string h5_file_path = bes_data_root + h5_file_name;
+        file = H5Fopen(h5_file_path.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
         if (file < 0) {
-            cerr << "Error: HDF5 file '" + h5_file_name + "' cannot be opened." << endl;
+            cerr << "Error: HDF5 file '" + h5_file_path + "' cannot be opened." << endl;
             return 1;
         }
 
-        bes::DmrppMetadataStore *mds = bes::DmrppMetadataStore::get_instance();
-
+#if 0
         // For a given HDF5, get info for all the HDF5 datasets in a DMR or for a
         // given HDF5 dataset
         if (!dmr_name.empty()) {
@@ -521,19 +561,24 @@ int main(int argc, char*argv[])
 
             hid_t dataset = H5Dopen2(file, h5_dset_path.c_str(), H5P_DEFAULT);
             if (dataset < 0)
-                throw BESError("HDF5 dataset '" + h5_dset_path + "' cannot be opened.", BES_NOT_FOUND_ERROR, __FILE__, __LINE__);
+            throw BESError("HDF5 dataset '" + h5_dset_path + "' cannot be opened.", BES_NOT_FOUND_ERROR, __FILE__, __LINE__);
 
             get_variable_chunk_info(dataset, 0);
         }
-        else if (mds) {
-            bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_name);
+        else if (!mds_path.empty()) {
+#endif
+
+            // Use the values from the bes.conf file... jhrg 5/21/18
+            bes::DmrppMetadataStore *mds = bes::DmrppMetadataStore::get_instance();
+
+            bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_path);
             if (lock()) {
                 // parse the DMR into a DMRpp (that uses the DmrppTypes)
-                auto_ptr<DMRpp> dmrpp(mds->get_dmrpp_object(h5_file_name));
+                auto_ptr<DMRpp> dmrpp(mds->get_dmrpp_object(h5_file_path));
 
                 get_chunks_for_all_variables(file, dmrpp->root());
 
-                mds->add_dmrpp_response(dmrpp.get(), h5_file_name);
+                mds->add_dmrpp_response(dmrpp.get(), h5_file_path);
 
                 XMLWriter writer;
                 dmrpp->set_href(url_name);
@@ -542,11 +587,18 @@ int main(int argc, char*argv[])
 
                 cout << writer.get_doc();
             }
-        }
-        else {
-            cerr << "Error: One of -d <hdf5 dataset name> or -r <DAP4 DMR name> must be given." << endl;
-            return 1;
-        }
+            else {
+                cerr << "Error: Could not get a lock on the DMR for '" + h5_file_path + "'." << endl;
+                return 1;
+            }
+#if 0
+    }
+    else {
+        cerr << "Error: One of -d <hdf5 dataset name>, -r <DAP4 DMR name> or -m <mds path> must be given." << endl;
+        return 1;
+    }
+#endif
+
     }
     catch (BESError &e) {
         cerr << "Error: " << e.get_message() << endl;

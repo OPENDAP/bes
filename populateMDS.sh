@@ -62,7 +62,7 @@ pathanme=$1
 
 # Ask the BES to get the DDS and DMR for that file
 
-.localBesGetDap.sh $verbose -i $pathname -d dds
+./localBesGetDap.sh $verbose -i $pathname -d dds > /dev/null
 
-.localBesGetDap.sh $verbose -i $pathname -d dmr
+./localBesGetDap.sh $verbose -i $pathname -d dmr > /dev/null
 

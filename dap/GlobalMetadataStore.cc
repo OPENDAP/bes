@@ -498,7 +498,7 @@ GlobalMetadataStore::store_dap_response(StreamDAP &writer, const string &key, co
         return false;
     }
     else {
-        throw BESInternalError("Could neither create or open '" + item_name + "'  in the metadata store.", __FILE__, __LINE__);
+        throw BESInternalError("Could neither create or open '" + item_name + "' in the metadata store.", __FILE__, __LINE__);
     }
 }
 
@@ -617,10 +617,12 @@ GlobalMetadataStore::add_responses(DMR *dmr, const string &name)
 GlobalMetadataStore::MDSReadLock
 GlobalMetadataStore::get_read_lock_helper(const string &name, const string &suffix, const string &object_name)
 {
+    BESDEBUG(DEBUG_KEY, __func__ << " MDS hashing name " << name << ", " << suffix <<  endl);
+
     string item_name = get_cache_file_name(get_hash(name + suffix), false);
     int fd;
     MDSReadLock lock(item_name, get_read_lock(item_name, fd), this);
-    BESDEBUG(DEBUG_KEY, __func__ << " MDS lock for  " << item_name << ": " << lock() <<  endl);
+    BESDEBUG(DEBUG_KEY, __func__ << " MDS lock for " << item_name << ": " << lock() <<  endl);
 
     if (lock())
         LOG("MDS Cache hit for " << name << " and response " << object_name << endl);
@@ -720,7 +722,7 @@ GlobalMetadataStore::write_response_helper(const string &name, ostream &os, cons
         unlock_and_close(item_name); // closes fd
     }
     else {
-        throw BESInternalError("Could not open '" + item_name + "'  in the metadata store.", __FILE__, __LINE__);
+        throw BESInternalError("Could not open '" + item_name + "' in the metadata store.", __FILE__, __LINE__);
     }
 }
 

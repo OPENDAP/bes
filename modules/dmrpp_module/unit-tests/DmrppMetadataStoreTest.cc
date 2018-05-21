@@ -52,11 +52,9 @@
 
 #include "DmrppMetadataStore.h"
 
-#if 1
 #include "DMRpp.h"
 #include "DmrppTypeFactory.h"
 #include "DmrppParserSax2.h"
-#endif
 
 #include "read_test_baseline.h"
 #include "test_config.h"
