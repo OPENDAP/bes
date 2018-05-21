@@ -455,7 +455,7 @@ int main(int argc, char*argv[])
     string dmr_name = "";
     string url_name = "";
 
-    GetOpt getopt(argc, argv, "c:f:u:dhv");
+    GetOpt getopt(argc, argv, "c:f:r:u:dhv");
     int option_char;
     while ((option_char = getopt()) != -1) {
         switch (option_char) {
@@ -470,7 +470,7 @@ int main(int argc, char*argv[])
         case 'f':
             h5_file_name = getopt.optarg;
             break;
-#if 0
+#if 1
         case 'r':
         dmr_name = getopt.optarg;
         break;
@@ -502,20 +502,6 @@ int main(int argc, char*argv[])
         }
     }
 
-    bool found;
-    string bes_data_root;
-    try {
-        TheBESKeys::TheKeys()->get_value(ROOT_DIRECTORY, bes_data_root, found);
-        if (!found) {
-            cerr << "Error: Could not find the BES root directory key." << endl;
-            return 1;
-        }
-    }
-    catch (BESError &e) {
-        cerr << "Error: " << e.get_message() << endl;
-        return 1;
-    }
-
     if (h5_file_name.empty()) {
         cerr << "HDF5 file name must be given (-f <input>)." << endl;
         return 1;
@@ -527,15 +513,8 @@ int main(int argc, char*argv[])
         // See: https://support.hdfgroup.org/HDF5/doc1.8/RM/RM_H5E.html#Error-SetAuto2
         if (!verbose) H5Eset_auto2(H5E_DEFAULT, NULL, NULL);
 
-        // Open the hdf5 file
-        string h5_file_path = bes_data_root + h5_file_name;
-        file = H5Fopen(h5_file_path.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
-        if (file < 0) {
-            cerr << "Error: HDF5 file '" + h5_file_path + "' cannot be opened." << endl;
-            return 1;
-        }
 
-#if 0
+#if 1
         // For a given HDF5, get info for all the HDF5 datasets in a DMR or for a
         // given HDF5 dataset
         if (!dmr_name.empty()) {
@@ -548,6 +527,13 @@ int main(int argc, char*argv[])
             D4ParserSax2 parser;
             parser.intern(in, dmrpp.get(), false);
 
+            // Open the hdf5 file
+            file = H5Fopen(h5_file_name.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+            if (file < 0) {
+                cerr << "Error: HDF5 file '" + h5_file_name + "' cannot be opened." << endl;
+                return 1;
+            }
+
             // iterate over all the variables in the DMR
             get_chunks_for_all_variables(file, dmrpp->root());
 
@@ -556,25 +542,49 @@ int main(int argc, char*argv[])
 
             cout << writer.get_doc();
         }
-        else if (!h5_dset_path.empty()) {
-            VERBOSE(cerr << "Getting chunk information for: " << h5_dset_path << endl);
-
-            hid_t dataset = H5Dopen2(file, h5_dset_path.c_str(), H5P_DEFAULT);
-            if (dataset < 0)
-            throw BESError("HDF5 dataset '" + h5_dset_path + "' cannot be opened.", BES_NOT_FOUND_ERROR, __FILE__, __LINE__);
-
-            get_variable_chunk_info(dataset, 0);
-        }
-        else if (!mds_path.empty()) {
+        else {
 #endif
+            bool found;
+            string bes_data_root;
+            try {
+                TheBESKeys::TheKeys()->get_value(ROOT_DIRECTORY, bes_data_root, found);
+                if (!found) {
+                    cerr << "Error: Could not find the BES root directory key." << endl;
+                    return 1;
+                }
+            }
+            catch (BESError &e) {
+                cerr << "Error: " << e.get_message() << endl;
+                return 1;
+            }
 
             // Use the values from the bes.conf file... jhrg 5/21/18
             bes::DmrppMetadataStore *mds = bes::DmrppMetadataStore::get_instance();
 
+            string h5_file_path = bes_data_root + h5_file_name;
+
             bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_path);
             if (lock()) {
                 // parse the DMR into a DMRpp (that uses the DmrppTypes)
-                auto_ptr<DMRpp> dmrpp(mds->get_dmrpp_object(h5_file_path));
+#if 0
+                DMRpp *temp_ptr = dynamic_cast<DMRpp*>(mds->get_dmr_object(h5_file_path));
+                if (!temp_ptr)
+                throw BESInternalError("Expected a DMR++ object from the DmrppMetadataStore." __FILE__, __LINE__);
+
+                auto_ptr<DMRpp> dmrpp(temp_ptr);
+#endif
+                auto_ptr<DMRpp> dmrpp(dynamic_cast<DMRpp*>(mds->get_dmr_object(h5_file_path)));
+                if (!dmrpp.get()) {
+                    cerr << "Expected a DMR++ object from the DmrppMetadataStore." << endl;
+                    return 1;
+                }
+
+                // Open the hdf5 file
+                file = H5Fopen(h5_file_path.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+                if (file < 0) {
+                    cerr << "Error: HDF5 file '" + h5_file_path + "' cannot be opened." << endl;
+                    return 1;
+                }
 
                 get_chunks_for_all_variables(file, dmrpp->root());
 
@@ -591,6 +601,7 @@ int main(int argc, char*argv[])
                 cerr << "Error: Could not get a lock on the DMR for '" + h5_file_path + "'." << endl;
                 return 1;
             }
+        }
 #if 0
     }
     else {

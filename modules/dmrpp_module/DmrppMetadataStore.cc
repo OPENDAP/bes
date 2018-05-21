@@ -234,6 +234,31 @@ DmrppMetadataStore::add_dmrpp_response(libdap::DMR *dmrpp, const std::string &na
 }
 
 /**
+ * @brief User the DMR response to built a DMR with Dmrpp Types
+ * @param name
+ * @return A DMRpp using a pointer to the base class.
+ */
+DMR *
+DmrppMetadataStore::get_dmr_object(const string &name)
+{
+    // Get the DMR response, but then parse that so the resulting binary
+    // object is built with DMR++ types so that the chunk information can be
+    // stored in them.
+    stringstream oss;
+    write_dmr_response(name, oss);    // throws BESInternalError if not found
+
+    DmrppTypeFactory dmrpp_btf;
+    auto_ptr<DMRpp> dmrpp(new DMRpp(&dmrpp_btf, "mds"));
+
+    DmrppParserSax2 parser;
+    parser.intern(oss.str(), dmrpp.get());
+
+    dmrpp->set_factory(0);
+
+    return dmrpp.release();
+}
+
+/**
  * @brief Build a DMR++ object from the cached Response
  *
  * Read and parse a DMR++ response , building a binary DMR++ object. The

@@ -172,6 +172,6 @@ fi
 
 echo $cmdDoc > $COMMAND_FILE
 
-besstandalone -d "cerr,metadata_store" -c $BES_CONF -i $COMMAND_FILE
+besstandalone -c $BES_CONF -i $COMMAND_FILE
 
 rm $COMMAND_FILE

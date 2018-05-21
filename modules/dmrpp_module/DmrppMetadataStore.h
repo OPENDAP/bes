@@ -120,6 +120,8 @@ public:
     virtual bool add_responses(libdap::DMR *dmrpp, const std::string &name);
     virtual bool add_dmrpp_response(libdap::DMR *dmrpp, const std::string &name);
 
+    virtual libdap::DMR *get_dmr_object(const string &name);
+
     virtual dmrpp::DMRpp *get_dmrpp_object(const std::string &name);
 };
 
