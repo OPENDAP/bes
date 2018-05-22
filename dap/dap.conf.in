@@ -46,7 +46,7 @@ DAP.Help.XML=@pkgdatadir@/dap_help.xml
 # when enable Arch #2 since regenerating the DMR++ will be more
 # expensive than regenerating other responses from files
 
-DAP.GlobalMetadataStore.path = @datadir@/mds
+# DAP.GlobalMetadataStore.path = @datadir@/mds
 DAP.GlobalMetadataStore.prefix = mds
 DAP.GlobalMetadataStore.size = 0
 
