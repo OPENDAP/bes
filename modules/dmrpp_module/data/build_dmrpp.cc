@@ -470,30 +470,15 @@ int main(int argc, char*argv[])
         case 'f':
             h5_file_name = getopt.optarg;
             break;
-#if 1
         case 'r':
         dmr_name = getopt.optarg;
         break;
-#endif
-
         case 'u':
             url_name = getopt.optarg;
             break;
         case 'c':
             TheBESKeys::ConfigFile = getopt.optarg;
             break;
-#if 0
-        case 'b':
-        bes_data_root = getopt.optarg;
-        break;
-        case 'm':
-        mds_path = getopt.optarg;
-        break;
-        case 'p':
-        mds_prefix = getopt.optarg;
-        break;
-#endif
-
         case 'h':
             cerr << "build_dmrpp [-v] -c <bes.conf> -f <input>  [-u <url>] | build_dmrpp -h" << endl;
             exit(1);
@@ -513,8 +498,6 @@ int main(int argc, char*argv[])
         // See: https://support.hdfgroup.org/HDF5/doc1.8/RM/RM_H5E.html#Error-SetAuto2
         if (!verbose) H5Eset_auto2(H5E_DEFAULT, NULL, NULL);
 
-
-#if 1
         // For a given HDF5, get info for all the HDF5 datasets in a DMR or for a
         // given HDF5 dataset
         if (!dmr_name.empty()) {
@@ -543,7 +526,6 @@ int main(int argc, char*argv[])
             cout << writer.get_doc();
         }
         else {
-#endif
             bool found;
             string bes_data_root;
             try {
@@ -566,13 +548,6 @@ int main(int argc, char*argv[])
             bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_path);
             if (lock()) {
                 // parse the DMR into a DMRpp (that uses the DmrppTypes)
-#if 0
-                DMRpp *temp_ptr = dynamic_cast<DMRpp*>(mds->get_dmr_object(h5_file_path));
-                if (!temp_ptr)
-                throw BESInternalError("Expected a DMR++ object from the DmrppMetadataStore." __FILE__, __LINE__);
-
-                auto_ptr<DMRpp> dmrpp(temp_ptr);
-#endif
                 auto_ptr<DMRpp> dmrpp(dynamic_cast<DMRpp*>(mds->get_dmr_object(h5_file_path)));
                 if (!dmrpp.get()) {
                     cerr << "Expected a DMR++ object from the DmrppMetadataStore." << endl;
@@ -602,14 +577,6 @@ int main(int argc, char*argv[])
                 return 1;
             }
         }
-#if 0
-    }
-    else {
-        cerr << "Error: One of -d <hdf5 dataset name>, -r <DAP4 DMR name> or -m <mds path> must be given." << endl;
-        return 1;
-    }
-#endif
-
     }
     catch (BESError &e) {
         cerr << "Error: " << e.get_message() << endl;
