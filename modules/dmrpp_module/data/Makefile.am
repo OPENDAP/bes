@@ -7,10 +7,6 @@ AM_CXXFLAGS =
 bin_PROGRAMS = build_dmrpp
 noinst_PROGRAMS = endian_convert multiball keepalive2
 
-# VPATH = ..
-
-# -I$(top_srcdir)/modules/hdf5_handler
-
 build_dmrpp_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)/modules/dmrpp_module \
 -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 
