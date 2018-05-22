@@ -26,13 +26,17 @@
 # You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 BES_CONF=
-local_bes_get_dap=./localBesGetDap.sh
-build_dmrpp=./modules/dmrpp_module/data/build_dmrpp
+
+# edit these to run using development versions of the programs
+#
+# local_bes_get_dap=./localBesGetDap.sh
+# build_dmrpp=./modules/dmrpp_module/data/build_dmrpp
+
+local_bes_get_dap=localBesGetDap
+build_dmrpp=build_dmrpp
 
 show_usage () { 
-    echo ""
-    echo "OPeNDAP              MAY 20, 2018"
-
+    echo " $0 [ -v] -c <bes conf> <pathname>]"
 }
 
 OPTIND=1         # Reset in case getopts has been used previously in the shell.

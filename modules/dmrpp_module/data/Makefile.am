@@ -4,7 +4,8 @@ AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = $(DAP_CFLAGS) $(BES_CPPFLAGS) -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch
 AM_CXXFLAGS = 
 
-noinst_PROGRAMS = build_dmrpp endian_convert multiball keepalive2
+bin_PROGRAMS = build_dmrpp
+noinst_PROGRAMS = endian_convert multiball keepalive2
 
 # VPATH = ..
 
