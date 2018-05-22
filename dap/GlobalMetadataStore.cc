@@ -871,7 +871,7 @@ GlobalMetadataStore::get_dmr_object(const string &name)
  * this implementation with something far better - and something that can
  * include information in specialized BaseTypes and DDS classes.
  *
- * @param name Name of the dataset
+ * @param name Path to the dataset, relative to the BES data root directory.
  * @return A pointer to the DDS object; the caller must delete this object.
  * @exception BESInternalError is thrown if \arg name does not have a
  * cached DDS or DAS response.

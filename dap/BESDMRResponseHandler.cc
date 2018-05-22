@@ -86,13 +86,13 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
     GlobalMetadataStore::MDSReadLock lock;
 
     dhi.first_container();
-    if (mds) lock = mds->is_dmr_available(dhi.container->get_real_name());
+    if (mds) lock = mds->is_dmr_available(dhi.container->get_relative_name());
 
     if (mds && lock() && dhi.container->get_dap4_constraint().empty()) {    // no CE
         // FIXME Does not work for constrained DMR requests
-        BESDEBUG("dmr", __func__ << " Locked: " << dhi.container->get_real_name() << endl);
+        BESDEBUG("dmr", __func__ << " Locked: " << dhi.container->get_relative_name() << endl);
         // send the response
-        mds->write_dmr_response(dhi.container->get_real_name(), dhi.get_output_stream());
+        mds->write_dmr_response(dhi.container->get_relative_name(), dhi.get_output_stream());
         // suppress transmitting a ResponseObject in transmit()
         d_response_object = 0;
     }
@@ -131,7 +131,7 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
             dhi.first_container();  // must reset container; execute_each() iterates over all of them
             BESDEBUG("dmr", __func__ << " Storing: " << dhi.container->get_real_name() << endl);
             mds->add_responses(static_cast<BESDMRResponse*>(d_response_object)->get_dmr(),
-                dhi.container->get_real_name());
+                dhi.container->get_relative_name());
         }
     }
 }

@@ -543,12 +543,14 @@ int main(int argc, char*argv[])
             // Use the values from the bes.conf file... jhrg 5/21/18
             bes::DmrppMetadataStore *mds = bes::DmrppMetadataStore::get_instance();
 
+            // Use the full path to open the file, but use the 'name' (which is the
+            // path relative to the BES Data Root) with the MDS.
             string h5_file_path = bes_data_root + h5_file_name;
 
-            bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_path);
+            bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_name /*h5_file_path*/);
             if (lock()) {
                 // parse the DMR into a DMRpp (that uses the DmrppTypes)
-                auto_ptr<DMRpp> dmrpp(dynamic_cast<DMRpp*>(mds->get_dmr_object(h5_file_path)));
+                auto_ptr<DMRpp> dmrpp(dynamic_cast<DMRpp*>(mds->get_dmr_object(h5_file_name /*h5_file_path*/)));
                 if (!dmrpp.get()) {
                     cerr << "Expected a DMR++ object from the DmrppMetadataStore." << endl;
                     return 1;
@@ -563,7 +565,7 @@ int main(int argc, char*argv[])
 
                 get_chunks_for_all_variables(file, dmrpp->root());
 
-                mds->add_dmrpp_response(dmrpp.get(), h5_file_path);
+                mds->add_dmrpp_response(dmrpp.get(), h5_file_name /*h5_file_path*/);
 
                 XMLWriter writer;
                 dmrpp->set_href(url_name);

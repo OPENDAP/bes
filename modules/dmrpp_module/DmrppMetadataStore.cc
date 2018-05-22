@@ -235,7 +235,8 @@ DmrppMetadataStore::add_dmrpp_response(libdap::DMR *dmrpp, const std::string &na
 
 /**
  * @brief User the DMR response to built a DMR with Dmrpp Types
- * @param name
+ * @param name The pathname to the dataset, relaitve to the BES
+ * data root directory
  * @return A DMRpp using a pointer to the base class.
  */
 DMR *

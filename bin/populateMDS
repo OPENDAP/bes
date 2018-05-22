@@ -36,22 +36,46 @@ local_bes_get_dap=localBesGetDap
 build_dmrpp=build_dmrpp
 
 show_usage () { 
-    echo " $0 [ -v] -c <bes conf> <pathname>]"
+    cat <<EOF
+ $0 [-v] [-c <bes conf>] [-R] <pathname>]
+ 
+ Populate the Metadata Store (MDS) with DDS, DAS, DMR and DMR++
+ responses. 
+ 
+ If -c <bes conf> is not given, the script looks for
+ a suitable bes.conf file by looking for $prefix/etc/bes/bes.conf
+ and then /etc/bes/bes.conf.
+ 
+ If -R is given, the DMR++ response is not added to the MDS.
+ 
+ Care should be taken when choosing the <pathname> since the 
+ name is relative to the BES Catalog Data Root Directory. The
+ underlying commands used by this script pass the pathname to 
+ software that computes the hash of exactly the characters used
+ here and to work, those relative pathnames must match exactly
+ the ones sent to the BES by the OLFS. The mds_ledger records
+ the names of al the items in the MDS.
+EOF
 }
+
 
 OPTIND=1         # Reset in case getopts has been used previously in the shell.
 
-verbose=""
+verbose=0
+include_dmrpp=1  # build the DMR++ by default
 
-while getopts "h?vc:" opt; do
+while getopts "h?vc:R" opt; do
     case "$opt" in
     h|\?)
         show_usage
         exit 0
         ;;
-    v)  verbose="-v"
+    v)  verbose=1
         ;;
     c)  BES_CONF="-c $OPTARG"
+        ;;
+    R)
+        include_dmrpp=0
         ;;
     esac
 done
@@ -71,7 +95,7 @@ then
         if [ -r $test_conf ]
         then
             BES_CONF="-c $test_conf"
-            if [ "x$verbose" = "x-v" ]
+            if [ $verbose = 1]
             then
                 echo "BES_CONF: " $BES_CONF
             fi
@@ -86,7 +110,7 @@ then
     if [ -r $BES_CONF ]
     then
         BES_CONF="-c $BES_CONF"
-        if [ "x$verbose" = "x-v" ]
+        if [ $verbose = 1 ]
         then
             echo "BES_CONF: " $BES_CONF
         fi
@@ -119,10 +143,26 @@ fi
 # Read a pathname from the next argument
 pathname=$1
 
-# Ask the BES to get the DDS and DMR for that file
+v_sw=                   # By default don't be verbose
 
-$local_bes_get_dap $verbose $BES_CONF -i $pathname -d dds > /dev/null
+if [ $verbose = 1 ]
+then
+    v_sw=-v             # Switch to tell sub-commands to be verbose
+fi
 
-$local_bes_get_dap $verbose $BES_CONF -i $pathname -d dmr > /dev/null
+# Ask the BES to get the DDS and DMR for that file - this triggers
+# loadind the MDS with the DDS, DAS adn DMR responses.
 
-$build_dmrpp $verbose $BES_CONF -f $pathname
+$local_bes_get_dap $v_sw $BES_CONF -i $pathname -d dds > /dev/null
+
+$local_bes_get_dap $v_sw $BES_CONF -i $pathname -d dmr > /dev/null
+
+# build_dmrpp uses the MDS to get the DMR response and then feeds that
+# into code that builds a DMR++ response. That response is added to the 
+# cache.
+
+if [ $include_dmrpp = 1 ]
+then
+    $build_dmrpp $v_sw $BES_CONF -f $pathname > /dev/null
+fi
+

@@ -64,8 +64,9 @@ show_usage () {
 OPTIND=1         # Reset in case getopts has been used previously in the shell.
 
 verbose=0
+debug=0
 
-while getopts "h?vd:i:c:" opt; do
+while getopts "h?vd:i:c:D" opt; do
     case "$opt" in
     h|\?)
         show_usage
@@ -78,6 +79,8 @@ while getopts "h?vd:i:c:" opt; do
     v)  verbose=1
         ;;
     c)  BES_CONF=$OPTARG
+        ;;
+    D)  debug=1
         ;;
     esac
 done
@@ -172,6 +175,14 @@ fi
 
 echo $cmdDoc > $COMMAND_FILE
 
-besstandalone -c $BES_CONF -i $COMMAND_FILE
+if [ $debug = 1 ]
+then
+    besstandalone -d "cerr,metadata_store,dmrpp_store" -c $BES_CONF -i $COMMAND_FILE
+else
+    besstandalone -c $BES_CONF -i $COMMAND_FILE
+fi
 
-rm $COMMAND_FILE
+if [  $debug != 1 ]
+then
+    rm $COMMAND_FILE
+fi
