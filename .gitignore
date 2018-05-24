@@ -149,3 +149,4 @@ timing/*/*.log
 timing/*/*.result
 timing/*/*.dtps
 /html/
+/.externalToolBuilders/

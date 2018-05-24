@@ -27,6 +27,10 @@
 #include <string>
 #include <vector>
 
+#include <cstdlib>  // for system
+
+#include "BESInternalError.h"
+
 #include "read_test_baseline.h"
 
 using namespace std;
@@ -68,6 +72,21 @@ read_test_baseline(const string &fn)
     buffer[length] = '\0';
 
     return string(&buffer[0]);
+}
+
+void clean_cache_dir(const string &cache)
+{
+    string cache_dir = cache + "/*";
+
+    string command = string("rm ") + cache_dir + " 2>/dev/null";
+
+    int status = system(command.c_str());
+
+    // it's normal for this to 'fail' because the clean operation has already
+    // been run or because it's the first run of the tests. But, fork and waitpid
+    // should not return an error and the shell should be found.
+    if (status == -1 || status == 127)
+        throw BESInternalError("Failed to clean cache dir: " + cache_dir, __FILE__, __LINE__);
 }
 
 } // namespace bes

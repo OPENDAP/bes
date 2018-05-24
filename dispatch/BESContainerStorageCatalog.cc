@@ -48,7 +48,9 @@
  * these cannot be determined or if the regular expressions are incorrectly
  * formed.
  *
- * &lt;data type&gt;:&lt;reg exp&gt;;&lt;data type&gt;:&lt;reg exp&gt;;
+ * ~~~{.xml}
+ * <data type>:<reg exp>; <data type>:<reg exp>;
+ * ~~~
  *
  * each type/reg expression pair is separated by a semicolon and ends with a
  * semicolon. The data type/expression pair itself is separated by a

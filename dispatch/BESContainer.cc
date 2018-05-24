@@ -37,9 +37,10 @@
  * @param copy_from The container to copy
  */
 BESContainer::BESContainer(const BESContainer &copy_from) :
-        BESObj(copy_from), _symbolic_name(copy_from._symbolic_name), _real_name(copy_from._real_name),
-        _container_type(copy_from._container_type), _constraint(copy_from._constraint),
-        _dap4_constraint(copy_from._dap4_constraint), _dap4_function(copy_from._dap4_function), _attributes(copy_from._attributes)
+    BESObj(copy_from), _symbolic_name(copy_from._symbolic_name), _real_name(copy_from._real_name),
+    d_relative_name(copy_from.d_relative_name), _container_type(copy_from._container_type),
+    _constraint(copy_from._constraint), _dap4_constraint(copy_from._dap4_constraint),
+    _dap4_function(copy_from._dap4_function), _attributes(copy_from._attributes)
 {
 }
 
@@ -49,11 +50,12 @@ BESContainer::BESContainer(const BESContainer &copy_from) :
  */
 void BESContainer::_duplicate(BESContainer &copy_to)
 {
+    copy_to._symbolic_name = _symbolic_name;
     copy_to._real_name = _real_name;
+    copy_to.d_relative_name = d_relative_name;
     copy_to._constraint = _constraint;
     copy_to._dap4_constraint = _dap4_constraint;
     copy_to._dap4_function = _dap4_function;
-    copy_to._symbolic_name = _symbolic_name;
     copy_to._container_type = _container_type;
     copy_to._attributes = _attributes;
 }
@@ -71,6 +73,7 @@ void BESContainer::dump(ostream &strm) const
     BESIndent::Indent();
     strm << BESIndent::LMarg << "symbolic name: " << _symbolic_name << endl;
     strm << BESIndent::LMarg << "real name: " << _real_name << endl;
+    strm << BESIndent::LMarg << "relative name: " << d_relative_name << endl;
     strm << BESIndent::LMarg << "data type: " << _container_type << endl;
     strm << BESIndent::LMarg << "constraint: " << _constraint << endl;
     strm << BESIndent::LMarg << "dap4_constraint: " << _dap4_constraint << endl;
