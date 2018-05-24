@@ -2,7 +2,6 @@
 AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
-# Removed: $(GCTP_CPPFLAGS) 
 
 ACLOCAL_AMFLAGS = -I conf
 AM_CXXFLAGS = 
@@ -31,26 +30,23 @@ DmrppModule.cc DmrppRequestHandler.cc DmrppByte.cc DmrppArray.cc \
 DmrppFloat32.cc DmrppFloat64.cc DmrppInt16.cc DmrppInt32.cc DmrppInt64.cc \
 DmrppInt8.cc DmrppUInt16.cc DmrppUInt32.cc DmrppUInt64.cc DmrppStr.cc  \
 DmrppStructure.cc DmrppUrl.cc DmrppD4Enum.cc DmrppD4Group.cc DmrppD4Opaque.cc \
-DmrppD4Sequence.cc  DmrppTypeFactory.cc DmrppParserSax2.cc
-
-# Odometer.cc 
+DmrppD4Sequence.cc  DmrppTypeFactory.cc DmrppParserSax2.cc DmrppMetadataStore.cc
 
 BES_HDRS = DMRpp.h DmrppCommon.h Chunk.h  CurlHandlePool.h \
 DmrppModule.h DmrppRequestHandler.h DmrppByte.h \
 DmrppArray.h DmrppFloat32.h DmrppFloat64.h DmrppInt16.h DmrppInt32.h \
 DmrppInt64.h DmrppInt8.h DmrppUInt16.h DmrppUInt32.h DmrppUInt64.h \
 DmrppStr.h DmrppStructure.h DmrppUrl.h DmrppD4Enum.h DmrppD4Group.h \
-DmrppD4Opaque.h DmrppD4Sequence.h DmrppTypeFactory.h DmrppParserSax2.h
-
-# Odometer.h 
+DmrppD4Opaque.h DmrppD4Sequence.h DmrppTypeFactory.h DmrppParserSax2.h \
+ DmrppMetadataStore.h
 
 # hack. This is probably not needed and is currently not used, but
 # I'm leaving it in for now. If there are run-time issues with this
 # module, add '$(BES_LIBS) $(OPENSSL_LIBS)' to LIBADD below.
 # jhrg 10/13/14 
-BES_LIBS = $(top_builddir)/xmlcommand/libbes_xml_command.la \
-$(top_builddir)/ppt/libbes_ppt.la \
-$(top_builddir)/dispatch/libbes_dispatch.la
+# BES_LIBS = $(top_builddir)/xmlcommand/libbes_xml_command.la \
+# $(top_builddir)/ppt/libbes_ppt.la \
+# $(top_builddir)/dispatch/libbes_dispatch.la
 
 libdmrpp_module_la_SOURCES = $(BES_HDRS) $(BES_SRCS)
 libdmrpp_module_la_LDFLAGS = -avoid-version -module 

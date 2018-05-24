@@ -92,7 +92,7 @@ AT_BESCMD_RESPONSE_TEST([dap/one_int.dap.dmr.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([dap/one_int.dap.dap.bescmd])
 
 # Test zero length arrays (from DAP2 data - dods - files)
-AT_BESCMD_RESPONSE_TEST([dap/zero_length_array.das.bescmd])
+# AT_BESCMD_RESPONSE_TEST([dap/zero_length_array.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([dap/zero_length_array.dds.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([dap/zero_length_array.dods.bescmd])
 

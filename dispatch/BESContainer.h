@@ -55,17 +55,26 @@ using std::string;
  * source is saved in the BESContainer and is used to execute the request
  * from the client.
  *
+ * @note Many data items used with the BES are files and are referenced
+ * relative to a configured _Data Root Directory_. When a Container is
+ * added to a store, if that store uses the BESContainerStorageVolatile
+ * storage type, the 'real name' will be transformed to the full pathname
+ * of the file on disk for the current BES. It's useful to have access to
+ * the original relative pathname provided by the client/user so I've
+ * added a field to hold that information. jhrg 5/22/18
+ *
  * @see BESContainerStorage
  */
 class BESContainer: public BESObj {
 private:
-    string _symbolic_name;
-    string _real_name;
+    string _symbolic_name;  ///< The name of the container
+    string _real_name;      ///< The full name of the thing (filename, database table name, ...)
+    string d_relative_name; ///< The name relative to the Data Root dir
     string _container_type;
     string _constraint;
     string _dap4_constraint;
     string _dap4_function;
-    string _attributes;
+    string _attributes;     ///< Not used. jhrg 5/22/18
 
 protected:
     BESContainer()
@@ -80,7 +89,7 @@ protected:
      * @param type type of data represented by this container, such as netcdf
      */
     BESContainer(const string &sym_name, const string &real_name, const string &type) :
-            _symbolic_name(sym_name), _real_name(real_name), _container_type(type)
+        _symbolic_name(sym_name), _real_name(real_name), _container_type(type)
     {
     }
 
@@ -135,6 +144,11 @@ public:
         _real_name = real_name;
     }
 
+    /// @brief Set the relative name of the object in this container
+    void set_relative_name(const std::string &relative) {
+        d_relative_name = relative;
+    }
+
     /** @brief set the type of data that this container represents, such
      * as cedar or netcdf.
      *
@@ -162,6 +176,11 @@ public:
     string get_real_name() const
     {
         return _real_name;
+    }
+
+    /// @brief Get the relative name of the object in this container
+    std::string get_relative_name() const {
+        return d_relative_name;
     }
 
     /** @brief retrieve the constraint expression for this container

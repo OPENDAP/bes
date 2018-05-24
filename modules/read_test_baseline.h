@@ -34,6 +34,7 @@
 namespace bes {
 
 std::string read_test_baseline(const std::string &fn);
+void clean_cache_dir(const std::string &cache);
 
 }
 #endif

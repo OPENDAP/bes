@@ -2,6 +2,8 @@
 #define E_test_config_h
 
 #define TEST_SRC_DIR "@abs_srcdir@"
+#define TEST_BUILD_DIR "@abs_builddir@"
+
 #define TEST_DATA_DIR "@abs_top_srcdir@/modules/dmrpp_module/data/dmrpp"
 #define TEST_DMRPP_CATALOG "@abs_top_srcdir@/modules/dmrpp_module"
 

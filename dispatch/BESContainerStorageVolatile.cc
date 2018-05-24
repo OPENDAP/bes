@@ -110,7 +110,8 @@ BESContainerStorageVolatile::look_for(const string &sym_name)
  * This method adds a container represented by a data file.
  *
  * @param sym_name symbolic name of the container being created
- * @param real_name real name of the container
+ * @param real_name The real name of the container, as provided by the user/client.
+ * This name is relative to the BES Data Root Directory
  * @param type type of data represented by this container
  * @throws BESInternalError if no type is specified
  * @throws BESInternalError if a container with the passed
@@ -148,15 +149,17 @@ void BESContainerStorageVolatile::add_container(const string &sym_name, const st
     BESUtil::check_path(real_name, _root_dir, _follow_sym_links);
 #endif
     // add the root directory to the real_name passed
-    string new_r_name = BESUtil::assemblePath(_root_dir,real_name, false);
+    string fully_qualified_real_name = BESUtil::assemblePath(_root_dir, real_name, false);
+
     BESDEBUG("container","BESContainerStorageVolatile::add_container() - "
     		<< " _root_dir: " << _root_dir
     		<< " real_name: " << real_name
-			<< " new_r_name: " << new_r_name
+			<< " fully_qualified_real_name: " << fully_qualified_real_name
 			<< endl);
 
     // Create the file container with the new information
-    BESContainer *c = new BESFileContainer(sym_name, new_r_name, type);
+    BESContainer *c = new BESFileContainer(sym_name, fully_qualified_real_name, type);
+    c->set_relative_name(real_name);
 
     // add it to the container list
     _container_list[sym_name] = c;
