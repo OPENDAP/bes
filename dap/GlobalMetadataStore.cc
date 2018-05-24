@@ -262,21 +262,10 @@ GlobalMetadataStore::get_instance()
 ///@}
 
 /**
- * Private constructor that calls BESFileLockingCache's constructor;
- * lookup cache directory, item prefix and max cache size in BESKeys
- *
- * @note Use the get_instance() methods to get a pointer to the singleton for
- * this class. Do not use this method except in derived classes. This method
- * either builds a valid object or throws an exception.
- *
- * @param cache_dir key to find cache dir
- * @param prefix key to find the cache prefix
- * @param size key to find the cache size (in MBytes)
- * @throws BESSyntaxUserError if the keys are not set in the BESKeys, if the key
- * are either the empty string or zero, respectively, or if the cache directory does not exist.
+ * @brief Configure the ledger using LEDGER_KEY and LOCAL_TIME_KEY.
  */
-GlobalMetadataStore::GlobalMetadataStore(const string &cache_dir, const string &prefix,
-    unsigned long long size) : BESFileLockingCache(cache_dir, prefix, size)
+void
+GlobalMetadataStore::initialize()
 {
     bool found;
 
@@ -293,6 +282,34 @@ GlobalMetadataStore::GlobalMetadataStore(const string &cache_dir, const string &
     TheBESKeys::TheKeys()->get_value(LOCAL_TIME_KEY, local_time, found);
     d_use_local_time = (local_time == "YES" || local_time == "Yes" || local_time == "yes");
 }
+
+/**
+ * Private constructors that call BESFileLockingCache's constructor;
+ * lookup cache directory, item prefix and max cache size in BESKeys
+ *
+ * @note Use the get_instance() methods to get a pointer to the singleton for
+ * this class. Do not use this method except in derived classes. This method
+ * either builds a valid object or throws an exception.
+ *
+ * @param cache_dir key to find cache dir
+ * @param prefix key to find the cache prefix
+ * @param size key to find the cache size (in MBytes)
+ * @throws BESSyntaxUserError if the keys are not set in the BESKeys, if the key
+ * are either the empty string or zero, respectively, or if the cache directory does not exist.
+ */
+///@{
+GlobalMetadataStore::GlobalMetadataStore()
+    : BESFileLockingCache(get_cache_dir_from_config(), get_cache_prefix_from_config(), get_cache_size_from_config())
+{
+    initialize();
+}
+
+GlobalMetadataStore::GlobalMetadataStore(const string &cache_dir, const string &prefix,
+    unsigned long long size) : BESFileLockingCache(cache_dir, prefix, size)
+{
+    initialize();
+}
+///@}
 
 /**
  * Copied from BESLog, where that code writes to an internal object, not a stream.
@@ -329,6 +346,7 @@ void
 GlobalMetadataStore::write_ledger()
 {
     // TODO open just once
+    // FIXME Protect this with an exclusive lock!
     ofstream of(d_ledger_name.c_str(), ios::app);
     if (of) {
         dump_time(of, d_use_local_time);
@@ -363,15 +381,6 @@ GlobalMetadataStore::get_hash(const string &name)
  * functor is used to parameterize writing the DAP metadata response for the
  * store_dap_response() method.
  *
- * @note These classes were written so that either the DDS _or_ DMR could be
- * used to write all of the three DAP2/4 metadata responses. That feature
- * worked for the most part, but highlighted some differences between the
- * two protocol versions that make it hard to produce identical responses
- * using both the DDS or DMR from the same dataset. This made testing hard
- * and meant that the result was 'unpredictable' for some edge cases. The symbol
- * SYMETRIC_ADD_RESPONSES controls if this feature is on or not; currently it
- * is turned off.
- *
  * @param os Write the DMR to this stream
  * @see StreamDAP
  * @see StreamDDS
@@ -396,7 +405,7 @@ void GlobalMetadataStore::StreamDMR::operator()(ostream &os)
     }
 }
 
-/// @see GlobalMetadataStore::StreamDMR
+/// @see GlobalMetadataStore::StreamDAP
 void GlobalMetadataStore::StreamDDS::operator()(ostream &os) {
     if (d_dds)
         d_dds->print(os);
@@ -406,7 +415,7 @@ void GlobalMetadataStore::StreamDDS::operator()(ostream &os) {
         throw BESInternalFatalError("Unknown DAP object type.", __FILE__, __LINE__);
 }
 
-/// @see GlobalMetadataStore::StreamDMR
+/// @see GlobalMetadataStore::StreamDAP
 void GlobalMetadataStore::StreamDAS::operator()(ostream &os) {
     if (d_dds)
         d_dds->print_das(os);
@@ -489,15 +498,12 @@ GlobalMetadataStore::store_dap_response(StreamDAP &writer, const string &key, co
         return false;
     }
     else {
-        throw BESInternalError("Could neither create or open '" + item_name + "'  in the metadata store.", __FILE__, __LINE__);
+        throw BESInternalError("Could neither create or open '" + item_name + "' in the metadata store.", __FILE__, __LINE__);
     }
 }
 
-// Documented in the header file - I could not get doxygen comments to work
-// for these two methods in this file (but all the others are fine). jhrg 2.28.18
 /**
  * @name Add responses to the GlobalMetadataStore
- * @brief Use a DDS or DMR to populate DAP metadata responses in the MDS
  *
  * These methods use a DDS or DMR object to generate the DDS, DAS and DMR responses
  * for DAP (2 and 4). They store those in the MDS and then update the
@@ -591,7 +597,7 @@ GlobalMetadataStore::add_responses(DMR *dmr, const string &name)
 #if SYMETRIC_ADD_RESPONSES
     return (stored_dds && stored_das && stored_dmr);
 #else
-    return(stored_dmr);
+    return(stored_dmr /* && stored_dmrpp */);
 #endif
 }
 ///@}
@@ -611,10 +617,12 @@ GlobalMetadataStore::add_responses(DMR *dmr, const string &name)
 GlobalMetadataStore::MDSReadLock
 GlobalMetadataStore::get_read_lock_helper(const string &name, const string &suffix, const string &object_name)
 {
+    BESDEBUG(DEBUG_KEY, __func__ << " MDS hashing name " << name << ", " << suffix <<  endl);
+
     string item_name = get_cache_file_name(get_hash(name + suffix), false);
     int fd;
-    MDSReadLock lock(item_name, get_read_lock(item_name, fd));
-    BESDEBUG(DEBUG_KEY, __func__ << " MDS lock for  " << item_name << ": " << lock() <<  endl);
+    MDSReadLock lock(item_name, get_read_lock(item_name, fd), this);
+    BESDEBUG(DEBUG_KEY, __func__ << " MDS lock for " << item_name << ": " << lock() <<  endl);
 
     if (lock())
         LOG("MDS Cache hit for " << name << " and response " << object_name << endl);
@@ -672,6 +680,29 @@ GlobalMetadataStore::is_das_available(const string &name)
 }
 
 /**
+ * @brief Is the DMR++ response for \arg name in the MDS?
+ *
+ * Look in the MDS to see if the DMR++ response has been stored/cached for
+ * \arg name.
+ *
+ * @note This method uses LOG()
+ * to record cache hits and misses. Other methods also record information
+ * about cache hits, but only using VERBOSE(), so that output will not show
+ * up in a normal log.
+ *
+ * @param name Find the DMR++ response for \arg name.
+ * @return A MDSReadLock object. This object is true if the item was found
+ * (and a read lock was obtained), false if either of those things are not
+ * true. When the MDSReadLock object goes out of scope, the read lock is
+ * released.
+ */
+GlobalMetadataStore::MDSReadLock
+GlobalMetadataStore::is_dmrpp_available(const string &name)
+{
+    return get_read_lock_helper(name, "dmrpp_r", "DMR++");
+}
+
+/**
  * Common code to copy a response to an output stream.
  *
  * @param name Granule name
@@ -680,7 +711,7 @@ GlobalMetadataStore::is_das_available(const string &name)
  * @param object_name One of DDS, DAS or DMR
  */
 void
-GlobalMetadataStore::get_response_helper(const string &name, ostream &os, const string &suffix, const string &object_name)
+GlobalMetadataStore::write_response_helper(const string &name, ostream &os, const string &suffix, const string &object_name)
 {
     string item_name = get_cache_file_name(get_hash(name + suffix), false);
     int fd; // value-result parameter;
@@ -691,7 +722,7 @@ GlobalMetadataStore::get_response_helper(const string &name, ostream &os, const 
         unlock_and_close(item_name); // closes fd
     }
     else {
-        throw BESInternalError("Could not open '" + item_name + "'  in the metadata store.", __FILE__, __LINE__);
+        throw BESInternalError("Could not open '" + item_name + "' in the metadata store.", __FILE__, __LINE__);
     }
 }
 
@@ -702,9 +733,9 @@ GlobalMetadataStore::get_response_helper(const string &name, ostream &os, const 
  * @param os Write to this stream
  */
 void
-GlobalMetadataStore::get_dds_response(const std::string &name, ostream &os)
+GlobalMetadataStore::write_dds_response(const std::string &name, ostream &os)
 {
-    get_response_helper(name, os, "dds_r", "DDS");
+    write_response_helper(name, os, "dds_r", "DDS");
 }
 
 /**
@@ -714,9 +745,9 @@ GlobalMetadataStore::get_dds_response(const std::string &name, ostream &os)
  * @param os Write to this stream
  */
 void
-GlobalMetadataStore::get_das_response(const std::string &name, ostream &os)
+GlobalMetadataStore::write_das_response(const std::string &name, ostream &os)
 {
-    get_response_helper(name, os, "das_r", "DAS");
+    write_response_helper(name, os, "das_r", "DAS");
 }
 
 /**
@@ -726,9 +757,21 @@ GlobalMetadataStore::get_das_response(const std::string &name, ostream &os)
  * @param os Write to this stream
  */
 void
-GlobalMetadataStore::get_dmr_response(const std::string &name, ostream &os)
+GlobalMetadataStore::write_dmr_response(const std::string &name, ostream &os)
 {
-    get_response_helper(name, os, "dmr_r", "DMR");
+    write_response_helper(name, os, "dmr_r", "DMR");
+}
+
+/**
+ * @brief Write the stored DMR++ response to a stream
+ *
+ * @param name The (path)name of the granule
+ * @param os Write to this stream
+ */
+void
+GlobalMetadataStore::write_dmrpp_response(const std::string &name, ostream &os)
+{
+    write_response_helper(name, os, "dmrpp_r", "DMR++");
 }
 
 /**
@@ -772,12 +815,14 @@ GlobalMetadataStore::remove_responses(const string &name)
 
      bool removed_dmr = remove_response_helper(name, "dmr_r", "DMR");
 
+     bool removed_dmrpp = remove_response_helper(name, "dmrpp_r", "DMR++");
+
      write_ledger(); // write the index line
 
 #if SYMETRIC_ADD_RESPONSES
      return  (removed_dds && removed_das && removed_dmr);
 #else
-     return  (removed_dds || removed_das || removed_dmr);
+     return  (removed_dds || removed_das || removed_dmr || removed_dmrpp);
 #endif
 }
 
@@ -797,7 +842,7 @@ DMR *
 GlobalMetadataStore::get_dmr_object(const string &name)
 {
     stringstream oss;
-    get_dmr_response(name, oss);    // throws BESInternalError if not found
+    write_dmr_response(name, oss);    // throws BESInternalError if not found
 
     D4BaseTypeFactory d4_btf;
     auto_ptr<DMR> dmr(new DMR(&d4_btf, "mds"));
@@ -826,7 +871,7 @@ GlobalMetadataStore::get_dmr_object(const string &name)
  * this implementation with something far better - and something that can
  * include information in specialized BaseTypes and DDS classes.
  *
- * @param name Name of the dataset
+ * @param name Path to the dataset, relative to the BES data root directory.
  * @return A pointer to the DDS object; the caller must delete this object.
  * @exception BESInternalError is thrown if \arg name does not have a
  * cached DDS or DAS response.
@@ -837,7 +882,7 @@ GlobalMetadataStore::get_dds_object(const string &name)
     TempFile dds_tmp(get_cache_directory() + "/opendapXXXXXX");
 
     fstream dds_fs(dds_tmp.get_name().c_str(), std::fstream::out);
-    get_dds_response(name, dds_fs);     // throws BESInternalError if not found
+    write_dds_response(name, dds_fs);     // throws BESInternalError if not found
     dds_fs.close();
 
     BaseTypeFactory btf;
@@ -846,7 +891,7 @@ GlobalMetadataStore::get_dds_object(const string &name)
 
     TempFile das_tmp(get_cache_directory() + "/opendapXXXXXX");
     fstream das_fs(das_tmp.get_name().c_str(), std::fstream::out);
-    get_das_response(name, das_fs);     // throws BESInternalError if not found
+    write_das_response(name, das_fs);     // throws BESInternalError if not found
     das_fs.close();
 
     auto_ptr<DAS> das(new DAS());

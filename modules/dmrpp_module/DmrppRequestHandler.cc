@@ -75,8 +75,6 @@ namespace dmrpp {
 
 const string module = "dmrpp";
 
-// These are not used. See the netcdf handler for an example of their use.
-// jhrg 4/24/18
 ObjMemCache *DmrppRequestHandler::das_cache = 0;
 ObjMemCache *DmrppRequestHandler::dds_cache = 0;
 ObjMemCache *DmrppRequestHandler::dmr_cache = 0;
@@ -141,6 +139,9 @@ DmrppRequestHandler::~DmrppRequestHandler()
     curl_global_cleanup();
 }
 
+// FIXME Here's where we could put code to build the DMR various ways,
+// from a DMR++ xml file, HDF5 file, ... The resulting DMR is always
+// a DMR++, even though it's not a DMRpp instance.
 void DmrppRequestHandler::build_dmr_from_file(const string& accessed, bool /*explicit_containers*/, DMR* dmr)
 {
     BESDEBUG(module, "In DmrppRequestHandler::build_dmr_from_file; accessed: " << accessed << endl);

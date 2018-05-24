@@ -4,11 +4,8 @@ AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = $(DAP_CFLAGS) $(BES_CPPFLAGS) -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch
 AM_CXXFLAGS = 
 
-noinst_PROGRAMS = build_dmrpp endian_convert multiball keepalive2
-
-# VPATH = ..
-
-# -I$(top_srcdir)/modules/hdf5_handler
+bin_PROGRAMS = build_dmrpp
+noinst_PROGRAMS = endian_convert multiball keepalive2
 
 build_dmrpp_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)/modules/dmrpp_module \
 -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)

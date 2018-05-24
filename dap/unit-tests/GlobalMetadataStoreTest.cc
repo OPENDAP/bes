@@ -52,6 +52,12 @@
 
 #include "GlobalMetadataStore.h"
 
+#if 0
+#include "DMRpp.h"
+#include "DmrppTypeFactory.h"
+#include "DmrppParserSax2.h"
+#endif
+
 #include "test_utils.h"
 #include "test_config.h"
 
@@ -67,6 +73,10 @@ static bool clean = true;
 using namespace CppUnit;
 using namespace std;
 using namespace libdap;
+#if 0
+using namespace dmrpp;
+#endif
+
 
 namespace bes {
 
@@ -75,7 +85,7 @@ static const string c_mds_prefix = "mds_"; // used when cleaning the cache, etc.
 static const string c_mds_name = "/mds";
 static const string c_mds_baselines = string(TEST_SRC_DIR) + "/mds_baselines";
 
-class GlobalMetadataStoreTest: public TestFixture {
+class DmrppMetadataStoreTest: public TestFixture {
 private:
     DDS *d_test_dds;
     BaseTypeFactory d_btf;
@@ -155,13 +165,47 @@ private:
         }
     }
 
+#if 0
+    void init_dmrpp_and_mds()
+    {
+        try {
+            // Stock code to get the d_test_dds and d_mds objects used by many
+            // of the tests.
+            d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
+            DBG(cerr << "Retrieved GlobalMetadataStore object: " << d_mds << endl);
+
+            // Get a DMRpp to cache.
+            string file_name = string(TEST_SRC_DIR).append("/input-files/chunked_fourD.h5.dmrpp");
+
+            DmrppTypeFactory dmrpp_factory;
+            d_test_dmr = new DMRpp(&dmrpp_factory);
+            DmrppParserSax2 dp;
+            DBG(cerr << "DMRpp file to be parsed: " << file_name << endl);
+            fstream in(file_name.c_str(), ios::in|ios::binary);
+            dp.intern(in, d_test_dmr);
+
+            DBG(cerr << "DMRpp Name: " << d_test_dmr->name() << endl);
+            CPPUNIT_ASSERT(d_test_dmr);
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL(e.get_message());
+        }
+        catch (Error &e) {
+            CPPUNIT_FAIL(e.get_error_message());
+        }
+        catch (std::exception &e) {
+            CPPUNIT_FAIL(e.what());
+        }
+    }
+#endif
+
 public:
-    GlobalMetadataStoreTest() :
+    DmrppMetadataStoreTest() :
         d_test_dds(0), d_test_dmr(0), d_mds_dir(string(TEST_BUILD_DIR).append(c_mds_name)), d_mds(0)
     {
     }
 
-    ~GlobalMetadataStoreTest()
+    ~DmrppMetadataStoreTest()
     {
     }
 
@@ -363,6 +407,43 @@ public:
         DBG(cerr << __func__ << " - END" << endl);
     }
 
+#if 0
+    void cache_a_dmrpp_response()
+    {
+        DBG(cerr << __func__ << " - BEGIN" << endl);
+
+        try {
+            init_dmrpp_and_mds();
+
+            // Store it - this will work if the the code is cleaning the cache.
+            GlobalMetadataStore::StreamDMRpp write_the_dmrpp_response(d_test_dmr);
+            bool stored = d_mds->store_dap_response(write_the_dmrpp_response, d_test_dmr->name() + ".dmrpp_r", d_test_dmr->name(), "DMRpp");
+
+            CPPUNIT_ASSERT(stored);
+
+            // Now check the file
+            string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "chunked_fourD.h5.dmrpp_r";
+            DBG(cerr << "Reading baseline: " << baseline_name << endl);
+            CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
+
+            string chunked_4d_dmrpp_baseline = read_test_baseline(baseline_name);
+
+            string response_name = d_mds_dir + "/" + c_mds_prefix + "chunked_fourD.h5.dmrpp_r";
+            DBG(cerr << "Reading response: " << response_name << endl);
+            CPPUNIT_ASSERT(access(response_name.c_str(), R_OK) == 0);
+
+            string stored_response = read_test_baseline(response_name);
+
+            CPPUNIT_ASSERT(stored_response == chunked_4d_dmrpp_baseline);
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL(e.get_message());
+        }
+
+        DBG(cerr << __func__ << " - END" << endl);
+    }
+#endif
+
     void add_response_test()
      {
          DBG(cerr << __func__ << " - BEGIN" << endl);
@@ -415,7 +496,7 @@ public:
 
              // Now lets read the object from the cache
              ostringstream oss;
-             d_mds->get_dds_response(d_test_dds->get_dataset_name(), oss);
+             d_mds->write_dds_response(d_test_dds->get_dataset_name(), oss);
              DBG(cerr << "DDS response: " << endl << oss.str() << endl);
 
              string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "SimpleTypes.dds_r";
@@ -446,7 +527,7 @@ public:
 
              // Now lets read the object from the cache
              ostringstream oss;
-             d_mds->get_das_response(d_test_dds->get_dataset_name(), oss);
+             d_mds->write_das_response(d_test_dds->get_dataset_name(), oss);
              DBG(cerr << "DAS response: " << endl << oss.str() << endl);
 
              string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "SimpleTypes.das_r";
@@ -464,7 +545,7 @@ public:
          DBG(cerr << __func__ << " - END" << endl);
     }
 
-    void get_dmr_response_test() {
+    void write_dmr_response_test() {
         DBG(cerr << __func__ << " - BEGIN" << endl);
 
          try {
@@ -477,7 +558,7 @@ public:
 
              // Now lets read the object from the cache
              ostringstream oss;
-             d_mds->get_dmr_response(d_test_dmr->name(), oss);
+             d_mds->write_dmr_response(d_test_dmr->name(), oss);
              DBG(cerr << "DMR response: " << endl << oss.str() << endl);
 
              string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "test_01.dmr_r";
@@ -509,7 +590,7 @@ public:
 
              // Now lets read the object from the cache
              ostringstream oss;
-             d_mds->get_dmr_response(d_test_dds->get_dataset_name(), oss);
+             d_mds->write_dmr_response(d_test_dds->get_dataset_name(), oss);
              DBG(cerr << "DMR response: " << endl << oss.str() << endl);
 
              string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "SimpleTypes.dmr_r";
@@ -801,7 +882,7 @@ public:
          DBG(cerr << __func__ << " - END" << endl);
      }
 
-    CPPUNIT_TEST_SUITE( GlobalMetadataStoreTest );
+    CPPUNIT_TEST_SUITE( DmrppMetadataStoreTest );
 
     CPPUNIT_TEST(ctor_test_1);
     CPPUNIT_TEST(ctor_test_2);
@@ -810,10 +891,15 @@ public:
     CPPUNIT_TEST(cache_a_dds_response);
     CPPUNIT_TEST(cache_a_das_response);
     CPPUNIT_TEST(cache_a_dmr_response);
+#if 0
+    CPPUNIT_TEST(cache_a_dmrpp_response);
+#endif
+
     CPPUNIT_TEST(add_response_test);
+
     CPPUNIT_TEST(get_dds_response_test);
     CPPUNIT_TEST(get_das_response_test);
-    CPPUNIT_TEST(get_dmr_response_test);
+    CPPUNIT_TEST(write_dmr_response_test);
 #if SYMETRIC_ADD_RESPONSES
     CPPUNIT_TEST(get_dmr_response_test_2);
 #endif
@@ -830,7 +916,7 @@ public:
     CPPUNIT_TEST_SUITE_END();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(GlobalMetadataStoreTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(DmrppMetadataStoreTest);
 
 }
 
@@ -853,8 +939,8 @@ int main(int argc, char*argv[])
             break;
         case 'h': {     // help - show test names
             cerr << "Usage: GlobalMetadataStoreTest has the following tests:" << endl;
-            const std::vector<Test*> &tests = bes::GlobalMetadataStoreTest::suite()->getTests();
-            unsigned int prefix_len = bes::GlobalMetadataStoreTest::suite()->getName().append("::").length();
+            const std::vector<Test*> &tests = bes::DmrppMetadataStoreTest::suite()->getTests();
+            unsigned int prefix_len = bes::DmrppMetadataStoreTest::suite()->getName().append("::").length();
             for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
             }
@@ -877,7 +963,7 @@ int main(int argc, char*argv[])
     else {
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            test = bes::GlobalMetadataStoreTest::suite()->getName().append("::").append(argv[i]);
+            test = bes::DmrppMetadataStoreTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
 
             ++i;
