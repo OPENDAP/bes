@@ -54,7 +54,10 @@ bes.hdf5.cf.template.conf: $(srcdir)/bes.hdf5.cf.template.conf.in $(top_srcdir)/
 EXTRA_PROGRAMS = 
 
 EXTRA_DIST = keepalive_stats.sh mtest.sh shreddit.sh test_reuse.sh \
-mkChunkedTestData.py get_dmrpp.sh README dmrpp
+mkChunkedTestData.py mkChunkedNewTypes.py get_dmrpp.sh README dmrpp \
+chunked_compund.bescmd chunked_enum.bescmd chunked_opaque.bescmd \
+chunked_scalar_string.bescmd chunked_string_array.bescmd \
+nc4_group_atomic.bescmd ntypes.bescmd
 
 CLEANFILES = *~
 
