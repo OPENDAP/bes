@@ -30,8 +30,9 @@ OPTIND=1        # Reset in case getopts has been used previously in this shell
 verbose=
 very_verbose=
 just_dmr=
+dmrpp_url=
 
-while getopts "h?vVr" opt; do
+while getopts "h?vVru:" opt; do
     case "$opt" in
     h|\?)
         show_usage
@@ -46,6 +47,9 @@ while getopts "h?vVr" opt; do
         ;;
     r)
         just_dmr="yes"
+        ;;
+    u)
+        dmrpp_url="-u $OPTARG"
         ;;
     esac
 done
@@ -110,7 +114,7 @@ fi
 
 if test -z "$just_dmr"
 then
-    ./build_dmrpp $verbose -f $hdf5_file -r $TMP_DMR_RESP
+    ./build_dmrpp $verbose -f $hdf5_file -r $TMP_DMR_RESP $dmrpp_url
 fi
 
 # TODO Use trap to ensure these are really removed
