@@ -1,9 +1,11 @@
-
-// This file is part of bes, A C++ back-end server implementation framework
-// for the OPeNDAP Data Access Protocol.
-
+// -*- mode: c++; c-basic-offset:4 -*-
+//
+// ShowBesKeyCommand.cc
+//
+// This file is part of the BES default command set
+//
 // Copyright (c) 2018 OPeNDAP, Inc
-// Author: James Gallagher <jgallagher@opendap.org>
+// Author: Nathan Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -22,19 +24,17 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 
-#include "ShowPathInfoCommand.h"
+#include "ShowBesKeyCommand.h"
 #include "BESDataNames.h"
 #include "BESDebug.h"
+#include "BESError.h"
 #include "BESUtil.h"
 #include "BESXMLUtils.h"
 #include "BESSyntaxUserError.h"
 
-#define SPI_DEBUG_KEY "show-path-info"
-
-#define SHOW_PATH_INFO_RESPONSE "show.pathInfo"
 
 
-ShowPathInfoCommand::ShowPathInfoCommand(const BESDataHandlerInterface &base_dhi) :
+ShowBesKeyCommand::ShowBesKeyCommand(const BESDataHandlerInterface &base_dhi) :
     BESXMLCommand(base_dhi)
 {
 
@@ -46,30 +46,36 @@ ShowPathInfoCommand::ShowPathInfoCommand(const BESDataHandlerInterface &base_dhi
  *
  * @param node xml2 element node pointer
  */
-void ShowPathInfoCommand::parse_request(xmlNode *node)
+void ShowBesKeyCommand::parse_request(xmlNode *node)
 {
     string name;
     string value;
     map<string, string> props;
     BESXMLUtils::GetNodeInfo(node, name, value, props);
-    if (name != SHOW_PATH_INFO_RESPONSE_STR) {
-        string err = "The specified command " + name + " is not a " + SHOW_PATH_INFO_RESPONSE_STR + " command";
+    if (name != SHOW_BES_KEY_RESPONSE_STR) {
+        string err = "The specified command " + name + " is not a " + SHOW_BES_KEY_RESPONSE_STR + " command";
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
-    // the the action is to return the showPathInfo response
-    d_xmlcmd_dhi.action = SHOW_PATH_INFO_RESPONSE;
-    d_xmlcmd_dhi.data[SHOW_PATH_INFO_RESPONSE] = SHOW_PATH_INFO_RESPONSE;
-    d_cmd_log_info = "show pathInfo";
+    // the action is to show the requested BES key value info response
+    d_xmlcmd_dhi.action = SHOW_BES_KEY_RESPONSE;
+    d_xmlcmd_dhi.data[SHOW_BES_KEY_RESPONSE] = SHOW_BES_KEY_RESPONSE;
+    d_cmd_log_info = "show besKey";
 
-    // node is an optional property, so could be empty string
-    d_xmlcmd_dhi.data[CONTAINER] = props["node"];
-    if (!d_xmlcmd_dhi.data[CONTAINER].empty()) {
-        d_cmd_log_info += " for " + d_xmlcmd_dhi.data[CONTAINER];
+    // key is a required property, so MAY NOT be empty string
+
+    string requested_bes_key =  props["key"];
+
+    if(requested_bes_key.empty())
+        throw BESError("Ouch! A Key name was not submitted with the request for a Key value from BESKeys",BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
+
+    d_xmlcmd_dhi.data[BES_KEY] = requested_bes_key;
+    if (!d_xmlcmd_dhi.data[BES_KEY].empty()) {
+        d_cmd_log_info += " for " + d_xmlcmd_dhi.data[BES_KEY];
     }
     d_cmd_log_info += ";";
 
-    BESDEBUG(SPI_DEBUG_KEY, "Built BES Command: '" << d_cmd_log_info << "'"<< endl );
+    BESDEBUG(SBK_DEBUG_KEY, "Built BES Command: '" << d_cmd_log_info << "'"<< endl );
 
     // now that we've set the action, go get the response handler for the
     // action by calling set_response() in our parent class
@@ -82,17 +88,19 @@ void ShowPathInfoCommand::parse_request(xmlNode *node)
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void ShowPathInfoCommand::dump(ostream &strm) const
+void ShowBesKeyCommand::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "ShowPathInfoCommand::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "ShowBesKeyCommand::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     BESXMLCommand::dump(strm);
     BESIndent::UnIndent();
 }
 
 BESXMLCommand *
-ShowPathInfoCommand::CommandBuilder(const BESDataHandlerInterface &base_dhi)
+ShowBesKeyCommand::CommandBuilder(const BESDataHandlerInterface &base_dhi)
 {
-    return new ShowPathInfoCommand(base_dhi);
+    return new ShowBesKeyCommand(base_dhi);
 }
+
+
 
