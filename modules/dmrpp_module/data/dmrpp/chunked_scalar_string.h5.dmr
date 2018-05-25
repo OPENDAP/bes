@@ -1,0 +1,12 @@
+DMR:
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="chunked_scalar_string.h5">
+    <String name="scalar_big_string">
+        <Attribute name="origname" type="String">
+            <Value>scalar_big_string</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/scalar_big_string</Value>
+        </Attribute>
+    </String>
+</Dataset>

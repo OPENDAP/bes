@@ -386,7 +386,7 @@ public:
   /******************************************************
    *
    */
-  void test_nc4_group_ataomic()
+  void test_nc4_group_atomic()
   {
       auto_ptr<DMR> dmr(new DMR);
       DmrppTypeFactory dtf;
@@ -765,7 +765,7 @@ void test_chunked_hdf5()
     CPPUNIT_TEST(test_float_arrays);
 
     CPPUNIT_TEST(test_grid_1_2d);
-    CPPUNIT_TEST(test_nc4_group_ataomic);
+    CPPUNIT_TEST(test_nc4_group_atomic);
 
 #if 0
     CPPUNIT_TEST(test_chunked_dmr_print);

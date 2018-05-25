@@ -1,5 +1,7 @@
 /DapRequestHandler.cc.merge.from.stash
 /DapRequestHandler.h.merge.from.stash
 /dmrpp.conf
+/data/mds
+/data/mds_ledger.txt
 
 *.trace
