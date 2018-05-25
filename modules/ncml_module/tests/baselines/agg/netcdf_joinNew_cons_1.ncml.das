@@ -6,8 +6,6 @@ Attributes {
     DODS_EXTRA {
         String Unlimited_Dimension "time_a";
     }
-    source {
-    }
     lat {
         String units "degree North";
     }

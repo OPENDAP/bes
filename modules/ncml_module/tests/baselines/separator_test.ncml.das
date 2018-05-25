@@ -7,10 +7,4 @@ Attributes {
         String zork "I am a string without a specified separator so won't get separated into an array.";
         String enchanter "Each", "One", "Is", "A", "Token";
     }
-    sorcerer {
-    }
-    grue {
-    }
-    dungeon_master {
-    }
 }
