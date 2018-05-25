@@ -49,6 +49,8 @@ get_dmrpp.sh
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
 		-e "s%[@]modulesdir[@]%${modulesdir}%" $< > $@
 
+bes.hdf5.cf.template.conf: $(srcdir)/bes.hdf5.cf.template.conf.in $(top_srcdir)/configure.ac
+
 EXTRA_PROGRAMS = 
 
 EXTRA_DIST = keepalive_stats.sh mtest.sh shreddit.sh test_reuse.sh \

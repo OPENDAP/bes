@@ -5,13 +5,13 @@
   <bes:setContext name="errors">xml</bes:setContext>
   <bes:setContext name="max_response_size">0</bes:setContext>
   
-  <bes:setContainer name="c" space="catalog">@hdf5_pathname@</bes:setContainer>
+  <bes:setContainer name="c" space="catalog">/data/dmrpp/chunked_scalar_string.h5</bes:setContainer>
   
   <bes:define name="d" space="default">
     <bes:container name="c">
     </bes:container>
   </bes:define>
   
-  <bes:get type="dmr" definition="d" />
+  <bes:get type="dods" definition="d" />
   
 </bes:request>
