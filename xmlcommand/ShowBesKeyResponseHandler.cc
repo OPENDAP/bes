@@ -2,9 +2,9 @@
 //
 // ShowBesKeyResponseHandler.cc
 //
-// This file is part of BES dap package
+// This file is part of the BES default command set
 //
-// Copyright (c) 2015v OPeNDAP, Inc.
+// Copyright (c) 2018 OPeNDAP, Inc.
 // Author: Nathan Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
@@ -78,7 +78,7 @@ void ShowBesKeyResponseHandler::execute(BESDataHandlerInterface &dhi)
 
     BESDEBUG(SBK_DEBUG_KEY, __func__ << "() - BEGIN ############################################################## BEGIN" << endl);
 
-    BESInfo *info= BESInfoList::TheList()->build_info();
+    BESInfo *info = BESInfoList::TheList()->build_info();
     d_response_object = info;
 
     string requested_bes_key = dhi.data[BES_KEY];
@@ -89,16 +89,14 @@ void ShowBesKeyResponseHandler::execute(BESDataHandlerInterface &dhi)
     vector<string> key_values;
     getBesKeyValue(requested_bes_key, key_values);
     map<string, string> attrs;
+    map<string, string> emptyAttrs;
     attrs[KEY] = requested_bes_key;
 
     info->begin_response(SHOW_BES_KEY_RESPONSE_STR, dhi);
     info->begin_tag(BES_KEY_RESPONSE, &attrs);
 
-    for(unsigned long i=0; i<key_values.size(); ++i){
-        info->begin_tag("value");
-        info->add_data(key_values[i]);
-        info->end_tag("value");
-    }
+    for(unsigned long i=0; i<key_values.size(); ++i)
+        info->add_tag("value",key_values[i],&emptyAttrs);
 
     info->end_tag(BES_KEY_RESPONSE);
 

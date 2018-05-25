@@ -1,9 +1,11 @@
-
-// This file is part of bes, A C++ back-end server implementation framework
-// for the OPeNDAP Data Access Protocol.
-
+// -*- mode: c++; c-basic-offset:4 -*-
+//
+// ShowBesKeyCommand.h
+//
+// This file is part of the BES default command set
+//
 // Copyright (c) 2018 OPeNDAP, Inc
-// Author: James Gallagher <jgallagher@opendap.org>
+// Author: Nathan Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public

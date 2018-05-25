@@ -1,10 +1,10 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 //
-// W10NResponseHandler.h
+// ShowBesKeyResponseHandler.h
 //
-// This file is part of BES w10n handler
+// This file is part of the BES default command set
 //
-// Copyright (c) 2015v OPeNDAP, Inc.
+// Copyright (c) 2018 OPeNDAP, Inc.
 // Author: Nathan Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
