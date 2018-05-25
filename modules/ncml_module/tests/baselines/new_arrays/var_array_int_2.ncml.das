@@ -1,4 +1,2 @@
 Attributes {
-    MyArray2D {
-    }
 }
