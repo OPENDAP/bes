@@ -542,6 +542,10 @@ int main(int argc, char*argv[])
 
             // Use the values from the bes.conf file... jhrg 5/21/18
             bes::DmrppMetadataStore *mds = bes::DmrppMetadataStore::get_instance();
+            if (!mds) {
+                cerr << "The Metadata Store (MDS) must be configured for this command to work." << endl;
+                return 1;
+            }
 
             // Use the full path to open the file, but use the 'name' (which is the
             // path relative to the BES Data Root) with the MDS.

@@ -103,7 +103,7 @@ dnl index and the end index.jhrg 4/27/18
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_fourD.h5.2.dap])
 
 dnl This test is a good idea, but the float representations are not reliable
-dnl across different machines. I set the CEs so that nly integer values are
+dnl across different machines. I set the CEs so that only integer values are
 dnl extracted to simplify the testing. jhrg 4/27/18
 
 dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_fourD.h5.3.dap])
@@ -147,3 +147,25 @@ AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([chunked/chunked_shufzip_threeD.h5.dods])
 
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_shufzip_twoD.h5.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([chunked/chunked_shufzip_twoD.h5.dods])
+
+dnl Test new types - jhrg 5/24/18
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([new_types/chunked_scalar_string.h5.dap], [xfail])
+AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/chunked_scalar_string.h5.dods], [xfail])
+
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([new_types/chunked_string_array.h5.dap], [xfail])
+AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/chunked_string_array.h5.dods], [xfail])
+
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([new_types/chunked_compound.h5.dap], [xfail])
+AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/chunked_compound.h5.dods], [xfail])
+
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([new_types/chunked_enum.h5.dap], [xfail])
+AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/chunked_enum.h5.dods], [xfail])
+
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([new_types/chunked_opaque.h5.dap], [xfail])
+AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/chunked_opaque.h5.dods], [xfail])
+
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([new_types/ntypes.h5.dap], [xfail])
+AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/ntypes.h5.dods], [xfail])
+
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([new_types/nc4_group_atomic.h5.dap])
+AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/nc4_group_atomic.h5.dods])

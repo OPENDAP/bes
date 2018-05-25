@@ -95,7 +95,7 @@ then
         if [ -r $test_conf ]
         then
             BES_CONF="-c $test_conf"
-            if [ $verbose = 1]
+            if [ $verbose = 1 ]
             then
                 echo "BES_CONF: " $BES_CONF
             fi
@@ -159,7 +159,7 @@ $local_bes_get_dap $v_sw $BES_CONF -i $pathname -d dmr > /dev/null
 
 # build_dmrpp uses the MDS to get the DMR response and then feeds that
 # into code that builds a DMR++ response. That response is added to the 
-# cache.
+# cache. If the MDS is not configured, this command will not work!
 
 if [ $include_dmrpp = 1 ]
 then
