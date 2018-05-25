@@ -10,19 +10,9 @@ Attributes {
         }
         String spatial_ref "PROJCS[\"unnamed\",GEOGCS[\"NAD27\",DATUM[\"North_American_Datum_1927\",SPHEROID[\"Clarke 1866\",6378206.4,294.9786982138982,AUTHORITY[\"EPSG\",\"7008\"]],AUTHORITY[\"EPSG\",\"6267\"]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433],AUTHORITY[\"EPSG\",\"4267\"]],PROJECTION[\"Cylindrical_Equal_Area\"],PARAMETER[\"standard_parallel_1\",33.75],PARAMETER[\"central_meridian\",-117.333333333333],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]]]";
     }
-    slice {
-    }
     band_1 {
         Float64 add_offset 0;
         Float64 scale_factor 1;
         String PhotometricInterpretation "Gray";
-        band_1 {
-        }
-        slice {
-        }
-        northing {
-        }
-        easting {
-        }
     }
 }

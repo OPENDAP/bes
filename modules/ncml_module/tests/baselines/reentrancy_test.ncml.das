@@ -6,6 +6,4 @@ Attributes {
     Wrapped_Wrappee_Variable {
         String Description "This should be modified from the wrappee in a successful wrap!";
     }
-    Foo {
-    }
 }
