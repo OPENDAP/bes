@@ -167,5 +167,5 @@ AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/chunked_opaque.h5.dods], [xfail])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([new_types/ntypes.h5.dap], [xfail])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/ntypes.h5.dods], [xfail])
 
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([new_types/nc4_group_atomic.h5.dap], [xfail])
-AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/nc4_group_atomic.h5.dods], [xfail])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([new_types/nc4_group_atomic.h5.dap])
+AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/nc4_group_atomic.h5.dods])
