@@ -43,7 +43,7 @@ using std::endl ;
 #include "BESRequestHandlerList.h"
 #include "TestRequestHandler.h"
 #include "TestException.h"
-#include "BESExceptionManager.h"
+#include "BESDapError.h"
 
 #include "BESDebug.h"
 
@@ -69,7 +69,7 @@ TestModule::initialize( const string &modname )
 				TestCommand::CommandBuilder ) ;
 
     BESDEBUG( "test", "    adding Test exception callback" << endl ) ;
-    BESExceptionManager::TheEHM()->add_ehm_callback( TestException::handleException ) ;
+    BESDapError::TheDapHandler()->add_ehm_callback( TestException::handleException ) ;
 
     BESDEBUG( "test", "Done Initializing Test Module " << modname << endl ) ;
 }

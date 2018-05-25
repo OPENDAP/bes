@@ -35,9 +35,18 @@
 
 using std::ostringstream;
 
+#include "BESLog.h"
+
 #include "BESDapError.h"
 #include "BESContextManager.h"
 #include "BESDapErrorInfo.h"
+#include "BESInfoList.h"
+#include "TheBESKeys.h"
+
+#define DEFAULT_ADMINISTRATOR "support@opendap.org"
+
+BESDapError *BESDapError::_instance = 0;
+
 
 /** @brief converts the libdap error code to the bes error type
  *
@@ -97,6 +106,109 @@ int BESDapError::convert_error_code(int error_code, int current_error_type)
 	return BES_INTERNAL_ERROR;
 }
 
+void log_error(BESError &e)
+{
+    string error_name = "";
+    // TODO This should be configurable; I'm changing the values below to always log all errors.
+    // I'm also confused about the actual intention. jhrg 11/14/17
+    bool only_log_to_verbose = false;
+    switch (e.get_error_type()) {
+    case BES_INTERNAL_FATAL_ERROR:
+        error_name = "BES Internal Fatal Error";
+        break;
+
+    case BES_INTERNAL_ERROR:
+        error_name = "BES Internal Error";
+        break;
+
+    case BES_SYNTAX_USER_ERROR:
+        error_name = "BES User Syntax Error";
+        only_log_to_verbose = false; // TODO Was 'true.' jhrg 11/14/17
+        break;
+
+    case BES_FORBIDDEN_ERROR:
+        error_name = "BES Forbidden Error";
+        break;
+
+    case BES_NOT_FOUND_ERROR:
+        error_name = "BES Not Found Error";
+        only_log_to_verbose = false; // TODO was 'true.' jhrg 11/14/17
+        break;
+
+    default:
+        error_name = "Unrecognized BES Error";
+        break;
+    }
+
+    if (only_log_to_verbose) {
+            VERBOSE("ERROR: " << error_name << ", type: " << e.get_error_type() << ", file: " << e.get_file() << ":"
+                    << e.get_line()  << ", message: " << e.get_message() << endl);
+
+    }
+	else {
+		LOG("ERROR: " << error_name << ": " << e.get_message() << endl);
+	}
+}
+
+
+/** @brief Register an exception handler with the manager
+
+ Signature of the function is as follows:
+
+ int function_name( BESError &e, BESDataHandlerInterface &dhi ) ;
+
+ If the handler does not handle the exception then it should return
+ 0. Otherwise, return a status code. Pre-defined status
+ codes can be found in BESError.h
+
+ @param ehm exception handler function
+ @see BESError
+ */
+void BESDapError::add_ehm_callback(ptr_bes_ehm ehm)
+{
+    _ehm_list.push_back(ehm);
+}
+
+int BESDapError::handleBESError(BESError &e, BESDataHandlerInterface &dhi)
+{
+	// Let's see if any of these exception callbacks can handle the
+	// exception. The first callback that can handle the exception wins
+	for (ehm_iter i = _ehm_list.begin(), ei = _ehm_list.end(); i != ei; ++i) {
+		ptr_bes_ehm p = *i;
+		int handled = p(e, dhi);
+		if (handled) {
+			return handled;
+		}
+	}
+
+	dhi.error_info = BESInfoList::TheList()->build_info();
+	string action_name = dhi.action_name;
+	if (action_name.empty()) action_name = "BES";
+	dhi.error_info->begin_response(action_name, dhi);
+
+	string administrator = "";
+	try {
+		bool found = false;
+		vector<string> vals;
+		string key = "BES.ServerAdministrator";
+		TheBESKeys::TheKeys()->get_value(key, administrator, found);
+	}
+	catch (...) {
+		administrator = DEFAULT_ADMINISTRATOR;
+	}
+	if (administrator.empty()) {
+		administrator = DEFAULT_ADMINISTRATOR;
+	}
+	dhi.error_info->add_exception(e, administrator);
+	dhi.error_info->end_response();
+
+	// Write a message in the log file about this error...
+	log_error(e);
+
+	return e.get_error_type();
+}
+
+
 /** @brief handles exceptions if the error context is set to dap2
  *
  * If the error context from the BESContextManager is set to dap2 then
@@ -122,6 +234,28 @@ int BESDapError::handleException(BESError &e, BESDataHandlerInterface &dhi)
 		}
 		e.set_error_type(convert_error_code(ec, e.get_error_type()));
 		dhi.error_info = new BESDapErrorInfo(ec, e.get_message());
+
+
+		dhi.error_info = BESInfoList::TheList()->build_info();
+		string action_name = dhi.action_name;
+		if (action_name.empty()) action_name = "BES";
+		dhi.error_info->begin_response(action_name, dhi);
+
+		string administrator = "";
+		try {
+			bool found = false;
+			vector<string> vals;
+			string key = "BES.ServerAdministrator";
+			TheBESKeys::TheKeys()->get_value(key, administrator, found);
+		}
+		catch (...) {
+			administrator = DEFAULT_ADMINISTRATOR;
+		}
+		if (administrator.empty()) {
+			administrator = DEFAULT_ADMINISTRATOR;
+		}
+		dhi.error_info->add_exception(e, administrator);
+		dhi.error_info->end_response();
 
 		return e.get_error_type();
 	}
@@ -156,5 +290,14 @@ void BESDapError::dump(ostream &strm) const
 	strm << BESIndent::LMarg << "error code = " << get_error_code() << endl;
 	BESError::dump(strm);
 	BESIndent::UnIndent();
+}
+
+BESDapError *
+BESDapError::TheDapHandler()
+{
+    if (_instance == 0) {
+        _instance = new BESDapError();
+    }
+    return _instance;
 }
 
