@@ -7,8 +7,6 @@ Attributes {
         String Dataset_Description "Virtual union aggregation example";
         String Description "Dataset One";
     }
-    SelfReferentialVariable {
-    }
     Foo {
         String Description "This var names Foo comes first and should be in output.";
     }
