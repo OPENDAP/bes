@@ -33,6 +33,7 @@
 #include "Constructor.h"
 #include "DAS.h"
 #include "DDS.h"
+#include "Grid.h"
 #include <DataDDS.h>
 #include <AttrTable.h>
 
@@ -142,6 +143,49 @@ bool NCMLUtil::toUnsignedInt(const std::string& stringVal, unsigned int& oVal)
     return success;
 }
 
+/**
+ * Does this AttrTable have descendants that are scalar or vector attributes?
+ *
+ * @param a The AttrTable
+ * @return true if the table contains a scalar- or vector-valued attribute,
+ * otherwise false.
+ */
+static bool
+has_dap2_attributes(AttrTable &a)
+{
+    for (AttrTable::Attr_iter i = a.attr_begin(), e = a.attr_end(); i != e; ++i) {
+        if (a.get_attr_type(i) != Attr_container)
+            return true;
+        else
+            return has_dap2_attributes(*a.get_attr_table(i));
+    }
+
+    return false;
+}
+
+static bool
+has_dap2_attributes(BaseType *btp)
+{
+    if (btp->get_attr_table().get_size() && has_dap2_attributes(btp->get_attr_table())) {
+        return true;
+    }
+
+    Constructor *cons = dynamic_cast<Constructor *>(btp);
+    if (cons) {
+        Grid* grid = dynamic_cast<Grid*>(btp);
+        if(grid){
+            return has_dap2_attributes(grid->get_array());
+        }
+        else {
+            for (Constructor::Vars_iter i = cons->var_begin(), e = cons->var_end(); i != e; i++) {
+                if (has_dap2_attributes(*i)) return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 /** Recursion helper:
  *  Recurse on the members of composite variable consVar and recursively add their AttrTables
  *  to the given dasTable for the container.
@@ -151,28 +195,61 @@ static void populateAttrTableForContainerVariableRecursive(AttrTable* dasTable, 
     VALID_PTR(dasTable);
     VALID_PTR(consVar);
 
-    BESDEBUG("ncml",
-        "Recursively adding attribute tables for children of composite variable " << consVar->name() << "..." << endl);
-    Constructor::Vars_iter endIt = consVar->var_end();
-    for (Constructor::Vars_iter it = consVar->var_begin(); it != endIt; ++it) {
-        BaseType* var = *it;
-        VALID_PTR(var);
-        BESDEBUG("ncml", "Adding attribute table for var: " << var->name() << endl);
-        // Make a new table for the child variable
-        AttrTable* newTable = new AttrTable(var->get_attr_table());
-        // Add it to the DAS's attribute table for the consVar scope.
-        dasTable->append_container(newTable, var->name());
+    if(!has_dap2_attributes(consVar))
+        return;
 
-        // If it's a container type, we need to recurse.
-        if (var->is_constructor_type()) {
-            Constructor* child = dynamic_cast<Constructor*>(var);
-            if (!child) {
-                throw BESInternalError("Type cast error", __FILE__, __LINE__);
+
+    Grid* grid = dynamic_cast<Grid*>(consVar);
+    if(grid){
+        // Here we take the Attributes from the Grid Array variable and copy them into the DAS container for the Grid.
+        // This essentially flattens the Grid in the DAS. Note too that we do now pursue the MAP vectors so they
+        // do not appear in the DAS container for the Grid.
+        BESDEBUG("ncml",  __func__ << "() The variable " << grid->name() << " is a Grid. So, we promote the Grid Array AttrTable content to the DAS container for Grid " << grid->name() << endl);
+        Array *gArray = grid->get_array();
+        AttrTable arrayAT = gArray->get_attr_table();
+        for( AttrTable::Attr_iter atIter = arrayAT.attr_begin(); atIter!=arrayAT.attr_end(); ++atIter){
+            AttrType type = arrayAT.get_attr_type(atIter);
+            string childName = arrayAT.get_name(atIter);
+            if (type == Attr_container){
+                BESDEBUG("ncml", __func__ << "() Adding child AttrTable '" << childName << "' to Grid " << grid->name() << endl);
+                dasTable->append_container( new AttrTable(*arrayAT.get_attr_table(atIter)), childName);
             }
+            else {
+                vector<string>* pAttrTokens = arrayAT.get_attr_vector(atIter);
+                // append_attr makes a copy of the vector, so we don't have to do so here.
+                BESDEBUG("ncml", __func__ << "() Adding child Attrbute '" << childName << "' to Grid " << grid->name() << endl);
+                dasTable->append_attr(childName, AttrType_to_String(type), pAttrTokens);
+            }
+        }
+    }
+    else {
+        // It's not a Grid but it's still a Constructor.
+        BESDEBUG("ncml",  __func__ << "() Adding attribute tables for children of a Constructor type variable " << consVar->name() << endl);
+        Constructor::Vars_iter endIt = consVar->var_end();
+        for (Constructor::Vars_iter it = consVar->var_begin(); it != endIt; ++it) {
+            BaseType* var = *it;
+            VALID_PTR(var);
 
-            BESDEBUG("ncml",
-                "Var " << child->name() << " is composite, so recursively adding attribute tables" << endl);
-            populateAttrTableForContainerVariableRecursive(newTable, child);
+            if(has_dap2_attributes(var)){
+                BESDEBUG("ncml",  __func__ << "() Adding attribute table for var: " << var->name() << endl);
+                // Make a new table for the child variable
+                AttrTable* newTable = new AttrTable(var->get_attr_table());
+                // Add it to the DAS's attribute table for the consVar scope.
+                dasTable->append_container(newTable, var->name());
+
+                // If it's a container type, we need to recurse.
+                if (var->is_constructor_type()) {
+                    Constructor* child = dynamic_cast<Constructor*>(var);
+                    if (!child) {
+                        throw BESInternalError("Type cast error", __FILE__, __LINE__);
+                    }
+                    BESDEBUG("ncml", __func__ << "() Var " << child->name() << " is Constructor type, recursively adding attribute tables" << endl);
+                    populateAttrTableForContainerVariableRecursive(newTable, child);
+                }
+            }
+            else {
+                BESDEBUG("ncml", __func__ << "() Variable '" << var->name() << "' has no dap2 attributes,. Skipping."<< endl);
+            }
         }
     }
 }
@@ -193,8 +270,7 @@ void NCMLUtil::populateDASFromDDS(DAS* das, const DDS& dds_const)
     // First, make sure we don't have a container at top level since we're assuming for now
     // that we only have one dataset per call (right?)
     if (dds.container()) {
-        BESDEBUG("ncml",
-            "populateDASFromDDS got unexpected container " << dds.container_name() << " and is failing." << endl);
+        BESDEBUG("ncml", __func__ << "()  Got unexpected container " << dds.container_name() << " and is failing." << endl);
         throw BESInternalError("Unexpected Container Error creating DAS from DDS in NCMLHandler", __FILE__, __LINE__);
     }
 
@@ -211,19 +287,24 @@ void NCMLUtil::populateDASFromDDS(DAS* das, const DDS& dds_const)
         BaseType* var = *it;
         VALID_PTR(var);
 
-        // BESDEBUG("ncml", "Adding attribute table for variable: " << var->name() << endl);
-        AttrTable* clonedVarTable = new AttrTable(var->get_attr_table());
-        VALID_PTR(clonedVarTable);
-        das->add_table(var->name(), clonedVarTable);
+        // By adding this test we stop adding empty top=level containers to the DAS.
+        if(has_dap2_attributes(var)){
+            BESDEBUG("ncml", "Adding attribute table for variable: " << var->name() << endl);
+            AttrTable* clonedVarTable = new AttrTable(var->get_attr_table());
+            VALID_PTR(clonedVarTable);
+            das->add_table(var->name(), clonedVarTable);
 
-        // If it's a container type, we need to recurse.
-        if (var->is_constructor_type()) {
-            Constructor* consVar = dynamic_cast<Constructor*>(var);
-            if (!consVar) {
-                throw BESInternalError("Type cast error", __FILE__, __LINE__);
+            // If it's a container type, we need to recurse.
+            if (var->is_constructor_type()) {
+                Constructor* consVar = dynamic_cast<Constructor*>(var);
+                if (!consVar) {
+                    throw BESInternalError("Type cast error", __FILE__, __LINE__);
+                }
+                populateAttrTableForContainerVariableRecursive(clonedVarTable, consVar);
             }
-
-            populateAttrTableForContainerVariableRecursive(clonedVarTable, consVar);
+        }
+        else {
+            BESDEBUG("ncml", __func__ << "() Variable '" << var->name() << "' has no dap2 attributes,. Skipping."<< endl);
         }
     }
 }
