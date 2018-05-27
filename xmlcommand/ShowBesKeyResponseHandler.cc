@@ -92,13 +92,13 @@ void ShowBesKeyResponseHandler::execute(BESDataHandlerInterface &dhi)
     map<string, string> emptyAttrs;
     attrs[KEY] = requested_bes_key;
 
-    info->begin_response(SHOW_BES_KEY_RESPONSE_STR, dhi);
-    info->begin_tag(BES_KEY_RESPONSE, &attrs);
+    info->begin_response(SHOW_BES_KEY_RESPONSE_STR, &attrs, dhi);
+    //info->begin_tag(BES_KEY_RESPONSE, &attrs);
 
     for(unsigned long i=0; i<key_values.size(); ++i)
         info->add_tag("value",key_values[i],&emptyAttrs);
 
-    info->end_tag(BES_KEY_RESPONSE);
+    //info->end_tag(BES_KEY_RESPONSE);
 
     // end the response object
     info->end_response();
