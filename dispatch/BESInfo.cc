@@ -109,6 +109,19 @@ BESInfo::~BESInfo()
  * @param response_name name of the response this information represents
  * @param dhi information about the request and response
  */
+void BESInfo::begin_response(const string &response_name, map<string, string> */*attrs*/, BESDataHandlerInterface &/*dhi*/)
+{
+    _response_started = true;
+    _response_name = response_name;
+}
+
+/** @brief begin the informational response
+ *
+ * basic setup of the response from abstract class
+ *
+ * @param response_name name of the response this information represents
+ * @param dhi information about the request and response
+ */
 void BESInfo::begin_response(const string &response_name, BESDataHandlerInterface &/*dhi*/)
 {
     _response_started = true;
