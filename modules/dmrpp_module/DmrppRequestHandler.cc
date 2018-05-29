@@ -115,14 +115,14 @@ static void read_key_value(const std::string &key_name, int &key_value)
 DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     BESRequestHandler(name)
 {
-    add_handler(DMR_RESPONSE, dap_build_dmr);
-    add_handler(DAP4DATA_RESPONSE, dap_build_dap4data);
-    add_handler(DAS_RESPONSE, dap_build_das);
-    add_handler(DDS_RESPONSE, dap_build_dds);
-    add_handler(DATA_RESPONSE, dap_build_dap2data);
+    add_method(DMR_RESPONSE, dap_build_dmr);
+    add_method(DAP4DATA_RESPONSE, dap_build_dap4data);
+    add_method(DAS_RESPONSE, dap_build_das);
+    add_method(DDS_RESPONSE, dap_build_dds);
+    add_method(DATA_RESPONSE, dap_build_dap2data);
 
-    add_handler(VERS_RESPONSE, dap_build_vers);
-    add_handler(HELP_RESPONSE, dap_build_help);
+    add_method(VERS_RESPONSE, dap_build_vers);
+    add_method(HELP_RESPONSE, dap_build_help);
 
     read_key_value("DMRPP.UseParallelTransfers", d_use_parallel_transfers);
     read_key_value("DMRPP.MaxParallelTransfers", d_max_parallel_transfers);

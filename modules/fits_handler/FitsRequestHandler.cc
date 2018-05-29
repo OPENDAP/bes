@@ -69,15 +69,15 @@ using namespace libdap;
 FitsRequestHandler::FitsRequestHandler(const string &name) :
 		BESRequestHandler(name)
 {
-	add_handler(DAS_RESPONSE, FitsRequestHandler::fits_build_das);
-	add_handler(DDS_RESPONSE, FitsRequestHandler::fits_build_dds);
-	add_handler(DATA_RESPONSE, FitsRequestHandler::fits_build_data);
+	add_method(DAS_RESPONSE, FitsRequestHandler::fits_build_das);
+	add_method(DDS_RESPONSE, FitsRequestHandler::fits_build_dds);
+	add_method(DATA_RESPONSE, FitsRequestHandler::fits_build_data);
 
-	add_handler(DMR_RESPONSE, FitsRequestHandler::fits_build_dmr);
-	add_handler(DAP4DATA_RESPONSE, FitsRequestHandler::fits_build_dmr);
+	add_method(DMR_RESPONSE, FitsRequestHandler::fits_build_dmr);
+	add_method(DAP4DATA_RESPONSE, FitsRequestHandler::fits_build_dmr);
 
-	add_handler(VERS_RESPONSE, FitsRequestHandler::fits_build_vers);
-	add_handler(HELP_RESPONSE, FitsRequestHandler::fits_build_help);
+	add_method(VERS_RESPONSE, FitsRequestHandler::fits_build_vers);
+	add_method(HELP_RESPONSE, FitsRequestHandler::fits_build_help);
 }
 
 FitsRequestHandler::~FitsRequestHandler()

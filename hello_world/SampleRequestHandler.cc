@@ -45,8 +45,8 @@
 SampleRequestHandler::SampleRequestHandler(const string &name) :
     BESRequestHandler(name)
 {
-    add_handler( VERS_RESPONSE, SampleRequestHandler::sample_build_vers);
-    add_handler( HELP_RESPONSE, SampleRequestHandler::sample_build_help);
+    add_method( VERS_RESPONSE, SampleRequestHandler::sample_build_vers);
+    add_method( HELP_RESPONSE, SampleRequestHandler::sample_build_help);
 }
 
 SampleRequestHandler::~SampleRequestHandler()

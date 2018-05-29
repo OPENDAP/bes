@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,7 +36,7 @@
 
 BESDefinitionStorageVolatile::~BESDefinitionStorageVolatile()
 {
-    del_definitions() ;
+    del_definitions();
 }
 
 /** @brief looks for a definition in this volatile store with the
@@ -46,15 +46,14 @@ BESDefinitionStorageVolatile::~BESDefinitionStorageVolatile()
  * @return definition with the given name, NULL if not found
  */
 BESDefine *
-BESDefinitionStorageVolatile::look_for( const string &def_name )
+BESDefinitionStorageVolatile::look_for(const string &def_name)
 {
-    Define_citer i ;
-    i = _def_list.find( def_name ) ;
-    if( i != _def_list.end() )
-    {
-	return (*i).second;
+    Define_citer i;
+    i = _def_list.find(def_name);
+    if (i != _def_list.end()) {
+        return (*i).second;
     }
-    return NULL ;
+    return NULL;
 }
 
 /** @brief adds a given definition to this volatile storage
@@ -64,16 +63,13 @@ BESDefinitionStorageVolatile::look_for( const string &def_name )
  * @param def_name name of the definition to add
  * @param d definition to add
  */
-bool
-BESDefinitionStorageVolatile::add_definition( const string &def_name,
-                                              BESDefine *d )
+bool BESDefinitionStorageVolatile::add_definition(const string &def_name, BESDefine *d)
 {
-    if( look_for( def_name ) == NULL )
-    {
-	_def_list[def_name] = d ;
-	return true ;
+    if (look_for(def_name) == NULL) {
+        _def_list[def_name] = d;
+        return true;
     }
-    return false ;
+    return false;
 }
 
 /** @brief deletes a defintion with the given name from this volatile store
@@ -84,40 +80,35 @@ BESDefinitionStorageVolatile::add_definition( const string &def_name,
  * @param def_name name of the defintion to delete
  * @return true if successfully deleted and false otherwise
  */
-bool
-BESDefinitionStorageVolatile::del_definition( const string &def_name )
+bool BESDefinitionStorageVolatile::del_definition(const string &def_name)
 {
-    bool ret = false ;
-    Define_iter i ;
-    i = _def_list.find( def_name ) ;
-    if( i != _def_list.end() )
-    {
-	BESDefine *d = (*i).second;
-	_def_list.erase( i ) ;
-	delete d ;
-	ret = true ;
+    bool ret = false;
+    Define_iter i;
+    i = _def_list.find(def_name);
+    if (i != _def_list.end()) {
+        BESDefine *d = (*i).second;
+        _def_list.erase(i);
+        delete d;
+        ret = true;
     }
-    return ret ;
+    return ret;
 }
 
 /** @brief deletes all defintions from the definition store
  *
  * @return true if successfully deleted and false otherwise
  */
-bool
-BESDefinitionStorageVolatile::del_definitions( )
+bool BESDefinitionStorageVolatile::del_definitions()
 {
-    while( _def_list.size() != 0 )
-    {
-	Define_iter di = _def_list.begin() ;
-	BESDefine *d = (*di).second ;
-	_def_list.erase( di ) ;
-	if( d )
-	{
-	    delete d ;
-	}
+    while (_def_list.size() != 0) {
+        Define_iter di = _def_list.begin();
+        BESDefine *d = (*di).second;
+        _def_list.erase(di);
+        if (d) {
+            delete d;
+        }
     }
-    return true ;
+    return true;
 }
 
 /** @brief show the defintions stored in this store
@@ -130,55 +121,57 @@ BESDefinitionStorageVolatile::del_definitions( )
  *
  * @param info information object to store the information in
  */
-void
-BESDefinitionStorageVolatile::show_definitions( BESInfo &info )
+void BESDefinitionStorageVolatile::show_definitions(BESInfo &info)
 {
-    map<string,string> dprops ; // for the definition
-    map<string,string> cprops ; // for the container
-    map<string,string> aprops ; // for aggregation
-    Define_citer di = _def_list.begin() ;
-    Define_citer de = _def_list.end() ;
-    for( ; di != de; di++ )
-    {
-	string def_name = (*di).first ;
-	BESDefine *def = (*di).second ;
+    map<string, string> dprops; // for the definition
+    map<string, string> cprops; // for the container
+    map<string, string> aprops; // for aggregation
+    Define_citer di = _def_list.begin();
+    Define_citer de = _def_list.end();
+    for (; di != de; di++) {
+        string def_name = (*di).first;
+        BESDefine *def = (*di).second;
 
-	dprops.clear() ;
-	dprops["name"] = def_name ;
-	info.begin_tag( "definition", &dprops ) ;
+        dprops.clear();
+        dprops["name"] = def_name;
+        info.begin_tag("definition", &dprops);
 
-	BESDefine::containers_citer ci = def->first_container() ;
-	BESDefine::containers_citer ce = def->end_container() ;
-	for( ; ci != ce; ci++ )
-	{
-	    cprops.clear() ;
-	    string sym = (*ci)->get_symbolic_name() ;
-	    cprops["name"] = sym ;
-	    // FIXME: need to get rid of the root directory
-	    string real = (*ci)->get_real_name() ;
-	    string type = (*ci)->get_container_type() ;
-	    cprops["type"] = type ;
-	    string con = (*ci)->get_constraint() ;
-	    if( !con.empty() )
-	    {
-		cprops["constraint"] = con ;
-	    }
-	    string attrs = (*ci)->get_attributes() ;
-	    if( !attrs.empty() )
-	    {
-		cprops["attributes"] = attrs ;
-	    }
-	    info.add_tag( "container", real, &cprops ) ;
-	}
+        BESDefine::containers_citer ci = def->first_container();
+        BESDefine::containers_citer ce = def->end_container();
+        for (; ci != ce; ci++) {
+            cprops.clear();
 
-	if( !def->get_agg_handler().empty() )
-	{
-	    aprops.clear() ;
-	    aprops["handler"] = def->get_agg_handler() ;
-	    info.add_tag( "aggregation", def->get_agg_cmd(), &aprops ) ;
-	}
+            string sym = (*ci)->get_symbolic_name();
+            cprops["name"] = sym;
 
-	info.end_tag( "definition" ) ;
+            // FIXME: need to get rid of the root directory
+            string real = (*ci)->get_real_name();
+
+            string type = (*ci)->get_container_type();
+            cprops["type"] = type;
+
+            string con = (*ci)->get_constraint();
+            if (!con.empty()) {
+                cprops["constraint"] = con;
+            }
+
+#if 1
+            string attrs = (*ci)->get_attributes();
+            if (!attrs.empty()) {
+                cprops["attributes"] = attrs;
+            }
+#endif
+
+            info.add_tag("container", real, &cprops);
+        }
+
+        if (!def->get_agg_handler().empty()) {
+            aprops.clear();
+            aprops["handler"] = def->get_agg_handler();
+            info.add_tag("aggregation", def->get_agg_cmd(), &aprops);
+        }
+
+        info.end_tag("definition");
     }
 }
 
@@ -189,29 +182,24 @@ BESDefinitionStorageVolatile::show_definitions( BESInfo &info )
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESDefinitionStorageVolatile::dump( ostream &strm ) const
+void BESDefinitionStorageVolatile::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESDefinitionStorageVolatile::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    strm << BESIndent::LMarg << "name: " << get_name() << endl ;
-    if( _def_list.size() )
-    {
-	strm << BESIndent::LMarg << "definitions:" << endl ;
-	BESIndent::Indent() ;
-	Define_citer di = _def_list.begin() ;
-	Define_citer de = _def_list.end() ;
-	for( ; di != de; di++ )
-	{
-	    (*di).second->dump( strm ) ;
-	}
-	BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESDefinitionStorageVolatile::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    strm << BESIndent::LMarg << "name: " << get_name() << endl;
+    if (_def_list.size()) {
+        strm << BESIndent::LMarg << "definitions:" << endl;
+        BESIndent::Indent();
+        Define_citer di = _def_list.begin();
+        Define_citer de = _def_list.end();
+        for (; di != de; di++) {
+            (*di).second->dump(strm);
+        }
+        BESIndent::UnIndent();
     }
-    else
-    {
-	strm << BESIndent::LMarg << "definitions: none" << endl ;
+    else {
+        strm << BESIndent::LMarg << "definitions: none" << endl;
     }
-    BESIndent::UnIndent() ;
+    BESIndent::UnIndent();
 }
 

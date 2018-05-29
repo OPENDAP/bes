@@ -45,8 +45,8 @@
 DapFunctionsRequestHandler::DapFunctionsRequestHandler(const string &name) :
     BESRequestHandler(name)
 {
-    add_handler( HELP_RESPONSE, DapFunctionsRequestHandler::build_help);
-    add_handler( VERS_RESPONSE, DapFunctionsRequestHandler::build_version);
+    add_method( HELP_RESPONSE, DapFunctionsRequestHandler::build_help);
+    add_method( VERS_RESPONSE, DapFunctionsRequestHandler::build_version);
 }
 
 /** @brief Provides information for the DAP functions help request
