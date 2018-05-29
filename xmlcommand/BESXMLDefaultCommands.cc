@@ -51,6 +51,8 @@
 #include "BESXMLDeleteDefinitionsCommand.h"
 
 #include "ShowPathInfoCommand.h"
+#include "ShowBesKeyCommand.h"
+#include "ShowBesKeyResponseHandler.h"
 
 #include "SetContextsNames.h"
 #include "XMLSetContextsCommand.h"
@@ -112,6 +114,10 @@ int BESXMLDefaultCommands::initialize(int, char**)
     BESDEBUG( "besxml", "    adding " << SHOW_PATH_INFO_RESPONSE_STR << " command" << endl ) ;
     BESXMLCommand::add_command( SHOW_PATH_INFO_RESPONSE_STR, ShowPathInfoCommand::CommandBuilder ) ;
 
+    BESXMLCommand::add_command( SHOW_BES_KEY_RESPONSE_STR, ShowBesKeyCommand::CommandBuilder ) ;
+
+    BESDEBUG("besxml", "    adding " << SHOW_BES_KEY_RESPONSE << " response handler" << endl ) ;
+    BESResponseHandlerList::TheList()->add_handler( SHOW_BES_KEY_RESPONSE, ShowBesKeyResponseHandler::ShowBesKeyResponseBuilder ) ;
 
     BESDEBUG("besxml", "Done Initializing default commands:" << endl);
 

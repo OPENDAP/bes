@@ -104,54 +104,25 @@ Attributes {
         String history "\001PATHNLC May 23 22:40:54 2000 PATHNLC t,3,269.16,0.125,0.,0.01,271.16,308.16,,,,1,,,2,,,3,,,,,,4,,,,,,,2.,,35.,0.1,5,,,,,,,2.,,35.,0.15,55.,80.,0.005,20,,,-2,6.,t,,,,,,,,,,16,,3.5 allb=0 nlsst=1 in=/pathfdr5//97182070958.N14@INGEST@ in1=/pathfdr10/mask/oi.9727.mean out=/pathfdr4/nlc/f97182070958.FMG@0\012\004PATHNLC  NLSST Temp calculation date: April 10, 1996\012\001OISST Jan 12 17:53:43 1998 OISST  /usr3/gacsst/maketc/oi/dinp/oi.comp.bias.1997,/usr3/gacsst/maketc/oi/dout/oi.97,-3.,0.15,oi.dates.97,0\012\004OISST 26 97 06 22 97 06 28  7        472\012\001STATS Jan 12 18:27:34 1998 STATS minpix=1 maxpix=255 in=/usr3/gacsst/maketc/oi/dout//oi.9726 \011  audit=t, callim=f, cal=f, cloud=f \011  outm=/usr3/gacsst/etc/oi/oi.9727.mean\012\001OISST Jan 12 17:53:43 1998 OISST  /usr3/gacsst/maketc/oi/dinp/oi.comp.bias.1997,/usr3/gacsst/maketc/oi/dout/oi.97,-3.,0.15,oi.dates.97,0\012\004OISST 27 97 06 29 97 07 05  7        472\012\002STATS /usr3/gacsst/maketc/oi/dout//oi.9727\012\001OISST Jan 12 17:53:43 1998 OISST  /usr3/gacsst/maketc/oi/dinp/oi.comp.bias.1997,/usr3/gacsst/maketc/oi/dout/oi.97,-3.,0.15,oi.dates.97,0\012\004OISST 27 97 06 29 97 07 05  7        472\012\002STATS /usr3/gacsst/maketc/oi/dout//oi.9727\012\001OISST Jan 12 17:53:43 1998 OISST  /usr3/gacsst/maketc/oi/dinp/oi.comp.bias.1997,/usr3/gacsst/maketc/oi/dout/oi.97,-3.,0.15,oi.dates.97,0\012\004OISST 28 97 07 06 97 07 12  7        472\012\002STATS /usr3/gacsst/maketc/oi/dout//oi.9728\012\002PATHNLC /pathfdr10/mask/oi.9727.mean\012\004PATHNLC  45d coeffs used (1) =    0.759   0.947   0.110   1.460   0.000\012\004PATHNLC  45d coeffs used (2) =    1.320   0.952   0.071   0.882   0.000\012\004PATHNLC  45d coeffs used (3) =    0.000   0.000   0.000   0.000   0.000\012\004PATHNLC  GETOZONE I     0.0900    0.0000\012\001REMAP Jun  4 07:59:42 2000 REMAP in=/coral/miami/remaps/sst_8r/file_uZ.FMG out=/coral/miami/remaps/sst_8r/f97182070958.nwa16\012\004REMAP Output image pixel, line size =    6144,    6144\012\004REMAP Grid spacing (X,Y) = (        6.00,        6.00), Projection Code=     1\012\004REMAP center lon,lat,dlon,dlat =       -70.00       38.00        0.01        0.01\012\001merge_sb Apr 16 16:05:09 2004 merge_sb in=(file=/NOPP/carlw/atlantic/remaps/nwa16/f97182070958.nwa16, filecheck=/RAID2/sbaker/atlantic/bslines97/f97182070958.nwa16) val=0 valcheck=0 tag=0 out=(file1=/RAID2/sbaker/nwa1024d/NDC/dsp_data/f97182070958.tmp_m2)\012\001merge_sb Apr 16 16:05:18 2004 merge_sb in=(file=/RAID2/sbaker/nwa1024d/NDC/dsp_data/f97182070958.tmp_m2, filecheck=/RAID/sbaker/DECLOUD/landmask16.img) val=1 valcheck=2 tag=0 out=(file1=/RAID2/sbaker/nwa6144d/NDC/dsp_data/f97182070958.nwa16)\012\001CONVRT Apr 16 16:05:21 2004 CONVRT 1024,1024,0,0,6,6,0,0,f,f,t,16,,SUB,1 in=/RAID2/sbaker/nwa6144d/NDC/dsp_data/f97182070958.nwa16   out=/RAID2/sbaker/nwa1024d/NDC/dsp_data/f97182070958.nwa16\012\012@\000\000\000";
     }
     dsp_band_1 {
-        Byte dsp_PixelType 1;
-        Byte dsp_PixelSize 2;
-        UInt16 dsp_Flag 0;
-        UInt16 dsp_nBits 16;
-        Int32 dsp_LineSize 0;
-        String dsp_cal_name "Temperature";
-        String units "Temp";
-        UInt16 dsp_cal_eqnNumber 2;
-        UInt16 dsp_cal_CoeffsLength 8;
-        Float32 dsp_cal_coeffs 0.125, -4;
-        Float32 scale_factor 0.125;
-        Float32 add_off -4;
-        dsp_band_1 {
-            Byte dsp_PixelType 1;
-            Byte dsp_PixelSize 2;
-            UInt16 dsp_Flag 0;
-            UInt16 dsp_nBits 16;
-            Int32 dsp_LineSize 0;
-            String dsp_cal_name "Temperature";
-            String units "Temp";
-            UInt16 dsp_cal_eqnNumber 2;
-            UInt16 dsp_cal_CoeffsLength 8;
-            Float32 dsp_cal_coeffs 0.125, -4;
-            Float32 scale_factor 0.125;
-            Float32 add_off -4;
-            dim_0 {
-                String name "lat";
-                String long_name "latitude";
-            }
-            dim_1 {
-                String name "lon";
-                String long_name "longitude";
-            }
+        Byte dsp_PixelType 1, 1;
+        Byte dsp_PixelSize 2, 2;
+        UInt16 dsp_Flag 0, 0;
+        UInt16 dsp_nBits 16, 16;
+        Int32 dsp_LineSize 0, 0;
+        String dsp_cal_name "Temperature", "Temperature";
+        String units "Temp", "Temp";
+        UInt16 dsp_cal_eqnNumber 2, 2;
+        UInt16 dsp_cal_CoeffsLength 8, 8;
+        Float32 dsp_cal_coeffs 0.125, -4, 0.125, -4;
+        Float32 scale_factor 0.125, 0.125;
+        Float32 add_off -4, -4;
+        dim_0 {
+            String name "lat";
+            String long_name "latitude";
         }
-        filename {
-            String units "Filename of the datafile";
-        }
-        lat {
-            dim_0 {
-                String name "lat";
-                String long_name "latitude";
-            }
-        }
-        lon {
-            dim_1 {
-                String name "lon";
-                String long_name "longitude";
-            }
+        dim_1 {
+            String name "lon";
+            String long_name "longitude";
         }
     }
     filename {
