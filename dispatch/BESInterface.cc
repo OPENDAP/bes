@@ -54,8 +54,6 @@
 #include "BESReporterList.h"
 #include "BESContextManager.h"
 
-#include "BESExceptionManager.h"
-
 #include "BESDapError.h"
 
 #include "BESTransmitterNames.h"
@@ -382,7 +380,12 @@ int BESInterface::execute_request(const string &from)
     }
     catch (BESError & ex) {
         timeout_jump_valid = false;
+#if 0
         status = BESDapError::TheDapHandler()->handleBESError(ex, *d_dhi_ptr);
+#else
+        	status = BESDapError::handleException(ex, *d_dhi_ptr);
+#endif
+
     }
     catch (bad_alloc &e) {
         timeout_jump_valid = false;
