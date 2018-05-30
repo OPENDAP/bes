@@ -61,23 +61,20 @@ using std::string;
  * storage type, the 'real name' will be transformed to the full pathname
  * of the file on disk for the current BES. It's useful to have access to
  * the original relative pathname provided by the client/user so I've
- * added a field to hold that information. jhrg 5/22/18
+ * added a field (d_relative_name) to hold that information. jhrg 5/22/18
  *
  * @see BESContainerStorage
  */
 class BESContainer: public BESObj {
 private:
-    string d_symbolic_name;  ///< The name of the container
-    string d_real_name;      ///< The full name of the thing (filename, database table name, ...)
-    string d_relative_name; ///< The name relative to the Data Root dir
+    string d_symbolic_name;     ///< The name of the container
+    string d_real_name;         ///< The full name of the thing (filename, database table name, ...)
+    string d_relative_name;     ///< The name relative to the Data Root dir
     string d_container_type;
     string d_constraint;
     string d_dap4_constraint;
     string d_dap4_function;
-#if 1
-    string _attributes;     ///< Not used. jhrg 5/22/18
-#endif
-
+    string d_attributes;     ///< See DefinitionStorageList, XMLDefineCommand
 
 protected:
     BESContainer()
@@ -162,16 +159,14 @@ public:
         d_container_type = type;
     }
 
-#if 1
     /** @brief set desired attributes for this container
      *
      * @param attrs attributes desired to access for this container
      */
     void set_attributes(const string &attrs)
     {
-        _attributes = attrs;
+        d_attributes = attrs;
     }
-#endif
 
     /** @brief retrieve the real name for this container, such as a
      * file name.
@@ -235,17 +230,15 @@ public:
         return d_container_type;
     }
 
-#if 1
+
     /** @brief retrieve the attributes desired from this container
      *
      * @return attributes desired from this container
      */
     string get_attributes() const
     {
-        return _attributes;
+        return d_attributes;
     }
-#endif
-
 
     /** @brief returns the true name of this container
      *

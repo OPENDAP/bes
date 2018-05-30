@@ -111,10 +111,10 @@ bool BESDefinitionStorageVolatile::del_definitions()
     return true;
 }
 
-/** @brief show the defintions stored in this store
+/** @brief show the definitions stored in this store
  *
  * Add information to the passed information object about each of the
- * defintions stored within this defintion store. The information
+ * definitions stored within this definition store. The information
  * added to the passed information objects includes the name of this
  * persistent store on the first line followed by the information for
  * each definition on the following lines, one per line.
@@ -155,12 +155,10 @@ void BESDefinitionStorageVolatile::show_definitions(BESInfo &info)
                 cprops["constraint"] = con;
             }
 
-#if 1
             string attrs = (*ci)->get_attributes();
             if (!attrs.empty()) {
                 cprops["attributes"] = attrs;
             }
-#endif
 
             info.add_tag("container", real, &cprops);
         }
