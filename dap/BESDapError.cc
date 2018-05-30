@@ -177,14 +177,10 @@ int BESDapError::handleBESError(BESError &e, BESDataHandlerInterface &dhi)
 		ptr_bes_ehm p = *i;
 		int handled = p(e, dhi);
 		if (handled) {
-			// Write a message in the log file about this error...
-			log_error(e);
-
 			return handled;
 		}
 	}
 
-#if 0
 	dhi.error_info = BESInfoList::TheList()->build_info();
 	string action_name = dhi.action_name;
 	if (action_name.empty()) action_name = "BES";
@@ -210,7 +206,6 @@ int BESDapError::handleBESError(BESError &e, BESDataHandlerInterface &dhi)
 	log_error(e);
 
 	return e.get_error_type();
-#endif
 }
 
 
@@ -219,7 +214,6 @@ int BESDapError::handleBESError(BESError &e, BESDataHandlerInterface &dhi)
  * If the error context from the BESContextManager is set to dap2 then
  * handle all exceptions by returning transmitting them as dap2 error
  * messages.
- *
  *
  * @param e exception to be handled
  * @param dhi structure that holds request and response information
@@ -232,7 +226,6 @@ int BESDapError::handleException(BESError &e, BESDataHandlerInterface &dhi)
 	bool found = false;
 	// I changed 'dap_format' to 'errors' in the following line. jhrg 10/6/08
 	string context = BESContextManager::TheManager()->get_context("errors", found);
-
 	if (context == "dap2" | context == "dap") {
 		ErrorCode ec = unknown_error;
 		BESDapError *de = dynamic_cast<BESDapError*>(&e);

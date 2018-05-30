@@ -17,7 +17,7 @@ endif
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-SUBDIRS = . test
+#SUBDIRS = . test
 
 bin_PROGRAMS = beslistener besdaemon
 dist_bin_SCRIPTS = besctl hyraxctl
