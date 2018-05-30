@@ -22,8 +22,6 @@
 
 #include "config.h"
 
-#include <sstream>
-
 #include <DMR.h>
 
 #include "BESDap4ResponseHandler.h"
@@ -51,29 +49,19 @@ BESDap4ResponseHandler::~BESDap4ResponseHandler()
 void BESDap4ResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
 	dhi.action_name = DAP4DATA_RESPONSE_STR;
+
+    bool found;
+    // This throws on error; hence before the 'new DMR()'
+    int response_size_limit = BESContextManager::TheManager()->get_context_int("max_response_size", found);
+
 	DMR *dmr = new DMR();
 
-	// Here we might set the dap and dmr version if they should be different from
-	// 4.0 and 1.0. jhrg 11/6/13
-
-	// Also, the DataResponseHandler does stuff with containers and the constraint.
-	// ...might look into that. jhrg 11/7/13
-    bool found;
-    string response_size_limit = BESContextManager::TheManager()->get_context("max_response_size", found);
-	if (found && !response_size_limit.empty()) {
-	    std::istringstream iss(response_size_limit);
-		long long rsl = -1;
-		iss >> rsl;
-		if (rsl == -1)
-			throw BESInternalError("The max_response_size context value (" + response_size_limit + ") not read",
-					__FILE__, __LINE__);
-		dmr->set_response_limit(rsl); // The default for this is zero
-	}
+	if (found)
+	    dmr->set_response_limit(response_size_limit);
 
     string xml_base = BESContextManager::TheManager()->get_context("xml:base", found);
-	if (found && !xml_base.empty()) {
+	if (found && !xml_base.empty())
 		dmr->set_request_xml_base(xml_base);
-	}
 
 	d_response_object = new BESDMRResponse(dmr);
 
