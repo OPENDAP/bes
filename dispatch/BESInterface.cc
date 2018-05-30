@@ -54,9 +54,9 @@
 #include "BESReporterList.h"
 #include "BESContextManager.h"
 
-#include "BESExceptionManager.h"
-
 #include "BESDapError.h"
+#include "BESDapErrorInfo.h"
+#include "BESInfoList.h"
 
 #include "BESTransmitterNames.h"
 #include "BESDataNames.h"
@@ -135,6 +135,50 @@ static void register_signal_handler()
     act.sa_handler = catch_sig_alarm;
     if (sigaction(SIGALRM, &act, 0))
         throw BESInternalFatalError("Could not register a handler to catch alarm/timeout.", __FILE__, __LINE__);
+}
+
+void log_error(BESError &e)
+{
+    string error_name = "";
+    // TODO This should be configurable; I'm changing the values below to always log all errors.
+    // I'm also confused about the actual intention. jhrg 11/14/17
+    bool only_log_to_verbose = false;
+    switch (e.get_error_type()) {
+    case BES_INTERNAL_FATAL_ERROR:
+        error_name = "BES Internal Fatal Error";
+        break;
+
+    case BES_INTERNAL_ERROR:
+        error_name = "BES Internal Error";
+        break;
+
+    case BES_SYNTAX_USER_ERROR:
+        error_name = "BES User Syntax Error";
+        only_log_to_verbose = false; // TODO Was 'true.' jhrg 11/14/17
+        break;
+
+    case BES_FORBIDDEN_ERROR:
+        error_name = "BES Forbidden Error";
+        break;
+
+    case BES_NOT_FOUND_ERROR:
+        error_name = "BES Not Found Error";
+        only_log_to_verbose = false; // TODO was 'true.' jhrg 11/14/17
+        break;
+
+    default:
+        error_name = "Unrecognized BES Error";
+        break;
+    }
+
+    if (only_log_to_verbose) {
+            VERBOSE("ERROR: " << error_name << ", type: " << e.get_error_type() << ", file: " << e.get_file() << ":"
+                    << e.get_line()  << ", message: " << e.get_message() << endl);
+
+    }
+	else {
+		LOG("ERROR: " << error_name << ": " << e.get_message() << endl);
+	}
 }
 
 #if USE_SIGWAIT
@@ -245,6 +289,46 @@ BESInterface::BESInterface(ostream *output_stream) :
 extern BESStopWatch *bes_timing::elapsedTimeToReadStart;
 extern BESStopWatch *bes_timing::elapsedTimeToTransmitStart;
 #endif
+
+
+int BESInterface::handleException(BESError &e, BESDataHandlerInterface &dhi)
+{
+	// If we are handling errors in a dap2 context, then create a
+	// DapErrorInfo object to transmit/print the error as a dap2
+	// response.
+	bool found = false;
+	// I changed 'dap_format' to 'errors' in the following line. jhrg 10/6/08
+	string context = BESContextManager::TheManager()->get_context("errors", found);
+	if (context == "dap2" | context == "dap") {
+		libdap::ErrorCode ec = unknown_error;
+		BESDapError *de = dynamic_cast<BESDapError*>(&e);
+		if (de) {
+			ec = de->get_error_code();
+		}
+		e.set_error_type(BESDapError::convert_error_code(ec, e.get_error_type()));
+		dhi.error_info = new BESDapErrorInfo(ec, e.get_message());
+
+
+		return e.get_error_type();
+	}
+	else {
+		// If we are not in a dap2 context and the exception is a dap
+		// handler exception, then convert the error message to include the
+		// error code. If it is or is not a dap exception, we simply return
+		// that the exception was not handled.
+		BESError *e_p = &e;
+		BESDapError *de = dynamic_cast<BESDapError*>(e_p);
+		if (de) {
+			ostringstream s;
+			s << "libdap exception building response: error_code = " << de->get_error_code() << ": "
+					<< de->get_message();
+			e.set_message(s.str());
+			e.set_error_type(BESDapError::convert_error_code(de->get_error_code(), e.get_error_type()));
+		}
+	}
+	return 0;
+}
+
 
 /** @brief The entry point for command execution; called by BESServerHandler::execute()
 
@@ -382,22 +466,53 @@ int BESInterface::execute_request(const string &from)
     }
     catch (BESError & ex) {
         timeout_jump_valid = false;
+#if 0
         status = BESDapError::TheDapHandler()->handleBESError(ex, *d_dhi_ptr);
+
+        	status = BESDapError::handleException(ex, *d_dhi_ptr);
+#endif
+
+        	d_dhi_ptr->error_info = BESInfoList::TheList()->build_info();
+        	string action_name = d_dhi_ptr->action_name;
+        	if (action_name.empty()) action_name = "BES";
+        	d_dhi_ptr->error_info->begin_response(action_name, *d_dhi_ptr);
+
+        	string administrator = "";
+        	try {
+        		bool found = false;
+        		vector<string> vals;
+        		string key = "BES.ServerAdministrator";
+        		TheBESKeys::TheKeys()->get_value(key, administrator, found);
+        	}
+        	catch (...) {
+        		administrator = "support@opendap.org";
+        	}
+        	if (administrator.empty()) {
+        		administrator = "support@opendap.org";
+        	}
+        	d_dhi_ptr->error_info->add_exception(ex, administrator);
+        	d_dhi_ptr->error_info->end_response();
+
+        	// Write a message in the log file about this error...
+        log_error(ex);
+
+        	return ex.get_error_type();
+
     }
     catch (bad_alloc &e) {
         timeout_jump_valid = false;
         BESInternalFatalError ex(string("BES out of memory: ") + e.what(), __FILE__, __LINE__);
-        status = BESDapError::handleException(ex, *d_dhi_ptr);
+        status = handleException(ex, *d_dhi_ptr);
     }
     catch (exception &e) {
         timeout_jump_valid = false;
         BESInternalFatalError ex(string("C++ Exception: ") + e.what(), __FILE__, __LINE__);
-        status = BESDapError::handleException(ex, *d_dhi_ptr);
+        status = handleException(ex, *d_dhi_ptr);
     }
     catch (...) {
         timeout_jump_valid = false;
         BESInternalError ex("An undefined exception has been thrown", __FILE__, __LINE__);
-        status = BESDapError::handleException(ex, *d_dhi_ptr);
+        status = handleException(ex, *d_dhi_ptr);
     }
 
 #if 0
