@@ -82,8 +82,8 @@ void BESXMLInfo::cleanup()
 
 /** @brief begin the informational response
  *
- * This will add the response name as well as the &lt;response&gt; tag tot
- * he informational response object
+ * This will add the response name as well as the <response> tag to
+ * the informational response object
  *
  * @param response_name name of the response this information represents
  * @param dhi information about the request and response

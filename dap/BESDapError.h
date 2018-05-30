@@ -45,7 +45,11 @@ using std::list;
 
 #include "Error.h"
 
+#if 0
 typedef int (*ptr_bes_ehm)(BESError &e, BESDataHandlerInterface &dhi);
+#endif
+
+
 /**
  * @brief error object created from libdap error objects and can handle
  * those errors
@@ -58,14 +62,20 @@ typedef int (*ptr_bes_ehm)(BESError &e, BESDataHandlerInterface &dhi);
  */
 class BESDapError: public BESError {
 private:
+#if 0
     typedef list<ptr_bes_ehm>::const_iterator ehm_citer;
     typedef list<ptr_bes_ehm>::iterator ehm_iter;
 
     list<ptr_bes_ehm> _ehm_list;
+#endif
+
 
     libdap::ErrorCode d_error_code;
 
+#if 0
     static BESDapError *_instance;
+#endif
+
 
 protected:
     BESDapError() : d_error_code(unknown_error)
@@ -74,33 +84,39 @@ protected:
 
 
 public:
-    BESDapError(const string &s, bool fatal, libdap::ErrorCode ec, const string &file, int line) :
-            BESError(s, 0, file, line), d_error_code(ec)
-    {
-        if (fatal)
-            set_error_type(BES_INTERNAL_FATAL_ERROR);
-        else
-            set_error_type(BES_INTERNAL_ERROR);
-    }
+    BESDapError(const string &s, bool fatal, libdap::ErrorCode ec, const string &file, int line);
 
     virtual ~BESDapError()
     {
     }
 
+    /// @deprecated
     virtual int get_error_code() const
     {
         return d_error_code;
     }
 
+    virtual int get_error_type()
+    {
+        return (int)d_error_code;
+    }
+
     virtual void dump(ostream &strm) const;
 
-    static int convert_error_code(int error_code, int current_error_type);
+    int convert_error_code(int error_code, int current_error_type);
+    int convert_error_code(int error_code, bool fatal);
+
+#if 0
     static int handleException(BESError &e, BESDataHandlerInterface &dhi);
     virtual int handleBESError(BESError &e, BESDataHandlerInterface &dhi);
 
     virtual void add_ehm_callback(ptr_bes_ehm ehm);
+#endif
 
+#if 0
     static BESDapError *TheDapHandler();
+#endif
+
 };
 
 #endif // BESDapError_h_

@@ -54,15 +54,20 @@
 #include "BESReporterList.h"
 #include "BESContextManager.h"
 
+#if 0
 #include "BESDapError.h"
 #include "BESDapErrorInfo.h"
 #include "BESInfoList.h"
+#endif
 
 #include "BESTransmitterNames.h"
 #include "BESDataNames.h"
 #include "BESTransmitterNames.h"
 #include "BESReturnManager.h"
 #include "BESSyntaxUserError.h"
+
+#include "BESInfoList.h"
+#include "BESXMLInfo.h"
 
 #include "BESDebug.h"
 #include "BESStopWatch.h"
@@ -290,44 +295,86 @@ extern BESStopWatch *bes_timing::elapsedTimeToReadStart;
 extern BESStopWatch *bes_timing::elapsedTimeToTransmitStart;
 #endif
 
-
+/**
+ * @brief Make a BESXMLInfo object to hold the error information
+ *
+ * Get the admin email address and form an error response to pass back
+ * to the OLFS. The response is an XML document.
+ *
+ * @param e The BESError object
+ * @param dhi The BESDataHandlerIterface object
+ * @return
+ */
 int BESInterface::handleException(BESError &e, BESDataHandlerInterface &dhi)
 {
-	// If we are handling errors in a dap2 context, then create a
-	// DapErrorInfo object to transmit/print the error as a dap2
-	// response.
-	bool found = false;
-	// I changed 'dap_format' to 'errors' in the following line. jhrg 10/6/08
-	string context = BESContextManager::TheManager()->get_context("errors", found);
-	if (context == "dap2" | context == "dap") {
-		libdap::ErrorCode ec = unknown_error;
-		BESDapError *de = dynamic_cast<BESDapError*>(&e);
-		if (de) {
-			ec = de->get_error_code();
-		}
-		e.set_error_type(BESDapError::convert_error_code(ec, e.get_error_type()));
-		dhi.error_info = new BESDapErrorInfo(ec, e.get_message());
+#if 0
+    dhi.error_info = new BESXMLInfo();
+#else
+    dhi.error_info = BESInfoList::TheList()->build_info();
+#endif
 
+    string administrator = "";
+    try {
+        bool found = false;
+        vector<string> vals;
+        string key = "BES.ServerAdministrator";
+        TheBESKeys::TheKeys()->get_value(key, administrator, found);
+    }
+    catch (...) {
+        administrator = "support@opendap.org";
+    }
+    if (administrator.empty()) {
+        administrator = "support@opendap.org";
+    }
 
-		return e.get_error_type();
-	}
-	else {
-		// If we are not in a dap2 context and the exception is a dap
-		// handler exception, then convert the error message to include the
-		// error code. If it is or is not a dap exception, we simply return
-		// that the exception was not handled.
-		BESError *e_p = &e;
-		BESDapError *de = dynamic_cast<BESDapError*>(e_p);
-		if (de) {
-			ostringstream s;
-			s << "libdap exception building response: error_code = " << de->get_error_code() << ": "
-					<< de->get_message();
-			e.set_message(s.str());
-			e.set_error_type(BESDapError::convert_error_code(de->get_error_code(), e.get_error_type()));
-		}
-	}
-	return 0;
+    dhi.error_info->begin_response(dhi.action_name.empty() ? "BES" : dhi.action_name, dhi);
+
+    dhi.error_info->add_exception(e, administrator);
+
+    dhi.error_info->end_response();
+
+    return e.get_error_type();
 }
+
+
+#if 0
+int BESInterface::handleException(BESError &e, BESDataHandlerInterface &dhi)
+{
+    // If we are handling errors in a dap2 context, then create a
+    // DapErrorInfo object to transmit/print the error as a dap2
+    // response.
+    bool found = false;
+    // I changed 'dap_format' to 'errors' in the following line. jhrg 10/6/08
+    string context = BESContextManager::TheManager()->get_context("errors", found);
+    if (context == "dap2" || context == "dap") {
+        libdap::ErrorCode ec = unknown_error;
+        BESDapError *de = dynamic_cast<BESDapError*>(&e);
+        if (de) {
+            ec = de->get_error_code();
+        }
+        e.set_error_type(BESDapError::convert_error_code(ec, e.get_error_type()));
+        dhi.error_info = new BESDapErrorInfo(ec, e.get_message());
+
+        return e.get_error_type();
+    }
+    else {
+        // If we are not in a dap2 context and the exception is a dap
+        // handler exception, then convert the error message to include the
+        // error code. If it is or is not a dap exception, we simply return
+        // that the exception was not handled.
+        BESError *e_p = &e;
+        BESDapError *de = dynamic_cast<BESDapError*>(e_p);
+        if (de) {
+            ostringstream s;
+            s << "libdap exception building response: error_code = " << de->get_error_code() << ": "
+            << de->get_message();
+            e.set_message(s.str());
+            e.set_error_type(BESDapError::convert_error_code(de->get_error_code(), e.get_error_type()));
+        }
+    }
+    return 0;
+}
+#endif
 
 
 /** @brief The entry point for command execution; called by BESServerHandler::execute()
@@ -464,39 +511,17 @@ int BESInterface::execute_request(const string &from)
 
         d_dhi_ptr->executed = true;
     }
-    catch (BESError & ex) {
+    catch (BESError &e) {
         timeout_jump_valid = false;
+        status = handleException(e, *d_dhi_ptr);
+
 #if 0
         status = BESDapError::TheDapHandler()->handleBESError(ex, *d_dhi_ptr);
 
-        	status = BESDapError::handleException(ex, *d_dhi_ptr);
+        status = BESDapError::handleException(ex, *d_dhi_ptr);
+
+        d_dhi_ptr->error_info = BESInfoList::TheList()->build_info();
 #endif
-
-        	d_dhi_ptr->error_info = BESInfoList::TheList()->build_info();
-        	string action_name = d_dhi_ptr->action_name;
-        	if (action_name.empty()) action_name = "BES";
-        	d_dhi_ptr->error_info->begin_response(action_name, *d_dhi_ptr);
-
-        	string administrator = "";
-        	try {
-        		bool found = false;
-        		vector<string> vals;
-        		string key = "BES.ServerAdministrator";
-        		TheBESKeys::TheKeys()->get_value(key, administrator, found);
-        	}
-        	catch (...) {
-        		administrator = "support@opendap.org";
-        	}
-        	if (administrator.empty()) {
-        		administrator = "support@opendap.org";
-        	}
-        	d_dhi_ptr->error_info->add_exception(ex, administrator);
-        	d_dhi_ptr->error_info->end_response();
-
-        	// Write a message in the log file about this error...
-        log_error(ex);
-
-        	return ex.get_error_type();
 
     }
     catch (bad_alloc &e) {

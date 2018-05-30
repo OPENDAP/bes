@@ -146,8 +146,6 @@ protected:
 
     static int handleException(BESError &e, BESDataHandlerInterface &dhi);
 
-
-
 public:
     // This is the point where BESServerHandler::execute(Connection *c) passes control
     // to the 'run the command' part of the server. jhrg 11/7/17
