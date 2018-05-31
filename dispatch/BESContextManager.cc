@@ -104,6 +104,8 @@ int BESContextManager::get_context_int(const string &name, bool &found)
         throw BESInternalError(string("Error reading an integer value for the context '") + name + "': " + strerror(errno),
             __FILE__, __LINE__);
     }
+
+    return 0;
 }
 
 /** @brief Adds all context and their values to the given informational
