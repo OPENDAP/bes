@@ -97,6 +97,14 @@ public:
     }
 
     virtual bool add_method(const string &name, p_request_handler_method method);
+
+    /// @brief Backward compatibility with the older version of this class.
+    /// @deprecated
+    virtual bool add_handler(const string &name, p_request_handler_method method)
+    {
+        add_method(name, method);
+    }
+
     virtual bool remove_method(const string &name);
     virtual p_request_handler_method find_method(const string &name);
 
