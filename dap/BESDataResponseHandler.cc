@@ -43,7 +43,9 @@
 #include "BESContextManager.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"
+#include "GlobalMetadataStore.h"
 
+using namespace bes;
 using namespace libdap;
 using namespace std;
 
@@ -76,6 +78,23 @@ void BESDataResponseHandler::execute(BESDataHandlerInterface &dhi)
 
     bool rsl_found;
     int response_size_limit = BESContextManager::TheManager()->get_context_int("max_response_size", rsl_found);
+
+    GlobalMetadataStore *mds = GlobalMetadataStore::get_instance(); // mds may be NULL
+
+    GlobalMetadataStore::MDSReadLock lock;
+    dhi.first_container();
+    if (mds) lock = mds->is_dmrpp_available(dhi.container->get_relative_name());
+
+    // If we were able to lock the DMR++ it must exist; use it.
+    if (mds && lock()) {
+        // Redirect the request to the DMR++ handler
+        // FIXME How do we get this value in a repeatable way? From bes.conf, of course jhrg 5/31/18
+        dhi.container->set_container_type("dmrpp");
+
+        // Add information to the container so the dmrpp handler works
+        // This tells DMR++ handler to look for this in the MDS
+        dhi.container->set_attributes(MDS_HAS_DMRPP);
+    }
 
     // NOTE: It is the responsibility of the specific request handler to set
     // the BaseTypeFactory. It is set to NULL here

@@ -30,6 +30,9 @@
 #include "BESDapNames.h"
 #include "BESDapTransmit.h"
 #include "BESContextManager.h"
+#include "GlobalMetadataStore.h"
+
+using namespace bes;
 
 BESDap4ResponseHandler::BESDap4ResponseHandler(const string &name) : BESResponseHandler(name)
 {
@@ -53,6 +56,23 @@ void BESDap4ResponseHandler::execute(BESDataHandlerInterface &dhi)
     bool found;
     // This throws on error; hence before the 'new DMR()'
     int response_size_limit = BESContextManager::TheManager()->get_context_int("max_response_size", found);
+
+    GlobalMetadataStore *mds = GlobalMetadataStore::get_instance(); // mds may be NULL
+
+    GlobalMetadataStore::MDSReadLock lock;
+    dhi.first_container();
+    if (mds) lock = mds->is_dmrpp_available(dhi.container->get_relative_name());
+
+    // If we were able to lock the DMR++ it must exist; use it.
+    if (mds && lock()) {
+        // Redirect the request to the DMR++ handler
+        // FIXME How do we get this value in a repeatable way? From bes.conf, of course jhrg 5/31/18
+        dhi.container->set_container_type("dmrpp");
+
+        // Add information to the container so the dmrpp handler works
+        // This tells DMR++ handler to look for this in the MDS
+        dhi.container->set_attributes(MDS_HAS_DMRPP);
+    }
 
 	DMR *dmr = new DMR();
 
