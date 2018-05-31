@@ -349,14 +349,6 @@ void BESXMLDefineCommand::prep_request()
             c = BESContainerStorageList::TheList()->look_for((*i));
         }
 
-        // I don't understand this test. If 'c' is null, then the code below will
-        // fail. If 'c' is not null, then what does it matter that the
-        // BES.Container.Persistence is set to 'nice' - dereferencing 'c' is still
-        // not going to work. I'm changing the test to be 'if (c == 0)...'.
-        // jhrg 10/23/15
-        //
-        // if (!c && BESContainerStorageList::TheList()->isnice() == false) {
-
         if (c == 0)
             throw BESSyntaxUserError(string("Could not find the container ") + (*i), __FILE__, __LINE__);
 

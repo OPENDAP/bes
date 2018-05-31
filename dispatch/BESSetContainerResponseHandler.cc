@@ -118,7 +118,7 @@ void BESSetContainerResponseHandler::execute(BESDataHandlerInterface &dhi)
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void BESSetContainerResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
+void BESSetContainerResponseHandler::transmit(BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/)
 {
 #if 0
     if (d_response_object) {

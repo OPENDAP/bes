@@ -137,8 +137,8 @@ static void read_key_value(const string &key_name, int &key, const int default_v
 FONcRequestHandler::FONcRequestHandler( const string &name )
     : BESRequestHandler( name )
 {
-    add_handler( HELP_RESPONSE, FONcRequestHandler::build_help ) ;
-    add_handler( VERS_RESPONSE, FONcRequestHandler::build_version ) ;
+    add_method( HELP_RESPONSE, FONcRequestHandler::build_help ) ;
+    add_method( VERS_RESPONSE, FONcRequestHandler::build_version ) ;
 
     if (FONcRequestHandler::temp_dir.empty()) {
         read_key_value(FONC_TEMP_DIR_KEY, FONcRequestHandler::temp_dir, FONC_TEMP_DIR);

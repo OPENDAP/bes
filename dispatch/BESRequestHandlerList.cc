@@ -194,7 +194,7 @@ void BESRequestHandlerList::execute_all(BESDataHandlerInterface &dhi)
     BESRequestHandlerList::Handler_citer ie = get_last_handler();
     for (; i != ie; i++) {
         BESRequestHandler *rh = (*i).second;
-        p_request_handler_method p = rh->find_handler(dhi.action);
+        p_request_handler_method p = rh->find_method(dhi.action);
         if (p) {
             p(dhi);
         }
@@ -265,34 +265,13 @@ void BESRequestHandlerList::execute_current(BESDataHandlerInterface &dhi)
         //     add_handler(DAS_RESPONSE, CSVRequestHandler::csv_build_das);
         // in the following 'p' will point to CSVRequestHandler::csv_build_das if
         // dhi.action is the string "get.das" (the value of the symbol DAS_RESPONSE)
-        p_request_handler_method request_handler_method = rh->find_handler(dhi.action);
+        p_request_handler_method request_handler_method = rh->find_method(dhi.action);
         if (!request_handler_method) {
             throw BESInternalError(string("Request handler for '") + dhi.container->get_container_type()
                 + "' does not handle the response type '" + dhi.action + "'", __FILE__, __LINE__);
         }
 
         request_handler_method(dhi); // This is where the request handler method is called
-
-        // TODO these are never used
-#if 0
-        if (dhi.container) {
-            // This is (likely) for reporting. May not be used... jhrg 2/20/15
-            string c_list = dhi.data[REAL_NAME_LIST];
-            if (!c_list.empty()) c_list += ", ";
-            c_list += dhi.container->get_real_name();
-            dhi.data[REAL_NAME_LIST] = c_list;
-        }
-#endif
-#if 0
-        // if we can't find the function, see if there is a catch all
-        // function that handles or redirects the request.
-        //
-        // TODO NB: There are no instances of catch.all handlers.
-        // jhrg 2/20/15
-        if (!p) {
-            p = rh->find_handler( BES_REQUEST_HANDLER_CATCH_ALL);
-        }
-#endif
     }
 }
 

@@ -140,6 +140,7 @@ int BESDapError::handleException(BESError &e, BESDataHandlerInterface &dhi)
 			e.set_error_type(convert_error_code(de->get_error_code(), e.get_error_type()));
 		}
 	}
+
 	return 0;
 }
 

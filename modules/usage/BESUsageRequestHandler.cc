@@ -42,8 +42,8 @@
 BESUsageRequestHandler::BESUsageRequestHandler( const string &name )
     : BESRequestHandler( name )
 {
-    add_handler( HELP_RESPONSE, BESUsageRequestHandler::dap_build_help ) ;
-    add_handler( VERS_RESPONSE, BESUsageRequestHandler::dap_build_version ) ;
+    add_method( HELP_RESPONSE, BESUsageRequestHandler::dap_build_help ) ;
+    add_method( VERS_RESPONSE, BESUsageRequestHandler::dap_build_version ) ;
 }
 
 BESUsageRequestHandler::~BESUsageRequestHandler()

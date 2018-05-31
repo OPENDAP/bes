@@ -132,8 +132,7 @@ BESDelDefResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @see BESDataHandlerInterface
  */
 void
-BESDelDefResponseHandler::transmit( BESTransmitter *transmitter,
-                               BESDataHandlerInterface &dhi )
+BESDelDefResponseHandler::transmit( BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/ )
 {
 #if 0
 	if( d_response_object )
