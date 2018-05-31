@@ -156,8 +156,8 @@ fi
 # Ask the BES to get the DDS and DMR for that file - this triggers
 # loading the MDS with the DDS, DAS and DMR responses.
 
-dds_cmd="${local_bes_get_dap} ${v_sw} -D ${BES_CONF} -i ${pathname} -d dds"
-dmr_cmd="${local_bes_get_dap} ${v_sw} -D ${BES_CONF} -i ${pathname} -d dmr"
+dds_cmd="${local_bes_get_dap} ${v_sw} ${BES_CONF} -i ${pathname} -d dds"
+dmr_cmd="${local_bes_get_dap} ${v_sw} ${BES_CONF} -i ${pathname} -d dmr"
 
 dev_null="> /dev/null";
 if [ $verbose = 1 ]; then 
