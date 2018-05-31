@@ -19,7 +19,7 @@ show_usage() {
 
  Limitations: 
  * The pathanme to the hdf5 file must be relative from the
-   directory where this command was run; absolute paths won't work. 
+   directory where this command was run; absolute paths won''t work. 
  * The build_dmrpp command must be in the CWD. 
  * The bes conf template has to build by hand. jhrg 5/11/18
 EOF
@@ -40,11 +40,15 @@ while getopts "h?vVru:" opt; do
         ;;
     v)
         verbose="-v"
+        echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
+        echo "${0} - BEGIN (verbose)";
         ;;
     V)
         very_verbose="yes"
         verbose="-v"
-        ;;
+         echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
+        echo "${0} - BEGIN (very_verbose)";
+       ;;
     r)
         just_dmr="yes"
         ;;
