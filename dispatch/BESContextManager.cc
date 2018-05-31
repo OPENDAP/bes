@@ -105,7 +105,7 @@ int BESContextManager::get_context_int(const string &name, bool &found)
             __FILE__, __LINE__);
     }
 
-    return 0;
+    return val;
 }
 
 /** @brief Adds all context and their values to the given informational
