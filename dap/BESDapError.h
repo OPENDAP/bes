@@ -33,15 +33,11 @@
 #ifndef BESDapError_h_
 #define BESDapError_h_ 1
 
-#include <list>
-
-using std::list;
-
 #include "BESError.h"
-#include "BESDataHandlerInterface.h"
 
-#include "BESInfo.h"
-#include "BESObj.h"
+#if 0
+#include "BESDataHandlerInterface.h"
+#endif
 
 #include "Error.h"
 
@@ -62,20 +58,7 @@ typedef int (*ptr_bes_ehm)(BESError &e, BESDataHandlerInterface &dhi);
  */
 class BESDapError: public BESError {
 private:
-#if 0
-    typedef list<ptr_bes_ehm>::const_iterator ehm_citer;
-    typedef list<ptr_bes_ehm>::iterator ehm_iter;
-
-    list<ptr_bes_ehm> _ehm_list;
-#endif
-
-
     libdap::ErrorCode d_error_code;
-
-#if 0
-    static BESDapError *_instance;
-#endif
-
 
 protected:
     BESDapError() : d_error_code(unknown_error)
@@ -90,6 +73,7 @@ public:
     {
     }
 
+    //Deprecated because it's only available in this class.
     /// @deprecated
     virtual int get_error_code() const
     {
@@ -108,13 +92,6 @@ public:
 
 #if 0
     static int handleException(BESError &e, BESDataHandlerInterface &dhi);
-    virtual int handleBESError(BESError &e, BESDataHandlerInterface &dhi);
-
-    virtual void add_ehm_callback(ptr_bes_ehm ehm);
-#endif
-
-#if 0
-    static BESDapError *TheDapHandler();
 #endif
 
 };

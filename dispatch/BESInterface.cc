@@ -516,11 +516,15 @@ int BESInterface::execute_request(const string &from)
         status = handleException(e, *d_dhi_ptr);
 
 #if 0
+        /*We switched between one or the other. 		kln 05/31/18
+        Leaving both in just in case someone comes back to this.
+        The top one used a singleton to try and find a handler that could handle the exception before
+        	moving on to the handleException function.We tried to get it so that the singleton wasn't
+        	needed and all 4 catch blocks only called handleException.
+        */
         status = BESDapError::TheDapHandler()->handleBESError(ex, *d_dhi_ptr);
 
         status = BESDapError::handleException(ex, *d_dhi_ptr);
-
-        d_dhi_ptr->error_info = BESInfoList::TheList()->build_info();
 #endif
 
     }

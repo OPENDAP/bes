@@ -66,7 +66,6 @@ using std::endl;
 
 #include "BESDebug.h"
 #include "BESInternalFatalError.h"
-#include "BESExceptionManager.h"
 #include "BESDapError.h"
 
 #include "DapFunctionUtils.h"

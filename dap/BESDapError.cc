@@ -35,20 +35,14 @@
 
 using std::ostringstream;
 
-#include "BESLog.h"
-
 #include "BESDapError.h"
 #include "BESContextManager.h"
 #include "BESDapErrorInfo.h"
-#include "BESInfoList.h"
-#include "TheBESKeys.h"
-
-#define DEFAULT_ADMINISTRATOR "support@opendap.org"
 
 #if 0
-BESDapError *BESDapError::_instance = 0;
+#include "BESInfoList.h"
+#include "TheBESKeys.h"
 #endif
-
 
 BESDapError::BESDapError(const string &s, bool fatal, libdap::ErrorCode ec, const string &file, int line) :
         BESError(s, 0, file, line), d_error_code(ec)
@@ -129,6 +123,7 @@ int BESDapError::convert_error_code(int error_code, bool fatal)
     return convert_error_code(error_code, (fatal) ? BES_INTERNAL_FATAL_ERROR: BES_INTERNAL_ERROR);
 }
 
+#if 0
 void log_error(BESError &e)
 {
     string error_name = "";
@@ -172,6 +167,7 @@ void log_error(BESError &e)
 		LOG("ERROR: " << error_name << ": " << e.get_message() << endl);
 	}
 }
+#endif
 
 
 #if 0
@@ -260,29 +256,6 @@ int BESDapError::handleException(BESError &e, BESDataHandlerInterface &dhi)
         }
         e.set_error_type(convert_error_code(ec, e.get_error_type()));
         dhi.error_info = new BESDapErrorInfo(ec, e.get_message());
-#if 0
-//TODO Either remove this or find a way to keep it and remove the one from handleBESError() kln 05/25/18
-        dhi.error_info = BESInfoList::TheList()->build_info();
-        string action_name = dhi.action_name;
-        if (action_name.empty()) action_name = "BES";
-        dhi.error_info->begin_response(action_name, dhi);
-
-        string administrator = "";
-        try {
-            bool found = false;
-            vector<string> vals;
-            string key = "BES.ServerAdministrator";
-            TheBESKeys::TheKeys()->get_value(key, administrator, found);
-        }
-        catch (...) {
-            administrator = DEFAULT_ADMINISTRATOR;
-        }
-        if (administrator.empty()) {
-            administrator = DEFAULT_ADMINISTRATOR;
-        }
-        dhi.error_info->add_exception(e, administrator);
-        dhi.error_info->end_response();
-#endif
 
         return e.get_error_type();
     }
@@ -320,16 +293,3 @@ void BESDapError::dump(ostream &strm) const
 	BESError::dump(strm);
 	BESIndent::UnIndent();
 }
-
-#if 0
-BESDapError *
-BESDapError::TheDapHandler()
-{
-    if (_instance == 0) {
-        _instance = new BESDapError();
-    }
-    return _instance;
-}
-#endif
-
-
