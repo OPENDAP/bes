@@ -49,8 +49,8 @@ using namespace gateway;
 GatewayRequestHandler::GatewayRequestHandler(const string &name) :
     BESRequestHandler(name)
 {
-    add_handler(VERS_RESPONSE, GatewayRequestHandler::gateway_build_vers);
-    add_handler(HELP_RESPONSE, GatewayRequestHandler::gateway_build_help);
+    add_method(VERS_RESPONSE, GatewayRequestHandler::gateway_build_vers);
+    add_method(HELP_RESPONSE, GatewayRequestHandler::gateway_build_help);
 }
 
 GatewayRequestHandler::~GatewayRequestHandler()

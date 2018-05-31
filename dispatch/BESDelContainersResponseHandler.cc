@@ -126,8 +126,7 @@ BESDelContainersResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @see BESDataHandlerInterface
  */
 void
-BESDelContainersResponseHandler::transmit( BESTransmitter *transmitter,
-                               BESDataHandlerInterface &dhi )
+BESDelContainersResponseHandler::transmit( BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/ )
 {
 #if 0
     if( d_response_object )

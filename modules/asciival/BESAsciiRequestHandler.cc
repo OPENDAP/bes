@@ -40,8 +40,8 @@
 BESAsciiRequestHandler::BESAsciiRequestHandler(const string &name) :
         BESRequestHandler(name)
 {
-    add_handler(HELP_RESPONSE, BESAsciiRequestHandler::dap_build_help);
-    add_handler(VERS_RESPONSE, BESAsciiRequestHandler::dap_build_version);
+    add_method(HELP_RESPONSE, BESAsciiRequestHandler::dap_build_help);
+    add_method(VERS_RESPONSE, BESAsciiRequestHandler::dap_build_version);
 }
 
 BESAsciiRequestHandler::~BESAsciiRequestHandler()

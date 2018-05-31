@@ -30,6 +30,12 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
+#include <cstdlib>
+#include <cerrno>
+#include <cstring>
+
 #include "BESContextManager.h"
 #include "BESInfo.h"
 
@@ -75,6 +81,31 @@ string BESContextManager::get_context(const string &name, bool &found)
         found = true;
     }
     return ret;
+}
+
+/**
+ * @brief Get the value of the given context and return it as an integer
+ * @author jhrg 5/30/18
+ * @param name The context name
+ * @param found True if the context was found, false otherwise.
+ * @return The context value as an integer. Returns 0 and found == false
+ * if the context \arg name was not found. If the \arg name was found but
+ * the value is the empty string, return 0.
+ */
+int BESContextManager::get_context_int(const string &name, bool &found)
+{
+    string value = BESContextManager::TheManager()->get_context(name, found);
+    if (!found || value.empty()) return 0;
+
+    char *endptr;
+    errno = 0;
+    int val = strtol(value.c_str(), &endptr, /*int base*/10);
+    if (val == 0 && errno > 0) {
+        throw BESInternalError(string("Error reading an integer value for the context '") + name + "': " + strerror(errno),
+            __FILE__, __LINE__);
+    }
+
+    return val;
 }
 
 /** @brief Adds all context and their values to the given informational

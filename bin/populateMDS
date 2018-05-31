@@ -87,7 +87,7 @@ shift $((OPTIND-1))
 
 [ "$1" = "--" ] && shift
 
-# Find teh bes.conf file
+# Find the bes.conf file
 if [ -z "$BES_CONF" ]
 then 
     echo "BES_CONF is not set trying env variable 'prefix'...";  
@@ -154,7 +154,7 @@ then
 fi
 
 # Ask the BES to get the DDS and DMR for that file - this triggers
-# loadind the MDS with the DDS, DAS adn DMR responses.
+# loading the MDS with the DDS, DAS and DMR responses.
 
 dds_cmd="${local_bes_get_dap} ${v_sw} -D ${BES_CONF} -i ${pathname} -d dds"
 dmr_cmd="${local_bes_get_dap} ${v_sw} -D ${BES_CONF} -i ${pathname} -d dmr"

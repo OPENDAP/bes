@@ -82,15 +82,15 @@ string FFRequestHandler::d_RSS_format_files = "";
 FFRequestHandler::FFRequestHandler(const string &name) :
         BESRequestHandler(name)
 {
-    add_handler(DAS_RESPONSE, FFRequestHandler::ff_build_das);
-    add_handler(DDS_RESPONSE, FFRequestHandler::ff_build_dds);
-    add_handler(DATA_RESPONSE, FFRequestHandler::ff_build_data);
+    add_method(DAS_RESPONSE, FFRequestHandler::ff_build_das);
+    add_method(DDS_RESPONSE, FFRequestHandler::ff_build_dds);
+    add_method(DATA_RESPONSE, FFRequestHandler::ff_build_data);
 
-    add_handler(DMR_RESPONSE, FFRequestHandler::ff_build_dmr);
-    add_handler(DAP4DATA_RESPONSE, FFRequestHandler::ff_build_dmr);
+    add_method(DMR_RESPONSE, FFRequestHandler::ff_build_dmr);
+    add_method(DAP4DATA_RESPONSE, FFRequestHandler::ff_build_dmr);
 
-    add_handler(HELP_RESPONSE, FFRequestHandler::ff_build_help);
-    add_handler(VERS_RESPONSE, FFRequestHandler::ff_build_version);
+    add_method(HELP_RESPONSE, FFRequestHandler::ff_build_help);
+    add_method(VERS_RESPONSE, FFRequestHandler::ff_build_version);
 
     ff_register_functions();
 
