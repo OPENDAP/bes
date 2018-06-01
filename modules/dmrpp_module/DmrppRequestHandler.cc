@@ -281,14 +281,26 @@ bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi)
             bdds->set_constraint(dhi);
         }
         else {
-            // Not in cache, make one...
-            DMR *dmr = new DMR();
-            build_dmr_from_file(dhi.container, dmr);
+            // Not in the local binary cache, make one...
+            DMR *dmr = NULL;
+
+            // Check the Container to see if the handler should get the response from the MDS.
+            if (dhi.container->get_attributes().find(MDS_HAS_DMRPP) != string::npos) {
+                DmrppMetadataStore *mds = DmrppMetadataStore::get_instance();
+                if (!mds)
+                    throw BESInternalError("MDS configuration error: The DMR++ module could not find the MDS", __FILE__, __LINE__);
+
+                dmr = mds->get_dmrpp_object(dhi.container->get_relative_name());
+                if (!dmr)
+                    throw BESInternalError("DMR++ module error: Null DMR++ object read from the MDS", __FILE__, __LINE__);
+            }
+            else {
+                dmr = new DMR();
+                build_dmr_from_file(dhi.container, dmr);
+            }
 
             // delete the current one;
             delete dds;
-            dds = 0;
-
             // assign the new one.
             dds = dmr->getDDS();
 
@@ -298,8 +310,6 @@ bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi)
 
             // Cache it, if the cache is active.
             if (dds_cache) {
-                // add a copy
-                BESDEBUG(module, __func__ << "() - " << "DDS added to the cache for : " << accessed << endl);
                 dds_cache->add(new DDS(*dds), accessed);
             }
         }
