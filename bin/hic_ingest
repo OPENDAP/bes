@@ -30,6 +30,9 @@ H5_REGEX=".*\.(HDF5|h5|he5)(\.bz2|\.gz|\.Z)?$"
 EXCLUDE_REGEX="^\\..*$"
 INCLUDE_REGEX="^.*$"
 
+DEFAULT_S3_BUCKET="opendap.scratch"
+DEFAULT_S3_PROFILE="ndp"
+
 ###########################################################################
 #
 # show_usage()
@@ -100,11 +103,11 @@ function qc_inputs(){
     # Check S3
     
     if [ -z ${s3_bucket_name+x} ] ; then
-        s3_bucket_name="opendap.test"
+        s3_bucket_name="${DEFAULT_S3_BUCKET}
     fi
     
     if [ -z ${s3_profile_name+x} ] ; then
-        s3_profile_name="ndp"
+        s3_profile_name=${DEFAULT_S3_PROFILE}
     fi
     if [ ${verbose} -eq 1 ]; then
         echo "Using s3_bucket_name: '${s3_bucket_name}' s3_profile_name: '${s3_profile_name}'"
