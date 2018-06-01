@@ -47,6 +47,7 @@ using std::endl;
 #include "BESDataNames.h"
 #include "BESSyntaxUserError.h"
 #include "BESResponseNames.h"
+#include "BESDataHandlerInterface.h"
 
 BESDefineResponseHandler::BESDefineResponseHandler(const string &name) :
     BESResponseHandler(name)

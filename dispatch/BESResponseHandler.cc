@@ -30,8 +30,13 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include "BESResponseHandler.h"
 #include "BESResponseObject.h"
+#include "BESDataHandlerInterface.h"
+#include "BESTransmitter.h"
+
 #if 0
 #include "BESRequestHandler.h"
 #endif
@@ -43,11 +48,9 @@ BESResponseHandler::BESResponseHandler(const string &name) :
 
 BESResponseHandler::~BESResponseHandler()
 {
-    if (d_response_object) {
-        delete d_response_object;
-    }
-    d_response_object = 0;
+    delete d_response_object;
 }
+
 
 BESResponseObject *
 BESResponseHandler::get_response_object()

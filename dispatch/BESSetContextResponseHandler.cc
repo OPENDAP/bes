@@ -41,6 +41,7 @@
 #include "BESDataNames.h"
 #include "BESSyntaxUserError.h"
 #include "BESResponseNames.h"
+#include "BESDataHandlerInterface.h"
 
 BESSetContextResponseHandler::BESSetContextResponseHandler(const string &name) :
     BESResponseHandler(name)

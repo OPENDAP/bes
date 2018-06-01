@@ -32,6 +32,7 @@
 #include "BESContextManager.h"
 #include "BESDataNames.h"
 #include "BESSyntaxUserError.h"
+#include "BESDataHandlerInterface.h"
 
 #include "SetContextsNames.h"
 #include "SetContextsResponseHandler.h"

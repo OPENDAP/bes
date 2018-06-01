@@ -43,6 +43,8 @@
 #include "BESContextManager.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"
+#include "BESTransmitter.h"
+
 #include "GlobalMetadataStore.h"
 
 using namespace bes;

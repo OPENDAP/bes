@@ -37,6 +37,8 @@
 #include "BESRequestHandlerList.h"
 #include "BESDapNames.h"
 #include "BESDataNames.h"
+#include "BESTransmitter.h"
+
 #include "GlobalMetadataStore.h"
 #include "BESDebug.h"
 
