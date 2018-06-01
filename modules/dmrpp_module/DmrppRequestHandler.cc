@@ -313,6 +313,7 @@ bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi)
                 dds_cache->add(new DDS(*dds), accessed);
             }
         }
+
         bdds->clear_container();
     }
     catch (BESError &e) {
@@ -371,7 +372,7 @@ bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi)
         }
         else {
             // Not in cache, make one...
-            DMR *dmr = new DMR();
+            DMR *dmr = new DMR();   // FIXME is this leaked? jhrg 6/1/18
             build_dmr_from_file(dhi.container, dmr);
 
             // delete the current one;
@@ -390,6 +391,7 @@ bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi)
                 dds_cache->add(new DDS(*dds), accessed);
             }
         }
+
         bdds->clear_container();
     }
     catch (BESError &e) {
