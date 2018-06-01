@@ -15,10 +15,4 @@ Attributes {
         String component "Wind.N";
         Float32 range 0, 1023;
     }
-    lat {
-    }
-    lon {
-    }
-    time {
-    }
 }

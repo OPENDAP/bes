@@ -46,7 +46,9 @@ BESXMLSetContainerCommand::BESXMLSetContainerCommand(const BESDataHandlerInterfa
 
 /** @brief parse a set container command.
  *
- &lt;setContainer name="c" space="catalog"&gt;data/nc/fnoc1.nc&lt;/setContainer&gt;
+ * ~~~{.xml}
+ * <setContainer name="c" space="catalog">data/nc/fnoc1.nc</setContainer>
+ * ~~~
  *
  * @param node xml2 element node pointer
  */
@@ -64,8 +66,6 @@ void BESXMLSetContainerCommand::parse_request(xmlNode *node)
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
-    // FIXME: I don't think there can ever be child node for setContainer.
-    // Remove this if that's true. Also see near the end of this method. jhrg 2/11/18
     string cname;
     string cvalue;
     map<string, string> cprops;
@@ -101,7 +101,7 @@ void BESXMLSetContainerCommand::parse_request(xmlNode *node)
         d_xmlcmd_dhi.data[STORE_NAME] = storage;
     }
     else {
-        d_xmlcmd_dhi.data[STORE_NAME] = PERSISTENCE_VOLATILE;
+        d_xmlcmd_dhi.data[STORE_NAME] = PERSISTENCE_VOLATILE; // PERSISTENCE_VOLATILE == "default"
     }
 
     // this can be the empty string, so just set it this way
@@ -110,8 +110,6 @@ void BESXMLSetContainerCommand::parse_request(xmlNode *node)
 
     // now that everything has passed tests, set the value in the dhi
     d_xmlcmd_dhi.data[REAL_NAME] = value;
-
-    // FIXME: Remove if there are never child nodes for setContainer. jhrg 2/11/18
 
     // if there is a child node, then the real value of the container is
     // this content, or is set in this content.

@@ -49,11 +49,6 @@ using std::string;
  */
 typedef bool (*p_request_handler_method)(BESDataHandlerInterface &);
 
-// TODO Remove
-#if 0
-#define BES_REQUEST_HANDLER_CATCH_ALL "catch_all"
-#endif
-
 /** @brief Represents a specific data type request handler
  *
  * A request handler is an object that represents a specific data type. The
@@ -83,6 +78,7 @@ class BESRequestHandler: public BESObj {
 private:
     map<string, p_request_handler_method> _handler_list;
     string _name;
+
 public:
     BESRequestHandler(const string &name) :
         _name(name)
@@ -100,11 +96,19 @@ public:
         return _name;
     }
 
-    virtual bool add_handler(const string &handler_name, p_request_handler_method handler_method);
-    virtual bool remove_handler(const string &handler_name);
-    virtual p_request_handler_method find_handler(const string &handler_name);
+    virtual bool add_method(const string &name, p_request_handler_method method);
 
-    virtual string get_handler_names();
+    /// @brief Backward compatibility with the older version of this class.
+    /// @deprecated
+    virtual bool add_handler(const string &name, p_request_handler_method method)
+    {
+        add_method(name, method);
+    }
+
+    virtual bool remove_method(const string &name);
+    virtual p_request_handler_method find_method(const string &name);
+
+    virtual string get_method_names();
 
     virtual void dump(ostream &strm) const;
 };

@@ -6,9 +6,9 @@
 AUTOMAKE_OPTIONS = foreign check-news
 ACLOCAL_AMFLAGS = -I conf
 
-bin_SCRIPTS = besCreateModule
+bin_SCRIPTS = besCreateModule localBesGetDap populateMDS
 
-EXTRA_DIST = besCreateModule.in
+EXTRA_DIST = besCreateModule.in localBesGetDap populateMDS
 DISTCLEANFILES = besCreateModule
 
 besCreateModule: besCreateModule.in ../config.status

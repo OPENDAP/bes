@@ -22,3 +22,16 @@ BES.Catalog.catalog.TypeMatch+=dmrpp:.*\.(dmrpp)$;
 #-----------------------------------------------------------------------#
 # DMR++ module specific parameters
 #-----------------------------------------------------------------------#
+
+# These are the default values
+#
+# Set UseParallelTransfers to no or false to use serial transfers of data
+
+# DMRPP.UseParallelTransfers=yes
+
+# Set maxParallelTransfers to N where N is the number of parallel data
+# transfers at any given time. These will be run using the libcurl 'multi'
+# API which uses a round-robin scheme. Eight is the default; more often
+# reduces throughput
+
+# DMRPP.MaxParallelTransfers=8

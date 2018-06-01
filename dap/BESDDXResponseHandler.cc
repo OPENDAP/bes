@@ -78,12 +78,12 @@ void BESDDXResponseHandler::execute(BESDataHandlerInterface &dhi)
     GlobalMetadataStore::MDSReadLock lock;
 
     dhi.first_container();
-    if (mds) lock = mds->is_dds_available(dhi.container->get_real_name());
+    if (mds) lock = mds->is_dds_available(dhi.container->get_relative_name());
 
     DDS *dds = 0;
 
     if (mds && lock()) {
-        dds = mds->get_dds_object(dhi.container->get_real_name());
+        dds = mds->get_dds_object(dhi.container->get_relative_name());
     }
     else {
         // Make a blank DDS. It is the responsibility of the specific request

@@ -45,7 +45,8 @@ SRCS = BESXMLInterface.cc BESXMLCommand.cc BESXMLUtils.cc		\
 	BESXMLDefineCommand.cc BESXMLGetCommand.cc			\
 	BESXMLDeleteContainerCommand.cc BESXMLDeleteContainersCommand.cc\
 	BESXMLDeleteDefinitionCommand.cc BESXMLDeleteDefinitionsCommand.cc \
-	ShowPathInfoCommand.cc SetContextsResponseHandler.cc XMLSetContextsCommand.cc
+	ShowPathInfoCommand.cc SetContextsResponseHandler.cc XMLSetContextsCommand.cc \
+	ShowBesKeyCommand.cc ShowBesKeyResponseHandler.cc
 	
 HDRS = BESXMLInterface.h BESXMLCommand.h BESXMLUtils.h			\
 	BESXMLDefaultCommands.h BESXMLShowCommand.h			\
@@ -55,7 +56,8 @@ HDRS = BESXMLInterface.h BESXMLCommand.h BESXMLUtils.h			\
 	BESXMLDeleteContainerCommand.h BESXMLDeleteContainersCommand.h	\
 	BESXMLDeleteDefinitionCommand.h BESXMLDeleteDefinitionsCommand.h \
 	SetContextsResponseHandler.h XMLSetContextsCommand.h NullResponseHandler.h \
-	SetContextsNames.h ShowPathInfoCommand.h
+	SetContextsNames.h ShowPathInfoCommand.h \
+	ShowBesKeyCommand.h ShowBesKeyResponseHandler.h
 
 DAP_SRCS = BESXMLDapCommandModule.cc BESXMLCatalogCommand.cc SiteMapCommand.cc
 

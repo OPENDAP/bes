@@ -1,0 +1,27 @@
+Attributes {
+    /HDFEOS/GRIDS/GeoGrid1/Data%20Fields/temperature {
+        String units "K";
+    }
+    /HDFEOS/GRIDS/GeoGrid2/Data%20Fields/temperature {
+        String units "K";
+    }
+    HDFEOS {
+        ADDITIONAL {
+            FILE_ATTRIBUTES {
+            }
+        }
+        GRIDS {
+            GeoGrid1 {
+                Data%20Fields {
+                }
+            }
+            GeoGrid2 {
+                Data%20Fields {
+                }
+            }
+        }
+    }
+    HDFEOS%20INFORMATION {
+        String HDFEOSVersion "HDFEOS_5.1.13";
+    }
+}

@@ -6,8 +6,6 @@ Attributes {
         String HDF5_OBJ_FULLPATH "H5_GLOBAL";
         String Desc "I am a test data from hdfview                                                                                                  ";
     }
-    file {
-    }
     /TestArray {
         String HDF5_OBJ_FULLPATH "/TestArray";
     }

@@ -46,9 +46,7 @@ awk -v dmrppNamespace="${dmrppNamespace}" '{
         gsub("h4:","dmrpp:");
         // convert xml base to dmrpp href
         gsub("xml:base","dmrpp:href");
-        
     }
     print $0;
-    
 }' $infile > $outfile
     

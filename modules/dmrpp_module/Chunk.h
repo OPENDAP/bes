@@ -27,14 +27,15 @@
 #include <string>
 #include <vector>
 
-#include <curl/curl.h>
-
 namespace dmrpp {
+
+// Callback function used by chunk readers
+size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data);
 
 /**
  * This class is used to encapsulate the state and behavior needed for reading
  * chunked data associated with a DAP variable. In particular it is based on the
- * semantics of an hdf4:byteStream object, which is used to represent a chunk of
+ * semantics of an hdf4:Chunk object, which is used to represent a chunk of
  * data in a (potentially complex) HDF4/HDF5 file.
  */
 class Chunk {
@@ -42,13 +43,7 @@ private:
     std::string d_data_url;
     unsigned long long d_size;
     unsigned long long d_offset;
-#if 0
-    // TODO Remove these
-    std::string d_md5;
-    std::string d_uuid;
-#endif
 
-    bool d_is_read;
     std::vector<unsigned int> d_chunk_position_in_array;
 
     // These are used only during the libcurl callback;
@@ -57,20 +52,12 @@ private:
     unsigned long long d_bytes_read;
     char *d_read_buffer;
     unsigned long long d_read_buffer_size;
-
-#if 0
-    unsigned long long d_read_pointer;
-#endif
-
-
-    CURL *d_curl_handle;
-    char d_curl_error_buf[CURL_ERROR_SIZE];
-
-    bool d_is_in_multi_queue;
+    bool d_is_read;
+    bool d_is_inflated;
 
     void add_tracking_query_param(std::string& data_access_url);
 
-    friend class ChunkTest;
+    friend class DmrppCommonTest;
 
 protected:
 
@@ -80,72 +67,57 @@ protected:
         d_bytes_read = 0;
         d_read_buffer = 0;
         d_read_buffer_size = 0;
-#if 0
-        d_read_pointer = 0;
-#endif
-
         d_is_read = false;
-        d_curl_handle = 0;
-        d_is_in_multi_queue = false;
+        d_is_inflated = false;
 
-#if 0
-        // For some reason, the assignment of a vector<Chunk> fails
-        // but an assignment of a reference to a vector<Chunk> works.
-        // I thought it was something in the code above - something missing
-        // in _duplicate(), but no. jhrg 4/10/18
-        d_bytes_read = bs.d_bytes_read;
-
-        d_read_buffer = new char[bs.d_read_buffer_size];
-        d_read_buffer_size = bs.d_read_buffer_size;
-        memcpy(d_read_buffer, bs.d_read_buffer, bs.d_read_buffer_size);
-
-        d_read_pointer = bs.d_read_pointer;
-        d_is_read = bs.d_is_read;
-
-        d_curl_handle = bs.d_curl_handle;
-        d_is_in_multi_queue = bs.d_is_in_multi_queue;
-#endif
-
-        // These vars are easy to duplicate.
         d_size = bs.d_size;
         d_offset = bs.d_offset;
-#if 0
-        d_md5 = bs.d_md5;
-        d_uuid = bs.d_uuid;
-#endif
         d_data_url = bs.d_data_url;
         d_chunk_position_in_array = bs.d_chunk_position_in_array;
     }
 
 public:
 
+    /**
+     * @brief Get an empty chunk
+     */
     Chunk() :
-            d_data_url(""), d_size(0), d_offset(0), // TODO d_md5(""), d_uuid(""),
-            d_is_read(false), d_bytes_read(0),
-            d_read_buffer(0), d_read_buffer_size(0), // TODO d_read_pointer(0),
-            d_curl_handle(0), d_is_in_multi_queue(false)
+        d_data_url(""), d_size(0), d_offset(0), d_bytes_read(0), d_read_buffer(0),
+        d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
     {
     }
 
-    Chunk(std::string data_url, unsigned long long size, unsigned long long offset, std::string position_in_array = "") :
-            d_data_url(data_url), d_size(size), d_offset(offset), // TODO d_md5(""), d_uuid(""),
-            d_is_read(false), d_bytes_read(0), d_read_buffer(0), d_read_buffer_size(0),
-            d_curl_handle(0), d_is_in_multi_queue(false)
+    /**
+     * @brief Get a chunk initialized with values
+     *
+     * @param data_url Where to read this chunk's data
+     * @param size The number of bytes to read
+     * @param offset Read \arg size bytes starting from this offset
+     * @param pia_str A string that provides the logical position of this chunk
+     * in an Array. Has the syntax '[1,2,3,4]'.
+     */
+    Chunk(const std::string &data_url, unsigned long long size, unsigned long long offset, std::string pia_str = "") :
+        d_data_url(data_url), d_size(size), d_offset(offset), d_bytes_read(0), d_read_buffer(0),
+        d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
     {
-        ingest_position_in_array(position_in_array);
+        set_position_in_array(pia_str);
     }
 
-#if 0
-    Chunk(std::string data_url, unsigned long long size, unsigned long long offset, std::string md5,
-        std::string uuid, std::string position_in_array = "") :
-    d_data_url(data_url), d_size(size), d_offset(offset), d_md5(md5), d_uuid(uuid),
-    d_is_read(false), d_bytes_read(0), d_read_buffer(0), d_read_buffer_size(0), // TODO  d_read_pointer(0),
-    d_curl_handle(0), d_is_in_multi_queue(false)
+    /**
+     * @brief Get a chunk initialized with values
+     *
+     * @param data_url Where to read this chunk's data
+     * @param size The number of bytes to read
+     * @param offset Read \arg size bytes starting from this offset
+     * @param pia_vec The logical position of this chunk in an Array; a std::vector
+     * of unsigned ints.
+     */
+    Chunk(const std::string &data_url, unsigned long long size, unsigned long long offset, const std::vector<unsigned int> &pia_vec) :
+        d_data_url(data_url), d_size(size), d_offset(offset), d_bytes_read(0), d_read_buffer(0),
+        d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
     {
-        ingest_position_in_array(position_in_array);
+        set_position_in_array(pia_vec);
     }
-#endif
-
 
     Chunk(const Chunk &h4bs)
     {
@@ -171,74 +143,30 @@ public:
         return *this;
     }
 
-#if 0
-    void reset_read_pointer()
-    {
-        d_read_pointer = 0;
-    }
-
-    void increment_read_pointer(unsigned long long size)
-    {
-        d_read_pointer += size;
-    }
-
-    char *get_read_pointer()
-    {
-        return get_rbuf() + d_read_pointer;
-    }
-#endif
-
-
-    virtual CURL *get_curl_handle() const
-    {
-        return d_curl_handle;
-    }
-
-    virtual void cleanup_curl_handle()
-    {
-        if (d_curl_handle != 0) curl_easy_cleanup(d_curl_handle);
-        d_curl_handle = 0;
-    }
-
     /**
-     * @brief Get the size of this byteStream's data block on disk
+     * @brief Get the size of this Chunk's data block on disk
      */
     virtual unsigned long long get_size() const
     {
         return d_size;
     }
     /**
-     * @brief Get the offset to this byteStream's data block
+     * @brief Get the offset to this Chunk's data block
      */
     virtual unsigned long long get_offset() const
     {
         return d_offset;
     }
-    /**
-     * @brief Get the md5 string for this byteStream's data block
-     */
-    virtual std::string get_md5() const
-    {
-        return ""; // TODO d_md5;
-
-    }
-    /**
-     * @brief Get the uuid string for this byteStream's data block
-     */
-    virtual std::string get_uuid() const
-    {
-        return ""; // TODO d_uuid;
-    }
 
     /**
-     * @brief Get the data url string for this byteStream's data block
+     * @brief Get the data url string for this Chunk's data block
      */
     virtual std::string get_data_url() const
     {
         return d_data_url;
     }
     /**
-     * @brief Get the data url string for this byteStream's data block
+     * @brief Get the data url string for this Chunk's data block
      */
     virtual void set_data_url(const std::string &data_url)
     {
@@ -246,7 +174,7 @@ public:
     }
 
     /**
-     * @brief Get the size of the data block associated with this byteStream.
+     * @brief Get the number of bytes read so far for this Chunk.
      */
     virtual unsigned long long get_bytes_read() const
     {
@@ -254,7 +182,7 @@ public:
     }
 
     /**
-     * @brief Set the size of this byteStream's data block
+     * @brief Set the size of this Chunk's data block
      * @param size Size of the data in bytes
      */
     virtual void set_bytes_read(unsigned long long bytes_read)
@@ -262,29 +190,8 @@ public:
         d_bytes_read = bytes_read;
     }
 
-#if 0
     /**
-     * @brief Sets the size of the internal read buffer.
-     * @deprecated
-     * @see set_rbuf_to_size()
-     * @param size Size of the internal read buffer.
-     */
-    virtual void rbuf_size(unsigned long long size)
-    {
-        // Calling delete on a null pointer is fine, so we don't need to check
-        // to see if this is the first call.
-        delete[] d_read_buffer;
-        d_read_buffer_size = 0;
-
-        d_read_buffer = new char[size];
-        d_read_buffer_size = size;
-        set_bytes_read(0);
-    }
-#endif
-
-
-    /**
-     * @brief Allocates the intenal read buffer to be d_size bytes
+     * @brief Allocates the internal read buffer to be d_size bytes
      *
      * The memory of the read buffer is managed internally by this method.
      * Calling this method will release any previously allocated read buffer
@@ -293,23 +200,15 @@ public:
      */
     virtual void set_rbuf_to_size()
     {
-#if 0
-        rbuf_size(d_size);
-#endif
-
-        // Calling delete on a null pointer is fine, so we don't need to check
-        // to see if this is the first call.
         delete[] d_read_buffer;
-        d_read_buffer_size = 0;
 
         d_read_buffer = new char[d_size];
         d_read_buffer_size = d_size;
         set_bytes_read(0);
-
     }
 
     /**
-     * Returns a pointer to the memory buffer for this byteStream. The
+     * Returns a pointer to the memory buffer for this Chunk. The
      * return value is NULL if no memory has been allocated.
      */
     virtual char *get_rbuf()
@@ -322,7 +221,7 @@ public:
      *
      * Transfer control of the buffer to this object. The buffer must have been
      * allocated using 'new char[size]'. This object will delete any previously
-     * allocated buffer and take control of the one passes in with this method.
+     * allocated buffer and take control of the one passed in with this method.
      * The size and number of bytes read are set to the value of 'size.'
      *
      * @param buf The new buffer to be used by this instance.
@@ -330,79 +229,33 @@ public:
      */
     virtual void set_rbuf(char *buf, unsigned int size)
     {
-        // Calling delete on a null pointer is fine, so we don't need to check
-        // to see if this is the first call.
         delete[] d_read_buffer;
-        d_read_buffer_size = 0;
 
         d_read_buffer = buf;
         d_read_buffer_size = size;
 
-        // FIXME Setting d_byes_read to 'size' may break code that tests to see that the
-        // correct number of bytes were actually read. I think this is patched, but we
-        // should think about what this field really means - the number of bytes read or
-        // the size of the current read_buffer? For now this works given a mod in
-        //Chunk::read(...). jhrg 1/18/17
         set_bytes_read(size);
     }
 
     /**
-     * Returns the size, in bytes, of the read buffer for this byteStream.
+     * Returns the size, in bytes, of the read buffer for this Chunk.
      */
     virtual unsigned long long get_rbuf_size() const
     {
         return d_read_buffer_size;
     }
 
-    virtual std::vector<unsigned int> get_position_in_array() const
+    virtual const std::vector<unsigned int> &get_position_in_array() const
     {
         return d_chunk_position_in_array;
     }
 
-    /**
-     * @brief Parse the dimension string store the sizes in an internal vector.
-     *
-     * The dimension information is a string of the form '[x,y,...,z]' Parse the
-     * integer dimension sizes and store them in the d_position_in_array vector.
-     * Since this is essentially a setter method any previous postion_in_array
-     * content is discarded. If the passed string parameter is empty then nothing
-     * is done.
-     *
-     * @param pia The dimension string
-     */
-    virtual void ingest_position_in_array(std::string pia);
-
-    /**
-     * @brief An alternate impl of ingest_position_in_array
-     *
-     * @note It would be much easier to parse this string if it didn't have the
-     * unneeded [, ], and comma (,) characters. The integers could be separated
-     * by whitespace. Then an istringstream and a while loop would be all that's
-     * needed.
-     *
-     * @param pia The dimension string.
-     */
     virtual void set_position_in_array(const std::string &pia);
+    virtual void set_position_in_array(const std::vector<unsigned int> &pia);
 
-    /**
-     * @brief default version of read() for types that are not chunked
-     *
-     * This function does the simple read operation for variables that are
-     * not chunked. We treat 'not-chunked' as 'stored in a single chunk.'
-     * An assumption is that data that are 'not-chunked' are also not compressed
-     * in any way.
-     */
-    virtual void read() {
-        read(false, false, 0, 0);   // default values for no compression
-    }
+    virtual void read_chunk();
 
-    virtual void read(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_size);
-    void complete_read(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width);
-
-    virtual void add_to_multi_read_queue(CURLM *multi_handle);
-
-    virtual bool is_started() const { return d_is_in_multi_queue; };
-    virtual bool is_read() const { return d_is_read;  }
+    void inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width);
 
     virtual void set_is_read(bool state) { d_is_read = state; }
 

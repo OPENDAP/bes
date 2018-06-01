@@ -25,14 +25,10 @@
 #include "config.h"
 
 #include <string>
-#include <sstream>
-#include <cassert>
 
-#include "BESInternalError.h"
 #include "BESDebug.h"
 #include "BESIndent.h"
 
-#include "DmrppUtil.h"
 #include "DmrppInt32.h"
 
 using namespace libdap;
@@ -73,7 +69,7 @@ DmrppInt32::operator=(const DmrppInt32 &rhs)
     dynamic_cast<Int32 &>(*this) = rhs; // run Constructor=
 
     _duplicate(rhs);
-    DmrppCommon::_duplicate(rhs);
+    DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }

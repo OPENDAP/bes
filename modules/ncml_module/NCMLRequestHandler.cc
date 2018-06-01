@@ -80,15 +80,15 @@ string NCMLRequestHandler::_global_attributes_container_name = "";
 NCMLRequestHandler::NCMLRequestHandler(const string &name) :
     BESRequestHandler(name)
 {
-    add_handler(DAS_RESPONSE, NCMLRequestHandler::ncml_build_das);
-    add_handler(DDS_RESPONSE, NCMLRequestHandler::ncml_build_dds);
-    add_handler(DATA_RESPONSE, NCMLRequestHandler::ncml_build_data);
+    add_method(DAS_RESPONSE, NCMLRequestHandler::ncml_build_das);
+    add_method(DDS_RESPONSE, NCMLRequestHandler::ncml_build_dds);
+    add_method(DATA_RESPONSE, NCMLRequestHandler::ncml_build_data);
 
-    add_handler(DMR_RESPONSE, NCMLRequestHandler::ncml_build_dmr);
-    add_handler(DAP4DATA_RESPONSE, NCMLRequestHandler::ncml_build_dmr);
+    add_method(DMR_RESPONSE, NCMLRequestHandler::ncml_build_dmr);
+    add_method(DAP4DATA_RESPONSE, NCMLRequestHandler::ncml_build_dmr);
 
-    add_handler(VERS_RESPONSE, NCMLRequestHandler::ncml_build_vers);
-    add_handler(HELP_RESPONSE, NCMLRequestHandler::ncml_build_help);
+    add_method(VERS_RESPONSE, NCMLRequestHandler::ncml_build_vers);
+    add_method(HELP_RESPONSE, NCMLRequestHandler::ncml_build_help);
 
     if (NCMLRequestHandler::_global_attributes_container_name_set == false) {
         bool key_found = false;

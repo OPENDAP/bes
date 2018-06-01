@@ -82,7 +82,6 @@ class GlobalMetadataStore: public BESFileLockingCache {
 private:
     bool d_use_local_time;      // Base on BES.LogTimeLocal
     std::string d_ledger_name;  // Name of the ledger file
-    std::string d_ledger_entry; // Built up as info is added, written on success
 
     static bool d_enabled;
     static GlobalMetadataStore *d_instance;
@@ -93,6 +92,11 @@ private:
         d_instance = 0;
     }
 
+    friend class DmrppMetadataStoreTest;
+    friend class GlobalMetadataStoreTest;
+
+protected:
+    std::string d_ledger_entry; // Built up as info is added, written on success
     void write_ledger();
 
     std::string get_hash(const std::string &name);
@@ -104,9 +108,14 @@ private:
      * StreamDAS and StreamDMR are instantiated and passed to
      * store_dap_response().
      *
-     * @note These classes were written to so either the DDS or DMR could be
-     * used to build all of the (three) metadata responses. See comments
-     * elsewhere about this and why it's turned off for now.
+     * @note These classes were written so that either the DDS _or_ DMR could be
+     * used to write all of the three DAP2/4 metadata responses. That feature
+     * worked for the most part, but highlighted some differences between the
+     * two protocol versions that make it hard to produce identical responses
+     * using both the DDS or DMR from the same dataset. This made testing hard
+     * and meant that the result was 'unpredictable' for some edge cases. The symbol
+     * SYMETRIC_ADD_RESPONSES controls if this feature is on or not; currently it
+     * is turned off.
      */
     struct StreamDAP : public std::unary_function<libdap::DapObj*, void> {
         libdap::DDS *d_dds;
@@ -121,9 +130,7 @@ private:
         virtual void operator()(std::ostream &os) = 0;
     };
 
-    /**
-     * Instantiate with a DDS or DMR and use to write the DDS response.
-     */
+    /// Instantiate with a DDS or DMR and use to write the DDS response.
     struct StreamDDS : public StreamDAP {
         StreamDDS(libdap::DDS *dds) : StreamDAP(dds) { }
         StreamDDS(libdap::DMR *dmr) : StreamDAP(dmr) { }
@@ -131,9 +138,7 @@ private:
         virtual void operator()(ostream &os);
     };
 
-    /**
-     * Instantiate with a DDS or DMR and use to write the DAS response.
-     */
+    /// Instantiate with a DDS or DMR and use to write the DAS response.
     struct StreamDAS : public StreamDAP {
         StreamDAS(libdap::DDS *dds) : StreamDAP(dds) { }
         StreamDAS(libdap::DMR *dmr) : StreamDAP(dmr) { }
@@ -141,19 +146,17 @@ private:
         virtual void operator()(ostream &os);
     };
 
-    /**
-     * Instantiate with a DDS or DMR and use to write the DMR response.
-     */
+    /// Instantiate with a DDS or DMR and use to write the DMR response.
     struct StreamDMR : public StreamDAP {
         StreamDMR(libdap::DDS *dds) : StreamDAP(dds) { }
         StreamDMR(libdap::DMR *dmr) : StreamDAP(dmr) { }
-        // Implementation in .cc since it uses libdap headers.
+
         virtual void operator()(ostream &os);
     };
 
     bool store_dap_response(StreamDAP &writer, const std::string &key, const string &name, const string &response_name);
 
-    void get_response_helper(const std::string &name, std::ostream &os, const std::string &suffix,
+    void write_response_helper(const std::string &name, std::ostream &os, const std::string &suffix,
         const std::string &object_name);
 
     bool remove_response_helper(const std::string& name, const std::string &suffix, const std::string &object_name);
@@ -163,14 +166,19 @@ public:
      * @brief Unlock and close the MDS item when the ReadLock goes out of scope.
      * @note This needs to be public because software that uses the MDS needs to
      * hold instances of the MDSReadLock.
+     * @note Passing in a pointer to an instance of GlobalMetadataStore makes
+     * GlobalMetadataStore easier to subclass. If _get_instance()_ is called
+     * in this code, then only a GlobalMetadataStore, and not the subclass,
+     * will be used to unlock the item.
      */
     struct MDSReadLock : public std::unary_function<std::string, bool> {
         std::string name;
         bool locked;
-        MDSReadLock() : name(""), locked(false) { }
-        MDSReadLock(const std::string n, bool l): name(n), locked(l) { }
+        GlobalMetadataStore *mds;
+        MDSReadLock() : name(""), locked(false), mds(0) { }
+        MDSReadLock(const std::string n, bool l, GlobalMetadataStore *store): name(n), locked(l), mds(store) { }
         ~MDSReadLock() {
-            if (locked) get_instance()->unlock_and_close(name);
+            if (locked) mds->unlock_and_close(name);
             locked = false;
         }
 
@@ -179,22 +187,22 @@ public:
 
     typedef struct MDSReadLock MDSReadLock;
 
-private:
+protected:
     MDSReadLock get_read_lock_helper(const string &name, const string &suffix, const string &object_name);
 
     // Suppress the automatic generation of these ctors
-    GlobalMetadataStore();
     GlobalMetadataStore(const GlobalMetadataStore &src);
 
+    void initialize();
+
     // Only get_instance() should be used to instantiate this class
+    GlobalMetadataStore();
     GlobalMetadataStore(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
 
     // these are static because they are called by the static method get_instance()
     static string get_cache_dir_from_config();
     static string get_cache_prefix_from_config();
     static unsigned long get_cache_size_from_config();
-
-    friend class GlobalMetadataStoreTest;
 
 public:
     static GlobalMetadataStore *get_instance(const std::string &cache_dir, const std::string &prefix,
@@ -205,64 +213,21 @@ public:
     {
     }
 
-    // I moved this from the .cc file where it really belongs to here because
-    // the docs were not getting built when the comments were in the the .cc
-    // file (only these two methods).
-    /**
-     * @name Add responses to the GlobalMetadataStore
-     * @brief Use a DDS or DMR to populate DAP metadata responses in the MDS
-     *
-     * These methods uses a DDS or DMR object to generate the DDS, DAS and DMR responses
-     * for DAP (2 and 4). They store those in the MDS and then update the
-     * MDS ledger file with the operation (add), the kind of object used
-     * to build the responses (DDS or DMR), name of the granule and hashes/names
-     * for each of the three files in the MDS that hold the responses.
-     *
-     * If verbose logging is on, the bes log also will hold information about
-     * the operation. If there is an error, that will always be recorded in
-     * the bes log.
-     *
-     * @return True if the DDS, DAS or DMR were added to the MDS
-     */
-    ///@{
-
-    /**
-     * @brief Add the DAP2 metadata responses using a DDS
-     *
-     * This method adds only the DDS and DAS unless the code was compiled with
-     * the symbol SYMETRIC_ADD_RESPONSES defined.
-     *
-     * @param name The granule name or identifier
-     * @param dds A DDS built from the granule
-     * @return True if all of the cache/store entries were written, False if any
-     * could not be written.
-     */
     virtual bool add_responses(libdap::DDS *dds, const std::string &name);
-
-    /**
-     * @brief Add the DAP4 metadata responses using a DMR
-     *
-     * This method adds only the DMR unless the code was compiled with
-     * the symbol SYMETRIC_ADD_RESPONSES defined.
-     *
-     * @param name The granule name or identifier
-     * @param dmr A DMR built from the granule
-     * @return True if all of the cache/store entry was written, False if any
-     * could not be written.
-     */
     virtual bool add_responses(libdap::DMR *dmr, const std::string &name);
-    ///@}
 
     virtual MDSReadLock is_dmr_available(const std::string &name);
     virtual MDSReadLock is_dds_available(const std::string &name);
     virtual MDSReadLock is_das_available(const std::string &name);
+    virtual MDSReadLock is_dmrpp_available(const std::string &name);
 
-    virtual void get_dds_response(const std::string &name, std::ostream &os);
-    virtual void get_das_response(const std::string &name, std::ostream &os);
+    virtual void write_dds_response(const std::string &name, std::ostream &os);
+    virtual void write_das_response(const std::string &name, std::ostream &os);
 
     // Add a third parameter to enable changing the value of xmlbase in this response.
     // jhrg 2.28.18
-    virtual void get_dmr_response(const std::string &name, std::ostream &os);
+    virtual void write_dmr_response(const std::string &name, std::ostream &os);
+    virtual void write_dmrpp_response(const std::string &name, std::ostream &os);
 
     virtual bool remove_responses(const std::string &name);
 

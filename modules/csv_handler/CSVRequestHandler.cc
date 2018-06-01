@@ -72,17 +72,17 @@ using namespace libdap;
 CSVRequestHandler::CSVRequestHandler(string name) :
 		BESRequestHandler(name)
 {
-	add_handler(DAS_RESPONSE, CSVRequestHandler::csv_build_das);
-	add_handler(DDS_RESPONSE, CSVRequestHandler::csv_build_dds);
-	add_handler(DATA_RESPONSE, CSVRequestHandler::csv_build_data);
+	add_method(DAS_RESPONSE, CSVRequestHandler::csv_build_das);
+	add_method(DDS_RESPONSE, CSVRequestHandler::csv_build_dds);
+	add_method(DATA_RESPONSE, CSVRequestHandler::csv_build_data);
 
 	// We can use the same DMR object for both the metadata and data
 	// responses. jhrg 8/13/14
-	add_handler(DMR_RESPONSE, CSVRequestHandler::csv_build_dmr);
-	add_handler(DAP4DATA_RESPONSE, CSVRequestHandler::csv_build_dmr);
+	add_method(DMR_RESPONSE, CSVRequestHandler::csv_build_dmr);
+	add_method(DAP4DATA_RESPONSE, CSVRequestHandler::csv_build_dmr);
 
-	add_handler(VERS_RESPONSE, CSVRequestHandler::csv_build_vers);
-	add_handler(HELP_RESPONSE, CSVRequestHandler::csv_build_help);
+	add_method(VERS_RESPONSE, CSVRequestHandler::csv_build_vers);
+	add_method(HELP_RESPONSE, CSVRequestHandler::csv_build_help);
 }
 
 CSVRequestHandler::~CSVRequestHandler()

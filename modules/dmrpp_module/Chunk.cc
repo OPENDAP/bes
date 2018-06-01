@@ -25,20 +25,230 @@
 
 #include <sstream>
 #include <cstdlib>
+#include <cstring>
 #include <cassert>
+
+#include <zlib.h>
 
 #include <BESDebug.h>
 #include <BESInternalError.h>
 #include <BESContextManager.h>
 
 #include "Chunk.h"
-#include "DmrppUtil.h"
+#include "CurlHandlePool.h"
+#include "DmrppRequestHandler.h"
 
 const string debug = "dmrpp";
 
 using namespace std;
 
 namespace dmrpp {
+
+/**
+ * @brief Callback passed to libcurl to handle reading a single byte.
+ *
+ * This callback assumes that the size of the data is small enough
+ * that all of the bytes will be either read at once or that a local
+ * temporary buffer can be used to build up the values.
+ *
+ * @param buffer Data from libcurl
+ * @param size Number of bytes
+ * @param nmemb Total size of data in this call is 'size * nmemb'
+ * @param data Pointer to this
+ * @return The number of bytes read
+ */
+size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
+{
+    Chunk *c_ptr = reinterpret_cast<Chunk*>(data);
+
+    // rbuf: |******++++++++++----------------------|
+    //              ^        ^ bytes_read + nbytes
+    //              | bytes_read
+
+    unsigned long long bytes_read = c_ptr->get_bytes_read();
+    size_t nbytes = size * nmemb;
+
+    // If this fails, the code will write beyond the buffer.
+    assert(bytes_read + nbytes <= c_ptr->get_rbuf_size());
+
+    memcpy(c_ptr->get_rbuf() + bytes_read, buffer, nbytes);
+
+    c_ptr->set_bytes_read(bytes_read + nbytes);
+
+    return nbytes;
+}
+
+/**
+ * @brief Deflate data. This is the zlib algorithm.
+ *
+ * @note Stolen from the HDF5 library and hacked to fit.
+ *
+ * @param dest Write the 'inflated' data here
+ * @param dest_len Size of the destination buffer
+ * @param src Compressed data
+ * @param src_len Size of the compressed data
+ */
+void inflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len)
+{
+    /* Sanity check */
+    assert(src_len > 0);
+    assert(src);
+    assert(dest_len > 0);
+    assert(dest);
+
+    /* Input; uncompress */
+    z_stream z_strm; /* zlib parameters */
+
+    /* Set the uncompression parameters */
+    memset(&z_strm, 0, sizeof(z_strm));
+    z_strm.next_in = (Bytef *) src;
+    z_strm.avail_in = src_len;
+    z_strm.next_out = (Bytef *) dest;
+    z_strm.avail_out = dest_len;
+
+    /* Initialize the uncompression routines */
+    if (Z_OK != inflateInit(&z_strm))
+        throw BESError("Failed to initialize inflate software.", BES_INTERNAL_ERROR, __FILE__, __LINE__);
+
+    /* Loop to uncompress the buffer */
+    int status = Z_OK;
+    do {
+        /* Uncompress some data */
+        status = inflate(&z_strm, Z_SYNC_FLUSH);
+
+        /* Check if we are done uncompressing data */
+        if (Z_STREAM_END == status) break; /*done*/
+
+        /* Check for error */
+        if (Z_OK != status) {
+            (void) inflateEnd(&z_strm);
+            throw BESError("Failed to inflate data chunk.", BES_INTERNAL_ERROR, __FILE__, __LINE__);
+        }
+        else {
+            /* If we're not done and just ran out of buffer space, it's an error.
+             * The HDF5 library code would extend the buffer as needed, but for
+             * this handler, we always know the size of the uncompressed chunk.
+             */
+            if (0 == z_strm.avail_out) {
+                throw BESError("Data buffer is not big enough for uncompressed data.", BES_INTERNAL_ERROR, __FILE__, __LINE__);
+#if 0
+                /* Here's how to extend the buffer if needed. This might be useful someday... */
+                void *new_outbuf; /* Pointer to new output buffer */
+
+                /* Allocate a buffer twice as big */
+                nalloc *= 2;
+                if (NULL == (new_outbuf = H5MM_realloc(outbuf, nalloc))) {
+                    (void) inflateEnd(&z_strm);
+                    HGOTO_ERROR(H5E_RESOURCE, H5E_NOSPACE, 0, "memory allocation failed for inflate decompression")
+                } /* end if */
+                outbuf = new_outbuf;
+
+                /* Update pointers to buffer for next set of uncompressed data */
+                z_strm.next_out = (unsigned char*) outbuf + z_strm.total_out;
+                z_strm.avail_out = (uInt) (nalloc - z_strm.total_out);
+#endif
+            } /* end if */
+        } /* end else */
+    } while (status == Z_OK);
+
+    /* Finish uncompressing the stream */
+    (void) inflateEnd(&z_strm);
+}
+
+// #define this to enable the duff's device loop unrolling code.
+// jhrg 1/19/17
+#define DUFFS_DEVICE
+
+/**
+ * @brief Un-shuffle data.
+ *
+ * @note Stolen from HDF5 and hacked to fit
+ *
+ * @note We use src size as a param because the buffer might be larger than
+ * elems * width (e.g., 1020 byte buffer will hold 127 doubles with 4 extra).
+ * If we used elems * width, the the buffer size will be too small for those
+ * extra bytes. Code at the end of this function will transfer them.
+ *
+ * @note Do not call this when the number of elements or the element width
+ * is 1. In the HDF5 library chunks that fit that description are never shuffled
+ * (because there really is nothing to shuffle). The function will handle that
+ * case, but by not calling it you can save the allocation of a buffer and a
+ * call to memcpy.
+ *
+ * @param dest Put the result here.
+ * @param src Shuffled data source
+ * @param src_size Number of bytes in both src and dest
+ * @param width Number of bytes in an element
+ */
+void unshuffle(char *dest, const char *src, unsigned int src_size, unsigned int width)
+{
+    unsigned int elems = src_size / width;  // int division rounds down
+
+    /* Don't do anything for 1-byte elements, or "fractional" elements */
+    if (!(width > 1 && elems > 1)) {
+        memcpy(dest, const_cast<char*>(src), src_size);
+    }
+    else {
+        /* Get the pointer to the source buffer (Alias for source buffer) */
+        char *_src = const_cast<char*>(src);
+        char *_dest = 0;   // Alias for destination buffer
+
+        /* Input; unshuffle */
+        for (unsigned int i = 0; i < width; i++) {
+            _dest = dest + i;
+#ifndef DUFFS_DEVICE
+            size_t j = elems;
+            while(j > 0) {
+                *_dest = *_src++;
+                _dest += width;
+
+                j--;
+            }
+#else /* DUFFS_DEVICE */
+            {
+                size_t duffs_index = (elems + 7) / 8;   /* Counting index for Duff's device */
+                switch (elems % 8) {
+                default:
+                    assert(0 && "This Should never be executed!");
+                    break;
+                case 0:
+                    do {
+                        // This macro saves repeating the same line 8 times
+#define DUFF_GUTS       *_dest = *_src++; _dest += width;
+
+                        DUFF_GUTS
+                        case 7:
+                        DUFF_GUTS
+                        case 6:
+                        DUFF_GUTS
+                        case 5:
+                        DUFF_GUTS
+                        case 4:
+                        DUFF_GUTS
+                        case 3:
+                        DUFF_GUTS
+                        case 2:
+                        DUFF_GUTS
+                        case 1:
+                        DUFF_GUTS
+                    } while (--duffs_index > 0);
+                } /* end switch */
+            } /* end block */
+#endif /* DUFFS_DEVICE */
+
+        } /* end for i = 0 to width*/
+
+        /* Compute the leftover bytes if there are any */
+        size_t leftover = src_size % width;
+
+        /* Add leftover to the end of data */
+        if (leftover > 0) {
+            /* Adjust back to end of shuffled bytes */
+            _dest -= (width - 1); /*lint !e794 _dest is initialized */
+            memcpy((void*) _dest, (void*) _src, leftover);
+        }
+    } /* end if width and elems both > 1 */
+}
 
 /**
  * @brief parse the chunk position string
@@ -51,79 +261,51 @@ namespace dmrpp {
  * will be much simpler since istringstream is designed to deal with exactly
  * that form of input.
  *
- * @param pia The chunk position string.
+ * @param pia The chunk position string. Syntax parsed: "[1,2,3,4]"
  */
 void Chunk::set_position_in_array(const string &pia)
 {
-    assert(!pia.empty());
+    if (pia.empty()) return;
 
-    // Assume input is [x,y,...,z] where x, ..., is an integer
-    // iss holds x , y , ... , z <eof>
-    istringstream iss(pia.substr(1, pia.size() - 2));
+    if (d_chunk_position_in_array.size()) d_chunk_position_in_array.clear();
+
+    // Assume input is [x,y,...,z] where x, ..., are integers; modest syntax checking
+    // [1] is a minimal 'position in array' string.
+    if (pia.find('[') == string::npos || pia.find(']') == string::npos || pia.length() < 3)
+        throw BESInternalError("while parsing a DMR++, chunk position string malformed", __FILE__, __LINE__);
+
+    if (pia.find_first_not_of("[]1234567890,") != string::npos)
+        throw BESInternalError("while parsing a DMR++, chunk position string illegal character(s)", __FILE__, __LINE__);
+
+    // string off []; iss holds x,y,...,z
+    istringstream iss(pia.substr(1, pia.length()-2));
 
     char c;
     unsigned int i;
-    while (!iss.eof()) {
+    while (!iss.eof() ) {
         iss >> i; // read an integer
+
         d_chunk_position_in_array.push_back(i);
 
-        iss >> c; // read a separator or the ending ']'
-        assert(c == ',' || iss.eof());
+        iss >> c; // read a separator (,)
     }
-
-    assert(d_chunk_position_in_array.size() > 0);
 }
 
-// FIXME Replace value param that is modified with a istringstream
-void Chunk::ingest_position_in_array(string pia)
+/**
+ * @brief Set the chunk's position in the Array
+ *
+ * Use this method when the vector<unsigned int> is known.
+ *
+ * @see Chunk::set_position_in_array(const string &pia)
+ * @param pia A vector of unsigned ints.
+ */
+void Chunk::set_position_in_array(const std::vector<unsigned int> &pia)
 {
-    BESDEBUG(debug, "Chunk::ingest_position_in_array() -  BEGIN" << " -  Parsing: " << pia << "'" << endl);
+    if (pia.size() == 0) return;
 
-    if (!pia.empty()) {
-        BESDEBUG(debug, "Chunk::ingest_position_in_array() -  string '"<< pia << "' is not empty." << endl);
-        // Clear the thing if it's got stuff in it.
-        if (d_chunk_position_in_array.size()) d_chunk_position_in_array.clear();
+    if (d_chunk_position_in_array.size()) d_chunk_position_in_array.clear();
 
-        string open_sqr_brckt("[");
-        string close_sqr_brckt("]");
-        string comma(",");
-        size_t strPos = 0;
-        string strVal;
-
-        // Drop leading square bracket
-        if (!pia.compare(0, 1, open_sqr_brckt)) {
-            pia.erase(0, 1);
-            BESDEBUG(debug,
-                    "Chunk::ingest_position_in_array() -  dropping leading '[' result: '"<< pia << "'" << endl);
-        }
-
-        // Drop trailing square bracket
-        if (!pia.compare(pia.length() - 1, 1, close_sqr_brckt)) {
-            pia.erase(pia.length() - 1, 1);
-            BESDEBUG(debug,
-                    "Chunk::ingest_position_in_array() -  dropping trailing ']' result: '"<< pia << "'" << endl);
-        }
-
-        // Is it multi-valued? We check for commas  to find out.
-        if ((strPos = pia.find(comma)) != string::npos) {
-            BESDEBUG(debug,
-                    "Chunk::ingest_position_in_array() -  Position string appears to contain multiple values..." << endl);
-            // Process comma delimited content
-            while ((strPos = pia.find(comma)) != string::npos) {
-                strVal = pia.substr(0, strPos);
-                BESDEBUG(debug, __PRETTY_FUNCTION__ << " -  Parsing: " << strVal << endl);
-                d_chunk_position_in_array.push_back(strtol(strVal.c_str(), NULL, 10));
-                pia.erase(0, strPos + comma.length());
-            }
-        }
-        // A single value, remains after multi-valued processing, or there was only
-        // Every a single value, so let's ingest that!
-        BESDEBUG(debug,
-                "Chunk::ingest_position_in_array() -  Position string appears to have a single value..." << endl);
-        d_chunk_position_in_array.push_back(strtol(pia.c_str(), NULL, 10));
-    }
-
-    BESDEBUG(debug, "Chunk::ingest_position_in_array() -  END" << " -  Parsed " << pia << "'" << endl);
+    d_chunk_position_in_array = pia;
 }
 
 /**
@@ -133,22 +315,12 @@ void Chunk::ingest_position_in_array(string pia)
  * for this byteStream.
  *
  */
-std::string Chunk::get_curl_range_arg_string()
+string Chunk::get_curl_range_arg_string()
 {
     ostringstream range;   // range-get needs a string arg for the range
     range << d_offset << "-" << d_offset + d_size - 1;
     return range.str();
 }
-
-#if 0
-bool Chunk::is_read()
-{
-    return d_is_read;
-}
-
-void Chunk::set_is_read(bool state) {d_is_read = state;}
-
-#endif
 
 /**
  * @brief Modify the \arg data_access_url so that it include tracking info
@@ -184,85 +356,20 @@ void Chunk::add_tracking_query_param(string &data_access_url)
     }
 }
 
-void Chunk::add_to_multi_read_queue(CURLM *multi_handle)
+/**
+ * @brief Decompress data in the chunk, managing the Chunk's data buffers
+ *
+ * This method tracks if a chunk has already been decompressed, so, like read_chunk()
+ * it can be called for achunk that has already been decompressed without error.
+ *
+ * @param deflate
+ * @param shuffle
+ * @param chunk_size
+ * @param elem_width
+ */
+void Chunk::inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width)
 {
-    BESDEBUG(debug,"Chunk::"<< __func__ <<"() - BEGIN  " << to_string() << endl);
-
-    if (d_is_read || d_is_in_multi_queue) {
-        BESDEBUG("dmrpp", "Chunk::"<< __func__ <<"() - Chunk has been " << (d_is_in_multi_queue?"queued to be ":"") << "read! Returning." << endl);
-        return;
-    }
-
-    // This call uses the internal size param and allocates the buffer's memory
-    set_rbuf_to_size();
-
-    string data_access_url = get_data_url();
-
-    BESDEBUG(debug,"Chunk::"<< __func__ <<"() - data_access_url "<< data_access_url << endl);
-
-    add_tracking_query_param(data_access_url);
-
-    string range = get_curl_range_arg_string();
-
-    BESDEBUG(debug,
-        __func__ <<" - Retrieve  " << get_size() << " bytes " "from "<< data_access_url << ": " << range << endl);
-
-    CURL* curl = curl_easy_init();
-    if (!curl) {
-        throw BESInternalError("Unable to initialize curl handle", __FILE__, __LINE__);
-    }
-
-    CURLcode res = curl_easy_setopt(curl, CURLOPT_URL, data_access_url.c_str());
-    if (res != CURLE_OK) throw BESInternalError("string(curl_easy_strerror(res))", __FILE__, __LINE__);
-
-    // Use CURLOPT_ERRORBUFFER for a human-readable message
-    //
-    res = curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, d_curl_error_buf);
-    if (res != CURLE_OK) throw BESInternalError("string(curl_easy_strerror(res))", __FILE__, __LINE__);
-
-    // get the offset to offset + size bytes
-    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_RANGE, range.c_str() /*"0-199"*/))
-        throw BESInternalError(string("HTTP Error: ").append(d_curl_error_buf), __FILE__, __LINE__);
-
-    // Pass all data to the 'write_data' function
-    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, h4bytestream_write_data))
-        throw BESInternalError(string("HTTP Error: ").append(d_curl_error_buf), __FILE__, __LINE__);
-
-    // Pass this to write_data as the fourth argument
-    if (CURLE_OK != curl_easy_setopt(curl, CURLOPT_WRITEDATA, this))
-        throw BESInternalError(string("HTTP Error: ").append(d_curl_error_buf), __FILE__, __LINE__);
-
-    /* add the individual transfers */
-    curl_multi_add_handle(multi_handle, curl);
-
-    BESDEBUG(debug, "Chunk::"<< __func__ <<"() - Added to multi_handle: "<< to_string() << endl);
-
-    /* we start some action by calling perform right away */
-    // int still_running;
-    //  curl_multi_perform(multi_handle, &still_running);
-    d_curl_handle = curl;
-    d_is_in_multi_queue = true;
-
-    BESDEBUG(debug, __func__ <<"() - END  "<< to_string() << endl);
-}
-
-void Chunk::complete_read(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width)
-{
-
-    // If the expected byte count was not read, it's an error.
-    if (get_size() != get_bytes_read()) {
-        ostringstream oss;
-        oss << "Chunk: Wrong number of bytes read for '" << to_string() << "'; expected " << get_size()
-                << " but found " << get_bytes_read() << endl;
-        throw BESInternalError("oss.str()", __FILE__, __LINE__);
-    }
-
-    // If data are compressed/encoded, then decode them here.
-    // At this point, the bytes_read property would be changed.
-    // The file that implements the deflate filter is H5Zdeflate.c in the hdf5 source.
-    // The file that implements the shuffle filter is H5Zshuffle.c.
-
-    // TODO This code is pretty naive - there are apparently a number of
+    // This code is pretty naive - there are apparently a number of
     // different ways HDF5 can compress data, and it does also use a scheme
     // where several algorithms can be applied in sequence. For now, get
     // simple zlib deflate working.jhrg 1/15/17
@@ -270,11 +377,16 @@ void Chunk::complete_read(bool deflate, bool shuffle, unsigned int chunk_size, u
     // inflating the data (reversing the shuffle --> deflate process). It is
     // possible that data could just be deflated or shuffled (because we
     // have test data are use only shuffle). jhrg 1/20/17
+    // The file that implements the deflate filter is H5Zdeflate.c in the hdf5 source.
+    // The file that implements the shuffle filter is H5Zshuffle.c.
+
+    if (d_is_inflated)
+        return;
 
     chunk_size *= elem_width;
 
     if (deflate) {
-        char *dest = new char[chunk_size];  // TODO unique_ptr<>. jhrg 1/15/17
+        char *dest = new char[chunk_size];
         try {
             inflate(dest, chunk_size, get_rbuf(), get_rbuf_size());
             // This replaces (and deletes) the original read_buffer with dest.
@@ -298,6 +410,8 @@ void Chunk::complete_read(bool deflate, bool shuffle, unsigned int chunk_size, u
             throw;
         }
     }
+
+    d_is_inflated = true;
 
 #if 0 // This was handy during development for debugging. Keep it for awhile (year or two) before we drop it ndp - 01/18/17
     if(BESDebug::IsSet("dmrpp")) {
@@ -311,147 +425,43 @@ void Chunk::complete_read(bool deflate, bool shuffle, unsigned int chunk_size, u
         }
     }
 #endif
-
-    d_is_read = true;
 }
 
 /**
- * @brief Read the chunk associated with this Chunk
+ * This method is for reading one chunk after the other, using a CURL handle
+ * from the CurlHandlePool.
  *
- * @param deflate True if we should deflate the data
- * @param shuffle_chunk True if the chunk was shuffled.
- * @param chunk_size The size of the chunk once deflated in elements; ignored when deflate is false
- * @param elem_width Number of bytes in an element; ignored when shuffle_chunk is false
+ * @param deflate
+ * @param shuffle
+ * @param chunk_size
+ * @param elem_width
  */
-void Chunk::read(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width)
+void Chunk::read_chunk()
 {
-    //  is_deflate, is_shuffle, chunk_size_in elements, var width)
     if (d_is_read) {
         BESDEBUG("dmrpp", "Chunk::"<< __func__ <<"() - Already been read! Returning." << endl);
         return;
     }
 
-    if (!d_is_in_multi_queue) {
-        // This call uses the internal size param and allocates the buffer's memory
-        set_rbuf_to_size();
+    set_rbuf_to_size();
 
-        string data_access_url = get_data_url();
+    dmrpp_easy_handle *handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(this);
+    if (!handle)
+        throw BESInternalError("No more libcurl handles.", __FILE__, __LINE__);
 
-        BESDEBUG(debug,"Chunk::"<< __func__ <<"() - data_access_url "<< data_access_url << endl);
+    handle->read_data();  // throws BESInternalError if error
 
-        #if 0
-        /** - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-         * Cloudydap test hack where we tag the S3 URLs with a query string for the S3 log
-         * in order to track S3 requests. The tag is submitted as a BESContext with the
-         * request. Here we check to see if the request is for an AWS S3 object, if
-         * it is AND we have the magic BESContext "cloudydap" then we add a query
-         * parameter to the S3 URL for tracking purposes.
-         *
-         * Should this be a function? FFS why? This is the ONLY place where this needs
-         * happen, as close to the curl call as possible and we can just turn it off
-         * down the road. - ndp 1/20/17 (EOD)
-         */
-        std::string aws_s3_url("https://s3.amazonaws.com/");
-        // Is it an AWS S3 access?
-        if (!data_access_url.compare(0, aws_s3_url.size(), aws_s3_url)){
-            // Yup, headed to S3.
-            string cloudydap_context("cloudydap");
+    DmrppRequestHandler::curl_handle_pool->release_handle(handle);
 
-            BESDEBUG(debug,"Chunk::"<< __func__ <<"() - data_access_url is pointed at "
-                    "AWS S3. Checking for '"<< cloudydap_context << "' context key..." << endl);
-
-            bool found;
-            string cloudydap_context_value;
-            cloudydap_context_value = BESContextManager::TheManager()->get_context(cloudydap_context, found);
-            if (found) {
-                BESDEBUG(debug,"Chunk::"<< __func__ <<"() - Found '"<<
-                        cloudydap_context << "' context key. value: " << cloudydap_context_value << endl);
-                data_access_url += "?cloudydap=" + cloudydap_context_value;
-            }
-            else {
-                BESDEBUG(debug,"Chunk::"<< __func__ <<"() - The context "
-                        "key '" << cloudydap_context << "' was not found. S3 url unchanged." << endl);
-            }
-        }
-        /** - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-        #endif
-
-        add_tracking_query_param(data_access_url);
-
-        BESDEBUG(debug,
-                "Chunk::"<< __func__ <<"() - Reading  " << get_size() << " bytes "
-                        "from "<< data_access_url << ": " << get_curl_range_arg_string() << endl);
-
-        curl_read_byte_stream(data_access_url, get_curl_range_arg_string(), this);
-    }
-
-    complete_read(deflate, shuffle, chunk_size, elem_width);
-
-#if 0
     // If the expected byte count was not read, it's an error.
     if (get_size() != get_bytes_read()) {
         ostringstream oss;
-        oss << "Chunk: Wrong number of bytes read for '" << to_string() << "'; expected " << get_size()
-        << " but found " << get_bytes_read() << endl;
-        throw BESInternalError("oss.str()", __FILE__, __LINE__);
+        oss << "Wrong number of bytes read for chunk; read: " << get_bytes_read() << ", expected: " << get_size();
+        throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
 
-    // If data are compressed/encoded, then decode them here.
-    // At this point, the bytes_read property would be changed.
-    // The file that implements the deflate filter is H5Zdeflate.c in the hdf5 source.
-    // The file that implements the shuffle filter is H5Zshuffle.c.
-
-    // TODO This code is pretty naive - there are apparently a number of
-    // different ways HDF5 can compress data, and it does also use a scheme
-    // where several algorithms can be applied in sequence. For now, get
-    // simple zlib deflate working.jhrg 1/15/17
-    // Added support for shuffle. Assuming unshuffle always is applied _after_
-    // inflating the data (reversing the shuffle --> deflate process). It is
-    // possible that data could just be deflated or shuffled (because we
-    // have test data that use only shuffle). jhrg 1/20/17
-
-    if (deflate) {
-        char *dest = new char[chunk_size];  // TODO unique_ptr<>. jhrg 1/15/17
-        try {
-            inflate(dest, chunk_size, get_rbuf(), get_rbuf_size());
-            // This replaces (and deletes) the original read_buffer with dest.
-            set_rbuf(dest, chunk_size);
-        }
-        catch (...) {
-            delete[] dest;
-            throw;
-        }
-    }
-
-    if (shuffle) {
-        // The internal buffer is chunk's full size at this point.
-        char *dest = new char[get_rbuf_size()];
-        try {
-            unshuffle(dest, get_rbuf(), get_rbuf_size(), elem_width);
-            set_rbuf(dest, get_rbuf_size());
-        }
-        catch (...) {
-            delete[] dest;
-            throw;
-        }
-    }
-#endif
-
-    d_is_in_multi_queue = false;
-#if 0
     d_is_read = true;
-#endif
 }
-
-#if 0
-// moved to header
-void Chunk::cleanup_curl_handle()
-{
-    if (d_curl_handle != 0) curl_easy_cleanup(d_curl_handle);
-    d_curl_handle = 0;
-}
-#endif
-
 
 /**
  *
@@ -470,10 +480,6 @@ void Chunk::dump(ostream &oss) const
     oss << "[data_url='" << d_data_url << "']";
     oss << "[offset=" << d_offset << "]";
     oss << "[size=" << d_size << "]";
-#if 0
-    oss << "[md5=" << d_md5 << "]";
-    oss << "[uuid=" << d_uuid << "]";
-#endif
     oss << "[chunk_position_in_array=(";
     for (unsigned long i = 0; i < d_chunk_position_in_array.size(); i++) {
         if (i) oss << ",";
@@ -481,7 +487,7 @@ void Chunk::dump(ostream &oss) const
     }
     oss << ")]";
     oss << "[is_read=" << d_is_read << "]";
-    oss << "[is_in_multi_queue=" << d_is_in_multi_queue << "]";
+    oss << "[is_inflated=" << d_is_inflated << "]";
 }
 
 string Chunk::to_string() const

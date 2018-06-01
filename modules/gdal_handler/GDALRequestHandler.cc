@@ -67,15 +67,15 @@ using namespace libdap;
 GDALRequestHandler::GDALRequestHandler(const string &name) :
     BESRequestHandler(name)
 {
-    add_handler(DAS_RESPONSE, GDALRequestHandler::gdal_build_das);
-    add_handler(DDS_RESPONSE, GDALRequestHandler::gdal_build_dds);
-    add_handler(DATA_RESPONSE, GDALRequestHandler::gdal_build_data);
+    add_method(DAS_RESPONSE, GDALRequestHandler::gdal_build_das);
+    add_method(DDS_RESPONSE, GDALRequestHandler::gdal_build_dds);
+    add_method(DATA_RESPONSE, GDALRequestHandler::gdal_build_data);
 
-    add_handler(DMR_RESPONSE, GDALRequestHandler::gdal_build_dmr);
-    add_handler(DAP4DATA_RESPONSE, GDALRequestHandler::gdal_build_dmr);
+    add_method(DMR_RESPONSE, GDALRequestHandler::gdal_build_dmr);
+    add_method(DAP4DATA_RESPONSE, GDALRequestHandler::gdal_build_dmr);
 
-    add_handler(HELP_RESPONSE, GDALRequestHandler::gdal_build_help);
-    add_handler(VERS_RESPONSE, GDALRequestHandler::gdal_build_version);
+    add_method(HELP_RESPONSE, GDALRequestHandler::gdal_build_help);
+    add_method(VERS_RESPONSE, GDALRequestHandler::gdal_build_version);
 
     GDALAllRegister();
 }
