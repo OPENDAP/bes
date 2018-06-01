@@ -1,1 +1,14 @@
-libdap exception building response: error_code = 1005: libdap error transmitting DataDDS: The last argument to scale_grid() must be a longitude variable!
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response reqID="[http-8080-1:27:bes_request]" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <getDODS>
+        <BESError>
+            <Type>1005</Type>
+            <Message>libdap error transmitting DataDDS: The last argument to scale_grid() must be a longitude variable!</Message>
+            <Administrator>support@opendap.org</Administrator>
+            <Location>
+
+
+            </Location>
+        </BESError>
+    </getDODS>
+</response>
