@@ -1,0 +1,50 @@
+
+BES.ServerAdministrator=root@localhost
+
+BES.User=user_name
+BES.Group=group_name
+
+BES.LogName=./bes.log
+BES.LogVerbose=no
+
+BES.modules=dap,cmd,dmrpp
+BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
+BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
+BES.module.dmrpp=@abs_top_builddir@/modules/dmrpp_module/.libs/libdmrpp_module.so
+
+BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/dmrpp_module
+BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;
+BES.Catalog.catalog.FollowSymLinks=No
+
+# TRICK: Without a type match for the underlying data files that are
+# to be accessed by the DMR++ the BES framework will kick out the request
+# before it makes it into the Data/Dap4ResponseHandler where it gets
+# redirected to the DMR++ handler when a DMR++ file is found in the MDS.
+# So, here I add a TypeMatch value or hdf5 files we use here for testing.
+# It doen't matter that no handler is registered for these files, just 
+# that some type be associated with them during the initial stages of
+# request processing. jhrg 6/1/18
+
+BES.Catalog.catalog.TypeMatch=h5:.*\.(h5)$;
+
+BES.Catalog.catalog.Include=;
+BES.Catalog.catalog.Exclude=^\..*;
+
+BES.FollowSymLinks=No
+BES.Data.RootDirectory=/dev/null
+
+BES.Info.Buffered=no
+BES.Info.Type=xml
+
+BES.UncompressCache.dir=/tmp
+BES.UncompressCache.prefix=dmrpp_
+BES.UncompressCache.size=500
+
+# MDS configuration - for the tests the read the DMR++ from the MDS,
+# use the saved/baseline MDS in data/mds_for_tests
+
+DAP.GlobalMetadataStore.path = @abs_top_srcdir@/modules/dmrpp_module/data/mds_for_tests
+DAP.GlobalMetadataStore.prefix = mds_for_tests_
+DAP.GlobalMetadataStore.size = 0
+
+DAP.GlobalMetadataStore.ledger = @abs_top_srcdir@/modules/dmrpp_module/data/mds_for_tests_ledger.txt

@@ -1,0 +1,8 @@
+README
+
+These files are used for the tests that exercise the DMR++ modifications
+in the BES framework in the bes/dap/BESDap4ResponseHandler and BESDataResponseHandler.
+Those classes test the MDS for DMR++ responses for a given data file and
+redirect the data response so that it will use the DMR++ RequestHandler and
+not the RequestHandler that matches the actual data file (as given by the
+TypeMatch regular expression).

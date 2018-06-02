@@ -72,8 +72,6 @@ using namespace bes;
 using namespace libdap;
 using namespace std;
 
-//#define NC_NAME "nc"
-
 namespace dmrpp {
 
 const string module = "dmrpp";

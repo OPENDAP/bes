@@ -89,6 +89,9 @@ void BESDataResponseHandler::execute(BESDataHandlerInterface &dhi)
 
     // If we were able to lock the DMR++ it must exist; use it.
     if (mds && lock()) {
+        BESDEBUG("dmrpp", "In BESDataResponseHandler::execute(): Found a DMR++ response for '"
+            << dhi.container->get_relative_name() << "'" << endl);
+
         // Redirect the request to the DMR++ handler
         // FIXME How do we get this value in a repeatable way? From bes.conf, of course jhrg 5/31/18
         dhi.container->set_container_type("dmrpp");

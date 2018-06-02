@@ -22,6 +22,8 @@ DISTCLEANFILES = atconfig
 
 bes.conf: $(top_srcdir)/configure.ac $(srcdir)/bes.conf.in
 
+bes_mds_tests.conf: $(top_srcdir)/configure.ac $(srcdir)/bes_mds_tests.conf.in
+
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te
@@ -29,16 +31,22 @@ AUTOTEST = $(AUTOM4TE) --language=autotest
 
 TESTSUITE = $(srcdir)/testsuite
 
-check-local: atconfig atlocal $(TESTSUITE) bes.conf
+TESTSUITE_MDS = $(srcdir)/testsuite_mds_tests
+
+check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_MDS) bes.conf bes_mds_tests.conf
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+	$(SHELL) '$(TESTSUITE_MDS)' --conf=bes_mds_tests.conf $(TESTSUITEFLAGS)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
+	test ! -f '$(TESTSUITE_MDS)' || $(SHELL) '$(TESTSUITE_MDS)' --clean
 
 %: %.at 
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
 $(TESTSUITE): $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
+
+$(TESTSUITE_MDS): $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
 
 # The `:;' works around a Bash 3.2 bug when the output is not writeable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac

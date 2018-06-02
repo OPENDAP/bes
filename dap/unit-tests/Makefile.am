@@ -8,7 +8,7 @@ AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch $(DAP_CFLAGS) \
 -I$(top_srcdir)/modules/dmrpp_module
 
-LDADD = $(top_builddir)/dispatch/libbes_dispatch.la \
+LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(top_builddir)/dap/libdap_module.la \
 $(top_builddir)/modules/dmrpp_module/libdmrpp_module.la -ltest-types $(DAP_LIBS) $(LIBS)
 
 if CPPUNIT
@@ -121,7 +121,11 @@ TemporaryFileTest_LDADD = $(TemporaryFileTest_OBJS) $(LDADD)
 
 GlobalMetadataStoreTest_SOURCES = GlobalMetadataStoreTest.cc $(TEST_SRC)
 GlobalMetadataStoreTest_OBJS = ../GlobalMetadataStore.o ../TempFile.o
-GlobalMetadataStoreTest_LDADD = $(GlobalMetadataStoreTest_OBJS) ../libdap_module.la $(LDADD)
+GlobalMetadataStoreTest_LDADD = $(GlobalMetadataStoreTest_OBJS) $(LDADD)
+
+Dap4ResponseHandlerTest_SOURCES =Dap4ResponseHandlerTest.cc $(TEST_SRC)
+Dap4ResponseHandlerTest_OBJS = ../BESDap4ResponseHandler.o
+Dap4ResponseHandlerTest_LDADD = $(Dap4ResponseHandlerTest_OBJS) $(LDADD)
 
 # StoredDap2ResultTest_SOURCES = StoredDap2ResultTest.cc  $(TEST_SRC)
 # StoredDap2ResultTest_LDADD = $(LDADD)

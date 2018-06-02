@@ -35,6 +35,9 @@
  * @see BESTransmitter
  */
 class BESDap4ResponseHandler: public BESResponseHandler {
+
+    friend class Dap4ResponseHandlerTest;
+
 public:
 	BESDap4ResponseHandler(const string &name);
 	virtual ~BESDap4ResponseHandler();
