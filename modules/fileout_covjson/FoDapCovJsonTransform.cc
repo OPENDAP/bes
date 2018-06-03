@@ -518,9 +518,27 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
 
                     // Parse the attribute table values and try to determine what variables AND
                     // metadata are present -- its not an exact science, and its a little dirty.
-                    // @ TODO -- Add logic for determining the presence of z axis variables
-
-                    if(((currValue.compare("lon") == 0) || (currValue.compare("longitude") == 0)
+                    if(currName.compare("axis") == 0) {
+                        if(((currValue.compare("x") == 0) || (currValue.compare("X") == 0)) && !xExists) {
+                            xExists = true;
+                            isAxis = true;
+                            isParam = false;
+                            currAxisName = "x";
+                        }
+                        else if(((currValue.compare("y") == 0) || (currValue.compare("Y") == 0)) && !yExists) {
+                            yExists = true;
+                            isAxis = true;
+                            isParam = false;
+                            currAxisName = "y";
+                        }
+                        else if(((currValue.compare("z") == 0) || (currValue.compare("Z") == 0)) && !zExists) {
+                            zExists = true;
+                            isAxis = true;
+                            isParam = false;
+                            currAxisName = "z";
+                        }
+                    }
+                    else if(((currValue.compare("lon") == 0) || (currValue.compare("longitude") == 0)
                         || (currValue.compare("LONGITUDE") == 0) || (currValue.compare("Longitude") == 0)
                         || (currValue.compare("x") == 0) || (currValue.compare("X") == 0)) && !xExists) {
                         xExists = true;
@@ -529,7 +547,7 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
                         currAxisName = "x";
                     }
                     else if(((currName.compare("units") == 0) && ((currValue.compare("degrees_east") == 0)
-                        || currValue.compare("degree East") || currValue.compare("degrees East"))) && !xExists)  {
+                        || currValue.compare("degree East") || currValue.compare("degrees East"))) && !xExists) {
                         xExists = true;
                         isAxis = true;
                         isParam = false;
@@ -550,6 +568,12 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
                         isParam = false;
                         currAxisName = "y";
                     }
+                    else if(((currValue.compare("z") == 0) || (currValue.compare("Z") == 0)) && !zExists) {
+                        zExists = true;
+                        isAxis = true;
+                        isParam = false;
+                        currAxisName = "z";
+                    }
                     else if(((currName.compare("t") == 0) || (currName.compare("TIME") == 0)
                         || (currName.compare("time") == 0) || (currName.compare("s") == 0)
                         || (currName.compare("seconds") == 0) || (currName.compare("Seconds") == 0)
@@ -560,13 +584,6 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
                         currAxisName = "t";
                         currAxisTimeOrigin = currValue;
                     }
-                    // else if((currName.compare("units") == 0) && (currValue.find("hour") || currValue.find("hours")
-                    //     || currValue.find("minutes") || currValue.find("seconds") || currValue.find("time")) && !tExists) {
-                    //     tExists = true;
-                    //     isAxis = true;
-                    //     isParam = false;
-                    //     currAxisName = "t";
-                    // }
                     else if(currName.compare("units") == 0) {
                         isAxis = false;
                         isParam = true;
@@ -577,9 +594,6 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
                         isParam = true;
                         currParameterLongName = currValue;
                     }
-
-                    // @TODO -- Add logic for determining the presence of a z axis variable here
-
                     else {
                         isAxis = false;
                         isParam = false;
