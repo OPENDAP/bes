@@ -30,11 +30,26 @@
 
 /** @brief response handler that builds an OPeNDAP Dap4 data response
  *
+ * This ResponseHandler is used to build DAP4 data responses.
+ *
+ * This class looks in the MDS for cached/stored DMR++ responses and, if found,
+ * will re-direct the request to the DMR++ requestHandler, regardless
+ * of the dataset's format and/or RequestHandler as specified by the
+ * bes.conf TypeMatch configuration. However, this can be suppressed
+ * using a configuration parameter in the bes.conf file. If the bes
+ * key BES.Use.Dmrpp is not yes, the handler does not look in the MDS
+ * for DMR++ responses and no attempt to redirect the request is made.
+ * The bes key BES.Dmrpp.Name should be set to the name of the DMR++
+ * handler used in the key BES.modules.
+ *
  * @see DMR
  * @see BESContainer
  * @see BESTransmitter
  */
 class BESDap4ResponseHandler: public BESResponseHandler {
+
+    bool d_use_dmrpp;           ///< Check for DMR++ responses and redirect?
+    std::string d_dmrpp_name;   ///< The name of the DMR++ module
 
     friend class Dap4ResponseHandlerTest;
 
@@ -44,6 +59,22 @@ public:
 
 	virtual void execute(BESDataHandlerInterface &dhi);
 	virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+
+	/**
+	 * @brief Is the BES.Use.Dmrpp key set in the bes.conf?
+	 * @return True or false.
+	 */
+	virtual bool get_use_dmrpp() const {
+	    return d_use_dmrpp;
+	}
+
+	/**
+	 * @brief Get the name of the DMR++ handler.
+	 * @return The value of the BES.Dmrpp.Name bes key.
+	 */
+	virtual std::string get_dmrpp_name() const {
+	    return d_dmrpp_name;
+	}
 
 	virtual void dump(ostream &strm) const;
 

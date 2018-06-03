@@ -32,29 +32,28 @@
 
 #include "config.h"
 
+#if HAVE_UNISTD_H
 #include <unistd.h>
-
-#include "TheBESKeys.h"
-#include "BESInternalFatalError.h"
-#include "BESSyntaxUserError.h"
-
-#include "config.h"
+#endif
 
 #include <cerrno>
 #include <cstring>
 
-#if HAVE_UNISTD_H
-#include <unistd.h>
-#endif
+#include <string>
+#include <sstream>
 
 #include "TheBESKeys.h"
 #include "BESUtil.h"
 #include "BESFSDir.h"
 #include "BESFSFile.h"
+#include "BESInternalFatalError.h"
+#include "BESSyntaxUserError.h"
 
 #define BES_INCLUDE_KEY "BES.Include"
 
-std::vector<string> TheBESKeys::KeyList;
+using namespace std;
+
+vector<string> TheBESKeys::KeyList;
 
 TheBESKeys *TheBESKeys::_instance = 0;
 string TheBESKeys::ConfigFile = "";
@@ -458,6 +457,88 @@ void TheBESKeys::get_values(const string& s, vector<string> &vals, bool &found)
     if (i != _the_keys->end()) {
         found = true;
         vals = (*i).second;
+    }
+}
+
+/**
+ * @brief Read a boolean-valued key from the bes.conf file
+ *
+ * Look-up the bes key \arg key and return its value if set. If the
+ * key is not set, return the default value.
+ *
+ * @param key The key to loop up
+ * @param default_value Return this value if \arg key is not found.
+ * @return The boolean value of \arg key. The value of the key is true if the
+ * key is set to "true", "yes", or "on", otherwise the key value is
+ * interpreted as false. If \arg key is not set, return \arg default_value.
+ */
+bool TheBESKeys::read_bool_key(const string &key, bool default_value)
+{
+    bool found = false;
+    string value;
+    TheBESKeys::TheKeys()->get_value(key, value, found);
+    // 'key' holds the string value at this point if key_found is true
+    if (found) {
+        value = BESUtil::lowercase(value);
+        return (value == "true" || value == "yes"|| value == "on");
+    }
+    else {
+        return default_value;
+    }
+ }
+
+/**
+ * @brief Read a string-valued key from the bes.conf file.
+ *
+ * Look-up the bes key \arg key and return its value if set. If the
+ * key is not set, return the default value.
+ *
+ * @param key The key to loop up
+ * @param default_value Return this value if \arg key is not found.
+ * @return The string value of \arg key.
+ */
+string TheBESKeys::read_string_key(const string &key, const string &default_value)
+{
+    bool found = false;
+    string value;
+    TheBESKeys::TheKeys()->get_value(key, value, found);
+    // 'value' holds the string value at this point if found is true
+    if (found) {
+        if (value[value.length() - 1] == '/') value.erase(value.length() - 1);
+        return value;
+    }
+    else {
+        return default_value;
+    }
+}
+
+/**
+ * @brief Read an integer-valued key from the bes.conf file.
+ *
+ * Look-up the bes key \arg key and return its value if set. If the
+ * key is not set, return the default value.
+ *
+ * @param key The key to loop up
+ * @param default_value Return this value if \arg key is not found.
+ * @return The integer value of \arg key.
+ */
+int TheBESKeys::read_key_value(const string &key, int default_value)
+{
+    bool found = false;
+    string value;
+    TheBESKeys::TheKeys()->get_value(key, value, found);
+    // 'key' holds the string value at this point if found is true
+    if (found) {
+        std::istringstream iss(value);
+        int int_val;
+        iss >> int_val;
+        if (iss.eof() || iss.bad() || iss.fail())
+            return default_value;
+        else
+            return int_val;
+    }
+    else {
+        return default_value;
     }
 }
 

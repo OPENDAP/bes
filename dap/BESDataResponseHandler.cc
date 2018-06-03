@@ -41,6 +41,7 @@
 #include "BESDapNames.h"
 #include "BESDataNames.h"
 #include "BESContextManager.h"
+#include "TheBESKeys.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"
 #include "BESTransmitter.h"
@@ -52,8 +53,10 @@ using namespace libdap;
 using namespace std;
 
 BESDataResponseHandler::BESDataResponseHandler(const string &name) :
-    BESResponseHandler(name)
+    BESResponseHandler(name), d_use_dmrpp(false), d_dmrpp_name(DMRPP_DEFAULT_NAME)
 {
+    d_use_dmrpp = TheBESKeys::TheKeys()->read_bool_key(USE_DMRPP_KEY, false);   // defined in BESDapNames.h
+    d_dmrpp_name = TheBESKeys::TheKeys()->read_string_key(DMRPP_NAME_KEY, DMRPP_DEFAULT_NAME);
 }
 
 BESDataResponseHandler::~BESDataResponseHandler()
@@ -78,9 +81,28 @@ void BESDataResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
     dhi.action_name = DATA_RESPONSE_STR;
 
-    bool rsl_found;
-    int response_size_limit = BESContextManager::TheManager()->get_context_int("max_response_size", rsl_found);
+    if (d_use_dmrpp) {
+        GlobalMetadataStore *mds = GlobalMetadataStore::get_instance(); // mds may be NULL
 
+        GlobalMetadataStore::MDSReadLock lock;
+        dhi.first_container();
+        if (mds) lock = mds->is_dmrpp_available(dhi.container->get_relative_name());
+
+        // If we were able to lock the DMR++ it must exist; use it.
+        if (mds && lock()) {
+            BESDEBUG("dmrpp",
+                "In BESDataResponseHandler::execute(): Found a DMR++ response for '" << dhi.container->get_relative_name() << "'" << endl);
+
+            // Redirect the request to the DMR++ handler
+            dhi.container->set_container_type(d_dmrpp_name);
+
+            // Add information to the container so the dmrpp handler works
+            // This tells DMR++ handler to look for this in the MDS
+            dhi.container->set_attributes(MDS_HAS_DMRPP);
+        }
+    }
+
+#if 0
     GlobalMetadataStore *mds = GlobalMetadataStore::get_instance(); // mds may be NULL
 
     GlobalMetadataStore::MDSReadLock lock;
@@ -100,6 +122,11 @@ void BESDataResponseHandler::execute(BESDataHandlerInterface &dhi)
         // This tells DMR++ handler to look for this in the MDS
         dhi.container->set_attributes(MDS_HAS_DMRPP);
     }
+#endif
+
+
+    bool rsl_found;
+    int response_size_limit = BESContextManager::TheManager()->get_context_int("max_response_size", rsl_found);
 
     // NOTE: It is the responsibility of the specific request handler to set
     // the BaseTypeFactory. It is set to NULL here

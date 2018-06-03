@@ -48,3 +48,11 @@ DAP.GlobalMetadataStore.prefix = mds_for_tests_
 DAP.GlobalMetadataStore.size = 0
 
 DAP.GlobalMetadataStore.ledger = @abs_top_srcdir@/modules/dmrpp_module/data/mds_for_tests_ledger.txt
+
+# These keys configure the bes/dap/BES{Dap4,Data}ResponseHandler classes
+# to check for DMR++ responses in the MDS and redirect data requests here
+# when those responses are present.
+
+BES.Use.Dmrpp = yes
+# dmrpp is the default value
+# BES.Dmrpp.Name = dmrpp

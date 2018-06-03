@@ -22,6 +22,8 @@
 
 #include "config.h"
 
+#include <memory>
+
 #include <DMR.h>
 
 #include "BESDap4ResponseHandler.h"
@@ -30,14 +32,19 @@
 #include "BESDapNames.h"
 #include "BESDapTransmit.h"
 #include "BESContextManager.h"
+#include "TheBESKeys.h"
 #include "BESDebug.h"
 
 #include "GlobalMetadataStore.h"
 
+using namespace std;
 using namespace bes;
 
-BESDap4ResponseHandler::BESDap4ResponseHandler(const string &name) : BESResponseHandler(name)
+BESDap4ResponseHandler::BESDap4ResponseHandler(const string &name)
+    : BESResponseHandler(name), d_use_dmrpp(false), d_dmrpp_name(DMRPP_DEFAULT_NAME)
 {
+    d_use_dmrpp = TheBESKeys::TheKeys()->read_bool_key(USE_DMRPP_KEY, false);   // defined in BESDapNames.h
+    d_dmrpp_name = TheBESKeys::TheKeys()->read_string_key(DMRPP_NAME_KEY, DMRPP_DEFAULT_NAME);
 }
 
 BESDap4ResponseHandler::~BESDap4ResponseHandler()
@@ -55,31 +62,31 @@ void BESDap4ResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
 	dhi.action_name = DAP4DATA_RESPONSE_STR;
 
-    bool found;
-    // This throws on error; hence before the 'new DMR()'
-    int response_size_limit = BESContextManager::TheManager()->get_context_int("max_response_size", found);
+    if (d_use_dmrpp) {
+        GlobalMetadataStore *mds = GlobalMetadataStore::get_instance(); // mds may be NULL
 
-    GlobalMetadataStore *mds = GlobalMetadataStore::get_instance(); // mds may be NULL
+        GlobalMetadataStore::MDSReadLock lock;
+        dhi.first_container();
+        if (mds) lock = mds->is_dmrpp_available(dhi.container->get_relative_name());
 
-    GlobalMetadataStore::MDSReadLock lock;
-    dhi.first_container();
-    if (mds) lock = mds->is_dmrpp_available(dhi.container->get_relative_name());
+        // If we were able to lock the DMR++ it must exist; use it.
+        if (mds && lock()) {
+            BESDEBUG("dmrpp",
+                "In BESDap4ResponseHandler::execute(): Found a DMR++ response for '" << dhi.container->get_relative_name() << "'" << endl);
 
-    // If we were able to lock the DMR++ it must exist; use it.
-    if (mds && lock()) {
-        BESDEBUG("dmrpp", "In BESDap4ResponseHandler::execute(): Found a DMR++ response for '"
-            << dhi.container->get_relative_name() << "'" << endl);
+            // Redirect the request to the DMR++ handler
+            dhi.container->set_container_type(d_dmrpp_name);
 
-        // Redirect the request to the DMR++ handler
-        // FIXME How do we get this value in a repeatable way? From bes.conf, of course jhrg 5/31/18
-        dhi.container->set_container_type("dmrpp");
-
-        // Add information to the container so the dmrpp handler works
-        // This tells DMR++ handler to look for this in the MDS
-        dhi.container->set_attributes(MDS_HAS_DMRPP);
+            // Add information to the container so the dmrpp handler works
+            // This tells DMR++ handler to look for this in the MDS
+            dhi.container->set_attributes(MDS_HAS_DMRPP);
+        }
     }
 
-	DMR *dmr = new DMR();
+	auto_ptr<DMR> dmr(new DMR());
+
+    bool found;
+    int response_size_limit = BESContextManager::TheManager()->get_context_int("max_response_size", found);
 
 	if (found)
 	    dmr->set_response_limit(response_size_limit);
@@ -88,7 +95,7 @@ void BESDap4ResponseHandler::execute(BESDataHandlerInterface &dhi)
 	if (found && !xml_base.empty())
 		dmr->set_request_xml_base(xml_base);
 
-	d_response_object = new BESDMRResponse(dmr);
+	d_response_object = new BESDMRResponse(dmr.release());
 
 	BESRequestHandlerList::TheList()->execute_each(dhi);
 }
