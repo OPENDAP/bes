@@ -1,5 +1,0 @@
-#! /bin/sh
-test "${ZSH_VERSION+set}" = set && alias -g '${1+"$@"}'='"$@"'
-cd '/Users/kodi/src/hyrax/bes/modules/gateway_module/tests'
-exec ${CONFIG_SHELL-/bin/sh} "/Users/kodi/src/hyrax/bes/modules/gateway_module/tests/./testsuite" -v -d  3 ${1+"$@"}
-exit 1
