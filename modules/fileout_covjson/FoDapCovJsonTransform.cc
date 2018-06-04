@@ -244,6 +244,8 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
 
     getAttributes(strm, a->get_attr_table(), a->name(), axisRetrieved, parameterRetrieved);
 
+    // a->print_val(*strm, "\n", true); // For testing purposes
+
     // sendData = false; // For testing purposes
 
     // If we are dealing with an Axis
@@ -305,7 +307,15 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
             istringstream (otemp.str());
             istringstream (otemp.str()) >> tempVal;
             shapeVals.push_back(tempVal);
-            currParameter->shape += otemp.str();
+
+            // t may only have 1 value: the origin timestamp
+            // DANGER: t may not yet be defined
+            if((i == 0) && tExists) {
+                currParameter->shape += "1";
+            }
+            else {
+                currParameter->shape += otemp.str();
+            }
         }
         currParameter->shape += "],";
 
@@ -369,6 +379,8 @@ void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, 
 
     getAttributes(strm, a->get_attr_table(), a->name(), axisRetrieved, parameterRetrieved);
 
+    // a->print_val(*strm, "\n", true); // For testing purposes
+
     // sendData = false; // For testing purposes
 
     // If we are dealing with an Axis
@@ -430,7 +442,15 @@ void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, 
             istringstream (otemp.str());
             istringstream (otemp.str()) >> tempVal;
             shapeVals.push_back(tempVal);
-            currParameter->shape += otemp.str();
+
+            // t may only have 1 value: the origin timestamp
+            // DANGER: t may not yet be defined
+            if((i == 0) && tExists) {
+                currParameter->shape += "1";
+            }
+            else {
+                currParameter->shape += otemp.str();
+            }
         }
         currParameter->shape += "],";
 
@@ -472,8 +492,6 @@ void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, 
  * Gets the current attribute values and stores the metadata the data in
  * the corresponding private class variables . Will logically search
  * for value names (ie "longitude") and store them as required.
- *
- @ @note TODO Add logic for determining the presence of z axis variable
  *
  * @note strm is included here for debugging purposes. Otherwise, there is no
  *   absolute need to require it as an argument. May remove strm as an arg if
@@ -518,76 +536,40 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
 
                     // Parse the attribute table values and try to determine what variables AND
                     // metadata are present -- its not an exact science, and its a little dirty.
-                    if(currName.compare("axis") == 0) {
-                        if(((currValue.compare("x") == 0) || (currValue.compare("X") == 0)) && !xExists) {
+                    if(currName.compare("units") == 0) {
+                        if(((currValue.compare("degrees_east") == 0) || (currValue.compare("degree East") == 0)
+                            || (currValue.compare("degrees East") == 0)) && !xExists) {
                             xExists = true;
                             isAxis = true;
                             isParam = false;
                             currAxisName = "x";
                         }
-                        else if(((currValue.compare("y") == 0) || (currValue.compare("Y") == 0)) && !yExists) {
+                        else if(((currValue.compare("degrees_north") == 0) || (currValue.compare("degree North") == 0)
+                            || (currValue.compare("degrees North") == 0)) && !yExists) {
                             yExists = true;
                             isAxis = true;
                             isParam = false;
                             currAxisName = "y";
                         }
-                        else if(((currValue.compare("z") == 0) || (currValue.compare("Z") == 0)) && !zExists) {
+                        else if(((currValue.find("z") == 0) || (currValue.find("Z") == 0)) && !zExists) {
                             zExists = true;
                             isAxis = true;
                             isParam = false;
                             currAxisName = "z";
                         }
-                    }
-                    else if(((currValue.compare("lon") == 0) || (currValue.compare("longitude") == 0)
-                        || (currValue.compare("LONGITUDE") == 0) || (currValue.compare("Longitude") == 0)
-                        || (currValue.compare("x") == 0) || (currValue.compare("X") == 0)) && !xExists) {
-                        xExists = true;
-                        isAxis = true;
-                        isParam = false;
-                        currAxisName = "x";
-                    }
-                    else if(((currName.compare("units") == 0) && ((currValue.compare("degrees_east") == 0)
-                        || currValue.compare("degree East") || currValue.compare("degrees East"))) && !xExists) {
-                        xExists = true;
-                        isAxis = true;
-                        isParam = false;
-                        currAxisName = "x";
-                    }
-                    else if(((currValue.compare("lat") == 0) || (currValue.compare("latitude") == 0)
-                        || (currValue.compare("LATITUDE") == 0) || (currValue.compare("Latitude") == 0)
-                        || (currValue.compare("y") == 0) || (currValue.compare("Y") == 0)) && !yExists) {
-                        yExists = true;
-                        isAxis = true;
-                        isParam = false;
-                        currAxisName = "y";
-                    }
-                    else if(((currName.compare("units") == 0) && ((currValue.compare("degrees_north") == 0)
-                        || currValue.compare("degree North") || currValue.compare("degrees North"))) && !yExists) {
-                        yExists = true;
-                        isAxis = true;
-                        isParam = false;
-                        currAxisName = "y";
-                    }
-                    else if(((currValue.compare("z") == 0) || (currValue.compare("Z") == 0)) && !zExists) {
-                        zExists = true;
-                        isAxis = true;
-                        isParam = false;
-                        currAxisName = "z";
-                    }
-                    else if(((currName.compare("t") == 0) || (currName.compare("TIME") == 0)
-                        || (currName.compare("time") == 0) || (currName.compare("s") == 0)
-                        || (currName.compare("seconds") == 0) || (currName.compare("Seconds") == 0)
-                        || (currName.compare("time_origin") == 0)) && !tExists) {
-                        tExists = true;
-                        isAxis = true;
-                        isParam = false;
-                        currAxisName = "t";
-                        currAxisTimeOrigin = currValue;
-                    }
-                    else if(currName.compare("units") == 0) {
-                        isAxis = false;
-                        isParam = true;
-                        currParameterUnit = currValue;
+                        else if(((currValue.find("day") == 0) || (currValue.find("hour") == 0)
+                            || (currValue.find("minute") == 0) || (currValue.find("second") == 0)) && !tExists) {
+                            tExists = true;
+                            isAxis = true;
+                            isParam = false;
+                            currAxisTimeOrigin = currValue;
+                            currAxisName = "t";
+                        }
+                        else {
+                            isAxis = false;
+                            isParam = true;
+                            currParameterUnit = currValue;
+                        }
                     }
                     else if(currName.compare("long_name") == 0) {
                         isAxis = false;
@@ -610,6 +592,9 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
                         // the time origin timestamp value with the
                         // appropriate formatting for printing
                         if(currAxisName.compare("t") == 0) {
+                            // @TODO Convert axis time origin to
+                            // to an acceptable timestamp format
+
                             newAxis->values += "\"values\": [\"";
                             newAxis->values += currAxisTimeOrigin;
                             newAxis->values += "\"]";
@@ -874,9 +859,55 @@ void FoDapCovJsonTransform::printAxesWorker(ostream *strm, string indent)
     // Write the axes to strm
     *strm << indent << "\"axes\": {" << endl;
     for(unsigned int i = 0; i < axisCount; i++) {
-        *strm << child_indent1 << "\"" << axes[i]->name << "\": {" << endl;
-        *strm << child_indent2 << axes[i]->values << endl;
+        for(unsigned int j = 0; j < axisCount; j++) {
+            // Logic for printing axes in the appropriate order
 
+            // If x, y, z, and t all exist (x, y, z, t)
+            if(xExists && yExists && zExists && tExists) {
+                if((i == 0) && (axes[j]->name.compare("x") == 0)) {
+                    *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
+                    *strm << child_indent2 << axes[j]->values << endl;
+                }
+                else if((i == 1) && (axes[j]->name.compare("y") == 0)) {
+                    *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
+                    *strm << child_indent2 << axes[j]->values << endl;
+                }
+                else if((i == 2) && (axes[j]->name.compare("z") == 0)) {
+                    *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
+                    *strm << child_indent2 << axes[j]->values << endl;
+                }
+                else if((i == 3) && (axes[j]->name.compare("t") == 0)) {
+                    *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
+                    *strm << child_indent2 << axes[j]->values << endl;
+                }
+            }
+            // If just x, y, and t exist (x, y, t)
+            else if(xExists && yExists && !zExists && tExists) {
+                if((i == 0) && (axes[j]->name.compare("x") == 0)) {
+                    *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
+                    *strm << child_indent2 << axes[j]->values << endl;
+                }
+                else if((i == 1) && (axes[j]->name.compare("y") == 0)) {
+                    *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
+                    *strm << child_indent2 << axes[j]->values << endl;
+                }
+                else if((i == 2) && (axes[j]->name.compare("t") == 0)) {
+                    *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
+                    *strm << child_indent2 << axes[j]->values << endl;
+                }
+            }
+            // If just x and y exist (x, y)
+            else if(xExists && yExists && !zExists && !tExists) {
+                if((i == 0) && (axes[j]->name.compare("x") == 0)) {
+                    *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
+                    *strm << child_indent2 << axes[j]->values << endl;
+                }
+                else if((i == 1) && (axes[j]->name.compare("y") == 0)) {
+                    *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
+                    *strm << child_indent2 << axes[j]->values << endl;
+                }
+            }
+        }
         if(i == axisCount - 1) {
             *strm << child_indent1 << "}" << endl;
         }
