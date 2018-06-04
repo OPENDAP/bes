@@ -7,8 +7,9 @@ noinst_DATA = bes.conf
 
 CLEANFILES = bes.conf bes.log $(srcdir)/package.m4 $(TESTSUITE) 
 
-EXTRA_DIST = contiguous chunked new_types $(TESTSUITE) $(TESTSUITE).at \
-atlocal.in bes.conf.in $(srcdir)/package.m4 
+EXTRA_DIST = contiguous chunked new_types $(srcdir)/package.m4 atlocal.in \
+$(TESTSUITE) $(TESTSUITE).at bes.conf.in $(TESTSUITE_MDS) $(TESTSUITE_MDS).at \
+bes_mds_tests.conf.in mds_tests
 
 DISTCLEANFILES = atconfig
 

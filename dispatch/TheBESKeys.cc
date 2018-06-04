@@ -522,7 +522,7 @@ string TheBESKeys::read_string_key(const string &key, const string &default_valu
  * @param default_value Return this value if \arg key is not found.
  * @return The integer value of \arg key.
  */
-int TheBESKeys::read_key_value(const string &key, int default_value)
+int TheBESKeys::read_int_key(const string &key, int default_value)
 {
     bool found = false;
     string value;

@@ -59,6 +59,8 @@ using std::ostringstream;
 
 #include "test_config.h"
 
+using namespace std;
+
 // Not run by default!
 // Set from the command-line invocation of the main only
 // since we're not sure the OS has room for the test files.

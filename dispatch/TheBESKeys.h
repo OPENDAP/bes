@@ -132,7 +132,7 @@ public:
 
     bool read_bool_key(const std::string &key, bool default_value);
     std::string read_string_key(const std::string &key, const std::string &default_value);
-    int read_key_value(const std::string &key, int default_value);
+    int read_int_key(const std::string &key, int default_value);
 
     typedef std::map<std::string, std::vector<std::string> >::const_iterator Keys_citer;
 
