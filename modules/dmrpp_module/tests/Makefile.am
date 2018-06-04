@@ -28,9 +28,11 @@ bes_mds_tests.conf: $(top_srcdir)/configure.ac $(srcdir)/bes_mds_tests.conf.in
 
 $(builddir)/mds_for_tests:
 	cp -r $(top_srcdir)/modules/dmrpp_module/data/mds_for_tests $(builddir)/mds_for_tests
-	(cd $(builddir)/mds_for_tests \
-	&& chmod -R a+w * \
-	&& for d in *.in; do sed -e "s%[@]abs_top_srcdir[@]%${abs_top_srcdir}%" $$d > `basename $$d .in`; done)
+	chmod -R a+w $(builddir)/mds_for_tests
+	(cd $(builddir)/mds_for_tests && \
+	 for d in *.in; \
+		do sed -e "s%[@]abs_top_srcdir[@]%${abs_top_srcdir}%" $$d > `basename $$d .in`; \
+	 done)
 
 ############## Autotest follows #####################
 
