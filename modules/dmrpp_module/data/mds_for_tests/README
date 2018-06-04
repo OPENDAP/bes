@@ -7,5 +7,7 @@ redirect the data response so that it will use the DMR++ RequestHandler and
 not the RequestHandler that matches the actual data file (as given by the
 TypeMatch regular expression).
 
-NB: If new data are added to this (to expand the tests, e.g.), copy it to
-modules/dmrpp_module/tests so that it will be used.
+NB: Set the URL used for the DMR++ responses so that href is the value
+"file://@abs_top_srcdir@/modules/dmrpp_module/data/dmrpp/chunked_fourD.h5".
+Note also that the file must be renamed to end in '.in' so that the Makefile
+in dmrpp_module/tests can edit it.
