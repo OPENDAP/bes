@@ -43,11 +43,11 @@ BES.UncompressCache.size=500
 # MDS configuration - for the tests the read the DMR++ from the MDS,
 # use the saved/baseline MDS in data/mds_for_tests
 
-DAP.GlobalMetadataStore.path = @abs_top_srcdir@/modules/dmrpp_module/data/mds_for_tests
+DAP.GlobalMetadataStore.path = @abs_top_builddir@/modules/dmrpp_module/tests/mds_for_tests
 DAP.GlobalMetadataStore.prefix = mds_for_tests_
 DAP.GlobalMetadataStore.size = 0
 
-DAP.GlobalMetadataStore.ledger = @abs_top_srcdir@/modules/dmrpp_module/data/mds_for_tests_ledger.txt
+DAP.GlobalMetadataStore.ledger = @abs_top_builddir@/modules/dmrpp_module/tests/mds_for_tests_ledger.txt
 
 # These keys configure the bes/dap/BES{Dap4,Data}ResponseHandler classes
 # to check for DMR++ responses in the MDS and redirect data requests here

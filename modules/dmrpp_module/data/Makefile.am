@@ -53,6 +53,8 @@ bes.hdf5.cf.template.conf: $(srcdir)/bes.hdf5.cf.template.conf.in $(top_srcdir)/
 
 EXTRA_PROGRAMS = 
 
+noinst_DATA = mds_for_tests
+
 EXTRA_DIST = keepalive_stats.sh mtest.sh shreddit.sh test_reuse.sh \
 mkChunkedTestData.py mkChunkedNewTypes.py get_dmrpp.sh README \
 chunked_compund.bescmd chunked_enum.bescmd chunked_opaque.bescmd \

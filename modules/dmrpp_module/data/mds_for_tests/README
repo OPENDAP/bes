@@ -6,3 +6,6 @@ Those classes test the MDS for DMR++ responses for a given data file and
 redirect the data response so that it will use the DMR++ RequestHandler and
 not the RequestHandler that matches the actual data file (as given by the
 TypeMatch regular expression).
+
+NB: If new data are added to this (to expand the tests, e.g.), copy it to
+modules/dmrpp_module/tests so that it will be used.

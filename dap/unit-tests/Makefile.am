@@ -39,7 +39,7 @@ noinst_DATA = response_cache pathinfo_files bes.conf
 response_cache:
 	test -d response_cache  || mkdir response_cache 
 
-# If 'input-files' does not exist, replicate it here. tar (used to make
+# If 'pathinfo_files' does not exist, replicate it here. tar (used to make
 # the source dist) dereferences symbolic links, so we make them this 
 # way to get distcheck to work.
 pathinfo_files:
