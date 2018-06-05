@@ -123,10 +123,6 @@ GlobalMetadataStoreTest_SOURCES = GlobalMetadataStoreTest.cc $(TEST_SRC)
 GlobalMetadataStoreTest_OBJS = ../GlobalMetadataStore.o ../TempFile.o
 GlobalMetadataStoreTest_LDADD = $(GlobalMetadataStoreTest_OBJS) $(LDADD)
 
-Dap4ResponseHandlerTest_SOURCES =Dap4ResponseHandlerTest.cc $(TEST_SRC)
-Dap4ResponseHandlerTest_OBJS = ../BESDap4ResponseHandler.o
-Dap4ResponseHandlerTest_LDADD = $(Dap4ResponseHandlerTest_OBJS) $(LDADD)
-
 # StoredDap2ResultTest_SOURCES = StoredDap2ResultTest.cc  $(TEST_SRC)
 # StoredDap2ResultTest_LDADD = $(LDADD)
 

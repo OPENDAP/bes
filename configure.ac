@@ -801,7 +801,7 @@ AC_CONFIG_FILES([Makefile
 		 standalone/Makefile
 		 
 		 server/Makefile
-		 server/test/Makefile
+
 		 bin/Makefile
 		 
 		 templates/Makefile

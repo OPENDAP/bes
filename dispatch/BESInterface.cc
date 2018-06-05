@@ -45,6 +45,8 @@
 #include <sstream>
 #include <iostream>
 
+#include "Error.h"
+
 #include "BESInterface.h"
 
 #include "TheBESKeys.h"
@@ -54,8 +56,8 @@
 // #include "BESReporterList.h"
 #include "BESContextManager.h"
 
-#if 0
 #include "BESDapError.h"
+#if 0
 #include "BESDapErrorInfo.h"
 #include "BESInfoList.h"
 #endif
@@ -142,7 +144,13 @@ static void register_signal_handler()
         throw BESInternalFatalError("Could not register a handler to catch alarm/timeout.", __FILE__, __LINE__);
 }
 
-void log_error(BESError &e)
+static inline void downcase(string &s)
+{
+    for (unsigned int i = 0; i < s.length(); i++)
+        s[i] = tolower(s[i]);
+}
+
+static void log_error(BESError &e)
 {
     string error_name = "";
     // TODO This should be configurable; I'm changing the values below to always log all errors.
@@ -172,17 +180,17 @@ void log_error(BESError &e)
         break;
 
     default:
-        error_name = "Unrecognized BES Error";
+        error_name = "BES Error";
         break;
     }
 
     if (only_log_to_verbose) {
-            VERBOSE("ERROR: " << error_name << ", type: " << e.get_error_type() << ", file: " << e.get_file() << ":"
+            VERBOSE("ERROR: " << error_name << ", error code: " << e.get_error_type() << ", file: " << e.get_file() << ":"
                     << e.get_line()  << ", message: " << e.get_message() << endl);
 
     }
 	else {
-		LOG("ERROR: " << error_name << ": " << e.get_message() << endl);
+		LOG("ERROR: " << error_name << ": " << e.get_message() << "(error code: " << e.get_error_type() << ")." << endl);
 	}
 }
 
@@ -307,11 +315,21 @@ extern BESStopWatch *bes_timing::elapsedTimeToTransmitStart;
  */
 int BESInterface::handleException(BESError &e, BESDataHandlerInterface &dhi)
 {
+    bool found = false;
+    string context = BESContextManager::TheManager()->get_context("errors", found);
+    downcase(context);
+    if (found && context == XML_ERRORS)
+        dhi.error_info = new BESXMLInfo();
+    else
+        dhi.error_info = BESInfoList::TheList()->build_info();
+
 #if 0
     dhi.error_info = new BESXMLInfo();
-#else
+// #else
     dhi.error_info = BESInfoList::TheList()->build_info();
 #endif
+
+    log_error(e);
 
     string administrator = "";
     try {

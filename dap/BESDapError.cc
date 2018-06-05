@@ -114,8 +114,6 @@ int BESDapError::convert_error_code(int error_code, int current_error_type)
         break;
     }
     }
-
-    return BES_INTERNAL_ERROR;
 }
 
 int BESDapError::convert_error_code(int error_code, bool fatal)
