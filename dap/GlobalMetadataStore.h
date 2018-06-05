@@ -82,6 +82,7 @@ class GlobalMetadataStore: public BESFileLockingCache {
 private:
     bool d_use_local_time;      // Base on BES.LogTimeLocal
     std::string d_ledger_name;  // Name of the ledger file
+    std::string d_xml_base;     // The value of the context xml:basse
 
     static bool d_enabled;
     static GlobalMetadataStore *d_instance;
@@ -158,6 +159,10 @@ protected:
 
     void write_response_helper(const std::string &name, std::ostream &os, const std::string &suffix,
         const std::string &object_name);
+
+    // This version adds xml:base to the DMR/DMR++
+    void write_response_helper(const std::string &name, std::ostream &os, const std::string &suffix,
+        const std::string &xml_base, const std::string &object_name);
 
     bool remove_response_helper(const std::string& name, const std::string &suffix, const std::string &object_name);
 

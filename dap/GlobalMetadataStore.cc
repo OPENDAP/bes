@@ -130,6 +130,68 @@ static void transfer_bytes(int fd, ostream &os)
     }
 }
 
+static void insert_xml_base(int fd, ostream &os, const strong &xml_base)
+{
+    static const int BUFFER_SIZE = 16*1024;
+
+#if _POSIX_C_SOURCE >= 200112L
+    /* Advise the kernel of our access pattern.  */
+    posix_fadvise(fd, 0, 0, 1);  // FDADVICE_SEQUENTIAL
+#endif
+
+    char buf[BUFFER_SIZE + 1];
+
+    while(size_t bytes_read = read(fd, buf, BUFFER_SIZE))
+    {
+        if(bytes_read == (size_t)-1)
+            throw BESInternalError("Could not read dds from the metadata store.", __FILE__, __LINE__);
+        if (!bytes_read)
+            break;
+
+        // Every valid DMR/++ response in the MDS starts with:
+        // <?xml version="1.0" encoding="ISO‌-8859-1"?>
+        //
+        // and has one of two kinds of <Dataset...> tags
+        // 1: <Dataset xmlns="..." xml:base="file:DMR_1.xml" ... >
+        // 2: <Dataset xmlns="..." ... >
+        //
+        // Assume it is well formed and always includes the prolog,
+        // but might not use <CR> <CRLF> chars
+
+        int i = 0;
+        while (buf[i++] != '>');    // 'i' now points one char past the xml prolog
+        os.write(buf, i);
+
+        int j = 0;
+        char xml_base_literal[] = "xml:base";
+        while (i < bytes_read) {
+            if (buf[i] == '>') {    // Found end of Dataset; no xml:base was present
+                os << " xml:base=\"" << xml_base << "\"";
+                break;
+            }
+            else if (j == sizeof(xml_base_literal)) { // found 'xml:base' literal
+                // read '=' then dump double quotes and write the value
+                while (buf[i++] != '=');
+                while (buf[i++] != '"');
+                while (buf[i++] != '"');
+
+                os << "\"" << xml_base << "\"";
+                break;
+            }
+            else if (buf[i] == xml_base_literal[j]) {
+                ++j;
+            }
+            else {
+                j = 0;
+            }
+
+            ++i;
+        }
+
+        os.write(buf+i, bytes_read-i);
+    }
+}
+
 unsigned long GlobalMetadataStore::get_cache_size_from_config()
 {
     bool found;
@@ -718,6 +780,26 @@ GlobalMetadataStore::write_response_helper(const string &name, ostream &os, cons
     if (get_read_lock(item_name, fd)) {
         VERBOSE("Metadata store: Cache hit: read " << object_name << " response for '" << name << "'." << endl);
         BESDEBUG(DEBUG_KEY, __FUNCTION__ << " Found " << item_name << " in the store." << endl);
+        transfer_bytes(fd, os);
+        unlock_and_close(item_name); // closes fd
+    }
+    else {
+        throw BESInternalError("Could not open '" + item_name + "' in the metadata store.", __FILE__, __LINE__);
+    }
+}
+
+void
+GlobalMetadataStore::write_response_helper(const string &name, ostream &os, const string &suffix, const string &xml_base,
+    const string &object_name)
+{
+    string item_name = get_cache_file_name(get_hash(name + suffix), false);
+    int fd; // value-result parameter;
+    if (get_read_lock(item_name, fd)) {
+        VERBOSE("Metadata store: Cache hit: read " << object_name << " response for '" << name << "'." << endl);
+        BESDEBUG(DEBUG_KEY, __FUNCTION__ << " Found " << item_name << " in the store." << endl);
+
+        insert_xml_base(fd, os, xml_base);
+
         transfer_bytes(fd, os);
         unlock_and_close(item_name); // closes fd
     }
