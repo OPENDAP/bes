@@ -130,7 +130,7 @@ static void transfer_bytes(int fd, ostream &os)
     }
 }
 
-static void insert_xml_base(int fd, ostream &os, const strong &xml_base)
+static void insert_xml_base(int fd, ostream &os, const string &xml_base)
 {
     static const int BUFFER_SIZE = 16*1024;
 
@@ -158,11 +158,11 @@ static void insert_xml_base(int fd, ostream &os, const strong &xml_base)
         // Assume it is well formed and always includes the prolog,
         // but might not use <CR> <CRLF> chars
 
-        int i = 0;
+        size_t i = 0;
         while (buf[i++] != '>');    // 'i' now points one char past the xml prolog
         os.write(buf, i);
 
-        int j = 0;
+        size_t j = 0;
         char xml_base_literal[] = "xml:base";
         while (i < bytes_read) {
             if (buf[i] == '>') {    // Found end of Dataset; no xml:base was present
