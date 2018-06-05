@@ -38,10 +38,13 @@
 #include <vector>
 #include <string>
 
+#if 0
 using std::string;
 using std::map;
 using std::vector;
 using std::ifstream;
+#endif
+
 
 #include "BESObj.h"
 
@@ -86,9 +89,9 @@ private:
 
     // TODO I don't think this needs to be a pointer - the code could be
     // redesigned. jhrg 3/7/18
-    ifstream * _keys_file;
+    std::ifstream * _keys_file;
     std::string _keys_file_name;
-    std::map<std::string, std::vector<string> > *_the_keys;
+    std::map<std::string, std::vector<std::string> > *_the_keys;
     bool _own_keys;
 
     static std::vector<std::string> KeyList;
@@ -97,20 +100,20 @@ private:
     void clean();
     void initialize_keys();
     void load_keys();
-    bool break_pair(const char* b, string& key, string &value, bool &addto);
+    bool break_pair(const char* b, std::string& key, std::string &value, bool &addto);
     bool only_blanks(const char *line);
-    void load_include_files(const string &files);
-    void load_include_file(const string &file);
+    void load_include_files(const std::string &files);
+    void load_include_file(const std::string &file);
 
     TheBESKeys() :
         _keys_file(0), _keys_file_name(""), _the_keys(0), _own_keys(false)
     {
     }
 
-    TheBESKeys(const string &keys_file_name, map<string, vector<string> > *keys);
+    TheBESKeys(const std::string &keys_file_name, std::map<std::string, std::vector<std::string> > *keys);
 
 protected:
-    TheBESKeys(const string &keys_file_name);
+    TheBESKeys(const std::string &keys_file_name);
 
 public:
     static TheBESKeys *_instance;
@@ -121,12 +124,17 @@ public:
         return _keys_file_name;
     }
 
-    void set_key(const string &key, const string &val, bool addto = false);
-    void set_key(const string &pair);
-    void get_value(const string& s, string &val, bool &found);
-    void get_values(const string& s, vector<string> &vals, bool &found);
+    void set_key(const std::string &key, const std::string &val, bool addto = false);
+    void set_key(const std::string &pair);
 
-    typedef map<string, vector<string> >::const_iterator Keys_citer;
+    void get_value(const std::string& s, std::string &val, bool &found);
+    void get_values(const std::string& s, std::vector<std::string> &vals, bool &found);
+
+    bool read_bool_key(const std::string &key, bool default_value);
+    std::string read_string_key(const std::string &key, const std::string &default_value);
+    int read_int_key(const std::string &key, int default_value);
+
+    typedef std::map<std::string, std::vector<std::string> >::const_iterator Keys_citer;
 
     Keys_citer keys_begin()
     {
@@ -138,13 +146,13 @@ public:
         return _the_keys->end();
     }
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 
     /**
      * TheBESKeys::ConfigFile provides a way for the daemon and test code to
      * set the location of a particular configuration file.
      */
-    static string ConfigFile;
+    static std::string ConfigFile;
 
     /**
      * Access to the singleton.

@@ -1,0 +1,8 @@
+2018-06-01T23:34:07UTC add DDS /data/dmrpp/chunked_fourD.h5 d9339ce95a79149d83720ba96cba69865f476b9c3f8af81694de0fdb0f9cab86 39eadf6fa1fcf6dc768aabee04186966e078c3f3b93f2f59618fda31df9e11e1
+2018-06-01T23:34:07UTC add DMR /data/dmrpp/chunked_fourD.h5 2c4e33f69d55a15b54dd8d53055324db4a0d6dea93196f76dbe39e0a85fd5c4d
+2018-06-01T23:34:08UTC add DMR++ /data/dmrpp/chunked_fourD.h5 85218565f659a3c8f47373425dd486a4087109258ec0983973aefd59a49bf38d
+2018-06-02T00:40:24UTC add DMR++ /data/dmrpp/chunked_fourD.h5
+2018-06-02T00:41:57UTC add DDS /data/dmrpp/chunked_fourD.h5 d9339ce95a79149d83720ba96cba69865f476b9c3f8af81694de0fdb0f9cab86 39eadf6fa1fcf6dc768aabee04186966e078c3f3b93f2f59618fda31df9e11e1
+2018-06-02T00:41:57UTC add DMR /data/dmrpp/chunked_fourD.h5 2c4e33f69d55a15b54dd8d53055324db4a0d6dea93196f76dbe39e0a85fd5c4d
+2018-06-02T00:41:58UTC add DMR++ /data/dmrpp/chunked_fourD.h5 85218565f659a3c8f47373425dd486a4087109258ec0983973aefd59a49bf38d
+2018-06-02T00:42:27UTC add DMR++ /data/dmrpp/chunked_fourD.h5

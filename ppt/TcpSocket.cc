@@ -59,16 +59,14 @@ extern "C" {
 #include <sstream>
 #include <arpa/inet.h>
 
-using std::cerr;
-using std::endl;
-using std::istringstream;
-
 #include "TcpSocket.h"
 #include "SocketConfig.h"
 #include "TheBESKeys.h"
 #include "BESDebug.h"
 #include "BESInternalError.h"
 #include "BESInternalFatalError.h"
+
+using namespace std;
 
 void TcpSocket::connect()
 {

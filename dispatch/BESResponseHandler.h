@@ -36,12 +36,18 @@
 #include <string>
 
 #include "BESObj.h"
+
+#if 0
 #include "BESResponseObject.h"
 #include "BESDataHandlerInterface.h"
 #include "BESTransmitter.h"
+#endif
 
-#if 0
+
+#if 1
 class BESResponseObject;
+class BESDataHandlerInterface;
+class BESTransmitter;
 #endif
 
 /** @brief handler object that knows how to create a specific response object

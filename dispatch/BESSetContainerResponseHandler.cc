@@ -42,6 +42,7 @@
 #include "BESDataNames.h"
 #include "BESSyntaxUserError.h"
 #include "BESResponseNames.h"
+#include "BESDataHandlerInterface.h"
 #include "BESDebug.h"
 
 BESSetContainerResponseHandler::BESSetContainerResponseHandler(const string &name) :

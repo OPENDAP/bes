@@ -38,6 +38,8 @@
 #include "BESWWWNames.h"
 #include "BESWWW.h"
 #include "BESDDSResponse.h"
+#include "BESTransmitter.h"
+
 #include "BESWWWTransmit.h"
 
 using namespace libdap;

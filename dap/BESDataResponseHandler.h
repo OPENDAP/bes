@@ -37,17 +37,27 @@
 
 /** @brief response handler that builds an OPeNDAP Data DDS object
  *
- * A request 'get data for &lt;def_name&gt;' will be handled by this 
+ * A request 'get data for <def_name>' will be handled by this
  * response handler. Given a definition name it determines what containers 
  * are to be used to build the response object. It then transmits the 
  * response object using the method send_data on the transmitter object.
+ *
+ * As for BESDap4ResponseHandler, this redirects accesses to the DMR++
+ * handler when DMR++ responses exist in the MDS for the given item in
+ * the container. Control this using BES.Use.Dmrpp and BES.Dmrpp.Name
+ * as for BESDap4ResponseHandler.
  *
  * @see DDS
  * @see BESContainer
  * @see BESTransmitter
  * @see BESDefine
+ * @see BESDap4ResponseHandler
  */
 class BESDataResponseHandler: public BESResponseHandler {
+
+    bool d_use_dmrpp;           ///< Check for DMR++ responses and redirect?
+    std::string d_dmrpp_name;   ///< The name of the DMR++ module
+
 public:
     BESDataResponseHandler(const string &name);
     virtual ~BESDataResponseHandler(void);

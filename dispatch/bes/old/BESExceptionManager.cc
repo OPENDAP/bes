@@ -41,6 +41,8 @@
 #include "BESInfoList.h"
 #include "BESLog.h"
 
+using namespace std;
+
 #define DEFAULT_ADMINISTRATOR "support@opendap.org"
 
 BESExceptionManager *BESExceptionManager::_instance = 0;
