@@ -49,6 +49,7 @@ using std::string;
 #include "BESInternalError.h"
 #include "BESDataNames.h"
 #include "BESContainer.h"
+#include "BESDataHandlerInterface.h"
 
 #define BES_STREAM_BUFFER_SIZE 4096
 

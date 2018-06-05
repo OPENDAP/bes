@@ -46,6 +46,7 @@
 #include "BESDataNames.h"
 #include "BESSyntaxUserError.h"
 #include "BESResponseNames.h"
+#include "BESDataHandlerInterface.h"
 
 BESDelDefsResponseHandler::BESDelDefsResponseHandler( const string &name )
     : BESResponseHandler( name )

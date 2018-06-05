@@ -36,12 +36,11 @@
 #include <fstream>
 #include <cstring>
 
-using std::ostringstream;
-using std::ifstream;
-
 #include "BESInfo.h"
 #include "TheBESKeys.h"
 #include "BESInternalError.h"
+
+using namespace std;
 
 #define BES_INFO_FILE_BUFFER_SIZE 4096
 

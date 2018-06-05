@@ -32,15 +32,14 @@
 
 #include <iostream>
 
-using std::cerr;
-using std::endl;
-
 #include "BESModuleApp.h"
 #include "BESError.h"
 #include "BESPluginFactory.h"
 #include "BESAbstractModule.h"
 #include "TheBESKeys.h"
 #include "BESUtil.h"
+
+using namespace std;
 
 /** @brief Default constructor
  *
