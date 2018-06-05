@@ -38,6 +38,8 @@
 #include "BESDDSResponse.h"
 #include "BESDapNames.h"
 //#include "BESDataNames.h"
+#include "BESTransmitter.h"
+
 #include "BESRequestHandlerList.h"
 
 #include "BESDebug.h"

@@ -84,6 +84,7 @@ public:
         _name(name)
     {
     }
+
     virtual ~BESRequestHandler(void)
     {
     }
@@ -102,7 +103,7 @@ public:
     /// @deprecated
     virtual bool add_handler(const string &name, p_request_handler_method method)
     {
-        add_method(name, method);
+        return add_method(name, method);
     }
 
     virtual bool remove_method(const string &name);

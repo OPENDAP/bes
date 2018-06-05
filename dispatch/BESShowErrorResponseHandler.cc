@@ -41,6 +41,7 @@ using std::istringstream;
 #include "BESSyntaxUserError.h"
 #include "BESForbiddenError.h"
 #include "BESNotFoundError.h"
+#include "BESDataHandlerInterface.h"
 
 BESShowErrorResponseHandler::BESShowErrorResponseHandler(const string &name) :
     BESResponseHandler(name)

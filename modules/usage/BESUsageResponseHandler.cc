@@ -40,6 +40,7 @@
 #include "BESDapNames.h"
 #include "BESDASResponse.h"
 #include "BESDDSResponse.h"
+#include "BESTransmitter.h"
 
 using namespace libdap;
 

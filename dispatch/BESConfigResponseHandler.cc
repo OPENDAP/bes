@@ -36,6 +36,8 @@
 #include "BESInfo.h"
 #include "BESResponseNames.h"
 
+using namespace std;
+
 BESConfigResponseHandler::BESConfigResponseHandler( const string &name )
     : BESResponseHandler( name )
 {
