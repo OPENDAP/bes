@@ -262,14 +262,11 @@ function process_cmdln() {
     verbose=0
     very_verbose=0
     verbose_flag=
-    recursive=
-    find_parameter=
     bes_conf_flag=
     maxdepth="-maxdepth 1"
     site_map_file="siteMap.txt"
-    DRY_RUN=
 
-    while getopts "h?DRvVc:b:u:p:i:x:" opt; do
+    while getopts "h?DRvVc:b:u:p:i:x:d:" opt; do
         case "$opt" in
         h|\?)
             show_usage;
@@ -287,7 +284,6 @@ function process_cmdln() {
             verbose_flag="-v";
             ;;
         R)
-            recursive="yes";
             maxdepth=
             ;;
         b)
@@ -347,8 +343,9 @@ function process_cmdln() {
 # Process the commandline parameters.
 process_cmdln "$@";
 
+
 if [ ${verbose} -eq 1 ]; then echo "${0} STAT_COMMAND: ${STAT_COMMAND}"; fi
-if [ ${verbose} -eq 1 ] || [ ${DRYRUN+x} ]; then echo "${0} THIS IS A DRYRUN"; fi
+if [ ${verbose} -eq 1 ] && [ ${DRYRUN+x} ]; then echo "${0} THIS IS A DRYRUN"; fi
 
 
 
@@ -428,8 +425,12 @@ do
         fi
         
         if [ ${mds_status} -eq 0 ] && [ ${aws_status} -eq 0 ] ; then
-            if [ ${verbose} -eq 1 ]; then echo "${0} Adding ${logical_path} to siteMap"; fi
-            echo "${last_modified_time} ${file_size} ${logical_path}" >> ${site_map_file};
+            site_map_entry=`echo "${last_modified_time} ${file_size} ${logical_path}"`;
+            if [ ${verbose} -eq 1 ]; then echo "${0} Site Map Entry: \"${site_map_entry}\""; fi
+            if [ -z ${DRY_RUN+x} ]; then
+                if [ ${verbose} -eq 1 ]; then echo "${0} Appending entry to siteMap."; fi
+                echo "${site_map_entry}" >> ${site_map_file};
+            fi
         fi
               
     fi

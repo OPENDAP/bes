@@ -152,7 +152,7 @@ then
     fi
 fi
 
-[ -n "$1" ] || { echo "${0} Expected one or more pathnames." ; exit 1; }
+[ -n "$1" ] || { echo "${0} Expected a pathnames." ; exit 1; }
 
 # Read a pathname from the next argument
 pathname=$1
@@ -199,7 +199,6 @@ then
         else 
             ${build_dmrpp_cmd} > /dev/null;
         fi
-        build_dmrpp_status=1;
         if [ ${build_dmrpp_status} -ne 0 ]; then
             echo "${0} Build dmr++ operation failed! STATUS: ${build_dmrpp_status}";
         fi
