@@ -503,7 +503,7 @@ void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, 
  *   absolute need to require it as an argument. May remove strm as an arg if
  *   necessary.
  *
- * @note CoverageJSON specification for Temporal Reference Systems)
+ * @note CoverageJSON specification for Temporal Reference Systems
  *   https://covjson.org/spec/#temporal-reference-systems
  *
  * @param ostrm Write the CovJSON to this stream (TEST/DEBUGGING)
@@ -1099,6 +1099,9 @@ void FoDapCovJsonTransform::printParametersWorker(ostream *strm, string indent)
 /**
  * @brief Worker method prints the CoverageJSON file Parameter's ranges to stream
  *
+ * @note CoverageJSON specification for N-dimensional Array Objects (NdArray)
+ *    https://covjson.org/spec/#ndarray-objects
+ *
  * @param strm Write to this output stream
  * @param indent Indent the output so humans can make sense of it
  */
@@ -1141,7 +1144,7 @@ void FoDapCovJsonTransform::printRangesWorker(ostream *strm, string indent)
     *strm << indent << "\"ranges\": {" << endl;
     for(unsigned int i = 0; i < parameterCount; i++) {
         string dataType;
-
+        // See spec: https://covjson.org/spec/#ndarray-objects
         if(parameters[i]->dataType.find("int") == 0 || parameters[i]->dataType.find("Int") == 0
             || parameters[i]->dataType.find("integer") == 0 || parameters[i]->dataType.find("Integer") == 0) {
             dataType = "integer";
