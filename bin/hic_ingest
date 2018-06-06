@@ -46,7 +46,7 @@ fi
 show_usage() {
 cat <<EOF
 
- Usage: $0 [h|v|V|R] [-c <bes_conf>] [-b <s3_bucket_name>] [-u <s3_profile_name>] [-r <s3_region>] [-p <parent_path>] [-s <site_map_file>] [-i <include_regex>] [-x <exclude_regex>] <bes_catalog_root_dir>
+ Usage: $0 [h|v|V|R|D] [-c <bes_conf>] [-b <s3_bucket_name>] [-u <s3_profile_name>] [-r <s3_region>] [-p <parent_path>] [-s <site_map_file>] [-i <include_regex>] [-x <exclude_regex>] <bes_catalog_root_dir>
 
  
  -R  Recursively process <directory>''s child directories.
