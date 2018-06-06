@@ -166,6 +166,9 @@ protected:
 
     bool remove_response_helper(const std::string& name, const std::string &suffix, const std::string &object_name);
 
+    static void transfer_bytes(int fd, ostream &os);
+    static void insert_xml_base(int fd, ostream &os, const string &xml_base);
+
 public:
     /**
      * @brief Unlock and close the MDS item when the ReadLock goes out of scope.

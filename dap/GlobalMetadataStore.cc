@@ -103,12 +103,15 @@ bool GlobalMetadataStore::d_enabled = true;
  *
  * https://stackoverflow.com/questions/17925051/fast-textfile-reading-in-c
  *
+ * @note This is a static method so the function will be scoped with this
+ * class.
+ *
  * @param fd Open file descriptor to read from; assumed open and
  * positioned at the start of the file.
- * @param os C++ stream to write to
+ * @param os Write to this C++ stream
  * @exception BESInternalError Thrown if there's a problem reading or writing.
  */
-static void transfer_bytes(int fd, ostream &os)
+void GlobalMetadataStore::transfer_bytes(int fd, ostream &os)
 {
     static const int BUFFER_SIZE = 16*1024;
 
@@ -130,7 +133,19 @@ static void transfer_bytes(int fd, ostream &os)
     }
 }
 
-static void insert_xml_base(int fd, ostream &os, const string &xml_base)
+/**
+ * @brief like transfer_bytes(), but adds the xml:base attribute to the DMR/++
+ *
+ * @note This is a static method so the function will be scoped with this
+ * class.
+ *
+ * @param fd Open file descriptor to read from; assumed open and
+ * positioned at the start of the file.
+ * @param os Write to this C++ stream
+ * @param xml_base Value of the xml:base attribute.
+ * @exception BESInternalError Thrown if there's a problem reading or writing.
+ */
+void GlobalMetadataStore::insert_xml_base(int fd, ostream &os, const string &xml_base)
 {
     static const int BUFFER_SIZE = 16*1024;
 
@@ -158,24 +173,27 @@ static void insert_xml_base(int fd, ostream &os, const string &xml_base)
         // Assume it is well formed and always includes the prolog,
         // but might not use <CR> <CRLF> chars
 
+        // transfer the prolog (<?xml version="1.0" encoding="ISO‌-8859-1"?>)
         size_t i = 0;
         while (buf[i++] != '>');    // 'i' now points one char past the xml prolog
         os.write(buf, i);
 
+        // transfer <Dataset ...> with new value for xml:base
+        size_t s = i; // start of <Dataset ...>
         size_t j = 0;
         char xml_base_literal[] = "xml:base";
         while (i < bytes_read) {
             if (buf[i] == '>') {    // Found end of Dataset; no xml:base was present
+                os.write(buf+s, i-s);
                 os << " xml:base=\"" << xml_base << "\"";
                 break;
             }
-            else if (j == sizeof(xml_base_literal)) { // found 'xml:base' literal
-                // read '=' then dump double quotes and write the value
-                while (buf[i++] != '=');
+            else if (j == sizeof(xml_base_literal)-1) { // found 'xml:base' literal
+                os.write(buf+s, i-s);   // This will include all of <Dataset... including 'xml:base'
+                while (buf[i++] != '=');    // read/discard '="..."'
                 while (buf[i++] != '"');
                 while (buf[i++] != '"');
-
-                os << "\"" << xml_base << "\"";
+                os << "=\"" << xml_base << "\"";    // write the new xml:base value
                 break;
             }
             else if (buf[i] == xml_base_literal[j]) {
@@ -188,6 +206,7 @@ static void insert_xml_base(int fd, ostream &os, const string &xml_base)
             ++i;
         }
 
+        // transfer the rest
         os.write(buf+i, bytes_read-i);
     }
 }
