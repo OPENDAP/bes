@@ -967,16 +967,16 @@ public:
     CPPUNIT_TEST(cache_a_dds_response);
     CPPUNIT_TEST(cache_a_das_response);
     CPPUNIT_TEST(cache_a_dmr_response);
-#if 0
-    CPPUNIT_TEST(cache_a_dmrpp_response);
-#endif
 
     CPPUNIT_TEST(add_response_test);
 
     CPPUNIT_TEST(get_dds_response_test);
     CPPUNIT_TEST(get_das_response_test);
     CPPUNIT_TEST(write_dmr_response_test);
+
+#ifndef XML_BASE_MISSING_MEANS_OMIT_ATTRIBUTE
     CPPUNIT_TEST_EXCEPTION(write_dmr_response_test_error, BESInternalError);
+#endif
 
 #if SYMETRIC_ADD_RESPONSES
     CPPUNIT_TEST(get_dmr_response_test_2);

@@ -31,6 +31,11 @@
 #include "BESFileLockingCache.h"
 #include "BESInternalFatalError.h"
 
+/// Setting XML_BASE_MISSING_MEANS_OMIT_ATTRIBUTE to zero causes the MDS to throw
+/// BESInternalError when the xml:base context is not defined and a DMR/++ response
+/// is accessed. This will break tests in dapreader and dmrpp_module. jhrg 6/6/18
+#define XML_BASE_MISSING_MEANS_OMIT_ATTRIBUTE 1
+
 namespace libdap {
 class DapObj;
 class DDS;

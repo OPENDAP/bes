@@ -95,11 +95,6 @@ static const string SIZE_KEY = "DAP.GlobalMetadataStore.size";
 static const string LEDGER_KEY = "DAP.GlobalMetadataStore.ledger";
 static const string LOCAL_TIME_KEY = "BES.LogTimeLocal";
 
-#if 0
-/// We decided that if xml:base is not present in the context manager, it's an error. jhrg 6/6/18
-static const string XML_BASE_DEFAULT = "http://localhost/";
-#endif
-
 GlobalMetadataStore *GlobalMetadataStore::d_instance = 0;
 bool GlobalMetadataStore::d_enabled = true;
 
@@ -879,8 +874,16 @@ GlobalMetadataStore::write_dmr_response(const std::string &name, ostream &os)
 {
     bool found = false;
     string xml_base = BESContextManager::TheManager()->get_context("xml:base", found);
-    if (!found) throw BESInternalError("Could not read the value of xml:base.", __FILE__, __LINE__);
-    write_response_helper(name, os, "dmr_r", xml_base, "DMR");
+    if (!found) {
+#if XML_BASE_MISSING_MEANS_OMIT_ATTRIBUTE
+        write_response_helper(name, os, "dmr_r", "DMR");
+#else
+        throw BESInternalError("Could not read the value of xml:base.", __FILE__, __LINE__);
+#endif
+    }
+    else {
+        write_response_helper(name, os, "dmr_r", xml_base, "DMR");
+    }
 }
 
 /**
@@ -894,8 +897,16 @@ GlobalMetadataStore::write_dmrpp_response(const std::string &name, ostream &os)
 {
     bool found = false;
     string xml_base = BESContextManager::TheManager()->get_context("xml:base", found);
-    if (!found) throw BESInternalError("Could not read the value of xml:base.", __FILE__, __LINE__);
-    write_response_helper(name, os, "dmrpp_r", xml_base, "DMR++");
+    if (!found) {
+#if XML_BASE_MISSING_MEANS_OMIT_ATTRIBUTE
+        write_response_helper(name, os, "dmrpp_r", "DMR++");
+#else
+        throw BESInternalError("Could not read the value of xml:base.", __FILE__, __LINE__);
+#endif
+    }
+    else {
+        write_response_helper(name, os, "dmrpp_r", xml_base, "DMR++");
+    }
 }
 
 /**
