@@ -88,8 +88,6 @@ while getopts "h?vc:Ru:" opt; do
         ;;
     R)  include_dmrpp=0
         ;;
-    u)  data_url="-u $OPTARG"
-        ;;
     u)
         cloud_url="$OPTARG"
         ;;
