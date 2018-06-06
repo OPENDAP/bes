@@ -3,7 +3,7 @@
   "domain": {
 {
   "type": "CoverageCollection",
-  "domainType": "Unknown",
+  "domainType": "Grid",
 {
   "type": "CoverageCollection",
   "domainType": "Grid",

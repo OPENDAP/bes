@@ -2,47 +2,19 @@
   "type": "Coverage",
   "domain": {
     "axes": {
-      "test": {
-        "values": []
       },
-      "test": {
-        "values": []
       },
-      "test": {
-        "values": []
       },
-      "test": {
-        "values": []
       },
-      "test": {
-        "values": []
       },
-      "test": {
-        "values": []
       },
-      "test": {
-        "values": []
       },
-      "test": {
-        "values": []
       },
-      "test": {
-        "values": []
       },
-      "test": {
-        "values": []
       },
-      "test": {
-        "values": []
       },
-      "test": {
-        "values": []
       },
-      "test": {
-        "values": []
       },
-      "test": {
-        "values": []
       }
     }
     "referencing": [{
