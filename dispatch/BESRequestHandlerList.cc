@@ -30,12 +30,11 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include "BESRequestHandlerList.h"
 #include "BESRequestHandler.h"
 #include "BESInternalError.h"
-#if 0
-#include "BESDataNames.h"
-#endif
 
 BESRequestHandlerList *BESRequestHandlerList::_instance = 0;
 
@@ -248,23 +247,23 @@ void BESRequestHandlerList::execute_once(BESDataHandlerInterface &dhi)
 void BESRequestHandlerList::execute_current(BESDataHandlerInterface &dhi)
 {
     if (dhi.container) {
-        // FIXME: This needs to happen here, but really should be done
+        // Patrick's comment: This needs to happen here, but really should be done
         // in the get_container_type method in the container class if it
-        // needs to happen. But those methods are not virtual and would
-        // require a release of all modules.
+        // needs to happen.
+        //
+        // This call will, for BESFileContainer, decompress and cache compressed files,
+        // changing their extensions from, e.g., '.gz' to '.h5' and enabling the
+        // get_container_type() method to function correctly. jhrg 5/31/18
         dhi.container->access();
 
-        // 'find_handler' below could be renamed find_handler_for_container_type(). jhrg 2/8/18
+        // Given the kind of thing in the DHI's container (netcdf file, ...) find the
+        // RequestHandler that understands that and then find the method in that handler
+        // that can process the DHI's action.
         BESRequestHandler *rh = find_handler((dhi.container->get_container_type()));
         if (!rh)
             throw BESInternalError(string("The data handler '") + dhi.container->get_container_type() + "' does not exist",
                 __FILE__, __LINE__);
 
-        // 'find_handler' below could be renamed find_handler_method_for_response(). jhrg 2/8/18
-        // Here's an example from the CSVRequestHandler:
-        //     add_handler(DAS_RESPONSE, CSVRequestHandler::csv_build_das);
-        // in the following 'p' will point to CSVRequestHandler::csv_build_das if
-        // dhi.action is the string "get.das" (the value of the symbol DAS_RESPONSE)
         p_request_handler_method request_handler_method = rh->find_method(dhi.action);
         if (!request_handler_method) {
             throw BESInternalError(string("Request handler for '") + dhi.container->get_container_type()

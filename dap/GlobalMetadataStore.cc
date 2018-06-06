@@ -52,6 +52,7 @@
 #include "TheBESKeys.h"
 #include "BESUtil.h"
 #include "BESLog.h"
+#include "BESInternalError.h"
 #include "BESDebug.h"
 
 #include "BESInternalError.h"
@@ -367,7 +368,10 @@ GlobalMetadataStore::write_ledger()
 inline string
 GlobalMetadataStore::get_hash(const string &name)
 {
-    return picosha2::hash256_hex_string(name);
+    if (name.empty())
+        throw BESInternalError("Empty name passed to the Metadata Store.", __FILE__, __LINE__);
+
+    return picosha2::hash256_hex_string(name[0] == '/' ? name : "/" + name);
 }
 
 /**

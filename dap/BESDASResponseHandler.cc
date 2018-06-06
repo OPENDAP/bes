@@ -36,6 +36,8 @@
 #include "BESDASResponse.h"
 #include "BESRequestHandlerList.h"
 #include "BESDapNames.h"
+#include "BESTransmitter.h"
+
 #include "GlobalMetadataStore.h"
 
 using namespace libdap;

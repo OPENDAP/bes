@@ -84,6 +84,7 @@ public:
         _name(name)
     {
     }
+
     virtual ~BESRequestHandler(void)
     {
     }
