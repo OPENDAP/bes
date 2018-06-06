@@ -77,7 +77,7 @@ static const string c_mds_prefix = "mds_"; // used when cleaning the cache, etc.
 static const string c_mds_name = "/mds";
 static const string c_mds_baselines = string(TEST_SRC_DIR) + "/mds_baselines";
 
-class DmrppMetadataStoreTest: public TestFixture {
+class GlobalMetadataStoreTest: public TestFixture {
 private:
     DDS *d_test_dds;
     BaseTypeFactory d_btf;
@@ -192,12 +192,12 @@ private:
 #endif
 
 public:
-    DmrppMetadataStoreTest() :
+    GlobalMetadataStoreTest() :
         d_test_dds(0), d_test_dmr(0), d_mds_dir(string(TEST_BUILD_DIR).append(c_mds_name)), d_mds(0)
     {
     }
 
-    ~DmrppMetadataStoreTest()
+    ~GlobalMetadataStoreTest()
     {
     }
 
@@ -288,6 +288,25 @@ public:
 
         DBG(cerr << __func__ << " - END" << endl);
     }
+
+    void get_hash_test()
+    {
+        d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 0);
+        DBG(cerr << "retrieved GlobalMetadataStore instance: " << d_mds << endl);
+        CPPUNIT_ASSERT(d_mds);
+
+        CPPUNIT_ASSERT(d_mds->get_hash("/path/name.txt") == d_mds->get_hash("path/name.txt"));
+    }
+
+    void get_hash_test_error()
+    {
+        d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 0);
+        DBG(cerr << "retrieved GlobalMetadataStore instance: " << d_mds << endl);
+        CPPUNIT_ASSERT(d_mds);
+
+        CPPUNIT_FAIL(d_mds->get_hash(""));  // if this does not throw, it's a test fail
+    }
+
     // This test may fail if the -k option is used.
     void cache_a_dds_response()
     {
@@ -958,11 +977,14 @@ public:
         CPPUNIT_FAIL("Expected GlobalMetadataStore::insert_xml_base to throw BESInternalError");
     }
 
-    CPPUNIT_TEST_SUITE( DmrppMetadataStoreTest );
+    CPPUNIT_TEST_SUITE( GlobalMetadataStoreTest );
 
     CPPUNIT_TEST(ctor_test_1);
     CPPUNIT_TEST(ctor_test_2);
     CPPUNIT_TEST(ctor_test_3);
+
+    CPPUNIT_TEST(get_hash_test);
+    CPPUNIT_TEST_EXCEPTION(get_hash_test_error, BESError);
 
     CPPUNIT_TEST(cache_a_dds_response);
     CPPUNIT_TEST(cache_a_das_response);
@@ -998,7 +1020,7 @@ public:
     CPPUNIT_TEST_SUITE_END();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(DmrppMetadataStoreTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(GlobalMetadataStoreTest);
 
 }
 
@@ -1021,8 +1043,8 @@ int main(int argc, char*argv[])
             break;
         case 'h': {     // help - show test names
             cerr << "Usage: GlobalMetadataStoreTest has the following tests:" << endl;
-            const std::vector<Test*> &tests = bes::DmrppMetadataStoreTest::suite()->getTests();
-            unsigned int prefix_len = bes::DmrppMetadataStoreTest::suite()->getName().append("::").length();
+            const std::vector<Test*> &tests = bes::GlobalMetadataStoreTest::suite()->getTests();
+            unsigned int prefix_len = bes::GlobalMetadataStoreTest::suite()->getName().append("::").length();
             for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
             }
@@ -1045,7 +1067,7 @@ int main(int argc, char*argv[])
     else {
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            test = bes::DmrppMetadataStoreTest::suite()->getName().append("::").append(argv[i]);
+            test = bes::GlobalMetadataStoreTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
 
             ++i;
