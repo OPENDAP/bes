@@ -25,8 +25,6 @@
 # You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 ###########################################################################
 
-DRY_RUN="--dryrun"
-DRY_RUN=
 H5_REGEX=".*\.(HDF5|h5|he5)(\.bz2|\.gz|\.Z)?$"
 EXCLUDE_REGEX="^\\..*$|.*\.dmrpp$"
 INCLUDE_REGEX="^.*$"
@@ -59,6 +57,7 @@ cat <<EOF
  -s <site_map_file> The file to which to write the site map of ingested files.
  -i <include_regex> A regex to match the (basename) of the files to be included.
  -x <exclude_regex> A regex to match the (basename) of the files to be excluded.
+ -D  Dryrun
  -v  Verbose Lots of informative output
  -V  Very Verbose: Even more informative output, including the bes.conf file.
  -h  Print this page.
@@ -269,12 +268,16 @@ function process_cmdln() {
     bes_conf_flag=
     maxdepth="-maxdepth 1"
     site_map_file="siteMap.txt"
-    
-    while getopts "h?RvVc:b:u:r:p:i:x:" opt; do
+    DRY_RUN=
+
+    while getopts "h?DRvVc:b:u:r:p:i:x:" opt; do
         case "$opt" in
         h|\?)
             show_usage;
             exit 0;
+            ;;
+        D)
+            DRY_RUN="--dryrun";
             ;;
         v)
             verbose=1;
@@ -349,6 +352,7 @@ function process_cmdln() {
 process_cmdln "$@";
 
 if [ ${verbose} -eq 1 ]; then echo "${0} STAT_COMMAND: ${STAT_COMMAND}"; fi
+if [ ${verbose} -eq 1 ] || [ ${DRYRUN+x} ]; then echo "${0} THIS IS A DRYRUN"; fi
 
 
 
@@ -404,14 +408,14 @@ do
         # This is the command that will populate the MDS with the "stuff".
         mds_cmd="./populateMDS ${verbose_flag} ${bes_conf_flag} ${dmrpp_flags} ${logical_path}"
         if [ ${verbose} -eq 1 ]; then echo "${0} mds_cmd: ${mds_cmd}"; fi
-        if [ -z ${DRY_RUN} ]; then
+        if [ -z ${DRY_RUN+x} ]; then
             $mds_cmd;
             mds_status=$?;
             if [ ${mds_status} -ne 0 ]; then
                 echo "${0} MDS INGEST FAILED. STATUS: ${mds_status}";
             fi
         else 
-            # We need to set this that down stream tests don't fail, and a 
+            # We need to set this so that down stream tests don't fail, and a 
             # dry run should always be successful
             echo "${0} (dryrun) mds_cmd: ${mds_cmd}"
             mds_status=0;
