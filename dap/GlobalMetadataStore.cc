@@ -52,6 +52,7 @@
 #include "TheBESKeys.h"
 #include "BESUtil.h"
 #include "BESLog.h"
+#include "BESContextManager.h"
 #include "BESDebug.h"
 
 #include "BESInternalError.h"
@@ -93,6 +94,11 @@ static const string PREFIX_KEY = "DAP.GlobalMetadataStore.prefix";
 static const string SIZE_KEY = "DAP.GlobalMetadataStore.size";
 static const string LEDGER_KEY = "DAP.GlobalMetadataStore.ledger";
 static const string LOCAL_TIME_KEY = "BES.LogTimeLocal";
+
+#if 0
+/// We decided that if xml:base is not present in the context manager, it's an error. jhrg 6/6/18
+static const string XML_BASE_DEFAULT = "http://localhost/";
+#endif
 
 GlobalMetadataStore *GlobalMetadataStore::d_instance = 0;
 bool GlobalMetadataStore::d_enabled = true;
@@ -783,13 +789,15 @@ GlobalMetadataStore::is_dmrpp_available(const string &name)
     return get_read_lock_helper(name, "dmrpp_r", "DMR++");
 }
 
+///@name write_response_helper
+///@{
 /**
  * Common code to copy a response to an output stream.
  *
  * @param name Granule name
  * @param os Write the response to this stream
  * @param suffix One of 'dds_r', 'das_r' or 'dmr_r'
- * @param object_name One of DDS, DAS or DMR
+ * @param object_name One of DDS, DAS or DMR; used for error reporting.
  */
 void
 GlobalMetadataStore::write_response_helper(const string &name, ostream &os, const string &suffix, const string &object_name)
@@ -807,6 +815,14 @@ GlobalMetadataStore::write_response_helper(const string &name, ostream &os, cons
     }
 }
 
+/**
+ * @brief This version looks at the first few bytes and substitutes a new value for xml:base
+ * @param name Granule name
+ * @param os Write the response to this stream
+ * @param suffix One of 'dds_r', 'das_r' or 'dmr_r'
+ * @param xml_base Value of the xml:base attribute in the <Dataset...> element
+ * @param object_name One of DDS, DAS or DMR; used for error reporting.
+ */
 void
 GlobalMetadataStore::write_response_helper(const string &name, ostream &os, const string &suffix, const string &xml_base,
     const string &object_name)
@@ -826,6 +842,7 @@ GlobalMetadataStore::write_response_helper(const string &name, ostream &os, cons
         throw BESInternalError("Could not open '" + item_name + "' in the metadata store.", __FILE__, __LINE__);
     }
 }
+///@}
 
 /**
  * @brief Write the stored DDS response to a stream
@@ -860,7 +877,10 @@ GlobalMetadataStore::write_das_response(const std::string &name, ostream &os)
 void
 GlobalMetadataStore::write_dmr_response(const std::string &name, ostream &os)
 {
-    write_response_helper(name, os, "dmr_r", "DMR");
+    bool found = false;
+    string xml_base = BESContextManager::TheManager()->get_context("xml:base", found);
+    if (!found) throw BESInternalError("Could not read the value of xml:base.", __FILE__, __LINE__);
+    write_response_helper(name, os, "dmr_r", xml_base, "DMR");
 }
 
 /**
@@ -872,7 +892,10 @@ GlobalMetadataStore::write_dmr_response(const std::string &name, ostream &os)
 void
 GlobalMetadataStore::write_dmrpp_response(const std::string &name, ostream &os)
 {
-    write_response_helper(name, os, "dmrpp_r", "DMR++");
+    bool found = false;
+    string xml_base = BESContextManager::TheManager()->get_context("xml:base", found);
+    if (!found) throw BESInternalError("Could not read the value of xml:base.", __FILE__, __LINE__);
+    write_response_helper(name, os, "dmrpp_r", xml_base, "DMR++");
 }
 
 /**

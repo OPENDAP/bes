@@ -47,19 +47,12 @@
 #include <BaseTypeFactory.h>
 #include <D4BaseTypeFactory.h>
 
-#include "BESError.h"
 #include "TheBESKeys.h"
+#include "BESContextManager.h"
 #include "BESDebug.h"
-
 #include "BESInternalError.h"
 
 #include "GlobalMetadataStore.h"
-
-#if 0
-#include "DMRpp.h"
-#include "DmrppTypeFactory.h"
-#include "DmrppParserSax2.h"
-#endif
 
 #include "test_utils.h"
 #include "test_config.h"
@@ -76,10 +69,6 @@ static bool clean = true;
 using namespace CppUnit;
 using namespace std;
 using namespace libdap;
-#if 0
-using namespace dmrpp;
-#endif
-
 
 namespace bes {
 
@@ -222,6 +211,7 @@ public:
 
         // Contains BES Log parameters but not cache names
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
+        BESContextManager::TheManager()->set_context("xml:base", "http://localhost/");
 
         DBG(cerr << __func__ << " - END" << endl);
     }
@@ -578,6 +568,30 @@ public:
 
          DBG(cerr << __func__ << " - END" << endl);
     }
+
+    void write_dmr_response_test_error()
+    {
+        DBG(cerr << __func__ << " - BEGIN" << endl);
+
+        init_dmr_and_mds();
+
+        // Store it - this will work if the the code is cleaning the cache.
+        bool stored = d_mds->add_responses(d_test_dmr, d_test_dmr->name());
+
+        CPPUNIT_ASSERT(stored);
+
+        // Now write_dmr_response() will throw
+        BESContextManager::TheManager()->unset_context("xml:base");
+
+        // Now lets read the object from the cache
+        ostringstream oss;
+        d_mds->write_dmr_response(d_test_dmr->name(), oss);
+        DBG(cerr << "DMR response: " << endl << oss.str() << endl);
+
+        CPPUNIT_FAIL("Should have thrown an error.");
+
+        DBG(cerr << __func__ << " - END" << endl);
+     }
 
 #if SYMETRIC_ADD_RESPONSES
     void get_dmr_response_test_2() {
@@ -962,6 +976,8 @@ public:
     CPPUNIT_TEST(get_dds_response_test);
     CPPUNIT_TEST(get_das_response_test);
     CPPUNIT_TEST(write_dmr_response_test);
+    CPPUNIT_TEST_EXCEPTION(write_dmr_response_test_error, BESInternalError);
+
 #if SYMETRIC_ADD_RESPONSES
     CPPUNIT_TEST(get_dmr_response_test_2);
 #endif
