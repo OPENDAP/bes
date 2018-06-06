@@ -26,12 +26,18 @@
 ###########################################################################
 
 DRY_RUN="--dryrun"
+DRY_RUN=
 H5_REGEX=".*\.(HDF5|h5|he5)(\.bz2|\.gz|\.Z)?$"
-EXCLUDE_REGEX="^\\..*$"
+EXCLUDE_REGEX="^\\..*$|.*\.dmrpp$"
 INCLUDE_REGEX="^.*$"
 
 DEFAULT_S3_BUCKET="opendap.scratch"
 DEFAULT_S3_PROFILE="ndp"
+
+STAT_COMMAND="stat -c%s"; # Linux
+if [ `uname -s` = "Darwin" ]; then
+    STAT_COMMAND="stat -f%z"; #OSX
+fi
 
 ###########################################################################
 #
@@ -44,9 +50,7 @@ cat <<EOF
 
  Usage: $0 [h|v|V|R] [-c <bes_conf>] [-b <s3_bucket_name>] [-u <s3_profile_name>] [-r <s3_region>] [-p <parent_path>] [-s <site_map_file>] [-i <include_regex>] [-x <exclude_regex>] <bes_catalog_root_dir>
 
- -h  Print this page.
- -v  Verbose Lots of informative output
- -V  Very Verbose: Even more informative output, including the bes.conf file.
+ 
  -R  Recursively process <directory>''s child directories.
  -b <s3_bucket_name> The name of the S3 bucket into which to place the files.
  -u <s3_profile_name> The name of the AWS profile to use when intracting with S3.
@@ -54,7 +58,10 @@ cat <<EOF
  -p <parent_path> The parent path, relative to the BES.
  -s <site_map_file> The file to which to write the site map of ingested files.
  -i <include_regex> A regex to match the (basename) of the files to be included.
- -c <exclude_regex> A regex to match the (basename) of the files to be excluded.
+ -x <exclude_regex> A regex to match the (basename) of the files to be excluded.
+ -v  Verbose Lots of informative output
+ -V  Very Verbose: Even more informative output, including the bes.conf file.
+ -h  Print this page.
 
 <bes_catalog_root_dir> The directory which will be used as the 
     BES.Catalog.catalog.RootDirectory for this ingest. All files to be ingested
@@ -87,30 +94,31 @@ function qc_inputs(){
     # Check bes_catalog_root_dir directory
     
     if [ ! -d $bes_catalog_root_dir ]; then
-        echo "The bes_catalog_root_dir: '${bes_catalog_root_dir}' is missing".
+        echo "${0} The bes_catalog_root_dir: '${bes_catalog_root_dir}' is missing".
         exit 1;
     fi
     if [ ! -r $bes_catalog_root_dir ]; then
-        echo "The bes_catalog_root_dir: '${bes_catalog_root_dir}' is unreadable".
+        echo "${0} The bes_catalog_root_dir: '${bes_catalog_root_dir}' is unreadable".
         exit 1;
     fi
     
     if [ ${verbose} -eq 1 ]; then
-        echo "The bes_catalog_root_dir: '${bes_catalog_root_dir}' appears to ok."
+        echo "${0} The bes_catalog_root_dir: '${bes_catalog_root_dir}' appears to ok."
     fi
     
     #----------------------------
     # Check S3
     
     if [ -z ${s3_bucket_name+x} ] ; then
-        s3_bucket_name="${DEFAULT_S3_BUCKET}
+        s3_bucket_name="${DEFAULT_S3_BUCKET}"
     fi
     
-    if [ -z ${s3_profile_name+x} ] ; then
+    if [ -z ${s3_profile_name+x} ]; then
         s3_profile_name=${DEFAULT_S3_PROFILE}
     fi
+    
     if [ ${verbose} -eq 1 ]; then
-        echo "Using s3_bucket_name: '${s3_bucket_name}' s3_profile_name: '${s3_profile_name}'"
+        echo "${0} Using s3_bucket_name: '${s3_bucket_name}' s3_profile_name: '${s3_profile_name}'"
     fi
     
     aws s3 ls s3://$s3_bucket_name --profile $s3_profile_name > /dev/null
@@ -118,11 +126,11 @@ function qc_inputs(){
     
     if [ $aws_status != 0 ]
     then
-        echo "S3 access Test FAILED. status: ${aws_status}"
+        echo "${0} S3 access Test FAILED. status: ${aws_status}"
         exit 1;
     else 
         if [ ${verbose} -eq 1 ]; then
-            echo "Initial S3 access SUCCESS."
+            echo "${0} Initial S3 access SUCCESS."
         fi
     fi
 }
@@ -146,11 +154,11 @@ function make_bes_conf() {
     # Find teh bes.conf file
     if [ -z ${source_bes_conf+x} ]
     then 
-        if [ ${verbose} -eq 1 ]; then echo "bes_conf is not set trying env variable 'prefix'..."; fi
+        if [ ${verbose} -eq 1 ]; then echo "${0} bes_conf is not set trying env variable 'prefix'..."; fi
         if [ ! -z $prefix ] # True if var is set and str length != 0
         then
             test_conf=$prefix/etc/bes/bes.conf
-            if [ ${verbose} -eq 1 ]; then echo "Env var 'prefix' is set. Checking $test_conf"; fi
+            if [ ${verbose} -eq 1 ]; then echo "${0} Env var 'prefix' is set. Checking $test_conf"; fi
             if [ -r $test_conf ]
             then
                 source_bes_conf="$test_conf"
@@ -162,26 +170,26 @@ function make_bes_conf() {
     if [ -z ${source_bes_conf+x} ]
     then     
         export source_bes_conf=/etc/bes/bes.conf
-        echo "Last Attempt:  Trying $source_bes_conf"; 
+        echo "${0} Last Attempt:  Trying $source_bes_conf"; 
         if [ ! -r $source_bes_conf ]
         then
             echo ""
-            echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+            echo "${0} !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
             echo ""
-            echo "Unable to locate a BES configuration file."
-            echo "You may identify your BES configurstion in one of three ways: "
+            echo "${0} Unable to locate a BES configuration file."
+            echo "${0} You may identify your BES configurstion in one of three ways: "
             echo ""
-            echo "  1. Using the command line parameter '-c'"
+            echo "${0}   1. Using the command line parameter '-c'"
             echo ""
-            echo "  2. Setting the environment variable $prefix to the install"
-            echo "     location of the BES."
+            echo "${0}   2. Setting the environment variable $prefix to the install"
+            echo "${0}      location of the BES."
             echo ""
-            echo "  3. Placing the bes.conf file in the well known location"
-            echo "         /etc/bes/bes.conf"
+            echo "${0}   3. Placing the bes.conf file in the well known location"
+            echo "${0}          /etc/bes/bes.conf"
             echo ""
-            echo "The command line parameter is the recommended usage."        
+            echo "${0} The command line parameter is the recommended usage."        
             echo ""
-            echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+            echo "${0} !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
             show_usage
             echo ""
            exit;
@@ -189,7 +197,7 @@ function make_bes_conf() {
         from_hyrax=1;
     fi
     
-    if [ ${verbose} -eq 1 ]; then echo "source_bes_conf: ${source_bes_conf}"; fi
+    if [ ${verbose} -eq 1 ]; then echo "${0} source_bes_conf: ${source_bes_conf}"; fi
     
     # Temp file
     bes_conf=$(mktemp -t bes.conf_$$)
@@ -213,7 +221,7 @@ function make_bes_conf() {
     
         # We add the dap.conf first because we need it for the rest to load.
         dap_conf=`dirname $source_bes_conf`/modules/dap.conf;
-        if [ ${verbose} -eq 1 ]; then echo "Adding ${dap_conf} to bes.conf"; fi
+        if [ ${verbose} -eq 1 ]; then echo "${0} Adding ${dap_conf} to bes.conf"; fi
         cat ${dap_conf} >> ${bes_conf};
         
         # Now we get all the file names
@@ -222,9 +230,9 @@ function make_bes_conf() {
         for conf_file in ${conf_files} ; do
             # We skip dap.conf because we already did it.
             if [ ${conf_file} = ${dap_conf} ]  ; then
-                if [ ${verbose} -eq 1 ]; then echo "Skipping ${conf_file}."; fi
+                if [ ${verbose} -eq 1 ]; then echo "${0} Skipping ${conf_file}."; fi
             else 
-                if [ ${verbose} -eq 1 ]; then echo "Adding ${conf_file}."; fi
+                if [ ${verbose} -eq 1 ]; then echo "${0} Adding ${conf_file}."; fi
                 cat ${conf_file} >> ${bes_conf};
             fi
         done
@@ -233,9 +241,9 @@ function make_bes_conf() {
     bes_conf_flag="-c ${bes_conf}"
     
     if [ ${very_verbose} -eq 1 ]; then
-        echo "############## BES CONFIG ###############"
+        echo "${0} ############## BES CONFIG ###############"
         cat $bes_conf;
-        echo "-----------------------------------------"
+        echo "${0} -----------------------------------------"
     fi
  
  }
@@ -252,14 +260,7 @@ function make_bes_conf() {
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
 function process_cmdln() {
     
-    OPTIND=1        # Reset in case getopts has been used previously in this shell
-    s3_region=
-    #s3_bucket_name=
-    #s3_profile=
-    #source_bes_conf=
-    #bes_catalog_root_dir=
-    
-    
+    OPTIND=1        # Reset in case getopts has been used previously in this shell    
     verbose=0
     very_verbose=0
     verbose_flag=
@@ -320,13 +321,13 @@ function process_cmdln() {
     [ "$1" = "--" ] && shift
     
     if [ -z ${1+x} ]
-        then echo "No value provided for <bes_catalog_root_dir>!"
+        then echo "${0} No value provided for <bes_catalog_root_dir>!"
         exit 1;
     else 
         # We want the absolute path for the bes_catalog_root_dir.
         bes_catalog_root_dir=`cd ${1};pwd`;
         if [ ${verbose} -eq 1 ]; then
-            echo "<bes_catalog_root_dir> is set to '$bes_catalog_root_dir'";    
+            echo "${0} <bes_catalog_root_dir> is set to '$bes_catalog_root_dir'";    
         fi
     fi
        
@@ -342,9 +343,12 @@ function process_cmdln() {
 #
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
 
+
             
 # Process the commandline parameters.
 process_cmdln "$@";
+
+if [ ${verbose} -eq 1 ]; then echo "${0} STAT_COMMAND: ${STAT_COMMAND}"; fi
 
 
 
@@ -358,11 +362,16 @@ make_bes_conf
 # here if the size gets too big)
 file_list=`find ${bes_catalog_root_dir} ${maxdepth} -type f`;
 
-if [ ${verbose} -eq 1 ]; then echo "Found "`echo ${file_list} | wc -w`" files."; fi
+if [ ${verbose} -eq 1 ]; then echo "${0} Found "`echo ${file_list} | wc -w`" files."; fi
 
 # Evaluate each file in the list.
 for afile in ${file_list}
 do 
+    if [ ${verbose} -eq 1 ]; then 
+        echo "";
+        echo "${0} ^-.-^ ^-.-^ ^-.-^ ^-.-^ ^-.-^ ^-.-^ ^-.-^ ^-.-^ ^-.-^ ^-.-^ ^-.-^ ^-.-^";
+        echo "${0} Evaluating ${afile}"; fi
+
     # The logicaal path is the path within the BES, relative to the BES root dir.
     logical_path=`echo ${afile} | sed "s|${bes_catalog_root_dir}/||g"`;
     
@@ -371,46 +380,56 @@ do
     
     # If the file mathes the EXCLUDE_REGEX or if it doesn't match the INCLUDE_REGEX then we skip it.
     if [[ ${fbasename} =~ ${EXCLUDE_REGEX} ]] || [[ ! ${fbasename} =~ ${INCLUDE_REGEX} ]]; then
-        if [ ${verbose} -eq 1 ]; then
-            echo "Skipping ${logical_path}";
-        fi
+        if [ ${verbose} -eq 1 ]; then echo "${0} Skipping ${logical_path}"; fi
     else 
         # We want this file.
         
-        if [ ${verbose} -eq 1 ]; then echo ""; echo "Processing ${logical_path}"; fi
-        #echo "bes_conf: ${bes_conf}"
+        aws_s3_url="s3://${s3_bucket_name}/${logical_path}"
+        dmr_s3_url="https://s3.amazonaws.com/${s3_bucket_name}/${logical_path}"
         
+        last_modified_time=`TZ=UTC date -r $afile +"%Y-%m-%dT%H:%M:%SZ"`
+        file_size=`$STAT_COMMAND $afile`
+        
+        if [ ${verbose} -eq 1 ]; then echo ""; echo "${0} Processing ${logical_path}"; fi
+                
         # Check for DMR++ match
-        no_dmrpp_flag="-R"
+        dmrpp_flags="-R"
         if [[ ${logical_path} =~ ${H5_REGEX} ]]
         then
-            no_dmrpp_flag=
-            if [ ${verbose} -eq 1 ]; then echo "Adding dmr++ to MDS"; fi
+            dmrpp_flags="-u ${dmr_s3_url}"
+            if [ ${verbose} -eq 1 ]; then echo "${0} Will attempt to add dmr++ to MDS"; fi
         fi
         
+        
         # This is the command that will populate the MDS with the "stuff".
-        mds_cmd="./populateMDS ${verbose_flag} ${bes_conf_flag} ${no_dmrpp_flag} ${logical_path}"
-        if [ ${verbose} -eq 1 ]; then echo "mds_cmd: ${mds_cmd}"; fi
-        if [ -z ${DRY_RUN} ] || [ true ] ; then
+        mds_cmd="./populateMDS ${verbose_flag} ${bes_conf_flag} ${dmrpp_flags} ${logical_path}"
+        if [ ${verbose} -eq 1 ]; then echo "${0} mds_cmd: ${mds_cmd}"; fi
+        if [ -z ${DRY_RUN} ]; then
             $mds_cmd;
             mds_status=$?;
             if [ ${mds_status} -ne 0 ]; then
-                echo "MDS INGEST FAILED. STATUS: ${mds_status}";
+                echo "${0} MDS INGEST FAILED. STATUS: ${mds_status}";
             fi
+        else 
+            # We need to set this that down stream tests don't fail, and a 
+            # dry run should always be successful
+            echo "${0} (dryrun) mds_cmd: ${mds_cmd}"
+            mds_status=0;
         fi
         
         # This is the command that will copy the file to the S3 bucket.
-        aws_cmd="aws s3 cp ${DRY_RUN} "${afile}" s3://${s3_bucket_name}/$logical_path"
-        if [ ${verbose} -eq 1 ]; then echo "aws_cmd: ${aws_cmd}"; fi
-        $aws_cmd;
+        aws_cmd="aws s3 cp ${DRY_RUN} ${afile} ${aws_s3_url}"  
+        aws_status=0;
+        if [ ${verbose} -eq 1 ]; then echo "${0} aws_cmd: ${aws_cmd}"; fi
+        $aws_cmd
         aws_status=$?;
         if [ ${aws_status} -ne 0 ]; then
-            echo "AWS UPLOAD FAILED. STATUS: ${aws_status}";
+            echo "${0} AWS UPLOAD FAILED. STATUS: ${aws_status}";
         fi
         
         if [ ${mds_status} -eq 0 ] && [ ${aws_status} -eq 0 ] ; then
-            if [ ${verbose} -eq 1 ]; then echo "Adding ${logical_path} to siteMap"; fi
-            echo "${logical_path}" >> ${site_map_file};
+            if [ ${verbose} -eq 1 ]; then echo "${0} Adding ${logical_path} to siteMap"; fi
+            echo "${last_modified_time} ${file_size} ${logical_path}" >> ${site_map_file};
         fi
               
     fi
