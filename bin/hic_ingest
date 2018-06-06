@@ -46,13 +46,12 @@ fi
 show_usage() {
 cat <<EOF
 
- Usage: $0 [h|v|V|R|D] [-c <bes_conf>] [-b <s3_bucket_name>] [-u <s3_profile_name>] [-r <s3_region>] [-p <parent_path>] [-s <site_map_file>] [-i <include_regex>] [-x <exclude_regex>] <bes_catalog_root_dir>
+ Usage: $0 [h|v|V|R|D] [-c <bes_conf>] [-b <s3_bucket_name>] [-u <s3_profile_name>] [-p <parent_path>] [-s <site_map_file>] [-i <include_regex>] [-x <exclude_regex>] <bes_catalog_root_dir>
 
  
  -R  Recursively process <bes_catalog_root_dir>''s child directories.
  -b <s3_bucket_name> The name of the S3 bucket into which to place the files.
  -u <s3_profile_name> The name of the AWS profile to use when intracting with S3.
- -r <s3_region> The AWS region of your bucket. (?? really??)
  -p <parent_path> The parent path, relative to the BES.
  -s <site_map_file> The file to which to write the site map of ingested files.
  -i <include_regex> A regex to match the (basename) of the files to be included.
@@ -270,7 +269,7 @@ function process_cmdln() {
     site_map_file="siteMap.txt"
     DRY_RUN=
 
-    while getopts "h?DRvVc:b:u:r:p:i:x:" opt; do
+    while getopts "h?DRvVc:b:u:p:i:x:" opt; do
         case "$opt" in
         h|\?)
             show_usage;
@@ -290,9 +289,6 @@ function process_cmdln() {
         R)
             recursive="yes";
             maxdepth=
-            ;;
-        r)
-            s3_region="$OPTARG";
             ;;
         b)
             s3_bucket_name="$OPTARG";
