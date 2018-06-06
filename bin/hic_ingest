@@ -49,7 +49,7 @@ cat <<EOF
  Usage: $0 [h|v|V|R|D] [-c <bes_conf>] [-b <s3_bucket_name>] [-u <s3_profile_name>] [-r <s3_region>] [-p <parent_path>] [-s <site_map_file>] [-i <include_regex>] [-x <exclude_regex>] <bes_catalog_root_dir>
 
  
- -R  Recursively process <directory>''s child directories.
+ -R  Recursively process <bes_catalog_root_dir>''s child directories.
  -b <s3_bucket_name> The name of the S3 bucket into which to place the files.
  -u <s3_profile_name> The name of the AWS profile to use when intracting with S3.
  -r <s3_region> The AWS region of your bucket. (?? really??)
