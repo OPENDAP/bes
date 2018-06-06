@@ -38,10 +38,12 @@
 #include <fstream>
 #include <stddef.h>
 #include <string>
+#include <cstring>
 #include <typeinfo>
 #include <iomanip> // setprecision
 #include <sstream> // stringstream
 #include <vector>
+#include <ctime>
 
 using std::ostringstream;
 using std::istringstream;
@@ -300,6 +302,8 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
                 currParameter->shape += ", ";
             }
 
+            // Process the shape's values, which are strings,
+            // convert them into integers, and store them
             ostringstream otemp;
             istringstream itemp;
             int tempVal = 0;
@@ -435,6 +439,8 @@ void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, 
                 currParameter->shape += ", ";
             }
 
+            // Process the shape's values, which are strings,
+            // convert them into integers, and store them
             ostringstream otemp;
             istringstream itemp;
             int tempVal = 0;
@@ -496,6 +502,9 @@ void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, 
  * @note strm is included here for debugging purposes. Otherwise, there is no
  *   absolute need to require it as an argument. May remove strm as an arg if
  *   necessary.
+ *
+ * @note CoverageJSON specification for Temporal Reference Systems)
+ *   https://covjson.org/spec/#temporal-reference-systems
  *
  * @param ostrm Write the CovJSON to this stream (TEST/DEBUGGING)
  * @param attr_table Reference to an AttrTable containing Axis attribute values
@@ -588,15 +597,52 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
                         struct Axis *newAxis = new Axis;
                         newAxis->name = currAxisName;
 
-                        // If we're dealing with the time axis, capture
-                        // the time origin timestamp value with the
-                        // appropriate formatting for printing
+                        // If we're dealing with the time axis, capture the time
+                        // origin timestamp value with the appropriate formatting
+                        // for printing.
+
+                        // See https://covjson.org/spec/#temporal-reference-systems
                         if(currAxisName.compare("t") == 0) {
-                            // @TODO Convert axis time origin to
-                            // to an acceptable timestamp format
+                            // If the calendar is based on years, months, days,
+                            // then the referenced values SHOULD use one of the
+                            // following ISO8601-based lexical representations:
+
+                            //    YYYY
+                            //    ±XYYYY (where X stands for extra year digits)
+                            //    YYYY-MM
+                            //    YYYY-MM-DD
+                            //    YYYY-MM-DDTHH:MM:SS[.F]Z where Z is either “Z”
+                            //              or a time scale offset + -HH:MM
+
+                            // If calendar dates with reduced precision are
+                            // used in a lexical representation (e.g. "2016"),
+                            // then a client SHOULD interpret those dates in
+                            // that reduced precision.
+
+                            string item;
+                            vector<string> tokens;
+                            char *dup = strdup(currAxisTimeOrigin.c_str());
+                            char *token = strtok(dup, " ");
+                            while(token != NULL){
+                                tokens.push_back(string(token));
+                                token = strtok(NULL, " ");
+                            }
+
+                            free(token);
+                            free(dup);
+                            free(token);
+
+                            // For testing purposes
+                            // for(unsigned int i = 0; i < tokens.size(); i++) {
+                            //     *strm << tokens[i] << endl;
+                            // }
+
+                            // @TODO Need to figure out a way to dynamically parse
+                            // origin timestamps and convert them to an appropriate
+                            // format for CoverageJSON
 
                             newAxis->values += "\"values\": [\"";
-                            newAxis->values += currAxisTimeOrigin;
+                            newAxis->values += "2010-01-01T00:12:20Z"; // Hard-coded for now
                             newAxis->values += "\"]";
                         }
 
