@@ -9,7 +9,7 @@
     },
     "symbol": {
       "value": "Celsius",
-      "type": "",
+      "type": ""
     },
     "observedProperty": {
       "id": null,
@@ -29,7 +29,7 @@
     },
     "symbol": {
       "value": "Celsius",
-      "type": "",
+      "type": ""
     },
     "observedProperty": {
       "id": null,
@@ -48,7 +48,7 @@
     },
     "symbol": {
       "value": "Fahrenheit",
-      "type": "",
+      "type": ""
     },
     "observedProperty": {
       "id": null,
@@ -69,7 +69,7 @@
     },
     "symbol": {
       "value": "Celsius",
-      "type": "",
+      "type": ""
     },
     "observedProperty": {
       "id": null,
@@ -88,7 +88,7 @@
     },
     "symbol": {
       "value": "Fahrenheit",
-      "type": "",
+      "type": ""
     },
     "observedProperty": {
       "id": null,
@@ -107,7 +107,7 @@
     },
     "symbol": {
       "value": "Kelvin",
-      "type": "",
+      "type": ""
     },
     "observedProperty": {
       "id": null,

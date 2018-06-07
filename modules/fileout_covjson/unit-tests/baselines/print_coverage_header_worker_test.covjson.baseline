@@ -1,5 +1,6 @@
 {
   "type": "Coverage",
+  "domain": {
 {
   "type": "CoverageCollection",
   "domainType": "Grid",
