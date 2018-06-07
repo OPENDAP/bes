@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,12 +36,12 @@
 #include <map>
 #include <string>
 
-using std::map ;
-using std::string ;
+using std::map;
+using std::string;
 
 #include "BESObj.h"
 
-class BESInfo ;
+class BESInfo;
 
 /** @brief maintains the list of registered request handlers for this server
  *
@@ -50,28 +50,34 @@ class BESInfo ;
  * how to fill in specific response objects, such as DAS, DDS, help, version,
  * etc... The request handlers are registered with this request handler list.
  */
-class BESContextManager : public BESObj
-{
+class BESContextManager: public BESObj {
 private:
-    static BESContextManager *	_instance ;
-    map< string, string > _context_list ;
+    static BESContextManager * _instance;
+    map<string, string> _context_list;
+
 protected:
-				BESContextManager(void) {}
+    BESContextManager(void)
+    {
+    }
+
 public:
-    virtual			~BESContextManager(void) {}
+    virtual ~BESContextManager(void)
+    {
+    }
 
-    typedef map< string, string >::const_iterator Context_citer ;
-    typedef map< string, string >::iterator Context_iter ;
+    typedef map<string, string>::const_iterator Context_citer;
+    typedef map<string, string>::iterator Context_iter;
 
-    virtual void		set_context( const string &name, const string &value ) ;
-    virtual void		unset_context( const string &name) ;
-    virtual string		get_context( const string &name, bool &found ) ;
+    virtual void set_context(const string &name, const string &value);
+    virtual void unset_context(const string &name);
+    virtual string get_context(const string &name, bool &found);
+    virtual int get_context_int(const string &name, bool &found);
 
-    virtual void		list_context( BESInfo &info ) ;
+    virtual void list_context(BESInfo &info);
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 
-    static BESContextManager *	TheManager() ;
+    static BESContextManager * TheManager();
 };
 
 #endif // I_BESContextManager_h

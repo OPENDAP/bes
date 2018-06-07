@@ -1,10 +1,11 @@
 ## directories
 .deps
 .libs
+.pydevproject
+.autotools
 autom4te.cache
 /bes-*
 docs
-.autotools
 
 ## files
 *~

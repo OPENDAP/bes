@@ -32,12 +32,12 @@ BES_CONF=
 # local_bes_get_dap=./localBesGetDap.sh
 # build_dmrpp=./modules/dmrpp_module/data/build_dmrpp
 
-local_bes_get_dap=localBesGetDap
+local_bes_get_dap=./localBesGetDap
 build_dmrpp=build_dmrpp
 
 show_usage () { 
     cat <<EOF
- $0 [-v] [-c <bes conf>] [-R] <pathname>]
+ $0 [-v] [-c <bes conf>] [-u <data URL>] [-R] <pathname>
  
  Populate the Metadata Store (MDS) with DDS, DAS, DMR and DMR++
  responses. 
@@ -45,6 +45,10 @@ show_usage () {
  If -c <bes conf> is not given, the script looks for
  a suitable bes.conf file by looking for $prefix/etc/bes/bes.conf
  and then /etc/bes/bes.conf.
+ 
+ if -u is given, the argument <data URL> is added to the DMR++
+ file as the href attribute's value. The DMR++ handler will use
+ this to access the data.
  
  If -R is given, the DMR++ response is not added to the MDS.
  
@@ -54,7 +58,7 @@ show_usage () {
  software that computes the hash of exactly the characters used
  here and to work, those relative pathnames must match exactly
  the ones sent to the BES by the OLFS. The mds_ledger records
- the names of al the items in the MDS.
+ the names of all the items in the MDS.
 EOF
 }
 
@@ -63,19 +67,24 @@ OPTIND=1         # Reset in case getopts has been used previously in the shell.
 
 verbose=0
 include_dmrpp=1  # build the DMR++ by default
+data_url=
 
-while getopts "h?vc:R" opt; do
+while getopts "h?vc:u:R" opt; do
     case "$opt" in
     h|\?)
         show_usage
         exit 0
         ;;
-    v)  verbose=1
+    v)  verbose=1;
+        echo "";
+        echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
+        echo "${0} - verbose enabled";
         ;;
     c)  BES_CONF="-c $OPTARG"
         ;;
-    R)
-        include_dmrpp=0
+    R)  include_dmrpp=0
+        ;;
+    u)  data_url="-u $OPTARG"
         ;;
     esac
 done
@@ -84,7 +93,7 @@ shift $((OPTIND-1))
 
 [ "$1" = "--" ] && shift
 
-# Find teh bes.conf file
+# Find the bes.conf file
 if [ -z "$BES_CONF" ]
 then 
     echo "BES_CONF is not set trying env variable 'prefix'...";  
@@ -151,11 +160,21 @@ then
 fi
 
 # Ask the BES to get the DDS and DMR for that file - this triggers
-# loadind the MDS with the DDS, DAS adn DMR responses.
+# loading the MDS with the DDS, DAS and DMR responses.
 
-$local_bes_get_dap $v_sw $BES_CONF -i $pathname -d dds > /dev/null
+dds_cmd="${local_bes_get_dap} ${v_sw} ${BES_CONF} -i ${pathname} -d dds"
+dmr_cmd="${local_bes_get_dap} ${v_sw} ${BES_CONF} -i ${pathname} -d dmr"
 
-$local_bes_get_dap $v_sw $BES_CONF -i $pathname -d dmr > /dev/null
+dev_null="> /dev/null";
+if [ $verbose = 1 ]; then 
+    echo "dds_cmd: ${dds_cmd}";
+    echo "dmr_cmd: ${dmr_cmd}";
+    dev_null=
+fi
+
+$dds_cmd $dev_null
+
+$dmr_cmd $dev_null
 
 # build_dmrpp uses the MDS to get the DMR response and then feeds that
 # into code that builds a DMR++ response. That response is added to the 
@@ -163,6 +182,6 @@ $local_bes_get_dap $v_sw $BES_CONF -i $pathname -d dmr > /dev/null
 
 if [ $include_dmrpp = 1 ]
 then
-    $build_dmrpp $v_sw $BES_CONF -f $pathname > /dev/null
+    $build_dmrpp $v_sw $BES_CONF $data_url -f $pathname > /dev/null
 fi
 

@@ -42,7 +42,7 @@
 TestRequestHandler::TestRequestHandler( string name )
     : BESRequestHandler( name )
 {
-    add_handler( HELP_RESPONSE, TestRequestHandler::cdf_build_help ) ;
+    add_method( HELP_RESPONSE, TestRequestHandler::cdf_build_help ) ;
 }
 
 TestRequestHandler::~TestRequestHandler()

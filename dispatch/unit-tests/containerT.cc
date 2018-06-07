@@ -41,9 +41,6 @@ using namespace CppUnit;
 #include <dirent.h>
 #include <cerrno>
 
-using std::cerr;
-using std::endl;
-
 #include <GetOpt.h>
 
 #include "TheBESKeys.h"
@@ -56,6 +53,8 @@ using std::endl;
 #include "BESUtil.h"
 #include "BESDebug.h"
 #include <test_config.h>
+
+using namespace std;
 
 static bool debug = false;
 static bool bes_debug = false;

@@ -48,8 +48,7 @@
 
 #include "BESStopWatch.h"
 
-
-
+using namespace std;
 
 ShowBesKeyResponseHandler::ShowBesKeyResponseHandler(const string &name) :
     BESResponseHandler(name)

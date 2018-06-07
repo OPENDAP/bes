@@ -3,9 +3,8 @@
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
 // Access Protocol.
 
-// Copyright (c) 2016 OPeNDAP, Inc.
-// Author: Nathan David Potter <ndp@opendap.org>, James Gallagher
-// <jgallagher@opendap.org>
+// Copyright (c) 2018 OPeNDAP, Inc.
+// Author: James Gallagher <jgallagher@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -62,7 +61,6 @@ static bool verbose = false;
 #define DEBUG_KEY "metadata_store,dmrpp_store,dmrpp"
 #define ROOT_DIRECTORY "BES.Catalog.catalog.RootDirectory"
 
-
 /**
  * @brief Print information about the data type
  *
@@ -97,7 +95,7 @@ static void print_dataset_type_info(hid_t dataset, uint8_t layout_type)
             if (fvalue_status == H5D_FILL_VALUE_UNDEFINED) {
                 // Replace with switch(), here and elsewhere. jhrg 5/7/18
                 if (layout_type == 1)
-                    cerr << " The storage size is 0 and the storge type is contiguous." << endl;
+                    cerr << " The storage size is 0 and the storage type is contiguous." << endl;
                 else if (layout_type == 2)
                     cerr << " The storage size is 0 and the storage type is chunking." << endl;
                 else if (layout_type == 3) cerr << " The storage size is 0 and the storage type is compact." << endl;
@@ -262,7 +260,7 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc)
  *
  * @exception BESError is thrown on error.
  */
-static void get_variable_chunk_info(hid_t dataset /*const string &h5_dset_path*/, DmrppCommon *dc)
+static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
 {
     try {
         uint8_t layout_type = 0;
@@ -274,12 +272,17 @@ static void get_variable_chunk_info(hid_t dataset /*const string &h5_dset_path*/
             throw BESInternalError("Cannot get HDF5 dataset storage info.", __FILE__, __LINE__);
         }
 
+        VERBOSE(cerr << "layout: " << (int)layout_type << ", chunks: " << num_chunk << ", storage: " << (int)storage_status << endl);
+
         // Replace this with a 'not found' error? It seems that chunk information
         // is found only when storage_status != 0. jhrg 5/7/18
         if (storage_status == 0) {
             print_dataset_type_info(dataset, layout_type);
         }
+#if 0
         else {
+#endif
+
             /* layout_type:  1 contiguous 2 chunk 3 compact */
             switch (layout_type) {
 
@@ -391,7 +394,10 @@ static void get_variable_chunk_info(hid_t dataset /*const string &h5_dset_path*/
                 BESInternalError(oss.str(), __FILE__, __LINE__);
             }
             } // end switch
-        }
+#if 0
+    }
+#endif
+
     }
     catch (...) {
         H5Dclose(dataset);
@@ -471,8 +477,8 @@ int main(int argc, char*argv[])
             h5_file_name = getopt.optarg;
             break;
         case 'r':
-        dmr_name = getopt.optarg;
-        break;
+            dmr_name = getopt.optarg;
+            break;
         case 'u':
             url_name = getopt.optarg;
             break;
@@ -480,7 +486,7 @@ int main(int argc, char*argv[])
             TheBESKeys::ConfigFile = getopt.optarg;
             break;
         case 'h':
-            cerr << "build_dmrpp [-v] -c <bes.conf> -f <input>  [-u <url>] | build_dmrpp -h" << endl;
+            cerr << "build_dmrpp [-v] -c <bes.conf> -f <data file>  [-u <href url>] | build_dmrpp -f <data file> -r <dmr file> build_dmrpp -h" << endl;
             exit(1);
         default:
             break;

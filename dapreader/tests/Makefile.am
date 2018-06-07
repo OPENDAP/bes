@@ -8,13 +8,9 @@ noinst_DATA = bes.conf bes.mds.conf mds
 CLEANFILES = bes.conf bes.mds.conf mds_ledger.txt bes.log $(srcdir)/package.m4 \
 $(TESTSUITE) 
 
-# $(MDS_TESTSUITE)
-
 EXTRA_DIST = dap $(TESTSUITE) $(TESTSUITE).at atlocal.in \
 $(srcdir)/handler_tests_macros.m4 bes.conf.in bes.mds.conf.in \
 $(srcdir)/package.m4
-
-# $(MDS_TESTSUITE) $(MDS_TESTSUITE).at
 
 DISTCLEANFILES = atconfig
 
@@ -51,8 +47,6 @@ check-local: atconfig atlocal $(TESTSUITE) $(MDS_TESTSUITE) bes.mds.conf bes.con
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
 	-rm -rf $(builddir)/mds
-
-# 	test ! -f '$(MDS_TESTSUITE)' || $(SHELL) '$(MDS_TESTSUITE)' --clean
 
 %: %.at 
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
