@@ -157,15 +157,15 @@ NCRequestHandler::NCRequestHandler(const string &name) :
 {
     BESDEBUG(NC_NAME, "In NCRequestHandler::NCRequestHandler" << endl);
 
-    add_handler(DAS_RESPONSE, NCRequestHandler::nc_build_das);
-    add_handler(DDS_RESPONSE, NCRequestHandler::nc_build_dds);
-    add_handler(DATA_RESPONSE, NCRequestHandler::nc_build_data);
+    add_method(DAS_RESPONSE, NCRequestHandler::nc_build_das);
+    add_method(DDS_RESPONSE, NCRequestHandler::nc_build_dds);
+    add_method(DATA_RESPONSE, NCRequestHandler::nc_build_data);
 
-    add_handler(DMR_RESPONSE, NCRequestHandler::nc_build_dmr);
-    add_handler(DAP4DATA_RESPONSE, NCRequestHandler::nc_build_dmr);
+    add_method(DMR_RESPONSE, NCRequestHandler::nc_build_dmr);
+    add_method(DAP4DATA_RESPONSE, NCRequestHandler::nc_build_dmr);
 
-    add_handler(HELP_RESPONSE, NCRequestHandler::nc_build_help);
-    add_handler(VERS_RESPONSE, NCRequestHandler::nc_build_version);
+    add_method(HELP_RESPONSE, NCRequestHandler::nc_build_help);
+    add_method(VERS_RESPONSE, NCRequestHandler::nc_build_version);
 
     // TODO replace with get_bool_key above 5/21/16 jhrg
 

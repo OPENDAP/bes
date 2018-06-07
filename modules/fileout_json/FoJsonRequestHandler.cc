@@ -46,8 +46,8 @@
 FoJsonRequestHandler::FoJsonRequestHandler(const string &name) :
     BESRequestHandler(name)
 {
-    add_handler( HELP_RESPONSE, FoJsonRequestHandler::build_help);
-    add_handler( VERS_RESPONSE, FoJsonRequestHandler::build_version);
+    add_method( HELP_RESPONSE, FoJsonRequestHandler::build_help);
+    add_method( VERS_RESPONSE, FoJsonRequestHandler::build_version);
 }
 
 /** @brief Any cleanup that needs to take place

@@ -39,8 +39,8 @@
 BESXDRequestHandler::BESXDRequestHandler(const string &name) :
         BESRequestHandler(name)
 {
-    add_handler(HELP_RESPONSE, BESXDRequestHandler::dap_build_help);
-    add_handler(VERS_RESPONSE, BESXDRequestHandler::dap_build_version);
+    add_method(HELP_RESPONSE, BESXDRequestHandler::dap_build_help);
+    add_method(VERS_RESPONSE, BESXDRequestHandler::dap_build_version);
 }
 
 BESXDRequestHandler::~BESXDRequestHandler()

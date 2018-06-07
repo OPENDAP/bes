@@ -89,6 +89,8 @@
 #define CONTAINER "container"
 #define CATALOG "catalog"
 
+#define BES_KEY "besKey"
+
 /*
  * Context
  */

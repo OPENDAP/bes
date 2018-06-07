@@ -8,7 +8,7 @@ AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch $(DAP_CFLAGS) \
 -I$(top_srcdir)/modules/dmrpp_module
 
-LDADD = $(top_builddir)/dispatch/libbes_dispatch.la \
+LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(top_builddir)/dap/libdap_module.la \
 $(top_builddir)/modules/dmrpp_module/libdmrpp_module.la -ltest-types $(DAP_LIBS) $(LIBS)
 
 if CPPUNIT
@@ -39,7 +39,7 @@ noinst_DATA = response_cache pathinfo_files bes.conf
 response_cache:
 	test -d response_cache  || mkdir response_cache 
 
-# If 'input-files' does not exist, replicate it here. tar (used to make
+# If 'pathinfo_files' does not exist, replicate it here. tar (used to make
 # the source dist) dereferences symbolic links, so we make them this 
 # way to get distcheck to work.
 pathinfo_files:
@@ -121,7 +121,11 @@ TemporaryFileTest_LDADD = $(TemporaryFileTest_OBJS) $(LDADD)
 
 GlobalMetadataStoreTest_SOURCES = GlobalMetadataStoreTest.cc $(TEST_SRC)
 GlobalMetadataStoreTest_OBJS = ../GlobalMetadataStore.o ../TempFile.o
-GlobalMetadataStoreTest_LDADD = $(GlobalMetadataStoreTest_OBJS) ../libdap_module.la $(LDADD)
+GlobalMetadataStoreTest_LDADD = $(GlobalMetadataStoreTest_OBJS) $(LDADD)
+
+Dap4ResponseHandlerTest_SOURCES =Dap4ResponseHandlerTest.cc $(TEST_SRC)
+Dap4ResponseHandlerTest_OBJS = ../BESDap4ResponseHandler.o
+Dap4ResponseHandlerTest_LDADD = $(Dap4ResponseHandlerTest_OBJS) $(LDADD)
 
 # StoredDap2ResultTest_SOURCES = StoredDap2ResultTest.cc  $(TEST_SRC)
 # StoredDap2ResultTest_LDADD = $(LDADD)

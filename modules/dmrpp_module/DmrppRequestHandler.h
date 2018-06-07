@@ -29,6 +29,7 @@
 #include "BESRequestHandler.h"
 
 class ObjMemCache;  // in bes/dap
+class BESContainer;
 
 namespace libdap {
 	class DMR;
@@ -49,7 +50,7 @@ private:
     static ObjMemCache *dmr_cache;
 
 	// These are static because they are used by the static public methods.
-	static void build_dmr_from_file(const std::string& accessed, bool explicit_containers, libdap::DMR* dmr);
+	static void build_dmr_from_file(BESContainer *container, libdap::DMR* dmr);
 
 public:
 	DmrppRequestHandler(const std::string &name);

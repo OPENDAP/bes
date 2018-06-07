@@ -43,8 +43,8 @@ using namespace libdap ;
 BESDapRequestHandler::BESDapRequestHandler( const string &name )
     : BESRequestHandler( name )
 {
-    add_handler( HELP_RESPONSE, BESDapRequestHandler::dap_build_help ) ;
-    add_handler( VERS_RESPONSE, BESDapRequestHandler::dap_build_version ) ;
+    add_method( HELP_RESPONSE, BESDapRequestHandler::dap_build_help ) ;
+    add_method( VERS_RESPONSE, BESDapRequestHandler::dap_build_version ) ;
 }
 
 BESDapRequestHandler::~BESDapRequestHandler()

@@ -41,6 +41,7 @@
 #include "BESDataNames.h"
 #include "BESSyntaxUserError.h"
 #include "BESResponseNames.h"
+#include "BESDataHandlerInterface.h"
 
 BESSetContextResponseHandler::BESSetContextResponseHandler(const string &name) :
     BESResponseHandler(name)
@@ -99,7 +100,7 @@ void BESSetContextResponseHandler::execute(BESDataHandlerInterface &dhi)
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void BESSetContextResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
+void BESSetContextResponseHandler::transmit(BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/)
 {
 #if 0
     if (d_response_object) {

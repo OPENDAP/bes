@@ -37,6 +37,8 @@
 #include "BESRequestHandlerList.h"
 #include "BESDapNames.h"
 #include "BESDataNames.h"
+#include "BESTransmitter.h"
+
 #include "GlobalMetadataStore.h"
 #include "BESDebug.h"
 
@@ -91,19 +93,6 @@ void BESDDSResponseHandler::execute(BESDataHandlerInterface &dhi)
     }
     else {
         DDS *dds = new DDS(NULL, "virtual");
-
-#if 0
-        // Keywords were a hack to the protocol and have been dropped. We can get rid of
-        // this keyword code. jhrg 11/6/13
-        dhi.container->set_constraint(dds->get_keywords().parse_keywords(dhi.container->get_constraint()));
-
-        if (dds->get_keywords().has_keyword("dap")) {
-            dds->set_dap_version(dds->get_keywords().get_keyword_value("dap"));
-        }
-        else if (!bdds->get_dap_client_protocol().empty()) {
-            dds->set_dap_version(bdds->get_dap_client_protocol());
-        }
-#endif
 
         d_response_object = new BESDDSResponse(dds);
 

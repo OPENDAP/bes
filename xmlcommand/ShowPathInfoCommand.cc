@@ -32,7 +32,6 @@
 #define SPI_DEBUG_KEY "show-path-info"
 
 #define SHOW_PATH_INFO_RESPONSE "show.pathInfo"
-#define SHOW_PATH_INFO_RESPONSE_STR "showPathInfo"
 
 
 ShowPathInfoCommand::ShowPathInfoCommand(const BESDataHandlerInterface &base_dhi) :
@@ -54,11 +53,11 @@ void ShowPathInfoCommand::parse_request(xmlNode *node)
     map<string, string> props;
     BESXMLUtils::GetNodeInfo(node, name, value, props);
     if (name != SHOW_PATH_INFO_RESPONSE_STR) {
-        string err = "The specified command " + name + " is not a show w10n command";
+        string err = "The specified command " + name + " is not a " + SHOW_PATH_INFO_RESPONSE_STR + " command";
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
-    // the the action is to show the w10n info response
+    // the the action is to return the showPathInfo response
     d_xmlcmd_dhi.action = SHOW_PATH_INFO_RESPONSE;
     d_xmlcmd_dhi.data[SHOW_PATH_INFO_RESPONSE] = SHOW_PATH_INFO_RESPONSE;
     d_cmd_log_info = "show pathInfo";
