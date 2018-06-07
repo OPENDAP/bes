@@ -31,6 +31,11 @@
 #include "BESFileLockingCache.h"
 #include "BESInternalFatalError.h"
 
+/// Setting XML_BASE_MISSING_MEANS_OMIT_ATTRIBUTE to zero causes the MDS to throw
+/// BESInternalError when the xml:base context is not defined and a DMR/++ response
+/// is accessed. This will break tests in dapreader and dmrpp_module. jhrg 6/6/18
+#define XML_BASE_MISSING_MEANS_OMIT_ATTRIBUTE 1
+
 namespace libdap {
 class DapObj;
 class DDS;
@@ -82,6 +87,7 @@ class GlobalMetadataStore: public BESFileLockingCache {
 private:
     bool d_use_local_time;      // Base on BES.LogTimeLocal
     std::string d_ledger_name;  // Name of the ledger file
+    std::string d_xml_base;     // The value of the context xml:basse
 
     static bool d_enabled;
     static GlobalMetadataStore *d_instance;
@@ -159,7 +165,14 @@ protected:
     void write_response_helper(const std::string &name, std::ostream &os, const std::string &suffix,
         const std::string &object_name);
 
+    // This version adds xml:base to the DMR/DMR++
+    void write_response_helper(const std::string &name, std::ostream &os, const std::string &suffix,
+        const std::string &xml_base, const std::string &object_name);
+
     bool remove_response_helper(const std::string& name, const std::string &suffix, const std::string &object_name);
+
+    static void transfer_bytes(int fd, ostream &os);
+    static void insert_xml_base(int fd, ostream &os, const string &xml_base);
 
 public:
     /**

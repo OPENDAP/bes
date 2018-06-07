@@ -25,6 +25,7 @@
 #include "config.h"
 
 #include <unistd.h>
+#include <fcntl.h>
 
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
@@ -46,9 +47,10 @@
 #include <BaseTypeFactory.h>
 #include <D4BaseTypeFactory.h>
 
-#include "BESError.h"
 #include "TheBESKeys.h"
+#include "BESContextManager.h"
 #include "BESDebug.h"
+#include "BESInternalError.h"
 
 #include "GlobalMetadataStore.h"
 
@@ -209,6 +211,7 @@ public:
 
         // Contains BES Log parameters but not cache names
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
+        BESContextManager::TheManager()->set_context("xml:base", "http://localhost/");
 
         DBG(cerr << __func__ << " - END" << endl);
     }
@@ -585,6 +588,30 @@ public:
          DBG(cerr << __func__ << " - END" << endl);
     }
 
+    void write_dmr_response_test_error()
+    {
+        DBG(cerr << __func__ << " - BEGIN" << endl);
+
+        init_dmr_and_mds();
+
+        // Store it - this will work if the the code is cleaning the cache.
+        bool stored = d_mds->add_responses(d_test_dmr, d_test_dmr->name());
+
+        CPPUNIT_ASSERT(stored);
+
+        // Now write_dmr_response() will throw
+        BESContextManager::TheManager()->unset_context("xml:base");
+
+        // Now lets read the object from the cache
+        ostringstream oss;
+        d_mds->write_dmr_response(d_test_dmr->name(), oss);
+        DBG(cerr << "DMR response: " << endl << oss.str() << endl);
+
+        CPPUNIT_FAIL("Should have thrown an error.");
+
+        DBG(cerr << __func__ << " - END" << endl);
+     }
+
 #if SYMETRIC_ADD_RESPONSES
     void get_dmr_response_test_2() {
         DBG(cerr << __func__ << " - BEGIN" << endl);
@@ -848,48 +875,107 @@ public:
         DBG(cerr << __func__ << " - END" << endl);
     }
 
-    void get_dmr_object_test() {
-         DBG(cerr << __func__ << " - BEGIN" << endl);
+    void get_dmr_object_test()
+    {
+        DBG(cerr << __func__ << " - BEGIN" << endl);
 
-         try {
-             init_dmr_and_mds();
+        try {
+            init_dmr_and_mds();
 
-             // Store it - this will work if the the code is cleaning the cache.
-             bool stored = d_mds->add_responses(d_test_dmr, d_test_dmr->name());
+            // Store it - this will work if the the code is cleaning the cache.
+            bool stored = d_mds->add_responses(d_test_dmr, d_test_dmr->name());
 
-             CPPUNIT_ASSERT(stored);
+            CPPUNIT_ASSERT(stored);
 
-             DMR *dmr = d_mds->get_dmr_object(d_test_dmr->name());
+            DMR *dmr = d_mds->get_dmr_object(d_test_dmr->name());
 
-             CPPUNIT_ASSERT(dmr);
+            CPPUNIT_ASSERT(dmr);
 
-             DBG(cerr << "DMR: " << dmr->name() << endl);
+            DBG(cerr << "DMR: " << dmr->name() << endl);
 
-             ostringstream oss;
-             XMLWriter writer;
-             dmr->print_dap4(writer);
-             oss << writer.get_doc();
+            ostringstream oss;
+            XMLWriter writer;
+            dmr->print_dap4(writer);
+            oss << writer.get_doc();
 
-             string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "test_01.dmr_r";
-             DBG(cerr << "Reading baseline: " << baseline_name << endl);
-             CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
+            string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "test_01.dmr_r";
+            DBG(cerr << "Reading baseline: " << baseline_name << endl);
+            CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
 
-             string test_01_dmr_baseline = read_test_baseline(baseline_name);
+            string test_01_dmr_baseline = read_test_baseline(baseline_name);
 
-             CPPUNIT_ASSERT(test_01_dmr_baseline == oss.str());
-         }
-         catch (BESError &e) {
-             CPPUNIT_FAIL(e.get_message());
-         }
-         catch(Error &e) {
-             CPPUNIT_FAIL(e.get_error_message());
-         }
-         catch (std::exception &e) {
-             CPPUNIT_FAIL(e.what());
-         }
+            CPPUNIT_ASSERT(test_01_dmr_baseline == oss.str());
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL(e.get_message());
+        }
+        catch (Error &e) {
+            CPPUNIT_FAIL(e.get_error_message());
+        }
+        catch (std::exception &e) {
+            CPPUNIT_FAIL(e.what());
+        }
 
-         DBG(cerr << __func__ << " - END" << endl);
-     }
+        DBG(cerr << __func__ << " - END" << endl);
+    }
+
+    // (int fd, ostream &os, const string &xml_base)
+    void insert_xml_base_test() {
+        string source_file = string(TEST_SRC_DIR) + "/input-files/insert_xml_base_src.txt";
+        DBG(cerr << __func__ << " Input file: " << source_file << endl);
+
+        int fd = open(source_file.c_str(), O_RDONLY);
+
+        CPPUNIT_ASSERT(fd > 0);
+
+        ostringstream oss;
+        GlobalMetadataStore::insert_xml_base(fd, oss, "URI");
+
+        DBG(cerr << __func__ << " Result: " << oss.str() << endl);
+
+        string baseline_name = string(TEST_SRC_DIR) + "/input-files/insert_xml_base_baseline.txt";
+        DBG(cerr << "Reading baseline: " << baseline_name << endl);
+        CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
+
+        string insert_xml_base_baseline = read_test_baseline(baseline_name);
+
+        CPPUNIT_ASSERT(insert_xml_base_baseline == oss.str());
+    }
+
+    void insert_xml_base_test_2() {
+        string source_file = string(TEST_SRC_DIR) + "/input-files/insert_xml_base_src2.txt";
+        DBG(cerr << __func__ << " Input file: " << source_file << endl);
+
+        int fd = open(source_file.c_str(), O_RDONLY);
+
+        CPPUNIT_ASSERT(fd > 0);
+
+        ostringstream oss;
+        GlobalMetadataStore::insert_xml_base(fd, oss, "URI-2");
+
+        DBG(cerr << __func__ << " Result: " << oss.str() << endl);
+
+        string baseline_name = string(TEST_SRC_DIR) + "/input-files/insert_xml_base_baseline2.txt";
+        DBG(cerr << "Reading baseline: " << baseline_name << endl);
+        CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
+
+        string insert_xml_base_baseline = read_test_baseline(baseline_name);
+
+        CPPUNIT_ASSERT(insert_xml_base_baseline == oss.str());
+    }
+
+    void insert_xml_base_test_error() {
+        string source_file = string(TEST_SRC_DIR) + "/no_such_file";
+        DBG(cerr << __func__ << " Input file: " << source_file << endl);
+
+        int fd = open(source_file.c_str(), O_RDONLY);
+
+        ostringstream oss;
+        // This should through BESInternalError
+        GlobalMetadataStore::insert_xml_base(fd, oss, "URI");
+
+        CPPUNIT_FAIL("Expected GlobalMetadataStore::insert_xml_base to throw BESInternalError");
+    }
 
     CPPUNIT_TEST_SUITE( GlobalMetadataStoreTest );
 
@@ -903,15 +989,17 @@ public:
     CPPUNIT_TEST(cache_a_dds_response);
     CPPUNIT_TEST(cache_a_das_response);
     CPPUNIT_TEST(cache_a_dmr_response);
-#if 0
-    CPPUNIT_TEST(cache_a_dmrpp_response);
-#endif
 
     CPPUNIT_TEST(add_response_test);
 
     CPPUNIT_TEST(get_dds_response_test);
     CPPUNIT_TEST(get_das_response_test);
     CPPUNIT_TEST(write_dmr_response_test);
+
+#ifndef XML_BASE_MISSING_MEANS_OMIT_ATTRIBUTE
+    CPPUNIT_TEST_EXCEPTION(write_dmr_response_test_error, BESInternalError);
+#endif
+
 #if SYMETRIC_ADD_RESPONSES
     CPPUNIT_TEST(get_dmr_response_test_2);
 #endif
@@ -924,6 +1012,10 @@ public:
 
     CPPUNIT_TEST(get_dds_object_test);
     CPPUNIT_TEST(get_dmr_object_test);
+
+    CPPUNIT_TEST(insert_xml_base_test);
+    CPPUNIT_TEST(insert_xml_base_test_2);
+    CPPUNIT_TEST_EXCEPTION(insert_xml_base_test_error, BESInternalError);
 
     CPPUNIT_TEST_SUITE_END();
 };
