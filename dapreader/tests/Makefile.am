@@ -42,7 +42,7 @@ check-local: atconfig atlocal $(TESTSUITE) $(MDS_TESTSUITE) bes.mds.conf bes.con
 	@echo "Test without the MDS"
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 	@echo "Test using the MDS"
-	test -d $(builddir)/mds && rm $(builddir)/mds/*
+	-(test -d $(builddir)/mds && rm $(builddir)/mds/*)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) --jobs=1 --conf=bes.mds.conf 
 
 clean-local:
