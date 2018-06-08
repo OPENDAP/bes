@@ -199,8 +199,11 @@ then
         else 
             ${build_dmrpp_cmd} > /dev/null;
         fi
+        build_dmrpp_status=$?;
         if [ ${build_dmrpp_status} -ne 0 ]; then
             echo "${0} Build dmr++ operation failed! STATUS: ${build_dmrpp_status}";
+        else 
+            if [ ${verbose} = 1 ]; then echo "${0} The dmr++ for ${pathname} has been added to the MDS."; fi
         fi
 
         exit ${build_dmrpp_status}

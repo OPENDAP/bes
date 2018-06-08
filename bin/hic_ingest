@@ -357,9 +357,12 @@ make_bes_conf
 
 # Find all the files in the tree (We might want to apply the include regex 
 # here if the size gets too big)
+
+echo "${0} Checking for files to ingest in ${bes_catalog_root_dir}"
+
 file_list=`find ${bes_catalog_root_dir} ${maxdepth} -type f`;
 
-if [ ${verbose} -eq 1 ]; then echo "${0} Found "`echo ${file_list} | wc -w`" files."; fi
+if [ ${verbose} -eq 1 ]; then echo "${0} Found "`echo ${file_list} | wc -w`" candidate files."; fi
 
 # Evaluate each file in the list.
 for afile in ${file_list}
