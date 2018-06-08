@@ -37,6 +37,7 @@ if [ `uname -s` = "Darwin" ]; then
     STAT_COMMAND="stat -f%z"; #OSX
 fi
 
+
 ###########################################################################
 #
 # show_usage()
@@ -46,7 +47,7 @@ fi
 show_usage() {
 cat <<EOF
 
- Usage: $0 [h|v|V|R|D] [-c <bes_conf>] [-b <s3_bucket_name>] [-u <s3_profile_name>] [-p <parent_path>] [-s <site_map_file>] [-i <include_regex>] [-x <exclude_regex>] <bes_catalog_root_dir>
+ Usage: $0 [h|v|V|R|D|P] [-c <bes_conf>] [-b <s3_bucket_name>] [-u <s3_profile_name>] [-p <parent_path>] [-s <site_map_file>] [-i <include_regex>] [-x <exclude_regex>] <bes_catalog_root_dir>
 
  
  -R  Recursively process <bes_catalog_root_dir>''s child directories.
@@ -56,6 +57,8 @@ cat <<EOF
  -s <site_map_file> The file to which to write the site map of ingested files.
  -i <include_regex> A regex to match the (basename) of the files to be included.
  -x <exclude_regex> A regex to match the (basename) of the files to be excluded.
+ -P  Make the objects loaded into S3 publicly readable. This means clients (
+     like Hyrax) do not need to authenticate to get the data.
  -D  Dryrun
  -v  Verbose Lots of informative output
  -V  Very Verbose: Even more informative output, including the bes.conf file.
@@ -265,8 +268,9 @@ function process_cmdln() {
     bes_conf_flag=
     maxdepth="-maxdepth 1"
     site_map_file="siteMap.txt"
-
-    while getopts "h?DRvVc:b:u:p:i:x:d:" opt; do
+    make_aws_object_public=
+    
+    while getopts "h?DRvVPc:b:u:p:i:x:d:" opt; do
         case "$opt" in
         h|\?)
             show_usage;
@@ -306,6 +310,9 @@ function process_cmdln() {
             ;;
         s)
             site_map_file="$OPTARG";
+            ;;
+        P)
+            make_aws_object_public="--acl public-read";
             ;;
         esac
     done
@@ -418,7 +425,7 @@ do
         fi
         
         # This is the command that will copy the file to the S3 bucket.
-        aws_cmd="aws s3 cp ${DRY_RUN} ${afile} ${aws_s3_url}"  
+        aws_cmd="aws s3 cp ${DRY_RUN} ${make_aws_object_public} ${afile} ${aws_s3_url}"  
         aws_status=0;
         if [ ${verbose} -eq 1 ]; then echo "${0} aws_cmd: ${aws_cmd}"; fi
         $aws_cmd
