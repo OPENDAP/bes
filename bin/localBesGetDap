@@ -171,7 +171,7 @@ cmdDoc=`cat <<EOF
 EOF
 `
 
-COMMAND_FILE=$(mktemp -t getDAP_$$)
+COMMAND_FILE=$(mktemp -t getDAP_$$$$$$)
 if [ $verbose = 1 ]; then echo "${0} COMMAND_FILE: " $COMMAND_FILE; fi
 
 echo $cmdDoc > $COMMAND_FILE
