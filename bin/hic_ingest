@@ -29,8 +29,6 @@ H5_REGEX=".*\.(HDF5|h5|he5)(\.bz2|\.gz|\.Z)?$"
 EXCLUDE_REGEX="^\\..*$|.*\.dmrpp$"
 INCLUDE_REGEX="^.*$"
 
-DEFAULT_S3_BUCKET="opendap.scratch"
-DEFAULT_S3_PROFILE="ndp"
 
 STAT_COMMAND="stat -c%s"; # Linux
 if [ `uname -s` = "Darwin" ]; then
@@ -47,16 +45,20 @@ fi
 show_usage() {
 cat <<EOF
 
- Usage: $0 [h|v|V|R|S|D|P] [-c <bes_conf>] [-b <s3_bucket_name>] [-u <s3_profile_name>] [-p <parent_path>] [-s <site_map_file>] [-i <include_regex>] [-x <exclude_regex>] <bes_catalog_root_dir>
+ Usage: 
+ 
+ $0 [h|v|V|R|S|D|P] [-c <bes_conf>] [-b <s3_bucket_name>] 
+    [-u <s3_profile_name>] [-p <parent_path>] [-s <site_map_file>] 
+    [-i <include_regex>] [-x <exclude_regex>] <bes_catalog_root_dir>
 
  
  -R  Recursively process <bes_catalog_root_dir>''s child directories.
- -b <s3_bucket_name> The name of the S3 bucket into which to place the files.
- -u <s3_profile_name> The name of the AWS profile to use when intracting with S3.
- -p <parent_path> The parent path, relative to the BES.
- -s <site_map_file> The file to which to write the site map of ingested files.
- -i <include_regex> A regex to match the (basename) of the files to be included.
- -x <exclude_regex> A regex to match the (basename) of the files to be excluded.
+ -b  <s3_bucket_name>  The name of the S3 bucket into which to place the files.
+ -u  <s3_profile_name> The name of the AWS profile to use when intracting with S3.
+ -p  <parent_path>     The parent path, relative to the BES.
+ -s  <site_map_file>   The file to which to write the site map of ingested files.
+ -i  <include_regex>   A regex to match the (basename) of the files to be included.
+ -x  <exclude_regex>   A regex to match the (basename) of the files to be excluded.
  -P  Make the objects loaded into S3 publicly readable. This means clients (
      like Hyrax) do not need to authenticate to get the data.
  -D  Dryrun
@@ -110,30 +112,55 @@ function qc_inputs(){
     
     #----------------------------
     # Check S3
+        
+    #echo "woot" >  /tmp/foo
     
-    if [ -z ${s3_bucket_name+x} ] ; then
-        s3_bucket_name="${DEFAULT_S3_BUCKET}"
-    fi
-    
-    if [ -z ${s3_profile_name+x} ]; then
-        s3_profile_name=${DEFAULT_S3_PROFILE}
-    fi
-    
-    if [ ${verbose} -eq 1 ]; then
-        echo "${0} Using s3_bucket_name: '${s3_bucket_name}' s3_profile_name: '${s3_profile_name}'"
-    fi
-    
-    aws s3 ls s3://$s3_bucket_name --profile $s3_profile_name > /dev/null
+    # List Bucket Test
+    aws_cmd="aws s3 ls s3://$s3_bucket_name --profile $s3_profile_name";
+    if [ ${verbose} -eq 1 ]; then echo "{$0} aws command: '${aws_cmd}'"; fi
+    $aws_cmd ${dev_null}
     aws_status=$?
-    
-    if [ $aws_status != 0 ]
-    then
-        echo "${0} S3 access Test FAILED. status: ${aws_status}"
+    if [ $aws_status != 0 ]; then
+        echo "${0} S3 access Test FAILED. Unable to list bucket contents. status: ${aws_status}"
         exit 1;
-    else 
-        if [ ${verbose} -eq 1 ]; then
-            echo "${0} Initial S3 access SUCCESS."
+    fi
+
+    # Write To Bucket Test
+    aws_cmd="aws s3 cp  --profile $s3_profile_name ${0} s3://$s3_bucket_name";
+    if [ ${verbose} -eq 1 ]; then echo "{$0} aws command: '${aws_cmd}'"; fi
+    $aws_cmd ${dev_null}
+    aws_status=$?
+    if [ $aws_status != 0 ]; then
+        echo "${0} S3 access Test FAILED. Unable to write to bucket. status: ${aws_status}"
+        exit 1;
+    fi
+
+    # We already tested list, but in verbose mode this shows the new bucket contents.
+    if [ ${verbose} -eq 1 ]; then 
+        # List Bucket Test
+        aws_cmd="aws s3 ls s3://$s3_bucket_name --profile $s3_profile_name";
+        echo "{$0} aws command: '${aws_cmd}'";
+        $aws_cmd ${dev_null}
+        aws_status=$?
+        if [ $aws_status != 0 ]; then
+            echo "${0} S3 access Test FAILED. Unable to list bucket contents. status: ${aws_status}"
+            exit 1;
         fi
+    
+    fi
+
+    # Delete Item From Bucket Test
+    aws_cmd="aws s3 rm  --profile $s3_profile_name s3://$s3_bucket_name/${0}";
+    if [ ${verbose} -eq 1 ]; then echo "{$0} aws command: '${aws_cmd}'"; fi
+    $aws_cmd ${dev_null}
+    aws_status=$?
+    if [ $aws_status != 0 ]; then
+        echo "${0} S3 access Test FAILED. Unable to delete item from bucket. status: ${aws_status}"
+        exit 1;
+    fi
+
+    if [ ${verbose} -eq 1 ]; then
+        echo "${0} Initial S3 access SUCCESS."
     fi
 }
 ###################################################################
@@ -267,11 +294,23 @@ function process_cmdln() {
     very_verbose=0
     verbose_flag=
     bes_conf_flag=
-    maxdepth="-maxdepth 1"
-    site_map_file="siteMap.txt"
     make_aws_object_public=
     make_site_map=0
+    dev_null=" > /dev/null";
+
+    # By default don't recurse
+    maxdepth="-maxdepth 1"
     
+    #Default site map file name;
+    site_map_file="siteMap.txt"
+    
+    # Not Setting S3 profile causes the aws cli 
+    # to use the "default" aws profile.
+    s3_profile_name="default";
+    
+    # Default bucket name
+    s3_bucket_name="somewhereovertherainbow";
+
     while getopts "h?DRSvVPc:b:u:p:i:x:d:" opt; do
         case "$opt" in
         h|\?)
@@ -284,6 +323,7 @@ function process_cmdln() {
         v)
             verbose=1;
             verbose_flag="-v";
+            dev_null=
             ;;
         V)
             very_verbose=1;
@@ -357,8 +397,12 @@ function process_cmdln() {
 process_cmdln "$@";
 
 
-if [ ${verbose} -eq 1 ]; then echo "${0} STAT_COMMAND: ${STAT_COMMAND}"; fi
-if [ ${verbose} -eq 1 ] && [ ${DRYRUN+x} ]; then echo "${0} THIS IS A DRYRUN"; fi
+if [ ${verbose} -eq 1 ]; then 
+    if [ ${DRYRUN+x} ]; then echo "${0} THIS IS A DRYRUN"; fi
+    echo "${0} STAT_COMMAND: ${STAT_COMMAND}"; 
+    echo "${0} <s3_bucket_name> is set to '$s3_bucket_name'";    
+    echo "${0} <s3_profile_name> is set to '$s3_profile_name'";    
+fi
 
 
 
@@ -371,7 +415,7 @@ make_bes_conf
 # Find all the files in the tree (We might want to apply the include regex 
 # here if the size gets too big)
 
-echo "${0} Checking for files to ingest in ${bes_catalog_root_dir}"
+if [ ${verbose} -eq 1 ]; then  echo "${0} Checking for files to ingest in ${bes_catalog_root_dir}"; fi
 
 file_list=`find ${bes_catalog_root_dir} ${maxdepth} -type f`;
 
@@ -431,7 +475,7 @@ do
         fi
         
         # This is the command that will copy the file to the S3 bucket.
-        aws_cmd="aws s3 cp ${DRY_RUN} ${make_aws_object_public} ${afile} ${aws_s3_url}"  
+        aws_cmd="aws s3 cp ${DRY_RUN} ${make_aws_object_public} ${afile} --profile ${s3_profile_name} ${aws_s3_url}"  
         aws_status=0;
         if [ ${verbose} -eq 1 ]; then echo "${0} aws_cmd: ${aws_cmd}"; fi
         $aws_cmd
@@ -447,10 +491,8 @@ do
                 if [ ${verbose} -eq 1 ]; then echo "${0} Appending entry to siteMap."; fi
                 echo "${site_map_entry}" >> ${site_map_file};
             fi
-        fi
-              
+        fi       
     fi
-    
 done
 if [ ${verbose} -eq 1 ]; then echo "${0} - END"; fi
 ###########################################################################
