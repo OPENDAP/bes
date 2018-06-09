@@ -487,7 +487,7 @@ do
             mds_status=$?;
             if [ ${mds_status} -ne 0 ]; then
                 echo "${0} MDS INGEST FAILED. STATUS: ${mds_status}";
-                if [ -z ${ignoreErrors+x} ]; then exit 1; fi
+                if [ ! -z ${ignoreErrors+x} ]; then exit 1; fi
             fi
         else 
             # We need to set this so that down stream tests don't fail, and a 
@@ -504,7 +504,7 @@ do
         aws_status=$?;
         if [ ${aws_status} -ne 0 ]; then
             echo "${0} AWS UPLOAD FAILED. STATUS: ${aws_status}";
-            if [  -z ${ignoreErrors+x} ]; then exit 1; fi
+            if [ ! -z ${ignoreErrors+x} ]; then exit 1; fi
         fi
         
         if [ ${mds_status} -eq 0 ] && [ ${aws_status} -eq 0 ] ; then
