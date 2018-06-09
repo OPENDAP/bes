@@ -47,7 +47,7 @@ cat <<EOF
 
  Usage: 
  
- $0 [h|v|V|R|S|D|P] [-c <bes_conf>] [-b <s3_bucket_name>] 
+ $0 [h|v|V|R|S|D|P|k] [-c <bes_conf>] [-b <s3_bucket_name>] 
     [-u <s3_profile_name>] [-p <parent_path>] [-s <site_map_file>] 
     [-i <include_regex>] [-x <exclude_regex>] <bes_catalog_root_dir>
 
@@ -65,6 +65,7 @@ cat <<EOF
  -S  Make a site map when doing the dryrun.
  -v  Verbose Lots of informative output
  -V  Very Verbose: Even more informative output, including the bes.conf file.
+ -k  Ignore ingest errors and continue.
  -h  Print this page.
 
 <bes_catalog_root_dir> The directory which will be used as the 
@@ -311,6 +312,8 @@ function process_cmdln() {
     make_aws_object_public=
     make_site_map=0
     dev_null=" > /dev/null";
+    ignore_errors=1;
+    
 
     # By default don't recurse
     maxdepth="-maxdepth 1"
@@ -372,6 +375,9 @@ function process_cmdln() {
             ;;
         S)  
             make_site_map=1;
+            ;;
+        k)  
+            ignore_errors=1;
             ;;
             
         esac
@@ -480,6 +486,7 @@ do
             mds_status=$?;
             if [ ${mds_status} -ne 0 ]; then
                 echo "${0} MDS INGEST FAILED. STATUS: ${mds_status}";
+                if [ ${ignore_errors=1;} -ne 0 ]; then exit 1; fi
             fi
         else 
             # We need to set this so that down stream tests don't fail, and a 
@@ -496,6 +503,7 @@ do
         aws_status=$?;
         if [ ${aws_status} -ne 0 ]; then
             echo "${0} AWS UPLOAD FAILED. STATUS: ${aws_status}";
+                if [ ${ignore_errors=1;} -ne 0 ]; then exit 1; fi
         fi
         
         if [ ${mds_status} -eq 0 ] && [ ${aws_status} -eq 0 ] ; then
