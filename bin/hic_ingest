@@ -312,7 +312,6 @@ function process_cmdln() {
     make_aws_object_public=
     make_site_map=0
     dev_null=" > /dev/null";
-    ignore_errors=1;
     
 
     # By default don't recurse
@@ -419,6 +418,8 @@ process_cmdln "$@";
 
 if [ ${verbose} -eq 1 ]; then 
     if [ ${DRYRUN+x} ]; then echo "${0} THIS IS A DRYRUN"; fi
+    if [ -z ${ignoreErrors+x} ]; then echo "ERRORS WILL BE IGNORED!"; fi
+        
     echo "${0} STAT_COMMAND: ${STAT_COMMAND}"; 
     echo "${0} <s3_bucket_name> is set to '$s3_bucket_name'";    
     echo "${0} <s3_profile_name> is set to '$s3_profile_name'";    
@@ -486,7 +487,7 @@ do
             mds_status=$?;
             if [ ${mds_status} -ne 0 ]; then
                 echo "${0} MDS INGEST FAILED. STATUS: ${mds_status}";
-                if [ ${ignore_errors} -ne 0 ]; then exit 1; fi
+                if [ -z ${ignoreErrors+x} ]; then exit 1; fi
             fi
         else 
             # We need to set this so that down stream tests don't fail, and a 
@@ -503,7 +504,7 @@ do
         aws_status=$?;
         if [ ${aws_status} -ne 0 ]; then
             echo "${0} AWS UPLOAD FAILED. STATUS: ${aws_status}";
-            if [ ${ignore_errors} -ne 0 ]; then exit 1; fi
+            if [  -z ${ignoreErrors+x} ]; then exit 1; fi
         fi
         
         if [ ${mds_status} -eq 0 ] && [ ${aws_status} -eq 0 ] ; then
