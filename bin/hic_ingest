@@ -236,7 +236,7 @@ function make_bes_conf() {
             echo "${0} !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
             show_usage
             echo ""
-           exit;
+           exit 1;
         fi
         from_hyrax=1;
     fi
@@ -244,7 +244,7 @@ function make_bes_conf() {
     if [ ${verbose} -eq 1 ]; then echo "${0} source_bes_conf: ${source_bes_conf}"; fi
     
     # Temp file
-    bes_conf=$(mktemp -t bes.conf_$$)
+    bes_conf=$(mktemp -t bes.conf_XXXX)
     
     # Doctor up the bes.conf file so that teh BES.Catalog.catalog.RootDirectory is
     # set as desired and als eliminate the BES.Include line which will bork us
