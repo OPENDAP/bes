@@ -113,7 +113,7 @@ function qc_inputs(){
     #----------------------------
     # Check S3
         
-    #echo "woot" >  /tmp/foo
+    echo "woot" >  /tmp/foo
     
     # List Bucket Test
     aws_cmd="aws s3 ls s3://$s3_bucket_name --profile $s3_profile_name";
@@ -126,7 +126,7 @@ function qc_inputs(){
     fi
 
     # Write To Bucket Test
-    aws_cmd="aws s3 cp  --profile $s3_profile_name ${0} s3://$s3_bucket_name";
+    aws_cmd="aws s3 cp  --profile $s3_profile_name ${0} s3://$s3_bucket_name/hic_ingest";
     if [ ${verbose} -eq 1 ]; then echo "{$0} aws command: '${aws_cmd}'"; fi
     $aws_cmd ${dev_null}
     aws_status=$?
@@ -150,13 +150,27 @@ function qc_inputs(){
     fi
 
     # Delete Item From Bucket Test
-    aws_cmd="aws s3 rm  --profile $s3_profile_name s3://$s3_bucket_name/${0}";
+    aws_cmd="aws s3 rm  --profile $s3_profile_name s3://$s3_bucket_name/hic_ingest";
     if [ ${verbose} -eq 1 ]; then echo "{$0} aws command: '${aws_cmd}'"; fi
     $aws_cmd ${dev_null}
     aws_status=$?
     if [ $aws_status != 0 ]; then
         echo "${0} S3 access Test FAILED. Unable to delete item from bucket. status: ${aws_status}"
         exit 1;
+    fi
+
+    # We already tested list, but in verbose mode this shows the new bucket contents.
+    if [ ${verbose} -eq 1 ]; then 
+        # List Bucket Test
+        aws_cmd="aws s3 ls s3://$s3_bucket_name --profile $s3_profile_name";
+        echo "{$0} aws command: '${aws_cmd}'";
+        $aws_cmd ${dev_null}
+        aws_status=$?
+        if [ $aws_status != 0 ]; then
+            echo "${0} S3 access Test FAILED. Unable to list bucket contents. status: ${aws_status}"
+            exit 1;
+        fi
+    
     fi
 
     if [ ${verbose} -eq 1 ]; then
