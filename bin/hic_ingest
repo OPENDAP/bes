@@ -328,7 +328,7 @@ function process_cmdln() {
     # Default bucket name
     s3_bucket_name="somewhereovertherainbow";
 
-    while getopts "h?DRSvVPc:b:u:p:i:x:d:" opt; do
+    while getopts "h?DRSkvVPc:b:u:p:i:x:d:" opt; do
         case "$opt" in
         h|\?)
             show_usage;
