@@ -498,6 +498,8 @@ int main(int argc, char*argv[])
         cerr << "HDF5 file name must be given (-f <input>)." << endl;
         return 1;
     }
+    if(h5_file_name[0] != '/')
+        h5_file_name = "/" + h5_file_name;
 
     hid_t file = 0;
     try {
