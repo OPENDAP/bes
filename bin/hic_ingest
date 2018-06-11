@@ -83,6 +83,114 @@ EOF
 
 
 
+###########################################################################
+#
+# process_cmdln()
+#
+# Process the commandline parameters.
+#
+#
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+function process_cmdln() {
+    
+    OPTIND=1        # Reset in case getopts has been used previously in this shell    
+    verbose=0
+    very_verbose=0
+    verbose_flag=
+    bes_conf_flag=
+    make_aws_object_public=
+    make_site_map=0
+    dev_null=" > /dev/null";
+    
+
+    # By default don't recurse
+    maxdepth="-maxdepth 1"
+    
+    #Default site map file name;
+    site_map_file="/tmp/siteMap.txt"
+    
+    # Not Setting S3 profile causes the aws cli 
+    # to use the "default" aws profile.
+    s3_profile_name="default";
+    
+    # Default bucket name
+    s3_bucket_name="somewhereovertherainbow";
+
+    while getopts "h?DRSkvVPc:b:u:p:i:x:d:" opt; do
+        case "$opt" in
+        h|\?)
+            show_usage;
+            exit 0;
+            ;;
+        D)
+            DRY_RUN="--dryrun";
+            ;;
+        v)
+            verbose=1;
+            verbose_flag="-v";
+            dev_null=
+            ;;
+        V)
+            very_verbose=1;
+            verbose_flag="-v";
+            ;;
+        R)
+            maxdepth=
+            ;;
+        b)
+            s3_bucket_name="$OPTARG";
+            ;;
+        u)
+            s3_profile_name="$OPTARG";
+            ;;
+        c)
+            source_bes_conf="$OPTARG";
+            ;;
+        d)
+            maxdepth="-maxdepth $OPTARG";
+            ;;
+        i)
+            INCLUDE_REGEX="$OPTARG";
+            ;;
+        x)
+            EXCLUDE_REGEX="$OPTARG";
+            ;;
+        s)
+            site_map_file="$OPTARG";
+            ;;
+        P)
+            make_aws_object_public="--acl public-read";
+            ;;
+        S)  
+            make_site_map=1;
+            ;;
+        k)  
+            ignore_errors=1;
+            ;;
+            
+        esac
+    done
+    if [ ${verbose} -eq 1 ]; then echo "${0} - BEGIN"; fi
+
+    shift $((OPTIND-1))
+    
+    [ "$1" = "--" ] && shift
+    
+    if [ -z ${1+x} ]
+        then echo "${0} No value provided for <bes_catalog_root_dir>!"
+        exit 1;
+    else 
+        # We want the absolute path for the bes_catalog_root_dir.
+        bes_catalog_root_dir=`cd ${1};pwd`;
+        if [ ${verbose} -eq 1 ]; then
+            echo "${0} <bes_catalog_root_dir> is set to '$bes_catalog_root_dir'";    
+        fi
+    fi
+       
+    
+}
+###########################################################################
+
 
 
 
@@ -293,113 +401,6 @@ function make_bes_conf() {
  }
 ###########################################################################
 
-
-###########################################################################
-#
-# process_cmdln()
-#
-# Process the commandline parameters.
-#
-#
-# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
-function process_cmdln() {
-    
-    OPTIND=1        # Reset in case getopts has been used previously in this shell    
-    verbose=0
-    very_verbose=0
-    verbose_flag=
-    bes_conf_flag=
-    make_aws_object_public=
-    make_site_map=0
-    dev_null=" > /dev/null";
-    
-
-    # By default don't recurse
-    maxdepth="-maxdepth 1"
-    
-    #Default site map file name;
-    site_map_file="siteMap.txt"
-    
-    # Not Setting S3 profile causes the aws cli 
-    # to use the "default" aws profile.
-    s3_profile_name="default";
-    
-    # Default bucket name
-    s3_bucket_name="somewhereovertherainbow";
-
-    while getopts "h?DRSkvVPc:b:u:p:i:x:d:" opt; do
-        case "$opt" in
-        h|\?)
-            show_usage;
-            exit 0;
-            ;;
-        D)
-            DRY_RUN="--dryrun";
-            ;;
-        v)
-            verbose=1;
-            verbose_flag="-v";
-            dev_null=
-            ;;
-        V)
-            very_verbose=1;
-            verbose_flag="-v";
-            ;;
-        R)
-            maxdepth=
-            ;;
-        b)
-            s3_bucket_name="$OPTARG";
-            ;;
-        u)
-            s3_profile_name="$OPTARG";
-            ;;
-        c)
-            source_bes_conf="$OPTARG";
-            ;;
-        d)
-            maxdepth="-maxdepth $OPTARG";
-            ;;
-        i)
-            INCLUDE_REGEX="$OPTARG";
-            ;;
-        x)
-            EXCLUDE_REGEX="$OPTARG";
-            ;;
-        s)
-            site_map_file="$OPTARG";
-            ;;
-        P)
-            make_aws_object_public="--acl public-read";
-            ;;
-        S)  
-            make_site_map=1;
-            ;;
-        k)  
-            ignore_errors=1;
-            ;;
-            
-        esac
-    done
-    if [ ${verbose} -eq 1 ]; then echo "${0} - BEGIN"; fi
-
-    shift $((OPTIND-1))
-    
-    [ "$1" = "--" ] && shift
-    
-    if [ -z ${1+x} ]
-        then echo "${0} No value provided for <bes_catalog_root_dir>!"
-        exit 1;
-    else 
-        # We want the absolute path for the bes_catalog_root_dir.
-        bes_catalog_root_dir=`cd ${1};pwd`;
-        if [ ${verbose} -eq 1 ]; then
-            echo "${0} <bes_catalog_root_dir> is set to '$bes_catalog_root_dir'";    
-        fi
-    fi
-       
-    
-}
 
 
 
