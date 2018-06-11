@@ -148,7 +148,7 @@ void GlobalMetadataStore::transfer_bytes(int fd, ostream &os)
  */
 void GlobalMetadataStore::insert_xml_base(int fd, ostream &os, const string &xml_base)
 {
-    static const int BUFFER_SIZE = 16*1024;
+    static const int BUFFER_SIZE = 1024;
 
 #if _POSIX_C_SOURCE >= 200112L
     /* Advise the kernel of our access pattern.  */
@@ -156,60 +156,66 @@ void GlobalMetadataStore::insert_xml_base(int fd, ostream &os, const string &xml
 #endif
 
     char buf[BUFFER_SIZE + 1];
+    size_t bytes_read = read(fd, buf, BUFFER_SIZE);
 
-    while(size_t bytes_read = read(fd, buf, BUFFER_SIZE))
-    {
-        if(bytes_read == (size_t)-1)
-            throw BESInternalError("Could not read dds from the metadata store.", __FILE__, __LINE__);
-        if (!bytes_read)
+    if(bytes_read == (size_t)-1)
+        throw BESInternalError("Could not read dds from the metadata store.", __FILE__, __LINE__);
+
+    if (bytes_read == 0)
+        return;
+
+    // Every valid DMR/++ response in the MDS starts with:
+    // <?xml version="1.0" encoding="ISO‌-8859-1"?>
+    //
+    // and has one of two kinds of <Dataset...> tags
+    // 1: <Dataset xmlns="..." xml:base="file:DMR_1.xml" ... >
+    // 2: <Dataset xmlns="..." ... >
+    //
+    // Assume it is well formed and always includes the prolog,
+    // but might not use <CR> <CRLF> chars
+
+    // transfer the prolog (<?xml version="1.0" encoding="ISO‌-8859-1"?>)
+    size_t i = 0;
+    while (buf[i++] != '>')
+        ;    // 'i' now points one char past the xml prolog
+    os.write(buf, i);
+
+    // transfer <Dataset ...> with new value for xml:base
+    size_t s = i; // start of <Dataset ...>
+    size_t j = 0;
+    char xml_base_literal[] = "xml:base";
+    while (i < bytes_read) {
+        if (buf[i] == '>') {    // Found end of Dataset; no xml:base was present
+            os.write(buf + s, i - s);
+            os << " xml:base=\"" << xml_base << "\"";
             break;
-
-        // Every valid DMR/++ response in the MDS starts with:
-        // <?xml version="1.0" encoding="ISO‌-8859-1"?>
-        //
-        // and has one of two kinds of <Dataset...> tags
-        // 1: <Dataset xmlns="..." xml:base="file:DMR_1.xml" ... >
-        // 2: <Dataset xmlns="..." ... >
-        //
-        // Assume it is well formed and always includes the prolog,
-        // but might not use <CR> <CRLF> chars
-
-        // transfer the prolog (<?xml version="1.0" encoding="ISO‌-8859-1"?>)
-        size_t i = 0;
-        while (buf[i++] != '>');    // 'i' now points one char past the xml prolog
-        os.write(buf, i);
-
-        // transfer <Dataset ...> with new value for xml:base
-        size_t s = i; // start of <Dataset ...>
-        size_t j = 0;
-        char xml_base_literal[] = "xml:base";
-        while (i < bytes_read) {
-            if (buf[i] == '>') {    // Found end of Dataset; no xml:base was present
-                os.write(buf+s, i-s);
-                os << " xml:base=\"" << xml_base << "\"";
-                break;
-            }
-            else if (j == sizeof(xml_base_literal)-1) { // found 'xml:base' literal
-                os.write(buf+s, i-s);   // This will include all of <Dataset... including 'xml:base'
-                while (buf[i++] != '=');    // read/discard '="..."'
-                while (buf[i++] != '"');
-                while (buf[i++] != '"');
-                os << "=\"" << xml_base << "\"";    // write the new xml:base value
-                break;
-            }
-            else if (buf[i] == xml_base_literal[j]) {
-                ++j;
-            }
-            else {
-                j = 0;
-            }
-
-            ++i;
+        }
+        else if (j == sizeof(xml_base_literal) - 1) { // found 'xml:base' literal
+            os.write(buf + s, i - s);   // This will include all of <Dataset... including 'xml:base'
+            while (buf[i++] != '=')
+                ;    // read/discard '="..."'
+            while (buf[i++] != '"')
+                ;
+            while (buf[i++] != '"')
+                ;
+            os << "=\"" << xml_base << "\"";    // write the new xml:base value
+            break;
+        }
+        else if (buf[i] == xml_base_literal[j]) {
+            ++j;
+        }
+        else {
+            j = 0;
         }
 
-        // transfer the rest
-        os.write(buf+i, bytes_read-i);
+        ++i;
     }
+
+    // transfer the rest
+    os.write(buf + i, bytes_read - i);
+
+    // Now, if the response is more than 1k, use faster code to finish the tx
+    transfer_bytes(fd, os);
 }
 
 unsigned long GlobalMetadataStore::get_cache_size_from_config()
