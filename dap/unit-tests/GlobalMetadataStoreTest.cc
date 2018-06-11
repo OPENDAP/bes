@@ -943,26 +943,51 @@ public:
     }
 
     void insert_xml_base_test_2() {
-        string source_file = string(TEST_SRC_DIR) + "/input-files/insert_xml_base_src2.txt";
-        DBG(cerr << __func__ << " Input file: " << source_file << endl);
+         string source_file = string(TEST_SRC_DIR) + "/input-files/insert_xml_base_src2.txt";
+         DBG(cerr << __func__ << " Input file: " << source_file << endl);
 
-        int fd = open(source_file.c_str(), O_RDONLY);
+         int fd = open(source_file.c_str(), O_RDONLY);
 
-        CPPUNIT_ASSERT(fd > 0);
+         CPPUNIT_ASSERT(fd > 0);
 
-        ostringstream oss;
-        GlobalMetadataStore::insert_xml_base(fd, oss, "URI-2");
+         ostringstream oss;
+         GlobalMetadataStore::insert_xml_base(fd, oss, "URI-2");
 
-        DBG(cerr << __func__ << " Result: " << oss.str() << endl);
+         DBG(cerr << __func__ << " Result: " << oss.str() << endl);
 
-        string baseline_name = string(TEST_SRC_DIR) + "/input-files/insert_xml_base_baseline2.txt";
-        DBG(cerr << "Reading baseline: " << baseline_name << endl);
-        CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
+         string baseline_name = string(TEST_SRC_DIR) + "/input-files/insert_xml_base_baseline2.txt";
+         DBG(cerr << "Reading baseline: " << baseline_name << endl);
+         CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
 
-        string insert_xml_base_baseline = read_test_baseline(baseline_name);
+         string insert_xml_base_baseline = read_test_baseline(baseline_name);
 
-        CPPUNIT_ASSERT(insert_xml_base_baseline == oss.str());
-    }
+         CPPUNIT_ASSERT(insert_xml_base_baseline == oss.str());
+     }
+
+    // This tests a real file and one that is bigger than the character buffer, so
+    // it will trigger the bug where a file larger than the buffer causes the xml:base
+    // attribute to appear several times. jhrg 6/11/18
+    void insert_xml_base_test_3() {
+         string source_file = string(TEST_SRC_DIR) + "/input-files/chunked_shuffled_fourD.h5.dmrpp";
+         DBG(cerr << __func__ << " Input file: " << source_file << endl);
+
+         int fd = open(source_file.c_str(), O_RDONLY);
+
+         CPPUNIT_ASSERT(fd > 0);
+
+         ostringstream oss;
+         GlobalMetadataStore::insert_xml_base(fd, oss, "URI-3");
+
+         DBG(cerr << __func__ << " Result: " << oss.str() << endl);
+
+         string baseline_name = string(TEST_SRC_DIR) + "/input-files/chunked_shuffled_fourD.h5.dmrpp.baseline";
+         DBG(cerr << "Reading baseline: " << baseline_name << endl);
+         CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
+
+         string insert_xml_base_baseline = read_test_baseline(baseline_name);
+
+         CPPUNIT_ASSERT(insert_xml_base_baseline == oss.str());
+     }
 
     void insert_xml_base_test_error() {
         string source_file = string(TEST_SRC_DIR) + "/no_such_file";
@@ -1015,6 +1040,7 @@ public:
 
     CPPUNIT_TEST(insert_xml_base_test);
     CPPUNIT_TEST(insert_xml_base_test_2);
+    CPPUNIT_TEST(insert_xml_base_test_3);
     CPPUNIT_TEST_EXCEPTION(insert_xml_base_test_error, BESInternalError);
 
     CPPUNIT_TEST_SUITE_END();
