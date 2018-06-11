@@ -48,17 +48,18 @@ cat <<EOF
  Usage: 
  
  $0 [h|v|V|R|S|D|P|k] [-c <bes_conf>] [-b <s3_bucket_name>] 
-    [-u <s3_profile_name>] [-p <parent_path>] [-s <site_map_file>] 
+    [-u <s3_profile_name>] [-s <site_map_file>] 
     [-i <include_regex>] [-x <exclude_regex>] <bes_catalog_root_dir>
 
  
- -R  Recursively process <bes_catalog_root_dir>''s child directories.
+ -c  <bes_conf> The name of the bes.conf file to use with besstandalone.
  -b  <s3_bucket_name>  The name of the S3 bucket into which to place the files.
  -u  <s3_profile_name> The name of the AWS profile to use when intracting with S3.
- -p  <parent_path>     The parent path, relative to the BES.
  -s  <site_map_file>   The file to which to write the site map of ingested files.
  -i  <include_regex>   A regex to match the (basename) of the files to be included.
  -x  <exclude_regex>   A regex to match the (basename) of the files to be excluded.
+
+ -R  Recursively process <bes_catalog_root_dir>''s child directories.
  -P  Make the objects loaded into S3 publicly readable. This means clients (
      like Hyrax) do not need to authenticate to get the data.
  -D  Dryrun
