@@ -156,6 +156,8 @@ fi
 
 # Read a pathname from the next argument
 pathname=$1
+# make sure it start's with slash
+# if [[ ! ${pathname} =~ "^\/.*$" ]]; then pathname="/${pathname}"; fi
 if [ ${verbose} = 1 ]; then echo "${0} Processing ${pathname}"; fi
 
 v_sw=                   # By default don't be verbose
@@ -191,22 +193,23 @@ then
     if [ -z ${cloud_url+x} ]; then 
         echo "${0} OUCH! You requested a dmr++ file be created but you failed to provide the URL of the source dataset! SKIPPING ${pathname} "
         exit 1;
-    else
-        build_dmrpp_cmd="${build_dmrpp} ${v_sw} ${BES_CONF} -f ${pathname} -u ${cloud_url}"
-        if [ ${verbose} = 1 ]; then echo "${0} Building dmr++ for ${pathname}"; echo "${0} build_dmrpp_cmd: ${build_dmrpp_cmd}"; fi
-        if [ ${very_verbose} = 1 ]; then
-            ${build_dmrpp_cmd};
-        else 
-            ${build_dmrpp_cmd} > /dev/null;
-        fi
-        build_dmrpp_status=$?;
-        if [ ${build_dmrpp_status} -ne 0 ]; then
-            echo "${0} Build dmr++ operation failed! STATUS: ${build_dmrpp_status}";
-        else 
-            if [ ${verbose} = 1 ]; then echo "${0} The dmr++ for ${pathname} has been added to the MDS."; fi
-        fi
-
-        exit ${build_dmrpp_status}
     fi
+
+    build_dmrpp_cmd="${build_dmrpp} ${v_sw} ${BES_CONF} -f ${pathname} -u ${cloud_url}"
+    if [ ${verbose} = 1 ]; then echo "${0} Building dmr++ for ${pathname}"; echo "${0} build_dmrpp_cmd: ${build_dmrpp_cmd}"; fi
+    if [ ${very_verbose} = 1 ]; then
+        ${build_dmrpp_cmd};
+    else
+        ${build_dmrpp_cmd} > /dev/null;
+    fi
+    build_dmrpp_status=$?;
+    if [ ${build_dmrpp_status} -ne 0 ]; then
+        echo "${0} Build dmr++ operation failed! STATUS: ${build_dmrpp_status}";
+    else
+        if [ ${verbose} = 1 ]; then echo "${0} The dmr++ for ${pathname} has been added to the MDS."; fi
+    fi
+
+    exit ${build_dmrpp_status}
+
 fi
 
