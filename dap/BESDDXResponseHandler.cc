@@ -34,15 +34,14 @@
 
 #include "GlobalMetadataStore.h"
 #include "BESDDXResponseHandler.h"
-// #include "BESDASResponse.h"
 #include "BESDDSResponse.h"
 #include "BESDapNames.h"
-//#include "BESDataNames.h"
 #include "BESTransmitter.h"
-
 #include "BESRequestHandlerList.h"
 
 #include "BESDebug.h"
+
+#define FORCE_DAP_VERSION_TO_3_2 false
 
 using namespace libdap;
 using namespace bes;
@@ -82,18 +81,48 @@ void BESDDXResponseHandler::execute(BESDataHandlerInterface &dhi)
     dhi.first_container();
     if (mds) lock = mds->is_dds_available(dhi.container->get_relative_name());
 
-    DDS *dds = 0;
-
     if (mds && lock()) {
-        dds = mds->get_dds_object(dhi.container->get_relative_name());
+        DDS *dds = mds->get_dds_object(dhi.container->get_relative_name());
+        BESDDSResponse *bdds = new BESDDSResponse(dds);
+
+#if FORCE_DAP_VERSION_TO_3_2
+        dds->set_dap_version("3.2");
+#else
+        // These values are read from the BESContextManager by the BESDapResponse ctor
+        if (!bdds->get_dap_client_protocol().empty()) {
+            dds->set_dap_version(bdds->get_dap_client_protocol());
+        }
+#endif
+        dds->set_request_xml_base(bdds->get_request_xml_base());
+
+        d_response_object = bdds;
     }
     else {
         // Make a blank DDS. It is the responsibility of the specific request
         // handler to set the BaseTypeFactory. It is set to NULL here
-        dds = new DDS(NULL, "virtual");
+        DDS *dds = new DDS(NULL, "virtual");
+
+        BESDDSResponse *bdds = new BESDDSResponse(dds);
+        d_response_name = DDS_RESPONSE;
+        dhi.action = DDS_RESPONSE;
+
+#if FORCE_DAP_VERSION_TO_3_2
+        dds->set_dap_version("3.2");
+#else
+        if (!bdds->get_dap_client_protocol().empty()) {
+            dds->set_dap_version(bdds->get_dap_client_protocol());
+        }
+#endif
+
+        dds->set_request_xml_base(bdds->get_request_xml_base());
+
+        d_response_object = bdds;
+
+        BESRequestHandlerList::TheList()->execute_each(dhi);
     }
 
-    BESDDSResponse *bdds = new BESDDSResponse(dds);
+#if 0
+    bdds = new BESDDSResponse(dds);
     d_response_object = bdds;
     d_response_name = DDS_RESPONSE;
     dhi.action = DDS_RESPONSE;
@@ -111,6 +140,7 @@ void BESDDXResponseHandler::execute(BESDataHandlerInterface &dhi)
 
     dhi.action = DDX_RESPONSE;
     d_response_object = bdds;
+#endif
 
     BESDEBUG("dap", "Leaving BESDDXResponseHandler::execute" << endl);
 }
