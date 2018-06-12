@@ -77,6 +77,7 @@ void TempFile::sigpipe_handler(int sig)
  *
  * @param path_template Template passed to mkstemp() to build the temporary
  * file pathname.
+ * @param keep_temps Keep the temporary files.
  */
 TempFile::TempFile(const std::string &path_template, bool keep_temps)
     : d_keep_temps(keep_temps)
@@ -120,12 +121,12 @@ TempFile::TempFile(const std::string &path_template, bool keep_temps)
 TempFile::~TempFile()
 {
     try {
-        if (!close(d_fd)) {
-            ERROR(string("Error closing temporary file: '").append(d_fname).append("': ").append(strerror(errno)));
+        if (close(d_fd) == -1) {
+            ERROR(string("Error closing temporary file: '").append(d_fname).append("': ").append(strerror(errno)).append("\n"));
         }
         if (!d_keep_temps) {
-            if (!unlink(d_fname.c_str())) {
-                ERROR(string("Error unlinking temporary file: '").append(d_fname).append("': ").append(strerror(errno)));
+            if (unlink(d_fname.c_str()) == -1) {
+                ERROR(string("Error unlinking temporary file: '").append(d_fname).append("': ").append(strerror(errno)).append("\n"));
             }
         }
     }

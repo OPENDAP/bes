@@ -304,12 +304,12 @@ GlobalMetadataStore::get_instance(const string &cache_dir, const string &prefix,
             delete d_instance;
             d_instance = 0;
 
-            BESDEBUG(DEBUG_KEY, "GlobalMetadataStore::"<<__func__ << "() - " << "Cache is DISABLED"<< endl);
+            BESDEBUG(DEBUG_KEY, "GlobalMetadataStore::"<<__func__ << "() - " << "MDS is DISABLED"<< endl);
         }
         else {
             AT_EXIT(delete_instance);
 
-            BESDEBUG(DEBUG_KEY, "GlobalMetadataStore::"<<__func__ << "() - " << "Cache is ENABLED"<< endl);
+            BESDEBUG(DEBUG_KEY, "GlobalMetadataStore::"<<__func__ << "() - " << "MDS is ENABLED"<< endl);
         }
     }
 
@@ -334,12 +334,12 @@ GlobalMetadataStore::get_instance()
         if (!d_enabled) {
             delete d_instance;
             d_instance = NULL;
-            BESDEBUG(DEBUG_KEY, "GlobalMetadataStore::"<<__func__ << "() - " << "Cache is DISABLED"<< endl);
+            BESDEBUG(DEBUG_KEY, "GlobalMetadataStore::"<<__func__ << "() - " << "MDS is DISABLED"<< endl);
         }
         else {
             AT_EXIT(delete_instance);
 
-            BESDEBUG(DEBUG_KEY, "GlobalMetadataStore::"<<__func__ << "() - " << "Cache is ENABLED"<< endl);
+            BESDEBUG(DEBUG_KEY, "GlobalMetadataStore::"<<__func__ << "() - " << "MDS is ENABLED"<< endl);
         }
     }
 
@@ -1023,7 +1023,8 @@ GlobalMetadataStore::get_dmr_object(const string &name)
 DDS *
 GlobalMetadataStore::get_dds_object(const string &name)
 {
-    TempFile dds_tmp(get_cache_directory() + "/opendapXXXXXX");
+    bool silent = true; // Tell TempFile to be silent about errors
+    TempFile dds_tmp(get_cache_directory() + "/opendapXXXXXX", silent);
 
     fstream dds_fs(dds_tmp.get_name().c_str(), std::fstream::out);
     write_dds_response(name, dds_fs);     // throws BESInternalError if not found
@@ -1033,7 +1034,7 @@ GlobalMetadataStore::get_dds_object(const string &name)
     auto_ptr<DDS> dds(new DDS(&btf));
     dds->parse(dds_tmp.get_name());
 
-    TempFile das_tmp(get_cache_directory() + "/opendapXXXXXX");
+    TempFile das_tmp(get_cache_directory() + "/opendapXXXXXX", silent);
     fstream das_fs(das_tmp.get_name().c_str(), std::fstream::out);
     write_das_response(name, das_fs);     // throws BESInternalError if not found
     das_fs.close();

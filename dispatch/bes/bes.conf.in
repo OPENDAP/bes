@@ -222,3 +222,7 @@ BES.modules=
 
 BES.Include=modules/.*\.conf$
 
+# Include the defs in site.conf last, forcing an override of the default
+# values.
+
+BES.Include=site.conf
