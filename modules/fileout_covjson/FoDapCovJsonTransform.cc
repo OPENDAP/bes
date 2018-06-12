@@ -642,7 +642,7 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
                             // format for CoverageJSON
 
                             newAxis->values += "\"values\": [\"";
-                            newAxis->values += "2010-01-01T00:12:20Z"; // Hard-coded for now
+                            newAxis->values += currAxisTimeOrigin;
                             newAxis->values += "\"]";
                         }
 
