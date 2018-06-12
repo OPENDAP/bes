@@ -1023,8 +1023,7 @@ GlobalMetadataStore::get_dmr_object(const string &name)
 DDS *
 GlobalMetadataStore::get_dds_object(const string &name)
 {
-    bool silent = true; // Tell TempFile to be silent about errors
-    TempFile dds_tmp(get_cache_directory() + "/opendapXXXXXX", silent);
+    TempFile dds_tmp(get_cache_directory() + "/opendapXXXXXX");
 
     fstream dds_fs(dds_tmp.get_name().c_str(), std::fstream::out);
     write_dds_response(name, dds_fs);     // throws BESInternalError if not found
@@ -1034,7 +1033,7 @@ GlobalMetadataStore::get_dds_object(const string &name)
     auto_ptr<DDS> dds(new DDS(&btf));
     dds->parse(dds_tmp.get_name());
 
-    TempFile das_tmp(get_cache_directory() + "/opendapXXXXXX", silent);
+    TempFile das_tmp(get_cache_directory() + "/opendapXXXXXX");
     fstream das_fs(das_tmp.get_name().c_str(), std::fstream::out);
     write_das_response(name, das_fs);     // throws BESInternalError if not found
     das_fs.close();
