@@ -304,12 +304,12 @@ GlobalMetadataStore::get_instance(const string &cache_dir, const string &prefix,
             delete d_instance;
             d_instance = 0;
 
-            BESDEBUG(DEBUG_KEY, "GlobalMetadataStore::"<<__func__ << "() - " << "Cache is DISABLED"<< endl);
+            BESDEBUG(DEBUG_KEY, "GlobalMetadataStore::"<<__func__ << "() - " << "MDS is DISABLED"<< endl);
         }
         else {
             AT_EXIT(delete_instance);
 
-            BESDEBUG(DEBUG_KEY, "GlobalMetadataStore::"<<__func__ << "() - " << "Cache is ENABLED"<< endl);
+            BESDEBUG(DEBUG_KEY, "GlobalMetadataStore::"<<__func__ << "() - " << "MDS is ENABLED"<< endl);
         }
     }
 
@@ -334,12 +334,12 @@ GlobalMetadataStore::get_instance()
         if (!d_enabled) {
             delete d_instance;
             d_instance = NULL;
-            BESDEBUG(DEBUG_KEY, "GlobalMetadataStore::"<<__func__ << "() - " << "Cache is DISABLED"<< endl);
+            BESDEBUG(DEBUG_KEY, "GlobalMetadataStore::"<<__func__ << "() - " << "MDS is DISABLED"<< endl);
         }
         else {
             AT_EXIT(delete_instance);
 
-            BESDEBUG(DEBUG_KEY, "GlobalMetadataStore::"<<__func__ << "() - " << "Cache is ENABLED"<< endl);
+            BESDEBUG(DEBUG_KEY, "GlobalMetadataStore::"<<__func__ << "() - " << "MDS is ENABLED"<< endl);
         }
     }
 
