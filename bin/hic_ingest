@@ -369,7 +369,7 @@ function make_bes_conf() {
         
     
     # if we got our bes.conf from an installed Hyrax we have to get the modules
-    # configurations or tnothing is going to work.
+    # configurations or nothing is going to work.
     if [ $from_hyrax -eq 1 ] ; then
     
         # We add the dap.conf first because we need it for the rest to load.
@@ -389,6 +389,12 @@ function make_bes_conf() {
                 cat ${conf_file} >> ${bes_conf};
             fi
         done
+        
+        site_conf=`dirname $source_bes_conf`/site.conf;
+        if [ -r ${site_conf} ] {
+            cat ${site_conf} >>  ${bes_conf};
+        fi
+        
     fi
     
     bes_conf_flag="-c ${bes_conf}"
