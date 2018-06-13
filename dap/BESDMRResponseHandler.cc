@@ -118,14 +118,12 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
 #endif
     else {
         DMR *dmr = 0;
-        bool cache_it = false;
-        if (mds && lock()) {
+                if (mds && lock()) {
             // If mds and lock(), the DDS is in the cache, get the _object_
             dmr = mds->get_dmr_object(dhi.container->get_relative_name());
         }
         else {
             dmr = new DMR();
-            cache_it = true;        // only cache the DMR if the mds is true also
         }
 
         if (xml_base_found && !xml_base.empty()) dmr->set_request_xml_base(xml_base);
@@ -134,7 +132,8 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
 
         BESRequestHandlerList::TheList()->execute_each(dhi);
 
-        if (mds && cache_it) {
+        // Cache the DMR if the MDS is not null but the response was not present.
+        if (mds && !lock()) {
             dhi.first_container();  // must reset container; execute_each() iterates over all of them
             BESDEBUG("dmr", __func__ << " Storing: " << dhi.container->get_real_name() << endl);
             mds->add_responses(static_cast<BESDMRResponse*>(d_response_object)->get_dmr(),
