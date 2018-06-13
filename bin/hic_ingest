@@ -391,7 +391,7 @@ function make_bes_conf() {
         done
         
         site_conf=`dirname $source_bes_conf`/site.conf;
-        if [ -r ${site_conf} ] {
+        if [ -r ${site_conf} ]; then
             cat ${site_conf} >>  ${bes_conf};
         fi
         
