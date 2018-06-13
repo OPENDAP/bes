@@ -85,23 +85,33 @@ void BESDDSResponseHandler::execute(BESDataHandlerInterface &dhi)
     if (mds) lock = mds->is_dds_available(dhi.container->get_relative_name());
 
     if (mds && lock() && dhi.container->get_constraint().empty()) {
-        // FIXME Does not work for constrained DDS requests
-        // send the stored response
+        // Unconstrained DDS requests; send the stored response
         mds->write_dds_response(dhi.container->get_relative_name(), dhi.get_output_stream());
         // suppress transmitting a ResponseObject in transmit()
         d_response_object = 0;
     }
     else {
-        DDS *dds = new DDS(NULL, "virtual");
+        DDS *dds = 0; // new DDS(NULL, "virtual");
+        if (mds && lock()) {
+            // If mds and lock(), the DDS is in the cache, get the _object_
+            dds = mds->get_dds_object(dhi.container->get_relative_name());
+            BESDDSResponse *bdds = new BESDDSResponse(dds);
+            bdds->set_constraint(dhi);
+            bdds->clear_container();
+            d_response_object = bdds;
+        }
+        else {
+            dds = new DDS(NULL, "virtual");
+            d_response_object = new BESDDSResponse(dds);
 
-        d_response_object = new BESDDSResponse(dds);
+            BESRequestHandlerList::TheList()->execute_each(dhi);
 
-        BESRequestHandlerList::TheList()->execute_each(dhi);
-
-        if (mds) {
-            dhi.first_container();  // must reset container; execute_each() iterates over all of them
-            mds->add_responses(static_cast<BESDDSResponse*>(d_response_object)->get_dds(),
-                dhi.container->get_relative_name());
+            // Cache the DDS if the MDS is not null but the DDS response was not in the cache
+            if (mds && !lock()) {
+                dhi.first_container();  // must reset container; execute_each() iterates over all of them
+                mds->add_responses(static_cast<BESDDSResponse*>(d_response_object)->get_dds(),
+                    dhi.container->get_relative_name());
+            }
         }
     }
 }
