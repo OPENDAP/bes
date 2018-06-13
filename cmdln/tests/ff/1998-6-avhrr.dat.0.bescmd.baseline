@@ -2,20 +2,6 @@ Attributes {
     FF_GLOBAL {
         String Server "DODS FreeFrom based on FFND release 4.2.3";
     }
-    satellite {
-    }
-    year {
-    }
-    day_num {
-    }
-    hh {
-    }
-    mm {
-    }
-    ss {
-    }
-    DODS_URL {
-    }
     DODS_Time {
         String hours_variable "GSO_AVHRR.hh";
         String minutes_variable "GSO_AVHRR.mm";
