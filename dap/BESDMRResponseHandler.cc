@@ -26,13 +26,6 @@
 
 #include <DMR.h>
 
-#undef DMR_CE
-
-#if DMR_CE
-#include <D4BaseTypeFactory.h>
-#include <D4ParserSax2.h>
-#endif
-
 #include "BESDMRResponseHandler.h"
 #include "BESDMRResponse.h"
 #include "BESRequestHandlerList.h"
@@ -94,50 +87,40 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
         // suppress transmitting a ResponseObject in transmit()
         d_response_object = 0;
     }
-#if DMR_CE
-    // this shows how to support DMR/DDS requests with CEs. I have no tests for this,
-    // however. And there are other things that are breaking still... jhrg 3/19/18
-    else if (mds && lock() && !dhi.container->get_dap4_constraint().empty()) {  // with CE
-        stringstream oss;
-        mds->write_dmr_response(dhi.container->get_real_name(), oss);
-
-        DMR *dmr = new DMR(new D4BaseTypeFactory, "mds");
-
-        if (xml_base_found && !xml_base.empty()) dmr->set_request_xml_base(xml_base);
-
-        D4ParserSax2 parser;
-        parser.intern(oss.str(), dmr);
-
-        // Do not leak the BaseType factory
-        delete dmr->factory();
-        dmr->set_factory(0);
-
-        // The transmit() method will evaluate the CE before sending the response.
-        d_response_object = new BESDMRResponse(dmr);
-    }
-#endif
     else {
         DMR *dmr = 0;
                 if (mds && lock()) {
             // If mds and lock(), the DDS is in the cache, get the _object_
             dmr = mds->get_dmr_object(dhi.container->get_relative_name());
+
+            if (xml_base_found && !xml_base.empty()) dmr->set_request_xml_base(xml_base);
+
+            BESDMRResponse *bdmr = new BESDMRResponse(dmr);
+
+            // This method sets the constraint for the current container. It does nothing
+            // if there is no 'current container.'
+            bdmr->set_dap4_constraint(dhi);
+            bdmr->clear_container();
+
+            d_response_object = bdmr;
         }
         else {
             dmr = new DMR();
-        }
 
-        if (xml_base_found && !xml_base.empty()) dmr->set_request_xml_base(xml_base);
+            if (xml_base_found && !xml_base.empty()) dmr->set_request_xml_base(xml_base);
 
-        d_response_object = new BESDMRResponse(dmr);
+            d_response_object = new BESDMRResponse(dmr);
 
-        BESRequestHandlerList::TheList()->execute_each(dhi);
+            // The RequestHandlers set the constraint and reset the container(s)
+            BESRequestHandlerList::TheList()->execute_each(dhi);
 
-        // Cache the DMR if the MDS is not null but the response was not present.
-        if (mds && !lock()) {
-            dhi.first_container();  // must reset container; execute_each() iterates over all of them
-            BESDEBUG("dmr", __func__ << " Storing: " << dhi.container->get_real_name() << endl);
-            mds->add_responses(static_cast<BESDMRResponse*>(d_response_object)->get_dmr(),
-                dhi.container->get_relative_name());
+            // Cache the DMR if the MDS is not null but the response was not present.
+            if (mds && !lock()) {
+                dhi.first_container();  // must reset container; execute_each() iterates over all of them
+                BESDEBUG("dmr", __func__ << " Storing: " << dhi.container->get_real_name() << endl);
+                mds->add_responses(static_cast<BESDMRResponse*>(d_response_object)->get_dmr(),
+                    dhi.container->get_relative_name());
+            }
         }
     }
 }
