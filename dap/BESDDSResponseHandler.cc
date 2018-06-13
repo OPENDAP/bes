@@ -92,21 +92,26 @@ void BESDDSResponseHandler::execute(BESDataHandlerInterface &dhi)
     }
     else {
         DDS *dds = 0; // new DDS(NULL, "virtual");
+#if 0
         bool cache_it = false;
+#endif
         if (mds && lock()) {
             // If mds and lock(), the DDS is in the cache, get the _object_
             dds = mds->get_dds_object(dhi.container->get_relative_name());
         }
         else {
             dds = new DDS(NULL, "virtual");
+#if 0
             cache_it = true;        // only cache if mds is true also
+#endif
         }
 
         d_response_object = new BESDDSResponse(dds);
 
         BESRequestHandlerList::TheList()->execute_each(dhi);
 
-        if (mds && cache_it) {
+        // Cache the DDS if the MDS is not null but the DDS response was not in the cache
+        if (mds && !lock()) {
             dhi.first_container();  // must reset container; execute_each() iterates over all of them
             mds->add_responses(static_cast<BESDDSResponse*>(d_response_object)->get_dds(),
                 dhi.container->get_relative_name());
