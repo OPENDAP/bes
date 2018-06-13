@@ -94,8 +94,8 @@
 // Container attribute used to signal the DMR++ handler to look in the
 // MDS for a DMR++ response. jhrg 5/31/18
 #define MDS_HAS_DMRPP "MDS_HAS_DMRPP"
-#define USE_DMRPP_KEY "BES.Use.Dmrpp"
-#define DMRPP_NAME_KEY "BES.Dmrpp.Name"
+#define USE_DMRPP_KEY "DAP.Use.Dmrpp"
+#define DMRPP_NAME_KEY "DAP.Dmrpp.Name"
 #define DMRPP_DEFAULT_NAME "dmrpp"
 
 #endif // E_BESDapNames_H

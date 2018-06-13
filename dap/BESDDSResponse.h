@@ -35,6 +35,8 @@
 
 #include "BESDapResponse.h"
 
+#define FORCE_DAP_VERSION_TO_3_2 false
+
 namespace libdap {
 class DDS;
 class ConstraintEvaluator;

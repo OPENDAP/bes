@@ -41,8 +41,6 @@
 
 #include "BESDebug.h"
 
-#define FORCE_DAP_VERSION_TO_3_2 false
-
 using namespace libdap;
 using namespace bes;
 
@@ -119,6 +117,12 @@ void BESDDXResponseHandler::execute(BESDataHandlerInterface &dhi)
         d_response_object = bdds;
 
         BESRequestHandlerList::TheList()->execute_each(dhi);
+
+        if (mds) {
+            dhi.first_container();  // must reset container; execute_each() iterates over all of them
+            mds->add_responses(static_cast<BESDDSResponse*>(d_response_object)->get_dds(),
+                dhi.container->get_relative_name());
+        }
     }
 
 #if 0
