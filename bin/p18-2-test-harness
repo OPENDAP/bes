@@ -861,13 +861,18 @@ function testit(){
         cat foo.time >> ${test_id};
         echo "Request time: ";
         tail -3 ${test_id};
-        echo "Checking result with getdap."
-        getdap -D -M foo.dods > /dev/null;
-        status=$?
-        if [ ${status} -ne 0 ]; then 
-            echo "ERROR! Unable to read dap2 data response."; 
-        else
-            echo "DAP2 Request appears to have worked."
+        
+        if [ -n ${ce} ]; then
+            echo "Checking result with getdap."
+            getdap -D -M foo.dods > /dev/null;
+            status=$?
+            if [ ${status} -ne 0 ]; then 
+                echo "ERROR! Unable to read dap2 data response."; 
+            else
+                echo "DAP2 Request appears to have worked."
+            fi
+        else 
+            echo "Not checking DAP2 data response for entire dataset, takes too long."
         fi
     done
 
