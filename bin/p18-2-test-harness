@@ -837,7 +837,7 @@ ce_one_var_with_coords_dap2="?CH4_VMR_A,StdPressureLev,Longitude,Latitude";
 
 function testit(){
     
-    test_name=${1};
+    test_id=${1};
     architecture=${2};
     response=${3}
     ce=${4}
@@ -852,8 +852,9 @@ function testit(){
         echo "curl_cmd: ${curl_cmd}";
         
         { time -p ${curl_cmd} > curl.stderr ; } 2> foo.time;
-        cat foo.time | tee -a ${test_name} 
-        tail -4 ${test_name}
+        cat foo.time >> ${test_id};
+        echo "Request time: ";
+        tail -3 ${test_id};
         echo "Checking result with getdap."
         getdap -D -M foo.dods > /dev/null;
         status=$?
