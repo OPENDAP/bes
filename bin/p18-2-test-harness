@@ -906,14 +906,13 @@ for pass in {0..99} ; do
 
     echo "################# PASS ${pass} #################"
 
-    test_ce "all_vars.txt" ""
-
     test_ce "one_sm_var.txt" "${ce_one_sm_var_dap2}"
     test_ce "one_sm_var_with_coords.txt" "${ce_one_sm_var_with_coords_dap2}"
 
     test_ce "one_var_dap2.txt" "${ce_one_var_dap2}"
     test_ce "one_var_with_coords.txt" "${ce_one_var_with_coords_dap2}"
 
+    test_ce "all_vars.txt" ""
 
 done
 
