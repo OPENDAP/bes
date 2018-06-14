@@ -843,10 +843,10 @@ function testit(){
     ce=${4}
 
     echo "Testing:";
-    echo "test_id:      '${test_id}'";
-    echo "architecture: '${architecture}'";
-    echo "response:     '${response}'";
-    echo "ce:           '${ce}'";
+    echo "    test_id:      '${test_id}'";
+    echo "    architecture: '${architecture}'";
+    echo "    response:     '${response}'";
+    echo "    ce:           '${ce}'";
     
     for resourceId in ${TEST_IDS} ; do
         
@@ -911,8 +911,7 @@ for pass in {0..99} ; do
     test_ce "one_var_dap2.txt" "${ce_one_var_dap2}"
     test_ce "one_var_with_coords.txt" "${ce_one_var_with_coords_dap2}"
 
-    test_ce "all_vars.txt" " "
-    test_ce "all_vars.txt" " "
+    test_ce "all_vars.txt" ""
 
 done
 
