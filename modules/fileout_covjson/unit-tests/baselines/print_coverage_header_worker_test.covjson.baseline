@@ -1,0 +1,18 @@
+{
+  "type": "Coverage",
+  "domain": {
+{
+  "type": "CoverageCollection",
+  "domainType": "Grid",
+{
+  "type": "CoverageCollection",
+  "domainType": "Grid",
+{
+  "type": "CoverageCollection",
+  "domainType": "Vertical Profile",
+{
+  "type": "CoverageCollection",
+  "domainType": "Point Series",
+{
+  "type": "CoverageCollection",
+  "domainType": "Point",
