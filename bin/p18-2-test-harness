@@ -828,10 +828,10 @@ ce_one_sm_var_dap2="?ClrOLR_A";
 ce_one_sm_var_with_coords_dap2="?ClrOLR_A,Longitude,Latitude";
 
 ce_one_var_dap2="?CH4_VMR_A";
-ce_one_var_with_coords_dap2="?CH4_VMR_A,StdPressureLev,Longitude,Latitude",;
+ce_one_var_with_coords_dap2="?CH4_VMR_A,StdPressureLev,Longitude,Latitude";
 
-ce_one_var_dap4="?dap4.ce=CH4_VMR_A";
-ce_one_var_with_coords_dap2="?dap4.ce=CH4_VMR_A;StdPressureLev;Longitude;Latitude",;
+#ce_one_var_dap4="?dap4.ce=CH4_VMR_A";
+#ce_one_var_with_coords_dap2="?dap4.ce=CH4_VMR_A;StdPressureLev;Longitude;Latitude";
 
 
 
