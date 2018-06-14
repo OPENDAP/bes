@@ -846,8 +846,10 @@ function testit(){
         
         ls /tmp/gateway* > /dev/null 2>&1;
         if [ ${?} -eq 0 ]; then
-            echo "Purging gateway cache..."
+            echo "Purging gateway cache...";
             rm -v /tmp/gateway*
+        else
+            echo "Gateway cache is clear.";
         fi
         
         dods_url="${architecture}${resourceId}.${response}${ce}";
