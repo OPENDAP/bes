@@ -849,7 +849,7 @@ function testit(){
         dods_url="${architecture}${resourceId}.${response}${ce}";
         echo "dods_url: ${dods_url}";
         curl_cmd="curl -s -o foo.${response} -g ${dods_url}";
-        echo "curl_cmd: ${curl_cmd}";
+        echo "curl_cmd: ${curl_cmd}" | tee -a ${test_id};
         
         { time -p ${curl_cmd} > curl.stderr ; } 2> foo.time;
         cat foo.time >> ${test_id};
