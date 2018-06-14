@@ -601,7 +601,7 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
                         // origin timestamp value with the appropriate formatting
                         // for printing.
 
-                        // See https://covjson.org/spec/#temporal-reference-systems
+                        // @TODO See https://covjson.org/spec/#temporal-reference-systems
                         if(currAxisName.compare("t") == 0) {
                             // If the calendar is based on years, months, days,
                             // then the referenced values SHOULD use one of the
@@ -619,18 +619,18 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
                             // then a client SHOULD interpret those dates in
                             // that reduced precision.
 
-                            string item;
-                            vector<string> tokens;
-                            char *dup = strdup(currAxisTimeOrigin.c_str());
-                            char *token = strtok(dup, " ");
-                            while(token != NULL){
-                                tokens.push_back(string(token));
-                                token = strtok(NULL, " ");
-                            }
-
-                            free(token);
-                            free(dup);
-                            free(token);
+                            // string item;
+                            // vector<string> tokens;
+                            // char *dup = strdup(currAxisTimeOrigin.c_str());
+                            // char *token = strtok(dup, " ");
+                            // while(token != NULL){
+                            //     tokens.push_back(string(token));
+                            //     token = strtok(NULL, " ");
+                            // }
+                            //
+                            // free(token);
+                            // free(dup);
+                            // free(token);
 
                             // For testing purposes
                             // for(unsigned int i = 0; i < tokens.size(); i++) {
@@ -642,7 +642,8 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
                             // format for CoverageJSON
 
                             newAxis->values += "\"values\": [\"";
-                            newAxis->values += currAxisTimeOrigin;
+                            // newAxis->values += currAxisTimeOrigin;
+                            newAxis->values += "2018-01-01T00:12:20Z";
                             newAxis->values += "\"]";
                         }
 
