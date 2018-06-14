@@ -851,7 +851,8 @@ function testit(){
         curl_cmd="curl -s -o foo.${response} -g ${dods_url}";
         echo "curl_cmd: ${curl_cmd}";
         
-        { time -p ${curl_cmd} 2> curl.stderr ; } 2>> ${test_name} 
+        { time -p ${curl_cmd} > curl.stderr 2>&1 ; } 2> foo;
+        cat foo | tee -a ${test_name} 
         tail -4 ${test_name}
         getdap -D -M foo.dods > /dev/null;
         status=$?
