@@ -1066,7 +1066,9 @@ for pass in {1..40} ; do
 
     echo "################# PASS ${pass} ################################## PASS ${pass} #################"
     
-    local thisCE=$(get_vars_ce ${pass})
+    thisCE=$(get_vars_ce ${pass})
+    
+    echo "Current CE: ${thisCE}"
 
     test_ce "vars_${pass}.txt" "${thisCE}"
 
