@@ -851,7 +851,7 @@ function testit(){
         curl_cmd="curl -s -o foo.${response} -g ${dods_url}";
         echo "curl_cmd: ${curl_cmd}";
         
-        { time -p ${curl_cmd} 2> curl.stderr ; } | tee -a ${test_name} 2>&1 
+        { time ${curl_cmd} 2> curl.stderr ; } | tee -a ${test_name} 2>&1 
         getdap -D -M foo.dods > /dev/null;
         status=$?
         if [ ${status} -ne 0 ]; then echo "ERROR! Unable to read dap2 data response."; fi
@@ -877,6 +877,8 @@ function test_ce(){
 }
 
 
+for i in {0.99} ; do
+
     test_ce "one_sm_var.txt" "${ce_one_sm_var_dap2}"
     test_ce "one_sm_var_with_coords.txt" "${ce_one_sm_var_with_coords_dap2}"
 
@@ -886,4 +888,5 @@ function test_ce(){
     test_ce "all_vars.txt" " "
     test_ce "all_vars.txt" " "
 
+done
 
