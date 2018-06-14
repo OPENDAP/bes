@@ -1040,13 +1040,13 @@ function test_ce(){
     
     echo "TEST_IDS: ${TEST_IDS}"
     
-    testit "a0_${test_name}" "${arch0}" "dods" "${ce}"
-    testit "a2_${test_name}" "${arch2}" "dods" "${ce}"
+    testit "timing/a0_${test_name}" "${arch0}" "dods" "${ce}"
+    testit "timing/a2_${test_name}" "${arch2}" "dods" "${ce}"
 
     TEST_IDS="${A1_IDS}";
     echo "TEST_IDS: ${TEST_IDS}"
 
-    testit "a1_${test_name}" "${arch1}" "dods" "${ce}"
+    testit "timing/a1_${test_name}" "${arch1}" "dods" "${ce}"
 }
 
 
@@ -1068,7 +1068,7 @@ for pass in {1..40} ; do
     
     local thisCE=$(get_vars_ce ${pass})
 
-    test_ce "timing/vars_${pass}.txt" "${thisCE}"
+    test_ce "vars_${pass}.txt" "${thisCE}"
 
     #test_ce "timing/one_sm_var.txt" "${ce_one_sm_var}"
     #test_ce "timing/one_sm_var_with_coords.txt" "${ce_one_sm_var_with_coords}"
