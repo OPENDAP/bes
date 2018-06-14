@@ -848,6 +848,11 @@ function testit(){
     echo "    response:     '${response}'";
     echo "    ce:           '${ce}'";
     
+    #if [ -z ${ce+x} ]; then echo "-z with +x is true"; else echo "-z with +x is false"; fi
+    #if [ -z ${ce} ]; then echo "-z is true"; else echo "-z is false"; fi
+    #if [ -n ${ce} ]; then echo "-n is true"; else echo "-n is false"; fi
+
+    
     for resourceId in ${TEST_IDS} ; do
         
         ls /tmp/gateway* > /dev/null 2>&1;
@@ -868,7 +873,9 @@ function testit(){
         echo "Request time: ";
         tail -3 ${test_id};
         
-        if [ -z ${ce+x} ]; then
+        if [ -z ${ce} ]; then
+            echo "Not checking DAP2 data response for entire dataset, takes too long."
+        else 
             echo "Checking DAP2 data response with getdap."
             getdap -D -M foo.dods > /dev/null;
             status=$?
@@ -877,8 +884,6 @@ function testit(){
             else
                 echo "DAP2 Request appears to have worked."
             fi
-        else 
-            echo "Not checking DAP2 data response for entire dataset, takes too long."
         fi
     done
 
