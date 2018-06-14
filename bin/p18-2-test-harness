@@ -912,17 +912,29 @@ function test_ce(){
 }
 
 
+
+
+if [ ! -d "timing" ]; then
+    mkdir timing;
+    if [ $? -ne 0 ]; then echo "OUCH! Unable to create timing dir";
+        exit 1;
+    fi
+fi
+
+echo "Clearing timing dir...";
+rm -f timing/*;
+
 for pass in {0..10} ; do
 
     echo "################# PASS ${pass} ################################## PASS ${pass} #################"
 
-    test_ce "one_sm_var.txt" "${ce_one_sm_var}"
-    test_ce "one_sm_var_with_coords.txt" "${ce_one_sm_var_with_coords}"
+    test_ce "timing/one_sm_var.txt" "${ce_one_sm_var}"
+    test_ce "timing/one_sm_var_with_coords.txt" "${ce_one_sm_var_with_coords}"
 
-    test_ce "one_var_dap2.txt" "${ce_one_var}"
-    test_ce "one_var_with_coords.txt" "${ce_one_var_with_coords}"
+    test_ce "timing/one_var.txt" "${ce_one_var}"
+    test_ce "timing/one_var_with_coords.txt" "${ce_one_var_with_coords}"
 
-    test_ce "all_vars.txt" 
+    test_ce "timing/all_vars.txt" 
 
 done
 
