@@ -843,8 +843,12 @@ function testit(){
     ce=${4}
 
     for resourceId in ${TEST_IDS} ; do
-        echo "Purging gateway cache..."
-        rm -v /tmp/gateway*
+        
+        ls /tmp/gateway* > /dev/null 2>&1;
+        if [ ${?} -eq 0 ]; then
+            echo "Purging gateway cache..."
+            rm -v /tmp/gateway*
+        fi
         
         dods_url="${architecture}${resourceId}.${response}${ce}";
         echo "dods_url: ${dods_url}";
