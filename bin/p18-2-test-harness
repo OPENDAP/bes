@@ -1,0 +1,889 @@
+#!/bin/sh
+
+
+dds=`cat << EOF
+Dataset {
+    Float32 ClrOLR_A[Latitude = 180][Longitude = 360];
+    Float32 GPHeight_MW_A_sdev[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Int16 CO_VMR_TqJ_D_ct[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 RelHum_liquid_A_max[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 Temperature_A_err[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TotH2OVap_TqJ_A[Latitude = 180][Longitude = 360];
+    Float32 TotCldLiqH2O_MW_A_min[Latitude = 180][Longitude = 360];
+    Float32 RelHum_A_min[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Int16 TropHeight_TqJ_D_ct[Latitude = 180][Longitude = 360];
+    Int16 TropHeight_D_ct[Latitude = 180][Longitude = 360];
+    Float32 O3_VMR_TqJ_D[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Int16 SurfPres_Forecast_D_ct[Latitude = 180][Longitude = 360];
+    Float32 CloudFrc_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 RelHum_TqJ_D_max[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudPres_TqJ_D_sdev[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 CloudFrc_TqJ_D_max[Latitude = 180][Longitude = 360];
+    Int16 RelHumSurf_TqJ_D_ct[Latitude = 180][Longitude = 360];
+    Float32 O3_VMR_TqJ_A_max[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 CloudTopPres_TqJ_D_min[Latitude = 180][Longitude = 360];
+    Float32 Emis_MW_D[EmisFreqMW = 3][Latitude = 180][Longitude = 360];
+    Float32 CloudTopPres_A[Latitude = 180][Longitude = 360];
+    Float32 SurfSkinTemp_TqJ_D[Latitude = 180][Longitude = 360];
+    Float32 CloudFrc_TqJ_A_err[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_TqJ_D[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Int16 TotCO_TqJ_A_ct[Latitude = 180][Longitude = 360];
+    Int16 TropPres_D_ct[Latitude = 180][Longitude = 360];
+    Float32 FineCloudFrc_TqJ_A_sdev[FineCloudLayer = 12][Latitude = 180][Longitude = 360];
+    Float32 TotCO_TqJ_D_max[Latitude = 180][Longitude = 360];
+    Float32 ClrOLR_TqJ_A[Latitude = 180][Longitude = 360];
+    Float32 TotCldLiqH2O_MW_A_err[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Surf_TqJ_D_min[Latitude = 180][Longitude = 360];
+    Int16 Temperature_TqJ_D_ct[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Int16 TotCH4_A_ct[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Lyr_A_min[H2OPressureLay = 12][Latitude = 180][Longitude = 360];
+    Float32 CO_VMR_TqJ_D_sdev[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Surf_TqJ_D_err[Latitude = 180][Longitude = 360];
+    Float32 Temperature_TqJ_D[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 CloudFrc_TqJ_D_err[Latitude = 180][Longitude = 360];
+    Int16 RelHum_A_ct[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Int16 RelHumSurf_liquid_TqJ_A_ct[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Lyr_D_sdev[H2OPressureLay = 12][Latitude = 180][Longitude = 360];
+    Float32 EmisIR_A_sdev[EmisFreqIR = 4][Latitude = 180][Longitude = 360];
+    Float32 TropTemp_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 TropPres_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 OLR_D_err[Latitude = 180][Longitude = 360];
+    Float32 O3_VMR_D[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Int16 H2O_MMR_D_ct[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 GPHeight_TqJ_D[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 SurfSkinTemp_TqJ_A_err[Latitude = 180][Longitude = 360];
+    Int16 TropTemp_D_ct[Latitude = 180][Longitude = 360];
+    Float32 Temperature_TqJ_A_min[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TotH2OVap_A_err[Latitude = 180][Longitude = 360];
+    Float32 Temperature_TqJ_D_err[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 OLR_TqJ_D_min[Latitude = 180][Longitude = 360];
+    Float32 SurfSkinTemp_TqJ_D_max[Latitude = 180][Longitude = 360];
+    Float32 SurfSkinTemp_TqJ_A[Latitude = 180][Longitude = 360];
+    Float32 CloudTopPres_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 SurfPres_Forecast_A[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Lyr_TqJ_D_err[H2OPressureLay = 12][Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudTemp_TqJ_A[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 CH4_VMR_TqJ_D_min[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Int16 RelHum_liquid_TqJ_A_ct[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 TropHeight_TqJ_A_min[Latitude = 180][Longitude = 360];
+    Int16 H2O_MMR_Lyr_TqJ_A_ct[H2OPressureLay = 12][Latitude = 180][Longitude = 360];
+    Int16 TotalCounts_TqJ_A[Latitude = 180][Longitude = 360];
+    Float32 OLR_A_max[Latitude = 180][Longitude = 360];
+    Float32 TropPres_TqJ_A_max[Latitude = 180][Longitude = 360];
+    Float32 TotO3_D[Latitude = 180][Longitude = 360];
+    Int16 CoarseCloudTemp_D_ct[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 TropHeight_D_min[Latitude = 180][Longitude = 360];
+    Int16 TotH2OVap_D_ct[Latitude = 180][Longitude = 360];
+    Float32 FineCloudFrc_D_max[FineCloudLayer = 12][Latitude = 180][Longitude = 360];
+    Int16 O3_VMR_A_ct[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 GPHeight_MW_A_max[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 CO_VMR_TqJ_A_max[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Int16 CloudTopPres_TqJ_A_ct[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_TqJ_A[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 EmisIR_TqJ_A_sdev[EmisFreqIR = 4][Latitude = 180][Longitude = 360];
+    Float32 TotH2OVap_TqJ_D_err[Latitude = 180][Longitude = 360];
+    Int16 TotalCounts_A[Latitude = 180][Longitude = 360];
+    Float32 O3_VMR_A_sdev[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 GPHeight_TqJ_D_max[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 O3_VMR_D_sdev[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 CH4_VMR_TqJ_D_max[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 CloudTopTemp_TqJ_A_sdev[Latitude = 180][Longitude = 360];
+    Int16 TotH2OVap_TqJ_A_ct[Latitude = 180][Longitude = 360];
+    Float32 CloudTopTemp_TqJ_D_min[Latitude = 180][Longitude = 360];
+    Float32 TotCH4_D_min[Latitude = 180][Longitude = 360];
+    Int16 CoarseCloudPres_TqJ_D_ct[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 TotH2OVap_MW_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudFrc_TqJ_D[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 CloudFrc_TqJ_D_min[Latitude = 180][Longitude = 360];
+    Int16 RelHumSurf_TqJ_A_ct[Latitude = 180][Longitude = 360];
+    Int16 CloudFrc_TqJ_D_ct[Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudTemp_D[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 TropPres_A_min[Latitude = 180][Longitude = 360];
+    Float32 RelHum_liquid_TqJ_D_max[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 FineCloudFrc_A_min[FineCloudLayer = 12][Latitude = 180][Longitude = 360];
+    Float32 ClrOLR_D[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Surf_TqJ_A[Latitude = 180][Longitude = 360];
+    Float32 O3_VMR_A_min[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Int16 CloudTopTemp_D_ct[Latitude = 180][Longitude = 360];
+    Float32 FineCloudFrc_A_max[FineCloudLayer = 12][Latitude = 180][Longitude = 360];
+    Float32 FineCloudFrc_A_sdev[FineCloudLayer = 12][Latitude = 180][Longitude = 360];
+    Float32 CloudTopTemp_A_err[Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 CloudFrc_TqJ_A[Latitude = 180][Longitude = 360];
+    Float32 CO_VMR_A_min[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 SurfAirTemp_TqJ_D_sdev[Latitude = 180][Longitude = 360];
+    Int16 FineCloudFrc_D_ct[FineCloudLayer = 12][Latitude = 180][Longitude = 360];
+    Float32 TotCH4_TqJ_D_min[Latitude = 180][Longitude = 360];
+    Float32 TropTemp_TqJ_A_max[Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_A_max[Latitude = 180][Longitude = 360];
+    Float32 Temperature_TqJ_D_sdev[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Int16 TotCH4_TqJ_D_ct[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Surf_D_min[Latitude = 180][Longitude = 360];
+    Float32 EmisIR_TqJ_D_err[EmisFreqIR = 4][Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_A[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 O3_VMR_D_min[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Int16 Temperature_TqJ_A_ct[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 CO_VMR_D_max[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TropTemp_TqJ_D_max[Latitude = 180][Longitude = 360];
+    Float32 CloudTopPres_D[Latitude = 180][Longitude = 360];
+    Int16 TropPres_TqJ_D_ct[Latitude = 180][Longitude = 360];
+    Float32 CloudTopPres_A_err[Latitude = 180][Longitude = 360];
+    Float32 CloudTopPres_TqJ_A_err[Latitude = 180][Longitude = 360];
+    Float32 CloudTopPres_TqJ_A_min[Latitude = 180][Longitude = 360];
+    Float32 CloudTopPres_D_err[Latitude = 180][Longitude = 360];
+    Float32 CloudTopPres_D_min[Latitude = 180][Longitude = 360];
+    Int16 TotH2OVap_MW_A_ct[Latitude = 180][Longitude = 360];
+    Int16 O3_VMR_TqJ_A_ct[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TotO3_TqJ_D_err[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Surf_D[Latitude = 180][Longitude = 360];
+    Float32 TropTemp_D_min[Latitude = 180][Longitude = 360];
+    Float32 CH4_VMR_TqJ_D[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_liquid_TqJ_D_max[Latitude = 180][Longitude = 360];
+    Int16 Emis_MW_A_ct[EmisFreqMW = 3][Latitude = 180][Longitude = 360];
+    Float32 EmisIR_TqJ_A_min[EmisFreqIR = 4][Latitude = 180][Longitude = 360];
+    Int16 CH4_VMR_TqJ_D_ct[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TotO3_TqJ_D[Latitude = 180][Longitude = 360];
+    Float32 RelHum_liquid_TqJ_D[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 TotCH4_TqJ_A_max[Latitude = 180][Longitude = 360];
+    Float32 GPHeight_A_max[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 O3_VMR_D_max[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 SurfAirTemp_A_max[Latitude = 180][Longitude = 360];
+    Int16 Temperature_A_ct[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_TqJ_A_min[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Int16 SurfSkinTemp_D_ct[Latitude = 180][Longitude = 360];
+    Float32 O3_VMR_TqJ_A_err[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 EmisIR_D_err[EmisFreqIR = 4][Latitude = 180][Longitude = 360];
+    Float32 Temperature_A_max[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_liquid_TqJ_D_min[Latitude = 180][Longitude = 360];
+    Float32 ClrOLR_TqJ_D_sdev[Latitude = 180][Longitude = 360];
+    Int16 EmisIR_A_ct[EmisFreqIR = 4][Latitude = 180][Longitude = 360];
+    Float32 OLR_TqJ_D[Latitude = 180][Longitude = 360];
+    Float32 Temperature_MW_A[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 SurfAirTemp_TqJ_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 CloudTopPres_TqJ_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 CloudTopTemp_TqJ_A_err[Latitude = 180][Longitude = 360];
+    Float32 TotCH4_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 EmisIR_TqJ_D_sdev[EmisFreqIR = 4][Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_D_max[Latitude = 180][Longitude = 360];
+    Float32 SurfAirTemp_D_min[Latitude = 180][Longitude = 360];
+    Float32 FineCloudFrc_A[FineCloudLayer = 12][Latitude = 180][Longitude = 360];
+    Float32 SurfAirTemp_TqJ_D_max[Latitude = 180][Longitude = 360];
+    Float32 TropHeight_TqJ_D_min[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Lyr_TqJ_A_max[H2OPressureLay = 12][Latitude = 180][Longitude = 360];
+    Int16 SurfSkinTemp_TqJ_D_ct[Latitude = 180][Longitude = 360];
+    Float32 SurfAirTemp_TqJ_A_err[Latitude = 180][Longitude = 360];
+    Float32 ClrOLR_A_err[Latitude = 180][Longitude = 360];
+    Float32 TropTemp_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 CloudTopTemp_D_min[Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudPres_D[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 TropPres_D_min[Latitude = 180][Longitude = 360];
+    Float32 TotCO_TqJ_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Surf_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 TotH2OVap_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 TotCldLiqH2O_MW_D_max[Latitude = 180][Longitude = 360];
+    Float32 CH4_VMR_A_max[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 CH4_VMR_A[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Surf_D_max[Latitude = 180][Longitude = 360];
+    Float32 SurfSkinTemp_TqJ_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 OLR_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 TotCO_D[Latitude = 180][Longitude = 360];
+    Int16 CoarseCloudFrc_TqJ_D_ct[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 TotCH4_D_max[Latitude = 180][Longitude = 360];
+    Int16 H2O_MMR_A_ct[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Int16 H2O_MMR_TqJ_A_ct[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 SurfSkinTemp_A_err[Latitude = 180][Longitude = 360];
+    Float32 SurfPres_Forecast_TqJ_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 CO_VMR_A_err[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TotH2OVap_D_min[Latitude = 180][Longitude = 360];
+    Float32 Temperature_TqJ_A[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TotO3_TqJ_D_max[Latitude = 180][Longitude = 360];
+    Float32 SurfAirTemp_TqJ_D_err[Latitude = 180][Longitude = 360];
+    Float32 GPHeight_MW_D_min[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 CO_VMR_D_sdev[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 RelHum_TqJ_A_max[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Int16 RelHumSurf_liquid_TqJ_D_ct[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_TqJ_A_sdev[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 CH4_VMR_TqJ_D_sdev[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 O3_VMR_D_err[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TotO3_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 OLR_TqJ_A_err[Latitude = 180][Longitude = 360];
+    Float32 CloudFrc_TqJ_D[Latitude = 180][Longitude = 360];
+    Int16 SurfAirTemp_A_ct[Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudFrc_TqJ_A_sdev[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_TqJ_D[Latitude = 180][Longitude = 360];
+    Float32 TotCH4_TqJ_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 CO_VMR_TqJ_A_sdev[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Surf_A_err[Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_TqJ_A_max[Latitude = 180][Longitude = 360];
+    Float32 TotCH4_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 TotH2OVap_TqJ_A_err[Latitude = 180][Longitude = 360];
+    Float32 GPHeight_TqJ_D_min[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 SurfSkinTemp_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 CO_VMR_D[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 CloudTopTemp_TqJ_D[Latitude = 180][Longitude = 360];
+    Float32 TotO3_TqJ_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudFrc_TqJ_D_min[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 TropPres_TqJ_D[Latitude = 180][Longitude = 360];
+    Int16 RelHum_TqJ_A_ct[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Int16 Temperature_MW_D_ct[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 Temperature_D_err[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TotH2OVap_D[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_D_sdev[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudPres_TqJ_A_sdev[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudPres_A_min[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 EmisIR_D_max[EmisFreqIR = 4][Latitude = 180][Longitude = 360];
+    Float32 TropPres_A_max[Latitude = 180][Longitude = 360];
+    Float32 Temperature_MW_D_min[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 RelHum_D_max[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Int16 TotalCounts_MW_D[Latitude = 180][Longitude = 360];
+    Int16 CH4_VMR_TqJ_A_ct[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 OLR_D_min[Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudPres_D_sdev[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 RelHum_liquid_D_max[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 CH4_VMR_TqJ_A[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 SurfAirTemp_A_sdev[Latitude = 180][Longitude = 360];
+    Int16 RelHumSurf_D_ct[Latitude = 180][Longitude = 360];
+    Float32 CO_VMR_D_min[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TotO3_TqJ_A_min[Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_liquid_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 SurfAirTemp_A_err[Latitude = 180][Longitude = 360];
+    Float32 CloudFrc_TqJ_A_max[Latitude = 180][Longitude = 360];
+    Float32 OLR_TqJ_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 OLR_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 SurfPres_Forecast_TqJ_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 TotH2OVap_A_min[Latitude = 180][Longitude = 360];
+    Float32 TotH2OVap_MW_D_min[Latitude = 180][Longitude = 360];
+    Float32 SurfAirTemp_D[Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudFrc_A[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudPres_A_max[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Int16 CloudTopPres_TqJ_D_ct[Latitude = 180][Longitude = 360];
+    Int16 RelHum_liquid_D_ct[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 OLR_TqJ_D_max[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Surf_TqJ_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 TotCldLiqH2O_MW_A[Latitude = 180][Longitude = 360];
+    Float32 TotH2OVap_D_sdev[Latitude = 180][Longitude = 360];
+    Int16 CloudTopTemp_A_ct[Latitude = 180][Longitude = 360];
+    Int16 CO_VMR_A_ct[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 FineCloudFrc_TqJ_A_min[FineCloudLayer = 12][Latitude = 180][Longitude = 360];
+    Float32 Temperature_TqJ_A_err[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 OLR_TqJ_A_min[Latitude = 180][Longitude = 360];
+    Int16 CH4_VMR_D_ct[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 RelHum_liquid_A[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 O3_VMR_A_err[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TropTemp_TqJ_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 ClrOLR_TqJ_A_min[Latitude = 180][Longitude = 360];
+    Float32 CloudFrc_D_min[Latitude = 180][Longitude = 360];
+    Float32 TotH2OVap_TqJ_D_min[Latitude = 180][Longitude = 360];
+    Float32 CloudFrc_TqJ_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudFrc_TqJ_A_min[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Int16 FineCloudFrc_TqJ_A_ct[FineCloudLayer = 12][Latitude = 180][Longitude = 360];
+    Float32 TotO3_A[Latitude = 180][Longitude = 360];
+    Float32 RelHum_liquid_D_min[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 TropPres_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudPres_TqJ_D_min[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Int16 TotH2OVap_A_ct[Latitude = 180][Longitude = 360];
+    Float32 TropTemp_TqJ_A[Latitude = 180][Longitude = 360];
+    Float32 RelHum_TqJ_A[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 RelHum_liquid_A_sdev[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Int16 GPHeight_A_ct[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 SurfPres_Forecast_TqJ_D[Latitude = 180][Longitude = 360];
+    Float32 RelHum_liquid_A_min[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 TropTemp_TqJ_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 TotO3_TqJ_D_sdev[Latitude = 180][Longitude = 360];
+    Int16 GPHeight_MW_A_ct[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Int16 TropPres_A_ct[Latitude = 180][Longitude = 360];
+    Float32 EmisIR_D_min[EmisFreqIR = 4][Latitude = 180][Longitude = 360];
+    Int16 TotCH4_D_ct[Latitude = 180][Longitude = 360];
+    Float32 SurfAirTemp_D_max[Latitude = 180][Longitude = 360];
+    Float32 CH4_VMR_A_err[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Int16 TropHeight_A_ct[Latitude = 180][Longitude = 360];
+    Int16 SurfSkinTemp_A_ct[Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudFrc_A_sdev[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 CloudTopTemp_A_max[Latitude = 180][Longitude = 360];
+    Float32 FineCloudFrc_TqJ_D[FineCloudLayer = 12][Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_A_max[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 ClrOLR_TqJ_D_min[Latitude = 180][Longitude = 360];
+    Float32 TotO3_TqJ_A[Latitude = 180][Longitude = 360];
+    Int16 H2O_MMR_Lyr_A_ct[H2OPressureLay = 12][Latitude = 180][Longitude = 360];
+    Float32 CloudTopTemp_TqJ_A[Latitude = 180][Longitude = 360];
+    Float32 Emis_MW_D_sdev[EmisFreqMW = 3][Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_liquid_TqJ_A_sdev[Latitude = 180][Longitude = 360];
+    Int16 CloudFrc_TqJ_A_ct[Latitude = 180][Longitude = 360];
+    Float32 OLR_D_max[Latitude = 180][Longitude = 360];
+    Int16 OLR_TqJ_D_ct[Latitude = 180][Longitude = 360];
+    Float32 RelHum_TqJ_A_sdev[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 CO_VMR_TqJ_D_min[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 CloudTopPres_A_min[Latitude = 180][Longitude = 360];
+    Int16 ClrOLR_TqJ_A_ct[Latitude = 180][Longitude = 360];
+    Float32 TropPres_A[Latitude = 180][Longitude = 360];
+    Int16 TotalCounts_D[Latitude = 180][Longitude = 360];
+    Int16 RelHumSurf_liquid_A_ct[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_TqJ_A_max[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 TotCO_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 ClrOLR_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 Temperature_TqJ_A_sdev[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_D_max[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 TotCO_TqJ_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 SurfSkinTemp_A[Latitude = 180][Longitude = 360];
+    Float32 SurfSkinTemp_D_sdev[Latitude = 180][Longitude = 360];
+    Int16 H2O_MMR_Surf_A_ct[Latitude = 180][Longitude = 360];
+    Float32 TropHeight_D_max[Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudTemp_TqJ_A_min[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 TropTemp_A[Latitude = 180][Longitude = 360];
+    Float32 TropHeight_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 TotCldLiqH2O_MW_A_max[Latitude = 180][Longitude = 360];
+    Float32 TotCH4_TqJ_D[Latitude = 180][Longitude = 360];
+    Float32 CloudFrc_A_min[Latitude = 180][Longitude = 360];
+    Float32 RelHum_A[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 CloudTopTemp_D[Latitude = 180][Longitude = 360];
+    Float32 Temperature_D_max[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 CloudTopPres_A_max[Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudTemp_A_min[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Int16 TropTemp_TqJ_D_ct[Latitude = 180][Longitude = 360];
+    Float32 Temperature_TqJ_D_max[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 CloudFrc_TqJ_A_min[Latitude = 180][Longitude = 360];
+    Int16 TotCldLiqH2O_MW_D_ct[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Surf_A[Latitude = 180][Longitude = 360];
+    Float32 TropPres_D[Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudFrc_D[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Int16 CoarseCloudFrc_TqJ_A_ct[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 CloudFrc_D_err[Latitude = 180][Longitude = 360];
+    Float32 O3_VMR_TqJ_D_err[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 SurfSkinTemp_D_min[Latitude = 180][Longitude = 360];
+    Float32 TotCO_TqJ_A_min[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Surf_TqJ_A_min[Latitude = 180][Longitude = 360];
+    Float32 TotCldLiqH2O_MW_D_min[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Lyr_D_min[H2OPressureLay = 12][Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudFrc_D_sdev[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 RelHum_TqJ_A_min[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 TotCO_A_min[Latitude = 180][Longitude = 360];
+    Int16 TotCO_D_ct[Latitude = 180][Longitude = 360];
+    Int16 TropTemp_TqJ_A_ct[Latitude = 180][Longitude = 360];
+    Float32 CH4_VMR_D[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 RelHum_liquid_TqJ_D_sdev[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Int16 ClrOLR_TqJ_D_ct[Latitude = 180][Longitude = 360];
+    Int16 CoarseCloudTemp_TqJ_A_ct[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 EmisIR_TqJ_A[EmisFreqIR = 4][Latitude = 180][Longitude = 360];
+    Float32 Emis_MW_A_sdev[EmisFreqMW = 3][Latitude = 180][Longitude = 360];
+    Float32 SurfSkinTemp_TqJ_A_min[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Surf_TqJ_D_sdev[Latitude = 180][Longitude = 360];
+    Int16 H2O_MMR_Lyr_TqJ_D_ct[H2OPressureLay = 12][Latitude = 180][Longitude = 360];
+    Float32 TotCH4_TqJ_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 CloudFrc_A[Latitude = 180][Longitude = 360];
+    Float32 SurfPres_Forecast_TqJ_A_min[Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_D[Latitude = 180][Longitude = 360];
+    Float32 TotCO_D_max[Latitude = 180][Longitude = 360];
+    Float32 EmisIR_TqJ_A_max[EmisFreqIR = 4][Latitude = 180][Longitude = 360];
+    Int16 EmisIR_D_ct[EmisFreqIR = 4][Latitude = 180][Longitude = 360];
+    Int16 RelHum_liquid_A_ct[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Int16 GPHeight_TqJ_D_ct[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TropHeight_A_min[Latitude = 180][Longitude = 360];
+    Float32 TotH2OVap_MW_D[Latitude = 180][Longitude = 360];
+    Int16 RelHumSurf_liquid_D_ct[Latitude = 180][Longitude = 360];
+    Int16 CO_VMR_TqJ_A_ct[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudFrc_TqJ_A_max[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 TotCH4_A_min[Latitude = 180][Longitude = 360];
+    Float32 TropTemp_D_max[Latitude = 180][Longitude = 360];
+    Int16 TotalCounts_TqJ_D[Latitude = 180][Longitude = 360];
+    Int16 OLR_A_ct[Latitude = 180][Longitude = 360];
+    Float32 CloudTopPres_TqJ_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 TropPres_TqJ_D_min[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Lyr_TqJ_D[H2OPressureLay = 12][Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudTemp_A_max[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Int16 CoarseCloudPres_A_ct[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 RelHum_TqJ_D_min[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 Temperature_TqJ_D_min[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Int16 CoarseCloudTemp_A_ct[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 ClrOLR_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 TropTemp_TqJ_A_min[Latitude = 180][Longitude = 360];
+    Float32 TropHeight_TqJ_A[Latitude = 180][Longitude = 360];
+    Float32 SurfSkinTemp_TqJ_D_err[Latitude = 180][Longitude = 360];
+    Float32 O3_VMR_TqJ_D_max[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 ClrOLR_TqJ_A_err[Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudFrc_TqJ_A[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Int16 SurfPres_Forecast_TqJ_A_ct[Latitude = 180][Longitude = 360];
+    Float32 SurfSkinTemp_D_max[Latitude = 180][Longitude = 360];
+    Float32 FineCloudFrc_D_min[FineCloudLayer = 12][Latitude = 180][Longitude = 360];
+    Int16 OLR_TqJ_A_ct[Latitude = 180][Longitude = 360];
+    Float32 RelHum_liquid_TqJ_A_max[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 RelHum_D_min[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudPres_TqJ_A[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Int16 RelHum_D_ct[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Lyr_D[H2OPressureLay = 12][Latitude = 180][Longitude = 360];
+    Int16 SurfAirTemp_D_ct[Latitude = 180][Longitude = 360];
+    Float32 EmisIR_TqJ_D_max[EmisFreqIR = 4][Latitude = 180][Longitude = 360];
+    Float32 SurfAirTemp_A[Latitude = 180][Longitude = 360];
+    Float32 TotCldLiqH2O_MW_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 TotCO_A[Latitude = 180][Longitude = 360];
+    Float32 FineCloudFrc_TqJ_D_max[FineCloudLayer = 12][Latitude = 180][Longitude = 360];
+    Float32 CloudFrc_TqJ_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 TotO3_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 RelHum_A_max[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Surf_TqJ_A_err[Latitude = 180][Longitude = 360];
+    Float32 CloudTopPres_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 FineCloudFrc_TqJ_A[FineCloudLayer = 12][Latitude = 180][Longitude = 360];
+    Float32 TotCO_A_max[Latitude = 180][Longitude = 360];
+    Float32 RelHum_liquid_TqJ_D_min[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 CloudTopTemp_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_liquid_TqJ_A[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_A_err[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudTemp_TqJ_A_sdev[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_D[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 CloudFrc_A_err[Latitude = 180][Longitude = 360];
+    Float32 TotH2OVap_TqJ_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 GPHeight_MW_D_sdev[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Int16 CoarseCloudFrc_A_ct[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Int16 CO_VMR_D_ct[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Surf_TqJ_D[Latitude = 180][Longitude = 360];
+    Float32 OLR_A_min[Latitude = 180][Longitude = 360];
+    Float32 CloudFrc_D[Latitude = 180][Longitude = 360];
+    Float32 FineCloudFrc_TqJ_D_sdev[FineCloudLayer = 12][Latitude = 180][Longitude = 360];
+    Int16 TotCO_TqJ_D_ct[Latitude = 180][Longitude = 360];
+    Float32 TotH2OVap_TqJ_A_max[Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudPres_TqJ_A_max[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 TotH2OVap_MW_A_min[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_D_min[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 EmisIR_A_err[EmisFreqIR = 4][Latitude = 180][Longitude = 360];
+    Float32 GPHeight_TqJ_A_max[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 RelHum_liquid_D_sdev[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 O3_VMR_A[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TotH2OVap_TqJ_D[Latitude = 180][Longitude = 360];
+    Float32 CloudTopTemp_TqJ_A_max[Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_A[Latitude = 180][Longitude = 360];
+    Float32 OLR_TqJ_A[Latitude = 180][Longitude = 360];
+    Float32 GPHeight_A_min[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Int16 SurfSkinTemp_TqJ_A_ct[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Lyr_TqJ_D_max[H2OPressureLay = 12][Latitude = 180][Longitude = 360];
+    Float32 SurfAirTemp_A_min[Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudFrc_D_min[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Int16 TotCH4_TqJ_A_ct[Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudTemp_A_sdev[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 CloudTopPres_TqJ_A_max[Latitude = 180][Longitude = 360];
+    Int16 TotH2OVap_MW_D_ct[Latitude = 180][Longitude = 360];
+    Float32 CO_VMR_A_max[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TropHeight_TqJ_A_max[Latitude = 180][Longitude = 360];
+    Float32 GPHeight_MW_D[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 GPHeight_D[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 Temperature_MW_D_max[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 Temperature_D[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Surf_A_min[Latitude = 180][Longitude = 360];
+    Float32 TropHeight_TqJ_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 CloudTopTemp_TqJ_A_min[Latitude = 180][Longitude = 360];
+    Float32 GPHeight_D_min[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Int16 CloudTopTemp_TqJ_A_ct[Latitude = 180][Longitude = 360];
+    Float32 GPHeight_TqJ_D_sdev[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TropHeight_TqJ_D_max[Latitude = 180][Longitude = 360];
+    Float32 ClrOLR_D_min[Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudTemp_A[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_D_err[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Int16 CoarseCloudPres_TqJ_A_ct[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Lyr_A_sdev[H2OPressureLay = 12][Latitude = 180][Longitude = 360];
+    Float32 CH4_VMR_TqJ_A_max[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Int16 TropTemp_A_ct[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Lyr_TqJ_D_min[H2OPressureLay = 12][Latitude = 180][Longitude = 360];
+    Float32 TropTemp_TqJ_D[Latitude = 180][Longitude = 360];
+    Int16 SurfPres_Forecast_A_ct[Latitude = 180][Longitude = 360];
+    Float32 TropHeight_TqJ_D[Latitude = 180][Longitude = 360];
+    Int16 LandSeaMask[Latitude = 180][Longitude = 360];
+    Float32 CloudFrc_A_max[Latitude = 180][Longitude = 360];
+    Float32 TropTemp_TqJ_D_min[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Surf_D_sdev[Latitude = 180][Longitude = 360];
+    Int16 CloudTopPres_D_ct[Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_TqJ_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudFrc_A_min[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Int16 GPHeight_TqJ_A_ct[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Int16 GPHeight_MW_D_ct[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TropTemp_A_min[Latitude = 180][Longitude = 360];
+    Float32 CloudTopTemp_D_err[Latitude = 180][Longitude = 360];
+    Int16 CoarseCloudTemp_TqJ_D_ct[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 Temperature_MW_D[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 FineCloudFrc_D_sdev[FineCloudLayer = 12][Latitude = 180][Longitude = 360];
+    Float32 TotCO_D_min[Latitude = 180][Longitude = 360];
+    Float32 ClrOLR_TqJ_A_max[Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudPres_TqJ_D[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Int16 RelHumSurf_A_ct[Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudPres_A_sdev[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Int16 CoarseCloudPres_D_ct[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Surf_TqJ_D_max[Latitude = 180][Longitude = 360];
+    Float32 TropPres_TqJ_A[Latitude = 180][Longitude = 360];
+    Float32 TotH2OVap_TqJ_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_TqJ_D_min[Latitude = 180][Longitude = 360];
+    Float32 ClrOLR_D_err[Latitude = 180][Longitude = 360];
+    Int16 GPHeight_D_ct[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudPres_A[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_TqJ_A_err[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Int16 EmisIR_TqJ_D_ct[EmisFreqIR = 4][Latitude = 180][Longitude = 360];
+    Float32 TotCH4_A_max[Latitude = 180][Longitude = 360];
+    Int16 Emis_MW_D_ct[EmisFreqMW = 3][Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Lyr_D_max[H2OPressureLay = 12][Latitude = 180][Longitude = 360];
+    Float32 CH4_VMR_TqJ_A_min[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TropHeight_D[Latitude = 180][Longitude = 360];
+    Float32 TropPres_D_max[Latitude = 180][Longitude = 360];
+    Float32 Temperature_MW_A_sdev[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 RelHum_D[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 EmisIR_TqJ_D[EmisFreqIR = 4][Latitude = 180][Longitude = 360];
+    Float32 EmisIR_A[EmisFreqIR = 4][Latitude = 180][Longitude = 360];
+    Float32 O3_VMR_TqJ_A_min[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TotO3_A_max[Latitude = 180][Longitude = 360];
+    Float32 ClrOLR_D_max[Latitude = 180][Longitude = 360];
+    Float32 CO_VMR_A_sdev[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudFrc_A_max[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 Emis_MW_A[EmisFreqMW = 3][Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_liquid_D_max[Latitude = 180][Longitude = 360];
+    Float32 GPHeight_TqJ_A[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 OLR_A[Latitude = 180][Longitude = 360];
+    Float32 TropPres_TqJ_A_sdev[Latitude = 180][Longitude = 360];
+    Int16 TotalCounts_MW_A[Latitude = 180][Longitude = 360];
+    Float32 CloudTopPres_TqJ_D[Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_liquid_TqJ_D[Latitude = 180][Longitude = 360];
+    Float32 TotCO_TqJ_D[Latitude = 180][Longitude = 360];
+    Float32 TotCO_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 EmisIR_D_sdev[EmisFreqIR = 4][Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Surf_TqJ_A_max[Latitude = 180][Longitude = 360];
+    Float32 CO_VMR_D_err[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_TqJ_D_err[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 SurfAirTemp_TqJ_A[Latitude = 180][Longitude = 360];
+    Float32 ClrOLR_A_max[Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_liquid_TqJ_A_max[Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudTemp_D_sdev[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 GPHeight_TqJ_A_sdev[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Lyr_TqJ_D_sdev[H2OPressureLay = 12][Latitude = 180][Longitude = 360];
+    Int16 H2O_MMR_Surf_TqJ_D_ct[Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_liquid_D[Latitude = 180][Longitude = 360];
+    Float32 SurfAirTemp_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 CloudTopPres_TqJ_A[Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_liquid_TqJ_A_min[Latitude = 180][Longitude = 360];
+    Float32 TotH2OVap_TqJ_A_min[Latitude = 180][Longitude = 360];
+    Float32 TotH2OVap_MW_A[Latitude = 180][Longitude = 360];
+    Float32 SurfAirTemp_TqJ_D[Latitude = 180][Longitude = 360];
+    Int16 RelHum_TqJ_D_ct[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 TotCO_TqJ_A[Latitude = 180][Longitude = 360];
+    Float32 SurfSkinTemp_D[Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudPres_D_max[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_A_min[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 ClrOLR_TqJ_D[Latitude = 180][Longitude = 360];
+    Int16 CoarseCloudFrc_D_ct[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 RelHum_liquid_TqJ_A[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 CH4_VMR_TqJ_A_err[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudTemp_D_max[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_liquid_A_min[Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_TqJ_A_min[Latitude = 180][Longitude = 360];
+    Float32 TotCO_TqJ_A_max[Latitude = 180][Longitude = 360];
+    Float32 Temperature_MW_A_min[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_liquid_D_min[Latitude = 180][Longitude = 360];
+    Float32 Temperature_MW_D_sdev[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TotCH4_D[Latitude = 180][Longitude = 360];
+    Float32 EmisIR_TqJ_D_min[EmisFreqIR = 4][Latitude = 180][Longitude = 360];
+    Float32 TotCH4_A[Latitude = 180][Longitude = 360];
+    Float32 RelHum_TqJ_D[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Lyr_TqJ_A_err[H2OPressureLay = 12][Latitude = 180][Longitude = 360];
+    Float32 SurfAirTemp_TqJ_A_min[Latitude = 180][Longitude = 360];
+    Float32 CH4_VMR_A_min[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TropTemp_D[Latitude = 180][Longitude = 360];
+    Int16 CloudFrc_D_ct[Latitude = 180][Longitude = 360];
+    Float32 GPHeight_MW_A_min[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 CO_VMR_TqJ_A[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Int16 TotO3_D_ct[Latitude = 180][Longitude = 360];
+    Int16 TotO3_TqJ_A_ct[Latitude = 180][Longitude = 360];
+    Float32 Temperature_A[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 GPHeight_MW_D_max[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 ClrOLR_TqJ_D_err[Latitude = 180][Longitude = 360];
+    Float32 CloudTopTemp_TqJ_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 Temperature_D_sdev[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Int16 OLR_D_ct[Latitude = 180][Longitude = 360];
+    Float32 Temperature_A_sdev[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 SurfSkinTemp_TqJ_A_max[Latitude = 180][Longitude = 360];
+    Float32 TotH2OVap_TqJ_D_max[Latitude = 180][Longitude = 360];
+    Float32 ClrOLR_TqJ_D_max[Latitude = 180][Longitude = 360];
+    Int16 RelHum_liquid_TqJ_D_ct[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Int16 O3_VMR_D_ct[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 Temperature_A_min[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TropHeight_TqJ_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 TotCO_TqJ_D_min[Latitude = 180][Longitude = 360];
+    Float32 Emis_MW_D_max[EmisFreqMW = 3][Latitude = 180][Longitude = 360];
+    Float32 EmisIR_D[EmisFreqIR = 4][Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudPres_TqJ_D_max[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Int16 FineCloudFrc_A_ct[FineCloudLayer = 12][Latitude = 180][Longitude = 360];
+    Float32 RelHum_TqJ_D_sdev[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 SurfPres_Forecast_A_max[Latitude = 180][Longitude = 360];
+    Float32 GPHeight_D_max[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TotH2OVap_A[Latitude = 180][Longitude = 360];
+    Float32 EmisIR_A_min[EmisFreqIR = 4][Latitude = 180][Longitude = 360];
+    Float32 TotO3_TqJ_D_min[Latitude = 180][Longitude = 360];
+    Float32 SurfSkinTemp_TqJ_A_sdev[Latitude = 180][Longitude = 360];
+    Int16 TropHeight_TqJ_A_ct[Latitude = 180][Longitude = 360];
+    Float32 SurfSkinTemp_A_max[Latitude = 180][Longitude = 360];
+    Float32 CloudTopPres_TqJ_D_max[Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudTemp_D_min[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 CO_VMR_TqJ_D_err[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TotO3_A_min[Latitude = 180][Longitude = 360];
+    Float32 CH4_VMR_D_min[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 Temperature_D_min[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TropHeight_A[Latitude = 180][Longitude = 360];
+    Int16 SurfPres_Forecast_TqJ_D_ct[Latitude = 180][Longitude = 360];
+    Float32 CH4_VMR_D_max[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TotO3_D_err[Latitude = 180][Longitude = 360];
+    Float32 CH4_VMR_A_sdev[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 Temperature_TqJ_A_max[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TotH2OVap_D_max[Latitude = 180][Longitude = 360];
+    Float32 CO_VMR_A[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Int16 H2O_MMR_TqJ_D_ct[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Int16 ClrOLR_A_ct[Latitude = 180][Longitude = 360];
+    Float32 TotCldLiqH2O_MW_D_err[Latitude = 180][Longitude = 360];
+    Float32 EmisIR_A_max[EmisFreqIR = 4][Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_TqJ_D_max[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_TqJ_A[Latitude = 180][Longitude = 360];
+    Float32 OLR_TqJ_A_max[Latitude = 180][Longitude = 360];
+    Int16 Temperature_MW_A_ct[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 CloudTopTemp_A[Latitude = 180][Longitude = 360];
+    Float32 CH4_VMR_D_sdev[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TotCldLiqH2O_MW_D[Latitude = 180][Longitude = 360];
+    Float32 CO_VMR_TqJ_A_err[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Int16 CloudTopPres_A_ct[Latitude = 180][Longitude = 360];
+    Float32 RelHum_liquid_TqJ_A_min[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Lyr_TqJ_A[H2OPressureLay = 12][Latitude = 180][Longitude = 360];
+    Int16 H2O_MMR_Lyr_D_ct[H2OPressureLay = 12][Latitude = 180][Longitude = 360];
+    Float32 CloudFrc_D_max[Latitude = 180][Longitude = 360];
+    Float32 CH4_VMR_TqJ_D_err[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Int16 TotO3_TqJ_D_ct[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_A_sdev[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 RelHum_liquid_TqJ_A_sdev[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 SurfSkinTemp_TqJ_D_min[Latitude = 180][Longitude = 360];
+    Float32 SurfAirTemp_TqJ_A_max[Latitude = 180][Longitude = 360];
+    Float32 SurfPres_Forecast_D_max[Latitude = 180][Longitude = 360];
+    Float32 GPHeight_A[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Int16 EmisIR_TqJ_A_ct[EmisFreqIR = 4][Latitude = 180][Longitude = 360];
+    Float32 O3_VMR_A_max[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_D_min[Latitude = 180][Longitude = 360];
+    Float32 OLR_A_err[Latitude = 180][Longitude = 360];
+    Float32 SurfPres_Forecast_D_min[Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_TqJ_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Lyr_A_max[H2OPressureLay = 12][Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudFrc_TqJ_D_sdev[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudFrc_D_max[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 TotH2OVap_MW_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 TotO3_TqJ_A_max[Latitude = 180][Longitude = 360];
+    Float32 CH4_VMR_TqJ_A_sdev[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TropTemp_A_max[Latitude = 180][Longitude = 360];
+    Float32 CloudTopTemp_D_max[Latitude = 180][Longitude = 360];
+    Float32 TropPres_TqJ_A_min[Latitude = 180][Longitude = 360];
+    Float32 TropPres_TqJ_D_max[Latitude = 180][Longitude = 360];
+    Float32 EmisIR_TqJ_A_err[EmisFreqIR = 4][Latitude = 180][Longitude = 360];
+    Float32 TropHeight_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_liquid_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_liquid_A[Latitude = 180][Longitude = 360];
+    Float32 TotO3_A_err[Latitude = 180][Longitude = 360];
+    Float32 CO_VMR_TqJ_D_max[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 FineCloudFrc_TqJ_D_min[FineCloudLayer = 12][Latitude = 180][Longitude = 360];
+    Float32 CloudTopPres_TqJ_D_err[Latitude = 180][Longitude = 360];
+    Float32 TotO3_TqJ_A_err[Latitude = 180][Longitude = 360];
+    Int16 ClrOLR_D_ct[Latitude = 180][Longitude = 360];
+    Float32 SurfPres_Forecast_TqJ_A[Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudPres_TqJ_A_min[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 GPHeight_TqJ_A_min[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudTemp_TqJ_D[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 RelHum_liquid_D[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Int16 SurfAirTemp_TqJ_A_ct[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Surf_A_max[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Lyr_TqJ_A_sdev[H2OPressureLay = 12][Latitude = 180][Longitude = 360];
+    Int16 TotO3_A_ct[Latitude = 180][Longitude = 360];
+    Float32 Temperature_MW_A_max[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TotH2OVap_MW_D_max[Latitude = 180][Longitude = 360];
+    Float32 GPHeight_A_sdev[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 SurfAirTemp_TqJ_D_min[Latitude = 180][Longitude = 360];
+    Float32 SurfSkinTemp_D_err[Latitude = 180][Longitude = 360];
+    Float32 Emis_MW_A_max[EmisFreqMW = 3][Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Lyr_D_err[H2OPressureLay = 12][Latitude = 180][Longitude = 360];
+    Int16 TropPres_TqJ_A_ct[Latitude = 180][Longitude = 360];
+    Float32 OLR_TqJ_D_err[Latitude = 180][Longitude = 360];
+    Float32 Emis_MW_A_min[EmisFreqMW = 3][Latitude = 180][Longitude = 360];
+    Float32 TropHeight_A_max[Latitude = 180][Longitude = 360];
+    Int16 FineCloudFrc_TqJ_D_ct[FineCloudLayer = 12][Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Lyr_TqJ_A_min[H2OPressureLay = 12][Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudFrc_TqJ_D_max[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_liquid_TqJ_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudTemp_TqJ_D_min[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_TqJ_D_min[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Float32 TotH2OVap_D_err[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Lyr_A[H2OPressureLay = 12][Latitude = 180][Longitude = 360];
+    Int16 H2O_MMR_Surf_TqJ_A_ct[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Surf_D_err[Latitude = 180][Longitude = 360];
+    Float32 GPHeight_MW_A[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 SurfPres_Forecast_D[Latitude = 180][Longitude = 360];
+    Float32 SurfPres_Forecast_TqJ_D_max[Latitude = 180][Longitude = 360];
+    Float32 CloudFrc_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 ClrOLR_TqJ_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 O3_VMR_TqJ_D_min[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TotO3_D_max[Latitude = 180][Longitude = 360];
+    Float32 TotO3_D_min[Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_TqJ_D_max[Latitude = 180][Longitude = 360];
+    Float32 TotCH4_TqJ_D_max[Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_liquid_A_max[Latitude = 180][Longitude = 360];
+    Float32 SurfPres_Forecast_A_min[Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudTemp_TqJ_D_max[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 TotCH4_TqJ_A[Latitude = 180][Longitude = 360];
+    Float32 CH4_VMR_D_err[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 RelHumSurf_A_min[Latitude = 180][Longitude = 360];
+    Float32 CO_VMR_TqJ_D[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 SurfPres_Forecast_TqJ_A_max[Latitude = 180][Longitude = 360];
+    Float32 GPHeight_D_sdev[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 CloudTopTemp_TqJ_D_max[Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudPres_D_min[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 SurfSkinTemp_A_min[Latitude = 180][Longitude = 360];
+    Float32 FineCloudFrc_D[FineCloudLayer = 12][Latitude = 180][Longitude = 360];
+    Float32 RelHum_D_sdev[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Int16 TotH2OVap_TqJ_D_ct[Latitude = 180][Longitude = 360];
+    Float32 O3_VMR_TqJ_D_sdev[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 CloudTopTemp_A_sdev[Latitude = 180][Longitude = 360];
+    Int16 H2O_MMR_Surf_D_ct[Latitude = 180][Longitude = 360];
+    Int16 SurfAirTemp_TqJ_D_ct[Latitude = 180][Longitude = 360];
+    Float32 SurfPres_Forecast_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 Emis_MW_D_min[EmisFreqMW = 3][Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudTemp_TqJ_D_sdev[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 OLR_TqJ_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 ClrOLR_A_min[Latitude = 180][Longitude = 360];
+    Float32 SurfPres_Forecast_TqJ_D_min[Latitude = 180][Longitude = 360];
+    Float32 TotH2OVap_A_max[Latitude = 180][Longitude = 360];
+    Float32 TotCH4_TqJ_A_min[Latitude = 180][Longitude = 360];
+    Float32 CloudTopTemp_A_min[Latitude = 180][Longitude = 360];
+    Int16 TotCldLiqH2O_MW_A_ct[Latitude = 180][Longitude = 360];
+    Float32 FineCloudFrc_TqJ_A_max[FineCloudLayer = 12][Latitude = 180][Longitude = 360];
+    Float32 OLR_D[Latitude = 180][Longitude = 360];
+    Float32 CO_VMR_TqJ_A_min[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TotCldLiqH2O_MW_D_sdev[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_TqJ_D_sdev[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Int16 Temperature_D_ct[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TropPres_TqJ_D_sdev[Latitude = 180][Longitude = 360];
+    Int16 CloudFrc_A_ct[Latitude = 180][Longitude = 360];
+    Float32 CloudTopTemp_TqJ_D_err[Latitude = 180][Longitude = 360];
+    Float32 Topography[Latitude = 180][Longitude = 360];
+    Int16 CH4_VMR_A_ct[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 CloudTopPres_D_max[Latitude = 180][Longitude = 360];
+    Float32 RelHum_A_sdev[H2OPressureLev = 12][Latitude = 180][Longitude = 360];
+    Int16 O3_VMR_TqJ_D_ct[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 TotH2OVap_MW_A_max[Latitude = 180][Longitude = 360];
+    Float32 O3_VMR_TqJ_A[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Float32 O3_VMR_TqJ_A_sdev[StdPressureLev = 24][Latitude = 180][Longitude = 360];
+    Int16 TotCO_A_ct[Latitude = 180][Longitude = 360];
+    Float32 SurfAirTemp_D_err[Latitude = 180][Longitude = 360];
+    Int16 CloudTopTemp_TqJ_D_ct[Latitude = 180][Longitude = 360];
+    Float32 SurfPres_Forecast_A_sdev[Latitude = 180][Longitude = 360];
+    Float32 H2O_MMR_Lyr_A_err[H2OPressureLay = 12][Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudTemp_TqJ_A_max[CoarseCloudLayer = 3][Latitude = 180][Longitude = 360];
+    Float32 CoarseCloudLayer[CoarseCloudLayer = 3];
+    Float32 EmisFreqIR[EmisFreqIR = 4];
+    Float32 EmisFreqMW[EmisFreqMW = 3];
+    Float32 FineCloudLayer[FineCloudLayer = 12];
+    Float32 H2OPressureLay[H2OPressureLay = 12];
+    Float32 H2OPressureLev[H2OPressureLev = 12];
+    Float64 Latitude[Latitude = 180];
+    Float64 Longitude[Longitude = 360];
+    Float32 StdPressureLev[StdPressureLev = 24];
+} AIRS.2015.01.01.L3.RetStd_IR001.v6.0.11.0.G15013155825.nc.h5;
+EOF
+`
+
+resourceIds=`cat <<EOF 
+AIRS.2015.01.01.L3.RetStd_IR001.v6.0.11.0.G15013155825.nc.h5
+AIRS.2015.01.02.L3.RetStd_IR001.v6.0.11.0.G15005190621.nc.h5
+AIRS.2015.01.03.L3.RetStd_IR001.v6.0.11.0.G15006005549.nc.h5
+AIRS.2015.01.04.L3.RetStd_IR001.v6.0.11.0.G15006043115.nc.h5
+AIRS.2015.01.05.L3.RetStd_IR001.v6.0.11.0.G15007130423.nc.h5
+AIRS.2015.01.06.L3.RetStd_IR001.v6.0.11.0.G15007171215.nc.h5
+AIRS.2015.01.07.L3.RetStd_IR001.v6.0.11.0.G15008175227.nc.h5
+AIRS.2015.01.08.L3.RetStd_IR001.v6.0.11.0.G15009164045.nc.h5
+AIRS.2015.01.09.L3.RetStd_IR001.v6.0.11.0.G15010163004.nc.h5
+AIRS.2015.01.10.L3.RetStd_IR001.v6.0.11.0.G15011162002.nc.h5
+EOF
+`
+
+Arch1Ids=`cat << EOF
+68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f736f6d6577686572656f7665727468657261696e626f772f417263682d322f6562732f616972732f414952532e323031352e30312e30312e4c332e5265745374645f49523030312e76362e302e31312e302e4731353031333135353832352e6e632e6835
+68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f736f6d6577686572656f7665727468657261696e626f772f417263682d322f6562732f616972732f414952532e323031352e30312e30322e4c332e5265745374645f49523030312e76362e302e31312e302e4731353030353139303632312e6e632e6835
+68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f736f6d6577686572656f7665727468657261696e626f772f417263682d322f6562732f616972732f414952532e323031352e30312e30332e4c332e5265745374645f49523030312e76362e302e31312e302e4731353030363030353534392e6e632e6835
+68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f736f6d6577686572656f7665727468657261696e626f772f417263682d322f6562732f616972732f414952532e323031352e30312e30342e4c332e5265745374645f49523030312e76362e302e31312e302e4731353030363034333131352e6e632e6835
+68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f736f6d6577686572656f7665727468657261696e626f772f417263682d322f6562732f616972732f414952532e323031352e30312e30352e4c332e5265745374645f49523030312e76362e302e31312e302e4731353030373133303432332e6e632e6835
+68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f736f6d6577686572656f7665727468657261696e626f772f417263682d322f6562732f616972732f414952532e323031352e30312e30362e4c332e5265745374645f49523030312e76362e302e31312e302e4731353030373137313231352e6e632e6835
+68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f736f6d6577686572656f7665727468657261696e626f772f417263682d322f6562732f616972732f414952532e323031352e30312e30372e4c332e5265745374645f49523030312e76362e302e31312e302e4731353030383137353232372e6e632e6835
+68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f736f6d6577686572656f7665727468657261696e626f772f417263682d322f6562732f616972732f414952532e323031352e30312e30382e4c332e5265745374645f49523030312e76362e302e31312e302e4731353030393136343034352e6e632e6835
+68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f736f6d6577686572656f7665727468657261696e626f772f417263682d322f6562732f616972732f414952532e323031352e30312e30392e4c332e5265745374645f49523030312e76362e302e31312e302e4731353031303136333030342e6e632e6835
+68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f736f6d6577686572656f7665727468657261696e626f772f417263682d322f6562732f616972732f414952532e323031352e30312e31302e4c332e5265745374645f49523030312e76362e302e31312e302e4731353031313136323030322e6e632e6835
+EOF
+`
+
+A0A2_IDs="AIRS.2015.01.01.L3.RetStd_IR001.v6.0.11.0.G15013155825.nc.h5 AIRS.2015.01.02.L3.RetStd_IR001.v6.0.11.0.G15005190621.nc.h5"
+
+A1_IDS="68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f736f6d6577686572656f7665727468657261696e626f772f417263682d322f6562732f616972732f414952532e323031352e30312e30312e4c332e5265745374645f49523030312e76362e302e31312e302e4731353031333135353832352e6e632e6835 68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f736f6d6577686572656f7665727468657261696e626f772f417263682d322f6562732f616972732f414952532e323031352e30312e30322e4c332e5265745374645f49523030312e76362e302e31312e302e4731353030353139303632312e6e632e6835"
+
+server="http://cloudydap.opendap.org";
+
+arch0="${server}/opendap/Arch-0/ebs/airs/";
+
+arch1="${server}/opendap/gateway/";
+
+arch2="${server}/opendap/Arch-2/ebs/airs/";
+
+ce_one_sm_var_dap2="?ClrOLR_A";
+ce_one_sm_var_with_coords_dap2="?ClrOLR_A,Longitude,Latitude";
+
+ce_one_var_dap2="?CH4_VMR_A";
+ce_one_var_with_coords_dap2="?CH4_VMR_A,StdPressureLev,Longitude,Latitude",;
+
+ce_one_var_dap4="?dap4.ce=CH4_VMR_A";
+ce_one_var_with_coords_dap2="?dap4.ce=CH4_VMR_A;StdPressureLev;Longitude;Latitude",;
+
+
+
+function testit(){
+    
+    test_name=${1};
+    architecture=${2};
+    response=${3}
+    ce=${4}
+
+    for resourceId in ${TEST_IDS} ; do
+        echo "Purging gateway cache..."
+        rm -v /tmp/gateway*
+        
+        dods_url="${architecture}${resourceId}.${response}${ce}";
+        echo "dods_url: ${dods_url}";
+        curl_cmd="curl -s -o foo.${response} -g ${dods_url}";
+        echo "curl_cmd: ${curl_cmd}";
+        
+        { time ${curl_cmd} 2> curl.stderr ; } | tee -a ${test_name} 2>&1 
+        getdap -D -M foo.dods > /dev/null;
+        status=$?
+        if [ ${status} -ne 0 ]; then echo "ERROR! Unable to read dap2 data response."; fi
+    done
+
+}
+
+function test_ce(){
+    test_name=${1};
+    ce=${2};
+    
+    TEST_IDS="${A0A2_IDs}";
+    
+    echo "TEST_IDS: ${TEST_IDS}"
+    
+    testit "a0_${test_name}" "${arch0}" "dods" "${ce}"
+    testit "a2_${test_name}" "${arch2}" "dods" "${ce}"
+
+    TEST_IDS="${A1_IDS}";
+    echo "TEST_IDS: ${TEST_IDS}"
+
+    testit "a1_${test_name}" "${arch1}" "dods" "${ce}"
+}
+
+
+    test_ce "one_sm_var.txt" "${ce_one_sm_var_dap2}"
+    test_ce "one_sm_var_with_coords.txt" "${ce_one_sm_var_with_coords_dap2}"
+
+    test_ce "one_var_dap2.txt" "${ce_one_var_dap2}"
+    test_ce "one_var_with_coords.txt" "${ce_one_var_with_coords_dap2}"
+
+    test_ce "all_vars.txt" " "
+    test_ce "all_vars.txt" " "
+
+
