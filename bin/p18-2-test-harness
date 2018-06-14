@@ -933,8 +933,8 @@ Temperature_TqJ_D_sdev
 EOF
 `
 
-A0A2_IDs="${A0A2_TWO_IDs}";
-A1_IDS="${A1_TWO_IDs}";
+A0A2_IDs="${A0A2_IDs}";
+A1_IDS="${A1_IDs}";
 
 server="http://localhost:8080";
 
