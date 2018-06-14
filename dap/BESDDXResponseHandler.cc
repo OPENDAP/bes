@@ -93,6 +93,9 @@ void BESDDXResponseHandler::execute(BESDataHandlerInterface &dhi)
 #endif
         dds->set_request_xml_base(bdds->get_request_xml_base());
 
+        bdds->set_constraint(dhi);
+        bdds->clear_container();
+
         d_response_object = bdds;
     }
     else {
