@@ -842,6 +842,12 @@ function testit(){
     response=${3}
     ce=${4}
 
+    echo "Testing:";
+    echo "test_id:      '${test_id}'";
+    echo "architecture: '${architecture}'";
+    echo "response:     '${response}'";
+    echo "ce:           '${ce}'";
+    
     for resourceId in ${TEST_IDS} ; do
         
         ls /tmp/gateway* > /dev/null 2>&1;
@@ -863,7 +869,7 @@ function testit(){
         tail -3 ${test_id};
         
         if [ -n ${ce} ]; then
-            echo "Checking result with getdap."
+            echo "Checking DAP2 data response with getdap."
             getdap -D -M foo.dods > /dev/null;
             status=$?
             if [ ${status} -ne 0 ]; then 
