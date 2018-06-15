@@ -1062,7 +1062,7 @@ fi
 echo "Clearing timing dir...";
 rm -f timing/*;
 
-for pass in {1..40} ; do
+for pass in {41..100} ; do
 
     echo "################# PASS ${pass} ################################## PASS ${pass} #################"
     
