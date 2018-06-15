@@ -933,6 +933,124 @@ Temperature_TqJ_D_sdev
 EOF
 `
 
+StdPresF32=`cat<<EOF
+CH4_VMR_A
+CH4_VMR_A_err
+CH4_VMR_A_max
+CH4_VMR_A_min
+CH4_VMR_A_sdev
+CH4_VMR_D
+CH4_VMR_D_err
+CH4_VMR_D_max
+CH4_VMR_D_min
+CH4_VMR_D_sdev
+CH4_VMR_TqJ_A
+CH4_VMR_TqJ_A_err
+CH4_VMR_TqJ_A_max
+CH4_VMR_TqJ_A_min
+CH4_VMR_TqJ_A_sdev
+CH4_VMR_TqJ_D
+CH4_VMR_TqJ_D_err
+CH4_VMR_TqJ_D_max
+CH4_VMR_TqJ_D_min
+CH4_VMR_TqJ_D_sdev
+CO_VMR_A
+CO_VMR_A_err
+CO_VMR_A_max
+CO_VMR_A_min
+CO_VMR_A_sdev
+CO_VMR_D
+CO_VMR_D_err
+CO_VMR_D_max
+CO_VMR_D_min
+CO_VMR_D_sdev
+CO_VMR_TqJ_A
+CO_VMR_TqJ_A_err
+CO_VMR_TqJ_A_max
+CO_VMR_TqJ_A_min
+CO_VMR_TqJ_A_sdev
+CO_VMR_TqJ_D
+CO_VMR_TqJ_D_err
+CO_VMR_TqJ_D_max
+CO_VMR_TqJ_D_min
+CO_VMR_TqJ_D_sdev
+GPHeight_A
+GPHeight_A_max
+GPHeight_A_min
+GPHeight_A_sdev
+GPHeight_D
+GPHeight_D_max
+GPHeight_D_min
+GPHeight_D_sdev
+GPHeight_MW_A
+GPHeight_MW_A_max
+GPHeight_MW_A_min
+GPHeight_MW_A_sdev
+GPHeight_MW_D
+GPHeight_MW_D_max
+GPHeight_MW_D_min
+GPHeight_MW_D_sdev
+GPHeight_TqJ_A
+GPHeight_TqJ_A_max
+GPHeight_TqJ_A_min
+GPHeight_TqJ_A_sdev
+GPHeight_TqJ_D
+GPHeight_TqJ_D_max
+GPHeight_TqJ_D_min
+GPHeight_TqJ_D_sdev
+O3_VMR_A
+O3_VMR_A_err
+O3_VMR_A_max
+O3_VMR_A_min
+O3_VMR_A_sdev
+O3_VMR_D
+O3_VMR_D_err
+O3_VMR_D_max
+O3_VMR_D_min
+O3_VMR_D_sdev
+O3_VMR_TqJ_A
+O3_VMR_TqJ_A_err
+O3_VMR_TqJ_A_max
+O3_VMR_TqJ_A_min
+O3_VMR_TqJ_A_sdev
+O3_VMR_TqJ_D
+O3_VMR_TqJ_D_err
+O3_VMR_TqJ_D_max
+O3_VMR_TqJ_D_min
+O3_VMR_TqJ_D_sdev
+Temperature_A
+Temperature_A_err
+Temperature_A_max
+Temperature_A_min
+Temperature_A_sdev
+Temperature_D
+Temperature_D_err
+Temperature_D_max
+Temperature_D_min
+Temperature_D_sdev
+Temperature_MW_A
+Temperature_MW_A_max
+Temperature_MW_A_min
+Temperature_MW_A_sdev
+Temperature_MW_D
+Temperature_MW_D_max
+Temperature_MW_D_min
+Temperature_MW_D_sdev
+Temperature_TqJ_A
+Temperature_TqJ_A_err
+Temperature_TqJ_A_max
+Temperature_TqJ_A_min
+Temperature_TqJ_A_sdev
+Temperature_TqJ_D
+Temperature_TqJ_D_err
+Temperature_TqJ_D_max
+Temperature_TqJ_D_min
+Temperature_TqJ_D_sdev
+EOF
+`
+
+vars="${StdPresF32}";
+
 A0A2_IDs="${A0A2_IDs}";
 A1_IDS="${A1_IDs}";
 
@@ -944,19 +1062,17 @@ arch1="${server}/opendap/gateway/";
 
 arch2="${server}/opendap/Arch-2/ebs/airs/";
 
-ce_one_sm_var="?ClrOLR_A";
-ce_one_sm_var_with_coords="?ClrOLR_A,Longitude,Latitude";
-
-ce_one_var="?CH4_VMR_A";
-ce_one_var_with_coords="?CH4_VMR_A,StdPressureLev,Longitude,Latitude";
-
-ce_two_var="?CH4_VMR_A,Temperature_A";
-ce_three_var="?CH4_VMR_A,Temperature_A,CO_VMR_A";
-ce_four_var="?CH4_VMR_A,Temperature_A,CO_VMR_A,GPHeight_A";
-ce_five_var="?CH4_VMR_A,Temperature_A,Temperature_D,CO_VMR_A,GPHeight_A";
-ce_six_var="?CH4_VMR_A,Temperature_A,Temperature_D,CO_VMR_A,GPHeight_A,GPHeight_D";
-ce_seven_var="?CH4_VMR_A,CH4_VMR_D,Temperature_A,Temperature_D,CO_VMR_A,GPHeight_A,GPHeight_D";
-ce_eight_var="?CH4_VMR_A,CH4_VMR_D,Temperature_A,Temperature_D,CO_VMR_A,CO_VMR_D,GPHeight_A,GPHeight_D";
+#ce_one_sm_var="?ClrOLR_A";
+#ce_one_sm_var_with_coords="?ClrOLR_A,Longitude,Latitude";
+#ce_one_var="?CH4_VMR_A";
+#ce_one_var_with_coords="?CH4_VMR_A,StdPressureLev,Longitude,Latitude";
+#ce_two_var="?CH4_VMR_A,Temperature_A";
+#ce_three_var="?CH4_VMR_A,Temperature_A,CO_VMR_A";
+#ce_four_var="?CH4_VMR_A,Temperature_A,CO_VMR_A,GPHeight_A";
+#ce_five_var="?CH4_VMR_A,Temperature_A,Temperature_D,CO_VMR_A,GPHeight_A";
+#ce_six_var="?CH4_VMR_A,Temperature_A,Temperature_D,CO_VMR_A,GPHeight_A,GPHeight_D";
+#ce_seven_var="?CH4_VMR_A,CH4_VMR_D,Temperature_A,Temperature_D,CO_VMR_A,GPHeight_A,GPHeight_D";
+#ce_eight_var="?CH4_VMR_A,CH4_VMR_D,Temperature_A,Temperature_D,CO_VMR_A,CO_VMR_D,GPHeight_A,GPHeight_D";
 
 function get_vars_ce() {
     n=${1};
@@ -1062,7 +1178,7 @@ fi
 echo "Clearing timing dir...";
 rm -f timing/*;
 
-for pass in {41..100} ; do
+for pass in {1..112} ; do
 
     echo "################# PASS ${pass} ################################## PASS ${pass} #################"
     
