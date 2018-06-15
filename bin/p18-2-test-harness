@@ -1016,7 +1016,7 @@ function testit(){
         echo "Request time: ";
         tail -3 ${test_id};
         
-        if [ -z ${ce} ]; then
+        if [ -z ${ce} ] || [ true ] ; then
             echo "Not checking DAP2 data response for entire dataset, takes too long."
         else 
             echo "Checking DAP2 data response with getdap."
