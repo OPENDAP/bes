@@ -47,7 +47,7 @@ show_usage () {
  and then /etc/bes/bes.conf.
  
  if -u is given, the argument <data URL> is added to the DMR++
- file as the href attribute's value. The DMR++ handler will use
+ file as the href attribute''s value. The DMR++ handler will use
  this to access the data.
  
  If -R is given, the DMR++ response is not added to the MDS.
@@ -66,10 +66,11 @@ EOF
 OPTIND=1         # Reset in case getopts has been used previously in the shell.
 
 verbose=0
+very_verbose=0
 include_dmrpp=1  # build the DMR++ by default
 data_url=
 
-while getopts "h?vc:u:R" opt; do
+while getopts "h?vc:Ru:" opt; do
     case "$opt" in
     h|\?)
         show_usage
@@ -77,14 +78,18 @@ while getopts "h?vc:u:R" opt; do
         ;;
     v)  verbose=1;
         echo "";
-        echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
-        echo "${0} - verbose enabled";
+        echo "${0} verbose enabled";
+        ;;
+    V)  very_verbose=1;
+        echo "";
+        echo "${0} verbose enabled";
         ;;
     c)  BES_CONF="-c $OPTARG"
         ;;
     R)  include_dmrpp=0
         ;;
-    u)  data_url="-u $OPTARG"
+    u)
+        cloud_url="$OPTARG"
         ;;
     esac
 done
@@ -96,17 +101,17 @@ shift $((OPTIND-1))
 # Find the bes.conf file
 if [ -z "$BES_CONF" ]
 then 
-    echo "BES_CONF is not set trying env variable 'prefix'...";  
+    echo "${0} BES_CONF is not set trying env variable 'prefix'...";  
     if [ ! -z $prefix ] # True if var is set and str length != 0
     then
         test_conf=$prefix/etc/bes/bes.conf
-        echo "Env var 'prefix' is set. Checking $test_conf"; 
+        echo "${0} Env var 'prefix' is set. Checking $test_conf"; 
         if [ -r $test_conf ]
         then
             BES_CONF="-c $test_conf"
-            if [ $verbose = 1 ]
+            if [ ${verbose} = 1 ]
             then
-                echo "BES_CONF: " $BES_CONF
+                echo "${0} BES_CONF: " $BES_CONF
             fi
         fi
     fi
@@ -115,46 +120,49 @@ fi
 if [ -z "$BES_CONF" ]
 then     
     export BES_CONF=/etc/bes/bes.conf
-    echo "Last Attempt:  Trying $BES_CONF"; 
+    echo "${0} Last Attempt:  Trying $BES_CONF"; 
     if [ -r $BES_CONF ]
     then
         BES_CONF="-c $BES_CONF"
-        if [ $verbose = 1 ]
+        if [ ${verbose} = 1 ]
         then
-            echo "BES_CONF: " $BES_CONF
+            echo "${0} BES_CONF: " $BES_CONF
         fi
     else
         echo ""
-        echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+        echo "${0} !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         echo ""
-        echo "Unable to locate a BES configuration file."
-        echo "You may identify your BES configurstion in one of three ways: "
+        echo "${0} Unable to locate a BES configuration file."
+        echo "${0} You may identify your BES configurstion in one of three ways: "
         echo ""
-        echo "  1. Using the command line parameter '-c'"
+        echo "${0}   1. Using the command line parameter '-c'"
         echo ""
-        echo "  2. Setting the environment variable $prefix to the install"
+        echo "${0}   2. Setting the environment variable $prefix to the install"
         echo "     location of the BES."
         echo ""
-        echo "  3. Placing the bes.conf file in the well known location"
-        echo "         /etc/bes/bes.conf"
+        echo "${0}   3. Placing the bes.conf file in the well known location"
+        echo "${0}          /etc/bes/bes.conf"
         echo ""
-        echo "The command line parameter is the recommended usage."        
+        echo "${0} The command line parameter is the recommended usage."        
         echo ""
-        echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+        echo "${0} !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         show_usage
         echo ""
        exit;
     fi
 fi
 
-[ -n "$1" ] || { echo "Expected one or more pathnames." ; exit 1; }
+[ -n "$1" ] || { echo "${0} Expected a pathnames." ; exit 1; }
 
 # Read a pathname from the next argument
 pathname=$1
+# make sure it start's with slash
+# if [[ ! ${pathname} =~ "^\/.*$" ]]; then pathname="/${pathname}"; fi
+if [ ${verbose} = 1 ]; then echo "${0} Processing ${pathname}"; fi
 
 v_sw=                   # By default don't be verbose
 
-if [ $verbose = 1 ]
+if [ ${verbose} = 1 ]
 then
     v_sw=-v             # Switch to tell sub-commands to be verbose
 fi
@@ -166,9 +174,9 @@ dds_cmd="${local_bes_get_dap} ${v_sw} ${BES_CONF} -i ${pathname} -d dds"
 dmr_cmd="${local_bes_get_dap} ${v_sw} ${BES_CONF} -i ${pathname} -d dmr"
 
 dev_null="> /dev/null";
-if [ $verbose = 1 ]; then 
-    echo "dds_cmd: ${dds_cmd}";
-    echo "dmr_cmd: ${dmr_cmd}";
+if [ ${verbose} = 1 ]; then 
+    echo "${0} dds_cmd: ${dds_cmd}";
+    echo "${0} dmr_cmd: ${dmr_cmd}";
     dev_null=
 fi
 
@@ -182,6 +190,26 @@ $dmr_cmd $dev_null
 
 if [ $include_dmrpp = 1 ]
 then
-    $build_dmrpp $v_sw $BES_CONF $data_url -f $pathname > /dev/null
+    if [ -z ${cloud_url+x} ]; then 
+        echo "${0} OUCH! You requested a dmr++ file be created but you failed to provide the URL of the source dataset! SKIPPING ${pathname} "
+        exit 1;
+    fi
+
+    build_dmrpp_cmd="${build_dmrpp} ${v_sw} ${BES_CONF} -f ${pathname} -u ${cloud_url}"
+    if [ ${verbose} = 1 ]; then echo "${0} Building dmr++ for ${pathname}"; echo "${0} build_dmrpp_cmd: ${build_dmrpp_cmd}"; fi
+    if [ ${very_verbose} = 1 ]; then
+        ${build_dmrpp_cmd};
+    else
+        ${build_dmrpp_cmd} > /dev/null;
+    fi
+    build_dmrpp_status=$?;
+    if [ ${build_dmrpp_status} -ne 0 ]; then
+        echo "${0} Build dmr++ operation failed! STATUS: ${build_dmrpp_status}";
+    else
+        if [ ${verbose} = 1 ]; then echo "${0} The dmr++ for ${pathname} has been added to the MDS."; fi
+    fi
+
+    exit ${build_dmrpp_status}
+
 fi
 

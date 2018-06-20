@@ -708,17 +708,22 @@ GlobalMetadataStore::add_responses(DMR *dmr, const string &name)
 GlobalMetadataStore::MDSReadLock
 GlobalMetadataStore::get_read_lock_helper(const string &name, const string &suffix, const string &object_name)
 {
-    BESDEBUG(DEBUG_KEY, __func__ << " MDS hashing name " << name << ", " << suffix <<  endl);
+    BESDEBUG(DEBUG_KEY, __func__ << "() MDS hashing name '" << name << "', '" << suffix << "'"<< endl);
+
+    if(name.empty())
+        throw BESInternalError("An empty name string was received by "
+                "GlobalMetadataStore::get_read_lock_helper(). That should never happen.", __FILE__, __LINE__);
+
 
     string item_name = get_cache_file_name(get_hash(name + suffix), false);
     int fd;
     MDSReadLock lock(item_name, get_read_lock(item_name, fd), this);
-    BESDEBUG(DEBUG_KEY, __func__ << " MDS lock for " << item_name << ": " << lock() <<  endl);
+    BESDEBUG(DEBUG_KEY, __func__ << "() MDS lock for " << item_name << ": " << lock() <<  endl);
 
     if (lock())
-        LOG("MDS Cache hit for " << name << " and response " << object_name << endl);
+        LOG("MDS Cache hit for '" << name << "' and response " << object_name << endl);
     else
-        LOG("MDS Cache miss for " << name << " and response " << object_name << endl);
+        LOG("MDS Cache miss for '" << name << "' and response " << object_name << endl);
 
     return lock;
  }
