@@ -1,12 +1,13 @@
-// GatewayUtils.h
+// RempteAccess.h
 
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of gateway_module, A C++ module that can be loaded in to
-// the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
+// This file is part of the OPeNDAP Back-End Server (BES)
+// and embodies a whitelist of remote system that may be
+// accessed by the server as part of it's routine operation.
 
-// Copyright (c) 2002,2003 OPeNDAP, Inc.
-// Author: Patrick West <pwest@ucar.edu>
+// Copyright (c) 2018 OPeNDAP, Inc.
+// Author:Nathan D. Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -25,47 +26,32 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 // Authors:
-//      pcw       Patrick West <pwest@ucar.edu>
+//      ndp       Nathan D. Potter <ndp@opendap.org>
 
-#ifndef I_GatewayUtils_H
-#define I_GatewayUtils_H 1
+#ifndef I_RemoteAccess_H
+#define I_RemoteAccess_H 1
 
 #include <string>
 #include <map>
 #include <vector>
 
-namespace gateway {
+#define REMOTE_ACCESS_WHITELIST "Gateway.Whitelist"
+
+namespace bes {
 
 /** @brief utility class for the gateway remote request mechanism
  *
  */
-class GatewayUtils {
-public:
-#if 0
+class RemoteAccess {
     static std::vector<std::string> WhiteList;
-#endif
-    static std::map<std::string, std::string> MimeList;
-    static std::string ProxyProtocol;
-    static std::string ProxyHost;
-    static std::string ProxyUserPW;
-    static std::string ProxyUser;
-    static std::string ProxyPassword;
-    static int ProxyPort;
-    static int ProxyAuthType;
-    static bool useInternalCache;
 
-    static std::string NoProxyRegex;
+public:
 
     static void Initialize();
-    static void Get_type_from_disposition(const std::string &disp, std::string &type);
-    static void Get_type_from_content_type(const std::string &ctype, std::string &type);
-    static void Get_type_from_url(const std::string &url, std::string &type);
-#if 0
     static bool Is_Whitelisted(const std::string &url);
-#endif
 };
 
-} // namespace gateway
+} // namespace bes
 
-#endif // I_GatewayUtils_H
+#endif // I_RemoteAccess_H
 

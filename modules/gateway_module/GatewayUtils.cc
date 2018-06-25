@@ -54,8 +54,10 @@
 using namespace libdap;
 using namespace gateway;
 
-vector<string> GatewayUtils::WhiteList;
-map<string, string> GatewayUtils::MimeList;
+#if 0
+std::vector<string> GatewayUtils::WhiteList;
+#endif
+std::map<string, string> GatewayUtils::MimeList;
 string GatewayUtils::ProxyProtocol;
 string GatewayUtils::ProxyHost;
 string GatewayUtils::ProxyUser;
@@ -71,6 +73,7 @@ string GatewayUtils::NoProxyRegex;
 // and keys, like the white list, the MimeTypes translation.
 void GatewayUtils::Initialize()
 {
+#if 0
     // Whitelist - list of domain that the gateway is allowed to
     // communicate with.
     bool found = false;
@@ -82,15 +85,16 @@ void GatewayUtils::Initialize()
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
 
     }
+#endif
 
     // MimeTypes - translate from a mime type to a module name
-    found = false;
-    key = Gateway_MIMELIST;
-    vector<string> vals;
+    bool found = false;
+    std::string key = Gateway_MIMELIST;
+    std::vector<string> vals;
     TheBESKeys::TheKeys()->get_values(key, vals, found);
     if (found && vals.size()) {
-        vector<string>::iterator i = vals.begin();
-        vector<string>::iterator e = vals.end();
+        std::vector<string>::iterator i = vals.begin();
+        std::vector<string>::iterator e = vals.end();
         for (; i != e; i++) {
             size_t colon = (*i).find(":");
             if (colon == string::npos) {
@@ -389,3 +393,24 @@ void GatewayUtils::Get_type_from_url(const string &url, string &type)
         }
     }
 }
+
+#if 0
+bool GatewayUtils::Is_Whitelisted(const std::string &url){
+    bool whitelisted = false;
+    std::vector<std::string>::const_iterator i = WhiteList.begin();
+    std::vector<std::string>::const_iterator e = WhiteList.end();
+    for (; i != e && !whitelisted; i++) {
+        if ((*i).length() <= url.length()) {
+            if (url.substr(0, (*i).length()) == (*i)) {
+                whitelisted = true;
+            }
+        }
+    }
+    return whitelisted;
+}
+
+#endif
+
+
+
+

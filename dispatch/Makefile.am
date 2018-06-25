@@ -98,7 +98,8 @@ SRCS = BESInterface.cc \
 	BESCatalogList.cc \
 	BESCatalogEntry.cc \
 	BESCatalogResponseHandler.cc \
-	CatalogNode.cc CatalogItem.cc
+	CatalogNode.cc CatalogItem.cc \
+	RemoteAccess.cc
 	
 # BESSilentInfo.cc
 # BESBasicHttpTransmitter.cc 
@@ -157,7 +158,9 @@ HDRS = BESInterface.h BESLog.h 			\
 	BESCatalogList.h \
 	BESCatalogEntry.h \
 	BESCatalogResponseHandler.h \
-	CatalogNode.h CatalogItem.h
+	CatalogNode.h CatalogItem.h \
+	RemoteAccess.h
+	
 	
 # BESSilentInfo.h
 # BESBasicHttpTransmitter.h
