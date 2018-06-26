@@ -61,9 +61,9 @@ class plistT: public TestFixture {
 private:
 
     void show_file(std::string filename){
-        // std::ifstream t(filename);
-        std::ifstream t;
-        t.open(filename, std::ifstream::in);
+        std::ifstream t(filename.c_str());
+        //std::ifstream t;
+        //t.open(filename.c_str(), std::ifstream::in);
         if(t.is_open()){
             std::string file_content((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
             t.close();
