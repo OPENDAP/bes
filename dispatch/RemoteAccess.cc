@@ -1,4 +1,4 @@
-// RempteAccess.cc
+// RemoteAccess.cc
 
 // -*- mode: c++; c-basic-offset:4 -*-
 

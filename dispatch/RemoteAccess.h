@@ -1,4 +1,4 @@
-// RempteAccess.h
+// RemoteAccess.h
 
 // -*- mode: c++; c-basic-offset:4 -*-
 

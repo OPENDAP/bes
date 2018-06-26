@@ -38,9 +38,6 @@
 #include "Chunk.h"
 #include "DmrppRequestHandler.h"
 
-
-
-
 #define MAX_WAIT_MSECS 30*1000 /* Wait max. 30 seconds */
 
 using namespace dmrpp;
