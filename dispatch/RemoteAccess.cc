@@ -27,12 +27,12 @@
 
 #include "config.h"
 
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-#include <cstdlib>
-#include <cstring>
-#include <curl/curl.h>
+//#ifdef HAVE_UNISTD_H
+//#include <unistd.h>
+//#endif
+//#include <cstdlib>
+//#include <cstring>
+//#include <curl/curl.h>
 
 #include "RemoteAccess.h"
 
