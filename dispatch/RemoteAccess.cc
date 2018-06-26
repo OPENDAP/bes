@@ -87,9 +87,8 @@ bool RemoteAccess::Is_Whitelisted(const std::string &url){
     string https_url("https://");
 
     if (url.compare(0, file_url.size(), file_url) == 0 /*equal*/) {
-        // BESDEBUG("bes","Checking file URL for suitability. "<< url << endl);
-        // Check that the file path starts with the catalog root dir.
 
+        // Ensure that the file path starts with the catalog root dir.
         string file_path = url.substr(file_url.size());
         // BESDEBUG("bes","path component: "<< file_path << endl);
 

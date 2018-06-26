@@ -212,7 +212,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
         handle->d_url = chunk->get_data_url();
         if(!RemoteAccess::Is_Whitelisted(handle->d_url)){
             string msg;
-            msg = "ERROR!! The chunk url " + handle->d_url + " does not match the white-list rule. ";
+            msg = "ERROR!! The chunk url " + handle->d_url + " does not match any white-list rule. ";
             BESDEBUG("dmrpp",msg << endl);
             throw BESForbiddenError(msg ,__FILE__,__LINE__);
         }
