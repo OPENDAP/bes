@@ -61,15 +61,18 @@ class plistT: public TestFixture {
 private:
 
     void show_file(std::string filename){
-        cout << endl << "##################################################################" << endl;
-        cout << "file: " << filename << endl;
-        cout << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << endl;
         // std::ifstream t(filename);
-        std::ifstream t(filename, std::ifstream::in);
-        std::string file_content((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
-        cout << file_content << endl;
-        cout << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << endl;
-
+        std::ifstream t;
+        t.open(filename, std::ifstream::in);
+        if(t.is_open()){
+            std::string file_content((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
+            t.close();
+            cout << endl << "##################################################################" << endl;
+            cout << "file: " << filename << endl;
+            cout << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << endl;
+            cout << file_content << endl;
+            cout << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << endl;
+        }
     }
 public:
     plistT()
