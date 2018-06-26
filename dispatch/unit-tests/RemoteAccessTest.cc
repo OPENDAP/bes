@@ -64,7 +64,8 @@ private:
         cout << endl << "##################################################################" << endl;
         cout << "file: " << filename << endl;
         cout << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << endl;
-        std::ifstream t(filename);
+        // std::ifstream t(filename);
+        std::ifstream t(filename, std::ifstream::in);
         std::string file_content((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
         cout << file_content << endl;
         cout << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << endl;
