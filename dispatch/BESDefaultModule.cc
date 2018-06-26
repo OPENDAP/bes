@@ -81,8 +81,6 @@ using std::endl ;
 #include "BESInfoList.h"
 #include "BESInfoNames.h"
 
-#include "RemoteAccess.h"
-
 int
 BESDefaultModule::initialize(int, char**)
 {
@@ -174,12 +172,6 @@ BESDefaultModule::initialize(int, char**)
 
     BESDEBUG( "bes", "    adding bes debug context" << endl ) ;
     BESDebug::Register( "bes" ) ;
-
-
-    BESDEBUG( "bes", "    initializing RemoteAccess" << endl ) ;
-    bes::RemoteAccess::Initialize();
-
-
 
     BESDEBUG( "bes", "Done Initializing default modules:" << endl ) ;
 

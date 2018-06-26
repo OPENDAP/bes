@@ -53,53 +53,63 @@ using namespace bes;
 
 
 std::vector<string> RemoteAccess::WhiteList;
+bool RemoteAccess::is_init = false;
 
-// Initialization routine for the gateway module for certain parameters
-// and keys, like the white list, the MimeTypes translation.
-void RemoteAccess::Initialize()
+// Initialization routine for the RemoteAccess white list
+void RemoteAccess::init()
 {
-    // Whitelist - list of domain that the gateway is allowed to
-    // communicate with.
+    if(is_init)
+        return;
+
+    // Whitelist - gather list of domains that the
+    // hyrax is allowed to communicate with.
     bool found = false;
     string key = REMOTE_ACCESS_WHITELIST;
     TheBESKeys::TheKeys()->get_values(key, WhiteList, found);
 
-    /*
+    is_init = true;
+
+#if 0
     if (!found || WhiteList.size() == 0) {
         string err = (string) "The parameter " + REMOTE_ACCESS_WHITELIST + " is not set or has no values in the gateway"
             + " configuration file";
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
-    */
+#endif
+
+
 }
 
 
 /**
  * This method provides an access condition assessment for URLs and files
  * to be accessed by the BES. The http and https urls are verified against a
- * whitelist assembled from configurtion. The file urls are checked to be
+ * whitelist assembled from configuration. All file urls are checked to be
  * sure that they reference a resource within the BES catalog.
  */
 bool RemoteAccess::Is_Whitelisted(const std::string &url){
+
+    if(!is_init)
+        init();
+
     bool whitelisted = false;
-    string file_url("file://");
-    string http_url("http://");
+    string file_url( "file://");
+    string http_url( "http://");
     string https_url("https://");
 
-    if (url.compare(0, file_url.size(), file_url) == 0 /*equal*/) {
+    if (url.compare(0, file_url.size(), file_url) == 0 /*equals a file url*/) {
 
         // Ensure that the file path starts with the catalog root dir.
         string file_path = url.substr(file_url.size());
-        // BESDEBUG("bes","path component: "<< file_path << endl);
 
         BESCatalog *bcat = BESCatalogList::TheCatalogList()->find_catalog(BES_DEFAULT_CATALOG);
-        string root = bcat->get_root();
+        string catalog_root = bcat->get_root();
         // BESDEBUG("bes","Catalog root: "<< root << endl);
 
-        whitelisted = file_path.compare(0, root.size(), root) == 0;
+        whitelisted = file_path.compare(0, catalog_root.size(), catalog_root) == 0;
         // BESDEBUG("bes","Is_Whitelisted: "<< (whitelisted?"true":"false") << endl);
     }
-    else if (url.compare(0, http_url.size(), http_url) == 0    /*equals http url */   ||
+    else if (url.compare(0, http_url.size(),  http_url)  == 0  /*equals http url */   ||
              url.compare(0, https_url.size(), https_url) == 0  /*equals https url */ ) {
 
         std::vector<std::string>::const_iterator i = WhiteList.begin();

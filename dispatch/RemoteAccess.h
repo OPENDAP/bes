@@ -39,15 +39,19 @@
 
 namespace bes {
 
-/** @brief utility class for the gateway remote request mechanism
+/** @brief Embodies a configuration based remote access white list
+ * and provides a simple API Is_Whitelisted() for determining what
+ * resources may be accessed.
  *
  */
 class RemoteAccess {
+private:
+    static bool is_init;
     static std::vector<std::string> WhiteList;
+    static void init();
 
 public:
 
-    static void Initialize();
     static bool Is_Whitelisted(const std::string &url);
 };
 

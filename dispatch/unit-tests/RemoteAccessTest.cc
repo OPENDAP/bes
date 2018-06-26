@@ -113,7 +113,7 @@ public:
 
     void do_test()
     {
-        bes::RemoteAccess::Initialize();
+        // bes::RemoteAccess::Initialize();
 
         CPPUNIT_ASSERT( !can_access("http://google.com") );
 
