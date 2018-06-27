@@ -101,13 +101,20 @@ bool RemoteAccess::Is_Whitelisted(const std::string &url){
 
         // Ensure that the file path starts with the catalog root dir.
         string file_path = url.substr(file_url.size());
+        BESDEBUG("bes","RemoteAccess::Is_Whitelisted() - file_path: "<< file_path << endl);
 
         BESCatalog *bcat = BESCatalogList::TheCatalogList()->find_catalog(BES_DEFAULT_CATALOG);
+        if(bcat){
+            BESDEBUG("bes","RemoteAccess::Is_Whitelisted() - Found catalog: "<< bcat->get_catalog_name() << endl);
+        }
+        else {
+            BESDEBUG("bes","RemoteAccess::Is_Whitelisted() - Unable to locate default catalog!" << endl);
+        }
         string catalog_root = bcat->get_root();
-        // BESDEBUG("bes","Catalog root: "<< root << endl);
+        BESDEBUG("bes","RemoteAccess::Is_Whitelisted() - Catalog root: "<< catalog_root << endl);
 
         whitelisted = file_path.compare(0, catalog_root.size(), catalog_root) == 0;
-        // BESDEBUG("bes","Is_Whitelisted: "<< (whitelisted?"true":"false") << endl);
+        BESDEBUG("bes","RemoteAccess::Is_Whitelisted() - Is_Whitelisted: "<< (whitelisted?"true":"false") << endl);
     }
     else if (url.compare(0, http_url.size(),  http_url)  == 0  /*equals http url */   ||
              url.compare(0, https_url.size(), https_url) == 0  /*equals https url */ ) {

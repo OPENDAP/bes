@@ -47,12 +47,15 @@ using std::cerr;
 using std::cout;
 using std::endl;
 
+#include <test_config.h>
+
 #include "RemoteAccess.h"
 #include <TheBESKeys.h>
-#include <test_config.h>
+#include <BESDebug.h>
 #include <GetOpt.h>
 
 static bool debug = false;
+static bool bes_debug = false;
 
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
@@ -60,7 +63,7 @@ static bool debug = false;
 class plistT: public TestFixture {
 private:
 
-#if 0
+#if 1
     void show_file(std::string filename){
         std::ifstream t(filename.c_str());
         //std::ifstream t;
@@ -87,6 +90,8 @@ public:
 
     void setUp()
     {
+        if (bes_debug) BESDebug::SetUp("cerr,bes");
+
 
 //        Gateway.Whitelist=http://localhost
 //        Gateway.Whitelist+=http://test.opendap.org/opendap/
@@ -97,7 +102,7 @@ public:
         std::string bes_conf = (std::string) TEST_SRC_DIR + "/remote_access_test.ini";
         TheBESKeys::ConfigFile = bes_conf;
 
-        // if(debug) show_file(bes_conf);
+        if(bes_debug) show_file(bes_conf);
     }
 
     void tearDown()
@@ -134,7 +139,11 @@ public:
 
         CPPUNIT_ASSERT( can_access("http://cloudydap.opendap.org/opendap/Arch-2/ebs/samples/3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.h5") );
 
+        CPPUNIT_ASSERT( !can_access("file://foo") );
+        CPPUNIT_ASSERT( can_access("file:///usr/share/hyrax/data/nc/fnoc1.nc") );
+        CPPUNIT_ASSERT( !can_access("file://usr/share/hyrax/data/nc/fnoc1.nc") );
 
+        CPPUNIT_ASSERT( !can_access("file:///etc/password") );
 
 
 
@@ -147,12 +156,15 @@ CPPUNIT_TEST_SUITE_REGISTRATION( plistT );
 int main(int argc, char*argv[])
 {
 
-    GetOpt getopt(argc, argv, "dh");
+    GetOpt getopt(argc, argv, "dhb");
     char option_char;
     while ((option_char = getopt()) != EOF)
         switch (option_char) {
         case 'd':
             debug = 1;  // debug is a static global
+            break;
+        case 'b':
+            bes_debug = 1;  // debug is a static global
             break;
         case 'h': {     // help - show test names
             cerr << "Usage: plistT has the following tests:" << endl;
