@@ -60,6 +60,7 @@ static bool debug = false;
 class plistT: public TestFixture {
 private:
 
+#if 0
     void show_file(std::string filename){
         std::ifstream t(filename.c_str());
         //std::ifstream t;
@@ -74,6 +75,8 @@ private:
             cout << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << endl;
         }
     }
+#endif
+
 public:
     plistT()
     {
@@ -94,7 +97,7 @@ public:
         std::string bes_conf = (std::string) TEST_SRC_DIR + "/remote_access_test.ini";
         TheBESKeys::ConfigFile = bes_conf;
 
-        if(debug) show_file(bes_conf);
+        // if(debug) show_file(bes_conf);
     }
 
     void tearDown()
