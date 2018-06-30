@@ -80,8 +80,15 @@ GatewayContainer::GatewayContainer(const string &sym_name,
                 + " the white list.";
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
+
+    // Because we know the name is really a URL, then we know the "relative_name" is meaningless
+    // So we set it to be the same as "name"
+    set_relative_name(real_name);
 }
 
+/**
+ * TODO: I think this implementation of the copy constructor is incomplete/inadequate. Review and fix as needed.
+ */
 GatewayContainer::GatewayContainer(const GatewayContainer &copy_from) :
         BESContainer(copy_from), d_remoteResource(copy_from.d_remoteResource) {
     // we can not make a copy of this container once the request has

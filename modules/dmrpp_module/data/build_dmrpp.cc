@@ -460,6 +460,7 @@ int main(int argc, char*argv[])
     string h5_dset_path = "";
     string dmr_name = "";
     string url_name = "";
+    int status=0;
 
     GetOpt getopt(argc, argv, "c:f:r:u:dhv");
     int option_char;
@@ -497,6 +498,8 @@ int main(int argc, char*argv[])
         cerr << "HDF5 file name must be given (-f <input>)." << endl;
         return 1;
     }
+    if(h5_file_name[0] != '/')
+        h5_file_name = "/" + h5_file_name;
 
     hid_t file = 0;
     try {
@@ -555,7 +558,9 @@ int main(int argc, char*argv[])
 
             // Use the full path to open the file, but use the 'name' (which is the
             // path relative to the BES Data Root) with the MDS.
-            string h5_file_path = bes_data_root + h5_file_name;
+            // Changed this to utilze assmeblePath() because simply concatenating the strings
+            // is fragile. - ndp 6/6/18
+            string h5_file_path = BESUtil::assemblePath(bes_data_root,h5_file_name);
 
             bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_name /*h5_file_path*/);
             if (lock()) {
@@ -575,10 +580,11 @@ int main(int argc, char*argv[])
 
                 get_chunks_for_all_variables(file, dmrpp->root());
 
+                dmrpp->set_href(url_name);
+
                 mds->add_dmrpp_response(dmrpp.get(), h5_file_name /*h5_file_path*/);
 
                 XMLWriter writer;
-                dmrpp->set_href(url_name);
                 dmrpp->set_print_chunks(true);
                 dmrpp->print_dap4(writer);
 
@@ -592,15 +598,18 @@ int main(int argc, char*argv[])
     }
     catch (BESError &e) {
         cerr << "Error: " << e.get_message() << endl;
+        status = 1;
     }
     catch (std::exception &e) {
         cerr << "Error: " << e.what() << endl;
+        status = 1;
     }
     catch (...) {
         cerr << "Unknown error." << endl;
+        status = 1;
     }
 
     H5Fclose(file);
 
-    return 0;
+    return status;
 }

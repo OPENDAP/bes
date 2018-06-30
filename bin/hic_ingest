@@ -1,0 +1,531 @@
+#!/bin/sh
+#
+# -*- mode: bash; -*-
+#
+# This file is part of the Back End Server component of the
+# Hyrax Data Server.
+#
+# Copyright (c) 2018 OPeNDAP, Inc.
+# Author: Nathan David Potter <ndp@opendap.org>
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+#
+# You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+###########################################################################
+
+H5_REGEX=".*\.(HDF5|h5|he5)(\.bz2|\.gz|\.Z)?$"
+EXCLUDE_REGEX="^\\..*$|.*\.dmrpp$"
+INCLUDE_REGEX="^.*$"
+
+
+STAT_COMMAND="stat -c%s"; # Linux
+if [ `uname -s` = "Darwin" ]; then
+    STAT_COMMAND="stat -f%z"; #OSX
+fi
+
+
+###########################################################################
+#
+# show_usage()
+#
+# Explain how to use this program.
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+show_usage() {
+cat <<EOF
+
+ Usage: 
+ 
+ $0 [h|v|V|R|S|D|P|k] [-c <bes_conf>] [-b <s3_bucket_name>] 
+    [-u <s3_profile_name>] [-s <site_map_file>] 
+    [-i <include_regex>] [-x <exclude_regex>] <bes_catalog_root_dir>
+
+ 
+ -c  <bes_conf> The name of the bes.conf file to use with besstandalone.
+ -b  <s3_bucket_name>  The name of the S3 bucket into which to place the files.
+ -u  <s3_profile_name> The name of the AWS profile to use when intracting with S3.
+ -s  <site_map_file>   The file to which to write the site map of ingested files.
+ -i  <include_regex>   A regex to match the (basename) of the files to be included.
+ -x  <exclude_regex>   A regex to match the (basename) of the files to be excluded.
+
+ -R  Recursively process <bes_catalog_root_dir>''s child directories.
+ -P  Make the objects loaded into S3 publicly readable. This means clients (
+     like Hyrax) do not need to authenticate to get the data.
+ -D  Dryrun
+ -S  Make a site map when doing the dryrun.
+ -v  Verbose Lots of informative output
+ -V  Very Verbose: Even more informative output, including the bes.conf file.
+ -k  Ignore ingest errors and continue.
+ -h  Print this page.
+
+<bes_catalog_root_dir> The directory which will be used as the 
+    BES.Catalog.catalog.RootDirectory for this ingest. All files to be ingested
+    must be contained in this directory hierarchy. They will be added to
+    the HiC catalog in the same position as the appear in the directory
+    hierarchy.
+
+ Limitations: 
+ * The build_dmrpp command must be in the CWD. 
+ * The populateMDS command must be in the CWD. 
+EOF
+}
+###########################################################################
+
+
+
+###########################################################################
+#
+# process_cmdln()
+#
+# Process the commandline parameters.
+#
+#
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+function process_cmdln() {
+    
+    OPTIND=1        # Reset in case getopts has been used previously in this shell    
+    verbose=0
+    very_verbose=0
+    verbose_flag=
+    bes_conf_flag=
+    make_aws_object_public=
+    make_site_map=0
+    dev_null=" > /dev/null";
+    
+
+    # By default don't recurse
+    maxdepth="-maxdepth 1"
+    
+    #Default site map file name;
+    site_map_file="/tmp/siteMap.txt"
+    
+    # Not Setting S3 profile causes the aws cli 
+    # to use the "default" aws profile.
+    s3_profile_name="default";
+    
+    # Default bucket name
+    s3_bucket_name="somewhereovertherainbow";
+
+    while getopts "h?DRSkvVPc:b:u:p:i:x:d:" opt; do
+        case "$opt" in
+        h|\?)
+            show_usage;
+            exit 0;
+            ;;
+        D)
+            DRY_RUN="--dryrun";
+            ;;
+        v)
+            verbose=1;
+            verbose_flag="-v";
+            dev_null=
+            ;;
+        V)
+            very_verbose=1;
+            verbose_flag="-v";
+            ;;
+        R)
+            maxdepth=
+            ;;
+        b)
+            s3_bucket_name="$OPTARG";
+            ;;
+        u)
+            s3_profile_name="$OPTARG";
+            ;;
+        c)
+            source_bes_conf="$OPTARG";
+            ;;
+        d)
+            maxdepth="-maxdepth $OPTARG";
+            ;;
+        i)
+            INCLUDE_REGEX="$OPTARG";
+            ;;
+        x)
+            EXCLUDE_REGEX="$OPTARG";
+            ;;
+        s)
+            site_map_file="$OPTARG";
+            ;;
+        P)
+            make_aws_object_public="--acl public-read";
+            ;;
+        S)  
+            make_site_map=1;
+            ;;
+        k)  
+            ignore_errors=1;
+            ;;
+            
+        esac
+    done
+    if [ ${verbose} -eq 1 ]; then echo "${0} - BEGIN"; fi
+
+    shift $((OPTIND-1))
+    
+    [ "$1" = "--" ] && shift
+    
+    if [ -z ${1+x} ]
+        then echo "${0} No value provided for <bes_catalog_root_dir>!"
+        exit 1;
+    else 
+        # We want the absolute path for the bes_catalog_root_dir.
+        bes_catalog_root_dir=`cd ${1};pwd`;
+        if [ ${verbose} -eq 1 ]; then
+            echo "${0} <bes_catalog_root_dir> is set to '$bes_catalog_root_dir'";    
+        fi
+    fi
+       
+    
+}
+###########################################################################
+
+
+
+
+
+###########################################################################
+# qc_inputs()
+#
+# Make sure the inputs are correct or set to a default value.
+#
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+function qc_inputs(){
+        
+    #----------------------------
+    # Check bes_catalog_root_dir directory
+    
+    if [ ! -d $bes_catalog_root_dir ]; then
+        echo "${0} The bes_catalog_root_dir: '${bes_catalog_root_dir}' is missing".
+        exit 1;
+    fi
+    if [ ! -r $bes_catalog_root_dir ]; then
+        echo "${0} The bes_catalog_root_dir: '${bes_catalog_root_dir}' is unreadable".
+        exit 1;
+    fi
+    
+    if [ ${verbose} -eq 1 ]; then
+        echo "${0} The bes_catalog_root_dir: '${bes_catalog_root_dir}' appears to ok."
+    fi
+    
+    #----------------------------
+    # Check S3
+        
+    echo "woot" >  /tmp/foo
+    
+    # List Bucket Test
+    aws_cmd="aws s3 ls s3://$s3_bucket_name --profile $s3_profile_name";
+    if [ ${verbose} -eq 1 ]; then echo "{$0} aws command: '${aws_cmd}'"; fi
+    $aws_cmd ${dev_null}
+    aws_status=$?
+    if [ $aws_status != 0 ]; then
+        echo "${0} S3 access Test FAILED. Unable to list bucket contents. status: ${aws_status}"
+        exit 1;
+    fi
+
+    # Write To Bucket Test
+    aws_cmd="aws s3 cp  --profile $s3_profile_name ${0} s3://$s3_bucket_name/hic_ingest";
+    if [ ${verbose} -eq 1 ]; then echo "{$0} aws command: '${aws_cmd}'"; fi
+    $aws_cmd ${dev_null}
+    aws_status=$?
+    if [ $aws_status != 0 ]; then
+        echo "${0} S3 access Test FAILED. Unable to write to bucket. status: ${aws_status}"
+        exit 1;
+    fi
+
+    # We already tested list, but in verbose mode this shows the new bucket contents.
+    if [ ${verbose} -eq 1 ]; then 
+        # List Bucket Test
+        aws_cmd="aws s3 ls s3://$s3_bucket_name --profile $s3_profile_name";
+        echo "{$0} aws command: '${aws_cmd}'";
+        $aws_cmd ${dev_null}
+        aws_status=$?
+        if [ $aws_status != 0 ]; then
+            echo "${0} S3 access Test FAILED. Unable to list bucket contents. status: ${aws_status}"
+            exit 1;
+        fi
+    
+    fi
+
+    # Delete Item From Bucket Test
+    aws_cmd="aws s3 rm  --profile $s3_profile_name s3://$s3_bucket_name/hic_ingest";
+    if [ ${verbose} -eq 1 ]; then echo "{$0} aws command: '${aws_cmd}'"; fi
+    $aws_cmd ${dev_null}
+    aws_status=$?
+    if [ $aws_status != 0 ]; then
+        echo "${0} S3 access Test FAILED. Unable to delete item from bucket. status: ${aws_status}"
+        exit 1;
+    fi
+
+    # We already tested list, but in verbose mode this shows the new bucket contents.
+    if [ ${verbose} -eq 1 ]; then 
+        # List Bucket Test
+        aws_cmd="aws s3 ls s3://$s3_bucket_name --profile $s3_profile_name";
+        echo "{$0} aws command: '${aws_cmd}'";
+        $aws_cmd ${dev_null}
+        aws_status=$?
+        if [ $aws_status != 0 ]; then
+            echo "${0} S3 access Test FAILED. Unable to list bucket contents. status: ${aws_status}"
+            exit 1;
+        fi
+    
+    fi
+
+    if [ ${verbose} -eq 1 ]; then
+        echo "${0} Initial S3 access SUCCESS."
+    fi
+}
+###################################################################
+
+
+
+
+###################################################################
+# make_bes_conf()
+#
+# Take the supplied (or discovered) BES configuration and hack it
+# so that the BES.Catalog.catalog.RootDirectory is set for this
+# ingest acitvity.
+#
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+function make_bes_conf() {
+    
+    from_hyrax=0;
+    
+    # Find teh bes.conf file
+    if [ -z ${source_bes_conf+x} ]
+    then 
+        if [ ${verbose} -eq 1 ]; then echo "${0} bes_conf is not set trying env variable 'prefix'..."; fi
+        if [ ! -z $prefix ] # True if var is set and str length != 0
+        then
+            test_conf=$prefix/etc/bes/bes.conf
+            if [ ${verbose} -eq 1 ]; then echo "${0} Env var 'prefix' is set. Checking $test_conf"; fi
+            if [ -r $test_conf ]
+            then
+                source_bes_conf="$test_conf"
+                from_hyrax=1;
+            fi
+        fi
+    fi   
+        
+    if [ -z ${source_bes_conf+x} ]
+    then     
+        export source_bes_conf=/etc/bes/bes.conf
+        echo "${0} Last Attempt:  Trying $source_bes_conf"; 
+        if [ ! -r $source_bes_conf ]
+        then
+            echo ""
+            echo "${0} !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+            echo ""
+            echo "${0} Unable to locate a BES configuration file."
+            echo "${0} You may identify your BES configurstion in one of three ways: "
+            echo ""
+            echo "${0}   1. Using the command line parameter '-c'"
+            echo ""
+            echo "${0}   2. Setting the environment variable $prefix to the install"
+            echo "${0}      location of the BES."
+            echo ""
+            echo "${0}   3. Placing the bes.conf file in the well known location"
+            echo "${0}          /etc/bes/bes.conf"
+            echo ""
+            echo "${0} The command line parameter is the recommended usage."        
+            echo ""
+            echo "${0} !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+            show_usage
+            echo ""
+           exit 1;
+        fi
+        from_hyrax=1;
+    fi
+    
+    if [ ${verbose} -eq 1 ]; then echo "${0} source_bes_conf: ${source_bes_conf}"; fi
+    
+    # Temp file
+    bes_conf=$(mktemp -t bes.conf_XXXX)
+    
+    # Doctor up the bes.conf file so that teh BES.Catalog.catalog.RootDirectory is
+    # set as desired and als eliminate the BES.Include line which will bork us
+    # at runtime.
+    cat ${source_bes_conf} | awk -v rootDir="${bes_catalog_root_dir}" '{ 
+            if(index($0,"BES.Catalog.catalog.RootDirectory")==1){ 
+                printf("BES.Catalog.catalog.RootDirectory=%s\n",rootDir);
+            }
+            else if(index($0,"BES.Include")==0){ 
+                print $0;
+            }
+        }' > ${bes_conf};
+        
+    
+    # if we got our bes.conf from an installed Hyrax we have to get the modules
+    # configurations or nothing is going to work.
+    if [ $from_hyrax -eq 1 ] ; then
+    
+        # We add the dap.conf first because we need it for the rest to load.
+        dap_conf=`dirname $source_bes_conf`/modules/dap.conf;
+        if [ ${verbose} -eq 1 ]; then echo "${0} Adding ${dap_conf} to bes.conf"; fi
+        cat ${dap_conf} >> ${bes_conf};
+        
+        # Now we get all the file names
+        conf_files=`dirname $source_bes_conf`/modules/*.conf;
+        # and add each one to bes.conf
+        for conf_file in ${conf_files} ; do
+            # We skip dap.conf because we already did it.
+            if [ ${conf_file} = ${dap_conf} ]  ; then
+                if [ ${verbose} -eq 1 ]; then echo "${0} Skipping ${conf_file}."; fi
+            else 
+                if [ ${verbose} -eq 1 ]; then echo "${0} Adding ${conf_file}."; fi
+                cat ${conf_file} >> ${bes_conf};
+            fi
+        done
+        
+        site_conf=`dirname $source_bes_conf`/site.conf;
+        if [ -r ${site_conf} ]; then
+            cat ${site_conf} >>  ${bes_conf};
+        fi
+        
+    fi
+    
+    bes_conf_flag="-c ${bes_conf}"
+    
+    if [ ${very_verbose} -eq 1 ]; then
+        echo "${0} ############## BES CONFIG ###############"
+        cat $bes_conf;
+        echo "${0} -----------------------------------------"
+    fi
+ 
+ }
+###########################################################################
+
+
+
+
+###########################################################################
+#
+#
+# "main()", as it were.
+#
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+
+
+            
+# Process the commandline parameters.
+process_cmdln "$@";
+
+
+if [ ${verbose} -eq 1 ]; then 
+    if [ ${DRYRUN+x} ]; then echo "${0} THIS IS A DRYRUN"; fi
+    if [ -z ${ignoreErrors+x} ]; then echo "ERRORS WILL BE IGNORED!"; fi
+        
+    echo "${0} STAT_COMMAND: ${STAT_COMMAND}"; 
+    echo "${0} <s3_bucket_name> is set to '$s3_bucket_name'";    
+    echo "${0} <s3_profile_name> is set to '$s3_profile_name'";    
+fi
+
+
+
+# Make sure we didn't get garbage
+qc_inputs
+
+# Hack the bes.conf so that we use our catalog root.
+make_bes_conf
+
+# Find all the files in the tree (We might want to apply the include regex 
+# here if the size gets too big)
+
+if [ ${verbose} -eq 1 ]; then  echo "${0} Checking for files to ingest in ${bes_catalog_root_dir}"; fi
+
+file_list=`find ${bes_catalog_root_dir} ${maxdepth} -type f`;
+
+if [ ${verbose} -eq 1 ]; then echo "${0} Found "`echo ${file_list} | wc -w`" candidate files."; fi
+
+# Evaluate each file in the list.
+for afile in ${file_list}
+do 
+    if [ ${verbose} -eq 1 ]; then 
+        echo "";
+        echo "${0} ^-.-^ ^-.-^ ^-.-^ ^-.-^ ^-.-^ ^-.-^ ^-.-^ ^-.-^ ^-.-^ ^-.-^ ^-.-^ ^-.-^";
+        echo "${0} Evaluating ${afile}"; fi
+
+    # The logicaal path is the path within the BES, relative to the BES root dir.
+    logical_path=`echo ${afile} | sed "s|${bes_catalog_root_dir}/||g"`;
+    
+    # We use the basename to evaluate the include/exclude regex 
+    fbasename=`basename ${afile}`;
+    
+    # If the file mathes the EXCLUDE_REGEX or if it doesn't match the INCLUDE_REGEX then we skip it.
+    if [[ ${fbasename} =~ ${EXCLUDE_REGEX} ]] || [[ ! ${fbasename} =~ ${INCLUDE_REGEX} ]]; then
+        if [ ${verbose} -eq 1 ]; then echo "${0} Skipping ${logical_path}"; fi
+    else 
+        # We want this file.
+        
+        aws_s3_url="s3://${s3_bucket_name}/${logical_path}"
+        dmr_s3_url="https://s3.amazonaws.com/${s3_bucket_name}/${logical_path}"
+        
+        last_modified_time=`TZ=UTC date -r $afile +"%Y-%m-%dT%H:%M:%SZ"`
+        file_size=`$STAT_COMMAND $afile`
+        
+        if [ ${verbose} -eq 1 ]; then echo ""; echo "${0} Processing ${logical_path}"; fi
+                
+        # Check for DMR++ match
+        dmrpp_flags="-R"
+        if [[ ${logical_path} =~ ${H5_REGEX} ]]
+        then
+            dmrpp_flags="-u ${dmr_s3_url}"
+            if [ ${verbose} -eq 1 ]; then echo "${0} Will attempt to add dmr++ to MDS"; fi
+        fi
+        
+        
+        # This is the command that will populate the MDS with the "stuff".
+        mds_cmd="./populateMDS ${verbose_flag} ${bes_conf_flag} ${dmrpp_flags} ${logical_path}"
+        if [ ${verbose} -eq 1 ]; then echo "${0} mds_cmd: ${mds_cmd}"; fi
+        if [ -z ${DRY_RUN+x} ]; then
+            $mds_cmd;
+            mds_status=$?;
+            if [ ${mds_status} -ne 0 ]; then
+                echo "${0} MDS INGEST FAILED. STATUS: ${mds_status}";
+                if [ ! -z ${ignoreErrors+x} ]; then exit 1; fi
+            fi
+        else 
+            # We need to set this so that down stream tests don't fail, and a 
+            # dry run should always be successful
+            echo "${0} (dryrun) mds_cmd: ${mds_cmd}"
+            mds_status=0;
+        fi
+        
+        # This is the command that will copy the file to the S3 bucket.
+        aws_cmd="aws s3 cp ${DRY_RUN} ${make_aws_object_public} ${afile} --profile ${s3_profile_name} ${aws_s3_url}"  
+        aws_status=0;
+        if [ ${verbose} -eq 1 ]; then echo "${0} aws_cmd: ${aws_cmd}"; fi
+        $aws_cmd
+        aws_status=$?;
+        if [ ${aws_status} -ne 0 ]; then
+            echo "${0} AWS UPLOAD FAILED. STATUS: ${aws_status}";
+            if [ ! -z ${ignoreErrors+x} ]; then exit 1; fi
+        fi
+        
+        if [ ${mds_status} -eq 0 ] && [ ${aws_status} -eq 0 ] ; then
+            site_map_entry=`echo "${last_modified_time} ${file_size} ${logical_path}"`;
+            if [ ${verbose} -eq 1 ]; then echo "${0} Site Map Entry: \"${site_map_entry}\""; fi
+            if [ -z ${DRY_RUN+x} ] || [ ${make_site_map} -ne 0 ]; then
+                if [ ${verbose} -eq 1 ]; then echo "${0} Appending entry to siteMap."; fi
+                echo "${site_map_entry}" >> ${site_map_file};
+            fi
+        fi       
+    fi
+done
+if [ ${verbose} -eq 1 ]; then echo "${0} - END"; fi
+###########################################################################
+
+ 

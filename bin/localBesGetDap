@@ -30,11 +30,11 @@ show_usage () {
     echo ""
     echo "NAME"
     echo ""
-    echo "    $0 -- Get a DAP object from a local BES."
+    echo "    ${0} -- Get a DAP object from a local BES."
     echo ""
     echo "SYNOPSIS"
     echo ""
-    echo "    $0 [-v] [-c bes_conf_file] -d dap_request_type -i resource_id "; 
+    echo "    ${0} [-v] [-c bes_conf_file] -d dap_request_type -i resource_id "; 
     echo ""
     echo "DESCRIPTION"
     echo ""
@@ -78,12 +78,12 @@ while getopts "h?vd:i:c:D" opt; do
         ;;
     v)  verbose=1
         echo "";
-        echo "${0} - verbose enabled";
+        echo "${0} verbose enabled";
         ;;
     c)  BES_CONF=$OPTARG
         ;;
     D)  debug=1
-        echo "${0} - debug enabled";
+        echo "${0} debug enabled";
         ;;
     esac
 done
@@ -92,23 +92,23 @@ shift $((OPTIND-1))
 
 [ "$1" = "--" ] && shift
 
-# [ -z $REQUESTED_DAP_OBJ ] && { echo "You must supply a requested DAP response."; exit 1 }
+# [ -z $REQUESTED_DAP_OBJ ] && { echo "${0} You must supply a requested DAP response."; exit 1 }
 
-# [ -z $RESOURCE_ID ] && { echo "You must supply a resource (file)."; exit 1 }
+# [ -z $RESOURCE_ID ] && { echo "${0} You must supply a resource (file)."; exit 1 }
 
 if [ -z $BES_CONF ]
 then 
-    echo "BES_CONF is not set trying env variable 'prefix'...";  
+    echo "${0} BES_CONF is not set trying env variable 'prefix'...";  
     if [ ! -z $prefix ] # True if var is set and str length != 0
     then
         test_conf=$prefix/etc/bes/bes.conf
-        echo "Env var 'prefix' is set. Checking $test_conf"; 
+        echo "${0} Env var 'prefix' is set. Checking $test_conf"; 
         if [ -r $test_conf ]
         then
             BES_CONF="$test_conf"
             if [ $verbose = 1 ]
             then
-                echo "BES_CONF: " $BES_CONF
+                echo "${0} BES_CONF: " $BES_CONF
             fi
         fi
     fi
@@ -117,29 +117,29 @@ fi
 if [ -z $BES_CONF ]
 then     
     export BES_CONF=/etc/bes/bes.conf
-    echo "Last Attempt:  Trying $BES_CONF"; 
+    echo "${0} Last Attempt:  Trying $BES_CONF"; 
     if [ -r $BES_CONF ]
     then
        if [ $verbose = 1 ]
         then
-            echo "BES_CONF: " $BES_CONF
+            echo "${0} BES_CONF: " $BES_CONF
         fi
     else
         echo ""
-        echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+        echo "${0} !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         echo ""
-        echo "Unable to locate a BES configuration file."
-        echo "You may identify your BES configurstion in one of three ways: "
+        echo "${0} Unable to locate a BES configuration file."
+        echo "${0} You may identify your BES configurstion in one of three ways: "
         echo ""
-        echo "  1. Using the command line parameter '-c'"
+        echo "${0}   1. Using the command line parameter '-c'"
         echo ""
-        echo "  2. Setting the environment variable $prefix to the install"
-        echo "     location of the BES."
+        echo "${0}   2. Setting the environment variable $prefix to the install"
+        echo "${0}      location of the BES."
         echo ""
-        echo "  3. Placing the bes.conf file in the well known location"
-        echo "         /etc/bes/bes.conf"
+        echo "${0}   3. Placing the bes.conf file in the well known location"
+        echo "${0}          /etc/bes/bes.conf"
         echo ""
-        echo "The command line parameter is the recommended usage."        
+        echo "${0} The command line parameter is the recommended usage."        
         echo ""
         echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
          show_usage
@@ -150,9 +150,9 @@ fi
 
 if [ $verbose = 1 ]
 then
-    echo "BES_CONF: ${BES_CONF}";
-    echo "REQUESTED_DAP_OBJ: $REQUESTED_DAP_OBJ";
-    echo "RESOURCE_ID: $RESOURCE_ID";
+    echo "${0} BES_CONF: ${BES_CONF}";
+    echo "${0} REQUESTED_DAP_OBJ: $REQUESTED_DAP_OBJ";
+    echo "${0} RESOURCE_ID: $RESOURCE_ID";
 fi
 
 cmdDoc=`cat <<EOF 
@@ -171,17 +171,17 @@ cmdDoc=`cat <<EOF
 EOF
 `
 
-COMMAND_FILE=$(mktemp -t getDAP_$$)
-if [ $verbose = 1 ]; then echo "COMMAND_FILE: " $COMMAND_FILE; fi
+COMMAND_FILE=$(mktemp -t getDAP_XXXX)
+if [ $verbose = 1 ]; then echo "${0} COMMAND_FILE: " $COMMAND_FILE; fi
 
 echo $cmdDoc > $COMMAND_FILE
 
 besstandalone_cmd="besstandalone -c ${BES_CONF} -i ${COMMAND_FILE}";
 if [ $debug = 1 ]
 then
-    besstandalone_cmd="besstandalone -d \"cerr,metadata_store,dmrpp_store\" -c ${BES_CONF} -i ${COMMAND_FILE}";
+    besstandalone_cmd="besstandalone -d cerr,metadata_store,dmrpp_store -c ${BES_CONF} -i ${COMMAND_FILE}";
 fi
-if [ $verbose = 1 ]; then echo "BES_COMMAND: ${besstandalone_cmd}"; fi
+if [ $verbose = 1 ]; then echo "${0} BES_COMMAND: ${besstandalone_cmd}"; fi
 
 $besstandalone_cmd;
 

@@ -166,7 +166,6 @@ void DmrppMetadataStore::StreamDMRpp::operator()(ostream &os)
         // FIXME This is where we will add the href that points toward the data file in S3. jhrg 5/17/18
         DMRpp *dmrpp = static_cast<dmrpp::DMRpp*>(d_dmr);
         dmrpp->set_print_chunks(true);
-        dmrpp->set_href("");
         XMLWriter xml;
         dmrpp->print_dap4(xml);
 
