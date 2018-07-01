@@ -1,8 +1,8 @@
 
 BES.ServerAdministrator=support@opendap.org
 
-BES.User=bes
-BES.Group=bes_group
+BES.User=user_name
+BES.Group=group_name
 
 BES.LogName=./bes.log
 BES.LogVerbose=no
