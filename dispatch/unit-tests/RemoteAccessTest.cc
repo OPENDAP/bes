@@ -48,6 +48,10 @@ using std::cout;
 using std::endl;
 
 #include <test_config.h>
+#include <BESCatalog.h>
+#include <BESCatalogDirectory.h>
+#include <BESCatalogList.h>
+#include <BESCatalogUtils.h>
 
 #include "RemoteAccess.h"
 #include <TheBESKeys.h>
@@ -90,8 +94,7 @@ public:
 
     void setUp()
     {
-        if (bes_debug) BESDebug::SetUp("cerr,bes");
-
+        if (bes_debug) BESDebug::SetUp("cerr,all");
 
 //        Gateway.Whitelist=http://localhost
 //        Gateway.Whitelist+=http://test.opendap.org/opendap/
@@ -102,11 +105,25 @@ public:
         std::string bes_conf = (std::string) TEST_SRC_DIR + "/remote_access_test.ini";
         TheBESKeys::ConfigFile = bes_conf;
 
+        try {
+        BESCatalogList *tcl = BESCatalogList::TheCatalogList();
+
+        if(tcl){
+            if (!tcl->ref_catalog(BES_DEFAULT_CATALOG)) {
+                tcl->add_catalog(new BESCatalogDirectory(BES_DEFAULT_CATALOG));
+            }
+        }
+        }
+        catch ( BESError &be){
+            cerr << be.get_message() << endl;
+
+        }
         if(bes_debug) show_file(bes_conf);
     }
 
     void tearDown()
     {
+        BESCatalogList::TheCatalogList()->deref_catalog(BES_DEFAULT_CATALOG);
     }
 
     CPPUNIT_TEST_SUITE( plistT );
