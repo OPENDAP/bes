@@ -91,6 +91,8 @@ bool RemoteAccess::Is_Whitelisted(const std::string &url)
     string http_url("http://");
     string https_url("https://");
 
+    // Special case: This allows any file: URL to pass if the URL starts with the default
+    // catalog's path.
     if (url.compare(0, file_url.size(), file_url) == 0 /*equals a file url*/) {
 
         // Ensure that the file path starts with the catalog root dir.
@@ -113,24 +115,31 @@ bool RemoteAccess::Is_Whitelisted(const std::string &url)
         whitelisted = file_path.compare(0, catalog_root.size(), catalog_root) == 0;
         BESDEBUG("bes", "RemoteAccess::Is_Whitelisted() - Is_Whitelisted: "<< (whitelisted?"true":"false") << endl);
     }
-    else if (url.compare(0, http_url.size(), http_url) == 0 /*equals http url */
-        || url.compare(0, https_url.size(), https_url) == 0 /*equals https url */) {
 
-        std::vector<std::string>::const_iterator i = WhiteList.begin();
-        std::vector<std::string>::const_iterator e = WhiteList.end();
-        for (; i != e && !whitelisted; i++) {
-            if ((*i).length() <= url.length()) {
-                if (url.substr(0, (*i).length()) == (*i)) {
-                    whitelisted = true;
+    if (!whitelisted) {
+        // This checks HTTP, HTTPS and FILE URLs against the whitelist regexs. I added
+        // file: URLs because I have tests that need to work with both 'make check' and
+        // 'make distcheck' where the latter has some complex paths
+        if (url.compare(0, http_url.size(), http_url) == 0 /*equals http url */
+            || url.compare(0, https_url.size(), https_url) == 0 /*equals https url */
+            || url.compare(0, file_url.size(), file_url) == 0 /*equals file url */) {
+
+            std::vector<std::string>::const_iterator i = WhiteList.begin();
+            std::vector<std::string>::const_iterator e = WhiteList.end();
+            for (; i != e && !whitelisted; i++) {
+                if ((*i).length() <= url.length()) {
+                    if (url.substr(0, (*i).length()) == (*i)) {
+                        whitelisted = true;
+                    }
                 }
             }
         }
-    }
-    else {
-        string msg;
-        msg = "ERROR! Unknown URL protocol! Only " + http_url + ", " + https_url + ", and " + file_url + " are supported.";
-        BESDEBUG("bes", msg << endl);
-        throw BESForbiddenError(msg, __FILE__, __LINE__);
+        else {
+            string msg;
+            msg = "ERROR! Unknown URL protocol! Only " + http_url + ", " + https_url + ", and " + file_url + " are supported.";
+            BESDEBUG("bes", msg << endl);
+            throw BESForbiddenError(msg, __FILE__, __LINE__);
+        }
     }
 
     return whitelisted;
