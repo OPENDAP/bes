@@ -85,7 +85,7 @@ public:
     {
         if (bes_debug) BESDebug::SetUp("cerr,all");
 
-        string bes_conf = (string) TEST_BUILD_DIR + "/remote_access_test.ini";
+        string bes_conf = (string) TEST_SRC_DIR + "/remote_access_test.ini";
         TheBESKeys::ConfigFile = bes_conf;
 
         try {
