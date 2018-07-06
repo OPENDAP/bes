@@ -106,17 +106,13 @@ public:
         TheBESKeys::ConfigFile = bes_conf;
 
         try {
-        BESCatalogList *tcl = BESCatalogList::TheCatalogList();
-
-        if(tcl){
+            BESCatalogList *tcl = BESCatalogList::TheCatalogList();
             if (!tcl->ref_catalog(BES_DEFAULT_CATALOG)) {
                 tcl->add_catalog(new BESCatalogDirectory(BES_DEFAULT_CATALOG));
             }
         }
-        }
         catch ( BESError &be){
-            cerr << be.get_message() << endl;
-
+            cerr << endl << endl << "setUp() - OUCH! Could not initialize the BES Catalog! Message:  " << be.get_message() << endl;
         }
         if(bes_debug) show_file(bes_conf);
     }
@@ -146,23 +142,20 @@ public:
 
         CPPUNIT_ASSERT( !can_access("http://google.com") );
 
-        CPPUNIT_ASSERT( can_access("http://test.opendap.org/opendap/data/nc/fnoc1.nc") );
+        CPPUNIT_ASSERT(  can_access("http://test.opendap.org/opendap/data/nc/fnoc1.nc") );
 
-        CPPUNIT_ASSERT( can_access("https://s3.amazonaws.com/somewhereovertherainbow/data/nc/fnoc1.nc") );
+        CPPUNIT_ASSERT(  can_access("https://s3.amazonaws.com/somewhereovertherainbow/data/nc/fnoc1.nc") );
         CPPUNIT_ASSERT( !can_access("http://s3.amazonaws.com/somewhereovertherainbow/data/nc/fnoc1.nc") );
 
-        CPPUNIT_ASSERT( can_access("http://thredds.ucar.edu/thredds/dodsC/data/nc/fnoc1.nc") );
+        CPPUNIT_ASSERT(  can_access("http://thredds.ucar.edu/thredds/dodsC/data/nc/fnoc1.nc") );
         CPPUNIT_ASSERT( !can_access("https://thredds.ucar.edu/thredds/dodsC/data/nc/fnoc1.nc") );
 
-        CPPUNIT_ASSERT( can_access("http://cloudydap.opendap.org/opendap/Arch-2/ebs/samples/3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.h5") );
+        CPPUNIT_ASSERT(  can_access("http://cloudydap.opendap.org/opendap/Arch-2/ebs/samples/3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.h5") );
 
         CPPUNIT_ASSERT( !can_access("file://foo") );
-        CPPUNIT_ASSERT( can_access("file:///usr/share/hyrax/data/nc/fnoc1.nc") );
-        CPPUNIT_ASSERT( !can_access("file://usr/share/hyrax/data/nc/fnoc1.nc") );
-
+        CPPUNIT_ASSERT(  can_access("file:///tmp/nc/fnoc1.nc") );
+        CPPUNIT_ASSERT( !can_access("file://tmp/data/nc/fnoc1.nc") );
         CPPUNIT_ASSERT( !can_access("file:///etc/password") );
-
-
 
 
     }
