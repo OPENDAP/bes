@@ -119,7 +119,7 @@ public:
 
     void tearDown()
     {
-        BESCatalogList::TheCatalogList()->deref_catalog(BES_DEFAULT_CATALOG);
+        // BESCatalogList::TheCatalogList()->deref_catalog(BES_DEFAULT_CATALOG);
     }
 
     CPPUNIT_TEST_SUITE( plistT );
