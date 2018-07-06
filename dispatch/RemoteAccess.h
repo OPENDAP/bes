@@ -7,7 +7,7 @@
 // accessed by the server as part of it's routine operation.
 
 // Copyright (c) 2018 OPeNDAP, Inc.
-// Author:Nathan D. Potter <ndp@opendap.org>
+// Author: Nathan D. Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -39,10 +39,15 @@
 
 namespace bes {
 
-/** @brief Embodies a configuration based remote access white list
- * and provides a simple API Is_Whitelisted() for determining what
- * resources may be accessed.
+/**
+ * @brief Can a given URL be dereferenced given the BES's configuration?
  *
+ * Embodies a configuration based remote access white list
+ * and provides a simple API (Is_Whitelisted()) for determining which
+ * resources may be accessed. This enables a system administrator to control
+ * the remote systems a particular BES daemon can access.
+ *
+ * @note This class is a singleton
  */
 class RemoteAccess {
 private:
@@ -51,7 +56,6 @@ private:
     static void init();
 
 public:
-
     static bool Is_Whitelisted(const std::string &url);
 };
 

@@ -1,10 +1,11 @@
-// plistT.C
+// -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of bes, A C++ back-end server implementation framework
-// for the OPeNDAP Data Access Protocol.
+// This file is part of the OPeNDAP Back-End Server (BES)
+// and embodies a whitelist of remote system that may be
+// accessed by the server as part of it's routine operation.
 
-// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
+// Copyright (c) 2018 OPeNDAP, Inc.
+// Author: Nathan D. Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -20,21 +21,11 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
-// You can contact University Corporation for Atmospheric Research at
-// 3080 Center Green Drive, Boulder, CO 80301
-
-// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
-// Please read the full copyright statement in the file COPYRIGHT_UCAR.
-//
-// Authors:
-//      pwest       Patrick West <pwest@ucar.edu>
-//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
-
-using namespace CppUnit;
 
 #include <string>
 #include <iostream>
@@ -42,21 +33,20 @@ using namespace CppUnit;
 #include <fstream>
 #include <streambuf>
 
-
-using std::cerr;
-using std::cout;
-using std::endl;
-
-#include <test_config.h>
+#include <GetOpt.h>
 #include <BESCatalog.h>
 #include <BESCatalogDirectory.h>
 #include <BESCatalogList.h>
 #include <BESCatalogUtils.h>
 
-#include "RemoteAccess.h"
 #include <TheBESKeys.h>
 #include <BESDebug.h>
-#include <GetOpt.h>
+
+#include "test_config.h"
+#include "RemoteAccess.h"
+
+using namespace std;
+using namespace CppUnit;
 
 static bool debug = false;
 static bool bes_debug = false;
@@ -64,16 +54,15 @@ static bool bes_debug = false;
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
-class plistT: public TestFixture {
+class RemoteAccessTest: public TestFixture {
 private:
 
-#if 1
-    void show_file(std::string filename){
-        std::ifstream t(filename.c_str());
-        //std::ifstream t;
-        //t.open(filename.c_str(), std::ifstream::in);
-        if(t.is_open()){
-            std::string file_content((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
+    void show_file(string filename)
+    {
+        ifstream t(filename.c_str());
+
+        if (t.is_open()) {
+            string file_content((istreambuf_iterator<char>(t)), istreambuf_iterator<char>());
             t.close();
             cout << endl << "##################################################################" << endl;
             cout << "file: " << filename << endl;
@@ -82,13 +71,12 @@ private:
             cout << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << endl;
         }
     }
-#endif
 
 public:
-    plistT()
+    RemoteAccessTest()
     {
     }
-    ~plistT()
+    ~RemoteAccessTest()
     {
     }
 
@@ -96,13 +84,7 @@ public:
     {
         if (bes_debug) BESDebug::SetUp("cerr,all");
 
-//        Gateway.Whitelist=http://localhost
-//        Gateway.Whitelist+=http://test.opendap.org/opendap/
-//        Gateway.Whitelist+=http://cloudydap.opendap.org/opendap/
-//        Gateway.Whitelist+=http://thredds.ucar.edu/thredds/
-//        Gateway.Whitelist+=https://s3.amazonaws.com/somewhereovertherainbow/
-
-        std::string bes_conf = (std::string) TEST_SRC_DIR + "/remote_access_test.ini";
+        string bes_conf = (string) TEST_SRC_DIR + "/remote_access_test.ini";
         TheBESKeys::ConfigFile = bes_conf;
 
         try {
@@ -111,10 +93,11 @@ public:
                 tcl->add_catalog(new BESCatalogDirectory(BES_DEFAULT_CATALOG));
             }
         }
-        catch ( BESError &be){
+        catch (BESError &be) {
             cerr << endl << endl << "setUp() - OUCH! Could not initialize the BES Catalog! Message:  " << be.get_message() << endl;
         }
-        if(bes_debug) show_file(bes_conf);
+
+        if (bes_debug) show_file(bes_conf);
     }
 
     void tearDown()
@@ -122,17 +105,17 @@ public:
         BESCatalogList::TheCatalogList()->deref_catalog(BES_DEFAULT_CATALOG);
     }
 
-    CPPUNIT_TEST_SUITE( plistT );
+    CPPUNIT_TEST_SUITE( RemoteAccessTest );
 
-    CPPUNIT_TEST( do_test );
+    CPPUNIT_TEST(do_test);
 
     CPPUNIT_TEST_SUITE_END();
 
-
-    bool can_access(std::string url){
-        if(debug) cout << "Checking remote access permission for url: '" << url << "' result: ";
-        bool result =  bes::RemoteAccess::Is_Whitelisted(url);
-        if(debug) cout << (result?"true":"false") << endl;
+    bool can_access(string url)
+    {
+        if (debug) cout << "Checking remote access permission for url: '" << url << "' result: ";
+        bool result = bes::RemoteAccess::Is_Whitelisted(url);
+        if (debug) cout << (result ? "true" : "false") << endl;
         return result;
     }
 
@@ -140,28 +123,27 @@ public:
     {
         // bes::RemoteAccess::Initialize();
 
-        CPPUNIT_ASSERT( !can_access("http://google.com") );
+        CPPUNIT_ASSERT(!can_access("http://google.com"));
 
-        CPPUNIT_ASSERT(  can_access("http://test.opendap.org/opendap/data/nc/fnoc1.nc") );
+        CPPUNIT_ASSERT(can_access("http://test.opendap.org/opendap/data/nc/fnoc1.nc"));
 
-        CPPUNIT_ASSERT(  can_access("https://s3.amazonaws.com/somewhereovertherainbow/data/nc/fnoc1.nc") );
-        CPPUNIT_ASSERT( !can_access("http://s3.amazonaws.com/somewhereovertherainbow/data/nc/fnoc1.nc") );
+        CPPUNIT_ASSERT(can_access("https://s3.amazonaws.com/somewhereovertherainbow/data/nc/fnoc1.nc"));
+        CPPUNIT_ASSERT(!can_access("http://s3.amazonaws.com/somewhereovertherainbow/data/nc/fnoc1.nc"));
 
-        CPPUNIT_ASSERT(  can_access("http://thredds.ucar.edu/thredds/dodsC/data/nc/fnoc1.nc") );
-        CPPUNIT_ASSERT( !can_access("https://thredds.ucar.edu/thredds/dodsC/data/nc/fnoc1.nc") );
+        CPPUNIT_ASSERT(can_access("http://thredds.ucar.edu/thredds/dodsC/data/nc/fnoc1.nc"));
+        CPPUNIT_ASSERT(!can_access("https://thredds.ucar.edu/thredds/dodsC/data/nc/fnoc1.nc"));
 
-        CPPUNIT_ASSERT(  can_access("http://cloudydap.opendap.org/opendap/Arch-2/ebs/samples/3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.h5") );
+        CPPUNIT_ASSERT(
+            can_access("http://cloudydap.opendap.org/opendap/Arch-2/ebs/samples/3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.h5"));
 
-        CPPUNIT_ASSERT( !can_access("file://foo") );
-        CPPUNIT_ASSERT(  can_access("file:///tmp/nc/fnoc1.nc") );
-        CPPUNIT_ASSERT( !can_access("file://tmp/data/nc/fnoc1.nc") );
-        CPPUNIT_ASSERT( !can_access("file:///etc/password") );
-
-
+        CPPUNIT_ASSERT(!can_access("file://foo"));
+        CPPUNIT_ASSERT(can_access("file:///tmp/nc/fnoc1.nc"));
+        CPPUNIT_ASSERT(!can_access("file://tmp/data/nc/fnoc1.nc"));
+        CPPUNIT_ASSERT(!can_access("file:///etc/password"));
     }
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( plistT );
+CPPUNIT_TEST_SUITE_REGISTRATION(RemoteAccessTest);
 
 int main(int argc, char*argv[])
 {
@@ -178,9 +160,9 @@ int main(int argc, char*argv[])
             break;
         case 'h': {     // help - show test names
             cerr << "Usage: plistT has the following tests:" << endl;
-            const std::vector<Test*> &tests = plistT::suite()->getTests();
-            unsigned int prefix_len = plistT::suite()->getName().append("::").length();
-            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+            const vector<Test*> &tests = RemoteAccessTest::suite()->getTests();
+            unsigned int prefix_len = RemoteAccessTest::suite()->getName().append("::").length();
+            for (vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
             }
             break;
@@ -202,7 +184,7 @@ int main(int argc, char*argv[])
     else {
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            test = plistT::suite()->getName().append("::").append(argv[i]);
+            test = RemoteAccessTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }

@@ -7,7 +7,7 @@
 // accessed by the server as part of it's routine operation.
 
 // Copyright (c) 2018 OPeNDAP, Inc.
-// Author:Nathan D. Potter <ndp@opendap.org>
+// Author: Nathan D. Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -27,15 +27,6 @@
 
 #include "config.h"
 
-//#ifdef HAVE_UNISTD_H
-//#include <unistd.h>
-//#endif
-//#include <cstdlib>
-//#include <cstring>
-//#include <curl/curl.h>
-
-#include "RemoteAccess.h"
-
 #include <BESUtil.h>
 #include <BESCatalog.h>
 #include <BESCatalogList.h>
@@ -47,10 +38,10 @@
 #include <BESDebug.h>
 #include <BESForbiddenError.h>
 
-// #include <util.h>
+#include "RemoteAccess.h"
 
+using namespace std;
 using namespace bes;
-
 
 std::vector<string> RemoteAccess::WhiteList;
 bool RemoteAccess::is_init = false;
@@ -58,68 +49,72 @@ bool RemoteAccess::is_init = false;
 // Initialization routine for the RemoteAccess white list
 void RemoteAccess::init()
 {
-    if(is_init)
-        return;
+    if (is_init) return;
 
-    // Whitelist - gather list of domains that the
+    // Whitelist - gather list of domains that
     // hyrax is allowed to communicate with.
     bool found = false;
     string key = REMOTE_ACCESS_WHITELIST;
-    TheBESKeys::TheKeys()->get_values(key, WhiteList, found);
+    TheBESKeys::TheKeys()->get_values(REMOTE_ACCESS_WHITELIST, WhiteList, found);
 
     is_init = true;
 
 #if 0
     if (!found || WhiteList.size() == 0) {
         string err = (string) "The parameter " + REMOTE_ACCESS_WHITELIST + " is not set or has no values in the gateway"
-            + " configuration file";
+        + " configuration file";
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 #endif
-
-
 }
-
 
 /**
  * This method provides an access condition assessment for URLs and files
- * to be accessed by the BES. The http and https urls are verified against a
- * whitelist assembled from configuration. All file urls are checked to be
- * sure that they reference a resource within the BES catalog.
+ * to be accessed by the BES. The http and https URLs are verified against a
+ * whitelist assembled from configuration. All file URLs are checked to be
+ * sure that they reference a resource within the BES default catalog.
+ *
+ * @note RemoteAccess is a singleton. This method will instantiate the class
+ * if that has not already been done. This method should only be called from
+ * the main thread of a multi-threaded application.
+ *
+ * @param url The URL to test
+ * @return True if the URL may be dereferenced, given the BES's configuration,
+ * false otherwise.
  */
-bool RemoteAccess::Is_Whitelisted(const std::string &url){
-
-    if(!is_init)
-        init();
+bool RemoteAccess::Is_Whitelisted(const std::string &url)
+{
+    if (!is_init) init();
 
     bool whitelisted = false;
-    string file_url( "file://");
-    string http_url( "http://");
+    string file_url("file://");
+    string http_url("http://");
     string https_url("https://");
 
     if (url.compare(0, file_url.size(), file_url) == 0 /*equals a file url*/) {
 
         // Ensure that the file path starts with the catalog root dir.
         string file_path = url.substr(file_url.size());
-        BESDEBUG("bes","RemoteAccess::Is_Whitelisted() - file_path: "<< file_path << endl);
+        BESDEBUG("bes", "RemoteAccess::Is_Whitelisted() - file_path: "<< file_path << endl);
 
         BESCatalog *bcat = BESCatalogList::TheCatalogList()->find_catalog(BES_DEFAULT_CATALOG);
-        if(bcat){
-            BESDEBUG("bes","RemoteAccess::Is_Whitelisted() - Found catalog: "<< bcat->get_catalog_name() << endl);
+        if (bcat) {
+            BESDEBUG("bes", "RemoteAccess::Is_Whitelisted() - Found catalog: "<< bcat->get_catalog_name() << endl);
         }
         else {
             string msg = "OUCH! Unable to locate default catalog!";
-            BESDEBUG("bes","RemoteAccess::Is_Whitelisted() - " << msg << endl);
-            throw BESInternalError(msg,__FILE__,__LINE__);
+            BESDEBUG("bes", "RemoteAccess::Is_Whitelisted() - " << msg << endl);
+            throw BESInternalError(msg, __FILE__, __LINE__);
         }
+
         string catalog_root = bcat->get_root();
-        BESDEBUG("bes","RemoteAccess::Is_Whitelisted() - Catalog root: "<< catalog_root << endl);
+        BESDEBUG("bes", "RemoteAccess::Is_Whitelisted() - Catalog root: "<< catalog_root << endl);
 
         whitelisted = file_path.compare(0, catalog_root.size(), catalog_root) == 0;
-        BESDEBUG("bes","RemoteAccess::Is_Whitelisted() - Is_Whitelisted: "<< (whitelisted?"true":"false") << endl);
+        BESDEBUG("bes", "RemoteAccess::Is_Whitelisted() - Is_Whitelisted: "<< (whitelisted?"true":"false") << endl);
     }
-    else if (url.compare(0, http_url.size(),  http_url)  == 0  /*equals http url */   ||
-             url.compare(0, https_url.size(), https_url) == 0  /*equals https url */ ) {
+    else if (url.compare(0, http_url.size(), http_url) == 0 /*equals http url */
+        || url.compare(0, https_url.size(), https_url) == 0 /*equals https url */) {
 
         std::vector<std::string>::const_iterator i = WhiteList.begin();
         std::vector<std::string>::const_iterator e = WhiteList.end();
@@ -133,14 +128,11 @@ bool RemoteAccess::Is_Whitelisted(const std::string &url){
     }
     else {
         string msg;
-        msg = "ERROR! Unknown URL protocol! Only "+http_url+", "+https_url+", and "+file_url+" are supported.";
+        msg = "ERROR! Unknown URL protocol! Only " + http_url + ", " + https_url + ", and " + file_url + " are supported.";
         BESDEBUG("bes", msg << endl);
-        throw BESForbiddenError(msg ,__FILE__,__LINE__);
+        throw BESForbiddenError(msg, __FILE__, __LINE__);
     }
+
     return whitelisted;
 }
-
-
-
-
 
