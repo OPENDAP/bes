@@ -141,6 +141,7 @@ scrubT_SOURCES = scrubT.cc
 checkT_SOURCES = checkT.cc
 
 RemoteAccessTest_SOURCES = RemoteAccessTest.cc
+RemoteAccessTest_LDADD = ../RemoteAccess.o $(LDADD)
 
 servicesT_SOURCES = servicesT.cc
 servicesT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)

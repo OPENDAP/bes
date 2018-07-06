@@ -108,7 +108,9 @@ bool RemoteAccess::Is_Whitelisted(const std::string &url){
             BESDEBUG("bes","RemoteAccess::Is_Whitelisted() - Found catalog: "<< bcat->get_catalog_name() << endl);
         }
         else {
-            BESDEBUG("bes","RemoteAccess::Is_Whitelisted() - Unable to locate default catalog!" << endl);
+            string msg = "OUCH! Unable to locate default catalog!";
+            BESDEBUG("bes","RemoteAccess::Is_Whitelisted() - " << msg << endl);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         string catalog_root = bcat->get_root();
         BESDEBUG("bes","RemoteAccess::Is_Whitelisted() - Catalog root: "<< catalog_root << endl);
