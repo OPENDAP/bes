@@ -76,6 +76,7 @@ public:
     RemoteAccessTest()
     {
     }
+
     ~RemoteAccessTest()
     {
     }
@@ -121,8 +122,6 @@ public:
 
     void do_test()
     {
-        // bes::RemoteAccess::Initialize();
-
         CPPUNIT_ASSERT(!can_access("http://google.com"));
 
         CPPUNIT_ASSERT(can_access("http://test.opendap.org/opendap/data/nc/fnoc1.nc"));
