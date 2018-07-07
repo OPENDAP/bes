@@ -42,10 +42,6 @@ DAP.Help.XML=@pkgdatadir@/dap_help.xml
 # hold objects forever; setting a positive non-zero size makes the
 # MDS behave like a cache, purging responses when the size is exceeded.
 
-# FIXME This will need to be modified for the DMR++ responses when
-# when enable Arch #2 since regenerating the DMR++ will be more
-# expensive than regenerating other responses from files
-
 # DAP.GlobalMetadataStore.path = @datadir@/mds
 DAP.GlobalMetadataStore.prefix = mds
 DAP.GlobalMetadataStore.size = 0
@@ -54,7 +50,13 @@ DAP.GlobalMetadataStore.size = 0
 # ledger is kept in 'mds_ledger.txt' in the directory used to start
 # the BES.
 
-DAP.GlobalMetadataStore.ledger = @datadir@/mds/mds_ledger.txt
+DAP.GlobalMetadataStore.ledger = @datadir@/mds_ledger.txt
+
+# This tells the BES Framework's DAP module to use the DMR++
+# handler for data requests if it find a DMR++ response in the MDS
+# for a given granule.
+
+# DAP.Use.Dmrpp = yes
 
 #-----------------------------------------------------------------------#
 # Response cache parameters                                             #

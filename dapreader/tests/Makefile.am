@@ -28,7 +28,7 @@ bes.mds.conf: $(top_srcdir)/configure.ac
 
 mds:
 	test -d mds || mkdir -p mds
-	
+
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te
@@ -42,7 +42,8 @@ check-local: atconfig atlocal $(TESTSUITE) $(MDS_TESTSUITE) bes.mds.conf bes.con
 	@echo "Test without the MDS"
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 	@echo "Test using the MDS"
-	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) --conf=bes.mds.conf 
+	-(test -d $(builddir)/mds && rm $(builddir)/mds/*)
+	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) --jobs=1 --conf=bes.mds.conf 
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
@@ -50,7 +51,6 @@ clean-local:
 
 %: %.at 
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
-	
 $(TESTSUITE): $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
 
 # The `:;' works around a Bash 3.2 bug when the output is not writeable.
