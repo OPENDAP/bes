@@ -51,6 +51,8 @@ using namespace CppUnit;
 static bool debug = false;
 static bool bes_debug = false;
 
+const string catalog_root_dir = BESUtil::assemblePath(TEST_SRC_DIR,"catalog_test");
+
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
@@ -85,8 +87,14 @@ public:
     {
         if (bes_debug) BESDebug::SetUp("cerr,all");
 
+
         string bes_conf = (string) TEST_SRC_DIR + "/remote_access_test.ini";
         TheBESKeys::ConfigFile = bes_conf;
+
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.RootDirectory",catalog_root_dir);
+
+//        BES.Catalog.catalog.RootDirectory=/tmp
+
 
         try {
             BESCatalogList *tcl = BESCatalogList::TheCatalogList();
@@ -122,6 +130,10 @@ public:
 
     void do_test()
     {
+
+        string catalog_root_url = "file://" + catalog_root_dir;
+
+
         CPPUNIT_ASSERT(!can_access("http://google.com"));
 
         CPPUNIT_ASSERT(can_access("http://test.opendap.org/opendap/data/nc/fnoc1.nc"));
@@ -136,7 +148,10 @@ public:
             can_access("http://cloudydap.opendap.org/opendap/Arch-2/ebs/samples/3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.h5"));
 
         CPPUNIT_ASSERT(!can_access("file://foo"));
-        CPPUNIT_ASSERT(can_access("file:///tmp/nc/fnoc1.nc"));
+
+        string s = BESUtil::assemblePath(catalog_root_url,"nc/fnoc1.nc");
+        CPPUNIT_ASSERT(can_access(s));
+
         CPPUNIT_ASSERT(!can_access("file://tmp/data/nc/fnoc1.nc"));
         CPPUNIT_ASSERT(!can_access("file:///etc/password"));
     }
