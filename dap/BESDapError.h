@@ -80,10 +80,12 @@ public:
         return d_error_code;
     }
 
+#if 0
     virtual int get_error_type()
     {
         return (int)d_error_code;
     }
+#endif
 
     virtual void dump(ostream &strm) const;
 
