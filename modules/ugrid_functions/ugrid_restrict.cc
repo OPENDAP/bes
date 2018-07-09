@@ -636,7 +636,7 @@ void ugrid_restrict(string func_name, locationType location, int argc, BaseType 
         BESDEBUG("ugrid", "ugrid_restrict() - END" << endl);
     }
     catch (GFError &gfe) {
-        throw BESError(gfe.get_message(), gfe.get_bes_error_type(), gfe.get_file(), gfe.get_line());
+        throw BESError(gfe.get_message(), gfe.get_error_type(), gfe.get_file(), gfe.get_line());
     }
 
     return;
