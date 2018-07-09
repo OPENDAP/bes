@@ -117,7 +117,7 @@ bool RemoteAccess::Is_Whitelisted(const std::string &url)
     }
 
     if (!whitelisted) {
-        // This checks HTTP, HTTPS and FILE URLs against the whitelist regexs. I added
+        // This checks HTTP, HTTPS and FILE URLs against the whitelist patterns. I added
         // file: URLs because I have tests that need to work with both 'make check' and
         // 'make distcheck' where the latter has some complex paths
         if (url.compare(0, http_url.size(), http_url) == 0 /*equals http url */
