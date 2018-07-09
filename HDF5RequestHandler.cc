@@ -138,6 +138,7 @@ ObjMemCache *HDF5RequestHandler::srdata_mem_cache = 0;
 bool HDF5RequestHandler::_usecf                       = false;
 bool HDF5RequestHandler::_pass_fileid                 = false;
 bool HDF5RequestHandler::_disable_structmeta          = false;
+bool HDF5RequestHandler::_disable_ecsmeta             = false;
 bool HDF5RequestHandler::_keep_var_leading_underscore = false;
 bool HDF5RequestHandler::_check_name_clashing         = false;
 bool HDF5RequestHandler::_add_path_attrs              = false;
@@ -212,6 +213,7 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
     // The following keys are only effective when usecf is true.
     _pass_fileid                 = check_beskeys("H5.EnablePassFileID");
     _disable_structmeta          = check_beskeys("H5.DisableStructMetaAttr");
+    _disable_ecsmeta             = check_beskeys("H5.DisableECSMetaAttr");
     _keep_var_leading_underscore = check_beskeys("H5.KeepVarLeadingUnderscore");
     _check_name_clashing         = check_beskeys("H5.EnableCheckNameClashing");
     _add_path_attrs              = check_beskeys("H5.EnableAddPathAttrs");

@@ -79,6 +79,8 @@ using namespace HDF5CF;
 void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
 
     BESDEBUG("h5","Coming to HDF-EOS5 products DDS mapping function map_eos5_cfdds  "<<endl);
+
+
     string st_str ="";
     string core_str="";
     string arch_str="";
@@ -835,6 +837,10 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
     }
 
 
+    bool disable_ecsmetadata = HDF5RequestHandler::get_disable_ecsmeta();
+
+    if(disable_ecsmetadata == false) {
+
     // To keep the backward compatiablity with the old handler,
     // we parse the special ECS metadata to DAP attributes
 
@@ -976,6 +982,7 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
         at->append_attr("Contents","String",other_str);
     }
 
+    }
     // CHECK ALL UNLIMITED DIMENSIONS from the coordinate variables based on the names. 
     if(f->HaveUnlimitedDim() == true) {
 

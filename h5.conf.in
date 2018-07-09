@@ -69,6 +69,8 @@ H5.EnablePassFileID=false
 # The handler makes metadata to follow CF based on this attribute
 H5.DisableStructMetaAttr=true
 
+H5.DisableECSMetaAttr=false
+
 # HDF5 group or dataset(variable) path always start with a '/'. When the CF naming rule is applied,
 # the first '/' is always changes to "_". This is not necessary and may potentially confuse with
 # CF predefined attributes(_FillValue e.g.). 

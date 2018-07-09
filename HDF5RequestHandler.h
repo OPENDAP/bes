@@ -67,6 +67,7 @@ class HDF5RequestHandler:public BESRequestHandler {
     static bool get_usecf()       { return _usecf;}
     static bool get_pass_fileid() { return _pass_fileid;}
     static bool get_disable_structmeta() { return _disable_structmeta;}
+    static bool get_disable_ecsmeta() { return _disable_ecsmeta;}
     static bool get_keep_var_leading_underscore() { return _keep_var_leading_underscore;}
     static bool get_check_name_clashing() { return _check_name_clashing;}
     static bool get_add_path_attrs() { return _add_path_attrs;}
@@ -140,6 +141,7 @@ class HDF5RequestHandler:public BESRequestHandler {
      static bool _usecf;
      static bool _pass_fileid;
      static bool _disable_structmeta;
+     static bool _disable_ecsmeta;
      static bool _keep_var_leading_underscore;
      static bool _check_name_clashing;
      static bool _add_path_attrs;
