@@ -5,7 +5,7 @@ AUTOMAKE_OPTIONS = foreign
 
 # I added a new command to and put the ResponseHandler in xmlcommand to
 # keep all of the files together. jhrg 2/8/18
-AM_CPPFLAGS = -I$(top_srcdir)/xmlcommand $(XML2_CFLAGS) 
+AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand $(DAP_CFLAGS) $(XML2_CFLAGS)
 AM_CXXFLAGS = 
 
 if BES_DEVELOPER
@@ -83,7 +83,7 @@ SRCS = BESInterface.cc \
 	BESMemoryManager.cc 			\
 	BESAggFactory.cc BESAggregationServer.cc			\
 	BESReturnManager.cc						\
-	BESError.cc BESExceptionManager.cc				\
+	BESError.cc				\
 	BESDataHandlerInterface.cc					\
 	BESIndent.cc BESApp.cc BESModuleApp.cc BESUtil.cc BESStopWatch.cc \
 	BESRegex.cc BESScrub.cc BESDebug.cc BESDefaultModule.cc		\
@@ -103,6 +103,7 @@ SRCS = BESInterface.cc \
 	
 # BESSilentInfo.cc
 # BESBasicHttpTransmitter.cc 
+# BESExceptionManager.cc
 	
 HDRS = BESInterface.h BESLog.h 			\
 	TheBESKeys.h BESStatus.h 				\
@@ -144,7 +145,6 @@ HDRS = BESInterface.h BESLog.h 			\
 	BESDataNames.h BESApp.h BESObj.h BESIndent.h 	\
 	BESAbstractModule.h BESPluginFactory.h BESPlugin.h 		\
 	BESDefaultModule.h BESTransmitterNames.h 			\
-	BESExceptionManager.h 						\
 	BESModuleApp.h BESUtil.h BESStopWatch.h BESRegex.h BESScrub.h 	\
 	BESDebug.h \
 	BESFileLockingCache.h \
@@ -164,6 +164,7 @@ HDRS = BESInterface.h BESLog.h 			\
 	
 # BESSilentInfo.h
 # BESBasicHttpTransmitter.h
+# BESExceptionManager.h
 	
 C4_DB=$(C4_DIR)/dispatch.db
 C4_HTML=$(C4_dir)/dispatch.html
