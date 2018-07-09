@@ -93,9 +93,6 @@ public:
 
         TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.RootDirectory",catalog_root_dir);
 
-//        BES.Catalog.catalog.RootDirectory=/tmp
-
-
         try {
             BESCatalogList *tcl = BESCatalogList::TheCatalogList();
             if (!tcl->ref_catalog(BES_DEFAULT_CATALOG)) {
@@ -130,9 +127,7 @@ public:
 
     void do_test()
     {
-
         string catalog_root_url = "file://" + catalog_root_dir;
-
 
         CPPUNIT_ASSERT(!can_access("http://google.com"));
 
@@ -149,8 +144,7 @@ public:
 
         CPPUNIT_ASSERT(!can_access("file://foo"));
 
-        string s = BESUtil::assemblePath(catalog_root_url,"nc/fnoc1.nc");
-        CPPUNIT_ASSERT(can_access(s));
+        CPPUNIT_ASSERT(can_access(BESUtil::assemblePath(catalog_root_url, "nc/fnoc1.nc")));
 
         CPPUNIT_ASSERT(!can_access("file://tmp/data/nc/fnoc1.nc"));
         CPPUNIT_ASSERT(!can_access("file:///etc/password"));
@@ -161,7 +155,6 @@ CPPUNIT_TEST_SUITE_REGISTRATION(RemoteAccessTest);
 
 int main(int argc, char*argv[])
 {
-
     GetOpt getopt(argc, argv, "dhb");
     char option_char;
     while ((option_char = getopt()) != EOF)

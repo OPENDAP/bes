@@ -56,6 +56,3 @@ DAP.GlobalMetadataStore.ledger = @abs_top_builddir@/modules/dmrpp_module/tests/m
 DAP.Use.Dmrpp = yes
 # dmrpp is the default value
 # DAP.Dmrpp.Name = dmrpp
-
-# Pretty liberal... jhrg 7/6/18
-Gateway.Whitelist=file:

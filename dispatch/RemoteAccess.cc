@@ -87,9 +87,9 @@ bool RemoteAccess::Is_Whitelisted(const std::string &url)
     if (!is_init) init();
 
     bool whitelisted = false;
-    string file_url("file://");
-    string http_url("http://");
-    string https_url("https://");
+    const string file_url("file://");
+    const string http_url("http://");
+    const string https_url("https://");
 
     // Special case: This allows any file: URL to pass if the URL starts with the default
     // catalog's path.
@@ -116,16 +116,12 @@ bool RemoteAccess::Is_Whitelisted(const std::string &url)
         BESDEBUG("bes", "RemoteAccess::Is_Whitelisted() - Is_Whitelisted: "<< (whitelisted?"true":"false") << endl);
     }
     else {
-   //if (!whitelisted) {
-        // This checks HTTP, HTTPS and FILE URLs against the whitelist patterns. I added
-        // file: URLs because I have tests that need to work with both 'make check' and
-        // 'make distcheck' where the latter has some complex paths
+        // This checks HTTP and HTTPS URLs against the whitelist patterns.
         if (url.compare(0, http_url.size(), http_url) == 0 /*equals http url */
-            || url.compare(0, https_url.size(), https_url) == 0 /*equals https url */
-            /*|| url.compare(0, file_url.size(), file_url) == 0*/ /*equals file url */) {
+            || url.compare(0, https_url.size(), https_url) == 0 /*equals https url */) {
 
-            std::vector<std::string>::const_iterator i = WhiteList.begin();
-            std::vector<std::string>::const_iterator e = WhiteList.end();
+            vector<string>::const_iterator i = WhiteList.begin();
+            vector<string>::const_iterator e = WhiteList.end();
             for (; i != e && !whitelisted; i++) {
                 if ((*i).length() <= url.length()) {
                     if (url.substr(0, (*i).length()) == (*i)) {
