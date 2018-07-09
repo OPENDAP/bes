@@ -280,10 +280,10 @@ bool DapRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
         throw e;
     }
     catch (InternalErr & e) {
-        throw BESDapError(e.get_error_message(), true, e.get_error_code(), __FILE__, __LINE__);
+        throw BESDapError(e.get_error_message(), true, e.get_dap_error_code(), __FILE__, __LINE__);
     }
     catch (Error & e) {
-        throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
+        throw BESDapError(e.get_error_message(), false, e.get_dap_error_code(), __FILE__, __LINE__);
     }
     catch (...) {
         throw BESInternalFatalError("Unknown exception caught building a DMR", __FILE__, __LINE__);
@@ -329,10 +329,10 @@ bool DapRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
         throw e;
     }
     catch (InternalErr & e) {
-        throw BESDapError(e.get_error_message(), true, e.get_error_code(), __FILE__, __LINE__);
+        throw BESDapError(e.get_error_message(), true, e.get_dap_error_code(), __FILE__, __LINE__);
     }
     catch (Error & e) {
-        throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
+        throw BESDapError(e.get_error_message(), false, e.get_dap_error_code(), __FILE__, __LINE__);
     }
     catch (...) {
         throw BESInternalFatalError("Unknown exception caught building DAP4 Data response", __FILE__, __LINE__);
@@ -377,10 +377,10 @@ bool DapRequestHandler::dap_build_das(BESDataHandlerInterface &dhi)
         throw e;
     }
     catch (InternalErr & e) {
-        throw BESDapError(e.get_error_message(), true, e.get_error_code(), __FILE__, __LINE__);
+        throw BESDapError(e.get_error_message(), true, e.get_dap_error_code(), __FILE__, __LINE__);
     }
     catch (Error & e) {
-        throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
+        throw BESDapError(e.get_error_message(), false, e.get_dap_error_code(), __FILE__, __LINE__);
     }
     catch (...) {
         throw BESInternalFatalError("Unknown exception caught building DAS", __FILE__, __LINE__);
@@ -410,10 +410,10 @@ bool DapRequestHandler::dap_build_dds(BESDataHandlerInterface &dhi)
         throw e;
     }
     catch (InternalErr & e) {
-        throw BESDapError(e.get_error_message(), true, e.get_error_code(), __FILE__, __LINE__);
+        throw BESDapError(e.get_error_message(), true, e.get_dap_error_code(), __FILE__, __LINE__);
     }
     catch (Error & e) {
-        throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
+        throw BESDapError(e.get_error_message(), false, e.get_dap_error_code(), __FILE__, __LINE__);
     }
     catch (...) {
         throw BESInternalFatalError("Unknown exception caught building DDS", __FILE__, __LINE__);
@@ -444,10 +444,10 @@ bool DapRequestHandler::dap_build_data(BESDataHandlerInterface &dhi)
         throw e;
     }
     catch (InternalErr & e) {
-        throw BESDapError(e.get_error_message(), true, e.get_error_code(), __FILE__, __LINE__);
+        throw BESDapError(e.get_error_message(), true, e.get_dap_error_code(), __FILE__, __LINE__);
     }
     catch (Error & e) {
-        throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
+        throw BESDapError(e.get_error_message(), false, e.get_dap_error_code(), __FILE__, __LINE__);
     }
     catch (...) {
         throw BESInternalFatalError("Unknown exception caught building a data response", __FILE__, __LINE__);

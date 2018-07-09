@@ -156,7 +156,7 @@ static void log_error(BESError &e)
     // TODO This should be configurable; I'm changing the values below to always log all errors.
     // I'm also confused about the actual intention. jhrg 11/14/17
     bool only_log_to_verbose = false;
-    switch (e.get_error_type()) {
+    switch (e.get_bes_error_type()) {
     case BES_INTERNAL_FATAL_ERROR:
         error_name = "BES Internal Fatal Error";
         break;
@@ -185,12 +185,12 @@ static void log_error(BESError &e)
     }
 
     if (only_log_to_verbose) {
-            VERBOSE("ERROR: " << error_name << ", error code: " << e.get_error_type() << ", file: " << e.get_file() << ":"
+            VERBOSE("ERROR: " << error_name << ", error code: " << e.get_bes_error_type() << ", file: " << e.get_file() << ":"
                     << e.get_line()  << ", message: " << e.get_message() << endl);
 
     }
 	else {
-		LOG("ERROR: " << error_name << ": " << e.get_message() << "(error code: " << e.get_error_type() << ")." << endl);
+		LOG("ERROR: " << error_name << ": " << e.get_message() << "(error code: " << e.get_bes_error_type() << ")." << endl);
 	}
 }
 
@@ -351,7 +351,7 @@ int BESInterface::handleException(BESError &e, BESDataHandlerInterface &dhi)
 
     dhi.error_info->end_response();
 
-    return e.get_error_type();
+    return e.get_bes_error_type();
 }
 
 
@@ -370,10 +370,10 @@ int BESInterface::handleException(BESError &e, BESDataHandlerInterface &dhi)
         if (de) {
             ec = de->get_error_code();
         }
-        e.set_error_type(BESDapError::convert_error_code(ec, e.get_error_type()));
+        e.set_bes_error_type(BESDapError::convert_error_code(ec, e.get_bes_error_type()));
         dhi.error_info = new BESDapErrorInfo(ec, e.get_message());
 
-        return e.get_error_type();
+        return e.get_bes_error_type();
     }
     else {
         // If we are not in a dap2 context and the exception is a dap
@@ -387,7 +387,7 @@ int BESInterface::handleException(BESError &e, BESDataHandlerInterface &dhi)
             s << "libdap exception building response: error_code = " << de->get_error_code() << ": "
             << de->get_message();
             e.set_message(s.str());
-            e.set_error_type(BESDapError::convert_error_code(de->get_error_code(), e.get_error_type()));
+            e.set_bes_error_type(BESDapError::convert_error_code(de->get_error_code(), e.get_bes_error_type()));
         }
     }
     return 0;

@@ -58,10 +58,10 @@ typedef int (*ptr_bes_ehm)(BESError &e, BESDataHandlerInterface &dhi);
  */
 class BESDapError: public BESError {
 private:
-    libdap::ErrorCode d_error_code;
+    libdap::ErrorCode d_dap_error_code;
 
 protected:
-    BESDapError() : d_error_code(unknown_error)
+    BESDapError() : d_dap_error_code(unknown_error)
     {
     }
 
@@ -75,15 +75,15 @@ public:
 
     //Deprecated because it's only available in this class.
     /// @deprecated
-    virtual int get_error_code() const
+    virtual int get_dap_error_code() const
     {
-        return d_error_code;
+        return d_dap_error_code;
     }
 
 #if 0
-    virtual int get_error_type()
+    virtual int get_bes_error_type()
     {
-        return (int)d_error_code;
+        return (int)d_dap_error_code;
     }
 #endif
 

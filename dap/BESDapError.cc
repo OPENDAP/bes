@@ -45,15 +45,15 @@ using std::ostringstream;
 #endif
 
 BESDapError::BESDapError(const string &s, bool fatal, libdap::ErrorCode ec, const string &file, int line) :
-        BESError(s, 0, file, line), d_error_code(ec)
+        BESError(s, 0, file, line), d_dap_error_code(ec)
 {
-    set_error_type(convert_error_code(ec, fatal));
+    set_bes_error_type(convert_error_code(ec, fatal));
 
 #if 0
     if (fatal)
-    set_error_type(BES_INTERNAL_FATAL_ERROR);
+    set_bes_error_type(BES_INTERNAL_FATAL_ERROR);
     else
-    set_error_type(BES_INTERNAL_ERROR);
+    set_bes_error_type(BES_INTERNAL_ERROR);
 #endif
 
 }
@@ -128,7 +128,7 @@ void log_error(BESError &e)
     // TODO This should be configurable; I'm changing the values below to always log all errors.
     // I'm also confused about the actual intention. jhrg 11/14/17
     bool only_log_to_verbose = false;
-    switch (e.get_error_type()) {
+    switch (e.get_bes_error_type()) {
     case BES_INTERNAL_FATAL_ERROR:
         error_name = "BES Internal Fatal Error";
         break;
@@ -157,7 +157,7 @@ void log_error(BESError &e)
     }
 
     if (only_log_to_verbose) {
-            VERBOSE("ERROR: " << error_name << ", type: " << e.get_error_type() << ", file: " << e.get_file() << ":"
+            VERBOSE("ERROR: " << error_name << ", type: " << e.get_bes_error_type() << ", file: " << e.get_file() << ":"
                     << e.get_line()  << ", message: " << e.get_message() << endl);
 
     }
@@ -226,7 +226,7 @@ int BESDapError::handleBESError(BESError &e, BESDataHandlerInterface &dhi)
     // Write a message in the log file about this error...
     log_error(e);
 
-    return e.get_error_type();
+    return e.get_bes_error_type();
 }
 
 /** @brief handles exceptions if the error context is set to dap2
@@ -251,12 +251,12 @@ int BESDapError::handleException(BESError &e, BESDataHandlerInterface &dhi)
         ErrorCode ec = unknown_error;
         BESDapError *de = dynamic_cast<BESDapError*>(&e);
         if (de) {
-            ec = de->get_error_code();
+            ec = de->get_dap_error_code();
         }
-        e.set_error_type(convert_error_code(ec, e.get_error_type()));
+        e.set_bes_error_type(convert_error_code(ec, e.get_bes_error_type()));
         dhi.error_info = new BESDapErrorInfo(ec, e.get_message());
 
-        return e.get_error_type();
+        return e.get_bes_error_type();
     }
     else {
         // If we are not in a dap2 context and the exception is a dap
@@ -267,10 +267,10 @@ int BESDapError::handleException(BESError &e, BESDataHandlerInterface &dhi)
         BESDapError *de = dynamic_cast<BESDapError*>(e_p);
         if (de) {
             ostringstream s;
-            s << "libdap exception building response: error_code = " << de->get_error_code() << ": "
+            s << "libdap exception building response: error_code = " << de->get_dap_error_code() << ": "
             << de->get_message();
             e.set_message(s.str());
-            e.set_error_type(convert_error_code(de->get_error_code(), e.get_error_type()));
+            e.set_bes_error_type(convert_error_code(de->get_dap_error_code(), e.get_bes_error_type()));
         }
     }
     return 0;
@@ -285,12 +285,12 @@ int BESDapError::handleException(BESError &e, BESDataHandlerInterface &dhi)
 		ErrorCode ec = unknown_error;
 		BESDapError *de = dynamic_cast<BESDapError*>(&e);
 		if (de) {
-			ec = de->get_error_code();
+			ec = de->get_dap_error_code();
 		}
-		e.set_error_type(convert_error_code(ec, e.get_error_type()));
+		e.set_bes_error_type(convert_error_code(ec, e.get_bes_error_type()));
 		dhi.error_info = new BESDapErrorInfo(ec, e.get_message());
 
-		return e.get_error_type();
+		return e.get_bes_error_type();
 	}
 	else {
 		// If we are not in a dap2 context and the exception is a dap
@@ -301,10 +301,10 @@ int BESDapError::handleException(BESError &e, BESDataHandlerInterface &dhi)
 		BESDapError *de = dynamic_cast<BESDapError*>(e_p);
 		if (de) {
 			ostringstream s;
-			s << "libdap exception building response: error_code = " << de->get_error_code() << ": "
+			s << "libdap exception building response: error_code = " << de->get_dap_error_code() << ": "
 					<< de->get_message();
 			e.set_message(s.str());
-			e.set_error_type(convert_error_code(de->get_error_code(), e.get_error_type()));
+			e.set_bes_error_type(convert_error_code(de->get_dap_error_code(), e.get_bes_error_type()));
 		}
 	}
 
@@ -324,7 +324,7 @@ void BESDapError::dump(ostream &strm) const
 {
 	strm << BESIndent::LMarg << "BESDapError::dump - (" << (void *) this << ")" << endl;
 	BESIndent::Indent();
-	strm << BESIndent::LMarg << "error code = " << get_error_code() << endl;
+	strm << BESIndent::LMarg << "error code = " << get_dap_error_code() << endl;
 	BESError::dump(strm);
 	BESIndent::UnIndent();
 }

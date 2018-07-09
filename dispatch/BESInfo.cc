@@ -235,7 +235,7 @@ void BESInfo::add_exception(BESError &e, const string &admin)
 {
     begin_tag("BESError");
     ostringstream stype;
-    stype << e.get_error_type();
+    stype << e.get_bes_error_type();
     add_tag("Type", stype.str());
     add_tag("Message", e.get_message());
     add_tag("Administrator", admin);

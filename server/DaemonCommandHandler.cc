@@ -716,7 +716,7 @@ static void send_bes_error(BESXMLWriter &writer, BESError &e)
 		throw BESInternalFatalError("Could not write <hai:OK> element ", __FILE__, __LINE__);
 
 	ostringstream oss;
-	oss << e.get_error_type() << std::ends;
+	oss << e.get_bes_error_type() << std::ends;
 	if (xmlTextWriterWriteElement(writer.get_writer(), (const xmlChar*) "hai:Type", (const xmlChar*) oss.str().c_str())
 			< 0) throw BESInternalFatalError("Could not write <hai:Type> element ", __FILE__, __LINE__);
 
@@ -783,7 +783,7 @@ void DaemonCommandHandler::handle(Connection *c)
 			map<string, string> extensions;
 			extensions["status"] = "error";
 
-			switch (e.get_error_type()) {
+			switch (e.get_bes_error_type()) {
 			case BES_INTERNAL_ERROR:
 			case BES_INTERNAL_FATAL_ERROR:
 				BESDEBUG("besdaemon", "DaemonCommandHandler::handle() - Internal/Fatal ERROR: " << e.get_message() << endl);
