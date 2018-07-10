@@ -25,14 +25,11 @@
 #include "config.h"
 
 #include <string>
-#include <sstream>
-#include <cassert>
 
 #include <BESError.h>
 #include <BESDebug.h>
 
 #include "DmrppUrl.h"
-#include "DmrppUtil.h"
 
 using namespace libdap;
 using namespace std;
@@ -72,7 +69,7 @@ DmrppUrl::operator=(const DmrppUrl &rhs)
     dynamic_cast<Url &>(*this) = rhs; // run Constructor=
 
     _duplicate(rhs);
-    DmrppCommon::_duplicate(rhs);
+    DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }
@@ -80,25 +77,15 @@ DmrppUrl::operator=(const DmrppUrl &rhs)
 bool
 DmrppUrl::read()
 {
-#if 0
-    BESDEBUG("dmrpp", "Entering DmrppUrl::read for " << name() << endl);
-
     if (read_p())
         return true;
 
-    // FIXME
+    string value = read_atomic(name());
 
-    set_read_p(true);
+    set_value(value);   // sets read_p too
 
     return true;
-#endif
-    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
-
-    throw BESError("Unsupported type libdap::D4Structure (dmrpp::DmrppStructure)",BES_INTERNAL_ERROR, __FILE__, __LINE__);
-
-
 }
-
 
 void DmrppUrl::dump(ostream & strm) const
 {

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<dmrpp:chunks>
+    <dmrpp:chunkDimensionSizes>51 17</dmrpp:chunkDimensionSizes>
+    <dmrpp:chunk offset="200" nBytes="100" chunkPositionInArray="[10,20]"/>
+</dmrpp:chunks>

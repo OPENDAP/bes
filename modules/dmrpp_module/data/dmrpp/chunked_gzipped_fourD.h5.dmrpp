@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <Dataset 
     xmlns="http://xml.opendap.org/ns/DAP/4.0#" 
-    xmlns:h4="http://www.hdfgroup.org/HDF4/XML/schema/HDF4map/1.0.1" 
+    xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#"
     dapVersion="4.0" 
     dmrVersion="1.0" 
     name="chunked_gzipped_fourD.h5"
-    xml:base="data/dmrpp/chunked_gzipped_fourD.h5">
+    dmrpp:href="data/dmrpp/chunked_gzipped_fourD.h5">
 
   <Float32 name="d_16_gzipped_chunks">
     <Dim size="40"/>
@@ -18,24 +18,24 @@
     <Attribute name="fullnamepath" type="String">
       <Value>/d_16_gzipped_chunks</Value>
     </Attribute>
-    <h4:chunks deflate_level="6" compressionType="deflate">
-      <h4:chunkDimensionSizes>20 20 20 20</h4:chunkDimensionSizes>
-      <h4:byteStream offset="4728" uuid="e5853038-de02-48e0-9eaf-5fb8ec4f01cb" nBytes="170568" chunkPositionInArray="[0,0,0,0]" md5="214548350db769caf59f4b345c8ec9eb"/>
-      <h4:byteStream offset="175296" uuid="0588f68c-9272-41ca-ae3e-2e49153de3da" nBytes="174124" chunkPositionInArray="[0,0,0,20]" md5="ad64da75a72ac0f8bfaf433737e01ba1"/>
-      <h4:byteStream offset="349420" uuid="b975412a-ef8c-4c87-a5b1-7d8cfd424ab7" nBytes="170395" chunkPositionInArray="[0,0,20,0]" md5="c3a87ccdaa0d94c50debde9d8ff6012e"/>
-      <h4:byteStream offset="519815" uuid="524465d2-709a-41d9-8dbf-a493d6d2904f" nBytes="173864" chunkPositionInArray="[0,0,20,20]" md5="7a8c8ba0bcbfba7dac5af8d04cc4aa73"/>
-      <h4:byteStream offset="693679" uuid="d2e25bdd-fce1-4633-8ec0-411ada19488e" nBytes="171774" chunkPositionInArray="[0,20,0,0]" md5="9a0a28f2c3561f6eac7f0136452755f5"/>
-      <h4:byteStream offset="865453" uuid="5d230c25-fa2f-4ca6-8248-a01827112e46" nBytes="175411" chunkPositionInArray="[0,20,0,20]" md5="3a2cc35a7951c9293a175869b3032780"/>
-      <h4:byteStream offset="1040864" uuid="5f24a960-b44b-4e0e-b9dd-8b8b68316f71" nBytes="171786" chunkPositionInArray="[0,20,20,0]" md5="8725046c1398e5a69b09c12e1a4a9d4e"/>
-      <h4:byteStream offset="1212650" uuid="fc19f61d-561e-457b-b88e-e6f36bbf57de" nBytes="175367" chunkPositionInArray="[0,20,20,20]" md5="0576f155306bef7cf88afac9dbac65eb"/>
-      <h4:byteStream offset="1388017" uuid="99b40758-e426-407b-b13d-8dd44188d2bc" nBytes="184284" chunkPositionInArray="[20,0,0,0]" md5="ab3e15f50b649345174821e0d60d27ef"/>
-      <h4:byteStream offset="1572301" uuid="690a8673-dd84-4931-9c82-9343e3d69cfb" nBytes="185508" chunkPositionInArray="[20,0,0,20]" md5="a390819f2d46d836e1aa8cabb969df3f"/>
-      <h4:byteStream offset="1757809" uuid="cb5a147b-3a24-47c8-a2ca-3d311c190bc2" nBytes="184548" chunkPositionInArray="[20,0,20,0]" md5="e4e7077c431ff23112f1e61ab3359b6c"/>
-      <h4:byteStream offset="1942357" uuid="e619d3a2-f6b5-4fda-b94c-fc5d7900a5dd" nBytes="185617" chunkPositionInArray="[20,0,20,20]" md5="3a7f5683c0a130776433ad4473efdccf"/>
-      <h4:byteStream offset="2127974" uuid="ea802b31-abff-43ee-b400-40a5cbdf75eb" nBytes="184387" chunkPositionInArray="[20,20,0,0]" md5="79fefb8db5fbf30f6a01c5d75083ec2d"/>
-      <h4:byteStream offset="2312361" uuid="f16a8ff0-2f24-4354-949f-77ce5940e5db" nBytes="185511" chunkPositionInArray="[20,20,0,20]" md5="3a911f845c7057737661d3794ab42f55"/>
-      <h4:byteStream offset="2497872" uuid="351be986-7288-41b1-b3d2-91a838158457" nBytes="184573" chunkPositionInArray="[20,20,20,0]" md5="7ae2d4dd22d899fb54840072f91888d8"/>
-      <h4:byteStream offset="2684493" uuid="3de388ae-fc63-4288-a806-a042d9002cd9" nBytes="185594" chunkPositionInArray="[20,20,20,20]" md5="f3faaa949ebff53cbd22d68265786d55"/>
-    </h4:chunks>
+    <dmrpp:chunks deflate_level="6" compressionType="deflate">
+      <dmrpp:chunkDimensionSizes>20 20 20 20</dmrpp:chunkDimensionSizes>
+      <dmrpp:chunk offset="4728"  nBytes="170568" chunkPositionInArray="[0,0,0,0]" />
+      <dmrpp:chunk offset="175296"  nBytes="174124" chunkPositionInArray="[0,0,0,20]" />
+      <dmrpp:chunk offset="349420"  nBytes="170395" chunkPositionInArray="[0,0,20,0]" />
+      <dmrpp:chunk offset="519815"  nBytes="173864" chunkPositionInArray="[0,0,20,20]" />
+      <dmrpp:chunk offset="693679"  nBytes="171774" chunkPositionInArray="[0,20,0,0]" />
+      <dmrpp:chunk offset="865453"  nBytes="175411" chunkPositionInArray="[0,20,0,20]" />
+      <dmrpp:chunk offset="1040864"  nBytes="171786" chunkPositionInArray="[0,20,20,0]" />
+      <dmrpp:chunk offset="1212650"  nBytes="175367" chunkPositionInArray="[0,20,20,20]" />
+      <dmrpp:chunk offset="1388017"  nBytes="184284" chunkPositionInArray="[20,0,0,0]" />
+      <dmrpp:chunk offset="1572301"  nBytes="185508" chunkPositionInArray="[20,0,0,20]" />
+      <dmrpp:chunk offset="1757809"  nBytes="184548" chunkPositionInArray="[20,0,20,0]" />
+      <dmrpp:chunk offset="1942357"  nBytes="185617" chunkPositionInArray="[20,0,20,20]" />
+      <dmrpp:chunk offset="2127974"  nBytes="184387" chunkPositionInArray="[20,20,0,0]" />
+      <dmrpp:chunk offset="2312361"  nBytes="185511" chunkPositionInArray="[20,20,0,20]" />
+      <dmrpp:chunk offset="2497872"  nBytes="184573" chunkPositionInArray="[20,20,20,0]" />
+      <dmrpp:chunk offset="2684493"  nBytes="185594" chunkPositionInArray="[20,20,20,20]" />
+    </dmrpp:chunks>
   </Float32>
 </Dataset>

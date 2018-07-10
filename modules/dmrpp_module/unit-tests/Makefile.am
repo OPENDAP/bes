@@ -3,14 +3,16 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir)/modules/dmrpp_module -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)/modules -I$(top_srcdir)/modules/dmrpp_module \
+-I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 
 # Added -lz for ubuntu
-LIBADD = $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_EXTRA_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
+LIBADD = $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_EXTRA_LIBS) \
+$(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
 
 
 if CPPUNIT
-AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
+AM_CPPFLAGS += $(CPPUNIT_CFLAGS) 
 LIBADD += $(CPPUNIT_LIBS)
 endif
 
@@ -31,15 +33,17 @@ TESTS = $(UNIT_TESTS)
 
 noinst_HEADERS = test_config.h
 
-DIRS_EXTRA = 
+noinst_DATA = bes.conf
 
-EXTRA_DIST = 
+EXTRA_DIST = baselines input-files
 
-CLEANFILES = testout .dodsrc  *.gcda *.gcno test_config.h *.strm *.file tmp.txt
+CLEANFILES = *.gcda *.gcno *.strm *.file test_config.h tmp.txt
 
-DISTCLEANFILES = 
+DISTCLEANFILES = bes.conf bes.log
 
 BUILT_SOURCES = test_config.h
+
+BES_CONF_IN = bes.conf.in
 
 test_config.h: $(srcdir)/test_config.h.in Makefile
 	@mod_abs_srcdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
@@ -49,13 +53,20 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 	    -e "s%[@]abs_top_srcdir[@]%$${mod_abs_top_srcdir}%" \
 	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
 
+# Build the bes.conf used for testing so that the value substituted for
+# @abs_top_srcdir@ does not contain '../'. This happens when using 
+# configure's value for the parameter when running the distcheck target.
+bes.conf: $(srcdir)/$(BES_CONF_IN) $(top_srcdir)/configure.ac
+	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
+	    -e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
+
 ############################################################################
 # Unit Tests
 #
 
 if CPPUNIT
-UNIT_TESTS = DmrppParserTest DmrppTypeReadTest DmrppChunkedReadTest \
-DmrppHttpReadTest DmrppUtilTest
+UNIT_TESTS = ChunkTest DmrppParserTest DmrppCommonTest DmrppMetadataStoreTest
 else
 UNIT_TESTS =
 
@@ -68,43 +79,20 @@ check-local:
 	@echo ""
 endif
 
-# HDRS and SRCS are not used. They were used with VPATH, but that
-# broke the distcheck target.
+clean-local:
+	-rm -rf mds mds_ledger.txt
 
-#HDRS = DmrppArray.h DmrppByte.h DmrppD4Enum.h DmrppD4Group.h DmrppD4Opaque.h\
-#DmrppD4Sequence.h DmrppFloat32.h DmrppFloat64.h DmrppInt16.h DmrppInt32.h \
-#DmrppInt64.h DmrppInt8.h DmrppParserSax2.h DmrppStr.h DmrppStructure.h \
-#DmrppUInt16.h DmrppUInt32.h DmrppUInt64.h DmrppUrl.h DmrppUtil.h \
-#DmrppTypeFactory.h DmrppCommon.h H4ByteStream.h
+OBJS = ../*.o
 
-#SRCS = DmrppArray.cc DmrppByte.cc DmrppD4Enum.cc DmrppD4Group.cc DmrppD4Opaque.cc\
-#DmrppD4Sequence.cc DmrppFloat32.cc DmrppFloat64.cc DmrppInt16.cc DmrppInt32.cc \
-#DmrppInt64.cc DmrppInt8.cc DmrppParserSax2.cc DmrppStr.cc DmrppStructure.cc \
-#DmrppUInt16.cc DmrppUInt32.cc DmrppUInt64.cc DmrppUrl.cc DmrppUtil.cc \
-#DmrppTypeFactory.cc DmrppCommon.cc H4ByteStream.cc $(HDRS)
+ChunkTest_SOURCES = ChunkTest.cc
+ChunkTest_LDADD = $(OBJS) $(LIBADD)
 
-#OBJS = ../DmrppArray.o ../DmrppByte.o ../DmrppD4Enum.o ../DmrppD4Group.o ../DmrppD4Opaque.o\
-#../DmrppD4Sequence.o ../DmrppFloat32.o ../DmrppFloat64.o ../DmrppInt16.o ../DmrppInt32.o \
-#../DmrppInt64.o ../DmrppInt8.o ../DmrppParserSax2.o ../DmrppStr.o ../DmrppStructure.o \
-#../DmrppUInt16.o ../DmrppUInt32.o ../DmrppUInt64.o ../DmrppUrl.o ../DmrppUtil.o \
-#../DmrppTypeFactory.o ../DmrppCommon.o H4ByteStream.o 
-
-OBJS = ../*.o 
-
+DmrppParserTest_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/modules/hdf5_handler
 DmrppParserTest_SOURCES = DmrppParserTest.cc
-DmrppParserTest_LDADD   =  $(OBJS) $(LIBADD) 
+DmrppParserTest_LDADD = $(OBJS) $(LIBADD) 
 
-# -L\$(abs_top_builddir)/modules/dmrpp_module -ldmrpp_module
+DmrppCommonTest_SOURCES = DmrppCommonTest.cc $(top_srcdir)/modules/read_test_baseline.cc
+DmrppCommonTest_LDADD = $(OBJS) $(LIBADD)
 
-DmrppTypeReadTest_SOURCES = DmrppTypeReadTest.cc
-DmrppTypeReadTest_LDADD   = $(OBJS) $(LIBADD)
-
-DmrppChunkedReadTest_SOURCES = DmrppChunkedReadTest.cc
-DmrppChunkedReadTest_LDADD   = $(OBJS) $(LIBADD)
-
-DmrppHttpReadTest_SOURCES = DmrppHttpReadTest.cc
-DmrppHttpReadTest_LDADD   = $(OBJS) $(LIBADD)
-
-DmrppUtilTest_SOURCES = DmrppUtilTest.cc
-DmrppUtilTest_LDADD   = $(OBJS) $(LIBADD)
-
+DmrppMetadataStoreTest_SOURCES = DmrppMetadataStoreTest.cc $(top_srcdir)/modules/read_test_baseline.cc
+DmrppMetadataStoreTest_LDADD = $(OBJS) $(LIBADD)

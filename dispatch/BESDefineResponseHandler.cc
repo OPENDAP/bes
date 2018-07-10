@@ -47,6 +47,7 @@ using std::endl;
 #include "BESDataNames.h"
 #include "BESSyntaxUserError.h"
 #include "BESResponseNames.h"
+#include "BESDataHandlerInterface.h"
 
 BESDefineResponseHandler::BESDefineResponseHandler(const string &name) :
     BESResponseHandler(name)
@@ -129,7 +130,7 @@ void BESDefineResponseHandler::execute(BESDataHandlerInterface &dhi)
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void BESDefineResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
+void BESDefineResponseHandler::transmit(BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/)
 {
 #if 0
 	if (d_response_object) {

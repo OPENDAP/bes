@@ -86,7 +86,7 @@ public:
 
     /** @brief request protocol, such as HTTP
      */
-    string transmit_protocol;
+    string transmit_protocol;   // FIXME Not used? jhrg 5/30/18
 
     /** @brief the map of string data that will be required for the current
      * request.

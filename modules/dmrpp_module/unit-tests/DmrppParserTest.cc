@@ -61,8 +61,22 @@
 
 #include "GetOpt.h"
 #include "test_config.h"
+#include "util.h"
+
+#if 0
+#include "H5Ppublic.h"
+#include "HDF5RequestHandler.h"
+#include "h5get.h"
+#include "HDF5CF.h"
+#include "H5Dpublic.h"
+#endif
+
 
 using namespace libdap;
+#if 0
+using namespace HDF5CF;
+#endif
+
 
 static bool debug = false;
 
@@ -95,50 +109,46 @@ public:
     }
 
     /**
-     * Evaluates a H4ByteStream instance.
+     * Evaluates a Chunk instance.
      * This checks the offset, size, md5, and uuid attributes
      * against expected values passed as parameters.
      */
-    void checkByteStream(string name, H4ByteStream h4bs,
-    		unsigned long long offset,
-    		unsigned long long size,
-    		string md5,
-    		string uuid){
+    void checkByteStream(string name, Chunk h4bs, unsigned long long offset, unsigned long long size,
+        string /*md5*/, string /*uuid*/)
+    {
 
-		CPPUNIT_ASSERT(h4bs.get_offset() == offset);
-		BESDEBUG("dmrpp", name << " offset: " << offset << endl);
-		CPPUNIT_ASSERT(h4bs.get_size() == size);
-		BESDEBUG("dmrpp", name << " size: " << size << endl);
-		CPPUNIT_ASSERT(h4bs.get_md5() == md5);
-		BESDEBUG("dmrpp", name << " md5: " << md5 << endl);
-		CPPUNIT_ASSERT(h4bs.get_uuid() == uuid);
-		BESDEBUG("dmrpp", name << " uuid: " << uuid << endl);
+        CPPUNIT_ASSERT(h4bs.get_offset() == offset);
+        BESDEBUG("dmrpp", name << " offset: " << offset << endl);
+        CPPUNIT_ASSERT(h4bs.get_size() == size);
+        BESDEBUG("dmrpp", name << " size: " << size << endl);
+#if 0
+        CPPUNIT_ASSERT(h4bs.get_md5() == md5);
+        BESDEBUG("dmrpp", name << " md5: " << md5 << endl);
+        CPPUNIT_ASSERT(h4bs.get_uuid() == uuid);
+        BESDEBUG("dmrpp", name << " uuid: " << uuid << endl);
+#endif
+
     }
 
     /**
      * Evaluates a BaseType pointer believed to be an instance of DrmppCommon
-     * with a single "chunk" (H4ByteStream) member.
+     * with a single "chunk" (Chunk) member.
      * This checks the variables name, offset, size, md5, and uuid attributes
      * against expected values passed as parameters.
      */
-    void checkDmrppVariableWithSingleChunk(BaseType *bt,
-    		string name,
-    		unsigned long long offset,
-    		unsigned long long size,
-    		string md5,
-    		string uuid){
+    void checkDmrppVariableWithSingleChunk(BaseType *bt, string name, unsigned long long offset,
+        unsigned long long size, string /*md5*/, string /*uuid*/)
+    {
+        CPPUNIT_ASSERT(bt);
 
-		CPPUNIT_ASSERT(bt);
+        BESDEBUG("dmrpp", "Looking at variable: " << bt->name() << endl);
+        CPPUNIT_ASSERT(bt->name() == name);
+        DmrppCommon *dc = dynamic_cast<DmrppCommon*>(bt);
+        CPPUNIT_ASSERT(dc);
 
-		BESDEBUG("dmrpp", "Looking at variable: " << bt->name() << endl);
-		CPPUNIT_ASSERT(bt->name() == name);
-		DmrppCommon *dc = dynamic_cast<DmrppCommon*>(bt);
-		CPPUNIT_ASSERT(dc);
-
-		vector<H4ByteStream> chunks = dc->get_immutable_chunks();
-		CPPUNIT_ASSERT(chunks.size() == 1);
-		checkByteStream(bt->name(), chunks[0],offset,size,md5,uuid);
-
+        const vector<Chunk> &chunks = dc->get_immutable_chunks();
+        CPPUNIT_ASSERT(chunks.size() == 1);
+        checkByteStream(bt->name(), chunks[0], offset, size, "", "");
     }
 
     /**
@@ -376,7 +386,7 @@ public:
   /******************************************************
    *
    */
-  void test_nc4_group_ataomic()
+  void test_nc4_group_atomic()
   {
       auto_ptr<DMR> dmr(new DMR);
       DmrppTypeFactory dtf;
@@ -429,6 +439,325 @@ public:
     		  "62569081-e56e-47b5-ab10-ea9132cc8ef2");
   }
 
+#if 0
+void print_dmrpp(XMLWriter &xml, DMR dmr)
+{
+    D4Group *g = dmr.root();
+    D4Group::Vars_iter v = g->var_begin();
+    DmrppCommon *dc = dynamic_cast<DmrppCommon*>(*v);
+    // Compression type:
+    string deflate("deflate");
+    string shuffle("shuffle");
+    string compressionType("");
+    string deflate_level("6");// TODO: ????
+    if(dc->is_deflate_compression()) compressionType=deflate;
+    if(dc->is_shuffle_compression()) compressionType=shuffle;
+    int chunk_num = (int) dc->get_immutable_chunks().size();
+    int chunk_dim_num = (int) dc->get_chunk_dimension_sizes().size();
+    vector<unsigned int> dims = dc->get_chunk_dimension_sizes();
+    std::stringstream sd;
+    string chunkDimensionSizes;
+    string delim = "";
+    for (int d = 0; d < chunk_dim_num; d++) {
+        sd << delim << to_string(dims[d]);
+        delim = " ";
+    }
+    chunkDimensionSizes = sd.str();
+
+    // Start element "dataset" with namespaces:
+    if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar*)"Dataset") < 0)
+    throw BESInternalError("Could not write Dataset element", __FILE__, __LINE__);
+
+    if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "xmlns", (const xmlChar*) dmr.get_namespace().c_str()) < 0)
+    throw BESInternalError("Could not write attribute for xmlns", __FILE__, __LINE__);
+
+    if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "dmrpp", (const xmlChar*)"http://xml.opendap.org/dap/dmrpp/1.0.0#") < 0)
+    throw BESInternalError("Could not write attribute for dmrpp", __FILE__, __LINE__);
+
+    if (!dmr.request_xml_base().empty()) {
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "xml:base",
+                (const xmlChar*)dmr.request_xml_base().c_str()) < 0)
+        throw BESInternalError("Could not write attribute for xml:base", __FILE__, __LINE__);
+    }
+
+    if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "dapVersion", (const xmlChar*)dmr.dap_version().c_str()) < 0)
+    throw BESInternalError("Could not write attribute for dapVersion", __FILE__, __LINE__);
+
+    if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "dmrVersion", (const xmlChar*)dmr.dmr_version().c_str()) < 0)
+    throw BESInternalError("Could not write attribute for dapVersion", __FILE__, __LINE__);
+
+    if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "name", (const xmlChar*)dmr.name().c_str()) < 0)
+    throw BESInternalError("Could not write attribute for name", __FILE__, __LINE__);
+
+    // Start BaseType elements:
+    dmr.root()->print_dap4(xml,false,false);
+
+    // Start element "chunks" with dmrpp namespace and attributes:
+    if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar*) "dmrpp", (const xmlChar*) "chunks", NULL) < 0)
+    throw BESInternalError("Could not write namespace for name chunks", __FILE__, __LINE__);
+
+    if (dc->is_deflate_compression()) {
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "deflate_level", (const xmlChar*) deflate_level.c_str()) < 0)
+        throw BESInternalError("Could not write attribute for dapVersion", __FILE__, __LINE__);
+    }
+
+    if (dc->is_shuffle_compression() || dc->is_deflate_compression()) {
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "compressionType", (const xmlChar*) compressionType.c_str()) < 0)
+        throw BESInternalError("Could not write attribute for name", __FILE__, __LINE__);
+    }
+
+    // Write element "chunkDimensionSizes" with dmrpp namespace:
+    if (xmlTextWriterWriteElementNS(xml.get_writer(), (const xmlChar*) "dmrpp", (const xmlChar*) "chunkDimensionSizes", NULL, (const xmlChar*) chunkDimensionSizes.c_str())< 0)
+    throw BESInternalError("Could not write namespace for name chunks", __FILE__, __LINE__);
+
+    // Start elements "chunk" with dmrpp namespace and attributes:
+    vector<Chunk> &chunk_refs = dc->get_chunk_vec();
+    for (int i = 0; i < chunk_num; i++)
+    {
+        Chunk &chunk = chunk_refs[i];
+
+        // Get offset string:
+        std::stringstream so;
+        string offset;
+        so << chunk.get_offset();
+        offset = so.str();
+
+        // Get nBytes string:
+        string nBytes;
+        std::stringstream sb;
+        sb << chunk.get_offset();
+        nBytes = sb.str();
+
+        // Get position in array string:
+        vector<unsigned int> pos = chunk.get_position_in_array();
+        std::stringstream sp;
+        string chunkPositionInArray;
+        string delim = "";
+        for (int j = 0; j < chunk_dim_num; j++) {
+            sp << delim << to_string(pos[j]);
+            delim = ",";
+        }
+        chunkPositionInArray = sp.str();
+
+        if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar*) "dmrpp", (const xmlChar*) "chunk", NULL) < 0)
+        throw BESInternalError("Could not write name chunks", __FILE__, __LINE__);
+
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "offset", (const xmlChar*) offset.c_str()) < 0)
+        throw BESInternalError("Could not write attribute for dapVersion", __FILE__, __LINE__);
+
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "nBytes", (const xmlChar*) nBytes.c_str()) < 0)
+        throw BESInternalError("Could not write attribute for dapVersion", __FILE__, __LINE__);
+
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "chunkPositionInArray", (const xmlChar*) chunkPositionInArray.c_str()) <0)
+        throw BESInternalError("Could not write attribute for dapVersion", __FILE__, __LINE__);
+
+        // End element "chunk":
+        if (xmlTextWriterEndElement(xml.get_writer()) < 0)
+        throw BESInternalError("Could not end the top-level Group element", __FILE__, __LINE__);
+
+    }
+    // End element "dataset"
+    if (xmlTextWriterEndElement(xml.get_writer()) < 0)
+    throw BESInternalError("Could not end the top-level Group element", __FILE__, __LINE__);
+
+}
+
+/******************************************************
+ *
+ */
+void test_chunked_dmr_print()
+{
+    auto_ptr<DMR> dmr(new DMR);
+    DmrppTypeFactory dtf;
+    dmr->set_factory(&dtf);
+
+    string dmr_file = string(TEST_DATA_DIR).append("/").append("chunked_fourD.h5.dmrpp");
+    BESDEBUG("dmrpp", "Opening: " << dmr_file << endl);
+    ifstream in(dmr_file.c_str());
+    parser.intern(in, dmr.get(), false);
+
+    XMLWriter xml;
+    print_dmrpp(xml, *dmr);
+    string dmr_src = string(xml.get_doc());
+    BESDEBUG("dmrpp", "DMR SRC: " << endl << dmr_src << endl);
+
+}
+
+/******************************************************
+ *
+ */
+H5D_chunk_storage_info_t* get_hdf5_chunkes_info(string h5_file_name, string h5_dset_path, H5D_chunk_storage_info_t* chunk_st_ptr, bool debug)
+{
+    BESDEBUG("dmrpp", "Use: ./h5dstoreinfo h5_file_name h5_dset_path." << endl);
+
+    hid_t file = -1; /* handles */
+    hid_t dataset;
+
+    herr_t status;
+    unsigned int num_chunk_dims = 0;
+
+    /*
+     * Open the file and the dataset.
+     */
+    file = H5_DLL::H5Fopen(h5_file_name.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+    if (file < 0) {
+        BESDEBUG("dmrpp", "HDF5 file %s cannot be opened successfully,check the file name and try again." << h5_file_name << endl);
+    }
+
+    H5G_info_t ginfo;
+    hsize_t nelems = 0;
+
+    if(H5_DLL::H5Gget_info(file, &ginfo)<0) {
+        throw InternalErr(__FILE__,__LINE__,"Cannot get the HDF5 object info. successfully");
+    }
+
+    dataset = H5_DLL::H5Dopen2(file, h5_dset_path.c_str(), H5P_DEFAULT);
+    if (dataset < 0) {
+        H5Fclose(file);
+        BESDEBUG("dmrpp", "HDF5 dataset %s cannot be opened successfully,check the dataset path and try again." << h5_dset_path);
+    }
+
+    uint8_t layout_type = 0;
+    uint8_t storage_status = 0;
+    int num_chunk = 0;
+
+    status = H5Dget_dataset_storage_info(dataset, &layout_type, (hsize_t*) &num_chunk, &storage_status);
+    if (status < 0) {
+        H5Dclose(dataset);
+        H5Fclose(file);
+        BESDEBUG("dmrpp", "Cannot get HDF5 dataset storage info. successfully." << endl);
+    }
+    /* layout_type:  2 chunk */
+    if (storage_status > 0 && layout_type == 2) {/*chunking storage */
+        BESDEBUG("dmrpp", "storage: chunked." << endl);
+        BESDEBUG("dmrpp", "   Number of chunks is " << num_chunk << endl);
+
+        /* Allocate the memory for the struct to obtain the chunk storage information */
+        chunk_st_ptr = (H5D_chunk_storage_info_t*) calloc(num_chunk, sizeof(H5D_chunk_storage_info_t));
+        if (!chunk_st_ptr) {
+            H5Dclose(dataset);
+            H5Fclose(file);
+            BESDEBUG("dmrpp", "Cannot allocate the memory to store the chunked storage info." << endl);
+        }
+
+        if (H5Dget_dataset_chunk_storage_info(dataset, chunk_st_ptr, &num_chunk_dims) < 0) {
+            H5Dclose(dataset);
+            H5Fclose(file);
+            BESDEBUG("dmrpp", "Cannot get HDF5 chunk storage info. successfully." << endl);
+        }
+
+        if (debug) {
+            BESDEBUG("dmrpp", "<h4:chunks>" << endl);
+            BESDEBUG("dmrpp", "<    h4:chunkDimensionSizes>20 20 20 20</h4:chunkDimensionSizes>" << endl);
+            for (int i = 0; i < num_chunk; i++) {
+                std::stringstream ss;
+                string delim = "";
+                for (int j = 0; j < (int) num_chunk_dims - 1; j++) {
+                    ss << delim << to_string(chunk_st_ptr[i].chunk_offset[j]);
+                    delim = ",";
+                }
+                BESDEBUG("dmrpp", "    <h4:byteStream offset='" << chunk_st_ptr[i].chunk_addr << "' nBytes='" << chunk_st_ptr[i].nbytes <<"' chunkPositionInArray='[" << ss.str()<< "]'/>" << endl);
+            }
+            BESDEBUG("dmrpp", "</h4:chunks>" << endl);
+        }
+
+        //free(chunk_st_ptr);
+    }
+    H5Dclose(dataset);
+    H5Fclose(file);
+    return chunk_st_ptr;
+}
+
+/******************************************************
+ *
+ */
+void test_chunked_hdf5()
+{
+    // Get chunks info:
+    string filename = string(TEST_DATA_DIR).append("/").append("chunked_fourD.h5");
+    /* Will be used to store the chunking info. */
+
+    // Get dmr:
+    string dmr_file = string(TEST_DATA_DIR).append("/").append("chunked_fourD.h5h.dmr");
+    auto_ptr<DMR> dmr(new DMR);
+    DmrppTypeFactory dtf;
+    dmr->set_factory(&dtf);
+
+    BESDEBUG("dmrpp", __func__ << "() - Opening: " << filename << endl);
+
+    ifstream in(dmr_file.c_str());
+    parser.intern(in, dmr.get(), false);
+    BESDEBUG("dmrpp", __func__ << "() - Parsing complete"<< endl);
+
+    H5D_chunk_storage_info_t* chunk_st_ptr = 0;
+    chunk_st_ptr = get_hdf5_chunkes_info(filename, "d_16_chunks", chunk_st_ptr, false);
+    BESDEBUG("dmrpp", "H5D_chunk_storage_info_t nbytes[0] = " << to_string(chunk_st_ptr[0].nbytes) << endl);
+
+    D4Group *g = dmr->root();
+
+    D4Group::Vars_iter v = g->var_begin();
+    DmrppCommon *dc = dynamic_cast<DmrppCommon*>(*v);
+//            // Compression type:
+//              string deflate("deflate");
+//              string shuffle("shuffle");
+//              string compressionType("");
+//              string deflate_level("6");  // TODO: ????
+//              if(dc->is_deflate_compression()) compressionType=deflate;
+//              if(dc->is_shuffle_compression()) compressionType=shuffle;
+    int chunk_num = (int) dc->get_immutable_chunks().size();
+    int chunk_dim_num = (int) dc->get_chunk_dimension_sizes().size();
+    vector<unsigned int> dims = dc->get_chunk_dimension_sizes();
+    std::stringstream sd;
+    string chunkDimensionSizes;
+    string delim = "";
+    for (int d = 0; d < chunk_dim_num; d++) {
+        sd << delim << to_string(dims[d]);
+        delim = " ";
+    }
+    chunkDimensionSizes = sd.str();
+    dc->ingest_chunk_dimension_sizes(chunkDimensionSizes);
+
+    vector<Chunk> &chunk_refs = dc->get_chunk_vec();
+    for (int i = 0; i < chunk_num; i++) {
+        Chunk &chunk = chunk_refs[i];
+
+        // Get offset string:
+        std::stringstream so;
+        string offset;
+        so << chunk.get_offset();
+        offset = so.str();
+
+        // Get nBytes string:
+        string nBytes;
+        std::stringstream sb;
+        sb << chunk.get_offset();
+        nBytes = sb.str();
+
+        // Get position in array string:
+        vector<unsigned int> pos = chunk.get_position_in_array();
+        std::stringstream sp;
+        string chunkPositionInArray;
+        string delim = "";
+        for (int j = 0; j < chunk_dim_num; j++) {
+            sp << delim << to_string(pos[j]);
+            delim = ",";
+        }
+        chunkPositionInArray = sp.str();
+
+        dc->add_chunk(chunk.get_data_url(), chunk.get_size(), chunk.get_offset(), chunkPositionInArray);
+    }
+
+    dc->dump(cout);
+
+    //XML output
+    XMLWriter xml;
+    print_dmrpp(xml, *dmr);
+    string dmr_src = string(xml.get_doc());
+    BESDEBUG("dmrpp", "DMR SRC: " << endl << dmr_src << endl);
+}
+#endif
+
+
     CPPUNIT_TEST_SUITE( DmrppParserTest );
 
     CPPUNIT_TEST(test_integer_scalar);
@@ -436,11 +765,17 @@ public:
     CPPUNIT_TEST(test_float_arrays);
 
     CPPUNIT_TEST(test_grid_1_2d);
-    CPPUNIT_TEST(test_nc4_group_ataomic);
+    CPPUNIT_TEST(test_nc4_group_atomic);
+
+#if 0
+    CPPUNIT_TEST(test_chunked_dmr_print);
+    CPPUNIT_TEST(test_chunked_hdf5);
+#endif
+
 
     CPPUNIT_TEST_SUITE_END();
         
-     };
+};
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DmrppParserTest);
 
@@ -453,7 +788,7 @@ int main(int argc, char*argv[])
 
     GetOpt getopt(argc, argv, "d");
     int option_char;
-    while ((option_char = getopt()) != -1)
+    while ((option_char = getopt()) != -1){
         switch (option_char) {
         case 'd':
             debug = true;  // debug is a static global
@@ -461,6 +796,7 @@ int main(int argc, char*argv[])
         default:
             break;
         }
+    }
 
     bool wasSuccessful = true;
     string test = "";
@@ -471,14 +807,12 @@ int main(int argc, char*argv[])
     }
     else {
         while (i < argc) {
-            test = string("dmrpp::DmrppParserTest::") + argv[i++];
-
-            cerr << endl << "Running test " << test << endl << endl;
-
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = dmrpp::DmrppParserTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
+        ++i;
         }
     }
-
     return wasSuccessful ? 0 : 1;
 }
 

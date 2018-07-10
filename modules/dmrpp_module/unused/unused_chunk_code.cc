@@ -4,7 +4,7 @@
     //########################### OneD Arrays ###############################
     case 1: {
         for(unsigned long i=0; i<chunk_refs->size(); i++) {
-            H4ByteStream h4bs = (*chunk_refs)[i];
+            Chunk h4bs = (*chunk_refs)[i];
             BESDEBUG("dmrpp", "----------------------------------------------------------------------------" << endl);
             BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Processing chunk[" << i << "]: BEGIN" << endl);
             BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - " << h4bs.to_string() << endl);
@@ -140,7 +140,7 @@
             vector<unsigned int> chunk_shape = get_chunk_dimension_sizes();
             for(unsigned long i=0; i<chunk_refs->size(); i++) {
                 BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - READING chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
-                H4ByteStream h4bs = (*chunk_refs)[i];
+                Chunk h4bs = (*chunk_refs)[i];
                 h4bs.read();
                 char * source_buffer = h4bs.get_rbuf();
                 vector<unsigned int> chunk_origin = h4bs.get_position_in_array();
@@ -205,7 +205,7 @@
                 BESDEBUG("dmrpp", "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - " << endl);
                 BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - Processing chunk[" << i << "]: " << endl);
                 BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << (*chunk_refs)[i].to_string() << endl);
-                H4ByteStream h4bs = (*chunk_refs)[i];
+                Chunk h4bs = (*chunk_refs)[i];
                 vector<unsigned int> chunk_origin = h4bs.get_position_in_array();
                 BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - chunk_origin:   " << vec2str(chunk_origin) << endl);
 
@@ -400,7 +400,7 @@
 
         for(unsigned long i=0; i<chunk_refs->size(); i++) {
             BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - READING chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
-            H4ByteStream h4bs = (*chunk_refs)[i];
+            Chunk h4bs = (*chunk_refs)[i];
             h4bs.read();
 
             vector<unsigned int> chunk_origin = h4bs.get_position_in_array();
@@ -452,7 +452,7 @@
 
         for(unsigned long i=0; i<chunk_refs->size(); i++) {
             BESDEBUG("dmrpp", "DmrppArray::"<< __func__ <<"() - READING chunk[" << i << "]: " << (*chunk_refs)[i].to_string() << endl);
-            H4ByteStream h4bs = (*chunk_refs)[i];
+            Chunk h4bs = (*chunk_refs)[i];
             h4bs.read();
 
             vector<unsigned int> chunk_origin = h4bs.get_position_in_array();

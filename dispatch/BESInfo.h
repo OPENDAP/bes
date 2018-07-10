@@ -81,6 +81,7 @@ public:
     virtual ~BESInfo();
 
     virtual void begin_response(const string &response_name, BESDataHandlerInterface &dhi);
+    virtual void begin_response(const string &response_name, map<string, string> *attrs, BESDataHandlerInterface &dhi);
     virtual void end_response();
 
     virtual void add_tag(const string &tag_name, const string &tag_data, map<string, string> *attrs = 0) = 0;

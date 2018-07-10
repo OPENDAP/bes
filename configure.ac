@@ -801,7 +801,7 @@ AC_CONFIG_FILES([Makefile
 		 standalone/Makefile
 		 
 		 server/Makefile
-		 server/test/Makefile
+
 		 bin/Makefile
 		 
 		 templates/Makefile
@@ -873,6 +873,8 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
 
     modules/dmrpp_module/Makefile
     modules/dmrpp_module/unit-tests/Makefile
+    modules/dmrpp_module/tests/Makefile
+    modules/dmrpp_module/tests/atlocal
     modules/dmrpp_module/data/Makefile
 
     modules/fileout_json/Makefile
@@ -963,20 +965,21 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     AC_CONFIG_TESTDIR(modules/cmr_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_json/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/debug_functions/tests, [standalone])
+    AC_CONFIG_TESTDIR(modules/dmrpp_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/freeform_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/xml_data_handler/tests, [standalone])
-    
     AC_CONFIG_TESTDIR(modules/netcdf_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_netcdf/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/gateway_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_gdal/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fits_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/gdal_handler/tests, [standalone])
-    AC_CONFIG_TESTDIR(modules/hdf4_handler/bes-testsuite, [standalone])
-    AC_CONFIG_TESTDIR(modules/hdf5_handler/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/ncml_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/ugrid_functions/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/w10n_handler/tests, [standalone])
+    
+    AC_CONFIG_TESTDIR(modules/hdf4_handler/bes-testsuite, [standalone])
+    AC_CONFIG_TESTDIR(modules/hdf5_handler/bes-testsuite, [standalone])
     
     ]
 )

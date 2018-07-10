@@ -82,15 +82,29 @@ void BESXMLInfo::cleanup()
 
 /** @brief begin the informational response
  *
- * This will add the response name as well as the &lt;response&gt; tag tot
- * he informational response object
+ * This will add the response name as well as the <response> tag to
+ * the informational response object
  *
  * @param response_name name of the response this information represents
  * @param dhi information about the request and response
  */
 void BESXMLInfo::begin_response(const string &response_name, BESDataHandlerInterface &dhi)
 {
-    BESInfo::begin_response(response_name, dhi);
+    map<string, string> empty_attrs;
+    begin_response(response_name,  &empty_attrs, dhi);
+
+}
+/** @brief begin the informational response
+ *
+ * This will add the response name as well as the &lt;response&gt; tag tot
+ * he informational response object
+ *
+ * @param response_name name of the response this information represents
+ * @param dhi information about the request and response
+ */
+void BESXMLInfo::begin_response(const string &response_name, map<string, string> *attrs, BESDataHandlerInterface &dhi)
+{
+    BESInfo::begin_response(response_name, attrs, dhi);
 
     _response_name = response_name;
 
@@ -172,7 +186,19 @@ void BESXMLInfo::begin_response(const string &response_name, BESDataHandlerInter
         string err = (string) "Error creating root element for response " + _response_name;
         throw BESInternalError(err, __FILE__, __LINE__);
     }
-}
+
+    map<string, string>::iterator it;
+    for ( it = attrs->begin(); it != attrs->end(); it++ )
+    {
+        rc = xmlTextWriterWriteAttribute( _writer, BAD_CAST it->first.c_str(), BAD_CAST it->second.c_str());
+        if (rc < 0) {
+            cleanup();
+            string err = (string) "Error creating root element for response " + _response_name;
+            throw BESInternalError(err, __FILE__, __LINE__);
+        }
+    }
+
+ }
 
 /** @brief end the response
  *

@@ -58,10 +58,10 @@ static bool debug_2 = false;
 #define DBG2(x) do { if (debug_2) (x); } while(false);
 
 using namespace CppUnit;
+using namespace bes;
 using namespace std;
 
 const string TEMP_FILE_TEMPLATE = BESUtil::assemblePath(TEST_BUILD_DIR, "tmp_XXXXXX");
-// const string BES_CONF_FILE = BESUtil::assemblePath(TEST_SRC_DIR, "bes.conf");
 const string BES_CONF_FILE = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.conf");
 
 class TemporaryFileTest: public CppUnit::TestFixture {

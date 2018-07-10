@@ -46,6 +46,7 @@
 #include "BESDataNames.h"
 #include "BESSyntaxUserError.h"
 #include "BESResponseNames.h"
+#include "BESDataHandlerInterface.h"
 
 BESDelContainersResponseHandler::BESDelContainersResponseHandler( const string &name )
     : BESResponseHandler( name )
@@ -126,8 +127,7 @@ BESDelContainersResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @see BESDataHandlerInterface
  */
 void
-BESDelContainersResponseHandler::transmit( BESTransmitter *transmitter,
-                               BESDataHandlerInterface &dhi )
+BESDelContainersResponseHandler::transmit( BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/ )
 {
 #if 0
     if( d_response_object )

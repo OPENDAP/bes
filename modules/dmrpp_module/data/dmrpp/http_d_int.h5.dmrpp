@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <Dataset 
     xmlns="http://xml.opendap.org/ns/DAP/4.0#" 
-    xmlns:h4="http://www.hdfgroup.org/HDF4/XML/schema/HDF4map/1.0.1" 
+    xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#"
     dapVersion="4.0" 
     dmrVersion="1.0" 
     name="d_int.h5"
-    xml:base="https://s3.amazonaws.com/cloudydap/samples/d_int.h5">
+    dmrpp:href="https://s3.amazonaws.com/cloudydap/samples/d_int.h5">
   <Int16 name="d16_1">
     <Dim size="2"/>
     <Attribute name="minimum" type="Int16">
@@ -14,7 +14,7 @@
     <Attribute name="maximum" type="Int16">
       <Value>32767</Value>
     </Attribute>
-    <h4:byteStream nBytes="4" uuid="4a0e86ee-484a-44f7-8c03-9c39b202d680" offset="2216" md5="094e70793148a97742191430ccea74c7"/>
+    <dmrpp:chunk nBytes="4"  offset="2216" />
   </Int16>
   <Int16 name="d16_2">
     <Dim size="2"/>
@@ -35,7 +35,7 @@
       <Value>2</Value>
       <Value>32767</Value>
     </Attribute>
-    <h4:byteStream nBytes="8" uuid="2ebf051a-cb32-45ae-b846-172a4ea451f9" offset="2220" md5="7d881b5a33bbc8bb7d21d3a24f803c6c"/>
+    <dmrpp:chunk nBytes="8"  offset="2220" />
   </Int16>
   <Int32 name="d32_1">
     <Dim size="2"/>
@@ -47,7 +47,7 @@
     <Attribute name="maximum" type="Int32">
       <Value>2147483647</Value>
     </Attribute>
-    <h4:byteStream nBytes="32" uuid="0ba99033-541d-44c6-8b7c-330ba3ce782e" offset="2228" md5="a9a3743b60524ab66f4d16546893f06b"/>
+    <dmrpp:chunk nBytes="32"  offset="2228" />
   </Int32>
   <Int32 name="d32_2">
     <Dim size="2"/>
@@ -61,6 +61,6 @@
     <Attribute name="maximum" type="Int32">
       <Value>2147483647</Value>
     </Attribute>
-    <h4:byteStream nBytes="128" uuid="49d12a6c-cda0-49b5-8fce-12e8d160b4f7" offset="2260" md5="780c27c624c158fb88305f41a767459d"/>
+    <dmrpp:chunk nBytes="128"  offset="2260" />
   </Int32>
 </Dataset>

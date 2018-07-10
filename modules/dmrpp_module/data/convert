@@ -1,0 +1,52 @@
+#!/bin/bash
+
+infile=$1
+outfile=$2
+
+echo "input file:  ${infile}"
+echo "output file: ${outfile}"
+
+dmrppNamespace="    xmlns:dmrpp=\"http://xml.opendap.org/dap/dmrpp/1.0.0#\""
+echo "dmrppNamespace: ${dmrppNamespace}"
+
+#       <h4:byteStream offset="5304" nBytes="32000" uuid="ec77e116-5c0c-4f92-9f21-592479a2bbb0" md5="a06ab7cf03daed2e76209059b8001d76"/>
+
+awk -v dmrppNamespace="${dmrppNamespace}" '{
+
+    if(index($0,"xmlns:h4")!=0){
+        for(i=1; i<=NF ;i++){
+            // convert h4 namespace prefix to our new one
+            if(index($i,"xmlns:h4")==1){
+                $i = dmrppNamespace;
+            }
+        }
+    }
+    if($1 == "<h4:byteStream"){
+        # print "Converting: ";
+        # print $0;
+        whitespace =  index($0,"<")-1;
+        $1 = "<dmrpp:chunk"
+        for(i=2; i<=NF ;i++){
+            if(index($i,"uuid")==1){
+                $i = "";
+            }
+            else if(index($i,"md5")==1){
+                $i = "";
+            }
+        }
+        if(match($0,"^.*/>$")==0){
+            $0 = $0"/>";
+        }
+        for(i=0;i<whitespace; i++){
+            printf(" ");
+        }
+    }
+    else {
+        // convert h4 elements to dmrpp
+        gsub("h4:","dmrpp:");
+        // convert xml base to dmrpp href
+        gsub("xml:base","dmrpp:href");
+    }
+    print $0;
+}' $infile > $outfile
+    

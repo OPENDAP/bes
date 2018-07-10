@@ -25,6 +25,9 @@
 #ifndef FONgGrid_h_
 #define FONgGrid_h_ 1
 
+#include <set>
+#include <string>
+
 class GDALDataset;
 
 namespace libdap {
@@ -52,11 +55,11 @@ private:
     libdap::Array *d_lat, *d_lon;
 
     // Sets of string values used to find stuff in attributes
-    set<string> d_coards_lat_units;
-    set<string> d_coards_lon_units;
+    std::set<std::string> d_coards_lat_units;
+    std::set<std::string> d_coards_lon_units;
 
-    set<string> d_lat_names;
-    set<string> d_lon_names;
+    std::set<std::string> d_lat_names;
+    std::set<std::string> d_lon_names;
 
     bool m_lat_unit_or_name_match(const string &var_units, const string &var_name, const string &long_name);
     bool m_lon_unit_or_name_match(const string &var_units, const string &var_name, const string &long_name);

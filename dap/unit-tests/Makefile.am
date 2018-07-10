@@ -5,8 +5,11 @@ AUTOMAKE_OPTIONS = foreign
 
 # Headers in 'tests' are used by the arrayT unit tests.
 
-AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch $(DAP_CFLAGS) 
-LDADD =  $(top_builddir)/dispatch/libbes_dispatch.la -ltest-types $(DAP_LIBS) $(LIBS)
+AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch $(DAP_CFLAGS) \
+-I$(top_srcdir)/modules/dmrpp_module
+
+LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(top_builddir)/dap/libdap_module.la \
+$(top_builddir)/modules/dmrpp_module/libdmrpp_module.la -ltest-types $(DAP_LIBS) $(LIBS)
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
@@ -36,7 +39,7 @@ noinst_DATA = response_cache pathinfo_files bes.conf
 response_cache:
 	test -d response_cache  || mkdir response_cache 
 
-# If 'input-files' does not exist, replicate it here. tar (used to make
+# If 'pathinfo_files' does not exist, replicate it here. tar (used to make
 # the source dist) dereferences symbolic links, so we make them this 
 # way to get distcheck to work.
 pathinfo_files:
@@ -117,7 +120,7 @@ TemporaryFileTest_OBJS = ../TempFile.o
 TemporaryFileTest_LDADD = $(TemporaryFileTest_OBJS) $(LDADD)
 
 GlobalMetadataStoreTest_SOURCES = GlobalMetadataStoreTest.cc $(TEST_SRC)
-GlobalMetadataStoreTest_OBJS = ../GlobalMetadataStore.o
+GlobalMetadataStoreTest_OBJS = ../GlobalMetadataStore.o ../TempFile.o
 GlobalMetadataStoreTest_LDADD = $(GlobalMetadataStoreTest_OBJS) $(LDADD)
 
 # StoredDap2ResultTest_SOURCES = StoredDap2ResultTest.cc  $(TEST_SRC)

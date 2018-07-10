@@ -92,7 +92,7 @@ public:
     virtual std::string get_root() const = 0;
 
     // Based on other code (show_catalogs()), use BESCatalogUtils::exclude() on
-    // a directory, but BESCatalogUtils::include() on a file.
+    // a directory, but BESCatalogUtils::include() on a file).
     virtual bes::CatalogNode *get_node(const std::string &path) const = 0;
 
     virtual void get_site_map(const string &prefix, const string &node_suffix, const string &leaf_suffix, ostream &out,

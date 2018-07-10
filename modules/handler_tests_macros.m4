@@ -5,8 +5,7 @@
 # the places it's needed and hack. If substantial changes are needed, try to copy
 # them back into this file. jhrg 12/14/15 
 
-AT_INIT([bes.conf besstandalone])
-# AT_COPYRIGHT([])
+# Before including these, use AT_INIT([ <name> ]) in the testsuite.at file. jhrg 4/25/18
 
 AT_TESTED([besstandalone])
 
@@ -14,6 +13,11 @@ AT_ARG_OPTION_ARG([baselines],
     [--baselines=yes|no   Build the baseline file for parser test 'arg'],
     [echo "baselines set to $at_arg_baselines";
      baselines=$at_arg_baselines],[baselines=])
+
+AT_ARG_OPTION_ARG([conf],
+    [--conf=<file>   Use <file> for the bes.conf file],
+    [echo "baselines set to $at_arg_baselines";
+     bes_conf=$at_arg_conf],[bes_conf=bes.conf])
 
 # Usage: _AT_TEST_*(<bescmd source>, <baseline file>, <xpass/xfail> [default is xpass] <repeat|cached> [default is no])
 
@@ -30,11 +34,11 @@ m4_define([_AT_BESCMD_TEST], [dnl
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
-        AT_CHECK([besstandalone $repeat -c $abs_builddir/bes.conf -i $input], [], [stdout])
+        AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
-        AT_CHECK([besstandalone $repeat -c $abs_builddir/bes.conf -i $input], [], [stdout])
+        AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test z$pass = zxfail])
         ])
@@ -56,11 +60,11 @@ m4_define([_AT_BESCMD_PATTERN_TEST], [dnl
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [0], [stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [0], [stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [0], [stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [0], [stdout])
         AT_CHECK([grep -f $baseline stdout], [0], [ignore])
         AT_XFAIL_IF([test "$3" = "xfail"])
         ])
@@ -78,11 +82,11 @@ m4_define([_AT_BESCMD_ERROR_TEST], [dnl
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [ignore], [stdout], [ignore])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [ignore], [stdout], [ignore])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [ignore], [stdout], [ignore])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [ignore], [stdout], [ignore])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test "$3" = "xfail"])
         ])
@@ -100,11 +104,11 @@ m4_define([_AT_BESCMD_BINARYDATA_TEST],  [dnl
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input | getdap -Ms -], [0], [stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap -Ms -], [0], [stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input | getdap -Ms -], [0], [stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap -Ms -], [0], [stdout])
         AT_CHECK([diff -b -B $baseline stdout], [0], [ignore])
         AT_XFAIL_IF([test "$3" = "xfail"])
         ])
@@ -122,11 +126,35 @@ m4_define([_AT_BESCMD_DAP4_BINARYDATA_TEST],  [dnl
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap4 -D -M -s -], [], [stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        AT_CHECK([diff -b -B $baseline stdout])
+        AT_XFAIL_IF([test "$3" = "xfail"])
+        ])
+
+    AT_CLEANUP
+])
+
+m4_define([_AT_NEW_BESCMD_DAP4_BINARYDATA_TEST],  [dnl
+
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([binary])
+    
+    input=$1
+    baseline=$2
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        REMOVE_DAP4_CHECKSUM([stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        REMOVE_DAP4_CHECKSUM([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test "$3" = "xfail"])
         ])
@@ -147,6 +175,18 @@ dnl jhrg 6/3/16
  
 m4_define([REMOVE_DATE_TIME], [dnl
     sed 's@[[0-9]]\{4\}-[[0-9]]\{2\}-[[0-9]]\{2\} [[0-9]]\{2\}:[[0-9]]\{2\}:[[0-9]]\{2\}@removed date-time@g' < $1 > $1.sed
+    dnl '
+    mv $1.sed $1
+])
+
+dnl Given a filename, remove the <Value> element of a DAP4 data response as
+dnl printed by getdap4 so that we don't have issues with comparing data values
+dnl on big- and little-endian machines. The value of the checksum is a function
+dnl of the bytes, so different word orders produce different checksums. jhrg 4/25/18
+
+m4_define([REMOVE_DAP4_CHECKSUM], [dnl
+    sed 's@<Value>[[0-9a-f]]\{8\}</Value>@removed checksum@g' < $1 > $1.sed
+    dnl '
     mv $1.sed $1
 ])
 
@@ -165,7 +205,7 @@ m4_define([_AT_BESCMD_NETCDF_TEST],  [dnl
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input > test.nc])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
         
         dnl first get the version number, then the header, then the data
         AT_CHECK([ncdump -k test.nc > $baseline.ver.tmp])
@@ -175,7 +215,7 @@ m4_define([_AT_BESCMD_NETCDF_TEST],  [dnl
         REMOVE_DATE_TIME([$baseline.data.tmp])
         ],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input > test.nc])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
         
         AT_CHECK([ncdump -k test.nc > tmp])
         AT_CHECK([diff -b -B $baseline.ver tmp])
@@ -211,7 +251,7 @@ m4_define([OLD_AT_BESCMD_NETCDF_TEST_OLD],  [dnl
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input > test.nc])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
         
         dnl first get the version number, then the header, then the data
         AT_CHECK([ncdump -k test.nc > $baseline.ver.tmp])
@@ -219,7 +259,7 @@ m4_define([OLD_AT_BESCMD_NETCDF_TEST_OLD],  [dnl
         AT_CHECK([ncdump test.nc > $baseline.data.tmp])
         ],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input > test.nc])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
         
         AT_CHECK([ncdump -k test.nc > tmp])
         AT_CHECK([diff -b -B $baseline.ver tmp])
@@ -256,11 +296,15 @@ m4_define([AT_BESCMD_ERROR_RESPONSE_TEST],
 [_AT_BESCMD_ERROR_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])
 ])
 
+dnl Depreacted
 m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
 [_AT_BESCMD_BINARYDATA_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])])
 
+m4_define([AT_BESCMD_BINARY_DAP2_RESPONSE_TEST],
+[_AT_BESCMD_BINARYDATA_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])])
+
 m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST],
-[_AT_BESCMD_DAP4_BINARYDATA_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])])
+[_AT_NEW_BESCMD_DAP4_BINARYDATA_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])])
 
 m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST],
 [_AT_BESCMD_NETCDF_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])])

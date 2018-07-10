@@ -182,6 +182,9 @@ exit 0
 %{_bindir}/besctl
 %{_bindir}/hyraxctl
 %{_bindir}/bescmdln
+%{_bindir}/build_dmrpp
+%{_bindir}/localBesGetDap
+%{_bindir}/populateMDS
 
 %{_libdir}/*.so.*
 %{_libdir}/bes/
@@ -211,6 +214,9 @@ exit 0
 # %doc __distribution_docs/api-html/
 
 %changelog
+* 5/22/18 - 3.19.1
+- Added build_dmrpp, localBesGetDap, and populateMDS to bin
+
 * Thu Apr  2 2015 EC2 James Gallagher <jgallagher@opendap.org> - 3.13.2-1.NASA
 - Added install of 'besd' script to /etc/rc.d/init.d 
 

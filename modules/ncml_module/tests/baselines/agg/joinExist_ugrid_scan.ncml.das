@@ -17,8 +17,6 @@ Attributes {
         Int32 start_index 1;
         String standard_name "face_node_connectivity";
     }
-    time {
-    }
     twoDnodedata {
         String coordinates "Y X";
         String mesh "fvcom_mesh";

@@ -41,7 +41,9 @@ namespace gateway {
  */
 class GatewayUtils {
 public:
+#if 0
     static std::vector<std::string> WhiteList;
+#endif
     static std::map<std::string, std::string> MimeList;
     static std::string ProxyProtocol;
     static std::string ProxyHost;
@@ -58,6 +60,9 @@ public:
     static void Get_type_from_disposition(const std::string &disp, std::string &type);
     static void Get_type_from_content_type(const std::string &ctype, std::string &type);
     static void Get_type_from_url(const std::string &url, std::string &type);
+#if 0
+    static bool Is_Whitelisted(const std::string &url);
+#endif
 };
 
 } // namespace gateway

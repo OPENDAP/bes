@@ -124,7 +124,9 @@ protected:
     BESDataHandlerInterface *d_dhi_ptr; ///< Allocated by the child class
     BESTransmitter *d_transmitter;  ///< The Transmitter to use for the result
 
+#if 0
     virtual int exception_manager(BESError &e);
+#endif
 
     virtual void end_request();
 
@@ -141,6 +143,8 @@ protected:
     BESInterface(ostream *strm);
 
     virtual ~BESInterface() { }
+
+    static int handleException(BESError &e, BESDataHandlerInterface &dhi);
 
 public:
     // This is the point where BESServerHandler::execute(Connection *c) passes control

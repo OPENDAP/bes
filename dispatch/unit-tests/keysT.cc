@@ -49,6 +49,8 @@ using std::endl;
 
 #include "test_config.h"
 
+using namespace std;
+
 static bool debug = false;
 static bool debug_2 = false;
 

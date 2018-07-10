@@ -36,6 +36,8 @@
 #include "BESDASResponse.h"
 #include "BESRequestHandlerList.h"
 #include "BESDapNames.h"
+#include "BESTransmitter.h"
+
 #include "GlobalMetadataStore.h"
 
 using namespace libdap;
@@ -79,11 +81,11 @@ BESDASResponseHandler::execute( BESDataHandlerInterface &dhi )
     GlobalMetadataStore::MDSReadLock lock;
 
     dhi.first_container();
-    if (mds) lock = mds->is_das_available(dhi.container->get_real_name());
+    if (mds) lock = mds->is_das_available(dhi.container->get_relative_name());
 
     if (mds && lock()) {
         // send the response
-        mds->get_das_response(dhi.container->get_real_name(), dhi.get_output_stream());
+        mds->write_das_response(dhi.container->get_relative_name(), dhi.get_output_stream());
         // suppress transmitting a ResponseObject in transmit()
         d_response_object = 0;
     }

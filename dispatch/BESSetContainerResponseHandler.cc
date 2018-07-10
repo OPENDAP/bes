@@ -42,6 +42,7 @@
 #include "BESDataNames.h"
 #include "BESSyntaxUserError.h"
 #include "BESResponseNames.h"
+#include "BESDataHandlerInterface.h"
 #include "BESDebug.h"
 
 BESSetContainerResponseHandler::BESSetContainerResponseHandler(const string &name) :
@@ -84,25 +85,24 @@ void BESSetContainerResponseHandler::execute(BESDataHandlerInterface &dhi)
     string symbolic_name = dhi.data[SYMBOLIC_NAME];
     string real_name = dhi.data[REAL_NAME];
     string container_type = dhi.data[CONTAINER_TYPE];
-    BESDEBUG( "bes", "BESSetContainerResponseHandler::execute store = "
-            << dhi.data[STORE_NAME] << endl );
-    BESDEBUG( "bes", "BESSetContainerResponseHandler::execute symbolic = "
-            << dhi.data[SYMBOLIC_NAME] << endl );
-    BESDEBUG( "bes", "BESSetContainerResponseHandler::execute real = "
-            << dhi.data[REAL_NAME] << endl );
-    BESDEBUG( "bes", "BESSetContainerResponseHandler::execute type = "
-            << dhi.data[CONTAINER_TYPE] << endl );
+
+    BESDEBUG("bes", "BESSetContainerResponseHandler::execute store = " << dhi.data[STORE_NAME] << endl);
+    BESDEBUG("bes", "BESSetContainerResponseHandler::execute symbolic = " << dhi.data[SYMBOLIC_NAME] << endl);
+    BESDEBUG("bes", "BESSetContainerResponseHandler::execute real = " << dhi.data[REAL_NAME] << endl);
+    BESDEBUG("bes", "BESSetContainerResponseHandler::execute type = " << dhi.data[CONTAINER_TYPE] << endl);
+
     BESContainerStorage *cp = BESContainerStorageList::TheList()->find_persistence(store_name);
     if (cp) {
         BESDEBUG("bes", "BESSetContainerResponseHandler::execute adding the container..." << endl);
+
         cp->del_container(symbolic_name);
         cp->add_container(symbolic_name, real_name, container_type);
-        BESDEBUG("bes", "BESSetContainerResponseHandler::execute Done" << endl);
 
+        BESDEBUG("bes", "BESSetContainerResponseHandler::execute Done" << endl);
     }
     else {
-        string ret = (string) "Unable to add container \"" + symbolic_name + "\" to container storage \"" + store_name
-                + "\". Store does not exist.";
+        string ret = (string) "Unable to add container '" + symbolic_name + "' to container storage '" + store_name
+                + "'. Store does not exist.";
         throw BESSyntaxUserError(ret, __FILE__, __LINE__);
     }
 }
@@ -119,7 +119,7 @@ void BESSetContainerResponseHandler::execute(BESDataHandlerInterface &dhi)
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void BESSetContainerResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
+void BESSetContainerResponseHandler::transmit(BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/)
 {
 #if 0
     if (d_response_object) {

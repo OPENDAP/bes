@@ -30,9 +30,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <cstdlib>
-#include <cerrno>
-#include <cstring>
+#include "config.h"
 
 #include <DDS.h>
 #include <DataDDS.h>
@@ -43,18 +41,25 @@
 #include "BESDapNames.h"
 #include "BESDataNames.h"
 #include "BESContextManager.h"
+#include "TheBESKeys.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"
+#include "BESTransmitter.h"
 
+#include "GlobalMetadataStore.h"
+
+using namespace bes;
 using namespace libdap;
 using namespace std;
 
-BESDataResponseHandler::BESDataResponseHandler( const string &name )
-    : BESResponseHandler( name )
+BESDataResponseHandler::BESDataResponseHandler(const string &name) :
+    BESResponseHandler(name), d_use_dmrpp(false), d_dmrpp_name(DMRPP_DEFAULT_NAME)
 {
+    d_use_dmrpp = TheBESKeys::TheKeys()->read_bool_key(USE_DMRPP_KEY, false);   // defined in BESDapNames.h
+    d_dmrpp_name = TheBESKeys::TheKeys()->read_string_key(DMRPP_NAME_KEY, DMRPP_DEFAULT_NAME);
 }
 
-BESDataResponseHandler::~BESDataResponseHandler( )
+BESDataResponseHandler::~BESDataResponseHandler()
 {
 }
 
@@ -75,47 +80,71 @@ BESDataResponseHandler::~BESDataResponseHandler( )
 void BESDataResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
     dhi.action_name = DATA_RESPONSE_STR;
+
+    if (d_use_dmrpp) {
+        GlobalMetadataStore *mds = GlobalMetadataStore::get_instance(); // mds may be NULL
+
+        GlobalMetadataStore::MDSReadLock lock;
+        dhi.first_container();
+        if (mds) lock = mds->is_dmrpp_available(dhi.container->get_relative_name());
+
+        // If we were able to lock the DMR++ it must exist; use it.
+        if (mds && lock()) {
+            BESDEBUG("dmrpp",
+                "In BESDataResponseHandler::execute(): Found a DMR++ response for '" << dhi.container->get_relative_name() << "'" << endl);
+
+            // Redirect the request to the DMR++ handler
+            dhi.container->set_container_type(d_dmrpp_name);
+
+            // Add information to the container so the dmrpp handler works
+            // This tells DMR++ handler to look for this in the MDS
+            dhi.container->set_attributes(MDS_HAS_DMRPP);
+        }
+    }
+
+#if 0
+    GlobalMetadataStore *mds = GlobalMetadataStore::get_instance(); // mds may be NULL
+
+    GlobalMetadataStore::MDSReadLock lock;
+    dhi.first_container();
+    if (mds) lock = mds->is_dmrpp_available(dhi.container->get_relative_name());
+
+    // If we were able to lock the DMR++ it must exist; use it.
+    if (mds && lock()) {
+        BESDEBUG("dmrpp", "In BESDataResponseHandler::execute(): Found a DMR++ response for '"
+            << dhi.container->get_relative_name() << "'" << endl);
+
+        // Redirect the request to the DMR++ handler
+        // FIXME How do we get this value in a repeatable way? From bes.conf, of course jhrg 5/31/18
+        dhi.container->set_container_type("dmrpp");
+
+        // Add information to the container so the dmrpp handler works
+        // This tells DMR++ handler to look for this in the MDS
+        dhi.container->set_attributes(MDS_HAS_DMRPP);
+    }
+#endif
+
+
+    bool rsl_found;
+    int response_size_limit = BESContextManager::TheManager()->get_context_int("max_response_size", rsl_found);
+
     // NOTE: It is the responsibility of the specific request handler to set
     // the BaseTypeFactory. It is set to NULL here
     DDS *dds = new DDS(NULL, "virtual");
+    if (rsl_found)
+        dds->set_response_limit(response_size_limit); // The default for this is zero
+
     BESDataDDSResponse *bdds = new BESDataDDSResponse(dds);
 
-    // Set the DAP protocol version requested by the client. 2/25/11 jhrg
-
     dhi.first_container();
-
-    BESDEBUG("version", "Initial CE: " << dhi.container->get_constraint() << endl);
-
-    // FIXME Keywords should not be used and this should be removed. jhrg 2/20/15
-    dhi.container->set_constraint(dds->get_keywords().parse_keywords(dhi.container->get_constraint()));
-    BESDEBUG("version", "CE after keyword processing: " << dhi.container->get_constraint() << endl);
-
-    bool found;
-    string response_size_limit = BESContextManager::TheManager()->get_context("max_response_size", found);
-    if (found && !response_size_limit.empty()) {
-        char *endptr;
-        errno = 0;
-        long rsl = strtol(response_size_limit.c_str(), &endptr, /*int base*/ 10);
-        if (rsl == 0 && errno > 0) {
-            string err = strerror(errno);
-            delete dds; dds = 0;
-            delete bdds; bdds = 0;
-            throw BESInternalError("The responseSizeLimit context value ("
-                    + response_size_limit + ") was bad: " + err, __FILE__, __LINE__);
-       }
-
-        dds->set_response_limit(rsl); // The default for this is zero
-    }
-
-    // FIXME This should be fixed too... (see above re keywords). jhrg 2/20/15
-    if (dds->get_keywords().has_keyword("dap")) {
-        dds->set_dap_version(dds->get_keywords().get_keyword_value("dap"));
-    }
-    else if (!bdds->get_dap_client_protocol().empty()) {
+    // Set the DAP protocol version requested by the client. 2/25/11 jhrg
+    if (!bdds->get_dap_client_protocol().empty()) {
         dds->set_dap_version(bdds->get_dap_client_protocol());
     }
 
     d_response_object = bdds;
+
+    // This calls RequestHandlerList::execute_current()
     BESRequestHandlerList::TheList()->execute_each(dhi);
 }
 
@@ -130,13 +159,10 @@ void BESDataResponseHandler::execute(BESDataHandlerInterface &dhi)
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void
-BESDataResponseHandler::transmit( BESTransmitter *transmitter,
-                                  BESDataHandlerInterface &dhi )
+void BESDataResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
 {
-    if( d_response_object )
-    {
-	transmitter->send_response( DATA_SERVICE, d_response_object, dhi ) ;
+    if (d_response_object) {
+        transmitter->send_response( DATA_SERVICE, d_response_object, dhi);
     }
 }
 
@@ -146,19 +172,17 @@ BESDataResponseHandler::transmit( BESTransmitter *transmitter,
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESDataResponseHandler::dump( ostream &strm ) const
+void BESDataResponseHandler::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESDataResponseHandler::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    BESResponseHandler::dump( strm ) ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESDataResponseHandler::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    BESResponseHandler::dump(strm);
+    BESIndent::UnIndent();
 }
 
 BESResponseHandler *
-BESDataResponseHandler::DataResponseBuilder( const string &name )
+BESDataResponseHandler::DataResponseBuilder(const string &name)
 {
-    return new BESDataResponseHandler( name ) ;
+    return new BESDataResponseHandler(name);
 }
 

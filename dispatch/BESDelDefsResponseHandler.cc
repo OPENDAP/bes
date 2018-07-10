@@ -46,6 +46,7 @@
 #include "BESDataNames.h"
 #include "BESSyntaxUserError.h"
 #include "BESResponseNames.h"
+#include "BESDataHandlerInterface.h"
 
 BESDelDefsResponseHandler::BESDelDefsResponseHandler( const string &name )
     : BESResponseHandler( name )
@@ -122,8 +123,7 @@ BESDelDefsResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @see BESDataHandlerInterface
  */
 void
-BESDelDefsResponseHandler::transmit( BESTransmitter *transmitter,
-                               BESDataHandlerInterface &dhi )
+BESDelDefsResponseHandler::transmit( BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/ )
 {
 #if 0
 	if( d_response_object )

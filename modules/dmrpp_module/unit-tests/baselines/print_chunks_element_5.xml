@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<DMRpp:chunks compressionType="shuffle">
+    <DMRpp:chunkDimensionSizes>51 17</DMRpp:chunkDimensionSizes>
+    <DMRpp:chunk offset="200" nBytes="100" chunkPositionInArray="[10,20]"/>
+    <DMRpp:chunk offset="300" nBytes="100" chunkPositionInArray="[20,30]"/>
+</DMRpp:chunks>

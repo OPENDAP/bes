@@ -47,9 +47,9 @@
  * @see BESResponseObject
  * @see BESResponseNames
  */
-bool BESRequestHandler::add_handler(const string &handler_name, p_request_handler_method handler_method)
+bool BESRequestHandler::add_method(const string &handler_name, p_request_handler_method handler_method)
 {
-    if (find_handler(handler_name) == 0) {
+    if (find_method(handler_name) == 0) {
         _handler_list[handler_name] = handler_method;
         return true;
     }
@@ -63,7 +63,7 @@ bool BESRequestHandler::add_handler(const string &handler_name, p_request_handle
  * @return true if successfully removed, false if not found
  * @see BESResponseNames
  */
-bool BESRequestHandler::remove_handler(const string &handler_name)
+bool BESRequestHandler::remove_method(const string &handler_name)
 {
     BESRequestHandler::Handler_iter i;
     i = _handler_list.find(handler_name);
@@ -84,7 +84,7 @@ bool BESRequestHandler::remove_handler(const string &handler_name)
  * @see BESResponseObject
  * @see BESResponseNames
  */
-p_request_handler_method BESRequestHandler::find_handler(const string &handler_name)
+p_request_handler_method BESRequestHandler::find_method(const string &handler_name)
 {
     BESRequestHandler::Handler_citer i;
     i = _handler_list.find(handler_name);
@@ -101,7 +101,7 @@ p_request_handler_method BESRequestHandler::find_handler(const string &handler_n
  * @see BESResponseObject
  * @see BESResponseNames
  */
-string BESRequestHandler::get_handler_names()
+string BESRequestHandler::get_method_names()
 {
     string ret = "";
     bool first_name = true;
