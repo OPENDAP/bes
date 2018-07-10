@@ -1,0 +1,14 @@
+Source: bes
+Maintainer: Kodi Neumiller <kneumiller@mtech.edu>
+Section: misc
+Priority: optional
+Standards-Version: 3.9.2
+Build-Depends: debhelper (>= 9)
+
+Package: bes
+Architecture: amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: bes
+ The bes library is a C++ daemon. This
+ package contains the library....
+
