@@ -31,8 +31,5 @@ m4_define([AT_BESCMD_RESPONSE_TEST],
 
 AT_BESCMD_RESPONSE_TEST([fnoc1_abstract_object_METADATA.bescmd])
 AT_BESCMD_RESPONSE_TEST([fnoc1_abstract_object_DATA.bescmd])
-
 AT_BESCMD_RESPONSE_TEST([coads_climatology_abstract_object_METADATA.bescmd])
 AT_BESCMD_RESPONSE_TEST([coads_climatology_abstract_object_DATA.bescmd])
-
-AT_BESCMD_RESPONSE_TEST([function_result_unwrap.bescmd])
