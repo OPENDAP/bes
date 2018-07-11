@@ -1,67 +1,91 @@
 {
-  "name": "fnoc1.nc",
-  "attributes": [
-    {
-      "name": "NC_GLOBAL",
-      "attributes": [
-        {"name": "base_time", "value": ["88- 10-00:00:00"]},
-        {"name": "title", "value": [" FNOC UV wind components from 1988- 10 to 1988- 13."]}
-      ]
+  "type": "CoverageCollection",
+  "domainType": "Grid",
+  "parameters": {
+    "u": {
+      "type": "Parameter",
+      "description": "u",
+      "unit": {
+        "label": {
+          "en": "meter per second"
+        }
+      },
+      "symbol": {
+        "value": "meter per second",
+        "type": ""
+      },
+      "observedProperty": {
+        "id": null,
+        "label": {
+          "en": "Vector wind eastward component"
+        }
+      }
     },
-    {
-      "name": "DODS_EXTRA",
-      "attributes": [
-        {"name": "Unlimited_Dimension", "value": ["time_a"]}
-      ]
+    "v": {
+      "type": "Parameter",
+      "description": "v",
+      "unit": {
+        "label": {
+          "en": "meter per second"
+        }
+      },
+      "symbol": {
+        "value": "meter per second",
+        "type": ""
+      },
+      "observedProperty": {
+        "id": null,
+        "label": {
+          "en": "Vector wind northward component"
+        }
+      }
     }
-  ],
-  "leaves": [
-    {
-      "name": "u",
-      "type": "Int16",
-      "attributes": [
-        {"name": "units", "value": ["meter per second"]},
-        {"name": "long_name", "value": ["Vector wind eastward component"]},
-        {"name": "missing_value", "value": ["-32767"]},
-        {"name": "scale_factor", "value": ["0.005"]}
-      ],
-      "shape": [16,17,21]
-    },
-    {
-      "name": "v",
-      "type": "Int16",
-      "attributes": [
-        {"name": "units", "value": ["meter per second"]},
-        {"name": "long_name", "value": ["Vector wind northward component"]},
-        {"name": "missing_value", "value": ["-32767"]},
-        {"name": "scale_factor", "value": ["0.005"]}
-      ],
-      "shape": [16,17,21]
-    },
-    {
-      "name": "lat",
-      "type": "Float32",
-      "attributes": [
-        {"name": "units", "value": ["degree North"]}
-      ],
-      "shape": [17]
-    },
-    {
-      "name": "lon",
-      "type": "Float32",
-      "attributes": [
-        {"name": "units", "value": ["degree East"]}
-      ],
-      "shape": [21]
-    },
-    {
-      "name": "time",
-      "type": "Float32",
-      "attributes": [
-        {"name": "units", "value": ["hours from base_time"]}
-      ],
-      "shape": [16]
+  },
+  "referencing": [{
+    "coordinates": ["t"],
+    "system": {
+      "type": "TemporalRS",
+      "calendar": "Gregorian"
     }
-  ],
-  "nodes": []
+  },
+  {
+    "coordinates": ["x", "y"],
+    "system": {
+      "type": "GeographicCRS",
+      "id": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+    }
+  }],
+  "coverages": [{
+    "type": "Coverage",
+    "domain": {
+      "type" : "Domain",
+      "axes": {
+        "x": {
+          "values": []
+        },
+        "y": {
+          "values": []
+        },
+        "t": {
+          "values": ["2018-01-01T00:12:20Z"]
+        }
+      }
+    },
+    "ranges": {
+      "u": {
+        "type": "NdArray",
+        "dataType": "integer", 
+        "axisNames": ["t", "y", "x"],
+        "shape": [16, 17, 21],
+        "values": []
+      },
+      "v": {
+        "type": "NdArray",
+        "dataType": "integer", 
+        "axisNames": ["t", "y", "x"],
+        "shape": [16, 17, 21],
+        "values": []
+      }
+    }
+  }]
 }
