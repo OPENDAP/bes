@@ -108,4 +108,7 @@
 #define SILENT "silent"
 #define BUFFERED "buffered"
 
+/// Context name used to select XML errors regardless of bes.conf setting.
+#define XML_ERRORS "xml"
+
 #endif // D_BESDataNames_h

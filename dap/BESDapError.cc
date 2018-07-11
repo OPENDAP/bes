@@ -39,9 +39,28 @@ using std::ostringstream;
 #include "BESContextManager.h"
 #include "BESDapErrorInfo.h"
 
+#if 0
+#include "BESInfoList.h"
+#include "TheBESKeys.h"
+#endif
+
+BESDapError::BESDapError(const string &s, bool fatal, libdap::ErrorCode ec, const string &file, int line) :
+        BESError(s, 0, file, line), d_dap_error_code(ec)
+{
+    set_bes_error_type(convert_error_code(ec, fatal));
+
+#if 0
+    if (fatal)
+    set_bes_error_type(BES_INTERNAL_FATAL_ERROR);
+    else
+    set_bes_error_type(BES_INTERNAL_ERROR);
+#endif
+
+}
+
 /** @brief converts the libdap error code to the bes error type
  *
- * This functions converts the libdap error codes in Error to the proper BES
+ * This function converts the libdap error codes in Error to the proper BES
  * error type.
  *
  *    undefined_error   1000 -> BES_INTERNAL_ERROR
@@ -63,38 +82,151 @@ using std::ostringstream;
  */
 int BESDapError::convert_error_code(int error_code, int current_error_type)
 {
-	if (current_error_type == BES_INTERNAL_FATAL_ERROR) return current_error_type;
-	switch (error_code) {
-	case undefined_error:
-	case unknown_error: {
-		return BES_INTERNAL_ERROR;
-		break;
+    if (current_error_type == BES_INTERNAL_FATAL_ERROR) return current_error_type;
+
+    switch (error_code) {
+    case undefined_error:
+    case unknown_error: {
+        return BES_INTERNAL_ERROR;
+        break;
+    }
+    case internal_error: {
+        return BES_INTERNAL_FATAL_ERROR;
+        break;
+    }
+    case no_such_file: {
+        return BES_NOT_FOUND_ERROR;
+        break;
+    }
+    case no_such_variable:
+    case malformed_expr: {
+        return BES_SYNTAX_USER_ERROR;
+        break;
+    }
+    case no_authorization:
+    case cannot_read_file:
+    case dummy_message: {
+        return BES_FORBIDDEN_ERROR;
+        break;
+    }
+    default: {
+        return BES_INTERNAL_ERROR;
+        break;
+    }
+    }
+}
+
+int BESDapError::convert_error_code(int error_code, bool fatal)
+{
+    return convert_error_code(error_code, (fatal) ? BES_INTERNAL_FATAL_ERROR: BES_INTERNAL_ERROR);
+}
+
+#if 0
+void log_error(BESError &e)
+{
+    string error_name = "";
+    // TODO This should be configurable; I'm changing the values below to always log all errors.
+    // I'm also confused about the actual intention. jhrg 11/14/17
+    bool only_log_to_verbose = false;
+    switch (e.get_bes_error_type()) {
+    case BES_INTERNAL_FATAL_ERROR:
+        error_name = "BES Internal Fatal Error";
+        break;
+
+    case BES_INTERNAL_ERROR:
+        error_name = "BES Internal Error";
+        break;
+
+    case BES_SYNTAX_USER_ERROR:
+        error_name = "BES User Syntax Error";
+        only_log_to_verbose = false; // TODO Was 'true.' jhrg 11/14/17
+        break;
+
+    case BES_FORBIDDEN_ERROR:
+        error_name = "BES Forbidden Error";
+        break;
+
+    case BES_NOT_FOUND_ERROR:
+        error_name = "BES Not Found Error";
+        only_log_to_verbose = false; // TODO was 'true.' jhrg 11/14/17
+        break;
+
+    default:
+        error_name = "Unrecognized BES Error";
+        break;
+    }
+
+    if (only_log_to_verbose) {
+            VERBOSE("ERROR: " << error_name << ", type: " << e.get_bes_error_type() << ", file: " << e.get_file() << ":"
+                    << e.get_line()  << ", message: " << e.get_message() << endl);
+
+    }
+	else {
+		LOG("ERROR: " << error_name << ": " << e.get_message() << endl);
 	}
-	case internal_error: {
-		return BES_INTERNAL_FATAL_ERROR;
-		break;
-	}
-	case no_such_file: {
-		return BES_NOT_FOUND_ERROR;
-		break;
-	}
-	case no_such_variable:
-	case malformed_expr: {
-		return BES_SYNTAX_USER_ERROR;
-		break;
-	}
-	case no_authorization:
-	case cannot_read_file:
-	case dummy_message: {
-		return BES_FORBIDDEN_ERROR;
-		break;
-	}
-	default: {
-		return BES_INTERNAL_ERROR;
-		break;
-	}
-	}
-	return BES_INTERNAL_ERROR;
+}
+#endif
+
+
+#if 0
+/** @brief Register an exception handler with the manager
+
+ Signature of the function is as follows:
+
+ int function_name( BESError &e, BESDataHandlerInterface &dhi ) ;
+
+ If the handler does not handle the exception then it should return
+ 0. Otherwise, return a status code. Pre-defined status
+ codes can be found in BESError.h
+
+ @param ehm exception handler function
+ @see BESError
+ */
+void BESDapError::add_ehm_callback(ptr_bes_ehm ehm)
+{
+    _ehm_list.push_back(ehm);
+}
+#endif
+
+
+#if 0
+int BESDapError::handleBESError(BESError &e, BESDataHandlerInterface &dhi)
+{
+    // Let's see if any of these exception callbacks can handle the
+    // exception. The first callback that can handle the exception wins
+    for (ehm_iter i = _ehm_list.begin(), ei = _ehm_list.end(); i != ei; ++i) {
+        ptr_bes_ehm p = *i;
+        int handled = p(e, dhi);
+        if (handled) {
+            return handled;
+        }
+    }
+
+    dhi.error_info = BESInfoList::TheList()->build_info();
+    string action_name = dhi.action_name;
+    if (action_name.empty()) action_name = "BES";
+    dhi.error_info->begin_response(action_name, dhi);
+
+    string administrator = "";
+    try {
+        bool found = false;
+        vector<string> vals;
+        string key = "BES.ServerAdministrator";
+        TheBESKeys::TheKeys()->get_value(key, administrator, found);
+    }
+    catch (...) {
+        administrator = DEFAULT_ADMINISTRATOR;
+    }
+    if (administrator.empty()) {
+        administrator = DEFAULT_ADMINISTRATOR;
+    }
+    dhi.error_info->add_exception(e, administrator);
+    dhi.error_info->end_response();
+
+    // Write a message in the log file about this error...
+    log_error(e);
+
+    return e.get_bes_error_type();
 }
 
 /** @brief handles exceptions if the error context is set to dap2
@@ -108,6 +240,41 @@ int BESDapError::convert_error_code(int error_code, int current_error_type)
  */
 int BESDapError::handleException(BESError &e, BESDataHandlerInterface &dhi)
 {
+<<<<<<< HEAD
+    // If we are handling errors in a dap2 context, then create a
+    // DapErrorInfo object to transmit/print the error as a dap2
+    // response.
+    bool found = false;
+    // I changed 'dap_format' to 'errors' in the following line. jhrg 10/6/08
+    string context = BESContextManager::TheManager()->get_context("errors", found);
+    if (context == "dap2" | context == "dap") {
+        ErrorCode ec = unknown_error;
+        BESDapError *de = dynamic_cast<BESDapError*>(&e);
+        if (de) {
+            ec = de->get_dap_error_code();
+        }
+        e.set_bes_error_type(convert_error_code(ec, e.get_bes_error_type()));
+        dhi.error_info = new BESDapErrorInfo(ec, e.get_message());
+
+        return e.get_bes_error_type();
+    }
+    else {
+        // If we are not in a dap2 context and the exception is a dap
+        // handler exception, then convert the error message to include the
+        // error code. If it is or is not a dap exception, we simply return
+        // that the exception was not handled.
+        BESError *e_p = &e;
+        BESDapError *de = dynamic_cast<BESDapError*>(e_p);
+        if (de) {
+            ostringstream s;
+            s << "libdap exception building response: error_code = " << de->get_dap_error_code() << ": "
+            << de->get_message();
+            e.set_message(s.str());
+            e.set_bes_error_type(convert_error_code(de->get_dap_error_code(), e.get_bes_error_type()));
+        }
+    }
+    return 0;
+=======
 	// If we are handling errors in a dap2 context, then create a
 	// DapErrorInfo object to transmit/print the error as a dap2
 	// response.
@@ -118,12 +285,12 @@ int BESDapError::handleException(BESError &e, BESDataHandlerInterface &dhi)
 		ErrorCode ec = unknown_error;
 		BESDapError *de = dynamic_cast<BESDapError*>(&e);
 		if (de) {
-			ec = de->get_error_code();
+			ec = de->get_dap_error_code();
 		}
-		e.set_error_type(convert_error_code(ec, e.get_error_type()));
+		e.set_bes_error_type(convert_error_code(ec, e.get_bes_error_type()));
 		dhi.error_info = new BESDapErrorInfo(ec, e.get_message());
 
-		return e.get_error_type();
+		return e.get_bes_error_type();
 	}
 	else {
 		// If we are not in a dap2 context and the exception is a dap
@@ -134,15 +301,18 @@ int BESDapError::handleException(BESError &e, BESDataHandlerInterface &dhi)
 		BESDapError *de = dynamic_cast<BESDapError*>(e_p);
 		if (de) {
 			ostringstream s;
-			s << "libdap exception building response: error_code = " << de->get_error_code() << ": "
+			s << "libdap exception building response: error_code = " << de->get_dap_error_code() << ": "
 					<< de->get_message();
 			e.set_message(s.str());
-			e.set_error_type(convert_error_code(de->get_error_code(), e.get_error_type()));
+			e.set_bes_error_type(convert_error_code(de->get_dap_error_code(), e.get_bes_error_type()));
 		}
 	}
 
 	return 0;
+>>>>>>> master
 }
+#endif
+
 
 /** @brief dumps information about this object
  *
@@ -154,8 +324,7 @@ void BESDapError::dump(ostream &strm) const
 {
 	strm << BESIndent::LMarg << "BESDapError::dump - (" << (void *) this << ")" << endl;
 	BESIndent::Indent();
-	strm << BESIndent::LMarg << "error code = " << get_error_code() << endl;
+	strm << BESIndent::LMarg << "error code = " << get_dap_error_code() << endl;
 	BESError::dump(strm);
 	BESIndent::UnIndent();
 }
-

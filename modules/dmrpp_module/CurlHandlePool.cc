@@ -29,7 +29,10 @@
 #include <curl/curl.h>
 #include <curl/multi.h>
 
+#include "BESDebug.h"
 #include "BESInternalError.h"
+#include "BESForbiddenError.h"
+#include "RemoteAccess.h"
 
 #include "CurlHandlePool.h"
 #include "Chunk.h"
@@ -39,6 +42,7 @@
 
 using namespace dmrpp;
 using namespace std;
+using bes::RemoteAccess;
 
 dmrpp_easy_handle::dmrpp_easy_handle()
 {
@@ -203,6 +207,14 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
         // Once here, d_easy_handle holds a CURL* we can use.
         handle->d_in_use = true;
         handle->d_url = chunk->get_data_url();
+
+        // Here we check to make sure that the we are only going to
+        // access an approved location with this easy_handle
+        if(!RemoteAccess::Is_Whitelisted(handle->d_url)){
+            string msg = "ERROR!! The chunk url " + handle->d_url + " does not match any white-list rule. ";
+            throw BESForbiddenError(msg ,__FILE__,__LINE__);
+        }
+
         handle->d_chunk = chunk;
 
         CURLcode res = curl_easy_setopt(handle->d_handle, CURLOPT_URL, chunk->get_data_url().c_str());

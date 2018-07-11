@@ -30,8 +30,9 @@ $(builddir)/mds_for_tests:
 	cp -r $(top_srcdir)/modules/dmrpp_module/data/mds_for_tests $(builddir)/mds_for_tests
 	chmod -R a+w $(builddir)/mds_for_tests
 	(cd $(builddir)/mds_for_tests && \
+	 clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
 	 for d in *.in; \
-		do sed -e "s%[@]abs_top_srcdir[@]%${abs_top_srcdir}%" $$d > `basename $$d .in`; \
+		do sed -e "s%[@]abs_top_srcdir[@]%$${clean_abs_top_srcdir}%" $$d > `basename $$d .in`; \
 	 done)
 
 ############## Autotest follows #####################

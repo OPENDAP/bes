@@ -354,7 +354,7 @@ bool SaxParserWrapper::parse(const string& ncmlFilename)
 void SaxParserWrapper::deferException(BESError& theErr)
 {
     _state = EXCEPTION;
-    _errorType = theErr.get_error_type();
+    _errorType = theErr.get_bes_error_type();
     _errorMsg = theErr.get_message();
     _errorLine = theErr.get_line();
     _errorFile = theErr.get_file();
