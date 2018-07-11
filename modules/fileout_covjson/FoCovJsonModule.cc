@@ -1,4 +1,3 @@
-
 // -*- mode: c++; c-basic-offset:4 -*-
 //
 // FoCovJsonModule.cc
@@ -25,10 +24,6 @@
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-//
-// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// (c) COPYRIGHT URI/MIT 1995-1999
-// Please read the full copyright statement in the file COPYRIGHT_URI.
 //
 
 #include "config.h"
