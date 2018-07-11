@@ -1,33 +1,6 @@
 {
-  "type": "Coverage",
-  "domain": {
-    "domainType": "Grid",
-    "axes": {
-      "x": {
-        "values": []
-      },
-      "y": {
-        "values": []
-      },
-      "t": {
-        "values": []
-      }
-    },
-    "referencing": [{
-      "coordinates": ["t"],
-      "system": {
-        "type": "TemporalRS",
-        "calendar": "Gregorian",
-      }
-    },
-    {
-      "coordinates": ["x", "y"],
-      "system": {
-        "type": "GeographicCRS",
-        "id": "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
-      }
-    }]
-  },
+  "type": "CoverageCollection",
+  "domainType": "Grid",
   "parameters": {
     "SST": {
       "type": "Parameter",
@@ -39,7 +12,7 @@
       },
       "symbol": {
         "value": "Deg C",
-        "type": "",
+        "type": ""
       },
       "observedProperty": {
         "id": null,
@@ -47,16 +20,7 @@
           "en": "SEA SURFACE TEMPERATURE"
         }
       }
-    }
-  },
-  "ranges": {
-    "SST": {
-      "type": "NdArray",
-      "dataType": "float",
-      "axisNames": ["t", "y", "x"],
-      "shape": [12, 90, 180],
-      "values": []
-    }
+    },
     "AIRT": {
       "type": "Parameter",
       "description": "AIRT",
@@ -67,7 +31,7 @@
       },
       "symbol": {
         "value": "DEG C",
-        "type": "",
+        "type": ""
       },
       "observedProperty": {
         "id": null,
@@ -75,16 +39,7 @@
           "en": "AIR TEMPERATURE"
         }
       }
-    }
-  },
-  "ranges": {
-    "AIRT": {
-      "type": "NdArray",
-      "dataType": "float",
-      "axisNames": ["t", "y", "x"],
-      "shape": [12, 90, 180],
-      "values": []
-    }
+    },
     "UWND": {
       "type": "Parameter",
       "description": "UWND",
@@ -95,7 +50,7 @@
       },
       "symbol": {
         "value": "M/S",
-        "type": "",
+        "type": ""
       },
       "observedProperty": {
         "id": null,
@@ -103,16 +58,7 @@
           "en": "ZONAL WIND"
         }
       }
-    }
-  },
-  "ranges": {
-    "UWND": {
-      "type": "NdArray",
-      "dataType": "float",
-      "axisNames": ["t", "y", "x"],
-      "shape": [12, 90, 180],
-      "values": []
-    }
+    },
     "VWND": {
       "type": "Parameter",
       "description": "VWND",
@@ -123,7 +69,7 @@
       },
       "symbol": {
         "value": "M/S",
-        "type": "",
+        "type": ""
       },
       "observedProperty": {
         "id": null,
@@ -133,13 +79,65 @@
       }
     }
   },
-  "ranges": {
-    "VWND": {
-      "type": "NdArray",
-      "dataType": "float",
-      "axisNames": ["t", "y", "x"],
-      "shape": [12, 90, 180],
-      "values": []
+  "referencing": [{
+    "coordinates": ["t"],
+    "system": {
+      "type": "TemporalRS",
+      "calendar": "Gregorian"
     }
-  }
+  },
+  {
+    "coordinates": ["x", "y"],
+    "system": {
+      "type": "GeographicCRS",
+      "id": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+    }
+  }],
+  "coverages": [{
+    "type": "Coverage",
+    "domain": {
+      "type" : "Domain",
+      "axes": {
+        "x": {
+          "values": []
+        },
+        "y": {
+          "values": []
+        },
+        "t": {
+          "values": ["2018-01-01T00:12:20Z"]
+        }
+      }
+    },
+    "ranges": {
+      "SST": {
+        "type": "NdArray",
+        "dataType": "float", 
+        "axisNames": ["t", "y", "x"],
+        "shape": [1, 90, 180],
+        "values": []
+      },
+      "AIRT": {
+        "type": "NdArray",
+        "dataType": "float", 
+        "axisNames": ["t", "y", "x"],
+        "shape": [1, 90, 180],
+        "values": []
+      },
+      "UWND": {
+        "type": "NdArray",
+        "dataType": "float", 
+        "axisNames": ["t", "y", "x"],
+        "shape": [1, 90, 180],
+        "values": []
+      },
+      "VWND": {
+        "type": "NdArray",
+        "dataType": "float", 
+        "axisNames": ["t", "y", "x"],
+        "shape": [1, 90, 180],
+        "values": []
+      }
+    }
+  }]
 }
