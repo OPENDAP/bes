@@ -876,6 +876,11 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/fileout_json/unit-tests/Makefile 
     modules/fileout_json/tests/Makefile 
     modules/fileout_json/tests/atlocal
+
+    modules/fileout_covjson/Makefile
+    modules/fileout_covjson/unit-tests/Makefile 
+    modules/fileout_covjson/tests/Makefile 
+    modules/fileout_covjson/tests/atlocal
     
     modules/freeform_handler/Makefile
     modules/freeform_handler/tests/Makefile
@@ -958,6 +963,7 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     AC_CONFIG_TESTDIR(modules/csv_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/asciival/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_json/tests, [standalone])
+    AC_CONFIG_TESTDIR(modules/fileout_covjson/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/debug_functions/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/dmrpp_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/freeform_handler/tests, [standalone])
