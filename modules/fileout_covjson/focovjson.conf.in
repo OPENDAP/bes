@@ -18,4 +18,4 @@ BES.module.focovjson=@bes_modules_dir@/libfocovjson_module.so
 # FoCovJson.Tempdir: Directory to store temporary netcdf files during transformation"
 # FoCovJson.Reference: URL to the FoCovJson Reference Page at docs.opendap.org"
 FoCovJson.Tempdir=/tmp
-FoCovJson.Reference=http://docs.opendap.org/index.php/BES_-_Modules_-_FileOut_JSON
+FoCovJson.Reference=http://docs.opendap.org/index.php/BES_-_Modules_-_FileOut_CovJSON
