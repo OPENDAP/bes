@@ -107,18 +107,7 @@ public:
     {
     }
 
-
-
-    void test_one()
-    {
-        CPPUNIT_ASSERT(true);
-
-
-        string cmr_granules_json = "https://cmr.earthdata.nasa.gov/search/granules.json";
-        string query = "?concept_id=C179003030-ORNL_DAAC&include_facets=v2";
-
-        string url = cmr_granules_json + query;
-        // string url("http://test.opendap.org/opendap/catalog.xml");
+    void getJsonDoc(const string &url, rapidjson::Document &d){
         if(debug) cerr << endl << "Trying url: " << url << endl;
 
         try {
@@ -126,28 +115,67 @@ public:
 
 
             rhr.retrieveResource();
-
             FILE* fp = fopen(rhr.getCacheFileName().c_str(), "r"); // non-Windows use "r"
             char readBuffer[65536];
             rapidjson::FileReadStream frs(fp, readBuffer, sizeof(readBuffer));
 
-            rapidjson::Document d;
             d.ParseStream(frs);
 
-            // 3. Stringify the DOM
-            StringBuffer buffer;
-            rapidjson::PrettyWriter<StringBuffer> writer(buffer);
-            d.Accept(writer);
-            // Output {"project":"rapidjson","stars":11}
-            if(debug) std::cout << buffer.GetString() << std::endl;
 
             CPPUNIT_ASSERT(true);
         }
-        catch (BESError be){
+        catch (BESError &be){
             cerr << be.get_message() << endl;
             CPPUNIT_ASSERT(false);
         }
 
+
+    }
+    void printJsonDoc(rapidjson::Document &d){
+        StringBuffer buffer;
+        rapidjson::PrettyWriter<StringBuffer> writer(buffer);
+        d.Accept(writer);
+        std::cout << buffer.GetString() << std::endl;
+    }
+
+    void get_collection_years(string collection_name){
+        string url = "https://cmr.earthdata.nasa.gov/search/granules.json?concept_id="+collection_name +"&include_facets=v2";
+        rapidjson::Document doc;
+        getJsonDoc(url,doc);
+        if(debug) printJsonDoc(doc);
+
+        bool result = doc.IsObject();
+        if(debug) cerr << "Json document is" << (result?"":" NOT") << " an object." << endl;
+        CPPUNIT_ASSERT(result);
+
+        rapidjson::Value::ConstMemberIterator itr = doc.FindMember("feed");
+        result  = itr != doc.MemberEnd();
+        if(debug) cerr << "" << (result?"Located":"FAILED to locate") << " the value 'feed'." << endl;
+        CPPUNIT_ASSERT(result);
+
+        const Value& feed = itr->value;
+        result  = feed.IsObject();
+        if(debug) cerr << "The value 'feed' is" << (result?"":" NOT") << " an object." << endl;
+        CPPUNIT_ASSERT(result);
+
+        itr = feed.FindMember("facets");
+        result  = itr != feed.MemberEnd();
+        if(debug) cerr << "" << (result?"Located":"FAILED to locate") << " the value 'facets'." << endl;
+        CPPUNIT_ASSERT(result);
+
+        const Value& facets = itr->value;
+        result  = facets.IsObject();
+        if(debug) cerr << "The value 'facets' is" << (result?"":" NOT") << " an object." << endl;
+        CPPUNIT_ASSERT(result);
+
+    }
+
+    void test_one()
+    {
+        CPPUNIT_ASSERT(true);
+        string collection_name = "C179003030-ORNL_DAAC";
+
+        get_collection_years(collection_name);
 
     }
 
