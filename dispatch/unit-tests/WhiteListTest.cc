@@ -43,7 +43,7 @@
 #include <BESDebug.h>
 
 #include "test_config.h"
-#include "RemoteAccess.h"
+#include "WhiteList.h"
 
 using namespace std;
 using namespace CppUnit;
@@ -120,7 +120,7 @@ public:
     bool can_access(string url)
     {
         if (debug) cout << "Checking remote access permission for url: '" << url << "' result: ";
-        bool result = bes::RemoteAccess::Is_Whitelisted(url);
+        bool result = bes::WhiteList::get_white_list()->is_white_listed(url);
         if (debug) cout << (result ? "true" : "false") << endl;
         return result;
     }
