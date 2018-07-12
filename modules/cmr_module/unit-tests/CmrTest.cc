@@ -109,28 +109,14 @@ public:
 
     void getJsonDoc(const string &url, rapidjson::Document &d){
         if(debug) cerr << endl << "Trying url: " << url << endl;
-
-        try {
-            cmr::RemoteHttpResource rhr(url);
-
-
-            rhr.retrieveResource();
-            FILE* fp = fopen(rhr.getCacheFileName().c_str(), "r"); // non-Windows use "r"
-            char readBuffer[65536];
-            rapidjson::FileReadStream frs(fp, readBuffer, sizeof(readBuffer));
-
-            d.ParseStream(frs);
-
-
-            CPPUNIT_ASSERT(true);
-        }
-        catch (BESError &be){
-            cerr << be.get_message() << endl;
-            CPPUNIT_ASSERT(false);
-        }
-
-
+        cmr::RemoteHttpResource rhr(url);
+        rhr.retrieveResource();
+        FILE* fp = fopen(rhr.getCacheFileName().c_str(), "r"); // non-Windows use "r"
+        char readBuffer[65536];
+        rapidjson::FileReadStream frs(fp, readBuffer, sizeof(readBuffer));
+        d.ParseStream(frs);
     }
+
     void printJsonDoc(rapidjson::Document &d){
         StringBuffer buffer;
         rapidjson::PrettyWriter<StringBuffer> writer(buffer);
@@ -139,6 +125,7 @@ public:
     }
 
     void get_collection_years(string collection_name){
+
         string url = "https://cmr.earthdata.nasa.gov/search/granules.json?concept_id="+collection_name +"&include_facets=v2";
         rapidjson::Document doc;
         getJsonDoc(url,doc);
@@ -174,8 +161,14 @@ public:
     {
         CPPUNIT_ASSERT(true);
         string collection_name = "C179003030-ORNL_DAAC";
+        try {
+            get_collection_years(collection_name);
+        }
+        catch (BESError &be){
+            cerr << be.get_message() << endl;
+            CPPUNIT_ASSERT(false);
+        }
 
-        get_collection_years(collection_name);
 
     }
 
