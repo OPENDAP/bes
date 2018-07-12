@@ -42,7 +42,7 @@
 
 using namespace dmrpp;
 using namespace std;
-using bes::RemoteAccess;
+using namespace bes;
 
 dmrpp_easy_handle::dmrpp_easy_handle()
 {
@@ -210,7 +210,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
 
         // Here we check to make sure that the we are only going to
         // access an approved location with this easy_handle
-        if(!RemoteAccess::Is_Whitelisted(handle->d_url)){
+        if(!RemoteAccess::get_white_list()->is_white_listed(handle->d_url)){
             string msg = "ERROR!! The chunk url " + handle->d_url + " does not match any white-list rule. ";
             throw BESForbiddenError(msg ,__FILE__,__LINE__);
         }

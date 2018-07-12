@@ -32,7 +32,6 @@
 #define I_RemoteAccess_H 1
 
 #include <string>
-#include <map>
 #include <vector>
 
 #define REMOTE_ACCESS_WHITELIST "Gateway.Whitelist"
@@ -51,12 +50,19 @@ namespace bes {
  */
 class RemoteAccess {
 private:
-    static bool is_init;
-    static std::vector<std::string> WhiteList;
-    static void init();
+	static RemoteAccess *d_instance;
+
+    std::vector<std::string> d_white_list;
+
+protected:
+    RemoteAccess();
 
 public:
-    static bool Is_Whitelisted(const std::string &url);
+    virtual ~RemoteAccess() {}
+
+    static RemoteAccess *get_white_list();
+
+    bool is_white_listed(const std::string &url);
 };
 
 } // namespace bes

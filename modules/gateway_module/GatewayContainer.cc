@@ -41,7 +41,7 @@
 
 using namespace std;
 using namespace gateway;
-using bes::RemoteAccess;
+using namespace bes;
 
 /** @brief Creates an instances of GatewayContainer with symbolic name and real
  * name, which is the remote request.
@@ -66,7 +66,7 @@ GatewayContainer::GatewayContainer(const string &sym_name,
     url_parts.psswd = "";
     string use_real_name = BESUtil::url_create(url_parts);
 
-    if (!RemoteAccess::Is_Whitelisted(use_real_name)) {
+    if (!RemoteAccess::get_white_list()->is_white_listed(use_real_name)) {
         string err = (string) "The specified URL " + real_name
                 + " does not match any of the accessible services in"
                 + " the white list.";
