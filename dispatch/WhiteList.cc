@@ -38,34 +38,33 @@
 #include <BESDebug.h>
 #include <BESForbiddenError.h>
 
-#include "RemoteAccess.h"
+#include "WhiteList.h"
 
 using namespace std;
 using namespace bes;
 
-std::vector<string> RemoteAccess::WhiteList;
-bool RemoteAccess::is_init = false;
+WhiteList *WhiteList::d_instance = 0;
 
-// Initialization routine for the RemoteAccess white list
-void RemoteAccess::init()
+/**
+ * @brief Static accessor for the singleton
+ *
+ * @return A pointer to the singleton instance
+ */
+WhiteList *
+WhiteList::get_white_list()
 {
-    if (is_init) return;
+    if (d_instance) return d_instance;
 
-    // Whitelist - gather list of domains that
-    // hyrax is allowed to communicate with.
+    d_instance = new WhiteList;
+
+    return d_instance;
+}
+
+WhiteList::WhiteList()
+{
     bool found = false;
     string key = REMOTE_ACCESS_WHITELIST;
-    TheBESKeys::TheKeys()->get_values(REMOTE_ACCESS_WHITELIST, WhiteList, found);
-
-    is_init = true;
-
-#if 0
-    if (!found || WhiteList.size() == 0) {
-        string err = (string) "The parameter " + REMOTE_ACCESS_WHITELIST + " is not set or has no values in the gateway"
-        + " configuration file";
-        throw BESSyntaxUserError(err, __FILE__, __LINE__);
-    }
-#endif
+    TheBESKeys::TheKeys()->get_values(REMOTE_ACCESS_WHITELIST, d_white_list, found);
 }
 
 /**
@@ -82,10 +81,8 @@ void RemoteAccess::init()
  * @return True if the URL may be dereferenced, given the BES's configuration,
  * false otherwise.
  */
-bool RemoteAccess::Is_Whitelisted(const std::string &url)
+bool WhiteList::is_white_listed(const std::string &url)
 {
-    if (!is_init) init();
-
     bool whitelisted = false;
     const string file_url("file://");
     const string http_url("http://");
@@ -120,8 +117,8 @@ bool RemoteAccess::Is_Whitelisted(const std::string &url)
         if (url.compare(0, http_url.size(), http_url) == 0 /*equals http url */
             || url.compare(0, https_url.size(), https_url) == 0 /*equals https url */) {
 
-            vector<string>::const_iterator i = WhiteList.begin();
-            vector<string>::const_iterator e = WhiteList.end();
+            vector<string>::const_iterator i = d_white_list.begin();
+            vector<string>::const_iterator e = d_white_list.end();
             for (; i != e && !whitelisted; i++) {
                 if ((*i).length() <= url.length()) {
                     if (url.substr(0, (*i).length()) == (*i)) {
