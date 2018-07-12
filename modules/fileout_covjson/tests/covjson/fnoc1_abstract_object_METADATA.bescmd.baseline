@@ -1,0 +1,91 @@
+{
+  "type": "CoverageCollection",
+  "domainType": "Grid",
+  "parameters": {
+    "u": {
+      "type": "Parameter",
+      "description": "u",
+      "unit": {
+        "label": {
+          "en": "meter per second"
+        }
+      },
+      "symbol": {
+        "value": "meter per second",
+        "type": ""
+      },
+      "observedProperty": {
+        "id": null,
+        "label": {
+          "en": "Vector wind eastward component"
+        }
+      }
+    },
+    "v": {
+      "type": "Parameter",
+      "description": "v",
+      "unit": {
+        "label": {
+          "en": "meter per second"
+        }
+      },
+      "symbol": {
+        "value": "meter per second",
+        "type": ""
+      },
+      "observedProperty": {
+        "id": null,
+        "label": {
+          "en": "Vector wind northward component"
+        }
+      }
+    }
+  },
+  "referencing": [{
+    "coordinates": ["t"],
+    "system": {
+      "type": "TemporalRS",
+      "calendar": "Gregorian"
+    }
+  },
+  {
+    "coordinates": ["x", "y"],
+    "system": {
+      "type": "GeographicCRS",
+      "id": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+    }
+  }],
+  "coverages": [{
+    "type": "Coverage",
+    "domain": {
+      "type" : "Domain",
+      "axes": {
+        "x": {
+          "values": []
+        },
+        "y": {
+          "values": []
+        },
+        "t": {
+          "values": ["2018-01-01T00:12:20Z"]
+        }
+      }
+    },
+    "ranges": {
+      "u": {
+        "type": "NdArray",
+        "dataType": "integer", 
+        "axisNames": ["t", "y", "x"],
+        "shape": [16, 17, 21],
+        "values": []
+      },
+      "v": {
+        "type": "NdArray",
+        "dataType": "integer", 
+        "axisNames": ["t", "y", "x"],
+        "shape": [16, 17, 21],
+        "values": []
+      }
+    }
+  }]
+}
