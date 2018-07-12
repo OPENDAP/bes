@@ -61,7 +61,7 @@
 
 using namespace bes;
 using namespace std;
-
+using namespace cmr;
 /**
  * @brief A catalog for POSIX file systems
  *
@@ -416,7 +416,7 @@ CMRCatalog::get_node(const string &path) const
  * @param out Write the site map to this stream
  * @param path Write the data for this node in the catalog. Starts with a slash.
  */
-void CMRCatalog::get_site_map(const string &prefix, const string &suffix, ostream &out,
+void CMRCatalog::get_site_map(const string &prefix, const string &node_suffix, const string &leaf_suffix, ostream &out,
     const string &path) const
 {
     auto_ptr<CatalogNode> node(get_node(path));
@@ -435,14 +435,14 @@ void CMRCatalog::get_site_map(const string &prefix, const string &suffix, ostrea
     // Depth-first node traversal. Assume the nodes and leaves are sorted
     for (CatalogNode::item_citer i = node->nodes_begin(), e = node->nodes_end(); i != e; ++i) {
         assert((*i)->get_type() == CatalogItem::node);
-        get_site_map(prefix, suffix, out, path + (*i)->get_name() + "/");
+        get_site_map(prefix, node_suffix, leaf_suffix, out, path + (*i)->get_name() + "/");
     }
 
     // For leaves, only write the data items
     for (CatalogNode::item_citer i = node->leaves_begin(), e = node->leaves_end(); i != e; ++i) {
         assert((*i)->get_type() == CatalogItem::leaf);
         if ((*i)->is_data())
-            out << prefix << path << (*i)->get_name() << suffix << endl;
+            out << prefix << path << (*i)->get_name() << leaf_suffix << endl;
     }
 }
 

@@ -91,7 +91,7 @@ TheBESKeys *TheBESKeys::TheKeys()
         return _instance;
     }
 
-    throw BESInternalFatalError("Unable to find a conf file or module version mismatch.", __FILE__, __LINE__);
+    throw BESInternalFatalError("TheBESKeys: Unable to find a conf file or module version mismatch.", __FILE__, __LINE__);
 }
 
 /** @brief default constructor that reads loads key/value pairs from the

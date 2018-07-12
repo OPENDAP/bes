@@ -43,6 +43,7 @@ namespace bes {
     class CatalogNode;
 }
 
+namespace cmr {
 /** @brief builds catalogs from a directory structure
  */
 class CMRCatalog: public BESCatalog {
@@ -59,11 +60,12 @@ public:
 
     virtual bes::CatalogNode *get_node(const std::string &path) const;
 
-    virtual void get_site_map(const string &prefix, const string &suffix, ostream &out,
-        const string &path = "/") const;
+    virtual void get_site_map(const string &prefix, const string &node_suffix, const string &leaf_suffix, ostream &out,
+        const string &path = "/") const = 0;
 
     virtual void dump(ostream &strm) const;
 };
+} // namespace cmr
 
 #endif // I_CMRCatalog_h
 

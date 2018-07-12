@@ -2,9 +2,14 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
--I$(top_srcdir)/modules/fileout_json $(DAP_CFLAGS)
-LIBADD = $(BES_DISPATCH_LIB) $(BES_EXTRA_LIBS) $(DAP_SERVER_LIBS) 
+
+AM_CPPFLAGS = -I$(top_srcdir)/modules -I$(top_srcdir)/modules/cmr_module \
+-I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+
+# Added -lz for ubuntu
+LIBADD = $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_EXTRA_LIBS) \
+$(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
+
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
@@ -26,7 +31,7 @@ check_PROGRAMS = $(UNIT_TESTS)
 
 TESTS = $(UNIT_TESTS)
 
-# Adding the tmp dir here causes make to put it in the buld dir
+# Adding the tmp dir here causes make to put it in the build dir
 noinst_DATA = tmp
 
 BUILT_SOURCES = test_config.h
@@ -66,4 +71,4 @@ endif
 OBJS = ../CMRCatalog.o
 
 CmrTest_SOURCES = CmrTest.cc
-CmrTest_LDADD = $(OBJS) $(LIBADD)
+CmrTest_LDADD = ../RemoteHttpResource.o  ../curl_utils.o ../CmrCache.o ../CmrUtils.o  $(OBJS) $(LIBADD)

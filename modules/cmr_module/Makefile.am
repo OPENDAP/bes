@@ -26,9 +26,11 @@ libcmr_module_la_SOURCES = $(CMR_SRC) $(CMR_HDR)
 libcmr_module_la_LDFLAGS = -avoid-version -module 
 libcmr_module_la_LIBADD = $(LIBADD)
 
-CMR_SRC = CMRCatalog.cc CmrInfoCmd.cc
+CMR_SRC = CmrCatalog.cc CmrInfoCmd.cc \
+	CmrCache.cc curl_utils.cc RemoteHttpResource.cc
 
-CMR_HDR = CMRCatalog.h CmrInfoCmd.h
+CMR_HDR = CmrCatalog.h CmrInfoCmd.h \
+	CmrCache.h curl_utils.h RemoteHttpResource.h
 
 EXTRA_DIST = data cmr.conf.in
 

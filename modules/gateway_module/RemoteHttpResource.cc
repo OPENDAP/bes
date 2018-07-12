@@ -148,7 +148,7 @@ void RemoteHttpResource::retrieveResource()
     BESDEBUG("gateway",
         "RemoteHttpResource::retrieveResource() - d_resourceCacheFileName: " << d_resourceCacheFileName << endl);
 
-    // @TODO MAKE THIS RETRIEVE THE CACHED DATA TYPE IF THE CACHED RESPONSE IF FOUND
+    // @FIXME MAKE THIS RETRIEVE THE CACHED DATA TYPE IF THE CACHED RESPONSE IF FOUND
     // We need to know the type of the resource. HTTP headers are the preferred  way to determine the type.
     // Unfortunately, the current code losses both the HTTP headers sent from the request and the derived type
     // to subsequent accesses of the cached object. Since we have to have a type, for now we just set the type

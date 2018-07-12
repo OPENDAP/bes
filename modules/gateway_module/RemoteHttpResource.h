@@ -78,7 +78,7 @@ private:
     std::vector<std::string> *d_response_headers; // Response headers
 
     /**
-     * Determines the DAP of the remote resource. Looks at HTTP headers, and failing that compares the
+     * Determines the type of the remote resource. Looks at HTTP headers, and failing that compares the
      * basename in the resource URL to the data handlers TypeMatch.
      */
     void setType(const std::vector<std::string> *resp_hdrs);
