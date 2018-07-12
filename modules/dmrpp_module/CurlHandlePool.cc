@@ -32,7 +32,7 @@
 #include "BESDebug.h"
 #include "BESInternalError.h"
 #include "BESForbiddenError.h"
-#include "RemoteAccess.h"
+#include "WhiteList.h"
 
 #include "CurlHandlePool.h"
 #include "Chunk.h"
@@ -210,7 +210,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
 
         // Here we check to make sure that the we are only going to
         // access an approved location with this easy_handle
-        if(!RemoteAccess::get_white_list()->is_white_listed(handle->d_url)){
+        if(!WhiteList::get_white_list()->is_white_listed(handle->d_url)){
             string msg = "ERROR!! The chunk url " + handle->d_url + " does not match any white-list rule. ";
             throw BESForbiddenError(msg ,__FILE__,__LINE__);
         }

@@ -38,29 +38,29 @@
 #include <BESDebug.h>
 #include <BESForbiddenError.h>
 
-#include "RemoteAccess.h"
+#include "WhiteList.h"
 
 using namespace std;
 using namespace bes;
 
-RemoteAccess *RemoteAccess::d_instance = 0;
+WhiteList *WhiteList::d_instance = 0;
 
 /**
  * @brief Static accessor for the singleton
  *
  * @return A pointer to the singleton instance
  */
-RemoteAccess *
-RemoteAccess::get_white_list()
+WhiteList *
+WhiteList::get_white_list()
 {
     if (d_instance) return d_instance;
 
-    d_instance = new RemoteAccess;
+    d_instance = new WhiteList;
 
     return d_instance;
 }
 
-RemoteAccess::RemoteAccess()
+WhiteList::WhiteList()
 {
     bool found = false;
     string key = REMOTE_ACCESS_WHITELIST;
@@ -81,7 +81,7 @@ RemoteAccess::RemoteAccess()
  * @return True if the URL may be dereferenced, given the BES's configuration,
  * false otherwise.
  */
-bool RemoteAccess::is_white_listed(const std::string &url)
+bool WhiteList::is_white_listed(const std::string &url)
 {
     bool whitelisted = false;
     const string file_url("file://");

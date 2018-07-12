@@ -48,19 +48,19 @@ namespace bes {
  *
  * @note This class is a singleton
  */
-class RemoteAccess {
+class WhiteList {
 private:
-	static RemoteAccess *d_instance;
+	static WhiteList *d_instance;
 
     std::vector<std::string> d_white_list;
 
 protected:
-    RemoteAccess();
+    WhiteList();
 
 public:
-    virtual ~RemoteAccess() {}
+    virtual ~WhiteList() {}
 
-    static RemoteAccess *get_white_list();
+    static WhiteList *get_white_list();
 
     bool is_white_listed(const std::string &url);
 };
