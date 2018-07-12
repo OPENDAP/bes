@@ -24,7 +24,10 @@
 #include <memory>
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
+#include "rapidjson/prettywriter.h"
 #include "rapidjson/stringbuffer.h"
+#include "rapidjson/filereadstream.h"
+#include <cstdio>
 #include <iostream>
 
 #include <cppunit/TextTestRunner.h>
@@ -124,20 +127,19 @@ public:
 
             rhr.retrieveResource();
 
-            ifstream ifs(rhr.getCacheFileName());
+            FILE* fp = fopen(rhr.getCacheFileName().c_str(), "r"); // non-Windows use "r"
+            char readBuffer[65536];
+            rapidjson::FileReadStream frs(fp, readBuffer, sizeof(readBuffer));
 
-            // 1. Parse a JSON string into DOM.
-            const char* json = "{\"project\":\"rapidjson\",\"stars\":10}";
             rapidjson::Document d;
-
-            d.Parse(ifs);
+            d.ParseStream(frs);
 
             // 3. Stringify the DOM
             StringBuffer buffer;
-            Writer<StringBuffer> writer(buffer);
+            rapidjson::PrettyWriter<StringBuffer> writer(buffer);
             d.Accept(writer);
             // Output {"project":"rapidjson","stars":11}
-            std::cout << buffer.GetString() << std::endl;
+            if(debug) std::cout << buffer.GetString() << std::endl;
 
             CPPUNIT_ASSERT(true);
         }

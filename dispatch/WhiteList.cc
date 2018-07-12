@@ -94,23 +94,23 @@ bool WhiteList::is_white_listed(const std::string &url)
 
         // Ensure that the file path starts with the catalog root dir.
         string file_path = url.substr(file_url.size());
-        BESDEBUG("bes", "RemoteAccess::Is_Whitelisted() - file_path: "<< file_path << endl);
+        BESDEBUG("bes", "WhiteList::Is_Whitelisted() - file_path: "<< file_path << endl);
 
         BESCatalog *bcat = BESCatalogList::TheCatalogList()->find_catalog(BES_DEFAULT_CATALOG);
         if (bcat) {
-            BESDEBUG("bes", "RemoteAccess::Is_Whitelisted() - Found catalog: "<< bcat->get_catalog_name() << endl);
+            BESDEBUG("bes", "WhiteList::Is_Whitelisted() - Found catalog: "<< bcat->get_catalog_name() << endl);
         }
         else {
             string msg = "OUCH! Unable to locate default catalog!";
-            BESDEBUG("bes", "RemoteAccess::Is_Whitelisted() - " << msg << endl);
+            BESDEBUG("bes", "WhiteList::Is_Whitelisted() - " << msg << endl);
             throw BESInternalError(msg, __FILE__, __LINE__);
         }
 
         string catalog_root = bcat->get_root();
-        BESDEBUG("bes", "RemoteAccess::Is_Whitelisted() - Catalog root: "<< catalog_root << endl);
+        BESDEBUG("bes", "WhiteList::Is_Whitelisted() - Catalog root: "<< catalog_root << endl);
 
         whitelisted = file_path.compare(0, catalog_root.size(), catalog_root) == 0;
-        BESDEBUG("bes", "RemoteAccess::Is_Whitelisted() - Is_Whitelisted: "<< (whitelisted?"true":"false") << endl);
+        BESDEBUG("bes", "WhiteList::Is_Whitelisted() - Is_Whitelisted: "<< (whitelisted?"true":"false") << endl);
     }
     else {
         // This checks HTTP and HTTPS URLs against the whitelist patterns.
@@ -129,7 +129,7 @@ bool WhiteList::is_white_listed(const std::string &url)
         }
         else {
             string msg;
-            msg = "ERROR! Unknown URL protocol! Only " + http_url + ", " + https_url + ", and " + file_url + " are supported.";
+            msg = "WhiteList - ERROR! Unknown URL protocol! Only " + http_url + ", " + https_url + ", and " + file_url + " are supported.";
             BESDEBUG("bes", msg << endl);
             throw BESForbiddenError(msg, __FILE__, __LINE__);
         }

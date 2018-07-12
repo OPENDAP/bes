@@ -41,7 +41,7 @@
 #include <algorithm>
 
 #include "BESUtil.h"
-#include "CMRCatalog.h"
+#include "CmrCatalog.h"
 #include "BESCatalogUtils.h"
 #include "BESCatalogEntry.h"
 
