@@ -1,6 +1,6 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of cmr_MODULE, A C++ MODULE that can be loaded in to
+// This file is part of cmr_module, A C++ MODULE that can be loaded in to
 // the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
 
 // Copyright (c) 2015 OPeNDAP, Inc.

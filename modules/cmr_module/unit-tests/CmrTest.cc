@@ -48,6 +48,7 @@
 #include "test_config.h"
 
 #include "RemoteHttpResource.h"
+#include "CmrApi.h"
 #include "CmrError.h"
 
 #define MODULE "cmr"
@@ -110,215 +111,6 @@ public:
     {
     }
 
-    void getJsonDoc(const string &url, rapidjson::Document &d){
-        if(debug) cerr << endl << "Trying url: " << url << endl;
-        cmr::RemoteHttpResource rhr(url);
-        rhr.retrieveResource();
-        FILE* fp = fopen(rhr.getCacheFileName().c_str(), "r"); // non-Windows use "r"
-        char readBuffer[65536];
-        rapidjson::FileReadStream frs(fp, readBuffer, sizeof(readBuffer));
-        d.ParseStream(frs);
-    }
-
-    std::string getStringValue(const Value& object, const string name){
-        string prolog = string(__func__) + "() - ";
-
-        string response;
-        rapidjson::Value::ConstMemberIterator itr = object.FindMember(name.c_str());
-        bool result  = itr != object.MemberEnd();
-        string msg = prolog + (result?"Located":"FAILED to locate") + " the value '"+name+"' in object.";
-        BESDEBUG(MODULE, msg << endl);
-        if(!result){
-            return response;
-        }
-
-        const Value& myValue = itr->value;
-        result = myValue.IsString();
-        msg = prolog + "The value '"+ name +"' is" + (result?"":" NOT") + " a String type.";
-        BESDEBUG(MODULE, msg << endl);
-        if(!result){
-            return response;
-        }
-
-        return myValue.GetString();
-    }
-
-    bool getBooleanValue(const Value& object, const string name){
-        string prolog = string(__func__) + "() - ";
-
-        rapidjson::Value::ConstMemberIterator itr = object.FindMember(name.c_str());
-        bool result  = itr != object.MemberEnd();
-        string msg = prolog + (result?"Located":"FAILED to locate") + " the value '"+name+"' in object.";
-        BESDEBUG(MODULE, msg << endl);
-        if(!result){
-            return false;
-        }
-
-        const Value& myValue = itr->value;
-        result = myValue.IsBool();
-        msg = prolog + "The value '"+ name +"' is" + (result?"":" NOT") + " a Boolean type.";
-        BESDEBUG(MODULE, msg << endl);
-        if(!result){
-            return false;
-        }
-
-        return myValue.GetBool();
-    }
-
-    std::string jsonDocToString(rapidjson::Document &d){
-        StringBuffer buffer;
-        rapidjson::PrettyWriter<StringBuffer> writer(buffer);
-        d.Accept(writer);
-        return buffer.GetString();
-    }
-
-    void get_collection_years(string collection_name, vector<string> &collection_years){
-
-        string url = "https://cmr.earthdata.nasa.gov/search/granules.json?concept_id="+collection_name +"&include_facets=v2";
-        rapidjson::Document doc;
-        getJsonDoc(url,doc);
-
-        string prolog = string(__func__) + "() - ";
-
-        BESDEBUG(MODULE, __func__ << "() - Got JSON Document: "<< endl << jsonDocToString(doc) << endl);
-
-        bool result = doc.IsObject();
-        string msg = prolog + "Json document is" + (result?"":" NOT") + " an object.";
-        BESDEBUG(MODULE, msg << endl);
-        if(!result){
-            throw CmrError(msg,__FILE__,__LINE__);
-        }
-
-        //################### feed
-        rapidjson::Value::ConstMemberIterator itr = doc.FindMember("feed");
-        result  = itr != doc.MemberEnd();
-        msg = string(__func__) + "() - " + (result?"Located":"FAILED to locate") + " the value 'feed'.";
-        BESDEBUG(MODULE, msg << endl);
-        if(!result){
-            throw CmrError(msg,__FILE__,__LINE__);
-        }
-
-        const Value& feed = itr->value;
-        result  = feed.IsObject();
-        msg = prolog + "The value 'feed' is" + (result?"":" NOT") + " an object.";
-        BESDEBUG(MODULE, msg << endl);
-        if(!result){
-            throw CmrError(msg,__FILE__,__LINE__);
-        }
-
-        //################### facets
-        itr = feed.FindMember("facets");
-        result  = itr != feed.MemberEnd();
-        msg =  prolog + (result?"Located":"FAILED to locate") + " the value 'facets'." ;
-        BESDEBUG(MODULE, msg << endl);
-        if(!result){
-            throw CmrError(msg,__FILE__,__LINE__);
-        }
-
-        const Value& facets_obj = itr->value;
-        result  = facets_obj.IsObject();
-        msg =  prolog + "The value 'facets' is" + (result?"":" NOT") + " an object.";
-        BESDEBUG(MODULE, msg << endl);
-        if(!result){
-            throw CmrError(msg,__FILE__,__LINE__);
-        }
-
-        //################### children
-        itr = facets_obj.FindMember("children");
-        result  = itr != feed.MemberEnd();
-        msg = prolog + (result?"Located":"FAILED to locate") + " the value 'children' in 'facets'.";
-        BESDEBUG(MODULE, msg << endl);
-        if(!result){
-            throw CmrError(msg,__FILE__,__LINE__);
-        }
-
-        const Value& facets = itr->value;
-        result = facets.IsArray();
-        msg = prolog + "The value 'children' is" + (result?"":" NOT") + " an array.";
-        BESDEBUG(MODULE, msg << endl);
-        if(!result){
-            throw CmrError(msg,__FILE__,__LINE__);
-        }
-
-        for (SizeType i = 0; i < facets.Size(); i++) { // Uses SizeType instead of size_t
-            const Value& facets_child = facets[i];
-
-            string facet_title = getStringValue(facets_child,"title");
-            string temporal_title("Temporal");
-            if(facet_title == temporal_title){
-                msg = prolog + "Found Temporal object.";
-                BESDEBUG(MODULE, msg << endl);
-
-                //################### children
-                itr = facets_child.FindMember("children");
-                result  = itr != feed.MemberEnd();
-                msg = prolog + (result?"Located":"FAILED to locate") + " the value 'children' in the object titled 'Temporal'.";
-                BESDEBUG(MODULE, msg << endl);
-                if(!result){
-                    throw CmrError(msg,__FILE__,__LINE__);
-                }
-
-                const Value& temporal_children = itr->value;
-                result = temporal_children.IsArray();
-                msg = prolog + "The value 'children' is" + (result?"":" NOT") + " an array.";
-                BESDEBUG(MODULE, msg << endl);
-                if(!result){
-                    throw CmrError(msg,__FILE__,__LINE__);
-                }
-
-
-                for (SizeType j = 0; j < temporal_children.Size(); j++) { // Uses SizeType instead of size_t
-                    const Value& temporal_child = temporal_children[j];
-
-                    string temporal_child_title = getStringValue(temporal_child,"title");
-                    string year_title("Year");
-                    if(temporal_child_title == year_title){
-                        msg = prolog + "Found Year object.";
-                        BESDEBUG(MODULE, msg << endl);
-
-                        itr = temporal_child.FindMember("children");
-                        result  = itr != feed.MemberEnd();
-                        msg = prolog + (result?"Located":"FAILED to locate") + " the value 'children' in the object titled 'Year'.";
-                        BESDEBUG(MODULE, msg << endl);
-                        if(!result){
-                            throw CmrError(msg,__FILE__,__LINE__);
-                        }
-
-                        const Value& years = itr->value;
-                        result = years.IsArray();
-                        msg = prolog + "The value 'children' is" + (result?"":" NOT") + " an array.";
-                        BESDEBUG(MODULE, msg << endl);
-                        if(!result){
-                            throw CmrError(msg,__FILE__,__LINE__);
-                        }
-
-                        for (SizeType k = 0; k < years.Size(); k++) { // Uses SizeType instead of size_t
-                            const Value& year_obj = years[k];
-                            string year = getStringValue(year_obj,"title");
-                            collection_years.push_back(year);
-                        }
-                        return;
-                    }
-                    else {
-                        msg = prolog + "The child of 'Temporal' with title '"+temporal_child_title+"' does not match 'Year'";
-                        BESDEBUG(MODULE, msg << endl);
-                    }
-                }
-            }
-            else {
-                msg = prolog + "The child of 'facets' with title '"+facet_title+"' does not match 'Temporal'";
-                BESDEBUG(MODULE, msg << endl);
-            }
-        }
-
-
-
-
-
-
-    }
-
-
 
     void get_collection_years_test()
     {
@@ -335,7 +127,9 @@ public:
 
         vector<string> years;
         try {
-            get_collection_years(collection_name,years);
+            CmrApi cmr;
+
+            cmr.get_collection_years(collection_name,years);
 
             CPPUNIT_ASSERT(5 == years.size());
 
