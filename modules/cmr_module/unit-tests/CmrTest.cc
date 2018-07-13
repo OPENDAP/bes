@@ -112,55 +112,107 @@ public:
     }
 
 
-    void get_collection_years_test()
-    {
+    void get_years_test() {
         string prolog = string(__func__) + "() - ";
 
         string collection_name = "C179003030-ORNL_DAAC";
-        string expected[] = {
-                string("1984"),
-                string("1985"),
-                string("1986"),
-                string("1987"),
-                string("1988")
-        };
-
+        string expected[] = { string("1984"), string("1985"), string("1986"),
+                string("1987"), string("1988") };
+        unsigned long  expected_size = 5;
         vector<string> years;
         try {
             CmrApi cmr;
+            cmr.get_years(collection_name, years);
+            BESDEBUG(MODULE, prolog << "Checking expected size ("<< expected_size << ") vs received size: " << years.size() << endl);
 
-            cmr.get_collection_years(collection_name,years);
-
-            CPPUNIT_ASSERT(5 == years.size());
+            CPPUNIT_ASSERT(expected_size == years.size());
 
             stringstream msg;
-            msg << prolog << "The collection '" << collection_name << "' spans " << years.size() << " years: ";
-            for(size_t i=0; i<years.size(); i++){
-                if(i>0) msg << ", ";
+            msg << prolog << "The collection '" << collection_name << "' spans "
+                    << years.size() << " years: ";
+            for (size_t i = 0; i < years.size(); i++) {
+                if (i > 0)
+                    msg << ", ";
                 msg << years[i];
             }
-            BESDEBUG(MODULE,msg.str() << endl);
+            BESDEBUG(MODULE, msg.str() << endl);
 
-            for(size_t i=0; i<years.size(); i++){
+            for (size_t i = 0; i < years.size(); i++) {
                 msg.str(std::string());
-                msg << prolog << "Checking:  expected: "<< expected[i] << " received: " << years[i];
-                BESDEBUG(MODULE,msg.str() << endl);
+                msg << prolog << "Checking:  expected: " << expected[i]
+                        << " received: " << years[i];
+                BESDEBUG(MODULE, msg.str() << endl);
                 CPPUNIT_ASSERT(expected[i] == years[i]);
             }
 
-     }
-        catch (BESError &be){
-            string msg = "Caught BESError! Message: " + be.get_message() ;
+        }
+        catch (BESError &be) {
+            string msg = "Caught BESError! Message: " + be.get_message();
             cerr << endl << msg << endl;
             CPPUNIT_ASSERT(!"Caught BESError");
         }
 
+    }
+
+    void get_months_test() {
+        string prolog = string(__func__) + "() - ";
+
+        string collection_name = "C179003030-ORNL_DAAC";
+        string expected[] = {
+                string("01"),
+                string("02"),
+                string("03"),
+                string("04"),
+                string("05"),
+                string("06"),
+                string("07"),
+                string("08"),
+                string("09"),
+                string("10"),
+                string("11"),
+                string("12") };
+        unsigned long  expected_size = 12;
+        vector<string> months;
+        try {
+            CmrApi cmr;
+
+            string year ="1985";
+
+            cmr.get_months(collection_name, year, months);
+            BESDEBUG(MODULE, prolog << "Checking expected size ("<< expected_size << ") vs received size: " << months.size() << endl);
+            CPPUNIT_ASSERT(expected_size == months.size());
+
+            stringstream msg;
+            msg << prolog << "In the year " << year << " the collection '" << collection_name << "' spans "
+                    << months.size() << " months: ";
+            for (size_t i = 0; i < months.size(); i++) {
+                if (i > 0)
+                    msg << ", ";
+                msg << months[i];
+            }
+            BESDEBUG(MODULE, msg.str() << endl);
+
+            for (size_t i = 0; i < months.size(); i++) {
+                msg.str(std::string());
+                msg << prolog << "Checking:  expected: " << expected[i]
+                        << " received: " << months[i];
+                BESDEBUG(MODULE, msg.str() << endl);
+                CPPUNIT_ASSERT(expected[i] == months[i]);
+            }
+
+        }
+        catch (BESError &be) {
+            string msg = "Caught BESError! Message: " + be.get_message();
+            cerr << endl << msg << endl;
+            CPPUNIT_ASSERT(!"Caught BESError");
+        }
 
     }
 
     CPPUNIT_TEST_SUITE( CmrTest );
 
-    CPPUNIT_TEST(get_collection_years_test);
+    CPPUNIT_TEST(get_years_test);
+    CPPUNIT_TEST(get_months_test);
 
     CPPUNIT_TEST_SUITE_END();
 };
