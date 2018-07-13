@@ -209,10 +209,55 @@ public:
 
     }
 
+    void get_days_test() {
+        string prolog = string(__func__) + "() - ";
+
+        string collection_name = "C179003030-ORNL_DAAC";
+        string expected[] = { string("01")};
+        unsigned long  expected_size = 1;
+        vector<string> days;
+        try {
+            CmrApi cmr;
+
+            string year ="1985";
+            string month = "03";
+
+            cmr.get_days(collection_name, year, month, days);
+            BESDEBUG(MODULE, prolog << "Checking expected size ("<< expected_size << ") vs received size: " << days.size() << endl);
+            CPPUNIT_ASSERT(expected_size == days.size());
+
+            stringstream msg;
+            msg << prolog << "In the year " << year << " the collection '" << collection_name << "' spans "
+                    << days.size() << " months: ";
+            for (size_t i = 0; i < days.size(); i++) {
+                if (i > 0)
+                    msg << ", ";
+                msg << days[i];
+            }
+            BESDEBUG(MODULE, msg.str() << endl);
+
+            for (size_t i = 0; i < days.size(); i++) {
+                msg.str(std::string());
+                msg << prolog << "Checking:  expected: " << expected[i]
+                        << " received: " << days[i];
+                BESDEBUG(MODULE, msg.str() << endl);
+                CPPUNIT_ASSERT(expected[i] == days[i]);
+            }
+
+        }
+        catch (BESError &be) {
+            string msg = "Caught BESError! Message: " + be.get_message();
+            cerr << endl << msg << endl;
+            CPPUNIT_ASSERT(!"Caught BESError");
+        }
+
+    }
+
     CPPUNIT_TEST_SUITE( CmrTest );
 
     CPPUNIT_TEST(get_years_test);
     CPPUNIT_TEST(get_months_test);
+    CPPUNIT_TEST(get_days_test);
 
     CPPUNIT_TEST_SUITE_END();
 };
