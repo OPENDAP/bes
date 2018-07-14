@@ -123,7 +123,7 @@ public:
         try {
             CmrApi cmr;
             cmr.get_years(collection_name, years);
-            BESDEBUG(MODULE, prolog << "Checking expected size ("<< expected_size << ") vs received size: " << years.size() << endl);
+            BESDEBUG(MODULE, prolog << "Checking expected size ("<< expected_size << ") vs received size ( " << years.size() << ")" << endl);
 
             CPPUNIT_ASSERT(expected_size == years.size());
 
@@ -179,7 +179,7 @@ public:
             string year ="1985";
 
             cmr.get_months(collection_name, year, months);
-            BESDEBUG(MODULE, prolog << "Checking expected size ("<< expected_size << ") vs received size: " << months.size() << endl);
+            BESDEBUG(MODULE, prolog << "Checking expected size ("<< expected_size << ") vs received size (" << months.size() << ")" << endl);
             CPPUNIT_ASSERT(expected_size == months.size());
 
             stringstream msg;
@@ -212,9 +212,15 @@ public:
     void get_days_test() {
         string prolog = string(__func__) + "() - ";
 
-        string collection_name = "C179003030-ORNL_DAAC";
-        string expected[] = { string("01")};
-        unsigned long  expected_size = 1;
+        //string collection_name = "C179003030-ORNL_DAAC";
+        string collection_name = "C1276812863-GES_DISC";
+        string expected[] = {
+                string("01"),string("02"),string("03"),string("04"),string("05"),string("06"),string("07"),string("08"),string("09"),string("10"),
+                string("11"),string("12"),string("13"),string("14"),string("15"),string("16"),string("17"),string("18"),string("19"),string("20"),
+                string("21"),string("22"),string("23"),string("24"),string("25"),string("26"),string("27"),string("28"),string("29"),string("30"),
+                string("31")
+        };
+        unsigned long  expected_size = 31;
         vector<string> days;
         try {
             CmrApi cmr;
@@ -223,12 +229,12 @@ public:
             string month = "03";
 
             cmr.get_days(collection_name, year, month, days);
-            BESDEBUG(MODULE, prolog << "Checking expected size ("<< expected_size << ") vs received size: " << days.size() << endl);
+            BESDEBUG(MODULE, prolog << "Checking expected size ("<< expected_size << ") vs received size (" << days.size() << ")" << endl);
             CPPUNIT_ASSERT(expected_size == days.size());
 
             stringstream msg;
-            msg << prolog << "In the year " << year << " the collection '" << collection_name << "' spans "
-                    << days.size() << " months: ";
+            msg << prolog << "In the year " << year << ", month " << month << " the collection '" << collection_name << "' spans "
+                    << days.size() << " days: ";
             for (size_t i = 0; i < days.size(); i++) {
                 if (i > 0)
                     msg << ", ";
@@ -253,11 +259,64 @@ public:
 
     }
 
+    void get_granules_test() {
+        string prolog = string(__func__) + "() - ";
+
+        //string collection_name = "C179003030-ORNL_DAAC";
+        string collection_name = "C1276812863-GES_DISC";
+
+        string expected[] = {
+                string("MERRA2_100.tavg1_2d_slv_Nx.19850313.nc4")
+        };
+        unsigned long  expected_size = 1;
+        vector<string> granules;
+        try {
+            CmrApi cmr;
+
+            string year ="1985";
+            string month = "03";
+            string day = "13";
+
+            cmr.get_granule_ids(collection_name, year, month, day, granules);
+            BESDEBUG(MODULE, prolog << "Checking expected size ("<< expected_size << ") vs received size (" << granules.size() << ")" << endl);
+            CPPUNIT_ASSERT(expected_size == granules.size());
+
+            stringstream msg;
+            msg << prolog << "In the year " << year << ", month " << month <<  ", day " << day << " the collection '" << collection_name << "' contains "
+                    << granules.size() << " granules: ";
+            for (size_t i = 0; i < granules.size(); i++) {
+                if (i > 0)
+                    msg << ", ";
+                msg << granules[i];
+            }
+            BESDEBUG(MODULE, msg.str() << endl);
+
+            for (size_t i = 0; i < granules.size(); i++) {
+                msg.str(std::string());
+                msg << prolog << "Checking:  expected: " << expected[i]
+                        << " received: " << granules[i];
+                BESDEBUG(MODULE, msg.str() << endl);
+                CPPUNIT_ASSERT(expected[i] == granules[i]);
+            }
+
+        }
+        catch (BESError &be) {
+            string msg = "Caught BESError! Message: " + be.get_message();
+            cerr << endl << msg << endl;
+            CPPUNIT_ASSERT(!"Caught BESError");
+        }
+
+
+
+
+    }
+
     CPPUNIT_TEST_SUITE( CmrTest );
 
     CPPUNIT_TEST(get_years_test);
     CPPUNIT_TEST(get_months_test);
     CPPUNIT_TEST(get_days_test);
+    CPPUNIT_TEST(get_granules_test);
 
     CPPUNIT_TEST_SUITE_END();
 };
