@@ -277,7 +277,7 @@ public:
             string month = "03";
             string day = "13";
 
-            cmr.get_granule_ids(collection_name, year, month, day, granules);
+            cmr.get_granule_ids(collection_name, year, month, granules);
             BESDEBUG(MODULE, prolog << "Checking expected size ("<< expected_size << ") vs received size (" << granules.size() << ")" << endl);
             CPPUNIT_ASSERT(expected_size == granules.size());
 
