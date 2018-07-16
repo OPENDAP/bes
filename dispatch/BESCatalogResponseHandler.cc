@@ -67,30 +67,23 @@ BESCatalogResponseHandler::~BESCatalogResponseHandler()
  */
 void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
-
     BESStopWatch sw;
     if (BESISDEBUG(TIMING_LOG)) sw.start("BESCatalogResponseHandler::execute", dhi.data[REQUEST_ID]);
 
     BESInfo *info = BESInfoList::TheList()->build_info();
     d_response_object = info;
 
+    // Remove all of the leading slashes from the container (path) name
     string container = dhi.data[CONTAINER];
-    string catname;
-    string defcatname = BESCatalogList::TheCatalogList()->default_catalog_name();
-    BESCatalog *defcat = BESCatalogList::TheCatalogList()->find_catalog(defcatname);
-    if (!defcat) {
-        string err = (string) "Not able to find the default catalog " + defcatname;
-        throw BESInternalError(err, __FILE__, __LINE__);
-    }
-
-    // remove all of the leading slashes from the container name
     string::size_type notslash = container.find_first_not_of("/", 0);
     if (notslash != string::npos) {
         container = container.substr(notslash);
     }
 
-    // see if there is a catalog name here. It's only a possible catalog
-    // name
+    // If there is a '/' in the path, then it might be a separator for a catalog name.
+    // Otherwise, the 'path' is just a single name and that might be a catalog name too.
+    // The next code block tests that...
+    string catname;
     string::size_type slash = container.find_first_of("/", 0);
     if (slash != string::npos) {
         catname = container.substr(0, slash);
@@ -99,8 +92,8 @@ void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi)
         catname = container;
     }
 
-    // see if this catalog exists. If it does, then remove the catalog
-    // name from the container (node)
+    // If 'catname' is a catalog, catobj will be non-null. Remove catname from the
+    // path (aka 'container').
     BESCatalog *catobj = BESCatalogList::TheCatalogList()->find_catalog(catname);
     if (catobj) {
         if (slash != string::npos) {
@@ -119,16 +112,21 @@ void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi)
 
     if (container.empty()) container = "/";
 
-    string coi = dhi.data[CATALOG_OR_INFO];
-
     BESCatalogEntry *entry = 0;
     if (catobj) {
-        entry = catobj->show_catalog(container, /*coi,*/ entry);
+        entry = catobj->show_catalog(container, entry);
     }
     else {
+        string defcatname = BESCatalogList::TheCatalogList()->default_catalog_name();
+        BESCatalog *defcat = BESCatalogList::TheCatalogList()->find_catalog(defcatname);
+        if (!defcat) {
+            string err = (string) "Not able to find the default catalog " + defcatname;
+            throw BESInternalError(err, __FILE__, __LINE__);
+        }
+
         // we always want to get the container information from the
         // default catalog, whether the node is / or not
-        entry = defcat->show_catalog(container, /*coi,*/ entry);
+        entry = defcat->show_catalog(container, entry);
 
         // we only care to get the list of catalogs if the container is
         // slash (/)
@@ -143,8 +141,13 @@ void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi)
         throw BESNotFoundError(err, __FILE__, __LINE__);
     }
 
+#if 0
+    string coi = dhi.data[CATALOG_OR_INFO];
+#endif
+
     // now that we have all the catalog entry information, display it
     // start the response depending on if show catalog or show info
+#if 0
     if (coi == CATALOG_RESPONSE) {
         info->begin_response(CATALOG_RESPONSE_STR, dhi);
         dhi.action_name = CATALOG_RESPONSE_STR;
@@ -153,10 +156,16 @@ void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi)
         info->begin_response(SHOW_INFO_RESPONSE_STR, dhi);
         dhi.action_name = SHOW_INFO_RESPONSE_STR;
     }
+#endif
+
+
+    info->begin_response(CATALOG_RESPONSE_STR, dhi);
+    dhi.action_name = CATALOG_RESPONSE_STR;
 
     // start with the first level entry
     BESCatalogUtils::display_entry(entry, info);
 
+#if 0
     // if we are doing a catalog response, then go one deeper
     if (coi == CATALOG_RESPONSE) {
         BESCatalogEntry::catalog_citer ei = entry->get_beginning_entry();
@@ -166,6 +175,15 @@ void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi)
             info->end_tag("dataset");
         }
     }
+#endif
+
+    BESCatalogEntry::catalog_citer ei = entry->get_beginning_entry();
+    BESCatalogEntry::catalog_citer ee = entry->get_ending_entry();
+    for (; ei != ee; ei++) {
+        BESCatalogUtils::display_entry((*ei).second, info);
+        info->end_tag("dataset");
+    }
+
     info->end_tag("dataset");
 
     // end the response object

@@ -54,7 +54,7 @@ class BESCatalogEntry;
 // One way to make this change and not leave the whole ref/deref model
 // looking odd would be to make a single BESCatalog instance that is
 // the default catalog and have that be separate from the list of added
-// catalog. jhrg 2.25.18
+// catalogs. jhrg 2.25.18
 
 
 /** @brief List of all registered catalogs
