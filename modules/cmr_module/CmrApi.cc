@@ -514,30 +514,23 @@ CmrApi::get_days(string collection_name, string r_year, string r_month, vector<s
 
 }
 
+
+
+
 void
 CmrApi::get_granule_ids(string collection_name, string r_year, string r_month, string r_day, vector<string> &granules_ids){
     string prolog = string("CmrApi::") + __func__ + "() - ";
     stringstream msg;
-
-    string url = BESUtil::assemblePath(cmr_search_endpoint_url,"granules.json")
-        + "?concept_id="+collection_name
-        +"&include_facets=v2"
-        +"&temporal_facet[0][year]="+r_year
-        +"&temporal_facet[0][month]="+r_month
-        +"&temporal_facet[0][day]="+r_day;
-
     rapidjson::Document cmr_doc;
-    getJsonDoc(url,cmr_doc);
-    BESDEBUG(MODULE, prolog << "Got JSON Document: "<< endl << jsonDocToString(cmr_doc) << endl);
+
+    granule_search(collection_name, r_year, r_month, r_day, cmr_doc);
 
     const rapidjson::Value& entries = get_entries(cmr_doc);
     for (rapidjson::SizeType i = 0; i < entries.Size(); i++) { // Uses SizeType instead of size_t
-        const rapidjson::Value& day = entries[i];
-        string day_id = getStringValue(day,"producer_granule_id");
+        const rapidjson::Value& granule = entries[i];
+        string day_id = getStringValue(granule,"producer_granule_id");
         granules_ids.push_back(day_id);
     }
-
-
 
 }
 
@@ -545,22 +538,58 @@ void
 CmrApi::get_granule_ids(string collection_name, string r_year, string r_month, vector<string> &granules_ids){
     string prolog = string("CmrApi::") + __func__ + "() - ";
     stringstream msg;
-
-    string url = BESUtil::assemblePath(cmr_search_endpoint_url,"granules.json")
-        + "?concept_id="+collection_name
-        +"&include_facets=v2"
-        +"&temporal_facet[0][year]="+r_year
-        +"&temporal_facet[0][month]="+r_month;
-
     rapidjson::Document cmr_doc;
-    getJsonDoc(url,cmr_doc);
-    BESDEBUG(MODULE, prolog << "Got JSON Document: "<< endl << jsonDocToString(cmr_doc) << endl);
+
+    granule_search(collection_name, r_year, r_month, "", cmr_doc);
 
     const rapidjson::Value& entries = get_entries(cmr_doc);
     for (rapidjson::SizeType i = 0; i < entries.Size(); i++) { // Uses SizeType instead of size_t
-        const rapidjson::Value& day = entries[i];
-        string day_id = getStringValue(day,"producer_granule_id");
+        const rapidjson::Value& granule = entries[i];
+        string day_id = getStringValue(granule,"producer_granule_id");
         granules_ids.push_back(day_id);
+    }
+}
+
+void
+CmrApi::granule_search(string collection_name, string r_year, string r_month, string r_day, rapidjson::Document &result_doc){
+    string prolog = string("CmrApi::") + __func__ + "() - ";
+
+    string url = BESUtil::assemblePath(cmr_search_endpoint_url,"granules.json")
+        + "?concept_id="+collection_name
+        +"&include_facets=v2";
+
+    if(!r_year.empty())
+        url += "&temporal_facet[0][year]="+r_year;
+
+    if(!r_month.empty())
+        url += "&temporal_facet[0][month]="+r_month;
+
+    if(!r_day.empty())
+        url += "&temporal_facet[0][day]="+r_day;
+
+    BESDEBUG(MODULE, prolog << "CMR Granule Search Request Url: : " << url << endl);
+    getJsonDoc(url,result_doc);
+    BESDEBUG(MODULE, prolog << "Got JSON Document: "<< endl << jsonDocToString(result_doc) << endl);
+}
+
+
+
+
+void
+CmrApi::get_granules(string collection_name, string r_year, string r_month, string r_day, vector<Granule&> &granules){
+    string prolog = string("CmrApi::") + __func__ + "() - ";
+    stringstream msg;
+    rapidjson::Document cmr_doc;
+
+    granule_search(collection_name, r_year, r_month, r_day, cmr_doc);
+
+    const rapidjson::Value& entries = get_entries(cmr_doc);
+    for (rapidjson::SizeType i = 0; i < entries.Size(); i++) { // Uses SizeType instead of size_t
+        const rapidjson::Value& granule_obj = entries[i];
+
+        rapidjson::Value grnl(granule_obj,cmr_doc.GetAllocator());
+        Granule g(grnl);
+        granules.push_back(g);
     }
 
 

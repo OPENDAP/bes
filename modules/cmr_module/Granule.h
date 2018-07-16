@@ -46,8 +46,8 @@ private:
 
 public:
 
-    Granule(const rapidjson::Value& granule_obj){
-        d_granule_obj.Set(granule_obj);
+    Granule(rapidjson::Value& granule_obj){
+        d_granule_obj = granule_obj;
     }
 
 

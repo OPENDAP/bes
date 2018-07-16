@@ -36,6 +36,7 @@
 #include <vector>
 #include "rapidjson/document.h"
 
+#include "Granule.h"
 
 namespace cmr {
 
@@ -55,6 +56,7 @@ private:
     const rapidjson::Value& get_children(const rapidjson::Value& obj);
     const rapidjson::Value& get_feed(const rapidjson::Document &cmr_doc);
     const rapidjson::Value& get_entries(const rapidjson::Document &cmr_doc);
+    void  granule_search(string collection_name, string r_year, string r_month, string r_day,rapidjson::Document &result_doc);
 
 
 public:
@@ -65,6 +67,7 @@ public:
     void get_days(std::string collection_name, std::string r_year, std::string r_month, std::vector<std::string> &days_result);
     void get_granule_ids(string collection_name, string r_year, string r_month, string r_day, std::vector<std::string> &granules_result);
     void get_granule_ids(string collection_name, string r_year, string r_month, std::vector<std::string> &granules_result);
+    void get_granules(string collection_name, string r_year, string r_month, string r_day, std::vector<Granule &> &granules);
 
 };
 
