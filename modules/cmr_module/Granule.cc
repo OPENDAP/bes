@@ -36,26 +36,6 @@
 namespace cmr {
 
 
-Granule::Granule(const rapidjson::Value& granule_obj):Granule(){
-    rapidjson::Value::ConstMemberIterator itr;
-    bool result;
-    const rapidjson::Value& myValue;
-
-    itr = granule_obj.FindMember("producer_granule_id");
-    result = itr != granule_obj.MemberEnd();
-    if(result){
-        myValue = itr->value;
-        if(myValue.IsString();
-        msg = prolog + "The value '"+ name +"' is" + (result?"":" NOT") + " a String type.";
-        BESDEBUG(MODULE, msg << endl);
-        if(!result){
-            return response;
-        }
-        producer_granule_id =
-    }
-
-
-}
 
 
 
