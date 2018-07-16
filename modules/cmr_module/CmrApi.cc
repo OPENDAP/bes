@@ -576,7 +576,7 @@ CmrApi::granule_search(string collection_name, string r_year, string r_month, st
 
 
 void
-CmrApi::get_granules(string collection_name, string r_year, string r_month, string r_day, vector<Granule&> &granules){
+CmrApi::get_granules(string collection_name, string r_year, string r_month, string r_day, vector<Granule *> &granules){
     string prolog = string("CmrApi::") + __func__ + "() - ";
     stringstream msg;
     rapidjson::Document cmr_doc;
