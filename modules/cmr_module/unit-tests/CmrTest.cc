@@ -419,6 +419,12 @@ public:
                 BESDEBUG(MODULE, msg.str() << endl);
                 CPPUNIT_ASSERT(expected[i] == pgi);
             }
+
+            for (size_t i = 0; i < granules.size(); i++) {
+                delete granules[i];
+                granules[i] = 0;
+            }
+
         }
         catch (BESError &be) {
             string msg = "Caught BESError! Message: " + be.get_message();
@@ -477,12 +483,18 @@ public:
                 BESDEBUG(MODULE, msg.str() << endl);
                 CPPUNIT_ASSERT(expected[i] == url);
             }
+
+            for (size_t i = 0; i < granules.size(); i++) {
+                delete granules[i];
+                granules[i] = 0;
+            }
         }
         catch (BESError &be) {
             string msg = "Caught BESError! Message: " + be.get_message();
             cerr << endl << msg << endl;
             CPPUNIT_ASSERT(!"Caught BESError");
         }
+
     }
 
     CPPUNIT_TEST_SUITE( CmrTest );
