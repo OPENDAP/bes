@@ -339,7 +339,7 @@ public:
             string year ="1985";
             string month = "03";
 
-            cmr.get_granule_ids(collection_name, year, month, granules);
+            cmr.get_granule_ids(collection_name, year, month, "", granules);
             BESDEBUG(MODULE, prolog << "Checking expected size ("<< expected_size << ") vs received size (" << granules.size() << ")" << endl);
             CPPUNIT_ASSERT(expected_size == granules.size());
 
@@ -400,14 +400,15 @@ public:
 
             stringstream msg;
             msg << prolog << "In the year " << year << ", month " << month <<  " the collection '" << collection_name << "' contains "
-                    << granules.size() << " granules: ";
+                    << granules.size() << " granules: " << endl;
             for (size_t i = 0; i < granules.size(); i++) {
                 Granule *granule = granules[i];
-                if (i > 0)
-                    msg << ", ";
-                msg << granule->getStringProperty("producer_granule_id");
+                msg << granule->getStringProperty("producer_granule_id") << endl
+                    << "    size:  " << granule->getSizeStr() << endl
+                    << "    lmt:    " << granule->getLastModifiedStr() << endl
+                    << "    access: " << granule->getDataAccessUrl() << endl;
             }
-            BESDEBUG(MODULE, msg.str() << endl);
+            BESDEBUG(MODULE, msg.str());
 
             for (size_t i = 0; i < granules.size(); i++) {
                 Granule *granule = granules[i];
@@ -457,14 +458,15 @@ public:
 
             stringstream msg;
             msg << prolog << "In the year " << year << ", month " << month <<  " the collection '" << collection_name << "' contains "
-                    << granules.size() << " granules. Data Access URLs: ";
+                    << granules.size() << " granules. Data Access URLs: " << endl;
             for (size_t i = 0; i < granules.size(); i++) {
                 Granule *granule = granules[i];
-                if (i > 0)
-                    msg << ", ";
-                msg << granule->getDataAccessUrl();
+                msg << granule->getStringProperty("producer_granule_id") << endl
+                    << "    size:   " << granule->getSizeStr() << endl
+                    << "    lmt:    " << granule->getLastModifiedStr() << endl
+                    << "    access: " << granule->getDataAccessUrl() << endl;
             }
-            BESDEBUG(MODULE, msg.str() << endl);
+            BESDEBUG(MODULE, msg.str());
 
             for (size_t i = 0; i < granules.size(); i++) {
                 Granule *granule = granules[i];

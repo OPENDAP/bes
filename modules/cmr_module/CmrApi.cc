@@ -60,7 +60,6 @@ using namespace std;
 
 namespace cmr {
 
-
 const rapidjson::Value&
 CmrApi::get_children(const rapidjson::Value& obj) {
     string prolog = string("CmrApi::") + __func__ + "() - ";
@@ -82,8 +81,8 @@ CmrApi::get_children(const rapidjson::Value& obj) {
         throw CmrError(msg,__FILE__,__LINE__);
     }
     return children;
-
 }
+
 const rapidjson::Value&
 CmrApi::get_feed(const rapidjson::Document &cmr_doc){
     string prolog = string("CmrApi::") + __func__ + "() - ";
@@ -112,7 +111,6 @@ CmrApi::get_feed(const rapidjson::Document &cmr_doc){
         throw CmrError(msg,__FILE__,__LINE__);
     }
     return feed;
-
 }
 
 
@@ -169,7 +167,6 @@ CmrApi::get_temporal_group(const rapidjson::Document &cmr_doc){
     }
 
     const rapidjson::Value& facets = get_children(facets_obj);
-
     for (rapidjson::SizeType i = 0; i < facets.Size(); i++) { // Uses SizeType instead of size_t
         const rapidjson::Value& facet = facets[i];
 
@@ -185,11 +182,9 @@ CmrApi::get_temporal_group(const rapidjson::Document &cmr_doc){
             BESDEBUG(MODULE, msg << endl);
         }
     }
-
     msg = prolog + "Failed to locate the Temporal facet.";
     BESDEBUG(MODULE, msg << endl);
     throw CmrError(msg,__FILE__,__LINE__);
-
 
 } // CmrApi::get_temporal_group()
 
@@ -241,7 +236,6 @@ CmrApi::get_month_group(const string r_year, const rapidjson::Document &cmr_doc)
             const rapidjson::Value& year_children = get_children(year_obj);
             for (rapidjson::SizeType j = 0; j < year_children.Size(); j++) { // Uses SizeType instead of size_t
                 const rapidjson::Value& child = year_children[i];
-
                 string title = rju.getStringValue(child,"title");
                 string month_title("Month");
                 if(title == month_title){
@@ -287,7 +281,6 @@ CmrApi::get_month(const string r_month, const string r_year, const rapidjson::Do
             msg << prolog  << "The month titled '"<<month_id << "' does not match the requested month ("<< r_month <<")";
             BESDEBUG(MODULE, msg << endl);
         }
-
     }
     msg.str("");
     msg << prolog  << "Failed to locate request Year/Month.";
@@ -313,10 +306,8 @@ CmrApi::get_day_group(const string r_month, const string r_year, const rapidjson
             msg << prolog  << "Located Day group for year: " << r_year << " month: "<< r_month;
             BESDEBUG(MODULE, msg << endl);
             return object;
-
         }
     }
-
     msg.str("");
     msg << prolog  << "Failed to locate requested Day  year: " << r_year << " month: "<< r_month;
     BESDEBUG(MODULE, msg << endl);
@@ -343,7 +334,6 @@ CmrApi::get_years(string collection_name, vector<string> &years_result){
 
     const rapidjson::Value& year_group = get_year_group(doc);
     const rapidjson::Value& years = get_children(year_group);
-
     for (rapidjson::SizeType k = 0; k < years.Size(); k++) { // Uses SizeType instead of size_t
         const rapidjson::Value& year_obj = years[k];
         string year = rju.getStringValue(year_obj,"title");
@@ -352,10 +342,10 @@ CmrApi::get_years(string collection_name, vector<string> &years_result){
 } // CmrApi::get_years()
 
 
-// https://cmr.earthdata.nasa.gov/search/granules.json?concept_id=C179003030-ORNL_DAAC&include_facets=v2&temporal_facet%5B0%5D%5Byear%5D=1985
-
 /**
  * Queries CMR for the 'collection_name' and returns the span of years covered by the collection.
+ *
+ * https://cmr.earthdata.nasa.gov/search/granules.json?concept_id=C179003030-ORNL_DAAC&include_facets=v2&temporal_facet%5B0%5D%5Byear%5D=1985
  *
  * @param collection_name The name of the collection to query.
  * @param collection_years A vector into which the years will be placed.
@@ -376,10 +366,8 @@ CmrApi::get_months(string collection_name, string r_year, vector<string> &months
     rju.getJsonDoc(url,doc);
     BESDEBUG(MODULE, prolog << "Got JSON Document: "<< endl << rju.jsonDocToString(doc) << endl);
 
-
     const rapidjson::Value& year_group = get_year_group(doc);
     const rapidjson::Value& years = get_children(year_group);
-
     if(years.Size() != 1){
         msg.str("");
         msg << prolog  << "We expected to get back one year (" << r_year << ") but we got back " << years.Size();
@@ -414,15 +402,12 @@ CmrApi::get_months(string collection_name, string r_year, vector<string> &months
     }
 
     const rapidjson::Value& months = get_children(month_group);
-
     for (rapidjson::SizeType i = 0; i < months.Size(); i++) { // Uses SizeType instead of size_t
         const rapidjson::Value& month = months[i];
         string month_id = rju.getStringValue(month,"title");
         months_result.push_back(month_id);
     }
     return;
-
-
 
 } // CmrApi::get_months()
 
@@ -443,11 +428,8 @@ CmrApi::get_days(string collection_name, string r_year, string r_month, vector<s
     rju.getJsonDoc(url,cmr_doc);
     BESDEBUG(MODULE, prolog << "Got JSON Document: "<< endl << rju.jsonDocToString(cmr_doc) << endl);
 
-
     const rapidjson::Value& day_group = get_day_group(r_month, r_year, cmr_doc);
-
     const rapidjson::Value& days = get_children(day_group);
-
     for (rapidjson::SizeType i = 0; i < days.Size(); i++) { // Uses SizeType instead of size_t
         const rapidjson::Value& day = days[i];
         string day_id = rju.getStringValue(day,"title");
@@ -478,22 +460,6 @@ CmrApi::get_granule_ids(string collection_name, string r_year, string r_month, s
 
 }
 
-void
-CmrApi::get_granule_ids(string collection_name, string r_year, string r_month, vector<string> &granules_ids){
-    string prolog = string("CmrApi::") + __func__ + "() - ";
-    rjson_utils rju;
-    stringstream msg;
-    rapidjson::Document cmr_doc;
-
-    granule_search(collection_name, r_year, r_month, "", cmr_doc);
-
-    const rapidjson::Value& entries = get_entries(cmr_doc);
-    for (rapidjson::SizeType i = 0; i < entries.Size(); i++) { // Uses SizeType instead of size_t
-        const rapidjson::Value& granule = entries[i];
-        string day_id = rju.getStringValue(granule,"producer_granule_id");
-        granules_ids.push_back(day_id);
-    }
-}
 
 void
 CmrApi::granule_search(string collection_name, string r_year, string r_month, string r_day, rapidjson::Document &result_doc){
