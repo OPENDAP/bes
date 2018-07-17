@@ -23,38 +23,32 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 /*
- * Granule.h
+ * rjson_utils.h
  *
- *  Created on: July, 14 2018
+ *  Created on: July, 17 2018
  *      Author: ndp
  */
-#ifndef MODULES_CMR_MODULE_GRANULE_H_
-#define MODULES_CMR_MODULE_GRANULE_H_
+
+#ifndef MODULES_CMR_MODULE_RJSONUTILS_H_
+#define MODULES_CMR_MODULE_RJSONUTILS_H_
 
 #include <string>
 #include <vector>
 #include "rapidjson/document.h"
 
-
 namespace cmr {
 
-class Granule {
-private:
-    const rapidjson::Value& d_granule_obj;
 
+class rjson_utils {
 public:
-    Granule(const rapidjson::Value& granule_obj) : d_granule_obj(granule_obj) {}
-
-    std::string getStringProperty(const std::string &id);
-    std::string getDataAccessUrl();
-    std::string getMetadataAccessUrl();
-    std::string getSizeStr();
-    std::string getLastModifiedStr();
+    void getJsonDoc(const std::string &url, rapidjson::Document &d);
+    std::string getStringValue(const rapidjson::Value& object, const std::string &name);
+    // bool getBooleanValue(const rapidjson::Value& object, const std::string name);
+    std::string jsonDocToString(rapidjson::Document &d);
 };
+
+
 
 } // namespace cmr
 
-#endif /* MODULES_CMR_MODULE_GRANULE_H_ */
-
-
-
+#endif /* MODULES_CMR_MODULE_RJSONUTILS_H_ */

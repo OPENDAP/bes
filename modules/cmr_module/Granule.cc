@@ -29,19 +29,95 @@
  *      Author: ndp
  */
 
+#include "rjson_utils.h"
+#include "BESDebug.h"
+
+#include "CmrError.h"
 #include "Granule.h"
 
 
+using namespace std;
+
+#define MODULE "cmr"
 
 namespace cmr {
 
 
+std::string Granule::getStringProperty(const std::string &name){
+    rjson_utils rju;
+    return rju.getStringValue(d_granule_obj,name);
+}
 
+string granule_LINKS_REL_DATA_ACCES = "http://esipfed.org/ns/fedsearch/1.1/data#";
+string granule_LINKS_REL_METADATA_ACCESS = "http://esipfed.org/ns/fedsearch/1.1/data#";
+string granule_LINKS = "links";
+string granule_LINKS_REL= "rel";
+string granule_LINKS_HREFLANG = "hreflang";
+string granule_LINKS_HREF = "href";
+string granule_SIZE = "granule_size";
+string granule_LMT = "updated";
 
+std::string Granule::getSizeStr(){
+    return getStringProperty(granule_SIZE);
+}
 
+std::string Granule::getLastModifiedStr(){
+    return getStringProperty(granule_LMT);
+}
 
+std::string Granule::getDataAccessUrl(){
+    string prolog = string("CmrApi::Granule::") + __func__ + "() - ";
+    rjson_utils rju;
 
+    string response;
+    rapidjson::Value::ConstMemberIterator itr = d_granule_obj.FindMember(granule_LINKS.c_str());
+    bool result = itr != d_granule_obj.MemberEnd();
+    string msg = prolog + (result?"Located":"FAILED to locate") + " the value '"+granule_LINKS+"' in object.";
+    BESDEBUG(MODULE, msg << endl);
+    if(!result){
+        throw CmrError("ERROR: Failed to located '"+granule_LINKS+"' section for CMRGranule!",__FILE__,__LINE__);
+    }
+    const rapidjson::Value& links = itr->value;
+    if(!links.IsArray())
+        throw CmrError("ERROR: The '"+granule_LINKS+"' object is NOT an array!",__FILE__,__LINE__);
 
+    for (rapidjson::SizeType i = 0; i < links.Size(); i++) { // Uses SizeType instead of size_t
+        const rapidjson::Value& link = links[i];
+        string rel = rju.getStringValue(link,granule_LINKS_REL);
+        if(rel == granule_LINKS_REL_DATA_ACCES){
+            string data_access_url = rju.getStringValue(link,granule_LINKS_HREF);
+            return data_access_url;
+        }
+    }
+    throw CmrError("ERROR: Failed to locate granule data access link ("+granule_LINKS_REL_DATA_ACCES+"). :(",__FILE__,__LINE__);
+}
+
+std::string Granule::getMetadataAccessUrl(){
+    string prolog = string("CmrApi::Granule::") + __func__ + "() - ";
+    rjson_utils rju;
+
+    string response;
+    rapidjson::Value::ConstMemberIterator itr = d_granule_obj.FindMember(granule_LINKS.c_str());
+    bool result = itr != d_granule_obj.MemberEnd();
+    string msg = prolog + (result?"Located":"FAILED to locate") + " the value '"+granule_LINKS+"' in object.";
+    BESDEBUG(MODULE, msg << endl);
+    if(!result){
+        throw CmrError("ERROR: Failed to located '"+granule_LINKS+"' section for CMRGranule!",__FILE__,__LINE__);
+    }
+    const rapidjson::Value& links = itr->value;
+    if(!links.IsArray())
+        throw CmrError("ERROR: The '"+granule_LINKS+"' object is NOT an array!",__FILE__,__LINE__);
+
+    for (rapidjson::SizeType i = 0; i < links.Size(); i++) { // Uses SizeType instead of size_t
+        const rapidjson::Value& link = links[i];
+        string rel = rju.getStringValue(link,granule_LINKS_REL);
+        if(rel == granule_LINKS_REL_METADATA_ACCESS){
+            string data_access_url = rju.getStringValue(link,granule_LINKS_HREF);
+            return data_access_url;
+        }
+    }
+    throw CmrError("ERROR: Failed to locate granule data access link ("+granule_LINKS_REL_METADATA_ACCESS+"). :(",__FILE__,__LINE__);
+}
 
 
 } //namespace cmr

@@ -44,10 +44,6 @@ namespace cmr {
 class CmrApi {
 private:
     std::string cmr_search_endpoint_url;
-    void getJsonDoc(const std::string &url, rapidjson::Document &d);
-    std::string getStringValue(const rapidjson::Value& object, const std::string name);
-    bool getBooleanValue(const rapidjson::Value& object, const string name);
-    std::string jsonDocToString(rapidjson::Document &d);
     const rapidjson::Value& get_temporal_group(const rapidjson::Document &cmr_doc);
     const rapidjson::Value& get_year_group(const rapidjson::Document &cmr_doc);
     const rapidjson::Value& get_month_group(const string year, const rapidjson::Document &cmr_doc);
@@ -67,7 +63,7 @@ public:
     void get_days(std::string collection_name, std::string r_year, std::string r_month, std::vector<std::string> &days_result);
     void get_granule_ids(string collection_name, string r_year, string r_month, string r_day, std::vector<std::string> &granules_result);
     void get_granule_ids(string collection_name, string r_year, string r_month, std::vector<std::string> &granules_result);
-    void get_granules(string collection_name, string r_year, string r_month, string r_day, std::vector<Granule &> &granules);
+    void get_granules(string collection_name, string r_year, string r_month, string r_day, std::vector<Granule *> &granules);
 
 };
 

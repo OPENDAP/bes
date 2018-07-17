@@ -71,4 +71,4 @@ endif
 OBJS = ../CMRCatalog.o
 
 CmrTest_SOURCES = CmrTest.cc
-CmrTest_LDADD = ../RemoteHttpResource.o  ../curl_utils.o ../CmrCache.o ../CmrUtils.o  ../CmrApi.o $(OBJS) $(LIBADD)
+CmrTest_LDADD = ../RemoteHttpResource.o  ../curl_utils.o ../rjson_utils.o ../CmrCache.o ../CmrUtils.o ../CmrApi.o ../Granule.o $(OBJS) $(LIBADD)

@@ -50,9 +50,11 @@
 #include "RemoteHttpResource.h"
 #include "CmrApi.h"
 #include "CmrError.h"
+#include "rjson_utils.h"
 
 #define MODULE "cmr"
 
+using namespace std;
 using namespace libdap;
 using namespace rapidjson;
 
@@ -259,7 +261,7 @@ public:
 
     }
 
-    void get_granules_day_test() {
+    void get_granule_ids_day_test() {
         string prolog = string(__func__) + "() - ";
 
         //string collection_name = "C179003030-ORNL_DAAC";
@@ -311,9 +313,8 @@ public:
 
 
     }
-    void get_granules_month_test() {
+    void get_granule_ids_month_test() {
         string prolog = string(__func__) + "() - ";
-
         //string collection_name = "C179003030-ORNL_DAAC";
         string collection_name = "C1276812863-GES_DISC";
 
@@ -359,17 +360,127 @@ public:
                 BESDEBUG(MODULE, msg.str() << endl);
                 CPPUNIT_ASSERT(expected[i] == granules[i]);
             }
-
         }
         catch (BESError &be) {
             string msg = "Caught BESError! Message: " + be.get_message();
             cerr << endl << msg << endl;
             CPPUNIT_ASSERT(!"Caught BESError");
         }
+    }
 
+    void get_granules_month_test() {
+        string prolog = string(__func__) + "() - ";
+        //string collection_name = "C179003030-ORNL_DAAC";
+        string collection_name = "C1276812863-GES_DISC";
 
+        string expected[] = {
+                string("MERRA2_100.tavg1_2d_slv_Nx.19850301.nc4"),
+                string("MERRA2_100.tavg1_2d_slv_Nx.19850302.nc4"),
+                string("MERRA2_100.tavg1_2d_slv_Nx.19850303.nc4"),
+                string("MERRA2_100.tavg1_2d_slv_Nx.19850304.nc4"),
+                string("MERRA2_100.tavg1_2d_slv_Nx.19850305.nc4"),
+                string("MERRA2_100.tavg1_2d_slv_Nx.19850306.nc4"),
+                string("MERRA2_100.tavg1_2d_slv_Nx.19850307.nc4"),
+                string("MERRA2_100.tavg1_2d_slv_Nx.19850308.nc4"),
+                string("MERRA2_100.tavg1_2d_slv_Nx.19850309.nc4"),
+                string("MERRA2_100.tavg1_2d_slv_Nx.19850310.nc4")
+        };
 
+        unsigned long  expected_size = 10;
+        vector<string> granules;
+        try {
+            CmrApi cmr;
+            std::vector<Granule *> granules;
+            string year ="1985";
+            string month = "03";
 
+            cmr.get_granules(collection_name, year, month, "",  granules);
+            BESDEBUG(MODULE, prolog << "Checking expected size ("<< expected_size << ") vs received size (" << granules.size() << ")" << endl);
+            CPPUNIT_ASSERT(expected_size == granules.size());
+
+            stringstream msg;
+            msg << prolog << "In the year " << year << ", month " << month <<  " the collection '" << collection_name << "' contains "
+                    << granules.size() << " granules: ";
+            for (size_t i = 0; i < granules.size(); i++) {
+                Granule *granule = granules[i];
+                if (i > 0)
+                    msg << ", ";
+                msg << granule->getStringProperty("producer_granule_id");
+            }
+            BESDEBUG(MODULE, msg.str() << endl);
+
+            for (size_t i = 0; i < granules.size(); i++) {
+                Granule *granule = granules[i];
+                string pgi = granule->getStringProperty("producer_granule_id");
+                msg.str(std::string());
+                msg << prolog << "Checking:  expected: " << expected[i]
+                        << " received: " << pgi;
+                BESDEBUG(MODULE, msg.str() << endl);
+                CPPUNIT_ASSERT(expected[i] == pgi);
+            }
+        }
+        catch (BESError &be) {
+            string msg = "Caught BESError! Message: " + be.get_message();
+            cerr << endl << msg << endl;
+            CPPUNIT_ASSERT(!"Caught BESError");
+        }
+    }
+
+    void get_granules_data_access_urls_month_test() {
+        string prolog = string(__func__) + "() - ";
+        string collection_name = "C1276812863-GES_DISC";
+
+        string expected[] = {
+                string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850301.nc4"),
+                string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850302.nc4"),
+                string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850303.nc4"),
+                string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850304.nc4"),
+                string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850305.nc4"),
+                string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850306.nc4"),
+                string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850307.nc4"),
+                string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850308.nc4"),
+                string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850309.nc4"),
+                string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850310.nc4"),
+        };
+
+        unsigned long  expected_size = 10;
+        vector<string> granules;
+        try {
+            CmrApi cmr;
+            std::vector<Granule *> granules;
+            string year ="1985";
+            string month = "03";
+
+            cmr.get_granules(collection_name, year, month, "",  granules);
+            BESDEBUG(MODULE, prolog << "Checking expected size ("<< expected_size << ") vs received size (" << granules.size() << ")" << endl);
+            CPPUNIT_ASSERT(expected_size == granules.size());
+
+            stringstream msg;
+            msg << prolog << "In the year " << year << ", month " << month <<  " the collection '" << collection_name << "' contains "
+                    << granules.size() << " granules. Data Access URLs: ";
+            for (size_t i = 0; i < granules.size(); i++) {
+                Granule *granule = granules[i];
+                if (i > 0)
+                    msg << ", ";
+                msg << granule->getDataAccessUrl();
+            }
+            BESDEBUG(MODULE, msg.str() << endl);
+
+            for (size_t i = 0; i < granules.size(); i++) {
+                Granule *granule = granules[i];
+                string url = granule->getDataAccessUrl();
+                msg.str(std::string());
+                msg << prolog << "Checking:  expected: " << expected[i]
+                        << " received: " << url;
+                BESDEBUG(MODULE, msg.str() << endl);
+                CPPUNIT_ASSERT(expected[i] == url);
+            }
+        }
+        catch (BESError &be) {
+            string msg = "Caught BESError! Message: " + be.get_message();
+            cerr << endl << msg << endl;
+            CPPUNIT_ASSERT(!"Caught BESError");
+        }
     }
 
     CPPUNIT_TEST_SUITE( CmrTest );
@@ -377,8 +488,10 @@ public:
     CPPUNIT_TEST(get_years_test);
     CPPUNIT_TEST(get_months_test);
     CPPUNIT_TEST(get_days_test);
-    CPPUNIT_TEST(get_granules_day_test);
+    CPPUNIT_TEST(get_granule_ids_day_test);
+    CPPUNIT_TEST(get_granule_ids_month_test);
     CPPUNIT_TEST(get_granules_month_test);
+    CPPUNIT_TEST(get_granules_data_access_urls_month_test);
 
     CPPUNIT_TEST_SUITE_END();
 };
