@@ -60,6 +60,9 @@ using namespace std;
 
 namespace cmr {
 
+/**
+ *
+ */
 const rapidjson::Value&
 CmrApi::get_children(const rapidjson::Value& obj) {
     string prolog = string("CmrApi::") + __func__ + "() - ";
@@ -83,6 +86,9 @@ CmrApi::get_children(const rapidjson::Value& obj) {
     return children;
 }
 
+/**
+ *
+ */
 const rapidjson::Value&
 CmrApi::get_feed(const rapidjson::Document &cmr_doc){
     string prolog = string("CmrApi::") + __func__ + "() - ";
@@ -113,7 +119,9 @@ CmrApi::get_feed(const rapidjson::Document &cmr_doc){
     return feed;
 }
 
-
+/**
+ *
+ */
 const rapidjson::Value&
 CmrApi::get_entries(const rapidjson::Document &cmr_doc){
     string prolog = string("CmrApi::") + __func__ + "() - ";
@@ -140,6 +148,9 @@ CmrApi::get_entries(const rapidjson::Document &cmr_doc){
     return entry;
 }
 
+/**
+ *
+ */
 const rapidjson::Value&
 CmrApi::get_temporal_group(const rapidjson::Document &cmr_doc){
     string prolog = string("CmrApi::") + __func__ + "() - ";
@@ -188,7 +199,9 @@ CmrApi::get_temporal_group(const rapidjson::Document &cmr_doc){
 
 } // CmrApi::get_temporal_group()
 
-
+/**
+ *
+ */
 const rapidjson::Value&
 CmrApi::get_year_group(const rapidjson::Document &cmr_doc){
     string prolog = string("CmrApi::") + __func__ + "() - ";
@@ -217,6 +230,9 @@ CmrApi::get_year_group(const rapidjson::Document &cmr_doc){
     throw CmrError(msg,__FILE__,__LINE__);
 }
 
+/**
+ *
+ */
 const rapidjson::Value&
 CmrApi::get_month_group(const string r_year, const rapidjson::Document &cmr_doc){
     string prolog = string("CmrApi::") + __func__ + "() - ";
@@ -411,7 +427,9 @@ CmrApi::get_months(string collection_name, string r_year, vector<string> &months
 
 } // CmrApi::get_months()
 
-
+/**
+ * Creates a list of the valid days for the collection matching the year and month
+ */
 void
 CmrApi::get_days(string collection_name, string r_year, string r_month, vector<string> &days_result){
     string prolog = string("CmrApi::") + __func__ + "() - ";
@@ -435,13 +453,13 @@ CmrApi::get_days(string collection_name, string r_year, string r_month, vector<s
         string day_id = rju.getStringValue(day,"title");
         days_result.push_back(day_id);
     }
-
-
 }
 
 
 
-
+/**
+ *
+ */
 void
 CmrApi::get_granule_ids(string collection_name, string r_year, string r_month, string r_day, vector<string> &granules_ids){
     string prolog = string("CmrApi::") + __func__ + "() - ";
@@ -454,13 +472,16 @@ CmrApi::get_granule_ids(string collection_name, string r_year, string r_month, s
     const rapidjson::Value& entries = get_entries(cmr_doc);
     for (rapidjson::SizeType i = 0; i < entries.Size(); i++) { // Uses SizeType instead of size_t
         const rapidjson::Value& granule = entries[i];
-        string day_id = rju.getStringValue(granule,"producer_granule_id");
+        string day_id = rju.getStringValue(granule,"id");
         granules_ids.push_back(day_id);
     }
 
 }
 
-
+/**
+ * Locates granules in the collection matching the year, month, and day. Any or all of
+ * year, month, and day may be the empty string.
+ */
 void
 CmrApi::granule_search(string collection_name, string r_year, string r_month, string r_day, rapidjson::Document &result_doc){
     string prolog = string("CmrApi::") + __func__ + "() - ";
@@ -486,7 +507,9 @@ CmrApi::granule_search(string collection_name, string r_year, string r_month, st
 
 
 
-
+/**
+ * Returns all of the Granules in the collection matching the date.
+ */
 void
 CmrApi::get_granules(string collection_name, string r_year, string r_month, string r_day, vector<Granule *> &granules){
     string prolog = string("CmrApi::") + __func__ + "() - ";

@@ -57,19 +57,26 @@ string granule_LINKS_HREF = "href";
 string granule_SIZE = "granule_size";
 string granule_LMT = "updated";
 
+/**
+ * Returns th size of the Granule as a string.
+ */
 std::string Granule::getSizeStr(){
     return getStringProperty(granule_SIZE);
 }
 
+/**
+ * Returns the last modified time of the granule as a string.
+ */
 std::string Granule::getLastModifiedStr(){
     return getStringProperty(granule_LMT);
 }
 
-std::string Granule::getDataAccessUrl(){
+/**
+ * Internal method that retrives the "links" array from the Granule's object.
+ */
+const rapidjson::Value& Granule::get_links(){
     string prolog = string("CmrApi::Granule::") + __func__ + "() - ";
-    rjson_utils rju;
 
-    string response;
     rapidjson::Value::ConstMemberIterator itr = d_granule_obj.FindMember(granule_LINKS.c_str());
     bool result = itr != d_granule_obj.MemberEnd();
     string msg = prolog + (result?"Located":"FAILED to locate") + " the value '"+granule_LINKS+"' in object.";
@@ -81,6 +88,17 @@ std::string Granule::getDataAccessUrl(){
     if(!links.IsArray())
         throw CmrError("ERROR: The '"+granule_LINKS+"' object is NOT an array!",__FILE__,__LINE__);
 
+    return links;
+}
+
+/**
+ * Returns the data access URL for the dataset granule.
+ */
+std::string Granule::getDataAccessUrl(){
+    string prolog = string("CmrApi::Granule::") + __func__ + "() - ";
+    rjson_utils rju;
+
+    const rapidjson::Value& links = get_links();
     for (rapidjson::SizeType i = 0; i < links.Size(); i++) { // Uses SizeType instead of size_t
         const rapidjson::Value& link = links[i];
         string rel = rju.getStringValue(link,granule_LINKS_REL);
@@ -92,22 +110,14 @@ std::string Granule::getDataAccessUrl(){
     throw CmrError("ERROR: Failed to locate granule data access link ("+granule_LINKS_REL_DATA_ACCES+"). :(",__FILE__,__LINE__);
 }
 
+/**
+ * Returns the metadata access URL for the dataset granule.
+ */
 std::string Granule::getMetadataAccessUrl(){
     string prolog = string("CmrApi::Granule::") + __func__ + "() - ";
     rjson_utils rju;
 
-    string response;
-    rapidjson::Value::ConstMemberIterator itr = d_granule_obj.FindMember(granule_LINKS.c_str());
-    bool result = itr != d_granule_obj.MemberEnd();
-    string msg = prolog + (result?"Located":"FAILED to locate") + " the value '"+granule_LINKS+"' in object.";
-    BESDEBUG(MODULE, msg << endl);
-    if(!result){
-        throw CmrError("ERROR: Failed to located '"+granule_LINKS+"' section for CMRGranule!",__FILE__,__LINE__);
-    }
-    const rapidjson::Value& links = itr->value;
-    if(!links.IsArray())
-        throw CmrError("ERROR: The '"+granule_LINKS+"' object is NOT an array!",__FILE__,__LINE__);
-
+    const rapidjson::Value& links = get_links();
     for (rapidjson::SizeType i = 0; i < links.Size(); i++) { // Uses SizeType instead of size_t
         const rapidjson::Value& link = links[i];
         string rel = rju.getStringValue(link,granule_LINKS_REL);
@@ -116,7 +126,7 @@ std::string Granule::getMetadataAccessUrl(){
             return data_access_url;
         }
     }
-    throw CmrError("ERROR: Failed to locate granule data access link ("+granule_LINKS_REL_METADATA_ACCESS+"). :(",__FILE__,__LINE__);
+    throw CmrError("ERROR: Failed to locate granule metadata access link ("+granule_LINKS_REL_METADATA_ACCESS+"). :(",__FILE__,__LINE__);
 }
 
 

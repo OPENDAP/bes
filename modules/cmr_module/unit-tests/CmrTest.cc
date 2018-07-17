@@ -268,7 +268,7 @@ public:
         string collection_name = "C1276812863-GES_DISC";
 
         string expected[] = {
-                string("MERRA2_100.tavg1_2d_slv_Nx.19850313.nc4")
+                string("G1277917089-GES_DISC")
         };
 
         unsigned long  expected_size = 1;
@@ -319,16 +319,16 @@ public:
         string collection_name = "C1276812863-GES_DISC";
 
         string expected[] = {
-                string("MERRA2_100.tavg1_2d_slv_Nx.19850301.nc4"),
-                string("MERRA2_100.tavg1_2d_slv_Nx.19850302.nc4"),
-                string("MERRA2_100.tavg1_2d_slv_Nx.19850303.nc4"),
-                string("MERRA2_100.tavg1_2d_slv_Nx.19850304.nc4"),
-                string("MERRA2_100.tavg1_2d_slv_Nx.19850305.nc4"),
-                string("MERRA2_100.tavg1_2d_slv_Nx.19850306.nc4"),
-                string("MERRA2_100.tavg1_2d_slv_Nx.19850307.nc4"),
-                string("MERRA2_100.tavg1_2d_slv_Nx.19850308.nc4"),
-                string("MERRA2_100.tavg1_2d_slv_Nx.19850309.nc4"),
-                string("MERRA2_100.tavg1_2d_slv_Nx.19850310.nc4")
+            string("G1277917088-GES_DISC"),
+            string("G1277917126-GES_DISC"),
+            string("G1277917102-GES_DISC"),
+            string("G1277917125-GES_DISC"),
+            string("G1277917121-GES_DISC"),
+            string("G1277917112-GES_DISC"),
+            string("G1277917116-GES_DISC"),
+            string("G1277917161-GES_DISC"),
+            string("G1277917098-GES_DISC"),
+            string("G1277917097-GES_DISC")
         };
 
         unsigned long  expected_size = 10;
@@ -374,16 +374,16 @@ public:
         string collection_name = "C1276812863-GES_DISC";
 
         string expected[] = {
-                string("MERRA2_100.tavg1_2d_slv_Nx.19850301.nc4"),
-                string("MERRA2_100.tavg1_2d_slv_Nx.19850302.nc4"),
-                string("MERRA2_100.tavg1_2d_slv_Nx.19850303.nc4"),
-                string("MERRA2_100.tavg1_2d_slv_Nx.19850304.nc4"),
-                string("MERRA2_100.tavg1_2d_slv_Nx.19850305.nc4"),
-                string("MERRA2_100.tavg1_2d_slv_Nx.19850306.nc4"),
-                string("MERRA2_100.tavg1_2d_slv_Nx.19850307.nc4"),
-                string("MERRA2_100.tavg1_2d_slv_Nx.19850308.nc4"),
-                string("MERRA2_100.tavg1_2d_slv_Nx.19850309.nc4"),
-                string("MERRA2_100.tavg1_2d_slv_Nx.19850310.nc4")
+            string("G1277917088-GES_DISC"),
+            string("G1277917126-GES_DISC"),
+            string("G1277917102-GES_DISC"),
+            string("G1277917125-GES_DISC"),
+            string("G1277917121-GES_DISC"),
+            string("G1277917112-GES_DISC"),
+            string("G1277917116-GES_DISC"),
+            string("G1277917161-GES_DISC"),
+            string("G1277917098-GES_DISC"),
+            string("G1277917097-GES_DISC")
         };
 
         unsigned long  expected_size = 10;
@@ -412,7 +412,7 @@ public:
 
             for (size_t i = 0; i < granules.size(); i++) {
                 Granule *granule = granules[i];
-                string pgi = granule->getStringProperty("producer_granule_id");
+                string pgi = granule->getStringProperty("id");
                 msg.str(std::string());
                 msg << prolog << "Checking:  expected: " << expected[i]
                         << " received: " << pgi;

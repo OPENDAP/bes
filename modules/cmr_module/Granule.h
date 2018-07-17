@@ -41,6 +41,7 @@ namespace cmr {
 class Granule {
 private:
     const rapidjson::Value& d_granule_obj;
+    const rapidjson::Value& get_links();
 
 public:
     Granule(const rapidjson::Value& granule_obj) : d_granule_obj(granule_obj) {}
