@@ -55,8 +55,7 @@ BESCatalogResponseHandler::~BESCatalogResponseHandler()
 {
 }
 
-/** @brief executes the command 'show catalog|leaves [for &lt;node&gt;];' by
- * returning nodes or leaves at the top level or at the specified node.
+/** @brief Execute the showCatalog command.
  *
  * The response object BESInfo is created to store the information.
  *
@@ -141,41 +140,13 @@ void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi)
         throw BESNotFoundError(err, __FILE__, __LINE__);
     }
 
-#if 0
-    string coi = dhi.data[CATALOG_OR_INFO];
-#endif
-
     // now that we have all the catalog entry information, display it
     // start the response depending on if show catalog or show info
-#if 0
-    if (coi == CATALOG_RESPONSE) {
-        info->begin_response(CATALOG_RESPONSE_STR, dhi);
-        dhi.action_name = CATALOG_RESPONSE_STR;
-    }
-    else {
-        info->begin_response(SHOW_INFO_RESPONSE_STR, dhi);
-        dhi.action_name = SHOW_INFO_RESPONSE_STR;
-    }
-#endif
-
-
     info->begin_response(CATALOG_RESPONSE_STR, dhi);
     dhi.action_name = CATALOG_RESPONSE_STR;
 
     // start with the first level entry
     BESCatalogUtils::display_entry(entry, info);
-
-#if 0
-    // if we are doing a catalog response, then go one deeper
-    if (coi == CATALOG_RESPONSE) {
-        BESCatalogEntry::catalog_citer ei = entry->get_beginning_entry();
-        BESCatalogEntry::catalog_citer ee = entry->get_ending_entry();
-        for (; ei != ee; ei++) {
-            BESCatalogUtils::display_entry((*ei).second, info);
-            info->end_tag("dataset");
-        }
-    }
-#endif
 
     BESCatalogEntry::catalog_citer ei = entry->get_beginning_entry();
     BESCatalogEntry::catalog_citer ee = entry->get_ending_entry();

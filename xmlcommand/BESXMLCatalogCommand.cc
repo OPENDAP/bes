@@ -44,9 +44,11 @@ BESXMLCatalogCommand::BESXMLCatalogCommand(const BESDataHandlerInterface &base_d
 {
 }
 
-/** @brief parse a show command. No properties or children elements
+/** @brief Parse a show catalog command.
  *
- &lt;showCatalog node="containerName" /&gt;
+ * ~~~{.xml}
+ * <showCatalog node="containerName" />
+ * ~~~
  *
  * @param node xml2 element node pointer
  */
@@ -64,20 +66,7 @@ void BESXMLCatalogCommand::parse_request(xmlNode *node)
     // the action is the same for show catalog and show info
     d_xmlcmd_dhi.action = CATALOG_RESPONSE;
 
-    d_xmlcmd_dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE;
     d_cmd_log_info = "show catalog";
-#if 0
-    // the CATALOG_OR_INFO data value will say if it's a show catalog or
-    // show info
-    if (name == CATALOG_RESPONSE_STR) {
-        d_xmlcmd_dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE;
-        d_cmd_log_info = "show catalog";
-    }
-    else {
-        d_xmlcmd_dhi.data[CATALOG_OR_INFO] = SHOW_INFO_RESPONSE;
-        d_cmd_log_info = "show info";
-    }
-#endif
 
     // node is an optional property, so could be empty string
     d_xmlcmd_dhi.data[CONTAINER] = props["node"];
