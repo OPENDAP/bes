@@ -34,12 +34,9 @@
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
-#include <curl/curl.h>
 
-#include <XMLWriter.h>
 #include <GetOpt.h>
 #include <util.h>
-#include <debug.h>
 
 #include <BESError.h>
 #include <BESDebug.h>
@@ -55,7 +52,6 @@
 #define MODULE "cmr"
 
 using namespace std;
-using namespace libdap;
 using namespace rapidjson;
 
 static bool debug = false;

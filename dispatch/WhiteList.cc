@@ -54,9 +54,7 @@ WhiteList *
 WhiteList::get_white_list()
 {
     if (d_instance) return d_instance;
-
     d_instance = new WhiteList;
-
     return d_instance;
 }
 
@@ -65,6 +63,10 @@ WhiteList::WhiteList()
     bool found = false;
     string key = REMOTE_ACCESS_WHITELIST;
     TheBESKeys::TheKeys()->get_values(REMOTE_ACCESS_WHITELIST, d_white_list, found);
+    if(!found){
+        throw BESInternalError(string("The remote access whitelist, '")+REMOTE_ACCESS_WHITELIST
+            +"' has not been configured.", __FILE__, __LINE__);
+    }
 }
 
 /**

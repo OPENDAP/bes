@@ -64,6 +64,7 @@ public:
     void get_granule_ids(string collection_name, string r_year, string r_month, string r_day, std::vector<std::string> &granules_result);
     void get_granule_ids(string collection_name, string r_year, string r_month, std::vector<std::string> &granules_result);
     void get_granules(string collection_name, string r_year, string r_month, string r_day, std::vector<Granule *> &granules);
+    void get_collection_ids(std::vector<std::string> &collection_ids);
 
 };
 

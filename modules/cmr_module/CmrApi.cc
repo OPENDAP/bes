@@ -530,5 +530,18 @@ CmrApi::get_granules(string collection_name, string r_year, string r_month, stri
 
 
 
+#define CMR_COLLECTIONS "CMR.Collections"
+void
+CmrApi::get_collection_ids(std::vector<std::string> &collection_ids){
+    bool found = false;
+    string key = CMR_COLLECTIONS;
+    TheBESKeys::TheKeys()->get_values(CMR_COLLECTIONS, collection_ids, found);
+    if(!found){
+        throw BESInternalError(string("The '") +CMR_COLLECTIONS
+            + "' field has not been configured.", __FILE__, __LINE__);
+    }
+}
+
+
 } // namespace cmr
 
