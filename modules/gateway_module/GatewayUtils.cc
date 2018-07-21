@@ -41,8 +41,10 @@
 
 #include <BESUtil.h>
 #include <BESCatalogUtils.h>
+#include <BESCatalogList.h>
 #include <BESRegex.h>
 #include <TheBESKeys.h>
+
 #include <BESInternalError.h>
 #include <BESDapError.h>
 #include <BESSyntaxUserError.h>
@@ -370,7 +372,7 @@ void GatewayUtils::Get_type_from_content_type(const string &ctype, string &type)
 void GatewayUtils::Get_type_from_url(const string &url, string &type)
 {
     // just run the url through the type match from the configuration
-    const BESCatalogUtils *utils = BESCatalogUtils::Utils("catalog");
+    const BESCatalogUtils *utils = BESCatalogUtils::Utils(BESCatalogList::TheCatalogList()->default_catalog_name());
     BESCatalogUtils::match_citer i = utils->match_list_begin();
     BESCatalogUtils::match_citer ie = utils->match_list_end();
     bool done = false;

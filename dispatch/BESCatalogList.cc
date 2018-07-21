@@ -106,12 +106,16 @@ void BESCatalogList::delete_instance() {
 BESCatalogList::BESCatalogList() {
     bool found = false;
     string key = "BES.Catalog.Default";
+
+    // FIXME Broken logic: If the default catalog key is not found, it should result in an exception...
+    // jhrg 7/21/18
     try {
         TheBESKeys::TheKeys()->get_value(key, d_default_catalog, found);
     }
     catch (BESError &) {
         found = false;
     }
+
     if (!found || d_default_catalog.empty()) {
         d_default_catalog = BES_DEFAULT_CATALOG;
     }

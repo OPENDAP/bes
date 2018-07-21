@@ -38,9 +38,11 @@
 #include "BESObj.h"
 
 class BESCatalogEntry;
+class BESCatalogUtils;
 
 namespace bes {
     class CatalogNode;
+    // TODO class CatalogUtils;
 }
 
 /** @brief Catalogs provide a hierarchical organization for data.
@@ -51,15 +53,24 @@ private:
     std::string d_catalog_name;
     unsigned int d_reference;
 
+    BESCatalogUtils *d_utils;
+
     BESCatalog();
 
 public:
-    BESCatalog(const std::string &catalog_name) : d_catalog_name(catalog_name), d_reference(0)
+    BESCatalog(const std::string &catalog_name);
+#if 0
+    : d_catalog_name(catalog_name), d_reference(0)
     {
+        d_utils = new BESCatalogUtils(d_catalog_name);
     }
+#endif
 
     virtual ~BESCatalog()
     {
+        // TODO delete d_utils when it's no longer a singleton.
+        // Or leave that class as the weird singleton it is and treat this
+        // as a weak pointer. jhrg 7/21/18
     }
 
     virtual void reference_catalog()
@@ -79,7 +90,17 @@ public:
         return d_catalog_name;
     }
 
-    virtual BESCatalogEntry * show_catalog(const std::string &container, BESCatalogEntry *entry) = 0;
+    /**
+     * @brief Get a pointer to the utilities, customized for this catalog.
+     *
+     * @return A BESCatalogUtils pointer.
+     */
+    virtual BESCatalogUtils *get_catalog_utils() const { return d_utils; }
+
+    /**
+     * @deprecated
+     */
+    virtual BESCatalogEntry *show_catalog(const std::string &container, BESCatalogEntry *entry) = 0;
 
     /**
      * The 'root prefix' for a catalog. For catalogs rooted in the file system,
