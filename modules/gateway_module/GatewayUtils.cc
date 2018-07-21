@@ -321,7 +321,7 @@ void GatewayUtils::Get_type_from_disposition(const string &disp, string &type)
 
             // we have the filename now, run it through
             // the type match to get the file type
-            const BESCatalogUtils *utils = BESCatalogUtils::Utils("catalog");
+            const BESCatalogUtils *utils = BESCatalogUtils::Utils(BESCatalogList::TheCatalogList()->default_catalog_name());
             BESCatalogUtils::match_citer i = utils->match_list_begin();
             BESCatalogUtils::match_citer ie = utils->match_list_end();
             bool done = false;

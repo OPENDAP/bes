@@ -73,11 +73,26 @@ public:
         // as a weak pointer. jhrg 7/21/18
     }
 
+    /**
+     * @brief Increase the count of clients that reference this catalog.
+     *
+     * This class maintains a count of the clients that reference the catalog.
+     * When count of clients drops to zero, the instance can be deleted.
+     *
+     * @todo Revisit the reference counting behavior - maybe there's a better
+     * way to manage these catalogs?
+     */
     virtual void reference_catalog()
     {
         d_reference++;
     }
 
+    /**
+     * @brief Decrement the count of clients that reference this catalog.
+     *
+     * @return The number of clients that reference this BESCatalog instance
+     * @see reference_catalog()
+     */
     virtual unsigned int dereference_catalog()
     {
         if (!d_reference)
@@ -85,6 +100,10 @@ public:
         return --d_reference;
     }
 
+    /**
+     * @brief Get the name for this catalog
+     * @return The catalog.
+     */
     virtual std::string get_catalog_name() const
     {
         return d_catalog_name;

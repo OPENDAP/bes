@@ -52,7 +52,10 @@ namespace bes {
  */
 class BESCatalogDirectory: public BESCatalog {
 private:
+#if 0
     BESCatalogUtils * d_utils;
+#endif
+
 
 public:
     BESCatalogDirectory(const string &name);

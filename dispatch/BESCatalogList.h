@@ -96,6 +96,7 @@ class BESCatalogList: public BESObj {
 private:
     std::map<std::string, BESCatalog *> d_catalogs;
     std::string d_default_catalog;
+
     static BESCatalogList * d_instance;
 
     static void initialize_instance();
