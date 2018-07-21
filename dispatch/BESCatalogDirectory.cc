@@ -314,7 +314,7 @@ static string get_time(time_t the_time, bool use_local_time = false)
 CatalogNode *
 BESCatalogDirectory::get_node(const string &path) const
 {
-    if (path[0] != '/') throw BESInternalError("Catalog paths must start with a slash (/)", __FILE__, __LINE__);
+    if (path[0] != '/') throw BESInternalError("The path sent to BESCatalogDirectory::get_node() must start with a slash (/)", __FILE__, __LINE__);
 
     string rootdir = d_utils->get_root_dir();
 
@@ -360,7 +360,7 @@ BESCatalogDirectory::get_node(const string &path) const
             // TODO add a test in configure for the readdir macro(s) DT_REG, DT_LNK
             // and DT_DIR and use those, if present, to determine if the name is a
             // link, directory or regular file. These are not present on all systems.
-            // Also, since we need mtime, this is not a huge time saver. But if we
+            // Also, since we need mtime, these are not a huge time saver. But if we
             // decide not to use the mtime, using these macros could save lots of system
             // calls. jhrg 3/9/18
 
