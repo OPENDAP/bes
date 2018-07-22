@@ -42,8 +42,10 @@
 
 #include "BESCatalogList.h"
 #include "BESCatalog.h"
+#include "BESCatalogDirectory.h"
 #include "BESCatalogEntry.h"
 #include "BESInfo.h"
+
 #include "BESSyntaxUserError.h"
 #include "TheBESKeys.h"
 #include "BESNames.h"
@@ -107,18 +109,29 @@ BESCatalogList::BESCatalogList() {
     bool found = false;
     string key = "BES.Catalog.Default";
 
+#if 0
     // FIXME Broken logic: If the default catalog key is not found, it should result in an exception...
     // jhrg 7/21/18
     try {
-        TheBESKeys::TheKeys()->get_value(key, d_default_catalog, found);
+        TheBESKeys::TheKeys()->get_value(key, d_default_catalog_name, found);
     }
     catch (BESError &) {
         found = false;
     }
+#endif
 
-    if (!found || d_default_catalog.empty()) {
-        d_default_catalog = BES_DEFAULT_CATALOG;
+    // The only way get_value() throws is when a single key has multiple values.
+    // This code should probably allow that to be logged and the server to fail
+    // to start, not hide the error. jhrg 7/21/18
+    TheBESKeys::TheKeys()->get_value(key, d_default_catalog_name, found);
+
+    if (!found || d_default_catalog_name.empty()) {
+        d_default_catalog_name = BES_DEFAULT_CATALOG;
     }
+
+    // Build the default catalog and add it to the map of catalogs. jhrg 7/21/18
+    d_default_catalog = new BESCatalogDirectory(d_default_catalog_name);
+    add_catalog(d_default_catalog);
 }
 
 /** @brief list destructor deletes all registered catalogs
@@ -148,7 +161,7 @@ BESCatalogList::~BESCatalogList() {
  * already exists. Returns true otherwise.
  * @see BESCatalog
  */
-bool BESCatalogList::add_catalog(BESCatalog * catalog) {
+bool BESCatalogList::add_catalog(BESCatalog *catalog) {
     bool result = false;
     if (catalog) {
         if (find_catalog(catalog->get_catalog_name()) == 0) {
@@ -164,6 +177,7 @@ bool BESCatalogList::add_catalog(BESCatalog * catalog) {
 #endif
         }
     }
+
     return result;
 }
 
@@ -320,7 +334,7 @@ BESCatalogList::show_catalogs(BESCatalogEntry *entry, bool show_default) {
 void BESCatalogList::dump(ostream &strm) const {
     strm << BESIndent::LMarg << "BESCatalogList::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
-    strm << BESIndent::LMarg << "default catalog: " << d_default_catalog << endl;
+    strm << BESIndent::LMarg << "default catalog: " << d_default_catalog_name << endl;
     if (d_catalogs.size()) {
         strm << BESIndent::LMarg << "catalog list:" << endl;
         BESIndent::Indent();

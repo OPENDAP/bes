@@ -95,7 +95,12 @@ class BESCatalogEntry;
 class BESCatalogList: public BESObj {
 private:
     std::map<std::string, BESCatalog *> d_catalogs;
-    std::string d_default_catalog;
+
+    // Record the default catalog name and hold a pointer to the object.
+    // The BESCatalog* should also be in the d_catalogs map (above) so
+    // that clients which search for it will find it that way.
+    std::string d_default_catalog_name;
+    BESCatalog *d_default_catalog;
 
     static BESCatalogList * d_instance;
 
@@ -118,7 +123,9 @@ public:
     virtual int num_catalogs() const { return d_catalogs.size();  }
 
     /// @brief The name of the default catalog
-    virtual std::string default_catalog_name() const { return d_default_catalog; }
+    virtual std::string default_catalog_name() const { return d_default_catalog_name; }
+    /// @brief The  the default catalog
+    virtual BESCatalog *default_catalog() const { return d_default_catalog; }
 
     virtual bool add_catalog(BESCatalog *catalog);
     virtual bool ref_catalog(const std::string &catalog_name);
