@@ -50,7 +50,6 @@
 #include "BESNotFoundError.h"
 #include "BESRegex.h"
 #include "BESUtil.h"
-//#include "BESDapNames.h"
 #include "BESInfo.h"
 #include "BESContainerStorageList.h"
 #include "BESContainerStorage.h"
@@ -436,6 +435,13 @@ BESCatalogUtils::is_data(const std::string &item) const
     return false;
 }
 
+/**
+ * Add info about a node to an BESCatalogEntry object. This method calls stat(2)
+ * and passes the result to bes_add_stat_into().
+ *
+ * @param entry The BESCatalogEntry object to modify
+ * @param fullnode
+ */
 void BESCatalogUtils::bes_add_stat_info(BESCatalogEntry *entry, const string &fullnode)
 {
     struct stat cbuf;
