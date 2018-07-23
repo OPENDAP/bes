@@ -305,6 +305,8 @@ void FONcArray::define(int ncid)
                 FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
             }
 
+            // TODO Make this more adaptable to the Array's data type. Find out when it's
+            // best to use shuffle, et c. jhrg 7/22/18
             if (FONcRequestHandler::use_compression) {
                 int shuffle = 0;
                 int deflate = 1;
@@ -312,7 +314,7 @@ void FONcArray::define(int ncid)
                 stax = nc_def_var_deflate(ncid, _varid, shuffle, deflate, deflate_level);
 
                 if (stax != NC_NOERR) {
-                    string err = (string) "fileout.netcdf - Failed to define compression deflation level for variable "
+                    string err = (string) "fileout.netcdf - Failed to define compression (deflate) level for variable "
                         + _varname;
                     FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
                 }

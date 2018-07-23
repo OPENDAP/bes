@@ -41,7 +41,6 @@
 #define SHOW_INFO_RESPONSE_STR "showInfo"
 #endif
 
-
 #define SITE_MAP_STR "buildSiteMap"
 #define SITE_MAP "build.site_map"
 

@@ -33,6 +33,8 @@
 #define ITEMS 0
 #define NODES_AND_LEAVES 1
 
+class BESInfo;
+
 namespace bes {
 
 class CatalogItem;
@@ -112,6 +114,8 @@ public:
     /// @brief Add information about an leaf that is in  this node of the catalog
     void add_leaf(CatalogItem *leaf) { d_leaves.push_back(leaf); }
 #endif
+
+    void encode_node(BESInfo *info);
 
     virtual void dump(ostream &strm) const;
 };

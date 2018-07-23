@@ -45,6 +45,17 @@ ShowNodeCommand::ShowNodeCommand(const BESDataHandlerInterface &base_dhi) :
 /**
  * @brief Parse a show node command.
  *
+ * The showNode command returns a BESInfo object with information about
+ * the contents of a catalog's node. Catalogs in the BES are hierarchical;
+ * the default catalog is a subset of the POSIX file system on the machine
+ * where the BES daemon is running. In the command, the node is required
+ * and the catalog is optional. If not given, the catalog is assumed to
+ * be the default catalog.
+ *
+ * When the command is parsed, two slots in the DHI.data map are used:
+ * CONTAINER holds the node's path and CATALOG holds the name of the
+ * catalog. The DHI action field is NODE_RESPONSE.
+ *
  * ~~~{.xml}
  * <showNode node="name" [catalog="name"]/>
  * ~~~
@@ -71,20 +82,20 @@ void ShowNodeCommand::parse_request(xmlNode *node)
     d_xmlcmd_dhi.data[CONTAINER] = props["node"];
 
     if (!d_xmlcmd_dhi.data[CONTAINER].empty()) {
-        d_cmd_log_info += " for " + d_xmlcmd_dhi.data[CONTAINER];
+        d_cmd_log_info.append(" for ").append(d_xmlcmd_dhi.data[CONTAINER]);
     }
 
     // catalog is an optional property, so could be empty string
     d_xmlcmd_dhi.data[CATALOG] = props["catalog"];
 
     if (!d_xmlcmd_dhi.data[CATALOG].empty()) {
-        d_cmd_log_info += " for " + d_xmlcmd_dhi.data[CATALOG];
+        d_cmd_log_info.append(" in catalog ").append(d_xmlcmd_dhi.data[CATALOG]);
     }
 
     d_cmd_log_info += ";";
 
     // Get the response handler for the action (dhi.action == show.node)
-    BESXMLCommand::set_response();
+    /*BESXMLCommand::*/set_response();
 }
 
 /** @brief dumps information about this object
@@ -101,6 +112,13 @@ void ShowNodeCommand::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
+/**
+ * @brief A command builder suitable for BESXMLCommand::add_command()
+ * @param base_dhi When this command is run, initialize the command with this
+ * DHI.
+ * @return A pointer to the static method (i.e., function) so other code
+ * can run it and build an instance of the command.
+ */
 BESXMLCommand *
 ShowNodeCommand::CommandBuilder(const BESDataHandlerInterface &base_dhi)
 {

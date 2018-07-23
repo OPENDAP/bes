@@ -32,7 +32,7 @@ if CPPUNIT
 TESTS = constraintT defT keysT pfileT plistT pvolT replistT		\
 reqhandlerT reqlistT resplistT infoT agglistT debugT utilT regexT	\
 scrubT checkT servicesT fsT urlT BESCatalogListUnitTest containerT	\
-uncompressT cacheT WhiteListTest
+uncompressT cacheT WhiteListTest CatalogNodeTest
 
 # This is tool to look at CatalogEntry objects. jhrg 3.5.18
 # complete_catalog_lister
@@ -150,6 +150,9 @@ checkT_SOURCES = checkT.cc
 
 WhiteListTest_SOURCES = WhiteListTest.cc
 WhiteListTest_LDADD = ../WhiteList.o $(LDADD)
+
+CatalogNodeTest_SOURCES = test_utils.cc CatalogNodeTest.cc
+CatalogNodeTest_LDADD = ../CatalogNode.o $(LDADD)
 
 servicesT_SOURCES = servicesT.cc
 servicesT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)

@@ -29,6 +29,7 @@
 #include "BESIndent.h"
 
 #include "BESCatalogList.h"
+#include "BESInfo.h"
 #include "CatalogNode.h"
 #include "CatalogItem.h"
 
@@ -53,6 +54,65 @@ CatalogNode::~CatalogNode()
     d_leaves.clear();
 #endif
 }
+
+/**
+ * @brief Encode this CatalogNode in an info object
+ *
+ * A CatalogNode is encoded as XML using the following grammar, where
+ * XML attributes in square brackets are optional.
+ * ~~~{.xml}
+ * <node name="path" catalog="catalog name" lastModified="date T time"
+ *       count="number of child nodes" >
+ * ~~~
+ * The <node> element may contain zero or more <leaf> elements.
+ *
+ * @param info Add information to this instance of BESInfo.
+ * @see CatalogItem::encode_item()
+ */
+void
+CatalogNode::encode_node(BESInfo *info)
+{
+    map<string, string> props;
+
+    props["name"] = get_name();
+    props["catalog"] = get_catalog_name();
+    props["lastModified"] = get_lmt();
+    props["count"] = get_item_count();
+
+    info->begin_tag("node", &props);
+
+    // TODO write out the items here.
+#if 0
+    // Depth-first node traversal. Assume the nodes and leaves are sorted
+    for (CatalogNode::item_citer i = node->nodes_begin(), e = node->nodes_end(); i != e; ++i) {
+        assert((*i)->get_type() == CatalogItem::node);
+
+    }
+
+    // For leaves, only write the data items
+    for (CatalogNode::item_citer i = node->leaves_begin(), e = node->leaves_end(); i != e; ++i) {
+        assert((*i)->get_type() == CatalogItem::leaf);
+        if ((*i)->is_data() && !leaf_suffix.empty())
+
+    }
+#endif
+
+    info->end_tag("node");
+
+#if 0
+    // TODO Should we support the serviceRef element? jhrg 7/22/18
+    list<string> services = entry->get_service_list();
+    if (services.size()) {
+        list<string>::const_iterator si = services.begin();
+        list<string>::const_iterator se = services.end();
+        for (; si != se; si++) {
+            info->add_tag("serviceRef", (*si));
+        }
+    }
+#endif
+
+}
+
 
 /**
  * Dump out information about this object

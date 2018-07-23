@@ -25,19 +25,22 @@
 #ifndef I_ShowNodeResponseHandler_h
 #define I_ShowNodeResponseHandler_h 1
 
+#include <string>
+#include <ostream>
+
 #include "BESResponseHandler.h"
+
+class BESDataHandlerInterface;
+class BESTransmitter;
 
 namespace bes {
 
-}
-/** @brief response handler that returns nodes or leaves within the catalog
- * either at the root or at a specified node.
+/**
+ * @brief Evaluate a showNode command
  *
- * A request 'show catalog [for &lt;node&gt;];' or
- * 'show leaves for &lt;node&gt;;
- * will be handled by this response handler. It returns nodes or leaves either
- * at the root level if no node is specified in the request, or the nodes or
- * leaves under the specified node.
+ * Evaluate a showNode command using information parsed by the ShowNodeCommand
+ * class. The execute() method builds an info object that is then returned
+ * to the caller using the transmit() method.
  *
  * @see BESResponseObject
  * @see BESContainer
@@ -46,15 +49,20 @@ namespace bes {
 class ShowNodeResponseHandler: public BESResponseHandler {
 private:
 public:
-    ShowNodeResponseHandler(const string &name);
-    virtual ~ShowNodeResponseHandler(void);
+    ShowNodeResponseHandler(const std::string &name): BESResponseHandler(name)
+    {
+    }
+
+    virtual ~ShowNodeResponseHandler()
+    {
+    }
 
     virtual void execute(BESDataHandlerInterface &dhi);
     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 
-    static BESResponseHandler *CatalogResponseBuilder(const string &name);
+    static BESResponseHandler *CatalogResponseBuilder(const std::string &name);
 };
 
 }
