@@ -62,7 +62,7 @@ static bool bes_debug = false;
 
 namespace cmr {
 
-class CmrTest: public CppUnit::TestFixture {
+class CmrApiTest: public CppUnit::TestFixture {
 private:
 
     // char curl_error_buf[CURL_ERROR_SIZE];
@@ -84,12 +84,12 @@ private:
 
 public:
     // Called once before everything gets tested
-    CmrTest()
+    CmrApiTest()
     {
     }
 
     // Called at the end of the test
-    ~CmrTest()
+    ~CmrApiTest()
     {
     }
 
@@ -493,7 +493,7 @@ public:
 
     }
 
-    CPPUNIT_TEST_SUITE( CmrTest );
+    CPPUNIT_TEST_SUITE( CmrApiTest );
 
     CPPUNIT_TEST(get_years_test);
     CPPUNIT_TEST(get_months_test);
@@ -506,7 +506,7 @@ public:
     CPPUNIT_TEST_SUITE_END();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(CmrTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(CmrApiTest);
 
 } // namespace dmrpp
 
@@ -539,7 +539,7 @@ int main(int argc, char*argv[])
     else {
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            test = cmr::CmrTest::suite()->getName().append("::").append(argv[i]);
+            test = cmr::CmrApiTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
             ++i;
         }

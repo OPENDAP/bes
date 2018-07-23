@@ -55,7 +55,7 @@ tmp:
 #
 
 if CPPUNIT
-UNIT_TESTS = CmrTest
+UNIT_TESTS = CmrApiTest
 else
 UNIT_TESTS =
 
@@ -70,5 +70,5 @@ endif
 
 OBJS = ../CMRCatalog.o
 
-CmrTest_SOURCES = CmrTest.cc
-CmrTest_LDADD = ../RemoteHttpResource.o  ../curl_utils.o ../rjson_utils.o ../CmrCache.o ../CmrUtils.o ../CmrApi.o ../Granule.o $(OBJS) $(LIBADD)
+CmrApiTest_SOURCES = CmrApiTest.cc
+CmrApiTest_LDADD = ../RemoteHttpResource.o  ../curl_utils.o ../rjson_utils.o ../CmrCache.o ../CmrUtils.o ../CmrApi.o ../Granule.o $(OBJS) $(LIBADD)
