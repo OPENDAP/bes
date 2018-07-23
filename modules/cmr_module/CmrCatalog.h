@@ -54,14 +54,21 @@ public:
     CMRCatalog(const string &name);
     virtual ~CMRCatalog();
 
-    virtual BESCatalogEntry * show_catalog(const string &container, BESCatalogEntry *entry);
+    virtual BESCatalogEntry * show_catalog(const string &container, BESCatalogEntry *entry){
+        throw BESInternalError("The CMRCatalog::show_catalog() method is not supported.",__FILE__,__LINE__);
+    }
 
-    virtual std::string get_root() const;
+    /**
+     * This is a meaningless method for CMR so it returns empty string
+     */
+    virtual std::string get_root() const { return ""; }
 
     virtual bes::CatalogNode *get_node(const std::string &path) const;
 
     virtual void get_site_map(const string &prefix, const string &node_suffix, const string &leaf_suffix, ostream &out,
-        const string &path = "/") const = 0;
+        const string &path = "/") const {
+        throw BESInternalError("The CMRCatalog::get_site_map() method is not supported.",__FILE__,__LINE__);
+    }
 
     virtual void dump(ostream &strm) const;
 };
