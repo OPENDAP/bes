@@ -30,7 +30,22 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
+#include <string>
+#include <sstream>
+
 #include "BESError.h"
+
+using namespace std;
+
+string
+BESError::get_verbose_message()
+{
+    ostringstream oss;
+    oss << _msg << " (" << _file << ":" << _line << ")";
+    return oss.str();
+}
 
 /** @brief dumps information about this object
  *

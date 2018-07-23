@@ -74,15 +74,21 @@ map<string, BESCatalogUtils *> BESCatalogUtils::_instances;
  * BES.Catalog.N.TypeMatch
  * BES.Catalog.N.FollowSymLinks
  *
+ * @note The RootDirectory and TypeMatch keys must be present for any
+ * catalog N.
+ *
  * @param n The name of the catalog.
+ * @param strict True (the default) means that the RootDirectory and TypeMatch
+ * must be defined; false causes this constructor to supply placeholder values.
+ * This feature was added for tests that run without the bes.conf file.
  */
-BESCatalogUtils::BESCatalogUtils(const string &n) :
+BESCatalogUtils::BESCatalogUtils(const string &n, bool strict) :
     d_name(n), d_follow_syms(false)
 {
     string key = "BES.Catalog." + n + ".RootDirectory";
     bool found = false;
     TheBESKeys::TheKeys()->get_value(key, d_root_dir, found);
-    if (!found || d_root_dir == "") {
+    if (strict && (!found || d_root_dir == "")) {
         string s = key + " not defined in BES configuration file";
         throw BESSyntaxUserError(s, __FILE__, __LINE__);
     }
@@ -120,7 +126,7 @@ BESCatalogUtils::BESCatalogUtils(const string &n) :
     list<string> match_list;
     vals.clear();
     TheBESKeys::TheKeys()->get_values(key, vals, found);
-    if (!found || vals.size() == 0) {
+    if (strict && (!found || vals.size() == 0)) {
         string s = key + " not defined in key file";
         throw BESInternalError(s, __FILE__, __LINE__);
     }

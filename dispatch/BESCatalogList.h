@@ -93,7 +93,7 @@ private:
 
     static BESCatalogList * d_instance;
 
-    static void initialize_instance();
+    static void initialize_instance();  // originally used with pthread_once(). jhrg 7/22/18
     static void delete_instance();
 
     friend class BESCatalogListUnitTest;
@@ -122,6 +122,7 @@ public:
 
     virtual BESCatalog * find_catalog(const std::string &catalog_name) const;
 
+    // TODO Remove this ASAP. jhrg 7/22/18
     virtual BESCatalogEntry * show_catalogs(BESCatalogEntry *entry, bool show_default = true);
 
     /// @brief Iterator to the first catalog

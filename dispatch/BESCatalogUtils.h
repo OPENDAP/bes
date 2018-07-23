@@ -83,7 +83,7 @@ private:
     static void bes_add_stat_info(BESCatalogEntry *entry, struct stat &buf);
 
 public:
-    BESCatalogUtils(const std::string &name);
+    BESCatalogUtils(const std::string &name, bool strict = true);
 
     virtual ~BESCatalogUtils()
     {

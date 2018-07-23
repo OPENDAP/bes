@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <response xmlns="http://xml.opendap.org/ns/bes/1.0#">
     <showCatalog>
-        <dataset catalog="default" count="3" lastModified="" name="/" node="true" size="">
-            <dataset catalog="default" count="1" lastModified="" name="child_dir" node="true" size=""/>
-            <dataset catalog="default" lastModified="" name="file1" node="false" size=""/>
-            <dataset catalog="default" lastModified="" name="file2" node="false" size=""/>
+        <dataset catalog="cat_test" count="3" lastModified="" name="cat_test/" node="true" size="">
+            <dataset catalog="cat_test" count="1" lastModified="" name="cat_test/child_dir" node="true" size=""/>
+            <dataset catalog="cat_test" lastModified="" name="cat_test/file1" node="false" size=""/>
+            <dataset catalog="cat_test" lastModified="" name="cat_test/file2" node="false" size=""/>
         </dataset>
     </showCatalog>
 </response>
