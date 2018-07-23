@@ -191,8 +191,7 @@ public:
 
     void setUp()
     {
-        string bes_conf = (string) TEST_SRC_DIR + "/bes.conf";
-        TheBESKeys::ConfigFile = bes_conf;
+        TheBESKeys::ConfigFile = string(TEST_SRC_DIR).append("/bes.conf");
 
         TheBESKeys::TheKeys()->set_key("BES.Catalog.Default=default");
         TheBESKeys::TheKeys()->set_key("BES.Data.RootDirectory=/dev/null");
@@ -243,7 +242,7 @@ public:
         CPPUNIT_ASSERT(defcat == "default");
 
         int numcats = BESCatalogList::TheCatalogList()->num_catalogs();
-        CPPUNIT_ASSERT(numcats == 0);
+        CPPUNIT_ASSERT(numcats == 1);
 
         try {
             // show_catalogs(...) the false value for show_default will suppress
@@ -314,38 +313,38 @@ public:
 
     // This test should be broken up into smaller pieces. jhrg 8/23/17
     void root_dir_test1() {
-       TheBESKeys::TheKeys()->set_key("BES.Catalog.Default=default");
-       TheBESKeys::TheKeys()->set_key(string("BES.Catalog.default.RootDirectory=") + TEST_SRC_DIR + root_dir);
+       // TheBESKeys::TheKeys()->set_key("BES.Catalog.Default=cat_test");
+       TheBESKeys::TheKeys()->set_key(string("BES.Catalog.cat_test.RootDirectory=") + TEST_SRC_DIR + root_dir);
        try {
             BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory("catalog"));
             CPPUNIT_FAIL("Succeeded in adding catalog, should not have");
         }
         catch (BESError &e) {
-            DBG(cerr << e.get_message() << endl);
+            DBG(cerr << "Expected error: " << e.get_verbose_message() << endl);
             CPPUNIT_ASSERT("Correctly caught exception");
         }
 
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.TypeMatch=conf:.*\\.conf$;");
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.Include=.*file.*$;");
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.default.Exclude=README;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.cat_test.TypeMatch=conf:.*\\.conf$;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.cat_test.Include=.*file.*$;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.cat_test.Exclude=README;");
 
         try {
-            if (!BESCatalogList::TheCatalogList()->ref_catalog("default"))
-                BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory("default"));
+            if (!BESCatalogList::TheCatalogList()->ref_catalog("cat_test"))
+                BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory("cat_test"));
         }
         catch (BESError &e) {
-            DBG(cerr << e.get_message() << endl);
+            DBG(cerr << e.get_verbose_message() << endl);
             CPPUNIT_FAIL("Failed to add catalog");
         }
 
-        BESCatalog *catobj = BESCatalogList::TheCatalogList()->find_catalog("default");
+        BESCatalog *catobj = BESCatalogList::TheCatalogList()->find_catalog("cat_test");
         CPPUNIT_ASSERT(catobj);
         int numcats = BESCatalogList::TheCatalogList()->num_catalogs();
-        CPPUNIT_ASSERT(numcats == 1);
+        CPPUNIT_ASSERT(numcats == 2); // This one and the default... jhrg 7/22/18
 
         try {
             BESDataHandlerInterface dhi;
-            BESCatalogEntry *entry = BESCatalogList::TheCatalogList()->show_catalogs(0);
+            BESCatalogEntry *entry = BESCatalogList::TheCatalogList()->show_catalogs(0, false /* show default*/);
             ostringstream strm;
             entry->dump(strm);
             string str = strm.str();
@@ -367,7 +366,8 @@ public:
         DBG(cerr << "now try it with BESCatalogResponseHandler" << endl);
         try {
             BESDataHandlerInterface dhi;
-            dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE;
+            // no longer used. jhrg 7/22/18 dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE;
+            dhi.data[CONTAINER] = "/cat_test/";
             BESCatalogResponseHandler handler("catalog");
             handler.execute(dhi);
 
@@ -413,13 +413,13 @@ public:
         CPPUNIT_ASSERT(catobj);
         CPPUNIT_ASSERT(catobj == other);
         numcats = BESCatalogList::TheCatalogList()->num_catalogs();
-        CPPUNIT_ASSERT(numcats == 2);
+        CPPUNIT_ASSERT(numcats == 3);
 
         DBG(cerr << "*****************************************" << endl);
         DBG(cerr << "now try it with BESCatalogResponseHandler" << endl);
         try {
             BESDataHandlerInterface dhi;
-            dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE;
+            // dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE;
             BESCatalogResponseHandler handler("catalog");
             handler.execute(dhi);
             BESInfo *info = dynamic_cast<BESInfo *>(handler.get_response_object());
@@ -445,7 +445,7 @@ public:
         DBG(cerr << "BESCatalogResponseHandler with catalog response" << endl);
         try {
             BESDataHandlerInterface dhi;
-            dhi.data[CONTAINER] = "other";
+            dhi.data[CONTAINER] = "/other/";
             dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE;
             BESCatalogResponseHandler handler("catalog");
             handler.execute(dhi);

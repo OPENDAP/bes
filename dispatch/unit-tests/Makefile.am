@@ -25,7 +25,7 @@ check_PROGRAMS = $(TESTS)
 
 noinst_HEADERS = test_config.h test_utils.h
 
-BUILT_SOURCES = test_config.h
+BUILT_SOURCES = test_config.h bes.conf
 
 if CPPUNIT
 # This determines what gets run by 'make check.'
@@ -71,7 +71,7 @@ EXTRA_DIST = $(CACHE) catalog_test catalog_test_baselines bad_keys1.ini \
 
 DISTCLEANFILES = 
 
-CLEANFILES = *.log *.sum real* test_config.h
+CLEANFILES = *.log *.sum real* test_config.h bes.conf
 
 ############################################
 # This was generating a directory of "." so 
@@ -89,6 +89,14 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
 		-e "s%[@]abs_top_srcdir[@]%$${mod_abs_top_srcdir}%" \
 	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
+
+bes.conf: $(srcdir)/bes.conf.in Makefile
+	@mod_abs_srcdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	mod_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	mod_abs_builddir=`echo ${abs_builddir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
+		-e "s%[@]abs_top_srcdir[@]%$${mod_abs_top_srcdir}%" \
+	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > bes.conf
 
 clean-local:
 	cd $(srcdir)/cache && rm -f *_cache*

@@ -48,11 +48,11 @@ namespace bes {
     class CatalogNode;
 }
 
-/** @brief builds catalogs from a directory structure
+/**
+ * @brief Catalogs from a directory structure
  */
 class BESCatalogDirectory: public BESCatalog {
 private:
-    BESCatalogUtils * d_utils;
 
 public:
     BESCatalogDirectory(const string &name);

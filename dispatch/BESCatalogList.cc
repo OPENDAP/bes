@@ -42,15 +42,20 @@
 
 #include "BESCatalogList.h"
 #include "BESCatalog.h"
+#include "BESCatalogDirectory.h"
 #include "BESCatalogEntry.h"
 #include "BESInfo.h"
+
 #include "BESSyntaxUserError.h"
 #include "TheBESKeys.h"
 #include "BESNames.h"
 
 using namespace std;
 
+#if 0
 static pthread_once_t BESCatalogList_instance_control = PTHREAD_ONCE_INIT;
+#endif
+
 
 BESCatalogList *BESCatalogList::d_instance = 0;
 
@@ -73,8 +78,15 @@ BESCatalogList *BESCatalogList::d_instance = 0;
  * @return A pointer to the CatalogList singleton
  */
 BESCatalogList *
-BESCatalogList::TheCatalogList() {
+BESCatalogList::TheCatalogList()
+{
+#if 0
     pthread_once(&BESCatalogList_instance_control, initialize_instance);
+#endif
+
+
+    if (d_instance == 0) initialize_instance();
+
     return d_instance;
 }
 
@@ -82,19 +94,29 @@ BESCatalogList::TheCatalogList() {
  * private static that only get's called once by using pthread_once and
  * pthread_once_t mutex.
  */
-void BESCatalogList::initialize_instance() {
+void BESCatalogList::initialize_instance()
+{
+#if 0
     if (d_instance == 0) {
         d_instance = new BESCatalogList;
 #ifdef HAVE_ATEXIT
         atexit(delete_instance);
 #endif
     }
+#endif
+
+    d_instance = new BESCatalogList;
+#ifdef HAVE_ATEXIT
+    atexit(delete_instance);
+#endif
+
 }
 
 /**
  * Private static function can only be called by friends and pThreads code.
  */
-void BESCatalogList::delete_instance() {
+void BESCatalogList::delete_instance()
+{
     delete d_instance;
     d_instance = 0;
 }
@@ -103,25 +125,43 @@ void BESCatalogList::delete_instance() {
  *
  * @see BESCatalog
  */
-BESCatalogList::BESCatalogList() {
+BESCatalogList::BESCatalogList()
+{
     bool found = false;
     string key = "BES.Catalog.Default";
+
+#if 0
+    // FIXME Broken logic: If the default catalog key is not found, it should result in an exception...
+    // jhrg 7/21/18
     try {
-        TheBESKeys::TheKeys()->get_value(key, d_default_catalog, found);
+        TheBESKeys::TheKeys()->get_value(key, d_default_catalog_name, found);
     }
     catch (BESError &) {
         found = false;
     }
-    if (!found || d_default_catalog.empty()) {
-        d_default_catalog = BES_DEFAULT_CATALOG;
+#endif
+
+    // The only way get_value() throws is when a single key has multiple values.
+    // However, TheKeys() throws if the bes.conf file cannot be found.
+    // This code should probably allow that to be logged and the server to fail
+    // to start, not hide the error. jhrg 7/22/18
+    TheBESKeys::TheKeys()->get_value(key, d_default_catalog_name, found);
+
+    if (!found || d_default_catalog_name.empty()) {
+        d_default_catalog_name = BES_DEFAULT_CATALOG;
     }
+
+    // Build the default catalog and add it to the map of catalogs. jhrg 7/21/18
+    d_default_catalog = new BESCatalogDirectory(d_default_catalog_name);
+    add_catalog(d_default_catalog);
 }
 
 /** @brief list destructor deletes all registered catalogs
  *
  * @see BESCatalog
  */
-BESCatalogList::~BESCatalogList() {
+BESCatalogList::~BESCatalogList()
+{
     catalog_iter i = d_catalogs.begin();
     catalog_iter e = d_catalogs.end();
     for (; i != e; i++) {
@@ -144,7 +184,8 @@ BESCatalogList::~BESCatalogList() {
  * already exists. Returns true otherwise.
  * @see BESCatalog
  */
-bool BESCatalogList::add_catalog(BESCatalog * catalog) {
+bool BESCatalogList::add_catalog(BESCatalog *catalog)
+{
     bool result = false;
     if (catalog) {
         if (find_catalog(catalog->get_catalog_name()) == 0) {
@@ -160,6 +201,7 @@ bool BESCatalogList::add_catalog(BESCatalog * catalog) {
 #endif
         }
     }
+
     return result;
 }
 
@@ -199,7 +241,8 @@ bool BESCatalogList::add_catalog(BESCatalog * catalog) {
  * @return true if successfully found and referenced, false otherwise
  * @see BESCatalog
  */
-bool BESCatalogList::ref_catalog(const string &catalog_name) {
+bool BESCatalogList::ref_catalog(const string &catalog_name)
+{
     bool ret = false;
     BESCatalog *cat = 0;
     BESCatalogList::catalog_iter i;
@@ -229,7 +272,8 @@ bool BESCatalogList::ref_catalog(const string &catalog_name) {
  * @return true if successfully de-referenced, false otherwise
  * @see BESCatalog
  */
-bool BESCatalogList::deref_catalog(const string &catalog_name) {
+bool BESCatalogList::deref_catalog(const string &catalog_name)
+{
     bool ret = false;
     BESCatalog *cat = 0;
     BESCatalogList::catalog_iter i;
@@ -277,6 +321,10 @@ BESCatalogList::find_catalog(const string &catalog_name) const
  * but BESCatalogDirectory (one - the only? - implementation of BESCatalog::show_catalog)
  * throws exceptions for several conditions.
  *
+ * @todo This is only used in BESCatalogResposeHandler::execute() for a condition that
+ * the OLFS will never trigger. When the showCatalog command is replaces by showNode, this
+ * method can be removed. jhrg 7/22/18
+ *
  * @param entry If null, make a new entry and use it to return the information, otherwise
  * add the information about the catalogs to the passed instance.
  * @param show_default If true, include information about the default catalog, if false,
@@ -286,7 +334,8 @@ BESCatalogList::find_catalog(const string &catalog_name) const
  * returned object.
  */
 BESCatalogEntry *
-BESCatalogList::show_catalogs(BESCatalogEntry *entry, bool show_default) {
+BESCatalogList::show_catalogs(BESCatalogEntry *entry, bool show_default)
+{
     BESCatalogEntry *myentry = entry;
     if (!myentry) {
         myentry = new BESCatalogEntry("/", "");
@@ -313,10 +362,11 @@ BESCatalogList::show_catalogs(BESCatalogEntry *entry, bool show_default) {
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESCatalogList::dump(ostream &strm) const {
+void BESCatalogList::dump(ostream &strm) const
+{
     strm << BESIndent::LMarg << "BESCatalogList::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
-    strm << BESIndent::LMarg << "default catalog: " << d_default_catalog << endl;
+    strm << BESIndent::LMarg << "default catalog: " << d_default_catalog_name << endl;
     if (d_catalogs.size()) {
         strm << BESIndent::LMarg << "catalog list:" << endl;
         BESIndent::Indent();

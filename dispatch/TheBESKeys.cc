@@ -91,7 +91,7 @@ TheBESKeys *TheBESKeys::TheKeys()
         return _instance;
     }
 
-    throw BESInternalFatalError("Unable to find a conf file or module version mismatch.", __FILE__, __LINE__);
+    throw BESInternalFatalError("Unable to find the BES configuration file.", __FILE__, __LINE__);
 }
 
 /** @brief default constructor that reads loads key/value pairs from the
@@ -137,7 +137,7 @@ void TheBESKeys::initialize_keys()
     if (!(*_keys_file)) {
         char path[500];
         getcwd(path, sizeof(path));
-        string s = string("BES: fatal, cannot open BES configuration file ") + _keys_file_name + ": ";
+        string s = string("Cannot open BES configuration file '") + _keys_file_name + "': ";
         char *err = strerror(errno);
         if (err)
             s += err;
@@ -159,8 +159,8 @@ void TheBESKeys::initialize_keys()
     }
     catch (...) {
         clean();
-        string s = (string) "Undefined exception while trying to load keys from bes configuration file "
-            + _keys_file_name;
+        string s = (string) "Undefined exception while trying to load keys from the BES configuration file '"
+            + _keys_file_name + "'";
         throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
 }

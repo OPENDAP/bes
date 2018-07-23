@@ -3,3 +3,8 @@
 
 BES.LogName=./bes.log
 BES.LogVerbose=yes
+
+BES.Catalog.Default=default
+BES.Catalog.default.RootDirectory=@abs_top_srcdir@
+BES.Catalog.default.TypeMatch=null:*;
+
