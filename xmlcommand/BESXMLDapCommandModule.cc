@@ -57,7 +57,10 @@ void BESXMLDapCommandModule::initialize(const string &/*modname*/)
     BESDEBUG("dap", "Initializing DAP Commands:" << endl);
 
     BESXMLCommand::add_command(CATALOG_RESPONSE_STR, BESXMLCatalogCommand::CommandBuilder);
-    BESXMLCommand::add_command(SHOW_INFO_RESPONSE_STR, BESXMLCatalogCommand::CommandBuilder);
+#if 0
+    BESXMLCommand::add_command(SHOW_INFO_RESPONSE_STR, ShowNodeCommand::CommandBuilder);
+#endif
+
 
     // Build a site map. Uses the Null Response Handler
     BESXMLCommand::add_command(SITE_MAP_STR, SiteMapCommand::CommandBuilder);
@@ -78,7 +81,10 @@ void BESXMLDapCommandModule::terminate(const string &/*modname*/)
     BESDEBUG("dap", "Removing DAP Commands" << endl);
 
     BESXMLCommand::del_command(CATALOG_RESPONSE_STR);
+#if 0
     BESXMLCommand::del_command(SHOW_INFO_RESPONSE_STR);
+#endif
+
     BESXMLCommand::del_command(SITE_MAP_STR);
 
     BESDEBUG("dap", "Done Removing DAP Commands" << endl);
