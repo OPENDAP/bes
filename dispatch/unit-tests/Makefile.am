@@ -71,7 +71,7 @@ EXTRA_DIST = $(CACHE) catalog_test catalog_test_baselines bad_keys1.ini \
 
 DISTCLEANFILES = 
 
-CLEANFILES = *.log *.sum real* test_config.h
+CLEANFILES = *.log *.sum real* test_config.h bes.conf
 
 ############################################
 # This was generating a directory of "." so 
