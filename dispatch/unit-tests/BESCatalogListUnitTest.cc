@@ -22,18 +22,22 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-//#include <cstdio>
 
+#if 0
 #include <pthread.h>
 #include <vector>
+#endif
 
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
+#include <GetOpt.h>
+
 #include "TheBESKeys.h"
 #include "BESCatalogList.h"
-#include <GetOpt.h>
+
+#include "test_config.h"
 
 static bool debug = false;
 
@@ -58,13 +62,15 @@ public:
     }
 
     // Called before each test
-    void setup()
+    void setUp()
     {
+        TheBESKeys::ConfigFile = string(TEST_SRC_DIR).append("/bes.conf");
     }
 
     // Called after each test
     void tearDown()
     {
+        TheBESKeys::ConfigFile = "";
     }
 
     CPPUNIT_TEST_SUITE( BESCatalogListUnitTest );
@@ -82,11 +88,11 @@ public:
 
             string defcat = BESCatalogList::TheCatalogList()->default_catalog_name();
             DBG(cerr << "bclut_test() - Default catalog is '" << defcat << "'" << endl);
-            CPPUNIT_ASSERT(defcat == "catalog");
+            CPPUNIT_ASSERT(defcat == "default");
 
             int numCat = BESCatalogList::TheCatalogList()->num_catalogs();
             DBG(cerr << "bclut_test() - TheCatalogList()->num_catalogs(): " << numCat << endl);
-            CPPUNIT_ASSERT(numCat == 0);
+            CPPUNIT_ASSERT(numCat == 1);
 
             DBG(cerr << "bclut_test() - Calling  BESCatalogList::delete_instance()" << endl);
             BESCatalogList::delete_instance();
@@ -95,17 +101,17 @@ public:
 
             defcat = BESCatalogList::TheCatalogList()->default_catalog_name();
             DBG(cerr << "bclut_test() - Default catalog is '" << defcat << "'" << endl);
-            CPPUNIT_ASSERT(defcat == "catalog");
+            CPPUNIT_ASSERT(defcat == "default");
 
             numCat = BESCatalogList::TheCatalogList()->num_catalogs();
             DBG(cerr << "bclut_test() - TheCatalogList()->num_catalogs(): " << numCat << endl);
-            CPPUNIT_ASSERT(numCat == 0);
+            CPPUNIT_ASSERT(numCat == 1);
 
             DBG(cerr << "bclut_test() - END." << endl);
             CPPUNIT_ASSERT(true);
         }
         catch (BESError &e) {
-            cerr << "bclut_test() - ERROR: " << e.get_message() << endl;
+            cerr << "bclut_test() - Errot: " << e.get_verbose_message() << endl;
             CPPUNIT_ASSERT(false);
         }
 

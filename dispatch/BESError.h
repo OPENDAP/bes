@@ -115,6 +115,9 @@ public:
         return _line;
     }
 
+    // Return the message, file and line
+    virtual std::string get_verbose_message();
+
     /** @brief Set the return code for this particular error class
      *
      * Sets the return code for this error class, which could represent the

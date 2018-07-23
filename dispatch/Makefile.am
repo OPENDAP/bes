@@ -93,6 +93,7 @@ SRCS = BESInterface.cc \
 	BESUncompress3GZ.cc BESUncompress3BZ2.cc BESUncompress3Z.cc \
 	BESTokenizer.cc		\
 	BESFSDir.cc BESFSFile.cc \
+	BESCatalog.cc \
 	BESCatalogDirectory.cc \
 	BESCatalogUtils.cc \
 	BESCatalogList.cc \

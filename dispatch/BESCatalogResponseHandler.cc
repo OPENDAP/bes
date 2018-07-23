@@ -129,6 +129,8 @@ void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi)
 
         // we only care to get the list of catalogs if the container is
         // slash (/)
+
+        // TODO This is the only place that CatalogList::show_catalogs() is called.
         int num_cats = BESCatalogList::TheCatalogList()->num_catalogs();
         if (container == "/" && num_cats > 1) {
             entry = BESCatalogList::TheCatalogList()->show_catalogs(entry, false);
