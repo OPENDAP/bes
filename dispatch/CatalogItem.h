@@ -29,6 +29,8 @@
 
 #include "BESObj.h"
 
+class BESInfo;
+
 namespace bes {
 
 #if 0
@@ -151,6 +153,8 @@ public:
     item_type get_type() const { return d_type; }
     /// @brief Set the type for this item
     void set_type(item_type t) { d_type = t; }
+
+    void encode_item(BESInfo *info);
 
     virtual void dump(ostream &strm) const;
 };

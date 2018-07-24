@@ -25,6 +25,7 @@
 
 #include <string>
 #include <ostream>
+#include <sstream>
 
 #include "BESIndent.h"
 
@@ -77,7 +78,9 @@ CatalogNode::encode_node(BESInfo *info)
     props["name"] = get_name();
     props["catalog"] = get_catalog_name();
     props["lastModified"] = get_lmt();
-    props["count"] = get_item_count();
+    ostringstream oss;
+    oss << get_item_count();
+    props["count"] = oss.str();
 
     info->begin_tag("node", &props);
 

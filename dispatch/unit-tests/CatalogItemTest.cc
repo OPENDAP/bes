@@ -31,7 +31,7 @@
 #include "TheBESKeys.h"
 #include "BESXMLInfo.h"
 #include "BESTextInfo.h"
-#include "CatalogNode.h"
+#include "CatalogItem.h"
 
 #include "test_config.h"
 #include "test_utils.h"
@@ -45,19 +45,20 @@ using namespace std;
 using namespace CppUnit;
 using namespace bes;
 
-class CatalogNodeTest: public CppUnit::TestFixture {
+class CatalogItemTest: public CppUnit::TestFixture {
 
-    CatalogNode *d_node;
+    CatalogItem *d_item;
+    CatalogItem *d_item_2;
 
 public:
 
     // Called once before everything gets tested
-    CatalogNodeTest(): d_node(0)
+    CatalogItemTest(): d_item(0)
     {
     }
 
     // Called at the end of the test
-    ~CatalogNodeTest()
+    ~CatalogItemTest()
     {
     }
 
@@ -66,10 +67,17 @@ public:
     {
         TheBESKeys::ConfigFile = string(TEST_SRC_DIR).append("/bes.conf");
 
-        d_node = new CatalogNode;
-        d_node->set_name("/test");
-        d_node->set_catalog_name("default");
-        d_node->set_lmt("07-07-07T07:07:07");
+        d_item = new CatalogItem;
+        d_item->set_name("/thing");
+        d_item->set_lmt("07-07-07T07:07:07");
+        d_item->set_type(bes::CatalogItem::node);
+
+        d_item_2 = new CatalogItem;
+        d_item_2->set_name("/thing2");
+        d_item_2->set_lmt("08-08-08T08:08:08");
+        d_item_2->set_type(bes::CatalogItem::leaf);
+        d_item_2->set_size(1024);
+        d_item_2->set_is_data(true);
     }
 
     // Called after each test
@@ -77,25 +85,29 @@ public:
     {
         TheBESKeys::ConfigFile = "";
 
-        delete d_node; d_node = 0;
+        delete d_item; d_item = 0;
+        delete d_item_2; d_item_2 = 0;
     }
 
-    CPPUNIT_TEST_SUITE( CatalogNodeTest );
+    CPPUNIT_TEST_SUITE( CatalogItemTest );
 
-    CPPUNIT_TEST(encode_node_test);
-    CPPUNIT_TEST(encode_node_text_test);
+    CPPUNIT_TEST(encode_item_test);
+    CPPUNIT_TEST(encode_item_text_test);
 
     CPPUNIT_TEST_SUITE_END();
 
-    void encode_node_test()
+    void encode_item_test()
     {
         try {
             auto_ptr<BESInfo> info(new BESXMLInfo);
 
             BESDataHandlerInterface dhi;
-            info->begin_response("showNode", dhi);
+            // I just made this 'response' showItem to make the test interesting.
+            // In reality, these items will be set inside a <node> element. jhrg 7/22/18
+            info->begin_response("showItem", dhi);
 
-            d_node->encode_node(info.get());
+            d_item->encode_item(info.get());
+            d_item_2->encode_item(info.get());
 
             // end the response object
             info->end_response();
@@ -103,29 +115,30 @@ public:
             ostringstream oss;
             info->print(oss);
 
-            string show_node_response = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/show_node_test_1.txt");
+            string show_item_response = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/show_item_test_1.txt");
 
-            DBG(cerr << "baseline: " << show_node_response << endl);
+            DBG(cerr << "baseline: " << show_item_response << endl);
             DBG(cerr << "response: " << oss.str() << endl);
 
-            CPPUNIT_ASSERT(oss.str() == show_node_response);
+            CPPUNIT_ASSERT(oss.str() == show_item_response);
         }
         catch (BESError &e) {
-            cerr << "encode_node_test() - Error: " << e.get_verbose_message() << endl;
+            cerr << "encode_item_test() - Error: " << e.get_verbose_message() << endl;
             CPPUNIT_ASSERT(false);
         }
     }
 
-    // This is the same test as encode_node_test but using a BESTextInfo object.
-    void encode_node_text_test()
+    // This is the same test as encode_item_test but using a BESTextInfo object.
+    void encode_item_text_test()
     {
         try {
             auto_ptr<BESInfo> info(new BESTextInfo);
 
             BESDataHandlerInterface dhi;
-            info->begin_response("showNode", dhi);
+            info->begin_response("showItem", dhi);
 
-            d_node->encode_node(info.get());
+            d_item->encode_item(info.get());
+            d_item_2->encode_item(info.get());
 
             // end the response object
             info->end_response();
@@ -133,15 +146,15 @@ public:
             ostringstream oss;
             info->print(oss);
 
-            string show_node_response = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/show_node_test_2.txt");
+            string show_item_response = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/show_item_test_2.txt");
 
-            DBG(cerr << "baseline: '" << show_node_response << "'" << endl);
-            DBG(cerr << "response: '" << oss.str() << "'" << endl);
+            DBG(cerr << "baseline: " << show_item_response << endl);
+            DBG(cerr << "response: " << oss.str() << endl);
 
-            CPPUNIT_ASSERT(oss.str() == show_node_response);
+            CPPUNIT_ASSERT(oss.str() == show_item_response);
         }
         catch (BESError &e) {
-            cerr << "encode_node_test() - Error: " << e.get_verbose_message() << endl;
+            cerr << "encode_item_test() - Error: " << e.get_verbose_message() << endl;
             CPPUNIT_ASSERT(false);
         }
     }
@@ -150,7 +163,7 @@ public:
 
 // BindTest
 
-CPPUNIT_TEST_SUITE_REGISTRATION(CatalogNodeTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(CatalogItemTest);
 
 int main(int argc, char*argv[])
 {
@@ -166,9 +179,9 @@ int main(int argc, char*argv[])
             break;
         }
         case 'h': {     // help - show test names
-            cerr << "Usage: CatalogNodeTest has the following tests:" << endl;
-            const std::vector<Test*> &tests = CatalogNodeTest::suite()->getTests();
-            unsigned int prefix_len = CatalogNodeTest::suite()->getName().append("::").length();
+            cerr << "Usage: CatalogItemTest has the following tests:" << endl;
+            const std::vector<Test*> &tests = CatalogItemTest::suite()->getTests();
+            unsigned int prefix_len = CatalogItemTest::suite()->getName().append("::").length();
             for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
             }
@@ -191,7 +204,7 @@ int main(int argc, char*argv[])
     else {
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            test = CatalogNodeTest::suite()->getName().append("::").append(argv[i]);
+            test = CatalogItemTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
             ++i;
         }
