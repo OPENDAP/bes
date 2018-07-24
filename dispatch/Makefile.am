@@ -98,7 +98,7 @@ SRCS = BESInterface.cc \
 	BESCatalogUtils.cc \
 	BESCatalogList.cc \
 	BESCatalogEntry.cc \
-	BESCatalogResponseHandler.cc \
+	BESCatalogResponseHandler.cc ShowNodeResponseHandler.cc \
 	CatalogNode.cc CatalogItem.cc \
 	WhiteList.cc
 	
@@ -158,7 +158,7 @@ HDRS = BESInterface.h BESLog.h 			\
 	BESCatalogUtils.h \
 	BESCatalogList.h \
 	BESCatalogEntry.h \
-	BESCatalogResponseHandler.h \
+	BESCatalogResponseHandler.h ShowNodeResponseHandler.h \
 	CatalogNode.h CatalogItem.h \
 	WhiteList.h
 	

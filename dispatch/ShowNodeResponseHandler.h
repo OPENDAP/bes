@@ -62,7 +62,7 @@ public:
 
     virtual void dump(std::ostream &strm) const;
 
-    static BESResponseHandler *CatalogResponseBuilder(const std::string &name);
+    static BESResponseHandler *ShowNodeResponseBuilder(const std::string &name);
 };
 
 }

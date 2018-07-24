@@ -42,17 +42,17 @@ static bool debug = false;
 using namespace std;
 using namespace CppUnit;
 
-class BESCatalogListUnitTest: public CppUnit::TestFixture {
+class BESCatalogListTest: public CppUnit::TestFixture {
 
 public:
 
     // Called once before everything gets tested
-    BESCatalogListUnitTest()
+    BESCatalogListTest()
     {
     }
 
     // Called at the end of the test
-    ~BESCatalogListUnitTest()
+    ~BESCatalogListTest()
     {
     }
 
@@ -68,7 +68,7 @@ public:
         TheBESKeys::ConfigFile = "";
     }
 
-    CPPUNIT_TEST_SUITE( BESCatalogListUnitTest );
+    CPPUNIT_TEST_SUITE( BESCatalogListTest );
 
     CPPUNIT_TEST(bclut_test);
 
@@ -116,7 +116,7 @@ public:
 
 // BindTest
 
-CPPUNIT_TEST_SUITE_REGISTRATION(BESCatalogListUnitTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(BESCatalogListTest);
 
 int main(int argc, char*argv[])
 {
@@ -133,8 +133,8 @@ int main(int argc, char*argv[])
         }
         case 'h': {     // help - show test names
             cerr << "Usage: BESCatalogListUnitTest has the following tests:" << endl;
-            const std::vector<Test*> &tests = BESCatalogListUnitTest::suite()->getTests();
-            unsigned int prefix_len = BESCatalogListUnitTest::suite()->getName().append("::").length();
+            const std::vector<Test*> &tests = BESCatalogListTest::suite()->getTests();
+            unsigned int prefix_len = BESCatalogListTest::suite()->getName().append("::").length();
             for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
             }
@@ -157,7 +157,7 @@ int main(int argc, char*argv[])
     else {
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            test = BESCatalogListUnitTest::suite()->getName().append("::").append(argv[i]);
+            test = BESCatalogListTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
             ++i;
         }

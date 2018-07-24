@@ -29,7 +29,7 @@
 #include <string>
 #include <vector>
 
-#include <InternalErr.h>
+#include "BESInternalError.h"
 
 using namespace std;
 
@@ -74,6 +74,6 @@ void clean_cache_dir(const string &cache)
 	// been run or because it's the first run of the tests. But, fork and waitpid
 	// should not return an error and the shell should be found.
 	if (status == -1 || status == 127)
-		throw libdap::InternalErr(__FILE__, __LINE__, "Failed to clean cache dir: " + cache_dir);
+		throw BESInternalError(string("Failed to clean cache dir: ").append(cache_dir), __FILE__, __LINE__);
 }
 

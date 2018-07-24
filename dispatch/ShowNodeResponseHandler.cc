@@ -24,24 +24,25 @@
 
 #include "config.h"
 
+#include <memory>
+#include <string>
+
 #include "BESInfoList.h"
 #include "BESInfo.h"
-#include "BESRequestHandlerList.h"
-#include "BESRequestHandler.h"
-#include "BESNames.h"
-#include "BESDataNames.h"
 #include "BESCatalogList.h"
 #include "BESCatalog.h"
-#include "BESCatalogEntry.h"
-#include "BESCatalogUtils.h"
-#include "BESSyntaxUserError.h"
-#include "BESNotFoundError.h"
+
+#include "BESNames.h"
+#include "BESDataNames.h"
+
 #include "BESDebug.h"
 #include "BESStopWatch.h"
 
+#include "CatalogNode.h"
 #include "ShowNodeResponseHandler.h"
 
 using namespace bes;
+using namespace std;
 
 /** @brief Execute the showCatalog command.
  *
@@ -71,12 +72,14 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
 
 
     // Get the node info from the catalog.
-    auto_ptr<CatalogNode> node(get_node(container));
+    auto_ptr<CatalogNode> node(catalog->get_node(container));
 
     BESInfo *info = BESInfoList::TheList()->build_info();
 
     // Transfer the catalog's node info to the BESInfo object
     info->begin_response(NODE_RESPONSE_STR, dhi);
+
+    node->encode_node(info);    // calls encode_item()
 
 #if 0
     // TODO recode this!
@@ -134,7 +137,7 @@ void ShowNodeResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandl
 {
     if (d_response_object) {
         BESInfo *info = dynamic_cast<BESInfo *>(d_response_object);
-        if (!info) throw BESInternalError("cast error", __FILE__, __LINE__);
+        if (!info) throw BESInternalError("Expected the Response Object to be a BESInfo instance.", __FILE__, __LINE__);
         info->transmit(transmitter, dhi);
     }
 }
@@ -154,7 +157,7 @@ void ShowNodeResponseHandler::dump(ostream &strm) const
 }
 
 BESResponseHandler *
-ShowNodeResponseHandler::CatalogResponseBuilder(const string &name)
+ShowNodeResponseHandler::ShowNodeResponseBuilder(const string &name)
 {
     return new ShowNodeResponseHandler(name);
 }

@@ -60,6 +60,7 @@
 #include "BESContainerStorageVolatile.h"
 
 #include "BESCatalogResponseHandler.h"
+#include "ShowNodeResponseHandler.h"
 
 #include "BESDefineResponseHandler.h"
 #include "BESShowDefsResponseHandler.h"
@@ -85,6 +86,7 @@
 #include "BESInfoNames.h"
 
 using namespace std;
+using namespace bes;
 
 int BESDefaultModule::initialize(int, char**)
 {
@@ -107,6 +109,7 @@ int BESDefaultModule::initialize(int, char**)
     BESResponseHandlerList::TheList()->add_handler( DELETE_CONTAINERS, BESDelContainersResponseHandler::DelContainersResponseBuilder);
 
     BESResponseHandlerList::TheList()->add_handler( CATALOG_RESPONSE, BESCatalogResponseHandler::CatalogResponseBuilder);
+    BESResponseHandlerList::TheList()->add_handler( NODE_RESPONSE, ShowNodeResponseHandler::ShowNodeResponseBuilder);
 
     BESContainerStorageList::TheList()->add_persistence(new BESContainerStorageVolatile( PERSISTENCE_VOLATILE));
 

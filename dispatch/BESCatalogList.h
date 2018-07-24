@@ -96,7 +96,7 @@ private:
     static void initialize_instance();  // originally used with pthread_once(). jhrg 7/22/18
     static void delete_instance();
 
-    friend class BESCatalogListUnitTest;
+    friend class BESCatalogListTest;
 
 public:
     typedef std::map<std::string, BESCatalog *>::iterator catalog_iter;
