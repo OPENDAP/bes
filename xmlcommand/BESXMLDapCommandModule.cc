@@ -32,16 +32,18 @@
 
 #include <iostream>
 
-using std::endl;
-using std::cout;
-
 #include "BESXMLDapCommandModule.h"
 #include "BESDapNames.h"
 #include "BESNames.h"
 #include "BESDebug.h"
 #include "BESXMLCatalogCommand.h"
 #include "SiteMapCommandNames.h"
-#include "SiteMapCommand.h"     // uses BullResponseHandler
+#include "SiteMapCommand.h"     // Uses NullResponseHandler
+#include "ShowNodeCommand.h"    // Could use NullResponseHandler. jhrg 7/23/18
+
+using namespace bes;
+using std::endl;
+using std::cout;
 
 /** @brief Adds the basic DAP XML command objects to the XMLCommand list of
  * possible commands
@@ -57,6 +59,7 @@ void BESXMLDapCommandModule::initialize(const string &/*modname*/)
     BESDEBUG("dap", "Initializing DAP Commands:" << endl);
 
     BESXMLCommand::add_command(CATALOG_RESPONSE_STR, BESXMLCatalogCommand::CommandBuilder);
+    BESXMLCommand::add_command(NODE_RESPONSE_STR, ShowNodeCommand::CommandBuilder);
 #if 0
     BESXMLCommand::add_command(SHOW_INFO_RESPONSE_STR, ShowNodeCommand::CommandBuilder);
 #endif

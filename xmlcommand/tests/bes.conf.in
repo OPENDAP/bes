@@ -21,6 +21,14 @@ BES.Catalog.catalog.TypeMatch=dapreader:.*\.(das|dds|dods|data|dmr|dap)$;
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
 
+BES.Catalog.second.RootDirectory=@abs_top_builddir@/xmlcommand/tests/second_catalog
+BES.Catalog.second.FollowSymLinks=No
+BES.Catalog.second.TypeMatch=dapreader:.*\.(data|dap)$;
+
+BES.Catalog.second.Include=;
+BES.Catalog.second.Exclude=^\..*;
+
+
 BES.FollowSymLinks=No
 BES.Data.RootDirectory=/dev/null
 

@@ -55,7 +55,7 @@ AUTOTEST = $(AUTOM4TE) --language=autotest
 # since that gives better control over things like PACKAGE_NAME,
 # which will be handy in the handlers to keep their package names
 # from all being 'bes'.
-$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
+$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4 bes.conf
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
 # The `:;' works around a Bash 3.2 bug when the output is not writeable.

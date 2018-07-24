@@ -37,6 +37,7 @@
 
 #include "BESDebug.h"
 #include "BESStopWatch.h"
+#include "BESSyntaxUserError.h"
 
 #include "CatalogNode.h"
 #include "ShowNodeResponseHandler.h"
@@ -65,10 +66,16 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
 
     string catname = dhi.data[CATALOG];
     BESCatalog *catalog = 0;    // pointer to a singleton; do not delete
-    if (!catname.empty())
+    if (!catname.empty()) {
         catalog = BESCatalogList::TheCatalogList()->find_catalog(catname);
-    else
+        if (!catalog)
+            throw BESSyntaxUserError(string("Could not find catalog: ").append(catname), __FILE__, __LINE__);
+    }
+    else {
         catalog = BESCatalogList::TheCatalogList()->default_catalog();
+        if (!catalog)
+            throw BESSyntaxUserError(string("Could not find the default catalog."), __FILE__, __LINE__);
+    }
 
 
     // Get the node info from the catalog.
