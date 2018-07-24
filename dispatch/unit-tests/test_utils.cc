@@ -41,6 +41,9 @@ read_test_baseline(const string &fn)
     ifstream is;
     is.open (fn.c_str(), ios::binary );
 
+    if (!is)
+        throw BESInternalError(string("read_test_baseline: Could not open ").append(fn), __FILE__, __LINE__);
+
     // get length of file:
     is.seekg (0, ios::end);
     length = is.tellg();
