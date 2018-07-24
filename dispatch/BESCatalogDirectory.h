@@ -35,18 +35,20 @@
 
 #include <list>
 #include <string>
-
-using std::list;
-using std::string;
+#include <ostream>
 
 #include "BESCatalog.h"
 
 class BESCatalogEntry;
-class BESCatalogUtils;
 
 namespace bes {
     class CatalogNode;
 }
+
+#if 0
+using std::list;
+using std::string;
+#endif
 
 /**
  * @brief Catalogs from a directory structure
@@ -55,19 +57,19 @@ class BESCatalogDirectory: public BESCatalog {
 private:
 
 public:
-    BESCatalogDirectory(const string &name);
+    BESCatalogDirectory(const std::string &name);
     virtual ~BESCatalogDirectory();
 
-    virtual BESCatalogEntry * show_catalog(const string &container, BESCatalogEntry *entry);
+    virtual BESCatalogEntry * show_catalog(const std::string &container, BESCatalogEntry *entry);
 
     virtual std::string get_root() const;
 
     virtual bes::CatalogNode *get_node(const std::string &path) const;
 
-    virtual void get_site_map(const string &prefix, const string &node_suffix, const string &leaf_suffix, ostream &out,
-        const string &path = "/") const;
+    virtual void get_site_map(const std::string &prefix, const std::string &node_suffix, const std::string &leaf_suffix, std::ostream &out,
+        const std::string &path = "/") const;
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // I_BESCatalogDirectory_h
