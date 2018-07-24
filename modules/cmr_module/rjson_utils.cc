@@ -1,3 +1,28 @@
+// -*- mode: c++; c-basic-offset:4 -*-
+//
+// This file is part of cmr_module, A C++ module that can be loaded in to
+// the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
+//
+// Copyright (c) 2018 OPeNDAP, Inc.
+// Author: Nathan Potter <ndp@opendap.org>
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+//
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+//
+#include <sstream>
 
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
@@ -29,10 +54,19 @@ namespace cmr {
  */
 void
 rjson_utils::getJsonDoc(const string &url, rapidjson::Document &doc){
-    string prolog = string("CmrApi::") + __func__ + "() - ";
+    string prolog = string("rjson_utils::") + __func__ + "() - ";
     BESDEBUG(MODULE,prolog << "Trying url: " << url << endl);
     cmr::RemoteHttpResource rhr(url);
     rhr.retrieveResource();
+    vector<string> *headers = rhr.getResponseHeaders();
+    if(BESDebug::IsSet(MODULE)){
+        stringstream msg(prolog);
+        msg << "HTTP Headers:" << endl;
+        for(unsigned long i=0; i<headers->size() ;i++){
+            msg << (*headers)[i] << endl;
+        }
+        *(BESDebug::GetStrm()) << msg.str();
+    }
     FILE* fp = fopen(rhr.getCacheFileName().c_str(), "r"); // non-Windows use "r"
     char readBuffer[65536];
     rapidjson::FileReadStream frs(fp, readBuffer, sizeof(readBuffer));
@@ -50,7 +84,7 @@ rjson_utils::getJsonDoc(const string &url, rapidjson::Document &doc){
  */
 std::string
 rjson_utils::getStringValue(const rapidjson::Value& object, const string &name){
-    string prolog = string("CmrApi::") + __func__ + "() - ";
+    string prolog = string("rjson_utils::") + __func__ + "() - ";
 
     string response;
     rapidjson::Value::ConstMemberIterator itr = object.FindMember(name.c_str());

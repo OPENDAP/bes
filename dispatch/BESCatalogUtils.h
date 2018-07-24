@@ -76,9 +76,7 @@ public:
 private:
     std::vector<handler_regex> d_match_list;  ///< The list of types & regexes
 
-    BESCatalogUtils()
-    {
-    }
+    BESCatalogUtils():d_follow_syms(false) {}
 
     static void bes_add_stat_info(BESCatalogEntry *entry, struct stat &buf);
 

@@ -35,6 +35,7 @@
 #include <string>
 #include <vector>
 #include "rapidjson/document.h"
+#include "BESCatalogUtils.h"
 
 #include "Granule.h"
 
@@ -44,6 +45,7 @@ namespace cmr {
 class CmrApi {
 private:
     std::string cmr_search_endpoint_url;
+
     const rapidjson::Value& get_temporal_group(const rapidjson::Document &cmr_doc);
     const rapidjson::Value& get_year_group(const rapidjson::Document &cmr_doc);
     const rapidjson::Value& get_month_group(const string year, const rapidjson::Document &cmr_doc);

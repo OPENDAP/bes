@@ -34,6 +34,8 @@
 #include <string>
 #include <vector>
 #include "rapidjson/document.h"
+#include "CatalogItem.h"
+#include "BESCatalogUtils.h"
 
 
 namespace cmr {
@@ -44,13 +46,15 @@ private:
     const rapidjson::Value& get_links_array();
 
 public:
-    Granule(const rapidjson::Value& granule_obj) : d_granule_obj(granule_obj) {}
+    Granule(const rapidjson::Value& granule_obj): d_granule_obj(granule_obj)  {}
 
     std::string getStringProperty(const std::string &id);
     std::string getDataAccessUrl();
     std::string getMetadataAccessUrl();
     std::string getSizeStr();
+    size_t getSize();
     std::string getLastModifiedStr();
+    bes::CatalogItem *getCatalogItem(BESCatalogUtils *d_catalog_utils);
 };
 
 } // namespace cmr

@@ -41,7 +41,6 @@
 #include <algorithm>
 
 #include "BESUtil.h"
-#include "CmrCatalog.h"
 #include "BESCatalogUtils.h"
 #include "BESCatalogEntry.h"
 
@@ -56,12 +55,21 @@
 #include "BESInternalError.h"
 #include "BESForbiddenError.h"
 #include "BESNotFoundError.h"
+#include "BESSyntaxUserError.h"
 
+#include "TheBESKeys.h"
 #include "BESDebug.h"
+
+#include "CmrApi.h"
+#include "CmrCatalog.h"
 
 using namespace bes;
 using namespace std;
-using namespace cmr;
+
+#define CMR_COLLECTIONS "CMR.Collections"
+#define CMR_FACETS "CMR.Facets"
+namespace cmr {
+
 /**
  * @brief A catalog for POSIX file systems
  *
@@ -78,6 +86,20 @@ CMRCatalog::CMRCatalog(const string &name) :
     BESCatalog(name)
 {
     d_utils = BESCatalogUtils::Utils(name);
+
+    bool found = false;
+    TheBESKeys::TheKeys()->get_values(CMR_COLLECTIONS, d_collections, found);
+    if(!found){
+        throw BESInternalError(string("The CMR module must define at least one collection name using the key; '")+CMR_COLLECTIONS
+            +"'", __FILE__, __LINE__);
+    }
+
+    found = false;
+    TheBESKeys::TheKeys()->get_values(CMR_FACETS, d_facets, found);
+    if(!found){
+        throw BESInternalError(string("The CMR module must define at least one facet name using the key; '")+CMR_COLLECTIONS
+            +"'", __FILE__, __LINE__);
+    }
 }
 
 CMRCatalog::~CMRCatalog()
@@ -116,6 +138,21 @@ static string get_time(time_t the_time, bool use_local_time = false)
     return buf;
 }
 
+
+
+
+vector<string> split(const string &s, char delim='/', bool skip_empty=true) {
+    stringstream ss(s);
+    string item;
+    vector<string> tokens;
+    while (getline(ss, item, delim)) {
+        if(skip_empty && !item.empty())
+            tokens.push_back(item);
+    }
+    return tokens;
+}
+
+
 // path must start with a '/'. By this class it will be interpreted as a
 // starting at the CatalogDirectory instance's root directory. It may either
 // end in a '/' or not.
@@ -123,7 +160,6 @@ static string get_time(time_t the_time, bool use_local_time = false)
 // If it is not a directory - that is an error. (return null or throw?)
 //
 // Item names are relative
-
 /**
  * @brief Get a CatalogNode for the given path in the current catalog
  *
@@ -138,10 +174,141 @@ static string get_time(time_t the_time, bool use_local_time = false)
  * @throw BESForbiddenError If the \arg path is explicitly excluded by the
  * bes.conf file
  */
-CatalogNode *
+bes::CatalogNode *
+CMRCatalog::get_node(const string &ppath) const
+{
+    string path(ppath);
+
+    if (ppath[0] != '/'){
+        path = "/"+ ppath;
+    }
+
+    vector<string> path_elements = split(path);
+
+    CmrApi cmrApi;
+    bes::CatalogNode *node;
+
+    if(path_elements.empty()){
+        node = new CatalogNode("/");
+        for(size_t i=0; i<d_collections.size() ; i++){
+            CatalogItem *collection = new CatalogItem();
+            collection->set_name(d_collections[i]);
+            collection->set_type(CatalogItem::node);
+            node->add_node(collection);
+        }
+    }
+    else {
+        string collection = path_elements[0];
+        bool valid_collection = false;
+        for(size_t i=0; i<d_collections.size() && !valid_collection ; i++){
+            if(collection == d_collections[i])
+                valid_collection = true;
+        }
+        if(!valid_collection){
+            throw new BESNotFoundError("The CMR catalog does not contain a collection named '"+collection+"'",__FILE__,__LINE__);
+        }
+        if(path_elements.size() >1){
+            string facet = path_elements[1];
+            bool valid_facet = false;
+            for(size_t i=0; i<d_facets.size() && !valid_facet ; i++){
+                if(facet == d_facets[i])
+                    valid_facet = true;
+            }
+            if(!valid_facet){
+                throw new BESNotFoundError("The CMR collection '"+collection+"' does not contain a facet named '"+facet+"'",__FILE__,__LINE__);
+            }
+
+            if(facet=="temporal"){
+                node = new CatalogNode(path);
+
+                switch( path_elements.size()){
+                case 1: // The path ends at temporal facet, so we need the years.
+                {
+                    vector<string> years;
+                    cmrApi.get_years(collection, years);
+                    for(size_t i=0; i<years.size() ; i++){
+                        CatalogItem *collection = new CatalogItem();
+                        collection->set_type(CatalogItem::node);
+                        collection->set_name(years[i]);
+                        collection->set_is_data(false);
+                        collection->set_lmt(get_time(std::time(0)));
+                        collection->set_size(0);
+                        node->add_node(collection);
+                    }
+                }
+                    break;
+                case 2:
+                {
+                    string year = path_elements[2];
+                    string month("");
+                    string day("");
+                    vector<string> months;
+                    cmrApi.get_months(collection, year, months);
+                    for(size_t i=0; i<months.size() ; i++){
+                        CatalogItem *collection = new CatalogItem();
+                        collection->set_name(months[i]);
+                        collection->set_is_data(false);
+                        collection->set_lmt(get_time(std::time(0)));
+                        collection->set_size(0);
+                        node->add_node(collection);
+                    }
+                }
+                    break;
+                case 3:
+                {
+                    string year = path_elements[2];
+                    string month = path_elements[3];
+                    string day("");
+                    vector<string> days;
+                    cmrApi.get_days(collection, year, month, days);
+                    for(size_t i=0; i<days.size() ; i++){
+                        CatalogItem *collection = new CatalogItem();
+                        collection->set_name(days[i]);
+                        collection->set_is_data(false);
+                        collection->set_lmt(get_time(std::time(0)));
+                        collection->set_size(0);
+                        node->add_node(collection);
+                    }
+                }
+                    break;
+                case 4:
+                {
+                    string year = path_elements[2];
+                    string month = path_elements[3];
+                    string day = path_elements[4];
+                    vector<Granule *> granules;
+                    cmrApi.get_granules(collection, year, month, day, granules);
+                    for(size_t i=0; i<granules.size() ; i++){
+                        node->add_leaf(granules[i]->getCatalogItem(d_utils));
+                    }
+                }
+                    break;
+                default:
+                    throw BESSyntaxUserError("CmrCatalog: The path '"+path+"' does not describe a valid temporal facet search.",__FILE__,__LINE__);
+                    break;
+                }
+            }
+            else {
+                throw new BESNotFoundError("The CMR only supports temporal faceting.",__FILE__,__LINE__);
+            }
+        }
+        else {
+            node = new CatalogNode(path);
+            for(size_t i=0; i<d_facets.size() ; i++){
+                CatalogItem *collection = new CatalogItem();
+                collection->set_name(d_facets[i]);
+                collection->set_type(CatalogItem::node);
+                node->add_node(collection);
+            }
+        }
+    }
+    return node;
+}
+
+#if 0
+bes::CatalogNode *
 CMRCatalog::get_node(const string &path) const
 {
-    if (path[0] != '/') throw BESInternalError("Catalog paths must start with a slash (/)", __FILE__, __LINE__);
 
     string rootdir = d_utils->get_root_dir();
 
@@ -235,6 +402,7 @@ CMRCatalog::get_node(const string &path) const
         throw;
     }
 }
+#endif
 
 
 /** @brief dumps information about this object
@@ -256,3 +424,4 @@ void CMRCatalog::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
+} // namespace cmr

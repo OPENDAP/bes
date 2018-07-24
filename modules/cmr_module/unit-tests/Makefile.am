@@ -55,7 +55,7 @@ tmp:
 #
 
 if CPPUNIT
-UNIT_TESTS = CmrApiTest
+UNIT_TESTS = CmrApiTest CmrCatalogTest
 else
 UNIT_TESTS =
 
@@ -68,7 +68,17 @@ check-local:
 	@echo ""
 endif
 
-OBJS = ../CMRCatalog.o
+OBJS = ../RemoteHttpResource.o \
+../curl_utils.o \
+../rjson_utils.o \
+../CmrCache.o \
+../CmrUtils.o \
+../CmrApi.o \
+../Granule.o \
+../CMRCatalog.o 
 
 CmrApiTest_SOURCES = CmrApiTest.cc
-CmrApiTest_LDADD = ../RemoteHttpResource.o  ../curl_utils.o ../rjson_utils.o ../CmrCache.o ../CmrUtils.o ../CmrApi.o ../Granule.o $(OBJS) $(LIBADD)
+CmrApiTest_LDADD = $(OBJS) $(LIBADD)
+
+CmrCatalogTest_SOURCES = CmrCatalogTest.cc
+CmrCatalogTest_LDADD = $(OBJS) $(LIBADD)

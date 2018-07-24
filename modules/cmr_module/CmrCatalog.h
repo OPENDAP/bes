@@ -50,6 +50,9 @@ namespace cmr {
 class CMRCatalog: public BESCatalog {
 private:
     BESCatalogUtils * d_utils;
+    std::vector<std::string> d_collections;
+    std::vector<std::string> d_facets;
+
 
 public:
     CMRCatalog(const string &name);
@@ -66,8 +69,6 @@ public:
      * This is a meaningless method for CMR so it returns empty string
      */
     virtual std::string get_root() const { return ""; }
-
-
 
     /**
      * Maybe someday...

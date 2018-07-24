@@ -28,6 +28,7 @@
  *  Created on: July, 13 2018
  *      Author: ndp
  */
+#include <stdlib.h>     /* atol */
 
 #include "rjson_utils.h"
 #include "BESDebug.h"
@@ -64,6 +65,11 @@ std::string Granule::getStringProperty(const std::string &name){
 std::string Granule::getSizeStr(){
     return getStringProperty(granule_SIZE);
 }
+
+size_t Granule::getSize(){
+    return atol(getSizeStr().c_str());
+}
+
 
 /**
  * Returns the last modified time of the granule as a string.
@@ -129,6 +135,18 @@ std::string Granule::getMetadataAccessUrl(){
     }
     throw CmrError("ERROR: Failed to locate granule metadata access link ("+granule_LINKS_REL_METADATA_ACCESS+"). :(",__FILE__,__LINE__);
 }
+
+
+bes::CatalogItem *Granule::getCatalogItem(BESCatalogUtils *d_catalog_utils){
+    bes::CatalogItem *item = new bes::CatalogItem();
+    item->set_type(bes::CatalogItem::leaf);
+    item->set_name(getStringProperty("title"));
+    item->set_lmt(getStringProperty("updated"));
+    item->set_size(getSize());
+    item->set_is_data(d_catalog_utils->is_data(item->get_name()));
+    return item;
+}
+
 
 
 } //namespace cmr
