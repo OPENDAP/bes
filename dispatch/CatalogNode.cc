@@ -23,6 +23,8 @@
 
 #include "config.h"
 
+#include <cassert>
+
 #include <string>
 #include <ostream>
 #include <sstream>
@@ -84,21 +86,18 @@ CatalogNode::encode_node(BESInfo *info)
 
     info->begin_tag("node", &props);
 
-    // TODO write out the items here.
-#if 0
-    // Depth-first node traversal. Assume the nodes and leaves are sorted
-    for (CatalogNode::item_citer i = node->nodes_begin(), e = node->nodes_end(); i != e; ++i) {
+    // Depth-first node traversal. Assume the nodes and leaves are sorted.
+    // Write the nodes first.
+    for (CatalogNode::item_citer i = nodes_begin(), e = nodes_end(); i != e; ++i) {
         assert((*i)->get_type() == CatalogItem::node);
-
+        (*i)->encode_item(info);
     }
 
-    // For leaves, only write the data items
-    for (CatalogNode::item_citer i = node->leaves_begin(), e = node->leaves_end(); i != e; ++i) {
+    // then leaves
+    for (CatalogNode::item_citer i = leaves_begin(), e = leaves_end(); i != e; ++i) {
         assert((*i)->get_type() == CatalogItem::leaf);
-        if ((*i)->is_data() && !leaf_suffix.empty())
-
+        (*i)->encode_item(info);
     }
-#endif
 
     info->end_tag("node");
 
