@@ -172,12 +172,10 @@ void CmrUtils::Initialize()
                 BESDEBUG("gateway",
                     "GatewayUtils::Initialize() - User supplied an invalid value '"<< authType << "'  for Gateway.ProxyAuthType. Falling back to BASIC authentication scheme." << endl);
             }
-
         }
         else {
             CmrUtils::ProxyAuthType = CURLAUTH_BASIC;
         }
-
     }
 
     found = false;
