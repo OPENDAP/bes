@@ -101,8 +101,8 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([nc/ref_tst_opaque_data.nc.3.bescmd])
 # Enum
 
 AT_BESCMD_RESPONSE_TEST([nc/ref_tst_enum_data.nc.0.bescmd])
-AT_BESCMD_RESPONSE_TEST([nc/ref_tst_enum_data.nc.1.bescmd])
-AT_BESCMD_RESPONSE_TEST([nc/ref_tst_enum_data.nc.2.bescmd])
+# AT_BESCMD_RESPONSE_TEST([nc/ref_tst_enum_data.nc.1.bescmd])
+# AT_BESCMD_RESPONSE_TEST([nc/ref_tst_enum_data.nc.2.bescmd])
 
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([nc/ref_tst_enum_data.nc.3.bescmd])
 

@@ -68,6 +68,7 @@ string CmrUtils::NoProxyRegex;
 // and keys, like the white list, the MimeTypes translation.
 void CmrUtils::Initialize()
 {
+    string prolog = string("CmrUtils::") + __func__ + "() - ";
 
     // MimeTypes - translate from a mime type to a module name
     bool found = false;
@@ -103,7 +104,7 @@ void CmrUtils::Initialize()
         if (found && !port.empty()) {
             CmrUtils::ProxyPort = atoi(port.c_str());
             if (!CmrUtils::ProxyPort) {
-                string err = (string) "Cmr proxy host specified," + " but proxy port specified is invalid";
+                string err = (string) "CMR proxy host is specified, but specified port is absent";
                 throw BESSyntaxUserError(err, __FILE__, __LINE__);
             }
         }
@@ -286,7 +287,7 @@ void CmrUtils::Get_type_from_content_type(const string &ctype, string &type)
 
 void CmrUtils::Get_type_from_url(const string &url, string &type)
 {
-    // just run the url through the type match from the configuration
+    // Just run the url through the type match from the configuration
     const BESCatalogUtils *utils = BESCatalogUtils::Utils("catalog");
     BESCatalogUtils::match_citer i = utils->match_list_begin();
     BESCatalogUtils::match_citer ie = utils->match_list_end();
@@ -304,7 +305,7 @@ void CmrUtils::Get_type_from_url(const string &url, string &type)
             }
         }
         catch (Error &e) {
-            string serr = (string) "Unable to match data type, " + "malformed Catalog TypeMatch parameter "
+            string serr = (string) "Unable to match data type! Malformed Catalog TypeMatch parameter "
                 + "in bes configuration file around " + match.regex + ": " + e.get_error_message();
             throw BESInternalError(serr, __FILE__, __LINE__);
         }

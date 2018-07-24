@@ -44,9 +44,11 @@ BESXMLCatalogCommand::BESXMLCatalogCommand(const BESDataHandlerInterface &base_d
 {
 }
 
-/** @brief parse a show command. No properties or children elements
+/** @brief Parse a show catalog command.
  *
- &lt;showCatalog node="containerName" /&gt;
+ * ~~~{.xml}
+ * <showCatalog node="containerName" />
+ * ~~~
  *
  * @param node xml2 element node pointer
  */
@@ -56,7 +58,7 @@ void BESXMLCatalogCommand::parse_request(xmlNode *node)
     string value;
     map<string, string> props;
     BESXMLUtils::GetNodeInfo(node, name, value, props);
-    if (name != CATALOG_RESPONSE_STR && name != SHOW_INFO_RESPONSE_STR) {
+    if (name != CATALOG_RESPONSE_STR /*&& name != SHOW_INFO_RESPONSE_STR*/) {
         string err = "The specified command " + name + " is not a show catalog or show info command";
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
@@ -64,26 +66,18 @@ void BESXMLCatalogCommand::parse_request(xmlNode *node)
     // the action is the same for show catalog and show info
     d_xmlcmd_dhi.action = CATALOG_RESPONSE;
 
-    // the CATALOG_OR_INFO data value will say if it's a show catalog or
-    // show info
-    if (name == CATALOG_RESPONSE_STR) {
-        d_xmlcmd_dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE;
-        d_cmd_log_info = "show catalog";
-    }
-    else {
-        d_xmlcmd_dhi.data[CATALOG_OR_INFO] = SHOW_INFO_RESPONSE;
-        d_cmd_log_info = "show info";
-    }
+    d_cmd_log_info = "show catalog";
 
     // node is an optional property, so could be empty string
     d_xmlcmd_dhi.data[CONTAINER] = props["node"];
+
     if (!d_xmlcmd_dhi.data[CONTAINER].empty()) {
         d_cmd_log_info += " for " + d_xmlcmd_dhi.data[CONTAINER];
     }
+
     d_cmd_log_info += ";";
 
-    // now that we've set the action, go get the response handler for the
-    // action
+    // Get the response handler for the action
     BESXMLCommand::set_response();
 }
 

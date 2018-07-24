@@ -54,7 +54,7 @@ class BESCatalogEntry;
 // One way to make this change and not leave the whole ref/deref model
 // looking odd would be to make a single BESCatalog instance that is
 // the default catalog and have that be separate from the list of added
-// catalog. jhrg 2.25.18
+// catalogs. jhrg 2.25.18
 
 
 /** @brief List of all registered catalogs
@@ -62,11 +62,10 @@ class BESCatalogEntry;
  * Catalogs are a way of organizing data into a tree.
  * Every BES daemon has at least one catalog, the default catalog
  * (confusingly named 'catalog.') In general, this is the
- * daemon's local file system. Nodes or leaves in this tree are
- * represented using CatalogEntry instances.
+ * daemon's local file system.
  *
  * Multiple BESCatalog objects can be registered with this list.
- * However, most installations have a  single catalog registered
+ * However, most installations have a single catalog registered
  * (the default catalog) which provides access to files on the host
  * computer's local file system.
  *
@@ -80,25 +79,21 @@ class BESCatalogEntry;
  * When the singleton's instance is deleted, so are all of the catalogs,
  * regardless of their reference count.
  *
- * I don't know if the following paragraph is true:
- * If there is only one catalog, then the display of the root will
- * be the display of that catalogs root.
- * If there is more than one catalog registered, then the view of
- * the root will display the list of catalogs registered. To view
- * the contents of a specific catalog begin each container name with
- * the name of the catalog followed by a colon.
- *
- * show catalog for "cedar_catalog:/instrument/5340/year/2004/";
- *
  * @see BESCatalog
  */
 class BESCatalogList: public BESObj {
 private:
     std::map<std::string, BESCatalog *> d_catalogs;
-    std::string d_default_catalog;
+
+    // Record the default catalog name and hold a pointer to the object.
+    // The BESCatalog* should also be in the d_catalogs map (above) so
+    // that clients which search for it will find it that way.
+    std::string d_default_catalog_name;
+    BESCatalog *d_default_catalog;
+
     static BESCatalogList * d_instance;
 
-    static void initialize_instance();
+    static void initialize_instance();  // originally used with pthread_once(). jhrg 7/22/18
     static void delete_instance();
 
     friend class BESCatalogListUnitTest;
@@ -117,7 +112,9 @@ public:
     virtual int num_catalogs() const { return d_catalogs.size();  }
 
     /// @brief The name of the default catalog
-    virtual std::string default_catalog_name() const { return d_default_catalog; }
+    virtual std::string default_catalog_name() const { return d_default_catalog_name; }
+    /// @brief The  the default catalog
+    virtual BESCatalog *default_catalog() const { return d_default_catalog; }
 
     virtual bool add_catalog(BESCatalog *catalog);
     virtual bool ref_catalog(const std::string &catalog_name);
@@ -125,6 +122,7 @@ public:
 
     virtual BESCatalog * find_catalog(const std::string &catalog_name) const;
 
+    // TODO Remove this ASAP. jhrg 7/22/18
     virtual BESCatalogEntry * show_catalogs(BESCatalogEntry *entry, bool show_default = true);
 
     /// @brief Iterator to the first catalog
