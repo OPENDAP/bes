@@ -193,7 +193,6 @@ void CmrUtils::Initialize()
         // If not set, default to false. Assume squid or ...
         CmrUtils::useInternalCache = false;
     }
-
     // Grab the value for the NoProxy regex; empty if there is none.
     found = false; // Not used
     TheBESKeys::TheKeys()->get_value("Gateway.NoProxy", CmrUtils::NoProxyRegex, found);
