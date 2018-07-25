@@ -11,6 +11,16 @@ AM_CXXFLAGS =
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
+# Build the TestModule, used to load a second catalog so the code can run
+# test cases using that. jhrg 7/23/18
+lib_besdir=$(libdir)/bes
+lib_bes_LTLIBRARIES = libtest_module.la
+
+libtest_module_la_SOURCES = TestModule.cc TestModule.h
+libtest_module_la_CPPFLAGS = $(AM_CPPFLAGS)
+libtest_module_la_LDFLAGS = -avoid-version -module 
+# libtest_module_la_LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+
 noinst_DATA = bes.conf $(builddir)/data
 
 TESTS = $(TESTSUITE)

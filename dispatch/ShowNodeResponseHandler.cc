@@ -77,7 +77,6 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
             throw BESSyntaxUserError(string("Could not find the default catalog."), __FILE__, __LINE__);
     }
 
-
     // Get the node info from the catalog.
     auto_ptr<CatalogNode> node(catalog->get_node(container));
 
@@ -87,39 +86,6 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
     info->begin_response(NODE_RESPONSE_STR, dhi);
 
     node->encode_node(info);    // calls encode_item()
-
-#if 0
-    // TODO recode this!
-
-    // Depth-first node traversal. Assume the nodes and leaves are sorted
-    for (CatalogNode::item_citer i = node->nodes_begin(), e = node->nodes_end(); i != e; ++i) {
-        assert((*i)->get_type() == CatalogItem::node);
-
-    }
-
-    // For leaves, only write the data items
-    for (CatalogNode::item_citer i = node->leaves_begin(), e = node->leaves_end(); i != e; ++i) {
-        assert((*i)->get_type() == CatalogItem::leaf);
-        if ((*i)->is_data() && !leaf_suffix.empty())
-
-    }
-
-    // *** old code ***
-
-    // now that we have all the catalog entry information, display it
-    // start the response depending on if show catalog or show info
-
-    // start with the first level entry
-    BESCatalogUtils::display_entry(entry, info);
-
-    BESCatalogEntry::catalog_citer ei = entry->get_beginning_entry();
-    BESCatalogEntry::catalog_citer ee = entry->get_ending_entry();
-    for (; ei != ee; ei++) {
-        BESCatalogUtils::display_entry((*ei).second, info);
-        info->end_tag("dataset");
-    }
-
-#endif
 
     // end the response object
     info->end_response();

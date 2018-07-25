@@ -1,4 +1,4 @@
-// DapModule.cc
+// TestModule.cc
 
 // Copyright (c) 2013 OPeNDAP, Inc. Author: James Gallagher
 // <jgallagher@opendap.org>, Patrick West <pwest@opendap.org>
@@ -20,18 +20,22 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI.
 // 02874-0112.
 
+#include "config.h"
+
+#include <string>
 #include <iostream>
 
-using std::endl;
+#include "TestModule.h"
+// #include "DapRequestHandler.h"
 
-#include "DapModule.h"
-#include "DapRequestHandler.h"
-
-#include <BESRequestHandlerList.h>
+//#include <BESRequestHandlerList.h>
 #include <BESDebug.h>
 
+#if 0
 #include <BESDapService.h>
 #include <BESResponseNames.h>
+#endif
+
 #include <BESContainerStorageList.h>
 #include <BESContainerStorageCatalog.h>
 #include <BESCatalogDirectory.h>
@@ -41,34 +45,36 @@ using std::endl;
 
 // #define DAP_CATALOG "catalog"
 
-void DapModule::initialize(const string &modname)
-{
-    BESDEBUG(modname, "Initializing Dap Reader Module " << modname << endl);
+const string &catalog_name = "second";
 
+void TestModule::initialize(const string &modname)
+{
+    BESDEBUG(modname, "Initializing Non-default Catalog Test Module " << modname << endl);
+
+#if 0
     BESRequestHandlerList::TheList()->add_handler(modname, new DapRequestHandler(modname));
 
     BESDapService::handle_dap_service(modname);
+#endif
 
-    string default_catalog_name = BESCatalogList::TheCatalogList()->default_catalog_name();
-    if (!BESCatalogList::TheCatalogList()->ref_catalog(default_catalog_name)) {
-        throw BESInternalError("Should never have to add the default catalog.", __FILE__, __LINE__);
-        // BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory(default_catalog_name));
+
+    if (!BESCatalogList::TheCatalogList()->ref_catalog(catalog_name)) {
+        BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory(catalog_name));
     }
 
-    // TODO this is probably bogus too. jhrg 7/23/18
-    if (!BESContainerStorageList::TheList()->ref_persistence(default_catalog_name)) {
-        BESContainerStorageCatalog *csc = new BESContainerStorageCatalog(default_catalog_name);
+    if (!BESContainerStorageList::TheList()->ref_persistence(catalog_name)) {
+        BESContainerStorageCatalog *csc = new BESContainerStorageCatalog(catalog_name);
         BESContainerStorageList::TheList()->add_persistence(csc);
     }
 
     BESDebug::Register(modname);
 
-    BESDEBUG(modname, "Done Initializing Dap Reader Module " << modname << endl);
+    BESDEBUG(modname, "Done Initializing Test Module " << modname << endl);
 }
 
-void DapModule::terminate(const string &modname)
+void TestModule::terminate(const string &modname)
 {
-    BESDEBUG(modname, "Cleaning Dap Reader Module " << modname << endl);
+    BESDEBUG(modname, "Cleaning Test Module " << modname << endl);
 
 #if 0
     BESRequestHandler *rh = 0;
@@ -77,25 +83,26 @@ void DapModule::terminate(const string &modname)
     if (rh) delete rh;
 #endif
 
+#if 0
     delete BESRequestHandlerList::TheList()->remove_handler(modname);
+#endif
 
-    string default_catalog_name = BESCatalogList::TheCatalogList()->default_catalog_name();
-    BESContainerStorageList::TheList()->deref_persistence(default_catalog_name);
+    BESContainerStorageList::TheList()->deref_persistence(catalog_name);
 
-    BESCatalogList::TheCatalogList()->deref_catalog(default_catalog_name);
+    BESCatalogList::TheCatalogList()->deref_catalog(catalog_name);
 
-    BESDEBUG(modname, "Done Cleaning Dap Reader Module " << modname << endl);
+    BESDEBUG(modname, "Done Cleaning TEst Module " << modname << endl);
 }
 
 extern "C" {
 BESAbstractModule *maker()
 {
-    return new DapModule;
+    return new TestModule;
 }
 }
 
-void DapModule::dump(ostream &strm) const
+void TestModule::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "DapModule::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "TestModule::dump - (" << (void *) this << ")" << endl;
 }
 

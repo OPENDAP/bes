@@ -95,7 +95,7 @@ void ShowNodeCommand::parse_request(xmlNode *node)
     d_cmd_log_info += ";";
 
     // Get the response handler for the action (dhi.action == show.node)
-    /*BESXMLCommand::*/set_response();
+    set_response();
 }
 
 /** @brief dumps information about this object

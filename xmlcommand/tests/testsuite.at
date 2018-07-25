@@ -39,8 +39,8 @@ AT_BESCMD_RESPONSE_TEST([bescmd/show_bes_key_5.bescmd], [pass])
 AT_BESCMD_NO_DATE_RESPONSE_TEST([bescmd/show_node_1.bescmd], [pass])
 AT_BESCMD_NO_DATE_RESPONSE_TEST([bescmd/show_node_2.bescmd], [pass])
 AT_BESCMD_NO_DATE_RESPONSE_TEST([bescmd/show_node_3.bescmd], [pass])
-AT_BESCMD_NO_DATE_RESPONSE_TEST([bescmd/show_node_4.bescmd], [xfail])
-AT_BESCMD_NO_DATE_RESPONSE_TEST([bescmd/show_node_5.bescmd], [xfail])
+AT_BESCMD_NO_DATE_RESPONSE_TEST([bescmd/show_node_4.bescmd], [pass])
+AT_BESCMD_NO_DATE_RESPONSE_TEST([bescmd/show_node_5.bescmd], [pass])
 
 # error - catalog doesn't exist
 AT_BESCMD_ERROR_RESPONSE_TEST([bescmd/show_node_6.bescmd], [pass])

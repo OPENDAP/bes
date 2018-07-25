@@ -8,18 +8,22 @@ BES.Group=group_name
 BES.LogName=./bes.log
 BES.LogVerbose=no
 
-BES.modules=dap,cmd,dapreader
+BES.modules=dap,cmd,dapreader,test_module
 
 BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
 BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
 BES.module.dapreader=@abs_top_builddir@/dapreader/.libs/libdapreader_module.so
 
-BES.Catalog.catalog.RootDirectory=@abs_top_builddir@/xmlcommand/tests/data
-BES.Catalog.catalog.FollowSymLinks=No
-BES.Catalog.catalog.TypeMatch=dapreader:.*\.(das|dds|dods|data|dmr|dap)$;
+BES.module.test_module=@abs_top_builddir@/xmlcommand/tests/.libs/libtest_module.so
 
-BES.Catalog.catalog.Include=;
-BES.Catalog.catalog.Exclude=^\..*;
+BES.Catalog.Default=default
+
+BES.Catalog.default.RootDirectory=@abs_top_builddir@/xmlcommand/tests/data
+BES.Catalog.default.FollowSymLinks=No
+BES.Catalog.default.TypeMatch=dapreader:.*\.(das|dds|dods|data|dmr|dap)$;
+
+BES.Catalog.default.Include=;
+BES.Catalog.default.Exclude=^\..*;
 
 BES.Catalog.second.RootDirectory=@abs_top_builddir@/xmlcommand/tests/second_catalog
 BES.Catalog.second.FollowSymLinks=No
