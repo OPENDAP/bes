@@ -163,11 +163,18 @@ void RemoteHttpResource::retrieveResource()
     try {
 
 
-        // #########################################################################################################
-        // I think in this if() is where we need to load the headers from the cache if we have them.
         if (cache->get_read_lock(d_resourceCacheFileName, d_fd)) {
             BESDEBUG(MODULE,
                 "RemoteHttpResource::retrieveResource() - Remote resource is already in cache. cache_file_name: " << d_resourceCacheFileName << endl);
+
+            // #########################################################################################################
+            // I think in this if() is where we need to load the headers from the cache if we have them.
+            string hdr_filename = cache->get_cache_file_name(d_remoteResourceUrl + ".hdrs");
+            std::ifstream hdr_in(hdr_filename);
+            string hdr;
+            while(hdr_in >> hdr){
+                (*d_response_headers).push_back(hdr);
+            }
             d_initialized = true;
             return;
         }
