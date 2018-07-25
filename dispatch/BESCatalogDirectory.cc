@@ -96,6 +96,7 @@ BESCatalogDirectory::~BESCatalogDirectory()
  * @brief Get the CatalogEntry for the given node.
  *
  * @deprecated Switch to get_node(); drop use of CatalogEntry objects
+ *
  * @param node The node within the Catalog
  * @param entry If not null, link the newly built CatalogEntry object
  * to \arg entry as a child node.
@@ -286,7 +287,7 @@ static string get_time(time_t the_time, bool use_local_time = false)
         status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&the_time));
 
     if (!status)
-    LOG("Error getting last modified time time for a leaf item in BESCatalogDirectory.");
+        LOG("Error getting last modified time time for a leaf item in BESCatalogDirectory.");
 
     return buf;
 }

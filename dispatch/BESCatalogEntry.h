@@ -40,6 +40,9 @@
 
 #include "BESObj.h"
 
+/**
+ * @deprecated Use CatalogNode and CatlogItem instead. jhrg 7/25/18
+ */
 class BESCatalogEntry: public BESObj {
 private:
     std::string _name;

@@ -29,10 +29,10 @@ BUILT_SOURCES = test_config.h bes.conf
 
 if CPPUNIT
 # This determines what gets run by 'make check.'
-TESTS = constraintT defT keysT pfileT plistT pvolT replistT		\
-reqhandlerT reqlistT resplistT infoT agglistT debugT utilT regexT	\
-scrubT checkT servicesT fsT urlT BESCatalogListUnitTest containerT	\
-uncompressT cacheT WhiteListTest
+TESTS = constraintT defT keysT pfileT plistT pvolT replistT	\
+reqhandlerT reqlistT resplistT infoT agglistT debugT utilT regexT \
+scrubT checkT servicesT fsT urlT containerT	uncompressT cacheT \
+BESCatalogListTest WhiteListTest CatalogNodeTest CatalogItemTest
 
 # This is tool to look at CatalogEntry objects. jhrg 3.5.18
 # complete_catalog_lister
@@ -151,6 +151,12 @@ checkT_SOURCES = checkT.cc
 WhiteListTest_SOURCES = WhiteListTest.cc
 WhiteListTest_LDADD = ../WhiteList.o $(LDADD)
 
+CatalogNodeTest_SOURCES = test_utils.cc CatalogNodeTest.cc
+CatalogNodeTest_LDADD = ../CatalogNode.o $(LDADD)
+
+CatalogItemTest_SOURCES = test_utils.cc CatalogItemTest.cc
+CatalogItemTest_LDADD = ../CatalogItem.o $(LDADD)
+
 servicesT_SOURCES = servicesT.cc
 servicesT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
 
@@ -164,8 +170,8 @@ catT_LDADD = $(catT_OBJ) $(LDADD)
 endif
 
 # Added Unit test for singleton class BESCatalogList. ndp 5/6/2013
-BESCatalogListUnitTest_SOURCES  = BESCatalogListUnitTest.cc
-BESCatalogListUnitTest_CPPFLAGS = $(AM_CPPFLAGS) -Wno-deprecated
+BESCatalogListTest_SOURCES  = BESCatalogListTest.cc
+BESCatalogListTest_CPPFLAGS = $(AM_CPPFLAGS) -Wno-deprecated
 
 # complete_catalog_lister_SOURCES = complete_catalog_lister.cc
 # complete_catalog_lister_OBJ = ../BESCatalogResponseHandler.o

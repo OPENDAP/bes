@@ -38,11 +38,7 @@
 /** @brief response handler that returns nodes or leaves within the catalog
  * either at the root or at a specified node.
  *
- * A request 'show catalog [for &lt;node&gt;];' or
- * 'show leaves for &lt;node&gt;;
- * will be handled by this response handler. It returns nodes or leaves either
- * at the root level if no node is specified in the request, or the nodes or
- * leaves under the specified node.
+ * @deprecated Use the showNode command instead. jhrg 7/25/18
  *
  * @see BESResponseObject
  * @see BESContainer
