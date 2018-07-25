@@ -36,16 +36,24 @@
 #define CATALOG_RESPONSE "show.catalog"
 #define CATALOG_RESPONSE_STR "showCatalog"
 
+#if 1
 #define SHOW_INFO_RESPONSE "show.info"
 #define SHOW_INFO_RESPONSE_STR "showInfo"
+#endif
 
 #define SITE_MAP_STR "buildSiteMap"
 #define SITE_MAP "build.site_map"
 
+#define NODE_RESPONSE "show.node"
+#define NODE_RESPONSE_STR "showNode"
+
+#if 1
 /*
  * show catalog/info data names
  */
 #define CATALOG_OR_INFO "catalog_or_info"
+#endif
+
 
 #endif // E_BESNames_H
 

@@ -789,6 +789,7 @@ AC_CONFIG_FILES([Makefile
 		 xmlcommand/Makefile
 		 xmlcommand/unit-tests/Makefile
 		 xmlcommand/tests/Makefile
+		 xmlcommand/tests/atlocal
 		 
 		 ppt/Makefile
 		 ppt/unit-tests/Makefile

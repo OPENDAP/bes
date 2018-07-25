@@ -3,8 +3,8 @@
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
 // Access Protocol.
 
-// Copyright (c) 2013 OPeNDAP, Inc.
-// Author: Nathan David Potter <ndp@opendap.org>
+// Copyright (c) 2018 OPeNDAP, Inc.
+// Author: James Gallagher <jgallagher@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -22,12 +22,6 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-
-#if 0
-#include <pthread.h>
-#include <vector>
-#endif
-
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -35,9 +29,12 @@
 #include <GetOpt.h>
 
 #include "TheBESKeys.h"
-#include "BESCatalogList.h"
+#include "BESXMLInfo.h"
+#include "BESTextInfo.h"
+#include "CatalogNode.h"
 
 #include "test_config.h"
+#include "test_utils.h"
 
 static bool debug = false;
 
@@ -46,18 +43,21 @@ static bool debug = false;
 
 using namespace std;
 using namespace CppUnit;
+using namespace bes;
 
-class BESCatalogListUnitTest: public CppUnit::TestFixture {
+class CatalogNodeTest: public CppUnit::TestFixture {
+
+    CatalogNode *d_node;
 
 public:
 
     // Called once before everything gets tested
-    BESCatalogListUnitTest()
+    CatalogNodeTest(): d_node(0)
     {
     }
 
     // Called at the end of the test
-    ~BESCatalogListUnitTest()
+    ~CatalogNodeTest()
     {
     }
 
@@ -65,63 +65,92 @@ public:
     void setUp()
     {
         TheBESKeys::ConfigFile = string(TEST_SRC_DIR).append("/bes.conf");
+
+        d_node = new CatalogNode;
+        d_node->set_name("/test");
+        d_node->set_catalog_name("default");
+        d_node->set_lmt("07-07-07T07:07:07");
     }
 
     // Called after each test
     void tearDown()
     {
         TheBESKeys::ConfigFile = "";
+
+        delete d_node; d_node = 0;
     }
 
-    CPPUNIT_TEST_SUITE( BESCatalogListUnitTest );
+    CPPUNIT_TEST_SUITE( CatalogNodeTest );
 
-    CPPUNIT_TEST(bclut_test);
+    CPPUNIT_TEST(encode_node_test);
+    CPPUNIT_TEST(encode_node_text_test);
 
     CPPUNIT_TEST_SUITE_END();
 
-    void bclut_test()
+    void encode_node_test()
     {
-
         try {
-            DBG(cerr << endl);
-            DBG(cerr << "bclut_test() - BEGIN." << endl);
+            auto_ptr<BESInfo> info(new BESXMLInfo);
 
-            string defcat = BESCatalogList::TheCatalogList()->default_catalog_name();
-            DBG(cerr << "bclut_test() - Default catalog is '" << defcat << "'" << endl);
-            CPPUNIT_ASSERT(defcat == "default");
+            BESDataHandlerInterface dhi;
+            info->begin_response("showNode", dhi);
 
-            int numCat = BESCatalogList::TheCatalogList()->num_catalogs();
-            DBG(cerr << "bclut_test() - TheCatalogList()->num_catalogs(): " << numCat << endl);
-            CPPUNIT_ASSERT(numCat == 1);
+            d_node->encode_node(info.get());
 
-            DBG(cerr << "bclut_test() - Calling  BESCatalogList::delete_instance()" << endl);
-            BESCatalogList::delete_instance();
-            DBG(cerr << "bclut_test() - Calling  BESCatalogList::initialize_instance()" << endl);
-            BESCatalogList::initialize_instance();
+            // end the response object
+            info->end_response();
 
-            defcat = BESCatalogList::TheCatalogList()->default_catalog_name();
-            DBG(cerr << "bclut_test() - Default catalog is '" << defcat << "'" << endl);
-            CPPUNIT_ASSERT(defcat == "default");
+            ostringstream oss;
+            info->print(oss);
 
-            numCat = BESCatalogList::TheCatalogList()->num_catalogs();
-            DBG(cerr << "bclut_test() - TheCatalogList()->num_catalogs(): " << numCat << endl);
-            CPPUNIT_ASSERT(numCat == 1);
+            string show_node_response = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/show_node_test_1.txt");
 
-            DBG(cerr << "bclut_test() - END." << endl);
-            CPPUNIT_ASSERT(true);
+            DBG(cerr << "baseline: " << show_node_response << endl);
+            DBG(cerr << "response: " << oss.str() << endl);
+
+            CPPUNIT_ASSERT(oss.str() == show_node_response);
         }
         catch (BESError &e) {
-            cerr << "bclut_test() - Errot: " << e.get_verbose_message() << endl;
+            cerr << "encode_node_test() - Error: " << e.get_verbose_message() << endl;
             CPPUNIT_ASSERT(false);
         }
+    }
 
+    // This is the same test as encode_node_test but using a BESTextInfo object.
+    void encode_node_text_test()
+    {
+        try {
+            auto_ptr<BESInfo> info(new BESTextInfo);
+
+            BESDataHandlerInterface dhi;
+            info->begin_response("showNode", dhi);
+
+            d_node->encode_node(info.get());
+
+            // end the response object
+            info->end_response();
+
+            ostringstream oss;
+            info->print(oss);
+
+            string show_node_response = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/show_node_test_2.txt");
+
+            DBG(cerr << "baseline: '" << show_node_response << "'" << endl);
+            DBG(cerr << "response: '" << oss.str() << "'" << endl);
+
+            CPPUNIT_ASSERT(oss.str() == show_node_response);
+        }
+        catch (BESError &e) {
+            cerr << "encode_node_test() - Error: " << e.get_verbose_message() << endl;
+            CPPUNIT_ASSERT(false);
+        }
     }
 
 };
 
 // BindTest
 
-CPPUNIT_TEST_SUITE_REGISTRATION(BESCatalogListUnitTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(CatalogNodeTest);
 
 int main(int argc, char*argv[])
 {
@@ -137,9 +166,9 @@ int main(int argc, char*argv[])
             break;
         }
         case 'h': {     // help - show test names
-            cerr << "Usage: BESCatalogListUnitTest has the following tests:" << endl;
-            const std::vector<Test*> &tests = BESCatalogListUnitTest::suite()->getTests();
-            unsigned int prefix_len = BESCatalogListUnitTest::suite()->getName().append("::").length();
+            cerr << "Usage: CatalogNodeTest has the following tests:" << endl;
+            const std::vector<Test*> &tests = CatalogNodeTest::suite()->getTests();
+            unsigned int prefix_len = CatalogNodeTest::suite()->getName().append("::").length();
             for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
             }
@@ -162,7 +191,7 @@ int main(int argc, char*argv[])
     else {
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            test = BESCatalogListUnitTest::suite()->getName().append("::").append(argv[i]);
+            test = CatalogNodeTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
             ++i;
         }

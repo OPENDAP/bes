@@ -1,4 +1,4 @@
 <bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[thread:http-nio-8080-exec-4-42][bes_client:/-2]">
   <bes:setContext name="errors">xml</bes:setContext>
-  <bes:showBesKey key="BES.Catalog.catalog.TypeMatch" />
+  <bes:showBesKey key="BES.Catalog.default.TypeMatch" />
 </bes:request>

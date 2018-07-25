@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response reqID="[thread:http-nio-8080-exec-4-42][bes_client:/-2]" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <showNode>
+        <node catalog="default" count="6" lastModified="removed date-time" name="/">
+            <item lastModified="removed date-time" name="dap2" type="node"/>
+            <item lastModified="removed date-time" name="dap4" type="node"/>
+            <item isData="false" lastModified="removed date-time" name="all_site_map.txt" size="998" type="leaf"/>
+            <item isData="false" lastModified="removed date-time" name="new_site_map.txt" size="715" type="leaf"/>
+            <item isData="false" lastModified="removed date-time" name="node_site_map.txt" size="283" type="leaf"/>
+            <item isData="false" lastModified="removed date-time" name="site_map.txt" size="715" type="leaf"/>
+        </node>
+    </showNode>
+</response>

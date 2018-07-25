@@ -59,12 +59,6 @@ private:
 
 public:
     BESCatalog(const std::string &catalog_name);
-#if 0
-    : d_catalog_name(catalog_name), d_reference(0)
-    {
-        d_utils = new BESCatalogUtils(d_catalog_name);
-    }
-#endif
 
     virtual ~BESCatalog()
     {
