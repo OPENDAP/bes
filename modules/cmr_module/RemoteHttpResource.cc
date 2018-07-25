@@ -28,6 +28,9 @@
 #include "config.h"
 
 #include <sstream>
+#include <fstream>
+#include <string>
+#include <iostream>
 
 #include "BESInternalError.h"
 
@@ -49,10 +52,8 @@ using namespace cmr;
  *
  * @param url Is a URL string that identifies the remote resource.
  */
-RemoteHttpResource::RemoteHttpResource(const string &url)
-{
+RemoteHttpResource::RemoteHttpResource(const string &url) {
     d_initialized = false;
-
     d_fd = 0;
     d_curl = 0;
     d_resourceCacheFileName.clear();
@@ -161,6 +162,9 @@ void RemoteHttpResource::retrieveResource()
 
     try {
 
+
+        // #########################################################################################################
+        // I think in this if() is where we need to load the headers from the cache if we have them.
         if (cache->get_read_lock(d_resourceCacheFileName, d_fd)) {
             BESDEBUG(MODULE,
                 "RemoteHttpResource::retrieveResource() - Remote resource is already in cache. cache_file_name: " << d_resourceCacheFileName << endl);
@@ -179,6 +183,13 @@ void RemoteHttpResource::retrieveResource()
             // #########################################################################################################
             // I think right here is where I would be able to cache the data type/response headers. While I have
             // the exclusive lock I could open another cache file for metadata and write to it.
+            {
+                string hdr_filename = cache->get_cache_file_name(d_remoteResourceUrl + ".hdrs");
+                std::ofstream hdr_out(hdr_filename);
+                for(size_t i=0; i<this->d_response_headers->size() ;i++){
+                    hdr_out << (*d_response_headers)[i] << endl;
+                }
+            }
             // #########################################################################################################
 
             // Change the exclusive lock on the new file to a shared lock. This keeps

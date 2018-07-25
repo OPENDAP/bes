@@ -478,6 +478,20 @@ CmrApi::get_granule_ids(string collection_name, string r_year, string r_month, s
 
 }
 
+
+/**
+ *
+ */
+unsigned long
+CmrApi::granule_count(string collection_name, string r_year, string r_month, string r_day){
+    string prolog = string("CmrApi::") + __func__ + "() - ";
+    stringstream msg;
+    rapidjson::Document cmr_doc;
+    granule_search(collection_name, r_year, r_month, r_day, cmr_doc);
+    const rapidjson::Value& entries = get_entries(cmr_doc);
+    return entries.Size();
+}
+
 /**
  * Locates granules in the collection matching the year, month, and day. Any or all of
  * year, month, and day may be the empty string.
@@ -489,7 +503,8 @@ CmrApi::granule_search(string collection_name, string r_year, string r_month, st
 
     string url = BESUtil::assemblePath(cmr_search_endpoint_url,"granules.json")
         + "?concept_id="+collection_name
-        +"&include_facets=v2";
+        + "&include_facets=v2"
+        + "&page_size=2000";
 
     if(!r_year.empty())
         url += "&temporal_facet[0][year]="+r_year;

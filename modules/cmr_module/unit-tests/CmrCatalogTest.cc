@@ -40,6 +40,7 @@
 #include <util.h>
 
 #include <BESError.h>
+#include <BESNotFoundError.h>
 #include <BESDebug.h>
 #include <BESUtil.h>
 #include <TheBESKeys.h>
@@ -114,13 +115,12 @@ public:
 
     void get_years_test() {
         string prolog = string(__func__) + "() - ";
-        string expected[] = { string("1984"), string("1985"), string("1986"),
-                string("1987"), string("1988") };
+        string expected[] = { string("1984"), string("1985"), string("1986"), string("1987"), string("1988") };
         unsigned long  expected_size = 5;
+        stringstream msg;
 
         try {
             cmr::CmrCatalog catalog;
-
             bes::CatalogNode *node = catalog.get_node("C179003030-ORNL_DAAC/temporal");
             unsigned lcount = node->get_leaf_count();
             BESDEBUG(MODULE, prolog << "Checking expected leaves (0) vs received (" << lcount << ")" << endl);
@@ -130,8 +130,16 @@ public:
             BESDEBUG(MODULE, prolog << "Checking expected nodes ("<< expected_size << ") vs received (" << ncount << ")" << endl);
             CPPUNIT_ASSERT( ncount==expected_size );
 
-
-
+            bes::CatalogNode::item_iter itr;
+            size_t i=0;
+            for (itr=node->nodes_begin(); itr!=node->nodes_end(); itr++, i++){
+                string node_name = (*itr)->get_name();
+                msg.str(std::string());
+                msg << prolog << "Checking:  expected: " << expected[i]
+                        << " received: " << node_name;
+                BESDEBUG(MODULE, msg.str() << endl);
+                CPPUNIT_ASSERT(expected[i] == node_name);
+            }
         }
         catch (BESError &be) {
             string msg = "Caught BESError! Message: " + be.get_message();
@@ -142,6 +150,7 @@ public:
 
     void get_months_test() {
         string prolog = string(__func__) + "() - ";
+        stringstream msg;
 
         string collection_name = "C179003030-ORNL_DAAC";
         string expected[] = {
@@ -160,30 +169,25 @@ public:
         unsigned long  expected_size = 12;
         vector<string> months;
         try {
-            CmrApi cmr;
+            cmr::CmrCatalog catalog;
+            bes::CatalogNode *node = catalog.get_node("C179003030-ORNL_DAAC/temporal/1985");
+            unsigned lcount = node->get_leaf_count();
+            BESDEBUG(MODULE, prolog << "Checking expected leaves (0) vs received (" << lcount << ")" << endl);
+            CPPUNIT_ASSERT( lcount==0 );
 
-            string year ="1985";
+            unsigned ncount = node->get_node_count();
+            BESDEBUG(MODULE, prolog << "Checking expected nodes ("<< expected_size << ") vs received (" << ncount << ")" << endl);
+            CPPUNIT_ASSERT( ncount==expected_size );
 
-            cmr.get_months(collection_name, year, months);
-            BESDEBUG(MODULE, prolog << "Checking expected size ("<< expected_size << ") vs received size (" << months.size() << ")" << endl);
-            CPPUNIT_ASSERT(expected_size == months.size());
-
-            stringstream msg;
-            msg << prolog << "In the year " << year << " the collection '" << collection_name << "' spans "
-                    << months.size() << " months: ";
-            for (size_t i = 0; i < months.size(); i++) {
-                if (i > 0)
-                    msg << ", ";
-                msg << months[i];
-            }
-            BESDEBUG(MODULE, msg.str() << endl);
-
-            for (size_t i = 0; i < months.size(); i++) {
+            bes::CatalogNode::item_iter itr;
+            size_t i=0;
+            for (itr=node->nodes_begin(); itr!=node->nodes_end(); itr++, i++){
+                string node_name = (*itr)->get_name();
                 msg.str(std::string());
                 msg << prolog << "Checking:  expected: " << expected[i]
-                        << " received: " << months[i];
+                        << " received: " << node_name;
                 BESDEBUG(MODULE, msg.str() << endl);
-                CPPUNIT_ASSERT(expected[i] == months[i]);
+                CPPUNIT_ASSERT(expected[i] == node_name);
             }
 
         }
@@ -197,9 +201,11 @@ public:
 
     void get_days_test() {
         string prolog = string(__func__) + "() - ";
+        stringstream msg;
 
         //string collection_name = "C179003030-ORNL_DAAC";
         string collection_name = "C1276812863-GES_DISC";
+        string node_path="C1276812863-GES_DISC/temporal/1985/03";
         string expected[] = {
                 string("01"),string("02"),string("03"),string("04"),string("05"),string("06"),string("07"),string("08"),string("09"),string("10"),
                 string("11"),string("12"),string("13"),string("14"),string("15"),string("16"),string("17"),string("18"),string("19"),string("20"),
@@ -209,32 +215,27 @@ public:
         unsigned long  expected_size = 31;
         vector<string> days;
         try {
-            CmrApi cmr;
+            cmr::CmrCatalog catalog;
+            bes::CatalogNode *node = catalog.get_node(node_path);
+            unsigned lcount = node->get_leaf_count();
+            BESDEBUG(MODULE, prolog << "Checking expected leaves (0) vs received (" << lcount << ")" << endl);
+            CPPUNIT_ASSERT( lcount==0 );
 
-            string year ="1985";
-            string month = "03";
+            unsigned ncount = node->get_node_count();
+            BESDEBUG(MODULE, prolog << "Checking expected nodes ("<< expected_size << ") vs received (" << ncount << ")" << endl);
+            CPPUNIT_ASSERT( ncount==expected_size );
 
-            cmr.get_days(collection_name, year, month, days);
-            BESDEBUG(MODULE, prolog << "Checking expected size ("<< expected_size << ") vs received size (" << days.size() << ")" << endl);
-            CPPUNIT_ASSERT(expected_size == days.size());
-
-            stringstream msg;
-            msg << prolog << "In the year " << year << ", month " << month << " the collection '" << collection_name << "' spans "
-                    << days.size() << " days: ";
-            for (size_t i = 0; i < days.size(); i++) {
-                if (i > 0)
-                    msg << ", ";
-                msg << days[i];
-            }
-            BESDEBUG(MODULE, msg.str() << endl);
-
-            for (size_t i = 0; i < days.size(); i++) {
+            bes::CatalogNode::item_iter itr;
+            size_t i=0;
+            for (itr=node->nodes_begin(); itr!=node->nodes_end(); itr++, i++){
+                string node_name = (*itr)->get_name();
                 msg.str(std::string());
                 msg << prolog << "Checking:  expected: " << expected[i]
-                        << " received: " << days[i];
+                        << " received: " << node_name;
                 BESDEBUG(MODULE, msg.str() << endl);
-                CPPUNIT_ASSERT(expected[i] == days[i]);
+                CPPUNIT_ASSERT(expected[i] == node_name);
             }
+
 
         }
         catch (BESError &be) {
@@ -245,104 +246,40 @@ public:
 
     }
 
-    void get_granule_ids_day_test() {
+
+    void get_granules_test() {
         string prolog = string(__func__) + "() - ";
+        stringstream msg;
 
         //string collection_name = "C179003030-ORNL_DAAC";
         string collection_name = "C1276812863-GES_DISC";
-
+        string node_path="C1276812863-GES_DISC/temporal/1985/03/13";
         string expected[] = {
-                string("G1277917089-GES_DISC")
+                string("M2T1NXSLV.5.12.4:MERRA2_100.tavg1_2d_slv_Nx.19850313.nc4")
         };
-
         unsigned long  expected_size = 1;
-        vector<string> granules;
+        vector<string> days;
         try {
-            CmrApi cmr;
+            cmr::CmrCatalog catalog;
+            bes::CatalogNode *node = catalog.get_node(node_path);
 
-            string year ="1985";
-            string month = "03";
-            string day = "13";
+            unsigned lcount = node->get_leaf_count();
+            BESDEBUG(MODULE, prolog << "Checking expected leaves (" << expected_size << ") vs received (" << lcount << ")" << endl);
+            CPPUNIT_ASSERT( lcount==expected_size );
 
-            cmr.get_granule_ids(collection_name, year, month, day, granules);
-            BESDEBUG(MODULE, prolog << "Checking expected size ("<< expected_size << ") vs received size (" << granules.size() << ")" << endl);
-            CPPUNIT_ASSERT(expected_size == granules.size());
+            unsigned ncount = node->get_node_count();
+            BESDEBUG(MODULE, prolog << "Checking expected nodes (0) vs received (" << ncount << ")" << endl);
+            CPPUNIT_ASSERT( ncount==0 );
 
-            stringstream msg;
-            msg << prolog << "In the year " << year << ", month " << month <<  ", day " << day << " the collection '" << collection_name << "' contains "
-                    << granules.size() << " granules: ";
-            for (size_t i = 0; i < granules.size(); i++) {
-                if (i > 0)
-                    msg << ", ";
-                msg << granules[i];
-            }
-            BESDEBUG(MODULE, msg.str() << endl);
-
-            for (size_t i = 0; i < granules.size(); i++) {
+            bes::CatalogNode::item_iter itr;
+            size_t i=0;
+            for (itr=node->leaves_begin(); itr!=node->leaves_end(); itr++, i++){
+                string leaf_name = (*itr)->get_name();
                 msg.str(std::string());
                 msg << prolog << "Checking:  expected: " << expected[i]
-                        << " received: " << granules[i];
+                        << " received: " << leaf_name;
                 BESDEBUG(MODULE, msg.str() << endl);
-                CPPUNIT_ASSERT(expected[i] == granules[i]);
-            }
-
-        }
-        catch (BESError &be) {
-            string msg = "Caught BESError! Message: " + be.get_message();
-            cerr << endl << msg << endl;
-            CPPUNIT_ASSERT(!"Caught BESError");
-        }
-
-
-
-
-    }
-    void get_granule_ids_month_test() {
-        string prolog = string(__func__) + "() - ";
-        //string collection_name = "C179003030-ORNL_DAAC";
-        string collection_name = "C1276812863-GES_DISC";
-
-        string expected[] = {
-            string("G1277917088-GES_DISC"),
-            string("G1277917126-GES_DISC"),
-            string("G1277917102-GES_DISC"),
-            string("G1277917125-GES_DISC"),
-            string("G1277917121-GES_DISC"),
-            string("G1277917112-GES_DISC"),
-            string("G1277917116-GES_DISC"),
-            string("G1277917161-GES_DISC"),
-            string("G1277917098-GES_DISC"),
-            string("G1277917097-GES_DISC")
-        };
-
-        unsigned long  expected_size = 10;
-        vector<string> granules;
-        try {
-            CmrApi cmr;
-
-            string year ="1985";
-            string month = "03";
-
-            cmr.get_granule_ids(collection_name, year, month, "", granules);
-            BESDEBUG(MODULE, prolog << "Checking expected size ("<< expected_size << ") vs received size (" << granules.size() << ")" << endl);
-            CPPUNIT_ASSERT(expected_size == granules.size());
-
-            stringstream msg;
-            msg << prolog << "In the year " << year << ", month " << month <<  " the collection '" << collection_name << "' contains "
-                    << granules.size() << " granules: ";
-            for (size_t i = 0; i < granules.size(); i++) {
-                if (i > 0)
-                    msg << ", ";
-                msg << granules[i];
-            }
-            BESDEBUG(MODULE, msg.str() << endl);
-
-            for (size_t i = 0; i < granules.size(); i++) {
-                msg.str(std::string());
-                msg << prolog << "Checking:  expected: " << expected[i]
-                        << " received: " << granules[i];
-                BESDEBUG(MODULE, msg.str() << endl);
-                CPPUNIT_ASSERT(expected[i] == granules[i]);
+                CPPUNIT_ASSERT(expected[i] == leaf_name);
             }
         }
         catch (BESError &be) {
@@ -352,144 +289,13 @@ public:
         }
     }
 
-    void get_granules_month_test() {
-        string prolog = string(__func__) + "() - ";
-        //string collection_name = "C179003030-ORNL_DAAC";
-        string collection_name = "C1276812863-GES_DISC";
-
-        string expected[] = {
-            string("G1277917088-GES_DISC"),
-            string("G1277917126-GES_DISC"),
-            string("G1277917102-GES_DISC"),
-            string("G1277917125-GES_DISC"),
-            string("G1277917121-GES_DISC"),
-            string("G1277917112-GES_DISC"),
-            string("G1277917116-GES_DISC"),
-            string("G1277917161-GES_DISC"),
-            string("G1277917098-GES_DISC"),
-            string("G1277917097-GES_DISC")
-        };
-
-        unsigned long  expected_size = 10;
-        vector<string> granules;
-        try {
-            CmrApi cmr;
-            std::vector<Granule *> granules;
-            string year ="1985";
-            string month = "03";
-
-            cmr.get_granules(collection_name, year, month, "",  granules);
-            BESDEBUG(MODULE, prolog << "Checking expected size ("<< expected_size << ") vs received size (" << granules.size() << ")" << endl);
-            CPPUNIT_ASSERT(expected_size == granules.size());
-
-            stringstream msg;
-            msg << prolog << "In the year " << year << ", month " << month <<  " the collection '" << collection_name << "' contains "
-                    << granules.size() << " granules: " << endl;
-            for (size_t i = 0; i < granules.size(); i++) {
-                Granule *granule = granules[i];
-                msg << granule->getStringProperty("producer_granule_id") << endl
-                    << "    size:  " << granule->getSizeStr() << endl
-                    << "    lmt:    " << granule->getLastModifiedStr() << endl
-                    << "    access: " << granule->getDataAccessUrl() << endl;
-            }
-            BESDEBUG(MODULE, msg.str());
-
-            for (size_t i = 0; i < granules.size(); i++) {
-                Granule *granule = granules[i];
-                string pgi = granule->getStringProperty("id");
-                msg.str(std::string());
-                msg << prolog << "Checking:  expected: " << expected[i]
-                        << " received: " << pgi;
-                BESDEBUG(MODULE, msg.str() << endl);
-                CPPUNIT_ASSERT(expected[i] == pgi);
-            }
-
-            for (size_t i = 0; i < granules.size(); i++) {
-                delete granules[i];
-                granules[i] = 0;
-            }
-
-        }
-        catch (BESError &be) {
-            string msg = "Caught BESError! Message: " + be.get_message();
-            cerr << endl << msg << endl;
-            CPPUNIT_ASSERT(!"Caught BESError");
-        }
-    }
-
-    void get_granules_data_access_urls_month_test() {
-        string prolog = string(__func__) + "() - ";
-        string collection_name = "C1276812863-GES_DISC";
-
-        string expected[] = {
-                string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850301.nc4"),
-                string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850302.nc4"),
-                string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850303.nc4"),
-                string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850304.nc4"),
-                string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850305.nc4"),
-                string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850306.nc4"),
-                string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850307.nc4"),
-                string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850308.nc4"),
-                string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850309.nc4"),
-                string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850310.nc4"),
-        };
-
-        unsigned long  expected_size = 10;
-        vector<string> granules;
-        try {
-            CmrApi cmr;
-            std::vector<Granule *> granules;
-            string year ="1985";
-            string month = "03";
-
-            cmr.get_granules(collection_name, year, month, "",  granules);
-            BESDEBUG(MODULE, prolog << "Checking expected size ("<< expected_size << ") vs received size (" << granules.size() << ")" << endl);
-            CPPUNIT_ASSERT(expected_size == granules.size());
-
-            stringstream msg;
-            msg << prolog << "In the year " << year << ", month " << month <<  " the collection '" << collection_name << "' contains "
-                    << granules.size() << " granules. Data Access URLs: " << endl;
-            for (size_t i = 0; i < granules.size(); i++) {
-                Granule *granule = granules[i];
-                msg << granule->getStringProperty("producer_granule_id") << endl
-                    << "    size:   " << granule->getSizeStr() << endl
-                    << "    lmt:    " << granule->getLastModifiedStr() << endl
-                    << "    access: " << granule->getDataAccessUrl() << endl;
-            }
-            BESDEBUG(MODULE, msg.str());
-
-            for (size_t i = 0; i < granules.size(); i++) {
-                Granule *granule = granules[i];
-                string url = granule->getDataAccessUrl();
-                msg.str(std::string());
-                msg << prolog << "Checking:  expected: " << expected[i]
-                        << " received: " << url;
-                BESDEBUG(MODULE, msg.str() << endl);
-                CPPUNIT_ASSERT(expected[i] == url);
-            }
-
-            for (size_t i = 0; i < granules.size(); i++) {
-                delete granules[i];
-                granules[i] = 0;
-            }
-        }
-        catch (BESError &be) {
-            string msg = "Caught BESError! Message: " + be.get_message();
-            cerr << endl << msg << endl;
-            CPPUNIT_ASSERT(!"Caught BESError");
-        }
-
-    }
 
     CPPUNIT_TEST_SUITE( CmrCatalogTest );
 
     CPPUNIT_TEST(get_years_test);
     CPPUNIT_TEST(get_months_test);
     CPPUNIT_TEST(get_days_test);
-    CPPUNIT_TEST(get_granule_ids_day_test);
-    CPPUNIT_TEST(get_granule_ids_month_test);
-    CPPUNIT_TEST(get_granules_month_test);
-    CPPUNIT_TEST(get_granules_data_access_urls_month_test);
+    CPPUNIT_TEST(get_granules_test);
 
     CPPUNIT_TEST_SUITE_END();
 };

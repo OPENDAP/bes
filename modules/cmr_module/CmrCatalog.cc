@@ -182,7 +182,7 @@ CmrCatalog::get_node(const string &ppath) const
     }
 
     vector<string> path_elements = split(path);
-    BESDEBUG(MODULE, prolog << "path: " << path << " path_elements.size(): " << path_elements.size() << endl);
+    BESDEBUG(MODULE, prolog << "path: '" << path << "'   path_elements.size(): " << path_elements.size() << endl);
 
     CmrApi cmrApi;
     bes::CatalogNode *node;
@@ -198,14 +198,16 @@ CmrCatalog::get_node(const string &ppath) const
     }
     else {
         string collection = path_elements[0];
+        BESDEBUG(MODULE, prolog << "Checking for collection: " << collection << " d_collections.size(): " << d_collections.size() << endl);
         bool valid_collection = false;
         for(size_t i=0; i<d_collections.size() && !valid_collection ; i++){
             if(collection == d_collections[i])
                 valid_collection = true;
         }
         if(!valid_collection){
-            throw new BESNotFoundError("The CMR catalog does not contain a collection named '"+collection+"'",__FILE__,__LINE__);
+            throw BESNotFoundError("The CMR catalog does not contain a collection named '"+collection+"'",__FILE__,__LINE__);
         }
+        BESDEBUG(MODULE, prolog << "Collection " << collection << " is valid." << endl);
         if(path_elements.size() >1){
             string facet = path_elements[1];
             bool valid_facet = false;
@@ -214,7 +216,7 @@ CmrCatalog::get_node(const string &ppath) const
                     valid_facet = true;
             }
             if(!valid_facet){
-                throw new BESNotFoundError("The CMR collection '"+collection+"' does not contain a facet named '"+facet+"'",__FILE__,__LINE__);
+                throw BESNotFoundError("The CMR collection '"+collection+"' does not contain a facet named '"+facet+"'",__FILE__,__LINE__);
             }
 
             if(facet=="temporal"){
@@ -296,15 +298,17 @@ CmrCatalog::get_node(const string &ppath) const
                 }
             }
             else {
-                throw new BESNotFoundError("The CMR only supports temporal faceting.",__FILE__,__LINE__);
+                throw BESNotFoundError("The CMR only supports temporal faceting.",__FILE__,__LINE__);
             }
         }
         else {
+            BESDEBUG(MODULE, prolog << "Building facet list for collection: " << collection << endl);
             node = new CatalogNode(path);
             for(size_t i=0; i<d_facets.size() ; i++){
                 CatalogItem *collection = new CatalogItem();
                 collection->set_name(d_facets[i]);
                 collection->set_type(CatalogItem::node);
+                BESDEBUG(MODULE, prolog << "Adding facet: " << d_facets[i] << endl);
                 node->add_node(collection);
             }
         }
