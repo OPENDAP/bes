@@ -25,8 +25,8 @@
 // Please read the full copyright statement in the file COPYRIGHT_URI.
 //
 
-#ifndef I_CMRCatalog_h
-#define I_CMRCatalog_h 1
+#ifndef I_CmrCatalog_h
+#define I_CmrCatalog_h 1
 
 #include <list>
 #include <string>
@@ -47,16 +47,15 @@ namespace bes {
 namespace cmr {
 /** @brief builds catalogs from a directory structure
  */
-class CMRCatalog: public BESCatalog {
+class CmrCatalog: public BESCatalog {
 private:
-    BESCatalogUtils * d_utils;
     std::vector<std::string> d_collections;
     std::vector<std::string> d_facets;
 
 
 public:
-    CMRCatalog(const string &name);
-    virtual ~CMRCatalog();
+    CmrCatalog(const std::string &name = "CMR");
+    virtual ~CmrCatalog();
 
     /**
      * @Deprecated
@@ -87,5 +86,5 @@ public:
 };
 } // namespace cmr
 
-#endif // I_CMRCatalog_h
+#endif // I_CmrCatalog_h
 

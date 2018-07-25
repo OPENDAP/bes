@@ -34,8 +34,6 @@
 #include <map>
 #include <curl/curl.h>
 
-#include "CmrUtils.h"
-#include "ResponseNames.h"
 
 #include <BESUtil.h>
 #include <BESCatalogUtils.h>
@@ -46,11 +44,15 @@
 #include <BESSyntaxUserError.h>
 #include <BESDebug.h>
 
+#include "ResponseNames.h"
+#include "CmrUtils.h"
+
 #include <GNURegex.h>
 #include <util.h>
 
 using namespace libdap;
 using namespace cmr;
+#define MODULE "cmr"
 
 std::map<string, string> CmrUtils::MimeList;
 string CmrUtils::ProxyProtocol;
@@ -156,21 +158,21 @@ void CmrUtils::Initialize()
             authType = BESUtil::lowercase(authType);
             if (authType == "basic") {
                 CmrUtils::ProxyAuthType = CURLAUTH_BASIC;
-                BESDEBUG("gateway", "GatewayUtils::Initialize() - ProxyAuthType BASIC set." << endl);
+                BESDEBUG(MODULE, prolog << "ProxyAuthType BASIC set." << endl);
             }
             else if (authType == "digest") {
                 CmrUtils::ProxyAuthType = CURLAUTH_DIGEST;
-                BESDEBUG("gateway", "GatewayUtils::Initialize() - ProxyAuthType DIGEST set." << endl);
+                BESDEBUG(MODULE, prolog << "ProxyAuthType DIGEST set." << endl);
             }
 
             else if (authType == "ntlm") {
                 CmrUtils::ProxyAuthType = CURLAUTH_NTLM;
-                BESDEBUG("gateway", "GatewayUtils::Initialize() - ProxyAuthType NTLM set." << endl);
+                BESDEBUG(MODULE, prolog << "ProxyAuthType NTLM set." << endl);
             }
             else {
                 CmrUtils::ProxyAuthType = CURLAUTH_BASIC;
-                BESDEBUG("gateway",
-                    "GatewayUtils::Initialize() - User supplied an invalid value '"<< authType << "'  for Gateway.ProxyAuthType. Falling back to BASIC authentication scheme." << endl);
+                BESDEBUG(MODULE,
+                        prolog << "User supplied an invalid value '"<< authType << "'  for Gateway.ProxyAuthType. Falling back to BASIC authentication scheme." << endl);
             }
         }
         else {
@@ -202,6 +204,7 @@ void CmrUtils::Initialize()
 
 void CmrUtils::Get_type_from_disposition(const string &disp, string &type)
 {
+    string prolog = string("CmrUtils::") + __func__ + "() - ";
     size_t fnpos = disp.find("filename");
     if (fnpos != string::npos) {
         // Got the filename attribute, now get the
@@ -241,8 +244,8 @@ void CmrUtils::Get_type_from_disposition(const string &disp, string &type)
             for (; i != ie && !done; i++) {
                 BESCatalogUtils::handler_regex match = (*i);
                 try {
-                    BESDEBUG("gateway",
-                        "  Comparing disp filename " << filename << " against expr " << match.regex << endl);
+                    BESDEBUG(MODULE,
+                            prolog << "Comparing disp filename " << filename << " against expr " << match.regex << endl);
                     BESRegex reg_expr(match.regex.c_str());
                     if (reg_expr.match(filename.c_str(), filename.length()) == static_cast<int>(filename.length())) {
                         type = match.handler;
@@ -261,29 +264,31 @@ void CmrUtils::Get_type_from_disposition(const string &disp, string &type)
 
 void CmrUtils::Get_type_from_content_type(const string &ctype, string &type)
 {
-    BESDEBUG("gateway", "GatewayUtils::Get_type_from_content_type() - BEGIN" << endl);
+    string prolog = string("CmrUtils::") + __func__ + "() - ";
+    BESDEBUG(MODULE, "GatewayUtils::Get_type_from_content_type() - BEGIN" << endl);
     std::map<string, string>::iterator i = MimeList.begin();
     std::map<string, string>::iterator e = MimeList.end();
     bool done = false;
     for (; i != e && !done; i++) {
-        BESDEBUG("gateway",
-            "GatewayUtils::Get_type_from_content_type() - Comparing content type '" << ctype << "' against mime list element '" << (*i).second << "'"<< endl);
-        BESDEBUG("gateway",
-            "GatewayUtils::Get_type_from_content_type() - first: " << (*i).first << "  second: " << (*i).second << endl);
+        BESDEBUG(MODULE,
+                prolog << "Comparing content type '" << ctype << "' against mime list element '" << (*i).second << "'"<< endl);
+        BESDEBUG(MODULE,
+                prolog << "first: " << (*i).first << "  second: " << (*i).second << endl);
 
         if ((*i).second == ctype) {
 
-            BESDEBUG("gateway", "GatewayUtils::Get_type_from_content_type() - MATCH" << endl);
+            BESDEBUG(MODULE, prolog << "MATCH" << endl);
 
             type = (*i).first;
             done = true;
         }
     }
-    BESDEBUG("gateway", "GatewayUtils::Get_type_from_content_type() - END" << endl);
+    BESDEBUG(MODULE, "GatewayUtils::Get_type_from_content_type() - END" << endl);
 }
 
 void CmrUtils::Get_type_from_url(const string &url, string &type)
 {
+    string prolog = string("CmrUtils::") + __func__ + "() - ";
     // Just run the url through the type match from the configuration
     const BESCatalogUtils *utils = BESCatalogUtils::Utils("catalog");
     BESCatalogUtils::match_citer i = utils->match_list_begin();
@@ -292,13 +297,13 @@ void CmrUtils::Get_type_from_url(const string &url, string &type)
     for (; i != ie && !done; i++) {
         BESCatalogUtils::handler_regex match = (*i);
         try {
-            BESDEBUG("gateway",
-                "GatewayUtils::Get_type_from_url() - Comparing url " << url << " against type match expr " << match.regex << endl);
+            BESDEBUG(MODULE,
+                    prolog << "Comparing url " << url << " against type match expr " << match.regex << endl);
             BESRegex reg_expr(match.regex.c_str());
             if (reg_expr.match(url.c_str(), url.length()) == static_cast<int>(url.length())) {
                 type = match.handler;
                 done = true;
-                BESDEBUG("gateway", "GatewayUtils::Get_type_from_url() - MATCH   type: " << type << endl);
+                BESDEBUG(MODULE, prolog << "MATCH   type: " << type << endl);
             }
         }
         catch (Error &e) {

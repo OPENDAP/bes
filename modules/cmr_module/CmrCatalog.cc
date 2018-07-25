@@ -68,13 +68,14 @@ using namespace std;
 
 #define CMR_COLLECTIONS "CMR.Collections"
 #define CMR_FACETS "CMR.Facets"
+
+#define MODULE "cmr"
 namespace cmr {
 
 /**
- * @brief A catalog for POSIX file systems
+ * @brief A catalog based on NASA's CMR system
  *
- * BESCatalgDirectory is BESCatalog specialized for POSIX file systems.
- * The default catalog is an instance of this class.
+ * CMRCatalog is BESCatalog specialized for  NASA's CMR system.
  *
  * @note Access to the host's file system is made using BESCatalogUtils,
  * which is initialized using the catalog name.
@@ -82,11 +83,7 @@ namespace cmr {
  * @param name The name of the catalog.
  * @see BESCatalogUtils
  */
-CMRCatalog::CMRCatalog(const string &name) :
-    BESCatalog(name)
-{
-    d_utils = BESCatalogUtils::Utils(name);
-
+CmrCatalog::CmrCatalog(const std::string &name /* = “CMR” */) : BESCatalog(name) {
     bool found = false;
     TheBESKeys::TheKeys()->get_values(CMR_COLLECTIONS, d_collections, found);
     if(!found){
@@ -102,7 +99,7 @@ CMRCatalog::CMRCatalog(const string &name) :
     }
 }
 
-CMRCatalog::~CMRCatalog()
+CmrCatalog::~CmrCatalog()
 {
 }
 
@@ -175,8 +172,9 @@ vector<string> split(const string &s, char delim='/', bool skip_empty=true) {
  * bes.conf file
  */
 bes::CatalogNode *
-CMRCatalog::get_node(const string &ppath) const
+CmrCatalog::get_node(const string &ppath) const
 {
+    string prolog = string("CmrCatalog::") + __func__ + "() - ";
     string path(ppath);
 
     if (ppath[0] != '/'){
@@ -184,6 +182,7 @@ CMRCatalog::get_node(const string &ppath) const
     }
 
     vector<string> path_elements = split(path);
+    BESDEBUG(MODULE, prolog << "path: " << path << " path_elements.size(): " << path_elements.size() << endl);
 
     CmrApi cmrApi;
     bes::CatalogNode *node;
@@ -219,12 +218,15 @@ CMRCatalog::get_node(const string &ppath) const
             }
 
             if(facet=="temporal"){
+                BESDEBUG(MODULE, prolog << "Found Temporal Facet"<< endl);
                 node = new CatalogNode(path);
 
                 switch( path_elements.size()){
-                case 1: // The path ends at temporal facet, so we need the years.
+                case 2: // The path ends at temporal facet, so we need the years.
                 {
                     vector<string> years;
+
+                    BESDEBUG(MODULE, prolog << "Getting year nodes for collection: " << collection<< endl);
                     cmrApi.get_years(collection, years);
                     for(size_t i=0; i<years.size() ; i++){
                         CatalogItem *collection = new CatalogItem();
@@ -237,12 +239,14 @@ CMRCatalog::get_node(const string &ppath) const
                     }
                 }
                     break;
-                case 2:
+                case 3:
                 {
                     string year = path_elements[2];
                     string month("");
                     string day("");
                     vector<string> months;
+
+                    BESDEBUG(MODULE, prolog << "Getting month nodes for collection: " << collection << " year: " << year << endl);
                     cmrApi.get_months(collection, year, months);
                     for(size_t i=0; i<months.size() ; i++){
                         CatalogItem *collection = new CatalogItem();
@@ -254,12 +258,14 @@ CMRCatalog::get_node(const string &ppath) const
                     }
                 }
                     break;
-                case 3:
+                case 4:
                 {
                     string year = path_elements[2];
                     string month = path_elements[3];
                     string day("");
                     vector<string> days;
+
+                    BESDEBUG(MODULE, prolog << "Getting day nodes for collection: " << collection << " year: " << year << " month: " << month << endl);
                     cmrApi.get_days(collection, year, month, days);
                     for(size_t i=0; i<days.size() ; i++){
                         CatalogItem *collection = new CatalogItem();
@@ -271,15 +277,16 @@ CMRCatalog::get_node(const string &ppath) const
                     }
                 }
                     break;
-                case 4:
+                case 5:
                 {
                     string year = path_elements[2];
                     string month = path_elements[3];
                     string day = path_elements[4];
+                    BESDEBUG(MODULE, prolog << "Getting granule leaves for collection: " << collection << " year: " << year << " month: " << month <<  " day: " << day << endl);
                     vector<Granule *> granules;
                     cmrApi.get_granules(collection, year, month, day, granules);
                     for(size_t i=0; i<granules.size() ; i++){
-                        node->add_leaf(granules[i]->getCatalogItem(d_utils));
+                        node->add_leaf(granules[i]->getCatalogItem(get_catalog_utils()));
                     }
                 }
                     break;
@@ -307,7 +314,7 @@ CMRCatalog::get_node(const string &ppath) const
 
 #if 0
 bes::CatalogNode *
-CMRCatalog::get_node(const string &path) const
+CmrCatalog::get_node(const string &path) const
 {
 
     string rootdir = d_utils->get_root_dir();
@@ -412,14 +419,14 @@ CMRCatalog::get_node(const string &path) const
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void CMRCatalog::dump(ostream &strm) const
+void CmrCatalog::dump(ostream &strm) const
 {
     strm << BESIndent::LMarg << "CMRCatalog::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
 
     strm << BESIndent::LMarg << "catalog utilities: " << endl;
     BESIndent::Indent();
-    d_utils->dump(strm);
+    get_catalog_utils()->dump(strm);
     BESIndent::UnIndent();
     BESIndent::UnIndent();
 }

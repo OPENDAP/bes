@@ -20,6 +20,7 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+#include "test_config.h"
 
 #include <memory>
 #include "rapidjson/document.h"
@@ -42,9 +43,10 @@
 #include <BESDebug.h>
 #include <BESUtil.h>
 #include <TheBESKeys.h>
-#include "test_config.h"
+#include <CatalogNode.h>
 
 #include "RemoteHttpResource.h"
+#include "CmrCatalog.h"
 #include "CmrApi.h"
 #include "CmrError.h"
 #include "rjson_utils.h"
@@ -112,36 +114,23 @@ public:
 
     void get_years_test() {
         string prolog = string(__func__) + "() - ";
-
-        string collection_name = "C179003030-ORNL_DAAC";
         string expected[] = { string("1984"), string("1985"), string("1986"),
                 string("1987"), string("1988") };
         unsigned long  expected_size = 5;
-        vector<string> years;
+
         try {
-            CmrApi cmr;
-            cmr.get_years(collection_name, years);
-            BESDEBUG(MODULE, prolog << "Checking expected size ("<< expected_size << ") vs received size ( " << years.size() << ")" << endl);
+            cmr::CmrCatalog catalog;
 
-            CPPUNIT_ASSERT(expected_size == years.size());
+            bes::CatalogNode *node = catalog.get_node("C179003030-ORNL_DAAC/temporal");
+            unsigned lcount = node->get_leaf_count();
+            BESDEBUG(MODULE, prolog << "Checking expected leaves (0) vs received (" << lcount << ")" << endl);
+            CPPUNIT_ASSERT( lcount==0 );
 
-            stringstream msg;
-            msg << prolog << "The collection '" << collection_name << "' spans "
-                    << years.size() << " years: ";
-            for (size_t i = 0; i < years.size(); i++) {
-                if (i > 0)
-                    msg << ", ";
-                msg << years[i];
-            }
-            BESDEBUG(MODULE, msg.str() << endl);
+            unsigned ncount = node->get_node_count();
+            BESDEBUG(MODULE, prolog << "Checking expected nodes ("<< expected_size << ") vs received (" << ncount << ")" << endl);
+            CPPUNIT_ASSERT( ncount==expected_size );
 
-            for (size_t i = 0; i < years.size(); i++) {
-                msg.str(std::string());
-                msg << prolog << "Checking:  expected: " << expected[i]
-                        << " received: " << years[i];
-                BESDEBUG(MODULE, msg.str() << endl);
-                CPPUNIT_ASSERT(expected[i] == years[i]);
-            }
+
 
         }
         catch (BESError &be) {
@@ -149,7 +138,6 @@ public:
             cerr << endl << msg << endl;
             CPPUNIT_ASSERT(!"Caught BESError");
         }
-
     }
 
     void get_months_test() {
