@@ -44,6 +44,7 @@ namespace bes {
     class CatalogNode;
 }
 
+
 namespace cmr {
 /** @brief builds catalogs from a directory structure
  */

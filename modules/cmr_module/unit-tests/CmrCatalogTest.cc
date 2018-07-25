@@ -47,12 +47,12 @@
 #include <CatalogNode.h>
 
 #include "RemoteHttpResource.h"
-#include "CmrCatalog.h"
+#include "CmrNames.h"
 #include "CmrApi.h"
+#include "CmrCatalog.h"
 #include "CmrError.h"
 #include "rjson_utils.h"
 
-#define MODULE "cmr"
 
 using namespace std;
 using namespace rapidjson;

@@ -33,13 +33,13 @@
 #include "rjson_utils.h"
 #include "BESDebug.h"
 
+#include "CmrNames.h"
 #include "CmrError.h"
 #include "Granule.h"
 
 
 using namespace std;
 
-#define MODULE "cmr"
 
 namespace cmr {
 

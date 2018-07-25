@@ -44,7 +44,7 @@
 #include <BESSyntaxUserError.h>
 #include <BESDebug.h>
 
-#include "ResponseNames.h"
+#include "CmrNames.h"
 #include "CmrUtils.h"
 
 #include <GNURegex.h>
@@ -52,7 +52,6 @@
 
 using namespace libdap;
 using namespace cmr;
-#define MODULE "cmr"
 
 std::map<string, string> CmrUtils::MimeList;
 string CmrUtils::ProxyProtocol;
@@ -74,7 +73,7 @@ void CmrUtils::Initialize()
 
     // MimeTypes - translate from a mime type to a module name
     bool found = false;
-    std::string key = Cmr_MIMELIST;
+    std::string key = CMR_MIMELIST;
     std::vector<string> vals;
     TheBESKeys::TheKeys()->get_values(key, vals, found);
     if (found && vals.size()) {
@@ -83,7 +82,7 @@ void CmrUtils::Initialize()
         for (; i != e; i++) {
             size_t colon = (*i).find(":");
             if (colon == string::npos) {
-                string err = (string) "Malformed " + Cmr_MIMELIST + " " + (*i)
+                string err = (string) "Malformed " + CMR_MIMELIST + " " + (*i)
                     + " specified in the gateway configuration";
                 throw BESSyntaxUserError(err, __FILE__, __LINE__);
             }
@@ -94,13 +93,13 @@ void CmrUtils::Initialize()
     }
 
     found = false;
-    key = Cmr_PROXYHOST;
+    key = CMR_PROXYHOST;
     TheBESKeys::TheKeys()->get_value(key, CmrUtils::ProxyHost, found);
     if (found && !CmrUtils::ProxyHost.empty()) {
         // if the proxy host is set, then check to see if the port is
         // set. Does not need to be.
         found = false;
-        key = Cmr_PROXYPORT;
+        key = CMR_PROXYPORT;
         string port;
         TheBESKeys::TheKeys()->get_value(key, port, found);
         if (found && !port.empty()) {
@@ -115,7 +114,7 @@ void CmrUtils::Initialize()
         // find the protocol to use for the proxy server. If none set,
         // default to http
         found = false;
-        key = Cmr_PROXYPROTOCOL;
+        key = CMR_PROXYPROTOCOL;
         TheBESKeys::TheKeys()->get_value(key, CmrUtils::ProxyProtocol, found);
         if (!found || CmrUtils::ProxyProtocol.empty()) {
             CmrUtils::ProxyProtocol = "http";
@@ -124,7 +123,7 @@ void CmrUtils::Initialize()
         // find the user to use for authenticating with the proxy server. If none set,
         // default to ""
         found = false;
-        key = Cmr_PROXYUSER;
+        key = CMR_PROXYUSER;
         TheBESKeys::TheKeys()->get_value(key, CmrUtils::ProxyUser, found);
         if (!found) {
             CmrUtils::ProxyUser = "";
@@ -133,7 +132,7 @@ void CmrUtils::Initialize()
         // find the password to use for authenticating with the proxy server. If none set,
         // default to ""
         found = false;
-        key = Cmr_PROXYPASSWORD;
+        key = CMR_PROXYPASSWORD;
         TheBESKeys::TheKeys()->get_value(key, CmrUtils::ProxyPassword, found);
         if (!found) {
             CmrUtils::ProxyPassword = "";
@@ -142,7 +141,7 @@ void CmrUtils::Initialize()
         // find the user:password string to use for authenticating with the proxy server. If none set,
         // default to ""
         found = false;
-        key = Cmr_PROXYUSERPW;
+        key = CMR_PROXYUSERPW;
         TheBESKeys::TheKeys()->get_value(key, CmrUtils::ProxyUserPW, found);
         if (!found) {
             CmrUtils::ProxyUserPW = "";
@@ -151,7 +150,7 @@ void CmrUtils::Initialize()
         // find the authentication mechanism to use with the proxy server. If none set,
         // default to BASIC authentication.
         found = false;
-        key = Cmr_PROXYAUTHTYPE;
+        key = CMR_PROXYAUTHTYPE;
         string authType;
         TheBESKeys::TheKeys()->get_value(key, authType, found);
         if (found) {
@@ -181,7 +180,7 @@ void CmrUtils::Initialize()
     }
 
     found = false;
-    key = Cmr_USE_INTERNAL_CACHE;
+    key = CMR_USE_INTERNAL_CACHE;
     string use_cache;
     TheBESKeys::TheKeys()->get_value(key, use_cache, found);
     if (found) {

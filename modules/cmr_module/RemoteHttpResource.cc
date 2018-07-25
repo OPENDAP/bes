@@ -37,6 +37,7 @@
 #include "BESDebug.h"
 #include "BESUtil.h"
 
+#include "CmrNames.h"
 #include "CmrCache.h"
 #include "CmrUtils.h"
 #include "curl_utils.h"
@@ -45,7 +46,6 @@
 using namespace std;
 using namespace cmr;
 
-#define MODULE  "cmr"
 
 /**
  * Builds a RemoteHttpResource object associated with the passed \c url parameter.
@@ -257,8 +257,7 @@ void RemoteHttpResource::retrieveResource()
  *
  * @param fd An open file descriptor the is associated with the target file.
  */
-void RemoteHttpResource::writeResourceToFile(int fd)
-{
+void RemoteHttpResource::writeResourceToFile(int fd) {
     string prolog = string("RemoteHttpResource::") + __func__ + "() - ";
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
@@ -308,9 +307,8 @@ void RemoteHttpResource::ingest_http_headers_and_type(){
         string key = BESUtil::lowercase((*d_response_headers)[i].substr(0,colon_index));
         string value = (*d_response_headers)[i].substr(colon_index + colon_space.length());
         BESDEBUG(MODULE, prolog << "key: " << key << " value: " << value << endl);
-        d_http_response_headers->insert(std::pair<string,string>(key,value));
+        (*d_http_response_headers)[key] = value;
     }
-
     string type;
 
     // Try and figure out the file type first from the
@@ -328,7 +326,6 @@ void RemoteHttpResource::ingest_http_headers_and_type(){
     if(it != d_http_response_headers->end()){
         ctype_hdr =  it->second;
     }
-
 
     if (!cdisp_hdr.empty()) {
         // Content disposition exists, grab the filename
@@ -358,17 +355,11 @@ void RemoteHttpResource::ingest_http_headers_and_type(){
         string err = prolog + "Unable to determine the type of data"
             + " returned from '" + d_remoteResourceUrl + "'  Setting type to 'unknown'";
         BESDEBUG(MODULE, err << endl);
-
         type = "unknown";
         //throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
-
-    // @TODO CACHE THE DATA TYPE OR THE HTTP HEADERS SO WHEN WE ARE RETRIEVING THE CACHED OBJECT WE CAN GET THE CORRECT TYPE
-
     d_type = type;
-
     BESDEBUG(MODULE, prolog << "END (dataset type: "<< d_type << ")" << endl);
-
 }
 
 /**

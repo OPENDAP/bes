@@ -44,6 +44,7 @@
 #include "BESUtil.h"
 #include "TheBESKeys.h"
 
+#include "CmrNames.h"
 #include "CmrCache.h"
 
 #ifdef HAVE_ATEXIT
@@ -52,8 +53,6 @@
 #define AT_EXIT(x)
 #endif
 
-
-#define MODULE "cmr"
 
 using namespace cmr;
 

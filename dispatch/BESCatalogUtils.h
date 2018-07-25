@@ -44,6 +44,7 @@
 
 #include "BESObj.h"
 #include "BESUtil.h"
+#include "CatalogNode.h"
 
 class BESInfo;
 class BESCatalogEntry;
@@ -116,6 +117,7 @@ public:
         BESCatalogEntry *entry, bool dirs_only);
 
     static void display_entry(BESCatalogEntry *entry, BESInfo *info);
+    static void display_node(bes::CatalogNode *entry);
 
     static void bes_add_stat_info(BESCatalogEntry *entry, const std::string &fullnode);
 

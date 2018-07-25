@@ -61,6 +61,7 @@
 #include "BESDebug.h"
 
 #include "CmrApi.h"
+#include "CmrNames.h"
 #include "CmrCatalog.h"
 
 using namespace bes;
@@ -69,7 +70,6 @@ using namespace std;
 #define CMR_COLLECTIONS "CMR.Collections"
 #define CMR_FACETS "CMR.Facets"
 
-#define MODULE "cmr"
 namespace cmr {
 
 /**

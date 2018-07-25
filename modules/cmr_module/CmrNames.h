@@ -1,12 +1,12 @@
-// GatewayResponseNames.h
+// CmrNames.h
 
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of gateway_module, A C++ module that can be loaded in to
 // the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
 
-// Copyright (c) 2002,2003 OPeNDAP, Inc.
-// Author: Patrick West <pwest@ucar.edu>
+// Copyright (c) 2018 OPeNDAP, Inc.
+// Author: Nathan David Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -24,22 +24,26 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-#ifndef E_CmrResponseNames_H
-#define E_CmrResponseNames_H 1
+#ifndef E_CmrNames_H
+#define E_CmrNames_H 1
 
-#define Cmr_NAME "cmr"
+#define CMR_NAME "cmr"
+
+#define CMR_CATALOG_NAME "cmr_catalog"
 
 // These are the names of the be keys used to configure the handler.
 
-#define Cmr_WHITELIST "Cmr.Whitelist"
-#define Cmr_MIMELIST "Cmr.MimeTypes"
-#define Cmr_PROXYPROTOCOL "Cmr.ProxyProtocol"
-#define Cmr_PROXYHOST "Cmr.ProxyHost"
-#define Cmr_PROXYPORT "Cmr.ProxyPort"
-#define Cmr_PROXYAUTHTYPE "Cmr.ProxyAuthType"
-#define Cmr_PROXYUSER "Cmr.ProxyUser"
-#define Cmr_PROXYPASSWORD "Cmr.ProxyPassword"
-#define Cmr_PROXYUSERPW "Cmr.ProxyUserPW"
-#define Cmr_USE_INTERNAL_CACHE "Cmr.UseInternalCache"
+#define CMR_WHITELIST "Cmr.Whitelist"
+#define CMR_MIMELIST "Cmr.MimeTypes"
+#define CMR_PROXYPROTOCOL "Cmr.ProxyProtocol"
+#define CMR_PROXYHOST "Cmr.ProxyHost"
+#define CMR_PROXYPORT "Cmr.ProxyPort"
+#define CMR_PROXYAUTHTYPE "Cmr.ProxyAuthType"
+#define CMR_PROXYUSER "Cmr.ProxyUser"
+#define CMR_PROXYPASSWORD "Cmr.ProxyPassword"
+#define CMR_PROXYUSERPW "Cmr.ProxyUserPW"
+#define CMR_USE_INTERNAL_CACHE "Cmr.UseInternalCache"
 
-#endif // E_CmrResponseNames_H
+#define MODULE CMR_NAME
+
+#endif // E_CmrNames_H

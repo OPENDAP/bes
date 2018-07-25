@@ -46,10 +46,9 @@
 
 #include "RemoteHttpResource.h"
 #include "CmrApi.h"
+#include "CmrNames.h"
 #include "CmrError.h"
 #include "rjson_utils.h"
-
-#define MODULE "cmr"
 
 using namespace std;
 using namespace rapidjson;
@@ -567,18 +566,13 @@ public:
         BESDEBUG(MODULE, msg.str());
         return granule_count;
     }
+
     void granule_count_test() {
         string prolog = string(__func__) + "() - ";
         stringstream msg;
-
-        string year, month, day;
-
         CPPUNIT_ASSERT(gct_helper("C1276812863-GES_DISC", "1985", "03", "") ==  31);
         CPPUNIT_ASSERT(gct_helper("C1276812863-GES_DISC", "1985",   "", "") == 365);
         CPPUNIT_ASSERT(gct_helper("C1276812822-GES_DISC", "2000",   "", "") == 366); // 2000 is a leap year
-
-
-
     }
 
 

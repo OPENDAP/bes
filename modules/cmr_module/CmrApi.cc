@@ -49,12 +49,12 @@
 #include <TheBESKeys.h>
 
 #include "CmrApi.h"
+#include "CmrNames.h"
 #include "RemoteHttpResource.h"
 #include "CmrError.h"
 #include "rjson_utils.h"
 
 
-#define MODULE "cmr"
 
 using namespace std;
 
