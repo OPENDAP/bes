@@ -138,16 +138,12 @@ void BESContainerStorageVolatile::add_container(const string &sym_name, const st
         string s = (string) "A container with the name " + sym_name + " already exists";
         throw BESInternalError(s, __FILE__, __LINE__);
     }
-#if 1
-    // NB: I added the #if 1 ... endif to test _not_ making this check while
-    // working with the jgofs code. It was just a hack, but I needed to
-    // toggle it several times. jhrg 3/6/13
 
     // make sure that the path to the container exists. If follow_sym_links
     // is false and there is a symbolic link in the path then an error will
     // be thrown. If the path does not exist, an error will be thrown.
     BESUtil::check_path(real_name, _root_dir, _follow_sym_links);
-#endif
+
     // add the root directory to the real_name passed
     string fully_qualified_real_name = BESUtil::assemblePath(_root_dir, real_name, false);
 

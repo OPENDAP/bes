@@ -75,7 +75,7 @@ protected:
     virtual void show_container(const std::string &sym_name, const std::string &real_name, const std::string &type, BESInfo &info);
 
 public:
-    /** @brief create an instance of BESContainerStorage with the give
+    /** @brief create an instance of BESContainerStorage with the given
      * name.
      *
      * @param name name of this persistence store
