@@ -59,7 +59,9 @@ dnl
 dnl jhrg 6/3/16
     
 m4_define([REMOVE_DATE_TIME], [dnl
-    sed -i -e 's@[[0-9]]\{4\}-[[0-9]]\{2\}-[[0-9]]\{2\}T[[0-9]]\{2\}:[[0-9]]\{2\}:[[0-9]]\{2\}UTC@removed date-time@g' $1
+    sed -i -e 's@[[0-9]]\{4\}-[[0-9]]\{2\}-[[0-9]]\{2\}T[[0-9]]\{2\}:[[0-9]]\{2\}:[[0-9]]\{2\}@removed date-time@g' $1
+    sed -i -e 's@UTC@@g' $1
+    sed -i -e 's@GMT@@g' $1
     dnl ' Added the preceding quote to quiet the Eclipse syntax checker. jhrg 3.2.18
 ])
 
