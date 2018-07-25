@@ -77,11 +77,8 @@ private:
     /// The HTTP response headers returned by the request for the remote resource.
     std::vector<std::string> *d_response_headers; // Response headers
 
-    /**
-     * Determines the type of the remote resource. Looks at HTTP headers, and failing that compares the
-     * basename in the resource URL to the data handlers TypeMatch.
-     */
-    void setType(const std::vector<std::string> *resp_hdrs);
+    /// The HTTP response headers returned by the request for the remote resource.
+    std::map<std::string,std::string> *d_http_response_headers; // Response headers
 
     /**
      * Makes the curl call to write the resource to a file, determines DAP type of the content, and rewinds
@@ -89,10 +86,16 @@ private:
      */
     void writeResourceToFile(int fd);
 
+    /**
+     * Ingests the HTTP headers into a queryable map. Once completed, determines the type of the remote resource.
+     * Looks at HTTP headers, and failing that compares the basename in the resource URL to the data handlers TypeMatch.
+     */
+    void ingest_http_headers_and_type();
+
 protected:
     RemoteHttpResource() :
         d_fd(0), d_initialized(false), d_curl(0), d_resourceCacheFileName(""), d_request_headers(0), d_response_headers(
-            0)
+            0), d_http_response_headers(0)
     {
     }
 
@@ -123,16 +126,8 @@ public:
         return d_resourceCacheFileName;
     }
 
-    /**
-     * Returns a std::vector of HTTP headers received along with the response from the request for the remote resource..
-     */
-    std::vector<std::string> *getResponseHeaders()
-    {
-        if (!d_initialized)
-            throw libdap::Error(
-                "RemoteHttpResource::getCacheFileName() - STATE ERROR: Remote Resource Has Not Been Retrieved.");
-        return d_response_headers;
-    }
+    std::string get_http_response_header(const std::string header_name);
+
 
 };
 

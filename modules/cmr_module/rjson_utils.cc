@@ -58,13 +58,10 @@ rjson_utils::getJsonDoc(const string &url, rapidjson::Document &doc){
     BESDEBUG(MODULE,prolog << "Trying url: " << url << endl);
     cmr::RemoteHttpResource rhr(url);
     rhr.retrieveResource();
-    vector<string> *headers = rhr.getResponseHeaders();
     if(BESDebug::IsSet(MODULE)){
+        string cmr_hits = rhr.get_http_response_header("cmr-hits");
         stringstream msg(prolog);
-        msg << "HTTP Headers:" << endl;
-        for(unsigned long i=0; i<headers->size() ;i++){
-            msg << (*headers)[i] << endl;
-        }
+        msg << "CMR-Hits: "<< cmr_hits << endl;
         *(BESDebug::GetStrm()) << msg.str();
     }
     FILE* fp = fopen(rhr.getCacheFileName().c_str(), "r"); // non-Windows use "r"

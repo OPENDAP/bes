@@ -59,6 +59,7 @@ RemoteHttpResource::RemoteHttpResource(const string &url) {
     d_resourceCacheFileName.clear();
     d_response_headers = new vector<string>();
     d_request_headers = new vector<string>();
+    d_http_response_headers = new map<string,string>();
 
     if (url.empty()) {
         string err = "RemoteHttpResource(): Remote resource URL is empty";
@@ -171,10 +172,12 @@ void RemoteHttpResource::retrieveResource()
             // I think in this if() is where we need to load the headers from the cache if we have them.
             string hdr_filename = cache->get_cache_file_name(d_remoteResourceUrl + ".hdrs");
             std::ifstream hdr_in(hdr_filename);
-            string hdr;
-            while(hdr_in >> hdr){
-                (*d_response_headers).push_back(hdr);
+            for (std::string line; std::getline(hdr_in, line); ){
+                (*d_response_headers).push_back(line);
             }
+            ingest_http_headers_and_type();
+            // #########################################################################################################
+
             d_initialized = true;
             return;
         }
@@ -256,17 +259,18 @@ void RemoteHttpResource::retrieveResource()
  */
 void RemoteHttpResource::writeResourceToFile(int fd)
 {
-    BESDEBUG(MODULE, "RemoteHttpResource::writeResourceToFile() - BEGIN" << endl);
+    string prolog = string("RemoteHttpResource::") + __func__ + "() - ";
+    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
     int status = -1;
     try {
         BESDEBUG(MODULE,
             "RemoteHttpResource::writeResourceToFile() - Saving resource " << d_remoteResourceUrl << " to cache file " << d_resourceCacheFileName << endl);
-        status = read_url(d_curl, d_remoteResourceUrl, fd, d_response_headers, d_request_headers,
-            d_error_buffer); // Throws Error.
+
+        status = read_url(d_curl, d_remoteResourceUrl, fd, d_response_headers, d_request_headers, d_error_buffer); // Throws Error.
+
         if (status >= 400) {
-            BESDEBUG(MODULE,
-                "RemoteHttpResource::writeResourceToFile() - HTTP returned an error status: " << status << endl);
+            BESDEBUG(MODULE, prolog << "HTTP returned an error status: " << status << endl);
             // delete resp_hdrs; resp_hdrs = 0;
             string msg = "Error while reading the URL: '";
             msg += d_remoteResourceUrl;
@@ -274,8 +278,7 @@ void RemoteHttpResource::writeResourceToFile(int fd)
             msg += http_status_to_string(status) + "' \n";
             throw libdap::Error(msg);
         }
-        BESDEBUG(MODULE,
-            "RemoteHttpResource::writeResourceToFile() - Resource " << d_remoteResourceUrl << " saved to cache file " << d_resourceCacheFileName << endl);
+        BESDEBUG(MODULE, prolog << "Resource " << d_remoteResourceUrl << " saved to cache file " << d_resourceCacheFileName << endl);
 
         // rewind the file
         // FIXME I think the idea here is that we have the file open and we should just keep
@@ -285,90 +288,76 @@ void RemoteHttpResource::writeResourceToFile(int fd)
         if (-1 == status)
             throw BESError("Could not seek within the response.", BES_NOT_FOUND_ERROR, __FILE__, __LINE__);
 
-        BESDEBUG(MODULE, "RemoteHttpResource::writeResourceToFile() - Reset file descriptor." << endl);
-
-        // @TODO CACHE THE DATA TYPE OR THE HTTP HEADERS SO WHEN WE ARE RETRIEVING THE CACHED OBJECT WE CAN GET THE CORRECT TYPE
-        setType(d_response_headers);
+        BESDEBUG(MODULE, prolog << "Reset file descriptor." << endl);
+        ingest_http_headers_and_type();
     }
     catch (libdap::Error &e) {
         throw;
     }
-    BESDEBUG(MODULE, "RemoteHttpResource::writeResourceToFile() - END" << endl);
+    BESDEBUG(MODULE, prolog << "END" << endl);
 }
 
-void RemoteHttpResource::setType(const vector<string> *resp_hdrs)
-{
 
-    BESDEBUG(MODULE, "RemoteHttpResource::setType() - BEGIN" << endl);
+void RemoteHttpResource::ingest_http_headers_and_type(){
+    const string prolog = string("RemoteHttpResource::") + __func__ + "() - ";
+    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
-    string type = "";
+    const string colon_space = ": ";
+    for(size_t i=0; i<this->d_response_headers->size() ;i++){
+        size_t colon_index = (*d_response_headers)[i].find(colon_space);
+        string key = BESUtil::lowercase((*d_response_headers)[i].substr(0,colon_index));
+        string value = (*d_response_headers)[i].substr(colon_index + colon_space.length());
+        BESDEBUG(MODULE, prolog << "key: " << key << " value: " << value << endl);
+        d_http_response_headers->insert(std::pair<string,string>(key,value));
+    }
+
+    string type;
 
     // Try and figure out the file type first from the
     // Content-Disposition in the http header response.
-    string disp;
-    string ctype;
+    string cdisp_hdr;
+    string ctype_hdr;
+    std::map<string,string>::iterator it;
 
-    if (resp_hdrs) {
-        vector<string>::const_iterator i = resp_hdrs->begin();
-        vector<string>::const_iterator e = resp_hdrs->end();
-        for (; i != e; i++) {
-            string hdr_line = (*i);
-
-            BESDEBUG(MODULE, "RemoteHttpResource::setType() - Evaluating header: " << hdr_line << endl);
-
-            hdr_line = BESUtil::lowercase(hdr_line);
-
-            string colon_space = ": ";
-            int index = hdr_line.find(colon_space);
-            string hdr_name = hdr_line.substr(0, index);
-            string hdr_value = hdr_line.substr(index + colon_space.length());
-
-            BESDEBUG(MODULE,
-                "RemoteHttpResource::setType() - hdr_name: '" << hdr_name << "'   hdr_value: '" <<hdr_value << "' "<< endl);
-
-            if (hdr_name.find("content-disposition") != string::npos) {
-                // Content disposition exists
-                BESDEBUG(MODULE, "RemoteHttpResource::setType() - Located content-disposition header." << endl);
-                disp = hdr_value;
-            }
-            if (hdr_name.find("content-type") != string::npos) {
-                BESDEBUG(MODULE, "RemoteHttpResource::setType() - Located content-type header." << endl);
-                ctype = hdr_value;
-            }
-        }
+    it = d_http_response_headers->find("content-disposition");
+    if(it != d_http_response_headers->end()){
+        cdisp_hdr =  it->second;
     }
 
-    if (!disp.empty()) {
+    it = d_http_response_headers->find("content-type");
+    if(it != d_http_response_headers->end()){
+        ctype_hdr =  it->second;
+    }
+
+
+    if (!cdisp_hdr.empty()) {
         // Content disposition exists, grab the filename
         // attribute
-        CmrUtils::Get_type_from_disposition(disp, type);
-        BESDEBUG(MODULE,
-            "RemoteHttpResource::setType() - Evaluated content-disposition '" << disp << "' matched type: \"" << type << "\"" << endl);
+        CmrUtils::Get_type_from_disposition(cdisp_hdr, type);
+        BESDEBUG(MODULE,prolog << "Evaluated content-disposition '" << cdisp_hdr << "' matched type: \"" << type << "\"" << endl);
     }
 
     // still haven't figured out the type. Check the content-type
     // next, translate to the BES MODULE name. It's also possible
     // that even though Content-disposition was available, we could
     // not determine the type of the file.
-    if (type.empty() && !ctype.empty()) {
-        CmrUtils::Get_type_from_content_type(ctype, type);
-        BESDEBUG(MODULE,
-            "RemoteHttpResource::setType() - Evaluated content-type '" << ctype << "' matched type \"" << type << "\"" << endl);
+    if (type.empty() && !ctype_hdr.empty()) {
+        CmrUtils::Get_type_from_content_type(ctype_hdr, type);
+        BESDEBUG(MODULE,prolog << "Evaluated content-type '" << ctype_hdr << "' matched type \"" << type << "\"" << endl);
     }
 
     // still haven't figured out the type. Now check the actual URL
     // and see if we can't match the URL to a MODULE name
     if (type.empty()) {
         CmrUtils::Get_type_from_url(d_remoteResourceUrl, type);
-        BESDEBUG(MODULE,
-            "RemoteHttpResource::setType() - Evaluated url '" << d_remoteResourceUrl << "' matched type: \"" << type << "\"" << endl);
+        BESDEBUG(MODULE,prolog << "Evaluated url '" << d_remoteResourceUrl << "' matched type: \"" << type << "\"" << endl);
     }
 
     // still couldn't figure it out, punt
     if (type.empty()) {
-        string err = (string) "RemoteHttpResource::setType() - Unable to determine the type of data"
+        string err = prolog + "Unable to determine the type of data"
             + " returned from '" + d_remoteResourceUrl + "'  Setting type to 'unknown'";
-        BESDEBUG(MODULE, err);
+        BESDEBUG(MODULE, err << endl);
 
         type = "unknown";
         //throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
@@ -378,6 +367,22 @@ void RemoteHttpResource::setType(const vector<string> *resp_hdrs)
 
     d_type = type;
 
-    BESDEBUG(MODULE, "RemoteHttpResource::setType() - END" << endl);
+    BESDEBUG(MODULE, prolog << "END (dataset type: "<< d_type << ")" << endl);
 
 }
+
+/**
+ * Returns the value of the requested HTTP response header.
+ * Evaluation is case-insensitive.
+ * If the requested header_name is not found the empty string is returned.
+ */
+std::string
+RemoteHttpResource::get_http_response_header(const std::string header_name){
+    string value("");
+    std::map<string,string>::iterator it;
+    it = d_http_response_headers->find( BESUtil::lowercase(header_name));
+    if(it != d_http_response_headers->end())
+        value = it->second;
+    return value;
+}
+
