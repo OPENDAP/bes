@@ -59,7 +59,7 @@ dnl
 dnl jhrg 6/3/16
     
 m4_define([REMOVE_DATE_TIME], [dnl
-    sed -e 's@[[0-9]]\{4\}-[[0-9]]\{2\}-[[0-9]]\{2\}T[[0-9]]\{2\}:[[0-9]]\{2\}:[[0-9]]\{2\}UTC@removed date-time@g' -i "" $1
+    sed -i -e 's@[[0-9]]\{4\}-[[0-9]]\{2\}-[[0-9]]\{2\}T[[0-9]]\{2\}:[[0-9]]\{2\}:[[0-9]]\{2\}UTC@removed date-time@g' $1
     dnl ' Added the preceding quote to quiet the Eclipse syntax checker. jhrg 3.2.18
 ])
 
@@ -80,8 +80,6 @@ m4_define([_AT_BESCMD_NO_DATE_TEST], [dnl
         [
         AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [0], [stdout])
         REMOVE_DATE_TIME([stdout])
-        echo "stdout after sed:"
-        echo stdout
         AT_CHECK([diff -b -B $baseline stdout], [0], [ignore])
         AT_XFAIL_IF([test "$3" = "xfail"])
         ])
@@ -120,7 +118,8 @@ m4_define([AT_BESCMD_ERROR_RESPONSE_TEST],
 ])
 
 m4_define([REMOVE_FILE_AND_LINE], [dnl
-    sed -e 's/<Line>.*$//g' -e 's/<File>.*$//g' -i "" $1  
+    sed -i -e 's/<Line>.*$//g' $1
+    sed -i -e 's/<File>.*$//g' $1
     dnl ' Added the preceding quote to quiet the Eclipse syntax checker.
 ])
 

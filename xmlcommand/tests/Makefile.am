@@ -25,7 +25,9 @@ libtest_module_la_LDFLAGS = -avoid-version -module -shared -export-dynamic
 
 noinst_DATA = bes.conf $(builddir)/data
 
-TESTS = $(TESTSUITE)
+# see below - use check-local lets each test in the script print out info
+# when make check is run.
+# TESTS = $(TESTSUITE)
 
 CLEANFILES = bes.conf
 
@@ -58,6 +60,10 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 AUTOM4TE = autom4te
 
 TESTSUITE = testsuite
+
+# Force the tests here to run 
+check-local: $(TESTSUITE) atconfig atlocal 
+	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
