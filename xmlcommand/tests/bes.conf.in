@@ -18,6 +18,7 @@ BES.module.test_module=@abs_top_builddir@/xmlcommand/tests/.libs/libtest_module.
 
 BES.Catalog.Default=default
 
+# This is 'generated' (i.e., copied) and thus in the build tree, hence ...builddir
 BES.Catalog.default.RootDirectory=@abs_top_builddir@/xmlcommand/tests/data
 BES.Catalog.default.FollowSymLinks=No
 BES.Catalog.default.TypeMatch=dapreader:.*\.(das|dds|dods|data|dmr|dap)$;
@@ -25,7 +26,8 @@ BES.Catalog.default.TypeMatch=dapreader:.*\.(das|dds|dods|data|dmr|dap)$;
 BES.Catalog.default.Include=;
 BES.Catalog.default.Exclude=^\..*;
 
-BES.Catalog.second.RootDirectory=@abs_top_builddir@/xmlcommand/tests/second_catalog
+# This is part of the source tree, so we use ...srcdir
+BES.Catalog.second.RootDirectory=@abs_top_srcdir@/xmlcommand/tests/second_catalog
 BES.Catalog.second.FollowSymLinks=No
 BES.Catalog.second.TypeMatch=dapreader:.*\.(data|dap)$;
 

@@ -32,12 +32,15 @@ CLEANFILES = bes.conf
 # NB: Make sure to distribute both the source and generated files
 # for the test
 EXTRA_DIST = $(TESTSUITE) $(TESTSUITE).at atlocal.in \
-bes.conf.in handler_tests_macros.m4 bescmd $(srcdir)/package.m4
+bes.conf.in handler_tests_macros.m4 $(srcdir)/package.m4 \
+bescmd second_catalog
 
 DISTCLEANFILES = atconfig
 
 BES_CONF_IN = bes.conf.in
 
+# The data are copied because the directory must be writable for the 
+# tests to work. 
 $(builddir)/data:
 	cp -r $(top_srcdir)/dapreader/data $(builddir)/data
 	chmod -R a+w $(builddir)/data

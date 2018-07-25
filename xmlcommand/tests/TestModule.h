@@ -30,6 +30,10 @@
 
 /**
  * @brief Add a new, non-default, catalog to the BES.
+ *
+ * This module is used soley for testing. It adds a second
+ * catalog, using a name set in the .cc implmentation file
+ * that must match the value used in the bes.conf file.
  */
 class TestModule: public BESAbstractModule {
 public:

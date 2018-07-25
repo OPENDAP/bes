@@ -25,38 +25,29 @@
 #include <string>
 #include <iostream>
 
-#include "TestModule.h"
-// #include "DapRequestHandler.h"
-
-//#include <BESRequestHandlerList.h>
-#include <BESDebug.h>
-
-#if 0
-#include <BESDapService.h>
-#include <BESResponseNames.h>
-#endif
-
-#include <BESContainerStorageList.h>
-#include <BESContainerStorageCatalog.h>
-#include <BESCatalogDirectory.h>
-#include <BESCatalogList.h>
+#include "BESContainerStorageList.h"
+#include "BESContainerStorageCatalog.h"
+#include "BESCatalogDirectory.h"
+#include "BESCatalogList.h"
 
 #include "BESInternalError.h"
+#include "BESDebug.h"
 
-// #define DAP_CATALOG "catalog"
+#include "TestModule.h"
 
 const string &catalog_name = "second";
 
+/**
+ * @brief Add a second, non-default, catalog.
+ *
+ * All this module needs is to load a catalog, it does not do anything else.
+ *
+ * @param modname The name of the module, set by the value used in the
+ * bes.conf file.
+ */
 void TestModule::initialize(const string &modname)
 {
     BESDEBUG(modname, "Initializing Non-default Catalog Test Module " << modname << endl);
-
-#if 0
-    BESRequestHandlerList::TheList()->add_handler(modname, new DapRequestHandler(modname));
-
-    BESDapService::handle_dap_service(modname);
-#endif
-
 
     if (!BESCatalogList::TheCatalogList()->ref_catalog(catalog_name)) {
         BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory(catalog_name));
@@ -72,23 +63,15 @@ void TestModule::initialize(const string &modname)
     BESDEBUG(modname, "Done Initializing Test Module " << modname << endl);
 }
 
+/**
+ * @brief Remove/delete the catalog and its persistance.
+ * @param modname
+ */
 void TestModule::terminate(const string &modname)
 {
     BESDEBUG(modname, "Cleaning Test Module " << modname << endl);
 
-#if 0
-    BESRequestHandler *rh = 0;
-
-    rh = BESRequestHandlerList::TheList()->remove_handler(modname);
-    if (rh) delete rh;
-#endif
-
-#if 0
-    delete BESRequestHandlerList::TheList()->remove_handler(modname);
-#endif
-
     BESContainerStorageList::TheList()->deref_persistence(catalog_name);
-
     BESCatalogList::TheCatalogList()->deref_catalog(catalog_name);
 
     BESDEBUG(modname, "Done Cleaning TEst Module " << modname << endl);
