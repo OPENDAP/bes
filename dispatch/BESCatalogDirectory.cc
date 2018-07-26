@@ -315,6 +315,57 @@ static string get_time(time_t the_time, bool use_local_time = false)
  * @throw BESForbiddenError If the \arg path is explicitly excluded by the
  * bes.conf file
  */
+
+
+void BESCatalogDirectory::ingest_entry(string item, string fullpath, bes::CatalogNode *node) const
+{
+
+    if (item == "." || item == "..")
+        return;
+
+    string item_path = fullpath + "/" + item;
+
+    // TODO add a test in configure for the readdir macro(s) DT_REG, DT_LNK
+    // and DT_DIR and use those, if present, to determine if the name is a
+    // link, directory or regular file. These are not present on all systems.
+    // Also, since we need mtime, these are not a huge time saver. But if we
+    // decide not to use the mtime, using these macros could save lots of system
+    // calls. jhrg 3/9/18
+
+    // Skip this dir entry if it is a sym link and follow links is false
+    if (get_catalog_utils()->follow_sym_links() == false) {
+        struct stat lbuf;
+        (void) lstat(item_path.c_str(), &lbuf);
+        if (S_ISLNK(lbuf.st_mode)) return;
+    }
+
+    // Is this a directory or a file? Should it be excluded or included?
+    struct stat buf;
+    int statret = stat(item_path.c_str(), &buf);
+    if (statret == 0 && S_ISDIR(buf.st_mode) && !get_catalog_utils()->exclude(item)) {
+#if 0
+        // Add a new node; set the size to zero.
+        node->add_item(new CatalogItem(item, 0, get_time(buf.st_mtime), CatalogItem::node));
+#endif
+        node->add_node(new CatalogItem(item, 0, get_time(buf.st_mtime), CatalogItem::node));
+    }
+    else if (statret == 0 && S_ISREG(buf.st_mode) && get_catalog_utils()->include(item)) {
+#if 0
+        // Add a new leaf.
+        node->add_item(new CatalogItem(item, buf.st_size, get_time(buf.st_mtime),
+            get_catalog_utils()->is_data(item), CatalogItem::leaf));
+#endif
+        node->add_leaf(new CatalogItem(item, buf.st_size, get_time(buf.st_mtime),
+            get_catalog_utils()->is_data(item), CatalogItem::leaf));
+    }
+    else {
+        VERBOSE("Excluded the item '" << item_path << "' from the catalog '" << get_catalog_name() << "' node listing.");
+    }
+
+}
+
+
+
 CatalogNode *
 BESCatalogDirectory::get_node(const string &path) const
 {
@@ -330,87 +381,63 @@ BESCatalogDirectory::get_node(const string &path) const
 
     string fullpath = rootdir + path;
 
-    DIR *dip = opendir(fullpath.c_str());
-    if (!dip)
-        throw BESInternalError(
-            "A BESCatalogDirectory can only return nodes for directory. The path '" + path
-                + "' is not a directory for BESCatalog '" + get_catalog_name() + "'.", __FILE__, __LINE__);
 
-    try {
-        // The node is a directory
-
-        // Based on other code (show_catalogs()), use BESCatalogUtils::exclude() on
-        // a directory, but BESCatalogUtils::include() on a file.
-        if (get_catalog_utils()->exclude(path))
-            throw BESForbiddenError(
-                string("The path '") + path + "' is not included in the catalog '" + get_catalog_name() + "'.",
-                __FILE__, __LINE__);
-
-        CatalogNode *node = new CatalogNode(path);
-
-        node->set_catalog_name(get_catalog_name());
-        struct stat buf;
-        int statret = stat(fullpath.c_str(), &buf);
-        if (statret == 0 /* && S_ISDIR(buf.st_mode) */)
-            node->set_lmt(get_time(buf.st_mtime));
-
-        struct dirent *dit;
-        while ((dit = readdir(dip)) != NULL) {
-            string item = dit->d_name;
-            if (item == "." || item == "..") continue;
-
-            string item_path = fullpath + "/" + item;
-
-            // TODO add a test in configure for the readdir macro(s) DT_REG, DT_LNK
-            // and DT_DIR and use those, if present, to determine if the name is a
-            // link, directory or regular file. These are not present on all systems.
-            // Also, since we need mtime, these are not a huge time saver. But if we
-            // decide not to use the mtime, using these macros could save lots of system
-            // calls. jhrg 3/9/18
-
-            // Skip this dir entry if it is a sym link and follow links is false
-            if (get_catalog_utils()->follow_sym_links() == false) {
-                struct stat lbuf;
-                (void) lstat(item_path.c_str(), &lbuf);
-                if (S_ISLNK(lbuf.st_mode)) continue;
-            }
-
-            // Is this a directory or a file? Should it be excluded or included?
-            statret = stat(item_path.c_str(), &buf);
-            if (statret == 0 && S_ISDIR(buf.st_mode) && !get_catalog_utils()->exclude(item)) {
-#if 0
-                // Add a new node; set the size to zero.
-                node->add_item(new CatalogItem(item, 0, get_time(buf.st_mtime), CatalogItem::node));
-#endif
-                node->add_node(new CatalogItem(item, 0, get_time(buf.st_mtime), CatalogItem::node));
-            }
-            else if (statret == 0 && S_ISREG(buf.st_mode) && get_catalog_utils()->include(item)) {
-#if 0
-                // Add a new leaf.
-                node->add_item(new CatalogItem(item, buf.st_size, get_time(buf.st_mtime),
-                    get_catalog_utils()->is_data(item), CatalogItem::leaf));
-#endif
-                node->add_leaf(new CatalogItem(item, buf.st_size, get_time(buf.st_mtime),
-                    get_catalog_utils()->is_data(item), CatalogItem::leaf));
-            }
-            else {
-                VERBOSE("Excluded the item '" << item_path << "' from the catalog '" << get_catalog_name() << "' node listing.");
-            }
-        } // end of the while loop
-
-        closedir(dip);
-
-        CatalogItem::CatalogItemAscending ordering;
-
-        sort(node->nodes_begin(), node->nodes_end(), ordering);
-        sort(node->leaves_begin(), node->leaves_end(), ordering);
-
-        return node;
+    //unsigned long long current_size = 0;
+    struct stat full_path_stat_buf;
+    int stat_result = stat(fullpath.c_str(), &full_path_stat_buf);
+    if(stat_result){
+        std::strerror(errno);
+        throw BESForbiddenError(
+            string("Unable to 'stat' the file '") + fullpath + "' errno says: " + std::strerror(errno),
+            __FILE__, __LINE__);
     }
-    catch (...) {
-        closedir(dip);
-        throw;
+
+    CatalogNode *node = new CatalogNode(path);
+    if(S_ISREG(full_path_stat_buf.st_mode)){
+        ingest_entry(path, fullpath, node);
     }
+    else if(S_ISDIR(full_path_stat_buf.st_mode)){
+
+
+        DIR *dip = 0;
+        try {
+            // The node is a directory
+
+            // Based on other code (show_catalogs()), use BESCatalogUtils::exclude() on
+            // a directory, but BESCatalogUtils::include() on a file.
+            if (get_catalog_utils()->exclude(path))
+                throw BESForbiddenError(
+                    string("The path '") + path + "' is not included in the catalog '" + get_catalog_name() + "'.",
+                    __FILE__, __LINE__);
+
+
+            node->set_catalog_name(get_catalog_name());
+            node->set_lmt(get_time(full_path_stat_buf.st_mtime));
+
+            DIR *dip = opendir(fullpath.c_str());
+            struct dirent *dit;
+            while ((dit = readdir(dip)) != NULL) {
+                ingest_entry(dit->d_name, fullpath, node);
+            }
+            closedir(dip);
+            dip = 0;
+
+            CatalogItem::CatalogItemAscending ordering;
+            sort(node->nodes_begin(), node->nodes_end(), ordering);
+            sort(node->leaves_begin(), node->leaves_end(), ordering);
+
+            return node;
+        }
+        catch (...) {
+            if(dip)
+                closedir(dip);
+            throw;
+        }
+    }
+    throw BESInternalError(
+        "A BESCatalogDirectory can only return nodes for directories and regular files. The path '" + path
+            + "' is not a directory or a regular file for BESCatalog '" + get_catalog_name() + "'.", __FILE__, __LINE__);
+
 }
 
 /**
