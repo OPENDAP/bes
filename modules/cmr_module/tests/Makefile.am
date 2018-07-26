@@ -12,16 +12,16 @@ LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-noinst_DATA = bes.conf
+noinst_DATA = bes.conf cache
 
-CLEANFILES = bes.conf
+CLEANFILES = bes.conf cache
 
 EXTRA_DIST = cmr_catalog $(TESTSUITE).at $(TESTSUITE) \
 atlocal.in package.m4 $(BES_CONF_IN) handler_tests_macros.m4 
 
 DISTCLEANFILES = atconfig
 
-BES_CONF_IN = bes.conf.modules.in
+BES_CONF_IN = bes.conf.in
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
@@ -31,6 +31,8 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
+cache: $(srcdir)/cache
+	mkdir -p $(srcdir)/cache
 
 ############## Autotest follows #####################
 
@@ -48,6 +50,7 @@ installcheck-local: $(TESTSUITE) atconfig atlocal
 clean-local: 
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
 	-rm -f $(TESTSUITE) $(srcdir)/package.m4 
+	-rm -fr $(srcdir)/cache 
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
