@@ -319,6 +319,7 @@ CmrCatalog::get_node(const string &ppath) const
                 CatalogItem *collection = new CatalogItem();
                 collection->set_name(d_facets[i]);
                 collection->set_type(CatalogItem::node);
+                collection->set_lmt(epoch_time);
                 BESDEBUG(MODULE, prolog << "Adding facet: " << d_facets[i] << endl);
                 node->add_node(collection);
             }

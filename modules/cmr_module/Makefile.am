@@ -1,7 +1,7 @@
 
-# Automake file for fileout_json
+# Automake file for cmr_module
 #
-# 06/23/14 ndp
+# 07/25/18
 #
 
 AUTOMAKE_OPTIONS = foreign

@@ -2,6 +2,8 @@
 
 m4_include([handler_tests_macros.m4])
 
+AT_BESCMD_RESPONSE_TEST([cmr_catalog/show_collections_node.bescmd])
+AT_BESCMD_RESPONSE_TEST([cmr_catalog/show_facets_node.bescmd])
 AT_BESCMD_RESPONSE_TEST([cmr_catalog/show_years_node.bescmd])
 AT_BESCMD_RESPONSE_TEST([cmr_catalog/show_months_node.bescmd])
 AT_BESCMD_RESPONSE_TEST([cmr_catalog/show_days_node.bescmd])
