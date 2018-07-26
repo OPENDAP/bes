@@ -95,7 +95,7 @@ public:
     // Called before each test
     void setUp()
     {
-        string bes_conf = BESUtil::assemblePath(TEST_SRC_DIR,"CmrTest.ini");
+        string bes_conf = BESUtil::assemblePath(TEST_SRC_DIR,"bes.conf");
         TheBESKeys::ConfigFile = bes_conf;
 
         if (bes_debug) BESDebug::SetUp("cerr,cmr");

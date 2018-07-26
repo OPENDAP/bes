@@ -32,6 +32,10 @@ BES.Catalog.catalog.FollowSymLinks=No
 #
 # CMR Configuration 
 #
+
+# Need to whitelist CMR server so we can talk to it.
+Gateway.Whitelist+=https://cmr.earthdata.nasa.gov
+
 BES.Catalog.CMR.RootDirectory=/private/tmp
 # BES.Catalog.CMR.FollowSymLinks=
 # BES.Catalog.CMR.Exclude=

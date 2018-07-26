@@ -29,7 +29,9 @@
 
 #include "util.h"
 #include "BESDebug.h"
+#include "BESSyntaxUserError.h"
 #include "CmrUtils.h"
+#include "Whitelist.h"
 
 #include "curl_utils.h"
 
@@ -533,8 +535,17 @@ long read_url(CURL *curl,
               const vector<string> *request_headers,
               char error_buffer[])
 {
+    string prolog = string("curl_utils.cc ") + __func__ + "() - ";
 
-    BESDEBUG(MODULE, "curl_utils::read_url() - BEGIN" << endl);
+    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+
+    if (!bes::WhiteList::get_white_list()->is_white_listed(url)) {
+        string err = (string) "The specified URL " + url
+                + " does not match any of the accessible services in"
+                + " the white list.";
+        BESDEBUG(MODULE, prolog << err << endl);
+        throw BESSyntaxUserError(err, __FILE__, __LINE__);
+    }
 
 
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
@@ -574,17 +585,17 @@ long read_url(CURL *curl,
 
 
     if (res != 0){
-        BESDEBUG(MODULE, "curl_utils::read_url() - OUCH! CURL returned an error! curl msg:  " << curl_easy_strerror(res) << endl);
-        BESDEBUG(MODULE, "curl_utils::read_url() - OUCH! CURL returned an error! error_buffer:  " << error_buffer << endl);
+        BESDEBUG(MODULE, prolog << "OUCH! CURL returned an error! curl msg:  " << curl_easy_strerror(res) << endl);
+        BESDEBUG(MODULE, prolog << "OUCH! CURL returned an error! error_buffer:  " << error_buffer << endl);
         throw libdap::Error(error_buffer);
     }
 
     long status;
     res = curl_easy_getinfo(curl, CURLINFO_HTTP_CODE, &status);
-    BESDEBUG(MODULE, "curl_utils::read_url() - HTTP Status " << status << endl);
+    BESDEBUG(MODULE, prolog << "HTTP Status " << status << endl);
     if (res != CURLE_OK)
         throw libdap::Error(error_buffer);
-    BESDEBUG(MODULE, "curl_utils::read_url() - END" << endl);
+    BESDEBUG(MODULE, prolog << "END" << endl);
 
     return status;
 }
