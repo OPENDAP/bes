@@ -28,36 +28,6 @@ BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
 BES.Catalog.catalog.FollowSymLinks=No
 
-#################################################################################
-#
-# CMR Configuration 
-#
-
-# Need to whitelist CMR server so we can talk to it.
-Gateway.Whitelist+=https://cmr.earthdata.nasa.gov
-
-BES.Catalog.CMR.RootDirectory=/private/tmp
-# BES.Catalog.CMR.FollowSymLinks=
-# BES.Catalog.CMR.Exclude=
-# BES.Catalog.CMR.Include=
-BES.Catalog.CMR.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$;
-
-CMR.Cache.dir=@abs_top_builddir@/modules/cmr_module/tests/cache
-CMR.Cache.prefix=cmr_
-CMR.Cache.size=500
-
-CMR.MimeTypes=nc:application/x-netcdf
-CMR.MimeTypes+=h4:application/x-hdf
-CMR.MimeTypes+=h5:application/x-hdf5
-
-CMR.Collections=C179003030-ORNL_DAAC
-CMR.Collections+=C1276812863-GES_DISC
-
-CMR.Facets=temporal
-CMR.Facets+=dental_floss
-
-
-
 BES.FollowSymLinks=No
 
 BES.ServerPort=10002
@@ -94,6 +64,39 @@ BES.Memory.GlobalArea.ControlHeap=no
 BES.ProcessManagerMethod=multiple
 
 BES.DefaultResponseMethod=POST
+
+
+
+#################################################################################
+#
+# CMR Configuration 
+#
+
+# Need to whitelist CMR server so we can talk to it.
+Gateway.Whitelist+=https://cmr.earthdata.nasa.gov
+
+BES.Catalog.CMR.RootDirectory=/private/tmp
+# BES.Catalog.CMR.FollowSymLinks=
+# BES.Catalog.CMR.Exclude=
+# BES.Catalog.CMR.Include=
+BES.Catalog.CMR.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$;
+
+CMR.Cache.dir=@abs_top_builddir@/modules/cmr_module/tests/cache
+CMR.Cache.prefix=cmr_
+CMR.Cache.size=500
+
+CMR.MimeTypes=nc:application/x-netcdf
+CMR.MimeTypes+=h4:application/x-hdf
+CMR.MimeTypes+=h5:application/x-hdf5
+
+CMR.Collections=C179003030-ORNL_DAAC
+CMR.Collections+=C1276812863-GES_DISC
+
+CMR.Facets=temporal
+CMR.Facets+=dental_floss
+
+
+
 
 #-----------------------------------------------------------------------#
 #                                                                       #

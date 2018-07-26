@@ -62,8 +62,8 @@ public:
     /**
      * @Deprecated
      */
-    virtual BESCatalogEntry * show_catalog(const string &/*container*/, BESCatalogEntry */*entry*/){
-        throw BESInternalError("The CMRCatalog::show_catalog() method is not supported.",__FILE__,__LINE__);
+    virtual BESCatalogEntry * show_catalog(const string &container, BESCatalogEntry */*entry*/){
+        throw BESInternalError("The CMRCatalog::show_catalog() method is not supported. (container: '" + container + "')",__FILE__,__LINE__);
     }
 
     /**

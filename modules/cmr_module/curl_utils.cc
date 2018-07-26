@@ -539,6 +539,7 @@ long read_url(CURL *curl,
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
+    // Before we do anything, make sure that the URL is OK to pursue.
     if (!bes::WhiteList::get_white_list()->is_white_listed(url)) {
         string err = (string) "The specified URL " + url
                 + " does not match any of the accessible services in"
@@ -547,29 +548,20 @@ long read_url(CURL *curl,
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
-
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeToOpenfileDescriptor);
-
 
 #ifdef CURLOPT_WRITEDATA
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &fd);
 #else
     curl_easy_setopt(curl, CURLOPT_FILE, &fd);
 #endif
-
-
-
     //DBG(copy(d_request_headers.begin(), d_request_headers.end(), ostream_iterator<string>(cerr, "\n")));
-
     BuildHeaders req_hdrs;
-    //req_hdrs = for_each(d_request_headers.begin(), d_request_headers.end(),
-     //                   req_hdrs);
+    //req_hdrs = for_each(d_request_headers.begin(), d_request_headers.end(), req_hdrs);
     if (request_headers)
         req_hdrs = for_each(request_headers->begin(), request_headers->end(), req_hdrs);
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, req_hdrs.get_headers());
-
 
     // Pass save_raw_http_headers() a pointer to the vector<string> where the
     // response headers may be stored. Callers can use the resp_hdrs
@@ -583,13 +575,11 @@ long read_url(CURL *curl,
     curl_slist_free_all(req_hdrs.get_headers());
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, 0);
 
-
     if (res != 0){
         BESDEBUG(MODULE, prolog << "OUCH! CURL returned an error! curl msg:  " << curl_easy_strerror(res) << endl);
         BESDEBUG(MODULE, prolog << "OUCH! CURL returned an error! error_buffer:  " << error_buffer << endl);
         throw libdap::Error(error_buffer);
     }
-
     long status;
     res = curl_easy_getinfo(curl, CURLINFO_HTTP_CODE, &status);
     BESDEBUG(MODULE, prolog << "HTTP Status " << status << endl);
