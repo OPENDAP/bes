@@ -184,11 +184,15 @@ CmrCatalog::get_node(const string &ppath) const
     vector<string> path_elements = split(path);
     BESDEBUG(MODULE, prolog << "path: '" << path << "'   path_elements.size(): " << path_elements.size() << endl);
 
+    string epoch_time = get_time(0);
+
     CmrApi cmrApi;
     bes::CatalogNode *node;
 
     if(path_elements.empty()){
         node = new CatalogNode("/");
+        node->set_lmt(epoch_time);
+        node->set_catalog_name(CMR_CATALOG_NAME);
         for(size_t i=0; i<d_collections.size() ; i++){
             CatalogItem *collection = new CatalogItem();
             collection->set_name(d_collections[i]);
@@ -222,6 +226,9 @@ CmrCatalog::get_node(const string &ppath) const
             if(facet=="temporal"){
                 BESDEBUG(MODULE, prolog << "Found Temporal Facet"<< endl);
                 node = new CatalogNode(path);
+                node->set_lmt(epoch_time);
+                node->set_catalog_name(CMR_CATALOG_NAME);
+
 
                 switch( path_elements.size()){
                 case 2: // The path ends at temporal facet, so we need the years.
@@ -235,7 +242,7 @@ CmrCatalog::get_node(const string &ppath) const
                         collection->set_type(CatalogItem::node);
                         collection->set_name(years[i]);
                         collection->set_is_data(false);
-                        collection->set_lmt(get_time(std::time(0)));
+                        collection->set_lmt(epoch_time);
                         collection->set_size(0);
                         node->add_node(collection);
                     }
@@ -252,9 +259,10 @@ CmrCatalog::get_node(const string &ppath) const
                     cmrApi.get_months(collection, year, months);
                     for(size_t i=0; i<months.size() ; i++){
                         CatalogItem *collection = new CatalogItem();
+                        collection->set_type(CatalogItem::node);
                         collection->set_name(months[i]);
                         collection->set_is_data(false);
-                        collection->set_lmt(get_time(std::time(0)));
+                        collection->set_lmt(epoch_time);
                         collection->set_size(0);
                         node->add_node(collection);
                     }
@@ -271,9 +279,10 @@ CmrCatalog::get_node(const string &ppath) const
                     cmrApi.get_days(collection, year, month, days);
                     for(size_t i=0; i<days.size() ; i++){
                         CatalogItem *collection = new CatalogItem();
+                        collection->set_type(CatalogItem::node);
                         collection->set_name(days[i]);
                         collection->set_is_data(false);
-                        collection->set_lmt(get_time(std::time(0)));
+                        collection->set_lmt(epoch_time);
                         collection->set_size(0);
                         node->add_node(collection);
                     }
@@ -304,6 +313,8 @@ CmrCatalog::get_node(const string &ppath) const
         else {
             BESDEBUG(MODULE, prolog << "Building facet list for collection: " << collection << endl);
             node = new CatalogNode(path);
+            node->set_lmt(epoch_time);
+            node->set_catalog_name(CMR_CATALOG_NAME);
             for(size_t i=0; i<d_facets.size() ; i++){
                 CatalogItem *collection = new CatalogItem();
                 collection->set_name(d_facets[i]);

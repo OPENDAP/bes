@@ -15,16 +15,46 @@ BES.module.dapreader=@abs_top_builddir@/dapreader/.libs/libdapreader_module.so
 BES.module.cmr=@abs_top_builddir@/modules/cmr_module/.libs/libcmr_module.so
 BES.module.nc=@abs_top_builddir@/modules/netcdf_handler/.libs/libnc_module.so
 
-BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/fileout_json
+
+#################################################################################
+#
+# Default Catalog 
+#
+BES.Catalog.Default=catalog
+BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/cmr_module
 BES.Data.RootDirectory=/dev/null
-
 BES.Catalog.catalog.TypeMatch=dapreader:.*\.das$;dapreader:.*\.dods$;nc:.*\.nc$
-
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
+BES.Catalog.catalog.FollowSymLinks=No
+
+#################################################################################
+#
+# CMR Configuration 
+#
+BES.Catalog.CMR.RootDirectory=/private/tmp
+# BES.Catalog.CMR.FollowSymLinks=
+# BES.Catalog.CMR.Exclude=
+# BES.Catalog.CMR.Include=
+BES.Catalog.CMR.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$;
+
+CMR.Cache.dir=/tmp
+CMR.Cache.prefix=cmr_
+CMR.Cache.size=500
+
+CMR.MimeTypes=nc:application/x-netcdf
+CMR.MimeTypes+=h4:application/x-hdf
+CMR.MimeTypes+=h5:application/x-hdf5
+
+CMR.Collections=C179003030-ORNL_DAAC
+CMR.Collections+=C1276812863-GES_DISC
+
+CMR.Facets=temporal
+CMR.Facets+=temporal
+
+
 
 BES.FollowSymLinks=No
-BES.Catalog.catalog.FollowSymLinks=No
 
 BES.ServerPort=10002
 

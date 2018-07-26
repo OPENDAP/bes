@@ -30,6 +30,7 @@
 
 #include <list>
 #include <string>
+#include <vector>
 
 using std::list;
 using std::string;

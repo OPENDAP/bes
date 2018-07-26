@@ -29,7 +29,7 @@
 
 #define CMR_NAME "cmr"
 
-#define CMR_CATALOG_NAME "cmr_catalog"
+#define CMR_CATALOG_NAME "CMR"
 
 // These are the names of the be keys used to configure the handler.
 

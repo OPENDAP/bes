@@ -16,8 +16,8 @@ noinst_DATA = bes.conf
 
 CLEANFILES = bes.conf
 
-EXTRA_DIST = cmr $(TESTSUITE).at $(TESTSUITE) atlocal.in \
-$(srcdir)/package.m4 $(BES_CONF_IN)
+EXTRA_DIST = cmr_catalog $(TESTSUITE).at $(TESTSUITE) \
+atlocal.in package.m4 $(BES_CONF_IN) handler_tests_macros.m4 
 
 DISTCLEANFILES = atconfig
 
@@ -36,21 +36,26 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 
 AUTOM4TE = autom4te
 
-TESTSUITE = $(srcdir)/cmrTest
+TESTSUITE = $(srcdir)/CmrCatalogTest
 TESTSUITEFLAGS =
-# -j9
 
-check-local: atlocal $(srcdir)/package.m4 $(TESTSUITE)
+check-local: $(TESTSUITE) atconfig atlocal 
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
-clean-local:
+installcheck-local: $(TESTSUITE) atconfig atlocal 
+	$(SHELL) '$(TESTSUITE)' AUTOTEST_PATH='$(bindir)' $(TESTSUITEFLAGS)
+
+clean-local: 
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
 	-rm -f $(TESTSUITE) $(srcdir)/package.m4 
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
-$(TESTSUITE): $(srcdir)/cmrTest.at $(srcdir)/package.m4
-	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
-	mv $@.tmp $@
+
+$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
+	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
+
+# % : %.at
+#	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
 # The `:;' works around a Bash 3.2 bug when the output is not writeable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac
@@ -62,5 +67,4 @@ $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	echo 'm4_define([AT_PACKAGE_STRING],    [@PACKAGE_STRING@])' && \
 	echo 'm4_define([AT_PACKAGE_BUGREPORT], [@PACKAGE_BUGREPORT@])'; \
 	} >'$(srcdir)/package.m4'
-
 

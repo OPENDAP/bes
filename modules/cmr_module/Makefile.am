@@ -27,10 +27,13 @@ libcmr_module_la_LDFLAGS = -avoid-version -module
 libcmr_module_la_LIBADD = $(LIBADD)
 
 CMR_SRC = CmrApi.cc CmrCatalog.cc CmrInfoCmd.cc Granule.cc \
-	CmrCache.cc curl_utils.cc rjson_utils.cc RemoteHttpResource.cc
+	CmrCache.cc curl_utils.cc rjson_utils.cc RemoteHttpResource.cc \
+	CmrModule.cc CmrUtils.cc
 
 CMR_HDR = CmrApi.h CmrError.h CmrCatalog.h CmrInfoCmd.h Granule.h \
-	CmrCache.h curl_utils.h rjson_utils.h RemoteHttpResource.h
+	CmrCache.h curl_utils.h rjson_utils.h RemoteHttpResource.h \
+	CmrModule.h CmrUtils.h
+	
 
 EXTRA_DIST = data cmr.conf.in
 
