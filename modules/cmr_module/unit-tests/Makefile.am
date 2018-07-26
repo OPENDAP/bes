@@ -23,7 +23,7 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 DISTCLEANFILES = test_config.h *.Po
 
-CLEANFILES = *.dbg *.log tmp/*
+CLEANFILES = *.dbg *.log 
 
 EXTRA_DIST = baselines test_config.h.in
 
@@ -31,8 +31,7 @@ check_PROGRAMS = $(UNIT_TESTS)
 
 TESTS = $(UNIT_TESTS)
 
-# Adding the tmp dir here causes make to put it in the build dir
-noinst_DATA = tmp
+noinst_DATA = 
 
 BUILT_SOURCES = test_config.h
 
@@ -47,8 +46,6 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
 	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
 
-tmp:
-	test -d tmp || mkdir tmp
 
 ############################################################################
 # Unit Tests
