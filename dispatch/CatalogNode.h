@@ -45,6 +45,8 @@ private:
     std::string d_catalog_name;
     std::string d_lmt;
 
+    CatalogItem* d_no_really_im_a_leaf;
+
 #if ITEMS
     std::vector<CatalogItem*> d_items;
 #endif
@@ -61,11 +63,15 @@ private:
 
 public:
     /// @brief Make an empty instance.
-    CatalogNode() : d_name(""), d_catalog_name(""), d_lmt("") { }
+    CatalogNode() : d_name(""), d_catalog_name(""), d_lmt(""), d_no_really_im_a_leaf(0){ }
 
-    CatalogNode(const std::string &name) : d_name(name), d_catalog_name(""), d_lmt("") { }
+    CatalogNode(const std::string &name) : d_name(name), d_catalog_name(""), d_lmt(""), d_no_really_im_a_leaf(0) { }
 
     virtual ~CatalogNode();
+
+
+    void set_leaf(CatalogItem *leaf) { d_no_really_im_a_leaf = leaf; }
+    CatalogItem *get_leaf() const { return d_no_really_im_a_leaf; }
 
     /// @brief The name of this node in the catalog
     std::string get_name() const { return d_name; }

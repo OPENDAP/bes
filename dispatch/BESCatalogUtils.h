@@ -129,6 +129,9 @@ public:
 
     // Added because of reported memory leaks. jhrg 12/24/12
     static void delete_all_catalogs();
+
+    std::string get_name(){ return d_name;}
 };
+
 
 #endif // S_BESCatalogUtils_h

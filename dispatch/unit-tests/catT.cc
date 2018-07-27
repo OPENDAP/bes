@@ -743,7 +743,6 @@ public:
         auto_ptr<BESCatalog> catalog(0);
         try {
             catalog.reset(new BESCatalogDirectory("nt3"));
-            CPPUNIT_ASSERT(catalog.get());
         }
         catch (BESError &e) {
             DBG(cerr << e.get_message() << endl);
@@ -751,8 +750,7 @@ public:
         }
 
         try {
-            auto_ptr<CatalogNode> node(catalog->get_node("/file1"));
-
+            auto_ptr<CatalogNode> node(catalog->get_node("/child_dir"));
             ostringstream oss;
             node->dump(oss);
 
@@ -780,10 +778,11 @@ public:
             str = remove_ptr(str);
             str = remove_attr(str, "last modified time");
 
-            string baseline = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/get_node_1.txt");
+            string baseline = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/get_node_3.txt");
 
-            DBG2(cerr << "Baseline: " << baseline << endl);
-            DBG(cerr << "response: " << str << endl);
+            DBG2(cerr << "Baseline: " << endl << baseline << endl);
+            DBG2(cerr << "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" << baseline << endl);
+            DBG(cerr << "response: " << endl << str << endl);
 
             CPPUNIT_ASSERT(str == baseline);
         }
