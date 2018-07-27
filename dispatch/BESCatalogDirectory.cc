@@ -387,7 +387,8 @@ CatalogNode *
 BESCatalogDirectory::get_node(const string &path) const
 {
     string prolog = string("BESCatalogDirectory::") + __func__ + "() - ";
-    if (path[0] != '/') throw BESInternalError("The path sent to BESCatalogDirectory::get_node() must start with a slash (/)", __FILE__, __LINE__);
+    if (path[0] != '/')
+        throw BESInternalError("The path sent to BESCatalogDirectory::get_node() must start with a slash (/)", __FILE__, __LINE__);
 
     string rootdir = get_catalog_utils()->get_root_dir();
 
