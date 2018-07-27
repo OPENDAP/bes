@@ -226,6 +226,7 @@ public:
     CPPUNIT_TEST(get_node_test);
     CPPUNIT_TEST(get_node_test_2);
     CPPUNIT_TEST(get_node_test_3);
+    CPPUNIT_TEST(get_node_test_4);
 
     CPPUNIT_TEST(get_site_map_test);
 #if 0
@@ -819,6 +820,66 @@ public:
             CPPUNIT_FAIL("Failed to get site map");
         }
     }
+
+    void get_node_test_4()
+    {
+        TheBESKeys::TheKeys()->set_key(string("BES.Catalog.nt3.RootDirectory=") + TEST_SRC_DIR + root_dir);
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.nt3.TypeMatch=conf:.*\\.conf$;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.nt3.Include=.*file.*$;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog.nt3.Exclude=README;");
+
+        auto_ptr<BESCatalog> catalog(0);
+        try {
+            catalog.reset(new BESCatalogDirectory("nt3"));
+        }
+        catch (BESError &e) {
+            DBG(cerr << e.get_message() << endl);
+            CPPUNIT_FAIL("Failed to add catalog");
+        }
+
+        try {
+            auto_ptr<CatalogNode> node(catalog->get_node("/child_dir/child_file.conf"));
+            ostringstream oss;
+            node->dump(oss);
+
+            if (node->get_item_count() > 0) {
+                int n = 0;
+#if 0
+                for (CatalogNode::item_citer i = node->items_begin(), e = node->items_end(); i != e; ++i) {
+                    oss << "Item " << n++ << ": " << endl;
+                    (*i)->dump(oss);
+                }
+#endif
+                for (CatalogNode::item_citer i = node->nodes_begin(), e = node->nodes_end(); i != e; ++i) {
+                    oss << "Node " << n++ << ": " << endl;
+                    (*i)->dump(oss);
+                }
+
+                for (CatalogNode::item_citer i = node->leaves_begin(), e = node->leaves_end(); i != e; ++i) {
+                    oss << "Leaf " << n++ << ": " << endl;
+                    (*i)->dump(oss);
+                }
+            }
+
+            string str = oss.str();
+
+            str = remove_ptr(str);
+            str = remove_attr(str, "last modified time");
+
+            string baseline = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/get_node_3.txt");
+
+            DBG2(cerr << "Baseline: " << endl << baseline << endl);
+            DBG2(cerr << "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" << baseline << endl);
+            DBG(cerr << "response: " << endl << str << endl);
+
+            CPPUNIT_ASSERT(str == baseline);
+        }
+        catch (BESError &e) {
+            DBG(cerr << e.get_message() << endl);
+            CPPUNIT_FAIL("Failed to get node listing for '/'");
+        }
+    }
+
 
     // This test is good, especially for timing, etc., but the differences between
     // source in a typical git clone and what gets into the tar ball and thus, shows
