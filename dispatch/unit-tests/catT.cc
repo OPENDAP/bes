@@ -58,6 +58,7 @@
 #include "CatalogItem.h"
 
 #include "BESError.h"
+#include "BESDebug.h"
 #include "TheBESKeys.h"
 #include "BESXMLInfo.h"
 #include "BESNames.h"
@@ -70,6 +71,7 @@
 #include "test_utils.h"
 
 static bool debug = false;
+static bool bes_debug = false;
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
@@ -205,6 +207,8 @@ public:
             cerr << e.get_message() << endl;
             throw e;
         }
+        if (bes_debug) BESDebug::SetUp("cerr,bes");
+
     }
 
     void tearDown()
@@ -913,15 +917,21 @@ CPPUNIT_TEST_SUITE_REGISTRATION(catT);
 int main(int argc, char*argv[])
 {
 
-    GetOpt getopt(argc, argv, "dDh");
+    GetOpt getopt(argc, argv, "dDhb");
     char option_char;
     while ((option_char = getopt()) != EOF)
         switch (option_char) {
         case 'd':
             debug = true;  // debug is a static global
+            cerr << "debug: true" << endl;
             break;
         case 'D':
             debug2 = true;
+            cerr << "debug2: true" << endl;
+            break;
+        case 'b':
+            bes_debug = true;
+            cerr << "bes_debug: true" << endl;
             break;
         case 'h': {     // help - show test names
             cerr << "Usage: catT has the following tests:" << endl;

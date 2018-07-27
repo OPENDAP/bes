@@ -386,7 +386,7 @@ BESCatalogDirectory::get_node(const string &path) const
     // Checks to make sure the different elements of the path are not
     // symbolic links if follow_sym_links is set to false, and checks to
     // make sure have permission to access node and the node exists.
-    // TODO Make this return the stat struct so we don't have to stat again here.
+    // TODO Make BESUtil::check_path() return the stat struct so we don't have to stat again here.
     BESUtil::check_path(path, rootdir, get_catalog_utils()->follow_sym_links());
     string fullpath = BESUtil::assemblePath(rootdir, path);
     struct stat full_path_stat_buf;
@@ -402,20 +402,19 @@ BESCatalogDirectory::get_node(const string &path) const
     if(S_ISREG(full_path_stat_buf.st_mode)){
         BESDEBUG(MODULE,prolog <<  "The requested node '"+fullpath+"' is actually a leaf. Wut do?" << endl);
         ingest_dir_entry(path, fullpath, node);
+        return 0;
     }
     else if(S_ISDIR(full_path_stat_buf.st_mode)){
         BESDEBUG(MODULE, prolog <<  "Processing directory node: "<< fullpath << endl);
         DIR *dip = 0;
         try {
             // The node is a directory
-
             // Based on other code (show_catalogs()), use BESCatalogUtils::exclude() on
             // a directory, but BESCatalogUtils::include() on a file.
             if (get_catalog_utils()->exclude(path))
                 throw BESForbiddenError(
                     string("The path '") + path + "' is not included in the catalog '" + get_catalog_name() + "'.",
                     __FILE__, __LINE__);
-
 
             node->set_catalog_name(get_catalog_name());
             node->set_lmt(get_time(full_path_stat_buf.st_mtime));
