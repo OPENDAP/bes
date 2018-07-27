@@ -299,7 +299,7 @@ static string get_time(time_t the_time, bool use_local_time = false)
 /**
  * Takes a directory entry and adds the appropriate CatalogItem to the node.
  */
-CatalogItem *BESCatalogDirectory::make_item(string item, string path_prefix) const
+CatalogItem *BESCatalogDirectory::make_item(string path_prefix, string item) const
 {
     if (item == "." || item == "..")
         return 0;
@@ -382,7 +382,8 @@ CatalogItem *BESCatalogDirectory::make_item(string item, string path_prefix) con
 CatalogNode *
 BESCatalogDirectory::get_node(const string &path) const
 {
-    if (path[0] != '/') throw BESInternalError("The path sent to BESCatalogDirectory::get_node() must start with a slash (/)", __FILE__, __LINE__);
+    if (path[0] != '/')
+        throw BESInternalError("The path sent to BESCatalogDirectory::get_node() must start with a slash (/)", __FILE__, __LINE__);
 
     string rootdir = get_catalog_utils()->get_root_dir();
 
@@ -404,8 +405,10 @@ BESCatalogDirectory::get_node(const string &path) const
     CatalogNode *node = new CatalogNode(path);
     if(S_ISREG(full_path_stat_buf.st_mode)){
         BESDEBUG(MODULE, PROLOG <<  "The requested node '"+fullpath+"' is actually a leaf. Wut do?" << endl);
-        CatalogItem *item = make_item(path,rootdir);
+
+        bes::CatalogItem *item = make_item(rootdir, path);
         node->set_leaf(item);
+
         BESDEBUG(MODULE, PROLOG << "Actually, I'm a LEAF (" << (void*)item << ")" <<  endl);
         return node;
     }
@@ -427,7 +430,7 @@ BESCatalogDirectory::get_node(const string &path) const
             dip = opendir(fullpath.c_str());
             struct dirent *dit;
             while ((dit = readdir(dip)) != NULL) {
-                bes::CatalogItem * item = make_item(dit->d_name, fullpath);
+                bes::CatalogItem * item = make_item(fullpath, dit->d_name);
                 if(item){
                     if(item->get_type() == CatalogItem::node){
                         node->add_node(item);
