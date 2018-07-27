@@ -394,7 +394,7 @@ BESCatalogDirectory::get_node(const string &path) const
     if(stat_result){
         std::strerror(errno);
         throw BESForbiddenError(
-            string("Unable to 'stat' the file '") + fullpath + "' errno says: " + std::strerror(errno),
+            string("Unable to 'stat' the path '") + fullpath + "' errno says: " + std::strerror(errno),
             __FILE__, __LINE__);
     }
 
