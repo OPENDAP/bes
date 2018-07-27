@@ -326,14 +326,10 @@ void VariableElement::processRenameVariable(NCMLParser& p)
         // This will remove the old one and replace our wrapper under the new _name if it's an Array subclass!
         pOrgVar = replaceArrayIfNeeded(p, pOrgVar, _name);
 
-
+        // Rename variable
         pOrgVar->set_name(_name);
-        BaseType* bt = pOrgVar->var(_orgName);
-        bt->set_name(_name);
+        pOrgVar->var(_orgName)->set_name(_name);
 
-        // This is safe whether we converted it or not.  Rename!
-
-        // NCMLUtil::setVariableNameProperly(pOrgVar, _name);
     }
     else {
         // The above branch will reorder the output for the DataDDS case,
