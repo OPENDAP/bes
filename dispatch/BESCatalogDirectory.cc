@@ -294,36 +294,33 @@ static string get_time(time_t the_time, bool use_local_time = false)
     return buf;
 }
 
-
+#define PROLOG string("BESCatalogDirectory::") + __func__ + "() - "
 
 /**
  * Takes a directory entry and adds the appropriate CatalogItem to the node.
  */
 CatalogItem *BESCatalogDirectory::make_item(string item, string path_prefix) const
 {
-    string prolog = string("BESCatalogDirectory::") + __func__ + "() - ";
-
     if (item == "." || item == "..")
         return 0;
 
     string item_path = BESUtil::assemblePath(path_prefix,item);
-    BESDEBUG(MODULE, prolog << "Processing POSIX entry: "<< item_path << endl);
+    BESDEBUG(MODULE, PROLOG << "Processing POSIX entry: "<< item_path << endl);
 
     bool include_item = get_catalog_utils()->include(item);
     bool exclude_item = get_catalog_utils()->exclude(item);
 
-    BESDEBUG(MODULE, prolog << "catalog_utils: " << get_catalog_utils()->get_name() << endl);
-    BESDEBUG(MODULE, prolog << "include_item: " << (include_item?"true":"false") << endl);
-    BESDEBUG(MODULE, prolog << "exclude_item: " << (exclude_item?"true":"false") << endl);
+    BESDEBUG(MODULE, PROLOG << "catalog_utils: " << get_catalog_utils()->get_name() << endl);
+    BESDEBUG(MODULE, PROLOG << "include_item: " << (include_item?"true":"false") << endl);
+    BESDEBUG(MODULE, PROLOG << "exclude_item: " << (exclude_item?"true":"false") << endl);
 
     if(exclude_item || !include_item){
-        stringstream msg;
-        msg << "Excluded the item '" << item_path << "' from the catalog '" << get_catalog_name() << "' node listing.";
-        BESDEBUG(MODULE, prolog << msg.str() << endl);
-        VERBOSE(msg.str());
+        string msg = string("Excluded the item '").append(item_path).append("' from the catalog '").append(get_catalog_name()).append("' node listing.");
+        BESDEBUG(MODULE, PROLOG << msg << endl);
+        VERBOSE(msg);
+
         return 0;
     }
-
 
     // TODO add a test in configure for the readdir macro(s) DT_REG, DT_LNK
     // and DT_DIR and use those, if present, to determine if the name is a
@@ -343,22 +340,21 @@ CatalogItem *BESCatalogDirectory::make_item(string item, string path_prefix) con
     struct stat buf;
     int statret = stat(item_path.c_str(), &buf);
     if (statret == 0 && S_ISDIR(buf.st_mode)) {
-        BESDEBUG(MODULE, prolog << item_path  << " is NODE"<< endl);
+        BESDEBUG(MODULE, PROLOG << item_path  << " is NODE"<< endl);
         return new CatalogItem(item, 0, get_time(buf.st_mtime), CatalogItem::node);
     }
     else if (statret == 0 && S_ISREG(buf.st_mode)) {
-        BESDEBUG(MODULE, prolog << item_path  << " is LEAF"<< endl);
+        BESDEBUG(MODULE, PROLOG << item_path  << " is LEAF"<< endl);
         return new CatalogItem(item, buf.st_size, get_time(buf.st_mtime),
             get_catalog_utils()->is_data(item), CatalogItem::leaf);
     }
-    stringstream msg;
-    msg << "Unable to create CatalogItem for '" << item_path << "' from the catalog '" << get_catalog_name() << "' SKIPPING.";
-    BESDEBUG(MODULE, prolog << msg.str() << endl);
-    VERBOSE(msg.str());
+
+    string msg = string("Unable to create CatalogItem for '").append("' from the catalog '").append(get_catalog_name()).append(",' SKIPPING.");
+    BESDEBUG(MODULE, PROLOG << msg << endl);
+    VERBOSE(msg);
+
     return 0;
 }
-
-
 
 // path must start with a '/'. By this class it will be interpreted as a
 // starting at the CatalogDirectory instance's root directory. It may either
@@ -386,7 +382,6 @@ CatalogItem *BESCatalogDirectory::make_item(string item, string path_prefix) con
 CatalogNode *
 BESCatalogDirectory::get_node(const string &path) const
 {
-    string prolog = string("BESCatalogDirectory::") + __func__ + "() - ";
     if (path[0] != '/') throw BESInternalError("The path sent to BESCatalogDirectory::get_node() must start with a slash (/)", __FILE__, __LINE__);
 
     string rootdir = get_catalog_utils()->get_root_dir();
@@ -401,7 +396,6 @@ BESCatalogDirectory::get_node(const string &path) const
     struct stat full_path_stat_buf;
     int stat_result = stat(fullpath.c_str(), &full_path_stat_buf);
     if(stat_result){
-        std::strerror(errno);
         throw BESForbiddenError(
             string("Unable to 'stat' the path '") + fullpath + "' errno says: " + std::strerror(errno),
             __FILE__, __LINE__);
@@ -409,14 +403,14 @@ BESCatalogDirectory::get_node(const string &path) const
 
     CatalogNode *node = new CatalogNode(path);
     if(S_ISREG(full_path_stat_buf.st_mode)){
-        BESDEBUG(MODULE,prolog <<  "The requested node '"+fullpath+"' is actually a leaf. Wut do?" << endl);
-        bes::CatalogItem *item = make_item(path,rootdir);
+        BESDEBUG(MODULE, PROLOG <<  "The requested node '"+fullpath+"' is actually a leaf. Wut do?" << endl);
+        CatalogItem *item = make_item(path,rootdir);
         node->set_leaf(item);
-        BESDEBUG(MODULE, prolog << "Actually, I'm a LEAF (" << (void*)item << ")" <<  endl);
+        BESDEBUG(MODULE, PROLOG << "Actually, I'm a LEAF (" << (void*)item << ")" <<  endl);
         return node;
     }
     else if(S_ISDIR(full_path_stat_buf.st_mode)){
-        BESDEBUG(MODULE, prolog <<  "Processing directory node: "<< fullpath << endl);
+        BESDEBUG(MODULE, PROLOG <<  "Processing directory node: "<< fullpath << endl);
         DIR *dip = 0;
         try {
             // The node is a directory
@@ -430,7 +424,7 @@ BESCatalogDirectory::get_node(const string &path) const
             node->set_catalog_name(get_catalog_name());
             node->set_lmt(get_time(full_path_stat_buf.st_mtime));
 
-            DIR *dip = opendir(fullpath.c_str());
+            dip = opendir(fullpath.c_str());
             struct dirent *dit;
             while ((dit = readdir(dip)) != NULL) {
                 bes::CatalogItem * item = make_item(dit->d_name, fullpath);
@@ -443,8 +437,8 @@ BESCatalogDirectory::get_node(const string &path) const
                     }
                 }
             }
+
             closedir(dip);
-            dip = 0;
 
             CatalogItem::CatalogItemAscending ordering;
             sort(node->nodes_begin(), node->nodes_end(), ordering);
@@ -453,15 +447,13 @@ BESCatalogDirectory::get_node(const string &path) const
             return node;
         }
         catch (...) {
-            if(dip)
-                closedir(dip);
+            closedir(dip);
             throw;
         }
     }
     throw BESInternalError(
         "A BESCatalogDirectory can only return nodes for directories and regular files. The path '" + path
             + "' is not a directory or a regular file for BESCatalog '" + get_catalog_name() + "'.", __FILE__, __LINE__);
-
 }
 
 #if 0
@@ -586,9 +578,6 @@ BESCatalogDirectory::get_node(const string &path) const
     }
 }
 #endif
-
-
-
 
 /**
  * @brief Write the site map for this catalog to the stream \arg out
