@@ -48,6 +48,9 @@
  * Keys file cannot be read. That is, the if the singleton TheBESKeys cannot
  * be initialized, the access to the BES keys will throw a BESInternalFatalError.
  *
+ * @todo Remove the non-BESCatalog file system stuff in this class and combine it with
+ * BESContainerStorageCatalog.
+ *
  * @param n name of this persistent store
  * @see BESContainer
  */
