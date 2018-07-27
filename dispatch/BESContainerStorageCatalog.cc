@@ -30,15 +30,23 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include "BESContainerStorageCatalog.h"
 #include "BESContainer.h"
+
+#include "BESCatalogList.h"
+#include "BESCatalog.h"
+
 #include "BESCatalogUtils.h"
-#include "BESInternalError.h"
-#include "BESForbiddenError.h"
 #include "BESInfo.h"
 #include "BESServiceRegistry.h"
 #include "BESRegex.h"
+#include "BESInternalError.h"
+#include "BESForbiddenError.h"
+
 #include "BESDebug.h"
+
 
 /** @brief create an instance of this persistent store with the given name.
  *
@@ -56,7 +64,7 @@
  * semicolon. The data type/expression pair itself is separated by a
  * colon.
  *
- * @param n name of this persistent store
+ * @param n The name of the Catalog/ContainerStorage (they must be the same).
  * @throws BESForbiddenError if the resources requested is not accessible
  * @throws BESNotFoundError if the resources requested is not found
  * @throws BESInternalError if there is a problem determining the resource
@@ -66,7 +74,12 @@
 BESContainerStorageCatalog::BESContainerStorageCatalog(const string &n) :
         BESContainerStorageVolatile(n)
 {
+#if 0
     _utils = BESCatalogUtils::Utils(n);
+#endif
+    BESCatalog *catalog = BESCatalogList::TheCatalogList()->find_catalog(n);
+    _utils = catalog->get_catalog_utils();
+
     _root_dir = _utils->get_root_dir();
     _follow_sym_links = _utils->follow_sym_links();
 }
