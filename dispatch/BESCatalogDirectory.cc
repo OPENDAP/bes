@@ -386,12 +386,9 @@ BESCatalogDirectory::get_node(const string &path) const
     // Checks to make sure the different elements of the path are not
     // symbolic links if follow_sym_links is set to false, and checks to
     // make sure have permission to access node and the node exists.
+    // TODO Make this return the stat struct so we don't have to stat again here.
     BESUtil::check_path(path, rootdir, get_catalog_utils()->follow_sym_links());
-
     string fullpath = BESUtil::assemblePath(rootdir, path);
-
-
-    //unsigned long long current_size = 0;
     struct stat full_path_stat_buf;
     int stat_result = stat(fullpath.c_str(), &full_path_stat_buf);
     if(stat_result){
@@ -407,9 +404,7 @@ BESCatalogDirectory::get_node(const string &path) const
         ingest_dir_entry(path, fullpath, node);
     }
     else if(S_ISDIR(full_path_stat_buf.st_mode)){
-
         BESDEBUG(MODULE, prolog <<  "Processing directory node: "<< fullpath << endl);
-
         DIR *dip = 0;
         try {
             // The node is a directory
