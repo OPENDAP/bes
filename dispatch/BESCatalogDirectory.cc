@@ -67,6 +67,8 @@
 using namespace bes;
 using namespace std;
 
+#define MODULE "bes"
+
 /**
  * @brief A catalog for POSIX file systems
  *
@@ -140,7 +142,7 @@ BESCatalogDirectory::show_catalog(const string &node, BESCatalogEntry *entry)
     // fullnode is the full pathname of the node, including the 'root' pathanme
     // basename is the last component of fullnode
 
-    BESDEBUG("bes",
+    BESDEBUG(MODULE,
         "BESCatalogDirectory::show_catalog: " << "use_node = " << use_node << endl << "rootdir = " << rootdir << endl << "fullnode = " << fullnode << endl << "basename = " << basename << endl);
 
     // This will throw the appropriate exception (Forbidden or Not Found).
@@ -292,36 +294,19 @@ static string get_time(time_t the_time, bool use_local_time = false)
     return buf;
 }
 
-// path must start with a '/'. By this class it will be interpreted as a
-// starting at the CatalogDirectory instance's root directory. It may either
-// end in a '/' or not.
-//
-// If it is not a directory - that is an error. (return null or throw?)
-//
-// Item names are relative
+
 
 /**
- * @brief Get a CatalogNode for the given path in the current catalog
- *
- * This is similar to show_catalog() but returns a simpler response. The
- * \arg path must start with a slash and is used as a suffix to the Catalog's
- * root directory. Thus, the \arg path argument is _relative_ to the catalog's
- * root directory (even though the string starts with a slash).
- *
- * @param path The pathname for the node; must start with a slash (/)
- * @return A CatalogNode instance or null if there is no such path in the
- * current catalog.
- * @throw BESInternalError If the \arg path is not a directory
- * @throw BESForbiddenError If the \arg path is explicitly excluded by the
- * bes.conf file
+ * Takes a directory entry and adds the appropriate CatalogItem to the node.
  */
-
-
-void BESCatalogDirectory::ingest_entry(string item, string fullpath, bes::CatalogNode *node) const
+void BESCatalogDirectory::ingest_dir_entry(string item, string fullpath, bes::CatalogNode *node) const
 {
+    string prolog = string("BESCatalogDirectory::") + __func__ + "() - ";
 
     if (item == "." || item == "..")
         return;
+
+    BESDEBUG(MODULE, prolog <<  "Processing directory entry: "<< fullpath << endl);
 
     string item_path = fullpath + "/" + item;
 
@@ -366,9 +351,33 @@ void BESCatalogDirectory::ingest_entry(string item, string fullpath, bes::Catalo
 
 
 
+// path must start with a '/'. By this class it will be interpreted as a
+// starting at the CatalogDirectory instance's root directory. It may either
+// end in a '/' or not.
+//
+// If it is not a directory - that is an error. (return null or throw?)
+//
+// Item names are relative
+
+/**
+ * @brief Get a CatalogNode for the given path in the current catalog
+ *
+ * This is similar to show_catalog() but returns a simpler response. The
+ * \arg path must start with a slash and is used as a suffix to the Catalog's
+ * root directory. Thus, the \arg path argument is _relative_ to the catalog's
+ * root directory (even though the string starts with a slash).
+ *
+ * @param path The pathname for the node; must start with a slash (/)
+ * @return A CatalogNode instance or null if there is no such path in the
+ * current catalog.
+ * @throw BESInternalError If the \arg path is not a directory
+ * @throw BESForbiddenError If the \arg path is explicitly excluded by the
+ * bes.conf file
+ */
 CatalogNode *
 BESCatalogDirectory::get_node(const string &path) const
 {
+    string prolog = string("BESCatalogDirectory::") + __func__ + "() - ";
     if (path[0] != '/') throw BESInternalError("The path sent to BESCatalogDirectory::get_node() must start with a slash (/)", __FILE__, __LINE__);
 
     string rootdir = get_catalog_utils()->get_root_dir();
@@ -379,7 +388,7 @@ BESCatalogDirectory::get_node(const string &path) const
     // make sure have permission to access node and the node exists.
     BESUtil::check_path(path, rootdir, get_catalog_utils()->follow_sym_links());
 
-    string fullpath = rootdir + path;
+    string fullpath = BESUtil::assemblePath(rootdir, path);
 
 
     //unsigned long long current_size = 0;
@@ -394,10 +403,12 @@ BESCatalogDirectory::get_node(const string &path) const
 
     CatalogNode *node = new CatalogNode(path);
     if(S_ISREG(full_path_stat_buf.st_mode)){
-        ingest_entry(path, fullpath, node);
+        BESDEBUG(MODULE,prolog <<  "The requested node '"+fullpath+"' is actually a leaf. Wut do?" << endl);
+        ingest_dir_entry(path, fullpath, node);
     }
     else if(S_ISDIR(full_path_stat_buf.st_mode)){
 
+        BESDEBUG(MODULE, prolog <<  "Processing directory node: "<< fullpath << endl);
 
         DIR *dip = 0;
         try {
@@ -417,7 +428,7 @@ BESCatalogDirectory::get_node(const string &path) const
             DIR *dip = opendir(fullpath.c_str());
             struct dirent *dit;
             while ((dit = readdir(dip)) != NULL) {
-                ingest_entry(dit->d_name, fullpath, node);
+                ingest_dir_entry(dit->d_name, fullpath, node);
             }
             closedir(dip);
             dip = 0;
@@ -439,6 +450,132 @@ BESCatalogDirectory::get_node(const string &path) const
             + "' is not a directory or a regular file for BESCatalog '" + get_catalog_name() + "'.", __FILE__, __LINE__);
 
 }
+
+#if 0
+// path must start with a '/'. By this class it will be interpreted as a
+// starting at the CatalogDirectory instance's root directory. It may either
+// end in a '/' or not.
+//
+// If it is not a directory - that is an error. (return null or throw?)
+//
+// Item names are relative
+
+/**
+ * @brief Get a CatalogNode for the given path in the current catalog
+ *
+ * This is similar to show_catalog() but returns a simpler response. The
+ * \arg path must start with a slash and is used as a suffix to the Catalog's
+ * root directory. Thus, the \arg path argument is _relative_ to the catalog's
+ * root directory (even though the string starts with a slash).
+ *
+ * @param path The pathname for the node; must start with a slash (/)
+ * @return A CatalogNode instance or null if there is no such path in the
+ * current catalog.
+ * @throw BESInternalError If the \arg path is not a directory
+ * @throw BESForbiddenError If the \arg path is explicitly excluded by the
+ * bes.conf file
+ */
+CatalogNode *
+BESCatalogDirectory::get_node(const string &path) const
+{
+    if (path[0] != '/') throw BESInternalError("The path sent to BESCatalogDirectory::get_node() must start with a slash (/)", __FILE__, __LINE__);
+
+    string rootdir = get_catalog_utils()->get_root_dir();
+
+    // This will throw the appropriate exception (Forbidden or Not Found).
+    // Checks to make sure the different elements of the path are not
+    // symbolic links if follow_sym_links is set to false, and checks to
+    // make sure have permission to access node and the node exists.
+    BESUtil::check_path(path, rootdir, get_catalog_utils()->follow_sym_links());
+
+    string fullpath = rootdir + path;
+
+    DIR *dip = opendir(fullpath.c_str());
+    if (!dip)
+        throw BESInternalError(
+            "A BESCatalogDirectory can only return nodes for directory. The path '" + path
+                + "' is not a directory for BESCatalog '" + get_catalog_name() + "'.", __FILE__, __LINE__);
+
+    try {
+        // The node is a directory
+
+        // Based on other code (show_catalogs()), use BESCatalogUtils::exclude() on
+        // a directory, but BESCatalogUtils::include() on a file.
+        if (get_catalog_utils()->exclude(path))
+            throw BESForbiddenError(
+                string("The path '") + path + "' is not included in the catalog '" + get_catalog_name() + "'.",
+                __FILE__, __LINE__);
+
+        CatalogNode *node = new CatalogNode(path);
+
+        node->set_catalog_name(get_catalog_name());
+        struct stat buf;
+        int statret = stat(fullpath.c_str(), &buf);
+        if (statret == 0 /* && S_ISDIR(buf.st_mode) */)
+            node->set_lmt(get_time(buf.st_mtime));
+
+        struct dirent *dit;
+        while ((dit = readdir(dip)) != NULL) {
+            string item = dit->d_name;
+            if (item == "." || item == "..") continue;
+
+            string item_path = fullpath + "/" + item;
+
+            // TODO add a test in configure for the readdir macro(s) DT_REG, DT_LNK
+            // and DT_DIR and use those, if present, to determine if the name is a
+            // link, directory or regular file. These are not present on all systems.
+            // Also, since we need mtime, these are not a huge time saver. But if we
+            // decide not to use the mtime, using these macros could save lots of system
+            // calls. jhrg 3/9/18
+
+            // Skip this dir entry if it is a sym link and follow links is false
+            if (get_catalog_utils()->follow_sym_links() == false) {
+                struct stat lbuf;
+                (void) lstat(item_path.c_str(), &lbuf);
+                if (S_ISLNK(lbuf.st_mode)) continue;
+            }
+
+            // Is this a directory or a file? Should it be excluded or included?
+            statret = stat(item_path.c_str(), &buf);
+            if (statret == 0 && S_ISDIR(buf.st_mode) && !get_catalog_utils()->exclude(item)) {
+#if 0
+                // Add a new node; set the size to zero.
+                node->add_item(new CatalogItem(item, 0, get_time(buf.st_mtime), CatalogItem::node));
+#endif
+                node->add_node(new CatalogItem(item, 0, get_time(buf.st_mtime), CatalogItem::node));
+            }
+            else if (statret == 0 && S_ISREG(buf.st_mode) && get_catalog_utils()->include(item)) {
+#if 0
+                // Add a new leaf.
+                node->add_item(new CatalogItem(item, buf.st_size, get_time(buf.st_mtime),
+                    get_catalog_utils()->is_data(item), CatalogItem::leaf));
+#endif
+                node->add_leaf(new CatalogItem(item, buf.st_size, get_time(buf.st_mtime),
+                    get_catalog_utils()->is_data(item), CatalogItem::leaf));
+            }
+            else {
+                VERBOSE("Excluded the item '" << item_path << "' from the catalog '" << get_catalog_name() << "' node listing.");
+            }
+        } // end of the while loop
+
+        closedir(dip);
+
+        CatalogItem::CatalogItemAscending ordering;
+
+        sort(node->nodes_begin(), node->nodes_end(), ordering);
+        sort(node->leaves_begin(), node->leaves_end(), ordering);
+
+        return node;
+    }
+    catch (...) {
+        closedir(dip);
+        throw;
+    }
+}
+#endif
+
+
+
 
 /**
  * @brief Write the site map for this catalog to the stream \arg out

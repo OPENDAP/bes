@@ -55,7 +55,7 @@ using std::string;
  */
 class BESCatalogDirectory: public BESCatalog {
 private:
-    void ingest_entry(string item, string fullpath, bes::CatalogNode *node) const;
+    void ingest_dir_entry(string item, string fullpath, bes::CatalogNode *node) const;
 
 
 public:
