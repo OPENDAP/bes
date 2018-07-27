@@ -68,6 +68,7 @@ using namespace bes;
 using namespace std;
 
 #define MODULE "bes"
+#define PROLOG "BESCatalogDirectory::" << __func__ << "() - "
 
 /**
  * @brief A catalog for POSIX file systems
@@ -294,8 +295,6 @@ static string get_time(time_t the_time, bool use_local_time = false)
     return buf;
 }
 
-#define PROLOG string("BESCatalogDirectory::") + __func__ + "() - "
-
 /**
  * Takes a directory entry and adds the appropriate CatalogItem to the node.
  */
@@ -305,7 +304,7 @@ CatalogItem *BESCatalogDirectory::make_item(string path_prefix, string item) con
         return 0;
 
     string item_path = BESUtil::assemblePath(path_prefix,item);
-    BESDEBUG(MODULE, PROLOG << "Processing POSIX entry: "<< item_path << endl);
+    BESDEBUG(MODULE, PROLOG << "Processing POSIX entry: " << item_path << endl);
 
     bool include_item = get_catalog_utils()->include(item);
     bool exclude_item = get_catalog_utils()->exclude(item);
