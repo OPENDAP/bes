@@ -316,6 +316,15 @@ CatalogItem *BESCatalogDirectory::make_item(string item, string path_prefix) con
     BESDEBUG(MODULE, prolog << "include_item: " << (include_item?"true":"false") << endl);
     BESDEBUG(MODULE, prolog << "exclude_item: " << (exclude_item?"true":"false") << endl);
 
+    if(exclude_item || !include_item){
+        stringstream msg;
+        msg << "Excluded the item '" << item_path << "' from the catalog '" << get_catalog_name() << "' node listing.";
+        BESDEBUG(MODULE, prolog << msg.str() << endl);
+        VERBOSE(msg.str());
+        return 0;
+    }
+
+
     // TODO add a test in configure for the readdir macro(s) DT_REG, DT_LNK
     // and DT_DIR and use those, if present, to determine if the name is a
     // link, directory or regular file. These are not present on all systems.
@@ -333,30 +342,19 @@ CatalogItem *BESCatalogDirectory::make_item(string item, string path_prefix) con
     // Is this a directory or a file? Should it be excluded or included?
     struct stat buf;
     int statret = stat(item_path.c_str(), &buf);
-    if (statret == 0 && S_ISDIR(buf.st_mode) && !exclude_item) {
-#if 0
-        // Add a new node; set the size to zero.
-        return new CatalogItem(item, 0, get_time(buf.st_mtime), CatalogItem::node);
-#endif
+    if (statret == 0 && S_ISDIR(buf.st_mode)) {
         BESDEBUG(MODULE, prolog << item_path  << " is NODE"<< endl);
         return new CatalogItem(item, 0, get_time(buf.st_mtime), CatalogItem::node);
     }
-    else if (statret == 0 && S_ISREG(buf.st_mode) && include_item) {
-#if 0
-        // Add a new leaf.
-        return new CatalogItem(item, buf.st_size, get_time(buf.st_mtime),
-            get_catalog_utils()->is_data(item), CatalogItem::leaf);
-#endif
+    else if (statret == 0 && S_ISREG(buf.st_mode)) {
         BESDEBUG(MODULE, prolog << item_path  << " is LEAF"<< endl);
         return new CatalogItem(item, buf.st_size, get_time(buf.st_mtime),
             get_catalog_utils()->is_data(item), CatalogItem::leaf);
     }
-    else {
-        stringstream msg;
-        msg << "Excluded the item '" << item_path << "' from the catalog '" << get_catalog_name() << "' node listing.";
-        BESDEBUG(MODULE, prolog << msg.str() << endl);
-        VERBOSE(msg.str());
-    }
+    stringstream msg;
+    msg << "Unable to create CatalogItem for '" << item_path << "' from the catalog '" << get_catalog_name() << "' SKIPPING.";
+    BESDEBUG(MODULE, prolog << msg.str() << endl);
+    VERBOSE(msg.str());
     return 0;
 }
 
@@ -412,7 +410,7 @@ BESCatalogDirectory::get_node(const string &path) const
     CatalogNode *node = new CatalogNode(path);
     if(S_ISREG(full_path_stat_buf.st_mode)){
         BESDEBUG(MODULE,prolog <<  "The requested node '"+fullpath+"' is actually a leaf. Wut do?" << endl);
-        bes::CatalogItem *item = make_item("", fullpath);
+        bes::CatalogItem *item = make_item(path,rootdir);
         node->set_leaf(item);
         BESDEBUG(MODULE, prolog << "Actually, I'm a LEAF (" << (void*)item << ")" <<  endl);
         return node;
