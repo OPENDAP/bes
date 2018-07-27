@@ -163,15 +163,12 @@ void GridAggregateOnOuterDimension::transferConstraintsToSubGridMaps(Grid* pSubG
     Map_iter subGridMapIt = pSubGrid->map_begin();
     for (Map_iter it = map_begin(); it != map_end(); ++it) {
         // Skip the new outer dimension
-        // No need to skip because there is no new outer dimension on top. SK 07/26/18.
-//        if (it == map_begin()) {
-//            continue;
-//        }
+        if (it == map_begin()) {
+            continue;
+        }
 
         Array* subGridMap = static_cast<Array*>(*subGridMapIt);
-        BESDEBUG("ncml", "===========>>>>>>>>> subGridMap name = " << subGridMap->name() << endl);
         Array* superGridMap = static_cast<Array*>(*it);
-        BESDEBUG("ncml", "===========>>>>>>>>> superGridMap name = " << superGridMap->name() << endl);
         agg_util::AggregationUtil::transferArrayConstraints(subGridMap, *superGridMap, false, // skipFirstDim = false since map sizes consistent
             false, // same rank, dont skip this one either
             true, // printDebug

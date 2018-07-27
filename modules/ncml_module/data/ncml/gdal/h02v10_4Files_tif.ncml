@@ -10,5 +10,5 @@
   <variable name="time" type="double">
     <attribute name="units" type="string">days since 2000-01-01 00:00</attribute>
   </variable>
-  <!-- variable name="SRB1" orgName="band_1" / -->
+  <!-- variable name="SRB2" orgName="band_1" / -->
 </netcdf>

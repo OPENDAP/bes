@@ -4,6 +4,6 @@
     <netcdf location="data/nc/jan.nc"/> 
     <netcdf location="data/nc/feb.nc"/>
   </aggregation>
-  <variable name="A" orgName="P" />
+  <!-- variable name="A" orgName="P" / -->
   <variable name="B" orgName="T" />
 </netcdf>
