@@ -44,6 +44,8 @@
 #include "RenamedArrayWrapper.h"
 #include <sstream>
 
+#include "AggregationElement.h"
+
 using namespace libdap;
 using std::vector;
 using std::auto_ptr;
@@ -249,7 +251,7 @@ void VariableElement::processExistingVariable(NCMLParser& p, BaseType* pVar)
 
 /**
  * I added this method as a place holder for repairing (potentially) broken behavior regarding the
- * the renmaing of libdap::Structre and libdap::Grid objects which I beleive is not curretnly being handled
+ * the renaming of libdap::Structure and libdap::Grid objects which I believe is not currently being handled
  * correctly. The implementation is incomplete, so I am disabling the code  using a #if statement.
  * ndp - 08/21/2015
  */
@@ -315,6 +317,8 @@ void VariableElement::processRenameVariable(NCMLParser& p)
     if (p.parsingDataRequest()) {
         // If not an Array, force it to read or we won't find the new name in the file for HDF at least...
         if (!dynamic_cast<Array*>(pOrgVar)) {
+            // need set send flag
+            pOrgVar->set_send_p(true);
             pOrgVar->read();
         }
         // If the variable is an Array, we need to wrap it in a RenamedArrayWrapper
@@ -327,13 +331,15 @@ void VariableElement::processRenameVariable(NCMLParser& p)
     }
     else {
         // The above branch will reorder the output for the DataDDS case,
-        // so we need to remove and readd even if we dont convert to preserve order!
+        // so we need to remove and read even if we don't convert to preserve order!
 
         // BaseType::set_name fails for Vector (Array etc) subtypes since it doesn't
         // set the template's BaseType var's name as well.  This function does that until
         // a fix in libdap lets us call pOrgName->set_name(_name) directly.
         // pOrgVar->set_name(_name); // TODO  switch to this call when bug is fixed.
         //NCMLUtil::setVariableNameProperly(pOrgVar, _name);
+
+        // FIXME This (Vector::set_name()) was fixed long ago. jhrg 7/10/18
 
         // Need to copy unfortunately, since delete will kill storage...
         auto_ptr<BaseType> pCopy = auto_ptr<BaseType>(pOrgVar->ptr_duplicate());
@@ -342,6 +348,12 @@ void VariableElement::processRenameVariable(NCMLParser& p)
         // Nuke the old
         p.deleteVariableAtCurrentScope(pOrgVar->name());
 
+        // Add renamed
+        NetcdfElement* pCdf = dynamic_cast<NetcdfElement*>(p.getCurrentDataset());
+        if (pCdf->getChildAggregation()) {
+            AggregationElement* pAgg = pCdf->getChildAggregation();
+            pAgg->addAggregationVariable(_name);
+        }
         // Add the new, which copies under the hood.  auto_ptr will clean pCopy.
         p.addCopyOfVariableAtCurrentScope(*pCopy);
     }
@@ -517,7 +529,7 @@ VariableElement::replaceArrayIfNeeded(NCMLParser& p, libdap::BaseType* pOrgVar, 
     // Make sure the new name is set.
     NCMLUtil::setVariableNameProperly(pNewArray.get(), name);
 
-    // Add the new one.  Unfortunately this copies it under    the libdap hood. ARGH!
+    // Add the new one.  Unfortunately this copies it under the libdap hood. ARGH!
     // So just use the get() and let the auto_ptr kill our copy.
     p.addCopyOfVariableAtCurrentScope(*(pNewArray.get()));
 

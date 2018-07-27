@@ -76,8 +76,8 @@ unsigned int FoDapJsonTransform::json_simple_type_array_worker(ostream *strm, T 
 
     for (unsigned int i = 0; i < currentDimSize; i++) {
         if (currentDim < shape->size() - 1) {
-            BESDEBUG(FoDapJsonTransform_debug_key,
-                "json_simple_type_array_worker() - Recursing! indx:  " << indx << " currentDim: " << currentDim << " currentDimSize: " << currentDimSize << endl);
+//            BESDEBUG(FoDapJsonTransform_debug_key,
+//                "json_simple_type_array_worker() - Recursing! indx:  " << indx << " currentDim: " << currentDim << " currentDimSize: " << currentDimSize << endl);
             indx = json_simple_type_array_worker<T>(strm, values, indx, shape, currentDim + 1);
             if (i + 1 != currentDimSize) *strm << ", ";
         }
