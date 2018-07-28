@@ -724,14 +724,7 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.Catalog.nt3.Include=.*file.*$;");
         TheBESKeys::TheKeys()->set_key("BES.Catalog.nt3.Exclude=README;");
 
-        auto_ptr<BESCatalog> catalog(0);
-        try {
-            catalog.reset(new BESCatalogDirectory("nt3"));
-        }
-        catch (BESError &e) {
-            DBG(cerr << e.get_message() << endl);
-            CPPUNIT_FAIL("Failed to add catalog");
-        }
+        auto_ptr<BESCatalog> catalog(new BESCatalogDirectory("nt3"));
 
         try {
             auto_ptr<CatalogNode> node(catalog->get_node("/child_dir"));
@@ -740,12 +733,7 @@ public:
 
             if (node->get_item_count() > 0) {
                 int n = 0;
-#if 0
-                for (CatalogNode::item_citer i = node->items_begin(), e = node->items_end(); i != e; ++i) {
-                    oss << "Item " << n++ << ": " << endl;
-                    (*i)->dump(oss);
-                }
-#endif
+
                 for (CatalogNode::item_citer i = node->nodes_begin(), e = node->nodes_end(); i != e; ++i) {
                     oss << "Node " << n++ << ": " << endl;
                     (*i)->dump(oss);
@@ -811,14 +799,7 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.Catalog.nt3.Include=.*file.*$;");
         TheBESKeys::TheKeys()->set_key("BES.Catalog.nt3.Exclude=README;");
 
-        auto_ptr<BESCatalog> catalog(0);
-        try {
-            catalog.reset(new BESCatalogDirectory("nt3"));
-        }
-        catch (BESError &e) {
-            DBG(cerr << e.get_message() << endl);
-            CPPUNIT_FAIL("Failed to add catalog");
-        }
+        auto_ptr<BESCatalog> catalog(new BESCatalogDirectory("nt3"));
 
         try {
             auto_ptr<CatalogNode> node(catalog->get_node("/child_dir/child_file.conf"));
@@ -827,12 +808,7 @@ public:
 
             if (node->get_item_count() > 0) {
                 int n = 0;
-#if 0
-                for (CatalogNode::item_citer i = node->items_begin(), e = node->items_end(); i != e; ++i) {
-                    oss << "Item " << n++ << ": " << endl;
-                    (*i)->dump(oss);
-                }
-#endif
+
                 for (CatalogNode::item_citer i = node->nodes_begin(), e = node->nodes_end(); i != e; ++i) {
                     oss << "Node " << n++ << ": " << endl;
                     (*i)->dump(oss);
@@ -849,10 +825,9 @@ public:
             str = remove_ptr(str);
             str = remove_attr(str, "last modified time");
 
-            string baseline = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/get_node_3.txt");
+            string baseline = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/get_node_4.txt");
 
             DBG2(cerr << "Baseline: " << endl << baseline << endl);
-            DBG2(cerr << "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" << baseline << endl);
             DBG(cerr << "response: " << endl << str << endl);
 
             CPPUNIT_ASSERT(str == baseline);
