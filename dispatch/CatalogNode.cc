@@ -79,11 +79,12 @@ CatalogNode::encode_node(BESInfo *info)
 {
     map<string, string> props;
 
+    // The node may actually be a leaf. Check and act accordingly.
     CatalogItem *im_a_leaf = get_leaf();
     if(im_a_leaf){
         im_a_leaf->encode_item(info);
     }
-    else {
+    else { // It's a node. Do the node dance...
         props["name"] = get_name();
         props["catalog"] = get_catalog_name();
         props["lastModified"] = get_lmt();
@@ -105,10 +106,8 @@ CatalogNode::encode_node(BESInfo *info)
             assert((*i)->get_type() == CatalogItem::leaf);
             (*i)->encode_item(info);
         }
-
         info->end_tag("node");
     }
-
 }
 
 
@@ -166,6 +165,5 @@ void CatalogNode::dump(ostream &strm) const
             BESIndent::UnIndent();
         }
     }
-
     BESIndent::UnIndent();
 }
