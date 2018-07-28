@@ -627,15 +627,8 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.Catalog.nt1.Include=.*file.*$;");
         TheBESKeys::TheKeys()->set_key("BES.Catalog.nt1.Exclude=README;");
 
-        auto_ptr<BESCatalog> catalog(0);
-        try {
-            catalog.reset(new BESCatalogDirectory("nt1"));
-            CPPUNIT_ASSERT(catalog.get());
-        }
-        catch (BESError &e) {
-            DBG(cerr << e.get_message() << endl);
-            CPPUNIT_FAIL("Failed to add catalog");
-        }
+        auto_ptr<BESCatalog> catalog(new BESCatalogDirectory("nt1"));
+        CPPUNIT_ASSERT(catalog.get());
 
         try {
             auto_ptr<CatalogNode> node(catalog->get_node("/"));
@@ -645,12 +638,7 @@ public:
 
             if (node->get_item_count() > 0) {
                 int n = 0;
-#if 0
-                for (CatalogNode::item_citer i = node->items_begin(), e = node->items_end(); i != e; ++i) {
-                    oss << "Item " << n++ << ": " << endl;
-                    (*i)->dump(oss);
-                }
-#endif
+
                 for (CatalogNode::item_citer i = node->nodes_begin(), e = node->nodes_end(); i != e; ++i) {
                     oss << "Node " << n++ << ": " << endl;
                     (*i)->dump(oss);
@@ -698,12 +686,7 @@ public:
 
             if (node->get_item_count() > 0) {
                  int n = 0;
- #if 0
-                 for (CatalogNode::item_citer i = node->items_begin(), e = node->items_end(); i != e; ++i) {
-                     oss << "Item " << n++ << ": " << endl;
-                     (*i)->dump(oss);
-                 }
- #endif
+
                  for (CatalogNode::item_citer i = node->nodes_begin(), e = node->nodes_end(); i != e; ++i) {
                      oss << "Node " << n++ << ": " << endl;
                      (*i)->dump(oss);
