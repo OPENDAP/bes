@@ -57,7 +57,10 @@
 
 using namespace std;
 
+#if 0
 map<string, BESCatalogUtils *> BESCatalogUtils::_instances;
+#endif
+
 
 /**
  * @brief Initialize the file system catalog utilities
@@ -249,11 +252,21 @@ bool BESCatalogUtils::exclude(const string &inQuestion) const
     return false;
 }
 
+/**
+ * @note Look at using get_handler_name() or is_data() instead
+ *
+ * @return The beginning of the handler match regex list.
+ */
 BESCatalogUtils::match_citer BESCatalogUtils::match_list_begin() const
 {
     return d_match_list.begin();
 }
 
+/**
+ * @note Look at using get_handler_name() or is_data() instead
+ *
+ * @return The end of the handler match regex list.
+ */
 BESCatalogUtils::match_citer BESCatalogUtils::match_list_end() const
 {
     return d_match_list.end();
@@ -552,6 +565,7 @@ void BESCatalogUtils::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
+#if 0
 BESCatalogUtils *
 BESCatalogUtils::Utils(const string &cat_name)
 {
@@ -562,7 +576,10 @@ BESCatalogUtils::Utils(const string &cat_name)
     }
     return utils;
 }
+#endif
 
+
+#if 0
 // Added 12/24/12
 void BESCatalogUtils::delete_all_catalogs()
 {
@@ -572,4 +589,6 @@ void BESCatalogUtils::delete_all_catalogs()
         delete (*i++).second;
     }
 }
+
+#endif
 
