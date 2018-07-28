@@ -79,18 +79,18 @@ CatalogNode::encode_node(BESInfo *info)
 {
     map<string, string> props;
 
-    props["name"] = get_name();
-    props["catalog"] = get_catalog_name();
-    props["lastModified"] = get_lmt();
-    ostringstream oss;
-    oss << get_item_count();
-    props["count"] = oss.str();
-
     CatalogItem *im_a_leaf = get_leaf();
     if(im_a_leaf){
         im_a_leaf->encode_item(info);
     }
     else {
+        props["name"] = get_name();
+        props["catalog"] = get_catalog_name();
+        props["lastModified"] = get_lmt();
+        ostringstream oss;
+        oss << get_item_count();
+        props["count"] = oss.str();
+
         info->begin_tag("node", &props);
 
         // Depth-first node traversal. Assume the nodes and leaves are sorted.
@@ -107,6 +107,7 @@ CatalogNode::encode_node(BESInfo *info)
         }
 
         info->end_tag("node");
+
     }
 #if 0
     // TODO Should we support the serviceRef element? jhrg 7/22/18
@@ -138,10 +139,7 @@ void CatalogNode::dump(ostream &strm) const
 
 
     if(d_no_really_im_a_leaf){
-        strm << "-----------------------------------------------" << endl;
-        strm << BESIndent::LMarg << "leaf(" << (void *) d_no_really_im_a_leaf << ")"<< endl;
         d_no_really_im_a_leaf->dump(strm);
-        strm << "-----------------------------------------------" << endl;
     }
     else {
 
