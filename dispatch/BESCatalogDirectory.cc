@@ -313,13 +313,6 @@ CatalogItem *BESCatalogDirectory::make_item(string path_prefix, string item) con
     BESDEBUG(MODULE, PROLOG << "include_item: " << (include_item?"true":"false") << endl);
     BESDEBUG(MODULE, PROLOG << "exclude_item: " << (exclude_item?"true":"false") << endl);
 
-    if(exclude_item || !include_item){
-        string msg = string("Excluded the item '").append(item_path).append("' from the catalog '").append(get_catalog_name()).append("' node listing.");
-        BESDEBUG(MODULE, PROLOG << msg << endl);
-        VERBOSE(msg);
-
-        return 0;
-    }
 
     // TODO add a test in configure for the readdir macro(s) DT_REG, DT_LNK
     // and DT_DIR and use those, if present, to determine if the name is a
@@ -338,21 +331,27 @@ CatalogItem *BESCatalogDirectory::make_item(string path_prefix, string item) con
     // Is this a directory or a file? Should it be excluded or included?
     struct stat buf;
     int statret = stat(item_path.c_str(), &buf);
-    if (statret == 0 && S_ISDIR(buf.st_mode)) {
+    if (statret == 0 && S_ISDIR(buf.st_mode) && !exclude_item) {
         BESDEBUG(MODULE, PROLOG << item_path  << " is NODE"<< endl);
         return new CatalogItem(item, 0, get_time(buf.st_mtime), CatalogItem::node);
     }
-    else if (statret == 0 && S_ISREG(buf.st_mode)) {
+    else if (statret == 0 && S_ISREG(buf.st_mode) && include_item) {
         BESDEBUG(MODULE, PROLOG << item_path  << " is LEAF"<< endl);
         return new CatalogItem(item, buf.st_size, get_time(buf.st_mtime),
             get_catalog_utils()->is_data(item), CatalogItem::leaf);
     }
 
-    string msg = string("Unable to create CatalogItem for '").append("' from the catalog '").append(get_catalog_name()).append(",' SKIPPING.");
+    string msg;
+    if(exclude_item || !include_item){
+        msg = string("Excluded the item '").append(item_path).append("' from the catalog '").append(get_catalog_name()).append("' node listing.");
+    }
+    else {
+        string msg = string("Unable to create CatalogItem for '").append("' from the catalog '").append(get_catalog_name()).append(",' SKIPPING.");
+    }
     BESDEBUG(MODULE, PROLOG << msg << endl);
     VERBOSE(msg);
 
-    return 0;
+return 0;
 }
 
 // path must start with a '/'. By this class it will be interpreted as a

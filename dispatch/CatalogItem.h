@@ -85,7 +85,7 @@ private:
 
 public:
     /// @brief Make an empty instance.
-    CatalogItem() : d_name(""), d_size(0), d_lmt(""), d_is_data(false),  d_type(unknown){ }
+    CatalogItem() : d_name(""), d_size(0), d_lmt(""), d_is_data(false),  d_type(unknown) { }
 
     /**
      * @brief Hold information about an item in a BES Catalog

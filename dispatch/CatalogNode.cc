@@ -139,7 +139,8 @@ void CatalogNode::dump(ostream &strm) const
 
     if(d_no_really_im_a_leaf){
         strm << "-----------------------------------------------" << endl;
-        strm << BESIndent::LMarg << d_no_really_im_a_leaf << endl;
+        strm << BESIndent::LMarg << "leaf(" << (void *) d_no_really_im_a_leaf << ")"<< endl;
+        d_no_really_im_a_leaf->dump(strm);
         strm << "-----------------------------------------------" << endl;
     }
     else {
@@ -164,7 +165,6 @@ void CatalogNode::dump(ostream &strm) const
             }
 #endif
 #if NODES_AND_LEAVES
-
             vector<CatalogItem*>::const_iterator i = d_nodes.begin();
             vector<CatalogItem*>::const_iterator e = d_nodes.end();
             for (; i != e; ++i) {
