@@ -371,9 +371,16 @@ CatalogItem *BESCatalogDirectory::make_item(string path_prefix, string item) con
  * root directory. Thus, the \arg path argument is _relative_ to the catalog's
  * root directory (even though the string starts with a slash).
  *
+ * @note The \arg path can be either a directory name or a file name. In the
+ * first case, this will return a CatalogNode that holds a set of CatalogItem
+ * instances. The parent CatalogNode is itself a node. In the second case,
+ * the CatalogNode returned _is_ a leaf. See the CatalogNode class and note that
+ * it has dual nature - it can be a node in a hierarchy _or_ it can be a leaf.
+ *
  * @param path The pathname for the node; must start with a slash (/)
  * @return A CatalogNode instance or null if there is no such path in the
  * current catalog.
+ *
  * @throw BESInternalError If the \arg path is not a directory
  * @throw BESForbiddenError If the \arg path is explicitly excluded by the
  * bes.conf file

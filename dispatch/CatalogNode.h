@@ -39,6 +39,9 @@ namespace bes {
 
 class CatalogItem;
 
+/**
+ *
+ */
 class CatalogNode: public BESObj {
 private:
     std::string d_name;
