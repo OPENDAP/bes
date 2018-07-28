@@ -107,19 +107,7 @@ CatalogNode::encode_node(BESInfo *info)
         }
 
         info->end_tag("node");
-
     }
-#if 0
-    // TODO Should we support the serviceRef element? jhrg 7/22/18
-    list<string> services = entry->get_service_list();
-    if (services.size()) {
-        list<string>::const_iterator si = services.begin();
-        list<string>::const_iterator se = services.end();
-        for (; si != se; si++) {
-            info->add_tag("serviceRef", (*si));
-        }
-    }
-#endif
 
 }
 
