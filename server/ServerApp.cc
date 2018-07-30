@@ -266,7 +266,10 @@ ServerApp::~ServerApp()
 {
     delete TheBESKeys::TheKeys();
 
+#if 0
     BESCatalogUtils::delete_all_catalogs();
+#endif
+
 }
 
 int ServerApp::initialize(int argc, char **argv)
