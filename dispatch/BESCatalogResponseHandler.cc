@@ -78,65 +78,19 @@ void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi)
     if (notslash != string::npos) {
         container = container.substr(notslash);
     }
-
-    // If there is a '/' in the path, then it might be a separator for a catalog name.
-    // Otherwise, the 'path' is just a single name and that might be a catalog name too.
-    // The next code block tests that...
-    string catname;
-    string::size_type slash = container.find_first_of("/", 0);
-    if (slash != string::npos) {
-        catname = container.substr(0, slash);
-    }
-    else {
-        catname = container;
-    }
-
-    // If 'catname' is a catalog, catobj will be non-null. Remove catname from the
-    // path (aka 'container').
-    BESCatalog *catobj = BESCatalogList::TheCatalogList()->find_catalog(catname);
-    if (catobj) {
-        if (slash != string::npos) {
-            container = container.substr(slash + 1);
-
-            // remove repeated slashes
-            notslash = container.find_first_not_of("/", 0);
-            if (notslash != string::npos) {
-                container = container.substr(notslash);
-            }
-        }
-        else {
-            container = "";
-        }
-    }
-
     if (container.empty()) container = "/";
 
+    string catalog = dhi.data[CATALOG];
+    BESCatalog *besCatalog = BESCatalogList::TheCatalogList()->find_catalog(catalog);
+    if (!besCatalog) {
+        string err = (string) "Not able to find the catalog '" + catalog + "'";
+        throw BESInternalError(err, __FILE__, __LINE__);
+    }
     BESCatalogEntry *entry = 0;
-    if (catobj) {
-        entry = catobj->show_catalog(container, entry);
-    }
-    else {
-        string defcatname = BESCatalogList::TheCatalogList()->default_catalog_name();
-        BESCatalog *defcat = BESCatalogList::TheCatalogList()->find_catalog(defcatname);
-        if (!defcat) {
-            string err = (string) "Not able to find the default catalog " + defcatname;
-            throw BESInternalError(err, __FILE__, __LINE__);
-        }
 
-        // we always want to get the container information from the
-        // default catalog, whether the node is / or not
-        entry = defcat->show_catalog(container, entry);
-
-        // we only care to get the list of catalogs if the container is
-        // slash (/)
-
-        // TODO This is the only place that CatalogList::show_catalogs() is called.
-        int num_cats = BESCatalogList::TheCatalogList()->num_catalogs();
-        if (container == "/" && num_cats > 1) {
-            entry = BESCatalogList::TheCatalogList()->show_catalogs(entry, false);
-        }
-    }
-
+    // we always want to get the container information from the
+    // default catalog, whether the node is / or not
+    entry = besCatalog->show_catalog(container, entry);
     if (!entry) {
         string err = (string) "Failed to find node " + container;
         throw BESNotFoundError(err, __FILE__, __LINE__);

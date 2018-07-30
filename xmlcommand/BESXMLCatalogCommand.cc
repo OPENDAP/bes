@@ -68,6 +68,14 @@ void BESXMLCatalogCommand::parse_request(xmlNode *node)
 
     d_cmd_log_info = "show catalog";
 
+    string catalog =  props[CATALOG];
+
+    // Which catalog?
+    d_xmlcmd_dhi.data[CATALOG] = catalog;
+    if (catalog.empty()) {
+        d_xmlcmd_dhi.data[CATALOG] = DEFAULT_CATALOG;
+    }
+
     // node is an optional property, so could be empty string
     d_xmlcmd_dhi.data[CONTAINER] = props["node"];
 
