@@ -309,12 +309,12 @@ CatalogItem *BESCatalogDirectory::make_item(string path_prefix, string item) con
     bool include_item = get_catalog_utils()->include(item);
     bool exclude_item = get_catalog_utils()->exclude(item);
 
-    BESDEBUG(MODULE, PROLOG << "catalog_utils: " << get_catalog_utils()->get_name() << endl);
+    BESDEBUG(MODULE, PROLOG << "catalog:      " << this->get_catalog_name() << endl);
     BESDEBUG(MODULE, PROLOG << "include_item: " << (include_item?"true":"false") << endl);
     BESDEBUG(MODULE, PROLOG << "exclude_item: " << (exclude_item?"true":"false") << endl);
 
     // TODO add a test in configure for the readdir macro(s) DT_REG, DT_LNK
-    // and DT_DIR and use those, if present, to determine if the name is a
+    // and DT_DIR and use those, if present, to dßetermine if the name is a
     // link, directory or regular file. These are not present on all systems.
     // Also, since we need mtime, these are not a huge time saver. But if we
     // decide not to use the mtime, using these macros could save lots of system

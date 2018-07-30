@@ -75,7 +75,7 @@ protected:
     virtual void show_container(const std::string &sym_name, const std::string &real_name, const std::string &type, BESInfo &info);
 
 public:
-    /** @brief create an instance of BESContainerStorage with the give
+    /** @brief create an instance of BESContainerStorage with the given
      * name.
      *
      * @param name name of this persistence store
@@ -113,9 +113,10 @@ public:
      * This method adds a container to the persistence store with the
      * specified information.
      *
-     * @param sym_name symbolic name for the container
-     * @param real_name real name for the container
-     * @param type type of data represented by this container
+     * @param sym_name The symbolic name for the container
+     * @param real_name The real name for the container
+     * @param type The type of data held by this container. This is
+     * the handler that can be used to read the data
      */
     virtual void add_container(const std::string &sym_name, const std::string &real_name, const std::string &type) = 0;
 

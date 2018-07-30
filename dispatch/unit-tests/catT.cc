@@ -221,7 +221,16 @@ public:
 
     CPPUNIT_TEST(default_test);
     CPPUNIT_TEST(no_default_test);
-    CPPUNIT_TEST(root_dir_test1);
+    // CPPUNIT_TEST(configure_catalog);
+    CPPUNIT_TEST(root_dir_test_2);
+    CPPUNIT_TEST(root_dir_test_3);
+    CPPUNIT_TEST(root_dir_test_4);
+    CPPUNIT_TEST(root_dir_test_5);
+    CPPUNIT_TEST(root_dir_test_6);
+    CPPUNIT_TEST(root_dir_test_7);
+
+    CPPUNIT_TEST(no_such_file_1);
+    CPPUNIT_TEST(no_such_file_2);
 
     CPPUNIT_TEST(get_node_test);
     CPPUNIT_TEST(get_node_test_2);
@@ -317,32 +326,35 @@ public:
         }
     }
 
-    // This test should be broken up into smaller pieces. jhrg 8/23/17
-    void root_dir_test1() {
-       // TheBESKeys::TheKeys()->set_key("BES.Catalog.Default=cat_test");
-       TheBESKeys::TheKeys()->set_key(string("BES.Catalog.cat_test.RootDirectory=") + TEST_SRC_DIR + root_dir);
-       try {
-            BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory("catalog"));
-            CPPUNIT_FAIL("Succeeded in adding catalog, should not have");
-        }
-        catch (BESError &e) {
-            DBG(cerr << "Expected error: " << e.get_verbose_message() << endl);
-            CPPUNIT_ASSERT("Correctly caught exception");
-        }
-
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.cat_test.TypeMatch=conf:.*\\.conf$;");
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.cat_test.Include=.*file.*$;");
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.cat_test.Exclude=README;");
-
+    void configure_catalog(string catName){
+        // TheBESKeys::TheKeys()->set_key("BES.Catalog.Default=cat_test");
+        TheBESKeys::TheKeys()->set_key(string("BES.Catalog."+catName+".RootDirectory=") + TEST_SRC_DIR + root_dir);
         try {
-            if (!BESCatalogList::TheCatalogList()->ref_catalog("cat_test"))
-                BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory("cat_test"));
-        }
-        catch (BESError &e) {
-            DBG(cerr << e.get_verbose_message() << endl);
-            CPPUNIT_FAIL("Failed to add catalog");
-        }
+             BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory("catalog"));
+             CPPUNIT_FAIL("Succeeded in adding catalog, should not have");
+         }
+         catch (BESError &e) {
+             DBG(cerr << "Expected error: " << e.get_verbose_message() << endl);
+             CPPUNIT_ASSERT("Correctly caught exception");
+         }
 
+         TheBESKeys::TheKeys()->set_key("BES.Catalog."+catName+".TypeMatch=conf:.*\\.conf$;");
+         TheBESKeys::TheKeys()->set_key("BES.Catalog."+catName+".Include=.*file.*$;");
+         TheBESKeys::TheKeys()->set_key("BES.Catalog."+catName+".Exclude=README;");
+
+         try {
+             if (!BESCatalogList::TheCatalogList()->ref_catalog(catName))
+                 BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory(catName));
+         }
+         catch (BESError &e) {
+             DBG(cerr << "BESError Message: " << e.get_message() << endl);
+             CPPUNIT_FAIL("Failed to add catalog");
+         }
+    }
+
+    void root_dir_test_2() {
+        string catalog_name("cat_test");
+        configure_catalog(catalog_name);
         BESCatalog *catobj = BESCatalogList::TheCatalogList()->find_catalog("cat_test");
         CPPUNIT_ASSERT(catobj);
         int numcats = BESCatalogList::TheCatalogList()->num_catalogs();
@@ -365,15 +377,20 @@ public:
             CPPUNIT_ASSERT(str == one_response);
         }
         catch (BESError &e) {
-            DBG(cerr << e.get_message() << endl);
+            DBG(cerr << "BESError Message: " << e.get_message() << endl);
             CPPUNIT_FAIL("Failed to show catalogs");
         }
+    }
 
-        DBG(cerr << "now try it with BESCatalogResponseHandler" << endl);
+    void root_dir_test_3() {
+        string catalog_name("cat_test");
+        configure_catalog(catalog_name);
+        DBG(cerr << "Get catalog using BESCatalogResponseHandler" << endl);
         try {
             BESDataHandlerInterface dhi;
             // no longer used. jhrg 7/22/18 dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE;
-            dhi.data[CONTAINER] = "/cat_test/";
+            dhi.data[CONTAINER] = "/";
+            dhi.data[CATALOG] = catalog_name;
             BESCatalogResponseHandler handler("catalog");
             handler.execute(dhi);
 
@@ -394,31 +411,36 @@ public:
             CPPUNIT_ASSERT(str == cat_root);
         }
         catch (BESError &e) {
-            DBG(cerr << e.get_message() << endl);
+            DBG(cerr << "BESError Message: " << e.get_message() << endl);
             CPPUNIT_FAIL("Failed to show catalogs");
         }
-
+    }
+    void root_dir_test_4() {
+        string catalog_name("cat_test");
+        configure_catalog(catalog_name);
         DBG(cerr << "add good catalog" << endl);
+        string new_cat_name = "other";
 
-        TheBESKeys::TheKeys()->set_key(string("BES.Catalog.other.RootDirectory=") + TEST_SRC_DIR + root_dir);
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.other.TypeMatch=conf:conf&;");
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.other.Include=.*file.*$;");
-        TheBESKeys::TheKeys()->set_key("BES.Catalog.other.Exclude=README;");
+        TheBESKeys::TheKeys()->set_key(string("BES.Catalog."+new_cat_name+".RootDirectory=") + TEST_SRC_DIR + root_dir);
+        TheBESKeys::TheKeys()->set_key("BES.Catalog."+new_cat_name+".TypeMatch=conf:conf&;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog."+new_cat_name+".Include=.*file.*$;");
+        TheBESKeys::TheKeys()->set_key("BES.Catalog."+new_cat_name+".Exclude=README;");
 
         BESCatalog *other = 0;
         try {
-            other = new BESCatalogDirectory("other");
+            other = new BESCatalogDirectory(new_cat_name);
             BESCatalogList::TheCatalogList()->add_catalog(other);
             CPPUNIT_ASSERT("Succeeded in adding other catalog");
         }
         catch (BESError &e) {
-            DBG(cerr << e.get_message() << endl);
+            DBG(cerr << "BESError Message: " << e.get_message() << endl);
             CPPUNIT_FAIL("Failed to add catalog");
         }
-        catobj = BESCatalogList::TheCatalogList()->find_catalog("other");
+        BESCatalog *catobj = BESCatalogList::TheCatalogList()->find_catalog(new_cat_name);
         CPPUNIT_ASSERT(catobj);
         CPPUNIT_ASSERT(catobj == other);
-        numcats = BESCatalogList::TheCatalogList()->num_catalogs();
+        int numcats = BESCatalogList::TheCatalogList()->num_catalogs();
+        DBG(cerr << "Found " << numcats << " catalogs." <<  endl);
         CPPUNIT_ASSERT(numcats == 3);
 
         DBG(cerr << "*****************************************" << endl);
@@ -443,15 +465,22 @@ public:
             CPPUNIT_ASSERT(str == two_response);
         }
         catch (BESError &e) {
-            DBG(cerr << e.get_message() << endl);
+            DBG(cerr << "BESError Message: " << e.get_message() << endl);
             CPPUNIT_FAIL("Failed to show catalogs");
         }
+    }
+    void root_dir_test_5() {
+        string catalog_name("cat_test");
+        configure_catalog(catalog_name);
+        string other_cat = "other";
+        configure_catalog(other_cat);
 
         DBG(cerr << "*****************************************" << endl);
         DBG(cerr << "BESCatalogResponseHandler with catalog response" << endl);
         try {
             BESDataHandlerInterface dhi;
-            dhi.data[CONTAINER] = "/other/";
+            dhi.data[CONTAINER] = "/";
+            dhi.data[CATALOG] = other_cat;
             dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE;
             BESCatalogResponseHandler handler("catalog");
             handler.execute(dhi);
@@ -470,44 +499,22 @@ public:
             CPPUNIT_ASSERT(str == other_root);
         }
         catch (BESError &e) {
-            DBG(cerr << e.get_message() << endl);
+            DBG(cerr << "BESError Message: " << e.get_message() << endl);
             CPPUNIT_FAIL("Failed to show catalogs");
         }
-
-#if 0
-        DBG(cerr << "*****************************************" << endl);
-        DBG(cerr << "BESCatalogResponseHandler with info response" << endl);
-        try {
-            BESDataHandlerInterface dhi;
-            dhi.data[CONTAINER] = "other";
-            dhi.data[CATALOG_OR_INFO] = SHOW_INFO_RESPONSE;
-            BESCatalogResponseHandler handler("catalog");
-            handler.execute(dhi);
-            BESInfo *info = dynamic_cast<BESInfo *>(handler.get_response_object());
-            CPPUNIT_ASSERT(info);
-            ostringstream strm;
-            info->print(strm);
-            string strm_s = strm.str();
-            string str = remove(strm_s, "lastModified", 0);
-            str = remove(str, "size", 0);
-
-            string other_root_info = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/other_root_info.txt");
-            DBG(cerr << "baseline: " << other_root_info << endl);
-            DBG(cerr << "response: " << str << endl);
-
-            CPPUNIT_ASSERT(str == other_root_info);
-        }
-        catch (BESError &e) {
-            DBG(cerr << e.get_message() << endl);
-            CPPUNIT_FAIL("Failed to show catalogs");
-        }
-#endif
+    }
+    void root_dir_test_6() {
+        string catalog_name("cat_test");
+        configure_catalog(catalog_name);
+        string other_cat = "other";
+        configure_catalog(other_cat);
 
         DBG(cerr << "*****************************************" << endl);
         DBG(cerr << "BESCatalogResponseHandler specific node" << endl);
         try {
             BESDataHandlerInterface dhi;
-            dhi.data[CONTAINER] = "other/file1";
+            dhi.data[CONTAINER] = "/file1";
+            dhi.data[CATALOG] = other_cat;
             dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE;
             BESCatalogResponseHandler handler("catalog");
             handler.execute(dhi);
@@ -527,40 +534,11 @@ public:
             CPPUNIT_ASSERT(str == spec_node);
         }
         catch (BESError &e) {
-            DBG(cerr << e.get_message() << endl);
+            DBG(cerr << "BESError Message: " << e.get_message() << endl);
             CPPUNIT_FAIL("Failed to show catalogs");
         }
-
-#if 0
-        DBG(cerr << "*****************************************" << endl);
-        DBG(cerr << "BESCatalogResponseHandler specific node info" << endl);
-        try {
-            BESDataHandlerInterface dhi;
-            dhi.data[CONTAINER] = "other/file1";
-            dhi.data[CATALOG_OR_INFO] = SHOW_INFO_RESPONSE;
-            BESCatalogResponseHandler handler("catalog");
-            handler.execute(dhi);
-            BESInfo *info = dynamic_cast<BESInfo *>(handler.get_response_object());
-            CPPUNIT_ASSERT(info);
-            ostringstream strm;
-            info->print(strm);
-            string strm_s = strm.str();
-            string str = remove(strm_s, "count", 0);
-            str = remove(str, "lastModified", 0);
-            str = remove(str, "size", 0);
-
-            string spec_info = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/spec_info.txt");
-            DBG(cerr << "baseline: " << spec_info << endl);
-            DBG(cerr << "response: " << str << endl);
-
-            CPPUNIT_ASSERT(str == spec_info);
-        }
-        catch (BESError &e) {
-            DBG(cerr << e.get_message() << endl);
-            CPPUNIT_FAIL("Failed to show catalogs");
-        }
-#endif
-
+    }
+    void root_dir_test_7() {
         DBG(cerr << "*****************************************" << endl);
         DBG(cerr << "BESCatalogResponseHandler specific default" << endl);
         try {
@@ -584,9 +562,12 @@ public:
             CPPUNIT_ASSERT(str == default_node);
         }
         catch (BESError &e) {
-            DBG(cerr << e.get_message() << endl);
+            DBG(cerr << "BESError Message: " << e.get_message() << endl);
             CPPUNIT_FAIL("Failed to show catalogs");
         }
+
+    }
+    void no_such_file_1() {
 
         DBG(cerr << "*****************************************" << endl);
         DBG(cerr << "BESCatalogResponseHandler not there" << endl);
@@ -599,8 +580,10 @@ public:
             CPPUNIT_FAIL("file not found error");
         }
         catch (BESError &e) {
-            DBG(cerr << e.get_message() << endl);
+            DBG(cerr << "BESError Message: " << e.get_message() << endl);
         }
+    }
+    void no_such_file_2() {
 
         DBG(cerr << "*****************************************" << endl);
         DBG(cerr << "BESCatalogResponseHandler not there" << endl);
@@ -613,12 +596,16 @@ public:
             CPPUNIT_FAIL("file not found error");
         }
         catch (BESError &e) {
-            DBG(cerr << e.get_message() << endl);
+            DBG(cerr << "BESError Message: " << e.get_message() << endl);
         }
 
         DBG(cerr << "*****************************************" << endl);
         DBG(cerr << "Returning from catT::run" << endl);
     }
+
+
+
+
 
     void get_node_test()
     {
@@ -627,8 +614,15 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.Catalog.nt1.Include=.*file.*$;");
         TheBESKeys::TheKeys()->set_key("BES.Catalog.nt1.Exclude=README;");
 
-        auto_ptr<BESCatalog> catalog(new BESCatalogDirectory("nt1"));
-        CPPUNIT_ASSERT(catalog.get());
+        auto_ptr<BESCatalog> catalog(0);
+        try {
+            catalog.reset(new BESCatalogDirectory("nt1"));
+            CPPUNIT_ASSERT(catalog.get());
+        }
+        catch (BESError &e) {
+            DBG(cerr << "BESError Message: " << e.get_message() << endl);
+            CPPUNIT_FAIL("Failed to add catalog");
+        }
 
         try {
             auto_ptr<CatalogNode> node(catalog->get_node("/"));
@@ -663,7 +657,7 @@ public:
             CPPUNIT_ASSERT(str == baseline);
         }
         catch (BESError &e) {
-            DBG(cerr << e.get_message() << endl);
+            DBG(cerr << "BESError Message: " << e.get_message() << endl);
             CPPUNIT_FAIL("Failed to get node listing for '/'");
         }
     }
@@ -711,7 +705,7 @@ public:
             CPPUNIT_ASSERT(str == baseline);
         }
         catch (BESError &e) {
-            DBG(cerr << e.get_message() << endl);
+            DBG(cerr << "BESError Message: " << e.get_message() << endl);
             CPPUNIT_FAIL("Failed to get node listing for '/child_dir'");
         }
     }
@@ -867,7 +861,7 @@ public:
             CPPUNIT_ASSERT(str == baseline);
         }
         catch (BESError &e) {
-            DBG(cerr << e.get_message() << endl);
+            DBG(cerr << "BESError Message: " << e.get_message() << endl);
             CPPUNIT_FAIL("Failed to get site map");
         }
     }
@@ -924,7 +918,7 @@ public:
             CPPUNIT_ASSERT(oss.str() == baseline);
         }
         catch (BESError &e) {
-            DBG(cerr << e.get_message() << endl);
+            DBG(cerr << "BESError Message: " << e.get_message() << endl);
             CPPUNIT_FAIL("Failed to get site map");
         }
     }
