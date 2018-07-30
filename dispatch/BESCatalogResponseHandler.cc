@@ -80,14 +80,23 @@ void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi)
     }
     if (container.empty()) container = "/";
 
+    BESCatalog *besCatalog = 0;
     string catalog = dhi.data[CATALOG];
-    BESCatalog *besCatalog = BESCatalogList::TheCatalogList()->find_catalog(catalog);
-    if (!besCatalog) {
-        string err = (string) "Not able to find the catalog '" + catalog + "'";
-        throw BESInternalError(err, __FILE__, __LINE__);
+    if(catalog.empty()){
+        // Use default catalog to service request
+        besCatalog = BESCatalogList::TheCatalogList()->default_catalog();
+        catalog = besCatalog->get_catalog_name();
     }
-    BESCatalogEntry *entry = 0;
+    else {
+        // Use the specified catalog.
+        besCatalog = BESCatalogList::TheCatalogList()->find_catalog(catalog);
+        if (!besCatalog) {
+            string err = (string) "Not able to find the catalog '" + catalog + "'";
+            throw BESInternalError(err, __FILE__, __LINE__);
+        }
+    }
 
+    BESCatalogEntry *entry = 0;
     // we always want to get the container information from the
     // default catalog, whether the node is / or not
     entry = besCatalog->show_catalog(container, entry);
