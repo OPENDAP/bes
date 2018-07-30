@@ -37,6 +37,8 @@
 
 #include <BESUtil.h>
 #include <BESCatalogUtils.h>
+#include <BESCatalogList.h>
+#include <BESCatalog.h>
 #include <BESRegex.h>
 #include <TheBESKeys.h>
 #include <BESInternalError.h>
@@ -235,7 +237,12 @@ void CmrUtils::Get_type_from_disposition(const string &disp, string &type)
             }
 
             // we have the filename now, run it through
-            // the type match to get the file type
+            // the type match to get the file type.
+
+            const BESCatalogUtils *utils = BESCatalogList::TheCatalogList()->default_catalog()->get_catalog_utils();
+            type = utils->get_handler_name(filename);
+
+#if 0
             const BESCatalogUtils *utils = BESCatalogUtils::Utils("catalog");
             BESCatalogUtils::match_citer i = utils->match_list_begin();
             BESCatalogUtils::match_citer ie = utils->match_list_end();
@@ -257,7 +264,8 @@ void CmrUtils::Get_type_from_disposition(const string &disp, string &type)
                     throw BESDapError(serr, false, e.get_error_code(), __FILE__, __LINE__);
                 }
             }
-        }
+#endif
+         }
     }
 }
 
@@ -289,7 +297,12 @@ void CmrUtils::Get_type_from_url(const string &url, string &type)
 {
     string prolog = string("CmrUtils::") + __func__ + "() - ";
     // Just run the url through the type match from the configuration
-    const BESCatalogUtils *utils = BESCatalogUtils::Utils("catalog");
+    const BESCatalogUtils *utils = BESCatalogList::TheCatalogList()->default_catalog()->get_catalog_utils();
+
+    type = utils->get_handler_name(url);
+
+#if 0
+
     BESCatalogUtils::match_citer i = utils->match_list_begin();
     BESCatalogUtils::match_citer ie = utils->match_list_end();
     bool done = false;
@@ -311,6 +324,8 @@ void CmrUtils::Get_type_from_url(const string &url, string &type)
             throw BESInternalError(serr, __FILE__, __LINE__);
         }
     }
+#endif
+
 }
 
 #if 0
