@@ -68,6 +68,9 @@ void BESXMLCatalogCommand::parse_request(xmlNode *node)
 
     d_cmd_log_info = "show catalog";
 
+    // catalog is an additional property and may be empty.
+    d_xmlcmd_dhi.data[CATALOG] = props[CATALOG];
+
     // node is an optional property, so could be empty string
     d_xmlcmd_dhi.data[CONTAINER] = props["node"];
 
