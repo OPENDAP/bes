@@ -76,11 +76,19 @@ private:
     virtual void read_chunks_serial();
 #endif
 
+    unsigned long long get_chunk_start(const dimension &thisDim, unsigned int chunk_origin_for_dim);
+#if 0
     unsigned long long get_chunk_start(unsigned int dim, const std::vector<unsigned int>& chunk_origin);
+#endif
+
     Chunk *find_needed_chunks(unsigned int dim, std::vector<unsigned int> *target_element_address, Chunk *chunk);
     void insert_chunk(unsigned int dim, std::vector<unsigned int> *target_element_address, std::vector<unsigned int> *chunk_element_address,
         Chunk *chunk);
-    virtual void read_chunks_parallel();
+    void read_chunks();
+
+    void insert_chunk_unconstrained(unsigned int dim, std::vector<unsigned int> *target_element_address, std::vector<unsigned int> *chunk_element_address,
+        Chunk *chunk);
+    void read_chunks_unconstrained();
 
 public:
     DmrppArray(const std::string &n, libdap::BaseType *v);

@@ -24,6 +24,8 @@ DISTCLEANFILES = atconfig
 
 bes.conf: $(top_srcdir)/configure.ac $(srcdir)/bes.conf.in
 
+bes_serial.conf: $(top_srcdir)/configure.ac $(srcdir)/bes_serial.conf.in
+
 bes_mds_tests.conf: $(top_srcdir)/configure.ac $(srcdir)/bes_mds_tests.conf.in
 
 $(builddir)/mds_for_tests:
@@ -44,8 +46,9 @@ TESTSUITE = $(srcdir)/testsuite
 
 TESTSUITE_MDS = $(srcdir)/testsuite_mds_tests
 
-check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_MDS) bes.conf bes_mds_tests.conf mds_for_tests
+check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_MDS) bes.conf bes_serial.conf bes_mds_tests.conf mds_for_tests
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) --conf=bes_serial.conf
 	$(SHELL) '$(TESTSUITE_MDS)' $(TESTSUITEFLAGS) --conf=bes_mds_tests.conf 
 
 clean-local:

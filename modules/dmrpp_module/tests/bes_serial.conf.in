@@ -33,7 +33,7 @@ Gateway.Whitelist = *
 Gateway.Whitelist += https://s3.amazonaws.com/cloudydap/
 
 # The default for DMRPP.UseParallelTransfers is true
-# DMRPP.UseParallelTransfers = true
+DMRPP.UseParallelTransfers = false
 
 # The default for DMRPP.MaxParallelTransfers is 8
 # DMRPP.MaxParallelTransfers = 8
