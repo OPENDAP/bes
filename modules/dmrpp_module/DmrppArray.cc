@@ -931,10 +931,14 @@ bool DmrppArray::read()
         read_contiguous();    // Throws on various errors
     }
     else {  // Handle the more complex case where the data is chunked.
+        read_chunks();
+#if 0
         if (!is_projected())
-            read_chunks_unconstrained();
+        read_chunks_unconstrained();
         else
-            read_chunks();
+        read_chunks();
+#endif
+
     }
 
     return true;
