@@ -57,7 +57,7 @@
 #include "NCRequestHandler.h"
 #include "NCArray.h"
 #include "NCStructure.h"
-#include "nc_util.h"
+// #include "nc_util.h"
 
 BaseType *
 NCArray::ptr_duplicate()
@@ -313,7 +313,7 @@ void NCArray::do_array_read(int ncid, int varid, nc_type datatype,
     int errstat;
 
 #if NETCDF_VERSION >= 4
-    if (is_user_defined_type(ncid, datatype)) {
+    if (datatype >= NC_FIRSTUSERTYPEID /*is_user_defined_type(ncid, datatype)*/) {
         // datatype >= NC_FIRSTUSERTYPEID) {
         char type_name[NC_MAX_NAME+1];
         size_t size;
@@ -349,8 +349,7 @@ void NCArray::do_array_read(int ncid, int varid, nc_type datatype,
                         // int field_sizes[MAX_NC_DIMS];
                         nc_inq_compound_field(ncid, datatype, i, field_name, &field_offset, &field_typeid, 0, 0); //&field_ndims, &field_sizes[0]);
                         BaseType *field = ncs->var(field_name);
-                        if (is_user_defined_type(ncid, field_typeid)) {
-			    // field_typeid >= NC_FIRSTUSERTYPEID) {
+                        if (field_typeid >= NC_FIRSTUSERTYPEID /*is_user_defined_type(ncid, field_typeid)*/) {
                             // Interior user defined types have names, but not field_names
                             // so use the type name as the field name (matches the
                             // behavior of the ncdds.cc code).

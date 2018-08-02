@@ -22,31 +22,33 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-#include "config_nc.h"
+#include "config.h"
 
 #include <netcdf.h>
-
-#include <Error.h>
-
-using namespace libdap;
 
 bool is_user_defined_type(int ncid, int type)
 {
 #if NETCDF_VERSION >= 4
+    return type >= NC_FIRSTUSERTYPEID;
+
+#if 0
+    // Use the above - it's simpler and supported in the netcdf.h header. jhrg 8/2/18
     int ntypes;
     int typeids[NC_MAX_VARS];  // It's likely safe to assume there are
-			       // no more types than variables. jhrg
-			       // 2/9/12
+    // no more types than variables. jhrg
+    // 2/9/12
     int err = nc_inq_typeids(ncid, &ntypes, typeids);
     if (err != NC_NOERR)
-	throw Error(err, "Could not get the user defined type information.");
+    throw Error(err, "Could not get the user defined type information.");
 
     for (int i = 0; i < ntypes; ++i) {
-	if (type == typeids[i])
-	    return true;
+        if (type == typeids[i])
+        return true;
     }
 
     return false;
+#endif
+
 #else
     return false;
 #endif

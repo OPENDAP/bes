@@ -110,7 +110,7 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([nc/ref_tst_enum_data.nc.3.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([nc/ref_tst_enum_data_1.nc.3.bescmd])
 
 # ... and UInt32
-# AT_BESCMD_BINARYDATA_RESPONSE_TEST([nc/ref_tst_enum_data_2.nc.3.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([nc/ref_tst_enum_data_2.nc.3.bescmd])
 
 # DAP4 DMR response tests
 AT_BESCMD_RESPONSE_TEST([nc/nc4_nc_classic_compressed.nc.dmr.bescmd])
@@ -126,7 +126,7 @@ AT_BESCMD_RESPONSE_TEST([nc/ref_tst_compound4.nc.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([nc/ref_tst_compound5.nc.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([nc/ref_tst_enum_data.nc.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([nc/ref_tst_enum_data_1.nc.dmr.bescmd])
-# AT_BESCMD_RESPONSE_TEST([nc/ref_tst_enum_data_2.nc.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc/ref_tst_enum_data_2.nc.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([nc/ref_tst_opaque_data.nc.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([nc/stringtest.nc.dmr.bescmd])
 
