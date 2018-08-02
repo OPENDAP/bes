@@ -316,7 +316,7 @@ void VariableElement::processRenameVariable(NCMLParser& p)
     // specially since they might refer to underlying data by the new name
     if (p.parsingDataRequest()) {
         // If not an Array, force it to read or we won't find the new name in the file for HDF at least...
-        if (!dynamic_cast<Array*>(pOrgVar)) {
+        if (pOrgVar->type() != libdap::dods_array_c /* dynamic_cast<Array*>(pOrgVar)*/ ) {
             // need set send flag
             pOrgVar->set_send_p(true);
             pOrgVar->read();
@@ -328,8 +328,15 @@ void VariableElement::processRenameVariable(NCMLParser& p)
 
         // Rename variable
         pOrgVar->set_name(_name);
-        pOrgVar->var(_orgName)->set_name(_name);
-
+        // This code was renaming in all cases, but I think we only should do this for
+        // Grids. Vector::set_name() was fixed a long time ago (see comment in the
+        // following block) and renaming parts of a structure or Sequence is probably
+        // wrong. Here we are basically hacking in a new behavior, but one that fixes
+        // problems with many NetCDF clients - that the Array of a Grid _should_ have
+        // the same name as the Grid itself. Not a DAP2/DAP4 requirement, but a CF req.
+        // jhrg 8/1/18
+        if (pOrgVar->type() == libdap::dods_grid_c)
+            pOrgVar->var(_orgName)->set_name(_name);
     }
     else {
         // The above branch will reorder the output for the DataDDS case,
