@@ -128,6 +128,7 @@ H5.EnableFillValueCheck=true
 # during the mapping from HDF5 to DAP2.
 # Also this key should only be used when the H5.EnableCF key is set to true.
 H5.CheckIgnoreObj=false
+H5.ForceFlattenNDCoorAttr=true
 
 # Caching 
 # 1. Caching DAP metadata responses. 

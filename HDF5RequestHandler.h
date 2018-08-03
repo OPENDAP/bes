@@ -74,6 +74,7 @@ class HDF5RequestHandler:public BESRequestHandler {
     static bool get_drop_long_string() { return _drop_long_string;}
     static bool get_fillvalue_check() { return _fillvalue_check;}
     static bool get_check_ignore_obj() { return _check_ignore_obj;}
+    static bool get_force_flatten_coor_attr() { return _flatten_coor_attr;}
 
     static void set_dmr_64bit_int(DMR *dmr) { dmr_int64 = dmr;}
     static DMR* get_dmr_64bit_int() {return dmr_int64;}
@@ -148,6 +149,7 @@ class HDF5RequestHandler:public BESRequestHandler {
      static bool _drop_long_string;
      static bool _fillvalue_check;
      static bool _check_ignore_obj;
+     static bool _flatten_coor_attr;
      //static bool _ld_mcache_config;
      //static bool _sd_mcache_config;
      static string _stp_east_filename;

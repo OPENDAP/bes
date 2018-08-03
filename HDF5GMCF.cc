@@ -5915,13 +5915,41 @@ void GMFile:: Handle_Coor_Attr() {
     // We now walk through all the >=2 vars and flatten the "coordinates"
     if(true == has_ll2d_coords) {
  
+        string co_attrname ="coordinates";
+        bool force_flatten_coor_attr = HDF5RequestHandler::get_force_flatten_coor_attr();
+        bool has_coor_attr_ge_2d_vars = false;
+        for (vector<Var *>::iterator irv = this->vars.begin();
+                                irv != this->vars.end(); ++irv) {
+            if((*irv)->rank >=2){
+                for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin(); ira !=(*irv)->attrs.end();++ira) {
+                    // We will check if we have the coordinate attribute 
+                    if((*ira)->name == co_attrname) {
+                        has_coor_attr_ge_2d_vars = true;
+                        break;
+                    }
+                }
+                if(has_coor_attr_ge_2d_vars == true)
+                    break;
+            }
+        }
         for (vector<Var *>::iterator irv = this->vars.begin();
                 irv != this->vars.end(); ++irv) {
 
-            bool coor_attr_keep_exist = false;
-
-            if(((*irv)->rank >=2)) { 
+            bool has_coor = false;
+            for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin(); ira !=(*irv)->attrs.end();++ira) {
+                // We will check if we have the coordinate attribute 
+                if((*ira)->name == co_attrname) {
+                    has_coor = true;
+                    break;
+                }
+            }
+ 
+            if(true == force_flatten_coor_attr && true == has_coor) 
+                Flatten_VarPath_In_Coordinates_Attr((*irv));
+            
+            else if(((*irv)->rank >=2) && has_coor_attr_ge_2d_vars == false) { 
                
+                bool coor_attr_keep_exist = false;
                 // Check if this var is under group_cv_paths, no, then check if this var's dims are the same as the dims of 2-D CVars 
                 if(grp_cv_paths.find(HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath)) == grp_cv_paths.end()) 
                     // If finding this var is associated with 2-D lat/lon CVs, not keep the original "coordinates" attribute.
@@ -5930,6 +5958,7 @@ void GMFile:: Handle_Coor_Attr() {
                     coor_attr_keep_exist = true;
                 }
                 
+                // The following two lines are just for old smap level 2 case. 
                 if(product_type == OSMAPL2S)
                     coor_attr_keep_exist = true;
 

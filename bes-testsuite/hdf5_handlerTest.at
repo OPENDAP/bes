@@ -160,6 +160,15 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([nc4_unlimited_0.h5.data.bescmd])
 AT_BESCMD_RESPONSE_TEST([nc4_unlimited_1.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([nc4_unlimited_1.h5.das.bescmd])
 
+#netcdf-4 enhanced model that have the coordinate attributes
+#The current approach is to just flatten the coordinate attribute values
+# due to the support of trop-OMI and new OMI level2 products.
+# Emulate the new OMI-level 2 product 
+AT_BESCMD_RESPONSE_TEST([dim_scale.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([dim_scale.h5.das.bescmd])
+# Emulate the new Trop-OMI product 
+AT_BESCMD_RESPONSE_TEST([dim_scale2.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([dim_scale2.h5.das.bescmd])
 
 #generic cf 1d,2d latlon tests, only include das and dds.
 AT_BESCMD_RESPONSE_TEST([t_cf_1dll.h5.dds.bescmd])

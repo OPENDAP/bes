@@ -145,6 +145,8 @@ bool HDF5RequestHandler::_add_path_attrs              = false;
 bool HDF5RequestHandler::_drop_long_string            = false;
 bool HDF5RequestHandler::_fillvalue_check             = false;
 bool HDF5RequestHandler::_check_ignore_obj            = false;
+bool HDF5RequestHandler::_flatten_coor_attr           = false;
+
 bool HDF5RequestHandler::_common_cache_dirs            = false;
 
 bool HDF5RequestHandler::_use_disk_cache              =false;
@@ -220,6 +222,8 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
     _drop_long_string            = check_beskeys("H5.EnableDropLongString");
     _fillvalue_check             = check_beskeys("H5.EnableFillValueCheck");
     _check_ignore_obj            = check_beskeys("H5.CheckIgnoreObj");
+    _flatten_coor_attr           = check_beskeys("H5.ForceFlattenNDCoorAttr");
+
     _use_disk_cache              = check_beskeys("H5.EnableDiskDataCache");
     _disk_cache_dir              = get_beskeys("H5.DiskCacheDataPath");
     _disk_cachefile_prefix       = get_beskeys("H5.DiskCacheFilePrefix");
