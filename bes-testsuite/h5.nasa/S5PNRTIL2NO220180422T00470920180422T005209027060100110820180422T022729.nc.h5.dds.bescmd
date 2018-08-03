@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="grid_1_2d" space="catalog">/data/S5PNRTIL2NO220180422T00470920180422T005209027060100110820180422T022729.nc.h5</setContainer>
+    <define name="d">
+	<container name="grid_1_2d" />
+    </define>
+    <get type="dds" definition="d" />
+</request>

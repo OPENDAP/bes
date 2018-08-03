@@ -28,7 +28,7 @@
             <value>/res_c2</value>
         </Attribute>
         <Attribute name="coordinates" type="String">
-            <value>Latitude Longitude</value>
+            <value>Longitude Latitude</value>
         </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
@@ -45,7 +45,7 @@
             <value>/mask</value>
         </Attribute>
         <Attribute name="coordinates" type="String">
-            <value>Latitude Longitude</value>
+            <value>Longitude Latitude</value>
         </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
@@ -71,7 +71,7 @@
             <value>/opt_depth_c2</value>
         </Attribute>
         <Attribute name="coordinates" type="String">
-            <value>Latitude Longitude</value>
+            <value>Longitude Latitude</value>
         </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
@@ -100,7 +100,7 @@
             <value>/res_c1</value>
         </Attribute>
         <Attribute name="coordinates" type="String">
-            <value>Latitude Longitude</value>
+            <value>Longitude Latitude</value>
         </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
@@ -129,7 +129,7 @@
             <value>/soil_moisture_c2</value>
         </Attribute>
         <Attribute name="coordinates" type="String">
-            <value>Latitude Longitude</value>
+            <value>Longitude Latitude</value>
         </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
@@ -158,7 +158,7 @@
             <value>/soil_moisture_c1</value>
         </Attribute>
         <Attribute name="coordinates" type="String">
-            <value>Latitude Longitude</value>
+            <value>Longitude Latitude</value>
         </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
@@ -187,7 +187,7 @@
             <value>/soil_moisture_c2_error</value>
         </Attribute>
         <Attribute name="coordinates" type="String">
-            <value>Latitude Longitude</value>
+            <value>Longitude Latitude</value>
         </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
@@ -213,7 +213,7 @@
             <value>/opt_depth_c1</value>
         </Attribute>
         <Attribute name="coordinates" type="String">
-            <value>Latitude Longitude</value>
+            <value>Longitude Latitude</value>
         </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
@@ -236,7 +236,7 @@
             <value>/scantime</value>
         </Attribute>
         <Attribute name="coordinates" type="String">
-            <value>Latitude Longitude</value>
+            <value>Longitude Latitude</value>
         </Attribute>
         <Float64/>
         <dimension name="nscan" size="2015"/>
@@ -253,7 +253,7 @@
             <value>/rfi_code2</value>
         </Attribute>
         <Attribute name="coordinates" type="String">
-            <value>Latitude Longitude</value>
+            <value>Longitude Latitude</value>
         </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
@@ -279,7 +279,7 @@
             <value>/opt_depth_x</value>
         </Attribute>
         <Attribute name="coordinates" type="String">
-            <value>Latitude Longitude</value>
+            <value>Longitude Latitude</value>
         </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
@@ -308,7 +308,7 @@
             <value>/res_x</value>
         </Attribute>
         <Attribute name="coordinates" type="String">
-            <value>Latitude Longitude</value>
+            <value>Longitude Latitude</value>
         </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
@@ -337,7 +337,7 @@
             <value>/soil_moisture_c1_error</value>
         </Attribute>
         <Attribute name="coordinates" type="String">
-            <value>Latitude Longitude</value>
+            <value>Longitude Latitude</value>
         </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
@@ -366,7 +366,7 @@
             <value>/ts</value>
         </Attribute>
         <Attribute name="coordinates" type="String">
-            <value>Latitude Longitude</value>
+            <value>Longitude Latitude</value>
         </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
@@ -383,7 +383,7 @@
             <value>/rfi_code1</value>
         </Attribute>
         <Attribute name="coordinates" type="String">
-            <value>Latitude Longitude</value>
+            <value>Longitude Latitude</value>
         </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
@@ -412,7 +412,7 @@
             <value>/soil_moisture_x</value>
         </Attribute>
         <Attribute name="coordinates" type="String">
-            <value>Latitude Longitude</value>
+            <value>Longitude Latitude</value>
         </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
@@ -441,7 +441,7 @@
             <value>/soil_moisture_x_error</value>
         </Attribute>
         <Attribute name="coordinates" type="String">
-            <value>Latitude Longitude</value>
+            <value>Longitude Latitude</value>
         </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>

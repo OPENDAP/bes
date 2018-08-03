@@ -10,13 +10,13 @@ Attributes {
         Float32 add_offset 0.000000000;
         String origname "res_c2";
         String fullnamepath "/res_c2";
-        String coordinates "Latitude Longitude";
+        String coordinates "Longitude Latitude";
     }
     mask {
         String long_name "Bit Mask";
         String origname "mask";
         String fullnamepath "/mask";
-        String coordinates "Latitude Longitude";
+        String coordinates "Longitude Latitude";
     }
     opt_depth_c2 {
         String long_name "Optical Depth from 7.3 GHz";
@@ -25,7 +25,7 @@ Attributes {
         Float32 add_offset 0.000000000;
         String origname "opt_depth_c2";
         String fullnamepath "/opt_depth_c2";
-        String coordinates "Latitude Longitude";
+        String coordinates "Longitude Latitude";
     }
     res_c1 {
         String long_name "Residual error at 6.9 GHz";
@@ -35,7 +35,7 @@ Attributes {
         Float32 add_offset 0.000000000;
         String origname "res_c1";
         String fullnamepath "/res_c1";
-        String coordinates "Latitude Longitude";
+        String coordinates "Longitude Latitude";
     }
     soil_moisture_c2 {
         String long_name "Volumetric Soil Moisture from 7.3 GHz";
@@ -45,7 +45,7 @@ Attributes {
         Float32 add_offset 0.000000000;
         String origname "soil_moisture_c2";
         String fullnamepath "/soil_moisture_c2";
-        String coordinates "Latitude Longitude";
+        String coordinates "Longitude Latitude";
     }
     soil_moisture_c1 {
         String long_name "Volumetric Soil Moisture from 6.9 GHZ";
@@ -55,7 +55,7 @@ Attributes {
         Float32 add_offset 0.000000000;
         String origname "soil_moisture_c1";
         String fullnamepath "/soil_moisture_c1";
-        String coordinates "Latitude Longitude";
+        String coordinates "Longitude Latitude";
     }
     soil_moisture_c2_error {
         String long_name "Uncertainty of Soil Moisture in 7.3 GHz";
@@ -65,7 +65,7 @@ Attributes {
         Float32 add_offset 0.000000000;
         String origname "soil_moisture_c2_error";
         String fullnamepath "/soil_moisture_c2_error";
-        String coordinates "Latitude Longitude";
+        String coordinates "Longitude Latitude";
     }
     opt_depth_c1 {
         String long_name "Optical Depth from 6.9 GHz";
@@ -74,7 +74,7 @@ Attributes {
         Float32 add_offset 0.000000000;
         String origname "opt_depth_c1";
         String fullnamepath "/opt_depth_c1";
-        String coordinates "Latitude Longitude";
+        String coordinates "Longitude Latitude";
     }
     scantime {
         String long_name "Scan time";
@@ -82,13 +82,13 @@ Attributes {
         Float64 _FillValue 0.0000000000000000;
         String origname "scantime";
         String fullnamepath "/scantime";
-        String coordinates "Latitude Longitude";
+        String coordinates "Longitude Latitude";
     }
     rfi_code2 {
         String long_name "RFI Code using 7.3 GHz";
         String origname "rfi_code2";
         String fullnamepath "/rfi_code2";
-        String coordinates "Latitude Longitude";
+        String coordinates "Longitude Latitude";
     }
     opt_depth_x {
         String long_name "Optical Depth from 10.7 GHz";
@@ -97,7 +97,7 @@ Attributes {
         Float32 add_offset 0.000000000;
         String origname "opt_depth_x";
         String fullnamepath "/opt_depth_x";
-        String coordinates "Latitude Longitude";
+        String coordinates "Longitude Latitude";
     }
     res_x {
         String long_name "Residual error at 10.7 GHz";
@@ -107,7 +107,7 @@ Attributes {
         Float32 add_offset 0.000000000;
         String origname "res_x";
         String fullnamepath "/res_x";
-        String coordinates "Latitude Longitude";
+        String coordinates "Longitude Latitude";
     }
     soil_moisture_c1_error {
         String long_name "Uncertainty of Soil Moisture in 6.9 GHz";
@@ -117,7 +117,7 @@ Attributes {
         Float32 add_offset 0.000000000;
         String origname "soil_moisture_c1_error";
         String fullnamepath "/soil_moisture_c1_error";
-        String coordinates "Latitude Longitude";
+        String coordinates "Longitude Latitude";
     }
     ts {
         String long_name "Skin Temperature (2mm)";
@@ -127,13 +127,13 @@ Attributes {
         Float32 add_offset 0.000000000;
         String origname "ts";
         String fullnamepath "/ts";
-        String coordinates "Latitude Longitude";
+        String coordinates "Longitude Latitude";
     }
     rfi_code1 {
         String long_name "RFI Code using 6.9 GHz";
         String origname "rfi_code1";
         String fullnamepath "/rfi_code1";
-        String coordinates "Latitude Longitude";
+        String coordinates "Longitude Latitude";
     }
     soil_moisture_x {
         String long_name "Volumetric Soil Moisture from 10.7 GHz";
@@ -143,7 +143,7 @@ Attributes {
         Float32 add_offset 0.000000000;
         String origname "soil_moisture_x";
         String fullnamepath "/soil_moisture_x";
-        String coordinates "Latitude Longitude";
+        String coordinates "Longitude Latitude";
     }
     soil_moisture_x_error {
         String long_name "Uncertainty of Soil Moisture in 10.7 GHz";
@@ -153,7 +153,7 @@ Attributes {
         Float32 add_offset 0.000000000;
         String origname "soil_moisture_x_error";
         String fullnamepath "/soil_moisture_x_error";
-        String coordinates "Latitude Longitude";
+        String coordinates "Longitude Latitude";
     }
     Latitude {
         String units "degrees_north";
