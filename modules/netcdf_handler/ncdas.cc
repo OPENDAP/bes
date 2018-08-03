@@ -419,7 +419,7 @@ static void read_attributes_netcdf4(int ncid, int varid, int natts, AttrTable *a
         errstat = nc_inq_att(ncid, varid, attrname, &datatype, &len);
         if (errstat != NC_NOERR) throw Error(errstat, "Could not get the name for attribute '" + string(attrname) + "'");
 
-        BESDEBUG("nc", "nc_inq_att returned datatype = " << datatype << endl);
+        BESDEBUG("nc", "nc_inq_att returned datatype = " << datatype << " for '" << attrname << "'" << endl);
 
         //if (is_user_defined_type(ncid, datatype)) {
         if (datatype >= NC_FIRSTUSERTYPEID) {
