@@ -317,9 +317,29 @@ void VariableElement::processRenameVariable(NCMLParser& p)
     if (p.parsingDataRequest()) {
         // If not an Array, force it to read or we won't find the new name in the file for HDF at least...
         if (pOrgVar->type() != libdap::dods_array_c /* dynamic_cast<Array*>(pOrgVar)*/ ) {
-            // need set send flag
-            pOrgVar->set_send_p(true);
+
+            bool send_p_was_set = false;
+            if (!pOrgVar->send_p()) {
+                // need set send flag to get read() to read in data
+                // See https://opendap.atlassian.net/browse/HYRAX-539 and
+                // https://opendap.atlassian.net/browse/HYRAX-802
+                pOrgVar->set_send_p(true);
+                // record the fact so we can back it out
+                send_p_was_set = true;
+            }
+
             pOrgVar->read();
+
+            if (send_p_was_set) {
+                // Trick: Reset/clear send_p so that when a CE is applied the libdap CE
+                // parser does not think this variable has already had a CE applied. If
+                // it sees send_p as true, it will think the Array was already projected
+                // (and as the full size of the array). Any subsequent attempt to re-project
+                // it to a different size will fail. Similarly, is pOrgVar is a structure,
+                // the call to set_send_p(true) will cause all fields to be sent, regardless
+                // of any Structure field projection. jhrg 8/2/18
+                pOrgVar->set_send_p(false);
+            }
         }
         // If the variable is an Array, we need to wrap it in a RenamedArrayWrapper
         // so that it finds it data correctly.
