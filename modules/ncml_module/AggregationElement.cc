@@ -867,7 +867,8 @@ void AggregationElement::processAggVarJoinNewForArray(DDS& aggDDS, const libdap:
     // Replaced the copy version of DDS::add_var() with the nocopy version. This saves
     // a deep copy, but more importantly, is a workaround for a memory issue in the
     // ArrayAggregateOnOuterDimension or ArrayAggreagtionBase copy constructor, which
-    // triggers a memory error deep in libdap::Array::Array(const Array&).
+    // triggers a memory error deep in libdap::Array::Array(const Array&). See similar
+    // changes below. This and related changes fix HYRAX-803. jhrg 8/3/18
 #if 0
     aggDDS.add_var(pAggArray.get());
 #endif
@@ -889,7 +890,11 @@ void AggregationElement::processAggVarJoinNewForGrid(DDS& aggDDS, const Grid& gr
     BESDEBUG("ncml",
         "Adding new GridAggregateOnOuterDimension with name=" << gridTemplate.name() << " to aggregated dataset!" << endl);
 
+#if 0
     aggDDS.add_var(pAggGrid.get());
+#endif
+
+    aggDDS.add_var_nocopy(pAggGrid.release());
 
     // processParentDatasetCompleteForJoinNew() will
     // make sure the correct new map vector gets added
@@ -937,7 +942,12 @@ void AggregationElement::processAggVarJoinExistingForGrid(DDS& aggDDS, const Gri
 
     BESDEBUG("ncml",
         "Adding new GridJoinExistingAggregation with name=" << gridTemplate.name() << " to aggregated dataset!" << endl);
+
+#if 0
     aggDDS.add_var(pAggGrid.get()); // will copy
+#endif
+
+    aggDDS.add_var_nocopy(pAggGrid.release());
 }
 
 void AggregationElement::processParentDatasetCompleteForJoinNew()
