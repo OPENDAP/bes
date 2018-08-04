@@ -864,7 +864,15 @@ void AggregationElement::processAggVarJoinNewForArray(DDS& aggDDS, const libdap:
     BESDEBUG("ncml",
         "Adding new ArrayAggregateOnOuterDimension with name=" << arrayTemplate.name() << " to aggregated dataset!" << endl);
 
+    // Replaced the copy version of DDS::add_var() with the nocopy version. This saves
+    // a deep copy, but more importantly, is a workaround for a memory issue in the
+    // ArrayAggregateOnOuterDimension or ArrayAggreagtionBase copy constructor, which
+    // triggers a memory error deep in libdap::Array::Array(const Array&).
+#if 0
     aggDDS.add_var(pAggArray.get());
+#endif
+
+    aggDDS.add_var_nocopy(pAggArray.release());
 }
 
 void AggregationElement::processAggVarJoinNewForGrid(DDS& aggDDS, const Grid& gridTemplate,
@@ -880,6 +888,7 @@ void AggregationElement::processAggVarJoinNewForGrid(DDS& aggDDS, const Grid& gr
     // OPTIMIZE change to add_var_no_copy when it exists.
     BESDEBUG("ncml",
         "Adding new GridAggregateOnOuterDimension with name=" << gridTemplate.name() << " to aggregated dataset!" << endl);
+
     aggDDS.add_var(pAggGrid.get());
 
     // processParentDatasetCompleteForJoinNew() will
@@ -909,7 +918,11 @@ void AggregationElement::processAggVarJoinExistingForArray(DDS& aggDDS, const li
     BESDEBUG("ncml",
         "Adding new ArrayJoinExistingAggregation with name=" << arrayTemplate.name() << " to aggregated dataset!" << endl);
 
+#if 0
     aggDDS.add_var(pAggArray.get());
+#endif
+
+    aggDDS.add_var_nocopy(pAggArray.release());
 }
 
 void AggregationElement::processAggVarJoinExistingForGrid(DDS& aggDDS, const Grid& gridTemplate,
