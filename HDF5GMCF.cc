@@ -4064,6 +4064,7 @@ bool GMFile::Flatten_VarPath_In_Coordinates_Attr(Var *var) throw(Exception) {
     bool has_coor_attr = false;
     string orig_coor_value;
     string flatten_coor_value;
+    // Assume the separator is always a space.
     char sc = ' ';
 
     for (vector<Attribute *>:: iterator ira =var->attrs.begin(); ira !=var->attrs.end();) {
@@ -4110,6 +4111,74 @@ bool GMFile::Flatten_VarPath_In_Coordinates_Attr(Var *var) throw(Exception) {
     return true;
  
 } 
+// This function flattens the variable path in the "coordinates" attribute for hybrid EOS5.
+// Will implement it later. 
+// It is also used by Handle_Coor_Attr().
+#if 0
+bool GMFile::Flatten_VarPath_In_Coordinates_Attr_EOS5(Var *var) throw(Exception) {
+
+    BESDEBUG("h5", "Coming to Flatten_VarPath_In_Coordinates_Attr_EOS5()"<<endl);
+    string co_attrname = "coordinates";
+    bool has_coor_attr = false;
+    string orig_coor_value;
+    string flatten_coor_value;
+    // Assume the separator is always a space.
+    char sc = ' ';
+
+    for (vector<Attribute *>:: iterator ira =var->attrs.begin(); ira !=var->attrs.end();) {
+
+        // We only check the original attribute name
+        // Remove the original "coordinates" attribute.
+        if((*ira)->name == co_attrname) {
+            Retrieve_H5_Attr_Value((*ira),var->fullpath);
+
+            string orig_attr_value((*ira)->value.begin(),(*ira)->value.end());
+            orig_coor_value = orig_attr_value;
+            has_coor_attr = true;
+            delete(*ira);
+            ira = var->attrs.erase(ira);
+            break;
+        }
+        else 
+            ++ira;
+    }
+
+    if(true == has_coor_attr) {
+
+        // We need to loop through each element in the "coordinates".
+        // For EOS5: we need to  find the swath name.
+        size_t ele_start_pos = 0;
+// cerr<<"orig_coor_value is "<<orig_coor_value <<endl;
+        size_t cur_pos = orig_coor_value.find_first_of(sc);
+        while(cur_pos !=string::npos) {
+            string tempstr = orig_coor_value.substr(ele_start_pos,cur_pos-ele_start_pos);
+            // Find the swath name
+            // tempstr = "swath name" +"_"+tempstr;
+            tempstr = get_CF_string(tempstr);
+            flatten_coor_value += tempstr + sc;
+            ele_start_pos = cur_pos+1;
+            cur_pos = orig_coor_value.find_first_of(sc,cur_pos+1);
+        }
+        // Only one element
+        if(ele_start_pos == 0) {
+            // Find the swath name
+            // tempstr = "swath name" +"_"+tempstr;
+            flatten_coor_value = get_CF_string(tempstr);
+        }
+        else // Add the last element
+            flatten_coor_value += get_CF_string(orig_coor_value.substr(ele_start_pos));
+
+        // Generate the new "coordinates" attribute.
+        Attribute *attr = new Attribute();
+        Add_Str_Attr(attr,co_attrname,flatten_coor_value);
+        var->attrs.push_back(attr);
+    }
+
+    return true;
+ 
+} 
+#endif
+
 
 // The following two routines only handle one 2-D lat/lon CVs. It is replaced by the more general 
 // multi 2-D lat/lon CV routines. Leave it here just for references.
@@ -5932,6 +6001,11 @@ void GMFile:: Handle_Coor_Attr() {
                     break;
             }
         }
+#if 0
+        bool is_hybrid_eos5= false;
+        if(force_flatten_coor_attr == true && has_coor_attr_ge_2d_vars == true)
+            is_hybrid_eos5 = Is_Hybrid_EOS5();
+#endif
         for (vector<Var *>::iterator irv = this->vars.begin();
                 irv != this->vars.end(); ++irv) {
 
@@ -5944,10 +6018,17 @@ void GMFile:: Handle_Coor_Attr() {
                 }
             }
  
-            if(true == force_flatten_coor_attr && true == has_coor) 
-                Flatten_VarPath_In_Coordinates_Attr((*irv));
+            if(true == force_flatten_coor_attr && true == has_coor) { 
+#if 0
+                if(is_hybrid_eos5 == true) {
+                    Flatten_VarPath_In_Coordinates_Attr_EOS5((*irv));
+                }
+                else 
+#endif
+                    Flatten_VarPath_In_Coordinates_Attr((*irv));
+            }
             
-            else if(((*irv)->rank >=2) && has_coor_attr_ge_2d_vars == false) { 
+            else if(((*irv)->rank >=2) && (has_coor_attr_ge_2d_vars == false || false == force_flatten_coor_attr)) { 
                
                 bool coor_attr_keep_exist = false;
                 // Check if this var is under group_cv_paths, no, then check if this var's dims are the same as the dims of 2-D CVars 

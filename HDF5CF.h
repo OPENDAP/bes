@@ -1005,6 +1005,7 @@ protected:
     // The following routines are for generating coordinates attributes for netCDF-4 like 2D-latlon cases.
     bool Check_Var_2D_CVars(Var*) throw (Exception);
     bool Flatten_VarPath_In_Coordinates_Attr(Var*) throw (Exception);
+    //bool Flatten_VarPath_In_Coordinates_Attr_EOS5(Var*) throw (Exception);
     void Handle_LatLon_With_CoordinateAttr_Coor_Attr() throw (Exception);
     bool Coord_Match_LatLon_NameSize(const string & coord_values) throw (Exception);
     bool Coord_Match_LatLon_NameSize_Same_Group(const string & coord_values, const string &var_path) throw (Exception);

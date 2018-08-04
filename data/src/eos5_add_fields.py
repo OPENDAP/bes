@@ -68,13 +68,14 @@ def add_swath_dim_info(file,fname,xdimname,ydimname,zdimname,v1name):
     return
 
 
-def add_swath_coordinates(file,v1path,v1name,v2path,v2name,geo1path):
+def add_swath_coordinates(file,v1path,v1name,v2path,v2name,geo1path,geo2path):
     grp1 = file[v1path]
     v1dset = grp1[v1name]
-    v1dset.attrs["coordinates"]=geo1path+"/"+"Latitude"+" "+geo1path+"/"+"Longitude"+" "+geo1path+"/"+"Pressure";
+    #v1dset.attrs["coordinates"]=geo1path+"/"+"Latitude"+" "+geo1path+"/"+"Longitude"+" "+geo1path+"/"+"Pressure";
     grp2 = file[v2path];
     v2dset = grp2[v2name];
-    v2dset.attrs["coordinates"]=v2path+"/"+"Latitude"+" "+v2path+"/"+"Longitude";
+    #v2dset.attrs["coordinates"]=v2path+"/"+"Latitude"+" "+v2path+"/"+"Longitude";
+    #v2dset.attrs["coordinates"]=geo2path+"/"+"Latitude"+" "+geo2path+"/"+"Longitude"+" "+geo2path+"/"+"Pressure";
     return
 
 def attach_2d_scales(file,swath_geov_2d_list,dim0name,dim1name):
@@ -101,6 +102,6 @@ swath_geov_2d_list =[grp1_path+"Latitude",grp1_path+"Longitude"]
 attach_2d_scales(file,swath_geov_2d_list,"/HDFEOS/SWATHS/Swath1/YDim","/HDFEOS/SWATHS/Swath1/XDim")
 swath_geov_2d_list=[grp2_path+"Latitude",grp2_path+"Longitude"]
 attach_2d_scales(file,swath_geov_2d_list,"/HDFEOS/SWATHS/Swath2/YDim","/HDFEOS/SWATHS/Swath2/XDim")
-add_swath_coordinates(file,"/HDFEOS/SWATHS/Swath1/Data Fields","Temperature","/HDFEOS/SWATHS/Swath2/Data Fields","Temperature","/HDFEOS/SWATHS/Swath1/Geolocation Fields");
+add_swath_coordinates(file,"/HDFEOS/SWATHS/Swath1/Data Fields","Temperature","/HDFEOS/SWATHS/Swath2/Data Fields","Temperature","/HDFEOS/SWATHS/Swath1/Geolocation Fields","/HDFEOS/SWATHS/Swath2/Geolocation Fields");
 file.close
 add_extra_field("za_1_2d_yz_ef.h5","/HDFEOS/ZAS/1dummy_extra",2);

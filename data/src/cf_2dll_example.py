@@ -53,7 +53,7 @@ temp_dset.attrs["long_name"] = "temperature"
 temp_dset.attrs["units"] = "kelvin"
 
 vlen = h5py.special_dtype (vlen = str)
-temp_dset.attrs.create ('coordinates', data = ['lat', 'lon'], 
+temp_dset.attrs.create ('coordinates', data = ['lat lon'], 
             dtype=vlen) 
 
 # must explicitly declare numerical data, or else the datatype is assumed
