@@ -1252,7 +1252,10 @@ AggregationElement::processDeferredCoordinateVariable(libdap::BaseType* pBT, con
     // Add the new one, which will copy it (argh! we need to fix this in libdap!)
     // OPTIMIZE  use non copy add when available.
     BESDEBUG("ncml", "Adding CV: " << pNewArrCV->name() << endl);
+#if 0
     pDDS->add_var(pNewArrCV.get()); // use raw ptr for the copy.
+#endif
+    pDDS->add_var_nocopy(pNewArrCV.release());
 
     // Pull out the copy we just added and hand it back
     Array* pArrCV = static_cast<Array*>(AggregationUtil::getVariableNoRecurse(*pDDS, dim.name));
@@ -1284,11 +1287,11 @@ AggregationElement::createAndAddCoordinateVariableForNewDimension(DDS& dds, cons
         "AgregationElement::createCoordinateVariableForNewDimension() failed to create a coordinate variable!");
 
     // Add it to the DDS, which will make a copy
-    // (TODO change this when we add noncopy add_var to DDS)
+    // (change this when we add noncopy add_var to DDS)
     //
     // Fix. This will append the variable to the DDS; we need these CVs to be
     // prefixes to the Grids (so that old versions of the netCDF library will
-    // recognize them. jhrg 10/17/11
+    // recognize them). jhrg 10/17/11
     BESDEBUG("ncml2", "AggregationElement::createAndAddCoordinateVariableForNewDimension: " << pNewCV->name());
 #if 0
     dds.add_var(pNewCV.get());

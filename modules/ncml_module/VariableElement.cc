@@ -488,7 +488,11 @@ void VariableElement::processNewArray(NCMLParser& p, const std::string& dapType)
 
     // Now make the template variable of the array entry type with the same name and add it
     auto_ptr<BaseType> pTemplateVar = MyBaseTypeFactory::makeVariable(dapType, _name);
+#if 0
     pNewVar->add_var(pTemplateVar.get());
+#endif
+
+    pNewVar->add_var_nocopy(pTemplateVar.release());
 
     // For each dimension in the shape, append it to make an N-D array...
     for (unsigned int i = 0; i < _shapeTokens.size(); ++i) {

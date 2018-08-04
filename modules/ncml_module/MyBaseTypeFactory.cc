@@ -229,55 +229,55 @@ std::auto_ptr<libdap::Array> MyBaseTypeFactory::makeArrayTemplateVariable(const 
     if (type == "Array<Byte>") {
         pNew = new NCMLArray<dods_byte>(name);
         if (makeTemplateVar) {
-            pNew->add_var(makeVariable("Byte", name).get());
+            pNew->add_var_nocopy(makeVariable("Byte", name).release());
         }
     }
     else if (type == "Array<Int16>") {
         pNew = new NCMLArray<dods_int16>(name);
         if (makeTemplateVar) {
-            pNew->add_var(makeVariable("Int16", name).get());
+            pNew->add_var_nocopy(makeVariable("Int16", name).release());
         }
     }
     else if (type == "Array<UInt16>") {
         pNew = new NCMLArray<dods_uint16>(name);
         if (makeTemplateVar) {
-            pNew->add_var(makeVariable("UInt16", name).get());
+            pNew->add_var_nocopy(makeVariable("UInt16", name).release());
         }
     }
     else if (type == "Array<Int32>") {
         pNew = new NCMLArray<dods_int32>(name);
         if (makeTemplateVar) {
-            pNew->add_var(makeVariable("Int32", name).get());
+            pNew->add_var_nocopy(makeVariable("Int32", name).release());
         }
     }
     else if (type == "Array<UInt32>") {
         pNew = new NCMLArray<dods_uint32>(name);
         if (makeTemplateVar) {
-            pNew->add_var(makeVariable("UInt32", name).get());
+            pNew->add_var_nocopy(makeVariable("UInt32", name).release());
         }
     }
     else if (type == "Array<Float32>") {
         pNew = new NCMLArray<dods_float32>(name);
         if (makeTemplateVar) {
-            pNew->add_var(makeVariable("Float32", name).get());
+            pNew->add_var_nocopy(makeVariable("Float32", name).release());
         }
     }
     else if (type == "Array<Float64>") {
         pNew = new NCMLArray<dods_float64>(name);
         if (makeTemplateVar) {
-            pNew->add_var(makeVariable("Float64", name).get());
+            pNew->add_var_nocopy(makeVariable("Float64", name).release());
         }
     }
     else if (type == "Array<String>" || type == "Array<Str>") {
         pNew = new NCMLArray<std::string>(name);
         if (makeTemplateVar) {
-            pNew->add_var(makeVariable("String", name).get());
+            pNew->add_var_nocopy(makeVariable("String", name).release());
         }
     }
     else if (type == "Array<URL>" || type == "Array<Url>") {
         pNew = new NCMLArray<std::string>(name);
         if (makeTemplateVar) {
-            pNew->add_var(makeVariable("URL", name).get());
+            pNew->add_var_nocopy(makeVariable("URL", name).release());
         }
     }
     else {

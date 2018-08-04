@@ -153,7 +153,8 @@ public:
 
         // OK, now that we have it, we need to copy the attribute table and the prototype variable
         set_attr_table(from.get_attr_table());
-        add_var(from.var()->ptr_duplicate()); // TODO This may leak memory
+        // switched to add_var_ncopy() to avoid memory leak. jhrg 8/3/18
+        add_var_nocopy(from.var()->ptr_duplicate()); // This may leak memory. Fixed.
 
         // add all the dimensions
         Array::Dim_iter endIt = from.dim_end();
