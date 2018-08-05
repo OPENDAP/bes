@@ -5,17 +5,6 @@
         <Dim name="/station"/>
         <Attribute name="_FillValue" type="Byte">
             <Value>255</Value>
-            <Value>0</Value>
-            <Value>0</Value>
-            <Value>0</Value>
-            <Value>0</Value>
-            <Value>0</Value>
-            <Value>0</Value>
-            <Value>0</Value>
-            <Value>0</Value>
-            <Value>0</Value>
-            <Value>0</Value>
-            <Value>0</Value>
         </Attribute>
         <Attribute name="DAP2_EnumValues" type="Byte">
             <Value>0</Value>

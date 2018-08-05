@@ -26,7 +26,7 @@
 
 #include <netcdf.h>
 
-bool is_user_defined_type(int ncid, int type)
+bool is_user_defined_type(int /*ncid*/, int type)
 {
 #if NETCDF_VERSION >= 4
     return type >= NC_FIRSTUSERTYPEID;

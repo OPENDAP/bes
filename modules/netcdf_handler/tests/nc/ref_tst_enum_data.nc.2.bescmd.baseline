@@ -3,17 +3,6 @@
     <Array name="primary_cloud">
         <Attribute name="_FillValue" type="Byte">
             <value>255</value>
-            <value>0</value>
-            <value>0</value>
-            <value>0</value>
-            <value>0</value>
-            <value>0</value>
-            <value>0</value>
-            <value>0</value>
-            <value>0</value>
-            <value>0</value>
-            <value>0</value>
-            <value>0</value>
         </Attribute>
         <Attribute name="DAP2_EnumValues" type="Byte">
             <value>0</value>

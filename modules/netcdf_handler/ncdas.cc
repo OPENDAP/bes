@@ -478,12 +478,12 @@ static void read_attributes_netcdf4(int ncid, int varid, int natts, AttrTable *a
                 errstat = nc_inq_enum(ncid, datatype, 0/*char *name*/, &basetype, &base_size, &num_members);
                 if (errstat != NC_NOERR) throw Error(errstat, string("Could not get the size of the enum base type for '") + attrname + string("'"));
 #endif
-                vector<unsigned char> values((nfields + 1) * size);
+                vector<unsigned char> values((len + 1) * size);
 
                 int errstat = nc_get_att(ncid, varid, attrname, &values[0]);
                 if (errstat != NC_NOERR) throw Error(errstat, string("Could not get the value for attribute '") + attrname + string("'"));
 
-                for (size_t i = 0; i < nfields; ++i)
+                for (size_t i = 0; i < len; ++i)
                     at->append_attr(attrname, print_type(base_type), print_attr(base_type, i, &values[0]));
 
                 break;
