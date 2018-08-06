@@ -69,6 +69,7 @@ libtool
 **/generate_data_baseline.sh
 **/generate_metadata_baseline.sh
 **/test_config.h
+**/bes.conf
 
 abi_checker.xml
 bes-config

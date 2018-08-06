@@ -3,9 +3,6 @@
     <UInt32 name="primary_cloud">
         <Attribute name="_FillValue" type="UInt32">
             <Value>255</Value>
-            <Value>0</Value>
-            <Value>25973</Value>
-            <Value>108</Value>
         </Attribute>
         <Attribute name="DAP2_EnumValues" type="UInt32">
             <Value>0</Value>

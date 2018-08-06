@@ -121,6 +121,7 @@ public:
     virtual BaseType *var(const string &name = "", bool exact_match = true, btp_stack *s = 0);
     virtual BaseType *var(const string &name, btp_stack &s);
     virtual void add_var(BaseType *bt, Part part = nil);
+    virtual void add_var_nocopy(BaseType *bt, Part part = nil);
 
 #if 0
     virtual bool check_semantics(string &msg, bool all = false);
