@@ -864,7 +864,16 @@ void AggregationElement::processAggVarJoinNewForArray(DDS& aggDDS, const libdap:
     BESDEBUG("ncml",
         "Adding new ArrayAggregateOnOuterDimension with name=" << arrayTemplate.name() << " to aggregated dataset!" << endl);
 
+    // Replaced the copy version of DDS::add_var() with the nocopy version. This saves
+    // a deep copy, but more importantly, is a workaround for a memory issue in the
+    // ArrayAggregateOnOuterDimension or ArrayAggreagtionBase copy constructor, which
+    // triggers a memory error deep in libdap::Array::Array(const Array&). See similar
+    // changes below. This and related changes fix HYRAX-803. jhrg 8/3/18
+#if 0
     aggDDS.add_var(pAggArray.get());
+#endif
+
+    aggDDS.add_var_nocopy(pAggArray.release());
 }
 
 void AggregationElement::processAggVarJoinNewForGrid(DDS& aggDDS, const Grid& gridTemplate,
@@ -880,7 +889,12 @@ void AggregationElement::processAggVarJoinNewForGrid(DDS& aggDDS, const Grid& gr
     // OPTIMIZE change to add_var_no_copy when it exists.
     BESDEBUG("ncml",
         "Adding new GridAggregateOnOuterDimension with name=" << gridTemplate.name() << " to aggregated dataset!" << endl);
+
+#if 0
     aggDDS.add_var(pAggGrid.get());
+#endif
+
+    aggDDS.add_var_nocopy(pAggGrid.release());
 
     // processParentDatasetCompleteForJoinNew() will
     // make sure the correct new map vector gets added
@@ -909,7 +923,11 @@ void AggregationElement::processAggVarJoinExistingForArray(DDS& aggDDS, const li
     BESDEBUG("ncml",
         "Adding new ArrayJoinExistingAggregation with name=" << arrayTemplate.name() << " to aggregated dataset!" << endl);
 
+#if 0
     aggDDS.add_var(pAggArray.get());
+#endif
+
+    aggDDS.add_var_nocopy(pAggArray.release());
 }
 
 void AggregationElement::processAggVarJoinExistingForGrid(DDS& aggDDS, const Grid& gridTemplate,
@@ -924,7 +942,12 @@ void AggregationElement::processAggVarJoinExistingForGrid(DDS& aggDDS, const Gri
 
     BESDEBUG("ncml",
         "Adding new GridJoinExistingAggregation with name=" << gridTemplate.name() << " to aggregated dataset!" << endl);
+
+#if 0
     aggDDS.add_var(pAggGrid.get()); // will copy
+#endif
+
+    aggDDS.add_var_nocopy(pAggGrid.release());
 }
 
 void AggregationElement::processParentDatasetCompleteForJoinNew()
@@ -1229,7 +1252,10 @@ AggregationElement::processDeferredCoordinateVariable(libdap::BaseType* pBT, con
     // Add the new one, which will copy it (argh! we need to fix this in libdap!)
     // OPTIMIZE  use non copy add when available.
     BESDEBUG("ncml", "Adding CV: " << pNewArrCV->name() << endl);
+#if 0
     pDDS->add_var(pNewArrCV.get()); // use raw ptr for the copy.
+#endif
+    pDDS->add_var_nocopy(pNewArrCV.release());
 
     // Pull out the copy we just added and hand it back
     Array* pArrCV = static_cast<Array*>(AggregationUtil::getVariableNoRecurse(*pDDS, dim.name));
@@ -1261,11 +1287,11 @@ AggregationElement::createAndAddCoordinateVariableForNewDimension(DDS& dds, cons
         "AgregationElement::createCoordinateVariableForNewDimension() failed to create a coordinate variable!");
 
     // Add it to the DDS, which will make a copy
-    // (TODO change this when we add noncopy add_var to DDS)
+    // (change this when we add noncopy add_var to DDS)
     //
     // Fix. This will append the variable to the DDS; we need these CVs to be
     // prefixes to the Grids (so that old versions of the netCDF library will
-    // recognize them. jhrg 10/17/11
+    // recognize them). jhrg 10/17/11
     BESDEBUG("ncml2", "AggregationElement::createAndAddCoordinateVariableForNewDimension: " << pNewCV->name());
 #if 0
     dds.add_var(pNewCV.get());
