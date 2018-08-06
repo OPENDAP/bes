@@ -1,5 +1,7 @@
 # Process with autom4te to create an -*- Autotest -*- test suite.
 
+AT_INIT([bes/modules/netcdf_handler/tests])
+
 m4_include([handler_tests_macros.m4])
 
 AT_BESCMD_RESPONSE_TEST([nc/coads_climatology.nc.0.bescmd])
