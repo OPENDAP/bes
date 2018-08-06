@@ -30,15 +30,23 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include "BESContainerStorageCatalog.h"
 #include "BESContainer.h"
+
+#include "BESCatalogList.h"
+#include "BESCatalog.h"
+
 #include "BESCatalogUtils.h"
-#include "BESInternalError.h"
-#include "BESForbiddenError.h"
 #include "BESInfo.h"
 #include "BESServiceRegistry.h"
 #include "BESRegex.h"
+#include "BESInternalError.h"
+#include "BESForbiddenError.h"
+
 #include "BESDebug.h"
+
 
 /** @brief create an instance of this persistent store with the given name.
  *
@@ -56,7 +64,7 @@
  * semicolon. The data type/expression pair itself is separated by a
  * colon.
  *
- * @param n name of this persistent store
+ * @param n The name of the Catalog/ContainerStorage (they must be the same).
  * @throws BESForbiddenError if the resources requested is not accessible
  * @throws BESNotFoundError if the resources requested is not found
  * @throws BESInternalError if there is a problem determining the resource
@@ -66,7 +74,12 @@
 BESContainerStorageCatalog::BESContainerStorageCatalog(const string &n) :
         BESContainerStorageVolatile(n)
 {
+#if 0
     _utils = BESCatalogUtils::Utils(n);
+#endif
+    BESCatalog *catalog = BESCatalogList::TheCatalogList()->find_catalog(n);
+    _utils = catalog->get_catalog_utils();
+
     _root_dir = _utils->get_root_dir();
     _follow_sym_links = _utils->follow_sym_links();
 }
@@ -139,6 +152,9 @@ void BESContainerStorageCatalog::add_container(const string &sym_name, const str
     // it against the types in the type list.
     string new_type = type;
     if (new_type == "") {
+        new_type = _utils->get_handler_name(real_name);
+
+#if 0
         BESCatalogUtils::match_citer i = _utils->match_list_begin();
         BESCatalogUtils::match_citer ie = _utils->match_list_end();
         bool done = false;
@@ -151,6 +167,7 @@ void BESContainerStorageCatalog::add_container(const string &sym_name, const str
             }
 
         }
+#endif
     }
 
     BESContainerStorageVolatile::add_container(sym_name, real_name, new_type);
@@ -167,6 +184,9 @@ void BESContainerStorageCatalog::add_container(const string &sym_name, const str
  */
 bool BESContainerStorageCatalog::isData(const string &inQuestion, list<string> &provides)
 {
+    string node_type = _utils->get_handler_name(inQuestion);
+
+#if 0
     string node_type = "";
     BESCatalogUtils::match_citer i = _utils->match_list_begin();
     BESCatalogUtils::match_citer ie = _utils->match_list_end();
@@ -179,10 +199,14 @@ bool BESContainerStorageCatalog::isData(const string &inQuestion, list<string> &
             done = true;
         }
     }
+#endif
 
     BESServiceRegistry::TheRegistry()->services_handled(node_type, provides);
 
+#if 0
     return done;
+#endif
+    return !node_type.empty();  // Return false if node_type is empty, true if a match is found.
 }
 
 /** @brief dumps information about this object

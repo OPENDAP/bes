@@ -1,5 +1,5 @@
 
-AT_INIT([FileLockingCacheTest])
+AT_INIT([bes/dispatch/tests (FileLockingCacheTest)])
 # AT_COPYRIGHT([])
 
 AT_TESTED([./FileLockingCacheTest])

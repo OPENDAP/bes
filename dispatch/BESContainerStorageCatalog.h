@@ -34,8 +34,13 @@
 #define BESContainerStorageCatalog_h_ 1
 
 #include <list>
+#include <string>
+#include <ostream>
 
+#if 0
 using std::list;
+#endif
+
 
 #include "BESContainerStorageVolatile.h"
 
@@ -78,13 +83,13 @@ class BESContainerStorageCatalog: public BESContainerStorageVolatile {
 private:
     const BESCatalogUtils * _utils;
 public:
-    BESContainerStorageCatalog(const string &n);
+    BESContainerStorageCatalog(const std::string &n);
     virtual ~BESContainerStorageCatalog();
 
-    virtual void add_container(const string &sym_name, const string &real_name, const string &type);
-    virtual bool isData(const string &inQuestion, list<string> &provides);
+    virtual void add_container(const std::string &sym_name, const std::string &real_name, const std::string &type);
+    virtual bool isData(const std::string &inQuestion, std::list<std::string> &provides);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // BESContainerStorageCatalog_h_

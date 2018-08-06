@@ -250,6 +250,11 @@ void RenamedArrayWrapper::add_var(BaseType *bt, Part part /* = nil */)
     _pArray->add_var(bt, part);
 }
 
+void RenamedArrayWrapper::add_var_nocopy(BaseType *bt, Part part /* = nil */)
+{
+    _pArray->add_var_nocopy(bt, part);
+}
+
 #if 0
 bool
 RenamedArrayWrapper::check_semantics(string &msg, bool all /* = false*/)

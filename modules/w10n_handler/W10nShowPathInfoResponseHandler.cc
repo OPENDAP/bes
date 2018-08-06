@@ -86,13 +86,14 @@ void W10nShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
     d_response_object = info;
 
     string container = dhi.data[CONTAINER];
+#if 0
     string catname;
     string defcatname = BESCatalogList::TheCatalogList()->default_catalog_name();
-    BESCatalog *defcat = BESCatalogList::TheCatalogList()->find_catalog(defcatname);
-    if (!defcat) {
-        string err = string("Not able to find the default catalog ") + defcatname;
-        throw BESInternalError(err, __FILE__, __LINE__);
-    }
+#endif
+
+    BESCatalog *defcat = BESCatalogList::TheCatalogList()->default_catalog();
+    if (!defcat)
+        throw BESInternalError("Not able to find the default catalog.", __FILE__, __LINE__);
 
     // remove all of the leading slashes from the container name
     string::size_type notslash = container.find_first_not_of("/", 0);
@@ -100,8 +101,8 @@ void W10nShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
         container = container.substr(notslash);
     }
 
-    // see if there is a catalog name here. It's only a possible catalog
-    // name
+    // see if there is a catalog name here. It's only a possible catalog name
+    string catname;
     string::size_type slash = container.find_first_of("/", 0);
     if (slash != string::npos) {
         catname = container.substr(0, slash);
@@ -143,7 +144,7 @@ void W10nShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
     string validPath, remainder;
     bool isFile, isDir;
 
-    BESCatalogUtils *utils = BESCatalogUtils::Utils(defcatname);
+    BESCatalogUtils *utils = BESCatalogList::TheCatalogList()->default_catalog()->get_catalog_utils();
     w10n::eval_resource_path(container, utils->get_root_dir(), utils->follow_sym_links(), validPath, isFile, isDir,
         remainder);
 

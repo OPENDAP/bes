@@ -3,8 +3,6 @@ AUTOMAKE_OPTIONS = foreign
 
 TESTSUITE = $(srcdir)/testsuite
 # Run the tests in parallel, which speeds things up considerably.
-TESTSUITEFLAGS =
-# -j9
 
 TEST_FILES = gateway_tests.at aggregations.at attribute_tests.at parse_error_misc.at	\
 variable_misc.at variable_new_arrays.at variable_new_multi_arrays.at	\
