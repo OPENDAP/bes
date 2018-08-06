@@ -1,5 +1,7 @@
 # Process with autom4te to create an -*- Autotest -*- test suite.
 
+AT_INIT([bes/modules/fileout_netcdf/tests])
+
 m4_include([handler_tests_macros.m4])
 
 dnl These DDS and Data responses are here as a sanity check so that when/if a test 
