@@ -42,6 +42,7 @@
 #include <BESUtil.h>
 #include <BESCatalogUtils.h>
 #include <BESCatalogList.h>
+#include <BESCatalog.h>
 #include <BESRegex.h>
 #include <TheBESKeys.h>
 
@@ -321,7 +322,14 @@ void GatewayUtils::Get_type_from_disposition(const string &disp, string &type)
 
             // we have the filename now, run it through
             // the type match to get the file type
+#if 0
             const BESCatalogUtils *utils = BESCatalogUtils::Utils(BESCatalogList::TheCatalogList()->default_catalog_name());
+#endif
+
+            const BESCatalogUtils *utils = BESCatalogList::TheCatalogList()->default_catalog()->get_catalog_utils();
+            type = utils->get_handler_name(filename);
+
+#if 0
             BESCatalogUtils::match_citer i = utils->match_list_begin();
             BESCatalogUtils::match_citer ie = utils->match_list_end();
             bool done = false;
@@ -336,12 +344,15 @@ void GatewayUtils::Get_type_from_disposition(const string &disp, string &type)
                         done = true;
                     }
                 }
+                // This will not catch the error throw by BESRegex() - that is an BESInteranlError.
+                // BESRegex::match does not throw. jhrg 7/27/18
                 catch (Error &e) {
                     string serr = (string) "Unable to match data type, " + "malformed Catalog TypeMatch parameter "
-                        + "in bes configuration file around " + match.regex + ": " + e.get_error_message();
+                    + "in bes configuration file around " + match.regex + ": " + e.get_error_message();
                     throw BESDapError(serr, false, e.get_error_code(), __FILE__, __LINE__);
                 }
             }
+#endif
         }
     }
 }
@@ -372,7 +383,13 @@ void GatewayUtils::Get_type_from_content_type(const string &ctype, string &type)
 void GatewayUtils::Get_type_from_url(const string &url, string &type)
 {
     // just run the url through the type match from the configuration
+#if 0
     const BESCatalogUtils *utils = BESCatalogUtils::Utils(BESCatalogList::TheCatalogList()->default_catalog_name());
+#endif
+    const BESCatalogUtils *utils = BESCatalogList::TheCatalogList()->default_catalog()->get_catalog_utils();
+    type = utils->get_handler_name(url);
+
+#if 0
     BESCatalogUtils::match_citer i = utils->match_list_begin();
     BESCatalogUtils::match_citer ie = utils->match_list_end();
     bool done = false;
@@ -390,10 +407,12 @@ void GatewayUtils::Get_type_from_url(const string &url, string &type)
         }
         catch (Error &e) {
             string serr = (string) "Unable to match data type, " + "malformed Catalog TypeMatch parameter "
-                + "in bes configuration file around " + match.regex + ": " + e.get_error_message();
+            + "in bes configuration file around " + match.regex + ": " + e.get_error_message();
             throw BESInternalError(serr, __FILE__, __LINE__);
         }
     }
+#endif
+
 }
 
 #if 0

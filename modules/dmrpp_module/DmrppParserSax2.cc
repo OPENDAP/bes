@@ -926,7 +926,11 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 else {
                     // Yay! We found the catalog so we get the root dir
                     // and make a file URL.
+#if 0
                     BESCatalogUtils *utils = BESCatalogUtils::Utils(defcat->get_catalog_name());
+#endif
+                    BESCatalogUtils *utils = BESCatalogList::TheCatalogList()->default_catalog()->get_catalog_utils();
+
                     if (parser->debug())
                         cerr << "Found default catalog name '" << defcatname << "' root_dir: '" << utils->get_root_dir()
                             << "'" << endl;

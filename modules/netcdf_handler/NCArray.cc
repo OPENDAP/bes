@@ -489,11 +489,11 @@ bool NCArray::read()
 		cor[i] = edg[i] = step[i] = 0;
     }
     long nels = format_constraint(cor, step, edg, &has_stride);
-    ostringstream oss;
-    for(unsigned int i=0; i<MAX_NC_DIMS; i++){
-    	oss << cor[i] <<  ", " << edg[i] << ", " << step[i] << endl;
-    }
-    BESDEBUG("nc", "NCArray::read() - corners, edges, stride" << endl << oss.str() << endl);
+//    ostringstream oss;
+//    for(unsigned int i=0; i<MAX_NC_DIMS; i++){
+//    	oss << cor[i] <<  ", " << edg[i] << ", " << step[i] << endl;
+//    }
+//    BESDEBUG("nc", "NCArray::read() - corners, edges, stride" << endl << oss.str() << endl);
 
     vector<char> values;
     do_array_read(ncid, varid, datatype, values, false /*has_values*/, 0 /*values_offset*/,

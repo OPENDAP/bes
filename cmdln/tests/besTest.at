@@ -229,7 +229,7 @@ AT_BESCMD_DDX_RESPONSE_TEST([ssfunc/geogrid_func_wholearray.1.bescmd], [pass])
 AT_BESCMD_ASCII_RESPONSE_TEST([ssfunc/geogrid_func_wholearray.2.bescmd], [pass])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([ssfunc/geogrid_func_wholearray.3.bescmd])
 
-AT_BESCMD_SHOW_RESPONSE_TEST([show/show_01.bescmd], [xfail])
-AT_BESCMD_SHOW_RESPONSE_TEST([show/show_02.bescmd], [xfail])
+#AT_BESCMD_SHOW_RESPONSE_TEST([show/show_01.bescmd], [xfail]) # Uses showInfo which was deprecated and dropped.
+#AT_BESCMD_SHOW_RESPONSE_TEST([show/show_02.bescmd], [xfail]) # Uses showInfo which was deprecated and dropped.
 AT_BESCMD_SHOW_RESPONSE_TEST([show/show_03.bescmd], [xfail])
 

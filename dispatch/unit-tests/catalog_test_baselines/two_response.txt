@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <response xmlns="http://xml.opendap.org/ns/bes/1.0#">
     <showCatalog>
-        <dataset catalog="default" count="4" lastModified="" name="/" node="true" size="">
-            <dataset catalog="other" count="3" lastModified="" name="other/" node="true" size=""/>
+        <dataset catalog="default" count="3" lastModified="" name="/" node="true" size="">
             <dataset catalog="default" count="1" lastModified="" name="child_dir" node="true" size=""/>
             <dataset catalog="default" lastModified="" name="file1" node="false" size=""/>
             <dataset catalog="default" lastModified="" name="file2" node="false" size=""/>

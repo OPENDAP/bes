@@ -58,14 +58,13 @@ BESRegex::init(const char *t)
     d_preg = static_cast<void*>(new regex_t);
     int result = regcomp(static_cast<regex_t*>(d_preg), t, REG_EXTENDED);
 
-    if  (result != 0) {
-        size_t msg_len = regerror(result, static_cast<regex_t*>(d_preg),
-                                  static_cast<char*>(NULL),
-                                  static_cast<size_t>(0));
-        char *msg = new char[msg_len+1];
+    if (result != 0) {
+        size_t msg_len = regerror(result, static_cast<regex_t*>(d_preg), static_cast<char*>(NULL),
+            static_cast<size_t>(0));
+        char *msg = new char[msg_len + 1];
         regerror(result, static_cast<regex_t*>(d_preg), msg, msg_len);
-	string err = string( "BESRegex error: " ) + string( msg ) ;
-        BESInternalError e( err, __FILE__, __LINE__ ) ;
+        string err = string("BESRegex error: ") + string(msg);
+        BESInternalError e(err, __FILE__, __LINE__);
         delete[] msg;
         throw e;
     }
@@ -102,6 +101,7 @@ BESRegex::BESRegex(const char* t, int)
 int 
 BESRegex::match(const char* s, int len, int pos)
 {
+    // TODO re-implement using auto_ptr or unique_ptr. jhrg 7/27/18
     regmatch_t *pmatch = new regmatch_t[len+1];
     string ss = s;
 

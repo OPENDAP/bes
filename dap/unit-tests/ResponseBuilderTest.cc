@@ -134,7 +134,9 @@ static void parse_datadds_response(istream &in, string &prolog, vector<char> &bl
     // return to byte just after 'Data:'
     in.seekg(pos, in.beg);
 
-    blob.reserve(length);
+    // Fix for HYRAX-804: Change reserve() to resize() for the vector
+    // blob. jhrg 8/3/18
+    blob.resize(length);
     in.read(&blob[0], length);
 }
 

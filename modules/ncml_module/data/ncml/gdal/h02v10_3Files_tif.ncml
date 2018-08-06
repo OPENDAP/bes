@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<netcdf title="Time based join for california_LC08_SRB2" xmlns="http://www.unidata.ucar.edu/namespaces/netcdf/ncml-2.2">
+  <aggregation type="joinNew" dimName="new_time">
+    <variableAgg name="band_1" />
+    <!-- scan location="data/gdal/" suffix=".tif" subdirs="false"/ -->
+    <netcdf coordValue="4856" location="data/gdal/LC08_CU_002010_20130418_20170727_C01_V01_SRB2.tif" />
+    <netcdf coordValue="4863" location="data/gdal/LC08_CU_002010_20130425_20170727_C01_V01_SRB2.tif" />
+    <netcdf coordValue="4872" location="data/gdal/LC08_CU_002010_20130504_20170727_C01_V01_SRB2.tif" />
+  </aggregation>
+  <variable name="new_time" type="double">
+    <attribute name="units" type="string">days since 2000-01-01 00:00</attribute>
+  </variable>
+  <variable name="SRB1" orgName="band_1"/>
+</netcdf>
