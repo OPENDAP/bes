@@ -123,8 +123,8 @@ $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC
 #LPDAAC sinusodial projections one grid and multiple grid
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/LPDAAC/VNP09A1.A2015257.h29v11.001.2016221164845.h5
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/LPDAAC/VNP09GA.A2017161.h10v04.001.2017162212935.h5
-_
-#LPDAAC sinusodial projections one grid and multiple grid
+
+#GHRC PS and LAMAZ projections 
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/GHRC/AMSR_2_L3_DailySnow_P00_20160831.he5
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/GHRC/AMSR_2_L3_SeaIce12km_P00_20160831.he5
 
