@@ -36,6 +36,16 @@ client tools such as IDV, Panoply, GrADS, Ferret, NCL, MATLAB, and IDL.
  A comprehensive list of the improvements since the 2.0.0 release is
 available on the next section.
 
+What's new for Hyrax 1.14.1(?)
+CF option:
+1. Add the support of the HDF-EOS5 Polar Stereographic(PS) and Lambert Azimuthal Equal Area(LAMAZ) grid projection files. 
+   Both projection files can be found in NASA LANCE products.
+2. Add the HDF-EOS5 grid latitude and longitude cache support. This is the same as what we did for the HDF-EOS2 grid. 
+3. Add the support for TROP-OMI, new OMI level 2 and OMPS-NPP product.
+4. Removed the internal reserved netCDF-4 attributes for DAP output.
+5. Make the behavior of the drop long string BES key consistent with the current limitation of netCDF Java.
+
+ 
 What's new for Hyrax 1.14.0
 CF option:
 1. Add the support of Hybrid HDF-EOS5 products. An example is the NASA ASDC AirMSPI product.
