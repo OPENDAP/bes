@@ -1,0 +1,9 @@
+dnl Test suite containing tests of the remote dataset aggregation and metadata modifications
+AT_BANNER([------------------  NcML + DMR++ Tests -----------------------])
+
+AT_CHECK_ALL_DAP_RESPONSES([dmrpp/dmrpp_join_new.ncml])
+
+dnl This test depends on http and the chunk_twoD.h5 file
+dnl in our s3 bucket.
+
+AT_CHECK_ALL_DAP_RESPONSES([dmrpp/s3_dmrpp_join_new.ncml])
