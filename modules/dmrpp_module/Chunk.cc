@@ -323,13 +323,11 @@ string Chunk::get_curl_range_arg_string()
 }
 
 /**
- * @brief Modify the \arg data_access_url so that it include tracking info
+ * @brief Modify this chunk's data URL so that it includes tracking info
  *
  * The tracking info is the value of the BESContext "cloudydap".
- *
- * @param data_access_url The URL to hack
  */
-void Chunk::add_tracking_query_param(string &data_access_url)
+void Chunk::add_tracking_query_param()
 {
     /** - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
      * Cloudydap test hack where we tag the S3 URLs with a query string for the S3 log
@@ -341,17 +339,20 @@ void Chunk::add_tracking_query_param(string &data_access_url)
      * Should this be a function? FFS why? This is the ONLY place where this needs
      * happen, as close to the curl call as possible and we can just turn it off
      * down the road. - ndp 1/20/17 (EOD)
+     *
+     * Well, it's a function now... ;-) jhrg 8/6/18
      */
-    std::string aws_s3_url("https://s3.amazonaws.com/");
-    // Is it an AWS S3 access?
-    if (!data_access_url.compare(0, aws_s3_url.size(), aws_s3_url)) {
+
+    string aws_s3_url_https("https://s3.amazonaws.com/");
+    string aws_s3_url_http("http://s3.amazonaws.com/");
+
+    // Is it an AWS S3 access? (y.find(x) returns 0 when y starts with x)
+    if (d_data_url.find(aws_s3_url_https) == 0 || d_data_url.find(aws_s3_url_http) == 0) {
         // Yup, headed to S3.
-        string cloudydap_context("cloudydap");
-        bool found;
-        string cloudydap_context_value;
-        cloudydap_context_value = BESContextManager::TheManager()->get_context(cloudydap_context, found);
+        bool found = false;
+        string cloudydap_context_value = BESContextManager::TheManager()->get_context("cloudydap", found);
         if (found) {
-            data_access_url += "?cloudydap=" + cloudydap_context_value;
+            d_data_url += "?cloudydap=" + cloudydap_context_value;
         }
     }
 }

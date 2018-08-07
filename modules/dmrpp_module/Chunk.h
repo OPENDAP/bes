@@ -55,8 +55,6 @@ private:
     bool d_is_read;
     bool d_is_inflated;
 
-    void add_tracking_query_param(std::string& data_access_url);
-
     friend class DmrppCommonTest;
 
 protected:
@@ -150,6 +148,7 @@ public:
     {
         return d_size;
     }
+
     /**
      * @brief Get the offset to this Chunk's data block
      */
@@ -163,8 +162,11 @@ public:
      */
     virtual std::string get_data_url() const
     {
+        // TODO Add a conditional call to void Chunk::add_tracking_query_param()
+        // here for the NASA cost model work THG's doing. jhrg 8/7/18
         return d_data_url;
     }
+
     /**
      * @brief Get the data url string for this Chunk's data block
      */
@@ -245,10 +247,15 @@ public:
         return d_read_buffer_size;
     }
 
+    /**
+     * @return The chunk's position in the array, as a vector of ints.
+     */
     virtual const std::vector<unsigned int> &get_position_in_array() const
     {
         return d_chunk_position_in_array;
     }
+
+    void add_tracking_query_param();
 
     virtual void set_position_in_array(const std::string &pia);
     virtual void set_position_in_array(const std::vector<unsigned int> &pia);
