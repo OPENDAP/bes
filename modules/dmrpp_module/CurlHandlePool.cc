@@ -156,8 +156,12 @@ void dmrpp_multi_handle::read_data()
             // HTTP status code. If the protocol is not HTTP, we assume since msg->data.result
             // returned CURLE_OK, that the transfer worked. jhrg 5/1/18
             ostringstream oss;
+#if 0
             string http_url("http://");
             if (dmrpp_easy_handle->d_url.compare(0, http_url.size(), http_url) == 0 /*equal*/) {
+#endif
+
+            if (dmrpp_easy_handle->d_url.find("http://") == 0 || dmrpp_easy_handle->d_url.find("https://") == 0) {
                 long http_code = 0;
                 res = curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_code);
                 if (CURLE_OK != res) {
