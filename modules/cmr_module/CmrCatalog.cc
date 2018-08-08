@@ -105,39 +105,6 @@ CmrCatalog::~CmrCatalog()
 
 
 
-/**
- * Copied from BESLog, where that code writes to an internal object, not a string.
- *
- * @todo Make this part of a collection of Utility functions
- * @param the_time A time_t value
- * @param use_local_time True to use the local time, false (default) to use GMT
- * @return The time, either local or GMT/UTC as an ISO8601 string
- */
-static string get_time(time_t the_time, bool use_local_time = false)
-{
-    char buf[sizeof "YYYY-MM-DDTHH:MM:SSzone"];
-    int status = 0;
-
-    // From StackOverflow:
-    // This will work too, if your compiler doesn't support %F or %T:
-    // strftime(buf, sizeof buf, "%Y-%m-%dT%H:%M:%S%Z", gmtime(&now));
-    //
-    // Apologies for the twisted logic - UTC is the default. Override to
-    // local time using BES.LogTimeLocal=yes in bes.conf. jhrg 11/15/17
-    if (!use_local_time)
-        status = strftime(buf, sizeof buf, "%FT%T%Z", gmtime(&the_time));
-    else
-        status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&the_time));
-
-    if (!status)
-    LOG("Error getting last modified time time for a leaf item in CMRCatalog.");
-
-    return buf;
-}
-
-
-
-
 vector<string> split(const string &s, char delim='/', bool skip_empty=true) {
     stringstream ss(s);
     string item;
@@ -184,7 +151,7 @@ CmrCatalog::get_node(const string &ppath) const
     vector<string> path_elements = split(path);
     BESDEBUG(MODULE, prolog << "path: '" << path << "'   path_elements.size(): " << path_elements.size() << endl);
 
-    string epoch_time = get_time(0);
+    string epoch_time = BESUtil::get_time(0,false);
 
     CmrApi cmrApi;
     bes::CatalogNode *node;

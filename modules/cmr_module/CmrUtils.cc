@@ -272,7 +272,7 @@ void CmrUtils::Get_type_from_disposition(const string &disp, string &type)
 void CmrUtils::Get_type_from_content_type(const string &ctype, string &type)
 {
     string prolog = string("CmrUtils::") + __func__ + "() - ";
-    BESDEBUG(MODULE, "GatewayUtils::Get_type_from_content_type() - BEGIN" << endl);
+    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     std::map<string, string>::iterator i = MimeList.begin();
     std::map<string, string>::iterator e = MimeList.end();
     bool done = false;
