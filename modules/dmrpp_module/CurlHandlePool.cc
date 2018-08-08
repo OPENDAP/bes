@@ -168,11 +168,29 @@ void dmrpp_multi_handle::read_data()
                     throw BESInternalError(string("Error getting HTTP response code: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
                 }
 
+                // Replaced the if below since newer Apache servers return 206 for range requests. jhrg 8/8/18
+                switch (http_code) {
+                case 200:   // OK
+                case 206:   // Partial content - this is to be expected since we use range gets
+                    // cases 201-205 are things we should probably reject, unless we add more
+                    // comprehensive HTTP/S processing here. jhrg 8/8/18
+                    break;
+
+                default:
+                    oss << "HTTP status error: Expected an OK status, but got: ";
+                    oss << http_code;
+                    throw BESInternalError(oss.str(), __FILE__, __LINE__);
+                    break;
+
+                }
+#if 0
                 if (http_code != 200) {
                     oss << "HTTP status error: Expected an OK status, but got: ";
                     oss << http_code;
                     throw BESInternalError(oss.str(), __FILE__, __LINE__);
                 }
+#endif
+
             }
 
             // If we are here, the request (file: or http:) was successful.
