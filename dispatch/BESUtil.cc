@@ -58,6 +58,7 @@ using std::endl;
 #include "BESForbiddenError.h"
 #include "BESNotFoundError.h"
 #include "BESInternalError.h"
+#include "BESLog.h"
 
 #define CRLF "\r\n"
 
@@ -913,6 +914,127 @@ void BESUtil::conditional_timeout_cancel()
     BESDEBUG("util",__func__ << "() - cancel_timeout_on_send: " <<(cancel_timeout_on_send?"true":"false") << endl);
     if (cancel_timeout_on_send)
         alarm(0);
+}
+
+
+ void BESUtil::replace_all(std::string &s, std::string find_this, std::string replace_with_this)
+{
+    size_t pos = s.find(find_this);
+    while( pos != std::string::npos)
+    {
+        // Replace current matching substring
+        s.replace(pos, find_this.size(), replace_with_this);
+        // Get the next occurrence from current position
+        pos =s.find(find_this, pos + find_this.size());
+    }
+}
+
+std::string
+BESUtil::normalize_path(const std::string &raw_path, bool leading_separator, bool trailing_separator, const string separator)
+{
+    if(separator.length()!=1)
+        throw BESInternalError("Path separators must be a single character. The string '"+separator+"' does not qualify.",__FILE__,__LINE__);
+   char separator_char = separator[0];
+    string double_separator;
+    double_separator = double_separator.append(separator).append(separator);
+
+    string path(raw_path);
+
+    replace_all(path, double_separator, separator);
+
+    if(path.empty()){
+        path = separator;
+    }
+    if(path == separator){
+        return path;
+    }
+    if(leading_separator){
+        if( path[0] != separator_char){
+            path = string(separator).append(path);
+        }
+    }
+    else {
+        if( path[0] == separator_char){
+            path = path.substr(1);
+        }
+    }
+    if(trailing_separator){
+        if( *path.rbegin() != separator_char){
+            path = path.append(separator);
+        }
+    }
+    else {
+        if( *path.rbegin() == separator_char){
+            path = path.substr(0,path.length()-1);
+        }
+    }
+    return path;
+}
+
+
+/**
+ * A call out thanks to:
+ * http://www.oopweb.com/CPP/Documents/CPPHOWTO/Volume/C++Programming-HOWTO-7.html
+ * for the tokenizer.
+ */
+void BESUtil::tokenize(const std::string& str, std::vector<std::string>& tokens, const std::string& delimiters)
+{
+    // Skip delimiters at beginning.
+    string::size_type lastPos = str.find_first_not_of(delimiters, 0);
+    // Find first "non-delimiter".
+    string::size_type pos     = str.find_first_of(delimiters, lastPos);
+    while (string::npos != pos || string::npos != lastPos)
+    {
+        // Found a token, add it to the vector.
+        tokens.push_back(str.substr(lastPos, pos - lastPos));
+        // Skip delimiters.  Note the "not_of"
+        lastPos = str.find_first_not_of(delimiters, pos);
+        // Find next "non-delimiter"
+        pos = str.find_first_of(delimiters, lastPos);
+    }
+}
+
+/**
+ * Copied from BESLog, where that code writes to an internal object, not a string.
+ *
+ * @todo Make this part of a collection of Utility functions
+ * @param the_time A time_t value
+ * @param use_local_time True to use the local time, false (default) to use GMT
+ * @return The time, either local or GMT/UTC as an ISO8601 string
+ */
+string BESUtil::get_time(bool use_local_time)
+{
+    return get_time(std::time(nullptr), use_local_time);
+}
+
+/**
+ * Copied from BESLog, where that code writes to an internal object, not a string.
+ *
+ * @todo Make this part of a collection of Utility functions
+ * @param the_time A time_t value
+ * @param use_local_time True to use the local time, false (default) to use GMT
+ * @return The time, either local or GMT/UTC as an ISO8601 string
+ */
+string BESUtil::get_time(time_t the_time, bool use_local_time)
+{
+    char buf[sizeof "YYYY-MM-DDTHH:MM:SSzone"];
+    int status = 0;
+
+    // From StackOverflow:
+    // This will work too, if your compiler doesn't support %F or %T:
+    // strftime(buf, sizeof buf, "%Y-%m-%dT%H:%M:%S%Z", gmtime(&now));
+    //
+    // Apologies for the twisted logic - UTC is the default. Override to
+    // local time using BES.LogTimeLocal=yes in bes.conf. jhrg 11/15/17
+    if (!use_local_time)
+        status = strftime(buf, sizeof buf, "%FT%T%Z", gmtime(&the_time));
+    else
+        status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&the_time));
+
+    if (!status)
+    LOG("Error getting last modified time time for a leaf item in CMRCatalog.");
+
+    return buf;
 }
 
 

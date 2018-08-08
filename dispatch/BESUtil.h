@@ -121,6 +121,12 @@ public:
     static bool endsWith(std::string const &fullString, std::string const &ending);
     static void conditional_timeout_cancel();
 
+    static void replace_all(std::string &s, std::string find_this, std::string replace_with_this);
+    static std::string normalize_path(const std::string &path, bool leading_separator, bool trailing_separator, const string separator="/");
+    static void tokenize(const std::string& str, std::vector<std::string>& tokens, const std::string& delimiters = "/");
+    static string get_time(bool use_local_time = false);
+    static string get_time(time_t the_time, bool use_local_time = false);
+
 } ;
 
 #endif // E_BESUtil_h

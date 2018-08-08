@@ -36,10 +36,12 @@
 #include "BESDataNames.h"
 
 #include "BESDebug.h"
+#include "BESUtil.h"
 #include "BESStopWatch.h"
 #include "BESSyntaxUserError.h"
 
 #include "CatalogNode.h"
+#include "CatalogItem.h"
 #include "ShowNodeResponseHandler.h"
 
 using namespace bes;
@@ -64,6 +66,34 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
     string container = dhi.data[CONTAINER];
     if (container[0] != '/') container = string("/").append(container);
 
+    BESCatalogList *daList = BESCatalogList::TheCatalogList();
+    BESCatalog *catalog = 0;    // pointer to a singleton; do not delete
+    vector<string> path_tokens;
+
+    string use_container = container;
+    string path = BESUtil::normalize_path(container, false, false);
+    BESUtil::tokenize(path, path_tokens);
+    if(!path_tokens.empty()){
+        catalog = daList->find_catalog(path_tokens[0]);
+        if(catalog){
+            // Since the catalog name is in the path we
+            // need to drop it this should leave container
+            // with a leading
+            use_container = BESUtil::normalize_path(path.substr(path_tokens[0].length()), true, false);
+        }
+    }
+
+    if(!catalog){
+        // No obvious catalog name in the path, so we go with the default catalog..
+        catalog = daList->default_catalog();
+        if (!catalog)
+            throw BESSyntaxUserError(string("Could not find the default catalog."), __FILE__, __LINE__);
+    }
+
+
+
+#if 0
+
     string catname = dhi.data[CATALOG];
     BESCatalog *catalog = 0;    // pointer to a singleton; do not delete
     if (!catname.empty()) {
@@ -76,9 +106,30 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
         if (!catalog)
             throw BESSyntaxUserError(string("Could not find the default catalog."), __FILE__, __LINE__);
     }
+#endif
 
     // Get the node info from the catalog.
-    auto_ptr<CatalogNode> node(catalog->get_node(container));
+    auto_ptr<CatalogNode> node(catalog->get_node(use_container));
+
+    // Now, if this is the top level catalog we need to add the other catalogs (as nodes)
+    // We check 'container', the unmodified name from the dhi.data to see if this is the top
+    // catalog
+    if(container == "/"){
+        BESCatalogList::catalog_citer catItr;
+        for(catItr=daList->first_catalog(); catItr!=daList->end_catalog(); catItr++){
+            string catalog_name = catItr->first;
+            // BESCatalog *catalog = catItr->second;
+            if(catalog != daList->default_catalog()){
+                CatalogItem *collection = new CatalogItem();
+                collection->set_type(CatalogItem::node);
+                collection->set_name(catalog_name);
+                collection->set_is_data(false);
+                collection->set_lmt(BESUtil::get_time());
+                collection->set_size(0);
+                node->add_node(collection);
+            }
+        }
+    }
 
     BESInfo *info = BESInfoList::TheList()->build_info();
 
