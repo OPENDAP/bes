@@ -73,8 +73,8 @@ AT_CHECK_ALL_DAP_RESPONSES([agg/aggNew.ncml])
 AT_CHECK_DATADDS_GETDAP([agg/aggNew.ncml])
 
 dnl Aggregation with renaming three tiff files (too big dods)
-dnl AT_CHECK_ALL_DAP_RESPONSES([gdal/h02v10_3Files_tif.ncml])
-dnl AT_CHECK_DATADDS_GETDAP([gdal/h02v10_3Files_tif.ncml])
+AT_CHECK_ALL_DAP_RESPONSES([gdal/h02v10_3Files_tif.ncml])
+AT_CHECK_DATADDS_GETDAP([gdal/h02v10_3Files_tif.ncml])
 
 dnl =======================================================
 dnl Test constraints on the virtual dataset aggs
