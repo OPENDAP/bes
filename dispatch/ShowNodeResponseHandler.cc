@@ -66,20 +66,25 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
     string container = dhi.data[CONTAINER];
     if (container[0] != '/') container = string("/").append(container);
 
+#if 1
     BESCatalogList *daList = BESCatalogList::TheCatalogList();
     BESCatalog *catalog = 0;    // pointer to a singleton; do not delete
     vector<string> path_tokens;
 
     string use_container = container;
     string path = BESUtil::normalize_path(container, false, false);
+    BESDEBUG("catalog", "Normalized path: " << path <<endl);
     BESUtil::tokenize(path, path_tokens);
     if(!path_tokens.empty()){
+        BESDEBUG("catalog", "First path token: " << path_tokens[0] <<endl);
         catalog = daList->find_catalog(path_tokens[0]);
         if(catalog){
-            // Since the catalog name is in the path we
+            BESDEBUG("catalog", "Located catalog " << catalog->get_catalog_name() << " from path component" <<endl);
+           // Since the catalog name is in the path we
             // need to drop it this should leave container
             // with a leading
             use_container = BESUtil::normalize_path(path.substr(path_tokens[0].length()), true, false);
+            BESDEBUG("catalog", "Modified container/path value to:  " << use_container <<endl);
         }
     }
 
@@ -89,7 +94,9 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
         if (!catalog)
             throw BESSyntaxUserError(string("Could not find the default catalog."), __FILE__, __LINE__);
     }
+    BESDEBUG("catalog", "Using catalog " << catalog->get_catalog_name() << endl <<endl);
 
+#endif
 
 
 #if 0
@@ -109,8 +116,9 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
 #endif
 
     // Get the node info from the catalog.
-    auto_ptr<CatalogNode> node(catalog->get_node(use_container));
+    auto_ptr<CatalogNode> node(catalog->get_node(container));
 
+#if 0
     // Now, if this is the top level catalog we need to add the other catalogs (as nodes)
     // We check 'container', the unmodified name from the dhi.data to see if this is the top
     // catalog
@@ -130,6 +138,7 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
             }
         }
     }
+#endif
 
     BESInfo *info = BESInfoList::TheList()->build_info();
 
