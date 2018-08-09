@@ -252,11 +252,11 @@ void BESUtil::check_path(const string &path, const string &root, bool follow_sym
     // function for the eval operation.
     int (*ye_old_stat_function)(const char *pathname, struct stat *buf);
     if (follow_sym_links) {
-        BESDEBUG(debug_key, "eval_w10n_resourceId() - Using 'stat' function (follow_sym_links = true)" << endl);
+        BESDEBUG(debug_key, "check_path() - Using 'stat' function (follow_sym_links = true)" << endl);
         ye_old_stat_function = &stat;
     }
     else {
-        BESDEBUG(debug_key, "eval_w10n_resourceId() - Using 'lstat' function (follow_sym_links = false)" << endl);
+        BESDEBUG(debug_key, "check_path() - Using 'lstat' function (follow_sym_links = false)" << endl);
         ye_old_stat_function = &lstat;
     }
 
