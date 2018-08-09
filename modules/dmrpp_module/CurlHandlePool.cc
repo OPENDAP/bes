@@ -155,8 +155,8 @@ void dmrpp_multi_handle::read_data()
             // This code has to work with both http: and file: protocols. Here we check the
             // HTTP status code. If the protocol is not HTTP, we assume since msg->data.result
             // returned CURLE_OK, that the transfer worked. jhrg 5/1/18
-            ostringstream oss;
 #if 0
+            ostringstream oss;
             string http_url("http://");
             if (dmrpp_easy_handle->d_url.compare(0, http_url.size(), http_url) == 0 /*equal*/) {
 #endif
@@ -176,11 +176,13 @@ void dmrpp_multi_handle::read_data()
                     // comprehensive HTTP/S processing here. jhrg 8/8/18
                     break;
 
-                default:
+                default: {
+                    ostringstream oss;
                     oss << "HTTP status error: Expected an OK status, but got: ";
                     oss << http_code;
                     throw BESInternalError(oss.str(), __FILE__, __LINE__);
                     break;
+                }
 
                 }
 #if 0

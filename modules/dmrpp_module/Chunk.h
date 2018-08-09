@@ -41,6 +41,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data);
 class Chunk {
 private:
     std::string d_data_url;
+    std::string d_query_marker;
     unsigned long long d_size;
     unsigned long long d_offset;
 
@@ -55,6 +56,9 @@ private:
     bool d_is_read;
     bool d_is_inflated;
 
+    static const std::string tracking_context;
+
+    friend class ChunkTest;
     friend class DmrppCommonTest;
 
 protected:
@@ -71,6 +75,7 @@ protected:
         d_size = bs.d_size;
         d_offset = bs.d_offset;
         d_data_url = bs.d_data_url;
+        d_query_marker = bs.d_query_marker;
         d_chunk_position_in_array = bs.d_chunk_position_in_array;
     }
 
@@ -78,9 +83,15 @@ public:
 
     /**
      * @brief Get an empty chunk
+     *
+     * @note This constructor does not read the Query String marker from the BES
+     * context system. You must call Chunk::add_tracking_query_param() if you
+     * want that information added with Chunks created using this constructor.
+     *
+     * @see Chunk::add_tracking_query_param()
      */
     Chunk() :
-        d_data_url(""), d_size(0), d_offset(0), d_bytes_read(0), d_read_buffer(0),
+        d_data_url(""), d_query_marker(""), d_size(0), d_offset(0), d_bytes_read(0), d_read_buffer(0),
         d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
     {
     }
@@ -95,9 +106,10 @@ public:
      * in an Array. Has the syntax '[1,2,3,4]'.
      */
     Chunk(const std::string &data_url, unsigned long long size, unsigned long long offset, std::string pia_str = "") :
-        d_data_url(data_url), d_size(size), d_offset(offset), d_bytes_read(0), d_read_buffer(0),
+        d_data_url(data_url), d_query_marker(""), d_size(size), d_offset(offset), d_bytes_read(0), d_read_buffer(0),
         d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
     {
+        add_tracking_query_param();
         set_position_in_array(pia_str);
     }
 
@@ -111,9 +123,10 @@ public:
      * of unsigned ints.
      */
     Chunk(const std::string &data_url, unsigned long long size, unsigned long long offset, const std::vector<unsigned int> &pia_vec) :
-        d_data_url(data_url), d_size(size), d_offset(offset), d_bytes_read(0), d_read_buffer(0),
+        d_data_url(data_url), d_query_marker(""), d_size(size), d_offset(offset), d_bytes_read(0), d_read_buffer(0),
         d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
     {
+        add_tracking_query_param();
         set_position_in_array(pia_vec);
     }
 
@@ -133,8 +146,7 @@ public:
     /// jhrg 4/10/18
     Chunk &operator=(const Chunk &rhs)
     {
-        if (this == &rhs)
-        return *this;
+        if (this == &rhs) return *this;
 
         _duplicate(rhs);
 
@@ -162,8 +174,13 @@ public:
      */
     virtual std::string get_data_url() const
     {
-        // TODO Add a conditional call to void Chunk::add_tracking_query_param()
+        // A conditional call to void Chunk::add_tracking_query_param()
         // here for the NASA cost model work THG's doing. jhrg 8/7/18
+
+        if (!d_query_marker.empty()) {
+            return d_data_url + d_query_marker;
+        }
+
         return d_data_url;
     }
 

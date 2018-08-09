@@ -44,6 +44,8 @@ using namespace std;
 
 namespace dmrpp {
 
+const std::string Chunk::tracking_context = "cloudydap";
+
 /**
  * @brief Callback passed to libcurl to handle reading a single byte.
  *
@@ -325,7 +327,13 @@ string Chunk::get_curl_range_arg_string()
 /**
  * @brief Modify this chunk's data URL so that it includes tracking info
  *
- * The tracking info is the value of the BESContext "cloudydap".
+ * Add information to the Query string of a URL, intended primarily to aid in
+ * tracking the origin of requests when reading data from S3. The information
+ * added to the query string comes from a BES Context command sent to the BES
+ * by a client (e.g., the OLFS). The addition takes the form
+ * "?tracking_context=<context value>".
+ *
+ * @note This is only added to data URLs that reference S3.
  */
 void Chunk::add_tracking_query_param()
 {
@@ -350,9 +358,9 @@ void Chunk::add_tracking_query_param()
     if (d_data_url.find(aws_s3_url_https) == 0 || d_data_url.find(aws_s3_url_http) == 0) {
         // Yup, headed to S3.
         bool found = false;
-        string cloudydap_context_value = BESContextManager::TheManager()->get_context("cloudydap", found);
+        string cloudydap_context_value = BESContextManager::TheManager()->get_context(tracking_context, found);
         if (found) {
-            d_data_url += "?cloudydap=" + cloudydap_context_value;
+            d_query_marker.append("?").append(tracking_context).append("=").append(cloudydap_context_value);
         }
     }
 }
