@@ -36,6 +36,7 @@
 #include <string>
 #include <list>
 #include <iostream>
+#include <vector>
 
 using std::string ;
 using std::list ;
