@@ -71,10 +71,10 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
 
     //---------------------------------------------------------------
     // In this next section we look for a catalog name in the first
-    // node of the container/file/resource name. If we find that a catalog name
-    // does start the path then we utilize the specified catalog and we
-    // remove the catalog name from the path and store the result in
-    // the variable "use_container".
+    // node of the container/file/resource name/path. If we find that
+    // the name/path starts with a catalog name then we utilize the
+    // specified catalog and we remove the catalog name from the
+    // name/path and store the result in the variable "use_container".
 
     BESCatalogList *datCatalogList = BESCatalogList::TheCatalogList(); // convenience variable
     BESCatalog *catalog = 0;    // pointer to a singleton; do not delete
@@ -132,9 +132,10 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
     // Get the node info from the catalog.
     auto_ptr<CatalogNode> node(catalog->get_node(use_container));
 
-#if 1
-    // Now, if this is the top level catalog we need to add the other catalogs (as nodes)
-    // We check 'container', the unmodified name from the dhi.data to see if this is the top
+    //---------------------------------------------------------------
+    // Now, if this is the top level catalog (which is always the default catalog)
+    // we need to add the other catalogs, if any, as child nodes.
+    // We check 'container', the unmodified name from the dhi.data[], to see if this is the top
     // catalog
     if(container == "/"){
         BESDEBUG(MODULE, prolog << "Preparing to add alternate catalog nodes to top level of default catalog. "
@@ -156,7 +157,7 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
             }
         }
     }
-#endif
+    //---------------------------------------------------------------
 
     BESInfo *info = BESInfoList::TheList()->build_info();
 
