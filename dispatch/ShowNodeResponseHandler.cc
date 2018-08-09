@@ -48,6 +48,8 @@ using namespace bes;
 using namespace std;
 
 #define MODULE "bes"
+#define prolog string("ShowNodeResponseHandler::").append(__func__).append("() - ")
+
 /** @brief Execute the showCatalog command.
  *
  * The response object BESInfo is created to store the information.
@@ -59,7 +61,6 @@ using namespace std;
  */
 void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
-    string prolog = string("ShowNodeResponseHandler::") + __func__ + "() - ";
     BESStopWatch sw;
     if (BESISDEBUG(TIMING_LOG)) sw.start("ShowNodeResponseHandler::execute", dhi.data[REQUEST_ID]);
 

@@ -45,6 +45,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <cassert>
+#include <vector>
 
 #include <sstream>
 #include <iostream>
@@ -52,6 +53,8 @@
 using std::istringstream;
 using std::cout;
 using std::endl;
+using std::vector;
+using std::string;
 
 #include "TheBESKeys.h"
 #include "BESUtil.h"
@@ -872,7 +875,7 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
  * Returns true if (the value of) 'fullString' ends with (the value of) 'ending',
  * false otherwise.
  */
-bool BESUtil::endsWith(std::string const &fullString, std::string const &ending)
+bool BESUtil::endsWith(string const &fullString, string const &ending)
 {
     if (fullString.length() >= ending.length()) {
         return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
@@ -918,10 +921,15 @@ void BESUtil::conditional_timeout_cancel()
 }
 
 
- void BESUtil::replace_all(std::string &s, std::string find_this, std::string replace_with_this)
+/**
+ * @brief Operates on the string 's' to replaces every occurrence of the value of the string
+ * 'find_this' with the value of the string 'replace_with_this'
+ * @param
+ */
+ void BESUtil::replace_all(string &s, string find_this, string replace_with_this)
 {
     size_t pos = s.find(find_this);
-    while( pos != std::string::npos)
+    while( pos != string::npos)
     {
         // Replace current matching substring
         s.replace(pos, find_this.size(), replace_with_this);
@@ -930,8 +938,19 @@ void BESUtil::conditional_timeout_cancel()
     }
 }
 
-std::string
-BESUtil::normalize_path(const std::string &raw_path, bool leading_separator, bool trailing_separator, const string separator)
+ /**
+  * @brief Removes duplicate separators and provides leading and trailing separators as directed.
+  *
+  * @param raw_path The string to normalize
+  * @param leading_separator if true then the result will begin with a single separator character. If false
+  * the result will not begin with a separator character.
+  * @param trailing_separator If true the result will end with a single separator character. If false
+  * the result will not end with a separator character.
+  * @param separator A string, of length one, containing the separator character for the path. This
+  * parameter is optional and its value defaults to the slash '/' character.
+  */
+string
+BESUtil::normalize_path(const string &raw_path, bool leading_separator, bool trailing_separator, const string separator)
 {
     if(separator.length()!=1)
         throw BESInternalError("Path separators must be a single character. The string '"+separator+"' does not qualify.",__FILE__,__LINE__);
@@ -978,7 +997,7 @@ BESUtil::normalize_path(const std::string &raw_path, bool leading_separator, boo
  * http://www.oopweb.com/CPP/Documents/CPPHOWTO/Volume/C++Programming-HOWTO-7.html
  * for the tokenizer.
  */
-void BESUtil::tokenize(const std::string& str, std::vector<std::string>& tokens, const std::string& delimiters)
+void BESUtil::tokenize(const string& str, vector<string>& tokens, const string& delimiters)
 {
     // Skip delimiters at beginning.
     string::size_type lastPos = str.find_first_not_of(delimiters, 0);
@@ -996,22 +1015,19 @@ void BESUtil::tokenize(const std::string& str, std::vector<std::string>& tokens,
 }
 
 /**
- * Copied from BESLog, where that code writes to an internal object, not a string.
+ * Returns the current time as an ISO8601 string.
  *
- * @todo Make this part of a collection of Utility functions
- * @param the_time A time_t value
  * @param use_local_time True to use the local time, false (default) to use GMT
  * @return The time, either local or GMT/UTC as an ISO8601 string
  */
 string BESUtil::get_time(bool use_local_time)
 {
-    return get_time(std::time(0), use_local_time);
+    return get_time(time(0), use_local_time);
 }
 
 /**
- * Copied from BESLog, where that code writes to an internal object, not a string.
+ * @brief Returns the time represented by 'the_time' as an ISO8601 string.
  *
- * @todo Make this part of a collection of Utility functions
  * @param the_time A time_t value
  * @param use_local_time True to use the local time, false (default) to use GMT
  * @return The time, either local or GMT/UTC as an ISO8601 string
