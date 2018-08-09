@@ -23,7 +23,7 @@
         <Attribute name="PhotometricInterpretation" type="String">
             <value>Gray</value>
         </Attribute>
-        <Array name="band_1">
+        <Array name="SRB1">
             <UInt16/>
             <dimension name="new_time" size="3"/>
             <dimension name="northing" size="500"/>

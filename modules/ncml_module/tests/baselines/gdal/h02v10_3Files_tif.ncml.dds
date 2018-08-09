@@ -1,7 +1,7 @@
 Dataset {
     Grid {
       Array:
-        UInt16 band_1[new_time = 3][northing = 500][easting = 500];
+        UInt16 SRB1[new_time = 3][northing = 500][easting = 500];
       Maps:
         Float64 new_time[new_time = 3];
         Float64 northing[northing = 500];
