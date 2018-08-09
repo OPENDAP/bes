@@ -43,6 +43,7 @@
 #include <cerrno>
 #include <cstring>
 #include <cstdlib>
+#include <ctime>
 #include <cassert>
 
 #include <sstream>
@@ -1004,7 +1005,7 @@ void BESUtil::tokenize(const std::string& str, std::vector<std::string>& tokens,
  */
 string BESUtil::get_time(bool use_local_time)
 {
-    return get_time(std::time(nullptr), use_local_time);
+    return get_time(std::time(0), use_local_time);
 }
 
 /**
