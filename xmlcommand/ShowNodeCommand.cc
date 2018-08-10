@@ -48,9 +48,10 @@ ShowNodeCommand::ShowNodeCommand(const BESDataHandlerInterface &base_dhi) :
  * The showNode command returns a BESInfo object with information about
  * the contents of a catalog's node. Catalogs in the BES are hierarchical;
  * the default catalog is a subset of the POSIX file system on the machine
- * where the BES daemon is running. In the command, the node is required
- * and the catalog is optional. If not given, the catalog is assumed to
- * be the default catalog.
+ * where the BES daemon is running. In the command, the node is required. If
+ * an alternate catalog is used it's name is expected to be the first node
+ * in the catalog path. If no alternate catalog matches the first path node
+ * then the default catalog is assumed.
  *
  * When the command is parsed, two slots in the DHI.data map are used:
  * CONTAINER holds the node's path and CATALOG holds the name of the
@@ -86,7 +87,8 @@ void ShowNodeCommand::parse_request(xmlNode *node)
     }
 
     // catalog is an optional property, so could be empty string
-    d_xmlcmd_dhi.data[CATALOG] = props["catalog"];
+    // Dropped this because the catalog name is going to be in the path. ndp 8/8/18
+    //  d_xmlcmd_dhi.data[CATALOG] = props["catalog"];
 
     if (!d_xmlcmd_dhi.data[CATALOG].empty()) {
         d_cmd_log_info.append(" in catalog ").append(d_xmlcmd_dhi.data[CATALOG]);

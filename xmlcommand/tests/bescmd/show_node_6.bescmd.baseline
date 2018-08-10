@@ -2,8 +2,8 @@
 <response reqID="[thread:http-nio-8080-exec-4-42][bes_client:/-2]" xmlns="http://xml.opendap.org/ns/bes/1.0#">
     <BES>
         <BESError>
-            <Type>3</Type>
-            <Message>Could not find catalog: nonexistant_catalog</Message>
+            <Type>5</Type>
+            <Message>Unable to access node /Users/ndp/OPeNDAP/hyrax/bes/xmlcommand/tests/data/nonexistant_catalog: No such file or directory</Message>
             <Administrator>support@opendap.org</Administrator>
             <Location>
                 

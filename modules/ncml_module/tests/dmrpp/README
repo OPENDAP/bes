@@ -1,0 +1,10 @@
+README
+ Created on: Aug 7, 2018
+     Author: jimg
+
+The bes command files in these directories (dmrpp, cache, dap4, gateway)
+are not actually used by the tests. These tests build the bes command file
+when they are run and will save it in the testsuite.dir tree for any tests
+that fail. The BES command files in these dirs are left over from various
+test development forays.
+ 

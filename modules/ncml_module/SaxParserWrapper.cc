@@ -206,8 +206,7 @@ void ncmlSax2StartElementNs(void *userData, const xmlChar *localname, const xmlC
     const xmlChar **attributes)
 {
     // BESDEBUG("ncml", "ncmlStartElement called for:<" << name << ">" << endl);
-    BEGIN_SAFE_PARSER_BLOCK(userData)
-;
+    BEGIN_SAFE_PARSER_BLOCK(userData);
     BESDEBUG("ncml", "SaxParserWrapper::ncmlSax2StartElementNs() - localname:" << localname << endl);
 
     XMLAttributeMap attrMap;
