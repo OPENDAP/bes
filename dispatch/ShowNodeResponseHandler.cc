@@ -143,9 +143,8 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
 
     // Transfer the catalog's node info to the BESInfo object
     info->begin_response(NODE_RESPONSE_STR, dhi);
-
-    node->encode_node(info);    // calls encode_item()
-
+    // calls encode_item()
+    node->encode_node(info);
     // end the response object
     info->end_response();
 
