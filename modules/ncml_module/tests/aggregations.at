@@ -74,14 +74,12 @@ AT_CHECK_DATADDS_GETDAP([agg/aggExisting.ncml])
 
 dnl Aggregation with renaming two nc files - This tests renaming
 dnl Grids in a JoinExisting aggregation
-AT_CHECK_DAS([agg/aggExistingRenaming.ncml])
-AT_CHECK_DDS([agg/aggExistingRenaming.ncml])
-AT_CHECK_DDX([agg/aggExistingRenaming.ncml])
+dnl AT_CHECK_DAS([agg/aggExistingRenaming.ncml])
+dnl AT_CHECK_DDS([agg/aggExistingRenaming.ncml])
+dnl AT_CHECK_DDX([agg/aggExistingRenaming.ncml])
 
-AT_CHECK_DATADDS([agg/aggExistingRenaming.ncml], [xfail])
-
+dnl AT_CHECK_DATADDS([agg/aggExistingRenaming.ncml], [xfail])
 dnl AT_CHECK_ALL_DAP_RESPONSES([agg/aggExistingRenaming.ncml])
-
 dnl AT_CHECK_DATADDS_GETDAP([agg/aggExistingRenaming.ncml], [xfail])
 
 dnl Aggregation with renaming three tiff files - Grids, renaming
