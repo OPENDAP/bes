@@ -7,7 +7,7 @@ TESTSUITE = $(srcdir)/testsuite
 TEST_FILES = gateway_tests.at aggregations.at attribute_tests.at parse_error_misc.at	\
 variable_misc.at variable_new_arrays.at variable_new_multi_arrays.at	\
 variable_new_scalars.at variable_new_structures.at variable_remove.at	\
-variable_rename.at gateway_tests.at handler_tests.at
+variable_rename.at gateway_tests.at handler_tests.at dmrpp_tests.at
 
 EXTRA_DIST = $(TESTSUITE).at $(TEST_FILES) $(srcdir)/package.m4 \
 $(TESTSUITE) atlocal.in template.bescmd.in bes.conf.modules.in \
