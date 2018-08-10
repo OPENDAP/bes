@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,92 +36,86 @@
 #include <string>
 #include <list>
 #include <iostream>
+#include <vector>
 
-using std::string ;
-using std::list ;
-using std::ostream ;
+using std::string;
+using std::list;
+using std::ostream;
 
-class BESUtil
-{
+class BESUtil {
 private:
-    static string		rfc822_date( const time_t t ) ;
+    static string rfc822_date(const time_t t);
 
-    static string		entity( char c ) ;
+    static string entity(char c);
 public:
     /** These functions are used to create the MIME headers for a message
-	from a server to a client.
+     from a server to a client.
 
-	NB: These functions actually write both the response status line
-	<i>and</i> the header.
+     NB: These functions actually write both the response status line
+     <i>and</i> the header.
 
-	@name MIME utility functions
-	@see libdap::escaping.cc
-	@see libdap::mime_util.cc
-    */
-    static void			set_mime_text( ostream &strm ) ;
-    static void			set_mime_html( ostream &strm ) ;
+     @name MIME utility functions
+     @see libdap::escaping.cc
+     @see libdap::mime_util.cc
+     */
+    static void set_mime_text(ostream &strm);
+    static void set_mime_html(ostream &strm);
 
     /** This functions are used to unescape hex characters from strings **/
-    static string		www2id( const string &in,
-				        const string &escape = "%",
-				        const string &except = "" ) ;
-    static string		unhexstring( string s ) ;
+    static string www2id(const string &in, const string &escape = "%", const string &except = "");
+    static string unhexstring(string s);
 
     /** Convert a string to all lower case **/
-    static string		lowercase( const string &s ) ;
+    static string lowercase(const string &s);
 
     /** Unescape characters with backslash before them **/
-    static string		unescape( const string &s ) ;
+    static string unescape(const string &s);
 
     /** Check if the specified path is valid **/
-    static void			check_path( const string &path,
-					    const string &root,
-					    bool follow_sym_links ) ;
+    static void check_path(const string &path, const string &root, bool follow_sym_links);
 
     /** convert pid and place in provided buffer **/
-    static char *		fastpidconverter( char *buf,
-						  int base ) ;
-    static char *		fastpidconverter( long val,
-						  char *buf,
-						  int base ) ;
+    static char * fastpidconverter(char *buf, int base);
+    static char * fastpidconverter(long val, char *buf, int base);
 
     /** remove leading and trailing blanks from a string **/
-    static void			removeLeadingAndTrailingBlanks( string &key ) ;
+    static void removeLeadingAndTrailingBlanks(string &key);
 
     /** convert characters not allowed in xml to escaped characters **/
-    static string		id2xml( string in,
-				        const string &not_allowed = "><&'\"" ) ;
+    static string id2xml(string in, const string &not_allowed = "><&'\"");
 
     /** unescape xml escaped characters **/
-    static string		xml2id( string in ) ;
+    static string xml2id(string in);
 
     /** explode a string into an array given a delimiter **/
-    static void			explode( char delim, const string &str,
-					 list<string> &values ) ;
+    static void explode(char delim, const string &str, list<string> &values);
 
     /** implode a list of values into a single string delimited by delim **/
-    static string		implode( const list<string> &values,
-					 char delim ) ;
+    static string implode(const list<string> &values, char delim);
 
-    struct url
-    {
-	string protocol ;
-	string domain ;
-	string uname ;
-	string psswd ;
-	string port ;
-	string path ;
-    } ;
+    struct url {
+        string protocol;
+        string domain;
+        string uname;
+        string psswd;
+        string port;
+        string path;
+    };
 
-    static void			url_explode( const string &url_str,
-					     BESUtil::url &url_parts ) ;
-    static string		url_create( BESUtil::url &url_parts ) ;
-    static string assemblePath(const string &firstPart, const string &secondPart, bool addLeadingSlash =  false);
+    static void url_explode(const string &url_str, BESUtil::url &url_parts);
+    static string url_create(BESUtil::url &url_parts);
+    static string assemblePath(const string &firstPart, const string &secondPart, bool addLeadingSlash = false);
 
     static bool endsWith(std::string const &fullString, std::string const &ending);
     static void conditional_timeout_cancel();
 
-} ;
+    static void replace_all(std::string &s, std::string find_this, std::string replace_with_this);
+    static std::string normalize_path(const std::string &path, bool leading_separator, bool trailing_separator, const string separator = "/");
+    static void tokenize(const std::string& str, std::vector<std::string>& tokens, const std::string& delimiters = "/");
+    static string get_time(bool use_local_time = false);
+    static string get_time(time_t the_time, bool use_local_time = false);
+
+};
 
 #endif // E_BESUtil_h
 

@@ -550,7 +550,7 @@ void nc_read_dataset_attributes(DAS &das, const string &filename)
 
     int ncid, errstat;
     errstat = nc_open(filename.c_str(), NC_NOWRITE, &ncid);
-    if (errstat != NC_NOERR) throw Error(errstat, "NetCDF handler: Could not open " + path_to_filename(filename) + ".");
+    if (errstat != NC_NOERR) throw Error(errstat, "NetCDF handler: Could not open " + filename + ".");
 
     // how many variables? how many global attributes?
     int nvars, ngatts;

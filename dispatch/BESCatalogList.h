@@ -110,6 +110,7 @@ public:
     /// @brief The number of non-default catalogs
     /// @todo Change this to include the default!
     virtual int num_catalogs() const { return d_catalogs.size();  }
+    virtual int empty() const { return d_catalogs.empty();  }
 
     /// @brief The name of the default catalog
     virtual std::string default_catalog_name() const { return d_default_catalog_name; }
