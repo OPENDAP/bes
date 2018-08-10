@@ -80,13 +80,15 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
     BESCatalog *catalog = 0;    // pointer to a singleton; do not delete
     vector<string> path_tokens;
 
+    // BESUtil::normalize_path() removes duplicate separators and adds leading and trailing separators as directed.
+    string path = BESUtil::normalize_path(container, false, false);
+    BESDEBUG(MODULE, prolog << "Normalized path: " << path << endl);
+
     // Because we may need to alter the container/file/resource name by removing
     // a catalog name from the first node in the path we use "use_container" to store
     // the altered container path.
     string use_container = container;
-    // BESUtil::normalize_path() removes duplicate separators and adds leading and trailing separators as directed.
-    string path = BESUtil::normalize_path(container, false, false);
-    BESDEBUG(MODULE, prolog << "Normalized path: " << path << endl);
+
     // Breaks path into tokens
     BESUtil::tokenize(path, path_tokens);
     if (!path_tokens.empty()) {
@@ -129,12 +131,7 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
             BESCatalog *catalog = catItr->second;
             BESDEBUG(MODULE, prolog << "Checking catalog '" << catalog_name << "' ptr: " << (void *) catalog << endl);
             if (catalog != datCatalogList->default_catalog()) {
-                CatalogItem *collection = new CatalogItem();
-                collection->set_type(CatalogItem::node);
-                collection->set_name(catalog_name);
-                collection->set_is_data(false);
-                collection->set_lmt(BESUtil::get_time());
-                collection->set_size(0);
+                CatalogItem *collection = new CatalogItem(catalog_name, 0, BESUtil::get_time(), false, CatalogItem::node);
                 node->add_node(collection);
                 BESDEBUG(MODULE, prolog << "Added catalog node " << catalog_name << " to top level node." << endl);
             }
