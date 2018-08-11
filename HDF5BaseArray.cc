@@ -292,7 +292,10 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
             set_value ((dods_uint32 *) &val[0], nelms);
         }
             break;
-
+        // Add the code for the CF option DAP4 support
+        // For the CF option DAP2 support, the code will
+        // not come here since 64-integer will be ignored 
+        // in DAP2.
         case H5INT64:
         {
             vector<long long>val;
@@ -309,7 +312,7 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
 			);
 
             set_value ((dods_int64 *) &val[0], nelms);
-        } // case H5INT32
+        } // case H5INT64
             break;
 
         case H5UINT64:

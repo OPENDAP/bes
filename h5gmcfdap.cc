@@ -296,6 +296,7 @@ void gen_gmh5_cfdds( DDS & dds, HDF5CF:: GMFile *f) {
 
     for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
         BESDEBUG("h5","variable full path= "<< (*it_v)->getFullPath() <<endl);
+        // Handle 64-integer DAP4 CF mapping
         if(need_attr_values_for_dap4(*it_v) == true) 
             f->Retrieve_H5_Var_Attr_Values(*it_v);
         gen_dap_onevar_dds(dds,*it_v,fileid, filename);
@@ -346,6 +347,7 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
             at = das.add_table(FILE_ATTR_TABLE_NAME, new AttrTable);
 
         for (it_ra = root_attrs.begin(); it_ra != root_attrs.end(); ++it_ra) {
+            // Check and may update the 64-bit integer attributes in DAP4.
             check_update_int64_attr("",*it_ra);
             gen_dap_oneobj_das(at,*it_ra,NULL);
         }
@@ -370,7 +372,10 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
          it_v != vars.end(); ++it_v) {
         if (false == ((*it_v)->getAttributes().empty())) {
 
-            // Add 64-bit int support.
+            // Skip the 64-bit integer variables. The attribute mapping of 
+            // DAP4 CF 64-bit integer variable support
+            // has been taken care at the routine gen_dap_onevar_dds() 
+            // defined at h5commoncfdap.cc
             if(H5INT64 == (*it_v)->getType() || H5UINT64 == (*it_v)->getType()){
                continue;
             }
@@ -383,7 +388,9 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
                  it_ra != (*it_v)->getAttributes().end(); ++it_ra) {
                 gen_dap_oneobj_das(at,*it_ra,*it_v);
             }
-            // If a var has integer-64 bit datatype attributes, we have to duplicate all 
+            // TODO: If a var has integer-64 bit datatype attributes, maybe 
+            // we can just keep that attributes(not consistent but 
+            // easy to implement) or we have to duplicate all 
             // the var in dmr and delete this var from dds. 
                     
         }
@@ -399,7 +406,7 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
          it_cv != cvars.end(); ++it_cv) {
         if (false == ((*it_cv)->getAttributes().empty())) {
 
-            // Add 64-bit int support.
+            // TODO: Add 64-bit int support for coordinates, this has not been tackled.
             if(H5INT64 == (*it_cv)->getType() || H5UINT64 == (*it_cv)->getType()){
                continue;
             }

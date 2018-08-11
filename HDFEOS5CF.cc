@@ -276,10 +276,10 @@ void EOS5File::Gen_EOS5_VarAttr_Unsupported_Dtype_Info() throw (Exception)
         // attribute REFERENCE_LIST is okay to ignore. No need to report.
         bool is_ignored = ignored_dimscale_ref_list((*irv));
         if (false == (*irv)->attrs.empty()) {
-            if (true == (*irv)->unsupported_attr_dtype) {
+            //if (true == (*irv)->unsupported_attr_dtype) {
                 for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
                     H5DataType temp_dtype = (*ira)->getType();
-                    if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                    if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype) || (temp_dtype == H5INT64) ||(temp_dtype == H5UINT64)) {
                         // "DIMENSION_LIST" is okay to ignore and "REFERENCE_LIST"
                         // is okay to ignore if the variable has another attribute
                         // CLASS="DIMENSION_SCALE"
@@ -288,7 +288,7 @@ void EOS5File::Gen_EOS5_VarAttr_Unsupported_Dtype_Info() throw (Exception)
                             this->add_ignored_info_attrs(false, (*irv)->fullpath, (*ira)->name);
                     }
                 }
-            }
+            //}
         }
     }
 }
@@ -456,6 +456,7 @@ void EOS5File::Handle_Unsupported_Others(bool include_attr) throw (Exception)
     //File::Handle_Unsupported_Others(include_attr);
     if (true == this->check_ignored && true == include_attr) {
 
+        // netCDF Java lifts the string size restriction for attributes. So comment out for the time being. KY 2018/08/10
         if (true == HDF5RequestHandler::get_drop_long_string()) {
 #if 0
             for (vector<Attribute *>::iterator ira = this->root_attrs.begin(); ira != this->root_attrs.end(); ++ira) {
@@ -527,7 +528,7 @@ void EOS5File::Adjust_EOS5Dim_Info(HE5Parser*strmeta_info) throw (Exception)
 
         Adjust_EOS5Dim_List(he5s.dim_list);
 
-        // Correct the possible wrong dimension size,this only happens for the unlimited dimension,this only happens for the unlimited dimension
+        // Correct the possible wrong dimension size,this only happens for the unlimited dimension,
         // WE JUST NEED TO CORRECT the EOS group dimension size. 
         // STEPS:
         // 1. Merge SWATH data_var_list and geo_var_list
@@ -677,7 +678,8 @@ void EOS5File::Condense_EOS5Dim_List(vector<HE5Dim>& groupdimlist) throw (Except
     }
 }
 
-void EOS5File:: Adjust_EOS5DimSize_List(vector<HE5Dim>& eos5objdimlist,const vector<HE5Var> & eos5objvarlist, const EOS5Type eos5type, const string & eos5objname) throw(Exception)
+void EOS5File:: Adjust_EOS5DimSize_List(vector<HE5Dim>& eos5objdimlist,const vector<HE5Var> & eos5objvarlist, 
+                                        const EOS5Type eos5type, const string & eos5objname) throw(Exception)
 {
 
     set<string>updated_dimlist;
@@ -723,6 +725,7 @@ void EOS5File:: Adjust_EOS5DimSize_List(vector<HE5Dim>& eos5objdimlist,const vec
             }
 
         }
+        // Don't need to go over every var, just find enough.
         if(updated_dimlist.size() == eos5objdimlist.size())// Finish updating the eos5objdimlist
             break;
     }

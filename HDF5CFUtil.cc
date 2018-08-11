@@ -181,7 +181,7 @@ bool HDF5CFUtil::use_data_mem_cache(H5DataType h5type, CVType cvtype, const stri
 bool HDF5CFUtil::cf_strict_support_type(H5DataType dtype) {
     if ((H5UNSUPTYPE == dtype)||(H5REFERENCE == dtype)
         || (H5COMPOUND == dtype) || (H5ARRAY == dtype))
-        // Try to suport 64-bit integer
+        // Try to suport 64-bit integer for DAP4 CF, check the starting code at get_dmr_64bit_int()
         //|| (H5INT64 == dtype)    ||(H5UINT64 == dtype))
         return false;
     else 

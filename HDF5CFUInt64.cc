@@ -1,7 +1,7 @@
 // This file is part of hdf5_handler: an HDF5 file handler for the OPeNDAP
 // data server.
 
-// Copyright (c) 2011-2016 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2018 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -23,7 +23,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \file HDF5CFUInt64.cc
-/// \brief The implementation of mapping HDF5 32-bit integer to DAP UInt64 for the CF option 
+/// \brief The implementation of mapping HDF5 64-bit unsigned integer to DAP4 UInt64 for the CF option 
 ///
 /// In the future, this may be merged with the default option.
 /// \author Muqun Yang <myang6@hdfgroup.org>

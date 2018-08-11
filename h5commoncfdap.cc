@@ -301,10 +301,13 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
                 ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
         }
 
+        // When handling DAP4 CF, we need to generate dmr for 64-bit integer separately.
         if(dap4_int64 == true) {
             DMR * dmr = HDF5RequestHandler::get_dmr_64bit_int();
             D4Group* root_grp = dmr->root();
+            // Dimensions need to be translated.
             BaseType* d4_var = ar->h5cfdims_transform_to_dap4(root_grp);
+            // Attributes.
             map_cfh5_attrs_to_dap4(var,d4_var);
             root_grp->add_var_nocopy(d4_var);
         }
@@ -488,7 +491,7 @@ void gen_dap_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr, const HDF5C
     BESDEBUG("h5", "Coming to gen_dap_oneobj_das()  "<<endl);
     // DMR support for 64-bit integer
     if (H5INT64 == attr->getType() || H5UINT64 == attr->getType()) {
-        // Add code to tackle DMR. 
+        // TODO: Add code to tackle DMR for the variable datatype that is not 64-bit integer. 
         return;
 
     }
@@ -885,6 +888,7 @@ void add_ll_valid_range(AttrTable* at, bool is_lat) {
     }
 }
 
+// This routine is for 64-bit DAP4 CF support: when var type is 64-bit integer.
 bool need_attr_values_for_dap4(const HDF5CF::Var *var) {
     bool ret_value = false;
     if(HDF5RequestHandler::get_dmr_64bit_int()!=NULL)
@@ -893,13 +897,14 @@ bool need_attr_values_for_dap4(const HDF5CF::Var *var) {
     return ret_value;
 }
 
+// This routine is for 64-bit DAP4 CF support: map all attributes to DAP4 for 64-bit integers.
 void map_cfh5_attrs_to_dap4(const HDF5CF::Var *var,BaseType* d4_var) {
 
     vector<HDF5CF::Attribute *>::const_iterator it_ra;
     for (it_ra = var->getAttributes().begin();
         it_ra != var->getAttributes().end(); ++it_ra) {
         // HDF5 Native Char maps to DAP INT16(DAP doesn't have the corresponding datatype), so needs to
-        // obtain the mem datatype. 
+        // obtain the mem datatype. Keep this in DAP4 mapping.
         size_t mem_dtype_size = ((*it_ra)->getBufSize()) / ((*it_ra)->getCount());
         H5DataType mem_dtype = HDF5CFDAPUtil::get_mem_dtype((*it_ra)->getType(), mem_dtype_size);
 

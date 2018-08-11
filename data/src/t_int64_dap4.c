@@ -1,5 +1,5 @@
 /*
-  Test all supported signed int types (16, 32) variables and attributes.
+  generate 64-bit integer  variables and attributes for DAP4 CF DMR support.
   Have 1d, 2d (16) /  3d, 5d (32) of size 2 in each dimension.
   Fill in min/max numbers for the first and last item.
 

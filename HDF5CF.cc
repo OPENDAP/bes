@@ -1049,28 +1049,28 @@ void File::Gen_Group_Unsupported_Dtype_Info() throw (Exception)
 
     // First root
     if (false == this->root_attrs.empty()) {
-        if (true == this->unsupported_attr_dtype) {
+        //if (true == this->unsupported_attr_dtype) {
             for (vector<Attribute *>::iterator ira = this->root_attrs.begin(); ira != this->root_attrs.end(); ++ira) {
                 H5DataType temp_dtype = (*ira)->getType();
-                if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
                     this->add_ignored_info_attrs(true, "/", (*ira)->name);
                 }
             }
-        }
+        //}
     }
 
     // Then the group attributes
     if (false == this->groups.empty()) {
         for (vector<Group *>::iterator irg = this->groups.begin(); irg != this->groups.end(); ++irg) {
             if (false == (*irg)->attrs.empty()) {
-                if (true == (*irg)->unsupported_attr_dtype) {
+                //if (true == (*irg)->unsupported_attr_dtype) {
                     for (vector<Attribute *>::iterator ira = (*irg)->attrs.begin(); ira != (*irg)->attrs.end(); ++ira) {
                         H5DataType temp_dtype = (*ira)->getType();
-                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype) || temp_dtype == H5INT64 || temp_dtype==H5UINT64 ) {
                             this->add_ignored_info_attrs(true, (*irg)->path, (*ira)->name);
                         }
                     }
-                }
+                //}
             }
         }
     }
@@ -1101,15 +1101,15 @@ void File::Gen_Var_Unsupported_Dtype_Info() throw (Exception)
 {
 
     if (false == this->vars.empty()) {
-        if (true == this->unsupported_var_dtype) {
+        //if (true == this->unsupported_var_dtype) {
             // "h5","having unsupported variable datatype" <<endl;
             for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
                 H5DataType temp_dtype = (*irv)->getType();
-                if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)||(H5INT64 == temp_dtype) ||(H5UINT64 == temp_dtype)) {
                     this->add_ignored_info_objs(false, (*irv)->fullpath);
                 }
             }
-        }
+        //}
     }
 
 }
@@ -1144,14 +1144,14 @@ void File::Gen_VarAttr_Unsupported_Dtype_Info() throw (Exception)
     if (false == this->vars.empty()) {
         for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
             if (false == (*irv)->attrs.empty()) {
-                if (true == (*irv)->unsupported_attr_dtype) {
+                //if (true == (*irv)->unsupported_attr_dtype) {
                     for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
                         H5DataType temp_dtype = (*ira)->getType();
-                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype) || (temp_dtype==H5INT64) || (temp_dtype == H5UINT64)) {
                             this->add_ignored_info_attrs(false, (*irv)->fullpath, (*ira)->name);
                         }
                     }
-                }
+                //}
             }
         }
     }
@@ -1170,10 +1170,10 @@ void File::Gen_DimScale_VarAttr_Unsupported_Dtype_Info() throw (Exception)
         // attribute REFERENCE_LIST is okay to ignore. No need to report.
         bool is_ignored = ignored_dimscale_ref_list((*irv));
         if (false == (*irv)->attrs.empty()) {
-            if (true == (*irv)->unsupported_attr_dtype) {
+            //if (true == (*irv)->unsupported_attr_dtype) {
                 for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
                     H5DataType temp_dtype = (*ira)->getType();
-                    if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                    if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype) || (temp_dtype == H5INT64) || (temp_dtype == H5UINT64)) {
                         // "DIMENSION_LIST" is okay to ignore and "REFERENCE_LIST"
                         // is okay to ignore if the variable has another attribute
                         // CLASS="DIMENSION_SCALE"
@@ -1182,7 +1182,7 @@ void File::Gen_DimScale_VarAttr_Unsupported_Dtype_Info() throw (Exception)
                             this->add_ignored_info_attrs(false, (*irv)->fullpath, (*ira)->name);
                     }
                 }
-            }
+            //}
         }
     }
 }
@@ -2350,7 +2350,7 @@ void File::add_ignored_info_namedtypes(const string& grp_name, const string& nam
 
     string ignored_HDF5_named_dtype_hdr = "\n******WARNING******";
     ignored_HDF5_named_dtype_hdr += "\n IGNORED HDF5 named datatype objects:\n";
-    string ignored_HDF5_named_dtype_msg = " Group name: " + grp_name + "  HDF5 named datatype name: " + named_dtype_name
+    string ignored_HDF5_named_dtype_msg = " Group name: " + grp_name + "  HDF5 named datatype name: " + named_dtype_name.substr(0,named_dtype_name.size()-1)
         + "\n";
     if (ignored_msg.find(ignored_HDF5_named_dtype_hdr) == string::npos)
         ignored_msg += ignored_HDF5_named_dtype_hdr + ignored_HDF5_named_dtype_msg;

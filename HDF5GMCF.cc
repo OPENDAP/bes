@@ -498,11 +498,11 @@ void GMFile:: Gen_GM_VarAttr_Unsupported_Dtype_Info(){
             // attribute REFERENCE_LIST is okay to ignore. No need to report.
             bool is_ignored = ignored_dimscale_ref_list((*irv));
             if (false == (*irv)->attrs.empty()) {
-                if (true == (*irv)->unsupported_attr_dtype) {
+                //if (true == (*irv)->unsupported_attr_dtype) {
                     for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
                         ira != (*irv)->attrs.end(); ++ira) {
                         H5DataType temp_dtype = (*ira)->getType();
-                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
                             // "DIMENSION_LIST" is okay to ignore and "REFERENCE_LIST"
                             // is okay to ignore if the variable has another attribute
                             // CLASS="DIMENSION_SCALE"
@@ -511,7 +511,7 @@ void GMFile:: Gen_GM_VarAttr_Unsupported_Dtype_Info(){
                                 this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
                         }
                     }
-                } // if (true == (*irv)->unsupported_attr_dtype) 
+                //} // if (true == (*irv)->unsupported_attr_dtype) 
             } // if (false == (*irv)->attrs.empty()) 
         }// for(vector<GMCVar*>    
 
@@ -521,11 +521,11 @@ void GMFile:: Gen_GM_VarAttr_Unsupported_Dtype_Info(){
             // attribute REFERENCE_LIST is okay to ignore. No need to report.
             bool is_ignored = ignored_dimscale_ref_list((*irv));
             if (false == (*irv)->attrs.empty()) {
-                if (true == (*irv)->unsupported_attr_dtype) {
+                //if (true == (*irv)->unsupported_attr_dtype) {
                     for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
                         ira != (*irv)->attrs.end(); ++ira) {
                         H5DataType temp_dtype = (*ira)->getType();
-                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
                             // "DIMENSION_LIST" is okay to ignore and "REFERENCE_LIST"
                             // is okay to ignore if the variable has another attribute
                             // CLASS="DIMENSION_SCALE"
@@ -534,7 +534,7 @@ void GMFile:: Gen_GM_VarAttr_Unsupported_Dtype_Info(){
                                 this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
                         }
                     }
-                } // if (true == (*irv)->unsupported_attr_dtype)
+                //} // if (true == (*irv)->unsupported_attr_dtype)
             } // if (false == (*irv)->attrs.empty())  
         }// for(vector<GMSPVar*>    
     }// if((General_Product == ......)
@@ -543,30 +543,30 @@ void GMFile:: Gen_GM_VarAttr_Unsupported_Dtype_Info(){
         for (vector<GMCVar *>::iterator irv = this->cvars.begin();
             irv != this->cvars.end(); ++irv) {
             if (false == (*irv)->attrs.empty()) {
-                if (true == (*irv)->unsupported_attr_dtype) {
+                //if (true == (*irv)->unsupported_attr_dtype) {
                     for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
                         ira != (*irv)->attrs.end(); ++ira) {
                         H5DataType temp_dtype = (*ira)->getType();
-                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
                                 this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
                         }
                     }
-                }
+                //}
             }
         }// for (vector<GMCVar *>::iterator irv = this->cvars.begin() STOP adding end logic comments
 
         for (vector<GMSPVar *>::iterator irv = this->spvars.begin();
             irv != this->spvars.end(); ++irv) {
             if (false == (*irv)->attrs.empty()) {
-                if (true == (*irv)->unsupported_attr_dtype) {
+                //if (true == (*irv)->unsupported_attr_dtype) {
                     for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
                         ira != (*irv)->attrs.end(); ++ira) {
                         H5DataType temp_dtype = (*ira)->getType();
-                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
                             this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
                         }
                     }
-                }
+                //}
             }
         }// for(vector<GMSPVar *> 
 
@@ -704,12 +704,6 @@ void GMFile:: Handle_Unsupported_Others(bool include_attr) throw(Exception) {
                     delete((*ira));
                     ira =this->root_attrs.erase(ira);
                 }
-#if 0
-                else if((*ira)->name == "_nc3_strict") {
-                    delete((*ira));
-                    ira =this->root_attrs.erase(ira);
-                }
-#endif
                 else {
                     ++ira;
                 }
@@ -766,6 +760,8 @@ void GMFile:: Handle_Unsupported_Others(bool include_attr) throw(Exception) {
             }
         }
     }
+    // netCDF Java lifts the string size limitation. All the string attributes can be 
+    // represented by netCDF Java. So comment out the code. KY 2018/08/10
 #if 0
     if(true == this->check_ignored && true == include_attr) {
         if(true == HDF5RequestHandler::get_drop_long_string()){
@@ -5984,8 +5980,17 @@ void GMFile:: Handle_Coor_Attr() {
     // We now walk through all the >=2 vars and flatten the "coordinates"
     if(true == has_ll2d_coords) {
  
+        // For some netCDF-4-like 2-D lat/lon cases, we may need to forcely flatten the coordinates.
+        // This case usually happens when the data producers follow the CF and the NASA DIWG guideline to
+        // provide the absolute path of the coordinates as the value of the "coordinates" attribute. 
+        // The handler doesn't need to figure out the contents of the coordinates attribute but to
+        // flatten the path inside. 
+        // However, the BES Key FORCENDCoorAttr must be set.
         string co_attrname ="coordinates";
         bool force_flatten_coor_attr = HDF5RequestHandler::get_force_flatten_coor_attr();
+
+        // We also need to find if we have coordinates attribute for >=2D variables.
+        // If not, the handler has to figure out the coordinates. 
         bool has_coor_attr_ge_2d_vars = false;
         for (vector<Var *>::iterator irv = this->vars.begin();
                                 irv != this->vars.end(); ++irv) {
@@ -6002,6 +6007,8 @@ void GMFile:: Handle_Coor_Attr() {
             }
         }
 #if 0
+        // Here we may need to consider the special case for HDF-EOS5. The "Data Fields" etc should not be 
+        // in the group path. May need to let DIWG provide a guideline for this issue. 
         bool is_hybrid_eos5= false;
         if(force_flatten_coor_attr == true && has_coor_attr_ge_2d_vars == true)
             is_hybrid_eos5 = Is_Hybrid_EOS5();
@@ -6018,6 +6025,7 @@ void GMFile:: Handle_Coor_Attr() {
                 }
             }
  
+            // The coordinates attribute is flattened by force.
             if(true == force_flatten_coor_attr && true == has_coor) { 
 #if 0
                 if(is_hybrid_eos5 == true) {
@@ -6031,8 +6039,10 @@ void GMFile:: Handle_Coor_Attr() {
             else if(((*irv)->rank >=2) && (has_coor_attr_ge_2d_vars == false || false == force_flatten_coor_attr)) { 
                
                 bool coor_attr_keep_exist = false;
+
                 // Check if this var is under group_cv_paths, no, then check if this var's dims are the same as the dims of 2-D CVars 
                 if(grp_cv_paths.find(HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath)) == grp_cv_paths.end()) 
+
                     // If finding this var is associated with 2-D lat/lon CVs, not keep the original "coordinates" attribute.
                     coor_attr_keep_exist = Check_Var_2D_CVars(*irv);
                 else {
@@ -6831,6 +6841,9 @@ void GMFile:: Remove_Unused_FakeDimVars() {
 
 }
 
+//Rename NC4 NonCoordVars back to the original name. This is detected by CAR_ARCTAS files.
+//By handling this way, the output will be the same as the netCDF handler output.
+//Check HFVHANDLER-254 for more information.
 void GMFile::Rename_NC4_NonCoordVars() {
 
     if(true == this->have_nc4_non_coord) {

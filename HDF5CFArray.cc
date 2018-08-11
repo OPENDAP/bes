@@ -428,7 +428,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
         } // case H5CHAR
            break;
 
-
+        // Note: for DAP2, H5INT64,H5UINT64 will be ignored.
         case H5UCHAR:
         case H5UINT16:
         case H5INT16:
@@ -1144,7 +1144,7 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
                 }
                     break;
 
-                case H5INT64:
+                case H5INT64: // Only for DAP4 CF
                 {
 #if 0
                     vector<unsigned int>total_val;
@@ -1184,7 +1184,7 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
 
 
 
-                case H5UINT64:
+                case H5UINT64: // Only for DAP4 CF
                 {
 #if 0
                     vector<unsigned int>total_val;
@@ -1611,6 +1611,8 @@ void HDF5CFArray::read_data_from_mem_cache(void*buf) {
 }
 #endif
 // We don't inherit libdap Array Class's transform_to_dap4 method since CF option is still using it.
+// This function is used for 64-bit integer mapping to DAP4 for the CF option. largely borrowed from
+// DAP4 code.
 BaseType* HDF5CFArray::h5cfdims_transform_to_dap4(D4Group *grp) {
 
     Array *dest = static_cast<HDF5CFArray*>(ptr_duplicate());
@@ -1645,7 +1647,6 @@ BaseType* HDF5CFArray::h5cfdims_transform_to_dap4(D4Group *grp) {
             // Not find this dimension in any of the ancestor groups, add it to this group.
             if(d4_dim == NULL) {
                 d4_dim = new D4Dimension((*d).name, (*d).size);
-//cerr<<"FQN name is "<<d4_dim->fully_qualified_name() <<endl;
                 D4Dimensions * dims = grp->dims();
                 dims->add_dim_nocopy(d4_dim);
                 (*d).dim = d4_dim;

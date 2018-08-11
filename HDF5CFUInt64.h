@@ -1,5 +1,5 @@
 // This file is part of the hdf5_handler implementing for the CF-compliant
-// Copyright (c) 2011-2016 The HDF Group, Inc. and OPeNDAP, Inc.
+// Copyright (c) 2011-2018 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -21,7 +21,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \file HDF5CFUInt64.h
-/// \brief This class provides a way to map HDF5 32-bit integer to DAP UInt64 for the CF option
+/// \brief This class provides a way to map HDF5 64-bit unsigned integer to DAP4 UInt64 for the CF option
 ///
 /// In the future, this may be merged with the default option.
 /// \author Muqun Yang <myang6@hdfgroup.org>

@@ -501,7 +501,7 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const hid_t 
     BESDEBUG("h5","Coming to gen_dap_oneeos5cvar_dds()  "<<endl);
     BaseType *bt = NULL;
 
-    // Handle 64-bit integer
+    // TODO: need to handle 64-bit integer for DAP4 CF 
     if(cvar->getType()==H5INT64 || cvar->getType() == H5UINT64)
         return;
     switch(cvar->getType()) {
@@ -774,7 +774,7 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
          it_v != vars.end(); ++it_v) {
         if (false == ((*it_v)->getAttributes().empty())) {
 
-            // Add 64-bit int support.
+            // TODO: Need to handle 64-bit int support for DAP4 CF.
             if(H5INT64 == (*it_v)->getType() || H5UINT64 == (*it_v)->getType()){
                continue;
             }
@@ -793,7 +793,8 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
     for (it_cv = cvars.begin(); it_cv !=cvars.end();it_cv++) {
 
         if (false == ((*it_cv)->getAttributes().empty())) {
-            // Add 64-bit int support.
+            
+            // TODO: Need to handle 64-bit int support for DAP4 CF.
             if(H5INT64 == (*it_cv)->getType() || H5UINT64 == (*it_cv)->getType()){
                continue;
             }

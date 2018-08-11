@@ -366,7 +366,7 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
                         invalid_file_msg +=" distributor.";
                         throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
                     }
-
+                    // Need to check if DAP4 DMR CF 64-bit integer mapping is on. 
                     if(HDF5RequestHandler::get_dmr_64bit_int()!=NULL)
                         HDF5RequestHandler::set_dmr_64bit_int(NULL);
                     read_cfdas( *das,filename,cf_fileid);
@@ -501,6 +501,8 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
                     invalid_file_msg +=" distributor.";
                     throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
                 }
+                // The following is for DAP4 CF(DMR) 64-bit mapping, we need to set the flag
+                // to let the handler map the 64-bit integer.
                 if(HDF5RequestHandler::get_dmr_64bit_int() != NULL)
                     HDF5RequestHandler::set_dmr_64bit_int(NULL);
                 read_cfdds(*dds,filename,cf_fileid);
@@ -1093,6 +1095,8 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
 
                 DAS das;
 
+                // For the CF option dmr response, we need to map 64-bit integer separately
+                // So set the flag to map 64-bit integer. 
                 HDF5RequestHandler::set_dmr_64bit_int(dmr);
                 read_cfdds( dds,filename,cf_fileid);
                 if (!dds.check_semantics()) {   // DDS didn't comply with the DAP semantics 
@@ -1647,6 +1651,7 @@ void write_das_to_file(DAS*das_ptr,FILE* das_file) {
     uint8_t category_flag = 2;
     AttrTable* top_table = das_ptr->get_top_level_attributes();
     write_das_table_to_file(top_table,das_file);
+
     // Add the final ending flag for retrieving the info.
     fwrite((const void*)&category_flag,1,1,das_file);
     return;
@@ -1774,8 +1779,10 @@ void write_das_attr_info(AttrTable* dtp,const string& attr_name, const string & 
 }
 
 // Read DDS from a disk cache, this function is not used by default.
-void HDF5RequestHandler::read_dds_from_disk_cache(BESDDSResponse* bdds, BESDataDDSResponse* data_bdds,bool build_data,const string & container_name,const string & h5_fname,
-                              const string & dds_cache_fname,const string &das_cache_fname, hid_t h5_fd, bool das_from_dc) {
+void HDF5RequestHandler::read_dds_from_disk_cache(BESDDSResponse* bdds, BESDataDDSResponse* data_bdds,
+                                bool build_data,const string & container_name,const string & h5_fname,
+                              const string & dds_cache_fname,const string &das_cache_fname, hid_t h5_fd, 
+                              bool das_from_dc) {
 
      
      BESDEBUG(HDF5_NAME, "Read DDS from disk cache " << dds_cache_fname << endl);
@@ -1977,7 +1984,8 @@ char* obtain_str(char*temp_ptr,string & str) {
 
 }
 
-// For our case, there are no global attributes for DAS. The global attribures are always under HDF_GLOBAL.
+// For our case, there are no global attributes for DAS. 
+// The global attribures are always under HDF_GLOBAL.
 // The main function to obtain the DAS info. from the cache.
 char* get_attr_info_from_dc(char*temp_pointer,DAS *das,AttrTable *at_par) {
 

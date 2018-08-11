@@ -78,7 +78,10 @@ class HDF5CFArray:public HDF5BaseArray {
     virtual BaseType *ptr_duplicate();
     virtual bool read();
     virtual void read_data_NOT_from_mem_cache(bool add_cache,void*buf);
+
+    // Currently this routine is only used for 64-bit integer mapping to DAP4.
     BaseType *h5cfdims_transform_to_dap4(D4Group *root);
+
     //void read_data_from_mem_cache(void*buf);
     //void read_data_from_file(bool add_cache,void*buf);
     //int format_constraint (int *cor, int *step, int *edg);

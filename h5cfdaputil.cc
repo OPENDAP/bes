@@ -101,6 +101,7 @@ void HDF5CFDAPUtil::replace_double_quote(string & str) {
 string HDF5CFDAPUtil::print_type(H5DataType type) {
 
     // The list is based on libdap/AttrTable.h.
+    // We added DAP4 INT64 and UINT64 support.
     string DAPUNSUPPORTED ="Unsupported";
     string DAPBYTE ="Byte";
     string DAPINT16 ="Int16";
@@ -239,14 +240,14 @@ HDF5CFDAPUtil:: print_attr(H5DataType type, int loc, void *vals)
             rep << *(gp.uip+loc);
             return rep.str();
         }
-    case H5INT64:
+    case H5INT64: // For DAP4 CF support only
         {
             gp.llp = (long long *) vals;
             rep << *(gp.llp+loc);
             return rep.str();
         }
 
-    case H5UINT64:
+    case H5UINT64: // For DAP4 CF support only
         {
             gp.ullp = (unsigned long long *) vals;
             rep << *(gp.ullp+loc);
@@ -297,6 +298,8 @@ HDF5CFDAPUtil:: print_attr(H5DataType type, int loc, void *vals)
 
 }
 
+// This helper function is used for 64-bit integer DAP4 support.
+// We need to support the attributes of all types for 64-bit integer variables.
 D4AttributeType HDF5CFDAPUtil::daptype_strrep_to_dap4_attrtype(std::string s){
     
     if (s == "Byte")
