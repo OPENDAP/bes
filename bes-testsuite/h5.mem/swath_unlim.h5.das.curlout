@@ -20,7 +20,7 @@ Attributes {
     Spectra {
         String origname "Spectra";
         String fullnamepath "/HDFEOS/SWATHS/Swath1/Data Fields/Spectra";
-        String coordinates "Bands Res2tr Bands_1";
+        String coordinates "Bands Res2tr Res2xtr";
     }
     StructMetadata_0 {
         String origname "StructMetadata.0";
@@ -37,13 +37,13 @@ Attributes {
     Bands {
         String units "level";
     }
-    Bands_1 {
-        String units "level";
-    }
     Res2tr {
         String units "level";
     }
+    Res2xtr {
+        String units "level";
+    }
     DODS_EXTRA {
-        String Unlimited_Dimension "Bands", "Bands_1", "Res2tr";
+        String Unlimited_Dimension "Bands", "Res2tr", "Res2xtr";
     }
 }

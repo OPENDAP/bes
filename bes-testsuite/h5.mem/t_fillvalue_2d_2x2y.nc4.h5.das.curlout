@@ -1,7 +1,4 @@
 Attributes {
-    HDF5_GLOBAL {
-        Int32 _nc3_strict 1;
-    }
     FVattr_yes {
         Float32 _FillValue -9999.000000;
         String origname "FVattr_yes";

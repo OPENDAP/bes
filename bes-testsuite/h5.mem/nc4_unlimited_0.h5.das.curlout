@@ -1,7 +1,4 @@
 Attributes {
-    HDF5_GLOBAL {
-        Int32 _nc3_strict 1;
-    }
     t {
         String origname "t";
         String fullnamepath "/t";
@@ -23,25 +20,16 @@ Attributes {
         String fullnamepath "/rh";
     }
     lat {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "lat";
-        Int32 _Netcdf4Dimid 0;
         String units "degrees_north";
         String origname "lat";
         String fullnamepath "/lat";
     }
     lon {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "lon";
-        Int32 _Netcdf4Dimid 1;
         String units "degrees_east";
         String origname "lon";
         String fullnamepath "/lon";
     }
     time {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "time";
-        Int32 _Netcdf4Dimid 2;
         String units "seconds";
         String origname "time";
         String fullnamepath "/time";

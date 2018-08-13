@@ -23,31 +23,19 @@ Attributes {
         String fullnamepath "/g1/fake_lon";
     }
     g1_dim1 {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "dim1";
-        Int32 _Netcdf4Dimid 2;
         String origname "dim1";
         String fullnamepath "/g1/dim1";
     }
     g1_dim2 {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "dim2";
-        Int32 _Netcdf4Dimid 3;
         String origname "dim2";
         String fullnamepath "/g1/dim2";
     }
     XDIM {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "XDIM";
-        Int32 _Netcdf4Dimid 1;
         String units "degrees_east";
         String origname "XDIM";
         String fullnamepath "/XDIM";
     }
     YDIM {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "YDIM";
-        Int32 _Netcdf4Dimid 0;
         String units "degrees_north";
         String origname "YDIM";
         String fullnamepath "/YDIM";

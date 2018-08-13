@@ -55,22 +55,16 @@ Attributes {
         String fullnamepath "/HDFEOS INFORMATION/StructMetadata.0";
     }
     TDim {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "TDim";
         String origname "TDim";
         String fullnamepath "/HDFEOS/ZAS/ZA/TDim";
         String orig_dimname "TDim";
     }
     YDim {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "YDim";
         String origname "YDim";
         String fullnamepath "/HDFEOS/ZAS/ZA/YDim";
         String orig_dimname "YDim";
     }
     ZDim {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "ZDim";
         String origname "ZDim";
         String fullnamepath "/HDFEOS/ZAS/ZA/ZDim";
         String orig_dimname "ZDim";

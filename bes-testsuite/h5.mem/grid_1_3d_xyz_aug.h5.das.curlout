@@ -44,7 +44,6 @@ Attributes {
         String fullnamepath "/HDFEOS INFORMATION/StructMetadata.0";
     }
     XDim {
-        String CLASS "DIMENSION_SCALE";
         String long_name "longitude";
         String units "degrees_east";
         String origname "XDim";
@@ -52,7 +51,6 @@ Attributes {
         String orig_dimname "XDim";
     }
     YDim {
-        String CLASS "DIMENSION_SCALE";
         String long_name "latitude";
         String units "degrees_north";
         String origname "YDim";
@@ -60,8 +58,6 @@ Attributes {
         String orig_dimname "YDim";
     }
     ZDim {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "ZDim";
         String origname "ZDim";
         String fullnamepath "/HDFEOS/GRIDS/GeoGrid/ZDim";
         String orig_dimname "ZDim";

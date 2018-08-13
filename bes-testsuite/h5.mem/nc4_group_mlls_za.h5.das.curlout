@@ -22,17 +22,11 @@ Attributes {
         String fullnamepath "/pres1";
     }
     lat {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "lat";
-        Int32 _Netcdf4Dimid 0;
         String units "degrees_north";
         String origname "lat";
         String fullnamepath "/lat";
     }
     zdim {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "zdim";
-        Int32 _Netcdf4Dimid 1;
         String units "km";
         String origname "zdim";
         String fullnamepath "/zdim";

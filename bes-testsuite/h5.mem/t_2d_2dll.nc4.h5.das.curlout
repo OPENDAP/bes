@@ -1,7 +1,4 @@
 Attributes {
-    HDF5_GLOBAL {
-        Int32 _nc3_strict 1;
-    }
     mydata {
         String origname "mydata";
         String fullnamepath "/mydata";
