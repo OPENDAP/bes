@@ -3,6 +3,7 @@ dnl Test suite for variable@orgName renaming.
 AT_BANNER([Testing variable renaming with orgName])
 
 dnl Test the renaming of an existing variable
+dnl tests 84 ... 87; 87 is wrong
 AT_CHECK_ALL_DAP_RESPONSES([var_orgName.ncml])
 
 dnl orgName doesnt exist should error
@@ -12,16 +13,21 @@ dnl name already exists should error
 AT_ASSERT_PARSE_ERROR([var_orgName_err_2.ncml])
 
 dnl Check that a Structure rename works as well
+dnl tests 90 .. 93; 93 is broken
 AT_CHECK_ALL_DAP_RESPONSES([var_orgName_Structure.ncml])
 
 dnl Variable Rename with Constraints
 
 dnl Check a Structure rename with constraint on renamed variables
+dnl tests 94 .. 97; 97 is broken.
 AT_CHECK_ALL_DAP_RESPONSES_WITH_CONSTRAINT([var_orgName_Structure.ncml], [ DataGranule.PlanetaryGrid.precipitate ], [var_orgName_Structure_constraint_1.ncml])
+
 dnl Selection and projection, a slice through the 180 degree line
+dnl tests 98 .. 101; 101 is broken
 AT_CHECK_ALL_DAP_RESPONSES_WITH_CONSTRAINT([var_orgName_Structure.ncml], [[ DataGranule.PlanetaryGrid.precipitate[0][179][0:79] ]], [var_orgName_Structure_cons_2.ncml])
 
 dnl Check hyperslab constraints on renamed variables
+dnl tests 102 .. 105; 105 is broken (...and so on. All the data responses are made without renaming)
 dnl Boundary min
 AT_CHECK_ALL_DAP_RESPONSES_WITH_CONSTRAINT([var_orgName.ncml],[[ wind_u[0][0][0] ]],[var_orgName_cons_2.ncml])
 dnl some element in the middle
