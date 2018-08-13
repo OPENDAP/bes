@@ -470,13 +470,7 @@ Attributes {
         String origname "nvalues";
         String fullnamepath "/Aura MLS/nvalues";
     }
-    ACE_FTS_dayInBin {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.        31";
-    }
     ACE_FTS_lat {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "lat";
         String long_name "Latitude";
         String units "degrees_north";
         String description "Center latitude";
@@ -484,8 +478,6 @@ Attributes {
         String fullnamepath "/ACE-FTS/lat";
     }
     ACE_FTS_lev {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "lev";
         String long_name "Pressure";
         String units "hPa";
         String description "Value of vertical coordinate (Pressure)";
@@ -493,21 +485,13 @@ Attributes {
         String fullnamepath "/ACE-FTS/lev";
     }
     ACE_FTS_time {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "time";
         String long_name "Time";
         String units "days since 1950-01-01";
         String description "Day number referenced to 15th day of the month";
         String origname "time";
         String fullnamepath "/ACE-FTS/time";
     }
-    Aura_MLS_dayInBin {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.        31";
-    }
     Aura_MLS_lat {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "lat";
         String long_name "Latitude";
         String units "degrees_north";
         String description "Center latitude";
@@ -515,8 +499,6 @@ Attributes {
         String fullnamepath "/Aura MLS/lat";
     }
     Aura_MLS_lev {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "lev";
         String long_name "Pressure";
         String units "hPa";
         String description "Value of vertical coordinate (Pressure)";
@@ -524,21 +506,13 @@ Attributes {
         String fullnamepath "/Aura MLS/lev";
     }
     Aura_MLS_time {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "time";
         String long_name "Time";
         String units "days since 1950-01-01";
         String description "Day number referenced to 15th day of the month";
         String origname "time";
         String fullnamepath "/Aura MLS/time";
     }
-    HALOE_dayInBin {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.        31";
-    }
     HALOE_lat {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "lat";
         String long_name "Latitude";
         String units "degrees_north";
         String description "Center latitude";
@@ -546,8 +520,6 @@ Attributes {
         String fullnamepath "/HALOE/lat";
     }
     HALOE_lev {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "lev";
         String long_name "Pressure";
         String units "hPa";
         String description "Value of vertical coordinate (Pressure)";
@@ -555,8 +527,6 @@ Attributes {
         String fullnamepath "/HALOE/lev";
     }
     HALOE_time {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "time";
         String long_name "Time";
         String units "days since 1950-01-01";
         String description "Day number referenced to 15th day of the month";

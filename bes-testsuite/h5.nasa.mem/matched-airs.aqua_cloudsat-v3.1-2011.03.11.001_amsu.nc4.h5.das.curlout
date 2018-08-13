@@ -326,269 +326,224 @@ Attributes {
     }
     AIRS_RetStd_GP_Tropopause {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "GP_Tropopause";
         String fullnamepath "/AIRS/RetStd/GP_Tropopause";
     }
     AIRS_RetStd_Press_mid_top_bndry {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "Press_mid_top_bndry";
         String fullnamepath "/AIRS/RetStd/Press_mid_top_bndry";
     }
     AIRS_RetStd_totH2OStd {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "totH2OStd";
         String fullnamepath "/AIRS/RetStd/totH2OStd";
     }
     AIRS_RetStd_olr {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "olr";
         String fullnamepath "/AIRS/RetStd/olr";
     }
     AIRS_RetStd_TotCld_4_CCfinal {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "TotCld_4_CCfinal";
         String fullnamepath "/AIRS/RetStd/TotCld_4_CCfinal";
     }
     AIRS_RetStd_Time {
         Float64 _FillValue -9999.0000000000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "Time";
         String fullnamepath "/AIRS/RetStd/Time";
     }
     AIRS_RetStd_TSurfStd {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "TSurfStd";
         String fullnamepath "/AIRS/RetStd/TSurfStd";
     }
     AIRS_RetStd_totCldH2OStdErr {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "totCldH2OStdErr";
         String fullnamepath "/AIRS/RetStd/totCldH2OStdErr";
     }
     AIRS_RetStd_TAirStd {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "TAirStd";
         String fullnamepath "/AIRS/RetStd/TAirStd";
     }
     AIRS_RetStd_totH2OMWOnlyStd {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "totH2OMWOnlyStd";
         String fullnamepath "/AIRS/RetStd/totH2OMWOnlyStd";
     }
     AIRS_RetStd_TSurfStdErr {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "TSurfStdErr";
         String fullnamepath "/AIRS/RetStd/TSurfStdErr";
     }
     AIRS_RetStd_landFrac {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "landFrac";
         String fullnamepath "/AIRS/RetStd/landFrac";
     }
     AIRS_RetStd_Longitude {
         Float64 _FillValue -9999.0000000000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "Longitude";
         String fullnamepath "/AIRS/RetStd/Longitude";
     }
     AIRS_RetStd_Qual_Surf {
         UInt16 _FillValue 65534;
-        Int32 _Netcdf4Dimid 0;
         String origname "Qual_Surf";
         String fullnamepath "/AIRS/RetStd/Qual_Surf";
     }
     AIRS_RetStd_Qual_Temp_Profile_Mid {
         UInt16 _FillValue 65534;
-        Int32 _Netcdf4Dimid 0;
         String origname "Qual_Temp_Profile_Mid";
         String fullnamepath "/AIRS/RetStd/Qual_Temp_Profile_Mid";
     }
     AIRS_RetStd_CH4_verticality {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "CH4_verticality";
         String fullnamepath "/AIRS/RetStd/CH4_verticality";
     }
     AIRS_RetStd_Qual_Cloud_OLR {
         UInt16 _FillValue 65534;
-        Int32 _Netcdf4Dimid 0;
         String origname "Qual_Cloud_OLR";
         String fullnamepath "/AIRS/RetStd/Qual_Cloud_OLR";
     }
     AIRS_RetStd_glintlon {
-        Int32 _Netcdf4Dimid 1;
         String origname "glintlon";
         String fullnamepath "/AIRS/RetStd/glintlon";
     }
     AIRS_RetStd_nGoodStd {
         Int16 _FillValue -9999;
-        Int32 _Netcdf4Dimid 0;
         String origname "nGoodStd";
         String fullnamepath "/AIRS/RetStd/nGoodStd";
     }
     AIRS_RetStd_olr_err {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "olr_err";
         String fullnamepath "/AIRS/RetStd/olr_err";
     }
     AIRS_RetStd_T_Tropopause {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "T_Tropopause";
         String fullnamepath "/AIRS/RetStd/T_Tropopause";
     }
     AIRS_RetStd_nSurfStd {
         Int32 _FillValue -9999;
-        Int32 _Netcdf4Dimid 0;
         String origname "nSurfStd";
         String fullnamepath "/AIRS/RetStd/nSurfStd";
     }
     AIRS_RetStd_nStd_bot_mid_bndry {
         Int16 _FillValue -9999;
-        Int32 _Netcdf4Dimid 0;
         String origname "nStd_bot_mid_bndry";
         String fullnamepath "/AIRS/RetStd/nStd_bot_mid_bndry";
     }
     AIRS_RetStd_PCldTopStdErr {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "PCldTopStdErr";
         String fullnamepath "/AIRS/RetStd/PCldTopStdErr";
     }
     AIRS_RetStd_emisIRStdErr {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "emisIRStdErr";
         String fullnamepath "/AIRS/RetStd/emisIRStdErr";
     }
     AIRS_RetStd_H2O_verticality {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "H2O_verticality";
         String fullnamepath "/AIRS/RetStd/H2O_verticality";
     }
     AIRS_RetStd_nBestStd {
         Int16 _FillValue -9999;
-        Int32 _Netcdf4Dimid 0;
         String origname "nBestStd";
         String fullnamepath "/AIRS/RetStd/nBestStd";
     }
     AIRS_RetStd_solazi {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "solazi";
         String fullnamepath "/AIRS/RetStd/solazi";
     }
     AIRS_RetStd_TAirStdErr {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "TAirStdErr";
         String fullnamepath "/AIRS/RetStd/TAirStdErr";
     }
     AIRS_RetStd_O3VMRStdErr {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "O3VMRStdErr";
         String fullnamepath "/AIRS/RetStd/O3VMRStdErr";
     }
     AIRS_RetStd_O3VMRStd {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "O3VMRStd";
         String fullnamepath "/AIRS/RetStd/O3VMRStd";
     }
     AIRS_RetStd_Qual_CO {
         UInt16 _FillValue 65534;
-        Int32 _Netcdf4Dimid 0;
         String origname "Qual_CO";
         String fullnamepath "/AIRS/RetStd/Qual_CO";
     }
     AIRS_RetStd_totCldH2OStd {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "totCldH2OStd";
         String fullnamepath "/AIRS/RetStd/totCldH2OStd";
     }
     AIRS_RetStd_glintlat {
-        Int32 _Netcdf4Dimid 1;
         String origname "glintlat";
         String fullnamepath "/AIRS/RetStd/glintlat";
     }
     AIRS_RetStd_TAirMWOnlyStd {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "TAirMWOnlyStd";
         String fullnamepath "/AIRS/RetStd/TAirMWOnlyStd";
     }
     AIRS_RetStd_Qual_H2O {
         UInt16 _FillValue 65534;
-        Int32 _Netcdf4Dimid 0;
         String origname "Qual_H2O";
         String fullnamepath "/AIRS/RetStd/Qual_H2O";
     }
     AIRS_RetStd_CO_VMR_eff {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "CO_VMR_eff";
         String fullnamepath "/AIRS/RetStd/CO_VMR_eff";
     }
     AIRS_RetStd_CO_dof {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "CO_dof";
         String fullnamepath "/AIRS/RetStd/CO_dof";
     }
     AIRS_RetStd_Qual_Temp_Profile_Top {
         UInt16 _FillValue 65534;
-        Int32 _Netcdf4Dimid 0;
         String origname "Qual_Temp_Profile_Top";
         String fullnamepath "/AIRS/RetStd/Qual_Temp_Profile_Top";
     }
     AIRS_RetStd_clrolr {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "clrolr";
         String fullnamepath "/AIRS/RetStd/clrolr";
     }
     AIRS_RetStd_clrolr_err {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "clrolr_err";
         String fullnamepath "/AIRS/RetStd/clrolr_err";
     }
     AIRS_RetStd_RetQAFlag {
         UInt16 _FillValue 65534;
-        Int32 _Netcdf4Dimid 0;
         String origname "RetQAFlag";
         String fullnamepath "/AIRS/RetStd/RetQAFlag";
     }
     AIRS_RetStd_Latitude {
         Float64 _FillValue -9999.0000000000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "Latitude";
         String fullnamepath "/AIRS/RetStd/Latitude";
     }
     AIRS_RetStd_TCldTopStdErr {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "TCldTopStdErr";
         String fullnamepath "/AIRS/RetStd/TCldTopStdErr";
     }
     AIRS_RetStd_totO3StdErr {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "totO3StdErr";
         String fullnamepath "/AIRS/RetStd/totO3StdErr";
     }
@@ -598,211 +553,176 @@ Attributes {
     }
     AIRS_RetStd_CO_eff_press {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "CO_eff_press";
         String fullnamepath "/AIRS/RetStd/CO_eff_press";
     }
     AIRS_RetStd_TSurfAirErr {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "TSurfAirErr";
         String fullnamepath "/AIRS/RetStd/TSurfAirErr";
     }
     AIRS_RetStd_H2OMMRStd {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "H2OMMRStd";
         String fullnamepath "/AIRS/RetStd/H2OMMRStd";
     }
     AIRS_RetStd_PTropopause {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "PTropopause";
         String fullnamepath "/AIRS/RetStd/PTropopause";
     }
     AIRS_RetStd_totH2OStdErr {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "totH2OStdErr";
         String fullnamepath "/AIRS/RetStd/totH2OStdErr";
     }
     AIRS_RetStd_numCloud {
         Int32 _FillValue -9999;
-        Int32 _Netcdf4Dimid 0;
         String origname "numCloud";
         String fullnamepath "/AIRS/RetStd/numCloud";
     }
     AIRS_RetStd_Press_bot_mid_bndry {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "Press_bot_mid_bndry";
         String fullnamepath "/AIRS/RetStd/Press_bot_mid_bndry";
     }
     AIRS_RetStd_H2OMMRSat_liquid {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "H2OMMRSat_liquid";
         String fullnamepath "/AIRS/RetStd/H2OMMRSat_liquid";
     }
     AIRS_RetStd_Qual_Temp_Profile_Bot {
         UInt16 _FillValue 65534;
-        Int32 _Netcdf4Dimid 0;
         String origname "Qual_Temp_Profile_Bot";
         String fullnamepath "/AIRS/RetStd/Qual_Temp_Profile_Bot";
     }
     AIRS_RetStd_PGood {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "PGood";
         String fullnamepath "/AIRS/RetStd/PGood";
     }
     AIRS_RetStd_nStd_mid_top_bndry {
         Int16 _FillValue -9999;
-        Int32 _Netcdf4Dimid 0;
         String origname "nStd_mid_top_bndry";
         String fullnamepath "/AIRS/RetStd/nStd_mid_top_bndry";
     }
     AIRS_RetStd_totO3Std {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "totO3Std";
         String fullnamepath "/AIRS/RetStd/totO3Std";
     }
     AIRS_RetStd_satzen {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "satzen";
         String fullnamepath "/AIRS/RetStd/satzen";
     }
     AIRS_RetStd_Qual_clrolr {
         UInt16 _FillValue 65534;
-        Int32 _Netcdf4Dimid 0;
         String origname "Qual_clrolr";
         String fullnamepath "/AIRS/RetStd/Qual_clrolr";
     }
     AIRS_RetStd_PBest {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "PBest";
         String fullnamepath "/AIRS/RetStd/PBest";
     }
     AIRS_RetStd_GP_Height {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "GP_Height";
         String fullnamepath "/AIRS/RetStd/GP_Height";
     }
     AIRS_RetStd_CH4_total_column {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "CH4_total_column";
         String fullnamepath "/AIRS/RetStd/CH4_total_column";
     }
     AIRS_RetStd_num_clear_spectral_indicator {
         Int16 _FillValue -9999;
-        Int32 _Netcdf4Dimid 0;
         String origname "num_clear_spectral_indicator";
         String fullnamepath "/AIRS/RetStd/num_clear_spectral_indicator";
     }
     AIRS_RetStd_solzen {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "solzen";
         String fullnamepath "/AIRS/RetStd/solzen";
     }
     AIRS_RetStd_PSurfStd {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "PSurfStd";
         String fullnamepath "/AIRS/RetStd/PSurfStd";
     }
     AIRS_RetStd_satazi {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "satazi";
         String fullnamepath "/AIRS/RetStd/satazi";
     }
     AIRS_RetStd_CO_verticality {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "CO_verticality";
         String fullnamepath "/AIRS/RetStd/CO_verticality";
     }
     AIRS_RetStd_numHingeSurf {
         Int16 _FillValue -9999;
-        Int32 _Netcdf4Dimid 0;
         String origname "numHingeSurf";
         String fullnamepath "/AIRS/RetStd/numHingeSurf";
     }
     AIRS_RetStd_H2OMMRStdErr {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "H2OMMRStdErr";
         String fullnamepath "/AIRS/RetStd/H2OMMRStdErr";
     }
     AIRS_RetStd_CO_total_column {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "CO_total_column";
         String fullnamepath "/AIRS/RetStd/CO_total_column";
     }
     AIRS_RetStd_emisIRStd {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "emisIRStd";
         String fullnamepath "/AIRS/RetStd/emisIRStd";
     }
     AIRS_RetStd_Cloud_Resid_Ratio {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "Cloud_Resid_Ratio";
         String fullnamepath "/AIRS/RetStd/Cloud_Resid_Ratio";
     }
     AIRS_RetStd_O3_verticality {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "O3_verticality";
         String fullnamepath "/AIRS/RetStd/O3_verticality";
     }
     AIRS_RetStd_freqEmis {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "freqEmis";
         String fullnamepath "/AIRS/RetStd/freqEmis";
     }
     AIRS_RetStd_TSurfAir {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "TSurfAir";
         String fullnamepath "/AIRS/RetStd/TSurfAir";
     }
     AIRS_RetStd_TCldTopStd {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "TCldTopStd";
         String fullnamepath "/AIRS/RetStd/TCldTopStd";
     }
     AIRS_RetStd_PCldTopStd {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "PCldTopStd";
         String fullnamepath "/AIRS/RetStd/PCldTopStd";
     }
     AIRS_RetStd_landFrac_err {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "landFrac_err";
         String fullnamepath "/AIRS/RetStd/landFrac_err";
     }
     AIRS_RetStd_H2OMMRSat {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "H2OMMRSat";
         String fullnamepath "/AIRS/RetStd/H2OMMRSat";
     }
     AIRS_RetStd_CO_VMR_eff_err {
         Float32 _FillValue -9999.000000;
-        Int32 _Netcdf4Dimid 0;
         String origname "CO_VMR_eff_err";
         String fullnamepath "/AIRS/RetStd/CO_VMR_eff_err";
     }
@@ -899,65 +819,5 @@ Attributes {
         Float32 _FillValue -9999.000000;
         String origname "CH4CDSup";
         String fullnamepath "/AIRS/RetSup/CH4CDSup";
-    }
-    AIRS_HingeSurf {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.       100";
-    }
-    AIRS_RetStd_CH4Func {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.         7";
-        Int32 _Netcdf4Dimid 8;
-    }
-    AIRS_RetStd_COFunc {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.         9";
-        Int32 _Netcdf4Dimid 3;
-    }
-    AIRS_RetStd_Cloud {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.         2";
-        Int32 _Netcdf4Dimid 7;
-    }
-    AIRS_RetStd_H2OFunc {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.        11";
-        Int32 _Netcdf4Dimid 5;
-    }
-    AIRS_RetStd_H2OPressureLay {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.        14";
-        Int32 _Netcdf4Dimid 6;
-    }
-    AIRS_RetStd_O3Func {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.         9";
-        Int32 _Netcdf4Dimid 2;
-    }
-    AIRS_RetStd_StdPressureLay {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.        28";
-        Int32 _Netcdf4Dimid 4;
-    }
-    AIRS_RetStd_StdPressureLev {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.        28";
-        Int32 _Netcdf4Dimid 9;
-    }
-    CloudSat_cs_idx {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.        51";
-    }
-    CloudSat_cs_nbin {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.       125";
-    }
-    amsu_idx {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.        46";
-    }
-    amsu_track_idx {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "This is a netCDF dimension but not a netCDF variable.        45";
     }
 }

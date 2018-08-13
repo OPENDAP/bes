@@ -61,14 +61,12 @@ Attributes {
         String fullnamepath "/OMI_Column_Amount_O3/Data_Fields/UVAerosolIndex";
     }
     OMI_Column_Amount_O3_lat {
-        String CLASS "DIMENSION_SCALE";
         String long_name "latitude ";
         String units "degrees_north ";
         String origname "lat";
         String fullnamepath "/OMI_Column_Amount_O3/lat";
     }
     OMI_Column_Amount_O3_lon {
-        String CLASS "DIMENSION_SCALE";
         String long_name "longitude ";
         String units "degrees_east ";
         String origname "lon";

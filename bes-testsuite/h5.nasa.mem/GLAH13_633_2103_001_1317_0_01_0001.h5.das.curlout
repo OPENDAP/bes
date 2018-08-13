@@ -3104,14 +3104,12 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1";
         String fullnamepath "/BROWSE/Image_03";
     }
     Data_1HZ_DS_UTCTime_1 {
-        String NAME "DS_UTCTime_1";
         String units "seconds since 2000-01-01 12:00:00 UTC";
         String hertz "1";
         String long_name "Transmit Time of First Shot in frame in J2000";
         String standard_name "time";
         String description "The transmit time of the first shot in the 1 second frame measured as UTC seconds elapsed since Jan 1 2000 12:00:00 UTC. This time has been derived from the GPS time accounting for leap seconds.";
         String source "Rel 33 GLAS Binary Data";
-        String CLASS "DIMENSION_SCALE";
         String origname "DS_UTCTime_1";
         String fullnamepath "/Data_1HZ/DS_UTCTime_1";
     }
@@ -3123,7 +3121,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1";
         String standard_name "time";
         String description "The transmit time of the first shot in the 1 second frame measured as UTC seconds elapsed since Jan 1 2000 12:00:00 UTC. This time has been derived from the GPS time accounting for leap seconds.";
         String source "Rel 33 GLAS Binary Data";
-        String CLASS "DIMENSION_SCALE";
         String origname "d_UTCTime_1";
         String fullnamepath "/Data_1HZ/Time/d_UTCTime_1";
     }
@@ -3134,8 +3131,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1";
         String source "Constants";
         Int32 flag_values 1, 2, 3, 4, 5, 6, 7, 8, 9;
         String flag_meanings "NW N NE W ORIGIN E SW S SE";
-        String CLASS "DIMENSION_SCALE";
-        String NAME "DS_DEMhiresArElv";
         String origname "DS_DEMhiresArElv";
         String fullnamepath "/Data_40HZ/DS_DEMhiresArElv";
     }
@@ -3146,8 +3141,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1";
         String standard_name "time";
         String description "The transmit time of each shot in the 1 second frame measured as UTC seconds elapsed since Jan 1 2000 12:00:00 UTC. This time has been derived from the GPS time accounting for leap seconds.";
         String source "Rel 33 GLAS Binary Data";
-        String CLASS "DIMENSION_SCALE";
-        String NAME "DS_UTCTime_40";
         String origname "DS_UTCTime_40";
         String fullnamepath "/Data_40HZ/DS_UTCTime_40";
     }
@@ -3158,7 +3151,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1";
         String standard_name "time";
         String description "The transmit time of each shot in the 1 second frame measured as UTC seconds elapsed since Jan 1 2000 12:00:00 UTC. This time has been derived from the GPS time accounting for leap seconds.";
         String source "Rel 33 GLAS Binary Data";
-        String CLASS "DIMENSION_SCALE";
         String NAME "DS_UTCTime_40";
         String origname "d_UTCTime_40";
         String fullnamepath "/Data_40HZ/Time/d_UTCTime_40";

@@ -1,6 +1,5 @@
 Attributes {
     HDF5_GLOBAL {
-        Int32 _nc3_strict 1;
         String FileHeader "AlgorithmID=3IMERGHH;
 AlgorithmVersion=3IMERGH_1.0                                                                                                                                                                                                                                                     ;
 FileName=3IMERGH.201206080230.HDF;
@@ -128,17 +127,11 @@ Tue Feb 11 17:56:58 2014: ncrename -d phony_dim_0,lon -d phony_dim_1,lat 3IMERGH
         String fullnamepath "/HQprecipSource1";
     }
     lat {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "lat";
-        Int32 _Netcdf4Dimid 1;
         String units "degrees_north";
         String origname "lat";
         String fullnamepath "/lat";
     }
     lon {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "lon";
-        Int32 _Netcdf4Dimid 0;
         String units "degrees_east";
         String origname "lon";
         String fullnamepath "/lon";

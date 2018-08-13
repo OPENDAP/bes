@@ -133,8 +133,6 @@ Attributes {
         String fullnamepath "/HDFEOS INFORMATION/coremetadata.0";
     }
     nLats {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "nLats";
         Float32 missing_value -999.0000000;
         String units "degrees_north";
         Float32 _FillValue -999.0000000;
@@ -144,8 +142,6 @@ Attributes {
         String orig_dimname "nLats";
     }
     nLevels {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "nLevels";
         Float32 missing_value -999.0000000;
         String units "hPa";
         Float32 _FillValue -999.0000000;
@@ -155,8 +151,6 @@ Attributes {
         String orig_dimname "nLevels";
     }
     nTimes {
-        String CLASS "DIMENSION_SCALE";
-        String NAME "nTimes";
         String units "seconds since 1993-01-01";
         String UniqueFieldDefinition "Aura-Shared";
         Float64 _FillValue -999.00000000000000;
