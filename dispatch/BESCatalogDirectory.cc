@@ -377,21 +377,19 @@ CatalogItem *BESCatalogDirectory::make_item(string path_prefix, string item) con
  * the CatalogNode returned _is_ a leaf. See the CatalogNode class and note that
  * it has dual nature - it can be a node in a hierarchy _or_ it can be a leaf.
  *
- * @param path The pathname for the node. The path is assumed to be a fully
- * qualified BES path, whether or not the path begins with the slash '/'
- * character. If the passed path string does not begin with a '/' then
- * one is added to it prior to processing. (This policy is intended to
- * make the method more lenient.)
+ * @param path The pathname for the node; must start with a slash (/)
+ * @return A CatalogNode instance or null if there is no such path in the
+ * current catalog.
  *
  * @throw BESInternalError If the \arg path is not a directory
  * @throw BESForbiddenError If the \arg path is explicitly excluded by the
  * bes.conf file
  */
 CatalogNode *
-BESCatalogDirectory::get_node(const string &ppath) const
+BESCatalogDirectory::get_node(const string &path) const
 {
-    string path = BESUtil::normalize_path(ppath,true, false);
-        // throw BESInternalError("The path sent to BESCatalogDirectory::get_node() must start with a slash (/)", __FILE__, __LINE__);
+    if (path[0] != '/')
+        throw BESInternalError("The path sent to BESCatalogDirectory::get_node() must start with a slash (/)", __FILE__, __LINE__);
 
     string rootdir = get_catalog_utils()->get_root_dir();
 
