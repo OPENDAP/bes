@@ -1,0 +1,21 @@
+Dataset {
+    Float32 lat[lat = 3];
+    Float32 lon[lon = 4];
+    Int32 time[time = 59];
+    Grid {
+      Array:
+        Float64 A[time = 59][lat = 3][lon = 4];
+      Maps:
+        Int32 time[time = 59];
+        Float32 lat[lat = 3];
+        Float32 lon[lon = 4];
+    } A;
+    Grid {
+      Array:
+        Float64 B[time = 59][lat = 3][lon = 4];
+      Maps:
+        Int32 time[time = 59];
+        Float32 lat[lat = 3];
+        Float32 lon[lon = 4];
+    } B;
+} aggExistingRenaming.ncml;
