@@ -32,6 +32,8 @@
 #define CMR_CATALOG_NAME "CMR"
 
 // These are the names of the be keys used to configure the handler.
+#define CMR_COLLECTIONS "CMR.Collections"
+#define CMR_FACETS "CMR.Facets"
 
 #define CMR_WHITELIST "Cmr.Whitelist"
 #define CMR_MIMELIST "Cmr.MimeTypes"

@@ -129,6 +129,18 @@ public:
     std::string get_http_response_header(const std::string header_name);
 
 
+    /**
+     * Returns a std::vector of HTTP headers received along with the response from the request for the remote resource..
+     */
+    std::vector<std::string> *getResponseHeaders()
+    {
+        if (!d_initialized)
+            throw libdap::Error(
+                "RemoteHttpResource::getCacheFileName() - STATE ERROR: Remote Resource Has Not Been Retrieved.");
+        return d_response_headers;
+    }
+
+
 };
 
 } /* namespace cmr */

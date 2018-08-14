@@ -53,12 +53,15 @@ using std::endl;
 #include "CmrNames.h"
 #include "CmrModule.h"
 #include "CmrCatalog.h"
+#include "CmrContainerStorage.h"
 
+#define MODULE "cmr"
+#define prolog std::string("CmrModule::").append(__func__).append("() - ")
 
 void CmrModule::initialize(const string &modname)
 {
     BESDebug::Register(MODULE);
-    BESDEBUG(MODULE, "Initializing CMR Module: " << modname << endl);
+    BESDEBUG(MODULE, prolog << "Initializing CMR Module: " << modname << endl);
 	if (!BESCatalogList::TheCatalogList()->ref_catalog(CMR_CATALOG_NAME)) {
 		BESCatalogList::TheCatalogList()->add_catalog(new cmr::CmrCatalog(CMR_CATALOG_NAME));
 	}
@@ -66,12 +69,17 @@ void CmrModule::initialize(const string &modname)
 	if (!BESContainerStorageList::TheList()->ref_persistence(CMR_CATALOG_NAME)) {
 		BESContainerStorageList::TheList()->add_persistence(new BESContainerStorageCatalog(CMR_CATALOG_NAME));
 	}
+
+
+    BESDEBUG(modname, prolog << "Adding " << modname << " container storage" << endl);
+    BESContainerStorageList::TheList()->add_persistence(new cmr::CmrContainerStorage(modname));
+
 	BESDEBUG(MODULE, "Done Initializing CMR Handler: " << modname << endl);
 }
 
 void CmrModule::terminate(const string &modname)
 {
-	BESDEBUG("csv", "Cleaning CMR Module: " << modname << endl);
+	BESDEBUG(MODULE, prolog << "Cleaning CMR Module: " << modname << endl);
 
 	//BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler(modname);
 	//if (rh) delete rh;
@@ -80,7 +88,7 @@ void CmrModule::terminate(const string &modname)
 
 	BESCatalogList::TheCatalogList()->deref_catalog(CMR_CATALOG_NAME);
 
-	BESDEBUG("csv", "Done Cleaning CMR Module: " << modname << endl);
+	BESDEBUG(MODULE, prolog << "Done Cleaning CMR Module: " << modname << endl);
 }
 
 extern "C" {
@@ -92,6 +100,6 @@ BESAbstractModule *maker()
 
 void CmrModule::dump(ostream &strm) const
 {
-	strm << BESIndent::LMarg << "CmrModule::dump - (" << (void *) this << ")" << endl;
+	strm << BESIndent::LMarg << prolog << "(" << (void *) this << ")" << endl;
 }
 

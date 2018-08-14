@@ -63,11 +63,12 @@ public:
     void get_years(std::string collection_name, std::vector<std::string> &years_result);
     void get_months(std::string collection_name, std::string year, std::vector<std::string> &months_result);
     void get_days(std::string collection_name, std::string r_year, std::string r_month, std::vector<std::string> &days_result);
-    void get_granule_ids(string collection_name, string r_year, string r_month, string r_day, std::vector<std::string> &granules_result);
-    void get_granule_ids(string collection_name, string r_year, string r_month, std::vector<std::string> &granules_result);
-    void get_granules(string collection_name, string r_year, string r_month, string r_day, std::vector<Granule *> &granules);
+    void get_granule_ids(std::string collection_name, std::string r_year, std::string r_month, std::string r_day, std::vector<std::string> &granules_result);
+    void get_granule_ids(std::string collection_name, std::string r_year, std::string r_month, std::vector<std::string> &granules_result);
+    void get_granules(std::string collection_name, string r_year, string r_month, string r_day, std::vector<cmr::Granule *> &granules);
     void get_collection_ids(std::vector<std::string> &collection_ids);
-    unsigned long granule_count(string collection_name, string r_year, string r_month, string r_day);
+    unsigned long granule_count(std::string collection_name,std:: string r_year, std::string r_month, std::string r_day);
+    cmr::Granule *get_granule(const std::string path);
 };
 
 

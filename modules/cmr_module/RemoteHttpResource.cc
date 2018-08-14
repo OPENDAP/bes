@@ -46,6 +46,9 @@
 using namespace std;
 using namespace cmr;
 
+#define MODULE "cmr"
+#define prolog std::string("RemoteHttpResource::").append(__func__).append("() - ")
+
 
 /**
  * Builds a RemoteHttpResource object associated with the passed \c url parameter.
@@ -258,7 +261,6 @@ void RemoteHttpResource::retrieveResource()
  * @param fd An open file descriptor the is associated with the target file.
  */
 void RemoteHttpResource::writeResourceToFile(int fd) {
-    string prolog = string("RemoteHttpResource::") + __func__ + "() - ";
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
     int status = -1;
@@ -298,7 +300,6 @@ void RemoteHttpResource::writeResourceToFile(int fd) {
 
 
 void RemoteHttpResource::ingest_http_headers_and_type(){
-    const string prolog = string("RemoteHttpResource::") + __func__ + "() - ";
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
     const string colon_space = ": ";

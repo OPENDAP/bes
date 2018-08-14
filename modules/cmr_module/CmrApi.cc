@@ -44,6 +44,7 @@
 #include <debug.h>
 
 #include <BESError.h>
+#include <BESSyntaxUserError.h>
 #include <BESDebug.h>
 #include <BESUtil.h>
 #include <TheBESKeys.h>
@@ -58,6 +59,8 @@
 
 using namespace std;
 
+#define prolog std::string("CmrApi::").append(__func__).append("() - ")
+
 namespace cmr {
 
 /**
@@ -65,7 +68,6 @@ namespace cmr {
  */
 const rapidjson::Value&
 CmrApi::get_children(const rapidjson::Value& obj) {
-    string prolog = string("CmrApi::") + __func__ + "() - ";
     rapidjson::Value::ConstMemberIterator itr;
 
     itr = obj.FindMember("children");
@@ -91,7 +93,6 @@ CmrApi::get_children(const rapidjson::Value& obj) {
  */
 const rapidjson::Value&
 CmrApi::get_feed(const rapidjson::Document &cmr_doc){
-    string prolog = string("CmrApi::") + __func__ + "() - ";
 
     bool result = cmr_doc.IsObject();
     string msg = prolog + "Json document is" + (result?"":" NOT") + " an object.";
@@ -124,7 +125,6 @@ CmrApi::get_feed(const rapidjson::Document &cmr_doc){
  */
 const rapidjson::Value&
 CmrApi::get_entries(const rapidjson::Document &cmr_doc){
-    string prolog = string("CmrApi::") + __func__ + "() - ";
     bool result;
     string msg;
 
@@ -153,7 +153,6 @@ CmrApi::get_entries(const rapidjson::Document &cmr_doc){
  */
 const rapidjson::Value&
 CmrApi::get_temporal_group(const rapidjson::Document &cmr_doc){
-    string prolog = string("CmrApi::") + __func__ + "() - ";
     rjson_utils ru;
 
     bool result;
@@ -204,7 +203,6 @@ CmrApi::get_temporal_group(const rapidjson::Document &cmr_doc){
  */
 const rapidjson::Value&
 CmrApi::get_year_group(const rapidjson::Document &cmr_doc){
-    string prolog = string("CmrApi::") + __func__ + "() - ";
     rjson_utils rju;
     string msg;
 
@@ -235,7 +233,6 @@ CmrApi::get_year_group(const rapidjson::Document &cmr_doc){
  */
 const rapidjson::Value&
 CmrApi::get_month_group(const string r_year, const rapidjson::Document &cmr_doc){
-    string prolog = string("CmrApi::") + __func__ + "() - ";
     rjson_utils rju;
     string msg;
 
@@ -277,7 +274,6 @@ CmrApi::get_month_group(const string r_year, const rapidjson::Document &cmr_doc)
 
 const rapidjson::Value&
 CmrApi::get_month(const string r_month, const string r_year, const rapidjson::Document &cmr_doc){
-    string prolog = string("CmrApi::") + __func__ + "() - ";
     rjson_utils rju;
     stringstream msg;
 
@@ -306,7 +302,6 @@ CmrApi::get_month(const string r_month, const string r_year, const rapidjson::Do
 
 const rapidjson::Value&
 CmrApi::get_day_group(const string r_month, const string r_year, const rapidjson::Document &cmr_doc){
-    string prolog = string("CmrApi::") + __func__ + "() - ";
     rjson_utils rju;
     stringstream msg;
 
@@ -339,7 +334,6 @@ CmrApi::get_day_group(const string r_month, const string r_year, const rapidjson
  */
 void
 CmrApi::get_years(string collection_name, vector<string> &years_result){
-    string prolog = string("CmrApi::") + __func__ + "() - ";
     rjson_utils rju;
     // bool result;
     string msg;
@@ -368,7 +362,6 @@ CmrApi::get_years(string collection_name, vector<string> &years_result){
  */
 void
 CmrApi::get_months(string collection_name, string r_year, vector<string> &months_result){
-    string prolog = string("CmrApi::") + __func__ + "() - ";
     rjson_utils rju;
 
     stringstream msg;
@@ -432,7 +425,6 @@ CmrApi::get_months(string collection_name, string r_year, vector<string> &months
  */
 void
 CmrApi::get_days(string collection_name, string r_year, string r_month, vector<string> &days_result){
-    string prolog = string("CmrApi::") + __func__ + "() - ";
     rjson_utils rju;
     stringstream msg;
 
@@ -462,7 +454,6 @@ CmrApi::get_days(string collection_name, string r_year, string r_month, vector<s
  */
 void
 CmrApi::get_granule_ids(string collection_name, string r_year, string r_month, string r_day, vector<string> &granules_ids){
-    string prolog = string("CmrApi::") + __func__ + "() - ";
     rjson_utils rju;
     stringstream msg;
     rapidjson::Document cmr_doc;
@@ -484,7 +475,6 @@ CmrApi::get_granule_ids(string collection_name, string r_year, string r_month, s
  */
 unsigned long
 CmrApi::granule_count(string collection_name, string r_year, string r_month, string r_day){
-    string prolog = string("CmrApi::") + __func__ + "() - ";
     stringstream msg;
     rapidjson::Document cmr_doc;
     granule_search(collection_name, r_year, r_month, r_day, cmr_doc);
@@ -498,7 +488,6 @@ CmrApi::granule_count(string collection_name, string r_year, string r_month, str
  */
 void
 CmrApi::granule_search(string collection_name, string r_year, string r_month, string r_day, rapidjson::Document &result_doc){
-    string prolog = string("CmrApi::") + __func__ + "() - ";
     rjson_utils rju;
 
     string url = BESUtil::assemblePath(cmr_search_endpoint_url,"granules.json")
@@ -527,7 +516,6 @@ CmrApi::granule_search(string collection_name, string r_year, string r_month, st
  */
 void
 CmrApi::get_granules(string collection_name, string r_year, string r_month, string r_day, vector<Granule *> &granules){
-    string prolog = string("CmrApi::") + __func__ + "() - ";
     stringstream msg;
     rapidjson::Document cmr_doc;
 
@@ -545,7 +533,6 @@ CmrApi::get_granules(string collection_name, string r_year, string r_month, stri
 
 
 
-#define CMR_COLLECTIONS "CMR.Collections"
 void
 CmrApi::get_collection_ids(std::vector<std::string> &collection_ids){
     bool found = false;
@@ -556,6 +543,91 @@ CmrApi::get_collection_ids(std::vector<std::string> &collection_ids){
             + "' field has not been configured.", __FILE__, __LINE__);
     }
 }
+
+
+/**
+ * Returns all of the Granules in the collection matching the date.
+ */
+cmr::Granule*
+CmrApi::get_granule(string ppath){
+
+
+    string path = BESUtil::normalize_path(ppath,true, false);
+    vector<string> path_elements = BESUtil::split(path);
+    BESDEBUG(MODULE, prolog << "path: '" << path << "'   path_elements.size(): " << path_elements.size() << endl);
+
+    if(path_elements.empty())
+        throw BESInternalError("The root node is not a granule.",__FILE__,__LINE__);
+
+    if(path_elements[0] == CMR_CATALOG_NAME)
+        path_elements.erase(path_elements.begin());
+
+    if(path_elements.empty())
+        throw BESInternalError("The root node is not a granule.",__FILE__,__LINE__);
+
+    string collection_name, year, month, day;
+
+    switch (path_elements.size()){
+
+    case 1:{
+        collection_name = path_elements[0];
+
+    }
+    break;
+
+    case 2:{
+        collection_name = path_elements[0];
+
+    }
+    break;
+
+    case 3:{
+        collection_name = path_elements[0];
+
+    }
+    break;
+
+    case 4:{
+        collection_name = path_elements[0];
+
+    }
+    break;
+
+    case 5:{
+        collection_name = path_elements[0];
+
+    }
+    break;
+
+
+    }
+
+
+
+    /*
+    stringstream msg;
+    rapidjson::Document cmr_doc;
+
+
+
+    granule_search(collection_name, r_year, r_month, r_day, cmr_doc);
+
+
+
+    const rapidjson::Value& entries = get_entries(cmr_doc);
+    for (rapidjson::SizeType i = 0; i < entries.Size(); i++) { // Uses SizeType instead of size_t
+        const rapidjson::Value& granule_obj = entries[i];
+        // rapidjson::Value grnl(granule_obj,cmr_doc.GetAllocator());
+        Granule *g = new Granule(granule_obj);
+        granules.push_back(g);
+    }
+*/
+    return 0;
+}
+
+
+
+
 
 
 } // namespace cmr

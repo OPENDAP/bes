@@ -1045,3 +1045,24 @@ string BESUtil::get_time(time_t the_time, bool use_local_time)
     return buf;
 }
 
+/**
+ * @brief Splits the string s into the return vector of tokens using the delimiter delim
+ * and skipping empty values as instructed by skip_empty.
+ *
+ * @param s The string to tokenize.
+ * @param delim The character delimiter to utilize during tokenization. default: '/'
+ * @param skip_empty A boolean flag which controls if empty tokens are returned.
+ * @return A vector of strings each of which is a token in the string read left to right.
+ */
+std::vector<std::string> BESUtil::split(const std::string &s, char delim, bool skip_empty)
+{
+    std::stringstream ss(s);
+    std::string item;
+    vector<std::string> tokens;
+    while (getline(ss, item, delim)) {
+        if(skip_empty && !item.empty())
+            tokens.push_back(item);
+    }
+    return tokens;
+}
+

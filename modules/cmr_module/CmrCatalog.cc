@@ -67,8 +67,7 @@
 using namespace bes;
 using namespace std;
 
-#define CMR_COLLECTIONS "CMR.Collections"
-#define CMR_FACETS "CMR.Facets"
+#define prolog std::string("CmrCatalog::").append(__func__).append("() - ")
 
 namespace cmr {
 
@@ -104,19 +103,6 @@ CmrCatalog::~CmrCatalog()
 }
 
 
-
-vector<string> split(const string &s, char delim='/', bool skip_empty=true) {
-    stringstream ss(s);
-    string item;
-    vector<string> tokens;
-    while (getline(ss, item, delim)) {
-        if(skip_empty && !item.empty())
-            tokens.push_back(item);
-    }
-    return tokens;
-}
-
-
 // path must start with a '/'. By this class it will be interpreted as a
 // starting at the CatalogDirectory instance's root directory. It may either
 // end in a '/' or not.
@@ -141,14 +127,8 @@ vector<string> split(const string &s, char delim='/', bool skip_empty=true) {
 bes::CatalogNode *
 CmrCatalog::get_node(const string &ppath) const
 {
-    string prolog = string("CmrCatalog::") + __func__ + "() - ";
-    string path(ppath);
-
-    if (ppath[0] != '/'){
-        path = "/"+ ppath;
-    }
-
-    vector<string> path_elements = split(path);
+    string path = BESUtil::normalize_path(ppath,true, false);
+    vector<string> path_elements = BESUtil::split(path);
     BESDEBUG(MODULE, prolog << "path: '" << path << "'   path_elements.size(): " << path_elements.size() << endl);
 
     string epoch_time = BESUtil::get_time(0,false);
@@ -404,7 +384,7 @@ CmrCatalog::get_node(const string &path) const
  */
 void CmrCatalog::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "CMRCatalog::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << prolog << "(" << (void *) this << ")" << endl;
     BESIndent::Indent();
 
     strm << BESIndent::LMarg << "catalog utilities: " << endl;
