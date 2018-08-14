@@ -3,6 +3,7 @@
 .libs
 .pydevproject
 .autotools
+.dir
 autom4te.cache
 /bes-*
 docs

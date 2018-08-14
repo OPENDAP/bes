@@ -369,12 +369,12 @@ void Chunk::add_tracking_query_param()
  * @brief Decompress data in the chunk, managing the Chunk's data buffers
  *
  * This method tracks if a chunk has already been decompressed, so, like read_chunk()
- * it can be called for achunk that has already been decompressed without error.
+ * it can be called for a chunk that has already been decompressed without error.
  *
  * @param deflate
  * @param shuffle
- * @param chunk_size
- * @param elem_width
+ * @param chunk_size The _expected_ chunk size, in elements; used to allocate storage
+ * @param elem_width The number of bytes per element
  */
 void Chunk::inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width)
 {

@@ -43,6 +43,7 @@
 #include "BESInternalError.h"
 #include "BESDebug.h"
 
+#include "Chunk.h"
 #include "DmrppArray.h"
 #include "DmrppRequestHandler.h"
 
@@ -128,6 +129,7 @@ static unsigned long long get_index(const vector<unsigned int> &address_in_targe
     unsigned long long multiplier = *shape_index++;
     unsigned long long offset = *index++;
 
+    // TODO unroll this loop
     while (index != index_end) {
         assert(*index < *shape_index); // index < shape for each dim
 
@@ -197,7 +199,7 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dimIter, unsigned long *
     BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() - subsetAddress.size(): " << subsetAddress.size() << endl);
 
     unsigned int bytesPerElt = prototype()->width();
-    // char *sourceBuf = src_buf; // ->get_rbuf();
+
     char *dest_buf = get_buf();
 
     unsigned int start = this->dimension_start(dimIter, true);
@@ -262,18 +264,38 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dimIter, unsigned long *
 }
 
 /**
- * @brief Read an array that is stored with using one 'chunk.'
+ * @brief Read an array that is stored using one 'chunk.'
  *
  * @return Always returns true, matching the libdap::Array::read() behavior.
  */
 void DmrppArray::read_contiguous()
 {
+#if 0
     char *data = read_atomic(name());
+#endif
+
+    // These first four lines reproduce DmrppCommon::read_atomic(). The call
+    // to Chunk::inflate_chunk() handles 'contiguous' data that are compressed.
+    // And since we need the chunk, I copied the read_atomix code here.
+
+    vector<Chunk> &chunk_refs = get_chunk_vec();
+
+    if (chunk_refs.size() != 1)
+        throw BESInternalError(string("Expected only a single chunk for variable ") + name(), __FILE__, __LINE__);
+
+    Chunk &chunk = chunk_refs[0];
+
+    chunk.read_chunk();
+
+    chunk.inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(),
+        var()->width());
+
+    // 'chunk' now holds the data. Transfer it to the Array.
 
     if (!is_projected()) {  // if there is no projection constraint
-        val2buf(data);      // yes, it's not type-safe
+        val2buf(chunk.get_rbuf());      // yes, it's not type-safe
     }
-    else {
+    else {                  // apply the constraint
         vector<unsigned int> array_shape = get_shape(false);
 
         // Reserve space in this array for the constrained size of the data request
@@ -281,7 +303,7 @@ void DmrppArray::read_contiguous()
         unsigned long target_index = 0;
         vector<unsigned int> subset;
 
-        insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, data);
+        insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, chunk.get_rbuf());
     }
 
     set_read_p(true);
@@ -321,35 +343,6 @@ unsigned long long DmrppArray::get_chunk_start(const dimension &thisDim, unsigne
 
     return first_element_offset;
 }
-
-#if 0
-unsigned long long DmrppArray::get_chunk_start(unsigned int dim, const vector<unsigned int>& chunk_origin)
-{
-    dimension thisDim = this->get_dimension(dim);
-
-    // What's the first element that we are going to access for this dimension of the chunk?
-    unsigned long long first_element_offset = 0;// start with 0
-    if ((unsigned) (thisDim.start) < chunk_origin[dim]) {
-        // If the start is behind this chunk, then it's special.
-        if (thisDim.stride != 1) {
-            // And if the stride isn't 1, we have to figure our where to begin in this chunk.
-            first_element_offset = (chunk_origin[dim] - thisDim.start) % thisDim.stride;
-            // If it's zero great!
-            if (first_element_offset != 0) {
-                // otherwise we adjustment to get correct first element.
-                first_element_offset = thisDim.stride - first_element_offset;
-            }
-        }
-    }
-    else {
-        first_element_offset = thisDim.start - chunk_origin[dim];
-    }
-
-    return first_element_offset;
-}
-#endif
-
-
 
 #ifdef USE_READ_SERIAL
 /**
@@ -530,7 +523,7 @@ DmrppArray::find_needed_chunks(unsigned int dim, vector<unsigned int> *target_el
 
     // Do we even want this chunk?
     if ((unsigned) thisDim.start > (chunk_origin[dim] + chunk_shape[dim]) || (unsigned) thisDim.stop < chunk_origin[dim]) {
-        return 0; // No. No, we do not. Skip this.
+        return 0; // No. No, we do not. Skip this chunk.
     }
 
     // What's the first element that we are going to access for this dimension of the chunk?
@@ -564,7 +557,7 @@ DmrppArray::find_needed_chunks(unsigned int dim, vector<unsigned int> *target_el
         }
     }
 
-    return 0;   // Should never get here
+    return 0;
 }
 
 /**
@@ -714,7 +707,7 @@ void DmrppArray::read_chunks()
                 chunks_to_insert.push(chunk);
             }
 
-            mhandle->read_data(); // read and decompress chunks, then remove the easy_handles
+            mhandle->read_data(); // read, then remove the easy_handles
 
             while (chunks_to_insert.size() > 0) {
                 Chunk *chunk = chunks_to_insert.front();
@@ -755,9 +748,8 @@ void DmrppArray::read_chunks()
     set_read_p(true);
 }
 
-#if 1
-void DmrppArray::insert_chunk_unconstrained(unsigned int dim, vector<unsigned int> *target_element_address, vector<unsigned int> *chunk_element_address,
-    Chunk *chunk)
+void DmrppArray::insert_chunk_unconstrained(unsigned int dim, vector<unsigned int> *target_element_address,
+    vector<unsigned int> *chunk_element_address, Chunk *chunk)
 {
     // The size, in elements, of each of the chunk's dimensions.
     const vector<unsigned int> &chunk_shape = get_chunk_dimension_sizes();
@@ -778,7 +770,6 @@ void DmrppArray::insert_chunk_unconstrained(unsigned int dim, vector<unsigned in
     }
 #endif
 
-
     unsigned long long chunk_end = end_element - chunk_origin[dim];
     vector<unsigned int> constrained_array_shape = get_shape(true);
 
@@ -788,64 +779,30 @@ void DmrppArray::insert_chunk_unconstrained(unsigned int dim, vector<unsigned in
         char *target_buffer = get_buf();
         unsigned int elem_width = prototype()->width();
 
-#if 0
-        if (thisDim.stride == 1) {
-#endif
+        // The start element in this array
+        unsigned long long start_element = chunk_origin[dim] + chunk_start;
+        // Compute how much we are going to copy
+        unsigned long long chunk_constrained_inner_dim_bytes = (end_element - start_element + 1) * elem_width;
 
-            // The start element in this array
-            unsigned long long start_element = chunk_origin[dim] + chunk_start;
-            // Compute how much we are going to copy
-            unsigned long long chunk_constrained_inner_dim_bytes = (end_element - start_element + 1) * elem_width;
+        // Compute where we need to put it.
+        (*target_element_address)[dim] = start_element; // (start_element - thisDim.start); // / thisDim.stride;
+        // Compute where we are going to read it from
+        (*chunk_element_address)[dim] = chunk_start;
 
-            // Compute where we need to put it.
-            (*target_element_address)[dim] = start_element; // (start_element - thisDim.start); // / thisDim.stride;
-            // Compute where we are going to read it from
-            (*chunk_element_address)[dim] = chunk_start;
+        unsigned int target_char_start_index = get_index(*target_element_address, constrained_array_shape) * elem_width;
+        unsigned int chunk_char_start_index = get_index(*chunk_element_address, chunk_shape) * elem_width;
 
-            unsigned int target_char_start_index = get_index(*target_element_address, constrained_array_shape) * elem_width;
-            unsigned int chunk_char_start_index = get_index(*chunk_element_address, chunk_shape) * elem_width;
-
-            memcpy(target_buffer + target_char_start_index, source_buffer + chunk_char_start_index, chunk_constrained_inner_dim_bytes);
-#if 0
-    }
-    else {
-        // Stride != 1
-        for (unsigned int chunk_index = chunk_start; chunk_index <= chunk_end; chunk_index += thisDim.stride) {
-            // Compute where we need to put it.
-            (*target_element_address)[dim] = (chunk_index + chunk_origin[dim] - thisDim.start) / thisDim.stride;
-
-            // Compute where we are going to read it from
-            (*chunk_element_address)[dim] = chunk_index;
-
-            unsigned int target_char_start_index = get_index(*target_element_address, constrained_array_shape) * elem_width;
-            unsigned int chunk_char_start_index = get_index(*chunk_element_address, chunk_shape) * elem_width;
-
-            memcpy(target_buffer + target_char_start_index, source_buffer + chunk_char_start_index, elem_width);
-        }
-    }
-#endif
-
+        memcpy(target_buffer + target_char_start_index, source_buffer + chunk_char_start_index, chunk_constrained_inner_dim_bytes);
     }
     else {
         // Not the last dimension, so we continue to proceed down the Recursion Branch.
         for (unsigned int chunk_index = chunk_start; chunk_index <= chunk_end; ++chunk_index) {
-            (*target_element_address)[dim] = (chunk_index + chunk_origin[dim]);// - thisDim.start);
+            (*target_element_address)[dim] = (chunk_index + chunk_origin[dim]);            // - thisDim.start);
             (*chunk_element_address)[dim] = chunk_index;
 
             // Re-entry here:
             insert_chunk(dim + 1, target_element_address, chunk_element_address, chunk);
         }
-
-#if 0
-        for (unsigned int chunk_index = chunk_start; chunk_index <= chunk_end; chunk_index += thisDim.stride) {
-            (*target_element_address)[dim] = (chunk_index + chunk_origin[dim] - thisDim.start) / thisDim.stride;
-            (*chunk_element_address)[dim] = chunk_index;
-
-            // Re-entry here:
-            insert_chunk(dim + 1, target_element_address, chunk_element_address, chunk);
-        }
-#endif
-
     }
 }
 
@@ -869,14 +826,13 @@ void DmrppArray::read_chunks_unconstrained()
 
         queue<Chunk *> chunks_to_read;  // Read all of the chunks
 
-        // Look only at the chunks we need, found above. jhrg 4/30/18
+        // Queue all of the chunks
         for (vector<Chunk>::iterator c = chunk_refs.begin(), e = chunk_refs.end(); c != e; ++c) {
             chunks_to_read.push(&(*c));
         }
-#if 1
+
         while (chunks_to_read.size() > 0) {
             queue<Chunk*> chunks_to_insert;
-#endif
 
             for (unsigned int i = 0; i < max_handles && chunks_to_read.size() > 0; ++i) {
                 Chunk *chunk = chunks_to_read.front();
@@ -892,7 +848,7 @@ void DmrppArray::read_chunks_unconstrained()
                 chunks_to_insert.push(chunk);
             }
 
-            mhandle->read_data(); // read and decompress chunks, then remove the easy_handles
+            mhandle->read_data(); // read 'max_handles' chunks
 
             while (chunks_to_insert.size() > 0) {
                 Chunk *chunk = chunks_to_insert.front();
@@ -909,11 +865,12 @@ void DmrppArray::read_chunks_unconstrained()
             }
         }
     }
-    else {
+    else {  // Serial transfers
         for (vector<Chunk>::iterator c = chunk_refs.begin(), e = chunk_refs.end(); c != e; ++c) {
             Chunk &chunk = *c;
 
             BESDEBUG(dmrpp_3, "Reading: " << chunk.to_string() << endl);
+
             chunk.read_chunk();
 
             chunk.inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(),
@@ -923,14 +880,13 @@ void DmrppArray::read_chunks_unconstrained()
             vector<unsigned int> chunk_source_address(dimensions(), 0);
 
             BESDEBUG(dmrpp_3, "Inserting: " << chunk.to_string() << endl);
-            insert_chunk_unconstrained(0 /* dimension */, &target_element_address, &chunk_source_address, &chunk);
 
+            insert_chunk_unconstrained(0 /* dimension */, &target_element_address, &chunk_source_address, &chunk);
         }
     }
 
     set_read_p(true);
 }
-#endif
 
 /**
  * @brief Read data for the array
@@ -947,20 +903,16 @@ bool DmrppArray::read()
 {
     if (read_p()) return true;
 
-    // Modify below so that when a variable is stored in one chunk, read_contiguous()
-    // can/will decompress it.
-    if (/* get_immutable_chunks().size() == 1 ||*/ get_chunk_dimension_sizes().empty()) {
+    // Single chunk and 'contiguous' are the same for this code.
+
+    if (get_immutable_chunks().size() == 1 || get_chunk_dimension_sizes().empty()) {
         read_contiguous();    // Throws on various errors
     }
     else {  // Handle the more complex case where the data is chunked.
-#if 0
-        read_chunks();
-#else
         if (!is_projected())
             read_chunks_unconstrained();
         else
             read_chunks();
-#endif
 
     }
 

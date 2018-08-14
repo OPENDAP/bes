@@ -32,7 +32,7 @@
 #include "DmrppCommon.h"
 
 // The 'read_serial()' method is more closely related to the original code
-// used to read data when the DMR++ handler was initial developed for NASA.
+// used to read data when the DMR++ handler was initially developed for NASA.
 // I modified that code for a while when we built the prototype version of
 // the handler, but then morphed that into a version that would support parallel
 // access. Defining this symbol will include the old code in the handler,
@@ -52,7 +52,7 @@ namespace dmrpp {
  * @note A key feature of HDF5 is that is can 'chunk' data, breaking up an
  * array into a number of smaller pieces, each of which can be compressed.
  * This code will read both array data that are chunked (and possibly compressed)
- * as well as code that is not (essentially the entire array is written in a
+ * as well as data that are not (essentially the entire array is written in a
  * single 'chunk'). Because the two cases are different and susceptible to
  * different kinds of optimizations, we have implemented two different read()
  * methods, one for the 'no chunks' case and one for arrays 'with chunks.'

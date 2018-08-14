@@ -7,10 +7,16 @@
   
   <bes:setContainer name="c" space="catalog">/data/s3/AIRS.2015.12.30.L3.RetStd_IR001.v6.0.31.0.G16116184203.nc.h5.dmrpp</bes:setContainer>
   
-  <!-- GPHeight_MW_A_sdev is 24 x 180 x 360 -->
+  <!-- Variable sizes in the CE -->
+  <!-- ClrOLR_A; GPHeight_MW_A_sdev; CO_VMR_TqJ_D_ct; RelHum_liquid_A_max; Temperature_A_err; SurfPres_Forecast_A_sdev; H2O_MMR_Lyr_A_err; CoarseCloudTemp_TqJ_A_max -->
+  <!-- 180x360 4, 24x180x360 4, 24x180x360 2, 12x180x360 4, 24x180x360 4, 180x360 4, 12x180x360 4, 3x180x360 4 -->
+  <!-- 180*360*4 * (1 + 24 + 12 + 12 + 24 + 1 + 12 + 3) == 180*360*4 * 89 -->
   
   <bes:define name="d1" space="default">
     <bes:container name="c">
+      <bes:dap4constraint>
+           ClrOLR_A; CO_VMR_TqJ_D_ct; SurfPres_Forecast_A_sdev
+      </bes:dap4constraint>
     </bes:container>
   </bes:define>
   

@@ -147,6 +147,9 @@ void dmrpp_multi_handle::read_data()
             if (res != CURLE_OK)
                 throw BESInternalError(string("Error HTTP: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
 
+            // Note: 'eh' is the easy handle returned by culr_multi_info_read(),
+            // but in it's private field is our dmrpp_easy_handle object. We need
+            // both to mark this data read operation as complete.
             dmrpp_easy_handle *dmrpp_easy_handle = 0;
             res = curl_easy_getinfo(eh, CURLINFO_PRIVATE, &dmrpp_easy_handle);
             if (res != CURLE_OK)
