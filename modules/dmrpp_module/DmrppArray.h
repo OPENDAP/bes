@@ -77,17 +77,14 @@ private:
 #endif
 
     unsigned long long get_chunk_start(const dimension &thisDim, unsigned int chunk_origin_for_dim);
-#if 0
-    unsigned long long get_chunk_start(unsigned int dim, const std::vector<unsigned int>& chunk_origin);
-#endif
 
     Chunk *find_needed_chunks(unsigned int dim, std::vector<unsigned int> *target_element_address, Chunk *chunk);
     void insert_chunk(unsigned int dim, std::vector<unsigned int> *target_element_address, std::vector<unsigned int> *chunk_element_address,
-        Chunk *chunk);
+        Chunk *chunk, const vector<unsigned int> &constrained_array_shape);
     void read_chunks();
 
-    void insert_chunk_unconstrained(unsigned int dim, std::vector<unsigned int> *target_element_address, std::vector<unsigned int> *chunk_element_address,
-        Chunk *chunk);
+    void insert_chunk_unconstrained(unsigned int dim, std::vector<unsigned int> *target_element_address,
+        std::vector<unsigned int> *chunk_element_address, Chunk *chunk, const vector<unsigned int> &array_shape);
     void read_chunks_unconstrained();
 
 public:

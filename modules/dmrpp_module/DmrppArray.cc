@@ -588,7 +588,7 @@ DmrppArray::find_needed_chunks(unsigned int dim, vector<unsigned int> *target_el
  * @param chunk
  */
 void DmrppArray::insert_chunk(unsigned int dim, vector<unsigned int> *target_element_address, vector<unsigned int> *chunk_element_address,
-    Chunk *chunk)
+    Chunk *chunk, const vector<unsigned int> &constrained_array_shape)
 {
     // The size, in elements, of each of the chunk's dimensions.
     const vector<unsigned int> &chunk_shape = get_chunk_dimension_sizes();
@@ -608,7 +608,10 @@ void DmrppArray::insert_chunk(unsigned int dim, vector<unsigned int> *target_ele
     }
 
     unsigned long long chunk_end = end_element - chunk_origin[dim];
+#if 0
     vector<unsigned int> constrained_array_shape = get_shape(true);
+#endif
+
 
     unsigned int last_dim = chunk_shape.size() - 1;
     if (dim == last_dim) {
@@ -655,7 +658,7 @@ void DmrppArray::insert_chunk(unsigned int dim, vector<unsigned int> *target_ele
             (*chunk_element_address)[dim] = chunk_index;
 
             // Re-entry here:
-            insert_chunk(dim + 1, target_element_address, chunk_element_address, chunk);
+            insert_chunk(dim + 1, target_element_address, chunk_element_address, chunk, constrained_array_shape);
         }
     }
 }
@@ -685,6 +688,7 @@ void DmrppArray::read_chunks()
     }
 
     reserve_value_capacity(get_size(true));
+    vector<unsigned int> constrained_array_shape = get_shape(true);
 
     // TODO A potential optimization of this code would be to run the insert_chunk()
     // method in a child thread than will let the main thread return to reading more
@@ -728,7 +732,7 @@ void DmrppArray::read_chunks()
                 vector<unsigned int> chunk_source_address(dimensions(), 0);
 
                 BESDEBUG(dmrpp_3, "Inserting: " << chunk->to_string() << endl);
-                insert_chunk(0 /* dimension */, &target_element_address, &chunk_source_address, chunk);
+                insert_chunk(0 /* dimension */, &target_element_address, &chunk_source_address, chunk, constrained_array_shape);
             }
         }
     }
@@ -749,7 +753,7 @@ void DmrppArray::read_chunks()
             vector<unsigned int> chunk_source_address(dimensions(), 0);
 
             BESDEBUG(dmrpp_3, "Inserting: " << chunk->to_string() << endl);
-            insert_chunk(0 /* dimension */, &target_element_address, &chunk_source_address, chunk);
+            insert_chunk(0 /* dimension */, &target_element_address, &chunk_source_address, chunk, constrained_array_shape);
         }
     }
 
@@ -769,7 +773,7 @@ void DmrppArray::read_chunks()
  * @param chunk
  */
 void DmrppArray::insert_chunk_unconstrained(unsigned int dim, vector<unsigned int> *target_element_address,
-    vector<unsigned int> *chunk_element_address, Chunk *chunk)
+    vector<unsigned int> *chunk_element_address, Chunk *chunk, const vector<unsigned int> &array_shape)
 {
     // The size, in elements, of each of the chunk's dimensions.
     const vector<unsigned int> &chunk_shape = get_chunk_dimension_sizes();
@@ -787,7 +791,6 @@ void DmrppArray::insert_chunk_unconstrained(unsigned int dim, vector<unsigned in
     }
 
     unsigned long long chunk_end = end_element - chunk_origin[dim];
-    vector<unsigned int> constrained_array_shape = get_shape(true);
 
     unsigned int last_dim = chunk_shape.size() - 1;
     if (dim == last_dim) {
@@ -796,7 +799,7 @@ void DmrppArray::insert_chunk_unconstrained(unsigned int dim, vector<unsigned in
         (*target_element_address)[dim] = chunk_origin[dim];
         (*chunk_element_address)[dim] = 0;
 
-        unsigned int target_char_start_index = get_index(*target_element_address, constrained_array_shape) * elem_width;
+        unsigned int target_char_start_index = get_index(*target_element_address, array_shape) * elem_width;
         unsigned int chunk_char_start_index = get_index(*chunk_element_address, chunk_shape) * elem_width;
 
         // Compute how much we are going to copy
@@ -812,7 +815,7 @@ void DmrppArray::insert_chunk_unconstrained(unsigned int dim, vector<unsigned in
             (*chunk_element_address)[dim] = chunk_index;
 
             // Re-entry here:
-            insert_chunk_unconstrained(dim + 1, target_element_address, chunk_element_address, chunk);
+            insert_chunk_unconstrained(dim + 1, target_element_address, chunk_element_address, chunk, array_shape);
         }
     }
 }
@@ -823,6 +826,7 @@ void DmrppArray::read_chunks_unconstrained()
     if (chunk_refs.size() == 0) throw BESInternalError(string("Expected one or more chunks for variable ") + name(), __FILE__, __LINE__);
 
     reserve_value_capacity(get_size());
+    vector<unsigned int> array_shape = get_shape(true); // compute this once, pass to insert_chunk_unconstrained()
 
     BESDEBUG(dmrpp_3, __func__ << endl);
 
@@ -872,7 +876,7 @@ void DmrppArray::read_chunks_unconstrained()
                 vector<unsigned int> chunk_source_address(dimensions(), 0);
 
                 BESDEBUG(dmrpp_3, "Inserting: " << chunk->to_string() << endl);
-                insert_chunk_unconstrained(0 /* dimension */, &target_element_address, &chunk_source_address, chunk);
+                insert_chunk_unconstrained(0 /* dimension */, &target_element_address, &chunk_source_address, chunk, array_shape);
             }
         }
     }
@@ -892,7 +896,7 @@ void DmrppArray::read_chunks_unconstrained()
 
             BESDEBUG(dmrpp_3, "Inserting: " << chunk.to_string() << endl);
 
-            insert_chunk_unconstrained(0 /* dimension */, &target_element_address, &chunk_source_address, &chunk);
+            insert_chunk_unconstrained(0 /* dimension */, &target_element_address, &chunk_source_address, &chunk, array_shape);
         }
     }
 

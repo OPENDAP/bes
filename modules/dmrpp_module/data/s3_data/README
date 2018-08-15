@@ -3,3 +3,10 @@ README
      Author: jimg
 
 These DMR++ files reference data here.
+
+There are two dmrpp files here that reference local copies of AIRS granules.
+Those granules (files) are huge and not in git. Get these from the OPeNDAP
+Raytheon S3 account. Here are the URLs:
+
+    https://s3.amazonaws.com/cloudydap/airs/AIRS.2015.12.30.L3.RetStd_IR001.v6.0.31.0.G16116184203.nc.h5
+    https://s3.amazonaws.com/cloudydap/airs/AIRS.2015.12.31.L3.RetStd_IR001.v6.0.31.0.G16118131039.nc.h5
