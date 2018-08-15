@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- This is derived from AIRS.2015.12.30.L3.RetStd_IR001.v6.0.31.0.G16116184203.nc.h5 jhrg 8/15/18 -->
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="AIRS_partial.h5" dmrpp:href="/data/s3_data/AIRS_partial.h5">
+    <Int16 name="CO_VMR_TqJ_D_ct">
+        <Dim size="24"/>
+        <Dim size="180"/>
+        <Dim size="360"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <Value>8</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>CO_VMR_TqJ_D_ct</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/CO_VMR_TqJ_D_ct</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="deflate shuffle">
+            <dmrpp:chunkDimensionSizes>24 180 360</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="118174" nBytes="850912" chunkPositionInArray="[0,0,0]"/>
+        </dmrpp:chunks>
+    </Int16>
+    <Float32 name="ClrOLR_A">
+        <Dim size="180"/>
+        <Dim size="360"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <Value>6</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ClrOLR_A</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/ClrOLR_A</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="deflate shuffle">
+            <dmrpp:chunkDimensionSizes>180 360</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="3416" nBytes="71704" chunkPositionInArray="[0,0]"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Float32 name="CoarseCloudTemp_TqJ_A_max">
+        <Dim size="3"/>
+        <Dim size="180"/>
+        <Dim size="360"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>CoarseCloudTemp_TqJ_A_max</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/CoarseCloudTemp_TqJ_A_max</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="deflate shuffle">
+            <dmrpp:chunkDimensionSizes>3 180 360</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="4371230" nBytes="229580" chunkPositionInArray="[0,0,0]"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Float32 name="GPHeight_MW_A_sdev">
+        <Dim size="24"/>
+        <Dim size="180"/>
+        <Dim size="360"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <Value>8</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>GPHeight_MW_A_sdev</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/GPHeight_MW_A_sdev</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="deflate shuffle">
+            <dmrpp:chunkDimensionSizes>12 90 180</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="83109" nBytes="3421" chunkPositionInArray="[0,0,0]"/>
+            <dmrpp:chunk offset="86530" nBytes="3421" chunkPositionInArray="[0,0,180]"/>
+            <dmrpp:chunk offset="89951" nBytes="3421" chunkPositionInArray="[0,90,0]"/>
+            <dmrpp:chunk offset="93372" nBytes="3421" chunkPositionInArray="[0,90,180]"/>
+            <dmrpp:chunk offset="96793" nBytes="3421" chunkPositionInArray="[12,0,0]"/>
+            <dmrpp:chunk offset="100214" nBytes="3421" chunkPositionInArray="[12,0,180]"/>
+            <dmrpp:chunk offset="103635" nBytes="3421" chunkPositionInArray="[12,90,0]"/>
+            <dmrpp:chunk offset="107056" nBytes="3421" chunkPositionInArray="[12,90,180]"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Float32 name="H2O_MMR_Lyr_A_err">
+        <Dim size="12"/>
+        <Dim size="180"/>
+        <Dim size="360"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <Value>4</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>H2O_MMR_Lyr_A_err</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/H2O_MMR_Lyr_A_err</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="deflate shuffle">
+            <dmrpp:chunkDimensionSizes>12 180 360</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="3524111" nBytes="839070" chunkPositionInArray="[0,0,0]"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Float32 name="RelHum_liquid_A_max">
+        <Dim size="12"/>
+        <Dim size="180"/>
+        <Dim size="360"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>RelHum_liquid_A_max</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/RelHum_liquid_A_max</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="deflate shuffle">
+            <dmrpp:chunkDimensionSizes>12 180 360</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="976763" nBytes="770210" chunkPositionInArray="[0,0,0]"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Float32 name="SurfPres_Forecast_A_sdev">
+        <Dim size="180"/>
+        <Dim size="360"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <Value>6</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SurfPres_Forecast_A_sdev</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SurfPres_Forecast_A_sdev</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="deflate shuffle">
+            <dmrpp:chunkDimensionSizes>180 360</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="3436048" nBytes="80402" chunkPositionInArray="[0,0]"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Float32 name="Temperature_A_err">
+        <Dim size="24"/>
+        <Dim size="180"/>
+        <Dim size="360"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="_Netcdf4Dimid" type="Int32">
+            <Value>8</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Temperature_A_err</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Temperature_A_err</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="deflate shuffle">
+            <dmrpp:chunkDimensionSizes>12 90 180</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="1754670" nBytes="206481" chunkPositionInArray="[0,0,0]"/>
+            <dmrpp:chunk offset="1961151" nBytes="208088" chunkPositionInArray="[0,0,180]"/>
+            <dmrpp:chunk offset="2169239" nBytes="205239" chunkPositionInArray="[0,90,0]"/>
+            <dmrpp:chunk offset="2374478" nBytes="196374" chunkPositionInArray="[0,90,180]"/>
+            <dmrpp:chunk offset="2570852" nBytes="217596" chunkPositionInArray="[12,0,0]"/>
+            <dmrpp:chunk offset="2788448" nBytes="215213" chunkPositionInArray="[12,0,180]"/>
+            <dmrpp:chunk offset="3003661" nBytes="214411" chunkPositionInArray="[12,90,0]"/>
+            <dmrpp:chunk offset="3218072" nBytes="210623" chunkPositionInArray="[12,90,180]"/>
+        </dmrpp:chunks>
+    </Float32>
+</Dataset>

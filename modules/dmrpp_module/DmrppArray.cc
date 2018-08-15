@@ -115,6 +115,9 @@ bool DmrppArray::is_projected()
  * 2 x 3 x 4, the data values are stored in a 24 element vector and the item at
  * location 1,1,1 (zero-based indexing) would be at offset 1*1 + 1*4 + 1 * 4*3 == 15.
  *
+ * @note When getting the whole AIRS file, the profiler shows that the code spends
+ * about 1s here.
+ *
  * @param address_in_target N-tuple zero-based index of an element in N-space
  * @param target_shape N-tuple of the array's dimension sizes.
  * @return The offset into the vector used to store the values.
@@ -158,6 +161,11 @@ unsigned long long DmrppArray::get_size(bool constrained)
 
 /**
  * @brief Get the array shape
+ *
+ * @note When getting the whole AIRS file, the profiler shows that the code spends
+ * about 1s here.
+ *
+ * @todo Optimize
  *
  * @param constrained If true, return the shape of the constrained array.
  * @return A vector<int> that describes the shape of the array.
@@ -748,6 +756,18 @@ void DmrppArray::read_chunks()
     set_read_p(true);
 }
 
+/**
+ * @brief Insert a chunk into an unconstrained Array
+ *
+ * This code is called recursively, N times for a rank N array. The
+ * \arg dim is incremented in each call until \arg dim is the rightmost
+ * dimension of the array.
+ *
+ * @param dim
+ * @param target_element_address
+ * @param chunk_element_address
+ * @param chunk
+ */
 void DmrppArray::insert_chunk_unconstrained(unsigned int dim, vector<unsigned int> *target_element_address,
     vector<unsigned int> *chunk_element_address, Chunk *chunk)
 {
@@ -757,51 +777,42 @@ void DmrppArray::insert_chunk_unconstrained(unsigned int dim, vector<unsigned in
     // The chunk's origin point a.k.a. its "position in array".
     const vector<unsigned int> &chunk_origin = chunk->get_position_in_array();
 
+    // Now we figure out the correct last element. It's possible that a
+    // chunk 'extends beyond' the Array bounds. Here 'end_element' is the
+    // last element of the destination array
     dimension thisDim = this->get_dimension(dim);
-
-    // What's the first element that we are going to access for this dimension of the chunk?
-    unsigned long long chunk_start = get_chunk_start(thisDim, chunk_origin[dim]);
-
-    // Now we figure out the correct last element, based on the subset expression
     unsigned long long end_element = chunk_origin[dim] + chunk_shape[dim] - 1;
-#if 1
     if ((unsigned) thisDim.stop < end_element) {
         end_element = thisDim.stop;
     }
-#endif
 
     unsigned long long chunk_end = end_element - chunk_origin[dim];
     vector<unsigned int> constrained_array_shape = get_shape(true);
 
     unsigned int last_dim = chunk_shape.size() - 1;
     if (dim == last_dim) {
-        char *source_buffer = chunk->get_rbuf();
-        char *target_buffer = get_buf();
         unsigned int elem_width = prototype()->width();
 
-        // The start element in this array
-        unsigned long long start_element = chunk_origin[dim] + chunk_start;
-        // Compute how much we are going to copy
-        unsigned long long chunk_constrained_inner_dim_bytes = (end_element - start_element + 1) * elem_width;
-
-        // Compute where we need to put it.
-        (*target_element_address)[dim] = start_element; // (start_element - thisDim.start); // / thisDim.stride;
-        // Compute where we are going to read it from
-        (*chunk_element_address)[dim] = chunk_start;
+        (*target_element_address)[dim] = chunk_origin[dim];
+        (*chunk_element_address)[dim] = 0;
 
         unsigned int target_char_start_index = get_index(*target_element_address, constrained_array_shape) * elem_width;
         unsigned int chunk_char_start_index = get_index(*chunk_element_address, chunk_shape) * elem_width;
 
+        // Compute how much we are going to copy
+        unsigned long long chunk_constrained_inner_dim_bytes = (end_element - chunk_origin[dim] + 1) * elem_width;
+        char *source_buffer = chunk->get_rbuf();
+        char *target_buffer = get_buf();
         memcpy(target_buffer + target_char_start_index, source_buffer + chunk_char_start_index, chunk_constrained_inner_dim_bytes);
     }
     else {
         // Not the last dimension, so we continue to proceed down the Recursion Branch.
-        for (unsigned int chunk_index = chunk_start; chunk_index <= chunk_end; ++chunk_index) {
+        for (unsigned int chunk_index = 0 /*chunk_start*/; chunk_index <= chunk_end; ++chunk_index) {
             (*target_element_address)[dim] = (chunk_index + chunk_origin[dim]);            // - thisDim.start);
             (*chunk_element_address)[dim] = chunk_index;
 
             // Re-entry here:
-            insert_chunk(dim + 1, target_element_address, chunk_element_address, chunk);
+            insert_chunk_unconstrained(dim + 1, target_element_address, chunk_element_address, chunk);
         }
     }
 }
@@ -892,7 +903,7 @@ void DmrppArray::read_chunks_unconstrained()
  * @brief Read data for the array
  *
  * This reads data for a variable and loads it into memory. The software is
- * specialize for reading data using HTTP for either arrays stored in one
+ * specialized for reading data using HTTP for either arrays stored in one
  * contiguous piece of memory or in a series of chunks.
  *
  * @return Always returns true
