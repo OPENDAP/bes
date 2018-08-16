@@ -31,7 +31,7 @@
 #include "BESDebug.h"
 #include "BESSyntaxUserError.h"
 #include "CmrUtils.h"
-#include "Whitelist.h"
+#include "WhiteList.h"
 
 #include "curl_utils.h"
 

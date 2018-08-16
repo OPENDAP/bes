@@ -46,7 +46,6 @@
 using namespace std;
 using namespace cmr;
 
-#define MODULE "cmr"
 #define prolog std::string("RemoteHttpResource::").append(__func__).append("() - ")
 
 
