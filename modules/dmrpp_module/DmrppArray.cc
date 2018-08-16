@@ -162,11 +162,6 @@ unsigned long long DmrppArray::get_size(bool constrained)
 /**
  * @brief Get the array shape
  *
- * @note When getting the whole AIRS file, the profiler shows that the code spends
- * about 1s here.
- *
- * @todo Optimize
- *
  * @param constrained If true, return the shape of the constrained array.
  * @return A vector<int> that describes the shape of the array.
  */
@@ -176,6 +171,7 @@ vector<unsigned int> DmrppArray::get_shape(bool constrained)
     vector<unsigned int> shape;
 
     // For a 3d array, this method took 14ms without reserve(), 5ms with
+    // (when called many times).
     shape.reserve(edim - dim);
 
     for (; dim != edim; dim++) {
