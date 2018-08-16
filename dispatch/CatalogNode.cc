@@ -86,7 +86,7 @@ CatalogNode::encode_node(BESInfo *info)
     }
     else { // It's a node. Do the node dance...
         props["name"] = get_name();
-        props["catalog"] = get_catalog_name();
+        // props["catalog"] = get_catalog_name(); // Dropped this because it's no longer used - ndp 8/15/2018
         props["lastModified"] = get_lmt();
         ostringstream oss;
         oss << get_item_count();
