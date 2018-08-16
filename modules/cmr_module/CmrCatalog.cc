@@ -254,7 +254,7 @@ CmrCatalog::get_node(const string &ppath) const
                 }
             }
             else {
-                throw BESNotFoundError("The CMR only supports temporal faceting.",__FILE__,__LINE__);
+                throw BESNotFoundError("The CMR catalog only supports temporal faceting.",__FILE__,__LINE__);
             }
         }
         else {
