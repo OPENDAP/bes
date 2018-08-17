@@ -63,10 +63,12 @@ using std::string;
 #include "BESNotFoundError.h"
 #include "BESInternalError.h"
 #include "BESLog.h"
+#include "BESCatalogList.h"
 
 #define CRLF "\r\n"
 
 #define debug_key "BesUtil"
+#define prolog string("BESUtil::").append(__func__).append("() - ")
 
 const string BES_KEY_TIMEOUT_CANCEL = "BES.CancelTimeoutOnSend";
 
@@ -1065,4 +1067,41 @@ std::vector<std::string> BESUtil::split(const std::string &s, char delim, bool s
     }
     return tokens;
 }
+
+
+
+
+BESCatalog *BESUtil::separateCatalogFromPath(std::string &ppath)
+{
+    BESCatalog *catalog = 0;    // pointer to a singleton; do not delete
+    vector<string> path_tokens;
+
+    // BESUtil::normalize_path() removes duplicate separators and adds leading and trailing separators as directed.
+    string path = BESUtil::normalize_path(ppath, false, false);
+    BESDEBUG(debug_key, prolog << "Normalized path: " << path << endl);
+
+    // Because we may need to alter the container/file/resource name by removing
+    // a catalog name from the first node in the path we use "use_container" to store
+    // the altered container path.
+    string use_container = ppath;
+
+    // Breaks path into tokens
+    BESUtil::tokenize(path, path_tokens);
+    if (!path_tokens.empty()) {
+        BESDEBUG(debug_key, "First path token: " << path_tokens[0] << endl);
+        catalog = BESCatalogList::TheCatalogList()->find_catalog(path_tokens[0]);
+        if (catalog) {
+            BESDEBUG(debug_key, prolog << "Located catalog " << catalog->get_catalog_name() << " from path component" << endl);
+            // Since the catalog name is in the path we
+            // need to drop it this should leave container
+            // with a leading
+            ppath = BESUtil::normalize_path(path.substr(path_tokens[0].length()), true, false);
+            BESDEBUG(debug_key, prolog << "Modified container/path value to:  " << use_container << endl);
+        }
+    }
+
+    return catalog;
+}
+
+
 

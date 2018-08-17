@@ -55,7 +55,6 @@ using std::endl;
 #include "CmrCatalog.h"
 #include "CmrContainerStorage.h"
 
-#define MODULE "cmr"
 #define prolog std::string("CmrModule::").append(__func__).append("() - ")
 
 void CmrModule::initialize(const string &modname)
@@ -71,8 +70,8 @@ void CmrModule::initialize(const string &modname)
 	}
 
 
-    BESDEBUG(modname, prolog << "Adding " << modname << " container storage" << endl);
-    BESContainerStorageList::TheList()->add_persistence(new cmr::CmrContainerStorage(modname));
+    // BESDEBUG(modname, prolog << "Adding " << modname << " container storage" << endl);
+    // BESContainerStorageList::TheList()->add_persistence(new cmr::CmrContainerStorage(modname));
 
 	BESDEBUG(MODULE, "Done Initializing CMR Handler: " << modname << endl);
 }

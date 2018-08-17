@@ -37,6 +37,7 @@
 #endif
 
 
+#include "BESCatalogList.h"
 #include "BESContainerStorageList.h"
 #include "BESContainerStorage.h"
 #include "BESDataNames.h"
@@ -44,6 +45,10 @@
 #include "BESResponseNames.h"
 #include "BESDataHandlerInterface.h"
 #include "BESDebug.h"
+#include "BESUtil.h"
+
+#define MODULE "bes"
+#define prolog std::string("BESSetContainerResponseHandler::").append(__func__).append("() - ")
 
 BESSetContainerResponseHandler::BESSetContainerResponseHandler(const string &name) :
         BESResponseHandler(name)
@@ -86,10 +91,19 @@ void BESSetContainerResponseHandler::execute(BESDataHandlerInterface &dhi)
     string real_name = dhi.data[REAL_NAME];
     string container_type = dhi.data[CONTAINER_TYPE];
 
-    BESDEBUG("bes", "BESSetContainerResponseHandler::execute store = " << dhi.data[STORE_NAME] << endl);
-    BESDEBUG("bes", "BESSetContainerResponseHandler::execute symbolic = " << dhi.data[SYMBOLIC_NAME] << endl);
-    BESDEBUG("bes", "BESSetContainerResponseHandler::execute real = " << dhi.data[REAL_NAME] << endl);
-    BESDEBUG("bes", "BESSetContainerResponseHandler::execute type = " << dhi.data[CONTAINER_TYPE] << endl);
+    BESDEBUG(MODULE, prolog << "store = " << dhi.data[STORE_NAME] << endl);
+    BESDEBUG(MODULE, prolog << "symbolic = " << dhi.data[SYMBOLIC_NAME] << endl);
+    BESDEBUG(MODULE, prolog << "real = " << dhi.data[REAL_NAME] << endl);
+    BESDEBUG(MODULE, prolog << "type = " << dhi.data[CONTAINER_TYPE] << endl);
+
+
+    BESCatalog *cat = BESUtil::separateCatalogFromPath(real_name);
+    if(cat){
+        store_name = cat->get_catalog_name();
+    }
+   // BESCatalogList::TheCatalogList()->find_catalog(real_name);
+
+    BESDEBUG(MODULE, prolog << "store_name = " << store_name << endl);
 
     BESContainerStorage *cp = BESContainerStorageList::TheList()->find_persistence(store_name);
     if (cp) {
