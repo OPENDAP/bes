@@ -84,7 +84,7 @@ private:
     void read_chunks();
 
     void insert_chunk_unconstrained(unsigned int dim, std::vector<unsigned int> *target_element_address,
-        std::vector<unsigned int> *chunk_element_address, Chunk *chunk, const vector<unsigned int> &array_shape,
+        /*std::vector<unsigned int> *chunk_element_address,*/ unsigned long long chunk_offset, Chunk *chunk, const vector<unsigned int> &array_shape,
         const vector<unsigned int> &chunk_shape, const vector<unsigned int> &chunk_origin);
 
     void read_chunks_unconstrained();
