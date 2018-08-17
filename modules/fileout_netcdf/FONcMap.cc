@@ -145,7 +145,8 @@ bool FONcMap::compare(Array *tomap) {
         // compare the values of the array
         char *map_buf = map->get_buf();
         char *tomap_buf = tomap->get_buf();
-        if (0 != memcmp(map_buf, tomap_buf, map->length() * map->var()->width())) {
+        int cmpres = memcmp(map_buf, tomap_buf, map->width());
+        if (0 != cmpres) {
             isequal = false;
         }
     }
