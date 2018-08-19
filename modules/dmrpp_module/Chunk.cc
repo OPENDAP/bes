@@ -366,13 +366,82 @@ void Chunk::add_tracking_query_param()
 }
 
 /**
+ * @brief function version of Chunk::inflate_chunk for use with pthreads
+ *
+ * @param c The Chunk object
+ * @param deflate
+ * @param shuffle
+ * @param chunk_size
+ * @param elem_width
+ */
+void *inflate_chunk(void *arg_list /*Chunk *chunk, bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width*/)
+{
+    // This code is pretty naive - there are apparently a number of
+    // different ways HDF5 can compress data, and it does also use a scheme
+    // where several algorithms can be applied in sequence. For now, get
+    // simple zlib deflate working.jhrg 1/15/17
+    // Added support for shuffle. Assuming unshuffle always is applied _after_
+    // inflating the data (reversing the shuffle --> deflate process). It is
+    // possible that data could just be deflated or shuffled (because we
+    // have test data are use only shuffle). jhrg 1/20/17
+    // The file that implements the deflate filter is H5Zdeflate.c in the hdf5 source.
+    // The file that implements the shuffle filter is H5Zshuffle.c.
+
+    inflate_chunk_args *args = reinterpret_cast<inflate_chunk_args*>(arg_list);
+
+    if (args->chunk->get_is_inflated()) {
+#if USE_PTHREADS
+       pthread_exit(NULL);
+#else
+       return NULL;
+#endif
+    }
+
+    args->chunk_size *= args->elem_width;
+
+    if (args->deflate) {
+        char *dest = new char[args->chunk_size];
+        try {
+            inflate(dest, args->chunk_size, args->chunk->get_rbuf(), args->chunk->get_rbuf_size());
+            // This replaces (and deletes) the original read_buffer with dest.
+            args->chunk->set_rbuf(dest, args->chunk_size);
+        }
+        catch (...) {
+            delete[] dest;
+            throw;
+        }
+    }
+
+    if (args->shuffle) {
+        // The internal buffer is chunk's full size at this point.
+        char *dest = new char[args->chunk->get_rbuf_size()];
+        try {
+            unshuffle(dest, args->chunk->get_rbuf(), args->chunk->get_rbuf_size(), args->elem_width);
+            args->chunk->set_rbuf(dest, args->chunk->get_rbuf_size());
+        }
+        catch (...) {
+            delete[] dest;
+            throw;
+        }
+    }
+
+    args->chunk->set_is_inflated(true);
+
+#if USE_PTHREADS
+       pthread_exit(NULL);
+#else
+       return NULL;
+#endif
+}
+
+/**
  * @brief Decompress data in the chunk, managing the Chunk's data buffers
  *
  * This method tracks if a chunk has already been decompressed, so, like read_chunk()
  * it can be called for a chunk that has already been decompressed without error.
  *
- * @param deflate
- * @param shuffle
+ * @param deflate True if the chunk should be 'inflated'
+ * @param shuffle True if the chunk should be 'unshuffled'
  * @param chunk_size The _expected_ chunk size, in elements; used to allocate storage
  * @param elem_width The number of bytes per element
  */

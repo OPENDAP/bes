@@ -33,6 +33,8 @@
 #include <cstring>
 #include <cassert>
 
+#include <pthread.h>
+
 #include <unistd.h>
 
 #include <D4Enum.h>
@@ -788,19 +790,21 @@ static unsigned long multiplier(const vector<unsigned int> &shape, unsigned int 
 /**
  * @brief Insert a chunk into an unconstrained Array
  *
- * This code is called recursively, N times for a rank N array. The
- * \arg dim is incremented in each call until \arg dim is the rightmost
- * dimension of the array.
+ * This code is called recursively, until the \arg dim is rank-1 for this
+ * Array.
  *
  * @note dimensions 0..k are d0, d1, d2, ..., dk and dk, the rightmost
  * dimension, varies the fastest (row-major order). To compute the offset
- * for coordinate c0, c1, c2, ..., ck use: c0(d1 * d2) + c1(d2) + c2 when
+ * for coordinate c0, c1, c2, ..., ck. e.g., c0(d1 * d2) + c1(d2) + c2 when
  * k == 2
  *
- * @param dim
- * @param target_element_address
- * @param chunk_element_address
- * @param chunk
+ * @param chunk The chunk that holds data to insert
+ * @param dim The current dimension
+ * @param array_offset Insert values at this point in the Array
+ * @param array_shape The size of the Array's dimensions
+ * @param chunk_offset Insert data from this point in the chunk
+ * @param chunk_shape The size of the chunk's dimensions
+ * @param chunk_origin Where this chunk fits into the Array
  */
 void DmrppArray::insert_chunk_unconstrained(Chunk *chunk, unsigned int dim,
     unsigned long long array_offset, const vector<unsigned int> &array_shape,
@@ -875,7 +879,7 @@ void DmrppArray::read_chunks_unconstrained()
         }
 
         while (chunks_to_read.size() > 0) {
-            queue<Chunk*> chunks_to_insert;
+            vector<Chunk*> chunks_to_insert;
 
             for (unsigned int i = 0; i < max_handles && chunks_to_read.size() > 0; ++i) {
                 Chunk *chunk = chunks_to_read.front();
@@ -888,17 +892,61 @@ void DmrppArray::read_chunks_unconstrained()
                 BESDEBUG(dmrpp_3, "Queuing: " << chunk->to_string() << endl);
                 mhandle->add_easy_handle(handle);
 
-                chunks_to_insert.push(chunk);
+                chunks_to_insert.push_back(chunk);
             }
 
             mhandle->read_data(); // read 'max_handles' chunks
 
-            while (chunks_to_insert.size() > 0) {
-                Chunk *chunk = chunks_to_insert.front();
-                chunks_to_insert.pop();
+#if USE_PTHREADS
+            pthread_t thread[chunks_to_insert.size()];
 
+            for (unsigned int i = 0; i < chunks_to_insert.size() - 2; ++i) {
+                Chunk *chunk = chunks_to_insert.at(i);
+
+                inflate_chunk_args *args = new inflate_chunk_args(chunk, is_deflate_compression(), is_shuffle_compression(),
+                    get_chunk_size_in_elements(), var()->width());
+                int status = pthread_create(&thread[i], NULL, dmrpp::inflate_chunk, (void*)args);
+                if (status != 0) {
+                    ostringstream oss("Could not start inflate_chunk thread for chunk ");
+                    oss << i << ": " << strerror(status);
+                    throw BESInternalError(oss.str(), __FILE__, __LINE__);
+                }
+            }
+
+            // The main thread does some work too.
+
+            Chunk *chunk = chunks_to_insert.at(chunks_to_insert.size() - 1);
+            inflate_chunk_args *args = new inflate_chunk_args(chunk, is_deflate_compression(), is_shuffle_compression(),
+                get_chunk_size_in_elements(), var()->width());
+            inflate_chunk(args);
+
+            for (unsigned int i = 0; i < chunks_to_insert.size() - 2; ++i) {
+                int status = pthread_join(thread[i], NULL);
+                if (status != 0) {
+                    ostringstream oss("Could not join inflate_chunk thread for chunk ");
+                    oss << i << ": " << strerror(status);
+                    throw BESInternalError(oss.str(), __FILE__, __LINE__);
+                }
+            }
+#endif
+
+
+            while (chunks_to_insert.size() > 0) {
+                Chunk *chunk = chunks_to_insert.back();//front();
+                //chunks_to_insert.pop();
+                chunks_to_insert.pop_back();
+
+#if 0
                 chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(),
                     var()->width());
+#endif
+
+#if !USE_PTHREADS
+                inflate_chunk_args *args = new inflate_chunk_args(chunk, is_deflate_compression(), is_shuffle_compression(),
+                    get_chunk_size_in_elements(), var()->width());
+
+                inflate_chunk(args);
+#endif
 
                 BESDEBUG("dmrpp:4", "Inserting: " << chunk->to_string() << endl);
 

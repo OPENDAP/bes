@@ -27,6 +27,8 @@
 #include <string>
 #include <vector>
 
+#define USE_PTHREADS 0
+
 namespace dmrpp {
 
 // Callback function used by chunk readers
@@ -272,16 +274,19 @@ public:
         return d_chunk_position_in_array;
     }
 
-    void add_tracking_query_param();
+    virtual void add_tracking_query_param();
 
     virtual void set_position_in_array(const std::string &pia);
     virtual void set_position_in_array(const std::vector<unsigned int> &pia);
 
     virtual void read_chunk();
 
-    void inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width);
+    virtual void inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width);
 
     virtual void set_is_read(bool state) { d_is_read = state; }
+
+    virtual bool get_is_inflated() const { return d_is_inflated; }
+    virtual void set_is_inflated(bool state) { d_is_inflated = state; }
 
     virtual std::string get_curl_range_arg_string();
 
@@ -289,6 +294,20 @@ public:
 
     virtual std::string to_string() const;
 };
+
+/// Chunk data decompression function for use with pthreads
+struct inflate_chunk_args {
+    Chunk *chunk;
+    bool deflate;
+    bool shuffle;
+    unsigned int chunk_size;
+    unsigned int elem_width;
+
+    inflate_chunk_args(Chunk *c, bool d, bool s, unsigned int c_size, unsigned int e_size):
+        chunk(c), deflate(d), shuffle(s), chunk_size(c_size), elem_width(e_size) {}
+};
+
+void *inflate_chunk(void *args);
 
 } // namespace dmrpp
 
