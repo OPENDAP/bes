@@ -369,6 +369,7 @@ void Chunk::add_tracking_query_param()
  * @brief function version of Chunk::inflate_chunk for use with pthreads
  *
  * @note Only use this with child threads
+ * @todo Rewrite this as glue to the method?
  *
  * @param arg_list Pointer to an inflate_chunk_args instance. That struct contains
  * The Chunk object, booleans that describe if the chunk is compressed or shuffled,
