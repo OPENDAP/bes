@@ -164,8 +164,6 @@ void RemoteHttpResource::retrieveResource()
     BESDEBUG(MODULE, "RemoteHttpResource::retrieveResource() - d_type: " << d_type << endl);
 
     try {
-
-
         if (cache->get_read_lock(d_resourceCacheFileName, d_fd)) {
             BESDEBUG(MODULE,
                 "RemoteHttpResource::retrieveResource() - Remote resource is already in cache. cache_file_name: " << d_resourceCacheFileName << endl);
@@ -183,12 +181,10 @@ void RemoteHttpResource::retrieveResource()
                 hdr_ifs.close();
                 throw;
             }
-
             ingest_http_headers_and_type();
-            // #########################################################################################################
-
             d_initialized = true;
             return;
+            // #########################################################################################################
         }
 
         // Now we actually need to reach out across the interwebs and retrieve the remote resource and put it's
@@ -214,7 +210,6 @@ void RemoteHttpResource::retrieveResource()
                     hdr_out.close();
                     throw;
                 }
-
             }
             // #########################################################################################################
 
@@ -235,11 +230,8 @@ void RemoteHttpResource::retrieveResource()
                 cache->update_and_purge(d_resourceCacheFileName);
                 BESDEBUG(MODULE, "RemoteHttpResource::retrieveResource() - Updated and purged cache." << endl);
             }
-
             BESDEBUG(MODULE, "RemoteHttpResource::retrieveResource() - END" << endl);
-
             d_initialized = true;
-
             return;
         }
         else {

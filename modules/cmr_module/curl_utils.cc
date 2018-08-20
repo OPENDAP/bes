@@ -459,6 +459,10 @@ CURL *init(char *error_buffer)
     // choosing the the 'safest' one supported by the server.
     // This requires curl 7.10.6 which is still in pre-release. 07/25/03 jhrg
     curl_easy_setopt(curl, CURLOPT_HTTPAUTH, (long)CURLAUTH_ANY);
+    curl_easy_setopt(curl, CURLOPT_NETRC, 1);
+
+    curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "/tmp/.hyrax_cookies");
+    curl_easy_setopt(curl, CURLOPT_COOKIEJAR, "/tmp/.hyrax_cookies");
 
     curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1);
     curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
@@ -469,6 +473,8 @@ CURL *init(char *error_buffer)
     // Follow 302 (redirect) responses
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
     curl_easy_setopt(curl, CURLOPT_MAXREDIRS, 5);
+
+
 
 
     // Set the user agent to curls version response because, well, that's what command line curl does :)
