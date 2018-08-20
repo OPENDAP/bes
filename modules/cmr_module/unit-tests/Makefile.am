@@ -63,7 +63,7 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 #
 
 if CPPUNIT
-UNIT_TESTS = CmrApiTest CmrCatalogTest
+UNIT_TESTS = CmrApiTest CmrCatalogTest GranuleTest
 else
 UNIT_TESTS =
 
@@ -90,3 +90,6 @@ CmrApiTest_LDADD = $(OBJS) $(LIBADD)
 
 CmrCatalogTest_SOURCES = CmrCatalogTest.cc
 CmrCatalogTest_LDADD = $(OBJS) $(LIBADD)
+
+GranuleTest_SOURCES = GranuleTest.cc
+GranuleTest_LDADD = $(OBJS) $(LIBADD)
