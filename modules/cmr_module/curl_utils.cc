@@ -459,8 +459,11 @@ CURL *init(char *error_buffer)
     // choosing the the 'safest' one supported by the server.
     // This requires curl 7.10.6 which is still in pre-release. 07/25/03 jhrg
     curl_easy_setopt(curl, CURLOPT_HTTPAUTH, (long)CURLAUTH_ANY);
+
+    // I added these next three to support Hyrax accessing data held behind URS auth. ndp - 8/20/18
     curl_easy_setopt(curl, CURLOPT_NETRC, 1);
 
+    // #TODO #FIXME Make these file names configuration based.
     curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "/tmp/.hyrax_cookies");
     curl_easy_setopt(curl, CURLOPT_COOKIEJAR, "/tmp/.hyrax_cookies");
 
