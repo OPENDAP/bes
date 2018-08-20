@@ -924,7 +924,7 @@ void DmrppArray::read_chunks_unconstrained()
                     var()->width());
 
                 // Now join the child threads.
-                for (unsigned int i = 0; i < chunks_to_insert.size() - 2; ++i) {
+                for (unsigned int i = 0; i < chunks_to_insert.size() - 1; ++i) {
                     inflate_chunk_args *args;
                     int status = pthread_join(thread[i], (void**)&args);
                     if (status != 0) {
