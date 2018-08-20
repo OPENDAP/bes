@@ -69,6 +69,7 @@ public:
     void get_collection_ids(std::vector<std::string> &collection_ids);
     unsigned long granule_count(std::string collection_name,std:: string r_year, std::string r_month, std::string r_day);
     cmr::Granule *get_granule(const std::string path);
+    cmr::Granule *get_granule(string collection_name, string r_year, string r_month, string r_day, string granule_id);
 };
 
 

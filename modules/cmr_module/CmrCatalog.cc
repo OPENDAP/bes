@@ -104,7 +104,7 @@ CmrCatalog::~CmrCatalog()
 bes::CatalogNode *
 CmrCatalog::get_node(const string &path) const
 {
-    return get_node_OLD(path);
+    return get_node_NEW(path);
 }
 
 
@@ -132,6 +132,11 @@ CmrCatalog::get_node_NEW(const string &ppath) const
         }
     }
     else {
+        for(size_t i=0; i< path_elements.size() ;i++){
+            if(path_elements[i]=="-")
+                path_elements[i] = "";
+        }
+
         string collection = path_elements[0];
         BESDEBUG(MODULE, prolog << "Checking for collection: " << collection << " d_collections.size(): " << d_collections.size() << endl);
         bool valid_collection = false;
@@ -162,6 +167,7 @@ CmrCatalog::get_node_NEW(const string &ppath) const
 
 
                 switch( path_elements.size()){
+
                 case 2: // The path ends at temporal facet, so we need the years.
                 {
                     vector<string> years;
@@ -178,7 +184,8 @@ CmrCatalog::get_node_NEW(const string &ppath) const
                         node->add_node(collection);
                     }
                 }
-                    break;
+                break;
+
                 case 3:
                 {
                     string year = path_elements[2];
@@ -198,7 +205,8 @@ CmrCatalog::get_node_NEW(const string &ppath) const
                         node->add_node(collection);
                     }
                 }
-                    break;
+                break;
+
                 case 4:
                 {
                     string year = path_elements[2];
@@ -218,7 +226,8 @@ CmrCatalog::get_node_NEW(const string &ppath) const
                         node->add_node(collection);
                     }
                 }
-                    break;
+                break;
+
                 case 5:
                 {
                     string year = path_elements[2];
@@ -231,22 +240,39 @@ CmrCatalog::get_node_NEW(const string &ppath) const
                         node->add_leaf(granules[i]->getCatalogItem(get_catalog_utils()));
                     }
                 }
-                    break;
+                break;
+
                 case 6:
                 {
                     string year = path_elements[2];
                     string month = path_elements[3];
                     string day = path_elements[4];
-                    string granule = path_elements[5];
+                    string granule_id = path_elements[5];
                     BESDEBUG(MODULE, prolog << "Request resolved to leaf granule/dataset name,  collection: " << collection << " year: " << year
-                        << " month: " << month <<  " day: " << day << " granule: " << granule << endl);
+                        << " month: " << month <<  " day: " << day << " granule: " << granule_id << endl);
+                    Granule *granule = cmrApi.get_granule(collection,year,month,day,granule_id);
+                    if(granule){
+                        CatalogItem *granuleItem = new CatalogItem();
+                        granuleItem->set_type(CatalogItem::leaf);
+                        granuleItem->set_name(granule->getName());
+                        granuleItem->set_is_data(true);
+                        granuleItem->set_lmt(granule->getLastModifiedStr());
+                        granuleItem->set_size(granule->getSize());
+                        node->set_leaf(granuleItem);
+                    }
+                    else {
+                        throw BESNotFoundError("No such resource: "+path,__FILE__,__LINE__);
+                    }
                 }
-                    break;
+                break;
 
                 default:
+                {
                     throw BESSyntaxUserError("CmrCatalog: The path '"+path+"' does not describe a valid temporal facet search.",__FILE__,__LINE__);
-                    break;
                 }
+                break;
+                }
+
             }
             else {
                 throw BESNotFoundError("The CMR catalog only supports temporal faceting.",__FILE__,__LINE__);

@@ -48,6 +48,7 @@ private:
 public:
     Granule(const rapidjson::Value& granule_obj): d_granule_obj(granule_obj)  {}
 
+    std::string getName(){ return getStringProperty("title"); }
     std::string getStringProperty(const std::string &id);
     std::string getDataAccessUrl();
     std::string getMetadataAccessUrl();

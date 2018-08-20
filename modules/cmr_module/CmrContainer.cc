@@ -29,6 +29,7 @@
 
 #include <BESSyntaxUserError.h>
 #include <BESInternalError.h>
+#include <BESNotFoundError.h>
 #include <BESDebug.h>
 #include <BESUtil.h>
 #include <TheBESKeys.h>
@@ -60,9 +61,25 @@ CmrContainer::CmrContainer(const string &sym_name,
         const string &real_name, const string &type) :
         BESContainer(sym_name, real_name, type), d_remoteResource(0) {
 
-    BESDEBUG( MODULE, prolog << "BEGIN" << endl);
+    BESDEBUG( MODULE, prolog << "BEGIN sym_name: " << sym_name
+        << " real_name: " << real_name << " type: " << type << endl);
 
 
+    string path = BESUtil::normalize_path(real_name,true, false);
+    vector<string> path_elements = BESUtil::split(path);
+    BESDEBUG(MODULE, prolog << "path: '" << path << "'  path_elements.size(): " << path_elements.size() << endl);
+
+
+    set_relative_name(path);
+
+    if(type==""){
+        // @TODO FIX Dynamically determine the type from the Granule information (type-match to name, mime-type, etc)
+        this->set_container_type("nc");
+    }
+
+
+
+    /*
 
     if (type.empty())
         set_container_type("cmr");
@@ -83,7 +100,7 @@ CmrContainer::CmrContainer(const string &sym_name,
     // Because we know the name is really a URL, then we know the "relative_name" is meaningless
     // So we set it to be the same as "name"
     set_relative_name(real_name);
-
+    */
 
     BESDEBUG( MODULE, prolog << "END" << endl);
 
@@ -135,10 +152,19 @@ string CmrContainer::access() {
 
     BESDEBUG( MODULE, prolog << "BEGIN" << endl);
 
-    // Since this the Gateway we know that the real_name is a URL.
-    string url  = get_real_name();
+    // Since this the CMR thang we know that the real_name is a path of facets and such.
+    string path  = get_real_name();
+    BESDEBUG( MODULE, prolog << "path: " << path << endl);
 
-    BESDEBUG( MODULE, prolog << "Accessing " << url << endl);
+    Granule *granule = CmrUtils::getTemporalFacetGranule(path);
+    if(!granule){
+        throw BESNotFoundError("Failed locate a granule associated with the path "+path,__FILE__,__LINE__);
+    }
+
+    string url  = granule->getDataAccessUrl();
+
+    delete granule;
+    granule = 0;
 
     string type = get_container_type();
     if (type == MODULE)

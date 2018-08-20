@@ -34,6 +34,8 @@
 #include <map>
 #include <vector>
 
+#include "Granule.h"
+
 namespace cmr {
 
 /** @brief utility class for the gateway remote request mechanism
@@ -57,6 +59,8 @@ public:
     static void Get_type_from_disposition(const std::string &disp, std::string &type);
     static void Get_type_from_content_type(const std::string &ctype, std::string &type);
     static void Get_type_from_url(const std::string &url, std::string &type);
+
+    static Granule *getTemporalFacetGranule(const std::string granule_path);
 };
 
 } // namespace cmr

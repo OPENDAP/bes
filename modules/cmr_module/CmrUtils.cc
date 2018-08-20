@@ -32,6 +32,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <map>
+#include <vector>
 #include <curl/curl.h>
 
 
@@ -43,17 +44,20 @@
 #include <TheBESKeys.h>
 #include <BESInternalError.h>
 #include <BESDapError.h>
+#include <BESNotFoundError.h>
 #include <BESSyntaxUserError.h>
 #include <BESDebug.h>
 
 #include "CmrNames.h"
 #include "CmrUtils.h"
+#include "CmrApi.h"
 
 #include <GNURegex.h>
 #include <util.h>
 
 using namespace libdap;
 using namespace cmr;
+using std::vector;
 
 std::map<string, string> CmrUtils::MimeList;
 string CmrUtils::ProxyProtocol;
@@ -67,12 +71,13 @@ bool CmrUtils::useInternalCache = false;
 
 string CmrUtils::NoProxyRegex;
 
+#define prolog std::string("CmrUtils::").append(__func__).append("() - ")
+
+
 // Initialization routine for the gateway module for certain parameters
 // and keys, like the white list, the MimeTypes translation.
 void CmrUtils::Initialize()
 {
-    string prolog = string("CmrUtils::") + __func__ + "() - ";
-
     // MimeTypes - translate from a mime type to a module name
     bool found = false;
     std::string key = CMR_MIMELIST;
@@ -205,7 +210,6 @@ void CmrUtils::Initialize()
 
 void CmrUtils::Get_type_from_disposition(const string &disp, string &type)
 {
-    string prolog = string("CmrUtils::") + __func__ + "() - ";
     size_t fnpos = disp.find("filename");
     if (fnpos != string::npos) {
         // Got the filename attribute, now get the
@@ -271,7 +275,6 @@ void CmrUtils::Get_type_from_disposition(const string &disp, string &type)
 
 void CmrUtils::Get_type_from_content_type(const string &ctype, string &type)
 {
-    string prolog = string("CmrUtils::") + __func__ + "() - ";
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     std::map<string, string>::iterator i = MimeList.begin();
     std::map<string, string>::iterator e = MimeList.end();
@@ -295,9 +298,9 @@ void CmrUtils::Get_type_from_content_type(const string &ctype, string &type)
 
 void CmrUtils::Get_type_from_url(const string &url, string &type)
 {
-    string prolog = string("CmrUtils::") + __func__ + "() - ";
     // Just run the url through the type match from the configuration
-    const BESCatalogUtils *utils = BESCatalogList::TheCatalogList()->default_catalog()->get_catalog_utils();
+
+    const BESCatalogUtils *utils = BESCatalogList::TheCatalogList()->find_catalog(CMR_CATALOG_NAME)->get_catalog_utils();
 
     type = utils->get_handler_name(url);
 
@@ -345,6 +348,50 @@ bool GatewayUtils::Is_Whitelisted(const std::string &url){
 
 #endif
 
+Granule *
+CmrUtils::getTemporalFacetGranule(const std::string granule_path)
+{
+
+    BESDEBUG(MODULE, prolog << "BEGIN  (granule_path: '" << granule_path  << ")" << endl);
+
+    string collection;
+    string facet = "temporal";
+    string year = "-";
+    string month = "-";
+    string day = "-";
+    string granule_id = "-";
+
+    string path = BESUtil::normalize_path(granule_path,false, false);
+    vector<string> path_elements = BESUtil::split(path);
+    BESDEBUG(MODULE, prolog << "path: '" << path << "'   path_elements.size(): " << path_elements.size() << endl);
+
+    switch(path_elements.size()){
+    case 6:
+    {
+        collection = path_elements[0];
+        BESDEBUG(MODULE, prolog << "collection: '" << collection << endl);
+        facet = path_elements[1];
+        BESDEBUG(MODULE, prolog << "facet: '" << facet << endl);
+        year = path_elements[2];
+        BESDEBUG(MODULE, prolog << "year: '" << year << endl);
+        month = path_elements[3];
+        BESDEBUG(MODULE, prolog << "month: '" << month << endl);
+        day = path_elements[4];
+        BESDEBUG(MODULE, prolog << "day: '" << day << endl);
+        granule_id = path_elements[5];
+        BESDEBUG(MODULE, prolog << "granule_id: '" << granule_id << endl);
+}
+    break;
+    default:
+    {
+        throw BESNotFoundError("Can't find it man...",__FILE__,__LINE__);
+    }
+    break;
+    }
+    CmrApi cmrApi;
+
+    return cmrApi.get_granule( collection, year, month, day, granule_id);;
+}
 
 
 

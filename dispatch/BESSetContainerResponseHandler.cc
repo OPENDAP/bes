@@ -107,12 +107,12 @@ void BESSetContainerResponseHandler::execute(BESDataHandlerInterface &dhi)
 
     BESContainerStorage *cp = BESContainerStorageList::TheList()->find_persistence(store_name);
     if (cp) {
-        BESDEBUG("bes", "BESSetContainerResponseHandler::execute adding the container..." << endl);
+        BESDEBUG(MODULE, prolog << "Adding the container..." << endl);
 
         cp->del_container(symbolic_name);
         cp->add_container(symbolic_name, real_name, container_type);
 
-        BESDEBUG("bes", "BESSetContainerResponseHandler::execute Done" << endl);
+        BESDEBUG(MODULE, prolog << "Done" << endl);
     }
     else {
         string ret = (string) "Unable to add container '" + symbolic_name + "' to container storage '" + store_name

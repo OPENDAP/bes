@@ -40,6 +40,8 @@
 
 using namespace std;
 
+#define prolog std::string("Granule::").append(__func__).append("() - ")
+
 
 namespace cmr {
 
@@ -79,10 +81,9 @@ std::string Granule::getLastModifiedStr(){
 }
 
 /**
- * Internal method that retrives the "links" array from the Granule's object.
+ * Internal method that retrieves the "links" array from the Granule's object.
  */
 const rapidjson::Value& Granule::get_links_array(){
-    string prolog = string("CmrApi::Granule::") + __func__ + "() - ";
 
     rapidjson::Value::ConstMemberIterator itr = d_granule_obj.FindMember(granule_LINKS.c_str());
     bool result = itr != d_granule_obj.MemberEnd();
@@ -102,7 +103,6 @@ const rapidjson::Value& Granule::get_links_array(){
  * Returns the data access URL for the dataset granule.
  */
 std::string Granule::getDataAccessUrl(){
-    string prolog = string("CmrApi::Granule::") + __func__ + "() - ";
     rjson_utils rju;
 
     const rapidjson::Value& links = get_links_array();
@@ -121,7 +121,6 @@ std::string Granule::getDataAccessUrl(){
  * Returns the metadata access URL for the dataset granule.
  */
 std::string Granule::getMetadataAccessUrl(){
-    string prolog = string("CmrApi::Granule::") + __func__ + "() - ";
     rjson_utils rju;
 
     const rapidjson::Value& links = get_links_array();
@@ -140,7 +139,7 @@ std::string Granule::getMetadataAccessUrl(){
 bes::CatalogItem *Granule::getCatalogItem(BESCatalogUtils *d_catalog_utils){
     bes::CatalogItem *item = new bes::CatalogItem();
     item->set_type(bes::CatalogItem::leaf);
-    item->set_name(getStringProperty("title"));
+    item->set_name(getName());
     item->set_lmt(getStringProperty("updated"));
     item->set_size(getSize());
     item->set_is_data(d_catalog_utils->is_data(item->get_name()));

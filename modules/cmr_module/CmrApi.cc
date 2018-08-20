@@ -548,81 +548,20 @@ CmrApi::get_collection_ids(std::vector<std::string> &collection_ids){
 /**
  * Returns all of the Granules in the collection matching the date.
  */
-cmr::Granule*
-CmrApi::get_granule(string ppath){
+cmr::Granule* CmrApi::get_granule(string collection_name, string r_year, string r_month, string r_day, string granule_id)
+{
+    vector<Granule *> granules;
+    Granule *result = 0;
 
-
-    string path = BESUtil::normalize_path(ppath,true, false);
-    vector<string> path_elements = BESUtil::split(path);
-    BESDEBUG(MODULE, prolog << "path: '" << path << "'   path_elements.size(): " << path_elements.size() << endl);
-
-    if(path_elements.empty())
-        throw BESInternalError("The root node is not a granule.",__FILE__,__LINE__);
-
-    if(path_elements[0] == CMR_CATALOG_NAME)
-        path_elements.erase(path_elements.begin());
-
-    if(path_elements.empty())
-        throw BESInternalError("The root node is not a granule.",__FILE__,__LINE__);
-
-    string collection_name, year, month, day;
-
-    switch (path_elements.size()){
-
-    case 1:{
-        collection_name = path_elements[0];
-
+    get_granules(collection_name, r_year, r_month, r_day, granules);
+    for(size_t i=0; i<granules.size() ;i++){
+        if(granules[i]->getName() == granule_id){
+            result = granules[i];
+        }
+        delete granules[i];
+        granules[i] = 0;
     }
-    break;
-
-    case 2:{
-        collection_name = path_elements[0];
-
-    }
-    break;
-
-    case 3:{
-        collection_name = path_elements[0];
-
-    }
-    break;
-
-    case 4:{
-        collection_name = path_elements[0];
-
-    }
-    break;
-
-    case 5:{
-        collection_name = path_elements[0];
-
-    }
-    break;
-
-
-    }
-
-
-
-    /*
-    stringstream msg;
-    rapidjson::Document cmr_doc;
-
-
-
-    granule_search(collection_name, r_year, r_month, r_day, cmr_doc);
-
-
-
-    const rapidjson::Value& entries = get_entries(cmr_doc);
-    for (rapidjson::SizeType i = 0; i < entries.Size(); i++) { // Uses SizeType instead of size_t
-        const rapidjson::Value& granule_obj = entries[i];
-        // rapidjson::Value grnl(granule_obj,cmr_doc.GetAllocator());
-        Granule *g = new Granule(granule_obj);
-        granules.push_back(g);
-    }
-*/
-    return 0;
+    return result;
 }
 
 

@@ -35,12 +35,13 @@
 #include <BESUtil.h>
 #include "RemoteHttpResource.h"
 
+#include "CmrNames.h"
 
 #include "rjson_utils.h"
 
 using namespace std;
 
-#define MODULE "cmr"
+#define prolog std::string("rjson_utils::").append(__func__).append("() - ")
 
 namespace cmr {
 /**
@@ -54,7 +55,6 @@ namespace cmr {
  */
 void
 rjson_utils::getJsonDoc(const string &url, rapidjson::Document &doc){
-    string prolog = string("rjson_utils::") + __func__ + "() - ";
     BESDEBUG(MODULE,prolog << "Trying url: " << url << endl);
     cmr::RemoteHttpResource rhr(url);
     rhr.retrieveResource();
@@ -81,15 +81,14 @@ rjson_utils::getJsonDoc(const string &url, rapidjson::Document &doc){
  */
 std::string
 rjson_utils::getStringValue(const rapidjson::Value& object, const string &name){
-    string prolog = string("rjson_utils::") + __func__ + "() - ";
 
-    string response;
+    string empty_string;
     rapidjson::Value::ConstMemberIterator itr = object.FindMember(name.c_str());
     bool result  = itr != object.MemberEnd();
     string msg = prolog + (result?"Located":"FAILED to locate") + " the value '"+name+"' in object.";
     BESDEBUG(MODULE, msg << endl);
     if(!result){
-        return response;
+        return empty_string;
     }
 
     const rapidjson::Value& myValue = itr->value;
@@ -97,7 +96,7 @@ rjson_utils::getStringValue(const rapidjson::Value& object, const string &name){
     msg = prolog + "The value '"+ name +"' is" + (result?"":" NOT") + " a String type.";
     BESDEBUG(MODULE, msg << endl);
     if(!result){
-        return response;
+        return empty_string;
     }
 
     return myValue.GetString();

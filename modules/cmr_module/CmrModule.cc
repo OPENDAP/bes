@@ -66,7 +66,7 @@ void CmrModule::initialize(const string &modname)
 	}
 
 	if (!BESContainerStorageList::TheList()->ref_persistence(CMR_CATALOG_NAME)) {
-		BESContainerStorageList::TheList()->add_persistence(new BESContainerStorageCatalog(CMR_CATALOG_NAME));
+		BESContainerStorageList::TheList()->add_persistence(new cmr::CmrContainerStorage(CMR_CATALOG_NAME));
 	}
 
 
