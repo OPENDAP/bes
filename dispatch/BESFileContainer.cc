@@ -116,6 +116,7 @@ string BESFileContainer::access()
  * If the file was cached (uncompressed) then we need to release the lock on
  * the cached entry
  *
+ * @todo Call this in the drot? jhrg 7/25/18
  * @return if successfully released, returns true, otherwise returns false
  */
 bool BESFileContainer::release()

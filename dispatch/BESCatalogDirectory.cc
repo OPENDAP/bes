@@ -82,7 +82,10 @@ using namespace std;
 BESCatalogDirectory::BESCatalogDirectory(const string &name) :
     BESCatalog(name)
 {
-    d_utils = BESCatalogUtils::Utils(name);
+#if 0
+    get_catalog_utils() = BESCatalogUtils::Utils(name);
+#endif
+
 }
 
 BESCatalogDirectory::~BESCatalogDirectory()
@@ -93,6 +96,7 @@ BESCatalogDirectory::~BESCatalogDirectory()
  * @brief Get the CatalogEntry for the given node.
  *
  * @deprecated Switch to get_node(); drop use of CatalogEntry objects
+ *
  * @param node The node within the Catalog
  * @param entry If not null, link the newly built CatalogEntry object
  * to \arg entry as a child node.
@@ -113,7 +117,7 @@ BESCatalogDirectory::show_catalog(const string &node, BESCatalogEntry *entry)
     // empty after the substring call.
     if (use_node.empty()) use_node = "/";
 
-    string rootdir = d_utils->get_root_dir();
+    string rootdir = get_catalog_utils()->get_root_dir();
     string fullnode = rootdir;
     if (!use_node.empty()) {
         // TODO It's hard to know just what this code is supposed to do, but I
@@ -144,7 +148,7 @@ BESCatalogDirectory::show_catalog(const string &node, BESCatalogEntry *entry)
     // symbolic links if follow_sym_links is set to false, and checks to
     // make sure have permission to access node and the node exists.
     // TODO Move up; this can be done once use_node is set. jhrg 2.26.18
-    BESUtil::check_path(use_node, rootdir, d_utils->follow_sym_links());
+    BESUtil::check_path(use_node, rootdir, get_catalog_utils()->follow_sym_links());
 
     // If null is passed in, then return the new entry, else add the new entry to the
     // existing Entry object. jhrg 2.26.18
@@ -167,7 +171,7 @@ BESCatalogDirectory::show_catalog(const string &node, BESCatalogEntry *entry)
 
             // if the directory requested is in the exclude list then we won't
             // let the user see it.
-            if (d_utils->exclude(basename)) {
+            if (get_catalog_utils()->exclude(basename)) {
                 string error = "You do not have permission to view the node " + use_node;
                 throw BESForbiddenError(error, __FILE__, __LINE__);
             }
@@ -179,7 +183,7 @@ BESCatalogDirectory::show_catalog(const string &node, BESCatalogEntry *entry)
             bool dirs_only = false;
             // TODO This is the only place in the code where get_entries() is called
             // jhrg 2.26.18
-            d_utils->get_entries(dip, fullnode, use_node, myentry, dirs_only);
+            get_catalog_utils()->get_entries(dip, fullnode, use_node, myentry, dirs_only);
         }
         catch (... /*BESError &e */) {
             closedir(dip);
@@ -188,16 +192,16 @@ BESCatalogDirectory::show_catalog(const string &node, BESCatalogEntry *entry)
         closedir(dip);
 
         // TODO This is the only place this method is called. replace the static method
-        // with an object call (i.e., d_utils)? jhrg 2.26.18
+        // with an object call (i.e., get_catalog_utils())? jhrg 2.26.18
         BESCatalogUtils::bes_add_stat_info(myentry, fullnode);
     }
     else {
         // if the node is not in the include list then the requester does
         // not have access to that node
-        if (d_utils->include(basename)) {
+        if (get_catalog_utils()->include(basename)) {
             struct stat buf;
             int statret = 0;
-            if (d_utils->follow_sym_links() == false) {
+            if (get_catalog_utils()->follow_sym_links() == false) {
                 /*statret =*/(void) lstat(fullnode.c_str(), &buf);
                 if (S_ISLNK(buf.st_mode)) {
                     string error = "You do not have permission to access node " + use_node;
@@ -255,7 +259,7 @@ BESCatalogDirectory::show_catalog(const string &node, BESCatalogEntry *entry)
 string
 BESCatalogDirectory::get_root() const
 {
-    return d_utils->get_root_dir();
+    return get_catalog_utils()->get_root_dir();
 }
 
 /**
@@ -283,7 +287,7 @@ static string get_time(time_t the_time, bool use_local_time = false)
         status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&the_time));
 
     if (!status)
-    LOG("Error getting last modified time time for a leaf item in BESCatalogDirectory.");
+        LOG("Error getting last modified time time for a leaf item in BESCatalogDirectory.");
 
     return buf;
 }
@@ -314,15 +318,15 @@ static string get_time(time_t the_time, bool use_local_time = false)
 CatalogNode *
 BESCatalogDirectory::get_node(const string &path) const
 {
-    if (path[0] != '/') throw BESInternalError("Catalog paths must start with a slash (/)", __FILE__, __LINE__);
+    if (path[0] != '/') throw BESInternalError("The path sent to BESCatalogDirectory::get_node() must start with a slash (/)", __FILE__, __LINE__);
 
-    string rootdir = d_utils->get_root_dir();
+    string rootdir = get_catalog_utils()->get_root_dir();
 
     // This will throw the appropriate exception (Forbidden or Not Found).
     // Checks to make sure the different elements of the path are not
     // symbolic links if follow_sym_links is set to false, and checks to
     // make sure have permission to access node and the node exists.
-    BESUtil::check_path(path, rootdir, d_utils->follow_sym_links());
+    BESUtil::check_path(path, rootdir, get_catalog_utils()->follow_sym_links());
 
     string fullpath = rootdir + path;
 
@@ -337,7 +341,7 @@ BESCatalogDirectory::get_node(const string &path) const
 
         // Based on other code (show_catalogs()), use BESCatalogUtils::exclude() on
         // a directory, but BESCatalogUtils::include() on a file.
-        if (d_utils->exclude(path))
+        if (get_catalog_utils()->exclude(path))
             throw BESForbiddenError(
                 string("The path '") + path + "' is not included in the catalog '" + get_catalog_name() + "'.",
                 __FILE__, __LINE__);
@@ -360,12 +364,12 @@ BESCatalogDirectory::get_node(const string &path) const
             // TODO add a test in configure for the readdir macro(s) DT_REG, DT_LNK
             // and DT_DIR and use those, if present, to determine if the name is a
             // link, directory or regular file. These are not present on all systems.
-            // Also, since we need mtime, this is not a huge time saver. But if we
+            // Also, since we need mtime, these are not a huge time saver. But if we
             // decide not to use the mtime, using these macros could save lots of system
             // calls. jhrg 3/9/18
 
             // Skip this dir entry if it is a sym link and follow links is false
-            if (d_utils->follow_sym_links() == false) {
+            if (get_catalog_utils()->follow_sym_links() == false) {
                 struct stat lbuf;
                 (void) lstat(item_path.c_str(), &lbuf);
                 if (S_ISLNK(lbuf.st_mode)) continue;
@@ -373,21 +377,21 @@ BESCatalogDirectory::get_node(const string &path) const
 
             // Is this a directory or a file? Should it be excluded or included?
             statret = stat(item_path.c_str(), &buf);
-            if (statret == 0 && S_ISDIR(buf.st_mode) && !d_utils->exclude(item)) {
+            if (statret == 0 && S_ISDIR(buf.st_mode) && !get_catalog_utils()->exclude(item)) {
 #if 0
                 // Add a new node; set the size to zero.
                 node->add_item(new CatalogItem(item, 0, get_time(buf.st_mtime), CatalogItem::node));
 #endif
                 node->add_node(new CatalogItem(item, 0, get_time(buf.st_mtime), CatalogItem::node));
             }
-            else if (statret == 0 && S_ISREG(buf.st_mode) && d_utils->include(item)) {
+            else if (statret == 0 && S_ISREG(buf.st_mode) && get_catalog_utils()->include(item)) {
 #if 0
                 // Add a new leaf.
                 node->add_item(new CatalogItem(item, buf.st_size, get_time(buf.st_mtime),
-                    d_utils->is_data(item), CatalogItem::leaf));
+                    get_catalog_utils()->is_data(item), CatalogItem::leaf));
 #endif
                 node->add_leaf(new CatalogItem(item, buf.st_size, get_time(buf.st_mtime),
-                    d_utils->is_data(item), CatalogItem::leaf));
+                    get_catalog_utils()->is_data(item), CatalogItem::leaf));
             }
             else {
                 VERBOSE("Excluded the item '" << item_path << "' from the catalog '" << get_catalog_name() << "' node listing.");
@@ -475,7 +479,7 @@ void BESCatalogDirectory::dump(ostream &strm) const
 
     strm << BESIndent::LMarg << "catalog utilities: " << endl;
     BESIndent::Indent();
-    d_utils->dump(strm);
+    get_catalog_utils()->dump(strm);
     BESIndent::UnIndent();
     BESIndent::UnIndent();
 }

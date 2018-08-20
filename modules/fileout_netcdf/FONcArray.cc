@@ -120,8 +120,11 @@ void FONcArray::convert(vector<string> embed)
         d_ndims++;
     }
 
-    d_dim_ids.reserve(d_ndims);
-    d_dim_sizes.reserve(d_ndims);
+    // See HYRAX-805. When assigning values using [], set the size using resize
+    // not reserve. THe reserve method works to optimize push_back(), but apparently
+    // does not work with []. jhrg 8/3/18
+    d_dim_ids.resize(d_ndims);
+    d_dim_sizes.resize(d_ndims);
 
     Array::Dim_iter di = d_a->dim_begin();
     Array::Dim_iter de = d_a->dim_end();
@@ -135,7 +138,6 @@ void FONcArray::convert(vector<string> embed)
         d_chunksizes.push_back(size <= MAX_CHUNK_SIZE ? size: MAX_CHUNK_SIZE);
 
         BESDEBUG("fonc", "FONcArray::convert() - dim num: " << dimnum << ", dim size: " << size << ", chunk size: " << d_chunksizes[dimnum] << endl);
-        BESDEBUG("fonc2", *this << endl);
 
         // See if this dimension has already been defined. If it has the
         // same name and same size as another dimension, then it is a
@@ -202,8 +204,6 @@ void FONcArray::convert(vector<string> embed)
     }
 
     BESDEBUG("fonc", "FONcArray::convert() - done converting array " << _varname << endl);
-    BESDEBUG("fonc2", *this << endl);
-
 }
 
 /** @brief Find a possible shared dimension in the global list
@@ -305,6 +305,8 @@ void FONcArray::define(int ncid)
                 FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
             }
 
+            // TODO Make this more adaptable to the Array's data type. Find out when it's
+            // best to use shuffle, et c. jhrg 7/22/18
             if (FONcRequestHandler::use_compression) {
                 int shuffle = 0;
                 int deflate = 1;
@@ -312,7 +314,7 @@ void FONcArray::define(int ncid)
                 stax = nc_def_var_deflate(ncid, _varid, shuffle, deflate, deflate_level);
 
                 if (stax != NC_NOERR) {
-                    string err = (string) "fileout.netcdf - Failed to define compression deflation level for variable "
+                    string err = (string) "fileout.netcdf - Failed to define compression (deflate) level for variable "
                         + _varname;
                     FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
                 }

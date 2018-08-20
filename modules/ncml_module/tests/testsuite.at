@@ -8,7 +8,7 @@ m4_define([datadir], [/data/ncml])
 m4_define([baselines_path],[${abs_srcdir}/baselines])
 m4_define([full_data_path],[${abs_srcdir}/../data/ncml])
 
-AT_INIT([ncml autotest testsuite])
+AT_INIT([ncml autotest testsuite (bes/modules/ncml_module/tests)])
 
 dnl $1 == ncml_filename
 dnl $2 == {das | dds | dods | ddx }
@@ -248,6 +248,8 @@ AT_BANNER([---------------------------------------------------------------])
 m4_include([gateway_tests.at])
 AT_BANNER([---------------------------------------------------------------])
 m4_include([handler_tests.at])
+AT_BANNER([---------------------------------------------------------------])
+m4_include([dmrpp_tests.at])
 AT_BANNER([---------------------------------------------------------------])
 
 

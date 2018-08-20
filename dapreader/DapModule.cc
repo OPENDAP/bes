@@ -37,7 +37,9 @@ using std::endl;
 #include <BESCatalogDirectory.h>
 #include <BESCatalogList.h>
 
-#define DAP_CATALOG "catalog"
+#include "BESInternalError.h"
+
+// #define DAP_CATALOG "catalog"
 
 void DapModule::initialize(const string &modname)
 {
@@ -47,12 +49,15 @@ void DapModule::initialize(const string &modname)
 
     BESDapService::handle_dap_service(modname);
 
-    if (!BESCatalogList::TheCatalogList()->ref_catalog(DAP_CATALOG)) {
-        BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory(DAP_CATALOG));
+    string default_catalog_name = BESCatalogList::TheCatalogList()->default_catalog_name();
+    if (!BESCatalogList::TheCatalogList()->ref_catalog(default_catalog_name)) {
+        throw BESInternalError("Should never have to add the default catalog.", __FILE__, __LINE__);
+        // BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory(default_catalog_name));
     }
 
-    if (!BESContainerStorageList::TheList()->ref_persistence(DAP_CATALOG)) {
-        BESContainerStorageCatalog *csc = new BESContainerStorageCatalog(DAP_CATALOG);
+    // TODO this is probably bogus too. jhrg 7/23/18
+    if (!BESContainerStorageList::TheList()->ref_persistence(default_catalog_name)) {
+        BESContainerStorageCatalog *csc = new BESContainerStorageCatalog(default_catalog_name);
         BESContainerStorageList::TheList()->add_persistence(csc);
     }
 
@@ -65,14 +70,19 @@ void DapModule::terminate(const string &modname)
 {
     BESDEBUG(modname, "Cleaning Dap Reader Module " << modname << endl);
 
+#if 0
     BESRequestHandler *rh = 0;
 
     rh = BESRequestHandlerList::TheList()->remove_handler(modname);
     if (rh) delete rh;
+#endif
 
-    BESContainerStorageList::TheList()->deref_persistence(DAP_CATALOG);
+    delete BESRequestHandlerList::TheList()->remove_handler(modname);
 
-    BESCatalogList::TheCatalogList()->deref_catalog(DAP_CATALOG);
+    string default_catalog_name = BESCatalogList::TheCatalogList()->default_catalog_name();
+    BESContainerStorageList::TheList()->deref_persistence(default_catalog_name);
+
+    BESCatalogList::TheCatalogList()->deref_catalog(default_catalog_name);
 
     BESDEBUG(modname, "Done Cleaning Dap Reader Module " << modname << endl);
 }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <showItem>
+        <item lastModified="07-07-07T07:07:07" name="/thing" type="node"/>
+        <item isData="true" lastModified="08-08-08T08:08:08" name="/thing2" size="1024" type="leaf"/>
+    </showItem>
+</response>

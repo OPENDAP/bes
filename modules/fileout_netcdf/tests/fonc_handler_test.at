@@ -1,5 +1,7 @@
 # Process with autom4te to create an -*- Autotest -*- test suite.
 
+AT_INIT([bes/modules/fileout_netcdf/tests])
+
 m4_include([handler_tests_macros.m4])
 
 dnl These DDS and Data responses are here as a sanity check so that when/if a test 
@@ -107,4 +109,5 @@ AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/gridT.8.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/gridT.9.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/gridT.10.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/gridT.11.bescmd)
-
+dnl Test added for the fix for Hyrax-764. sk 08/17/18
+AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/gridNwm.bescmd)

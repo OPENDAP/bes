@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <showNode>
+        <node catalog="default" count="0" lastModified="07-07-07T07:07:07" name="/test"/>
+    </showNode>
+</response>

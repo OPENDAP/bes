@@ -50,7 +50,6 @@
 #include "BESNotFoundError.h"
 #include "BESRegex.h"
 #include "BESUtil.h"
-//#include "BESDapNames.h"
 #include "BESInfo.h"
 #include "BESContainerStorageList.h"
 #include "BESContainerStorage.h"
@@ -58,7 +57,10 @@
 
 using namespace std;
 
+#if 0
 map<string, BESCatalogUtils *> BESCatalogUtils::_instances;
+#endif
+
 
 /**
  * @brief Initialize the file system catalog utilities
@@ -75,15 +77,21 @@ map<string, BESCatalogUtils *> BESCatalogUtils::_instances;
  * BES.Catalog.N.TypeMatch
  * BES.Catalog.N.FollowSymLinks
  *
+ * @note The RootDirectory and TypeMatch keys must be present for any
+ * catalog N.
+ *
  * @param n The name of the catalog.
+ * @param strict True (the default) means that the RootDirectory and TypeMatch
+ * must be defined; false causes this constructor to supply placeholder values.
+ * This feature was added for tests that run without the bes.conf file.
  */
-BESCatalogUtils::BESCatalogUtils(const string &n) :
+BESCatalogUtils::BESCatalogUtils(const string &n, bool strict) :
     d_name(n), d_follow_syms(false)
 {
     string key = "BES.Catalog." + n + ".RootDirectory";
     bool found = false;
     TheBESKeys::TheKeys()->get_value(key, d_root_dir, found);
-    if (!found || d_root_dir == "") {
+    if (strict && (!found || d_root_dir == "")) {
         string s = key + " not defined in BES configuration file";
         throw BESSyntaxUserError(s, __FILE__, __LINE__);
     }
@@ -121,7 +129,7 @@ BESCatalogUtils::BESCatalogUtils(const string &n) :
     list<string> match_list;
     vals.clear();
     TheBESKeys::TheKeys()->get_values(key, vals, found);
-    if (!found || vals.size() == 0) {
+    if (strict && (!found || vals.size() == 0)) {
         string s = key + " not defined in key file";
         throw BESInternalError(s, __FILE__, __LINE__);
     }
@@ -244,11 +252,21 @@ bool BESCatalogUtils::exclude(const string &inQuestion) const
     return false;
 }
 
+/**
+ * @note Look at using get_handler_name() or is_data() instead
+ *
+ * @return The beginning of the handler match regex list.
+ */
 BESCatalogUtils::match_citer BESCatalogUtils::match_list_begin() const
 {
     return d_match_list.begin();
 }
 
+/**
+ * @note Look at using get_handler_name() or is_data() instead
+ *
+ * @return The end of the handler match regex list.
+ */
 BESCatalogUtils::match_citer BESCatalogUtils::match_list_end() const
 {
     return d_match_list.end();
@@ -436,6 +454,13 @@ BESCatalogUtils::is_data(const std::string &item) const
     return false;
 }
 
+/**
+ * Add info about a node to an BESCatalogEntry object. This method calls stat(2)
+ * and passes the result to bes_add_stat_into().
+ *
+ * @param entry The BESCatalogEntry object to modify
+ * @param fullnode
+ */
 void BESCatalogUtils::bes_add_stat_info(BESCatalogEntry *entry, const string &fullnode)
 {
     struct stat cbuf;
@@ -540,6 +565,7 @@ void BESCatalogUtils::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
+#if 0
 BESCatalogUtils *
 BESCatalogUtils::Utils(const string &cat_name)
 {
@@ -550,7 +576,10 @@ BESCatalogUtils::Utils(const string &cat_name)
     }
     return utils;
 }
+#endif
 
+
+#if 0
 // Added 12/24/12
 void BESCatalogUtils::delete_all_catalogs()
 {
@@ -560,4 +589,6 @@ void BESCatalogUtils::delete_all_catalogs()
         delete (*i++).second;
     }
 }
+
+#endif
 

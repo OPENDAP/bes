@@ -77,6 +77,7 @@ public:
 
     BESFileContainer(const BESFileContainer &copy_from);
 
+    // TODO Make this distructor call the release() method? jhrg 7/25/18
     virtual ~BESFileContainer()
     {
     }

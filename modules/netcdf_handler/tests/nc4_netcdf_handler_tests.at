@@ -1,5 +1,7 @@
 # Process with autom4te to create an -*- Autotest -*- test suite.
 
+AT_INIT([bes/modules/netcdf_handler/tests])
+
 m4_include([handler_tests_macros.m4])
 
 # These are tests for netcdf4 support
@@ -144,7 +146,7 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([nc/ref_tst_compound4.nc.dap.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([nc/ref_tst_compound5.nc.dap.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([nc/ref_tst_enum_data.nc.dap.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([nc/ref_tst_enum_data_1.nc.dap.bescmd])
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([nc/ref_tst_enum_data_2.nc.dap.bescmd])
+# AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([nc/ref_tst_enum_data_2.nc.dap.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([nc/ref_tst_opaque_data.nc.dap.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([nc/stringtest.nc.dap.bescmd])
 

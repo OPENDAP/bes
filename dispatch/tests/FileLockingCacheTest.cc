@@ -179,6 +179,7 @@ public:
 
 };
 
+const string version = "FileLockingCacheTest: 1.0";
 
 /**
  * Performs each of the tasks indicated by the command line parameters.
@@ -190,7 +191,7 @@ int main(int argc, char*argv[])
 {
     FileLockingCacheTest flc_test;
 
-    GetOpt getopt(argc, argv, "db:pr:x:hf:c:");
+    GetOpt getopt(argc, argv, "vdb:pr:x:hf:c:");
     int option_char;
     long int time;
     int retVal=0;
@@ -198,6 +199,10 @@ int main(int argc, char*argv[])
     string cache_dir = TEST_CACHE_DIR;
     while (!retVal && (option_char = getopt()) != EOF) {
         switch (option_char) {
+        case 'v':
+            cerr << version << endl;
+            exit(0);
+
         case 'd':
             debug = true;  // debug is a static global
             cerr << "Debug enabled." << endl;

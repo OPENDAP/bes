@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -38,30 +38,24 @@
 /** @brief response handler that returns nodes or leaves within the catalog
  * either at the root or at a specified node.
  *
- * A request 'show catalog [for &lt;node&gt;];' or
- * 'show leaves for &lt;node&gt;;
- * will be handled by this response handler. It returns nodes or leaves either
- * at the root level if no node is specified in the request, or the nodes or
- * leaves under the specified node.
+ * @deprecated Use the showNode command instead. jhrg 7/25/18
  *
  * @see BESResponseObject
  * @see BESContainer
  * @see BESTransmitter
  */
-class BESCatalogResponseHandler : public BESResponseHandler
-{
+class BESCatalogResponseHandler: public BESResponseHandler {
 private:
 public:
-				BESCatalogResponseHandler( const string &name );
-    virtual			~BESCatalogResponseHandler( void ) ;
+    BESCatalogResponseHandler(const string &name);
+    virtual ~BESCatalogResponseHandler(void);
 
-    virtual void		execute( BESDataHandlerInterface &dhi ) ;
-    virtual void		transmit( BESTransmitter *transmitter,
-                                          BESDataHandlerInterface &dhi ) ;
+    virtual void execute(BESDataHandlerInterface &dhi);
+    virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 
-    static BESResponseHandler *CatalogResponseBuilder( const string &name ) ;
+    static BESResponseHandler *CatalogResponseBuilder(const string &name);
 };
 
 #endif // I_BESCatalogResponseHandler_h

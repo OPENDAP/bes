@@ -1,0 +1,11 @@
+Dataset {
+    Grid {
+      Array:
+        UInt16 SRB1[new_time = 3][northing = 500][easting = 500];
+      Maps:
+        Float64 new_time[new_time = 3];
+        Float64 northing[northing = 500];
+        Float64 easting[easting = 500];
+    } SRB1;
+    Float64 new_time[new_time = 3];
+} h02v10_3Files_tif.ncml;

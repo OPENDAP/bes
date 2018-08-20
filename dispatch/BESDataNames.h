@@ -77,10 +77,12 @@
 #define STORE_NAME "store_name"
 #define SYMBOLIC_NAME "symbolic_name"
 #define REAL_NAME "real_name"
+
 // TODO Never used
 #if 0
 #define REAL_NAME_LIST "real_name_list"
 #endif
+
 #define CONTAINER_TYPE "type"
 
 #define DEF_NAME "def_name"
@@ -88,6 +90,9 @@
 
 #define CONTAINER "container"
 #define CATALOG "catalog"
+
+// FIXME Change this to "default" ASAP. jhrg 7/22/18
+#define DEFAULT_CATALOG "catalog"
 
 #define BES_KEY "besKey"
 

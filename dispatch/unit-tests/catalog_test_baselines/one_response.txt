@@ -10,7 +10,7 @@ BESCatalogEntry::dump - ()
     count: 1
         BESCatalogEntry::dump - ()
             name: /
-            catalog: default
+            catalog: cat_test
             size:
             modification date:
             modification time:
@@ -20,7 +20,7 @@ BESCatalogEntry::dump - ()
             count: 3
                 BESCatalogEntry::dump - ()
                     name: child_dir
-                    catalog: default
+                    catalog: cat_test
                     size:
                     modification date:
                     modification time:
@@ -30,7 +30,7 @@ BESCatalogEntry::dump - ()
                     count: 1
                         BESCatalogEntry::dump - ()
                             name: .blank
-                            catalog: default
+                            catalog: cat_test
                             size:
                             modification date:
                             modification time:
@@ -40,7 +40,7 @@ BESCatalogEntry::dump - ()
                             count: 0
                 BESCatalogEntry::dump - ()
                     name: file1
-                    catalog: default
+                    catalog: cat_test
                     size:
                     modification date:
                     modification time:
@@ -50,7 +50,7 @@ BESCatalogEntry::dump - ()
                     count: 0
                 BESCatalogEntry::dump - ()
                     name: file2
-                    catalog: default
+                    catalog: cat_test
                     size:
                     modification date:
                     modification time:

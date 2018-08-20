@@ -93,11 +93,12 @@ SRCS = BESInterface.cc \
 	BESUncompress3GZ.cc BESUncompress3BZ2.cc BESUncompress3Z.cc \
 	BESTokenizer.cc		\
 	BESFSDir.cc BESFSFile.cc \
+	BESCatalog.cc \
 	BESCatalogDirectory.cc \
 	BESCatalogUtils.cc \
 	BESCatalogList.cc \
 	BESCatalogEntry.cc \
-	BESCatalogResponseHandler.cc \
+	BESCatalogResponseHandler.cc ShowNodeResponseHandler.cc \
 	CatalogNode.cc CatalogItem.cc \
 	WhiteList.cc
 	
@@ -157,7 +158,7 @@ HDRS = BESInterface.h BESLog.h 			\
 	BESCatalogUtils.h \
 	BESCatalogList.h \
 	BESCatalogEntry.h \
-	BESCatalogResponseHandler.h \
+	BESCatalogResponseHandler.h ShowNodeResponseHandler.h \
 	CatalogNode.h CatalogItem.h \
 	WhiteList.h
 	

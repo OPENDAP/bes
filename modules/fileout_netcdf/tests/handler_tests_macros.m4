@@ -5,9 +5,6 @@
 # the places it's needed and hack. If substantial changes are needed, try to copy
 # them back into this file. jhrg 12/14/15 
 
-AT_INIT([bes.conf besstandalone])
-# AT_COPYRIGHT([])
-
 AT_TESTED([besstandalone])
 
 AT_ARG_OPTION_ARG([baselines],
@@ -147,6 +144,7 @@ dnl jhrg 6/3/16
  
 m4_define([REMOVE_DATE_TIME], [dnl
     sed 's@[[0-9]]\{4\}-[[0-9]]\{2\}-[[0-9]]\{2\} [[0-9]]\{2\}:[[0-9]]\{2\}:[[0-9]]\{2\}@removed date-time@g' < $1 > $1.sed
+    dnl ' Added the preceding quote to quiet the Eclipse syntax checker. jhrg 3.2.18
     mv $1.sed $1
 ])
 

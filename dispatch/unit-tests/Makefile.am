@@ -25,14 +25,14 @@ check_PROGRAMS = $(TESTS)
 
 noinst_HEADERS = test_config.h test_utils.h
 
-BUILT_SOURCES = test_config.h
+BUILT_SOURCES = test_config.h bes.conf
 
 if CPPUNIT
 # This determines what gets run by 'make check.'
-TESTS = constraintT defT keysT pfileT plistT pvolT replistT		\
-reqhandlerT reqlistT resplistT infoT agglistT debugT utilT regexT	\
-scrubT checkT servicesT fsT urlT BESCatalogListUnitTest containerT	\
-uncompressT cacheT WhiteListTest
+TESTS = constraintT defT keysT pfileT plistT pvolT replistT	\
+reqhandlerT reqlistT resplistT infoT agglistT debugT utilT regexT \
+scrubT checkT servicesT fsT urlT containerT	uncompressT cacheT \
+BESCatalogListTest WhiteListTest CatalogNodeTest CatalogItemTest
 
 # This is tool to look at CatalogEntry objects. jhrg 3.5.18
 # complete_catalog_lister
@@ -71,7 +71,7 @@ EXTRA_DIST = $(CACHE) catalog_test catalog_test_baselines bad_keys1.ini \
 
 DISTCLEANFILES = 
 
-CLEANFILES = *.log *.sum real* test_config.h
+CLEANFILES = *.log *.sum real* test_config.h bes.conf
 
 ############################################
 # This was generating a directory of "." so 
@@ -89,6 +89,14 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
 		-e "s%[@]abs_top_srcdir[@]%$${mod_abs_top_srcdir}%" \
 	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
+
+bes.conf: $(srcdir)/bes.conf.in Makefile
+	@mod_abs_srcdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	mod_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	mod_abs_builddir=`echo ${abs_builddir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
+		-e "s%[@]abs_top_srcdir[@]%$${mod_abs_top_srcdir}%" \
+	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > bes.conf
 
 clean-local:
 	cd $(srcdir)/cache && rm -f *_cache*
@@ -143,6 +151,12 @@ checkT_SOURCES = checkT.cc
 WhiteListTest_SOURCES = WhiteListTest.cc
 WhiteListTest_LDADD = ../WhiteList.o $(LDADD)
 
+CatalogNodeTest_SOURCES = test_utils.cc CatalogNodeTest.cc
+CatalogNodeTest_LDADD = ../CatalogNode.o $(LDADD)
+
+CatalogItemTest_SOURCES = test_utils.cc CatalogItemTest.cc
+CatalogItemTest_LDADD = ../CatalogItem.o $(LDADD)
+
 servicesT_SOURCES = servicesT.cc
 servicesT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
 
@@ -156,8 +170,8 @@ catT_LDADD = $(catT_OBJ) $(LDADD)
 endif
 
 # Added Unit test for singleton class BESCatalogList. ndp 5/6/2013
-BESCatalogListUnitTest_SOURCES  = BESCatalogListUnitTest.cc
-BESCatalogListUnitTest_CPPFLAGS = $(AM_CPPFLAGS) -Wno-deprecated
+BESCatalogListTest_SOURCES  = BESCatalogListTest.cc
+BESCatalogListTest_CPPFLAGS = $(AM_CPPFLAGS) -Wno-deprecated
 
 # complete_catalog_lister_SOURCES = complete_catalog_lister.cc
 # complete_catalog_lister_OBJ = ../BESCatalogResponseHandler.o

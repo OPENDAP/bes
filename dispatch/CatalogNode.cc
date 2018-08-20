@@ -23,12 +23,16 @@
 
 #include "config.h"
 
+#include <cassert>
+
 #include <string>
 #include <ostream>
+#include <sstream>
 
 #include "BESIndent.h"
 
 #include "BESCatalogList.h"
+#include "BESInfo.h"
 #include "CatalogNode.h"
 #include "CatalogItem.h"
 
@@ -53,6 +57,64 @@ CatalogNode::~CatalogNode()
     d_leaves.clear();
 #endif
 }
+
+/**
+ * @brief Encode this CatalogNode in an info object
+ *
+ * A CatalogNode is encoded as XML using the following grammar, where
+ * XML attributes in square brackets are optional.
+ * ~~~{.xml}
+ * <node name="path" catalog="catalog name" lastModified="date T time"
+ *       count="number of child nodes" >
+ * ~~~
+ * The <node> element may contain zero or more <leaf> elements.
+ *
+ * @param info Add information to this instance of BESInfo.
+ * @see CatalogItem::encode_item()
+ */
+void
+CatalogNode::encode_node(BESInfo *info)
+{
+    map<string, string> props;
+
+    props["name"] = get_name();
+    props["catalog"] = get_catalog_name();
+    props["lastModified"] = get_lmt();
+    ostringstream oss;
+    oss << get_item_count();
+    props["count"] = oss.str();
+
+    info->begin_tag("node", &props);
+
+    // Depth-first node traversal. Assume the nodes and leaves are sorted.
+    // Write the nodes first.
+    for (CatalogNode::item_citer i = nodes_begin(), e = nodes_end(); i != e; ++i) {
+        assert((*i)->get_type() == CatalogItem::node);
+        (*i)->encode_item(info);
+    }
+
+    // then leaves
+    for (CatalogNode::item_citer i = leaves_begin(), e = leaves_end(); i != e; ++i) {
+        assert((*i)->get_type() == CatalogItem::leaf);
+        (*i)->encode_item(info);
+    }
+
+    info->end_tag("node");
+
+#if 0
+    // TODO Should we support the serviceRef element? jhrg 7/22/18
+    list<string> services = entry->get_service_list();
+    if (services.size()) {
+        list<string>::const_iterator si = services.begin();
+        list<string>::const_iterator se = services.end();
+        for (; si != se; si++) {
+            info->add_tag("serviceRef", (*si));
+        }
+    }
+#endif
+
+}
+
 
 /**
  * Dump out information about this object

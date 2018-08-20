@@ -103,14 +103,14 @@ void ShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
     d_response_object = info;
 
     string container = dhi.data[CONTAINER];
+#if 0
     string catname;
     string defcatname = BESCatalogList::TheCatalogList()->default_catalog_name();
-    BESCatalog *defcat = BESCatalogList::TheCatalogList()->find_catalog(defcatname);
-    if (!defcat) {
-        string err = (string) "Not able to find the default catalog " + defcatname;
-        throw BESInternalError(err, __FILE__, __LINE__);
-    }
-    BESCatalogUtils *utils = BESCatalogUtils::Utils(defcat->get_catalog_name());
+#endif
+
+    BESCatalog *defcat = BESCatalogList::TheCatalogList()->default_catalog();
+    if (!defcat)
+        throw BESInternalError("Not able to find the default catalog.", __FILE__, __LINE__);
 
     // remove all of the leading slashes from the container name
     string::size_type notslash = container.find_first_not_of("/", 0);
@@ -118,8 +118,8 @@ void ShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
         container = container.substr(notslash);
     }
 
-    // see if there is a catalog name here. It's only a possible catalog
-    // name
+    // see if there is a catalog name here. It's only a possible catalog name
+    string catname;
     string::size_type slash = container.find_first_of("/", 0);
     if (slash != string::npos) {
         catname = container.substr(0, slash);
@@ -164,6 +164,8 @@ void ShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
     bool isFile, isDir, canRead;
     long long size, time;
 
+    BESCatalogUtils *utils = BESCatalogList::TheCatalogList()->default_catalog()->get_catalog_utils();
+
     eval_resource_path(container, utils->get_root_dir(), utils->follow_sym_links(), validPath, isFile, isDir, size,
         time, canRead, remainder);
 
@@ -177,7 +179,7 @@ void ShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
         // Get the catalog entry.
         BESCatalogEntry *entry = 0;
         //string coi = dhi.data[CATALOG];
-        entry = defcat->show_catalog(validPath, /*coi,*/ entry);
+        entry = defcat->show_catalog(validPath, /*coi,*/entry);
         if (!entry) {
             string err = (string) "Failed to find the validPath node " + validPath
                 + " this should not be possible. Some thing BAD is happening.";
@@ -221,9 +223,7 @@ void ShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
     // end the response object
     info->end_response();
 
-    BESDEBUG(SPI_DEBUG_KEY,
-        "ShowPathInfoResponseHandler::execute() - END ################################################################## END" << endl);
-
+    BESDEBUG(SPI_DEBUG_KEY, "ShowPathInfoResponseHandler::execute() - END" << endl);
 }
 
 /** @brief transmit the response object built by the execute command
