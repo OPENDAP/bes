@@ -27,7 +27,7 @@
 #include <string>
 #include <vector>
 
-#define USE_PTHREADS 0
+#define USE_PTHREADS 1
 
 namespace dmrpp {
 

@@ -368,11 +368,12 @@ void Chunk::add_tracking_query_param()
 /**
  * @brief function version of Chunk::inflate_chunk for use with pthreads
  *
- * @param c The Chunk object
- * @param deflate
- * @param shuffle
- * @param chunk_size
- * @param elem_width
+ * @note Only use this with child threads
+ *
+ * @param arg_list Pointer to an inflate_chunk_args instance. That struct contains
+ * The Chunk object, booleans that describe if the chunk is compressed or shuffled,
+ * the expected chunk size and the element size (chunk size is in elements, not bytes).
+ * @see Chunk::inflate_chunk()
  */
 void *inflate_chunk(void *arg_list /*Chunk *chunk, bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width*/)
 {
@@ -391,9 +392,11 @@ void *inflate_chunk(void *arg_list /*Chunk *chunk, bool deflate, bool shuffle, u
 
     if (args->chunk->get_is_inflated()) {
 #if USE_PTHREADS
-       pthread_exit(NULL);
+        pthread_exit(args);
 #else
-       return NULL;
+        // This should only be called using pthread_create(). This is here because I
+        // tested this code in the main thread. jhrg 8/19/18
+        return NULL;
 #endif
     }
 
@@ -428,9 +431,9 @@ void *inflate_chunk(void *arg_list /*Chunk *chunk, bool deflate, bool shuffle, u
     args->chunk->set_is_inflated(true);
 
 #if USE_PTHREADS
-       pthread_exit(NULL);
+    pthread_exit(args);
 #else
-       return NULL;
+    return NULL;
 #endif
 }
 

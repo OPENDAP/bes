@@ -897,58 +897,58 @@ void DmrppArray::read_chunks_unconstrained()
 
             mhandle->read_data(); // read 'max_handles' chunks
 
+            if (is_deflate_compression() || is_shuffle_compression()) {
 #if USE_PTHREADS
-            pthread_t thread[chunks_to_insert.size()];
+                // Given that parallel operations are selected, make chunks_to_insert.size() - 1
+                // threads (-1 because the main thread will decompress a chunk too). jhrg 8/19/18
+                pthread_t thread[chunks_to_insert.size() - 1];
+                for (unsigned int i = 0; i < chunks_to_insert.size() - 1; ++i) {
+                    Chunk *chunk = chunks_to_insert.at(i);
 
-            for (unsigned int i = 0; i < chunks_to_insert.size() - 2; ++i) {
-                Chunk *chunk = chunks_to_insert.at(i);
-
-                inflate_chunk_args *args = new inflate_chunk_args(chunk, is_deflate_compression(), is_shuffle_compression(),
-                    get_chunk_size_in_elements(), var()->width());
-                int status = pthread_create(&thread[i], NULL, dmrpp::inflate_chunk, (void*)args);
-                if (status != 0) {
-                    ostringstream oss("Could not start inflate_chunk thread for chunk ");
-                    oss << i << ": " << strerror(status);
-                    throw BESInternalError(oss.str(), __FILE__, __LINE__);
+                    inflate_chunk_args *args = new inflate_chunk_args(chunk, is_deflate_compression(),
+                        is_shuffle_compression(), get_chunk_size_in_elements(), var()->width());
+                    int status = pthread_create(&thread[i], NULL, dmrpp::inflate_chunk, (void*) args);
+                    if (status != 0) {
+                        ostringstream oss("Could not start inflate_chunk thread for chunk ");
+                        oss << i << ": " << strerror(status);
+                        throw BESInternalError(oss.str(), __FILE__, __LINE__);
+                    }
                 }
-            }
 
-            // The main thread does some work too.
-
-            Chunk *chunk = chunks_to_insert.at(chunks_to_insert.size() - 1);
-            inflate_chunk_args *args = new inflate_chunk_args(chunk, is_deflate_compression(), is_shuffle_compression(),
-                get_chunk_size_in_elements(), var()->width());
-            inflate_chunk(args);
-
-            for (unsigned int i = 0; i < chunks_to_insert.size() - 2; ++i) {
-                int status = pthread_join(thread[i], NULL);
-                if (status != 0) {
-                    ostringstream oss("Could not join inflate_chunk thread for chunk ");
-                    oss << i << ": " << strerror(status);
-                    throw BESInternalError(oss.str(), __FILE__, __LINE__);
-                }
-            }
-#endif
-
-
-            while (chunks_to_insert.size() > 0) {
-                Chunk *chunk = chunks_to_insert.back();//front();
-                //chunks_to_insert.pop();
-                chunks_to_insert.pop_back();
-
-#if 0
+                // The main thread does some work too. We don't want to call the function because
+                // it (might) call code meant only for a child thread (e.g. pthread_exit()) and
+                // that will confuse (or exit) the main thread. Use the C++ method that does the
+                // same thing. jhrg 8/19/18
+                Chunk *chunk = chunks_to_insert.at(chunks_to_insert.size() - 1);
                 chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(),
                     var()->width());
+
+                // Now join the child threads.
+                for (unsigned int i = 0; i < chunks_to_insert.size() - 2; ++i) {
+                    inflate_chunk_args *args;
+                    int status = pthread_join(thread[i], (void**)&args);
+                    if (status != 0) {
+                        ostringstream oss("Could not join inflate_chunk thread for chunk ");
+                        oss << i << ": " << strerror(status);
+                        throw BESInternalError(oss.str(), __FILE__, __LINE__);
+                    }
+                    else {
+                        delete args;
+                    }
+                }
 #endif
+            }
+
+            while (chunks_to_insert.size() > 0) {
+                Chunk *chunk = chunks_to_insert.back();
+                chunks_to_insert.pop_back();
 
 #if !USE_PTHREADS
-                inflate_chunk_args *args = new inflate_chunk_args(chunk, is_deflate_compression(), is_shuffle_compression(),
-                    get_chunk_size_in_elements(), var()->width());
-
-                inflate_chunk(args);
+                if (is_deflate_compression() || is_shuffle_compression()) {
+                    chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(),
+                        var()->width());
+                }
 #endif
-
-                BESDEBUG("dmrpp:4", "Inserting: " << chunk->to_string() << endl);
 
                 insert_chunk_unconstrained(chunk, 0 /*dimension*/, 0/*array offset*/, array_shape, 0/*chunk offset*/, chunk_shape, chunk->get_position_in_array());
             }
