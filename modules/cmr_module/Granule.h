@@ -42,19 +42,30 @@ namespace cmr {
 
 class Granule {
 private:
-    const rapidjson::Value& d_granule_obj;
-    const rapidjson::Value& get_links_array();
+    const rapidjson::Value& get_links_array(const rapidjson::Value& go);
+
+    std::string d_name;
+    std::string d_data_access_url;
+    std::string d_metadata_access_url;
+    std::string d_size_str;
+    std::string d_last_modified_time;
+
+    void setName(const rapidjson::Value& granule_obj);
+    void setDataAccessUrl(const rapidjson::Value& granule_obj);
+    void setMetadataAccessUrl(const rapidjson::Value& granule_obj);
+    void setSize(const rapidjson::Value& granule_obj);
+    void setLastModifiedStr(const rapidjson::Value& granule_obj);
 
 public:
-    Granule(const rapidjson::Value& granule_obj): d_granule_obj(granule_obj)  {}
+    Granule(const rapidjson::Value& granule_obj);
 
-    std::string getName(){ return getStringProperty("title"); }
-    std::string getStringProperty(const std::string &id);
-    std::string getDataAccessUrl();
-    std::string getMetadataAccessUrl();
-    std::string getSizeStr();
-    size_t getSize();
-    std::string getLastModifiedStr();
+    std::string getName(){ return d_name; }
+    std::string getDataAccessUrl() { return d_data_access_url; }
+    std::string getMetadataAccessUrl(){ return d_metadata_access_url; }
+    std::string getSizeStr(){ return d_size_str; }
+    std::string getLastModifiedStr() { return d_last_modified_time; }
+    size_t getSize(){ return atol(getSizeStr().c_str()); }
+
     bes::CatalogItem *getCatalogItem(BESCatalogUtils *d_catalog_utils);
 };
 

@@ -44,7 +44,6 @@ using namespace std;
 
 
 namespace cmr {
-
 string granule_LINKS_REL_DATA_ACCES = "http://esipfed.org/ns/fedsearch/1.1/data#";
 string granule_LINKS_REL_METADATA_ACCESS = "http://esipfed.org/ns/fedsearch/1.1/data#";
 string granule_LINKS = "links";
@@ -53,40 +52,41 @@ string granule_LINKS_HREFLANG = "hreflang";
 string granule_LINKS_HREF = "href";
 string granule_SIZE = "granule_size";
 string granule_LMT = "updated";
+string granule_NAME = "title";
 
+Granule::Granule(const rapidjson::Value& granule_obj){
+    setName(granule_obj);
+    setSize(granule_obj);
+    setDataAccessUrl(granule_obj);
+    setMetadataAccessUrl(granule_obj);
+    setLastModifiedStr(granule_obj);
+}
 
-std::string Granule::getStringProperty(const std::string &name){
+void Granule::setName(const rapidjson::Value& go){
     rjson_utils rju;
-    return rju.getStringValue(d_granule_obj,name);
+    this->d_name = rju.getStringValue(go, granule_NAME);
 }
 
+void Granule::setSize(const rapidjson::Value& go){
+    rjson_utils rju;
+    this->d_size_str = rju.getStringValue(go, granule_SIZE);
+}
 
 /**
- * Returns th size of the Granule as a string.
+ * Sets the last modified time of the granule as a string.
  */
-std::string Granule::getSizeStr(){
-    return getStringProperty(granule_SIZE);
-}
-
-size_t Granule::getSize(){
-    return atol(getSizeStr().c_str());
-}
-
-
-/**
- * Returns the last modified time of the granule as a string.
- */
-std::string Granule::getLastModifiedStr(){
-    return getStringProperty(granule_LMT);
+void Granule::setLastModifiedStr(const rapidjson::Value& go){
+    rjson_utils rju;
+    this->d_last_modified_time = rju.getStringValue(go, granule_LMT);
 }
 
 /**
  * Internal method that retrieves the "links" array from the Granule's object.
  */
-const rapidjson::Value& Granule::get_links_array(){
+const rapidjson::Value& Granule::get_links_array(const rapidjson::Value& go){
 
-    rapidjson::Value::ConstMemberIterator itr = d_granule_obj.FindMember(granule_LINKS.c_str());
-    bool result = itr != d_granule_obj.MemberEnd();
+    rapidjson::Value::ConstMemberIterator itr = go.FindMember(granule_LINKS.c_str());
+    bool result = itr != go.MemberEnd();
     string msg = prolog + (result?"Located":"FAILED to locate") + " the value '"+granule_LINKS+"' in object.";
     BESDEBUG(MODULE, msg << endl);
     if(!result){
@@ -100,36 +100,36 @@ const rapidjson::Value& Granule::get_links_array(){
 }
 
 /**
- * Returns the data access URL for the dataset granule.
+ * Sets the data access URL for the dataset granule.
  */
-std::string Granule::getDataAccessUrl(){
+void Granule::setDataAccessUrl(const rapidjson::Value& go){
     rjson_utils rju;
 
-    const rapidjson::Value& links = get_links_array();
+    const rapidjson::Value& links = get_links_array(go);
     for (rapidjson::SizeType i = 0; i < links.Size(); i++) { // Uses SizeType instead of size_t
         const rapidjson::Value& link = links[i];
         string rel = rju.getStringValue(link,granule_LINKS_REL);
         if(rel == granule_LINKS_REL_DATA_ACCES){
-            string data_access_url = rju.getStringValue(link,granule_LINKS_HREF);
-            return data_access_url;
+            this->d_data_access_url = rju.getStringValue(link,granule_LINKS_HREF);
+            return;
         }
     }
     throw CmrError("ERROR: Failed to locate granule data access link ("+granule_LINKS_REL_DATA_ACCES+"). :(",__FILE__,__LINE__);
 }
 
 /**
- * Returns the metadata access URL for the dataset granule.
+ * Sets the metadata access URL for the dataset granule.
  */
-std::string Granule::getMetadataAccessUrl(){
+void Granule::setMetadataAccessUrl(const rapidjson::Value& go){
     rjson_utils rju;
 
-    const rapidjson::Value& links = get_links_array();
+    const rapidjson::Value& links = get_links_array(go);
     for (rapidjson::SizeType i = 0; i < links.Size(); i++) { // Uses SizeType instead of size_t
         const rapidjson::Value& link = links[i];
         string rel = rju.getStringValue(link,granule_LINKS_REL);
         if(rel == granule_LINKS_REL_METADATA_ACCESS){
-            string data_access_url = rju.getStringValue(link,granule_LINKS_HREF);
-            return data_access_url;
+            this->d_metadata_access_url = rju.getStringValue(link,granule_LINKS_HREF);
+            return;
         }
     }
     throw CmrError("ERROR: Failed to locate granule metadata access link ("+granule_LINKS_REL_METADATA_ACCESS+"). :(",__FILE__,__LINE__);
@@ -140,7 +140,7 @@ bes::CatalogItem *Granule::getCatalogItem(BESCatalogUtils *d_catalog_utils){
     bes::CatalogItem *item = new bes::CatalogItem();
     item->set_type(bes::CatalogItem::leaf);
     item->set_name(getName());
-    item->set_lmt(getStringProperty("updated"));
+    item->set_lmt(getLastModifiedStr());
     item->set_size(getSize());
     item->set_is_data(d_catalog_utils->is_data(item->get_name()));
     return item;

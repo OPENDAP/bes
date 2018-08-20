@@ -390,7 +390,7 @@ CmrUtils::getTemporalFacetGranule(const std::string granule_path)
     }
     CmrApi cmrApi;
 
-    return cmrApi.get_granule( collection, year, month, day, granule_id);;
+    return cmrApi.get_granule( collection, year, month, day, granule_id);
 }
 
 

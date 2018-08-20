@@ -524,7 +524,7 @@ CmrApi::get_granules(string collection_name, string r_year, string r_month, stri
     const rapidjson::Value& entries = get_entries(cmr_doc);
     for (rapidjson::SizeType i = 0; i < entries.Size(); i++) { // Uses SizeType instead of size_t
         const rapidjson::Value& granule_obj = entries[i];
-        // rapidjson::Value grnl(granule_obj,cmr_doc.GetAllocator());
+        // rapidjson::Value grnl(granule_obj, cmr_doc.GetAllocator());
         Granule *g = new Granule(granule_obj);
         granules.push_back(g);
     }
@@ -555,11 +555,15 @@ cmr::Granule* CmrApi::get_granule(string collection_name, string r_year, string 
 
     get_granules(collection_name, r_year, r_month, r_day, granules);
     for(size_t i=0; i<granules.size() ;i++){
-        if(granules[i]->getName() == granule_id){
+        string id = granules[i]->getName();
+        BESDEBUG(MODULE, prolog << "Comparing granule id: " << granule_id << " to collection member id: " << id << endl);
+        if( id == granule_id){
             result = granules[i];
         }
-        delete granules[i];
-        granules[i] = 0;
+        else {
+            delete granules[i];
+            granules[i] = 0;
+        }
     }
     return result;
 }
