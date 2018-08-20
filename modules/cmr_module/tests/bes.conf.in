@@ -65,15 +65,27 @@ BES.ProcessManagerMethod=multiple
 
 BES.DefaultResponseMethod=POST
 
+#-----------------------------------------------------------------------#
+#                                                                       #
+# Data Handler Specific key/value parameters                            #
+#                                                                       #
+#-----------------------------------------------------------------------#
 
-
-#################################################################################
 #
 # CMR Configuration 
 #
 
 # Need to whitelist CMR server so we can talk to it.
-Gateway.Whitelist+=https://cmr.earthdata.nasa.gov
+Gateway.Whitelist=http://localhost
+Gateway.Whitelist+=http://cloudydap.opendap.org/opendap
+Gateway.Whitelist+=http://cloudydap.opendap.org//opendap
+Gateway.Whitelist+=http://thredds.ucar.edu/thredds
+Gateway.Whitelist+=http://thredds.ucar.edu//thredds
+Gateway.Whitelist+=http://s3.amazonaws.com/somewhereovertherainbow
+Gateway.Whitelist+=https://s3.amazonaws.com/somewhereovertherainbow
+Gateway.Whitelist+=https://s3.amazonaws.com/cloudydap
+
+Gateway.Whitelist += https://cmr.earthdata.nasa.gov
 
 BES.Catalog.CMR.RootDirectory=/private/tmp
 # BES.Catalog.CMR.FollowSymLinks=
@@ -96,11 +108,4 @@ CMR.Facets=temporal
 CMR.Facets+=dental_floss
 
 
-
-
-#-----------------------------------------------------------------------#
-#                                                                       #
-# Data Handler Specific key/value parameters                            #
-#                                                                       #
-#-----------------------------------------------------------------------#
 

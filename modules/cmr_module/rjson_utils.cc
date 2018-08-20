@@ -84,16 +84,14 @@ rjson_utils::getStringValue(const rapidjson::Value& object, const string &name){
 
     rapidjson::Value::ConstMemberIterator itr = object.FindMember(name.c_str());
     bool result  = itr != object.MemberEnd();
-    string msg = prolog + (result?"Located":"FAILED to locate") + " the value '"+name+"' in object.";
-    BESDEBUG(MODULE, msg << endl);
+
+    BESDEBUG(MODULE, prolog + (result?"Located":"FAILED to locate") + " the value '"+name+"' in object." << endl);
     if(!result){
         return "";
     }
-
     const rapidjson::Value& myValue = itr->value;
     result = myValue.IsString();
-    msg = prolog + "The value of '"+ name +"' is " + (result?myValue.GetString():" NOT a String type.");
-    BESDEBUG(MODULE, msg << endl);
+    BESDEBUG(MODULE, prolog + "The value of '"+ name +"' is " + (result?myValue.GetString():" NOT a String type.") << endl);
     if(!result){
         return "";
     }

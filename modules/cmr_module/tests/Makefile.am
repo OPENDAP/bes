@@ -41,7 +41,7 @@ AUTOM4TE = autom4te
 TESTSUITE = $(srcdir)/CmrCatalogTest
 TESTSUITEFLAGS =
 
-check-local: $(TESTSUITE) atconfig atlocal 
+check-local: $(TESTSUITE) atconfig atlocal bes.conf
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
 installcheck-local: $(TESTSUITE) atconfig atlocal 
