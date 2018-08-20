@@ -26,15 +26,17 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 /////////////////////////////////////////////////////////////////////////////
-#include "VariableElement.h"
+#include <ctype.h>
+#include <memory>
+#include <sstream>
 
 #include <Array.h>
 #include <BaseType.h>
 #include <Structure.h>
+#include <Grid.h>
 #include <dods-limits.h>
-#include <ctype.h>
-#include "DimensionElement.h"
-#include <memory>
+
+
 #include "MyBaseTypeFactory.h"
 #include "NCMLBaseArray.h"
 #include "NCMLDebug.h"
@@ -42,9 +44,10 @@
 #include "NCMLUtil.h"
 #include "NetcdfElement.h"
 #include "RenamedArrayWrapper.h"
-#include <sstream>
-
 #include "AggregationElement.h"
+#include "DimensionElement.h"
+
+#include "VariableElement.h"
 
 using namespace libdap;
 using std::vector;
@@ -314,9 +317,112 @@ void VariableElement::processRenameVariable(NCMLParser& p)
 
     // If we are doing data, we need to handle some variables (Array)
     // specially since they might refer to underlying data by the new name
+
+    // After extensive work, we've come to this version of the code. It reads
+    // every renamed variable before renaming it and uses the same process to
+    // rename the variable for both data and metadata responses. Previous versions
+    // did something different (and wrong) for 'p.parsingDataRequest' and I
+    // discovered that the baselines were not correct for several tests. This
+    // version produces responses I think are correct.
+    //
+    // The old version of this code is preserved below in #if 0 .. #endif
+    //
+    // jhrg 8/13/18
+
+    if (p.parsingDataRequest()) {
+        // Read the variable that's about to be renamed if this is a data request.
+        // jhrg 8/13/18
+
+        bool send_p_was_set = false;
+        if (!pOrgVar->send_p()) {
+            // need set send flag to get read() to read in data
+            // See https://opendap.atlassian.net/browse/HYRAX-539 and
+            // https://opendap.atlassian.net/browse/HYRAX-802
+            pOrgVar->set_send_p(true);
+            // record the fact so we can back it out
+            send_p_was_set = true;
+        }
+
+        pOrgVar->read();
+
+        if (send_p_was_set) {
+            // Trick: Reset/clear send_p so that when a CE is applied the libdap CE
+            // parser does not think this variable has already had a CE applied. If
+            // it sees send_p as true, it will think the Array was already projected
+            // (and as the full size of the array). Any subsequent attempt to re-project
+            // it to a different size will fail. Similarly, is pOrgVar is a structure,
+            // the call to set_send_p(true) will cause all fields to be sent, regardless
+            // of any Structure field projection. jhrg 8/2/18
+            pOrgVar->set_send_p(false);
+        }
+    }
+
+    auto_ptr<BaseType> pCopy = auto_ptr<BaseType>(pOrgVar->ptr_duplicate());
+    pCopy->set_name(_name);
+    if (pCopy->type() == libdap::dods_grid_c) dynamic_cast<libdap::Grid*>(pCopy.get())->array_var()->set_name(_name);
+
+    // Nuke the old
+    p.deleteVariableAtCurrentScope(pOrgVar->name());
+
+    // Add renamed
+    NetcdfElement* pCdf = dynamic_cast<NetcdfElement*>(p.getCurrentDataset());
+    if (pCdf->getChildAggregation()) {
+        AggregationElement* pAgg = pCdf->getChildAggregation();
+        pAgg->addAggregationVariable(_name);
+    }
+    // Add the new, which copies under the hood.  auto_ptr will clean pCopy.
+    p.addCopyOfVariableAtCurrentScope(*pCopy);
+
+#if 0
+        auto_ptr<BaseType> pCopy = auto_ptr<BaseType>(pOrgVar->ptr_duplicate());
+        pCopy->set_name(_name);
+        if (pCopy->type() == libdap::dods_grid_c) dynamic_cast<libdap::Grid*>(pCopy.get())->array_var()->set_name(_name);
+
+        // Nuke the old
+        p.deleteVariableAtCurrentScope(pOrgVar->name());
+
+        // Add renamed
+        NetcdfElement* pCdf = dynamic_cast<NetcdfElement*>(p.getCurrentDataset());
+        if (pCdf->getChildAggregation()) {
+            AggregationElement* pAgg = pCdf->getChildAggregation();
+            pAgg->addAggregationVariable(_name);
+        }
+        // Add the new, which copies under the hood.  auto_ptr will clean pCopy.
+        p.addCopyOfVariableAtCurrentScope(*pCopy);
+    }
+    else {
+        // The above branch will reorder the output for the DataDDS case,
+        // so we need to remove and read even if we don't convert to preserve order!
+
+        // Need to copy unfortunately, since delete will kill storage...
+        auto_ptr<BaseType> pCopy = auto_ptr<BaseType>(pOrgVar->ptr_duplicate());
+
+        pCopy->set_name(_name);
+        if (pCopy->type() == libdap::dods_grid_c)
+        dynamic_cast<libdap::Grid*>(pCopy.get())->array_var()->set_name(_name);
+
+        // Nuke the old
+        p.deleteVariableAtCurrentScope(pOrgVar->name());
+
+        // Add renamed
+        NetcdfElement* pCdf = dynamic_cast<NetcdfElement*>(p.getCurrentDataset());
+        if (pCdf->getChildAggregation()) {
+            AggregationElement* pAgg = pCdf->getChildAggregation();
+            pAgg->addAggregationVariable(_name);
+        }
+        // Add the new, which copies under the hood.  auto_ptr will clean pCopy.
+        p.addCopyOfVariableAtCurrentScope(*pCopy);
+    }
+#endif
+
+
+#if 0
+    // This is an older version of the code that seemed to work, but which produced
+    // broken data responses. jhrg 8/13/18
+
     if (p.parsingDataRequest()) {
         // If not an Array, force it to read or we won't find the new name in the file for HDF at least...
-        if (pOrgVar->type() != libdap::dods_array_c /* dynamic_cast<Array*>(pOrgVar)*/ ) {
+        if (pOrgVar->type() != libdap::dods_array_c /* dynamic_cast<Array*>(pOrgVar)*/) {
 
             bool send_p_was_set = false;
             if (!pOrgVar->send_p()) {
@@ -341,12 +447,13 @@ void VariableElement::processRenameVariable(NCMLParser& p)
                 pOrgVar->set_send_p(false);
             }
         }
+
         // If the variable is an Array, we need to wrap it in a RenamedArrayWrapper
         // so that it finds it data correctly.
         // This will remove the old one and replace our wrapper under the new _name if it's an Array subclass!
         pOrgVar = replaceArrayIfNeeded(p, pOrgVar, _name);
-
         // Rename variable
+
         pOrgVar->set_name(_name);
         // This code was renaming in all cases, but I think we only should do this for
         // Grids. Vector::set_name() was fixed a long time ago (see comment in the
@@ -355,8 +462,12 @@ void VariableElement::processRenameVariable(NCMLParser& p)
         // problems with many NetCDF clients - that the Array of a Grid _should_ have
         // the same name as the Grid itself. Not a DAP2/DAP4 requirement, but a CF req.
         // jhrg 8/1/18
-        if (pOrgVar->type() == libdap::dods_grid_c)
-            pOrgVar->var(_orgName)->set_name(_name);
+        if (pOrgVar->type() == libdap::dods_grid_c) dynamic_cast<libdap::Grid*>(pOrgVar)->array_var()->set_name(_name);
+
+        // If the variable is an Array, we need to wrap it in a RenamedArrayWrapper
+        // so that it finds it data correctly.
+        // This will remove the old one and replace our wrapper under the new _name if it's an Array subclass!
+        pOrgVar = replaceArrayIfNeeded(p, pOrgVar, _name);
     }
     else {
         // The above branch will reorder the output for the DataDDS case,
@@ -365,14 +476,19 @@ void VariableElement::processRenameVariable(NCMLParser& p)
         // BaseType::set_name fails for Vector (Array etc) subtypes since it doesn't
         // set the template's BaseType var's name as well.  This function does that until
         // a fix in libdap lets us call pOrgName->set_name(_name) directly.
-        // pOrgVar->set_name(_name); // TODO  switch to this call when bug is fixed.
-        //NCMLUtil::setVariableNameProperly(pOrgVar, _name);
 
-        // FIXME This (Vector::set_name()) was fixed long ago. jhrg 7/10/18
+        // pOrgVar->set_name(_name); //  switch to this call when bug is fixed.
+        // NCMLUtil::setVariableNameProperly(pOrgVar, _name);
+
+        // This (Vector::set_name()) was fixed long ago. jhrg 7/10/18
 
         // Need to copy unfortunately, since delete will kill storage...
         auto_ptr<BaseType> pCopy = auto_ptr<BaseType>(pOrgVar->ptr_duplicate());
+
         NCMLUtil::setVariableNameProperly(pCopy.get(), _name);
+
+        pCopy->set_name(_name);
+        if (pCopy->type() == libdap::dods_grid_c) dynamic_cast<libdap::Grid*>(pCopy.get())->array_var()->set_name(_name);
 
         // Nuke the old
         p.deleteVariableAtCurrentScope(pOrgVar->name());
@@ -386,6 +502,8 @@ void VariableElement::processRenameVariable(NCMLParser& p)
         // Add the new, which copies under the hood.  auto_ptr will clean pCopy.
         p.addCopyOfVariableAtCurrentScope(*pCopy);
     }
+#endif
+
 
     // Make sure we find it under the new name
     BaseType* pRenamedVar = p.getVariableInCurrentVariableContainer(_name);
@@ -560,7 +678,12 @@ VariableElement::replaceArrayIfNeeded(NCMLParser& p, libdap::BaseType* pOrgVar, 
     p.deleteVariableAtCurrentScope(pOrgArray->name());
 
     // Make sure the new name is set.
+#if 0
     NCMLUtil::setVariableNameProperly(pNewArray.get(), name);
+#endif
+    pNewArray->set_name(name);
+    if (pNewArray->type() == libdap::dods_grid_c)
+         dynamic_cast<libdap::Grid*>(pNewArray.get())->array_var()->set_name(name);
 
     // Add the new one.  Unfortunately this copies it under the libdap hood. ARGH!
     // So just use the get() and let the auto_ptr kill our copy.

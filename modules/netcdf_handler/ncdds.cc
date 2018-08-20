@@ -615,7 +615,7 @@ void nc_read_dataset_variables(DDS &dds_table, const string &filename)
 
     errstat = nc_open(filename.c_str(), NC_NOWRITE, &ncid);
     if (errstat != NC_NOERR)
-        throw Error(errstat, "Could not open " + path_to_filename(filename) + ".");
+        throw Error(errstat, "Could not open " + filename + ".");
 
     // how many variables?
     errstat = nc_inq_nvars(ncid, &nvars);
