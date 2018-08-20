@@ -82,21 +82,32 @@ rjson_utils::getJsonDoc(const string &url, rapidjson::Document &doc){
 std::string
 rjson_utils::getStringValue(const rapidjson::Value& object, const string &name){
 
+#if 0
     string empty_string;
+#endif
+
     rapidjson::Value::ConstMemberIterator itr = object.FindMember(name.c_str());
     bool result  = itr != object.MemberEnd();
+
+#if 0
     string msg = prolog + (result?"Located":"FAILED to locate") + " the value '"+name+"' in object.";
-    BESDEBUG(MODULE, msg << endl);
+#endif
+
+    BESDEBUG(MODULE, prolog + (result?"Located":"FAILED to locate") + " the value '"+name+"' in object." << endl);
     if(!result){
-        return empty_string;
+        return "";
     }
 
     const rapidjson::Value& myValue = itr->value;
     result = myValue.IsString();
+
+#if 0
     msg = prolog + "The value '"+ name +"' is" + (result?"":" NOT") + " a String type.";
-    BESDEBUG(MODULE, msg << endl);
+#endif
+
+    BESDEBUG(MODULE, prolog + "The value '"+ name +"' is" + (result?"":" NOT") + " a String type." << endl);
     if(!result){
-        return empty_string;
+        return "";
     }
 
     return myValue.GetString();
