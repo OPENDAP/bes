@@ -41,7 +41,7 @@ namespace dmrpp {
 class Chunk;
 
 /**
- * RAII
+ * RAII. Lock access to the get_easy_handle() and release_handle() methods.
  */
 class Lock {
 private:
@@ -86,15 +86,6 @@ class dmrpp_easy_handle {
 public:
     dmrpp_easy_handle();
     ~dmrpp_easy_handle();
-
-#if 0
-    bool in_use() const {return d_in_use;}
-    void set_in_use(bool state)
-    {
-        d_in_use = state;
-    }
-#endif
-
 
     void read_data();
 };

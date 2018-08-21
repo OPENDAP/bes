@@ -117,13 +117,15 @@ public:
 
 /// Chunk data insert args for use with pthreads
 struct one_chunk_unconstrained_args {
+    int *fds;             // pipe back to parent
+    unsigned char tid;      // thread id as a byte
     Chunk *chunk;
     DmrppArray *array;
     const vector<unsigned int> &array_shape;
     const vector<unsigned int> &chunk_shape;
 
-    one_chunk_unconstrained_args(Chunk *c, DmrppArray *a, const vector<unsigned int> &a_s, const vector<unsigned int> &c_s)
-        : chunk(c), array(a), array_shape(a_s), chunk_shape(c_s) {}
+    one_chunk_unconstrained_args(int *pipe, unsigned char id, Chunk *c, DmrppArray *a, const vector<unsigned int> &a_s, const vector<unsigned int> &c_s)
+        : fds(pipe), tid(id), chunk(c), array(a), array_shape(a_s), chunk_shape(c_s) {}
 };
 
 } // namespace dmrpp

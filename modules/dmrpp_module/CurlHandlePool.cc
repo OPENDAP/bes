@@ -216,6 +216,12 @@ void dmrpp_multi_handle::read_data()
 /**
  * Get a CURL easy handle to transfer data from \arg url into the given \arg chunk.
  *
+ * @note This method and release_handle() use the same lock to prevent the handle's
+ * chunk pointer from being cleared by another thread after a thread running this
+ * method has set it. However, there's no protection against calling this when no
+ * more handles are available. If that happens a thread calling release_handle()
+ * will block until this code returns (and this code will return NULL).
+ *
  * @param chunk Use this Chunk to set a libcurl easy handle so that it
  * will fetch the Chunk's data.
  * @return A CURL easy handle configured to transfer data, or null if
@@ -278,9 +284,10 @@ void CurlHandlePool::release_handle(dmrpp_easy_handle *handle)
 {
     // In get_easy_handle, it's possible that d_in_use could be false and d_chunk
     // could not be set to 0 (because a separate thread could be running these
-    // methods). In that case, the thread runing get_easy_handle could set d_chunk,
-    // and then this thread could clear it. Unlikely, but an optimizing compiler is
-    // free to reorder statements so long as they don't alter the function's behavior.
+    // methods). In that case, the thread running get_easy_handle could set d_chunk,
+    // and then this thread could clear it (... unlikely, but an optimizing compiler is
+    // free to reorder statements so long as they don't alter the function's behavior).
+    // Timing tests indicate this lock does not cost anything that can be measured.
     // jhrg 8/21/18
     Lock lock(d_get_easy_handle_mutex);
 
