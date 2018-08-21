@@ -160,9 +160,7 @@ string CmrContainer::access() {
     if(!granule){
         throw BESNotFoundError("Failed locate a granule associated with the path "+path,__FILE__,__LINE__);
     }
-
     string url  = granule->getDataAccessUrl();
-
     delete granule;
     granule = 0;
 
