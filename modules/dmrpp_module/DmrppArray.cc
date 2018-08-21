@@ -848,6 +848,16 @@ void DmrppArray::insert_chunk_unconstrained(Chunk *chunk, unsigned int dim,
     }
 }
 
+void process_one_chunk(Chunk *chunk, DmrppArray *array, bool is_deflate, bool is_shuffle, unsigned int chunk_size, unsigned int elem_width,
+    const vector<unsigned int> &array_shape, const vector<unsigned int> &chunk_shape)
+{
+    chunk->read_chunk();
+
+    chunk->inflate_chunk(is_deflate, is_shuffle, chunk_size, elem_width);
+
+    array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());
+}
+
 void DmrppArray::read_chunks_unconstrained()
 {
     vector<Chunk> &chunk_refs = get_chunk_vec();
@@ -925,15 +935,18 @@ void DmrppArray::read_chunks_unconstrained()
 
                 // Now join the child threads.
                 for (unsigned int i = 0; i < chunks_to_insert.size() - 1; ++i) {
-                    inflate_chunk_args *args;
-                    int status = pthread_join(thread[i], (void**)&args);
+                    // TODO inflate_chunk_args *args;
+                    BESError *error;
+                    int status = pthread_join(thread[i], (void**)&error);
                     if (status != 0) {
                         ostringstream oss("Could not join inflate_chunk thread for chunk ");
                         oss << i << ": " << strerror(status);
                         throw BESInternalError(oss.str(), __FILE__, __LINE__);
                     }
-                    else {
-                        delete args;
+                    else if (error != 0) {
+                        BESError e(*error);
+                        delete error;
+                        throw e;
                     }
                 }
 #endif
@@ -958,6 +971,17 @@ void DmrppArray::read_chunks_unconstrained()
         for (vector<Chunk>::iterator c = chunk_refs.begin(), e = chunk_refs.end(); c != e; ++c) {
             Chunk &chunk = *c;
 
+#if 0
+            Chunk *chunk, bool is_deflate, bool is_shuffle, unsigned int chunk_size, unsigned int elem_width,
+            const vector<unsigned int> &array_shape, const vector<unsigned int> &chunk_shape)
+#endif
+
+            process_one_chunk(&chunk, this, is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(),
+                var()->width(), array_shape, chunk_shape);
+
+#if 0
+            Chunk &chunk = *c;
+
             BESDEBUG(dmrpp_3, "Reading: " << chunk.to_string() << endl);
 
             chunk.read_chunk();
@@ -968,6 +992,8 @@ void DmrppArray::read_chunks_unconstrained()
             BESDEBUG(dmrpp_3, "Inserting: " << chunk.to_string() << endl);
 
             insert_chunk_unconstrained(&chunk, 0, 0, array_shape, 0, chunk_shape, chunk.get_position_in_array());
+#endif
+
         }
     }
 

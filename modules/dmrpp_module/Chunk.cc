@@ -376,30 +376,24 @@ void Chunk::add_tracking_query_param()
  * the expected chunk size and the element size (chunk size is in elements, not bytes).
  * @see Chunk::inflate_chunk()
  */
-void *inflate_chunk(void *arg_list /*Chunk *chunk, bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width*/)
+void *inflate_chunk(void *arg_list)
 {
-    // This code is pretty naive - there are apparently a number of
-    // different ways HDF5 can compress data, and it does also use a scheme
-    // where several algorithms can be applied in sequence. For now, get
-    // simple zlib deflate working.jhrg 1/15/17
-    // Added support for shuffle. Assuming unshuffle always is applied _after_
-    // inflating the data (reversing the shuffle --> deflate process). It is
-    // possible that data could just be deflated or shuffled (because we
-    // have test data are use only shuffle). jhrg 1/20/17
-    // The file that implements the deflate filter is H5Zdeflate.c in the hdf5 source.
-    // The file that implements the shuffle filter is H5Zshuffle.c.
-
     inflate_chunk_args *args = reinterpret_cast<inflate_chunk_args*>(arg_list);
 
-    if (args->chunk->get_is_inflated()) {
-#if USE_PTHREADS
-        pthread_exit(args);
-#else
-        // This should only be called using pthread_create(). This is here because I
-        // tested this code in the main thread. jhrg 8/19/18
-        return NULL;
-#endif
+    try {
+        args->chunk->inflate_chunk(args->deflate, args->shuffle, args->chunk_size, args->elem_width);
     }
+    catch (BESError &error) {
+        delete args;
+        pthread_exit(new BESError(error));
+    }
+
+    delete args;
+    pthread_exit(NULL);
+
+#if 0
+    if (args->chunk->get_is_inflated())
+    pthread_exit(args);
 
     args->chunk_size *= args->elem_width;
 
@@ -431,10 +425,7 @@ void *inflate_chunk(void *arg_list /*Chunk *chunk, bool deflate, bool shuffle, u
 
     args->chunk->set_is_inflated(true);
 
-#if USE_PTHREADS
     pthread_exit(args);
-#else
-    return NULL;
 #endif
 }
 
