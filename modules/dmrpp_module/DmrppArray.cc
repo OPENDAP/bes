@@ -848,14 +848,45 @@ void DmrppArray::insert_chunk_unconstrained(Chunk *chunk, unsigned int dim,
     }
 }
 
-void process_one_chunk(Chunk *chunk, DmrppArray *array, bool is_deflate, bool is_shuffle, unsigned int chunk_size, unsigned int elem_width,
-    const vector<unsigned int> &array_shape, const vector<unsigned int> &chunk_shape)
+/**
+ * @brief Friend function, insert data from one chunk in this this array
+ *
+ * @param chunk
+ * @param array
+ * @param array_shape
+ * @param chunk_shape
+ */
+void process_one_chunk_unconstrained(Chunk *chunk, DmrppArray *array, const vector<unsigned int> &array_shape,
+    const vector<unsigned int> &chunk_shape)
 {
     chunk->read_chunk();
 
-    chunk->inflate_chunk(is_deflate, is_shuffle, chunk_size, elem_width);
+    if (array->is_deflate_compression() || array->is_shuffle_compression())
+        chunk->inflate_chunk(array->is_deflate_compression(), array->is_shuffle_compression(), array->get_chunk_size_in_elements(),
+            array->var()->width());
 
     array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());
+}
+
+/**
+ * @brief Thread to insert data from one chunk
+ *
+ * @param arg_list
+ */
+void *one_chunk_unconstrained_thread(void *arg_list)
+{
+    one_chunk_unconstrained_args *args = reinterpret_cast<one_chunk_unconstrained_args*>(arg_list);
+
+    try {
+        process_one_chunk_unconstrained(args->chunk, args->array, args->array_shape, args->chunk_shape);
+    }
+    catch (BESError &error) {
+        delete args;
+        pthread_exit(new BESError(error));
+    }
+
+    delete args;
+    pthread_exit(NULL);
 }
 
 void DmrppArray::read_chunks_unconstrained()
@@ -876,22 +907,53 @@ void DmrppArray::read_chunks_unconstrained()
     BESDEBUG(dmrpp_3, "d_max_parallel_transfers: " << DmrppRequestHandler::d_max_parallel_transfers << endl);
 
     if (DmrppRequestHandler::d_use_parallel_transfers) {
-        // This is the parallel version of the code. It reads a set of chunks in parallel
-        // using the multi curl API, then inserts them, then reads the next set, ... jhrg 5/1/18
-        unsigned int max_handles = DmrppRequestHandler::curl_handle_pool->get_max_handles();
-        dmrpp_multi_handle *mhandle = DmrppRequestHandler::curl_handle_pool->get_multi_handle();
-
-        queue<Chunk *> chunks_to_read;  // Read all of the chunks
+        queue<Chunk *> chunks_to_read;
 
         // Queue all of the chunks
-        for (vector<Chunk>::iterator c = chunk_refs.begin(), e = chunk_refs.end(); c != e; ++c) {
+        for (vector<Chunk>::iterator c = chunk_refs.begin(), e = chunk_refs.end(); c != e; ++c)
             chunks_to_read.push(&(*c));
-        }
 
         while (chunks_to_read.size() > 0) {
-            vector<Chunk*> chunks_to_insert;
 
-            for (unsigned int i = 0; i < max_handles && chunks_to_read.size() > 0; ++i) {
+            pthread_t thread[DmrppRequestHandler::d_max_parallel_transfers];
+            unsigned int threads = 0;
+            for (unsigned int i = 0; i < (unsigned int)DmrppRequestHandler::d_max_parallel_transfers && chunks_to_read.size() > 0; ++i) {
+                Chunk *chunk = chunks_to_read.front();
+                chunks_to_read.pop();
+
+                one_chunk_unconstrained_args *args = new one_chunk_unconstrained_args(chunk, this, array_shape, chunk_shape);
+
+                int status = pthread_create(&thread[i], NULL, dmrpp::one_chunk_unconstrained_thread, (void*)args);
+                if (status == 0) {
+                    ++threads;
+                }
+                else {
+                    ostringstream oss("Could not start process_one_chunk_unconstrained thread for chunk ");
+                    oss << i << ": " << strerror(status);
+                    throw BESInternalError(oss.str(), __FILE__, __LINE__);
+                }
+            }
+
+            // TODO start new threads as old ones finish
+
+            // Now join the child threads.
+            for (unsigned int i = 0; i < threads; ++i) {
+                BESError *error;
+                int status = pthread_join(thread[i], (void**)&error);
+                if (status != 0) {
+                    ostringstream oss("Could not join process_one_chunk_unconstrained thread for chunk ");
+                    oss << i << ": " << strerror(status);
+                    throw BESInternalError(oss.str(), __FILE__, __LINE__);
+                }
+                else if (error != 0) {
+                    BESError e(*error);
+                    delete error;
+                    throw e;
+                }
+            }
+
+#if 0
+            for (unsigned int i = 0; i < max_handles-1 && chunks_to_read.size() > 0; ++i) {
                 Chunk *chunk = chunks_to_read.front();
                 chunks_to_read.pop();
 
@@ -965,20 +1027,14 @@ void DmrppArray::read_chunks_unconstrained()
 
                 insert_chunk_unconstrained(chunk, 0 /*dimension*/, 0/*array offset*/, array_shape, 0/*chunk offset*/, chunk_shape, chunk->get_position_in_array());
             }
+#endif
         }
     }
     else {  // Serial transfers
         for (vector<Chunk>::iterator c = chunk_refs.begin(), e = chunk_refs.end(); c != e; ++c) {
             Chunk &chunk = *c;
 
-#if 0
-            Chunk *chunk, bool is_deflate, bool is_shuffle, unsigned int chunk_size, unsigned int elem_width,
-            const vector<unsigned int> &array_shape, const vector<unsigned int> &chunk_shape)
-#endif
-
-            process_one_chunk(&chunk, this, is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(),
-                var()->width(), array_shape, chunk_shape);
-
+            process_one_chunk_unconstrained(&chunk, this, array_shape, chunk_shape);
 #if 0
             Chunk &chunk = *c;
 
@@ -993,7 +1049,6 @@ void DmrppArray::read_chunks_unconstrained()
 
             insert_chunk_unconstrained(&chunk, 0, 0, array_shape, 0, chunk_shape, chunk.get_position_in_array());
 #endif
-
         }
     }
 

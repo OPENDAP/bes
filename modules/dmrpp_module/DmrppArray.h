@@ -86,8 +86,11 @@ private:
     void insert_chunk_unconstrained(Chunk *chunk, unsigned int dim,
         unsigned long long array_offset, const std::vector<unsigned int> &array_shape,
         unsigned long long chunk_offset, const std::vector<unsigned int> &chunk_shape, const std::vector<unsigned int> &chunk_origin);
-
     void read_chunks_unconstrained();
+
+    // Called from read_chunks_unconstrained() and also using pthreads
+    friend void process_one_chunk_unconstrained(Chunk *chunk, DmrppArray *array, const vector<unsigned int> &array_shape,
+        const vector<unsigned int> &chunk_shape);
 
 public:
     DmrppArray(const std::string &n, libdap::BaseType *v);
@@ -110,6 +113,17 @@ public:
     virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false);
 
     virtual void dump(ostream & strm) const;
+};
+
+/// Chunk data insert args for use with pthreads
+struct one_chunk_unconstrained_args {
+    Chunk *chunk;
+    DmrppArray *array;
+    const vector<unsigned int> &array_shape;
+    const vector<unsigned int> &chunk_shape;
+
+    one_chunk_unconstrained_args(Chunk *c, DmrppArray *a, const vector<unsigned int> &a_s, const vector<unsigned int> &c_s)
+        : chunk(c), array(a), array_shape(a_s), chunk_shape(c_s) {}
 };
 
 } // namespace dmrpp

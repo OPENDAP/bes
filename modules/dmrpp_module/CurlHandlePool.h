@@ -27,6 +27,8 @@
 #include <string>
 #include <vector>
 
+#include <pthread.h>
+
 #include <curl/curl.h>
 #include <curl/multi.h>
 
@@ -37,6 +39,32 @@
 namespace dmrpp {
 
 class Chunk;
+
+/**
+ * RAII
+ */
+class Lock {
+private:
+    pthread_mutex_t& m_mutex;
+
+    Lock();
+    Lock(const Lock &rhs);
+
+public:
+    Lock(pthread_mutex_t &lock) :
+        m_mutex(lock)
+    {
+        int status = pthread_mutex_lock(&m_mutex);
+        if (status != 0) throw BESInternalError("Could not lock in CurlHandlePool", __FILE__, __LINE__);
+    }
+
+    virtual ~Lock()
+    {
+        int status = pthread_mutex_unlock(&m_mutex);
+        if (status != 0) throw BESInternalError("Could not unlock in CurlHandlePool", __FILE__, __LINE__);
+    }
+
+};
 
 /**
  * @brief Bundle a libcurl easy handle to other information.
@@ -58,6 +86,15 @@ class dmrpp_easy_handle {
 public:
     dmrpp_easy_handle();
     ~dmrpp_easy_handle();
+
+#if 0
+    bool in_use() const {return d_in_use;}
+    void set_in_use(bool state)
+    {
+        d_in_use = state;
+    }
+#endif
+
 
     void read_data();
 };
@@ -101,6 +138,10 @@ private:
     std::vector<dmrpp_easy_handle *> d_easy_handles;
     dmrpp_multi_handle *d_multi_handle;
 
+    pthread_mutex_t d_get_easy_handle_mutex;
+
+    friend class Lock;
+
 public:
     CurlHandlePool() : d_multi_handle(0)
     {
@@ -111,6 +152,9 @@ public:
         for (unsigned int i = 0; i < d_max_easy_handles; ++i) {
             d_easy_handles.push_back(new dmrpp_easy_handle());
         }
+
+        if (pthread_mutex_init(&d_get_easy_handle_mutex, 0) != 0)
+            throw BESInternalError("Could not initialize mutex in CurlHandlePool", __FILE__, __LINE__);
     }
 
     ~CurlHandlePool()

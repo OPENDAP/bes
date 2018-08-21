@@ -295,6 +295,7 @@ public:
     virtual std::string to_string() const;
 };
 
+#if 0
 /// Chunk data decompression function for use with pthreads
 struct inflate_chunk_args {
     Chunk *chunk;
@@ -304,10 +305,12 @@ struct inflate_chunk_args {
     unsigned int elem_width;
 
     inflate_chunk_args(Chunk *c, bool d, bool s, unsigned int c_size, unsigned int e_size):
-        chunk(c), deflate(d), shuffle(s), chunk_size(c_size), elem_width(e_size) {}
+    chunk(c), deflate(d), shuffle(s), chunk_size(c_size), elem_width(e_size) {}
 };
 
 void *inflate_chunk(void *args);
+#endif
+
 
 } // namespace dmrpp
 

@@ -365,6 +365,7 @@ void Chunk::add_tracking_query_param()
     }
 }
 
+#if 0
 /**
  * @brief function version of Chunk::inflate_chunk for use with pthreads
  *
@@ -390,44 +391,9 @@ void *inflate_chunk(void *arg_list)
 
     delete args;
     pthread_exit(NULL);
-
-#if 0
-    if (args->chunk->get_is_inflated())
-    pthread_exit(args);
-
-    args->chunk_size *= args->elem_width;
-
-    if (args->deflate) {
-        char *dest = new char[args->chunk_size];
-        try {
-            inflate(dest, args->chunk_size, args->chunk->get_rbuf(), args->chunk->get_rbuf_size());
-            // This replaces (and deletes) the original read_buffer with dest.
-            args->chunk->set_rbuf(dest, args->chunk_size);
-        }
-        catch (...) {
-            delete[] dest;
-            throw;
-        }
-    }
-
-    if (args->shuffle) {
-        // The internal buffer is chunk's full size at this point.
-        char *dest = new char[args->chunk->get_rbuf_size()];
-        try {
-            unshuffle(dest, args->chunk->get_rbuf(), args->chunk->get_rbuf_size(), args->elem_width);
-            args->chunk->set_rbuf(dest, args->chunk->get_rbuf_size());
-        }
-        catch (...) {
-            delete[] dest;
-            throw;
-        }
-    }
-
-    args->chunk->set_is_inflated(true);
-
-    pthread_exit(args);
-#endif
 }
+#endif
+
 
 /**
  * @brief Decompress data in the chunk, managing the Chunk's data buffers

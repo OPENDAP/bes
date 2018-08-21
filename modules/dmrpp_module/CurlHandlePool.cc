@@ -224,6 +224,8 @@ void dmrpp_multi_handle::read_data()
 dmrpp_easy_handle *
 CurlHandlePool::get_easy_handle(Chunk *chunk)
 {
+    Lock lock(d_get_easy_handle_mutex);
+
     dmrpp_easy_handle *handle = 0;
     for (vector<dmrpp_easy_handle *>::iterator i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
         if (!(*i)->d_in_use)
@@ -274,7 +276,15 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
  */
 void CurlHandlePool::release_handle(dmrpp_easy_handle *handle)
 {
-    handle->d_in_use = false;
+    // In get_easy_handle, it's possible that d_in_use could be false and d_chunk
+    // could not be set to 0 (because a separate thread could be running these
+    // methods). In that case, the thread runing get_easy_handle could set d_chunk,
+    // and then this thread could clear it. Unlikely, but an optimizing compiler is
+    // free to reorder statements so long as they don't alter the function's behavior.
+    // jhrg 8/21/18
+    Lock lock(d_get_easy_handle_mutex);
+
     handle->d_url = "";
     handle->d_chunk = 0;
+    handle->d_in_use = false;
 }
