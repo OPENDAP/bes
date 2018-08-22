@@ -139,6 +139,14 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
     }
     //---------------------------------------------------------------
 
+    /*
+    if(catalog != datCatalogList->default_catalog()){
+        string name = BESUtil::assemblePath(catalog->get_catalog_name(), node->get_name(), true);
+        node->set_name(name);
+    }
+*/
+
+
     BESInfo *info = BESInfoList::TheList()->build_info();
 
     // Transfer the catalog's node info to the BESInfo object

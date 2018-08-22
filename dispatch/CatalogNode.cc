@@ -30,6 +30,7 @@
 #include <sstream>
 
 #include "BESIndent.h"
+#include "BESUtil.h"
 
 #include "BESCatalogList.h"
 #include "BESInfo.h"
@@ -77,8 +78,12 @@ CatalogNode::encode_node(BESInfo *info)
 {
     map<string, string> props;
 
-    props["name"] = get_name();
-    props["catalog"] = get_catalog_name();
+   if(get_catalog_name() != BESCatalogList::TheCatalogList()->default_catalog_name())
+        props["name"] = BESUtil::assemblePath(get_catalog_name(), get_name(), true);
+   else
+        props["name"] = get_name();
+
+    // props["catalog"] = get_catalog_name();
     props["lastModified"] = get_lmt();
     ostringstream oss;
     oss << get_item_count();
