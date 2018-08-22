@@ -44,6 +44,7 @@
 #include <BESDebug.h>
 #include <BESUtil.h>
 #include <TheBESKeys.h>
+#include <BESCatalogList.h>
 #include <CatalogNode.h>
 
 #include "RemoteHttpResource.h"
@@ -101,6 +102,8 @@ public:
     {
         string bes_conf = BESUtil::assemblePath(TEST_SRC_DIR,"bes.conf");
         TheBESKeys::ConfigFile = bes_conf;
+
+        BESCatalogList::TheCatalogList()->add_catalog(new cmr::CmrCatalog(CMR_CATALOG_NAME));
 
         if (bes_debug) BESDebug::SetUp("cerr,cmr");
 
