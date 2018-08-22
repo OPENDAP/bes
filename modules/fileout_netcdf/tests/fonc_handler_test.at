@@ -109,4 +109,5 @@ AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/gridT.8.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/gridT.9.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/gridT.10.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/gridT.11.bescmd)
-
+dnl Test added for the fix for Hyrax-764. sk 08/17/18
+AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/gridNwm.bescmd)

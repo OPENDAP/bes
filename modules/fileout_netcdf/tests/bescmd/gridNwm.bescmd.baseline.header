@@ -1,0 +1,67 @@
+netcdf test {
+dimensions:
+	time = 1 ;
+	feature_id = 2716897 ;
+	reference_time = 1 ;
+variables:
+	int time(time) ;
+		time:long_name = "valid output time" ;
+		time:standard_name = "time" ;
+		time:units = "minutes since removed date-time UTC" ;
+	int feature_id(feature_id) ;
+		feature_id:long_name = "Reach ID" ;
+		feature_id:comment = "NHDPlusv2 ComIDs within CONUS, arbitrary Reach IDs outside of CONUS" ;
+	int streamflow(feature_id) ;
+		streamflow:_FillValue = -999900 ;
+		streamflow:long_name = "River Flow" ;
+		streamflow:units = "m3 s-1" ;
+		streamflow:coordinates = "latitude longitude" ;
+		streamflow:scale_factor = 0.01 ;
+		streamflow:add_offset = 0. ;
+		streamflow:valid_range = 0., 50000000. ;
+		streamflow:missing_value = -999900 ;
+	int nudge(feature_id) ;
+		nudge:_FillValue = -99990 ;
+		nudge:long_name = "Amount of stream flow alteration" ;
+		nudge:units = "m3 s-1" ;
+		nudge:coordinates = "latitude longitude" ;
+		nudge:scale_factor = 0.1 ;
+		nudge:add_offset = 0. ;
+		nudge:valid_range = -5000000., 5000000. ;
+		nudge:missing_value = -99990 ;
+	int q_lateral(feature_id) ;
+		q_lateral:_FillValue = -99990 ;
+		q_lateral:long_name = "Runoff into channel reach" ;
+		q_lateral:units = "m3 s-1" ;
+		q_lateral:coordinates = "latitude longitude" ;
+		q_lateral:scale_factor = 0.1 ;
+		q_lateral:add_offset = 0. ;
+		q_lateral:valid_range = 0., 500000. ;
+		q_lateral:missing_value = -99990 ;
+	int velocity(feature_id) ;
+		velocity:_FillValue = -999900 ;
+		velocity:long_name = "River Velocity" ;
+		velocity:units = "m s-1" ;
+		velocity:coordinates = "latitude longitude" ;
+		velocity:scale_factor = 0.01 ;
+		velocity:add_offset = 0. ;
+		velocity:valid_range = 0., 1000000. ;
+		velocity:missing_value = -999900 ;
+	int reference_time(reference_time) ;
+		reference_time:long_name = "model initialization time" ;
+		reference_time:standard_name = "forecast_reference_time" ;
+		reference_time:units = "minutes since removed date-time UTC" ;
+
+// global attributes:
+		:featureType = "timeSeries" ;
+		:proj4 = "+proj=longlat +datum=NAD83 +no_defs" ;
+		:model_initialization_time = "2017-08-18_00:00:00" ;
+		:station_dimension = "station" ;
+		:model_output_valid_time = "2017-08-18_01:00:00" ;
+		:stream_order_output = 1 ;
+		:cdm_datatype = "Station" ;
+		:esri_pe_string = "GEOGCS[GCS_North_American_1983,DATUM[D_North_American_1983,SPHEROID[GRS_1980,6378137.0,298.257222101]],PRIMEM[Greenwich,0.0],UNIT[Degree,0.017453292519943295]]" ;
+		:Conventions = "CF-1.6" ;
+		:DODS_EXTRA.Unlimited_Dimension = "time" ;
+		:history = "removed date-time Hyrax nwm.t00z.short_range.channel_rt.f001.conus.nc?" ;
+}
