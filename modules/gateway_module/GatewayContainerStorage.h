@@ -24,22 +24,17 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-// (c) COPYRIGHT URI/MIT 1994-1999
-// Please read the full copyright statement in the file COPYRIGHT_URI.
-//
 // Authors:
 //      pcw       Patrick West <pwest@ucar.edu>
 
 #ifndef GatewayContainerStorage_h_
 #define GatewayContainerStorage_h_ 1
 
-#include <list>
-
-using std::list;
-
 #include "BESContainerStorageVolatile.h"
 
 class BESCatalogUtils;
+
+namespace gateway {
 
 /** @brief implementation of BESContainerStorageVolatile that represents a
  * list of remote requests
@@ -53,12 +48,14 @@ class BESCatalogUtils;
  */
 class GatewayContainerStorage: public BESContainerStorageVolatile {
 public:
-    GatewayContainerStorage(const string &n);
+    GatewayContainerStorage(const std::string &n);
     virtual ~GatewayContainerStorage();
 
-    virtual void add_container(const string &s_name, const string &r_name, const string &type);
+    virtual void add_container(const std::string &s_name, const std::string &r_name, const std::string &type);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
+
+} // namespace gateway
 
 #endif // GatewayContainerStorage_h_

@@ -33,7 +33,7 @@
 
 #include "curl_utils.h"
 
-namespace libcurl {
+namespace gateway {
 
 // Set this to 1 to turn on libcurl's verbose mode (for debugging).
 int curl_trace = 0;
@@ -310,12 +310,12 @@ bool configureProxy(CURL *curl, const string &url) {
     // to the curl state in HTTPConnect
     //string proxyProtocol = GatewayUtils::ProxyProtocol;
 
-    string proxyHost     = GatewayUtils::ProxyHost;
-    int proxyPort        = GatewayUtils::ProxyPort;
-    string proxyPassword = GatewayUtils::ProxyPassword;
-    string proxyUser     = GatewayUtils::ProxyUser;
-    string proxyUserPW   = GatewayUtils::ProxyUserPW;
-    int proxyAuthType    = GatewayUtils::ProxyAuthType;
+    string proxyHost     = gateway::GatewayUtils::ProxyHost;
+    int proxyPort        = gateway::GatewayUtils::ProxyPort;
+    string proxyPassword = gateway::GatewayUtils::ProxyPassword;
+    string proxyUser     = gateway::GatewayUtils::ProxyUser;
+    string proxyUserPW   = gateway::GatewayUtils::ProxyUserPW;
+    int proxyAuthType    = gateway::GatewayUtils::ProxyAuthType;
 
     if (!proxyHost.empty()) {
         using_proxy = true;

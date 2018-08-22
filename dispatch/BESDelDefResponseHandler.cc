@@ -31,7 +31,12 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "BESDelDefResponseHandler.h"
+
+#if 0
 #include "BESSilentInfo.h"
+#endif
+
+
 #include "BESDefinitionStorageList.h"
 #include "BESDefinitionStorage.h"
 #include "BESDefine.h"
@@ -41,6 +46,7 @@
 #include "BESDataNames.h"
 #include "BESSyntaxUserError.h"
 #include "BESResponseNames.h"
+#include "BESDataHandlerInterface.h"
 
 BESDelDefResponseHandler::BESDelDefResponseHandler( const string &name )
     : BESResponseHandler( name )
@@ -66,7 +72,6 @@ BESDelDefResponseHandler::~BESDelDefResponseHandler( )
  * from the specified definition store.
  * object
  * @see BESDataHandlerInterface
- * @see BESSilentInfo
  * @see BESDefine
  * @see BESDefinitionStorage
  * @see BESDefinitionStorageList
@@ -74,9 +79,11 @@ BESDelDefResponseHandler::~BESDelDefResponseHandler( )
 void
 BESDelDefResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
-    dhi.action_name = DELETE_DEFINITION_STR ;
+#if 0
+	dhi.action_name = DELETE_DEFINITION_STR ;
     BESInfo *info = new BESSilentInfo() ;
-    _response = info ;
+    d_response_object = info ;
+#endif
 
     string def_name = dhi.data[DEF_NAME] ;
     string store_name = dhi.data[STORE_NAME] ;
@@ -126,16 +133,17 @@ BESDelDefResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @see BESDataHandlerInterface
  */
 void
-BESDelDefResponseHandler::transmit( BESTransmitter *transmitter,
-                               BESDataHandlerInterface &dhi )
+BESDelDefResponseHandler::transmit( BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/ )
 {
-    if( _response )
+#if 0
+	if( d_response_object )
     {
-	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
+	BESInfo *info = dynamic_cast<BESInfo *>(d_response_object) ;
 	if( !info )
 	    throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 	info->transmit( transmitter, dhi ) ;
     }
+#endif
 }
 
 /** @brief dumps information about this object

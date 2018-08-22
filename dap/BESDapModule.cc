@@ -50,14 +50,18 @@ using std::endl;
 #include "BESDMRResponseHandler.h"
 #include "BESDap4ResponseHandler.h"
 
+#if 0
 #include "BESCatalogResponseHandler.h"
+#endif
 
 #include "BESServiceRegistry.h"
 
+#if 0
 // These I added to test the Null AggregationServer code jhrg 1/30/15
 #include "BESDapNullAggregationServer.h"
 // Removed jhrg 3/17/15 #include "BESDapSequenceAggregationServer.h"
 #include "BESAggFactory.h"
+#endif
 
 #include "BESDapTransmit.h"
 #include "BESTransmitter.h"
@@ -66,43 +70,31 @@ using std::endl;
 
 #include "BESDebug.h"
 #include "BESInternalFatalError.h"
-#include "BESExceptionManager.h"
 #include "BESDapError.h"
 
 #include "DapFunctionUtils.h"
 #include "ServerFunctionsList.h"
+#include "ShowPathInfoResponseHandler.h"
 
 
 void BESDapModule::initialize(const string &modname)
 {
 	BESDEBUG("dap", "Initializing DAP Modules:" << endl);
 
-	BESDEBUG("dap", "    adding " << modname << " request handler" << endl);
 	BESRequestHandlerList::TheList()->add_handler(modname, new BESDapRequestHandler(modname));
-
-	BESDEBUG("dap", "    adding " << DAS_RESPONSE << " response handler" << endl);
 	BESResponseHandlerList::TheList()->add_handler(DAS_RESPONSE, BESDASResponseHandler::DASResponseBuilder);
-
-	BESDEBUG( "dap", "    adding " << DDS_RESPONSE << " response handler" << endl );
 	BESResponseHandlerList::TheList()->add_handler( DDS_RESPONSE, BESDDSResponseHandler::DDSResponseBuilder );
-
-	BESDEBUG("dap", "    adding " << DDX_RESPONSE << " response handler" << endl);
 	BESResponseHandlerList::TheList()->add_handler(DDX_RESPONSE, BESDDXResponseHandler::DDXResponseBuilder);
-
-	BESDEBUG("dap", "    adding " << DATA_RESPONSE << " response handler" << endl);
 	BESResponseHandlerList::TheList()->add_handler(DATA_RESPONSE, BESDataResponseHandler::DataResponseBuilder);
-
-	BESDEBUG("dap", "    adding " << DATADDX_RESPONSE << " response handler" << endl);
 	BESResponseHandlerList::TheList()->add_handler(DATADDX_RESPONSE, BESDataDDXResponseHandler::DataDDXResponseBuilder);
-
-	BESDEBUG("dap", "    adding " << DMR_RESPONSE << " response handler" << endl);
 	BESResponseHandlerList::TheList()->add_handler(DMR_RESPONSE, BESDMRResponseHandler::DMRResponseBuilder);
-
-	BESDEBUG("dap", "    adding " << DAP4DATA_RESPONSE << " response handler" << endl);
 	BESResponseHandlerList::TheList()->add_handler(DAP4DATA_RESPONSE, BESDap4ResponseHandler::Dap4ResponseBuilder);
 
-	BESDEBUG("dap", "    adding " << CATALOG_RESPONSE << " response handler" << endl);
-	BESResponseHandlerList::TheList()->add_handler(CATALOG_RESPONSE, BESCatalogResponseHandler::CatalogResponseBuilder);
+#if 0
+    BESDEBUG("dap", "    adding " << CATALOG_RESPONSE << " response handler" << endl);
+    BESResponseHandlerList::TheList()->add_handler(CATALOG_RESPONSE, BESCatalogResponseHandler::CatalogResponseBuilder);
+#endif
+
 
 	BESDEBUG("dap", "Adding " << OPENDAP_SERVICE << " services:" << endl);
 	BESServiceRegistry *registry = BESServiceRegistry::TheRegistry();
@@ -120,24 +112,12 @@ void BESDapModule::initialize(const string &modname)
 	BESReturnManager::TheManager()->add_transmitter(DAP2_FORMAT, new BESDapTransmit());
 	// TODO ?? BESReturnManager::TheManager()->add_transmitter( DAP4_FORMAT, new BESDapTransmit( ) );
 
-	BESDEBUG("dap", "    adding dap exception handler" << endl);
-	BESExceptionManager::TheEHM()->add_ehm_callback(BESDapError::handleException);
-
-#if 0
-	// Aggregations are no longer run. jhrg 11/9/17
-	// Add the new 'Null' AggregationServer. jhrg 1/30/15
-	// TODO Add these names to BESDapNames.h
-	BESDEBUG("dap", "    adding null aggregation handler" << endl);
-    BESAggFactory::TheFactory()->add_handler("null.aggregation", BESDapNullAggregationServer::NewBESDapNullAggregationServer);
-#endif
-#if 0
-    // Removed jhrg 3/17/15
-    BESAggFactory::TheFactory()->add_handler("sequence.aggregation", BESDapSequenceAggregationServer::NewBESDapSequenceAggregationServer);
-#endif
-
     BESDEBUG("dap", "    adding DAP Utility Function 'wrapitup'()" << endl);
     WrapItUp *wiu = new WrapItUp();
     libdap::ServerFunctionsList::TheList()->add_function(wiu);
+
+    BESDEBUG("dap", "    adding " << SHOW_PATH_INFO_RESPONSE << " response handler" << endl ) ;
+    BESResponseHandlerList::TheList()->add_handler( SHOW_PATH_INFO_RESPONSE, ShowPathInfoResponseHandler::ShowPathInfoResponseBuilder ) ;
 
 	BESDEBUG("dap", "    adding dap debug context" << endl);
 	BESDebug::Register("dap");
@@ -154,12 +134,15 @@ void BESDapModule::terminate(const string &modname)
 	BESResponseHandlerList::TheList()->remove_handler(DDX_RESPONSE);
 	BESResponseHandlerList::TheList()->remove_handler(DATA_RESPONSE);
 	BESResponseHandlerList::TheList()->remove_handler(DATADDX_RESPONSE);
+
 	BESResponseHandlerList::TheList()->remove_handler(CATALOG_RESPONSE);
 
 	BESResponseHandlerList::TheList()->remove_handler(DMR_RESPONSE);
 	BESResponseHandlerList::TheList()->remove_handler(DAP4DATA_RESPONSE);
 
+#if 0
 	BESResponseHandlerList::TheList()->remove_handler(CATALOG_RESPONSE);
+#endif
 
 	BESDEBUG("dap", "    removing " << OPENDAP_SERVICE << " services" << endl);
 	BESServiceRegistry::TheRegistry()->remove_service(OPENDAP_SERVICE);
@@ -170,10 +153,6 @@ void BESDapModule::terminate(const string &modname)
 
 	BESReturnManager::TheManager()->del_transmitter(DAP2_FORMAT);
 	// TODO ?? BESReturnManager::TheManager()->del_transmitter( DAP4_FORMAT );
-
-#if 0
-	BESAggFactory::TheFactory()->remove_handler("null.aggregation");
-#endif
 
 	BESDEBUG("dap", "Done Removing DAP Modules:" << endl);
 }

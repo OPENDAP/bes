@@ -1,10 +1,11 @@
 ## directories
 .deps
 .libs
+.pydevproject
+.autotools
 autom4te.cache
 /bes-*
 docs
-.autotools
 
 ## files
 *~
@@ -68,6 +69,7 @@ libtool
 **/generate_data_baseline.sh
 **/generate_metadata_baseline.sh
 **/test_config.h
+**/bes.conf
 
 abi_checker.xml
 bes-config
@@ -148,3 +150,5 @@ xmlcommand/unit-tests/test_config.h
 timing/*/*.log
 timing/*/*.result
 timing/*/*.dtps
+/html/
+/.externalToolBuilders/

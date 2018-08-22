@@ -25,14 +25,11 @@
 #include "config.h"
 
 #include <string>
-#include <sstream>
-#include <cassert>
 
 #include <BESError.h>
 #include <BESDebug.h>
 
 #include "DmrppStr.h"
-#include "DmrppUtil.h"
 
 using namespace libdap;
 using namespace std;
@@ -72,7 +69,7 @@ DmrppStr::operator=(const DmrppStr &rhs)
     dynamic_cast<Str &>(*this) = rhs; // run Constructor=
 
     _duplicate(rhs);
-    DmrppCommon::_duplicate(rhs);
+    DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }
@@ -80,32 +77,24 @@ DmrppStr::operator=(const DmrppStr &rhs)
 bool
 DmrppStr::read()
 {
-#if 0
-    BESDEBUG("dmrpp", "Entering DmrppStr::read for " << name() << endl);
-
     if (read_p())
         return true;
 
-    // FIXME
+    string value = read_atomic(name());
 
-    set_read_p(true);
+    set_value(value);   // sets read_p too
 
     return true;
-#endif
-    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
-
-    throw BESError("Unsupported type libdap::Str (dmrpp::DmrppStr)",BES_INTERNAL_ERROR, __FILE__, __LINE__);
-
 }
 
 void DmrppStr::dump(ostream & strm) const
 {
-    strm << DapIndent::LMarg << "DmrppStr::dump - (" << (void *) this << ")" << endl;
-    DapIndent::Indent();
+    strm << BESIndent::LMarg << "DmrppStr::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
     DmrppCommon::dump(strm);
     Str::dump(strm);
-    strm << DapIndent::LMarg << "value:    " << d_buf << endl;
-    DapIndent::UnIndent();
+    strm << BESIndent::LMarg << "value:    " << d_buf << endl;
+    BESIndent::UnIndent();
 }
 
 } // namespace dmrpp

@@ -36,13 +36,18 @@
 #include <string>
 
 #include "BESObj.h"
+
+#if 0
 #include "BESResponseObject.h"
 #include "BESDataHandlerInterface.h"
 #include "BESTransmitter.h"
+#endif
 
-using std::string ;
-#if 0
-class BESResponseObject ;
+
+#if 1
+class BESResponseObject;
+class BESDataHandlerInterface;
+class BESTransmitter;
 #endif
 
 /** @brief handler object that knows how to create a specific response object
@@ -78,15 +83,15 @@ class BESResponseObject ;
  * @see BESResponseHandlerList
  * @see BESTransmitter
  */
-class BESResponseHandler : public BESObj
-{
+class BESResponseHandler: public BESObj {
 protected:
-    string			_response_name ;
-    BESResponseObject		*_response ;
+    std::string d_response_name;
+    BESResponseObject *d_response_object;
 
-				BESResponseHandler( const string &name ) ;
+    BESResponseHandler(const std::string &name);
+
 public:
-    virtual			~BESResponseHandler(void) ;
+    virtual ~BESResponseHandler(void);
 
     /** @brief return the current response object
      *
@@ -97,7 +102,7 @@ public:
      * @return current response object
      * @see BESResponseObject
      */
-    virtual BESResponseObject  *get_response_object() ;
+    virtual BESResponseObject *get_response_object();
 
     /** @brief replaces the current response object with the specified one,
      * returning the current response object
@@ -113,7 +118,7 @@ public:
      * @return the response object being replaced
      * @see BESResponseObject
      */
-    virtual BESResponseObject	*set_response_object( BESResponseObject *o ) ;
+    virtual BESResponseObject *set_response_object(BESResponseObject *o);
 
     /** @brief knows how to build a requested response object
      *
@@ -129,7 +134,7 @@ public:
      * @see BESDataHandlerInterface
      * @see BESResponseObject
      */
-    virtual void		execute( BESDataHandlerInterface &dhi ) = 0 ;
+    virtual void execute(BESDataHandlerInterface &dhi) = 0;
 
     /** @brief transmit the response object built by the execute command
      * using the specified transmitter object
@@ -142,20 +147,25 @@ public:
      * @see BESDataHandlerInterface
      * @see BESTransmitException
      */
-    virtual void		transmit( BESTransmitter *transmitter,
-                                          BESDataHandlerInterface &dhi ) = 0 ;
-
+    virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) = 0;
+#if 0
     /** @brief return the name of this response object
      *
      * This name is used to determine which response handler can handle a
      * requested response, such as das, dds, ddx, tab, info, version, help,
-     * etc...
+     * et cetera.
+     *
+     * @todo Is this really used? Looks like only one test calls it. The d_response_name
+     * field is assigned only a few places. I think dhi.action is what is really used to
+     * choose the correct ResponseHandler. jhrg 2/9/18
      *
      * @return response name
      */
-    virtual string 		get_name( ) const { return _response_name ; }
-
-    virtual void		dump( ostream &strm ) const ;
+    virtual std::string get_name() const {
+        return d_response_name;
+    }
+#endif
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // I_BESResponseHandler_h

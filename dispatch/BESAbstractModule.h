@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -35,19 +35,19 @@
 
 #include <string>
 
-using std::string ;
+// using std::string;
 
 #include "BESObj.h"
 
-class BESAbstractModule : public BESObj
-{
+class BESAbstractModule: public BESObj {
 public:
-    				BESAbstractModule() {}
-    virtual			~BESAbstractModule() {}
-    virtual void		initialize( const string &modname ) = 0 ;
-    virtual void		terminate( const string &modname ) = 0 ;
-    virtual void		dump( ostream &strm ) const = 0 ;
-} ;
+    BESAbstractModule() {  }
+    virtual ~BESAbstractModule()  {  }
+
+    virtual void initialize(const std::string &modname) = 0;
+    virtual void terminate(const std::string &modname) = 0;
+    virtual void dump(std::ostream &strm) const = 0;
+};
 
 #endif // A_BESAbstractModule_H
 

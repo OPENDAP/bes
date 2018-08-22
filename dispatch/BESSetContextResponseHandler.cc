@@ -31,11 +31,17 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "BESSetContextResponseHandler.h"
+
+#if 0
 #include "BESSilentInfo.h"
+#endif
+
+
 #include "BESContextManager.h"
 #include "BESDataNames.h"
 #include "BESSyntaxUserError.h"
 #include "BESResponseNames.h"
+#include "BESDataHandlerInterface.h"
 
 BESSetContextResponseHandler::BESSetContextResponseHandler(const string &name) :
     BESResponseHandler(name)
@@ -63,9 +69,11 @@ BESSetContextResponseHandler::~BESSetContextResponseHandler()
  */
 void BESSetContextResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
+#if 0
     dhi.action_name = SET_CONTEXT_STR;
     BESInfo *info = new BESSilentInfo();
-    _response = info;
+    d_response_object = info;
+#endif
 
     // the name string cannot be the empty string. No other restrictions
     // apply.
@@ -92,13 +100,15 @@ void BESSetContextResponseHandler::execute(BESDataHandlerInterface &dhi)
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void BESSetContextResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
+void BESSetContextResponseHandler::transmit(BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/)
 {
-    if (_response) {
-        BESInfo *info = dynamic_cast<BESInfo *>(_response);
-        if (!info) throw BESInternalError("cast error", __FILE__, __LINE__);
+#if 0
+    if (d_response_object) {
+        BESInfo *info = dynamic_cast<BESInfo *>(d_response_object);
+        if (!info) throw BESInternalError("Expected an Info object.", __FILE__, __LINE__);
         info->transmit(transmitter, dhi);
     }
+#endif
 }
 
 /** @brief dumps information about this object

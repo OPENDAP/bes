@@ -30,15 +30,23 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include "BESContainerStorageCatalog.h"
 #include "BESContainer.h"
+
+#include "BESCatalogList.h"
+#include "BESCatalog.h"
+
 #include "BESCatalogUtils.h"
-#include "BESInternalError.h"
-#include "BESForbiddenError.h"
 #include "BESInfo.h"
 #include "BESServiceRegistry.h"
 #include "BESRegex.h"
+#include "BESInternalError.h"
+#include "BESForbiddenError.h"
+
 #include "BESDebug.h"
+
 
 /** @brief create an instance of this persistent store with the given name.
  *
@@ -48,13 +56,15 @@
  * these cannot be determined or if the regular expressions are incorrectly
  * formed.
  *
- * &lt;data type&gt;:&lt;reg exp&gt;;&lt;data type&gt;:&lt;reg exp&gt;;
+ * ~~~{.xml}
+ * <data type>:<reg exp>; <data type>:<reg exp>;
+ * ~~~
  *
  * each type/reg expression pair is separated by a semicolon and ends with a
  * semicolon. The data type/expression pair itself is separated by a
  * colon.
  *
- * @param n name of this persistent store
+ * @param n The name of the Catalog/ContainerStorage (they must be the same).
  * @throws BESForbiddenError if the resources requested is not accessible
  * @throws BESNotFoundError if the resources requested is not found
  * @throws BESInternalError if there is a problem determining the resource
@@ -64,7 +74,12 @@
 BESContainerStorageCatalog::BESContainerStorageCatalog(const string &n) :
         BESContainerStorageVolatile(n)
 {
+#if 0
     _utils = BESCatalogUtils::Utils(n);
+#endif
+    BESCatalog *catalog = BESCatalogList::TheCatalogList()->find_catalog(n);
+    _utils = catalog->get_catalog_utils();
+
     _root_dir = _utils->get_root_dir();
     _follow_sym_links = _utils->follow_sym_links();
 }
@@ -96,6 +111,7 @@ BESContainerStorageCatalog::~BESContainerStorageCatalog()
  * @param real_name real name (path to the file relative to the root
  * catalog's root directory)
  * @param type type of data represented by this container
+ *
  * @throws BESForbiddenError if the resources requested is not accessible
  * @throws BESNotFoundError if the resources requested is not found
  * @throws BESInternalError if there is a problem determining the resource
@@ -103,7 +119,7 @@ BESContainerStorageCatalog::~BESContainerStorageCatalog()
  */
 void BESContainerStorageCatalog::add_container(const string &sym_name, const string &real_name, const string &type)
 {
-    // make sure that the real name passed in is not oon the exclude list
+    // make sure that the real name passed in is not on the exclude list
     // for the catalog. First, remove any trailing slashes. Then find the
     // basename of the remaining real name. The make sure it's not on the
     // exclude list.
@@ -136,18 +152,22 @@ void BESContainerStorageCatalog::add_container(const string &sym_name, const str
     // it against the types in the type list.
     string new_type = type;
     if (new_type == "") {
+        new_type = _utils->get_handler_name(real_name);
+
+#if 0
         BESCatalogUtils::match_citer i = _utils->match_list_begin();
         BESCatalogUtils::match_citer ie = _utils->match_list_end();
         bool done = false;
         for (; i != ie && !done; i++) {
-            BESCatalogUtils::type_reg match = (*i);
-            BESRegex reg_expr(match.reg.c_str());
+            BESCatalogUtils::handler_regex match = (*i);
+            BESRegex reg_expr(match.regex.c_str());
             if (reg_expr.match(real_name.c_str(), real_name.length()) == static_cast<int>(real_name.length())) {
-                new_type = match.type;
+                new_type = match.handler;
                 done = true;
             }
 
         }
+#endif
     }
 
     BESContainerStorageVolatile::add_container(sym_name, real_name, new_type);
@@ -159,27 +179,34 @@ void BESContainerStorageCatalog::add_container(const string &sym_name, const str
  * data) and what the request handler serves for the node
  *
  * @param inQuestion node to look up
- * @param provides what is provided for the node by the node types request handler
- * return true if a request hanlder serves the specified node, false otherwise
+ * @param provides what is provided for the node by the node type's request handler
+ * @return true if a request handler serves the specified node, false otherwise
  */
 bool BESContainerStorageCatalog::isData(const string &inQuestion, list<string> &provides)
 {
+    string node_type = _utils->get_handler_name(inQuestion);
+
+#if 0
     string node_type = "";
     BESCatalogUtils::match_citer i = _utils->match_list_begin();
     BESCatalogUtils::match_citer ie = _utils->match_list_end();
     bool done = false;
     for (; i != ie && !done; i++) {
-        BESCatalogUtils::type_reg match = (*i);
-        BESRegex reg_expr(match.reg.c_str());
+        BESCatalogUtils::handler_regex match = (*i);
+        BESRegex reg_expr(match.regex.c_str());
         if (reg_expr.match(inQuestion.c_str(), inQuestion.length()) == static_cast<int>(inQuestion.length())) {
-            node_type = match.type;
+            node_type = match.handler;
             done = true;
         }
     }
+#endif
 
     BESServiceRegistry::TheRegistry()->services_handled(node_type, provides);
 
+#if 0
     return done;
+#endif
+    return !node_type.empty();  // Return false if node_type is empty, true if a match is found.
 }
 
 /** @brief dumps information about this object

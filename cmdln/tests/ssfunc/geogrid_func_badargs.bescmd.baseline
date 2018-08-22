@@ -2,8 +2,8 @@
 <response reqID="some_unique_value" xmlns="http://xml.opendap.org/ns/bes/1.0#">
     <getDODS>
         <BESError>
-            <Type>3</Type>
-            <Message>libdap exception building response: error_code = 1005: Failed to get values as ascii: Wrong number of arguments to geogrid() (expected at least 5 args). See geogrid() for more information.</Message>
+            <Type>1005</Type>
+            <Message>Failed to get values as ascii: Wrong number of arguments to geogrid() (expected at least 5 args). See geogrid() for more information.</Message>
             <Administrator>admin.email.address@your.domain.name</Administrator>
             <Location>
                 
@@ -12,3 +12,4 @@
         </BESError>
     </getDODS>
 </response>
+

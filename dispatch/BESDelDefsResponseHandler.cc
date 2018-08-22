@@ -31,7 +31,12 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "BESDelDefsResponseHandler.h"
+
+#if 0
 #include "BESSilentInfo.h"
+#endif
+
+
 #include "BESDefinitionStorageList.h"
 #include "BESDefinitionStorage.h"
 #include "BESDefine.h"
@@ -41,6 +46,7 @@
 #include "BESDataNames.h"
 #include "BESSyntaxUserError.h"
 #include "BESResponseNames.h"
+#include "BESDataHandlerInterface.h"
 
 BESDelDefsResponseHandler::BESDelDefsResponseHandler( const string &name )
     : BESResponseHandler( name )
@@ -74,9 +80,11 @@ BESDelDefsResponseHandler::~BESDelDefsResponseHandler( )
 void
 BESDelDefsResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
-    dhi.action_name = DELETE_DEFINITIONS_STR ;
+#if 0
+	dhi.action_name = DELETE_DEFINITIONS_STR ;
     BESInfo *info = new BESSilentInfo() ;
-    _response = info ;
+    d_response_object = info ;
+#endif
 
     string store_name = dhi.data[STORE_NAME] ;
     if( store_name == "" )
@@ -115,16 +123,17 @@ BESDelDefsResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @see BESDataHandlerInterface
  */
 void
-BESDelDefsResponseHandler::transmit( BESTransmitter *transmitter,
-                               BESDataHandlerInterface &dhi )
+BESDelDefsResponseHandler::transmit( BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/ )
 {
-    if( _response )
+#if 0
+	if( d_response_object )
     {
-	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
+	BESInfo *info = dynamic_cast<BESInfo *>(d_response_object) ;
 	if( !info )
 	    throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 	info->transmit( transmitter, dhi ) ;
     }
+#endif
 }
 
 /** @brief dumps information about this object

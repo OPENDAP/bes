@@ -55,17 +55,27 @@ using std::string;
  * source is saved in the BESContainer and is used to execute the request
  * from the client.
  *
+ * @note Many data items used with the BES are files and are referenced
+ * relative to a configured _Data Root Directory_. When a Container is
+ * added to a store, if that store uses the BESContainerStorageVolatile
+ * storage type, the 'real name' will be transformed to the full pathname
+ * of the file on disk for the current BES. It's useful to have access to
+ * the original relative pathname provided by the client/user so I've
+ * added a field (d_relative_name) to hold that information. jhrg 5/22/18
+ *
  * @see BESContainerStorage
  */
 class BESContainer: public BESObj {
 private:
-    string _symbolic_name;
-    string _real_name;
-    string _container_type;
-    string _constraint;
-    string _dap4_constraint;
-    string _dap4_function;
-    string _attributes;
+    string d_symbolic_name;     ///< The name of the container
+    string d_real_name;         ///< The full name of the thing (filename, database table name, ...)
+    string d_relative_name;     ///< The name relative to the Data Root dir
+    string d_container_type;
+    string d_constraint;
+    string d_dap4_constraint;
+    string d_dap4_function;
+    string d_attributes;     ///< See DefinitionStorageList, XMLDefineCommand
+
 protected:
     BESContainer()
     {
@@ -79,7 +89,7 @@ protected:
      * @param type type of data represented by this container, such as netcdf
      */
     BESContainer(const string &sym_name, const string &real_name, const string &type) :
-            _symbolic_name(sym_name), _real_name(real_name), _container_type(type)
+        d_symbolic_name(sym_name), d_real_name(real_name), d_container_type(type)
     {
     }
 
@@ -103,7 +113,7 @@ public:
      */
     void set_constraint(const string &s)
     {
-        _constraint = s;
+        d_constraint = s;
     }
 
     /** @brief set the constraint for this container
@@ -112,7 +122,7 @@ public:
      */
     void set_dap4_constraint(const string &s)
     {
-        _dap4_constraint = s;
+        d_dap4_constraint = s;
     }
 
     /** @brief set the constraint for this container
@@ -121,7 +131,7 @@ public:
      */
     void set_dap4_function(const string &s)
     {
-        _dap4_function = s;
+        d_dap4_function = s;
     }
 
     /** @brief set the real name for this container, such as a file name
@@ -131,7 +141,12 @@ public:
      */
     void set_real_name(const string &real_name)
     {
-        _real_name = real_name;
+        d_real_name = real_name;
+    }
+
+    /// @brief Set the relative name of the object in this container
+    void set_relative_name(const std::string &relative) {
+        d_relative_name = relative;
     }
 
     /** @brief set the type of data that this container represents, such
@@ -141,7 +156,7 @@ public:
      */
     void set_container_type(const string &type)
     {
-        _container_type = type;
+        d_container_type = type;
     }
 
     /** @brief set desired attributes for this container
@@ -150,7 +165,7 @@ public:
      */
     void set_attributes(const string &attrs)
     {
-        _attributes = attrs;
+        d_attributes = attrs;
     }
 
     /** @brief retrieve the real name for this container, such as a
@@ -160,7 +175,12 @@ public:
      */
     string get_real_name() const
     {
-        return _real_name;
+        return d_real_name;
+    }
+
+    /// @brief Get the relative name of the object in this container
+    std::string get_relative_name() const {
+        return d_relative_name;
     }
 
     /** @brief retrieve the constraint expression for this container
@@ -169,7 +189,7 @@ public:
      */
     string get_constraint() const
     {
-        return _constraint;
+        return d_constraint;
     }
 
     /** @brief retrieve the constraint expression for this container
@@ -178,7 +198,7 @@ public:
      */
     string get_dap4_constraint() const
     {
-        return _dap4_constraint;
+        return d_dap4_constraint;
     }
 
     /** @brief retrieve the constraint expression for this container
@@ -187,7 +207,7 @@ public:
      */
     string get_dap4_function() const
     {
-        return _dap4_function;
+        return d_dap4_function;
     }
 
     /** @brief retrieve the symbolic name for this container
@@ -196,7 +216,7 @@ public:
      */
     string get_symbolic_name() const
     {
-        return _symbolic_name;
+        return d_symbolic_name;
     }
 
     /** @brief retrieve the type of data this container holds, such as
@@ -207,8 +227,9 @@ public:
      */
     string get_container_type() const
     {
-        return _container_type;
+        return d_container_type;
     }
+
 
     /** @brief retrieve the attributes desired from this container
      *
@@ -216,7 +237,7 @@ public:
      */
     string get_attributes() const
     {
-        return _attributes;
+        return d_attributes;
     }
 
     /** @brief returns the true name of this container

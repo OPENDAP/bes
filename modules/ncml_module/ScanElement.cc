@@ -77,10 +77,10 @@ struct ScanElement::DateFormatters {
     // If we have a _dateFormatMark, we'll create a single
     // instance of the icu SimpleDateFormat in order
     // to process each file.
-    SimpleDateFormat* _pDateFormat;
+    icu::SimpleDateFormat* _pDateFormat;
     // We also will create a single instance of a format
     // for ISO 8601 times for output into the coordinate
-    SimpleDateFormat* _pISO8601;
+    icu::SimpleDateFormat* _pISO8601;
 
     // The position of the # mark in the date format string
     // We match the preceding characters with the filename.
@@ -385,7 +385,7 @@ static const string ISO_8601_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
  * Fill in toString from the UnicodeString using UnicodeString::extract().
  * @return success  if true, toString is valid.
  */
-static bool convertUnicodeStringToStdString(std::string& toString, const UnicodeString& fromUniString)
+static bool convertUnicodeStringToStdString(std::string& toString, const icu::UnicodeString& fromUniString)
 {
     // This call exists in 4.2 but not 4.0 or 3.6
     // TODO use this call if we up our minimum ICU version
@@ -422,31 +422,31 @@ void ScanElement::initSimpleDateFormats(const std::string& dateFormatMark)
     // Get just the portion that is the SDF string
     string dateFormat = dateFormatMark.substr(_pDateFormatters->_markPos + 1, string::npos);
     BESDEBUG("ncml", "Using a date format of: " << dateFormat << endl);
-    UnicodeString usDateFormat(dateFormat.c_str());
+    icu::UnicodeString usDateFormat(dateFormat.c_str());
 
     // Cache the length of the pattern for later substr calcs.
     _pDateFormatters->_sdfLen = dateFormat.size();
 
     // Try to make the formatter from the user given string
     UErrorCode success = U_ZERO_ERROR;
-    _pDateFormatters->_pDateFormat = new SimpleDateFormat(usDateFormat, success);
+    _pDateFormatters->_pDateFormat = new icu::SimpleDateFormat(usDateFormat, success);
     if (U_FAILURE(success)) {
         THROW_NCML_PARSE_ERROR(line(), "Scan element failed to parse the SimpleDateFormat pattern: " + dateFormat);
     }
     VALID_PTR(_pDateFormatters->_pDateFormat);
     // Set it to the GMT timezone since we expect UTC times by default.
-    _pDateFormatters->_pDateFormat->setTimeZone(*(TimeZone::getGMT()));
+    _pDateFormatters->_pDateFormat->setTimeZone(*(icu::TimeZone::getGMT()));
 
     // Also create an ISO 8601 formatter for creating the coordValue's
     // from the parsed UDate's.
-    _pDateFormatters->_pISO8601 = new SimpleDateFormat(success);
+    _pDateFormatters->_pISO8601 = new icu::SimpleDateFormat(success);
     if (U_FAILURE(success)) {
         THROW_NCML_PARSE_ERROR(line(), "Scan element failed to create the ISO 8601 SimpleDateFormat"
             " using the pattern " + ISO_8601_FORMAT);
     }
     VALID_PTR(_pDateFormatters->_pISO8601);
     // We want to output UTC, so GMT as well.
-    _pDateFormatters->_pISO8601->setTimeZone(*(TimeZone::getGMT()));
+    _pDateFormatters->_pISO8601->setTimeZone(*(icu::TimeZone::getGMT()));
     _pDateFormatters->_pISO8601->applyPattern(ISO_8601_FORMAT.c_str());
 }
 
@@ -460,7 +460,7 @@ std::string ScanElement::extractTimeFromFilename(const std::string& filename) co
     // they match, just the quantity).
     string sdfPortion = filename.substr(_pDateFormatters->_markPos, _pDateFormatters->_sdfLen);
 
-    UnicodeString usPattern;
+    icu::UnicodeString usPattern;
     _pDateFormatters->_pDateFormat->toPattern(usPattern);
     string sdfPattern;
     bool conversionSuccess = convertUnicodeStringToStdString(sdfPattern, usPattern);
@@ -480,7 +480,7 @@ std::string ScanElement::extractTimeFromFilename(const std::string& filename) co
             " Either the pattern was invalid or the filename did not match.");
     }
 
-    UnicodeString usISODate;
+    icu::UnicodeString usISODate;
     _pDateFormatters->_pISO8601->format(theDate, usISODate);
     string result;
     conversionSuccess = convertUnicodeStringToStdString(result, usISODate);

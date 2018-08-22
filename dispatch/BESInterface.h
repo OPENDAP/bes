@@ -33,6 +33,9 @@
 #ifndef BESInterface_h_
 #define BESInterface_h_ 1
 
+#include <string>
+#include <ostream>
+
 #include "BESObj.h"
 
 class BESError;
@@ -114,15 +117,17 @@ class BESDataHandlerInterface;
  */
 class BESInterface: public BESObj {
 private:
-    ostream *d_strm;
+    std::ostream *d_strm;
     int d_timeout_from_keys; ///< Command timeout; can be overridden using setContext
 
 protected:
     BESDataHandlerInterface *d_dhi_ptr; ///< Allocated by the child class
     BESTransmitter *d_transmitter;  ///< The Transmitter to use for the result
 
+#if 0
     virtual int exception_manager(BESError &e);
-    virtual void finish();
+#endif
+
     virtual void end_request();
 
     virtual void build_data_request_plan() = 0;
@@ -139,14 +144,16 @@ protected:
 
     virtual ~BESInterface() { }
 
+    static int handleException(BESError &e, BESDataHandlerInterface &dhi);
+
 public:
     // This is the point where BESServerHandler::execute(Connection *c) passes control
     // to the 'run the command' part of the server. jhrg 11/7/17
-    virtual int execute_request(const string &from);
+    virtual int execute_request(const std::string &from);
 
-    virtual int finish_with_error(int status);
+    virtual int finish(int status);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // BESInterface_h_

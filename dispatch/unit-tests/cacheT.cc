@@ -57,7 +57,9 @@ using std::ostringstream;
 #include <BESUtil.h>
 #include <BESFileLockingCache.h>
 
-#include <test_config.h>
+#include "test_config.h"
+
+using namespace std;
 
 // Not run by default!
 // Set from the command-line invocation of the main only
@@ -204,7 +206,7 @@ public:
 
     void setUp()
     {
-        string bes_conf = (string) TEST_ABS_SRC_DIR + "/cacheT_bes.keys";
+        string bes_conf = (string) TEST_SRC_DIR + "/cacheT_bes.keys";
         TheBESKeys::ConfigFile = bes_conf;
 
         if (bes_debug) {
@@ -246,8 +248,7 @@ public:
         for (unsigned int i = 0; i < NUM_FILES_TEST_64; ++i) {
             std::stringstream fss;
             fss << cacheDir << "/" << MATCH_PREFIX << "_file_" << i << ".txt";
-            DBG(
-                cerr << __func__ << "() - Creating filename=" << fss.str() << " of size (mb) = "
+            DBG(cerr << __func__ << "() - Creating filename=" << fss.str() << " of size (mb) = "
                     << FILE_SIZE_IN_MEGS_TEST_64 << endl);
             std::stringstream mkfileCmdSS;
             mkfileCmdSS << "mkfile -n " << FILE_SIZE_IN_MEGS_TEST_64 << "m" << " " << fss.str();
@@ -287,8 +288,7 @@ public:
         // 4) get info again and make sure size is not too big
 
         // 1) Make the cache
-        DBG(
-            cerr << __func__ << "() - "
+        DBG(cerr << __func__ << "() - "
                 "Making a BESFileLockingCache with dir=" << CACHE_DIR_TEST_64 << " and prefix=" << CACHE_PREFIX
                 << " and max size (mb)= " << MAX_CACHE_SIZE_IN_MEGS_TEST_64 << endl);
 
@@ -376,12 +376,11 @@ public:
         DBG(cerr << endl << __func__ << "() - BEGIN " << endl);
         try {
             BESFileLockingCache cache(TEST_CACHE_DIR, CACHE_PREFIX, 0);
-            CPPUNIT_ASSERT(!"Created cache with 0 size");
+            CPPUNIT_ASSERT("Created cache with 0 size - correct given new behavior for this class");
         }
         catch (BESError &e) {
-            DBG(
-                cerr << __func__ << "() - Unable to create cache with 0 size. " << "That's good. msg: "
-                    << e.get_message() << endl);
+            DBG(cerr << __func__ << "() - Unable to create cache with 0 size. " << "That's good. msg: " << e.get_message() << endl);
+            CPPUNIT_FAIL("Could not make cache with zero size - new behavior uses this as an unbounded cache - it should work");
         }
         DBG(cerr << __func__ << "() - END " << endl);
     }
@@ -456,8 +455,7 @@ public:
 
         string latest_file = "/usr/local/data/template01.txt";
 
-        DBG(
-            cerr << __func__ << "() - Cache Before update_and_purge():" << endl
+        DBG(cerr << __func__ << "() - Cache Before update_and_purge():" << endl
                 << show_cache(TEST_CACHE_DIR, CACHE_PREFIX));
 
         try {
@@ -517,8 +515,7 @@ CPPUNIT_TEST_SUITE( cacheT );
     CPPUNIT_TEST(test_cache_purge);
     CPPUNIT_TEST(test_64_bit_cache_sizes);
 
-    CPPUNIT_TEST_SUITE_END()
-    ;
+    CPPUNIT_TEST_SUITE_END();
 };
 
 // test fixture class
@@ -541,9 +538,9 @@ int main(int argc, char*argv[])
             break;
 
         case '6':
+            // FIXME Not used
             RUN_64_BIT_CACHE_TEST = true;  // RUN_64_BIT_CACHE_TEST is a static global
-            DBG(cerr << __func__ << "() - 64 Bit Cache Tests Enabled." << endl)
-            ;
+            DBG(cerr << __func__ << "() - 64 Bit Cache Tests Enabled." << endl);
             break;
 
         case 'p':
@@ -584,6 +581,7 @@ int main(int argc, char*argv[])
             if (debug) cerr << "Running " << argv[i] << endl;
             test = cacheT::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
+            ++i;
         }
     }
 

@@ -139,7 +139,7 @@ public:
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        string baseline = readTestBaseline(
+        string baseline = read_test_baseline(
             string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array_roi.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
@@ -172,7 +172,7 @@ public:
         oss.clear();
         result_struct->print_val(oss, "    ", false);
         DBG(cerr << "Result values: " << oss.str() << endl);
-        baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array_roi.baseline");
+        baseline = read_test_baseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array_roi.baseline");
 
         CPPUNIT_ASSERT(oss.str() == baseline);
     }
@@ -205,7 +205,7 @@ public:
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        string baseline = readTestBaseline(
+        string baseline = read_test_baseline(
             string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_2d_array_roi.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
@@ -238,7 +238,7 @@ public:
         oss.clear();
         result_struct->print_val(oss, "    ", false);
         DBG(cerr << "Result values: " << oss.str() << endl);
-        baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_2d_array_roi.baseline");
+        baseline = read_test_baseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_2d_array_roi.baseline");
 
         CPPUNIT_ASSERT(oss.str() == baseline);
     }
@@ -271,7 +271,7 @@ public:
             CPPUNIT_FAIL("Error:" + e.get_error_message());
         }
 
-        string baseline = readTestBaseline(
+        string baseline = read_test_baseline(
             string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array2_roi.baseline.xml");
         ostringstream oss;
         result->print_xml(oss);
@@ -320,7 +320,7 @@ public:
         oss.clear();
         result_struct->print_val(oss, "    ", false);
         DBG(cerr << "Result values: " << oss.str() << endl);
-        baseline = readTestBaseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array2_roi.baseline");
+        baseline = read_test_baseline(string(TEST_SRC_DIR) + "/ce-functions-testsuite/float32_array2_roi.baseline");
 
         CPPUNIT_ASSERT(oss.str() == baseline);
     }

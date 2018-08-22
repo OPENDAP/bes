@@ -32,29 +32,28 @@
 
 #include "config.h"
 
+#if HAVE_UNISTD_H
 #include <unistd.h>
-
-#include "TheBESKeys.h"
-#include "BESInternalFatalError.h"
-#include "BESSyntaxUserError.h"
-
-#include "config.h"
+#endif
 
 #include <cerrno>
 #include <cstring>
 
-#if HAVE_UNISTD_H
-#include <unistd.h>
-#endif
+#include <string>
+#include <sstream>
 
 #include "TheBESKeys.h"
 #include "BESUtil.h"
 #include "BESFSDir.h"
 #include "BESFSFile.h"
+#include "BESInternalFatalError.h"
+#include "BESSyntaxUserError.h"
 
 #define BES_INCLUDE_KEY "BES.Include"
 
-std::vector<string> TheBESKeys::KeyList;
+using namespace std;
+
+vector<string> TheBESKeys::KeyList;
 
 TheBESKeys *TheBESKeys::_instance = 0;
 string TheBESKeys::ConfigFile = "";
@@ -92,7 +91,7 @@ TheBESKeys *TheBESKeys::TheKeys()
         return _instance;
     }
 
-    throw BESInternalFatalError("Unable to find a conf file or module version mismatch.", __FILE__, __LINE__);
+    throw BESInternalFatalError("Unable to find the BES configuration file.", __FILE__, __LINE__);
 }
 
 /** @brief default constructor that reads loads key/value pairs from the
@@ -138,7 +137,7 @@ void TheBESKeys::initialize_keys()
     if (!(*_keys_file)) {
         char path[500];
         getcwd(path, sizeof(path));
-        string s = string("BES: fatal, cannot open BES configuration file ") + _keys_file_name + ": ";
+        string s = string("Cannot open BES configuration file '") + _keys_file_name + "': ";
         char *err = strerror(errno);
         if (err)
             s += err;
@@ -154,14 +153,14 @@ void TheBESKeys::initialize_keys()
     }
     catch (BESError &e) {
         // be sure we're throwing a fatal error, since the BES can't run
-        // within the configuration file
+        // without the configuration file
         clean();
         throw BESInternalFatalError(e.get_message(), e.get_file(), e.get_line());
     }
     catch (...) {
         clean();
-        string s = (string) "Undefined exception while trying to load keys from bes configuration file "
-            + _keys_file_name;
+        string s = (string) "Undefined exception while trying to load keys from the BES configuration file '"
+            + _keys_file_name + "'";
         throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
 }
@@ -178,7 +177,7 @@ void TheBESKeys::clean()
     }
 }
 
-/* @brief Determine if the specified key file has been loaded yet
+/** @brief Determine if the specified key file has been loaded yet
  *
  * Given the name of the key file, determine if it has already been
  * loaded. More specifically, if started to load the file.
@@ -461,6 +460,88 @@ void TheBESKeys::get_values(const string& s, vector<string> &vals, bool &found)
     }
 }
 
+/**
+ * @brief Read a boolean-valued key from the bes.conf file
+ *
+ * Look-up the bes key \arg key and return its value if set. If the
+ * key is not set, return the default value.
+ *
+ * @param key The key to loop up
+ * @param default_value Return this value if \arg key is not found.
+ * @return The boolean value of \arg key. The value of the key is true if the
+ * key is set to "true", "yes", or "on", otherwise the key value is
+ * interpreted as false. If \arg key is not set, return \arg default_value.
+ */
+bool TheBESKeys::read_bool_key(const string &key, bool default_value)
+{
+    bool found = false;
+    string value;
+    TheBESKeys::TheKeys()->get_value(key, value, found);
+    // 'key' holds the string value at this point if key_found is true
+    if (found) {
+        value = BESUtil::lowercase(value);
+        return (value == "true" || value == "yes"|| value == "on");
+    }
+    else {
+        return default_value;
+    }
+ }
+
+/**
+ * @brief Read a string-valued key from the bes.conf file.
+ *
+ * Look-up the bes key \arg key and return its value if set. If the
+ * key is not set, return the default value.
+ *
+ * @param key The key to loop up
+ * @param default_value Return this value if \arg key is not found.
+ * @return The string value of \arg key.
+ */
+string TheBESKeys::read_string_key(const string &key, const string &default_value)
+{
+    bool found = false;
+    string value;
+    TheBESKeys::TheKeys()->get_value(key, value, found);
+    // 'value' holds the string value at this point if found is true
+    if (found) {
+        if (value[value.length() - 1] == '/') value.erase(value.length() - 1);
+        return value;
+    }
+    else {
+        return default_value;
+    }
+}
+
+/**
+ * @brief Read an integer-valued key from the bes.conf file.
+ *
+ * Look-up the bes key \arg key and return its value if set. If the
+ * key is not set, return the default value.
+ *
+ * @param key The key to loop up
+ * @param default_value Return this value if \arg key is not found.
+ * @return The integer value of \arg key.
+ */
+int TheBESKeys::read_int_key(const string &key, int default_value)
+{
+    bool found = false;
+    string value;
+    TheBESKeys::TheKeys()->get_value(key, value, found);
+    // 'key' holds the string value at this point if found is true
+    if (found) {
+        std::istringstream iss(value);
+        int int_val;
+        iss >> int_val;
+        if (iss.eof() || iss.bad() || iss.fail())
+            return default_value;
+        else
+            return int_val;
+    }
+    else {
+        return default_value;
+    }
+}
+
 /** @brief dumps information about this object
  *
  * Displays the pointer value of this instance along with all of the keys.
@@ -484,14 +565,15 @@ void TheBESKeys::dump(ostream &strm) const
         Keys_citer i = _the_keys->begin();
         Keys_citer ie = _the_keys->end();
         for (; i != ie; i++) {
-            strm << BESIndent::LMarg << (*i).first << ":" << endl;
-            BESIndent::Indent();
+            strm << BESIndent::LMarg << (*i).first << ": " /*<< endl*/;
+            // BESIndent::Indent();
             vector<string>::const_iterator v = (*i).second.begin();
             vector<string>::const_iterator ve = (*i).second.end();
             for (; v != ve; v++) {
-                strm << (*v) << endl;
+                strm << (*v) << " "; //endl;
             }
-            BESIndent::UnIndent();
+            strm << endl;
+            //BESIndent::UnIndent();
         }
         BESIndent::UnIndent();
     }

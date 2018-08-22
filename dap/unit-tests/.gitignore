@@ -2,3 +2,10 @@ SequenceAggregationServerTest
 ObjMemCacheTest
 vg_supp.txt
 FunctionResponseCacheTest
+TemporaryFileTest
+bes.conf
+/GlobalMetadataStoreTest
+mds_inventory
+/mds_ledger.txt
+/pathinfo_files/
+/ShowPathInfoTest

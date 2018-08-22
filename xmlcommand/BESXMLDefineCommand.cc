@@ -65,11 +65,8 @@ BESXMLDefineCommand::BESXMLDefineCommand(const BESDataHandlerInterface &base_dhi
 void BESXMLDefineCommand::parse_request(xmlNode *node)
 {
     string value;		// element value, should not be any
-    string def_name;		// definition name
-    string def_space;		// definition storage space
     string action;		// element name, which is the request action
-    map<string, string> props;	// element properties. Should contain name
-    // and optionally space
+    map<string, string> props;	// element attributes; 'name' and maybe 'space'
 
     BESXMLUtils::GetNodeInfo(node, action, value, props);
     if (action != DEFINE_RESPONSE_STR) {
@@ -79,7 +76,7 @@ void BESXMLDefineCommand::parse_request(xmlNode *node)
 
     d_xmlcmd_dhi.action = DEFINE_RESPONSE;
 
-    def_name = props["name"];
+    string def_name = props["name"];
     if (def_name.empty()) {
         string err = action + " command: definition name missing";
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
@@ -88,7 +85,9 @@ void BESXMLDefineCommand::parse_request(xmlNode *node)
     d_xmlcmd_dhi.data[DEF_NAME] = def_name;
     d_cmd_log_info = (string) "define " + def_name;
 
-    def_space = props["space"];
+    // TODO we could set it to "default" here. See the code in DefineResponseHandler.
+    // jhrg 2/11/18
+    string def_space = props["space"];
     if (!def_space.empty()) {
         d_cmd_log_info += " in " + def_space;
     }
@@ -298,6 +297,8 @@ void BESXMLDefineCommand::handle_container_element(const string &action, xmlNode
  *
  * The handler and cmd properties are required
  *
+ * @todo I remove support for aggregations as the BES has defined them. jhrg 2/11/18
+ *
  * @param action we are working on
  * @param node xml node element for the container
  * @param value a value of the container element, should be empty
@@ -323,6 +324,12 @@ void BESXMLDefineCommand::handle_aggregate_element(const string &action, xmlNode
 }
 
 /** @brief prepare the define command by making sure the containers exist
+ *
+ * @todo This could just as easily be done at the end of the parse_request()
+ * method. _Unless_ we want to support the behavior that <define> could come
+ * before <setContainer> in the request document. That is, this method is
+ * called by XMLInterface::execture_dat_request_plan(), after all the elements
+ * have been parsed. jhrg 2/11/18
  */
 void BESXMLDefineCommand::prep_request()
 {
@@ -341,14 +348,6 @@ void BESXMLDefineCommand::prep_request()
         else {
             c = BESContainerStorageList::TheList()->look_for((*i));
         }
-
-        // I don't understand this test. If 'c' is null, then the code below will
-        // fail. If 'c' is not null, then what does it matter that the
-        // BES.Container.Persistence is set to 'nice' - dereferencing 'c' is still
-        // not going to work. I'm changing the test to be 'if (c == 0)...'.
-        // jhrg 10/23/15
-        //
-        // if (!c && BESContainerStorageList::TheList()->isnice() == false) {
 
         if (c == 0)
             throw BESSyntaxUserError(string("Could not find the container ") + (*i), __FILE__, __LINE__);

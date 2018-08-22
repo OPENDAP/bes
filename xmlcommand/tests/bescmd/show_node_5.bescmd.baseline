@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response reqID="[thread:http-nio-8080-exec-4-42][bes_client:/-2]" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <showNode>
+        <node count="2" lastModified="removed date-time" name="/second/dap4">
+            <item isData="false" lastModified="removed date-time" name="Readme.md" size="145" type="leaf"/>
+            <item isData="true" lastModified="removed date-time" name="one_int.dap" size="242" type="leaf"/>
+        </node>
+    </showNode>
+</response>

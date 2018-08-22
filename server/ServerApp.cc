@@ -266,7 +266,10 @@ ServerApp::~ServerApp()
 {
     delete TheBESKeys::TheKeys();
 
+#if 0
     BESCatalogUtils::delete_all_catalogs();
+#endif
+
 }
 
 int ServerApp::initialize(int argc, char **argv)
@@ -552,6 +555,8 @@ int ServerApp::run()
             // This is where the 'child listener' is started. This method will call
             // BESServerHandler::handle(...) that will, in turn, fork. The child process
             // becomes the 'child listener' that actually processes a request.
+            //
+            // This call blocks, using select(), until a client asks for another beslistener.
             _ps->initConnection();
         }
 

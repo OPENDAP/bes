@@ -35,13 +35,19 @@
 using std::endl;
 
 #include "BESDefineResponseHandler.h"
+
+#if 0
 #include "BESSilentInfo.h"
+#endif
+
+
 #include "BESDefine.h"
 #include "BESDefinitionStorageList.h"
 #include "BESDefinitionStorage.h"
 #include "BESDataNames.h"
 #include "BESSyntaxUserError.h"
 #include "BESResponseNames.h"
+#include "BESDataHandlerInterface.h"
 
 BESDefineResponseHandler::BESDefineResponseHandler(const string &name) :
     BESResponseHandler(name)
@@ -61,31 +67,27 @@ BESDefineResponseHandler::~BESDefineResponseHandler()
  * The BESDefine object is created using the containers, constraints,
  * attribute lists and aggregation command parsed in the parse method.
  *
- * The response object built for this command is a BESInfo response
- * object. It will contain one of two possible responses:
- *
- * Successfully added definition &lt;def_name&gt;
- * 
- * Successfully replaced definition &lt;def_name&gt;
- *
- * If the keyword SILENT is set within the data handler interface then no
- * information is added.
+ * @todo Roll this command's execute() method into the XMLDefineCommand::parse_request()
+ * method using the NullResponseObject.
  *
  * @param dhi structure that holds request and response information
  * @throws BESSyntaxUserError if the store name specified does not exist
  * @see BESDataHandlerInterface
- * @see BESInfo
  * @see BESDefine
  * @see DefintionStorageList
  */
 void BESDefineResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
     dhi.action_name = DEFINE_RESPONSE_STR;
+#if 0
     BESInfo *info = new BESSilentInfo();
-    _response = info;
+    d_response_object = info;
+#endif
 
     string def_name = dhi.data[DEF_NAME];
     string store_name = dhi.data[STORE_NAME];
+
+
     if (store_name == "") store_name = PERSISTENCE_VOLATILE;
 
     BESDefinitionStorage *store = BESDefinitionStorageList::TheList()->find_persistence(store_name);
@@ -98,10 +100,14 @@ void BESDefineResponseHandler::execute(BESDataHandlerInterface &dhi)
             dd->add_container(dhi.container);
             dhi.next_container();
         }
+
+        // TODO Now no-ops. Aggreagtion removed. jhrg 2/11/18
+#if 0
         dd->set_agg_cmd(dhi.data[AGG_CMD]);
         dd->set_agg_handler(dhi.data[AGG_HANDLER]);
         dhi.data[AGG_CMD] = "";
         dhi.data[AGG_HANDLER] = "";
+#endif
 
         store->add_definition(def_name, dd);
     }
@@ -124,13 +130,15 @@ void BESDefineResponseHandler::execute(BESDataHandlerInterface &dhi)
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void BESDefineResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
+void BESDefineResponseHandler::transmit(BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/)
 {
-    if (_response) {
-        BESInfo *info = dynamic_cast<BESInfo *>(_response);
+#if 0
+	if (d_response_object) {
+        BESInfo *info = dynamic_cast<BESInfo *>(d_response_object);
         if (!info) throw BESInternalError("cast error", __FILE__, __LINE__);
         info->transmit(transmitter, dhi);
     }
+#endif
 }
 
 /** @brief dumps information about this object

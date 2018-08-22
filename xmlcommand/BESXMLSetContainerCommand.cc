@@ -46,7 +46,9 @@ BESXMLSetContainerCommand::BESXMLSetContainerCommand(const BESDataHandlerInterfa
 
 /** @brief parse a set container command.
  *
- &lt;setContainer name="c" space="catalog"&gt;data/nc/fnoc1.nc&lt;/setContainer&gt;
+ * ~~~{.xml}
+ * <setContainer name="c" space="catalog">data/nc/fnoc1.nc</setContainer>
+ * ~~~
  *
  * @param node xml2 element node pointer
  */
@@ -82,6 +84,7 @@ void BESXMLSetContainerCommand::parse_request(xmlNode *node)
     }
     d_xmlcmd_dhi.data[SYMBOLIC_NAME] = name;
 
+#if 0
     // where should this container be stored
     d_xmlcmd_dhi.data[STORE_NAME] = PERSISTENCE_VOLATILE;
     storage = props["space"];
@@ -90,6 +93,15 @@ void BESXMLSetContainerCommand::parse_request(xmlNode *node)
     }
     else {
         storage = PERSISTENCE_VOLATILE;
+    }
+#endif
+    // where should this container be stored
+    storage = props["space"];
+    if (!storage.empty()) {
+        d_xmlcmd_dhi.data[STORE_NAME] = storage;
+    }
+    else {
+        d_xmlcmd_dhi.data[STORE_NAME] = PERSISTENCE_VOLATILE; // PERSISTENCE_VOLATILE == "default"
     }
 
     // this can be the empty string, so just set it this way

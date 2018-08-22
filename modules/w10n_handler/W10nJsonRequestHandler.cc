@@ -46,8 +46,8 @@
 W10nJsonRequestHandler::W10nJsonRequestHandler( const string &name )
     : BESRequestHandler( name )
 {
-    add_handler( HELP_RESPONSE, W10nJsonRequestHandler::build_help ) ;
-    add_handler( VERS_RESPONSE, W10nJsonRequestHandler::build_version ) ;
+    add_method( HELP_RESPONSE, W10nJsonRequestHandler::build_help ) ;
+    add_method( VERS_RESPONSE, W10nJsonRequestHandler::build_version ) ;
 }
 
 /** @brief Any cleanup that needs to take place

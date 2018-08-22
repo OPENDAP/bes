@@ -8,6 +8,11 @@ AUTOMAKE_OPTIONS = foreign check-news
 
 ACLOCAL_AMFLAGS = -I conf
 
+AM_CPPFLAGS = $(XML2_CFLAGS) -I$(top_srcdir)/xmlcommand $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch \
+$(DAP_CFLAGS)
+
+#  -I$(top_srcdir)/modules/dmrpp_module
+
 AM_CXXFLAGS =
 
 # These are not used by automake but are often useful for certain types of
@@ -56,9 +61,12 @@ BESDAP_SRCS = 	BESDASResponseHandler.cc \
 	DapFunctionUtils.cc \
 	CachedSequence.cc \
 	CacheTypeFactory.cc \
-	BESHandlerUtil.cc \
-	CacheMarshaller.cc CacheUnMarshaller.cc \
-	ObjMemCache.cc
+	TempFile.cc \
+	CacheMarshaller.cc \
+	CacheUnMarshaller.cc \
+	ObjMemCache.cc \
+	ShowPathInfoResponseHandler.cc \
+	GlobalMetadataStore.cc
 
 BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDDSResponseHandler.h \
@@ -86,14 +94,19 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 	DapFunctionUtils.h \
 	CachedSequence.h \
 	CacheTypeFactory.h \
-	BESHandlerUtil.h \
-	CacheMarshaller.h CacheUnMarshaller.h \
-	ObjMemCache.h
+	TempFile.h \
+	CacheMarshaller.h \
+	CacheUnMarshaller.h \
+	ObjMemCache.h \
+	GlobalMetadataStore.h \
+	ShowPathInfoResponseHandler.h
 
 libdap_module_la_SOURCES = $(BESDAP_SRCS) $(BESDAP_HDRS)
-libdap_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
+# libdap_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
 libdap_module_la_LDFLAGS = -avoid-version -module 
 libdap_module_la_LIBADD = $(DAP_LIBS) $(LIBS)
+
+# $(top_builddir)/modules/dmrpp_module/libdmrpp_module.la
 
 pkginclude_HEADERS = $(BESDAP_HDRS) 
 

@@ -42,7 +42,7 @@
 // These typedefs are used to record information about the files in the cache.
 // See BESFileLockingCache.cc and look at the purge() method.
 typedef struct {
-    string name;
+    std::string name;
     unsigned long long size;
     time_t time;
 } cache_entry;
@@ -72,7 +72,7 @@ typedef std::list<cache_entry> CacheFiles;
  * latter obtains a shared lock iff the file already exists. The unlock()
  * methods unlock a file. The lock_cache_info() and unlock_cache_info() are
  * used to control access to the whole cache - with the open + lock and
- * close + unlock operations performed atomically. Other methods that operate
+ * close + unlock operations are performed atomically. Other methods that operate
  * on the cache info file must only be called when the lock has been obtained.
  *
  * @note The locking mechanism uses Unix fcntl(2) and so is _per process_. That
@@ -93,23 +93,24 @@ private:
     bool d_cache_enabled;
 
     // pathname of the cache directory
-    string d_cache_dir;
+    std::string d_cache_dir;
 
     // tack this on the front of each cache file name
-    string d_prefix;
+    std::string d_prefix;
 
-    /// How many bytes can the cache hold before we have to purge
+    /// How many bytes can the cache hold before we have to purge?
+    /// A value of zero indicates a cache of unlimited size.
     unsigned long long d_max_cache_size_in_bytes;
 
     // When we purge, how much should we throw away. Set in the ctor to 80% of the max size.
     unsigned long long d_target_size;
 
     // Name of the file that tracks the size of the cache
-    string d_cache_info;
+    std::string d_cache_info;
     int d_cache_info_fd;
 
     // map that relates files to the descriptor used to obtain a lock
-    typedef std::multimap<string, int> FilesAndLockDescriptors;
+    typedef std::multimap<std::string, int> FilesAndLockDescriptors;
     FilesAndLockDescriptors d_locks;
 
     bool m_check_ctor_params();
@@ -117,21 +118,21 @@ private:
 
     unsigned long long m_collect_cache_dir_info(CacheFiles &contents);
 
-    void m_record_descriptor(const string &file, int fd);
-    int m_remove_descriptor(const string &file);
+    void m_record_descriptor(const std::string &file, int fd);
+    int m_remove_descriptor(const std::string &file);
 #if USE_GET_SHARED_LOCK
-    int m_find_descriptor(const string &file);
+    int m_find_descriptor(const std::string &file);
 #endif
     // Suppress the assignment operator and default copy ctor, ...
     BESFileLockingCache(const BESFileLockingCache &);
     BESFileLockingCache &operator=(const BESFileLockingCache &rhs);
 
-//protected:
 public:
+    // TODO Should cache_enabled be false given that cache_dir is empty? jhrg 2/18/18
     BESFileLockingCache(): d_cache_enabled(true), d_cache_dir(""), d_prefix(""), d_max_cache_size_in_bytes(0),
-        d_target_size(0), d_cache_info(""), d_cache_info_fd(-1) {};
+        d_target_size(0), d_cache_info(""), d_cache_info_fd(-1) { }
 
-    BESFileLockingCache(const string &cache_dir, const string &prefix, unsigned long long size);
+    BESFileLockingCache(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
 
     virtual ~BESFileLockingCache()
     {
@@ -141,45 +142,56 @@ public:
         }
     }
 
-    void initialize(const string &cache_dir, const string &prefix, unsigned long long size);
+    void initialize(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
 
-public:
+    virtual std::string get_cache_file_name(const std::string &src, bool mangle = true);
 
-    virtual string get_cache_file_name(const string &src, bool mangle = true);
-
-    virtual bool create_and_lock(const string &target, int &fd);
-    virtual bool get_read_lock(const string &target, int &fd);
+    virtual bool create_and_lock(const std::string &target, int &fd);
+    virtual bool get_read_lock(const std::string &target, int &fd);
     virtual void exclusive_to_shared_lock(int fd);
-    virtual void unlock_and_close(const string &target);
+    virtual void unlock_and_close(const std::string &target);
 
     virtual void lock_cache_write();
     virtual void lock_cache_read();
     virtual void unlock_cache();
 
-    virtual unsigned long long update_cache_info(const string &target);
+    virtual unsigned long long update_cache_info(const std::string &target);
     virtual bool cache_too_big(unsigned long long current_size) const;
     virtual unsigned long long get_cache_size();
-    virtual void update_and_purge(const string &new_file);
-    virtual void purge_file(const string &file);
+    virtual void update_and_purge(const std::string &new_file);
+    virtual void purge_file(const std::string &file);
+
+    /**
+     * @brief Is this cache allowed to store as much as it wants?
+     *
+     * If the size of the cache is zero bytes, then it is allowed to
+     * grow with out bounds.
+     *
+     * @return True if the cache is unlimited in size, false if values
+     * will be purged after a preset size is exceeded.
+     */
+    bool is_unlimited() const {
+        return d_max_cache_size_in_bytes == 0;
+    }
 
     /// @return The prefix used for items in an instance of BESFileLockingCache
-    const string get_cache_file_prefix()
+    const std::string get_cache_file_prefix()
     {
         return d_prefix;
     }
 
     /// @return The directory used for the an instance of BESFileLockingCache
-    const string get_cache_directory()
+    const std::string get_cache_directory()
     {
         return d_cache_dir;
     }
 
     // This is a static method because it's often called from 'get_instance()'
     // methods that are static.
-    static bool dir_exists(const string &dir);
+    static bool dir_exists(const std::string &dir);
 
     /// @return Is this cache enabled?
-    bool cache_enabled()
+    bool cache_enabled() const
     {
         return d_cache_enabled;
     }
@@ -190,7 +202,7 @@ public:
         d_cache_enabled = false;
     }
 
-    /// @brief Enabel the cache
+    /// @brief Enable the cache
     void enable()
     {
         d_cache_enabled = true;

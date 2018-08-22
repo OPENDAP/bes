@@ -25,14 +25,11 @@
 #include "config.h"
 
 #include <string>
-#include <sstream>
-#include <cassert>
-
+#
 #include <BESError.h>
 #include <BESDebug.h>
 
 #include "DmrppD4Sequence.h"
-#include "DmrppUtil.h"
 
 using namespace libdap;
 using namespace std;
@@ -72,7 +69,7 @@ DmrppD4Sequence::operator=(const DmrppD4Sequence &rhs)
     dynamic_cast<D4Sequence &>(*this) = rhs; // run Constructor=
 
     _duplicate(rhs);
-    DmrppCommon::_duplicate(rhs);
+    DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }
@@ -80,33 +77,19 @@ DmrppD4Sequence::operator=(const DmrppD4Sequence &rhs)
 bool
 DmrppD4Sequence::read()
 {
-#if 0
-    BESDEBUG("dmrpp", "Entering DmrppD4Sequence::read for " << name() << endl);
-
-    if (read_p())
-        return true;
-
-    // FIXME
-
-    set_read_p(true);
-
-    return true;
-#endif
     BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
 
     throw BESError("Unsupported type libdap::D4Sequence (dmrpp::DmrppSequence)",BES_INTERNAL_ERROR, __FILE__, __LINE__);
-
-
 }
 
 void DmrppD4Sequence::dump(ostream & strm) const
 {
-    strm << DapIndent::LMarg << "DmrppD4Sequence::dump - (" << (void *) this << ")" << endl;
-    DapIndent::Indent();
+    strm << BESIndent::LMarg << "DmrppD4Sequence::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
     DmrppCommon::dump(strm);
     D4Sequence::dump(strm);
-    strm << DapIndent::LMarg << "value:    " << "----" << /*d_buf <<*/ endl;
-    DapIndent::UnIndent();
+    strm << BESIndent::LMarg << "value:    " << "----" << /*d_buf <<*/ endl;
+    BESIndent::UnIndent();
 }
 
 } // namespace dmrpp

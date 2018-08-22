@@ -30,17 +30,23 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include <DDS.h>
 
+#include "GlobalMetadataStore.h"
 #include "BESWWWResponseHandler.h"
 #include "BESRequestHandlerList.h"
 #include "BESDapNames.h"
 #include "BESWWWNames.h"
 #include "BESWWW.h"
 #include "BESDDSResponse.h"
+#include "BESTransmitter.h"
+
 #include "BESWWWTransmit.h"
 
 using namespace libdap;
+using namespace bes;
 
 BESWWWResponseHandler::BESWWWResponseHandler( const string &name )
 :  BESResponseHandler(name)
@@ -72,27 +78,89 @@ void
 {
     dhi.action_name = WWW_RESPONSE_STR;
 
+    dhi.action_name = DDX_RESPONSE_STR;
+
+    GlobalMetadataStore *mds = GlobalMetadataStore::get_instance();
+    GlobalMetadataStore::MDSReadLock lock;
+
+    dhi.first_container();
+    if (mds) lock = mds->is_dds_available(dhi.container->get_relative_name());
+
+    if (mds && lock()) {
+        DDS *dds = mds->get_dds_object(dhi.container->get_relative_name());
+        BESDDSResponse *bdds = new BESDDSResponse(dds);
+
+#if FORCE_DAP_VERSION_TO_3_2
+        dds->set_dap_version("3.2");
+#else
+        // These values are read from the BESContextManager by the BESDapResponse ctor
+        if (!bdds->get_dap_client_protocol().empty()) {
+            dds->set_dap_version(bdds->get_dap_client_protocol());
+        }
+#endif
+        dds->set_request_xml_base(bdds->get_request_xml_base());
+
+        d_response_object = new BESWWW(bdds);
+        dhi.action = WWW_RESPONSE;
+    }
+    else {
+        // Make a blank DDS. It is the responsibility of the specific request
+        // handler to set the BaseTypeFactory. It is set to NULL here
+        DDS *dds = new DDS(NULL, "virtual");
+
+        BESDDSResponse *bdds = new BESDDSResponse(dds);
+        d_response_name = DDS_RESPONSE;
+        dhi.action = DDS_RESPONSE;
+
+#if FORCE_DAP_VERSION_TO_3_2
+        dds->set_dap_version("3.2");
+#else
+        if (!bdds->get_dap_client_protocol().empty()) {
+            dds->set_dap_version(bdds->get_dap_client_protocol());
+        }
+#endif
+
+        dds->set_request_xml_base(bdds->get_request_xml_base());
+
+        d_response_object = bdds;
+
+        BESRequestHandlerList::TheList()->execute_each(dhi);
+
+        if (mds) {
+            dhi.first_container();  // must reset container; execute_each() iterates over all of them
+            mds->add_responses(static_cast<BESDDSResponse*>(d_response_object)->get_dds(),
+                dhi.container->get_relative_name());
+        }
+
+        d_response_object = new BESWWW(bdds);
+        dhi.action = WWW_RESPONSE;
+    }
+
+    // Original code follows
+#if 0
     // Create the DDS.
-    // NOTE: It is the responsbility of the specific request handler to set
+    // NOTE: It is the responsibility of the specific request handler to set
     // the BaseTypeFactory. It is set to NULL here
     DDS *dds = new DDS(NULL, "virtual");
     BESDDSResponse *bdds = new BESDDSResponse(dds);
-    _response = bdds;
-    _response_name = DDS_RESPONSE;
+    d_response_object = bdds;
+    d_response_name = DDS_RESPONSE;
     dhi.action = DDS_RESPONSE;
     BESRequestHandlerList::TheList()->execute_each(dhi);
 #if 0
     // Fill the DAS
     DAS *das = new DAS;
     BESDASResponse *bdas = new BESDASResponse(das);
-    _response = bdas;
-    _response_name = DAS_RESPONSE;
+    d_response_object = bdas;
+    d_response_name = DAS_RESPONSE;
     dhi.action = DAS_RESPONSE;
     BESRequestHandlerList::TheList()->execute_each(dhi);
 #endif
-    BESWWW *www = new BESWWW(/*bdas,*/ bdds);
-    _response = www;
+    BESWWW *www = new BESWWW(/*bdas,*/bdds);
+    d_response_object = www;
     dhi.action = WWW_RESPONSE;
+#endif
+
 }
 
 /** @brief transmit the response object built by the execute command
@@ -110,8 +178,8 @@ void
 void BESWWWResponseHandler::transmit(BESTransmitter * transmitter,
                                      BESDataHandlerInterface & dhi)
 {
-    if (_response) {
-        transmitter->send_response(WWW_TRANSMITTER, _response, dhi);
+    if (d_response_object) {
+        transmitter->send_response(WWW_TRANSMITTER, d_response_object, dhi);
     }
 }
 

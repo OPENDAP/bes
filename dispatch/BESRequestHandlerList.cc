@@ -30,10 +30,11 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include "BESRequestHandlerList.h"
 #include "BESRequestHandler.h"
 #include "BESInternalError.h"
-#include "BESDataNames.h"
 
 BESRequestHandlerList *BESRequestHandlerList::_instance = 0;
 
@@ -59,7 +60,7 @@ bool BESRequestHandlerList::add_handler(const string &handler_name, BESRequestHa
  *
  * Finds, removes and returns the specified request handler. if the handler
  * exists then it is removed from the list, but not deleted. Deleting the
- * request handler is the responsability of the caller. The request handler is
+ * request handler is the responsibility of the caller. The request handler is
  * then returned to the caller. If not found, NULL is returned
  *
  * @param handler_name name of the data type request handler to be removed and
@@ -192,13 +193,14 @@ void BESRequestHandlerList::execute_all(BESDataHandlerInterface &dhi)
     BESRequestHandlerList::Handler_citer ie = get_last_handler();
     for (; i != ie; i++) {
         BESRequestHandler *rh = (*i).second;
-        p_request_handler p = rh->find_handler(dhi.action);
+        p_request_handler_method p = rh->find_method(dhi.action);
         if (p) {
             p(dhi);
         }
     }
 }
 
+#if 0
 /** @brief Execute a single method that will fill in the response object
  * rather than iterating over the list of containers or request handlers.
  *
@@ -224,6 +226,7 @@ void BESRequestHandlerList::execute_once(BESDataHandlerInterface &dhi)
     dhi.first_container();
     execute_current(dhi);
 }
+#endif
 
 /** @brief Execute a single method for the current container that will fill
  * in the response object rather than iterating over the list of containers
@@ -244,48 +247,30 @@ void BESRequestHandlerList::execute_once(BESDataHandlerInterface &dhi)
 void BESRequestHandlerList::execute_current(BESDataHandlerInterface &dhi)
 {
     if (dhi.container) {
-        // FIXME: This needs to happen here, but really should be done
+        // Patrick's comment: This needs to happen here, but really should be done
         // in the get_container_type method in the container class if it
-        // needs to happen. But those methods are not virtual and would
-        // require a release of all modules.
+        // needs to happen.
+        //
+        // This call will, for BESFileContainer, decompress and cache compressed files,
+        // changing their extensions from, e.g., '.gz' to '.h5' and enabling the
+        // get_container_type() method to function correctly. jhrg 5/31/18
         dhi.container->access();
 
-        // TODO Do not need to use .c_str(). jhrg 2/20/15
-        BESRequestHandler *rh = find_handler((dhi.container->get_container_type()).c_str());
-        if (rh) {
-            p_request_handler p = rh->find_handler(dhi.action);
-            // if we can't find the function, see if there is a catch all
-            // function that handles or redirects the request.
-            //
-            // TODO NB: There are no instances of catch.all handlers.
-            // jhrg 2/20/15
-            if (!p) {
-                p = rh->find_handler( BES_REQUEST_HANDLER_CATCH_ALL);
-            }
+        // Given the kind of thing in the DHI's container (netcdf file, ...) find the
+        // RequestHandler that understands that and then find the method in that handler
+        // that can process the DHI's action.
+        BESRequestHandler *rh = find_handler((dhi.container->get_container_type()));
+        if (!rh)
+            throw BESInternalError(string("The data handler '") + dhi.container->get_container_type() + "' does not exist",
+                __FILE__, __LINE__);
 
-            if (p) {
-                p(dhi); // This is where the request handler is called
+        p_request_handler_method request_handler_method = rh->find_method(dhi.action);
+        if (!request_handler_method) {
+            throw BESInternalError(string("Request handler for '") + dhi.container->get_container_type()
+                + "' does not handle the response type '" + dhi.action + "'", __FILE__, __LINE__);
+        }
 
-                if (dhi.container) {
-                    // This is (likely) for reporting. May not be used... jhrg 2/20/15
-                    string c_list = dhi.data[REAL_NAME_LIST];
-                    if (!c_list.empty()) c_list += ", ";
-                    c_list += dhi.container->get_real_name();
-                    dhi.data[REAL_NAME_LIST] = c_list;
-                }
-            }
-            else {
-                // TODO This should not be an internal error - it's really a configuration error
-                // jhrg 2/20/15
-                string se = "Request handler \"" + dhi.container->get_container_type()
-                    + "\" does not handle the response type \"" + dhi.action + "\"";
-                throw BESInternalError(se, __FILE__, __LINE__);
-            }
-        }
-        else {
-            string se = "The data handler \"" + dhi.container->get_container_type() + "\" does not exist";
-            throw BESInternalError(se, __FILE__, __LINE__);
-        }
+        request_handler_method(dhi); // This is where the request handler method is called
     }
 }
 

@@ -58,6 +58,149 @@ using namespace libdap;
 
 namespace functions {
 
+auto_ptr<Array> bbox_helper(double min_value, double max_value, Array* the_array)
+{
+    // Get the values as doubles
+    vector<double> the_values;
+    extract_double_array(the_array, the_values); // This function sets the size of the_values
+
+    // Build the response
+    unsigned int rank = the_array->dimensions();
+    auto_ptr<Array> response = roi_bbox_build_empty_bbox(rank, the_array->name());
+
+    switch (rank) {
+    case 1: {
+        unsigned int X = the_array->dimension_size(the_array->dim_begin());
+        bool found_start = false;
+        unsigned int start = 0;
+        for (unsigned int i = 0; i < X && !found_start; ++i) {
+            if (the_values[i] >= min_value && the_values[i] <= max_value) {
+                start = i;
+                found_start = true;
+            }
+        }
+        // ! found_start == error?
+        if (!found_start) {
+            ostringstream oss("In function bbox(): No values between ", std::ios::ate);
+            oss << min_value << " and " << max_value << " were found in the array '" << the_array->name() << "'";
+            throw Error(oss.str());
+        }
+        bool found_stop = false;
+        unsigned int stop = X - 1;
+        for (int i = X - 1; i >= 0 && !found_stop; --i) {
+            if (the_values[i] >= min_value && the_values[i] <= max_value) {
+                stop = (unsigned int) (i);
+                found_stop = true;
+            }
+        }
+        // ! found_stop == error?
+        if (!found_stop) throw InternalErr(__FILE__, __LINE__, "In BBoxFunction: Found start but not stop.");
+
+        Structure* slice = roi_bbox_build_slice(start, stop, the_array->dimension_name(the_array->dim_begin()));
+        response->set_vec_nocopy(0, slice);
+        break;
+    }
+    case 2: {
+        // quick reminder: rows == y == j; cols == x == i
+        Array::Dim_iter rows = the_array->dim_begin(), cols = the_array->dim_begin() + 1;
+        unsigned int Y = the_array->dimension_size(rows);
+        unsigned int X = the_array->dimension_size(cols);
+        unsigned int x_start = X - 1; //= 0;
+        unsigned int y_start = 0;
+        bool found_y_start = false;
+        // Must look at all rows to find the 'left-most' col with value
+        for (unsigned int j = 0; j < Y; ++j) {
+            bool found_x_start = false;
+            for (unsigned int i = 0; i < X && !found_x_start; ++i) {
+                unsigned int ind = j * X + i;
+                if (the_values[ind] >= min_value && the_values[ind] <= max_value) {
+                    x_start = min(i, x_start);
+                    found_x_start = true;
+                    if (!found_y_start) {
+                        y_start = j;
+                        found_y_start = true;
+                    }
+                }
+            }
+        }
+        // ! found_y_start == error?
+        if (!found_y_start) {
+            ostringstream oss("In function bbox(): No values between ", std::ios::ate);
+            oss << min_value << " and " << max_value << " were found in the array '" << the_array->name() << "'";
+            throw Error(oss.str());
+        }
+        unsigned int x_stop = 0;
+        unsigned int y_stop = 0;
+        bool found_y_stop = false;
+        // Must look at all rows to find the 'left-most' col with value
+        for (int j = Y - 1; j >= (int) (y_start); --j) {
+            bool found_x_stop = false;
+            for (int i = X - 1; i >= 0 && !found_x_stop; --i) {
+                unsigned int ind = j * X + i;
+                if (the_values[ind] >= min_value && the_values[ind] <= max_value) {
+                    x_stop = max((unsigned int) (i), x_stop);
+                    found_x_stop = true;
+                    if (!found_y_stop) {
+                        y_stop = j;
+                        found_y_stop = true;
+                    }
+                }
+            }
+        }
+        // ! found_stop == error?
+        if (!found_y_stop) throw InternalErr(__FILE__, __LINE__, "In BBoxFunction: Found start but not stop.");
+
+        response->set_vec_nocopy(0, roi_bbox_build_slice(y_start, y_stop, the_array->dimension_name(rows)));
+        response->set_vec_nocopy(1, roi_bbox_build_slice(x_start, x_stop, the_array->dimension_name(cols)));
+        break;
+    }
+    default: {
+        Odometer::shape shape(rank); // the shape of 'the_array'
+        int j = 0;
+        for (Array::Dim_iter i = the_array->dim_begin(), e = the_array->dim_end(); i != e; ++i) {
+            shape.at(j++) = the_array->dimension_size(i);
+        }
+        Odometer odometer(shape);
+        Odometer::shape indices(rank); // Holds a given index
+        Odometer::shape min = shape; // Holds the minimum values for each of rank dimensions
+        Odometer::shape max(rank, 0); // ... and the maximum. min and max define the bounding box
+        // NB: shape is initialized with the size of the array
+        do {
+            if (the_values[odometer.offset()] >= min_value && the_values[odometer.offset()] <= max_value) {
+                // record this index
+                odometer.indices(indices);
+                Odometer::shape::iterator m = min.begin();
+                Odometer::shape::iterator x = max.begin();
+                for (Odometer::shape::iterator i = indices.begin(), e = indices.end(); i != e; ++i, ++m, ++x) {
+                    if (*i < *m) *m = *i;
+
+                    if (*i > *x) *x = *i;
+                }
+            }
+        } while (odometer.next() != odometer.end());
+        // cheap test for 'did we find any values.' If we did, then the
+        // min index will have to be less than the shape (which is the
+        // size of the array). We only need to test one of the indices.
+        if (min[0] == shape[0]) {
+            ostringstream oss("In function bbox(): No values between ", std::ios::ate);
+            oss << min_value << " and " << max_value << " were found in the array '" << the_array->name() << "'";
+            throw Error(oss.str());
+        }
+        Odometer::shape::iterator m = min.begin();
+        Odometer::shape::iterator x = max.begin();
+        Array::Dim_iter d = the_array->dim_begin();
+        for (unsigned int i = 0; i < rank; ++i, ++m, ++x, ++d) {
+            response->set_vec_nocopy(i, roi_bbox_build_slice(*m, *x, the_array->dimension_name(d)));
+        }
+        break;
+    } // default
+    } // switch
+
+    response->set_read_p(true);
+    response->set_send_p(true);
+    return response;
+}
+
 /**
  * @brief Return the bounding box for an array
  *
@@ -110,168 +253,11 @@ function_dap2_bbox(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     the_array->read();
     the_array->set_read_p(true);
 
-    // Get the values as doubles
-    vector<double> the_values;
-    extract_double_array(the_array, the_values); // This function sets the size of the_values
-
     double min_value = extract_double_value(argv[1]);
     double max_value = extract_double_value(argv[2]);
 
-    // Build the response
-    unsigned int rank = the_array->dimensions();
-    auto_ptr<Array> response = roi_bbox_build_empty_bbox(rank, the_array->name());
-
-    switch (rank) {
-    case 1:
-#if UNWIND_BBOX_CODE
-    {
-        unsigned int X = the_array->dimension_size(the_array->dim_begin());
-
-        bool found_start = false;
-        unsigned int start = 0;
-        for (unsigned int i = 0; i < X && !found_start; ++i) {
-            if (the_values[i] >= min_value && the_values[i] <= max_value) {
-                start = i;
-                found_start = true;
-            }
-        }
-
-        // ! found_start == error?
-        if (!found_start) {
-            ostringstream oss("In function bbox(): No values between ", std::ios::ate);
-            oss << min_value << " and " << max_value << " were found in the array '" << the_array->name() << "'";
-            throw Error(oss.str());
-        }
-
-        bool found_stop = false;
-        unsigned int stop = X-1;
-        for (int i = X - 1; i >= 0 && !found_stop; --i) {
-            if (the_values[i] >= min_value && the_values[i] <= max_value) {
-                stop = (unsigned int)i;
-                found_stop = true;
-            }
-        }
-
-        // ! found_stop == error?
-        if (!found_stop)
-            throw InternalErr(__FILE__, __LINE__, "In BBoxFunction: Found start but not stop.");
-
-        Structure *slice = roi_bbox_build_slice(start, stop, the_array->dimension_name(the_array->dim_begin()));
-        response->set_vec_nocopy(0, slice);
-        break;
-    }
-#endif
-    case 2:
-#if UNWIND_BBOX_CODE
-    {
-        // quick reminder: rows == y == j; cols == x == i
-        Array::Dim_iter rows = the_array->dim_begin(), cols = the_array->dim_begin()+1;
-        unsigned int Y = the_array->dimension_size(rows);
-        unsigned int X = the_array->dimension_size(cols);
-
-        unsigned int x_start = X-1; //= 0;
-        unsigned int y_start = 0;
-        bool found_y_start = false;
-        // Must look at all rows to find the 'left-most' col with value
-        for (unsigned int j = 0; j < Y; ++j) {
-            bool found_x_start = false;
-
-            for (unsigned int i = 0; i < X && !found_x_start; ++i) {
-                unsigned int ind = j * X + i;
-                if (the_values[ind] >= min_value && the_values[ind] <= max_value) {
-                    x_start = min(i, x_start);
-                    found_x_start = true;
-                    if (!found_y_start) {
-                        y_start = j;
-                        found_y_start = true;
-                    }
-                }
-            }
-        }
-
-        // ! found_y_start == error?
-        if (!found_y_start) {
-            ostringstream oss("In function bbox(): No values between ", std::ios::ate);
-            oss << min_value << " and " << max_value << " were found in the array '" << the_array->name() << "'";
-            throw Error(oss.str());
-        }
-
-        unsigned int x_stop = 0;
-        unsigned int y_stop = 0;
-        bool found_y_stop = false;
-        // Must look at all rows to find the 'left-most' col with value
-        for (int j = Y - 1; j >= (int)y_start; --j) {
-            bool found_x_stop = false;
-
-            for (int i = X - 1; i >= 0 && !found_x_stop; --i) {
-                unsigned int ind = j * X + i;
-                if (the_values[ind] >= min_value && the_values[ind] <= max_value) {
-                    x_stop = max((unsigned int)i, x_stop);
-                    found_x_stop = true;
-                    if (!found_y_stop) {
-                        y_stop = j;
-                        found_y_stop = true;
-                    }
-                }
-            }
-        }
-
-        // ! found_stop == error?
-        if (!found_y_stop)
-            throw InternalErr(__FILE__, __LINE__, "In BBoxFunction: Found start but not stop.");
-
-        response->set_vec_nocopy(0, roi_bbox_build_slice(y_start, y_stop, the_array->dimension_name(rows)));
-        response->set_vec_nocopy(1, roi_bbox_build_slice(x_start, x_stop, the_array->dimension_name(cols)));
-        break;
-    }
-#endif
-    default: {
-        Odometer::shape shape(rank);       // the shape of 'the_array'
-        int j = 0;
-        for (Array::Dim_iter i = the_array->dim_begin(), e = the_array->dim_end(); i != e; ++i) {
-            shape.at(j++) = the_array->dimension_size(i);
-        }
-        Odometer odometer(shape);
-
-        Odometer::shape indices(rank);  // Holds a given index
-        Odometer::shape min = shape;    // Holds the minimum values for each of rank dimensions
-        Odometer::shape max(rank, 0);   // ... and the maximum. min and max define the bounding box
-                                        // NB: shape is initialized with the size of the array
-        do {
-            if (the_values[odometer.offset()] >= min_value && the_values[odometer.offset()] <= max_value) {
-                // record this index
-                odometer.indices(indices);
-                Odometer::shape::iterator m = min.begin();
-                Odometer::shape::iterator x = max.begin();
-
-                for (Odometer::shape::iterator i = indices.begin(), e = indices.end(); i != e; ++i, ++m, ++x) {
-                    if (*i < *m) *m = *i;
-                    if (*i > *x) *x = *i;
-                }
-            }
-        } while (odometer.next() != odometer.end());
-
-        // cheap test for 'did we find any values.' If we did, then the
-        // min index will have to be less than the shape (which is the
-        // size of the array). We only need to test one of the indices.
-        if (min[0] == shape[0]) {
-            ostringstream oss("In function bbox(): No values between ", std::ios::ate);
-            oss << min_value << " and " << max_value << " were found in the array '" << the_array->name() << "'";
-            throw Error(oss.str());
-        }
-
-        Odometer::shape::iterator m = min.begin();
-        Odometer::shape::iterator x = max.begin();
-        Array::Dim_iter d = the_array->dim_begin();
-        for (unsigned int i = 0; i < rank; ++i, ++m, ++x, ++d) {
-            response->set_vec_nocopy(i, roi_bbox_build_slice(*m, *x, the_array->dimension_name(d)));
-        }
-        break;
-    }   // default
-    }   // switch
-
-    response->set_read_p(true);
-    response->set_send_p(true);
+    // Get the values as doubles
+    auto_ptr<Array> response = bbox_helper(min_value, max_value, the_array);
 
     *btpp = response.release();
     return;

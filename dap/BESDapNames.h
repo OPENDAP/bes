@@ -77,7 +77,6 @@
 #define DATADDX_DESCRIPT "OPeNDAP Data Description and Attributes in DDX format and Data Object"
 #define DATADDX_RESPONSE_STR "getDataDDX"
 
-#if 1
 #define DMR_RESPONSE "get.dmr"
 #define DMR_SERVICE "dmr"
 #define DMR_DESCRIPT "OPeNDAP Data DMR Structure"
@@ -87,14 +86,17 @@
 #define DAP4DATA_SERVICE "dap"
 #define DAP4DATA_DESCRIPT "OPeNDAP DAP4 Data Structure"
 #define DAP4DATA_RESPONSE_STR "getDAP"
-#endif
-/*
- * DataDDX data names
- */
+
+// DataDDX data names
 #define DATADDX_STARTID "dataddx_startid"
 #define DATADDX_BOUNDARY "dataddx_boundary"
 
-
+// Container attribute used to signal the DMR++ handler to look in the
+// MDS for a DMR++ response. jhrg 5/31/18
+#define MDS_HAS_DMRPP "MDS_HAS_DMRPP"
+#define USE_DMRPP_KEY "DAP.Use.Dmrpp"
+#define DMRPP_NAME_KEY "DAP.Dmrpp.Name"
+#define DMRPP_DEFAULT_NAME "dmrpp"
 
 #endif // E_BESDapNames_H
 

@@ -221,7 +221,7 @@ void StandAloneClient::executeCommand(const string & cmd, int repeat)
 				show_stream = new ostringstream;
 			}
 
-			BESDEBUG( "standalone", "cmd client sending " << cmd << endl );
+			BESDEBUG( "standalone", "StandAloneClient::executeCommand sending: " << cmd << endl );
 
 	        BESStopWatch sw;
 	        if (BESISDEBUG(TIMING_LOG)) sw.start("StandAloneClient::executeCommand");
@@ -236,42 +236,35 @@ void StandAloneClient::executeCommand(const string & cmd, int repeat)
 
 			int status = interface->execute_request("standalone");
 
-			if (status == 0) {
-				BESDEBUG( "standalone", "BESServerHandler::execute - "
-						<< "executed successfully" << endl );
-				}
-				else
-				{
-					// an error has occurred.
-					BESDEBUG( "standalone", "BESServerHandler::execute - "
-							"error occurred" << endl );
+			*_strm << flush;
 
-					// flush what we have in the stream to the client
-					*_strm << flush;
+			// Put the call to finish() here beacuse we're not sending chunked responses back
+			// to a client over PPT. In the BESServerHandler.cc code, we must do that and hence,
+			// break up the call to finish() for the error and no-error cases.
+			status = interface->finish(status);
 
-					// transmit the error message. finish_with_error will transmit
-					// the error
-					interface->finish_with_error( status );
+            if (status == 0) {
+                BESDEBUG("standalone", "StandAloneClient::executeCommand - executed successfully" << endl);
+            }
+            else {
+                // an error has occurred.
+                BESDEBUG("standalone", "StandAloneClient::executeCommand - error occurred" << endl);
+                switch (status) {
+                case BES_INTERNAL_FATAL_ERROR: {
+                    cerr << "Status not OK, dispatcher returned value " << status << endl;
+                    exit(1);
+                }
+                    break;
+                case BES_INTERNAL_ERROR:
+                case BES_SYNTAX_USER_ERROR:
+                case BES_FORBIDDEN_ERROR:
+                case BES_NOT_FOUND_ERROR:
 
-					switch (status)
-					{
-						case BES_INTERNAL_FATAL_ERROR:
-						{
-							cerr << "BES server " << getpid()
-							<< ": Status not OK, dispatcher returned value "
-							<< status << endl;
-							exit( 1 );
-						}
-						break;
-						case BES_INTERNAL_ERROR:
-						case BES_SYNTAX_USER_ERROR:
-						case BES_FORBIDDEN_ERROR:
-						case BES_NOT_FOUND_ERROR:
+                default:
+                    break;
+                }
+            }
 
-						default:
-						break;
-					}
-				}
 			delete interface;
 			interface = 0;
 

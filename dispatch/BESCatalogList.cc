@@ -40,121 +40,214 @@
 
 #include <sstream>
 
-using std::ostringstream;
-
 #include "BESCatalogList.h"
 #include "BESCatalog.h"
+#include "BESCatalogDirectory.h"
 #include "BESCatalogEntry.h"
 #include "BESInfo.h"
+
 #include "BESSyntaxUserError.h"
 #include "TheBESKeys.h"
 #include "BESNames.h"
 
+using namespace std;
+
+#if 0
 static pthread_once_t BESCatalogList_instance_control = PTHREAD_ONCE_INIT;
+#endif
 
-BESCatalogList *BESCatalogList::_instance = 0;
 
-/** @brief returns the singleton BESCatalogList instance. The pthreads library insures that only one instance
- * can be made in a process lifetime.
+BESCatalogList *BESCatalogList::d_instance = 0;
+
+/** @brief Get the singleton BESCatalogList instance.
+ *
+ * This static method returns the instance of this singleton class. It
+ * uses the protected constructor below to read the name of the default
+ * catalog from the BES's configuration file, using the key "BES.Catalog.Default".
+ * If the key is not found or the key lookup fails for any reason, it
+ * uses the the value of BES_DEFAULT_CATALOG as defined in this class'
+ * header file (currently the confusing name "catalog").
+ *
+ * The implementation will only build one instance of CatalogList and
+ * thereafter simple return that pointer.
+ *
+ * For this code, the default catalog is implemented suing CatalogDirectory,
+ * which exposes the BES's local POSIX file system, rooted at a place set in
+ * the BES configuration file.
+ *
+ * @return A pointer to the CatalogList singleton
  */
 BESCatalogList *
-BESCatalogList::TheCatalogList() {
+BESCatalogList::TheCatalogList()
+{
+#if 0
     pthread_once(&BESCatalogList_instance_control, initialize_instance);
-    return _instance;
+#endif
+
+
+    if (d_instance == 0) initialize_instance();
+
+    return d_instance;
 }
 
 /**
- * private static that only get's called once by dint of...    EXPLAIN
+ * private static that only get's called once by using pthread_once and
+ * pthread_once_t mutex.
  */
-void BESCatalogList::initialize_instance() {
-    if (_instance == 0) {
-        _instance = new BESCatalogList;
+void BESCatalogList::initialize_instance()
+{
+#if 0
+    if (d_instance == 0) {
+        d_instance = new BESCatalogList;
 #ifdef HAVE_ATEXIT
         atexit(delete_instance);
 #endif
     }
+#endif
+
+    d_instance = new BESCatalogList;
+#ifdef HAVE_ATEXIT
+    atexit(delete_instance);
+#endif
+
 }
 
 /**
- * Private static function can only be called by friends andf pThreads code.
+ * Private static function can only be called by friends and pThreads code.
  */
-void BESCatalogList::delete_instance() {
-    delete _instance;
-    _instance = 0;
+void BESCatalogList::delete_instance()
+{
+    delete d_instance;
+    d_instance = 0;
 }
 
 /** @brief construct a catalog list
  *
  * @see BESCatalog
  */
-BESCatalogList::BESCatalogList() {
+BESCatalogList::BESCatalogList()
+{
     bool found = false;
     string key = "BES.Catalog.Default";
+
+#if 0
+    // FIXME Broken logic: If the default catalog key is not found, it should result in an exception...
+    // jhrg 7/21/18
     try {
-        TheBESKeys::TheKeys()->get_value(key, _default_catalog, found);
+        TheBESKeys::TheKeys()->get_value(key, d_default_catalog_name, found);
     }
     catch (BESError &) {
         found = false;
     }
-    if (!found || _default_catalog.empty()) {
-        _default_catalog = BES_DEFAULT_CATALOG;
+#endif
+
+    // The only way get_value() throws is when a single key has multiple values.
+    // However, TheKeys() throws if the bes.conf file cannot be found.
+    // This code should probably allow that to be logged and the server to fail
+    // to start, not hide the error. jhrg 7/22/18
+    TheBESKeys::TheKeys()->get_value(key, d_default_catalog_name, found);
+
+    if (!found || d_default_catalog_name.empty()) {
+        d_default_catalog_name = BES_DEFAULT_CATALOG;
     }
+
+    // Build the default catalog and add it to the map of catalogs. jhrg 7/21/18
+    d_default_catalog = new BESCatalogDirectory(d_default_catalog_name);
+    add_catalog(d_default_catalog);
 }
 
 /** @brief list destructor deletes all registered catalogs
  *
  * @see BESCatalog
  */
-BESCatalogList::~BESCatalogList() {
-    catalog_iter i = _catalogs.begin();
-    catalog_iter e = _catalogs.end();
+BESCatalogList::~BESCatalogList()
+{
+    catalog_iter i = d_catalogs.begin();
+    catalog_iter e = d_catalogs.end();
     for (; i != e; i++) {
         BESCatalog *catalog = (*i).second;
-        if (catalog) delete catalog;
+        delete catalog;
     }
+
+    d_catalogs.clear();
 }
 
-/** @brief adds the speciifed catalog to the list
+/** @brief adds the specified catalog to the list
  *
- * @param catalog new catalog to add to the list
- * @return false if a catalog with the given catalog's name
+ * Add a catalog to the list of catalogs. If a catalog with the same
+ * name already exists, don't add the BESCatalog instance (the test
+ * is limited to the BESCatalog object's name) and signal that by returning
+ * false. If the catalog was added, return true.
+ *
+ * @param catalog New catalog to add to the list
+ * @return false If a catalog with the given catalog's name
  * already exists. Returns true otherwise.
  * @see BESCatalog
  */
-bool BESCatalogList::add_catalog(BESCatalog * catalog) {
+bool BESCatalogList::add_catalog(BESCatalog *catalog)
+{
     bool result = false;
     if (catalog) {
         if (find_catalog(catalog->get_catalog_name()) == 0) {
+            // TODO I have no idea why this code was re-written. jhrg 2.25.18
 #if 0
-            _catalogs[catalog->get_catalog_name()] = catalog;
+            d_catalogs[catalog->get_catalog_name()] = catalog;
 #endif
             string name = catalog->get_catalog_name();
-            std::pair<const std::string, BESCatalog*> p = std::make_pair(name, catalog);
-            result = _catalogs.insert(p).second;
+            pair<const string, BESCatalog*> p = make_pair(name, catalog);
+            result = d_catalogs.insert(p).second;
 #if 0
             result = true;
 #endif
         }
     }
+
     return result;
 }
 
-/** @brief reference the specified catalog
+// Modules that call ref_catalog: csv, dap, dmrpp, ff, fits, gdal, hdf4,
+// hdf5, ncml, nc, sql. jhrg 2.25.18
+
+/**
+ *  @brief reference the specified catalog
  *
  * Search the list for the catalog with the given name. If the
  * catalog exists, reference it and return true. If not found then
  * return false.
  *
+ * @note The general use pattern for this method is:
+ * <pre>
+ *  if (!BESCatalogList::TheCatalogList()->ref_catalog("catalog")) {
+ *      BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory("catalog"));
+ *  }
+ *  <pre>
+ *  If "catalog" cannot be found, it's added. If it is found, its reference
+ *  count is incremented. This call is generally made in a Module::initialize()
+ *  method (and the matching deref_catalog() call is made in the Module::terminate()
+ *  method.
+ *
+ * @note This is part of a system that lets modules 'reference' a particular
+ * catalog so that when all references to it are gone, it can be deleted.
+ * Given that Catalog instances are pretty small and only get used when called,
+ * I don't think we need this. The destructor for this class, which gets
+ * called by at_exit(), will remove all the Catalog instances. The argument
+ * for this scheme is that each handler should be managing its use of the BES
+ * so that its terminate() method cleans up any resources allocated. Using
+ * this won't break anything, so it's easiest to leave it in place. However,
+ * if it is used 100% by the handlers, then there should be nothing for the
+ * class' dtor to actually delete, as noted there.
+ *
  * @param catalog_name name of the catalog to reference
  * @return true if successfully found and referenced, false otherwise
  * @see BESCatalog
  */
-bool BESCatalogList::ref_catalog(const string &catalog_name) {
+bool BESCatalogList::ref_catalog(const string &catalog_name)
+{
     bool ret = false;
     BESCatalog *cat = 0;
     BESCatalogList::catalog_iter i;
-    i = _catalogs.find(catalog_name);
-    if (i != _catalogs.end()) {
+    i = d_catalogs.find(catalog_name);
+    if (i != d_catalogs.end()) {
         cat = (*i).second;
         cat->reference_catalog();
         ret = true;
@@ -162,26 +255,33 @@ bool BESCatalogList::ref_catalog(const string &catalog_name) {
     return ret;
 }
 
-/** @brief de-reference the specified catalog and remove from list
+// Modules that call deref_catalog: csv, dap, dmrpp, ff, fits, gdal, hdf4,
+// hdf5, ncml, nc, sql. jhrg 2.25.18
+
+/**
+ * @brief de-reference the specified catalog and remove from list
  * if no longer referenced
  *
  * Search the list for the catalog with the given name. If the
  * catalog exists, de-reference it. If there are no more references
  * then remove the catalog from the list and delete it.
  *
+ * @note See the note for BESCatalogList::ref_catalog()
+ *
  * @param catalog_name name of the catalog to de-reference
  * @return true if successfully de-referenced, false otherwise
  * @see BESCatalog
  */
-bool BESCatalogList::deref_catalog(const string &catalog_name) {
+bool BESCatalogList::deref_catalog(const string &catalog_name)
+{
     bool ret = false;
     BESCatalog *cat = 0;
     BESCatalogList::catalog_iter i;
-    i = _catalogs.find(catalog_name);
-    if (i != _catalogs.end()) {
+    i = d_catalogs.find(catalog_name);
+    if (i != d_catalogs.end()) {
         cat = (*i).second;
         if (!cat->dereference_catalog()) {
-            _catalogs.erase(i);
+            d_catalogs.erase(i);
             delete cat;
         }
         ret = true;
@@ -196,43 +296,59 @@ bool BESCatalogList::deref_catalog(const string &catalog_name) {
  * @see BESCatalog
  */
 BESCatalog *
-BESCatalogList::find_catalog(const string &catalog_name) {
-    BESCatalog *ret = 0;
-    BESCatalogList::catalog_citer i;
-    i = _catalogs.find(catalog_name);
-    if (i != _catalogs.end()) {
-        ret = (*i).second;
+BESCatalogList::find_catalog(const string &catalog_name) const
+{
+    BESCatalogList::catalog_citer i = d_catalogs.find(catalog_name);
+    if (i != d_catalogs.end()) {
+        return (*i).second;
     }
-    return ret;
+    return 0;
 }
 
-/** @brief show the list of catalogs
+/**
+ * @brief Return a CatalogEntry object listing the BES's catalogs
  *
- * This method adds information about the list of catalogs that exist
+ * Build a CatalogEntry object that lists all of the registered catalogs. This
+ * enables a BES with more than just the default catalog to present them as group
+ * 'rooted' at "/".
  *
- * If there is a problem accessing the requested node then the reason for
- * the problem must be included in the informational response, not an
- * exception thrown. This method will not throw an exception.
+ * @note This method is currently called only by BESCatalogResponseHandler::execute()
+ * when the 'showCatalog' command is responding to information about "/" and
+ * there is more than just a single catalog configured for the BES. Note that there
+ * is always a default catalog in the BES.
  *
- * @param coi is the request to include collections or just the specified
- * container
- * @param info informational object to add information to
+ * @note The original documentation for this method claimed it never threw an exception,
+ * but BESCatalogDirectory (one - the only? - implementation of BESCatalog::show_catalog)
+ * throws exceptions for several conditions.
+ *
+ * @todo This is only used in BESCatalogResposeHandler::execute() for a condition that
+ * the OLFS will never trigger. When the showCatalog command is replaces by showNode, this
+ * method can be removed. jhrg 7/22/18
+ *
+ * @param entry If null, make a new entry and use it to return the information, otherwise
+ * add the information about the catalogs to the passed instance.
+ * @param show_default If true, include information about the default catalog, if false,
+ * don't. True by default.
+ * @return A BESCatalogEntry instance with information about all of the catalogs. If
+ * the 'entry' parameter was null, the caller is responsible for deleting the
+ * returned object.
  */
 BESCatalogEntry *
-BESCatalogList::show_catalogs(BESDataHandlerInterface &/*dhi*/, BESCatalogEntry *entry, bool show_default) {
+BESCatalogList::show_catalogs(BESCatalogEntry *entry, bool show_default)
+{
     BESCatalogEntry *myentry = entry;
     if (!myentry) {
         myentry = new BESCatalogEntry("/", "");
     }
-    catalog_citer i = _catalogs.begin();
-    catalog_citer e = _catalogs.end();
+    catalog_citer i = d_catalogs.begin();
+    catalog_citer e = d_catalogs.end();
     for (; i != e; i++) {
         // if show_default is true then display all catalogs
         // if !show_default but this current catalog is not the default
         // then display
-        if (show_default || (*i).first != default_catalog()) {
+        if (show_default || (*i).first != default_catalog_name()) {
             BESCatalog *catalog = (*i).second;
-            catalog->show_catalog("", SHOW_INFO_RESPONSE, myentry);
+            catalog->show_catalog("", myentry);
         }
     }
 
@@ -246,15 +362,16 @@ BESCatalogList::show_catalogs(BESDataHandlerInterface &/*dhi*/, BESCatalogEntry 
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESCatalogList::dump(ostream &strm) const {
+void BESCatalogList::dump(ostream &strm) const
+{
     strm << BESIndent::LMarg << "BESCatalogList::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
-    strm << BESIndent::LMarg << "default catalog: " << _default_catalog << endl;
-    if (_catalogs.size()) {
+    strm << BESIndent::LMarg << "default catalog: " << d_default_catalog_name << endl;
+    if (d_catalogs.size()) {
         strm << BESIndent::LMarg << "catalog list:" << endl;
         BESIndent::Indent();
-        catalog_citer i = _catalogs.begin();
-        catalog_citer e = _catalogs.end();
+        catalog_citer i = d_catalogs.begin();
+        catalog_citer e = d_catalogs.end();
         for (; i != e; i++) {
             BESCatalog *catalog = (*i).second;
             strm << BESIndent::LMarg << (*i).first << catalog << endl;

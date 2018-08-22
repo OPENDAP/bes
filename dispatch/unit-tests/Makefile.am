@@ -25,12 +25,17 @@ check_PROGRAMS = $(TESTS)
 
 noinst_HEADERS = test_config.h test_utils.h
 
+BUILT_SOURCES = test_config.h bes.conf
+
 if CPPUNIT
 # This determines what gets run by 'make check.'
-TESTS = constraintT defT keysT pfileT plistT pvolT replistT		\
-reqhandlerT reqlistT resplistT infoT agglistT debugT utilT regexT	\
-scrubT checkT servicesT fsT urlT BESCatalogListUnitTest containerT	\
-uncompressT cacheT 
+TESTS = constraintT defT keysT pfileT plistT pvolT replistT	\
+reqhandlerT reqlistT resplistT infoT agglistT debugT utilT regexT \
+scrubT checkT servicesT fsT urlT containerT	uncompressT cacheT \
+BESCatalogListTest WhiteListTest CatalogNodeTest CatalogItemTest
+
+# This is tool to look at CatalogEntry objects. jhrg 3.5.18
+# complete_catalog_lister
 
 if LIBDAP
 TESTS += catT
@@ -53,7 +58,7 @@ endif
 # created when tests are run. jhrg 5/13/07
 CACHE = cache/template.txt cache/testfile.txt.bz2 cache/testfile.txt.gz cache/testfile.txt.Z
 
-EXTRA_DIST = $(CACHE) common_tests.exp bad_keys1.ini \
+EXTRA_DIST = $(CACHE) catalog_test catalog_test_baselines bad_keys1.ini \
 	defT.ini empty.ini info_test.ini keys_test.ini \
 	keys_test_include.ini keys_test_m1.ini \
 	keys_test_m2.ini keys_test_m3.ini \
@@ -62,11 +67,11 @@ EXTRA_DIST = $(CACHE) common_tests.exp bad_keys1.ini \
 	persistence_file1.txt persistence_file2.txt \
 	persistence_file3.txt persistence_file4.txt \
 	persistence_file_test.txt test_config.h.in \
-    bes.conf
+    bes.conf remote_access_test.ini
 
-DISTCLEANFILES = test_config.h
+DISTCLEANFILES = 
 
-CLEANFILES = *.log *.sum real*
+CLEANFILES = *.log *.sum real* test_config.h bes.conf
 
 ############################################
 # This was generating a directory of "." so 
@@ -75,14 +80,27 @@ CLEANFILES = *.log *.sum real*
 #
 #test_config.h: test_config.h.in Makefile
 #	sed -e "s%[@]srcdir[@]%${srcdir}%" $< > test_config.h
+#
+# Changed test_config.h.in tp $(srcdir)/test_config.h.in. jhrg 1/21/18
+test_config.h: $(srcdir)/test_config.h.in Makefile
+	@mod_abs_srcdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	mod_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	mod_abs_builddir=`echo ${abs_builddir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
+		-e "s%[@]abs_top_srcdir[@]%$${mod_abs_top_srcdir}%" \
+	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
 
-test_config.h: test_config.h.in Makefile
-	@my_topdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
-	sed -e "s%[@]abs_srcdir[@]%$${my_topdir}%" $< > test_config.h
+bes.conf: $(srcdir)/bes.conf.in Makefile
+	@mod_abs_srcdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	mod_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	mod_abs_builddir=`echo ${abs_builddir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
+		-e "s%[@]abs_top_srcdir[@]%$${mod_abs_top_srcdir}%" \
+	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > bes.conf
 
 clean-local:
-	cd ${srcdir}/cache && rm -f *_cache*
-	rm -rf ${srcdir}/test_cache_64
+	cd $(srcdir)/cache && rm -f *_cache*
+	rm -rf test_cache_64
 	rm -rf testdir
 
 ############################################################################
@@ -116,18 +134,7 @@ agglistT_SOURCES = agglistT.cc TestAggServer.cc TestAggServer.h
 
 cacheT_SOURCES = cacheT.cc
 
-#lockT_SOURCES = lockT.cc
-
-# gzT_SOURCES = gzT.cc
-# gzT_LDADD =  $(LDADD) -lz
-
-# bz2T_SOURCES = bz2T.cc
-
-# zT_SOURCES = zT.cc
-
 uncompressT_SOURCES = uncompressT.cc
-
-# encodeT_SOURCES = encodeT.cc
 
 debugT_SOURCES = debugT.cc
 
@@ -141,6 +148,15 @@ scrubT_SOURCES = scrubT.cc
 
 checkT_SOURCES = checkT.cc
 
+WhiteListTest_SOURCES = WhiteListTest.cc
+WhiteListTest_LDADD = ../WhiteList.o $(LDADD)
+
+CatalogNodeTest_SOURCES = test_utils.cc CatalogNodeTest.cc
+CatalogNodeTest_LDADD = ../CatalogNode.o $(LDADD)
+
+CatalogItemTest_SOURCES = test_utils.cc CatalogItemTest.cc
+CatalogItemTest_LDADD = ../CatalogItem.o $(LDADD)
+
 servicesT_SOURCES = servicesT.cc
 servicesT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
 
@@ -153,12 +169,12 @@ catT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
 catT_LDADD = $(catT_OBJ) $(LDADD)
 endif
 
+# Added Unit test for singleton class BESCatalogList. ndp 5/6/2013
+BESCatalogListTest_SOURCES  = BESCatalogListTest.cc
+BESCatalogListTest_CPPFLAGS = $(AM_CPPFLAGS) -Wno-deprecated
 
-# Note that BESCache3Test is not a CPP Unit test. jhrg 4/12/12
-# BESCache3Test_SOURCES = BESCache3Test.cc
-# BESCache3Test_CPPFLAGS = $(AM_CPPFLAGS) -Wno-deprecated
-# BESCache3Test_LDFLAGS = -lcrypto
+# complete_catalog_lister_SOURCES = complete_catalog_lister.cc
+# complete_catalog_lister_OBJ = ../BESCatalogResponseHandler.o
+# complete_catalog_lister_CPPFLAGS =  $(AM_CPPFLAGS) $(XML2_CFLAGS)
+# complete_catalog_lister_LDADD = $(complete_catalog_lister_OBJ) $(LDADD)
 
-# Added Unit test for singleton class BESCatalogList.ndp 5/6/2013
-BESCatalogListUnitTest_SOURCES  = BESCatalogListUnitTest.cc
-BESCatalogListUnitTest_CPPFLAGS = $(AM_CPPFLAGS) -Wno-deprecated

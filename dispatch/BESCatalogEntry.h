@@ -38,29 +38,29 @@
 #include <map>
 #include <sys/types.h>
 
-using std::string;
-using std::list;
-using std::map;
-
 #include "BESObj.h"
 
+/**
+ * @deprecated Use CatalogNode and CatlogItem instead. jhrg 7/25/18
+ */
 class BESCatalogEntry: public BESObj {
 private:
-    string _name;
-    string _catalog;
-    string _size;
-    string _mod_date;
-    string _mod_time;
-    list<string> _services;
-    map<string, BESCatalogEntry *> _entry_list;
-    map<string, string> _metadata;
+    std::string _name;
+    std::string _catalog;
+    std::string _size;
+    std::string _mod_date;
+    std::string _mod_time;
+    std::list<std::string> _services;
+
+    std::map<std::string, BESCatalogEntry *> _entry_list;
+    std::map<std::string, std::string> _metadata;
 
     BESCatalogEntry()
     {
     }
 
 public:
-    BESCatalogEntry(const string &name, const string &catalog);
+    BESCatalogEntry(const std::string &name, const std::string &catalog);
     virtual ~BESCatalogEntry(void);
 
     virtual void add_entry(BESCatalogEntry *entry)
@@ -70,48 +70,54 @@ public:
         }
     }
 
-    virtual string get_name()
+    virtual std::string get_name()
     {
         return _name;
     }
-    virtual string get_catalog()
+
+    virtual std::string get_catalog()
     {
         return _catalog;
     }
+
     virtual bool is_collection()
     {
         return (get_count() > 0);
     }
 
-    virtual string get_size()
+    virtual std::string get_size()
     {
         return _size;
     }
+
     virtual void set_size(off_t size);
 
-    virtual string get_mod_date()
+    virtual std::string get_mod_date()
     {
         return _mod_date;
     }
-    virtual void set_mod_date(const string &mod_date)
+
+    virtual void set_mod_date(const std::string &mod_date)
     {
         _mod_date = mod_date;
     }
 
-    virtual string get_mod_time()
+    virtual std::string get_mod_time()
     {
         return _mod_time;
     }
-    virtual void set_mod_time(const string &mod_time)
+
+    virtual void set_mod_time(const std::string &mod_time)
     {
         _mod_time = mod_time;
     }
 
-    virtual list<string> get_service_list()
+    virtual std::list<std::string> get_service_list()
     {
         return _services;
     }
-    virtual void set_service_list(list<string> &slist)
+
+    virtual void set_service_list(std::list<std::string> &slist)
     {
         _services = slist;
     }
@@ -121,20 +127,23 @@ public:
         return _entry_list.size();
     }
 
-    virtual map<string, string> get_info()
+    virtual std::map<std::string, std::string> get_info()
     {
         return _metadata;
     }
-    virtual void add_info(const string &name, const string &value)
+
+    virtual void add_info(const std::string &name, const std::string &value)
     {
         _metadata[name] = value;
     }
 
-    typedef map<string, BESCatalogEntry *>::const_iterator catalog_citer;
+    typedef std::map<std::string, BESCatalogEntry *>::const_iterator catalog_citer;
+
     virtual catalog_citer get_beginning_entry()
     {
         return _entry_list.begin();
     }
+
     virtual catalog_citer get_ending_entry()
     {
         return _entry_list.end();

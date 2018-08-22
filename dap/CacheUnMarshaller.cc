@@ -26,9 +26,11 @@
 
 #include <InternalErr.h>
 
+#include "BESIndent.h"
 #include "CacheUnMarshaller.h"
 
 using namespace libdap;
+using namespace std;
 
 // namespace bes {
 
@@ -117,7 +119,7 @@ void CacheUnMarshaller::get_vector(char **val, unsigned int &num, int width, Vec
 
 void CacheUnMarshaller::dump(ostream &strm) const
 {
-    strm << DapIndent::LMarg << "CacheUnMarshaller::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "CacheUnMarshaller::dump - (" << (void *) this << ")" << endl;
 }
 
 //} // namespace bes

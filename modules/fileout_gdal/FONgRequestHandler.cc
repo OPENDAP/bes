@@ -45,8 +45,8 @@
 FONgRequestHandler::FONgRequestHandler(const string &name) :
         BESRequestHandler(name)
 {
-    add_handler(HELP_RESPONSE, FONgRequestHandler::build_help);
-    add_handler(VERS_RESPONSE, FONgRequestHandler::build_version);
+    add_method(HELP_RESPONSE, FONgRequestHandler::build_help);
+    add_method(VERS_RESPONSE, FONgRequestHandler::build_version);
 
     GDALAllRegister();
     CPLSetErrorHandler(CPLQuietErrorHandler);

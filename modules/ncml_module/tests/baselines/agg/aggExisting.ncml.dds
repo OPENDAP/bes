@@ -1,0 +1,21 @@
+Dataset {
+    Float32 lat[lat = 3];
+    Float32 lon[lon = 4];
+    Grid {
+      Array:
+        Float64 P[time = 59][lat = 3][lon = 4];
+      Maps:
+        Int32 time[time = 59];
+        Float32 lat[lat = 3];
+        Float32 lon[lon = 4];
+    } P;
+    Grid {
+      Array:
+        Float64 T[time = 59][lat = 3][lon = 4];
+      Maps:
+        Int32 time[time = 59];
+        Float32 lat[lat = 3];
+        Float32 lon[lon = 4];
+    } T;
+    Int32 time[time = 59];
+} aggExisting.ncml;

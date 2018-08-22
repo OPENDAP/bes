@@ -1,0 +1,22 @@
+CatalogNode::dump - ()
+    name: /child_dir
+    catalog_name: nt2
+    last modified time:
+    item count: 2
+    items: 
+        
+        
+Leaf 0: 
+CatalogItem::dump - ()
+    name: child_file.conf
+    size: 64
+    last modified time:
+    is_data: 1
+    type: 2
+Leaf 1: 
+CatalogItem::dump - ()
+    name: child_file1
+    size: 1176
+    last modified time:
+    is_data: 0
+    type: 2

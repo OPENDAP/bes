@@ -36,8 +36,12 @@
 #include "BESDASResponse.h"
 #include "BESRequestHandlerList.h"
 #include "BESDapNames.h"
+#include "BESTransmitter.h"
+
+#include "GlobalMetadataStore.h"
 
 using namespace libdap;
+using namespace bes;
 using namespace std;
 
 BESDASResponseHandler::BESDASResponseHandler( const string &name )
@@ -49,15 +53,20 @@ BESDASResponseHandler::~BESDASResponseHandler( )
 {
 }
 
-/** @brief executes the command 'get das for &lt;def_name&gt;;' by executing
- * the request for each container in the specified definition.
+/**
+ * @brief executes the command `<get type="das" definition=...>`
  *
  * For each container in the specified definition go to the request
  * handler for that container and have it add to the OPeNDAP DAS response
  * object. The DAS response object is built within this method and passed
- * to the request handler list.
+ * to the request handler list. This command will read the DAS from the
+ * MDS if that has been configured and the response is found there.
+ *
+ * DAS responses are added to the MDS when a request for either the DMR or
+ * DDS is made.
  *
  * @param dhi structure that holds request and response information
+ *
  * @see BESDataHandlerInterface
  * @see BESDASResponse
  * @see BESRequestHandlerList
@@ -65,10 +74,35 @@ BESDASResponseHandler::~BESDASResponseHandler( )
 void
 BESDASResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
-    dhi.action_name = DAS_RESPONSE_STR ;
-    DAS *das = new DAS() ;
-    _response = new BESDASResponse( das ) ;
-    BESRequestHandlerList::TheList()->execute_each( dhi ) ;
+    dhi.action_name = DAS_RESPONSE_STR;
+
+    GlobalMetadataStore *mds = GlobalMetadataStore::get_instance();
+
+    GlobalMetadataStore::MDSReadLock lock;
+
+    dhi.first_container();
+    if (mds) lock = mds->is_das_available(dhi.container->get_relative_name());
+
+    if (mds && lock()) {
+        // send the response
+        mds->write_das_response(dhi.container->get_relative_name(), dhi.get_output_stream());
+        // suppress transmitting a ResponseObject in transmit()
+        d_response_object = 0;
+    }
+    else {
+        d_response_object = new BESDASResponse( new DAS() ) ;
+
+        BESRequestHandlerList::TheList()->execute_each(dhi);
+
+        // The DDS and DMR ResponseHandler code stores those responses when the
+        // MDS is configured (*mds is not null) and can make all of the DDS, DAS
+        // and DMR from either the DDS or DMR alone. But the DAS is different -
+        // the MDS code cannot generate the DDS and DMR responses from the DAS.
+        // We could re-work the software to build a DDS even when the request is
+        // for a DAS, but that would involve a number of modifications to the code
+        // for an optimization of dubious value. If a client asked for a DAS, it
+        // will likely ask for a DDS very soon... jhrg 3/18/18
+    }
 }
 
 /** @brief transmit the response object built by the execute command
@@ -87,9 +121,9 @@ void
 BESDASResponseHandler::transmit( BESTransmitter *transmitter,
                               BESDataHandlerInterface &dhi )
 {
-    if( _response )
+    if( d_response_object )
     {
-	transmitter->send_response( DAS_SERVICE, _response, dhi ) ;
+	transmitter->send_response( DAS_SERVICE, d_response_object, dhi ) ;
     }
 }
 

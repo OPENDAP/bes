@@ -204,6 +204,9 @@ AT_BESCMD_INFO_RESPONSE_TEST([nc/fnoc1.nc.3.bescmd], [pass])
 AT_BESCMD_ASCII_RESPONSE_TEST([nc/fnoc1.nc.5.bescmd], [pass])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([nc/fnoc1.nc.6.bescmd])
 
+AT_BESCMD_DDX_RESPONSE_TEST([nc/coads_climatology.ddx.bescmd], [pass])
+AT_BESCMD_DDX_RESPONSE_TEST([nc/coads_climatology.ddx2.bescmd], [pass])
+
 AT_BESCMD_DDS_RESPONSE_TEST([ssfunc/ff_date_func.0.bescmd], [pass])
 AT_BESCMD_DDX_RESPONSE_TEST([ssfunc/ff_date_func.1.bescmd], [pass])
 AT_BESCMD_ASCII_RESPONSE_TEST([ssfunc/ff_date_func.2.bescmd], [pass])
@@ -226,7 +229,7 @@ AT_BESCMD_DDX_RESPONSE_TEST([ssfunc/geogrid_func_wholearray.1.bescmd], [pass])
 AT_BESCMD_ASCII_RESPONSE_TEST([ssfunc/geogrid_func_wholearray.2.bescmd], [pass])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([ssfunc/geogrid_func_wholearray.3.bescmd])
 
-AT_BESCMD_SHOW_RESPONSE_TEST([show/show_01.bescmd], [xfail])
-AT_BESCMD_SHOW_RESPONSE_TEST([show/show_02.bescmd], [xfail])
+#AT_BESCMD_SHOW_RESPONSE_TEST([show/show_01.bescmd], [xfail]) # Uses showInfo which was deprecated and dropped.
+#AT_BESCMD_SHOW_RESPONSE_TEST([show/show_02.bescmd], [xfail]) # Uses showInfo which was deprecated and dropped.
 AT_BESCMD_SHOW_RESPONSE_TEST([show/show_03.bescmd], [xfail])
 

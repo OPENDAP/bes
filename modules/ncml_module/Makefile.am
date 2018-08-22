@@ -11,7 +11,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=ncml_moddule
-M_VER=1.4.6
+M_VER=1.4.7
 
 AM_CPPFLAGS = $(ICU_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
 -I$(top_srcdir)/xmlcommand $(DAP_CFLAGS)
@@ -77,12 +77,6 @@ NCML_SRCS = \
 		VariableElement.cc \
 		XMLHelpers.cc 
 
-# NCMLCacheAggXMLCommand.cc
-# NCMLCommonTypes.cc
-# JoinExistingDimensionCacheManager.cc
-# 		NCMLContainerStorage.cc
-#		NCMLContainer.cc
-
 NCML_HDRS = \
 		AggMemberDataset.h \
 		AggMemberDatasetDDSWrapper.h \
@@ -135,12 +129,6 @@ NCML_HDRS = \
 		VariableElement.h \
 		XMLHelpers.h
 
-# NCMLCacheAggXMLCommand.h
-# NCMLCommonTypes.h
-# JoinExistingDimensionCacheManager.h
-# 		NCMLContainerStorage.h
-#		NCMLContainer.h
-
 # ICU_CPPFLAGS and ICU_LIBS set from configure.ac check for ICU
 libncml_module_la_SOURCES = $(NCML_SRCS) $(BES_SRCS) $(NCML_HDRS) $(BES_HDRS)
 # libncml_module_la_CPPFLAGS = $(ICU_CPPFLAGS) $(BES_CPPFLAGS) $(DAP_CFLAGS) 
@@ -182,6 +170,9 @@ sample_data_agg_dated_DATA = 	data/ncml/agg/dated/CG2006158_120000h_usfc.nc \
 
 sample_data_ncdir = 		$(datadir)/hyrax/data/nc
 sample_data_nc_DATA =		data/nc/jan.nc data/nc/feb.nc
+
+sample_data_dmrppdir = 		$(datadir)/hyrax/data/ncml/dmrpp
+sample_data_dmrpp_DATA = 	data/ncml/dmrpp/chunked_twoD.h5
 
 
 install-data-local: ncml.conf

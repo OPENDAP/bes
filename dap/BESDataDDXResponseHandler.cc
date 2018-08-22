@@ -37,6 +37,7 @@
 #include "BESRequestHandlerList.h"
 #include "BESDapNames.h"
 #include "BESDataNames.h"
+#include "BESTransmitter.h"
 
 #include "BESDebug.h"
 
@@ -77,13 +78,14 @@ BESDataDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
     // the BaseTypeFactory. It is set to NULL here
     DDS *dds = new DDS( NULL, "virtual" ) ;
     BESDataDDSResponse *bdds = new BESDataDDSResponse( dds ) ;
-    _response = bdds ;
+    d_response_object = bdds ;
 
     // we're actually going to get the data response, it just gets
     // displayed as a DataDDX
-    _response_name = DATA_RESPONSE ;
+    d_response_name = DATA_RESPONSE ;
     dhi.action = DATA_RESPONSE ;
 
+#if 0
     // Read keywords from the CE and use those to set the DAP version; maybe
     // other things. If the dap version(s) are not included in the CE using
     // keywords, then see if anything was sent in the Request headers (which
@@ -99,10 +101,15 @@ BESDataDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
 
     dhi.data[POST_CONSTRAINT] = dds->get_keywords().parse_keywords(dhi.data[POST_CONSTRAINT]);
     if (dds->get_keywords().has_keyword("dap")) {
-	dds->set_dap_version(dds->get_keywords().get_keyword_value("dap"));
+        dds->set_dap_version(dds->get_keywords().get_keyword_value("dap"));
     }
     else if (!bdds->get_dap_client_protocol().empty()) {
-	dds->set_dap_version( bdds->get_dap_client_protocol() ) ;
+        dds->set_dap_version( bdds->get_dap_client_protocol() );
+    }
+#endif
+
+    if (!bdds->get_dap_client_protocol().empty()) {
+        dds->set_dap_version( bdds->get_dap_client_protocol() );
     }
 
     dds->set_request_xml_base( bdds->get_request_xml_base() );
@@ -111,7 +118,7 @@ BESDataDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
 
     // we've got what we want, now set the action back to data ddx
     dhi.action = DATADDX_RESPONSE ;
-    _response = bdds ;
+    d_response_object = bdds ;
 
     BESDEBUG( "dap", "Leaving BESDataDDXResponseHandler::execute" << endl ) ;
 }
@@ -132,9 +139,9 @@ void
 BESDataDDXResponseHandler::transmit( BESTransmitter * transmitter,
                                      BESDataHandlerInterface & dhi )
 {
-    if( _response )
+    if( d_response_object )
     {
-        transmitter->send_response( DATADDX_SERVICE, _response, dhi ) ;
+        transmitter->send_response( DATADDX_SERVICE, d_response_object, dhi ) ;
     }
 }
 

@@ -32,6 +32,7 @@
 
 #include <DMR.h>
 
+#include <TheBESKeys.h>
 #include <BESDebug.h>
 
 #include "DmrppArray.h"
@@ -61,6 +62,16 @@
 
 #include "GetOpt.h"
 #include "test_config.h"
+#include "util.h"
+
+#if 0
+#include "H5Ppublic.h"
+#include "HDF5RequestHandler.h"
+#include "h5get.h"
+#include "HDF5CF.h"
+#include "H5Dpublic.h"
+#endif
+
 
 using namespace libdap;
 
@@ -87,6 +98,8 @@ public:
     void setUp()
     {
         if (debug) BESDebug::SetUp("cerr,dmrpp");
+        // Contains BES Log parameters but not cache names
+        TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
     }
 
     // Called after each test
@@ -95,50 +108,46 @@ public:
     }
 
     /**
-     * Evaluates a H4ByteStream instance.
+     * Evaluates a Chunk instance.
      * This checks the offset, size, md5, and uuid attributes
      * against expected values passed as parameters.
      */
-    void checkByteStream(string name, H4ByteStream h4bs,
-    		unsigned long long offset,
-    		unsigned long long size,
-    		string md5,
-    		string uuid){
+    void checkByteStream(string name, Chunk h4bs, unsigned long long offset, unsigned long long size,
+        string /*md5*/, string /*uuid*/)
+    {
 
-		CPPUNIT_ASSERT(h4bs.get_offset() == offset);
-		BESDEBUG("dmrpp", name << " offset: " << offset << endl);
-		CPPUNIT_ASSERT(h4bs.get_size() == size);
-		BESDEBUG("dmrpp", name << " size: " << size << endl);
-		CPPUNIT_ASSERT(h4bs.get_md5() == md5);
-		BESDEBUG("dmrpp", name << " md5: " << md5 << endl);
-		CPPUNIT_ASSERT(h4bs.get_uuid() == uuid);
-		BESDEBUG("dmrpp", name << " uuid: " << uuid << endl);
+        CPPUNIT_ASSERT(h4bs.get_offset() == offset);
+        BESDEBUG("dmrpp", name << " offset: " << offset << endl);
+        CPPUNIT_ASSERT(h4bs.get_size() == size);
+        BESDEBUG("dmrpp", name << " size: " << size << endl);
+#if 0
+        CPPUNIT_ASSERT(h4bs.get_md5() == md5);
+        BESDEBUG("dmrpp", name << " md5: " << md5 << endl);
+        CPPUNIT_ASSERT(h4bs.get_uuid() == uuid);
+        BESDEBUG("dmrpp", name << " uuid: " << uuid << endl);
+#endif
+
     }
 
     /**
      * Evaluates a BaseType pointer believed to be an instance of DrmppCommon
-     * with a single "chunk" (H4ByteStream) member.
+     * with a single "chunk" (Chunk) member.
      * This checks the variables name, offset, size, md5, and uuid attributes
      * against expected values passed as parameters.
      */
-    void checkDmrppVariableWithSingleChunk(BaseType *bt,
-    		string name,
-    		unsigned long long offset,
-    		unsigned long long size,
-    		string md5,
-    		string uuid){
+    void checkDmrppVariableWithSingleChunk(BaseType *bt, string name, unsigned long long offset,
+        unsigned long long size, string /*md5*/, string /*uuid*/)
+    {
+        CPPUNIT_ASSERT(bt);
 
-		CPPUNIT_ASSERT(bt);
+        BESDEBUG("dmrpp", "Looking at variable: " << bt->name() << endl);
+        CPPUNIT_ASSERT(bt->name() == name);
+        DmrppCommon *dc = dynamic_cast<DmrppCommon*>(bt);
+        CPPUNIT_ASSERT(dc);
 
-		BESDEBUG("dmrpp", "Looking at variable: " << bt->name() << endl);
-		CPPUNIT_ASSERT(bt->name() == name);
-		DmrppCommon *dc = dynamic_cast<DmrppCommon*>(bt);
-		CPPUNIT_ASSERT(dc);
-
-		vector<H4ByteStream> chunks = dc->get_immutable_chunks();
-		CPPUNIT_ASSERT(chunks.size() == 1);
-		checkByteStream(bt->name(), chunks[0],offset,size,md5,uuid);
-
+        const vector<Chunk> &chunks = dc->get_immutable_chunks();
+        CPPUNIT_ASSERT(chunks.size() == 1);
+        checkByteStream(bt->name(), chunks[0], offset, size, "", "");
     }
 
     /**
@@ -376,7 +385,7 @@ public:
   /******************************************************
    *
    */
-  void test_nc4_group_ataomic()
+  void test_nc4_group_atomic()
   {
       auto_ptr<DMR> dmr(new DMR);
       DmrppTypeFactory dtf;
@@ -436,11 +445,17 @@ public:
     CPPUNIT_TEST(test_float_arrays);
 
     CPPUNIT_TEST(test_grid_1_2d);
-    CPPUNIT_TEST(test_nc4_group_ataomic);
+    CPPUNIT_TEST(test_nc4_group_atomic);
+
+#if 0
+    CPPUNIT_TEST(test_chunked_dmr_print);
+    CPPUNIT_TEST(test_chunked_hdf5);
+#endif
+
 
     CPPUNIT_TEST_SUITE_END();
         
-     };
+};
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DmrppParserTest);
 
@@ -453,7 +468,7 @@ int main(int argc, char*argv[])
 
     GetOpt getopt(argc, argv, "d");
     int option_char;
-    while ((option_char = getopt()) != -1)
+    while ((option_char = getopt()) != -1){
         switch (option_char) {
         case 'd':
             debug = true;  // debug is a static global
@@ -461,6 +476,7 @@ int main(int argc, char*argv[])
         default:
             break;
         }
+    }
 
     bool wasSuccessful = true;
     string test = "";
@@ -471,14 +487,12 @@ int main(int argc, char*argv[])
     }
     else {
         while (i < argc) {
-            test = string("dmrpp::DmrppParserTest::") + argv[i++];
-
-            cerr << endl << "Running test " << test << endl << endl;
-
+            if (debug) cerr << "Running " << argv[i] << endl;
+            test = dmrpp::DmrppParserTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
+        ++i;
         }
     }
-
     return wasSuccessful ? 0 : 1;
 }
 

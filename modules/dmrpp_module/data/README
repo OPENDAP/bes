@@ -1,3 +1,17 @@
-This "data" directory and it's child "dmrpp" exist in this hierarchy in order to mimic the deployment structure resulting from running "make install". Most modules do not need to do this but since dmr++ files reference other files, and they do so using paths relative the the BES Catalog Root the mimicry is required.
+This "data" directory and it's child "dmrpp" exist in this hierarchy
+in order to mimic the deployment structure resulting from running
+"make install". Most modules do not need to do this but since dmr++
+files reference other files, and they do so using paths relative the
+the BES Catalog Root the mimicry is required.
 
-Also in this directory are scripts, source code, and production rules for tools that were used to create and process many of the data files in the "dmrpp" directory.
+Also in this directory are scripts, source code, and production rules
+for tools that were used to create and process many of the data files
+in the "dmrpp" directory.
+
+5/25/18
+
+Added *.bescmd files for a number of new test files so that we can
+tell if the hdf5 handler can read these files. If it cannot, then
+it will be impossible to get a DMR file for input to build_dmrpp to
+build the DMR++ file for this code. The new test files were made
+using the mkChunkNewTypes.py script. jhrg 

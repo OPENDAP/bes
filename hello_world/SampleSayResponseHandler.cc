@@ -52,7 +52,7 @@ void SampleSayResponseHandler::execute(BESDataHandlerInterface &dhi)
     // This is an example. Here you would build the BESResponseObject
     // object and set it to the _response protected data member
     BESInfo *info = BESInfoList::TheList()->build_info();
-    _response = info;
+    d_response_object = info;
 
     // Here is where your code would fill in the new response object
     info->begin_response(SAY_RESPONSE, dhi);
@@ -66,8 +66,9 @@ void SampleSayResponseHandler::transmit(BESTransmitter *transmitter, BESDataHand
     // Here is where you would transmit your response object using the
     // specified transmitter object. This is the example using the BESInfo
     // response object
-    if (_response) {
-        BESInfo *info = dynamic_cast<BESInfo *>(_response);
+    if (d_response_object) {
+        BESInfo *info = dynamic_cast<BESInfo *>(d_response_object);
+
         if (!info)
             throw BESInternalError("Could not cast the BESResponse object to an Info object.", __FILE__, __LINE__);
         info->transmit(transmitter, dhi);

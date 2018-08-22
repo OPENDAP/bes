@@ -45,7 +45,7 @@ class Connection;
  * This class and the ServerApp class are main code for the beslistener.
  * The besdaemon is made from the code in daemon.cc along with DaemonCommandHandler
  * and BESXMLWriter. Both programs use common code in BESServerUtils which
- * provides two functions for info and usage messges.
+ * provides two functions for info and usage messages.
  */
 class BESServerHandler: public ServerHandler {
 private:

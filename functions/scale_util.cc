@@ -301,11 +301,37 @@ static Array *transfer_values_helper(GDALRasterBand *band, const unsigned long x
         string msg = string("Could not extract data for array.") +  CPLGetLastErrorMsg();
 		BESDEBUG(DEBUG_KEY,"ERROR transfer_values_helper(): " << msg << endl);
         throw BESError(msg,BES_SYNTAX_USER_ERROR,__FILE__,__LINE__);
-}
+    }
     a->set_value(buf, buf.size());
 
     return a;
 }
+
+#if 0
+/**
+ * @brief Used to transfer data values from a gdal dataset to a dap Vector
+ * @param band Read from this raster and
+ * @param y Rows
+ * @param x Cols
+ * @param a Set the values in this vector
+ * @return Return a pointer to parameter 'a'
+ */
+template <typename T>
+static Vector *transfer_values_helper_vec(GDALRasterBand *band, const int x, const int y, Vector *a)
+{
+    // get the data
+    vector<T> buf(x * y);
+    CPLErr error = band->RasterIO(GF_Read, 0, 0, x, y, &buf[0], x, y, a->type(), 0, 0);
+
+    if (error != CPLE_None){
+        string msg = string("Could not extract data for array.") +  CPLGetLastErrorMsg();
+        BESDEBUG(DEBUG_KEY,"ERROR transfer_values_helper(): " << msg << endl);
+        throw BESError(msg,BES_SYNTAX_USER_ERROR,__FILE__,__LINE__);
+    }
+    a->set_value(buf, buf.size());
+    return a;
+}
+#endif
 
 /**
  * @brief Extract data from a gdal dataset and store it in a dap Array
@@ -363,6 +389,49 @@ Array *build_array_from_gdal_dataset(GDALDataset *source, const Array *dest)
         throw BESError(msg,BES_SYNTAX_USER_ERROR,__FILE__,__LINE__);
 }
 }
+
+/**
+ * @brief Extract data from a gdal dataset and store it in a dap Array
+ *
+ * @param source The gdal dataset; 3D data source
+ * @param dest The dap Array; destnation
+ * @return
+ */
+Array *build_array_from_gdal_dataset_3D(GDALDataset *source3D, const Array *dest){
+
+    // DAP array result
+    int t_size = source3D->GetRasterCount();
+    int x_size = source3D->GetRasterBand(1)->GetXSize();
+    int y_size = source3D->GetRasterBand(1)->GetYSize();
+    Array *result = new Array("result", const_cast<Array*>(dest)->var()->ptr_duplicate());
+    result->append_dim(t_size);
+    result->append_dim(y_size);
+    result->append_dim(x_size);
+
+    vector<dods_float32> res(t_size * x_size * y_size);
+    for(int i=0; i< t_size; i++) {
+        // get the data
+        GDALRasterBand *band = source3D->GetRasterBand(i+1);
+        if (!band)
+            throw Error(string("Could not get the GDALRasterBand for the GDALDataset: ") + CPLGetLastErrorMsg());
+        vector<double> gt(6);
+        source3D->GetGeoTransform(&gt[0]);
+        // Extract data from band
+        vector<dods_float32> buf(x_size * y_size);
+        CPLErr error = band->RasterIO(GF_Read, 0, 0, x_size, y_size, &buf[0], x_size, y_size, get_array_type(dest),
+            0, 0);
+        if (error != CPLE_None)
+            throw Error(string("Could not extract data for translated GDAL Dataset.") + CPLGetLastErrorMsg());
+        if(i==0){
+            res =buf;
+        }else{
+            res.insert(res.end(), buf.begin(), buf.end());
+        }
+    }
+    result->set_value(res, res.size());
+    return result;
+}
+
 
 /**
  * @brief build lon and lat maps using a GDAL dataset
@@ -444,65 +513,100 @@ void build_maps_from_gdal_dataset(GDALDataset *dst, Array *x_map, Array *y_map, 
     y_map->set_value(&y_map_vals[0], y);
 }
 
-void build_maps_from_gdal_dataset_3D(GDALDataset *dst, Array *t_map, Array *x_map, Array *y_map, bool name_maps /*default false */)
+/**
+ * @brief build time, lon and lat maps using a 3D GDAL dataset
+ *
+ * Given a 3D GDAL Dataset, use the geo-transform information along with
+ * the dataset's extent (height and width in pixels) to build Maps/shared
+ * dimensions for DAP2/4 Grid/Coverages. The three Array arguments must
+ * be allocated by the caller and have an element type of dods_float32, but
+ * their dimensionality should not be set.
+ *
+ * @note
+ * Xgeo = GT(0) + Xpixel*GT(1) + Yline*GT(2)
+ * Ygeo = GT(3) + Xpixel*GT(4) + Yline*GT(5)
+ * For an inverted dataset, use min_y and res_y for GT(3) and GT(5)
+ * In case of north up images, the GT(2) and GT(4) coefficients are zero
+ *
+ * @param dst Source for the DAP2 Grid maps (or DAP4 shared dimensions)
+ * @param t_map value-result parameter for time map (get values from t)
+ * @param x_map value-result parameter for the longitude map (uses dods_float32
+ * elements)
+ * @param y_map value-result parameter for the latitude map
+ * @param name_maps If true, name t map "Time", the x map "Latitude" and the y map "Longitude"
+ * if false, do not name the maps.
+ */
+void build_maps_from_gdal_dataset_3D(GDALDataset *dst, Array *t, Array *t_map, Array *x_map, Array *y_map, bool name_maps /*default false */)
 {
     // get the geo-transform data
     vector<double> gt(6);
     dst->GetGeoTransform(&gt[0]);
-    BESDEBUG(DEBUG_KEY,"build_maps_from_gdal_dataset_3D: Band number: " << dst->GetRasterCount() << endl);
-    //start loop
-    for(int j=1; j<=dst->GetRasterCount(); j++ ){
-        // Get the GDALDataset size
-        GDALRasterBand *band = dst->GetRasterBand(j);
 
-        // Build Lon map
-        unsigned long x = band->GetXSize(); // x_map_vals
+    // Get the GDALDataset size
+    GDALRasterBand *band = dst->GetRasterBand(1);
 
-        if (name_maps) {
-            x_map->append_dim(x, "Longitude");
-        }
-        else {
-            x_map->append_dim(x);
-        }
+    // Build Time map
+    int t_size = t->length();
 
-        // for each value, use the geo-transform data to compute a value and store it.
-        vector<dods_float32> x_map_vals(x);
-        dods_float32 *cur_x = &x_map_vals[0];
-        dods_float32 *prev_x = cur_x;
-        // x_map_vals[0] = gt[0];
-        *cur_x++ = gt[0];
-        for (unsigned long i = 1; i < x; ++i) {
-            // x_map_vals[i] = gt[0] + i * gt[1];
-            // x_map_vals[i] = x_map_vals[i-1] + gt[1];
-            *cur_x++ = *prev_x++ + gt[1];
-        }
+    if (name_maps) {
+        t_map->append_dim(t_size, "Time");
+    }
+    else {
+        t_map->append_dim(t_size);
+    }
 
-        x_map->set_value(&x_map_vals[0], x); // copies values to new storage
+    vector<dods_float32> t_buf(t_size);
+    t->value(&t_buf[0]);
 
-        // Build the Lat map
-        unsigned long y = band->GetYSize();
+    t_map->set_value(&t_buf[0], t_size);
 
-        if (name_maps) {
-            y_map->append_dim(y, "Latitude");
-        }
-        else {
-            y_map->append_dim(y);
-        }
+    // Build Lon map
+    unsigned long x = band->GetXSize(); // x_map_vals
 
-        // for each value, use the geo-transform data to compute a value and store it.
-        vector<dods_float32> y_map_vals(y);
-        dods_float32 *cur_y = &y_map_vals[0];
-        dods_float32 *prev_y = cur_y;
-        // y_map_vals[0] = gt[3];
-        *cur_y++ = gt[3];
-        for (unsigned long i = 1; i < y; ++i) {
-            // y_map_vals[i] = gt[3] + i * gt[5];
-            // y_map_vals[i] = y_map_vals[i-1] + gt[5];
-            *cur_y++ = *prev_y++ + gt[5];
-        }
+    if (name_maps) {
+        x_map->append_dim(x, "Longitude");
+    }
+    else {
+        x_map->append_dim(x);
+    }
 
-        y_map->set_value(&y_map_vals[0], y);
-    }//end loop
+    // for each value, use the geo-transform data to compute a value and store it.
+    vector<dods_float32> x_map_vals(x);
+    dods_float32 *cur_x = &x_map_vals[0];
+    dods_float32 *prev_x = cur_x;
+    // x_map_vals[0] = gt[0];
+    *cur_x++ = gt[0];
+    for (unsigned long i = 1; i < x; ++i) {
+        // x_map_vals[i] = gt[0] + i * gt[1];
+        // x_map_vals[i] = x_map_vals[i-1] + gt[1];
+        *cur_x++ = *prev_x++ + gt[1];
+    }
+
+    x_map->set_value(&x_map_vals[0], x); // copies values to new storage
+
+    // Build the Lat map
+    unsigned long y = band->GetYSize();
+
+    if (name_maps) {
+        y_map->append_dim(y, "Latitude");
+    }
+    else {
+        y_map->append_dim(y);
+    }
+
+    // for each value, use the geo-transform data to compute a value and store it.
+    vector<dods_float32> y_map_vals(y);
+    dods_float32 *cur_y = &y_map_vals[0];
+    dods_float32 *prev_y = cur_y;
+    // y_map_vals[0] = gt[3];
+    *cur_y++ = gt[3];
+    for (unsigned long i = 1; i < y; ++i) {
+        // y_map_vals[i] = gt[3] + i * gt[5];
+        // y_map_vals[i] = y_map_vals[i-1] + gt[5];
+        *cur_y++ = *prev_y++ + gt[5];
+    }
+
+    y_map->set_value(&y_map_vals[0], y);
 }
 
 /**
@@ -975,7 +1079,7 @@ Grid *scale_dap_grid(const Grid *g, const SizeBox &size, const string &crs, cons
 #define ADD_BAND 0
 
 /**
- * @brief Build a GDAL Dataset object for this data/lon/lat combination
+ * @brief Build a GDAL Dataset object for this data/time/lon/lat combination
  *
  * @note Supported values for the srs parameter
  * "WGS84": same as "EPSG:4326" but has no dependence on EPSG data files.
@@ -985,11 +1089,12 @@ Grid *scale_dap_grid(const Grid *g, const SizeBox &size, const string &crs, cons
  * "EPSG:n": same as doing an ImportFromEPSG(n).
  *
  * @param data
+ * @param time
  * @param lon
  * @param lat
  * @param srs The SRS/CRS of the data array; defaults to WGS84 which
  * uses lat, lon axis order.
- * @return An auto_ptr<GDALDataset>
+ * @return An auto_ptr<GDALDataset> with number of bands equal to size of time array
  */
 auto_ptr<GDALDataset> build_src_dataset_3D(Array *data, Array *t, Array *x, Array *y, const string &srs)
 {
@@ -1062,37 +1167,42 @@ auto_ptr<GDALDataset> build_src_dataset_3D(Array *data, Array *t, Array *x, Arra
  * @param size
  * @param crs
  * @param interp
- * @return The scaled Grid where the first map holds the longitude data and second
+ * @return The scaled Grid where the first map holds time, the second holds longitude data and third
  * holds the latitude data.
  */
-Grid *scale_dap_array_3D(const Array *data, const Array *t, const Array *x, const Array *y, const SizeBox &size,
+Grid *scale_dap_array_3D(const Array *data, const Array *time, const Array *lon, const Array *lat, const SizeBox &size,
     const string &crs, const string &interp)
 {
     // Build GDALDataset for Grid g with lon and lat maps as given
     Array *d = const_cast<Array*>(data);
+    Array *t = const_cast<Array*>(time);
+    Array *x = const_cast<Array*>(lon);
+    Array *y = const_cast<Array*>(lat);
 
+    // get GDALDataset with bands
     auto_ptr<GDALDataset> src = build_src_dataset_3D(d, const_cast<Array*>(t), const_cast<Array*>(x), const_cast<Array*>(y));
 
-    // scale to the new size, using optional CRS and interpolation params
-
+    // scale all bands to the new size, using optional CRS and interpolation params
     auto_ptr<GDALDataset> dst = scale_dataset_3D(src, size, crs, interp);
 
     // Build a result Grid: extract the data, build the maps and assemble
-    auto_ptr<Array> built_data(build_array_from_gdal_dataset(dst.get(), d));
+    auto_ptr<Array> built_data(build_array_from_gdal_dataset_3D(dst.get(), d));
     auto_ptr<Array> built_time(new Array(t->name(), new Float32(t->name())));
     auto_ptr<Array> built_lat(new Array(y->name(), new Float32(y->name())));
     auto_ptr<Array> built_lon(new Array(x->name(), new Float32(x->name())));
 
-    build_maps_from_gdal_dataset_3D(dst.get(), built_time.get(), built_lon.get(), built_lat.get());
+    // Build maps for grid
+    build_maps_from_gdal_dataset_3D(dst.get(), t, built_time.get(), built_lon.get(), built_lat.get());
 
+    // get result Grid
     auto_ptr<Grid> result(new Grid(d->name()));
     result->set_array(built_data.release());
     result->add_map(built_time.release(), false);
     result->add_map(built_lat.release(), false);
     result->add_map(built_lon.release(), false);
-    BESDEBUG(DEBUG_KEY,"result length: " << result.release()->get_array()->dimensions() << endl);
+
     return result.release();
 }
 
 }
- // namespace libdap
+

@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -38,10 +38,10 @@
 #include <stack>
 #include <map>
 
-using std::string ;
-using std::ostream ;
-using std::stack ;
-using std::map ;
+using std::string;
+using std::ostream;
+using std::stack;
+using std::map;
 
 #include "BESResponseObject.h"
 #include "BESDataHandlerInterface.h"
@@ -65,42 +65,36 @@ using std::map ;
  *
  * @see BESResponseObject
  */
-class BESInfo :public BESResponseObject
-{
+class BESInfo: public BESResponseObject {
 protected:
-    ostream		*_strm ;
-    bool		_strm_owned ;
-    bool		_buffered ;
-    bool		_response_started ;
+    ostream *_strm;
+    bool _strm_owned;
+    bool _buffered;
+    bool _response_started;
 
-    stack<string>	_tags ;
-    string		_response_name ;
+    stack<string> _tags;
+    string _response_name;
 
 public:
-    			BESInfo( ) ;
-    			BESInfo( const string &buffered_key,
-			         ostream *strm, bool strm_owned ) ;
-    virtual		~BESInfo() ;
+    BESInfo();
+    BESInfo(const string &buffered_key, ostream *strm, bool strm_owned);
+    virtual ~BESInfo();
 
-    virtual void	begin_response( const string &response_name,
-					BESDataHandlerInterface &dhi ) ;
-    virtual void	end_response( ) ;
+    virtual void begin_response(const string &response_name, BESDataHandlerInterface &dhi);
+    virtual void begin_response(const string &response_name, map<string, string> *attrs, BESDataHandlerInterface &dhi);
+    virtual void end_response();
 
-    virtual void	add_tag( const string &tag_name,
-                                 const string &tag_data,
-				 map<string,string> *attrs = 0 ) = 0 ;
-    virtual void	begin_tag( const string &tag_name,
-                                   map<string,string> *attrs = 0 ) ;
-    virtual void	end_tag( const string &tag_name ) ;
+    virtual void add_tag(const string &tag_name, const string &tag_data, map<string, string> *attrs = 0) = 0;
+    virtual void begin_tag(const string &tag_name, map<string, string> *attrs = 0);
+    virtual void end_tag(const string &tag_name);
 
-    virtual void 	add_data( const string &s ) ;
-    virtual void	add_space( unsigned long num_spaces ) = 0 ;
-    virtual void	add_break( unsigned long num_breaks ) = 0 ;
+    virtual void add_data(const string &s);
+    virtual void add_space(unsigned long num_spaces) = 0;
+    virtual void add_break(unsigned long num_breaks) = 0;
 
-    virtual void 	add_data_from_file( const string &key,
-                                            const string &name ) ;
+    virtual void add_data_from_file(const string &key, const string &name);
 
-    virtual void	add_exception( BESError &e, const string &admin ) ;
+    virtual void add_exception(BESError &e, const string &admin);
 
     /** @brief transmit the informational object
      *
@@ -111,22 +105,24 @@ public:
      * @param transmitter The type of transmitter to use to transmit the info
      * @param dhi information to help with the transmission
      */
-    virtual void	transmit( BESTransmitter *transmitter,
-				  BESDataHandlerInterface &dhi ) = 0 ;
+    virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) = 0;
 
-    virtual void 	print( ostream &strm ) ;
+    virtual void print(ostream &strm);
 
     /** @brief return whether the information is to be buffered or not.
      *
      * @return true if information is buffered, false if not
      */
-    virtual bool	is_buffered() { return _buffered ; }
+    virtual bool is_buffered()
+    {
+        return _buffered;
+    }
 
     /** @brief Displays debug information about this object
      *
      * @param strm output stream to use to dump the contents of this object
      */
-    virtual void	dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 };
 
 #endif // BESInfo_h_

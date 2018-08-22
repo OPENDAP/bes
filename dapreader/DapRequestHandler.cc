@@ -100,15 +100,15 @@ static bool extension_match(const string &data_source, const string &extension)
 DapRequestHandler::DapRequestHandler(const string &name) :
         BESRequestHandler(name)
 {
-    add_handler(DAS_RESPONSE, dap_build_das);
-    add_handler(DDS_RESPONSE, dap_build_dds);
-    add_handler(DATA_RESPONSE, dap_build_data);
+    add_method(DAS_RESPONSE, dap_build_das);
+    add_method(DDS_RESPONSE, dap_build_dds);
+    add_method(DATA_RESPONSE, dap_build_data);
 
-    add_handler(DMR_RESPONSE, dap_build_dmr);
-    add_handler(DAP4DATA_RESPONSE, dap_build_dap4data);
+    add_method(DMR_RESPONSE, dap_build_dmr);
+    add_method(DAP4DATA_RESPONSE, dap_build_dap4data);
 
-    add_handler(VERS_RESPONSE, dap_build_vers);
-    add_handler(HELP_RESPONSE, dap_build_help);
+    add_method(VERS_RESPONSE, dap_build_vers);
+    add_method(HELP_RESPONSE, dap_build_help);
 
     read_key_value("DR.UseTestTypes", d_use_test_types, d_use_test_types_set);
     read_key_value("DR.UseSeriesValues", d_use_series_values, d_use_series_values_set);

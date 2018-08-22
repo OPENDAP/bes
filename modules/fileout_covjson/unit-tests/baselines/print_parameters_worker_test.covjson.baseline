@@ -1,0 +1,119 @@
+"parameters": {
+  "testParam1": {
+    "type": "Parameter",
+    "description": "testParam1",
+    "unit": {
+      "label": {
+        "en": "Celsius"
+      }
+    },
+    "symbol": {
+      "value": "Celsius",
+      "type": ""
+    },
+    "observedProperty": {
+      "id": null,
+      "label": {
+        "en": "THIS IS A LONG NAME"
+      }
+    }
+  }
+"parameters": {
+  "testParam1": {
+    "type": "Parameter",
+    "description": "testParam1",
+    "unit": {
+      "label": {
+        "en": "Celsius"
+      }
+    },
+    "symbol": {
+      "value": "Celsius",
+      "type": ""
+    },
+    "observedProperty": {
+      "id": null,
+      "label": {
+        "en": "THIS IS A LONG NAME"
+      }
+    }
+  },
+  "testParam2": {
+    "type": "Parameter",
+    "description": "testParam2",
+    "unit": {
+      "label": {
+        "en": "Fahrenheit"
+      }
+    },
+    "symbol": {
+      "value": "Fahrenheit",
+      "type": ""
+    },
+    "observedProperty": {
+      "id": null,
+      "label": {
+        "en": "THIS IS A LONGER NAME"
+      }
+    }
+  }
+},
+"parameters": {
+  "testParam1": {
+    "type": "Parameter",
+    "description": "testParam1",
+    "unit": {
+      "label": {
+        "en": "Celsius"
+      }
+    },
+    "symbol": {
+      "value": "Celsius",
+      "type": ""
+    },
+    "observedProperty": {
+      "id": null,
+      "label": {
+        "en": "THIS IS A LONG NAME"
+      }
+    }
+  },
+  "testParam2": {
+    "type": "Parameter",
+    "description": "testParam2",
+    "unit": {
+      "label": {
+        "en": "Fahrenheit"
+      }
+    },
+    "symbol": {
+      "value": "Fahrenheit",
+      "type": ""
+    },
+    "observedProperty": {
+      "id": null,
+      "label": {
+        "en": "THIS IS A LONGER NAME"
+      }
+    }
+  },
+  "testParam3": {
+    "type": "Parameter",
+    "description": "testParam3",
+    "unit": {
+      "label": {
+        "en": "Kelvin"
+      }
+    },
+    "symbol": {
+      "value": "Kelvin",
+      "type": ""
+    },
+    "observedProperty": {
+      "id": null,
+      "label": {
+        "en": "THIS IS THE LONGEST NAME"
+      }
+    }
+  }
+},

@@ -24,9 +24,6 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-// (c) COPYRIGHT URI/MIT 1994-1999
-// Please read the full copyright statement in the file COPYRIGHT_URI.
-//
 // Authors:
 //      pcw       Patrick West <pwest@ucar.edu>
 
@@ -37,40 +34,38 @@
 #include <map>
 #include <vector>
 
-using std::string ;
-using std::vector ;
-using std::map ;
+namespace gateway {
 
 /** @brief utility class for the gateway remote request mechanism
  *
  */
-class GatewayUtils
-{
+class GatewayUtils {
 public:
-    static vector<string>	WhiteList ;
-    static map<string,string>	MimeList ;
-    static string		ProxyProtocol ;
-    static string       ProxyHost ;
-    static string       ProxyUserPW ;
-    static string       ProxyUser ;
-    static string       ProxyPassword ;
-    static int          ProxyPort ;
-    static int          ProxyAuthType ;
-    static bool			useInternalCache ;
-
-    static string       NoProxyRegex ;
-
-    static void			Initialize() ;
 #if 0
-    static char *		Get_tempfile_template( char *file_template ) ;
+    static std::vector<std::string> WhiteList;
 #endif
-    static void			Get_type_from_disposition( const string &disp,
-						           string &type ) ;
-    static void			Get_type_from_content_type( const string &ctype,
-						            string &type ) ;
-    static void			Get_type_from_url( const string &url,
-						   string &type ) ;
-} ;
+    static std::map<std::string, std::string> MimeList;
+    static std::string ProxyProtocol;
+    static std::string ProxyHost;
+    static std::string ProxyUserPW;
+    static std::string ProxyUser;
+    static std::string ProxyPassword;
+    static int ProxyPort;
+    static int ProxyAuthType;
+    static bool useInternalCache;
+
+    static std::string NoProxyRegex;
+
+    static void Initialize();
+    static void Get_type_from_disposition(const std::string &disp, std::string &type);
+    static void Get_type_from_content_type(const std::string &ctype, std::string &type);
+    static void Get_type_from_url(const std::string &url, std::string &type);
+#if 0
+    static bool Is_Whitelisted(const std::string &url);
+#endif
+};
+
+} // namespace gateway
 
 #endif // I_GatewayUtils_H
 

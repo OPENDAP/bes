@@ -1,0 +1,48 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+
+m4_include([handler_tests_macros.m4])
+
+# These tests use the server at RPI and it's often off line.
+# jhrg 12/1/14
+#
+# AT_BESCMD_RESPONSE_TEST([test.00.bescmd])
+# AT_BESCMD_RESPONSE_TEST([test.01.bescmd])
+# AT_BESCMD_BINARYDATA_RESPONSE_TEST([test.02.bescmd])
+
+# Utilizing FoNC to get netcdf files
+AT_BESCMD_RESPONSE_TEST([gateway/fnoc1.nc.nc.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([gateway/fnoc1.nc.nc.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([gateway/fnoc1.nc.nc.dods.bescmd])
+AT_BESCMD_RESPONSE_TEST([gateway/fnoc1.nc.nc.dmr.bescmd])
+# This next test fails because of the ever shifting history attribute added by FoNC.
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([gateway/fnoc1.nc.nc.dap.bescmd])
+
+# Utilizing dapreader to read returned and cached DAP2 responses.
+AT_BESCMD_RESPONSE_TEST([gateway/fnoc1.nc.dods.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([gateway/fnoc1.nc.dods.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([gateway/fnoc1.nc.dods.dods.bescmd])
+
+
+# Utilizing dapreader to read returned and cached DAP4 responses.
+AT_BESCMD_RESPONSE_TEST([gateway/fnoc1.nc.dap.dmr.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([gateway/fnoc1.nc.dap.dap.bescmd])
+
+# Try to get DAP2 response objects from the cached DAP4 response.
+# 
+# These tests won't work until the dapreader handler is made more capable.
+# Now (3/2018) it does not know how to make a DAP2 response from a DAP4
+# data response.
+#
+# AT_BESCMD_RESPONSE_TEST([gateway/fnoc1.nc.dap.dds.bescmd],xfail)
+# AT_BESCMD_RESPONSE_TEST([gateway/fnoc1.nc.dap.das.bescmd],xfail)
+# AT_BESCMD_BINARYDATA_RESPONSE_TEST([gateway/fnoc1.nc.dap.dods.bescmd],xfail)
+
+# test streaming. These two tests grab the fnoc1.nc file just as it
+# is. The first uses  <setContainer name="c" space="gateway" type="STREAM">
+# and the second uses  <setContainer name="c" space="gateway">, showing
+# that the type="stream" part of the GatewayContainer is apparently
+# ignored. Each test returns the DDS from fnoc1.nc.
+#
+AT_BESCMD_RESPONSE_TEST([gateway/test_streaming.bescmd])
+AT_BESCMD_RESPONSE_TEST([gateway/test_streaming2.bescmd])
+

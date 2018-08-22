@@ -49,13 +49,13 @@ TestRequestHandler::TestRequestHandler( string name )
       _resp_num( 0 )
 {
     trh = this ;
-    CPPUNIT_ASSERT( add_handler( "resp1",
+    CPPUNIT_ASSERT( add_method( "resp1",
 				 TestRequestHandler::test_build_resp1 ) ) ;
-    CPPUNIT_ASSERT( add_handler( "resp2",
+    CPPUNIT_ASSERT( add_method( "resp2",
 				 TestRequestHandler::test_build_resp2 ) ) ;
-    CPPUNIT_ASSERT( add_handler( "resp3",
+    CPPUNIT_ASSERT( add_method( "resp3",
 				 TestRequestHandler::test_build_resp3 ) ) ;
-    CPPUNIT_ASSERT( add_handler( "resp4",
+    CPPUNIT_ASSERT( add_method( "resp4",
 				 TestRequestHandler::test_build_resp4 ) ) ;
 }
 
@@ -99,50 +99,50 @@ TestRequestHandler::test()
     BESDataHandlerInterface dhi ;
 
     cout << "    finding resp1" << endl ;
-    p_request_handler p = find_handler( "resp1" ) ;
+    p_request_handler_method p = find_method( "resp1" ) ;
     CPPUNIT_ASSERT( p ) ;
     p( dhi ) ;
     CPPUNIT_ASSERT( _resp_num == 1 ) ;
 
     cout << "    finding resp2" << endl ;
-    p = find_handler( "resp2" ) ;
+    p = find_method( "resp2" ) ;
     CPPUNIT_ASSERT( p ) ;
     p( dhi ) ;
     CPPUNIT_ASSERT( _resp_num == 2 ) ;
 
     cout << "    finding resp3" << endl ;
-    p = find_handler( "resp3" ) ;
+    p = find_method( "resp3" ) ;
     CPPUNIT_ASSERT( p ) ;
     p( dhi ) ;
     CPPUNIT_ASSERT( _resp_num == 3 ) ;
 
     cout << "    finding resp4" << endl ;
-    p = find_handler( "resp4" ) ;
+    p = find_method( "resp4" ) ;
     CPPUNIT_ASSERT( p ) ;
     p( dhi ) ;
     CPPUNIT_ASSERT( _resp_num == 4 ) ;
 
     cout << "    finding not_there" << endl ;
-    p = find_handler( "not_there" ) ;
+    p = find_method( "not_there" ) ;
     CPPUNIT_ASSERT( !p ) ;
 
     cout << "*****************************************" << endl;
     cout << "try to add resp3 again" << endl ;
-    bool ret = add_handler( "resp3", TestRequestHandler::test_build_resp3 ) ;
+    bool ret = add_method( "resp3", TestRequestHandler::test_build_resp3 ) ;
     CPPUNIT_ASSERT( ret == false ) ;
 
     cout << "*****************************************" << endl;
     cout << "removing resp2" << endl ;
-    CPPUNIT_ASSERT( remove_handler( "resp2" ) ) ;
-    p = find_handler( "resp2" ) ;
+    CPPUNIT_ASSERT( remove_method( "resp2" ) ) ;
+    p = find_method( "resp2" ) ;
     CPPUNIT_ASSERT( !p ) ;
 
     cout << "*****************************************" << endl;
     cout << "add resp2 back" << endl ;
-    ret = add_handler( "resp2", TestRequestHandler::test_build_resp2 ) ;
+    ret = add_method( "resp2", TestRequestHandler::test_build_resp2 ) ;
     CPPUNIT_ASSERT( ret == true ) ;
 
-    p = find_handler( "resp2" ) ;
+    p = find_method( "resp2" ) ;
     CPPUNIT_ASSERT( p ) ;
     p( dhi ) ;
     CPPUNIT_ASSERT( _resp_num == 2 ) ;

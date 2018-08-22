@@ -26,6 +26,8 @@
 
 #include <cstdlib>
 
+#include <set>
+
 #include <gdal.h>
 #include <gdal_priv.h>
 

@@ -56,8 +56,8 @@
 #include "DmrppParserSax2.h"
 #include "DmrppCommon.h"
 
-static const string module = "dmrpp";
-static const string hdf4_namespace = "http://www.hdfgroup.org/HDF4/XML/schema/HDF4map/1.0.1";
+static const string module = "dmrpp:2";
+static const string dmrpp_namespace = "http://xml.opendap.org/dap/dmrpp/1.0.0#";
 
 using namespace libdap;
 using namespace std;
@@ -86,8 +86,7 @@ static const char *states[] = { "parser_start",
 
     "inside_constructor",
 
-    // FIXME "inside_h4_byte_stream",
-    "not_dap4_element", "inside_h4_object", "inside_h4_chunkDimensionSizes_element",
+    "not_dap4_element", "inside_dmrpp_object", "inside_dmrpp_chunkDimensionSizes_element",
 
     "parser_unknown", "parser_error", "parser_fatal_error",
 
@@ -637,16 +636,16 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         string dap4_ns_name = DapXmlNamspaces::getDapNamespaceString(DAP_4_0);
         if (parser->debug()) cerr << "dap4_ns_name:         " << dap4_ns_name << endl;
 
-        if (this_element_ns_name == hdf4_namespace) {
+        if (this_element_ns_name == dmrpp_namespace) {
             if (strcmp(localname, "chunkDimensionSizes") == 0) {
-                if (parser->debug()) cerr << "Found h4:chunkDimensionSizes element. Pushing state." << endl;
-                parser->push_state(inside_h4_chunkDimensionSizes_element);
+                if (parser->debug()) cerr << "Found dmrpp:chunkDimensionSizes element. Pushing state." << endl;
+                parser->push_state(inside_dmrpp_chunkDimensionSizes_element);
             }
             else {
                 if (parser->debug())
-                    cerr << "Start of element in hdf4 namespace: " << localname << " detected." << endl;
-                parser->push_state(inside_h4_object);
-                // Ingest the h4:chunkDimensionSizes element text content
+                    cerr << "Start of element in dmrpp namespace: " << localname << " detected." << endl;
+                parser->push_state(inside_dmrpp_object);
+                // Ingest the dmrpp namespaced element text content
             }
 
         }
@@ -681,6 +680,11 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             parser->dmr()->set_request_xml_base(parser->xml_attrs["base"].value);
         }
         if (parser->debug()) cerr << "Dataset xml:base is set to '" << parser->dmr()->request_xml_base() << "'" << endl;
+
+        if (parser->check_attribute("href")) {
+            parser->dmrpp_dataset_href = parser->xml_attrs["href"].value;
+        }
+        if (parser->debug()) cerr << "Dataset dmrpp:href is set to '" << parser->dmrpp_dataset_href << "'" << endl;
 
         if (!parser->root_ns.empty()) parser->dmr()->set_namespace(parser->root_ns);
 
@@ -838,9 +842,9 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 << endl;
         break;
 
-    case inside_h4_object: {
-        if (parser->debug()) cerr << "Inside hdf4 namespaced element. localname: " << localname << endl;
-        assert(this_element_ns_name == hdf4_namespace);
+    case inside_dmrpp_object: {
+        if (parser->debug()) cerr << "Inside dmrpp namespaced element. localname: " << localname << endl;
+        assert(this_element_ns_name == dmrpp_namespace);
 
         parser->transfer_xml_attrs(attributes, nb_attributes); // load up xml_attrs
 
@@ -851,10 +855,10 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         if (!dc)
             throw BESInternalError("Could not cast BaseType to DmrppType in the drmpp handler.", __FILE__, __LINE__);
 
-        // Ingest the h4:chunks element and it attributes
+        // Ingest the dmrpp:chunks element and it attributes
         if (strcmp(localname, "chunks") == 0) {
             if (parser->debug()) cerr << "Inside HDF4 chunks element. localname: " << localname << endl;
-
+#if 0
             // This bit of magic sets the URL used to get the data and it's
             // magic in part because it may be a file or an http URL
             unsigned int deflate_level = 0;
@@ -870,7 +874,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                     cerr << "There was no 'deflate_level' attribute associated with the variable '" << bt->type_name()
                         << " " << bt->name() << "'" << endl;
             }
-
+#endif
             if (parser->check_attribute("compressionType")) {
                 string compression_type_string(parser->xml_attrs["compressionType"].value);
                 dc->ingest_compression_type(compression_type_string);
@@ -884,11 +888,8 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                         << " " << bt->name() << "'" << endl;
             }
         }
-        // Ingest an h4:byteStream element and its attributes
-        else if (strcmp(localname, "byteStream") == 0) {
-            // Check for a h4:byteStream and process if found
-            // <h4:byteStream nBytes="4" uuid="..." offset="2216" md5="..."/>
-
+        // Ingest an dmrpp:chunk element and its attributes
+        else if (strcmp(localname, "chunk") == 0) {
             string data_url = "unknown_data_location";
             if (parser->check_attribute("href")) {
                 istringstream data_url_ss(parser->xml_attrs["href"].value);
@@ -897,12 +898,12 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                     cerr << "Processing 'href' value into data_url. href: " << data_url_ss.str() << endl;
             }
             else {
-                if (parser->debug()) cerr << "No attribute 'href' located. Trying xml:base..." << endl;
+                if (parser->debug()) cerr << "No attribute 'href' located. Trying Dataset/@dmrpp:href..." << endl;
                 // This bit of magic sets the URL used to get the data and it's
                 // magic in part because it may be a file or an http URL
-                data_url = parser->dmr()->request_xml_base();
+                data_url = parser->dmrpp_dataset_href;
                 if (parser->debug())
-                    cerr << "Processing xml:base into data_url. xml:base: '" << data_url << "'" << endl;
+                    cerr << "Processing dmrpp:href into data_url. dmrpp:href='" << data_url << "'" << endl;
             }
             // First we see if it's an HTTP URL, and if not we
             // make a local file url based on the Catalog Root
@@ -911,10 +912,10 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             std::string file("file://");
             if (data_url.compare(0, http.size(), http) && data_url.compare(0, https.size(), https)
                 && data_url.compare(0, file.size(), file)) {
-                if (parser->debug()) cerr << "xml:base does NOT start with '" << http << "' or with '" << https << "'. "
+                if (parser->debug()) cerr << "data_url does NOT start with '" << http << "' or with '" << https << "'. "
                     "Retrieving default catalog root directory" << endl;
                 // Now we try to find the default catalog. If we can't find it we punt and leave it be.
-                string defcatname = BESCatalogList::TheCatalogList()->default_catalog();
+                string defcatname = BESCatalogList::TheCatalogList()->default_catalog_name();
                 if (parser->debug()) cerr << "default_catalog name '" << defcatname << "'" << endl;
                 BESCatalog *defcat = BESCatalogList::TheCatalogList()->find_catalog(defcatname);
                 if (!defcat) {
@@ -925,7 +926,11 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 else {
                     // Yay! We found the catalog so we get the root dir
                     // and make a file URL.
+#if 0
                     BESCatalogUtils *utils = BESCatalogUtils::Utils(defcat->get_catalog_name());
+#endif
+                    BESCatalogUtils *utils = BESCatalogList::TheCatalogList()->default_catalog()->get_catalog_utils();
+
                     if (parser->debug())
                         cerr << "Found default catalog name '" << defcatname << "' root_dir: '" << utils->get_root_dir()
                             << "'" << endl;
@@ -937,8 +942,10 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
 
             unsigned long long offset = 0;
             unsigned long long size = 0;
+#if 0
             string md5("");
             string uuid("");
+#endif
             string chunk_position_in_array("");
 
             if (parser->check_required_attribute("offset")) {
@@ -959,6 +966,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 dmr_error(parser, "The hdf:byteStream element is missing the required attribute 'size'.");
             }
 
+#if 0
             if (parser->check_required_attribute("md5")) {
                 istringstream md5_ss(parser->xml_attrs["md5"].value);
                 md5 = md5_ss.str();
@@ -977,6 +985,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             else {
                 if (parser->debug()) cerr << "No attribute 'uuid' located" << endl;
             }
+#endif
 
             if (parser->check_attribute("chunkPositionInArray")) {
                 istringstream chunk_position_ss(parser->xml_attrs["chunkPositionInArray"].value);
@@ -988,13 +997,13 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 if (parser->debug()) cerr << "No attribute 'chunkPositionInArray' located" << endl;
             }
 
-            dc->add_chunk(data_url, size, offset, md5, uuid, chunk_position_in_array);
+            dc->add_chunk(data_url, size, offset, /* FIXME md5, uuid,*/ chunk_position_in_array);
         }
     }
         break;
 
-    case inside_h4_chunkDimensionSizes_element:
-        // The h4:chunkDimensionSizes value is processed by the end element code.
+    case inside_dmrpp_chunkDimensionSizes_element:
+        // The dmrpp:chunkDimensionSizes value is processed by the end element code.
         break;
 
     case parser_unknown:
@@ -1242,12 +1251,12 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
         parser->pop_state();
         break;
 
-    case inside_h4_object:
-        if (parser->debug()) cerr << "End of h4 namespace element: " << localname << endl;
+    case inside_dmrpp_object:
+        if (parser->debug()) cerr << "End of dmrpp namespace element: " << localname << endl;
         parser->pop_state();
         break;
 
-    case inside_h4_chunkDimensionSizes_element: {
+    case inside_dmrpp_chunkDimensionSizes_element: {
         if (parser->debug()) cerr << "End of chunkDimensionSizes element. localname: " << localname << endl;
 
         if (is_not(localname, "chunkDimensionSizes"))
@@ -1257,7 +1266,7 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
             throw BESInternalError("Could not cast BaseType to DmrppType in the drmpp handler.", __FILE__, __LINE__);
         string element_text(parser->char_data);
         if (parser->debug()) cerr << "chunkDimensionSizes element_text: '" << element_text << "'" << endl;
-        dc->ingest_chunk_dimension_sizes(element_text);
+        dc->parse_chunk_dimension_sizes(element_text);
         parser->char_data = ""; // Null this after use.
         parser->pop_state();
         break;
@@ -1288,7 +1297,7 @@ void DmrppParserSax2::dmr_get_characters(void * p, const xmlChar * ch, int len)
 
     switch (parser->get_state()) {
     case inside_attribute_value:
-    case inside_h4_chunkDimensionSizes_element:
+    case inside_dmrpp_chunkDimensionSizes_element:
         parser->char_data.append((const char *) (ch), len);
         BESDEBUG(module, "Characters: '" << parser->char_data << "'" << endl);
         break;

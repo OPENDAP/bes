@@ -5,13 +5,15 @@ AUTOMAKE_OPTIONS = foreign
 
 # Headers in 'tests' are used by the arrayT unit tests.
 
-AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch $(DAP_CFLAGS) 
-AM_LDADD =  $(top_builddir)/dispatch/libbes_dispatch.la -ltest-types \
-$(DAP_LIBS) $(LIBS)
+AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch $(DAP_CFLAGS) \
+-I$(top_srcdir)/modules/dmrpp_module
+
+LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(top_builddir)/dap/libdap_module.la \
+$(top_builddir)/modules/dmrpp_module/libdmrpp_module.la -ltest-types $(DAP_LIBS) $(LIBS)
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
-AM_LDADD += $(CPPUNIT_LIBS)
+LDADD += $(CPPUNIT_LIBS)
 endif
 
 # These are not used by automake but are often useful for certain types of
@@ -25,30 +27,59 @@ check_PROGRAMS = $(UNIT_TESTS)
 # This determines what gets run by 'make check.'
 TESTS = $(UNIT_TESTS)
 
+# Don't install test_config.h
 noinst_HEADERS = test_config.h
+# Build it first for the all, check and install targets. jhrg 1/20/18
+BUILT_SOURCES = test_config.h
 
-DIRS_EXTRA = response_cache input-files
+# Adding this here ensures the directory is made at runtime and in the
+# build directory (I think - check this). jhrg 1/19/18
+noinst_DATA = response_cache pathinfo_files bes.conf
 
-EXTRA_DIST = $(DIRS_EXTRA) test_utils.cc test_utils.h TestFunction.h test_config.h.in
+response_cache:
+	test -d response_cache  || mkdir response_cache 
 
-CLEANFILES = testout .dodsrc  *.gcda *.gcno
+# If 'pathinfo_files' does not exist, replicate it here. tar (used to make
+# the source dist) dereferences symbolic links, so we make them this 
+# way to get distcheck to work.
+pathinfo_files:
+	test -d pathinfo_files || mkdir -p pathinfo_files/nc
+	(cd pathinfo_files/nc && touch testfile.txt && ln -s testfile.txt link_to_testfile.txt)
+	(cd pathinfo_files && ln -s nc link_to_nc)
 
-DISTCLEANFILES = test_config.h *.strm *.file *.Po tmp.txt
+clean-local:
+	-rm -rf mds pathinfo_files response_cache tmp
+
+EXTRA_DIST = input-files mds_baselines test_utils.cc test_utils.h TestFunction.h \
+test_config.h.in bes.conf.in
+
+CLEANFILES = testout test_config.h bes.conf .dodsrc 
+
+DISTCLEANFILES = *.strm *.file *.Po tmp.txt  bes.log mds_ledger.txt
+
+BES_CONF_IN = bes.conf.in
+
+test_config.h: $(srcdir)/test_config.h.in Makefile
+	@mod_abs_srcdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	mod_abs_builddir=`echo ${abs_builddir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
+	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
+
+# Build the bes.conf used for testing so that the value substituted for
+# @abs_top_srcdir@ does not contain '../'. This happens when using 
+# configure's value for the parameter when running the distcheck target.
+bes.conf: $(srcdir)/$(BES_CONF_IN) $(top_srcdir)/configure.ac
+	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
+	    -e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
 ############################################################################
 # Unit Tests
 #
 
 if CPPUNIT
-UNIT_TESTS = ResponseBuilderTest ObjMemCacheTest FunctionResponseCacheTest
-
-# Class not included in the dap module: SequenceAggregationServerTest
-
-# FIXME Look at the problems in ResponseBuilderTest and address the (likley)
-# similar issues in these tests. (Use of machine dependent hash names in the
-# baselines.) jhrg 3/4/15
-# 
-# StoredDap2ResultTest StoredDap4ResultTest 
+UNIT_TESTS = ResponseBuilderTest ObjMemCacheTest FunctionResponseCacheTest \
+ShowPathInfoTest TemporaryFileTest GlobalMetadataStoreTest
 
 else
 UNIT_TESTS =
@@ -69,22 +100,34 @@ ResponseBuilderTest_OBJS = ../BESDapResponseBuilder.o ../BESDataDDSResponse.o \
 ../BESDDSResponse.o ../BESDapResponse.o ../BESDapFunctionResponseCache.o \
 ../BESStoredDapResultCache.o ../DapFunctionUtils.o ../CachedSequence.o ../CacheTypeFactory.o \
 ../CacheMarshaller.o ../CacheUnMarshaller.o ../../dispatch/BESFileLockingCache.o
-ResponseBuilderTest_LDADD = $(ResponseBuilderTest_OBJS) $(AM_LDADD) 
+ResponseBuilderTest_LDADD = $(ResponseBuilderTest_OBJS) $(LDADD) 
 
 FunctionResponseCacheTest_SOURCES = FunctionResponseCacheTest.cc $(TEST_SRC)
 FunctionResponseCacheTest_OBJS = ../BESDapFunctionResponseCache.o ../DapFunctionUtils.o \
 ../CachedSequence.o ../CacheTypeFactory.o ../CacheMarshaller.o ../CacheUnMarshaller.o 
-FunctionResponseCacheTest_LDADD = $(FunctionResponseCacheTest_OBJS) $(AM_LDADD)
+FunctionResponseCacheTest_LDADD = $(FunctionResponseCacheTest_OBJS) $(LDADD)
 
 ObjMemCacheTest_SOURCES = ObjMemCacheTest.cc
 ObjMemCacheTest_OBJS = ../ObjMemCache.o
-ObjMemCacheTest_LDADD = $(ObjMemCacheTest_OBJS) $(AM_LDADD)
+ObjMemCacheTest_LDADD = $(ObjMemCacheTest_OBJS) $(LDADD)
+
+ShowPathInfoTest_SOURCES = ShowPathInfoTest.cc
+ShowPathInfoTest_OBJS = ../ShowPathInfoResponseHandler.o 
+ShowPathInfoTest_LDADD = $(ShowPathInfoTest_OBJS) $(LDADD)
+
+TemporaryFileTest_SOURCES = TemporaryFileTest.cc
+TemporaryFileTest_OBJS = ../TempFile.o
+TemporaryFileTest_LDADD = $(TemporaryFileTest_OBJS) $(LDADD)
+
+GlobalMetadataStoreTest_SOURCES = GlobalMetadataStoreTest.cc $(TEST_SRC)
+GlobalMetadataStoreTest_OBJS = ../GlobalMetadataStore.o ../TempFile.o
+GlobalMetadataStoreTest_LDADD = $(GlobalMetadataStoreTest_OBJS) $(LDADD)
 
 # StoredDap2ResultTest_SOURCES = StoredDap2ResultTest.cc  $(TEST_SRC)
-# StoredDap2ResultTest_LDADD = $(AM_LDADD)
+# StoredDap2ResultTest_LDADD = $(LDADD)
 
 # StoredDap4ResultTest_SOURCES = StoredDap4ResultTest.cc  $(TEST_SRC)
-# StoredDap4ResultTest_LDADD = $(AM_LDADD)
+# StoredDap4ResultTest_LDADD = $(LDADD)
 
 # SequenceAggregationServerTest_SOURCES = SequenceAggregationServerTest.cc
-# SequenceAggregationServerTest_LDADD = $(AM_LDADD)
+# SequenceAggregationServerTest_LDADD = $(LDADD)

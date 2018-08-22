@@ -4,3 +4,9 @@
 /FileLockingCacheTest
 /package.m4
 /testsuite
+/create_and_lock/
+/create_and_lock_2/
+/create_and_lock_3/
+/read_hooks/
+/tc/
+/blocking/

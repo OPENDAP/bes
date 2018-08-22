@@ -4,7 +4,7 @@
 // This file is part of www_int, software which returns an HTML form which
 // can be used to build a URL to access data from a DAP data server.
 
-// Copyright (c) 2002,2003 OPeNDAP, Inc.
+// Copyright (c) 2002,2003,2018 OPeNDAP, Inc.
 // Author: James Gallagher <jgallagher@opendap.org>
 //
 // asciival is free software; you can redistribute it and/or modify it under
@@ -50,7 +50,7 @@ function ascii_button() {
         var ascii_url = url_parts[0] + ".ascii?";
     }
 
-    window.open(ascii_url, "ASCII_Data");
+    window.open(encodeURI(ascii_url), "ASCII_Data");
 }
 
 /* The netcdf_button handler loads the data to the current window. Since it 
@@ -69,7 +69,7 @@ function netcdf_button(ext) {
         var binary_url = url_parts[0] + "." + ext + "?";
     }
 
-    window.location = binary_url;
+    window.location = encodeURI(binary_url);
 }
 
 /* The binary_button handler loads the data to the current window. Since it 
@@ -88,26 +88,10 @@ function binary_button(ext) {
         var binary_url = url_parts[0] + "." + ext + "?";
     }
 
-    window.location = binary_url;
+    window.location = encodeURI(binary_url);
 }
 
-/* Route the URL to Matlab, IDL, .... Users must add an entry into their mime
-   types file (aka list of Netscape helper applications) so that the URL will
-   be fedd into Matlab which must, in addition, be running loaddods.
 
-   Note that reflection_cgi is a global JavaScript variable set at the 
-   begining of this `file'. 
-
-   DEPRECATED */
-
-function program_button() {
-    var program_url = new String(document.forms[0].url.value);
-
-    /* Build a call to the reflector CGI. */
-    var CGI = reflection_cgi + "?" + "url=" + program_url + "&disposition=matlab";
-
-    window.location = CGI;
-}
 
 var help = 0;			// Our friend, the help window.
 
@@ -123,7 +107,7 @@ function help_button() {
     // the root window's document gets reloaded. This does not happen on IE5.
     // regardless, with scrollbars we don't absolutely need to be able to
     // resize. 10/8/99 jhrg
-    help = window.open("http://www.opendap.org/online_help_files/opendap_form_help.html",
+    help = window.open("https://opendap.github.io/documentation/QuickStart.html#_an_easy_way_using_the_browser_based_opendap_server_dataset_access_form",
                        "help", "scrollbars,dependent,width=600,height=400");
 }
 

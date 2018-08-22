@@ -35,51 +35,102 @@
 
 #include <string>
 
-using std::string;
-
 #include "BESObj.h"
 
 class BESCatalogEntry;
+class BESCatalogUtils;
 
-/** @brief abstract base class catalog object. Derived classes know how to
- * show nodes and leaves in a catalog.
+namespace bes {
+    class CatalogNode;
+    // TODO class CatalogUtils;
+}
+
+/** @brief Catalogs provide a hierarchical organization for data.
+ *
  */
 class BESCatalog: public BESObj {
 private:
-    string _catalog_name;
-    unsigned int _reference;
+    std::string d_catalog_name;
+    unsigned int d_reference;
+
+    BESCatalogUtils *d_utils;
 
     BESCatalog();
 
-protected:
-    BESCatalog(const string &catalog_name) :
-            _catalog_name(catalog_name), _reference(0)
-    {
-    }
-
 public:
-    virtual ~BESCatalog(void)
+    BESCatalog(const std::string &catalog_name);
+
+    virtual ~BESCatalog()
     {
+        // TODO delete d_utils when it's no longer a singleton.
+        // Or leave that class as the weird singleton it is and treat this
+        // as a weak pointer. jhrg 7/21/18
     }
 
+    /**
+     * @brief Increase the count of clients that reference this catalog.
+     *
+     * This class maintains a count of the clients that reference the catalog.
+     * When count of clients drops to zero, the instance can be deleted.
+     *
+     * @todo Revisit the reference counting behavior - maybe there's a better
+     * way to manage these catalogs?
+     */
     virtual void reference_catalog()
     {
-        _reference++;
+        d_reference++;
     }
 
+    /**
+     * @brief Decrement the count of clients that reference this catalog.
+     *
+     * @return The number of clients that reference this BESCatalog instance
+     * @see reference_catalog()
+     */
     virtual unsigned int dereference_catalog()
     {
-        if (!_reference)
-            return _reference;
-        return --_reference;
+        if (!d_reference)
+            return d_reference;
+        return --d_reference;
     }
 
-    virtual string get_catalog_name()
+    /**
+     * @brief Get the name for this catalog
+     * @return The catalog.
+     */
+    virtual std::string get_catalog_name() const
     {
-        return _catalog_name;
+        return d_catalog_name;
     }
 
-    virtual BESCatalogEntry * show_catalog(const string &container, const string &coi, BESCatalogEntry *entry) = 0;
+    /**
+     * @brief Get a pointer to the utilities, customized for this catalog.
+     *
+     * @return A BESCatalogUtils pointer.
+     */
+    virtual BESCatalogUtils *get_catalog_utils() const { return d_utils; }
+
+    /**
+     * @deprecated
+     */
+    virtual BESCatalogEntry *show_catalog(const std::string &container, BESCatalogEntry *entry) = 0;
+
+    /**
+     * The 'root prefix' for a catalog. For catalogs rooted in the file system,
+     * this is the pathname to that directory. If the idea of a 'root prefix'
+     * makes no sense for a particular kind of catalog, this should be the empty
+     * string.
+     *
+     * @return The root prefix for the catalog.
+     */
+    virtual std::string get_root() const = 0;
+
+    // Based on other code (show_catalogs()), use BESCatalogUtils::exclude() on
+    // a directory, but BESCatalogUtils::include() on a file).
+    virtual bes::CatalogNode *get_node(const std::string &path) const = 0;
+
+    virtual void get_site_map(const string &prefix, const string &node_suffix, const string &leaf_suffix, ostream &out,
+        const string &path = "/") const = 0;
 
     virtual void dump(ostream &strm) const = 0;
 };

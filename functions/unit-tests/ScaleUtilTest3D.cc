@@ -70,6 +70,7 @@
 #include <BESDebug.h>
 #include <BESError.h>
 #include <BESDapError.h>
+#include <dods-datatypes.h>
 
 static bool debug = false;
 static bool bes_debug = false;
@@ -133,7 +134,7 @@ public:
             test3D_dds->parse(dds_file);
 
             vector<dods_float32> time(t_size);
-            DBG(cerr << "time num = " << time.size() << endl);
+            //DBG(cerr << "time num = " << time.size() << endl);
             string time_file = src_dir + "/" + "test3D_time.txt";
             load_var(dynamic_cast<Array*>(test3D_dds->var("time")), time_file, time);
 
@@ -171,6 +172,7 @@ public:
 
     void test_reading_data()
     {
+        DBG(cerr << "Run test_reading_data." << endl);
         vector<dods_float32> lat_buf(y_size);
         Array *lat = dynamic_cast<Array*>(test3D_dds->var("lat"));
         lat->value(&lat_buf[0]);
@@ -213,15 +215,22 @@ public:
         DBG(cerr << "d[1:0:0] dimension_size = " << d->dimension_size(d->dim_begin()) << endl);
         DBG(cerr << "d[1:0:0] dimension_name = " << d->dimension_name(d->dim_begin()) << endl);
 
+        DBG(cerr << "------------------End test------------------" << endl);
     }
 
     void test_get_size_box()
     {
+        DBG(cerr << "Run test_get_size_box." << endl);
         SizeBox sb = get_size_box(dynamic_cast<Array*>(test3D_dds->var("lon")),
             dynamic_cast<Array*>(test3D_dds->var("lat")));
 
+        DBG(cerr << "SizeBox x_size = " << sb.x_size << endl);
+        DBG(cerr << "SizeBox y_size = " << sb.y_size << endl);
+
         CPPUNIT_ASSERT(sb.x_size == x_size);
         CPPUNIT_ASSERT(sb.y_size == y_size);
+
+        DBG(cerr << "------------------End test------------------" << endl);
     }
 
     #define ADD_BAND 0
@@ -229,6 +238,8 @@ public:
     void test_build_src_dataset_3D()
     {
         try {
+            DBG(cerr << "Run test_build_src_dataset_3D" << endl);
+
             Array *data = dynamic_cast<Array*>(test3D_dds->var("data"));
             Array *t = dynamic_cast<Array*>(test3D_dds->var("time"));
             Array *x = dynamic_cast<Array*>(test3D_dds->var("lon"));
@@ -249,7 +260,7 @@ public:
             DBG(cerr << endl);
 
             auto_ptr<GDALDataset> ds = build_src_dataset_3D(data, t, x, y);
-           DBG(cerr << "RasterCount = " << ds.get()->GetRasterCount() << endl);
+            DBG(cerr << "RasterCount = " << ds.get()->GetRasterCount() << endl);
 
 #if 0
             GDALDriver *driver = GetGDALDriverManager()->GetDriverByName("MEM");
@@ -355,15 +366,79 @@ public:
                 CPPUNIT_ASSERT(gt[4] == 0);   // 0 if east-west is parallel to x axis
                 CPPUNIT_ASSERT(gt[5] == 2);  // resolution of lat; neg for north up data
             }
+
+            DBG(cerr << "------------------End test------------------" << endl);
         }
         catch (Error &e) {
             CPPUNIT_FAIL(e.get_error_message());
         }
     }
+
+    void test_build_array_from_gdal_dataset_3D()
+        {
+            try {
+                DBG(cerr << "Run test_build_array_from_gdal_dataset_3D" << endl);
+
+                Array *data = dynamic_cast<Array*>(test3D_dds->var("data"));
+                Array *t = dynamic_cast<Array*>(test3D_dds->var("time"));
+                Array *x = dynamic_cast<Array*>(test3D_dds->var("lon"));
+                Array *y = dynamic_cast<Array*>(test3D_dds->var("lat"));
+
+                DBG(cerr << "original data: ");
+                DBG(data->print_val(cerr));
+                DBG(cerr << endl);
+
+                // Array to gdal
+                auto_ptr<GDALDataset> src = build_src_dataset_3D(data, t, x, y);
+
+                //Get GDAL data
+                int nBand = src.get()->GetRasterCount();
+                DBG(cerr << "Band count = " << nBand << endl);
+                for(int b = 0; b < nBand; b++){
+                    // Extract the data now.
+                    cerr << "----> GDAL data band " << b+1 << ":" << endl;
+                    GDALRasterBand *band = src->GetRasterBand(b+1);
+                    int x_size = band->GetXSize();
+                    DBG(cerr << "band x_size: " << band->GetXSize() << endl);
+                    int y_size = band->GetYSize();
+                    DBG(cerr << "band y_size: " << band->GetYSize() << endl);
+
+                    vector<dods_float32> buf(x->length() * y->length());
+                    CPLErr error = band->RasterIO(GF_Read, 0, 0, x_size, y_size, &buf[0], x_size, y_size, get_array_type(data), 0, 0);
+                    if (error != CPLE_None)
+                        throw Error(string("Could not extract data for translated GDAL Dataset.") + CPLGetLastErrorMsg());
+
+                    if (debug) {
+                        for (int i = 0; i < y_size; ++i) {
+                            for (int j = 0; j < x_size; ++j) {
+                                cerr << buf[i * x_size + j] << " ";
+                            }
+                            cerr << endl;
+                        }
+                    }
+                }
+
+                // gdal to array
+                auto_ptr<Array> result(build_array_from_gdal_dataset_3D(src.get(), data));
+
+                cerr << endl;
+                DBG(cerr << "new data: ");
+                DBG(result->print_val(cerr));
+                DBG(cerr << endl);
+
+                DBG(cerr << "------------------End test------------------" << endl);
+            }
+            catch (Error &e) {
+                CPPUNIT_FAIL(e.get_error_message());
+            }
+        }
+
 #if 0
     void test_scaling_with_gdal()
     {
         try {
+
+            DBG(cerr << "Run ");
 
             Array *d = dynamic_cast<Array*>(test3D_dds->var("data"));
             Array *t = dynamic_cast<Array*>(test3D_dds->var("time"));
@@ -490,110 +565,123 @@ public:
     }
 #endif
 
-    void test_scaling_with_gdal_3D()
-        {
-            try {
-                Array *data = dynamic_cast<Array*>(test3D_dds->var("data"));
-                Array *t = dynamic_cast<Array*>(test3D_dds->var("time"));
-                Array *lon = dynamic_cast<Array*>(test3D_dds->var("lon"));
-                Array *lat = dynamic_cast<Array*>(test3D_dds->var("lat"));
+    void test_build_maps_from_gdal_dataset_3D(){
 
-                DBG(cerr << "data: ");
-                DBG(data->print_val(cerr));
-                DBG(cerr << endl);
-                DBG(cerr << "t: ");
-                DBG(t->print_val(cerr));
-                DBG(cerr << endl);
-                DBG(cerr << "lat: ");
-                DBG(lat->print_val(cerr))
-                DBG(cerr << endl);
-                DBG(cerr << "lon: ");
-                DBG(lon->print_val(cerr))
-                DBG(cerr << endl);
+        DBG(cerr << "Run test_build_maps_from_gdal_dataset_3D." << endl);
 
-                auto_ptr<GDALDataset> src = build_src_dataset_3D(data, t, lon, lat);
-                DBG(cerr << "src nBands = " << src->GetRasterCount() << endl);
+        Array *data = dynamic_cast<Array*>(test3D_dds->var("data"));
+        Array *t = dynamic_cast<Array*>(test3D_dds->var("time"));
+        Array *lon = dynamic_cast<Array*>(test3D_dds->var("lon"));
+        Array *lat = dynamic_cast<Array*>(test3D_dds->var("lat"));
 
-                const int dst_size = 11;
-                SizeBox size(dst_size, dst_size);
+        DBG(cerr << "data: ");
+        DBG(data->print_val(cerr));
+        DBG(cerr << endl);
+        DBG(cerr << "t: ");
+        DBG(t->print_val(cerr));
+        DBG(cerr << endl);
+        DBG(cerr << "lat: ");
+        DBG(lat->print_val(cerr))
+        DBG(cerr << endl);
+        DBG(cerr << "lon: ");
+        DBG(lon->print_val(cerr))
+        DBG(cerr << endl);
 
-                auto_ptr<GDALDataset> dst = scale_dataset_3D(src, size);
-                int nBands = dst->GetRasterCount();
-                DBG(cerr << "scaled nBands = " << nBands << endl);
-                //start test loop
-                for(int i=0; i< nBands; i++){
-                    GDALRasterBand *band = dst->GetRasterBand(i+1);
+        auto_ptr<GDALDataset> src = build_src_dataset_3D(data, t, lon, lat);
 
-                    if (!band)
-                        throw Error(string("Could not get the GDALRasterBand for the GDALDataset: ") + CPLGetLastErrorMsg());
-                    DBG(cerr << "------------------Test band #" << band->GetBand() << endl);
-                    CPPUNIT_ASSERT(band->GetXSize() == dst_size);
-                    CPPUNIT_ASSERT(band->GetYSize() == dst_size);
+        auto_ptr<Array> built_time(new Array("built_time", new Float32("built_time")));
+        auto_ptr<Array> built_lon(new Array("built_lon", new Float32("built_lon")));
+        auto_ptr<Array> built_lat(new Array("built_lat", new Float32("built_lat")));
 
-                    CPPUNIT_ASSERT(band->GetBand() == i+1);
-                    CPPUNIT_ASSERT(band->GetRasterDataType() == get_array_type(data));
+        DBG(cerr << "built_time before: ");
+        DBG(built_time->print_val(cerr))
+        DBG(cerr << endl);
 
-                    // This is just interesting...
-                    int block_x, block_y;
-                    band->GetBlockSize(&block_x, &block_y);
-                    DBG(cerr << "Block size: " << block_y << ", " << block_x << endl);
+        // Build Time map
+       int t_size = t->length();
 
-                    double min, max;
-                    CPLErr error = band->GetStatistics(false, true, &min, &max, NULL, NULL);
-                    DBG(cerr << "min: " << min << ", max: " << max << " (error: " << error << ")" << endl);
-                    CPPUNIT_ASSERT(same_as(min, -0.9));  // This is 1 and not -99 because the no data value is set.
-                    CPPUNIT_ASSERT(double_eq(max, 1));
+       DBG(cerr << "t_size = " << t_size << endl);
+       bool name_maps = false;
 
-                    vector<double> gt(6);
-                    dst->GetGeoTransform(&gt[0]);
+       if (name_maps) {
+           built_time->append_dim(t_size, "Time");
+       }
+       else {
+           built_time->append_dim(t_size);
+       }
+       vector<dods_float32> t_buf(t_size);
+       t->value(&t_buf[0]);
 
-                    DBG(cerr << "gt values: ");
-                    DBG(copy(gt.begin(), gt.end(), std::ostream_iterator<double>(std::cerr, " ")));
-                    DBG(cerr << endl);
+       built_time->set_value(&t_buf[0], t_size);
 
-                    // gt values: 21 2.72727 0 -89 0 1.81818
-                    CPPUNIT_ASSERT(gt[0] == 21);  // min lon
-                    CPPUNIT_ASSERT(double_eq(gt[1], 2.72727));  // resolution of lon; i.e., pixel width
-                    CPPUNIT_ASSERT(gt[2] == 0.0);  // north-south parallel to y axis
-                    CPPUNIT_ASSERT(gt[3] == -89);  // max lat
-                    CPPUNIT_ASSERT(gt[4] == 0.0);  // 0 if east-west is parallel to x axis
-                    CPPUNIT_ASSERT(double_eq(gt[5], 1.81818));  // resolution of lat; neg for north up data
+        DBG(cerr << "built_time after: ");
+        DBG(built_time.get()->print_val(cerr))
+        DBG(cerr << endl);
 
-                    // Extract the data now.
-                    vector<dods_float32> buf(dst_size * dst_size);
-                    error = band->RasterIO(GF_Read, 0, 0, dst_size, dst_size, &buf[0], dst_size, dst_size, get_array_type(data),
-                        0, 0);
-                    if (error != CPLE_None)
-                        throw Error(string("Could not extract data for translated GDAL Dataset.") + CPLGetLastErrorMsg());
+        DBG(cerr << "------------------End test------------------" << endl);
+    }
 
-                    if (debug) {
-                        cerr << "buf:" << endl;
-                        for (int y = 0; y < dst_size; ++y) {
-                            for (int x = 0; x < dst_size; ++x) {
-                                cerr << buf[y * dst_size + x] << " ";
-                            }
-                            cerr << endl;
-                        }
-                    }
+    void test_scaling_dap_array_3D(){
+        try {
+            DBG(cerr << "Run test_scaling_dap_array_3D." << endl);
 
-                    CPPUNIT_ASSERT(double_eq(buf[0 * dst_size + 4], -0.3));
-                    CPPUNIT_ASSERT(double_eq(buf[0 * dst_size + 6], -0.7));
-                    CPPUNIT_ASSERT(double_eq(buf[0 * dst_size + 11], -0.6));
-                    CPPUNIT_ASSERT(double_eq(buf[6 * dst_size + 10], -0.9));
-                }//end loop
-                GDALClose(dst.release());
-            }
-            catch (Error &e) {
-                CPPUNIT_FAIL(e.get_error_message());
-            }
+            Array *data = dynamic_cast<Array*>(test3D_dds->var("data"));
+            Array *t = dynamic_cast<Array*>(test3D_dds->var("time"));
+            Array *lon = dynamic_cast<Array*>(test3D_dds->var("lon"));
+            Array *lat = dynamic_cast<Array*>(test3D_dds->var("lat"));
+
+            DBG(cerr << "data: ");
+            DBG(data->print_val(cerr));
+            DBG(cerr << endl);
+            DBG(cerr << "t: ");
+            DBG(t->print_val(cerr));
+            DBG(cerr << endl);
+            DBG(cerr << "lat: ");
+            DBG(lat->print_val(cerr))
+            DBG(cerr << endl);
+            DBG(cerr << "lon: ");
+            DBG(lon->print_val(cerr))
+            DBG(cerr << endl);
+
+            // build GDAL dataset
+            auto_ptr<GDALDataset> src = build_src_dataset_3D(data, t, lon, lat);
+            DBG(cerr << "src nBands = " << src->GetRasterCount() << endl);
+
+            // result box
+            const int x_dst_size = 10;
+            const int y_dst_size = 7;
+
+            SizeBox size(x_dst_size, y_dst_size);
+            int data_size = x_dst_size * y_dst_size;
+
+            DBG(cerr << "result data_size = " << data_size << endl);
+
+            string crs = "WGS84";   // FIXME WGS84 assumes a certain order for lat and lon
+            string interp = "nearest";
+
+            // scale data set
+            Grid *gr = scale_dap_array_3D(data, t, lon, lat, size, crs, interp);
+
+            DBG(cerr << "gr = ");
+            DBG(gr->print_val(cerr));
+            DBG(cerr << endl);
+
+            DBG(cerr << "------------------End test------------------" << endl);
+
+        }catch (Error &e) {
+            CPPUNIT_FAIL(e.get_error_message());
         }
+    }
+
 
 CPPUNIT_TEST_SUITE( ScaleUtilTest3D );
 
     CPPUNIT_TEST(test_reading_data);
     CPPUNIT_TEST(test_get_size_box);
-    CPPUNIT_TEST(test_scaling_with_gdal_3D);
     CPPUNIT_TEST(test_build_src_dataset_3D);
+    CPPUNIT_TEST(test_build_array_from_gdal_dataset_3D);
+    CPPUNIT_TEST(test_build_maps_from_gdal_dataset_3D);
+    CPPUNIT_TEST(test_scaling_dap_array_3D);
 
     CPPUNIT_TEST_SUITE_END()
     ;

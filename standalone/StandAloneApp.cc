@@ -69,7 +69,10 @@ StandAloneApp::~StandAloneApp()
 
     delete TheBESKeys::TheKeys();
 
+#if 0
     BESCatalogUtils::delete_all_catalogs();
+#endif
+
 }
 
 void StandAloneApp::showVersion()

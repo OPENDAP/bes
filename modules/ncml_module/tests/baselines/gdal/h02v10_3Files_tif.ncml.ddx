@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="h02v10_3Files_tif.ncml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="GLOBAL" type="Container">
+        <Attribute name="Metadata" type="Container">
+            <Attribute name="TIFFTAG_RESOLUTIONUNIT" type="String">
+                <value>2 (pixels/inch)</value>
+            </Attribute>
+            <Attribute name="TIFFTAG_XRESOLUTION" type="String">
+                <value>72</value>
+            </Attribute>
+            <Attribute name="TIFFTAG_YRESOLUTION" type="String">
+                <value>72</value>
+            </Attribute>
+        </Attribute>
+    </Attribute>
+    <Grid name="SRB1">
+        <Attribute name="add_offset" type="Float64">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="PhotometricInterpretation" type="String">
+            <value>Gray</value>
+        </Attribute>
+        <Array name="SRB1">
+            <UInt16/>
+            <dimension name="new_time" size="3"/>
+            <dimension name="northing" size="500"/>
+            <dimension name="easting" size="500"/>
+        </Array>
+        <Map name="new_time">
+            <Attribute name="units" type="String">
+                <value>days since 2000-01-01 00:00</value>
+            </Attribute>
+            <Float64/>
+            <dimension name="new_time" size="3"/>
+        </Map>
+        <Map name="northing">
+            <Float64/>
+            <dimension name="northing" size="500"/>
+        </Map>
+        <Map name="easting">
+            <Float64/>
+            <dimension name="easting" size="500"/>
+        </Map>
+    </Grid>
+    <Array name="new_time">
+        <Attribute name="units" type="String">
+            <value>days since 2000-01-01 00:00</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="new_time" size="3"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

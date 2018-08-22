@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -43,40 +43,33 @@
  * @see BESInfo
  * @see BESResponseObject
  */
-class BESHTMLInfo : public BESInfo
-{
+class BESHTMLInfo: public BESInfo {
 private:
-    bool		_header ;
-    string		_indent ;
-    bool		_do_indent ;
+    bool _header;
+    string _indent;
+    bool _do_indent;
 public:
-  			BESHTMLInfo( ) ;
-  			BESHTMLInfo( const string &key, ostream *strm, bool strm_owned ) ;
-    virtual 		~BESHTMLInfo() ;
+    BESHTMLInfo();
+    BESHTMLInfo(const string &key, ostream *strm, bool strm_owned);
+    virtual ~BESHTMLInfo();
 
-    virtual void	begin_response( const string &response_name,
-					BESDataHandlerInterface &dhi ) ;
-    virtual void	end_response( ) ;
+    virtual void begin_response(const string &response_name, BESDataHandlerInterface &dhi);
+    virtual void end_response();
 
-    virtual void	add_tag( const string &tag_name,
-                                 const string &tag_data,
-				 map<string,string> *attrs = 0 ) ;
-    virtual void	begin_tag( const string &tag_name,
-				   map<string,string> *attrs = 0 ) ;
-    virtual void	end_tag( const string &tag_name ) ;
+    virtual void add_tag(const string &tag_name, const string &tag_data, map<string, string> *attrs = 0);
+    virtual void begin_tag(const string &tag_name, map<string, string> *attrs = 0);
+    virtual void end_tag(const string &tag_name);
 
-    virtual void 	add_data( const string &s ) ;
-    virtual void	add_space( unsigned long num_spaces ) ;
-    virtual void	add_break( unsigned long num_breaks ) ;
+    virtual void add_data(const string &s);
+    virtual void add_space(unsigned long num_spaces);
+    virtual void add_break(unsigned long num_breaks);
 
-    virtual void 	add_data_from_file( const string &key,
-                                            const string &name ) ;
-    virtual void	transmit( BESTransmitter *transmitter,
-				  BESDataHandlerInterface &dhi ) ;
+    virtual void add_data_from_file(const string &key, const string &name);
+    virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
 
-    virtual void	dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 
-    static BESInfo *BuildHTMLInfo( const string &info_type ) ;
+    static BESInfo *BuildHTMLInfo(const string &info_type);
 };
 
 #endif // BESHTMLInfo_h_

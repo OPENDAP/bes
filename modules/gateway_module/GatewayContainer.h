@@ -24,9 +24,6 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-// (c) COPYRIGHT URI/MIT 1994-1999
-// Please read the full copyright statement in the file COPYRIGHT_URI.
-//
 // Authors:
 //      pcw       Patrick West <pwest@ucar.edu>
 
@@ -34,37 +31,37 @@
 #define GatewayContainer_h_ 1
 
 #include <string>
-
-using std::string;
-
-#include <HTTPResponse.h>
-
-using namespace libdap;
+#include <ostream>
 
 #include "BESContainer.h"
-#include "RemoteHttpResource.h"
+
+namespace gateway {
+
+class RemoteHttpResource;
 
 /** @brief Container representing a remote request
  *
  * The real name of a GatewayContainer is the actual remote request. When the
  * access method is called the remote request is made, the response
- * saved to file if successfull, and the target response returned as the real
+ * saved to file if successful, and the target response returned as the real
  * container that a data handler would then open.
  *
  * @see GatewayContainerStorage
  */
 class GatewayContainer: public BESContainer {
 private:
-    gateway::RemoteHttpResource *_remoteResource;
+    gateway::RemoteHttpResource *d_remoteResource;
 
     GatewayContainer() :
-            BESContainer(), _remoteResource(0) {
+        BESContainer(), d_remoteResource(0)
+    {
     }
+
 protected:
     void _duplicate(GatewayContainer &copy_to);
+
 public:
-    GatewayContainer(const string &sym_name, const string &real_name,
-            const string &type);
+    GatewayContainer(const std::string &sym_name, const std::string &real_name, const std::string &type);
 
     GatewayContainer(const GatewayContainer &copy_from);
 
@@ -72,11 +69,13 @@ public:
 
     virtual BESContainer * ptr_duplicate();
 
-    virtual string access();
+    virtual std::string access();
 
     virtual bool release();
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
+
+} // namespace gateway
 
 #endif // GatewayContainer_h_

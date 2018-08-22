@@ -5,7 +5,7 @@
 # the places it's needed and hack. If substantial changes are needed, try to copy
 # them back into this file. jhrg 12/14/15 
 
-AT_INIT([bes.conf besstandalone])
+# AT_INIT([bes.conf besstandalone])
 # AT_COPYRIGHT([])
 
 AT_TESTED([besstandalone])

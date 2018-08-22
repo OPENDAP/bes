@@ -831,28 +831,25 @@ EXCLUDE_SYMLINKS       = NO
 # Note that the wildcards are matched against the file with absolute path, so to
 # exclude all test directories for example use the pattern */test/*
 
-EXCLUDE_PATTERNS       = */tests/* \
-                         */unit-tests/* \
-                         */bes-testsuite/* \
-                         */modules/* \
-                         */templates/* \
-                         *.tab.cc \
-                         *.tab.h \
-                         lex.* \
-                         Test*.cc \
-                         Test*.h \
-                         *Test.cc \
-                         *T.cc \
-                         */apache/* \
-                         */bin/* \
-                         */conf/* \
-                         */docs/* \
-                         */modules/* \
-                         */OSX_Resources/* \
-                         */templates/* \
-                         */bes-testsuite/* \
-                         */tests/* \
-                         */unit-tests/*
+EXCLUDE_PATTERNS       = */old/* \
+*/not-used/* \
+*/unused/* \
+*/tests/* \
+*/unit-tests/* \
+*/templates/* \
+*/apache/* \
+*/bin/* \
+*/conf/* \
+*/docs/* \
+*/OSX_Resources/* \
+*.tab.cc \
+*.tab.h lex.* \
+Test*.cc \
+Test*.h \
+*Test.cc \
+*T.cc
+
+# This was excluded. jhrg 5/10/18 */modules/* \ 
                          
 # The EXCLUDE_SYMBOLS tag can be used to specify one or more symbol names
 # (namespaces, classes, functions, etc.) that should be excluded from the
@@ -2219,7 +2216,7 @@ DOT_FONTPATH           =
 # The default value is: YES.
 # This tag requires that the tag HAVE_DOT is set to YES.
 
-CLASS_GRAPH            = YES
+CLASS_GRAPH            = NO
 
 # If the COLLABORATION_GRAPH tag is set to YES then doxygen will generate a
 # graph for each documented class showing the direct and indirect implementation
@@ -2228,14 +2225,14 @@ CLASS_GRAPH            = YES
 # The default value is: YES.
 # This tag requires that the tag HAVE_DOT is set to YES.
 
-COLLABORATION_GRAPH    = NO
+COLLABORATION_GRAPH    = YES
 
 # If the GROUP_GRAPHS tag is set to YES then doxygen will generate a graph for
 # groups, showing the direct groups dependencies.
 # The default value is: YES.
 # This tag requires that the tag HAVE_DOT is set to YES.
 
-GROUP_GRAPHS           = NO
+GROUP_GRAPHS           = YES
 
 # If the UML_LOOK tag is set to YES, doxygen will generate inheritance and
 # collaboration diagrams in a style similar to the OMG's Unified Modeling

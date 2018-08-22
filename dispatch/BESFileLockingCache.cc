@@ -61,18 +61,26 @@ static const unsigned long long BYTES_PER_MEG = 1048576ULL;
 // 2^64 / 2^20 == 2^44
 static const unsigned long long MAX_CACHE_SIZE_IN_MEGABYTES = (1ULL << 44);
 
-/** @brief Protected constructor that takes as arguments keys to the cache directory,
- * file prefix, and size of the cache to be looked up a configuration file
+/** @brief Make an instance of FileLockingCache
  *
- * The keys specified are looked up in the specified keys object. If not
- * found or not set correctly then an exception is thrown. I.E., if the
- * cache directory is empty, the size is zero, or the prefix is empty.
+ * Instantiate the FileLockingClass, using the given values for the cache
+ * directory, item prefix and size. If the cache directory is the empty string,
+ * do not initialize the cache, but instead mark the cache as 'disabled.' Otherwise,
+ * attempt to build the FileLockingCache object and throw an exception if the
+ * directory, ..., values are not valid.
+ *
+ * @note A side effect of this is that the cache_enabled() property will be set
+ * to true or false based on whether the cache should be used or note. This ensures
+ * that the evaluation of the various parameters (and the BESKeys that are likely
+ * used by specializations) will happen only once when the cache is disabled.
  *
  * @param cache_dir The directory into which the cache files will be written.
  * @param prefix    The prefix that will be added to each cache file.
  * @param size      The size of the cache in MBytes
+ *
  * @throws BESInternalError If the cache_dir does not exist or is not writable.
  * size is 0, or if cache dir does not exist.
+ * @throws BESError If the parameters (directory, ...) are invalid.
  */
 BESFileLockingCache::BESFileLockingCache(const string &cache_dir, const string &prefix, unsigned long long size) :
     d_cache_dir(cache_dir), d_prefix(prefix), d_max_cache_size_in_bytes(size), d_target_size(0), d_cache_info(""),
@@ -81,11 +89,26 @@ BESFileLockingCache::BESFileLockingCache(const string &cache_dir, const string &
     m_initialize_cache_info();
 }
 
+/** @brief Initialize an instance of FileLockingCache
+ *
+ * Initialize and instance of FileLockingCache using the passed values for the
+ * cache directory, item prefix and max cache size. This will ignore the value
+ * of enable_cache() (but will correctly (re)set it based on the directory, ...,
+ * values). This provides a way for clients to re-initialize caches on the fly.
+ *
+ * @param cache_dir The directory into which the cache files will be written.
+ * @param prefix The prefix that will be added to each cache file.
+ * @param size The size of the cache in MBytes
+ *
+ * @throws BESInternalError If the cache_dir does not exist or is not writable.
+ * size is 0, or if cache dir does not exist.
+ * @throws BESError If the parameters (directory, ...) are invalid.
+ */
 void BESFileLockingCache::initialize(const string &cache_dir, const string &prefix, unsigned long long size)
 {
     d_cache_dir = cache_dir;
     d_prefix = prefix;
-    d_max_cache_size_in_bytes = size;
+    d_max_cache_size_in_bytes = size; // converted later on to bytes
 
     m_initialize_cache_info();
 }
@@ -156,7 +179,7 @@ inline int BESFileLockingCache::m_find_descriptor(const string &file)
  * @param fd An open file descriptor
  * @return A string with information about its status WRT advisory locking.
  */
-string lockStatus(const int fd)
+static string lockStatus(const int fd)
 {
     struct flock lock_query;
 
@@ -221,12 +244,23 @@ static void unlock(int fd)
 }
 
 /**
- * @brief Check the construtor's params and throw on error.
+ * Check the values of the three main parameters to the cache: The
+ * cache's directory, item prefix and maximum size. If the directory
+ * value is the empty string, this indicates the cache should not be
+ * used - return false. Otherwise, evaluate the parameters and return
+ * true if they are valid, or thrown a BESError exception.
  *
- * After checking the constructor's parameters, enable the cache and
- * return true.
+ * @note If the directory is named, but does not exist, this method
+ * will create it. If it cannot (for any reason, e.g., lack of privilege)
+ * then an error is indicated by an exception.
  *
- * @return Always returns true; errors result in an exception.
+ * @note Sets the cache_enabled property as a side effect.
+ *
+ * @return True if the parameters are valid and the cache directory exists,
+ * false if the cache directory does not exist (the prefix and size are
+ * then ignored) and thus the cache object should not be created.
+ *
+ * @exception BESError
  */
 bool BESFileLockingCache::m_check_ctor_params()
 {
@@ -241,12 +275,12 @@ bool BESFileLockingCache::m_check_ctor_params()
     // and we don't want to throw an exception for every call to a child's
     // get_instance() method  just because someone doesn't want to use a cache.
     // jhrg 9/27/16
-    BESDEBUG("cache", "BESFileLockingCache::" <<__func__ << "() - " <<
-        "d_cache_dir: '" << d_cache_dir << "'" << endl);
+    BESDEBUG("cache", "BESFileLockingCache::" <<__func__ << "() - BEGIN" << endl);
 
     if (d_cache_dir.empty()) {
         BESDEBUG("cache", "BESFileLockingCache::" <<__func__ << "() - " <<
             "The cache directory was not specified. CACHE IS DISABLED." << endl);
+
         disable();
         return false;
     }
@@ -264,20 +298,26 @@ bool BESFileLockingCache::m_check_ctor_params()
         throw BESError(err, BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
     }
 
-    if (d_max_cache_size_in_bytes <= 0) {
+    // I changed this from '<=' to '<' since the code now uses a cache size
+    // of zero to indicate that the cache will never be purged. The other
+    // size-related methods all still work. Since the field is unsigned,
+    // testing for '< 0' is pointless. Later on in this code the value is capped
+    // at MAX_CACHE_SIZE_IN_MEGABYTES (set in this file), which is 2^44.
+    // jhrg 2.28.18
+#if 0
+    if (d_max_cache_size_in_bytes < 0) {
         string err = "The cache size was not specified, must be greater than zero";
         throw BESError(err, BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
     }
-
-    enable();
+#endif
 
     BESDEBUG("cache",
         "BESFileLockingCache::" << __func__ << "() -" <<
         " d_cache_dir: " << d_cache_dir <<
         " d_prefix: " << d_prefix <<
-        " d_max_cache_size_in_bytes: " << d_max_cache_size_in_bytes <<
-        " (The cache has been " << (cache_enabled()?"enabled)":"disabled)") << endl);
+        " d_max_cache_size_in_bytes: " << d_max_cache_size_in_bytes << endl);
 
+    enable();
     return true;
 }
 
@@ -321,7 +361,15 @@ static bool createLockedFile(string file_name, int &ref_fd)
     return true;
 }
 
-/** Private method. */
+/**
+ * Initialize FileLockingCache
+ *
+ * @return True if the cache is enabled, False if not. Throws exceptions on error.
+ * @exception BESError thrown if the cache directory, item prefix or max size are
+ * invalid.
+ * @exception BESInternalError thrown of the cache info control file cannot be created
+ * or opened.
+ */
 bool BESFileLockingCache::m_initialize_cache_info()
 {
     BESDEBUG("cache", "BESFileLockingCache::m_initialize_cache_info() - BEGIN" << endl);
@@ -333,9 +381,10 @@ bool BESFileLockingCache::m_initialize_cache_info()
     d_target_size = d_max_cache_size_in_bytes * 0.8;
 
     BESDEBUG("cache",
-        "BESFileLockingCache::m_initialize_cache_info() - d_max_cache_size_in_bytes: " << d_max_cache_size_in_bytes << " d_target_size: "<<d_target_size<< endl);
+        "BESFileLockingCache::m_initialize_cache_info() - d_max_cache_size_in_bytes: "
+        << d_max_cache_size_in_bytes << " d_target_size: "<<d_target_size<< endl);
 
-    bool status = m_check_ctor_params(); // Throws BESError on error.
+    bool status = m_check_ctor_params(); // Throws BESError on error; otherwise sets the cache_enabled() property
     if (status) {
         d_cache_info = BESUtil::assemblePath(d_cache_dir, d_prefix + ".cache_control", true);
 
@@ -359,16 +408,18 @@ bool BESFileLockingCache::m_initialize_cache_info()
                 throw BESInternalError(get_errno(), __FILE__, __LINE__);
             }
         }
+
         BESDEBUG("cache",
             "BESFileLockingCache::m_initialize_cache_info() - d_cache_info_fd: " << d_cache_info_fd << endl);
     }
+
     BESDEBUG("cache",
         "BESFileLockingCache::m_initialize_cache_info() - END [" << "CACHE IS " << (cache_enabled()?"ENABLED]":"DISABLED]") << endl);
 
     return status;
 }
 
-const string chars_excluded_from_filenames = "<>=,/()\\\"\':? []()$";
+static const string chars_excluded_from_filenames = "<>=,/()\\\"\':? []()$";
 
 /**
  * Returns the fully qualified file system path name for the cache file
@@ -425,8 +476,9 @@ string BESFileLockingCache::get_cache_file_name(const string &src, bool mangle)
  failure (false), otherwise block until a shared read-lock can be
  obtained and then return true.
 
- @exception Error is thrown to indicate a number of untoward
- events. */
+ @exception BESInternalError Thrown to indicate a number of untoward
+ events.
+ */
 static bool getSharedLock(const string &file_name, int &ref_fd)
 {
     BESDEBUG("cache2", "getSharedLock(): Acquiring cache read lock for " << file_name <<endl);
@@ -615,7 +667,7 @@ void BESFileLockingCache::lock_cache_read()
 
 /** Unlock the cache info file.
  *
- * @note This is intended to be used internally only bt might be useful in
+ * @note This is intended to be used internally only but might be useful in
  * some settings.
  */
 void BESFileLockingCache::unlock_cache()
@@ -718,9 +770,9 @@ bool BESFileLockingCache::cache_too_big(unsigned long long current_size) const
 }
 
 /** @brief Get the cache size.
+ *
  * Read the size information from the cache info file and return it.
  * This methods locks the cache.
- *
  *
  * @return The size of the cache.
  */
@@ -857,14 +909,23 @@ static bool getExclusiveLockNB(string file_name, int &ref_fd)
  * size of the cache specified in the constructor. This method uses an exclusive
  * lock on the cache for the duration of the purge process.
  *
- * @param new_file The name of a file this process just added to the cache. Using
- * fcntl(2) locking there is no way this process can detect its own lock, so the
- * shared read lock on the new file won't keep this process from deleting it (but
- * will keep other processes from deleting it).
+ * @note If the cache size in bytes is zero, calling this method has no affect
+ * (the cache is unlimited in size). Other public methods like update_cache_info()
+ * and get_cache_size() still work, however.
+ *
+ * @param new_file Do not delete this file. The name of a file this process just
+ * added to the cache. Using fcntl(2) locking there is no way this process can
+ * detect its own lock, so the shared read lock on the new file won't keep this
+ * process from deleting it (but will keep other processes from deleting it).
  */
 void BESFileLockingCache::update_and_purge(const string &new_file)
 {
     BESDEBUG("cache", "purge - starting the purge" << endl);
+
+    if (is_unlimited()) {
+        BESDEBUG("cache", "purge - unlimited so no need to purge." << endl);
+        return;
+    }
 
     try {
         lock_cache_write();

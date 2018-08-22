@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <Dataset 
     xmlns="http://xml.opendap.org/ns/DAP/4.0#" 
-    xmlns:h4="http://www.hdfgroup.org/HDF4/XML/schema/HDF4map/1.0.1" 
+    xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#"
     dapVersion="4.0" 
     dmrVersion="1.0" 
     name="grid_2_2d.h5"
-    xml:base="data/dmrpp/grid_2_2d.h5">
+    dmrpp:href="data/dmrpp/grid_2_2d.h5">
   <Group name="HDFEOS">
     <Group name="ADDITIONAL">
       <Group name="FILE_ATTRIBUTES"/>
@@ -19,7 +19,7 @@
             <Attribute name="units" type="String">
               <Value>K</Value>
             </Attribute>
-            <h4:byteStream nBytes="128" uuid="dda2aaf3-2502-4fa9-9d1a-e0d6b0e9adaa" md5="3b37566bd3a2587a88e4787820e0d36f" offset="40672"/>
+            <dmrpp:chunk nBytes="128"   offset="40672"/>
           </Float32>
         </Group>
       </Group>
@@ -31,7 +31,7 @@
             <Attribute name="units" type="String">
               <Value>K</Value>
             </Attribute>
-            <h4:byteStream nBytes="128" uuid="33c42554-050c-44cd-b0fb-aa26efdbb21a" md5="3b37566bd3a2587a88e4787820e0d36f" offset="40800"/>
+            <dmrpp:chunk nBytes="128"   offset="40800"/>
           </Float32>
         </Group>
       </Group>
@@ -39,7 +39,7 @@
   </Group>
   <Group name="HDFEOS INFORMATION">
     <String name="StructMetadata.0">
-      <h4:byteStream nBytes="32000" uuid="c574dd93-8712-498b-9f80-ed212734c87a" md5="fbf5900764d583f05f705988170581ce" offset="5304"/>
+      <dmrpp:chunk nBytes="32000"   offset="5304"/>
     </String>
     <Attribute name="HDFEOSVersion" type="String">
       <Value>HDFEOS_5.1.13</Value>

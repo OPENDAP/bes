@@ -3,3 +3,8 @@ containerT
 lockT
 uncompressT
 
+/RemoteAccessTest
+/WhiteListTest
+/CatalogNodeTest
+/CatalogItemTest
+/BESCatalogListTest

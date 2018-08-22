@@ -32,15 +32,18 @@
 
 #include <iostream>
 
-using std::endl;
-using std::cout;
-
 #include "BESXMLDapCommandModule.h"
 #include "BESDapNames.h"
 #include "BESNames.h"
 #include "BESDebug.h"
 #include "BESXMLCatalogCommand.h"
-// FIXME Remove #include "BESXMLGetDataDDXCommand.h"
+#include "SiteMapCommandNames.h"
+#include "SiteMapCommand.h"     // Uses NullResponseHandler
+#include "ShowNodeCommand.h"    // Could use NullResponseHandler. jhrg 7/23/18
+
+using namespace bes;
+using std::endl;
+using std::cout;
 
 /** @brief Adds the basic DAP XML command objects to the XMLCommand list of
  * possible commands
@@ -53,18 +56,19 @@ using std::cout;
  */
 void BESXMLDapCommandModule::initialize(const string &/*modname*/)
 {
-    BESDEBUG( "dap", "Initializing DAP Commands:" << endl );
+    BESDEBUG("dap", "Initializing DAP Commands:" << endl);
 
-    BESXMLCommand::add_command( CATALOG_RESPONSE_STR,
-            BESXMLCatalogCommand::CommandBuilder );
-
-    BESXMLCommand::add_command( SHOW_INFO_RESPONSE_STR,
-            BESXMLCatalogCommand::CommandBuilder );
+    BESXMLCommand::add_command(CATALOG_RESPONSE_STR, BESXMLCatalogCommand::CommandBuilder);
+    BESXMLCommand::add_command(NODE_RESPONSE_STR, ShowNodeCommand::CommandBuilder);
 #if 0
-    BESXMLCommand::add_command( DATADDX_RESPONSE,
-            BESXMLGetDataDDXCommand::CommandBuilder );
+    BESXMLCommand::add_command(SHOW_INFO_RESPONSE_STR, ShowNodeCommand::CommandBuilder);
 #endif
-    BESDEBUG( "dap", "Done Initializing DAP Commands:" << endl );
+
+
+    // Build a site map. Uses the Null Response Handler
+    BESXMLCommand::add_command(SITE_MAP_STR, SiteMapCommand::CommandBuilder);
+
+    BESDEBUG("dap", "Done Initializing DAP Commands:" << endl);
 }
 
 /** @brief Cleans up the DAP XML commands from the list of possible commands
@@ -77,14 +81,16 @@ void BESXMLDapCommandModule::initialize(const string &/*modname*/)
  */
 void BESXMLDapCommandModule::terminate(const string &/*modname*/)
 {
-    BESDEBUG( "dap", "Removing DAP Commands" << endl );
+    BESDEBUG("dap", "Removing DAP Commands" << endl);
 
-    BESXMLCommand::del_command( CATALOG_RESPONSE_STR );
-    BESXMLCommand::del_command( SHOW_INFO_RESPONSE_STR );
+    BESXMLCommand::del_command(CATALOG_RESPONSE_STR);
 #if 0
-    BESXMLCommand::del_command( DATADDX_RESPONSE );
+    BESXMLCommand::del_command(SHOW_INFO_RESPONSE_STR);
 #endif
-    BESDEBUG( "dap", "Done Removing DAP Commands" << endl );
+
+    BESXMLCommand::del_command(SITE_MAP_STR);
+
+    BESDEBUG("dap", "Done Removing DAP Commands" << endl);
 }
 
 /** @brief dumps information about this object

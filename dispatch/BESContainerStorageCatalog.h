@@ -34,8 +34,13 @@
 #define BESContainerStorageCatalog_h_ 1
 
 #include <list>
+#include <string>
+#include <ostream>
 
+#if 0
 using std::list;
+#endif
+
 
 #include "BESContainerStorageVolatile.h"
 
@@ -51,21 +56,21 @@ class BESCatalogUtils;
  * where the files exist. This way, the user need not know the root directory
  * or the type of data represented by the container.
  *
- * Catalog.&lt;name&gt;.RootDirectory is the key
+ * Catalog._name_.RootDirectory is the key
  * representing the base directory where the files are physically located.
  * The real_name of the container is determined by concatenating the file
  * name to the base directory.
  *
- * Catalog.&lt;name&gt;.TypeMatch is the key
+ * Catalog._name_.TypeMatch is the key
  * representing the regular expressions. This key is formatted as follows:
  *
- * &lt;data type&gt;:&lt;reg exp&gt;;&lt;data type&gt;:&lt;reg exp&gt;;
+ * _data type_ : _reg exp_ ; _data type_ : _reg exp_ ;
  *
- * For example: cedar:cedar\/.*\.cbf;cdf:cdf\/.*\.cdf;
+ * For example: `cedar:cedar/.*\.cbf;cdf:cdf/.*\.cdf;`
  *
  * The first would match anything that might look like: cedar/datfile01.cbf
  *
- * &lt;name&gt; is the name of this container storage, so you could have
+ * _name_ is the name of this container storage, so you could have
  * multiple container stores using regular expressions.
  *
  * The containers are stored in a volatile list.
@@ -78,13 +83,13 @@ class BESContainerStorageCatalog: public BESContainerStorageVolatile {
 private:
     const BESCatalogUtils * _utils;
 public:
-    BESContainerStorageCatalog(const string &n);
+    BESContainerStorageCatalog(const std::string &n);
     virtual ~BESContainerStorageCatalog();
 
-    virtual void add_container(const string &sym_name, const string &real_name, const string &type);
-    virtual bool isData(const string &inQuestion, list<string> &provides);
+    virtual void add_container(const std::string &sym_name, const std::string &real_name, const std::string &type);
+    virtual bool isData(const std::string &inQuestion, std::list<std::string> &provides);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // BESContainerStorageCatalog_h_

@@ -37,6 +37,8 @@
 
 #include <libxml/parserInternals.h>
 
+#include <Type.h>   // from libdap
+
 #define CRLF "\r\n"
 
 namespace libdap {
@@ -52,7 +54,7 @@ class D4Dimension;
 namespace dmrpp {
 /**
  * Hacked DMR parser copied from libdap. This version of the parser processes
- * h4:byteStream elements and stores their information (xml attributes) in
+ * dmrpp:chunk elements and stores their information (xml attributes) in
  * Dmrpp BaseTypes.
  */
 class DmrppParserSax2
@@ -90,10 +92,10 @@ private:
 
         // inside_sequence, Removed from merged code jhrg 5/2/14
 
-        // FIXMEinside_h4_byte_stream,
+        // FIXMEinside_dmrpp_byte_stream,
         not_dap4_element,
-        inside_h4_object,
-        inside_h4_chunkDimensionSizes_element,
+        inside_dmrpp_object,
+        inside_dmrpp_chunkDimensionSizes_element,
 
         parser_unknown,
         parser_error,
@@ -110,25 +112,25 @@ private:
     libdap::DMR *dmr() const { return d_dmr; }
 
     // These stacks hold the state of the parse as it progresses.
-    stack<ParseState> s; // Current parse state
+    std::stack<ParseState> s; // Current parse state
     void push_state(DmrppParserSax2::ParseState state) { s.push(state); }
     DmrppParserSax2::ParseState get_state() const { return s.top(); }
     void pop_state() { s.pop(); }
     bool empty_state() const { return s.empty(); }
 
-    stack<libdap::BaseType*> btp_stack; // current variable(s)
+    std::stack<libdap::BaseType*> btp_stack; // current variable(s)
     void push_basetype(libdap::BaseType *btp) { btp_stack.push(btp); }
     libdap::BaseType *top_basetype() const { return btp_stack.top(); }
     void pop_basetype() { btp_stack.pop(); }
     bool empty_basetype() const { return btp_stack.empty(); }
 
-    stack<libdap::D4Group*> grp_stack; // current groups(s)
+    std::stack<libdap::D4Group*> grp_stack; // current groups(s)
     void push_group(libdap::D4Group *grp) { grp_stack.push(grp); }
     libdap::D4Group *top_group() const { return grp_stack.top(); }
     void pop_group() { grp_stack.pop(); }
     bool empty_group() const { return grp_stack.empty(); }
 
-    stack<libdap::D4Attributes*> d_attrs_stack; // DAP4 Attributes
+    std::stack<libdap::D4Attributes*> d_attrs_stack; // DAP4 Attributes
     void push_attributes(libdap::D4Attributes *attr) { d_attrs_stack.push(attr); }
     libdap::D4Attributes *top_attributes() const { return d_attrs_stack.top(); }
     void pop_attributes() { d_attrs_stack.pop(); }
@@ -165,6 +167,8 @@ private:
 
     bool d_strict;
 
+    string dmrpp_dataset_href;
+
     class XMLAttribute {
         public:
         string prefix;
@@ -198,14 +202,14 @@ private:
         }
     };
 
-    typedef map<string, XMLAttribute> XMLAttrMap;
+    typedef std::map<std::string, XMLAttribute> XMLAttrMap;
     XMLAttrMap xml_attrs; // dump XML attributes here
 
     XMLAttrMap::iterator xml_attr_begin() { return xml_attrs.begin(); }
 
     XMLAttrMap::iterator xml_attr_end() {  return xml_attrs.end(); }
 
-    map<string, string> namespace_table;
+    std::map<std::string, std::string> namespace_table;
 
     void cleanup_parse();
 
@@ -217,8 +221,8 @@ private:
     //@{
     void transfer_xml_attrs(const xmlChar **attrs, int nb_attributes);
     void transfer_xml_ns(const xmlChar **namespaces, int nb_namespaces);
-    bool check_required_attribute(const string &attr);
-    bool check_attribute(const string & attr);
+    bool check_required_attribute(const std::string &attr);
+    bool check_attribute(const std::string & attr);
     void process_variable_helper(libdap::Type t, ParseState s, const xmlChar **attrs, int nb_attributes);
 
     void process_enum_const_helper(const xmlChar **attrs, int nb_attributes);
@@ -232,7 +236,7 @@ private:
     bool process_group(const char *name, const xmlChar **attrs, int nb_attributes);
     bool process_enum_def(const char *name, const xmlChar **attrs, int nb_attributes);
     bool process_enum_const(const char *name, const xmlChar **attrs, int nb_attributes);
-    bool process_h4_object(const char *name, const xmlChar **attrs, int nb_attributes);
+    bool process_dmrpp_object(const char *name, const xmlChar **attrs, int nb_attributes);
 
     void finish_variable(const char *tag, libdap::Type t, const char *expected);
     //@}
@@ -245,7 +249,8 @@ public:
         other_xml(""), other_xml_depth(0), unknown_depth(0),
         error_msg(""), context(0),
         dods_attr_name(""), dods_attr_type(""),
-        char_data(""), root_ns(""), d_debug(false), d_strict(true)
+        char_data(""), root_ns(""), d_debug(false), d_strict(true),
+        dmrpp_dataset_href("")
     {
         //xmlSAXHandler ddx_sax_parser;
         memset(&ddx_sax_parser, 0, sizeof(xmlSAXHandler));
@@ -264,7 +269,7 @@ public:
         ddx_sax_parser.endElementNs = &DmrppParserSax2::dmr_end_element;
     }
 
-    void intern(istream &f, libdap::DMR *dest_dmr, bool debug = false);
+    void intern(std::istream &f, libdap::DMR *dest_dmr, bool debug = false);
     void intern(const string &document, libdap::DMR *dest_dmr, bool debug = false);
     void intern(const char *buffer, int size, libdap::DMR *dest_dmr, bool debug = false);
 

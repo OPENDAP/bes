@@ -37,10 +37,13 @@
 #include "BESRequestHandlerList.h"
 #include "BESDapNames.h"
 #include "BESDataNames.h"
+#include "BESTransmitter.h"
 
+#include "GlobalMetadataStore.h"
 #include "BESDebug.h"
 
 using namespace libdap;
+using namespace bes;
 
 BESDDSResponseHandler::BESDDSResponseHandler(const string &name) :
 		BESResponseHandler(name)
@@ -51,47 +54,66 @@ BESDDSResponseHandler::~BESDDSResponseHandler()
 {
 }
 
-/** @brief executes the command 'get dds for def_name;' by executing
- * the request for each container in the specified definition.
+/**
+ * @brief executes the command `<get type="dds" definition=...>`
  *
- * For each container in the specified definition go to the request
+ * For each container in the specified definition, go to the request
  * handler for that container and have it add to the OPeNDAP DDS response
  * object. The DDS response object is created within this method and passed
- * to the request handler list.
+ * to the request handler list. The ResponseHandler now supports the Metadata
+ * store, so cached/stored DDS responses will be used if found there and if
+ * the MDS is configured in the bes.conf file.
+ *
+ * @note This ResponseHandler does not work for multiple containers when using
+ * the Global Metadata Store.
  *
  * @param dhi structure that holds request and response information
+ *
  * @see BESDataHandlerInterface
  * @see BESDDSResponse
  * @see BESRequestHandlerList
  */
 void BESDDSResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
-	// NOTE: It is the responsibility of the specific request handler to set
-	// the BaseTypeFactory. It is set to NULL here
-	dhi.action_name = DDS_RESPONSE_STR;
-	DDS *dds = new DDS(NULL, "virtual");
-	BESDDSResponse *bdds = new BESDDSResponse(dds);
+    dhi.action_name = DDS_RESPONSE_STR;
 
-	// Set the DAP protocol version requested by the client
+    GlobalMetadataStore *mds = GlobalMetadataStore::get_instance();
 
-	dhi.first_container();
-	BESDEBUG("version", "Initial CE: " << dhi.container->get_constraint() << endl);
+    GlobalMetadataStore::MDSReadLock lock;
 
-	// Keywords were a hack to the protocol and have been dropped. We can get rid of
-	// this keyword code. jhrg 11/6/13
-	dhi.container->set_constraint(dds->get_keywords().parse_keywords(dhi.container->get_constraint()));
-	BESDEBUG("version", "CE after keyword processing: " << dhi.container->get_constraint() << endl);
+    dhi.first_container();
+    if (mds) lock = mds->is_dds_available(dhi.container->get_relative_name());
 
-	if (dds->get_keywords().has_keyword("dap")) {
-		dds->set_dap_version(dds->get_keywords().get_keyword_value("dap"));
-	}
-	else if (!bdds->get_dap_client_protocol().empty()) {
-		dds->set_dap_version(bdds->get_dap_client_protocol());
-	}
+    if (mds && lock() && dhi.container->get_constraint().empty()) {
+        // Unconstrained DDS requests; send the stored response
+        mds->write_dds_response(dhi.container->get_relative_name(), dhi.get_output_stream());
+        // suppress transmitting a ResponseObject in transmit()
+        d_response_object = 0;
+    }
+    else {
+        DDS *dds = 0; // new DDS(NULL, "virtual");
+        if (mds && lock()) {
+            // If mds and lock(), the DDS is in the cache, get the _object_
+            dds = mds->get_dds_object(dhi.container->get_relative_name());
+            BESDDSResponse *bdds = new BESDDSResponse(dds);
+            bdds->set_constraint(dhi);
+            bdds->clear_container();
+            d_response_object = bdds;
+        }
+        else {
+            dds = new DDS(NULL, "virtual");
+            d_response_object = new BESDDSResponse(dds);
 
-	_response = bdds;
+            BESRequestHandlerList::TheList()->execute_each(dhi);
 
-	BESRequestHandlerList::TheList()->execute_each(dhi);
+            // Cache the DDS if the MDS is not null but the DDS response was not in the cache
+            if (mds && !lock()) {
+                dhi.first_container();  // must reset container; execute_each() iterates over all of them
+                mds->add_responses(static_cast<BESDDSResponse*>(d_response_object)->get_dds(),
+                    dhi.container->get_relative_name());
+            }
+        }
+    }
 }
 
 /** @brief transmit the response object built by the execute command
@@ -108,8 +130,8 @@ void BESDDSResponseHandler::execute(BESDataHandlerInterface &dhi)
  */
 void BESDDSResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
 {
-	if (_response) {
-		transmitter->send_response(DDS_SERVICE, _response, dhi);
+	if (d_response_object) {
+		transmitter->send_response(DDS_SERVICE, d_response_object, dhi);
 	}
 }
 

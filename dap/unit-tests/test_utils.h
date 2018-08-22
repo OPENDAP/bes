@@ -18,26 +18,19 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI.
 // 02874-0112.
-#if 0
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-#endif
 
 #include <string>
 
-//using namespace std;
-
 #if 0
-// Never use this!
-#define FILE2string(s,f,c) do {\
-        FILE *(f) = fopen("testout", "w");\
-        c;\
-        fclose(f);\
-        s = readTestBaseline("testout");\
-        unlink("testout");\
-} while(0);
+namespace libdap {
+class Regex;
+}
 #endif
 
-std::string readTestBaseline(const std::string &fn);
+std::string read_test_baseline(const std::string &fn);
 void clean_cache_dir(const std::string &cache);
+
+#if 0
+bool re_match_binary(libdap::Regex &r, const std::string &s);
+bool re_match(libdap::Regex &r, const std::string &s);
+#endif

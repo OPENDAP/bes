@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -37,29 +37,37 @@
 
 /** @brief response handler that builds an OPeNDAP Data DDS object
  *
- * A request 'get data for &lt;def_name&gt;' will be handled by this 
+ * A request 'get data for <def_name>' will be handled by this
  * response handler. Given a definition name it determines what containers 
  * are to be used to build the response object. It then transmits the 
  * response object using the method send_data on the transmitter object.
+ *
+ * As for BESDap4ResponseHandler, this redirects accesses to the DMR++
+ * handler when DMR++ responses exist in the MDS for the given item in
+ * the container. Control this using BES.Use.Dmrpp and BES.Dmrpp.Name
+ * as for BESDap4ResponseHandler.
  *
  * @see DDS
  * @see BESContainer
  * @see BESTransmitter
  * @see BESDefine
+ * @see BESDap4ResponseHandler
  */
-class BESDataResponseHandler : public BESResponseHandler
-{
+class BESDataResponseHandler: public BESResponseHandler {
+
+    bool d_use_dmrpp;           ///< Check for DMR++ responses and redirect?
+    std::string d_dmrpp_name;   ///< The name of the DMR++ module
+
 public:
-				BESDataResponseHandler( const string &name ) ;
-    virtual			~BESDataResponseHandler(void) ;
+    BESDataResponseHandler(const string &name);
+    virtual ~BESDataResponseHandler(void);
 
-    virtual void		execute( BESDataHandlerInterface &dhi ) ;
-    virtual void		transmit( BESTransmitter *transmitter,
-                                          BESDataHandlerInterface &dhi ) ;
+    virtual void execute(BESDataHandlerInterface &dhi);
+    virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 
-    static BESResponseHandler *DataResponseBuilder( const string &name ) ;
+    static BESResponseHandler *DataResponseBuilder(const string &name);
 };
 
 #endif

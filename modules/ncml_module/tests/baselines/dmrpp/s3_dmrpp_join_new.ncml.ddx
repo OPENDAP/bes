@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="s3_dmrpp_join_new.ncml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Array name="time">
+        <Float64/>
+        <dimension name="time" size="2"/>
+    </Array>
+    <Array name="d_4_chunks">
+        <Attribute name="origname" type="String">
+            <value>d_4_chunks</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/d_4_chunks</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="time" size="2"/>
+        <dimension size="100"/>
+        <dimension size="100"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

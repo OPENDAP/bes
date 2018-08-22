@@ -1,0 +1,48 @@
+
+m4_include([handler_tests_macros.m4])
+
+
+
+# These tests do not use the SequenceAggregationServer
+
+AT_BESCMD_RESPONSE_TEST([bescmd/set_contexts.bescmd], [pass])
+
+# For the buildSiteMap command, testing is unusual since the command
+# returns nothing but writes to the local file system. The baseline
+# will be empty unless we're testing an error.
+
+# These tests all return errors
+
+AT_BESCMD_ERROR_RESPONSE_TEST([bescmd/site_map.bescmd], [pass])
+AT_BESCMD_ERROR_RESPONSE_TEST([bescmd/site_map2.bescmd], [pass])
+AT_BESCMD_ERROR_RESPONSE_TEST([bescmd/site_map3.bescmd], [pass])
+
+# These work
+# test that data/site_map.txt exists and is not zero length
+AT_BESCMD_RESPONSE_AND_FILE_TEST([bescmd/site_map4.bescmd], [data/site_map.txt], [lines], [pass])
+
+# test that data/new_site_map.txt exists and is not zero
+AT_BESCMD_RESPONSE_AND_FILE_TEST([bescmd/site_map5.bescmd], [data/new_site_map.txt], [lines], [pass])
+
+AT_BESCMD_RESPONSE_AND_FILE_TEST([bescmd/site_map6.bescmd], [data/node_site_map.txt], [lines], [pass])
+AT_BESCMD_RESPONSE_AND_FILE_TEST([bescmd/site_map7.bescmd], [data/all_site_map.txt], [lines], [pass])
+
+
+# Here we test the showBesKey API
+AT_BESCMD_RESPONSE_TEST([bescmd/show_bes_key_1.bescmd], [pass])
+AT_BESCMD_RESPONSE_TEST([bescmd/show_bes_key_2.bescmd], [pass])
+AT_BESCMD_RESPONSE_TEST([bescmd/show_bes_key_3.bescmd], [pass])
+AT_BESCMD_RESPONSE_TEST([bescmd/show_bes_key_4.bescmd], [pass])
+AT_BESCMD_RESPONSE_TEST([bescmd/show_bes_key_5.bescmd], [pass])
+
+# Test the showNode command
+AT_BESCMD_NO_DATE_RESPONSE_TEST([bescmd/show_node_1.bescmd], [pass])
+AT_BESCMD_NO_DATE_RESPONSE_TEST([bescmd/show_node_2.bescmd], [pass])
+AT_BESCMD_NO_DATE_RESPONSE_TEST([bescmd/show_node_3.bescmd], [pass])
+AT_BESCMD_NO_DATE_RESPONSE_TEST([bescmd/show_node_4.bescmd], [pass])
+AT_BESCMD_NO_DATE_RESPONSE_TEST([bescmd/show_node_5.bescmd], [pass])
+
+# error - catalog doesn't exist
+# Dropped this test because showNode no longer utilizes an explicit catalog
+# in the command syntax - ndp 8/9/18
+# AT_BESCMD_ERROR_RESPONSE_TEST([bescmd/show_node_6.bescmd], [pass])

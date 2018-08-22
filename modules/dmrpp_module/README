@@ -3,6 +3,35 @@ README
      Author: ndp
 
 This module ingests special DMR files that contain range, offset and structural
-information about the associated HDF4 & HDF55 files. This information should allow the 
+information about the associated HDF5 files. This information allows the 
 server to use "range GETs" against the datasets, either in the file system or 
-over the network such that the HDF libraries are not needed to retrieve the values.
+over the network, such that the HDF libraries are not needed to retrieve the values.
+
+This handler does not currently support the following types:
+Structure
+Sequence
+Group
+Opaque
+Str
+Url
+
+jhrg 4/10/18
+
+#-----------------------------------------------------------------------#
+# DMR++ module specific parameters
+#-----------------------------------------------------------------------#
+
+# These are the default values
+#
+# Set UseParallelTransfers to no or false to use serial transfers of data
+
+# DMRPP.UseParallelTransfers=yes
+
+# Set maxParallelTransfers to N where N is the number of parallel data
+# transfers at any given time. These will be run using the libcurl 'multi'
+# API which uses a round-robin scheme. Eight is the default; more often
+# reduces throughput
+
+# DMRPP.MaxParallelTransfers=8
+
+jhrg 5/1/18

@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -35,30 +35,41 @@
 
 #include <list>
 #include <string>
-
-using std::list ;
-using std::string ;
+#include <ostream>
 
 #include "BESCatalog.h"
 
-class BESCatalogEntry ;
-class BESCatalogUtils ;
+class BESCatalogEntry;
 
-/** @brief builds catalogs from a directory structure
+namespace bes {
+    class CatalogNode;
+}
+
+#if 0
+using std::list;
+using std::string;
+#endif
+
+/**
+ * @brief Catalogs from a directory structure
  */
-class BESCatalogDirectory : public BESCatalog
-{
+class BESCatalogDirectory: public BESCatalog {
 private:
-    BESCatalogUtils *		_utils ;
+
 public:
-				BESCatalogDirectory( const string &name ) ;
-    virtual			~BESCatalogDirectory( void ) ;
+    BESCatalogDirectory(const std::string &name);
+    virtual ~BESCatalogDirectory();
 
-    virtual BESCatalogEntry *	show_catalog( const string &container,
-					      const string &coi,
-					      BESCatalogEntry *entry ) ;
+    virtual BESCatalogEntry * show_catalog(const std::string &container, BESCatalogEntry *entry);
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual std::string get_root() const;
+
+    virtual bes::CatalogNode *get_node(const std::string &path) const;
+
+    virtual void get_site_map(const std::string &prefix, const std::string &node_suffix, const std::string &leaf_suffix, std::ostream &out,
+        const std::string &path = "/") const;
+
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // I_BESCatalogDirectory_h

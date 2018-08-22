@@ -1,0 +1,215 @@
+#!/bin/sh
+#
+# -*- mode: bash; -*-
+#
+# This file is part of the Back End Server component of the
+# Hyrax Data Server.
+#
+# Copyright (c) 2018 OPeNDAP, Inc.
+# Author: Nathan David Potter <ndp@opendap.org>, James Gallagher
+# <jgallagher@opendap.org>
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+#
+# You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+
+BES_CONF=
+
+# edit these to run using development versions of the programs
+#
+# local_bes_get_dap=./localBesGetDap.sh
+# build_dmrpp=./modules/dmrpp_module/data/build_dmrpp
+
+local_bes_get_dap=./localBesGetDap
+build_dmrpp=build_dmrpp
+
+show_usage () { 
+    cat <<EOF
+ $0 [-v] [-c <bes conf>] [-u <data URL>] [-R] <pathname>
+ 
+ Populate the Metadata Store (MDS) with DDS, DAS, DMR and DMR++
+ responses. 
+ 
+ If -c <bes conf> is not given, the script looks for
+ a suitable bes.conf file by looking for $prefix/etc/bes/bes.conf
+ and then /etc/bes/bes.conf.
+ 
+ if -u is given, the argument <data URL> is added to the DMR++
+ file as the href attribute''s value. The DMR++ handler will use
+ this to access the data.
+ 
+ If -R is given, the DMR++ response is not added to the MDS.
+ 
+ Care should be taken when choosing the <pathname> since the 
+ name is relative to the BES Catalog Data Root Directory. The
+ underlying commands used by this script pass the pathname to 
+ software that computes the hash of exactly the characters used
+ here and to work, those relative pathnames must match exactly
+ the ones sent to the BES by the OLFS. The mds_ledger records
+ the names of all the items in the MDS.
+EOF
+}
+
+
+OPTIND=1         # Reset in case getopts has been used previously in the shell.
+
+verbose=0
+very_verbose=0
+include_dmrpp=1  # build the DMR++ by default
+data_url=
+
+while getopts "h?vc:Ru:" opt; do
+    case "$opt" in
+    h|\?)
+        show_usage
+        exit 0
+        ;;
+    v)  verbose=1;
+        echo "";
+        echo "${0} verbose enabled";
+        ;;
+    V)  very_verbose=1;
+        echo "";
+        echo "${0} verbose enabled";
+        ;;
+    c)  BES_CONF="-c $OPTARG"
+        ;;
+    R)  include_dmrpp=0
+        ;;
+    u)
+        cloud_url="$OPTARG"
+        ;;
+    esac
+done
+
+shift $((OPTIND-1))
+
+[ "$1" = "--" ] && shift
+
+# Find the bes.conf file
+if [ -z "$BES_CONF" ]
+then 
+    echo "${0} BES_CONF is not set trying env variable 'prefix'...";  
+    if [ ! -z $prefix ] # True if var is set and str length != 0
+    then
+        test_conf=$prefix/etc/bes/bes.conf
+        echo "${0} Env var 'prefix' is set. Checking $test_conf"; 
+        if [ -r $test_conf ]
+        then
+            BES_CONF="-c $test_conf"
+            if [ ${verbose} = 1 ]
+            then
+                echo "${0} BES_CONF: " $BES_CONF
+            fi
+        fi
+    fi
+fi   
+    
+if [ -z "$BES_CONF" ]
+then     
+    export BES_CONF=/etc/bes/bes.conf
+    echo "${0} Last Attempt:  Trying $BES_CONF"; 
+    if [ -r $BES_CONF ]
+    then
+        BES_CONF="-c $BES_CONF"
+        if [ ${verbose} = 1 ]
+        then
+            echo "${0} BES_CONF: " $BES_CONF
+        fi
+    else
+        echo ""
+        echo "${0} !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+        echo ""
+        echo "${0} Unable to locate a BES configuration file."
+        echo "${0} You may identify your BES configurstion in one of three ways: "
+        echo ""
+        echo "${0}   1. Using the command line parameter '-c'"
+        echo ""
+        echo "${0}   2. Setting the environment variable $prefix to the install"
+        echo "     location of the BES."
+        echo ""
+        echo "${0}   3. Placing the bes.conf file in the well known location"
+        echo "${0}          /etc/bes/bes.conf"
+        echo ""
+        echo "${0} The command line parameter is the recommended usage."        
+        echo ""
+        echo "${0} !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+        show_usage
+        echo ""
+       exit;
+    fi
+fi
+
+[ -n "$1" ] || { echo "${0} Expected a pathnames." ; exit 1; }
+
+# Read a pathname from the next argument
+pathname=$1
+# make sure it start's with slash
+# if [[ ! ${pathname} =~ "^\/.*$" ]]; then pathname="/${pathname}"; fi
+if [ ${verbose} = 1 ]; then echo "${0} Processing ${pathname}"; fi
+
+v_sw=                   # By default don't be verbose
+
+if [ ${verbose} = 1 ]
+then
+    v_sw=-v             # Switch to tell sub-commands to be verbose
+fi
+
+# Ask the BES to get the DDS and DMR for that file - this triggers
+# loading the MDS with the DDS, DAS and DMR responses.
+
+dds_cmd="${local_bes_get_dap} ${v_sw} ${BES_CONF} -i ${pathname} -d dds"
+dmr_cmd="${local_bes_get_dap} ${v_sw} ${BES_CONF} -i ${pathname} -d dmr"
+
+dev_null="> /dev/null";
+if [ ${verbose} = 1 ]; then 
+    echo "${0} dds_cmd: ${dds_cmd}";
+    echo "${0} dmr_cmd: ${dmr_cmd}";
+    dev_null=
+fi
+
+$dds_cmd $dev_null
+
+$dmr_cmd $dev_null
+
+# build_dmrpp uses the MDS to get the DMR response and then feeds that
+# into code that builds a DMR++ response. That response is added to the 
+# cache. If the MDS is not configured, this command will not work!
+
+if [ $include_dmrpp = 1 ]
+then
+    if [ -z ${cloud_url+x} ]; then 
+        echo "${0} OUCH! You requested a dmr++ file be created but you failed to provide the URL of the source dataset! SKIPPING ${pathname} "
+        exit 1;
+    fi
+
+    build_dmrpp_cmd="${build_dmrpp} ${v_sw} ${BES_CONF} -f ${pathname} -u ${cloud_url}"
+    if [ ${verbose} = 1 ]; then echo "${0} Building dmr++ for ${pathname}"; echo "${0} build_dmrpp_cmd: ${build_dmrpp_cmd}"; fi
+    if [ ${very_verbose} = 1 ]; then
+        ${build_dmrpp_cmd};
+    else
+        ${build_dmrpp_cmd} > /dev/null;
+    fi
+    build_dmrpp_status=$?;
+    if [ ${build_dmrpp_status} -ne 0 ]; then
+        echo "${0} Build dmr++ operation failed! STATUS: ${build_dmrpp_status}";
+    else
+        if [ ${verbose} = 1 ]; then echo "${0} The dmr++ for ${pathname} has been added to the MDS."; fi
+    fi
+
+    exit ${build_dmrpp_status}
+
+fi
+

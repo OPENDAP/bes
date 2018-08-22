@@ -43,7 +43,9 @@
 #include <cerrno>
 #include <cstring>
 #include <cstdlib>
+#include <ctime>
 #include <cassert>
+#include <vector>
 
 #include <sstream>
 #include <iostream>
@@ -51,6 +53,8 @@
 using std::istringstream;
 using std::cout;
 using std::endl;
+using std::vector;
+using std::string;
 
 #include "TheBESKeys.h"
 #include "BESUtil.h"
@@ -58,6 +62,7 @@ using std::endl;
 #include "BESForbiddenError.h"
 #include "BESNotFoundError.h"
 #include "BESInternalError.h"
+#include "BESLog.h"
 
 #define CRLF "\r\n"
 
@@ -152,8 +157,8 @@ string BESUtil::rfc822_date(const time_t t)
     struct tm *stm = gmtime(&t);
     char d[256];
 
-    snprintf(d, 255, "%s, %02d %s %4d %02d:%02d:%02d GMT", days[stm->tm_wday], stm->tm_mday, months[stm->tm_mon],
-            1900 + stm->tm_year, stm->tm_hour, stm->tm_min, stm->tm_sec);
+    snprintf(d, 255, "%s, %02d %s %4d %02d:%02d:%02d GMT", days[stm->tm_wday], stm->tm_mday, months[stm->tm_mon], 1900 + stm->tm_year, stm->tm_hour,
+        stm->tm_min, stm->tm_sec);
     d[255] = '\0';
     return string(d);
 }
@@ -218,7 +223,8 @@ string BESUtil::unescape(const string &s)
     return new_str;
 }
 
-/** Check if the specified path is valid
+/**
+ * @brief Check if the specified path is valid
  *
  * Checks to see if the specified path is a valid path or not. The root
  * directory specified is assumed to be valid, so we don't check that
@@ -250,11 +256,11 @@ void BESUtil::check_path(const string &path, const string &root, bool follow_sym
     // function for the eval operation.
     int (*ye_old_stat_function)(const char *pathname, struct stat *buf);
     if (follow_sym_links) {
-        BESDEBUG(debug_key, "eval_w10n_resourceId() - Using 'stat' function (follow_sym_links = true)" << endl);
+        BESDEBUG(debug_key, "check_path() - Using 'stat' function (follow_sym_links = true)" << endl);
         ye_old_stat_function = &stat;
     }
     else {
-        BESDEBUG(debug_key, "eval_w10n_resourceId() - Using 'lstat' function (follow_sym_links = false)" << endl);
+        BESDEBUG(debug_key, "check_path() - Using 'lstat' function (follow_sym_links = false)" << endl);
         ye_old_stat_function = &lstat;
     }
 
@@ -273,7 +279,7 @@ void BESUtil::check_path(const string &path, const string &root, bool follow_sym
 
     // what is remaining to check
     string rem = path;
-    if (rem[0] == '/') rem = rem.substr(1, rem.length() - 1);
+    if (rem[0] == '/') rem = rem.substr(1); // substr(1, rem.length() - 1); jhrg 3/5/18
     if (rem[rem.length() - 1] == '/') rem = rem.substr(0, rem.length() - 1);
 
     // full path of the thing to check
@@ -283,19 +289,24 @@ void BESUtil::check_path(const string &path, const string &root, bool follow_sym
     }
 
     // path checked so far
-    string checked;
+    //string checked;
     while (!done) {
         size_t slash = rem.find('/');
         if (slash == string::npos) {
-            fullpath = fullpath + "/" + rem;
-            checked = checked + "/" + rem;
+            // fullpath = fullpath + "/" + rem; jhrg 3/5/18
+            fullpath.append("/").append(rem);
+            // checked = checked + "/" + rem;
             done = true;
         }
         else {
-            fullpath = fullpath + "/" + rem.substr(0, slash);
-            checked = checked + "/" + rem.substr(0, slash);
+            // fullpath = fullpath + "/" + rem.substr(0, slash);
+            fullpath.append("/").append(rem.substr(0, slash));
+            // checked = checked + "/" + rem.substr(0, slash);
+            //checked.append("/").append(rem.substr(0, slash));
             rem = rem.substr(slash + 1, rem.length() - slash);
         }
+
+        //checked = fullpath;
 
         struct stat buf;
         int statret = ye_old_stat_function(fullpath.c_str(), &buf);
@@ -304,13 +315,12 @@ void BESUtil::check_path(const string &path, const string &root, bool follow_sym
             // stat failed, so not accessible. Get the error string,
             // store in error, and throw exception
             char *s_err = strerror(errsv);
-            string error = "Unable to access node " + checked + ": ";
-            if (s_err) {
-                error = error + s_err;
-            }
-            else {
-                error = error + "unknown access error";
-            }
+            //string error = "Unable to access node " + checked + ": ";
+            string error = "Unable to access node " + fullpath + ": ";
+            if (s_err)
+                error.append(s_err);
+            else
+                error.append("unknown error");
 
             BESDEBUG(debug_key, "check_path() - error: "<< error << "   errno: " << errno << endl);
 
@@ -326,13 +336,13 @@ void BESUtil::check_path(const string &path, const string &root, bool follow_sym
             }
         }
         else {
-            //The call to (stat | lstat) was successful, now check to see if it's a symlink.
+            // The call to (stat | lstat) was successful, now check to see if it's a symlink.
             // Note that if follow_symlinks is true then this will never evaluate as true
             // because we'll be using 'stat' and not 'lstat' and stat will follow the link
             // and return information about the file/dir pointed to by the symlink
             if (S_ISLNK(buf.st_mode)) {
-                string error = "You do not have permission to access " + checked;
-                throw BESForbiddenError(error, __FILE__, __LINE__);
+                //string error = "You do not have permission to access " + checked;
+                throw BESForbiddenError(string("You do not have permission to access ") + fullpath, __FILE__, __LINE__);
             }
         }
     }
@@ -765,31 +775,27 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
 
     // add a leading slash if needed
     if (ensureLeadingSlash && first[0] != '/')
-        first = "/" + first;
+    first = "/" + first;
 
     // if 'second' start with a slash, remove it
     if (second[0] == '/')
-        second = second.substr(1);
+    second = second.substr(1);
 
     // glue the two parts together, adding a slash if needed
     if (first.back() == '/')
-        return first.append(second);
+    return first.append(second);
     else
-        return first.append("/").append(second);
+    return first.append("/").append(second);
 #endif
 
 #if 1
-    BESDEBUG("util", "BESUtil::assemblePath() -  firstPart: "<< firstPart << endl);
-    BESDEBUG("util", "BESUtil::assemblePath() -  secondPart: "<< secondPart << endl);
+    BESDEBUG("util", "BESUtil::assemblePath() -  firstPart:  '" << firstPart << "'" << endl);
+    BESDEBUG("util", "BESUtil::assemblePath() -  secondPart: '" << secondPart << "'" << endl);
 
-    assert(!firstPart.empty());
+    // assert(!firstPart.empty()); // I dropped this because I had to ask, why? Why does it matter? ndp 2017
 
     string first = firstPart;
     string second = secondPart;
-
-    if (ensureLeadingSlash) {
-        if (first[0] != '/') first = "/" + first;
-    }
 
     // make sure there are not multiple slashes at the end of the first part...
     // Note that this removes all of the slashes. jhrg 9/27/16
@@ -804,7 +810,26 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
         second.erase(0, 1);
     }
 
-    string newPath = first.append("/").append(second);
+    string newPath;
+
+    if (first.empty()) {
+        newPath = second;
+    }
+    else if (second.empty()) {
+        newPath = first;
+    }
+    else {
+        newPath = first.append("/").append(second);
+    }
+
+    if (ensureLeadingSlash) {
+        if (newPath.empty()) {
+            newPath = "/";
+        }
+        else if (newPath.compare(0, 1, "/")) {
+            newPath = "/" + newPath;
+        }
+    }
 
     BESDEBUG("util", "BESUtil::assemblePath() -  newPath: "<< newPath << endl);
 
@@ -849,7 +874,7 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
  * Returns true if (the value of) 'fullString' ends with (the value of) 'ending',
  * false otherwise.
  */
-bool BESUtil::endsWith(std::string const &fullString, std::string const &ending)
+bool BESUtil::endsWith(string const &fullString, string const &ending)
 {
     if (fullString.length() >= ending.length()) {
         return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
@@ -858,7 +883,6 @@ bool BESUtil::endsWith(std::string const &fullString, std::string const &ending)
         return false;
     }
 }
-
 
 /**
  * If the value of the BES Key BES.CancelTimeoutOnSend is true, cancel the
@@ -879,19 +903,145 @@ void BESUtil::conditional_timeout_cancel()
 {
     bool cancel_timeout_on_send = false;
     bool found = false;
-    string doset ="";
-    const string dosettrue ="true";
+    string doset = "";
+    const string dosettrue = "true";
     const string dosetyes = "yes";
 
-    TheBESKeys::TheKeys()->get_value( BES_KEY_TIMEOUT_CANCEL, doset, found ) ;
-    if( true == found ) {
-        doset = BESUtil::lowercase( doset ) ;
-        if( dosettrue == doset  || dosetyes == doset )
-            cancel_timeout_on_send =  true;
+    TheBESKeys::TheKeys()->get_value(BES_KEY_TIMEOUT_CANCEL, doset, found);
+    if (true == found) {
+        doset = BESUtil::lowercase(doset);
+        if (dosettrue == doset || dosetyes == doset) cancel_timeout_on_send = true;
     }
-    BESDEBUG("util",__func__ << "() - cancel_timeout_on_send: " <<(cancel_timeout_on_send?"true":"false") << endl);
-    if (cancel_timeout_on_send)
-        alarm(0);
+    BESDEBUG("util", __func__ << "() - cancel_timeout_on_send: " <<(cancel_timeout_on_send?"true":"false") << endl);
+    if (cancel_timeout_on_send) alarm(0);
 }
 
+/**
+ * @brief Operates on the string 's' to replaces every occurrence of the value of the string
+ * 'find_this' with the value of the string 'replace_with_this'
+ * @param
+ */
+void BESUtil::replace_all(string &s, string find_this, string replace_with_this)
+{
+    size_t pos = s.find(find_this);
+    while (pos != string::npos) {
+        // Replace current matching substring
+        s.replace(pos, find_this.size(), replace_with_this);
+        // Get the next occurrence from current position
+        pos = s.find(find_this, pos + find_this.size());
+    }
+}
+
+/**
+ * @brief Removes duplicate separators and provides leading and trailing separators as directed.
+ *
+ * @param raw_path The string to normalize
+ * @param leading_separator if true then the result will begin with a single separator character. If false
+ * the result will not begin with a separator character.
+ * @param trailing_separator If true the result will end with a single separator character. If false
+ * the result will not end with a separator character.
+ * @param separator A string, of length one, containing the separator character for the path. This
+ * parameter is optional and its value defaults to the slash '/' character.
+ */
+string BESUtil::normalize_path(const string &raw_path, bool leading_separator, bool trailing_separator, const string separator)
+{
+    if (separator.length() != 1)
+        throw BESInternalError("Path separators must be a single character. The string '" + separator + "' does not qualify.", __FILE__, __LINE__);
+    char separator_char = separator[0];
+    string double_separator;
+    double_separator = double_separator.append(separator).append(separator);
+
+    string path(raw_path);
+
+    replace_all(path, double_separator, separator);
+
+    if (path.empty()) {
+        path = separator;
+    }
+    if (path == separator) {
+        return path;
+    }
+    if (leading_separator) {
+        if (path[0] != separator_char) {
+            path = string(separator).append(path);
+        }
+    }
+    else {
+        if (path[0] == separator_char) {
+            path = path.substr(1);
+        }
+    }
+    if (trailing_separator) {
+        if (*path.rbegin() != separator_char) {
+            path = path.append(separator);
+        }
+    }
+    else {
+        if (*path.rbegin() == separator_char) {
+            path = path.substr(0, path.length() - 1);
+        }
+    }
+    return path;
+}
+
+/**
+ * A call out thanks to:
+ * http://www.oopweb.com/CPP/Documents/CPPHOWTO/Volume/C++Programming-HOWTO-7.html
+ * for the tokenizer.
+ */
+void BESUtil::tokenize(const string& str, vector<string>& tokens, const string& delimiters)
+{
+    // Skip delimiters at beginning.
+    string::size_type lastPos = str.find_first_not_of(delimiters, 0);
+    // Find first "non-delimiter".
+    string::size_type pos = str.find_first_of(delimiters, lastPos);
+    while (string::npos != pos || string::npos != lastPos) {
+        // Found a token, add it to the vector.
+        tokens.push_back(str.substr(lastPos, pos - lastPos));
+        // Skip delimiters.  Note the "not_of"
+        lastPos = str.find_first_not_of(delimiters, pos);
+        // Find next "non-delimiter"
+        pos = str.find_first_of(delimiters, lastPos);
+    }
+}
+
+/**
+ * Returns the current time as an ISO8601 string.
+ *
+ * @param use_local_time True to use the local time, false (default) to use GMT
+ * @return The time, either local or GMT/UTC as an ISO8601 string
+ */
+string BESUtil::get_time(bool use_local_time)
+{
+    return get_time(time(0), use_local_time);
+}
+
+/**
+ * @brief Returns the time represented by 'the_time' as an ISO8601 string.
+ *
+ * @param the_time A time_t value
+ * @param use_local_time True to use the local time, false (default) to use GMT
+ * @return The time, either local or GMT/UTC as an ISO8601 string
+ */
+string BESUtil::get_time(time_t the_time, bool use_local_time)
+{
+    char buf[sizeof "YYYY-MM-DDTHH:MM:SSzone"];
+    int status = 0;
+
+    // From StackOverflow:
+    // This will work too, if your compiler doesn't support %F or %T:
+    // strftime(buf, sizeof buf, "%Y-%m-%dT%H:%M:%S%Z", gmtime(&now));
+    //
+    // UTC is the default. Override to local time based on the
+    // passed parameter 'use_local_time'
+    if (!use_local_time)
+        status = strftime(buf, sizeof buf, "%FT%T%Z", gmtime(&the_time));
+    else
+        status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&the_time));
+
+    if (!status)
+    LOG("Error getting last modified time time for a leaf item in CMRCatalog.");
+
+    return buf;
+}
 

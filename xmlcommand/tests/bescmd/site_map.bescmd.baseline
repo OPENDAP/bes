@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response reqID="[http-8080-1:27:bes_request]" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <BES>
+        <BESError>
+            <Type>3</Type>
+            <Message>Build site map must include the prefix and at least one of the nodeSuffix or leafSuffix attributes.</Message>
+            <Administrator>support@opendap.org</Administrator>
+            <Location>
+                
+                
+            </Location>
+        </BESError>
+    </BES>
+</response>

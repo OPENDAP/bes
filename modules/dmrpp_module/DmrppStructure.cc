@@ -25,14 +25,13 @@
 #include "config.h"
 
 #include <string>
-#include <sstream>
-#include <cassert>
+
+#include <XMLWriter.h>
 
 #include <BESError.h>
 #include <BESDebug.h>
 
 #include "DmrppStructure.h"
-#include "DmrppUtil.h"
 
 using namespace libdap;
 using namespace std;
@@ -72,42 +71,58 @@ DmrppStructure::operator=(const DmrppStructure &rhs)
     dynamic_cast<Structure &>(*this) = rhs; // run Constructor=
 
     _duplicate(rhs);
-    DmrppCommon::_duplicate(rhs);
+    DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }
 
-bool
-DmrppStructure::read()
-{
 #if 0
-    BESDEBUG("dmrpp", "Entering DmrppStructure::read for " << name() << endl);
+class PrintDAP4FieldXMLWriter : public unary_function<BaseType *, void>
+{
+    XMLWriter &d_xml;
+    bool d_constrained;
+public:
+    PrintDAP4FieldXMLWriter(XMLWriter &x, bool c) : d_xml(x), d_constrained(c) {}
 
-    if (read_p())
-        return true;
+    void operator()(BaseType *btp)
+    {
+        btp->print_dap4(d_xml, d_constrained);
+    }
+};
 
-    // FIXME
+void
+DmrppStructure::print_dap4(XMLWriter &xml, bool constrained)
+{
+    if (constrained && !send_p())
+    return;
 
-    set_read_p(true);
+    if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar*)type_name().c_str()) < 0)
+    throw InternalErr(__FILE__, __LINE__, "Could not write " + type_name() + " element");
 
-    return true;
-#endif
-    BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
+    if (!name().empty())
+    if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "name", (const xmlChar*)name().c_str()) < 0)
+    throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
 
-    throw BESError("Unsupported type libdap::D4Structure (dmrpp::DmrppStructure)",BES_INTERNAL_ERROR, __FILE__, __LINE__);
+    bool has_variables = (var_begin() != var_end());
+    if (has_variables)
+    for_each(var_begin(), var_end(), PrintDAP4FieldXMLWriter(xml, constrained));
 
+    attributes()->print_dap4(xml);
 
+    if (xmlTextWriterEndElement(xml.get_writer()) < 0)
+    throw InternalErr(__FILE__, __LINE__, "Could not end " + type_name() + " element");
 }
+#endif
 
 
 void DmrppStructure::dump(ostream & strm) const
 {
-    strm << DapIndent::LMarg << "DmrppStructure::dump - (" << (void *) this << ")" << endl;
-    DapIndent::Indent();
+    strm << BESIndent::LMarg << "DmrppStructure::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
     DmrppCommon::dump(strm);
     Structure::dump(strm);
-    strm << DapIndent::LMarg << "value:    " << "----" << /*d_buf <<*/ endl;
-    DapIndent::UnIndent();
+    strm << BESIndent::LMarg << "value:    " << "----" << /*d_buf <<*/ endl;
+    BESIndent::UnIndent();
 }
 
 } // namespace dmrpp

@@ -48,6 +48,9 @@
  * Keys file cannot be read. That is, the if the singleton TheBESKeys cannot
  * be initialized, the access to the BES keys will throw a BESInternalFatalError.
  *
+ * @todo Remove the non-BESCatalog file system stuff in this class and combine it with
+ * BESContainerStorageCatalog.
+ *
  * @param n name of this persistent store
  * @see BESContainer
  */
@@ -110,7 +113,8 @@ BESContainerStorageVolatile::look_for(const string &sym_name)
  * This method adds a container represented by a data file.
  *
  * @param sym_name symbolic name of the container being created
- * @param real_name real name of the container
+ * @param real_name The real name of the container, as provided by the user/client.
+ * This name is relative to the BES Data Root Directory
  * @param type type of data represented by this container
  * @throws BESInternalError if no type is specified
  * @throws BESInternalError if a container with the passed
@@ -137,26 +141,24 @@ void BESContainerStorageVolatile::add_container(const string &sym_name, const st
         string s = (string) "A container with the name " + sym_name + " already exists";
         throw BESInternalError(s, __FILE__, __LINE__);
     }
-#if 1
-    // NB: I added the #if 1 ... endif to test _not_ making this check while
-    // working with the jgofs code. It was just a hack, but I needed to
-    // toggle it several times. jhrg 3/6/13
 
     // make sure that the path to the container exists. If follow_sym_links
     // is false and there is a symbolic link in the path then an error will
     // be thrown. If the path does not exist, an error will be thrown.
     BESUtil::check_path(real_name, _root_dir, _follow_sym_links);
-#endif
+
     // add the root directory to the real_name passed
-    string new_r_name = BESUtil::assemblePath(_root_dir,real_name, false);
+    string fully_qualified_real_name = BESUtil::assemblePath(_root_dir, real_name, false);
+
     BESDEBUG("container","BESContainerStorageVolatile::add_container() - "
     		<< " _root_dir: " << _root_dir
     		<< " real_name: " << real_name
-			<< " new_r_name: " << new_r_name
+			<< " fully_qualified_real_name: " << fully_qualified_real_name
 			<< endl);
 
     // Create the file container with the new information
-    BESContainer *c = new BESFileContainer(sym_name, new_r_name, type);
+    BESContainer *c = new BESFileContainer(sym_name, fully_qualified_real_name, type);
+    c->set_relative_name(real_name);
 
     // add it to the container list
     _container_list[sym_name] = c;

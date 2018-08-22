@@ -115,6 +115,9 @@ public:
         return _line;
     }
 
+    // Return the message, file and line
+    virtual std::string get_verbose_message();
+
     /** @brief Set the return code for this particular error class
      *
      * Sets the return code for this error class, which could represent the
@@ -124,7 +127,7 @@ public:
      * be one of BES_INTERNAL_ERROR, BES_INTERNAL_FATAL_ERROR,
      * BES_SYNTAX_USER_ERROR, BES_FORBIDDEN_ERROR, BES_NOT_FOUND_ERROR
      */
-    virtual void set_error_type(int type)
+    virtual void set_bes_error_type(int type)
     {
         _type = type;
     }
@@ -135,7 +138,7 @@ public:
      * the need to terminate or do something specific base on the error
      * @return context string
      */
-    virtual int get_error_type()
+    virtual int get_bes_error_type()
     {
         return _type;
     }
