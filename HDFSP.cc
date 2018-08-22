@@ -4247,9 +4247,14 @@ void File:: Obtain_TRMML3S_V7_latlon_size(int &latsize, int&lonsize) {
             float lon_start = 0.;
             float lat_res = 1.;
             float lon_res = 1.;
-            HDFCFUtil::parser_trmm_v7_gridheader((*i)->getValue(),latsize,lonsize,
+            try {
+                HDFCFUtil::parser_trmm_v7_gridheader((*i)->getValue(),latsize,lonsize,
                                                  lat_start,lon_start,
                                                  lat_res,lon_res,false);
+            }
+            catch(...){
+                throw;
+            }
             break;
         }
     }
@@ -4841,9 +4846,14 @@ File::PrepareTRMML3M_V7()  {
             int latsize = 0;
             int lonsize = 0;
             
-            HDFCFUtil::parser_trmm_v7_gridheader((*i)->getValue(),latsize,lonsize,
+            try {
+                HDFCFUtil::parser_trmm_v7_gridheader((*i)->getValue(),latsize,lonsize,
                                                  lat_start,lon_start,
                                                  lat_res, lon_res, false);
+            }
+            catch(...) {
+                throw;
+            }
           
             string latname;
             string lonname;
