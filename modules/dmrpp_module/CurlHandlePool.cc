@@ -78,6 +78,39 @@ dmrpp_easy_handle::~dmrpp_easy_handle()
 }
 
 /**
+ * Return the HTTP/S status code if the request succeeded; throw an exception
+ * on error.
+ *
+ * @param eh The CURL easy_handle
+ */
+static void evaluate_curl_response(CURL* eh)
+{
+    long http_code = 0;
+    CURLcode res = curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_code);
+    if (CURLE_OK != res) {
+        throw BESInternalError(string("Error getting HTTP response code: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
+    }
+
+    // Newer Apache servers return 206 for range requests. jhrg 8/8/18
+    switch (http_code) {
+    case 200: // OK
+    case 206: // Partial content - this is to be expected since we use range gets
+        // cases 201-205 are things we should probably reject, unless we add more
+        // comprehensive HTTP/S processing here. jhrg 8/8/18
+        break;
+
+    default: {
+        ostringstream oss;
+        oss << "HTTP status error: Expected an OK status, but got: ";
+        oss << http_code;
+        throw BESInternalError(oss.str(), __FILE__, __LINE__);
+        break;
+    }
+    }
+}
+
+
+/**
  * @brief This is the read_data() method for serial transfers
  */
 void dmrpp_easy_handle::read_data()
@@ -87,26 +120,12 @@ void dmrpp_easy_handle::read_data()
     // Perform the request
     CURLcode curl_code = curl_easy_perform(curl);
     if (CURLE_OK != curl_code) {
-        throw BESInternalError(string("Data transfer error: ").append(curl_easy_strerror(curl_code)), __FILE__,
-            __LINE__);
+        throw BESInternalError(string("Data transfer error: ").append(curl_easy_strerror(curl_code)), __FILE__, __LINE__);
     }
 
-    ostringstream oss;
     // For HTTP, check the return code, for the file protocol, if curl_code is OK, that's good enough
-    string http_url("http://");
-    if (d_url.compare(0, http_url.size(), http_url) == 0 /*equal*/) {
-        long http_code = 0;
-        curl_code = curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
-        if (CURLE_OK != curl_code) {
-            throw BESInternalError(string("Error getting HTTP response code: ").append(curl_easy_strerror(curl_code)),
-                __FILE__, __LINE__);
-        }
-
-        if (http_code != 200) {
-            oss << "HTTP status error. Expected an OK status, but got: ";
-            oss << http_code;
-            throw BESInternalError(oss.str(), __FILE__, __LINE__);
-        }
+    if (d_url.find("https://") == 0 || d_url.find("http://") == 0) {
+        evaluate_curl_response(curl);
     }
 
     d_chunk->set_is_read(true);
@@ -155,50 +174,14 @@ void dmrpp_multi_handle::read_data()
             if (res != CURLE_OK)
                 throw BESInternalError(string("Could not access easy handle: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
 
-            // This code has to work with both http: and file: protocols. Here we check the
+            // This code has to work with both http/s: and file: protocols. Here we check the
             // HTTP status code. If the protocol is not HTTP, we assume since msg->data.result
             // returned CURLE_OK, that the transfer worked. jhrg 5/1/18
-#if 0
-            ostringstream oss;
-            string http_url("http://");
-            if (dmrpp_easy_handle->d_url.compare(0, http_url.size(), http_url) == 0 /*equal*/) {
-#endif
-
             if (dmrpp_easy_handle->d_url.find("http://") == 0 || dmrpp_easy_handle->d_url.find("https://") == 0) {
-                long http_code = 0;
-                res = curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_code);
-                if (CURLE_OK != res) {
-                    throw BESInternalError(string("Error getting HTTP response code: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
-                }
-
-                // Replaced the if below since newer Apache servers return 206 for range requests. jhrg 8/8/18
-                switch (http_code) {
-                case 200:   // OK
-                case 206:   // Partial content - this is to be expected since we use range gets
-                    // cases 201-205 are things we should probably reject, unless we add more
-                    // comprehensive HTTP/S processing here. jhrg 8/8/18
-                    break;
-
-                default: {
-                    ostringstream oss;
-                    oss << "HTTP status error: Expected an OK status, but got: ";
-                    oss << http_code;
-                    throw BESInternalError(oss.str(), __FILE__, __LINE__);
-                    break;
-                }
-
-                }
-#if 0
-                if (http_code != 200) {
-                    oss << "HTTP status error: Expected an OK status, but got: ";
-                    oss << http_code;
-                    throw BESInternalError(oss.str(), __FILE__, __LINE__);
-                }
-#endif
-
+                evaluate_curl_response(eh);
             }
 
-            // If we are here, the request (file: or http:) was successful.
+            // If we are here, the request was successful.
 
             dmrpp_easy_handle->d_chunk->set_is_read(true);  // Set the is_read() property for chunk here.
             DmrppRequestHandler::curl_handle_pool->release_handle(dmrpp_easy_handle);

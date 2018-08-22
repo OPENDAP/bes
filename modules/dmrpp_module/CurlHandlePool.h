@@ -90,6 +90,11 @@ public:
     void read_data();
 };
 
+#if 0
+long evaluate_curl_response(CURL* eh);
+#endif
+
+
 /**
  * @brief Encapsulate a libcurl multi handle.
  */
