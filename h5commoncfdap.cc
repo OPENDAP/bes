@@ -958,9 +958,10 @@ void check_update_int64_attr(const string & obj_name, const HDF5CF::Attribute * 
                 d4_hg_container->set_name("HDF5_GLOBAL_integer_64");
                 d4_hg_container->set_type(attr_container_c);
                 root_grp->attributes()->add_attribute_nocopy(d4_hg_container);
+                //root_grp->attributes()->add_attribute(d4_hg_container);
             }
-            else 
-                d4_hg_container = root_grp->attributes()->get("HDF5_GLOBAL_integer_64");
+            //else 
+            d4_hg_container = root_grp->attributes()->get("HDF5_GLOBAL_integer_64");
             if(obj_name != "") {
                 string test_obj_name = "HDF5_GLOBAL_integer_64."+obj_name;
                 //D4Attribute *d4_container = root_grp->attributes()->find(obj_name);

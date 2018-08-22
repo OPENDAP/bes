@@ -692,14 +692,16 @@ void EOS5File:: Adjust_EOS5DimSize_List(vector<HE5Dim>& eos5objdimlist,const vec
             set_insert_ret = updated_dimlist.insert(he5d.name);
             if(set_insert_ret.second == true) {
                 // Find out the index of this dimension in eos5objdimlist 
-                int objdimlist_index = -1;
+                unsigned int objdimlist_index = 9999;
+                bool has_objdimlist_index = false;
                 for(unsigned int k = 0; k <eos5objdimlist.size();k++) {
                     if(eos5objdimlist[k].name == he5d.name) {
                         objdimlist_index = k;
+                        has_objdimlist_index = true;
                         break;
                     }
                 }
-                if(objdimlist_index == -1)
+                if(has_objdimlist_index == false)
                     throw2("Cannot find the dimension in the EOS5 object dimension list for the dimension ", he5d.name);
                 for (vector<Var *>::const_iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
 
