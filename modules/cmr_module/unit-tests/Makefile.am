@@ -7,7 +7,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/modules -I$(top_srcdir)/modules/cmr_module \
 -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 
 # Added -lz for ubuntu
-LIBADD = $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_EXTRA_LIBS) \
+LIBADD = $(abs_topbuilddir)/dispatch/.libs/libbes_dispatch.15.dylib $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_EXTRA_LIBS) \
 $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
 
 

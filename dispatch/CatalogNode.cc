@@ -30,6 +30,7 @@
 #include <sstream>
 
 #include "BESIndent.h"
+#include "BESUtil.h"
 
 #include "BESCatalogList.h"
 #include "BESInfo.h"
@@ -85,14 +86,12 @@ CatalogNode::encode_node(BESInfo *info)
         im_a_leaf->encode_item(info);
     }
     else { // It's a node. Do the node dance...
-        props["name"] = get_name();
-        // props["catalog"] = get_catalog_name(); // Dropped this because it's no longer used - ndp 8/15/2018
+        if(get_catalog_name() != BESCatalogList::TheCatalogList()->default_catalog_name())
+            props["name"] = BESUtil::assemblePath(get_catalog_name(), get_name(), true);
+        else
+            props["name"] = get_name();
 
-
-        // @TODO WHY Did I flag this spot for work?
-
-
-
+        // props["catalog"] = get_catalog_name();
         props["lastModified"] = get_lmt();
         ostringstream oss;
         oss << get_item_count();

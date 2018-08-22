@@ -45,12 +45,14 @@ private:
     const rapidjson::Value& get_links_array(const rapidjson::Value& go);
 
     std::string d_name;
+    std::string d_id;
     std::string d_data_access_url;
     std::string d_metadata_access_url;
     std::string d_size_str;
     std::string d_last_modified_time;
 
     void setName(const rapidjson::Value& granule_obj);
+    void setId(const rapidjson::Value& granule_obj);
     void setDataAccessUrl(const rapidjson::Value& granule_obj);
     void setMetadataAccessUrl(const rapidjson::Value& granule_obj);
     void setSize(const rapidjson::Value& granule_obj);
@@ -60,6 +62,7 @@ public:
     Granule(const rapidjson::Value& granule_obj);
 
     std::string getName(){ return d_name; }
+    std::string getId(){ return d_id; }
     std::string getDataAccessUrl() { return d_data_access_url; }
     std::string getMetadataAccessUrl(){ return d_metadata_access_url; }
     std::string getSizeStr(){ return d_size_str; }

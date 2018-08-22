@@ -440,7 +440,7 @@ public:
                     << granules.size() << " granules: " << endl;
             for (size_t i = 0; i < granules.size(); i++) {
                 Granule *granule = granules[i];
-                msg << granule->getStringProperty("producer_granule_id") << endl
+                msg << granule->getName() << endl
                     << "    size:  " << granule->getSizeStr() << endl
                     << "    lmt:    " << granule->getLastModifiedStr() << endl
                     << "    access: " << granule->getDataAccessUrl() << endl;
@@ -449,7 +449,7 @@ public:
 
             for (size_t i = 0; i < granules.size(); i++) {
                 Granule *granule = granules[i];
-                string pgi = granule->getStringProperty("id");
+                string pgi = granule->getId();
                 msg.str(std::string());
                 msg << prolog << "Checking:  expected: " << expected[i]
                         << " received: " << pgi;
@@ -526,7 +526,7 @@ public:
                     << granules.size() << " granules. Data Access URLs: " << endl;
             for (size_t i = 0; i < granules.size(); i++) {
                 Granule *granule = granules[i];
-                msg << granule->getStringProperty("producer_granule_id") << endl
+                msg << granule->getName() << endl
                     << "    size:   " << granule->getSizeStr() << endl
                     << "    lmt:    " << granule->getLastModifiedStr() << endl
                     << "    access: " << granule->getDataAccessUrl() << endl;

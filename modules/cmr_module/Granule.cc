@@ -52,9 +52,13 @@ string granule_LINKS_HREFLANG = "hreflang";
 string granule_LINKS_HREF = "href";
 string granule_SIZE = "granule_size";
 string granule_LMT = "updated";
+
+string granule_ID = "id";
+
 string granule_NAME = "title";
 
 Granule::Granule(const rapidjson::Value& granule_obj){
+    setId(granule_obj);
     setName(granule_obj);
     setSize(granule_obj);
     setDataAccessUrl(granule_obj);
@@ -65,6 +69,11 @@ Granule::Granule(const rapidjson::Value& granule_obj){
 void Granule::setName(const rapidjson::Value& go){
     rjson_utils rju;
     this->d_name = rju.getStringValue(go, granule_NAME);
+}
+
+void Granule::setId(const rapidjson::Value& go){
+    rjson_utils rju;
+    this->d_id = rju.getStringValue(go, granule_ID);
 }
 
 void Granule::setSize(const rapidjson::Value& go){

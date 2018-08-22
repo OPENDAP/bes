@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <response reqID="[thread:http-nio-8080-exec-4-42][bes_client:/-2]" xmlns="http://xml.opendap.org/ns/bes/1.0#">
     <showNode>
-        <node count="3" lastModified="removed date-time" name="/">
+        <node count="3" lastModified="removed date-time" name="/second">
             <item lastModified="removed date-time" name="dap4" type="node"/>
             <item isData="false" lastModified="removed date-time" name="README" size="127" type="leaf"/>
             <item isData="true" lastModified="removed date-time" name="fnoc1.data" size="46155" type="leaf"/>
