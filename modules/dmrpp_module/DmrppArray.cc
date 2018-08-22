@@ -277,10 +277,6 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dimIter, unsigned long *
  */
 void DmrppArray::read_contiguous()
 {
-#if 0
-    char *data = read_atomic(name());
-#endif
-
     // These first four lines reproduce DmrppCommon::read_atomic(). The call
     // to Chunk::inflate_chunk() handles 'contiguous' data that are compressed.
     // And since we need the chunk, I copied the read_atomix code here.
@@ -291,6 +287,7 @@ void DmrppArray::read_contiguous()
 
     Chunk &chunk = chunk_refs[0];
 
+    // TODO Break this call down so that data can be read in parallel. jhrg 8/21/18
     chunk.read_chunk();
 
     chunk.inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(), var()->width());
@@ -880,7 +877,8 @@ void *one_chunk_unconstrained_thread(void *arg_list)
         pthread_exit(new string(error.get_message()));
     }
 
-    // tid is a char and thus us written atomically
+    // tid is a char and thus us written atomically. Writing this tells the parent
+    // thread the child is complete and it should call pthread_join(tid, ...)
     write(args->fds[1], &args->tid, sizeof(args->tid));
 
     delete args;
@@ -915,19 +913,15 @@ void DmrppArray::read_chunks_unconstrained()
         int fds[2];
         pipe(fds);
 
-#if 0
-        while (chunks_to_read.size() > 0) {
-#endif
-
         // Start the max number of processing pipelines
         pthread_t thread[DmrppRequestHandler::d_max_parallel_transfers];
         unsigned int threads = 0;
-        for (unsigned int i = 0; i < (unsigned int) DmrppRequestHandler::d_max_parallel_transfers && chunks_to_read.size() > 0; ++i) {
+        for (unsigned int i = 0; i < (unsigned int)DmrppRequestHandler::d_max_parallel_transfers && chunks_to_read.size() > 0; ++i) {
             Chunk *chunk = chunks_to_read.front();
             chunks_to_read.pop();
 
+            // thread number is 'i'
             one_chunk_unconstrained_args *args = new one_chunk_unconstrained_args(fds, i, chunk, this, array_shape, chunk_shape);
-
             int status = pthread_create(&thread[i], NULL, dmrpp::one_chunk_unconstrained_thread, (void*) args);
             if (status == 0) {
                 ++threads;
@@ -939,13 +933,14 @@ void DmrppArray::read_chunks_unconstrained()
             }
         }
 
-        // Now join the child threads, creating replacement threads if needed
+         // Now join the child threads, creating replacement threads if needed
         while (threads > 0) {
             unsigned char tid;   // bytes can be written atomically
+            // Block here until a child thread writes to the pipe, then read the byte
             ::read(fds[0], &tid, sizeof(tid));
 
             string *error;
-            int status = pthread_join(thread[(unsigned int) tid], (void**) &error);
+            int status = pthread_join(thread[(unsigned int)tid], (void**)&error);
             if (status != 0) {
                 ostringstream oss("Could not join process_one_chunk_unconstrained thread for chunk ");
                 oss << tid << ": " << strerror(status);
@@ -960,8 +955,8 @@ void DmrppArray::read_chunks_unconstrained()
                 Chunk *chunk = chunks_to_read.front();
                 chunks_to_read.pop();
 
+                // thread number is 'tid,' the number of the thread that just completed
                 one_chunk_unconstrained_args *args = new one_chunk_unconstrained_args(fds, tid, chunk, this, array_shape, chunk_shape);
-
                 int status = pthread_create(&thread[tid], NULL, dmrpp::one_chunk_unconstrained_thread, (void*) args);
                 if (status != 0) {
                     ostringstream oss("Could not start process_one_chunk_unconstrained thread for chunk ");
@@ -974,126 +969,50 @@ void DmrppArray::read_chunks_unconstrained()
                 --threads;
             }
         }
-
 #if 0
-    }
-#endif
+        while (chunks_to_read.size() > 0) {
 
-#if 0
-        // Now join the child threads.
-        for (unsigned int i = 0; i < threads; ++i) {
-            BESError *error;
-            int status = pthread_join(thread[i], (void**)&error);
-            if (status != 0) {
-                ostringstream oss("Could not join process_one_chunk_unconstrained thread for chunk ");
-                oss << i << ": " << strerror(status);
-                throw BESInternalError(oss.str(), __FILE__, __LINE__);
-            }
-            else if (error != 0) {
-                BESError e(*error);
-                delete error;
-                throw e;
-            }
-        }
-#endif
+            // Start the max number of processing pipelines
+            pthread_t thread[DmrppRequestHandler::d_max_parallel_transfers];
+            unsigned int threads = 0;
+            for (unsigned int i = 0; i < (unsigned int) DmrppRequestHandler::d_max_parallel_transfers && chunks_to_read.size() > 0; ++i) {
+                Chunk *chunk = chunks_to_read.front();
+                chunks_to_read.pop();
 
-#if 0
-        for (unsigned int i = 0; i < max_handles-1 && chunks_to_read.size() > 0; ++i) {
-            Chunk *chunk = chunks_to_read.front();
-            chunks_to_read.pop();
+                one_chunk_unconstrained_args *args = new one_chunk_unconstrained_args(fds, i, chunk, this, array_shape, chunk_shape);
 
-            chunk->set_rbuf_to_size();
-            dmrpp_easy_handle *handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(chunk);
-            if (!handle) throw BESInternalError("No more libcurl handles.", __FILE__, __LINE__);
-
-            BESDEBUG(dmrpp_3, "Queuing: " << chunk->to_string() << endl);
-            mhandle->add_easy_handle(handle);
-
-            chunks_to_insert.push_back(chunk);
-        }
-
-        mhandle->read_data(); // read 'max_handles' chunks
-
-        if (is_deflate_compression() || is_shuffle_compression()) {
-#if USE_PTHREADS
-            // Given that parallel operations are selected, make chunks_to_insert.size() - 1
-            // threads (-1 because the main thread will decompress a chunk too). jhrg 8/19/18
-            pthread_t thread[chunks_to_insert.size() - 1];
-            for (unsigned int i = 0; i < chunks_to_insert.size() - 1; ++i) {
-                Chunk *chunk = chunks_to_insert.at(i);
-
-                inflate_chunk_args *args = new inflate_chunk_args(chunk, is_deflate_compression(),
-                    is_shuffle_compression(), get_chunk_size_in_elements(), var()->width());
-                int status = pthread_create(&thread[i], NULL, dmrpp::inflate_chunk, (void*) args);
-                if (status != 0) {
-                    ostringstream oss("Could not start inflate_chunk thread for chunk ");
+                int status = pthread_create(&thread[i], NULL, dmrpp::one_chunk_unconstrained_thread, (void*) args);
+                if (status == 0) {
+                    ++threads;
+                }
+                else {
+                    ostringstream oss("Could not start process_one_chunk_unconstrained thread for chunk ");
                     oss << i << ": " << strerror(status);
                     throw BESInternalError(oss.str(), __FILE__, __LINE__);
                 }
             }
-
-            // The main thread does some work too. We don't want to call the function because
-            // it (might) call code meant only for a child thread (e.g. pthread_exit()) and
-            // that will confuse (or exit) the main thread. Use the C++ method that does the
-            // same thing. jhrg 8/19/18
-            Chunk *chunk = chunks_to_insert.at(chunks_to_insert.size() - 1);
-            chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(),
-                var()->width());
-
             // Now join the child threads.
-            for (unsigned int i = 0; i < chunks_to_insert.size() - 1; ++i) {
-                // TODO inflate_chunk_args *args;
-                BESError *error;
-                int status = pthread_join(thread[i], (void**)&error);
+            for (unsigned int i = 0; i < threads; ++i) {
+                string *error;
+                int status = pthread_join(thread[i], (void**) &error);
                 if (status != 0) {
-                    ostringstream oss("Could not join inflate_chunk thread for chunk ");
+                    ostringstream oss("Could not join process_one_chunk_unconstrained thread for chunk ");
                     oss << i << ": " << strerror(status);
                     throw BESInternalError(oss.str(), __FILE__, __LINE__);
                 }
                 else if (error != 0) {
-                    BESError e(*error);
+                    BESInternalError e(*error, __FILE__, __LINE__);
                     delete error;
                     throw e;
                 }
             }
-#endif
-        }
-
-        while (chunks_to_insert.size() > 0) {
-            Chunk *chunk = chunks_to_insert.back();
-            chunks_to_insert.pop_back();
-
-#if !USE_PTHREADS
-            if (is_deflate_compression() || is_shuffle_compression()) {
-                chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(),
-                    var()->width());
-            }
-#endif
-
-            insert_chunk_unconstrained(chunk, 0 /*dimension*/, 0/*array offset*/, array_shape, 0/*chunk offset*/, chunk_shape, chunk->get_position_in_array());
         }
 #endif
-
     }
     else {  // Serial transfers
         for (vector<Chunk>::iterator c = chunk_refs.begin(), e = chunk_refs.end(); c != e; ++c) {
             Chunk &chunk = *c;
-
             process_one_chunk_unconstrained(&chunk, this, array_shape, chunk_shape);
-#if 0
-            Chunk &chunk = *c;
-
-            BESDEBUG(dmrpp_3, "Reading: " << chunk.to_string() << endl);
-
-            chunk.read_chunk();
-
-            chunk.inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(),
-                var()->width());
-
-            BESDEBUG(dmrpp_3, "Inserting: " << chunk.to_string() << endl);
-
-            insert_chunk_unconstrained(&chunk, 0, 0, array_shape, 0, chunk_shape, chunk.get_position_in_array());
-#endif
         }
     }
 
