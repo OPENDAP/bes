@@ -32,6 +32,8 @@ m4_define([AT_TEST_BLOCKING], [dnl
     AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -x $write_lock_hold_time &], [0], [ignore], [ignore])
     write_lock_end_time=`date "+%s"`
     
+    sleep 1
+    
     write_lock_elapsed=`echo "$write_lock_end_time - $write_lock_start_time" | bc`
     
     AS_IF([test x$verbose = xv], [echo "write_lock_elapsed: $write_lock_elapsed"], [])
@@ -106,8 +108,10 @@ m4_define([AT_TEST_TWO_FILE_CREATE_AND_LOCK], [dnl
     
     hold_time=5
     
-    # This makes the file and holds the lock for 1 second; it should work fine
+    # This makes the file and holds the lock for 5 seconds; it should work fine
     AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -f first_file -x ${hold_time} &], [0], [ignore], [ignore])
+    
+    sleep 1
     
     # This attempts to lock a second file. It should block until the above lock 
     # is released.
@@ -148,8 +152,10 @@ m4_define([AT_TEST_TWO_FILE_CREATE_AND_LOCK_VERSION_2], [dnl
     
     hold_time=2
     
-    # This makes the file and holds the lock for 1 second; it should work fine
+    # This makes the file and holds the lock for 2 seconds; it should work fine
     AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -f first_file -x ${hold_time} &], [0], [ignore], [ignore])
+    
+    sleep 1
     
     # Get four read locks in parallel.
     AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -f first_file -r ${hold_time} &], [0], [ignore], [ignore])
@@ -200,6 +206,8 @@ m4_define([AT_TEST_MULTIPLE_READ_LOCKS], [dnl
     # locks will attach to.
     AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -x 1], [0], [ignore], [ignore])
     
+    sleep 1
+    
     # Get four read locks in parallel. The last call waits for the three secs, just so
     # test doesn't complete before the lock processes are done.
     AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -r 2 &], [0], [ignore], [ignore])
@@ -210,7 +218,7 @@ m4_define([AT_TEST_MULTIPLE_READ_LOCKS], [dnl
     AT_CLEANUP
 ])
 
-AT_TEST_BLOCKING()
+AT_TEST_BLOCKING(v)
 
 AT_TEST_CREATE_AND_LOCK()
 AT_TEST_TWO_FILE_CREATE_AND_LOCK()

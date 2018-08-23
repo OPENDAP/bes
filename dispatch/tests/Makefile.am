@@ -49,6 +49,9 @@ clean-local: cache-clean
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
 	-rm -f $(TESTSUITE) $(srcdir)/package.m4 
 
+# until the bugs in these tests are fixed, run them as verbose. jhrg 8/22/18
+TESTSUITEFLAGS = $(TESTSUITEFLAGS) -v
+
 # Force the tests here to run 
 check-local: $(TESTSUITE) atconfig atlocal 
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
