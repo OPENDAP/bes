@@ -6,7 +6,7 @@ AM_CPPFLAGS = -I$(top_srcdir)
 noinst_DATA = bes.conf bes_mds_tests.conf mds_for_tests
 
 CLEANFILES = bes.conf bes.log $(srcdir)/package.m4 $(TESTSUITE) \
-bes_mds_tests.conf $(TESTSUITE_MDS)
+bes_mds_tests.conf bes_serial.conf $(TESTSUITE_MDS)
 
 EXTRA_DIST = contiguous chunked new_types mds_tests s3 $(srcdir)/package.m4 \
 $(TESTSUITE) $(TESTSUITE).at $(TESTSUITE_MDS) $(TESTSUITE_MDS).at \
