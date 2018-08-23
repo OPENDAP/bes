@@ -58,7 +58,7 @@ EXTRA_PROGRAMS =
 
 noinst_DATA = mds_for_tests
 
-EXTRA_DIST = get_dmrpp.sh README dmrpp mds_for_tests old
+EXTRA_DIST = get_dmrpp.sh README dmrpp mds_for_tests s3 s3_data old
 
 CLEANFILES = *~
 

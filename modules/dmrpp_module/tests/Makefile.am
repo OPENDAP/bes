@@ -8,9 +8,9 @@ noinst_DATA = bes.conf bes_mds_tests.conf mds_for_tests
 CLEANFILES = bes.conf bes.log $(srcdir)/package.m4 $(TESTSUITE) \
 bes_mds_tests.conf $(TESTSUITE_MDS)
 
-EXTRA_DIST = contiguous chunked new_types $(srcdir)/package.m4 atlocal.in \
-$(TESTSUITE) $(TESTSUITE).at bes.conf.in $(TESTSUITE_MDS) $(TESTSUITE_MDS).at \
-bes_mds_tests.conf.in mds_tests
+EXTRA_DIST = contiguous chunked new_types mds_tests s3 $(srcdir)/package.m4 \
+$(TESTSUITE) $(TESTSUITE).at $(TESTSUITE_MDS) $(TESTSUITE_MDS).at \
+atlocal.in bes.conf.in bes_mds_tests.conf.in  bes_serial.conf.in
 
 DISTCLEANFILES = atconfig 
 
@@ -22,7 +22,7 @@ DISTCLEANFILES = atconfig
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > $@
 
-bes.conf: $(top_srcdir)/configure.ac $(srcdir)/bes.conf.in
+bes.conf: $(top_srcdir)/configure.ac $(srcdir)/bes.conf.in $(srcdir)/bes_serial.conf.in
 
 bes_serial.conf: $(top_srcdir)/configure.ac $(srcdir)/bes_serial.conf.in
 
