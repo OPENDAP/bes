@@ -67,7 +67,7 @@ EXTRA_DIST = $(CACHE) catalog_test catalog_test_baselines bad_keys1.ini \
 	persistence_file1.txt persistence_file2.txt \
 	persistence_file3.txt persistence_file4.txt \
 	persistence_file_test.txt test_config.h.in \
-    bes.conf remote_access_test.ini
+    bes.conf.in bes.conf remote_access_test.ini
 
 DISTCLEANFILES = 
 
