@@ -55,7 +55,7 @@ test_config.h.in bes.conf.in
 
 CLEANFILES = testout test_config.h bes.conf .dodsrc 
 
-DISTCLEANFILES = *.strm *.file *.Po tmp.txt  bes.log mds_ledger.txt
+DISTCLEANFILES = *.strm *.file *.Po tmp.txt  tmp_* bes.log mds_ledger.txt
 
 BES_CONF_IN = bes.conf.in
 
