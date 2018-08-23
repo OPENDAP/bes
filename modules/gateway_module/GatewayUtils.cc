@@ -288,14 +288,32 @@ GatewayUtils::Get_tempfile_template( char *file_template )
 }
 #endif
 
+/**
+ * Look for the type of handler that can read the filename found in the \arg disp.
+ * The string \arg disp (probably from a HTTP Content-Dispoition header) has the
+ * format:
+ *
+ * ~~~xml
+ * filename[#|=]<value>[ <attribute name>[#|=]<value>]
+ * ~~~
+ *
+ * @param disp The disposition string
+ * @param type The type of the handler that can read this file or the empty
+ * string if the BES Catalog Utils cannot find a handler to read it.
+ */
 void GatewayUtils::Get_type_from_disposition(const string &disp, string &type)
 {
+    // If this function extracts a filename from disp and it matches a handler's
+    // regex using the Catalog Utils, this will be set to a non-empty value.
+    type = "";
+
     size_t fnpos = disp.find("filename");
     if (fnpos != string::npos) {
         // Got the filename attribute, now get the
-        // filename, which is after the pound sign (#)
+        // filename, which is after the pound sign (#) or the equal sign (=)
         size_t pos = disp.find("#", fnpos);
         if (pos == string::npos) pos = disp.find("=", fnpos);
+
         if (pos != string::npos) {
             // Got the filename to the end of the
             // string, now get it to either the end of
