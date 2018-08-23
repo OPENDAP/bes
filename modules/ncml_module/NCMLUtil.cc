@@ -146,6 +146,9 @@ bool NCMLUtil::toUnsignedInt(const std::string& stringVal, unsigned int& oVal)
 /**
  * Does this AttrTable have descendants that are scalar or vector attributes?
  *
+ * @todo Switch to libdap::has_dap2_attributes once libdap 3.20 is required
+ * for this code.
+ *
  * @param a The AttrTable
  * @return true if the table contains a scalar- or vector-valued attribute,
  * otherwise false.
@@ -154,15 +157,26 @@ static bool
 has_dap2_attributes(AttrTable &a)
 {
     for (AttrTable::Attr_iter i = a.attr_begin(), e = a.attr_end(); i != e; ++i) {
-        if (a.get_attr_type(i) != Attr_container)
+        if (a.get_attr_type(i) != Attr_container) {
             return true;
-        else
-            return has_dap2_attributes(*a.get_attr_table(i));
+        }
+        else if (has_dap2_attributes(*a.get_attr_table(i))) {
+            return true;
+        }
     }
 
     return false;
 }
 
+/**
+ * Does this variable, or any of its descendants, have attributes?
+ *
+ * @todo As with has_dap2_attributes(AttrTable &a), switch to the libdap version.
+ *
+ * @param btp The variable
+ * @return True if any of the variable's descendants have attributes,
+ * otherwise false.
+ */
 static bool
 has_dap2_attributes(BaseType *btp)
 {
@@ -182,7 +196,6 @@ has_dap2_attributes(BaseType *btp)
             }
         }
     }
-
     return false;
 }
 
