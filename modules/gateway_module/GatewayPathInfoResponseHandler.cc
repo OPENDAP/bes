@@ -65,7 +65,7 @@
 #define LMT  "lastModified"
 
 GatewayPathInfoResponseHandler::GatewayPathInfoResponseHandler(const string &name) :
-    BESResponseHandler(name)
+    BESResponseHandler(name), _response(0)
 {
 }
 
@@ -85,11 +85,10 @@ GatewayPathInfoResponseHandler::~GatewayPathInfoResponseHandler()
  */
 void GatewayPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
-
     BESStopWatch sw;
     if (BESISDEBUG(TIMING_LOG)) sw.start("GatewayPathInfoResponseHandler::execute", dhi.data[REQUEST_ID]);
 
-    BESDEBUG(SPI_DEBUG_KEY, "GatewayPathInfoResponseHandler::execute() - BEGIN ############################################################## BEGIN" << endl );
+    BESDEBUG(SPI_DEBUG_KEY, "GatewayPathInfoResponseHandler::execute() - BEGIN" << endl );
 
     BESInfo *info = BESInfoList::TheList()->build_info();
     _response = info;
@@ -217,7 +216,7 @@ void GatewayPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
     // end the response object
     info->end_response();
 
-    BESDEBUG(SPI_DEBUG_KEY, "GatewayPathInfoResponseHandler::execute() - END ################################################################## END" << endl );
+    BESDEBUG(SPI_DEBUG_KEY, "GatewayPathInfoResponseHandler::execute() - END" << endl );
 
     }
 

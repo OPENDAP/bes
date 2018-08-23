@@ -687,10 +687,12 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
  * @param dds DDS object
  * @throws BESInternalError if the DDS* is null or if localfile is empty.
  */
-FoDapCovJsonTransform::FoDapCovJsonTransform(libdap::DDS *dds)
-    : _dds(dds), _indent_increment("  "), xExists(false), yExists(false), zExists(false), tExists(false), isParam(false), isAxis(false), canConvertToCovJson(false), axisCount(0), parameterCount(0)
+FoDapCovJsonTransform::FoDapCovJsonTransform(libdap::DDS *dds) :
+    _dds(dds), _returnAs(""), _indent_increment("  "), atomicVals(""), currDataType(""), domainType(0),
+    xExists(false), yExists(false), zExists(false), tExists(false), isParam(false), isAxis(false),
+    canConvertToCovJson(false), axisCount(0), parameterCount(0) // not used , shapeValsCount(0)
 {
-    if(!_dds) throw BESInternalError("File out COVJSON, null DDS passed to constructor", __FILE__, __LINE__);
+    if (!_dds) throw BESInternalError("File out COVJSON, null DDS passed to constructor", __FILE__, __LINE__);
 }
 
 

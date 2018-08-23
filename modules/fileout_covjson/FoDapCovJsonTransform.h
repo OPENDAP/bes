@@ -83,7 +83,11 @@ private:
     std::vector<Axis *> axes;
     unsigned int parameterCount;
     std::vector<Parameter *> parameters;
+#if 0
+    // not used
     unsigned int shapeValsCount;
+#endif
+
     std::vector<int> shapeVals;
 
     enum domains { Grid = 0, VerticalProfile = 1, PointSeries = 2, Point = 3, CoverageCollection = 4 };
