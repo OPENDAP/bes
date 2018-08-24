@@ -96,12 +96,19 @@ H5.EnableCheckNameClashing=false
 H5.EnableAddPathAttrs=true
 
 
-# We find netCDF java has a string size limit(currently 32767). If an HDF5 string size
-# is greater than this limit, visualization tools(Panoply etc.) that depend on
+# We find netCDF java has a string size limit(currently 32767). If an HDF5 string dataset
+# has an individual element of which the size is greater than this limit, 
+# visualization tools(Panoply etc.) that depend on
 # the netCDF Java may not open the HDF5 file. So this key is set to be true to
 # skip the HDF5 string of which size is greater than 32767. Users should set this
 # key to false if that long string information is necessary or visualization clients
 # are not used.
+# Note: For the following two cases:
+# 1) The latest netCDF Java works fine if the size of an HDF5 string attribute exceeds
+# 32767. 
+# 2) Also even if the total size of an HDF5 string dataset exceeds 32767, but the 
+# individual string element size doesn't exceed 32767.
+# For the above cases, the handler will not drop the long string even this key is turned to be true.
 H5.EnableDropLongString=true
 
 # We find that occassionally NASA HDF5 products may have the attribute_FillValue datatype 
@@ -128,6 +135,11 @@ H5.EnableFillValueCheck=true
 # during the mapping from HDF5 to DAP2.
 # Also this key should only be used when the H5.EnableCF key is set to true.
 H5.CheckIgnoreObj=false
+
+# If this key is turned to be true, the handler will try to flatten the
+# the coordinate variable path stored inside the "coordinates" attribute.
+# Currently this key only takes effect for the HDF5 file that follows
+# the netCDF-4 data model when the 2-D latitude/longitude fields present.
 H5.ForceFlattenNDCoorAttr=true
 
 # Caching 
