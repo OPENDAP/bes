@@ -49,9 +49,9 @@ TemporaryFile::~TemporaryFile()
 {
     try {
         if (!close(d_fd))
-            ERROR(string("Error closing temporary file: ").append(&d_name[0]).append(": ").append(strerror(errno)));
+            ERROR("Error closing temporary file: " << d_name << ": " << strerror(errno) << endl);
         if (!unlink(&d_name[0]))
-            ERROR(string("Error closing temporary file: ").append(&d_name[0]).append(": ").append(strerror(errno)));
+            ERROR("Error closing temporary file: " << d_name << ": " << strerror(errno) << endl);
     }
     catch (...) {
         // Do nothing. This just protects against BESLog (i.e., ERROR)
