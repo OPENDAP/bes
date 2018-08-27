@@ -46,6 +46,32 @@ m4_define([_AT_BESCMD_TEST], [dnl
     AT_CLEANUP
 ])
 
+m4_define([_AT_BESCMD_SCRUB_DATES_TEST], [dnl
+
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([bescmd])
+
+    input=$1
+    baseline=$2
+    pass=$3
+    repeat=$4
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
+        REMOVE_DATE_TIME([stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
+        REMOVE_DATE_TIME([stdout])
+        AT_CHECK([diff -b -B $baseline stdout])
+        AT_XFAIL_IF([test z$pass = zxfail])
+        ])
+    AT_CLEANUP
+])
+
 dnl This PATTREN test reads a set of patterns from a file and if any
 dnl of those patterns match, the test passes. In many ways it's just
 dnl a better version of _AT_BESCMD_ERROR_TEST below
@@ -281,6 +307,11 @@ dnl END OLD. jhrg 9/21/16
 m4_define([AT_BESCMD_RESPONSE_TEST],
 [_AT_BESCMD_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])
 ])
+
+m4_define([AT_BESCMD_RESPONSE_SCRUB_DATES_TEST],
+[_AT_BESCMD_SCRUB_DATES_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])
+])
+
 
 m4_define([AT_BESCMD_REPEAT_RESPONSE_TEST],
 [_AT_BESCMD_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2], [$3])
