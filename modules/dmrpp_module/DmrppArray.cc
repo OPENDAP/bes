@@ -515,6 +515,8 @@ void DmrppArray::read_chunks_serial()
 Chunk *
 DmrppArray::find_needed_chunks(unsigned int dim, vector<unsigned int> *target_element_address, Chunk *chunk)
 {
+    BESDEBUG(dmrpp_3, __func__ << " BEGIN, dim: " << dim << endl);
+
     // The size, in elements, of each of the chunk's dimensions.
     const vector<unsigned int> &chunk_shape = get_chunk_dimension_sizes();
 

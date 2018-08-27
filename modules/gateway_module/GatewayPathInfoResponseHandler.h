@@ -44,34 +44,24 @@
  * @see BESContainer
  * @see BESTransmitter
  */
-class GatewayPathInfoResponseHandler : public BESResponseHandler
-{
+class GatewayPathInfoResponseHandler: public BESResponseHandler {
 private:
     BESInfo *_response;
-public:
-    void eval_resource_path(
-        const string &resource_path,
-        const string &catalog_root,
-        const bool follow_sym_links,
-        string &validPath,
-        bool &isFile,
-        bool &isDir,
-        long long &size,
-        long long &lastModifiedTime,
-        bool &canRead,
-        string &remainder);
 
 public:
-    GatewayPathInfoResponseHandler( const string &name );
-    virtual	~GatewayPathInfoResponseHandler( void ) ;
+    void eval_resource_path(const string &resource_path, const string &catalog_root, const bool follow_sym_links, string &validPath, bool &isFile,
+        bool &isDir, long long &size, long long &lastModifiedTime, bool &canRead, string &remainder);
 
-    virtual void		execute( BESDataHandlerInterface &dhi ) ;
-    virtual void		transmit( BESTransmitter *transmitter,
-                                          BESDataHandlerInterface &dhi ) ;
+public:
+    GatewayPathInfoResponseHandler(const string &name);
+    virtual ~GatewayPathInfoResponseHandler(void);
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void execute(BESDataHandlerInterface &dhi);
+    virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
 
-    static BESResponseHandler *GatewayPathInfoResponseBuilder( const string &name ) ;
+    virtual void dump(ostream &strm) const;
+
+    static BESResponseHandler *GatewayPathInfoResponseBuilder(const string &name);
 };
 
 #endif // I_GatewayPathInfoResponseHandler_h

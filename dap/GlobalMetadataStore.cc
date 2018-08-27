@@ -24,7 +24,7 @@
 
 #include "config.h"
 
-#include <fcntl.h>
+#include <fcntl.h>  // for posix_advise
 #include <unistd.h>
 
 #include <cerrno>
@@ -125,9 +125,9 @@ void GlobalMetadataStore::transfer_bytes(int fd, ostream &os)
 
     char buf[BUFFER_SIZE + 1];
 
-    while(size_t bytes_read = read(fd, buf, BUFFER_SIZE))
+    while(int bytes_read = read(fd, buf, BUFFER_SIZE))
     {
-        if(bytes_read == (size_t)-1)
+        if(bytes_read == -1)
             throw BESInternalError("Could not read dds from the metadata store.", __FILE__, __LINE__);
         if (!bytes_read)
             break;
