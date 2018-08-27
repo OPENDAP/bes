@@ -32,7 +32,7 @@ CMR_SRC = CmrApi.cc CmrCatalog.cc Granule.cc \
 
 CMR_HDR = CmrApi.h CmrError.h CmrCatalog.h Granule.h \
 	CmrCache.h curl_utils.h rjson_utils.h RemoteHttpResource.h \
-	CmrModule.h CmrUtils.h CmrContainer.h CmrContainerStorage.h
+	CmrModule.h CmrUtils.h CmrContainer.h CmrContainerStorage.h CmrNames.h
 	
 
 EXTRA_DIST = rapidjson cmr.conf.in

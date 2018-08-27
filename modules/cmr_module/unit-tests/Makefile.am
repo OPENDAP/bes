@@ -25,7 +25,7 @@ DISTCLEANFILES = test_config.h *.Po
 
 CLEANFILES = bes.conf *.dbg *.log 
 
-EXTRA_DIST = test_config.h.in
+EXTRA_DIST = test_config.h.in bes.conf.in
 
 check_PROGRAMS = $(UNIT_TESTS)
 
