@@ -83,7 +83,7 @@ OBJS = ../RemoteHttpResource.o \
 ../CmrUtils.o \
 ../CmrApi.o \
 ../Granule.o \
-../CMRCatalog.o 
+../CmrCatalog.o 
 
 CmrApiTest_SOURCES = CmrApiTest.cc
 CmrApiTest_LDADD = $(OBJS) $(LIBADD)
