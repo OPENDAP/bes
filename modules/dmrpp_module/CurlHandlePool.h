@@ -126,9 +126,8 @@ public:
  * Clients of this class must manage the CURL easy handles
  */
 class dmrpp_multi_handle {
-    // THese are 'weak' pointers; they should not be deleted by this class
+    // TH\hese are 'weak' pointers; they should not be deleted by this class
     std::vector<dmrpp_easy_handle *> d_multi;
-    // *** CURLM *d_multi;
 
 public:
     dmrpp_multi_handle()
@@ -137,9 +136,12 @@ public:
 
     virtual ~dmrpp_multi_handle()
     {
+#if 0
         for (unsigned int i = 0; i < d_multi.size(); ++i) {
             d_multi[i]->~dmrpp_easy_handle();
         }
+#endif
+
     }
 
     /**
@@ -152,7 +154,6 @@ public:
      */
     void add_easy_handle(dmrpp_easy_handle *eh)
     {
-        // *** curl_multi_add_handle(d_multi, eh->d_handle);
         d_multi.push_back(eh);
     }
 

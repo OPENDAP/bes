@@ -28,7 +28,7 @@
 
 #include <curl/curl.h>
 
-#define HAVE_CURL_MULTI
+//#define HAVE_CURL_MULTI
 
 #ifdef HAVE_CURL_MULTI
 #include <curl/multi.h>
@@ -255,6 +255,9 @@ void dmrpp_multi_handle::read_data()
             throw e;
         }
     }
+
+    // Now remove the easy_handles, mimicking the behavior when using the real Multi API
+    d_multi.clear();
 #endif
 }
 
