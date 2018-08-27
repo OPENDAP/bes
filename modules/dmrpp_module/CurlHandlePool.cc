@@ -27,9 +27,14 @@
 #include <sstream>
 
 #include <curl/curl.h>
-#ifdef HAVE_CIRL_MULTI
+
+#define HAVE_CURL_MULTI
+
+#ifdef HAVE_CURL_MULTI
 #include <curl/multi.h>
 #endif
+
+#include "util.h"   // long_to_string()
 
 #include "BESDebug.h"
 #include "BESInternalError.h"
@@ -111,6 +116,22 @@ static void evaluate_curl_response(CURL* eh)
     }
 }
 
+#ifndef HAVE_CURL_MULTI
+static void *easy_handle_read_data(void *handle)
+{
+    dmrpp_easy_handle *eh = reinterpret_cast<dmrpp_easy_handle*>(handle);
+
+    try {
+        eh->read_data();
+        pthread_exit(NULL);
+    }
+    catch (BESError &e) {
+        string *error = new string(e.get_message().append(": ").append(e.get_file())
+            .append(":").append(libdap::long_to_string(e.get_line())));
+        pthread_exit(error);
+    }
+}
+#endif
 
 /**
  * @brief This is the read_data() method for serial transfers
@@ -136,10 +157,12 @@ void dmrpp_easy_handle::read_data()
 /**
  * @brief The read_data() method for parallel transfers
  *
- * @todo Make an alternative version use pthreads
+ * This uses either the CURL Multi API or pthreads to read N
+ * dmrpp_easy_handle instances in parallel.
  */
 void dmrpp_multi_handle::read_data()
 {
+#ifdef HAVE_CURL_MULTI
     int still_running = 0;
     CURLMcode mres = curl_multi_perform(d_multi, &still_running);
     if (mres != CURLM_OK)
@@ -198,6 +221,41 @@ void dmrpp_multi_handle::read_data()
             throw BESInternalError("Error getting HTTP or FILE responses.", __FILE__, __LINE__);
         }
     }
+#else
+    // Note: It's the responsibility of the caller to make sure that no more than
+    // d_max_parallel_transfers are added to the 'multi' handle.
+
+    // Start the processing pipelines
+    pthread_t thread[d_multi.size()];
+    unsigned int threads = 0;
+    for (unsigned int i = 0; i < d_multi.size(); ++i) {
+        int status = pthread_create(&thread[i], NULL, easy_handle_read_data, (void*) d_multi[i]);
+        if (status == 0) {
+            ++threads;
+        }
+        else {
+            ostringstream oss("Could not start process_one_chunk_unconstrained thread for chunk ");
+            oss << i << ": " << strerror(status);
+            throw BESInternalError(oss.str(), __FILE__, __LINE__);
+        }
+    }
+
+    // Now join the child threads.
+    for (unsigned int i = 0; i < threads; ++i) {
+        string *error;
+        int status = pthread_join(thread[i], (void**) &error);
+        if (status != 0) {
+            ostringstream oss("Could not join process_one_chunk_unconstrained thread for chunk ");
+            oss << i << ": " << strerror(status);
+            throw BESInternalError(oss.str(), __FILE__, __LINE__);
+        }
+        else if (error != 0) {
+            BESInternalError e(*error, __FILE__, __LINE__);
+            delete error;
+            throw e;
+        }
+    }
+#endif
 }
 
 /**

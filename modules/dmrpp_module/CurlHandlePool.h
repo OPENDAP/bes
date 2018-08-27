@@ -30,10 +30,10 @@
 #include <pthread.h>
 
 #include <curl/curl.h>
-#ifdef HAVE_CIRL_MULTI
+
+#ifdef HAVE_CURL_MULTI
 #include <curl/multi.h>
 #endif
-
 
 #include "BESInternalError.h"
 
@@ -92,7 +92,7 @@ public:
     void read_data();
 };
 
-#ifdef HAVE_CIRL_MULTI
+#ifdef HAVE_CURL_MULTI
 /**
  * @brief Encapsulate a libcurl multi handle.
  */
@@ -117,28 +117,43 @@ public:
 
     void read_data();
 };
+
 #else
+
 /**
- * @brief Encapsulate a libcurl multi handle.
+ * @brief If there's no multi API in libcurl, provide something similar
+ *
+ * Clients of this class must manage the CURL easy handles
  */
 class dmrpp_multi_handle {
-    vector<dmrpp_easy_handle *> d_easy_handles;
-    CURLM *d_multi;
+    // THese are 'weak' pointers; they should not be deleted by this class
+    std::vector<dmrpp_easy_handle *> d_multi;
+    // *** CURLM *d_multi;
 
 public:
     dmrpp_multi_handle()
     {
-        d_multi = curl_multi_init();
     }
 
-    ~dmrpp_multi_handle()
+    virtual ~dmrpp_multi_handle()
     {
-        curl_multi_cleanup(d_multi);
+        for (unsigned int i = 0; i < d_multi.size(); ++i) {
+            d_multi[i]->~dmrpp_easy_handle();
+        }
     }
 
+    /**
+     * @brief Add an Easy Handle to a Multi Handle object.
+     *
+     * @note It is the responsibility of the caller to make sure there are not
+     * too many handles added to the 'multi handle' object.
+     *
+     * @param eh The CURL easy handle to add
+     */
     void add_easy_handle(dmrpp_easy_handle *eh)
     {
-        curl_multi_add_handle(d_multi, eh->d_handle);
+        // *** curl_multi_add_handle(d_multi, eh->d_handle);
+        d_multi.push_back(eh);
     }
 
     void read_data();
