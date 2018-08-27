@@ -27,7 +27,9 @@
 #include <sstream>
 
 #include <curl/curl.h>
+#ifdef HAVE_CIRL_MULTI
 #include <curl/multi.h>
+#endif
 
 #include "BESDebug.h"
 #include "BESInternalError.h"
@@ -133,6 +135,8 @@ void dmrpp_easy_handle::read_data()
 
 /**
  * @brief The read_data() method for parallel transfers
+ *
+ * @todo Make an alternative version use pthreads
  */
 void dmrpp_multi_handle::read_data()
 {

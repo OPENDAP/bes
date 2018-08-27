@@ -30,7 +30,10 @@
 #include <pthread.h>
 
 #include <curl/curl.h>
+#ifdef HAVE_CIRL_MULTI
 #include <curl/multi.h>
+#endif
+
 
 #include "BESInternalError.h"
 
@@ -51,8 +54,7 @@ private:
     Lock(const Lock &rhs);
 
 public:
-    Lock(pthread_mutex_t &lock) :
-        m_mutex(lock)
+    Lock(pthread_mutex_t &lock) : m_mutex(lock)
     {
         int status = pthread_mutex_lock(&m_mutex);
         if (status != 0) throw BESInternalError("Could not lock in CurlHandlePool", __FILE__, __LINE__);
@@ -90,11 +92,7 @@ public:
     void read_data();
 };
 
-#if 0
-long evaluate_curl_response(CURL* eh);
-#endif
-
-
+#ifdef HAVE_CIRL_MULTI
 /**
  * @brief Encapsulate a libcurl multi handle.
  */
@@ -119,6 +117,34 @@ public:
 
     void read_data();
 };
+#else
+/**
+ * @brief Encapsulate a libcurl multi handle.
+ */
+class dmrpp_multi_handle {
+    vector<dmrpp_easy_handle *> d_easy_handles;
+    CURLM *d_multi;
+
+public:
+    dmrpp_multi_handle()
+    {
+        d_multi = curl_multi_init();
+    }
+
+    ~dmrpp_multi_handle()
+    {
+        curl_multi_cleanup(d_multi);
+    }
+
+    void add_easy_handle(dmrpp_easy_handle *eh)
+    {
+        curl_multi_add_handle(d_multi, eh->d_handle);
+    }
+
+    void read_data();
+};
+
+#endif
 
 /**
  * Get a CURL easy handle, assign a URL and other values, use the handler, return
@@ -132,6 +158,7 @@ private:
     unsigned int d_max_easy_handles;
 
     std::vector<dmrpp_easy_handle *> d_easy_handles;
+
     dmrpp_multi_handle *d_multi_handle;
 
     pthread_mutex_t d_get_easy_handle_mutex;
@@ -142,7 +169,6 @@ public:
     CurlHandlePool() : d_multi_handle(0)
     {
         d_max_easy_handles = DmrppRequestHandler::d_max_parallel_transfers;
-
         d_multi_handle = new dmrpp_multi_handle();
 
         for (unsigned int i = 0; i < d_max_easy_handles; ++i) {
