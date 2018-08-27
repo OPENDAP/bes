@@ -1,4 +1,4 @@
-What's new for Hyrax 1.14.1
+What's new for Hyrax 1.15.0
 ----------------------------
 CF option:
 1. Enhance the support of handling the scale_factor and add_offset to follow the CF. The scale_factor and
