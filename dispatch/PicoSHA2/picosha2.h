@@ -142,6 +142,7 @@ void hash256_block(RaIter1 message_digest, RaIter2 first, RaIter2 last) {
 template <typename InIter>
 void output_hex(InIter first, InIter last, std::ostream& os) {
     os.setf(std::ios::hex, std::ios::basefield);
+    char orig_fill_char = os.fill();
     while (first != last) {
         os.width(2);
         os.fill('0');
@@ -149,6 +150,7 @@ void output_hex(InIter first, InIter last, std::ostream& os) {
         ++first;
     }
     os.setf(std::ios::dec, std::ios::basefield);
+    os.fill(orig_fill_char);
 }
 
 template <typename InIter>

@@ -234,20 +234,19 @@ template<typename T>
 void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array *a, string indent, bool sendData)
 {
     string childindent = indent + _indent_increment;
-    bool *axisRetrieved = new bool;
-    bool *parameterRetrieved = new bool;
-    *axisRetrieved = false;
-    *parameterRetrieved = false;
+    bool axisRetrieved = false;
+    bool parameterRetrieved = false;
+
     currDataType = a->var()->type_name();
 
-    getAttributes(strm, a->get_attr_table(), a->name(), axisRetrieved, parameterRetrieved);
+    getAttributes(strm, a->get_attr_table(), a->name(), &axisRetrieved, &parameterRetrieved);
 
     // a->print_val(*strm, "\n", true); // For testing purposes
 
     // sendData = false; // For testing purposes
 
     // If we are dealing with an Axis
-    if((*axisRetrieved == true) && (*parameterRetrieved == false)) {
+    if((axisRetrieved == true) && (parameterRetrieved == false)) {
         struct Axis *currAxis;
         currAxis = axes[axisCount - 1];
 
@@ -284,7 +283,7 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
     }
 
     // If we are dealing with a Parameter
-    else if(*axisRetrieved == false && *parameterRetrieved == true) {
+    else if(axisRetrieved == false && parameterRetrieved == true) {
         struct Parameter *currParameter;
         currParameter = parameters[parameterCount - 1];
 
@@ -343,9 +342,6 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
             currParameter->values += "\"values\": []";
         }
     }
-
-    free(axisRetrieved);
-    free(parameterRetrieved);
 }
 
 
@@ -691,10 +687,12 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
  * @param dds DDS object
  * @throws BESInternalError if the DDS* is null or if localfile is empty.
  */
-FoDapCovJsonTransform::FoDapCovJsonTransform(libdap::DDS *dds)
-    : _dds(dds), _indent_increment("  "), xExists(false), yExists(false), zExists(false), tExists(false), isParam(false), isAxis(false), canConvertToCovJson(false), axisCount(0), parameterCount(0)
+FoDapCovJsonTransform::FoDapCovJsonTransform(libdap::DDS *dds) :
+    _dds(dds), _returnAs(""), _indent_increment("  "), atomicVals(""), currDataType(""), domainType(0),
+    xExists(false), yExists(false), zExists(false), tExists(false), isParam(false), isAxis(false),
+    canConvertToCovJson(false), axisCount(0), parameterCount(0) // not used , shapeValsCount(0)
 {
-    if(!_dds) throw BESInternalError("File out COVJSON, null DDS passed to constructor", __FILE__, __LINE__);
+    if (!_dds) throw BESInternalError("File out COVJSON, null DDS passed to constructor", __FILE__, __LINE__);
 }
 
 

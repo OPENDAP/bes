@@ -493,6 +493,36 @@ void DmrppArray::read_chunks_serial()
 Chunk *
 DmrppArray::find_needed_chunks(unsigned int dim, vector<unsigned int> *target_element_address, Chunk *chunk)
 {
+#if 0
+<<<<<<< HEAD
+BESDEBUG("dmrpp", "DmrppArray::" << __func__ <<"() BEGIN" << endl);
+
+int still_running;
+int repeats = 0;
+long long lap_counter = 0;  // TODO Remove or ... see below
+CURLMcode mcode;
+
+do {
+    int numfds;
+
+    lap_counter++;        // TODO make this depend on BESDEBG if we really need it
+    BESDEBUG("dmrpp", "DmrppArray::" << __func__ <<"() Calling curl_multi_perform()" << endl);
+    // Read from one or more handles and get the number 'still running'.
+    // This returns when there's currently no more to read
+    mcode = curl_multi_perform(multi_handle, &still_running);
+    BESDEBUG("dmrpp", "DmrppArray::" << __func__ <<"() Completed curl_multi_perform() mcode: " << mcode << endl);
+
+    if (mcode == CURLM_OK) {
+        /* wait for activity, timeout or "nothing" */
+        BESDEBUG("dmrpp", "DmrppArray::" << __func__ <<"() Calling curl_multi_wait()" << endl);
+        // Block until one or more handles have new data to be read or until a timer expires.
+        // The timer is set to 1000 milliseconds. Return the numer of handles ready for reading.
+        mcode = curl_multi_wait(multi_handle, NULL, 0, 1000, &numfds);
+        BESDEBUG("dmrpp", "DmrppArray::" << __func__ <<"() Completed curl_multi_wait() mcode: " << mcode << endl);
+    }
+    =======
+#endif
+
     BESDEBUG(dmrpp_3, __func__ << " BEGIN, dim: " << dim << endl);
 
     // The size, in elements, of each of the chunk's dimensions.
