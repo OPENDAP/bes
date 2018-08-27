@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <response reqID="[thread:http-nio-8080-exec-4-42][bes_client:/-2]" xmlns="http://xml.opendap.org/ns/bes/1.0#">
     <showNode>
-        <node catalog="" count="39" lastModified="" name="/C1276812863-GES_DISC/temporal">
+        <node count="39" lastModified="" name="/CMR/C1276812863-GES_DISC/temporal">
             <item lastModified="2018-07-26T02:55:39UTC" name="1980" type="node"/>
             <item lastModified="2018-07-26T02:55:39UTC" name="1981" type="node"/>
             <item lastModified="2018-07-26T02:55:39UTC" name="1982" type="node"/>
