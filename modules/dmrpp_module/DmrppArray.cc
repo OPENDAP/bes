@@ -940,7 +940,15 @@ void DmrppArray::read_chunks_unconstrained()
         while (threads > 0) {
             unsigned char tid;   // bytes can be written atomically
             // Block here until a child thread writes to the pipe, then read the byte
-            ::read(fds[0], &tid, sizeof(tid));
+            int bytes = ::read(fds[0], &tid, sizeof(tid));
+            if (bytes != sizeof(tid))
+                throw BESInternalError(string("Could not read the thread id: ").append(strerror(errno)), __FILE__, __LINE__);
+
+            if (!(tid >= 0 && tid < DmrppRequestHandler::d_max_parallel_transfers)) {
+                ostringstream oss("Invalid thread id read after thread exit: ");
+                oss << tid;
+                throw BESInternalError(oss.str(), __FILE__, __LINE__);
+            }
 
             string *error;
             int status = pthread_join(thread[(unsigned int)tid], (void**)&error);
