@@ -27,6 +27,8 @@
 #include <string>
 #include <vector>
 
+#define USE_PTHREADS 1
+
 namespace dmrpp {
 
 // Callback function used by chunk readers
@@ -41,6 +43,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data);
 class Chunk {
 private:
     std::string d_data_url;
+    std::string d_query_marker;
     unsigned long long d_size;
     unsigned long long d_offset;
 
@@ -55,8 +58,9 @@ private:
     bool d_is_read;
     bool d_is_inflated;
 
-    void add_tracking_query_param(std::string& data_access_url);
+    static const std::string tracking_context;
 
+    friend class ChunkTest;
     friend class DmrppCommonTest;
 
 protected:
@@ -73,6 +77,7 @@ protected:
         d_size = bs.d_size;
         d_offset = bs.d_offset;
         d_data_url = bs.d_data_url;
+        d_query_marker = bs.d_query_marker;
         d_chunk_position_in_array = bs.d_chunk_position_in_array;
     }
 
@@ -80,9 +85,15 @@ public:
 
     /**
      * @brief Get an empty chunk
+     *
+     * @note This constructor does not read the Query String marker from the BES
+     * context system. You must call Chunk::add_tracking_query_param() if you
+     * want that information added with Chunks created using this constructor.
+     *
+     * @see Chunk::add_tracking_query_param()
      */
     Chunk() :
-        d_data_url(""), d_size(0), d_offset(0), d_bytes_read(0), d_read_buffer(0),
+        d_data_url(""), d_query_marker(""), d_size(0), d_offset(0), d_bytes_read(0), d_read_buffer(0),
         d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
     {
     }
@@ -97,9 +108,10 @@ public:
      * in an Array. Has the syntax '[1,2,3,4]'.
      */
     Chunk(const std::string &data_url, unsigned long long size, unsigned long long offset, std::string pia_str = "") :
-        d_data_url(data_url), d_size(size), d_offset(offset), d_bytes_read(0), d_read_buffer(0),
+        d_data_url(data_url), d_query_marker(""), d_size(size), d_offset(offset), d_bytes_read(0), d_read_buffer(0),
         d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
     {
+        add_tracking_query_param();
         set_position_in_array(pia_str);
     }
 
@@ -113,9 +125,10 @@ public:
      * of unsigned ints.
      */
     Chunk(const std::string &data_url, unsigned long long size, unsigned long long offset, const std::vector<unsigned int> &pia_vec) :
-        d_data_url(data_url), d_size(size), d_offset(offset), d_bytes_read(0), d_read_buffer(0),
+        d_data_url(data_url), d_query_marker(""), d_size(size), d_offset(offset), d_bytes_read(0), d_read_buffer(0),
         d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
     {
+        add_tracking_query_param();
         set_position_in_array(pia_vec);
     }
 
@@ -135,8 +148,7 @@ public:
     /// jhrg 4/10/18
     Chunk &operator=(const Chunk &rhs)
     {
-        if (this == &rhs)
-        return *this;
+        if (this == &rhs) return *this;
 
         _duplicate(rhs);
 
@@ -150,6 +162,7 @@ public:
     {
         return d_size;
     }
+
     /**
      * @brief Get the offset to this Chunk's data block
      */
@@ -163,8 +176,16 @@ public:
      */
     virtual std::string get_data_url() const
     {
+        // A conditional call to void Chunk::add_tracking_query_param()
+        // here for the NASA cost model work THG's doing. jhrg 8/7/18
+
+        if (!d_query_marker.empty()) {
+            return d_data_url + d_query_marker;
+        }
+
         return d_data_url;
     }
+
     /**
      * @brief Get the data url string for this Chunk's data block
      */
@@ -245,19 +266,27 @@ public:
         return d_read_buffer_size;
     }
 
+    /**
+     * @return The chunk's position in the array, as a vector of ints.
+     */
     virtual const std::vector<unsigned int> &get_position_in_array() const
     {
         return d_chunk_position_in_array;
     }
+
+    virtual void add_tracking_query_param();
 
     virtual void set_position_in_array(const std::string &pia);
     virtual void set_position_in_array(const std::vector<unsigned int> &pia);
 
     virtual void read_chunk();
 
-    void inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width);
+    virtual void inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width);
 
     virtual void set_is_read(bool state) { d_is_read = state; }
+
+    virtual bool get_is_inflated() const { return d_is_inflated; }
+    virtual void set_is_inflated(bool state) { d_is_inflated = state; }
 
     virtual std::string get_curl_range_arg_string();
 
@@ -265,6 +294,23 @@ public:
 
     virtual std::string to_string() const;
 };
+
+#if 0
+/// Chunk data decompression function for use with pthreads
+struct inflate_chunk_args {
+    Chunk *chunk;
+    bool deflate;
+    bool shuffle;
+    unsigned int chunk_size;
+    unsigned int elem_width;
+
+    inflate_chunk_args(Chunk *c, bool d, bool s, unsigned int c_size, unsigned int e_size):
+    chunk(c), deflate(d), shuffle(s), chunk_size(c_size), elem_width(e_size) {}
+};
+
+void *inflate_chunk(void *args);
+#endif
+
 
 } // namespace dmrpp
 

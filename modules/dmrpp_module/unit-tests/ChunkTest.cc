@@ -28,34 +28,40 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <BESError.h>
-#include <BESDebug.h>
+#include <GetOpt.h>
+#include <util.h>
+#include <debug.h>
+
+#include "BESContextManager.h"
+#include "BESError.h"
+#include "BESDebug.h"
 
 #include "Chunk.h"
 
-#include "GetOpt.h"
 #include "test_config.h"
-#include "util.h"
 
 using namespace libdap;
 
 static bool debug = false;
 static bool bes_debug = false;
 
+#undef DBG
+#define DBG(x) do { if (debug) x; } while(false)
+
 namespace dmrpp {
 
-class DmrppCommonTest: public CppUnit::TestFixture {
+class ChunkTest: public CppUnit::TestFixture {
 private:
     Chunk d_chunk;
 
 public:
     // Called once before everything gets tested
-    DmrppCommonTest()
+    ChunkTest()
     {
     }
 
     // Called at the end of the test
-    ~DmrppCommonTest()
+    ~ChunkTest()
     {
     }
 
@@ -114,7 +120,89 @@ public:
         CPPUNIT_FAIL("set_position_in_array() should throw on bad values");
     }
 
-    CPPUNIT_TEST_SUITE( DmrppCommonTest );
+    void add_tracking_query_param_test()
+    {
+        CPPUNIT_ASSERT(d_chunk.d_query_marker.empty());
+    }
+
+    void add_tracking_query_param_test_2()
+    {
+        CPPUNIT_ASSERT(Chunk::tracking_context == "cloudydap");
+    }
+
+    void add_tracking_query_param_test_3()
+    {
+        BESContextManager::TheManager()->set_context("cloudydap", "request_id");
+        // add_tracking_query_param() only works with S3 URLs. Bug? jhrg 8/9/18
+        d_chunk.set_data_url("http://s3.amazonaws.com/somewhereovertherainbow");
+
+        d_chunk.add_tracking_query_param();
+
+        CPPUNIT_ASSERT(!d_chunk.d_query_marker.empty());
+        DBG(cerr << "d_chunk.d_query_marker: " << d_chunk.d_query_marker << endl);
+        CPPUNIT_ASSERT(d_chunk.d_query_marker == "?cloudydap=request_id");
+    }
+
+    void add_tracking_query_param_test_4()
+    {
+        BESContextManager::TheManager()->set_context("cloudydap", "request_id");
+
+        // add_tracking_query_param() only works with S3 URLs. Bug? jhrg 8/9/18
+        d_chunk.set_data_url("http://s3.amazonaws.com/somewhereovertherainbow");
+
+        d_chunk.add_tracking_query_param();
+
+        string data_url = d_chunk.get_data_url();
+
+        DBG(cerr << "data_url: " << data_url << endl);
+        CPPUNIT_ASSERT(!data_url.empty());
+        CPPUNIT_ASSERT(data_url == "http://s3.amazonaws.com/somewhereovertherainbow?cloudydap=request_id");
+    }
+
+    void add_tracking_query_param_test_4_1()
+    {
+       // An S3 URL, but no context.
+        BESContextManager::TheManager()->unset_context("cloudydap");   //>set_context("cloudydap", "request_id");
+        d_chunk.set_data_url("http://s3.amazonaws.com/somewhereovertherainbow");
+        d_chunk.add_tracking_query_param();
+
+        CPPUNIT_ASSERT(d_chunk.d_query_marker.empty());
+    }
+
+    // Test the non-default ctor
+    void add_tracking_query_param_test_5()
+    {
+        BESContextManager::TheManager()->set_context("cloudydap", "request_id");
+
+        auto_ptr<Chunk> l_chunk(new Chunk("http://s3.amazonaws.com/somewhereovertherainbow", 100, 10, ""));
+
+        CPPUNIT_ASSERT(!l_chunk->d_query_marker.empty());
+        DBG(cerr << "l_chunk->d_query_marker: " << l_chunk->d_query_marker << endl);
+        CPPUNIT_ASSERT(l_chunk->d_query_marker == "?cloudydap=request_id");
+
+        string data_url = l_chunk->get_data_url();
+
+        DBG(cerr << "data_url: " << data_url << endl);
+        CPPUNIT_ASSERT(!data_url.empty());
+        CPPUNIT_ASSERT(data_url == "http://s3.amazonaws.com/somewhereovertherainbow?cloudydap=request_id");
+    }
+
+    void add_tracking_query_param_test_5_1()
+    {
+        // No context, S3 URL, non-default ctor
+        BESContextManager::TheManager()->unset_context("cloudydap");
+        auto_ptr<Chunk> l_chunk(new Chunk("http://s3.amazonaws.com/somewhereovertherainbow", 100, 10, ""));
+
+        CPPUNIT_ASSERT(l_chunk->d_query_marker.empty());
+
+        string data_url = l_chunk->get_data_url();
+
+        DBG(cerr << "data_url: " << data_url << endl);
+        CPPUNIT_ASSERT(!data_url.empty());
+        CPPUNIT_ASSERT(data_url == "http://s3.amazonaws.com/somewhereovertherainbow");
+    }
+
+   CPPUNIT_TEST_SUITE( ChunkTest );
 
     CPPUNIT_TEST(set_position_in_array_test);
     CPPUNIT_TEST(set_position_in_array_test_2);
@@ -125,10 +213,18 @@ public:
 
     CPPUNIT_TEST_FAIL(set_position_in_array_test_6);
 
+    CPPUNIT_TEST(add_tracking_query_param_test);
+    CPPUNIT_TEST(add_tracking_query_param_test_2);
+    CPPUNIT_TEST(add_tracking_query_param_test_3);
+    CPPUNIT_TEST(add_tracking_query_param_test_4);
+    CPPUNIT_TEST(add_tracking_query_param_test_4_1);
+    CPPUNIT_TEST(add_tracking_query_param_test_5);
+    CPPUNIT_TEST(add_tracking_query_param_test_5_1);
+
     CPPUNIT_TEST_SUITE_END();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(DmrppCommonTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(ChunkTest);
 
 } // namespace dmrpp
 
@@ -162,7 +258,7 @@ int main(int argc, char*argv[])
     else {
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            test = dmrpp::DmrppCommonTest::suite()->getName().append("::").append(argv[i]);
+            test = dmrpp::ChunkTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
             ++i;
         }

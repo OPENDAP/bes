@@ -120,7 +120,7 @@ void GlobalMetadataStore::transfer_bytes(int fd, ostream &os)
     /* Advise the kernel of our access pattern.  */
     int status = posix_fadvise(fd, 0, 0, POSIX_FADV_SEQUENTIAL);
     if (status != 0)
-        LOG("Error calling posix_advise() in the GlobalMetadataStore: " << strerror(status) << endl);
+        ERROR("Error calling posix_advise() in the GlobalMetadataStore: " << strerror(status) << endl);
 #endif
 
     char buf[BUFFER_SIZE + 1];
@@ -156,7 +156,7 @@ void GlobalMetadataStore::insert_xml_base(int fd, ostream &os, const string &xml
     /* Advise the kernel of our access pattern.  */
     int status = posix_fadvise(fd, 0, 0, POSIX_FADV_SEQUENTIAL);
     if (status != 0)
-        LOG("Error calling posix_advise() in the GlobalMetadataStore: " << strerror(status) << endl);
+        ERROR("Error calling posix_advise() in the GlobalMetadataStore: " << strerror(status) << endl);
 #endif
 
     char buf[BUFFER_SIZE + 1];

@@ -5,7 +5,6 @@ AM_CPPFLAGS = $(DAP_CFLAGS) $(BES_CPPFLAGS) -I$(top_srcdir)/dap -I$(top_srcdir)/
 AM_CXXFLAGS = 
 
 bin_PROGRAMS = build_dmrpp
-noinst_PROGRAMS = endian_convert multiball keepalive2
 
 build_dmrpp_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)/modules/dmrpp_module \
 -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
@@ -25,20 +24,24 @@ build_dmrpp_SOURCES = build_dmrpp.cc
 
 DMRPP_MODULE = $(top_builddir)/modules/dmrpp_module/.libs/libdmrpp_module.a
 BESDAP_MODULE = $(top_builddir)/dap/.libs/libdap_module.a
+
 build_dmrpp_LDADD = $(HDF5_MODULE) $(DMRPP_MODULE) $(BES_DISPATCH_LIB) $(BESDAP_MODULE) $(BES_EXTRA_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
 
-endian_convert_SOURCES = endian_convert.cc
-endian_convert_LDADD = $(DAP_SERVER_LIBS)
+# noinst_PROGRAMS = endian_convert multiball keepalive2
 
-multiball_SOURCES = multiball.cc 
-multiball_LDADD = $(DAP_SERVER_LIBS) $(CURL_LIBS)
+# endian_convert_SOURCES = endian_convert.cc
+# endian_convert_LDADD = $(DAP_SERVER_LIBS)
 
-keepalive2_SOURCES = keepalive2.cc 
-keepalive2_LDADD = $(DAP_SERVER_LIBS) $(CURL_LIBS) $(PTHREAD_LIBS)
+# multiball_SOURCES = multiball.cc 
+# multiball_LDADD = $(DAP_SERVER_LIBS) $(CURL_LIBS)
 
-noinst_SCRIPTS = keepalive_stats.sh mtest.sh shreddit.sh test_reuse.sh \
-get_dmrpp.sh
+# keepalive2_SOURCES = keepalive2.cc 
+# keepalive2_LDADD = $(DAP_SERVER_LIBS) $(CURL_LIBS) $(PTHREAD_LIBS)
+
+# noinst_SCRIPTS = keepalive_stats.sh mtest.sh shreddit.sh test_reuse.sh
+
+noinst_SCRIPTS = get_dmrpp.sh
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
@@ -55,11 +58,7 @@ EXTRA_PROGRAMS =
 
 noinst_DATA = mds_for_tests
 
-EXTRA_DIST = keepalive_stats.sh mtest.sh shreddit.sh test_reuse.sh \
-mkChunkedTestData.py mkChunkedNewTypes.py get_dmrpp.sh README \
-chunked_compund.bescmd chunked_enum.bescmd chunked_opaque.bescmd \
-chunked_scalar_string.bescmd chunked_string_array.bescmd \
-nc4_group_atomic.bescmd ntypes.bescmd dmrpp mds_for_tests
+EXTRA_DIST = get_dmrpp.sh README dmrpp mds_for_tests s3 s3_data old
 
 CLEANFILES = *~
 

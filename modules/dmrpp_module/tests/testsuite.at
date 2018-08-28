@@ -33,6 +33,7 @@ AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([contiguous/coads_climatology.dods])
 dnl Constrained data responses
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/coads_climatology2.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([contiguous/coads_climatology2.dods])
+
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/grid_2_2d.h5.2.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([contiguous/grid_2_2d.h5.2.dods])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/grid_2_2d.h5.3.dap])
@@ -48,6 +49,7 @@ AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([contiguous/http_t_int_scalar.h5.dods])
 AT_BESCMD_RESPONSE_TEST([contiguous/http_d_int.h5.dmr])
 AT_BESCMD_RESPONSE_TEST([contiguous/http_d_int.h5.das])
 AT_BESCMD_RESPONSE_TEST([contiguous/http_d_int.h5.dds])
+
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/http_d_int.h5.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([contiguous/http_d_int.h5.dods])
 
@@ -169,3 +171,18 @@ AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/ntypes.h5.dods], [xfail])
 
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([new_types/nc4_group_atomic.h5.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/nc4_group_atomic.h5.dods])
+
+dnl Test using AIRS data
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([s3/airs_1_local.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([s3/airs_1.dap])
+
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([s3/airs_2_local.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([s3/airs_2.dap])
+
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([s3/airs_3_local.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([s3/airs_3.dap])
+
+dnl Getting the whole file is tedious...
+dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([s3/airs_3_local.dap])
+dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([s3/airs_3.dap])
+

@@ -32,7 +32,7 @@
 #include "DmrppCommon.h"
 
 // The 'read_serial()' method is more closely related to the original code
-// used to read data when the DMR++ handler was initial developed for NASA.
+// used to read data when the DMR++ handler was initially developed for NASA.
 // I modified that code for a while when we built the prototype version of
 // the handler, but then morphed that into a version that would support parallel
 // access. Defining this symbol will include the old code in the handler,
@@ -52,7 +52,7 @@ namespace dmrpp {
  * @note A key feature of HDF5 is that is can 'chunk' data, breaking up an
  * array into a number of smaller pieces, each of which can be compressed.
  * This code will read both array data that are chunked (and possibly compressed)
- * as well as code that is not (essentially the entire array is written in a
+ * as well as data that are not (essentially the entire array is written in a
  * single 'chunk'). Because the two cases are different and susceptible to
  * different kinds of optimizations, we have implemented two different read()
  * methods, one for the 'no chunks' case and one for arrays 'with chunks.'
@@ -76,11 +76,21 @@ private:
     virtual void read_chunks_serial();
 #endif
 
-    unsigned long long get_chunk_start(unsigned int dim, const std::vector<unsigned int>& chunk_origin);
+    unsigned long long get_chunk_start(const dimension &thisDim, unsigned int chunk_origin_for_dim);
+
     Chunk *find_needed_chunks(unsigned int dim, std::vector<unsigned int> *target_element_address, Chunk *chunk);
     void insert_chunk(unsigned int dim, std::vector<unsigned int> *target_element_address, std::vector<unsigned int> *chunk_element_address,
-        Chunk *chunk);
-    virtual void read_chunks_parallel();
+        Chunk *chunk, const vector<unsigned int> &constrained_array_shape);
+    void read_chunks();
+
+    void insert_chunk_unconstrained(Chunk *chunk, unsigned int dim,
+        unsigned long long array_offset, const std::vector<unsigned int> &array_shape,
+        unsigned long long chunk_offset, const std::vector<unsigned int> &chunk_shape, const std::vector<unsigned int> &chunk_origin);
+    void read_chunks_unconstrained();
+
+    // Called from read_chunks_unconstrained() and also using pthreads
+    friend void process_one_chunk_unconstrained(Chunk *chunk, DmrppArray *array, const vector<unsigned int> &array_shape,
+        const vector<unsigned int> &chunk_shape);
 
 public:
     DmrppArray(const std::string &n, libdap::BaseType *v);
@@ -103,6 +113,19 @@ public:
     virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false);
 
     virtual void dump(ostream & strm) const;
+};
+
+/// Chunk data insert args for use with pthreads
+struct one_chunk_unconstrained_args {
+    int *fds;             // pipe back to parent
+    unsigned char tid;      // thread id as a byte
+    Chunk *chunk;
+    DmrppArray *array;
+    const vector<unsigned int> &array_shape;
+    const vector<unsigned int> &chunk_shape;
+
+    one_chunk_unconstrained_args(int *pipe, unsigned char id, Chunk *c, DmrppArray *a, const vector<unsigned int> &a_s, const vector<unsigned int> &c_s)
+        : fds(pipe), tid(id), chunk(c), array(a), array_shape(a_s), chunk_shape(c_s) {}
 };
 
 } // namespace dmrpp
