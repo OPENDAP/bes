@@ -32,6 +32,9 @@ m4_define([AT_TEST_BLOCKING], [dnl
     write_lock_hold_time=2
     AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -x $write_lock_hold_time &], [0], [ignore], [ignore])
     
+    # Sleep to allow file created by the wirte lock to show up in the file system
+    sleep 1
+    
     read_lock_hold_time=1
     read_lock_start_time=`date "+%s"`
     AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -r $read_lock_hold_time], [0], [ignore], [ignore])

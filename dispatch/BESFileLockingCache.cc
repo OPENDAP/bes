@@ -532,7 +532,7 @@ bool BESFileLockingCache::get_read_lock(const string &target, int &fd)
 {
     lock_cache_read();
 
-    bool status = true;     // Used to support to techniques. jhrg 4/26/17
+    bool status = true;
 
 #if USE_GET_SHARED_LOCK
     status = getSharedLock(target, fd);
