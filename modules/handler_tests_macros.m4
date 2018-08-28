@@ -54,8 +54,6 @@ m4_define([_AT_BESCMD_SCRUB_DATES_TEST], [dnl
     input=$1
     baseline=$2
     pass=$3
-    repeat=$4
-    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
@@ -69,7 +67,9 @@ m4_define([_AT_BESCMD_SCRUB_DATES_TEST], [dnl
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test z$pass = zxfail])
         ])
+        
     AT_CLEANUP
+    
 ])
 
 dnl This PATTREN test reads a set of patterns from a file and if any

@@ -33,14 +33,14 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
-cache: $(builddir)/cache
+cache:
 	mkdir -p $(builddir)/cache
 
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te
-
-TESTSUITE = $(srcdir)/CmrCatalogTest
+ 
+TESTSUITE = $(srcdir)/testsuite 
 TESTSUITEFLAGS =
 
 check-local: $(TESTSUITE) atconfig atlocal bes.conf
@@ -52,12 +52,12 @@ installcheck-local: $(TESTSUITE) atconfig atlocal
 clean-local: 
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
 	-rm -f $(TESTSUITE) $(srcdir)/package.m4 
-	-rm -fr $(srcdir)/cache 
+	-rm -fr $(builddir)/cache 
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
-$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 
-	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
+testsuite: testsuite.at $(srcdir)/package.m4 
+	$(AUTOTEST) -I '$(srcdir)' -o testsuite  testsuite.at
 
 # % : %.at
 #	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
