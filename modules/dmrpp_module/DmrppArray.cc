@@ -32,6 +32,7 @@
 
 #include <cstring>
 #include <cassert>
+#include <cerrno>
 
 #include <pthread.h>
 
