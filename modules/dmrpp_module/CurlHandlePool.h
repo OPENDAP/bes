@@ -31,10 +31,13 @@
 
 #include <curl/curl.h>
 
+#if 0
 // FIXME Needs config.h - fix this. jhrg 8/27/18
-#ifdef HAVE_CURL_MULTI_h
+#if HAVE_CURL_MULTI_H
 #include <curl/multi.h>
 #endif
+#endif
+
 
 namespace dmrpp {
 
@@ -79,33 +82,40 @@ public:
     void read_data();
 };
 
-#ifdef HAVE_CURL_MULTI
+
 /**
  * @brief Encapsulate a libcurl multi handle.
  */
 class dmrpp_multi_handle {
-    CURLM *d_multi;
+
+#if 1
+    // This struct can be a vector<dmrpp_easy_handle*> or a CURLM *, depending
+    // on whether the curl lib support the Multi API.
+    struct multi_handle;
+
+    multi_handle *p_impl;
+#endif
+
+
+#if 0
+#if HAVE_CURL_MULTI_H
+CURLM *curlm;
+#else
+std::vector<dmrpp_easy_handle *> ehandles;
+#endif
+#endif
 
 public:
-    dmrpp_multi_handle()
-    {
-        d_multi = curl_multi_init();
-    }
+    dmrpp_multi_handle();
 
-    ~dmrpp_multi_handle()
-    {
-        curl_multi_cleanup(d_multi);
-    }
+    ~dmrpp_multi_handle();
 
-    void add_easy_handle(dmrpp_easy_handle *eh)
-    {
-        curl_multi_add_handle(d_multi, eh->d_handle);
-    }
+    void add_easy_handle(dmrpp_easy_handle *eh);
 
     void read_data();
 };
 
-#else
+#if 0
 
 /**
  * @brief If there's no multi API in libcurl, provide something similar
@@ -114,7 +124,6 @@ public:
  */
 class dmrpp_multi_handle {
     // These are 'weak' pointers; they should not be deleted by this class
-    std::vector<dmrpp_easy_handle *> d_multi;
 
 public:
     dmrpp_multi_handle()
@@ -125,14 +134,6 @@ public:
     {
     }
 
-    /**
-     * @brief Add an Easy Handle to a Multi Handle object.
-     *
-     * @note It is the responsibility of the caller to make sure there are not
-     * too many handles added to the 'multi handle' object.
-     *
-     * @param eh The CURL easy handle to add
-     */
     void add_easy_handle(dmrpp_easy_handle *eh)
     {
         d_multi.push_back(eh);

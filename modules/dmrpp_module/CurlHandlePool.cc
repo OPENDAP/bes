@@ -28,7 +28,7 @@
 
 #include <curl/curl.h>
 
-#ifdef HAVE_CURL_MULTI_h
+#if HAVE_CURL_MULTI_H
 #include <curl/multi.h>
 #endif
 
@@ -126,23 +126,6 @@ static void evaluate_curl_response(CURL* eh)
     }
 }
 
-#ifndef HAVE_CURL_MULTI
-static void *easy_handle_read_data(void *handle)
-{
-    dmrpp_easy_handle *eh = reinterpret_cast<dmrpp_easy_handle*>(handle);
-
-    try {
-        eh->read_data();
-        pthread_exit(NULL);
-    }
-    catch (BESError &e) {
-        string *error = new string(e.get_message().append(": ").append(e.get_file())
-            .append(":").append(libdap::long_to_string(e.get_line())));
-        pthread_exit(error);
-    }
-}
-#endif
-
 /**
  * @brief This is the read_data() method for serial transfers
  */
@@ -164,6 +147,66 @@ void dmrpp_easy_handle::read_data()
     d_chunk->set_is_read(true);
 }
 
+struct dmrpp_multi_handle::multi_handle {
+#if HAVE_CURL_MULTI_H
+    CURLM *curlm;
+#else
+    std::vector<dmrpp_easy_handle *> ehandles;
+#endif
+};
+
+dmrpp_multi_handle::dmrpp_multi_handle()
+{
+    p_impl = new multi_handle;
+#if HAVE_CURL_MULTI_H
+    p_impl->curlm = curl_multi_init();
+#endif
+}
+
+dmrpp_multi_handle::~dmrpp_multi_handle()
+{
+#if HAVE_CURL_MULTI_H
+    curl_multi_cleanup(p_impl->curlm);
+#endif
+    delete p_impl;
+}
+
+/**
+ * @brief Add an Easy Handle to a Multi Handle object.
+ *
+ * @note It is the responsibility of the caller to make sure there are not
+ * too many handles added to the 'multi handle' object.
+ *
+ * @param eh The CURL easy handle to add
+ */
+void dmrpp_multi_handle::add_easy_handle(dmrpp_easy_handle *eh)
+{
+#if HAVE_CURL_MULTI_H
+    curl_multi_add_handle(p_impl->curlm, eh->d_handle);
+#else
+    p_impl->ehandles.push_back(eh);
+#endif
+}
+
+// This is only used if we don't have the Multi API and have to use pthreads.
+// jhrg 8/27/18
+#if !HAVE_CURL_MULTI_H
+static void *easy_handle_read_data(void *handle)
+{
+    dmrpp_easy_handle *eh = reinterpret_cast<dmrpp_easy_handle*>(handle);
+
+    try {
+        eh->read_data();
+        pthread_exit(NULL);
+    }
+    catch (BESError &e) {
+        string *error = new string(e.get_message().append(": ").append(e.get_file())
+            .append(":").append(libdap::long_to_string(e.get_line())));
+        pthread_exit(error);
+    }
+}
+#endif
+
 /**
  * @brief The read_data() method for parallel transfers
  *
@@ -172,21 +215,21 @@ void dmrpp_easy_handle::read_data()
  */
 void dmrpp_multi_handle::read_data()
 {
-#ifdef HAVE_CURL_MULTI
+#if HAVE_CURL_MULTI_H
     int still_running = 0;
-    CURLMcode mres = curl_multi_perform(d_multi, &still_running);
+    CURLMcode mres = curl_multi_perform(p_impl->curlm, &still_running);
     if (mres != CURLM_OK)
         throw BESInternalError(string("Could not initiate data read: ").append(curl_multi_strerror(mres)), __FILE__,
             __LINE__);
 
     do {
         int numfds = 0;
-        mres = curl_multi_wait(d_multi, NULL, 0, MAX_WAIT_MSECS, &numfds);
+        mres = curl_multi_wait(p_impl->curlm, NULL, 0, MAX_WAIT_MSECS, &numfds);
         if (mres != CURLM_OK)
             throw BESInternalError(string("Could not wait on data read: ").append(curl_multi_strerror(mres)), __FILE__,
                 __LINE__);
 
-        mres = curl_multi_perform(d_multi, &still_running);
+        mres = curl_multi_perform(p_impl->curlm, &still_running);
         if (mres != CURLM_OK)
             throw BESInternalError(string("Could not iterate data read: ").append(curl_multi_strerror(mres)), __FILE__,
                 __LINE__);
@@ -195,7 +238,7 @@ void dmrpp_multi_handle::read_data()
 
     CURLMsg *msg = 0;
     int msgs_left = 0;
-    while ((msg = curl_multi_info_read(d_multi, &msgs_left))) {
+    while ((msg = curl_multi_info_read(p_impl->curlm, &msgs_left))) {
         if (msg->msg == CURLMSG_DONE) {
             CURL *eh = msg->easy_handle;
 
@@ -223,7 +266,7 @@ void dmrpp_multi_handle::read_data()
             dmrpp_easy_handle->d_chunk->set_is_read(true);  // Set the is_read() property for chunk here.
             DmrppRequestHandler::curl_handle_pool->release_handle(dmrpp_easy_handle);
 
-            mres = curl_multi_remove_handle(d_multi, eh);
+            mres = curl_multi_remove_handle(p_impl->curlm, eh);
             if (mres != CURLM_OK)
                 throw BESInternalError(string("Could not remove libcurl handle: ").append(curl_multi_strerror(mres)),  __FILE__, __LINE__);
         }
@@ -236,10 +279,10 @@ void dmrpp_multi_handle::read_data()
     // d_max_parallel_transfers are added to the 'multi' handle.
 
     // Start the processing pipelines
-    pthread_t thread[d_multi.size()];
+    pthread_t thread[p_impl->ehandles.size()];
     unsigned int threads = 0;
-    for (unsigned int i = 0; i < d_multi.size(); ++i) {
-        int status = pthread_create(&thread[i], NULL, easy_handle_read_data, (void*) d_multi[i]);
+    for (unsigned int i = 0; i < p_impl->ehandles.size(); ++i) {
+        int status = pthread_create(&thread[i], NULL, easy_handle_read_data, (void*) p_impl->ehandles[i]);
         if (status == 0) {
             ++threads;
         }
@@ -267,7 +310,7 @@ void dmrpp_multi_handle::read_data()
     }
 
     // Now remove the easy_handles, mimicking the behavior when using the real Multi API
-    d_multi.clear();
+    p_impl->ehandles.clear();
 #endif
 }
 
