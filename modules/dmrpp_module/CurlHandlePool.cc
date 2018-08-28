@@ -28,9 +28,7 @@
 
 #include <curl/curl.h>
 
-//#define HAVE_CURL_MULTI
-
-#ifdef HAVE_CURL_MULTI
+#ifdef HAVE_CURL_MULTI_h
 #include <curl/multi.h>
 #endif
 
@@ -41,15 +39,27 @@
 #include "BESForbiddenError.h"
 #include "WhiteList.h"
 
+#include "DmrppRequestHandler.h"
 #include "CurlHandlePool.h"
 #include "Chunk.h"
-#include "DmrppRequestHandler.h"
 
 #define MAX_WAIT_MSECS 30*1000 /* Wait max. 30 seconds */
 
 using namespace dmrpp;
 using namespace std;
 using namespace bes;
+
+Lock::Lock(pthread_mutex_t &lock) : m_mutex(lock)
+ {
+     int status = pthread_mutex_lock(&m_mutex);
+     if (status != 0) throw BESInternalError("Could not lock in CurlHandlePool", __FILE__, __LINE__);
+ }
+
+Lock::~Lock()
+ {
+     int status = pthread_mutex_unlock(&m_mutex);
+     if (status != 0) throw BESInternalError("Could not unlock in CurlHandlePool", __FILE__, __LINE__);
+ }
 
 dmrpp_easy_handle::dmrpp_easy_handle()
 {
@@ -259,6 +269,19 @@ void dmrpp_multi_handle::read_data()
     // Now remove the easy_handles, mimicking the behavior when using the real Multi API
     d_multi.clear();
 #endif
+}
+
+CurlHandlePool::CurlHandlePool() : d_multi_handle(0)
+{
+    d_max_easy_handles = DmrppRequestHandler::d_max_parallel_transfers;
+    d_multi_handle = new dmrpp_multi_handle();
+
+    for (unsigned int i = 0; i < d_max_easy_handles; ++i) {
+        d_easy_handles.push_back(new dmrpp_easy_handle());
+    }
+
+    if (pthread_mutex_init(&d_get_easy_handle_mutex, 0) != 0)
+        throw BESInternalError("Could not initialize mutex in CurlHandlePool", __FILE__, __LINE__);
 }
 
 /**

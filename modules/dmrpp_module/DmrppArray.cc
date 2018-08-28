@@ -46,6 +46,7 @@
 #include "BESInternalError.h"
 #include "BESDebug.h"
 
+#include "CurlHandlePool.h"
 #include "Chunk.h"
 #include "DmrppArray.h"
 #include "DmrppRequestHandler.h"

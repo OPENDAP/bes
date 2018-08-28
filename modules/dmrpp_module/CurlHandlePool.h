@@ -31,13 +31,10 @@
 
 #include <curl/curl.h>
 
-#ifdef HAVE_CURL_MULTI
+// FIXME Needs config.h - fix this. jhrg 8/27/18
+#ifdef HAVE_CURL_MULTI_h
 #include <curl/multi.h>
 #endif
-
-#include "BESInternalError.h"
-
-#include "DmrppRequestHandler.h"
 
 namespace dmrpp {
 
@@ -54,18 +51,8 @@ private:
     Lock(const Lock &rhs);
 
 public:
-    Lock(pthread_mutex_t &lock) : m_mutex(lock)
-    {
-        int status = pthread_mutex_lock(&m_mutex);
-        if (status != 0) throw BESInternalError("Could not lock in CurlHandlePool", __FILE__, __LINE__);
-    }
-
-    virtual ~Lock()
-    {
-        int status = pthread_mutex_unlock(&m_mutex);
-        if (status != 0) throw BESInternalError("Could not unlock in CurlHandlePool", __FILE__, __LINE__);
-    }
-
+    Lock(pthread_mutex_t &lock);
+    virtual ~Lock();
 };
 
 /**
@@ -126,7 +113,7 @@ public:
  * Clients of this class must manage the CURL easy handles
  */
 class dmrpp_multi_handle {
-    // TH\hese are 'weak' pointers; they should not be deleted by this class
+    // These are 'weak' pointers; they should not be deleted by this class
     std::vector<dmrpp_easy_handle *> d_multi;
 
 public:
@@ -136,12 +123,6 @@ public:
 
     virtual ~dmrpp_multi_handle()
     {
-#if 0
-        for (unsigned int i = 0; i < d_multi.size(); ++i) {
-            d_multi[i]->~dmrpp_easy_handle();
-        }
-#endif
-
     }
 
     /**
@@ -182,18 +163,7 @@ private:
     friend class Lock;
 
 public:
-    CurlHandlePool() : d_multi_handle(0)
-    {
-        d_max_easy_handles = DmrppRequestHandler::d_max_parallel_transfers;
-        d_multi_handle = new dmrpp_multi_handle();
-
-        for (unsigned int i = 0; i < d_max_easy_handles; ++i) {
-            d_easy_handles.push_back(new dmrpp_easy_handle());
-        }
-
-        if (pthread_mutex_init(&d_get_easy_handle_mutex, 0) != 0)
-            throw BESInternalError("Could not initialize mutex in CurlHandlePool", __FILE__, __LINE__);
-    }
+    CurlHandlePool();
 
     ~CurlHandlePool()
     {
