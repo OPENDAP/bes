@@ -87,23 +87,13 @@ public:
  * @brief Encapsulate a libcurl multi handle.
  */
 class dmrpp_multi_handle {
-
-#if 1
     // This struct can be a vector<dmrpp_easy_handle*> or a CURLM *, depending
-    // on whether the curl lib support the Multi API.
+    // on whether the curl lib support the Multi API. ...commonly known as the
+    // 'pointer to an implementation' pattern which has the unfortunate acronym
+    // 'pimpl.' jhrg 8/27/18
     struct multi_handle;
 
     multi_handle *p_impl;
-#endif
-
-
-#if 0
-#if HAVE_CURL_MULTI_H
-CURLM *curlm;
-#else
-std::vector<dmrpp_easy_handle *> ehandles;
-#endif
-#endif
 
 public:
     dmrpp_multi_handle();
@@ -114,35 +104,6 @@ public:
 
     void read_data();
 };
-
-#if 0
-
-/**
- * @brief If there's no multi API in libcurl, provide something similar
- *
- * Clients of this class must manage the CURL easy handles
- */
-class dmrpp_multi_handle {
-    // These are 'weak' pointers; they should not be deleted by this class
-
-public:
-    dmrpp_multi_handle()
-    {
-    }
-
-    virtual ~dmrpp_multi_handle()
-    {
-    }
-
-    void add_easy_handle(dmrpp_easy_handle *eh)
-    {
-        d_multi.push_back(eh);
-    }
-
-    void read_data();
-};
-
-#endif
 
 /**
  * Get a CURL easy handle, assign a URL and other values, use the handler, return

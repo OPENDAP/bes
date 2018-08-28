@@ -32,7 +32,9 @@
 #include <curl/multi.h>
 #endif
 
+#if !HAVE_CURL_MULTI_H
 #include "util.h"   // long_to_string()
+#endif
 
 #include "BESDebug.h"
 #include "BESInternalError.h"
@@ -147,6 +149,13 @@ void dmrpp_easy_handle::read_data()
     d_chunk->set_is_read(true);
 }
 
+/**
+ * The implementation of the dmrpp_multi_handle field. It can be either
+ * a CURLM* or a vector of dmrpp_easy_handle*, depending on whether libcurl
+ * has the CULRM* interface.
+ *
+ * @note This uses the pimpl pattern.
+ */
 struct dmrpp_multi_handle::multi_handle {
 #if HAVE_CURL_MULTI_H
     CURLM *curlm;
@@ -212,10 +221,15 @@ static void *easy_handle_read_data(void *handle)
  *
  * This uses either the CURL Multi API or pthreads to read N
  * dmrpp_easy_handle instances in parallel.
+ *
+ * @note It's the responsibility of the caller to make sure that no more than
+ * d_max_parallel_transfers are added to the 'multi' handle.
  */
 void dmrpp_multi_handle::read_data()
 {
 #if HAVE_CURL_MULTI_H
+    // Use the libcurl Multi API here. Alternate version follows...
+
     int still_running = 0;
     CURLMcode mres = curl_multi_perform(p_impl->curlm, &still_running);
     if (mres != CURLM_OK)
@@ -275,10 +289,8 @@ void dmrpp_multi_handle::read_data()
         }
     }
 #else
-    // Note: It's the responsibility of the caller to make sure that no more than
-    // d_max_parallel_transfers are added to the 'multi' handle.
+    // Start the processing pipelines using pthreads - there is no Multi API
 
-    // Start the processing pipelines
     pthread_t thread[p_impl->ehandles.size()];
     unsigned int threads = 0;
     for (unsigned int i = 0; i < p_impl->ehandles.size(); ++i) {
