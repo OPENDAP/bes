@@ -100,7 +100,7 @@ public:
     // Called before each test
     void setUp()
     {
-        string bes_conf = BESUtil::assemblePath(TEST_SRC_DIR,"bes.conf");
+        string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
         TheBESKeys::ConfigFile = bes_conf;
 
         BESCatalogList::TheCatalogList()->add_catalog(new cmr::CmrCatalog(CMR_CATALOG_NAME));

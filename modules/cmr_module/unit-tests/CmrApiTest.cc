@@ -98,19 +98,19 @@ public:
     // Called before each test
     void setUp()
     {
-        if(debug) cerr << "setUp() - BEGIN" << endl;
-        string bes_conf = BESUtil::assemblePath(TEST_SRC_DIR,"bes.conf");
-        if(debug) cerr << "setUp() - Using BES configuration: " << bes_conf << endl;
+        if(Debug) cerr << "setUp() - BEGIN" << endl;
+        string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
+        if(Debug) cerr << "setUp() - Using BES configuration: " << bes_conf << endl;
 
         TheBESKeys::ConfigFile = bes_conf;
 
-        if(debug) cerr << "setUp() - Adding catalog '"<< CMR_CATALOG_NAME << "'" << endl;
+        if(Debug) cerr << "setUp() - Adding catalog '"<< CMR_CATALOG_NAME << "'" << endl;
         BESCatalogList::TheCatalogList()->add_catalog(new cmr::CmrCatalog(CMR_CATALOG_NAME));
 
         if (bes_debug) BESDebug::SetUp("cerr,cmr");
 
         if (bes_debug) show_file(bes_conf);
-        if(debug) cerr << "setUp() - END" << endl;
+        if(Debug) cerr << "setUp() - END" << endl;
     }
 
     // Called after each test
@@ -610,7 +610,7 @@ int main(int argc, char*argv[])
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "db");
+    GetOpt getopt(argc, argv, "dbD");
     int option_char;
     while ((option_char = getopt()) != -1)
         switch (option_char) {

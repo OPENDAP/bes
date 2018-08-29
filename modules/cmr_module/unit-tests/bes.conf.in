@@ -14,7 +14,7 @@
 
 
 Gateway.Whitelist=http://localhost
-# Gateway.Whitelist+=https://cmr.earthdata.nasa.gov
+Gateway.Whitelist+=https://cmr.earthdata.nasa.gov
 
 
 BES.Catalog.Default=catalog
@@ -23,7 +23,7 @@ BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@
 # it can be anything that matches the form of '<thing>:<regex>;' jhrg 7/6/18
 BES.Catalog.catalog.TypeMatch=something:regex;
 
-CMR.Cache.dir=@abs_top_srcdir@/modules/cmr_module/unit-tests/static-cache
+CMR.Cache.dir=@abs_top_builddir@/modules/cmr_module/unit-tests/static-cache
 CMR.Cache.prefix=cmr_
 CMR.Cache.size=500
 
