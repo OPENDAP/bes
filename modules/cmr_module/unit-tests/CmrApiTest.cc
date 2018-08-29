@@ -56,6 +56,7 @@ using namespace std;
 using namespace rapidjson;
 
 static bool debug = false;
+static bool Debug = false;
 static bool bes_debug = false;
 
 #undef DBG
@@ -97,14 +98,19 @@ public:
     // Called before each test
     void setUp()
     {
+        if(debug) cerr << "setUp() - BEGIN" << endl;
         string bes_conf = BESUtil::assemblePath(TEST_SRC_DIR,"bes.conf");
+        if(debug) cerr << "setUp() - Using BES configuration: " << bes_conf << endl;
+
         TheBESKeys::ConfigFile = bes_conf;
 
+        if(debug) cerr << "setUp() - Adding catalog '"<< CMR_CATALOG_NAME << "'" << endl;
         BESCatalogList::TheCatalogList()->add_catalog(new cmr::CmrCatalog(CMR_CATALOG_NAME));
 
         if (bes_debug) BESDebug::SetUp("cerr,cmr");
 
         if (bes_debug) show_file(bes_conf);
+        if(debug) cerr << "setUp() - END" << endl;
     }
 
     // Called after each test
@@ -610,6 +616,9 @@ int main(int argc, char*argv[])
         switch (option_char) {
         case 'd':
             debug = true;  // debug is a static global
+            break;
+        case 'D':
+            Debug = true;  // Debug is a static global
             break;
         case 'b':
             bes_debug = true;  // debug is a static global
