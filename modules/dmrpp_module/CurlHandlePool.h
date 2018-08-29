@@ -27,16 +27,36 @@
 #include <string>
 #include <vector>
 
+#include <pthread.h>
+
 #include <curl/curl.h>
+
+#if 0
+// FIXME Needs config.h - fix this. jhrg 8/27/18
+#if HAVE_CURL_MULTI_H
 #include <curl/multi.h>
+#endif
+#endif
 
-#include "BESInternalError.h"
-
-#include "DmrppRequestHandler.h"
 
 namespace dmrpp {
 
 class Chunk;
+
+/**
+ * RAII. Lock access to the get_easy_handle() and release_handle() methods.
+ */
+class Lock {
+private:
+    pthread_mutex_t& m_mutex;
+
+    Lock();
+    Lock(const Lock &rhs);
+
+public:
+    Lock(pthread_mutex_t &lock);
+    virtual ~Lock();
+};
 
 /**
  * @brief Bundle a libcurl easy handle to other information.
@@ -62,27 +82,25 @@ public:
     void read_data();
 };
 
+
 /**
  * @brief Encapsulate a libcurl multi handle.
  */
 class dmrpp_multi_handle {
-    CURLM *d_multi;
+    // This struct can be a vector<dmrpp_easy_handle*> or a CURLM *, depending
+    // on whether the curl lib support the Multi API. ...commonly known as the
+    // 'pointer to an implementation' pattern which has the unfortunate acronym
+    // 'pimpl.' jhrg 8/27/18
+    struct multi_handle;
+
+    multi_handle *p_impl;
 
 public:
-    dmrpp_multi_handle()
-    {
-        d_multi = curl_multi_init();
-    }
+    dmrpp_multi_handle();
 
-    ~dmrpp_multi_handle()
-    {
-        curl_multi_cleanup(d_multi);
-    }
+    ~dmrpp_multi_handle();
 
-    void add_easy_handle(dmrpp_easy_handle *eh)
-    {
-        curl_multi_add_handle(d_multi, eh->d_handle);
-    }
+    void add_easy_handle(dmrpp_easy_handle *eh);
 
     void read_data();
 };
@@ -99,19 +117,15 @@ private:
     unsigned int d_max_easy_handles;
 
     std::vector<dmrpp_easy_handle *> d_easy_handles;
+
     dmrpp_multi_handle *d_multi_handle;
 
+    pthread_mutex_t d_get_easy_handle_mutex;
+
+    friend class Lock;
+
 public:
-    CurlHandlePool() : d_multi_handle(0)
-    {
-        d_max_easy_handles = DmrppRequestHandler::d_max_parallel_transfers;
-
-        d_multi_handle = new dmrpp_multi_handle();
-
-        for (unsigned int i = 0; i < d_max_easy_handles; ++i) {
-            d_easy_handles.push_back(new dmrpp_easy_handle());
-        }
-    }
+    CurlHandlePool();
 
     ~CurlHandlePool()
     {

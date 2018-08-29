@@ -49,9 +49,10 @@ clean-local: cache-clean
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
 	-rm -f $(TESTSUITE) $(srcdir)/package.m4 
 
-# Force the tests here to run 
+# Force the tests here to run; use -v until we sort out the intermittent issues
+# with these tests
 check-local: $(TESTSUITE) atconfig atlocal 
-	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) --jobs=1 --verbose 
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 

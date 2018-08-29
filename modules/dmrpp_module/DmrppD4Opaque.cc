@@ -29,9 +29,11 @@
 #include <string>
 #include <queue>
 
-#include <BESError.h>
+#include <BESInternalError.h>
 #include <BESDebug.h>
 
+#include "CurlHandlePool.h"
+#include "DmrppRequestHandler.h"
 #include "DmrppD4Opaque.h"
 
 using namespace libdap;

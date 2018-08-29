@@ -31,8 +31,6 @@
 #include <H5Ppublic.h>
 
 #include "Chunk.h"
-#include "CurlHandlePool.h"
-
 
 namespace libdap {
 class DMR;

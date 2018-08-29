@@ -18,7 +18,7 @@ m4_define([AT_TEST_BLOCKING], [dnl
     AT_SETUP([BLOCKING])
 
     # This uses the verbose option of the testsuite itself. 
-    AS_IF([test -z $at_verbose], [verbose=v; debug="-d"], [verbose=""; debug=""]);
+    AS_IF([test -z $at_verbose], [debug="-d"], [debug=""]);
     
     # naming the cache dir - and using a different one for each test - means the
     # tests can run in parallel, that's faster and tests multiple caches in use
@@ -27,27 +27,30 @@ m4_define([AT_TEST_BLOCKING], [dnl
     cache_dir=blocking 
     FileLockingCacheTest $debug -c $cache_dir -p
     
-    write_lock_hold_time=4
-    write_lock_start_time=`date "+%s"`
+    # This call will return instantly, the child process it starts will hold the
+    # write lock for 4 seconds
+    write_lock_hold_time=2
     AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -x $write_lock_hold_time &], [0], [ignore], [ignore])
-    write_lock_end_time=`date "+%s"`
     
-    write_lock_elapsed=`echo "$write_lock_end_time - $write_lock_start_time" | bc`
+    # Sleep to allow file created by the wirte lock to show up in the file system
+    sleep 1
     
-    AS_IF([test x$verbose = xv], [echo "write_lock_elapsed: $write_lock_elapsed"], [])
-    
-    read_lock_hold_time=3
+    read_lock_hold_time=1
     read_lock_start_time=`date "+%s"`
     AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -r $read_lock_hold_time], [0], [ignore], [ignore])
     read_lock_end_time=`date "+%s"`
     
     read_lock_elapsed=`echo "$read_lock_end_time - $read_lock_start_time" | bc`
     
-    minimum_expected_time=`echo "$write_lock_hold_time + $read_lock_hold_time" | bc`
+    AS_IF([test -z $at_verbose], [echo "read_lock_elapsed: $read_lock_elapsed"], [])
+
+    # minimum_expected_time=$write_lock_hold_time
+    delta_time=`echo "($read_lock_hold_time + $write_lock_hold_time) - $read_lock_elapsed" | bc`
     
-    AS_IF([test x$verbose = xv], [echo "read_lock_elapsed:  $read_lock_elapsed"], [])
+    AS_IF([test -z $at_verbose], 
+        [echo "read_lock_elapsed:  $read_lock_elapsed, delta_time: $delta_time"], [])
     
-    AT_CHECK([test ${read_lock_elapsed} -ge ${minimum_expected_time} ], [0], [ignore], [ignore])
+    AT_CHECK([test $delta_time -le 1 ], [0], [ignore], [ignore])
     
     AT_CLEANUP
 ])
@@ -92,7 +95,7 @@ m4_define([AT_TEST_TWO_FILE_CREATE_AND_LOCK], [dnl
     AT_SETUP([TWO_FILE_CREATE_AND_LOCK])
 
     # This uses the verbose option of the testsuite itself. 
-    AS_IF([test -z $at_verbose], [verbose=v; debug="-d"], [verbose=""; debug=""]);
+    AS_IF([test -z $at_verbose], [debug="-d"], [debug=""]);
     
     # naming the cache dir - and using a different one for each test - means the
     # tests can run in parallel, that's faster and tests multiple caches in use
@@ -106,22 +109,21 @@ m4_define([AT_TEST_TWO_FILE_CREATE_AND_LOCK], [dnl
     
     hold_time=5
     
-    # This makes the file and holds the lock for 1 second; it should work fine
+    # This makes the file and holds the lock for 5 seconds; it should work fine
     AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -f first_file -x ${hold_time} &], [0], [ignore], [ignore])
-    
+        
     # This attempts to lock a second file. It should block until the above lock 
     # is released.
     AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -f second_file -x ${hold_time}], [0], [ignore], [ignore])
     
     end_time=`date "+%s"`
-    elapsed=`echo "${end_time} - ${start_time}" | bc`
-    AS_IF([test -n "$verbose"], [echo "Elapsed time: $elapsed (should be >= ${hold_time})"])
     
-    AT_CHECK([test ${elapsed} -ge ${hold_time}], [0], [ignore], [ignore])
+    delta=`echo "($end_time - $start_time) - $hold_time" | bc`
     
-    hold_time_plus_epsilon=6
-    AT_CHECK([test ${elapsed} -le ${hold_time_plus_epsilon}], [0], [ignore], [ignore])
+    AS_IF([test -z $at_verbose], [echo "delta: $delta"])
     
+    AT_CHECK([test $delta -le 1], [0], [ignore], [ignore])
+        
     AT_CLEANUP
 ])
 
@@ -134,7 +136,7 @@ m4_define([AT_TEST_TWO_FILE_CREATE_AND_LOCK_VERSION_2], [dnl
     AT_SETUP([TWO_FILE_CREATE_AND_LOCK_VERSION_2])
 
     # This uses the verbose option of the testsuite itself. 
-    AS_IF([test -z $at_verbose], [verbose=v; debug="-d"], [verbose=""; debug=""]);
+    AS_IF([test -z $at_verbose], [debug="-d"], [debug=""]);
     
     # naming the cache dir - and using a different one for each test - means the
     # tests can run in parallel, that's faster and tests multiple caches in use
@@ -148,32 +150,26 @@ m4_define([AT_TEST_TWO_FILE_CREATE_AND_LOCK_VERSION_2], [dnl
     
     hold_time=2
     
-    # This makes the file and holds the lock for 1 second; it should work fine
+    # This makes the file and holds the lock for 2 seconds; it should work fine
     AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -f first_file -x ${hold_time} &], [0], [ignore], [ignore])
     
     # Get four read locks in parallel.
+    # *** and this part takes ${hold_time} seconds (since it blocks).
     AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -f first_file -r ${hold_time} &], [0], [ignore], [ignore])
     AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -f first_file -r ${hold_time} &], [0], [ignore], [ignore])
     AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -f first_file -r ${hold_time} &], [0], [ignore], [ignore])
     AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -f first_file -r ${hold_time} &], [0], [ignore], [ignore])
     
-    # *** This part takes ${hold_itme} seconds
-    
-    # This attempts to lock a second file. It should return right away because
-    # it can get the lock for a new file right away.
+    # This attempts to lock a second file. It should return after $hold_time seconds
     AT_CHECK([FileLockingCacheTest $debug -c $cache_dir -f second_file -x ${hold_time}], [0], [ignore], [ignore])
     
-    # *** and this part takes ${hold_time} seconds (since it blocks).
-    
     end_time=`date "+%s"`
-    elapsed=`echo "${end_time} - ${start_time}" | bc`
-    AS_IF([test -n "$verbose"], [echo "Elapsed time: $elapsed (should be >= 4)"])
     
-    AT_CHECK([test ${elapsed} -ge 4], [0], [ignore], [ignore])
+    delta=`echo "($end_time - $start_time) - ($hold_time * 2)" | bc`
+    AS_IF([test -z $at_verbose], [echo "delta time: $delta"])
     
-    hold_time_plus_epsilon=6
-    AT_CHECK([test ${elapsed} -le 5], [0], [ignore], [ignore])
-    
+    AT_CHECK([test $delta -le 1], [0], [ignore], [ignore])
+        
     AT_CLEANUP
 ])
 
@@ -187,7 +183,7 @@ m4_define([AT_TEST_MULTIPLE_READ_LOCKS], [dnl
     AT_SETUP([MULTIPLE_READ_LOCKS])
 
     # This uses the verbose option of the testsuite itself. 
-    AS_IF([test -z $at_verbose], [verbose=v; debug="-d"], [verbose=""; debug=""]);
+    AS_IF([test -z $at_verbose], [debug="-d"], [debug=""]);
     
     # naming the cache dir - and using a different one for each test - means the
     # tests can run in parallel, that's faster and tests multiple caches in use
@@ -210,7 +206,7 @@ m4_define([AT_TEST_MULTIPLE_READ_LOCKS], [dnl
     AT_CLEANUP
 ])
 
-AT_TEST_BLOCKING()
+AT_TEST_BLOCKING(v)
 
 AT_TEST_CREATE_AND_LOCK()
 AT_TEST_TWO_FILE_CREATE_AND_LOCK()

@@ -142,6 +142,7 @@ m4_define([_AT_BESCMD_BINARYDATA_TEST],  [dnl
     AT_CLEANUP
 ])
     
+dnl OLD - Do not use this. See the macro below. jhrg 8/1/18
 m4_define([_AT_BESCMD_DAP4_BINARYDATA_TEST],  [dnl
 
     AT_SETUP([BESCMD $1])
@@ -174,12 +175,14 @@ m4_define([_AT_NEW_BESCMD_DAP4_BINARYDATA_TEST],  [dnl
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [], [stdout])
+        PRINT_DAP4_DATA_RESPONSE([stdout])
         REMOVE_DAP4_CHECKSUM([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [], [stdout])
+        PRINT_DAP4_DATA_RESPONSE([stdout])
         REMOVE_DAP4_CHECKSUM([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test "$3" = "xfail"])
@@ -214,6 +217,16 @@ m4_define([REMOVE_DAP4_CHECKSUM], [dnl
     sed 's@<Value>[[0-9a-f]]\{8\}</Value>@removed checksum@g' < $1 > $1.sed
     dnl '
     mv $1.sed $1
+])
+
+dnl This enables the besstandalone to run by itself in AT_CHECK so we can see 
+dnl Error messages more easily. The conversion from a binry response to text
+dnl is done here and then the text is used with diff against a text baseline.
+dnl jhrg 8/1/18
+ 
+m4_define([PRINT_DAP4_DATA_RESPONSE], [dnl
+    getdap4 -D -M -s $1 > $1.txt
+    mv $1.txt $1
 ])
 
 dnl This is similar to the "binary data" macro above, but instead assumes the

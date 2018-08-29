@@ -70,10 +70,12 @@ private:
     string d_symbolic_name;     ///< The name of the container
     string d_real_name;         ///< The full name of the thing (filename, database table name, ...)
     string d_relative_name;     ///< The name relative to the Data Root dir
-    string d_container_type;
+    string d_container_type;    ///< The handler that can read this kind of data (e.g., HDF5)
+
     string d_constraint;
     string d_dap4_constraint;
     string d_dap4_function;
+
     string d_attributes;     ///< See DefinitionStorageList, XMLDefineCommand
 
 protected:

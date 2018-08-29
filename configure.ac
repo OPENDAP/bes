@@ -128,6 +128,11 @@ dnl We need the *-config scripts to build, so the AC_CHECK_LIB
 dnl macro is not needed.
 AC_PATH_PROG([CURL], [curl], [Where is curl?], [/bin:/usr/bin:/usr/local/bin])
 
+dnl The DMR++ handler uses, conditionally, the Multi API. These tests determine
+dnl if that API is present (iff the multi.h header is present). jhrg 8/27/18
+AC_CHECK_HEADERS([curl/curl.h])
+AC_CHECK_HEADERS([curl/multi.h])
+
 dnl Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS_ONCE(fcntl.h float.h malloc.h stddef.h stdlib.h limits.h unistd.h pthread.h bzlib.h string.h strings.h)

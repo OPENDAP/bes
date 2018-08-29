@@ -1,0 +1,17 @@
+README
+ Created on: Aug 15, 2018
+     Author: jimg
+
+The *_local.dap bes command files reference a local copy of an AIRS
+granule that I edited to reduce its size. I used h5copy to copy about 10
+variables from a 300MB AIRS granule to the 4MB AIRS_partial.h5 file.
+
+The non-local tests reference the real AIRS granule 
+(AIRS.2015.12.30.L3.RetStd_IR001.v6.0.31.0.G16116184203.nc.h5) that is 
+in our/Raytheon's S3 account. There is a copy of AIRS_partial.h5 there
+as well. I have not switched the non-local tests to use it, however.
+
+One issues is that while the values are the same for the variable that
+are common to both files, other things about the files are different.
+Chunk sizes, however, are the same as are the names and types for each
+of the copied variables.

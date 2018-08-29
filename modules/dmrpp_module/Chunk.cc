@@ -44,6 +44,8 @@ using namespace std;
 
 namespace dmrpp {
 
+const std::string Chunk::tracking_context = "cloudydap";
+
 /**
  * @brief Callback passed to libcurl to handle reading a single byte.
  *
@@ -323,13 +325,17 @@ string Chunk::get_curl_range_arg_string()
 }
 
 /**
- * @brief Modify the \arg data_access_url so that it include tracking info
+ * @brief Modify this chunk's data URL so that it includes tracking info
  *
- * The tracking info is the value of the BESContext "cloudydap".
+ * Add information to the Query string of a URL, intended primarily to aid in
+ * tracking the origin of requests when reading data from S3. The information
+ * added to the query string comes from a BES Context command sent to the BES
+ * by a client (e.g., the OLFS). The addition takes the form
+ * "?tracking_context=<context value>".
  *
- * @param data_access_url The URL to hack
+ * @note This is only added to data URLs that reference S3.
  */
-void Chunk::add_tracking_query_param(string &data_access_url)
+void Chunk::add_tracking_query_param()
 {
     /** - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
      * Cloudydap test hack where we tag the S3 URLs with a query string for the S3 log
@@ -341,31 +347,64 @@ void Chunk::add_tracking_query_param(string &data_access_url)
      * Should this be a function? FFS why? This is the ONLY place where this needs
      * happen, as close to the curl call as possible and we can just turn it off
      * down the road. - ndp 1/20/17 (EOD)
+     *
+     * Well, it's a function now... ;-) jhrg 8/6/18
      */
-    std::string aws_s3_url("https://s3.amazonaws.com/");
-    // Is it an AWS S3 access?
-    if (!data_access_url.compare(0, aws_s3_url.size(), aws_s3_url)) {
+
+    string aws_s3_url_https("https://s3.amazonaws.com/");
+    string aws_s3_url_http("http://s3.amazonaws.com/");
+
+    // Is it an AWS S3 access? (y.find(x) returns 0 when y starts with x)
+    if (d_data_url.find(aws_s3_url_https) == 0 || d_data_url.find(aws_s3_url_http) == 0) {
         // Yup, headed to S3.
-        string cloudydap_context("cloudydap");
-        bool found;
-        string cloudydap_context_value;
-        cloudydap_context_value = BESContextManager::TheManager()->get_context(cloudydap_context, found);
+        bool found = false;
+        string cloudydap_context_value = BESContextManager::TheManager()->get_context(tracking_context, found);
         if (found) {
-            data_access_url += "?cloudydap=" + cloudydap_context_value;
+            d_query_marker.append("?").append(tracking_context).append("=").append(cloudydap_context_value);
         }
     }
 }
+
+#if 0
+/**
+ * @brief function version of Chunk::inflate_chunk for use with pthreads
+ *
+ * @note Only use this with child threads
+ * @todo Rewrite this as glue to the method?
+ *
+ * @param arg_list Pointer to an inflate_chunk_args instance. That struct contains
+ * The Chunk object, booleans that describe if the chunk is compressed or shuffled,
+ * the expected chunk size and the element size (chunk size is in elements, not bytes).
+ * @see Chunk::inflate_chunk()
+ */
+void *inflate_chunk(void *arg_list)
+{
+    inflate_chunk_args *args = reinterpret_cast<inflate_chunk_args*>(arg_list);
+
+    try {
+        args->chunk->inflate_chunk(args->deflate, args->shuffle, args->chunk_size, args->elem_width);
+    }
+    catch (BESError &error) {
+        delete args;
+        pthread_exit(new BESError(error));
+    }
+
+    delete args;
+    pthread_exit(NULL);
+}
+#endif
+
 
 /**
  * @brief Decompress data in the chunk, managing the Chunk's data buffers
  *
  * This method tracks if a chunk has already been decompressed, so, like read_chunk()
- * it can be called for achunk that has already been decompressed without error.
+ * it can be called for a chunk that has already been decompressed without error.
  *
- * @param deflate
- * @param shuffle
- * @param chunk_size
- * @param elem_width
+ * @param deflate True if the chunk should be 'inflated'
+ * @param shuffle True if the chunk should be 'unshuffled'
+ * @param chunk_size The _expected_ chunk size, in elements; used to allocate storage
+ * @param elem_width The number of bytes per element
  */
 void Chunk::inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width)
 {
