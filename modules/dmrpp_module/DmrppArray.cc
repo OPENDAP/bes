@@ -945,7 +945,7 @@ void DmrppArray::read_chunks_unconstrained()
             if (bytes != sizeof(tid))
                 throw BESInternalError(string("Could not read the thread id: ").append(strerror(errno)), __FILE__, __LINE__);
 
-            if (!(tid >= 0 && tid < DmrppRequestHandler::d_max_parallel_transfers)) {
+            if (!(tid < DmrppRequestHandler::d_max_parallel_transfers)) {
                 ostringstream oss("Invalid thread id read after thread exit: ");
                 oss << tid;
                 throw BESInternalError(oss.str(), __FILE__, __LINE__);
