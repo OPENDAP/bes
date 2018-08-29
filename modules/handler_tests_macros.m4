@@ -54,7 +54,7 @@ m4_define([_AT_BESCMD_SCRUB_DATES_TEST], [dnl
     input=$1
     baseline=$2
     pass=$3
-
+        
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
         AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
@@ -201,12 +201,36 @@ dnl
 dnl Note that the macro depends on the baseline being a file.
 dnl
 dnl jhrg 6/3/16
- 
+dnl
+dnl
+dnl I replaced this function with the one following which is somewhat more lenient w.r.t. format and time zone. 
+dnl ndp - 8/29/18
+dnl m4_define([REMOVE_DATE_TIME], [dnl
+dnl    sed 's@[[0-9]]\{4\}-[[0-9]]\{2\}-[[0-9]]\{2\} [[0-9]]\{2\}:[[0-9]]\{2\}:[[0-9]]\{2\}@removed date-time@g' < $1 > $1.sed
+dnl    dnl '
+dnl    mv $1.sed $1
+dnl])
+
+
+dnl Here is a correct (and lenient) regex for ISO-8601 date-time:
+dnl [0-9]{4}-[0-9]{2}-[0-9]{2}(T| )[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]{3})?([a-zA-Z])?([a-zA-Z])?([a-zA-Z])?([a-zA-Z])?([a-zA-Z])?
+dnl
+dnl Unfortunately sed won't run that so I have had to dissemble the regex into a shoddy spectre of its full
+dnl glory.
+dnl
 m4_define([REMOVE_DATE_TIME], [dnl
-    sed 's@[[0-9]]\{4\}-[[0-9]]\{2\}-[[0-9]]\{2\} [[0-9]]\{2\}:[[0-9]]\{2\}:[[0-9]]\{2\}@removed date-time@g' < $1 > $1.sed
-    dnl '
+    sed -e 's@[[0-9]]\{4\}-[[0-9]]\{2\}-[[0-9]]\{2\}T[[0-9]]\{2\}:[[0-9]]\{2\}:[[0-9]]\{2\}@MONGO@g' \
+    -e 's@[[0-9]]\{4\}-[[0-9]]\{2\}-[[0-9]]\{2\} [[0-9]]\{2\}:[[0-9]]\{2\}:[[0-9]]\{2\}@MONGO@g' \
+    -e 's@MONGO.[[0-9]]\{3\}@MONGO@g' \
+    -e 's@MONGOUTC@removed date-time@g' \
+    -e 's@MONGOGMT@removed date-time@g' \
+    -e 's@MONGOZ@removed date-time@g' \
+    < $1 > $1.sed
     mv $1.sed $1
 ])
+
+
+
 
 dnl Given a filename, remove the <Value> element of a DAP4 data response as
 dnl printed by getdap4 so that we don't have issues with comparing data values
