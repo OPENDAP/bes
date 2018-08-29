@@ -44,7 +44,7 @@ BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
 
 BES.FollowSymLinks=No
-BES.Catalog.catalog.FollowSymLinks=No
+BES.Catalog.catalog.FollowSymLinks=Yes
 
 BES.Info.Buffered=no
 BES.Info.Type=xml

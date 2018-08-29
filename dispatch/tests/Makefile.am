@@ -26,7 +26,7 @@ CLEANFILES = test_config.h
 .PHONY: cache-clean
 cache-clean:
 	-rm -rf blocking cache create_and_lock create_and_lock_2 create_and_lock_3 read_hooks
-	
+
 noinst_HEADERS = test_config.h
 
 BUILT_SOURCES = test_config.h
@@ -50,9 +50,9 @@ clean-local: cache-clean
 	-rm -f $(TESTSUITE) $(srcdir)/package.m4 
 
 # Force the tests here to run; use -v until we sort out the intermittent issues
-# with these tests
+# with these tests. 
 check-local: $(TESTSUITE) atconfig atlocal 
-	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) --jobs=1 --verbose 
+	$(SHELL) '$(TESTSUITE)'$(TESTSUITEFLAGS)
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 

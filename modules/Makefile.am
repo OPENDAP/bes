@@ -7,10 +7,10 @@ AUTOMAKE_OPTIONS = foreign
 # Might move these to a child directory for testing things. jhrg 5/16/18
 EXTRA_DIST = read_test_baseline.cc read_test_baseline.h
 
-SUBDIRS = csv_handler usage asciival www-interface freeform_handler
+SUBDIRS = csv_handler usage asciival www-interface freeform_handler dmrpp_module
 
 if BES_DEVELOPER
-SUBDIRS += debug_functions dmrpp_module
+SUBDIRS += debug_functions
 endif
 
 if BUILD_HDF4
