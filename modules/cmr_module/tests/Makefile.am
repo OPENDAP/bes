@@ -1,25 +1,12 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
--I$(top_srcdir)/modules/cmr_module $(DAP_CFLAGS)
-LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
-
-# These are not used by automake but are often useful for certain types of
-# debugging. The best way to use these is to run configure as:
-#     export CXXFLAGS='...'; ./configure --disable-shared
-# the --disable-shared is not required, but it seems to help with debuggers.
-CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
-TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
-
 noinst_DATA = bes.conf cache
 
 CLEANFILES = bes.conf cache
 
-EXTRA_DIST = cmr_catalog $(TESTSUITE).at $(TESTSUITE) \
-atlocal.in package.m4 $(BES_CONF_IN) 
-
-# handler_tests_macros.m4 
+EXTRA_DIST = cmr_catalog $(TESTSUITE).at $(TESTSUITE) atlocal.in \
+$(BES_CONF_IN) package.m4
 
 DISTCLEANFILES = atconfig
 
@@ -39,9 +26,8 @@ cache:
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te
- 
-TESTSUITE = $(srcdir)/testsuite 
-TESTSUITEFLAGS =
+
+TESTSUITE = $(srcdir)/testsuite
 
 check-local: $(TESTSUITE) atconfig atlocal bes.conf
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
@@ -56,11 +42,8 @@ clean-local:
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
-testsuite: testsuite.at $(srcdir)/package.m4 
-	$(AUTOTEST) -I '$(srcdir)' -o testsuite  testsuite.at
-
-# % : %.at
-#	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
+$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 
+	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
 # The `:;' works around a Bash 3.2 bug when the output is not writeable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac
