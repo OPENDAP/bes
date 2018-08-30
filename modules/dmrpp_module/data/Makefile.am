@@ -4,79 +4,7 @@ AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = $(DAP_CFLAGS) $(BES_CPPFLAGS) -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch
 AM_CXXFLAGS = 
 
-# Don't install this program. jhrg 8/30/18
-# bin_PROGRAMS = build_dmrpp
-
-# build_dmrpp_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)/modules/dmrpp_module \
-# -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
-
-# build_dmrpp_SOURCES = build_dmrpp.cc
-
-# I tried linking with the HDF5 module, but that didn't work. The error was
-# "... file was built for archive which is not the architecture being linked."
-# jhrg 5/11/18
-#
-# HDF5_MODULE = $(H5_LDFLAGS) $(H5_LIBS) $(GCTP_LIBS) -L$(top_builddir)/modules/hdf5_handler -lhdf5_module
-
-# Explictily linking with the .a archive removes the warnings about the .so
-# being a module and not a real library. jhrg 5/11/18
-#
-# DMRPP_MODULE = -L$(top_builddir)/modules/dmrpp_module -ldmrpp_module
-# DMRPP_MODULE = $(top_builddir)/modules/dmrpp_module/.libs/libdmrpp_module.a
-# ../DmrppModule.o 
-
-DMRPP_OBJS = ../DMRpp.o ../DmrppCommon.o ../Chunk.o			\
-../CurlHandlePool.o ../DmrppRequestHandler.o ../DmrppByte.o		\
-../DmrppArray.o ../DmrppFloat32.o ../DmrppFloat64.o ../DmrppInt16.o	\
-../DmrppInt32.o ../DmrppInt64.o ../DmrppInt8.o ../DmrppUInt16.o		\
-../DmrppUInt32.o ../DmrppUInt64.o ../DmrppStr.o ../DmrppStructure.o	\
-../DmrppUrl.o ../DmrppD4Enum.o ../DmrppD4Group.o ../DmrppD4Opaque.o	\
-../DmrppD4Sequence.o ../DmrppTypeFactory.o ../DmrppParserSax2.o		\
-../DmrppMetadataStore.o
-
-# BESDAP_MODULE = $(top_builddir)/dap/.libs/libdap_module.a
-# $(BESDAP_MODULE) 
-# ../../../dap/BESDapModule.o 
-
-DAP_MODULE_OBJS = \
-../../../dap/BESDASResponseHandler.o \
-../../../dap/BESDDSResponseHandler.o \
-../../../dap/BESDDXResponseHandler.o \
-../../../dap/BESDataResponseHandler.o \
-../../../dap/BESDataDDXResponseHandler.o \
-../../../dap/BESDMRResponseHandler.o \
-../../../dap/BESDap4ResponseHandler.o \
-../../../dap/BESDapRequestHandler.o \
-../../../dap/BESDapTransmit.o \
-../../../dap/BESDapResponse.o \
-../../../dap/BESDASResponse.o \
-../../../dap/BESDDSResponse.o \
-../../../dap/BESDataDDSResponse.o \
-../../../dap/BESDMRResponse.o \
-../../../dap/BESDapError.o \
-../../../dap/BESDapErrorInfo.o \
-../../../dap/BESDapService.o \
-../../../dap/BESDapResponseBuilder.o \
-../../../dap/BESDapFunctionResponseCache.o \
-../../../dap/BESStoredDapResultCache.o \
-../../../dap/BESDapNullAggregationServer.o \
-../../../dap/DapFunctionUtils.o \
-../../../dap/CachedSequence.o \
-../../../dap/CacheTypeFactory.o \
-../../../dap/TempFile.o \
-../../../dap/CacheMarshaller.o \
-../../../dap/CacheUnMarshaller.o \
-../../../dap/ObjMemCache.o \
-../../../dap/ShowPathInfoResponseHandler.o \
-../../../dap/GlobalMetadataStore.o
-
-# build_dmrpp_LDADD = $(DMRPP_OBJS) $(DAP_MODULE_OBJS)		\
-# $(BES_DISPATCH_LIB) $(BES_EXTRA_LIBS) $(H5_LDFLAGS) $(H5_LIBS)	\
-# $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
-
 # noinst_PROGRAMS = endian_convert multiball keepalive2
-
-# noinst_PROGRAMS = build_dmrpp
 
 # endian_convert_SOURCES = endian_convert.cc
 # endian_convert_LDADD = $(DAP_SERVER_LIBS)
