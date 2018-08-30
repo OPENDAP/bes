@@ -25,13 +25,13 @@ DISTCLEANFILES = test_config.h *.Po
 
 CLEANFILES = bes.conf *.dbg *.log 
 
-EXTRA_DIST = test_config.h.in bes.conf.in
+EXTRA_DIST = test_config.h.in bes.conf.in 
 
 check_PROGRAMS = $(UNIT_TESTS)
 
 TESTS = $(UNIT_TESTS)
 
-noinst_DATA = bes.conf
+noinst_DATA = bes.conf $(builddir)/static-cache
 
 BUILT_SOURCES = test_config.h
 
@@ -57,6 +57,10 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
+
+$(builddir)/static-cache:
+	cp -r $(srcdir)<dir> $(builddir)<dir>
+	
 ############################################################################
 # Unit Tests
 #
@@ -74,6 +78,10 @@ check-local:
 	@echo "**********************************************************"
 	@echo ""
 endif
+
+clean-local:
+	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
+	-rm -rf $(builddir)/static-cache
 
 OBJS = ../RemoteHttpResource.o \
 ../curl_utils.o \
