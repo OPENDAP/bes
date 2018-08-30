@@ -4,7 +4,8 @@ AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = $(DAP_CFLAGS) $(BES_CPPFLAGS) -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch
 AM_CXXFLAGS = 
 
-bin_PROGRAMS = build_dmrpp
+# Don't install this program. jhrg 8/30/18
+# bin_PROGRAMS = build_dmrpp
 
 build_dmrpp_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)/modules/dmrpp_module \
 -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
@@ -21,7 +22,6 @@ build_dmrpp_SOURCES = build_dmrpp.cc
 # being a module and not a real library. jhrg 5/11/18
 #
 # DMRPP_MODULE = -L$(top_builddir)/modules/dmrpp_module -ldmrpp_module
-
 # DMRPP_MODULE = $(top_builddir)/modules/dmrpp_module/.libs/libdmrpp_module.a
 # ../DmrppModule.o 
 
@@ -76,6 +76,8 @@ $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
 
 # noinst_PROGRAMS = endian_convert multiball keepalive2
 
+noinst_PROGRAMS = build_dmrpp
+
 # endian_convert_SOURCES = endian_convert.cc
 # endian_convert_LDADD = $(DAP_SERVER_LIBS)
 
@@ -104,7 +106,7 @@ EXTRA_PROGRAMS =
 
 noinst_DATA = mds_for_tests
 
-EXTRA_DIST = get_dmrpp.sh README dmrpp mds_for_tests s3 s3_data old
+EXTRA_DIST = get_dmrpp.sh README dmrpp mds_for_tests s3 s3_data
 
 CLEANFILES = *~
 
