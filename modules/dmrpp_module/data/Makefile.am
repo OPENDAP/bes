@@ -4,7 +4,8 @@ AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = $(DAP_CFLAGS) $(BES_CPPFLAGS) -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch
 AM_CXXFLAGS = 
 
-bin_PROGRAMS = build_dmrpp
+# Don't install this program. jhrg 8/30/18
+# bin_PROGRAMS = build_dmrpp
 
 build_dmrpp_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)/modules/dmrpp_module \
 -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
@@ -22,13 +23,19 @@ build_dmrpp_SOURCES = build_dmrpp.cc
 #
 # DMRPP_MODULE = -L$(top_builddir)/modules/dmrpp_module -ldmrpp_module
 
-DMRPP_MODULE = $(top_builddir)/modules/dmrpp_module/.libs/libdmrpp_module.a
-BESDAP_MODULE = $(top_builddir)/dap/.libs/libdap_module.a
+# DMRPP_MODULE = $(top_builddir)/modules/dmrpp_module/.libs/libdmrpp_module.so
+# BESDAP_MODULE = $(top_builddir)/dap/.libs/libdap_module.so
 
-build_dmrpp_LDADD = $(HDF5_MODULE) $(DMRPP_MODULE) $(BES_DISPATCH_LIB) $(BESDAP_MODULE) $(BES_EXTRA_LIBS) \
-$(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
+DMRPP_MODULE = $(top_builddir)/modules/dmrpp_module/.libs/libdmrpp_module.so
+BESDAP_MODULE = $(top_builddir)/dap/.libs/libdap_module.so
+
+build_dmrpp_LDADD = $(DMRPP_MODULE) $(BES_DISPATCH_LIB)		\
+$(BESDAP_MODULE) $(BES_EXTRA_LIBS) $(H5_LDFLAGS) $(H5_LIBS)	\
+$(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
 
 # noinst_PROGRAMS = endian_convert multiball keepalive2
+
+noinst_PROGRAMS = build_dmrpp
 
 # endian_convert_SOURCES = endian_convert.cc
 # endian_convert_LDADD = $(DAP_SERVER_LIBS)
@@ -58,7 +65,7 @@ EXTRA_PROGRAMS =
 
 noinst_DATA = mds_for_tests
 
-EXTRA_DIST = get_dmrpp.sh README dmrpp mds_for_tests s3 s3_data old
+EXTRA_DIST = get_dmrpp.sh README dmrpp mds_for_tests s3 s3_data
 
 CLEANFILES = *~
 
