@@ -22,11 +22,57 @@ build_dmrpp_SOURCES = build_dmrpp.cc
 #
 # DMRPP_MODULE = -L$(top_builddir)/modules/dmrpp_module -ldmrpp_module
 
-DMRPP_MODULE = $(top_builddir)/modules/dmrpp_module/.libs/libdmrpp_module.a
-BESDAP_MODULE = $(top_builddir)/dap/.libs/libdap_module.a
+# DMRPP_MODULE = $(top_builddir)/modules/dmrpp_module/.libs/libdmrpp_module.a
+# ../DmrppModule.o 
 
-build_dmrpp_LDADD = $(HDF5_MODULE) $(DMRPP_MODULE) $(BES_DISPATCH_LIB) $(BESDAP_MODULE) $(BES_EXTRA_LIBS) \
-$(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
+DMRPP_OBJS = ../DMRpp.o ../DmrppCommon.o ../Chunk.o			\
+../CurlHandlePool.o ../DmrppRequestHandler.o ../DmrppByte.o		\
+../DmrppArray.o ../DmrppFloat32.o ../DmrppFloat64.o ../DmrppInt16.o	\
+../DmrppInt32.o ../DmrppInt64.o ../DmrppInt8.o ../DmrppUInt16.o		\
+../DmrppUInt32.o ../DmrppUInt64.o ../DmrppStr.o ../DmrppStructure.o	\
+../DmrppUrl.o ../DmrppD4Enum.o ../DmrppD4Group.o ../DmrppD4Opaque.o	\
+../DmrppD4Sequence.o ../DmrppTypeFactory.o ../DmrppParserSax2.o		\
+../DmrppMetadataStore.o
+
+# BESDAP_MODULE = $(top_builddir)/dap/.libs/libdap_module.a
+# $(BESDAP_MODULE) 
+# ../../../dap/BESDapModule.o 
+
+DAP_MODULE_OBJS = \
+../../../dap/BESDASResponseHandler.o \
+../../../dap/BESDDSResponseHandler.o \
+../../../dap/BESDDXResponseHandler.o \
+../../../dap/BESDataResponseHandler.o \
+../../../dap/BESDataDDXResponseHandler.o \
+../../../dap/BESDMRResponseHandler.o \
+../../../dap/BESDap4ResponseHandler.o \
+../../../dap/BESDapRequestHandler.o \
+../../../dap/BESDapTransmit.o \
+../../../dap/BESDapResponse.o \
+../../../dap/BESDASResponse.o \
+../../../dap/BESDDSResponse.o \
+../../../dap/BESDataDDSResponse.o \
+../../../dap/BESDMRResponse.o \
+../../../dap/BESDapError.o \
+../../../dap/BESDapErrorInfo.o \
+../../../dap/BESDapService.o \
+../../../dap/BESDapResponseBuilder.o \
+../../../dap/BESDapFunctionResponseCache.o \
+../../../dap/BESStoredDapResultCache.o \
+../../../dap/BESDapNullAggregationServer.o \
+../../../dap/DapFunctionUtils.o \
+../../../dap/CachedSequence.o \
+../../../dap/CacheTypeFactory.o \
+../../../dap/TempFile.o \
+../../../dap/CacheMarshaller.o \
+../../../dap/CacheUnMarshaller.o \
+../../../dap/ObjMemCache.o \
+../../../dap/ShowPathInfoResponseHandler.o \
+../../../dap/GlobalMetadataStore.o
+
+build_dmrpp_LDADD = $(DMRPP_OBJS) $(DAP_MODULE_OBJS)		\
+$(BES_DISPATCH_LIB) $(BES_EXTRA_LIBS) $(H5_LDFLAGS) $(H5_LIBS)	\
+$(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
 
 # noinst_PROGRAMS = endian_convert multiball keepalive2
 
