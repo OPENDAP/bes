@@ -100,24 +100,12 @@ rpm: dist
 
 # This target is pretty specific to our need to build a RPM for use at
 # GSFC and JPL. We are assuming that the user has the rpmbuild dirs.
-#
-# Note: NASA is now using the all-static-rpm build and this is deprecated.
-# jhrg 1/25/16
-nasarpm: dist
-	cp @PACKAGE@-@PACKAGE_VERSION@.tar.gz ~/rpmbuild/SOURCES
-	rpmbuild -bb $(RPM_OPTIONS) bes.spec.nasa
-
-# This target is pretty specific to our need to build a RPM for use at
-# GSFC and JPL. We are assuming that the user has the rpmbuild dirs.
 # This will link with everything it can find in the local deps dir,
 # removing the need for EPEL
 all-static-rpm: dist
 	cp @PACKAGE@-@PACKAGE_VERSION@.tar.gz ~/rpmbuild/SOURCES
 	rpmbuild -bb $(RPM_OPTIONS) bes.spec.all_static
 
-# cp @PACKAGE@-@PACKAGE_VERSION@.tar.gz ~/rpmbuild/SOURCES
-# rpmbuild -bb $(RPM_OPTIONS) bes.spec
-#
 # Old comment: 
 # We used to use -tb and feed it the source tar.gz but with the new
 # 'modules' build of the bes there are multiple .spec files in the resulting
