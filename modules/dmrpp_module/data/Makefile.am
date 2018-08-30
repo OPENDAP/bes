@@ -7,10 +7,10 @@ AM_CXXFLAGS =
 # Don't install this program. jhrg 8/30/18
 # bin_PROGRAMS = build_dmrpp
 
-build_dmrpp_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)/modules/dmrpp_module \
--I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+# build_dmrpp_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)/modules/dmrpp_module \
+# -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 
-build_dmrpp_SOURCES = build_dmrpp.cc
+# build_dmrpp_SOURCES = build_dmrpp.cc
 
 # I tried linking with the HDF5 module, but that didn't work. The error was
 # "... file was built for archive which is not the architecture being linked."
@@ -70,13 +70,13 @@ DAP_MODULE_OBJS = \
 ../../../dap/ShowPathInfoResponseHandler.o \
 ../../../dap/GlobalMetadataStore.o
 
-build_dmrpp_LDADD = $(DMRPP_OBJS) $(DAP_MODULE_OBJS)		\
-$(BES_DISPATCH_LIB) $(BES_EXTRA_LIBS) $(H5_LDFLAGS) $(H5_LIBS)	\
-$(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
+# build_dmrpp_LDADD = $(DMRPP_OBJS) $(DAP_MODULE_OBJS)		\
+# $(BES_DISPATCH_LIB) $(BES_EXTRA_LIBS) $(H5_LDFLAGS) $(H5_LIBS)	\
+# $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
 
 # noinst_PROGRAMS = endian_convert multiball keepalive2
 
-noinst_PROGRAMS = build_dmrpp
+# noinst_PROGRAMS = build_dmrpp
 
 # endian_convert_SOURCES = endian_convert.cc
 # endian_convert_LDADD = $(DAP_SERVER_LIBS)
