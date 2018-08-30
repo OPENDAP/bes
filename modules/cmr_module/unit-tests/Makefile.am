@@ -59,7 +59,7 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 
 
 $(builddir)/static-cache:
-	cp -r $(srcdir)static-cache $(builddir)static-cache
+	cp -r $(srcdir)/static-cache $(builddir)/static-cache
 	
 ############################################################################
 # Unit Tests
