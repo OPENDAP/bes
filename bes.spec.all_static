@@ -214,7 +214,7 @@ exit 0
 # %doc __distribution_docs/api-html/
 
 %changelog
-* 5/22/18 - 3.19.1
+* Thu Aug 30 2018 James Gallagher <jgallagher@opendap.org> - 3.19.1-1.static
 - Added build_dmrpp, localBesGetDap, and populateMDS to bin
 
 * Thu Apr  2 2015 EC2 James Gallagher <jgallagher@opendap.org> - 3.13.2-1.NASA

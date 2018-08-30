@@ -52,7 +52,7 @@ clean-local: cache-clean
 # Force the tests here to run; use -v until we sort out the intermittent issues
 # with these tests. 
 check-local: $(TESTSUITE) atconfig atlocal 
-	$(SHELL) '$(TESTSUITE)'$(TESTSUITEFLAGS)
+	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
