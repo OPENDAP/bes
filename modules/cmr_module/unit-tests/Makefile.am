@@ -25,13 +25,13 @@ DISTCLEANFILES = test_config.h *.Po
 
 CLEANFILES = bes.conf *.dbg *.log 
 
-EXTRA_DIST = static-cache test_config.h.in bes.conf.in 
+EXTRA_DIST = test_config.h.in bes.conf.in 
 
 check_PROGRAMS = $(UNIT_TESTS)
 
 TESTS = $(UNIT_TESTS)
 
-noinst_DATA = bes.conf static-cache
+noinst_DATA = bes.conf $(abs_builddir)/static-cache
 
 BUILT_SOURCES = test_config.h
 
@@ -53,12 +53,24 @@ BES_CONF_IN = bes.conf.in
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
 # configure's value for the parameter when running the distcheck target.
 bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
+	@echo "# abs_top_srcdir: $(abs_top_srcdir)" 
+	@echo "# top_srcdir: $(top_srcdir)" 
+	@echo "# srcdir: $(srcdir)" 
+	@echo "# abs_top_builddir: $(abs_top_builddir)" 
+	@echo "# abs_builddir: $(abs_builddir)" 
+	@echo "# builddir: $(builddir)" 
 	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
 	
-static-cache:
+$(abs_builddir)/static-cache:
+	@echo "# abs_top_srcdir: $(abs_top_srcdir)" 
+	@echo "# top_srcdir: $(top_srcdir)" 
+	@echo "# srcdir: $(srcdir)" 
+	@echo "# abs_top_builddir: $(abs_top_builddir)" 
+	@echo "# abs_builddir: $(abs_builddir)" 
+	@echo "# builddir: $(builddir)" 
 	@echo "# Coping preloaded CMR cache from: '$(top_srcdir)/modules/cmr_module/data/cmr_cache_for_tests' to '$(builddir)/static-cache'" 
 	cp -r $(top_srcdir)/modules/cmr_module/data/cmr_cache_for_tests $(builddir)/static-cache
 	chmod -R ug+w $(builddir)/static-cache

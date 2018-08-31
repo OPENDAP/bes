@@ -143,7 +143,7 @@ void RemoteHttpResource::retrieveResource()
         ostringstream oss;
         oss << __func__ << "() - FAILED to get local cache."
             " Unable to proceed with request for " << this->d_remoteResourceUrl
-            << " The gateway_MODULE MUST have a valid cache configuration to operate." << endl;
+            << " The cmr_module MUST have a valid cache configuration to operate." << endl;
         BESDEBUG(MODULE, oss.str());
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
