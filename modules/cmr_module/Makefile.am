@@ -35,7 +35,7 @@ CMR_HDR = CmrApi.h CmrError.h CmrCatalog.h Granule.h \
 	CmrModule.h CmrUtils.h CmrContainer.h CmrContainerStorage.h CmrNames.h
 	
 
-EXTRA_DIST = rapidjson cmr.conf.in
+EXTRA_DIST = rapidjson cmr.conf.in data
 
 CLEANFILES = *~ cmr.conf
 

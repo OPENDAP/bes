@@ -31,7 +31,7 @@ check_PROGRAMS = $(UNIT_TESTS)
 
 TESTS = $(UNIT_TESTS)
 
-noinst_DATA = bes.conf $(abs_builddir)/static-cache
+noinst_DATA = bes.conf $(abs_builddir)/static-cache 
 
 BUILT_SOURCES = test_config.h
 
