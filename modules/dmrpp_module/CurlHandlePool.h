@@ -31,14 +31,6 @@
 
 #include <curl/curl.h>
 
-#if 0
-// FIXME Needs config.h - fix this. jhrg 8/27/18
-#if HAVE_CURL_MULTI_H
-#include <curl/multi.h>
-#endif
-#endif
-
-
 namespace dmrpp {
 
 class Chunk;
