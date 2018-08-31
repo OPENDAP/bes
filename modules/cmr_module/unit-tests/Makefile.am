@@ -25,13 +25,13 @@ DISTCLEANFILES = test_config.h *.Po
 
 CLEANFILES = bes.conf *.dbg *.log 
 
-EXTRA_DIST = test_config.h.in bes.conf.in static-cache
+EXTRA_DIST = static-cache test_config.h.in bes.conf.in 
 
 check_PROGRAMS = $(UNIT_TESTS)
 
 TESTS = $(UNIT_TESTS)
 
-noinst_DATA = bes.conf $(builddir)/static-cache
+noinst_DATA = bes.conf static-cache
 
 BUILT_SOURCES = test_config.h
 
@@ -57,9 +57,11 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
-
-$(builddir)/static-cache:
-	cp -r $(srcdir)/static-cache $(builddir)/static-cache
+	
+static-cache:
+	@echo "# Coping preloaded CMR cache from: '$(top_srcdir)/modules/cmr_module/data/cmr_cache_for_tests' to '$(builddir)/static-cache'" 
+	cp -r $(top_srcdir)/modules/cmr_module/data/cmr_cache_for_tests $(builddir)/static-cache
+	chmod -R ug+w $(builddir)/static-cache
 	
 ############################################################################
 # Unit Tests
@@ -80,8 +82,7 @@ check-local:
 endif
 
 clean-local:
-	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
-	-rm -rf $(builddir)/static-cache
+	test ! -d $(builddir)/static-cache || rm -rf $(builddir)/static-cache
 
 OBJS = ../RemoteHttpResource.o \
 ../curl_utils.o \
