@@ -82,7 +82,14 @@ endif
 clean-local:
 	-rm -rf mds mds_ledger.txt
 
-OBJS = ../*.o
+OBJS = ../DMRpp.o ../DmrppCommon.o ../Chunk.o ../CurlHandlePool.o	\
+../DmrppByte.o ../DmrppArray.o ../DmrppFloat32.o ../DmrppFloat64.o	\
+../DmrppInt16.o ../DmrppInt32.o ../DmrppInt64.o ../DmrppInt8.o		\
+../DmrppUInt16.o ../DmrppUInt32.o ../DmrppUInt64.o ../DmrppStr.o	\
+../DmrppStructure.o ../DmrppUrl.o ../DmrppD4Enum.o ../DmrppD4Group.o	\
+../DmrppD4Opaque.o ../DmrppD4Sequence.o ../DmrppTypeFactory.o		\
+../DmrppParserSax2.o ../DmrppMetadataStore.o ../DmrppRequestHandler.o
+
 
 ChunkTest_SOURCES = ChunkTest.cc
 ChunkTest_LDADD = $(OBJS) $(LIBADD)
