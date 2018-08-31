@@ -191,7 +191,7 @@ public:
 
     void setUp()
     {
-        TheBESKeys::ConfigFile = string(TEST_SRC_DIR).append("/bes.conf");
+        TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
 
         TheBESKeys::TheKeys()->set_key("BES.Catalog.Default=default");
         TheBESKeys::TheKeys()->set_key("BES.Data.RootDirectory=/dev/null");
