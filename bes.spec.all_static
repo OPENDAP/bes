@@ -27,6 +27,7 @@ Requires:       readline bzip2 zlib
 Requires:	libicu >= 3.6 
 Requires:       libxml2 >= 2.7.0
 Requires:       openssl
+
 # Requires:	netcdf >= 4.1 
 # Requires:	hdf5 => 1.8
 # Build and run against a static hdf4/hdfeos2 library because hdfeos2
@@ -45,6 +46,8 @@ BuildRequires:  libxml2-devel >= 2.7.0
 BuildRequires:	libicu-devel >= 3.6
 BuildRequires:  openssl-devel
 BuildRequires:  pkgconfig
+
+# only RH7 onward BuildRequires:  systemd
 # BuildRequires:	netcdf-devel >= 4.1 
 # BuildRequires:	hdf5-devel => 1.8
 # BuildRequires:	hdf >= 4.2
@@ -182,7 +185,7 @@ exit 0
 %{_bindir}/besctl
 %{_bindir}/hyraxctl
 %{_bindir}/bescmdln
-# %{_bindir}/build_dmrpp FIXME - figure out how to add this back in. jhrg 8/30/18
+%{_bindir}/build_dmrpp
 %{_bindir}/localBesGetDap
 %{_bindir}/populateMDS
 

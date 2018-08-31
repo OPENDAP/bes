@@ -174,7 +174,7 @@ exit 0
 %{_bindir}/besctl
 %{_bindir}/hyraxctl
 %{_bindir}/bescmdln
-# %{_bindir}/build_dmrpp
+%{_bindir}/build_dmrpp
 %{_bindir}/localBesGetDap
 %{_bindir}/populateMDS
 
