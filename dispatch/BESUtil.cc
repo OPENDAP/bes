@@ -63,10 +63,12 @@ using std::string;
 #include "BESNotFoundError.h"
 #include "BESInternalError.h"
 #include "BESLog.h"
+#include "BESCatalogList.h"
 
 #define CRLF "\r\n"
 
 #define debug_key "BesUtil"
+#define prolog string("BESUtil::").append(__func__).append("() - ")
 
 const string BES_KEY_TIMEOUT_CANCEL = "BES.CancelTimeoutOnSend";
 
@@ -1044,4 +1046,62 @@ string BESUtil::get_time(time_t the_time, bool use_local_time)
 
     return buf;
 }
+
+/**
+ * @brief Splits the string s into the return vector of tokens using the delimiter delim
+ * and skipping empty values as instructed by skip_empty.
+ *
+ * @param s The string to tokenize.
+ * @param delim The character delimiter to utilize during tokenization. default: '/'
+ * @param skip_empty A boolean flag which controls if empty tokens are returned.
+ * @return A vector of strings each of which is a token in the string read left to right.
+ */
+std::vector<std::string> BESUtil::split(const std::string &s, char delim, bool skip_empty)
+{
+    std::stringstream ss(s);
+    std::string item;
+    vector<std::string> tokens;
+    while (getline(ss, item, delim)) {
+        if(skip_empty && !item.empty())
+            tokens.push_back(item);
+    }
+    return tokens;
+}
+
+
+
+
+BESCatalog *BESUtil::separateCatalogFromPath(std::string &ppath)
+{
+    BESCatalog *catalog = 0;    // pointer to a singleton; do not delete
+    vector<string> path_tokens;
+
+    // BESUtil::normalize_path() removes duplicate separators and adds leading and trailing separators as directed.
+    string path = BESUtil::normalize_path(ppath, false, false);
+    BESDEBUG(debug_key, prolog << "Normalized path: " << path << endl);
+
+    // Because we may need to alter the container/file/resource name by removing
+    // a catalog name from the first node in the path we use "use_container" to store
+    // the altered container path.
+    string use_container = ppath;
+
+    // Breaks path into tokens
+    BESUtil::tokenize(path, path_tokens);
+    if (!path_tokens.empty()) {
+        BESDEBUG(debug_key, "First path token: " << path_tokens[0] << endl);
+        catalog = BESCatalogList::TheCatalogList()->find_catalog(path_tokens[0]);
+        if (catalog) {
+            BESDEBUG(debug_key, prolog << "Located catalog " << catalog->get_catalog_name() << " from path component" << endl);
+            // Since the catalog name is in the path we
+            // need to drop it this should leave container
+            // with a leading
+            ppath = BESUtil::normalize_path(path.substr(path_tokens[0].length()), true, false);
+            BESDEBUG(debug_key, prolog << "Modified container/path value to:  " << use_container << endl);
+        }
+    }
+
+    return catalog;
+}
+
+
 

@@ -33,6 +33,8 @@
 
 #include "curl_utils.h"
 
+using namespace std;
+
 namespace gateway {
 
 // Set this to 1 to turn on libcurl's verbose mode (for debugging).

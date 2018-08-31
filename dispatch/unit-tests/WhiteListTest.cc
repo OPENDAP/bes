@@ -87,8 +87,8 @@ public:
     {
         if (bes_debug) BESDebug::SetUp("cerr,all");
 
+        string bes_conf = BESUtil::assemblePath(TEST_SRC_DIR,"remote_access_test.ini");
 
-        string bes_conf = (string) TEST_SRC_DIR + "/remote_access_test.ini";
         TheBESKeys::ConfigFile = bes_conf;
 
         TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.RootDirectory",catalog_root_dir);
