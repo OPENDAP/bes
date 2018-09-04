@@ -41,7 +41,7 @@ class RemoteHttpResource;
 
 /** @brief Container representing a remote request
  *
- * The real name of a GatewayContainer is the actual remote request. When the
+ * The real name of a CmrContainer is the actual remote request. When the
  * access method is called the remote request is made, the response
  * saved to file if successful, and the target response returned as the real
  * container that a data handler would then open.

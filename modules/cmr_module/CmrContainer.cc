@@ -55,7 +55,7 @@ namespace cmr {
  * @param sym_name symbolic name representing this remote container
  * @param real_name the virtual CMR path to a dataset or file.
  * @throws BESSyntaxUserError if the path does not validate
- * @see GatewayUtils
+ * @see CmrUtils
  */
 CmrContainer::CmrContainer(const string &sym_name,
         const string &real_name, const string &type) :
@@ -188,7 +188,7 @@ string CmrContainer::access() {
     BESDEBUG( MODULE, prolog << "Done accessing " << *this << endl);
     BESDEBUG( MODULE, prolog << "END" << endl);
 
-    return cachedResource;    // this should return the file name from the GatewayCache
+    return cachedResource;    // this should return the file name from the CmrCache
 }
 
 
