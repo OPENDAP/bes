@@ -36,7 +36,7 @@ AUTOM4TE = autom4te
 
 TESTSUITE = $(srcdir)/ASCII_HandlerTest
 
-$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4 
+#$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4 
 
 check-local: $(TESTSUITE) atconfig atlocal 
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)

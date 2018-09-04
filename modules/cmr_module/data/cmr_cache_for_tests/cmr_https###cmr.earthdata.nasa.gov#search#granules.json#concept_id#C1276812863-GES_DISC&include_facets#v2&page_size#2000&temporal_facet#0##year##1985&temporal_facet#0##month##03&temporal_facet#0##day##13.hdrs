@@ -1,0 +1,13 @@
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: CMR-Hits, CMR-Request-Id
+CMR-Hits: 1
+CMR-Request-Id: e424a916-ac0d-4b7f-b4b3-07e13c44308e
+CMR-Took: 31
+Content-Encoding: gzip
+Content-Type: application/json; charset=utf-8
+Date: Thu, 26 Jul 2018 18:04:14 GMT
+Server: nginx
+Strict-Transport-Security: max-age=31536000; includeSubDomains;
+Vary: Accept-Encoding, User-Agent
+Content-Length: 1113
+Connection: keep-alive

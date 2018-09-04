@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response reqID="[thread:http-nio-8080-exec-4-42][bes_client:/-2]" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <showNode>
+        <node count="31" lastModified="removed date-time" name="/CMR/C1276812863-GES_DISC/temporal/2002/03">
+            <item lastModified="removed date-time" name="01" type="node"/>
+            <item lastModified="removed date-time" name="02" type="node"/>
+            <item lastModified="removed date-time" name="03" type="node"/>
+            <item lastModified="removed date-time" name="04" type="node"/>
+            <item lastModified="removed date-time" name="05" type="node"/>
+            <item lastModified="removed date-time" name="06" type="node"/>
+            <item lastModified="removed date-time" name="07" type="node"/>
+            <item lastModified="removed date-time" name="08" type="node"/>
+            <item lastModified="removed date-time" name="09" type="node"/>
+            <item lastModified="removed date-time" name="10" type="node"/>
+            <item lastModified="removed date-time" name="11" type="node"/>
+            <item lastModified="removed date-time" name="12" type="node"/>
+            <item lastModified="removed date-time" name="13" type="node"/>
+            <item lastModified="removed date-time" name="14" type="node"/>
+            <item lastModified="removed date-time" name="15" type="node"/>
+            <item lastModified="removed date-time" name="16" type="node"/>
+            <item lastModified="removed date-time" name="17" type="node"/>
+            <item lastModified="removed date-time" name="18" type="node"/>
+            <item lastModified="removed date-time" name="19" type="node"/>
+            <item lastModified="removed date-time" name="20" type="node"/>
+            <item lastModified="removed date-time" name="21" type="node"/>
+            <item lastModified="removed date-time" name="22" type="node"/>
+            <item lastModified="removed date-time" name="23" type="node"/>
+            <item lastModified="removed date-time" name="24" type="node"/>
+            <item lastModified="removed date-time" name="25" type="node"/>
+            <item lastModified="removed date-time" name="26" type="node"/>
+            <item lastModified="removed date-time" name="27" type="node"/>
+            <item lastModified="removed date-time" name="28" type="node"/>
+            <item lastModified="removed date-time" name="29" type="node"/>
+            <item lastModified="removed date-time" name="30" type="node"/>
+            <item lastModified="removed date-time" name="31" type="node"/>
+        </node>
+    </showNode>
+</response>
