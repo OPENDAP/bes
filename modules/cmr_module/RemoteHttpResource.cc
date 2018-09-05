@@ -70,7 +70,7 @@ RemoteHttpResource::RemoteHttpResource(const string &url) {
 
     d_remoteResourceUrl = url;
 
-    BESDEBUG(MODULE, "RemoteHttpResource() - URL: " << d_remoteResourceUrl << endl);
+    BESDEBUG(MODULE, prolog << "URL: " << d_remoteResourceUrl << endl);
 
     // EXAMPLE: returned value parameter for CURL *
     //
@@ -83,7 +83,7 @@ RemoteHttpResource::RemoteHttpResource(const string &url) {
 
     configureProxy(d_curl, d_remoteResourceUrl); // Configure the a proxy for this url (if appropriate).
 
-    BESDEBUG(MODULE, "RemoteHttpResource() - d_curl: " << d_curl << endl);
+    BESDEBUG(MODULE,  prolog << "d_curl: " << d_curl << endl);
 }
 
 /**
@@ -91,32 +91,32 @@ RemoteHttpResource::RemoteHttpResource(const string &url) {
  * ( Closes the file descriptor opened when retrieveResource() was called.)
  */RemoteHttpResource::~RemoteHttpResource()
 {
-    BESDEBUG(MODULE, "~RemoteHttpResource() - BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
+    BESDEBUG(MODULE,  prolog << "BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
 
     delete d_response_headers;
     d_response_headers = 0;
-    BESDEBUG(MODULE, "~RemoteHttpResource() - Deleted d_response_headers." << endl);
+    BESDEBUG(MODULE,  prolog << "Deleted d_response_headers." << endl);
 
     delete d_request_headers;
     d_request_headers = 0;
-    BESDEBUG(MODULE, "~RemoteHttpResource() - Deleted d_request_headers." << endl);
+    BESDEBUG(MODULE,  prolog << "Deleted d_request_headers." << endl);
 
     if (!d_resourceCacheFileName.empty()) {
         CmrCache *cache = CmrCache::get_instance();
         if (cache) {
             cache->unlock_and_close(d_resourceCacheFileName);
-            BESDEBUG(MODULE, "~RemoteHttpResource() - Closed and unlocked "<< d_resourceCacheFileName << endl);
+            BESDEBUG(MODULE,  prolog << "Closed and unlocked "<< d_resourceCacheFileName << endl);
             d_resourceCacheFileName.clear();
         }
     }
 
     if (d_curl) {
         curl_easy_cleanup(d_curl);
-        BESDEBUG(MODULE, "~RemoteHttpResource() - Called curl_easy_cleanup()." << endl);
+        BESDEBUG(MODULE,  prolog << "Called curl_easy_cleanup()." << endl);
     }
     d_curl = 0;
 
-    BESDEBUG(MODULE, "~RemoteHttpResource() - END   resourceURL: " << d_remoteResourceUrl << endl);
+    BESDEBUG(MODULE, prolog << "END   resourceURL: " << d_remoteResourceUrl << endl);
     d_remoteResourceUrl.clear();
 }
 
@@ -129,11 +129,10 @@ RemoteHttpResource::RemoteHttpResource(const string &url) {
  */
 void RemoteHttpResource::retrieveResource()
 {
-    BESDEBUG(MODULE,
-        "RemoteHttpResource::retrieveResource() - BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
+    BESDEBUG(MODULE, prolog << "BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
 
     if (d_initialized) {
-        BESDEBUG(MODULE, "RemoteHttpResource::retrieveResource() - END  Already initialized." << endl);
+        BESDEBUG(MODULE,  prolog << "END  Already initialized." << endl);
         return;
     }
 
@@ -151,8 +150,7 @@ void RemoteHttpResource::retrieveResource()
     // Get the name of the file in the cache (either the code finds this file or
     // or it makes it).
     d_resourceCacheFileName = cache->get_cache_file_name(d_remoteResourceUrl);
-    BESDEBUG(MODULE,
-        "RemoteHttpResource::retrieveResource() - d_resourceCacheFileName: " << d_resourceCacheFileName << endl);
+    BESDEBUG(MODULE, prolog << "d_resourceCacheFileName: " << d_resourceCacheFileName << endl);
 
     // @TODO MAKE THIS RETRIEVE THE CACHED DATA TYPE IF THE CACHED RESPONSE IF FOUND
     // We need to know the type of the resource. HTTP headers are the preferred  way to determine the type.
@@ -161,12 +159,11 @@ void RemoteHttpResource::retrieveResource()
     // from the url. If down below we DO an HTTP GET then the headers will be evaluated and the type set by setType()
     // But really - we gotta fix this.
     CmrUtils::Get_type_from_url(d_remoteResourceUrl, d_type);
-    BESDEBUG(MODULE, "RemoteHttpResource::retrieveResource() - d_type: " << d_type << endl);
+    BESDEBUG(MODULE,  prolog << "d_type: " << d_type << endl);
 
     try {
         if (cache->get_read_lock(d_resourceCacheFileName, d_fd)) {
-            BESDEBUG(MODULE,
-                "RemoteHttpResource::retrieveResource() - Remote resource is already in cache. cache_file_name: " << d_resourceCacheFileName << endl);
+            BESDEBUG(MODULE, prolog << "Remote resource is already in cache. cache_file_name: " << d_resourceCacheFileName << endl);
 
             // #########################################################################################################
             // I think in this if() is where we need to load the headers from the cache if we have them.
@@ -217,33 +214,31 @@ void RemoteHttpResource::retrieveResource()
             // other processes from purging the new file and ensures that the reading
             // process can use it.
             cache->exclusive_to_shared_lock(d_fd);
-            BESDEBUG(MODULE,
-                "RemoteHttpResource::retrieveResource() - Converted exclusive cache lock to shared lock." << endl);
+            BESDEBUG(MODULE, prolog << "Converted exclusive cache lock to shared lock." << endl);
 
             // Now update the total cache size info and purge if needed. The new file's
             // name is passed into the purge method because this process cannot detect its
             // own lock on the file.
             unsigned long long size = cache->update_cache_info(d_resourceCacheFileName);
-            BESDEBUG(MODULE, "RemoteHttpResource::retrieveResource() - Updated cache info" << endl);
+            BESDEBUG(MODULE, prolog << "Updated cache info" << endl);
 
             if (cache->cache_too_big(size)) {
                 cache->update_and_purge(d_resourceCacheFileName);
-                BESDEBUG(MODULE, "RemoteHttpResource::retrieveResource() - Updated and purged cache." << endl);
+                BESDEBUG(MODULE,  prolog << "Updated and purged cache." << endl);
             }
-            BESDEBUG(MODULE, "RemoteHttpResource::retrieveResource() - END" << endl);
+            BESDEBUG(MODULE,  prolog << "END" << endl);
             d_initialized = true;
             return;
         }
         else {
             if (cache->get_read_lock(d_resourceCacheFileName, d_fd)) {
-                BESDEBUG(MODULE,
-                    "RemoteHttpResource::retrieveResource() - Remote resource is in cache. cache_file_name: " << d_resourceCacheFileName << endl);
+                BESDEBUG(MODULE, prolog << "Remote resource is in cache. cache_file_name: " << d_resourceCacheFileName << endl);
                 d_initialized = true;
                 return;
             }
         }
 
-        string msg = "RemoteHttpResource::retrieveResource() - Failed to acquire cache read lock for remote resource: '";
+        string msg = prolog + "Failed to acquire cache read lock for remote resource: '";
         msg += d_remoteResourceUrl + "\n";
         throw libdap::Error(msg);
 

@@ -18,7 +18,6 @@ BES.module.cmr=@bes_modules_dir@/libcmr_module.so
 # CMR.Reference: URL to the FoJson Reference Page at docs.opendap.org"
 CMR.Reference=http://docs.opendap.org/index.php/BES_-_Modules_-_CMR_Catalog
 
-
 BES.Catalog.CMR.RootDirectory=UNUSED
 # BES.Catalog.CMR.FollowSymLinks=
 # BES.Catalog.CMR.Exclude=
@@ -43,3 +42,7 @@ CMR.Collections=C179003030-ORNL_DAAC
 CMR.Collections+=C1276812863-GES_DISC
 
 CMR.Facets=temporal
+
+# The CMR service needs to be on the whitelist
+Gateway.Whitelist+=https://cmr.earthdata.nasa.gov/search
+

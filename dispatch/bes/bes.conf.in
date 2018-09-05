@@ -1,7 +1,5 @@
-#-----------------------OPeNDAP BES Initialization file-----------------#
+#------------------ OPeNDAP BES Initialization file --------------------#
 #                                                                       #
-#       National Center for Atmospheric Research (NCAR)                 #
-#       High Altitude Observatory (HAO)	                                #
 #       Key entries for OPeNDAP BES run time behavior                   #
 #                                                                       #
 #-----------------------------------------------------------------------#
@@ -78,10 +76,22 @@ BES.UncompressCache.size=500
 
 # BES.CancelTimeoutOnSend=true
 
-#-----------------------------------------------------------------------#
+#########################################################################
+#                                                                       #
 # NOTE: It is unlikely that you will need to change anything below      #
 #       this comment.                                                   #
 #-----------------------------------------------------------------------#
+
+# Because the Hyrax is often tasked with accessing services using the 
+# internets we maintain a whitelist of services which Hyrax is allowed 
+# to access. By default, Hyrax is allowed to access itself. If additional
+# services are to be added to the whitelist do so by adding the new 
+# service URL to the site.conf file using += syntax like this:
+#
+#     Gateway.Whitelist+=http://test.opendap.org/opendap
+# 
+#
+Gateway.Whitelist=http://localhost
 
 # If you intend to use the BES as a standalone server, set the value
 # of BES.Data.RootDirectory to point to your data and disregard the
