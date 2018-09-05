@@ -37,6 +37,7 @@ using std::string;
 
 #include "BESCatalog.h"
 #include "BESInternalError.h"
+#include "CmrNames.h"
 
 class BESCatalogEntry;
 class BESCatalogUtils;
@@ -56,7 +57,7 @@ private:
 
 
 public:
-    CmrCatalog(const std::string &name = "CMR");
+    CmrCatalog(const std::string &name = CMR_CATALOG_NAME);
     virtual ~CmrCatalog();
 
     /**
