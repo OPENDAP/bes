@@ -37,16 +37,16 @@
 namespace cmr {
 
 /**
- * @brief A cache for data files accessed using the Gateway.
+ * @brief A cache for content accessed via the CMR.
  *
  * This cache is a simple cache for data files implemented using
  * advisory file locking on a POSIX file system (it is a specialization
  * of BESFileLockingCache).
  *
  * This cache uses the following keys in the bes.conf file:
- * - _Gateway.Cache.dir_: The directory where retrieved data files should be stored
- * - _Gateway.Cache.prefix_: The item-name prefix for this cache
- * - _Gateway.Cache.size_: The size of the cache. Limit the total amount of
+ * - _CMR.Cache.dir_: The directory where retrieved data files should be stored
+ * - _CMR.Cache.prefix_: The item-name prefix for this cache
+ * - _CMR.Cache.size_: The size of the cache. Limit the total amount of
  *   data cached to this many MB. If zero, the cache size is unlimited.
  *
  * All of the keys must be defined for this cache (the BES uses several caches
