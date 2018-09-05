@@ -38,6 +38,7 @@
 #include <ostream>
 
 #include "BESCatalog.h"
+#include "CatalogItem.h"
 
 class BESCatalogEntry;
 
@@ -55,6 +56,9 @@ using std::string;
  */
 class BESCatalogDirectory: public BESCatalog {
 private:
+    bes::CatalogItem *make_item(string item, string fullpath) const;
+    bes::CatalogItem *make_item(string item) const;
+
 
 public:
     BESCatalogDirectory(const std::string &name);

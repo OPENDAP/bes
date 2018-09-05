@@ -83,9 +83,7 @@ private:
     BESCatalogUtils::match_citer match_list_begin() const;
     BESCatalogUtils::match_citer match_list_end() const;
 
-    BESCatalogUtils()
-    {
-    }
+    BESCatalogUtils():d_follow_syms(false) {}
 
     static void bes_add_stat_info(BESCatalogEntry *entry, struct stat &buf);
 

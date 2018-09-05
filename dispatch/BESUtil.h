@@ -37,6 +37,7 @@
 #include <list>
 #include <iostream>
 #include <vector>
+#include <BESCatalog.h>
 
 using std::string;
 using std::list;
@@ -114,8 +115,15 @@ public:
     static void tokenize(const std::string& str, std::vector<std::string>& tokens, const std::string& delimiters = "/");
     static string get_time(bool use_local_time = false);
     static string get_time(time_t the_time, bool use_local_time = false);
+    static std::vector<std::string> split(const string &s, char delim='/', bool skip_empty=true);
+
+    static BESCatalog *separateCatalogFromPath(std::string &path);
+
 
 };
+
+
+
 
 #endif // E_BESUtil_h
 

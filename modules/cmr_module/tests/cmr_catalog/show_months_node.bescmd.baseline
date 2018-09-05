@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response reqID="[thread:http-nio-8080-exec-4-42][bes_client:/-2]" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <showNode>
+        <node count="12" lastModified="removed date-time" name="/CMR/C1276812863-GES_DISC/temporal/2002">
+            <item lastModified="removed date-time" name="01" type="node"/>
+            <item lastModified="removed date-time" name="02" type="node"/>
+            <item lastModified="removed date-time" name="03" type="node"/>
+            <item lastModified="removed date-time" name="04" type="node"/>
+            <item lastModified="removed date-time" name="05" type="node"/>
+            <item lastModified="removed date-time" name="06" type="node"/>
+            <item lastModified="removed date-time" name="07" type="node"/>
+            <item lastModified="removed date-time" name="08" type="node"/>
+            <item lastModified="removed date-time" name="09" type="node"/>
+            <item lastModified="removed date-time" name="10" type="node"/>
+            <item lastModified="removed date-time" name="11" type="node"/>
+            <item lastModified="removed date-time" name="12" type="node"/>
+        </node>
+    </showNode>
+</response>
