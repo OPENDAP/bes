@@ -45,6 +45,8 @@
 #include "CurlHandlePool.h"
 #include "Chunk.h"
 
+#define KEEP_ALIVE 1    // Reuse libcurl easy handles (1) or not (0).
+
 #define MAX_WAIT_MSECS 30*1000 /* Wait max. 30 seconds */
 
 using namespace dmrpp;
@@ -82,8 +84,8 @@ dmrpp_easy_handle::dmrpp_easy_handle()
     if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPIDLE, 120L)))
         throw string("CURL Error: ").append(curl_easy_strerror(res));
 
-    /* interval time between keep-alive probes: 60 seconds */
-    if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPINTVL, 60L)))
+    /* interval time between keep-alive probes: 120 seconds */
+    if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPINTVL, 120L)))
         throw string("CURL Error: ").append(curl_easy_strerror(res));
 
     d_in_use = false;
@@ -356,7 +358,7 @@ CurlHandlePool::CurlHandlePool() : d_multi_handle(0)
 dmrpp_easy_handle *
 CurlHandlePool::get_easy_handle(Chunk *chunk)
 {
-    Lock lock(d_get_easy_handle_mutex);
+    Lock lock(d_get_easy_handle_mutex); // RAII
 
     dmrpp_easy_handle *handle = 0;
     for (vector<dmrpp_easy_handle *>::iterator i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
@@ -417,7 +419,19 @@ void CurlHandlePool::release_handle(dmrpp_easy_handle *handle)
     // jhrg 8/21/18
     Lock lock(d_get_easy_handle_mutex);
 
+#if KEEP_ALIVE
     handle->d_url = "";
     handle->d_chunk = 0;
     handle->d_in_use = false;
+#else
+    // This is to test the effect of libcurl Keep Alive support
+    // Find the handle; erase from the vector; delete; allocate a new handle and push it back on
+    for (std::vector<dmrpp_easy_handle *>::iterator i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
+        if (*i == handle) {
+            d_easy_handles.erase(i);
+        }
+    }
+    delete handle;
+    d_easy_handles.push_back(new dmrpp_easy_handle());
+#endif
 }
