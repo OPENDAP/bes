@@ -52,6 +52,10 @@ AC_ARG_ENABLE([asan], [AS_HELP_STRING([--enable-asan], [Use the address sanitize
      cxx_debug_flags="$cxx_debug_flags -fsanitize=address -fno-omit-frame-pointer"], 
     [AM_CONDITIONAL([USE_ASAN], [false])])
 
+AC_ARG_WITH([cmr], [AS_HELP_STRING([--with-cmr], [Build and include the CMR Module (built by default in developer mode)])], 
+    [AM_CONDITIONAL([WITH_CMR], [true])],
+    [AM_CONDITIONAL([WITH_CMR], [AM_COND_IF([BES_DEVELOPER], [true], [flase])])])
+
 dnl Only set CXXFLAGS if the caller didn't supply a value
 AS_IF([test -z "${CXXFLAGS+set}"], [CXXFLAGS="$cxx_debug_flags"])
 
