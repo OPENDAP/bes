@@ -170,9 +170,11 @@ void RemoteHttpResource::retrieveResource()
             string hdr_filename = cache->get_cache_file_name(d_remoteResourceUrl + ".hdrs");
             std::ifstream hdr_ifs(hdr_filename.c_str());
             try {
+                BESDEBUG(MODULE, prolog << "Reading response headers from cache: " << endl);
                 for (std::string line; std::getline(hdr_ifs, line); ){
                     (*d_response_headers).push_back(line);
-                }
+                    BESDEBUG(MODULE, prolog << line << endl);
+               }
             }
             catch(...){
                 hdr_ifs.close();
