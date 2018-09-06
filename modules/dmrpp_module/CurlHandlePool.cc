@@ -43,7 +43,7 @@
 #include "CurlHandlePool.h"
 #include "Chunk.h"
 
-#define KEEP_ALIVE 1    // Reuse libcurl easy handles (1) or not (0).
+#define KEEP_ALIVE 1   // Reuse libcurl easy handles (1) or not (0).
 
 #define MAX_WAIT_MSECS 30*1000 /* Wait max. 30 seconds */
 
@@ -276,13 +276,16 @@ void dmrpp_multi_handle::read_data()
             }
 
             // If we are here, the request was successful.
-
             dmrpp_easy_handle->d_chunk->set_is_read(true);  // Set the is_read() property for chunk here.
-            DmrppRequestHandler::curl_handle_pool->release_handle(dmrpp_easy_handle);
 
+            // NB: Remove the handle from the CURLM* and _then_ call release_handle()
+            // so that the KEEP_ALIVE 0 (off) works. Calling delete on the dmrpp_easy_handle
+            // will invalidate 'eh', so call that after removing 'eh'.
             mres = curl_multi_remove_handle(p_impl->curlm, eh);
             if (mres != CURLM_OK)
                 throw BESInternalError(string("Could not remove libcurl handle: ").append(curl_multi_strerror(mres)),  __FILE__, __LINE__);
+
+            DmrppRequestHandler::curl_handle_pool->release_handle(dmrpp_easy_handle);
         }
         else {  // != CURLMSG_DONE
             throw BESInternalError("Error getting HTTP or FILE responses.", __FILE__, __LINE__);
