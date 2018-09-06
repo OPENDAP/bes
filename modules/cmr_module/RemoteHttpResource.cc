@@ -196,7 +196,7 @@ void RemoteHttpResource::retrieveResource()
             // I think right here is where I would be able to cache the data type/response headers. While I have
             // the exclusive lock I could open another cache file for metadata and write to it.
             {
-                string hdr_filename = cache->get_cache_file_name(d_remoteResourceUrl + ".hdrs");
+                string hdr_filename = cache->get_cache_file_name(d_remoteResourceUrl) + ".hdrs";
                 std::ofstream hdr_out(hdr_filename.c_str());
                 try {
                     for(size_t i=0; i<this->d_response_headers->size() ;i++){
@@ -288,8 +288,8 @@ void RemoteHttpResource::writeResourceToFile(int fd) {
         int status = lseek(fd, 0, SEEK_SET);
         if (-1 == status)
             throw BESError("Could not seek within the response.", BES_NOT_FOUND_ERROR, __FILE__, __LINE__);
-
         BESDEBUG(MODULE, prolog << "Reset file descriptor." << endl);
+
         ingest_http_headers_and_type();
     }
     catch (libdap::Error &e) {
