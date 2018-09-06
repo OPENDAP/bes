@@ -167,13 +167,13 @@ void RemoteHttpResource::retrieveResource()
 
             // #########################################################################################################
             // I think in this if() is where we need to load the headers from the cache if we have them.
-            string hdr_filename = cache->get_cache_file_name(d_remoteResourceUrl + ".hdrs");
+            string hdr_filename = cache->get_cache_file_name(d_remoteResourceUrl) + ".hdrs";
             std::ifstream hdr_ifs(hdr_filename.c_str());
             try {
-                BESDEBUG(MODULE, prolog << "Reading response headers from cache: " << endl);
+                BESDEBUG(MODULE, prolog << "Reading response headers from: " << hdr_filename << endl);
                 for (std::string line; std::getline(hdr_ifs, line); ){
                     (*d_response_headers).push_back(line);
-                    BESDEBUG(MODULE, prolog << line << endl);
+                    BESDEBUG(MODULE, prolog << "header:   " << line << endl);
                }
             }
             catch(...){
