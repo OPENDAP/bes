@@ -32,9 +32,7 @@
 #include <curl/multi.h>
 #endif
 
-#if !HAVE_CURL_MULTI_H
 #include "util.h"   // long_to_string()
-#endif
 
 #include "BESDebug.h"
 #include "BESInternalError.h"
@@ -428,10 +426,11 @@ void CurlHandlePool::release_handle(dmrpp_easy_handle *handle)
     // Find the handle; erase from the vector; delete; allocate a new handle and push it back on
     for (std::vector<dmrpp_easy_handle *>::iterator i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
         if (*i == handle) {
-            d_easy_handles.erase(i);
+            BESDEBUG("dmrpp:5", "Found a handle match for the " << i - d_easy_handles.begin() << "th easy handle." << endl);
+            delete handle;
+            *i = new dmrpp_easy_handle();
+            break;
         }
     }
-    delete handle;
-    d_easy_handles.push_back(new dmrpp_easy_handle());
 #endif
 }
