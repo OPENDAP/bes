@@ -9,7 +9,7 @@ EXTRA_DIST = read_test_baseline.cc read_test_baseline.h
 
 SUBDIRS = csv_handler usage asciival www-interface freeform_handler dmrpp_module
 
-if CMR_MODULE || BES_DEVELOPER
+if WITH_CMR
 SUBDIRS += cmr_module 
 endif
 
