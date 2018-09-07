@@ -52,6 +52,16 @@ libdmrpp_module_la_SOURCES = $(BES_HDRS) $(BES_SRCS)
 libdmrpp_module_la_LDFLAGS = -avoid-version -module 
 libdmrpp_module_la_LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(H5_LDFLAGS) $(H5_LIBS) -ltest-types 
 
+# bin_PROGRAMS = build_dmrpp
+
+# build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS) \
+# -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+
+# build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) build_dmrpp.cc
+
+# build_dmrpp_LDADD = $(BES_DISPATCH_LIB) $(DAP_MODULE_OBJS) $(BES_EXTRA_LIBS) \
+# $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
+
 EXTRA_PROGRAMS = 
 
 EXTRA_DIST = dmrpp.conf.in
