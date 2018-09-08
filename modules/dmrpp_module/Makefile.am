@@ -1,7 +1,9 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+
+# removed $(H5_CPPFLAGS) 
 
 ACLOCAL_AMFLAGS = -I conf
 AM_CXXFLAGS = 

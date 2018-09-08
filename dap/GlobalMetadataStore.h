@@ -98,6 +98,7 @@ private:
         d_instance = 0;
     }
 
+    friend class DmrppMetadataStore;
     friend class DmrppMetadataStoreTest;
     friend class GlobalMetadataStoreTest;
 
