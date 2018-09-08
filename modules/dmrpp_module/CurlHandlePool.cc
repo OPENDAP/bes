@@ -25,6 +25,7 @@
 
 #include <string>
 #include <sstream>
+#include <cstring>
 
 #include <curl/curl.h>
 
@@ -74,17 +75,23 @@ dmrpp_easy_handle::dmrpp_easy_handle()
     if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_WRITEFUNCTION, chunk_write_data)))
         throw BESInternalError(string("CURL Error: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
 
+#ifdef CURLOPT_TCP_KEEPALIVE
     /* enable TCP keep-alive for this transfer */
     if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPALIVE, 1L)))
         throw string("CURL Error: ").append(curl_easy_strerror(res));
+#endif
 
+#ifdef CURLOPT_TCP_KEEPIDLE
     /* keep-alive idle time to 120 seconds */
     if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPIDLE, 120L)))
         throw string("CURL Error: ").append(curl_easy_strerror(res));
+#endif
 
+#ifdef CURLOPT_TCP_KEEPINTVL
     /* interval time between keep-alive probes: 120 seconds */
     if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPINTVL, 120L)))
         throw string("CURL Error: ").append(curl_easy_strerror(res));
+#endif
 
     d_in_use = false;
     d_url = "";
@@ -157,7 +164,7 @@ void dmrpp_easy_handle::read_data()
  * @note This uses the pimpl pattern.
  */
 struct dmrpp_multi_handle::multi_handle {
-#if HAVE_CURL_MULTI_H
+#if HAVE_CURL_MULTI_API
     CURLM *curlm;
 #else
     std::vector<dmrpp_easy_handle *> ehandles;
@@ -167,14 +174,14 @@ struct dmrpp_multi_handle::multi_handle {
 dmrpp_multi_handle::dmrpp_multi_handle()
 {
     p_impl = new multi_handle;
-#if HAVE_CURL_MULTI_H
+#if HAVE_CURL_MULTI_API
     p_impl->curlm = curl_multi_init();
 #endif
 }
 
 dmrpp_multi_handle::~dmrpp_multi_handle()
 {
-#if HAVE_CURL_MULTI_H
+#if HAVE_CURL_MULTI_API
     curl_multi_cleanup(p_impl->curlm);
 #endif
     delete p_impl;
@@ -190,7 +197,7 @@ dmrpp_multi_handle::~dmrpp_multi_handle()
  */
 void dmrpp_multi_handle::add_easy_handle(dmrpp_easy_handle *eh)
 {
-#if HAVE_CURL_MULTI_H
+#if HAVE_CURL_MULTI_API
     curl_multi_add_handle(p_impl->curlm, eh->d_handle);
 #else
     p_impl->ehandles.push_back(eh);
@@ -199,7 +206,7 @@ void dmrpp_multi_handle::add_easy_handle(dmrpp_easy_handle *eh)
 
 // This is only used if we don't have the Multi API and have to use pthreads.
 // jhrg 8/27/18
-#if !HAVE_CURL_MULTI_H
+#if !HAVE_CURL_MULTI_API
 static void *easy_handle_read_data(void *handle)
 {
     dmrpp_easy_handle *eh = reinterpret_cast<dmrpp_easy_handle*>(handle);
@@ -227,7 +234,7 @@ static void *easy_handle_read_data(void *handle)
  */
 void dmrpp_multi_handle::read_data()
 {
-#if HAVE_CURL_MULTI_H
+#if HAVE_CURL_MULTI_API
     // Use the libcurl Multi API here. Alternate version follows...
 
     int still_running = 0;
