@@ -151,23 +151,23 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_shufzip_twoD.h5.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([chunked/chunked_shufzip_twoD.h5.dods])
 
 dnl Test new types - jhrg 5/24/18
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([new_types/chunked_scalar_string.h5.dap], [xfail])
-AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/chunked_scalar_string.h5.dods], [xfail])
+dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([new_types/chunked_scalar_string.h5.dap], [xfail])
+dnl AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/chunked_scalar_string.h5.dods], [xfail])
 
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([new_types/chunked_string_array.h5.dap], [xfail])
-AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/chunked_string_array.h5.dods], [xfail])
+dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([new_types/chunked_string_array.h5.dap], [xfail])
+dnl AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/chunked_string_array.h5.dods], [xfail])
 
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([new_types/chunked_compound.h5.dap], [xfail])
-AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/chunked_compound.h5.dods], [xfail])
+dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([new_types/chunked_compound.h5.dap], [xfail])
+dnl AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/chunked_compound.h5.dods], [xfail])
 
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([new_types/chunked_enum.h5.dap], [xfail])
-AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/chunked_enum.h5.dods], [xfail])
+dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([new_types/chunked_enum.h5.dap], [xfail])
+dnl AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/chunked_enum.h5.dods], [xfail])
 
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([new_types/chunked_opaque.h5.dap], [xfail])
-AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/chunked_opaque.h5.dods], [xfail])
+dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([new_types/chunked_opaque.h5.dap], [xfail])
+dnl AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/chunked_opaque.h5.dods], [xfail])
 
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([new_types/ntypes.h5.dap], [xfail])
-AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/ntypes.h5.dods], [xfail])
+dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([new_types/ntypes.h5.dap], [xfail])
+dnl AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/ntypes.h5.dods], [xfail])
 
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([new_types/nc4_group_atomic.h5.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/nc4_group_atomic.h5.dods])

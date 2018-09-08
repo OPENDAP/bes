@@ -31,6 +31,7 @@ BES.UncompressCache.size=500
 
 Gateway.Whitelist = *
 Gateway.Whitelist += https://s3.amazonaws.com/cloudydap/
+Gateway.Whitelist += http://s3.amazonaws.com/cloudydap/
 
 # The default for DMRPP.UseParallelTransfers is true
 DMRPP.UseParallelTransfers = false
