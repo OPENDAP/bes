@@ -54,6 +54,7 @@
 
 // Used with BESDEBUG
 static const string dmrpp_3 = "dmrpp:3";
+static const string dmrpp_4 = "dmrpp:4";
 
 using namespace libdap;
 using namespace std;
@@ -121,7 +122,9 @@ bool DmrppArray::is_projected()
  * location 1,1,1 (zero-based indexing) would be at offset 1*1 + 1*4 + 1 * 4*3 == 15.
  *
  * @note When getting the whole AIRS file, the profiler shows that the code spends
- * about 1s here.
+ * about 1s here. There is a better performing replacement for this function. See
+ * multiplier(const vector<unsigned int> &shape, unsigned int k) below in
+ * read_chunk_unconstrained() and elsewhere in this file.
  *
  * @param address_in_target N-tuple zero-based index of an element in N-space
  * @param target_shape N-tuple of the array's dimension sizes.
@@ -137,12 +140,11 @@ static unsigned long long get_index(const vector<unsigned int> &address_in_targe
     unsigned long long multiplier = *shape_index++;
     unsigned long long offset = *index++;
 
-    // TODO unroll this loop
     while (index != index_end) {
         assert(*index < *shape_index); // index < shape for each dim
 
         offset += multiplier * *index++;
-        multiplier *= *shape_index++;   // TODO Remove the unneeded multiply. jhrg 3/24/17
+        multiplier *= *shape_index++;
     }
 
     return offset;
@@ -687,9 +689,6 @@ void DmrppArray::read_chunks()
     reserve_value_capacity(get_size(true));
     vector<unsigned int> constrained_array_shape = get_shape(true);
 
-    // TODO A potential optimization of this code would be to run the insert_chunk()
-    // method in a child thread than will let the main thread return to reading more
-    // data.
     BESDEBUG(dmrpp_3, "d_use_parallel_transfers: " << DmrppRequestHandler::d_use_parallel_transfers << endl);
     BESDEBUG(dmrpp_3, "d_max_parallel_transfers: " << DmrppRequestHandler::d_max_parallel_transfers << endl);
 
@@ -1049,14 +1048,18 @@ bool DmrppArray::read()
     // Single chunk and 'contiguous' are the same for this code.
 
     if (get_immutable_chunks().size() == 1 || get_chunk_dimension_sizes().empty()) {
+        BESDEBUG(dmrpp_4, "Calling read_contiguous() for " << name() << endl);
         read_contiguous();    // Throws on various errors
     }
     else {  // Handle the more complex case where the data is chunked.
-        if (!is_projected())
+        if (!is_projected()) {
+            BESDEBUG(dmrpp_4, "Calling read_chunks_unconstrained() for " << name() << endl);
             read_chunks_unconstrained();
-        else
+        }
+        else {
+            BESDEBUG(dmrpp_4, "Calling read_chunks() for " << name() << endl);
             read_chunks();
-
+        }
     }
 
     return true;

@@ -27,6 +27,7 @@ Requires:       readline bzip2 zlib
 Requires:	libicu >= 3.6 
 Requires:       libxml2 >= 2.7.0
 Requires:       openssl
+
 # Requires:	netcdf >= 4.1 
 # Requires:	hdf5 => 1.8
 # Build and run against a static hdf4/hdfeos2 library because hdfeos2
@@ -45,6 +46,8 @@ BuildRequires:  libxml2-devel >= 2.7.0
 BuildRequires:	libicu-devel >= 3.6
 BuildRequires:  openssl-devel
 BuildRequires:  pkgconfig
+
+# only RH7 onward BuildRequires:  systemd
 # BuildRequires:	netcdf-devel >= 4.1 
 # BuildRequires:	hdf5-devel => 1.8
 # BuildRequires:	hdf >= 4.2
@@ -214,7 +217,7 @@ exit 0
 # %doc __distribution_docs/api-html/
 
 %changelog
-* 5/22/18 - 3.19.1
+* Thu Aug 30 2018 James Gallagher <jgallagher@opendap.org> - 3.19.1-1.static
 - Added build_dmrpp, localBesGetDap, and populateMDS to bin
 
 * Thu Apr  2 2015 EC2 James Gallagher <jgallagher@opendap.org> - 3.13.2-1.NASA

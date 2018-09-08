@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -38,26 +38,28 @@
 /** @brief error thrown if there is a user syntax error in the request or
  * any other user error
  */
-class BESSyntaxUserError : public BESError
-{
+class BESSyntaxUserError: public BESError {
 protected:
-      			BESSyntaxUserError() {}
+    BESSyntaxUserError()
+    {
+    }
 public:
-      			BESSyntaxUserError( const string &s,
-					  const string &file,
-					  unsigned int line )
-			    : BESError( s, BES_SYNTAX_USER_ERROR,
-			                file, line ) {}
-    virtual		~BESSyntaxUserError() {}
+    BESSyntaxUserError(const string &s, const string &file, unsigned int line) :
+        BESError(s, BES_SYNTAX_USER_ERROR, file, line)
+    {
+    }
 
-    virtual void	dump( ostream &strm ) const
-			{
-			    strm << "BESSyntaxUserError::dump - ("
-			         << (void *)this << ")" << endl ;
-			    BESIndent::Indent() ;
-			    BESError::dump( strm ) ;
-			    BESIndent::UnIndent() ;
-			}
+    virtual ~BESSyntaxUserError()
+    {
+    }
+
+    virtual void dump(ostream &strm) const
+    {
+        strm << "BESSyntaxUserError::dump - (" << (void *) this << ")" << endl;
+        BESIndent::Indent();
+        BESError::dump(strm);
+        BESIndent::UnIndent();
+    }
 
 };
 

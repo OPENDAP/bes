@@ -64,7 +64,7 @@ public:
     // Called before each test
     void setUp()
     {
-        TheBESKeys::ConfigFile = string(TEST_SRC_DIR).append("/bes.conf");
+        TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
 
         d_node = new CatalogNode;
         d_node->set_name("/test");

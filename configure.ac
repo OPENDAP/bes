@@ -52,6 +52,10 @@ AC_ARG_ENABLE([asan], [AS_HELP_STRING([--enable-asan], [Use the address sanitize
      cxx_debug_flags="$cxx_debug_flags -fsanitize=address -fno-omit-frame-pointer"], 
     [AM_CONDITIONAL([USE_ASAN], [false])])
 
+AC_ARG_WITH([cmr], [AS_HELP_STRING([--with-cmr], [Build and include the CMR Module (built by default in developer mode)])], 
+    [AM_CONDITIONAL([WITH_CMR], [true])],
+    [AM_CONDITIONAL([WITH_CMR], [AM_COND_IF([BES_DEVELOPER], [true], [flase])])])
+
 dnl Only set CXXFLAGS if the caller didn't supply a value
 AS_IF([test -z "${CXXFLAGS+set}"], [CXXFLAGS="$cxx_debug_flags"])
 
@@ -132,6 +136,9 @@ dnl The DMR++ handler uses, conditionally, the Multi API. These tests determine
 dnl if that API is present (iff the multi.h header is present). jhrg 8/27/18
 AC_CHECK_HEADERS([curl/curl.h])
 AC_CHECK_HEADERS([curl/multi.h])
+
+AC_SEARCH_LIBS([curl_multi_wait], [curl],
+    [AC_DEFINE([HAVE_CURL_MULTI_API],[1],[Does libcurl have the multi API])], [], [])
 
 dnl Checks for header files.
 AC_HEADER_STDC

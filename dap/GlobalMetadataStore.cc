@@ -456,7 +456,7 @@ GlobalMetadataStore::write_ledger()
  * @param name The name to hash
  * @return The SHA256 hash of the name.
  */
-inline string
+string
 GlobalMetadataStore::get_hash(const string &name)
 {
     if (name.empty())
