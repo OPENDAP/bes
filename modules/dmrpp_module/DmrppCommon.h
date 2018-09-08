@@ -148,7 +148,7 @@ public:
 
     void print_dmrpp(libdap::XMLWriter &writer, bool constrained = false);
 
-    // Replaced hsize_t with size_t. jhrg 9/7/18
+    // Replaced hsize_t with size_t. This eliminates a dependency on hdf5. jhrg 9/7/18
     /// @brief Set the value of the chunk dimension sizes given a vector of HDF5 hsize_t
     void set_chunk_dimension_sizes(const std::vector<size_t> &chunk_dims)
     {

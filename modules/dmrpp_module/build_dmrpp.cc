@@ -336,8 +336,8 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
                     VERBOSE(cerr << "Number of dimensions in a chunk is " << num_chunk_dims << endl);
 
                     // Get chunking information: rank and dimensions
-                    vector<hsize_t> chunk_dims(num_chunk_dims);
-                    unsigned int rank_chunk = H5Pget_chunk(cparms, num_chunk_dims, &chunk_dims[0]);
+                    vector<size_t> chunk_dims(num_chunk_dims);
+                    unsigned int rank_chunk = H5Pget_chunk(cparms, num_chunk_dims, (hsize_t*)&chunk_dims[0]);
 
                     if (rank_chunk != num_chunk_dims) throw BESInternalError("Unexpected chunk dimension mismatch.", __FILE__, __LINE__);
 
@@ -348,7 +348,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
 
                     if (dc) dc->set_chunk_dimension_sizes(chunk_dims);
 
-                    for (hsize_t i = 0; i < num_chunk; i++) {
+                    for (size_t i = 0; i < num_chunk; i++) {
                         VERBOSE(cerr << "    Chunk index:  " << i << endl);
                         VERBOSE(cerr << "    Number of bytes: " << chunk_st_ptr[i].nbytes << endl);
                         VERBOSE(cerr << "    Physical offset: " << chunk_st_ptr[i].chunk_addr << endl);
