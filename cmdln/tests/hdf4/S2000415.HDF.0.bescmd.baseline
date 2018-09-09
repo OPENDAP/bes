@@ -1,152 +1,4 @@
 Attributes {
-    NSCAT_Rev_20_WVC_Lat {
-        String long_name "latitude";
-        String units "deg";
-        Float64 scale_factor 0.010000000000000000;
-        Float64 scale_factor_err 0.0000000000000000;
-        Float64 add_offset 0.0000000000000000;
-        Float64 add_offset_err 0.0000000000000000;
-        Int32 calibrated_nt 22;
-        Int16 valid_range -9000, 7771;
-    }
-    NSCAT_Rev_20_WVC_Lon {
-        String long_name "longitude";
-        String units "deg";
-        Float64 scale_factor 0.010000000000000000;
-        Float64 scale_factor_err 0.0000000000000000;
-        Float64 add_offset 0.0000000000000000;
-        Float64 add_offset_err 0.0000000000000000;
-        Int32 calibrated_nt 22;
-        UInt16 valid_range 0, 31242;
-    }
-    NSCAT_Rev_20_Num_Sigma0 {
-        String long_name "The total number of sigma-0 measurements";
-        String units "counts";
-        Float64 scale_factor 1.0000000000000000;
-        Float64 scale_factor_err 0.0000000000000000;
-        Float64 add_offset 0.0000000000000000;
-        Float64 add_offset_err 0.0000000000000000;
-        Int32 calibrated_nt 21;
-        Byte valid_range 0, 19;
-    }
-    NSCAT_Rev_20_Num_Beam_12 {
-        String long_name "The total number of sigma-0s received from beam 1 or 2";
-        String units "counts";
-        Float64 scale_factor 1.0000000000000000;
-        Float64 scale_factor_err 0.0000000000000000;
-        Float64 add_offset 0.0000000000000000;
-        Float64 add_offset_err 0.0000000000000000;
-        Int32 calibrated_nt 21;
-        Byte valid_range 0, 6;
-    }
-    NSCAT_Rev_20_Num_Beam_34 {
-        String long_name "The total number of sigma-0s received from beam 3 or 4";
-        String units "counts";
-        Float64 scale_factor 1.0000000000000000;
-        Float64 scale_factor_err 0.0000000000000000;
-        Float64 add_offset 0.0000000000000000;
-        Float64 add_offset_err 0.0000000000000000;
-        Int32 calibrated_nt 21;
-        Byte valid_range 0, 6;
-    }
-    NSCAT_Rev_20_Num_Beam_56 {
-        String long_name "The total number of sigma-0s received from beam 5 or 6";
-        String units "counts";
-        Float64 scale_factor 1.0000000000000000;
-        Float64 scale_factor_err 0.0000000000000000;
-        Float64 add_offset 0.0000000000000000;
-        Float64 add_offset_err 0.0000000000000000;
-        Int32 calibrated_nt 21;
-        Byte valid_range 0, 6;
-    }
-    NSCAT_Rev_20_Num_Beam_78 {
-        String long_name "The total number of sigma-0s received from beam 7 or 8";
-        String units "counts";
-        Float64 scale_factor 1.0000000000000000;
-        Float64 scale_factor_err 0.0000000000000000;
-        Float64 add_offset 0.0000000000000000;
-        Float64 add_offset_err 0.0000000000000000;
-        Int32 calibrated_nt 21;
-        Byte valid_range 0, 6;
-    }
-    NSCAT_Rev_20_WVC_Quality_Flag {
-        String long_name "WVC Quality Flag";
-        Float64 scale_factor 1.0000000000000000;
-        Float64 scale_factor_err 0.0000000000000000;
-        Float64 add_offset 0.0000000000000000;
-        Float64 add_offset_err 0.0000000000000000;
-        Int32 calibrated_nt 21;
-        Byte valid_range 0, 3;
-    }
-    NSCAT_Rev_20_Mean_Wind {
-        String long_name "Mean Wind Speed";
-        String units "m/s";
-        Float64 scale_factor 0.010000000000000000;
-        Float64 scale_factor_err 0.0000000000000000;
-        Float64 add_offset 0.0000000000000000;
-        Float64 add_offset_err 0.0000000000000000;
-        Int32 calibrated_nt 23;
-        UInt16 valid_range 0, 2374;
-    }
-    NSCAT_Rev_20_Wind_Speed {
-        String long_name "Wind speed associated with a WVC";
-        String units "m/s";
-        Float64 scale_factor 0.010000000000000000;
-        Float64 scale_factor_err 0.0000000000000000;
-        Float64 add_offset 0.0000000000000000;
-        Float64 add_offset_err 0.0000000000000000;
-        Int32 calibrated_nt 23;
-        UInt16 valid_range 0, 2571;
-    }
-    NSCAT_Rev_20_Wind_Dir {
-        String long_name "Wind direction solution associated with a WVC";
-        String units "deg";
-        Float64 scale_factor 0.010000000000000000;
-        Float64 scale_factor_err 0.0000000000000000;
-        Float64 add_offset 0.0000000000000000;
-        Float64 add_offset_err 0.0000000000000000;
-        Int32 calibrated_nt 23;
-        UInt16 valid_range 0, 35997;
-    }
-    NSCAT_Rev_20_Error_Speed {
-        String long_name "Uncertainty estimated for the wind speed value";
-        String units "m/s";
-        Float64 scale_factor 0.010000000000000000;
-        Float64 scale_factor_err 0.0000000000000000;
-        Float64 add_offset 0.0000000000000000;
-        Float64 add_offset_err 0.0000000000000000;
-        Int32 calibrated_nt 23;
-        UInt16 valid_range 0, 2410;
-    }
-    NSCAT_Rev_20_Error_Dir {
-        String long_name "Uncertainty estimated for the wind direction value";
-        String units "deg";
-        Float64 scale_factor 0.010000000000000000;
-        Float64 scale_factor_err 0.0000000000000000;
-        Float64 add_offset 0.0000000000000000;
-        Float64 add_offset_err 0.0000000000000000;
-        Int32 calibrated_nt 23;
-        UInt16 valid_range 0, 2435;
-    }
-    NSCAT_Rev_20_MLE_Likelihood {
-        String long_name "Relative likelihood that a given win vector solution is correct";
-        Float64 scale_factor 0.10000000000000001;
-        Float64 scale_factor_err 0.0000000000000000;
-        Float64 add_offset 0.0000000000000000;
-        Float64 add_offset_err 0.0000000000000000;
-        Int32 calibrated_nt 22;
-        Int16 valid_range -32768, 2825;
-    }
-    NSCAT_Rev_20_Num_Ambigs {
-        String long_name "Number of ambiguous wind vectors reported for a given cell";
-        String units "counts";
-        Float64 scale_factor 1.0000000000000000;
-        Float64 scale_factor_err 0.0000000000000000;
-        Float64 add_offset 0.0000000000000000;
-        Float64 add_offset_err 0.0000000000000000;
-        Int32 calibrated_nt 21;
-        Byte valid_range 0, 4;
-    }
     HDF_GLOBAL {
         String Producer_Agency "NASA";
         String Producer_Institution "JPL";
@@ -173,6 +25,16 @@ Attributes {
         String HDF_Conversion_Time "1996-320T17:32:34       ";
         String Data_Format_Type "HDF";
     }
+    NSCAT_Rev_20_WVC_Lat {
+        String long_name "latitude";
+        String units "deg";
+        Float64 scale_factor 0.010000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 22;
+        Int16 valid_range -9000, 7771;
+    }
     NSCAT_Rev_20_WVC_Lat_dim_0 {
         String long_name "WVC row";
         String name "row";
@@ -180,6 +42,16 @@ Attributes {
     NSCAT_Rev_20_WVC_Lat_dim_1 {
         String long_name "WVC index";
         String name "WVC";
+    }
+    NSCAT_Rev_20_WVC_Lon {
+        String long_name "longitude";
+        String units "deg";
+        Float64 scale_factor 0.010000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 22;
+        UInt16 valid_range 0, 31242;
     }
     NSCAT_Rev_20_WVC_Lon_dim_0 {
         String long_name "WVC row";
@@ -189,6 +61,16 @@ Attributes {
         String long_name "WVC index";
         String name "WVC";
     }
+    NSCAT_Rev_20_Num_Sigma0 {
+        String long_name "The total number of sigma-0 measurements";
+        String units "counts";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 21;
+        Byte valid_range 0, 19;
+    }
     NSCAT_Rev_20_Num_Sigma0_dim_0 {
         String long_name "WVC row";
         String name "row";
@@ -196,6 +78,16 @@ Attributes {
     NSCAT_Rev_20_Num_Sigma0_dim_1 {
         String long_name "WVC index";
         String name "WVC";
+    }
+    NSCAT_Rev_20_Num_Beam_12 {
+        String long_name "The total number of sigma-0s received from beam 1 or 2";
+        String units "counts";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 21;
+        Byte valid_range 0, 6;
     }
     NSCAT_Rev_20_Num_Beam_12_dim_0 {
         String long_name "WVC row";
@@ -205,6 +97,16 @@ Attributes {
         String long_name "WVC index";
         String name "WVC";
     }
+    NSCAT_Rev_20_Num_Beam_34 {
+        String long_name "The total number of sigma-0s received from beam 3 or 4";
+        String units "counts";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 21;
+        Byte valid_range 0, 6;
+    }
     NSCAT_Rev_20_Num_Beam_34_dim_0 {
         String long_name "WVC row";
         String name "row";
@@ -212,6 +114,16 @@ Attributes {
     NSCAT_Rev_20_Num_Beam_34_dim_1 {
         String long_name "WVC index";
         String name "WVC";
+    }
+    NSCAT_Rev_20_Num_Beam_56 {
+        String long_name "The total number of sigma-0s received from beam 5 or 6";
+        String units "counts";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 21;
+        Byte valid_range 0, 6;
     }
     NSCAT_Rev_20_Num_Beam_56_dim_0 {
         String long_name "WVC row";
@@ -221,6 +133,16 @@ Attributes {
         String long_name "WVC index";
         String name "WVC";
     }
+    NSCAT_Rev_20_Num_Beam_78 {
+        String long_name "The total number of sigma-0s received from beam 7 or 8";
+        String units "counts";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 21;
+        Byte valid_range 0, 6;
+    }
     NSCAT_Rev_20_Num_Beam_78_dim_0 {
         String long_name "WVC row";
         String name "row";
@@ -228,6 +150,15 @@ Attributes {
     NSCAT_Rev_20_Num_Beam_78_dim_1 {
         String long_name "WVC index";
         String name "WVC";
+    }
+    NSCAT_Rev_20_WVC_Quality_Flag {
+        String long_name "WVC Quality Flag";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 21;
+        Byte valid_range 0, 3;
     }
     NSCAT_Rev_20_WVC_Quality_Flag_dim_0 {
         String long_name "WVC row";
@@ -237,6 +168,16 @@ Attributes {
         String long_name "WVC index";
         String name "WVC";
     }
+    NSCAT_Rev_20_Mean_Wind {
+        String long_name "Mean Wind Speed";
+        String units "m/s";
+        Float64 scale_factor 0.010000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 23;
+        UInt16 valid_range 0, 2374;
+    }
     NSCAT_Rev_20_Mean_Wind_dim_0 {
         String long_name "WVC row";
         String name "row";
@@ -244,6 +185,16 @@ Attributes {
     NSCAT_Rev_20_Mean_Wind_dim_1 {
         String long_name "WVC index";
         String name "WVC";
+    }
+    NSCAT_Rev_20_Wind_Speed {
+        String long_name "Wind speed associated with a WVC";
+        String units "m/s";
+        Float64 scale_factor 0.010000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 23;
+        UInt16 valid_range 0, 2571;
     }
     NSCAT_Rev_20_Wind_Speed_dim_0 {
         String long_name "WVC row";
@@ -257,6 +208,16 @@ Attributes {
         String long_name "position of the ambiguities";
         String name "position";
     }
+    NSCAT_Rev_20_Wind_Dir {
+        String long_name "Wind direction solution associated with a WVC";
+        String units "deg";
+        Float64 scale_factor 0.010000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 23;
+        UInt16 valid_range 0, 35997;
+    }
     NSCAT_Rev_20_Wind_Dir_dim_0 {
         String long_name "WVC row";
         String name "row";
@@ -268,6 +229,16 @@ Attributes {
     NSCAT_Rev_20_Wind_Dir_dim_2 {
         String long_name "position of the ambiguities";
         String name "position";
+    }
+    NSCAT_Rev_20_Error_Speed {
+        String long_name "Uncertainty estimated for the wind speed value";
+        String units "m/s";
+        Float64 scale_factor 0.010000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 23;
+        UInt16 valid_range 0, 2410;
     }
     NSCAT_Rev_20_Error_Speed_dim_0 {
         String long_name "WVC row";
@@ -281,6 +252,16 @@ Attributes {
         String long_name "position of the ambiguities";
         String name "position";
     }
+    NSCAT_Rev_20_Error_Dir {
+        String long_name "Uncertainty estimated for the wind direction value";
+        String units "deg";
+        Float64 scale_factor 0.010000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 23;
+        UInt16 valid_range 0, 2435;
+    }
     NSCAT_Rev_20_Error_Dir_dim_0 {
         String long_name "WVC row";
         String name "row";
@@ -293,6 +274,15 @@ Attributes {
         String long_name "position of the ambiguities";
         String name "position";
     }
+    NSCAT_Rev_20_MLE_Likelihood {
+        String long_name "Relative likelihood that a given win vector solution is correct";
+        Float64 scale_factor 0.10000000000000001;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 22;
+        Int16 valid_range -32768, 2825;
+    }
     NSCAT_Rev_20_MLE_Likelihood_dim_0 {
         String long_name "WVC row";
         String name "row";
@@ -304,6 +294,16 @@ Attributes {
     NSCAT_Rev_20_MLE_Likelihood_dim_2 {
         String long_name "position of the ambiguities";
         String name "position";
+    }
+    NSCAT_Rev_20_Num_Ambigs {
+        String long_name "Number of ambiguous wind vectors reported for a given cell";
+        String units "counts";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 21;
+        Byte valid_range 0, 4;
     }
     NSCAT_Rev_20_Num_Ambigs_dim_0 {
         String long_name "WVC row";
