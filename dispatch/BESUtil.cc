@@ -765,6 +765,14 @@ string BESUtil::url_create(BESUtil::url &url_parts)
  * arguments do not contain multiple consecutive slashes - I don't think the original
  * version will work in cases where the string is only slashes because it will dereference
  * the return value of begin()
+ * @param firstPart The first string to concatenate.
+ * @param secondPart The second string to concatenate.
+ * @param leadingSlash If this bool value is true then the returned string will have a leading slash.
+ *  If the value of leadingSlash is false then the first character  of the returned string will
+ *  be the first character of the passed firstPart.
+ *  @param trailingSlash If this bool is true then the returned string will end it a slash. If
+ *   trailingSlash is false, then the returned string will not end with a slash. If trailing
+ *   slash(es) need to be removed to accomplish this, then they will be removed.
  */
 string BESUtil::assemblePath(const string &firstPart, const string &secondPart, bool leadingSlash, bool trailingSlash)
 {
@@ -835,16 +843,14 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
 
     if (trailingSlash) {
         if (newPath.compare(newPath.length(), 1, "/")) {
-            newPath = "/" + newPath;
+            newPath = newPath.append("/");
         }
     }
     else {
         while( *newPath.rbegin() == '/')
             newPath = newPath.substr(0,newPath.length()-1);
     }
-
     BESDEBUG("util", "BESUtil::assemblePath() -  newPath: "<< newPath << endl);
-
     return newPath;
 #endif
 
