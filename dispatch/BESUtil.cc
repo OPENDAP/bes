@@ -67,7 +67,7 @@ using std::string;
 
 #define CRLF "\r\n"
 
-#define debug_key "BesUtil"
+#define debug_key "util"
 #define prolog string("BESUtil::").append(__func__).append("() - ")
 
 const string BES_KEY_TIMEOUT_CANCEL = "BES.CancelTimeoutOnSend";
@@ -799,8 +799,8 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
 #endif
 
 #if 1
-    BESDEBUG("util", "BESUtil::assemblePath() -  firstPart:  '" << firstPart << "'" << endl);
-    BESDEBUG("util", "BESUtil::assemblePath() -  secondPart: '" << secondPart << "'" << endl);
+    BESDEBUG(debug_key, prolog << "firstPart:  '" << firstPart << "'" << endl);
+    BESDEBUG(debug_key, prolog << "secondPart: '" << secondPart << "'" << endl);
 
     // assert(!firstPart.empty()); // I dropped this because I had to ask, why? Why does it matter? ndp 2017
 
@@ -847,10 +847,10 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
         }
     }
     else {
-        while( *newPath.rbegin() == '/')
+        while(newPath.length()>1 &&  *newPath.rbegin() == '/')
             newPath = newPath.substr(0,newPath.length()-1);
     }
-    BESDEBUG("util", "BESUtil::assemblePath() -  newPath: "<< newPath << endl);
+    BESDEBUG(debug_key, prolog << "newPath: "<< newPath << endl);
     return newPath;
 #endif
 
@@ -930,7 +930,7 @@ void BESUtil::conditional_timeout_cancel()
         doset = BESUtil::lowercase(doset);
         if (dosettrue == doset || dosetyes == doset) cancel_timeout_on_send = true;
     }
-    BESDEBUG("util", __func__ << "() - cancel_timeout_on_send: " <<(cancel_timeout_on_send?"true":"false") << endl);
+    BESDEBUG(debug_key, __func__ << "() - cancel_timeout_on_send: " <<(cancel_timeout_on_send?"true":"false") << endl);
     if (cancel_timeout_on_send) alarm(0);
 }
 
