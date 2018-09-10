@@ -766,7 +766,7 @@ string BESUtil::url_create(BESUtil::url &url_parts)
  * version will work in cases where the string is only slashes because it will dereference
  * the return value of begin()
  */
-string BESUtil::assemblePath(const string &firstPart, const string &secondPart, bool ensureLeadingSlash)
+string BESUtil::assemblePath(const string &firstPart, const string &secondPart, bool leadingSlash, bool trailingSlash)
 {
 #if 0
     assert(!firstPart.empty());
@@ -824,13 +824,23 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
         newPath = first.append("/").append(second);
     }
 
-    if (ensureLeadingSlash) {
+    if (leadingSlash) {
         if (newPath.empty()) {
             newPath = "/";
         }
         else if (newPath.compare(0, 1, "/")) {
             newPath = "/" + newPath;
         }
+    }
+
+    if (trailingSlash) {
+        if (newPath.compare(newPath.length(), 1, "/")) {
+            newPath = "/" + newPath;
+        }
+    }
+    else {
+        while( *newPath.rbegin() == '/')
+            newPath = newPath.substr(0,newPath.length()-1);
     }
 
     BESDEBUG("util", "BESUtil::assemblePath() -  newPath: "<< newPath << endl);
