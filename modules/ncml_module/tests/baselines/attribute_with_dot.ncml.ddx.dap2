@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="attribute_with_dot.ncml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="NewContainer" type="Container">
+        <Attribute name="NewAttr" type="String">
+            <value>I am a new attribute in a new container!</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NC_GLOBAL" type="Container">
+        <Attribute name="NewContainer.NewAttr" type="Int32">
+            <value>100</value>
+        </Attribute>
+    </Attribute>
+    <dataBLOB href=""/>
+</Dataset>
+

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="test5.dab" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="FF_GLOBAL" type="Container">
+        <Attribute name="Server" type="String">
+            <value>DODS FreeFrom based on FFND release 4.2.3</value>
+        </Attribute>
+        <Attribute name="iyr" type="Int16">
+            <value>79</value>
+        </Attribute>
+        <Attribute name="iday" type="Int16">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="isc" type="String">
+            <value>3</value>
+        </Attribute>
+        <Attribute name="traj1" type="Float64">
+            <value>1356310000.000000</value>
+        </Attribute>
+        <Attribute name="traj2" type="Float64">
+            <value>637963000.000000</value>
+        </Attribute>
+        <Attribute name="traj3" type="Float64">
+            <value>1716290.000000</value>
+        </Attribute>
+        <Attribute name="traj4" type="Float64">
+            <value>0.000000</value>
+        </Attribute>
+        <Attribute name="traj5" type="Float64">
+            <value>0.000000</value>
+        </Attribute>
+        <Attribute name="traj6" type="Float64">
+            <value>0.000000</value>
+        </Attribute>
+        <Attribute name="text" type="String">
+            <value>I,S COORDINATES 800102  2.5                                                     TRAJCOR     AVEDT 800207</value>
+        </Attribute>
+    </Attribute>
+    <Sequence name="ISEE3_data">
+        <Float64 name="t"/>
+        <Float64 name="Bx"/>
+        <Float64 name="By"/>
+        <Float64 name="Bz"/>
+        <Float64 name="Bx2"/>
+    </Sequence>
+    <dataBLOB href=""/>
+</Dataset>
+

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="attr_name_is_url_bug.ncml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="NC_GLOBAL" type="Container">
+        <Attribute name="eml://ecoinformatics.org/eml-2.0.1" type="OtherXML">
+    
+    <creator xmlns="">
+      <organizationName>Australian Commonwealth Scientific and Research Organization
+	(CSIRO)</organizationName>
+    </creator>
+    <keywordSet xmlns="">
+      <keyword>remote sensing</keyword>
+      <keyword>imagery</keyword>
+      <keyword>spatial raster</keyword>
+      <keyword>earth observation</keyword>
+      <keyword>satellite data</keyword>
+      
+      <keyword>CZCS</keyword>
+      <keyword>Chlorophyll</keyword>
+    </keywordSet>
+  </Attribute>
+    </Attribute>
+    <Structure name="chlor">
+        <Attribute name="eml://ecoinformatics.org/eml-2.0.1" type="OtherXML">
+      
+      <attributeDefinition xmlns="">chlor is level of chlorophyll a in mg m^-3 as measured by the
+	satellite-borne CZCS sensor (From OtherXML, via NcML)</attributeDefinition>
+      
+      <horizontalAccuracy xmlns="">
+	<accuracyReport>These data have very little variation in the horzontal
+	  dimensionality between pixels.</accuracyReport>
+      </horizontalAccuracy>
+      <verticalAccuracy xmlns="">
+	<accuracyReport>These data have very little variation in the vertical dimensionality
+	  between pixels.</accuracyReport>
+      </verticalAccuracy>
+      <numberOfBands xmlns="">1</numberOfBands>
+      <rasterOrigin xmlns="">Upper Left</rasterOrigin>
+      <rows xmlns="">2160</rows>
+      <columns xmlns="">4320</columns>
+      <verticals xmlns="">1</verticals>
+      <cellGeometry xmlns="">pixel</cellGeometry>
+    </Attribute>
+        <Array name="time">
+            <Attribute name="eml://ecoinformatics.org/eml-2.0.1" type="OtherXML">
+	<temporalCoverage xmlns="">
+	  <rangeOfDates>
+	    <beginDate>
+	      <calendarDate>1985-01-01</calendarDate>
+	    </beginDate>
+	    <endDate>
+	      <calendarDate>1985-12-27</calendarDate>
+	    </endDate>
+	  </rangeOfDates>
+	</temporalCoverage>
+      </Attribute>
+            <Int32/>
+            <dimension size="3"/>
+        </Array>
+    </Structure>
+    <dataBLOB href=""/>
+</Dataset>

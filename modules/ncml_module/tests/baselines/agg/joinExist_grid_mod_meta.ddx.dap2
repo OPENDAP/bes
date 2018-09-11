@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="joinExist_grid_mod_meta.ncml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="NC_GLOBAL" type="Container">
+        <Attribute name="Test Description" type="String">
+            <value>Modifying metadata on the auto-generated aggregated map vector.</value>
+        </Attribute>
+    </Attribute>
+    <Array name="x">
+        <Attribute name="Description" type="String">
+            <value>Test coordinate variable x.</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="x" size="3"/>
+    </Array>
+    <Array name="time">
+        <Attribute name="Description" type="String">
+            <value>Test coordinate variable time.</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="time" size="3"/>
+    </Array>
+    <Grid name="v">
+        <Array name="v">
+            <Attribute name="Description" type="String">
+                <value>Test output data array v</value>
+            </Attribute>
+            <Float32/>
+            <dimension name="time" size="3"/>
+            <dimension name="x" size="3"/>
+        </Array>
+        <Map name="time">
+            <Attribute name="Description" type="String">
+                <value>This is a user-modified attribute on the aggregated map vector!</value>
+            </Attribute>
+            <Int32/>
+            <dimension name="time" size="3"/>
+        </Map>
+        <Map name="x">
+            <Attribute name="Description" type="String">
+                <value>Test coordinate variable x.</value>
+            </Attribute>
+            <Int32/>
+            <dimension name="x" size="3"/>
+        </Map>
+    </Grid>
+    <Array name="time">
+        <Attribute name="Description" type="String">
+            <value>This is a user-modified attribute on the aggregated map vector!</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="time" size="3"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>
