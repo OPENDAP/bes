@@ -68,6 +68,8 @@ libtool
 **/generate_metadata_baseline.sh
 **/test_config.h
 **/bes.conf
+**/testsuite
+**/testsuite.dir
 
 abi_checker.xml
 bes-config
