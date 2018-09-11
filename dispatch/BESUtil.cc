@@ -1058,7 +1058,7 @@ string BESUtil::get_time(time_t the_time, bool use_local_time)
         status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&the_time));
 
     if (!status)
-    LOG("Error getting last modified time time for a leaf item in CMRCatalog.");
+        LOG(prolog + "Error formatting time value!");
 
     return buf;
 }
