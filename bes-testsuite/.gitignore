@@ -4,3 +4,4 @@ generate_metadata_baseline.sh
 hdf4_handlerTest
 hdf4_handlerTest.with_hdfeos2
 package.m4
+*.dir
