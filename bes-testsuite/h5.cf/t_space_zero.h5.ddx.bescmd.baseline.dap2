@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="t_space_zero.h5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Array name="dataset_2d">
+        <Attribute name="origname" type="String">
+            <value>dataset_2d</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/dataset_2d</value>
+        </Attribute>
+        <Int16/>
+        <dimension size="0"/>
+        <dimension size="0"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>
