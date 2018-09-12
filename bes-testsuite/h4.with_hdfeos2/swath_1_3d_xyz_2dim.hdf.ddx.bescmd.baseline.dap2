@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="swath_1_3d_xyz_2dim.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <value>HDFEOS_V2.18</value>
+        </Attribute>
+    </Attribute>
+    <Array name="temperature">
+        <Attribute name="coordinates" type="String">
+            <value>pressure pressure Latitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>temperature</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="ZDim" size="4"/>
+        <dimension name="ZDim" size="4"/>
+        <dimension name="NDim" size="8"/>
+    </Array>
+    <Array name="pressure">
+        <Attribute name="long_name" type="String">
+            <value>pressure</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="ZDim" size="4"/>
+    </Array>
+    <Array name="Latitude">
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Latitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="NDim" size="8"/>
+    </Array>
+    <Array name="Longitude">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="NDim" size="8"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

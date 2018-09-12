@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="swath_1_1d_t.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <value>HDFEOS_V2.18</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath_Geolocation_Fields_Time" type="Container">
+        <Attribute name="Vdata_field_Time" type="Float32">
+            <value>0.000000000</value>
+            <value>1.000000000</value>
+            <value>2.000000000</value>
+            <value>3.000000000</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath_Data_Fields_temperature" type="Container">
+        <Attribute name="Vdata_field_temperature" type="Float32">
+            <value>0.000000000</value>
+            <value>1.000000000</value>
+            <value>2.000000000</value>
+            <value>3.000000000</value>
+        </Attribute>
+    </Attribute>
+    <dataBLOB href=""/>
+</Dataset>

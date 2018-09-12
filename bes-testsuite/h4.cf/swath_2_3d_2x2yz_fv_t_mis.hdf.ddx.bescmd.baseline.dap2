@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="swath_2_3d_2x2yz_fv_t_mis.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <value>HDFEOS_V2.18</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath1_Geolocation_Fields_Latitude_dim_0" type="Container">
+        <Attribute name="name" type="String">
+            <value>xtrack:Swath1</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath1_Geolocation_Fields_Latitude_dim_1" type="Container">
+        <Attribute name="name" type="String">
+            <value>ytrack:Swath1</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath1_Geolocation_Fields_Longitude_dim_0" type="Container">
+        <Attribute name="name" type="String">
+            <value>xtrack:Swath1</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath1_Geolocation_Fields_Longitude_dim_1" type="Container">
+        <Attribute name="name" type="String">
+            <value>ytrack:Swath1</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath1_Data_Fields_temperature_dim_0" type="Container">
+        <Attribute name="name" type="String">
+            <value>ZDim:Swath1</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath1_Data_Fields_temperature_dim_1" type="Container">
+        <Attribute name="name" type="String">
+            <value>xtrack:Swath1</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath1_Data_Fields_temperature_dim_2" type="Container">
+        <Attribute name="name" type="String">
+            <value>ytrack:Swath1</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath2_Geolocation_Fields_Latitude_dim_0" type="Container">
+        <Attribute name="name" type="String">
+            <value>xtrack:Swath2</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath2_Geolocation_Fields_Latitude_dim_1" type="Container">
+        <Attribute name="name" type="String">
+            <value>ytrack:Swath2</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath2_Geolocation_Fields_Longitude_dim_0" type="Container">
+        <Attribute name="name" type="String">
+            <value>xtrack:Swath2</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath2_Geolocation_Fields_Longitude_dim_1" type="Container">
+        <Attribute name="name" type="String">
+            <value>ytrack:Swath2</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath2_Data_Fields_temperature_dim_0" type="Container">
+        <Attribute name="name" type="String">
+            <value>ZDim:Swath2</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath2_Data_Fields_temperature_dim_1" type="Container">
+        <Attribute name="name" type="String">
+            <value>xtrack:Swath2</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath2_Data_Fields_temperature_dim_2" type="Container">
+        <Attribute name="name" type="String">
+            <value>ytrack:Swath2</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath1_Geolocation_Fields_pressure" type="Container">
+        <Attribute name="Vdata_field_pressure" type="Float32">
+            <value>0.000000000</value>
+            <value>1.000000000</value>
+            <value>2.000000000</value>
+            <value>3.000000000</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath2_Geolocation_Fields_pressure" type="Container">
+        <Attribute name="Vdata_field_pressure" type="Float32">
+            <value>0.000000000</value>
+            <value>1.000000000</value>
+            <value>2.000000000</value>
+            <value>3.000000000</value>
+            <value>4.000000000</value>
+            <value>5.000000000</value>
+            <value>6.000000000</value>
+            <value>7.000000000</value>
+        </Attribute>
+    </Attribute>
+    <Array name="Swath1_Geolocation_Fields_Latitude">
+        <Attribute name="long_name" type="String">
+            <value>Latitude</value>
+        </Attribute>
+        <Attribute name="fill" type="UInt32">
+            <value>4294967295</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>4294967295</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="xtrack_Swath1" size="4"/>
+        <dimension name="ytrack_Swath1" size="8"/>
+    </Array>
+    <Array name="Swath1_Geolocation_Fields_Longitude">
+        <Attribute name="long_name" type="String">
+            <value>Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>65535</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="xtrack_Swath1" size="4"/>
+        <dimension name="ytrack_Swath1" size="8"/>
+    </Array>
+    <Array name="Swath1_Data_Fields_temperature">
+        <Attribute name="long_name" type="String">
+            <value>temperature</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>97</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="ZDim_Swath1" size="4"/>
+        <dimension name="xtrack_Swath1" size="4"/>
+        <dimension name="ytrack_Swath1" size="8"/>
+    </Array>
+    <Array name="Swath2_Geolocation_Fields_Latitude">
+        <Attribute name="long_name" type="String">
+            <value>Latitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-2147483648</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="xtrack_Swath2" size="8"/>
+        <dimension name="ytrack_Swath2" size="16"/>
+    </Array>
+    <Array name="Swath2_Geolocation_Fields_Longitude">
+        <Attribute name="long_name" type="String">
+            <value>Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-32768</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="xtrack_Swath2" size="8"/>
+        <dimension name="ytrack_Swath2" size="16"/>
+    </Array>
+    <Array name="Swath2_Data_Fields_temperature">
+        <Attribute name="long_name" type="String">
+            <value>temperature</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-128</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="ZDim_Swath2" size="8"/>
+        <dimension name="xtrack_Swath2" size="8"/>
+        <dimension name="ytrack_Swath2" size="16"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

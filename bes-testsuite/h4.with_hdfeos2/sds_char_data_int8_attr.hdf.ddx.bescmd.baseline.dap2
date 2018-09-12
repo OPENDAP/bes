@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="sds_char_data_int8_attr.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="char_2D_dim_0" type="Container">
+        <Attribute name="name" type="String">
+            <value>fakeDim1</value>
+        </Attribute>
+    </Attribute>
+    <String name="char_1D">
+        <Attribute name="long_name" type="String">
+            <value>char_1D</value>
+        </Attribute>
+    </String>
+    <Array name="char_2D">
+        <Attribute name="long_name" type="String">
+            <value>char_2D</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>-128</value>
+            <value>127</value>
+        </Attribute>
+        <String/>
+        <dimension name="fakeDim1" size="10"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

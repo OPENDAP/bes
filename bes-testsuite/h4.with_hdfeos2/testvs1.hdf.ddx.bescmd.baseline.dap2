@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="testvs1.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="Vdata_DFNT_INT32" type="Container">
+        <Attribute name="Vdata_field_Field_DFNT_INT32" type="Int32">
+            <value>0</value>
+            <value>1</value>
+            <value>-1</value>
+            <value>2147483647</value>
+            <value>-2147483648</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Vdata_DFNT_UINT32" type="Container">
+        <Attribute name="Vdata_field_Field_DFNT_UINT32" type="UInt32">
+            <value>0</value>
+            <value>1</value>
+            <value>4294967295</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Vdata_DFNT_INT16" type="Container">
+        <Attribute name="Vdata_field_Field_DFNT_INT16" type="Int16">
+            <value>0</value>
+            <value>1</value>
+            <value>-1</value>
+            <value>32767</value>
+            <value>-32768</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Vdata_DFNT_UINT16" type="Container">
+        <Attribute name="Vdata_field_Field_DFNT_UINT16" type="UInt16">
+            <value>0</value>
+            <value>1</value>
+            <value>65535</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Vdata_DFNT_INT8" type="Container">
+        <Attribute name="Vdata_field_Field_DFNT_INT8" type="Int32">
+            <value>0</value>
+            <value>1</value>
+            <value>-1</value>
+            <value>127</value>
+            <value>-128</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Vdata_DFNT_UINT8" type="Container">
+        <Attribute name="Vdata_field_Field_DFNT_UINT8" type="Byte">
+            <value>0</value>
+            <value>1</value>
+            <value>255</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Vdata_DFNT_FLOAT32" type="Container">
+        <Attribute name="Vdata_field_Field_DFNT_FLOAT32" type="Float32">
+            <value>0.000000000</value>
+            <value>1.000000000</value>
+            <value>-1.000000000</value>
+            <value>3.402823466e+38</value>
+            <value>1.401298464e-45</value>
+            <value>-3.402823466e+38</value>
+            <value>-1.401298464e-45</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Vdata_DFNT_FLOAT64" type="Container">
+        <Attribute name="Vdata_field_Field_DFNT_FLOAT64" type="Float64">
+            <value>0.0000000000000000</value>
+            <value>1.0000000000000000</value>
+            <value>-1.0000000000000000</value>
+            <value>1.7976931348623157e+308</value>
+            <value>4.9406564584124654e-324</value>
+            <value>-1.7976931348623157e+308</value>
+            <value>-4.9406564584124654e-324</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Vdata_DFNT_CHAR8" type="Container">
+        <Attribute name="Vdata_field_Field_DFNT_CHAR8" type="String">
+            <value>\000\001\377\177\200</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Vdata_DFNT_UCHAR8" type="Container">
+        <Attribute name="Vdata_field_Field_DFNT_UCHAR8" type="String">
+            <value>\000\001\377</value>
+        </Attribute>
+    </Attribute>
+    <dataBLOB href=""/>
+</Dataset>
