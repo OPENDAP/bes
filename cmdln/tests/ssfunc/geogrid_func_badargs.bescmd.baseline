@@ -4,7 +4,7 @@
         <BESError>
             <Type>3</Type>
             <Message>Failed to get values as ascii: Wrong number of arguments to geogrid() (expected at least 5 args). See geogrid() for more information.</Message>
-            <Administrator>jgallagher@opendap.org</Administrator>
+            <Administrator>admin.email.address@your.domain.name</Administrator>
             <Location>
                 
                 
