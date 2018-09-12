@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset name="MISR_AEROSOL_P017_O036105_F10_0020_GOM_b64-72.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+<Dataset name="MISR_AEROSOL_P017_O036105_F10_0020_GOM_b64-72.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xml.opendap.org/ns/DAP/3.2# http://xml.opendap.org/dap/dap3.2.xsd" xmlns:grddl="http://www.w3.org/2003/g/data-view#" grddl:transformation="http://xml.opendap.org/transforms/ddxToRdfTriples.xsl" xmlns="http://xml.opendap.org/ns/DAP/3.2#" xmlns:dap="http://xml.opendap.org/ns/DAP/3.2#" dapVersion="3.2">
     <Attribute name="coremetadata" type="Container">
         <Attribute name="INVENTORYMETADATA" type="Container">
             <Attribute name="GROUPTYPE" type="String">
@@ -4448,5 +4448,5 @@ END GROUP = SUBSET
         <String/>
         <dimension name="VDFDim0_vdata_RetrAppMask_Flag_Legend_vdf_Description" size="13"/>
     </Array>
-    <dataBLOB href=""/>
+    <blob href="cid:"/>
 </Dataset>

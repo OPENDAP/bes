@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset name="AIRS.2008.10.27.L3.RetStd001.v5.2.2.0.G08303124144.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+<Dataset name="AIRS.2008.10.27.L3.RetStd001.v5.2.2.0.G08303124144.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xml.opendap.org/ns/DAP/3.2# http://xml.opendap.org/dap/dap3.2.xsd" xmlns:grddl="http://www.w3.org/2003/g/data-view#" grddl:transformation="http://xml.opendap.org/transforms/ddxToRdfTriples.xsl" xmlns="http://xml.opendap.org/ns/DAP/3.2#" xmlns:dap="http://xml.opendap.org/ns/DAP/3.2#" dapVersion="3.2">
     <Attribute name="coremetadata" type="Container">
         <Attribute name="INVENTORYMETADATA" type="Container">
             <Attribute name="GROUPTYPE" type="String">
@@ -5812,5 +5812,5 @@
         <dimension name="Latitude" size="180"/>
         <dimension name="Longitude" size="360"/>
     </Array>
-    <dataBLOB href=""/>
+    <blob href="cid:"/>
 </Dataset>
