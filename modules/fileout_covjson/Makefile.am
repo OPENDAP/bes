@@ -36,19 +36,11 @@ EXTRA_DIST = data focovjson.conf.in
 
 CLEANFILES = *~ focovjson.conf
 
-install-data-local: focovjson.conf
-	@currdate=`date +"%y%m%d%H%M"`; \
-	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
-	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/focovjson.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/focovjson.conf $(DESTDIR)$(sysconfdir)/bes/modules/focovjson.conf.$$currdate; \
-	$(INSTALL_DATA) focovjson.conf $(DESTDIR)$(sysconfdir)/bes/modules/focovjson.conf
-
-uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/focovjson.conf
+moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+module_DATA = focovjson.conf
 
 focovjson.conf: focovjson.conf.in $(top_srcdir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > focovjson.conf
-
 
 C4_DIR=./cccc
 .PHONY: cccc

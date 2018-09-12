@@ -51,15 +51,8 @@ EXTRA_DIST = xml_data_handler.conf.in data
 CLEANFILES = *~ *.log *.sum
 DISTCLEANFILES = xml_data_handler.conf
 
-install-data-local: xml_data_handler.conf
-	@currdate=`date +"%y%m%d%H%M"`; \
-	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
-	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/xml_data_handler.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/xml_data_handler.conf $(DESTDIR)$(sysconfdir)/bes/modules/xml_data_handler.conf.$$currdate; \
-	$(INSTALL_DATA) xml_data_handler.conf $(DESTDIR)$(sysconfdir)/bes/modules/xml_data_handler.conf
-
-uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/xml_data_handler.conf
+moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+module_DATA = xml_data_handler.conf
 
 xml_data_handler.conf: xml_data_handler.conf.in $(top_srcdir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > xml_data_handler.conf

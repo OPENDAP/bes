@@ -69,15 +69,8 @@ sample_data_DATA = data/1998-6-avhrr.dat data/avhrr.dat data/gsodock.dat \
 	data/1998-6-avhrr.fmt data/avhrr.fmt data/gsodock.fmt \
 	data/1998-6-avhrr.dat.das data/avhrr.dat.das
 
-install-data-local: ff.conf
-	@currdate=`date +"%y%m%d%H%M"`; \
-	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
-	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/ff.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/ff.conf $(DESTDIR)$(sysconfdir)/bes/modules/ff.conf.$$currdate; \
-	$(INSTALL_DATA) ff.conf $(DESTDIR)$(sysconfdir)/bes/modules/ff.conf
-
-uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/ff.conf
+moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+module_DATA = ff.conf
 
 ff.conf: ff.conf.in $(top_srcdir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > ff.conf
