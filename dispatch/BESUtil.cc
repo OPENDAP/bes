@@ -1043,7 +1043,7 @@ string BESUtil::get_time(bool use_local_time)
  */
 string BESUtil::get_time(time_t the_time, bool use_local_time)
 {
-    char buf[sizeof "YYYY-MM-DDTHH:MM:SSzone"];
+    char buf[sizeof "YYYY-MM-DDTHH:MM:SS zones"];
     int status = 0;
 
     // From StackOverflow:
@@ -1057,8 +1057,10 @@ string BESUtil::get_time(time_t the_time, bool use_local_time)
     else
         status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&the_time));
 
-    if (!status)
+    if (!status) {
         LOG(prolog + "Error formatting time value!");
+        return "date-format-error";
+    }
 
     return buf;
 }
