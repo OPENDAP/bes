@@ -3,12 +3,13 @@ AUTOMAKE_OPTIONS = foreign
 
 CLEANFILES = *.log *.sum $(srcdir)/package.m4
 
-EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) atlocal.in ff hdf4 hdf5 nc show ssfunc
+EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) atlocal.in ff hdf4 hdf5 nc show ssfunc \
+mds_initial_state
 
 DISTCLEANFILES = $(TESTSUITE)
 
 mds_cachedir = $(datadir)/mds
-mds_cache_DATA = mds_initial_state/*
+mds_cache_DATA = $(srcdir)/mds_initial_state/*
 
 ############## Autotest follows #####################
 
