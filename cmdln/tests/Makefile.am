@@ -7,13 +7,16 @@ EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) atlocal.in ff hdf4 hdf5 nc show ssfunc
 
 DISTCLEANFILES = $(TESTSUITE)
 
+mds_cachedir = $(datadir)/mds
+mds_cache_DATA = mds_initial_state/*
+
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te
 
 TESTSUITE = $(srcdir)/testsuite
 
-check-local: atconfig atlocal $(TESTSUITE)
+check-local: atconfig atlocal $(TESTSUITE) install-data
 	@if bescmdln -x "show version;"; \
 		then $(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS); \
 		else echo "no bes found, not running cmdln-based tests"; \
