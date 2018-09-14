@@ -55,6 +55,21 @@ BESDDSResponseHandler::~BESDDSResponseHandler()
 }
 
 /**
+ * Is there a function call in this CE? This function tests for a left paren
+ * to indicate that a function is present. The CE will still be encoded at
+ * this point, so test for the escape characters (%28) too.
+ *
+ * @param ce The Constraint expression to test
+ * @return True if there is a function call, false otherwise
+ */
+static bool
+function_in_ce(const string &ce)
+{
+    // 0x28 is '('
+    return ce.find("(") != string::npos || ce.find("%28") != string::npos;   // hack
+}
+
+/**
  * @brief executes the command `<get type="dds" definition=...>`
  *
  * For each container in the specified definition, go to the request
@@ -92,7 +107,7 @@ void BESDDSResponseHandler::execute(BESDataHandlerInterface &dhi)
     }
     else {
         DDS *dds = 0; // new DDS(NULL, "virtual");
-        if (mds && lock()) {
+        if (mds && lock() && !function_in_ce(dhi.container->get_constraint())) {
             // If mds and lock(), the DDS is in the cache, get the _object_
             dds = mds->get_dds_object(dhi.container->get_relative_name());
             BESDDSResponse *bdds = new BESDDSResponse(dds);
@@ -106,9 +121,11 @@ void BESDDSResponseHandler::execute(BESDataHandlerInterface &dhi)
 
             BESRequestHandlerList::TheList()->execute_each(dhi);
 
+            dhi.first_container();  // must reset container; execute_each() iterates over all of them
+
             // Cache the DDS if the MDS is not null but the DDS response was not in the cache
-            if (mds && !lock()) {
-                dhi.first_container();  // must reset container; execute_each() iterates over all of them
+            if (mds && !lock() && !function_in_ce(dhi.container->get_constraint())) {
+                // moved dhi.first_container();  // must reset container; execute_each() iterates over all of them
                 mds->add_responses(static_cast<BESDDSResponse*>(d_response_object)->get_dds(),
                     dhi.container->get_relative_name());
             }

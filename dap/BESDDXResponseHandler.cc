@@ -53,6 +53,25 @@ BESDDXResponseHandler::~BESDDXResponseHandler()
 {
 }
 
+/**
+ * Is there a function call in this CE? This function tests for a left paren
+ * to indicate that a function is present. The CE will still be encoded at
+ * this point, so test for the escape characters (%28) too.
+ *
+ * @note I copied this from BESDDSResponseHandler. I think there is probably
+ * a better solution to this whole issue of CEs and functions, maybe in
+ * BESContainer.
+ *
+ * @param ce The Constraint expression to test
+ * @return True if there is a function call, false otherwise
+ */
+static bool
+function_in_ce(const string &ce)
+{
+    // 0x28 is '('
+    return ce.find("(") != string::npos || ce.find("%28") != string::npos;   // hack
+}
+
 /** @brief executes the command 'get ddx for def_name;'
  *
  * For each container in the specified definition go to the request
@@ -83,14 +102,17 @@ void BESDDXResponseHandler::execute(BESDataHandlerInterface &dhi)
         DDS *dds = mds->get_dds_object(dhi.container->get_relative_name());
         BESDDSResponse *bdds = new BESDDSResponse(dds);
 
+#if 0
 #if FORCE_DAP_VERSION_TO_3_2
-        dds->set_dap_version("3.2");
+dds->set_dap_version("3.2");
 #else
-        // These values are read from the BESContextManager by the BESDapResponse ctor
-        if (!bdds->get_dap_client_protocol().empty()) {
-            dds->set_dap_version(bdds->get_dap_client_protocol());
-        }
+// These values are read from the BESContextManager by the BESDapResponse ctor
+if (!bdds->get_dap_client_protocol().empty()) {
+    dds->set_dap_version(bdds->get_dap_client_protocol());
+}
 #endif
+#endif
+
         dds->set_request_xml_base(bdds->get_request_xml_base());
 
         bdds->set_constraint(dhi);
@@ -107,12 +129,14 @@ void BESDDXResponseHandler::execute(BESDataHandlerInterface &dhi)
         d_response_name = DDS_RESPONSE;
         dhi.action = DDS_RESPONSE;
 
+#if 0
 #if FORCE_DAP_VERSION_TO_3_2
-        dds->set_dap_version("3.2");
+dds->set_dap_version("3.2");
 #else
-        if (!bdds->get_dap_client_protocol().empty()) {
-            dds->set_dap_version(bdds->get_dap_client_protocol());
-        }
+if (!bdds->get_dap_client_protocol().empty()) {
+    dds->set_dap_version(bdds->get_dap_client_protocol());
+}
+#endif
 #endif
 
         dds->set_request_xml_base(bdds->get_request_xml_base());

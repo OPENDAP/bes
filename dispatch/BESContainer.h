@@ -86,12 +86,17 @@ protected:
     /** @brief construct a container with the given symbolic name, real name
      * and container type.
      *
+     * @note The relative name filed is set to "", which is the best this code can
+     * do, but not really very good. Child classes that know the data root should
+     * fix the value.
+     *
      * @param sym_name symbolic name
      * @param real_name real name of the container, such as a file name
      * @param type type of data represented by this container, such as netcdf
      */
     BESContainer(const string &sym_name, const string &real_name, const string &type) :
-        d_symbolic_name(sym_name), d_real_name(real_name), d_container_type(type)
+        d_symbolic_name(sym_name), d_real_name(real_name), d_relative_name(""), d_container_type(type),
+        d_constraint(""), d_dap4_constraint(""), d_dap4_function(""), d_attributes("")
     {
     }
 
