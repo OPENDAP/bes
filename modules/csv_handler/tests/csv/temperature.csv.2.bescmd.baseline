@@ -8,21 +8,21 @@
         <dimension name="record" size="5"/>
     </Array>
     <Array name="latitude">
-        <Attribute name="type" type="Float32">
+        <Attribute name="type" type="String">
             <value>Float32</value>
         </Attribute>
         <Float32/>
         <dimension name="record" size="5"/>
     </Array>
     <Array name="longitude">
-        <Attribute name="type" type="Float32">
+        <Attribute name="type" type="String">
             <value>Float32</value>
         </Attribute>
         <Float32/>
         <dimension name="record" size="5"/>
     </Array>
     <Array name="temperature_K">
-        <Attribute name="type" type="Float32">
+        <Attribute name="type" type="String">
             <value>Float32</value>
         </Attribute>
         <Float32/>
@@ -37,4 +37,3 @@
     </Array>
     <blob href="cid:"/>
 </Dataset>
-

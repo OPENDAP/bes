@@ -3,13 +3,13 @@ Attributes {
         String type "String";
     }
     latitude {
-        Float32 type Float32;
+        String type "Float32";
     }
     longitude {
-        Float32 type Float32;
+        String type "Float32";
     }
     temperature_K {
-        Float32 type Float32;
+        String type "Float32";
     }
     Notes {
         String type "String";
