@@ -98,7 +98,7 @@ void BESDDXResponseHandler::execute(BESDataHandlerInterface &dhi)
     dhi.first_container();
     if (mds) lock = mds->is_dds_available(dhi.container->get_relative_name());
 
-    if (mds && lock()) {
+    if (mds && lock() && !function_in_ce(dhi.container->get_constraint())) {
         DDS *dds = mds->get_dds_object(dhi.container->get_relative_name());
         BESDDSResponse *bdds = new BESDDSResponse(dds);
 
@@ -145,8 +145,10 @@ if (!bdds->get_dap_client_protocol().empty()) {
 
         BESRequestHandlerList::TheList()->execute_each(dhi);
 
-        if (mds) {
-            dhi.first_container();  // must reset container; execute_each() iterates over all of them
+        dhi.first_container();  // must reset container; execute_each() iterates over all of them
+
+        if (mds && !function_in_ce(dhi.container->get_constraint())) {
+            // dhi.first_container();  // must reset container; execute_each() iterates over all of them
             mds->add_responses(static_cast<BESDDSResponse*>(d_response_object)->get_dds(),
                 dhi.container->get_relative_name());
         }
