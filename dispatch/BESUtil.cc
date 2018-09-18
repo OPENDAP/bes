@@ -67,7 +67,7 @@ using std::string;
 
 #define CRLF "\r\n"
 
-#define debug_key "BesUtil"
+#define debug_key "util"
 #define prolog string("BESUtil::").append(__func__).append("() - ")
 
 const string BES_KEY_TIMEOUT_CANCEL = "BES.CancelTimeoutOnSend";
@@ -765,8 +765,16 @@ string BESUtil::url_create(BESUtil::url &url_parts)
  * arguments do not contain multiple consecutive slashes - I don't think the original
  * version will work in cases where the string is only slashes because it will dereference
  * the return value of begin()
+ * @param firstPart The first string to concatenate.
+ * @param secondPart The second string to concatenate.
+ * @param leadingSlash If this bool value is true then the returned string will have a leading slash.
+ *  If the value of leadingSlash is false then the first character  of the returned string will
+ *  be the first character of the passed firstPart.
+ *  @param trailingSlash If this bool is true then the returned string will end it a slash. If
+ *   trailingSlash is false, then the returned string will not end with a slash. If trailing
+ *   slash(es) need to be removed to accomplish this, then they will be removed.
  */
-string BESUtil::assemblePath(const string &firstPart, const string &secondPart, bool ensureLeadingSlash)
+string BESUtil::assemblePath(const string &firstPart, const string &secondPart, bool leadingSlash, bool trailingSlash)
 {
 #if 0
     assert(!firstPart.empty());
@@ -791,8 +799,8 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
 #endif
 
 #if 1
-    BESDEBUG("util", "BESUtil::assemblePath() -  firstPart:  '" << firstPart << "'" << endl);
-    BESDEBUG("util", "BESUtil::assemblePath() -  secondPart: '" << secondPart << "'" << endl);
+    BESDEBUG(debug_key, prolog << "firstPart:  '" << firstPart << "'" << endl);
+    BESDEBUG(debug_key, prolog << "secondPart: '" << secondPart << "'" << endl);
 
     // assert(!firstPart.empty()); // I dropped this because I had to ask, why? Why does it matter? ndp 2017
 
@@ -824,7 +832,7 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
         newPath = first.append("/").append(second);
     }
 
-    if (ensureLeadingSlash) {
+    if (leadingSlash) {
         if (newPath.empty()) {
             newPath = "/";
         }
@@ -833,8 +841,16 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
         }
     }
 
-    BESDEBUG("util", "BESUtil::assemblePath() -  newPath: "<< newPath << endl);
-
+    if (trailingSlash) {
+        if (newPath.compare(newPath.length(), 1, "/")) {
+            newPath = newPath.append("/");
+        }
+    }
+    else {
+        while(newPath.length()>1 &&  *newPath.rbegin() == '/')
+            newPath = newPath.substr(0,newPath.length()-1);
+    }
+    BESDEBUG(debug_key, prolog << "newPath: "<< newPath << endl);
     return newPath;
 #endif
 
@@ -914,7 +930,7 @@ void BESUtil::conditional_timeout_cancel()
         doset = BESUtil::lowercase(doset);
         if (dosettrue == doset || dosetyes == doset) cancel_timeout_on_send = true;
     }
-    BESDEBUG("util", __func__ << "() - cancel_timeout_on_send: " <<(cancel_timeout_on_send?"true":"false") << endl);
+    BESDEBUG(debug_key, __func__ << "() - cancel_timeout_on_send: " <<(cancel_timeout_on_send?"true":"false") << endl);
     if (cancel_timeout_on_send) alarm(0);
 }
 
@@ -1027,7 +1043,7 @@ string BESUtil::get_time(bool use_local_time)
  */
 string BESUtil::get_time(time_t the_time, bool use_local_time)
 {
-    char buf[sizeof "YYYY-MM-DDTHH:MM:SSzone"];
+    char buf[sizeof "YYYY-MM-DDTHH:MM:SS zones"];
     int status = 0;
 
     // From StackOverflow:
@@ -1041,8 +1057,10 @@ string BESUtil::get_time(time_t the_time, bool use_local_time)
     else
         status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&the_time));
 
-    if (!status)
-    LOG("Error getting last modified time time for a leaf item in CMRCatalog.");
+    if (!status) {
+        LOG(prolog + "Error formatting time value!");
+        return "date-format-error";
+    }
 
     return buf;
 }

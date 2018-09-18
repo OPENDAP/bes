@@ -143,6 +143,7 @@ bool NCMLUtil::toUnsignedInt(const std::string& stringVal, unsigned int& oVal)
     return success;
 }
 
+#if 0
 /**
  * Does this AttrTable have descendants that are scalar or vector attributes?
  *
@@ -187,7 +188,7 @@ has_dap2_attributes(BaseType *btp)
     Constructor *cons = dynamic_cast<Constructor *>(btp);
     if (cons) {
         Grid* grid = dynamic_cast<Grid*>(btp);
-        if(grid){
+        if(grid) {
             return has_dap2_attributes(grid->get_array());
         }
         else {
@@ -198,6 +199,8 @@ has_dap2_attributes(BaseType *btp)
     }
     return false;
 }
+#endif
+
 
 /** Recursion helper:
  *  Recurse on the members of composite variable consVar and recursively add their AttrTables

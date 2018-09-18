@@ -17,3 +17,32 @@ BES.module.cmr=@bes_modules_dir@/libcmr_module.so
 # CMR module specific parameters"
 # CMR.Reference: URL to the FoJson Reference Page at docs.opendap.org"
 CMR.Reference=http://docs.opendap.org/index.php/BES_-_Modules_-_CMR_Catalog
+
+BES.Catalog.CMR.RootDirectory=UNUSED
+# BES.Catalog.CMR.FollowSymLinks=
+# BES.Catalog.CMR.Exclude=
+# BES.Catalog.CMR.Include=
+
+# Type Match for handlers.
+BES.Catalog.CMR.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.CMR.TypeMatch+=h4:.*\.(hdf|HDF|eos|HDFEOS)(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.CMR.TypeMatch+=h5:.*\.(HDF5|h5|he5)(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.CMR.TypeMatch+=ncml:.*\.ncml(\.bz2|\.gz|\.Z)?$;
+
+
+CMR.Cache.dir=/tmp/CmrCache
+CMR.Cache.prefix=cmr_
+CMR.Cache.size=500
+
+CMR.MimeTypes=nc:application/x-netcdf
+CMR.MimeTypes+=h4:application/x-hdf
+CMR.MimeTypes+=h5:application/x-hdf5
+
+CMR.Collections=C179003030-ORNL_DAAC
+CMR.Collections+=C1276812863-GES_DISC
+
+CMR.Facets=temporal
+
+# The CMR service needs to be on the whitelist
+Gateway.Whitelist+=https://cmr.earthdata.nasa.gov/search
+

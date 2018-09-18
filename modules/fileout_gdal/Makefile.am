@@ -37,15 +37,8 @@ EXTRA_DIST = data fong.conf.in
 
 CLEANFILES = *~ fong.conf
 
-install-data-local: fong.conf
-	@currdate=`date +"%y%m%d%H%M"`; \
-	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
-	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/fong.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/fong.conf $(DESTDIR)$(sysconfdir)/bes/modules/fong.conf.$$currdate; \
-	$(INSTALL_DATA) fong.conf $(DESTDIR)$(sysconfdir)/bes/modules/fong.conf
-
-uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/fong.conf
+moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+module_DATA = fong.conf
 
 fong.conf: fong.conf.in $(top_srcdir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > fong.conf

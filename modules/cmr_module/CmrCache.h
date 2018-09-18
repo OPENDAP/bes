@@ -78,6 +78,9 @@ public:
     static CmrCache *get_instance(const string &cache_dir, const string &prefix, unsigned long long size);
     static CmrCache *get_instance();
 
+    virtual string get_cache_file_name(const string &src, bool mangle=true);
+    inline  string get_hash(const string &name);
+
 	virtual ~CmrCache() { }
 };
 

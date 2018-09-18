@@ -128,7 +128,7 @@ protected:
         libdap::DDS *d_dds;
         libdap::DMR *d_dmr;
 
-        StreamDAP() {
+        StreamDAP() : d_dds(0), d_dmr(0) {
             throw BESInternalFatalError("Unknown DAP object type.", __FILE__, __LINE__);
         }
         StreamDAP(libdap::DDS *dds) : d_dds(dds), d_dmr(0) { }

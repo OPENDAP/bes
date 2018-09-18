@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="var_array_url_1.ncml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Array name="MyArray">
+        <Attribute name="Description" type="String">
+            <value>Testing URL with an explicit integer for shape</value>
+        </Attribute>
+        <Url/>
+        <dimension size="3"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>
+

@@ -84,15 +84,8 @@ EXTRA_DIST = functions.conf.in gse.yy gse.lex
 
 CLEANFILES = *~ functions.conf
 
-install-data-local: functions.conf
-	@currdate=`date +"%y%m%d%H%M"`; \
-	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
-	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/functions.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/functions.conf $(DESTDIR)$(sysconfdir)/bes/modules/functions.conf.$$currdate; \
-	$(INSTALL_DATA) functions.conf $(DESTDIR)$(sysconfdir)/bes/modules/functions.conf
-
-uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/functions.conf
+moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+module_DATA = functions.conf
 
 functions.conf: functions.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \

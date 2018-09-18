@@ -44,15 +44,8 @@ CLEANFILES = *~ fits.conf
 sample_datadir = $(datadir)/hyrax/data/fits
 sample_data_DATA = data/20060308.172859.mk4.cpb.fts data/20060308.172859.mk4.rpb.fts data/20060328.185927.chp.bsh.fts data/20060328.190602.dpm.alr.fts
 
-install-data-local: fits.conf
-	@currdate=`date +"%y%m%d%H%M"`; \
-	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
-	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/fits.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/fits.conf $(DESTDIR)$(sysconfdir)/bes/modules/fits.conf.$$currdate; \
-	$(INSTALL_DATA) fits.conf $(DESTDIR)$(sysconfdir)/bes/modules/fits.conf
-
-uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/fits.conf
+moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+module_DATA = fits.conf
 
 fits.conf: fits.conf.in $(top_srcdir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > fits.conf

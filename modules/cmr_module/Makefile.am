@@ -33,25 +33,16 @@ CMR_SRC = CmrApi.cc CmrCatalog.cc Granule.cc \
 CMR_HDR = CmrApi.h CmrError.h CmrCatalog.h Granule.h \
 	CmrCache.h curl_utils.h rjson_utils.h RemoteHttpResource.h \
 	CmrModule.h CmrUtils.h CmrContainer.h CmrContainerStorage.h CmrNames.h
-	
 
 EXTRA_DIST = rapidjson cmr.conf.in data
 
 CLEANFILES = *~ cmr.conf
 
-install-data-local: cmr.conf
-	@currdate=`date +"%y%m%d%H%M"`; \
-	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
-	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/cmr.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/cmr.conf $(DESTDIR)$(sysconfdir)/bes/modules/cmr.conf.$$currdate; \
-	$(INSTALL_DATA) cmr.conf $(DESTDIR)$(sysconfdir)/bes/modules/cmr.conf
-
-uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/cmr.conf
+moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+module_DATA = cmr.conf
 
 cmr.conf: cmr.conf.in $(top_srcdir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > cmr.conf
-
 
 C4_DIR=./cccc
 .PHONY: cccc

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="nc4_strings_comp.nc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="NC_GLOBAL" type="Container">
+        <Attribute name="title" type="String">
+            <value>Hyrax/netcdf handler test file 2</value>
+        </Attribute>
+        <Attribute name="version" type="Float64">
+            <value>1.000000000000000</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>This file has all of the new netcdf 4 unsigned data types.</value>
+        </Attribute>
+    </Attribute>
+    <Grid name="station">
+        <Array name="station">
+            <Attribute name="who" type="String">
+                <value>james</value>
+            </Attribute>
+            <Attribute name="names" type="String">
+                <value>site_1</value>
+                <value>site_2</value>
+                <value>site_3</value>
+            </Attribute>
+            <String/>
+            <dimension name="lat" size="6"/>
+            <dimension name="lon" size="5"/>
+        </Array>
+        <Map name="lat">
+            <Int32/>
+            <dimension name="lat" size="6"/>
+        </Map>
+        <Map name="lon">
+            <Int32/>
+            <dimension name="lon" size="5"/>
+        </Map>
+    </Grid>
+    <Grid name="scan_line">
+        <Array name="scan_line">
+            <String/>
+            <dimension name="lon" size="5"/>
+        </Array>
+        <Map name="lon">
+            <Int32/>
+            <dimension name="lon" size="5"/>
+        </Map>
+    </Grid>
+    <String name="codec_name"/>
+    <dataBLOB href=""/>
+</Dataset>

@@ -38,7 +38,7 @@ CMR.Collections+=C1276812863-GES_DISC
 CMR.Facets=temporal
 CMR.Facets+=dental_floss
 
-BES.Catalog.CMR.RootDirectory=@abs_top_srcdir@/modules/cmr_module/unit-tests
+BES.Catalog.CMR.RootDirectory=UNUSED
 # BES.Catalog.CMR.FollowSymLinks=
 # BES.Catalog.CMR.Exclude=
 # BES.Catalog.CMR.Include=

@@ -1,4 +1,5 @@
-static-cache
 CmrApiTest
 CmrCatalogTest
 GranuleTest
+static-cache
+

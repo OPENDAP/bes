@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="multi_nested_unions.ncml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="NC_GLOBAL" type="Container">
+        <Attribute name="Description" type="String">
+            <value>Dataset 0 -- I should win!</value>
+        </Attribute>
+        <Attribute name="FirstComer" type="String">
+            <value>This attribute is in a nested agg, but is first instance of the attr in the file and should win.</value>
+        </Attribute>
+    </Attribute>
+    <String name="Foo"/>
+    <String name="Var_0_0"/>
+    <String name="Var_1_0"/>
+    <String name="Var_1_1"/>
+    <String name="Var_0_1"/>
+    <dataBLOB href=""/>
+</Dataset>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="nc4_unsigned_types.nc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="NC_GLOBAL" type="Container">
+        <Attribute name="title" type="String">
+            <value>Hyrax/netcdf handler test file 2</value>
+        </Attribute>
+        <Attribute name="version" type="Float64">
+            <value>1.000000000000000</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>This file has all of the new netcdf 4 cardinal data types.</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <value>time</value>
+        </Attribute>
+    </Attribute>
+    <Grid name="temp">
+        <Array name="temp">
+            <UInt32/>
+            <dimension name="time" size="2"/>
+            <dimension name="lat" size="6"/>
+            <dimension name="lon" size="5"/>
+        </Array>
+        <Map name="time">
+            <Attribute name="units" type="String">
+                <value>seconds</value>
+            </Attribute>
+            <Int32/>
+            <dimension name="time" size="2"/>
+        </Map>
+        <Map name="lat">
+            <Attribute name="units" type="String">
+                <value>degrees_north</value>
+            </Attribute>
+            <Int32/>
+            <dimension name="lat" size="6"/>
+        </Map>
+        <Map name="lon">
+            <Attribute name="units" type="String">
+                <value>degrees_east</value>
+            </Attribute>
+            <Int32/>
+            <dimension name="lon" size="5"/>
+        </Map>
+    </Grid>
+    <Grid name="rh">
+        <Array name="rh">
+            <Attribute name="_FillValue" type="UInt16">
+                <value>9999</value>
+            </Attribute>
+            <UInt16/>
+            <dimension name="time" size="2"/>
+            <dimension name="lat" size="6"/>
+            <dimension name="lon" size="5"/>
+        </Array>
+        <Map name="time">
+            <Attribute name="units" type="String">
+                <value>seconds</value>
+            </Attribute>
+            <Int32/>
+            <dimension name="time" size="2"/>
+        </Map>
+        <Map name="lat">
+            <Attribute name="units" type="String">
+                <value>degrees_north</value>
+            </Attribute>
+            <Int32/>
+            <dimension name="lat" size="6"/>
+        </Map>
+        <Map name="lon">
+            <Attribute name="units" type="String">
+                <value>degrees_east</value>
+            </Attribute>
+            <Int32/>
+            <dimension name="lon" size="5"/>
+        </Map>
+    </Grid>
+    <dataBLOB href=""/>
+</Dataset>

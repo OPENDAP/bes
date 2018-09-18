@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="var_new_Structure_nest.ncml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Structure name="MyStructure">
+        <String name="ContainedScalar1"/>
+        <Structure name="MyChildStructure">
+            <String name="ChildSays"/>
+        </Structure>
+    </Structure>
+    <dataBLOB href=""/>
+</Dataset>
+

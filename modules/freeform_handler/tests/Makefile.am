@@ -1,16 +1,6 @@
 
 AUTOMAKE_OPTIONS = foreign 
 
-AM_CPPFLAGS = -I$(top_srcdir)
-AM_CXXFLAGS =
-
-# These are not used by automake but are often useful for certain types of
-# debugging. The best way to use these is to run configure as:
-#     export CXXFLAGS='...'; ./configure --disable-shared
-# the --disable-shared is not required, but it seems to help with debuggers.
-CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
-TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
-
 noinst_DATA = bes.conf
 
 CLEANFILES = bes.conf
@@ -20,7 +10,7 @@ $(srcdir)/package.m4 ff $(BES_CONF_IN) handler_tests_macros.m4
 
 DISTCLEANFILES = atconfig
 
-BES_CONF_IN = bes.conf.modules.in
+BES_CONF_IN = bes.conf.in
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
@@ -38,7 +28,7 @@ AUTOM4TE = autom4te
 # is put in the source directory along with the *.at file used to
 # build it, which is important since these scripts are distributed
 # in the tar.gz distribution.
-TESTSUITE = $(srcdir)/freeform_handlerTest
+TESTSUITE = $(srcdir)/testsuite
 
 check-local: $(TESTSUITE) atconfig atlocal 
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)

@@ -39,15 +39,8 @@ EXTRA_DIST = usage.conf.in
 
 DISTCLEANFILES = usage.conf
 
-install-data-local: usage.conf
-	@currdate=`date +"%y%m%d%H%M"`; \
-	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
-	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/usage.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/usage.conf $(DESTDIR)$(sysconfdir)/bes/modules/usage.conf.$$currdate; \
-	$(INSTALL_DATA) usage.conf $(DESTDIR)$(sysconfdir)/bes/modules/usage.conf
-
-uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/usage.conf
+moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+module_DATA = usage.conf
 
 usage.conf: usage.conf.in $(top_srcdir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > usage.conf

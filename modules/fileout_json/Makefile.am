@@ -36,19 +36,11 @@ EXTRA_DIST = data fojson.conf.in
 
 CLEANFILES = *~ fojson.conf
 
-install-data-local: fojson.conf
-	@currdate=`date +"%y%m%d%H%M"`; \
-	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
-	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/fojson.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/fojson.conf $(DESTDIR)$(sysconfdir)/bes/modules/fojson.conf.$$currdate; \
-	$(INSTALL_DATA) fojson.conf $(DESTDIR)$(sysconfdir)/bes/modules/fojson.conf
-
-uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/fojson.conf
+moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+module_DATA = fojson.conf
 
 fojson.conf: fojson.conf.in $(top_srcdir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > fojson.conf
-
 
 C4_DIR=./cccc
 .PHONY: cccc

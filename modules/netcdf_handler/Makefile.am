@@ -49,15 +49,8 @@ sample_datadir = $(datadir)/hyrax/data/nc
 sample_data_DATA = data/bears.nc data/bears.nc.das data/coads_climatology.nc \
 data/fnoc1.nc data/fnoc1.das data/fnoc1.nc.html data/zero_length_array.nc
 
-install-data-local: nc.conf
-	@currdate=`date +"%y%m%d%H%M"`; \
-	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
-	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/nc.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/nc.conf $(DESTDIR)$(sysconfdir)/bes/modules/nc.conf.$$currdate; \
-	$(INSTALL_DATA) nc.conf $(DESTDIR)$(sysconfdir)/bes/modules/nc.conf
-
-uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/nc.conf
+moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+module_DATA = nc.conf
 
 nc.conf: nc.conf.in $(top_srcdir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > nc.conf

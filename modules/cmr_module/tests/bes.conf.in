@@ -87,7 +87,7 @@ Gateway.Whitelist+=https://s3.amazonaws.com/cloudydap
 
 Gateway.Whitelist += https://cmr.earthdata.nasa.gov
 
-BES.Catalog.CMR.RootDirectory=@abs_top_srcdir@
+BES.Catalog.CMR.RootDirectory=UNUSED
 # BES.Catalog.CMR.FollowSymLinks=
 # BES.Catalog.CMR.Exclude=
 # BES.Catalog.CMR.Include=

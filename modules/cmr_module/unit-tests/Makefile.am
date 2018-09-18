@@ -2,14 +2,12 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-
 AM_CPPFLAGS = -I$(top_srcdir)/modules -I$(top_srcdir)/modules/cmr_module \
 -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 
 # Added -lz for ubuntu
 LIBADD = -L../../../dispatch/.libs -lbes_dispatch $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_EXTRA_LIBS) \
 $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
-
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
@@ -37,7 +35,6 @@ BUILT_SOURCES = test_config.h
 
 noinst_HEADERS = test_config.h
 
-
 # This way of building the header ensures it's in the build dir and that there
 # are no '../' seqeunces in the paths. The BES will reject paths with 'dot dot'
 # in them in certain circumstances. jhrg 1/21/18
@@ -63,7 +60,6 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
-	
 $(abs_builddir)/static-cache:
 	@echo "# abs_top_srcdir: $(abs_top_srcdir)" 
 	@echo "# top_srcdir: $(top_srcdir)" 
@@ -74,7 +70,7 @@ $(abs_builddir)/static-cache:
 	@echo "# Coping preloaded CMR cache from: '$(top_srcdir)/modules/cmr_module/data/cmr_cache_for_tests' to '$(builddir)/static-cache'" 
 	cp -r $(top_srcdir)/modules/cmr_module/data/cmr_cache_for_tests $(builddir)/static-cache
 	chmod -R ug+w $(builddir)/static-cache
-	
+
 ############################################################################
 # Unit Tests
 #

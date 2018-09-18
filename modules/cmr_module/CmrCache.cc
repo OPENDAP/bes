@@ -39,6 +39,8 @@
 
 #include <cstdlib>
 
+#include "PicoSHA2/picosha2.h"
+
 #include "BESInternalError.h"
 #include "BESDebug.h"
 #include "BESUtil.h"
@@ -191,3 +193,23 @@ CmrCache::get_instance()
 
     return d_instance;
 }
+
+
+/**
+ * Compute the SHA256 hash for the item name
+ *
+ * @param name The name to hash
+ * @return The SHA256 hash of the name.
+ */
+inline string
+CmrCache::get_hash(const string &name)
+{
+    if (name.empty())
+        throw BESInternalError("Empty name passed to the Metadata Store.", __FILE__, __LINE__);
+    return picosha2::hash256_hex_string(name[0] == '/' ? name : "/" + name);
+}
+
+string CmrCache::get_cache_file_name(const string &src, bool /*mangle*/){
+    return  BESUtil::assemblePath(this->get_cache_directory(),get_cache_file_prefix() + get_hash(src));
+}
+

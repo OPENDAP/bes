@@ -67,7 +67,12 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
     // Get the container. By convention, the path can start with a slash,
     // but doesn't have too. However, get_node() requires the leading '/'.
     string container = dhi.data[CONTAINER];
-    BESDEBUG(MODULE, prolog << "container: " << container << endl);
+    BESDEBUG(MODULE, prolog << "Requested container: " << container << endl);
+
+    // Here we enforce a rule: The container name, which may be a
+    // Node and Item may never end in slash "/"
+    while(container.length()>1 &&  *container.rbegin() == '/')
+        container = container.substr(0,container.length()-1);
 
     //---------------------------------------------------------------
     // In this next section we look for a catalog name in the first
