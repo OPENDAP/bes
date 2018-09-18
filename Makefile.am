@@ -89,15 +89,8 @@ CLEANFILES = *~ *.sum *.log *.output he5das.tab.cc he5das.tab.hh \
 sample_datadir = $(datadir)/hyrax/data/hdf5
 sample_data_DATA = data/grid_1_2d.h5
 
-install-data-local: h5.conf
-	@currdate=`date +"%y%m%d%H%M"`; \
-	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
-	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/h5.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/h5.conf $(DESTDIR)$(sysconfdir)/bes/modules/h5.conf.$$currdate; \
-	$(INSTALL_DATA) h5.conf $(DESTDIR)$(sysconfdir)/bes/modules/h5.conf
-
-uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/h5.conf
+moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+module_DATA = h5.conf
 
 h5.conf: h5.conf.in $(top_srcdir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > h5.conf
