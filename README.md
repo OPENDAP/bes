@@ -10,6 +10,98 @@
 README for the OPeNDAP BES 
 ==========================
 
+# Updated for version 3.20.0
+
+## Site-specific configuration
+
+The BES uses a number of configuration files, and until now, a site has to
+customize these for their server. Each server installation would overwrite
+those files. No more. Now you can put all your configuration values in 
+
+> /etc/bes/site.conf
+
+And be configent that they will never be overwritten by a new install. The
+`site.conf` file is always read last, so parameters set there override values
+set elsewhere.
+
+## The MDS
+
+A new cache has been added to the BES for Metadata Responses (aka, the MDS
+or Metadata Store). This cache is unlike the other BES caches in that it is
+intended to be operated as either a 'cache' or a 'store.' In the latter case,
+items added will never be removed - it is an open-ended place where metadata
+response objects will be kept indefinitely. The MDS contents (as a cache or 
+a store) will survive Hyrax restarts.
+
+The MDS was initially built to speed responses when data are stored on high-
+latency devices like Amazon's S3 storage system. We have special features in
+Hyrax to handle data kept on those kinds of data stores and the MDS can provide
+clients with fast access to the metadata for those data very quickly. After
+our initial tests of the MDS, we decided to make it a general feature of the
+server, available to data served from data stored on spinning disk in addition
+to S3.
+
+Note: The MDS is not used for requests that using server-side function processing.
+
+The MDS configuration can be found in the dap.conf configuration file. Here 
+are the default settings:
+
+* Setting the 'path' to null disables uses of the MDS. 
+
+> DAP.GlobalMetadataStore.path = @datadir@/mds
+> DAP.GlobalMetadataStore.prefix = mds
+
+* Setting 'size' to zero makes the MDS hold objects forever; setting a positive 
+non-zero size makes the MDS behave like a cache, purging responses when the 
+size is exceeded. The number is the size of the cache volume in megabytes.
+
+> DAP.GlobalMetadataStore.size = 200
+
+* The MDS writes a ledger of additions and removals. By default the ledger is
+kept in 'mds_ledger.txt' in the directory used to start the BES.
+
+> DAP.GlobalMetadataStore.ledger = @datadir@/mds_ledger.txt
+
+## COVJSON Response
+
+For datasets that contain geo-spatial data, we now provide the option to
+get those data (and related metadata) encoded using the covjson format. 
+(See https://covjson.org/). Thanks to Corey Hemphill, Riley Rimer, and 
+Lewis McGibbney for this contribution.
+
+## Improved support for data stored on Amazon's S3 Web Object Store
+
+Hyrax has been about to work with data stored on S3 by copying those datasets
+to a local cache for some time. With Hyrax 1.15 we have added support for 
+subset-in-place for HDF5 and NetCDF4 data files. Data files stored in S3 
+must be configured for use with this feature of Hyrax. Configuration is simple - 
+data files are accessed using a simple command line tool that builds metadata
+objects for them that are then added to the MDS. For this feature, the MDS
+should be run in 'store' mode.
+
+Contact us about details regarding the population of the MDS for use with 
+this feature.
+
+We are currently evaluating this new feature and welcome feedback. 
+
+## Improved catalog support
+
+It has long been possible to define 'catalogs' for data that reside on other
+kinds of data stores (e.g., relational data base systems). The datasets defined
+by these catalogs appear(ed) in the directory listings as if they are 
+directories of data files, just like datasets that actually are files on a
+spinning disk. 
+
+We have generalized this system so that it is much easier to use. As an example
+of new Catalog sub-system's ease of use, we have implemented a new module that
+reads information about datasets from NASA's Common Metadata Repository (CMR)
+and uses that to display a Virtual Directory for NASA data, where the hierarchical
+relationships between data files is derived entirely from data read a CMR-support
+web API.
+
+This software is currently available in source form only - contact us if you
+would like to extend the BES Catalog system for your own data collections.
+
 # Updated for version 3.19.1
 
 BESInterface/XMLInterface improved
