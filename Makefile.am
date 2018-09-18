@@ -119,15 +119,8 @@ CLEANFILES = *~ *.log *.sum $(GRAM_SRC) h4.conf
 sample_datadir = $(datadir)/hyrax/data/hdf4
 sample_data_DATA = data/S2000415.HDF.gz data/foo2.hdf.gz data/grid_1_2d.hdf
 
-install-data-local: h4.conf
-	@currdate=`date +"%y%m%d%H%M"`; \
-	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
-	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/h4.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/h4.conf $(DESTDIR)$(sysconfdir)/bes/modules/h4.conf.$$currdate; \
-	$(INSTALL_DATA) h4.conf $(DESTDIR)$(sysconfdir)/bes/modules/h4.conf
-
-uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/h4.conf
+moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+module_DATA = h4.conf
 
 h4.conf: h4.conf.in $(top_srcdir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > h4.conf

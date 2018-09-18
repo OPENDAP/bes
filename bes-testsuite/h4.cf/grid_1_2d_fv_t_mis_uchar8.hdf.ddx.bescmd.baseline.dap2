@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="grid_1_2d_fv_t_mis_uchar8.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <value>HDFEOS_V2.18</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="GeoGrid_Data_Fields_temperature_dim_0" type="Container">
+        <Attribute name="name" type="String">
+            <value>YDim:GeoGrid</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="GeoGrid_Data_Fields_temperature_dim_1" type="Container">
+        <Attribute name="name" type="String">
+            <value>XDim:GeoGrid</value>
+        </Attribute>
+    </Attribute>
+    <Array name="GeoGrid_Data_Fields_temperature">
+        <Attribute name="long_name" type="String">
+            <value>temperature</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>255</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="YDim_GeoGrid" size="4"/>
+        <dimension name="XDim_GeoGrid" size="8"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

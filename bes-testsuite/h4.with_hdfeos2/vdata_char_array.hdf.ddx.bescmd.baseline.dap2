@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="vdata_char_array.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="Vdata_characters" type="Container">
+        <Attribute name="Vdata_field_Fchar_2d_array" type="String">
+            <value>'abc'</value>
+            <value>'bcd'</value>
+            <value>'cde'</value>
+            <value>'def'</value>
+            <value>'efg'</value>
+        </Attribute>
+        <Attribute name="Vdata_field_Fchar_array" type="String">
+            <value>ABCDE</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Vdata2_characters" type="Container"/>
+    <Array name="vdata_Vdata2_characters_vdf_Fchar2_2d_array">
+        <String/>
+        <dimension name="VDFDim0_vdata_Vdata2_characters_vdf_Fchar2_2d_array" size="12"/>
+    </Array>
+    <String name="vdata_Vdata2_characters_vdf_Fchar2_array"/>
+    <dataBLOB href=""/>
+</Dataset>

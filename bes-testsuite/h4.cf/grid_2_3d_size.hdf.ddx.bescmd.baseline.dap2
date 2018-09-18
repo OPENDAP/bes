@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="grid_2_3d_size.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <value>HDFEOS_V2.18</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="GeoGrid1_Data_Fields_temperature_dim_0" type="Container">
+        <Attribute name="name" type="String">
+            <value>ZDim:GeoGrid1</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="GeoGrid1_Data_Fields_temperature_dim_1" type="Container">
+        <Attribute name="name" type="String">
+            <value>YDim:GeoGrid1</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="GeoGrid1_Data_Fields_temperature_dim_2" type="Container">
+        <Attribute name="name" type="String">
+            <value>XDim:GeoGrid1</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="GeoGrid2_Data_Fields_temperature_dim_0" type="Container">
+        <Attribute name="name" type="String">
+            <value>ZDim:GeoGrid2</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="GeoGrid2_Data_Fields_temperature_dim_1" type="Container">
+        <Attribute name="name" type="String">
+            <value>YDim:GeoGrid2</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="GeoGrid2_Data_Fields_temperature_dim_2" type="Container">
+        <Attribute name="name" type="String">
+            <value>XDim:GeoGrid2</value>
+        </Attribute>
+    </Attribute>
+    <Array name="GeoGrid1_Data_Fields_temperature">
+        <Attribute name="long_name" type="String">
+            <value>temperature</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="ZDim_GeoGrid1" size="2"/>
+        <dimension name="YDim_GeoGrid1" size="8"/>
+        <dimension name="XDim_GeoGrid1" size="16"/>
+    </Array>
+    <Array name="GeoGrid2_Data_Fields_temperature">
+        <Attribute name="long_name" type="String">
+            <value>temperature</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="ZDim_GeoGrid2" size="2"/>
+        <dimension name="YDim_GeoGrid2" size="4"/>
+        <dimension name="XDim_GeoGrid2" size="8"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="3B43.20130901.7.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="Grid" type="Container">
+        <Attribute name="GridHeader" type="String">
+            <value>BinMethod=ARITHMETIC_MEAN;
+Registration=CENTER;
+LatitudeResolution=0.25;
+LongitudeResolution=0.25;
+NorthBoundingCoordinate=50;
+SouthBoundingCoordinate=-50;
+EastBoundingCoordinate=180;
+WestBoundingCoordinate=-180;
+Origin=SOUTHWEST;
+</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="FileHeader" type="String">
+            <value>AlgorithmID=3B43;
+AlgorithmVersion=3B43_7.0;
+FileName=3B43.20130901.7.HDF;
+GenerationDateTime=2013-12-04T15:42:50.000Z;
+StartGranuleDateTime=2013-09-01T00:00:00.000Z;
+StopGranuleDateTime=2013-09-30T23:59:59.999Z;
+GranuleNumber=;
+NumberOfSwaths=0;
+NumberOfGrids=1;
+GranuleStart=;
+TimeInterval=MONTH;
+ProcessingSystem=PPS;
+ProductVersion=7;
+MissingData=;
+</value>
+        </Attribute>
+        <Attribute name="FileInfo" type="String">
+            <value>DataFormatVersion=m;
+TKCodeBuildVersion=1;
+MetadataVersion=m;
+FormatPackage=HDF Version 4.2 Release 4, January 25, 2009;
+BlueprintFilename=TRMM.V7.3B43.blueprint.xml;
+BlueprintVersion=BV_13;
+TKIOVersion=1.6;
+MetadataStyle=PVL;
+EndianType=LITTLE_ENDIAN;
+</value>
+        </Attribute>
+        <Attribute name="GridHeader" type="String">
+            <value>BinMethod=ARITHMETIC_MEAN;
+Registration=CENTER;
+LatitudeResolution=0.25;
+LongitudeResolution=0.25;
+NorthBoundingCoordinate=50;
+SouthBoundingCoordinate=-50;
+EastBoundingCoordinate=180;
+WestBoundingCoordinate=-180;
+Origin=SOUTHWEST;
+</value>
+        </Attribute>
+    </Attribute>
+    <Array name="precipitation">
+        <Attribute name="units" type="String">
+            <value>mm/hr</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>nlon nlat</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.9</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nlon" size="1440"/>
+        <dimension name="nlat" size="400"/>
+    </Array>
+    <Array name="relativeError">
+        <Attribute name="units" type="String">
+            <value>mm/hr</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>nlon nlat</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.9</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nlon" size="1440"/>
+        <dimension name="nlat" size="400"/>
+    </Array>
+    <Array name="gaugeRelativeWeighting">
+        <Attribute name="units" type="String">
+            <value>percent</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>nlon nlat</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="nlon" size="1440"/>
+        <dimension name="nlat" size="400"/>
+    </Array>
+    <Array name="nlon">
+        <Attribute name="long_name" type="String">
+            <value>longitude</value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <value>longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nlon" size="1440"/>
+    </Array>
+    <Array name="nlat">
+        <Attribute name="long_name" type="String">
+            <value>latitude</value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <value>latitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nlat" size="400"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

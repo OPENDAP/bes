@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="grid_2_3d_size.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <value>HDFEOS_V2.18</value>
+        </Attribute>
+    </Attribute>
+    <Array name="temperature">
+        <Attribute name="coordinates" type="String">
+            <value>ZDim Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>GeoGrid1:temperature</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="ZDim" size="2"/>
+        <dimension name="Latitude" size="8"/>
+        <dimension name="Longitude" size="16"/>
+    </Array>
+    <Array name="ZDim">
+        <Attribute name="long_name" type="String">
+            <value>GeoGrid1:ZDim(fake)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="ZDim" size="2"/>
+    </Array>
+    <Array name="Latitude">
+        <Attribute name="long_name" type="String">
+            <value>GeoGrid1:Latitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="Latitude" size="8"/>
+    </Array>
+    <Array name="Longitude">
+        <Attribute name="long_name" type="String">
+            <value>GeoGrid1:Longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="Longitude" size="16"/>
+    </Array>
+    <Array name="temperature_1">
+        <Attribute name="coordinates" type="String">
+            <value>ZDim_1 Latitude_1 Longitude_1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>GeoGrid2:temperature</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="ZDim_1" size="2"/>
+        <dimension name="Latitude_1" size="4"/>
+        <dimension name="Longitude_1" size="8"/>
+    </Array>
+    <Array name="ZDim_1">
+        <Attribute name="long_name" type="String">
+            <value>GeoGrid2:ZDim(fake)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="ZDim_1" size="2"/>
+    </Array>
+    <Array name="Latitude_1">
+        <Attribute name="long_name" type="String">
+            <value>GeoGrid2:Latitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="Latitude_1" size="4"/>
+    </Array>
+    <Array name="Longitude_1">
+        <Attribute name="long_name" type="String">
+            <value>GeoGrid2:Longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="Longitude_1" size="8"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

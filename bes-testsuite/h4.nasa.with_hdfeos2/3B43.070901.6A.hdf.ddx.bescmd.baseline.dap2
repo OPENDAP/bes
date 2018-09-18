@@ -1,0 +1,1384 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="3B43.070901.6A.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="CoreMetadata" type="Container">
+        <Attribute name="OrbitNumber" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>-9999</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="RangeBeginningDate" type="Container">
+            <Attribute name="Value" type="String">
+                <value>2007/09/01</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="RangeBeginningTime" type="Container">
+            <Attribute name="Value" type="String">
+                <value>00:00:00</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="RangeEndingDate" type="Container">
+            <Attribute name="Value" type="String">
+                <value>2007/10/01</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="RangeEndingTime" type="Container">
+            <Attribute name="Value" type="String">
+                <value>00:00:00</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="GranulePointer" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;3B43.070901.6A.HDF&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="ShortName" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;Surface Rain from all Satellite and Surface&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="SizeMBECSDataGranule" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>4.394812</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="LongitudeOfMaximumLatitude" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="SpatialCoverageType" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;Horizontal&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="EllipsoidName" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;NULL&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="EquatorialRadius" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="DenominatorFlatteningRatio" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="OrbitalModelName" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;NULL&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="SemiMajorAxis" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="MeanAnomaly" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="RightAscensionNode" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="ArgumentOfPerigee" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="Eccentricity" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="Inclination" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="EpochTime" type="Container">
+            <Attribute name="Value" type="String">
+                <value>99:99:99</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="EpochDate" type="Container">
+            <Attribute name="Value" type="String">
+                <value>9999/99/99</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="EpochMillisec" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="WestBoundingCoordinate" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>-180</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="EastBoundingCoordinate" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>180</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="NorthBoundingCoordinate" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>50</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="SouthBoundingCoordinate" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>-50</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="CenterLatitude" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="CenterLongitude" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="RadiusValue" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="LatitudeResolution" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;.25deg&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="LongitudeResolution" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;.25deg&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="GeographicCoordinateUnits" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;Decimal Degrees&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="TemporalRangeType" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;Continuous Range&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="QualityAssuranceParameterName" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;ScienceQualityFlag&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="QualityAssuranceParameterValue" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;NOT BEING INVESTIGATED&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="ReprocessingActual" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;NULL&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="BrowsePointer" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;3B43_BR.070901.6A.BRO&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="ScienceContact" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;George Huffman&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="MeanMotion" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="OrbitAdjustFlag" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>-9999</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="AttitudeModeFlag" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>-9999</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="SolarBetaAngleAtBeginningOfGranule" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="SolarBetaAngleAtEndOfGranule" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="SensorAlignment" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;NULL&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="SensorAlignmentChannelOffsets" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;NULL&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="ScanPathModel" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;NULL&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="ScanPathModelParam" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;NULL&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="EphemerisFileID" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;NULL&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+    </Attribute>
+    <Attribute name="ArchiveMetadata" type="Container">
+        <Attribute name="DataGaps" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="NumberOfDataGaps" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="AlgorithmVersion" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;6.43&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="ProductVersion" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;6A&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="ToolkitVersion" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;6.38&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="CalibrationCoefficientVersion" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>-9999</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="MissingData" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>-9999</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="PercentOfBadOrMissingPixels" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;NULL&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="MaximumValidValueofChannel" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;NULL&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="MinimumValidValueofChannel" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;NULL&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="MinMaxUnits" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;NULL&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="OrbitSize" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>-9999</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="RadarWavelength" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="MinimumReflectivityThreshold" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="AlgorithmID" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;3B43&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="DataAccuracy" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;NULL&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="InputFiles" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;NULL&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="DateOfGenerationOfInputFiles" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;NULL&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="DataCenterSourceOfInputFiles" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;NULL&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="GenerationDate" type="Container">
+            <Attribute name="Value" type="String">
+                <value>2007-10-18T20:09:52.000Z</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="DayNight" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="SolarChannelGains" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;(-9999.9,-9999.9,-9999.9,-9999.9)&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="TMIRolloverCoef" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;(-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9)&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="OrbitFirstScanUTCDate" type="Container">
+            <Attribute name="Value" type="String">
+                <value>9999/99/99</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="OrbitFirstScanUTCTime" type="Container">
+            <Attribute name="Value" type="String">
+                <value>99:99:99</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="OrbitFirstScanUTCMilliseconds" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>-9999</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="OrbitFirstSCSecs" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>-9999</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="OrbitFirstSCSubsecs" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>-9999</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="OrbitLastScanUTCDate" type="Container">
+            <Attribute name="Value" type="String">
+                <value>9999/99/99</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="OrbitLastScanUTCTime" type="Container">
+            <Attribute name="Value" type="String">
+                <value>99:99:99</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="OrbitLastScanUTCmilliseconds" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>-9999</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="OrbitLastSCSecs" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>-9999</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="OrbitLastSCSubsecs" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>-9999</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="UTCFSeconds" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>-9999</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="UTCFSubseconds" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>-9999</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="UTCFflag" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>-9999</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="LeapSecondsFlag" type="Container">
+            <Attribute name="Value" type="String">
+                <value>Data_Location</value>
+                <value>&quot;Error processing EOS attributes&quot;</value>
+                <value>&quot;Error processing EOS attributes&quot;</value>
+            </Attribute>
+            <Attribute name="PGE" type="String">
+                <value>&quot;Error processing EOS attributes&quot;</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="RadarSiteName" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;NULL&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="RadarCity" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;NULL&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="RadarState" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;NULL&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="RadarCountry" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;NULL&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="NumberOfVOS" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>-9999</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="RadarGridOriginLatitude" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="RadarGridOriginLongitude" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="RadarGridOriginAltitude" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="RadarGridSpacingX" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="RadarGridSpacingY" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="RadarGridSpacingZ" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="RadarGridSizeX" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>-9999</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="RadarGridSizeY" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>-9999</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="RadarGridSizeZ" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>-9999</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="DZCal" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="GVL1C_Scale" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="Alpha" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="RuntimeOptions" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;NULL&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="AnomalyFlag" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;NOT EMPTY&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="SoftwareVersion" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>-9999</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="DatabaseVersion" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>-9999</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="TotalQualityCode" type="Container">
+            <Attribute name="Value" type="String">
+                <value>&quot;NULL&quot;</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="LongitudeOnEquator" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="UTCDateOnEquator" type="Container">
+            <Attribute name="Value" type="String">
+                <value>9999/99/99</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="UTCTimeOnEquator" type="Container">
+            <Attribute name="Value" type="String">
+                <value>99:99:99</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="UTCMillisecsOnEquator" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>-9999</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="CenterScanUTCDate" type="Container">
+            <Attribute name="Value" type="String">
+                <value>9999/99/99</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="CenterScanUTCTime" type="Container">
+            <Attribute name="Value" type="String">
+                <value>99:99:99</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="CenterScanUTCMillisec" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>-9999</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="FirstScanLat" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="FirstScanLon" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="LastScanLat" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="LastScanLon" type="Container">
+            <Attribute name="Value" type="Float64">
+                <value>-9999.9</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="NumberOfRainScans" type="Container">
+            <Attribute name="Value" type="Int32">
+                <value>-9999</value>
+            </Attribute>
+            <Attribute name="Data_Location" type="String">
+                <value>PGE</value>
+            </Attribute>
+            <Attribute name="Mandatory" type="String">
+                <value>FALSE</value>
+            </Attribute>
+        </Attribute>
+    </Attribute>
+    <Array name="DATA_GRANULE_PlanetaryGrid_precipitation">
+        <Attribute name="long_name" type="String">
+            <value>precipitation</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>scan longitude latitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="scan" size="1"/>
+        <dimension name="longitude" size="1440"/>
+        <dimension name="latitude" size="400"/>
+    </Array>
+    <Array name="DATA_GRANULE_PlanetaryGrid_relativeError">
+        <Attribute name="long_name" type="String">
+            <value>relativeError</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>scan longitude latitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="scan" size="1"/>
+        <dimension name="longitude" size="1440"/>
+        <dimension name="latitude" size="400"/>
+    </Array>
+    <Array name="latitude">
+        <Attribute name="long_name" type="String">
+            <value>latitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="latitude" size="400"/>
+    </Array>
+    <Array name="longitude">
+        <Attribute name="long_name" type="String">
+            <value>longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="longitude" size="1440"/>
+    </Array>
+    <Array name="scan">
+        <Attribute name="long_name" type="String">
+            <value>scan</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="scan" size="1"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>
