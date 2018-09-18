@@ -61,7 +61,6 @@ public:
     BESCatalog(const std::string &catalog_name);
 
     virtual ~BESCatalog();
-
 #if 0
     {
         // TODO delete d_utils when it's no longer a singleton.
