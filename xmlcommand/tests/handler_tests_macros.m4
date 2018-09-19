@@ -65,6 +65,12 @@ m4_define([REMOVE_DATE_TIME], [dnl
     dnl ' Added the preceding quote to quiet the Eclipse syntax checker. jhrg 3.2.18
 ])
 
+m4_define([REMOVE_SIZE], [dnl
+    dnl size="998" --> size="value"
+    sed -i -e 's@size="[[0-9]]+"@size="value"@g' $1
+    dnl ' Added the preceding quote to quiet the Eclipse syntax checker. jhrg 3.2.18
+])
+
 m4_define([_AT_BESCMD_NO_DATE_TEST], [dnl
 
     AT_SETUP([BESCMD $1])
@@ -77,11 +83,13 @@ m4_define([_AT_BESCMD_NO_DATE_TEST], [dnl
         [
         AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [0], [stdout])
         REMOVE_DATE_TIME([stdout])
+        REMOVE_SIZE([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
         AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [0], [stdout])
         REMOVE_DATE_TIME([stdout])
+        REMOVE_SIZE([stdout])
         AT_CHECK([diff -b -B $baseline stdout], [0], [ignore])
         AT_XFAIL_IF([test "$3" = "xfail"])
         ])
@@ -210,12 +218,12 @@ dnl
 m4_define([AT_BESCMD_RESPONSE_AND_FILE_TEST],
 [_AT_BESCMD_AND_FILE_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2], [$3], [$4])])
 
-m4_define([COMPARE_FILE_LINE_LENGTHS], [dnl
-    length1=`wc -l $1 | sed 's@[[ ]]*\([[0-9]]*\).*@\1@g'`
-    length2=`wc -l $2 | sed 's@[[ ]]*\([[0-9]]*\).*@\1@g'`
+m4_define([COMPARE_FILE_LINE_COUNT], [dnl
+    count1=`wc -l $1 | sed 's@[[ ]]*\([[0-9]]*\).*@\1@g'`
+    count2=`wc -l $2 | sed 's@[[ ]]*\([[0-9]]*\).*@\1@g'`
 
-    echo "testing: $length1 -eq $length2"
-    test $length1 -eq $length2
+    echo "testing: $count1 -eq $count2"
+    test $count1 -eq $count2
 ])
 
 dnl args: input bescmd, test baseline, output file, [diff|lines], [pass|xfail]
@@ -237,7 +245,7 @@ m4_define([_AT_BESCMD_AND_FILE_TEST], [dnl
         AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [0], [ignore])
         
         AS_IF([test "x$4" = "xlines"],
-            [AT_CHECK([COMPARE_FILE_LINE_LENGTHS([$baseline], [$output])], [0], [ignore])  ],
+            [AT_CHECK([COMPARE_FILE_LINE_COUNT([$baseline], [$output])], [0], [ignore])  ],
             [AT_CHECK([diff -b -B $baseline $output], [0], [ignore])])
 
         AT_XFAIL_IF([test "$5" = "xfail"])
