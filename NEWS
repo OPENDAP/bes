@@ -1,6 +1,51 @@
+
 News for version 3.20.0
 
-FIXME Add news items already in the README
+For more information about the new features and bug fixes, see README.md
+
+* Site-specific configuration
+
+The BES uses a number of configuration files, and until now, a site has to
+customize these for their server. Each server installation would overwrite
+those files. No more.
+
+* The MDS
+
+A new cache has been added to the BES for Metadata Responses (aka, the MDS
+or MetaData Store). This cache is unlike the other BES caches in that it is
+intended to be operated as either a 'cache' or a 'store.' In the latter case,
+items added will never be removed - it is an open-ended place where metadata
+response objects will be kept indefinitely. The MDS contents (as a cache or 
+a store) will survive Hyrax restarts.
+
+* COVJSON Response
+
+For datasets that contain geo-spatial data, we now provide the option to
+get those data (and related metadata) encoded using the covjson format. 
+(See https://covjson.org/). Thanks to Corey Hemphill, Riley Rimer, and 
+Lewis McGibbney for this contribution.
+
+* Improved support for data stored on Amazon's S3 Web Object Store
+
+Hyrax has been about to work with data stored on S3 by copying those datasets
+to a local cache for some time. With Hyrax 1.15 we have added support for 
+subset-in-place for HDF5 and NetCDF4 data files.
+
+We welcome feedback on this new feature.
+
+* Improved catalog support
+
+We have generalized the BESCatalog system so that it is much easier to use. 
+As an example of new Catalog sub-system's ease of use, we have implemented a 
+new module that reads information about datasets from NASA's Common Metadata
+Repository (CMR) and uses that to display a Virtual Directory for NASA data
+
+This software is currently available in source form only - contact us if you
+would like to extend the BES Catalog system for your own data collections.
+
+* Bug Fixes
+
+About 40 bugs have been fixed for this release. 
 
 News for version 3.19.1
 

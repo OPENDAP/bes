@@ -82,7 +82,7 @@ should be run in 'store' mode.
 Contact us about details regarding the population of the MDS for use with 
 this feature.
 
-We are currently evaluating this new feature and welcome feedback. 
+We welcome feedback on this new feature.
 
 ## Improved catalog support
 
@@ -101,6 +101,56 @@ web API.
 
 This software is currently available in source form only - contact us if you
 would like to extend the BES Catalog system for your own data collections.
+
+## Bug fixes
+
+HYRAX-10 The fileout netCDF-4 doesn't generate the correct dimensions for aggregated files
+HYRAX-247 <Dimension> elements in a constrained DMR sometimes have 'random' order
+HYRAX-248 fileout_gdal seems to build broken JP2k files
+HYRAX-362 Make the GeoTiff (GDAL) handler work with NCML aggregations
+HYRAX-554 BES now includes DMR++; hack the configure script WRT libcurl
+HYRAX-561 The fileout_netcdf, and/or the ncml_handler code does not clean up the 
+          temporary netCDF result file if the requesting client is killed during the transaction.
+HYRAX-588 Gateway HTML Form Rendering Failure
+HYRAX-591 Tests that create files fail 'make distcheck' (e.g., the tests for HYRAX-561)
+HYRAX-595 The "SHOW HELP" button in the DAP2 Data Request Form points to a broken link
+HYRAX-598 NULL pointer dereference in D4ParserSax2
+HYRAX-599 Symbolic links to data not showing up in Hyrax 1.14.0 RPMs on CentOS 7
+HYRAX-600 Unable to startup Hyrax installed from RPM on boot on Centos OS 7
+HYRAX-603 The OLFS authentication code is no longer compatible with the current deployment "bootstrap".
+HYRAX-612 Renaming the result of an aggregation (only join new?) fails.
+HYRAX-613 OLFS installation bootstrap is broken on CentOS-7
+HYRAX-621 Replace logo.gif with a transparent logo.png in Hyrax
+HYRAX-623 Fix the CI build
+HYRAX-630 The Keywords feature of libdap is hosed
+HYRAX-645 Build issue causes make -j check to fail
+HYRAX-646 Target collect-coverage-data doesn't work
+HYRAX-647 The DDS print_das() method does not produce the same DAS as the DAS::print() method for Grids sometimes
+HYRAX-648 MDS tests 61 and 62 fail on the first run of ./testsuite --conf=bes.mds.conf
+HYRAX-670 Reading values from olfs.xml file is fragile
+HYRAX-692 cppunit-config is no longer present in cppunit
+HYRAX-721 The implementation of Sequence in the XSLT based Data Request Form (IFH) is broken
+HYRAX-723 The DMR++ parser doesn't see a newline (cr?) as whitepspace.
+HYRAX-745 Broker service needs to make correct links for data access.
+HYRAX-755 The build_dmrpp code seems to fail on DMRs/Files with several variables.
+HYRAX-756 get_dmrpp fails on datasets where variables are not in the root group
+HYRAX-764 Fileout_netcdf returns empty response for dataset when no query is provided.
+HYRAX-767 Change the Data Request Form code (all 3 versions) so that it URL encodes the query before using it.
+HYRAX-775 The DMR response from the MDS has the xml:base attribute in a random place.
+HYRAX-790 geogrid is failing in OLFS regression tests
+HYRAX-791 w10n syntax collides with URI encoding rules enforced by recent Tomcat
+HYRAX-794 Some tests regarding the enum type in the netcdf handler  fail randomly
+HYRAX-801 ASAN Reveals 104 issues in the BES
+HYRAX-802 Issues remain in the Aggregation rename bug
+HYRAX-803 NcML Memory errors
+HYRAX-804 Error in ResponseBuilderTest - a unit test
+HYRAX-805 fileout_netcdf memory errors
+HYRAX-818 showNode removes catalog name from the path name of the node - stop it.
+HYRAX-833 Update baselines for BES cmdlm tests
+HYRAX-837 libdap seems to return DAP2 and DAP3.2 DDX responses in kind of random way.
+HYRAX-844 THREDDS catalog produced by Hyrax no longer work with Unidata code because of time zone issues
+HYRAX-845 BESUtil::get_time() has a pointer problem
+HYRAX-851 Memory leak in BESCatalog
 
 # Updated for version 3.19.1
 
