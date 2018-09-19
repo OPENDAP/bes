@@ -43,7 +43,7 @@ CLEANFILES = *~ csv.conf
 sample_datadir = $(datadir)/hyrax/data/csv
 sample_data_DATA = data/temperature.csv
 
-moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+moduledir = $(sysconfdir)/bes/modules
 module_DATA = csv.conf
 
 csv.conf: csv.conf.in $(top_srcdir)/config.status

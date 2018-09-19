@@ -175,7 +175,7 @@ sample_data_dmrppdir = 		$(datadir)/hyrax/data/ncml/dmrpp
 sample_data_dmrpp_DATA = 	data/ncml/dmrpp/chunked_twoD.h5
 
 
-moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+moduledir = $(sysconfdir)/bes/modules
 module_DATA = ncml.conf
 
 ncml.conf: ncml.conf.in $(top_srcdir)/config.status

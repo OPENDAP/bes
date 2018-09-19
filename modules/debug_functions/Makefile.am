@@ -39,7 +39,7 @@ package_version=$(PACKAGE_MAJOR_VERSION).$(PACKAGE_MINOR_VERSION).$(PACKAGE_SUBM
 
 CLEANFILES = *~ debug_functions.conf debug_functions-*.tar.gz
 
-moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+moduledir = $(sysconfdir)/bes/modules
 module_DATA = debug_functions.conf
 
 debug_functions.conf: debug_functions.conf.in $(top_builddir)/config.status

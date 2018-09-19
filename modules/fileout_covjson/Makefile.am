@@ -36,7 +36,7 @@ EXTRA_DIST = data focovjson.conf.in
 
 CLEANFILES = *~ focovjson.conf
 
-moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+moduledir = $(sysconfdir)/bes/modules
 module_DATA = focovjson.conf
 
 focovjson.conf: focovjson.conf.in $(top_srcdir)/config.status

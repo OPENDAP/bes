@@ -38,7 +38,7 @@ EXTRA_DIST = rapidjson cmr.conf.in data
 
 CLEANFILES = *~ cmr.conf
 
-moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+moduledir = $(sysconfdir)/bes/modules
 module_DATA = cmr.conf
 
 cmr.conf: cmr.conf.in $(top_srcdir)/config.status

@@ -30,7 +30,9 @@ EXTRA_DIST = bes/bes.conf.in bes/bes.conf bes/bes_help.html bes/bes_help.txt \
 
 DISTCLEANFILES = bes/bes.conf
 
-confdir = $(DESTDIR)$(sysconfdir)/bes
+# confdir = $(sysconfdir)/bes
+# Edit while working on C7 RPM builds jhrg 9/19/18
+confdir = $(sysconfdir)/bes
 conf_DATA = bes/bes.conf
 
 bes/bes.conf: bes/bes.conf.in ../config.status

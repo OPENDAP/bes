@@ -68,7 +68,7 @@ sample_data_DATA = data/README \
     data/SP27GTIF.lgo \
     data/DIGEST_Example_2.20120926112501.jp2
 
-moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+moduledir = $(sysconfdir)/bes/modules
 module_DATA = gdal.conf
 
 gdal.conf: gdal.conf.in $(top_srcdir)/config.status

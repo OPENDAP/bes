@@ -55,7 +55,7 @@ sample_data_DATA = data/ugrid_test_01.nc data/ugrid_test_02.nc data/ugrid_test_0
 
 # ugrid_functions.spec OSX_Resources
 
-moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+moduledir = $(sysconfdir)/bes/modules
 module_DATA = ugrid_functions.conf
 
 ugrid_functions.conf: ugrid_functions.conf.in $(top_builddir)/config.status

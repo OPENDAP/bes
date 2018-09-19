@@ -136,6 +136,9 @@ chmod g+w $RPM_BUILD_ROOT%{bespiddir}
 mv $RPM_BUILD_ROOT%{_bindir}/bes-config-pkgconfig $RPM_BUILD_ROOT%{_bindir}/bes-config
 mkdir -p $RPM_BUILD_ROOT%{_tmpfilesdir}
 mv $RPM_BUILD_ROOT%{_bindir}/bes-tmpfiles-conf $RPM_BUILD_ROOT%{_tmpfilesdir}/%{name}.conf 
+# Added the following since 'make install' installs 'base' MDS files
+# for the cmdln tests.
+# rm -rf $RPM_BUILD_ROOT%%{_datadir}/mds
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -159,10 +162,10 @@ exit 0
 %files
 %defattr(-,root,root,-)
 %doc ChangeLog NEWS README.md
+# NB: listing a directory here packages the dir and everything it contains. Using %dir
+# packages _just_ the dir. Subsequent commands can add contents selectively. jhrg 9/19/18
 %dir %{_sysconfdir}/bes/
 %dir %{_sysconfdir}/bes/modules
-
-%{_tmpfilesdir}/%{name}.conf
 
 %config(noreplace) %{_sysconfdir}/bes/bes.conf
 %config(noreplace) %{_sysconfdir}/bes/modules/*.conf
@@ -177,6 +180,8 @@ exit 0
 %{_datadir}/bes/*.xml
 
 %{_datadir}/hyrax/
+
+%{_datadir}/mds/
 
 %{_bindir}/beslistener
 %{_bindir}/besdaemon
@@ -200,6 +205,8 @@ exit 0
 %attr (-,%{besuser},%{besgroup}) %{beslogdir}
 %attr (-,%{besuser},%{besgroup}) %{bespiddir}
 %attr (-,%{besuser},%{besgroup}) %{bescachedir}
+
+%{_tmpfilesdir}/%{name}.conf
 
 %files devel
 %defattr(-,root,root,-)

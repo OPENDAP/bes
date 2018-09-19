@@ -38,7 +38,7 @@ EXTRA_DIST = data w10n.conf.in
 
 CLEANFILES = *~ w10n.conf bes.log
 
-moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+moduledir = $(sysconfdir)/bes/modules
 module_DATA =  w10n.conf
 
 w10n.conf: w10n.conf.in $(top_srcdir)/config.status

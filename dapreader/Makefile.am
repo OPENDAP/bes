@@ -99,7 +99,7 @@ data/dap4/dmr-testsuite/test_simple_9.2.xml				\
 data/dap4/dmr-testsuite/test_simple_9.xml
 
 
-moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+moduledir = $(sysconfdir)/bes/modules
 module_DATA = dapreader.conf
 
 dapreader.conf: dapreader.conf.in $(top_builddir)/config.status

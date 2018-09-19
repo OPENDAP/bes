@@ -49,7 +49,7 @@ sample_datadir = $(datadir)/hyrax/data/nc
 sample_data_DATA = data/bears.nc data/bears.nc.das data/coads_climatology.nc \
 data/fnoc1.nc data/fnoc1.das data/fnoc1.nc.html data/zero_length_array.nc
 
-moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+moduledir = $(sysconfdir)/bes/modules
 module_DATA = nc.conf
 
 nc.conf: nc.conf.in $(top_srcdir)/config.status

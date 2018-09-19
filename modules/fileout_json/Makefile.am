@@ -36,7 +36,7 @@ EXTRA_DIST = data fojson.conf.in
 
 CLEANFILES = *~ fojson.conf
 
-moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+moduledir = $(sysconfdir)/bes/modules
 module_DATA = fojson.conf
 
 fojson.conf: fojson.conf.in $(top_srcdir)/config.status

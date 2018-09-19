@@ -51,7 +51,7 @@ EXTRA_DIST = xml_data_handler.conf.in data
 CLEANFILES = *~ *.log *.sum
 DISTCLEANFILES = xml_data_handler.conf
 
-moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+moduledir = $(sysconfdir)/bes/modules
 module_DATA = xml_data_handler.conf
 
 xml_data_handler.conf: xml_data_handler.conf.in $(top_srcdir)/config.status

@@ -84,7 +84,7 @@ EXTRA_DIST = functions.conf.in gse.yy gse.lex
 
 CLEANFILES = *~ functions.conf
 
-moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+moduledir = $(sysconfdir)/bes/modules
 module_DATA = functions.conf
 
 functions.conf: functions.conf.in $(top_builddir)/config.status
