@@ -100,7 +100,10 @@ relationships between data files is derived entirely from data read a CMR-suppor
 web API.
 
 This software is currently available in source form only - contact us if you
-would like to extend the BES Catalog system for your own data collections.
+would like to extend the BES Catalog system for your own data collections. 
+To build Hyrax with this feature enabled, build either in developer mode 
+(./configure ... --enable-developer) or using the spepcial configuration option
+--enable-cmr.
 
 ## Bug fixes
 
