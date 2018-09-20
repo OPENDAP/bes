@@ -24,7 +24,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:       libdap >= 3.20.0
 Requires:       readline bzip2 zlib
-Requires:	libicu >= 3.6 
+Requires:	    libicu >= 3.6 
 Requires:       libxml2 >= 2.7.0
 Requires:       openssl
 
@@ -136,9 +136,6 @@ chmod g+w $RPM_BUILD_ROOT%{bespiddir}
 mv $RPM_BUILD_ROOT%{_bindir}/bes-config-pkgconfig $RPM_BUILD_ROOT%{_bindir}/bes-config
 mkdir -p $RPM_BUILD_ROOT%{_tmpfilesdir}
 mv $RPM_BUILD_ROOT%{_bindir}/bes-tmpfiles-conf $RPM_BUILD_ROOT%{_tmpfilesdir}/%{name}.conf 
-# Added the following since 'make install' installs 'base' MDS files
-# for the cmdln tests.
-# rm -rf $RPM_BUILD_ROOT%%{_datadir}/mds
 
 %clean
 rm -rf $RPM_BUILD_ROOT
