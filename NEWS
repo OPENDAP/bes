@@ -3,6 +3,9 @@ News for version 3.20.0
 
 For more information about the new features and bug fixes, see README.md
 
+* Updates for the HDF4 and HDF5 handlers in addition to bug fixes for other
+handles as noted in the README.md file.
+
 * Site-specific configuration
 
 The BES uses a number of configuration files, and until now, a site has to

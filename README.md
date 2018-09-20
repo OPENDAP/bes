@@ -105,6 +105,23 @@ To build Hyrax with this feature enabled, build either in developer mode
 (./configure ... --enable-developer) or using the spepcial configuration option
 --enable-cmr.
 
+## For the HDF4 handler
+
+* CF option: Enhance the support of handling the scale_factor and add_offset to follow the CF. The scale_factor and
+add_offset rule for the MOD16A3 product is different than other MODIS products. We make an exception for 
+this product only to ensure the scale_factor and add_offset follow the CF conventions.
+ 
+ 
+## For the HDF5 handler
+ 
+CF option:
+1. Add the support of the HDF-EOS5 Polar Stereographic(PS) and Lambert Azimuthal Equal Area(LAMAZ) grid projection files. 
+   Both projection files can be found in NASA LANCE products.
+2. Add the HDF-EOS5 grid latitude and longitude cache support. This is the same as what we did for the HDF-EOS2 grid. 
+3. Add the support for TROP-OMI, new OMI level 2 and OMPS-NPP product.
+4. Removed the internal reserved netCDF-4 attributes for DAP output.
+5. Make the behavior of the drop long string BES key consistent with the current limitation of netCDF Java.
+ 
 ## Bug fixes
 
 HYRAX-10 The fileout netCDF-4 doesn't generate the correct dimensions for aggregated files
