@@ -12,7 +12,7 @@ SUBDIRS = . tests
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=fileout_gdal
-M_VER=0.10.4
+M_VER=0.10.5
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(GDAL_CFLAGS) $(DAP_CFLAGS)
 LIBADD = $(GDAL_LDFLAGS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -37,15 +37,8 @@ EXTRA_DIST = data fong.conf.in
 
 CLEANFILES = *~ fong.conf
 
-install-data-local: fong.conf
-	@currdate=`date +"%y%m%d%H%M"`; \
-	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
-	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/fong.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/fong.conf $(DESTDIR)$(sysconfdir)/bes/modules/fong.conf.$$currdate; \
-	$(INSTALL_DATA) fong.conf $(DESTDIR)$(sysconfdir)/bes/modules/fong.conf
-
-uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/fong.conf
+moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+module_DATA = fong.conf
 
 fong.conf: fong.conf.in $(top_srcdir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > fong.conf

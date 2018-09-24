@@ -64,7 +64,7 @@ do
     
     (cd $module
 
-     # Test the sentinel file. If this is here, do nothing.
+     # If the sentinel file is here, do nothing.
      if test -f version_updated
      then
 	   echo "Found a 'version_updated' file, exiting."

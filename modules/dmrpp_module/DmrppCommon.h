@@ -28,11 +28,9 @@
 #include <string>
 #include <vector>
 
-#include <H5Ppublic.h>
+//#include <H5Ppublic.h>
 
 #include "Chunk.h"
-#include "CurlHandlePool.h"
-
 
 namespace libdap {
 class DMR;
@@ -150,12 +148,13 @@ public:
 
     void print_dmrpp(libdap::XMLWriter &writer, bool constrained = false);
 
+    // Replaced hsize_t with size_t. This eliminates a dependency on hdf5. jhrg 9/7/18
     /// @brief Set the value of the chunk dimension sizes given a vector of HDF5 hsize_t
-    void set_chunk_dimension_sizes(const std::vector<hsize_t> &chunk_dims)
+    void set_chunk_dimension_sizes(const std::vector<size_t> &chunk_dims)
     {
         // tried using copy(chunk_dims.begin(), chunk_dims.end(), d_chunk_dimension_sizes.begin())
         // it didn't work, maybe because of the differing element types?
-        for (std::vector<hsize_t>::const_iterator i = chunk_dims.begin(), e = chunk_dims.end(); i != e; ++i) {
+        for (std::vector<size_t>::const_iterator i = chunk_dims.begin(), e = chunk_dims.end(); i != e; ++i) {
             d_chunk_dimension_sizes.push_back(*i);
         }
     }

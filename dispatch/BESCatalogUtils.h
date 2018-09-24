@@ -52,7 +52,7 @@ class BESCatalogEntry;
 // Refactored the 'singleton list of CatalogUtils out/ jhrg 7/27/18
 
 // This seems odd - to have a singleton that is actually a map of
-// instances and have that me a member of (each of?) the instances...
+// instances and have that a member of (each of?) the instances...
 // I think this should be a member of a catalog, not a singleton with
 // a list of classes. jhrg 2.25.18
 #endif
@@ -83,9 +83,7 @@ private:
     BESCatalogUtils::match_citer match_list_begin() const;
     BESCatalogUtils::match_citer match_list_end() const;
 
-    BESCatalogUtils()
-    {
-    }
+    BESCatalogUtils():d_follow_syms(false) {}
 
     static void bes_add_stat_info(BESCatalogEntry *entry, struct stat &buf);
 

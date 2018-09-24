@@ -11,7 +11,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=fileout_netcdf
-M_VER=1.4.6
+M_VER=1.4.7
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(NC_CPPFLAGS) $(DAP_CFLAGS)
 LIBADD = $(NC_LDFLAGS) $(NC_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -46,15 +46,8 @@ EXTRA_DIST = data fonc.conf.in
 
 CLEANFILES = *~ fonc.conf
 
-install-data-local: fonc.conf
-	@currdate=`date +"%y%m%d%H%M"`; \
-	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
-	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/fonc.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/fonc.conf $(DESTDIR)$(sysconfdir)/bes/modules/fonc.conf.$$currdate; \
-	$(INSTALL_DATA) fonc.conf $(DESTDIR)$(sysconfdir)/bes/modules/fonc.conf
-
-uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/fonc.conf
+moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+module_DATA = fonc.conf
 
 fonc.conf: fonc.conf.in $(top_srcdir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > fonc.conf

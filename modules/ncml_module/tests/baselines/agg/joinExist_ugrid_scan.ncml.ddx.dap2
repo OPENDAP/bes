@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="joinExist_ugrid_scan.ncml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Int32 name="fvcom_mesh">
+        <Attribute name="face_node_connectivity" type="String">
+            <value>fnca</value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <value>mesh_topology</value>
+        </Attribute>
+        <Attribute name="topology_dimension" type="Int32">
+            <value>2</value>
+        </Attribute>
+        <Attribute name="node_coordinates" type="String">
+            <value>X Y</value>
+        </Attribute>
+    </Int32>
+    <Array name="X">
+        <Attribute name="grid" type="String">
+            <value>element</value>
+        </Attribute>
+        <Attribute name="grid_location" type="String">
+            <value>node</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nodes" size="9"/>
+    </Array>
+    <Array name="Y">
+        <Attribute name="grid" type="String">
+            <value>element</value>
+        </Attribute>
+        <Attribute name="grid_location" type="String">
+            <value>node</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nodes" size="9"/>
+    </Array>
+    <Array name="fnca">
+        <Attribute name="start_index" type="Int32">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <value>face_node_connectivity</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="faces" size="8"/>
+        <dimension name="three" size="3"/>
+    </Array>
+    <Array name="time">
+        <Float32/>
+        <dimension name="time" size="10"/>
+    </Array>
+    <Array name="twoDnodedata">
+        <Attribute name="coordinates" type="String">
+            <value>Y X</value>
+        </Attribute>
+        <Attribute name="mesh" type="String">
+            <value>fvcom_mesh</value>
+        </Attribute>
+        <Attribute name="location" type="String">
+            <value>node</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="time" size="10"/>
+        <dimension name="nodes" size="9"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

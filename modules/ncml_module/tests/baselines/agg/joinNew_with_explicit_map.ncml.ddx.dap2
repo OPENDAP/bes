@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="joinNew_with_explicit_map.ncml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Array name="V">
+        <Int32/>
+        <dimension name="day" size="2"/>
+        <dimension name="sensors" size="3"/>
+    </Array>
+    <Array name="day">
+        <Attribute name="units" type="String">
+            <value>days since 2000-1-01 00:00</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="day" size="2"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>
+

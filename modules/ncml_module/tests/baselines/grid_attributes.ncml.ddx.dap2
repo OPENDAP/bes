@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="grid_attributes.ncml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="NC_GLOBAL" type="Container">
+        <Attribute name="title" type="String">
+            <value>COADS 1-degree Equatorial Enhanced</value>
+        </Attribute>
+        <Attribute name="history" type="String">
+            <value></value>
+        </Attribute>
+        <Attribute name="Conventions" type="String">
+            <value>COARDS</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <value>time</value>
+        </Attribute>
+    </Attribute>
+    <Array name="lat">
+        <Attribute name="long_name" type="String">
+            <value>Latitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Attribute name="actual_range" type="Float32">
+            <value>10.0000000</value>
+            <value>-10.0000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="lat" size="21"/>
+    </Array>
+    <Array name="lon">
+        <Attribute name="long_name" type="String">
+            <value>Longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Attribute name="actual_range" type="Float32">
+            <value>0.500000000</value>
+            <value>359.500000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="lon" size="360"/>
+    </Array>
+    <Array name="time">
+        <Attribute name="units" type="String">
+            <value>days since 1-1-1 00:00:0.0</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Time</value>
+        </Attribute>
+        <Attribute name="delta_t" type="String">
+            <value>0000-01-00 00:00:00</value>
+        </Attribute>
+        <Attribute name="avg_period" type="String">
+            <value>0000-01-00 00:00:00</value>
+        </Attribute>
+        <Attribute name="actual_range" type="Float64">
+            <value>715511.0000000000</value>
+            <value>729360.0000000000</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="time" size="456"/>
+    </Array>
+    <Grid name="cldc">
+        <Array name="cldc">
+            <Attribute name="valid_range" type="Float32">
+                <value>0.00000000</value>
+                <value>8.00000000</value>
+            </Attribute>
+            <Attribute name="actual_range" type="Float32">
+                <value>0.00000000</value>
+                <value>8.00000000</value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <value>okta</value>
+            </Attribute>
+            <Attribute name="precision" type="Int16">
+                <value>1</value>
+            </Attribute>
+            <Attribute name="missing_value" type="Int16">
+                <value>32766</value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int16">
+                <value>32766</value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <value>Cloudiness Monthly Mean at Surface</value>
+            </Attribute>
+            <Attribute name="dataset" type="String">
+                <value>COADS 1-degree Equatorial Enhanced\012AI</value>
+            </Attribute>
+            <Attribute name="var_desc" type="String">
+                <value>Cloudiness\012C</value>
+            </Attribute>
+            <Attribute name="level_desc" type="String">
+                <value>Surface\0120</value>
+            </Attribute>
+            <Attribute name="statistic" type="String">
+                <value>Mean\012M</value>
+            </Attribute>
+            <Attribute name="parent_stat" type="String">
+                <value>Individual Obs\012I</value>
+            </Attribute>
+            <Attribute name="add_offset" type="Float32">
+                <value>3276.50000</value>
+            </Attribute>
+            <Attribute name="scale_factor" type="Float32">
+                <value>0.100000001</value>
+            </Attribute>
+            <Int16/>
+            <dimension name="time" size="456"/>
+            <dimension name="lat" size="21"/>
+            <dimension name="lon" size="360"/>
+        </Array>
+        <Map name="time">
+            <Attribute name="units" type="String">
+                <value>days since 1-1-1 00:00:0.0</value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <value>Time</value>
+            </Attribute>
+            <Attribute name="delta_t" type="String">
+                <value>0000-01-00 00:00:00</value>
+            </Attribute>
+            <Attribute name="avg_period" type="String">
+                <value>0000-01-00 00:00:00</value>
+            </Attribute>
+            <Attribute name="actual_range" type="Float64">
+                <value>715511.0000000000</value>
+                <value>729360.0000000000</value>
+            </Attribute>
+            <Float64/>
+            <dimension name="time" size="456"/>
+        </Map>
+        <Map name="lat">
+            <Attribute name="long_name" type="String">
+                <value>Latitude</value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <value>degrees_north</value>
+            </Attribute>
+            <Attribute name="actual_range" type="Float32">
+                <value>10.0000000</value>
+                <value>-10.0000000</value>
+            </Attribute>
+            <Attribute name="Description" type="String">
+                <value>I am a new attribute in the Grid map vector named lat!</value>
+            </Attribute>
+            <Float32/>
+            <dimension name="lat" size="21"/>
+        </Map>
+        <Map name="lon">
+            <Attribute name="long_name" type="String">
+                <value>Longitude</value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <value>degrees_east</value>
+            </Attribute>
+            <Attribute name="actual_range" type="Float32">
+                <value>0.500000000</value>
+                <value>359.500000</value>
+            </Attribute>
+            <Attribute name="Description" type="String">
+                <value>I am a new attribute in the Grid map vector named lon!</value>
+            </Attribute>
+            <Float32/>
+            <dimension name="lon" size="360"/>
+        </Map>
+    </Grid>
+    <dataBLOB href=""/>
+</Dataset>

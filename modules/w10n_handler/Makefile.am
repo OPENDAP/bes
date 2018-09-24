@@ -10,7 +10,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=w10n_handler
-M_VER=1.0.9
+M_VER=1.1.0
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand $(DAP_CFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -38,15 +38,8 @@ EXTRA_DIST = data w10n.conf.in
 
 CLEANFILES = *~ w10n.conf bes.log
 
-install-data-local: w10n.conf
-	@currdate=`date +"%y%m%d%H%M"`; \
-	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
-	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/w10n.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/w10n.conf $(DESTDIR)$(sysconfdir)/bes/modules/w10n.conf.$$currdate; \
-	$(INSTALL_DATA) w10n.conf $(DESTDIR)$(sysconfdir)/bes/modules/w10n.conf
-
-uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/w10n.conf
+moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+module_DATA =  w10n.conf
 
 w10n.conf: w10n.conf.in $(top_srcdir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > w10n.conf
@@ -55,7 +48,6 @@ w10n.conf: w10n.conf.in $(top_srcdir)/config.status
 # in subdirs.
 dist-hook:
 	rm -rf `find $(distdir) -name .svn`
-
 
 C4_DIR=./cccc
 .PHONY: cccc

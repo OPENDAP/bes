@@ -80,7 +80,7 @@ namespace bes {
  *
  * @author jhrg
  */
-class DmrppMetadataStore: public bes::GlobalMetadataStore {
+class DmrppMetadataStore: public GlobalMetadataStore {
 private:
     static bool d_enabled;
     static DmrppMetadataStore *d_instance;

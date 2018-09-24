@@ -10,6 +10,168 @@
 README for the OPeNDAP BES 
 ==========================
 
+# Updated for version 3.20.0
+
+## Site-specific configuration
+
+The BES uses a number of configuration files, and until now, a site has to
+customize these for their server. Each server installation would overwrite
+those files. No more. Now you can put all your configuration values in 
+
+> /etc/bes/site.conf
+
+And be configent that they will never be overwritten by a new install. The
+`site.conf` file is always read last, so parameters set there override values
+set elsewhere.
+
+## The MDS
+
+A new cache has been added to the BES for Metadata Responses (aka, the MDS
+or Metadata Store). This cache is unlike the other BES caches in that it is
+intended to be operated as either a 'cache' or a 'store.' In the latter case,
+items added will never be removed - it is an open-ended place where metadata
+response objects will be kept indefinitely. The MDS contents (as a cache or 
+a store) will survive Hyrax restarts.
+
+The MDS was initially built to speed responses when data are stored on high-
+latency devices like Amazon's S3 storage system. We have special features in
+Hyrax to handle data kept on those kinds of data stores and the MDS can provide
+clients with fast access to the metadata for those data very quickly. After
+our initial tests of the MDS, we decided to make it a general feature of the
+server, available to data served from data stored on spinning disk in addition
+to S3.
+
+Note: The MDS is not used for requests that using server-side function processing.
+
+The MDS configuration can be found in the dap.conf configuration file. Here 
+are the default settings:
+
+* Setting the 'path' to null disables uses of the MDS. 
+
+> DAP.GlobalMetadataStore.path = @datadir@/mds
+> DAP.GlobalMetadataStore.prefix = mds
+
+* Setting 'size' to zero makes the MDS hold objects forever; setting a positive 
+non-zero size makes the MDS behave like a cache, purging responses when the 
+size is exceeded. The number is the size of the cache volume in megabytes.
+
+> DAP.GlobalMetadataStore.size = 200
+
+* The MDS writes a ledger of additions and removals. By default the ledger is
+kept in 'mds_ledger.txt' in the directory used to start the BES.
+
+> DAP.GlobalMetadataStore.ledger = @datadir@/mds_ledger.txt
+
+## COVJSON Response
+
+For datasets that contain geo-spatial data, we now provide the option to
+get those data (and related metadata) encoded using the covjson format. 
+(See https://covjson.org/). Thanks to Corey Hemphill, Riley Rimer, and 
+Lewis McGibbney for this contribution.
+
+## Improved support for data stored on Amazon's S3 Web Object Store
+
+Hyrax has been about to work with data stored on S3 by copying those datasets
+to a local cache for some time. With Hyrax 1.15 we have added support for 
+subset-in-place for HDF5 and NetCDF4 data files. Data files stored in S3 
+must be configured for use with this feature of Hyrax. Configuration is simple - 
+data files are accessed using a simple command line tool that builds metadata
+objects for them that are then added to the MDS. For this feature, the MDS
+should be run in 'store' mode.
+
+Contact us about details regarding the population of the MDS for use with 
+this feature.
+
+We welcome feedback on this new feature.
+
+## Improved catalog support
+
+It has long been possible to define 'catalogs' for data that reside on other
+kinds of data stores (e.g., relational data base systems). The datasets defined
+by these catalogs appear(ed) in the directory listings as if they are 
+directories of data files, just like datasets that actually are files on a
+spinning disk. 
+
+We have generalized this system so that it is much easier to use. As an example
+of new Catalog sub-system's ease of use, we have implemented a new module that
+reads information about datasets from NASA's Common Metadata Repository (CMR)
+and uses that to display a Virtual Directory for NASA data, where the hierarchical
+relationships between data files is derived entirely from data read a CMR-support
+web API.
+
+This software is currently available in source form only - contact us if you
+would like to extend the BES Catalog system for your own data collections. 
+To build Hyrax with this feature enabled, build either in developer mode 
+(./configure ... --enable-developer) or using the spepcial configuration option
+--enable-cmr.
+
+## For the HDF4 handler
+
+* CF option: Enhance the support of handling the scale_factor and add_offset to follow the CF. The scale_factor and
+add_offset rule for the MOD16A3 product is different than other MODIS products. We make an exception for 
+this product only to ensure the scale_factor and add_offset follow the CF conventions.
+ 
+ 
+## For the HDF5 handler
+ 
+CF option:
+1. Add the support of the HDF-EOS5 Polar Stereographic(PS) and Lambert Azimuthal Equal Area(LAMAZ) grid projection files. 
+   Both projection files can be found in NASA LANCE products.
+2. Add the HDF-EOS5 grid latitude and longitude cache support. This is the same as what we did for the HDF-EOS2 grid. 
+3. Add the support for TROP-OMI, new OMI level 2 and OMPS-NPP product.
+4. Removed the internal reserved netCDF-4 attributes for DAP output.
+5. Make the behavior of the drop long string BES key consistent with the current limitation of netCDF Java.
+ 
+## Bug fixes
+
+HYRAX-10 The fileout netCDF-4 doesn't generate the correct dimensions for aggregated files
+HYRAX-247 <Dimension> elements in a constrained DMR sometimes have 'random' order
+HYRAX-248 fileout_gdal seems to build broken JP2k files
+HYRAX-362 Make the GeoTiff (GDAL) handler work with NCML aggregations
+HYRAX-554 BES now includes DMR++; hack the configure script WRT libcurl
+HYRAX-561 The fileout_netcdf, and/or the ncml_handler code does not clean up the 
+          temporary netCDF result file if the requesting client is killed during the transaction.
+HYRAX-588 Gateway HTML Form Rendering Failure
+HYRAX-591 Tests that create files fail 'make distcheck' (e.g., the tests for HYRAX-561)
+HYRAX-595 The "SHOW HELP" button in the DAP2 Data Request Form points to a broken link
+HYRAX-598 NULL pointer dereference in D4ParserSax2
+HYRAX-599 Symbolic links to data not showing up in Hyrax 1.14.0 RPMs on CentOS 7
+HYRAX-600 Unable to startup Hyrax installed from RPM on boot on Centos OS 7
+HYRAX-603 The OLFS authentication code is no longer compatible with the current deployment "bootstrap".
+HYRAX-612 Renaming the result of an aggregation (only join new?) fails.
+HYRAX-613 OLFS installation bootstrap is broken on CentOS-7
+HYRAX-621 Replace logo.gif with a transparent logo.png in Hyrax
+HYRAX-623 Fix the CI build
+HYRAX-630 The Keywords feature of libdap is hosed
+HYRAX-645 Build issue causes make -j check to fail
+HYRAX-646 Target collect-coverage-data doesn't work
+HYRAX-647 The DDS print_das() method does not produce the same DAS as the DAS::print() method for Grids sometimes
+HYRAX-648 MDS tests 61 and 62 fail on the first run of ./testsuite --conf=bes.mds.conf
+HYRAX-670 Reading values from olfs.xml file is fragile
+HYRAX-692 cppunit-config is no longer present in cppunit
+HYRAX-721 The implementation of Sequence in the XSLT based Data Request Form (IFH) is broken
+HYRAX-723 The DMR++ parser doesn't see a newline (cr?) as whitepspace.
+HYRAX-745 Broker service needs to make correct links for data access.
+HYRAX-755 The build_dmrpp code seems to fail on DMRs/Files with several variables.
+HYRAX-756 get_dmrpp fails on datasets where variables are not in the root group
+HYRAX-764 Fileout_netcdf returns empty response for dataset when no query is provided.
+HYRAX-767 Change the Data Request Form code (all 3 versions) so that it URL encodes the query before using it.
+HYRAX-775 The DMR response from the MDS has the xml:base attribute in a random place.
+HYRAX-790 geogrid is failing in OLFS regression tests
+HYRAX-791 w10n syntax collides with URI encoding rules enforced by recent Tomcat
+HYRAX-794 Some tests regarding the enum type in the netcdf handler  fail randomly
+HYRAX-801 ASAN Reveals 104 issues in the BES
+HYRAX-802 Issues remain in the Aggregation rename bug
+HYRAX-803 NcML Memory errors
+HYRAX-804 Error in ResponseBuilderTest - a unit test
+HYRAX-805 fileout_netcdf memory errors
+HYRAX-818 showNode removes catalog name from the path name of the node - stop it.
+HYRAX-833 Update baselines for BES cmdlm tests
+HYRAX-837 libdap seems to return DAP2 and DAP3.2 DDX responses in kind of random way.
+HYRAX-844 THREDDS catalog produced by Hyrax no longer work with Unidata code because of time zone issues
+HYRAX-845 BESUtil::get_time() has a pointer problem
+HYRAX-851 Memory leak in BESCatalog
+
 # Updated for version 3.19.1
 
 BESInterface/XMLInterface improved

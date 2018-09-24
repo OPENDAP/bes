@@ -56,10 +56,10 @@ void TempFile::sigpipe_handler(int sig)
     if (sig == SIGPIPE) {
         std::map<string, int>::iterator it;
         for (it = open_files->begin(); it != open_files->end(); ++it) {
-            unlink((it->first).c_str());
+            if (unlink((it->first).c_str()) == -1)
+                ERROR(string("Error unlinking temporary file: '").append(it->first).append("': ").append(strerror(errno)).append("\n"));
         }
         // Files cleaned up? Sweet! Time to bail...
-        // FIXME Should we set this to the cached_sigpipe_handler? Or just the default?
         sigaction(SIGPIPE, &cached_sigpipe_handler, 0);
         // signal(SIGPIPE, SIG_DFL);
         raise(SIGPIPE);

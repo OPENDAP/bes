@@ -60,12 +60,14 @@ private:
 public:
     BESCatalog(const std::string &catalog_name);
 
-    virtual ~BESCatalog()
+    virtual ~BESCatalog();
+#if 0
     {
         // TODO delete d_utils when it's no longer a singleton.
         // Or leave that class as the weird singleton it is and treat this
         // as a weak pointer. jhrg 7/21/18
     }
+#endif
 
     /**
      * @brief Increase the count of clients that reference this catalog.

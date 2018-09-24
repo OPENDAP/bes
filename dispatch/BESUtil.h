@@ -37,6 +37,7 @@
 #include <list>
 #include <iostream>
 #include <vector>
+#include <BESCatalog.h>
 
 using std::string;
 using std::list;
@@ -104,7 +105,8 @@ public:
 
     static void url_explode(const string &url_str, BESUtil::url &url_parts);
     static string url_create(BESUtil::url &url_parts);
-    static string assemblePath(const string &firstPart, const string &secondPart, bool addLeadingSlash = false);
+    // static string assemblePath(const string &firstPart, const string &secondPart, bool leadingSlash = false);
+    static string assemblePath(const string &firstPart, const string &secondPart, bool leadingSlash = false, bool trailingSlash = false);
 
     static bool endsWith(std::string const &fullString, std::string const &ending);
     static void conditional_timeout_cancel();
@@ -114,8 +116,15 @@ public:
     static void tokenize(const std::string& str, std::vector<std::string>& tokens, const std::string& delimiters = "/");
     static string get_time(bool use_local_time = false);
     static string get_time(time_t the_time, bool use_local_time = false);
+    static std::vector<std::string> split(const string &s, char delim='/', bool skip_empty=true);
+
+    static BESCatalog *separateCatalogFromPath(std::string &path);
+
 
 };
+
+
+
 
 #endif // E_BESUtil_h
 

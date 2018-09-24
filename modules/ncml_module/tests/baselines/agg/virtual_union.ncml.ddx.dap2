@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="virtual_union.ncml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="AttrContainer" type="Container">
+        <Attribute name="Attr_1" type="Int32">
+            <value>0</value>
+            <value>1</value>
+            <value>2</value>
+            <value>3</value>
+            <value>4</value>
+            <value>5</value>
+            <value>6</value>
+            <value>7</value>
+            <value>8</value>
+            <value>9</value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <value>Test for whether a container gets merged correctly.</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NC_GLOBAL" type="Container">
+        <Attribute name="Dataset_Description" type="String">
+            <value>Virtual union aggregation example</value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <value>Dataset One</value>
+        </Attribute>
+    </Attribute>
+    <String name="SelfReferentialVariable"/>
+    <String name="Foo">
+        <Attribute name="Description" type="String">
+            <value>This var names Foo comes first and should be in output.</value>
+        </Attribute>
+    </String>
+    <String name="Bar">
+        <Attribute name="Description" type="String">
+            <value>This var names Bar comes first and should be in output.</value>
+        </Attribute>
+    </String>
+    <String name="Baz">
+        <Attribute name="Description" type="String">
+            <value>This var names Baz comes first and should be in output.</value>
+        </Attribute>
+    </String>
+    <dataBLOB href=""/>
+</Dataset>

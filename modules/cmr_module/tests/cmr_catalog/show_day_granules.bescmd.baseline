@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response reqID="[thread:http-nio-8080-exec-4-42][bes_client:/-2]" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <showNode>
+        <node count="1" lastModified="removed date-time" name="/CMR/C1276812863-GES_DISC/temporal/2002/03/03">
+            <item isData="true" lastModified="removed date-time" name="M2T1NXSLV.5.12.4:MERRA2_300.tavg1_2d_slv_Nx.20020303.nc4" size="399" type="leaf"/>
+        </node>
+    </showNode>
+</response>

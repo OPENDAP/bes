@@ -3,7 +3,7 @@
 show_usage() {
     cat <<EOF
 
- Usage: $0 [h|v] <hdf5 file>
+ Usage: $0 [options] <hdf5 file>
 
  Write the DMR++ for hdf5_file to stdout
  
@@ -12,14 +12,16 @@ show_usage() {
  The DMR++ is built using the DMR as returned by the HDF5 handler,
  using options as set in the bes configuration file found here.
  
+ -h: Show help
  -v: Verbose: Print the DMR too
  -V: Very Verbose: print the DMR, the command and the configuration
      file used to build the DMR
  -r: Just print the DMR that will be used to build the DMR++
+ -u: URL for the DMR++ file
 
  Limitations: 
  * The pathanme to the hdf5 file must be relative from the
-   directory where this command was run; absolute paths won''t work. 
+   directory where this command was run; absolute paths won't work. 
  * The build_dmrpp command must be in the CWD. 
  * The bes conf template has to build by hand. jhrg 5/11/18
 EOF

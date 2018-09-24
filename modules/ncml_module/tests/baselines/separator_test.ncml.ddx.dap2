@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="separator_test.ncml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="NC_GLOBAL" type="Container">
+        <Attribute name="foo" type="Int32">
+            <value>1</value>
+            <value>2</value>
+            <value>3</value>
+            <value>4</value>
+            <value>5</value>
+        </Attribute>
+        <Attribute name="bar" type="String">
+            <value>a</value>
+            <value>b</value>
+            <value>c</value>
+            <value>d</value>
+            <value>e</value>
+        </Attribute>
+        <Attribute name="baz" type="String">
+            <value> a </value>
+            <value> b </value>
+            <value> c </value>
+            <value> d </value>
+            <value> e </value>
+        </Attribute>
+        <Attribute name="frobozz" type="Url">
+            <value>http://www.gnu.org</value>
+            <value>http://www.opendap.org</value>
+        </Attribute>
+        <Attribute name="zork" type="String">
+            <value>I am a string without a specified separator so won't get separated into an array.</value>
+        </Attribute>
+        <Attribute name="enchanter" type="String">
+            <value>Each</value>
+            <value>One</value>
+            <value>Is</value>
+            <value>A</value>
+            <value>Token</value>
+        </Attribute>
+    </Attribute>
+    <String name="sorcerer"/>
+    <Array name="grue">
+        <String/>
+        <dimension size="3"/>
+    </Array>
+    <Array name="dungeon_master">
+        <String/>
+        <dimension size="3"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>
+

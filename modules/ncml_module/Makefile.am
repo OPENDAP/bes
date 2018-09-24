@@ -11,7 +11,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=ncml_moddule
-M_VER=1.4.7
+M_VER=1.4.8
 
 AM_CPPFLAGS = $(ICU_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
 -I$(top_srcdir)/xmlcommand $(DAP_CFLAGS)
@@ -175,15 +175,8 @@ sample_data_dmrppdir = 		$(datadir)/hyrax/data/ncml/dmrpp
 sample_data_dmrpp_DATA = 	data/ncml/dmrpp/chunked_twoD.h5
 
 
-install-data-local: ncml.conf
-	@currdate=`date +"%y%m%d%H%M"`; \
-	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
-	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/ncml.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/ncml.conf $(DESTDIR)$(sysconfdir)/bes/modules/ncml.conf.$$currdate; \
-	$(INSTALL_DATA) ncml.conf $(DESTDIR)$(sysconfdir)/bes/modules/ncml.conf
-
-uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/ncml.conf
+moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+module_DATA = ncml.conf
 
 ncml.conf: ncml.conf.in $(top_srcdir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > ncml.conf

@@ -1,3 +1,4446 @@
+2018-09-18  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #190 from OPENDAP/hyrax-1.15
+	Hyrax 1.15
+
+	Minor edits related to the leak Kent found
+
+2018-09-17  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed a memory leak reported by Kent Yang - BESCatalog leaked a CatalogUtils pointer
+
+2018-09-14  James Gallagher  <jgallagher@opendap.org>
+
+	Fix for MDS use when DDX responses are constrained with CE functions
+
+	The MDS does not work with server functions.
+	When a CE contains a server function call, the MDS should not be used.
+	In that case, the MDS will try to build a DDS and evaluate the CE, but
+	the type classes in the DDS won't support data read operations, resulting
+	in an obscure error about unimplemented read() methods. This commit
+	fixes the problem for DDS and DMR responses, but not DDX responses.
+	The latter don't appear to handle constrained requests at all.
+
+2018-09-14  Nathan Potter  <ndp@opendap.org>
+
+	Fixing baselines for change to cvs_handler
+
+2018-09-14  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed an error in the CSV handler's DAS response
+	The DAS is simply a 'type' attribute for each variable - the type of
+	'type' should be "String" and the value should be the name of the
+	datatype (e.g., "Float32"). The DAS incorrectly used the variable's
+	type as the type of the 'type' attribute.
+
+2018-09-13  James Gallagher  <jgallagher@opendap.org>
+
+	Minor modification to BESUtil::get_time() - it can handle longer time zone names
+	And returns a valid string if the date/time won't fit in the string
+	buffer
+
+	Fix the MDS 'initial_state_hack' for distcheck
+
+	bes/cmdln/tests MDS initial state
+
+	Now cmdln/tests preloads the MDS cache for its tests
+	This is a work-around for the cmdln tests, which only run when the BES
+	is running. See HYRAX-811. The MDS returns different DAS responses than
+	the data handlers, so cached DAS responses will differ from the first
+	DAS for any given dataset.
+
+2018-09-12  James Gallagher  <jgallagher@opendap.org>
+
+	hdf4/5 modules have matching changes for make install
+
+	make install no longer copies old conf files to date-stamped backups.
+	Use the site.conf file for customization instead - or be savvy.
+	Or both.
+
+	Merge branch 'hyrax-1.15' of https://github.com/opendap/bes into hyrax-1.15
+
+	Turn on the MDS in the dap.conf.in file
+	This may fix our broken cmdln tests and is probably how we want to
+	ship the Hyrax anyway
+
+2018-09-12  Nathan Potter  <ndp@opendap.org>
+
+	Replaced jhrg with the unconfigured sys admin name in the baseline error responses.
+
+2018-09-12  James Gallagher  <jgallagher@opendap.org>
+
+	various gitignore edits.
+	[skip ci]
+
+2018-09-12  Nathan Potter  <ndp@opendap.org>
+
+	Trying to sort our CMR response cache files for build
+
+	Merge branch 'hyrax-1.15' of https://github.com/opendap/bes into hyrax-1.15
+
+	fixing static_cache
+
+	trying to fix cache
+
+2018-09-12  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'hyrax-1.15' of https://github.com/opendap/bes into hyrax-1.15
+
+	Fixed unit-test that depends on the DAP2/3.2 DDX response.
+
+2018-09-12  Nathan Potter  <ndp@opendap.org>
+
+	New inputs (cached cmr responses) for cmr_module unit tests because sha2 cache filenames.
+
+2018-09-12  James Gallagher  <jgallagher@opendap.org>
+
+	Corrected baselines for the cmdln tests.
+	The changes are for some of the DAS responses, but mostly for the
+	new DAP3.2 DDX responses.
+
+	Merge branch 'hyrax-1.15' of https://github.com/opendap/bes into hyrax-1.15
+
+	Changes to HDF4/5 for the DDX baselines are on a branch (also named hyrax-1.15)
+	These branches should be pulled from github by our CI system. Once
+	Kent agrees with these changes, we can merge the HDF4/5 code back to
+	their master branches.
+
+2018-09-11  James Gallagher  <jgallagher@opendap.org>
+
+	For the updated DDX baselines, this commit adds the old DAP2 responses.
+	The responses are save off in files ending in 'dap2'
+
+	For all modules' tests, the DDX baselines are now DAP3.2 DDX responses.
+
+2018-09-11  Nathan Potter  <ndp@opendap.org>
+
+	adding missing caches files
+
+	Merge branch 'hyrax-1.15' of https://github.com/opendap/bes into hyrax-1.15
+
+	Updating hdf4 & hdf5 submodules.
+
+	small changes
+
+2018-09-10  James Gallagher  <jgallagher@opendap.org>
+
+	These baselines )netcdf_handler/tests) work with DAP2 DDX responses. [skip ci]
+
+	Modified the NCML module, uses DDS::has_dap_2_attributes() functions.
+	[skip ci]
+
+	Merge branch 'cmdln-test-fixes' into hyrax-1.15
+
+2018-09-10  Nathan Potter  <ndp@opendap.org>
+
+	Added code that makes sure container names don't end in '/'
+
+	Comments
+
+	Added a fourth (optional) parameter to the BESUtils::assemble_path() methd that allows the caller to control the presence (or abscence) trailing slash.
+
+2018-09-09  James Gallagher  <jgallagher@opendap.org>
+
+	Modified travis.yaml to install/start the bes before running the tests
+	This will run the cmdln tests, which test the server and not the
+	besstandalone app, which is just a tiny bit different. In this set of
+	tests the server is installed and will load all of the modules in
+	their default configuration. The besstandalone tool only ever loads a
+	subset of the modules and often with 'special' settings.
+
+	Fixes for the bes/cmdln tests - run when the bes is running.
+	These baselines should be independent of various run-time parameter.
+	If not, then we should swap to the better set of m4 macros and drop
+	the use of self-contained ones.
+
+2018-09-08  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' into hyrax-1.15
+
+2018-09-08  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #191 from OPENDAP/rc1
+	RC1
+
+	Newest hdf4/5 modules (git submodules)
+
+	The inlined GlobalMetadataStore::get_hash() was not include in
+	-O2 version of the dap module Removed the 'inline' keyword
+	from the GlobalMetadataStore.cc file.
+
+2018-09-07  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint - removng H5 include from DMR++ module
+	But not build_dmrpp
+
+	Merge branch 'centos-build-fixes' into rc1
+
+2018-09-07  James Gallagher  <jgallagehr@opendap.org>
+
+	checkpoint - remove build_dmrpp build for now
+
+	Fixed an error in the conditional CMR build
+	CMR_MODULE --> WITH_CMR
+
+2018-09-06  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed KEEP ALIVE 0 (off) for the Multi API
+
+	Better Keep Alive off implementation.
+	This will fail, however, if the curl multi API is used.
+
+2018-09-06  James Gallagher  <jgallagehr@opendap.org>
+
+	Added infor about variables used for tests
+
+	Added timing info.
+
+2018-09-06  Nathan Potter  <ndp@opendap.org>
+
+	More repairs to the response header recovery
+
+	Fixed problem with recovering response headers from cache
+
+	Add static_cache files for unit tests. Fixed name prblem in CMR cache
+
+	Migrated CMR cache so that it sha2 hashes the file names.
+
+2018-09-05  James Gallagher  <jgallagher@opendap.org>
+
+	Added Keep Alive compile time switch.
+	This only workes with read_contiguous() or in serial mode. Probably
+	good enough for testing.
+
+	Added info file about AIRS graule in S3
+
+	DmrppArray now has instrumentation that identifies the read method used
+	Use the BESDEBUG key "dmrpp:4" to see this.
+
+2018-09-05  James Gallagher  <jgallagehr@opendap.org>
+
+	Make the CMR module build only with  --with-cmr or --enable-developer
+
+2018-09-05  James Gallagher  <jgallagher@opendap.org>
+
+	Minor edis to BESSyntaxUserError.h
+
+2018-09-05  Nathan Potter  <ndp@opendap.org>
+
+	Made it possible for Catalog implmentations not to need a RootDir in their configuration
+
+2018-09-05  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into rc1
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+2018-09-05  Nathan Potter  <ndp@opendap.org>
+
+	Working on BESCatalog to drop RootDir requirement
+
+2018-09-04  Nathan Potter  <ndp@opendap.org>
+
+	Updated comments
+
+2018-09-04  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+2018-08-31  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes for rc1 - one cherry-picked commit from centos-build-fixes
+
+	Fixed modules/dmrpp_handler/unit-tests/Makefile.am
+	Linking against ../*.o was linking both the plain and build_dmrpp
+	objects.
+
+2018-08-31  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #188 from OPENDAP/cmr
+	Cmr
+
+	Adding .gitignore
+
+	And even more with the production urles.
+
+2018-08-31  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed modules/dmrpp_handler/unit-tests/Makefile.am
+	Linking against ../*.o was linking both the plain and build_dmrpp
+	objects.
+
+	Merge branch 'centos-build-fixes' of github.com:opendap/bes into centos-build-fixes
+	Conflicts:
+		Makefile.am
+
+	RPMs now build on CentOS 6
+
+2018-08-31  Nathan Potter  <ndp@opendap.org>
+
+	Production rules
+
+	More production rules for distcheck
+
+2018-08-30  Nathan Potter  <ndp@opendap.org>
+
+	More production rules.
+
+	More production rules.
+
+2018-08-30  James Gallagher  <jgallagher@opendap.org>
+
+	cleaned up the Makefile.am
+
+2018-08-30  Nathan Potter  <ndp@opendap.org>
+
+	More production rules.
+
+	More production rules.
+
+2018-08-30  James Gallagher  <jgallagher@opendap.org>
+
+	Replaced the dap module linkage with explicit object files.
+
+	Moved build_dmrpp to the main DMR++ source directory; added dap module back
+
+	Merge branch 'centos-build-fixes' of https://github.com/opendap/bes into centos-build-fixes
+
+	Changed build_dmrpp so it uses object files and not BES modules
+	This makes it easier to distribute that program.
+
+	Temp fix for the RPM - remove build_dmrpp until its build works.
+	[skip ci]
+
+2018-08-29  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes for the rpm build
+	[skip ci]
+
+	rpm spec file files and the dispatch/tests/Makefile.am
+
+2018-08-29  Nathan Potter  <ndp@opendap.org>
+
+	distcheck repairs
+
+2018-08-29  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes made for the build on centos 6
+
+2018-08-29  Nathan Potter  <ndp@opendap.org>
+
+	Debuggin'
+
+	Added improved dat-time string removal to tests. Fixed baselines. woot.
+
+	Merge branch 'master' into cmr_issues
+
+2018-08-28  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed cmr_module/tests/Makefile.am - I think it had invisible chars
+
+	Fix submitted for a coverity issue
+
+2018-08-28  Nathan Potter  <ndp@opendap.org>
+
+	Added missing testsuite.at
+
+2018-08-28  James Gallagher  <jgallagher@opendap.org>
+
+	Added sleep between write lock and read lock for FlieLockingCacheTest
+	[skip ci]
+
+	Added missing linux include for errno
+
+2018-08-28  Nathan Potter  <ndp@opendap.org>
+
+	More gnu hell
+
+2018-08-28  James Gallagher  <jgallagher@opendap.org>
+
+	Coverity fixes
+
+	Merge pull request #186 from OPENDAP/dmrpp_profile
+	Dmrpp profile
+
+	Cleaned up the hackery a bit.
+
+2018-08-28  Nathan Potter  <ndp@opendap.org>
+
+	sync
+
+2018-08-27  James Gallagher  <jgallagher@opendap.org>
+
+	This version uses the pointer to an implementation pattern to hide the CURLM*
+	Passes tests; Needs cleanup.
+
+	checkpoint - tests for the multi API; still needs work.
+
+2018-08-27  Nathan Potter  <ndp@opendap.org>
+
+	More m4 work for ignoring dates
+
+	Switching to modules/handler_tests_macros.m4
+
+	Switching to modules/handler_tests_macros.m4
+
+	Switching to modules/handler_tests_macros.m4
+
+	Moved cmr_module test cache from srcdir to builddir
+
+	Producion rules
+
+2018-08-27  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into dmrpp_profile
+
+2018-08-27  Nathan Potter  <ndp@opendap.org>
+
+	Adding rapidjson to EXTRA_DIST
+
+	dropped bad directory reference
+
+	More test issues
+
+	More test issues
+
+	added missing file
+
+	Updating baselines for showNode/catalog changes
+
+	Distchack issues.
+
+	Character-case challanges
+
+	Removing unused code componets.
+
+2018-08-27  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint - pthread version works.
+
+	Completed the hack remove the requirement for CURL's Multi API.
+	Not working.
+
+2018-08-27  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' into cmr
+
+2018-08-26  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint - compile-time switch for multi-curl
+
+	Updated GlobalMetadataCache
+
+	Merge pull request #187 from OPENDAP/coverity_scan
+	Coverity scan
+
+2018-08-24  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'coverity_scan' of https://github.com/opendap/bes into coverity_scan
+
+	Until the DMR++ can be part of the non-developer build, add
+	--enable-developer to the coverity scan
+
+2018-08-23  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed error in GlobalMetadataStore
+	An error from posix_advise() was being logged, but not correctly.
+
+	Merge branch 'coverity_fixes' into coverity_scan
+
+	the remaining fixes...
+
+	checkpoint
+
+	Fixes(?) for the dispatch FileLockCacheTests, again...
+
+	Fixed the dispatch/unit-tests Makefile - no self referential recursive variables
+
+2018-08-22  James Gallagher  <jgallagher@opendap.org>
+
+	Added sleep calls to dispatch FileLockingCacheTest; tests run in verbose mode
+	Maybe this will help debug the misc. errors these have
+
+	Added tmp_* to DISTCLEANFILES in dap/unit-tests
+	This will remove any tmp_XXXXXX files left in unit-tests.
+
+	Fixed one issue with make distcheck
+
+	Working on distcheck for the dmrpp_profile branch
+
+	Fix to the HTTP/S result processing code for Chunk::read_chunk()
+
+	Merge branch 'master' into dmrpp_profile
+
+	Merge branch 'master' into coverity_scan
+
+	Updated travis.yml to include build_command_prepend for the coverity addon
+	[skip ci]
+
+	Merge branch 'master' into coverity_scan
+
+2018-08-22  Nathan Potter  <ndp@opendap.org>
+
+	Tests fixed. Woot.
+
+	merged master to cmr, tests failing
+
+	Merge pull request #185 from OPENDAP/shownode
+	Fixed a problem in showNode
+
+	Dropped unused code
+
+2018-08-21  Nathan Potter  <ndp@opendap.org>
+
+	Fixed a problem in showNode where the catalog name, which
+	prefixes the path for catalogs other than the default catalog,
+	was being dropped from the returned node name and the catalog
+	attribute was still being included in the retruned node.
+
+2018-08-21  James Gallagher  <jgallagher@opendap.org>
+
+	Added comments and cleaned up a bit.
+
+	Checkpoint. Opt 3: now keeps a maximum number of threads running
+
+2018-08-21  Nathan Potter  <ndp@opendap.org>
+
+	hdf4 and hdf4 commits
+
+	Revert "hdf4 and hdf5 updates"
+	This reverts commit c947d763027fd26b91f186ebc1e41d99dbfb06e9.
+
+	pull master
+
+	hdf4 and hdf5 updates
+
+2018-08-21  James Gallagher  <jgallagher@opendap.org>
+
+	Second rev of pthreads parallel optimization for DMR++
+
+2018-08-21  Nathan Potter  <ndp@opendap.org>
+
+	 Formatting
+
+2018-08-20  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint. working toward more threading
+
+2018-08-20  Nathan Potter  <ndp@opendap.org>
+
+	sync
+
+	Works
+
+2018-08-20  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into dmrpp_profile
+
+2018-08-20  Nathan Potter  <ndp@opendap.org>
+
+	merged origin
+
+	Converting Granule class so that it interrogates the rapidjson
+	objects and does not try to keep a ref/copy
+
+2018-08-20  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'cmr' of https://github.com/opendap/bes into cmr
+
+	Fix errors in rjson_utils::getStringValue() (return empty_string)
+	Add to bes.conf.in so that using besstandalone works for debugging.
+
+2018-08-20  Nathan Potter  <ndp@opendap.org>
+
+	Fixing baselines
+
+	Fixed baselines for Node tests
+
+2018-08-20  James Gallagher  <jgallagher@opendap.org>
+
+	Comment - use pthreads code as glue to a method?
+
+	Fixed an off-by-one error in DmrppArray::read_chunks_unconstrained().
+
+2018-08-20  Nathan Potter  <ndp@opendap.org>
+
+	sync
+
+2018-08-19  James Gallagher  <jgallagher@opendap.org>
+
+	Checkpoint. Implemented parallel 'chunk inflate()'
+	Does not always work. Sometimes tests 84, 93, (others?), fail.
+
+	Modified to parallel chunk inflation. Not working.
+
+	Merge pull request #183 from OPENDAP/netcdf_issue
+	Netcdf issue
+
+	Added header for memcmp (linux) in FONcMap.cc
+
+2018-08-17  James Gallagher  <jgallagher@opendap.org>
+
+	Optimization: Compute the array offset  in the  recursive cal
+	This is implemented only for the chunk_insert_unconstrained()
+	method, but does result in a measurable performance improvement.
+
+2018-08-17  Nathan Potter  <ndp@opendap.org>
+
+	Smakk changes for cent-os compile
+
+	Smakk changes for cent-os compile
+
+	Smakk changes for cent-os compile
+
+	Smakk changes for cent-os compile
+
+	Smakk changes for cent-os compile
+
+2018-08-17  James Gallagher  <jgallagher@opendap.org>
+
+	Optimization: remove calls to get_index for chunk offset computation
+
+2018-08-17  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HYRAX-764. One more change in memcmp.
+
+	HYRAX-764. Changed sizeof to width.
+
+	HYRAX-764. Corrected comparing the values of the array in FONcMap.cc
+
+2018-08-16  James Gallagher  <jgallagher@opendap.org>
+
+	More progress moving invariants out of the insert_chunk_unconstrained() method.
+
+2018-08-16  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' into cmr
+
+	Small issues
+
+2018-08-16  James Gallagher  <jgallagher@opendap.org>
+
+	Updated a comment
+
+2018-08-16  Nathan Potter  <ndp@opendap.org>
+
+	Spelling
+
+2018-08-16  James Gallagher  <jgallagher@opendap.org>
+
+	Revert "checkpoint - flawed version of recursive chunk_offset computation."
+	This reverts commit 9dd1c9fc2d5775b3217dcaa35617625f183c54a5.
+
+2018-08-16  Nathan Potter  <ndp@opendap.org>
+
+	Dropped catalog attribute from node representation.
+
+2018-08-16  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint - flawed version of recursive chunk_offset computation.
+	Previous commit works.
+
+2018-08-15  James Gallagher  <jgallagher@opendap.org>
+
+	Optimization: remove repeated calls to DmrppArray::get_shape()
+
+	Updates to DmrppArray and to the tests.
+	DmrppArray::read_chunk_unconstrained() minor fix - insert_chunk_unconstrained()
+	failed to call itself and called insert_chunk() instead.
+	I added tests that read from a local AIRS granule that I 'shrunk'
+	using h5copy. These tests help with profiling (and include reading
+	from an essentially equivalent file in S3).
+
+2018-08-14  Nathan Potter  <ndp@opendap.org>
+
+	Dropping changes to BESCatalogDirectory
+
+	More CMR monkey biz
+
+2018-08-14  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #182 from OPENDAP/ncml_rename_test
+	Ncml rename test
+
+	DmrppArray::read_contiguous() works for compressed chunks now.
+
+2018-08-14  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HYRAX-806. Corrected testsuite.
+
+	Merge branch 'master' into ncml_rename_test
+
+2018-08-13  James Gallagher  <jgallagher@opendap.org>
+
+	I think I've fixed the renaminng issue when data are requested.
+	The baselines were wrong for this branch when data were requested.
+	While the metadata requests were correct when variables were
+	renamed, the data responses used the old variable names. Fixed.
+	I also fixed the issue where a Grid aggregation was returning
+	a Structure (405 and maybe test 406). I have not updated the
+	baselines - someone else needs to check them to make sure I'm
+	not deluded...
+	[skip ci]
+
+2018-08-13  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' into cmr
+
+2018-08-11  Nathan Potter  <ndp@opendap.org>
+
+	Fixed issue in .travis.yml
+
+2018-08-10  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into ncml_rename_test
+
+2018-08-10  Nathan Potter  <ndp@opendap.org>
+
+	Adding debug files to travis log
+
+	Merge branch 'master' into cmr
+
+	Added Whitelist configuration to dmrpp tests.
+
+	Fixed tests to reflect the catalog name in the path arrangement.
+
+	Merge branch 'master' into cmr
+
+	Merge pull request #181 from OPENDAP/catalog_nodes
+	Catalog nodes
+
+2018-08-10  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HYRAX-806. Removed agg/aggExistingRenaming.ncml from test. Corrected baselines.
+
+2018-08-10  Nathan Potter  <ndp@opendap.org>
+
+	Small changes
+
+	 More fixes
+
+	Formatting and redundant code removal
+
+2018-08-10  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Merge branch 'master' into ncml_rename_test
+
+2018-08-09  Nathan Potter  <ndp@opendap.org>
+
+	Code improvements, comments.
+
+2018-08-09  James Gallagher  <jgallagher@opendap.org>
+
+	Updated the failing test 405 - marked as xfail
+
+	Worked on tests; found a lingering renaming bug
+
+	Added support for the 'cloudydap' context to dmrp::Chunk.
+
+2018-08-09  Nathan Potter  <ndp@opendap.org>
+
+	Small changes to gather error info.
+
+	Small changes to gather error info.
+
+	Working through ci build issues.
+
+	Working through ci build issues.
+
+	Adding missing include
+
+	Alternate catalog nodes now being added to root node.
+
+2018-08-08  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into dmrpp_profile
+
+	Merge pull request #180 from OPENDAP/dmrpp_ncml_tests
+	Test for Ncml Aggregations using the DMR++ handler
+
+2018-08-08  Nathan Potter  <ndp@opendap.org>
+
+	sync
+
+2018-08-08  James Gallagher  <jgallagher@opendap.org>
+
+	Added ncml/dmrpp files needed for the new test
+
+	Modified the HTTP status test in CurlHandlePool to include HTTPS.
+
+2018-08-08  Nathan Potter  <ndp@opendap.org>
+
+	First effort to add multi catalogs to node response
+
+2018-08-08  James Gallagher  <jgallagher@opendap.org>
+
+	Added a test were we read data from test.opendap.org using HTTP
+
+	Modified the CurlHandlePool so that it accepts 206 as a valid response
+
+2018-08-08  Nathan Potter  <ndp@opendap.org>
+
+	Prechanges for catalog node activity
+
+2018-08-08  James Gallagher  <jgallagher@opendap.org>
+
+	Changed VariableElement to handle renaming for Grids specially
+	I also changed other aspects of the renaming so that Grid renaming
+	is done for the metadata responses.
+	[skip ci]
+
+	Chan ged /data/ncml/agg/aggNew.nso it uses <varaibleAgg ...>
+
+2018-08-08  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Added test for aggregation 3 tiff files.
+
+2018-08-07  James Gallagher  <jgallagher@opendap.org>
+
+	Test for Ncml Aggregations using the DMR++ handler
+	Both local file and data from S3 are tested - we might have to
+	remove the S3 tests at some point (when the bucket goes away).
+	For now, this shows it really works reading from S3.
+
+	Minor change to dmrpp::Chunk::add_tracking_query_param()
+
+2018-08-07  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HYRAX-806. Added aggNew.ncml to testsuite.
+
+2018-08-06  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into dmrpp_profile
+
+2018-08-06  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' into cmr
+
+2018-08-06  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #177 from OPENDAP/netcdf_handler_fixes
+	Netcdf handler fixes
+
+	Merge branch 'master' into netcdf_handler_fixes
+	[skip ci]
+
+	Merge pull request #179 from OPENDAP/ncml_memory_fixes
+	Ncml memory fixes
+
+	Merge branch 'master' into ncml_memory_fixes
+	[skip ci]
+
+	Merge pull request #178 from OPENDAP/memory_fixes
+	Memory fixes
+
+2018-08-05  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed problem with enum attributes - I used num_fields instead of length.
+	I was using the number of fields of the user defined enumeration
+	type, and not the attribute's length (as returned by the nc_att_inq()
+	function.
+
+2018-08-04  James Gallagher  <jgallagher@opendap.org>
+
+	Fix to testsuite.at - fixed unbalanced parens in AT_INIT.
+
+2018-08-03  James Gallagher  <jgallagher@opendap.org>
+
+	Replaced DDS::add_var and Aray::add_var with add_var_nocopy in many places.
+	I did not replace the calls to NCMLParser::addCopyOfVariableAtCurrentScope()
+	since that seemed more intricate than I wanted to as part of this
+	bug fix - especailly since I have not actually fixed the real bug,
+	just patched it. ...Although the patch is more efficient thatn the
+	original.
+
+	Added comments and switched to add_var_nocopy() for Grids.
+
+	Fixes for HYRAX-803 - these changes patch a memory error flagged by ASAN.
+	The problem appears to be in the copy constructor(s) for the two classes
+	ArrayAggregateOnOuterDimension and ArrayAggreagtionBase or is a latent
+	problem they trigger (although those methods are so thin it's hard
+	to imagine them being broken). Regardless, replacing the DDS::add_var()
+	calls with DDS::add_var_nocopy() calls fixes the errors. See the bug
+	report for an extensive discussion of the errors.
+
+	Fix for HYRAX-804: Use std::vector::resize() instead of reserve.
+
+	Fixed a memory issue in fileout_netcdf (HYRAX-805)
+
+	Baseline updates for the Enum attribute fix in netcdf_handler
+	Also tweaked the dispatch tests in a minor way - no change to
+	their overall behavior. The test 'banner' is now more verbose.
+
+	Merge pull request #174 from OPENDAP/agg_rename
+	Agg rename
+
+2018-08-02  James Gallagher  <jgallagher@opendap.org>
+
+	Added **/bes.conf to git ignore at the top level.
+	[skip ci]
+
+	Fixed ticket HYRAX-802.
+	We were pretty close with our 'send_p' hack, but there was one wrinkle -
+	the send_p flag has to be cleared after the data are read in case a CE
+	is then applied. Failure to do so leaves the CE parser thinking it's
+	working on a variable that has already been constrained. That's OK,
+	but only in limited cases.
+	I also modified the tests/Makefile.am so that TESTSUITEFLAGS env var
+	works (it was overridden in the Makefile).
+
+	Found and fixed a memory access error in netcdf_handler
+	The handler did not correctly process Attribtues that
+	were enumerations. Oddly, it appears that _FillValue
+	is also an enumeration in the test files. Baselines
+	not yet updated.
+
+	Added AIRS complete file access bescmd files.
+
+	Problems with read_chunked_unconstrained() fixed.
+
+	Added more scripts; read_chunks_unconstrained has problems
+
+	I modified how variables are renamed - now only tests 97 101 fail
+	The code only renames the inner Array of a Grid (by explicitly
+	testing for the the dods_grid_c value from BaseType::type()).
+	I also replaced the test that used dynamic_cast<Array*> to use
+	...type() != dods_array_c.
+
+2018-08-01  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into agg_rename
+
+	Added bescmd files specifically for profiling
+
+	Added the start of tests that read from S3.
+
+	Changes based on profiling - get_shape() was improved.
+	Also, started on a version of read_chunked() that is optimized
+	for unconstrained access.
+
+2018-07-30  Nathan Potter  <ndp@opendap.org>
+
+	Finishing issue raised by merging master.
+
+	merged master to cmr
+
+	Merge pull request #176 from OPENDAP/catalog
+	Catalog
+
+	Added 'catalog' attribute to show catalog command.
+
+	Added catalog attribute to chowCatalog command. Issues.
+
+	Dropped tests that use showInfo
+
+2018-07-30  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #175 from OPENDAP/catalog_utils_refactor_2
+	Catalog utils refactor 2
+
+2018-07-30  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Merge branch 'master' into agg_rename
+
+2018-07-28  James Gallagher  <jgallagher@opendap.org>
+
+	Refactored out the awkward singleton pattern from BESCatalogUtils.
+	Instances are held by BESCatalogs, which are themselves held in a
+	singleton list - so by extension BESCatalogs and ...Utils are
+	singletons. I also found that BESCatalogUtils::get_handler_name() was
+	never used, but could have been in several places. I replaced that code
+	with calls to get_handler_name().
+
+2018-07-27  Nathan Potter  <ndp@opendap.org>
+
+	comments
+
+2018-07-27  James Gallagher  <jgallagher@opendap.org>
+
+	Removed /dispatch/unit-tests/bes.conf
+
+	Merge branch 'cmr' of https://github.com/opendap/bes into cmr
+
+	Comments
+
+2018-07-27  Nathan Potter  <ndp@opendap.org>
+
+	cleanup
+
+2018-07-27  James Gallagher  <jgallagher@opendap.org>
+
+	Baselines for get_node_test_3 and _4
+
+	comments added
+
+2018-07-27  Nathan Potter  <ndp@opendap.org>
+
+	tweaks
+
+	Restored broken logic in get_node
+
+2018-07-27  James Gallagher  <jgallagher@opendap.org>
+
+	Streamlined the PROLOG macro and moved it to the top of BESCatalogDirectory.
+
+	Merge branch 'cmr' of https://github.com/opendap/bes into cmr
+
+	Minor fixes: Fixed DIR* and change 'prolog' debug helper to a macro
+
+2018-07-27  Nathan Potter  <ndp@opendap.org>
+
+	fixed leaf/node issue
+
+	fixed leaf/node issue
+
+	Merge branch 'cmr' of https://github.com/opendap/bes into cmr
+
+	fixed leaf/node issue
+
+2018-07-27  James Gallagher  <jgallagher@opendap.org>
+
+	Removed /dispatch/unit-tests/bes.conf from git
+
+2018-07-27  Nathan Potter  <ndp@opendap.org>
+
+	sync
+
+	sync
+
+2018-07-27  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Merge branch 'master' into agg_rename
+
+	Made different change to force aggregation work with and without renaming.
+
+	Updated rename variable.
+
+	Added ncml renaming of vars.
+
+	HYRAX-539. Added transmitters and data.
+
+2018-07-27  Nathan Potter  <ndp@opendap.org>
+
+	cleanup
+
+	cleanup
+
+	small edits
+
+	Added unit test for a leaf as node to dispatch
+
+2018-07-27  James Gallagher  <jgallagher@opendap.org>
+
+	Start removing the CatalogUtils::Utils(name) stuff.
+
+2018-07-26  James Gallagher  <jgallagher@opendap.org>
+
+	comments fixed in ContainerStorage and ContainerStorageVolatile
+	[skip ci]
+
+2018-07-26  Nathan Potter  <ndp@opendap.org>
+
+	Reowkring BesCatalogDirectory so that it returns valid showNode responses for leaves.
+
+	Sync
+
+	All unit-tests work against content held locally in 'static-cache'
+
+	Droppping tmp dir creation
+
+	Droppping modules noise
+
+	Moved CMR cache into build_dir
+
+2018-07-25  Nathan Potter  <ndp@opendap.org>
+
+	More catalog implementation work
+
+	Got CmrCatalog working. Tests passing.
+
+2018-07-25  James Gallagher  <jgallagher@opendap.org>
+
+	Added comments.
+	[skip ci]
+
+2018-07-25  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' into cmr
+
+	Sync
+
+	Added http response header caching to RemoteHttpResource.
+
+	Working on caching response headers.
+
+	Working on caching response headers.
+
+2018-07-25  James Gallagher  <jgallagher@opendap.org>
+
+	Added comments for deprecated classes for the showCatalog command.
+	That command has now been replaced by the showNode command.
+	[skip ci]
+
+	I removed another enum test in the netcdf handler since it fails 'randomly.'
+	[skip ci]
+
+	Merge pull request #173 from OPENDAP/show_node_command
+	Show Node command
+
+	YADF (Yet another distcheck fix)
+
+2018-07-24  James Gallagher  <jgallagher@opendap.org>
+
+	Make the sed commands in the xmlcommand/tests work on linux
+
+	Removed one test from netcdf4 - an enum test that fails every so often.
+
+	Distcheck fixes
+
+2018-07-24  Nathan Potter  <ndp@opendap.org>
+
+	First CmrCatalog unit test working.
+
+2018-07-24  James Gallagher  <jgallagher@opendap.org>
+
+	'Fixed' the TestModule install but putting it in a 'test' dir.
+	Not optimal, but a quick look at the net indicates I could dump much
+	time into fixing this.
+
+	Added a TestModule that loads a second BESCatalog. Used for tests.
+	This completes the first version of the showNode command.
+	...except that the TestModule will be installed by the
+	normal build. I have to sort out how to prevent that and
+	still build a shared object module.
+
+	Added/modified gitignore
+
+	checkpoint
+
+2018-07-24  Nathan Potter  <ndp@opendap.org>
+
+	Added missing CmrCatalogTest.cc
+
+2018-07-24  James Gallagher  <jgallagher@opendap.org>
+
+	showNode testing checkpoint
+
+	showNode testing checkpoint
+
+2018-07-24  Nathan Potter  <ndp@opendap.org>
+
+	Added missing CmrCatalogTest.cc
+
+	sync
+
+	sync
+
+2018-07-24  James Gallagher  <jgallagher@opendap.org>
+
+	ShowNodeResponseHandler builds and is loaded by the BESDefaultModule.
+
+	Added test baselines for CatalogItemTest
+
+2018-07-24  Nathan Potter  <ndp@opendap.org>
+
+	First draft of CmrCatalog::get_node()
+
+2018-07-24  James Gallagher  <jgallagher@opendap.org>
+
+	Added CatalogItem output to CatalogNode::encode_node(). No tests...
+
+	Added CatalogItem::encode_item() and tests.
+
+2018-07-23  James Gallagher  <jgallagher@opendap.org>
+
+	Ignore CatalogNodeTest exec
+
+	Added an encode to BESInfo method to CatalogNode.
+	Added a test for the method. Various mods and fixes to replated code.
+
+	Merge branch 'master' into show_node_command
+
+	Merge pull request #172 from OPENDAP/catalog_utils_refactor
+	Catalog utils refactor
+
+	Stuff added for the ResponseHandler
+
+	Fixes for distcheck.
+	I removed the netcdf 4 enum tests because they seem to break randomly.
+	Added a ticket to Jira.
+
+2018-07-23  Nathan Potter  <ndp@opendap.org>
+
+	Moved CmrTest to CmrApiTest
+
+	Pseudo-code now real.
+
+2018-07-23  ndp-opendap  <ndp@opendap.org>
+
+	Starting CMR Catalog implementation
+
+2018-07-23  James Gallagher  <jgallagher@opendap.org>
+
+	Added the parser for showNode. No tests yet.
+
+2018-07-22  James Gallagher  <jgallagher@opendap.org>
+
+	BESCatlalogUtils hacking.
+	Fixed tests. One side effect of the modifications I've made is that
+	unit tests that call BESCatalogUtils() must have the keys for the
+	default catalog, its RootDir and TypeMatch set. This only affected
+	four tests, but it's not the best design. Hopefully this can be
+	fixed in a later refactor.
+
+	Merge branch 'master' into catalog_utils_refactor
+	# Conflicts:
+	#	dispatch/BESCatalogList.h
+
+	Added a	default	catalog	name field to the CatalogList.
+
+2018-07-21  James Gallagher  <jgallagher@opendap.org>
+
+	Removed BESCatalogUtils instance in BESCatalogDirectory
+	Use the in new instnace in BESCatalog. All code modified.
+
+	Added BESCatalogUtils instance to BESCatalog.
+	Also started to remove hard-coded default catalog name from
+	modules.
+
+2018-07-20  ndp-opendap  <ndp@opendap.org>
+
+	Adding rapidjson header lib to cmr_module
+
+2018-07-20  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #171 from OPENDAP/catalog_refactor
+	Catalog refactor
+
+	Minor edits to comments
+
+2018-07-18  ndp-opendap  <ndp@opendap.org>
+
+	minor cleanup
+
+2018-07-17  ndp-opendap  <ndp@opendap.org>
+
+	Sync
+
+	Added clean up to CmrTest
+
+	Add Granule tests. Added getSize() getLastModifed() to Granule
+
+	Moved json tools into their own file. Add Granule class
+
+2018-07-16  James Gallagher  <jgallagher@opendap.org>
+
+	minor edits - showInfo removal
+
+	Removed then unused showInfo command
+
+2018-07-16  Nathan Potter  <ndp@opendap.org>
+
+	sync
+
+	sync
+
+2018-07-15  Nathan Potter  <ndp@opendap.org>
+
+	sync
+
+	Adding missing classes (oops)
+
+2018-07-14  Nathan Potter  <ndp@opendap.org>
+
+	Added granules test
+
+	Added granules test
+
+2018-07-13  Nathan Potter  <ndp@opendap.org>
+
+	First draft of get_days() working
+
+	get_months(collection, year) works. woot.
+
+	Started CmrApi class. Moved get_collection_years into it.
+
+	Got first CMR function working. get_collection_years() works. woot.
+
+2018-07-12  Nathan Potter  <ndp@opendap.org>
+
+	working on navigation rapidjson dom
+
+	working on navigation rapidjson dom
+
+	Reading and parsing JSON from CMR
+
+	Merge branch 'master' into cmr
+
+	Building CMR framework
+
+	Building CMR framework
+
+2018-07-12  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Merge pull request #170 from OPENDAP/remote_access_refactor
+	Remote access refactor
+
+2018-07-12  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Rnamed RemoteAccess to WhiteList
+
+	Initial refactor of the RemoteAccess singleton.
+
+2018-07-12  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' into cmr
+
+2018-07-11  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #165 from RiverHendriksen/master
+	CoverageJSON Response Handler for OPeNDAP Project - BES
+
+2018-07-11  Corey Hemphill  <hemphilc@oregonstate.edu>
+
+	Merge pull request #44 from RiverHendriksen/fixing-source-headers
+	Fixing source headers
+
+	Delete fnoc1_covjson.bescmd.baseline
+	Removing unused files.
+
+	Delete fnoc1_covjson.bescmd
+	Removing unused files.
+
+	Delete function_result_unwrap.bescmd.baseline
+	Removing unused files.
+
+	Delete function_result_unwrap.bescmd
+	Removing unused files.
+
+	Update FoCovJsonTest.cc
+	Removed deprecated header info.
+
+	Update focovjson_utils.h
+	Removed deprecated header info.
+
+	Update focovjson_utils.cc
+	Removed deprecated header info.
+
+	Update focovjson.conf.in
+
+	Update StreamString.h
+	Removed deprecated header info.
+
+	Update StreamString.cc
+	Removed deprecated header info.
+
+	Update FoDapCovJsonTransmitter.h
+	Removed deprecated header info.
+
+	Update FoDapCovJsonTransmitter.cc
+	Removed deprecated header info.
+
+	Update FoDapCovJsonTransform.h
+	Removed deprecated header info.
+
+	Update FoDapCovJsonTransform.cc
+	Removed deprecated header info.
+
+	Update FoCovJsonRequestHandler.h
+	Removed deprecated header info.
+
+	Update FoCovJsonRequestHandler.cc
+	Removed deprecated header info.
+
+	Update FoCovJsonModule.h
+	Removed deprecated header info.
+
+	Update FoCovJsonModule.cc
+	Removed deprecated header info.
+
+	Update fileout_covjsonTest.at
+
+2018-07-10  Corey Hemphill  <hemphilc@oregonstate.edu>
+
+	Merge pull request #43 from RiverHendriksen/quick-baseline-fix
+	Quick baseline fix
+
+	Add files via upload
+
+	Delete coads_climatology_abstract_object_DATA.bescmd.baseline
+
+	Update coads_climatology_abstract_object_METADATA.bescmd.baseline
+
+	Update fnoc1_abstract_object_DATA.bescmd.baseline
+
+	Update fnoc1_abstract_object_METADATA.bescmd.baseline
+
+	Update configure.ac
+	Added AC_CONFIG for fileout_covjson as it was missing.
+
+2018-07-10  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Merge branch 'master' of git://github.com/OPENDAP/bes
+	Updating to latest from master repo
+
+2018-07-10  Nathan Potter  <ndp@opendap.org>
+
+	Merged branch 'master' to branch 'cmr'
+
+2018-07-09  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #155 from OPENDAP/error_refactoring
+	Error refactoring Time to merge!
+
+2018-07-09  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Reverted the get_bes_error_type back to get_error_type for the libdap methods.
+
+	Changed the method names for get_error_code, get_error_type, set_error_type, and d_error_code.
+
+2018-07-09  James Gallagher  <jgallagher@opendap.org>
+
+	I removed the BESDapError::get_error_type() method based on a suggestion made by Nathan. Now the code returns the BES errors when the OLFS expects them, using the BESError::get_error_type() method it defines.
+
+2018-07-09  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #169 from OPENDAP/dmrpp_whitelist
+	Adds whitelist access control to dmr++ operations.
+
+2018-07-09  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed distcheck w/o hacking the whitelist code. Ready to merge.
+
+2018-07-09  Nathan Potter  <ndp@opendap.org>
+
+	Unwinding checks
+
+2018-07-09  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed error in a comment - the whitelist uses prefixes, not regexs
+
+2018-07-07  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' into error_refactoring
+
+2018-07-06  James Gallagher  <jgallagher@opendap.org>
+
+	Added changes to the RemoteAccess singleton so that file: URLs can use whitelist regexs
+
+	Accidentally used TEST_BUILD_DIR in place of TEST_SRC_DIR for the remote_access_test.ini file. Added the ini file to EXTRA_DIST
+
+	Must use add 'remote_access_test.ini' to EXTRA_DIST in Makefile.am
+
+	merged Nathan's edits into my edits...
+
+	Merge branch 'dmrpp_whitelist' of https://github.com/opendap/bes into dmrpp_whitelist
+
+	Formatting hackery
+
+2018-07-06  Nathan Potter  <ndp@opendap.org>
+
+	dropedd dref call
+
+	Fixed tests to match new reote_access.ini file
+
+2018-07-06  James Gallagher  <jgallagher@opendap.org>
+
+	Added TypeMatch to the remove_access_test.ini
+
+2018-07-06  Nathan Potter  <ndp@opendap.org>
+
+	sync
+
+	Throwing exception when cataliog cannot be located
+
+2018-07-06  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #167 from opoplawski/getopt
+	getopt() returns int
+
+	Merge pull request #168 from opoplawski/icu
+	Use icu:: names required by icu 61.1
+
+2018-06-30  Corey Hemphill  <hemphilc@oregonstate.edu>
+
+	Update bes.conf.modules.in
+	Changed BES.User=user_name and BES.Group=group_name
+
+	Update bes.conf.in
+	Changes BES.User=user_name and BES.Group=group_name.
+
+2018-06-30  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Merge branch 'master' of git://github.com/OPENDAP/bes
+	73 behind -- need to update with master
+
+2018-06-26  Nathan Potter  <ndp@opendap.org>
+
+	Adding tests for file URLs. They're broken but I need to checkin to switch to travel mode.
+
+	Repairing problematic ue if ifstream constructor
+
+	Dropping unused includes
+
+	More small changes
+
+	Made RemoteAccess::init() a 'run once' affair. Comments.
+
+2018-06-25  Nathan Potter  <ndp@opendap.org>
+
+	sync
+
+	sync
+
+	Added whitelist checking to dmrpp access
+
+	Move gateway whitelist to dispatch as RemoteAccess class. All tests pass on local system
+
+2018-06-24  Orion Poplawski  <orion@cora.nwra.com>
+
+	Use icu:: names required by icu 61.1
+
+	getopt() returns int
+
+2018-06-20  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #166 from OPENDAP/hic-ingest
+	Adds Hyrax in the Cloud ingest scripts for S3 upload and MDS population.
+
+2018-06-15  Nathan Potter  <ndp@opendap.org>
+
+	Adjuest test to only look at the largest vars
+
+2018-06-14  Nathan Potter  <ndp@opendap.org>
+
+	sync
+
+2018-06-13  Nathan Potter  <ndp@opendap.org>
+
+	sync
+
+	 added test script
+
+2018-06-13  Corey Hemphill  <hemphilc@oregonstate.edu>
+
+	Merge pull request #42 from RiverHendriksen/pre-merge2
+	Unit tests
+
+2018-06-13  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Unit tests
+
+2018-06-13  Corey Hemphill  <hemphilc@oregonstate.edu>
+
+	Merge pull request #41 from RiverHendriksen/pre-merge
+	Hardcoded t axis timestamp for now
+
+2018-06-13  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Hardcoded t axis timestamp for now
+
+2018-06-13  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-06-13  Nathan Potter  <ndp@opendap.org>
+
+	sync
+
+	Merge branch 'master' into hic-ingest
+
+2018-06-13  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #163 from OPENDAP/mds_dds_ce
+	Mds dds ce
+
+	Added CE support to the DDX response when using the MDS.
+	Fixed CE support for the DMR when using the MDS.
+	Updated bes/cmdln test baselines.
+
+2018-06-13  Nathan Potter  <ndp@opendap.org>
+
+	Added support for site.conf to hic_ingest
+
+	Added support for site.conf to hic_ingest
+
+	Added input qc for the MDS store. It was accepting empty name strings and that was making the troubles.
+
+	Fix to gateway so that relative_name is set in the container
+
+	Merge branch 'master' into hic-ingest
+
+2018-06-12  James Gallagher  <jgallagher@opendap.org>
+
+	Comments...
+
+	Simplifed the MDS code for constrained DDS adn DMR responses.
+
+	Added support for constrained DMRs
+
+2018-06-12  RivH  <hendriri@oregonstate.edu>
+
+	Create README.md
+
+2018-06-12  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint
+
+2018-06-12  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-06-12  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #162 from OPENDAP/mds_html_fix
+	Mds html fix
+
+	Added a better comment about the site.conf file in bes.conf.in
+
+	Fixed a bug in the MDS - it was keeping temp files
+
+	The MDS supports the HTML form; A site.conf file is now supported
+	I added support for a 'site.conf' file in {$prefix}/etc/bes/site.conf.
+	BES key values in that file will override values in all of the other
+	conf files.
+	* The bes/dap/TempFile class was incorrectly reporting errors when closing
+	files. Fixed.
+	* The HTML form is now supported by the MDS.
+	* The DDX and HTML form now populate the MDS when there's no DDS in
+	the MDS.
+
+2018-06-12  Corey Hemphill  <hemphilc@oregonstate.edu>
+
+	Merge pull request #40 from RiverHendriksen/origin/pre-master-merge
+	Changed timestamp printing to print time origin value rather than hardcoded timestamp
+
+2018-06-12  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Removed hard-coded timestamp printing -- will print the full time origin string now
+
+2018-06-12  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-06-12  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' into hic-ingest
+
+2018-06-12  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #161 from OPENDAP/ddx_mds_fix
+	Fixed the DDX response so that it'll work when using the MDS.
+
+	Fixed the DDX response so that it'll work when using the MDS.
+
+2018-06-11  Nathan Potter  <ndp@opendap.org>
+
+	Simplified code
+
+	QC'd upplied path name so that it always starts with a slash.
+
+2018-06-11  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-06-11  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' into hic-ingest
+
+	Sync
+
+2018-06-11  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #159 from OPENDAP/print_das_fix
+	Fixes a test in dapreader; requires the print_das_fix branch of libdap4
+
+	Merge pull request #160 from OPENDAP/xml_base_fix
+	Fix for ticket HYRAX-775 (xml:base value fail)
+
+	Fix for ticket HYRAX-775 (xml:base value fail)
+	The code in the GlobalMetadataStore that inserts the value of xml:base
+	was failing because some responses were larger than a single buffer (16k)
+	and that caused the xml:base attribute to be inserted multiple times.
+
+2018-06-11  Nathan Potter  <ndp@opendap.org>
+
+	Made hic_ingest use default site mao file: /tmp/siteMap.txt
+
+2018-06-09  Nathan Potter  <ndp@opendap.org>
+
+	sync
+
+	Sorted out issues with checking S3 access
+
+2018-06-08  Nathan Potter  <ndp@opendap.org>
+
+	Added switch to create siteMaps when doing a dry run.
+
+	Added -P switch to hic_ingest. This causes all uploaded objects to be publicly readable, thus removing the need for clients (like Hyrax) to authenticate in order to gain access.
+
+2018-06-07  Nathan Potter  <ndp@opendap.org>
+
+	Changes, bugs, and wizardry
+
+2018-06-07  Corey Hemphill  <hemphilc@oregonstate.edu>
+
+	Merge pull request #39 from RiverHendriksen/bes-covjson-post-code-freeze
+	Submission of all post-code-freeze changes. Mostly bug fixes and printing adjustments. This by no means is meant to be a "final" merge, but its awfully close.
+
+2018-06-07  James Gallagher  <jgallagher@opendap.org>
+
+	Minor tweak for the dapreader/tests - cleaning the mds dir was failing on Ubuntu
+
+	Merge branch 'master' into print_das_fix
+
+2018-06-07  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' into hic-ingest
+
+2018-06-07  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-06-06  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #158 from OPENDAP/mds_xml_base
+	Mds xml base
+
+2018-06-06  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-06-06  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into mds_xml_base
+	Conflicts: dap/GlobalMetadataStore.cc
+
+	Resolved the missing xml:base issue.
+	If the BES contxt xml:base is missing do not throw an exception
+	or use a default value. Instead, do nothing WRT the xml:base
+	attribute. If the attribute was present when the response was
+	added to the store, that value wil be present when it is extracted.
+	If no value was present, there will be no value in the response
+	that is returned.
+	The OLFS should _never_ call the BES without setting the xml:base
+	context, so all responses from teh MDS should have this attribute.
+
+	Added use of xml:base context to read the value od xml:base
+	And added tests
+
+	Added tests for the new insert_xml_base() function
+	This function is used by the MDS to correct the value or xml:base
+	in DMR/++ responses based on the value sent over by the OLFS.
+
+2018-06-06  Nathan Potter  <ndp@opendap.org>
+
+	Killing bugs...
+
+	Dropped S3 region option because it's not really relevant
+
+	Usage message update
+
+	Usage message update
+
+	Added  a dryrun option to the hic-ingest
+
+	Pathed merge cruft
+
+	Merged master to hic-ingest
+
+	Nuermous fixes to dmr++ foodchain.
+
+	Fixed missing return value issue in BESRequestHandler.h
+
+2018-06-06  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #157 from OPENDAP/mds_path_normalize
+	Mds path normalize
+
+2018-06-05  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Fixed baselines
+
+	Added logic for tokenizining the time origin unit value
+
+	Added logic for tokenizining the time origin unit value
+
+2018-06-05  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint.
+
+	checkpoint. Start of the xml:base fix.
+
+	Merge branch 'mds_path_normalize' of https://github.com/opendap/bes into mds_path_normalize
+
+	Pathnames passed to the MDS now may start with or without a leading slash ('/')
+	Since the BES is lenient WRT leading slashes, so is the MDS.
+
+	Pathnames passed to teh MDS now may start with or without a leading slash ('/')
+	Since the BES is lenient WRT leading slashes, so is the MDS.
+
+	Minor edits - passes tests and adds loggin of errors to the bes.log file.
+
+	Merge branch 'error_refactoring' of https://github.com/opendap/bes into error_refactoring
+
+2018-06-05  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Merge branch 'master' into error_refactoring
+
+	Deleted the unnecessary test files...again.
+
+	Edited the test: /modules/fileout_gdal/tests/gdal/coads_climatology.nc.1.err.bescmd.baseline  (Test 3)
+
+2018-06-05  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into error_refactoring
+
+2018-06-04  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #156 from OPENDAP/dmrpp_mods
+	Dmrpp mods
+
+	Another round of fixes for distcheck
+
+	Adapted teh DMR++ tests so the DMR++ file used is adapted to different full pathnames
+
+2018-06-04  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Removed all of the unnecessary files.
+
+2018-06-04  James Gallagher  <jgallagher@opendap.org>
+
+	Changes for distcheck
+
+2018-06-04  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Delete mds_ledger.txt
+
+2018-06-04  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Deleted tmp files
+
+	Fixed the two tests in /functions/tests
+
+2018-06-03  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed issues found while trying to build distcheck. WIP.
+
+2018-06-03  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Fixed shape printing, simplified get attributes logic, added logic for printing axes in correct order depending on the axes present
+
+	added more standalone datasets
+
+2018-06-03  James Gallagher  <jgallagher@opendap.org>
+
+	Added control of the DMR++ re-direct feature of the data response handlers
+	Now two bes keys can be set that will control this feature. BES.Use.Dmrpp
+	controls if the Dap4ResponseHandler and DataResponseHandler look for DMR++
+	responses at all (if they are never going to be present, there's no
+	point in locking the MDS to look for them). The key BES.Dmrpp.Name is
+	used to make sure when the response handler code re-directs the request
+	to the DMR++ handler, is uses the name used in the DMR++ handler's conf
+	file.
+
+2018-06-02  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Fixing bugs
+
+2018-06-01  James Gallagher  <jgallagher@opendap.org>
+
+	Added tests for the DMR++ changes to the BES framework and DMR++ handler.
+	Only one file, but the changes to the framework, such that a file with
+	a DMR++ response in the MDS is redirected to the DMR++ handler, clearly
+	work. More tests won't prove much, but the change should use a bes.conf
+	key to disable the redirection since it will access the MDS and if an
+	admin knows the DMR++ is not being used, why do that for every request?
+
+2018-06-01  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Changed the baselines of /cmdln/tests/ssfunc/georgrid_func_badargs.bescmd.baseline, /cmdln/tests/ssfunc/georgrid_func_swapcoords.bescmd.baseline (Tests 46 and 49). Also changed the baselines of /functions/tests/bescmd/bind_name_4.dods.besc,/functions/tests/bescmd/scale_grid_xy.dods2.bescmd.baseline (Tests 55 and 76). These last two tests still failed, need to be looked at. Ran out of time but will continue looking at baselines.
+
+2018-06-01  Nathan Potter  <ndp@opendap.org>
+
+	Switched default bucket
+
+2018-06-01  James Gallagher  <jgallagher@opendap.org>
+
+	Flagged a potential memory leak - see HYRAX-770
+
+2018-06-01  Nathan Potter  <ndp@opendap.org>
+
+	Comments and reorg
+
+2018-06-01  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Merge branch 'master' into error_refactoring
+
+2018-05-31  James Gallagher  <jgallagher@opendap.org>
+
+	Added code in the DMR++ for DMR++ support of DAP2 data responses
+
+	A bit more refactoring on this problem
+
+	Added redirection to the DMR++ handler for data requests when that's appropriate
+	The DAP2 and DAP4 data requests look in the MDS for DMR++ responses
+	that match the relative path of the current container. If one is
+	found, the container type is set to dmrpp and container attributes
+	are set so that the DMR++ handler will realize that it should look
+	in the MDS for a DMR++ response (normally it uses the value of access()
+	to find a DMR++ file on disk).
+	Still to do: implement the DAP2 code in the DMR++ handler and tests.
+
+2018-05-31  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Cleaned up some of the code from the previous changes. Also added BESExceptionManager.h and BESExceptionManager.cc to dispatch/bes/old.
+
+2018-05-31  Nathan Potter  <ndp@opendap.org>
+
+	Turned off debug mode for localBesGetDap
+
+	First draft of hic_ingest
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	small deubgging mods
+
+2018-05-31  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #154 from OPENDAP/command_mods
+	The branch name is command_mods; this PR is a refactor only
+
+	Now really fixed the error in BESContextManager::get_context_int()
+
+	Fixed an error in the new BESContextManager::get_context_int() method
+
+2018-05-30  James Gallagher  <jgallagher@opendap.org>
+
+	Added backward compatibility mode for BESRequestHandler
+	This means that hdf4/5 handlers don't need changes to build with this
+	but can 'update' later.
+
+	Checkpoint. Removed BESDapError singleton. Most tests pass...
+
+	Merge branch 'error_refactoring' of https://github.com/opendap/bes into error_refactoring
+
+	Commit hashes for hdf4/5 modules that match BES command_mods refactoring.
+
+2018-05-30  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Moved the handleException and handleBESError methods to
+	BESInterface. Took out the for loop in handleBESError, may
+	need to put it back in. An error began to appear when I tried
+	to make the project, but only popped up after I ran
+	./configure and make install.
+
+2018-05-30  James Gallagher  <jgallagher@opendap.org>
+
+	More refactoring - no functional changes
+
+	Refactoring only
+
+2018-05-29  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Fixing issue with t axis timestamp -- WIP
+
+2018-05-29  James Gallagher  <jgallagher@opendap.org>
+
+	Refactoring before I start work on the ticket...
+
+	checkpoint
+
+	checkpoint
+
+2018-05-29  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Changes made to try and eliminate the BESDapError singleton.
+	Not passing all tests (could be something to do with the
+	baseline tests).
+
+2018-05-29  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+2018-05-27  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-05-27  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #152 from OPENDAP/besinfo
+	BESInfo API Addition
+
+2018-05-26  Nathan Potter  <ndp@opendap.org>
+
+	Added new begin_response() method to BESInfo that allows one
+	to add attributes to the response header. Since the only eco
+	system that is using this is the BESXMLInfo stuff I
+	implemented it there.
+
+2018-05-25  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-05-25  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #151 from OPENDAP/www-encode
+	Changed the Data Request Form so that all URLs are correctly URI enco…
+
+	Changed the Data Request Form so that all URLs are correctly
+	URI encoded before being dereferenced.
+
+2018-05-25  James Gallagher  <jgallagher@opendap.org>
+
+	Added to comments and docs on build_dmrpp
+	[skip ci]
+
+2018-05-25  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Refactored the way errors are handled through BESInterface.
+	Errors are now handled in BESDapError and do not use
+	BESExceptionManager. Further refactoring is planned for
+	BESDapError to clean it up.
+
+2018-05-25  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-05-25  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #146 from OPENDAP/flatten-grids
+	Added code to NCMLUtil::populateDASFromDDS() so that Grids get handle…
+
+2018-05-25  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-05-25  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #147 from OPENDAP/getBesKey
+	Adding new BES command 'showBesKey'
+
+	Merge pull request #149 from OPENDAP/baselines
+	Repairing DAS baselines broken by corrected DAS output
+
+	Fixed the remaing ncml_handler DAS baselines
+
+2018-05-25  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-05-25  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #150 from OPENDAP/dmrpp_new_tests
+	Dmrpp new tests
+
+	Added more files - working on distcheck
+
+2018-05-25  Nathan Potter  <ndp@opendap.org>
+
+	more baseline patching
+
+2018-05-25  James Gallagher  <jgallagher@opendap.org>
+
+	Test for 'new types' complete -	many fail
+	Some of	these failures are problems in the DMR++ software but most
+	are because our	HDF5 handler does not support the data type.
+
+2018-05-25  Nathan Potter  <ndp@opendap.org>
+
+	Adding corrected DAS baselines for the simple invocations of the generate_baselines script
+
+2018-05-25  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed a spelling error in DmrppParserTest.cc
+
+	Added more tests - many are exected to fail
+	Most of these cover HDF5 data types not yet supported by the Hyrax
+	server's hdf5 module.
+
+2018-05-25  Nathan Potter  <ndp@opendap.org>
+
+	Updated copyright headers. Simplified ShowBesKeyResponseHandler response production.
+
+2018-05-25  James Gallagher  <jgallagher@opendap.org>
+
+	Added two more tests. Mixed results for the new types...
+
+2018-05-24  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint: HYRAX-747
+
+	Added files for the start of tests of the 'new types' (HYRAX-747)
+
+2018-05-24  Nathan Potter  <ndp@opendap.org>
+
+	Adding new BES command 'showBesKey'
+
+2018-05-24  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed errors in bin/populateMDS and build_dmrpp when the MDS is not configured
+
+	Merge branch 'master' into dmrpp_new_tests
+
+2018-05-24  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-05-24  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes a test in dapreader; requires the print_das_fix branch of libdap4
+
+	Merge pull request #145 from OPENDAP/dmrpp_mds
+	dmrpp mds
+
+2018-05-23  James Gallagher  <jgallagher@opendap.org>
+
+	Ready for merge. See HYRAX-766, however.
+
+2018-05-22  James Gallagher  <jgallagher@opendap.org>
+
+	I changed dap.conf.in so that the MDS is off by default.
+
+	This version of the code adds responses to the MDS using reltive paths
+
+	Added build_dmrpp, localBesGetDap, and populateMDS to bin
+
+	Moved teh two scripts for MDS population to bes/bin; installed build_dmrpp
+	These changes support using these scripts as part of the regular
+	server instead of just with development versions.
+
+2018-05-22  Nathan Potter  <ndp@opendap.org>
+
+	Added code to NCMLUtil::populateDASFromDDS() so that Grids get handled 'special'
+
+2018-05-21  James Gallagher  <jgallagher@opendap.org>
+
+	removed old code in build_dmrpp
+	[skip ci]
+
+	Wrote/modified scripts that enable streamlined population of the MDS
+	[skip ci]
+
+2018-05-21  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HYRAX-747. Added HDF5 files for tests
+
+2018-05-21  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint. build_dmrpp cannot write the response to the MDS cache
+	But it does read the DMR response _from_ the cache.
+
+2018-05-20  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint. see ticket 663
+
+2018-05-19  James Gallagher  <jgallagher@opendap.org>
+
+	Added #include <typeinfo> to DmrppMetadataStore.cc
+
+	Tested: Using the Global M S to read a DMR++ written using Dmrpp M S.
+	See DmrppMetadataStoreTest::use_dmrpp_response_test().
+
+	Fixed the 'ledger issue' where the ledger was private in Global M S
+	The larger 'ledger issue' (that it should be protected at write
+	time) I left for later.
+
+	Merge branch 'master' into dmrpp_mds
+
+	Added test for get_dmrpp_object()
+
+	Added more of the Dmrpp Interface (by adding methods to Global MS).
+	Also trimmed away unneeded includes in the Dmrpp MS implementation.
+
+	MDSReadLock change to enable easy(ier) specialization of the MDS.
+	Also, refactored the get_dds_response(), ..., methods; they are
+	called write_dds_response(), etc., as suggested by Nathan.
+
+2018-05-18  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-05-18  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed seg fault in build_dmrpp when -d option is used.
+	Note that now there is output with -d only when -v (verbose)
+	is used too. The -d option was more of a testing/developement
+	tool, but it should be working.
+
+	Remove bes.conf and bes.log in modules/dmrpp_module/unit-tests/ to fix distcheck
+
+	Added input-files to modules/dmrpp_module/unit-tests/Makefile.am
+
+	checkpoint.
+
+	DmrppMetadataStore caches DMR++ responses - all tests pass
+	Added unit tests for DmrppMetadataStore.
+
+	I switched to subclassing the GlobalMetadataStore to add Dmrpp support.
+
+2018-05-17  James Gallagher  <jgallagher@opendap.org>
+
+	Added test input and baseline for MDS/DMR++ work
+
+	checkpoint. Passs tests here; breaks tests in dmrpp_module!
+
+	Added factory class and const constructors to DMRpp.
+
+2018-05-17  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-05-17  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #144 from OPENDAP/chunk_proc
+	Chunk proc
+
+	Modified comments for GlobalMetadatStore
+	[skip ci]
+
+2018-05-17  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Changed button name
+
+2018-05-16  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Added Get CovJson button in .html granule
+
+2018-05-16  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed distcheck issues with new files in bes/modules and DMRPP unit test baselines
+
+2018-05-15  James Gallagher  <jgallagher@opendap.org>
+
+	Added #include <iterator> to build_dmrpp.cc
+
+	Added #include <iterator> to DmrppCommon.cc for ostream_iterator
+
+2018-05-15  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Some cleanup
+
+2018-05-15  James Gallagher  <jgallagher@opendap.org>
+
+	Modified build_dmrpp so that it uses the fullnamepath attribute
+	...and so that it ignores variables that cannot be found in the HDF5
+	file if that attribute is not present - assuming this indicates a
+	virtual variable. This fixes the bug described in HYRAX-756 - where
+	get_dmrpp.sh fails for datasets with non-root group variables.
+	It does not address another problem, however, that some variables
+	don't have values even though they show up in the DAP data set when
+	using the HDF5 handler's CF compatibility mode. I added a story about
+	that (HYRAX 761).
+
+2018-05-14  James Gallagher  <jgallagher@opendap.org>
+
+	Minor hackery; working on the get_dmrpp bug
+
+	Fixed a bug in the handling of groups by build_dmrpp
+
+2018-05-13  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	More format changes and fixes. Fixed baselines for unit-tests
+
+	Fixed covjsonSimpleTypeArrayWorker recursion issue (String too)
+
+	Fixed more formatting. Fixed test baselines
+
+2018-05-13  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed: variables were incorrectly nested in the built DMR++ responses.
+
+2018-05-13  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Fixed baselines
+
+	Fixed some output formatting
+
+2018-05-11  Corey Hemphill  <hemphilc@oregonstate.edu>
+
+	Merge pull request #38 from
+	RiverHendriksen/bes-covjson-code-freeze Last minute changes to
+	unit tests and basic functionality. Merging in preparation for
+	"code freeze" and potential merge with OPeNDAP master.
+
+2018-05-11  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Fixed error printing in Transform
+
+	Cleanup
+
+	Added even more unit tests
+
+	Added unit tests for all print functions. Removed Validation
+	files. Added unit test baselines
+
+2018-05-11  James Gallagher  <jgallagher@opendap.org>
+
+	Modified get_dmr so that it now gets a dmrpp.
+	Still with caveats, but functional.
+
+	Added initial version of a get_dmr CLI tool
+
+2018-05-10  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Unit tests now compiling. Validation has been unwired
+
+2018-05-10  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint: testsuite2.at; a testsuite for build_dmrpp
+
+	Added *.dmr files in data/dmrpp to ease testing of build_dmrpp
+
+	Fixed a bug in the compression filter reading code
+	Added simpler methods to set the deflate and shuffle props, fixed
+	up some other things. Added DMR files for more sample data so
+	it should be possbile to test build_dmrpp easily:
+	data/dmrpp/chunked_fourD.h5.dmr, chunked_gzipped_fourD.h5.dmr,
+	chunked_shuffled_fourD.h5.dmr, chunked_shufzip_fourD.h5.dmr.
+
+2018-05-10  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-05-10  James Gallagher  <jgallagher@opendap.org>
+
+	Added support for finding compression filters for a given hdf5 dataset.
+
+	Added support for the href/url info.
+	I made this a different param from the hdf5 file name since the file
+	might be in temp storage while we read its info but the data actaully
+	will be read from another location (like S3).
+
+	Added support for finding the chunk dimension sizes.
+
+	Use the default value for print_chunks in the call to DMRpp::print_dmrpp()
+
+	Fixed: DmrppCommon::print_dap4() --> ... print_dmrpp().
+	The name print_dmrpp() is better for the DmrppCommon class' method.
+
+	Comments, some loose ends with the print code in dmrpp_module
+	I made the DMR++ namespace and namespace prefix static class
+	fields of DmrppCommon. This way we can change the default prefix
+	using a parameter in the module's conf file.
+
+2018-05-09  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint. What is here, works. The tests pass.
+	The CLI tool build_dmrpp will print a DMR++ with chunk info, where the
+	chunk info is read using the HDF5 API. Inputs are an HDF5 file and
+	a (plain) DMR. The result is a DMR++. The handler has the capability
+	to print/return _either_ a DMR or DMR++ depending on the value of
+	the class static bool dmrpp::DmrppCommon::d_print_chunks, which
+	defaults to false. Yes, I know. A global. An alternative would be
+	to load up the Dmrpp<Type> objects with chunk info, and then insert
+	the corresponding elements into the DMR DOM tree. Version 2?
+
+	Fixed the DmrppCommonTest baselines
+
+	checkpoint.
+
+	checkpoint. massive test fail... Working on DMR++ responses with namespaces
+
+	checkpoint. Starting on the output capability of build_dmrpp
+
+	Added more unit tests for DmrppCommon, esp for print_chunks_element()
+
+2018-05-08  James Gallagher  <jgallagher@opendap.org>
+
+	Add the new DmrppCommon unit test
+
+	checkpoint. Added unit tests for DmrppCommon, incl print_dmrpp()
+	Have not added the baselines yet, however.
+
+	checkpoint. In dmrpp_module: make check works; build_dmrpp inches forward.
+
+	build_dmrpp can now use the variables in a DMR to get names of a HDF5 datasets.
+
+2018-05-07  Corey Hemphill  <hemphilc@oregonstate.edu>
+
+	Merge pull request #37 from RiverHendriksen/bes-covjson-issue-x
+
+	Checking in many major changes to transform. Transform now
+	behaves more dynamically, and instead of just reading and
+	printing at once, the module reads, stores, and then prints
+	everything at the same time. This is a fundamentally different
+	approach than what we were originally doing. Also added
+	extended logic for defining domain type, and extended logic
+	determining CoverageCollection and printing appropriately.
+
+2018-05-07  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Fixed some print formatting
+
+2018-05-07  Corey Hemphill  <hemphilc@oregonstate.edu>
+
+	Merge pull request #36 from RiverHendriksen/bes-covjson-issue-#12
+
+	Checking in unit test changes so we can open a new branch for
+	NEW tests with the latest transform now that this is solid.
+
+2018-05-07  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Tests compile, still need to add more, but for reworked transform
+
+	Added CoverageCollection printing capability, among a LOT of other changes
+
+2018-05-07  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint.
+	Look at the code in dmrpp_module/unit-tests/DmrppParserTest.cc to
+	see a newer version of 'get the chunk info' software than I used
+	to make the data/build_dmrpp util. Same basic idea, but the ParserTest
+	code is newer. Start there.
+
+	Added build_dmrpp.cc to the dmrpp_module/data/ directory.
+	This is a simple command line utility that prints storage information
+	about a single hdf5 dataset (aka variable). It needs quite a bit more
+	work to process all the information in a whole hdf5 file.
+
+	Merge branch 'master' into chunk_proc
+
+	Merge pull request #142 from OPENDAP/dmrpp_rep
+	Dmrpp rep
+
+	Merge branch 'master' into dmrpp_rep
+
+	Merge branch 'master' into dmrpp_rep
+
+	Modified DmrppChunkedReadTest.cc so that it built on my system
+	I modified the path to the hdf5 file so that it the code should
+	work anywhere.
+
+	Merge pull request #141 from OPENDAP/dmrpp_missing_types
+	Dmrpp missing types
+
+	Added #include <cstring> for memcpy in DmrppD4Opaque.cc
+
+	Added baselines and stuff for tests in the DMR++ handler
+
+2018-05-07  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HYRAX-698. Prototype print_dmrpp and HDF5 handler in DmrppParserTest.
+
+2018-05-06  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	More cleanup
+
+	More cleanup
+
+	Major changes to transform -- also removed validation class dependency
+
+	Minor change
+
+	More changes than I could name
+
+2018-05-05  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Added FoDapCovJsonAxis and FoDapCovJsonParameter subclasses to FoDapCovJsonTransform class
+
+2018-05-05  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HYRAX-698. Merge master.
+
+	HYRAX-698. Merge master.
+
+2018-05-04  James Gallagher  <jgallagher@opendap.org>
+
+	Added read_chunks_parallel() to DmrppD4Opaque. Compiles. No tests.
+
+2018-05-03  James Gallagher  <jgallagher@opendap.org>
+
+	Adding support for types missing from the POC Dmrpp module.
+
+2018-05-03  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Merge master.
+
+2018-05-02  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #140 from OPENDAP/connection_pool
+	Connection pool
+
+	Minor fixes for the Ubuntu build.
+
+	Sanding down the rough edges. I fixed the linger issue with read_serial().
+
+2018-05-01  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'connection_pool' of https://github.com/opendap/bes into connection_pool
+
+	Running this code using asan, I get the following errors: 10 16 17 18 19 20 21 22 36
+	These errors show up when the BES is built using --enable-asan. Using
+	./testsuite 10 -v, etc., will show the problems. They appear to be
+	long standing issues with the DMR parser and other parts of libdap.
+
+	Running this code using asan, I get the following errors: 10 16 17 18 19 20 21 22 36
+
+	Added an option to set the max number of parallel transfers.
+	There are now two options, with these default values:
+	DMRPP.UseParallelTransfers = yes
+	DMRPP.MaxParallelTransfers = 8
+
+	Added a run-time parameter (DMRPP.UseParallelTransfers) to choose parallel or serial operation.
+
+	Working parallel version. This code can be optimized in various ways.
+
+2018-05-01  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'dmrpp_rep' of https://github.com/opendap/bes into dmrpp_rep
+
+	Updated comparitor
+
+2018-04-30  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint. DmrppArray::read_chunks_parallel() now passes tests.
+	I still need to make more than one curl easy handle, but the code
+	uses the multi interface on the one easy handle.
+
+	checkpoint. multi curl version. tests fail.
+
+2018-04-29  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Some quick cleanup
+
+	Added unit test functions for all transform workers
+
+2018-04-29  James Gallagher  <jgallagher@opendap.org>
+
+	Started adding support for multi_curl. checkpoint.
+
+	Faster 'parallel' code - still operating in serial mode. Passes tests.
+
+2018-04-29  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Adding baseline files for axes and paramter print
+
+	Added tests for Axes and Parameter metadata printing
+
+2018-04-29  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint. Tests pass.
+
+	checkpoint. Passes tests. Removed some unused code from Chunk and DmrppArray.
+	Removed the curl handles from Chunk and the multi code from DmrppArray.
+
+	Fixed bug: The new code was pushing null objects onto the chunk list.
+	Tests pass now
+
+2018-04-28  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	More cleanup
+
+	More cleanup
+
+	Some cleanup
+
+	Unit tests are now compiling and passing. Time to add more tests...
+
+2018-04-28  James Gallagher  <jgallagher@opendap.org>
+
+	starting on parallel reads. checkpoint.
+
+2018-04-28  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HYRAX-698. Mimic of h5dstoreinfo.c from chunks repository.
+
+	Merge branch 'master' into chunk_proc
+
+2018-04-27  James Gallagher  <jgallagher@opendap.org>
+
+	Checkpoint. Passes tests. Chunk::read_serial() uses CurlHandlePool.
+
+	Merge branch 'master' into connection_pool
+
+	Merge pull request #139 from OPENDAP/dmrpp-test-refactor
+	Dmrpp test refactor
+
+	Added better tests for the chunked 4D dataset.
+	These tests are more compact, test varios kinds of subsetting, and
+	avoid scientific notation, which prints differently on different
+	machines and/or compilers.
+
+	Changes to the dmrpp_module Makefile.am files for the chunk_proc branch
+
+	Fixed directories in tests/Makefile.am
+
+2018-04-27  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HYRAX 698. Get error Undefined symbols for architecture x86_64.
+
+2018-04-26  James Gallagher  <jgallagher@opendap.org>
+
+	Added test for constrained arrays, 1D and 3D
+	I tried to get some of the CEs to fall on chunk boundaries, cross
+	chunks, skip leading chunks, and to use both regular and data that
+	use odd chunk sizes.
+
+	Added baselines - some of these are pretty big.
+	These tests don't check the subsetting constraints.
+
+	Added new tests for chunked data. Replaces DmrppChunkedReadTest.
+	The ChunkedReadTest unit test was failing with the new CURL handle
+	pool code.
+
+	checkpoint - code works; new code breaks the tests
+	The new code need the CurlHandlePool to read data. Modify the
+	DmrppChunkedReadTestunit test so that it is an integration test.
+
+2018-04-26  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HYRAX 698. Corrected error in Makefile.am.
+
+	HYRAX 698. HDF5 test.
+
+2018-04-25  James Gallagher  <jgallagher@opendap.org>
+
+	Cleaned up the DMR++ handler unit-tests Makefile.am
+
+	Fixed the DMR++ handler unit tests
+
+	Merge branch 'master' into connection_pool
+
+	Merge pull request #138 from OPENDAP/dmrpp-test-refactor
+	Dmrpp test refactor
+
+	Merge pull request #137 from OPENDAP/dmrpp_rep
+	Dmrpp rep
+
+	Merge branch 'master' into dmrpp_rep
+
+	Added more tests. Replaced DmrppTypeReadTest and DmrppHttpReadTest
+	These are now replaced with autotest tests that use the whole
+	dmrpp_module.
+
+	Added tests for DAP2 and DAP4 constrained array reads
+
+	More tests for DMR++
+
+	More tests for DMR++
+
+	Initial (small) set of integration tests for the DMR++ handler
+
+	Added ChunkTest unit test
+
+	checkpoint
+
+2018-04-25  Nathan Potter  <ndp@opendap.org>
+
+	more tests
+
+2018-04-24  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint. Segfault in DmrppTypeReadTest
+
+	Checkpoint: CurlHandlePool added. See DmrppCommon::read_atomic()
+
+2018-04-24  Nathan Potter  <ndp@opendap.org>
+
+	add test targets
+
+	Added tests for ebs vs dmrpp
+
+2018-04-24  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint
+
+	CURL Connection Pool. checkpoint.
+
+2018-04-23  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-04-23  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #135 from OPENDAP/dmrpp_rep
+	Migrating dmrpp representation to dedicated namespaces
+
+2018-04-23  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-04-23  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #136 from OPENDAP/mds-objects
+	Mds objects
+
+2018-04-23  Nathan Potter  <ndp@opendap.org>
+
+	formatting dmrpp files
+
+	Moved dmrpp data files to new namespace. Fixed test options
+
+	Added conversion script for old (hdf4) base dmrpp representation. Fixed namespace name.
+
+2018-04-22  Corey Hemphill  <hemphilc@oregonstate.edu>
+
+	Merge pull request #35 from RiverHendriksen/issue-#5
+	FoDapCovJsonTransform and FoDapCovJsonTransmitter major update checkin (project issue #4 #5)
+
+2018-04-22  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Fixed all line spacing bugs, added some commenting, fixed baselines
+
+	sendData set to true
+
+	sendData set to false for the moment
+
+2018-04-21  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Added corrected baseline files
+
+2018-04-20  James Gallagher  <jgallagher@opendap.org>
+
+	Added support for the MDS to DDXResponseHandler.
+	Because this code uses the get_dds_object() call, it will support
+	constrained requests. It only requires the DDS/DAS responses be
+	cached. This commit also contains a fix for the TempFile tests and
+	some comment cruft cleanup in GlobalMetadataCache.cc
+
+	Added tests for the get_dds and get_dmr_object() methods of the MDS
+	Also fixed an issue with TempFile and added an debug option to keep
+	the temp files around. It's off by default.
+
+2018-04-20  Nathan Potter  <ndp@opendap.org>
+
+	Fixed dmrpp tests to reflect migration to new dmrpp namespace in dmrppp files.
+
+2018-04-20  James Gallagher  <jgallagher@opendap.org>
+
+	DDS version works and has a rudementary test.
+
+2018-04-19  James Gallagher  <jgallagher@opendap.org>
+
+	Added a unit test for get_dmr...()
+
+	Builds. No tests.
+
+	checkpoint - tests don't link
+
+2018-04-16  Corey Hemphill  <hemphilc@oregonstate.edu>
+
+	Fixed spacing
+
+	Fixed some spacing
+
+	Fixed some indenting.
+	Fixed some indenting.
+
+2018-04-16  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Merge remote-tracking branch 'origin/master' into issue-#5
+
+2018-04-16  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-04-16  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #134 from OPENDAP/dmrpp_read_refactor
+	Simple refactor for Chunk::read()
+
+	Found a n error in the Chunk.h header's definition of read().
+
+	Simple refactor for Chunk::read()
+
+2018-04-15  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Fixed baseline file
+
+	More cleanup
+
+	More Cleanup
+
+	More header comments for Validation
+
+	Ongoing transform work. Very close to completion. Added full header comments to all functions in transform
+
+	Fixed axes variable printing logic
+
+	Ongoing transform work. Updated baseline file as well
+
+2018-04-14  James Gallagher  <jgallagher@opendap.org>
+
+	Fix for fileout_gdal. It uses STL set but didn't include the headers.
+	Apparently, it worked on Ubuntu but it didn't work on OSX. Fixed.
+	I aslo edited some comments in the keepalive2 test prgram in the
+	dmrpp_handler software
+
+2018-04-14  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	We got a CovJSON file here
+
+	Ongoing transform work. Range metadata.
+
+	Did a lot of cleanup. Renamed function naming in Validation
+
+	Fixed some transform printing.
+
+2018-04-14  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #133 from OPENDAP/dmrpp-refactor
+	Dmrpp refactor
+
+	Merge pull request #132 from OPENDAP/keyword-removal
+	Keyword removal
+
+2018-04-14  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Ongoing transform work. Fixed value printing.
+
+2018-04-13  James Gallagher  <jgallagher@opendap.org>
+
+	Renamed H4ByteStream to Chunk.
+
+	More refactoring - unused code removed. Not all of it, though...
+
+2018-04-12  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Ongoing transform work
+
+2018-04-11  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Ongoing work in transform. Created some new functions
+
+	Renamed functions to match spec
+
+2018-04-11  James Gallagher  <jgallagher@opendap.org>
+
+	Added the call to set the dap version in the DDS for the DDXResponseHandler
+	This will probably be removed, but that will happen when the DDX
+	Response Handler is modified to work with the MDS.
+
+	Removed errant 'Keywords' code from DDXResponseHandler
+
+	Removed broken 'Keywords' code from DDSRequestHandler
+
+2018-04-10  James Gallagher  <jgallagher@opendap.org>
+
+	Checkpoint
+
+2018-04-10  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Fixed x,y coord print
+
+	More tweaks to reference and parameter printing
+
+	Added printing for axes references
+
+	Set enums in Transform
+
+	Removed the enumerations again
+
+	Updates to both Transform and Validation. Mostly cleanup. Added enumeration for domainTypes
+
+2018-04-10  James Gallagher  <jgallagher@opendap.org>
+
+	Modest refactoring.
+
+2018-04-10  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' into cmr
+
+	chekcing files
+
+2018-04-10  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #131 from OPENDAP/info_refactor
+	removed BESSilentInfo instances.
+
+2018-04-09  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #130 from OPENDAP/dmrpp-dap2
+	Dmrpp dap2
+
+2018-04-09  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' into cmr
+
+2018-04-08  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	More transform changes
+
+	Ongoing transform work. Added CovJSON formatting
+
+	Added some TODO commenting
+
+2018-04-07  rrimer07  <rrimer07@gmail.com>
+
+	Recognizes time now based on its array name, rather than the attributes under it. Shape is still not being populated for Time
+
+	Changes to try to just get shapes in the validation portion, Its not finding the time correcty
+
+2018-04-07  Nathan Potter  <ndp@opendap.org>
+
+	Cleanup
+
+	Fixed failure to correctly set_read_p() in DmrppArray.cc
+
+2018-04-06  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	functional validator, in progress transform
+
+2018-04-06  Nathan Potter  <ndp@opendap.org>
+
+	Cleanup
+
+	Still worrkingnon DAS response
+
+2018-04-05  Nathan Potter  <ndp@opendap.org>
+
+	Sync
+
+2018-04-05  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	removed BESSilentInfo instances.
+
+2018-04-05  Nathan Potter  <ndp@opendap.org>
+
+	Added DAS response to DMRPP handler.
+
+	Added DDS response to DMRPP handler.
+
+2018-04-04  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #129 from OPENDAP/info_refactor
+	removed BESBasicHttpTransmitter
+
+2018-04-04  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Ongoing work
+
+2018-04-04  Nathan Potter  <ndp@opendap.org>
+
+	Added DAS response. Not working...
+
+2018-04-03  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Merge branch 'master' into info_refactor
+
+2018-04-03  kodi  <kodi@192.168.1.3>
+
+	removed BESBasicHttpTransmitter
+
+2018-04-01  rrimer07  <rrimer07@gmail.com>
+
+	Functional attribute checking added
+
+2018-03-31  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	added checking feature that will iterate over the dds to get the values of each item in the dds
+
+	Fixed validateDataset - removed for loop
+
+2018-03-29  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	added an additional starter function to fodapcovjsonvalidation in order for class to properly compile and run in the standalone.
+
+2018-03-29  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-03-29  Nathan Potter  <ndp@opendap.org>
+
+	Cahnged default site map filename.
+
+	Updating hdf modules
+
+	Adding mkSiteMap script for building site map files.
+
+	Adding mkSiteMap script for building site map files.
+
+2018-03-28  rrimer07  <rrimer07@gmail.com>
+
+	Change to use private method called by public method
+
+2018-03-28  root  <root@ip-172-31-41-75.us-east-2.compute.internal>
+
+	minor fixes to validation function, still does not compile
+
+2018-03-28  rrimer07  <rrimer07@gmail.com>
+
+	Minor change to try to fix compilation errors
+
+	Minor changes, added call in transmitter
+
+2018-03-26  Ubuntu  <ubuntu@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Fixed makefile
+
+	Fixing makefiles for FoDapCovJsonValidation
+
+2018-03-26  rrimer07  <rrimer07@gmail.com>
+
+	added printing
+
+	initial setup for new class that validates if a dataset can be converted to covjson
+
+2018-03-24  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-03-24  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+2018-03-24  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-03-24  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #127 from captainkirk99/ck_cppunit_fix_2
+	changed how configure looks for cppunit
+
+2018-03-24  Ed Hartnett  <37277297+captainkirk99@users.noreply.github.com>
+
+	continue to use cppunit-config before trying PKG_CONFIG
+
+2018-03-24  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+	[skip ci]
+
+	commentary about unused code
+	[skip ci]
+
+2018-03-24  Ed Hartnett  <37277297+captainkirk99@users.noreply.github.com>
+
+	changed how configure looks for cppunit
+
+2018-03-22  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-03-22  James Gallagher  <jgallagher@opendap.org>
+
+	Corrected spelling of my last name is a few places.
+	[skip ci]
+
+2018-03-22  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-03-22  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #126 from OPENDAP/cat-util-refactor
+	Initial refactor.
+
+2018-03-22  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Initial refactor.
+
+2018-03-21  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-03-21  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #125 from OPENDAP/build-tweaks
+	Makefile.am and travis.yml minor mods
+
+	Makefile.am and travis.yml minor mods
+
+2018-03-21  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-03-21  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	hdf modules
+
+2018-03-21  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-03-21  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #124 from OPENDAP/mds-impl
+	Mds impl
+
+2018-03-20  James Gallagher  <jgallagher@opendap.org>
+
+	MDS remove_responses() is now conditional on SYMETRIC_ADD_RESPONSES
+	If defined, the method returns true when all the responses are
+	removed, otherwise it returns true if any of the responses are
+	removed.
+
+	Minor change - MDS remove_responses() now considers removing anything to be a success
+	This mirrors the behavior that says if the code is writing only DAP2
+	given a DDS or DAP4 given a DMR, be relaxed about what you delete for
+	a given name.
+
+	checkpoint - test mostly work but the MDS remove_responses() is broken
+	The SYMETRIC_ADD_RESPONSES change breaks remove_responses().
+
+2018-03-20  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-03-20  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into mds-impl
+
+	Merge pull request #123 from OPENDAP/travis
+	Travis
+
+	Changed how the MDS stores the responses.
+	Now the MDS only stores DDS and DAS responses built using the DDS
+	and DMR responses built using the DMR. This is different from the
+	old behavior where all three metadata responses were built using
+	eitehr the DDS or the DMR.
+
+	Change the CI build to use aws S3 to store the test results.
+
+	Update to a MDS test baseline to accommodate libdap changes
+	Also, an update to travis.yml to use curl to read the binary
+	dependencies instead of the aws cli. This means that future
+	pull requests from forks will work (as we learned with libdap,
+	PRs from a fork don't run under our UID and don't have access to
+	encrypted env vars and, thus, cannot use the aws cli, even with
+	a globally read-able S3 bucket).
+
+	Modified a das file used with the dapreader tests.
+	This DAS response should match the response returned by the new
+	version of DDS:print_das() in libdap.
+
+2018-03-19  James Gallagher  <jgallagher@opendap.org>
+
+	Changes to two baselines
+	Also added some code (not used yet) to support constrained DMR responses
+	using the MDS. Lets fix the current crop of bugs first. (HYRAX-648)
+
+2018-03-18  James Gallagher  <jgallagher@opendap.org>
+
+	Dropped back to regular logging for the MDS tests. Easier to read...
+
+	DDS adn DAS now use the MDS cache/store. There are some problems, however.
+
+	checkpoint - remove MDS tests (2) that fail so I can test distcheck
+
+2018-03-17  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint - added is_{dds,das}_available() methods to the MDS.
+
+	Added comments about the MDSReadLock object and LOG() use by is_dmr_available().
+
+	More updates - added LOG() calls for cache hits and misses.
+
+	Two tests fail in dapreader when using the MDS, 61 and 62.
+	The error is a seg fault.
+
+	checkpoint - Fixes for the DHI container logic. Tests mostly pass
+
+	checkpoint - adding some tests.
+
+	Checkpoint - DMR implemented; needs testing along with the MDS changes
+
+2018-03-13  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' into cmr
+
+2018-03-13  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-03-13  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #122 from OPENDAP/picosha2-dir-hack
+	Removed extra copy of PicoSHA2; minor edit to travis.yml
+
+	Removed extra copy of PicoSHA2; minor edit to travis.yml
+
+2018-03-13  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-03-13  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' into cmr
+
+2018-03-13  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #121 from OPENDAP/site-map-nodes
+	Site map nodes
+
+2018-03-13  Nathan Potter  <ndp@opendap.org>
+
+	Starting CMR module. Added module directory and copied BESCatalogDirectory code as a place holder for the real thing.
+
+2018-03-13  James Gallagher  <jgallagher@opendap.org>
+
+	Modified the xmlcommand buildSiteMap so that it will include nodes
+	Now the command will build site maps that include nodes, leaves,
+	or both. See the SiteMapCommand class docs
+
+	Added nodes to the site maps
+	If the (new) parameter node_suffix is not the empty string, print
+	information about nodes. If the leaf_suffix param is not empty,
+	print information about leaves. This is a new behavior for the
+	method.
+
+2018-03-10  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-03-10  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #120 from OPENDAP/sort-nodes
+	Sort nodes
+
+	Merge branch 'master' into sort-nodes
+
+2018-03-10  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-03-10  James Gallagher  <jgallagher@opendap.org>
+
+	Added missing <algorithm> include in BESCatalogDirectory
+
+2018-03-10  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-03-10  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into sort-nodes
+
+	Merge pull request #119 from OPENDAP/xmlcommand-tests
+	Xmlcommand tests
+
+2018-03-09  James Gallagher  <jgallagher@opendap.org>
+
+	Now CatalogNodes are ordered. This will address testing issues and
+	... it will be better since the depth-first traversal will be more
+	predictable
+
+	The data dir in xmlcommand/tests can now be deleted when running distcheck
+	The problem was that data was copied from the source tree, which is
+	write protected. To delete it, I had to add a call to chmod. Done.
+
+	Fixed xmlcommand/tests on OSX and Ubuntu
+
+	Revert "Changed the xmlcommand/tests data directory build/copy/delete process"
+	This reverts commit 47e5239a25f2a35d54abca451c6d97eae099dcb6.
+	It didn't fix the distcheck build.
+	[skip ci]
+
+	Changed the xmlcommand/tests data directory build/copy/delete process
+
+2018-03-09  jgallagher59701  <jgallagher@opendap.org>
+
+	Fixed the xmlcommand tests so they work on Ubuntu
+	The problem was that wc -l returns a leading blank on OSX
+	but not Ubuntu
+
+2018-03-09  James Gallagher  <jgallagher@opendap.org>
+
+	Debug the xmlcommand tests on ubuntu
+
+	Tests for the build site map command no longer depend on item order
+
+2018-03-08  James Gallagher  <jgallagher@opendap.org>
+
+	Modified tests in xmlcommand to elide <File> and <Line> from error responses
+
+	The build site map tests now look at the site_map file
+
+	spelling...
+
+	Added tests for build site map
+
+	Added files for tests; patched Makefile.am so that it builds the dat directory in $builddir
+
+	Adding tests for the build site map command.
+	This is complicated because we cannot write into the source tree
+	with the distcheck builds
+
+2018-03-08  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-03-08  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into xmlcommand-tests
+
+	checkpoint - modified Makefile.am and top level configure.ac
+
+	Merge pull request #118 from OPENDAP/site-map-command
+	Site map command
+
+2018-03-07  James Gallagher  <jgallagher@opendap.org>
+
+	Checkpoint - adding regression tests for xmlcommand
+
+2018-03-07  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-03-07  James Gallagher  <jgallagher@opendap.org>
+
+	Updated the hdf5 handler hash
+
+	Comments improved
+
+	Added the buildSiteMap command.
+	I'm not sure how to test this. For now, I'm going to leave it untested.
+
+2018-03-07  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-03-07  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #117 from OPENDAP/site-map
+	Site map
+
+	Tests pass distcheck on my host
+	I dropped the CatalogDirectory get_site_map_test_2 () because its
+	too dependent on what distcheck packs into the tar ball
+
+	Fixed tests for get_site_map.
+	I realized that I needed to use different catalogs for the different
+	tests because the CatalogUtils objects are singletons and do not
+	'pick up' new valus for the keys. Thus, changing the value for a
+	catalog by editing the keys will show up in the catalog object, but
+	not the (singleton) Utils object. ...no idea why the Utils are singletons.
+
+	Added <memory> to dispatch/BESCatalogDirectory.cc
+
+2018-03-06  James Gallagher  <jgallagher@opendap.org>
+
+	Added a test for BESCatalog::get_site_map()
+	This is a pretty primitive method - but the basics are here. This
+	could be used by a command, could build a BESInfo object or could
+	feed information to something that could build a BESInfo response.
+
+	checkpoint - initial version of BESCatalog::get_site_map()
+
+	Added tests for CatalogDirectory::get_node() id_data change.
+	This commit also has a large refactor for cahnges that are
+	now on the master branch of libdap. It's a huge drag to mix
+	these changes...
+
+	Added get_node_1.txt baseline
+
+	Added a working test for BESCatalog::get_node()
+	Also, some refactoring of the related code
+
+2018-03-05  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint - need to add an accessor to the items vector
+
+	Started testing get_node() - node working; items not tested
+
+	checkpoint - adding a test for get_node()
+
+	checkpoint - Added CatalogItem and CatalogNode classes
+
+	checkpoint - Implemented most of CatalogDirectory::get_node().
+
+	Checkpoint - compiles, but doesn't do much
+
+2018-03-05  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-03-05  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #116 from OPENDAP/catalog-refactor
+	Catalog refactor
+
+	Removed the build of ceomplete_catalog_lister; but added the source for it.
+
+	Refactor the software rooted in Catalog and Info.
+
+2018-03-04  James Gallagher  <jgallagher@opendap.org>
+
+	More refactoring
+
+2018-03-04  Corey Hemphill  <hemphilc@oregonstate.edu>
+
+	Fixed all files within test and unit-test directories from json to covjson.
+	bes CovJSON Issue #29
+
+2018-03-04  hemphilc@oregonstate.edu  <root@TheOmega.localdomain>
+
+	Renaming json dir to covjson
+
+	Fixing baseline files in test directory
+
+2018-03-04  Corey Hemphill  <hemphilc@oregonstate.edu>
+
+	Delete coads_climatology_instance_object_METADATA.bescmd.baseline
+
+	Delete coads_climatology_instance_object_METADATA.bescmd
+
+	Delete coads_climatology_instance_object_DATA.bescmd.baseline
+
+	Delete coads_climatology_instance_object_DATA.bescmd
+
+	Delete fnoc1_instance_object_METADATA.bescmd.baseline
+
+	Delete fnoc1_instance_object_METADATA.bescmd
+
+	Delete fnoc1_instance_object_DATA.bescmd.baseline
+
+	Delete fnoc1_instance_object_DATA.bescmd
+
+2018-03-04  hemphilc@oregonstate.edu  <TheFaceOfOrder@TheOmega.localdomain>
+
+	Fixed test/unit-test directory files
+
+2018-03-04  Corey Hemphill  <hemphilc@oregonstate.edu>
+
+	Removed FoInstance reference
+	Removed FoInstance reference
+
+	Update FoCovJsonTest.cc
+
+2018-03-03  Corey Hemphill  <hemphilc@oregonstate.edu>
+
+	Removed FoInstance related files
+	bes CovJSON #17
+
+	Delete instance_object_test_METADATA.covjson.baseline
+
+	Delete instance_object_test_DATA.covjson.baseline
+
+	Delete FoInstanceCovJsonTransmitter.h
+
+	Delete FoInstanceCovJsonTransmitter.cc
+
+	Delete FoInstanceCovJsonTransform.h
+
+	Delete FoInstanceCovJsonTransform.cc
+
+	Removed FoInstance references
+	bes CovJSON Issue #22
+
+	Merge pull request #20 from RiverHendriksen/bes-covjson-#19
+	bes CovJSON Issue #19
+
+	Merge branch 'master' into bes-covjson-#19
+
+2018-03-03    <TheFaceOfOrder@TheOmega.localdomain>
+
+	Removing FoInstance references
+
+2018-03-03  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into catalog-refactor
+	Conflicts:
+	dap/unit-tests/Makefile.am
+	modules/gateway_module/Makefile.am
+
+2018-03-03  RivH  <hendriri@oregonstate.edu>
+
+	Merge pull request #23 from RiverHendriksen/bes-covjson-#22
+	bes CovJSON Issue #21
+
+	Merge pull request #24 from RiverHendriksen/issue-#2
+	Issue #2
+
+2018-03-03  root  <root@ip-172-31-41-75.us-east-2.compute.internal>
+
+	fixed makefile merge conflict
+
+	Revert "May fix some errors"
+	This reverts commit 32214a87cfefe9494a906bf51bc3c757b6e1521a.
+
+	changed covjson
+
+2018-03-03  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-03-03  James Gallagher  <jgallagher@opendap.org>
+
+	Patched two Makefile.am files after the merging bes-show-path-info to master
+	modified:   dap/unit-tests/Makefile.am
+	modified:   modules/gateway_module/Makefile.am
+
+2018-03-03  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-03-03  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #115 from OPENDAP/bes-show-path-info
+	Bes show path info
+
+2018-03-02  James Gallagher  <jgallagher@opendap.org>
+
+	Comments/TODO items
+
+2018-03-02  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-03-02  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Fixed a bad comment
+
+2018-03-02  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into bes-show-path-info
+
+	Merge branch 'master' into catalog-refactor
+
+2018-03-02  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-03-02  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #114 from OPENDAP/gateway-refactor
+	Gateway refactor
+
+	Fixed up tests for the gateway handler
+
+	Added tests for streaming to the gateway handler
+
+	Refactor of the gateway handler
+	Put the code in a new namespace: gateway
+	Removed unused code
+	Reformatted and fixed up some field names
+	Tests unchanged - some tests marked as xfail really are working,
+	they never will return the various objects because those are not
+	in the dataset's being requested.
+
+2018-03-02  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-03-02  Nathan Potter  <ndp@opendap.org>
+
+	Another README.md change
+
+	Updating hdf5 module
+
+	Added BES API docs link to README.md
+
+2018-03-02  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into catalog-refactor
+
+	dispatch/BESDefinitionStorage.h used private inheritance for BESObj - likely a typo
+
+2018-03-01  Corey Hemphill  <hemphilc@oregonstate.edu>
+
+	Fixed file headers (author/copyright)
+
+	Update FoCovJsonTest.cc
+
+2018-03-01  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint
+
+	Removed 'using' declarations in headers
+
+	Fixed include of config.h (moved from header to impl - my error
+
+	minor edit
+
+	Fixed an issue in the GatewayCache dtor - it was calling delete_instance()
+	That should only happen once, when the process exits.
+
+2018-03-01  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-03-01  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #113 from OPENDAP/metadata_store
+	Metadata store
+
+	Changes for distcheck and the MDS
+
+	Merge branch 'master' into metadata_store
+
+2018-02-28  James Gallagher  <jgallagher@opendap.org>
+
+	Found and fixed an error in Dap4_CEFunctionsTest; otehr refactoring of the Catalog sub-system
+
+	More fixes - added zero size is unlimited feature to FileLockingCache
+	and to GlobalMetadataStore.
+
+	More hacking, mostly the comments/docs
+
+	Added time to the MDS ledger.
+
+	Added tests for the DAS and DMR as generated from a DMR*
+
+	Started support for DMR-based responses to be stored. DDS done/tested
+
+2018-02-27  James Gallagher  <jgallagher@opendap.org>
+
+	Tweaks
+
+	Add remove_response_helper() to cut down on repitious code
+
+	Added more tests and completed remove_responses() so it removed the DMR too
+	Also, fixed an error in the inventory where the inventory was truncated
+	for every write.
+
+	Added get_dmr_response()
+
+	One more DMR response test
+
+	Added writing the DMR response given a DDS. Tests, too.
+
+	checkpoint
+
+	Added baselines for the MDS
+
+	Added inventory to gitignore
+
+	Added get_{dds,das}_response() methods and a simple inventory file.
+
+	Added input-files to Makefile.am in dap/unit-tests to fix distcheck
+
+	Trying to sort out the ShowPathInfo test files that use sym links
+	Using sym links checked into git breaks distcheck because
+	tar copies the file/dir linked to, not the link itself. So
+	tests that should fail because the BES should not, as part
+	of the test, follow sym links will not fail because the 'link'
+	is not actaully a link anymore.
+
+2018-02-26  James Gallagher  <jgallagher@opendap.org>
+
+	Added a comment
+
+	Started removing unused parameters and simplifying methods
+
+	Changed from errno.h to cerrno and string.h to cstring
+
+	Merge branch 'bes-show-path-info' into catalog-refactor
+
+	Merge branch 'bes-show-path-info' of https://github.com/opendap/bes into bes-show-path-info
+
+	One more fix for GatewayPathInfoResponseHandler.cc
+	must use c strings to fstream() ctor
+
+	Fix for GatewayPathInfoResponseHandler.cc on linux
+	errno and strerror and stat() mtime fixes - I hope
+
+	Merge branch 'master' into bes-show-path-info
+
+	Merge branch 'bes-show-path-info' into catalog-refactor
+
+	Fixed w10n handler tests so they are no longer sensitive to LMT or size
+
+2018-02-26  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-02-26  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Updated gitignore
+	[skip ci]
+
+2018-02-25  James Gallagher  <jgallagher@opendap.org>
+
+	Refactoring BESCatalog and friends - checkpoint
+
+2018-02-24  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-02-24  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into bes-show-path-info
+
+	Movd PicoSHA2 - fixed distcheck on OSX; Linux, too?
+
+2018-02-24  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-02-24  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into bes-show-path-info
+
+	Added PicoSHA2 to Makefile.am EXTRA_DIST
+	and added its copyright notice to the README
+
+	Added $prefix/deps/bin to PATH
+
+	new file:   ecr_credentials.sh
+
+	deleted:    dap/unit-tests/ShowPathInfoTest
+
+	testing
+
+	Working travis.yml file - probably
+
+	Merge branch 'bes-show-path-info' of https://github.com/opendap/bes into bes-show-path-info
+
+	Fixes for compile-time errors in ShowPathInfoResponseHandler
+	This issues don't show up on OSX
+	[skip ci]
+
+	Fixes for compile-time errors in ShowPathInfoResponseHandler
+	This issues don't show up on OSX
+
+2018-02-24  Corey Hemphill  <hemphilc@oregonstate.edu>
+
+	Update focovjson_utils.h
+
+	Update focovjson_utils.cc
+
+	Update StreamString.h
+
+	Update StreamString.cc
+
+	Update FoCovJsonModule.h
+
+	Update FoCovJsonModule.cc
+
+2018-02-23  ndp-opendap  <ndp@opendap.org>
+
+	Baseline adjust
+
+2018-02-23  James Gallagher  <jgallagher@opendap.org>
+
+	Removed old code from GlobalMetadataStore
+
+	More GlobalMeatadataStore tests and fixes
+
+	Added BES.LogName entry to test.keys for GlobalMetadataStore::add_object()
+	add_object() may write to the log when logging is verbose.
+
+2018-02-22  Corey Hemphill  <hemphilc@oregonstate.edu>
+
+	Update focovjson_utils.h
+	Updated comments/headers/spaces
+
+	Update focovjson_utils.cc
+	Updated comments/headers
+
+	Update StreamString.h
+	Updated comments/headers/spacing
+
+	Update StreamString.h
+	Updated comments/headers
+
+	Update StreamString.cc
+	Updated comments/headers
+
+	Update FoCovJsonModule.cc
+	Updated comments/headers
+
+	Update FoCovJsonModule.h
+	Updated comments/headers
+
+	Merge pull request #16 from RiverHendriksen/covjson-bes-issue#13
+	Covjson bes issue#13 - The FoInstance baseline metadata/data files may need to be edited in the future.
+
+	Rename instance_object_test_METADATA.json.baseline to instance_object_test_METADATA.covjson.baseline
+
+	Rename instance_object_test_DATA.json.baseline to instance_object_test_DATA.covjson.baseline
+
+	Update and rename abstract_object_test_METADATA.json.baseline to abstract_object_test_METADATA.covjson.baseline
+
+	Update and rename abstract_object_test_DATA.json.baseline to abstract_object_test_DATA.covjson.baseline
+
+	Merge pull request #15 from RiverHendriksen/revert-14-covjson-bes-issue-4
+	Revert "Covjson bes issue 4"
+
+	Revert "Covjson bes issue 4"
+
+	Merge pull request #14 from RiverHendriksen/covjson-bes-issue-4
+	Covjson bes issue 4
+
+2018-02-22  Nathan Potter  <ndp@opendap.org>
+
+	Added private BESInfo pointer _response to GatewayPathInfoResponse.h
+
+2018-02-22  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'bes-show-path-info' of https://github.com/opendap/bes into bes-show-path-info
+
+	Added Gateway Path Info code
+
+2018-02-22  James Gallagher  <jgallagher@opendap.org>
+
+	Reformat ShowPathInfo header
+
+	Merge branch 'bes-show-path-info' of https://github.com/opendap/bes into bes-show-path-info
+
+	Merge bes-show-path-info with master - catch-up with refactoring
+
+	Merge branch 'master' into bes-show-path-info
+
+	Added test for GlobalMetadataStore::add_object
+
+	Initial tests for GlobalMetadataStore work.
+	I refactored the name of read_test_baseline; that propagated to
+	other parts of the bes, but it's probably an improvement.
+
+2018-02-22  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-02-21  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #108 from OPENDAP/daemon-fix
+	Fix for the daemon.cc argument handling code.
+
+	Adding tests for GlobalMetadataStore - checkpoint; tests fail
+
+	Fix for the daemon.cc argument handling code.
+	The software used: if (install_dir.empty() && !install_dir.empty())
+	when it should have been: if (config_file.empty() && !install_dir.empty())
+
+2018-02-21  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-02-21  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #106 from OPENDAP/fix-dap-unit-tests
+	Fix dap unit tests
+
+2018-02-20  James Gallagher  <jgallagher@opendap.org>
+
+	Added PicoSHA2
+
+	Added 'class' to friend declaration or GlobalMetadataStoreTest
+
+	Added PicoSHA2 from the 1.0.0 tar ball
+
+	Removed PicoSHA2
+
+	Removed PicoSHA2 - it was somehow added a git submodule
+
+	Merge branch 'master' into fix-dap-unit-tests
+
+2018-02-20  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-02-20  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #107 from lewismc/master
+	Trivial updates to README for better readability
+
+	Merge pull request #102 from OPENDAP/file-locking-cache-tests
+	File locking cache tests
+
+	GlobalMetadataStoreTest now works.
+
+2018-02-20  Lewis John McGibbney  <lewis.mcgibbney@gmail.com>
+
+	Trivial updates to README for better readability
+
+2018-02-20  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-02-20  Nathan Potter  <ndp@opendap.org>
+
+	Fixing mistake introduced in commits ef0cc5bdcdd1b526dfb75b6b61285b13ba12a33c and 135827fdc1ae812f9fa53a17a60030d7c6c9ab00
+
+	hdf4 and hdf5 updates
+
+	hdf4 and hdf5 updates
+
+2018-02-20  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed unit tests in dap/unit-tests; the loop increment for individaul tests was missing
+
+	Added initial files
+
+2018-02-19  Corey Hemphill  <hemphilc@oregonstate.edu>
+
+	Update abstract_object_test_METADATA.covjson.baseline
+	Adding CovJSON coverage collection test metadata
+
+	Update abstract_object_test_DATA.covjson.baseline
+	Adding CovJSON coverage collection test data test
+
+2018-02-19  James Gallagher  <jgallagher@opendap.org>
+
+	More code..
+
+2018-02-18  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint
+
+2018-02-18  Riley Rimer  <rrimer07@gmail.com>
+
+	May fix some errors
+
+	makefile change
+
+2018-02-18  James Gallagher  <jgallagher@opendap.org>
+
+	Empty version of the GlobalMetadataStore builds and all bes tests pass.
+	This version does nothing...
+
+2018-02-18  Riley Rimer  <rrimer07@gmail.com>
+
+	Initial changes to try to make bes with covjson
+
+2018-02-18  James Gallagher  <jgallagher@opendap.org>
+
+	Made GlobalMetadataStore class using FunctionResultCache - barely started
+
+2018-02-17  root  <root@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Removed old json files from directory
+
+	Renaming dataset baseline files to covjson
+
+2018-02-14  James Gallagher  <jgallagher@opendap.org>
+
+	Removed distcheck from the CI build for now
+
+2018-02-13  Riley Rimer  <rrimer07@gmail.com>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2018-02-13  James Gallagher  <jgallagher@opendap.org>
+
+	Updated hdf5 handler's commit hash
+
+	Changed times so the math will more likely work.
+
+	Attempt to fix the file locking cache tests with a parallel build.
+
+2018-02-13  Uday Kari  <ukari@opendap.org>
+
+	Merge pull request #101 from OPENDAP/stable-reboot-centos7
+	HYRAX-600: Install a bes.conf in %{_tmpfilesdir} to ensure /var/run/bes is available for serverr start/reboot
+
+2018-02-13  Nathan Potter  <ndp@opendap.org>
+
+	Updating hdf5
+
+2018-02-13  Cloud User  <centos@ip-172-31-20-195.us-west-2.compute.internal>
+
+	Restire besd.in, remove hack to force add /var/run/bes by doing test -d '/var/run/bes' || mkdir -p /var/run/bes
+
+	HYRAX-600: add bes-tmpfiles-conf to %{_tmpfilesdir}
+
+	HYRAX-600: add bes-tmpfiles-conf to %{_tmpfilesdir}
+
+	HYRAX-600: add bes-tmpfiles-conf to %{_tmpfilesdir}
+
+	HYRAX-600: add bes-tmpfiles-conf to %{_tmpfilesdir}
+
+	Add bes-tmpfiles-conf to EXTRA_DIST, bin_SCRIPTS
+
+	Add bes-tmpfiles-conf to EXTRA_DIST
+
+	removed bes-tempfiles-conf
+
+	HYRAX-600: {_tmpfilesdir} directives to create /var/run/bes
+
+2018-02-13  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'stable-reboot-centos7' of https://github.com/opendap/bes into stable-reboot-centos7
+
+2018-02-12  Cloud User  <centos@ip-172-31-20-195.us-west-2.compute.internal>
+
+	HYRAX-600: Install a bes.conf in %{_tmpfilesdir} to ensure /var/run/bes exists
+
+2018-02-12  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #100 from OPENDAP/set-contexts
+	Set contexts
+
+	Updated HDF submodules
+
+	Comments in BESDataResponseHandler.h
+	[skip ci]
+
+2018-02-12  jgallagher59701  <jgallagher@opendap.org>
+
+	Remove 'modules' from EXTRA_DIST
+
+	Added test_config.h.in to EXTRA_DIST in ugrid_functions/unit-tests
+
+2018-02-12  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'stable-reboot-centos7' of https://github.com/opendap/bes into stable-reboot-centos7
+
+2018-02-12  Cloud User  <centos@ip-172-31-20-195.us-west-2.compute.internal>
+
+	HYRAX-600:  install be.conf in tmpfiles.d
+
+2018-02-12  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'set-contexts' of https://github.com/opendap/bes into set-contexts
+
+	Comments in XMMLInterface
+
+	Added SetContextsNames.h to Makefile.am
+	I moved this file and borked the build.
+
+2018-02-11  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed spelling of NullResponseHandler - Null was NULL
+
+	Changes, mostly comments, and a fix for the MemoryGlobalArea snafu
+
+2018-02-11  Cloud User  <centos@ip-172-31-20-195.us-west-2.compute.internal>
+
+	HYRAX-600: Centos 7 RPM build, re-boot fixes
+
+2018-02-11  Corey Hemphill  <hemphilc@oregonstate.edu>
+
+	Merge pull request #1 from RiverHendriksen/bes-covjson
+	Bes covjson
+
+2018-02-11  root  <root@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Initial commit for the fileout_covjson module unit tests
+
+2018-02-10  Riley Rimer  <rrimer07@gmail.com>
+
+	Changed the calls in the files to be for covjson module files rather than json module files
+
+2018-02-09  root  <root@ip-172-31-41-75.us-east-2.compute.internal>
+
+	Adding fileout_covjson directory and files
+
+2018-02-09  James Gallagher  <jgallagher@opendap.org>
+
+	Added a comment in XMLInterface.cc
+
+	Refactoring..
+
+	Refactor mixed with new command experiements.
+	I switched the <setContexts> command so that it completes it's
+	work in the build_... phase of command evaluation. And it uses
+	a new NullResponseHandler.
+
+	Merge branch 'set-contexts' of https://github.com/opendap/bes into set-contexts
+
+	Fixes to the command's implementation
+
+2018-02-08  James Gallagher  <jgallagher@opendap.org>
+
+	More hacking - mostling in the RequestHandler code
+
+	Added a NullResponseHandler for use with the setContexts command
+	This is part of an example command that can run completely during
+	the 'build_data_response_plan()' part of the command evaluation.
+	It's not working yet..
+
+	Added a new command - setContexts
+	I'll work on this some more because there are two ways to implement
+	the command.
+
+2018-02-07  Uday Kari  <ukari@opendap.org>
+
+	HYRAX-600: Unable to startup Hyrax installed from RPM on (re)boot on Centos OS 7
+
+	HYRAX-600: Unable to startup Hyrax installed from RPM on (re)boot on Centos OS 7
+
+	HYRAX-600: Unable to startup Hyrax installed from RPM on (re)boot on Centos OS 7
+
+	HYRAX-600: Unable to startup Hyrax installed from RPM on (re)boot on Centos OS 7
+
+2018-02-06  James Gallagher  <jgallagher@opendap.org>
+
+	Clean up xmlcommand/BESXMLCommand.cc
+	[skip ci]
+
+2018-01-31  James Gallagher  <jgallagher@opendap.org>
+
+	Formating for the BESCatalogUtils
+	[skip ci]
+
+	Comments and spelling and a minor refactor
+
+2018-01-24  Nathan Potter  <ndp@opendap.org>
+
+	Updated hdf handlers
+
+2018-01-24  James Gallagher  <jgallagher@opendap.org>
+
+	Added test-generated dirs to ignore
+
+	Merge pull request #99 from OPENDAP/hyrax-561
+	Hyrax 561
+
+2018-01-23  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into hyrax-561
+
+	One more fix - for dmrpp_handler
+
+	All but dmrpp_handler work.
+	[skip ci]
+
+	The hacked code builds distcheck on OSX now.
+
+2018-01-22  James Gallagher  <jgallagher@opendap.org>
+
+	More fixes; distcheck doesn't all work.
+	[skip ci]
+
+	More fixes for distcheck - it's not there yet.
+	[skip ci]
+
+2018-01-22  Nathan Potter  <ndp@opendap.org>
+
+	Fixed broken Show Help button in the IFH
+
+2018-01-22  James Gallagher  <jgallagher@opendap.org>
+
+	Minor mod to ravis.yml
+	[skip ci]
+
+	Modifications to fix distcheck. See Hyrax -591 for more info.
+	The distcheck target still does not work.
+	[skip ci]
+
+2018-01-17  James Gallagher  <jgallagher@opendap.org>
+
+	Re-enabled dual process build for travis
+
+	Changed TRAVIS_BUILD_NUMBER to TRAVIS_JOB_NUMBER
+	This will/should enable both builds to write log files
+
+2018-01-16  Nathan Potter  <ndp@opendap.org>
+
+	Improved error mesages
+
+2018-01-12  Nathan Potter  <ndp@opendap.org>
+
+	Switching dap/unit-tests bes.conf constrution to TEST_BUILD_DIR
+
+	Another swipe at BESLog error handling.
+
+	Reverting BESLog
+
+	Travis dinking
+
+	More dinking with BESLog error management
+
+	Change to exception handling in BESLog
+
+	disabling good build
+
+	disabling good build
+
+	disabling good build
+
+2018-01-12  ndp-opendap  <ndp@opendap.org>
+
+	Fixing travis build
+
+	Fixing travis config
+
+2018-01-12  James Gallagher  <jgallagher@opendap.org>
+
+	Travis fix for parallel build and log upload.
+
+2018-01-11  James Gallagher  <jgallagher@opendap.org>
+
+	another fix - FTPUSER_AT_OO to TRAVIS_AT_OO
+
+	More travis hacks. Fixed pathname for uploaded tarball
+
+	once again... travis.yml fix
+
+	Fixed travis.yml
+
+	hacked travis.yml to upload test logs
+
+	Added bes.log to DISTCLEANFILES; a fix for distcheck
+	... in dap/unit-tests/Makefile.am
+
+2018-01-10  James Gallagher  <jgallagher@opendap.org>
+
+	Formatting changes to TemporaryFileTest.cc
+
+2018-01-10  Nathan Potter  <ndp@opendap.org>
+
+	Attribution
+
+	Attribution
+
+	Cleaning up unused code and directories.
+
+2018-01-09  James Gallagher  <jgallagher@opendap.org>
+
+	Modified dap/unit-tests/test_config.h so that it includes the build dir.
+	This fixes the distcheck target. It works because the build dir
+	is where all generated files go and the bes.conf is a generated
+	file. The TemporaryFileTest.cc code needs to use that to reference
+	where bes.conf will be. With distcheck, it's in the special _build
+	dir; with a normal build, it's in the source dir.
+
+2018-01-09  Nathan Potter  <ndp@opendap.org>
+
+	More distcheck trashing
+
+	Working on distcheck issues
+
+	Working on distcheck issues
+
+	Pruning code related to BESHandlerUtil
+
+	Dropped bad include from TemporaryFileTest
+
+	Merged master to hyrax-561
+
+	Dropped unused BESHandlerUtil.* from production
+
+	Added TempFIle fix to other modules
+
+	Hooking up new TempFile class to fileout_netcdf
+
+	Formatting and comments
+
+2018-01-08  Nathan Potter  <ndp@opendap.org>
+
+	comments
+
+	Merge pull request #98 from OPENDAP/hyrax-561-sig-handler-swap
+	Hyrax 561 sig handler swap
+
+2018-01-05  Nathan Potter  <ndp@opendap.org>
+
+	Added FIXME for discussion
+
+	Moved cached signal handler into TempFile as a static member variable
+
+	First pass at a SIGPIPE handler swap which confines the signal managment activity to the TempFile class for which it is utilized.
+
+2018-01-03  Nathan Potter  <ndp@opendap.org>
+
+	Added a test for mutliple concurrent temp files to be removed when the SIGPIPE happens
+
+	Added a test for mutliple concurrent temp files to be removed when the SIGPIPE happens
+
+	Another pass at SIGPIPE - this one looks like an actual functioning candidate. woot.
+
+	Another cut at handling SIGPIPE. This verions works, but for the wrong reaons. :(
+
+	TempFile increment
+
+2018-01-02  Nathan Potter  <ndp@opendap.org>
+
+	Another efffort. No seg fault, but no worky either...
+
+2017-12-22  Nathan Potter  <ndp@opendap.org>
+
+	oops
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	updated modules
+
+2017-12-20  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Changed the CI build so it might complete in time.
+	The length of the build was resulting in failures. Try to run the distcheck
+	and make && make check builds in parallel. This uses an experimental
+	feature of Travis CI.
+
+2017-12-18  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #97 from OPENDAP/AGU_data
+	Agu data
+
+2017-12-07  ndp-opendap  <ndp@opendap.org>
+
+	patched baselines for w10nShowPathInfo tests.
+
+	Merge branch 'master' into bes-show-path-info
+
+	Fleshing out a GatewayPathInfo command/response
+
+2017-12-06  James Gallagher  <jgallagher@opendap.org>
+
+	Added more performace tests and data
+
+	Added: Keep alive data and data for a curl multi-handle/easy-handle comparison script/data.
+
+2017-12-05  James Gallagher  <jgallagher@opendap.org>
+
+	Fix to the keepalive_download script
+
+	Added scripts and CSV result files
+
+2017-12-04  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #96 from OPENDAP/scale3D
+	Scale3D
+
+	Hacking the mtest.sh script; fixed the Makefile.am for pthreads on linux
+
+	Hacking mtest.sh
+
+2017-12-04  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Merge branch 'master' into scale3D
+
+2017-12-04  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Merge pull request #95 from OPENDAP/adding-libcurl
+	Adding libcurl test to the bes when --enable-developer is used with configure
+
+	Merge pull request #92 from OPENDAP/finish-refactor
+	Finish refactor
+
+	Merge pull request #90 from OPENDAP/file-locking-cache-test
+	Fixed up the tests in bes/dispatch for FileLockingCache
+
+	Merge pull request #91 from OPENDAP/Hyrax-252
+	Hyrax 252
+
+2017-12-04  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Merge branch 'master' into scale3D
+
+2017-12-03  James Gallagher  <jgallagher@opendap.org>
+
+	Dropped the release number back to 3.19.1 from 3.19.2
+	Because 3.19.1 looked like a real tag but was instead a phony one
+	I made for the DOI system provided by zenodo.
+
+	Reset the version number to 3.19.2 given that 3.18 was our last released version.
+
+	Merge branch 'master' into adding-libcurl
+
+	Deleted temp file libcurl_configure.ac
+
+	Switched to autoconf macros for the last section of configure.ac
+
+2017-12-03  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HYRAX-294. Changed scale_dap_array_3D.
+
+2017-12-03  James Gallagher  <jgallagher@opendap.org>
+
+	Added --with-curl and curl tests that are only run with --enable-developer
+	This supports the dmrpp_module - it provides a way to get the 7.20.0++
+	version of libcurl so that module will work. However, when --enable-developer
+	is not used and that module is not built, libcurl is not required.
+
+2017-12-02  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Merge branch 'master' into scale3D
+
+2017-12-01  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+2017-11-30  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into temp-for-release
+
+	Minor build edits.
+
+2017-11-29  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Merge branch 'master' into scale3D
+
+2017-11-29  James Gallagher  <jgallagher@opendap.org>
+
+	Stuff - libcurl_configure.ac is maybe the way to look for libs.
+	But it does not use AC_CHECK_LIB. Think about that. Also, look at
+	autotools myth buster.
+
+2017-11-28  udayopen  <ukari@opendap.org>
+
+	Updated for Hyrax-1.13.6
+
+	Merge branch 'temp-for-release' of https://github.com/OPENDAP/bes into temp-for-release
+
+	chnage REVISION
+
+2017-11-27  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HYRAX-294. Corrected test_scaling_with_gdal_3D in ScaleUtilTest3D.cc
+
+	HYRAX-294. Corrected scale_util.cc, ScaleGrid.h, ScaleUtilTest3D.cc
+
+2017-11-22  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'temp-for-release' of https://github.com/opendap/bes into temp-for-release
+
+	Shortened the NEWS file and fixed some of the spelling errors inherited from the git logs
+	I alsoadded a section that listed all of the Bug tickets from Jira closed
+	since the last release. I have a JQL command that will get all of those
+	tickets.
+
+2017-11-22  udayopen  <ukari@opendap.org>
+
+	Add version 3.20.0
+
+	Add version 3.20.0
+
+2017-11-21  udayopen  <ukari@opendap.org>
+
+	Update NEWS to November 2017
+
+	Update NEWS to November 2017
+
+	Update ChangeLog to November 2017
+
+2017-11-21  James Gallagher  <jgallagher@opendap.org>
+
+	Added two json files for the cmln tests.
+	Note that these tests require a running BES.
+
+	Added gitignore in hello_world
+
+	Added support for parallel tests.
+
+2017-11-20  James Gallagher  <jgallagher@opendap.org>
+
+	Hacked testsutie.at to use the autotest -v option for in-test verbose output.
+
+	Fixed minor error in BESInterface::finish().
+	Failed to dereference d_strm when passing it to BESInfo::print(ostream &)
+
+	Merge branch 'master' into finish-refactor
+
+	Merge branch 'master' into Hyrax-252
+
+	Fixed up the tests in bes/dispatch for FileLockingCache
+	We now test the cache to ensure that it works for two processes.
+
+2017-11-20  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'bes-show-path-info' of https://github.com/opendap/bes into bes-show-path-info
+
+2017-11-18  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HYRAX-294. Corrected ScaleGrid.function_scale_array_3D.
+
+2017-11-17  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Various fixes.
+
+	Various fixes.
+
+2017-11-17  udayopen  <ukari@opendap.org>
+
+	add hyraxctl
+
+	add hyraxctl to dist_bin_scripts for release
 2017-11-17  James Gallagher <jgallagher@opendap.org>
 
         Merge branch 'master' of https://github.com/opendap/bes

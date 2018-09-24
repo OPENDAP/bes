@@ -27,6 +27,7 @@ addons:
     project:
       name: "OPENDAP/bes"
     notification_email: jgallagher@opendap.org
+    build_command_prepend: ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
     build_command: "make -j7"
     branch_pattern: coverity_scan
   apt:
@@ -36,8 +37,8 @@ addons:
     - libcurl4-openssl-dev
     - libcppunit-dev
     - libicu-dev
-    - sshpass
 
+#    - sshpass
 #   ssh_known_hosts: www.opendap.org
 
 env:
@@ -86,7 +87,7 @@ jobs:
     script: 
     - export BES_MAIN_BUILD=yes
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-    - make -j7 && make check -j7 && make install
+    - make -j7 && make install && besctl start && make check -j7
   - stage: build
     script:
     - export BES_MAIN_BUILD=no

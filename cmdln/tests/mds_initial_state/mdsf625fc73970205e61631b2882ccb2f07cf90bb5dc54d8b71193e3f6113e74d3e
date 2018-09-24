@@ -1,0 +1,37 @@
+Dataset {
+    Float64 COADSX[COADSX = 180];
+    Float64 COADSY[COADSY = 90];
+    Float64 TIME[TIME = 12];
+    Grid {
+      Array:
+        Float32 SST[TIME = 12][COADSY = 90][COADSX = 180];
+      Maps:
+        Float64 TIME[TIME = 12];
+        Float64 COADSY[COADSY = 90];
+        Float64 COADSX[COADSX = 180];
+    } SST;
+    Grid {
+      Array:
+        Float32 AIRT[TIME = 12][COADSY = 90][COADSX = 180];
+      Maps:
+        Float64 TIME[TIME = 12];
+        Float64 COADSY[COADSY = 90];
+        Float64 COADSX[COADSX = 180];
+    } AIRT;
+    Grid {
+      Array:
+        Float32 UWND[TIME = 12][COADSY = 90][COADSX = 180];
+      Maps:
+        Float64 TIME[TIME = 12];
+        Float64 COADSY[COADSY = 90];
+        Float64 COADSX[COADSX = 180];
+    } UWND;
+    Grid {
+      Array:
+        Float32 VWND[TIME = 12][COADSY = 90][COADSX = 180];
+      Maps:
+        Float64 TIME[TIME = 12];
+        Float64 COADSY[COADSY = 90];
+        Float64 COADSX[COADSX = 180];
+    } VWND;
+} coads_climatology.nc;
