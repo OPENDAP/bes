@@ -1118,7 +1118,9 @@ function testit(){
         ls /tmp/gateway* > /dev/null 2>&1;
         if [ ${?} -eq 0 ]; then
             echo "Gateway cache contains files! Purging...";
-            # rm -v /tmp/gateway*
+            rm -v /tmp/gateway*
+            touch /tmp/gateway_cache.cache_control
+            truncate -s +8 /tmp/gateway_cache.cache_control 
         else
             echo "Gateway cache is empty.";
         fi
