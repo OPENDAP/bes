@@ -1187,7 +1187,6 @@ function test_ce(){
 
     TEST_IDS="${A1_IDS}";
     echo "TEST_IDS: ${TEST_IDS}"
-
     testit "timing/a1_${test_name}" "${arch1}" "dods" "${ce}"
 }
 
@@ -1207,6 +1206,7 @@ rm -f timing/*;
 for pass in {1..112} ; do
 
     echo "################# PASS ${pass} ################################## PASS ${pass} #################"
+    date
     
     thisCE=$(get_vars_ce ${pass})
     
