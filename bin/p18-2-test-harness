@@ -1159,7 +1159,7 @@ function testit(){
         echo "Checking HTTP Header..."
         http_status=`head -1 foo.${response} | xargs`;
         echo "Server returned http status: '${http_status}'";
-        echo "http_success:                '${http_success}'";
+        # echo "http_success:                '${http_success}'";
         if [ "${http_status}" = "${http_success}" ] ; then
             echo "Request SUCCEEDED." | tee -a ${test_id};
             
