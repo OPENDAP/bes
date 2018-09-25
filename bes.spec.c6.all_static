@@ -1,4 +1,4 @@
- -*- mode: rpm-spec -*-
+# -*- mode: rpm-spec -*-
 
 %define bescachedir %{_localstatedir}/cache/%{name}
 %define bespkidir %{_sysconfdir}/pki/%{name}
