@@ -1,4 +1,4 @@
-# -*- mode: rpm-spec -*-
+ -*- mode: rpm-spec -*-
 
 %define bescachedir %{_localstatedir}/cache/%{name}
 %define bespkidir %{_sysconfdir}/pki/%{name}
@@ -134,8 +134,11 @@ chmod g+w $RPM_BUILD_ROOT%{beslogdir}
 mkdir -p $RPM_BUILD_ROOT%{bespiddir}
 chmod g+w $RPM_BUILD_ROOT%{bespiddir}
 mv $RPM_BUILD_ROOT%{_bindir}/bes-config-pkgconfig $RPM_BUILD_ROOT%{_bindir}/bes-config
-mkdir -p $RPM_BUILD_ROOT%{_tmpfilesdir}
-mv $RPM_BUILD_ROOT%{_bindir}/bes-tmpfiles-conf $RPM_BUILD_ROOT%{_tmpfilesdir}/%{name}.conf 
+
+# Not in CentOS 6 - we need the systemd package which is present in C7 onward.
+# jhrg 9/25/18
+# mkdir -p $RPM_BUILD_ROOT%{_tmpfilesdir}
+# mv $RPM_BUILD_ROOT%{_bindir}/bes-tmpfiles-conf $RPM_BUILD_ROOT%{_tmpfilesdir}/%{name}.conf 
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -203,7 +206,8 @@ exit 0
 %attr (-,%{besuser},%{besgroup}) %{bespiddir}
 %attr (-,%{besuser},%{besgroup}) %{bescachedir}
 
-%{_tmpfilesdir}/%{name}.conf
+# Not part of C6, see above. jhrg 9/25/18
+# %{_tmpfilesdir}/%{name}.conf
 
 %files devel
 %defattr(-,root,root,-)
