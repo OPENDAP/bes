@@ -1093,6 +1093,21 @@ function get_vars_ce() {
     done
 }
 
+
+function purge_gateway_cache() {
+    ls /tmp/gateway* > /dev/null 2>&1;
+    if [ ${?} -eq 0 ]; then
+        echo "Gateway cache contains files! Purging...";
+        rm -v /tmp/gateway*
+    else
+        echo "Gateway cache is empty.";
+    fi
+    echo "Creating cache contrl file..."
+    touch /tmp/gateway_cache.cache_control
+    truncate -s +8 /tmp/gateway_cache.cache_control 
+    ls -l /tmp/gateway_cache.cache_control
+}
+
 function testit(){
     
     test_id=${1};
@@ -1115,16 +1130,7 @@ function testit(){
     dap2_data_response="dods"
     for resourceId in ${TEST_IDS} ; do
         
-        ls /tmp/gateway* > /dev/null 2>&1;
-        if [ ${?} -eq 0 ]; then
-            echo "Gateway cache contains files! Purging...";
-            rm -v /tmp/gateway*
-        else
-            echo "Gateway cache is empty.";
-        fi
-        touch /tmp/gateway_cache.cache_control
-        truncate -s +8 /tmp/gateway_cache.cache_control 
-        ls -l /tmp/gateway_cache.cache_control
+        purge_gateway_cache;
         
         dods_url="${architecture}${resourceId}.${response}${ce}";
         echo "dods_url: ${dods_url}";
