@@ -1117,10 +1117,10 @@ function testit(){
         
         ls /tmp/gateway* > /dev/null 2>&1;
         if [ ${?} -eq 0 ]; then
-            echo "Purging gateway cache...";
+            echo "Gateway cache contains files! Purging...";
             rm -v /tmp/gateway*
         else
-            echo "Gateway cache is clear.";
+            echo "Gateway cache is empty.";
         fi
         
         dods_url="${architecture}${resourceId}.${response}${ce}";
@@ -1178,16 +1178,15 @@ function test_ce(){
     test_name=${1};
     ce=${2};
     
-    #TEST_IDS="${A0A2_IDs}";
-    
-    #echo "TEST_IDS: ${TEST_IDS}"
+    TEST_IDS="${A0A2_IDs}";
+    echo "TEST_IDS: ${TEST_IDS}"
     
     #testit "timing/a0_${test_name}" "${arch0}" "dods" "${ce}"
-    #testit "timing/a2_${test_name}" "${arch2}" "dods" "${ce}"
+    testit "timing/a2_${test_name}" "${arch2}" "dods" "${ce}"
 
-    TEST_IDS="${A1_IDS}";
-    echo "TEST_IDS: ${TEST_IDS}"
-    testit "timing/a1_${test_name}" "${arch1}" "dods" "${ce}"
+    # TEST_IDS="${A1_IDS}";
+    # echo "TEST_IDS: ${TEST_IDS}"
+    # testit "timing/a1_${test_name}" "${arch1}" "dods" "${ce}"
 }
 
 
