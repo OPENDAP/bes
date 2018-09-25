@@ -8,7 +8,8 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=hdf5_handler
-M_VER=2.4.1
+M_VER=1.15.0
+
 GCTP_LIBS=gctp/src/libGctp.a
 GCTP_CPPFLAGS=-I gctp/include
 
@@ -89,7 +90,7 @@ CLEANFILES = *~ *.sum *.log *.output he5das.tab.cc he5das.tab.hh \
 sample_datadir = $(datadir)/hyrax/data/hdf5
 sample_data_DATA = data/grid_1_2d.h5
 
-moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+moduledir = $(sysconfdir)/bes/modules
 module_DATA = h5.conf
 
 h5.conf: h5.conf.in $(top_srcdir)/config.status
