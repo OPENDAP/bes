@@ -1147,7 +1147,7 @@ function testit(){
                 
                 echo "Checking DAP2 data response with getdap.";
                 content_lines=`cat foo.${response} | wc -l`;
-                content_lines=`${content_lines}-${hdr_length} | bc`;
+                content_lines=`echo ${content_lines}-${hdr_length} | bc`;
                 tail -f ${content_lines} foo.${response} > foo.${response}.body;
                 getdap -D -M foo.${response}.body > /dev/null;
                 status=$?;
