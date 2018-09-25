@@ -1110,8 +1110,9 @@ function testit(){
     #if [ -z ${ce} ]; then echo "-z is true"; else echo "-z is false"; fi
     #if [ -n ${ce} ]; then echo "-n is true"; else echo "-n is false"; fi
 
-    
-    
+    hdr_length=12;
+    http_success="HTTP/1.1 200";
+    dap2_data_response="dods"
     for resourceId in ${TEST_IDS} ; do
         
         ls /tmp/gateway* > /dev/null 2>&1;
@@ -1124,26 +1125,50 @@ function testit(){
         
         dods_url="${architecture}${resourceId}.${response}${ce}";
         echo "dods_url: ${dods_url}";
-        curl_cmd="curl -s -o foo.${response} -g ${dods_url}";
+        curl_cmd="curl -s -i -o foo.${response} -g ${dods_url}";
         echo "curl_cmd: ${curl_cmd}" | tee -a ${test_id};
         
         { time -p ${curl_cmd} > curl.stderr ; } 2> foo.time;
         cat foo.time >> ${test_id};
         echo "Request time: ";
         tail -3 ${test_id};
-        
-        if [ -z ${ce} ] || [ true ] ; then
-            echo "Not checking DAP2 data response for entire dataset, takes too long."
-        else 
-            echo "Checking DAP2 data response with getdap."
-            getdap -D -M foo.dods > /dev/null;
-            status=$?
-            if [ ${status} -ne 0 ]; then 
-                echo "ERROR! Unable to read dap2 data response."; 
+
+        echo "Checking HTTP Header..."
+        http_status=`head -1 foo.${response}`;
+        echo "Server returned http status: ${http_status}";
+        if [ "${http_status}" = "${http_success}" ] ; then
+            echo "Request SUCCEEDED." | tee -a ${test_id};
+            
+            if [ -z ${ce} ] || [ true ] ; then
+                echo "Not checking DAP2 data response for entire dataset, takes too long.";
+
+            elif [ "${response}" = "${dap2_data_response}" ] ; then
+                
+                echo "Checking DAP2 data response with getdap.";
+                content_lines=`cat foo.${response} | wc -l`;
+                content_lines=`${content_lines}-${hdr_length} | bc`;
+                tail -f ${content_lines} foo.${response} > foo.${response}.body;
+                getdap -D -M foo.${response}.body > /dev/null;
+                status=$?;
+                if [ ${status} -ne 0 ] ; then 
+                    echo "ERROR! Unable to read dap2 data response."; 
+                else
+                    echo "DAP2 Request appears to have worked.";
+                fi
+
+
             else
-                echo "DAP2 Request appears to have worked."
+                echo "NO QC OF RESPONSE PERFORMED ON: ${curl_cmd}";
             fi
+                
+                
+    
+        else 
+            echo "Request FAILED." | tee -a ${test_id};
+            grep -e "message =" -e "blockquote" foo.${response} | tee -a ${test_id}
+            # grep "blockquote" foo.${response} | tee -a ${test_id}
         fi
+        
     done
 
 }
