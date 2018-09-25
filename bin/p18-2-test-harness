@@ -1074,6 +1074,10 @@ arch2="${server}/opendap/Arch-2/ebs/airs/";
 #ce_seven_var="?CH4_VMR_A,CH4_VMR_D,Temperature_A,Temperature_D,CO_VMR_A,GPHeight_A,GPHeight_D";
 #ce_eight_var="?CH4_VMR_A,CH4_VMR_D,Temperature_A,Temperature_D,CO_VMR_A,CO_VMR_D,GPHeight_A,GPHeight_D";
 
+
+########################################################
+#
+#
 function get_vars_ce() {
     n=${1};
     c=0;
@@ -1093,21 +1097,29 @@ function get_vars_ce() {
     done
 }
 
-
+########################################################
+# This seems to be ill advised as doing this
+# pretty much makes BESFileLockingCache break.
+#
 function purge_gateway_cache() {
     ls /tmp/gateway* > /dev/null 2>&1;
     if [ ${?} -eq 0 ]; then
         echo "Gateway cache contains files! Purging...";
         rm -v /tmp/gateway*
-    else
-        echo "Gateway cache is empty.";
     fi
-    echo "Creating cache contrl file..."
+    echo "Gateway cache is empty.";
+    
+    echo "Creating cache control file..."
     touch /tmp/gateway_cache.cache_control
     truncate -s +8 /tmp/gateway_cache.cache_control 
     ls -l /tmp/gateway_cache.cache_control
 }
 
+
+
+########################################################
+#
+#
 function testit(){
     
     test_id=${1};
@@ -1125,12 +1137,13 @@ function testit(){
     #if [ -z ${ce} ]; then echo "-z is true"; else echo "-z is false"; fi
     #if [ -n ${ce} ]; then echo "-n is true"; else echo "-n is false"; fi
 
-    http_hdr_length=12;
-    http_success="HTTP/1.1 200";
-    dap2_data_response="dods"
+    http_hdr_length=12;           # The number of lines of http header from Hyrax
+    http_success="HTTP/1.1 200";  # The successful request always were's this
+    dap2_data_response="dods"     # The suffix for a DAP2 dat response
+
     for resourceId in ${TEST_IDS} ; do
         
-        purge_gateway_cache;
+        # purge_gateway_cache; # This seemed like a good idea but turned out to be Hyrax Kryptonite
         
         dods_url="${architecture}${resourceId}.${response}${ce}";
         echo "dods_url: ${dods_url}";
@@ -1151,7 +1164,6 @@ function testit(){
             
             if [ -z ${ce} ] || [ true ] ; then
                 echo "Not checking DAP2 data response for entire dataset, takes too long.";
-
             elif [ "${response}" = "${dap2_data_response}" ] ; then
                 
                 echo "Checking DAP2 data response with getdap.";
@@ -1165,24 +1177,21 @@ function testit(){
                 else
                     echo "DAP2 Request appears to have worked.";
                 fi
-
-
             else
                 echo "NO QC OF RESPONSE PERFORMED ON: ${curl_cmd}";
             fi
-                
-                
-    
         else 
             echo "Request FAILED." | tee -a ${test_id};
             grep -e "message =" -e "blockquote" foo.${response} | tee -a ${test_id}
             # grep "blockquote" foo.${response} | tee -a ${test_id}
         fi
-        
     done
-
 }
 
+
+########################################################
+#
+#
 function test_ce(){
     test_name=${1};
     ce=${2};
@@ -1200,6 +1209,10 @@ function test_ce(){
 
 
 
+########################################################
+#
+# MAIN
+#
 
 if [ ! -d "timing" ]; then
     mkdir timing;
