@@ -10,7 +10,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=hdf4_handler
-M_VER=3.13.1
+M_VER=1.15.0
 
 AM_CXXFLAGS = -I$(top_srcdir)/hdfclass
 AM_YFLAGS = -d -v
@@ -119,7 +119,7 @@ CLEANFILES = *~ *.log *.sum $(GRAM_SRC) h4.conf
 sample_datadir = $(datadir)/hyrax/data/hdf4
 sample_data_DATA = data/S2000415.HDF.gz data/foo2.hdf.gz data/grid_1_2d.hdf
 
-moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+moduledir = $(sysconfdir)/bes/modules
 module_DATA = h4.conf
 
 h4.conf: h4.conf.in $(top_srcdir)/config.status
