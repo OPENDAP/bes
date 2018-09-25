@@ -1118,7 +1118,7 @@ function testit(){
         ls /tmp/gateway* > /dev/null 2>&1;
         if [ ${?} -eq 0 ]; then
             echo "Gateway cache contains files! Purging...";
-            rm -v /tmp/gateway*
+            # rm -v /tmp/gateway*
         else
             echo "Gateway cache is empty.";
         fi
@@ -1182,11 +1182,11 @@ function test_ce(){
     echo "TEST_IDS: ${TEST_IDS}"
     
     #testit "timing/a0_${test_name}" "${arch0}" "dods" "${ce}"
-    testit "timing/a2_${test_name}" "${arch2}" "dods" "${ce}"
+    # testit "timing/a2_${test_name}" "${arch2}" "dods" "${ce}"
 
-    # TEST_IDS="${A1_IDS}";
-    # echo "TEST_IDS: ${TEST_IDS}"
-    # testit "timing/a1_${test_name}" "${arch1}" "dods" "${ce}"
+     TEST_IDS="${A1_IDS}";
+     echo "TEST_IDS: ${TEST_IDS}"
+     testit "timing/a1_${test_name}" "${arch1}" "dods" "${ce}"
 }
 
 
