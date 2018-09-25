@@ -1140,7 +1140,7 @@ function testit(){
         if [ "${http_status}" = "${http_success}" ] ; then
             echo "Request SUCCEEDED." | tee -a ${test_id};
             
-            if [ -z ${ce} ] ; then
+            if [ -z ${ce} ] || [ true ] ; then
                 echo "Not checking DAP2 data response for entire dataset, takes too long.";
 
             elif [ "${response}" = "${dap2_data_response}" ] ; then
