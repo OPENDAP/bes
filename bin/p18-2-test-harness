@@ -1110,7 +1110,7 @@ function testit(){
     #if [ -z ${ce} ]; then echo "-z is true"; else echo "-z is false"; fi
     #if [ -n ${ce} ]; then echo "-n is true"; else echo "-n is false"; fi
 
-    hdr_length=12;
+    http_hdr_length=12;
     http_success="HTTP/1.1 200";
     dap2_data_response="dods"
     for resourceId in ${TEST_IDS} ; do
@@ -1147,7 +1147,7 @@ function testit(){
                 
                 echo "Checking DAP2 data response with getdap.";
                 content_lines=`cat foo.${response} | wc -l`;
-                content_lines=`echo ${content_lines}-${hdr_length} | bc`;
+                content_lines=`echo ${content_lines}-${http_hdr_length} | bc`;
                 tail -n ${content_lines} foo.${response} > foo.${response}.body;
                 getdap -D -M foo.${response}.body > /dev/null;
                 status=$?;
@@ -1178,17 +1178,17 @@ function test_ce(){
     test_name=${1};
     ce=${2};
     
-    TEST_IDS="${A0A2_IDs}";
+    #TEST_IDS="${A0A2_IDs}";
     
-    echo "TEST_IDS: ${TEST_IDS}"
+    #echo "TEST_IDS: ${TEST_IDS}"
     
-    testit "timing/a0_${test_name}" "${arch0}" "dods" "${ce}"
+    #testit "timing/a0_${test_name}" "${arch0}" "dods" "${ce}"
     #testit "timing/a2_${test_name}" "${arch2}" "dods" "${ce}"
 
-    #TEST_IDS="${A1_IDS}";
-    #echo "TEST_IDS: ${TEST_IDS}"
+    TEST_IDS="${A1_IDS}";
+    echo "TEST_IDS: ${TEST_IDS}"
 
-    #testit "timing/a1_${test_name}" "${arch1}" "dods" "${ce}"
+    testit "timing/a1_${test_name}" "${arch1}" "dods" "${ce}"
 }
 
 
