@@ -139,6 +139,8 @@ mv $RPM_BUILD_ROOT%{_bindir}/bes-config-pkgconfig $RPM_BUILD_ROOT%{_bindir}/bes-
 # jhrg 9/25/18
 # mkdir -p $RPM_BUILD_ROOT%{_tmpfilesdir}
 # mv $RPM_BUILD_ROOT%{_bindir}/bes-tmpfiles-conf $RPM_BUILD_ROOT%{_tmpfilesdir}/%{name}.conf 
+# Do this instead for C6
+rm $RPM_BUILD_ROOT%{_bindir}/bes-tmpfiles-conf
 
 %clean
 rm -rf $RPM_BUILD_ROOT
