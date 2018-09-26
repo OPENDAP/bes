@@ -934,11 +934,11 @@ EOF
 `
 
 StdPresF32=`cat<<EOF
-CH4_VMR_A
 CH4_VMR_A_err
 CH4_VMR_A_max
 CH4_VMR_A_min
 CH4_VMR_A_sdev
+CH4_VMR_A
 CH4_VMR_D
 CH4_VMR_D_err
 CH4_VMR_D_max
@@ -1145,7 +1145,7 @@ function testit(){
     for resourceId in ${TEST_IDS} ; do
         
         # purge_gateway_cache; # This seemed like a good idea but turned out to be Hyrax Kryptonite
-        
+        echo "";
         dods_url="${architecture}${resourceId}.${response}${ce}";
         echo "dods_url: ${dods_url}";
         curl_cmd="curl -s -i -o foo.${response} -g ${dods_url}";
@@ -1169,11 +1169,11 @@ function testit(){
             elif [ "${response}" = "${dap2_data_response}" ] ; then
                 
                 if [ true ] ; then
-                    echo "** Performing crude error check with grep:";
+                    echo "Performing crude dap2 error check with grep:";
                     cat  foo.${response} | grep "message = ";
                     status=$?;
                 else 
-                    echo "** Performing full DAP2 data integrity check with getdap.";
+                    echo "Performing full DAP2 data integrity check with getdap.";
                     content_lines=`cat foo.${response} | wc -l`;
                     content_lines=`echo ${content_lines}-${http_hdr_length} | bc`;
                     tail -n ${content_lines} foo.${response} > foo.${response}.body;
@@ -1183,7 +1183,7 @@ function testit(){
                 
                 if [ ${status} -ne 0 ] ; then 
                     echo "ERROR! Bad dap2 data response."; 
-                    echo "** Last 2 bes.log entries:";
+                    echo "Last 2 bes.log entries:";
                     tail -n 2 /home/centos/hyrax/build/var/bes.log;
                 else
                     echo "DAP2 Request appears to have worked.";
@@ -1195,7 +1195,7 @@ function testit(){
         else 
             echo "Request FAILED." | tee -a ${test_id};
             grep -e "message =" -e "blockquote" foo.${response} | tee -a ${test_id}
-            echo "** Last 2 bes.log entries:";
+            echo "Last 2 bes.log entries:";
             tail -n 2 /home/centos/hyrax/build/var/bes.log;
         fi
     done
@@ -1238,7 +1238,7 @@ fi
 echo "Clearing timing dir...";
 rm -f timing/*;
 
-for pass in {98..112} ; do
+for pass in {1..112} ; do
 
     echo "################# PASS ${pass} ################################## PASS ${pass} #################"
     date
