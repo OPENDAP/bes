@@ -1171,8 +1171,7 @@ function testit(){
                 if [ true ] ; then
                     echo "** Performing crude error check with grep:";
                     cat  foo.${response} | grep "message = ";
-                    echo "** Last 3 bes.log entries:";
-                    tail -n 3 /home/centos/hyrax/build/var/bes.log;
+                    status=$?;
                 else 
                     echo "** Performing full DAP2 data integrity check with getdap.";
                     content_lines=`cat foo.${response} | wc -l`;
@@ -1183,7 +1182,9 @@ function testit(){
                 fi
                 
                 if [ ${status} -ne 0 ] ; then 
-                    echo "ERROR! Unable to read dap2 data response."; 
+                    echo "ERROR! Bad dap2 data response."; 
+                    echo "** Last 2 bes.log entries:";
+                    tail -n 2 /home/centos/hyrax/build/var/bes.log;
                 else
                     echo "DAP2 Request appears to have worked.";
                 fi
@@ -1194,8 +1195,8 @@ function testit(){
         else 
             echo "Request FAILED." | tee -a ${test_id};
             grep -e "message =" -e "blockquote" foo.${response} | tee -a ${test_id}
-            echo "** Last 3 bes.log entries:";
-            tail -n 3 /home/centos/hyrax/build/var/bes.log;
+            echo "** Last 2 bes.log entries:";
+            tail -n 2 /home/centos/hyrax/build/var/bes.log;
         fi
     done
 }
