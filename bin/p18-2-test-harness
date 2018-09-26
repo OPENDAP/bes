@@ -1172,6 +1172,9 @@ function testit(){
                     echo "Performing crude dap2 error check with grep:";
                     cat  foo.${response} | grep "message = ";
                     status=$?;
+                    if [ $status -ne 0 ] ; then status=0; else status=1; fi
+                    echo $status;
+                    
                 else 
                     echo "Performing full DAP2 data integrity check with getdap.";
                     content_lines=`cat foo.${response} | wc -l`;
