@@ -1225,11 +1225,11 @@ function test_ce(){
     echo "TEST_IDS: ${TEST_IDS}"
     
     #testit "timing/a0_${test_name}" "${arch0}" "dods" "${ce}"
-    testit "timing/a2_${test_name}" "${arch2}" "dods" "${ce}"
+    #testit "timing/a2_${test_name}" "${arch2}" "dods" "${ce}"
 
-    #TEST_IDS="${A1_IDS}";
-    #echo "TEST_IDS: ${TEST_IDS}"
-    #testit "timing/a1_${test_name}" "${arch1}" "dods" "${ce}"
+    TEST_IDS="${A1_IDS}";
+    echo "TEST_IDS: ${TEST_IDS}"
+    testit "timing/a1_${test_name}" "${arch1}" "dods" "${ce}"
 }
 
 
