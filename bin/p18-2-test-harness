@@ -1165,7 +1165,8 @@ function testit(){
             
             if [ -z ${ce} ] || [ true ] ; then
                 echo "Not checking DAP2 data response for entire dataset, takes too long.";
-                exit;
+                cat  foo.${response} | grep "message = ";
+                
             elif [ "${response}" = "${dap2_data_response}" ] ; then
                 
                 echo "Checking DAP2 data response with getdap.";
