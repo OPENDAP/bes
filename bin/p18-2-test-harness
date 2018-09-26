@@ -1163,7 +1163,7 @@ function testit(){
         if [ "${http_status}" = "${http_success}" ] ; then
             echo "Request SUCCEEDED?" | tee -a ${test_id};
             
-            if [ -z ${ce} ] || [ true ] ; then
+            if [ -z ${ce} ] ; then
                 echo "Not checking DAP2 data response for entire dataset, takes too long.";
                 
             elif [ "${response}" = "${dap2_data_response}" ] ; then
@@ -1194,7 +1194,8 @@ function testit(){
         else 
             echo "Request FAILED." | tee -a ${test_id};
             grep -e "message =" -e "blockquote" foo.${response} | tee -a ${test_id}
-            # grep "blockquote" foo.${response} | tee -a ${test_id}
+            echo "** Last 3 bes.log entries:";
+            tail -n 3 /home/centos/hyrax/build/var/bes.log;
         fi
     done
 }
