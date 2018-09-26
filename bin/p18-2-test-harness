@@ -1161,10 +1161,11 @@ function testit(){
         echo "Server returned http status: '${http_status}'";
         # echo "http_success:                '${http_success}'";
         if [ "${http_status}" = "${http_success}" ] ; then
-            echo "Request SUCCEEDED." | tee -a ${test_id};
+            echo "Request SUCCEEDED?" | tee -a ${test_id};
             
             if [ -z ${ce} ] || [ true ] ; then
                 echo "Not checking DAP2 data response for entire dataset, takes too long.";
+                
             elif [ "${response}" = "${dap2_data_response}" ] ; then
                 
                 echo "Checking DAP2 data response with getdap.";
@@ -1226,7 +1227,7 @@ fi
 echo "Clearing timing dir...";
 rm -f timing/*;
 
-for pass in {1..112} ; do
+for pass in {98..112} ; do
 
     echo "################# PASS ${pass} ################################## PASS ${pass} #################"
     date
