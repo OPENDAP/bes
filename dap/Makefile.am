@@ -116,7 +116,7 @@ EXTRA_DIST = data dap.conf.in dap_help.html dap_help.txt dap_help.xml
 
 CLEANFILES = *~ dap.conf
 
-moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+moduledir = $(sysconfdir)/bes/modules
 module_DATA = dap.conf
 
 dap.conf: dap.conf.in $(top_builddir)/config.status

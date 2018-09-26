@@ -37,7 +37,7 @@ EXTRA_DIST = sample.conf.in
 
 CLEANFILES = *~ sample.conf
 
-moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+moduledir = $(sysconfdir)/bes/modules
 module_DATA =  sample.conf
 
 sample.conf: sample.conf.in $(top_builddir)/config.status

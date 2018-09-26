@@ -63,7 +63,7 @@ EXTRA_DIST = dmrpp.conf.in
 
 CLEANFILES = *~ dmrpp.conf
 
-moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+moduledir = $(sysconfdir)/bes/modules
 module_DATA = dmrpp.conf
 
 dmrpp.conf: dmrpp.conf.in $(top_builddir)/config.status

@@ -47,7 +47,7 @@ EXTRA_DIST = gateway.conf.in
 
 CLEANFILES = *~ gateway.conf
 
-moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+moduledir = $(sysconfdir)/bes/modules
 module_DATA = gateway.conf
 
 gateway.conf: gateway.conf.in $(top_srcdir)/config.status
