@@ -1138,9 +1138,17 @@ function testit(){
     #if [ -z ${ce} ]; then echo "-z is true"; else echo "-z is false"; fi
     #if [ -n ${ce} ]; then echo "-n is true"; else echo "-n is false"; fi
 
-    http_hdr_length=12;           # The number of lines of http header from Hyrax
-    http_success="HTTP/1.1 200";  # The successful request always were's this
-    dap2_data_response="dods"     # The suffix for a DAP2 dat response
+    # The expected number of http header lines sent from Hyrax
+    http_hdr_length=12;          
+     
+    # The successful request always were's this
+    http_success="HTTP/1.1 200";  
+    
+    # The suffix for a DAP2 dat response
+    dap2_data_response="dods"     
+
+    # The location of the bes.log file.
+    bes_log="/home/centos/hyrax/build/var/bes.log"
 
     for resourceId in ${TEST_IDS} ; do
         
@@ -1187,7 +1195,7 @@ function testit(){
                 if [ ${status} -ne 0 ] ; then 
                     echo "ERROR! Bad dap2 data response."; 
                     echo "Last 2 bes.log entries:";
-                    tail -n 2 /home/centos/hyrax/build/var/bes.log;
+                    tail -n 2 ${bes_log};
                 else
                     echo "DAP2 Request appears to have worked.";
                 fi
@@ -1199,7 +1207,7 @@ function testit(){
             echo "Request FAILED." | tee -a ${test_id};
             grep -e "message =" -e "blockquote" foo.${response} | tee -a ${test_id}
             echo "Last 2 bes.log entries:";
-            tail -n 2 /home/centos/hyrax/build/var/bes.log;
+            tail -n 2 ${bes_log};
         fi
     done
 }
