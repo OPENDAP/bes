@@ -40,6 +40,8 @@ addons:
     - debhelper
     - devscripts
     - lintian
+    - fakeroot
+    - build-essential
     
 
 #    - sshpass
