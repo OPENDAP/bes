@@ -18,7 +18,7 @@ noinst_DATA = bes.conf
 CLEANFILES = bes.conf
 
 EXTRA_DIST = gateway $(TESTSUITE).at $(TESTSUITE) atlocal.in \
-$(srcdir)/package.m4 $(BES_CONF_IN)
+$(srcdir)/package.m4 $(BES_CONF_IN) $(srcdir)/handler_tests_macros.m4
 
 DISTCLEANFILES =  atconfig
 
