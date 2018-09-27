@@ -37,6 +37,9 @@ addons:
     - libcurl4-openssl-dev
     - libcppunit-dev
     - libicu-dev
+    - debhelper
+    - lintan
+    
 
 #    - sshpass
 #   ssh_known_hosts: www.opendap.org
