@@ -1,0 +1,11 @@
+#!/usr/bin/make -f
+%:
+	dh $@
+
+override_dh_auto_install:
+	$(MAKE) DESTDIR=$$(pwd)/debian/bes prefix=/home/ubuntu/src/hyrax/build install
+
+override_dh_auto_configure:
+	dh_auto_configure -- --with-dependencies=/home/ubuntu/src/hyrax/build/deps
+
+export PATH="/home/ubuntu/src/hyrax/build/bin:/home/ubuntu/src/hyrax/build/deps/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"
