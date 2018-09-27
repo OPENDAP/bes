@@ -38,7 +38,7 @@ addons:
     - libcppunit-dev
     - libicu-dev
     - debhelper
-    - lintan
+    - lintian
     
 
 #    - sshpass
