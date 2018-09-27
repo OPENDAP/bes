@@ -38,6 +38,7 @@ addons:
     - libcppunit-dev
     - libicu-dev
     - debhelper
+    - devscripts
     - lintian
     
 
