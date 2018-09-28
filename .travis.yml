@@ -101,6 +101,8 @@ jobs:
     - make distcheck -j7
   - stage: build
     script:
+    - wget https://s3.amazonaws.com/opendap.travis.build/libdap_3.19.1-1_amd64.deb
+    - dpkg -i libdap_3.19.1-1_amd64.deb
     - export BES_MAIN_BUILD=no
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
     - make deb -j7
