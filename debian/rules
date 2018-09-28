@@ -3,7 +3,9 @@
 	dh $@
 
 override_dh_auto_install:
-	$(MAKE) DESTDIR=$$(pwd)/debian/bes prefix=$(PREFIX) install
+	$(MAKE) DESTDIR=$$(pwd)/debian/bes install
+
+export prefix=$prefix
 
 override_dh_auto_configure:
 	dh_auto_configure -- --with-dependencies=$(prefix)/deps
