@@ -102,7 +102,7 @@ jobs:
   - stage: build
     script:
     - wget https://s3.amazonaws.com/opendap.travis.build/libdap_3.20.0-1_amd64.deb
-    - sudo dpkg -i libdap_3.19.1-1_amd64.deb
+    - sudo dpkg -i libdap_3.20.0-1_amd64.deb
     - export BES_MAIN_BUILD=no
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
     - make deb -j7
