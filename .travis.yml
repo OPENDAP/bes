@@ -106,8 +106,6 @@ jobs:
     - export BES_MAIN_BUILD=no
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
     - make deb -j7
-    - ls $prefix
-    - ls $PATH
 
 # using: 'test -z "$AWS_ACCESS_KEY_ID" || ...' keeps after_script from running
 # the aws cli for forked PRs (where secure env vars are null). I could've used
