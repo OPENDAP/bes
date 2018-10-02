@@ -8,7 +8,7 @@ mds_initial_state
 
 DISTCLEANFILES = $(TESTSUITE)
 
-mds_datadir = /home/travis/build/share/mds
+mds_datadir = /home/travis/install/share/mds
 mds_data_DATA = $(srcdir)/mds_initial_state/*
 
 ############## Autotest follows #####################
