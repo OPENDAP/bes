@@ -101,6 +101,7 @@ jobs:
     - make distcheck -j7
   - stage: package
     script:
+    - echo $prefix
     - wget https://s3.amazonaws.com/opendap.travis.build/libdap_3.20.0-1_amd64.deb
     - sudo dpkg -i libdap_3.20.0-1_amd64.deb
     - export BES_MAIN_BUILD=no
