@@ -8,8 +8,8 @@ mds_initial_state
 
 DISTCLEANFILES = $(TESTSUITE)
 
-mds_cachedir = $(prefix)/share/mds
-mds_cache_DATA = $(srcdir)/mds_initial_state/*
+mds_datadir = $(prefix)/share/mds
+mds_data_DATA = $(srcdir)/mds_initial_state/*
 
 ############## Autotest follows #####################
 
