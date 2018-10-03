@@ -190,7 +190,7 @@ static void log_error(BESError &e)
 
     }
 	else {
-		LOG("ERROR: " << error_name << ": " << e.get_message() << "(error code: " << e.get_bes_error_type() << ")." << endl);
+		LOG("ERROR: " << error_name << ": " << e.get_message() << " (BES error code: " << e.get_bes_error_type() << ")." << endl);
 	}
 }
 

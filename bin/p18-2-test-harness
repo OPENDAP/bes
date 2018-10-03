@@ -1225,11 +1225,11 @@ function test_ce(){
     echo "TEST_IDS: ${TEST_IDS}"
     
     #testit "timing/a0_${test_name}" "${arch0}" "dods" "${ce}"
-    #testit "timing/a2_${test_name}" "${arch2}" "dods" "${ce}"
+    testit "timing/a2_${test_name}" "${arch2}" "dods" "${ce}"
 
     TEST_IDS="${A1_IDS}";
-    echo "TEST_IDS: ${TEST_IDS}"
-    testit "timing/a1_${test_name}" "${arch1}" "dods" "${ce}"
+    # echo "TEST_IDS: ${TEST_IDS}"
+    # testit "timing/a1_${test_name}" "${arch1}" "dods" "${ce}"
 }
 
 
@@ -1238,6 +1238,25 @@ function test_ce(){
 #
 # MAIN
 #
+
+OPTIND=1         # Reset in case getopts has been used previously in the shell.
+start=1
+
+while getopts "h?s:" opt; do
+    case "$opt" in
+    h|\?)
+       echo "$0 [-s <start>] [0|1|2] "
+       exit 0
+       ;;
+    s) start=$OPTARG
+       echo "-s $start"
+       ;;
+    esac
+done
+
+shift $((OPTIND-1))
+
+[ "$1" = "--" ] && shift
 
 if [ ! -d "timing" ]; then
     mkdir timing;
@@ -1249,8 +1268,9 @@ fi
 echo "Clearing timing dir...";
 rm -f timing/*;
 
-for pass in {1..112} ; do
-
+# for pass in {1..112} ; do
+for pass in `seq $start 112`
+do
     echo "################# PASS ${pass} ################################## PASS ${pass} #################"
     date
     

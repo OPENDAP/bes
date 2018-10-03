@@ -25,6 +25,8 @@
 
 #include <string>
 #include <sstream>
+#include <iomanip>
+
 #include <cstring>
 
 #include <curl/curl.h>
@@ -35,6 +37,7 @@
 
 #include "util.h"   // long_to_string()
 
+#include "BESLog.h"
 #include "BESDebug.h"
 #include "BESInternalError.h"
 #include "BESForbiddenError.h"
@@ -64,6 +67,9 @@ Lock::~Lock()
      if (status != 0) throw BESInternalError("Could not unlock in CurlHandlePool", __FILE__, __LINE__);
  }
 
+/**
+ * @brief print the long curl message if available.
+ */
 static string
 curl_error_msg(CURLcode res, char *errbuf)
 {
@@ -74,10 +80,92 @@ curl_error_msg(CURLcode res, char *errbuf)
         oss << " (code: " << (int)res << ")";
     }
     else {
-        oss << curl_easy_strerror(res);
+        oss << curl_easy_strerror(res) << "(result: " << res << ")";
     }
 
     return oss.str();
+}
+
+static
+string dump(const char *text, unsigned char *ptr, size_t size)
+{
+    size_t i;
+    size_t c;
+    unsigned int width=0x10;
+ 
+    ostringstream oss;
+    oss << text << ", " << std::setw(10) << (long)size << std::setbase(16) << (long)size << endl;
+
+#if 0
+    fprintf(stream, "%s, %10.10ld bytes (0x%8.8lx)\n",
+	    text, (long)size, (long)size);
+#endif
+ 
+    for(i=0; i<size; i+= width) {
+	oss << std::setw(4) << (long)i;
+	// fprintf(stream, "%4.4lx: ", (long)i);
+
+	/* show hex to the left */
+	for(c = 0; c < width; c++) {
+	    if(i+c < size) {
+		oss << std::setw(2) << ptr[i+c];
+		//fprintf(stream, "%02x ", ptr[i+c]);
+	    }
+	    else {
+		oss << "   ";  
+		// fputs("   ", stream);
+	    }
+	}
+ 
+	/* show data on the right */
+	for(c = 0; (c < width) && (i+c < size); c++) {
+	    char x = (ptr[i+c] >= 0x20 && ptr[i+c] < 0x80) ? ptr[i+c] : '.';
+	    // fputc(x, stream);
+	    oss << std::setw(1) << x;
+	}
+ 
+	// fputc('\n', stream); /* newline */
+	oss << endl;
+    }
+
+    return oss.str();
+}
+ 
+static
+int curl_trace(CURL */*handle*/, curl_infotype type,
+             char *data, size_t size,
+             void */*userp*/)
+{
+    const char *text;
+ 
+    switch (type) {
+    case CURLINFO_TEXT:
+	// print info
+	VERBOSE("libcurl == Info: " << data << endl);
+
+	// print nothing for these
+    case CURLINFO_DATA_IN:
+    case CURLINFO_SSL_DATA_IN:
+    default: /* in case a new one is introduced to shock us */
+	return 0;
+ 
+    case CURLINFO_HEADER_OUT:
+	text = "=> Send header";
+	break;
+    case CURLINFO_DATA_OUT:
+	text = "=> Send data";
+	break;
+    case CURLINFO_SSL_DATA_OUT:
+	text = "=> Send SSL data";
+	break;
+    case CURLINFO_HEADER_IN:
+	text = "<= Recv header";
+	break;
+    }
+ 
+    VERBOSE("libcurl: " << dump(text, (unsigned char *)data, size) << endl);
+
+    return 0;
 }
 
 dmrpp_easy_handle::dmrpp_easy_handle()
@@ -90,7 +178,9 @@ dmrpp_easy_handle::dmrpp_easy_handle()
     if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_ERRORBUFFER, d_errbuf)))
         throw BESInternalError(string("CURL Error: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
 
-#if 0
+#ifndef NDEBUG
+    if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_DEBUGFUNCTION, curl_trace)))
+        throw BESInternalError(string("CURL Error: ").append(curl_error_msg(res, d_errbuf)), __FILE__, __LINE__);
     // Many tests fail with this option, but it's still useful to see how connections
     // are treated. jhrg 10/2/18
     if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_VERBOSE, 1L)))
@@ -140,7 +230,7 @@ static void evaluate_curl_response(CURL* eh)
     long http_code = 0;
     CURLcode res = curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_code);
     if (CURLE_OK != res) {
-        throw BESInternalError(string("Error getting HTTP response code: ").append(curl_error_msg(res, "")), __FILE__, __LINE__);
+        throw BESInternalError(string("Error getting HTTP response code: ").append(curl_error_msg(res, (char*)"")), __FILE__, __LINE__);
     }
 
     // Newer Apache servers return 206 for range requests. jhrg 8/8/18
