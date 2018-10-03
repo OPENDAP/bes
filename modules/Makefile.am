@@ -5,7 +5,7 @@
 AUTOMAKE_OPTIONS = foreign
 
 # Might move these to a child directory for testing things. jhrg 5/16/18
-EXTRA_DIST = read_test_baseline.cc read_test_baseline.h
+EXTRA_DIST = read_test_baseline.cc read_test_baseline.h handler_tests_macros.m4
 
 SUBDIRS = csv_handler usage asciival www-interface freeform_handler dmrpp_module
 
