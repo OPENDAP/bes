@@ -119,6 +119,16 @@ c6-all-static-rpm: dist
 
 ###########################################################################
 
+#Build the debian package
+deb: dist 
+	( mv @PACKAGE@-@PACKAGE_VERSION@.tar.gz ../ )
+	( mv ../@PACKAGE@-@PACKAGE_VERSION@.tar.gz ../@PACKAGE@_@PACKAGE_VERSION@.orig.tar.gz )
+	( cd ../ && tar xzf @PACKAGE@_@PACKAGE_VERSION@.orig.tar.gz )
+	( cp -r debian/ ../@PACKAGE@-@PACKAGE_VERSION@ )
+	( cd ../@PACKAGE@-@PACKAGE_VERSION@ && debuild --preserve-env --prepend-path=$(prefix)/deps/bin -us -uc )
+
+##########################################################################
+
 # Build OS/X Packages. The strange operations with configure and make
 # are there so that the values built into bes-config will match the mac
 # osx install dirs and not the temp directory used to build the packages
