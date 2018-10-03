@@ -64,6 +64,22 @@ Lock::~Lock()
      if (status != 0) throw BESInternalError("Could not unlock in CurlHandlePool", __FILE__, __LINE__);
  }
 
+static string
+curl_error_msg(CURLcode res, char *errbuf)
+{
+    ostringstream oss;
+    size_t len = strlen(errbuf);
+    if (len) {
+        oss << errbuf;
+        oss << " (code: " << (int)res << ")";
+    }
+    else {
+        oss << curl_easy_strerror(res);
+    }
+
+    return oss.str();
+}
+
 dmrpp_easy_handle::dmrpp_easy_handle()
 {
     d_handle = curl_easy_init();
@@ -71,26 +87,36 @@ dmrpp_easy_handle::dmrpp_easy_handle()
 
     CURLcode res;
 
+    if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_ERRORBUFFER, d_errbuf)))
+        throw BESInternalError(string("CURL Error: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
+
+#if 0
+    // Many tests fail with this option, but it's still useful to see how connections
+    // are treated. jhrg 10/2/18
+    if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_VERBOSE, 1L)))
+        throw BESInternalError(string("CURL Error: ").append(curl_error_msg(res, d_errbuf)), __FILE__, __LINE__);
+#endif
+
     // Pass all data to the 'write_data' function
     if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_WRITEFUNCTION, chunk_write_data)))
-        throw BESInternalError(string("CURL Error: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
+        throw BESInternalError(string("CURL Error: ").append(curl_error_msg(res, d_errbuf)), __FILE__, __LINE__);
 
 #ifdef CURLOPT_TCP_KEEPALIVE
     /* enable TCP keep-alive for this transfer */
     if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPALIVE, 1L)))
-        throw BESInternalError(string("CURL Error: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
+        throw BESInternalError(string("CURL Error: ").append(curl_error_msg(res)), __FILE__, __LINE__);
 #endif
 
 #ifdef CURLOPT_TCP_KEEPIDLE
     /* keep-alive idle time to 120 seconds */
     if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPIDLE, 120L)))
-        throw BESInternalError(string("CURL Error: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
+        throw BESInternalError(string("CURL Error: ").append(curl_error_msg(res)), __FILE__, __LINE__);
 #endif
 
 #ifdef CURLOPT_TCP_KEEPINTVL
     /* interval time between keep-alive probes: 120 seconds */
     if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPINTVL, 120L)))
-        throw BESInternalError(string("CURL Error: ").append(curl_easy_strerror(res)), __FILE__, __LINE__)
+        throw BESInternalError(string("CURL Error: ").append(curl_error_msg(res)), __FILE__, __LINE__)
 #endif
 
     d_in_use = false;
@@ -114,7 +140,7 @@ static void evaluate_curl_response(CURL* eh)
     long http_code = 0;
     CURLcode res = curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_code);
     if (CURLE_OK != res) {
-        throw BESInternalError(string("Error getting HTTP response code: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
+        throw BESInternalError(string("Error getting HTTP response code: ").append(curl_error_msg(res, "")), __FILE__, __LINE__);
     }
 
     // Newer Apache servers return 206 for range requests. jhrg 8/8/18
@@ -145,7 +171,7 @@ void dmrpp_easy_handle::read_data()
     // Perform the request
     CURLcode curl_code = curl_easy_perform(curl);
     if (CURLE_OK != curl_code) {
-        throw BESInternalError(string("Data transfer error: ").append(curl_easy_strerror(curl_code)), __FILE__, __LINE__);
+        throw BESInternalError(string("Data transfer error: ").append(curl_error_msg(curl_code, d_errbuf)), __FILE__, __LINE__);
     }
 
     // For HTTP, check the return code, for the file protocol, if curl_code is OK, that's good enough
@@ -389,21 +415,21 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
         handle->d_chunk = chunk;
 
         CURLcode res = curl_easy_setopt(handle->d_handle, CURLOPT_URL, chunk->get_data_url().c_str());
-        if (res != CURLE_OK) throw BESInternalError(string(curl_easy_strerror(res)), __FILE__, __LINE__);
+        if (res != CURLE_OK) throw BESInternalError(string("HTTP Error setting URL: ").append(curl_error_msg(res, handle->d_errbuf)), __FILE__, __LINE__);
 
         // get the offset to offset + size bytes
         if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_RANGE, chunk->get_curl_range_arg_string().c_str())))
-            throw BESInternalError(string("HTTP Error setting Range: ").append(curl_easy_strerror(res)), __FILE__,
+            throw BESInternalError(string("HTTP Error setting Range: ").append(curl_error_msg(res, handle->d_errbuf)), __FILE__,
             __LINE__);
 
         // Pass this to write_data as the fourth argument
         if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_WRITEDATA, reinterpret_cast<void*>(chunk))))
-            throw BESInternalError(string("CURL Error setting chunk as data buffer: ").append(curl_easy_strerror(res)),
+            throw BESInternalError(string("CURL Error setting chunk as data buffer: ").append(curl_error_msg(res, handle->d_errbuf)),
             __FILE__, __LINE__);
 
         // store the easy_handle so that we can call release_handle in multi_handle::read_data()
         if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_PRIVATE, reinterpret_cast<void*>(handle))))
-            throw BESInternalError(string("CURL Error setting easy_handle as private data: ").append(curl_easy_strerror(res)), __FILE__,
+            throw BESInternalError(string("CURL Error setting easy_handle as private data: ").append(curl_error_msg(res, handle->d_errbuf)), __FILE__,
             __LINE__);
     }
 
