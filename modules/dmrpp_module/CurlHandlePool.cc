@@ -51,6 +51,8 @@
 
 #define MAX_WAIT_MSECS 30*1000 /* Wait max. 30 seconds */
 
+#define CURL_VERBOSE 1
+
 using namespace dmrpp;
 using namespace std;
 using namespace bes;
@@ -133,6 +135,7 @@ string dump(const char *text, unsigned char *ptr, size_t size)
 }
 #endif
 
+#if CURL_VERBOSE
 /**
  * @brief print verbose info from curl.
  *
@@ -143,8 +146,13 @@ int curl_trace(CURL */*handle*/, curl_infotype type, char *data, size_t /*size*/
 {
     switch (type) {
     // print info
-    case CURLINFO_TEXT:
-	VERBOSE("libcurl == Info: " << data << endl);
+    case CURLINFO_TEXT: {
+        string text = data;
+        size_t pos;
+        while((pos = text.find('\n')) != string::npos)
+            text = text.substr(0, pos);
+        LOG("libcurl == Info: " << text << endl);
+    }
 
     // print nothing for these
     case CURLINFO_DATA_IN:
@@ -159,6 +167,7 @@ int curl_trace(CURL */*handle*/, curl_infotype type, char *data, size_t /*size*/
 	return 0;
     }
 }
+#endif
 
 dmrpp_easy_handle::dmrpp_easy_handle()
 {
@@ -170,7 +179,7 @@ dmrpp_easy_handle::dmrpp_easy_handle()
     if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_ERRORBUFFER, d_errbuf)))
         throw BESInternalError(string("CURL Error: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
 
-#ifndef NDEBUG
+#if CURL_VERBOSE
     // Information is output only when the log is in verbose mode and the code is
     // built using --enable-developer
     if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_DEBUGFUNCTION, curl_trace)))

@@ -914,7 +914,9 @@ void DmrppArray::read_chunks_unconstrained()
 
         // This pipe is used by the child threads to indicate completion
         int fds[2];
-        pipe(fds);
+        int status = pipe(fds);
+        if (status < 0)
+            throw BESInternalError(string("Could not open a pipe for thread communication: ").append(strerror(errno)), __FILE__, __LINE__);
 
         try {
             // Start the max number of processing pipelines
@@ -988,6 +990,7 @@ void DmrppArray::read_chunks_unconstrained()
         catch (...) {
             close(fds[0]);
             close(fds[1]);
+            throw;
         }
 
 #if 0
