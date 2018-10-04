@@ -79,6 +79,9 @@
 
 #include "BESLog.h"
 
+// If not defined, this is false (source code file names are logged). jhrg 10/4/18
+#define EXCLUDE_FILE_INFO_FROM_LOG "BES.DoNotLogSourceFilenames"
+
 using namespace std;
 
 static jmp_buf timeout_jump;
@@ -188,8 +191,12 @@ static void log_error(BESError &e)
         break;
     }
 
-    LOG("ERROR: " << error_name << ": " << e.get_message() << " (BES error code: " << e.get_bes_error_type() << ")." << endl);
-    VERBOSE(" at: " << e.get_file() << ":" << e.get_line() << endl);
+    if (TheBESKeys::TheKeys()->read_bool_key(EXCLUDE_FILE_INFO_FROM_LOG, false)) {
+        LOG("ERROR: " << error_name << ": " << e.get_message() << endl);
+    }
+    else {
+        LOG("ERROR: " << error_name << ": " << e.get_message() << " (" << e.get_file() << ":" << e.get_line() << ")" << endl);
+    }
 
 #if 0
     if (only_log_to_verbose) {

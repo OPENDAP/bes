@@ -61,6 +61,10 @@ using std::flush;
 #include "BESDebug.h"
 #include "BESStopWatch.h"
 
+// Default is to not exit on internal error. A bad idea, but the original
+// behavior of the server. jhrg 10/4/18
+#define EXIT_ON_INTERNAL_ERROR "BES.ExitOnInternalError"
+
 BESServerHandler::BESServerHandler()
 {
     bool found = false;
@@ -221,26 +225,22 @@ void BESServerHandler::execute(Connection *c)
 
                 break;
 
-            // These cases print redundant information given the code in
-            // BESExceptionManager::log_error(). jhrg 11/14/17
             case BES_INTERNAL_ERROR:
-                LOG("BES Internal Error" << endl);
+                // This should be an option. The default is to not exit. jhrg 10/4/18
+                if (TheBESKeys::TheKeys()->read_bool_key(EXIT_ON_INTERNAL_ERROR, false)) {
+                    LOG("BES Internal Error; child returning "
+                        << SERVER_EXIT_ABNORMAL_TERMINATION << " to the master listener." << endl);
+
+                    c->closeConnection();
+                    exit(SERVER_EXIT_ABNORMAL_TERMINATION);
+                }
                 break;
 
+                // These are recoverable errors
             case BES_SYNTAX_USER_ERROR:
-                LOG("BES User Syntax Error" << endl);
-                break;
-
             case BES_FORBIDDEN_ERROR:
-                LOG("BES Forbidden Error" << endl);
-                break;
-
             case BES_NOT_FOUND_ERROR:
-                LOG("BES Not Found Error" << endl);
-                break;
-
             default:
-                LOG("Unrecognized BES Error" << endl);
                 break;
             }
         }

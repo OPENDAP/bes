@@ -55,6 +55,9 @@
 // Symbols used with BESDEBUG.
 #define CACHE "cache"
 #define LOCK "cache-lock"
+#define LOCK_STATUS "cache-lock-status"
+
+#define prolog std::string("BESFileLockingCache::").append(__func__).append("() - ")
 
 using namespace std;
 
@@ -198,11 +201,11 @@ static string lockStatus(const int fd)
     stringstream ss;
     ss << endl;
     if (ret == -1) {
-        ss << "ERROR! fnctl(" << fd << ",F_GETLK, &lock) returned: " << ret << "   errno[" << errno << "]: "
+        ss << "fnctl(" << fd << ",F_GETLK, &lock) returned: " << ret << "   errno[" << errno << "]: "
             << strerror(errno) << endl;
     }
     else {
-        ss << "SUCCESS. fnctl(" << fd << ",F_GETLK, &lock) returned: " << ret << endl;
+        ss << "fnctl(" << fd << ",F_GETLK, &lock) returned: " << ret << endl;
     }
 
     ss << "lock_info.l_len:    " << lock_query.l_len << endl;
@@ -240,7 +243,7 @@ static void unlock(int fd)
         throw BESInternalError("An error occurred trying to unlock the file: " + get_errno(), __FILE__, __LINE__);
     }
 
-    BESDEBUG(LOCK, "BESFileLockingCache::unlock() - lock status: " << lockStatus(fd) << endl);
+    BESDEBUG(LOCK_STATUS, "BESFileLockingCache::unlock() - lock status: " << lockStatus(fd) << endl);
 
     if (close(fd) == -1) throw BESInternalError("Could not close the (just) unlocked file.", __FILE__, __LINE__);
 
@@ -503,6 +506,7 @@ static bool getSharedLock(const string &file_name, int &ref_fd)
         close(fd);
         ostringstream oss;
         oss << "cache process: " << l->l_pid << " triggered a locking error: " << get_errno();
+        BESDEBUG(LOCK, "getSharedLock(): FAIL Could not get read lock for " << file_name << ": " << oss.str() << endl);
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
 
@@ -631,7 +635,7 @@ void BESFileLockingCache::exclusive_to_shared_lock(int fd)
         throw BESInternalError(get_errno(), __FILE__, __LINE__);
     }
 
-    BESDEBUG(LOCK, "BESFileLockingCache::exclusive_to_shared_lock() - lock status: " << lockStatus(fd) << endl);
+    BESDEBUG(LOCK_STATUS, "BESFileLockingCache::exclusive_to_shared_lock() - lock status: " << lockStatus(fd) << endl);
 }
 
 /** Get an exclusive lock on the 'cache info' file. The 'cache info' file
@@ -651,7 +655,7 @@ void BESFileLockingCache::lock_cache_write()
             __LINE__);
     }
 
-    BESDEBUG(LOCK, "BESFileLockingCache::lock_cache_write() - lock status: " << lockStatus(d_cache_info_fd) << endl);
+    BESDEBUG(LOCK_STATUS, "BESFileLockingCache::lock_cache_write() - lock status: " << lockStatus(d_cache_info_fd) << endl);
 }
 
 /** Get a shared lock on the 'cache info' file.
@@ -666,7 +670,7 @@ void BESFileLockingCache::lock_cache_read()
             __LINE__);
     }
 
-    BESDEBUG(LOCK, "BESFileLockingCache::lock_cache_read() - lock status: " << lockStatus(d_cache_info_fd) << endl);
+    BESDEBUG(LOCK_STATUS, "BESFileLockingCache::lock_cache_read() - lock status: " << lockStatus(d_cache_info_fd) << endl);
 }
 
 /** Unlock the cache info file.
@@ -683,7 +687,7 @@ void BESFileLockingCache::unlock_cache()
             __LINE__);
     }
 
-    BESDEBUG(LOCK, "BESFileLockingCache::unlock_cache() - lock status: " << lockStatus(d_cache_info_fd) << endl);
+    BESDEBUG(LOCK_STATUS, "BESFileLockingCache::unlock_cache() - lock status: " << lockStatus(d_cache_info_fd) << endl);
 }
 
 /** Unlock the named file.
@@ -711,7 +715,7 @@ void BESFileLockingCache::unlock_and_close(const string &file_name)
         fd = m_remove_descriptor(file_name);
     }
 
-    BESDEBUG(LOCK, "BESFileLockingCache::unlock_and_close() - lock status: " << lockStatus(d_cache_info_fd) << endl);
+    BESDEBUG(LOCK_STATUS, "BESFileLockingCache::unlock_and_close() - lock status: " << lockStatus(d_cache_info_fd) << endl);
     BESDEBUG(LOCK, "BESFileLockingCache::unlock_and_close() -  END"<< endl);
 }
 
