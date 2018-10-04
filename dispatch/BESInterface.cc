@@ -153,9 +153,13 @@ static inline void downcase(string &s)
 static void log_error(BESError &e)
 {
     string error_name = "";
+#if 0
     // TODO This should be configurable; I'm changing the values below to always log all errors.
     // I'm also confused about the actual intention. jhrg 11/14/17
+    //
+    // Simplified. jhrg 10/03/18
     bool only_log_to_verbose = false;
+#endif
     switch (e.get_bes_error_type()) {
     case BES_INTERNAL_FATAL_ERROR:
         error_name = "BES Internal Fatal Error";
@@ -167,7 +171,7 @@ static void log_error(BESError &e)
 
     case BES_SYNTAX_USER_ERROR:
         error_name = "BES User Syntax Error";
-        only_log_to_verbose = false; // TODO Was 'true.' jhrg 11/14/17
+        // only_log_to_verbose = false; // TODO Was 'true.' jhrg 11/14/17
         break;
 
     case BES_FORBIDDEN_ERROR:
@@ -176,7 +180,7 @@ static void log_error(BESError &e)
 
     case BES_NOT_FOUND_ERROR:
         error_name = "BES Not Found Error";
-        only_log_to_verbose = false; // TODO was 'true.' jhrg 11/14/17
+        // only_log_to_verbose = false; // TODO was 'true.' jhrg 11/14/17
         break;
 
     default:
@@ -184,14 +188,21 @@ static void log_error(BESError &e)
         break;
     }
 
+    LOG("ERROR: " << error_name << ": " << e.get_message() << " (BES error code: " << e.get_bes_error_type() << ")." << endl);
+    VERBOSE(" at: " << e.get_file() << ":" << e.get_line() << endl);
+
+#if 0
     if (only_log_to_verbose) {
-            VERBOSE("ERROR: " << error_name << ", error code: " << e.get_bes_error_type() << ", file: " << e.get_file() << ":"
+        VERBOSE("ERROR: " << error_name << ", error code: " << e.get_bes_error_type() << ", file: " << e.get_file() << ":"
                     << e.get_line()  << ", message: " << e.get_message() << endl);
 
     }
-	else {
-		LOG("ERROR: " << error_name << ": " << e.get_message() << " (BES error code: " << e.get_bes_error_type() << ")." << endl);
-	}
+    else {
+      LOG("ERROR: " << error_name << ": " << e.get_message() << " (BES error code: " << e.get_bes_error_type() << ")." << endl);
+      VERBOSE(" at: " << e.get_file() << ":" << e.get_line() << endl);
+    }
+#endif
+
 }
 
 #if USE_SIGWAIT

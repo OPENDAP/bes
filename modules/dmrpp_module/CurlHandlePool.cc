@@ -86,6 +86,12 @@ curl_error_msg(CURLcode res, char *errbuf)
     return oss.str();
 }
 
+/**
+ * @brief Build a string with hex info about stuff libcurl gets
+ *
+ * Unused, but might be useful someday.
+ */
+#if 0
 static
 string dump(const char *text, unsigned char *ptr, size_t size)
 {
@@ -96,11 +102,6 @@ string dump(const char *text, unsigned char *ptr, size_t size)
     ostringstream oss;
     oss << text << ", " << std::setw(10) << (long)size << std::setbase(16) << (long)size << endl;
 
-#if 0
-    fprintf(stream, "%s, %10.10ld bytes (0x%8.8lx)\n",
-	    text, (long)size, (long)size);
-#endif
- 
     for(i=0; i<size; i+= width) {
 	oss << std::setw(4) << (long)i;
 	// fprintf(stream, "%4.4lx: ", (long)i);
@@ -130,42 +131,33 @@ string dump(const char *text, unsigned char *ptr, size_t size)
 
     return oss.str();
 }
- 
+#endif
+
+/**
+ * @brief print verbose info from curl.
+ *
+ * Copied from the libcurl docs, then hacked to remove most of the output.
+ */ 
 static
-int curl_trace(CURL */*handle*/, curl_infotype type,
-             char *data, size_t size,
-             void */*userp*/)
+int curl_trace(CURL */*handle*/, curl_infotype type, char *data, size_t /*size*/, void */*userp*/)
 {
-    const char *text;
- 
     switch (type) {
+    // print info
     case CURLINFO_TEXT:
-	// print info
 	VERBOSE("libcurl == Info: " << data << endl);
 
-	// print nothing for these
+    // print nothing for these
     case CURLINFO_DATA_IN:
     case CURLINFO_SSL_DATA_IN:
+
+    case CURLINFO_DATA_OUT:
+    case CURLINFO_SSL_DATA_OUT:
+
+    case CURLINFO_HEADER_IN:
+    case CURLINFO_HEADER_OUT:
     default: /* in case a new one is introduced to shock us */
 	return 0;
- 
-    case CURLINFO_HEADER_OUT:
-	text = "=> Send header";
-	break;
-    case CURLINFO_DATA_OUT:
-	text = "=> Send data";
-	break;
-    case CURLINFO_SSL_DATA_OUT:
-	text = "=> Send SSL data";
-	break;
-    case CURLINFO_HEADER_IN:
-	text = "<= Recv header";
-	break;
     }
- 
-    VERBOSE("libcurl: " << dump(text, (unsigned char *)data, size) << endl);
-
-    return 0;
 }
 
 dmrpp_easy_handle::dmrpp_easy_handle()
@@ -179,6 +171,8 @@ dmrpp_easy_handle::dmrpp_easy_handle()
         throw BESInternalError(string("CURL Error: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
 
 #ifndef NDEBUG
+    // Information is output only when the log is in verbose mode and the code is
+    // built using --enable-developer
     if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_DEBUGFUNCTION, curl_trace)))
         throw BESInternalError(string("CURL Error: ").append(curl_error_msg(res, d_errbuf)), __FILE__, __LINE__);
     // Many tests fail with this option, but it's still useful to see how connections
