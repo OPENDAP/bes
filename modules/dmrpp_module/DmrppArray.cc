@@ -916,70 +916,80 @@ void DmrppArray::read_chunks_unconstrained()
         int fds[2];
         pipe(fds);
 
-        // Start the max number of processing pipelines
-        pthread_t thread[DmrppRequestHandler::d_max_parallel_transfers];
-        unsigned int threads = 0;
-        for (unsigned int i = 0; i < (unsigned int)DmrppRequestHandler::d_max_parallel_transfers && chunks_to_read.size() > 0; ++i) {
-            Chunk *chunk = chunks_to_read.front();
-            chunks_to_read.pop();
-
-            // thread number is 'i'
-            one_chunk_unconstrained_args *args = new one_chunk_unconstrained_args(fds, i, chunk, this, array_shape, chunk_shape);
-            int status = pthread_create(&thread[i], NULL, dmrpp::one_chunk_unconstrained_thread, (void*) args);
-            if (status == 0) {
-                ++threads;
-            }
-            else {
-                ostringstream oss("Could not start process_one_chunk_unconstrained thread for chunk ");
-                oss << i << ": " << strerror(status);
-                throw BESInternalError(oss.str(), __FILE__, __LINE__);
-            }
-        }
-
-         // Now join the child threads, creating replacement threads if needed
-        while (threads > 0) {
-            unsigned char tid;   // bytes can be written atomically
-            // Block here until a child thread writes to the pipe, then read the byte
-            int bytes = ::read(fds[0], &tid, sizeof(tid));
-            if (bytes != sizeof(tid))
-                throw BESInternalError(string("Could not read the thread id: ").append(strerror(errno)), __FILE__, __LINE__);
-
-            if (!(tid < DmrppRequestHandler::d_max_parallel_transfers)) {
-                ostringstream oss("Invalid thread id read after thread exit: ");
-                oss << tid;
-                throw BESInternalError(oss.str(), __FILE__, __LINE__);
-            }
-
-            string *error;
-            int status = pthread_join(thread[(unsigned int)tid], (void**)&error);
-            if (status != 0) {
-                ostringstream oss("Could not join process_one_chunk_unconstrained thread for chunk ");
-                oss << tid << ": " << strerror(status);
-                throw BESInternalError(oss.str(), __FILE__, __LINE__);
-            }
-            else if (error != 0) {
-                BESInternalError e(*error, __FILE__, __LINE__);
-                delete error;
-                throw e;
-            }
-            else if (chunks_to_read.size() > 0) {
+        try {
+            // Start the max number of processing pipelines
+            pthread_t thread[DmrppRequestHandler::d_max_parallel_transfers];
+            unsigned int threads = 0;
+            for (unsigned int i = 0; i < (unsigned int) DmrppRequestHandler::d_max_parallel_transfers && chunks_to_read.size() > 0; ++i) {
                 Chunk *chunk = chunks_to_read.front();
                 chunks_to_read.pop();
 
-                // thread number is 'tid,' the number of the thread that just completed
-                one_chunk_unconstrained_args *args = new one_chunk_unconstrained_args(fds, tid, chunk, this, array_shape, chunk_shape);
-                int status = pthread_create(&thread[tid], NULL, dmrpp::one_chunk_unconstrained_thread, (void*) args);
-                if (status != 0) {
+                // thread number is 'i'
+                one_chunk_unconstrained_args *args = new one_chunk_unconstrained_args(fds, i, chunk, this, array_shape, chunk_shape);
+                int status = pthread_create(&thread[i], NULL, dmrpp::one_chunk_unconstrained_thread, (void*) args);
+                if (status == 0) {
+                    ++threads;
+                }
+                else {
                     ostringstream oss("Could not start process_one_chunk_unconstrained thread for chunk ");
-                    oss << tid << ": " << strerror(status);
+                    oss << i << ": " << strerror(status);
                     throw BESInternalError(oss.str(), __FILE__, __LINE__);
                 }
             }
-            else {
-                // there are no more chunks to process, decrement the thread count
-                --threads;
+
+            // Now join the child threads, creating replacement threads if needed
+            while (threads > 0) {
+                unsigned char tid;   // bytes can be written atomically
+                // Block here until a child thread writes to the pipe, then read the byte
+                int bytes = ::read(fds[0], &tid, sizeof(tid));
+                if (bytes != sizeof(tid))
+                    throw BESInternalError(string("Could not read the thread id: ").append(strerror(errno)), __FILE__, __LINE__);
+
+                if (!(tid < DmrppRequestHandler::d_max_parallel_transfers)) {
+                    ostringstream oss("Invalid thread id read after thread exit: ");
+                    oss << tid;
+                    throw BESInternalError(oss.str(), __FILE__, __LINE__);
+                }
+
+                string *error;
+                int status = pthread_join(thread[(unsigned int) tid], (void**) &error);
+                if (status != 0) {
+                    ostringstream oss("Could not join process_one_chunk_unconstrained thread for chunk ");
+                    oss << tid << ": " << strerror(status);
+                    throw BESInternalError(oss.str(), __FILE__, __LINE__);
+                }
+                else if (error != 0) {
+                    BESInternalError e(*error, __FILE__, __LINE__);
+                    delete error;
+                    throw e;
+                }
+                else if (chunks_to_read.size() > 0) {
+                    Chunk *chunk = chunks_to_read.front();
+                    chunks_to_read.pop();
+
+                    // thread number is 'tid,' the number of the thread that just completed
+                    one_chunk_unconstrained_args *args = new one_chunk_unconstrained_args(fds, tid, chunk, this, array_shape, chunk_shape);
+                    int status = pthread_create(&thread[tid], NULL, dmrpp::one_chunk_unconstrained_thread, (void*) args);
+                    if (status != 0) {
+                        ostringstream oss("Could not start process_one_chunk_unconstrained thread for chunk ");
+                        oss << tid << ": " << strerror(status);
+                        throw BESInternalError(oss.str(), __FILE__, __LINE__);
+                    }
+                }
+                else {
+                    // there are no more chunks to process, decrement the thread count
+                    --threads;
+                }
             }
+
+            close(fds[0]);
+            close(fds[1]);
         }
+        catch (...) {
+            close(fds[0]);
+            close(fds[1]);
+        }
+
 #if 0
         while (chunks_to_read.size() > 0) {
 
