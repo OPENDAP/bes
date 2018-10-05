@@ -877,7 +877,7 @@ void *one_chunk_unconstrained_thread(void *arg_list)
     catch (BESError &error) {
         write(args->fds[1], &args->tid, sizeof(args->tid));
         delete args;
-        pthread_exit(new string(error.get_message()));
+        pthread_exit(new string(error.get_message() + " (" + error.get_file() + ":" + error.get_line_str() + ")"));
     }
 
     // tid is a char and thus us written atomically. Writing this tells the parent
