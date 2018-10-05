@@ -34,7 +34,6 @@
 #define BESError_h_ 1
 
 #include <string>
-#include <sstream>
 
 #include "BESObj.h"
 
@@ -116,12 +115,6 @@ public:
     virtual int get_line()
     {
         return _line;
-    }
-    virtual std::string get_line_str()
-    {
-        std::ostringstream oss;
-	oss << _line;
-        return oss.str();
     }
 
     // Return the message, file and line
