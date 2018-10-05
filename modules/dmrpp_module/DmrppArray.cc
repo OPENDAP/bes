@@ -44,6 +44,7 @@
 #include <D4Maps.h>
 #include <D4Group.h>
 
+#include "BESLog.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"
 
@@ -888,6 +889,26 @@ void *one_chunk_unconstrained_thread(void *arg_list)
     pthread_exit(NULL);
 }
 
+/**
+ * @brief Join with all the 'outstanding' threads
+ * Use this to clean up resources if an exception is thrown in one thread. In that case
+ * this code sweeps through all of the outstanding threads and makes sure they are joined.
+ * It's tempting to detach and let the existing threads call exit, but might lead to a
+ * double use error, since two threads might be working with the same libcurl handle.
+ *
+ * @param threads Array of pthread_t structures; null values indicate an unused item
+ * @param num_threads Total number of elements in threads.
+ */
+static void join_threads(pthread_t threads[], unsigned int num_threads)
+{
+    int status;
+    for (unsigned int i = 0; i < num_threads; ++i) {
+        if (threads[i])
+            if ((status = pthread_join(threads[i], NULL)) < 0)
+                LOG("Failed to join thread " << i << "during clean up from an exception: " << strerror(status) << endl);
+    }
+}
+
 void DmrppArray::read_chunks_unconstrained()
 {
     vector<Chunk> &chunk_refs = get_chunk_vec();
@@ -918,9 +939,15 @@ void DmrppArray::read_chunks_unconstrained()
         if (status < 0)
             throw BESInternalError(string("Could not open a pipe for thread communication: ").append(strerror(errno)), __FILE__, __LINE__);
 
+        // Start the max number of processing pipelines
+        pthread_t thread[DmrppRequestHandler::d_max_parallel_transfers];
+
+        // set the thread[] elements to null - this serves as a sentinel value
+        for (unsigned int i = 0; i < (unsigned int)DmrppRequestHandler::d_max_parallel_transfers; ++i) {
+            memset(&thread[i], 0, sizeof(pthread_t));
+        }
+
         try {
-            // Start the max number of processing pipelines
-            pthread_t thread[DmrppRequestHandler::d_max_parallel_transfers];
             unsigned int threads = 0;
             for (unsigned int i = 0; i < (unsigned int) DmrppRequestHandler::d_max_parallel_transfers && chunks_to_read.size() > 0; ++i) {
                 Chunk *chunk = chunks_to_read.front();
@@ -992,8 +1019,12 @@ void DmrppArray::read_chunks_unconstrained()
             close(fds[1]);
         }
         catch (...) {
+            // cancel all the threads, otherwise we'll have threads out there using up resources
+            join_threads(thread, DmrppRequestHandler::d_max_parallel_transfers);
+            // close the pipe used to communicate with the child threads
             close(fds[0]);
             close(fds[1]);
+            // rethrow the exception
             throw;
         }
 
