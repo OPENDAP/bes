@@ -42,6 +42,8 @@
 
 // BES_INTERNAL_FATAL_ERROR will cause the bes listener to exit()
 // while the others (BES_INTERNAL_ERROR, ...) won't.
+// But, see the new option BES.ExitOnInternalError, which causes the
+// BES to exit on an InternalError.
 #define BES_INTERNAL_FATAL_ERROR 2
 
 #define BES_SYNTAX_USER_ERROR 3
