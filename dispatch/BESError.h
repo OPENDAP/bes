@@ -117,7 +117,8 @@ public:
     }
     virtual std::string get_line_str()
     {
-        std::ostringstream oss(_line);
+        std::ostringstream oss;
+	oss << _line;
         return oss.str();
     }
 
