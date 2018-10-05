@@ -877,7 +877,7 @@ void *one_chunk_unconstrained_thread(void *arg_list)
     catch (BESError &error) {
         write(args->fds[1], &args->tid, sizeof(args->tid));
         delete args;
-	pthread_exit(new string(error.get_verbose_message()));
+        pthread_exit(new string(error.get_verbose_message()));
     }
 
     // tid is a char and thus us written atomically. Writing this tells the parent
@@ -931,10 +931,12 @@ void DmrppArray::read_chunks_unconstrained()
                 int status = pthread_create(&thread[i], NULL, dmrpp::one_chunk_unconstrained_thread, (void*) args);
                 if (status == 0) {
                     ++threads;
+                    BESDEBUG(dmrpp_3, "started thread: " << i << ", there are: " << threads << endl);
                 }
                 else {
-                    ostringstream oss("Could not start process_one_chunk_unconstrained thread for chunk ");
+                    ostringstream oss("Could not start process_one_chunk_unconstrained thread for chunk ", std::ios::ate);
                     oss << i << ": " << strerror(status);
+                    BESDEBUG(dmrpp_3, oss.str());
                     throw BESInternalError(oss.str(), __FILE__, __LINE__);
                 }
             }
@@ -948,15 +950,18 @@ void DmrppArray::read_chunks_unconstrained()
                     throw BESInternalError(string("Could not read the thread id: ").append(strerror(errno)), __FILE__, __LINE__);
 
                 if (!(tid < DmrppRequestHandler::d_max_parallel_transfers)) {
-                    ostringstream oss("Invalid thread id read after thread exit: ");
+                    ostringstream oss("Invalid thread id read after thread exit: ", std::ios::ate);
                     oss << tid;
                     throw BESInternalError(oss.str(), __FILE__, __LINE__);
                 }
 
                 string *error;
-                int status = pthread_join(thread[(unsigned int) tid], (void**) &error);
+                int status = pthread_join(thread[tid], (void**) &error);
+                --threads;
+                BESDEBUG(dmrpp_3, "joined thread: " << (unsigned int)tid << ", there are: " << threads << endl);
+
                 if (status != 0) {
-                    ostringstream oss("Could not join process_one_chunk_unconstrained thread for chunk ");
+                    ostringstream oss("Could not join process_one_chunk_unconstrained thread for chunk ", std::ios::ate);
                     oss << tid << ": " << strerror(status);
                     throw BESInternalError(oss.str(), __FILE__, __LINE__);
                 }
@@ -973,17 +978,16 @@ void DmrppArray::read_chunks_unconstrained()
                     one_chunk_unconstrained_args *args = new one_chunk_unconstrained_args(fds, tid, chunk, this, array_shape, chunk_shape);
                     int status = pthread_create(&thread[tid], NULL, dmrpp::one_chunk_unconstrained_thread, (void*) args);
                     if (status != 0) {
-                        ostringstream oss("Could not start process_one_chunk_unconstrained thread for chunk ");
-                        oss << tid << ": " << strerror(status);
+                        ostringstream oss;
+                        oss << "Could not start process_one_chunk_unconstrained thread for chunk " << tid << ": " << strerror(status);
                         throw BESInternalError(oss.str(), __FILE__, __LINE__);
                     }
-                }
-                else {
-                    // there are no more chunks to process, decrement the thread count
-                    --threads;
+                    ++threads;
+                    BESDEBUG(dmrpp_3, "started thread: " << (unsigned int)tid << ", there are: " << threads << endl);
                 }
             }
 
+            // Once done with the threads, close the communication pipe.
             close(fds[0]);
             close(fds[1]);
         }
@@ -1010,7 +1014,7 @@ void DmrppArray::read_chunks_unconstrained()
                     ++threads;
                 }
                 else {
-                    ostringstream oss("Could not start process_one_chunk_unconstrained thread for chunk ");
+                    ostringstream oss("Could not start process_one_chunk_unconstrained thread for chunk ", std::ios::ate);
                     oss << i << ": " << strerror(status);
                     throw BESInternalError(oss.str(), __FILE__, __LINE__);
                 }
@@ -1020,7 +1024,7 @@ void DmrppArray::read_chunks_unconstrained()
                 string *error;
                 int status = pthread_join(thread[i], (void**) &error);
                 if (status != 0) {
-                    ostringstream oss("Could not join process_one_chunk_unconstrained thread for chunk ");
+                    ostringstream oss("Could not join process_one_chunk_unconstrained thread for chunk ", std::ios::ate);
                     oss << i << ": " << strerror(status);
                     throw BESInternalError(oss.str(), __FILE__, __LINE__);
                 }

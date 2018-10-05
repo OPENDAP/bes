@@ -428,7 +428,7 @@ void dmrpp_multi_handle::read_data()
             ++threads;
         }
         else {
-            ostringstream oss("Could not start process_one_chunk_unconstrained thread for chunk ");
+            ostringstream oss("Could not start process_one_chunk_unconstrained thread for chunk ", std::ios::ate);
             oss << i << ": " << strerror(status);
             throw BESInternalError(oss.str(), __FILE__, __LINE__);
         }
@@ -439,7 +439,7 @@ void dmrpp_multi_handle::read_data()
         string *error;
         int status = pthread_join(thread[i], (void**) &error);
         if (status != 0) {
-            ostringstream oss("Could not join process_one_chunk_unconstrained thread for chunk ");
+            ostringstream oss("Could not join process_one_chunk_unconstrained thread for chunk ", std::ios::ate);
             oss << i << ": " << strerror(status);
             throw BESInternalError(oss.str(), __FILE__, __LINE__);
         }
