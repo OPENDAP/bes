@@ -28,6 +28,7 @@
 #include <iomanip>
 
 #include <cstring>
+#include <unistd.h>
 
 #include <curl/curl.h>
 
@@ -52,6 +53,9 @@
 #define MAX_WAIT_MSECS 30*1000 /* Wait max. 30 seconds */
 
 #define CURL_VERBOSE 1
+
+const unsigned int retry_limit = 10; // Amazon's suggestion
+const unsigned int initial_retry_time = 1000; // one milli-second
 
 using namespace dmrpp;
 using namespace std;
@@ -223,12 +227,14 @@ dmrpp_easy_handle::~dmrpp_easy_handle()
 }
 
 /**
- * Return the HTTP/S status code if the request succeeded; throw an exception
- * on error.
+ * Return true if the HTTP request worked, false if it should be re-tried;
+ * throw an exception on error.
  *
  * @param eh The CURL easy_handle
+ * @return True indicates success, false a failure that should be re-tried.
+ * @exception BESInternalError indicates an unrecoverable error
  */
-static void evaluate_curl_response(CURL* eh)
+static bool evaluate_curl_response(CURL* eh)
 {
     long http_code = 0;
     CURLcode res = curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_code);
@@ -242,14 +248,18 @@ static void evaluate_curl_response(CURL* eh)
     case 206: // Partial content - this is to be expected since we use range gets
         // cases 201-205 are things we should probably reject, unless we add more
         // comprehensive HTTP/S processing here. jhrg 8/8/18
-        break;
+        return true;
+
+    case 500: // Internal server error
+    case 503: // Service Unavailable
+    case 504: // Gateway Timeout
+        return false;
 
     default: {
         ostringstream oss;
         oss << "HTTP status error: Expected an OK status, but got: ";
         oss << http_code;
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
-        break;
     }
     }
 }
@@ -259,17 +269,43 @@ static void evaluate_curl_response(CURL* eh)
  */
 void dmrpp_easy_handle::read_data()
 {
-    CURL *curl = d_handle;
-
-    // Perform the request
-    CURLcode curl_code = curl_easy_perform(curl);
-    if (CURLE_OK != curl_code) {
-        throw BESInternalError(string("Data transfer error: ").append(curl_error_msg(curl_code, d_errbuf)), __FILE__, __LINE__);
-    }
-
-    // For HTTP, check the return code, for the file protocol, if curl_code is OK, that's good enough
+    // Treat HTTP/S requests specially; retry some kinds of failures.
     if (d_url.find("https://") == 0 || d_url.find("http://") == 0) {
-        evaluate_curl_response(curl);
+        unsigned int tries = 0;
+        bool success = true;
+        unsigned int retry_time = initial_retry_time;
+
+        // Perform the request
+        do {
+            CURLcode curl_code = curl_easy_perform(d_handle);
+            ++tries;
+
+            if (CURLE_OK != curl_code) {
+                throw BESInternalError(string("Data transfer error: ").append(curl_error_msg(curl_code, d_errbuf)),
+                    __FILE__, __LINE__);
+            }
+
+            success = evaluate_curl_response(d_handle);
+
+            if (!success) {
+                if (tries == retry_limit) {
+                    throw BESInternalError(
+                        string("Data transfer error: Number of re-tries to S3 exceeded: ").append(
+                            curl_error_msg(curl_code, d_errbuf)), __FILE__, __LINE__);
+                }
+                else {
+                    usleep(retry_time);
+                    retry_time *= 2;
+                }
+            }
+        } while (!success);
+    }
+    else {
+        CURLcode curl_code = curl_easy_perform(d_handle);
+        if (CURLE_OK != curl_code) {
+            throw BESInternalError(string("Data transfer error: ").append(curl_error_msg(curl_code, d_errbuf)),
+                __FILE__, __LINE__);
+        }
     }
 
     d_chunk->set_is_read(true);
@@ -347,6 +383,9 @@ static void *easy_handle_read_data(void *handle)
  *
  * This uses either the CURL Multi API or pthreads to read N
  * dmrpp_easy_handle instances in parallel.
+ *
+ * @todo This has to be fixed to restart 500 HTTP errors and to clean up
+ * after threads if there's an exception.
  *
  * @note It's the responsibility of the caller to make sure that no more than
  * d_max_parallel_transfers are added to the 'multi' handle.
