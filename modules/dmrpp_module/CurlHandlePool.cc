@@ -50,9 +50,11 @@
 
 #define KEEP_ALIVE 1   // Reuse libcurl easy handles (1) or not (0).
 
-#define MAX_WAIT_MSECS 30*1000 /* Wait max. 30 seconds */
+static const int MAX_WAIT_MSECS = 30*1000; /* Wait max. 30 seconds */
 
-#define CURL_VERBOSE 1
+// This is very verbose and also independent of the log mode.
+//jhrg 10/9/18
+#define CURL_VERBOSE 0
 
 const unsigned int retry_limit = 10; // Amazon's suggestion
 const unsigned int initial_retry_time = 1000; // one milli-second
