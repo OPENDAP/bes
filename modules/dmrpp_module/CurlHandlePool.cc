@@ -52,7 +52,7 @@
 
 #define MAX_WAIT_MSECS 30*1000 /* Wait max. 30 seconds */
 
-#define CURL_VERBOSE 1
+#define CURL_VERBOSE 0
 
 const unsigned int retry_limit = 10; // Amazon's suggestion
 const unsigned int initial_retry_time = 1000; // one milli-second
@@ -380,28 +380,6 @@ static void *easy_handle_read_data(void *handle)
     }
 }
 #endif
-
-/**
- * @brief Join with all the 'outstanding' threads
- * Use this to clean up resources if an exception is thrown in one thread. In that case
- * this code sweeps through all of the outstanding threads and makes sure they are joined.
- * It's tempting to detach and let the existing threads call exit, but might lead to a
- * double use error, since two threads might be working with the same libcurl handle.
- *
- * @param threads Array of pthread_t structures; null values indicate an unused item
- * @param num_threads Total number of elements in threads.
- */
-static void join_threads(pthread_t threads[], unsigned int num_threads)
-{
-    int status;
-    for (unsigned int i = 0; i < num_threads; ++i) {
-        if (threads[i]) {
-            BESDEBUG(dmrpp_3, "Join thread " << i << " after an exception was caught.");
-            if ((status = pthread_join(threads[i], NULL)) < 0)
-                LOG("Failed to join thread " << i << "during clean up from an exception: " << strerror(status) << endl);
-        }
-    }
-}
 
 /**
  * @brief The read_data() method for parallel transfers

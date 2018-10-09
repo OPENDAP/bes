@@ -45,6 +45,8 @@ class XMLWriter;
 
 namespace dmrpp {
 
+void join_threads(pthread_t threads[], unsigned int num_threads);
+
 /**
  * @brief Size and offset information of data included in DMR++ files.
  *

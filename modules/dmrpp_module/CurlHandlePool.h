@@ -35,10 +35,6 @@ namespace dmrpp {
 
 class Chunk;
 
-#if 0
-void join_threads(pthread_t threads[], unsigned int num_threads);
-#endif
-
 /**
  * RAII. Lock access to the get_easy_handle() and release_handle() methods.
  */

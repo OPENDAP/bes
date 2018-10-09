@@ -609,9 +609,6 @@ void DmrppArray::insert_chunk(unsigned int dim, vector<unsigned int> *target_ele
     }
 
     unsigned long long chunk_end = end_element - chunk_origin[dim];
-#if 0
-    vector<unsigned int> constrained_array_shape = get_shape(true);
-#endif
 
     unsigned int last_dim = chunk_shape.size() - 1;
     if (dim == last_dim) {
@@ -630,6 +627,7 @@ void DmrppArray::insert_chunk(unsigned int dim, vector<unsigned int> *target_ele
             // Compute where we are going to read it from
             (*chunk_element_address)[dim] = chunk_start;
 
+            // See below re get_index()
             unsigned int target_char_start_index = get_index(*target_element_address, constrained_array_shape) * elem_width;
             unsigned int chunk_char_start_index = get_index(*chunk_element_address, chunk_shape) * elem_width;
 
@@ -644,6 +642,7 @@ void DmrppArray::insert_chunk(unsigned int dim, vector<unsigned int> *target_ele
                 // Compute where we are going to read it from
                 (*chunk_element_address)[dim] = chunk_index;
 
+                // These calls to get_index() can be removed as with the insert...unconstrained() code.
                 unsigned int target_char_start_index = get_index(*target_element_address, constrained_array_shape) * elem_width;
                 unsigned int chunk_char_start_index = get_index(*chunk_element_address, chunk_shape) * elem_width;
 
@@ -889,33 +888,6 @@ void *one_chunk_unconstrained_thread(void *arg_list)
     pthread_exit(NULL);
 }
 
-#if 1
-// Moved to CurlHandlerPool. jhrg 10.6.18
-//
-// FIXME Get the above to work.
-/**
- * @brief Join with all the 'outstanding' threads
- * Use this to clean up resources if an exception is thrown in one thread. In that case
- * this code sweeps through all of the outstanding threads and makes sure they are joined.
- * It's tempting to detach and let the existing threads call exit, but might lead to a
- * double use error, since two threads might be working with the same libcurl handle.
- *
- * @param threads Array of pthread_t structures; null values indicate an unused item
- * @param num_threads Total number of elements in threads.
- */
-static void join_threads(pthread_t threads[], unsigned int num_threads)
-{
-    int status;
-    for (unsigned int i = 0; i < num_threads; ++i) {
-        if (threads[i]) {
-            BESDEBUG(dmrpp_3, "Join thread " << i << " after an exception was caught.");
-            if ((status = pthread_join(threads[i], NULL)) < 0)
-            LOG("Failed to join thread " << i << "during clean up from an exception: " << strerror(status) << endl);
-        }
-    }
-}
-#endif
-
 void DmrppArray::read_chunks_unconstrained()
 {
     vector<Chunk> &chunk_refs = get_chunk_vec();
@@ -1027,6 +999,7 @@ void DmrppArray::read_chunks_unconstrained()
         }
         catch (...) {
             // cancel all the threads, otherwise we'll have threads out there using up resources
+            // defined in DmrppCommon.cc
             join_threads(threads, DmrppRequestHandler::d_max_parallel_transfers);
             // close the pipe used to communicate with the child threads
             close(fds[0]);

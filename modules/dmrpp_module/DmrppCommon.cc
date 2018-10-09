@@ -35,6 +35,7 @@
 
 #include <BESIndent.h>
 #include <BESDebug.h>
+#include <BESLog.h>
 #include <BESInternalError.h>
 
 #include "DmrppRequestHandler.h"
@@ -46,9 +47,35 @@ using namespace libdap;
 
 namespace dmrpp {
 
+// Used with BESDEBUG
+static const string dmrpp_3 = "dmrpp:3";
+static const string dmrpp_4 = "dmrpp:4";
+
 bool DmrppCommon::d_print_chunks = false;
 string DmrppCommon::d_dmrpp_ns = "http://xml.opendap.org/dap/dmrpp/1.0.0#";
 string DmrppCommon::d_ns_prefix = "dmrpp";
+
+/**
+ * @brief Join with all the 'outstanding' threads
+ * Use this to clean up resources if an exception is thrown in one thread. In that case
+ * this code sweeps through all of the outstanding threads and makes sure they are joined.
+ * It's tempting to detach and let the existing threads call exit, but might lead to a
+ * double use error, since two threads might be working with the same libcurl handle.
+ *
+ * @param threads Array of pthread_t structures; null values indicate an unused item
+ * @param num_threads Total number of elements in threads.
+ */
+void join_threads(pthread_t threads[], unsigned int num_threads)
+{
+    int status;
+    for (unsigned int i = 0; i < num_threads; ++i) {
+        if (threads[i]) {
+            BESDEBUG(dmrpp_3, "Join thread " << i << " after an exception was caught.");
+            if ((status = pthread_join(threads[i], NULL)) < 0)
+            LOG("Failed to join thread " << i << "during clean up from an exception: " << strerror(status) << endl);
+        }
+    }
+}
 
 /**
  * @brief Set the dimension sizes for a chunk
