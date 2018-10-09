@@ -50,12 +50,11 @@
 
 #define KEEP_ALIVE 1   // Reuse libcurl easy handles (1) or not (0).
 
-#define MAX_WAIT_MSECS 30*1000 /* Wait max. 30 seconds */
-
 #define CURL_VERBOSE 0
 
-const unsigned int retry_limit = 10; // Amazon's suggestion
-const unsigned int initial_retry_time = 1000; // one milli-second
+static const int MAX_WAIT_MSECS = 30*1000; // Wait max. 30 seconds
+static const unsigned int retry_limit = 10; // Amazon's suggestion
+static const unsigned int initial_retry_time = 1000; // one milli-second
 static const string dmrpp_3 = "dmrpp:3";
 
 using namespace dmrpp;
