@@ -889,6 +889,10 @@ void *one_chunk_unconstrained_thread(void *arg_list)
     pthread_exit(NULL);
 }
 
+#if 1
+// Moved to CurlHandlerPool. jhrg 10.6.18
+//
+// FIXME Get the above to work.
 /**
  * @brief Join with all the 'outstanding' threads
  * Use this to clean up resources if an exception is thrown in one thread. In that case
@@ -906,10 +910,11 @@ static void join_threads(pthread_t threads[], unsigned int num_threads)
         if (threads[i]) {
             BESDEBUG(dmrpp_3, "Join thread " << i << " after an exception was caught.");
             if ((status = pthread_join(threads[i], NULL)) < 0)
-                LOG("Failed to join thread " << i << "during clean up from an exception: " << strerror(status) << endl);
+            LOG("Failed to join thread " << i << "during clean up from an exception: " << strerror(status) << endl);
         }
     }
 }
+#endif
 
 void DmrppArray::read_chunks_unconstrained()
 {

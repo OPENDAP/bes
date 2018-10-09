@@ -56,6 +56,7 @@
 
 const unsigned int retry_limit = 10; // Amazon's suggestion
 const unsigned int initial_retry_time = 1000; // one milli-second
+static const string dmrpp_3 = "dmrpp:3";
 
 using namespace dmrpp;
 using namespace std;
@@ -266,6 +267,8 @@ static bool evaluate_curl_response(CURL* eh)
 
 /**
  * @brief This is the read_data() method for serial transfers
+ *
+ * @todo Modify re-try so it's only done for AWS and/or if an option is set.
  */
 void dmrpp_easy_handle::read_data()
 {
@@ -294,6 +297,7 @@ void dmrpp_easy_handle::read_data()
                             curl_error_msg(curl_code, d_errbuf)), __FILE__, __LINE__);
                 }
                 else {
+                    LOG("HTTP transfer 500 error, will retry (trial " << tries << "for: " << d_url << ").");
                     usleep(retry_time);
                     retry_time *= 2;
                 }
@@ -371,12 +375,33 @@ static void *easy_handle_read_data(void *handle)
         pthread_exit(NULL);
     }
     catch (BESError &e) {
-        string *error = new string(e.get_message().append(": ").append(e.get_file())
-            .append(":").append(libdap::long_to_string(e.get_line())));
+        string *error = new string(e.get_verbose_message());
         pthread_exit(error);
     }
 }
 #endif
+
+/**
+ * @brief Join with all the 'outstanding' threads
+ * Use this to clean up resources if an exception is thrown in one thread. In that case
+ * this code sweeps through all of the outstanding threads and makes sure they are joined.
+ * It's tempting to detach and let the existing threads call exit, but might lead to a
+ * double use error, since two threads might be working with the same libcurl handle.
+ *
+ * @param threads Array of pthread_t structures; null values indicate an unused item
+ * @param num_threads Total number of elements in threads.
+ */
+static void join_threads(pthread_t threads[], unsigned int num_threads)
+{
+    int status;
+    for (unsigned int i = 0; i < num_threads; ++i) {
+        if (threads[i]) {
+            BESDEBUG(dmrpp_3, "Join thread " << i << " after an exception was caught.");
+            if ((status = pthread_join(threads[i], NULL)) < 0)
+                LOG("Failed to join thread " << i << "during clean up from an exception: " << strerror(status) << endl);
+        }
+    }
+}
 
 /**
  * @brief The read_data() method for parallel transfers
@@ -459,34 +484,40 @@ void dmrpp_multi_handle::read_data()
 #else
     // Start the processing pipelines using pthreads - there is no Multi API
 
-    pthread_t thread[p_impl->ehandles.size()];
-    unsigned int threads = 0;
-    for (unsigned int i = 0; i < p_impl->ehandles.size(); ++i) {
-        int status = pthread_create(&thread[i], NULL, easy_handle_read_data, (void*) p_impl->ehandles[i]);
-        if (status == 0) {
-            ++threads;
+    pthread_t threads[p_impl->ehandles.size()];
+    try {
+        unsigned int num_threads = 0;
+        for (unsigned int i = 0; i < p_impl->ehandles.size(); ++i) {
+            int status = pthread_create(&threads[i], NULL, easy_handle_read_data, (void*) p_impl->ehandles[i]);
+            if (status == 0) {
+                ++num_threads;
+            }
+            else {
+                ostringstream oss("Could not start process_one_chunk_unconstrained thread for chunk ", std::ios::ate);
+                oss << i << ": " << strerror(status);
+                throw BESInternalError(oss.str(), __FILE__, __LINE__);
+            }
         }
-        else {
-            ostringstream oss("Could not start process_one_chunk_unconstrained thread for chunk ", std::ios::ate);
-            oss << i << ": " << strerror(status);
-            throw BESInternalError(oss.str(), __FILE__, __LINE__);
+
+        // Now join the child threads.
+        for (unsigned int i = 0; i < num_threads; ++i) {
+            string *error;
+            int status = pthread_join(threads[i], (void**) &error);
+            if (status != 0) {
+                ostringstream oss("Could not join process_one_chunk_unconstrained thread for chunk ", std::ios::ate);
+                oss << i << ": " << strerror(status);
+                throw BESInternalError(oss.str(), __FILE__, __LINE__);
+            }
+            else if (error != 0) {
+                BESInternalError e(*error, __FILE__, __LINE__);
+                delete error;
+                throw e;
+            }
         }
     }
-
-    // Now join the child threads.
-    for (unsigned int i = 0; i < threads; ++i) {
-        string *error;
-        int status = pthread_join(thread[i], (void**) &error);
-        if (status != 0) {
-            ostringstream oss("Could not join process_one_chunk_unconstrained thread for chunk ", std::ios::ate);
-            oss << i << ": " << strerror(status);
-            throw BESInternalError(oss.str(), __FILE__, __LINE__);
-        }
-        else if (error != 0) {
-            BESInternalError e(*error, __FILE__, __LINE__);
-            delete error;
-            throw e;
-        }
+    catch(...) {
+        join_threads(threads, num_threads);
+        throw;
     }
 
     // Now remove the easy_handles, mimicking the behavior when using the real Multi API
