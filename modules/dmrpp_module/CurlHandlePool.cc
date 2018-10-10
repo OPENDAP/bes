@@ -296,7 +296,7 @@ void dmrpp_easy_handle::read_data()
                             curl_error_msg(curl_code, d_errbuf)), __FILE__, __LINE__);
                 }
                 else {
-                    LOG("HTTP transfer 500 error, will retry (trial " << tries << "for: " << d_url << ").");
+                    LOG("HTTP transfer 500 error, will retry (trial " << tries << " for: " << d_url << ").");
                     usleep(retry_time);
                     retry_time *= 2;
                 }
