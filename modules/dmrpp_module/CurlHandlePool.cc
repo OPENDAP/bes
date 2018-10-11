@@ -45,6 +45,7 @@
 #include "WhiteList.h"
 
 #include "DmrppRequestHandler.h"
+#include "DmrppCommon.h"
 #include "CurlHandlePool.h"
 #include "Chunk.h"
 
@@ -462,8 +463,8 @@ void dmrpp_multi_handle::read_data()
     // Start the processing pipelines using pthreads - there is no Multi API
 
     pthread_t threads[p_impl->ehandles.size()];
+    unsigned int num_threads = 0;
     try {
-        unsigned int num_threads = 0;
         for (unsigned int i = 0; i < p_impl->ehandles.size(); ++i) {
             int status = pthread_create(&threads[i], NULL, easy_handle_read_data, (void*) p_impl->ehandles[i]);
             if (status == 0) {
