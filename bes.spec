@@ -11,7 +11,7 @@
 
 Name:           bes
 Version:        3.20.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
 Group:          System Environment/Libraries
