@@ -34,9 +34,7 @@ endif
 # Why are these here? Because they have tests that depend on
 # netcdf.
 # FIXME Rewrite the tests to use the dapread handler. jhrg 12/12/14
-SUBDIRS += fileout_json w10n_handler
-
-SUBDIRS += gateway_module
+SUBDIRS += fileout_json w10n_handler gateway_module http_catalog_module xml_data_handler
 
 if BUILD_GDAL
 SUBDIRS += fileout_gdal gdal_handler
@@ -45,9 +43,6 @@ endif
 if BUILD_FITS
 SUBDIRS += fits_handler
 endif
-
-# Same deal as above, but this uses HDF4/5 too... jhrg 12/12/14
-SUBDIRS += xml_data_handler
 
 if BUILD_NCML
 SUBDIRS += ncml_module
