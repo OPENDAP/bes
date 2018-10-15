@@ -282,3 +282,4 @@ H5.EnableAddPathAttrs=false
 H5.CacheEntries=100
 #H5.CachePurgeLevel=0.2
 #
+H5.DefaultHandleDimension=true

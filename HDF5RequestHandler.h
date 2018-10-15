@@ -76,6 +76,9 @@ class HDF5RequestHandler:public BESRequestHandler {
     static bool get_check_ignore_obj() { return _check_ignore_obj;}
     static bool get_force_flatten_coor_attr() { return _flatten_coor_attr;}
 
+    // Default Handle dimension key, only valid when the default option is on.
+    static bool get_default_handle_dimension() { return _default_handle_dimension;}
+
     static void set_dmr_64bit_int(DMR *dmr) { dmr_int64 = dmr;}
     static DMR* get_dmr_64bit_int() {return dmr_int64;}
 
@@ -150,6 +153,9 @@ class HDF5RequestHandler:public BESRequestHandler {
      static bool _fillvalue_check;
      static bool _check_ignore_obj;
      static bool _flatten_coor_attr;
+
+     // For the default option
+     static bool _default_handle_dimension;
      //static bool _ld_mcache_config;
      //static bool _sd_mcache_config;
      static string _stp_east_filename;

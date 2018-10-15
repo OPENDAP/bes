@@ -146,6 +146,7 @@ bool HDF5RequestHandler::_drop_long_string            = false;
 bool HDF5RequestHandler::_fillvalue_check             = false;
 bool HDF5RequestHandler::_check_ignore_obj            = false;
 bool HDF5RequestHandler::_flatten_coor_attr           = false;
+bool HDF5RequestHandler::_default_handle_dimension    = false;
 
 bool HDF5RequestHandler::_common_cache_dirs            = false;
 
@@ -223,6 +224,7 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
     _fillvalue_check             = check_beskeys("H5.EnableFillValueCheck");
     _check_ignore_obj            = check_beskeys("H5.CheckIgnoreObj");
     _flatten_coor_attr           = check_beskeys("H5.ForceFlattenNDCoorAttr");
+    _default_handle_dimension   = check_beskeys("H5.DefaultHandleDimension");
 
     _use_disk_cache              = check_beskeys("H5.EnableDiskDataCache");
     _disk_cache_dir              = get_beskeys("H5.DiskCacheDataPath");
@@ -1130,7 +1132,9 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
                     throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
                 }
 
-                bool use_dimscale = check_dimscale(fileid);
+                bool use_dimscale = false;
+                if(true == _default_handle_dimension)
+                    use_dimscale = check_dimscale(fileid);
                 dmr->set_name(name_path(filename));
                 dmr->set_filename(name_path(filename));
 

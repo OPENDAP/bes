@@ -424,3 +424,7 @@ H5.Cache.latlon.size=20000
 #  State Plane Projection east and north files: Must provide the absolute path
 #H5.STPEastFileName=/usr/tmp/nad27sp_le
 #H5.STPNorthFileName=/usr/tmp/nad83sp_le
+#
+# This key is only valid for the default option
+# Change the key value to false if the dimension cannot be handled.
+H5.DefaultHandleDimension=true

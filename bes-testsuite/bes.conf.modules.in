@@ -82,3 +82,4 @@ H5.MetaDataMemCacheEntries=300
 H5.LargeDataMemCacheEntries=0
 H5.SmallDataMemCacheEntries=0
 #H5.CachePurgeLevel=0.2
+#H5.DefaultHandleDimension=true
