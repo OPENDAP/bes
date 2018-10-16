@@ -51,6 +51,7 @@
 
 #include <BESDebug.h>
 #include <math.h>
+#include <sstream>
 
 using namespace libdap;
 
@@ -1554,6 +1555,14 @@ void obtain_dimnames(hid_t dset,int ndims, DS_t *dt_inst_ptr) {
 
             // The dimension names of variables will be the HDF5 dataset names dereferenced from the DIMENSION_LIST attribute.
             for (int i = 0; i < ndims; i++) {
+
+                if(vlbuf[i].p == NULL) {
+                    stringstream sindex ;
+                    sindex <<i;
+                    string msg = "For variable " + string(dt_inst_ptr->name) + "; "; 
+                    msg = msg + "the dimension of which the index is "+ sindex.str() + " doesn't exist. "; 
+                    throw InternalErr(__FILE__, __LINE__, msg);
+                }
 
                 rbuf =((hobj_ref_t*)vlbuf[i].p)[0];
 
