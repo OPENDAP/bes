@@ -38,11 +38,15 @@ noinst_HEADERS = test_config.h
 # This way of building the header ensures it's in the build dir and that there
 # are no '../' seqeunces in the paths. The BES will reject paths with 'dot dot'
 # in them in certain circumstances. jhrg 1/21/18
+
 test_config.h: $(srcdir)/test_config.h.in Makefile
 	@mod_abs_srcdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	mod_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
 	mod_abs_builddir=`echo ${abs_builddir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
 	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
+	    -e "s%[@]abs_top_srcdir[@]%$${mod_abs_top_srcdir}%" \
 	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
+
 
 BES_CONF_IN = bes.conf.in
 
@@ -76,7 +80,7 @@ $(abs_builddir)/static-cache:
 #
 
 if CPPUNIT
-UNIT_TESTS = CmrApiTest CmrCatalogTest GranuleTest
+UNIT_TESTS = HttpdDirScraperTest
 else
 UNIT_TESTS =
 
@@ -92,20 +96,8 @@ endif
 clean-local:
 	test ! -d $(builddir)/static-cache || rm -rf $(builddir)/static-cache
 
-OBJS = ../RemoteHttpResource.o \
-../curl_utils.o \
-../rjson_utils.o \
-../CmrCache.o \
-../CmrUtils.o \
-../CmrApi.o \
-../Granule.o \
-../CmrCatalog.o 
+OBJS = ../RemoteHttpResource.o ../curl_utils.o ../RemoteHttpResourceCache.o ../HttpdCatalogUtils.o ../HttpdDirScraper.o 
 
-CmrApiTest_SOURCES = CmrApiTest.cc
-CmrApiTest_LDADD = $(OBJS) $(LIBADD)
+HttpdDirScraperTest_SOURCES = HttpdDirScraperTest.cc
+HttpdDirScraperTest_LDADD = $(OBJS) $(LIBADD)
 
-CmrCatalogTest_SOURCES = CmrCatalogTest.cc
-CmrCatalogTest_LDADD = $(OBJS) $(LIBADD)
-
-GranuleTest_SOURCES = GranuleTest.cc
-GranuleTest_LDADD = $(OBJS) $(LIBADD)

@@ -32,7 +32,7 @@ HTTP_CAT_SRC = HttpdCatalogModule.cc HttpdCatalogUtils.cc HttpdCatalog.cc \
 	curl_utils.cc RemoteHttpResourceCache.cc RemoteHttpResource.cc \
 	HttpdDirScraper.cc
 	
-HTTP_CAT_HDR = HttpdCatalogError.h  HttpdCatalog.h \
+HTTP_CAT_HDR = HttpdCatalogError.h  HttpdCatalog.h  HttpdCatalogNames.h \
 	HttpdCatalogModule.h HttpdCatalogUtils.h HttpdCatalogNames.h \
 	curl_utils.h RemoteHttpResourceCache.h RemoteHttpResource.h \
 	HttpdDirScraper.h 

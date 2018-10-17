@@ -52,7 +52,7 @@ private:
     std::map<std::string,std::string> d_httpd_catalogs;
 
 public:
-    HttpdCatalog(const std::string &name = HTTPD_CATALOG_NAME);
+    HttpdCatalog(const std::string &catalog_name = HTTPD_CATALOG_NAME);
     virtual ~HttpdCatalog();
 
     /**

@@ -92,17 +92,15 @@ HttpdCatalog::HttpdCatalog(const string &catalog_name) : BESCatalog(catalog_name
             +"'", __FILE__, __LINE__);
     }
 
-
-    vector<string>::iterator it;
-
-    for(it=httpd_catalogs.begin();  it!=httpd_catalogs.end(); it++){
+    vector<string>::const_iterator it;
+    for(it=httpd_catalogs.cbegin();  it!=httpd_catalogs.cend(); it++){
         string catalog_entry = *it;
         int index = catalog_entry.find(":");
         if(index>0){
             string name = catalog_entry.substr(0,index);
             string url =  catalog_entry.substr(index);
             BESDEBUG(MODULE, prolog << "name: '" << name << "'  url: " << url << endl);
-            d_httpd_catalogs.insert(name,url);
+            d_httpd_catalogs.insert( pair<string,string>(name,url));
         }
         else {
             throw BESInternalError(string("The configuration entry for the ") + HTTPD_CATALOG_COLLECTIONS +
