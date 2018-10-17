@@ -39,6 +39,7 @@
 
 #include <memory>
 #include <algorithm>
+#include <map>
 
 #include "BESUtil.h"
 #include "BESCatalogUtils.h"
