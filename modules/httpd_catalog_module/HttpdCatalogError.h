@@ -22,34 +22,34 @@
 //
 #include <BESInternalError.h>
 
-#ifndef http_catalog_error_h_
-#define http_catalog_error_h_
+#ifndef _HttpCatalogError_h_
+#define _HttpCatalogError_h_
 
-namespace http_catalog {
+namespace httpd_catalog {
 
-class HttpCatalogError: public BESInternalError {
+class HttpdCatalogError: public BESInternalError {
 protected:
-    HttpCatalogError()
+    HttpdCatalogError()
     {
     }
 public:
-    HttpCatalogError(const std::string &msg, const std::string &file, unsigned int line) :
+    HttpdCatalogError(const std::string &msg, const std::string &file, unsigned int line) :
         BESInternalError("HttpCatalogError "+ msg, file, line)
     {
     }
-    virtual ~HttpCatalogError()
+    virtual ~HttpdCatalogError()
     {
     }
 
     virtual void dump(std::ostream &strm) const
     {
-        strm << "HttpCatalogError::dump - (" << (void *) this << ")" << endl;
+        strm << "HttpdCatalogError::dump - (" << (void *) this << ")" << endl;
         BESIndent::Indent();
         BESError::dump(strm);
         BESIndent::UnIndent();
     }
 };
 
-} /* namespace http_catalog */
+} /* namespace httpd_catalog */
 
-#endif /* http_catalog_error_h_ */
+#endif /* _HttpCatalogError_h_ */

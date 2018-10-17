@@ -37,7 +37,7 @@
 #include <curl/curl.h>
 #include <curl/easy.h>
 
-namespace http_catalog {
+namespace httpd_catalog {
 
 CURL *init(char *error_buffer);
 
@@ -48,6 +48,6 @@ long read_url(CURL *curl, const std::string &url, int fd, std::vector<std::strin
 
 std::string http_status_to_string(int status);
 
-} // namespace http_catalog
+} // namespace httpd_catalog
 
 #endif /* CURL_UTILS_H_ */

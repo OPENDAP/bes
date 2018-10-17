@@ -24,21 +24,21 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-#ifndef http_catalog_utils_h_
-#define http_catalog_utils_h_ 1
+#ifndef I_HttpCatalogUtils_H
+#define I_HttpCatalogUtils_H 1
 
 #include <string>
 #include <map>
 #include <vector>
 
-namespace http_catalog {
+namespace httpd_catalog {
 
 /**
  * @brief utility class for the HTTP catalog module
  *
  * This class provides utilities that extract information from a URL
  * or the returned headers of an HTTP response. It also provides
- * storage for a number of values read from the http_catalog.conf
+ * storage for a number of values read from the httpd_catalog.conf
  * configuration file.
  *
  * @note This class holds only static methods and fields. It has no
@@ -46,7 +46,7 @@ namespace http_catalog {
  * the various static fields based on the values of the BES configuration
  * file(s).
  */
-class HttpCatalogUtils {
+class HttpdCatalogUtils {
 public:
     static std::map<std::string, std::string> MimeList;
     static std::string ProxyProtocol;
@@ -66,7 +66,7 @@ public:
     static void get_type_from_url(const std::string &url, std::string &type);
 };
 
-} // namespace http_catalog
+} // namespace httpd_catalog
 
-#endif // http_catalog_utils_h_
+#endif // I_HttpCatalogUtils_H
 

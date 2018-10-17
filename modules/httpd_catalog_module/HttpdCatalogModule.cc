@@ -22,6 +22,7 @@
 //
 
 #include <iostream>
+#include <string>
 
 #include <BESRequestHandlerList.h>
 #include <BESResponseHandlerList.h>
@@ -41,43 +42,46 @@
 #include "HttpCatalogContainerStorage.h"
 #endif
 
-#include "HttpCatalogNames.h"
-#include "HttpCatalogModule.h"
+#include "HttpdCatalogNames.h"
+#include "HttpdCatalogModule.h"
 
 using namespace std;
 #if 0
-using namespace http_catalog;
+using namespace httpd_catalog;
 #endif
 
 
-#define prolog std::string("CmrModule::").append(__func__).append("() - ")
+#define prolog string("HttpdCatalogModule::").append(__func__).append("() - ")
 
-void CmrModule::initialize(const string &modname)
+namespace httpd_catalog {
+
+
+void HttpdCatalogModule::initialize(const string &modname)
 {
     BESDebug::Register(MODULE);
 
     BESDEBUG(MODULE, prolog << "Initializing Module: " << modname << endl);
 
 #if 0
-    if (!BESCatalogList::TheCatalogList()->ref_catalog(HTTP_CATALOG_NAME)) {
-        BESCatalogList::TheCatalogList()->add_catalog(new HttpCatalog(HTTP_CATALOG_NAME));
+    if (!BESCatalogList::TheCatalogList()->ref_catalog(HTTPD_CATALOG_NAME)) {
+        BESCatalogList::TheCatalogList()->add_catalog(new HttpCatalog(HTTPD_CATALOG_NAME));
     }
 
-    if (!BESContainerStorageList::TheList()->ref_persistence(HTTP_CATALOG_NAME)) {
-        BESContainerStorageList::TheList()->add_persistence(newHttpCatalogContainerStorage(HTTP_CATALOG_NAME));
+    if (!BESContainerStorageList::TheList()->ref_persistence(HTTPD_CATALOG_NAME)) {
+        BESContainerStorageList::TheList()->add_persistence(newHttpCatalogContainerStorage(HTTPD_CATALOG_NAME));
     }
 #endif
 
     BESDEBUG(MODULE, "Done Initializing Handler: " << modname << endl);
 }
 
-void CmrModule::terminate(const string &modname)
+void HttpdCatalogModule::terminate(const string &modname)
 {
     BESDEBUG(MODULE, prolog << "Cleaning Module: " << modname << endl);
 
-    BESContainerStorageList::TheList()->deref_persistence(HTTP_CATALOG_NAME);
+    BESContainerStorageList::TheList()->deref_persistence(HTTPD_CATALOG_NAME);
 
-    BESCatalogList::TheCatalogList()->deref_catalog(HTTP_CATALOG_NAME);
+    BESCatalogList::TheCatalogList()->deref_catalog(HTTPD_CATALOG_NAME);
 
     BESDEBUG(MODULE, prolog << "Done Cleaning Module: " << modname << endl);
 }
@@ -85,12 +89,13 @@ void CmrModule::terminate(const string &modname)
 extern "C" {
 BESAbstractModule *maker()
 {
-    return new CmrModule;
+    return new HttpdCatalogModule;
 }
 }
 
-void CmrModule::dump(ostream &strm) const
+void HttpdCatalogModule::dump(ostream &strm) const
 {
     strm << BESIndent::LMarg << prolog<< "(" << (void *) this << ")" << endl;
 }
 
+} // namespace httpd_catalog

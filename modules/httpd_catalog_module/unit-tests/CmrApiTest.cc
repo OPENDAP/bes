@@ -48,8 +48,8 @@
 #include "RemoteHttpResource.h"
 #include "CmrApi.h"
 
-#include "../HttpCatalogError.h"
-#include "../HttpCatalogNames.h"
+#include "../HttpdCatalogError.h"
+#include "../HttpdCatalogNames.h"
 #include "CmrCatalog.h"
 #include "rjson_utils.h"
 
@@ -63,7 +63,7 @@ static bool bes_debug = false;
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
 
-namespace http_catalog {
+namespace httpd_catalog {
 
 class CmrApiTest: public CppUnit::TestFixture {
 private:
@@ -604,7 +604,7 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(CmrApiTest);
 
-} // namespace dmrpp
+} // namespace httpd_catalog
 
 int main(int argc, char*argv[])
 {

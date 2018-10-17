@@ -3,13 +3,13 @@ Partially complete HTTP Catalog module.
 
 What needs to be done:
 
-1. HttpCatalog needs code.
+1. HttpdCatalog needs code.
 2. the files CmrContainer and CmrContainterStorage need to be renamed, edited, et cetera
 3. The files in #1 and 2 need to be added to the Makefile.am
 4. Of course, the functionality has to be added
 5. The tests and unit tests are wired up as far as autotools is considered, but they
     have to be written
-6. http_catalog_conf.in needs to be edited
+6. httpd_catalog_conf.in needs to be edited
 7. The libdap::Error object should be swapped out for a BESError<something> object
     and the libdap headers for Error.h should be dumped.
 

@@ -24,28 +24,27 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-#ifndef http_catalog_names_h_
-#define http_catalog_names_h_ 1
+#ifndef I_HTTPD_CATALOG_NAME_H
+#define I_HTTPD_CATALOG_NAME_H 1
 
-#define HTTP_CATALOG "HttpCatalog"
+#define HTTPD_CATALOG "httpd"
 
-#define HTTP_CATALOG_NAME "HTTP_Catalog"
+#define HTTPD_CATALOG_NAME "BONZO"
 
 // These are the names of the be keys used to configure the handler.
-#define HTTP_CATALOG_COLLECTIONS "HTTP_Catalog.Collections"
-#define HTTP_CATALOG_FACETS "HTTP_Catalog.Facets"
+#define HTTPD_CATALOG_COLLECTIONS "Httpd_Catalog.RemoteHttpdDir"
 
-#define HTTP_CATALOG_WHITELIST "HTTP_Catalog.Whitelist"
-#define HTTP_CATALOG_MIMELIST "HTTP_Catalog.MimeTypes"
-#define HTTP_CATALOG_PROXYPROTOCOL "HTTP_Catalog.ProxyProtocol"
-#define HTTP_CATALOG_PROXYHOST "HTTP_Catalog.ProxyHost"
-#define HTTP_CATALOG_PROXYPORT "HTTP_Catalog.ProxyPort"
-#define HTTP_CATALOG_PROXYAUTHTYPE "HTTP_Catalog.ProxyAuthType"
-#define HTTP_CATALOG_PROXYUSER "HTTP_Catalog.ProxyUser"
-#define HTTP_CATALOG_PROXYPASSWORD "HTTP_Catalog.ProxyPassword"
-#define HTTP_CATALOG_PROXYUSERPW "HTTP_Catalog.ProxyUserPW"
-#define HTTP_CATALOG_USE_INTERNAL_CACHE "HTTP_Catalog.UseInternalCache"
+#define HTTPD_CATALOG_WHITELIST "Httpd_Catalog.Whitelist"
+#define HTTPD_CATALOG_MIMELIST "Httpd_Catalog.MimeTypes"
+#define HTTPD_CATALOG_PROXYPROTOCOL "Httpd_Catalog.ProxyProtocol"
+#define HTTPD_CATALOG_PROXYHOST "Httpd_Catalog.ProxyHost"
+#define HTTPD_CATALOG_PROXYPORT "Httpd_Catalog.ProxyPort"
+#define HTTPD_CATALOG_PROXYAUTHTYPE "Httpd_Catalog.ProxyAuthType"
+#define HTTPD_CATALOG_PROXYUSER "Httpd_Catalog.ProxyUser"
+#define HTTPD_CATALOG_PROXYPASSWORD "Httpd_Catalog.ProxyPassword"
+#define HTTPD_CATALOG_PROXYUSERPW "Httpd_Catalog.ProxyUserPW"
+#define HTTPD_CATALOG_USE_INTERNAL_CACHE "Httpd_Catalog.UseInternalCache"
 
-#define MODULE HTTP_CATALOG
+#define MODULE HTTPD_CATALOG
 
-#endif // http_catalog_names_h_
+#endif // I_HTTPD_CATALOG_NAME_H

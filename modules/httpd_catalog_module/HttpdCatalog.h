@@ -25,16 +25,16 @@
 // Please read the full copyright statement in the file COPYRIGHT_URI.
 //
 
-#ifndef http_catalog_h_
-#define http_catalog_h_ 1
+#ifndef _HttpdCatalog_h_
+#define _HttpdCatalog_h_ 1
 
 #include <list>
 #include <string>
-#include <vector>
+#include <map>
 
 #include "BESCatalog.h"
 #include "BESInternalError.h"
-#include "HttpCatalogNames.h"
+#include "HttpdCatalogNames.h"
 
 class BESCatalogEntry;
 class BESCatalogUtils;
@@ -43,24 +43,23 @@ namespace bes {
     class CatalogNode;
 }
 
-namespace http_catalog {
+namespace httpd_catalog {
 
 /** @brief builds catalogs from a directory structure
  */
-class HttpCatalog: public BESCatalog {
+class HttpdCatalog: public BESCatalog {
 private:
-    std::vector<std::string> d_collections;
-    std::vector<std::string> d_facets;
+    std::map<std::string,std::string> d_httpd_catalogs;
 
 public:
-    HttpCatalog(const std::string &name = HTTP_CATALOG_NAME);
-    virtual ~HttpCatalog();
+    HttpdCatalog(const std::string &name = HTTPD_CATALOG_NAME);
+    virtual ~HttpdCatalog();
 
     /**
      * @Deprecated
      */
     virtual BESCatalogEntry * show_catalog(const string &container, BESCatalogEntry */*entry*/){
-        throw BESInternalError("The CMRCatalog::show_catalog() method is not supported. (container: '" + container + "')",__FILE__,__LINE__);
+        throw BESInternalError("The HttpdCatalog::show_catalog() method is not supported. (container: '" + container + "')",__FILE__,__LINE__);
     }
 
     /**
@@ -73,19 +72,19 @@ public:
      */
     virtual void get_site_map(const std::string &/*prefix*/, const std::string &/*node_suffix*/, const std::string &/*leaf_suffix*/, ostream &/*out*/,
         const std::string &/*path = "/"*/) const {
-        throw BESInternalError("The CMRCatalog::get_site_map() method is not currently supported.",__FILE__,__LINE__);
+        throw BESInternalError("The HttpdCatalog::get_site_map() method is not currently supported.",__FILE__,__LINE__);
     }
 
 
     virtual bes::CatalogNode *get_node(const std::string &path) const;
-    virtual bes::CatalogNode *get_node_OLD(const std::string &path) const;
-    virtual bes::CatalogNode *get_node_NEW(const std::string &path) const;
+    // virtual bes::CatalogNode *get_node_OLD(const std::string &path) const;
+    // virtual bes::CatalogNode *get_node_NEW(const std::string &path) const;
 
 
     virtual void dump(ostream &strm) const;
 
 };
-} // namespace http_catalog
+} // namespace httpd_catalog
 
-#endif // http_catalog_h_
+#endif // _HttpdCatalog_h_
 

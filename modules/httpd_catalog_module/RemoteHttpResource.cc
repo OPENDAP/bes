@@ -39,14 +39,16 @@
 
 #include "curl_utils.h"
 #include "RemoteHttpResource.h"
-#include "HttpCatalogCache.h"
-#include "HttpCatalogNames.h"
-#include "HttpCatalogUtils.h"
+#include "RemoteHttpResourceCache.h"
+#include "HttpdCatalogNames.h"
+#include "HttpdCatalogUtils.h"
 
 using namespace std;
-using namespace http_catalog;
 
 #define prolog string("RemoteHttpResource::").append(__func__).append("() - ")
+
+
+namespace httpd_catalog {
 
 /**
  * Builds a RemoteHttpResource object associated with the passed \c url parameter.
@@ -102,7 +104,7 @@ RemoteHttpResource::RemoteHttpResource(const string &url)
     BESDEBUG(MODULE, prolog << "Deleted d_request_headers." << endl);
 
     if (!d_resourceCacheFileName.empty()) {
-        HttpCatalogCache *cache = HttpCatalogCache::get_instance();
+        RemoteHttpResourceCache *cache = RemoteHttpResourceCache::get_instance();
         if (cache) {
             cache->unlock_and_close(d_resourceCacheFileName);
             BESDEBUG(MODULE, prolog << "Closed and unlocked "<< d_resourceCacheFileName << endl);
@@ -137,7 +139,7 @@ void RemoteHttpResource::retrieveResource()
     }
 
     // Get a pointer to the singleton cache instance for this process.
-    HttpCatalogCache *cache = HttpCatalogCache::get_instance();
+    RemoteHttpResourceCache *cache = RemoteHttpResourceCache::get_instance();
     if (!cache) {
         ostringstream oss;
         oss << __func__ << "() - FAILED to get local cache."
@@ -158,7 +160,7 @@ void RemoteHttpResource::retrieveResource()
     // to subsequent accesses of the cached object. Since we have to have a type, for now we just set the type
     // from the url. If down below we DO an HTTP GET then the headers will be evaluated and the type set by setType()
     // But really - we gotta fix this.
-    HttpCatalogUtils::get_type_from_url(d_remoteResourceUrl, d_type);
+    HttpdCatalogUtils::get_type_from_url(d_remoteResourceUrl, d_type);
     BESDEBUG(MODULE, prolog << "d_type: " << d_type << endl);
 
     try {
@@ -335,7 +337,7 @@ void RemoteHttpResource::ingest_http_headers_and_type()
     if (!cdisp_hdr.empty()) {
         // Content disposition exists, grab the filename
         // attribute
-        HttpCatalogUtils::get_type_from_disposition(cdisp_hdr, type);
+        HttpdCatalogUtils::get_type_from_disposition(cdisp_hdr, type);
         BESDEBUG(MODULE, prolog << "Evaluated content-disposition '" << cdisp_hdr << "' matched type: \"" << type << "\"" << endl);
     }
 
@@ -344,14 +346,14 @@ void RemoteHttpResource::ingest_http_headers_and_type()
     // that even though Content-disposition was available, we could
     // not determine the type of the file.
     if (type.empty() && !ctype_hdr.empty()) {
-        HttpCatalogUtils::get_type_from_content_type(ctype_hdr, type);
+        HttpdCatalogUtils::get_type_from_content_type(ctype_hdr, type);
         BESDEBUG(MODULE, prolog << "Evaluated content-type '" << ctype_hdr << "' matched type \"" << type << "\"" << endl);
     }
 
     // still haven't figured out the type. Now check the actual URL
     // and see if we can't match the URL to a MODULE name
     if (type.empty()) {
-        HttpCatalogUtils::get_type_from_url(d_remoteResourceUrl, type);
+        HttpdCatalogUtils::get_type_from_url(d_remoteResourceUrl, type);
         BESDEBUG(MODULE, prolog << "Evaluated url '" << d_remoteResourceUrl << "' matched type: \"" << type << "\"" << endl);
     }
 
@@ -381,3 +383,4 @@ string RemoteHttpResource::get_http_response_header(const string header_name)
     return value;
 }
 
+} /// namespace httpd_catalog

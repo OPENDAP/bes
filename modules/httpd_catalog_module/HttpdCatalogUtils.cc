@@ -52,36 +52,37 @@
 #include <BESSyntaxUserError.h>
 #include <BESDebug.h>
 
-#include "HttpCatalogNames.h"
-#include "HttpCatalogUtils.h"
+#include "HttpdCatalogNames.h"
+#include "HttpdCatalogUtils.h"
 
 using namespace libdap;
-using namespace http_catalog;
 using namespace std;
 
+namespace httpd_catalog {
+
 // These are static class members
-map<string, string> HttpCatalogUtils::MimeList;
-string HttpCatalogUtils::ProxyProtocol;
-string HttpCatalogUtils::ProxyHost;
-string HttpCatalogUtils::ProxyUser;
-string HttpCatalogUtils::ProxyPassword;
-string HttpCatalogUtils::ProxyUserPW;
+map<string, string> HttpdCatalogUtils::MimeList;
+string HttpdCatalogUtils::ProxyProtocol;
+string HttpdCatalogUtils::ProxyHost;
+string HttpdCatalogUtils::ProxyUser;
+string HttpdCatalogUtils::ProxyPassword;
+string HttpdCatalogUtils::ProxyUserPW;
 
-int HttpCatalogUtils::ProxyPort = 0;
-int HttpCatalogUtils::ProxyAuthType = 0;
-bool HttpCatalogUtils::useInternalCache = false;
+int HttpdCatalogUtils::ProxyPort = 0;
+int HttpdCatalogUtils::ProxyAuthType = 0;
+bool HttpdCatalogUtils::useInternalCache = false;
 
-string HttpCatalogUtils::NoProxyRegex;
+string HttpdCatalogUtils::NoProxyRegex;
 
 #define prolog string("HttpCatalogUtils::").append(__func__).append("() - ")
 
 // Initialization routine for the gateway module for certain parameters
 // and keys, like the white list, the MimeTypes translation.
-void HttpCatalogUtils::initialize()
+void HttpdCatalogUtils::initialize()
 {
     // MimeTypes - translate from a mime type to a module name
     bool found = false;
-    string key = HTTP_CATALOG_MIMELIST;
+    string key = HTTPD_CATALOG_MIMELIST;
     vector<string> vals;
     TheBESKeys::TheKeys()->get_values(key, vals, found);
     if (found && vals.size()) {
@@ -90,7 +91,7 @@ void HttpCatalogUtils::initialize()
         for (; i != e; i++) {
             size_t colon = (*i).find(":");
             if (colon == string::npos) {
-                string err = (string) "Malformed " + HTTP_CATALOG_MIMELIST + " " + (*i) + " specified in the gateway configuration";
+                string err = (string) "Malformed " + HTTPD_CATALOG_MIMELIST + " " + (*i) + " specified in the gateway configuration";
                 throw BESSyntaxUserError(err, __FILE__, __LINE__);
             }
             string mod = (*i).substr(0, colon);
@@ -100,18 +101,18 @@ void HttpCatalogUtils::initialize()
     }
 
     found = false;
-    key = HTTP_CATALOG_PROXYHOST;
-    TheBESKeys::TheKeys()->get_value(key, HttpCatalogUtils::ProxyHost, found);
-    if (found && !HttpCatalogUtils::ProxyHost.empty()) {
+    key = HTTPD_CATALOG_PROXYHOST;
+    TheBESKeys::TheKeys()->get_value(key, HttpdCatalogUtils::ProxyHost, found);
+    if (found && !HttpdCatalogUtils::ProxyHost.empty()) {
         // if the proxy host is set, then check to see if the port is
         // set. Does not need to be.
         found = false;
-        key = HTTP_CATALOG_PROXYPORT;
+        key = HTTPD_CATALOG_PROXYPORT;
         string port;
         TheBESKeys::TheKeys()->get_value(key, port, found);
         if (found && !port.empty()) {
-            HttpCatalogUtils::ProxyPort = atoi(port.c_str());
-            if (!HttpCatalogUtils::ProxyPort) {
+            HttpdCatalogUtils::ProxyPort = atoi(port.c_str());
+            if (!HttpdCatalogUtils::ProxyPort) {
                 string err = (string) "CMR proxy host is specified, but specified port is absent";
                 throw BESSyntaxUserError(err, __FILE__, __LINE__);
             }
@@ -120,91 +121,91 @@ void HttpCatalogUtils::initialize()
         // @TODO Either use this or remove it - right now this variable is never used downstream
         // find the protocol to use for the proxy server. If none set, default to http
         found = false;
-        key = HTTP_CATALOG_PROXYPROTOCOL;
-        TheBESKeys::TheKeys()->get_value(key, HttpCatalogUtils::ProxyProtocol, found);
-        if (!found || HttpCatalogUtils::ProxyProtocol.empty()) {
-            HttpCatalogUtils::ProxyProtocol = "http";
+        key = HTTPD_CATALOG_PROXYPROTOCOL;
+        TheBESKeys::TheKeys()->get_value(key, HttpdCatalogUtils::ProxyProtocol, found);
+        if (!found || HttpdCatalogUtils::ProxyProtocol.empty()) {
+            HttpdCatalogUtils::ProxyProtocol = "http";
         }
 
         // find the user to use for authenticating with the proxy server. If none set,
         // default to ""
         found = false;
-        key = HTTP_CATALOG_PROXYUSER;
-        TheBESKeys::TheKeys()->get_value(key, HttpCatalogUtils::ProxyUser, found);
+        key = HTTPD_CATALOG_PROXYUSER;
+        TheBESKeys::TheKeys()->get_value(key, HttpdCatalogUtils::ProxyUser, found);
         if (!found) {
-            HttpCatalogUtils::ProxyUser = "";
+            HttpdCatalogUtils::ProxyUser = "";
         }
 
         // find the password to use for authenticating with the proxy server. If none set,
         // default to ""
         found = false;
-        key = HTTP_CATALOG_PROXYPASSWORD;
-        TheBESKeys::TheKeys()->get_value(key, HttpCatalogUtils::ProxyPassword, found);
+        key = HTTPD_CATALOG_PROXYPASSWORD;
+        TheBESKeys::TheKeys()->get_value(key, HttpdCatalogUtils::ProxyPassword, found);
         if (!found) {
-            HttpCatalogUtils::ProxyPassword = "";
+            HttpdCatalogUtils::ProxyPassword = "";
         }
 
         // find the user:password string to use for authenticating with the proxy server. If none set,
         // default to ""
         found = false;
-        key = HTTP_CATALOG_PROXYUSERPW;
-        TheBESKeys::TheKeys()->get_value(key, HttpCatalogUtils::ProxyUserPW, found);
+        key = HTTPD_CATALOG_PROXYUSERPW;
+        TheBESKeys::TheKeys()->get_value(key, HttpdCatalogUtils::ProxyUserPW, found);
         if (!found) {
-            HttpCatalogUtils::ProxyUserPW = "";
+            HttpdCatalogUtils::ProxyUserPW = "";
         }
 
         // find the authentication mechanism to use with the proxy server. If none set,
         // default to BASIC authentication.
         found = false;
-        key = HTTP_CATALOG_PROXYAUTHTYPE;
+        key = HTTPD_CATALOG_PROXYAUTHTYPE;
         string authType;
         TheBESKeys::TheKeys()->get_value(key, authType, found);
         if (found) {
             authType = BESUtil::lowercase(authType);
             if (authType == "basic") {
-                HttpCatalogUtils::ProxyAuthType = CURLAUTH_BASIC;
+                HttpdCatalogUtils::ProxyAuthType = CURLAUTH_BASIC;
                 BESDEBUG(MODULE, prolog << "ProxyAuthType BASIC set." << endl);
             }
             else if (authType == "digest") {
-                HttpCatalogUtils::ProxyAuthType = CURLAUTH_DIGEST;
+                HttpdCatalogUtils::ProxyAuthType = CURLAUTH_DIGEST;
                 BESDEBUG(MODULE, prolog << "ProxyAuthType DIGEST set." << endl);
             }
 
             else if (authType == "ntlm") {
-                HttpCatalogUtils::ProxyAuthType = CURLAUTH_NTLM;
+                HttpdCatalogUtils::ProxyAuthType = CURLAUTH_NTLM;
                 BESDEBUG(MODULE, prolog << "ProxyAuthType NTLM set." << endl);
             }
             else {
-                HttpCatalogUtils::ProxyAuthType = CURLAUTH_BASIC;
+                HttpdCatalogUtils::ProxyAuthType = CURLAUTH_BASIC;
                 BESDEBUG(MODULE,
                     prolog << "User supplied an invalid value '"<< authType << "'  for Gateway.ProxyAuthType. Falling back to BASIC authentication scheme." << endl);
             }
         }
         else {
-            HttpCatalogUtils::ProxyAuthType = CURLAUTH_BASIC;
+            HttpdCatalogUtils::ProxyAuthType = CURLAUTH_BASIC;
         }
     }
 
     found = false;
-    key = HTTP_CATALOG_USE_INTERNAL_CACHE;
+    key = HTTPD_CATALOG_USE_INTERNAL_CACHE;
     string use_cache;
     TheBESKeys::TheKeys()->get_value(key, use_cache, found);
     if (found) {
         if (use_cache == "true" || use_cache == "TRUE" || use_cache == "True" || use_cache == "yes" || use_cache == "YES" || use_cache == "Yes")
-            HttpCatalogUtils::useInternalCache = true;
+            HttpdCatalogUtils::useInternalCache = true;
         else
-            HttpCatalogUtils::useInternalCache = false;
+            HttpdCatalogUtils::useInternalCache = false;
     }
     else {
         // If not set, default to false. Assume squid or ...
-        HttpCatalogUtils::useInternalCache = false;
+        HttpdCatalogUtils::useInternalCache = false;
     }
     // Grab the value for the NoProxy regex; empty if there is none.
     found = false; // Not used
-    TheBESKeys::TheKeys()->get_value("Gateway.NoProxy", HttpCatalogUtils::NoProxyRegex, found);
+    TheBESKeys::TheKeys()->get_value("Gateway.NoProxy", HttpdCatalogUtils::NoProxyRegex, found);
 }
 
-void HttpCatalogUtils::get_type_from_disposition(const string &disp, string &type)
+void HttpdCatalogUtils::get_type_from_disposition(const string &disp, string &type)
 {
     size_t fnpos = disp.find("filename");
     if (fnpos != string::npos) {
@@ -245,7 +246,7 @@ void HttpCatalogUtils::get_type_from_disposition(const string &disp, string &typ
     }
 }
 
-void HttpCatalogUtils::get_type_from_content_type(const string &ctype, string &type)
+void HttpdCatalogUtils::get_type_from_content_type(const string &ctype, string &type)
 {
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
@@ -268,11 +269,12 @@ void HttpCatalogUtils::get_type_from_content_type(const string &ctype, string &t
     BESDEBUG(MODULE, prolog << "END" << endl);
 }
 
-void HttpCatalogUtils::get_type_from_url(const string &url, string &type)
+void HttpdCatalogUtils::get_type_from_url(const string &url, string &type)
 {
-    const BESCatalogUtils *utils = BESCatalogList::TheCatalogList()->find_catalog(HTTP_CATALOG_NAME)->get_catalog_utils();
+    const BESCatalogUtils *utils = BESCatalogList::TheCatalogList()->find_catalog(HTTPD_CATALOG_NAME)->get_catalog_utils();
 
     type = utils->get_handler_name(url);
 }
 
+} // namespace httpd_catalog
 

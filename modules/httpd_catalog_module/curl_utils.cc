@@ -33,14 +33,14 @@
 #include "WhiteList.h"
 
 #include "curl_utils.h"
-#include "HttpCatalogUtils.h"
-#include "HttpCatalogNames.h"
+#include "HttpdCatalogUtils.h"
+#include "HttpdCatalogNames.h"
 
 #define prolog string("curl_utils.cc: ").append(__func__).append("() - ")
 
 using namespace std;
 
-namespace http_catalog {
+namespace httpd_catalog {
 
 // Set this to 1 to turn on libcurl's verbose mode (for debugging).
 int curl_trace = 0;
@@ -272,12 +272,12 @@ bool configureProxy(CURL *curl, const string &url)
 
     bool using_proxy = false;
 
-    string proxyHost = HttpCatalogUtils::ProxyHost;
-    int proxyPort = HttpCatalogUtils::ProxyPort;
-    string proxyPassword = HttpCatalogUtils::ProxyPassword;
-    string proxyUser = HttpCatalogUtils::ProxyUser;
-    string proxyUserPW = HttpCatalogUtils::ProxyUserPW;
-    int proxyAuthType = HttpCatalogUtils::ProxyAuthType;
+    string proxyHost = HttpdCatalogUtils::ProxyHost;
+    int proxyPort = HttpdCatalogUtils::ProxyPort;
+    string proxyPassword = HttpdCatalogUtils::ProxyPassword;
+    string proxyUser = HttpdCatalogUtils::ProxyUser;
+    string proxyUserPW = HttpdCatalogUtils::ProxyUserPW;
+    int proxyAuthType = HttpdCatalogUtils::ProxyAuthType;
 
     if (!proxyHost.empty()) {
         using_proxy = true;
@@ -291,11 +291,11 @@ bool configureProxy(CURL *curl, const string &url)
         // regex set in the gateway.conf file.
 
         // Don't create the regex if the string is empty
-        if (!HttpCatalogUtils::NoProxyRegex.empty()) {
+        if (!HttpdCatalogUtils::NoProxyRegex.empty()) {
             BESDEBUG(MODULE, prolog << "Found NoProxyRegex." << endl);
-            libdap::Regex r(HttpCatalogUtils::NoProxyRegex.c_str());
+            libdap::Regex r(HttpdCatalogUtils::NoProxyRegex.c_str());
             if (r.match(url.c_str(), url.length()) != -1) {
-                BESDEBUG(MODULE, prolog << "Found NoProxy match. Regex: " << HttpCatalogUtils::NoProxyRegex << "; Url: " << url << endl);
+                BESDEBUG(MODULE, prolog << "Found NoProxy match. Regex: " << HttpdCatalogUtils::NoProxyRegex << "; Url: " << url << endl);
                 using_proxy = false;
             }
         }
@@ -506,4 +506,4 @@ long read_url(CURL *curl, const string &url, int fd, vector<string> *resp_hdrs, 
     return status;
 }
 
-} /* namespace http_catalog */
+} /* namespace httpd_catalog */

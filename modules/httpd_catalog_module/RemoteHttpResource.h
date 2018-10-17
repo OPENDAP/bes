@@ -37,7 +37,7 @@
 #include "InternalErr.h"
 //#include "RCReader.h"
 
-namespace http_catalog {
+namespace httpd_catalog {
 
 /**
  * This class encapsulates a remote resource available via HTTP GET. It will
@@ -142,6 +142,6 @@ public:
 
 };
 
-} /* namespace http_catalog */
+} /* namespace httpd_catalog */
 
 #endif /* remote_http_resource_h_ */

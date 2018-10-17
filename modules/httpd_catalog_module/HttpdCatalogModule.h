@@ -32,18 +32,21 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef I_CmrModule_H
-#define I_CmrModule_H 1
+#ifndef I_HttpdCatalogModule_H
+#define I_HttpdCatalogModule_H 1
+
 
 #include "BESAbstractModule.h"
 
-class CmrModule: public BESAbstractModule {
+namespace httpd_catalog {
+
+class HttpdCatalogModule: public BESAbstractModule {
 public:
-    CmrModule()
+    HttpdCatalogModule()
 	{
 	}
 
-	virtual ~CmrModule()
+	virtual ~HttpdCatalogModule()
 	{
 	}
 
@@ -53,4 +56,6 @@ public:
 	virtual void dump(ostream &strm) const;
 };
 
-#endif // I_CmrModule_H
+} // namespace httpd_catalog
+
+#endif // I_HttpdCatalogModule_H

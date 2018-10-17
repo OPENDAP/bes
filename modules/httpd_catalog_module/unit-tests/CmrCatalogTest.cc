@@ -46,12 +46,13 @@
 #include <TheBESKeys.h>
 #include <BESCatalogList.h>
 #include <CatalogNode.h>
-#include "../HttpCatalogError.h"
-#include "../HttpCatalogNames.h"
 
 #include "RemoteHttpResource.h"
 #include "CmrApi.h"
 #include "CmrCatalog.h"
+
+#include "../HttpCatalogError.h"
+#include "../HttpCatalogNames.h"
 #include "rjson_utils.h"
 
 
@@ -64,9 +65,9 @@ static bool bes_debug = false;
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
 
-namespace http_catalog {
+namespace httpd_catalog {
 
-class GranuleTest: public CppUnit::TestFixture {
+class CmrCatalogTest: public CppUnit::TestFixture {
 private:
 
     // char curl_error_buf[CURL_ERROR_SIZE];
@@ -88,12 +89,12 @@ private:
 
 public:
     // Called once before everything gets tested
-    GranuleTest()
+    CmrCatalogTest()
     {
     }
 
     // Called at the end of the test
-    ~GranuleTest()
+    ~CmrCatalogTest()
     {
     }
 
@@ -102,6 +103,7 @@ public:
     {
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
         TheBESKeys::ConfigFile = bes_conf;
+
         BESCatalogList::TheCatalogList()->add_catalog(new cmr::CmrCatalog(CMR_CATALOG_NAME));
 
         if (bes_debug) BESDebug::SetUp("cerr,cmr");
@@ -292,7 +294,7 @@ public:
     }
 
 
-    CPPUNIT_TEST_SUITE( GranuleTest );
+    CPPUNIT_TEST_SUITE( CmrCatalogTest );
 
     CPPUNIT_TEST(get_years_test);
     CPPUNIT_TEST(get_months_test);
@@ -302,15 +304,14 @@ public:
     CPPUNIT_TEST_SUITE_END();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(GranuleTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(CmrCatalogTest);
 
-} // namespace dmrpp
+} // namespace httpd_catalog
 
 int main(int argc, char*argv[])
 {
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
-
 
     GetOpt getopt(argc, argv, "db");
     int option_char;
@@ -336,7 +337,7 @@ int main(int argc, char*argv[])
     else {
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            test = cmr::GranuleTest::suite()->getName().append("::").append(argv[i]);
+            test = cmr::CmrCatalogTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
             ++i;
         }
