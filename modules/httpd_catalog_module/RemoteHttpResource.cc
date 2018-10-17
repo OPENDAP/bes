@@ -1,6 +1,6 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of cmr_MODULE, A C++ MODULE that can be loaded in to
+// This file is part of httpd_catalog_module, A C++ MODULE that can be loaded in to
 // the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
 
 // Copyright (c) 2018 OPeNDAP, Inc.
@@ -143,7 +143,7 @@ void RemoteHttpResource::retrieveResource()
     if (!cache) {
         ostringstream oss;
         oss << __func__ << "() - FAILED to get local cache."
-            " Unable to proceed with request for " << this->d_remoteResourceUrl << " The cmr_module MUST have a valid cache configuration to operate."
+            " Unable to proceed with request for " << this->d_remoteResourceUrl << " The httpd_catalog MUST have a valid cache configuration to operate."
             << endl;
         BESDEBUG(MODULE, oss.str());
         throw BESInternalError(oss.str(), __FILE__, __LINE__);

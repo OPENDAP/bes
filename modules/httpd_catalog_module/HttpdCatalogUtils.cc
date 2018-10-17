@@ -271,7 +271,7 @@ void HttpdCatalogUtils::get_type_from_content_type(const string &ctype, string &
 
 void HttpdCatalogUtils::get_type_from_url(const string &url, string &type)
 {
-    const BESCatalogUtils *utils = BESCatalogList::TheCatalogList()->find_catalog(HTTPD_CATALOG_NAME)->get_catalog_utils();
+    const BESCatalogUtils *utils = BESCatalogList::TheCatalogList()->find_catalog("catalog")->get_catalog_utils();
 
     type = utils->get_handler_name(url);
 }

@@ -23,23 +23,21 @@ BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@
 # it can be anything that matches the form of '<thing>:<regex>;' jhrg 7/6/18
 BES.Catalog.catalog.TypeMatch=something:regex;
 
-CMR.Cache.dir=@abs_top_builddir@/modules/cmr_module/unit-tests/static-cache
-#CMR.Cache.dir=/tmp/cache
-CMR.Cache.prefix=cmr_
-CMR.Cache.size=500
+Httpd_Catalog.Cache.dir=@abs_top_builddir@/modules/httpd_catalog_module/unit-tests/static-cache
+#Httpd_Catalog.Cache.dir=/tmp/cache
+Httpd_Catalog.Cache.prefix=httpd_cat_
+Httpd_Catalog.Cache.size=500
 
-CMR.MimeTypes=nc:application/x-netcdf
-CMR.MimeTypes+=h4:application/x-hdf
-CMR.MimeTypes+=h5:application/x-hdf5
+Httpd_Catalog.MimeTypes=nc:application/x-netcdf
+Httpd_Catalog.MimeTypes+=h4:application/x-hdf
+Httpd_Catalog.MimeTypes+=h5:application/x-hdf5
 
-CMR.Collections=C179003030-ORNL_DAAC
-CMR.Collections+=C1276812863-GES_DISC
+Httpd_Catalog.Collections=woo:https://www.opendap.org/pub/
+Httpd_Catalog.Collections+=iris:https://ds.iris.edu/files/products/
 
-CMR.Facets=temporal
-CMR.Facets+=dental_floss
 
-BES.Catalog.CMR.RootDirectory=UNUSED
-# BES.Catalog.CMR.FollowSymLinks=
-# BES.Catalog.CMR.Exclude=
-# BES.Catalog.CMR.Include=
-BES.Catalog.CMR.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.Httpd_Catalog.RootDirectory=UNUSED
+# BES.Catalog.Httpd_Catalog.FollowSymLinks=
+# BES.Catalog.Httpd_Catalog.Exclude=
+# BES.Catalog.Httpd_Catalog.Include=
+BES.Catalog.Httpd_Catalog.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$;

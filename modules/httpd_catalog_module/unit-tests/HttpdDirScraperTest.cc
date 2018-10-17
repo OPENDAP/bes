@@ -84,7 +84,7 @@ private:
         if(debug) cerr << "data_file: " << data_file << endl;
         if(Debug) show_file(data_file);
 
-        string data_file_url = "file:/" + data_file;
+        string data_file_url = "file://" + data_file;
         if(debug) cerr << "data_file_url: " << data_file_url << endl;
 
         return data_file_url;
@@ -126,12 +126,30 @@ public:
     {
     }
 
+
+/*##################################################################################################*/
+/* TESTS BEGIN */
+
+
     void get_nodes_test() {
         string data_file_url = get_data_file_url("woo.pub.binaries.html");
-
         HttpdDirScraper hds;
-        hds.get_node(data_file_url,"/woo/pub/binaries");
+        try {
+            bes::CatalogNode *node = hds.get_node(data_file_url,"/woo/pub/binaries");
+            if(debug) cerr << "Found " <<  node->get_leaf_count() << " leaves and " << node->get_node_count() << " nodes.";
+        }
+        catch (BESError &besE){
+            cerr << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type() << endl;
+        }
+        catch (libdap::Error &le){
+            cerr << "Caught libdap::Error! message: " << le.get_error_message() << " code: "<< le.get_error_code() << endl;
+        }
+
     }
+
+/* TESTS END */
+/*##################################################################################################*/
+
 
     CPPUNIT_TEST_SUITE( HttpdDirScraperTest );
 
