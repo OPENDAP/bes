@@ -82,7 +82,7 @@ namespace httpd_catalog {
  * @param name The name of the catalog.
  * @see BESCatalogUtils
  */
-HttpdCatalog::HttpdCatalog(const string &name) : BESCatalog(name) {
+HttpdCatalog::HttpdCatalog(const string &catalog_name) : BESCatalog(catalog_name) {
     bool found = false;
     vector<string> httpd_catalogs;
     TheBESKeys::TheKeys()->get_values(HTTPD_CATALOG_COLLECTIONS, httpd_catalogs, found);
