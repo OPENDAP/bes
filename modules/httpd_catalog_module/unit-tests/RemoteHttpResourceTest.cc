@@ -156,10 +156,10 @@ public:
 /* TESTS BEGIN */
 
 
-    void get_url_test() {
+    void get_http_url_test() {
 
         string url = "https://www.opendap.org/pub/";
-        if(debug) cerr << "get_url_test() - url: " << url << endl;
+        if(debug) cerr << __func__ << "() - url: " << url << endl;
         RemoteHttpResource rhr(url);
         try {
             rhr.retrieveResource();
@@ -167,10 +167,40 @@ public:
             rhr.getResponseHeaders(hdrs);
 
             for(size_t i=0; i<hdrs.size() && debug ; i++){
-                cerr << "get_url_test() - hdr["<< i << "]: " << hdrs[i] << endl;
+                cerr << __func__ << "() - hdr["<< i << "]: " << hdrs[i] << endl;
             }
             string cache_filename = rhr.getCacheFileName();
-            if(debug) cerr << "get_url_test() - cache_filename: " << cache_filename << endl;
+            if(debug) cerr <<  __func__ << "() - cache_filename: " << cache_filename << endl;
+            show_file(cache_filename);
+        }
+        catch (BESError &besE){
+            cerr << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type() << endl;
+            CPPUNIT_ASSERT(false);
+        }
+        catch (libdap::Error &le){
+            cerr << "Caught libdap::Error! message: " << le.get_error_message() << " code: "<< le.get_error_code() << endl;
+            CPPUNIT_ASSERT(false);
+        }
+    }
+
+    /**
+     *
+     */
+    void get_file_url_test() {
+
+        string data_file_url = get_data_file_url("woo.pub.html");
+        if(debug) cerr <<  __func__ << "() - data_file_url: " << data_file_url << endl;
+        RemoteHttpResource rhr(data_file_url);
+        try {
+            rhr.retrieveResource();
+            vector<string> hdrs;
+            rhr.getResponseHeaders(hdrs);
+
+            for(size_t i=0; i<hdrs.size() && debug ; i++){
+                cerr <<  __func__ << "() - hdr["<< i << "]: " << hdrs[i] << endl;
+            }
+            string cache_filename = rhr.getCacheFileName();
+            if(debug) cerr <<  __func__ << "() - cache_filename: " << cache_filename << endl;
             show_file(cache_filename);
         }
         catch (BESError &besE){
@@ -189,7 +219,8 @@ public:
 
     CPPUNIT_TEST_SUITE( RemoteHttpResourceTest );
 
-    CPPUNIT_TEST(get_url_test);
+    // CPPUNIT_TEST(get_http_url_test);
+    CPPUNIT_TEST(get_file_url_test);
 
     CPPUNIT_TEST_SUITE_END();
 };
