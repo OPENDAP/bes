@@ -131,12 +131,12 @@ public:
     /**
      * Returns a std::vector of HTTP headers received along with the response from the request for the remote resource..
      */
-    std::vector<std::string> *getResponseHeaders()
+    void getResponseHeaders(std::vector<std::string> &hdrs)
     {
         if (!d_initialized)
             throw libdap::Error(
                 "RemoteHttpResource::getCacheFileName() - STATE ERROR: Remote Resource Has Not Been Retrieved.");
-        return d_response_headers;
+        hdrs.insert( hdrs.end(), d_response_headers->begin(), d_response_headers->end() );
     }
 
 

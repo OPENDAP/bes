@@ -54,9 +54,9 @@ namespace httpd_catalog {
 RemoteHttpResourceCache *RemoteHttpResourceCache::d_instance = 0;
 bool RemoteHttpResourceCache::d_enabled = true;
 
-const string RemoteHttpResourceCache::DIR_KEY = "Httpd_Catalog.Cache.dir";
-const string RemoteHttpResourceCache::PREFIX_KEY = "Httpd_Catalog.Cache.prefix";
-const string RemoteHttpResourceCache::SIZE_KEY = "Httpd_Catalog.Cache.size";
+const string RemoteHttpResourceCache::DIR_KEY = "HttpResourceCache.dir";
+const string RemoteHttpResourceCache::PREFIX_KEY = "HttpResourceCache.prefix";
+const string RemoteHttpResourceCache::SIZE_KEY = "HttpResourceCache.size";
 
 unsigned long RemoteHttpResourceCache::getCacheSizeFromConfig()
 {

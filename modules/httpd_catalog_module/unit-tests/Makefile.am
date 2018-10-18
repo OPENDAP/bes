@@ -80,7 +80,7 @@ $(abs_builddir)/static-cache:
 #
 
 if CPPUNIT
-UNIT_TESTS = HttpdDirScraperTest
+UNIT_TESTS = HttpdDirScraperTest RemoteHttpResourceTest
 else
 UNIT_TESTS =
 
@@ -100,4 +100,7 @@ OBJS = ../RemoteHttpResource.o ../curl_utils.o ../RemoteHttpResourceCache.o ../H
 
 HttpdDirScraperTest_SOURCES = HttpdDirScraperTest.cc
 HttpdDirScraperTest_LDADD = $(OBJS) $(LIBADD)
+
+RemoteHttpResourceTest_SOURCES = RemoteHttpResourceTest.cc
+RemoteHttpResourceTest_LDADD = $(OBJS) $(LIBADD)
 

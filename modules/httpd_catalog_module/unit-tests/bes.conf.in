@@ -12,9 +12,15 @@
 # Gateway.Whitelist+=http://opendap.rpi.edu/opendap
 #
 
-
+# Where we can go for stuff...
 Gateway.Whitelist=http://localhost
-#Gateway.Whitelist+=https://cmr.earthdata.nasa.gov
+Gateway.Whitelist+=https://www.opendap.org
+
+# Configure dat cache
+HttpResourceCache.dir=@abs_top_builddir@/modules/httpd_catalog_module/unit-tests/static-cache
+#HttpResourceCache.dir=/tmp/cache
+HttpResourceCache.prefix=httpd_cat_
+HttpResourceCache.size=500
 
 
 BES.Catalog.Default=catalog
@@ -23,10 +29,6 @@ BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@
 # it can be anything that matches the form of '<thing>:<regex>;' jhrg 7/6/18
 BES.Catalog.catalog.TypeMatch=something:regex;
 
-Httpd_Catalog.Cache.dir=@abs_top_builddir@/modules/httpd_catalog_module/unit-tests/static-cache
-#Httpd_Catalog.Cache.dir=/tmp/cache
-Httpd_Catalog.Cache.prefix=httpd_cat_
-Httpd_Catalog.Cache.size=500
 
 Httpd_Catalog.MimeTypes=nc:application/x-netcdf
 Httpd_Catalog.MimeTypes+=h4:application/x-hdf
