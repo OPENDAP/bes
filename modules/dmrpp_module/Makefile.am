@@ -96,7 +96,6 @@ $(top_builddir)/dap/BESDapService.o \
 $(top_builddir)/dap/BESDapResponseBuilder.o \
 $(top_builddir)/dap/BESDapFunctionResponseCache.o \
 $(top_builddir)/dap/BESStoredDapResultCache.o \
-$(top_builddir)/dap/BESDapNullAggregationServer.o \
 $(top_builddir)/dap/DapFunctionUtils.o \
 $(top_builddir)/dap/CachedSequence.o \
 $(top_builddir)/dap/CacheTypeFactory.o \

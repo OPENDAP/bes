@@ -51,8 +51,8 @@
 
 #include "TheBESKeys.h"
 #include "BESResponseHandler.h"
-#include "BESAggFactory.h"
-#include "BESAggregationServer.h"
+// #include "BESAggFactory.h"
+// #include "BESAggregationServer.h"
 // #include "BESReporterList.h"
 #include "BESContextManager.h"
 
