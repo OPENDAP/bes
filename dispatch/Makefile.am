@@ -76,7 +76,6 @@ SRCS = BESInterface.cc \
 	BESServiceRegistry.cc BESServicesResponseHandler.cc		\
 	BESMemoryGlobalArea.cc						\
 	BESMemoryManager.cc 			\
-	BESAggFactory.cc BESAggregationServer.cc			\
 	BESReturnManager.cc						\
 	BESError.cc				\
 	BESDataHandlerInterface.cc					\
@@ -96,6 +95,8 @@ SRCS = BESInterface.cc \
 	BESCatalogResponseHandler.cc ShowNodeResponseHandler.cc \
 	CatalogNode.cc CatalogItem.cc \
 	WhiteList.cc
+
+#	BESAggFactory.cc BESAggregationServer.cc
 
 HDRS = BESInterface.h BESLog.h 			\
 	TheBESKeys.h BESStatus.h 				\
@@ -132,7 +133,6 @@ HDRS = BESInterface.h BESLog.h 			\
 	BESConstraintFuncs.h  			\
 	BESMemoryGlobalArea.h BESMemoryManager.h 			\
 	BESServerSystemResources.h 					\
-	BESAggFactory.h BESAggregationServer.h 				\
 	BESReturnManager.h 						\
 	BESDataNames.h BESApp.h BESObj.h BESIndent.h 	\
 	BESAbstractModule.h BESPluginFactory.h BESPlugin.h 		\
@@ -152,6 +152,8 @@ HDRS = BESInterface.h BESLog.h 			\
 	BESCatalogResponseHandler.h ShowNodeResponseHandler.h \
 	CatalogNode.h CatalogItem.h \
 	WhiteList.h
+
+#	BESAggFactory.h BESAggregationServer.h 
 
 C4_DB=$(C4_DIR)/dispatch.db
 C4_HTML=$(C4_dir)/dispatch.html
