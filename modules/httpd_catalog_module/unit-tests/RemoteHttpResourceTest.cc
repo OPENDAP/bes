@@ -84,6 +84,27 @@ private:
         }
     }
 
+    std::string get_file_as_string(string filename)
+    {
+        ifstream t(filename.c_str());
+
+        if (t.is_open()) {
+            string file_content((istreambuf_iterator<char>(t)), istreambuf_iterator<char>());
+            t.close();
+            if(Debug) cerr << endl << "#############################################################################" << endl;
+            if(Debug) cerr << "file: " << filename << endl;
+            if(Debug) cerr <<         ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << endl;
+            if(Debug) cerr << file_content << endl;
+            if(Debug) cerr << "#############################################################################" << endl;
+            return file_content;
+        }
+        else {
+            cerr << "FAILED TO OPEN FILE: " << filename << endl;
+            CPPUNIT_ASSERT(false);
+            return "";
+        }
+    }
+
 
 
 
@@ -107,7 +128,7 @@ public:
     // Called once before everything gets tested
     RemoteHttpResourceTest()
     {
-        d_data_dir = BESUtil::assemblePath(TEST_DATA_DIR,"httpd_dirs");
+        d_data_dir = TEST_DATA_DIR;;
         cerr << "data_dir: " << d_data_dir << endl;
     }
 
@@ -187,9 +208,9 @@ public:
      *
      */
     void get_file_url_test() {
+        if(debug) cerr << endl;
 
-        string data_file_url = get_data_file_url("woo.pub.html");
-        if(debug) cerr <<  __func__ << "() - data_file_url: " << data_file_url << endl;
+        string data_file_url = get_data_file_url("test_file");
         RemoteHttpResource rhr(data_file_url);
         try {
             rhr.retrieveResource();
@@ -201,7 +222,11 @@ public:
             }
             string cache_filename = rhr.getCacheFileName();
             if(debug) cerr <<  __func__ << "() - cache_filename: " << cache_filename << endl;
-            show_file(cache_filename);
+
+            string target("This a TEST. Move Along...\n");
+
+            string content = get_file_as_string(cache_filename);
+            CPPUNIT_ASSERT( !content.compare(target) );
         }
         catch (BESError &besE){
             cerr << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type() << endl;
