@@ -61,8 +61,6 @@ namespace httpd_catalog {
 class RemoteHttpResourceTest: public CppUnit::TestFixture {
 private:
 
-    // char curl_error_buf[CURL_ERROR_SIZE];
-
     /**
      *
      */
@@ -105,9 +103,6 @@ private:
         }
     }
 
-
-
-
     /**
      *
      */
@@ -146,7 +141,7 @@ public:
 
         TheBESKeys::ConfigFile = bes_conf;
 
-        if (bes_debug) BESDebug::SetUp("cerr,cmr");
+        if (bes_debug) BESDebug::SetUp("cerr,httpd_catalog");
 
         if (bes_debug) show_file(bes_conf);
 

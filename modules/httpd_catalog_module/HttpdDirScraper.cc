@@ -40,7 +40,7 @@ HttpdDirScraper::~HttpdDirScraper()
 }
 
 void
-HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::set<std::string> pageNodes, std::set<std::string> pageLeaves/*, PathPrefix*/) const
+HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::set<std::string> &pageNodes, std::set<std::string> &pageLeaves) const
 {
     // Go get the text from the remote resource
     RemoteHttpResource rhr(url);
@@ -69,34 +69,46 @@ HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::set<std::stri
                 done = true;
             }
             else {
+                int length;
+
+                // Locate out the entire <a /> element
                 BESDEBUG(MODULE, prolog << "aOpenIndex: " << aOpenIndex << endl);
                 BESDEBUG(MODULE, prolog << "aCloseIndex: " << aCloseIndex << endl);
-                string aElemStr = pageStr.substr(aOpenIndex, aCloseIndex + aCloseStr.length());
+                length = aCloseIndex + aCloseStr.length() - aOpenIndex;
+                string aElemStr = pageStr.substr(aOpenIndex, length);
                 BESDEBUG(MODULE, prolog << "Processing link: " << aElemStr << endl);
 
-                int start = aElemStr.find(">");
+                // Find the link text
+                int start = aElemStr.find(">") + 1;
                 int end = aElemStr.find("<", start);
-                string linkText = aElemStr.substr(start, end);
+                length = end - start;
+                string linkText = aElemStr.substr(start, length);
                 BESDEBUG(MODULE, prolog << "Link Text: " << linkText << endl);
 
+                // Locate the href attribute
                 start = aElemStr.find(hrefStr) + hrefStr.length();
                 end = aElemStr.find("\"", start);
-                string href = aElemStr.substr(start, end);
+                length = end - start;
+                string href = aElemStr.substr(start, length);
                 BESDEBUG(MODULE, prolog << "href: " << href << endl);
 
-                if (!(linkText.find("<img") < 0) || !(linkText.length()) || !(linkText.find("<<<") < 0) || !(linkText.find(">>>") < 0)) {
+                if ((linkText.find("<img") != string::npos) || !(linkText.length()) || (linkText.find("<<<") != string::npos) || (linkText.find(">>>") != string::npos)) {
                     BESDEBUG(MODULE, prolog << "SKIPPING(image|copy|<<<|>>>): " << aElemStr << endl);
                 }
                 else {
-                    if (href.length() == 0 || (((href.find("http") == 0) || (href.find("https") == 0)) && !(href.find(url) == 0))) {
+                    if (href.length() == 0 || (((href.find("http://") == 0) || (href.find("https://") == 0)) && !(href.find(url) == 0))) {
                         // SKIPPING
                         BESDEBUG(MODULE, prolog << "SKIPPING(null or remote): " << href << endl);
                     }
-                    else if (hrefExcludeRegex.match(href.c_str(),href.length(),0) || nameExcludeRegex.match(linkText.c_str(),linkText.length(),0)) { /// USE MATCH
+                    else if (hrefExcludeRegex.match(href.c_str(),href.length(),0) > 0) { /// USE MATCH
                         // SKIPPING
-                        BESDEBUG(MODULE, prolog << "SKIPPING(regex) - href: '" << href << "' name: '" << linkText << "'" << endl);
+                        BESDEBUG(MODULE, prolog << "SKIPPING(hrefExcludeRegex) - href: '" << href << "'"<< endl);
                     }
-                    else if (BESUtil::endsWith(url, "/")) {
+                    else if (nameExcludeRegex.match(linkText.c_str(),linkText.length(),0) > 0) { /// USE MATCH
+                        // SKIPPING
+                        BESDEBUG(MODULE, prolog << "SKIPPING(nameExcludeRegex) - name: '" << linkText << "'" << endl);
+                    }
+                    else if (BESUtil::endsWith(href, "/")) {
                         // it's a directory aka a node
                         BESDEBUG(MODULE, prolog << "NODE: " << href << endl);
                         pageNodes.insert(href);
@@ -120,11 +132,15 @@ bes::CatalogNode *HttpdDirScraper::get_node(const string &url, const string &pat
     set<string> pageNodes;
     set<string> pageLeaves;
     createHttpdDirectoryPageMap(url, pageNodes, pageLeaves);
+
+    BESDEBUG(MODULE, prolog << "Found " << pageNodes.size() << " nodes." << endl);
+    BESDEBUG(MODULE, prolog << "Found " << pageLeaves.size() << " leaves." << endl);
+
     set<string>::iterator it;
     bes::CatalogNode *node =  new bes::CatalogNode(path);
 
     it =pageNodes.begin();
-    for (; it!=pageNodes.end(); ++it){
+    while(it!=pageNodes.end()){
         string pageNode = *it;
         bes::CatalogItem *collection = new bes::CatalogItem();
         collection->set_type(CatalogItem::node);
@@ -138,10 +154,11 @@ bes::CatalogNode *HttpdDirScraper::get_node(const string &url, const string &pat
         collection->set_size(0);
 
         node->add_node(collection);
+        it++;
     }
 
     it=pageLeaves.begin();
-    for (; it!=pageLeaves.end(); ++it){
+    while (it!=pageLeaves.end()){
         string leaf = *it;
         CatalogItem *granuleItem = new CatalogItem();
         granuleItem->set_type(CatalogItem::leaf);
@@ -156,7 +173,8 @@ bes::CatalogNode *HttpdDirScraper::get_node(const string &url, const string &pat
         // FIXME: Determine size of this thing? Do we "HEAD" all the leaves?
         granuleItem->set_size(-1);
 
-        node->set_leaf(granuleItem);
+        node->add_leaf(granuleItem);
+        it++;
     }
 
     return node;

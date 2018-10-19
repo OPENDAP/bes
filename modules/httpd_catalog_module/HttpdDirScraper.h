@@ -19,7 +19,7 @@ public:
     HttpdDirScraper();
     virtual ~HttpdDirScraper();
 
-    void createHttpdDirectoryPageMap(std::string url, std::set<std::string> pageNodes, std::set<std::string> pageLeaves/*, PathPrefix*/) const;
+    void createHttpdDirectoryPageMap(std::string url, std::set<std::string> &pageNodes, std::set<std::string> &pageLeave) const;
     bes::CatalogNode *get_node(const string &url, const string &path) const;
 
 };
