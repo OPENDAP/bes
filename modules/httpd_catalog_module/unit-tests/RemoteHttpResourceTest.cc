@@ -179,7 +179,7 @@ public:
 
     void get_http_url_test() {
 
-        string url = "https://www.opendap.org/pub/";
+        string url = "http://test.opendap.org/data/httpd_catalog/READTHIS";
         if(debug) cerr << __func__ << "() - url: " << url << endl;
         RemoteHttpResource rhr(url);
         try {
@@ -192,7 +192,11 @@ public:
             }
             string cache_filename = rhr.getCacheFileName();
             if(debug) cerr <<  __func__ << "() - cache_filename: " << cache_filename << endl;
-            show_file(cache_filename);
+            string target("This is a test. If this was not a test you would have known the answer.\n");
+            if(debug) cerr << "target string: " << target << endl;
+            string content = get_file_as_string(cache_filename);
+            if(debug) cerr << "retrieved content: " << content << endl;
+            CPPUNIT_ASSERT( !content.compare(target) );
         }
         catch (BESError &besE){
             cerr << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type() << endl;
@@ -244,7 +248,7 @@ public:
 
     CPPUNIT_TEST_SUITE( RemoteHttpResourceTest );
 
-    // CPPUNIT_TEST(get_http_url_test);
+    CPPUNIT_TEST(get_http_url_test);
     CPPUNIT_TEST(get_file_url_test);
 
     CPPUNIT_TEST_SUITE_END();
