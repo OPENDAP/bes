@@ -68,7 +68,7 @@
 using namespace bes;
 using namespace std;
 
-#define prolog std::string("HttpCatalog::").append(__func__).append("() - ")
+#define prolog std::string("HttpdCatalog::").append(__func__).append("() - ")
 
 namespace httpd_catalog {
 
@@ -98,7 +98,7 @@ HttpdCatalog::HttpdCatalog(const string &catalog_name) : BESCatalog(catalog_name
         int index = catalog_entry.find(":");
         if(index>0){
             string name = catalog_entry.substr(0,index);
-            string url =  catalog_entry.substr(index);
+            string url =  catalog_entry.substr(index+1);
             BESDEBUG(MODULE, prolog << "name: '" << name << "'  url: " << url << endl);
             d_httpd_catalogs.insert( pair<string,string>(name,url));
         }

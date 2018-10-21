@@ -38,8 +38,8 @@ Httpd_Catalog.Collections=woo:https://www.opendap.org/pub/
 Httpd_Catalog.Collections+=iris:https://ds.iris.edu/files/products/
 
 
-BES.Catalog.Httpd_Catalog.RootDirectory=UNUSED
-# BES.Catalog.Httpd_Catalog.FollowSymLinks=
-# BES.Catalog.Httpd_Catalog.Exclude=
-# BES.Catalog.Httpd_Catalog.Include=
-BES.Catalog.Httpd_Catalog.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.BONZO.RootDirectory=UNUSED
+# BES.Catalog.BONZO.FollowSymLinks=
+# BES.Catalog.BONZO.Exclude=
+# BES.Catalog.BONZO.Include=
+BES.Catalog.BONZO.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$;

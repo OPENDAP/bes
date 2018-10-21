@@ -111,6 +111,7 @@ HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::set<std::stri
                     else if (BESUtil::endsWith(href, "/")) {
                         // it's a directory aka a node
                         BESDEBUG(MODULE, prolog << "NODE: " << href << endl);
+                        href = href.substr(0,href.length()-1);
                         pageNodes.insert(href);
                     }
                     else {

@@ -19,7 +19,7 @@ AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
 SUBDIRS = . unit-tests
 # Move these back once there are tests. jhrg 10/15/18
-# unit-tests tests
+# tests
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libhttpd_catalog_module.la
@@ -29,11 +29,13 @@ libhttpd_catalog_module_la_LDFLAGS = -avoid-version -module
 libhttpd_catalog_module_la_LIBADD = $(LIBADD)
 
 HTTP_CAT_SRC = HttpdCatalogModule.cc HttpdCatalogUtils.cc HttpdCatalog.cc \
+	HttpdCatalogContainer.cc HttpdCatalogContainerStorage.cc \
 	curl_utils.cc RemoteHttpResourceCache.cc RemoteHttpResource.cc \
 	HttpdDirScraper.cc
 	
 HTTP_CAT_HDR = HttpdCatalogError.h  HttpdCatalog.h  HttpdCatalogNames.h \
 	HttpdCatalogModule.h HttpdCatalogUtils.h HttpdCatalogNames.h \
+	HttpdCatalogContainer.h HttpdCatalogContainerStorage.h \
 	curl_utils.h RemoteHttpResourceCache.h RemoteHttpResource.h \
 	HttpdDirScraper.h 
 

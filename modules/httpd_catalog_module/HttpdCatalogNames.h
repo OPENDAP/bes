@@ -32,7 +32,7 @@
 #define HTTPD_CATALOG_NAME "BONZO"
 
 // These are the names of the be keys used to configure the handler.
-#define HTTPD_CATALOG_COLLECTIONS "Httpd_Catalog.RemoteHttpdDir"
+#define HTTPD_CATALOG_COLLECTIONS "Httpd_Catalog.Collections"
 
 #define HTTPD_CATALOG_WHITELIST "Httpd_Catalog.Whitelist"
 #define HTTPD_CATALOG_MIMELIST "Httpd_Catalog.MimeTypes"

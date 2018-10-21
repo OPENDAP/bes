@@ -44,6 +44,8 @@
 
 #include "HttpdCatalogNames.h"
 #include "HttpdCatalogModule.h"
+#include "HttpdCatalogContainerStorage.h"
+#include "HttpdCatalog.h"
 
 using namespace std;
 #if 0
@@ -62,13 +64,13 @@ void HttpdCatalogModule::initialize(const string &modname)
 
     BESDEBUG(MODULE, prolog << "Initializing Module: " << modname << endl);
 
-#if 0
+#if 1
     if (!BESCatalogList::TheCatalogList()->ref_catalog(HTTPD_CATALOG_NAME)) {
-        BESCatalogList::TheCatalogList()->add_catalog(new HttpCatalog(HTTPD_CATALOG_NAME));
+        BESCatalogList::TheCatalogList()->add_catalog(new HttpdCatalog(HTTPD_CATALOG_NAME));
     }
 
     if (!BESContainerStorageList::TheList()->ref_persistence(HTTPD_CATALOG_NAME)) {
-        BESContainerStorageList::TheList()->add_persistence(newHttpCatalogContainerStorage(HTTPD_CATALOG_NAME));
+        BESContainerStorageList::TheList()->add_persistence(new HttpdCatalogContainerStorage(HTTPD_CATALOG_NAME));
     }
 #endif
 
