@@ -115,24 +115,20 @@ HttpdCatalog::~HttpdCatalog()
 
 
 
-
+/**
+ * Returns the bes::CatalogNode for the ppath;
+ */
 bes::CatalogNode *
 HttpdCatalog::get_node(const string &ppath) const
 {
-    string path = BESUtil::normalize_path(ppath,false, false);
-    path = ppath;
-    while(path.length()>0 && path[0]=='/')
-        path = path.substr(1);
-
-
-
-    vector<string> path_elements = BESUtil::split(path);
-    BESDEBUG(MODULE, prolog << "path: '" << path << "'   path_elements.size(): " << path_elements.size() << endl);
-
     string time_now = BESUtil::get_time(0,false);
     bes::CatalogNode *node;
 
-    if(path_elements.empty()){
+    string path = ppath;
+    while(path.length()>0 && path[0]=='/')
+        path = path.substr(1);
+
+    if(path.empty() || path=="/"){
         node = new CatalogNode("/");
         node->set_lmt(time_now);
         node->set_catalog_name(HTTPD_CATALOG_NAME);
@@ -147,6 +143,10 @@ HttpdCatalog::get_node(const string &ppath) const
         }
     }
     else {
+#if 0
+        vector<string> path_elements = BESUtil::split(path);
+        BESDEBUG(MODULE, prolog << "path_elements.size(): " << path_elements.size()  << " path: '" << path << "'"<< endl);
+
         string collection = path_elements[0];
         BESDEBUG(MODULE, prolog << "Checking for collection: " << collection << " d_httpd_catalogs.size(): "
             << d_httpd_catalogs.size() << endl);
@@ -168,6 +168,8 @@ HttpdCatalog::get_node(const string &ppath) const
             remote_target_url = BESUtil::pathConcat(url,remote_relative_path);
 
         BESDEBUG(MODULE, prolog << "remote_target_url: " << remote_target_url << endl);
+#endif
+        string remote_target_url = path_to_access_url(path);
 
         HttpdDirScraper hds;
         node = hds.get_node(remote_target_url,path);
@@ -176,6 +178,46 @@ HttpdCatalog::get_node(const string &ppath) const
 
     }
     return node;
+}
+
+
+
+
+/**
+ * Takes a path which begins with the name of an HttpdCatalog collection and returns the associated
+ * access url for the referenced thingy.
+ * @param path The path to convert.
+ * @throws BESNotFoundError when there is no matching collection found.
+ */
+std::string HttpdCatalog::path_to_access_url(std::string path) const
+{
+    vector<string> path_elements = BESUtil::split(path);
+    BESDEBUG(MODULE, prolog << "path_elements.size(): " << path_elements.size()  << " path: '" << path << "'"<< endl);
+
+    string collection = path_elements[0];
+    BESDEBUG(MODULE, prolog << "Checking for collection: " << collection << " d_httpd_catalogs.size(): "
+        << d_httpd_catalogs.size() << endl);
+
+    map<string,string>::const_iterator it = d_httpd_catalogs.find(collection);
+    if(it == d_httpd_catalogs.end()){
+        throw BESNotFoundError("The httpd_catalog does not contain a collection named '"+collection+"'",__FILE__,__LINE__);
+    }
+    BESDEBUG(MODULE, prolog << "The httpd_catalog collection " << collection << " is valid." << endl);
+
+    string url = it->second;
+    string remote_relative_path = path.substr(collection.length()+1);
+    BESDEBUG(MODULE, prolog << "remote_relative_path: " << remote_relative_path << endl);
+
+    string access_url;
+    if(remote_relative_path == "/" || remote_relative_path.empty())
+        access_url = url;
+    else
+        access_url = BESUtil::pathConcat(url,remote_relative_path);
+
+    BESDEBUG(MODULE, prolog << "remote_target_url: " << access_url << endl);
+
+    return access_url;
+
 }
 
 

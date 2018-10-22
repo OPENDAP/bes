@@ -38,12 +38,13 @@
 #include "HttpdCatalogContainer.h"
 #include "HttpdCatalogUtils.h"
 #include "HttpdCatalogNames.h"
+#include "HttpdCatalog.h"
 #include "RemoteHttpResource.h"
 
 using namespace std;
 using namespace bes;
 
-#define prolog std::string("HttpdCatalogContainerv::").append(__func__).append("() - ")
+#define prolog std::string("HttpdCatalogContainer::").append(__func__).append("() - ")
 
 namespace httpd_catalog {
 
@@ -156,7 +157,31 @@ string HttpdCatalogContainer::access() {
     string path  = get_real_name();
     BESDEBUG( MODULE, prolog << "path: " << path << endl);
 
-    return "";
+    HttpdCatalog hc;
+    string access_url = hc.path_to_access_url(path);
+
+
+    if(!d_remoteResource) {
+        BESDEBUG( MODULE, prolog << "Building new RemoteResource." << endl );
+        d_remoteResource = new RemoteHttpResource(access_url);
+        d_remoteResource->retrieveResource();
+    }
+    BESDEBUG( MODULE, prolog << "Located remote resource." << endl );
+
+    string cachedResource = d_remoteResource->getCacheFileName();
+    BESDEBUG( MODULE, prolog << "Using local cache file: " << cachedResource << endl );
+
+    string type = d_remoteResource->getType();
+    set_container_type(type);
+    BESDEBUG( MODULE, prolog << "Type: " << type << endl );
+
+
+    BESDEBUG( MODULE, prolog << "Done accessing " << get_real_name() << " returning cached file " << cachedResource << endl);
+    BESDEBUG( MODULE, prolog << "Done accessing " << *this << endl);
+    BESDEBUG( MODULE, prolog << "END" << endl);
+
+    return cachedResource;    // this should return the file name from the CmrCache
+
 
     /*
     Granule *granule = CmrUtils::getTemporalFacetGranule(path);

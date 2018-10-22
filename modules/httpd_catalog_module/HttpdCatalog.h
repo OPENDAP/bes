@@ -79,7 +79,7 @@ public:
     virtual bes::CatalogNode *get_node(const std::string &path) const;
     // virtual bes::CatalogNode *get_node_OLD(const std::string &path) const;
     // virtual bes::CatalogNode *get_node_NEW(const std::string &path) const;
-
+    virtual std::string path_to_access_url(std::string path) const;
 
     virtual void dump(ostream &strm) const;
 
