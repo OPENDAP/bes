@@ -24,9 +24,7 @@ using bes::CatalogItem;
 
 #define prolog std::string("HttpdDirScraper::").append(__func__).append("() - ")
 
-
 namespace httpd_catalog {
-
 
 HttpdDirScraper::HttpdDirScraper()
 {
@@ -39,8 +37,7 @@ HttpdDirScraper::~HttpdDirScraper()
     // TODO Auto-generated destructor stub
 }
 
-void
-HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::set<std::string> &pageNodes, std::set<std::string> &pageLeaves) const
+void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::set<std::string> &pageNodes, std::set<std::string> &pageLeaves) const
 {
     // Go get the text from the remote resource
     RemoteHttpResource rhr(url);
@@ -53,7 +50,7 @@ HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::set<std::stri
     string aOpenStr = "<a ";
     string aCloseStr = "</a>";
     string hrefStr = "href=\"";
-    BESRegex hrefExcludeRegex ("(^#.*$)|(^\\?C.*$)|(redirect\\/)|(^\\/$)|(^<img.*$)");
+    BESRegex hrefExcludeRegex("(^#.*$)|(^\\?C.*$)|(redirect\\/)|(^\\/$)|(^<img.*$)");
     BESRegex nameExcludeRegex("^Parent Directory$");
 
     bool done = false;
@@ -92,7 +89,8 @@ HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::set<std::stri
                 string href = aElemStr.substr(start, length);
                 BESDEBUG(MODULE, prolog << "href: " << href << endl);
 
-                if ((linkText.find("<img") != string::npos) || !(linkText.length()) || (linkText.find("<<<") != string::npos) || (linkText.find(">>>") != string::npos)) {
+                if ((linkText.find("<img") != string::npos) || !(linkText.length()) || (linkText.find("<<<") != string::npos)
+                    || (linkText.find(">>>") != string::npos)) {
                     BESDEBUG(MODULE, prolog << "SKIPPING(image|copy|<<<|>>>): " << aElemStr << endl);
                 }
                 else {
@@ -100,18 +98,17 @@ HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::set<std::stri
                         // SKIPPING
                         BESDEBUG(MODULE, prolog << "SKIPPING(null or remote): " << href << endl);
                     }
-                    else if (hrefExcludeRegex.match(href.c_str(),href.length(),0) > 0) { /// USE MATCH
+                    else if (hrefExcludeRegex.match(href.c_str(), href.length(), 0) > 0) { /// USE MATCH
                         // SKIPPING
                         BESDEBUG(MODULE, prolog << "SKIPPING(hrefExcludeRegex) - href: '" << href << "'"<< endl);
                     }
-                    else if (nameExcludeRegex.match(linkText.c_str(),linkText.length(),0) > 0) { /// USE MATCH
+                    else if (nameExcludeRegex.match(linkText.c_str(), linkText.length(), 0) > 0) { /// USE MATCH
                         // SKIPPING
                         BESDEBUG(MODULE, prolog << "SKIPPING(nameExcludeRegex) - name: '" << linkText << "'" << endl);
                     }
                     else if (BESUtil::endsWith(href, "/")) {
                         // it's a directory aka a node
                         BESDEBUG(MODULE, prolog << "NODE: " << href << endl);
-                        href = href.substr(0,href.length()-1);
                         pageNodes.insert(href);
                     }
                     else {
@@ -126,63 +123,83 @@ HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::set<std::stri
     }
 }
 
-
-
 bes::CatalogNode *HttpdDirScraper::get_node(const string &url, const string &path) const
 {
-    set<string> pageNodes;
-    set<string> pageLeaves;
-    createHttpdDirectoryPageMap(url, pageNodes, pageLeaves);
+    BESDEBUG(MODULE, prolog << "Processing url: '" << url << "'"<< endl);
+    bes::CatalogNode *node = new bes::CatalogNode(path);
 
-    BESDEBUG(MODULE, prolog << "Found " << pageNodes.size() << " nodes." << endl);
-    BESDEBUG(MODULE, prolog << "Found " << pageLeaves.size() << " leaves." << endl);
+    if (BESUtil::endsWith(url, "/")) {
 
-    set<string>::iterator it;
-    bes::CatalogNode *node =  new bes::CatalogNode(path);
+        set<string> pageNodes;
+        set<string> pageLeaves;
+        createHttpdDirectoryPageMap(url, pageNodes, pageLeaves);
 
-    it =pageNodes.begin();
-    while(it!=pageNodes.end()){
-        string pageNode = *it;
-        bes::CatalogItem *collection = new bes::CatalogItem();
-        collection->set_type(CatalogItem::node);
-        collection->set_name(pageNode);
-        collection->set_is_data(false);
+        BESDEBUG(MODULE, prolog << "Found " << pageNodes.size() << " nodes." << endl);
+        BESDEBUG(MODULE, prolog << "Found " << pageLeaves.size() << " leaves." << endl);
 
-        // FIXME: Figure out the LMT if we can... HEAD?
-        collection->set_lmt(BESUtil::get_time(true));
+        set<string>::iterator it;
 
-        // FIXME: For nodes the size should be the number of children, but how without crawling?
-        collection->set_size(0);
+        it = pageNodes.begin();
+        while (it != pageNodes.end()) {
+            string pageNode = *it;
+            if (BESUtil::endsWith(pageNode, "/")) pageNode = pageNode.substr(0, pageNode.length() - 1);
 
-        node->add_node(collection);
-        it++;
+            bes::CatalogItem *collection = new bes::CatalogItem();
+            collection->set_type(CatalogItem::node);
+
+            collection->set_name(pageNode);
+            collection->set_is_data(false);
+
+            // FIXME: Figure out the LMT if we can... HEAD?
+            collection->set_lmt(BESUtil::get_time(true));
+
+            // FIXME: For nodes the size should be the number of children, but how without crawling?
+            collection->set_size(0);
+
+            node->add_node(collection);
+            it++;
+        }
+
+        it = pageLeaves.begin();
+        while (it != pageLeaves.end()) {
+            string leaf = *it;
+            CatalogItem *granuleItem = new CatalogItem();
+            granuleItem->set_type(CatalogItem::leaf);
+            granuleItem->set_name(leaf);
+
+            // FIXME: wrangle up the Typematch and see if we think this thing is data or not.
+            granuleItem->set_is_data(false);
+
+            // FIXME: Find the Last Modified date?
+            granuleItem->set_lmt(BESUtil::get_time(true));
+
+            // FIXME: Determine size of this thing? Do we "HEAD" all the leaves?
+            granuleItem->set_size(1);
+
+            node->add_leaf(granuleItem);
+            it++;
+        }
     }
+    else {
+        std::vector<std::string> url_parts = BESUtil::split(url,'/',true);
+        string leaf_name = url_parts.back();
 
-    it=pageLeaves.begin();
-    while (it!=pageLeaves.end()){
-        string leaf = *it;
-        CatalogItem *granuleItem = new CatalogItem();
-        granuleItem->set_type(CatalogItem::leaf);
-        granuleItem->set_name(leaf);
-
-        // FIXME: wrangle up the Typematch and see if we think this thing is data or not.
-        granuleItem->set_is_data(false);
-
+        CatalogItem *item = new CatalogItem();
+        item->set_type(CatalogItem::leaf);
+        item->set_name(leaf_name);
         // FIXME: Find the Last Modified date?
-        granuleItem->set_lmt(BESUtil::get_time(true));
+        item->set_lmt(BESUtil::get_time(true));
 
         // FIXME: Determine size of this thing? Do we "HEAD" all the leaves?
-        granuleItem->set_size(-1);
+        item->set_size(1);
 
-        node->add_leaf(granuleItem);
-        it++;
+        node->set_leaf(item);
+
+
     }
-
     return node;
+
 }
 
 } // namespace httpd_catalog
-
-
-
 

@@ -120,6 +120,12 @@ bes::CatalogNode *
 HttpdCatalog::get_node(const string &ppath) const
 {
     string path = BESUtil::normalize_path(ppath,false, false);
+    path = ppath;
+    while(path.length()>0 && path[0]=='/')
+        path = path.substr(1);
+
+
+
     vector<string> path_elements = BESUtil::split(path);
     BESDEBUG(MODULE, prolog << "path: '" << path << "'   path_elements.size(): " << path_elements.size() << endl);
 
@@ -153,7 +159,15 @@ HttpdCatalog::get_node(const string &ppath) const
 
         string url = it->second;
         string remote_relative_path = path.substr(collection.length());
-        string remote_target_url = BESUtil::assemblePath(url,remote_relative_path);
+        BESDEBUG(MODULE, prolog << "remote_relative_path: " << remote_relative_path << endl);
+
+        string remote_target_url;
+        if(remote_relative_path == "/" || remote_relative_path.empty())
+            remote_target_url = url;
+        else
+            remote_target_url = BESUtil::pathConcat(url,remote_relative_path);
+
+        BESDEBUG(MODULE, prolog << "remote_target_url: " << remote_target_url << endl);
 
         HttpdDirScraper hds;
         node = hds.get_node(remote_target_url,path);
