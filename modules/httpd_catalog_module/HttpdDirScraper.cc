@@ -184,7 +184,7 @@ long get_size_val(string size_str){
 }
 
 
-void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::set<bes::CatalogItem *> &items) const
+void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std::string, bes::CatalogItem *> &items) const
 {
     const BESCatalogUtils *cat_utils = BESCatalogList::TheCatalogList()->find_catalog("catalog")->get_catalog_utils();
 
@@ -288,7 +288,7 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::set<bes:
                         long size = get_size_val(size_str);
                         childNode->set_size(size);
 
-                        items.insert(childNode);
+                        items.insert(pair<std::string,bes::CatalogItem *>(node_name,childNode));
 
                     }
                     else {
@@ -305,8 +305,7 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::set<bes:
 
                         long size = get_size_val(size_str);
                         leafItem->set_size(size);
-
-                        items.insert(leafItem);
+                        items.insert(pair<std::string,bes::CatalogItem *>(href,leafItem));
                     }
                 }
             }
@@ -350,15 +349,15 @@ bes::CatalogNode *HttpdDirScraper::get_node(const string &url, const string &pat
 
     if (BESUtil::endsWith(url, "/")) {
 
-        set<bes::CatalogItem *> items;
+        map<string, bes::CatalogItem *> items;
         createHttpdDirectoryPageMap(url, items);
 
         BESDEBUG(MODULE, prolog << "Found " << items.size() << " items." << endl);
 
-        set<bes::CatalogItem *>::iterator it;
+        map<string, bes::CatalogItem *>::iterator it;
         it = items.begin();
         while (it != items.end()) {
-            bes::CatalogItem *item = *it;
+            bes::CatalogItem *item = it->second;
             BESDEBUG(MODULE, prolog << "Adding item: '" << item->get_name() << "'"<< endl);
 
             if(item->get_type() == CatalogItem::node )

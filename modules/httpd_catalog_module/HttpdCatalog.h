@@ -50,7 +50,7 @@ namespace httpd_catalog {
 class HttpdCatalog: public BESCatalog {
 private:
     std::map<std::string,std::string> d_httpd_catalogs;
-    std::map<std::string,std::string> d_typematch;
+    // std::map<std::string,std::string> d_typematch;
 
 public:
     HttpdCatalog(const std::string &catalog_name = HTTPD_CATALOG_NAME);
@@ -81,7 +81,6 @@ public:
     // virtual bes::CatalogNode *get_node_OLD(const std::string &path) const;
     // virtual bes::CatalogNode *get_node_NEW(const std::string &path) const;
     virtual std::string path_to_access_url(std::string path) const;
-    virtual bool is_data(std::string path) const;
 
     virtual void dump(ostream &strm) const;
 

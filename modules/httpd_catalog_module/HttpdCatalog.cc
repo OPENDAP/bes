@@ -107,6 +107,7 @@ HttpdCatalog::HttpdCatalog(const string &catalog_name) : BESCatalog(catalog_name
                 " was incorrectly formatted. entry: "+catalog_entry, __FILE__,__LINE__);
         }
     }
+#if 0
     string default_type_match_key = "BES.Catalog.catalog.TypeMatch";
     string catalog_type_match_key = "BES.Catalog."+catalog_name+".TypeMatch";
     string type_match_key = catalog_type_match_key;
@@ -135,7 +136,7 @@ HttpdCatalog::HttpdCatalog(const string &catalog_name) : BESCatalog(catalog_name
                 " was incorrectly formatted. entry: "+typeMatch_entry, __FILE__,__LINE__);
         }
     }
-
+#endif
 
 
 
@@ -211,20 +212,6 @@ HttpdCatalog::get_node(const string &ppath) const
 
     }
     return node;
-}
-
-/**
- * Takes a path which begins with the name of an HttpdCatalog collection and returns the associated
- * access url for the referenced thingy.
- * @param path The path to convert.
- * @throws BESNotFoundError when there is no matching collection found.
- */
-bool HttpdCatalog::is_data(std::string path) const
-{
-
-
-    return true;
-
 }
 
 

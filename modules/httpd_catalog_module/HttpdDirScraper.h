@@ -21,8 +21,8 @@ private:
 
     int getNextElementText(const string &page_str, string element_name, int startIndex, string &resultText, bool trim=true) const;
 
-    void createHttpdDirectoryPageMap(std::string url, std::set<bes::CatalogItem *> &items) const;
-    void createHttpdDirectoryPageMap(std::string url, std::set<std::string> &pageNodes, std::set<std::string> &pageLeave) const;
+    void createHttpdDirectoryPageMap(std::string url, std::map<std::string, bes::CatalogItem *> &items) const;
+    // void createHttpdDirectoryPageMap(std::string url, std::set<std::string> &pageNodes, std::set<std::string> &pageLeave) const;
 
 public:
     HttpdDirScraper(const HttpdCatalog *hc);
