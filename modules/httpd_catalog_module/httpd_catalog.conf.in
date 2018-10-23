@@ -22,7 +22,7 @@ BES.Catalog.RemoteResources.RootDirectory=UNUSED
 # BES.Catalog.RemoteResources.FollowSymLinks=
 # BES.Catalog.RemoteResources.Exclude=
 # BES.Catalog.RemoteResources.Include=
-BES.Catalog.RemoteResources.TypeMatch+=nc:*;
+BES.Catalog.RemoteResources.TypeMatch+=unused:*;
 
 
 # The cache used by the BES for the retrieved items.
