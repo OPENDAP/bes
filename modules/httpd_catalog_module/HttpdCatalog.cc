@@ -132,7 +132,7 @@ HttpdCatalog::get_node(const string &ppath) const
         node = new CatalogNode("/");
         node->set_lmt(time_now);
         node->set_catalog_name(HTTPD_CATALOG_NAME);
-        map<string, string>::iterator  it  = d_httpd_catalogs.begin();
+        map<string, string>::const_iterator  it  = d_httpd_catalogs.begin();
 
         while(it!=d_httpd_catalogs.end()){
             CatalogItem *collection = new CatalogItem();
