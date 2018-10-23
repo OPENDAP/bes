@@ -15,6 +15,11 @@
 namespace httpd_catalog {
 
 class HttpdDirScraper {
+private:
+
+    int getNextElementText(const string &page_str, string element_name, int startIndex, string &resultText, bool trim=true) const;
+    void createHttpdDirectoryPageMap(std::string url, std::set<bes::CatalogItem *> &items) const;
+
 public:
     HttpdDirScraper();
     virtual ~HttpdDirScraper();
