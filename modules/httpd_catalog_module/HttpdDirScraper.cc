@@ -43,7 +43,7 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::set<std:
     // Go get the text from the remote resource
     RemoteHttpResource rhr(url);
     rhr.retrieveResource();
-    ifstream t(rhr.getCacheFileName());
+    ifstream t(rhr.getCacheFileName().c_str());
     stringstream buffer;
     buffer << t.rdbuf();
     string pageStr = buffer.str();
