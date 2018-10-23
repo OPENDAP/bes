@@ -36,6 +36,7 @@ Httpd_Catalog.MimeTypes+=h5:application/x-hdf5
 
 Httpd_Catalog.Collections=woo:https://www.opendap.org/pub/
 Httpd_Catalog.Collections+=iris:https://ds.iris.edu/files/products/
+Httpd_Catalog.Collections+=too:http://test.opendap.org/data/
 
 # Where we can go for stuff...
 Gateway.Whitelist=http://localhost
