@@ -7,7 +7,6 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <regex>
 #include <stdlib.h>     /* atol */
 #include <ctype.h> /* isalpha and isdigit */
 
