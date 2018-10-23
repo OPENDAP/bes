@@ -107,6 +107,38 @@ HttpdCatalog::HttpdCatalog(const string &catalog_name) : BESCatalog(catalog_name
                 " was incorrectly formatted. entry: "+catalog_entry, __FILE__,__LINE__);
         }
     }
+    string default_type_match_key = "BES.Catalog.catalog.TypeMatch";
+    string catalog_type_match_key = "BES.Catalog."+catalog_name+".TypeMatch";
+    string type_match_key = catalog_type_match_key;
+    vector<string> type_match_v;
+    TheBESKeys::TheKeys()->get_values(type_match_key, type_match_v, found);
+    if(!found){
+        type_match_key = default_type_match_key;
+        TheBESKeys::TheKeys()->get_values(type_match_key, type_match_v, found);
+        if(!found){
+            throw BESInternalError("ERROR: Failed to located either the '"+catalog_type_match_key+
+                "' or the '"+default_type_match_key+"' BES keys." , __FILE__, __LINE__);
+        }
+    }
+
+    for(it=type_match_v.begin();  it!=type_match_v.end(); it++){
+        string typeMatch_entry = *it;
+        int index = typeMatch_entry.find(":");
+        if(index>0){
+            string name = typeMatch_entry.substr(0,index);
+            string regex =  typeMatch_entry.substr(index+1);
+            BESDEBUG(MODULE, prolog << "name: '" << name << "'  regex: " << regex << endl);
+            d_typematch.insert( pair<string,string>(name,regex));
+        }
+        else {
+            throw BESInternalError(string("The configuration entry for the ") + type_match_key +
+                " was incorrectly formatted. entry: "+typeMatch_entry, __FILE__,__LINE__);
+        }
+    }
+
+
+
+
 }
 
 HttpdCatalog::~HttpdCatalog()
@@ -169,9 +201,10 @@ HttpdCatalog::get_node(const string &ppath) const
 
         BESDEBUG(MODULE, prolog << "remote_target_url: " << remote_target_url << endl);
 #endif
+
         string remote_target_url = path_to_access_url(path);
 
-        HttpdDirScraper hds;
+        HttpdDirScraper hds(this);
         node = hds.get_node(remote_target_url,path);
         node->set_lmt(time_now);
         node->set_catalog_name(HTTPD_CATALOG_NAME);
@@ -180,7 +213,19 @@ HttpdCatalog::get_node(const string &ppath) const
     return node;
 }
 
+/**
+ * Takes a path which begins with the name of an HttpdCatalog collection and returns the associated
+ * access url for the referenced thingy.
+ * @param path The path to convert.
+ * @throws BESNotFoundError when there is no matching collection found.
+ */
+bool HttpdCatalog::is_data(std::string path) const
+{
 
+
+    return true;
+
+}
 
 
 /**

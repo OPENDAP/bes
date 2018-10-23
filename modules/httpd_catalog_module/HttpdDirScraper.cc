@@ -13,6 +13,8 @@
 #include <BESDebug.h>
 #include <BESUtil.h>
 #include <BESRegex.h>
+#include <BESCatalogList.h>
+#include <BESCatalogUtils.h>
 #include <CatalogItem.h>
 
 #include "RemoteHttpResource.h"
@@ -27,7 +29,7 @@ using bes::CatalogItem;
 
 namespace httpd_catalog {
 
-HttpdDirScraper::HttpdDirScraper()
+HttpdDirScraper::HttpdDirScraper(const HttpdCatalog *hc):d_catalog(hc)
 {
     // TODO Auto-generated constructor stub
 
@@ -37,6 +39,7 @@ HttpdDirScraper::~HttpdDirScraper()
 {
     // TODO Auto-generated destructor stub
 }
+#if 0
 void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::set<std::string> &pageNodes, std::set<std::string> &pageLeaves) const
 
 {
@@ -71,7 +74,6 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::set<std:
             }
             else {
                 int length;
-
 
                 // Locate out the entire <a /> element
                 BESDEBUG(MODULE, prolog << "aOpenIndex: " << aOpenIndex << endl);
@@ -136,6 +138,7 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::set<std:
         }
     }
 }
+#endif
 
 
 /*
@@ -183,6 +186,8 @@ long get_size_val(string size_str){
 
 void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::set<bes::CatalogItem *> &items) const
 {
+    const BESCatalogUtils *cat_utils = BESCatalogList::TheCatalogList()->find_catalog(d_catalog->get_catalog_name())->get_catalog_utils();
+
     // Go get the text from the remote resource
     RemoteHttpResource rhr(url);
     rhr.retrieveResource();
@@ -293,13 +298,11 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::set<bes:
                         leafItem->set_type(CatalogItem::leaf);
                         leafItem->set_name(href);
 
-                        // FIXME: wrangle up the Typematch and see if we think this thing is data or not.
-                        leafItem->set_is_data(false);
 
-                        // FIXME: Find the Last Modified date?
+                        leafItem->set_is_data(cat_utils->is_data(href));
+
                         leafItem->set_lmt(time_str);
 
-                        // FIXME: Determine size of this thing? Do we "HEAD" all the leaves?
                         long size = get_size_val(size_str);
                         leafItem->set_size(size);
 
@@ -367,6 +370,8 @@ bes::CatalogNode *HttpdDirScraper::get_node(const string &url, const string &pat
 
     }
     else {
+        const BESCatalogUtils *cat_utils = BESCatalogList::TheCatalogList()->find_catalog(d_catalog->get_catalog_name())->get_catalog_utils();
+
         std::vector<std::string> url_parts = BESUtil::split(url,'/',true);
         string leaf_name = url_parts.back();
 
@@ -375,6 +380,9 @@ bes::CatalogNode *HttpdDirScraper::get_node(const string &url, const string &pat
         item->set_name(leaf_name);
         // FIXME: Find the Last Modified date?
         item->set_lmt(BESUtil::get_time(true));
+
+
+        item->set_is_data(cat_utils->is_data(leaf_name));
 
         // FIXME: Determine size of this thing? Do we "HEAD" all the leaves?
         item->set_size(1);

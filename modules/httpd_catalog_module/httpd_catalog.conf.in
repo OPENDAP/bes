@@ -18,11 +18,11 @@ BES.module.httpd=@bes_modules_dir@/libhttpd_catalog_module.so
 # Httpd_Catalog.Reference: URL to the Httpd_Catalog Reference Page at docs.opendap.org"
 Httpd_Catalog.Reference=http://docs.opendap.org/index.php/BES_-_Modules_-_Httpd_Catalog
 
-BES.Catalog.BONZO.RootDirectory=UNUSED
-# BES.Catalog.BONZO.FollowSymLinks=
-# BES.Catalog.BONZO.Exclude=
-# BES.Catalog.BONZO.Include=
-BES.Catalog.BONZO.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.RemoteResources.RootDirectory=UNUSED
+# BES.Catalog.RemoteResources.FollowSymLinks=
+# BES.Catalog.RemoteResources.Exclude=
+# BES.Catalog.RemoteResources.Include=
+BES.Catalog.RemoteResources.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$;
 
 
 # The cache used by the BES for the retrieved items.

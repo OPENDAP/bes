@@ -29,7 +29,7 @@
 
 #define HTTPD_CATALOG "httpd"
 
-#define HTTPD_CATALOG_NAME "BONZO"
+#define HTTPD_CATALOG_NAME "RemoteResources"
 
 // These are the names of the be keys used to configure the handler.
 #define HTTPD_CATALOG_COLLECTIONS "Httpd_Catalog.Collections"
