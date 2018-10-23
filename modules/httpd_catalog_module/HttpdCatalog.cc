@@ -92,8 +92,8 @@ HttpdCatalog::HttpdCatalog(const string &catalog_name) : BESCatalog(catalog_name
             +"'", __FILE__, __LINE__);
     }
 
-    vector<string>::const_iterator it;
-    for(it=httpd_catalogs.cbegin();  it!=httpd_catalogs.cend(); it++){
+    vector<string>::iterator it;
+    for(it=httpd_catalogs.begin();  it!=httpd_catalogs.end(); it++){
         string catalog_entry = *it;
         int index = catalog_entry.find(":");
         if(index>0){
