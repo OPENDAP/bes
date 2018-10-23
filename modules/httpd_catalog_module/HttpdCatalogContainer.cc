@@ -65,8 +65,10 @@ HttpdCatalogContainer::HttpdCatalogContainer(const string &sym_name,
     BESDEBUG( MODULE, prolog << "BEGIN sym_name: " << sym_name
         << " real_name: " << real_name << " type: " << type << endl);
 
-
-    string path = BESUtil::normalize_path(real_name,true, false);
+    string path = real_name;
+    if(path.empty() || path[0]!='/'){
+        path = "/" + path;
+    }
     vector<string> path_elements = BESUtil::split(path);
     BESDEBUG(MODULE, prolog << "path: '" << path << "'  path_elements.size(): " << path_elements.size() << endl);
 
@@ -77,31 +79,6 @@ HttpdCatalogContainer::HttpdCatalogContainer(const string &sym_name,
         // @TODO FIX Dynamically determine the type from the Granule information (type-match to name, mime-type, etc)
         this->set_container_type("nc");
     }
-
-
-
-    /*
-
-    if (type.empty())
-        set_container_type("cmr");
-
-    BESUtil::url url_parts;
-    BESUtil::url_explode(real_name, url_parts);
-    url_parts.uname = "";
-    url_parts.psswd = "";
-    string use_real_name = BESUtil::url_create(url_parts);
-
-    if (!WhiteList::get_white_list()->is_white_listed(use_real_name)) {
-        string err = (string) "The specified URL " + real_name
-                + " does not match any of the accessible services in"
-                + " the white list.";
-        throw BESSyntaxUserError(err, __FILE__, __LINE__);
-    }
-
-    // Because we know the name is really a URL, then we know the "relative_name" is meaningless
-    // So we set it to be the same as "name"
-    set_relative_name(real_name);
-    */
 
     BESDEBUG( MODULE, prolog << "END" << endl);
 
@@ -160,7 +137,6 @@ string HttpdCatalogContainer::access() {
     HttpdCatalog hc;
     string access_url = hc.path_to_access_url(path);
 
-
     if(!d_remoteResource) {
         BESDEBUG( MODULE, prolog << "Building new RemoteResource." << endl );
         d_remoteResource = new RemoteHttpResource(access_url);
@@ -175,52 +151,11 @@ string HttpdCatalogContainer::access() {
     set_container_type(type);
     BESDEBUG( MODULE, prolog << "Type: " << type << endl );
 
-
     BESDEBUG( MODULE, prolog << "Done accessing " << get_real_name() << " returning cached file " << cachedResource << endl);
     BESDEBUG( MODULE, prolog << "Done accessing " << *this << endl);
     BESDEBUG( MODULE, prolog << "END" << endl);
 
     return cachedResource;    // this should return the file name from the CmrCache
-
-
-    /*
-    Granule *granule = CmrUtils::getTemporalFacetGranule(path);
-    if(!granule){
-        throw BESNotFoundError("Failed locate a granule associated with the path "+path,__FILE__,__LINE__);
-    }
-    string url  = granule->getDataAccessUrl();
-    delete granule;
-    granule = 0;
-
-    string type = get_container_type();
-    if (type == MODULE)
-        type = "";
-
-    if(!d_remoteResource) {
-        BESDEBUG( MODULE, prolog << "Building new RemoteResource." << endl );
-        d_remoteResource = new RemoteHttpResource(url);
-        d_remoteResource->retrieveResource();
-    }
-    BESDEBUG( MODULE, prolog << "Located remote resource." << endl );
-
-
-    string cachedResource = d_remoteResource->getCacheFileName();
-    BESDEBUG( MODULE, prolog << "Using local cache file: " << cachedResource << endl );
-
-    type = d_remoteResource->getType();
-    set_container_type(type);
-    BESDEBUG( MODULE, prolog << "Type: " << type << endl );
-
-
-    BESDEBUG( MODULE, prolog << "Done accessing " << get_real_name() << " returning cached file " << cachedResource << endl);
-    BESDEBUG( MODULE, prolog << "Done accessing " << *this << endl);
-    BESDEBUG( MODULE, prolog << "END" << endl);
-
-    return cachedResource;    // this should return the file name from the CmrCache
-
-    */
-
-
 }
 
 
