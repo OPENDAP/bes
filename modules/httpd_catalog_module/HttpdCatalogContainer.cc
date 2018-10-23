@@ -54,7 +54,7 @@ namespace httpd_catalog {
  * The real_name is the remote request URL.
  *
  * @param sym_name symbolic name representing this remote container
- * @param real_name the virtual CMR path to a dataset or file.
+ * @param real_name the virtual  path to a dataset or file.
  * @throws BESSyntaxUserError if the path does not validate
  * @see CmrUtils
  */
