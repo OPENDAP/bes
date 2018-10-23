@@ -358,8 +358,7 @@ bes::CatalogNode *HttpdDirScraper::get_node(const string &url, const string &pat
             bes::CatalogItem *item = *it;
             BESDEBUG(MODULE, prolog << "Adding item: '" << item->get_name() << "'"<< endl);
 
-            CatalogItem::item_type node_type = CatalogItem::item_type::node;
-            if(item->get_type() == node_type )
+            if(item->get_type() == CatalogItem::node )
                 node->add_node(item);
             else
                 node->add_leaf(item);
