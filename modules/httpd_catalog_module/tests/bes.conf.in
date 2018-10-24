@@ -87,25 +87,28 @@ Gateway.Whitelist+=https://s3.amazonaws.com/cloudydap
 
 Gateway.Whitelist += https://cmr.earthdata.nasa.gov
 
-BES.Catalog.CMR.RootDirectory=UNUSED
-# BES.Catalog.CMR.FollowSymLinks=
-# BES.Catalog.CMR.Exclude=
-# BES.Catalog.CMR.Include=
-BES.Catalog.CMR.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$;
 
-CMR.Cache.dir=@abs_top_builddir@/modules/cmr_module/tests/cache
-CMR.Cache.prefix=cmr_
-CMR.Cache.size=500
+# Configure dat cache
+HttpResourceCache.dir=@abs_top_builddir@/modules/httpd_catalog_module/unit-tests/static-cache
+#HttpResourceCache.dir=/tmp/cache
+HttpResourceCache.prefix=httpd_cat_
+HttpResourceCache.size=500
 
-CMR.MimeTypes=nc:application/x-netcdf
-CMR.MimeTypes+=h4:application/x-hdf
-CMR.MimeTypes+=h5:application/x-hdf5
 
-CMR.Collections=C179003030-ORNL_DAAC
-CMR.Collections+=C1276812863-GES_DISC
+BES.Catalog.Default=catalog
+BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@
+BES.Catalog.catalog.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$
 
-CMR.Facets=temporal
-CMR.Facets+=dental_floss
+BES.Catalog.RemoteResources.RootDirectory=UNUSED
+BES.Catalog.RemoteResources.TypeMatch+=unused:*;
+
+Httpd_Catalog.MimeTypes=nc:application/x-netcdf
+Httpd_Catalog.MimeTypes+=h4:application/x-hdf
+Httpd_Catalog.MimeTypes+=h5:application/x-hdf5
+
+Httpd_Catalog.Collections=woo:https://www.opendap.org/pub/
+Httpd_Catalog.Collections+=iris:https://ds.iris.edu/files/products/
+
 
 
 

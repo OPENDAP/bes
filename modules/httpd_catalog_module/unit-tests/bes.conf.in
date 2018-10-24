@@ -25,9 +25,7 @@ HttpResourceCache.size=500
 
 BES.Catalog.Default=catalog
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@
-# The TypeMatch is required, but since these tests don't actually use the value,
-# it can be anything that matches the form of '<thing>:<regex>;' jhrg 7/6/18
-BES.Catalog.catalog.TypeMatch=something:regex;
+BES.Catalog.catalog.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$
 
 
 Httpd_Catalog.MimeTypes=nc:application/x-netcdf
@@ -38,11 +36,7 @@ Httpd_Catalog.Collections=woo:https://www.opendap.org/pub/
 Httpd_Catalog.Collections+=iris:https://ds.iris.edu/files/products/
 
 
-BES.Catalog.BONZO.RootDirectory=unused
-# BES.Catalog.BONZO.FollowSymLinks=
-# BES.Catalog.BONZO.Exclude=
-# BES.Catalog.BONZO.Include=
-BES.Catalog.BONZO.TypeMatch+=unused:*
+BES.Catalog.RemoteResources.RootDirectory=UNUSED
+BES.Catalog.RemoteResources.TypeMatch+=unused:*;
 
-BES.Catalog.catalog.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$
 

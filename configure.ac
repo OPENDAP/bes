@@ -878,9 +878,9 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/cmr_module/unit-tests/Makefile
     
     modules/httpd_catalog_module/Makefile
+    modules/httpd_catalog_module/unit-tests/Makefile
     modules/httpd_catalog_module/tests/Makefile
     modules/httpd_catalog_module/tests/atlocal
-    modules/httpd_catalog_module/unit-tests/Makefile
 
     modules/www-interface/Makefile
 
