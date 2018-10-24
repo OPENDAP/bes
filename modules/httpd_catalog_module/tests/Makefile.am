@@ -5,7 +5,7 @@ noinst_DATA = bes.conf cache
 
 CLEANFILES = bes.conf cache
 
-EXTRA_DIST = cmr_catalog $(TESTSUITE).at $(TESTSUITE) atlocal.in \
+EXTRA_DIST = httpd_catalog $(TESTSUITE).at $(TESTSUITE) atlocal.in \
 $(BES_CONF_IN) package.m4
 
 DISTCLEANFILES = atconfig
