@@ -47,7 +47,7 @@
 
 #include "RemoteHttpResource.h"
 #include "CmrApi.h"
-#include "HttpdCatalogNames.h"
+#include "CmrNames.h"
 #include "CmrCatalog.h"
 #include "CmrError.h"
 #include "rjson_utils.h"
