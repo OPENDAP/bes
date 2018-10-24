@@ -17,7 +17,7 @@ LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
-SUBDIRS = . unit-tests
+SUBDIRS = . unit-tests tests
 # Move these back once there are tests. jhrg 10/15/18
 # tests
 
