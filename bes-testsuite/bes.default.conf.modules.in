@@ -72,4 +72,5 @@ BES.DefaultResponseMethod=POST
 H5.EnableCF=false
 H5.EnableCheckNameClashing=false
 H5.EnableAddPathAttrs=false
+H5.DefaultHandleDimension=true
 
