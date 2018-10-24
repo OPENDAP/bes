@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <response reqID="[thread:http-nio-8080-exec-4-42][bes_client:/-2]" xmlns="http://xml.opendap.org/ns/bes/1.0#">
     <showNode>
-        <node count="2" lastModified="removed date-time" name="/CMR">
-            <item lastModified="" name="C179003030-ORNL_DAAC" type="node"/>
-            <item lastModified="" name="C1276812863-GES_DISC" type="node"/>
+        <node count="4" lastModified="removed date-time" name="/RemoteResources/test/httpd_catalog">
+            <item lastModified="19-Oct-2018 19:33" name="subdir1" type="node"/>
+            <item lastModified="19-Oct-2018 19:33" name="subdir2" type="node"/>
+            <item isData="false" lastModified="19-Oct-2018 19:29" name="READTHIS" size="72" type="leaf"/>
+            <item isData="true" lastModified="19-Oct-2018 19:32" name="fnoc1.nc" size="23000" type="leaf"/>
         </node>
     </showNode>
 </response>

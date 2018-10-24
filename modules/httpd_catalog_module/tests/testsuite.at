@@ -5,3 +5,5 @@ AT_TESTED([besstandalone])
 m4_include([../../handler_tests_macros.m4])
 
 AT_BESCMD_RESPONSE_SCRUB_DATES_TEST([httpd_catalog/show_test_node.bescmd])
+AT_BESCMD_RESPONSE_SCRUB_DATES_TEST([httpd_catalog/show_test_item.bescmd])
+AT_BESCMD_RESPONSE_SCRUB_DATES_TEST([httpd_catalog/show_test_data_item.bescmd])

@@ -986,6 +986,7 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     AC_CONFIG_TESTDIR(modules/csv_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/asciival/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/cmr_module/tests, [standalone])
+    AC_CONFIG_TESTDIR(modules/httpd_catalog_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_json/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_covjson/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/debug_functions/tests, [standalone])

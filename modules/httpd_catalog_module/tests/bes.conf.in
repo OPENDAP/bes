@@ -7,13 +7,13 @@ BES.Group=group_name
 BES.LogName=./bes.log
 BES.LogVerbose=no
 
-BES.modules=dap,cmd,dapreader,cmr,nc
+BES.modules=dap,cmd,dapreader,httpd,nc
 BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
 BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
 BES.module.dapreader=@abs_top_builddir@/dapreader/.libs/libdapreader_module.so
-
-BES.module.cmr=@abs_top_builddir@/modules/cmr_module/.libs/libcmr_module.so
 BES.module.nc=@abs_top_builddir@/modules/netcdf_handler/.libs/libnc_module.so
+
+BES.module.httpd=@abs_top_builddir@/modules/httpd_catalog_module/.libs/libhttpd_catalog_module.so
 
 
 #################################################################################
@@ -106,8 +106,7 @@ Httpd_Catalog.MimeTypes=nc:application/x-netcdf
 Httpd_Catalog.MimeTypes+=h4:application/x-hdf
 Httpd_Catalog.MimeTypes+=h5:application/x-hdf5
 
-Httpd_Catalog.Collections=woo:https://www.opendap.org/pub/
-Httpd_Catalog.Collections+=iris:https://ds.iris.edu/files/products/
+Httpd_Catalog.Collections+=test:http://test.opendap.org/data/
 
 
 
