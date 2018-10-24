@@ -96,7 +96,8 @@ endif
 clean-local:
 	test ! -d $(builddir)/static-cache || rm -rf $(builddir)/static-cache
 
-OBJS = ../RemoteHttpResource.o ../curl_utils.o ../RemoteHttpResourceCache.o ../HttpdCatalogUtils.o ../HttpdDirScraper.o 
+OBJS = ../RemoteHttpResource.o ../curl_utils.o ../RemoteHttpResourceCache.o \
+       ../HttpdCatalogUtils.o ../HttpdDirScraper.o ../HttpdCatalog.o
 
 HttpdDirScraperTest_SOURCES = HttpdDirScraperTest.cc
 HttpdDirScraperTest_LDADD = $(OBJS) $(LIBADD)

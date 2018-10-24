@@ -58,6 +58,9 @@ static bool purge_cache = false;
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
 
+#define prolog std::string("HttpdDirScraperTest::").append(__func__).append("() - ")
+
+
 namespace httpd_catalog {
 
 class HttpdDirScraperTest: public CppUnit::TestFixture {
@@ -75,11 +78,9 @@ private:
         if (t.is_open()) {
             string file_content((istreambuf_iterator<char>(t)), istreambuf_iterator<char>());
             t.close();
-            cerr << endl << "#############################################################################" << endl;
-            cerr << "file: " << filename << endl;
-            cerr <<         ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << endl;
+            cerr << endl << prolog << "BEGIN  file: " << filename << endl;
             cerr << file_content << endl;
-            cerr << "#############################################################################" << endl;
+            cerr << prolog << "END file: " << filename << endl;
         }
         else {
             cerr << "FAILED TO OPEN FILE: " << filename << endl;
@@ -96,15 +97,13 @@ private:
         if (t.is_open()) {
             string file_content((istreambuf_iterator<char>(t)), istreambuf_iterator<char>());
             t.close();
-            if(Debug) cerr << endl << "#############################################################################" << endl;
-            if(Debug) cerr << "file: " << filename << endl;
-            if(Debug) cerr <<         ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << endl;
-            if(Debug) cerr << file_content << endl;
-            if(Debug) cerr << "#############################################################################" << endl;
+            if(Debug) cerr << endl << prolog << "BEGIN file: " << filename << endl;
+            if(Debug) cerr << prolog << file_content << endl;
+            if(Debug) cerr << prolog << "END file: " << filename << endl;
             return file_content;
         }
         else {
-            cerr << "FAILED TO OPEN FILE: " << filename << endl;
+            cerr << prolog << "FAILED TO OPEN FILE: " << filename << endl;
             CPPUNIT_ASSERT(false);
             return "";
         }
@@ -115,12 +114,12 @@ private:
      */
     string get_data_file_url(string name){
 
-        string data_file = BESUtil::assemblePath(d_data_dir,name);
-        if(debug) cerr << "data_file: " << data_file << endl;
+        string data_file = BESUtil::pathConcat(d_data_dir,name);
+        if(debug) cerr << prolog << "data_file: " << data_file << endl;
         if(Debug) show_file(data_file);
 
         string data_file_url = "file://" + data_file;
-        if(debug) cerr << "data_file_url: " << data_file_url << endl;
+        if(debug) cerr << prolog << "data_file_url: " << data_file_url << endl;
 
         return data_file_url;
     }
@@ -143,9 +142,9 @@ public:
     // Called before each test
     void setUp()
     {
-        if(Debug) cerr << "setUp() - BEGIN" << endl;
+        if(Debug) cerr << prolog << "BEGIN" << endl;
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
-        if(Debug) cerr << "setUp() - Using BES configuration: " << bes_conf << endl;
+        if(Debug) cerr << prolog << "Using BES configuration: " << bes_conf << endl;
 
         TheBESKeys::ConfigFile = bes_conf;
 
@@ -154,13 +153,13 @@ public:
         if (bes_debug) show_file(bes_conf);
 
         if(purge_cache){
-            if(Debug) cerr << "Purging cache!" << endl;
+            if(Debug) cerr << prolog << "Purging cache!" << endl;
             string cache_dir;
             bool found;
             TheBESKeys::TheKeys()->get_value(RemoteHttpResourceCache::DIR_KEY,cache_dir,found);
             if(found){
-                if(Debug) cerr << RemoteHttpResourceCache::DIR_KEY << ": " <<  cache_dir << endl;
-                if(Debug) cerr << "Purging " << cache_dir << endl;
+                if(Debug) cerr << prolog << RemoteHttpResourceCache::DIR_KEY << ": " <<  cache_dir << endl;
+                if(Debug) cerr << prolog << "Purging " << cache_dir << endl;
                 string cmd = "exec rm -r "+ BESUtil::assemblePath(cache_dir,"/*");
                 system(cmd.c_str());
             }
@@ -181,33 +180,37 @@ public:
 
     void get_remote_node_test() {
         if(debug) cerr << endl;
+        // note: the following path must end with "/" in order for the scraper to think
+        // it's a catalog/directory link and not an item or file
         string url = "http://test.opendap.org/data/httpd_catalog/";
         HttpdDirScraper hds;
         bes::CatalogNode *node = 0;
         try {
+            if(debug) cerr << prolog << "Scraping '" << url << "'" << endl;
+
             node = hds.get_node(url,"/data/httpd_catalog/");
-            if(debug) cerr << "Found " <<  node->get_leaf_count() << " leaves and " << node->get_node_count() << " nodes." << endl;
+            if(debug) cerr << prolog << "Found " <<  node->get_leaf_count() << " leaves and " << node->get_node_count() << " nodes." << endl;
 
             // Node items...
             CPPUNIT_ASSERT(node->get_node_count() == 2);
             bes::CatalogNode::item_iter it = node->nodes_begin();
             bes::CatalogItem *first_node = *it++;
-            if(debug) cerr << "first_node: " << first_node->get_name() << endl;
-            CPPUNIT_ASSERT(first_node->get_name() == "subdir1/");
+            if(debug) cerr << prolog << "first_node: " << first_node->get_name() << endl;
+            CPPUNIT_ASSERT(first_node->get_name() == "subdir1");
 
             bes::CatalogItem *second_node = *it;
-            if(debug) cerr << "second_node: " << second_node->get_name() << endl;
-            CPPUNIT_ASSERT(second_node->get_name() == "subdir2/");
+            if(debug) cerr << prolog << "second_node: " << second_node->get_name() << endl;
+            CPPUNIT_ASSERT(second_node->get_name() == "subdir2");
 
             // Leaf items...
             CPPUNIT_ASSERT(node->get_leaf_count() == 2);
             it = node->leaves_begin();
             bes::CatalogItem *first_leaf = *it++;
-            if(debug) cerr << "first_leaf: " << first_leaf->get_name() << endl;
+            if(debug) cerr << prolog << "first_leaf: " << first_leaf->get_name() << endl;
             CPPUNIT_ASSERT(first_leaf->get_name() == "READTHIS");
 
             bes::CatalogItem *second_leaf = *it;
-            if(debug) cerr << "second_leaf: " << second_leaf->get_name() << endl;
+            if(debug) cerr << prolog << "second_leaf: " << second_leaf->get_name() << endl;
             CPPUNIT_ASSERT(second_leaf->get_name() == "fnoc1.nc");
 
         }
@@ -222,33 +225,38 @@ public:
 
     void get_file_node_test() {
         if(debug) cerr << endl;
-        string url = get_data_file_url("too.data.http_catalog");
+
+        // note: the following path must end with "/" in order for the scraper to think
+        // it's a catalog/directory link and not an item or file (even though it is a file...)
+        string url = get_data_file_url("too.data.http_catalog/");
+
         HttpdDirScraper hds;
         bes::CatalogNode *node = 0;
         try {
+            if(debug) cerr << prolog << "Scraping '" << url << "'" << endl;
             node = hds.get_node(url,"/data/httpd_catalog/");
-            if(debug) cerr << "Found " <<  node->get_leaf_count() << " leaves and " << node->get_node_count() << " nodes." << endl;
+            if(debug) cerr << prolog << "Found " <<  node->get_leaf_count() << " leaves and " << node->get_node_count() << " nodes." << endl;
 
             // Node items...
             CPPUNIT_ASSERT(node->get_node_count() == 2);
             bes::CatalogNode::item_iter it = node->nodes_begin();
             bes::CatalogItem *first_node = *it++;
-            if(debug) cerr << "first_node: " << first_node->get_name() << endl;
-            CPPUNIT_ASSERT(first_node->get_name() == "subdir1/");
+            if(debug) cerr << prolog << "first_node: " << first_node->get_name() << endl;
+            CPPUNIT_ASSERT(first_node->get_name() == "subdir1");
 
             bes::CatalogItem *second_node = *it;
-            if(debug) cerr << "second_node: " << second_node->get_name() << endl;
-            CPPUNIT_ASSERT(second_node->get_name() == "subdir2/");
+            if(debug) cerr << prolog << "second_node: " << second_node->get_name() << endl;
+            CPPUNIT_ASSERT(second_node->get_name() == "subdir2");
 
             // Leaf items...
             CPPUNIT_ASSERT(node->get_leaf_count() == 2);
             it = node->leaves_begin();
             bes::CatalogItem *first_leaf = *it++;
-            if(debug) cerr << "first_leaf: " << first_leaf->get_name() << endl;
+            if(debug) cerr << prolog << "first_leaf: " << first_leaf->get_name() << endl;
             CPPUNIT_ASSERT(first_leaf->get_name() == "READTHIS");
 
             bes::CatalogItem *second_leaf = *it;
-            if(debug) cerr << "second_leaf: " << second_leaf->get_name() << endl;
+            if(debug) cerr << prolog << "second_leaf: " << second_leaf->get_name() << endl;
             CPPUNIT_ASSERT(second_leaf->get_name() == "fnoc1.nc");
 
         }

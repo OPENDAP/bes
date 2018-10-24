@@ -29,7 +29,7 @@ using bes::CatalogItem;
 
 namespace httpd_catalog {
 
-HttpdDirScraper::HttpdDirScraper(const HttpdCatalog *hc):d_catalog(hc)
+HttpdDirScraper::HttpdDirScraper()
 {
     // TODO Auto-generated constructor stub
 
@@ -186,7 +186,7 @@ long get_size_val(string size_str){
 
 void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std::string, bes::CatalogItem *> &items) const
 {
-    const BESCatalogUtils *cat_utils = BESCatalogList::TheCatalogList()->find_catalog("catalog")->get_catalog_utils();
+    const BESCatalogUtils *cat_utils = BESCatalogList::TheCatalogList()->find_catalog(BES_DEFAULT_CATALOG)->get_catalog_utils();
 
     // Go get the text from the remote resource
     RemoteHttpResource rhr(url);
@@ -369,7 +369,7 @@ bes::CatalogNode *HttpdDirScraper::get_node(const string &url, const string &pat
 
     }
     else {
-        const BESCatalogUtils *cat_utils = BESCatalogList::TheCatalogList()->find_catalog("catalog")->get_catalog_utils();
+        const BESCatalogUtils *cat_utils = BESCatalogList::TheCatalogList()->find_catalog(BES_DEFAULT_CATALOG)->get_catalog_utils();
 
         std::vector<std::string> url_parts = BESUtil::split(url,'/',true);
         string leaf_name = url_parts.back();

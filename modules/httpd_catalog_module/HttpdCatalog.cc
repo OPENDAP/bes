@@ -205,7 +205,7 @@ HttpdCatalog::get_node(const string &ppath) const
 
         string remote_target_url = path_to_access_url(path);
 
-        HttpdDirScraper hds(this);
+        HttpdDirScraper hds;
         node = hds.get_node(remote_target_url,path);
         node->set_lmt(time_now);
         node->set_catalog_name(HTTPD_CATALOG_NAME);

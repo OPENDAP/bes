@@ -55,7 +55,7 @@ namespace httpd_catalog {
  *
  * @param url Is a URL string that identifies the remote resource.
  */
-RemoteHttpResource::RemoteHttpResource(const string &url)
+RemoteHttpResource::RemoteHttpResource(const string &const_url)
 {
     d_initialized = false;
     d_fd = 0;
@@ -65,9 +65,17 @@ RemoteHttpResource::RemoteHttpResource(const string &url)
     d_request_headers = new vector<string>();
     d_http_response_headers = new map<string, string>();
 
+    BESDEBUG(MODULE, prolog << "Passed url: " << const_url << endl);
+
+    string url = const_url;
     if (url.empty()) {
         string err = "RemoteHttpResource(): Remote resource URL is empty";
         throw BESInternalError(err, __FILE__, __LINE__);
+    }
+
+    size_t file_index = url.find("file://");
+    if(  file_index!=url.npos && file_index==0 && *url.rbegin()=='/'){
+        url = url.substr(0,url.length()-1);
     }
 
     d_remoteResourceUrl = url;
