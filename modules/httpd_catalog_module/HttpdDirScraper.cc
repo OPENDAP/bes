@@ -198,23 +198,38 @@ long HttpdDirScraper::get_size_val(const string size_str) const
     return size;
 }
 
-
-string  show_tm_struct(const tm tms)
+/**
+ * Helper function to view a time struct.
+ */
+string show_tm_struct(const tm tms)
 {
    stringstream ss;
-
-   ss << "tm_sec: " << tms.tm_sec << endl;
-   ss << "tm_min: " << tms.tm_min << endl;
-   ss << "tm_hour: " << tms.tm_hour << endl;
-   ss << "tm_mday: " << tms.tm_mday << endl;
-   ss << "tm_mon: " << tms.tm_mon << endl;
-   ss << "tm_year: " << tms.tm_year << endl;
-   ss << "tm_wday: " << tms.tm_wday << endl;
-   ss << "tm_yday: " << tms.tm_yday << endl;
+   ss << "tm_sec:   " << tms.tm_sec << endl;
+   ss << "tm_min:   " << tms.tm_min << endl;
+   ss << "tm_hour:  " << tms.tm_hour << endl;
+   ss << "tm_mday:  " << tms.tm_mday << endl;
+   ss << "tm_mon:   " << tms.tm_mon << endl;
+   ss << "tm_year:  " << tms.tm_year << endl;
+   ss << "tm_wday:  " << tms.tm_wday << endl;
+   ss << "tm_yday:  " << tms.tm_yday << endl;
    ss << "tm_isdst: " << tms.tm_isdst << endl;
-
    return ss.str();
 }
+/**
+ * Helper function to zero a tm struct
+ */
+void zero_tm_struct(tm &tms){
+    tms.tm_sec = 0;
+    tms.tm_min = 0;
+    tms.tm_hour = 0;
+    tms.tm_mday = 1;
+    tms.tm_mon = 0;
+    tms.tm_year = 0;
+    tms.tm_wday = 0;
+    tms.tm_yday = 0;
+    tms.tm_isdst = 0;
+}
+
 /**
  * Apache httpd directories hav a time format of
  *  "DD-MM-YYY hh:mm" example: "19-Oct-2018 19:32"
@@ -224,17 +239,7 @@ string HttpdDirScraper::httpd_time_to_iso_8601(const string httpd_time) const
 {
     // void BESUtil::tokenize(const string& str, vector<string>& tokens, const string& delimiters)
     struct tm tm;
-    tm.tm_sec = 0;
-    tm.tm_min = 0;
-    tm.tm_hour = 0;
-    tm.tm_mday = 1;
-    tm.tm_mon = 0;
-    tm.tm_year = 0;
-    tm.tm_wday = 0;
-    tm.tm_yday = 0;
-    tm.tm_isdst = 0;
-
-
+    zero_tm_struct(tm);
 
     vector<string> tokens;
     string delimiters = "- :";
@@ -272,6 +277,9 @@ string HttpdDirScraper::httpd_time_to_iso_8601(const string httpd_time) const
 }
 
 
+/**
+ *
+ */
 void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std::string, bes::CatalogItem *> &items) const
 {
     const BESCatalogUtils *cat_utils = BESCatalogList::TheCatalogList()->find_catalog(BES_DEFAULT_CATALOG)->get_catalog_utils();
@@ -308,8 +316,7 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std:
             else {
                 int length;
 
-
-                // Locate out the entire <a /> element
+                // Locate the entire <a /> element
                 BESDEBUG(MODULE, prolog << "aOpenIndex: " << aOpenIndex << endl);
                 BESDEBUG(MODULE, prolog << "aCloseIndex: " << aCloseIndex << endl);
                 length = aCloseIndex + aCloseStr.length() - aOpenIndex;
@@ -369,7 +376,6 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std:
                         childNode->set_name(node_name);
                         childNode->set_is_data(false);
 
-                        // FIXME: Figure out the LMT if we can... HEAD?
                         string iso_8601_time = httpd_time_to_iso_8601(time_str);
                         childNode->set_lmt(iso_8601_time);
 
@@ -432,24 +438,25 @@ int HttpdDirScraper::getNextElementText(const string &page_str, string element_n
     return startIndex + element_str.length();
 }
 
+/*
+ *
+ */
 bes::CatalogNode *HttpdDirScraper::get_node(const string &url, const string &path) const
 {
     BESDEBUG(MODULE, prolog << "Processing url: '" << url << "'"<< endl);
     bes::CatalogNode *node = new bes::CatalogNode(path);
 
     if (BESUtil::endsWith(url, "/")) {
-
+        // This always means the URL points to a node when coming from httpd
         map<string, bes::CatalogItem *> items;
         createHttpdDirectoryPageMap(url, items);
 
         BESDEBUG(MODULE, prolog << "Found " << items.size() << " items." << endl);
-
         map<string, bes::CatalogItem *>::iterator it;
         it = items.begin();
         while (it != items.end()) {
             bes::CatalogItem *item = it->second;
             BESDEBUG(MODULE, prolog << "Adding item: '" << item->get_name() << "'"<< endl);
-
             if(item->get_type() == CatalogItem::node )
                 node->add_node(item);
             else
@@ -459,19 +466,18 @@ bes::CatalogNode *HttpdDirScraper::get_node(const string &url, const string &pat
 
     }
     else {
+        // It's a leaf aka "item" response.
         const BESCatalogUtils *cat_utils = BESCatalogList::TheCatalogList()->find_catalog(BES_DEFAULT_CATALOG)->get_catalog_utils();
-
         std::vector<std::string> url_parts = BESUtil::split(url,'/',true);
         string leaf_name = url_parts.back();
 
         CatalogItem *item = new CatalogItem();
         item->set_type(CatalogItem::leaf);
         item->set_name(leaf_name);
-
-        // FIXME: Find the Last Modified date?
-        item->set_lmt(BESUtil::get_time(true));
-
         item->set_is_data(cat_utils->is_data(leaf_name));
+
+        // FIXME: Find the Last Modified date? Head??
+        item->set_lmt(BESUtil::get_time(true));
 
         // FIXME: Determine size of this thing? Do we "HEAD" all the leaves?
         item->set_size(1);
