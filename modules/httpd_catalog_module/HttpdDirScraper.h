@@ -17,8 +17,12 @@ namespace httpd_catalog {
 
 class HttpdDirScraper {
 private:
+    map<string,int> d_months;
+
     int getNextElementText(const string &page_str, string element_name, int startIndex, string &resultText, bool trim=true) const;
     void createHttpdDirectoryPageMap(std::string url, std::map<std::string, bes::CatalogItem *> &items) const;
+    long get_size_val(const string size_str) const;
+    string httpd_time_to_iso_8601(const string httpd_time) const;
 
 public:
     HttpdDirScraper();
