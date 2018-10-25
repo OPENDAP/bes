@@ -41,25 +41,25 @@
 #include <algorithm>
 #include <map>
 
-#include "BESUtil.h"
-#include "BESCatalogUtils.h"
-#include "BESCatalogEntry.h"
+#include <BESUtil.h>
+#include <BESCatalogUtils.h>
+#include <BESCatalogEntry.h>
 
-#include "CatalogNode.h"
-#include "CatalogItem.h"
+#include <CatalogNode.h>
+#include <CatalogItem.h>
 
-#include "BESInfo.h"
-#include "BESContainerStorageList.h"
-#include "BESContainerStorageCatalog.h"
-#include "BESLog.h"
+#include <BESInfo.h>
+#include <BESContainerStorageList.h>
+#include <BESContainerStorageCatalog.h>
+#include <BESLog.h>
 
-#include "BESInternalError.h"
-#include "BESForbiddenError.h"
-#include "BESNotFoundError.h"
-#include "BESSyntaxUserError.h"
+#include <BESInternalError.h>
+#include <BESForbiddenError.h>
+#include <BESNotFoundError.h>
+#include <BESSyntaxUserError.h>
 
-#include "TheBESKeys.h"
-#include "BESDebug.h"
+#include <TheBESKeys.h>
+#include <BESDebug.h>
 
 #include "HttpdCatalogNames.h"
 #include "HttpdCatalog.h"

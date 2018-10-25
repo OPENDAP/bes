@@ -32,16 +32,17 @@
 #include <string>
 #include <iostream>
 
-#include "BESInternalError.h"
+#include <BESInternalError.h>
 
-#include "BESDebug.h"
-#include "BESUtil.h"
+#include <BESDebug.h>
+#include <BESUtil.h>
 
 #include "curl_utils.h"
-#include "RemoteHttpResource.h"
-#include "RemoteHttpResourceCache.h"
 #include "HttpdCatalogNames.h"
 #include "HttpdCatalogUtils.h"
+#include "RemoteHttpResource.h"
+#include "RemoteHttpResourceCache.h"
+
 
 using namespace std;
 

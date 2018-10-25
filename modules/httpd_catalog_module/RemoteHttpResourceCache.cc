@@ -34,10 +34,10 @@
 
 #include "PicoSHA2/picosha2.h"
 
-#include "BESInternalError.h"
-#include "BESDebug.h"
-#include "BESUtil.h"
-#include "TheBESKeys.h"
+#include <BESInternalError.h>
+#include <BESDebug.h>
+#include <BESUtil.h>
+#include <TheBESKeys.h>
 
 #include "RemoteHttpResourceCache.h"
 #include "HttpdCatalogNames.h"
