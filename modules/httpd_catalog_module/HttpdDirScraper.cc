@@ -377,9 +377,9 @@ bes::CatalogNode *HttpdDirScraper::get_node(const string &url, const string &pat
         CatalogItem *item = new CatalogItem();
         item->set_type(CatalogItem::leaf);
         item->set_name(leaf_name);
+
         // FIXME: Find the Last Modified date?
         item->set_lmt(BESUtil::get_time(true));
-
 
         item->set_is_data(cat_utils->is_data(leaf_name));
 

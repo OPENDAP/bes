@@ -17,13 +17,11 @@ BES.module.httpd=@abs_top_builddir@/modules/httpd_catalog_module/.libs/libhttpd_
 
 
 #################################################################################
-#
 # Default Catalog 
-#
 BES.Catalog.Default=catalog
-BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/cmr_module
+BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/httpd_catalog_module
 BES.Data.RootDirectory=/dev/null
-BES.Catalog.catalog.TypeMatch=dapreader:.*\.das$;dapreader:.*\.dods$;nc:.*\.nc$
+BES.Catalog.catalog.TypeMatch=dapreader:.*\.das$;dapreader:.*\.dods$;nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
 BES.Catalog.catalog.FollowSymLinks=No
@@ -67,37 +65,29 @@ BES.DefaultResponseMethod=POST
 
 #-----------------------------------------------------------------------#
 #                                                                       #
-# Data Handler Specific key/value parameters                            #
+# httpd_catalog Specific key/value parameters                            #
 #                                                                       #
 #-----------------------------------------------------------------------#
 
 #
-# CMR Configuration 
+# httpd_catalog Test Configuration 
 #
 
-# Need to whitelist CMR server so we can talk to it.
+# Need to whitelist the test server so we can talk to it.
 Gateway.Whitelist=http://localhost
-Gateway.Whitelist+=http://cloudydap.opendap.org/opendap
-Gateway.Whitelist+=http://cloudydap.opendap.org//opendap
-Gateway.Whitelist+=http://thredds.ucar.edu/thredds
-Gateway.Whitelist+=http://thredds.ucar.edu//thredds
-Gateway.Whitelist+=http://s3.amazonaws.com/somewhereovertherainbow
-Gateway.Whitelist+=https://s3.amazonaws.com/somewhereovertherainbow
-Gateway.Whitelist+=https://s3.amazonaws.com/cloudydap
-
-Gateway.Whitelist += https://cmr.earthdata.nasa.gov
+Gateway.Whitelist+=http://test.opendap.org
 
 
 # Configure dat cache
-HttpResourceCache.dir=@abs_top_builddir@/modules/httpd_catalog_module/unit-tests/static-cache
+HttpResourceCache.dir=@abs_top_builddir@/modules/httpd_catalog_module/tests/cache
 #HttpResourceCache.dir=/tmp/cache
 HttpResourceCache.prefix=httpd_cat_
 HttpResourceCache.size=500
 
 
 BES.Catalog.Default=catalog
-BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@
-BES.Catalog.catalog.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$
+BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/httpd_catalog_module
+BES.Catalog.catalog.TypeMatch=dapreader:.*\.das$;dapreader:.*\.dods$;nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$
 
 BES.Catalog.RemoteResources.RootDirectory=UNUSED
 BES.Catalog.RemoteResources.TypeMatch+=unused:*;

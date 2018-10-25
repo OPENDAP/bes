@@ -5,12 +5,13 @@ noinst_DATA = bes.conf cache
 
 CLEANFILES = bes.conf cache
 
+BES_CONF_IN = bes.conf.in
+
 EXTRA_DIST = httpd_catalog $(TESTSUITE).at $(TESTSUITE) atlocal.in \
 $(BES_CONF_IN) package.m4
 
 DISTCLEANFILES = atconfig
 
-BES_CONF_IN = bes.conf.in
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
