@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[http-8080-1:27:bes_request]">
+  <bes:setContext name="xdap_accept">3.2</bes:setContext>
+  <bes:setContext name="dap_explicit_containers">no</bes:setContext>
+  <bes:setContext name="errors">xml</bes:setContext>
+  <bes:setContext name="max_response_size">0</bes:setContext>
+  
+  <bes:setContainer name="c" space="catalog">/functions/tests/data/OMI-Aura_L2-OMAERUV_2005m0101t0020-o02472_v003-2017m0720t185621.he5.dods</bes:setContainer>
+  
+  <bes:define name="d1" space="default">
+    <bes:container name="c">
+      <bes:constraint>bbox_union(bbox(Latitude,-60,-50),bbox(Longitude,-180,-140),bbox(FoV75Area,1000,1200),union)</bes:constraint>
+    </bes:container>
+  </bes:define>nion
+  
+  <bes:get type="dods" definition="d1" returnAs="ascii"/>
+  
+</bes:request>
