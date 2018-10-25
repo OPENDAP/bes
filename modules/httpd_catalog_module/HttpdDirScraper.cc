@@ -244,8 +244,10 @@ string HttpdDirScraper::httpd_time_to_iso_8601(const string httpd_time) const
     vector<string>::iterator it = tokens.begin();
     int i=0;
     if(BESDebug::IsSet(MODULE)){
-        while(it != tokens.end())
-            BESDEBUG(MODULE, prolog << "    token["<< i++ << "]: "<< *it++  << endl);
+        while(it != tokens.end()) {
+            BESDEBUG(MODULE, prolog << "    token["<< i++ << "]: "<< *it  << endl);
+            it++;
+        }
     }
 
     if(tokens.size() >2){
