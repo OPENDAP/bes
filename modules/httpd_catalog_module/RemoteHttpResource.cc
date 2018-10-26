@@ -1,3 +1,4 @@
+// RemoteHttpResource.cc
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of httpd_catalog_module, A C++ MODULE that can be loaded in to

@@ -1,8 +1,8 @@
+// HttpdCatalog.cc
 // -*- mode: c++; c-basic-offset:4 -*-
 //
-// CMRCatalog.cc
 //
-// This file is part of BES cmr_module
+// This file is part of BES httpd_catalog_module
 //
 // Copyright (c) 2018 OPeNDAP, Inc.
 // Author: Nathan Potter <ndp@opendap.org>
@@ -73,13 +73,12 @@ using namespace std;
 namespace httpd_catalog {
 
 /**
- * @brief A catalog based on NASA's CMR system
+ * @brief A catalog based on scraping the directory pages produced by httpd .
  *
- * CMRCatalog is BESCatalog specialized for  NASA's CMR system.
+ * See HttpdDirScraper.cc for more.
  *
- * @note Access to the host's file system is made using BESCatalogUtils,
- * which is initialized using the catalog name.
- *
+ * HttpdCatalog is BESCatalog specialized for Apache httpd catalog pages.
+ * *
  * @param name The name of the catalog.
  * @see BESCatalogUtils
  */
@@ -149,7 +148,12 @@ HttpdCatalog::~HttpdCatalog()
 
 
 /**
- * Returns the bes::CatalogNode for the ppath;
+ * @brief Produces the bes::CatalogNode for the string ppath.
+ *
+ * This includes dealing with the named Httpd_Catalog.Collections
+ * part of the path and providing catalog page with the list of Collections
+ * for the empty path.
+ *
  */
 bes::CatalogNode *
 HttpdCatalog::get_node(const string &ppath) const

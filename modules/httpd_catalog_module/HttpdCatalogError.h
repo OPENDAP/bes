@@ -1,3 +1,4 @@
+// HttpdCatalogError.h
 // -*- mode: c++; c-basic-offset:4 -*-
 //
 // Copyright (c) 2018 OPeNDAP, Inc.

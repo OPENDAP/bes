@@ -1,10 +1,9 @@
 // HttpCatalogUtils.cc
-
 // -*- mode: c++; c-basic-offset:4 -*-
-
-// This file is part of gateway_module, A C++ module that can be loaded in to
+//
+// This file is part of httpd_catalog_module, A C++ module that can be loaded in to
 // the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
-
+//
 // Copyright (c) 2018 OPeNDAP, Inc.
 // Author: Nathan Potter <ndp@opendap.org>
 //
@@ -76,7 +75,7 @@ string HttpdCatalogUtils::NoProxyRegex;
 
 #define prolog string("HttpCatalogUtils::").append(__func__).append("() - ")
 
-// Initialization routine for the gateway module for certain parameters
+// Initialization routine for the httpd_catalog_module for certain parameters
 // and keys, like the white list, the MimeTypes translation.
 void HttpdCatalogUtils::initialize()
 {

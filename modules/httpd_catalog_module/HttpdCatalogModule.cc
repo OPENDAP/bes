@@ -1,8 +1,8 @@
-// CSVModule.cc
-
+// HttpdCatalogModule.cc
+//
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
-
+//
 // Copyright (c) 2018 OPeNDAP, Inc.
 // Author: Nathan Potter <ndp@opendap.org>
 //

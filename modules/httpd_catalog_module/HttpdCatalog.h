@@ -1,6 +1,5 @@
-// -*- mode: c++; c-basic-offset:4 -*-
-//
 // HttpCatalog.h
+// -*- mode: c++; c-basic-offset:4 -*-
 //
 // This file is part of BES cmr_module
 //

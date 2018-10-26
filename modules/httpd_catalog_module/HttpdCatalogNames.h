@@ -1,10 +1,9 @@
 // HttpCatalogNames.h
-
 // -*- mode: c++; c-basic-offset:4 -*-
-
-// This file is part of gateway_module, A C++ module that can be loaded in to
+//
+// This file is part of httpd_catalog_module, A C++ module that can be loaded in to
 // the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
-
+//
 // Copyright (c) 2018 OPeNDAP, Inc.
 // Author: Nathan David Potter <ndp@opendap.org>
 //
@@ -27,11 +26,13 @@
 #ifndef I_HTTPD_CATALOG_NAME_H
 #define I_HTTPD_CATALOG_NAME_H 1
 
+
 #define HTTPD_CATALOG "httpd"
 
+// Thisname  appears at the top level of the Hyrax catalog:
 #define HTTPD_CATALOG_NAME "RemoteResources"
 
-// These are the names of the be keys used to configure the handler.
+// These are the names of the bes keys used to configure the handler.
 #define HTTPD_CATALOG_COLLECTIONS "Httpd_Catalog.Collections"
 
 #define HTTPD_CATALOG_WHITELIST "Httpd_Catalog.Whitelist"

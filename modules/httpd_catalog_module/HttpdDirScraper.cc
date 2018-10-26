@@ -1,9 +1,28 @@
-/*
- * HttpdDirScraper.cc
- *
- *  Created on: Oct 15, 2018
- *      Author: ndp
- */
+// HttpdDirScraper.cc
+// -*- mode: c++; c-basic-offset:4 -*-
+//
+// This file is part of httpd_catalog_module, A C++ module that can be loaded in to
+// the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
+//
+// Copyright (c) 2018 OPeNDAP, Inc.
+// Author: Nathan Potter <ndp@opendap.org>
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+//
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -32,7 +51,7 @@ namespace httpd_catalog {
 
 HttpdDirScraper::HttpdDirScraper()
 {
-    // TODO Auto-generated constructor stub
+    // There was probably a better way to make this association but this worked.
     d_months.insert(pair<string,int>(string("jan"),0));
     d_months.insert(pair<string,int>(string("feb"),1));
     d_months.insert(pair<string,int>(string("mar"),2));
@@ -48,115 +67,10 @@ HttpdDirScraper::HttpdDirScraper()
 
 }
 
-HttpdDirScraper::~HttpdDirScraper()
-{
-    // TODO Auto-generated destructor stub
-}
-#if 0
-void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::set<std::string> &pageNodes, std::set<std::string> &pageLeaves) const
-
-{
-    // Go get the text from the remote resource
-    RemoteHttpResource rhr(url);
-    rhr.retrieveResource();
-    ifstream t(rhr.getCacheFileName().c_str());
-    stringstream buffer;
-    buffer << t.rdbuf();
-    string pageStr = buffer.str();
-
-    string aOpenStr = "<a ";
-    string aCloseStr = "</a>";
-    string hrefStr = "href=\"";
-    string tdOpenStr = "<td ";
-    string tdCloseStr = "</td>";
-
-    BESRegex hrefExcludeRegex("(^#.*$)|(^\\?C.*$)|(redirect\\/)|(^\\/$)|(^<img.*$)");
-    BESRegex nameExcludeRegex("^Parent Directory$");
-
-    bool done = false;
-    int next_start = 0;
-    while (!done) {
-        int aOpenIndex = pageStr.find(aOpenStr, next_start);
-        if (aOpenIndex < 0) {
-            done = true;
-        }
-        else {
-            int aCloseIndex = pageStr.find(aCloseStr, aOpenIndex + aOpenStr.length());
-            if (aCloseIndex < 0) {
-                done = true;
-            }
-            else {
-                int length;
-
-                // Locate out the entire <a /> element
-                BESDEBUG(MODULE, prolog << "aOpenIndex: " << aOpenIndex << endl);
-                BESDEBUG(MODULE, prolog << "aCloseIndex: " << aCloseIndex << endl);
-                length = aCloseIndex + aCloseStr.length() - aOpenIndex;
-                string aElemStr = pageStr.substr(aOpenIndex, length);
-                BESDEBUG(MODULE, prolog << "Processing link: " << aElemStr << endl);
-
-                // Find the link text
-                int start = aElemStr.find(">") + 1;
-                int end = aElemStr.find("<", start);
-                length = end - start;
-                string linkText = aElemStr.substr(start, length);
-                BESDEBUG(MODULE, prolog << "Link Text: " << linkText << endl);
-
-                // Locate the href attribute
-                start = aElemStr.find(hrefStr) + hrefStr.length();
-                end = aElemStr.find("\"", start);
-                length = end - start;
-                string href = aElemStr.substr(start, length);
-                BESDEBUG(MODULE, prolog << "href: " << href << endl);
-
-                string time_str;
-                int start_pos =  getNextElementText(pageStr, "td", aCloseIndex + aCloseStr.length(), time_str);
-                BESDEBUG(MODULE, prolog << "time_str: '" << time_str << "'" << endl);
-
-                string size_str;
-                start_pos =  getNextElementText(pageStr, "td", start_pos, size_str);
-                BESDEBUG(MODULE, prolog << "size_str: '" << size_str << "'" << endl);
-
-
-                if ((linkText.find("<img") != string::npos) || !(linkText.length()) || (linkText.find("<<<") != string::npos)
-                    || (linkText.find(">>>") != string::npos)) {
-                    BESDEBUG(MODULE, prolog << "SKIPPING(image|copy|<<<|>>>): " << aElemStr << endl);
-                }
-                else {
-                    if (href.length() == 0 || (((href.find("http://") == 0) || (href.find("https://") == 0)) && !(href.find(url) == 0))) {
-                        // SKIPPING
-                        BESDEBUG(MODULE, prolog << "SKIPPING(null or remote): " << href << endl);
-                    }
-                    else if (hrefExcludeRegex.match(href.c_str(), href.length(), 0) > 0) { /// USE MATCH
-                        // SKIPPING
-                        BESDEBUG(MODULE, prolog << "SKIPPING(hrefExcludeRegex) - href: '" << href << "'"<< endl);
-                    }
-                    else if (nameExcludeRegex.match(linkText.c_str(), linkText.length(), 0) > 0) { /// USE MATCH
-                        // SKIPPING
-                        BESDEBUG(MODULE, prolog << "SKIPPING(nameExcludeRegex) - name: '" << linkText << "'" << endl);
-                    }
-                    else if (BESUtil::endsWith(href, "/")) {
-                        // it's a directory aka a node
-                        BESDEBUG(MODULE, prolog << "NODE: " << href << endl);
-                        pageNodes.insert(href);
-                    }
-                    else {
-                        // It's a file aka a leaf
-                        BESDEBUG(MODULE, prolog << "LEAF: " << href << endl);
-                        pageLeaves.insert(href);
-                    }
-                }
-            }
-            next_start = aCloseIndex + aCloseStr.length();
-        }
-    }
-}
-#endif
-
 
 /*
- *
- *
+ * @brief Converts an Apache httpd directory page "size" string (23K, 45M, 32G, etc)
+ * to an actual value, approximate though it may be.
  */
 long HttpdDirScraper::get_size_val(const string size_str) const
 {
@@ -199,7 +113,7 @@ long HttpdDirScraper::get_size_val(const string size_str) const
 }
 
 /**
- * Helper function to view a time struct.
+ * @ brief Make a string of a tm struct (time structure) value;
  */
 string show_tm_struct(const tm tms)
 {
@@ -215,8 +129,9 @@ string show_tm_struct(const tm tms)
    ss << "tm_isdst: " << tms.tm_isdst << endl;
    return ss.str();
 }
+
 /**
- * Helper function to zero a tm struct
+ * @brief Zero a tm struct
  */
 void zero_tm_struct(tm &tms){
     tms.tm_sec = 0;
@@ -231,7 +146,7 @@ void zero_tm_struct(tm &tms){
 }
 
 /**
- * Apache httpd directories hav a time format of
+ * Apache httpd directories utilize a time format of
  *  "DD-MM-YYY hh:mm" example: "19-Oct-2018 19:32"
  *  here we assume the time zone is UTC and off we go.
  */
@@ -278,7 +193,20 @@ string HttpdDirScraper::httpd_time_to_iso_8601(const string httpd_time) const
 
 
 /**
+ * @brief Converts an Apache httpd directory page into a collection of bes::CatalogItems.
  *
+ * If one considers each Apache httpd generated directory page to be equivalent to
+ * a bes::CatalogNode then this method examines the contents of the httpd directory page and
+ * builds child node and leaf bes:CatalogItems based on what it finds.
+ *
+ * isData: The besCatalogItem objects that are leaves are evaluated against the BES_DEFAULT_CATALOG
+ * TypeMatch by retrieving the BES_DEFAULT_CATALOG's BESCatalogUtils and then calling
+ * BESCatalogUtils::is_data(leaf_name) This why this catalog does not utilize it's own
+ * TypeMatch string.
+ *
+ * @param url The url of the source httpd directory.
+ * @param items The map (list sorted by href) of catalog Items generated by the scrape processes. The map's
+ * key is the bes::CatalogItem::name().
  */
 void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std::string, bes::CatalogItem *> &items) const
 {
@@ -337,10 +265,12 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std:
                 string href = aElemStr.substr(start, length);
                 BESDEBUG(MODULE, prolog << "href: " << href << endl);
 
+                // attempt to get time string
                 string time_str;
                 int start_pos =  getNextElementText(pageStr, "td", aCloseIndex + aCloseStr.length(), time_str);
                 BESDEBUG(MODULE, prolog << "time_str: '" << time_str << "'" << endl);
 
+                // attempt to get size string
                 string size_str;
                 start_pos =  getNextElementText(pageStr, "td", start_pos, size_str);
                 BESDEBUG(MODULE, prolog << "size_str: '" << size_str << "'" << endl);
@@ -355,36 +285,29 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std:
                         // SKIPPING
                         BESDEBUG(MODULE, prolog << "SKIPPING(null or remote): " << href << endl);
                     }
-                    else if (hrefExcludeRegex.match(href.c_str(), href.length(), 0) > 0) { /// USE MATCH
+                    else if (hrefExcludeRegex.match(href.c_str(), href.length(), 0) > 0) {
                         // SKIPPING
                         BESDEBUG(MODULE, prolog << "SKIPPING(hrefExcludeRegex) - href: '" << href << "'"<< endl);
                     }
-                    else if (nameExcludeRegex.match(linkText.c_str(), linkText.length(), 0) > 0) { /// USE MATCH
+                    else if (nameExcludeRegex.match(linkText.c_str(), linkText.length(), 0) > 0) {
                         // SKIPPING
                         BESDEBUG(MODULE, prolog << "SKIPPING(nameExcludeRegex) - name: '" << linkText << "'" << endl);
                     }
                     else if (BESUtil::endsWith(href, "/")) {
-
                         string node_name = href.substr(0,href.length()-1);
-
                         // it's a directory aka a node
                         BESDEBUG(MODULE, prolog << "NODE: " << node_name << endl);
-
                         bes::CatalogItem *childNode = new bes::CatalogItem();
                         childNode->set_type(CatalogItem::node);
-
                         childNode->set_name(node_name);
                         childNode->set_is_data(false);
-
                         string iso_8601_time = httpd_time_to_iso_8601(time_str);
                         childNode->set_lmt(iso_8601_time);
-
                         // FIXME: For nodes the size should be the number of children, but how without crawling?
                         long size = get_size_val(size_str);
                         childNode->set_size(size);
 
                         items.insert(pair<std::string,bes::CatalogItem *>(node_name,childNode));
-
                     }
                     else {
                         // It's a file aka a leaf
@@ -392,15 +315,12 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std:
                         CatalogItem *leafItem = new CatalogItem();
                         leafItem->set_type(CatalogItem::leaf);
                         leafItem->set_name(href);
-
-
                         leafItem->set_is_data(cat_utils->is_data(href));
-
                         string iso_8601_time = httpd_time_to_iso_8601(time_str);
                         leafItem->set_lmt(iso_8601_time);
-
                         long size = get_size_val(size_str);
                         leafItem->set_size(size);
+
                         items.insert(pair<std::string,bes::CatalogItem *>(href,leafItem));
                     }
                 }
@@ -411,7 +331,16 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std:
 }
 
 /**
- * @return
+ * Get's the text content of the next element_name element beginning at startIndex.
+ * The correctness of this is very limitied and it works just well enough to grab the td elements that
+ * hold last modified time and size in the httpd directory content. Just sayin.
+ *
+ * @param page_str The string to examine.
+ * @param element_name the name of the element whose text to get.
+ * @param startIndex The index in page_str at which to begin the search.
+ * @param resultText The text content of the element.
+ * @param trim If true then leading and trailing whitespace will be removed from the result string. default: true
+ * @return The next start index, after the td element closer.
  */
 int HttpdDirScraper::getNextElementText(const string &page_str, string element_name, int startIndex, string &resultText, bool trim) const
 {
@@ -434,12 +363,15 @@ int HttpdDirScraper::getNextElementText(const string &page_str, string element_n
         BESUtil::removeLeadingAndTrailingBlanks(resultText);
 
     BESDEBUG(MODULE, prolog << "resultText: '" << resultText << "'" << endl);
-
     return startIndex + element_str.length();
 }
 
 /*
- *
+ * @brief Returns the catalog node represented by the httpd directory page returned
+ * by dereferencing the passed url.
+ * @param url The url of the Apache httpd directory to process.
+ * @param path The path prefix that associates the location of this generated CatalogNode with it's
+ * correct position in the local service path.
  */
 bes::CatalogNode *HttpdDirScraper::get_node(const string &url, const string &path) const
 {
@@ -463,7 +395,6 @@ bes::CatalogNode *HttpdDirScraper::get_node(const string &url, const string &pat
                 node->add_leaf(item);
             it++;
         }
-
     }
     else {
         // It's a leaf aka "item" response.
@@ -483,11 +414,8 @@ bes::CatalogNode *HttpdDirScraper::get_node(const string &url, const string &pat
         item->set_size(1);
 
         node->set_leaf(item);
-
-
     }
     return node;
-
 }
 
 #if 0

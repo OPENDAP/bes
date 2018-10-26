@@ -1,3 +1,4 @@
+// RemoteHttpResourceCache.h
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of cmr_module, A C++ module that can be loaded in to
@@ -30,16 +31,16 @@
 namespace httpd_catalog {
 
 /**
- * @brief A cache for content accessed via the CMR.
+ * @brief A cache for content accessed via HTTP.
  *
  * This cache is a simple cache for data files implemented using
  * advisory file locking on a POSIX file system (it is a specialization
  * of BESFileLockingCache).
  *
  * This cache uses the following keys in the bes.conf file:
- * - _CMR.Cache.dir_: The directory where retrieved data files should be stored
- * - _CMR.Cache.prefix_: The item-name prefix for this cache
- * - _CMR.Cache.size_: The size of the cache. Limit the total amount of
+ * - _HttpResourceCache.dir_: The directory where retrieved data files should be stored
+ * - _HttpResourceCache.prefix_: The item-name prefix for this cache
+ * - _HttpResourceCache.size_: The size of the cache. Limit the total amount of
  *   data cached to this many MB. If zero, the cache size is unlimited.
  *
  * All of the keys must be defined for this cache (the BES uses several caches
