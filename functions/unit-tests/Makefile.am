@@ -56,7 +56,7 @@ if CPPUNIT
 UNIT_TESTS = CEFunctionsTest GridGeoConstraintTest Dap4_CEFunctionsTest \
 TabularFunctionTest BBoxFunctionTest RoiFunctionTest BBoxUnionFunctionTest \
 OdometerTest MaskArrayFunctionTest MakeMaskFunctionTest ScaleUtilTest \
-ScaleUtilTest3D RangeFunctionTest
+ScaleUtilTest3D RangeFunctionTest BBoxComboFunctionTest
 
 # Dap4_TabularFunctionTest Removed since the DAP2 code has moved so far 
 # in front of the DAP4 version, which has had virtually no testing.
@@ -108,6 +108,10 @@ BBoxFunctionTest_LDADD = $(BBoxFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) -ltest-
 BBoxUnionFunctionTest_OBJ = ../BBoxUnionFunction.o
 BBoxUnionFunctionTest_SOURCES = BBoxUnionFunctionTest.cc $(TEST_SRC)
 BBoxUnionFunctionTest_LDADD = $(BBoxUnionFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) -ltest-types $(DAP_LIBS)
+
+BBoxComboFunctionTest_OBJ = ../BBoxComboFunction.o
+BBoxComboFunctionTest_SOURCES = BBoxComboFunctionTest.cc $(TEST_SRC)
+BBoxComboFunctionTest_LDADD = $(BBoxComboFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) -ltest-types $(DAP_LIBS)
 
 RoiFunctionTest_OBJ = ../RoiFunction.o
 RoiFunctionTest_SOURCES = RoiFunctionTest.cc $(TEST_SRC)
