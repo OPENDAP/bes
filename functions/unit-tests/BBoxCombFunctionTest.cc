@@ -141,9 +141,7 @@ public:
             auto_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(1, "bbox_2");
             bbox_2->set_vec_nocopy(0, roi_bbox_build_slice(5, 9, "x"));
 
-
-
-            BaseType *argv[] = { bbox_2.get(), bbox_1.get() };
+            BaseType *argv[] = { bbox_1.get(), bbox_2.get() };
             function_dap2_bbox_comb(2, argv, *float32_array /* DDS & */, &result);
         }
         catch (Error &e) {
@@ -160,8 +158,11 @@ public:
 
 //        CPPUNIT_ASSERT(result->type() == dods_array_c);
 
-        Array *result_bbox = static_cast<Array*>(result);
+        DBG(cerr << "function_dap2_bbox_comb(2,bbox(3, 10, 'cols'),bbox(5, 9, 'x')"<<endl);
+        DBG(float32_2d_array->print_xml(stderr, false, "No blob"));
+        DBG(float32_3d_array->print_xml(stderr, false, "No blob"));
 
+        Array *result_bbox = static_cast<Array*>(result);
         oss.str("");
         oss.clear();
         result_bbox->print_val(oss);
@@ -614,20 +615,6 @@ CPPUNIT_TEST_SUITE( BBoxCombFunctionTest );
 
     CPPUNIT_TEST(no_arg_test);
     CPPUNIT_TEST(combo_test_1);
-//    CPPUNIT_TEST(union_test_2);
-//    CPPUNIT_TEST(union_test_3);
-//
-//    CPPUNIT_TEST(intersection_test_1);
-//    CPPUNIT_TEST(intersection_test_2);
-//    CPPUNIT_TEST(intersection_test_3);
-//
-//    CPPUNIT_TEST(union_test_4);
-//    CPPUNIT_TEST(union_test_5);
-//    CPPUNIT_TEST(union_test_6);
-//
-//    CPPUNIT_TEST(intersection_test_4);
-//    CPPUNIT_TEST(intersection_test_5);
-//    CPPUNIT_TEST(intersection_test_6);
 
     CPPUNIT_TEST_SUITE_END()
     ;

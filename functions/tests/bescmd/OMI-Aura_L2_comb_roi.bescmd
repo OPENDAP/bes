@@ -9,10 +9,10 @@
   
   <bes:define name="d1" space="default">
     <bes:container name="c">
-      <bes:constraint>bbox_comb(bbox(Latitude,-62,-58),bbox(nWavel,0,1))</bes:constraint>
+      <bes:constraint>roi(FinalAerosolAbsOpticalDepth,bbox_comb(bbox(Latitude,-60,-50),bbox(nWavel,0,1)))</bes:constraint>
     </bes:container>
   </bes:define>nion
   
-  <bes:get type="dods" definition="d1"/>
+  <bes:get type="dds" definition="d1"/>
   
 </bes:request>
