@@ -13,11 +13,11 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 noinst_DATA = bes.conf
 
-CLEANFILES = bes.conf
+CLEANFILES = bes.conf package.m4
 
 EXTRA_DIST = nc netcdf_handlerTest netcdf_handlerTest.at \
 nc4_netcdf_handler_tests nc4_netcdf_handler_tests.at \
-atlocal.in package.m4 $(BES_CONF_IN) handler_tests_macros.m4
+atlocal.in $(BES_CONF_IN) handler_tests_macros.m4
 
 DISTCLEANFILES = atconfig
 
@@ -53,7 +53,8 @@ $(srcdir)/handler_tests_macros.m4
 clean-local:
 	test ! -f '$(TESTSUITE_3)' || $(SHELL) '$(TESTSUITE_3)' --clean
 	test ! -f '$(TESTSUITE_4)' || $(SHELL) '$(TESTSUITE_4)' --clean
-	
+	-rm $(srcdir)/pckage.m4
+
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
 % : %.at
