@@ -20,7 +20,7 @@ branches:
   only:
   - master
   - coverity_scan
-  - travis
+  - cd-rpm-build
 
 addons:
   coverity_scan:
@@ -42,10 +42,6 @@ addons:
     - lintian
     - fakeroot
     - build-essential
-    
-
-#    - sshpass
-#   ssh_known_hosts: www.opendap.org
 
 env:
   global:
@@ -60,15 +56,9 @@ env:
   # AWS_SECRET_ACCESS_KEY
   - secure: "BVETDaGI/cwfUHdvsGPkV1o7jd6OnqyvtFCPk0WsmCWh6PdpwXQ8D4yFdk4jejWxa0YFdRiCgK3ThHqqzv+6pDxrMnpYOx2O+ZjK//ErECjDa+OCJr2ObCwlqOPE6+4aVmPDz5ecjd2inVR5CfL5/Kt3Zgn4U9fNBUz9OMYpRF4="
 
-# The env var $TRAVIS_AT_OO must be made using 
-# "travis encrypt TRAVIS_AT_OO=<secret> -r OPENDAP/bes"
-# where -r <...> is the name of the travis repo from our Travis landing page
-# and the <secret> is the 'travis' user's password on www.opendap.org.
-#
-# TRAVIS_AT_OO
-# - secure: "J0HEROlR4GbOB1ZSoUIo5mEUzVzmxTKSvpS/jrAWbFB5JJHxCHd/oQh5dzTK9NiDaGGPN9Y2acA8Oyuz4Hsle7+DgAWvtGr4+hFqfYx7oLsxhhb3VTRNivuSsldsbNCUO4ebtezArH4hVLYw6ScwgDpnQfVrPkBMpyf4Iu3UMYs="
-
 before_install:
+- sudo apt-get update -qq
+- pip install --user awscli
 
 # hyrax-dependencies-build.tar.gz includes/makes the build directory
 install:
@@ -91,30 +81,39 @@ jobs:
   include:
   - stage: build
     script: 
-    - export BES_MAIN_BUILD=yes
+    - export BES_BUILD=main
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
     - make -j7 && make install && besctl start && make check -j7 && besctl stop
   - stage: build
     script:
-    - export BES_MAIN_BUILD=no
+    - export BES_BUILD=distcheck
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
     - make distcheck -j7
   - stage: package
     script:
     - wget https://s3.amazonaws.com/opendap.travis.build/libdap_3.20.0-1_amd64.deb
     - sudo dpkg -i libdap_3.20.0-1_amd64.deb
-    - export BES_MAIN_BUILD=no
+    - export BES_BUILD=deb
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps 
     - make deb -j7
 
-# using: 'test -z "$AWS_ACCESS_KEY_ID" || ...' keeps after_script from running
-# the aws cli for forked PRs (where secure env vars are null). I could've used
-# an 'if' to block out the whole script, but I didn't... jhrg 3/21/18
 after_script:
-- LOG_FILE_TGZ=bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz
-- tar -czf /tmp/${LOG_FILE_TGZ} `find . -name timing -prune -o -name '*.log' -print -o -name '*site_map.txt' -print`
-- sudo apt-get update -qq
-- pip install --user awscli
-- test -z "$AWS_ACCESS_KEY_ID" || aws s3 cp /tmp/${LOG_FILE_TGZ} s3://opendap.travis.build/
+- upload-test-results.sh
 
-# - sshpass -p ${TRAVIS_AT_OO} scp /tmp/${LOG_FILE_TGZ} travis@www.opendap.org:tmp/${LOG_FILE_TGZ}
+before_deploy:
+- test -d $TRAVIS_BUILD_DIR/package || mkdir $TRAVIS_BUILD_DIR/package
+- if test $BES_BUILD = deb; then mv $TRAVIS_BUILD_DIR/../bes*-*_amd64.deb $TRAVIS_BUILD_DIR/package/; fi
+- pwd
+
+deploy:
+  provider: s3
+  access_key_id: $AWS_ACCESS_KEY_ID
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
+  bucket: opendap.travis.build
+  skip_cleanup: true
+  local_dir: $TRAVIS_BUILD_DIR/package
+  on:
+    branch:
+    - master
+    - cd-rpm-build
+    condition: $LIBDAP_BUILD =~ ^deb$
