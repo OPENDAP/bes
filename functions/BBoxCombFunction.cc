@@ -91,8 +91,6 @@ function_dap2_bbox_comb(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     vector<slice> combo(rank);     // struct slice is defined in roi_utils.h
 
     //first arg
-    Array *bbox1 = static_cast<Array*>(argv[0]);
-
     for (unsigned int i = 0; i < rnk1; ++i) {
         int start, stop;
         string name;
@@ -104,9 +102,8 @@ function_dap2_bbox_comb(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         combo.at(i).stop = stop;
         combo.at(i).name = name;
     }
-    //second arg
-    Array *bbox2 = static_cast<Array*>(argv[1]);
 
+    //second arg
     for (unsigned int j = 0; j < rnk2; ++j) {
         int start, stop;
         string name;
