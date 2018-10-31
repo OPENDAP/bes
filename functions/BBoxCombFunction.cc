@@ -114,7 +114,7 @@ function_dap2_bbox_comb(int argc, BaseType *argv[], DDS &, BaseType **btpp)
             combo.at(rnk1+j).start = start;
             combo.at(rnk1+j).stop = stop;
             combo.at(rnk1+j).name = name;
-        }
+
     }
 
     // Build the response; name the result after the operation
