@@ -129,6 +129,22 @@ public:
         }
     }
 
+    void three_arg_test()
+    {
+        BaseType *result = 0;
+        try {
+            BaseType *argv[] = {};
+            function_dap2_bbox_comb(3, argv, *float32_2d_array /* DDS & */, &result);
+            CPPUNIT_FAIL("bbox_comb() Should throw an exception when called with three arguments");
+        }
+        catch (Error &e) {
+            CPPUNIT_ASSERT(true);
+        }
+        catch (...) {
+            CPPUNIT_FAIL("unknown exception.");
+        }
+    }
+
     void combo_test_1()
     {
         BaseType *result = 0;
@@ -174,7 +190,7 @@ CPPUNIT_TEST_SUITE( BBoxCombFunctionTest );
 
     CPPUNIT_TEST(no_arg_test);
     CPPUNIT_TEST(combo_test_1);
-
+    CPPUNIT_TEST(three_arg_test);
     CPPUNIT_TEST_SUITE_END()
     ;
 };
