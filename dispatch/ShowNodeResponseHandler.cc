@@ -67,7 +67,13 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
     // Get the container. By convention, the path can start with a slash,
     // but doesn't have too. However, get_node() requires the leading '/'.
     string container = dhi.data[CONTAINER];
-    BESDEBUG(MODULE, prolog << "container: " << container << endl);
+    BESDEBUG(MODULE, prolog << "Requested container: " << container << endl);
+
+    // Here we enforce a rule: The container name, which may be a
+    // Node and Item may never end in slash "/"
+    // (That's a pretty much a b.s. rule. How about we preserve that stuff instead? -  ndp 10/22/18)
+    //while(container.length()>1 &&  *container.rbegin() == '/')
+    //     container = container.substr(0,container.length()-1);
 
     //---------------------------------------------------------------
     // In this next section we look for a catalog name in the first
@@ -81,8 +87,9 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
     vector<string> path_tokens;
 
     // BESUtil::normalize_path() removes duplicate separators and adds leading and trailing separators as directed.
-    string path = BESUtil::normalize_path(container, false, false);
-    BESDEBUG(MODULE, prolog << "Normalized path: " << path << endl);
+    // string path = BESUtil::normalize_path(container, false, false); // I dropped this because we need it to preserve the trailing slash. -  ndp 10/22/18
+    string path = container;
+    BESDEBUG(MODULE, prolog << "!Normalized path: " << path << endl);
 
     // Because we may need to alter the container/file/resource name by removing
     // a catalog name from the first node in the path we use "use_container" to store
@@ -95,11 +102,16 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
         BESDEBUG(MODULE, "First path token: " << path_tokens[0] << endl);
         catalog = datCatalogList->find_catalog(path_tokens[0]);
         if (catalog) {
-            BESDEBUG(MODULE, prolog << "Located catalog " << catalog->get_catalog_name() << " from path component" << endl);
+            string catalog_name = catalog->get_catalog_name();
+            BESDEBUG(MODULE, prolog << "Located catalog " << catalog_name << " from path component" << endl);
             // Since the catalog name is in the path we
             // need to drop it this should leave container
             // with a leading
-            use_container = BESUtil::normalize_path(path.substr(path_tokens[0].length()), true, false);
+            int index =  path.find(catalog_name) + catalog_name.length();
+            use_container =  path.substr(index);
+
+            // I dropped this because we needed to preserve the trailing slash. -  ndp 10/22/18
+            // use_container = BESUtil::normalize_path(path.substr(path_tokens[0].length()), true, false);
             BESDEBUG(MODULE, prolog << "Modified container/path value to:  " << use_container << endl);
         }
     }

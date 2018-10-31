@@ -195,7 +195,7 @@ bool BESDebug::IsContextName(const string &name)
  */
 string BESDebug::GetOptionsString()
 {
-    ostringstream oss("");
+    ostringstream oss;
 
     if (_debug_map.size())
     {

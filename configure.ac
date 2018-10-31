@@ -4,7 +4,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.63)
 
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
-AC_INIT(bes, 3.19.1, support@opendap.org)
+AC_INIT(bes, 3.20.0, support@opendap.org)
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 
@@ -52,14 +52,18 @@ AC_ARG_ENABLE([asan], [AS_HELP_STRING([--enable-asan], [Use the address sanitize
      cxx_debug_flags="$cxx_debug_flags -fsanitize=address -fno-omit-frame-pointer"], 
     [AM_CONDITIONAL([USE_ASAN], [false])])
 
+AC_ARG_WITH([cmr], [AS_HELP_STRING([--with-cmr], [Build and include the CMR Module (built by default in developer mode)])], 
+    [AM_CONDITIONAL([WITH_CMR], [true])],
+    [AM_CONDITIONAL([WITH_CMR], [AM_COND_IF([BES_DEVELOPER], [true], [flase])])])
+
 dnl Only set CXXFLAGS if the caller didn't supply a value
 AS_IF([test -z "${CXXFLAGS+set}"], [CXXFLAGS="$cxx_debug_flags"])
 
 dnl library visioning: Update these when the interface changes. Generally,
 dnl assume that the interface tracks the major and minor release numbers.
-LIB_DIS_CURRENT=15
-LIB_DIS_AGE=0
-LIB_DIS_REVISION=2
+LIB_DIS_CURRENT=16
+LIB_DIS_AGE=1
+LIB_DIS_REVISION=0
 AC_SUBST(LIB_DIS_CURRENT)
 AC_SUBST(LIB_DIS_AGE)
 AC_SUBST(LIB_DIS_REVISION)
@@ -68,16 +72,16 @@ AC_SUBST(LIBDISPATCH_VERSION)
 
 LIB_PPT_CURRENT=4
 LIB_PPT_AGE=0
-LIB_PPT_REVISION=11
+LIB_PPT_REVISION=12
 AC_SUBST(LIB_PPT_CURRENT)
 AC_SUBST(LIB_PPT_AGE)
 AC_SUBST(LIB_PPT_REVISION)
 LIBPPT_VERSION="$LIB_PPT_CURRENT:$LIB_PPT_REVISION:$LIB_PPT_AGE"
 AC_SUBST(LIBPPT_VERSION)
 
-LIB_XML_CMD_CURRENT=3
-LIB_XML_CMD_AGE=2
-LIB_XML_CMD_REVISION=4
+LIB_XML_CMD_CURRENT=4
+LIB_XML_CMD_AGE=3
+LIB_XML_CMD_REVISION=0
 AC_SUBST(LIB_XML_CMD_CURRENT)
 AC_SUBST(LIB_XML_CMD_AGE)
 AC_SUBST(LIB_XML_CMD_REVISION)
@@ -132,6 +136,9 @@ dnl The DMR++ handler uses, conditionally, the Multi API. These tests determine
 dnl if that API is present (iff the multi.h header is present). jhrg 8/27/18
 AC_CHECK_HEADERS([curl/curl.h])
 AC_CHECK_HEADERS([curl/multi.h])
+
+AC_SEARCH_LIBS([curl_multi_wait], [curl],
+    [AC_DEFINE([HAVE_CURL_MULTI_API],[1],[Does libcurl have the multi API])], [], [])
 
 dnl Checks for header files.
 AC_HEADER_STDC
@@ -865,6 +872,16 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/asciival/tests/atlocal
     modules/asciival/unit-tests/Makefile
 
+    modules/cmr_module/Makefile
+    modules/cmr_module/tests/Makefile
+    modules/cmr_module/tests/atlocal
+    modules/cmr_module/unit-tests/Makefile
+    
+    modules/httpd_catalog_module/Makefile
+    modules/httpd_catalog_module/unit-tests/Makefile
+    modules/httpd_catalog_module/tests/Makefile
+    modules/httpd_catalog_module/tests/atlocal
+
     modules/www-interface/Makefile
 
     modules/debug_functions/Makefile
@@ -968,6 +985,10 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
 
     AC_CONFIG_TESTDIR(modules/csv_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/asciival/tests, [standalone])
+        
+    AC_CONFIG_TESTDIR(modules/httpd_catalog_module/tests, [standalone])
+
+    AC_CONFIG_TESTDIR(modules/cmr_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_json/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_covjson/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/debug_functions/tests, [standalone])
@@ -983,7 +1004,7 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     AC_CONFIG_TESTDIR(modules/ncml_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/ugrid_functions/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/w10n_handler/tests, [standalone])
-    
+
     AC_CONFIG_TESTDIR(modules/hdf4_handler/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/hdf5_handler/bes-testsuite, [standalone])
     

@@ -26,7 +26,7 @@ BES_SRCS = SampleSayResponseHandler.cc SampleSayXMLCommand.cc SampleModule.cc Sa
 
 BES_HDRS = SampleSayResponseHandler.h SampleSayXMLCommand.h SampleModule.h SampleRequestHandler.h \
 SampleResponseNames.h
-		
+
 libsample_module_la_SOURCES = $(BES_SRCS) $(BES_HDRS)
 libsample_module_la_LDFLAGS = -avoid-version -module 
 libsample_module_la_LIBADD = $(BES_LIBS)
@@ -37,15 +37,8 @@ EXTRA_DIST = sample.conf.in
 
 CLEANFILES = *~ sample.conf
 
-install-data-local: sample.conf
-	@currdate=`date +"%y%m%d%H%M"`; \
-	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
-	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/sample.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/sample.conf $(DESTDIR)$(sysconfdir)/bes/modules/sample.conf.$$currdate; \
-	$(INSTALL_DATA) sample.conf $(DESTDIR)$(sysconfdir)/bes/modules/sample.conf
-
-uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/sample.conf
+moduledir = $(sysconfdir)/bes/modules
+module_DATA =  sample.conf
 
 sample.conf: sample.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \

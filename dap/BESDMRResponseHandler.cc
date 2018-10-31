@@ -81,7 +81,7 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
     dhi.first_container();
     if (mds) lock = mds->is_dmr_available(dhi.container->get_relative_name());
 
-    if (mds && lock() && dhi.container->get_dap4_constraint().empty()) {    // no CE
+    if (mds && lock() && dhi.container->get_dap4_constraint().empty() && dhi.container->get_dap4_function().empty()) {    // no CE
         // send the response
         mds->write_dmr_response(dhi.container->get_relative_name(), dhi.get_output_stream());
         // suppress transmitting a ResponseObject in transmit()
@@ -89,7 +89,7 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
     }
     else {
         DMR *dmr = 0;
-                if (mds && lock()) {
+        if (mds && lock() && dhi.container->get_dap4_function().empty()) {
             // If mds and lock(), the DDS is in the cache, get the _object_
             dmr = mds->get_dmr_object(dhi.container->get_relative_name());
 
@@ -114,12 +114,12 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
             // The RequestHandlers set the constraint and reset the container(s)
             BESRequestHandlerList::TheList()->execute_each(dhi);
 
-            // Cache the DMR if the MDS is not null but the response was not present.
-            if (mds && !lock()) {
-                dhi.first_container();  // must reset container; execute_each() iterates over all of them
-                BESDEBUG("dmr", __func__ << " Storing: " << dhi.container->get_real_name() << endl);
-                mds->add_responses(static_cast<BESDMRResponse*>(d_response_object)->get_dmr(),
-                    dhi.container->get_relative_name());
+            dhi.first_container();  // must reset container; execute_each() iterates over all of them
+
+            // Cache the DMR if the MDS is not null but the response was not present, and..
+            // This request does not contain a server function call.
+            if (mds && !lock() && dhi.container->get_dap4_function().empty()) {
+                mds->add_responses(static_cast<BESDMRResponse*>(d_response_object)->get_dmr(), dhi.container->get_relative_name());
             }
         }
     }

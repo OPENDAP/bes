@@ -1,0 +1,10 @@
+CatalogNode::dump - ()
+    name: /child_dir/child_file.conf
+    catalog_name: 
+    last modified time:
+    CatalogItem::dump - ()
+        name: /child_dir/child_file.conf
+        size: 64
+        last modified time:
+        is_data: 1
+        type: 2

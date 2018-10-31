@@ -42,9 +42,11 @@ DAP.Help.XML=@pkgdatadir@/dap_help.xml
 # hold objects forever; setting a positive non-zero size makes the
 # MDS behave like a cache, purging responses when the size is exceeded.
 
-# DAP.GlobalMetadataStore.path = @datadir@/mds
+DAP.GlobalMetadataStore.path = @datadir@/mds
 DAP.GlobalMetadataStore.prefix = mds
-DAP.GlobalMetadataStore.size = 0
+
+# Size in MB
+DAP.GlobalMetadataStore.size = 200
 
 # The MDS writes a ledger of additions and removals. By default the
 # ledger is kept in 'mds_ledger.txt' in the directory used to start

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="attribute_OtherXML_Attribute.ncml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="NC_GLOBAL" type="Container">
+        <Attribute name="TestOtherXML" type="OtherXML">
+    <Root xmlns="http://www.some_place_that_uses_attribute.com">
+      <SomeElement>
+	<variable> 
+	  <attribute name="I_Am_In_A_New_Namespace_Not_NCML">
+	    We better not think the parse of OtherXML is done here since we're not back to 0 depth!
+	  </attribute> 
+	</variable>
+      </SomeElement>
+    </Root>
+  </Attribute>
+    </Attribute>
+    <dataBLOB href=""/>
+</Dataset>

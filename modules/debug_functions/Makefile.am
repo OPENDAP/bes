@@ -6,7 +6,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=debug_functions
-M_VER=1.0.6
+M_VER=1.0.7
 
 AM_CPPFLAGS = $(GF_CFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 LIBADD = $(GF_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -24,12 +24,10 @@ SUBDIRS =  . unit-tests tests
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libdebug_functions.la
 
-SRCS =  \
-	DebugFunctions.cc 
+SRCS =  DebugFunctions.cc 
 
-HDRS =  \
-	DebugFunctions.h 
-	
+HDRS =  DebugFunctions.h 
+
 libdebug_functions_la_SOURCES = $(SRCS) $(HDRS)
 # libdebug_functions_la_CPPFLAGS = $(GF_CFLAGS) $(XML2_CFLAGS)
 libdebug_functions_la_LDFLAGS = -avoid-version -module 
@@ -41,16 +39,8 @@ package_version=$(PACKAGE_MAJOR_VERSION).$(PACKAGE_MINOR_VERSION).$(PACKAGE_SUBM
 
 CLEANFILES = *~ debug_functions.conf debug_functions-*.tar.gz
 
-install-data-local: debug_functions.conf
-	@currdate=`date +"%y%m%d%H%M"`; \
-	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
-	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/debug_functions.conf \
-	      && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/debug_functions.conf $(DESTDIR)$(sysconfdir)/bes/modules/debug_functions.conf.$$currdate; \
-	$(INSTALL_DATA) debug_functions.conf $(DESTDIR)$(sysconfdir)/bes/modules/debug_functions.conf
-
-uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/debug_functions.conf
+moduledir = $(sysconfdir)/bes/modules
+module_DATA = debug_functions.conf
 
 debug_functions.conf: debug_functions.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \

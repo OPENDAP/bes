@@ -22,7 +22,7 @@ DISTCLEANFILES = atconfig
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > $@
 
-bes.conf: $(top_srcdir)/configure.ac $(srcdir)/bes.conf.in $(srcdir)/bes_serial.conf.in
+bes.conf: $(top_srcdir)/configure.ac $(srcdir)/bes.conf.in
 
 bes_serial.conf: $(top_srcdir)/configure.ac $(srcdir)/bes_serial.conf.in
 

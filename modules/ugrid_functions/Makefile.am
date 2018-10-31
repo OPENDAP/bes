@@ -6,7 +6,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=ugrid_functions
-M_VER=1.1.1
+M_VER=1.1.2
 
 AM_CPPFLAGS = $(GF_CFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 LIBADD = $(GF_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -55,16 +55,8 @@ sample_data_DATA = data/ugrid_test_01.nc data/ugrid_test_02.nc data/ugrid_test_0
 
 # ugrid_functions.spec OSX_Resources
 
-install-data-local: ugrid_functions.conf
-	@currdate=`date +"%y%m%d%H%M"`; \
-	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
-	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/ugrid_functions.conf \
-	      && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/ugrid_functions.conf $(DESTDIR)$(sysconfdir)/bes/modules/ugrid_functions.conf.$$currdate; \
-	$(INSTALL_DATA) ugrid_functions.conf $(DESTDIR)$(sysconfdir)/bes/modules/ugrid_functions.conf
-
-uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/ugrid_functions.conf
+moduledir = $(sysconfdir)/bes/modules
+module_DATA = ugrid_functions.conf
 
 ugrid_functions.conf: ugrid_functions.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
@@ -75,7 +67,6 @@ ugrid_functions.conf: ugrid_functions.conf.in $(top_builddir)/config.status
                 -e "s%[@]bindir[@]%${bindir}%" \
                 -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > ugrid_functions.conf
 
-                # Not nearly as clean as it could be, but this removes .svn directories
 C4_DIR=./cccc
 .PHONY: cccc
 cccc:	

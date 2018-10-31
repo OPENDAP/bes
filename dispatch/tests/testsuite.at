@@ -18,7 +18,7 @@ m4_define([AT_TEST_BLOCKING], [dnl
     AT_SETUP([BLOCKING])
 
     # This uses the verbose option of the testsuite itself. 
-    AS_IF([test -z $at_verbose], [debug="-d"], [debug=""]);
+    AS_IF([test -z $at_verbose], [debug="-d"], [debug=""])
     
     # naming the cache dir - and using a different one for each test - means the
     # tests can run in parallel, that's faster and tests multiple caches in use
@@ -65,7 +65,7 @@ m4_define([AT_TEST_CREATE_AND_LOCK], [dnl
     AT_SETUP([CREATE_AND_LOCK])
 
     # This uses the verbose option of the testsuite itself. 
-    AS_IF([test -z $at_verbose], [verbose=v; debug="-d"], [verbose=""; debug=""]);
+    AS_IF([test -z $at_verbose], [debug="-d"], [debug=""])
     
     # naming the cache dir - and using a different one for each test - means the
     # tests can run in parallel, that's faster and tests multiple caches in use
@@ -95,7 +95,7 @@ m4_define([AT_TEST_TWO_FILE_CREATE_AND_LOCK], [dnl
     AT_SETUP([TWO_FILE_CREATE_AND_LOCK])
 
     # This uses the verbose option of the testsuite itself. 
-    AS_IF([test -z $at_verbose], [debug="-d"], [debug=""]);
+    AS_IF([test -z $at_verbose], [debug="-d"], [debug=""])
     
     # naming the cache dir - and using a different one for each test - means the
     # tests can run in parallel, that's faster and tests multiple caches in use
@@ -136,7 +136,7 @@ m4_define([AT_TEST_TWO_FILE_CREATE_AND_LOCK_VERSION_2], [dnl
     AT_SETUP([TWO_FILE_CREATE_AND_LOCK_VERSION_2])
 
     # This uses the verbose option of the testsuite itself. 
-    AS_IF([test -z $at_verbose], [debug="-d"], [debug=""]);
+    AS_IF([test -z $at_verbose], [debug="-d"], [debug=""])
     
     # naming the cache dir - and using a different one for each test - means the
     # tests can run in parallel, that's faster and tests multiple caches in use
@@ -183,7 +183,7 @@ m4_define([AT_TEST_MULTIPLE_READ_LOCKS], [dnl
     AT_SETUP([MULTIPLE_READ_LOCKS])
 
     # This uses the verbose option of the testsuite itself. 
-    AS_IF([test -z $at_verbose], [debug="-d"], [debug=""]);
+    AS_IF([test -z $at_verbose], [debug="-d"], [debug=""])
     
     # naming the cache dir - and using a different one for each test - means the
     # tests can run in parallel, that's faster and tests multiple caches in use

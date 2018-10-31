@@ -99,16 +99,8 @@ data/dap4/dmr-testsuite/test_simple_9.2.xml				\
 data/dap4/dmr-testsuite/test_simple_9.xml
 
 
-install-data-local: dapreader.conf
-	@currdate=`date +"%y%m%d%H%M"`; \
-	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
-	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/dapreader.conf \
-	    && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/dapreader.conf $(DESTDIR)$(sysconfdir)/bes/modules/dapreader.conf.$$currdate; \
-	$(INSTALL_DATA) dapreader.conf $(DESTDIR)$(sysconfdir)/bes/modules/dapreader.conf
-
-uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/dapreader.conf
+moduledir = $(sysconfdir)/bes/modules
+module_DATA = dapreader.conf
 
 dapreader.conf: dapreader.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > dapreader.conf

@@ -44,6 +44,7 @@
 #include <D4Maps.h>
 #include <D4Group.h>
 
+#include "BESLog.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"
 
@@ -54,6 +55,7 @@
 
 // Used with BESDEBUG
 static const string dmrpp_3 = "dmrpp:3";
+static const string dmrpp_4 = "dmrpp:4";
 
 using namespace libdap;
 using namespace std;
@@ -121,7 +123,9 @@ bool DmrppArray::is_projected()
  * location 1,1,1 (zero-based indexing) would be at offset 1*1 + 1*4 + 1 * 4*3 == 15.
  *
  * @note When getting the whole AIRS file, the profiler shows that the code spends
- * about 1s here.
+ * about 1s here. There is a better performing replacement for this function. See
+ * multiplier(const vector<unsigned int> &shape, unsigned int k) below in
+ * read_chunk_unconstrained() and elsewhere in this file.
  *
  * @param address_in_target N-tuple zero-based index of an element in N-space
  * @param target_shape N-tuple of the array's dimension sizes.
@@ -137,12 +141,11 @@ static unsigned long long get_index(const vector<unsigned int> &address_in_targe
     unsigned long long multiplier = *shape_index++;
     unsigned long long offset = *index++;
 
-    // TODO unroll this loop
     while (index != index_end) {
         assert(*index < *shape_index); // index < shape for each dim
 
         offset += multiplier * *index++;
-        multiplier *= *shape_index++;   // TODO Remove the unneeded multiply. jhrg 3/24/17
+        multiplier *= *shape_index++;
     }
 
     return offset;
@@ -606,9 +609,6 @@ void DmrppArray::insert_chunk(unsigned int dim, vector<unsigned int> *target_ele
     }
 
     unsigned long long chunk_end = end_element - chunk_origin[dim];
-#if 0
-    vector<unsigned int> constrained_array_shape = get_shape(true);
-#endif
 
     unsigned int last_dim = chunk_shape.size() - 1;
     if (dim == last_dim) {
@@ -627,6 +627,7 @@ void DmrppArray::insert_chunk(unsigned int dim, vector<unsigned int> *target_ele
             // Compute where we are going to read it from
             (*chunk_element_address)[dim] = chunk_start;
 
+            // See below re get_index()
             unsigned int target_char_start_index = get_index(*target_element_address, constrained_array_shape) * elem_width;
             unsigned int chunk_char_start_index = get_index(*chunk_element_address, chunk_shape) * elem_width;
 
@@ -641,6 +642,7 @@ void DmrppArray::insert_chunk(unsigned int dim, vector<unsigned int> *target_ele
                 // Compute where we are going to read it from
                 (*chunk_element_address)[dim] = chunk_index;
 
+                // These calls to get_index() can be removed as with the insert...unconstrained() code.
                 unsigned int target_char_start_index = get_index(*target_element_address, constrained_array_shape) * elem_width;
                 unsigned int chunk_char_start_index = get_index(*chunk_element_address, chunk_shape) * elem_width;
 
@@ -687,9 +689,6 @@ void DmrppArray::read_chunks()
     reserve_value_capacity(get_size(true));
     vector<unsigned int> constrained_array_shape = get_shape(true);
 
-    // TODO A potential optimization of this code would be to run the insert_chunk()
-    // method in a child thread than will let the main thread return to reading more
-    // data.
     BESDEBUG(dmrpp_3, "d_use_parallel_transfers: " << DmrppRequestHandler::d_use_parallel_transfers << endl);
     BESDEBUG(dmrpp_3, "d_max_parallel_transfers: " << DmrppRequestHandler::d_max_parallel_transfers << endl);
 
@@ -878,7 +877,7 @@ void *one_chunk_unconstrained_thread(void *arg_list)
     catch (BESError &error) {
         write(args->fds[1], &args->tid, sizeof(args->tid));
         delete args;
-        pthread_exit(new string(error.get_message()));
+        pthread_exit(new string(error.get_verbose_message()));
     }
 
     // tid is a char and thus us written atomically. Writing this tells the parent
@@ -915,77 +914,105 @@ void DmrppArray::read_chunks_unconstrained()
 
         // This pipe is used by the child threads to indicate completion
         int fds[2];
-        pipe(fds);
+        int status = pipe(fds);
+        if (status < 0)
+            throw BESInternalError(string("Could not open a pipe for thread communication: ").append(strerror(errno)), __FILE__, __LINE__);
 
         // Start the max number of processing pipelines
-        pthread_t thread[DmrppRequestHandler::d_max_parallel_transfers];
-        unsigned int threads = 0;
-        for (unsigned int i = 0; i < (unsigned int)DmrppRequestHandler::d_max_parallel_transfers && chunks_to_read.size() > 0; ++i) {
-            Chunk *chunk = chunks_to_read.front();
-            chunks_to_read.pop();
+        pthread_t threads[DmrppRequestHandler::d_max_parallel_transfers];
 
-            // thread number is 'i'
-            one_chunk_unconstrained_args *args = new one_chunk_unconstrained_args(fds, i, chunk, this, array_shape, chunk_shape);
-            int status = pthread_create(&thread[i], NULL, dmrpp::one_chunk_unconstrained_thread, (void*) args);
-            if (status == 0) {
-                ++threads;
-            }
-            else {
-                ostringstream oss("Could not start process_one_chunk_unconstrained thread for chunk ");
-                oss << i << ": " << strerror(status);
-                throw BESInternalError(oss.str(), __FILE__, __LINE__);
-            }
+        // set the thread[] elements to null - this serves as a sentinel value
+        for (unsigned int i = 0; i < (unsigned int)DmrppRequestHandler::d_max_parallel_transfers; ++i) {
+            memset(&threads[i], 0, sizeof(pthread_t));
         }
 
-         // Now join the child threads, creating replacement threads if needed
-        while (threads > 0) {
-            unsigned char tid;   // bytes can be written atomically
-            // Block here until a child thread writes to the pipe, then read the byte
-            int bytes = ::read(fds[0], &tid, sizeof(tid));
-            if (bytes != sizeof(tid))
-                throw BESInternalError(string("Could not read the thread id: ").append(strerror(errno)), __FILE__, __LINE__);
-
-            if (!(tid < DmrppRequestHandler::d_max_parallel_transfers)) {
-                ostringstream oss("Invalid thread id read after thread exit: ");
-                oss << tid;
-                throw BESInternalError(oss.str(), __FILE__, __LINE__);
-            }
-
-            string *error;
-            int status = pthread_join(thread[(unsigned int)tid], (void**)&error);
-            if (status != 0) {
-                ostringstream oss("Could not join process_one_chunk_unconstrained thread for chunk ");
-                oss << tid << ": " << strerror(status);
-                throw BESInternalError(oss.str(), __FILE__, __LINE__);
-            }
-            else if (error != 0) {
-                BESInternalError e(*error, __FILE__, __LINE__);
-                delete error;
-                throw e;
-            }
-            else if (chunks_to_read.size() > 0) {
+        try {
+            unsigned int num_threads = 0;
+            for (unsigned int i = 0; i < (unsigned int) DmrppRequestHandler::d_max_parallel_transfers && chunks_to_read.size() > 0; ++i) {
                 Chunk *chunk = chunks_to_read.front();
                 chunks_to_read.pop();
 
-                // thread number is 'tid,' the number of the thread that just completed
-                one_chunk_unconstrained_args *args = new one_chunk_unconstrained_args(fds, tid, chunk, this, array_shape, chunk_shape);
-                int status = pthread_create(&thread[tid], NULL, dmrpp::one_chunk_unconstrained_thread, (void*) args);
-                if (status != 0) {
-                    ostringstream oss("Could not start process_one_chunk_unconstrained thread for chunk ");
-                    oss << tid << ": " << strerror(status);
+                // thread number is 'i'
+                one_chunk_unconstrained_args *args = new one_chunk_unconstrained_args(fds, i, chunk, this, array_shape, chunk_shape);
+                int status = pthread_create(&threads[i], NULL, dmrpp::one_chunk_unconstrained_thread, (void*) args);
+                if (status == 0) {
+                    ++num_threads;
+                    BESDEBUG(dmrpp_3, "started thread: " << i << endl);
+                }
+                else {
+                    ostringstream oss("Could not start process_one_chunk_unconstrained thread for chunk ", std::ios::ate);
+                    oss << i << ": " << strerror(status);
+                    BESDEBUG(dmrpp_3, oss.str());
                     throw BESInternalError(oss.str(), __FILE__, __LINE__);
                 }
             }
-            else {
-                // there are no more chunks to process, decrement the thread count
-                --threads;
+
+            // Now join the child threads, creating replacement threads if needed
+            while (num_threads > 0) {
+                unsigned char tid;   // bytes can be written atomically
+                // Block here until a child thread writes to the pipe, then read the byte
+                int bytes = ::read(fds[0], &tid, sizeof(tid));
+                if (bytes != sizeof(tid))
+                    throw BESInternalError(string("Could not read the thread id: ").append(strerror(errno)), __FILE__, __LINE__);
+
+                if (!(tid < DmrppRequestHandler::d_max_parallel_transfers)) {
+                    ostringstream oss("Invalid thread id read after thread exit: ", std::ios::ate);
+                    oss << tid;
+                    throw BESInternalError(oss.str(), __FILE__, __LINE__);
+                }
+
+                string *error;
+                int status = pthread_join(threads[tid], (void**)&error);
+                --num_threads;
+                BESDEBUG(dmrpp_3, "joined thread: " << (unsigned int)tid << ", there are: " << num_threads << endl);
+
+                if (status != 0) {
+                    ostringstream oss("Could not join process_one_chunk_unconstrained thread for chunk ", std::ios::ate);
+                    oss << tid << ": " << strerror(status);
+                    throw BESInternalError(oss.str(), __FILE__, __LINE__);
+                }
+                else if (error != 0) {
+                    BESInternalError e(*error, __FILE__, __LINE__);
+                    delete error;
+                    throw e;
+                }
+                else if (chunks_to_read.size() > 0) {
+                    Chunk *chunk = chunks_to_read.front();
+                    chunks_to_read.pop();
+
+                    // thread number is 'tid,' the number of the thread that just completed
+                    one_chunk_unconstrained_args *args = new one_chunk_unconstrained_args(fds, tid, chunk, this, array_shape, chunk_shape);
+                    int status = pthread_create(&threads[tid], NULL, dmrpp::one_chunk_unconstrained_thread, (void*) args);
+                    if (status != 0) {
+                        ostringstream oss;
+                        oss << "Could not start process_one_chunk_unconstrained thread for chunk " << tid << ": " << strerror(status);
+                        throw BESInternalError(oss.str(), __FILE__, __LINE__);
+                    }
+                    ++num_threads;
+                    BESDEBUG(dmrpp_3, "started thread: " << (unsigned int)tid << ", there are: " << threads << endl);
+                }
             }
+
+            // Once done with the threads, close the communication pipe.
+            close(fds[0]);
+            close(fds[1]);
         }
+        catch (...) {
+            // cancel all the threads, otherwise we'll have threads out there using up resources
+            // defined in DmrppCommon.cc
+            join_threads(threads, DmrppRequestHandler::d_max_parallel_transfers);
+            // close the pipe used to communicate with the child threads
+            close(fds[0]);
+            close(fds[1]);
+            // re-throw the exception
+            throw;
+        }
+
 #if 0
         while (chunks_to_read.size() > 0) {
 
             // Start the max number of processing pipelines
-            pthread_t thread[DmrppRequestHandler::d_max_parallel_transfers];
+            pthread_t threads[DmrppRequestHandler::d_max_parallel_transfers];
             unsigned int threads = 0;
             for (unsigned int i = 0; i < (unsigned int) DmrppRequestHandler::d_max_parallel_transfers && chunks_to_read.size() > 0; ++i) {
                 Chunk *chunk = chunks_to_read.front();
@@ -993,12 +1020,12 @@ void DmrppArray::read_chunks_unconstrained()
 
                 one_chunk_unconstrained_args *args = new one_chunk_unconstrained_args(fds, i, chunk, this, array_shape, chunk_shape);
 
-                int status = pthread_create(&thread[i], NULL, dmrpp::one_chunk_unconstrained_thread, (void*) args);
+                int status = pthread_create(&threads[i], NULL, dmrpp::one_chunk_unconstrained_thread, (void*) args);
                 if (status == 0) {
                     ++threads;
                 }
                 else {
-                    ostringstream oss("Could not start process_one_chunk_unconstrained thread for chunk ");
+                    ostringstream oss("Could not start process_one_chunk_unconstrained thread for chunk ", std::ios::ate);
                     oss << i << ": " << strerror(status);
                     throw BESInternalError(oss.str(), __FILE__, __LINE__);
                 }
@@ -1006,9 +1033,9 @@ void DmrppArray::read_chunks_unconstrained()
             // Now join the child threads.
             for (unsigned int i = 0; i < threads; ++i) {
                 string *error;
-                int status = pthread_join(thread[i], (void**) &error);
+                int status = pthread_join(threads[i], (void**) &error);
                 if (status != 0) {
-                    ostringstream oss("Could not join process_one_chunk_unconstrained thread for chunk ");
+                    ostringstream oss("Could not join process_one_chunk_unconstrained thread for chunk ", std::ios::ate);
                     oss << i << ": " << strerror(status);
                     throw BESInternalError(oss.str(), __FILE__, __LINE__);
                 }
@@ -1049,14 +1076,18 @@ bool DmrppArray::read()
     // Single chunk and 'contiguous' are the same for this code.
 
     if (get_immutable_chunks().size() == 1 || get_chunk_dimension_sizes().empty()) {
+        BESDEBUG(dmrpp_4, "Calling read_contiguous() for " << name() << endl);
         read_contiguous();    // Throws on various errors
     }
     else {  // Handle the more complex case where the data is chunked.
-        if (!is_projected())
+        if (!is_projected()) {
+            BESDEBUG(dmrpp_4, "Calling read_chunks_unconstrained() for " << name() << endl);
             read_chunks_unconstrained();
-        else
+        }
+        else {
+            BESDEBUG(dmrpp_4, "Calling read_chunks() for " << name() << endl);
             read_chunks();
-
+        }
     }
 
     return true;

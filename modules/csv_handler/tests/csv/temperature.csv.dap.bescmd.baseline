@@ -12,7 +12,7 @@
     </String>
     <Float32 name="latitude">
         <Dim name="/record"/>
-        <Attribute name="type" type="Float32">
+        <Attribute name="type" type="String">
             <Value>Float32</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
@@ -21,7 +21,7 @@
     </Float32>
     <Float32 name="longitude">
         <Dim name="/record"/>
-        <Attribute name="type" type="Float32">
+        <Attribute name="type" type="String">
             <Value>Float32</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
@@ -30,7 +30,7 @@
     </Float32>
     <Float32 name="temperature_K">
         <Dim name="/record"/>
-        <Attribute name="type" type="Float32">
+        <Attribute name="type" type="String">
             <Value>Float32</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">

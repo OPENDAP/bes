@@ -10,7 +10,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=gdal_handler
-M_VER=1.1.2
+M_VER=1.1.3
 
 AM_CPPFLAGS = $(GDAL_CFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -68,16 +68,8 @@ sample_data_DATA = data/README \
     data/SP27GTIF.lgo \
     data/DIGEST_Example_2.20120926112501.jp2
 
-install-data-local: gdal.conf
-	@currdate=`date +"%y%m%d%H%M"`; \
-	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
-	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/gdal.conf \
-		&& mv -f $(DESTDIR)$(sysconfdir)/bes/modules/gdal.conf $(DESTDIR)$(sysconfdir)/bes/modules/gdal.conf.$$currdate; \
-	$(INSTALL_DATA) gdal.conf $(DESTDIR)$(sysconfdir)/bes/modules/gdal.conf
-
-uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/gdal.conf
+moduledir = $(sysconfdir)/bes/modules
+module_DATA = gdal.conf
 
 gdal.conf: gdal.conf.in $(top_srcdir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > gdal.conf

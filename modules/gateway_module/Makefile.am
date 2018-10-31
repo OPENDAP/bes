@@ -11,7 +11,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=gateway_module
-M_VER=1.2.2
+M_VER=1.2.3
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand $(DAP_CFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -47,15 +47,8 @@ EXTRA_DIST = gateway.conf.in
 
 CLEANFILES = *~ gateway.conf
 
-install-data-local: gateway.conf
-	@currdate=`date +"%y%m%d%H%M"`; \
-	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
-	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/gateway.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/gateway.conf $(DESTDIR)$(sysconfdir)/bes/modules/gateway.conf.$$currdate; \
-	$(INSTALL_DATA) gateway.conf $(DESTDIR)$(sysconfdir)/bes/modules/gateway.conf
-
-uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/gateway.conf
+moduledir = $(sysconfdir)/bes/modules
+module_DATA = gateway.conf
 
 gateway.conf: gateway.conf.in $(top_srcdir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > gateway.conf

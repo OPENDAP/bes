@@ -10,7 +10,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=csv_handler
-M_VER=1.1.9
+M_VER=1.2.0
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -43,15 +43,8 @@ CLEANFILES = *~ csv.conf
 sample_datadir = $(datadir)/hyrax/data/csv
 sample_data_DATA = data/temperature.csv
 
-install-data-local: csv.conf
-	@currdate=`date +"%y%m%d%H%M"`; \
-	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
-	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/csv.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/csv.conf $(DESTDIR)$(sysconfdir)/bes/modules/csv.conf.$$currdate; \
-	$(INSTALL_DATA) csv.conf $(DESTDIR)$(sysconfdir)/bes/modules/csv.conf
-
-uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/csv.conf
+moduledir = $(sysconfdir)/bes/modules
+module_DATA = csv.conf
 
 csv.conf: csv.conf.in $(top_srcdir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > csv.conf

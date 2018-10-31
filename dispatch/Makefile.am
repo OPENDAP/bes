@@ -30,15 +30,10 @@ EXTRA_DIST = bes/bes.conf.in bes/bes.conf bes/bes_help.html bes/bes_help.txt \
 
 DISTCLEANFILES = bes/bes.conf
 
-install-data-local: bes/bes.conf
-	@currdate=`date +"%y%m%d%H%M"`; \
-	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/bes.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/bes.conf $(DESTDIR)$(sysconfdir)/bes/bes.conf.$$currdate; \
-	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	$(INSTALL_DATA) bes/bes.conf $(DESTDIR)$(sysconfdir)/bes/bes.conf
-
-uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/bes.conf
+# confdir = $(sysconfdir)/bes
+# Edit while working on C7 RPM builds jhrg 9/19/18
+confdir = $(sysconfdir)/bes
+conf_DATA = bes/bes.conf
 
 bes/bes.conf: bes/bes.conf.in ../config.status
 	mkdir -p bes
@@ -81,7 +76,6 @@ SRCS = BESInterface.cc \
 	BESServiceRegistry.cc BESServicesResponseHandler.cc		\
 	BESMemoryGlobalArea.cc						\
 	BESMemoryManager.cc 			\
-	BESAggFactory.cc BESAggregationServer.cc			\
 	BESReturnManager.cc						\
 	BESError.cc				\
 	BESDataHandlerInterface.cc					\
@@ -101,11 +95,9 @@ SRCS = BESInterface.cc \
 	BESCatalogResponseHandler.cc ShowNodeResponseHandler.cc \
 	CatalogNode.cc CatalogItem.cc \
 	WhiteList.cc
-	
-# BESSilentInfo.cc
-# BESBasicHttpTransmitter.cc 
-# BESExceptionManager.cc
-	
+
+#	BESAggFactory.cc BESAggregationServer.cc
+
 HDRS = BESInterface.h BESLog.h 			\
 	TheBESKeys.h BESStatus.h 				\
 	BESNames.h \
@@ -141,7 +133,6 @@ HDRS = BESInterface.h BESLog.h 			\
 	BESConstraintFuncs.h  			\
 	BESMemoryGlobalArea.h BESMemoryManager.h 			\
 	BESServerSystemResources.h 					\
-	BESAggFactory.h BESAggregationServer.h 				\
 	BESReturnManager.h 						\
 	BESDataNames.h BESApp.h BESObj.h BESIndent.h 	\
 	BESAbstractModule.h BESPluginFactory.h BESPlugin.h 		\
@@ -161,12 +152,9 @@ HDRS = BESInterface.h BESLog.h 			\
 	BESCatalogResponseHandler.h ShowNodeResponseHandler.h \
 	CatalogNode.h CatalogItem.h \
 	WhiteList.h
-	
-	
-# BESSilentInfo.h
-# BESBasicHttpTransmitter.h
-# BESExceptionManager.h
-	
+
+#	BESAggFactory.h BESAggregationServer.h 
+
 C4_DB=$(C4_DIR)/dispatch.db
 C4_HTML=$(C4_dir)/dispatch.html
 C4_XM=$(C4_dir)/dispatch.xml

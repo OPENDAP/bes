@@ -11,8 +11,8 @@
 %define hyraxsharedir %{_datadir}/hyrax
 
 Name:           bes
-Version:        3.19.1
-Release:        1.static%{?dist}
+Version:        3.20.0
+Release:        2.static%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
 Group:          System Environment/Libraries
@@ -22,11 +22,12 @@ Source0:        http://www.opendap.org/pub/source/bes-%{version}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:       libdap >= 3.19.0
+Requires:       libdap >= 3.20.0
 Requires:       readline bzip2 zlib
 Requires:	libicu >= 3.6 
 Requires:       libxml2 >= 2.7.0
 Requires:       openssl
+
 # Requires:	netcdf >= 4.1 
 # Requires:	hdf5 => 1.8
 # Build and run against a static hdf4/hdfeos2 library because hdfeos2
@@ -38,13 +39,15 @@ Requires:       openssl
 
 Requires(pre): shadow-utils
 
-BuildRequires:  libdap-devel >= 3.19.0
+BuildRequires:  libdap-devel >= 3.20.0
 BuildRequires:  readline-devel
 BuildRequires:  bzip2-devel zlib-devel
 BuildRequires:  libxml2-devel >= 2.7.0
 BuildRequires:	libicu-devel >= 3.6
 BuildRequires:  openssl-devel
 BuildRequires:  pkgconfig
+
+# only RH7 onward BuildRequires:  systemd
 # BuildRequires:	netcdf-devel >= 4.1 
 # BuildRequires:	hdf5-devel => 1.8
 # BuildRequires:	hdf >= 4.2
@@ -72,7 +75,7 @@ in the standard + EPEL repos.
 Summary:        Development files for %{name}
 Group:          Development/Libraries
 Requires:       %{name} = %{version}-%{release}
-Requires:       libdap-devel >= 3.15.0
+Requires:       libdap-devel >= 3.20.0
 # for the /usr/share/aclocal directory ownership
 Requires:       automake
 Requires:       openssl-devel, bzip2-devel, zlib-devel
@@ -156,10 +159,10 @@ exit 0
 %files
 %defattr(-,root,root,-)
 %doc ChangeLog NEWS README.md
+# NB: listing a directory here packages the dir and everything it contains. Using %dir
+# packages _just_ the dir. Subsequent commands can add contents selectively. jhrg 9/19/18
 %dir %{_sysconfdir}/bes/
 %dir %{_sysconfdir}/bes/modules
-
-%{_tmpfilesdir}/%{name}.conf
 
 %config(noreplace) %{_sysconfdir}/bes/bes.conf
 %config(noreplace) %{_sysconfdir}/bes/modules/*.conf
@@ -174,6 +177,8 @@ exit 0
 %{_datadir}/bes/*.xml
 
 %{_datadir}/hyrax/
+
+%{_datadir}/mds/
 
 %{_bindir}/beslistener
 %{_bindir}/besdaemon
@@ -198,6 +203,8 @@ exit 0
 %attr (-,%{besuser},%{besgroup}) %{bespiddir}
 %attr (-,%{besuser},%{besgroup}) %{bescachedir}
 
+%{_tmpfilesdir}/%{name}.conf
+
 %files devel
 %defattr(-,root,root,-)
 # %doc __distribution_docs/BES_*.doc
@@ -214,7 +221,7 @@ exit 0
 # %doc __distribution_docs/api-html/
 
 %changelog
-* 5/22/18 - 3.19.1
+* Thu Aug 30 2018 James Gallagher <jgallagher@opendap.org> - 3.19.1-1.static
 - Added build_dmrpp, localBesGetDap, and populateMDS to bin
 
 * Thu Apr  2 2015 EC2 James Gallagher <jgallagher@opendap.org> - 3.13.2-1.NASA

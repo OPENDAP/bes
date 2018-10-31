@@ -23,7 +23,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -33,6 +33,7 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <vector>
+#include <memory>
 
 #include "CSVDAS.h"
 
@@ -44,42 +45,51 @@
 #include <BESNotFoundError.h>
 #include <BESDebug.h>
 
-void
-csv_read_attributes(DAS &das, const string &filename)
+void csv_read_attributes(DAS &das, const string &filename)
 {
-    AttrTable *attr_table_ptr = NULL ;
-    string type ;
+#if 0
+    AttrTable *attr_table_ptr = NULL;
+    string type;
+#endif
 
-    CSV_Obj* csvObj = new CSV_Obj() ;
-    if( !csvObj->open( filename ) )
-    {
-	string err = (string)"Unable to open file " + filename ;
-	delete csvObj;
-	throw BESNotFoundError( err, __FILE__, __LINE__ ) ;
+#if 0
+    CSV_Obj* csvObj = new CSV_Obj();
+#endif
+
+    auto_ptr<CSV_Obj> csvObj(new CSV_Obj);
+
+    if (!csvObj->open(filename)) {
+#if 0
+        string err = (string) "Unable to open file " + filename;
+        delete csvObj;
+#endif
+
+        throw BESNotFoundError(string("Unable to open file ").append(filename), __FILE__, __LINE__);
     }
-    csvObj->load() ;
 
-    BESDEBUG( "csv", "File Loaded:" << endl << *csvObj << endl ) ;
+    csvObj->load();
 
-    vector<string> fieldList ;
-    csvObj->getFieldList( fieldList ) ;
+    BESDEBUG( "csv", "File Loaded:" << endl << *csvObj << endl );
+
+    vector<string> fieldList;
+    csvObj->getFieldList(fieldList);
 
     //loop through all the fields
-    vector<string>::iterator it = fieldList.begin() ;
-    vector<string>::iterator et = fieldList.end() ;
-    for( ; it != et; it++)
-    {
-	attr_table_ptr = das.get_table((string(*it)).c_str());
+    vector<string>::iterator it = fieldList.begin();
+    vector<string>::iterator et = fieldList.end();
+    for (; it != et; it++) {
+        AttrTable *attr_table_ptr = das.get_table((string(*it)).c_str());
 
-	if( !attr_table_ptr )
-	    attr_table_ptr =
-		das.add_table(string(*it), new AttrTable);
+        if (!attr_table_ptr) attr_table_ptr = das.add_table(string(*it), new AttrTable);
 
-	//only one attribute, field type, called "type"
-	type = csvObj->getFieldType(*it);
-	attr_table_ptr->append_attr( "type", type, type ) ;
+        //only one attribute, field type, called "type"
+        string type = csvObj->getFieldType(*it);
+        attr_table_ptr->append_attr("type", "String", type);
     }
 
+#if 0
     delete csvObj;
+#endif
+
 }
 

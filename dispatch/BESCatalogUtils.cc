@@ -96,13 +96,15 @@ BESCatalogUtils::BESCatalogUtils(const string &n, bool strict) :
         throw BESSyntaxUserError(s, __FILE__, __LINE__);
     }
 
-    // TODO access() or stat() would test for existence faster. jhrg 2.25.18
-    DIR *dip = opendir(d_root_dir.c_str());
-    if (dip == NULL) {
-        string serr = "BESCatalogDirectory - root directory " + d_root_dir + " does not exist";
-        throw BESNotFoundError(serr, __FILE__, __LINE__);
+    if(d_root_dir != "UNUSED"){
+        // TODO access() or stat() would test for existence faster. jhrg 2.25.18
+        DIR *dip = opendir(d_root_dir.c_str());
+        if (dip == NULL) {
+            string serr = "BESCatalogDirectory - root directory " + d_root_dir + " does not exist";
+            throw BESNotFoundError(serr, __FILE__, __LINE__);
+        }
+        closedir(dip);
     }
-    closedir(dip);
 
     found = false;
     key = (string) "BES.Catalog." + n + ".Exclude";

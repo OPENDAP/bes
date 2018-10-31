@@ -31,14 +31,6 @@
 
 #include <curl/curl.h>
 
-#if 0
-// FIXME Needs config.h - fix this. jhrg 8/27/18
-#if HAVE_CURL_MULTI_H
-#include <curl/multi.h>
-#endif
-#endif
-
-
 namespace dmrpp {
 
 class Chunk;
@@ -70,6 +62,7 @@ class dmrpp_easy_handle {
     bool d_in_use;      ///< Is this easy_handle in use?
     std::string d_url;  ///< The libcurl handle reads from this URL.
     Chunk *d_chunk;     ///< This easy_handle reads the data for \arg chunk.
+    char d_errbuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
     CURL *d_handle;     ///< The libcurl handle object.
 
     friend class CurlHandlePool;
@@ -109,6 +102,11 @@ public:
  * Get a CURL easy handle, assign a URL and other values, use the handler, return
  * it to the pool. This class helps take advantage of libculr's built-in reuse
  * capabilities (connection keep-alive, DNS pooling, etc.).
+ *
+ * @note It may be that TCP Keep Alive is not supported in libcurl versions
+ * prior to 7.25, which means CentOS 6 will not have support for this.
+ *
+ * See https://ec.haxx.se/libcurl-connectionreuse.html for more information.
  *
  * See d_max_easy_handles below for the limit on the total number of easy handles.
  */
