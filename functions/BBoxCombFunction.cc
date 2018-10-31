@@ -49,10 +49,10 @@ using namespace libdap;
 namespace functions {
 
 /**
- * @brief Combine two bounding boxes with different shapes, forming their combination.
+ * @brief to just "Combine two bounding boxes with different shapes"
  *
- * This combines 2 BBox variables (Array of Structure) forming
- * their combination.
+ * This combines to bounding boxes (Array of Structure) of rank N and M
+ * into a single bounding box of rank N+M.
  *
  * @note There is DAP2 versions of this function.
  *
@@ -72,16 +72,14 @@ function_dap2_bbox_comb(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     unsigned int rnk2 = 0;
 
     switch (argc) {
-    case 0:
-    case 1:
-        // Must have 2 arguments
-        throw Error(malformed_expr, wrong_args);
-
-    default:
-
+    case 2:
         // Rank should be sum of ranks of arguments because names all different,
         rnk1 = roi_valid_bbox(argv[0]);
         rnk2 = roi_valid_bbox(argv[1]);
+        break;
+
+    default:
+        throw Error(malformed_expr, wrong_args);
         break;
     }
 
@@ -93,8 +91,6 @@ function_dap2_bbox_comb(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     vector<slice> combo(rank);     // struct slice is defined in roi_utils.h
 
     //first arg
-    Array *bbox1 = static_cast<Array*>(argv[0]);
-
     for (unsigned int i = 0; i < rnk1; ++i) {
         int start, stop;
         string name;
@@ -107,8 +103,6 @@ function_dap2_bbox_comb(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         combo.at(i).name = name;
     }
     //second arg
-    Array *bbox2 = static_cast<Array*>(argv[1]);
-
     for (unsigned int j = 0; j < rnk2; ++j) {
         int start, stop;
         string name;
