@@ -102,7 +102,6 @@ function_dap2_bbox_comb(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         combo.at(i).stop = stop;
         combo.at(i).name = name;
     }
-
     //second arg
     for (unsigned int j = 0; j < rnk2; ++j) {
         int start, stop;
@@ -114,7 +113,7 @@ function_dap2_bbox_comb(int argc, BaseType *argv[], DDS &, BaseType **btpp)
             combo.at(rnk1+j).start = start;
             combo.at(rnk1+j).stop = stop;
             combo.at(rnk1+j).name = name;
-
+        }
     }
 
     // Build the response; name the result after the operation
