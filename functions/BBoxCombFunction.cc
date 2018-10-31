@@ -72,11 +72,6 @@ function_dap2_bbox_comb(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     unsigned int rnk2 = 0;
 
     switch (argc) {
-    case 0:
-    case 1:
-        // Must have 2 arguments
-        throw Error(malformed_expr, wrong_args);
-
     case 2:
         // Rank should be sum of ranks of arguments because names all different,
         rnk1 = roi_valid_bbox(argv[0]);
