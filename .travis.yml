@@ -78,6 +78,9 @@ jobs:
   stages:
   - name: build
     if:  branch != coverity_scan
+  - name: package
+    if:  branch != coverity_scan
+    
   include:
   - stage: build
     script: 
@@ -89,6 +92,7 @@ jobs:
     - export BES_BUILD=distcheck
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
     - make distcheck -j7
+    
   - stage: package
     script:
     - wget https://s3.amazonaws.com/opendap.travis.build/libdap_3.20.0-1_amd64.deb
@@ -96,14 +100,28 @@ jobs:
     - export BES_BUILD=deb
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps 
     - make deb -j7
-
+  - stage: package
+    script: 
+    - export BES_BUILD=centos6
+    - mkdir -p $prefix/rpmbuild
+    - docker run --volume $prefix/rpmbuild:/root/rpmbuild --volume $TRAVIS_BUILD_DIR:/root/travis
+                 --env os=centos6 --env dist=el6 opendap/centos6_hyrax_builder:1.1 /root/travis/build-rpm.sh
+  - stage: package
+    script: 
+    - export BES_BUILD=centos7
+    - mkdir -p $prefix/rpmbuild
+    - docker run --volume $prefix/rpmbuild:/root/rpmbuild --volume $TRAVIS_BUILD_DIR:/root/travis
+                 --env os=centos7 --env dist=el7 opendap/centos7_hyrax_builder:1.1 /root/travis/build-rpm.sh
+    
 after_script:
 - upload-test-results.sh
 
 before_deploy:
 - test -d $TRAVIS_BUILD_DIR/package || mkdir $TRAVIS_BUILD_DIR/package
 - if test $BES_BUILD = deb; then mv $TRAVIS_BUILD_DIR/../bes*-*_amd64.deb $TRAVIS_BUILD_DIR/package/; fi
-- pwd
+- if test "$BES_BUILD" = "centos6"; then cp $prefix/rpmbuild/RPMS/x86_64/* $TRAVIS_BUILD_DIR/package/; fi
+- if test "$BES_BUILD" = "centos7"; then cp $prefix/rpmbuild/RPMS/x86_64/* $TRAVIS_BUILD_DIR/package/; fi
+- ls -l $TRAVIS_BUILD_DIR/package
 
 deploy:
   provider: s3
@@ -116,4 +134,4 @@ deploy:
     branch:
     - master
     - cd-rpm-build
-    condition: $LIBDAP_BUILD =~ ^deb$
+    condition: $LIBDAP_BUILD =~ ^deb|centos7|centos6$

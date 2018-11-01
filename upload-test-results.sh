@@ -10,5 +10,5 @@ then
 	# using: 'test -z "$AWS_ACCESS_KEY_ID" || ...' keeps after_script from running
 	# the aws cli for forked PRs (where secure env vars are null). I could've used
 	# an 'if' to block out the whole script, but I didn't... jhrg 3/21/18
-	test -z "$AWS_ACCESS_KEY_ID" || aws s3 cp /tmp/${LOG_FILE_TGZ} s3://opendap.travis.build/
+	test -z "$AWS_ACCESS_KEY_ID" || aws s3 cp /tmp/${LOG_FILE_TGZ} s3://opendap.travis.tests/
 fi
