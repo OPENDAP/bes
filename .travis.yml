@@ -85,12 +85,12 @@ jobs:
   - stage: build
     script: 
     - export BES_BUILD=main
-    # - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-    # - make -j7 && make install && besctl start && make check -j7 && besctl stop
+    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+    - make -j7 && make install && besctl start && make check -j7 && besctl stop
   - stage: build
     script:
     - export BES_BUILD=distcheck
-    # - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
+    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
     # - make distcheck -j7
     
   - stage: package
@@ -114,7 +114,7 @@ jobs:
                  --env os=centos7 --env dist=el7 opendap/centos7_hyrax_builder:1.1 /root/travis/build-rpm.sh
     
 after_script:
-- upload-test-results.sh
+- ./upload-test-results.sh
 
 before_deploy:
 - test -d $TRAVIS_BUILD_DIR/package || mkdir $TRAVIS_BUILD_DIR/package
@@ -134,4 +134,4 @@ deploy:
     branch:
     - master
     - cd-rpm-build
-    condition: $LIBDAP_BUILD =~ ^deb|centos7|centos6$
+    condition: $BES_BUILD =~ ^deb|centos7|centos6$
