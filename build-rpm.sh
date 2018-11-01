@@ -48,9 +48,7 @@ tar -xzvf /tmp/hyrax-dependencies-$os-static.tar.gz
 yum install -y /tmp/*.rpm
 
 # Get a fresh copy of the sources and any submodules
-#  git clone https://github.com/opendap/bes
-# Since we have a local copy of the repo, clone that, avoiding network traffic
-git clone /root/travis bes
+git clone https://github.com/opendap/bes
 
 cd bes
 
