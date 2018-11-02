@@ -52,6 +52,7 @@ git clone https://github.com/opendap/bes
 
 cd bes
 
+git checkout cd-rpm-build
 git submodule update --init --recursive
 
 # build (autoreconf; configure, make)
