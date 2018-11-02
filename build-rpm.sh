@@ -8,7 +8,7 @@
 # The env vars $HOME, $OS, $DIST, AND $LIBDAP_RPM_VERSION must be set.
 #
 # run the script like (with the obvious changes for CentOS7):
-# docker run -e os=centos6 -e dist=el6 
+# docker run -e OS=centos6 -e DIST=el6 -e LIBDAP_RPM_VERSION='3.20.0-1'
 # -v $prefix/centos6/rpmbuild:/root/rpmbuild -v `pwd`:/root/travis 
 # opendap/centos6_hyrax_builder:1.1 /root/travis/build-rpm.sh 
 
@@ -69,7 +69,7 @@ autoreconf -fiv
 mkdir -pv $HOME/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 
 # This will leave the package in $HOME/rpmbuild/RPMS/x86_64/*.rpm
-if test $dist = el6
+if test $DIST = el6
 then
     make -j4 c6-all-static-rpm
 else

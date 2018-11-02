@@ -106,7 +106,7 @@ jobs:
     - export BES_BUILD=centos6
     - mkdir -p $prefix/rpmbuild
     - docker run --volume $prefix/rpmbuild:/root/rpmbuild --volume $TRAVIS_BUILD_DIR:/root/travis
-                 --env os=centos6 --env dist=el6 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
+                 --env OS=centos6 --env DIST=el6 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
                  opendap/centos6_hyrax_builder:1.1 /root/travis/build-rpm.sh
   - stage: package
     script: 
