@@ -88,10 +88,9 @@ function_dap2_roi(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         throw Error(malformed_expr, wrong_args);
     default:
         rank = roi_valid_bbox(argv[argc-1]); // throws if slice is not valid
-
-        for (int i = 0; i < argc-1; ++i)
-            check_number_type_array(argv[i], rank);      // throws if array is not valid
-        break;
+//        for (int i = 0; i < argc-1; ++i)
+//            check_number_type_array(argv[i], rank);      // throws if array is not valid
+//        break;
     }
 
     auto_ptr<Structure> response(new Structure("roi_subset_unwrap"));
@@ -123,8 +122,8 @@ function_dap2_roi(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 
             // TODO Make this an option (i.e., turn off the test)?
             // TODO Make a second option that will match names instead of position
-            if (the_array->dimension_name(iter) != name)
-                throw Error("In function roi(): Dimension name (" + the_array->dimension_name(iter) + ") and slice name (" + name + ") don't match");
+            if (the_array->dimension_name(iter) != name) continue;
+//                throw Error("In function roi(): Dimension name (" + the_array->dimension_name(iter) + ") and slice name (" + name + ") don't match");
 
             // TODO Add stride option?
             BESDEBUG("roi", "Dimension: " << i << ", Start: " << start << ", Stop: " << stop << endl);

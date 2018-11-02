@@ -9,7 +9,7 @@
   
   <bes:define name="d1" space="default">
     <bes:container name="c">
-      <bes:constraint>roi(AerosolAbsOpticalDepthVsHeight, bbox_comb(bbox_comb(bbox_union(bbox(Latitude,-62,-58),bbox(Longitude,-26,26),inter), bbox(nLayers,2,2)), bbox(nWavel,0,1)))</bes:constraint>
+      <bes:constraint>roi(AerosolAbsOpticalDepthVsHeight, ImaRefractiveIndex, SurfaceAlbedo, Latitude, bbox_comb(bbox_comb(bbox_union(bbox(Latitude,-62,-58),bbox(Longitude,-26,26),inter), bbox(nLayers,2,2)), bbox(nWavel,0,1)))</bes:constraint>
     </bes:container>
   </bes:define>nion
   
