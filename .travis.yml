@@ -20,7 +20,6 @@ branches:
   only:
   - master
   - coverity_scan
-  - cd-rpm-build
 
 addons:
   coverity_scan:
@@ -48,7 +47,9 @@ env:
   # NB: This value of $prefix must be shared between the hyrax-deps, libdap and bes builds.
   - prefix=$HOME/install
   - PATH=$prefix/bin:$prefix/deps/bin:$PATH
-  - TESTSUITEFLAGS=-j7  
+  - TESTSUITEFLAGS=-j7
+  # Change this when libdap version numbers change
+  - LIBDAP_RPM_VERSION=3.20.0-1
   # COVERITY_SCAN_TOKEN
   - secure: "KNE6gkK7+WEQkNLiW/oap/3E/YSq6nzH6icXWpgA3MZj2KX0i6IzQgteeEGFUC1vDTzkCpqSidvGxdd22V33s0sHDuLRI5e17VFMjI5WyWjRQaXMhWmyO5/ofx7AArvaCWq6w6zfn1T/LiIuHXc14Rg8uuWEgDGWM0USiSbMepc="
   # AWS_ACCESS_KEY_ID
@@ -95,8 +96,8 @@ jobs:
     
   - stage: package
     script:
-    - wget https://s3.amazonaws.com/opendap.travis.build/libdap_3.20.0-1_amd64.deb
-    - sudo dpkg -i libdap_3.20.0-1_amd64.deb
+    - wget https://s3.amazonaws.com/opendap.travis.build/libdap_$LIBDAP_RPM_VERSION_amd64.deb
+    - sudo dpkg -i libdap_$LIBDAP_RPM_VERSION_amd64.deb
     - export BES_BUILD=deb
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps 
     - make deb -j7
@@ -105,13 +106,15 @@ jobs:
     - export BES_BUILD=centos6
     - mkdir -p $prefix/rpmbuild
     - docker run --volume $prefix/rpmbuild:/root/rpmbuild --volume $TRAVIS_BUILD_DIR:/root/travis
-                 --env os=centos6 --env dist=el6 opendap/centos6_hyrax_builder:1.1 /root/travis/build-rpm.sh
+                 --env os=centos6 --env dist=el6 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
+                 opendap/centos6_hyrax_builder:1.1 /root/travis/build-rpm.sh
   - stage: package
     script: 
     - export BES_BUILD=centos7
     - mkdir -p $prefix/rpmbuild
     - docker run --volume $prefix/rpmbuild:/root/rpmbuild --volume $TRAVIS_BUILD_DIR:/root/travis
-                 --env os=centos7 --env dist=el7 opendap/centos7_hyrax_builder:1.1 /root/travis/build-rpm.sh
+                 --env OS=centos7 --env DIST=el7 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
+                 opendap/centos7_hyrax_builder:1.1 /root/travis/build-rpm.sh
     
 after_script:
 - ./upload-test-results.sh
@@ -133,5 +136,4 @@ deploy:
   on:
     branch:
     - master
-    - cd-rpm-build
     condition: $BES_BUILD =~ ^deb|centos7|centos6$

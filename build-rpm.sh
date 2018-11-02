@@ -5,7 +5,7 @@
 # in the BES's .travis.yml file. However, it is run _inside a Docker
 # container_ using values passed in by the .travis.yml file
 #
-# The env vars $HOME, $os and $dist must be set.
+# The env vars $HOME, $OS, $DIST, AND $LIBDAP_RPM_VERSION must be set.
 #
 # run the script like (with the obvious changes for CentOS7):
 # docker run -e os=centos6 -e dist=el6 
@@ -33,17 +33,17 @@ then
     exit 1
 fi
 
-# Get the pre-built dependencies (all static libraries). $os is 'centos6' or 'centos7'
-(cd /tmp && curl -s -O https://s3.amazonaws.com/opendap.travis.build/hyrax-dependencies-$os-static.tar.gz)
+# Get the pre-built dependencies (all static libraries). $OS is 'centos6' or 'centos7'
+(cd /tmp && curl -s -O https://s3.amazonaws.com/opendap.travis.build/hyrax-dependencies-$OS-static.tar.gz)
 
 # This dumps the dependencies in $HOME/install/deps/{lib,bin,...}
-tar -xzvf /tmp/hyrax-dependencies-$os-static.tar.gz
+tar -xzvf /tmp/hyrax-dependencies-$OS-static.tar.gz
 
 # Then get the libdap RPMs packages
-# libdap-3.20.0-1.el6.x86_64.rpm libdap-devel3.20.0-1.el6.x86_64.rpm
-# $dist is 'el6' or 'el7'
-(cd /tmp && curl -s -O https://s3.amazonaws.com/opendap.travis.build/libdap-3.20.0-1.$dist.x86_64.rpm)
-(cd /tmp && curl -s -O https://s3.amazonaws.com/opendap.travis.build/libdap-devel-3.20.0-1.$dist.x86_64.rpm)
+# libdap-3.20.0-1.el6.x86_64.rpm libdap-devel-3.20.0-1.el6.x86_64.rpm
+# $DIST is 'el6' or 'el7'; $LIBDAP_RPM_VERSION is 3.20.0-1 (set by Travis)
+(cd /tmp && curl -s -O https://s3.amazonaws.com/opendap.travis.build/libdap-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm)
+(cd /tmp && curl -s -O https://s3.amazonaws.com/opendap.travis.build/libdap-devel-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm)
 
 yum install -y /tmp/*.rpm
 
@@ -52,7 +52,9 @@ git clone https://github.com/opendap/bes
 
 cd bes
 
-git checkout cd-rpm-build
+# Use the master branch by default, but for testing, use a development branch
+# git checkout cd-rpm-build
+
 git submodule update --init --recursive
 
 # build (autoreconf; configure, make)
