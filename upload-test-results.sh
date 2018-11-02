@@ -3,7 +3,7 @@
 # Upload the results of tests after running a build on Travis
 
 LOG_FILE_TGZ=bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz
-if test x$BES_BUILD = xmain -o test x$BES_BUILD = xdistcheck 
+if test x$BES_BUILD = xmain -o x$BES_BUILD = xdistcheck 
 then
 	tar -czf /tmp/${LOG_FILE_TGZ} `find . -name timing -prune -o -name '*.log' -print -o -name '*site_map.txt' -print`
 	
