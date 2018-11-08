@@ -11,7 +11,7 @@
 
 Name:           bes
 Version:        3.20.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
 Group:          System Environment/Libraries
@@ -23,10 +23,10 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:       libdap >= 3.20.0
 Requires:       readline bzip2 zlib
-Requires:	netcdf >= 4.1
-Requires:	libicu >= 3.6
-Requires:	hdf5 => 1.8
-Requires:	hdf >= 4.2
+Requires:	    netcdf >= 4.1
+Requires:	    libicu >= 3.6
+Requires:	    hdf5 => 1.8
+Requires:	    hdf >= 4.2
 Requires:       libxml2 >= 2.7.0
 Requires:       openssl
 # gdal >= 1.10
@@ -167,6 +167,8 @@ exit 0
 
 %{_datadir}/hyrax/
 
+%{_datadir}/mds/
+
 %{_bindir}/beslistener
 %{_bindir}/besdaemon
 # %{_bindir}/besd # moved to /etc/rc.d/init.d; see below.
@@ -189,6 +191,9 @@ exit 0
 %attr (-,%{besuser},%{besgroup}) %{beslogdir}
 %attr (-,%{besuser},%{besgroup}) %{bespiddir}
 %attr (-,%{besuser},%{besgroup}) %{bescachedir}
+
+# Make sure that the BES, once runnin g, can write to the MDS directory. jhrg 11/7/18
+%attr (-,%{besuser},%{besgroup}) %{_datadir}/mds/
 
 %files devel
 %defattr(-,root,root,-)
