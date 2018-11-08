@@ -20,7 +20,6 @@ branches:
   only:
   - master
   - coverity_scan
-  - mds_rpm_fix
 
 addons:
   coverity_scan:
@@ -138,5 +137,4 @@ deploy:
   on:
     branch:
     - master
-    - mds_rpm_fix
     condition: $BES_BUILD =~ ^deb|centos7|centos6$
