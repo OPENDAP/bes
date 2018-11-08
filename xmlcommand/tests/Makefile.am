@@ -16,7 +16,7 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 # I want, but I don't know how to build a shared object lib when using the 
 # noinst prefix. Libtool/Automake will only builds a static lib in that
 # case. jhrg 7/23/18
-lib_bestestdir=$(libdir)/bes/test
+lib_bestestdir = $(libdir)/bes/test
 lib_bestest_LTLIBRARIES = libtest_module.la
 
 libtest_module_la_SOURCES = TestModule.cc TestModule.h
@@ -62,8 +62,10 @@ AUTOM4TE = autom4te
 TESTSUITE = testsuite
 
 # Force the tests here to run 
+# Until the show_node test is fixed, do not run these in parallel. jhrg 11/8/18
+# $(TESTSUITEFLAGS)
 check-local: $(TESTSUITE) atconfig atlocal 
-	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+	$(SHELL) '$(TESTSUITE)'
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
