@@ -13,6 +13,6 @@
     </bes:container>
   </bes:define>nion
   
-  <bes:get type="dds" definition="d1"/>
+  <bes:get type="dods" definition="d1"/>
   
 </bes:request>
