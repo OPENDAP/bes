@@ -208,6 +208,9 @@ exit 0
 %attr (-,%{besuser},%{besgroup}) %{bespiddir}
 %attr (-,%{besuser},%{besgroup}) %{bescachedir}
 
+# Make sure that the BES, once runnin g, can write to the MDS directory. jhrg 11/7/18
+%attr (-,%{besuser},%{besgroup}) %{_datadir}/mds/
+
 # Not part of C6, see above. jhrg 9/25/18
 # %{_tmpfilesdir}/%{name}.conf
 
