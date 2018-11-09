@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Array name="bbox">
+    <Structure>
+        <Int32 name="start"/>
+        <Int32 name="stop"/>
+        <String name="name"/>
+    </Structure>
+    <dimension name="bbox" size="2"/>
+</Array>

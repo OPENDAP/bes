@@ -1,0 +1,3 @@
+Dataset {
+    Float32 b[x = 10][y = 14][z = 2];
+} one_var;
