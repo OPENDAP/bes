@@ -38,12 +38,15 @@ TESTSUITE = $(srcdir)/testsuite
 
 # MDS_TESTSUITE = $(srcdir)/mds_testsuite
 
+# I removed $(TESTSUITEFLAGS) from the MDS enabled run of the tests because there
+# we are testing the order of some of the accesses (e.g., getting a DAS both 
+# before and after getting a DDS). jhrg 11/9/18
 check-local: atconfig atlocal $(TESTSUITE) $(MDS_TESTSUITE) bes.mds.conf bes.conf
 	@echo "Test without the MDS"
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 	@echo "Test using the MDS"
 	-(test -d $(builddir)/mds && rm $(builddir)/mds/*)
-	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) --conf=bes.mds.conf 
+	$(SHELL) '$(TESTSUITE)' --conf=bes.mds.conf 
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
