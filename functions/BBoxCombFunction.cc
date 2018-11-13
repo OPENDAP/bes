@@ -49,7 +49,7 @@ using namespace libdap;
 namespace functions {
 
 /**
- * @brief to just "Combine two bounding boxes with different shapes"
+ * @brief Combine two bounding boxes with different shapes.
  *
  * This combines to bounding boxes (Array of Structure) of rank N and M
  * into a single bounding box of rank N+M.

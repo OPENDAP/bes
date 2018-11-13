@@ -88,20 +88,15 @@ function_dap2_roi(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         throw Error(malformed_expr, wrong_args);
     default:
         rank = roi_valid_bbox(argv[argc-1]); // throws if slice is not valid
-
-        for (int i = 0; i < argc-1; ++i)
-            check_number_type_array(argv[i], rank);      // throws if array is not valid
-        break;
     }
 
     auto_ptr<Structure> response(new Structure("roi_subset_unwrap"));
 
     Array *bbox = static_cast<Array*>(argv[argc-1]);
-
+    // Loop over arguments
     for (int i = 0; i < argc-1; ++i) {
         // cast is safe given the above
         Array *the_array = static_cast<Array*>(argv[i]);
-        BESDEBUG("roi", "the_array: " << the_array->name() << ": " << (void*)the_array << endl);
 
         // For each dimension of the array, apply the slice constraint.
         // Assume Array[]...[][X][Y] where the slice has dims X and Y
@@ -110,26 +105,18 @@ function_dap2_roi(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         // both the N bbox slices and the right-most N dimensions of
         // the arrays.
 
-        unsigned int num_dims = the_array->dimensions();
-        int d = num_dims-1;
+        // Loop over dimensions in BBox
         for (int i = rank-1; i >= 0; --i) {
             int start, stop;
             string name;
             // start, stop, name are value-result parameters
             roi_bbox_get_slice_data(bbox, i, start, stop, name);
-
-            // Hack, should use reverse iterators, but Array does not have them
-            Array::Dim_iter iter = the_array->dim_begin() + d;
-
-            // TODO Make this an option (i.e., turn off the test)?
-            // TODO Make a second option that will match names instead of position
-            if (the_array->dimension_name(iter) != name)
-                throw Error("In function roi(): Dimension name (" + the_array->dimension_name(iter) + ") and slice name (" + name + ") don't match");
-
-            // TODO Add stride option?
-            BESDEBUG("roi", "Dimension: " << i << ", Start: " << start << ", Stop: " << stop << endl);
-            the_array->add_constraint(iter, start, 1 /*stride*/, stop);
-            --d;
+            // Loop over dimensions in argument
+            for (Array::Dim_iter iter = the_array->dim_begin(); iter< the_array->dim_end(); iter++){
+                string cname = the_array->dimension_name(iter);
+                if (the_array->dimension_name(iter) != name) continue;
+                the_array->add_constraint(iter, start, 1 /*stride*/, stop);
+            }
         }
 
         // Add the array to the Structure returned by the function
