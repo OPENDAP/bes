@@ -4,7 +4,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.63)
 
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
-AC_INIT(bes, 3.20.0, support@opendap.org)
+AC_INIT(bes, 3.20.1, support@opendap.org)
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 
@@ -59,10 +59,17 @@ AC_ARG_WITH([cmr], [AS_HELP_STRING([--with-cmr], [Build and include the CMR Modu
 dnl Only set CXXFLAGS if the caller didn't supply a value
 AS_IF([test -z "${CXXFLAGS+set}"], [CXXFLAGS="$cxx_debug_flags"])
 
-dnl library visioning: Update these when the interface changes. Generally,
-dnl assume that the interface tracks the major and minor release numbers.
-LIB_DIS_CURRENT=16
-LIB_DIS_AGE=1
+dnl library visioning: Update these when the interface changes.
+dnl
+dnl How to set these SO variables:
+dnl No interfaces changed, only implementations (good): ==> Increment REVISION.
+dnl Interfaces added, none removed (good): ==> Increment CURRENT,
+dnl increment AGE, set REVISION to 0.
+dnl Interfaces removed or changed (BAD, breaks upward compatibility):
+dnl ==> Increment CURRENT, set AGE and REVISION to 0.
+
+LIB_DIS_CURRENT=17
+LIB_DIS_AGE=2
 LIB_DIS_REVISION=0
 AC_SUBST(LIB_DIS_CURRENT)
 AC_SUBST(LIB_DIS_AGE)
@@ -72,7 +79,7 @@ AC_SUBST(LIBDISPATCH_VERSION)
 
 LIB_PPT_CURRENT=4
 LIB_PPT_AGE=0
-LIB_PPT_REVISION=12
+LIB_PPT_REVISION=13
 AC_SUBST(LIB_PPT_CURRENT)
 AC_SUBST(LIB_PPT_AGE)
 AC_SUBST(LIB_PPT_REVISION)
@@ -81,7 +88,7 @@ AC_SUBST(LIBPPT_VERSION)
 
 LIB_XML_CMD_CURRENT=4
 LIB_XML_CMD_AGE=3
-LIB_XML_CMD_REVISION=0
+LIB_XML_CMD_REVISION=1
 AC_SUBST(LIB_XML_CMD_CURRENT)
 AC_SUBST(LIB_XML_CMD_AGE)
 AC_SUBST(LIB_XML_CMD_REVISION)

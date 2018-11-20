@@ -11,8 +11,8 @@
 %define hyraxsharedir %{_datadir}/hyrax
 
 Name:           bes
-Version:        3.20.0
-Release:        3.static%{?dist}
+Version:        3.20.1
+Release:        1.static%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
 Group:          System Environment/Libraries
@@ -24,7 +24,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:       libdap >= 3.20.0
 Requires:       readline bzip2 zlib
-Requires:	    libicu >= 3.6 
+Requires:	libicu >= 3.6 
 Requires:       libxml2 >= 2.7.0
 Requires:       openssl
 

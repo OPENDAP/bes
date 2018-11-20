@@ -10,7 +10,11 @@
 README for the OPeNDAP BES 
 ==========================
 
-# Updated for version 3.20.0
+# Updated for version 3.20.1. See NEWS
+
+## Bug fixes for Hyrax 1.15
+
+## Server function roi() improvments
 
 ## Site-specific configuration
 
