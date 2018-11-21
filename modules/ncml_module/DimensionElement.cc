@@ -134,10 +134,10 @@ void DimensionElement::processRenameDimension(NCMLParser& p)
         "DimensionElement::processRenameDimension() called on " + toString() << " at scope=" << p.getTypedScopeString() << endl);
 
     NetcdfElement* dataset = p.getCurrentDataset();
-    const DimensionElement* pNewDim = dataset->getDimensionInLocalScope(_orgName);
+    const DimensionElement* pNewDim = dataset->getDimensionInLocalScope(name());
     if (pNewDim) {
         THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
-            "Renaming dimension failed for element=" + toString() + " since a dimension with name=" + _orgName
+            "Renaming dimension failed for element=" + toString() + " since a dimension with name=" + name()
                 + " already exists at current parser scope=" + p.getScopeString());
     }
     BESDEBUG("ncml", "Success, new dimension name is open at this scope." << endl);
