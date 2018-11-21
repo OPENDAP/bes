@@ -66,7 +66,7 @@ public:
     {
 
         if(debug) cerr << prolog << "BEGIN" << endl;
-        string bes_conf = BESUtil::assemblePath(TEST_SRC_DIR,"bes.conf");
+        string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
         if(debug) cerr << prolog << "Using BES configuration: " << bes_conf << endl;
 
         TheBESKeys::ConfigFile = bes_conf;
