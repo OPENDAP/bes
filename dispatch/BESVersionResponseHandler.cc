@@ -40,6 +40,7 @@ using std::vector;
 #include "BESVersionInfo.h"
 #include "BESRequestHandlerList.h"
 #include "BESResponseNames.h"
+#include "ServerAdministrator.h"
 #include "TheBESKeys.h"
 
 #define DEFAULT_ADMINISTRATOR "support@opendap.org"
@@ -74,20 +75,18 @@ void BESVersionResponseHandler::execute(BESDataHandlerInterface &dhi)
     dhi.action_name = VERS_RESPONSE_STR;
     info->begin_response( VERS_RESPONSE_STR, dhi);
 
-    string administrator = "";
+    string admin_email = "";
     try {
-        bool found = false;
-        vector<string> vals;
-        string key = "BES.ServerAdministrator";
-        TheBESKeys::TheKeys()->get_value(key, administrator, found);
+        bes::ServerAdministrator sd;
+        admin_email = sd.get("email");
     }
     catch (...) {
-        administrator = DEFAULT_ADMINISTRATOR;
+        admin_email = DEFAULT_ADMINISTRATOR;
     }
-    if (administrator.empty()) {
-        administrator = DEFAULT_ADMINISTRATOR;
+    if (admin_email.empty()) {
+        admin_email = DEFAULT_ADMINISTRATOR;
     }
-    info->add_tag("Administrator", administrator);
+    info->add_tag("Administrator", admin_email);
 
     info->add_library( PACKAGE_NAME, PACKAGE_VERSION);
 
