@@ -111,13 +111,15 @@ private:
      */
     static vector<string> getValidAttributes();
 
+    void processRenameDimension(NCMLParser& p);
+
 private:
     // string _name; // within _dim
     string _length; // unparsed size
-    string _orgName; // unused
+    string _orgName; // used
     string _isUnlimited; // unused
     string _isShared; // unused
-    string _isVariableLength; // unused
+    string _isVariableLength; // used
 
     // the actual parsed values from above...
     agg_util::Dimension _dim;

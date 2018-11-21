@@ -32,6 +32,7 @@
 #include "NCMLUtil.h"
 #include "NetcdfElement.h"
 #include <sstream>
+#include <Array.h>
 
 using std::string;
 using std::stringstream;
@@ -82,16 +83,14 @@ void DimensionElement::setAttributes(const XMLAttributeMap& attrs)
     _length = attrs.getValueForLocalNameOrDefault("length");
     _orgName = attrs.getValueForLocalNameOrDefault("orgName");
     _isUnlimited = attrs.getValueForLocalNameOrDefault("isUnlimited");
-    ;
     _isShared = attrs.getValueForLocalNameOrDefault("isShared");
-    ;
     _isVariableLength = attrs.getValueForLocalNameOrDefault("isVariableLength");
 
     // First check that we didn't get any typos...
     validateAttributes(attrs, _sValidAttributes);
 
     // Parse the size etc
-    parseAndCacheDimension();
+    if(!_length.empty()) parseAndCacheDimension();
 
     // Final validation for things we implemented
     validateOrThrow();
@@ -99,7 +98,7 @@ void DimensionElement::setAttributes(const XMLAttributeMap& attrs)
 
 void DimensionElement::handleBegin()
 {
-    BESDEBUG("ncml", "DimensionElement::handleBegin called...");
+    BESDEBUG("ncml", "DimensionElement::handleBegin called..." << endl);
 
     // Make sure we're placed at a valid parse location.
     // Direct child of <netcdf> only now since we dont handle <group>
@@ -124,6 +123,41 @@ void DimensionElement::handleBegin()
 
     // The dataset will maintain a strong reference to us while we're needed.
     dataset->addDimension(this);
+    if(!_orgName.empty()){
+        processRenameDimension(*_parser);
+    }
+}
+
+void DimensionElement::processRenameDimension(NCMLParser& p)
+{
+    BESDEBUG("ncml",
+        "DimensionElement::processRenameDimension() called on " + toString() << " at scope=" << p.getTypedScopeString() << endl);
+
+    NetcdfElement* dataset = p.getCurrentDataset();
+    const DimensionElement* pNewDim = dataset->getDimensionInLocalScope(_orgName);
+    if (pNewDim) {
+        THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
+            "Renaming dimension failed for element=" + toString() + " since a dimension with name=" + _orgName
+                + " already exists at current parser scope=" + p.getScopeString());
+    }
+    BESDEBUG("ncml", "Success, new dimension name is open at this scope." << endl);
+    BESDEBUG("ncml", "Renaming dimension " << _orgName << " to " << name() << endl);
+    string sNewDimName = name();
+   // Loop over variables
+    DDS* cDDS = p.getDDSForCurrentDataset();
+    DDS::Vars_iter varit;
+    for (varit = cDDS->var_begin(); varit != cDDS->var_end(); varit++) {
+        Array* varArray = 0;
+        if ((*varit)->type() == dods_array_c)
+                    varArray = dynamic_cast<Array *>(*varit);
+        Array::Dim_iter ait;
+        // Loop over dimensions
+        for (ait = varArray->dim_begin(); ait != varArray->dim_end(); ++ait) {
+            if((*ait).name == _orgName){
+                varArray->rename_dim(_orgName, sNewDimName);
+            }
+        }
+    }
 }
 
 void DimensionElement::handleContent(const string& content)
@@ -205,10 +239,13 @@ void DimensionElement::parseAndCacheDimension()
 void DimensionElement::validateOrThrow()
 {
     // Perhaps we want to warn in BESDEBUG rather than error, but I'd rather be explicit for now.
-    if (!_isShared.empty() || !_isUnlimited.empty() || !_isVariableLength.empty() || !_orgName.empty()) {
+    if (!_isShared.empty() || !_isUnlimited.empty() || !_isVariableLength.empty()) {
         THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
             "Dimension element " + toString() + " has unexpected unimplemented attributes. "
-                "This version of the module only handles name and length.");
+                "This version of the module only handles name, orgName and length.");
+    }else if(!_length.empty() && !_orgName.empty()){
+        THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
+                    "Dimension element " + toString() + " has unexpected attributes orgName or length.");
     }
 }
 

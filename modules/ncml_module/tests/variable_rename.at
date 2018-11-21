@@ -17,6 +17,10 @@ dnl tests 90 .. 93; 93 is broken
 AT_CHECK_ALL_DAP_RESPONSES([var_orgName_Structure.ncml])
 AT_CHECK_DATADDS_GETDAP([var_orgName_Structure.ncml])
 
+dnl rename dimension and variable
+AT_CHECK_ALL_DAP_RESPONSES([var_orgNameDim.ncml])
+AT_CHECK_DATADDS_GETDAP([var_orgNameDim.ncml])
+
 dnl Variable Rename with Constraints
 
 dnl Check a Structure rename with constraint on renamed variables
