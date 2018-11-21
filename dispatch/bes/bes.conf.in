@@ -8,7 +8,15 @@
 # administrator. This is the address where users should send basic
 # questions about the server and the data it provides.
 
-BES.ServerAdministrator=admin.email.address@your.domain.name
+BES.ServerAdministrator=email:support@opendap.org
+BES.ServerAdministrator+=organization:OPeNDAP Inc.
+BES.ServerAdministrator+=street:165 NW Dean Knauss Dr.
+BES.ServerAdministrator+=city:Narragansett
+BES.ServerAdministrator+=region:RI
+BES.ServerAdministrator+=postalCode:02882
+BES.ServerAdministrator+=country:US
+BES.ServerAdministrator+=telephone:+1.401.575.4835
+BES.ServerAdministrator+=website:http://www.opendap.org
 
 # User and Group for the BES
 #
