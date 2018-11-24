@@ -94,7 +94,7 @@ public:
     }
 
 private:
-
+#if 0
     /** Fill in _dim from our string _length and other attrs.
      * @exception Throws BESSyntaxUserError if the token in _length
      *            cannot be successfully parsed as an unsigned int.
@@ -105,6 +105,14 @@ private:
      * @exception Throw BESSyntaxUserError if there's an attribute we can't handle.
      * */
     void validateOrThrow();
+#endif
+    /** Fill in _dim from our string _length and other attrs.
+     * @exception Throws BESSyntaxUserError if the token in _length
+     *            cannot be successfully parsed as an unsigned int.
+     * Make sure they didn't set any attributes we can't handle.
+     * @exception Throw BESSyntaxUserError if there's an attribute we can't handle.
+     **/
+    void parseValidateAndCacheDimension();
 
     /** @return the list of valid attributes as a new vector
      * Used to set the static.

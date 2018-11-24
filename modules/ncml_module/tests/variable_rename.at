@@ -21,6 +21,15 @@ dnl rename dimension and variable
 AT_CHECK_ALL_DAP_RESPONSES([var_orgNameDim.ncml])
 AT_CHECK_DATADDS_GETDAP([var_orgNameDim.ncml])
 
+dnl dimension with orgName does not exist should error
+AT_ASSERT_PARSE_ERROR([var_orgNameDim_err_1.ncml])
+
+dnl dimension name is empty  should error
+AT_ASSERT_PARSE_ERROR([var_orgNameDim_err_2.ncml])
+
+dnl dimension name already exists should error
+AT_ASSERT_PARSE_ERROR([var_orgNameDim_err_2.ncml])
+
 dnl Variable Rename with Constraints
 
 dnl Check a Structure rename with constraint on renamed variables

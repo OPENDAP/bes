@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf location="/data/ncml/fnoc1.nc">
+
+     <!-- Test renaming of dimension name without name -->
+     <dimension name="" orgName="lat"/>
+</netcdf>
+
