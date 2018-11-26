@@ -91,9 +91,6 @@ void DimensionElement::setAttributes(const XMLAttributeMap& attrs)
 
     // Parse the size etc
     parseValidateAndCacheDimension();
-
-//    // Final validation for things we implemented
-//    validateOrThrow();
 }
 
 void DimensionElement::handleBegin()
@@ -210,13 +207,11 @@ unsigned int DimensionElement::getSize() const
 void DimensionElement::parseAndCacheDimension()
 {
     stringstream sis;
-    if(!_length.empty()){
-        sis.str(_length);
-        sis >> _dim.size;
-        if (sis.fail()) {
-            THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
-                "Element " + toString() + " failed to parse the length attribute into a proper unsigned int!");
-        }
+    sis.str(_length);
+    sis >> _dim.size;
+    if (sis.fail()) {
+        THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
+            "Element " + toString() + " failed to parse the length attribute into a proper unsigned int!");
     }
 
     // @TODO set the _dim.isSizeConstant from the isVariableLength, etc once we know how to use them for aggs
@@ -237,7 +232,7 @@ void DimensionElement::parseAndCacheDimension()
 void DimensionElement::validateOrThrow()
 {
     // Perhaps we want to warn in BESDEBUG rather than error, but I'd rather be explicit for now.
-    if (!_isShared.empty() || !_isUnlimited.empty() || !_isVariableLength.empty()) {
+    if (!_isShared.empty() || !_isUnlimited.empty() || !_isVariableLength.empty()  || !_orgName.empty()) {
         THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
             "Dimension element " + toString() + " has unexpected unimplemented attributes. "
                 "This version of the module only handles name, orgName and length.");
@@ -264,12 +259,12 @@ void DimensionElement::parseValidateAndCacheDimension()
     // There is only name
     else if (_length.empty() && _orgName.empty()) {
         THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
-             "Dimension element " + toString() + " has no expected length or orgName value for renaming.");
+             "Dimension element " + toString() + " has no expected length value for new dimension or orgName value for renaming.");
     }
     // There are length and orgName together
     else if(!_length.empty() && !_orgName.empty()){
         THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
-              "Dimension element " + toString() + " has attributes orgName and length together.");
+              "Dimension element " + toString() + " should not has attributes orgName and length together.");
     }
 
     stringstream sis;

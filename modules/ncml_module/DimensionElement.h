@@ -124,10 +124,10 @@ private:
 private:
     // string _name; // within _dim
     string _length; // unparsed size
-    string _orgName; // used
+    string _orgName; // unparsed original name
     string _isUnlimited; // unused
     string _isShared; // unused
-    string _isVariableLength; // used
+    string _isVariableLength; // unused
 
     // the actual parsed values from above...
     agg_util::Dimension _dim;
