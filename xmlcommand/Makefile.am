@@ -59,9 +59,13 @@ HDRS = BESXMLInterface.h BESXMLCommand.h BESXMLUtils.h			\
 	SetContextsNames.h ShowPathInfoCommand.h \
 	ShowBesKeyCommand.h ShowBesKeyResponseHandler.h ShowNodeCommand.h
 
-DAP_SRCS = BESXMLDapCommandModule.cc BESXMLCatalogCommand.cc SiteMapCommand.cc
+DAP_SRCS = BESXMLDapCommandModule.cc BESXMLCatalogCommand.cc SiteMapCommand.cc \
+	SiteMapResponseHandler.cc
 
-DAP_HDRS = BESXMLDapCommandModule.h BESXMLCatalogCommand.h SiteMapCommand.h SiteMapCommandNames.h
+DAP_HDRS = BESXMLDapCommandModule.h BESXMLCatalogCommand.h SiteMapCommand.h \
+	SiteMapResponseHandler.h 
+	
+# SiteMapCommandNames.h
 
 C4_DIR=./cccc
 .PHONY: cccc

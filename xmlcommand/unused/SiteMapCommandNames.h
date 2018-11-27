@@ -24,7 +24,5 @@
 //@{
 #define SITE_MAP_STR "buildSiteMap"
 
-#define SITE_MAP "build.site_map"
-
-#define NULL_ACTION "null"
+#define SITE_MAP_RESPONSE "build.site_map"
 //@}

@@ -35,9 +35,9 @@
 #include "BESXMLUtils.h"
 #include "BESSyntaxUserError.h"
 #include "BESDebug.h"
+#include "BESNames.h"
 
 #include "SiteMapCommand.h"
-#include "SiteMapCommandNames.h"
 
 using namespace std;
 
@@ -62,43 +62,33 @@ void SiteMapCommand::parse_request(xmlNode *node)
     string value;
     map<string, string> props;
     BESXMLUtils::GetNodeInfo(node, name, value, props);
-    if (name != SITE_MAP_STR) {    // buildSiteMap
+    if (name != SITE_MAP_RESPONSE_STR) {
         throw BESSyntaxUserError(string("The specified command ") + name + " is not a build site map command", __FILE__, __LINE__);
     }
 
-    string prefix = props["prefix"];
-    string node_suffix = props["nodeSuffix"];
-    string leaf_suffix = props["leafSuffix"];
+    d_xmlcmd_dhi.data[SITE_MAP_RESPONSE] = SITE_MAP_RESPONSE;
 
-    string catalog_name = props["catalog"].empty() ? BESCatalogList::TheCatalogList()->default_catalog_name(): props["catalog"];
-    string filename = props["filename"].empty() ? "site_map.txt": props["filename"];
-
-    BESDEBUG("besxml", "In SiteMapCommand::parse_request, command attributes: " << prefix << ", "
-        << node_suffix << ", " << leaf_suffix << ", " << catalog_name << ", " << filename << endl);
-
-    if (prefix.empty() || catalog_name.empty() || filename.empty() || (node_suffix.empty() && leaf_suffix.empty()))
+    if (props[PREFIX].empty() || (props[NODE_SUFFIX].empty() && props[LEAF_SUFFIX].empty()))
         throw BESSyntaxUserError("Build site map must include the prefix and at least one of the nodeSuffix or leafSuffix attributes.", __FILE__, __LINE__);
 
-    BESCatalog *catalog = BESCatalogList::TheCatalogList()->find_catalog(catalog_name);
-    if (!catalog)
+    d_xmlcmd_dhi.data[PREFIX] = props[PREFIX];
+    d_xmlcmd_dhi.data[NODE_SUFFIX] = props[NODE_SUFFIX];
+    d_xmlcmd_dhi.data[LEAF_SUFFIX] = props[LEAF_SUFFIX];
+
+    // TODO Emulate the new catalog behavior of showNode - where the code figures out the
+    // catalog based on the path (which is called 'prefix' here. jhrg 11/27/18
+    string catalog_name = props["catalog"].empty() ? BESCatalogList::TheCatalogList()->default_catalog_name(): props["catalog"];
+    if (!BESCatalogList::TheCatalogList()->find_catalog(catalog_name))
         throw BESSyntaxUserError(string("Build site map could not find the catalog: ") + catalog_name, __FILE__, __LINE__);
 
-    filename.insert(0, catalog->get_root() + "/");  // add root as a prefix to filename
-    BESDEBUG("besxml", "filename: " << filename << endl);
+    d_xmlcmd_dhi.data["catalog"] = catalog_name;
 
-    ofstream ofs(filename.c_str(), ios::trunc|ios::binary);
-    if (!ofs.is_open())
-        throw BESSyntaxUserError(string("Build site map could not write to the site map file: ") + filename, __FILE__, __LINE__);
+    d_cmd_log_info = string("show siteMap: build site map for catalog '").append(catalog_name).append("'.");
 
-    catalog->get_site_map(prefix, node_suffix, leaf_suffix, ofs, "/");
-
-    d_cmd_log_info = string("build site map for catalog '").append(catalog_name).append("' and write to '").append(filename);
-
-    // Set action_name here because the NULLResponseHandler (aka NULL_ACTION) won't know
-    // which command used it (current ResponseHandlers set this because there is a 1-to-1
-    // correlation between XMLCommands and ResponseHanlders). jhrg 2/8/18
-    d_xmlcmd_dhi.action_name = SITE_MAP;
-    d_xmlcmd_dhi.action = NULL_ACTION;
+    // These values control the ResponseHandler set in the set_response() call below.
+    // jhrg 11/26/18
+    d_xmlcmd_dhi.action_name = SITE_MAP_RESPONSE_STR;
+    d_xmlcmd_dhi.action = SITE_MAP_RESPONSE;
 
     // Set the response handler for the action in the command's DHI using the value of
     // the DHI.action field. And, as a bonus, copy the d_cmd_log_info into DHI.data[LOG_INFO]
@@ -106,7 +96,8 @@ void SiteMapCommand::parse_request(xmlNode *node)
     BESXMLCommand::set_response();
 }
 
-/** @brief dumps information about this object
+/**
+ * @brief dumps information about this object
  *
  * Displays the pointer value of this instance
  *

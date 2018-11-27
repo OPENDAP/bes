@@ -75,29 +75,27 @@ void ShowBesKeyResponseHandler::execute(BESDataHandlerInterface &dhi)
     BESStopWatch sw;
     if (BESISDEBUG(TIMING_LOG)) sw.start("ShowBesKeyResponseHandler::execute", dhi.data[REQUEST_ID]);
 
-    BESDEBUG(SBK_DEBUG_KEY, __func__ << "() - BEGIN ############################################################## BEGIN" << endl);
-
     BESInfo *info = BESInfoList::TheList()->build_info();
     d_response_object = info;
 
     string requested_bes_key = dhi.data[BES_KEY];
 
-
     BESDEBUG(SBK_DEBUG_KEY, __func__ << "() - requested key: " << requested_bes_key << endl);
 
     vector<string> key_values;
     getBesKeyValue(requested_bes_key, key_values);
+
     map<string, string> attrs;
-    map<string, string> emptyAttrs;
+
     attrs[KEY] = requested_bes_key;
 
     info->begin_response(SHOW_BES_KEY_RESPONSE_STR, &attrs, dhi);
-    //info->begin_tag(BES_KEY_RESPONSE, &attrs);
 
-    for(unsigned long i=0; i<key_values.size(); ++i)
-        info->add_tag("value",key_values[i],&emptyAttrs);
-
-    //info->end_tag(BES_KEY_RESPONSE);
+    // I think we can replace/remove 'emptyAttrs' and pass nullptr in its place.
+    // jhrg 11/26/18
+    map<string, string> emptyAttrs;
+    for(unsigned long i = 0; i < key_values.size(); ++i)
+        info->add_tag("value", key_values[i], &emptyAttrs);
 
     // end the response object
     info->end_response();
@@ -153,6 +151,5 @@ void ShowBesKeyResponseHandler::getBesKeyValue(string key,  vector<string> &valu
         BESDEBUG(SBK_DEBUG_KEY, __func__ << "() Failed to located BES key '" << key << "'" << endl);
         throw BESError("Ouch! The Key name '"+key+"' was not found in BESKeys",BES_NOT_FOUND_ERROR, __FILE__, __LINE__);
    }
-
 }
 

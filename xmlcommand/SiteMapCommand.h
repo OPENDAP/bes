@@ -61,7 +61,7 @@ public:
     /// @brief This command does not return a response, unless its an error
     virtual bool has_response()
     {
-        return false;
+        return true;
     }
 
     virtual void dump(ostream &strm) const;
