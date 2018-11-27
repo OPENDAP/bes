@@ -1,10 +1,6 @@
 
 m4_include([handler_tests_macros.m4])
 
-
-
-# These tests do not use the SequenceAggregationServer
-
 AT_BESCMD_RESPONSE_TEST([bescmd/set_contexts.bescmd], [pass])
 
 # For the buildSiteMap command, testing is unusual since the command
@@ -18,14 +14,11 @@ AT_BESCMD_ERROR_RESPONSE_TEST([bescmd/site_map2.bescmd], [pass])
 AT_BESCMD_ERROR_RESPONSE_TEST([bescmd/site_map3.bescmd], [pass])
 
 # These work
-# test that data/site_map.txt exists and is not zero length
-AT_BESCMD_RESPONSE_AND_FILE_TEST([bescmd/site_map4.bescmd], [data/site_map.txt], [lines], [pass])
 
-# test that data/new_site_map.txt exists and is not zero
-AT_BESCMD_RESPONSE_AND_FILE_TEST([bescmd/site_map5.bescmd], [data/new_site_map.txt], [lines], [pass])
-
-AT_BESCMD_RESPONSE_AND_FILE_TEST([bescmd/site_map6.bescmd], [data/node_site_map.txt], [lines], [pass])
-AT_BESCMD_RESPONSE_AND_FILE_TEST([bescmd/site_map7.bescmd], [data/all_site_map.txt], [lines], [pass])
+AT_BESCMD_RESPONSE_TEST([bescmd/site_map4.bescmd], [pass])
+# AT_BESCMD_RESPONSE_TEST([bescmd/site_map5.bescmd], [pass])
+AT_BESCMD_RESPONSE_TEST([bescmd/site_map6.bescmd], [pass])
+AT_BESCMD_RESPONSE_TEST([bescmd/site_map7.bescmd], [pass])
 
 
 # Here we test the showBesKey API
