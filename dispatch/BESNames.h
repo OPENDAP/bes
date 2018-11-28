@@ -46,6 +46,7 @@
 #define PREFIX "prefix"
 #define NODE_SUFFIX "nodeSuffix"
 #define LEAF_SUFFIX "leafSuffix"
+#define CATALOG "catalog"
 
 #define NODE_RESPONSE "show.node"
 #define NODE_RESPONSE_STR "showNode"

@@ -16,9 +16,11 @@ AT_BESCMD_ERROR_RESPONSE_TEST([bescmd/site_map3.bescmd], [pass])
 # These work
 
 AT_BESCMD_RESPONSE_TEST([bescmd/site_map4.bescmd], [pass])
-# AT_BESCMD_RESPONSE_TEST([bescmd/site_map5.bescmd], [pass])
+# site map 5 was redundant
 AT_BESCMD_RESPONSE_TEST([bescmd/site_map6.bescmd], [pass])
 AT_BESCMD_RESPONSE_TEST([bescmd/site_map7.bescmd], [pass])
+AT_BESCMD_RESPONSE_TEST([bescmd/site_map8.bescmd], [pass])
+AT_BESCMD_RESPONSE_TEST([bescmd/site_map9.bescmd], [pass])
 
 
 # Here we test the showBesKey API

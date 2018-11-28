@@ -18,3 +18,7 @@ http://machine/opendap/dap4/data-responses/one_int.dap.html
 http://machine/opendap/dap4/data-responses/zero_length_array.dap.html
 http://machine/opendap/dap4/dmr-testsuite/contents.html
 http://machine/opendap/dap4/dmr-testsuite/test_simple_1.dmr.html
+http://machine/opendap/second/contents.html
+http://machine/opendap/second/dap4/contents.html
+http://machine/opendap/second/dap4/one_int.dap.html
+http://machine/opendap/second/fnoc1.data.html

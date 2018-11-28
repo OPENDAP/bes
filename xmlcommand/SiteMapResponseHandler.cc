@@ -90,25 +90,52 @@ void SiteMapResponseHandler::execute(BESDataHandlerInterface &dhi)
     if (dhi.data[SITE_MAP_RESPONSE] != SITE_MAP_RESPONSE)
         throw BESInternalError("Not a Site Map command in SiteMapResponseHandler::execute().", __FILE__, __LINE__);
 
-    ostringstream oss;
-
-    BESCatalog *catalog = BESCatalogList::TheCatalogList()->find_catalog(dhi.data["catalog"]);
-    if (!catalog)
-        throw BESInternalError(string("Build site map could not find the catalog: ") + dhi.data["catalog"], __FILE__, __LINE__);
-
     // remove trailing '/' if present
     if (*(dhi.data[PREFIX].end()-1) == '/')
         dhi.data[PREFIX].erase(dhi.data[PREFIX].end()-1);
 
-    catalog->get_site_map(dhi.data[PREFIX], dhi.data[NODE_SUFFIX], dhi.data[LEAF_SUFFIX], oss, "/");
+    ostringstream oss;
 
     info->begin_response(SITE_MAP_RESPONSE_STR, dhi);
 
-    info->add_data(oss.str());
+    // If not catalog is named, return the concatenation of the site maps for
+    // all of the catalogs.
+    if (dhi.data[CATALOG].empty()) {
+        BESCatalogList::catalog_citer i = BESCatalogList::TheCatalogList()->first_catalog();
+        BESCatalogList::catalog_citer e = BESCatalogList::TheCatalogList()->end_catalog();
+        for (; i != e; ++i) {
+            BESCatalog *catalog = i->second;
+            if (!catalog)
+                throw BESInternalError(string("Build site map found a null catalog in the catalog list."), __FILE__, __LINE__);
 
-    // end the response object
+            // FIXME don't add 'default;' i->first is the name of the catalog
+            string prefix = (i->first == BESCatalogList::TheCatalogList()->default_catalog_name()) ? dhi.data[PREFIX]: dhi.data[PREFIX] + "/" + i->first;
+            catalog->get_site_map(prefix, dhi.data[NODE_SUFFIX], dhi.data[LEAF_SUFFIX], oss, "/");
+
+            info->add_data(oss.str());
+
+            // clearing oss to keep the size of the object small.
+            // Maybe change get_site_map so it takes an Info object? jhrg 11/28/18
+            oss.str("");
+            oss.clear();
+        }
+    }
+    else {
+        BESCatalog *catalog = BESCatalogList::TheCatalogList()->find_catalog(dhi.data[CATALOG]);
+        if (!catalog)
+            throw BESInternalError(string("Build site map could not find the catalog: ") + dhi.data[CATALOG], __FILE__, __LINE__);
+
+        string prefix = (dhi.data[CATALOG] == BESCatalogList::TheCatalogList()->default_catalog_name()) ? dhi.data[PREFIX]: dhi.data[PREFIX] + "/" + dhi.data[CATALOG];
+        catalog->get_site_map(prefix, dhi.data[NODE_SUFFIX], dhi.data[LEAF_SUFFIX], oss, "/");
+
+        info->add_data(oss.str());
+
+        // As above, no sense keeping this in memory any longer than needed
+        oss.str("");
+        oss.clear();
+    }
+
     info->end_response();
-
 }
 
 /** @brief transmit the response object built by the execute command

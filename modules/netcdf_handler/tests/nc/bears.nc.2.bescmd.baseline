@@ -7,6 +7,14 @@ Attributes {
         Float64 acd -1.000000000000000, 0.7500000000000000;
         Int32 string_length 3;
     }
+    order {
+    }
+    shot {
+    }
+    aloan {
+    }
+    cross {
+    }
     i {
         String attr1 "1";
         String attr2 "1", "2", "3", "4";
@@ -14,6 +22,10 @@ Attributes {
             String attr3_1 "17";
             Float64 attr3_2 19, 23, 27;
         }
+    }
+    j {
+    }
+    l {
     }
     NC_GLOBAL {
         String history "This is an example of a multi-line global\012attribute.  It could be used for representing the\012processing history of the data, for example.";

@@ -75,15 +75,21 @@ void SiteMapCommand::parse_request(xmlNode *node)
     d_xmlcmd_dhi.data[NODE_SUFFIX] = props[NODE_SUFFIX];
     d_xmlcmd_dhi.data[LEAF_SUFFIX] = props[LEAF_SUFFIX];
 
+#if 0
     // TODO Emulate the new catalog behavior of showNode - where the code figures out the
     // catalog based on the path (which is called 'prefix' here. jhrg 11/27/18
     string catalog_name = props["catalog"].empty() ? BESCatalogList::TheCatalogList()->default_catalog_name(): props["catalog"];
     if (!BESCatalogList::TheCatalogList()->find_catalog(catalog_name))
-        throw BESSyntaxUserError(string("Build site map could not find the catalog: ") + catalog_name, __FILE__, __LINE__);
+    throw BESSyntaxUserError(string("Build site map could not find the catalog: ") + catalog_name, __FILE__, __LINE__);
+#endif
 
-    d_xmlcmd_dhi.data["catalog"] = catalog_name;
+    // if CATALOG is not given, then return a site map for all the catalogs
+    d_xmlcmd_dhi.data[CATALOG] = props[CATALOG];
 
-    d_cmd_log_info = string("show siteMap: build site map for catalog '").append(catalog_name).append("'.");
+    if (props[CATALOG].empty())
+        d_cmd_log_info = string("show siteMap: build site map for all catalogs.");
+    else
+        d_cmd_log_info = string("show siteMap: build site map for catalog '").append(props[CATALOG]).append("'.");
 
     // These values control the ResponseHandler set in the set_response() call below.
     // jhrg 11/26/18
