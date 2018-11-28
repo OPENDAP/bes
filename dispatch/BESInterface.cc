@@ -76,6 +76,7 @@
 #include "BESTimeoutError.h"
 #include "BESInternalError.h"
 #include "BESInternalFatalError.h"
+#include "ServerAdministrator.h"
 
 #include "BESLog.h"
 
@@ -349,23 +350,21 @@ int BESInterface::handleException(BESError &e, BESDataHandlerInterface &dhi)
 
     log_error(e);
 
-    string administrator = "";
+    string admin_email = "";
     try {
-        bool found = false;
-        vector<string> vals;
-        string key = "BES.ServerAdministrator";
-        TheBESKeys::TheKeys()->get_value(key, administrator, found);
+        bes::ServerAdministrator sd;
+        admin_email = sd.get("email");
     }
     catch (...) {
-        administrator = "support@opendap.org";
+        admin_email = "support@opendap.org";
     }
-    if (administrator.empty()) {
-        administrator = "support@opendap.org";
+    if (admin_email.empty()) {
+        admin_email = "support@opendap.org";
     }
 
     dhi.error_info->begin_response(dhi.action_name.empty() ? "BES" : dhi.action_name, dhi);
 
-    dhi.error_info->add_exception(e, administrator);
+    dhi.error_info->add_exception(e, admin_email);
 
     dhi.error_info->end_response();
 

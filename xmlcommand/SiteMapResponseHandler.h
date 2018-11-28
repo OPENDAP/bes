@@ -1,11 +1,11 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 //
-// ShowBesKeyResponseHandler.h
+// SiteMapResponseHandler.h
 //
 // This file is part of the BES default command set
 //
 // Copyright (c) 2018 OPeNDAP, Inc.
-// Author: Nathan Potter <ndp@opendap.org>
+// Author: James Gallagher <jgallagher@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -25,39 +25,34 @@
 // Please read the full copyright statement in the file COPYRIGHT_URI.
 //
 
-#ifndef I_ShowBesKeyResponseHandler_h
-#define I_ShowBesKeyResponseHandler_h 1
+#ifndef I_SiteMapResponseHandler_h
+#define I_SiteMapResponseHandler_h 1
 
 #include <string>
 #include <vector>
 #include <ostream>
-#include "BESResponseHandler.h"
-#include "ShowBesKeyCommand.h"
 
-/** @brief Response handler that returns the value(s) of a BES key
+#include "BESResponseHandler.h"
+#include "SiteMapCommand.h"
+
+/** @brief Response handler that returns a site map
  *
  * @see BESResponseObject
  * @see BESContainer
  * @see BESTransmitter
  */
-class ShowBesKeyResponseHandler: public BESResponseHandler {
+class SiteMapResponseHandler: public BESResponseHandler {
 public:
-    void eval_resource_path(const std::string &resource_path, const std::string &catalog_root, const bool follow_sym_links,
-        std::string &validPath, bool &isFile, bool &isDir, long long &size, long long &lastModifiedTime, bool &canRead,
-        std::string &remainder);
-
-    ShowBesKeyResponseHandler(const std::string &name);
-    virtual ~ShowBesKeyResponseHandler();
+    SiteMapResponseHandler(const std::string &name);
+    virtual ~SiteMapResponseHandler();
 
     virtual void execute(BESDataHandlerInterface &dhi);
     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
 
     virtual void dump(std::ostream &strm) const;
 
-    static BESResponseHandler *ShowBesKeyResponseBuilder(const std::string &name);
-
-    virtual void getBesKeyValue(string key,  std::vector<string> &values);
+    static BESResponseHandler *SiteMapResponseBuilder(const std::string &name);
 };
 
-#endif // I_ShowBesKeyResponseHandler_h
+#endif // I_SiteMapResponseHandler_h
 

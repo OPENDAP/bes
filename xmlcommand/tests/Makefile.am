@@ -65,7 +65,7 @@ TESTSUITE = testsuite
 # Until the show_node test is fixed, do not run these in parallel. jhrg 11/8/18
 # $(TESTSUITEFLAGS)
 check-local: $(TESTSUITE) atconfig atlocal 
-	$(SHELL) '$(TESTSUITE)'
+	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean

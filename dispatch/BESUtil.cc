@@ -1004,7 +1004,7 @@ void BESUtil::replace_all(string &s, string find_this, string replace_with_this)
  * @param separator A string, of length one, containing the separator character for the path. This
  * parameter is optional and its value defaults to the slash '/' character.
  */
-string BESUtil::normalize_path(const string &raw_path, bool leading_separator, bool trailing_separator, const string separator)
+string BESUtil::normalize_path(const string &raw_path, bool leading_separator, bool trailing_separator, const string separator /* = "/" */)
 {
     if (separator.length() != 1)
         throw BESInternalError("Path separators must be a single character. The string '" + separator + "' does not qualify.", __FILE__, __LINE__);
@@ -1050,7 +1050,7 @@ string BESUtil::normalize_path(const string &raw_path, bool leading_separator, b
  * http://www.oopweb.com/CPP/Documents/CPPHOWTO/Volume/C++Programming-HOWTO-7.html
  * for the tokenizer.
  */
-void BESUtil::tokenize(const string& str, vector<string>& tokens, const string& delimiters)
+void BESUtil::tokenize(const string& str, vector<string>& tokens, const string& delimiters /* = "/" */)
 {
     // Skip delimiters at beginning.
     string::size_type lastPos = str.find_first_not_of(delimiters, 0);

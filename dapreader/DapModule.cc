@@ -39,8 +39,6 @@ using std::endl;
 
 #include "BESInternalError.h"
 
-// #define DAP_CATALOG "catalog"
-
 void DapModule::initialize(const string &modname)
 {
     BESDEBUG(modname, "Initializing Dap Reader Module " << modname << endl);
@@ -52,7 +50,6 @@ void DapModule::initialize(const string &modname)
     string default_catalog_name = BESCatalogList::TheCatalogList()->default_catalog_name();
     if (!BESCatalogList::TheCatalogList()->ref_catalog(default_catalog_name)) {
         throw BESInternalError("Should never have to add the default catalog.", __FILE__, __LINE__);
-        // BESCatalogList::TheCatalogList()->add_catalog(new BESCatalogDirectory(default_catalog_name));
     }
 
     // TODO this is probably bogus too. jhrg 7/23/18
@@ -69,13 +66,6 @@ void DapModule::initialize(const string &modname)
 void DapModule::terminate(const string &modname)
 {
     BESDEBUG(modname, "Cleaning Dap Reader Module " << modname << endl);
-
-#if 0
-    BESRequestHandler *rh = 0;
-
-    rh = BESRequestHandlerList::TheList()->remove_handler(modname);
-    if (rh) delete rh;
-#endif
 
     delete BESRequestHandlerList::TheList()->remove_handler(modname);
 
