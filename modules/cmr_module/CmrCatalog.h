@@ -77,7 +77,8 @@ public:
      */
     virtual void get_site_map(const std::string &/*prefix*/, const std::string &/*node_suffix*/, const std::string &/*leaf_suffix*/, ostream &/*out*/,
         const std::string &/*path = "/"*/) const {
-        throw BESInternalError("The CMRCatalog::get_site_map() method is not currently supported.",__FILE__,__LINE__);
+        BESDEBUG(MODULE, "The CMRCatalog::get_site_map() method is not currently supported. SKIPPING. file: " << __FILE__ << " line: "  << __LINE__ << endl);
+        // throw BESInternalError("The CMRCatalog::get_site_map() method is not currently supported.",__FILE__,__LINE__);
     }
 
 
