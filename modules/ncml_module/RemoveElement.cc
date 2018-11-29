@@ -31,6 +31,10 @@
 #include "NCMLParser.h"
 #include "NCMLUtil.h"
 
+#include "NetcdfElement.h"
+
+using namespace libdap;
+
 namespace ncml_module {
 // The element name
 const string RemoveElement::_sTypeName = "remove";
@@ -105,7 +109,7 @@ string RemoveElement::toString() const
 
 void RemoveElement::processRemove(NCMLParser& p)
 {
-    if (!(_type.empty() || _type == "attribute" || _type == "variable")) {
+    if (!(_type.empty() || _type == "attribute" || _type == "variable" || _type == "dimension")) {
         THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
             "Illegal type in remove element: type=" + _type
                 + "  This version of the parser can only remove type=\"attribute\" or type=\"variable\".");
@@ -116,6 +120,9 @@ void RemoveElement::processRemove(NCMLParser& p)
     }
     else if (_type == "variable") {
         processRemoveVariable(p);
+    }
+    else if (_type == "dimension") {
+        processRemoveDimension(p);
     }
     else {
         THROW_NCML_INTERNAL_ERROR(
@@ -146,6 +153,46 @@ void RemoveElement::processRemoveVariable(NCMLParser& p)
 
     // Remove the variable from the current container scope, either the dataset variable list or the current variable container.
     p.deleteVariableAtCurrentScope(_name);
+}
+
+void RemoveElement::processRemoveDimension(NCMLParser& p)
+{
+    BESDEBUG("ncml", "Removing dimension name=" + _name + " at scope=" + p.getScopeString() << endl);
+
+    BaseType* pOrgVar = p.getCurrentVariable();
+    // inside variable remove only dimension with name = _name
+    if(pOrgVar){
+        pOrgVar->set_send_p(true);
+        pOrgVar->set_send_p(true);
+        pOrgVar->read();
+        Array*  varArray = dynamic_cast<Array *>(pOrgVar);
+        RemoveElement::removeDimension(varArray, _name);
+    }
+    // outside variable remove all dimensions with name = _name
+    // and remove variable with name = _name
+    else
+    {
+        p.deleteVariableAtCurrentScope(_name);
+        DDS* cDDS = p.getDDSForCurrentDataset();
+        for (DDS::Vars_iter varit = cDDS->var_begin(); varit != cDDS->var_end(); varit++) {
+            Array* varArray = 0;
+            if ((*varit)->type() == dods_array_c){
+                varArray = dynamic_cast<Array *>(*varit);
+                RemoveElement::removeDimension(varArray, _name);
+            }
+        }
+    }
+}
+
+void RemoveElement::removeDimension(Array* arr, string name)
+{
+    Array::Dim_iter ait;
+    // Loop over dimensions
+    for (ait = arr->dim_begin(); ait != arr->dim_end(); ++ait) {
+        if((*ait).name == name){
+            arr->rename_dim(name, "");
+        }
+    }
 }
 
 vector<string> RemoveElement::getValidAttributes()

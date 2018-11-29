@@ -10,3 +10,6 @@ dnl Test a variable nested within structures.
 AT_CHECK_ALL_DAP_RESPONSES([var_remove_nested.ncml])
 AT_CHECK_DATADDS_GETDAP([var_remove_nested.ncml])
 
+dnl Test removing dimension name.
+AT_CHECK_ALL_DAP_RESPONSES([fnoc1_remove_dim.ncml])
+AT_CHECK_DATADDS_GETDAP([fnoc1_remove_dim.ncml])
