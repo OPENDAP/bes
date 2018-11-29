@@ -33,20 +33,26 @@ class BESDataHandlerInterface;
  * @brief Build a site map.
  *
  * The buildSiteMap command builds a site map for a particular BES catalog.
- * By default the command uses the default catalog and writes the site map
- * text file (not XML) to site_map.txt in the root directory of the catalog.
- * The site map is not returned to the caller - it is stored by the BES and
- * can be accessed using the OLFS and streaming access to files in the catalog.
+ * This command emulates the behavior of showNode in that it builds a site
+ * map that shows all of the BES's catalogs and inserts the non-default catalogs
+ * as top-level 'directories' in the default catalog. The site map is returned
+ * to the caller as a text document, with one item per line.
  *
  * The command syntax is
  * ~~~{.xml}
- * <buildSiteMap prefix="..." nodeSuffix="..." leafSuffix="..." catalog="..." filename="..."/>
+ * <buildSiteMap prefix="..." nodeSuffix="..." leafSuffix="..." catalog="..."/>
  * ~~~
- * where _catalog_ defaults to the default catalog and _filename_
- * defaults to `site_map.txt`. If nodeSuffix or leafSuffix are the empty string,
+ * where _catalog_ defaults to returning a site map for all of the catalogs
+ * using the same convention as the showNode command (as described above). If
+ * a catalog name is given, only the information for that catalog will be included,
+ * and this includes the default catalog (thus, it's possible to get a site map
+ * for the default catalog without touching the other catalogs).
+ *
+ * If nodeSuffix or leafSuffix are the empty string,
  * nodes or leaves will not be added to the site map (resp.). If you want these
  * in the site map without a suffix, use a space (e.g., " ") as the attribute
- * value.
+ * value. Otherwise, these strings are appended to the values of either Nodes
+ * (e.g., directories) or Leafs (e.g., data files).
  */
 class SiteMapCommand: public BESXMLCommand {
 public:

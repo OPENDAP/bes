@@ -50,7 +50,7 @@ SiteMapCommand::SiteMapCommand(const BESDataHandlerInterface &base_dhi) :
  * @brief Parse the build site map command
  *
  * ~~~{.xml}
- * <buildSiteMap prefix="..." nodeSuffix="..." leafSuffix="..." catalog="..." filename="..."/>
+ * <buildSiteMap prefix="..." nodeSuffix="..." leafSuffix="..." catalog="...""/>
  * ~~~
  * See the class documentation for more information
  *
@@ -75,17 +75,10 @@ void SiteMapCommand::parse_request(xmlNode *node)
     d_xmlcmd_dhi.data[NODE_SUFFIX] = props[NODE_SUFFIX];
     d_xmlcmd_dhi.data[LEAF_SUFFIX] = props[LEAF_SUFFIX];
 
-#if 0
-    // TODO Emulate the new catalog behavior of showNode - where the code figures out the
-    // catalog based on the path (which is called 'prefix' here. jhrg 11/27/18
-    string catalog_name = props["catalog"].empty() ? BESCatalogList::TheCatalogList()->default_catalog_name(): props["catalog"];
-    if (!BESCatalogList::TheCatalogList()->find_catalog(catalog_name))
-    throw BESSyntaxUserError(string("Build site map could not find the catalog: ") + catalog_name, __FILE__, __LINE__);
-#endif
-
-    // if CATALOG is not given, then return a site map for all the catalogs
     d_xmlcmd_dhi.data[CATALOG] = props[CATALOG];
 
+    // if CATALOG is not given, then return a site map for all the catalogs. See
+    // SiteMapResponseHandler.
     if (props[CATALOG].empty())
         d_cmd_log_info = string("show siteMap: build site map for all catalogs.");
     else
