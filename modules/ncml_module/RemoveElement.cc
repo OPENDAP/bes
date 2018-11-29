@@ -112,7 +112,7 @@ void RemoveElement::processRemove(NCMLParser& p)
     if (!(_type.empty() || _type == "attribute" || _type == "variable" || _type == "dimension")) {
         THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
             "Illegal type in remove element: type=" + _type
-                + "  This version of the parser can only remove type=\"attribute\" or type=\"variable\".");
+                + "  This version of the parser can only remove type=\"attribute\", type=\"variable\" or type=\"dimension\".");
     }
 
     if (_type == "attribute") {
@@ -126,7 +126,7 @@ void RemoveElement::processRemove(NCMLParser& p)
     }
     else {
         THROW_NCML_INTERNAL_ERROR(
-            toString() + " had type that wasn't attribute or variable.  We shouldn't be calling this if so.");
+            toString() + " had type that wasn't attribute, variable or dimension.  We shouldn't be calling this if so.");
     }
 }
 
