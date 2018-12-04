@@ -125,7 +125,7 @@ deb: dist
 	( mv ../@PACKAGE@-@PACKAGE_VERSION@.tar.gz ../@PACKAGE@_@PACKAGE_VERSION@.orig.tar.gz )
 	( cd ../ && tar xzf @PACKAGE@_@PACKAGE_VERSION@.orig.tar.gz )
 	( cp -r debian/ ../@PACKAGE@-@PACKAGE_VERSION@ )
-	( cd ../@PACKAGE@-@PACKAGE_VERSION@ && debuild -j7 --preserve-env --prepend-path=$(prefix)/deps/bin -us -uc)
+	( cd ../@PACKAGE@-@PACKAGE_VERSION@ && debuild --preserve-env --prepend-path=$(prefix)/deps/bin -us -uc -j7)
 
 ##########################################################################
 
