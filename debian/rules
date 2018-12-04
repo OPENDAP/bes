@@ -3,10 +3,10 @@
 	dh $@
 
 override_dh_auto_install:
-	$(MAKE) DESTDIR=$$(pwd)/debian/bes install -j7
+	$(MAKE) -j7 DESTDIR=$$(pwd)/debian/bes install
 
 override_dh_auto_test:
-	$(MAKE) DESTDIR=$$(pwd)/debian/bes check -j7
+	$(MAKE) -j7 DESTDIR=$$(pwd)/debian/bes check
 
 override_dh_shlibdeps:
 	dh_shlibdeps --dpkg-shlibdeps-params=--ignore-missing-info
