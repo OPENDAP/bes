@@ -67,7 +67,7 @@ using std::ifstream;
  #
  # Who is responsible for this server
  #
- BES.ServerAdministrator=support@opendap.org
+ BES.ServerAdministrator=email:support@opendap.org
 
  #
  # Default server port and unix socket information and whether the server

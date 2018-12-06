@@ -32,13 +32,15 @@
 
 #include <iostream>
 
+#include "BESResponseHandlerList.h"
 #include "BESXMLDapCommandModule.h"
 #include "BESDapNames.h"
 #include "BESNames.h"
 #include "BESDebug.h"
 #include "BESXMLCatalogCommand.h"
-#include "SiteMapCommandNames.h"
+// #include "SiteMapCommandNames.h"
 #include "SiteMapCommand.h"     // Uses NullResponseHandler
+#include "SiteMapResponseHandler.h"
 #include "ShowNodeCommand.h"    // Could use NullResponseHandler. jhrg 7/23/18
 
 using namespace bes;
@@ -60,13 +62,11 @@ void BESXMLDapCommandModule::initialize(const string &/*modname*/)
 
     BESXMLCommand::add_command(CATALOG_RESPONSE_STR, BESXMLCatalogCommand::CommandBuilder);
     BESXMLCommand::add_command(NODE_RESPONSE_STR, ShowNodeCommand::CommandBuilder);
-#if 0
-    BESXMLCommand::add_command(SHOW_INFO_RESPONSE_STR, ShowNodeCommand::CommandBuilder);
-#endif
 
-
-    // Build a site map. Uses the Null Response Handler
-    BESXMLCommand::add_command(SITE_MAP_STR, SiteMapCommand::CommandBuilder);
+    // Build a site map. Originally used the Null Response Handler, now
+    // it returns a response to the caller. jhrg 11/26/18
+    BESXMLCommand::add_command(SITE_MAP_RESPONSE_STR, SiteMapCommand::CommandBuilder);
+    BESResponseHandlerList::TheList()->add_handler(SITE_MAP_RESPONSE, SiteMapResponseHandler::SiteMapResponseBuilder);
 
     BESDEBUG("dap", "Done Initializing DAP Commands:" << endl);
 }
@@ -84,11 +84,9 @@ void BESXMLDapCommandModule::terminate(const string &/*modname*/)
     BESDEBUG("dap", "Removing DAP Commands" << endl);
 
     BESXMLCommand::del_command(CATALOG_RESPONSE_STR);
-#if 0
-    BESXMLCommand::del_command(SHOW_INFO_RESPONSE_STR);
-#endif
+    BESXMLCommand::del_command(SITE_MAP_RESPONSE_STR);
 
-    BESXMLCommand::del_command(SITE_MAP_STR);
+    BESResponseHandlerList::TheList()->remove_handler(SITE_MAP_RESPONSE);
 
     BESDEBUG("dap", "Done Removing DAP Commands" << endl);
 }

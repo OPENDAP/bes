@@ -90,7 +90,7 @@ int BESXMLDefaultCommands::initialize(int, char**)
     BESXMLCommand::add_command( SET_CONTEXT_STR, BESXMLSetContextCommand::CommandBuilder);
 
     // A new command, added both for utility and to learn. jhrg 2/8/18
-    BESXMLCommand::add_command(SET_CONTEXTS_STR, XMLSetContextsCommand::CommandBuilder);
+    BESXMLCommand::add_command( SET_CONTEXTS_STR, XMLSetContextsCommand::CommandBuilder);
 
 #if USE_CONTEXTS_RESPONSE_HANDLER
     // And we can add the ResponseHandler here too, so it can all be in the same dir. jhrg 2/9/18

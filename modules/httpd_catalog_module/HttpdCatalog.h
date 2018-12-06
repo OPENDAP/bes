@@ -70,9 +70,15 @@ public:
     /**
      * Maybe someday...
      */
-    virtual void get_site_map(const std::string &/*prefix*/, const std::string &/*node_suffix*/, const std::string &/*leaf_suffix*/, ostream &/*out*/,
-        const std::string &/*path = "/"*/) const {
-        throw BESInternalError("The HttpdCatalog::get_site_map() method is not currently supported.",__FILE__,__LINE__);
+    virtual void get_site_map(
+        const std::string &/*prefix*/,
+        const std::string &/*node_suffix*/,
+        const std::string &/*leaf_suffix*/,
+        ostream &/*out*/,
+        const std::string &/*path = "/"*/
+        ) const {
+        BESDEBUG(MODULE, "The HttpdCatalog::get_site_map() method is not currently supported. SKIPPING. file: " << __FILE__ << " line: "  << __LINE__ << endl);
+        // throw BESInternalError("The HttpdCatalog::get_site_map() method is not currently supported.",__FILE__,__LINE__);
     }
 
 

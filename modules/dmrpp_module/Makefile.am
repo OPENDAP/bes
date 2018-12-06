@@ -59,7 +59,9 @@ $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(XML2_LIBS) -lz
 
 EXTRA_PROGRAMS = 
 
-EXTRA_DIST = dmrpp.conf.in libdmrpp_module.la
+EXTRA_DIST = dmrpp.conf.in
+
+# removed from EXTRA_DIST: libdmrpp_module.la
 
 CLEANFILES = *~ dmrpp.conf
 

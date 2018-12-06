@@ -4,6 +4,10 @@ AT_INIT([bes/modules/netcdf_handler/tests])
 
 m4_include([handler_tests_macros.m4])
 
+
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([nc/bears.nc.1.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc/bears.nc.2.bescmd])
+
 AT_BESCMD_RESPONSE_TEST([nc/coads_climatology.nc.0.bescmd])
 AT_BESCMD_RESPONSE_TEST([nc/coads_climatology.nc.ddx.bescmd])
 AT_BESCMD_RESPONSE_TEST([nc/fnoc1.nc.0.bescmd])

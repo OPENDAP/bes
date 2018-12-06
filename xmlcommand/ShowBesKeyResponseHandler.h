@@ -25,8 +25,8 @@
 // Please read the full copyright statement in the file COPYRIGHT_URI.
 //
 
-#ifndef I_ShowPathInfoResponseHandler_h
-#define I_ShowPathInfoResponseHandler_h 1
+#ifndef I_ShowBesKeyResponseHandler_h
+#define I_ShowBesKeyResponseHandler_h 1
 
 #include <string>
 #include <vector>
@@ -34,14 +34,7 @@
 #include "BESResponseHandler.h"
 #include "ShowBesKeyCommand.h"
 
-/** @brief response handler that returns nodes or leaves within the catalog
- * either at the root or at a specified node.
- *
- * A request 'show catalog [for &lt;node&gt;];' or
- * 'show leaves for &lt;node&gt;;
- * will be handled by this response handler. It returns nodes or leaves either
- * at the root level if no node is specified in the request, or the nodes or
- * leaves under the specified node.
+/** @brief Response handler that returns the value(s) of a BES key
  *
  * @see BESResponseObject
  * @see BESContainer
@@ -53,9 +46,8 @@ public:
         std::string &validPath, bool &isFile, bool &isDir, long long &size, long long &lastModifiedTime, bool &canRead,
         std::string &remainder);
 
-public:
     ShowBesKeyResponseHandler(const std::string &name);
-    virtual ~ShowBesKeyResponseHandler(void);
+    virtual ~ShowBesKeyResponseHandler();
 
     virtual void execute(BESDataHandlerInterface &dhi);
     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
@@ -65,8 +57,7 @@ public:
     static BESResponseHandler *ShowBesKeyResponseBuilder(const std::string &name);
 
     virtual void getBesKeyValue(string key,  std::vector<string> &values);
-
 };
 
-#endif // I_ShowPathInfoResponseHandler_h
+#endif // I_ShowBesKeyResponseHandler_h
 

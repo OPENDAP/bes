@@ -32,7 +32,8 @@ if CPPUNIT
 TESTS = constraintT defT keysT pfileT plistT pvolT replistT		\
 reqhandlerT reqlistT resplistT infoT debugT utilT regexT scrubT		\
 checkT servicesT fsT urlT containerT uncompressT cacheT			\
-BESCatalogListTest WhiteListTest CatalogNodeTest CatalogItemTest
+BESCatalogListTest WhiteListTest CatalogNodeTest CatalogItemTest \
+ServerAdministratorTest
 
 # This is tool to look at CatalogEntry objects. jhrg 3.5.18
 # complete_catalog_lister agglistT 
@@ -177,4 +178,9 @@ BESCatalogListTest_CPPFLAGS = $(AM_CPPFLAGS) -Wno-deprecated
 # complete_catalog_lister_OBJ = ../BESCatalogResponseHandler.o
 # complete_catalog_lister_CPPFLAGS =  $(AM_CPPFLAGS) $(XML2_CFLAGS)
 # complete_catalog_lister_LDADD = $(complete_catalog_lister_OBJ) $(LDADD)
+
+
+
+ServerAdministratorTest_SOURCES = ServerAdministratorTest.cc
+ServerAdministratorTest_LDADD = ../ServerAdministrator.o $(LDADD)
 
