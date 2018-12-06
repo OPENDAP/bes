@@ -12,6 +12,8 @@ README for the OPeNDAP BES
 
 # Updated for version 3.20.2. See NEWS
 
+This version of the BES requires libdap-3.20.2 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2002799.svg)](https://doi.org/10.5281/zenodo.2002799)
+
 ## Bug fixes for Hyrax 1.15
 
 ## Server function roi() improvments
