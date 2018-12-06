@@ -30,6 +30,7 @@
 #define __NCML_MODULE__REMOVE_ELEMENT_H__
 
 #include "NCMLElement.h"
+#include <Array.h>
 
 namespace ncml_module {
 // FDecls
@@ -81,7 +82,15 @@ private:
      * */
     void processRemoveVariable(NCMLParser& p);
 
+    /** @brief Helper for processRemove() called when _type == "dimension"
+     * to remove the named dimensions at the current parser scope of p.
+     * */
+    void processRemoveDimension(NCMLParser& p);
+
     static vector<string> getValidAttributes();
+
+    // removes dimension with name from arr
+    void removeDimension(libdap::Array* arr, string name);
 
 private:
     // data rep
