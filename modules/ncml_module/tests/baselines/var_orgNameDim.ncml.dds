@@ -1,0 +1,7 @@
+Dataset {
+    Int16 v[time_a = 16][latitude = 17][lon = 21];
+    Float32 lon[lon = 21];
+    Float32 time[time = 16];
+    Int16 wind_u[time_a = 16][latitude = 17][lon = 21];
+    Float32 latitude[latitude = 17];
+} var_orgNameDim.ncml;
