@@ -41,6 +41,27 @@ namespace bes {
 class ServerAdministrator {
 private:
     std::map<std::string,std::string> d_admin_info;
+    std::string d_organization;
+    std::string d_street;
+    std::string d_city;
+    std::string d_region;
+    std::string d_postal_code;
+    std::string d_country;
+    std::string d_telephone;
+    std::string d_email;
+    std::string d_website;
+
+    /**
+    BES.ServerAdministrator=email:support@opendap.org
+    BES.ServerAdministrator+=organization:OPeNDAP Inc.
+    BES.ServerAdministrator+=street:165 NW Dean Knauss Dr.
+    BES.ServerAdministrator+=city:Narragansett
+    BES.ServerAdministrator+=region:RI
+    BES.ServerAdministrator+=postalCode:02882
+    BES.ServerAdministrator+=country:US
+    BES.ServerAdministrator+=telephone:+1.401.575.4835
+    BES.ServerAdministrator+=website:http://www.opendap.org
+    **/
 
 public:
     ServerAdministrator();
@@ -52,6 +73,16 @@ public:
 
     virtual std::string xdump() const;
     virtual std::string jdump(bool compact=true) const;
+
+    virtual std::string get_organization() const { return  d_organization; }
+    virtual std::string get_street() const { return  d_street; }
+    virtual std::string get_city() const { return  d_city; }
+    virtual std::string get_region() const { return  d_region; }
+    virtual std::string get_postal_code() const { return  d_postal_code; }
+    virtual std::string get_country() const { return  d_country; }
+    virtual std::string get_telephone() const { return  d_telephone; }
+    virtual std::string get_email() const { return  d_email; }
+    virtual std::string get_website() const { return  d_website; }
 
 
 }; //class ServerAdministrator

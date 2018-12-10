@@ -122,6 +122,23 @@ ServerAdministrator::ServerAdministrator(){
             return;
         }
     }
+    d_organization = get(ORGANIZATION_KEY);
+    d_street = get(STREET_KEY);
+    d_city = get(CITY_KEY);
+    d_region = get(REGION_KEY);
+    d_postal_code = get(POSTAL_CODE_KEY);
+    d_country = get(COUNTRY_KEY);
+    d_telephone = get(TELEPHONE_KEY);
+    d_email = get(EMAIL_KEY);
+    d_website = get(WEBSITE_KEY);
+
+    // %TODO THis is a pretty simple (and brutal) qc in that any missing valiue prompts all of it to be rejected. Review. Fix?
+    if(d_organization.empty() || d_street.empty() || d_city.empty()
+        || d_region.empty() || d_postal_code.empty() || d_country.empty()
+        || d_telephone.empty() || d_email.empty() || d_website.empty() ){
+        mk_default();
+        BESDEBUG(MODULE,__func__ << "() -  The configuration entry for the " << SERVER_ADMINISTRATOR_KEY << " was missing crucial information.  jdump(): " << jdump(true) << endl);
+    }
 }
 
 
@@ -134,6 +151,10 @@ std::string ServerAdministrator::get(const string &key){
     }
     return result->second;
 }
+
+
+
+
 
 std::string ServerAdministrator::xdump() const {
     std::stringstream ss;
