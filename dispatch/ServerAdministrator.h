@@ -48,11 +48,14 @@ public:
 
     virtual std::string get(const string &key);
 
+    virtual void mk_default();
+
     virtual std::string xdump() const;
     virtual std::string jdump(bool compact=true) const;
 
 
-};
+}; //class ServerAdministrator
+
 } // namespace bes
 
 #endif // _ServerAdministrator_h_
