@@ -83,7 +83,6 @@ install:
 before_script:
 - printenv
 - ls /home/travis/install/deps/share/bison
-- ls /home/travis/ubuntu14/
 - autoreconf --force --install --verbose
 
 jobs:
