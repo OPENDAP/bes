@@ -3091,6 +3091,9 @@ void Dataset::SetScaleType(const string EOS2ObjName) throw(Exception) {
     //modis_div_scale_type.push_back("VIP_CMG_GRID");
 
     string modis_eq_scale_type   = "LST";
+    string modis_equ_scale_lst_group1="MODIS_Grid_8Day_1km_LST21";
+    string modis_equ_scale_lst_group2="MODIS_Grid_Daily_1km_LST21";
+
     string modis_divequ_scale_group = "MODIS_Grid";
     string modis_div_scale_group = "MOD_Grid";
 
@@ -3156,9 +3159,12 @@ void Dataset::SetScaleType(const string EOS2ObjName) throw(Exception) {
         pos = EOS2ObjName.find(modis_divequ_scale_group);
 
         // Find the "MODIS_Grid???" group. 
-        // We have to separate MODIS_Grid_1km_2D(EQ) from other grids(DIV). 
+        // We have to separate MODIS_Grid_1km_2D(EQ),MODIS_Grid_8Day_1km_LST21
+        // and MODIS_Grid_Daily_1km_LST21 from other grids(DIV). 
         if (0 == pos) { 
-            size_t eq_scale_pos = EOS2ObjName.find(modis_equ_scale_group);
+            size_t eq_scale_pos = EOS2ObjName.find(modis_equ_scale_group)
+                                 *EOS2ObjName.find(modis_equ_scale_lst_group1)
+                                 *EOS2ObjName.find(modis_equ_scale_lst_group2);
             if (0 == eq_scale_pos) 
                 scaletype = MODIS_EQ_SCALE;
             else 

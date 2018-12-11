@@ -1320,6 +1320,7 @@ cerr<<"tmp_rank 4 is "<<tmp_rank <<endl;
             //cerr << "scale=" << scale << endl;	
             //cerr << "offset=" << field_offset << endl;
             //cerr << "fillvalue=" << fillvalue << endl;
+            //cerr << "sotype=" << sotype << endl;
 
 	    //SDend(sdfileid);
         }
