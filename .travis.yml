@@ -81,6 +81,7 @@ install:
 # - aws s3 cp s3://opendap.travis.build/hyrax-dependencies-build.tar.gz $TRAVIS_BUILD_DIR
 
 before_script:
+- echo $TRAVIS_BUILD_DIR
 - printenv
 - autoreconf --force --install --verbose
 
