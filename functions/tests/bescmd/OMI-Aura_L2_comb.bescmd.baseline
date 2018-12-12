@@ -1,0 +1,6 @@
+The data:
+Structure {
+    Int32 start;
+    Int32 stop;
+    String name;
+} bbox[bbox = 3] = {{ 0, 254, "nTimes" }, { 0, 59, "nXtrack" }, { 0, 1, "nWavel" }};

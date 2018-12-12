@@ -197,6 +197,7 @@ public:
     BESLog& operator <<(char*);
     BESLog& operator <<(const char*);
     BESLog& operator <<(int);
+    BESLog& operator <<(unsigned int);
     BESLog& operator <<(char);
     BESLog& operator <<(long);
     BESLog& operator <<(unsigned long);

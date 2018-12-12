@@ -39,6 +39,10 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/roi_3.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/roi_4.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/roi_5.dods.bescmd)
 
+# Test roi function for OMI-Aura_L2-OMAERUV_2005m0101t0020-o02472_v003-2017m0720t185621.he5.dods
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/OMI-Aura_L2_comb.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/OMI-Aura_L2_roi.bescmd)
+
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/mask_array_data_dap2_1.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/mask_array_data_dap2_2.bescmd)
 AT_BESCMD_DAP_FUNCTION_RESPONSE_TEST([bescmd/mask_array_data_dap4_1.bescmd])

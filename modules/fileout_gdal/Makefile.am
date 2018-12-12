@@ -37,7 +37,7 @@ EXTRA_DIST = data fong.conf.in
 
 CLEANFILES = *~ fong.conf
 
-moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+moduledir = $(sysconfdir)/bes/modules
 module_DATA = fong.conf
 
 fong.conf: fong.conf.in $(top_srcdir)/config.status

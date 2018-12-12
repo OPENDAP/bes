@@ -39,7 +39,7 @@ EXTRA_DIST = usage.conf.in
 
 DISTCLEANFILES = usage.conf
 
-moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+moduledir = $(sysconfdir)/bes/modules
 module_DATA = usage.conf
 
 usage.conf: usage.conf.in $(top_srcdir)/config.status

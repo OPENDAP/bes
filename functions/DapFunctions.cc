@@ -49,6 +49,7 @@
 #include "MaskArrayFunction.h"
 #include "DilateArrayFunction.h"
 #include "RangeFunction.h"
+#include "BBoxCombFunction.h"
 
 #include "DapFunctionsRequestHandler.h"
 
@@ -81,6 +82,7 @@ void DapFunctions::initialize(const string &modname)
     libdap::ServerFunctionsList::TheList()->add_function(new BBoxFunction());
     libdap::ServerFunctionsList::TheList()->add_function(new RoiFunction());
     libdap::ServerFunctionsList::TheList()->add_function(new BBoxUnionFunction());
+    libdap::ServerFunctionsList::TheList()->add_function(new BBoxCombFunction());
 
     libdap::ServerFunctionsList::TheList()->add_function(new MaskArrayFunction());
     libdap::ServerFunctionsList::TheList()->add_function(new DilateArrayFunction());

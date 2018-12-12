@@ -235,7 +235,7 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc)
                 dc->set_shuffle(true);
                 break;
             default: {
-                ostringstream oss("Unsupported HDF5 filter: ");
+                ostringstream oss("Unsupported HDF5 filter: ", std::ios::ate);
                 oss << filter_type;
                 throw BESInternalError(oss.str(), __FILE__, __LINE__);
             }
@@ -389,7 +389,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
             }
 
             default: {
-                ostringstream oss("Unsupported HDF5 dataset layout type: ");
+                ostringstream oss("Unsupported HDF5 dataset layout type: ", std::ios::ate);
                 oss << layout_type << ".";
                 BESInternalError(oss.str(), __FILE__, __LINE__);
             }

@@ -57,7 +57,6 @@ BESDAP_SRCS = 	BESDASResponseHandler.cc \
 	BESDapResponseBuilder.cc \
 	BESDapFunctionResponseCache.cc \
 	BESStoredDapResultCache.cc \
-	BESDapNullAggregationServer.cc \
 	DapFunctionUtils.cc \
 	CachedSequence.cc \
 	CacheTypeFactory.cc \
@@ -67,6 +66,8 @@ BESDAP_SRCS = 	BESDASResponseHandler.cc \
 	ObjMemCache.cc \
 	ShowPathInfoResponseHandler.cc \
 	GlobalMetadataStore.cc
+
+#	BESDapNullAggregationServer.cc 
 
 BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDDSResponseHandler.h \
@@ -90,7 +91,6 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDapResponseBuilder.h \
 	BESDapFunctionResponseCache.h \
 	BESStoredDapResultCache.h \
-	BESDapNullAggregationServer.h \
 	DapFunctionUtils.h \
 	CachedSequence.h \
 	CacheTypeFactory.h \
@@ -100,6 +100,8 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 	ObjMemCache.h \
 	GlobalMetadataStore.h \
 	ShowPathInfoResponseHandler.h
+
+# 	BESDapNullAggregationServer.h
 
 libdap_module_la_SOURCES = $(BESDAP_SRCS) $(BESDAP_HDRS)
 # libdap_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
@@ -116,7 +118,7 @@ EXTRA_DIST = data dap.conf.in dap_help.html dap_help.txt dap_help.xml
 
 CLEANFILES = *~ dap.conf
 
-moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+moduledir = $(sysconfdir)/bes/modules
 module_DATA = dap.conf
 
 dap.conf: dap.conf.in $(top_builddir)/config.status

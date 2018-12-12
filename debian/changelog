@@ -1,3 +1,9 @@
+bes (3.20.1-1) trusty; urgency=medium
+
+  * Bugs, roi() function fixes, DMR++ fixes, httpd catalog support
+
+ -- James Gallagher <jgallagher@openda.org>  Mon, 19 Nov 2018 23:20:26 +0000
+
 bes (3.20.0-1) UNRELEASED; urgency=medium
 
   * Initial release.

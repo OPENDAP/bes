@@ -30,7 +30,9 @@ EXTRA_DIST = bes/bes.conf.in bes/bes.conf bes/bes_help.html bes/bes_help.txt \
 
 DISTCLEANFILES = bes/bes.conf
 
-confdir = $(DESTDIR)$(sysconfdir)/bes
+# confdir = $(sysconfdir)/bes
+# Edit while working on C7 RPM builds jhrg 9/19/18
+confdir = $(sysconfdir)/bes
 conf_DATA = bes/bes.conf
 
 bes/bes.conf: bes/bes.conf.in ../config.status
@@ -74,7 +76,6 @@ SRCS = BESInterface.cc \
 	BESServiceRegistry.cc BESServicesResponseHandler.cc		\
 	BESMemoryGlobalArea.cc						\
 	BESMemoryManager.cc 			\
-	BESAggFactory.cc BESAggregationServer.cc			\
 	BESReturnManager.cc						\
 	BESError.cc				\
 	BESDataHandlerInterface.cc					\
@@ -93,7 +94,10 @@ SRCS = BESInterface.cc \
 	BESCatalogEntry.cc \
 	BESCatalogResponseHandler.cc ShowNodeResponseHandler.cc \
 	CatalogNode.cc CatalogItem.cc \
-	WhiteList.cc
+	WhiteList.cc \
+	ServerAdministrator.cc
+
+#	BESAggFactory.cc BESAggregationServer.cc
 
 HDRS = BESInterface.h BESLog.h 			\
 	TheBESKeys.h BESStatus.h 				\
@@ -130,7 +134,6 @@ HDRS = BESInterface.h BESLog.h 			\
 	BESConstraintFuncs.h  			\
 	BESMemoryGlobalArea.h BESMemoryManager.h 			\
 	BESServerSystemResources.h 					\
-	BESAggFactory.h BESAggregationServer.h 				\
 	BESReturnManager.h 						\
 	BESDataNames.h BESApp.h BESObj.h BESIndent.h 	\
 	BESAbstractModule.h BESPluginFactory.h BESPlugin.h 		\
@@ -149,7 +152,10 @@ HDRS = BESInterface.h BESLog.h 			\
 	BESCatalogEntry.h \
 	BESCatalogResponseHandler.h ShowNodeResponseHandler.h \
 	CatalogNode.h CatalogItem.h \
-	WhiteList.h
+	WhiteList.h \
+	ServerAdministrator.h
+
+#	BESAggFactory.h BESAggregationServer.h 
 
 C4_DB=$(C4_DIR)/dispatch.db
 C4_HTML=$(C4_dir)/dispatch.html

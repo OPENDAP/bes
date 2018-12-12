@@ -69,7 +69,7 @@ sample_data_DATA = data/1998-6-avhrr.dat data/avhrr.dat data/gsodock.dat \
 	data/1998-6-avhrr.fmt data/avhrr.fmt data/gsodock.fmt \
 	data/1998-6-avhrr.dat.das data/avhrr.dat.das
 
-moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+moduledir = $(sysconfdir)/bes/modules
 module_DATA = ff.conf
 
 ff.conf: ff.conf.in $(top_srcdir)/config.status

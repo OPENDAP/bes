@@ -255,6 +255,16 @@ BESLog& BESLog::operator<<(int val)
     return *this;
 }
 
+BESLog& BESLog::operator<<(unsigned int val)
+{
+    if (!d_suspended) {
+        if (d_flushed) dump_time();
+        (*d_file_buffer) << val;
+    }
+    return *this;
+}
+
+
 /** @brief Overloaded inserter that writes the specified char value.
  *
  * @param val char value to write to the log file

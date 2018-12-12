@@ -754,6 +754,46 @@ string BESUtil::url_create(BESUtil::url &url_parts)
     return url;
 }
 
+
+/**
+ * @brief Concatenate path fragments making sure that they are separated by a single '/' character.
+ *
+ * Returns a new string made from appending secondPart to firstPart while
+ * ensuring that a single separator appears between the two parts.
+ *
+ * @param firstPart The first string to concatenate.
+ * @param secondPart The second string to concatenate.
+ * @param separator The separator character to use between the two concatenated strings. Default: '/'
+ */
+string BESUtil::pathConcat(const string &firstPart, const string &secondPart, char separator)
+{
+    string first = firstPart;
+    string second = secondPart;
+    string sep(1,separator);
+
+    // make sure there are not multiple slashes at the end of the first part...
+    // Note that this removes all of the slashes. jhrg 9/27/16
+    while (!first.empty() && *first.rbegin() == separator) {
+        // C++-11 first.pop_back();
+        first = first.substr(0, first.length() - 1);
+    }
+    // make sure second part does not BEGIN with a slash
+    while (!second.empty() && second[0] == separator) {
+        // erase is faster? second = second.substr(1);
+        second.erase(0, 1);
+    }
+    string newPath;
+    if (first.empty()) {
+        newPath = second;
+    }
+    else if (second.empty()) {
+        newPath = first;
+    }
+    else {
+        newPath = first.append(sep).append(second);
+    }
+    return newPath;
+}
 /**
  * @brief Assemble path fragments making sure that they are separated by a single '/' character.
  *
@@ -802,6 +842,7 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
     BESDEBUG(debug_key, prolog << "firstPart:  '" << firstPart << "'" << endl);
     BESDEBUG(debug_key, prolog << "secondPart: '" << secondPart << "'" << endl);
 
+#if 0
     // assert(!firstPart.empty()); // I dropped this because I had to ask, why? Why does it matter? ndp 2017
 
     string first = firstPart;
@@ -831,7 +872,9 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
     else {
         newPath = first.append("/").append(second);
     }
+#endif
 
+    string newPath = BESUtil::pathConcat(firstPart,secondPart);
     if (leadingSlash) {
         if (newPath.empty()) {
             newPath = "/";
@@ -961,7 +1004,7 @@ void BESUtil::replace_all(string &s, string find_this, string replace_with_this)
  * @param separator A string, of length one, containing the separator character for the path. This
  * parameter is optional and its value defaults to the slash '/' character.
  */
-string BESUtil::normalize_path(const string &raw_path, bool leading_separator, bool trailing_separator, const string separator)
+string BESUtil::normalize_path(const string &raw_path, bool leading_separator, bool trailing_separator, const string separator /* = "/" */)
 {
     if (separator.length() != 1)
         throw BESInternalError("Path separators must be a single character. The string '" + separator + "' does not qualify.", __FILE__, __LINE__);
@@ -1007,7 +1050,7 @@ string BESUtil::normalize_path(const string &raw_path, bool leading_separator, b
  * http://www.oopweb.com/CPP/Documents/CPPHOWTO/Volume/C++Programming-HOWTO-7.html
  * for the tokenizer.
  */
-void BESUtil::tokenize(const string& str, vector<string>& tokens, const string& delimiters)
+void BESUtil::tokenize(const string& str, vector<string>& tokens, const string& delimiters /* = "/" */)
 {
     // Skip delimiters at beginning.
     string::size_type lastPos = str.find_first_not_of(delimiters, 0);

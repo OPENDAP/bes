@@ -1,3 +1,23 @@
+News for version 3.20.1
+
+Added server side function 'bbox_comb' that provides a way to combine to
+bounding box (with dimensions M and N, respectively) to a single bbox with
+dimensions M+N.
+
+Fixed the roi() function so that it's more flexible about the bbox dimensions
+and variable dimensions (it allows some variables to have different dimensions
+than the bbox - the extra/unmatching dimensions are now ignored).
+
+Fixed the MDS install error in the RPM packages
+
+Added support for continuous delivery for CentOS 6 and 7 and Ubuntu Trusty.
+
+Added a BES catalog for remote directories visible using Apache httpd. Currently
+in the developer build only.
+
+Fixes for the DMR++ handler - it now recovers from the odd '500' errors
+that S3 returns (about 1 in 6,000 requests). Some other bugs in teh DMR++
+code were also fixed - see the ChangeLog.
 
 News for version 3.20.0
 
@@ -48,7 +68,7 @@ would like to extend the BES Catalog system for your own data collections.
 
 * Bug Fixes
 
-About 40 bugs have been fixed for this release. 
+About 40 bugs have been fixed for this release. See README.md
 
 News for version 3.19.1
 

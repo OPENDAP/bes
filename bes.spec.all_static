@@ -11,7 +11,7 @@
 %define hyraxsharedir %{_datadir}/hyrax
 
 Name:           bes
-Version:        3.20.0
+Version:        3.20.1
 Release:        1.static%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
@@ -37,7 +37,7 @@ Requires:       openssl
 # gridfields >= ?
 # fits >= ?
 
-Requires(pre): shadow-utils
+Requires(pre):  shadow-utils
 
 BuildRequires:  libdap-devel >= 3.20.0
 BuildRequires:  readline-devel
@@ -157,12 +157,16 @@ exit 0
 %postun -p /sbin/ldconfig
 
 %files
+
+#%attr(<mode>, <user>, <group>) file
+#%defattr(file perms, user, group, dir perms)
+
 %defattr(-,root,root,-)
 %doc ChangeLog NEWS README.md
+# NB: listing a directory here packages the dir and everything it contains. Using %dir
+# packages _just_ the dir. Subsequent commands can add contents selectively. jhrg 9/19/18
 %dir %{_sysconfdir}/bes/
 %dir %{_sysconfdir}/bes/modules
-
-%{_tmpfilesdir}/%{name}.conf
 
 %config(noreplace) %{_sysconfdir}/bes/bes.conf
 %config(noreplace) %{_sysconfdir}/bes/modules/*.conf
@@ -177,6 +181,8 @@ exit 0
 %{_datadir}/bes/*.xml
 
 %{_datadir}/hyrax/
+
+%{_datadir}/mds/
 
 %{_bindir}/beslistener
 %{_bindir}/besdaemon
@@ -200,6 +206,11 @@ exit 0
 %attr (-,%{besuser},%{besgroup}) %{beslogdir}
 %attr (-,%{besuser},%{besgroup}) %{bespiddir}
 %attr (-,%{besuser},%{besgroup}) %{bescachedir}
+
+# Make sure that the BES, once runnin g, can write to the MDS directory. jhrg 11/7/18
+%attr (-,%{besuser},%{besgroup}) %{_datadir}/mds/
+
+%{_tmpfilesdir}/%{name}.conf
 
 %files devel
 %defattr(-,root,root,-)

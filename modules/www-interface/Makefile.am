@@ -48,6 +48,6 @@ BES_SOURCES = BESWWWModule.cc BESWWWResponseHandler.cc BESWWWTransmit.cc \
 EXTRA_DIST = js2h.pl www.js
 
 javascript.h: www.js js2h.pl js2h.pl.in
-	./js2h.pl $< > $@
+	perl js2h.pl $< > $@
 
 CLEANFILES = *~ javascript.h

@@ -44,7 +44,7 @@ CLEANFILES = *~ fits.conf
 sample_datadir = $(datadir)/hyrax/data/fits
 sample_data_DATA = data/20060308.172859.mk4.cpb.fts data/20060308.172859.mk4.rpb.fts data/20060328.185927.chp.bsh.fts data/20060328.190602.dpm.alr.fts
 
-moduledir = $(DESTDIR)$(sysconfdir)/bes/modules
+moduledir = $(sysconfdir)/bes/modules
 module_DATA = fits.conf
 
 fits.conf: fits.conf.in $(top_srcdir)/config.status

@@ -88,7 +88,6 @@ BESCatalogDirectory::BESCatalogDirectory(const string &name) :
 #if 0
     get_catalog_utils() = BESCatalogUtils::Utils(name);
 #endif
-
 }
 
 BESCatalogDirectory::~BESCatalogDirectory()

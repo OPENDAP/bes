@@ -29,13 +29,14 @@ BUILT_SOURCES = test_config.h bes.conf
 
 if CPPUNIT
 # This determines what gets run by 'make check.'
-TESTS = constraintT defT keysT pfileT plistT pvolT replistT	\
-reqhandlerT reqlistT resplistT infoT agglistT debugT utilT regexT \
-scrubT checkT servicesT fsT urlT containerT	uncompressT cacheT \
-BESCatalogListTest WhiteListTest CatalogNodeTest CatalogItemTest
+TESTS = constraintT defT keysT pfileT plistT pvolT replistT		\
+reqhandlerT reqlistT resplistT infoT debugT utilT regexT scrubT		\
+checkT servicesT fsT urlT containerT uncompressT cacheT			\
+BESCatalogListTest WhiteListTest CatalogNodeTest CatalogItemTest \
+ServerAdministratorTest
 
 # This is tool to look at CatalogEntry objects. jhrg 3.5.18
-# complete_catalog_lister
+# complete_catalog_lister agglistT 
 
 if LIBDAP
 TESTS += catT
@@ -130,7 +131,7 @@ resplistT_SOURCES = resplistT.cc TestResponseHandler.cc TestResponseHandler.h
 infoT_SOURCES = infoT.cc
 infoT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
 
-agglistT_SOURCES = agglistT.cc TestAggServer.cc TestAggServer.h
+# agglistT_SOURCES = agglistT.cc TestAggServer.cc TestAggServer.h
 
 cacheT_SOURCES = cacheT.cc
 
@@ -177,4 +178,9 @@ BESCatalogListTest_CPPFLAGS = $(AM_CPPFLAGS) -Wno-deprecated
 # complete_catalog_lister_OBJ = ../BESCatalogResponseHandler.o
 # complete_catalog_lister_CPPFLAGS =  $(AM_CPPFLAGS) $(XML2_CFLAGS)
 # complete_catalog_lister_LDADD = $(complete_catalog_lister_OBJ) $(LDADD)
+
+
+
+ServerAdministratorTest_SOURCES = ServerAdministratorTest.cc
+ServerAdministratorTest_LDADD = ../ServerAdministrator.o $(LDADD)
 

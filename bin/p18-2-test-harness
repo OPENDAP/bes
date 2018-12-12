@@ -934,11 +934,11 @@ EOF
 `
 
 StdPresF32=`cat<<EOF
-CH4_VMR_A
 CH4_VMR_A_err
 CH4_VMR_A_max
 CH4_VMR_A_min
 CH4_VMR_A_sdev
+CH4_VMR_A
 CH4_VMR_D
 CH4_VMR_D_err
 CH4_VMR_D_max
@@ -1074,6 +1074,10 @@ arch2="${server}/opendap/Arch-2/ebs/airs/";
 #ce_seven_var="?CH4_VMR_A,CH4_VMR_D,Temperature_A,Temperature_D,CO_VMR_A,GPHeight_A,GPHeight_D";
 #ce_eight_var="?CH4_VMR_A,CH4_VMR_D,Temperature_A,Temperature_D,CO_VMR_A,CO_VMR_D,GPHeight_A,GPHeight_D";
 
+
+########################################################
+#
+#
 function get_vars_ce() {
     n=${1};
     c=0;
@@ -1093,6 +1097,30 @@ function get_vars_ce() {
     done
 }
 
+########################################################
+# This seems to be ill advised as doing this
+# pretty much makes BESFileLockingCache break.
+#
+function purge_gateway_cache() {
+    ls /tmp/gateway* > /dev/null 2>&1;
+    if [ ${?} -eq 0 ]; then
+        echo "Gateway cache contains files! Purging...";
+        rm -v /tmp/gateway*
+    fi
+    echo "Gateway cache is empty.";
+    
+    echo "Creating cache control file..."
+    touch /tmp/gateway_cache.cache_control
+    truncate -s +8 /tmp/gateway_cache.cache_control 
+    ls -l /tmp/gateway_cache.cache_control
+}
+
+
+
+########################################################
+#
+#
+#
 function testit(){
     
     test_id=${1};
@@ -1110,50 +1138,90 @@ function testit(){
     #if [ -z ${ce} ]; then echo "-z is true"; else echo "-z is false"; fi
     #if [ -n ${ce} ]; then echo "-n is true"; else echo "-n is false"; fi
 
+    # The expected number of http header lines sent from Hyrax
+    http_hdr_length=12;          
+     
+    # The successful request always were's this
+    http_success="HTTP/1.1 200";  
     
-    
+    # The suffix for a DAP2 dat response
+    dap2_data_response="dods"     
+
+    # The location of the bes.log file.
+    bes_log="/home/centos/hyrax/build/var/bes.log"
+
     for resourceId in ${TEST_IDS} ; do
         
-        ls /tmp/gateway* > /dev/null 2>&1;
-        if [ ${?} -eq 0 ]; then
-            echo "Purging gateway cache...";
-            rm -v /tmp/gateway*
-        else
-            echo "Gateway cache is clear.";
-        fi
-        
+        # purge_gateway_cache; # This seemed like a good idea but turned out to be Hyrax Kryptonite
+        echo "";
         dods_url="${architecture}${resourceId}.${response}${ce}";
         echo "dods_url: ${dods_url}";
-        curl_cmd="curl -s -o foo.${response} -g ${dods_url}";
+        curl_cmd="curl -s -i -o foo.${response} -g ${dods_url}";
         echo "curl_cmd: ${curl_cmd}" | tee -a ${test_id};
         
         { time -p ${curl_cmd} > curl.stderr ; } 2> foo.time;
         cat foo.time >> ${test_id};
         echo "Request time: ";
         tail -3 ${test_id};
-        
-        if [ -z ${ce} ] || [ true ] ; then
-            echo "Not checking DAP2 data response for entire dataset, takes too long."
-        else 
-            echo "Checking DAP2 data response with getdap."
-            getdap -D -M foo.dods > /dev/null;
-            status=$?
-            if [ ${status} -ne 0 ]; then 
-                echo "ERROR! Unable to read dap2 data response."; 
+
+        echo "Checking HTTP Header..."
+        http_status=`head -1 foo.${response} | xargs`;
+        echo "Server returned http status: '${http_status}'";
+        # echo "http_success:                '${http_success}'";
+        if [ "${http_status}" = "${http_success}" ] ; then
+            echo "Request SUCCEEDED?" | tee -a ${test_id};
+            
+            if [ -z ${ce} ] ; then
+                echo "Not checking DAP2 data response for entire dataset, takes too long.";
+                
+            elif [ "${response}" = "${dap2_data_response}" ] ; then
+                
+                if [ true ] ; then
+                    echo "Performing crude dap2 error check with grep:";
+                    cat  foo.${response} | grep "message = ";
+                    status=$?;
+                    if [ $status -ne 0 ] ; then status=0; else status=1; fi
+                    # echo "status: $status";
+                    
+                else 
+                    echo "Performing full DAP2 data integrity check with getdap.";
+                    content_lines=`cat foo.${response} | wc -l`;
+                    content_lines=`echo ${content_lines}-${http_hdr_length} | bc`;
+                    tail -n ${content_lines} foo.${response} > foo.${response}.body;
+                    getdap -D -M foo.${response}.body > /dev/null;
+                    status=$?;
+                fi
+                
+                if [ ${status} -ne 0 ] ; then 
+                    echo "ERROR! Bad dap2 data response."; 
+                    echo "Last 2 bes.log entries:";
+                    tail -n 2 ${bes_log};
+                else
+                    echo "DAP2 Request appears to have worked.";
+                fi
+                
             else
-                echo "DAP2 Request appears to have worked."
+                echo "NO QC OF RESPONSE PERFORMED ON: ${curl_cmd}";
             fi
+        else 
+            echo "Request FAILED." | tee -a ${test_id};
+            grep -e "message =" -e "blockquote" foo.${response} | tee -a ${test_id}
+            echo "Last 2 bes.log entries:";
+            tail -n 2 ${bes_log};
         fi
     done
-
 }
 
+
+########################################################
+#
+#
+#
 function test_ce(){
     test_name=${1};
     ce=${2};
     
     TEST_IDS="${A0A2_IDs}";
-    
     echo "TEST_IDS: ${TEST_IDS}"
     
     testit "timing/a0_${test_name}" "${arch0}" "dods" "${ce}"
@@ -1161,12 +1229,34 @@ function test_ce(){
 
     TEST_IDS="${A1_IDS}";
     echo "TEST_IDS: ${TEST_IDS}"
-
     testit "timing/a1_${test_name}" "${arch1}" "dods" "${ce}"
 }
 
 
 
+########################################################
+#
+# MAIN
+#
+
+OPTIND=1         # Reset in case getopts has been used previously in the shell.
+start=1
+
+while getopts "h?s:" opt; do
+    case "$opt" in
+    h|\?)
+       echo "$0 [-s <start>] [0|1|2] "
+       exit 0
+       ;;
+    s) start=$OPTARG
+       echo "-s $start"
+       ;;
+    esac
+done
+
+shift $((OPTIND-1))
+
+[ "$1" = "--" ] && shift
 
 if [ ! -d "timing" ]; then
     mkdir timing;
@@ -1178,9 +1268,11 @@ fi
 echo "Clearing timing dir...";
 rm -f timing/*;
 
-for pass in {1..112} ; do
-
+# for pass in {1..112} ; do
+for pass in `seq $start 112`
+do
     echo "################# PASS ${pass} ################################## PASS ${pass} #################"
+    date
     
     thisCE=$(get_vars_ce ${pass})
     

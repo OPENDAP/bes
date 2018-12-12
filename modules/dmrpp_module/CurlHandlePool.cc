@@ -25,7 +25,10 @@
 
 #include <string>
 #include <sstream>
+#include <iomanip>
+
 #include <cstring>
+#include <unistd.h>
 
 #include <curl/curl.h>
 
@@ -35,18 +38,25 @@
 
 #include "util.h"   // long_to_string()
 
+#include "BESLog.h"
 #include "BESDebug.h"
 #include "BESInternalError.h"
 #include "BESForbiddenError.h"
 #include "WhiteList.h"
 
 #include "DmrppRequestHandler.h"
+#include "DmrppCommon.h"
 #include "CurlHandlePool.h"
 #include "Chunk.h"
 
 #define KEEP_ALIVE 1   // Reuse libcurl easy handles (1) or not (0).
 
-#define MAX_WAIT_MSECS 30*1000 /* Wait max. 30 seconds */
+#define CURL_VERBOSE 0
+
+static const int MAX_WAIT_MSECS = 30*1000; // Wait max. 30 seconds
+static const unsigned int retry_limit = 10; // Amazon's suggestion
+static const unsigned int initial_retry_time = 1000; // one milli-second
+static const string dmrpp_3 = "dmrpp:3";
 
 using namespace dmrpp;
 using namespace std;
@@ -64,6 +74,106 @@ Lock::~Lock()
      if (status != 0) throw BESInternalError("Could not unlock in CurlHandlePool", __FILE__, __LINE__);
  }
 
+/**
+ * @brief print the long curl message if available.
+ */
+static string
+curl_error_msg(CURLcode res, char *errbuf)
+{
+    ostringstream oss;
+    size_t len = strlen(errbuf);
+    if (len) {
+        oss << errbuf;
+        oss << " (code: " << (int)res << ")";
+    }
+    else {
+        oss << curl_easy_strerror(res) << "(result: " << res << ")";
+    }
+
+    return oss.str();
+}
+
+/**
+ * @brief Build a string with hex info about stuff libcurl gets
+ *
+ * Unused, but might be useful someday.
+ */
+#if 0
+static
+string dump(const char *text, unsigned char *ptr, size_t size)
+{
+    size_t i;
+    size_t c;
+    unsigned int width=0x10;
+ 
+    ostringstream oss;
+    oss << text << ", " << std::setw(10) << (long)size << std::setbase(16) << (long)size << endl;
+
+    for(i=0; i<size; i+= width) {
+	oss << std::setw(4) << (long)i;
+	// fprintf(stream, "%4.4lx: ", (long)i);
+
+	/* show hex to the left */
+	for(c = 0; c < width; c++) {
+	    if(i+c < size) {
+		oss << std::setw(2) << ptr[i+c];
+		//fprintf(stream, "%02x ", ptr[i+c]);
+	    }
+	    else {
+		oss << "   ";  
+		// fputs("   ", stream);
+	    }
+	}
+ 
+	/* show data on the right */
+	for(c = 0; (c < width) && (i+c < size); c++) {
+	    char x = (ptr[i+c] >= 0x20 && ptr[i+c] < 0x80) ? ptr[i+c] : '.';
+	    // fputc(x, stream);
+	    oss << std::setw(1) << x;
+	}
+ 
+	// fputc('\n', stream); /* newline */
+	oss << endl;
+    }
+
+    return oss.str();
+}
+#endif
+
+#if CURL_VERBOSE
+/**
+ * @brief print verbose info from curl.
+ *
+ * Copied from the libcurl docs, then hacked to remove most of the output.
+ */ 
+static
+int curl_trace(CURL */*handle*/, curl_infotype type, char *data, size_t /*size*/, void */*userp*/)
+{
+    switch (type) {
+    // print info
+    case CURLINFO_TEXT: {
+        string text = data;
+        size_t pos;
+        while((pos = text.find('\n')) != string::npos)
+            text = text.substr(0, pos);
+        LOG("libcurl == Info: " << text << endl);
+    }
+
+    // print nothing for these
+    case CURLINFO_DATA_IN:
+    case CURLINFO_SSL_DATA_IN:
+
+    case CURLINFO_DATA_OUT:
+    case CURLINFO_SSL_DATA_OUT:
+
+    case CURLINFO_HEADER_IN:
+    case CURLINFO_HEADER_OUT:
+    default: /* in case a new one is introduced to shock us */
+	return 0;
+    }
+}
+#endif
+
 dmrpp_easy_handle::dmrpp_easy_handle()
 {
     d_handle = curl_easy_init();
@@ -71,26 +181,40 @@ dmrpp_easy_handle::dmrpp_easy_handle()
 
     CURLcode res;
 
+    if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_ERRORBUFFER, d_errbuf)))
+        throw BESInternalError(string("CURL Error: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
+
+#if CURL_VERBOSE
+    // Information is output only when the log is in verbose mode and the code is
+    // built using --enable-developer
+    if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_DEBUGFUNCTION, curl_trace)))
+        throw BESInternalError(string("CURL Error: ").append(curl_error_msg(res, d_errbuf)), __FILE__, __LINE__);
+    // Many tests fail with this option, but it's still useful to see how connections
+    // are treated. jhrg 10/2/18
+    if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_VERBOSE, 1L)))
+        throw BESInternalError(string("CURL Error: ").append(curl_error_msg(res, d_errbuf)), __FILE__, __LINE__);
+#endif
+
     // Pass all data to the 'write_data' function
     if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_WRITEFUNCTION, chunk_write_data)))
-        throw BESInternalError(string("CURL Error: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
+        throw BESInternalError(string("CURL Error: ").append(curl_error_msg(res, d_errbuf)), __FILE__, __LINE__);
 
 #ifdef CURLOPT_TCP_KEEPALIVE
     /* enable TCP keep-alive for this transfer */
     if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPALIVE, 1L)))
-        throw string("CURL Error: ").append(curl_easy_strerror(res));
+        throw BESInternalError(string("CURL Error: ").append(curl_error_msg(res)), __FILE__, __LINE__);
 #endif
 
 #ifdef CURLOPT_TCP_KEEPIDLE
     /* keep-alive idle time to 120 seconds */
     if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPIDLE, 120L)))
-        throw string("CURL Error: ").append(curl_easy_strerror(res));
+        throw BESInternalError(string("CURL Error: ").append(curl_error_msg(res)), __FILE__, __LINE__);
 #endif
 
 #ifdef CURLOPT_TCP_KEEPINTVL
     /* interval time between keep-alive probes: 120 seconds */
     if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPINTVL, 120L)))
-        throw string("CURL Error: ").append(curl_easy_strerror(res));
+        throw BESInternalError(string("CURL Error: ").append(curl_error_msg(res)), __FILE__, __LINE__)
 #endif
 
     d_in_use = false;
@@ -104,17 +228,19 @@ dmrpp_easy_handle::~dmrpp_easy_handle()
 }
 
 /**
- * Return the HTTP/S status code if the request succeeded; throw an exception
- * on error.
+ * Return true if the HTTP request worked, false if it should be re-tried;
+ * throw an exception on error.
  *
  * @param eh The CURL easy_handle
+ * @return True indicates success, false a failure that should be re-tried.
+ * @exception BESInternalError indicates an unrecoverable error
  */
-static void evaluate_curl_response(CURL* eh)
+static bool evaluate_curl_response(CURL* eh)
 {
     long http_code = 0;
     CURLcode res = curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_code);
     if (CURLE_OK != res) {
-        throw BESInternalError(string("Error getting HTTP response code: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
+        throw BESInternalError(string("Error getting HTTP response code: ").append(curl_error_msg(res, (char*)"")), __FILE__, __LINE__);
     }
 
     // Newer Apache servers return 206 for range requests. jhrg 8/8/18
@@ -123,34 +249,67 @@ static void evaluate_curl_response(CURL* eh)
     case 206: // Partial content - this is to be expected since we use range gets
         // cases 201-205 are things we should probably reject, unless we add more
         // comprehensive HTTP/S processing here. jhrg 8/8/18
-        break;
+        return true;
+
+    case 500: // Internal server error
+    case 503: // Service Unavailable
+    case 504: // Gateway Timeout
+        return false;
 
     default: {
         ostringstream oss;
         oss << "HTTP status error: Expected an OK status, but got: ";
         oss << http_code;
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
-        break;
     }
     }
 }
 
 /**
  * @brief This is the read_data() method for serial transfers
+ *
+ * @todo Modify re-try so it's only done for AWS and/or if an option is set.
  */
 void dmrpp_easy_handle::read_data()
 {
-    CURL *curl = d_handle;
-
-    // Perform the request
-    CURLcode curl_code = curl_easy_perform(curl);
-    if (CURLE_OK != curl_code) {
-        throw BESInternalError(string("Data transfer error: ").append(curl_easy_strerror(curl_code)), __FILE__, __LINE__);
-    }
-
-    // For HTTP, check the return code, for the file protocol, if curl_code is OK, that's good enough
+    // Treat HTTP/S requests specially; retry some kinds of failures.
     if (d_url.find("https://") == 0 || d_url.find("http://") == 0) {
-        evaluate_curl_response(curl);
+        unsigned int tries = 0;
+        bool success = true;
+        unsigned int retry_time = initial_retry_time;
+
+        // Perform the request
+        do {
+            CURLcode curl_code = curl_easy_perform(d_handle);
+            ++tries;
+
+            if (CURLE_OK != curl_code) {
+                throw BESInternalError(string("Data transfer error: ").append(curl_error_msg(curl_code, d_errbuf)),
+                    __FILE__, __LINE__);
+            }
+
+            success = evaluate_curl_response(d_handle);
+
+            if (!success) {
+                if (tries == retry_limit) {
+                    throw BESInternalError(
+                        string("Data transfer error: Number of re-tries to S3 exceeded: ").append(
+                            curl_error_msg(curl_code, d_errbuf)), __FILE__, __LINE__);
+                }
+                else {
+                    LOG("HTTP transfer 500 error, will retry (trial " << tries << " for: " << d_url << ").");
+                    usleep(retry_time);
+                    retry_time *= 2;
+                }
+            }
+        } while (!success);
+    }
+    else {
+        CURLcode curl_code = curl_easy_perform(d_handle);
+        if (CURLE_OK != curl_code) {
+            throw BESInternalError(string("Data transfer error: ").append(curl_error_msg(curl_code, d_errbuf)),
+                __FILE__, __LINE__);
+        }
     }
 
     d_chunk->set_is_read(true);
@@ -216,8 +375,7 @@ static void *easy_handle_read_data(void *handle)
         pthread_exit(NULL);
     }
     catch (BESError &e) {
-        string *error = new string(e.get_message().append(": ").append(e.get_file())
-            .append(":").append(libdap::long_to_string(e.get_line())));
+        string *error = new string(e.get_verbose_message());
         pthread_exit(error);
     }
 }
@@ -228,6 +386,9 @@ static void *easy_handle_read_data(void *handle)
  *
  * This uses either the CURL Multi API or pthreads to read N
  * dmrpp_easy_handle instances in parallel.
+ *
+ * @todo This has to be fixed to restart 500 HTTP errors and to clean up
+ * after threads if there's an exception.
  *
  * @note It's the responsibility of the caller to make sure that no more than
  * d_max_parallel_transfers are added to the 'multi' handle.
@@ -301,34 +462,40 @@ void dmrpp_multi_handle::read_data()
 #else
     // Start the processing pipelines using pthreads - there is no Multi API
 
-    pthread_t thread[p_impl->ehandles.size()];
-    unsigned int threads = 0;
-    for (unsigned int i = 0; i < p_impl->ehandles.size(); ++i) {
-        int status = pthread_create(&thread[i], NULL, easy_handle_read_data, (void*) p_impl->ehandles[i]);
-        if (status == 0) {
-            ++threads;
+    pthread_t threads[p_impl->ehandles.size()];
+    unsigned int num_threads = 0;
+    try {
+        for (unsigned int i = 0; i < p_impl->ehandles.size(); ++i) {
+            int status = pthread_create(&threads[i], NULL, easy_handle_read_data, (void*) p_impl->ehandles[i]);
+            if (status == 0) {
+                ++num_threads;
+            }
+            else {
+                ostringstream oss("Could not start process_one_chunk_unconstrained thread for chunk ", std::ios::ate);
+                oss << i << ": " << strerror(status);
+                throw BESInternalError(oss.str(), __FILE__, __LINE__);
+            }
         }
-        else {
-            ostringstream oss("Could not start process_one_chunk_unconstrained thread for chunk ");
-            oss << i << ": " << strerror(status);
-            throw BESInternalError(oss.str(), __FILE__, __LINE__);
+
+        // Now join the child threads.
+        for (unsigned int i = 0; i < num_threads; ++i) {
+            string *error;
+            int status = pthread_join(threads[i], (void**) &error);
+            if (status != 0) {
+                ostringstream oss("Could not join process_one_chunk_unconstrained thread for chunk ", std::ios::ate);
+                oss << i << ": " << strerror(status);
+                throw BESInternalError(oss.str(), __FILE__, __LINE__);
+            }
+            else if (error != 0) {
+                BESInternalError e(*error, __FILE__, __LINE__);
+                delete error;
+                throw e;
+            }
         }
     }
-
-    // Now join the child threads.
-    for (unsigned int i = 0; i < threads; ++i) {
-        string *error;
-        int status = pthread_join(thread[i], (void**) &error);
-        if (status != 0) {
-            ostringstream oss("Could not join process_one_chunk_unconstrained thread for chunk ");
-            oss << i << ": " << strerror(status);
-            throw BESInternalError(oss.str(), __FILE__, __LINE__);
-        }
-        else if (error != 0) {
-            BESInternalError e(*error, __FILE__, __LINE__);
-            delete error;
-            throw e;
-        }
+    catch(...) {
+        join_threads(threads, num_threads);
+        throw;
     }
 
     // Now remove the easy_handles, mimicking the behavior when using the real Multi API
@@ -389,21 +556,21 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
         handle->d_chunk = chunk;
 
         CURLcode res = curl_easy_setopt(handle->d_handle, CURLOPT_URL, chunk->get_data_url().c_str());
-        if (res != CURLE_OK) throw BESInternalError(string(curl_easy_strerror(res)), __FILE__, __LINE__);
+        if (res != CURLE_OK) throw BESInternalError(string("HTTP Error setting URL: ").append(curl_error_msg(res, handle->d_errbuf)), __FILE__, __LINE__);
 
         // get the offset to offset + size bytes
         if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_RANGE, chunk->get_curl_range_arg_string().c_str())))
-            throw BESInternalError(string("HTTP Error setting Range: ").append(curl_easy_strerror(res)), __FILE__,
+            throw BESInternalError(string("HTTP Error setting Range: ").append(curl_error_msg(res, handle->d_errbuf)), __FILE__,
             __LINE__);
 
         // Pass this to write_data as the fourth argument
         if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_WRITEDATA, reinterpret_cast<void*>(chunk))))
-            throw BESInternalError(string("CURL Error setting chunk as data buffer: ").append(curl_easy_strerror(res)),
+            throw BESInternalError(string("CURL Error setting chunk as data buffer: ").append(curl_error_msg(res, handle->d_errbuf)),
             __FILE__, __LINE__);
 
         // store the easy_handle so that we can call release_handle in multi_handle::read_data()
         if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_PRIVATE, reinterpret_cast<void*>(handle))))
-            throw BESInternalError(string("CURL Error setting easy_handle as private data: ").append(curl_easy_strerror(res)), __FILE__,
+            throw BESInternalError(string("CURL Error setting easy_handle as private data: ").append(curl_error_msg(res, handle->d_errbuf)), __FILE__,
             __LINE__);
     }
 
