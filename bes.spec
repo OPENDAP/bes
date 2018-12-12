@@ -10,7 +10,7 @@
 %define hyraxsharedir %{_datadir}/hyrax
 
 Name:           bes
-Version:        3.20.1
+Version:        3.20.2
 Release:        1%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
@@ -21,7 +21,7 @@ Source0:        http://www.opendap.org/pub/source/bes-%{version}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:       libdap >= 3.20.0
+Requires:       libdap >= 3.20.2
 Requires:       readline bzip2 zlib
 Requires:	netcdf >= 4.1
 Requires:	libicu >= 3.6
@@ -29,13 +29,10 @@ Requires:	hdf5 => 1.8
 Requires:	hdf >= 4.2
 Requires:       libxml2 >= 2.7.0
 Requires:       openssl
-# gdal >= 1.10
-# gridfields >= ?
-# fits >= ?
 
 Requires(pre): shadow-utils
 
-BuildRequires:  libdap-devel >= 3.20.0
+BuildRequires:  libdap-devel >= 3.20.2
 BuildRequires:  readline-devel
 BuildRequires:  bzip2-devel zlib-devel
 BuildRequires:  libxml2-devel >= 2.7.0
@@ -45,9 +42,6 @@ BuildRequires:	hdf5-devel => 1.8
 BuildRequires:	hdf-devel >= 4.2
 BuildRequires:  openssl-devel
 BuildRequires:  pkgconfig
-# gdal-devel >= 1.10
-# gridfields-devel >= ?
-# fits-devel >= ?
 
 %description
 BES is a high-performance back-end server software framework for 
@@ -64,7 +58,7 @@ hooks, and more.
 Summary:        Development files for %{name}
 Group:          Development/Libraries
 Requires:       %{name} = %{version}-%{release}
-Requires:       libdap-devel >= 3.20.0
+Requires:       libdap-devel >= 3.20.2
 # for the /usr/share/aclocal directory ownership
 Requires:       automake
 Requires:       openssl-devel, bzip2-devel, zlib-devel

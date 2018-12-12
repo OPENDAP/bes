@@ -1,3 +1,740 @@
+2018-12-06  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #205 from OPENDAP/HK-247
+	Hk 247
+
+2018-12-05  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #207 from OPENDAP/HK-40
+	HK 40
+
+	Merge branch 'master' into HK-40
+
+	Merge branch 'master' into HK-247
+
+2018-12-04  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #208 from OPENDAP/dmrpp_dist_fix
+	Modified the Makefile so that the DMR++ handler is not built be the d…
+
+	Modified the Makefile so that the DMR++ handler is not built be the dist target.
+
+2018-12-04  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Took out the -j7 in the rules file.
+
+	Added -j7 back to the rules file and kept it in the Makefile.
+
+	Moved where the -j7 was in the command.
+
+	Trying the -j7 in the bes Makefile.am.
+
+	moved the -j7 to be next to $(MAKE)
+
+	Added "-j7" onto the install and check in the rules file.
+
+2018-12-03  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Added the tests back
+
+	Took out the tests to see if debian will still build on travis.
+
+2018-11-30  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Updated the version number to use for libdap package.
+
+2018-11-29  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HK-40. Minor changes.
+
+	Merge branch 'master' into HK-40
+
+	HK-40. Added remove dimension option in RemoveElement.cc.
+
+2018-11-29  James Gallagher  <jgallagher@opendap.org>
+
+	Updated comments for the new version of the site map command
+	[skip ci]
+
+2018-11-29  Nathan Potter  <ndp@opendap.org>
+
+	Dropped the throwing of the exceptions in
+	CmrCatalog::get_site_map() and in HttpdCatalog::get_site_map()
+	and now they both write to the BESDebug log and add nothing to
+	the site map.
+
+2018-11-28  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #204 from OPENDAP/server-admin
+	ServerAdministrator class
+
+2018-11-28  James Gallagher  <jgallagher@opendap.org>
+
+	updated gitignore
+
+	Added tests for site map and a non-default catalog
+
+	Updates - site map works for multiple catalogs
+
+2018-11-27  James Gallagher  <jgallagher@opendap.org>
+
+	Forgot to add the new SiteMap code...
+
+	Fixed tests for the new site map command version
+	The old site map command is no more...
+
+	New version of the site map command
+	THis version returns the site map as a TextInfo response. It is a list
+	of pathnames, one per line.
+
+2018-11-26  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HK-247. Minor corrections.
+
+2018-11-24  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HK-247. Added validations.
+
+2018-11-21  Nathan Potter  <ndp@opendap.org>
+
+	Adding bears.nc DAS test. Really. This time.
+
+	Added tests for bears.nc to netcdf_handler because the
+	bears.nc contains variables without attributes
+
+2018-11-21  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HK-247. Correction of parse error.
+
+	HK-247. Added DimensionElement::processRenameDimension and tests.
+
+2018-11-21  Nathan Potter  <ndp@opendap.org>
+
+	Add ing default system administrator to default configuration
+
+	Moved bes.conf reference from TEST_SRC_DIR to TEST_BUILD_DIR in ServerAdministratorTest
+
+2018-11-20  Nathan Potter  <ndp@opendap.org>
+
+	ServerAdministrator working. and wired in
+
+	reformating because it was a mess
+
+2018-11-19  James Gallagher  <jgallagher@opendap.org>
+
+	Updates for Hyrax 1.15.1 release
+
+2018-11-13  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #203 from OPENDAP/HK-258_roi
+	HK-258 roi
+
+2018-11-09  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into HK-258_roi
+
+	Merge branch 'master' of https://github.com/opendap/bes
+	[skip ci]
+
+	Don't run the dapreader MDS tests in parallel.
+	[skip ci]
+
+2018-11-09  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Merge branch 'master' into HK-258_roi
+
+	HK-258. Added tests for comb and roi functions.
+
+2018-11-08  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #202 from OPENDAP/HK246_bbox_comb
+	Hk246 bbox comb
+
+	Merge mds_rpm_fix to master; remove mds_rpm_fix branch build from travis
+
+	Do not run the xmlcommand tests in parallel.
+
+2018-11-08  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HK-258. Corrected RoiFunction.
+
+2018-11-07  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into mds_rpm_fix
+
+	Removed bes cmdln tests for now - add ticket to check baselines
+
+	Updates that should result in a cleaner RPM package
+	The MDS is now off by default and the ${datadir}/mds is now
+	owned by bes and in the bes group. .travis.yml has been modified
+	so rpms should buld from this branch.
+
+2018-11-04  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Merge branch 'master' into HK-258_roi
+
+2018-11-02  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed LIBDAP_RPM_VERSION use
+
+	Fixed errors in both travis.yml and build-rpm.sh WRT OS and DIST env vars
+
+	Merge cd-rpm-build to master
+
+	Error in the upload script.
+
+	Merge branch 'cd-rpm-build' of https://github.com/opendap/bes into cd-rpm-build
+
+2018-11-02  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HK-258. Corrected function_dap2_roi.
+
+2018-11-02  James Gallagher  <jgallagher@opendap.org>
+
+	Fix for the test uploader script.
+
+2018-11-02  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HK-258. Added test /bes/functions/tests/bescmd/OMI-Aura_L2_roi.bescmd.
+
+	Merge branch 'master' into HK-258_roi
+
+2018-11-01  James Gallagher  <jgallagher@opendap.org>
+
+	Close to the real build.
+
+	For testing, build the cd=rpm-build branch
+	...also remove unneeded configure for the deb build
+
+	Fix for issue with perl on C7 and added main build back in for testing
+
+	cannot checkout using a local repo on Travis
+
+	For testing, I removed most of the build parts - run only the RPM builds
+
+	Possible RPM build - test on this branch
+
+2018-10-31  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Merge branch 'HK246_bbox_comb' into HK-258_roi
+
+	Merge branch 'master' into HK-258_roi
+
+2018-10-31  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into cd-rpm-build
+
+2018-10-31  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HK-246. Corrections.
+
+	HK-246. Corrections.
+
+	HK-246. Removed unused.
+
+	HK-246. Changed switch for args.
+
+	HK-246. Added unit test three_arg_test.
+
+	HK-246. Corrected function_dap2_bbox_comb.
+
+2018-10-31  James Gallagher  <jgallagher@opendap.org>
+
+	Added package.m4 to the list of EXTRA_DIST items for the netcdf handler
+	It's still not in git, but this makes it part of the tar ball and, thus,
+	available for distcheck.
+
+	Merge branch 'master' into cd-rpm-build
+
+	Updated the commit hashes for the hdf4 and hdf5 handlers
+
+2018-10-31  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Merge branch 'master' into HK246_bbox_comb
+
+2018-10-31  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into cd-rpm-build
+
+	Made package.m4 in netcdf_handler/tests a dep of the testsuite
+
+2018-10-30  James Gallagher  <jgallagher@opendap.org>
+
+	modified travis to upload bes deb package
+
+	Merge branch 'master' of https://github.com/opendap/bes [skip ci]
+
+	Removed generated modules/netcdf_handler/tests/package.m4
+
+2018-10-30  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #201 from OPENDAP/http-catalog-module
+	Http catalog module
+
+	Disabling httpd_catalog_module by default
+
+2018-10-29  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HK-246. Corrected tests.
+
+2018-10-27  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HK-246. Added OMI-Aura_L2_comb_roi.bescmd in tests/bescmd.
+
+	HK-246. Corrected name BBoxCombFunctionTest in unit-tests/Makefile.am.
+
+2018-10-26  Nathan Potter  <ndp@opendap.org>
+
+	Comments.Copyright. Woot.
+
+2018-10-26  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HK-246. Added BBoxCombFunctionTest to unit-tests/Makefile.am.
+
+	HK-246. Added BBoxCombFunction to Makefile.am.
+
+	HK-246. BBoxCombFunction has been registered.
+
+2018-10-25  Nathan Potter  <ndp@opendap.org>
+
+	Comments and formatting
+
+	ensuring loop exits
+
+	Fixed bad loop
+
+	cleaning configure.ac
+
+	cleaning configure.ac
+
+2018-10-25  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HK-246. Added BBoxCombFunction.
+
+2018-10-25  Nathan Potter  <ndp@opendap.org>
+
+	More test changes
+
+	repaired tests. still wrk todo on httpd_catalog dates
+
+	Generalized the data scrubber to work with all timezzones
+
+2018-10-24  Nathan Potter  <ndp@opendap.org>
+
+	Added tests to SUBDIRS
+
+	Production rules repair
+
+	Adding bes testsuite
+
+	Building bes tests
+
+	Merge branch 'master' into http-catalog-module
+
+	submodule update
+
+	Minor build change
+
+	Fixed tests. Added a pathc to RemoteHttpResource that massgaes file:// urls so that they do not end in slash.
+
+	Fixed copy/pasta error
+
+2018-10-23  Nathan Potter  <ndp@opendap.org>
+
+	Fixed ordering in getNode() results.
+
+	Switching to default catalog typematch
+
+	Added first pass at typematch.
+
+	Added first pass at typematch.
+
+	merged master to http-catalog-module
+
+
+	Fixed naming issue for nodes. SCraping date and size info.
+
+	Dropping commented out code
+
+2018-10-22  Nathan Potter  <ndp@opendap.org>
+
+	Got the HttpdCatalogContainer::access() method working. We can get stuff. woot.
+
+	Path handling changes that preserve trailg slashes.
+
+	Adding classes for BES integration
+
+	Catalog working. woot.
+
+2018-10-21  Nathan Potter  <ndp@opendap.org>
+
+	Wired up httpd_catalog. Some stuff works.
+
+2018-10-19  Nathan Potter  <ndp@opendap.org>
+
+	Added unit-tests to Makefile.am
+
+	HttpdDirScraper test, now with file:// urls
+
+	woot. Lookes like HttpdDirScraper is work and tests are running.
+
+	Simple testsuite for RemoteHttpResource completed and working.
+
+	More test incrments
+
+2018-10-18  Nathan Potter  <ndp@opendap.org>
+
+	Added file:// test to RemoteHttpResourceTest
+
+2018-10-18  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #200 from OPENDAP/agg-step-removal
+	Agg step removal
+
+2018-10-18  Nathan Potter  <ndp@opendap.org>
+
+	Adding RemoteHttpResourceTest. The work on HttpdDirScraperTest
+	is being pushed back because the RemoteHttpResource seems to
+	have problems with fil:// urls.
+
+2018-10-17  James Gallagher  <jgallagher@opendap.org>
+
+	Removed BESAgg*.h header includes.
+
+	Removed unused aggregation server files.
+
+	Removed the old aggregation server code from the Makefiles
+	It is no longer included in the command processing code.
+
+2018-10-17  Nathan Potter  <ndp@opendap.org>
+
+	More work on tests
+
+	New unit test. Fixed issue in in HttpdCatalog.cc
+
+	fixing
+
+	small ineffectual attempt to fix compile, but at least now the
+	variable names don't appear to collide (they dodn't because of
+	scope but still...)
+
+	Additonal files
+
+	First pass for httpd catalog.
+
+2018-10-15  James Gallagher  <jgallagher@opendap.org>
+
+	Added a template http_catalog module.
+
+2018-10-10  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #199 from OPENDAP/centos6-fixes
+	Modifications needed for a Centos 6 RPM build
+
+	Modifications needed for a Centos 6 RPM build
+
+	Merge pull request #198 from OPENDAP/dmrpp-fix
+	Dmrpp fix
+
+2018-10-10  Cloud User  <centos@ip-172-31-11-224.ec2.internal>
+
+	join_threads compilation fix for CentOS7
+
+2018-10-09  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'dmrpp-fix' of https://github.com/opendap/bes into dmrpp-fix
+	# Conflicts:
+	#	modules/dmrpp_module/CurlHandlePool.cc
+
+	Moved join_threads to DmrppCommon.
+
+2018-10-09  Cloud User  <centos@ip-172-31-11-224.ec2.internal>
+
+	Set CURL_VERBOSE to 0
+
+2018-10-08  James Gallagher  <jgallagher@opendap.org>
+
+	Added re-tries for 500 errors - this might need to be specialized for AWS only
+
+2018-10-06  James Gallagher  <jgallagher@opendap.org>
+
+	For the unconstrained reads, HTTP 500 errors will be retried.
+	This matches Amazon's S3 docs. HTTP 500 errors result in re-tries up to
+	10 times, starting with a 1ms delay up to 1s delay.
+
+2018-10-05  James Gallagher  <jgallagher@opendap.org>
+
+	When one thread throws an exception, join with the remaining ones.
+	This will hopefully prevent resource leaks.
+
+	Fixed use of ostringstream with an initial value.
+	If an ostringstream is used with an initial value, the stream state
+	std::ios::ate must also be used if new information using << is to be
+	appended.
+
+2018-10-04  Cloud User  <centos@ip-172-31-11-224.ec2.internal>
+
+	Fixed the code in DmrppArray that builds errors strings in the threads
+	Adding #include <sstream> in BESError.h broke the FreeForm handler. really.
+
+	added a comment to BESError.h
+
+	Minor error in BESError.h - cannot init a stringstream with an int.
+
+2018-10-04  James Gallagher  <jgallagher@opendap.org>
+
+	Added better error reporting to the DMR++ pthreads code
+	Now, when a thread signals an error, file and line info is included.
+	This remedies the situation where all the errors appear to come from
+	the place in the code that reads the thread status info.
+
+	Fixed an error in my pipe-closing code - it was trapping errors
+	The curl verbose mode no longer depends on BES verbose logging, which
+	makes for more compact logs. Also, trimmed extra newlines from the
+	curl debug info.
+
+	Close pipe file descriptors in DmrppArray::read_chunks_unconstrained()
+	This may fix a resource leak we see in tests.
+
+	Changed logging of errors
+	Added BES.ExitOnInternalError option, If true, the BES will
+	exit on an InternalError (default is the current behavior,
+	which is to not exit).
+	Added BES.DoNotLogSourceFilenames which defaults to false.
+	Now BESError's will be logged with the filename and line number
+	by default (new behavior).
+	Also 'improved' instrumentation in BESFileLockingCache making it
+	a bit easier to see what's going on. Still needs work.
+
+2018-10-04  Cloud User  <centos@ip-172-31-11-224.ec2.internal>
+
+	improved error reporting for both curl and in the BES log
+	Errors in the BES log now have line numbers in verbose mode.
+	Curl now prints 'info' via its verbose mode when the BES log
+	is set to verbose and --enable-developer is used for the build.
+
+2018-10-03  James Gallagher  <jgallagher@opendap.org>
+
+	Changed BESFileLocking cache so it's easier to track locking of files
+	Part of debugging the DMR++ code. It looks like there is an error
+	that is leaving files with shared read locks.
+
+2018-10-03  Cloud User  <centos@ip-172-31-11-224.ec2.internal>
+
+	Merge branch 'master' into dmrpp-fix
+
+	checkpoint - better reporting
+
+2018-10-03  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Merge pull request #195 from OPENDAP/debian
+	Debian
+
+2018-10-03  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Took out echo $prefix
+
+2018-10-03  Ubuntu  <ubuntu@ip-172-31-18-214.ec2.internal>
+
+	Added an override to the debian rules to set DESTDIR during
+	the make check. Set the Makefile in cmdln/tests back to what
+	it used to be.
+
+2018-10-02  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #197 from OPENDAP/better-curl-errs
+	Changed how errors are processed. Now uses the Curl Error buffer.
+
+	Changed how errors are processed. Now uses the Curl Error buffer.
+	This is supposed to produce more verbose error messages.
+
+2018-10-02  Ubuntu  <ubuntu@ip-172-31-18-214.ec2.internal>
+
+	Added an override to the rules to ignore missing info
+
+	Checked which directory is supposed to be used...so many commits
+
+	Merge branch 'debian' of https://github.com/opendap/bes into debian
+
+	Wrong directory
+
+2018-10-02  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Added echo $prefix
+
+2018-10-02  Ubuntu  <ubuntu@ip-172-31-18-214.ec2.internal>
+
+	Hardcoding the location to see if Travis will build.
+
+2018-10-02  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #196 from OPENDAP/dmrpp-throw-fix
+	Fixed an issue in the dmrpp_easy_handle() where string was thrown
+
+2018-10-02  Ubuntu  <ubuntu@ip-172-31-18-214.ec2.internal>
+
+	Trying again with $prefix instead of $datadir
+
+2018-10-02  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Adding build stages to Travis
+
+2018-10-01  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Added echo prefix to make sure prefix is set if there is an error
+
+2018-10-01  Ubuntu  <ubuntu@ip-172-31-18-214.ec2.internal>
+
+	Going to try and use $prefix instead of $datadir to get the appropriate directory to make mds in
+
+2018-10-01  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Took out the .. left after the tar
+
+2018-10-01  Ubuntu  <ubuntu@ip-172-31-18-214.ec2.internal>
+
+	Merge branch 'debian' of https://github.com/opendap/bes into debian
+
+	Switched back the tar command in the make deb
+
+2018-10-01  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Took out the "echo $PATH" and "ls $prefix" from the makefile
+
+2018-10-01  Ubuntu  <ubuntu@ip-172-31-18-214.ec2.internal>
+
+	Added options in the debuild command of the makefile to preserve the prefix variable and set the PATH
+
+2018-09-28  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Trying again.
+
+	Still trying to get format right
+
+	I think it's supposed to be $(prefix) but can't get it to work
+
+	Trying another format for prefix
+
+	Trying to figure out how to call $prefix still
+
+	Format for how $prefix was called was wrong.
+
+	Changed the ./configure in debian/rules
+
+	Had the wrong version when trying to dpkg the libdap deb file, fixed it
+
+	Used the wrong link to get libdap, fixed it.
+
+	Try to download and install the libdap debian before making the bes debian
+
+2018-09-27  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed an issue in the dmrpp_easy_handle() where string was thrown
+	THe code should have thrown BESInternalError.
+
+2018-09-27  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Added two more packages...should've looked closer at what needed to be included
+
+	Added devscripts package
+
+	Spelled "lintian" wrong...
+
+	Added the debhelper and lintan packages
+
+	Merge branch 'debian' of https://github.com/opendap/bes into debian
+
+	The travis yaml fil was not being parsed, tried to fix
+
+2018-09-27  Ubuntu  <ubuntu@ip-172-31-18-214.ec2.internal>
+
+	Merge branch 'debian' of https://github.com/opendap/bes into debian
+
+	Removed a directory in the bes.dirs file. Also changed my email in the control file
+
+2018-09-27  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Added the debian package build to Travis
+
+2018-09-27  Ubuntu  <ubuntu@ip-172-31-18-214.ec2.internal>
+
+	Edits to get the debian packaging to build on ubuntu.
+
+2018-09-26  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'centos7-rpm-fix'
+
+	Updates to the bes.spec.c6.all_static and README.md for bes 3.20
+
+2018-09-26  Nathan Potter  <ndp@opendap.org>
+
+	sync
+
+2018-09-25  Nathan Potter  <ndp@opendap.org>
+
+	sync
+
+2018-09-25  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed syntax error
+
+	Added bes.spec.c6.all_static
+
+2018-09-25  Nathan Potter  <ndp@opendap.org>
+
+	Added HTTP status checking to test harness
+
+	Added HTTP status checking to test harness
+
+2018-09-24  Nathan Potter  <ndp@opendap.org>
+
+	test changes [skip ci]
+
+2018-09-24  Ubuntu  <ubuntu@ip-172-31-18-214.ec2.internal>
+
+	Merge branch 'master' into debian
+	Conflicts:
+		dispatch/unit-tests/Makefile.am
+
+2018-09-21  James Gallagher  <jgallagher@opendap.org>
+
+	Bumped up the handler/module versions
+	Also added an awk script to help count variable for DMR++ testing
+	[skip ci]
+
+2018-09-20  James Gallagher  <jgallagehr@opendap.org>
+
+	Merge branch 'master' into centos5-rpm-fix
+
+2018-09-20  James Gallagher  <jgallagher@opendap.org>
+
+	Updated the version numbers baked into the handlers and used for the bes version response
+
+	bes.spec.all_static comments edited
+
+2018-09-19  James Gallagher  <jgallagehr@opendap.org>
+
+	Lots of changes; I'm not sure I understand why these were needed
+	...maybe rpmbuild changed.
+
+2018-09-19  James Gallagher  <jgallagher@opendap.org>
+
+	Updated library codes for bes, ppt and xmlcommand [skip ci]
+
+	Updated NEWS and README.md [skip ci]
+
+	Merge pull request #193 from OPENDAP/distcheck-fix
+	Fixes for distcheck
+
+2018-09-18  James Gallagher  <jgallagher@opendap.org>
+
+	Updated version number to get make dist to work
+
+	Fixes for distcheck
+
+	Version updates in configure and spec files [skip ci]
+
+	ChangeLog, README.md for version 3.20 [skip ci]
 2018-09-18  James Gallagher  <jgallagher@opendap.org>
 
 	Merge pull request #190 from OPENDAP/hyrax-1.15

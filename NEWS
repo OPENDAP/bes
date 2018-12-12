@@ -1,3 +1,15 @@
+News for version 3.20.2
+
+HK-40 and HK-247 fixed - Renaming dimensions using NCML now works correctly
+for aggregations.
+
+Added automatic generation of site maps, including 'virtual' catalogs.
+
+HK-258 fixed/completed - Now the roi() function will work for variables with
+more than two dimensions. If the roi() function's bounding box has a different
+number of dimensions than a variable, it adapts, applying the b-box to the
+dimensions that correspond and not constraining the ones that don't.
+
 News for version 3.20.1
 
 Added server side function 'bbox_comb' that provides a way to combine to
