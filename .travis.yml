@@ -74,6 +74,9 @@ install:
 before_script:
 - printenv
 - autoreconf --force --install --verbose
+- PATH=~/home/travis/install/deps/share/bison
+- echo $PATH
+- ls /usr/bin
 
 jobs:
   stages:
