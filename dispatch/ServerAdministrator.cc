@@ -132,7 +132,7 @@ ServerAdministrator::ServerAdministrator(){
     d_email = get(EMAIL_KEY);
     d_website = get(WEBSITE_KEY);
 
-    // %TODO THis is a pretty simple (and brutal) qc in that any missing valiue prompts all of it to be rejected. Review. Fix?
+    // %TODO This is a pretty simple (and brutal) qc in that any missing value prompts all of it to be rejected. Review. Fix?
     if(d_organization.empty() || d_street.empty() || d_city.empty()
         || d_region.empty() || d_postal_code.empty() || d_country.empty()
         || d_telephone.empty() || d_email.empty() || d_website.empty() ){
