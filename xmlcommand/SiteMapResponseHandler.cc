@@ -40,11 +40,6 @@
 #include "SiteMapResponseHandler.h"
 
 
-#if 0
-#include "BESInfo.h"
-#include "BESInfoList.h"
-#endif
-
 #include "BESTextInfo.h"
 #include "BESDataNames.h"
 #include "BESNames.h"
@@ -95,21 +90,26 @@ void SiteMapResponseHandler::execute(BESDataHandlerInterface &dhi)
         dhi.data[PREFIX].erase(dhi.data[PREFIX].end()-1);
 
     ostringstream oss;
+    const BESCatalogList *catalog_list = BESCatalogList::TheCatalogList();    // convenience variable
 
     info->begin_response(SITE_MAP_RESPONSE_STR, dhi);
 
-    // If not catalog is named, return the concatenation of the site maps for
-    // all of the catalogs.
+    // If no catalog is named, return the concatenation of the site maps for
+    // all of the catalogs. This mimics the way shwoNode returns information
+    // for the path '/'.
     if (dhi.data[CATALOG].empty()) {
-        BESCatalogList::catalog_citer i = BESCatalogList::TheCatalogList()->first_catalog();
-        BESCatalogList::catalog_citer e = BESCatalogList::TheCatalogList()->end_catalog();
+        BESCatalogList::catalog_citer i = catalog_list->first_catalog();
+        BESCatalogList::catalog_citer e = catalog_list->end_catalog();
         for (; i != e; ++i) {
             BESCatalog *catalog = i->second;
             if (!catalog)
                 throw BESInternalError(string("Build site map found a null catalog in the catalog list."), __FILE__, __LINE__);
 
-            // FIXME don't add 'default;' i->first is the name of the catalog
-            string prefix = (i->first == BESCatalogList::TheCatalogList()->default_catalog_name()) ? dhi.data[PREFIX]: dhi.data[PREFIX] + "/" + i->first;
+            // Don't add 'default' to the prefix value here. For other catalogs, do add their
+            // names to the prefix (i->first is the name of the catalog). This matches the
+            // behavior of showNode, where the non-default catalogs 'appear' in the default
+            // catalog's top level as 'phantom' directories.
+            string prefix = (i->first == catalog_list->default_catalog_name()) ? dhi.data[PREFIX]: dhi.data[PREFIX] + "/" + i->first;
             catalog->get_site_map(prefix, dhi.data[NODE_SUFFIX], dhi.data[LEAF_SUFFIX], oss, "/");
 
             info->add_data(oss.str());
@@ -121,11 +121,11 @@ void SiteMapResponseHandler::execute(BESDataHandlerInterface &dhi)
         }
     }
     else {
-        BESCatalog *catalog = BESCatalogList::TheCatalogList()->find_catalog(dhi.data[CATALOG]);
+        BESCatalog *catalog = catalog_list->find_catalog(dhi.data[CATALOG]);
         if (!catalog)
             throw BESInternalError(string("Build site map could not find the catalog: ") + dhi.data[CATALOG], __FILE__, __LINE__);
 
-        string prefix = (dhi.data[CATALOG] == BESCatalogList::TheCatalogList()->default_catalog_name()) ? dhi.data[PREFIX]: dhi.data[PREFIX] + "/" + dhi.data[CATALOG];
+        string prefix = (dhi.data[CATALOG] == catalog_list->default_catalog_name()) ? dhi.data[PREFIX]: dhi.data[PREFIX] + "/" + dhi.data[CATALOG];
         catalog->get_site_map(prefix, dhi.data[NODE_SUFFIX], dhi.data[LEAF_SUFFIX], oss, "/");
 
         info->add_data(oss.str());

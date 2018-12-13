@@ -1,0 +1,7 @@
+Dataset {
+    Int16 u[16][lat = 17][lon = 21];
+    Int16 v[16][lat = 17][21];
+    Float32 lat[lat = 17];
+    Float32 lon[lon = 21];
+    Float32 time[time = 16];
+} fnoc1_remove_dim.ncml;

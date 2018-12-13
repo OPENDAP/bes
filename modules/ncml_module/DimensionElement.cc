@@ -32,6 +32,7 @@
 #include "NCMLUtil.h"
 #include "NetcdfElement.h"
 #include <sstream>
+#include <Array.h>
 
 using std::string;
 using std::stringstream;
@@ -82,24 +83,19 @@ void DimensionElement::setAttributes(const XMLAttributeMap& attrs)
     _length = attrs.getValueForLocalNameOrDefault("length");
     _orgName = attrs.getValueForLocalNameOrDefault("orgName");
     _isUnlimited = attrs.getValueForLocalNameOrDefault("isUnlimited");
-    ;
     _isShared = attrs.getValueForLocalNameOrDefault("isShared");
-    ;
     _isVariableLength = attrs.getValueForLocalNameOrDefault("isVariableLength");
 
     // First check that we didn't get any typos...
     validateAttributes(attrs, _sValidAttributes);
 
     // Parse the size etc
-    parseAndCacheDimension();
-
-    // Final validation for things we implemented
-    validateOrThrow();
+    parseValidateAndCacheDimension();
 }
 
 void DimensionElement::handleBegin()
 {
-    BESDEBUG("ncml", "DimensionElement::handleBegin called...");
+    BESDEBUG("ncml", "DimensionElement::handleBegin called..." << endl);
 
     // Make sure we're placed at a valid parse location.
     // Direct child of <netcdf> only now since we dont handle <group>
@@ -118,12 +114,43 @@ void DimensionElement::handleBegin()
     const DimensionElement* pExistingDim = dataset->getDimensionInLocalScope(name());
     if (pExistingDim) {
         THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
-            "Tried at add dimension " + toString() + " but a dimension with name=" + name()
+            "Tried to add dimension at " + toString() + " but a dimension with name=" + name()
                 + " already exists in this scope=" + _parser->getScopeString());
     }
 
     // The dataset will maintain a strong reference to us while we're needed.
     dataset->addDimension(this);
+    if(!_orgName.empty()){
+        processRenameDimension(*_parser);
+    }
+}
+
+void DimensionElement::processRenameDimension(NCMLParser& p)
+{
+    BESDEBUG("ncml",
+        "DimensionElement::processRenameDimension() called on " + toString() << " at scope=" << p.getTypedScopeString() << endl);
+
+    BESDEBUG("ncml", "Renaming dimension " << _orgName << " to " << name() << endl);
+   // Loop over variables
+    DDS* cDDS = p.getDDSForCurrentDataset();
+    DDS::Vars_iter varit;
+    for (varit = cDDS->var_begin(); varit != cDDS->var_end(); varit++) {
+        Array* varArray = 0;
+        if ((*varit)->type() == dods_array_c)
+                    varArray = dynamic_cast<Array *>(*varit);
+        Array::Dim_iter ait;
+        // Loop over dimensions
+        for (ait = varArray->dim_begin(); ait != varArray->dim_end(); ++ait) {
+            if((*ait).name == name()){
+                THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
+                            "Renaming dimension failed for element=" + toString() + " since a dimension with name=" + (*ait).name
+                                + " already exists at current parser scope=" + p.getScopeString());
+            }
+            if((*ait).name == _orgName){
+                varArray->rename_dim(_orgName, name());
+            }
+        }
+    }
 }
 
 void DimensionElement::handleContent(const string& content)
@@ -176,7 +203,7 @@ unsigned int DimensionElement::getSize() const
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////// PRIVATE IMPL
-
+#if 0
 void DimensionElement::parseAndCacheDimension()
 {
     stringstream sis;
@@ -205,12 +232,66 @@ void DimensionElement::parseAndCacheDimension()
 void DimensionElement::validateOrThrow()
 {
     // Perhaps we want to warn in BESDEBUG rather than error, but I'd rather be explicit for now.
-    if (!_isShared.empty() || !_isUnlimited.empty() || !_isVariableLength.empty() || !_orgName.empty()) {
+    if (!_isShared.empty() || !_isUnlimited.empty() || !_isVariableLength.empty()  || !_orgName.empty()) {
         THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
             "Dimension element " + toString() + " has unexpected unimplemented attributes. "
-                "This version of the module only handles name and length.");
+                "This version of the module only handles name, orgName and length.");
+    }else if(!_length.empty() && !_orgName.empty()){
+        THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
+                    "Dimension element " + toString() + " has unexpected attributes orgName or length.");
     }
 }
+#endif
+
+void DimensionElement::parseValidateAndCacheDimension()
+{
+    // There is no name
+    if (_dim.name.empty()) {
+        THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
+             "Dimension element " + toString() + "Can't have an empty name.");
+    }
+    // Perhaps we want to warn in BESDEBUG rather than error, but I'd rather be explicit for now.
+    else if (!_isShared.empty() || !_isUnlimited.empty() || !_isVariableLength.empty()) {
+        THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
+            "Dimension element " + toString() + " has unexpected unimplemented attributes. "
+                "This version of the module only handles name, orgName and length.");
+    }
+    // There is only name
+    else if (_length.empty() && _orgName.empty()) {
+        THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
+             "Dimension element " + toString() + " has no expected length value for new dimension or orgName value for renaming.");
+    }
+    // There are length and orgName together
+    else if(!_length.empty() && !_orgName.empty()){
+        THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
+              "Dimension element " + toString() + " should not has attributes orgName and length together.");
+    }
+
+    stringstream sis;
+    if(!_length.empty()){
+        sis.str(_length);
+        sis >> _dim.size;
+        if (sis.fail()) {
+            THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
+                "Element " + toString() + " failed to parse the length attribute into a proper unsigned int!");
+        }
+    }
+
+    // @TODO set the _dim.isSizeConstant from the isVariableLength, etc once we know how to use them for aggs
+    _dim.isSizeConstant = true;
+
+    if (_isShared == "true") {
+        _dim.isShared = true;
+    }
+    else if (_isShared == "false") {
+        _dim.isShared = false;
+    }
+    else if (!_isShared.empty()) {
+        THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(), "dimension@isShared did not have value in {true,false}.");
+    }
+
+}
+
 
 vector<string> DimensionElement::getValidAttributes()
 {
