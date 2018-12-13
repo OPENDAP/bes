@@ -74,7 +74,7 @@ install:
 before_script:
 - printenv
 - autoreconf --force --install --verbose
-- PATH=~/home/travis/install/deps/share/bison
+- PATH=~$HOME/install/deps/share/bison:$PATH
 - echo $PATH
 - ls /usr/bin
 
