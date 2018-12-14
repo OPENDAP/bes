@@ -119,7 +119,7 @@ void BESStreamResponseHandler::execute(BESDataHandlerInterface &dhi)
     os.open(filename.c_str(), ios::in);
     int myerrno = errno;
     if (!os) {
-        string serr = (string) "Unable to stream file: " + "cannot open file " + filename + ": ";
+        string serr = (string) "Unable to stream file because it cannot be opened. file: '" + filename + "'  msg: ";
         char *err = strerror(myerrno);
         if (err)
             serr += err;
