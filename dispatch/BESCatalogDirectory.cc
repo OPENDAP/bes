@@ -412,7 +412,14 @@ BESCatalogDirectory::get_node(const string &path) const
         BESDEBUG(MODULE, PROLOG <<  "The requested node '"+fullpath+"' is actually a leaf. Wut do?" << endl);
 
         CatalogItem *item = make_item(rootdir, path);
-        node->set_leaf(item);
+        if(item){
+            node->set_leaf(item);
+        }
+        else {
+            string msg(__func__);
+            msg += "() - Failed to build CatalogItem for "+ path + " BESCatlogDirectory::make_item() returned NULL.",
+            throw BESInternalError(msg,__FILE__, __LINE__);
+        }
 
         BESDEBUG(MODULE, PROLOG << "Actually, I'm a LEAF (" << (void*)item << ")" <<  endl);
         return node;
