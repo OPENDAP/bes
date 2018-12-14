@@ -434,7 +434,9 @@ BESCatalogDirectory::get_node(const string &path) const
 
             dip = opendir(fullpath.c_str());
             if(dip == NULL){
-                // That went well... Since we want to return "node", and at this point it is empty. Which is probably enough...
+                // That went well...
+                // We need to return this "node", and at this point it is empty.
+                // Which is probably enough, so we do nothing more.
                 BESDEBUG(MODULE, PROLOG << "Unable to open '" << fullpath << "' SKIPPING (errno: " << std::strerror(errno) << ")"<<  endl);
             }
             else {
