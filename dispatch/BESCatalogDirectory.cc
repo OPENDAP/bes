@@ -433,20 +433,26 @@ BESCatalogDirectory::get_node(const string &path) const
             node->set_lmt(get_time(full_path_stat_buf.st_mtime));
 
             dip = opendir(fullpath.c_str());
-            struct dirent *dit;
-            while ((dit = readdir(dip)) != NULL) {
-                CatalogItem * item = make_item(fullpath, dit->d_name);
-                if(item){
-                    if(item->get_type() == CatalogItem::node){
-                        node->add_node(item);
-                    }
-                    else {
-                        node->add_leaf(item);
+            if(dip == NULL){
+                // That went well... Since we want to return "node", and at this point it is empty. Which is probably enough...
+                BESDEBUG(MODULE, PROLOG << "Unable to open '" << fullpath << "' SKIPPING (errno: " << std::strerror(errno) << ")"<<  endl);
+            }
+            else {
+                // otherwise we grind through the node contents...
+                struct dirent *dit;
+                while ((dit = readdir(dip)) != NULL) {
+                    CatalogItem * item = make_item(fullpath, dit->d_name);
+                    if(item){
+                        if(item->get_type() == CatalogItem::node){
+                            node->add_node(item);
+                        }
+                        else {
+                            node->add_leaf(item);
+                        }
                     }
                 }
+                closedir(dip);
             }
-
-            closedir(dip);
 
             CatalogItem::CatalogItemAscending ordering;
             sort(node->nodes_begin(), node->nodes_end(), ordering);
