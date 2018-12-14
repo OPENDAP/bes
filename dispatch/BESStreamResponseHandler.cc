@@ -45,6 +45,7 @@ using std::string;
 
 #include "BESStreamResponseHandler.h"
 #include "BESRequestHandlerList.h"
+#include "BESForbiddenError.h"
 #include "BESNotFoundError.h"
 #include "BESInternalError.h"
 #include "BESDataNames.h"
@@ -125,7 +126,15 @@ void BESStreamResponseHandler::execute(BESDataHandlerInterface &dhi)
         else
             serr += "Unknown error";
 
-        throw BESNotFoundError(err, __FILE__, __LINE__);
+        // ENOENT means that the node wasn't found.
+        // On some systems a file that doesn't exist returns ENOTDIR because: w.f.t?
+        // Otherwise, access is being denied for some other reason
+        if (myerrno == ENOENT || myerrno == ENOTDIR) {
+            // On some systems a file that doesn't exist returns ENOTDIR because: w.f.t?
+            throw BESNotFoundError(serr, __FILE__, __LINE__);
+        }
+        // Not a 404? Then we'll go with the forbidden fruit theory...
+        throw BESForbiddenError(serr, __FILE__, __LINE__);
     }
 
     int nbytes;
