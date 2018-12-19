@@ -37,13 +37,32 @@
 #include "BESDataHandlerInterface.h"
 #include "BESTransmitter.h"
 
-#if 0
-#include "BESRequestHandler.h"
-#endif
+#include "TheBESKeys.h"
+
+// Experimental: Annotation service URL. Set this parameter to the URL
+// of an annotation service. If the value is not null, then a global
+// attribute will be added to the DAS/DMR response for every dataset
+// available using this server so that clients can access the annotation
+// service. The name of the attribute will be 'Annotation'.
+
+// BES.AnnotationServerURL = http://localhost:8083/Feedback/form
+
+const string annotation_service_url = "BES.AnnotationServiceURL";
+
+// Experimental: Include the current dataset URL in the Query Parameter
+// of the AnnotationServiceURL. This will make the value of the 'Annotation'
+// attribute have the form: http://localhost:8083/Feedback/form?url=<url>.
+// This has no effect if the BES.AnnotationServerURL parameter is null.
+
+const string include_dataset_in_annotation_url = "BES.IncludeDatasetInAnnotationURL";
 
 BESResponseHandler::BESResponseHandler(const string &name) :
     d_response_name(name), d_response_object(0)
 {
+#if 1
+    d_annotation_service_url = TheBESKeys::TheKeys()->read_string_key(annotation_service_url, "");
+    d_include_dataset_in_annotation_url = TheBESKeys::TheKeys()->read_bool_key(include_dataset_in_annotation_url, false);
+#endif
 }
 
 BESResponseHandler::~BESResponseHandler()

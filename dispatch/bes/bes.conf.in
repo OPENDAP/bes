@@ -84,6 +84,23 @@ BES.UncompressCache.size=500
 
 # BES.CancelTimeoutOnSend=true
 
+# Experimental: Annotation service URL. Set this parameter to the URL
+# of an annotation service. If the value is not null, then a global
+# attribute will be added to the DAS/DMR response for every dataset
+# available using this server so that clients can access the annotation
+# service. The name of the attribute will be 'Annotation'.
+
+BES.AnnotationServiceURL = 
+
+# BES.AnnotationServiceURL = http://localhost:8083/Feedback/form
+
+# Experimental: Include the current dataset URL in the Query Parameter
+# of the AnnotationServiceURL. This will make the value of the 'Annotation'
+# attribute have the form: http://localhost:8083/Feedback/form?url=<url>.
+# This has no effect if the BES.AnnotationServerURL parametger is null.
+
+BES.IncludeDatasetInAnnotationURL = true
+
 #########################################################################
 #                                                                       #
 # NOTE: It is unlikely that you will need to change anything below      #
