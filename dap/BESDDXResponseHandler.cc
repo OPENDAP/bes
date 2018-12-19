@@ -30,6 +30,8 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include <DDS.h>
 
 #include "GlobalMetadataStore.h"
@@ -65,8 +67,7 @@ BESDDXResponseHandler::~BESDDXResponseHandler()
  * @param ce The Constraint expression to test
  * @return True if there is a function call, false otherwise
  */
-static bool
-function_in_ce(const string &ce)
+static bool function_in_ce(const string &ce)
 {
     // 0x28 is '('
     return ce.find("(") != string::npos || ce.find("%28") != string::npos;   // hack
@@ -104,12 +105,12 @@ void BESDDXResponseHandler::execute(BESDataHandlerInterface &dhi)
 
 #if 0
 #if FORCE_DAP_VERSION_TO_3_2
-dds->set_dap_version("3.2");
+        dds->set_dap_version("3.2");
 #else
 // These values are read from the BESContextManager by the BESDapResponse ctor
-if (!bdds->get_dap_client_protocol().empty()) {
-    dds->set_dap_version(bdds->get_dap_client_protocol());
-}
+        if (!bdds->get_dap_client_protocol().empty()) {
+            dds->set_dap_version(bdds->get_dap_client_protocol());
+        }
 #endif
 #endif
 
@@ -125,17 +126,27 @@ if (!bdds->get_dap_client_protocol().empty()) {
         // handler to set the BaseTypeFactory. It is set to NULL here
         DDS *dds = new DDS(NULL, "virtual");
 
+#if ANNOTATION_SYSTEM
+            // Support for the experimental Dataset Annotation system. jhrg 12/19/18
+            if (!d_annotation_service_url.empty()) {
+                auto_ptr<AttrTable> dods_extra(new AttrTable);
+                dods_extra->append_attr(DODS_EXTRA_ANNOTATION_ATTR, "String", d_annotation_service_url);
+
+                dds->get_attr_table().append_container(dods_extra.release(), DODS_EXTRA_ATTR_TABLE);
+            }
+#endif
+
         BESDDSResponse *bdds = new BESDDSResponse(dds);
         d_response_name = DDS_RESPONSE;
         dhi.action = DDS_RESPONSE;
 
 #if 0
 #if FORCE_DAP_VERSION_TO_3_2
-dds->set_dap_version("3.2");
+        dds->set_dap_version("3.2");
 #else
-if (!bdds->get_dap_client_protocol().empty()) {
-    dds->set_dap_version(bdds->get_dap_client_protocol());
-}
+        if (!bdds->get_dap_client_protocol().empty()) {
+            dds->set_dap_version(bdds->get_dap_client_protocol());
+        }
 #endif
 #endif
 
@@ -149,8 +160,7 @@ if (!bdds->get_dap_client_protocol().empty()) {
 
         if (mds && !function_in_ce(dhi.container->get_constraint())) {
             // dhi.first_container();  // must reset container; execute_each() iterates over all of them
-            mds->add_responses(static_cast<BESDDSResponse*>(d_response_object)->get_dds(),
-                dhi.container->get_relative_name());
+            mds->add_responses(static_cast<BESDDSResponse*>(d_response_object)->get_dds(), dhi.container->get_relative_name());
         }
     }
 

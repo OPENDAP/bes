@@ -22,9 +22,14 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
+#include "config.h"
+
 #include <sstream>
+#include <memory>
 
 #include <DMR.h>
+#include <D4Group.h>
+#include <D4Attributes.h>
 
 #include "BESDMRResponseHandler.h"
 #include "BESDMRResponse.h"
@@ -33,6 +38,8 @@
 #include "BESDapTransmit.h"
 #include "BESContextManager.h"
 #include "GlobalMetadataStore.h"
+
+#include "BESLog.h"
 #include "BESDebug.h"
 
 using namespace bes;
@@ -106,6 +113,26 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
         }
         else {
             dmr = new DMR();
+
+#if ANNOTATION_SYSTEM
+            // Support for the experimental Dataset Annotation system. jhrg 12/19/18
+            if (!d_annotation_service_url.empty()) {
+                LOG("Adding info to the DMR for the annotation service.");
+
+                auto_ptr<D4Attribute> annotation_url(new D4Attribute(DODS_EXTRA_ANNOTATION_ATTR, attr_str_c));
+                annotation_url->add_value(d_annotation_service_url);
+
+                auto_ptr<D4Attribute> dods_extra(new D4Attribute(DODS_EXTRA_ATTR_TABLE, attr_container_c));
+                dods_extra->attributes()->add_attribute_nocopy(annotation_url.release());
+
+                dmr->root()->attributes()->add_attribute_nocopy(dods_extra.release());
+                LOG("Done adding info to the DMR for the annotation service.");
+
+                XMLWriter xml;
+                dmr->print_dap4(xml);
+                LOG("The DMR before pasing it on to the handlers:\n" << xml.get_doc());
+            }
+#endif
 
             if (xml_base_found && !xml_base.empty()) dmr->set_request_xml_base(xml_base);
 

@@ -127,6 +127,7 @@ void BESDDSResponseHandler::execute(BESDataHandlerInterface &dhi)
             if (!d_annotation_service_url.empty()) {
                 auto_ptr<AttrTable> dods_extra(new AttrTable);
                 dods_extra->append_attr(DODS_EXTRA_ANNOTATION_ATTR, "String", d_annotation_service_url);
+
                 dds->get_attr_table().append_container(dods_extra.release(), DODS_EXTRA_ATTR_TABLE);
             }
 #endif

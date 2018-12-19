@@ -17,7 +17,7 @@ noinst_DATA = bes.conf
 # target will show the individual tests. Defining both targets will
 # produce both outputs. jhrg 2/10/15
 #
-TESTS = besDapModuleTest
+# TESTS = testsuite
 
 CLEANFILES = bes.conf
 
@@ -33,20 +33,30 @@ BES_CONF_IN = bes.conf.in
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
 # configure's value for the parameter when running the distcheck target.
-bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
+
+%.conf: %.conf.in
 	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
-		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
+		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > $@
+
+bes.conf: $(top_srcdir)/configure.ac
+bes.annotation.conf: $(top_srcdir)/configure.ac
 
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te
 
-TESTSUITE = $(srcdir)/besDapModuleTest
+TESTSUITE = $(srcdir)/testsuite
+
+TESTSUITE2 = $(srcdir)/annotation_testsuite
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
 	-rm -f $(TESTSUITE) $(srcdir)/package.m4 
+
+check-local: $(TESTSUITE) $(TESTSUITE2) bes.conf bes.annotation.conf
+	$(TESTSUITE)
+	$(TESTSUITE2) --conf bes.annotation.conf
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
@@ -54,9 +64,12 @@ AUTOTEST = $(AUTOM4TE) --language=autotest
 # since that gives better control over things like PACKAGE_NAME,
 # which will be handy in the handlers to keep their package names
 # from all being 'bes'.
-$(TESTSUITE): $(srcdir)/besDapModuleTest.at $(srcdir)/package.m4
-	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
-	mv $@.tmp $@
+
+$(TESTSUITE): $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
+$(TESTSUITE2): $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
+
+%: %.at 
+	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
 # The `:;' works around a Bash 3.2 bug when the output is not writeable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac

@@ -1,0 +1,11 @@
+
+# These tests test adding the Anotation URL to a DAS/DMR.
+# run this using a bes.conf file that includes the annotation url parameter
+
+AT_INIT([bes/dap/tests annotation_testsuite])
+
+m4_include([handler_tests_macros.m4])
+
+AT_BESCMD_RESPONSE_TEST([bescmd/annotation.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([bescmd/annotation.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([bescmd/annotation.dmr.bescmd])
