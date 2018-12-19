@@ -30,6 +30,8 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include <DDS.h>
 
 #include "BESDDSResponseHandler.h"
@@ -106,7 +108,9 @@ void BESDDSResponseHandler::execute(BESDataHandlerInterface &dhi)
         d_response_object = 0;
     }
     else {
-        DDS *dds = 0; // new DDS(NULL, "virtual");
+        DDS *dds = 0;
+
+        // Constrained DDS request (but not a CE with a function).
         if (mds && lock() && !function_in_ce(dhi.container->get_constraint())) {
             // If mds and lock(), the DDS is in the cache, get the _object_
             dds = mds->get_dds_object(dhi.container->get_relative_name());
@@ -117,6 +121,16 @@ void BESDDSResponseHandler::execute(BESDataHandlerInterface &dhi)
         }
         else {
             dds = new DDS(NULL, "virtual");
+
+#if ANNOTATION_SYSTEM
+            // Support for the experimental Dataset Annotation system. jhrg 12/19/18
+            if (!d_annotation_service_url.empty()) {
+                auto_ptr<AttrTable> dods_extra(new AttrTable);
+                dods_extra->append_attr(DODS_EXTRA_ANNOTATION_ATTR, "String", d_annotation_service_url);
+                dds->get_attr_table().append_container(dods_extra.release(), DODS_EXTRA_ATTR_TABLE);
+            }
+#endif
+
             d_response_object = new BESDDSResponse(dds);
 
             BESRequestHandlerList::TheList()->execute_each(dhi);

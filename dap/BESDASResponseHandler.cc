@@ -30,6 +30,8 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include <DAS.h>
 
 #include "BESDASResponseHandler.h"
@@ -90,19 +92,18 @@ BESDASResponseHandler::execute( BESDataHandlerInterface &dhi )
         d_response_object = 0;
     }
     else {
-#if 1
         DAS *das = new DAS();
 
+#if ANNOTATION_SYSTEM
         if (!d_annotation_service_url.empty()) {
             auto_ptr<AttrTable> dods_extra(new AttrTable);
-            dods_extra->append_attr("Annotation", "String", d_annotation_service_url);
-            das->add_table("DODS_EXTRA", dods_extra.release());
+            dods_extra->append_attr(DODS_EXTRA_ANNOTATION_ATTR, "String", d_annotation_service_url);
+            das->add_table(DODS_EXTRA_ATTR_TABLE, dods_extra.release());
         }
+#endif
 
         d_response_object = new BESDASResponse( das ) ;
-#else
-        d_response_object = new BESDASResponse( new DAS() ) ;
-#endif
+
         BESRequestHandlerList::TheList()->execute_each(dhi);
 
         // The DDS and DMR ResponseHandler code stores those responses when the
