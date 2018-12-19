@@ -90,8 +90,19 @@ BESDASResponseHandler::execute( BESDataHandlerInterface &dhi )
         d_response_object = 0;
     }
     else {
-        d_response_object = new BESDASResponse( new DAS() ) ;
+#if 1
+        DAS *das = new DAS();
 
+        if (!d_annotation_service_url.empty()) {
+            auto_ptr<AttrTable> dods_extra(new AttrTable);
+            dods_extra->append_attr("Annotation", "String", d_annotation_service_url);
+            das->add_table("DODS_EXTRA", dods_extra.release());
+        }
+
+        d_response_object = new BESDASResponse( das ) ;
+#else
+        d_response_object = new BESDASResponse( new DAS() ) ;
+#endif
         BESRequestHandlerList::TheList()->execute_each(dhi);
 
         // The DDS and DMR ResponseHandler code stores those responses when the

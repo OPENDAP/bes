@@ -10,7 +10,7 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([bescmd/agg_array_dods_one_ce.bescmd],[aggreg
 #
 # NB: I've removed the BESDapSequenceAggregationServer class from this
 # handler. It was based on a misunderstanding about when in the processing
-# chain the BES run the AggregationServer handlers. I'm leaving it in 
+# chain the BES runs the AggregationServer handlers. I'm leaving it in 
 # git because it might be useful if the BES is modified in the future.
 # jhrg 3/17/15
 

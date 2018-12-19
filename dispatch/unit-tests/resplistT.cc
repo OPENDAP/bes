@@ -63,7 +63,8 @@ private:
     BESResponseHandlerList *handler_list;
 
 public:
-    resplistT()
+    resplistT() :
+        handler_list(0)
     {
         TheBESKeys::ConfigFile = string(TEST_SRC_DIR).append("/bes.conf");
         DBG(cerr << "TheBESKeys::ConfigFile: " << TheBESKeys::ConfigFile << endl);
@@ -75,107 +76,42 @@ public:
     void setUp()
     {
         handler_list = BESResponseHandlerList::TheList();
-        char num[10];
-        for (int i = 0; i < 5; i++) {
-            sprintf(num, "resp%d", i);
-            DBG(cerr << "Adding handler: " << num << endl);
-            CPPUNIT_ASSERT( handler_list->add_handler( num, TestResponseHandler::TestResponseBuilder ) == true );
+        // this really need mutex protection
+        if (handler_list->_handler_list.empty()) {
+            char num[10];
+            for (int i = 0; i < 5; i++) {
+                sprintf(num, "resp%d", i);
+                DBG(cerr << "Adding handler: " << num << endl);
+                CPPUNIT_ASSERT(handler_list->add_handler(num, TestResponseHandler::TestResponseBuilder) == true);
+            }
         }
     }
 
     void tearDown()
     {
-        delete handler_list;
-        handler_list = 0;
     }
 
     CPPUNIT_TEST_SUITE( resplistT );
 
-    // CPPUNIT_TEST( do_test );
+    CPPUNIT_TEST(test_duplicate_add);
+    CPPUNIT_TEST(test_find_all_handlers);
+    CPPUNIT_TEST(test_nonexistant_handler);
+    CPPUNIT_TEST(test_remove_and_add_handler);
 
-    CPPUNIT_TEST( test_duplicate_add );
-    CPPUNIT_TEST( test_find_all_handlers );
-    CPPUNIT_TEST( test_nonexistant_handler );
-    CPPUNIT_TEST( test_ctor );
+    CPPUNIT_TEST(test_ctor);
 
     CPPUNIT_TEST_SUITE_END();
 
-    void test_duplicate_add() {
-        CPPUNIT_ASSERT( handler_list->add_handler( "resp3", TestResponseHandler::TestResponseBuilder ) == false );
-    }
-
-    void test_find_all_handlers() {
-        BESResponseHandler *rh = 0;
-        char num[10];
-        for (int i = 4; i >= 0; i--) {
-            sprintf(num, "resp%d", i);
-            DBG(cerr << "    finding " << num << endl);
-            rh = handler_list->find_handler(num);
-            CPPUNIT_ASSERT( rh );
-        }
-    }
-
-    void test_nonexistant_handler() {
-        CPPUNIT_ASSERT( !handler_list->find_handler("not_there") );
-    }
-
-    void do_test()
+    void test_duplicate_add()
     {
-        BESResponseHandler *rh = 0;
-
         try {
-        cout << "*****************************************" << endl;
-        cout << "Entered resplistT::run" << endl;
-
-        cout << "*****************************************" << endl;
-        cout << "add the 5 response handlers" << endl;
-        BESResponseHandlerList *rhl = BESResponseHandlerList::TheList();
-        char num[10];
-        for (int i = 0; i < 5; i++) {
-            sprintf(num, "resp%d", i);
-            cout << "    adding " << num << endl;
-            CPPUNIT_ASSERT( rhl->add_handler( num, TestResponseHandler::TestResponseBuilder ) == true );
-        }
-
-        cout << "*****************************************" << endl;
-        cout << "try to add resp3 again" << endl;
-        CPPUNIT_ASSERT( rhl->add_handler( "resp3", TestResponseHandler::TestResponseBuilder ) == false );
-
-        cout << "*****************************************" << endl;
-        cout << "finding the handlers" << endl;
-        for (int i = 4; i >= 0; i--) {
-            sprintf(num, "resp%d", i);
-            cout << "    finding " << num << endl;
-            rh = rhl->find_handler(num);
-            CPPUNIT_ASSERT( rh );
-        }
-
-        cout << "*****************************************" << endl;
-        cout << "finding non-existant handler" << endl;
-        rh = rhl->find_handler("not_there");
-        CPPUNIT_ASSERT( !rh );
-
-        cout << "*****************************************" << endl;
-        cout << "removing resp2" << endl;
-        CPPUNIT_ASSERT( rhl->remove_handler( "resp2" ) == true );
-        rh = rhl->find_handler("resp2");
-        CPPUNIT_ASSERT( !rh );
-
-        cout << "*****************************************" << endl;
-        cout << "add resp2 back" << endl;
-        CPPUNIT_ASSERT( rhl->add_handler( "resp2", TestResponseHandler::TestResponseBuilder ) == true );
-
-        rh = rhl->find_handler("resp2");
-        CPPUNIT_ASSERT( rh );
-
-        cout << "*****************************************" << endl;
-        cout << "Returning from resplistT::run" << endl;
+            CPPUNIT_ASSERT(handler_list->add_handler("resp3", TestResponseHandler::TestResponseBuilder) == false);
         }
         catch (BESError &e) {
             cerr << "Caught BESError: " << e.get_verbose_message() << endl;
             CPPUNIT_FAIL("BESError");
         }
-        catch (Error &e ) {
+        catch (Error &e) {
             cerr << "Caught libdap::Error: " << e.get_error_message() << endl;
             CPPUNIT_FAIL("libdap::Error");
         }
@@ -185,17 +121,105 @@ public:
         }
     }
 
-    void test_ctor() {
-        auto_ptr<BESResponseHandler> handler(TestResponseHandler::TestResponseBuilder("test"));
+    void test_find_all_handlers()
+    {
+        try {
+            BESResponseHandler *rh = 0;
+            char num[10];
+            for (int i = 4; i >= 0; i--) {
+                sprintf(num, "resp%d", i);
+                DBG(cerr << "    finding " << num << endl);
+                rh = handler_list->find_handler(num);
+                CPPUNIT_ASSERT(rh);
+            }
+        }
+        catch (BESError &e) {
+            cerr << "Caught BESError: " << e.get_verbose_message() << endl;
+            CPPUNIT_FAIL("BESError");
+        }
+        catch (Error &e) {
+            cerr << "Caught libdap::Error: " << e.get_error_message() << endl;
+            CPPUNIT_FAIL("libdap::Error");
+        }
+        catch (std::exception &e) {
+            cerr << "Caught std::exception: " << e.what() << endl;
+            CPPUNIT_FAIL("std::exception");
+        }
+    }
 
-        // These values are set in bes.conf which is built from bes.conf.in
-        DBG(cerr << "handler->d_annotation_service_url: " << handler->d_annotation_service_url << endl);
-        CPPUNIT_ASSERT(handler->d_annotation_service_url == "http://localhost:8083/Feedback/form");
-        CPPUNIT_ASSERT(handler->d_include_dataset_in_annotation_url == true);
+    void test_nonexistant_handler()
+    {
+        try {
+            CPPUNIT_ASSERT(!handler_list->find_handler("not_there"));
+        }
+        catch (BESError &e) {
+            cerr << "Caught BESError: " << e.get_verbose_message() << endl;
+            CPPUNIT_FAIL("BESError");
+        }
+        catch (Error &e) {
+            cerr << "Caught libdap::Error: " << e.get_error_message() << endl;
+            CPPUNIT_FAIL("libdap::Error");
+        }
+        catch (std::exception &e) {
+            cerr << "Caught std::exception: " << e.what() << endl;
+            CPPUNIT_FAIL("std::exception");
+        }
+    }
+
+    void test_remove_and_add_handler()
+    {
+        try {
+            DBG(cerr << "Removing resp2" << endl);
+            CPPUNIT_ASSERT(handler_list->remove_handler("resp2") == true);
+
+            BESResponseHandler *rh = handler_list->find_handler("resp2");
+            CPPUNIT_ASSERT(!rh);
+
+            DBG(cerr << "Add resp2 back" << endl);
+            CPPUNIT_ASSERT(handler_list->add_handler("resp2", TestResponseHandler::TestResponseBuilder) == true);
+
+            rh = handler_list->find_handler("resp2");
+            CPPUNIT_ASSERT(rh);
+        }
+        catch (BESError &e) {
+            cerr << "Caught BESError: " << e.get_verbose_message() << endl;
+            CPPUNIT_FAIL("BESError");
+        }
+        catch (Error &e) {
+            cerr << "Caught libdap::Error: " << e.get_error_message() << endl;
+            CPPUNIT_FAIL("libdap::Error");
+        }
+        catch (std::exception &e) {
+            cerr << "Caught std::exception: " << e.what() << endl;
+            CPPUNIT_FAIL("std::exception");
+        }
+    }
+
+    void test_ctor()
+    {
+        try {
+            auto_ptr<BESResponseHandler> handler(TestResponseHandler::TestResponseBuilder("test"));
+
+            // These values are set in bes.conf which is built from bes.conf.in
+            DBG(cerr << "handler->d_annotation_service_url: " << handler->d_annotation_service_url << endl);
+            CPPUNIT_ASSERT(handler->d_annotation_service_url == "http://localhost:8083/Feedback/form");
+        }
+        catch (BESError &e) {
+            cerr << "Caught BESError: " << e.get_verbose_message() << endl;
+            CPPUNIT_FAIL("BESError");
+        }
+        catch (Error &e) {
+            cerr << "Caught libdap::Error: " << e.get_error_message() << endl;
+            CPPUNIT_FAIL("libdap::Error");
+        }
+        catch (std::exception &e) {
+            cerr << "Caught std::exception: " << e.what() << endl;
+            CPPUNIT_FAIL("std::exception");
+        }
     }
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( resplistT );
+CPPUNIT_TEST_SUITE_REGISTRATION(resplistT);
 
 int main(int argc, char*argv[])
 {

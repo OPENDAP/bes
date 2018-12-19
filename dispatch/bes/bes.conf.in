@@ -94,13 +94,6 @@ BES.AnnotationServiceURL =
 
 # BES.AnnotationServiceURL = http://localhost:8083/Feedback/form
 
-# Experimental: Include the current dataset URL in the Query Parameter
-# of the AnnotationServiceURL. This will make the value of the 'Annotation'
-# attribute have the form: http://localhost:8083/Feedback/form?url=<url>.
-# This has no effect if the BES.AnnotationServerURL parametger is null.
-
-BES.IncludeDatasetInAnnotationURL = true
-
 #########################################################################
 #                                                                       #
 # NOTE: It is unlikely that you will need to change anything below      #

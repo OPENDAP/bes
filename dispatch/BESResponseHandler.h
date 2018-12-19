@@ -80,7 +80,10 @@ protected:
     BESResponseObject *d_response_object;
 
     std::string d_annotation_service_url;   //< If not null, include this in the DAS/DMR
+#if 0
+    // Do this later if it seems advisable to 'bake the web api' into this. jhrg 12/19/18
     bool d_include_dataset_in_annotation_url;    //< include the dataset URL if true
+#endif
 
     friend class resplistT;
 

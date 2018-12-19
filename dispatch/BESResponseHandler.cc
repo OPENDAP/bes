@@ -49,18 +49,21 @@
 
 const string annotation_service_url = "BES.AnnotationServiceURL";
 
+#if 0
 // Experimental: Include the current dataset URL in the Query Parameter
 // of the AnnotationServiceURL. This will make the value of the 'Annotation'
 // attribute have the form: http://localhost:8083/Feedback/form?url=<url>.
 // This has no effect if the BES.AnnotationServerURL parameter is null.
 
 const string include_dataset_in_annotation_url = "BES.IncludeDatasetInAnnotationURL";
+#endif
 
 BESResponseHandler::BESResponseHandler(const string &name) :
     d_response_name(name), d_response_object(0)
 {
-#if 1
     d_annotation_service_url = TheBESKeys::TheKeys()->read_string_key(annotation_service_url, "");
+#if 0
+    // see comment in header. jhrg 12/19/18
     d_include_dataset_in_annotation_url = TheBESKeys::TheKeys()->read_bool_key(include_dataset_in_annotation_url, false);
 #endif
 }
