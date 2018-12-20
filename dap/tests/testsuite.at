@@ -12,5 +12,12 @@ AT_BESCMD_RESPONSE_TEST([bescmd/function_result_unwrap_dds.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([bescmd/function_result_unwrap_dods.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/function_result_unwrap_dap.bescmd, xfail)
 
-
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/dap4_ce_function-01.bescmd, xfail)
+
+# These tests ask for the same responses as the annotation tests, but without
+# the attribute set in the bes.conf file. The reponses should not contain the
+# annotation service url. DDS is not included since it's the same for both cases.
+
+AT_BESCMD_RESPONSE_TEST([bescmd/fnoc.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([bescmd/fnoc.ddx.bescmd])
+AT_BESCMD_RESPONSE_TEST([bescmd/fnoc.dmr.bescmd])

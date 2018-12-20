@@ -26,6 +26,5 @@ Attributes {
     }
     DODS_EXTRA {
         String Unlimited_Dimension "time_a";
-        String AnnotationService "http://localhost:8083/Feedback/form";
     }
 }

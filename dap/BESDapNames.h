@@ -99,7 +99,7 @@
 #define DMRPP_DEFAULT_NAME "dmrpp"
 
 #define DODS_EXTRA_ATTR_TABLE "DODS_EXTRA"
-#define DODS_EXTRA_ANNOTATION_ATTR "Annotation"
+#define DODS_EXTRA_ANNOTATION_ATTR "AnnotationService"
 
 #endif // E_BESDapNames_H
 

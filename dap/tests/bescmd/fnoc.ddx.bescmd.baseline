@@ -12,9 +12,6 @@
         <Attribute name="Unlimited_Dimension" type="String">
             <value>time_a</value>
         </Attribute>
-        <Attribute name="AnnotationService" type="String">
-            <value>http://localhost:8083/Feedback/form</value>
-        </Attribute>
     </Attribute>
     <Array name="u">
         <Attribute name="units" type="String">
