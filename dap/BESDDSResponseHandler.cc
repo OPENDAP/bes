@@ -122,21 +122,29 @@ void BESDDSResponseHandler::execute(BESDataHandlerInterface &dhi)
         else {
             dds = new DDS(NULL, "virtual");
 
-#if ANNOTATION_SYSTEM
-            // Support for the experimental Dataset Annotation system. jhrg 12/19/18
-            if (!d_annotation_service_url.empty()) {
-                auto_ptr<AttrTable> dods_extra(new AttrTable);
-                dods_extra->append_attr(DODS_EXTRA_ANNOTATION_ATTR, "String", d_annotation_service_url);
-
-                dds->get_attr_table().append_container(dods_extra.release(), DODS_EXTRA_ATTR_TABLE);
-            }
-#endif
-
             d_response_object = new BESDDSResponse(dds);
 
             BESRequestHandlerList::TheList()->execute_each(dhi);
 
             dhi.first_container();  // must reset container; execute_each() iterates over all of them
+
+#if ANNOTATION_SYSTEM
+            // Support for the experimental Dataset Annotation system. jhrg 12/19/18
+            if (!d_annotation_service_url.empty()) {
+                // resp_dds is a convenience object
+                BESDDSResponse *resp_dds = static_cast<BESDDSResponse*>(d_response_object);
+
+                // Add the Annotation Service URL attribute in the DODS_EXTRA container.
+                AttrTable *dods_extra = resp_dds->get_dds()->get_attr_table().find_container(DODS_EXTRA_ATTR_TABLE);
+                if (dods_extra)
+                    dods_extra->append_attr(DODS_EXTRA_ANNOTATION_ATTR, "String", d_annotation_service_url);
+                else {
+                    auto_ptr<AttrTable> new_dods_extra(new AttrTable);
+                    new_dods_extra->append_attr(DODS_EXTRA_ANNOTATION_ATTR, "String", d_annotation_service_url);
+                    resp_dds->get_dds()->get_attr_table().append_container(new_dods_extra.release(), DODS_EXTRA_ATTR_TABLE);
+                }
+            }
+#endif
 
             // Cache the DDS if the MDS is not null but the DDS response was not in the cache
             if (mds && !lock() && !function_in_ce(dhi.container->get_constraint())) {

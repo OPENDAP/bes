@@ -103,17 +103,6 @@ void BESDDXResponseHandler::execute(BESDataHandlerInterface &dhi)
         DDS *dds = mds->get_dds_object(dhi.container->get_relative_name());
         BESDDSResponse *bdds = new BESDDSResponse(dds);
 
-#if 0
-#if FORCE_DAP_VERSION_TO_3_2
-        dds->set_dap_version("3.2");
-#else
-// These values are read from the BESContextManager by the BESDapResponse ctor
-        if (!bdds->get_dap_client_protocol().empty()) {
-            dds->set_dap_version(bdds->get_dap_client_protocol());
-        }
-#endif
-#endif
-
         dds->set_request_xml_base(bdds->get_request_xml_base());
 
         bdds->set_constraint(dhi);
@@ -126,29 +115,9 @@ void BESDDXResponseHandler::execute(BESDataHandlerInterface &dhi)
         // handler to set the BaseTypeFactory. It is set to NULL here
         DDS *dds = new DDS(NULL, "virtual");
 
-#if ANNOTATION_SYSTEM
-            // Support for the experimental Dataset Annotation system. jhrg 12/19/18
-            if (!d_annotation_service_url.empty()) {
-                auto_ptr<AttrTable> dods_extra(new AttrTable);
-                dods_extra->append_attr(DODS_EXTRA_ANNOTATION_ATTR, "String", d_annotation_service_url);
-
-                dds->get_attr_table().append_container(dods_extra.release(), DODS_EXTRA_ATTR_TABLE);
-            }
-#endif
-
         BESDDSResponse *bdds = new BESDDSResponse(dds);
         d_response_name = DDS_RESPONSE;
         dhi.action = DDS_RESPONSE;
-
-#if 0
-#if FORCE_DAP_VERSION_TO_3_2
-        dds->set_dap_version("3.2");
-#else
-        if (!bdds->get_dap_client_protocol().empty()) {
-            dds->set_dap_version(bdds->get_dap_client_protocol());
-        }
-#endif
-#endif
 
         dds->set_request_xml_base(bdds->get_request_xml_base());
 
@@ -158,7 +127,25 @@ void BESDDXResponseHandler::execute(BESDataHandlerInterface &dhi)
 
         dhi.first_container();  // must reset container; execute_each() iterates over all of them
 
-        if (mds && !function_in_ce(dhi.container->get_constraint())) {
+#if ANNOTATION_SYSTEM
+            // Support for the experimental Dataset Annotation system. jhrg 12/19/18
+            if (!d_annotation_service_url.empty()) {
+                // resp_dds is a convenience object
+                BESDDSResponse *resp_dds = static_cast<BESDDSResponse*>(d_response_object);
+
+                // Add the Annotation Service URL attribute in the DODS_EXTRA container.
+                AttrTable *dods_extra = resp_dds->get_dds()->get_attr_table().find_container(DODS_EXTRA_ATTR_TABLE);
+                if (dods_extra)
+                    dods_extra->append_attr(DODS_EXTRA_ANNOTATION_ATTR, "String", d_annotation_service_url);
+                else {
+                    auto_ptr<AttrTable> new_dods_extra(new AttrTable);
+                    new_dods_extra->append_attr(DODS_EXTRA_ANNOTATION_ATTR, "String", d_annotation_service_url);
+                    resp_dds->get_dds()->get_attr_table().append_container(new_dods_extra.release(), DODS_EXTRA_ATTR_TABLE);
+                }
+            }
+#endif
+
+            if (mds && !function_in_ce(dhi.container->get_constraint())) {
             // dhi.first_container();  // must reset container; execute_each() iterates over all of them
             mds->add_responses(static_cast<BESDDSResponse*>(d_response_object)->get_dds(), dhi.container->get_relative_name());
         }

@@ -30,6 +30,9 @@ m4_define([_AT_BESCMD_TEST], [dnl
     baseline=$2
     pass=$3
     repeat=$4
+    
+    echo "PASS: $pass"
+    
     AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
@@ -40,7 +43,7 @@ m4_define([_AT_BESCMD_TEST], [dnl
         [
         AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
         AT_CHECK([diff -b -B $baseline stdout])
-        AT_XFAIL_IF([test z$pass = zxfail])
+        AT_XFAIL_IF([test "z$pass" = "zxfail"])
         ])
 
     AT_CLEANUP

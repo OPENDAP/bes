@@ -4,8 +4,8 @@ AT_INIT([bes/dap/tests testsuite])
 m4_include([handler_tests_macros.m4])
 
 # These tests do not use the SequenceAggregationServer
-AT_BESCMD_RESPONSE_TEST([bescmd/agg_array_dds_one_ce.bescmd],[aggregation])
-AT_BESCMD_BINARYDATA_RESPONSE_TEST([bescmd/agg_array_dods_one_ce.bescmd],[aggregation])
+AT_BESCMD_RESPONSE_TEST([bescmd/agg_array_dds_one_ce.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([bescmd/agg_array_dods_one_ce.bescmd])
 
 # Test the "_unwrap" Structure naming convention.
 AT_BESCMD_RESPONSE_TEST([bescmd/function_result_unwrap_dds.bescmd])
