@@ -94,15 +94,6 @@ BESDASResponseHandler::execute( BESDataHandlerInterface &dhi )
     else {
         DAS *das = new DAS();
 
-#if 0 //ANNOTATION_SYSTEM
-        if (!d_annotation_service_url.empty()) {
-            auto_ptr<AttrTable> dods_extra(new AttrTable);
-            dods_extra->append_attr(DODS_EXTRA_ANNOTATION_ATTR, "String", d_annotation_service_url);
-
-            das->add_table(DODS_EXTRA_ATTR_TABLE, dods_extra.release());
-        }
-#endif
-
         d_response_object = new BESDASResponse( das ) ;
 
         BESRequestHandlerList::TheList()->execute_each(dhi);
