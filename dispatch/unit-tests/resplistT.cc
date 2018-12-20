@@ -66,7 +66,7 @@ public:
     resplistT() :
         handler_list(0)
     {
-        TheBESKeys::ConfigFile = string(TEST_SRC_DIR).append("/bes.conf");
+        TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
         DBG(cerr << "TheBESKeys::ConfigFile: " << TheBESKeys::ConfigFile << endl);
     }
     ~resplistT()
