@@ -94,7 +94,7 @@ BESDASResponseHandler::execute( BESDataHandlerInterface &dhi )
     else {
         DAS *das = new DAS();
 
-#if ANNOTATION_SYSTEM
+#if 0 //ANNOTATION_SYSTEM
         if (!d_annotation_service_url.empty()) {
             auto_ptr<AttrTable> dods_extra(new AttrTable);
             dods_extra->append_attr(DODS_EXTRA_ANNOTATION_ATTR, "String", d_annotation_service_url);
@@ -107,6 +107,23 @@ BESDASResponseHandler::execute( BESDataHandlerInterface &dhi )
 
         BESRequestHandlerList::TheList()->execute_each(dhi);
 
+#if ANNOTATION_SYSTEM
+            // Support for the experimental Dataset Annotation system. jhrg 12/19/18
+            if (!d_annotation_service_url.empty()) {
+                // resp_dds is a convenience object
+                BESDASResponse *resp_das = static_cast<BESDASResponse *>(d_response_object);
+
+                // Add the Annotation Service URL attribute in the DODS_EXTRA container.
+                AttrTable *dods_extra = resp_das->get_das()->get_table(DODS_EXTRA_ATTR_TABLE);
+                if (dods_extra)
+                    dods_extra->append_attr(DODS_EXTRA_ANNOTATION_ATTR, "String", d_annotation_service_url);
+                else {
+                    auto_ptr<AttrTable> new_dods_extra(new AttrTable);
+                    new_dods_extra->append_attr(DODS_EXTRA_ANNOTATION_ATTR, "String", d_annotation_service_url);
+                    resp_das->get_das()->add_table(DODS_EXTRA_ATTR_TABLE, new_dods_extra.release());
+                }
+            }
+#endif
         // The DDS and DMR ResponseHandler code stores those responses when the
         // MDS is configured (*mds is not null) and can make all of the DDS, DAS
         // and DMR from either the DDS or DMR alone. But the DAS is different -
