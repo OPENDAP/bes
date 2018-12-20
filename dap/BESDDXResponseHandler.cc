@@ -32,6 +32,8 @@
 
 #include "config.h"
 
+#include <memory>
+
 #include <DDS.h>
 
 #include "GlobalMetadataStore.h"

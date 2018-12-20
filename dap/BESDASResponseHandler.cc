@@ -32,6 +32,8 @@
 
 #include "config.h"
 
+#include <memory>
+
 #include <DAS.h>
 
 #include "BESDASResponseHandler.h"
