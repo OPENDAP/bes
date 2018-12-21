@@ -22,9 +22,15 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
+#include "config.h"
+
 #include <sstream>
+#include <memory>
 
 #include <DMR.h>
+#include <D4Group.h>
+#include <D4Attributes.h>
+#include <D4BaseTypeFactory.h>
 
 #include "BESDMRResponseHandler.h"
 #include "BESDMRResponse.h"
@@ -33,6 +39,8 @@
 #include "BESDapTransmit.h"
 #include "BESContextManager.h"
 #include "GlobalMetadataStore.h"
+
+#include "BESLog.h"
 #include "BESDebug.h"
 
 using namespace bes;
@@ -116,6 +124,34 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
 
             dhi.first_container();  // must reset container; execute_each() iterates over all of them
 
+#if ANNOTATION_SYSTEM
+            // Support for the experimental Dataset Annotation system. jhrg 12/19/18
+            if (!d_annotation_service_url.empty()) {
+                auto_ptr<D4Attribute> annotation_url(new D4Attribute(DODS_EXTRA_ANNOTATION_ATTR, attr_str_c));
+                annotation_url->add_value(d_annotation_service_url);
+
+                // If there is already a DODS_EXTRA container, use it
+                if (dmr->root() && dmr->root()->attributes()->get(DODS_EXTRA_ATTR_TABLE)) {
+                    dmr->root()->attributes()->get(DODS_EXTRA_ATTR_TABLE)->attributes()->add_attribute_nocopy(annotation_url.release());
+                }
+                else {
+                    // Make DODS_EXTRA and load the attribute into it.
+                    auto_ptr<D4Attribute> dods_extra(new D4Attribute(DODS_EXTRA_ATTR_TABLE, attr_container_c));
+                    dods_extra->attributes()->add_attribute_nocopy(annotation_url.release());
+
+                    // If the root group is null, set the factory (this is an edge case!)
+                    if (!dmr->root()) {
+                        auto_ptr<D4BaseTypeFactory> factory(new D4BaseTypeFactory);
+                        dmr->set_factory(factory.get());
+                        dmr->root()->attributes()->add_attribute_nocopy(dods_extra.release());
+                        dmr->set_factory(0);
+                    }
+                    else {
+                        dmr->root()->attributes()->add_attribute_nocopy(dods_extra.release());
+                    }
+                }
+            }
+#endif
             // Cache the DMR if the MDS is not null but the response was not present, and..
             // This request does not contain a server function call.
             if (mds && !lock() && dhi.container->get_dap4_function().empty()) {

@@ -35,3 +35,5 @@ BES.UncompressCache.size=500
 DAP.FunctionResponseCache.path=./response_cache
 DAP.FunctionResponseCache.prefix=/rc
 DAP.FunctionResponseCache.size=500
+
+BES.AnnotationServiceURL = http://localhost:8083/Feedback/form

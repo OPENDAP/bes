@@ -778,6 +778,10 @@ AH_TOP([#ifndef _config_h
 #define _config_h])
 
 AH_BOTTOM([
+
+// These values are defined in configure.ac
+#define ANNOTATION_SYSTEM 1
+
 #if defined(__GNUG__) || defined(__GNUC__)
 #define not_used __attribute__ ((unused))
 #else

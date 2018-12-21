@@ -50,7 +50,7 @@
 class BESDASResponseHandler: public BESResponseHandler {
 public:
     BESDASResponseHandler(const string &name);
-    virtual ~BESDASResponseHandler(void);
+    virtual ~BESDASResponseHandler();
 
     virtual void execute(BESDataHandlerInterface &dhi);
     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);

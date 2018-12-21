@@ -38,14 +38,6 @@
 #include <vector>
 #include <string>
 
-#if 0
-using std::string;
-using std::map;
-using std::vector;
-using std::ifstream;
-#endif
-
-
 #include "BESObj.h"
 
 /** @brief mapping of key/value pairs defining different behaviors of an
