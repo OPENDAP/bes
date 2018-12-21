@@ -109,7 +109,7 @@ public:
     ShowPathInfoTest() :
         d_testDir(string(TEST_BUILD_DIR) + "/pathinfo_files")
     {
-        TheBESKeys::ConfigFile = string(TEST_SRC_DIR).append("/bes.conf");
+        TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
         DBG(cerr << "TheBESKeys::ConfigFile: " << TheBESKeys::ConfigFile << endl);
     }
 
