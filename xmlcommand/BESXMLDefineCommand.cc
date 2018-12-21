@@ -85,13 +85,8 @@ void BESXMLDefineCommand::parse_request(xmlNode *node)
     d_xmlcmd_dhi.data[DEF_NAME] = def_name;
     d_cmd_log_info = (string) "define " + def_name;
 
-    // TODO we could set it to "default" here. See the code in DefineResponseHandler.
-    // jhrg 2/11/18
-    string def_space = props["space"];
-    if (!def_space.empty()) {
-        d_cmd_log_info += " in " + def_space;
-    }
-    d_xmlcmd_dhi.data[STORE_NAME] = def_space;
+    d_xmlcmd_dhi.data[STORE_NAME] = props["space"].empty() ? DEFAULT: props["space"];
+    d_cmd_log_info += " in " + d_xmlcmd_dhi.data[STORE_NAME];
 
     int num_containers = 0;
     string child_name;
@@ -174,8 +169,7 @@ void BESXMLDefineCommand::parse_request(xmlNode *node)
 
     BESDEBUG("xml", "BESXMLDefineCommand::parse_request() -  _str_cmd: " << d_cmd_log_info << endl);
 
-    // now that we've set the action, go get the response handler for the
-    // action
+    // now that we've set the action, go get the response handler for the action
     BESXMLCommand::set_response();
 }
 

@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,13 +36,13 @@
 #include <string>
 #include <map>
 
-using std::string ;
-using std::map ;
+using std::string;
+using std::map;
 
 #include "BESDefinitionStorage.h"
 
-class BESDefine ;
-class BESInfo ;
+class BESDefine;
+class BESInfo;
 
 /** @brief provides volatile storage for a specific definition/view of
  * different containers including contraints and aggregation.
@@ -55,34 +55,34 @@ class BESInfo ;
  * @see BESDefine
  * @see BESDefinitionStorageList
  */
-class BESDefinitionStorageVolatile : public BESDefinitionStorage
-{
+class BESDefinitionStorageVolatile: public BESDefinitionStorage {
 private:
-    map< string, BESDefine * > _def_list ;
-    typedef map< string, BESDefine * >::const_iterator Define_citer ;
-    typedef map< string, BESDefine * >::iterator Define_iter ;
+    map<string, BESDefine *> _def_list;
+    typedef map<string, BESDefine *>::const_iterator Define_citer;
+    typedef map<string, BESDefine *>::iterator Define_iter;
 public:
     /** @brief create an instance of BESDefinitionStorageVolatile with the give
      * name.
      *
      * @param name name of this persistence store
      */
-    				BESDefinitionStorageVolatile( const string &name )
-				    : BESDefinitionStorage( name ) {}
+    BESDefinitionStorageVolatile(const string &name) :
+        BESDefinitionStorage(name)
+    {
+    }
 
-    virtual 			~BESDefinitionStorageVolatile() ;
+    virtual ~BESDefinitionStorageVolatile();
 
-    virtual BESDefine * 	look_for( const string &def_name ) ;
+    virtual BESDefine * look_for(const string &def_name);
 
-    virtual bool		add_definition( const string &def_name,
-                                                BESDefine *d ) ;
+    virtual bool add_definition(const string &def_name, BESDefine *d);
 
-    virtual bool		del_definition( const string &def_name ) ;
-    virtual bool		del_definitions( ) ;
+    virtual bool del_definition(const string &def_name);
+    virtual bool del_definitions();
 
-    virtual void		show_definitions( BESInfo &info ) ;
+    virtual void show_definitions(BESInfo &info);
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 };
 
 #endif // BESDefinitionStorageVolatile_h_

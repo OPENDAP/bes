@@ -88,7 +88,10 @@ void BESDefineResponseHandler::execute(BESDataHandlerInterface &dhi)
     string store_name = dhi.data[STORE_NAME];
 
 
+#if 0
     if (store_name == "") store_name = DEFAULT;
+#endif
+
 
     BESDefinitionStorage *store = BESDefinitionStorageList::TheList()->find_persistence(store_name);
     if (store) {

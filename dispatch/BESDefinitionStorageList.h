@@ -43,8 +43,9 @@ class BESDefinitionStorage;
 class BESDefine;
 class BESInfo;
 
-#define DEFAULT "catalog"
-// #define CATALOG "catalog"
+#ifndef DEFAULT
+#define DEFAULT "default"
+#endif
 
 /** @brief Provides a mechanism for accessing definitions from
  * different definition stores registered with this server.

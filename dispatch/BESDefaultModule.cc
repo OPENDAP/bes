@@ -93,11 +93,14 @@ int BESDefaultModule::initialize(int, char**)
     BESDEBUG("bes", "Initializing default modules:" << endl);
 
     // Default places to store containers and definitions. Support both "default" and "catalog"
-    BESContainerStorageList::TheList()->add_persistence(new BESContainerStorageVolatile( DEFAULT ));
+    //BESContainerStorageList::TheList()->add_persistence(new BESContainerStorageVolatile( DEFAULT ));
     //BESContainerStorageList::TheList()->add_persistence(new BESContainerStorageVolatile( CATALOG ));
 
+    // This is the only place the Definition Storage is set. I set both DEFAULT and CATALOG so that
+    // code that uses those names will work.
+    // TODO Remove 'catalog' and change the way define command works to use DEFAULT by
     BESDefinitionStorageList::TheList()->add_persistence(new BESDefinitionStorageVolatile( DEFAULT ));
-    //BESDefinitionStorageList::TheList()->add_persistence(new BESDefinitionStorageVolatile( CATALOG ));
+    BESDefinitionStorageList::TheList()->add_persistence(new BESDefinitionStorageVolatile( CATALOG ));
 
     BESResponseHandlerList::TheList()->add_handler( HELP_RESPONSE, BESHelpResponseHandler::HelpResponseBuilder);
 
