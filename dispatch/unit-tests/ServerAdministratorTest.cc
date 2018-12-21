@@ -98,13 +98,12 @@ public:
         try {
             ServerAdministrator admin;
             string xml_result = admin.xdump();
-            string xml_baseline = "<ServerAdministrator city=\"City\" email=\"admin.email.address@your.domain.name\" organization=\"Company/Insitution Name\" postalCode=\"12345\" state=\"State\" street=\"Street Address\" telephone=\"+1.800.555.1212\" website=\"http://www.your.domain.name\"/>";
+            string xml_baseline = "<ServerAdministrator city=\"Narragansett\" country=\"US\" email=\"support@opendap.org\" organization=\"OPeNDAP Inc.\" postalCode=\"02882\" region=\"RI\" street=\"165 NW Dean Knauss Dr.\" telephone=\"+1.401.575.4835\" website=\"http://www.opendap.org\"/>";
             if(debug){
                 cerr << "xml_baseline: " << xml_baseline << endl;
                 cerr << "  xml_result: " << xml_result << endl;
             }
-            CPPUNIT_ASSERT(xml_result == xml_result);
-            cerr << admin.xdump() << endl ;
+            CPPUNIT_ASSERT(xml_result == xml_baseline);
         }
         catch (BESError &e) {
             cerr << __func__ << "() - Error: " << e.get_verbose_message() << endl;
@@ -118,7 +117,7 @@ public:
         try {
             ServerAdministrator admin;
             string json_result = admin.jdump();
-            string json_baseline = "{\"ServerAdministrator\":{\"city\":\"City\",\"email\":\"admin.email.address@your.domain.name\",\"organization\":\"Company/Insitution Name\",\"postalCode\":\"12345\",\"state\":\"State\",\"street\":\"Street Address\",\"telephone\":\"+1.800.555.1212\",\"website\":\"http://www.your.domain.name\"}}";
+            string json_baseline = "{\"ServerAdministrator\":{\"city\":\"Narragansett\",\"country\":\"US\",\"email\":\"support@opendap.org\",\"organization\":\"OPeNDAP Inc.\",\"postalCode\":\"02882\",\"region\":\"RI\",\"street\":\"165 NW Dean Knauss Dr.\",\"telephone\":\"+1.401.575.4835\",\"website\":\"http://www.opendap.org\"}}";
             if(debug){
                 cerr << "json_baseline: " << json_baseline << endl;
                 cerr << "  json_result: " << json_result << endl;
@@ -137,7 +136,7 @@ public:
         try {
             ServerAdministrator admin;
             string baseline, result;
-            baseline = "City";
+            baseline = "Narragansett";
             result = admin.get("CiTy");
             if(debug){
                 cerr << "baseline: " << baseline << endl;
@@ -145,7 +144,7 @@ public:
             }
             CPPUNIT_ASSERT(result == baseline);
 
-            baseline = "admin.email.address@your.domain.name";
+            baseline = "support@opendap.org";
             result = admin.get("email");
             if(debug){
                 cerr << "baseline: " << baseline << endl;
@@ -153,7 +152,7 @@ public:
             }
             CPPUNIT_ASSERT(result == baseline);
 
-            baseline = "Street Address";
+            baseline = "165 NW Dean Knauss Dr.";
             result = admin.get("STREET");
             if(debug){
                 cerr << "baseline: " << baseline << endl;

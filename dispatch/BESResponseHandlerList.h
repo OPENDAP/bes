@@ -64,6 +64,8 @@ private:
     static BESResponseHandlerList * _instance;
     map<string, p_response_handler> _handler_list;
 
+    friend class resplistT;
+
 protected:
     BESResponseHandlerList(void)
     {

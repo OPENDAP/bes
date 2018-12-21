@@ -29,3 +29,8 @@ BES.ServerAdministrator+=state:State
 BES.ServerAdministrator+=postalCode:12345
 BES.ServerAdministrator+=telephone:+1.800.555.1212
 BES.ServerAdministrator+=website:http://www.your.domain.name
+
+# Hackery for the annotation service. Does the ResponseHandler
+# ctor pick these up?
+BES.AnnotationServiceURL = http://localhost:8083/Feedback/form
+BES.IncludeDatasetInAnnotationURL = true

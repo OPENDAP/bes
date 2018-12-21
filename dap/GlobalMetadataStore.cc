@@ -714,10 +714,9 @@ GlobalMetadataStore::get_read_lock_helper(const string &name, const string &suff
 {
     BESDEBUG(DEBUG_KEY, __func__ << "() MDS hashing name '" << name << "', '" << suffix << "'"<< endl);
 
-    if(name.empty())
+    if (name.empty())
         throw BESInternalError("An empty name string was received by "
                 "GlobalMetadataStore::get_read_lock_helper(). That should never happen.", __FILE__, __LINE__);
-
 
     string item_name = get_cache_file_name(get_hash(name + suffix), false);
     int fd;

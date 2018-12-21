@@ -412,7 +412,14 @@ BESCatalogDirectory::get_node(const string &path) const
         BESDEBUG(MODULE, PROLOG <<  "The requested node '"+fullpath+"' is actually a leaf. Wut do?" << endl);
 
         CatalogItem *item = make_item(rootdir, path);
-        node->set_leaf(item);
+        if(item){
+            node->set_leaf(item);
+        }
+        else {
+            string msg(__func__);
+            msg += "() - Failed to build CatalogItem for "+ path + " BESCatlogDirectory::make_item() returned NULL.",
+            throw BESInternalError(msg,__FILE__, __LINE__);
+        }
 
         BESDEBUG(MODULE, PROLOG << "Actually, I'm a LEAF (" << (void*)item << ")" <<  endl);
         return node;
@@ -433,20 +440,28 @@ BESCatalogDirectory::get_node(const string &path) const
             node->set_lmt(get_time(full_path_stat_buf.st_mtime));
 
             dip = opendir(fullpath.c_str());
-            struct dirent *dit;
-            while ((dit = readdir(dip)) != NULL) {
-                CatalogItem * item = make_item(fullpath, dit->d_name);
-                if(item){
-                    if(item->get_type() == CatalogItem::node){
-                        node->add_node(item);
-                    }
-                    else {
-                        node->add_leaf(item);
+            if(dip == NULL){
+                // That went well...
+                // We need to return this "node", and at this point it is empty.
+                // Which is probably enough, so we do nothing more.
+                BESDEBUG(MODULE, PROLOG << "Unable to open '" << fullpath << "' SKIPPING (errno: " << std::strerror(errno) << ")"<<  endl);
+            }
+            else {
+                // otherwise we grind through the node contents...
+                struct dirent *dit;
+                while ((dit = readdir(dip)) != NULL) {
+                    CatalogItem * item = make_item(fullpath, dit->d_name);
+                    if(item){
+                        if(item->get_type() == CatalogItem::node){
+                            node->add_node(item);
+                        }
+                        else {
+                            node->add_leaf(item);
+                        }
                     }
                 }
+                closedir(dip);
             }
-
-            closedir(dip);
 
             CatalogItem::CatalogItemAscending ordering;
             sort(node->nodes_begin(), node->nodes_end(), ordering);

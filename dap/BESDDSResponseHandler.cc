@@ -30,6 +30,10 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
+#include <memory>
+
 #include <DDS.h>
 
 #include "BESDDSResponseHandler.h"
@@ -106,7 +110,9 @@ void BESDDSResponseHandler::execute(BESDataHandlerInterface &dhi)
         d_response_object = 0;
     }
     else {
-        DDS *dds = 0; // new DDS(NULL, "virtual");
+        DDS *dds = 0;
+
+        // Constrained DDS request (but not a CE with a function).
         if (mds && lock() && !function_in_ce(dhi.container->get_constraint())) {
             // If mds and lock(), the DDS is in the cache, get the _object_
             dds = mds->get_dds_object(dhi.container->get_relative_name());
@@ -117,11 +123,30 @@ void BESDDSResponseHandler::execute(BESDataHandlerInterface &dhi)
         }
         else {
             dds = new DDS(NULL, "virtual");
+
             d_response_object = new BESDDSResponse(dds);
 
             BESRequestHandlerList::TheList()->execute_each(dhi);
 
             dhi.first_container();  // must reset container; execute_each() iterates over all of them
+
+#if ANNOTATION_SYSTEM
+            // Support for the experimental Dataset Annotation system. jhrg 12/19/18
+            if (!d_annotation_service_url.empty()) {
+                // resp_dds is a convenience object
+                BESDDSResponse *resp_dds = static_cast<BESDDSResponse*>(d_response_object);
+
+                // Add the Annotation Service URL attribute in the DODS_EXTRA container.
+                AttrTable *dods_extra = resp_dds->get_dds()->get_attr_table().find_container(DODS_EXTRA_ATTR_TABLE);
+                if (dods_extra)
+                    dods_extra->append_attr(DODS_EXTRA_ANNOTATION_ATTR, "String", d_annotation_service_url);
+                else {
+                    auto_ptr<AttrTable> new_dods_extra(new AttrTable);
+                    new_dods_extra->append_attr(DODS_EXTRA_ANNOTATION_ATTR, "String", d_annotation_service_url);
+                    resp_dds->get_dds()->get_attr_table().append_container(new_dods_extra.release(), DODS_EXTRA_ATTR_TABLE);
+                }
+            }
+#endif
 
             // Cache the DDS if the MDS is not null but the DDS response was not in the cache
             if (mds && !lock() && !function_in_ce(dhi.container->get_constraint())) {

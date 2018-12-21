@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="sequence_1">
+    <Sequence name="outer">
+        <Int32 name="i"/>
+        <Int32 name="j"/>
+        <Sequence name="inner">
+            <Float32 name="x"/>
+            <Float32 name="y"/>
+        </Sequence>
+    </Sequence>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="AnnotationService" type="String">
+            <Value>http://localhost:8083/Feedback/form</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

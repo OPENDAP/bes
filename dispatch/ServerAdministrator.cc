@@ -34,6 +34,7 @@
 #include <TheBESKeys.h>
 #include <BESDebug.h>
 #include <BESUtil.h>
+#include <BESLog.h>
 #include "BESInternalFatalError.h"
 
 #include "ServerAdministrator.h"
@@ -45,8 +46,52 @@ using std::vector;
 #define prolog std::string("ServerAdministrator::").append(__func__).append("() - ")
 
 
+/**
+BES.ServerAdministrator=email:support@opendap.org
+BES.ServerAdministrator+=organization:OPeNDAP Inc.
+BES.ServerAdministrator+=street:165 NW Dean Knauss Dr.
+BES.ServerAdministrator+=city:Narragansett
+BES.ServerAdministrator+=region:RI
+BES.ServerAdministrator+=postalCode:02882
+BES.ServerAdministrator+=country:US
+BES.ServerAdministrator+=telephone:+1.401.575.4835
+BES.ServerAdministrator+=website:http://www.opendap.org
+**/
+
+#define EMAIL_KEY "email"
+#define EMAIL_DEFAULT "support@opendap.org"
+
+#define ORGANIZATION_KEY "organization"
+#define ORGANIZATION_DEFAULT "OPeNDAP Inc."
+
+#define STREET_KEY "street"
+#define STREET_DEFAULT "165 NW Dean Knauss Dr."
+
+#define CITY_KEY "city"
+#define CITY_DEFAULT "Narragansett"
+
+#define REGION_KEY "region"
+#define REGION_DEFAULT "RI"
+
+#define POSTAL_CODE_KEY "postalCode"
+#define POSTAL_CODE_DEFAULT "02882"
+
+#define COUNTRY_KEY "country"
+#define COUNTRY_DEFAULT "US"
+
+#define TELEPHONE_KEY "telephone"
+#define TELEPHONE_DEFAULT "+1.401.575.4835"
+
+#define WEBSITE_KEY "website"
+#define WEBSITE_DEFAULT "http://www.opendap.org"
+
+
 namespace bes {
 
+/**
+ * Tries to read the SERVER_ADMINISTRATOR_KEY keys from the BESKeys if there is a prblem in the formatting
+ * of the entries the default administrator (OPeNDAP Inc.) is returned.
+ */
 ServerAdministrator::ServerAdministrator(){
     bool found = false;
     vector<string> admin_keys;
@@ -54,6 +99,9 @@ ServerAdministrator::ServerAdministrator(){
     if(!found){
         throw BESInternalFatalError(string("The BES configuration must provide server administrator information using the key: '")+SERVER_ADMINISTRATOR_KEY
             +"'", __FILE__, __LINE__);
+        BESDEBUG(MODULE,__func__ << "() -  ERROR! The BES configuration must provide server administrator information using the key " << SERVER_ADMINISTRATOR_KEY << endl);
+        mk_default();
+        return;
     }
 
     vector<string>::iterator it;
@@ -67,11 +115,33 @@ ServerAdministrator::ServerAdministrator(){
             d_admin_info.insert( std::pair<string,string>(key,value));
         }
         else {
-            throw BESInternalFatalError(string("The configuration entry for the ") + SERVER_ADMINISTRATOR_KEY +
-                " was incorrectly formatted. entry: "+admin_info_entry, __FILE__,__LINE__);
+            //throw BESInternalFatalError(string("The configuration entry for the ") + SERVER_ADMINISTRATOR_KEY +
+            //    " was incorrectly formatted. entry: "+admin_info_entry, __FILE__,__LINE__);
+            BESDEBUG(MODULE,__func__ << "() -  The configuration entry for the " << SERVER_ADMINISTRATOR_KEY << " was incorrectly formatted.  Offending entry: " << admin_info_entry << endl);
+            mk_default();
+            return;
         }
     }
+    d_organization = get(ORGANIZATION_KEY);
+    d_street = get(STREET_KEY);
+    d_city = get(CITY_KEY);
+    d_region = get(REGION_KEY);
+    d_postal_code = get(POSTAL_CODE_KEY);
+    d_country = get(COUNTRY_KEY);
+    d_telephone = get(TELEPHONE_KEY);
+    d_email = get(EMAIL_KEY);
+    d_website = get(WEBSITE_KEY);
+
+    // %TODO This is a pretty simple (and brutal) qc in that any missing value prompts all of it to be rejected. Review. Fix?
+    if(d_organization.empty() || d_street.empty() || d_city.empty()
+        || d_region.empty() || d_postal_code.empty() || d_country.empty()
+        || d_telephone.empty() || d_email.empty() || d_website.empty() ){
+        mk_default();
+        BESDEBUG(MODULE,__func__ << "() -  The configuration entry for the " << SERVER_ADMINISTRATOR_KEY << " was missing crucial information.  jdump(): " << jdump(true) << endl);
+    }
 }
+
+
 
 std::string ServerAdministrator::get(const string &key){
     string lkey = BESUtil::lowercase(key);
@@ -81,6 +151,10 @@ std::string ServerAdministrator::get(const string &key){
     }
     return result->second;
 }
+
+
+
+
 
 std::string ServerAdministrator::xdump() const {
     std::stringstream ss;
@@ -127,6 +201,24 @@ std::string ServerAdministrator::jdump(bool compact) const {
         ss << endl;
     return ss.str();
 }
+
+
+void ServerAdministrator::mk_default() {
+    this->d_admin_info.clear();
+    d_admin_info.insert( std::pair<string,string>(EMAIL_KEY,EMAIL_DEFAULT));
+    d_admin_info.insert( std::pair<string,string>(ORGANIZATION_KEY,ORGANIZATION_DEFAULT));
+    d_admin_info.insert( std::pair<string,string>(STREET_KEY,STREET_DEFAULT));
+    d_admin_info.insert( std::pair<string,string>(CITY_KEY,CITY_DEFAULT));
+    d_admin_info.insert( std::pair<string,string>(REGION_KEY,REGION_DEFAULT));
+    d_admin_info.insert( std::pair<string,string>(POSTAL_CODE_KEY,POSTAL_CODE_DEFAULT));
+    d_admin_info.insert( std::pair<string,string>(COUNTRY_KEY,COUNTRY_DEFAULT));
+    d_admin_info.insert( std::pair<string,string>(TELEPHONE_KEY,TELEPHONE_DEFAULT));
+    d_admin_info.insert( std::pair<string,string>(WEBSITE_KEY,WEBSITE_DEFAULT));
+    BESDEBUG(MODULE,__func__ << "() - ServerAdministrator values have been set to the defaults:  " << jdump(true) << endl);
+}
+
+
+
 
 
 } // namespace bes
