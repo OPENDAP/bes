@@ -43,7 +43,7 @@ class BESContainerStorage;
 class BESContainer;
 class BESInfo;
 
-#define DEFAULT "default"
+#define DEFAULT "catalog"
 
 /** @brief Provides a mechanism for accessing container information from
  * different container stores registered with this server.

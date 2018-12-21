@@ -94,10 +94,10 @@ int BESDefaultModule::initialize(int, char**)
 
     // Default places to store containers and definitions. Support both "default" and "catalog"
     BESContainerStorageList::TheList()->add_persistence(new BESContainerStorageVolatile( DEFAULT ));
-    BESContainerStorageList::TheList()->add_persistence(new BESContainerStorageVolatile( CATALOG ));
+    //BESContainerStorageList::TheList()->add_persistence(new BESContainerStorageVolatile( CATALOG ));
 
     BESDefinitionStorageList::TheList()->add_persistence(new BESDefinitionStorageVolatile( DEFAULT ));
-    BESDefinitionStorageList::TheList()->add_persistence(new BESDefinitionStorageVolatile( CATALOG ));
+    //BESDefinitionStorageList::TheList()->add_persistence(new BESDefinitionStorageVolatile( CATALOG ));
 
     BESResponseHandlerList::TheList()->add_handler( HELP_RESPONSE, BESHelpResponseHandler::HelpResponseBuilder);
 
@@ -184,10 +184,10 @@ int BESDefaultModule::terminate(void)
     BESInfoList::TheList()->rem_info_builder( BES_XML_INFO );
 
     BESContainerStorageList::TheList()->deref_persistence( DEFAULT );
-    BESContainerStorageList::TheList()->deref_persistence( CATALOG );
+    //BESContainerStorageList::TheList()->deref_persistence( CATALOG );
 
     BESDefinitionStorageList::TheList()->deref_persistence( DEFAULT );
-    BESDefinitionStorageList::TheList()->deref_persistence( CATALOG );
+    //BESDefinitionStorageList::TheList()->deref_persistence( CATALOG );
 
     BESDEBUG("bes", "Done Removing default modules" << endl);
 
