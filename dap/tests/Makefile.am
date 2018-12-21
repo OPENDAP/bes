@@ -11,7 +11,7 @@ AM_CXXFLAGS =
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-noinst_DATA = bes.conf
+noinst_DATA = bes.conf bes.annotation.conf
 
 # Using this will result in a summary of tests while the check-local
 # target will show the individual tests. Defining both targets will
@@ -19,16 +19,15 @@ noinst_DATA = bes.conf
 #
 # TESTS = testsuite
 
-CLEANFILES = bes.conf
+CLEANFILES = bes.conf bes.annotation.conf
 
 # NB: Make sure to distribute both the source and generated files
 # for the test
-EXTRA_DIST = $(TESTSUITE) $(TESTSUITE).at atlocal.in \
-bes.conf.in handler_tests_macros.m4 bescmd $(srcdir)/package.m4
+EXTRA_DIST = $(TESTSUITE) $(TESTSUITE).at $(TESTSUITE2) $(TESTSUITE2).at \
+atlocal.in bes.conf.in bes.annotation.conf.in handler_tests_macros.m4 \
+$(srcdir)/package.m4 bescmd
 
 DISTCLEANFILES = atconfig
-
-BES_CONF_IN = bes.conf.in
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
@@ -52,11 +51,12 @@ TESTSUITE2 = $(srcdir)/annotation_testsuite
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
+	test ! -f '$(TESTSUITE2)' || $(SHELL) '$(TESTSUITE2)' --clean
 	-rm -f $(TESTSUITE) $(srcdir)/package.m4 
 
 check-local: $(TESTSUITE) $(TESTSUITE2) bes.conf bes.annotation.conf
-	$(TESTSUITE)
-	$(TESTSUITE2) --conf bes.annotation.conf
+	$(SHELL) $(TESTSUITE)
+	$(SHELL) $(TESTSUITE2) --conf bes.annotation.conf
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
