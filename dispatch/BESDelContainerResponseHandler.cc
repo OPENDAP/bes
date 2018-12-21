@@ -86,7 +86,7 @@ void BESDelContainerResponseHandler::execute(BESDataHandlerInterface &dhi)
     string store_name = dhi.data[STORE_NAME];
     if (container_name != "") {
         if (store_name == "")
-            store_name = PERSISTENCE_VOLATILE;
+            store_name = DEFAULT;
         BESContainerStorage *cp = BESContainerStorageList::TheList()->find_persistence(store_name);
         if (cp) {
             bool deleted = cp->del_container(dhi.data[CONTAINER_NAME]);

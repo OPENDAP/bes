@@ -43,7 +43,7 @@ class BESContainerStorage;
 class BESContainer;
 class BESInfo;
 
-#define PERSISTENCE_VOLATILE "default"
+#define DEFAULT "default"
 
 /** @brief Provides a mechanism for accessing container information from
  * different container stores registered with this server.

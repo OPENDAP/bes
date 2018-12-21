@@ -105,7 +105,7 @@ parse_request(BESTokenizer & tokenizer, BESDataHandlerInterface & dhi)
     // Or do it like the containers, just find the first one available? Same
     // question for containers then?
     /*
-       string store_name = PERSISTENCE_VOLATILE ;
+       string store_name = DEFAULT ;
        BESDefinitionStorage *store =
        BESDefinitionStorageList::TheList()->find_def( store_name ) ;
        if( !store )

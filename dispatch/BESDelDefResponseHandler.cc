@@ -90,7 +90,7 @@ BESDelDefResponseHandler::execute( BESDataHandlerInterface &dhi )
     if( def_name != "" )
     {
 	if( store_name == "" )
-	    store_name = PERSISTENCE_VOLATILE ;
+	    store_name = DEFAULT ;
 	BESDefinitionStorage *store =
 	    BESDefinitionStorageList::TheList()->find_persistence( store_name ) ;
 	if( store )
