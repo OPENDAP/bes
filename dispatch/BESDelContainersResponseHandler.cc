@@ -89,7 +89,7 @@ BESDelContainersResponseHandler::execute( BESDataHandlerInterface &dhi )
     string store_name = dhi.data[STORE_NAME] ;
     if( store_name == "" )
     {
-	store_name = PERSISTENCE_VOLATILE ;
+	store_name = DEFAULT ;
     }
     BESContainerStorage *cp =
 	BESContainerStorageList::TheList()->find_persistence( store_name ) ;

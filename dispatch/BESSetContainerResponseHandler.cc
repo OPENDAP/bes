@@ -32,11 +32,6 @@
 
 #include "BESSetContainerResponseHandler.h"
 
-#if 0
-#include "BESSilentInfo.h"
-#endif
-
-
 #include "BESCatalogList.h"
 #include "BESContainerStorageList.h"
 #include "BESContainerStorage.h"
@@ -51,7 +46,7 @@
 #define prolog std::string("BESSetContainerResponseHandler::").append(__func__).append("() - ")
 
 BESSetContainerResponseHandler::BESSetContainerResponseHandler(const string &name) :
-        BESResponseHandler(name)
+    BESResponseHandler(name)
 {
 }
 
@@ -81,42 +76,39 @@ BESSetContainerResponseHandler::~BESSetContainerResponseHandler()
 void BESSetContainerResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
 #if 0
-	dhi.action_name = SETCONTAINER_STR;
+    dhi.action_name = SETCONTAINER_STR;
     BESInfo *info = new BESSilentInfo();
     d_response_object = info;
 #endif
 
+#if 0
     string store_name = dhi.data[STORE_NAME];
     string symbolic_name = dhi.data[SYMBOLIC_NAME];
     string real_name = dhi.data[REAL_NAME];
     string container_type = dhi.data[CONTAINER_TYPE];
+#endif
+
 
     BESDEBUG(MODULE, prolog << "store = " << dhi.data[STORE_NAME] << endl);
     BESDEBUG(MODULE, prolog << "symbolic = " << dhi.data[SYMBOLIC_NAME] << endl);
     BESDEBUG(MODULE, prolog << "real = " << dhi.data[REAL_NAME] << endl);
     BESDEBUG(MODULE, prolog << "type = " << dhi.data[CONTAINER_TYPE] << endl);
 
-
+#if 0
     BESCatalog *cat = BESUtil::separateCatalogFromPath(real_name);
-    if(cat){
-        store_name = cat->get_catalog_name();
-    }
-   // BESCatalogList::TheCatalogList()->find_catalog(real_name);
+    if (cat) store_name = cat->get_catalog_name();
 
     BESDEBUG(MODULE, prolog << "store_name = " << store_name << endl);
+#endif
 
-    BESContainerStorage *cp = BESContainerStorageList::TheList()->find_persistence(store_name);
+
+    BESContainerStorage *cp = BESContainerStorageList::TheList()->find_persistence(dhi.data[STORE_NAME]);
     if (cp) {
-        BESDEBUG(MODULE, prolog << "Adding the container..." << endl);
-
-        cp->del_container(symbolic_name);
-        cp->add_container(symbolic_name, real_name, container_type);
-
-        BESDEBUG(MODULE, prolog << "Done" << endl);
+        cp->del_container(dhi.data[SYMBOLIC_NAME]);
+        cp->add_container(dhi.data[SYMBOLIC_NAME], dhi.data[REAL_NAME], dhi.data[CONTAINER_TYPE]);
     }
     else {
-        string ret = (string) "Unable to add container '" + symbolic_name + "' to container storage '" + store_name
-                + "'. Store does not exist.";
+        string ret = (string) "Unable to add container '" + dhi.data[SYMBOLIC_NAME] + "' to container storage '" + dhi.data[STORE_NAME] + "'. Store does not exist.";
         throw BESSyntaxUserError(ret, __FILE__, __LINE__);
     }
 }
@@ -139,7 +131,7 @@ void BESSetContainerResponseHandler::transmit(BESTransmitter */*transmitter*/, B
     if (d_response_object) {
         BESInfo *info = dynamic_cast<BESInfo *>(d_response_object);
         if (!info)
-            throw BESInternalError("cast error", __FILE__, __LINE__);
+        throw BESInternalError("cast error", __FILE__, __LINE__);
         info->transmit(transmitter, dhi);
     }
 #endif
