@@ -105,7 +105,7 @@ void BESXMLSetContainerCommand::parse_request(xmlNode *node)
         d_xmlcmd_dhi.data[STORE_NAME] = props["space"];
     }
     else {
-        d_xmlcmd_dhi.data[STORE_NAME] = DEFAULT; // DEFAULT == "default"
+        d_xmlcmd_dhi.data[STORE_NAME] = CATALOG /* DEFAULT jhrg 12/27/18 */; // CATALOG == "catalog" DEFAULT == "default"
     }
 
     // 'type' can be empty (not used), so just set it this way
