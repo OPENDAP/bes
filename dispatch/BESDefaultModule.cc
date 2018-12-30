@@ -92,7 +92,7 @@ int BESDefaultModule::initialize(int, char**)
 {
     BESDEBUG("bes", "Initializing default modules:" << endl);
 
-    // Default places to store containers and definitions. Support both "default" and "catalog"
+    // TODO Remove this. jhrg 12/27/18
     //BESContainerStorageList::TheList()->add_persistence(new BESContainerStorageVolatile( DEFAULT ));
     //BESContainerStorageList::TheList()->add_persistence(new BESContainerStorageVolatile( CATALOG ));
 
@@ -128,12 +128,6 @@ int BESDefaultModule::initialize(int, char**)
     BESResponseHandlerList::TheList()->add_handler( DELETE_DEFINITIONS, BESDelDefsResponseHandler::DelDefsResponseBuilder);
 
     BESResponseHandlerList::TheList()->add_handler( SET_CONTEXT, BESSetContextResponseHandler::SetContextResponseBuilder);
-
-#if 0
-    // Moved this to the xmlcommand code that loads the commands. It can be in either place, but
-    // it's easier to see how the commands are built if they are in there. jhrg 2/9/18
-    BESResponseHandlerList::TheList()->add_handler(SET_CONTEXTS_ACTION, SetContextsResponseHandler::SetContextsResponseBuilder );
-#endif
 
     BESResponseHandlerList::TheList()->add_handler( SHOW_CONTEXT, BESShowContextResponseHandler::ShowContextResponseBuilder);
     BESResponseHandlerList::TheList()->add_handler( SHOW_ERROR, BESShowErrorResponseHandler::ResponseBuilder);
@@ -186,11 +180,8 @@ int BESDefaultModule::terminate(void)
     BESInfoList::TheList()->rem_info_builder( BES_HTML_INFO );
     BESInfoList::TheList()->rem_info_builder( BES_XML_INFO );
 
-    BESContainerStorageList::TheList()->deref_persistence( DEFAULT );
-    //BESContainerStorageList::TheList()->deref_persistence( CATALOG );
-
     BESDefinitionStorageList::TheList()->deref_persistence( DEFAULT );
-    //BESDefinitionStorageList::TheList()->deref_persistence( CATALOG );
+    BESDefinitionStorageList::TheList()->deref_persistence( CATALOG );
 
     BESDEBUG("bes", "Done Removing default modules" << endl);
 

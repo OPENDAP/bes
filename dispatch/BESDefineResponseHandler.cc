@@ -104,7 +104,7 @@ void BESDefineResponseHandler::execute(BESDataHandlerInterface &dhi)
             dhi.next_container();
         }
 
-        // TODO Now no-ops. Aggreagtion removed. jhrg 2/11/18
+        // TODO Now no-ops. Aggregation removed. jhrg 2/11/18
 #if 0
         dd->set_agg_cmd(dhi.data[AGG_CMD]);
         dd->set_agg_handler(dhi.data[AGG_HANDLER]);
