@@ -21,6 +21,7 @@ printenv
 
 echo "pwd = `pwd`"
 
+cd $HOME
 
 #Get the pre-built dependencies (all static libraries) for ubuntu.
 (cd /tmp && curl -s -O https://s3.amazonaws.com/opendap.travis.build/hyrax-dependencies-$OS-static.tar.gz)
@@ -30,19 +31,21 @@ tar -xzvf /tmp/hyrax-dependencies-$OS-static.tar.gz
 
 # Then get the libdap debian package
 # libdap-3.20.2-1_amd64.deb
-(cd /tmp && curl -s -O https://s3.amazonaws.com/opendap.travis.build/libdap_$LIBDAP_RPM_VERSION_amd64.deb)
+(cd /tmp && curl -s -O https://s3.amazonaws.com/opendap.travis.build/libdap_${LIBDAP_RPM_VERSION}_amd64.deb)
 
+dpkg -i /tmp/libdap_${LIBDAP_RPM_VERSION}_amd64.deb
 
 # Get a fresh copy of the sources and any submodules
 git clone https://github.com/opendap/bes
 
-cd bes
+cd $HOME/bes
 
 git submodule update --init --recursive
 
 # build (autoreconf; configure, make)
 autoreconf -fiv
 
+#$prefix is set in the Dockerfile
 ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps
 
 make deb -j7
