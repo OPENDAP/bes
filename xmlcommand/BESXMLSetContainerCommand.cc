@@ -30,13 +30,21 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include "BESXMLSetContainerCommand.h"
 #include "BESContainerStorageList.h"
+#include "BESCatalog.h"
+
 #include "BESXMLUtils.h"
 #include "BESUtil.h"
+
 #include "BESResponseNames.h"
 #include "BESDataNames.h"
+
 #include "BESSyntaxUserError.h"
+#include "BESInternalError.h"
+#include "BESLog.h"
 #include "BESDebug.h"
 
 BESXMLSetContainerCommand::BESXMLSetContainerCommand(const BESDataHandlerInterface &base_dhi) :
@@ -55,17 +63,17 @@ BESXMLSetContainerCommand::BESXMLSetContainerCommand(const BESDataHandlerInterfa
 void BESXMLSetContainerCommand::parse_request(xmlNode *node)
 {
     string action;	// name of the node, should be setContainer
-    string name;	// symbolic name of the container as name=""
-    string storage;	// storage of container, default is default, as space=
+    // string name;	// symbolic name of the container as name=""
+    // string storage;	// storage of container, default is default, as space=
     string value;	// real name of the container, e.g. path
 
     map<string, string> props;
     BESXMLUtils::GetNodeInfo(node, action, value, props);
     if (action != SETCONTAINER_STR) {
-        string err = "The specified command " + action + " is not a set container command";
-        throw BESSyntaxUserError(err, __FILE__, __LINE__);
+        throw BESInternalError(string("The specified command ").append(action).append(" is not a set container command."), __FILE__, __LINE__);
     }
 
+#if 0
     string cname;
     string cvalue;
     map<string, string> cprops;
@@ -75,42 +83,38 @@ void BESXMLSetContainerCommand::parse_request(xmlNode *node)
         string err = action + " command: container real name missing";
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
+#endif
+    if (value.empty())
+        throw BESSyntaxUserError(action + " command: container real name missing", __FILE__, __LINE__);
 
     // what is the symbolic name of this container
-    name = props["name"];
-    if (name.empty()) {
-        string err = action + " command: name property missing";
-        throw BESSyntaxUserError(err, __FILE__, __LINE__);
-    }
-    d_xmlcmd_dhi.data[SYMBOLIC_NAME] = name;
+    if (props["name"].empty())
+        throw BESSyntaxUserError(action + " command: name property missing", __FILE__, __LINE__);
 
-#if 0
+    d_xmlcmd_dhi.data[SYMBOLIC_NAME] = props["name"];
+
     // where should this container be stored
-    d_xmlcmd_dhi.data[STORE_NAME] = PERSISTENCE_VOLATILE;
-    storage = props["space"];
-    if (!storage.empty()) {
-        d_xmlcmd_dhi.data[STORE_NAME] = storage;
-    }
-    else {
-        storage = PERSISTENCE_VOLATILE;
-    }
-#endif
-    // where should this container be stored
-    storage = props["space"];
-    if (!storage.empty()) {
-        d_xmlcmd_dhi.data[STORE_NAME] = storage;
-    }
-    else {
-        d_xmlcmd_dhi.data[STORE_NAME] = PERSISTENCE_VOLATILE; // PERSISTENCE_VOLATILE == "default"
+    BESCatalog *cat = BESUtil::separateCatalogFromPath(value);
+    if (cat) {
+        if (!props["space"].empty())
+            VERBOSE("SetContainer called with 'space=\"" << props["space"] << "\" but the pathname uses \"" << cat->get_catalog_name() << "\"");
+        props["space"] = cat->get_catalog_name();
     }
 
-    // this can be the empty string, so just set it this way
-    string container_type = props["type"];
-    d_xmlcmd_dhi.data[CONTAINER_TYPE] = container_type;
+    if (!props["space"].empty()) {
+        d_xmlcmd_dhi.data[STORE_NAME] = props["space"];
+    }
+    else {
+        d_xmlcmd_dhi.data[STORE_NAME] = CATALOG /* DEFAULT jhrg 12/27/18 */; // CATALOG == "catalog" DEFAULT == "default"
+    }
+
+    // 'type' can be empty (not used), so just set it this way
+    d_xmlcmd_dhi.data[CONTAINER_TYPE] = props["type"];
 
     // now that everything has passed tests, set the value in the dhi
     d_xmlcmd_dhi.data[REAL_NAME] = value;
 
+#if 0
     // if there is a child node, then the real value of the container is
     // this content, or is set in this content.
     if (real) {
@@ -121,17 +125,18 @@ void BESXMLSetContainerCommand::parse_request(xmlNode *node)
             d_xmlcmd_dhi.data[REAL_NAME] = (char *) (buf->content);
         }
     }
+#endif
 
     d_xmlcmd_dhi.action = SETCONTAINER;
 
-    d_cmd_log_info = (string) "set container in " + storage + " values " + name + "," + value;
-    if (!container_type.empty()) {
-        d_cmd_log_info += "," + container_type;
+    d_cmd_log_info = (string) "set container in " + props["space"] + " values " + props["name"] + "," + value;
+    if (!props["type"].empty()) {
+        d_cmd_log_info += "," + props["type"];
     }
     d_cmd_log_info += ";";
 
-    // now that we've set the action, go get the response handler for the
-    // action
+    // now that we've set the action, go get the response handler for the action.
+    // The class the evaluates this command is dispatch/BESSetContainerresponseHandler.
     BESXMLCommand::set_response();
 }
 

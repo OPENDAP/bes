@@ -39,6 +39,10 @@ BES.LogVerbose=no
 # Set to 'yes' to use local time in the bes log. UTC is used by default.
 # BES.LogTimeLocal=yes
 
+# Set this to true to suppress source file name from the log file. The 
+# default value is false.
+# BES.DoNotLogSourceFilenames
+
 # Set the value of BES.Catalog.catalog.RootDirectory to the root
 # directory of the data this BES will serve. If you are not using the 
 # BES in conjunction with Hyrax, but as a standalone server, set this 
@@ -83,6 +87,16 @@ BES.UncompressCache.size=500
 # the value of this parameter defaults to false.
 
 # BES.CancelTimeoutOnSend=true
+
+# Experimental: Annotation service URL. Set this parameter to the URL
+# of an annotation service. If the value is not null, then a global
+# attribute will be added to the DAS/DMR response for every dataset
+# available using this server so that clients can access the annotation
+# service. The name of the attribute will be 'Annotation'.
+
+BES.AnnotationServiceURL = 
+
+# BES.AnnotationServiceURL = http://localhost:8083/Feedback/form
 
 #########################################################################
 #                                                                       #

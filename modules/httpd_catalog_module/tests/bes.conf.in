@@ -20,30 +20,13 @@ BES.module.httpd=@abs_top_builddir@/modules/httpd_catalog_module/.libs/libhttpd_
 # Default Catalog 
 BES.Catalog.Default=catalog
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/httpd_catalog_module
+
 BES.Data.RootDirectory=/dev/null
+
 BES.Catalog.catalog.TypeMatch=dapreader:.*\.das$;dapreader:.*\.dods$;nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
 BES.Catalog.catalog.FollowSymLinks=No
-
-BES.FollowSymLinks=No
-
-BES.ServerPort=10002
-
-BES.ServerSecure=no
-BES.ServerSecurePort=10003
-BES.ServerCertFile=/full/path/to/serverside/certificate/file.pem
-BES.ServerKeyFile=/full/path/to/serverside/key/file.pem
-BES.ClientCertFile=/full/path/to/clientside/certificate/file.pem
-BES.ClientKeyFile=/full/path/to/clientside/key/file.pem
-
-BES.Help.TXT=@pkgdatadir@/bes_help.txt
-BES.Help.HTML=@pkgdatadir@/bes_help.html
-BES.Help.XML=@pkgdatadir@/bes_help.txt
-
-DAP.Help.TXT=@pkgdatadir@/dap_help.txt
-DAP.Help.HTML=@pkgdatadir@/dap_help.html
-DAP.Help.XML=@pkgdatadir@/dap_help.txt
 
 BES.Info.Buffered=no
 BES.Info.Type=xml
@@ -52,16 +35,6 @@ BES.UncompressCache.dir=/tmp
 BES.UncompressCache.prefix=uncompress_cache
 BES.UncompressCache.size=500
 
-BES.Container.Persistence=strict
-
-BES.Memory.GlobalArea.EmergencyPoolSize=1
-BES.Memory.GlobalArea.MaximumHeapSize=20
-BES.Memory.GlobalArea.Verbose=no
-BES.Memory.GlobalArea.ControlHeap=no
-
-BES.ProcessManagerMethod=multiple
-
-BES.DefaultResponseMethod=POST
 
 #-----------------------------------------------------------------------#
 #                                                                       #
@@ -69,35 +42,20 @@ BES.DefaultResponseMethod=POST
 #                                                                       #
 #-----------------------------------------------------------------------#
 
-#
-# httpd_catalog Test Configuration 
-#
-
-# Need to whitelist the test server so we can talk to it.
+# Need to white list the test server so we can talk to it.
 Gateway.Whitelist=http://localhost
 Gateway.Whitelist+=http://test.opendap.org
 
-
-# Configure dat cache
+# Configure data cache
 HttpResourceCache.dir=@abs_top_builddir@/modules/httpd_catalog_module/tests/cache
-#HttpResourceCache.dir=/tmp/cache
 HttpResourceCache.prefix=httpd_cat_
 HttpResourceCache.size=500
 
-
-BES.Catalog.Default=catalog
-BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/httpd_catalog_module
-BES.Catalog.catalog.TypeMatch=dapreader:.*\.das$;dapreader:.*\.dods$;nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$
-
 BES.Catalog.RemoteResources.RootDirectory=UNUSED
-BES.Catalog.RemoteResources.TypeMatch+=unused:*;
+BES.Catalog.RemoteResources.TypeMatch=unused:*;
 
 Httpd_Catalog.MimeTypes=nc:application/x-netcdf
 Httpd_Catalog.MimeTypes+=h4:application/x-hdf
 Httpd_Catalog.MimeTypes+=h5:application/x-hdf5
 
-Httpd_Catalog.Collections+=test:http://test.opendap.org/data/
-
-
-
-
+Httpd_Catalog.Collections=test:http://test.opendap.org/data/

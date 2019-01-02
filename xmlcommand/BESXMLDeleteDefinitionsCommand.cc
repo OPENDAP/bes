@@ -65,8 +65,8 @@ void BESXMLDeleteDefinitionsCommand::parse_request(xmlNode *node)
     string storage = props["space"];
     d_xmlcmd_dhi.data[STORE_NAME] = storage;
     if (d_xmlcmd_dhi.data[STORE_NAME].empty()) {
-        d_xmlcmd_dhi.data[STORE_NAME] = PERSISTENCE_VOLATILE;
-        storage = PERSISTENCE_VOLATILE;
+        d_xmlcmd_dhi.data[STORE_NAME] = DEFAULT;
+        storage = DEFAULT;
     }
 
     d_xmlcmd_dhi.action = DELETE_DEFINITIONS;

@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -32,7 +32,7 @@
 
 #include "BESResponseHandlerList.h"
 
-BESResponseHandlerList *BESResponseHandlerList::_instance = 0 ;
+BESResponseHandlerList *BESResponseHandlerList::_instance = 0;
 
 /** @brief add a response handler to the list
  *
@@ -48,18 +48,14 @@ BESResponseHandlerList *BESResponseHandlerList::_instance = 0 ;
  * @see BESResponseHandler
  * @see BESResponseObject
  */
-bool
-BESResponseHandlerList::add_handler( const string &handler_name,
-			      	     p_response_handler handler_method )
+bool BESResponseHandlerList::add_handler(const string &handler_name, p_response_handler handler_method)
 {
-    BESResponseHandlerList::Handler_citer i ;
-    i = _handler_list.find( handler_name ) ;
-    if( i == _handler_list.end() )
-    {
-	_handler_list[handler_name] = handler_method ;
-	return true ;
+    BESResponseHandlerList::Handler_citer i = _handler_list.find(handler_name);
+    if (i == _handler_list.end()) {
+        _handler_list[handler_name] = handler_method;
+        return true;
     }
-    return false ;
+    return false;
 }
 
 /** @brief removes a response handler from the list
@@ -71,17 +67,14 @@ BESResponseHandlerList::add_handler( const string &handler_name,
  * @return true if successfully removed, false if it doesn't exist in the list
  * @see BESResponseHandler
  */
-bool
-BESResponseHandlerList::remove_handler( const string &handler_name )
+bool BESResponseHandlerList::remove_handler(const string &handler_name)
 {
-    BESResponseHandlerList::Handler_iter i ;
-    i = _handler_list.find( handler_name ) ;
-    if( i != _handler_list.end() )
-    {
-	_handler_list.erase( i ) ;
-	return true ;
+    BESResponseHandlerList::Handler_iter i = _handler_list.find(handler_name);
+    if (i != _handler_list.end()) {
+        _handler_list.erase(i);
+        return true;
     }
-    return false ;
+    return false;
 }
 
 /** @brief returns the response handler with the given name from the list
@@ -97,19 +90,16 @@ BESResponseHandlerList::remove_handler( const string &handler_name )
  * @see BESResponseHandler
  */
 BESResponseHandler *
-BESResponseHandlerList::find_handler( const string &handler_name )
+BESResponseHandlerList::find_handler(const string &handler_name)
 {
-    BESResponseHandlerList::Handler_citer i ;
-    i = _handler_list.find( handler_name ) ;
-    if( i != _handler_list.end() )
-    {
-	p_response_handler p = (*i).second ;
-	if( p )
-	{
-	    return p( handler_name ) ;
-	}
+    BESResponseHandlerList::Handler_citer i = _handler_list.find(handler_name);
+    if (i != _handler_list.end()) {
+        p_response_handler p = (*i).second;
+        if (p) {
+            return p(handler_name);
+        }
     }
-    return 0 ;
+    return 0;
 }
 
 /** @brief returns the comma separated list of all response handlers currently registered with this server.
@@ -119,20 +109,17 @@ BESResponseHandlerList::find_handler( const string &handler_name )
  *
  * @return comma separated list of response handler names
  */
-string
-BESResponseHandlerList::get_handler_names()
+string BESResponseHandlerList::get_handler_names()
 {
     string ret = "";
-    bool first_name = true ;
-    BESResponseHandlerList::Handler_citer i = _handler_list.begin() ;
-    for( ; i != _handler_list.end(); i++ )
-    {
-	if( !first_name )
-	    ret += ", " ;
-	ret += (*i).first ;
-	first_name = false ;
+    bool first_name = true;
+    BESResponseHandlerList::Handler_citer i = _handler_list.begin();
+    for (; i != _handler_list.end(); i++) {
+        if (!first_name) ret += ", ";
+        ret += (*i).first;
+        first_name = false;
     }
-    return ret ;
+    return ret;
 }
 
 /** @brief dumps information about this object
@@ -142,38 +129,32 @@ BESResponseHandlerList::get_handler_names()
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESResponseHandlerList::dump( ostream &strm ) const
+void BESResponseHandlerList::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESResponseHandlerList::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    if( _handler_list.size() )
-    {
-	strm << BESIndent::LMarg << "registered response handlers:" << endl ;
-	BESIndent::Indent() ;
-	BESResponseHandlerList::Handler_citer i = _handler_list.begin() ;
-	BESResponseHandlerList::Handler_citer ie = _handler_list.end() ;
-	for( ; i != ie; i++ )
-	{
-	    strm << BESIndent::LMarg << (*i).first << endl ;
-	}
-	BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESResponseHandlerList::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    if (_handler_list.size()) {
+        strm << BESIndent::LMarg << "registered response handlers:" << endl;
+        BESIndent::Indent();
+        BESResponseHandlerList::Handler_citer i = _handler_list.begin();
+        BESResponseHandlerList::Handler_citer ie = _handler_list.end();
+        for (; i != ie; i++) {
+            strm << BESIndent::LMarg << (*i).first << endl;
+        }
+        BESIndent::UnIndent();
     }
-    else
-    {
-	strm << BESIndent::LMarg << "registered response handlers: none" << endl ;
+    else {
+        strm << BESIndent::LMarg << "registered response handlers: none" << endl;
     }
-    BESIndent::UnIndent() ;
+    BESIndent::UnIndent();
 }
 
 BESResponseHandlerList *
 BESResponseHandlerList::TheList()
 {
-    if( _instance == 0 )
-    {
-	_instance = new BESResponseHandlerList ;
+    if (_instance == 0) {
+        _instance = new BESResponseHandlerList;
     }
-    return _instance ;
+    return _instance;
 }
 

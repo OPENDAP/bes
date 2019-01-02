@@ -32,6 +32,7 @@ TESTSUITE = $(srcdir)/testsuite
 
 check-local: $(TESTSUITE) atconfig atlocal bes.conf
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+	-rm -rf $(builddir)/cache/*
 
 installcheck-local: $(TESTSUITE) atconfig atlocal 
 	$(SHELL) '$(TESTSUITE)' AUTOTEST_PATH='$(bindir)' $(TESTSUITEFLAGS)
@@ -39,7 +40,7 @@ installcheck-local: $(TESTSUITE) atconfig atlocal
 clean-local: 
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
 	-rm -f $(TESTSUITE) $(srcdir)/package.m4 
-	-rm -fr $(builddir)/cache 
+	-rm -rf $(builddir)/cache/*
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 

@@ -45,22 +45,13 @@
 #include <sstream>
 #include <iostream>
 
-#include "Error.h"
-
 #include "BESInterface.h"
 
 #include "TheBESKeys.h"
 #include "BESResponseHandler.h"
-// #include "BESAggFactory.h"
-// #include "BESAggregationServer.h"
-// #include "BESReporterList.h"
 #include "BESContextManager.h"
 
 #include "BESDapError.h"
-#if 0
-#include "BESDapErrorInfo.h"
-#include "BESInfoList.h"
-#endif
 
 #include "BESTransmitterNames.h"
 #include "BESDataNames.h"

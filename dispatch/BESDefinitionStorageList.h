@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -35,15 +35,22 @@
 
 #include <string>
 
-using std::string ;
+//using std::string;
 
 #include "BESObj.h"
 
-class BESDefinitionStorage ;
-class BESDefine ;
-class BESInfo ;
+class BESDefinitionStorage;
+class BESDefine;
+class BESInfo;
 
-#define PERSISTENCE_VOLATILE "default"
+#ifndef DEFAULT
+#define DEFAULT "default"
+#endif
+
+#ifndef CATALOG
+#define CATALOG "catalog"
+#endif
+
 
 /** @brief Provides a mechanism for accessing definitions from
  * different definition stores registered with this server.
@@ -61,37 +68,35 @@ class BESInfo ;
  * @see BESDefine
  * @see BESDefinitionStorageException
  */
-class BESDefinitionStorageList : public BESObj
-{
+class BESDefinitionStorageList: public BESObj {
 private:
-    static BESDefinitionStorageList * _instance ;
+    static BESDefinitionStorageList * _instance;
 
-    typedef struct _persistence_list
-    {
-	BESDefinitionStorage *_persistence_obj ;
-	unsigned int _reference ;
-	BESDefinitionStorageList::_persistence_list *_next ;
-    } persistence_list ;
+    typedef struct _persistence_list {
+        BESDefinitionStorage *_persistence_obj;
+        unsigned int _reference;
+        BESDefinitionStorageList::_persistence_list *_next;
+    } persistence_list;
 
-    BESDefinitionStorageList::persistence_list *_first ;
+    BESDefinitionStorageList::persistence_list *_first;
 protected:
-			BESDefinitionStorageList() ;
+    BESDefinitionStorageList();
 public:
-    virtual		~BESDefinitionStorageList() ;
+    virtual ~BESDefinitionStorageList();
 
-    virtual bool	add_persistence( BESDefinitionStorage *p ) ;
-    virtual bool	ref_persistence( const string &persist_name ) ;
-    virtual bool	deref_persistence( const string &persist_name ) ;
-    virtual BESDefinitionStorage *find_persistence( const string &persist_name ) ;
+    virtual bool add_persistence(BESDefinitionStorage *p);
+    virtual bool ref_persistence(const std::string &persist_name);
+    virtual bool deref_persistence(const std::string &persist_name);
+    virtual BESDefinitionStorage *find_persistence(const std::string &persist_name);
 
-    virtual BESDefine *	look_for( const string &def_name ) ;
+    virtual BESDefine * look_for(const std::string &def_name);
 
-    virtual void	show_definitions( BESInfo &info ) ;
+    virtual void show_definitions(BESInfo &info);
 
-    virtual void	dump( ostream &strm ) const ;
+    virtual void dump(std::ostream &strm) const;
 
-    static BESDefinitionStorageList *TheList() ;
-} ;
+    static BESDefinitionStorageList *TheList();
+};
 
 #endif // I_BESDefinitionStorageList_H
 
