@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response reqID="[thread:http-nio-8080-exec-4-42][bes_client:/-2]" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <showNode>
+        <node count="6" lastModified="removed date-time" name="/RemoteResources/test/httpd_catalog">
+            <item lastModified="removed date-time" name="subdir1" type="node"/>
+            <item lastModified="removed date-time" name="subdir2" type="node"/>
+            <item isData="false" lastModified="removed date-time" name="READTHIS" size="72" type="leaf"/>
+            <item isData="true" lastModified="removed date-time" name="coads_climatology.nc" size="3000000" type="leaf"/>
+            <item isData="true" lastModified="removed date-time" name="fnoc1.das" size="927" type="leaf"/>
+            <item isData="false" lastModified="removed date-time" name="fnoc1.data" size="45000" type="leaf"/>
+        </node>
+    </showNode>
+</response>
