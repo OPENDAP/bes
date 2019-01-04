@@ -84,17 +84,17 @@ jobs:
     if:  branch = master
     
   include:
-  #- stage: build
-   # script: 
-    #- export BES_BUILD=main
-    #- ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+  - stage: build
+    script: 
+    - export BES_BUILD=main
+    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
     # - make -j7 && make check -j7 && make install
-    #- make -j7 && make install && besctl start && make check -j7 && besctl stop
-  #- stage: build
-   # script:
-    #- export BES_BUILD=distcheck
-    #- ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
-    #- make distcheck -j7
+    - make -j7 && make install && besctl start && make check -j7 && besctl stop
+  - stage: build
+    script:
+    - export BES_BUILD=distcheck
+    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
+    - make distcheck -j7
     
   - stage: package
     script:
