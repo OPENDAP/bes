@@ -45,6 +45,8 @@
 #include <sstream>
 #include <iostream>
 
+#include <Error.h>
+
 #include "BESInterface.h"
 
 #include "TheBESKeys.h"
@@ -537,6 +539,11 @@ int BESInterface::execute_request(const string &from)
 
         d_dhi_ptr->executed = true;
     }
+    catch (libdap::Error &e) {
+        timeout_jump_valid = false;
+        BESInternalFatalError ex(string("BES caught a libdap exception: ") + e.get_error_message(), __FILE__, __LINE__);
+        status = handleException(ex, *d_dhi_ptr);
+    }
     catch (BESError &e) {
         timeout_jump_valid = false;
         status = handleException(e, *d_dhi_ptr);
@@ -566,7 +573,7 @@ int BESInterface::execute_request(const string &from)
     }
     catch (...) {
         timeout_jump_valid = false;
-        BESInternalError ex("An undefined exception has been thrown", __FILE__, __LINE__);
+        BESInternalError ex("An unidentified exception has been thrown", __FILE__, __LINE__);
         status = handleException(ex, *d_dhi_ptr);
     }
 

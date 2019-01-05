@@ -18,7 +18,7 @@ lib_LTLIBRARIES = libbes_dispatch.la
 
 libbes_dispatch_la_SOURCES = $(SRCS) $(HDRS) 
 libbes_dispatch_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
-libbes_dispatch_la_LIBADD = $(XML2_LIBS) $(BES_ZLIB_LIBS) \
+libbes_dispatch_la_LIBADD = $(DAP_LIBS) $(XML2_LIBS) $(BES_ZLIB_LIBS) \
 	$(BES_BZ2_LIBS) $(BES_DL_LIBS) $(PTHREAD_LIBS)
 
 pkginclude_HEADERS = $(HDRS) 

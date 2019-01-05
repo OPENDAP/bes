@@ -7,26 +7,15 @@ BES.Group=group_name
 BES.LogName=./bes.log
 BES.LogVerbose=no
 
-BES.modules=dap,cmd,dapreader,httpd,nc
+BES.modules=dap,cmd,httpd,nc,csv
 BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
 BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
-BES.module.dapreader=@abs_top_builddir@/dapreader/.libs/libdapreader_module.so
 BES.module.nc=@abs_top_builddir@/modules/netcdf_handler/.libs/libnc_module.so
+BES.module.csv=@abs_top_builddir@/modules/csv_handler/.libs/libcsv_module.so
 
 BES.module.httpd=@abs_top_builddir@/modules/httpd_catalog_module/.libs/libhttpd_catalog_module.so
 
-
-#################################################################################
-# Default Catalog 
-BES.Catalog.Default=catalog
-BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/httpd_catalog_module
-
 BES.Data.RootDirectory=/dev/null
-
-BES.Catalog.catalog.TypeMatch=dapreader:.*\.das$;dapreader:.*\.dods$;nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$
-BES.Catalog.catalog.Include=;
-BES.Catalog.catalog.Exclude=^\..*;
-BES.Catalog.catalog.FollowSymLinks=No
 
 BES.Info.Buffered=no
 BES.Info.Type=xml
@@ -35,10 +24,21 @@ BES.UncompressCache.dir=/tmp
 BES.UncompressCache.prefix=uncompress_cache
 BES.UncompressCache.size=500
 
+###
+### Default Catalog
+###
+
+BES.Catalog.Default=catalog
+BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/httpd_catalog_module
+
+BES.Catalog.catalog.TypeMatch=csv:.*\.csv$;nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$
+# BES.Catalog.catalog.Include=;
+BES.Catalog.catalog.Exclude=^\..*;
+BES.Catalog.catalog.FollowSymLinks=No
 
 #-----------------------------------------------------------------------#
 #                                                                       #
-# httpd_catalog Specific key/value parameters                            #
+# httpd_catalog Specific key/value parameters                           #
 #                                                                       #
 #-----------------------------------------------------------------------#
 
@@ -50,6 +50,10 @@ Gateway.Whitelist+=http://test.opendap.org
 HttpResourceCache.dir=@abs_top_builddir@/modules/httpd_catalog_module/tests/cache
 HttpResourceCache.prefix=httpd_cat_
 HttpResourceCache.size=500
+
+# These are here because they must be defined for a 'catalog' regardless
+# of the kind of catalog - it's probably a bug. The name 'RemoteResources'
+# is set in the in the Module.cc file for this handler. jhrg 1/4/19
 
 BES.Catalog.RemoteResources.RootDirectory=UNUSED
 BES.Catalog.RemoteResources.TypeMatch=unused:*;

@@ -1,48 +1,41 @@
-#-----------------------------------------------------------------------#
-# OPeNDAP httpd Catalog BES Module Configuration file          #
-#-----------------------------------------------------------------------#
+###
+### OPeNDAP httpd Catalog BES Module Configuration file
+###
 
-#-----------------------------------------------------------------------#
-# Require dap configuration to be loaded first                          #
-#-----------------------------------------------------------------------#
-BES.Include=dap.conf
+# Require dap configuration to be loaded first
 
-#-----------------------------------------------------------------------#
-# modules to load, includes data modules and command modules            #
-#-----------------------------------------------------------------------#
+BES.Include = dap.conf
 
-# BES.modules+=httpd
-BES.module.httpd=@bes_modules_dir@/libhttpd_catalog_module.so
+# By default, this module is turned off. Add 'BES.modules += httpd' to
+# your site.conf file or uncomment the following line. NB: This file 
+# will be overwritten by subsequent installs of the server; the site.conf
+# will not be altered by future installs.
 
-# 
+# BES.modules += httpd
+
+BES.module.httpd = @bes_modules_dir@/libhttpd_catalog_module.so
+
 # Httpd_Catalog.Reference: URL to the Httpd_Catalog Reference Page at docs.opendap.org"
+
 Httpd_Catalog.Reference=http://docs.opendap.org/index.php/BES_-_Modules_-_Httpd_Catalog
 
-BES.Catalog.RemoteResources.RootDirectory=UNUSED
-# BES.Catalog.RemoteResources.FollowSymLinks=
-# BES.Catalog.RemoteResources.Exclude=
-# BES.Catalog.RemoteResources.Include=
-BES.Catalog.RemoteResources.TypeMatch+=unused:*;
+# These parameters are required by the BES catalog subsystem. The name 
+# 'RemoteResources' is set in the module's Module.cc initialization code.
 
+BES.Catalog.RemoteResources.RootDirectory = UNUSED
+BES.Catalog.RemoteResources.TypeMatch += unused:*;
 
 # The cache used by the BES for the retrieved items.
-HttpResourceCache.dir=/tmp/cache
-HttpResourceCache.prefix=httpd_cat_
-HttpResourceCache.size=500
 
-Httpd_Catalog.MimeTypes=nc:application/x-netcdf
-Httpd_Catalog.MimeTypes+=h4:application/x-hdf
-Httpd_Catalog.MimeTypes+=h5:application/x-hdf5
+HttpResourceCache.dir = /tmp/hyrax_httpd_cache
+HttpResourceCache.prefix = hc_
+HttpResourceCache.size = 500
 
-Httpd_Catalog.Collections=woo:https://www.opendap.org/pub/
-Httpd_Catalog.Collections+=IrisProducts:https://ds.iris.edu/files/products/
-Httpd_Catalog.Collections+=too:http://test.opendap.org/data/
+Httpd_Catalog.MimeTypes = nc:application/x-netcdf
+Httpd_Catalog.MimeTypes += h4:application/x-hdf
+Httpd_Catalog.MimeTypes += h5:application/x-hdf5
+
+Httpd_Catalog.Collections = test:http://test.opendap.org/data/
 
 # Where we can go for stuff...
-Gateway.Whitelist=http://localhost
-Gateway.Whitelist+=http://test.opendap.org
-Gateway.Whitelist+=https://www.opendap.org
-Gateway.Whitelist+=https://ds.iris.edu
-
-
-
+Gateway.Whitelist += http://test.opendap.org
