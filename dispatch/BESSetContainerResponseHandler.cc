@@ -75,36 +75,17 @@ BESSetContainerResponseHandler::~BESSetContainerResponseHandler()
  */
 void BESSetContainerResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
-#if 0
-    dhi.action_name = SETCONTAINER_STR;
-    BESInfo *info = new BESSilentInfo();
-    d_response_object = info;
-#endif
-
-#if 0
-    string store_name = dhi.data[STORE_NAME];
-    string symbolic_name = dhi.data[SYMBOLIC_NAME];
-    string real_name = dhi.data[REAL_NAME];
-    string container_type = dhi.data[CONTAINER_TYPE];
-#endif
-
-
     BESDEBUG(MODULE, prolog << "store = " << dhi.data[STORE_NAME] << endl);
     BESDEBUG(MODULE, prolog << "symbolic = " << dhi.data[SYMBOLIC_NAME] << endl);
     BESDEBUG(MODULE, prolog << "real = " << dhi.data[REAL_NAME] << endl);
     BESDEBUG(MODULE, prolog << "type = " << dhi.data[CONTAINER_TYPE] << endl);
 
-#if 0
-    BESCatalog *cat = BESUtil::separateCatalogFromPath(real_name);
-    if (cat) store_name = cat->get_catalog_name();
-
-    BESDEBUG(MODULE, prolog << "store_name = " << store_name << endl);
-#endif
-
-
     BESContainerStorage *cp = BESContainerStorageList::TheList()->find_persistence(dhi.data[STORE_NAME]);
     if (cp) {
         cp->del_container(dhi.data[SYMBOLIC_NAME]);
+        // FIXME Change this so that we make a container and then add it. Do not depend on the store
+        // to make the container. This will require re-design of the Catalog/Container/ContainerStorage
+        // classes and maybe the handlers. jhrg 1/7/19
         cp->add_container(dhi.data[SYMBOLIC_NAME], dhi.data[REAL_NAME], dhi.data[CONTAINER_TYPE]);
     }
     else {
@@ -113,28 +94,17 @@ void BESSetContainerResponseHandler::execute(BESDataHandlerInterface &dhi)
     }
 }
 
-/** @brief transmit the response object built by the execute command
- * using the specified transmitter object
- *
- * If a response object was built then transmit it as text using the specified
- * transmitter object.
+/** @brief The setContainer command does not return a response.
  *
  * @param transmitter object that knows how to transmit specific basic types
  * @param dhi structure that holds the request and response information
+ *
  * @see BESInfo
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
 void BESSetContainerResponseHandler::transmit(BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/)
 {
-#if 0
-    if (d_response_object) {
-        BESInfo *info = dynamic_cast<BESInfo *>(d_response_object);
-        if (!info)
-        throw BESInternalError("cast error", __FILE__, __LINE__);
-        info->transmit(transmitter, dhi);
-    }
-#endif
 }
 
 /** @brief dumps information about this object

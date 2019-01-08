@@ -27,7 +27,7 @@
 #include <BESDapService.h>
 #include <BESResponseNames.h>
 #include <BESContainerStorageList.h>
-#include <BESContainerStorageCatalog.h>
+#include <BESFileContainerStorage.h>
 #include <BESCatalogDirectory.h>
 #include <BESCatalogList.h>
 
@@ -55,7 +55,7 @@ void DmrppModule::initialize(const string &modname)
     }
 
     if (!BESContainerStorageList::TheList()->ref_persistence(DAP_CATALOG)) {
-        BESContainerStorageCatalog *csc = new BESContainerStorageCatalog(DAP_CATALOG);
+        BESFileContainerStorage *csc = new BESFileContainerStorage(DAP_CATALOG);
         BESContainerStorageList::TheList()->add_persistence(csc);
     }
 

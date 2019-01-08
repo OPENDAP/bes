@@ -36,7 +36,7 @@ using std::endl;
 #include "GDALRequestHandler.h"
 #include <BESDapService.h>
 #include <BESContainerStorageList.h>
-#include <BESContainerStorageCatalog.h>
+#include <BESFileContainerStorage.h>
 #include <BESCatalogDirectory.h>
 #include <BESCatalogList.h>
 #include <BESDebug.h>
@@ -57,7 +57,7 @@ void GDALModule::initialize(const string & modname)
     }
 
     if (!BESContainerStorageList::TheList()->ref_persistence(GDAL_CATALOG)) {
-        BESContainerStorageCatalog *csc = new BESContainerStorageCatalog(GDAL_CATALOG);
+        BESFileContainerStorage *csc = new BESFileContainerStorage(GDAL_CATALOG);
         BESContainerStorageList::TheList()->add_persistence(csc);
     }
 

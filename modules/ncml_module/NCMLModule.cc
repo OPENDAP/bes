@@ -34,7 +34,7 @@
 #include <BESCatalogDirectory.h>
 #include <BESCatalogList.h>
 #include <BESContainerStorageList.h>
-#include <BESContainerStorageCatalog.h>
+#include <BESFileContainerStorage.h>
 #include <BESDapService.h>
 #include <BESDebug.h>
 #include <BESRequestHandlerList.h>
@@ -80,7 +80,7 @@ void NCMLModule::initialize(const string &modname)
     }
 
     if (!BESContainerStorageList::TheList()->ref_persistence(NCML_CATALOG)) {
-        BESContainerStorageCatalog *csc = new BESContainerStorageCatalog(NCML_CATALOG);
+        BESFileContainerStorage *csc = new BESFileContainerStorage(NCML_CATALOG);
         BESContainerStorageList::TheList()->add_persistence(csc);
     }
 

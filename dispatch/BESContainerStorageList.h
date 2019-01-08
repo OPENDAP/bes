@@ -35,8 +35,6 @@
 
 #include <string>
 
-//using std::string;
-
 #include "BESObj.h"
 
 class BESContainerStorage;

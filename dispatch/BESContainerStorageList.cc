@@ -42,6 +42,8 @@ using std::endl;
 #include "BESLog.h"
 #include "BESInfo.h"
 
+#include "BESDebug.h"
+
 BESContainerStorageList *BESContainerStorageList::_instance = 0;
 
 BESContainerStorageList::BESContainerStorageList() :
@@ -272,6 +274,7 @@ BESContainerStorageList::look_for(const string &sym_name)
     bool done = false;
     while (done == false) {
         if (pl) {
+            BESDEBUG("define", "BESContainerStorageList::look_for: looking in store " << pl->_persistence_obj->get_name() << " for container: " << sym_name << endl);
             ret_container = pl->_persistence_obj->look_for(sym_name);
             if (ret_container) {
                 done = true;

@@ -41,7 +41,7 @@ using std::endl;
 #include <BESResponseNames.h>
 
 #include <BESContainerStorageList.h>
-#include <BESContainerStorageCatalog.h>
+#include <BESFileContainerStorage.h>
 #include <BESCatalogDirectory.h>
 #include <BESCatalogList.h>
 #include <BESDapService.h>

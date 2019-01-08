@@ -40,7 +40,7 @@ using std::endl;
 #include <BESDapService.h>
 #include <BESDebug.h>
 #include <BESContainerStorageList.h>
-#include <BESContainerStorageCatalog.h>
+#include <BESFileContainerStorage.h>
 #include <BESCatalogDirectory.h>
 #include <BESCatalogList.h>
 //#include "FitsResponseNames.h"
@@ -63,7 +63,7 @@ void FitsModule::initialize(const string &modname)
 	}
 
 	if (!BESContainerStorageList::TheList()->ref_persistence(FITS_CATALOG)) {
-		BESContainerStorageCatalog *csc = new BESContainerStorageCatalog(FITS_CATALOG);
+		BESFileContainerStorage *csc = new BESFileContainerStorage(FITS_CATALOG);
 		BESContainerStorageList::TheList()->add_persistence(csc);
 	}
 	else {
