@@ -17,6 +17,6 @@ override_dh_auto_configure:
 override_dh_fixperms:
 	dh_fixperms
 	useradd -m bes 
-	chmod bes:bes /var/run/bes/
+	chown bes:bes /var/run/bes/
 
 #export PATH="/home/ubuntu/src/hyrax/build/bin:/home/ubuntu/src/hyrax/build/deps/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"
