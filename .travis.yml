@@ -36,8 +36,6 @@ addons:
     - libcurl4-openssl-dev
     - libcppunit-dev
     - libicu-dev
-    - debhelper
-    - devscripts
     - lintian
     - fakeroot
     - build-essential
@@ -74,20 +72,23 @@ install:
 before_script:
 - printenv
 - autoreconf --force --install --verbose
+- PATH=~$HOME/install/deps/share/bison:$PATH
+- echo $PATH
+- ls /usr/bin
 
 jobs:
   stages:
   - name: build
-    if:  branch != coverity_scan
+    if:  branch = master
   - name: package
-    if:  branch != coverity_scan
+    if:  branch = master
     
   include:
   - stage: build
     script: 
     - export BES_BUILD=main
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-    - make -j7 && make check -j7 && make install
+    # - make -j7 && make check -j7 && make install
     - make -j7 && make install && besctl start && make check -j7 && besctl stop
   - stage: build
     script:
@@ -97,11 +98,11 @@ jobs:
     
   - stage: package
     script:
-    - wget https://s3.amazonaws.com/opendap.travis.build/libdap_${LIBDAP_RPM_VERSION}_amd64.deb
-    - sudo dpkg -i libdap_${LIBDAP_RPM_VERSION}_amd64.deb
     - export BES_BUILD=deb
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps 
-    - make deb -j7
+    - mkdir -p $prefix/debbuild
+    - docker run --volume $prefix/debbuild:/root --volume $TRAVIS_BUILD_DIR:/root/travis
+                 --env OS=ubuntu14 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
+                 opendap/ubuntu14_hyrax_build:1.4 /root/travis/build-deb.sh
   - stage: package
     script: 
     - export BES_BUILD=centos6
@@ -122,7 +123,7 @@ after_script:
 
 before_deploy:
 - test -d $TRAVIS_BUILD_DIR/package || mkdir $TRAVIS_BUILD_DIR/package
-- if test $BES_BUILD = deb; then mv $TRAVIS_BUILD_DIR/../bes*-*_amd64.deb $TRAVIS_BUILD_DIR/package/; fi
+- if test $BES_BUILD = deb; then cp $prefix/debbuild/bes*-*_amd64.deb $TRAVIS_BUILD_DIR/package/; fi
 - if test "$BES_BUILD" = "centos6"; then cp $prefix/rpmbuild/RPMS/x86_64/* $TRAVIS_BUILD_DIR/package/; fi
 - if test "$BES_BUILD" = "centos7"; then cp $prefix/rpmbuild/RPMS/x86_64/* $TRAVIS_BUILD_DIR/package/; fi
 - ls -l $TRAVIS_BUILD_DIR/package
