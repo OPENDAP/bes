@@ -98,8 +98,10 @@ jobs:
   - stage: package
     script: 
     - export BES_BUILD=deb
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps 
-    - make deb -j7
+    - mkdir -p $prefix/debbuild
+    - docker run --volume $prefix/debbuild:/root --volume $TRAVIS_BUILD_DIR:/root/travis
+                 --env OS=ubuntu14 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
+                 opendap/ubuntu14_hyrax_build:1.4 /root/travis/build-deb.sh
   - stage: package
     script: 
     - export BES_BUILD=centos6
