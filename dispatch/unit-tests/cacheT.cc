@@ -345,11 +345,8 @@ public:
     {
         DBG(cerr << endl << __func__ << "() - BEGIN " << endl);
         try {
-        		//Only run this test if you don't have access (mainly for in case something is built in root or as the super user)
-        		if (access("/", W_OK) != 0) {
-        			BESFileLockingCache cache("/dummy", CACHE_PREFIX, 0);
-        			CPPUNIT_ASSERT(!"Created cache with non-existent dir");
-        		}
+            BESFileLockingCache cache("/dummy", CACHE_PREFIX, 0);
+            CPPUNIT_ASSERT(!"Created cache with non-existent dir");
         }
         catch (BESError &e) {
             DBG(
