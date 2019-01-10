@@ -35,7 +35,7 @@ tar -xzvf /tmp/hyrax-dependencies-$OS-static.tar.gz
 
 dpkg -i /tmp/libdap_${LIBDAP_RPM_VERSION}_amd64.deb
 
-# Get a fresh copy of the sources and any submodules
+# Get a fresh copy of the bes sources and any submodules
 git clone https://github.com/opendap/bes
 
 cd $HOME/bes

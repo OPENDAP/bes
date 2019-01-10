@@ -97,7 +97,7 @@ jobs:
     - make distcheck -j7
     
   - stage: package
-    script:
+    script: 
     - export BES_BUILD=deb
     - mkdir -p $prefix/debbuild
     - docker run --volume $prefix/debbuild:/root --volume $TRAVIS_BUILD_DIR:/root/travis
