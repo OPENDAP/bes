@@ -89,7 +89,6 @@ void BESDefineResponseHandler::execute(BESDataHandlerInterface &dhi)
         dhi.first_container();
         while (dhi.container) {
             dd->add_container(dhi.container);
-            BESDEBUG("define", "BESDefineResponseHandler::execute: container: " << hex << dhi.container << dec << endl);
             dhi.next_container();
         }
 

@@ -274,7 +274,6 @@ BESContainerStorageList::look_for(const string &sym_name)
     bool done = false;
     while (done == false) {
         if (pl) {
-            BESDEBUG("define", "BESContainerStorageList::look_for: looking in store " << pl->_persistence_obj->get_name() << " for container: " << sym_name << endl);
             ret_container = pl->_persistence_obj->look_for(sym_name);
             if (ret_container) {
                 done = true;
@@ -298,6 +297,31 @@ BESContainerStorageList::look_for(const string &sym_name)
     }
 
     return ret_container;
+}
+
+/**
+ * @brief scan all of the container stores and remove any containers called \arg syn_name
+ *
+ * Scan all of the Container Storage objects and looking for containers
+ * called \arg sym_name and delete those. This method was added as a fix
+ * for a bug where containers in one store were used because the <define>
+ * command did not have the information it needed to search a particular
+ * store and used the global 'look_for' method defined above.
+ *
+ * @note A better fix is to change the design of the Container and ContainerStorage
+ * classes. jhrg 1/8/19
+ *
+ * @param sym_name The name of the container(s) to delete.
+ */
+void
+BESContainerStorageList::delete_container(const std::string &sym_name)
+{
+    BESContainerStorageList::persistence_list *pl = _first;
+    while (pl) {
+        (void) pl->_persistence_obj->del_container(sym_name);
+
+        pl = pl->_next;
+    }
 }
 
 /** @brief show information for each container in each persistence store

@@ -182,8 +182,6 @@ void BESXMLDefineCommand::parse_request(xmlNode *node)
 
     d_cmd_log_info += ";";
 
-    BESDEBUG("xml", "BESXMLDefineCommand::parse_request() -  _str_cmd: " << d_cmd_log_info << endl);
-
     // now that we've set the action, go get the response handler for the action
     BESXMLCommand::set_response();
 }
@@ -359,16 +357,14 @@ void BESXMLDefineCommand::prep_request()
         // look for the specified container
         BESContainer *c = 0;
 
-        // first see if a particular store is being used - this is container store
-        // not the definition store
+        // Is a particular store is being used - this is container store
+        // not the definition store. If no store is named, search them all.
         string store = container_store_names[(*i)];
         if (!store.empty()) {
-            BESDEBUG("define", "BESXMLDefineCommand::prep_request: looking in store " << store << " for container: " << *i << endl);
             BESContainerStorage *cs = BESContainerStorageList::TheList()->find_persistence(store);
             if (cs) c = cs->look_for((*i));
         }
         else {
-            BESDEBUG("define", "BESXMLDefineCommand::prep_request: looking in all stores for container: " << *i << endl);
             c = BESContainerStorageList::TheList()->look_for((*i));
         }
 

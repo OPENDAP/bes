@@ -91,7 +91,11 @@ public:
     virtual BESContainerStorage *find_persistence(const std::string &persist_name);
     virtual bool isnice();
 
+    // These methods scan all of the container stores. Currently, this is used
+    // by both <setContainer> and <define>. However, a better design would disentangle
+    // the ContainerStorage from the Container creation. jhrg 1/8/19
     virtual BESContainer *look_for(const std::string &sym_name);
+    virtual void delete_container(const std::string &sym_name);
 
     virtual void show_containers(BESInfo &info);
 

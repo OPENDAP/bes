@@ -80,6 +80,8 @@ void BESSetContainerResponseHandler::execute(BESDataHandlerInterface &dhi)
     BESDEBUG(MODULE, prolog << "real = " << dhi.data[REAL_NAME] << endl);
     BESDEBUG(MODULE, prolog << "type = " << dhi.data[CONTAINER_TYPE] << endl);
 
+    BESContainerStorageList::TheList()->delete_container(dhi.data[SYMBOLIC_NAME]);
+
     BESContainerStorage *cp = BESContainerStorageList::TheList()->find_persistence(dhi.data[STORE_NAME]);
     if (cp) {
         cp->del_container(dhi.data[SYMBOLIC_NAME]);

@@ -29,6 +29,7 @@
 
 #include <set>
 #include <string>
+
 #include <CatalogNode.h>
 #include "HttpdCatalog.h"
 
