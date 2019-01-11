@@ -83,25 +83,25 @@ jobs:
     if:  branch != coverity_scan
     
   include:
-  - stage: build
-    script: 
-    - export BES_BUILD=main
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-    - make -j7 && make check -j7 && make install
-    - make -j7 && make install && besctl start && make check -j7 && besctl stop
-  - stage: build
-    script:
-    - export BES_BUILD=distcheck
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
-    - make distcheck -j7
+  #- stage: build
+  #  script: 
+  #  - export BES_BUILD=main
+  #  - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+  #  - make -j7 && make check -j7 && make install
+  #  - make -j7 && make install && besctl start && make check -j7 && besctl stop
+  #- stage: build
+  #  script:
+  #  - export BES_BUILD=distcheck
+  #  - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
+  #  - make distcheck -j7
     
   - stage: package
-    script:
-    - wget https://s3.amazonaws.com/opendap.travis.build/libdap_${LIBDAP_RPM_VERSION}_amd64.deb
-    - sudo dpkg -i libdap_${LIBDAP_RPM_VERSION}_amd64.deb
+    script: 
     - export BES_BUILD=deb
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps 
-    - make deb -j7
+    - mkdir -p $prefix/debbuild
+    - docker run --volume $prefix/debbuild:/root --volume $TRAVIS_BUILD_DIR:/root/travis
+                 --env OS=ubuntu14 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
+                 opendap/ubuntu14_hyrax_build:1.4 /root/travis/build-deb.sh
   - stage: package
     script: 
     - export BES_BUILD=centos6
