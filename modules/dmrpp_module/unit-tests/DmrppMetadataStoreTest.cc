@@ -198,9 +198,12 @@ public:
         try {
             // The call to get_instance should fail since the directory is named,
             // but does not exist and cannot be made.
-            d_mds = DmrppMetadataStore::get_instance("/new", c_mds_prefix, 1000);
-            DBG(cerr << "retrieved DmrppMetadataStore instance: " << d_mds << endl);
-            CPPUNIT_FAIL("get_instance() Should not return when the non-existent directory cannot be created");
+        		// Check to see if the test is being run by the super user or built in root.
+        	    if (access("/", W_OK) != 0) {
+				d_mds = DmrppMetadataStore::get_instance("/new", c_mds_prefix, 1000);
+				DBG(cerr << "retrieved DmrppMetadataStore instance: " << d_mds << endl);
+				CPPUNIT_FAIL("get_instance() Should not return when the non-existent directory cannot be created");
+        	    }
         }
         catch (BESError &e) {
             CPPUNIT_ASSERT(!e.get_message().empty());
