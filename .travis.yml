@@ -95,13 +95,13 @@ jobs:
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
     - make distcheck -j7
     
-  - stage: package
-    script:
-    - wget https://s3.amazonaws.com/opendap.travis.build/libdap_${LIBDAP_RPM_VERSION}_amd64.deb
-    - sudo dpkg -i libdap_${LIBDAP_RPM_VERSION}_amd64.deb
-    - export BES_BUILD=deb
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps 
-    - make deb -j7
+  #- stage: package
+    #script:
+    #- wget https://s3.amazonaws.com/opendap.travis.build/libdap_${LIBDAP_RPM_VERSION}_amd64.deb
+    #- sudo dpkg -i libdap_${LIBDAP_RPM_VERSION}_amd64.deb
+    #- export BES_BUILD=deb
+    #- ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps 
+    #- make deb -j7
   - stage: package
     script: 
     - export BES_BUILD=centos6
