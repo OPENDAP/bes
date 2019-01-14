@@ -297,8 +297,8 @@ void VariableElement::processRenameVariable(NCMLParser& p)
     BaseType* pOrgVar = p.getVariableInCurrentVariableContainer(_orgName);
     if (!pOrgVar) {
         THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
-            "Renaming variable failed for element='" + toString() + "' since no variable with orgName='" + _orgName
-                + "' exists at current parser scope='" + p.getScopeString()+"'");
+            "Renaming variable failed for element=" + toString() + " since no variable with orgName=" + _orgName
+                + " exists at current parser scope=" + p.getScopeString());
     }
     BESDEBUG("ncml", "Found variable with name=" << _orgName << endl);
 
@@ -307,8 +307,8 @@ void VariableElement::processRenameVariable(NCMLParser& p)
     BaseType* pExisting = p.getVariableInCurrentVariableContainer(_name);
     if (pExisting) {
         THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
-            "Renaming variable failed for element='" + toString() + "' since a variable with name='" + _name
-                + "' already exists at current parser scope='" + p.getScopeString()+"'");
+            "Renaming variable failed for element=" + toString() + " since a variable with name=" + _name
+                + " already exists at current parser scope=" + p.getScopeString());
     }
     BESDEBUG("ncml", "Success, new variable name is open at this scope." << endl);
 
