@@ -117,7 +117,7 @@ void VariableElement::handleContent(const string& content)
     if (!NCMLUtil::isAllWhitespace(content)) {
         THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
             "Got non-whitespace for element content and didn't expect it.  "
-                "Element=" + toString() + " content=\"" + content + "\"");
+                "Element='" + toString() + "' content=\"" + content + "\"");
     }
 }
 
@@ -156,14 +156,14 @@ void VariableElement::processBegin(NCMLParser& p)
 
     if (!p.withinNetcdf()) {
         THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
-            "Got element " + toString() + " while not in <netcdf> node!");
+            "Got element '" + toString() + "' while not in <netcdf> node!");
     }
 
     // Can only specify variable globally or within a composite variable now.
     if (!(p.isScopeGlobal() || p.isScopeCompositeVariable())) {
         THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
-            "Got <variable> element while not within a <netcdf> or within variable container.  scope="
-                + p.getScopeString());
+            "Got <variable> element while not within a <netcdf> or within variable container.  scope='"
+                + p.getScopeString() + "'");
     }
 
     // If a request to rename the variable
@@ -186,11 +186,11 @@ void VariableElement::processBegin(NCMLParser& p)
 
 void VariableElement::processEnd(NCMLParser& p)
 {
-    BESDEBUG("ncml", "VariableElement::handleEnd called at scope:" << p.getScopeString() << endl);
+    BESDEBUG("ncml", "VariableElement::handleEnd called at scope: '" << p.getScopeString() << "'" << endl);
     if (!p.isScopeVariable()) {
         THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
             "VariableElement::handleEnd called when not parsing a variable element!  "
-                "Scope=" + p.getTypedScopeString());
+                "Scope='" + p.getTypedScopeString()+"'");
     }
 
     // We need to defer the setting of values until the dataset
@@ -205,9 +205,12 @@ void VariableElement::processEnd(NCMLParser& p)
     // have run.
     if (isNewVariable() && !checkGotValues()) {
         BESDEBUG("ncml",
-            "WARNING: at parse line: " << _parser->getParseLineNumber() << " the newly created variable=" << toString() << " did not have its values set!  We will assume this is a placeholder variable" " for an aggregation (such as the new outer dimension of a joinNew) and will" " defer checking that required values are set until the point when this " " netcdf element is closed..." " Scope=" << p.getScopeString() << endl);
+            "WARNING: at parse line: " << _parser->getParseLineNumber() << " the newly created variable='" << toString() << "' did not have its values set!  We will assume this is a placeholder variable"
+            " for an aggregation (such as the new outer dimension of a joinNew) and will"
+            " defer checking that required values are set until the point when this "
+            " netcdf element is closed..." " Scope='" << p.getScopeString() << "'" << endl);
         BESDEBUG("ncml",
-            "Adding new variable name=" << _pNewlyCreatedVar->name() << " to the validation watch list for the closing of this netcdf." << endl);
+            "Adding new variable name='" << _pNewlyCreatedVar->name() << "' to the validation watch list for the closing of this netcdf." << endl);
         _parser->getCurrentDataset()->addVariableToValidateOnClose(_pNewlyCreatedVar, this);
     }
 
@@ -224,7 +227,7 @@ void VariableElement::processEnd(NCMLParser& p)
 void VariableElement::processExistingVariable(NCMLParser& p, BaseType* pVar)
 {
     BESDEBUG("ncml",
-        "VariableElement::processExistingVariable() called with name=" << _name << " at scope=" << p.getTypedScopeString() << endl);
+        "VariableElement::processExistingVariable() called with name='" << _name << "' at scope='" << p.getTypedScopeString() << "'" << endl);
 
     // If undefined, look it up
     if (!pVar) {
@@ -241,9 +244,9 @@ void VariableElement::processExistingVariable(NCMLParser& p, BaseType* pVar)
     // We're gonna ignore that until we allow addition of variables, but let's leave this check here for now
     if (!_type.empty() && !p.typeCheckDAPVariable(*pVar, p.convertNcmlTypeToCanonicalType(_type))) {
         THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
-            "Type Mismatch in variable element with name=" + _name + " at scope=" + p.getScopeString()
-                + " Expected type=" + _type + " but found variable with type=" + pVar->type_name()
-                + "  In order to match a variable of any type, please do not specify variable@type attribute in your NcML file.");
+            "Type Mismatch in variable element with name='" + _name + "' at scope='" + p.getScopeString()
+                + "' Expected type='" + _type + "' but found variable with type='" + pVar->type_name()
+                + "'  In order to match a variable of any type, please do not specify variable@type attribute in your NcML file.");
     }
 
     // Use this variable as the new scope until we get a handleEnd()
@@ -286,7 +289,7 @@ void VariableElement::processRenameVariableDataWorker(NCMLParser& p, BaseType* p
 void VariableElement::processRenameVariable(NCMLParser& p)
 {
     BESDEBUG("ncml",
-        "VariableElement::processRenameVariable() called on " + toString() << " at scope=" << p.getTypedScopeString() << endl);
+        "VariableElement::processRenameVariable() called on '" + toString() << "' at scope='" << p.getTypedScopeString() << "'"<< endl);
 
     // First, make sure the data is valid
     NCML_ASSERT_MSG(!_name.empty(), "Can't have an empty variable@name if variable@orgName is specified!");
@@ -297,8 +300,8 @@ void VariableElement::processRenameVariable(NCMLParser& p)
     BaseType* pOrgVar = p.getVariableInCurrentVariableContainer(_orgName);
     if (!pOrgVar) {
         THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
-            "Renaming variable failed for element=" + toString() + " since no variable with orgName=" + _orgName
-                + " exists at current parser scope=" + p.getScopeString());
+            "Renaming variable failed for element='" + toString() + "' since no variable with orgName='" + _orgName
+                + "' exists at current parser scope='" + p.getScopeString()+"'");
     }
     BESDEBUG("ncml", "Found variable with name=" << _orgName << endl);
 
@@ -307,13 +310,13 @@ void VariableElement::processRenameVariable(NCMLParser& p)
     BaseType* pExisting = p.getVariableInCurrentVariableContainer(_name);
     if (pExisting) {
         THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
-            "Renaming variable failed for element=" + toString() + " since a variable with name=" + _name
-                + " already exists at current parser scope=" + p.getScopeString());
+            "Renaming variable failed for element='" + toString() + "' since a variable with name='" + _name
+                + "' already exists at current parser scope='" + p.getScopeString()+"'");
     }
     BESDEBUG("ncml", "Success, new variable name is open at this scope." << endl);
 
     // Call set_name on the orgName variable.
-    BESDEBUG("ncml", "Renaming variable " << _orgName << " to " << _name << endl);
+    BESDEBUG("ncml", "Renaming variable '" << _orgName << "' to '" << _name << "'" << endl);
 
     // If we are doing data, we need to handle some variables (Array)
     // specially since they might refer to underlying data by the new name
@@ -511,7 +514,7 @@ void VariableElement::processRenameVariable(NCMLParser& p)
 
     // Finally change the scope to the variable.
     enterScope(p, pRenamedVar);
-    BESDEBUG("ncml", "Entering scope of the renamed variable.  Scope is now: " << p.getTypedScopeString() << endl);
+    BESDEBUG("ncml", "Entering scope of the renamed variable.  Scope is now: '" << p.getTypedScopeString() << "'" << endl);
 }
 
 void VariableElement::processNewVariable(NCMLParser& p)
@@ -523,13 +526,13 @@ void VariableElement::processNewVariable(NCMLParser& p)
     // Type cannot be empty for a new variable!!
     if (_type.empty()) {
         THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
-            "Must have non-empty variable@type when creating new variable=" + toString());
+            "Must have non-empty variable@type when creating new variable='" + toString() + "'");
     }
 
     // Convert the type to the canonical type...
     string type = p.convertNcmlTypeToCanonicalType(_type);
     if (_type.empty()) {
-        THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(), "Unknown type for new variable=" + toString());
+        THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(), "Unknown type for new variable='" + toString()+"'");
     }
 
     // Tokenize the _shape string
@@ -564,12 +567,12 @@ void VariableElement::processNewStructure(NCMLParser& p)
     // First, make sure we are at a parse scope that ALLOWS variables to be added!
     if (!(p.isScopeCompositeVariable() || p.isScopeGlobal())) {
         THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(), "Cannot add a new Structure variable at current scope!  "
-            "TypedScope=" + p.getTypedScopeString());
+            "TypedScope='" + p.getTypedScopeString()+"'");
     }
 
     auto_ptr<BaseType> pNewVar = MyBaseTypeFactory::makeVariable("Structure", _name);
     NCML_ASSERT_MSG(pNewVar.get(),
-        "VariableElement::processNewStructure: factory failed to make a new Structure variable for name=" + _name);
+        "VariableElement::processNewStructure: factory failed to make a new Structure variable for name='" + _name +"'");
 
     // Add the copy, let auto_ptr clean up
     p.addCopyOfVariableAtCurrentScope(*pNewVar);
@@ -697,14 +700,14 @@ void VariableElement::addNewVariableAndEnterScope(NCMLParser& p, const std::stri
     // First, make sure we are at a parse scope that ALLOWS variables to be added!
     if (!(p.isScopeCompositeVariable() || p.isScopeGlobal())) {
         THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
-            "Cannot add a new scalar variable at current scope!  TypedScope=" + p.getTypedScopeString());
+            "Cannot add a new scalar variable at current scope!  TypedScope='" + p.getTypedScopeString()+"'");
     }
 
     // Destroy it no matter what sicne add_var copies it
     auto_ptr<BaseType> pNewVar = MyBaseTypeFactory::makeVariable(dapType, _name);
     NCML_ASSERT_MSG(pNewVar.get(),
-        "VariableElement::addNewVariable: factory failed to make a new variable of type: " + dapType + " for element: "
-            + toString());
+        "VariableElement::addNewVariable: factory failed to make a new variable of type: '" + dapType + "' for element: '"
+            + toString() +"'");
 
     // Now that we have it, we need to add it to the parser at current scope
     // Internally, the add will copy the arg, not store it.
@@ -774,8 +777,8 @@ unsigned int VariableElement::getSizeForDimension(NCMLParser& p, const std::stri
         else {
             THROW_NCML_PARSE_ERROR(_parser->getParseLineNumber(),
                 "Failed to find a dimension with name=" + dimToken + " for variable=" + toString()
-                    + " with dimension table= " + p.printAllDimensionsAtLexicalScope() + " at scope="
-                    + p.getScopeString());
+                    + " with dimension table= " + p.printAllDimensionsAtLexicalScope() + " at scope='"
+                    + p.getScopeString()+"'");
         }
     }
     return dim;
