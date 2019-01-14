@@ -41,7 +41,7 @@ using std::endl;
 #include <BESResponseNames.h>
 
 #include <BESContainerStorageList.h>
-#include <BESContainerStorageCatalog.h>
+#include <BESFileContainerStorage.h>
 #include <BESCatalogDirectory.h>
 #include <BESCatalogList.h>
 #include <BESDapService.h>
@@ -68,7 +68,7 @@ void CSVModule::initialize(const string &modname)
 	}
 
 	if (!BESContainerStorageList::TheList()->ref_persistence(CSV_CATALOG)) {
-		BESContainerStorageList::TheList()->add_persistence(new BESContainerStorageCatalog(CSV_CATALOG));
+		BESContainerStorageList::TheList()->add_persistence(new BESFileContainerStorage(CSV_CATALOG));
 	}
 
 	BESDebug::Register("csv");

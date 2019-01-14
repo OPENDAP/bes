@@ -55,7 +55,7 @@
 
 #include "BESInfo.h"
 #include "BESContainerStorageList.h"
-#include "BESContainerStorageCatalog.h"
+#include "BESFileContainerStorage.h"
 #include "BESLog.h"
 
 #include "BESInternalError.h"

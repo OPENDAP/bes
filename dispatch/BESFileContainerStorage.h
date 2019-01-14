@@ -79,12 +79,12 @@ class BESCatalogUtils;
  * @see BESContainer
  * @see BESKeys
  */
-class BESContainerStorageCatalog: public BESContainerStorageVolatile {
+class BESFileContainerStorage: public BESContainerStorageVolatile {
 private:
     const BESCatalogUtils * _utils;
 public:
-    BESContainerStorageCatalog(const std::string &n);
-    virtual ~BESContainerStorageCatalog();
+    BESFileContainerStorage(const std::string &n);
+    virtual ~BESFileContainerStorage();
 
     virtual void add_container(const std::string &sym_name, const std::string &real_name, const std::string &type);
     virtual bool isData(const std::string &inQuestion, std::list<std::string> &provides);

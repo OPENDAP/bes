@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -32,32 +32,30 @@
 
 #include <iostream>
 
-using std::endl ;
+using std::endl;
 
 #include "BESDefinitionStorageList.h"
 #include "BESDefinitionStorage.h"
 #include "BESDefine.h"
 #include "BESInfo.h"
 
-BESDefinitionStorageList *BESDefinitionStorageList::_instance = 0 ;
+BESDefinitionStorageList *BESDefinitionStorageList::_instance = 0;
 
-BESDefinitionStorageList::BESDefinitionStorageList()
-    : _first( 0 )
+BESDefinitionStorageList::BESDefinitionStorageList() :
+    _first(0)
 {
 }
 
 BESDefinitionStorageList::~BESDefinitionStorageList()
 {
-    BESDefinitionStorageList::persistence_list *pl = _first ;
-    while( pl )
-    {
-	if( pl->_persistence_obj )
-	{
-	    delete pl->_persistence_obj ;
-	}
-	BESDefinitionStorageList::persistence_list *next = pl->_next ;
-	delete pl ;
-	pl = next ;
+    BESDefinitionStorageList::persistence_list *pl = _first;
+    while (pl) {
+        if (pl->_persistence_obj) {
+            delete pl->_persistence_obj;
+        }
+        BESDefinitionStorageList::persistence_list *next = pl->_next;
+        delete pl;
+        pl = next;
     }
 }
 
@@ -73,48 +71,40 @@ BESDefinitionStorageList::~BESDefinitionStorageList()
  * @return true if successfully added, false otherwise
  * @see BESDefinitionStorage
  */
-bool
-BESDefinitionStorageList::add_persistence( BESDefinitionStorage *cp )
+bool BESDefinitionStorageList::add_persistence(BESDefinitionStorage *cp)
 {
-    bool ret = false ;
-    if( !_first )
-    {
-	_first = new BESDefinitionStorageList::persistence_list ;
-	_first->_persistence_obj = cp ;
-	_first->_reference = 1 ;
-	_first->_next = 0 ;
-	ret = true ;
+    bool ret = false;
+    if (!_first) {
+        _first = new BESDefinitionStorageList::persistence_list;
+        _first->_persistence_obj = cp;
+        _first->_reference = 1;
+        _first->_next = 0;
+        ret = true;
     }
-    else
-    {
-	BESDefinitionStorageList::persistence_list *pl = _first ;
-	bool done = false ;
-	while( done == false )
-	{
-	    if( pl->_persistence_obj->get_name() != cp->get_name() )
-	    {
-		if( pl->_next )
-		{
-		    pl = pl->_next ;
-		}
-		else
-		{
-		    pl->_next = new BESDefinitionStorageList::persistence_list ;
-		    pl->_next->_persistence_obj = cp ;
-		    pl->_next->_reference = 1 ;
-		    pl->_next->_next = 0 ;
-		    done = true ;
-		    ret = true ;
-		}
-	    }
-	    else
-	    {
-		done = true ;
-		ret = false ;
-	    }
-	}
+    else {
+        BESDefinitionStorageList::persistence_list *pl = _first;
+        bool done = false;
+        while (done == false) {
+            if (pl->_persistence_obj->get_name() != cp->get_name()) {
+                if (pl->_next) {
+                    pl = pl->_next;
+                }
+                else {
+                    pl->_next = new BESDefinitionStorageList::persistence_list;
+                    pl->_next->_persistence_obj = cp;
+                    pl->_next->_reference = 1;
+                    pl->_next->_next = 0;
+                    done = true;
+                    ret = true;
+                }
+            }
+            else {
+                done = true;
+                ret = false;
+            }
+        }
     }
-    return ret ;
+    return ret;
 }
 
 /** @brief reference a persistent store in the list
@@ -125,36 +115,29 @@ BESDefinitionStorageList::add_persistence( BESDefinitionStorage *cp )
  * @return true if successfully referenced, false if not found
  * @see BESDefinitionStorage
  */
-bool
-BESDefinitionStorageList::ref_persistence( const string &persist_name )
+bool BESDefinitionStorageList::ref_persistence(const string &persist_name)
 {
-    bool ret = false ;
-    BESDefinitionStorageList::persistence_list *pl = _first ;
+    bool ret = false;
+    BESDefinitionStorageList::persistence_list *pl = _first;
 
-    bool done = false ;
-    while( done == false )
-    {
-	if( pl )
-	{
-	    if( pl->_persistence_obj &&
-	        pl->_persistence_obj->get_name() == persist_name )
-	    {
-		ret = true ;
-		done = true ;
-		pl->_reference++ ;
-	    }
-	    else
-	    {
-		pl = pl->_next ;
-	    }
-	}
-	else
-	{
-	    done = true ;
-	}
+    bool done = false;
+    while (done == false) {
+        if (pl) {
+            if (pl->_persistence_obj && pl->_persistence_obj->get_name() == persist_name) {
+                ret = true;
+                done = true;
+                pl->_reference++;
+            }
+            else {
+                pl = pl->_next;
+            }
+        }
+        else {
+            done = true;
+        }
     }
 
-    return ret ;
+    return ret;
 }
 
 /** @brief de-reference a persistent store in the list
@@ -167,54 +150,43 @@ BESDefinitionStorageList::ref_persistence( const string &persist_name )
  * @return true if successfully de-referenced, false if not found
  * @see BESDefinitionStorage
  */
-bool
-BESDefinitionStorageList::deref_persistence( const string &persist_name )
+bool BESDefinitionStorageList::deref_persistence(const string &persist_name)
 {
-    bool ret = false ;
-    BESDefinitionStorageList::persistence_list *pl = _first ;
-    BESDefinitionStorageList::persistence_list *last = 0 ;
+    bool ret = false;
+    BESDefinitionStorageList::persistence_list *pl = _first;
+    BESDefinitionStorageList::persistence_list *last = 0;
 
-    bool done = false ;
-    while( done == false )
-    {
-	if( pl )
-	{
-	    if( pl->_persistence_obj &&
-	        pl->_persistence_obj->get_name() == persist_name )
-	    {
-		ret = true ;
-		done = true ;
-		pl->_reference-- ;
-		if( !pl->_reference )
-		{
-		    if( pl == _first )
-		    {
-			_first = _first->_next ;
-		    }
-		    else
-		    {
-		    	if (!last)
-		    		throw BESInternalError("ContainerStorageList last is null", __FILE__, __LINE__);
-			last->_next = pl->_next ;
-		    }
-		    delete pl->_persistence_obj ;
-		    delete pl ;
-		    pl = 0 ;
-		}
-	    }
-	    else
-	    {
-		last = pl ;
-		pl = pl->_next ;
-	    }
-	}
-	else
-	{
-	    done = true ;
-	}
+    bool done = false;
+    while (done == false) {
+        if (pl) {
+            if (pl->_persistence_obj && pl->_persistence_obj->get_name() == persist_name) {
+                ret = true;
+                done = true;
+                pl->_reference--;
+                if (!pl->_reference) {
+                    if (pl == _first) {
+                        _first = _first->_next;
+                    }
+                    else {
+                        if (!last) throw BESInternalError("ContainerStorageList last is null", __FILE__, __LINE__);
+                        last->_next = pl->_next;
+                    }
+                    delete pl->_persistence_obj;
+                    delete pl;
+                    pl = 0;
+                }
+            }
+            else {
+                last = pl;
+                pl = pl->_next;
+            }
+        }
+        else {
+            done = true;
+        }
     }
 
-    return ret ;
+    return ret;
 }
 
 /** @brief find the persistence store with the given name
@@ -226,31 +198,26 @@ BESDefinitionStorageList::deref_persistence( const string &persist_name )
  * @see BESDefinitionStorage
  */
 BESDefinitionStorage *
-BESDefinitionStorageList::find_persistence( const string &persist_name )
+BESDefinitionStorageList::find_persistence(const string &persist_name)
 {
-    BESDefinitionStorage *ret = NULL ;
-    BESDefinitionStorageList::persistence_list *pl = _first ;
-    bool done = false ;
-    while( done == false )
-    {
-	if( pl )
-	{
-	    if( persist_name == pl->_persistence_obj->get_name() )
-	    {
-		ret = pl->_persistence_obj ;
-		done = true ;
-	    }
-	    else
-	    {
-		pl = pl->_next ;
-	    }
-	}
-	else
-	{
-	    done = true ;
-	}
+    BESDefinitionStorage *ret = NULL;
+    BESDefinitionStorageList::persistence_list *pl = _first;
+    bool done = false;
+    while (done == false) {
+        if (pl) {
+            if (persist_name == pl->_persistence_obj->get_name()) {
+                ret = pl->_persistence_obj;
+                done = true;
+            }
+            else {
+                pl = pl->_next;
+            }
+        }
+        else {
+            done = true;
+        }
     }
-    return ret ;
+    return ret;
 }
 
 /** @brief look for the specified definition in the list of defintion stores.
@@ -264,31 +231,26 @@ BESDefinitionStorageList::find_persistence( const string &persist_name )
  * @see BESDefine
  */
 BESDefine *
-BESDefinitionStorageList::look_for( const string &def_name )
+BESDefinitionStorageList::look_for(const string &def_name)
 {
-    BESDefine *ret_def = NULL ;
-    BESDefinitionStorageList::persistence_list *pl = _first ;
-    bool done = false ;
-    while( done == false )
-    {
-	if( pl )
-	{
-	    ret_def = pl->_persistence_obj->look_for( def_name ) ;
-	    if( ret_def )
-	    {
-		done = true ;
-	    }
-	    else
-	    {
-		pl = pl->_next ;
-	    }
-	}
-	else
-	{
-	    done = true ;
-	}
+    BESDefine *ret_def = NULL;
+    BESDefinitionStorageList::persistence_list *pl = _first;
+    bool done = false;
+    while (done == false) {
+        if (pl) {
+            ret_def = pl->_persistence_obj->look_for(def_name);
+            if (ret_def) {
+                done = true;
+            }
+            else {
+                pl = pl->_next;
+            }
+        }
+        else {
+            done = true;
+        }
     }
-    return ret_def ;
+    return ret_def;
 }
 
 /** @brief show information for each definition in each persistence store
@@ -305,36 +267,32 @@ BESDefinitionStorageList::look_for( const string &def_name )
  * @param info object to store the definition and persistent store information
  * @see BESInfo
  */
-void
-BESDefinitionStorageList::show_definitions( BESInfo &info )
+void BESDefinitionStorageList::show_definitions(BESInfo &info)
 {
-    BESDefinitionStorageList::persistence_list *pl = _first ;
-    bool first = true ;
-    while( pl )
-    {
-	if( !first )
-	{
-	    // separate each store with a blank line
-	    info.add_break( 1 ) ;
-	}
-	first = false ;
-	map<string,string> props ;
-	props["name"] = pl->_persistence_obj->get_name() ;
-	info.begin_tag( "store", &props ) ;
-	pl->_persistence_obj->show_definitions( info ) ;
-	info.end_tag( "store" ) ;
-	pl = pl->_next ;
+    BESDefinitionStorageList::persistence_list *pl = _first;
+    bool first = true;
+    while (pl) {
+        if (!first) {
+            // separate each store with a blank line
+            info.add_break(1);
+        }
+        first = false;
+        map<string, string> props;
+        props["name"] = pl->_persistence_obj->get_name();
+        info.begin_tag("store", &props);
+        pl->_persistence_obj->show_definitions(info);
+        info.end_tag("store");
+        pl = pl->_next;
     }
 }
 
 BESDefinitionStorageList *
 BESDefinitionStorageList::TheList()
 {
-    if( _instance == 0 )
-    {
-	_instance = new BESDefinitionStorageList ;
+    if (_instance == 0) {
+        _instance = new BESDefinitionStorageList;
     }
-    return _instance ;
+    return _instance;
 }
 
 /** @brief dumps information about this object
@@ -344,28 +302,23 @@ BESDefinitionStorageList::TheList()
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESDefinitionStorageList::dump( ostream &strm ) const
+void BESDefinitionStorageList::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESDefinitionStorageList::dump - ("
-			     << (void *)this << ")" << endl;
-    BESIndent::Indent() ;
-    if( _first )
-    {
-	strm << BESIndent::LMarg << "registered definition storage:" << endl ;
-	BESIndent::Indent() ;
-	BESDefinitionStorageList::persistence_list *pl = _first ;
-	while( pl )
-	{
-	    pl->_persistence_obj->dump( strm ) ;
-	    pl = pl->_next ;
-	}
-	BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESDefinitionStorageList::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    if (_first) {
+        strm << BESIndent::LMarg << "registered definition storage:" << endl;
+        BESIndent::Indent();
+        BESDefinitionStorageList::persistence_list *pl = _first;
+        while (pl) {
+            pl->_persistence_obj->dump(strm);
+            pl = pl->_next;
+        }
+        BESIndent::UnIndent();
     }
-    else
-    {
-	strm << BESIndent::LMarg << "registered definition storage: none" << endl ;
+    else {
+        strm << BESIndent::LMarg << "registered definition storage: none" << endl;
     }
-    BESIndent::UnIndent() ;
+    BESIndent::UnIndent();
 }
 

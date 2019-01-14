@@ -33,11 +33,14 @@
 #include "BESXMLDefineCommand.h"
 #include "BESContainerStorageList.h"
 #include "BESContainerStorage.h"
+
 #include "BESXMLUtils.h"
 #include "BESUtil.h"
 #include "BESResponseNames.h"
 #include "BESDataNames.h"
+
 #include "BESSyntaxUserError.h"
+#include "BESInternalFatalError.h"
 #include "BESDebug.h"
 
 BESXMLDefineCommand::BESXMLDefineCommand(const BESDataHandlerInterface &base_dhi) :
@@ -45,20 +48,31 @@ BESXMLDefineCommand::BESXMLDefineCommand(const BESDataHandlerInterface &base_dhi
 {
 }
 
-/** @brief parse a show command. No properties or children elements
+/** @brief parse a define command.
  *
- &lt;define name="d" space="default"&gt;
- &lt;container name="c"&gt;
- &lt;constraint&gt;a valid ce&lt;/constraint&gt;
- &lt;attributes&gt;list of attributes&lt;/attributes&gt;
- &lt;/container&gt;
- &lt;aggregate handler="someHandler" cmd="someCommand" /&gt;
- &lt;/define&gt;
+ * ~~~{.xml}
+ * <define name"d" space="default">
+ *
+ *     <!-- required -->
+ *     <container name="c"/>
+ *
+ *     <!-- Optional -->
+ *     <container name="c">
+ *         <constraint> A valid DAP2 CE </constraint>
+ *
+ *         <dap4constraint> ... </dap4constraint>
+ *         <dap4function> ... </dap4function>
+ *
+ *         <attributes> ... </attributes>
+ *    </container>
+ *
+ * </define>
+ * ~~~
  *
  * Requires the name property. The space property is optional. Requires at
  * least one container element. The container element requires the name
  * property. The constraint and attribute elements of container are
- * optional. The aggregate element is optional.
+ * optional.
  *
  * @param node xml2 element node pointer
  */
@@ -71,16 +85,14 @@ void BESXMLDefineCommand::parse_request(xmlNode *node)
     BESXMLUtils::GetNodeInfo(node, action, value, props);
     if (action != DEFINE_RESPONSE_STR) {
         string err = "The specified command " + action + " is not a set context command";
-        throw BESSyntaxUserError(err, __FILE__, __LINE__);
+        throw BESInternalFatalError(err, __FILE__, __LINE__);
     }
 
     d_xmlcmd_dhi.action = DEFINE_RESPONSE;
 
     string def_name = props["name"];
-    if (def_name.empty()) {
-        string err = action + " command: definition name missing";
-        throw BESSyntaxUserError(err, __FILE__, __LINE__);
-    }
+    if (def_name.empty())
+        throw BESSyntaxUserError(string(action) + " command: definition name missing", __FILE__, __LINE__);
 
     d_xmlcmd_dhi.data[DEF_NAME] = def_name;
     d_cmd_log_info = (string) "define " + def_name;
@@ -110,9 +122,14 @@ void BESXMLDefineCommand::parse_request(xmlNode *node)
             handle_container_element(action, child_node, child_value, props);
             num_containers++;
         }
+        else {
+            throw BESSyntaxUserError(string(action) + " Unrecognized child element: " + child_name, __FILE__, __LINE__);
+        }
+#if 0
         else if (child_name == "aggregate") {
             handle_aggregate_element(action, child_node, child_value, props);
         }
+#endif
 
         // get the next child element
         props.clear();
@@ -121,53 +138,49 @@ void BESXMLDefineCommand::parse_request(xmlNode *node)
         child_node = BESXMLUtils::GetNextChild(child_node, child_name, child_value, props);
     }
 
-    if (num_containers < 1) {
-        string err = action + "The define element must contain at least " + "one container element";
-        throw BESSyntaxUserError(err, __FILE__, __LINE__);
-    }
+    if (num_containers < 1)
+        throw BESSyntaxUserError(string(action) + " The define element must contain at least one container element", __FILE__, __LINE__);
 
     d_cmd_log_info += " as ";
     bool first = true;
-    vector<string>::iterator i = _containers.begin();
-    vector<string>::iterator e = _containers.end();
+    vector<string>::iterator i = container_names.begin();
+    vector<string>::iterator e = container_names.end();
     for (; i != e; i++) {
         if (!first) d_cmd_log_info += ",";
         d_cmd_log_info += (*i);
         first = false;
     }
 
-    if (_constraints.size() || _dap4constraints.size() || _dap4functions.size() || _attributes.size()) {
+    if (container_constraints.size() || container_dap4constraints.size() || container_dap4functions.size() || container_attributes.size()) {
         d_cmd_log_info += " with ";
         first = true;
-        i = _containers.begin();
-        e = _containers.end();
+        i = container_names.begin();
+        e = container_names.end();
         for (; i != e; i++) {
-            if (_constraints.count((*i))) {
+            if (container_constraints.count((*i))) {
                 if (!first) d_cmd_log_info += ",";
                 first = false;
-                d_cmd_log_info += (*i) + ".constraint=\"" + _constraints[(*i)] + "\"";
+                d_cmd_log_info += (*i) + ".constraint=\"" + container_constraints[(*i)] + "\"";
             }
-            if (_dap4constraints.count((*i))) {
+            if (container_dap4constraints.count((*i))) {
                 if (!first) d_cmd_log_info += ",";
                 first = false;
-                d_cmd_log_info += (*i) + ".dap4constraint=\"" + _dap4constraints[(*i)] + "\"";
+                d_cmd_log_info += (*i) + ".dap4constraint=\"" + container_dap4constraints[(*i)] + "\"";
             }
-            if (_dap4functions.count((*i))) {
+            if (container_dap4functions.count((*i))) {
                 if (!first) d_cmd_log_info += ",";
                 first = false;
-                d_cmd_log_info += (*i) + ".dap4function=\"" + _dap4functions[(*i)] + "\"";
+                d_cmd_log_info += (*i) + ".dap4function=\"" + container_dap4functions[(*i)] + "\"";
             }
-            if (_attributes.count((*i))) {
+            if (container_attributes.count((*i))) {
                 if (!first) d_cmd_log_info += ",";
                 first = false;
-                d_cmd_log_info += (*i) + ".attributes=\"" + _attributes[(*i)] + "\"";
+                d_cmd_log_info += (*i) + ".attributes=\"" + container_attributes[(*i)] + "\"";
             }
         }
     }
 
     d_cmd_log_info += ";";
-
-    BESDEBUG("xml", "BESXMLDefineCommand::parse_request() -  _str_cmd: " << d_cmd_log_info << endl);
 
     // now that we've set the action, go get the response handler for the action
     BESXMLCommand::set_response();
@@ -175,11 +188,20 @@ void BESXMLDefineCommand::parse_request(xmlNode *node)
 
 /** @brief handle a container element of the define element
  *
- &lt;container name="c"&gt;
- &lt;constraint&gt;a valid ce&lt;/constraint&gt;
- &lt;attributes&gt;list of attributes&lt;/attributes&gt;
- &lt;/container&gt;
+ * There are two possible cases: a <constraint> element with no child nodes
+ * or one with child nodes.
+ * ~~~{.xml}
+ * <container name="c"/>
  *
+ * <container name="c">
+ *     <constraint> A valid DAP2 CE </constraint>
+ *
+ *     <dap4constraint> ... </dap4constraint>
+ *     <dap4function> ... </dap4function>
+ *
+ *     <attributes> ... </attributes>
+ * </container>
+ * ~~~
  * The name is required. constraint and attribute sub elements are optional
  *
  * @param action we are working on
@@ -196,10 +218,9 @@ void BESXMLDefineCommand::handle_container_element(const string &action, xmlNode
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
-    _containers.push_back(name);
+    container_names.push_back(name);
 
-    string space = props["space"];
-    _stores[name] = space;
+    container_store_names[name] = props["space"];
 
     bool have_constraint = false;
     bool have_dap4constraint = false;
@@ -226,7 +247,7 @@ void BESXMLDefineCommand::handle_container_element(const string &action, xmlNode
                 throw BESSyntaxUserError(err, __FILE__, __LINE__);
             }
             have_constraint = true;
-            _constraints[name] = child_value;
+            container_constraints[name] = child_value;
         }
         else if (child_name == "dap4constraint") {
             if (child_props.size()) {
@@ -242,7 +263,7 @@ void BESXMLDefineCommand::handle_container_element(const string &action, xmlNode
                 throw BESSyntaxUserError(err, __FILE__, __LINE__);
             }
             have_dap4constraint = true;
-            _dap4constraints[name] = child_value;
+            container_dap4constraints[name] = child_value;
         }
         else if (child_name == "dap4function") {
             if (child_props.size()) {
@@ -258,7 +279,7 @@ void BESXMLDefineCommand::handle_container_element(const string &action, xmlNode
                 throw BESSyntaxUserError(err, __FILE__, __LINE__);
             }
             have_dap4function = true;
-            _dap4functions[name] = child_value;
+            container_dap4functions[name] = child_value;
         }
         else if (child_name == "attributes") {
             if (child_props.size()) {
@@ -274,7 +295,7 @@ void BESXMLDefineCommand::handle_container_element(const string &action, xmlNode
                 throw BESSyntaxUserError(err, __FILE__, __LINE__);
             }
             have_attributes = true;
-            _attributes[name] = child_value;
+            container_attributes[name] = child_value;
         }
 
         // get the next child element
@@ -285,6 +306,7 @@ void BESXMLDefineCommand::handle_container_element(const string &action, xmlNode
     }
 }
 
+#if 0
 /** @brief handle an aggregate element of the define element
  *
  &lt;aggregate handler="someHandler" cmd="someCommand" /&gt;
@@ -316,25 +338,28 @@ void BESXMLDefineCommand::handle_aggregate_element(const string &action, xmlNode
     d_xmlcmd_dhi.data[AGG_CMD] = cmd;
     d_cmd_log_info += " aggregate using " + handler + " by " + cmd;
 }
+#endif
+
 
 /** @brief prepare the define command by making sure the containers exist
  *
  * @todo This could just as easily be done at the end of the parse_request()
  * method. _Unless_ we want to support the behavior that <define> could come
  * before <setContainer> in the request document. That is, this method is
- * called by XMLInterface::execture_dat_request_plan(), after all the elements
+ * called by XMLInterface::execute_data_request_plan(), after all the elements
  * have been parsed. jhrg 2/11/18
  */
 void BESXMLDefineCommand::prep_request()
 {
-    vector<string>::iterator i = _containers.begin();
-    vector<string>::iterator e = _containers.end();
+    vector<string>::iterator i = container_names.begin();
+    vector<string>::iterator e = container_names.end();
     for (; i != e; i++) {
         // look for the specified container
         BESContainer *c = 0;
 
-        // first see if a particular store is being used
-        string store = _stores[(*i)];
+        // Is a particular store is being used - this is container store
+        // not the definition store. If no store is named, search them all.
+        string store = container_store_names[(*i)];
         if (!store.empty()) {
             BESContainerStorage *cs = BESContainerStorageList::TheList()->find_persistence(store);
             if (cs) c = cs->look_for((*i));
@@ -347,21 +372,21 @@ void BESXMLDefineCommand::prep_request()
             throw BESSyntaxUserError(string("Could not find the container ") + (*i), __FILE__, __LINE__);
 
         // What use case do we have in which the "default" value of the constraint is not an empty string?
-        string constraint = _constraints[(*i)];
+        string constraint = container_constraints[(*i)];
         if (constraint.empty()) constraint = _default_constraint;
         c->set_constraint(constraint);
 
         // What use case do we have in which the "default" value of the dap4constraint is not an empty string?
-        string dap4constraint = _dap4constraints[(*i)];
+        string dap4constraint = container_dap4constraints[(*i)];
         if (dap4constraint.empty()) dap4constraint = _default_dap4_constraint;
         c->set_dap4_constraint(dap4constraint);
 
         // What use case do we have in which the "default" value of the dap4function is not an empty string?
-        string function = _dap4functions[(*i)];
+        string function = container_dap4functions[(*i)];
         if (function.empty()) function = _default_dap4_function;
         c->set_dap4_function(function);
 
-        string attrs = _attributes[(*i)];
+        string attrs = container_attributes[(*i)];
         c->set_attributes(attrs);
         d_xmlcmd_dhi.containers.push_back(c);
 

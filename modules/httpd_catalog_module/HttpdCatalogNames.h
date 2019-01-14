@@ -29,7 +29,7 @@
 
 #define HTTPD_CATALOG "httpd"
 
-// Thisname  appears at the top level of the Hyrax catalog:
+// This name  appears at the top level of the Hyrax catalog:
 #define HTTPD_CATALOG_NAME "RemoteResources"
 
 // These are the names of the bes keys used to configure the handler.

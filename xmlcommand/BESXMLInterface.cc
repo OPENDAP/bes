@@ -218,7 +218,7 @@ void BESXMLInterface::execute_data_request_plan()
     vector<BESXMLCommand *>::iterator i = d_xml_cmd_list.begin();
     vector<BESXMLCommand *>::iterator e = d_xml_cmd_list.end();
     for (; i != e; i++) {
-        (*i)->prep_request();
+        (*i)->prep_request();   // TODO remove this if possible jhrg 1//7/19
 
         d_dhi_ptr = &(*i)->get_xmlcmd_dhi();
 

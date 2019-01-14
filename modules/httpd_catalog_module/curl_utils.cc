@@ -23,12 +23,16 @@
 
 #include <unistd.h>
 #include <algorithm>    // std::for_each
+#include <sstream>
 
 #include <GNURegex.h>
 
-#include "util.h"
+#include <util.h>
+
 #include "BESDebug.h"
 #include "BESSyntaxUserError.h"
+#include "BESInternalError.h"
+#include "BESInternalFatalError.h"
 #include "WhiteList.h"
 
 #include "curl_utils.h"
@@ -359,7 +363,7 @@ bool configureProxy(CURL *curl, const string &url)
 CURL *init(char *error_buffer)
 {
     CURL *curl = curl_easy_init();
-    if (!curl) throw libdap::InternalErr(__FILE__, __LINE__, "Could not initialize libcurl.");
+    if (!curl) throw BESInternalFatalError("Could not initialize libcurl.", __FILE__, __LINE__);
 
     // Load in the default headers to send with a request. The empty Pragma
     // headers overrides libcurl's default Pragma: no-cache header (which
@@ -455,6 +459,7 @@ CURL *init(char *error_buffer)
 long read_url(CURL *curl, const string &url, int fd, vector<string> *resp_hdrs, const vector<string> *request_headers, char error_buffer[])
 {
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+    BESDEBUG(MODULE, prolog << "url: " << url << endl);
 
     // Before we do anything, make sure that the URL is OK to pursue.
     if (!bes::WhiteList::get_white_list()->is_white_listed(url)) {
@@ -481,24 +486,41 @@ long read_url(CURL *curl, const string &url, int fd, vector<string> *resp_hdrs, 
     // value/result parameter to get the raw response header information.
     curl_easy_setopt(curl, CURLOPT_WRITEHEADER, resp_hdrs);
 
+
+    char *urlp = NULL;
+    curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &urlp);
+    BESDEBUG(MODULE, prolog << "url in curl object: " << urlp << endl);
+
     // This call is the one that makes curl go get the thing.
     CURLcode res = curl_easy_perform(curl);
+
+    if (res != CURLE_OK) {
+        BESDEBUG(MODULE, prolog << "OUCH! CURL returned an error! curl msg:  " << curl_easy_strerror(res) << endl);
+        throw BESInternalError(string("CURL returned an error! curl msg: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
+    }
 
     // Free the header list and null the value in d_curl.
     curl_slist_free_all(req_hdrs.get_headers());
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, 0);
 
+#if 0
     if (res != 0) {
         BESDEBUG(MODULE, prolog << "OUCH! CURL returned an error! curl msg:  " << curl_easy_strerror(res) << endl);
         BESDEBUG(MODULE, prolog << "OUCH! CURL returned an error! error_buffer:  " << error_buffer << endl);
         throw libdap::Error(error_buffer);
     }
+#endif
+
 
     long status;
     res = curl_easy_getinfo(curl, CURLINFO_HTTP_CODE, &status);
     BESDEBUG(MODULE, prolog << "HTTP Status " << status << endl);
 
-    if (res != CURLE_OK) throw libdap::Error(error_buffer);
+    if (res != CURLE_OK) {
+        ostringstream oss;
+        oss << "HTTP Status: " << status;
+        throw BESInternalError(oss.str().append("; ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
+    }
 
     BESDEBUG(MODULE, prolog << "END" << endl);
 

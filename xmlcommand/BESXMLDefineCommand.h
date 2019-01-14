@@ -45,18 +45,28 @@ private:
     string _default_constraint;
     string _default_dap4_constraint;
     string _default_dap4_function;
-    vector<string> _containers;
-    map<string, string> _stores;
-    map<string, string> _constraints;
-    map<string, string> _dap4constraints;
-    map<string, string> _dap4functions;
-    map<string, string> _attributes;
+
+    vector<string> container_names;
+
+    map<string, string> container_store_names;
+
+    map<string, string> container_constraints;
+    map<string, string> container_dap4constraints;
+    map<string, string> container_dap4functions;
+
+    map<string, string> container_attributes;
+
     void handle_container_element(const string &action, xmlNode *node, const string &vallues,
         map<string, string> &props);
+
+#if 0
     void handle_aggregate_element(const string &action, xmlNode *node, const string &vallues,
         map<string, string> &props);
+#endif
+
 public:
     BESXMLDefineCommand(const BESDataHandlerInterface &base_dhi);
+
     virtual ~BESXMLDefineCommand()
     {
     }

@@ -1,10 +1,34 @@
 
 Partially complete HTTP Catalog module.
 
+Notes:
+
+1) he initial token in the path that triggers this module is set in the 
+HttpdMCatalogModule.cc file at the call
+
+    BESCatalogList::TheCatalogList()->add_catalog(new HttpdCatalog(HTTPD_CATALOG_NAME));
+        
+where HTTPD_CATALOG_NAME is "RemoteResources"
+
+2) While the default catalog is lenient WRT trailing slashes on pathnames,
+code (and thus the /RemoteResources catalog) is not. This is because there
+is no way for the code to know whether a given path is a 'node' or a 'leaf'
+until it makes a call. Use information from the <showNode> command for the
+parent to determine if a given path is a node or leaf and append a / as needed.
+
+Note that the 'RemoteResourse catalog can have many remote 'collections,'
+each of which has a name bound to a HTTP/S URL:
+
+    Httpd_Catalog.Collections=test:http://test.opendap.org/data/
+    
+To access this collection, use /RemoteResources/test/ in the path. Note that
+failing to append a slash to _that_ path should work but is currently known
+to fail with a C++ string exception. (jhrg 1/3/19)
+
 What needs to be done:
 
 1. HttpdCatalog needs code.
-2. the files CmrContainer and CmrContainterStorage need to be renamed, edited, et cetera
+2. The files CmrContainer and CmrContainterStorage need to be renamed, edited, et cetera.
 3. The files in #1 and 2 need to be added to the Makefile.am
 4. Of course, the functionality has to be added
 5. The tests and unit tests are wired up as far as autotools is considered, but they
@@ -13,4 +37,3 @@ What needs to be done:
 7. The libdap::Error object should be swapped out for a BESError<something> object
     and the libdap headers for Error.h should be dumped.
 
- 

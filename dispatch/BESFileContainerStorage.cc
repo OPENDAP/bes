@@ -1,4 +1,4 @@
-// BESContainerStorageCatalog.cc
+// BESFileContainerStorage.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -32,7 +32,7 @@
 
 #include "config.h"
 
-#include "BESContainerStorageCatalog.h"
+#include "BESFileContainerStorage.h"
 #include "BESContainer.h"
 
 #include "BESCatalogList.h"
@@ -50,7 +50,7 @@
 
 /** @brief create an instance of this persistent store with the given name.
  *
- * Creates an instances of BESContainerStorageCatalog with the given name.
+ * Creates an instances of BESFileContainerStorage with the given name.
  * Looks up the base directory and regular expressions in the bes
  * configuration file using TheBESKeys. Throws an exception if either of
  * these cannot be determined or if the regular expressions are incorrectly
@@ -71,20 +71,18 @@
  * @see BESKeys
  * @see BESContainer
  */
-BESContainerStorageCatalog::BESContainerStorageCatalog(const string &n) :
+BESFileContainerStorage::BESFileContainerStorage(const string &n) :
         BESContainerStorageVolatile(n)
 {
-#if 0
-    _utils = BESCatalogUtils::Utils(n);
-#endif
     BESCatalog *catalog = BESCatalogList::TheCatalogList()->find_catalog(n);
+
     _utils = catalog->get_catalog_utils();
 
     _root_dir = _utils->get_root_dir();
     _follow_sym_links = _utils->follow_sym_links();
 }
 
-BESContainerStorageCatalog::~BESContainerStorageCatalog()
+BESFileContainerStorage::~BESFileContainerStorage()
 {
 }
 
@@ -117,13 +115,13 @@ BESContainerStorageCatalog::~BESContainerStorageCatalog()
  * @throws BESInternalError if there is a problem determining the resource
  * determined using the regular expression extensions.
  */
-void BESContainerStorageCatalog::add_container(const string &sym_name, const string &real_name, const string &type)
+void BESFileContainerStorage::add_container(const string &sym_name, const string &real_name, const string &type)
 {
     // make sure that the real name passed in is not on the exclude list
     // for the catalog. First, remove any trailing slashes. Then find the
     // basename of the remaining real name. The make sure it's not on the
     // exclude list.
-    BESDEBUG( "bes", "BESContainerStorageCatalog::add_container: "
+    BESDEBUG( "bes", "BESFileContainerStorage::add_container: "
             << "adding container with name \"" << sym_name << "\", real name \""
             << real_name << "\", type \"" << type << "\"" << endl);
 
@@ -153,21 +151,6 @@ void BESContainerStorageCatalog::add_container(const string &sym_name, const str
     string new_type = type;
     if (new_type == "") {
         new_type = _utils->get_handler_name(real_name);
-
-#if 0
-        BESCatalogUtils::match_citer i = _utils->match_list_begin();
-        BESCatalogUtils::match_citer ie = _utils->match_list_end();
-        bool done = false;
-        for (; i != ie && !done; i++) {
-            BESCatalogUtils::handler_regex match = (*i);
-            BESRegex reg_expr(match.regex.c_str());
-            if (reg_expr.match(real_name.c_str(), real_name.length()) == static_cast<int>(real_name.length())) {
-                new_type = match.handler;
-                done = true;
-            }
-
-        }
-#endif
     }
 
     BESContainerStorageVolatile::add_container(sym_name, real_name, new_type);
@@ -182,30 +165,12 @@ void BESContainerStorageCatalog::add_container(const string &sym_name, const str
  * @param provides what is provided for the node by the node type's request handler
  * @return true if a request handler serves the specified node, false otherwise
  */
-bool BESContainerStorageCatalog::isData(const string &inQuestion, list<string> &provides)
+bool BESFileContainerStorage::isData(const string &inQuestion, list<string> &provides)
 {
     string node_type = _utils->get_handler_name(inQuestion);
 
-#if 0
-    string node_type = "";
-    BESCatalogUtils::match_citer i = _utils->match_list_begin();
-    BESCatalogUtils::match_citer ie = _utils->match_list_end();
-    bool done = false;
-    for (; i != ie && !done; i++) {
-        BESCatalogUtils::handler_regex match = (*i);
-        BESRegex reg_expr(match.regex.c_str());
-        if (reg_expr.match(inQuestion.c_str(), inQuestion.length()) == static_cast<int>(inQuestion.length())) {
-            node_type = match.handler;
-            done = true;
-        }
-    }
-#endif
-
     BESServiceRegistry::TheRegistry()->services_handled(node_type, provides);
 
-#if 0
-    return done;
-#endif
     return !node_type.empty();  // Return false if node_type is empty, true if a match is found.
 }
 
@@ -216,9 +181,9 @@ bool BESContainerStorageCatalog::isData(const string &inQuestion, list<string> &
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESContainerStorageCatalog::dump(ostream &strm) const
+void BESFileContainerStorage::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESContainerStorageCatalog::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "BESFileContainerStorage::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     strm << BESIndent::LMarg << "name: " << get_name() << endl;
     strm << BESIndent::LMarg << "utils: " << get_name() << endl;

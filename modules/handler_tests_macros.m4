@@ -54,7 +54,10 @@ m4_define([_AT_BESCMD_SCRUB_DATES_TEST], [dnl
     input=$1
     baseline=$2
     pass=$3
-        
+    
+    dnl I'm not sure about this. jhrg 1/3/19
+    dnl AS_IF([test -z "$at_verbose"],[echo "COMMAND: besstandalone $repeat -c $abs_builddir/$bes_conf -i $input"])
+    
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
         AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])

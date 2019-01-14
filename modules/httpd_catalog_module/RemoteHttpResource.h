@@ -33,9 +33,6 @@
 #include <string>
 #include <vector>
 
-#include "InternalErr.h"
-//#include "RCReader.h"
-
 namespace httpd_catalog {
 
 /**
@@ -119,8 +116,8 @@ public:
     std::string getCacheFileName()
     {
         if (!d_initialized)
-            throw libdap::Error(
-                "RemoteHttpResource::getCacheFileName() - STATE ERROR: Remote Resource Has Not Been Retrieved.");
+           //throw libdap::Error(
+           throw BESInternalError("RemoteHttpResource::getCacheFileName() - STATE ERROR: Remote Resource Has Not Been Retrieved.", __FILE__, __LINE__);
         return d_resourceCacheFileName;
     }
 
@@ -133,8 +130,8 @@ public:
     void getResponseHeaders(std::vector<std::string> &hdrs)
     {
         if (!d_initialized)
-            throw libdap::Error(
-                "RemoteHttpResource::getCacheFileName() - STATE ERROR: Remote Resource Has Not Been Retrieved.");
+            //throw libdap::Error(
+            throw BESInternalError("RemoteHttpResource::getCacheFileName() - STATE ERROR: Remote Resource Has Not Been Retrieved.", __FILE__, __LINE__);
         hdrs.insert( hdrs.end(), d_response_headers->begin(), d_response_headers->end() );
     }
 

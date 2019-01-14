@@ -55,7 +55,7 @@ BESXMLSetContainerCommand::BESXMLSetContainerCommand(const BESDataHandlerInterfa
 /** @brief parse a set container command.
  *
  * ~~~{.xml}
- * <setContainer name="c" space="catalog">data/nc/fnoc1.nc</setContainer>
+ * <setContainer name="c" space="catalog"> data/nc/fnoc1.nc </setContainer>
  * ~~~
  *
  * @param node xml2 element node pointer
@@ -73,17 +73,6 @@ void BESXMLSetContainerCommand::parse_request(xmlNode *node)
         throw BESInternalError(string("The specified command ").append(action).append(" is not a set container command."), __FILE__, __LINE__);
     }
 
-#if 0
-    string cname;
-    string cvalue;
-    map<string, string> cprops;
-    xmlNode *real = BESXMLUtils::GetFirstChild(node, cname, cvalue, cprops);
-
-    if (value.empty() && !real) {
-        string err = action + " command: container real name missing";
-        throw BESSyntaxUserError(err, __FILE__, __LINE__);
-    }
-#endif
     if (value.empty())
         throw BESSyntaxUserError(action + " command: container real name missing", __FILE__, __LINE__);
 
@@ -93,7 +82,12 @@ void BESXMLSetContainerCommand::parse_request(xmlNode *node)
 
     d_xmlcmd_dhi.data[SYMBOLIC_NAME] = props["name"];
 
-    // where should this container be stored
+    // Is the path (i.e., the 'value') of this command in a virtual directory?
+    // If so, use the corresponding catalog name as the value of the 'space'
+    // attribute, overriding what the client may have sent.
+    //
+    // @TODO Really? seems odd. I'd expect the opposite behavior - use what was given
+    // and set the space using the catalog name if 'space' was not provided. jhrg 1/7/19
     BESCatalog *cat = BESUtil::separateCatalogFromPath(value);
     if (cat) {
         if (!props["space"].empty())
@@ -105,7 +99,7 @@ void BESXMLSetContainerCommand::parse_request(xmlNode *node)
         d_xmlcmd_dhi.data[STORE_NAME] = props["space"];
     }
     else {
-        d_xmlcmd_dhi.data[STORE_NAME] = CATALOG /* DEFAULT jhrg 12/27/18 */; // CATALOG == "catalog" DEFAULT == "default"
+        d_xmlcmd_dhi.data[STORE_NAME] = CATALOG /* DEFAULT jhrg 12/27/18 */; // CATALOG == "catalog"; DEFAULT == "default"
     }
 
     // 'type' can be empty (not used), so just set it this way
@@ -113,19 +107,6 @@ void BESXMLSetContainerCommand::parse_request(xmlNode *node)
 
     // now that everything has passed tests, set the value in the dhi
     d_xmlcmd_dhi.data[REAL_NAME] = value;
-
-#if 0
-    // if there is a child node, then the real value of the container is
-    // this content, or is set in this content.
-    if (real) {
-        xmlBufferPtr buf = xmlBufferCreate();
-        xmlNodeDump(buf, real->doc, real, 2, 1);
-        if (buf->content) {
-            value = (char *) buf->content;
-            d_xmlcmd_dhi.data[REAL_NAME] = (char *) (buf->content);
-        }
-    }
-#endif
 
     d_xmlcmd_dhi.action = SETCONTAINER;
 
