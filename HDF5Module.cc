@@ -40,7 +40,7 @@ using std::endl;
 #include "HDF5RequestHandler.h"
 #include <BESDapService.h>
 #include <BESContainerStorageList.h>
-#include <BESContainerStorageCatalog.h>
+#include <BESFileContainerStorage.h>
 #include <BESCatalogDirectory.h>
 #include <BESCatalogList.h>
 #include <BESDebug.h>
@@ -61,7 +61,7 @@ void HDF5Module::initialize(const string & modname)
     }
 
     if (!BESContainerStorageList::TheList()->ref_persistence(HDF5_CATALOG)) {
-        BESContainerStorageCatalog *csc = new BESContainerStorageCatalog(HDF5_CATALOG);
+        BESContainerStorage *csc = new BESFileContainerStorage(HDF5_CATALOG);
         BESContainerStorageList::TheList()->add_persistence(csc);
     }
 
