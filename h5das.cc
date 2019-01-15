@@ -332,7 +332,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 
         // Since HDF5 attribute may be in string datatype, it must be dealt
         // properly. Get data type.
-        // The following line doesn't work in HDF5 1.10.
+        // The following line doesn't work in HDF5 1.10 at one centos machine but it works on CentOS 7.4.
         //hid_t ty_id = attr_inst.type;
         hid_t ty_id = H5Aget_type(attr_id);
         string dap_type = get_dap_type(ty_id, false);
