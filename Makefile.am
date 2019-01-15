@@ -47,7 +47,7 @@ HDF5DTYPE_HDRS = HDF5Array.h HDF5Float64.h HDF5Int32.h HDF5Structure.h HDF5Url.h
 	HDF5Int16.h HDF5Str.h HDF5UInt32.h HDF5Int64.h HDF5UInt64.h
 
 HDF5_SRCS = h5dds.cc h5das.cc h5dmr.cc h5common.cc h5get.cc HDF5PathFinder.cc 
-HDF5_HDRS = hdf5_handler.h h5dds.h h5das.h h5dmr.h h5common.h h5get.h  HDF5PathFinder.h config_hdf5.h
+HDF5_HDRS = hdf5_handler.h h5dds.h h5das.h h5dmr.h h5common.h h5get.h  HDF5PathFinder.h config_hdf5.h h5apicompatible.h
 
 HDF5CFDTYPE_SRCS = HDF5GMSPCFArray.cc HDF5GMCFFillIndexArray.cc HDF5GMCFMissLLArray.cc HDF5GMCFMissNonLLCVArray.cc HDF5GMCFSpecialCVArray.cc \
                    HDFEOS5CFMissLLArray.cc HDFEOS5CFMissNonLLCVArray.cc  HDFEOS5CFSpecialCVArray.cc \

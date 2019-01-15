@@ -1566,8 +1566,8 @@ void obtain_dimnames(hid_t dset,int ndims, DS_t *dt_inst_ptr) {
 
                 rbuf =((hobj_ref_t*)vlbuf[i].p)[0];
 
-                // Note: H5Rget_name may be used to replace H5Rdereference and H5Iget_name in the future. KY 2016-06-28
-                if ((ref_dset = H5Rdereference(attr_id, H5R_OBJECT, &rbuf)) < 0) {
+                // Note: H5Rget_name may be used to replace H5RDEREFERENCE and H5Iget_name in the future. KY 2016-06-28
+                if ((ref_dset = H5RDEREFERENCE(attr_id, H5R_OBJECT, &rbuf)) < 0) {
                     string msg = "Cannot dereference from the DIMENSION_LIST attribute  for the variable " + string(dt_inst_ptr->name);
                     throw InternalErr(__FILE__, __LINE__, msg);
                 }

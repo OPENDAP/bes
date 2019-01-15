@@ -82,12 +82,12 @@ bool HDF5Url::read()
 	throw InternalErr(__FILE__, __LINE__, "H5Dread() failed.");
     }
 
-    hid_t did_r = H5Rdereference(dset_id, H5R_OBJECT, &rbuf);
+    hid_t did_r = H5RDEREFERENCE(dset_id, H5R_OBJECT, &rbuf);
     char r_name[DODS_NAMELEN];
     if (did_r < 0){
 	H5Dclose(dset_id);
         H5Fclose(file_id);
-	throw InternalErr(__FILE__, __LINE__, "H5Rdereference() failed.");
+	throw InternalErr(__FILE__, __LINE__, "H5RDEREFERENCE() failed.");
     }
     if (H5Iget_name(did_r, r_name, DODS_NAMELEN) < 0){
 	H5Dclose(dset_id);

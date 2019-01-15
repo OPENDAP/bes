@@ -1335,6 +1335,8 @@ bool HDF5RequestHandler::hdf5_build_help(BESDataHandlerInterface & dhi)
     if( !info )
         throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 
+    string add_info="Just for Test";
+
     map<string,string> attrs ;
     attrs["name"] = MODULE_NAME ;
     attrs["version"] = MODULE_VERSION ;
@@ -1347,6 +1349,7 @@ bool HDF5RequestHandler::hdf5_build_help(BESDataHandlerInterface & dhi)
         }
     info->begin_tag( "module", &attrs ) ;
     info->end_tag( "module" ) ;
+    info->add_data(add_info);
 
     return true;
 }

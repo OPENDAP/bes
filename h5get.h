@@ -35,6 +35,7 @@
 #define _H5GET_H
 #include "hdf5_handler.h"
 #include "h5common.h"
+#include "h5apicompatible.h"
 
 bool check_h5str(hid_t);
 

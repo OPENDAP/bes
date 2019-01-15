@@ -332,7 +332,10 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 
         // Since HDF5 attribute may be in string datatype, it must be dealt
         // properly. Get data type.
-        hid_t ty_id = attr_inst.type;
+        //hid_t ty_id = attr_inst.type;
+        hid_t ty_id = H5Aget_type(attr_id);
+cerr<<"type is "<<ty_id <<endl;
+cerr<<"attribute name is "<<attr_inst.name <<endl;
         string dap_type = get_dap_type(ty_id, false);
         string attr_name = attr_inst.name;
 
@@ -378,12 +381,14 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
                 }
 
                 // going to the next value.
-                temp_bp += H5Tget_size(attr_inst.type);
+                //temp_bp += H5Tget_size(attr_inst.type);
+                temp_bp += H5Tget_size(ty_id);
             }
             if (temp_buf.empty() != true) {
                 // Reclaim any VL memory if necessary.
                 herr_t ret_vlen_claim;
-                ret_vlen_claim = H5Dvlen_reclaim(attr_inst.type, temp_space_id, H5P_DEFAULT, &temp_buf[0]);
+                //ret_vlen_claim = H5Dvlen_reclaim(attr_inst.type, temp_space_id, H5P_DEFAULT, &temp_buf[0]);
+                ret_vlen_claim = H5Dvlen_reclaim(ty_id, temp_space_id, H5P_DEFAULT, &temp_buf[0]);
                 if(ret_vlen_claim < 0) {
                     H5Sclose(temp_space_id);
                     throw InternalErr(__FILE__, __LINE__, "Cannot reclaim the memory buffer of the HDF5 variable length string.");

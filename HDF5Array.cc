@@ -626,9 +626,9 @@ bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
 		if (rbuf[offset[0] + i * step[0]][0] != '\0') {
 		    char r_name[DODS_NAMELEN];
 
-		    hid_t did_r = H5Rdereference(d_dset_id, H5R_DATASET_REGION, rbuf[offset[0] + i * step[0]]);
+		    hid_t did_r = H5RDEREFERENCE(d_dset_id, H5R_DATASET_REGION, rbuf[offset[0] + i * step[0]]);
 		    if (did_r < 0) {
-			throw InternalErr(__FILE__, __LINE__, "H5Rdereference() failed.");
+			throw InternalErr(__FILE__, __LINE__, "H5RDEREFERENCE() failed.");
 
 		    }
 
@@ -757,9 +757,9 @@ bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
 
 	    for (int i = 0; i < nelms; i++) {
 		// Let's assume that URL array is always 1 dimension.
-		hid_t did_r = H5Rdereference(d_dset_id, H5R_OBJECT, &orbuf[offset[0] + i * step[0]]);
+		hid_t did_r = H5RDEREFERENCE(d_dset_id, H5R_OBJECT, &orbuf[offset[0] + i * step[0]]);
 		if (did_r < 0) {
-		    throw InternalErr(__FILE__, __LINE__, "H5Rdereference() failed.");
+		    throw InternalErr(__FILE__, __LINE__, "H5RDEREFERENCE() failed.");
 		}
 		char r_name[DODS_NAMELEN];
 		if (H5Iget_name(did_r, (char *) r_name, DODS_NAMELEN) < 0) {

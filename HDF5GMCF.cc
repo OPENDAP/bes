@@ -36,6 +36,7 @@
 
 #include "HDF5CF.h"
 #include "HDF5RequestHandler.h"
+#include "h5apicompatible.h"
 #include <BESDebug.h>
 #include <algorithm>
 //#include <sstream>
@@ -1014,7 +1015,7 @@ throw (Exception){
             if(vlbuf[vlbuf_index].p== NULL) 
                 throw4("The dimension doesn't exist. Var name is ",var->name,"; the dimension index is ",vlbuf_index);
             rbuf =((hobj_ref_t*)vlbuf[vlbuf_index].p)[0];
-            if ((ref_dset = H5Rdereference(attr_id, H5R_OBJECT, &rbuf)) < 0) 
+            if ((ref_dset = H5RDEREFERENCE(attr_id, H5R_OBJECT, &rbuf)) < 0) 
                 throw2("Cannot dereference from the DIMENSION_LIST attribute  for the variable ",var->name);
 
             if ((objnamelen= H5Iget_name(ref_dset,NULL,0))<=0) 
@@ -2705,7 +2706,7 @@ throw (Exception){
             if(vlbuf[vlbuf_index].p== NULL) 
                 throw4("The dimension doesn't exist. Var name is ",var->name,"; the dimension index is ",vlbuf_index);
             rbuf =((hobj_ref_t*)vlbuf[vlbuf_index].p)[0];
-            if ((ref_dset = H5Rdereference(attr_id, H5R_OBJECT, &rbuf)) < 0) 
+            if ((ref_dset = H5RDEREFERENCE(attr_id, H5R_OBJECT, &rbuf)) < 0) 
                 throw2("Cannot dereference from the DIMENSION_LIST attribute  for the variable ",var->name);
 
             if ((objnamelen= H5Iget_name(ref_dset,NULL,0))<=0) 
