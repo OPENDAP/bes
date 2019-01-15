@@ -332,10 +332,9 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 
         // Since HDF5 attribute may be in string datatype, it must be dealt
         // properly. Get data type.
+        // The following line doesn't work in HDF5 1.10.
         //hid_t ty_id = attr_inst.type;
         hid_t ty_id = H5Aget_type(attr_id);
-cerr<<"type is "<<ty_id <<endl;
-cerr<<"attribute name is "<<attr_inst.name <<endl;
         string dap_type = get_dap_type(ty_id, false);
         string attr_name = attr_inst.name;
 
@@ -344,11 +343,11 @@ cerr<<"attribute name is "<<attr_inst.name <<endl;
 
             BESDEBUG("h5", "attribute name " << attr_name <<endl);
             BESDEBUG("h5", "attribute size " <<attr_inst.need <<endl);
-            BESDEBUG("h5", "attribute type size " <<(int)(H5Tget_size(attr_inst.type))<<endl);
+            BESDEBUG("h5", "attribute type size " <<(int)(H5Tget_size(ty_id))<<endl);
 
             hid_t temp_space_id = H5Aget_space(attr_id);
             BESDEBUG("h5",
-                "attribute calculated size "<<(int)(H5Tget_size(attr_inst.type)) *(int)(H5Sget_simple_extent_npoints(temp_space_id)) <<endl);
+                "attribute calculated size "<<(int)(H5Tget_size(ty_id)) *(int)(H5Sget_simple_extent_npoints(temp_space_id)) <<endl);
             if (temp_space_id < 0) {
                 H5Tclose(ty_id);
                 H5Aclose(attr_id);

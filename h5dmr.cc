@@ -855,6 +855,7 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
         }
 
         // Get the corresponding DAP data type of the HDF5 datatype.
+        // The following line doesn't work in HDF5 1.10.
         //hid_t ty_id = attr_inst.type;
         hid_t ty_id = H5Aget_type(attr_id);
         string dap_type = get_dap_type(ty_id,true);
@@ -879,10 +880,12 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
 
             BESDEBUG("h5","attribute name " << attr_name <<endl);
             BESDEBUG("h5","attribute size " <<attr_inst.need <<endl);
-            BESDEBUG("h5","attribute type size " <<(int)(H5Tget_size(attr_inst.type))<<endl); 
+            //BESDEBUG("h5","attribute type size " <<(int)(H5Tget_size(attr_inst.type))<<endl); 
+            BESDEBUG("h5","attribute type size " <<(int)(H5Tget_size(ty_id))<<endl); 
 
             hid_t temp_space_id = H5Aget_space(attr_id);
-            BESDEBUG("h5","attribute calculated size "<<(int)(H5Tget_size(attr_inst.type)) *(int)(H5Sget_simple_extent_npoints(temp_space_id)) <<endl);
+            //BESDEBUG("h5","attribute calculated size "<<(int)(H5Tget_size(attr_inst.type)) *(int)(H5Sget_simple_extent_npoints(temp_space_id)) <<endl);
+            BESDEBUG("h5","attribute calculated size "<<(int)(H5Tget_size(ty_id)) *(int)(H5Sget_simple_extent_npoints(temp_space_id)) <<endl);
             if(temp_space_id <0) {
                 H5Tclose(ty_id);
                 H5Aclose(attr_id);
