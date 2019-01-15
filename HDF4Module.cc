@@ -38,7 +38,7 @@ using std::endl;
 #include "HDF4RequestHandler.h"
 #include <BESDapService.h>
 #include <BESContainerStorageList.h>
-#include <BESContainerStorageCatalog.h>
+#include <BESFileContainerStorage.h>
 #include <BESCatalogDirectory.h>
 #include <BESCatalogList.h>
 #include <BESDebug.h>
@@ -60,8 +60,8 @@ void HDF4Module::initialize(const string & modname)
         }
 
         if( !BESContainerStorageList::TheList()->ref_persistence( HDF4_CATALOG ) ) {
-            BESContainerStorageCatalog *csc =
-            new BESContainerStorageCatalog(HDF4_CATALOG);
+            BESFileContainerStorage *csc =
+            new BESFileContainerStorage(HDF4_CATALOG);
             BESContainerStorageList::TheList()->add_persistence(csc);
         }
 
