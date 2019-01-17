@@ -1,4 +1,4 @@
-// RemoteHttpResource.cc
+
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of httpd_catalog_module, A C++ MODULE that can be loaded in to
@@ -44,11 +44,9 @@
 #include "RemoteHttpResource.h"
 #include "RemoteHttpResourceCache.h"
 
-
 using namespace std;
 
 #define prolog string("RemoteHttpResource::").append(__func__).append("() - ")
-
 
 namespace httpd_catalog {
 
@@ -262,7 +260,6 @@ void RemoteHttpResource::retrieveResource()
         cache->unlock_cache();
         throw;
     }
-
 }
 
 /**
@@ -374,6 +371,7 @@ void RemoteHttpResource::ingest_http_headers_and_type()
         type = "unknown";
         //throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
+
     d_type = type;
 
     BESDEBUG(MODULE, prolog << "END (dataset type: "<< d_type << ")" << endl);

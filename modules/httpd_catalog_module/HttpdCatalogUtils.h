@@ -1,4 +1,4 @@
-// HttpCatalogUtils.h
+
 // -*- mode: c++; c-basic-offset:4 -*-
 //
 // This file is part of httpd_catalog_module, A C++ module that can be loaded in to
@@ -22,7 +22,6 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-
 
 #ifndef I_HttpCatalogUtils_H
 #define I_HttpCatalogUtils_H 1

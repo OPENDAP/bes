@@ -1,4 +1,3 @@
-// HttpdDirScraper.cc
 // -*- mode: c++; c-basic-offset:4 -*-
 //
 // This file is part of httpd_catalog_module, A C++ module that can be loaded in to
@@ -52,21 +51,19 @@ namespace httpd_catalog {
 HttpdDirScraper::HttpdDirScraper()
 {
     // There was probably a better way to make this association but this worked.
-    d_months.insert(pair<string,int>(string("jan"),0));
-    d_months.insert(pair<string,int>(string("feb"),1));
-    d_months.insert(pair<string,int>(string("mar"),2));
-    d_months.insert(pair<string,int>(string("apr"),3));
-    d_months.insert(pair<string,int>(string("may"),4));
-    d_months.insert(pair<string,int>(string("jun"),5));
-    d_months.insert(pair<string,int>(string("jul"),6));
-    d_months.insert(pair<string,int>(string("aug"),7));
-    d_months.insert(pair<string,int>(string("sep"),8));
-    d_months.insert(pair<string,int>(string("oct"),9));
-    d_months.insert(pair<string,int>(string("nov"),10));
-    d_months.insert(pair<string,int>(string("dec"),11));
-
+    d_months.insert(pair<string, int>(string("jan"), 0));
+    d_months.insert(pair<string, int>(string("feb"), 1));
+    d_months.insert(pair<string, int>(string("mar"), 2));
+    d_months.insert(pair<string, int>(string("apr"), 3));
+    d_months.insert(pair<string, int>(string("may"), 4));
+    d_months.insert(pair<string, int>(string("jun"), 5));
+    d_months.insert(pair<string, int>(string("jul"), 6));
+    d_months.insert(pair<string, int>(string("aug"), 7));
+    d_months.insert(pair<string, int>(string("sep"), 8));
+    d_months.insert(pair<string, int>(string("oct"), 9));
+    d_months.insert(pair<string, int>(string("nov"), 10));
+    d_months.insert(pair<string, int>(string("dec"), 11));
 }
-
 
 /*
  * @brief Converts an Apache httpd directory page "size" string (23K, 45M, 32G, etc)
@@ -74,11 +71,10 @@ HttpdDirScraper::HttpdDirScraper()
  */
 long HttpdDirScraper::get_size_val(const string size_str) const
 {
-
     char scale_c = *size_str.rbegin();
     long scale = 1;
 
-    switch (scale_c){
+    switch (scale_c) {
     case 'K':
         scale = 1e3;
         break;
@@ -101,8 +97,7 @@ long HttpdDirScraper::get_size_val(const string size_str) const
     BESDEBUG(MODULE, prolog << "scale: " << scale << endl);
 
     string result = size_str;
-    if(isalpha(scale_c))
-        result = size_str.substr(0,size_str.length()-1);
+    if (isalpha(scale_c)) result = size_str.substr(0, size_str.length() - 1);
 
     long size = atol(result.c_str());
     BESDEBUG(MODULE, prolog << "raw size: " << size << endl);
@@ -117,23 +112,24 @@ long HttpdDirScraper::get_size_val(const string size_str) const
  */
 string show_tm_struct(const tm tms)
 {
-   stringstream ss;
-   ss << "tm_sec:   " << tms.tm_sec << endl;
-   ss << "tm_min:   " << tms.tm_min << endl;
-   ss << "tm_hour:  " << tms.tm_hour << endl;
-   ss << "tm_mday:  " << tms.tm_mday << endl;
-   ss << "tm_mon:   " << tms.tm_mon << endl;
-   ss << "tm_year:  " << tms.tm_year << endl;
-   ss << "tm_wday:  " << tms.tm_wday << endl;
-   ss << "tm_yday:  " << tms.tm_yday << endl;
-   ss << "tm_isdst: " << tms.tm_isdst << endl;
-   return ss.str();
+    stringstream ss;
+    ss << "tm_sec:   " << tms.tm_sec << endl;
+    ss << "tm_min:   " << tms.tm_min << endl;
+    ss << "tm_hour:  " << tms.tm_hour << endl;
+    ss << "tm_mday:  " << tms.tm_mday << endl;
+    ss << "tm_mon:   " << tms.tm_mon << endl;
+    ss << "tm_year:  " << tms.tm_year << endl;
+    ss << "tm_wday:  " << tms.tm_wday << endl;
+    ss << "tm_yday:  " << tms.tm_yday << endl;
+    ss << "tm_isdst: " << tms.tm_isdst << endl;
+    return ss.str();
 }
 
 /**
  * @brief Zero a tm struct
  */
-void zero_tm_struct(tm &tms){
+void zero_tm_struct(tm &tms)
+{
     tms.tm_sec = 0;
     tms.tm_min = 0;
     tms.tm_hour = 0;
@@ -158,39 +154,39 @@ string HttpdDirScraper::httpd_time_to_iso_8601(const string httpd_time) const
 
     vector<string> tokens;
     string delimiters = "- :";
-    BESUtil::tokenize(httpd_time,tokens,delimiters);
+    BESUtil::tokenize(httpd_time, tokens, delimiters);
 
     BESDEBUG(MODULE, prolog << "Found " << tokens.size() << " tokens." << endl);
     vector<string>::iterator it = tokens.begin();
-    int i=0;
-    if(BESDebug::IsSet(MODULE)){
-        while(it != tokens.end()) {
-            BESDEBUG(MODULE, prolog << "    token["<< i++ << "]: "<< *it  << endl);
+    int i = 0;
+    if (BESDebug::IsSet(MODULE)) {
+        while (it != tokens.end()) {
+            BESDEBUG(MODULE, prolog << "    token["<< i++ << "]: "<< *it << endl);
             it++;
         }
     }
 
-    if(tokens.size() >2){
+    if (tokens.size() > 2) {
         std::istringstream(tokens[0]) >> tm.tm_mday;
 
-        pair<string,int> mnth = *d_months.find(BESUtil::lowercase(tokens[1]));
+        pair<string, int> mnth = *d_months.find(BESUtil::lowercase(tokens[1]));
         tm.tm_mon = mnth.second;
 
         std::istringstream(tokens[2]) >> tm.tm_year;
         tm.tm_year -= 1900;
 
-        if(tokens.size()>4){
+        if (tokens.size() > 4) {
             std::istringstream(tokens[3]) >> tm.tm_hour;
             std::istringstream(tokens[4]) >> tm.tm_min;
         }
     }
-    BESDEBUG(MODULE, prolog << "tm struct: "  << endl << show_tm_struct(tm) );
 
-    time_t theTime = mktime (&tm);
+    BESDEBUG(MODULE, prolog << "tm struct: " << endl << show_tm_struct(tm));
+
+    time_t theTime = mktime(&tm);
     BESDEBUG(MODULE, prolog << "theTime: " << theTime << endl);
-    return BESUtil::get_time(theTime,false);
+    return BESUtil::get_time(theTime, false);
 }
-
 
 /**
  * @brief Converts an Apache httpd directory page into a collection of bes::CatalogItems.
@@ -267,14 +263,13 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std:
 
                 // attempt to get time string
                 string time_str;
-                int start_pos =  getNextElementText(pageStr, "td", aCloseIndex + aCloseStr.length(), time_str);
+                int start_pos = getNextElementText(pageStr, "td", aCloseIndex + aCloseStr.length(), time_str);
                 BESDEBUG(MODULE, prolog << "time_str: '" << time_str << "'" << endl);
 
                 // attempt to get size string
                 string size_str;
-                start_pos =  getNextElementText(pageStr, "td", start_pos, size_str);
+                start_pos = getNextElementText(pageStr, "td", start_pos, size_str);
                 BESDEBUG(MODULE, prolog << "size_str: '" << size_str << "'" << endl);
-
 
                 if ((linkText.find("<img") != string::npos) || !(linkText.length()) || (linkText.find("<<<") != string::npos)
                     || (linkText.find(">>>") != string::npos)) {
@@ -294,7 +289,7 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std:
                         BESDEBUG(MODULE, prolog << "SKIPPING(nameExcludeRegex) - name: '" << linkText << "'" << endl);
                     }
                     else if (BESUtil::endsWith(href, "/")) {
-                        string node_name = href.substr(0,href.length()-1);
+                        string node_name = href.substr(0, href.length() - 1);
                         // it's a directory aka a node
                         BESDEBUG(MODULE, prolog << "NODE: " << node_name << endl);
                         bes::CatalogItem *childNode = new bes::CatalogItem();
@@ -307,7 +302,7 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std:
                         long size = get_size_val(size_str);
                         childNode->set_size(size);
 
-                        items.insert(pair<std::string,bes::CatalogItem *>(node_name,childNode));
+                        items.insert(pair<std::string, bes::CatalogItem *>(node_name, childNode));
                     }
                     else {
                         // It's a file aka a leaf
@@ -321,7 +316,7 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std:
                         long size = get_size_val(size_str);
                         leafItem->set_size(size);
 
-                        items.insert(pair<std::string,bes::CatalogItem *>(href,leafItem));
+                        items.insert(pair<std::string, bes::CatalogItem *>(href, leafItem));
                     }
                 }
             }
@@ -344,8 +339,8 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std:
  */
 int HttpdDirScraper::getNextElementText(const string &page_str, string element_name, int startIndex, string &resultText, bool trim) const
 {
-    string e_open_str = "<"+element_name+" ";
-    string e_close_str = "</"+element_name+">";
+    string e_open_str = "<" + element_name + " ";
+    string e_close_str = "</" + element_name + ">";
 
     // Locate the next "element_name"  element
     int start = page_str.find(e_open_str, startIndex);
@@ -359,8 +354,7 @@ int HttpdDirScraper::getNextElementText(const string &page_str, string element_n
     length = end - start;
     resultText = element_str.substr(start, length);
 
-    if(trim)
-        BESUtil::removeLeadingAndTrailingBlanks(resultText);
+    if (trim) BESUtil::removeLeadingAndTrailingBlanks(resultText);
 
     BESDEBUG(MODULE, prolog << "resultText: '" << resultText << "'" << endl);
     return startIndex + element_str.length();
@@ -389,7 +383,7 @@ bes::CatalogNode *HttpdDirScraper::get_node(const string &url, const string &pat
         while (it != items.end()) {
             bes::CatalogItem *item = it->second;
             BESDEBUG(MODULE, prolog << "Adding item: '" << item->get_name() << "'"<< endl);
-            if(item->get_type() == CatalogItem::node )
+            if (item->get_type() == CatalogItem::node)
                 node->add_node(item);
             else
                 node->add_leaf(item);
@@ -399,7 +393,7 @@ bes::CatalogNode *HttpdDirScraper::get_node(const string &url, const string &pat
     else {
         // It's a leaf aka "item" response.
         const BESCatalogUtils *cat_utils = BESCatalogList::TheCatalogList()->find_catalog(BES_DEFAULT_CATALOG)->get_catalog_utils();
-        std::vector<std::string> url_parts = BESUtil::split(url,'/',true);
+        std::vector<std::string> url_parts = BESUtil::split(url, '/', true);
         string leaf_name = url_parts.back();
 
         CatalogItem *item = new CatalogItem();
@@ -492,13 +486,12 @@ bes::CatalogNode *HttpdDirScraper::get_node(const string &url, const string &pat
 
         node->set_leaf(item);
 
-
     }
     return node;
 
 }
 #endif
 
-
-} // namespace httpd_catalog
+}
+ // namespace httpd_catalog
 

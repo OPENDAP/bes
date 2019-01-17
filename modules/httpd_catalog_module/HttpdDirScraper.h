@@ -38,7 +38,6 @@ namespace httpd_catalog {
  *
  * The scraping is done procedurally. The primary assumption is that links that point to nodes always end
  * in "/". Links that end in other characters are assumed to be links to "leaves".
- *
  */
 class HttpdDirScraper {
 private:
