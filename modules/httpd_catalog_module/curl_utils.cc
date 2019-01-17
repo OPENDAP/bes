@@ -59,7 +59,7 @@ const char *http_server_errors[SERVER_ERR_MAX - SERVER_ERR_MIN + 1] = { "Interna
     "Service Unavailable.", "Gateway Time-out.", "HTTP Version Not Supported." };
 
 /** This function translates an HTTP status code into an error messages. It
- works for those code greater than or equal to 400. */
+ 	works for those code greater than or equal to 400. */
 string http_status_to_string(int status)
 {
     if (status >= CLIENT_ERR_MIN && status <= CLIENT_ERR_MAX)

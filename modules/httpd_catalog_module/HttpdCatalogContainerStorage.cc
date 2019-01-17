@@ -1,4 +1,3 @@
-// HttpdCatalogContainerStorage.cc
 // -*- mode: c++; c-basic-offset:4 -*-
 //
 // This file is part of httpd_catalog_module, A C++ module that can be loaded in to
@@ -45,7 +44,7 @@ namespace httpd_catalog {
  * @see GatewayContainer
  */
 HttpdCatalogContainerStorage::HttpdCatalogContainerStorage(const string &n) :
-        BESContainerStorageVolatile(n)
+    BESContainerStorageVolatile(n)
 {
 }
 
@@ -75,10 +74,10 @@ void HttpdCatalogContainerStorage::add_container(const string &s_name, const str
  */
 void HttpdCatalogContainerStorage::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << prolog << "(" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << prolog<<"(" << (void *) this << ")" << endl;
     BESIndent::Indent();
     BESContainerStorageVolatile::dump(strm);
     BESIndent::UnIndent();
 }
 
-}// namespace httpd_catalog
+} // namespace httpd_catalog

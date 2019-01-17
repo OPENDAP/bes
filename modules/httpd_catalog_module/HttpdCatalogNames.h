@@ -1,4 +1,4 @@
-// HttpCatalogNames.h
+
 // -*- mode: c++; c-basic-offset:4 -*-
 //
 // This file is part of httpd_catalog_module, A C++ module that can be loaded in to
@@ -26,10 +26,9 @@
 #ifndef I_HTTPD_CATALOG_NAME_H
 #define I_HTTPD_CATALOG_NAME_H 1
 
-
 #define HTTPD_CATALOG "httpd"
 
-// Thisname  appears at the top level of the Hyrax catalog:
+// This name  appears at the top level of the Hyrax catalog:
 #define HTTPD_CATALOG_NAME "RemoteResources"
 
 // These are the names of the bes keys used to configure the handler.

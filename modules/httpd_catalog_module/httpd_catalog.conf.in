@@ -1,48 +1,47 @@
-#-----------------------------------------------------------------------#
-# OPeNDAP httpd Catalog BES Module Configuration file          #
-#-----------------------------------------------------------------------#
+###
+### OPeNDAP httpd Catalog BES Module Configuration file
+###
 
-#-----------------------------------------------------------------------#
-# Require dap configuration to be loaded first                          #
-#-----------------------------------------------------------------------#
-BES.Include=dap.conf
+BES.Include = dap.conf
 
-#-----------------------------------------------------------------------#
-# modules to load, includes data modules and command modules            #
-#-----------------------------------------------------------------------#
+# Un-comment this or add 'httpd' to BES.modules in the site.conf file
+# BES.modules += httpd
+BES.module.httpd = @bes_modules_dir@/libhttpd_catalog_module.so
 
-# BES.modules+=httpd
-BES.module.httpd=@bes_modules_dir@/libhttpd_catalog_module.so
-
-# 
 # Httpd_Catalog.Reference: URL to the Httpd_Catalog Reference Page at docs.opendap.org"
 Httpd_Catalog.Reference=http://docs.opendap.org/index.php/BES_-_Modules_-_Httpd_Catalog
 
-BES.Catalog.RemoteResources.RootDirectory=UNUSED
-# BES.Catalog.RemoteResources.FollowSymLinks=
-# BES.Catalog.RemoteResources.Exclude=
-# BES.Catalog.RemoteResources.Include=
-BES.Catalog.RemoteResources.TypeMatch+=unused:*;
+# These can be used for the RemoteRsources catalog
 
+# BES.Catalog.RemoteResources.FollowSymLinks =
+# BES.Catalog.RemoteResources.Exclude =
+# BES.Catalog.RemoteResources.Include =
+
+# The values of these parameters are not used by the httpd catalog module
+# but they must be defined or the framework will signal an error.
+
+BES.Catalog.RemoteResources.RootDirectory = UNUSED
+BES.Catalog.RemoteResources.TypeMatch += unused:*;
 
 # The cache used by the BES for the retrieved items.
-HttpResourceCache.dir=/tmp/cache
-HttpResourceCache.prefix=httpd_cat_
-HttpResourceCache.size=500
 
-Httpd_Catalog.MimeTypes=nc:application/x-netcdf
-Httpd_Catalog.MimeTypes+=h4:application/x-hdf
-Httpd_Catalog.MimeTypes+=h5:application/x-hdf5
+HttpResourceCache.dir = /tmp/httpd_cache
+HttpResourceCache.prefix = hc_
+HttpResourceCache.size = 500
 
-Httpd_Catalog.Collections=woo:https://www.opendap.org/pub/
-Httpd_Catalog.Collections+=IrisProducts:https://ds.iris.edu/files/products/
-Httpd_Catalog.Collections+=too:http://test.opendap.org/data/
+# The mapping between files/responses from the remote httpd an modules that 
+# read data on the local Hyrax server.
 
-# Where we can go for stuff...
-Gateway.Whitelist=http://localhost
-Gateway.Whitelist+=http://test.opendap.org
-Gateway.Whitelist+=https://www.opendap.org
-Gateway.Whitelist+=https://ds.iris.edu
+Httpd_Catalog.MimeTypes = nc:application/x-netcdf
+Httpd_Catalog.MimeTypes += h4:application/x-hdf
+Httpd_Catalog.MimeTypes += h5:application/x-hdf5
 
+# Data available on OPeNDAP's test server
 
+Httpd_Catalog.Collections = test:http://test.opendap.org/data/
 
+# Where we can go for stuff... Access to remote sites is limited to
+# only those URLs on the 'Gateway.Whitelist'.
+
+Gateway.Whitelist = http://localhost
+Gateway.Whitelist += http://test.opendap.org
