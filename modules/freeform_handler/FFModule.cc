@@ -36,7 +36,7 @@ using std::endl;
 #include <BESRequestHandlerList.h>
 #include <BESDapService.h>
 #include <BESContainerStorageList.h>
-#include <BESContainerStorageCatalog.h>
+#include <BESFileContainerStorage.h>
 #include <BESCatalogDirectory.h>
 #include <BESCatalogList.h>
 #include <BESDebug.h>
@@ -63,7 +63,7 @@ void FFModule::initialize(const string &modname)
 	}
 
 	if (!BESContainerStorageList::TheList()->ref_persistence(FF_CATALOG)) {
-		BESContainerStorageList::TheList()->add_persistence(new BESContainerStorageCatalog(FF_CATALOG));
+		BESContainerStorageList::TheList()->add_persistence(new BESFileContainerStorage(FF_CATALOG));
 	}
 	else {
 		BESDEBUG("ff", "    storage already exists, skipping" << endl);

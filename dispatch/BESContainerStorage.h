@@ -117,8 +117,16 @@ public:
      * @param real_name The real name for the container
      * @param type The type of data held by this container. This is
      * the handler that can be used to read the data
+     * @deprecated
      */
     virtual void add_container(const std::string &sym_name, const std::string &real_name, const std::string &type) = 0;
+
+    /**
+     * @brief Add a container to the store
+     *
+     * @param c
+     */
+    virtual void add_container(BESContainer *c) = 0;
 
     /** @brief removes a container with the given symbolic name
      *

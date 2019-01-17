@@ -26,7 +26,7 @@
 #include <iostream>
 
 #include "BESContainerStorageList.h"
-#include "BESContainerStorageCatalog.h"
+#include "BESFileContainerStorage.h"
 #include "BESCatalogDirectory.h"
 #include "BESCatalogList.h"
 
@@ -54,7 +54,7 @@ void TestModule::initialize(const string &modname)
     }
 
     if (!BESContainerStorageList::TheList()->ref_persistence(catalog_name)) {
-        BESContainerStorageCatalog *csc = new BESContainerStorageCatalog(catalog_name);
+        BESFileContainerStorage *csc = new BESFileContainerStorage(catalog_name);
         BESContainerStorageList::TheList()->add_persistence(csc);
     }
 

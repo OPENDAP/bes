@@ -49,7 +49,7 @@ AC_ARG_ENABLE([developer], [AS_HELP_STRING([--enable-developer], [Developer mode
 
 AC_ARG_ENABLE([asan], [AS_HELP_STRING([--enable-asan], [Use the address sanitizer; won't override CXXFLAGS on the command line])], 
     [AM_CONDITIONAL([USE_ASAN], [true])
-     cxx_debug_flags="$cxx_debug_flags -fsanitize=address -fno-omit-frame-pointer"], 
+     cxx_debug_flags="$cxx_debug_flags -fsanitize=address -fno-omit-frame-pointer -fno-common"], 
     [AM_CONDITIONAL([USE_ASAN], [false])])
 
 AC_ARG_WITH([cmr], [AS_HELP_STRING([--with-cmr], [Build and include the CMR Module (built by default in developer mode)])], 

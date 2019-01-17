@@ -33,8 +33,6 @@
 #include <string>
 #include <vector>
 
-#include "InternalErr.h"
-
 namespace httpd_catalog {
 
 /**
@@ -48,9 +46,7 @@ private:
     /// Resource URL that an instance of this class represents
     std::string d_remoteResourceUrl;
 
-    /**
-     * Open file descriptor for the resource content (Returned from the cache).
-     */
+    /// Open file descriptor for the resource content (Returned from the cache).
     int d_fd;
 
     /// Protect the state of the object, not allowing some method calls before the resource is retrieved.
@@ -118,8 +114,8 @@ public:
     std::string getCacheFileName()
     {
         if (!d_initialized)
-            throw libdap::Error(
-                "RemoteHttpResource::getCacheFileName() - STATE ERROR: Remote Resource Has Not Been Retrieved.");
+           //throw libdap::Error(
+           throw BESInternalError("RemoteHttpResource::getCacheFileName() - STATE ERROR: Remote Resource Has Not Been Retrieved.", __FILE__, __LINE__);
         return d_resourceCacheFileName;
     }
 
@@ -131,8 +127,8 @@ public:
     void getResponseHeaders(std::vector<std::string> &hdrs)
     {
         if (!d_initialized)
-            throw libdap::Error(
-                "RemoteHttpResource::getCacheFileName() - STATE ERROR: Remote Resource Has Not Been Retrieved.");
+            //throw libdap::Error(
+            throw BESInternalError("RemoteHttpResource::getCacheFileName() - STATE ERROR: Remote Resource Has Not Been Retrieved.", __FILE__, __LINE__);
         hdrs.insert( hdrs.end(), d_response_headers->begin(), d_response_headers->end() );
     }
 };

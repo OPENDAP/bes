@@ -33,10 +33,9 @@
 #include <string>
 #include <iostream>
 
-#include <BESInternalError.h>
-
 #include <BESDebug.h>
 #include <BESUtil.h>
+#include <BESInternalError.h>
 
 #include "curl_utils.h"
 #include "HttpdCatalogNames.h"
@@ -252,8 +251,10 @@ void RemoteHttpResource::retrieveResource()
 
         string msg = prolog + "Failed to acquire cache read lock for remote resource: '";
         msg += d_remoteResourceUrl + "\n";
+        throw BESInternalError(msg, __FILE__, __LINE__);
+#if 0
         throw libdap::Error(msg);
-
+#endif
     }
     catch (...) {
         BESDEBUG(MODULE, "RemoteHttpResource::retrieveResource() - Caught exception, unlocking cache and re-throw." << endl);
@@ -275,37 +276,46 @@ void RemoteHttpResource::writeResourceToFile(int fd)
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
     int status = -1;
+
+#if 0
     try {
-        BESDEBUG(MODULE,
-            "RemoteHttpResource::writeResourceToFile() - Saving resource " << d_remoteResourceUrl << " to cache file " << d_resourceCacheFileName << endl);
+#endif
 
-        status = read_url(d_curl, d_remoteResourceUrl, fd, d_response_headers, d_request_headers, d_error_buffer); // Throws Error.
+    BESDEBUG(MODULE,
+        "RemoteHttpResource::writeResourceToFile() - Saving resource " << d_remoteResourceUrl << " to cache file " << d_resourceCacheFileName << endl);
 
-        if (status >= 400) {
-            BESDEBUG(MODULE, prolog << "HTTP returned an error status: " << status << endl);
-            ostringstream oss("Error while reading the URL: '");
-            oss << d_remoteResourceUrl;
-            oss << "' The HTTP request returned a status of " << status << " which means '";
-            oss << http_status_to_string(status) << "' \n";
-            throw libdap::Error(oss.str());
-        }
+    status = read_url(d_curl, d_remoteResourceUrl, fd, d_response_headers, d_request_headers, d_error_buffer); // Throws Error.
 
-        BESDEBUG(MODULE, prolog << "Resource " << d_remoteResourceUrl << " saved to cache file " << d_resourceCacheFileName << endl);
-
-        // rewind the file
-        // FIXME I think the idea here is that we have the file open and we should just keep
-        // reading from it. But the container mechanism works with file names, so we will
-        // likely have to open the file again. If that's true, lets remove this call. jhrg 3.2.18
-        int status = lseek(fd, 0, SEEK_SET);
-        if (-1 == status) throw BESError("Could not seek within the response.", BES_NOT_FOUND_ERROR, __FILE__, __LINE__);
-
-        BESDEBUG(MODULE, prolog << "Reset file descriptor." << endl);
-
-        ingest_http_headers_and_type();
+    if (status >= 400) {
+        BESDEBUG(MODULE, prolog << "HTTP returned an error status: " << status << endl);
+        ostringstream oss("Error while reading the URL: '");
+        oss << d_remoteResourceUrl;
+        oss << "' The HTTP request returned a status of " << status << " which means '";
+        oss << http_status_to_string(status) << "' \n";
+        throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
-    catch (libdap::Error &e) {
-        throw;
-    }
+
+    BESDEBUG(MODULE, prolog << "Resource " << d_remoteResourceUrl << " saved to cache file " << d_resourceCacheFileName << endl);
+
+    // rewind the file
+
+    // FIXME I think the idea here is that we have the file open and we should just keep
+    // reading from it. But the container mechanism works with file names, so we will
+    // likely have to open the file again. If that's true, lets remove this call. jhrg 3.2.18
+
+    status = lseek(fd, 0, SEEK_SET);
+    if (-1 == status) throw BESError("Could not seek within the response.", BES_NOT_FOUND_ERROR, __FILE__, __LINE__);
+
+    BESDEBUG(MODULE, prolog << "Reset file descriptor." << endl);
+
+    ingest_http_headers_and_type();
+
+#if 0
+}
+catch (libdap::Error &e) {
+    throw;
+}
+#endif
 
     BESDEBUG(MODULE, prolog << "END" << endl);
 }

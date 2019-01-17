@@ -86,6 +86,7 @@ public:
 
     virtual BESContainer * look_for(const string &sym_name);
     virtual void add_container(const string &sym_name, const string &real_name, const string &type);
+    virtual void add_container(BESContainer *c);
     virtual bool del_container(const string &s_name);
     virtual bool del_containers();
 

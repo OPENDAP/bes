@@ -33,7 +33,7 @@ using std::endl;
 #include <BESDapService.h>
 #include <BESResponseNames.h>
 #include <BESContainerStorageList.h>
-#include <BESContainerStorageCatalog.h>
+#include <BESFileContainerStorage.h>
 #include <BESCatalogDirectory.h>
 #include <BESCatalogList.h>
 
@@ -54,7 +54,7 @@ void DapModule::initialize(const string &modname)
 
     // TODO this is probably bogus too. jhrg 7/23/18
     if (!BESContainerStorageList::TheList()->ref_persistence(default_catalog_name)) {
-        BESContainerStorageCatalog *csc = new BESContainerStorageCatalog(default_catalog_name);
+        BESFileContainerStorage *csc = new BESFileContainerStorage(default_catalog_name);
         BESContainerStorageList::TheList()->add_persistence(csc);
     }
 

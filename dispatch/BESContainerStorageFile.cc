@@ -204,6 +204,13 @@ BESContainerStorageFile::add_container( const string &,
     throw BESInternalError( err, __FILE__, __LINE__ ) ;
 }
 
+void
+BESContainerStorageFile::add_container(BESContainer *)
+{
+    string err = "Unable to add a container to a file, not yet implemented" ;
+    throw BESInternalError( err, __FILE__, __LINE__ ) ;
+}
+
 /** @brief removes a container with the given symbolic name
  *
  * This method removes a container to the persistence store with the

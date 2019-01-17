@@ -18,7 +18,7 @@ lib_LTLIBRARIES = libbes_dispatch.la
 
 libbes_dispatch_la_SOURCES = $(SRCS) $(HDRS) 
 libbes_dispatch_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
-libbes_dispatch_la_LIBADD = $(XML2_LIBS) $(BES_ZLIB_LIBS) \
+libbes_dispatch_la_LIBADD = $(DAP_LIBS) $(XML2_LIBS) $(BES_ZLIB_LIBS) \
 	$(BES_BZ2_LIBS) $(BES_DL_LIBS) $(PTHREAD_LIBS)
 
 pkginclude_HEADERS = $(HDRS) 
@@ -54,7 +54,7 @@ SRCS = BESInterface.cc \
 	BESContainer.cc BESFileContainer.cc				\
 	BESContainerStorage.cc BESContainerStorageFile.cc		\
 	BESContainerStorageList.cc BESContainerStorageVolatile.cc	\
-	BESContainerStorageCatalog.cc \
+	BESFileContainerStorage.cc \
 	BESSetContainerResponseHandler.cc BESShowContainersResponseHandler.cc \
 	BESDelContainerResponseHandler.cc BESDelContainersResponseHandler.cc \
 	BESShowErrorResponseHandler.cc					\
@@ -97,7 +97,7 @@ SRCS = BESInterface.cc \
 	WhiteList.cc \
 	ServerAdministrator.cc
 
-#	BESAggFactory.cc BESAggregationServer.cc
+#	BESAggFactory.cc BESAggregationServer.cc BESContainerStorageCatalog.cc
 
 HDRS = BESInterface.h BESLog.h 			\
 	TheBESKeys.h BESStatus.h 				\
@@ -109,7 +109,7 @@ HDRS = BESInterface.h BESLog.h 			\
 	BESShowErrorResponseHandler.h					\
 	BESDelContainerResponseHandler.h BESDelContainersResponseHandler.h \
 	BESDefine.h BESDefinitionStorageList.h BESDefinitionStorage.h 	\
-	BESContainerStorageCatalog.h \
+	BESFileContainerStorage.h \
 	BESDefinitionStorageVolatile.h 					\
 	BESDefineResponseHandler.h BESShowDefsResponseHandler.h 	\
 	BESDelDefResponseHandler.h BESDelDefsResponseHandler.h 		\
@@ -155,7 +155,7 @@ HDRS = BESInterface.h BESLog.h 			\
 	WhiteList.h \
 	ServerAdministrator.h
 
-#	BESAggFactory.h BESAggregationServer.h 
+#	BESAggFactory.h BESAggregationServer.h BESContainerStorageCatalog.h
 
 C4_DB=$(C4_DIR)/dispatch.db
 C4_HTML=$(C4_dir)/dispatch.html

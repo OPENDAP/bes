@@ -3,3 +3,5 @@
 /testsuite_mds_tests.dir/
 /testsuite_mds_tests
 /mds_for_tests/
+*.bin
+AIRS_test_data/*

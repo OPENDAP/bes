@@ -41,7 +41,7 @@ using std::string;
 
 #include "BESObj.h"
 
-/** @brief A container is something that holds data. I.E. a netcdf file or a
+/** @brief A container is something that holds data. E.G., a netcdf file or a
  * database entry
  *
  * A symbolic name is a name that represents a set of data, such as
