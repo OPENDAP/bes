@@ -48,11 +48,6 @@ Httpd_Catalog.MimeTypes += h5:application/x-hdf5
 
 Httpd_Catalog.Collections = test:http://test.opendap.org/data/
 
-# Where we can go for stuff... Access to remote sites is limited to
-# only those URLs on the 'Gateway.Whitelist'.
-
-Gateway.Whitelist = http://localhost
-=======
 HttpResourceCache.dir = /tmp/hyrax_httpd_cache
 HttpResourceCache.prefix = hc_
 HttpResourceCache.size = 500
@@ -61,8 +56,18 @@ Httpd_Catalog.MimeTypes = nc:application/x-netcdf
 Httpd_Catalog.MimeTypes += h4:application/x-hdf
 Httpd_Catalog.MimeTypes += h5:application/x-hdf5
 
+# 'Collections' make virtual directory hierarchies under the literal 
+# '/RemoteResources/'. For example the Collections value below will 
+# make the path '/RemoteResources/test/' access the files in the remote
+# directory at http://test.opendap.org/data/.
+
 Httpd_Catalog.Collections = test:http://test.opendap.org/data/
 
-# Where we can go for stuff...
->>>>>>> master
+# Where we can go for stuff... Access to remote sites is limited to
+# only those URLs on the 'Gateway.Whitelist'.
+#
+# The hosts listed in Collections have to be on the Whitelist. And
+# the Whitelist should have things added to is using '+=' because
+# using '=' will remove all previous values.
+
 Gateway.Whitelist += http://test.opendap.org
