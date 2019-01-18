@@ -1,3 +1,4 @@
+
 // -*- mode: c++; c-basic-offset:4 -*-
 // This file is part of BES httpd_catalog_module, A C++ module that can be loaded in to
 // the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
@@ -358,7 +359,7 @@ bool configureProxy(CURL *curl, const string &url)
  *  - Follow redirects
  *  - User agent set to curl version.
  *
- *  @param error_buffer A buffer of XXX characters that can hold an error message from curl.
+ *  @param error_buffer A pointer to a buffer of CURL_ERROR_SIZE characters that can hold an error message from curl.
  */
 CURL *init(char *error_buffer)
 {
@@ -502,15 +503,6 @@ long read_url(CURL *curl, const string &url, int fd, vector<string> *resp_hdrs, 
     // Free the header list and null the value in d_curl.
     curl_slist_free_all(req_hdrs.get_headers());
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, 0);
-
-#if 0
-    if (res != 0) {
-        BESDEBUG(MODULE, prolog << "OUCH! CURL returned an error! curl msg:  " << curl_easy_strerror(res) << endl);
-        BESDEBUG(MODULE, prolog << "OUCH! CURL returned an error! error_buffer:  " << error_buffer << endl);
-        throw libdap::Error(error_buffer);
-    }
-#endif
-
 
     long status;
     res = curl_easy_getinfo(curl, CURLINFO_HTTP_CODE, &status);
