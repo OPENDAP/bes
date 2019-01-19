@@ -1,7 +1,6 @@
 // HttpdCatalog.cc
 // -*- mode: c++; c-basic-offset:4 -*-
 //
-//
 // This file is part of BES httpd_catalog_module
 //
 // Copyright (c) 2018 OPeNDAP, Inc.
@@ -82,70 +81,69 @@ namespace httpd_catalog {
  * @param name The name of the catalog.
  * @see BESCatalogUtils
  */
-HttpdCatalog::HttpdCatalog(const string &catalog_name) : BESCatalog(catalog_name) {
-    bool found = false;
-    vector<string> httpd_catalogs;
-    TheBESKeys::TheKeys()->get_values(HTTPD_CATALOG_COLLECTIONS, httpd_catalogs, found);
-    if(!found){
-        throw BESInternalError(string("The httpd_catalog module must define at least one catalog name using the key; '")+HTTPD_CATALOG_COLLECTIONS
-            +"'", __FILE__, __LINE__);
-    }
+HttpdCatalog::HttpdCatalog(const string &catalog_name) :
+		BESCatalog(catalog_name) {
+	bool found = false;
+	vector<string> httpd_catalogs;
+	TheBESKeys::TheKeys()->get_values(HTTPD_CATALOG_COLLECTIONS, httpd_catalogs,
+			found);
+	if (!found) {
+		throw BESInternalError(
+				string("The httpd_catalog module must define at least one catalog name using the key; '")
+						+ HTTPD_CATALOG_COLLECTIONS + "'", __FILE__, __LINE__);
+	}
 
-    vector<string>::iterator it;
-    for(it=httpd_catalogs.begin();  it!=httpd_catalogs.end(); it++){
-        string catalog_entry = *it;
-        int index = catalog_entry.find(":");
-        if(index>0){
-            string name = catalog_entry.substr(0,index);
-            string url =  catalog_entry.substr(index+1);
-            BESDEBUG(MODULE, prolog << "name: '" << name << "'  url: " << url << endl);
-            d_httpd_catalogs.insert( pair<string,string>(name,url));
-        }
-        else {
-            throw BESInternalError(string("The configuration entry for the ") + HTTPD_CATALOG_COLLECTIONS +
-                " was incorrectly formatted. entry: "+catalog_entry, __FILE__,__LINE__);
-        }
-    }
+	vector<string>::iterator it;
+	for (it = httpd_catalogs.begin(); it != httpd_catalogs.end(); it++) {
+		string catalog_entry = *it;
+		int index = catalog_entry.find(":");
+		if (index > 0) {
+			string name = catalog_entry.substr(0, index);
+			string url = catalog_entry.substr(index + 1);
+			BESDEBUG(MODULE,
+					prolog << "name: '" << name << "'  url: " << url << endl);
+			d_httpd_catalogs.insert(pair<string, string>(name, url));
+		} else {
+			throw BESInternalError(
+					string("The configuration entry for the ")
+							+ HTTPD_CATALOG_COLLECTIONS
+							+ " was incorrectly formatted. entry: "
+							+ catalog_entry, __FILE__, __LINE__);
+		}
+	}
+
 #if 0
-    string default_type_match_key = "BES.Catalog.catalog.TypeMatch";
-    string catalog_type_match_key = "BES.Catalog."+catalog_name+".TypeMatch";
-    string type_match_key = catalog_type_match_key;
-    vector<string> type_match_v;
-    TheBESKeys::TheKeys()->get_values(type_match_key, type_match_v, found);
-    if(!found){
-        type_match_key = default_type_match_key;
-        TheBESKeys::TheKeys()->get_values(type_match_key, type_match_v, found);
-        if(!found){
-            throw BESInternalError("ERROR: Failed to located either the '"+catalog_type_match_key+
-                "' or the '"+default_type_match_key+"' BES keys." , __FILE__, __LINE__);
-        }
-    }
+	string default_type_match_key = "BES.Catalog.catalog.TypeMatch";
+	string catalog_type_match_key = "BES.Catalog."+catalog_name+".TypeMatch";
+	string type_match_key = catalog_type_match_key;
+	vector<string> type_match_v;
+	TheBESKeys::TheKeys()->get_values(type_match_key, type_match_v, found);
+	if(!found) {
+		type_match_key = default_type_match_key;
+		TheBESKeys::TheKeys()->get_values(type_match_key, type_match_v, found);
+		if(!found) {
+			throw BESInternalError("ERROR: Failed to located either the '"+catalog_type_match_key+
+					"' or the '"+default_type_match_key+"' BES keys." , __FILE__, __LINE__);
+		}
+	}
 
-    for(it=type_match_v.begin();  it!=type_match_v.end(); it++){
-        string typeMatch_entry = *it;
-        int index = typeMatch_entry.find(":");
-        if(index>0){
-            string name = typeMatch_entry.substr(0,index);
-            string regex =  typeMatch_entry.substr(index+1);
-            BESDEBUG(MODULE, prolog << "name: '" << name << "'  regex: " << regex << endl);
-            d_typematch.insert( pair<string,string>(name,regex));
-        }
-        else {
-            throw BESInternalError(string("The configuration entry for the ") + type_match_key +
-                " was incorrectly formatted. entry: "+typeMatch_entry, __FILE__,__LINE__);
-        }
-    }
+	for(it=type_match_v.begin(); it!=type_match_v.end(); it++) {
+		string typeMatch_entry = *it;
+		int index = typeMatch_entry.find(":");
+		if(index>0) {
+			string name = typeMatch_entry.substr(0,index);
+			string regex = typeMatch_entry.substr(index+1);
+			BESDEBUG(MODULE, prolog << "name: '" << name << "'  regex: " << regex << endl);
+			d_typematch.insert( pair<string,string>(name,regex));
+		}
+		else {
+			throw BESInternalError(string("The configuration entry for the ") + type_match_key +
+					" was incorrectly formatted. entry: "+typeMatch_entry, __FILE__,__LINE__);
+		}
+	}
 #endif
 
-
-
 }
-
-HttpdCatalog::~HttpdCatalog()
-{
-}
-
-
 
 /**
  * @brief Produces the bes::CatalogNode for the string ppath.
@@ -218,7 +216,6 @@ HttpdCatalog::get_node(const string &ppath) const
     return node;
 }
 
-
 /**
  * Takes a path which begins with the name of an HttpdCatalog collection and returns the associated
  * access url for the referenced thingy.
@@ -253,10 +250,7 @@ std::string HttpdCatalog::path_to_access_url(std::string path) const
     BESDEBUG(MODULE, prolog << "remote_target_url: " << access_url << endl);
 
     return access_url;
-
 }
-
-
 
 /** @brief dumps information about this object
  *

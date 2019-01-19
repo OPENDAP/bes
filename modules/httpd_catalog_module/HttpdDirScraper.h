@@ -1,4 +1,4 @@
-// HttpdDirScraper.h
+
 // -*- mode: c++; c-basic-offset:4 -*-
 //
 // This file is part of httpd_catalog_module, A C++ module that can be loaded in to
@@ -23,7 +23,6 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-
 #ifndef MODULES_CMR_MODULE_HTTPDDIRSCRAPER_H_
 #define MODULES_CMR_MODULE_HTTPDDIRSCRAPER_H_
 
@@ -36,12 +35,10 @@
 namespace httpd_catalog {
 
 /**
- * @brief This class knows how to scrape an httpd generated directory page and build a BES CatalogNode response
- * from the result.
+ * @brief This class builds a BES CatalogNode response from an httpd-generated directory page.
  *
  * The scraping is done procedurally. The primary assumption is that links that point to nodes always end
  * in "/". Links that end in other characters are assumed to be links to "leaves".
- *
  */
 class HttpdDirScraper {
 private:

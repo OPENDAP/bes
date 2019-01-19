@@ -1,4 +1,3 @@
-// HttpdCatalogContainer.cc
 // -*- mode: c++; c-basic-offset:4 -*-
 //
 // This file is part of cnr_module, A C++ module that can be loaded in to
@@ -54,64 +53,62 @@ namespace httpd_catalog {
  * @throws BESSyntaxUserError if the path does not validate
  * @see CmrUtils
  */
-HttpdCatalogContainer::HttpdCatalogContainer(const string &sym_name,
-        const string &real_name, const string &type) :
-        BESContainer(sym_name, real_name, type), d_remoteResource(0) {
+HttpdCatalogContainer::HttpdCatalogContainer(const string &sym_name, const string &real_name, const string &type) :
+    BESContainer(sym_name, real_name, type), d_remoteResource(0)
+{
 
-    BESDEBUG( MODULE, prolog << "BEGIN sym_name: " << sym_name
-        << " real_name: " << real_name << " type: " << type << endl);
+    BESDEBUG(MODULE, prolog << "BEGIN sym_name: " << sym_name << " real_name: " << real_name << " type: " << type << endl);
 
     string path = real_name;
-    if(path.empty() || path[0]!='/'){
+    if (path.empty() || path[0] != '/') {
         path = "/" + path;
     }
+
     vector<string> path_elements = BESUtil::split(path);
     BESDEBUG(MODULE, prolog << "path: '" << path << "'  path_elements.size(): " << path_elements.size() << endl);
 
-
     set_relative_name(path);
 
-    if(type==""){
+    if (type == "") {
         // @TODO FIX Dynamically determine the type from the Granule information (type-match to name, mime-type, etc)
         this->set_container_type("nc");
     }
 
-    BESDEBUG( MODULE, prolog << "END" << endl);
-
+    BESDEBUG(MODULE, prolog << "END" << endl);
 }
 
 /**
  * TODO: I think this implementation of the copy constructor is incomplete/inadequate. Review and fix as needed.
  */
 HttpdCatalogContainer::HttpdCatalogContainer(const HttpdCatalogContainer &copy_from) :
-        BESContainer(copy_from), d_remoteResource(copy_from.d_remoteResource) {
+    BESContainer(copy_from), d_remoteResource(copy_from.d_remoteResource)
+{
     // we can not make a copy of this container once the request has
     // been made
     if (d_remoteResource) {
-        string err = (string) "The Container has already been accessed, "
-                + "can not create a copy of this container.";
-        throw BESInternalError(err, __FILE__, __LINE__);
+        throw BESInternalError("The Container has already been accessed, cannot create a copy of this container.", __FILE__, __LINE__);
     }
 }
 
-void HttpdCatalogContainer::_duplicate(HttpdCatalogContainer &copy_to) {
+void HttpdCatalogContainer::_duplicate(HttpdCatalogContainer &copy_to)
+{
     if (copy_to.d_remoteResource) {
-        string err = (string) "The Container has already been accessed, "
-                + "can not duplicate this resource.";
-        throw BESInternalError(err, __FILE__, __LINE__);
+        throw BESInternalError("The Container has already been accessed, cannot duplicate this resource.", __FILE__, __LINE__);
     }
     copy_to.d_remoteResource = d_remoteResource;
     BESContainer::_duplicate(copy_to);
 }
 
 BESContainer *
-HttpdCatalogContainer::ptr_duplicate() {
+HttpdCatalogContainer::ptr_duplicate()
+{
     HttpdCatalogContainer *container = new HttpdCatalogContainer;
     _duplicate(*container);
     return container;
 }
 
-HttpdCatalogContainer::~HttpdCatalogContainer() {
+HttpdCatalogContainer::~HttpdCatalogContainer()
+{
     if (d_remoteResource) {
         release();
     }
@@ -122,39 +119,37 @@ HttpdCatalogContainer::~HttpdCatalogContainer() {
  * @return full path to the remote request response data file
  * @throws BESError if there is a problem making the remote request
  */
-string HttpdCatalogContainer::access() {
-
-    BESDEBUG( MODULE, prolog << "BEGIN" << endl);
+string HttpdCatalogContainer::access()
+{
+    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
     // Since this the CMR thang we know that the real_name is a path of facets and such.
-    string path  = get_real_name();
-    BESDEBUG( MODULE, prolog << "path: " << path << endl);
+    string path = get_real_name();
+    BESDEBUG(MODULE, prolog << "path: " << path << endl);
 
     HttpdCatalog hc;
     string access_url = hc.path_to_access_url(path);
 
-    if(!d_remoteResource) {
-        BESDEBUG( MODULE, prolog << "Building new RemoteResource." << endl );
+    if (!d_remoteResource) {
+        BESDEBUG(MODULE, prolog << "Building new RemoteResource." << endl);
         d_remoteResource = new RemoteHttpResource(access_url);
         d_remoteResource->retrieveResource();
     }
-    BESDEBUG( MODULE, prolog << "Located remote resource." << endl );
+    BESDEBUG(MODULE, prolog << "Located remote resource." << endl);
 
     string cachedResource = d_remoteResource->getCacheFileName();
-    BESDEBUG( MODULE, prolog << "Using local cache file: " << cachedResource << endl );
+    BESDEBUG(MODULE, prolog << "Using local cache file: " << cachedResource << endl);
 
     string type = d_remoteResource->getType();
     set_container_type(type);
-    BESDEBUG( MODULE, prolog << "Type: " << type << endl );
+    BESDEBUG(MODULE, prolog << "Type: " << type << endl);
 
-    BESDEBUG( MODULE, prolog << "Done accessing " << get_real_name() << " returning cached file " << cachedResource << endl);
-    BESDEBUG( MODULE, prolog << "Done accessing " << *this << endl);
-    BESDEBUG( MODULE, prolog << "END" << endl);
+    BESDEBUG(MODULE, prolog << "Done accessing " << get_real_name() << " returning cached file " << cachedResource << endl);
+    BESDEBUG(MODULE, prolog << "Done accessing " << *this << endl);
+    BESDEBUG(MODULE, prolog << "END" << endl);
 
-    return cachedResource;    // this should return the file name from the CmrCache
+    return cachedResource; // this should return the file name from the CmrCache
 }
-
-
 
 /** @brief release the resources
  *
@@ -162,14 +157,15 @@ string HttpdCatalogContainer::access() {
  *
  * @return true if the resource is released successfully and false otherwise
  */
-bool HttpdCatalogContainer::release() {
-    BESDEBUG( MODULE, prolog << "BEGIN" << endl);
+bool HttpdCatalogContainer::release()
+{
+    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     if (d_remoteResource) {
-        BESDEBUG( MODULE, prolog << "Releasing RemoteResource" << endl);
+        BESDEBUG(MODULE, prolog << "Releasing RemoteResource" << endl);
         delete d_remoteResource;
         d_remoteResource = 0;
     }
-    BESDEBUG( MODULE, prolog << "END" << endl);
+    BESDEBUG(MODULE, prolog << "END" << endl);
     return true;
 }
 
@@ -180,14 +176,15 @@ bool HttpdCatalogContainer::release() {
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void HttpdCatalogContainer::dump(ostream &strm) const {
-    strm << BESIndent::LMarg << prolog << "(" << (void *) this
-            << ")" << endl;
+void HttpdCatalogContainer::dump(ostream &strm) const
+{
+    strm << BESIndent::LMarg << prolog<<"(" << (void *) this
+    << ")" << endl;
     BESIndent::Indent();
     BESContainer::dump(strm);
     if (d_remoteResource) {
-        strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_remoteResource->getCacheFileName()
-                << endl;
+        strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " <<d_remoteResource->getCacheFileName()
+        << endl;
         strm << BESIndent::LMarg << "response headers: ";
 
         vector<string> hdrs;
@@ -202,12 +199,15 @@ void HttpdCatalogContainer::dump(ostream &strm) const {
                 strm << BESIndent::LMarg << hdr_line << endl;
             }
             BESIndent::UnIndent();
-        } else {
+        }
+        else {
             strm << "none" << endl;
         }
-    } else {
+    }
+    else {
         strm << BESIndent::LMarg << "response not yet obtained" << endl;
     }
+
     BESIndent::UnIndent();
 }
 

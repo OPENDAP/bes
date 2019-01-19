@@ -1,4 +1,5 @@
-// HttpdCatalogModule.cc
+
+// -*- mode: c++; c-basic-offset:4 -*-
 //
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -37,26 +38,16 @@
 #include <BESLog.h>
 #include <BESDebug.h>
 
-#if 0
-#include "HttpCatalog.h"
-#include "HttpCatalogContainerStorage.h"
-#endif
-
 #include "HttpdCatalogNames.h"
 #include "HttpdCatalogModule.h"
 #include "HttpdCatalogContainerStorage.h"
 #include "HttpdCatalog.h"
 
 using namespace std;
-#if 0
-using namespace httpd_catalog;
-#endif
-
 
 #define prolog string("HttpdCatalogModule::").append(__func__).append("() - ")
 
 namespace httpd_catalog {
-
 
 void HttpdCatalogModule::initialize(const string &modname)
 {
@@ -64,7 +55,6 @@ void HttpdCatalogModule::initialize(const string &modname)
 
     BESDEBUG(MODULE, prolog << "Initializing Module: " << modname << endl);
 
-#if 1
     if (!BESCatalogList::TheCatalogList()->ref_catalog(HTTPD_CATALOG_NAME)) {
         BESCatalogList::TheCatalogList()->add_catalog(new HttpdCatalog(HTTPD_CATALOG_NAME));
     }
@@ -72,7 +62,6 @@ void HttpdCatalogModule::initialize(const string &modname)
     if (!BESContainerStorageList::TheList()->ref_persistence(HTTPD_CATALOG_NAME)) {
         BESContainerStorageList::TheList()->add_persistence(new HttpdCatalogContainerStorage(HTTPD_CATALOG_NAME));
     }
-#endif
 
     BESDEBUG(MODULE, "Done Initializing Handler: " << modname << endl);
 }

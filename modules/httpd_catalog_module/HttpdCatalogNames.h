@@ -1,4 +1,4 @@
-// HttpCatalogNames.h
+
 // -*- mode: c++; c-basic-offset:4 -*-
 //
 // This file is part of httpd_catalog_module, A C++ module that can be loaded in to
@@ -25,7 +25,6 @@
 
 #ifndef I_HTTPD_CATALOG_NAME_H
 #define I_HTTPD_CATALOG_NAME_H 1
-
 
 #define HTTPD_CATALOG "httpd"
 

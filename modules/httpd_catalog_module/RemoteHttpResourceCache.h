@@ -1,4 +1,4 @@
-// RemoteHttpResourceCache.h
+
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of cmr_module, A C++ module that can be loaded in to

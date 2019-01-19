@@ -1,4 +1,5 @@
-// HttpdCatalogModule.h
+
+// -*- mode: c++; c-basic-offset:4 -*-
 //
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.

@@ -1,7 +1,7 @@
 // HttpCatalog.h
 // -*- mode: c++; c-basic-offset:4 -*-
 //
-// This file is part of BES cmr_module
+// This file is part of BES httpd_catalog_module
 //
 // Copyright (c) 2018 OPeNDAP, Inc.
 // Author: Nathan Potter <ndp@opendap.org>
@@ -44,16 +44,17 @@ namespace bes {
 
 namespace httpd_catalog {
 
-/** @brief builds catalogs from a directory structure
+/**
+ * @brief builds catalogs from a directory structure exposed by Apache httpd
  */
 class HttpdCatalog: public BESCatalog {
 private:
     std::map<std::string,std::string> d_httpd_catalogs;
-    // std::map<std::string,std::string> d_typematch;
 
 public:
     HttpdCatalog(const std::string &catalog_name = HTTPD_CATALOG_NAME);
-    virtual ~HttpdCatalog();
+
+    virtual ~HttpdCatalog() { }
 
     /**
      * @Deprecated
@@ -75,21 +76,17 @@ public:
         const std::string &/*node_suffix*/,
         const std::string &/*leaf_suffix*/,
         ostream &/*out*/,
-        const std::string &/*path = "/"*/
-        ) const {
+        const std::string &/*path = "/"*/) const {
         BESDEBUG(MODULE, "The HttpdCatalog::get_site_map() method is not currently supported. SKIPPING. file: " << __FILE__ << " line: "  << __LINE__ << endl);
-        // throw BESInternalError("The HttpdCatalog::get_site_map() method is not currently supported.",__FILE__,__LINE__);
     }
 
-
     virtual bes::CatalogNode *get_node(const std::string &path) const;
-    // virtual bes::CatalogNode *get_node_OLD(const std::string &path) const;
-    // virtual bes::CatalogNode *get_node_NEW(const std::string &path) const;
+
     virtual std::string path_to_access_url(std::string path) const;
 
     virtual void dump(ostream &strm) const;
-
 };
+
 } // namespace httpd_catalog
 
 #endif // _HttpdCatalog_h_
