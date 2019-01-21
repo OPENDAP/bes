@@ -1,4 +1,4 @@
-// HttpdCatalogContainer.h
+
 // -*- mode: c++; c-basic-offset:4 -*-
 //
 // This file is part of httpd_catalog_module, A C++ module that can be loaded in to
@@ -32,12 +32,9 @@
 
 #include <BESContainer.h>
 
-// #include "RemoteHttpResource.h"
-
 namespace httpd_catalog {
 
 class RemoteHttpResource;
-
 
 /** @brief Container representing a remote request
  *

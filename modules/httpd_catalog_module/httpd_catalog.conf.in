@@ -19,13 +19,34 @@ BES.module.httpd = @bes_modules_dir@/libhttpd_catalog_module.so
 
 Httpd_Catalog.Reference=http://docs.opendap.org/index.php/BES_-_Modules_-_Httpd_Catalog
 
-# These parameters are required by the BES catalog subsystem. The name 
-# 'RemoteResources' is set in the module's Module.cc initialization code.
+# These can be used for the RemoteRsources catalog
+
+# BES.Catalog.RemoteResources.FollowSymLinks =
+# BES.Catalog.RemoteResources.Exclude =
+# BES.Catalog.RemoteResources.Include =
+
+# The values of these parameters are not used by the httpd catalog module
+# but they must be defined or the framework will signal an error.
 
 BES.Catalog.RemoteResources.RootDirectory = UNUSED
 BES.Catalog.RemoteResources.TypeMatch += unused:*;
 
 # The cache used by the BES for the retrieved items.
+
+HttpResourceCache.dir = /tmp/httpd_cache
+HttpResourceCache.prefix = hc_
+HttpResourceCache.size = 500
+
+# The mapping between files/responses from the remote httpd an modules that 
+# read data on the local Hyrax server.
+
+Httpd_Catalog.MimeTypes = nc:application/x-netcdf
+Httpd_Catalog.MimeTypes += h4:application/x-hdf
+Httpd_Catalog.MimeTypes += h5:application/x-hdf5
+
+# Data available on OPeNDAP's test server
+
+Httpd_Catalog.Collections = test:http://test.opendap.org/data/
 
 HttpResourceCache.dir = /tmp/hyrax_httpd_cache
 HttpResourceCache.prefix = hc_
@@ -35,7 +56,18 @@ Httpd_Catalog.MimeTypes = nc:application/x-netcdf
 Httpd_Catalog.MimeTypes += h4:application/x-hdf
 Httpd_Catalog.MimeTypes += h5:application/x-hdf5
 
+# 'Collections' make virtual directory hierarchies under the literal 
+# '/RemoteResources/'. For example the Collections value below will 
+# make the path '/RemoteResources/test/' access the files in the remote
+# directory at http://test.opendap.org/data/.
+
 Httpd_Catalog.Collections = test:http://test.opendap.org/data/
 
-# Where we can go for stuff...
+# Where we can go for stuff... Access to remote sites is limited to
+# only those URLs on the 'Gateway.Whitelist'.
+#
+# The hosts listed in Collections have to be on the Whitelist. And
+# the Whitelist should have things added to is using '+=' because
+# using '=' will remove all previous values.
+
 Gateway.Whitelist += http://test.opendap.org

@@ -1,4 +1,4 @@
-// RemoteHttpResource.h
+
 // -*- mode: c++; c-basic-offset:4 -*-
 //
 // This file is part of cmr_module, A C++ module that can be loaded in to
@@ -46,9 +46,7 @@ private:
     /// Resource URL that an instance of this class represents
     std::string d_remoteResourceUrl;
 
-    /**
-     * Open file descriptor for the resource content (Returned from the cache).
-     */
+    /// Open file descriptor for the resource content (Returned from the cache).
     int d_fd;
 
     /// Protect the state of the object, not allowing some method calls before the resource is retrieved.
@@ -123,7 +121,6 @@ public:
 
     std::string get_http_response_header(const std::string header_name);
 
-
     /**
      * Returns a std::vector of HTTP headers received along with the response from the request for the remote resource..
      */
@@ -134,8 +131,6 @@ public:
             throw BESInternalError("RemoteHttpResource::getCacheFileName() - STATE ERROR: Remote Resource Has Not Been Retrieved.", __FILE__, __LINE__);
         hdrs.insert( hdrs.end(), d_response_headers->begin(), d_response_headers->end() );
     }
-
-
 };
 
 } /* namespace httpd_catalog */

@@ -1,4 +1,4 @@
-// RemoteHttpResourceCache.cc
+
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of cmr_module, A C++ MODULE that can be loaded in to
@@ -46,7 +46,6 @@
 #ifdef HAVE_ATEXIT
 #define AT_EXIT(x) atexit((x))
 #else
-
 #define AT_EXIT(x)
 #endif
 
