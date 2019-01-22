@@ -1301,7 +1301,7 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
         }
     }
     else {
-        // If this file can't be converted, then its failing spacial/temporal requirements
+        // If this file can't be converted, then its failing spatial/temporal requirements
         throw BESInternalError("File cannot be converted to COVJSON format due to missing or incompatible spatial dimensions", __FILE__, __LINE__);
     }
 }
