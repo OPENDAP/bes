@@ -6,9 +6,10 @@
 #besstandalone -c bes-testsuite/bes.conf -i bes-testsuite/h5.he5/grid_1_2d.h5.dap.bescmd | getdap4 -D -M -
 #valgrind -v besstandalone -c bes-testsuite/bes.conf -i bes-testsuite/h5.he5/grid_1_2d.h5.dap.bescmd
 #besstandalone -c bes-testsuite/bes.conf -i bes-testsuite/h5.local/eos5sin.h5.dds.bescmd
-besstandalone -c bes-testsuite/bes.conf -i bes-testsuite/h5.local/eos5lamaz.h5.dds.bescmd
-besstandalone -c bes-testsuite/bes.conf -i bes-testsuite/h5.local/eos5ps.h5.dds.bescmd
+#besstandalone -c bes-testsuite/bes.conf -i bes-testsuite/h5.local/eos5lamaz.h5.dds.bescmd
+#besstandalone -c bes-testsuite/bes.conf -i bes-testsuite/h5.local/eos5ps.h5.dds.bescmd
 #besstandalone -c bes-testsuite/bes.conf -i bes-testsuite/h5.cf/grid_1_2d.h5.dds.bescmd
 
-#besstandalone -c bes-testsuite/bes.conf -i bes-testsuite/h5.default/t_vl_string_cstr.h5.das.bescmd
+#besstandalone -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.default/d_int.h5.das.bescmd
+besstandalone -c /home/kyang/opendap/opendapbin/etc/bes/bes.conf -i bes-testsuite/h5.local/grid_1_2d.h5.nc.bescmd>out.nc3
 
