@@ -11,7 +11,7 @@ BES.Include=dap.conf
 # modules to load, includes data modules and command modules            #
 #-----------------------------------------------------------------------#
 
-BES.modules+=cmr
+# BES.modules+=cmr
 BES.module.cmr=@bes_modules_dir@/libcmr_module.so
 
 # CMR module specific parameters"
