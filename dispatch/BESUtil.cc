@@ -50,6 +50,7 @@
 #include <sstream>
 #include <iostream>
 
+using std::stringstream;
 using std::istringstream;
 using std::cout;
 using std::endl;
@@ -1116,21 +1117,31 @@ string BESUtil::get_time(time_t the_time, bool use_local_time)
  * @param delim The character delimiter to utilize during tokenization. default: '/'
  * @param skip_empty A boolean flag which controls if empty tokens are returned.
  * @return A vector of strings each of which is a token in the string read left to right.
+ * @see BESUtil::tokenize() is probably faster
  */
-std::vector<std::string> BESUtil::split(const std::string &s, char delim, bool skip_empty)
+vector<string> BESUtil::split(const string &s, char delim /* '/' */, bool skip_empty /* true */)
 {
-    std::stringstream ss(s);
-    std::string item;
-    vector<std::string> tokens;
+    stringstream ss(s);
+    string item;
+    vector<string> tokens;
+
     while (getline(ss, item, delim)) {
-        if(skip_empty && !item.empty())
+
+        if (item.empty() && skip_empty)
+            continue;
+
+        tokens.push_back(item);
+
+#if 0
+        // If skip_empty is false, item is not ever pushed, regardless of whether it's empty. jhrg 1/24/19
+        if (skip_empty && !item.empty())
             tokens.push_back(item);
+#endif
+
     }
+
     return tokens;
 }
-
-
-
 
 BESCatalog *BESUtil::separateCatalogFromPath(std::string &ppath)
 {
