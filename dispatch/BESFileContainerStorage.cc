@@ -139,10 +139,10 @@ void BESFileContainerStorage::add_container(const string &sym_name, const string
     else {
         basename = new_name;
     }
-    // BESCatalogUtils::include method already calls exclude, so just
-    // need to call include
+
+    // BESCatalogUtils::include method already calls exclude, so just call include
     if (!_utils->include(basename)) {
-        string s = "Attempting to create a container with real name " + real_name + " which is on the exclude list";
+        string s = "Attempting to create a container with real name '" + real_name + "' which is excluded from the server's catalog.";
         throw BESForbiddenError(s, __FILE__, __LINE__);
     }
 

@@ -56,8 +56,8 @@ using std::string;
  */
 class BESCatalogDirectory: public BESCatalog {
 private:
-    bes::CatalogItem *make_item(string item, string fullpath) const;
-    bes::CatalogItem *make_item(string item) const;
+    bes::CatalogItem *make_item(std::string item, std::string fullpath) const;
+    bes::CatalogItem *make_item(std::string item) const;
 
 
 public:

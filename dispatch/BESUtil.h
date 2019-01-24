@@ -120,8 +120,6 @@ public:
     static std::vector<std::string> split(const string &s, char delim='/', bool skip_empty=true);
 
     static BESCatalog *separateCatalogFromPath(std::string &path);
-
-
 };
 
 

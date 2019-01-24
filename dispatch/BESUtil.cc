@@ -1117,20 +1117,17 @@ string BESUtil::get_time(time_t the_time, bool use_local_time)
  * @param skip_empty A boolean flag which controls if empty tokens are returned.
  * @return A vector of strings each of which is a token in the string read left to right.
  */
-std::vector<std::string> BESUtil::split(const std::string &s, char delim, bool skip_empty)
+vector<string> BESUtil::split(const string &s, char delim /* '/' */, bool skip_empty /* true */)
 {
-    std::stringstream ss(s);
-    std::string item;
-    vector<std::string> tokens;
+    stringstream ss(s);
+    string item;
+    vector<string> tokens;
     while (getline(ss, item, delim)) {
-        if(skip_empty && !item.empty())
-            tokens.push_back(item);
+        if (skip_empty && !item.empty()) // FIXME if skip_empty is false, item is not pushed regardless jhrg 1/23/19
+        tokens.push_back(item);
     }
     return tokens;
 }
-
-
-
 
 BESCatalog *BESUtil::separateCatalogFromPath(std::string &ppath)
 {
