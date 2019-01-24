@@ -1133,7 +1133,7 @@ vector<string> BESUtil::split(const string &s, char delim /* '/' */, bool skip_e
         tokens.push_back(item);
 
 #if 0
-        // If skip_empty is false, item is not ever pushed, regardless. jhrg 1/24/19
+        // If skip_empty is false, item is not ever pushed, regardless of whether it's empty. jhrg 1/24/19
         if (skip_empty && !item.empty())
             tokens.push_back(item);
 #endif
