@@ -1,26 +1,26 @@
+#########################################################################
+#
 # site.conf.proto
 #
 #
 # The BES component of Hyrax uses a number (25+) configuration files to generate
 # it's operational state. When updates are applied these files are overwritten. 
 # In order to preserve localized configurations across updates you can place 
-# each term that 
-# was localized into a file titled site.conf and located in the BES configuration
-# directory, typically /etc/bes
+# each term that was localized into a file titled site.conf and located in the 
+# BES configuration directory, typically /etc/bes
 # 
 # This file, site.conf.proto, contains a number of the most commonly localized
 # configuration terms (commented out) along with additional comments describing
 # what they are how they are used. You can copy/move the file to /etc/bes/site.conf
 # uncomment the various things you wish t adjust. And Hyrax will utilize the settings.
 #
-# Hyrax utilizes a number of caching activities to improve perfrmance. These are 
+# Hyrax utilizes a number of caching activities to improve performance. These are 
 # mentioned below. 
-# NOTE: All cache sizes are expressed in megabytes.
 #
+# NOTE: All cache sizes are expressed in megabytes.
 
 
 #########################################################################
-#
 # The BES.ServerAdministrator key is used to identify the 
 # operator/responsible party for the server. By default it comes configured
 # in the bes.conf file and is set to the OPeNDAP organization. 
@@ -34,7 +34,7 @@
 #BES.ServerAdministrator+=country:US
 #BES.ServerAdministrator+=telephone:+1.401.575.4835
 #BES.ServerAdministrator+=website:http://www.opendap.org
-
+#
 # The SupportEmail is the email address that will appear on Hyrax error pages
 # By default it is set to support@opendap.org but if you wish to handle the support
 # questions for your server instance you can change it here.
@@ -46,12 +46,12 @@
 # Set the value of BES.Catalog.catalog.RootDirectory to the root
 # directory of the data this BES will serve. 
 #
-# BES.Catalog.catalog.RootDirectory=/path/to/your/data
+#BES.Catalog.catalog.RootDirectory=/path/to/your/data
 
 # Set BES.Catalog.catalog.FollowSymLinks to true/yes if the BES should
 # follow symbolic links in the BES.Catalog.catalog.RootDirectory. 
 #
-# BES.Catalog.catalog.FollowSymLinks=No
+#BES.Catalog.catalog.FollowSymLinks=No
 
 
 #########################################################################
@@ -64,28 +64,33 @@
 #     Gateway.Whitelist+=http://test.opendap.org/opendap
 #
 #Gateway.Whitelist+=http://test.opendap.org
-
+#
 # Gateway operations (in which Hyrax reaches out across the web and 
 # grabs various data resources) utilize a cache. The cache size and location
-# can be adjusted with the follwing parameters.
+# can be adjusted with the following parameters.
 #
-#Gateway.Cache.dir=/tmp
+#Gateway.Cache.dir=/tmp/hyrax/gw
 #Gateway.Cache.size=500
 
 
 #########################################################################
-# Do we ship with CMR enabled? I think we should not.
-# BES.modules+=cmr
-#########################################################################
+# CMR catalog module
+#
+# The CMR catalog module is used by NASA to expose data indexed/cataloged
+# by the Common Metadata Repository. By default this module is disabled.
+# Remove the comment to enable the CMR catalog.
+#
+#BES.modules+=cmr
 
 
 #########################################################################
 # httpd_catalog module
-# By default, this module is turned off. Uncommemnt 'BES.modules += httpd' 
-# to enable.
-# BES.modules += httpd
 #
-#HttpResourceCache.dir = /tmp/httpd_cache
+# By default, this module is turned off. Remove the comment to enable.
+#
+#BES.modules += httpd
+#
+#HttpResourceCache.dir = /tmp/hyrax/hc
 #HttpResourceCache.prefix = hc_
 #HttpResourceCache.size = 500
 #
@@ -102,39 +107,31 @@
 # are stored/cached so that they can be returned by the server w/o
 # having to touch the data files/objects. 
 #
-# DAP.GlobalMetadataStore.path = /Users/ndp/OPeNDAP/hyrax/build/share/mds
-
+#DAP.GlobalMetadataStore.path = /Users/ndp/OPeNDAP/hyrax/build/share/mds
+#
 # Setting 'size' to zero makes the MDS
 # hold objects forever; setting a positive non-zero size makes the
 # MDS behave like a cache, purging responses when the size is exceeded.
 #
-# DAP.GlobalMetadataStore.size = 200
-
+#DAP.GlobalMetadataStore.size = 200
+#
 # The MDS writes a ledger of additions and removals. By default the
 # ledger is kept in 'mds_ledger.txt' in the MDS directory.
 #
-# DAP.GlobalMetadataStore.ledger = /Users/ndp/OPeNDAP/hyrax/build/share/mds/mds_ledger.txt
-
-
+#DAP.GlobalMetadataStore.ledger = /Users/ndp/OPeNDAP/hyrax/build/share/mds/mds_ledger.txt
 
 
 #########################################################################
 # NcML Aggregation Dimension Cache Parameters                           
-
+#
 # Directory into which the cache files will be stored.
 #
-#NCML.DimensionCache.directory=/tmp
-
+#NCML.DimensionCache.directory=/tmp/hyrax/ncml
+#
 # Filename prefix to be used for the cache files
 #
 #NCML.DimensionCache.prefix=ncml_dimension_cache
-
-#This is the size of the cache in megabytes; e.g., 2,000 is a 2GB cache
 #
-# NCML.DimensionCache.size=2000
-
-
-
-
-
-
+# This is the size of the cache in megabytes; e.g., 2,000 is a 2GB cache
+#
+#NCML.DimensionCache.size=2000
