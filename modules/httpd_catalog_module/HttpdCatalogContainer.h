@@ -47,6 +47,7 @@ class RemoteHttpResource;
  */
 class HttpdCatalogContainer: public BESContainer {
 private:
+    /// Remote resource for this container, nullptr means it has not yet been accessed
     RemoteHttpResource *d_remoteResource;
 
     HttpdCatalogContainer() :
