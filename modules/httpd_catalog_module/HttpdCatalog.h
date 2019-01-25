@@ -64,7 +64,7 @@ public:
     }
 
     /**
-     * This is a meaningless method for CMR so it returns empty string
+     * This is a meaningless method for a remote catalog so it returns empty string
      */
     virtual std::string get_root() const { return ""; }
 
