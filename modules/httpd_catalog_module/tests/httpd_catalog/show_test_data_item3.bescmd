@@ -1,0 +1,14 @@
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[thread:http-nio-8080-exec-4-42][bes_client:/-2]">
+
+  <bes:setContext name="errors">xml</bes:setContext>
+  
+  <!-- <bes:showNode node="/RemoteResources/test/httpd_catalog/fnoc1.nc" /> -->
+
+  <setContainer name="c">/RemoteResources/test/ncml/dmrpp/chunked_twoD.h5</setContainer>
+  <define name="d">
+    <container name="c" />
+  </define>
+  
+  <get type="dmr" definition="d" />
+  
+</bes:request>
