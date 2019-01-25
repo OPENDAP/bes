@@ -194,12 +194,14 @@ HttpdCatalog::get_node(const string &ppath) const
  * @brief Takes a path which begins with the name of an HttpdCatalog collection and
  * returns the associated access url for the referenced thingy.
  *
- * @param path The path to convert.
+ * @param p The path to convert.
  * @returns The access URL for the path on the named remote resource.
  * @throws BESNotFoundError when there is no matching collection found.
  */
-string HttpdCatalog::path_to_access_url(string path) const
+string HttpdCatalog::path_to_access_url(const string &p) const
 {
+    // If the path starts with a slash, remove that
+    string path = (p.find('/') == 0) ? p.substr(1): p;
     string::size_type i = path.find('/');
     string collection = path.substr(0, i);  // if 'i == string::npos', substr() returns all of 'path'
 

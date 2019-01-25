@@ -123,7 +123,6 @@ string HttpdCatalogContainer::access()
 {
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
-    // Since this the CMR thang we know that the real_name is a path of facets and such.
     string path = get_real_name();
     BESDEBUG(MODULE, prolog << "path: " << path << endl);
 
