@@ -70,7 +70,7 @@
 # can be adjusted with the following parameters.
 #
 #Gateway.Cache.dir = /tmp/hyrax_gw
-#Gateway.Cache.prefix = gw
+#Gateway.Cache.prefix = gw_
 #Gateway.Cache.size = 500
 
 
@@ -92,7 +92,7 @@
 #BES.modules += httpd
 #
 #HttpResourceCache.dir = /tmp/hyrax_hc
-#HttpResourceCache.prefix = hc
+#HttpResourceCache.prefix = hc_
 #HttpResourceCache.size = 500
 #
 # For each entry in Httpd_Catalog.Collections you have to make sure that
@@ -131,7 +131,7 @@
 #
 # Filename prefix to be used for the cache files
 #
-#NCML.DimensionCache.prefix=ncml_dimension_cache
+#NCML.DimensionCache.prefix=ncml_
 #
 # This is the size of the cache in megabytes; e.g., 2,000 is a 2GB cache
 #
