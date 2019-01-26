@@ -69,8 +69,9 @@
 # grabs various data resources) utilize a cache. The cache size and location
 # can be adjusted with the following parameters.
 #
-#Gateway.Cache.dir=/tmp/hyrax/gw
-#Gateway.Cache.size=500
+#Gateway.Cache.dir = /tmp/hyrax_gw
+#Gateway.Cache.prefix = gw
+#Gateway.Cache.size = 500
 
 
 #########################################################################
@@ -90,8 +91,8 @@
 #
 #BES.modules += httpd
 #
-#HttpResourceCache.dir = /tmp/hyrax/hc
-#HttpResourceCache.prefix = hc_
+#HttpResourceCache.dir = /tmp/hyrax_hc
+#HttpResourceCache.prefix = hc
 #HttpResourceCache.size = 500
 #
 # For each entry in Httpd_Catalog.Collections you have to make sure that
@@ -126,7 +127,7 @@
 #
 # Directory into which the cache files will be stored.
 #
-#NCML.DimensionCache.directory=/tmp/hyrax/ncml
+#NCML.DimensionCache.directory=/tmp/hyrax_ncml
 #
 # Filename prefix to be used for the cache files
 #
