@@ -294,6 +294,7 @@ bool BESFileLockingCache::m_check_ctor_params()
         return false;
     }
 
+
     int status = mkdir(d_cache_dir.c_str(), 0775);
     // If there is an error and it's not that the dir already exists,
     // throw an exception.
