@@ -45,7 +45,7 @@ DAP.Help.XML=@pkgdatadir@/dap_help.xml
 # Off by default for Hyrax 1.15.x
 
 # DAP.GlobalMetadataStore.path = @datadir@/mds
-DAP.GlobalMetadataStore.prefix = mds
+DAP.GlobalMetadataStore.prefix = mds_
 
 # Size in MB
 DAP.GlobalMetadataStore.size = 200
