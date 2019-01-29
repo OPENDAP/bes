@@ -62,7 +62,7 @@ Gateway.MimeTypes+=h5:application/x-hdf5
 
 # Gateway.Cache.size - The maxium size of the Gateway cache, in megabytes.
 
-Gateway.Cache.dir=/tmp
-Gateway.Cache.prefix=gateway_cache
+Gateway.Cache.dir=/tmp/hyrax_gw
+Gateway.Cache.prefix=gw_
 Gateway.Cache.size=500
 
