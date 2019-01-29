@@ -8,6 +8,8 @@
 # administrator. This is the address where users should send basic
 # questions about the server and the data it provides.
 
+SupportEmail=support@opendap.org
+
 BES.ServerAdministrator=email:support@opendap.org
 BES.ServerAdministrator+=organization:OPeNDAP Inc.
 BES.ServerAdministrator+=street:165 NW Dean Knauss Dr.
@@ -69,8 +71,8 @@ BES.Catalog.catalog.FollowSymLinks=No
 # easy to see what's in the cache at any given time, even when it's a 
 # directory like /tmp that's used by many programs. 
 
-BES.UncompressCache.dir=/tmp
-BES.UncompressCache.prefix=uncompress_cache
+BES.UncompressCache.dir=/tmp/hyrax_ux
+BES.UncompressCache.prefix=ux_
 BES.UncompressCache.size=500
 
 # Configure the BES timeout feature. In practice, the timeout value is

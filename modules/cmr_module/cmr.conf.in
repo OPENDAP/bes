@@ -11,7 +11,7 @@ BES.Include=dap.conf
 # modules to load, includes data modules and command modules            #
 #-----------------------------------------------------------------------#
 
-BES.modules+=cmr
+# BES.modules+=cmr
 BES.module.cmr=@bes_modules_dir@/libcmr_module.so
 
 # CMR module specific parameters"
@@ -30,7 +30,7 @@ BES.Catalog.CMR.TypeMatch+=h5:.*\.(HDF5|h5|he5)(\.bz2|\.gz|\.Z)?$;
 BES.Catalog.CMR.TypeMatch+=ncml:.*\.ncml(\.bz2|\.gz|\.Z)?$;
 
 
-CMR.Cache.dir=/tmp/CmrCache
+CMR.Cache.dir=/tmp/hyrax_cmr
 CMR.Cache.prefix=cmr_
 CMR.Cache.size=500
 

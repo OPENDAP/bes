@@ -29,11 +29,11 @@ Httpd_Catalog.Reference=http://docs.opendap.org/index.php/BES_-_Modules_-_Httpd_
 # but they must be defined or the framework will signal an error.
 
 BES.Catalog.RemoteResources.RootDirectory = UNUSED
-BES.Catalog.RemoteResources.TypeMatch += unused:*;
+BES.Catalog.RemoteResources.TypeMatch += unused:unused;
 
 # The cache used by the BES for the retrieved items.
 
-HttpResourceCache.dir = /tmp/httpd_cache
+HttpResourceCache.dir = /tmp/hyrax_hc
 HttpResourceCache.prefix = hc_
 HttpResourceCache.size = 500
 
@@ -43,6 +43,7 @@ HttpResourceCache.size = 500
 Httpd_Catalog.MimeTypes = nc:application/x-netcdf
 Httpd_Catalog.MimeTypes += h4:application/x-hdf
 Httpd_Catalog.MimeTypes += h5:application/x-hdf5
+
 
 # 'Collections' add virtual directory hierarchies under the literal 
 # '/RemoteResources/'. For example the Collections value below will 

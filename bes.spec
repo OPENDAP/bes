@@ -148,6 +148,7 @@ exit 0
 %{_tmpfilesdir}/%{name}.conf
 
 %config(noreplace) %{_sysconfdir}/bes/bes.conf
+%config(noreplace) %{_sysconfdir}/bes/site.conf.proto
 %config(noreplace) %{_sysconfdir}/bes/modules/*.conf
 
 # Added 10/25/16 jhrg. See below for the installation of the logrotate file.

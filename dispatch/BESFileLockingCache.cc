@@ -57,6 +57,8 @@
 #define LOCK "cache-lock"
 #define LOCK_STATUS "cache-lock-status"
 
+#define CACHE_CONTROL "cache_control"
+
 #define prolog std::string("BESFileLockingCache::").append(__func__).append("() - ")
 
 using namespace std;
@@ -292,6 +294,7 @@ bool BESFileLockingCache::m_check_ctor_params()
         return false;
     }
 
+
     int status = mkdir(d_cache_dir.c_str(), 0775);
     // If there is an error and it's not that the dir already exists,
     // throw an exception.
@@ -393,7 +396,7 @@ bool BESFileLockingCache::m_initialize_cache_info()
 
     bool status = m_check_ctor_params(); // Throws BESError on error; otherwise sets the cache_enabled() property
     if (status) {
-        d_cache_info = BESUtil::assemblePath(d_cache_dir, d_prefix + ".cache_control", true);
+        d_cache_info = BESUtil::assemblePath(d_cache_dir, d_prefix + CACHE_CONTROL, true);
 
         BESDEBUG(CACHE, "BESFileLockingCache::m_initialize_cache_info() - d_cache_info: " << d_cache_info << endl);
 
