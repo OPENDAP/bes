@@ -64,7 +64,7 @@ public:
     }
 
     /**
-     * This is a meaningless method for CMR so it returns empty string
+     * This is a meaningless method for a remote catalog so it returns empty string
      */
     virtual std::string get_root() const { return ""; }
 
@@ -82,7 +82,7 @@ public:
 
     virtual bes::CatalogNode *get_node(const std::string &path) const;
 
-    virtual std::string path_to_access_url(std::string path) const;
+    virtual std::string path_to_access_url(const std::string &path) const;
 
     virtual void dump(ostream &strm) const;
 };

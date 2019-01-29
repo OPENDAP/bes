@@ -178,33 +178,6 @@ HttpdCatalog::get_node(const string &ppath) const
         }
     }
     else {
-#if 0
-        vector<string> path_elements = BESUtil::split(path);
-        BESDEBUG(MODULE, prolog << "path_elements.size(): " << path_elements.size()  << " path: '" << path << "'"<< endl);
-
-        string collection = path_elements[0];
-        BESDEBUG(MODULE, prolog << "Checking for collection: " << collection << " d_httpd_catalogs.size(): "
-            << d_httpd_catalogs.size() << endl);
-
-        map<string,string>::const_iterator it = d_httpd_catalogs.find(collection);
-        if(it == d_httpd_catalogs.end()){
-            throw BESNotFoundError("The httpd_catalog does not contain a collection named '"+collection+"'",__FILE__,__LINE__);
-        }
-        BESDEBUG(MODULE, prolog << "The httpd_catalog collection " << collection << " is valid." << endl);
-
-        string url = it->second;
-        string remote_relative_path = path.substr(collection.length());
-        BESDEBUG(MODULE, prolog << "remote_relative_path: " << remote_relative_path << endl);
-
-        string remote_target_url;
-        if(remote_relative_path == "/" || remote_relative_path.empty())
-            remote_target_url = url;
-        else
-            remote_target_url = BESUtil::pathConcat(url,remote_relative_path);
-
-        BESDEBUG(MODULE, prolog << "remote_target_url: " << remote_target_url << endl);
-#endif
-
         string remote_target_url = path_to_access_url(path);
 
         HttpdDirScraper hds;
@@ -213,43 +186,67 @@ HttpdCatalog::get_node(const string &ppath) const
         node->set_catalog_name(HTTPD_CATALOG_NAME);
 
     }
+
     return node;
 }
 
 /**
- * Takes a path which begins with the name of an HttpdCatalog collection and returns the associated
- * access url for the referenced thingy.
- * @param path The path to convert.
+ * @brief Takes a path which begins with the name of an HttpdCatalog collection and
+ * returns the associated access url for the referenced thingy.
+ *
+ * @param p The path to convert.
+ * @returns The access URL for the path on the named remote resource.
  * @throws BESNotFoundError when there is no matching collection found.
  */
-std::string HttpdCatalog::path_to_access_url(std::string path) const
+string HttpdCatalog::path_to_access_url(const string &p) const
 {
+    // If the path starts with a slash, remove that
+    string path = (p.find('/') == 0) ? p.substr(1): p;
+    string::size_type i = path.find('/');
+    string collection = path.substr(0, i);  // if 'i == string::npos', substr() returns all of 'path'
+
+    map<string,string>::const_iterator it = d_httpd_catalogs.find(collection);
+    if (it == d_httpd_catalogs.end())
+        throw BESNotFoundError("The httpd_catalog does not contain a collection named '" + collection + "'", __FILE__, __LINE__);
+
+    // passing string::npos to the first arg of substr() causes an out-of-range exception
+    string remote_relative_path = (i == string::npos) ? "": path.substr(i);
+
+    if(remote_relative_path == "/" || remote_relative_path.empty())
+        return it->second;
+    else
+        return BESUtil::pathConcat(it->second, remote_relative_path);
+
+#if 0
     vector<string> path_elements = BESUtil::split(path);
-    BESDEBUG(MODULE, prolog << "path_elements.size(): " << path_elements.size()  << " path: '" << path << "'"<< endl);
+    BESDEBUG(MODULE, prolog << "path_elements.size(): " << path_elements.size() << " path: '" << path << "'"<< endl);
 
     string collection = path_elements[0];
     BESDEBUG(MODULE, prolog << "Checking for collection: " << collection << " d_httpd_catalogs.size(): "
         << d_httpd_catalogs.size() << endl);
 
     map<string,string>::const_iterator it = d_httpd_catalogs.find(collection);
-    if(it == d_httpd_catalogs.end()){
+    if(it == d_httpd_catalogs.end()) {
         throw BESNotFoundError("The httpd_catalog does not contain a collection named '"+collection+"'",__FILE__,__LINE__);
     }
     BESDEBUG(MODULE, prolog << "The httpd_catalog collection " << collection << " is valid." << endl);
 
     string url = it->second;
-    string remote_relative_path = path.substr(collection.length()+1);
+
+    string remote_relative_path = path.substr(collection.length()+1); // Broken here. HK-313 jhrg 1/24/19
     BESDEBUG(MODULE, prolog << "remote_relative_path: " << remote_relative_path << endl);
 
     string access_url;
     if(remote_relative_path == "/" || remote_relative_path.empty())
-        access_url = url;
+    access_url = url;
     else
-        access_url = BESUtil::pathConcat(url,remote_relative_path);
+    access_url = BESUtil::pathConcat(url,remote_relative_path);
 
     BESDEBUG(MODULE, prolog << "remote_target_url: " << access_url << endl);
 
     return access_url;
+#endif
+
 }
 
 /** @brief dumps information about this object

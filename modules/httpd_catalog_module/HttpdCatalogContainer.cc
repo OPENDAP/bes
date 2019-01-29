@@ -64,28 +64,31 @@ HttpdCatalogContainer::HttpdCatalogContainer(const string &sym_name, const strin
         path = "/" + path;
     }
 
+#if 0
+    // unused
     vector<string> path_elements = BESUtil::split(path);
     BESDEBUG(MODULE, prolog << "path: '" << path << "'  path_elements.size(): " << path_elements.size() << endl);
+#endif
+
 
     set_relative_name(path);
 
-    if (type == "") {
-        // @TODO FIX Dynamically determine the type from the Granule information (type-match to name, mime-type, etc)
-        this->set_container_type("nc");
-    }
+    // The container type is set in the access() method when the remote resource is accessed using the
+    // MIME type information using mappings between handlers (e.g., 'h5') and MIME types like application/x-hdf5.
+    // However, bes/dispatchBESContainerStorageVolatile::add_container(BESContainer *) expects the field
+    // to be not empty, so I'll add a place holder value. jhrg 1/25/19
+    if (type == "")
+         this->set_container_type("place_holder");
 
     BESDEBUG(MODULE, prolog << "END" << endl);
 }
 
-/**
- * TODO: I think this implementation of the copy constructor is incomplete/inadequate. Review and fix as needed.
- */
 HttpdCatalogContainer::HttpdCatalogContainer(const HttpdCatalogContainer &copy_from) :
-    BESContainer(copy_from), d_remoteResource(copy_from.d_remoteResource)
+    BESContainer(copy_from), d_remoteResource(0)
 {
     // we can not make a copy of this container once the request has
     // been made
-    if (d_remoteResource) {
+    if (copy_from.d_remoteResource) {
         throw BESInternalError("The Container has already been accessed, cannot create a copy of this container.", __FILE__, __LINE__);
     }
 }
@@ -123,7 +126,6 @@ string HttpdCatalogContainer::access()
 {
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
-    // Since this the CMR thang we know that the real_name is a path of facets and such.
     string path = get_real_name();
     BESDEBUG(MODULE, prolog << "path: " << path << endl);
 
@@ -135,6 +137,7 @@ string HttpdCatalogContainer::access()
         d_remoteResource = new RemoteHttpResource(access_url);
         d_remoteResource->retrieveResource();
     }
+
     BESDEBUG(MODULE, prolog << "Located remote resource." << endl);
 
     string cachedResource = d_remoteResource->getCacheFileName();
@@ -142,6 +145,7 @@ string HttpdCatalogContainer::access()
 
     string type = d_remoteResource->getType();
     set_container_type(type);
+
     BESDEBUG(MODULE, prolog << "Type: " << type << endl);
 
     BESDEBUG(MODULE, prolog << "Done accessing " << get_real_name() << " returning cached file " << cachedResource << endl);

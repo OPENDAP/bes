@@ -1,9 +1,9 @@
 
-Partially complete HTTP Catalog module.
+HTTP Catalog module.
 
 Notes:
 
-1) he initial token in the path that triggers this module is set in the 
+1) The initial token in the path that triggers this module is set in the 
 HttpdMCatalogModule.cc file at the call
 
     BESCatalogList::TheCatalogList()->add_catalog(new HttpdCatalog(HTTPD_CATALOG_NAME));
@@ -19,21 +19,12 @@ parent to determine if a given path is a node or leaf and append a / as needed.
 Note that the 'RemoteResourse catalog can have many remote 'collections,'
 each of which has a name bound to a HTTP/S URL:
 
-    Httpd_Catalog.Collections=test:http://test.opendap.org/data/
+    Httpd_Catalog.Collections = test:http://test.opendap.org/data/
     
-To access this collection, use /RemoteResources/test/ in the path. Note that
-failing to append a slash to _that_ path should work but is currently known
-to fail with a C++ string exception. (jhrg 1/3/19)
+To access this collection, use /RemoteResources/test/ in the path.
 
-What needs to be done:
-
-1. HttpdCatalog needs code.
-2. The files CmrContainer and CmrContainterStorage need to be renamed, edited, et cetera.
-3. The files in #1 and 2 need to be added to the Makefile.am
-4. Of course, the functionality has to be added
-5. The tests and unit tests are wired up as far as autotools is considered, but they
-    have to be written
-6. httpd_catalog_conf.in needs to be edited
-7. The libdap::Error object should be swapped out for a BESError<something> object
-    and the libdap headers for Error.h should be dumped.
-
+For this to properly build DAP responses, the returned item needs to be recognized
+by the default catalog's TypeMatch parameter. For example, to work with HDF5 data
+named *.h5, the value 'h5:.*\.h5$' should be part of the TypeMatch parameter. This
+is odd because the type of the container is determined using the MIME type of the
+response from the remote resource.

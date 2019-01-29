@@ -72,8 +72,8 @@ DAP.GlobalMetadataStore.ledger = @datadir@/mds/mds_ledger.txt
 # the empty string ("") shuts off the cache, regardless of the other 
 # DAP.FunctionResponseCache parameter values.
 
-DAP.FunctionResponseCache.path=/tmp/dap_cache
-DAP.FunctionResponseCache.prefix=rc
+DAP.FunctionResponseCache.path=/tmp/hyrax_func
+DAP.FunctionResponseCache.prefix=func_
 
 # This is the size of the cache in megabytes; e.g., 20,000 is a 20GB cache
 DAP.FunctionResponseCache.size=20000
@@ -83,7 +83,7 @@ DAP.FunctionResponseCache.size=20000
 #-----------------------------------------------------------------------#
 
 DAP.StoredResultsCache.subdir=stored_results
-DAP.StoredResultsCache.prefix=result
+DAP.StoredResultsCache.prefix=result_
 
 # This is the size of the cache in megabytes; e.g., 20,000 is a 20GB cache
 DAP.StoredResultsCache.size=20000
