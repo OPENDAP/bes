@@ -112,7 +112,7 @@ void HttpdCatalogUtils::initialize()
         if (found && !port.empty()) {
             HttpdCatalogUtils::ProxyPort = atoi(port.c_str());
             if (!HttpdCatalogUtils::ProxyPort) {
-                string err = (string) "CMR proxy host is specified, but specified port is absent";
+                string err = (string) "httpd catalog proxy host is specified, but specified port is absent";
                 throw BESSyntaxUserError(err, __FILE__, __LINE__);
             }
         }

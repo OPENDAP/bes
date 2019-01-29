@@ -31,26 +31,29 @@ Httpd_Catalog.Reference=http://docs.opendap.org/index.php/BES_-_Modules_-_Httpd_
 BES.Catalog.RemoteResources.RootDirectory = UNUSED
 BES.Catalog.RemoteResources.TypeMatch += unused:unused;
 
+# The cache used by the BES for the retrieved items.
+
 HttpResourceCache.dir = /tmp/hyrax_hc
 HttpResourceCache.prefix = hc_
 HttpResourceCache.size = 500
+
+# The mapping between files/responses from the remote httpd an modules that 
+# read data on the local Hyrax server.
 
 Httpd_Catalog.MimeTypes = nc:application/x-netcdf
 Httpd_Catalog.MimeTypes += h4:application/x-hdf
 Httpd_Catalog.MimeTypes += h5:application/x-hdf5
 
-# 'Collections' make virtual directory hierarchies under the literal 
+
+# 'Collections' add virtual directory hierarchies under the literal 
 # '/RemoteResources/'. For example the Collections value below will 
 # make the path '/RemoteResources/test/' access the files in the remote
 # directory at http://test.opendap.org/data/.
 
 Httpd_Catalog.Collections = test:http://test.opendap.org/data/
 
-# Where we can go for stuff... Access to remote sites is limited to
-# only those URLs on the 'Gateway.Whitelist'.
-#
-# The hosts listed in Collections have to be on the Whitelist. And
-# the Whitelist should have things added to is using '+=' because
-# using '=' will remove all previous values.
+# The hosts listed in Collections have to be on the Whitelist of allowable
+# remote hosts this server may connect to. The Whitelist should have hosts
+# added to is using '+=' because using '=' will remove all previous values.
 
 Gateway.Whitelist += http://test.opendap.org
