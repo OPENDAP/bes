@@ -8,6 +8,8 @@
 # administrator. This is the address where users should send basic
 # questions about the server and the data it provides.
 
+SupportEmail=support@opendap.org
+
 BES.ServerAdministrator=email:support@opendap.org
 BES.ServerAdministrator+=organization:OPeNDAP Inc.
 BES.ServerAdministrator+=street:165 NW Dean Knauss Dr.
