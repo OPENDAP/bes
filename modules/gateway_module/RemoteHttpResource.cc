@@ -172,7 +172,14 @@ void RemoteHttpResource::retrieveResource()
         if (cache->create_and_lock(d_resourceCacheFileName, d_fd)) {
 
             // Write the remote resource to the cache file.
-            writeResourceToFile(d_fd);
+            try {
+                writeResourceToFile(d_fd);
+            }
+            catch(...){
+                // If things went south then we need to dump the file because we'll end up with an empty/bogus file clogging the cache
+                unlink(d_resourceCacheFileName.c_str());
+                throw;
+            }
 
             // #########################################################################################################
             // I think right here is where I would be able to cache the data type/response headers. While I have
