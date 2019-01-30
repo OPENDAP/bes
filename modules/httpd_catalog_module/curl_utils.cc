@@ -51,12 +51,28 @@ int curl_trace = 0;
 
 #define CLIENT_ERR_MIN 400
 #define CLIENT_ERR_MAX 417
-const char *http_client_errors[CLIENT_ERR_MAX - CLIENT_ERR_MIN + 1] = { "Bad Request:", "Unauthorized: Contact the server administrator.",
-    "Payment Required.", "Forbidden: Contact the server administrator.", "Not Found: The data source or server could not be found.\n"
-        "Often this means that the OPeNDAP server is missing or needs attention;\n"
-        "Please contact the server administrator.", "Method Not Allowed.", "Not Acceptable.", "Proxy Authentication Required.", "Request Time-out.",
-    "Conflict.", "Gone:.", "Length Required.", "Precondition Failed.", "Request Entity Too Large.", "Request URI Too Large.",
-    "Unsupported Media Type.", "Requested Range Not Satisfiable.", "Expectation Failed." };
+const char *http_client_errors[CLIENT_ERR_MAX - CLIENT_ERR_MIN + 1] = {
+    "Bad Request:",
+    "Unauthorized: Contact the server administrator.",
+    "Payment Required.",
+    "Forbidden: Contact the server administrator.",
+    "Not Found: The data source or server could not be found.\n"
+        "Often this means that the OPeNDAP server is missing or needs attention.\n"
+        "Please contact the server administrator.",
+    "Method Not Allowed.",
+    "Not Acceptable.",
+    "Proxy Authentication Required.",
+    "Request Time-out.",
+    "Conflict.",
+    "Gone.",
+    "Length Required.",
+    "Precondition Failed.",
+    "Request Entity Too Large.",
+    "Request URI Too Large.",
+    "Unsupported Media Type.",
+    "Requested Range Not Satisfiable.",
+    "Expectation Failed."
+};
 
 #define SERVER_ERR_MIN 500
 #define SERVER_ERR_MAX 505

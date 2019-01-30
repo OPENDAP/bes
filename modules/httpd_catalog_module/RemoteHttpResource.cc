@@ -201,7 +201,14 @@ void RemoteHttpResource::retrieveResource()
         if (cache->create_and_lock(d_resourceCacheFileName, d_fd)) {
 
             // Write the remote resource to the cache file.
-            writeResourceToFile(d_fd);
+            try {
+                writeResourceToFile(d_fd);
+            }
+            catch(...){
+                // If things went south then we need to dump the file because we'll end up with an empty/bogus file clogging the cache
+                unlink(d_resourceCacheFileName.c_str());
+                throw;
+            }
 
             // #########################################################################################################
             // I think right here is where I would be able to cache the data type/response headers. While I have
@@ -215,7 +222,9 @@ void RemoteHttpResource::retrieveResource()
                     }
                 }
                 catch (...) {
+                    // If this fails for any reason close the stream and unlink (rm) the file.
                     hdr_out.close();
+                    unlink(hdr_filename.c_str());
                     throw;
                 }
             }
@@ -288,7 +297,8 @@ void RemoteHttpResource::writeResourceToFile(int fd)
 
     if (status >= 400) {
         BESDEBUG(MODULE, prolog << "HTTP returned an error status: " << status << endl);
-        ostringstream oss("Error while reading the URL: '");
+        ostringstream oss;
+        oss << "Error while reading the URL: '";
         oss << d_remoteResourceUrl;
         oss << "' The HTTP request returned a status of " << status << " which means '";
         oss << http_status_to_string(status) << "' \n";
