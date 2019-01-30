@@ -222,9 +222,10 @@ void RemoteHttpResource::retrieveResource()
                     }
                 }
                 catch (...) {
-                    // If this fails for any reason close the stream and unlink (rm) the file.
-                    hdr_out.close();
-                    unlink(hdr_filename.c_str());
+                    // If this fails for any reason we:
+                    hdr_out.close(); // Close the stream
+                    unlink(hdr_filename.c_str()); // unlink the file
+                    unlink(d_resourceCacheFileName.c_str()); // unlink the primary cache file.
                     throw;
                 }
             }
