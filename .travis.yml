@@ -63,13 +63,12 @@ before_install:
 
 # hyrax-dependencies-build.tar.gz includes/makes the build directory
 install:
-- (cd $TRAVIS_BUILD_DIR && curl -s -O https://s3.amazonaws.com/opendap.travis.build/hyrax-dependencies-build.tar.gz) 
+# - (cd $TRAVIS_BUILD_DIR && curl -s -O https://s3.amazonaws.com/opendap.travis.build/hyrax-dependencies-build.tar.gz) 
+- aws s3 cp s3://opendap.travis.build/hyrax-dependencies-build.tar.gz $TRAVIS_BUILD_DIR
 - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/hyrax-dependencies-build.tar.gz
-- (cd $TRAVIS_BUILD_DIR && curl -s -O https://s3.amazonaws.com/opendap.travis.build/libdap-build.tar.gz) 
+# - (cd $TRAVIS_BUILD_DIR && curl -s -O https://s3.amazonaws.com/opendap.travis.build/libdap-build.tar.gz) 
+- aws s3 cp s3://opendap.travis.build/libdap-build.tar.gz $TRAVIS_BUILD_DIR
 - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/libdap-build.tar.gz
-
-# - aws s3 cp s3://opendap.travis.build/libdap-build.tar.gz $TRAVIS_BUILD_DIR
-# - aws s3 cp s3://opendap.travis.build/hyrax-dependencies-build.tar.gz $TRAVIS_BUILD_DIR
 
 before_script:
 - printenv
@@ -87,8 +86,8 @@ jobs:
     script: 
     - export BES_BUILD=main
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-    - make -j7 && make check -j7 && make install
     - make -j7 && make install && besctl start && make check -j7 && besctl stop
+
   - stage: build
     script:
     - export BES_BUILD=distcheck
@@ -110,6 +109,7 @@ jobs:
     - docker run --volume $prefix/rpmbuild:/root/rpmbuild --volume $TRAVIS_BUILD_DIR:/root/travis
                  --env OS=centos6 --env DIST=el6 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
                  opendap/centos6_hyrax_builder:1.1 /root/travis/build-rpm.sh
+
   - stage: package
     script: 
     - export BES_BUILD=centos7
