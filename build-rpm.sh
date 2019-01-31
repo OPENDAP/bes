@@ -33,8 +33,6 @@ then
     exit 1
 fi
 
-pip install --user awscli
-
 # Get the pre-built dependencies (all static libraries). $OS is 'centos6' or 'centos7'
 # aws s3 cp s3://opendap.travis.build/
 (cd /tmp && aws s3 cp s3://opendap.travis.build/hyrax-dependencies-$OS-static.tar.gz)
