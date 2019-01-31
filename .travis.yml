@@ -58,7 +58,7 @@ env:
   - secure: "BVETDaGI/cwfUHdvsGPkV1o7jd6OnqyvtFCPk0WsmCWh6PdpwXQ8D4yFdk4jejWxa0YFdRiCgK3ThHqqzv+6pDxrMnpYOx2O+ZjK//ErECjDa+OCJr2ObCwlqOPE6+4aVmPDz5ecjd2inVR5CfL5/Kt3Zgn4U9fNBUz9OMYpRF4="
 
 before_install:
-- sudo apt-get update -qq
+# - sudo apt-get update -qq
 - pip install --user awscli
 
 # hyrax-dependencies-build.tar.gz includes/makes the build directory

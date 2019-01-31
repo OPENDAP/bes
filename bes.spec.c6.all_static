@@ -3,7 +3,11 @@
 %define bescachedir %{_localstatedir}/cache/%{name}
 %define bespkidir %{_sysconfdir}/pki/%{name}
 %define beslogdir %{_localstatedir}/log/%{name}
-%define bespiddir %{_localstatedir}/run/%{name}
+%define bespiddir %{_localstatedir}/run
+# The pid file should be in /var/run and not /var/run/bes for systemctl/systemd 
+# to function correctly (it could be hacked, but it's better to go with the herd).
+# jhrg 1/31/19
+# /%{name}
 %define besuser %{name}
 %define besgroup %{name}
 %define beslibdir %{_libdir}/bes
@@ -24,7 +28,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:       libdap >= 3.20.2
 Requires:       readline bzip2 zlib
-Requires:	libicu >= 3.6 
+Requires:	    libicu >= 3.6 
 Requires:       libxml2 >= 2.7.0
 Requires:       openssl
 

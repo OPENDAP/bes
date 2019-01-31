@@ -2,7 +2,7 @@
 %define bescachedir %{_localstatedir}/cache/%{name}
 %define bespkidir %{_sysconfdir}/pki/%{name}
 %define beslogdir %{_localstatedir}/log/%{name}
-%define bespiddir %{_localstatedir}/run/%{name}
+%define bespiddir %{_localstatedir}/run
 %define besuser %{name}
 %define besgroup %{name}
 %define beslibdir %{_libdir}/bes
@@ -23,10 +23,10 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:       libdap >= 3.20.2
 Requires:       readline bzip2 zlib
-Requires:	netcdf >= 4.1
-Requires:	libicu >= 3.6
-Requires:	hdf5 => 1.8
-Requires:	hdf >= 4.2
+Requires:	    netcdf >= 4.1
+Requires:	    libicu >= 3.6
+Requires:	    hdf5 => 1.8
+Requires:	    hdf >= 4.2
 Requires:       libxml2 >= 2.7.0
 Requires:       openssl
 
