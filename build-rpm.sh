@@ -35,7 +35,7 @@ fi
 
 # Get the pre-built dependencies (all static libraries). $OS is 'centos6' or 'centos7'
 # aws s3 cp s3://opendap.travis.build/
-(cd /tmp && aws s3 cp s3://opendap.travis.build/hyrax-dependencies-$OS-static.tar.gz)
+aws s3 cp s3://opendap.travis.build/hyrax-dependencies-$OS-static.tar.gz /tmp/
 
 # This dumps the dependencies in $HOME/install/deps/{lib,bin,...}
 tar -xzvf /tmp/hyrax-dependencies-$OS-static.tar.gz
@@ -43,8 +43,8 @@ tar -xzvf /tmp/hyrax-dependencies-$OS-static.tar.gz
 # Then get the libdap RPMs packages
 # libdap-3.20.0-1.el6.x86_64.rpm libdap-devel-3.20.0-1.el6.x86_64.rpm
 # $DIST is 'el6' or 'el7'; $LIBDAP_RPM_VERSION is 3.20.0-1 (set by Travis)
-(cd /tmp && aws s3 cp s3://opendap.travis.build/libdap-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm)
-(cd /tmp && aws s3 cp s3://opendap.travis.build/libdap-devel-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm)
+aws s3 cp s3://opendap.travis.build/libdap-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm /tmp/
+aws s3 cp s3://opendap.travis.build/libdap-devel-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm /tmp/
 
 yum install -y /tmp/*.rpm
 
