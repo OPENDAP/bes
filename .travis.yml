@@ -108,7 +108,8 @@ jobs:
     - mkdir -p $prefix/rpmbuild
     - docker run --volume $prefix/rpmbuild:/root/rpmbuild --volume $TRAVIS_BUILD_DIR:/root/travis
                  --env OS=centos6 --env DIST=el6 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
-                 opendap/centos6_hyrax_builder:1.1 /root/travis/build-rpm.sh
+                 --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+                 opendap/centos6_hyrax_builder:1.3 /root/travis/build-rpm.sh
 
   - stage: package
     script: 
@@ -116,7 +117,8 @@ jobs:
     - mkdir -p $prefix/rpmbuild
     - docker run --volume $prefix/rpmbuild:/root/rpmbuild --volume $TRAVIS_BUILD_DIR:/root/travis
                  --env OS=centos7 --env DIST=el7 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
-                 opendap/centos7_hyrax_builder:1.1 /root/travis/build-rpm.sh
+                 --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+                 opendap/centos7_hyrax_builder:1.2 /root/travis/build-rpm.sh
     
 after_script:
 - ./upload-test-results.sh
