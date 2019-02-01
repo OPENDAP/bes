@@ -33,6 +33,11 @@ then
     exit 1
 fi
 
+if ! which aws && test -x /root/.local/bin/aws
+then
+    export PATH=$PATH:/root/.local/bin
+fi
+
 # Get the pre-built dependencies (all static libraries). $OS is 'centos6' or 'centos7'
 # aws s3 cp s3://opendap.travis.build/
 aws s3 cp s3://opendap.travis.build/hyrax-dependencies-$OS-static.tar.gz /tmp/
