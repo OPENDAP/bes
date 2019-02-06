@@ -83,30 +83,36 @@ jobs:
   stages:
   - name: build
     if:  branch != coverity_scan
-  - name: package
-    if:  branch != coverity_scan
+  # - name: package
+  #  if:  branch != coverity_scan
     
   include:
   - stage: build
+    # script: 
+    # - export BES_BUILD=main
+    # - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+    # - make -j7 && make install && besctl start && make check -j7 && besctl stop
+
+  - stage: build
     script: 
-    - export BES_BUILD=main
+    - export BES_BUILD=sonar-scan
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-    - make -j7 && make install && besctl start && make check -j7 && besctl stop
+    - build-wrapper-linux-x86-64 --out-dir bw-output make clean all
     - sonar-scanner
 
   - stage: build
-    script:
-    - export BES_BUILD=distcheck
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
-    - make distcheck -j7
+    # script:
+    # - export BES_BUILD=distcheck
+    # - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
+    # - make distcheck -j7
 
   #- stage: package
-  #  script: 
-  #  - export BES_BUILD=deb
-  #  - mkdir -p $prefix/debbuild
-  #  - docker run --volume $prefix/debbuild:/root --volume $TRAVIS_BUILD_DIR:/root/travis
-  #               --env OS=ubuntu14 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
-  #               opendap/ubuntu14_hyrax_build:1.4 /root/travis/build-deb.sh
+    # script: 
+    #  - export BES_BUILD=deb
+    #  - mkdir -p $prefix/debbuild
+    #  - docker run --volume $prefix/debbuild:/root --volume $TRAVIS_BUILD_DIR:/root/travis
+    #               --env OS=ubuntu14 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
+    #               opendap/ubuntu14_hyrax_build:1.4 /root/travis/build-deb.sh
 
   - stage: package
     script: 
