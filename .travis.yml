@@ -22,6 +22,11 @@ branches:
   - coverity_scan
 
 addons:
+  sonarcloud:
+    organization: "opendap" # the key of the org you chose at step #3
+    token:
+      # SonarCloud 'OPENDAP_bes' key
+      secure: "V042KJv1u0GBYfZOIsg+NilBA3t2ediJMsqRHASa83QcPR7hkGz8dMdBigpGNEqUonmLrPTTb7OoyS2bbhYTNuEILo1WrILg4EEDLRVKJtHrdEPEtwOPJGwBHicN5mK3n8TJBhhHJQQ9CtIRU0b1rlIh0xKd6zlS189+uSdtXsg="
   coverity_scan:
     project:
       name: "OPENDAP/bes"
@@ -87,6 +92,7 @@ jobs:
     - export BES_BUILD=main
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
     - make -j7 && make install && besctl start && make check -j7 && besctl stop
+    - sonar-scanner
 
   - stage: build
     script:
