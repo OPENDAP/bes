@@ -81,6 +81,7 @@ install:
 before_script:
 - printenv
 - autoreconf --force --install --verbose
+- echo "Before script"
 
 jobs:
   stages:
@@ -100,7 +101,7 @@ jobs:
     script: 
     - export BES_BUILD=sonar-scan
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-    - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+    - build-wrapper-linux-x86-64 --out-dir bw-output make all check -j7
     - sonar-scanner
 
   # - stage: build
