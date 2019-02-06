@@ -24,9 +24,13 @@ branches:
 addons:
   sonarcloud:
     organization: "opendap" # the key of the org you chose at step #3
+    notification_email: jgallagher@opendap.org
+    build_command_prepend: ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+    build_command: make -j7 && make check -j7
     token:
       # SonarCloud 'OPENDAP_bes' key
       secure: "V042KJv1u0GBYfZOIsg+NilBA3t2ediJMsqRHASa83QcPR7hkGz8dMdBigpGNEqUonmLrPTTb7OoyS2bbhYTNuEILo1WrILg4EEDLRVKJtHrdEPEtwOPJGwBHicN5mK3n8TJBhhHJQQ9CtIRU0b1rlIh0xKd6zlS189+uSdtXsg="
+
   coverity_scan:
     project:
       name: "OPENDAP/bes"
@@ -97,7 +101,7 @@ jobs:
     script: 
     - export BES_BUILD=sonar-scan
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-    - build-wrapper-linux-x86-64 --out-dir bw-output make clean all
+    - build-wrapper-linux-x86-64 --out-dir bw-output make clean all -j7
     - sonar-scanner
 
   # - stage: build
