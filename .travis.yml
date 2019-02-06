@@ -24,7 +24,6 @@ branches:
 addons:
   sonarcloud:
     organization: "opendap" # the key of the org you chose at step #3
-    notification_email: jgallagher@opendap.org
     build_command_prepend: ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
     build_command: make -j7 && make check -j7
     token:
