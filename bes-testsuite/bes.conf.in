@@ -223,8 +223,8 @@ BES.Info.Type=xml
 # microseconds. If you have really large files (e.g., decompressed they are
 # 500MB), try setting NumTries to 100.
 
-BES.UncompressCache.dir=/tmp
-BES.UncompressCache.prefix=uncompress_cache
+BES.UncompressCache.dir=/tmp/hyrax_ux
+BES.UncompressCache.prefix=ux_
 BES.UncompressCache.size=500
 BES.Uncompress.Retry=2000
 BES.Uncompress.NumTries=10

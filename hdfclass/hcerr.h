@@ -61,7 +61,7 @@ using namespace libdap;
 class hcerr: public Error {
 public:
 	hcerr(const char *msg, const char *file, int line);
-	virtual ~ hcerr(void) {
+	virtual ~ hcerr(void) throw() {
 	}
 };
 

@@ -51,11 +51,13 @@ using namespace libdap;
 #define THROW(x) throw x(__FILE__,__LINE__)
 
 // DODS/HDF exceptions class
-class dhdferr:public Error {
-  public:
+class dhdferr: public Error {
+public:
     dhdferr(const string & msg, const string & file, int line);
-     virtual ~ dhdferr(void) {
-}};
+    virtual ~dhdferr() throw ()
+    {
+    }
+};
 
 // Define valid DODS/HDF exceptions
 class dhdferr_hcerr:public dhdferr {
