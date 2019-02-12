@@ -109,7 +109,7 @@ if (ipr == 1)
       return(6);
       }
    file_e = TRUE;
-   strcpy(err_file,efile);
+   strncpy(err_file,efile,256);
    }
 else
 if (ipr == 2)
@@ -122,7 +122,7 @@ if (ipr == 2)
       return(6);
       }
    file_e = TRUE;
-   strcpy(err_file,efile);
+   strncpy(err_file,efile,256);
    }
 else
    {
@@ -143,7 +143,7 @@ if (jpr == 1)
       return(6);
       }
    file_p = TRUE;
-   strcpy(parm_file,pfile);
+   strncpy(parm_file,pfile,256);
    }
 else
 if (jpr == 2)
@@ -156,7 +156,7 @@ if (jpr == 2)
       return(6);
       }
    file_p = TRUE;
-   strcpy(parm_file,pfile);
+   strncpy(parm_file,pfile,256);
    }
 else
    {

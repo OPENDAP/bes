@@ -229,7 +229,7 @@ L250:  rlm=PI * gsat_ratio;
        if(tlam<rlm)tlamp=2.50*PI;
        if(tlam>=rlm2) tlamp=HALF_PI;
        goto L230;
-L260:  sprintf(errorbuf,"50 iterations without conv\n");
+L260:  snprintf(errorbuf,80,"50 iterations without conv\n");
        p_error(errorbuf,"som-forward");
        return(214);
 

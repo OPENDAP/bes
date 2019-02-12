@@ -107,7 +107,7 @@ if (zone > 0)
    }
 if (ind == -1)
    {
-   sprintf(buf,"Illegal zone #%4ld  for spheroid #%4ld",zone,sphere);
+   snprintf(buf,100,"Illegal zone #%4ld  for spheroid #%4ld",zone,sphere);
    p_error(buf,"state-init");
    return(21);
    }
@@ -149,7 +149,7 @@ for (i=0;i<9;i++)
 
 if (id <= 0)
      {
-     sprintf(buf,"Illegal zone #%4ld  for spheroid #%4ld",zone,sphere);
+     snprintf(buf,100,"Illegal zone #%4ld  for spheroid #%4ld",zone,sphere);
      p_error(buf,"state-init");
      return(21);
      }
