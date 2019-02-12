@@ -1377,9 +1377,9 @@ private:
     vector<EOS5CFZa *> eos5cfzas;
     map<string, string> eos5_to_cf_attr_map;
     bool iscoard;
-    EOS5AuraName aura_name;
     bool grids_multi_latloncvs;
     bool isaura;
+    EOS5AuraName aura_name;
     int orig_num_grids;
     multimap<string, string> dimname_to_dupdimnamelist;
 };

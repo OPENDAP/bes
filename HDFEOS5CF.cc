@@ -2594,7 +2594,7 @@ void EOS5File::Handle_Single_1DLatLon_Swath_CVar(EOS5CFSwath *cfswath, bool is_a
     string EOS5SWATHPATH = "/HDFEOS/SWATHS/";
     string fslash_str = "/";
     string THIS_EOS5SWATHPATH = EOS5SWATHPATH + cfswath->name + fslash_str;
-    bool find_lat = false;
+    //bool find_lat = false;
 #if 0
     for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its)
     cerr<<"Dimension name befor latitude " << *its << endl;
@@ -2624,7 +2624,7 @@ void EOS5File::Handle_Single_1DLatLon_Swath_CVar(EOS5CFSwath *cfswath, bool is_a
                 delete (*irv);
                 this->vars.erase(irv);
                 //irv--;
-                find_lat = true;
+                // find_lat = true;
                 break;
             } // if ((var_swath_name == cfswath->name) && ...
         } // if (SWATH == Get_Var_EOS5_Type(*irv) &&

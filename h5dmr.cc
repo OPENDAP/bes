@@ -671,7 +671,17 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
 
  
         // If we have dimension names(dimension scale is used.),we will see if we can add the names.       
-        if(dt_inst.dimnames.size() ==dt_inst.ndims) {
+        int dimnames_size = 0;
+        if((unsigned int)((int)(dt_inst.dimnames.size())) != dt_inst.dimnames.size())
+        {
+            delete ar;
+            throw
+            InternalErr(__FILE__, __LINE__,
+                        "number of dimensions: overflow");
+        }
+        dimnames_size = (int)(dt_inst.dimnames.size());
+            
+        if(dimnames_size ==dt_inst.ndims) {
             for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
                 if(dt_inst.dimnames[dim_index] !="")
                     ar->append_dim(dt_inst.size[dim_index],dt_inst.dimnames[dim_index]);
@@ -752,9 +762,20 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
                 ar->set_numelm((int) (dt_inst.nelmts));
                 ar->set_length((int) (dt_inst.nelmts));
                 ar->set_varpath(varname);
-
+ 
                 // If having dimension names, add the dimension names to DAP.
-                if(dt_inst.dimnames.size() ==dt_inst.ndims) {
+                int dimnames_size = 0;
+                if((unsigned int)((int)(dt_inst.dimnames.size())) != dt_inst.dimnames.size())
+                {
+                   delete ar;
+                   throw
+                   InternalErr(__FILE__, __LINE__,
+                               "number of dimensions: overflow");
+                }
+                dimnames_size = (int)(dt_inst.dimnames.size());
+                
+
+                if(dimnames_size ==dt_inst.ndims) {
                    for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
                        if(dt_inst.dimnames[dim_index] !="")
                            ar->append_dim(dt_inst.size[dim_index],dt_inst.dimnames[dim_index]);

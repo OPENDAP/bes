@@ -64,11 +64,11 @@ class HDF5CFArray:public HDF5BaseArray {
                     fileid(h5_file_id),
                     filename(h5_filename),
                     dtype(h5_dtype),
-                    total_elems(h5_total_elems),
                     dimsizes(h5_dimsizes),
+                    varname(varfullpath),
+                    total_elems(h5_total_elems),
                     cvtype(h5_cvtype),
                     islatlon(h5_islatlon),
-                    varname(varfullpath),
                     comp_ratio(h5_comp_ratio)
         {
         }
@@ -91,12 +91,12 @@ class HDF5CFArray:public HDF5BaseArray {
         hid_t fileid;
         string filename;
         H5DataType dtype;
+        vector<size_t>dimsizes;
         string varname;
         size_t total_elems;
         CVType cvtype;
         bool islatlon;
         float comp_ratio;
-        vector<size_t>dimsizes;
         bool valid_disk_cache();
         bool valid_disk_cache_for_compressed_data(short dtype_size);
         bool obtain_cached_data(HDF5DiskCache*,const string&,int, vector<int>&,vector<int>&,size_t,short);

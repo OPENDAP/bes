@@ -73,13 +73,13 @@ string HDF5DiskCache::getCacheDirFromConfig(const string& cache_dir)
 }
 
 
-HDF5DiskCache::HDF5DiskCache(const long _cache_size, const string &_cache_dir, const string &_cache_prefix)
+HDF5DiskCache::HDF5DiskCache(const unsigned long long _cache_size, const string &_cache_dir, const string &_cache_prefix)
 {
     BESDEBUG("cache", "In HDF5DiskCache::HDF5DiskCache()" << endl);
 
     string cacheDir = getCacheDirFromConfig(_cache_dir);
     string prefix = getCachePrefixFromConfig(_cache_prefix);
-    long size_in_megabytes = getCacheSizeFromConfig(_cache_size);
+    unsigned long long size_in_megabytes = getCacheSizeFromConfig(_cache_size);
 
     BESDEBUG("cache",
         "HDF5DiskCache() - Cache config params: " << cacheDir << ", " << prefix << ", " << size_in_megabytes << endl);

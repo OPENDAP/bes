@@ -1257,7 +1257,7 @@ void GMFile::Add_Dim_Name_GPM()throw(Exception)
     for (vector<Var *>::iterator irv = this->vars.begin();
                 irv != this->vars.end(); irv++) {
 
-        bool has_dim_name_attr = false;
+        //bool has_dim_name_attr = false;
 
         for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
                         ira != (*irv)->attrs.end(); ++ira) {
@@ -1315,7 +1315,7 @@ void GMFile::Add_Dim_Name_GPM()throw(Exception)
                     }
 
                 }// for(unsigned int i = 0; i<ind_elems.size(); ++i)
-                has_dim_name_attr = true;
+                //  has_dim_name_attr = true;
                 break;
 
             } //if("DimensionNames" == (*ira)->name)

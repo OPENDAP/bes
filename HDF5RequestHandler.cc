@@ -108,6 +108,7 @@ bool check_beskeys(const string);
 
 // Obtain the BES key as an integer
 static unsigned int get_uint_key(const string &key,unsigned int def_val);
+static unsigned long get_ulong_key(const string &key,unsigned long def_val);
 
 // Obtain the BES key as a floating-pointer number.
 static float get_float_key(const string &key, float def_val);
@@ -154,13 +155,13 @@ bool HDF5RequestHandler::_use_disk_cache              =false;
 bool HDF5RequestHandler::_use_disk_dds_cache              =false;
 string HDF5RequestHandler::_disk_cache_dir            ="";
 string HDF5RequestHandler::_disk_cachefile_prefix     ="";
-long HDF5RequestHandler::_disk_cache_size             =0;
+unsigned long long HDF5RequestHandler::_disk_cache_size    =0;
 
 
 bool HDF5RequestHandler::_disk_cache_comp_data        =false;
 bool HDF5RequestHandler::_disk_cache_float_only_comp_data    =false;
 float HDF5RequestHandler::_disk_cache_comp_threshold        =1.0;
-long HDF5RequestHandler::_disk_cache_var_size        =0;
+unsigned long HDF5RequestHandler::_disk_cache_var_size    =0;
 
 bool HDF5RequestHandler::_use_disk_meta_cache        = false;
 string HDF5RequestHandler::_disk_meta_cache_path       ="";
@@ -229,7 +230,7 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
     _use_disk_cache              = check_beskeys("H5.EnableDiskDataCache");
     _disk_cache_dir              = get_beskeys("H5.DiskCacheDataPath");
     _disk_cachefile_prefix       = get_beskeys("H5.DiskCacheFilePrefix");
-    _disk_cache_size             = get_uint_key("H5.DiskCacheSize",0);
+    _disk_cache_size             = get_ulong_key("H5.DiskCacheSize",0);
 
     _disk_cache_comp_data        = check_beskeys("H5.DiskCacheComp");
     _disk_cache_float_only_comp_data = check_beskeys("H5.DiskCacheFloatOnlyComp");
@@ -1929,6 +1930,7 @@ static unsigned int get_uint_key(const string &key, unsigned int def_val)
 
     TheBESKeys::TheKeys()->get_value(key, doset, found);
     if (true == found) {
+        // In C++11, stoi is better.
         return atoi(doset.c_str()); // use better code TODO
     }
     else {
@@ -1936,6 +1938,20 @@ static unsigned int get_uint_key(const string &key, unsigned int def_val)
     }
 }
 
+static unsigned long get_ulong_key(const string &key, unsigned long def_val)
+{
+    bool found = false;
+    string doset = "";
+
+    TheBESKeys::TheKeys()->get_value(key, doset, found);
+    if (true == found) {
+        // In C++11, stoull is better.
+        return atol(doset.c_str()); // use better code TODO
+    }
+    else {
+        return def_val;
+    }
+}
 static float get_float_key(const string &key, float def_val)
 {
     bool found = false;
@@ -1982,7 +1998,7 @@ char* obtain_str(char*temp_ptr,string & str) {
     size_t oname_size = *((size_t *)temp_ptr);
     temp_ptr = temp_ptr + sizeof(size_t);
     string oname;
-    for(int i =0; i<oname_size; i++){
+    for(unsigned int i =0; i<oname_size; i++){
         oname.push_back(*temp_ptr);
         ++temp_ptr;
     }

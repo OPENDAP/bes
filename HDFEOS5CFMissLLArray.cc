@@ -230,6 +230,11 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
 
             //Latitude starts from 0, longitude starts from xdimsize*ydimsize*sizeof(double);
             off_t fpos = lseek(fd,var_offset,SEEK_SET);
+            if(fpos == -1) {
+                throw InternalErr (__FILE__, __LINE__,
+                          "Cannot seek the cached file offset.");
+
+            }
             ssize_t ret_val = HDF5CFUtil::read_buffer_from_file(fd,(void*)&var_value[0],var_value.size()*sizeof(double));
             ll_cache->unlock_and_close(cache_fname);
 

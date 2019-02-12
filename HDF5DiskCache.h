@@ -19,7 +19,7 @@ private:
     static HDF5DiskCache *d_instance;
     static void delete_instance() { delete d_instance; d_instance = 0; }
 
-    HDF5DiskCache(const long,const string&, const string&);
+    HDF5DiskCache(const unsigned long long,const string&, const string&);
 
 public:
     static const string PATH_KEY;
