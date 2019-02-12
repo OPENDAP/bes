@@ -31,7 +31,7 @@ int misr_init(
     char msg[STRLEN]; /* Warning message */
     /* Argument checks */
     if (nblock < 1 || nblock > NBLOCK) {
-        sprintf(msg,"nblock is out of range (1 < %d < %d)", nblock, NBLOCK);
+        snprintf(msg,STRLEN,"nblock is out of range (1 < %d < %d)", nblock, NBLOCK);
         WRN_LOG_JUMP(msg);
     }
     /* Convert relative offsets to absolute offsets */

@@ -3361,7 +3361,7 @@ string HDFCFUtil::get_int_str(int x) {
       //char buf[num_digit];
       vector<char> buf;
       buf.resize(num_digit);
-      sprintf(&buf[0],"%d",x);
+      snprintf(&buf[0],num_digit,"%d",x);
       //sprintf(buf,"%d",x);
       str.assign(&buf[0]);
       //str.assign(buf);

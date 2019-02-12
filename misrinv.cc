@@ -28,15 +28,15 @@ int misrinv(
     char msg[STRLEN]; /* Warning message */
     /* Check Arguments */
     if (block < 1 || block > NBLOCK) {
-        sprintf(msg, "block is out of range (0 < %d < %d)", block, nb);
+        snprintf(msg, STRLEN, "block is out of range (0 < %d < %d)", block, nb);
         WRN_LOG_JUMP(msg);
     }
     if (line < -0.5 || line > nl - 0.5) {
-        sprintf(msg, "line is out of range (0 < %e < %d)", line, nl);
+        snprintf(msg, STRLEN, "line is out of range (0 < %e < %d)", line, nl);
         WRN_LOG_JUMP(msg);
     }
     if (sample < -0.5 || sample > ns - 0.5) {
-        sprintf(msg, "sample is out of range (0 < %e < %d)", sample, ns);
+        snprintf(msg, STRLEN, "sample is out of range (0 < %e < %d)", sample, ns);
         WRN_LOG_JUMP(msg);
     }
     /* Compute SOM x/y coordinates in ulc/lrc units (meters) */
