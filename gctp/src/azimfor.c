@@ -93,7 +93,7 @@ if (fabs(fabs(g) - 1.0) < EPSLN)
    if (g < 0.0)
      {
      con = 2.0 * HALF_PI * r_major;
-     sprintf(mess,"Point projects into a circle of radius = %12.2lf",con);
+     snprintf(mess,80,"Point projects into a circle of radius = %12.2lf",con);
      p_error(mess,"azim-for");  
      return(123);
      }
