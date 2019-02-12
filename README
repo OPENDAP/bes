@@ -1,4 +1,11 @@
-What's new for Hyrax 1.15.0
+What's new for Hyrax 1.15.3
+----------------------------
+CF option:
+1. Enhance the support of handling the scale_factor and add_offset to follow the CF. The scale_factor and
+add_offset rule for the MOD/MYD21 product is different than other MODIS products. We make an exception for 
+this product only to ensure the scale_factor and add_offset follow the CF conventions.
+
+hat's new for Hyrax 1.15.0
 ----------------------------
 CF option:
 1. Enhance the support of handling the scale_factor and add_offset to follow the CF. The scale_factor and
