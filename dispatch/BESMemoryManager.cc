@@ -113,8 +113,12 @@ BESMemoryManager::release_global_pool() throw (bad_alloc)
 
         *(BESLog::TheLog()) << "BES Warning: low in memory, " << "releasing global memory pool!" << endl;
     }
+    catch (BESError &e) {
+        // At this point, exceptions are pretty moot.
+        cerr << "Exception while trying to release the global memory pool. (" << e.get_verbose_message() << ").";
+    }
     catch (...) {
-        // Do nothing with whatever exception these call throw...
+        cerr << "Exception while trying to release the global memory pool.";
     }
 
     _storage_used = true ;

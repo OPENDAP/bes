@@ -130,9 +130,13 @@ TempFile::~TempFile()
             }
         }
     }
+    catch (BESError &e) {
+        // This  protects against BESLog (i.e., ERROR) throwing an exception.
+        // If BESLog has failed, we cannot log the error, punt and write to stderr.
+        cerr << "Could not close temporary file '" << d_fname << "' due to an error in BESlog (" << e.get_verbose_message() << ").";
+    }
     catch (...) {
-        // Do nothing. This just protects against BESLog (i.e., ERROR)
-        // throwing an exception
+        cerr << "Could not close temporary file '" << d_fname << "' due to an error in BESlog.";
     }
 
     open_files->erase(d_fname);

@@ -152,3 +152,5 @@ timing/*/*.result
 timing/*/*.dtps
 /html/
 /.externalToolBuilders/
+/.scannerwork/
+/bw-output/
