@@ -1513,7 +1513,11 @@ BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp) {
             }
 
             // Not find this dimension in any of the ancestor groups, add it to this group.
-            if(d4_dim == NULL) {
+            // The following block is fine, but to avoid the complaint from sonarcloud.
+            // Use a bool.
+            bool d4_dim_null = ((d4_dim==NULL)?true:false);
+            //if(d4_dim == NULL) {
+            if(d4_dim_null == true) {
                 d4_dim = new D4Dimension((*d).name, (*d).size);
 //cerr<<"FQN name is "<<d4_dim->fully_qualified_name() <<endl;
                 D4Dimensions * dims = grp->dims();

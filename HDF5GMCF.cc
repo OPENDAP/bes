@@ -5547,11 +5547,11 @@ GMFile:: Add_Aqu_Attrs() throw(Exception) {
     //    const string orig_valid_min_attr_name = "Data Minimum";
     const string orig_valid_min_attr_name = "Data Minimum";
     const string valid_min_attr_name = "valid_min";
-    float valid_min_value;
+    float valid_min_value = 0;
 
     const string orig_valid_max_attr_name = "Data Maximum";
     const string valid_max_attr_name = "valid_max";
-    float valid_max_value;
+    float valid_max_value = 0;
 
     // The fill value is -32767.0. However, No _FillValue attribute is added.
     // So add it here. KY 2012-2-16
