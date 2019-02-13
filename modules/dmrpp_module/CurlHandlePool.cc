@@ -71,7 +71,8 @@ Lock::Lock(pthread_mutex_t &lock) : m_mutex(lock)
 Lock::~Lock()
  {
      int status = pthread_mutex_unlock(&m_mutex);
-     if (status != 0) throw BESInternalError("Could not unlock in CurlHandlePool", __FILE__, __LINE__);
+     if (status != 0)
+         ERROR("Could not unlock in CurlHandlePool");
  }
 
 /**

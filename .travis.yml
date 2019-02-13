@@ -50,6 +50,8 @@ env:
   - TESTSUITEFLAGS=-j7
   # Change this when libdap version numbers change
   - LIBDAP_RPM_VERSION=3.20.2-1
+  # SONAR_SCAN, made using "travis encrypt --org -r OPENDAP/bes SONAR_LOGIN=335df..."
+  - secure: "TmoFcgeIyAEjFyrlqB6rhdUhDqPJfxVZmT5fewgVHj0xm767VZ6DU21mM6ZHgNGyk99TzX0Gx/dwSqbsUj18hSSAvEa7fJQSKJ5IBJvTeMKhXn1DPPG9VpuZ4ti5afRDiNr6EJKbVxwBTkz+3798S8LajPuXGupYupir8IJQCt8="
   # COVERITY_SCAN_TOKEN
   - secure: "KNE6gkK7+WEQkNLiW/oap/3E/YSq6nzH6icXWpgA3MZj2KX0i6IzQgteeEGFUC1vDTzkCpqSidvGxdd22V33s0sHDuLRI5e17VFMjI5WyWjRQaXMhWmyO5/ofx7AArvaCWq6w6zfn1T/LiIuHXc14Rg8uuWEgDGWM0USiSbMepc="
   # AWS_ACCESS_KEY_ID
@@ -58,15 +60,12 @@ env:
   - secure: "BVETDaGI/cwfUHdvsGPkV1o7jd6OnqyvtFCPk0WsmCWh6PdpwXQ8D4yFdk4jejWxa0YFdRiCgK3ThHqqzv+6pDxrMnpYOx2O+ZjK//ErECjDa+OCJr2ObCwlqOPE6+4aVmPDz5ecjd2inVR5CfL5/Kt3Zgn4U9fNBUz9OMYpRF4="
 
 before_install:
-# - sudo apt-get update -qq
 - pip install --user awscli
 
 # hyrax-dependencies-build.tar.gz includes/makes the build directory
 install:
-# - (cd $TRAVIS_BUILD_DIR && curl -s -O https://s3.amazonaws.com/opendap.travis.build/hyrax-dependencies-build.tar.gz) 
 - aws s3 cp s3://opendap.travis.build/hyrax-dependencies-build.tar.gz $TRAVIS_BUILD_DIR
 - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/hyrax-dependencies-build.tar.gz
-# - (cd $TRAVIS_BUILD_DIR && curl -s -O https://s3.amazonaws.com/opendap.travis.build/libdap-build.tar.gz) 
 - aws s3 cp s3://opendap.travis.build/libdap-build.tar.gz $TRAVIS_BUILD_DIR
 - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/libdap-build.tar.gz
 
@@ -77,11 +76,23 @@ before_script:
 jobs:
   stages:
   - name: build
-    if:  branch != coverity_scan
+    if:  branch = master
+  - name: scan
+    if:  branch = master
   - name: package
-    if:  branch != coverity_scan
+    if:  branch = master
     
   include:
+  # Scan first on this branch. move once/if merged.
+  - stage: scan
+    addons: 
+      sonarcloud: 
+    script:
+    - export BES_BUILD=sonar
+    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+    - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+    - sonar-scanner -Dsonar.login=$SONAR_LOGIN
+
   - stage: build
     script: 
     - export BES_BUILD=main

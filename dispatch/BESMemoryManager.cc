@@ -32,14 +32,20 @@
 
 #include <iostream>
 
-using std::endl ;
-using std::set_new_handler ;
+#if 0
+using std::endl;
+using std::set_new_handler;
+#endif
+
 
 #include "BESMemoryManager.h"
 
 #include "BESLog.h"
 #include "BESDebug.h"
 #include "BESMemoryGlobalArea.h"
+#include "BESError.h"
+
+using namespace std;
 
 BESMemoryGlobalArea* BESMemoryManager::_memory;
 bool BESMemoryManager::_storage_used(false);

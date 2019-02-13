@@ -143,7 +143,7 @@ TempFile::~TempFile()
 
     if (open_files->size() == 0) {
         if (sigaction(SIGPIPE, &cached_sigpipe_handler, 0)) {
-            throw BESInternalFatalError("Could not register a handler to catch SIGPIPE.", __FILE__, __LINE__);
+            ERROR(string("Could not register a handler to catch SIGPIPE. ").append("(").append(strerror(errno)).append(")"));
         }
     }
 }
