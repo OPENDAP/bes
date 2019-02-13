@@ -194,7 +194,6 @@ cerr<<"file name " <<filename <<endl;
             eherr << "Currently the dimension scale datatype cannot be string"<<endl;
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
         }
-            break;
 
     }
 

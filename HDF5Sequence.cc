@@ -55,11 +55,4 @@ HDF5Sequence::~HDF5Sequence()
 {
 }
 
-bool HDF5Sequence::read()
-{
-    throw InternalErr(__FILE__, __LINE__,
-                      "HDF5Sequence::read(): Unimplemented method.");
-
-    return true;
-}
 

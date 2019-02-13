@@ -43,8 +43,6 @@ using namespace libdap;
 class HDF5Sequence:public Sequence {
 
   private:
-//    hid_t dset_id;
-//    hid_t ty_id;
 
   public:
 
@@ -52,14 +50,9 @@ class HDF5Sequence:public Sequence {
     virtual ~ HDF5Sequence();
 
     virtual BaseType *ptr_duplicate();
-    virtual bool read();
+//    virtual bool read();
 
     friend string return_type(hid_t datatype);
-
-//    hid_t get_did();
-//    hid_t get_tid();
-//    void set_did(hid_t dset);
-//    void set_tid(hid_t type);
 
 
 };
