@@ -617,7 +617,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                 // the latitude/longitude with dimension map is under the "data fields".
                 // So we have to consider this. KY 2012-09-24
                        
-                if(grid_or_swath ==1) {
+                else if(grid_or_swath ==1) {
 
                     // Use Swath dimension map
                     if((*it_f)->UseDimMap()) {
@@ -712,9 +712,14 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                         delete ar;
                     }
                 }
+                else {
+                    delete bt;
+                    throw InternalErr(__FILE__, __LINE__, "The current type should be either grid or swath");
+                }
+ 
             }
                     
-            //missing Z dimensional field
+            //Missing Z dimensional field
             else if(fieldtype == 4) { 
 
                 if((*it_f)->getRank()!=1){
@@ -737,6 +742,11 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                 delete bt;
                 delete ar;
             }
+            else {
+                delete bt;
+                throw InternalErr(__FILE__, __LINE__, "Encounter unsupported datatype or The field type should be between 0 and 5. ");
+            }
+
         }
     }
 
@@ -1691,7 +1701,7 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
     try {
         
         // Check if swath or grid object (like vgroup) attributes should be mapped to DAP2. If yes, start mapping.
- #if 0
+#if 0
         string check_enable_sg_attr_key="H4.EnableSwathGridAttr";
         bool turn_on_enable_sg_attr_key= false;
         turn_on_enable_sg_attr_key = HDFCFUtil::check_beskeys(check_enable_sg_attr_key);
@@ -3249,6 +3259,11 @@ void read_dds_spfields(DDS &dds,const string& filename,const int sdfd,HDFSP::SDF
             dds.add_var(ar);
             delete bt;
             delete ar;
+        }
+        else {
+            delete bt;
+            throw InternalErr(__FILE__, __LINE__, "The field type should be one of  0,1,2,3,4 or 6.");
+ 
         }
     }
 

@@ -44,6 +44,9 @@ const char *_BACK_SLASH= "/";
 using namespace HDFSP;
 using namespace std;
 
+#define ERR_LOC1(x) #x
+#define ERR_LOC2(x) ERR_LOC1(x)
+#define ERR_LOC __FILE__ " : " ERR_LOC2(__LINE__)
 // Convenient function to handle exceptions
 template < typename T, typename U, typename V, typename W, typename X > static void
 _throw5 (const char *fname, int line, int numarg,
@@ -202,8 +205,7 @@ throw (Exception)
 
     // Allocate a new file object.
     File *file = new File (path);
-//cerr<<"FIle is opened for HDF4 "<<endl;
-
+ 
 #if 0
     int32 mysdid = -1;
 
@@ -258,7 +260,7 @@ throw (Exception)
     // New File 
     File *file = new File (path);
     if(file == NULL)
-        throw;
+        throw1("Memory allocation for file class failed. ");
 //cerr<<"File is opened for HDF4 "<<endl;
 
 #if 0
@@ -654,8 +656,8 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
             full_path = (char *) malloc (MAX_FULL_PATH_LEN);
             if (full_path == NULL) {
                 Vdetach (vgroup_id);
-                throw;
-                //throw1 ("No enough memory to allocate the buffer.");
+                //throw;
+                throw1 ("No enough memory to allocate the buffer.");
             }
             else
                 memset(full_path,'\0',MAX_FULL_PATH_LEN);
@@ -670,8 +672,8 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
             if (cfull_path == NULL) {
                 Vdetach (vgroup_id);
                 free (full_path);
-                throw;
-                //throw1 ("No enough memory to allocate the buffer.");
+                //throw;
+                throw1 ("No enough memory to allocate the buffer.");
             }
             else 
                 memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
@@ -2151,8 +2153,8 @@ throw (Exception)
                 if(sd!= NULL)
                     delete sd;
                 Vdetach (vgroup_id);
-                throw;
-                //throw1 ("No enough memory to allocate the buffer.");
+                //throw;
+                throw1 ("No enough memory to allocate the buffer.");
             }
             else 
                 memset(full_path,'\0',MAX_FULL_PATH_LEN);
@@ -2166,8 +2168,8 @@ throw (Exception)
                 Vdetach (vgroup_id);
                 if(full_path != NULL)
                     free (full_path);
-                throw;
-                //throw1 ("No enough memory to allocate the buffer.");
+                //throw;
+                throw1 ("No enough memory to allocate the buffer.");
             }
             else 
                 memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
@@ -2438,7 +2440,8 @@ throw (Exception)
 
         if(field == NULL) {
             delete vdata;
-            throw;
+            //throw;
+            throw1("Memory allocation for field class failed.");
 
         }
         fieldsize = VFfieldesize (vdata_id, i);
@@ -2857,8 +2860,8 @@ throw (Exception)
             full_path = (char *) malloc (MAX_FULL_PATH_LEN);
             if (full_path == NULL) {
                 Vdetach (vgroup_id);
-                throw;
-                //throw1 ("No enough memory to allocate the buffer.");
+                //throw;
+                throw1 ("No enough memory to allocate the buffer.");
             }
             else {// Not necessary, however this will make coverity scan happy.
                 memset(full_path,'\0',MAX_FULL_PATH_LEN);
@@ -2880,8 +2883,8 @@ throw (Exception)
             if (cfull_path == NULL) {
                 Vdetach (vgroup_id);
                 free (full_path);
-                throw;
-                //throw1 ("No enough memory to allocate the buffer.");
+                //throw;
+                throw1 ("No enough memory to allocate the buffer.");
             }
             else { // Not necessary, however this will make coverity scan happy.
                 memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
@@ -3071,7 +3074,7 @@ File::obtain_path (int32 file_id, int32 sd_id, char *full_path,
 throw (Exception)
 {
     // Vgroup parent ID
-    int32 vgroup_pid = 0;
+    int32 vgroup_pid = -1;
 
     // Indicator of status
     int32 status     = 0;
@@ -3106,8 +3109,25 @@ throw (Exception)
     int32 obj_ref = 0;
 
     // full path of the child group
-    char *cfull_path;
+    char *cfull_path = NULL;
 
+    bool unexpected_fail = false;
+
+
+    vgroup_pid = Vattach (file_id, pobj_ref, "r");
+    if (vgroup_pid == FAIL) 
+        throw3 ("Vattach failed ", "Object reference number is ", pobj_ref);
+    
+
+    if (Vgetname (vgroup_pid, cvgroup_name) == FAIL) {
+        Vdetach (vgroup_pid);
+        throw3 ("Vgetname failed ", "Object reference number is ", pobj_ref);
+    }
+    num_gobjects = Vntagrefs (vgroup_pid);
+    if (num_gobjects < 0) {
+        Vdetach (vgroup_pid);
+        throw3 ("Vntagrefs failed ", "Object reference number is ", pobj_ref);
+    }
     // MAX_FULL_PATH_LEN(1024) is long enough
     // to cover any HDF4 object path for all NASA HDF4 products.
     // So using strcpy and strcat is safe in a practical sense.
@@ -3123,24 +3143,6 @@ throw (Exception)
     else 
         memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
 
-    vgroup_pid = Vattach (file_id, pobj_ref, "r");
-    if (vgroup_pid == FAIL) {
-        free (cfull_path);
-        throw3 ("Vattach failed ", "Object reference number is ", pobj_ref);
-    }
-
-    if (Vgetname (vgroup_pid, cvgroup_name) == FAIL) {
-        Vdetach (vgroup_pid);
-        free (cfull_path);
-        throw3 ("Vgetname failed ", "Object reference number is ", pobj_ref);
-    }
-    num_gobjects = Vntagrefs (vgroup_pid);
-    if (num_gobjects < 0) {
-        Vdetach (vgroup_pid);
-        free (cfull_path);
-        throw3 ("Vntagrefs failed ", "Object reference number is ", pobj_ref);
-    }
-
     strncpy(cfull_path,full_path,strlen(full_path));
     strncat(cfull_path,cvgroup_name,strlen(cvgroup_name));
     try {
@@ -3155,14 +3157,16 @@ throw (Exception)
 
     strncat(cfull_path,_BACK_SLASH,strlen(_BACK_SLASH));
 
-
+    // Introduce err_msg mainly to get rid of fake solarcloud warnings
+    // We may use the same method for all error handling if we have time.
+    string err_msg;
 
     for (i = 0; i < num_gobjects; i++) {
 
         if (Vgettagref (vgroup_pid, i, &obj_tag, &obj_ref) == FAIL) {
-            Vdetach (vgroup_pid);
-            free (cfull_path);
-            throw3 ("Vgettagref failed ", "object index is ", i);
+            unexpected_fail = true;
+            err_msg = string(ERR_LOC) + " Vgettagref failed. ";
+            goto cleanFail;   
         }
 
         if (Visvg (vgroup_pid, obj_ref) == TRUE) {
@@ -3174,24 +3178,23 @@ throw (Exception)
 
             vdata_id = VSattach (file_id, obj_ref, "r");
             if (vdata_id == FAIL) {
-                Vdetach (vgroup_pid);
-                free (cfull_path);
-                throw3 ("VSattach failed ", "object index is ", i);
+                unexpected_fail = true;
+                err_msg = string(ERR_LOC) + " VSattach failed. ";
+                goto cleanFail;   
             }
-
 
             status = VSQueryname (vdata_id, vdata_name);
             if (status == FAIL) {
-                Vdetach (vgroup_pid);
-                free (cfull_path);
-                throw3 ("VSgetclass failed ", "object index is ", i);
+                unexpected_fail = true;
+                err_msg = string(ERR_LOC) + " VSQueryname failed. ";
+                goto cleanFail;   
             }
 
             status = VSgetclass (vdata_id, vdata_class);
             if (status == FAIL) {
-                Vdetach (vgroup_pid);
-                free (cfull_path);
-                throw3 ("VSgetclass failed ", "object index is ", i);
+                unexpected_fail = true;
+                err_msg = string(ERR_LOC) + " VSgetclass failed. ";
+                goto cleanFail;   
             }
 
             if (VSisattr (vdata_id) != TRUE) {
@@ -3206,6 +3209,7 @@ throw (Exception)
                     }
                     catch(...) {
                         free (cfull_path);
+                        VSdetach(vdata_id);
                         Vdetach (vgroup_pid);
                         throw;
                     }
@@ -3237,8 +3241,9 @@ throw (Exception)
             }
             status = VSdetach (vdata_id);
             if (status == FAIL) {
-                free(cfull_path);
-                throw3 ("VSdetach failed ", "object index is ", i);
+               unexpected_fail = true;
+               err_msg = string(ERR_LOC) + " VSdetach failed. ";
+               goto cleanFail;   
             }
         }
         else if (obj_tag == DFTAG_NDG || obj_tag == DFTAG_SDG
@@ -3249,21 +3254,44 @@ throw (Exception)
                 // New name conventions require the path to be prefixed before the object name
                     cfull_path + this->sd->sdfields[this->sd->refindexlist[obj_ref]]->name;
             else {
-                Vdetach (vgroup_pid);
-                free (cfull_path);
-                throw3 ("SDS with the reference number ", obj_ref,
-                        " is not found");;
+                unexpected_fail = true;
+                stringstream temp_ss;
+                temp_ss <<obj_ref;
+                err_msg = string(ERR_LOC) + "SDS with the reference number" 
+                          + temp_ss.str() + " is not found.";
+                goto cleanFail;
             }
         }
         else;
     }
-    status = Vdetach (vgroup_pid);
-    if (status == FAIL) {
-        free (cfull_path);
-        throw3 ("Vdetach failed ", "vgroup name is ", cvgroup_name);
-    }
+    vdata_id = -1;
+cleanFail:
     free (cfull_path);
+    if(vdata_id != -1) {
+        status = VSdetach(vdata_id);
+        if (status == FAIL) {
+            Vdetach(vgroup_pid);
+            string err_msg2 = "In the cleanup " + string(ERR_LOC) + " VSdetached failed. ";
+            err_msg = err_msg + err_msg2;
+            throw1(err_msg);
+        }
+        else if(true == unexpected_fail)
+            throw1(err_msg);
 
+    }
+
+    if(vgroup_pid != -1) {
+        status = Vdetach(vgroup_pid);
+        if (status == FAIL) {
+            string err_msg2 = "In the cleanup " + string(ERR_LOC) + " VSdetached failed. ";
+            err_msg = err_msg + err_msg2;
+            throw1(err_msg);
+        }
+        else if(true == unexpected_fail)
+            throw1(err_msg);
+
+    }
+    
 }
 
 // This fuction is called recursively to obtain the full path of an HDF4 SDS path for extra SDS objects
@@ -3276,7 +3304,7 @@ SD::obtain_noneos2_sds_path (int32 file_id, char *full_path, int32 pobj_ref)
 throw (Exception)
 {
 
-    int32 vgroup_cid = 0;
+    int32 vgroup_cid = -1;
     int32 status = 0;
     int i = 0;
     int num_gobjects = 0;
@@ -3287,7 +3315,23 @@ throw (Exception)
     char cvgroup_name[VGNAMELENMAX*4];
 
     int32 obj_tag, obj_ref;
-    char *cfull_path;
+    char *cfull_path = NULL;
+
+    bool unexpected_fail = false;
+
+    vgroup_cid = Vattach (file_id, pobj_ref, "r");
+    if (vgroup_cid == FAIL)
+        throw3 ("Vattach failed ", "Object reference number is ", pobj_ref);
+
+    if (Vgetname (vgroup_cid, cvgroup_name) == FAIL) {
+        Vdetach (vgroup_cid);
+        throw3 ("Vgetname failed ", "Object reference number is ", pobj_ref);
+    }
+    num_gobjects = Vntagrefs (vgroup_cid);
+    if (num_gobjects < 0) {
+        Vdetach (vgroup_cid);
+        throw3 ("Vntagrefs failed ", "Object reference number is ", pobj_ref);
+    }
 
     // MAX_FULL_PATH_LEN(1024) is long enough
     // to cover any HDF4 object path for all NASA HDF4 products.
@@ -3304,35 +3348,20 @@ throw (Exception)
     else 
         memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
 
-    vgroup_cid = Vattach (file_id, pobj_ref, "r");
-    if (vgroup_cid == FAIL) {
-        free (cfull_path);
-        throw3 ("Vattach failed ", "Object reference number is ", pobj_ref);
-    }
-
-    if (Vgetname (vgroup_cid, cvgroup_name) == FAIL) {
-        Vdetach (vgroup_cid);
-        free (cfull_path);
-        throw3 ("Vgetname failed ", "Object reference number is ", pobj_ref);
-    }
-    num_gobjects = Vntagrefs (vgroup_cid);
-    if (num_gobjects < 0) {
-        Vdetach (vgroup_cid);
-        free (cfull_path);
-        throw3 ("Vntagrefs failed ", "Object reference number is ", pobj_ref);
-    }
 
     // NOTE: The order of cat gets changed.
     strncpy(cfull_path,full_path,strlen(full_path));
     strncat(cfull_path,cvgroup_name,strlen(cvgroup_name));
     strncat(cfull_path,_BACK_SLASH,strlen(_BACK_SLASH));
 
+    string err_msg;
+
     for (i = 0; i < num_gobjects; i++) {
 
         if (Vgettagref (vgroup_cid, i, &obj_tag, &obj_ref) == FAIL) {
-            Vdetach (vgroup_cid);
-            free (cfull_path);
-            throw3 ("Vgettagref failed ", "object index is ", i);
+            unexpected_fail = true;
+            err_msg = string(ERR_LOC) + " Vgettagref failed. ";
+            goto cleanFail;   
         }
 
         if (Visvg (vgroup_cid, obj_ref) == TRUE) {
@@ -3354,12 +3383,18 @@ throw (Exception)
             }
             else;
         }
-        status = Vdetach (vgroup_cid);
+cleanFail:
+    free (cfull_path);
+    if(vgroup_cid != -1) {
+        status = Vdetach(vgroup_cid);
         if (status == FAIL) {
-            free (cfull_path);
-	    throw3 ("Vdetach failed ", "vgroup name is ", cvgroup_name);
+            string err_msg2 = "In the cleanup " + string(ERR_LOC) + " Vdetached failed. ";
+            err_msg = err_msg + err_msg2;
+            throw1(err_msg);
         }
-        free (cfull_path);
+        else if(true == unexpected_fail)
+            throw1(err_msg);
+    }
 
 }
 
@@ -3922,6 +3957,7 @@ File::handle_sds_names(bool & COARDFLAG, string & lldimname1, string&lldimname2)
                 // The current OTHERHDF case we support(MERRA and SDS dimension scale)
                 // follow COARDS conventions. Panoply fail to display the data,
                 // if we just follow CF conventions. So following COARD. KY-2011-3-4
+#if 0
                 if (COARDFLAG || file->sptype == OTHERHDF)//  Follow COARD Conventions
                     (*i)->newname =
                         (*i)->getCorrectedDimensions ()[0]->getName ();
@@ -3931,7 +3967,10 @@ File::handle_sds_names(bool & COARDFLAG, string & lldimname1, string&lldimname2)
                                    (*i)->getCorrectedDimensions ()[0]->getName ();
 //				(*i)->newname =
 //				(*i)->getCorrectedDimensions ()[0]->getName () + "_d";
-                HDFCFUtil::insert_map(file->sd->dimcvarlist, (*i)->getCorrectedDimensions()[0]->getName(), (*i)->newname);
+#endif
+                (*i)->newname = (*i)->getCorrectedDimensions ()[0]->getName ();
+
+	        HDFCFUtil::insert_map(file->sd->dimcvarlist, (*i)->getCorrectedDimensions()[0]->getName(), (*i)->newname);
 
             }
         }
@@ -5638,7 +5677,7 @@ throw (Exception)
     // Longitude
     SDField *longitude = new SDField ();
     if(longitude == NULL)
-        throw;
+        throw1("Allocate memory for longitude failed .");
 
     longitude->name = "longitude";
     longitude->rank = 1;
@@ -5655,7 +5694,7 @@ throw (Exception)
     Dimension *dim = new Dimension (num_lon_name, num_lon, 0);
     if(dim == NULL) {
         delete longitude;
-        throw;
+        throw1("Allocate memory for dim failed .");
     }
 
     //if(longitude != NULL) 
@@ -5667,7 +5706,7 @@ throw (Exception)
     dim = new Dimension (num_lon_name, num_lon, 0);
     if(dim == NULL) {
         delete longitude;
-        throw;
+        throw1("Allocate memory for dim failed .");
     }
     //if(longitude != NULL) 
     longitude->correcteddims.push_back (dim);
@@ -5676,7 +5715,7 @@ throw (Exception)
     SDField *latitude = new SDField ();
     if(latitude == NULL) {
         delete latitude;
-        throw;
+        throw1("Allocate memory for dim failed .");
     }
     latitude->name = "latitude";
     latitude->rank = 1;
@@ -5696,7 +5735,7 @@ throw (Exception)
     if( dim == NULL) {
         delete longitude;
         delete latitude;
-        throw;
+        throw1("Allocate memory for dim failed .");
     }
     
     if(latitude != NULL) 
@@ -5708,7 +5747,7 @@ throw (Exception)
     if(dim == NULL) {
         delete longitude;
         delete latitude;
-        throw;
+        throw1("Allocate memory for dim failed .");
     }
     //if(latitude != NULL) 
     latitude->correcteddims.push_back (dim);

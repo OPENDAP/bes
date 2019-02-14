@@ -129,8 +129,7 @@ File * File::Read(const char *path, int32 mygridfd, int32 myswathfd) throw(Excep
 
     File *file = new File(path);
     if(file == NULL)
-        throw;
-//cerr <<"File is opened" <<endl;
+        throw1("Memory allocation for file class failed. ");
 
     file->gridfd = mygridfd;
     file->swathfd = myswathfd;
@@ -147,8 +146,7 @@ File * File::Read(const char *path, int32 mygridfd, int32 myswathfd) throw(Excep
     vector<string> gridlist;
     if (!Utility::ReadNamelist(file->path.c_str(), GDinqgrid, gridlist)) {
         delete file;
-        throw;
-        //throw2("grid namelist", path);
+        throw1("Grid ReadNamelist failed.");
     }
 
     try {
@@ -158,7 +156,7 @@ File * File::Read(const char *path, int32 mygridfd, int32 myswathfd) throw(Excep
     }
     catch(...) {
         delete file;
-        throw;
+        throw1("GridDataset Read failed");
     }
 
 #if 0
@@ -173,8 +171,7 @@ File * File::Read(const char *path, int32 mygridfd, int32 myswathfd) throw(Excep
     vector<string> swathlist;
     if (!Utility::ReadNamelist(file->path.c_str(), SWinqswath, swathlist)){
         delete file;
-        throw;
-        //throw2("swath namelist", path);
+        throw1("Swath ReadNamelist failed.");
     }
 
     try {
@@ -184,7 +181,7 @@ File * File::Read(const char *path, int32 mygridfd, int32 myswathfd) throw(Excep
     }
     catch(...) {
         delete file;
-        throw;
+        throw1("SwathDataset Read failed.");
     }
 
 
@@ -194,10 +191,9 @@ File * File::Read(const char *path, int32 mygridfd, int32 myswathfd) throw(Excep
     vector<string> pointlist;
     if (!Utility::ReadNamelist(file->path.c_str(), PTinqpoint, pointlist)){
         delete file;
-        throw;
-        //throw2("point namelist", path);
+        throw1("Point ReadNamelist failed.");
     }
-   //if(file !=NULL) {//See if I can make coverity happy because it doesn't understand throw macro.
+    //See if I can make coverity happy because it doesn't understand throw macro.
     for (vector<string>::const_iterator i = pointlist.begin();
          i != pointlist.end(); ++i)
         file->points.push_back(PointDataset::Read(-1, *i));
@@ -210,7 +206,6 @@ File * File::Read(const char *path, int32 mygridfd, int32 myswathfd) throw(Excep
         delete file;
         throw e;  
     }
-   //}
     return file;
 }
 

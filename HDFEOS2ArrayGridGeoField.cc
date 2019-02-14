@@ -152,7 +152,6 @@ HDFEOS2ArrayGridGeoField::read ()
         enable_eos_geo_cache_key = HDFCFUtil::check_beskeys(check_eos_geo_cache_key);
 #endif
 
-        //if(true == enable_eos_geo_cache_key) {
         if(true == HDF4RequestHandler::get_enable_eosgeo_cachefile()) {
 
 //cerr<<"geo cache is true "<<endl;
@@ -207,7 +206,6 @@ HDFEOS2ArrayGridGeoField::read ()
                 }
             }
 
-            //string cache_fname=llcache->getCachePrefixFromConfig();
             string cache_fname=HDF4RequestHandler::get_cache_latlon_prefix();
 
             intn r = -1;
@@ -277,10 +275,9 @@ HDFEOS2ArrayGridGeoField::read ()
             cache_fname +=HDFCFUtil::get_double_str(lowright[1],17,6);
 
             // According to HDF-EOS2 document, only 13 parameters are used.
-            for(int ipar = 0; ipar<13;ipar++) {
-//cerr<<"params["<<ipar<<"] is "<<params[ipar]<<endl;
+            for(int ipar = 0; ipar<13;ipar++) 
                 cache_fname+=HDFCFUtil::get_double_str(params[ipar],17,6);
-            }
+            
             
             cache_fpath = bescachedir + "/"+ cache_fname;
 #if 0
@@ -293,7 +290,7 @@ cerr<<"after testing get_read_lock"<<endl;
 #endif
             
             try {
-                do  {
+                do  { // do while(0) is a trick to handle break; so ignore solarcloud's warning.
                     int expected_file_size = 0;
                     if(GCTP_CEA == projcode || GCTP_GEO == projcode) 
                         expected_file_size = (xdim+ydim)*sizeof(double);
