@@ -182,16 +182,14 @@ bool HDFSPArrayGeoField::read ()
         // We don't handle any OtherHDF products
         case OTHERHDF:
         {
-                throw InternalErr (__FILE__, __LINE__, "Unsupported HDF files");
+            throw InternalErr (__FILE__, __LINE__, "Unsupported HDF files");
 
-            break;
         }
         default:
         {
 
-                throw InternalErr (__FILE__, __LINE__, "Unsupported HDF files");
+            throw InternalErr (__FILE__, __LINE__, "Unsupported HDF files");
 
-            break;
         }
     }
 
@@ -829,9 +827,8 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
         case DFNT_UINT32:
         case DFNT_FLOAT64:
             SDendaccess (sdsid);
-        HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
+            HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
             throw InternalErr (__FILE__, __LINE__,"datatype is not float, unsupported.");
-            break;
         case DFNT_FLOAT32:
         {
             vector<float32> val;
