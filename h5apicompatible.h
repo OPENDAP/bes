@@ -14,18 +14,19 @@
 
 
 #if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR == 8)
-    #define H5RDEREFERENCE(obj_id,ref_type,ref) H5Rdereference(obj_id,ref_type,ref)
 
+
+#define H5RDEREFERENCE(obj_id,ref_type,ref) H5Rdereference(obj_id,ref_type,ref)
 #else
-    #if (defined H5_USE_18_API)
-        #define H5RDEREFERENCE(obj_id,ref_type,ref) H5Rdereference1(obj_id,ref_type,ref)
-        
-    #else                                        
-        #define H5RDEREFERENCE(obj_id,ref_type,ref) H5Rdereference2(obj_id,H5P_DEFAULT,ref_type,ref)
-    #endif
+
+#if (defined H5_USE_18_API)
+#define H5RDEREFERENCE(obj_id,ref_type,ref) H5Rdereference1(obj_id,ref_type,ref)
+#else                                        
+#define H5RDEREFERENCE(obj_id,ref_type,ref) H5Rdereference2(obj_id,H5P_DEFAULT,ref_type,ref)
 #endif
 
-    
+#endif
+
 
 #endif
 

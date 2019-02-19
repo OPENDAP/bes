@@ -64,13 +64,6 @@ void read_cfdds(DDS & dds, const string &filename,hid_t myfile_id) {
     if (moduletype == HDF_EOS5) {
         map_eos5_cfdds(dds,fileid, filename);
     }
-
-    else if(moduletype == HDF5_JPSS) {
-        // handle HDF5 JPSS product, will handle this later.
-        //read_cfjpss(fileid,filename);
-        ;
-    }
-
     else { // handle HDF5 general product 
         map_gmh5_cfdds(dds,fileid, filename);
 
@@ -98,13 +91,6 @@ void read_cfdas(DAS & das, const string &filename,hid_t myfile_id) {
     if (moduletype == HDF_EOS5) {
         map_eos5_cfdas(das,fileid, filename);
     }
-
-    else if(moduletype == HDF5_JPSS) {
-        // handle HDF5 JPSS product, will handle this later.
-        //read_cfjpss(fileid,filename);
-        ;
-    }
-
     else { // handle HDF5 general product 
         map_gmh5_cfdas(das,fileid, filename);
     }

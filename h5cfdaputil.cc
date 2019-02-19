@@ -47,22 +47,21 @@ string HDF5CFDAPUtil::escattr(string s)
     const string ESCQUOTE = ESC + QUOTE;
 
     // escape \ with a second backslash
-    //string::size_type ind = 0;
     size_t ind = 0;
-    while ((ind = s.find(ESC, ind)) != s.npos) {
+    while ((ind = s.find(ESC, ind)) != string::npos) {
         s.replace(ind, 1, DOUBLE_ESC);
         ind += DOUBLE_ESC.length();
     }
 
     // escape non-printing characters with octal escape
     ind = 0;
-    while ((ind = s.find_first_not_of(printable, ind)) != s.npos)
+    while ((ind = s.find_first_not_of(printable, ind)) != string::npos)
         s.replace(ind, 1, ESC + octstring(s[ind]));
 
 
     // escape " with backslash
     ind = 0;
-    while ((ind = s.find(QUOTE, ind)) != s.npos) {
+    while ((ind = s.find(QUOTE, ind)) != string::npos) {
         s.replace(ind, 1, ESCQUOTE);
         ind += ESCQUOTE.length();
     }
@@ -263,14 +262,13 @@ HDF5CFDAPUtil:: print_attr(H5DataType type, int loc, void *vals)
             gp.fp = (float *) vals;
             rep << showpoint;
             rep << setprecision(10);
-            //rep << setprecision(6);
             rep << *(gp.fp+loc);
             string tmp_rep_str = rep.str();
             if (tmp_rep_str.find('.') == string::npos
                 && tmp_rep_str.find('e') == string::npos
-                && tmp_rep_str.find('E') == string::npos){
-                if(true == is_a_fin)
-                    rep<<".";
+                && tmp_rep_str.find('E') == string::npos
+                && (true == is_a_fin)){
+                rep<<".";
             }
             return rep.str();
         }
@@ -286,9 +284,9 @@ HDF5CFDAPUtil:: print_attr(H5DataType type, int loc, void *vals)
             string tmp_rep_str = rep.str();
             if (tmp_rep_str.find('.') == string::npos
                 && tmp_rep_str.find('e') == string::npos
-                && tmp_rep_str.find('E') == string::npos) {
-                if(true == is_a_fin)
-                    rep << ".";
+                && tmp_rep_str.find('E') == string::npos
+                && (true == is_a_fin)) {
+                rep << ".";
             }
             return rep.str();
         }
@@ -328,8 +326,6 @@ D4AttributeType HDF5CFDAPUtil::daptype_strrep_to_dap4_attrtype(std::string s){
         return attr_str_c;
     else if (s == "Url")
         return attr_url_c;
-    //else if (s == "otherxml")
-    //    return attr_otherxml_c;
     else
         return attr_null_c;
 
