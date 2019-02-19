@@ -73,15 +73,18 @@ before_script:
 - printenv
 - autoreconf --force --install --verbose
 
+# Build all the stages for 'master'. For a PR, run the 'build' and 'package' stages.
+# For a branch with 'sonar' in it's name only run the scan, not the build or package
+# stages.
+stages:
+- name: build
+  if:  branch = master OR (type = pull_request AND NOT branch =~ /^.*sonar.*$/)
+- name: scan
+  if:  branch = master OR branch =~ /^.*sonar.*$/
+- name: package
+  if:  branch = master OR (type = pull_request AND NOT branch =~ /^.*sonar.*$/)
+
 jobs:
-  stages:
-  - name: build
-    if:  branch = master
-  - name: scan
-    if:  branch = master
-  - name: package
-    if:  branch = master
-    
   include:
   # Scan first on this branch. move once/if merged. Could split this up into parallel jobs
   # using different properties files and sonar-scanner -Dproject.settings=../myproject.properties
@@ -150,6 +153,5 @@ deploy:
   skip_cleanup: true
   local_dir: $TRAVIS_BUILD_DIR/package
   on:
-    branch:
-    - master
+    branch: master
     condition: $BES_BUILD =~ ^deb|centos7|centos6$
