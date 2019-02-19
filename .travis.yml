@@ -83,7 +83,8 @@ jobs:
     if:  branch = master
     
   include:
-  # Scan first on this branch. move once/if merged.
+  # Scan first on this branch. move once/if merged. Could split this up into parallel jobs
+  # using different properties files and sonar-scanner -Dproject.settings=../myproject.properties
   - stage: scan
     addons: 
       sonarcloud: 
