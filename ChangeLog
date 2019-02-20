@@ -1,3 +1,15 @@
+2019-02-08  James Gallagher  <jgallagher@opendap.org>
+
+	Updated hdf4 and hdf5_handler commit hashes
+
+2019-01-25  James Gallagher  <jgallagher@opendap.org>
+	
+	Removed a HDF5 test from the httpd_catalog since the tests don't load that handler
+
+2018-12-21  James Gallagher  <jgallagher@opendap.org>
+
+	Update hdf5 handler commit hash
+
 2018-10-24  Nathan Potter  <ndp@opendap.org>
 
 	Updated test bes.conf to preserve behavior.

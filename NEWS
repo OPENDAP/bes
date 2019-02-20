@@ -1,3 +1,7 @@
+Updated for Hyrax 1.15.3
+
+Coverity Scan for libdap4, BES, and OLFS.
+
 Updated for Hyrax 1.15.1
 
 Graceful error handling for DAP4 DMR response when the dimension name is not in
