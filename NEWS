@@ -1,3 +1,18 @@
+News for version 3.20.3
+
+Multiple bug fixes (See ChangeLog for specifics)
+
+HK-320 fixed - libcurl fails when called from the bes daemon on OSX
+
+HK-275 fixed - bes cmdln tests fail on master for the Travis build
+
+HK-285 fixed/completed - The BES Centos 7 RPM as packaged does not
+support `systemctl enable bes`
+
+Created docker build for debian packaging
+
+HK-304 Created docker build for debian packages.
+
 News for version 3.20.2
 
 HK-40 and HK-247 fixed - Renaming dimensions using NCML now works correctly

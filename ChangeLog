@@ -1,3 +1,519 @@
+2019-02-08  James Gallagher  <jgallagher@opendap.org>
+
+	Added sonar-project.properties
+	[skip ci]
+
+	Updated hdf4 and hdf5_handler commit hashes
+
+2019-02-01  Nathan Potter  <ndp@opendap.org>
+
+	This should update the submodules.
+
+2019-02-01  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #234 from OPENDAP/travis-rpm-use-awscli
+	Travis rpm use awscli
+
+	Add test for the aws cli - is it on the PATH. Fix that if not.
+	Sort of. The fix works for C6 but not much else.
+
+	Bumped up the version on the centos6 docker image.
+	Added ~/.local/bin to PATH so the aws cli tool is found.
+
+	Pass in the AWS  credentials to the docker images for the travis builds
+
+2019-01-31  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed 'aws s3 cp' syntax fail
+
+	removed pip install from build-rpm.sh
+	included by mistake
+
+	Updated build-rpm.sh and travis.yml
+	Use the aws cli and new docker containers that include the aws cli.
+	This is all to reduce our spurious build fails when using curl with S3
+
+	Merge pull request #233 from OPENDAP/systemctl-fix
+	Attempt to repair support for systemctl/systemd found on CentOS 7
+
+	Merge branch 'master' into systemctl-fix
+
+	Removed 'sudo apt-get update -qq' from .travis.yml
+
+	Attempt to repair support for systemctl/systemd found on CentOS 7
+
+	Merge pull request #232 from OPENDAP/travis-aws
+	Use aws cli and not curl; modules_common --> modules/common
+
+2019-01-30  James Gallagher  <jgallagher@opendap.org>
+
+	Use aws cli and not curl; modules_common --> modules/common
+
+2019-01-30  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #231 from OPENDAP/unlink_cache_failures
+	Unlinking cache files when retrival from remote fails.
+
+	Added unlink for primary cache file if the header file creation fails.
+
+2019-01-29  Nathan Potter  <ndp@opendap.org>
+
+	Unlinking cache files when retrival from remote fails.
+
+	Merge pull request #228 from OPENDAP/site_conf_proto
+	Site conf proto
+
+2019-01-28  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'site_conf_proto' of https://github.com/opendap/bes into site_conf_proto
+
+	Added a new SupportEmail key to the default configuration.
+
+2019-01-28  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into site_conf_proto
+
+	Merge branch 'site_conf_proto' of https://github.com/opendap/bes into site_conf_proto
+
+	Modified many of the *.conf.in files to use the same pattern for Cache dirs
+	All of the cache dirs are now named /tmp/hyrax_<name> by default and
+	all of the prefix values are '<name>_'
+
+2019-01-28  Nathan Potter  <ndp@opendap.org>
+
+	Added hdf4/5 sections to site.conf.proto
+
+2019-01-28  James Gallagher  <jgallagher@opendap.org>
+
+	Formatting
+	[skip ci]
+
+	Removed the '.' in '.cache_control' and made the name 'cache_control' a #define
+	Also made the default MDS prefix 'mds_'
+
+2019-01-25  James Gallagher  <jgallagher@opendap.org>
+
+	Added trailing underscores to the Cache.Prefix values.
+	[skip ci]
+
+	I normalized the three cache names in the site.conf.proto
+	They all use the pattern /tmp/hyrax_<name> and a prefix of <name>.
+	[skip ci]
+
+	Added site.conf.proto to the RPM spec files.
+
+	Merge pull request #230 from OPENDAP/HK-313
+	Hk 313
+
+	Merge branch 'site_conf_proto' of https://github.com/opendap/bes into site_conf_proto
+
+	Fixed some typos
+	[skip ci]
+
+	Fixed some typos
+
+	Removed a HDF5 test from the httpd_catalog since the tests don't load that handler
+
+	more still more cleanup
+
+	Some more cleanup; removed unused code, old 'CMR' comments.
+
+	Edit to the httpd_catalog.conf.in - removed redundant info.
+
+	Fixed a bug in HttpdCatalog::path_to_access_url(const string &p)
+	When paths start with a slash, the continer catalog prefix was not
+	found. Fixed.
+
+2019-01-24  Nathan Potter  <ndp@opendap.org>
+
+	Adding site.conf.proto to distro
+
+2019-01-24  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #229 from OPENDAP/HK-313
+	Hk 313
+
+	Fixed comment
+	[skip ci]
+
+	Fixed BESUtil::split(). It did not use the skip_empty param correctly.
+
+	Fixed HK-313
+	If a Remote Resource was accessed using only the collection name with no
+	trailing slash, an exception was thrown because the string was accessed
+	one character past its end. Now it's OK to leave off the trailing slash.
+	I also found that the BESUtil::split() function is broken and will fix
+	it in a subsequent commit.
+
+2019-01-23  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint
+
+2019-01-23  Nathan Potter  <ndp@opendap.org>
+
+	Disabled CMR catalog by default.
+
+	First daft of site.conf.proto
+
+2019-01-22  James Gallagher  <jgallagher@opendap.org>
+
+	Spelling in a comment
+	[skip ci]
+
+2019-01-21  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Typo fixy
+
+2019-01-19  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #227 from OPENDAP/httpd_minor_refactor
+	Httpd minor refactor
+
+2019-01-18  James Gallagher  <jgallagher@opendap.org>
+
+	Changes to fix the build for the PR from this branch
+
+	Merge branch 'master' into httpd_minor_refactor
+
+	Removed unused code
+
+	Merge pull request #226 from OPENDAP/hk-95
+	Hk 95
+
+2019-01-17  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Updated the hdf4/5 handler commit hashes
+
+	Merge branch 'master' into httpd_minor_refactor
+
+	Updated teh hdf4/5 handler commit hashes
+
+	More minor edits to httpd_catalog
+
+	comments; formatting; minor edits. httpd_catalof.conf.in changes
+
+2019-01-14  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #225 from OPENDAP/virtual-catalog-bug
+	Virtual catalog bug
+
+2019-01-14  Nathan Potter  <ndp@opendap.org>
+
+	More ncml error message grooming
+
+	Revert "dscfdw"
+	This reverts commit bde45591a3e2c99d60b0edbddd3d9a76b73a1234.
+
+	dscfdw
+
+2019-01-11  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into virtual-catalog-bug
+
+	More tests for the odd problem with libcurl on OSX
+
+2019-01-11  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Commented out debian build
+
+2019-01-11  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint
+
+2019-01-11  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Merge pull request #224 from OPENDAP/debian
+	Debian: Have to merge, otherwise it won't use the new cacheT.cc file.
+
+	Added back the changes made to cacheT.cc
+
+2019-01-10  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Added back the bes docker script, was removed from the last git merge.
+
+	Merge branch 'debian' of https://github.com/opendap/bes into debian
+
+	Added slight changes so that the files can be pushed to master.
+
+	Merge branch 'master' into debian
+
+	Reverting to the state of the project at d9dd51b530dc74425951ed5b28d6f047461baddf
+
+	Reverting to the state of the project at bcd2ee5701f64aa500b0582720949403efaf45fc
+
+	Needed to slightly change a file to create a new pull request.
+
+	Reverting to the state of the project at bcd2ee5701f64aa500b0582720949403efaf45fc
+
+2019-01-09  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Added "sudo" to the debian/rules
+
+	Reverting to the state of the project at d9dd51b530dc74425951ed5b28d6f047461baddf. Needed to fix the modules/hdf4 and hdf5 changes that somehow keep showing up...
+
+	Merge pull request #223 from OPENDAP/debian
+	Debian: Had to revert to a previous commit because, for some reason, there was a conflict and several files had new code swapped out for their old code.
+
+	Added "sudo" to the rules. (Had to revert a commit that already had this because of conflicts)
+
+	Reverting to the state of the project at d9dd51b530dc74425951ed5b28d6f047461baddf
+
+	Merge pull request #222 from OPENDAP/debian
+	Debian
+
+	Merge branch 'debian' of https://github.com/opendap/bes into debian
+
+	Added "sudo" to commands
+
+	Merge pull request #221 from OPENDAP/debian
+	Changed the rules from "chmod" to "chown"
+
+	Merge branch 'master' into debian
+
+	Changed the rules from "chmod" to "chown"
+
+2019-01-08  James Gallagher  <jgallagher@opendap.org>
+
+	Refactor fixes. Tests pass.
+
+2019-01-07  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint - found the issue in https://opendap.atlassian.net/browse/HK-314
+
+2019-01-07  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Merge pull request #220 from OPENDAP/debian
+	Debian docker build, have to merge so that Travis uses the edited .cc files for the tests
+
+	Made the same changes to DmrppMetadataStoreTest.cc that were made in cacheT.cc
+
+	Added a check so the tests won't fail when run in /root
+
+	Revert "Reverting to the state of the project at 8b1e657f6b099629e51d3ee7c61081796f87b2c9"
+	This reverts commit fc6cb6e3c648b6839e9f3693b4fed6c842c380d4.
+
+	Reverting to the state of the project at 8b1e657f6b099629e51d3ee7c61081796f87b2c9
+
+	Reverting to the state of the project at 8b1e657f6b099629e51d3ee7c61081796f87b2c9
+
+2019-01-04  James Gallagher  <jgallagher@opendap.org>
+
+	Ignored dmrpp test files
+
+	checkpoint - more data and test files
+
+	checkpoint
+
+2019-01-04  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Merge pull request #219 from OPENDAP/debian
+	Debian: Merge master and added main builds back to travis
+
+	Merge branch 'master' into debian
+
+	Added back the main builds
+
+	Merge pull request #218 from OPENDAP/debian
+	Docker Debian build
+
+	Edited the cacheT test to allow root to write to "/" without causing a fail
+
+2019-01-03  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Building just the package stages for quicker testing
+
+2019-01-03  James Gallagher  <jgallagher@opendap.org>
+
+	Added tests
+
+2019-01-03  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Changed permissions for build-deb
+
+	Spelling error in the docker command
+
+2019-01-02  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Changed certain calls to hyrax-deps
+
+	Merge branch 'master' into debian
+
+	Initial Docker debian build
+
+2018-12-30  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #217 from OPENDAP/container_store_refactor
+	Container store refactor
+
+2018-12-28  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into container_store_refactor
+
+	Minor mods to the httpd_catalog_module
+	Leaner bes.conf.in and added a clean of the cache after 'make check'
+
+2018-12-27  James Gallagher  <jgallagher@opendap.org>
+
+	My last push failed to include some changes...
+	The default Container space is "catalog" and the default Definition
+	space is "default".
+
+	Merge pull request #216 from OPENDAP/container_store_refactor
+	Container store refactor
+
+2018-12-21  James Gallagher  <jgallagher@opendap.org>
+
+	Update hdf5 handler commit hash
+
+	Merge branch 'master' into container_store_refactor
+
+	This refactor is at a stopping point. I cleaned up the ContainerStorage code
+
+	Merge pull request #213 from OPENDAP/feedback_url_add
+	Feedback url add
+
+	checkpoint
+
+2018-12-21  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #214 from OPENDAP/cmdln_tests_fix
+	Cmdln tests fix
+
+2018-12-20  James Gallagher  <jgallagher@opendap.org>
+
+	One last fix for distcheck
+
+	Fixed a 'distcheck error' in dap/unit-tests/ShowPathInfoTest.cc
+
+	checkpoint
+
+2018-12-20  Nathan Potter  <ndp@opendap.org>
+
+	Reactivating bescmdln tests in Travis
+
+2018-12-20  James Gallagher  <jgallagher@opendap.org>
+
+	Fix for failure of bes/dispatch/unit-tests/resplistT with distcheck
+
+	Added #include <memory> to {DAS,DDS,DDX}ResponseHandler
+
+	New baselines for bes/cmdln/tests
+
+	Added another test dataset to the annotation tests
+
+	Added tests and fixed the DMR code. The attribute is now AnnotationService.
+
+2018-12-19  James Gallagher  <jgallagher@opendap.org>
+
+	Tiny clean up
+
+	Applyied the 'DODS_EXTRA' fix to the DAS.
+
+	Annotation service: Added tests along with a fix for the 'container collision' bug
+	Handlers do not generally test to see if an attribute container exists
+	before making one, so if the Annotation URL attribute is added to
+	DODS_EXTRA and then the handlers are run and one of those handlers
+	also uses a container called DODS_EXTRA... libdap throws. My fix is
+	to call the handlers first, and then add the attribute. I look for
+	DODS_EXTRA and insert the attribute or make the container, as needed.
+
+	Added integration tests for the annotation service url feature
+	Some tests fail...
+
+	Added support for the Annotation service the DDS.
+	Added a compile-time switch for the annotation service
+
+	Added support for a bes.conf parameter to supply the annotation URL.
+	I added this to the BESResponseHandler object. The BESDASResponse
+	Handler is modified to use it. No tests for the DAS yet.
+
+2018-12-18  James Gallagher  <jgallagher@opendap.org>
+
+	checkoint - fixing BESResponseHandler unit test
+
+2018-12-14  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #212 from OPENDAP/stream_error
+	Repair misclassified read error in the stream handler
+
+	formatting and comments
+
+	Repair misclassified read error in the stream handler
+
+	Trapped potential null pointer isse. Needs an overall review of the code contextas there are problems with the implmentation design.
+
+	Merge branch 'forbidden_node'
+
+	Merge pull request #211 from OPENDAP/forbidden_node
+	Checking for opendir() failures in get_node()
+
+2018-12-13  Nathan Potter  <ndp@opendap.org>
+
+	docs
+
+	Checking for opendir() failures in get_node()
+
+2018-12-13  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Trying just $HOME/install/bin for the PATH
+
+	trying another PATH
+
+	Fixed the PATH
+
+2018-12-13  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #210 from OPENDAP/sadmin
+	ServerAdministrator class is working
+
+	Merge branch 'master' into sadmin
+
+2018-12-12  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Added the bison directory to PATH
+
+	Merge branch 'master' into debian
+
+2018-12-12  Nathan Potter  <ndp@opendap.org>
+
+	Repairing ServerAdministratorTest to reflect using the OPeNDAP support information as the defaults.
+
+2018-12-12  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Did a merge with master, trying the new hyrax-deps tar again.
+
+2018-12-12  Nathan Potter  <ndp@opendap.org>
+
+	docs
+
+2018-12-12  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	Merge branch 'master' into debian
+
+2018-12-11  Kodi Neumiller  <kodi@Udays-MacBook-Pro.local>
+
+	directory: /home/travis/ubuntu14/ does not exist. This is why the build is failing with the new tar of hyrax-deps.
+
+	Building with the old hyrax-deps to see if it works
+
+	Testing bison location
+
+	Testing for bison directory
+
+	Checking to see where Travis_build_dir is
+
+2018-12-10  Nathan Potter  <ndp@opendap.org>
+
+	More parsing and QC
+
+	ServerAdministrator class is working
+
 2018-12-06  James Gallagher  <jgallagher@opendap.org>
 
 	Merge pull request #205 from OPENDAP/HK-247
