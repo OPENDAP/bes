@@ -97,7 +97,7 @@ jobs:
     - export BES_BUILD=sonar-bes-framework
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
     - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
-    - sonar-scanner -Dsonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
+    - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
 
   - stage: scan
     addons: 
@@ -106,7 +106,7 @@ jobs:
     - export BES_BUILD=sonar-bes-modules
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
     - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
-    - sonar-scanner -Dsonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
+    - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
 
   # - stage: build
   #   script: 
