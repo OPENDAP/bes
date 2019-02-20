@@ -49,8 +49,8 @@ env:
   - PATH=$prefix/bin:$prefix/deps/bin:$PATH
   - TESTSUITEFLAGS=-j7
   # Change this when libdap version numbers change
-  - LIBDAP_RPM_VERSION=3.20.2-1
-  # SONAR_SCAN, made using "travis encrypt --org -r OPENDAP/bes SONAR_LOGIN=335df..."
+  - LIBDAP_RPM_VERSION=3.20.3-1
+  # SONAR_LOGIN, made using "travis encrypt --org -r OPENDAP/bes SONAR_LOGIN=335df..."
   - secure: "TmoFcgeIyAEjFyrlqB6rhdUhDqPJfxVZmT5fewgVHj0xm767VZ6DU21mM6ZHgNGyk99TzX0Gx/dwSqbsUj18hSSAvEa7fJQSKJ5IBJvTeMKhXn1DPPG9VpuZ4ti5afRDiNr6EJKbVxwBTkz+3798S8LajPuXGupYupir8IJQCt8="
   # COVERITY_SCAN_TOKEN
   - secure: "KNE6gkK7+WEQkNLiW/oap/3E/YSq6nzH6icXWpgA3MZj2KX0i6IzQgteeEGFUC1vDTzkCpqSidvGxdd22V33s0sHDuLRI5e17VFMjI5WyWjRQaXMhWmyO5/ofx7AArvaCWq6w6zfn1T/LiIuHXc14Rg8uuWEgDGWM0USiSbMepc="
