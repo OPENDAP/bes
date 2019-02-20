@@ -1,3 +1,7 @@
+2019-02-08  James Gallagher  <jgallagher@opendap.org>
+
+	Updated hdf4 and hdf5_handler commit hashes
+
 2017-09-26  kyang2014  <kyang2014@users.noreply.github.com>
 
 	Merge pull request #5 from OPENDAP/coverity_scan_kent
