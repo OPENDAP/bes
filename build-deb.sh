@@ -30,7 +30,7 @@ cd $HOME
 tar -xzvf /tmp/hyrax-dependencies-$OS-static.tar.gz
 
 # Then get the libdap debian package
-# libdap-3.20.2-1_amd64.deb
+# libdap-3.20.3-1_amd64.deb
 (cd /tmp && curl -s -O https://s3.amazonaws.com/opendap.travis.build/libdap_${LIBDAP_RPM_VERSION}_amd64.deb)
 
 dpkg -i /tmp/libdap_${LIBDAP_RPM_VERSION}_amd64.deb
