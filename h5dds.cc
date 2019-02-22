@@ -124,7 +124,6 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
         // Obtain the name of the object
         oname.resize((size_t) oname_size + 1);
 
-        //if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,oname,
         if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,&oname[0],
             (size_t)(oname_size+1), H5P_DEFAULT) < 0){
             string msg =
@@ -149,10 +148,6 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
         if(linfo.type == H5L_TYPE_SOFT)
             continue;
 
-        // Soft link and hard link information are stored at DAS, not in DDS.
-        //if(linfo.type == H5L_TYPE_SOFT || linfo.type == H5L_TYPE_EXTERNAL) 
-        //    continue;
-
         // Obtain the object type, such as group or dataset. 
         H5O_info_t oinfo;
 
@@ -172,7 +167,6 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
                 // Obtain the full path name
                 string full_path_name =
                     string(gname) + string(oname.begin(),oname.end()-1) + "/";
-                    //string(gname) + string(oname) + "/";
 
                 BESDEBUG("h5", "=depth_first():H5G_GROUP " << full_path_name
                     << endl);
@@ -181,18 +175,16 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
                 t_fpn.resize(full_path_name.length()+1);
                 copy(full_path_name.begin(),full_path_name.end(),t_fpn.begin());
 
-//                char *t_fpn = new char[full_path_name.length() + 1];
- //               (void)full_path_name.copy(t_fpn, full_path_name.length());
                 t_fpn[full_path_name.length()] = '\0';
 
                 hid_t cgroup = H5Gopen(pid, &t_fpn[0],H5P_DEFAULT);
                 if (cgroup < 0){
-		   throw InternalErr(__FILE__, __LINE__, "h5_dds handler: H5Gopen() failed.");
-		}
+                    throw InternalErr(__FILE__, __LINE__, "h5_dds handler: H5Gopen() failed.");
+                }
 
                 // Check the hard link loop and break the loop if it exists.
                 // Note the function get_hardlink is defined in h5das.cc
-		string oid = get_hardlink(pid, &oname[0]);
+                string oid = get_hardlink(pid, &oname[0]);
                 if (oid == "") {
                     try {
                         depth_first(cgroup, &t_fpn[0], dds, fname);
@@ -204,8 +196,8 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
                 }
 
                 if (H5Gclose(cgroup) < 0){
-		   throw InternalErr(__FILE__, __LINE__, "Could not close the group.");
-		}
+                    throw InternalErr(__FILE__, __LINE__, "Could not close the group.");
+                }
                 break;
             }
 
@@ -213,7 +205,6 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
             {
 
                 // Obtain the absolute path of the HDF5 dataset
-                //string full_path_name = string(gname) + string(oname);
                 string full_path_name = string(gname) + string(oname.begin(),oname.end()-1);
 
                 // Obtain the hdf5 dataset handle stored in the structure dt_inst. 
@@ -223,7 +214,6 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 
                 // Put the hdf5 dataset structure into DODS dds.
                 read_objects(dds, full_path_name, fname);
-                //H5Tclose(dt_inst.type);
                 break;
             }
 
@@ -234,7 +224,6 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
                 break;
             }
             
-        //if (oname) {delete[]oname; oname = NULL;}
     } // for i is 0 ... nelems
 
     BESDEBUG("h5", "<depth_first() " << endl);
@@ -294,12 +283,10 @@ read_objects_base_type(DDS & dds_table, const string & varname,
         // the end of the method. jhrg
         HDF5Array *ar = new HDF5Array(varname, filename, bt);
         delete bt; bt = 0;
-        //ar->set_did(dt_inst.dset);
-        //ar->set_tid(dt_inst.type);
         ar->set_memneed(dt_inst.need);
         ar->set_numdim(dt_inst.ndims);
         ar->set_numelm((int) (dt_inst.nelmts));
-	for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++)
+	    for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++)
             ar->append_dim(dt_inst.size[dim_index]); 
         dds_table.add_var(ar);
         delete ar; ar = 0;
@@ -340,8 +327,6 @@ read_objects_structure(DDS & dds_table, const string & varname,
             HDF5Array *ar = new HDF5Array(varname, filename, structure);
             delete structure; structure = 0;
             try {
-                //ar->set_did(dt_inst.dset);
-                //ar->set_tid(dt_inst.type);
                 ar->set_memneed(dt_inst.need);
                 ar->set_numdim(dt_inst.ndims);
                 ar->set_numelm((int) (dt_inst.nelmts));
@@ -367,7 +352,7 @@ read_objects_structure(DDS & dds_table, const string & varname,
             delete structure; structure = 0;
         }
 
-    } // try     Structure *structure = Get_structure(...)
+    } // try     Structure *structure is  Get_structure(...)
     catch (...) {
         delete structure;
         throw;

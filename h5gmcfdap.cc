@@ -98,12 +98,13 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
 
         // Handle coordinate variables
         f->Handle_CVar();
-
+#if 0
         // We need to retrieve  coordinate variable attributes for memory cache use.
         //f->Retrieve_H5_CVar_Supported_Attr_Values(); 
         //if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) || 
         //   (HDF5RequestHandler::get_srdata_mem_cache() != NULL)){
         //    f->Retrieve_H5_Supported_Attr_Values();
+#endif
 
 
         // Handle special variables
@@ -436,7 +437,9 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
             AttrTable *at = das.get_table((*it_spv)->getNewName());
             if (NULL == at)
                 at = das.add_table((*it_spv)->getNewName(), new AttrTable);
+#if 0
             // cerr<<"spv coordinate variable name "<<(*it_spv)->getNewName() <<endl;
+#endif
 
             for (it_ra = (*it_spv)->getAttributes().begin();
                  it_ra != (*it_spv)->getAttributes().end(); ++it_ra) 
@@ -469,7 +472,7 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
                     if((*ird)->HaveUnlimitedDim() == true) {
                         still_has_unlimited = true;
                         break;
-                    }// if((*ird)->HaveUnlimitedDim()
+                    }// if((*ird) is HaveUnlimitedDim()
                 }// for (vector<Dimension*>::
                 if(true == still_has_unlimited) 
                     break;
@@ -513,9 +516,11 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
           }// if(true == still_has_unlimited)
             
         }//if(cvars.size()>0)
+#if 0
         // The following line will generate the string like "Band1 str1 str2".
         //if(unlimited_names!="") 
         //         //   at->append_attr("Unlimited_Dimension","String",unlimited_names);
+#endif
     }
 }
 

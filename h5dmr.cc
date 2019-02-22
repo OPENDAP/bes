@@ -381,7 +381,6 @@ bool breadth_first(hid_t pid, char *gname, D4Group* par_grp, const char *fname,b
             // Size of a soft link value
             size_t val_size = linfo.u.val_size;
             get_softlink(par_grp,pid,&oname[0],slinkindex,val_size);
-            //get_softlink(par_grp,pid,gname,&oname[0],slinkindex,val_size);
             continue;
          }
 
@@ -421,7 +420,6 @@ bool breadth_first(hid_t pid, char *gname, D4Group* par_grp, const char *fname,b
 
             try {
                 read_objects(par_grp, full_path_name, fname,dset_id);
-                //read_objects(dmr, par_grp, full_path_name, fname,dset_id);
             }
             catch(...) {
                 H5Dclose(dset_id);
@@ -474,7 +472,7 @@ bool breadth_first(hid_t pid, char *gname, D4Group* par_grp, const char *fname,b
         }
             
         // Information of soft links are handled already, the softlinks need to be ignored, otherwise
-        // the group it links will be mapped again in the block of if(obj_type == H5O_TYPE_GROUP) 
+        // the group it links will be mapped again in the block of if obj_type is H5O_TYPE_GROUP 
         if(linfo.type == H5L_TYPE_SOFT) { 
             continue;
         }
@@ -576,7 +574,6 @@ bool breadth_first(hid_t pid, char *gname, D4Group* par_grp, const char *fname,b
 //
 void
 read_objects( D4Group * d4_grp, const string &varname, const string &filename, const hid_t dset_id)
-//read_objects(DMR & dmr, D4Group * d4_grp, const string &varname, const string &filename, const hid_t dset_id)
 {
 
     switch (H5Tget_class(dt_inst.type)) {
@@ -584,14 +581,12 @@ read_objects( D4Group * d4_grp, const string &varname, const string &filename, c
     // HDF5 compound maps to DAP structure.
     case H5T_COMPOUND:
         read_objects_structure(d4_grp, varname, filename,dset_id);
-        //read_objects_structure(dmr,d4_grp, varname, filename,dset_id);
         break;
 
     case H5T_ARRAY:
-    {
         H5Tclose(dt_inst.type);
         throw InternalErr(__FILE__, __LINE__, "Currently don't support accessing data of Array datatype when array datatype is not inside the compound.");       
-    }
+    
     default:
         read_objects_base_type(d4_grp,varname, filename,dset_id);
         //read_objects_base_type(dmr, d4_grp,varname, filename,dset_id);
@@ -660,8 +655,6 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
         HDF5Array *ar = new HDF5Array(newvarname, filename, bt);
         delete bt; bt = 0;
 
-        //ar->set_did(dt_inst.dset);
-        //ar->set_tid(dt_inst.type);
         // set number of elements and variable name values.
         // This essentially stores in the struct.
         ar->set_memneed(dt_inst.need);
@@ -730,8 +723,6 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
 ///    \param dset_id HDF5 dataset ID
 ///    \throw error a string of error message to the dods interface.
 ///////////////////////////////////////////////////////////////////////////////
-//void
-//read_objects_structure(DMR & dmr, D4Group *d4_grp, const string & varname,
 void
 read_objects_structure(D4Group *d4_grp, const string & varname,
                        const string & filename,hid_t dset_id)

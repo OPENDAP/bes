@@ -678,7 +678,6 @@ void read_comments(DAS & das, const string & varname, hid_t oid)
         if (!at) at = das.add_table(varname, new AttrTable);
         at->append_attr("HDF5_COMMENT", STRING, &comment[0]);
 
-        //delete[] comment;
     }
 }
 

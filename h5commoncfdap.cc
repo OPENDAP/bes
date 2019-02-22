@@ -87,7 +87,6 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
                     sca_int64->set_is_dap4(true);
                     map_cfh5_attrs_to_dap4(var,sca_int64);
                     root_grp->add_var_nocopy(sca_int64);
-                    //delete sca_int64;
  
                 }
                 else if(H5UINT64 == var->getType()) {
@@ -101,7 +100,6 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
                     sca_uint64->set_is_dap4(true);
                     map_cfh5_attrs_to_dap4(var,sca_uint64);
                     root_grp->add_var_nocopy(sca_uint64);
-                    //delete sca_int64;
  
                 }
 
@@ -337,15 +335,13 @@ void gen_dap_special_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr, con
     if (attr->getCount() != 1) throw InternalErr(__FILE__, __LINE__, "FillValue attribute can only have one element.");
 
     H5DataType var_dtype = var->getType();
-    if (true == HDF5RequestHandler::get_fillvalue_check()) {
-        if (false == is_fvalue_valid(var_dtype, attr)) {
-            string msg = "The attribute value is out of the range.\n";
-            msg += "The variable name: " + var->getNewName() + "\n";
-            msg += "The attribute name: " + attr->getNewName() + "\n";
-            msg += "The error occurs inside the gen_dap_special_oneobj_das function in h5commoncfdap.cc.";
-            throw InternalErr(msg);
-            //throw InternalErr(__FILE__,__LINE__,msg);
-        }
+    if ((true == HDF5RequestHandler::get_fillvalue_check()) 
+        && (false == is_fvalue_valid(var_dtype, attr))) {
+        string msg = "The attribute value is out of the range.\n";
+        msg += "The variable name: " + var->getNewName() + "\n";
+        msg += "The attribute name: " + attr->getNewName() + "\n";
+        msg += "The error occurs inside the gen_dap_special_oneobj_das function in h5commoncfdap.cc.";
+        throw InternalErr(msg);
     }
     string print_rep = HDF5CFDAPUtil::print_attr(attr->getType(), 0, (void*) (&(attr->getValue()[0])));
     at->append_attr(attr->getNewName(), HDF5CFDAPUtil::print_type(var_dtype), print_rep);
@@ -560,11 +556,9 @@ void gen_dap_str_attr(AttrTable *at, const HDF5CF::Attribute *attr)
             // The above statement is no longer true. The netCDF Java can handle long string
             // attributes. The long string can be kept and I do think the
             // performance penalty should be small. KY 2018-02-26
-            //if (false == HDF5RequestHandler::get_drop_long_string() || tempstring.size() <= NC_JAVA_STR_SIZE_LIMIT) {
-                if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath")) tempstring =
-                    HDF5CFDAPUtil::escattr(tempstring);
+            if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath")) 
+                tempstring = HDF5CFDAPUtil::escattr(tempstring);
                 at->append_attr(attr->getNewName(), "String", tempstring);
-            //}
         }
     }
 }
@@ -678,7 +672,6 @@ void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridP
 
         // Change this to meter.
         at->append_attr("units", "string", "meter");
-        //at->append_attr("units","string","km");
 
         at->append_attr("_CoordinateAxisType", "string", "GeoY");
 
@@ -686,14 +679,12 @@ void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridP
         if (!at) at = das.add_table(dim1name, new AttrTable);
 
         at->append_attr("standard_name", "String", "projection_x_coordinate");
-        //at->append_attr("long_name","String","x coordinate");
-        //long_name="x coordinate of projection for grid "+ gdset->getName();
+
         long_name = "x coordinate of projection ";
         at->append_attr("long_name", "String", long_name);
 
         // change this to meter.
         at->append_attr("units", "string", "meter");
-        //at->append_attr("units","string","km");
         
         // This is for CDM conventions. Adding doesn't do harm. Same as GeoY.
         at->append_attr("_CoordinateAxisType", "string", "GeoX");
@@ -742,18 +733,17 @@ void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridP
                 // False northing 
                 double fn = eos5_proj_params[7];
 
-                //if(at->simple_find("grid_mapping_name") == at->attr_end())
                 at->append_attr("grid_mapping_name", "String", "polar_stereographic");
 
                 ostringstream s_vert_lon_pole;
                 s_vert_lon_pole << vert_lon_pole;
 
-                //if(at->simple_find("straight_vertical_longitude_from_pole") == at->attr_end())
                 // I did this map is based on my best understanding. I cannot be certain about south pole. KY
                 // CF: straight_vertical_longitude_from_pole
                 at->append_attr("straight_vertical_longitude_from_pole", "Float64", s_vert_lon_pole.str());
                 ostringstream s_lat_true_scale;
                 s_lat_true_scale << lat_true_scale;
+
                 //if(at->simple_find("standard_parallel") == at->attr_end())
                 at->append_attr("standard_parallel", "Float64", s_lat_true_scale.str());
 
@@ -952,20 +942,26 @@ void check_update_int64_attr(const string & obj_name, const HDF5CF::Attribute * 
             D4Group * root_grp = dmr->root();
             D4Attribute *d4_hg_container; 
             if(root_grp->attributes()->empty() == true){
+#if 0
             //D4Attribute *d4_hg_container = root_grp->attributes()->find("HDF5_GLOBAL");
             //if(d4_hg_container == NULL) {
+#endif
                 d4_hg_container = new D4Attribute;
                 d4_hg_container->set_name("HDF5_GLOBAL_integer_64");
                 d4_hg_container->set_type(attr_container_c);
                 root_grp->attributes()->add_attribute_nocopy(d4_hg_container);
+#if 0
                 //root_grp->attributes()->add_attribute(d4_hg_container);
+#endif
             }
             //else 
             d4_hg_container = root_grp->attributes()->get("HDF5_GLOBAL_integer_64");
             if(obj_name != "") {
                 string test_obj_name = "HDF5_GLOBAL_integer_64."+obj_name;
+#if 0
                 //D4Attribute *d4_container = root_grp->attributes()->find(obj_name);
                 //D4Attribute *d4_container = root_grp->attributes()->get(obj_name);
+#endif
                 D4Attribute *d4_container = root_grp->attributes()->get(test_obj_name);
                 // ISSUES need to search the attributes 
                 //
@@ -975,13 +971,17 @@ void check_update_int64_attr(const string & obj_name, const HDF5CF::Attribute * 
                     d4_container->set_name(obj_name);
                     d4_container->set_type(attr_container_c);
 
+#if 0
                     //if(d4_hg_container->attributes()->empty()==true)
                     //    cerr<<"global container is empty"<<endl;
                     //d4_hg_container->attributes()->add_attribute_nocopy(d4_container);
                     //cerr<<"end of d4_container "<<endl;
+#endif
                 }
                 d4_container->attributes()->add_attribute_nocopy(d4_attr);
+#if 0
                 //root_grp->attributes()->add_attribute_nocopy(d4_container);
+#endif
 //#if 0
                 if(d4_hg_container->attributes()->get(obj_name)==NULL)
                     d4_hg_container->attributes()->add_attribute_nocopy(d4_container);

@@ -100,7 +100,7 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
         H5Aclose(attrid);
         string msg = "unable to obtain the size of the hdf5 attribute name ";
         throw InternalErr(__FILE__, __LINE__, msg);
-    };
+    }
 
     vector<char> attr_name;
     attr_name.resize(name_size+1);
@@ -151,6 +151,7 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
     }
 
     // Ignore 64-bit integer for DAP2.
+    // The nested if is better to understand the code. Don't combine
     if (false == is_dap4) {
         if((ty_class == H5T_INTEGER) && (H5Tget_size(ty_id)== 8)) {//64-bit int
             *ignore_attr_ptr = true;
@@ -301,7 +302,6 @@ string get_dap_type(hid_t type, bool is_dap4)
             // DAP2 doesn't have signed 8-bit integer, so we need map it to INT16.
             if(true == is_dap4) {
                 if (sign == H5T_SGN_NONE)      
-                    //return UINT8;    
                     return BYTE;
                 else
                     return INT8;
@@ -640,7 +640,6 @@ bool check_h5str(hid_t h5type)
 /// \todo re-written in this re-engineering process. KY 2011-Nov. 14th
 ///////////////////////////////////////////////////////////////////////////////
 string print_attr(hid_t type, int loc, void *sm_buf) {
-//static char *print_attr(hid_t type, int loc, void *sm_buf) {
     union {
         unsigned char* ucp;
         char *tcp;
@@ -680,8 +679,6 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
             // change void pointer into the corresponding integer datatype.
             // 32 should be long enough to hold one integer and one
             // floating point number.
-            //rep = new char[32];
-            //memset(rep, 0, 32);
             rep.resize(32);
 
             if (size == 1){
@@ -756,9 +753,9 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
                 int ll = strlen(gps);
 
                 // Add the dot to assure this is a floating number
-                if (!strchr(gps, '.') && !strchr(gps, 'e') && !strchr(gps,'E')) {
-                    if(true == is_a_fin)
-                        gps[ll++] = '.';
+                if (!strchr(gps, '.') && !strchr(gps, 'e') && !strchr(gps,'E')
+                   && (true == is_a_fin)){
+                    gps[ll++] = '.';
                 }
 
                 gps[ll] = '\0';
@@ -771,28 +768,28 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
                 gp.tdp = (double *) sm_buf;
                 snprintf(gps, 30, "%.17g", *(gp.tdp + loc));
                 int ll = strlen(gps);
-                if (!strchr(gps, '.') && !strchr(gps, 'e')&& !strchr(gps,'E')) {
-                    if(true == is_a_fin)
-                        gps[ll++] = '.';
+                if (!strchr(gps, '.') && !strchr(gps, 'e')&& !strchr(gps,'E')
+                   && (true == is_a_fin)) {
+                    gps[ll++] = '.';
                 }
                 gps[ll] = '\0';
                 snprintf(&rep[0], 32, "%s", gps);
             } 
             else if (H5Tget_size(type) == 0){
-		throw InternalErr(__FILE__, __LINE__, "H5Tget_size() failed.");
-	    }
+                throw InternalErr(__FILE__, __LINE__, "H5Tget_size() failed.");
+            }
             break;
         }
 
         case H5T_STRING: {
             int str_size = H5Tget_size(type);
             if(H5Tis_variable_str(type) == true) {
-		throw InternalErr(__FILE__, __LINE__, 
+                throw InternalErr(__FILE__, __LINE__, 
                       "print_attr function doesn't handle variable length string, variable length string should be handled separately.");
             }
-	    if (str_size == 0){
-		throw InternalErr(__FILE__, __LINE__, "H5Tget_size() failed.");
-	    }
+            if (str_size == 0){
+                throw InternalErr(__FILE__, __LINE__, "H5Tget_size() failed.");
+            }
             BESDEBUG("h5", "=print_attr(): H5T_STRING sm_buf=" << (char *) sm_buf
                 << " size=" << str_size << endl);
             char *buf = NULL;
@@ -801,7 +798,6 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
                 buf = new char[str_size + 1];
                 strncpy(buf, (char *) sm_buf, str_size);
                 buf[str_size] = '\0';
-                //rep = new char[str_size + 3];
                 // Not necessarily allocate 3 more bytes. 
                 rep.resize(str_size+3);
                 snprintf(&rep[0], str_size + 3, "%s", buf);
@@ -851,8 +847,6 @@ D4AttributeType daptype_strrep_to_dap4_attrtype(std::string s){
         return attr_str_c;
     else if (s == "Url")
         return attr_url_c;
-    //else if (s == "otherxml")
-    //    return attr_otherxml_c;
     else
         return attr_null_c;
 
@@ -897,13 +891,13 @@ BaseType *Get_bt(const string &vname,
             BESDEBUG("h5", "=Get_bt() H5T_INTEGER size = " << size << " sign = "
                 << sign << endl);
 
-	    if (sign == H5T_SGN_ERROR) {
+            if (sign == H5T_SGN_ERROR) {
                 throw InternalErr(__FILE__, __LINE__, "cannot retrieve the sign type of the integer");
             }
             if (size == 0) {
-		throw InternalErr(__FILE__, __LINE__, "cannot return the size of the datatype");
-	    }
-	    else if (size == 1) { // Either signed char or unsigned char
+                throw InternalErr(__FILE__, __LINE__, "cannot return the size of the datatype");
+            }
+            else if (size == 1) { // Either signed char or unsigned char
                 // DAP2 doesn't support signed char, it maps to DAP int16.
                 if (sign == H5T_SGN_2) {
                     if (false == is_dap4) // signed char to DAP2 int16
@@ -967,7 +961,7 @@ BaseType *Get_bt(const string &vname,
 
         // The array datatype is rarely,rarely used. So this
         // part of code is not reviewed.
- #if 0
+#if 0
         case H5T_ARRAY: {
             BaseType *ar_bt = 0;
             try {
@@ -1096,22 +1090,20 @@ Structure *Get_structure(const string &varname,const string &vpath,
 
     try {
         structure_ptr = new HDF5Structure(varname, vpath, dataset);
-        //structure_ptr->set_did(dt_inst.dset);
-        //structure_ptr->set_tid(dt_inst.type);
 
         // Retrieve member types
         int nmembs = H5Tget_nmembers(datatype);
         BESDEBUG("h5", "=Get_structure() has " << nmembs << endl);
-	if (nmembs < 0){
-	   throw InternalErr(__FILE__, __LINE__, "cannot retrieve the number of elements");
-	}
+        if (nmembs < 0){
+            throw InternalErr(__FILE__, __LINE__, "cannot retrieve the number of elements");
+        }
         for (int i = 0; i < nmembs; i++) {
             memb_name = H5Tget_member_name(datatype, i);
             H5T_class_t memb_cls = H5Tget_member_class(datatype, i);
             memb_type = H5Tget_member_type(datatype, i);
-	    if (memb_name == NULL){
-		throw InternalErr(__FILE__, __LINE__, "cannot retrieve the name of the member");
-	    }
+            if (memb_name == NULL){
+                throw InternalErr(__FILE__, __LINE__, "cannot retrieve the name of the member");
+            }
             if ((memb_cls < 0) | (memb_type < 0)) {
                 throw InternalErr(__FILE__, __LINE__,
                                   string("Type mapping error for ")
@@ -1140,13 +1132,13 @@ Structure *Get_structure(const string &varname,const string &vpath,
                     size_t size = H5Tget_size(memb_type);
                     int nelement = 1;
 
-		    if (dtype_base < 0) {
+                    if (dtype_base < 0) {
                         throw InternalErr(__FILE__, __LINE__, "cannot return the base memb_type");
- 	            }
-		    if (ndim < 0) {
+                    }
+                    if (ndim < 0) {
                         throw InternalErr(__FILE__, __LINE__, "cannot return the rank of the array memb_type");
                     }
-		    if (size == 0) {
+                    if (size == 0) {
                         throw InternalErr(__FILE__, __LINE__, "cannot return the size of the memb_type");
                     }
 
@@ -1174,40 +1166,30 @@ Structure *Get_structure(const string &varname,const string &vpath,
                             nelement = nelement * size2[dim_index];
                         }
 
-                        // May delete them later since all these can be obtained from the file ID.
-                        //h5_ar->set_did(dt_inst.dset);
-                        // Assign the array memb_type id.
-                        //h5_ar->set_tid(memb_type);
                         h5_ar->set_memneed(size);
                         h5_ar->set_numdim(ndim);
                         h5_ar->set_numelm(nelement);
                         h5_ar->set_length(nelement);
 
-	                structure_ptr->add_var(h5_ar);
+                        structure_ptr->add_var(h5_ar);
                         delete h5_ar;
 	
                     }
                     else if (H5T_INTEGER == array_memb_cls || H5T_FLOAT == array_memb_cls || H5T_STRING == array_memb_cls) { 
                         ar_bt = Get_bt(memb_name, memb_name,dataset, dtype_base,is_dap4);
                         HDF5Array *h5_ar = new HDF5Array(memb_name,dataset,ar_bt);
-                        //btp = new HDF5Array(memb_name, dataset, ar_bt);
-                        //HDF5Array &h5_ar = static_cast < HDF5Array & >(*btp);
                     
                         for (int dim_index = 0; dim_index < ndim; dim_index++) {
                             h5_ar->append_dim(size2[dim_index]);
                             nelement = nelement * size2[dim_index];
                         }
 
-                        // May delete them later
-                        //h5_ar->set_did(dt_inst.dset);
-                        // Assign the array memb_type id.
-                        //h5_ar->set_tid(memb_type);
                         h5_ar->set_memneed(size);
                         h5_ar->set_numdim(ndim);
                         h5_ar->set_numelm(nelement);
                         h5_ar->set_length(nelement);
 
-	                structure_ptr->add_var(h5_ar);
+                        structure_ptr->add_var(h5_ar);
                         delete h5_ar;
                     }
                     if( ar_bt ) delete ar_bt;
@@ -1233,11 +1215,11 @@ Structure *Get_structure(const string &varname,const string &vpath,
             else {
                 free(memb_name);
                 memb_name = NULL;
-		throw InternalErr(__FILE__, __LINE__, "unsupported field datatype inside a compound datatype");
+                throw InternalErr(__FILE__, __LINE__, "unsupported field datatype inside a compound datatype");
             }
             // Caller needs to free the memory allocated by the library for memb_name.
             if(memb_name != NULL)
-                  free(memb_name);
+                free(memb_name);
         }
     }
     catch (...) {
@@ -1596,9 +1578,8 @@ void obtain_dimnames(hid_t dset,int ndims, DS_t *dt_inst_ptr) {
                 if(H5Dclose(ref_dset)<0) {
                     throw InternalErr(__FILE__,__LINE__,"Cannot close the HDF5 dataset in the function obtain_dimnames().");
                 }
-                ref_dset = -1;
                 objname.clear();
-            }// for (vector<Dimension *>::iterator ird = var->dims.begin()
+            }// for (vector<Dimension *>::iterator ird is var->dims.begin()
             if(vlbuf.size()!= 0) {
 
                 if ((aspace_id = H5Aget_space(attr_id)) < 0) {

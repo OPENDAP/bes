@@ -49,7 +49,6 @@ struct HDF5CFDAPUtil {
     static string print_type(H5DataType h5type);
     static string print_attr(H5DataType h5type, int loc, void *vals);
     static void replace_double_quote(string &str);
-//    static bool check_beskeys(const string key);
 
     /// A customized escaping function to escape special characters following OPeNDAP's escattr function
     /// that can be found at escaping.cc and escaping.h. i

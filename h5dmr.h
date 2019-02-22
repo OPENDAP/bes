@@ -54,12 +54,8 @@ using namespace libdap;
 #include <D4Group.h>
 #include <D4Attributes.h>
 
-//bool depth_first(hid_t, char *,  D4Group* par_grp, const char *);
-
-//bool breadth_first(hid_t, char *, DMR &, D4Group* par_grp, const char *,bool);
 bool breadth_first(hid_t, char *, D4Group* par_grp, const char *,bool);
 
-//void read_objects(DMR & dmr, D4Group* d4_grp,const string & varname, const string & filename,const hid_t);
 void read_objects(D4Group* d4_grp,const string & varname, const string & filename,const hid_t);
 void read_objects_base_type(D4Group* d4_grp,const string & varname, const string & filename,const hid_t);
 void read_objects_structure(D4Group* d4_grp,const string & varname, const string & filename,const hid_t);
