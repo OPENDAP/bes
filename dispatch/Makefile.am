@@ -28,7 +28,7 @@ pkgdata_DATA = bes/bes_help.html bes/bes_help.txt bes/bes_help.xml
 EXTRA_DIST = bes/bes.conf.in bes/bes.conf bes/bes_help.html bes/bes_help.txt \
 	bes/bes_help.xml PicoSHA2 bes/site.conf.proto
 
-DISTCLEANFILES = bes/bes.conf bes/site.conf.proto
+DISTCLEANFILES = bes/bes.conf 
 
 # confdir = $(sysconfdir)/bes
 # Edit while working on C7 RPM builds jhrg 9/19/18

@@ -6,14 +6,15 @@
   <img alt="Coverity" src="https://scan.coverity.com/projects/5060/badge.svg"/>
 </a>
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2008575.svg)](https://doi.org/10.5281/zenodo.2008575)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2576017.svg)](https://doi.org/10.5281/zenodo.2576017)
+
 
 README for the OPeNDAP BES 
 ==========================
 
-# Updated for version 3.20.2. See NEWS
+# Updated for version 3.20.3. See NEWS
 
-This version of the BES requires libdap-3.20.2
+This version of the BES requires libdap-3.20.3  [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2566512.svg)](https://doi.org/10.5281/zenodo.2566512)
 
 ## Bug fixes for Hyrax 1.15
 
