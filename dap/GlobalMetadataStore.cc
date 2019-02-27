@@ -819,8 +819,14 @@ GlobalMetadataStore::write_response_helper(const string &name, ostream &os, cons
     if (get_read_lock(item_name, fd)) {
         VERBOSE("Metadata store: Cache hit: read " << object_name << " response for '" << name << "'." << endl);
         BESDEBUG(DEBUG_KEY, __FUNCTION__ << " Found " << item_name << " in the store." << endl);
-        transfer_bytes(fd, os);
-        unlock_and_close(item_name); // closes fd
+        try {
+            transfer_bytes(fd, os);
+            unlock_and_close(item_name); // closes fd
+        }
+        catch (...) {
+            unlock_and_close(item_name);
+            throw;
+        }
     }
     else {
         throw BESInternalError("Could not open '" + item_name + "' in the metadata store.", __FILE__, __LINE__);
@@ -844,11 +850,16 @@ GlobalMetadataStore::write_response_helper(const string &name, ostream &os, cons
     if (get_read_lock(item_name, fd)) {
         VERBOSE("Metadata store: Cache hit: read " << object_name << " response for '" << name << "'." << endl);
         BESDEBUG(DEBUG_KEY, __FUNCTION__ << " Found " << item_name << " in the store." << endl);
+        try {
+            insert_xml_base(fd, os, xml_base);
 
-        insert_xml_base(fd, os, xml_base);
-
-        transfer_bytes(fd, os);
-        unlock_and_close(item_name); // closes fd
+            transfer_bytes(fd, os);
+            unlock_and_close(item_name); // closes fd
+        }
+        catch (...) {
+            unlock_and_close(item_name);
+            throw;
+        }
     }
     else {
         throw BESInternalError("Could not open '" + item_name + "' in the metadata store.", __FILE__, __LINE__);
@@ -1034,8 +1045,14 @@ GlobalMetadataStore::get_dds_object(const string &name)
     TempFile dds_tmp(get_cache_directory() + "/opendapXXXXXX");
 
     fstream dds_fs(dds_tmp.get_name().c_str(), std::fstream::out);
-    write_dds_response(name, dds_fs);     // throws BESInternalError if not found
-    dds_fs.close();
+    try {
+        write_dds_response(name, dds_fs);     // throws BESInternalError if not found
+        dds_fs.close();
+    }
+    catch (...) {
+        dds_fs.close();
+        throw;
+    }
 
     BaseTypeFactory btf;
     auto_ptr<DDS> dds(new DDS(&btf));
@@ -1043,8 +1060,14 @@ GlobalMetadataStore::get_dds_object(const string &name)
 
     TempFile das_tmp(get_cache_directory() + "/opendapXXXXXX");
     fstream das_fs(das_tmp.get_name().c_str(), std::fstream::out);
-    write_das_response(name, das_fs);     // throws BESInternalError if not found
-    das_fs.close();
+    try {
+        write_das_response(name, das_fs);     // throws BESInternalError if not found
+        das_fs.close();
+    }
+    catch (...) {
+        das_fs.close();
+        throw;
+    }
 
     auto_ptr<DAS> das(new DAS());
     das->parse(das_tmp.get_name());

@@ -85,19 +85,18 @@
 #define BESISDEBUG( x ) BESDebug::IsSet( x )
 #endif
 
-class BESDebug
-{
+class BESDebug {
 private:
-    typedef std::map<std::string,bool> DebugMap;
+    typedef std::map<std::string, bool> DebugMap;
 
-    static DebugMap _debug_map ;
-    static std::ostream *_debug_strm ;
-    static bool	_debug_strm_created ;
+    static DebugMap _debug_map;
+    static std::ostream *_debug_strm;
+    static bool _debug_strm_created;
 
-    typedef DebugMap::iterator _debug_iter ;
+    typedef DebugMap::iterator _debug_iter;
 
 public:
-    typedef DebugMap::const_iterator debug_citer ;
+    typedef DebugMap::const_iterator debug_citer;
 
     static const DebugMap &debug_map()
     {
@@ -116,12 +115,10 @@ public:
      */
     static void Set(const std::string &flagName, bool value)
     {
-        if (flagName == "all" && value)
-        {
+        if (flagName == "all" && value) {
             _debug_iter i = _debug_map.begin();
             _debug_iter e = _debug_map.end();
-            for (; i != e; i++)
-            {
+            for (; i != e; i++) {
                 (*i).second = true;
             }
         }
@@ -142,14 +139,11 @@ public:
     {
         debug_citer a = _debug_map.find("all");
         debug_citer i = _debug_map.find(flagName);
-        if (i == _debug_map.end())
-        {
-            if (a == _debug_map.end())
-            {
+        if (i == _debug_map.end()) {
+            if (a == _debug_map.end()) {
                 _debug_map[flagName] = false;
             }
-            else
-            {
+            else {
                 _debug_map[flagName] = true;
             }
         }
@@ -203,32 +197,28 @@ public:
      */
     static void SetStrm(std::ostream *strm, bool created)
     {
-        if (_debug_strm_created && _debug_strm)
-        {
+        if (_debug_strm_created && _debug_strm) {
             _debug_strm->flush();
             delete _debug_strm;
             _debug_strm = NULL;
         }
-        else if (_debug_strm)
-        {
+        else if (_debug_strm) {
             _debug_strm->flush();
         }
-        if (!strm)
-        {
+        if (!strm) {
             _debug_strm = &std::cerr;
             _debug_strm_created = false;
         }
-        else
-        {
+        else {
             _debug_strm = strm;
             _debug_strm_created = created;
         }
     }
 
-    static void			SetUp( const std::string &values ) ;
-    static void			Help( std::ostream &strm ) ;
-    static bool         IsContextName( const std::string &name ) ;
-    static std::string       GetOptionsString() ;
-} ;
+    static void SetUp(const std::string &values);
+    static void Help(std::ostream &strm);
+    static bool IsContextName(const std::string &name);
+    static std::string GetOptionsString();
+};
 
 #endif // I_BESDebug_h

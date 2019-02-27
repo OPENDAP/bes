@@ -50,6 +50,10 @@ env:
   - TESTSUITEFLAGS=-j7
   # Change this when libdap version numbers change
   - LIBDAP_RPM_VERSION=3.20.3-1
+  # SONAR_LOGIN, made using "travis encrypt --org -r OPENDAP/bes SONAR_LOGIN=335df..."
+  - secure: "TmoFcgeIyAEjFyrlqB6rhdUhDqPJfxVZmT5fewgVHj0xm767VZ6DU21mM6ZHgNGyk99TzX0Gx/dwSqbsUj18hSSAvEa7fJQSKJ5IBJvTeMKhXn1DPPG9VpuZ4ti5afRDiNr6EJKbVxwBTkz+3798S8LajPuXGupYupir8IJQCt8="
+  # SONAR_MODULES_LOGIN, using "travis encrypt --org -r OPENDAP/bes SONAR_MODULES_LOGIN=42ba..."
+  - secure: "V3fMZgzMRRB0xFQMTvXf2fFPHIdwvg2y6bNFKqSGI5HP2sZEtc7XqSC4hjboR9RjnyZY/H1L/EuYQCS45gmJMsmtzo4g1Cn0oTfuPRJzDSi00jRlB1wUl5p1pU0Fdv2ffrGF4m6/SRfYFT0KkR/Tp8hdIoYx5/8R4MajysABMT4="
   # COVERITY_SCAN_TOKEN
   - secure: "KNE6gkK7+WEQkNLiW/oap/3E/YSq6nzH6icXWpgA3MZj2KX0i6IzQgteeEGFUC1vDTzkCpqSidvGxdd22V33s0sHDuLRI5e17VFMjI5WyWjRQaXMhWmyO5/ofx7AArvaCWq6w6zfn1T/LiIuHXc14Rg8uuWEgDGWM0USiSbMepc="
   # AWS_ACCESS_KEY_ID
@@ -58,15 +62,12 @@ env:
   - secure: "BVETDaGI/cwfUHdvsGPkV1o7jd6OnqyvtFCPk0WsmCWh6PdpwXQ8D4yFdk4jejWxa0YFdRiCgK3ThHqqzv+6pDxrMnpYOx2O+ZjK//ErECjDa+OCJr2ObCwlqOPE6+4aVmPDz5ecjd2inVR5CfL5/Kt3Zgn4U9fNBUz9OMYpRF4="
 
 before_install:
-# - sudo apt-get update -qq
 - pip install --user awscli
 
 # hyrax-dependencies-build.tar.gz includes/makes the build directory
 install:
-# - (cd $TRAVIS_BUILD_DIR && curl -s -O https://s3.amazonaws.com/opendap.travis.build/hyrax-dependencies-build.tar.gz) 
 - aws s3 cp s3://opendap.travis.build/hyrax-dependencies-build.tar.gz $TRAVIS_BUILD_DIR
 - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/hyrax-dependencies-build.tar.gz
-# - (cd $TRAVIS_BUILD_DIR && curl -s -O https://s3.amazonaws.com/opendap.travis.build/libdap-build.tar.gz) 
 - aws s3 cp s3://opendap.travis.build/libdap-build.tar.gz $TRAVIS_BUILD_DIR
 - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/libdap-build.tar.gz
 
@@ -74,14 +75,37 @@ before_script:
 - printenv
 - autoreconf --force --install --verbose
 
+# Build all the stages for 'master'. For a PR, run the 'build' and 'package' stages.
+# For a branch with 'sonar' in it's name only run the scan, not the build or package
+# stages.
+stages:
+- name: build
+  if:  branch = master OR (type = pull_request AND NOT branch =~ /^.*sonar.*$/)
+- name: scan
+  if:  branch = master OR branch =~ /^.*sonar.*$/
+- name: package
+  if:  branch = master OR (type = pull_request AND NOT branch =~ /^.*sonar.*$/)
+
 jobs:
-  stages:
-  - name: build
-    if:  branch != coverity_scan
-  - name: package
-    if:  branch != coverity_scan
-    
   include:
+  - stage: scan
+    addons: 
+      sonarcloud: 
+    script:
+    - export BES_BUILD=sonar-bes-framework
+    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+    - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+    - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
+
+  - stage: scan
+    addons: 
+      sonarcloud: 
+    script:
+    - export BES_BUILD=sonar-bes-modules
+    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+    - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+    - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
+
   - stage: build
     script: 
     - export BES_BUILD=main
@@ -94,7 +118,7 @@ jobs:
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
     - make distcheck -j7
 
-  #- stage: package
+  # - stage: package
   #  script: 
   #  - export BES_BUILD=deb
   #  - mkdir -p $prefix/debbuild
@@ -138,6 +162,5 @@ deploy:
   skip_cleanup: true
   local_dir: $TRAVIS_BUILD_DIR/package
   on:
-    branch:
-    - master
+    branch: master
     condition: $BES_BUILD =~ ^deb|centos7|centos6$

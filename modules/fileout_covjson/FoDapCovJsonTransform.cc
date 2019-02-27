@@ -254,25 +254,20 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
         vector<unsigned int> shape(numDim);
         long length = focovjson::computeConstrainedShape(a, &shape);
 
-        if(currAxis->name.compare("t") != 0) {
-            if(sendData) {
+        if (currAxis->name.compare("t") != 0) {
+            if (sendData) {
                 currAxis->values += "\"values\": ";
                 unsigned int indx = 0;
                 vector<T> src(length);
                 a->value(&src[0]);
 
-                try {
-                    ostringstream *astrm = new ostringstream;
-                    indx = covjsonSimpleTypeArrayWorker(astrm, &src[0], 0, &shape, 0);
-                    currAxis->values += astrm->str();
-                    free(astrm);
-                }
-                catch(...) {
-                    throw;
-                }
+                ostringstream astrm;
+                indx = covjsonSimpleTypeArrayWorker(&astrm, &src[0], 0, &shape, 0);
+                currAxis->values += astrm.str();
 
-                if(length != indx) {
-                    BESDEBUG(FoDapCovJsonTransform_debug_key, "covjsonSimpleTypeArray(Axis) - indx NOT equal to content length! indx:  " << indx << "  length: " << length << endl);
+                if (length != indx) {
+                    BESDEBUG(FoDapCovJsonTransform_debug_key,
+                        "covjsonSimpleTypeArray(Axis) - indx NOT equal to content length! indx:  " << indx << "  length: " << length << endl);
                 }
                 assert(length == indx);
             }
@@ -318,23 +313,19 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
         }
         currParameter->shape += "],";
 
-        if(sendData) {
+        if (sendData) {
             currParameter->values += "\"values\": ";
             unsigned int indx = 0;
             vector<T> src(length);
             a->value(&src[0]);
 
-            try {
-                ostringstream *pstrm = new ostringstream;
-                indx = covjsonSimpleTypeArrayWorker(pstrm, &src[0], 0, &shape, 0);
-                currParameter->values += pstrm->str();
-                free(pstrm);
-            }
-            catch(...) {
-                throw;
-            }
-            if(length != indx) {
-                BESDEBUG(FoDapCovJsonTransform_debug_key, "covjsonSimpleTypeArray(Parameter) - indx NOT equal to content length! indx:  " << indx << "  length: " << length << endl);
+            ostringstream pstrm;
+            indx = covjsonSimpleTypeArrayWorker(&pstrm, &src[0], 0, &shape, 0);
+            currParameter->values += pstrm.str();
+
+            if (length != indx) {
+                BESDEBUG(FoDapCovJsonTransform_debug_key,
+                    "covjsonSimpleTypeArray(Parameter) - indx NOT equal to content length! indx:  " << indx << "  length: " << length << endl);
             }
             assert(length == indx);
         }
@@ -368,19 +359,24 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
 void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, string indent, bool sendData)
 {
     string childindent = indent + _indent_increment;
+#if 0
     bool *axisRetrieved = new bool;
-    bool *parameterRetrieved = new bool;
+#endif
+    bool axisRetrieved = false;
+    bool parameterRetrieved = false;
+#if 0
     *axisRetrieved = false;
     *parameterRetrieved = false;
+#endif
 
-    getAttributes(strm, a->get_attr_table(), a->name(), axisRetrieved, parameterRetrieved);
+    getAttributes(strm, a->get_attr_table(), a->name(), &axisRetrieved, &parameterRetrieved);
 
     // a->print_val(*strm, "\n", true); // For testing purposes
 
     // sendData = false; // For testing purposes
 
     // If we are dealing with an Axis
-    if((*axisRetrieved == true) && (*parameterRetrieved == false)) {
+    if((axisRetrieved == true) && (parameterRetrieved == false)) {
         struct Axis *currAxis;
         currAxis = axes[axisCount - 1];
 
@@ -388,25 +384,21 @@ void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, 
         vector<unsigned int> shape(numDim);
         long length = focovjson::computeConstrainedShape(a, &shape);
 
-        if(currAxis->name.compare("t") != 0) {
-            if(sendData) {
+        if (currAxis->name.compare("t") != 0) {
+            if (sendData) {
                 currAxis->values += "\"values\": ";
                 unsigned int indx = 0;
                 // The string type utilizes a specialized version of libdap:Array.value()
                 vector<string> sourceValues;
                 a->value(sourceValues);
 
-                try {
-                    ostringstream *astrm = new ostringstream;
-                    indx = covjsonSimpleTypeArrayWorker(astrm, (string *) (&sourceValues[0]), 0, &shape, 0);
-                    currAxis->values += astrm->str();
-                    free(astrm);
-                }
-                catch(...) {
-                    throw;
-                }
-                if(length != indx) {
-                    BESDEBUG(FoDapCovJsonTransform_debug_key, "covjsonStringArray(Axis) - indx NOT equal to content length! indx:  " << indx << "  length: " << length << endl);
+                ostringstream astrm;
+                indx = covjsonSimpleTypeArrayWorker(&astrm, (string *) (&sourceValues[0]), 0, &shape, 0);
+                currAxis->values += astrm.str();
+
+                if (length != indx) {
+                    BESDEBUG(FoDapCovJsonTransform_debug_key,
+                        "covjsonStringArray(Axis) - indx NOT equal to content length! indx:  " << indx << "  length: " << length << endl);
                 }
                 assert(length == indx);
             }
@@ -417,7 +409,7 @@ void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, 
     }
 
     // If we are dealing with a Parameter
-    else if(*axisRetrieved == false && *parameterRetrieved == true) {
+    else if(axisRetrieved == false && parameterRetrieved == true) {
         struct Parameter *currParameter;
         currParameter = parameters[parameterCount - 1];
 
@@ -452,24 +444,20 @@ void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, 
         }
         currParameter->shape += "],";
 
-        if(sendData) {
+        if (sendData) {
             currParameter->values += "\"values\": ";
             unsigned int indx = 0;
             // The string type utilizes a specialized version of libdap:Array.value()
             vector<string> sourceValues;
             a->value(sourceValues);
 
-            try {
-                ostringstream *pstrm = new ostringstream;
-                indx = covjsonSimpleTypeArrayWorker(pstrm, (string *) (&sourceValues[0]), 0, &shape, 0);
-                currParameter->values += pstrm->str();
-                free(pstrm);
-            }
-            catch(...) {
-                throw;
-            }
-            if(length != indx) {
-                BESDEBUG(FoDapCovJsonTransform_debug_key, "covjsonStringArray(Parameter) - indx NOT equal to content length! indx:  " << indx << "  length: " << length << endl);
+            ostringstream pstrm;
+            indx = covjsonSimpleTypeArrayWorker(&pstrm, (string *) (&sourceValues[0]), 0, &shape, 0);
+            currParameter->values += pstrm.str();
+
+            if (length != indx) {
+                BESDEBUG(FoDapCovJsonTransform_debug_key,
+                    "covjsonStringArray(Parameter) - indx NOT equal to content length! indx:  " << indx << "  length: " << length << endl);
             }
             assert(length == indx);
         }
@@ -478,8 +466,11 @@ void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, 
         }
     }
 
+#if 0
     free(axisRetrieved);
     free(parameterRetrieved);
+#endif
+
 }
 
 
