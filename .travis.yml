@@ -80,11 +80,11 @@ before_script:
 # stages.
 stages:
 - name: build
-  if:  branch = master OR (type = pull_request AND NOT branch =~ /^.*sonar.*$/)
+  if:  branch = master OR (type = pull_request AND NOT head_branch =~ /^.*sonar.*$/)
 - name: scan
-  if:  branch = master OR branch =~ /^.*sonar.*$/
+  if:  branch = master OR head_branch =~ /^.*sonar.*$/
 - name: package
-  if:  branch = master OR (type = pull_request AND NOT branch =~ /^.*sonar.*$/)
+  if:  branch = master OR (type = pull_request AND NOT head_branch =~ /^.*sonar.*$/)
 
 jobs:
   include:
