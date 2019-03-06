@@ -75,16 +75,15 @@ before_script:
 - printenv
 - autoreconf --force --install --verbose
 
-# Build all the stages for 'master'. For a PR, run the 'build' and 'package' stages.
-# For a branch with 'sonar' in it's name only run the scan, not the build or package
-# stages.
+# Build all the stages for 'master'. For a PR, run the 'build' and 'package' stages,
+# but do not run the scan.
 stages:
 - name: build
-  if:  branch = master OR (type = pull_request AND NOT branch =~ /^.*sonar.*$/)
+  if:  branch = master
 - name: scan
-  if:  branch = master OR branch =~ /^.*sonar.*$/
+  if:  branch = master AND NOT type = pull_request
 - name: package
-  if:  branch = master OR (type = pull_request AND NOT branch =~ /^.*sonar.*$/)
+  if:  branch = master
 
 jobs:
   include:
