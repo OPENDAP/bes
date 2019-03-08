@@ -3137,11 +3137,13 @@ cerr<<"Coming to the wrapper" <<endl;
             attr_vgroup_name_str = attr_vgroup_name_str.substr(0,attr_vgroup_name_str.size()-1);
  cerr<<"attr_vgroup_name_str "<<attr_vgroup_name_str<<endl;
             if(true == is_grid && attr_vgroup_name_str=="Grid Attributes"){
-                map_eos2_one_object_attrs(das,object_attr_vgroup,vgroup_name);
+                map_eos2_one_object_attrs(das,file_id,object_attr_vgroup,vgroup_name);
+                Vdetach(object_attr_vgroup);
                 break;
             }
             else if(false == is_grid && attr_vgroup_name_str=="Swath Attributes") {
-                map_eos2_one_object_attrs(das,object_attr_vgroup,vgroup_name);
+                map_eos2_one_object_attrs(das,file_id,object_attr_vgroup,vgroup_name);
+                Vdetach(object_attr_vgroup);
                 break;
             }
             Vdetach(object_attr_vgroup);
@@ -3151,47 +3153,49 @@ cerr<<"Coming to the wrapper" <<endl;
     }
 }
 
-void HDFCFUtil::map_eos2_one_object_attrs(libdap:: DAS &das,int32 obj_attr_group_id, const string& vgroup_name) {
+void HDFCFUtil::map_eos2_one_object_attrs(libdap:: DAS &das,int32 file_id, int32 obj_attr_group_id, const string& vgroup_name) {
 
     int32 num_gobjects = Vntagrefs (obj_attr_group_id);
 cerr<<"num_gobjects is "<<num_gobjects<<endl;
 cerr<<"coming to object_attrs" <<endl;
-    intn n_attrs = Vnattrs(obj_attr_group_id);
-    if(n_attrs == FAIL) 
-        throw InternalErr(__FILE__,__LINE__,"Failed to obtain number of attributes in a vgroup.");
-    if(n_attrs > 0) {
-cerr<<"having attributes "<<endl;
-        char attr_name[H4_MAX_NC_NAME];
-        int32 attr_type,attr_n_values;
-        string table_name = HDFCFUtil::get_CF_string(vgroup_name);
-#if 0
-        AttrTable *at = das.get_table(table_name);
-        if(!at)
-            at = das.add_table(table_name, new AttrTable);
-#endif
-        for(int attr_index = 0; attr_index <n_attrs; attr_index++) {
 
-        int32 value_size_32 = 0;
-        intn status_n = Vattrinfo(obj_attr_group_id, (intn)attr_index, attr_name, &attr_type, 
-                            &attr_n_values, &value_size_32);
-        if(status_n == FAIL) {
-            cerr<<"Vattrinfo failed. "<<endl;
+    for(int i = 0; i<num_gobjects;i++) {
+
+        int32 obj_tag, obj_ref;
+        if (Vgettagref (obj_attr_group_id, i, &obj_tag, &obj_ref) == FAIL) {
+            //unexpected_fail = true;
+            cerr<<"Vgettagref failed "<<endl;
+            //err_msg = string(ERR_LOC) + " Vgettagref failed. ";
+            //goto cleanFail;
         }
-        int value_size = value_size_32;
 
-	    string tempname (attr_name);
-            tempname = HDFCFUtil::get_CF_string(tempname);
-        vector<char> attr_value;
-        attr_value.resize(value_size);
+        if(Visvs(obj_attr_group_id,obj_ref)) {
+            int32 vdata_id = VSattach(file_id,obj_ref,"r");
+            if(VSisattr(vdata_id)) {
+                int32 num_field = VFnfields(vdata_id);
+                if(num_field !=1) 
+                    cerr<<"number of field must be 1. "<<endl;
+                int32 num_record = VSelts(vdata_id);
+                if(num_record !=1)
+                    cerr<<"number of vdata record must be 1. "<<endl;
+                char vdata_name[VSNAMELENMAX];
+                VSQueryname(vdata_id,vdata_name);
+                string vdatanamestr(vdata_name);
+                int32 fieldsize = VFfieldesize(vdata_id,0);
+                char* fieldname = VFfieldname(vdata_id,0);
+                int32 fieldtype = VFfieldtype(vdata_id,0);
+                VSsetfields(vdata_id,fieldname);
+                vector<char> vdata_value;
+                vdata_value.resize(fieldsize);
+                VSread(vdata_id,(uint8*)&vdata_value[0],1,FULL_INTERLACE);
+cerr<<"vdata name is "<<vdatanamestr<<endl;
+cerr<<"vdata size is "<<fieldsize <<endl;
+cerr<<"field name is "<<fieldname <<endl;
+            }
+            VSdetach(vdata_id);
 
-        cerr<<"attribute name is "<<tempname <<endl;
-        status_n = Vgetattr(obj_attr_group_id,(intn)attr_index,&attr_value[0]);
-        if(status_n == FAIL) {
-            cerr<<"Vgetattr failed. " << "The attribute name is " << tempname <<endl;
-        }
         }
     }
-
 
     return;
 }
