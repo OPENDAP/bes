@@ -2668,8 +2668,14 @@ bool read_das_special_eos2_core(DAS &das,HDFSP::File* f,const string& filename,b
 
     }
 
+#if 0
+    // Handle HDF-EOS2 object attributes. These are found in AIRS version 6.
+    HDFCFUtil::map_eos2_objects_attrs(das,filename);
+#endif
+
     return true;
 }
+
 
 // MOD/MYD08M3 follows the no-CF scale/offset rulea,we need to change the add_offset value when add_offset is 0.
 void change_das_mod08_scale_offset(DAS &das, HDFSP::File *f) {

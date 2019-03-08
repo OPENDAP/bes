@@ -3001,6 +3001,200 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
 
 }
 
+void HDFCFUtil::map_eos2_objects_attrs(libdap::DAS &das,const string &filename) {
+    
+   /************************* Variable declaration **************************/
+
+   intn   status_n;     /* returned status for functions returning an intn  */
+   int32  status_32,    /* returned status for functions returning an int32 */
+          file_id, vgroup_id;
+   int32  lone_vg_number,      /* current lone vgroup number */
+          num_of_lones = 0;    /* number of lone vgroups */
+   int32 *ref_array;    /* buffer to hold the ref numbers of lone vgroups   */
+   //char  *vgroup_name, *vgroup_class;
+   uint16 name_len;
+
+   /********************** End of variable declaration **********************/
+ 
+   /*
+   * Open the HDF file for reading.
+   */
+   file_id = Hopen (filename.c_str(), DFACC_READ, 0); 
+
+   /*
+   * Initialize the V interface.
+   */
+   status_n = Vstart (file_id);
+
+   /*
+   * Get and print the names and class names of all the lone vgroups.
+   * First, call Vlone with num_of_lones set to 0 to get the number of
+   * lone vgroups in the file, but not to get their reference numbers.
+   */
+   num_of_lones = Vlone (file_id, NULL, num_of_lones );
+
+   /*
+   * Then, if there are any lone vgroups, 
+   */
+   if (num_of_lones > 0)
+   {
+      /*
+      * use the num_of_lones returned to allocate sufficient space for the
+      * buffer ref_array to hold the reference numbers of all lone vgroups,
+      */
+      vector<int32> ref_array;
+      ref_array.resize(num_of_lones);
+
+      /*
+      * and call Vlone again to retrieve the reference numbers into 
+      * the buffer ref_array.
+      */
+      num_of_lones = Vlone (file_id, &ref_array[0], num_of_lones);
+
+      /*
+      * Display the name and class of each lone vgroup.
+      */
+      for (lone_vg_number = 0; lone_vg_number < num_of_lones; 
+                                                            lone_vg_number++)
+      {
+         /*
+         * Attach to the current vgroup then get and display its
+         * name and class. Note: the current vgroup must be detached before
+         * moving to the next.
+         */
+         vgroup_id = Vattach (file_id, ref_array[lone_vg_number], "r");
+	 status_32 = Vgetnamelen(vgroup_id, &name_len);
+     vector<char> vgroup_name;
+     vgroup_name.resize(name_len+1);
+         status_32 = Vgetname (vgroup_id, &vgroup_name[0]);
+
+	 status_32 = Vgetclassnamelen(vgroup_id, &name_len);
+     vector<char>vgroup_class;
+     vgroup_class.resize(name_len+1);
+     status_32 = Vgetclass (vgroup_id, &vgroup_class[0]);
+
+     string vgroup_name_str(vgroup_name.begin(),vgroup_name.end());
+     vgroup_name_str = vgroup_name_str.substr(0,vgroup_name_str.size()-1);
+
+     string vgroup_class_str(vgroup_class.begin(),vgroup_class.end());
+     vgroup_class_str = vgroup_class_str.substr(0,vgroup_class_str.size()-1);
+	 //vgroup_class = (char *) HDmalloc(sizeof(char *) * (name_len+1));
+     cerr<<"vgroup name is "<<vgroup_name_str<<endl;
+     cerr<<"vgroup class is "<< vgroup_class_str <<endl;
+     if(vgroup_class_str =="GRID") 
+        map_eos2_one_object_attrs_wrapper(das,file_id,vgroup_id,vgroup_name_str,true);
+     else if(vgroup_class_str =="SWATH")
+        map_eos2_one_object_attrs_wrapper(das,file_id,vgroup_id,vgroup_name_str,false);
+
+     status_32 = Vdetach (vgroup_id);
+      } /* for */
+   } /* if */
+
+   /*
+   * Terminate access to the V interface and close the file.
+   */
+   status_n = Vend (file_id);
+   status_n = Hclose (file_id);
+
+   /*
+   * Free the space allocated by this program.
+   */
+   return ;
+
+}
+
+void HDFCFUtil::map_eos2_one_object_attrs_wrapper(libdap:: DAS &das,int32 file_id,int32 vgroup_id, const string& vgroup_name,bool is_grid) {
+
+cerr<<"Coming to the wrapper" <<endl;
+    intn status_n;
+    bool unexpected_fail = false;
+    //int  n_attr_value = 0;
+    char attr_name[H4_MAX_NC_NAME];
+
+    int32 num_gobjects = Vntagrefs (vgroup_id);
+    
+    
+    for(int i = 0; i<num_gobjects;i++) {
+
+        int32 obj_tag, obj_ref;
+        if (Vgettagref (vgroup_id, i, &obj_tag, &obj_ref) == FAIL) {
+            unexpected_fail = true;
+            cerr<<"Vgettagref failed "<<endl;
+            //err_msg = string(ERR_LOC) + " Vgettagref failed. ";
+            //goto cleanFail;
+        }
+
+        if (Visvg (vgroup_id, obj_ref) == TRUE) {
+                                                                      
+ cerr<<"Coming to the grid group "<<endl;
+            int32 object_attr_vgroup = Vattach(file_id,obj_ref,"r");
+            uint16 name_len = 0;
+	        int32 status_32 = Vgetnamelen(object_attr_vgroup, &name_len);
+            vector<char> attr_vgroup_name; 
+            attr_vgroup_name.resize(name_len+1);
+            status_32 = Vgetname (object_attr_vgroup, &attr_vgroup_name[0]);
+            string attr_vgroup_name_str(attr_vgroup_name.begin(),attr_vgroup_name.end());
+            attr_vgroup_name_str = attr_vgroup_name_str.substr(0,attr_vgroup_name_str.size()-1);
+ cerr<<"attr_vgroup_name_str "<<attr_vgroup_name_str<<endl;
+            if(true == is_grid && attr_vgroup_name_str=="Grid Attributes"){
+                map_eos2_one_object_attrs(das,object_attr_vgroup,vgroup_name);
+                break;
+            }
+            else if(false == is_grid && attr_vgroup_name_str=="Swath Attributes") {
+                map_eos2_one_object_attrs(das,object_attr_vgroup,vgroup_name);
+                break;
+            }
+            Vdetach(object_attr_vgroup);
+
+        }
+
+    }
+}
+
+void HDFCFUtil::map_eos2_one_object_attrs(libdap:: DAS &das,int32 obj_attr_group_id, const string& vgroup_name) {
+
+    int32 num_gobjects = Vntagrefs (obj_attr_group_id);
+cerr<<"num_gobjects is "<<num_gobjects<<endl;
+cerr<<"coming to object_attrs" <<endl;
+    intn n_attrs = Vnattrs(obj_attr_group_id);
+    if(n_attrs == FAIL) 
+        throw InternalErr(__FILE__,__LINE__,"Failed to obtain number of attributes in a vgroup.");
+    if(n_attrs > 0) {
+cerr<<"having attributes "<<endl;
+        char attr_name[H4_MAX_NC_NAME];
+        int32 attr_type,attr_n_values;
+        string table_name = HDFCFUtil::get_CF_string(vgroup_name);
+#if 0
+        AttrTable *at = das.get_table(table_name);
+        if(!at)
+            at = das.add_table(table_name, new AttrTable);
+#endif
+        for(int attr_index = 0; attr_index <n_attrs; attr_index++) {
+
+        int32 value_size_32 = 0;
+        intn status_n = Vattrinfo(obj_attr_group_id, (intn)attr_index, attr_name, &attr_type, 
+                            &attr_n_values, &value_size_32);
+        if(status_n == FAIL) {
+            cerr<<"Vattrinfo failed. "<<endl;
+        }
+        int value_size = value_size_32;
+
+	    string tempname (attr_name);
+            tempname = HDFCFUtil::get_CF_string(tempname);
+        vector<char> attr_value;
+        attr_value.resize(value_size);
+
+        cerr<<"attribute name is "<<tempname <<endl;
+        status_n = Vgetattr(obj_attr_group_id,(intn)attr_index,&attr_value[0]);
+        if(status_n == FAIL) {
+            cerr<<"Vgetattr failed. " << "The attribute name is " << tempname <<endl;
+        }
+        }
+    }
+
+
+    return;
+}
 
 string HDFCFUtil::escattr(string s)
 {

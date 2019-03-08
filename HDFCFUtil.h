@@ -230,6 +230,11 @@ struct HDFCFUtil
     // Handle the attributes with the BES key EnableVdataDescAttr.
     static void handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das);
 
+    // Map AIRS version 6 or MOD08 HDF-EOS object attributes to DAP2, here we simply call Hopen and just retrieve the vgroup info. for the performance reason.
+    static void map_eos2_objects_attrs(libdap::DAS &das,const string &filename);
+    static void map_eos2_one_object_attrs_wrapper(libdap::DAS &das,int32 file_id,int32 vgroup_id, const string &vgroup_name, bool is_grid);
+    static void map_eos2_one_object_attrs(libdap::DAS &das,int32 obj_attr_group_id, const string &vgroup_name);
+
     // Parse TRMM V7 GridHeaders
     //static void parser_trmm_v7_gridheader(int& latsize, int&lonsize, float& lat_start, float& lon_start, bool &sw_origin, bool & cr_reg);
     static void parser_trmm_v7_gridheader(const std:: vector<char>&value, int& latsize, int&lonsize, float& lat_start, float& lon_start, float& lat_res, float& lon_res, bool check_reg_orig);
