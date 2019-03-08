@@ -399,14 +399,14 @@ void FONgTransform::transform_to_geotiff()
                 //---------- write reverse raster----------
                 for (int row = 0; row <= height()-1; ++row) {
                     int offsety=height()-row-1;
-                    CPLErr error_write = band->RasterIO(GF_Write, 0, offsety, width(), 1, data+(row*width()), width(), 1, GDT_Float64, 0, 0);
+                    CPLErr error_write = band->RasterIO(GF_Write, 0, offsety, width(), 1, data+(row*width()), width(), 1, GDT_Byte, 0, 0);
                     if (error_write != CPLE_None)
                         throw Error("Could not write data for band: " + long_to_string(i + 1) + ": " + string(CPLGetLastErrorMsg()));
                 }
             }
             else {
                 BESDEBUG("fong3", "calling band->RasterIO" << endl);
-                CPLErr error = band->RasterIO(GF_Write, 0, 0, width(), height(), data, width(), height(), GDT_Float64, 0, 0);
+                CPLErr error = band->RasterIO(GF_Write, 0, 0, width(), height(), data, width(), height(), GDT_Byte, 0, 0);
                 if (error != CPLE_None)
                      throw Error("Could not write data for band: " + long_to_string(i+1) + ": " + string(CPLGetLastErrorMsg()));
             }
@@ -457,7 +457,7 @@ void FONgTransform::transform_to_jpeg2000()
 
     // No creation options for a memory dataset
     // NB: This is where the type of the bands is set. JPEG2000 only supports integer types.
-    d_dest = Driver->Create("in_memory_dataset", width(), height(), num_bands(), GDT_Int32, 0 /*options*/);
+    d_dest = Driver->Create("in_memory_dataset", width(), height(), num_bands(), GDT_Byte, 0 /*options*/);
     if (!d_dest)
         throw Error("Could not create in-memory dataset: " + string(CPLGetLastErrorMsg()));
 
