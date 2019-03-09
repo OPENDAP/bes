@@ -321,32 +321,22 @@ void FONgTransform::transform_to_geotiff()
         if (!effectively_two_D(var(i)))
             throw Error("GeoTiff responses can consist of two-dimensional variables only; use constraints to reduce the size of Grids as needed.");
 
-#if 0
-    GDALAllRegister();
-    CPLSetErrorHandler(CPLQuietErrorHandler);
-#endif
-
-    GDALDriver *Driver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    GDALDriver *Driver = GetGDALDriverManager()->GetDriverByName("MEM");
     if( Driver == NULL )
-        throw Error("Could not get the GTiff driver from/for GDAL: " + string(CPLGetLastErrorMsg()));
+        throw Error("Could not get the MEM driver from/for GDAL: " + string(CPLGetLastErrorMsg()));
 
     char **Metadata = Driver->GetMetadata();
     if (!CSLFetchBoolean(Metadata, GDAL_DCAP_CREATE, FALSE))
         throw Error("Could not make output format.");
 
     BESDEBUG("fong3", "num_bands: " << num_bands() << "." << endl);
-
-    // NB: Changing PHOTOMETIC to MINISWHITE doesn't seem to have any visible affect,
-    // although the resulting files differ. jhrg 11/21/12
-    char **options = NULL;
-    options = CSLSetNameValue(options, "PHOTOMETRIC", "MINISBLACK" ); // The default for GDAL
-    d_dest = Driver->Create(d_localfile.c_str(), width(), height(), num_bands(), GDT_Float64, options);
+    // Create band in the memory using data type GDT_Byte.
+    // Most image viewers reproduce tiff files with Bits/Sample: 8
+    d_dest = Driver->Create("in_memory_dataset", width(), height(), num_bands(), GDT_Byte, 0/*options*/);
     if (!d_dest)
         throw Error("Could not create the geotiff dataset: " + string(CPLGetLastErrorMsg()));
 
     d_dest->SetGeoTransform(geo_transform());
-    // Take the mapping data from the first variable
-    // var(0)->get_projection(d_dds, d_dest);
 
     BESDEBUG("fong3", "Made new temp file and set georeferencing (" << num_bands() << " vars)." << endl);
 
@@ -366,20 +356,14 @@ void FONgTransform::transform_to_geotiff()
             if (wkt_i != wkt)
                 throw Error("In building a multiband response, different bands had different projection information.");
         }
-#if 0
-        d_dest->AddBand(GDT_Float64, 0);
-        GDALRasterBand *band = d_dest->GetRasterBand(d_dest->GetRasterCount());
-        if (!band)
-            throw Error("Could not get the " + long_to_string(i) + "th band: " + string(CPLGetLastErrorMsg()));
-#endif
+
         GDALRasterBand *band = d_dest->GetRasterBand(i+1);
         if (!band)
             throw Error("Could not get the " + long_to_string(i+1) + "th band: " + string(CPLGetLastErrorMsg()));
 
-        double *data = 0;
         try {
             // TODO We can read any of the basic DAP2 types and let RasterIO convert it to any other type.
-            data = fbtp->get_data();
+            double *data = fbtp->get_data();
 
             // hack the values; because the missing value used with many datasets
             // is often really small it'll skew the mapping of values to the grayscale
@@ -389,24 +373,29 @@ void FONgTransform::transform_to_geotiff()
             if (no_data_type() != none)
                 m_scale_data(data);
 
+            BESDEBUG("fong3", "calling band->RasterIO" << endl);
+
             // If the latitude values are inverted, the 0th value will be less than
             // the last value.
             vector<double> local_lat;
             extract_double_array(fbtp->d_lat, local_lat);
+
+            // NB: Here the 'type' value indicates the type of data in the buffer. The
+            // type of the band is set above when the dataset is created.
 
             if (local_lat[0] < local_lat[local_lat.size() - 1]) {
                 BESDEBUG("fong3", "Writing reversed raster. Lat[0] = " << local_lat[0] << endl);
                 //---------- write reverse raster----------
                 for (int row = 0; row <= height()-1; ++row) {
                     int offsety=height()-row-1;
-                    CPLErr error_write = band->RasterIO(GF_Write, 0, offsety, width(), 1, data+(row*width()), width(), 1, GDT_Byte, 0, 0);
+                    CPLErr error_write = band->RasterIO(GF_Write, 0, offsety, width(), 1, data+(row*width()), width(), 1, GDT_Float64, 0, 0);
                     if (error_write != CPLE_None)
                         throw Error("Could not write data for band: " + long_to_string(i + 1) + ": " + string(CPLGetLastErrorMsg()));
                 }
             }
             else {
                 BESDEBUG("fong3", "calling band->RasterIO" << endl);
-                CPLErr error = band->RasterIO(GF_Write, 0, 0, width(), height(), data, width(), height(), GDT_Byte, 0, 0);
+                CPLErr error = band->RasterIO(GF_Write, 0, 0, width(), height(), data, width(), height(), GDT_Float64, 0, 0);
                 if (error != CPLE_None)
                      throw Error("Could not write data for band: " + long_to_string(i+1) + ": " + string(CPLGetLastErrorMsg()));
             }
@@ -415,12 +404,43 @@ void FONgTransform::transform_to_geotiff()
 
         }
         catch (...) {
-            delete[] data;
             GDALClose(d_dest);
             throw;
         }
     }
+
+    // Now get the GTiff driver and use CreateCopy() on the d_dest "MEM" dataset
+    GDALDataset *tif_dst = 0;
+    try {
+        Driver = GetGDALDriverManager()->GetDriverByName("GTiff");
+        if (Driver == NULL)
+            throw Error("Could not get driver for GeoTiff: " + string(CPLGetLastErrorMsg()));
+
+        // The drivers only support CreateCopy()
+        char **Metadata = Driver->GetMetadata();
+        if (!CSLFetchBoolean(Metadata, GDAL_DCAP_CREATECOPY, FALSE))
+            BESDEBUG("fong", "Driver does not support dataset creation via 'CreateCopy()'." << endl);
+        //throw Error("Driver does not support dataset creation via 'CreateCopy()'.");
+        // NB: Changing PHOTOMETIC to MINISWHITE doesn't seem to have any visible affect,
+        // although the resulting files differ. jhrg 11/21/12
+        char **options = NULL;
+        options = CSLSetNameValue(options, "PHOTOMETRIC", "MINISBLACK" ); // The default for GDAL
+        BESDEBUG("fong3", "Before CreateCopy, number of bands: " << d_dest->GetRasterCount() << endl);
+
+        tif_dst = Driver->CreateCopy(d_localfile.c_str(), d_dest, FALSE/*strict*/,
+                options, NULL/*progress*/, NULL/*progress data*/);
+
+        if (!tif_dst)
+            throw Error("Could not create the GeoTiff dataset: " + string(CPLGetLastErrorMsg()));
+    }
+    catch (...) {
+        GDALClose(d_dest);
+        GDALClose (tif_dst);
+        throw;
+    }
+
     GDALClose(d_dest);
+    GDALClose(tif_dst);
 }
 
 /** @brief Transforms the variables of the DataDDS to a JPEG2000 file.
