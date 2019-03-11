@@ -26,6 +26,10 @@
 using namespace std;
 using namespace libdap;
 
+#define ERR_LOC1(x) #x
+#define ERR_LOC2(x) ERR_LOC1(x)
+#define ERR_LOC __FILE__ " : " ERR_LOC2(__LINE__)
+
 // Check the BES key. 
 // This function will check a BES key specified at the file h4.conf.in.
 // If the key's value is either true or yes. The handler claims to find
@@ -3003,131 +3007,149 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
 
 void HDFCFUtil::map_eos2_objects_attrs(libdap::DAS &das,const string &filename) {
     
-   /************************* Variable declaration **************************/
+    intn   status_n =-1;     
+    int32  status_32 = -1;  
+    int32  file_id = -1;
+    int32  vgroup_id = -1;
+    int32  lone_vg_number = -1;     
+    int32  num_of_lones = 0;    
+    uint16 name_len = 0;
 
-   intn   status_n =-1;     /* returned status for functions returning an intn  */
-   int32  status_32 = -1,    /* returned status for functions returning an int32 */
-          file_id = -1, vgroup_id = -1;
-   int32  lone_vg_number = -1,      /* current lone vgroup number */
-          num_of_lones = 0;    /* number of lone vgroups */
-   uint16 name_len = 0;
+    file_id = Hopen (filename.c_str(), DFACC_READ, 0); 
+    if(file_id == FAIL) 
+        throw InternalErr(__FILE__,__LINE__,"Hopen failed.");
 
-   /********************** End of variable declaration **********************/
- 
-   /*
-   * Open the HDF file for reading.
-   */
-   file_id = Hopen (filename.c_str(), DFACC_READ, 0); 
+    status_n = Vstart (file_id);
+    if(status_n == FAIL) {
+        Hclose(file_id);
+        throw InternalErr(__FILE__,__LINE__,"Vstart failed.");
+    }
 
-   /*
-   * Initialize the V interface.
-   */
-   status_n = Vstart (file_id);
+    string err_msg;
+    bool unexpected_fail = false;
+    //Get and print the names and class names of all the lone vgroups.
+    // First, call Vlone with num_of_lones set to 0 to get the number of
+    // lone vgroups in the file, but not to get their reference numbers.
+    num_of_lones = Vlone (file_id, NULL, num_of_lones );
 
-   /*
-   * Get and print the names and class names of all the lone vgroups.
-   * First, call Vlone with num_of_lones set to 0 to get the number of
-   * lone vgroups in the file, but not to get their reference numbers.
-   */
-   num_of_lones = Vlone (file_id, NULL, num_of_lones );
+    //
+    // Then, if there are any lone vgroups, 
+    if (num_of_lones > 0)
+    {
+        // Use the num_of_lones returned to allocate sufficient space for the
+        // buffer ref_array to hold the reference numbers of all lone vgroups,
+        vector<int32> ref_array;
+        ref_array.resize(num_of_lones);
 
-   /*
-   * Then, if there are any lone vgroups, 
-   */
-   if (num_of_lones > 0)
-   {
-      /*
-      * use the num_of_lones returned to allocate sufficient space for the
-      * buffer ref_array to hold the reference numbers of all lone vgroups,
-      */
-      vector<int32> ref_array;
-      ref_array.resize(num_of_lones);
+      
+        // and call Vlone again to retrieve the reference numbers into 
+        // the buffer ref_array.
+      
+        num_of_lones = Vlone (file_id, &ref_array[0], num_of_lones);
 
-      /*
-      * and call Vlone again to retrieve the reference numbers into 
-      * the buffer ref_array.
-      */
-      num_of_lones = Vlone (file_id, &ref_array[0], num_of_lones);
-
-      /*
-      * Display the name and class of each lone vgroup.
-      */
-      for (lone_vg_number = 0; lone_vg_number < num_of_lones; 
+        // Loop the name and class of each lone vgroup.
+        for (lone_vg_number = 0; lone_vg_number < num_of_lones; 
                                                             lone_vg_number++)
-      {
-         /*
-         * Attach to the current vgroup then get and display its
-         * name and class. Note: the current vgroup must be detached before
-         * moving to the next.
-         */
-         vgroup_id = Vattach (file_id, ref_array[lone_vg_number], "r");
-	 status_32 = Vgetnamelen(vgroup_id, &name_len);
-     vector<char> vgroup_name;
-     vgroup_name.resize(name_len+1);
-         status_32 = Vgetname (vgroup_id, &vgroup_name[0]);
+        {
+         
+            // Attach to the current vgroup then get and display its
+            // name and class. Note: the current vgroup must be detached before
+            // moving to the next.
+            vgroup_id = Vattach(file_id, ref_array[lone_vg_number], "r");
+            if(vgroup_id == FAIL) {
+                unexpected_fail = true;
+                err_msg = string(ERR_LOC) + " Vattach failed. ";
+                goto cleanFail;
+            }
+            
+	    status_32 = Vgetnamelen(vgroup_id, &name_len);
+            if(status_32 == FAIL) {
+                unexpected_fail = true;
+                Vdetach(vgroup_id);
+                err_msg = string(ERR_LOC) + " Vgetnamelen failed. ";
+                goto cleanFail;
+            }
+ 
+            vector<char> vgroup_name;
+            vgroup_name.resize(name_len+1);
+            status_32 = Vgetname (vgroup_id, &vgroup_name[0]);
+            if(status_32 == FAIL) {
+                unexpected_fail = true;
+                Vdetach(vgroup_id);
+                err_msg = string(ERR_LOC) + " Vgetname failed. ";
+                goto cleanFail;
+            }
 
-	 status_32 = Vgetclassnamelen(vgroup_id, &name_len);
-     vector<char>vgroup_class;
-     vgroup_class.resize(name_len+1);
-     status_32 = Vgetclass (vgroup_id, &vgroup_class[0]);
+	    status_32 = Vgetclassnamelen(vgroup_id, &name_len);
+            if(status_32 == FAIL) {
+                unexpected_fail = true;
+                Vdetach(vgroup_id);
+                err_msg = string(ERR_LOC) + " Vgetclassnamelen failed. ";
+                goto cleanFail;
+            }
+           
+            vector<char>vgroup_class;
+            vgroup_class.resize(name_len+1);
+            status_32 = Vgetclass (vgroup_id, &vgroup_class[0]);
+            if(status_32 == FAIL) {
+                unexpected_fail = true;
+                Vdetach(vgroup_id);
+                err_msg = string(ERR_LOC) + " Vgetclass failed. ";
+                goto cleanFail;
+            }
+            
+            string vgroup_name_str(vgroup_name.begin(),vgroup_name.end());
+            vgroup_name_str = vgroup_name_str.substr(0,vgroup_name_str.size()-1);
 
-     string vgroup_name_str(vgroup_name.begin(),vgroup_name.end());
-     vgroup_name_str = vgroup_name_str.substr(0,vgroup_name_str.size()-1);
+            string vgroup_class_str(vgroup_class.begin(),vgroup_class.end());
+            vgroup_class_str = vgroup_class_str.substr(0,vgroup_class_str.size()-1);
+            try {
+                if(vgroup_class_str =="GRID") 
+                    map_eos2_one_object_attrs_wrapper(das,file_id,vgroup_id,vgroup_name_str,true);
+                else if(vgroup_class_str =="SWATH")
+                    map_eos2_one_object_attrs_wrapper(das,file_id,vgroup_id,vgroup_name_str,false);
+            }
+            catch(...) {
+                Vdetach(vgroup_id);
+                Vend(file_id);
+                Hclose(file_id);
+                throw InternalErr(__FILE__,__LINE__,"map_eos2_one_object_attrs_wrapper failed.");
+            }
+            status_32 = Vdetach (vgroup_id);
+        }// for  
+    }// if 
 
-     string vgroup_class_str(vgroup_class.begin(),vgroup_class.end());
-     vgroup_class_str = vgroup_class_str.substr(0,vgroup_class_str.size()-1);
-	 //vgroup_class = (char *) HDmalloc(sizeof(char *) * (name_len+1));
-//     cerr<<"vgroup name is "<<vgroup_name_str<<endl;
-//     cerr<<"vgroup class is "<< vgroup_class_str <<endl;
-     if(vgroup_class_str =="GRID") 
-        map_eos2_one_object_attrs_wrapper(das,file_id,vgroup_id,vgroup_name_str,true);
-     else if(vgroup_class_str =="SWATH")
-        map_eos2_one_object_attrs_wrapper(das,file_id,vgroup_id,vgroup_name_str,false);
+    //Terminate access to the V interface and close the file.
+cleanFail:
+    status_n = Vend (file_id);
+    status_n = Hclose (file_id);
+    if(true == unexpected_fail)
+        throw InternalErr(__FILE__,__LINE__,err_msg);
 
-     status_32 = Vdetach (vgroup_id);
-      } /* for */
-   } /* if */
-
-   /*
-   * Terminate access to the V interface and close the file.
-   */
-   status_n = Vend (file_id);
-   status_n = Hclose (file_id);
-
-   /*
-   * Free the space allocated by this program.
-   */
-   return ;
+    return;
 
 }
 
 void HDFCFUtil::map_eos2_one_object_attrs_wrapper(libdap:: DAS &das,int32 file_id,int32 vgroup_id, const string& vgroup_name,bool is_grid) {
 
-//cerr<<"Coming to the wrapper" <<endl;
-    intn status_n;
-    bool unexpected_fail = false;
-    //int  n_attr_value = 0;
     char attr_name[H4_MAX_NC_NAME];
 
     int32 num_gobjects = Vntagrefs (vgroup_id);
-    
+    if(num_gobjects < 0) 
+        throw InternalErr(__FILE__,__LINE__,"Cannot obtain the number of objects under a vgroup.");
     
     for(int i = 0; i<num_gobjects;i++) {
 
         int32 obj_tag, obj_ref;
-        if (Vgettagref (vgroup_id, i, &obj_tag, &obj_ref) == FAIL) {
-            unexpected_fail = true;
-            cerr<<"Vgettagref failed "<<endl;
-            //err_msg = string(ERR_LOC) + " Vgettagref failed. ";
-            //goto cleanFail;
-        }
+        if (Vgettagref (vgroup_id, i, &obj_tag, &obj_ref) == FAIL) 
+            throw InternalErr(__FILE__,__LINE__,"Failed to obtain the tag and reference of an object under a vgroup.");
 
         if (Visvg (vgroup_id, obj_ref) == TRUE) {
                                                                       
- //cerr<<"Coming to the grid group "<<endl;
             int32 object_attr_vgroup = Vattach(file_id,obj_ref,"r");
+            // STOP 
             uint16 name_len = 0;
-	        int32 status_32 = Vgetnamelen(object_attr_vgroup, &name_len);
+	    int32 status_32 = Vgetnamelen(object_attr_vgroup, &name_len);
             vector<char> attr_vgroup_name; 
             attr_vgroup_name.resize(name_len+1);
             status_32 = Vgetname (object_attr_vgroup, &attr_vgroup_name[0]);
