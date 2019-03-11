@@ -3005,14 +3005,12 @@ void HDFCFUtil::map_eos2_objects_attrs(libdap::DAS &das,const string &filename) 
     
    /************************* Variable declaration **************************/
 
-   intn   status_n;     /* returned status for functions returning an intn  */
-   int32  status_32,    /* returned status for functions returning an int32 */
-          file_id, vgroup_id;
-   int32  lone_vg_number,      /* current lone vgroup number */
+   intn   status_n =-1;     /* returned status for functions returning an intn  */
+   int32  status_32 = -1,    /* returned status for functions returning an int32 */
+          file_id = -1, vgroup_id = -1;
+   int32  lone_vg_number = -1,      /* current lone vgroup number */
           num_of_lones = 0;    /* number of lone vgroups */
-   int32 *ref_array;    /* buffer to hold the ref numbers of lone vgroups   */
-   //char  *vgroup_name, *vgroup_class;
-   uint16 name_len;
+   uint16 name_len = 0;
 
    /********************** End of variable declaration **********************/
  
@@ -3079,8 +3077,8 @@ void HDFCFUtil::map_eos2_objects_attrs(libdap::DAS &das,const string &filename) 
      string vgroup_class_str(vgroup_class.begin(),vgroup_class.end());
      vgroup_class_str = vgroup_class_str.substr(0,vgroup_class_str.size()-1);
 	 //vgroup_class = (char *) HDmalloc(sizeof(char *) * (name_len+1));
-     cerr<<"vgroup name is "<<vgroup_name_str<<endl;
-     cerr<<"vgroup class is "<< vgroup_class_str <<endl;
+//     cerr<<"vgroup name is "<<vgroup_name_str<<endl;
+//     cerr<<"vgroup class is "<< vgroup_class_str <<endl;
      if(vgroup_class_str =="GRID") 
         map_eos2_one_object_attrs_wrapper(das,file_id,vgroup_id,vgroup_name_str,true);
      else if(vgroup_class_str =="SWATH")
@@ -3105,7 +3103,7 @@ void HDFCFUtil::map_eos2_objects_attrs(libdap::DAS &das,const string &filename) 
 
 void HDFCFUtil::map_eos2_one_object_attrs_wrapper(libdap:: DAS &das,int32 file_id,int32 vgroup_id, const string& vgroup_name,bool is_grid) {
 
-cerr<<"Coming to the wrapper" <<endl;
+//cerr<<"Coming to the wrapper" <<endl;
     intn status_n;
     bool unexpected_fail = false;
     //int  n_attr_value = 0;
@@ -3126,7 +3124,7 @@ cerr<<"Coming to the wrapper" <<endl;
 
         if (Visvg (vgroup_id, obj_ref) == TRUE) {
                                                                       
- cerr<<"Coming to the grid group "<<endl;
+ //cerr<<"Coming to the grid group "<<endl;
             int32 object_attr_vgroup = Vattach(file_id,obj_ref,"r");
             uint16 name_len = 0;
 	        int32 status_32 = Vgetnamelen(object_attr_vgroup, &name_len);
@@ -3135,7 +3133,7 @@ cerr<<"Coming to the wrapper" <<endl;
             status_32 = Vgetname (object_attr_vgroup, &attr_vgroup_name[0]);
             string attr_vgroup_name_str(attr_vgroup_name.begin(),attr_vgroup_name.end());
             attr_vgroup_name_str = attr_vgroup_name_str.substr(0,attr_vgroup_name_str.size()-1);
- cerr<<"attr_vgroup_name_str "<<attr_vgroup_name_str<<endl;
+ //cerr<<"attr_vgroup_name_str "<<attr_vgroup_name_str<<endl;
             if(true == is_grid && attr_vgroup_name_str=="Grid Attributes"){
                 map_eos2_one_object_attrs(das,file_id,object_attr_vgroup,vgroup_name);
                 Vdetach(object_attr_vgroup);
@@ -3156,8 +3154,12 @@ cerr<<"Coming to the wrapper" <<endl;
 void HDFCFUtil::map_eos2_one_object_attrs(libdap:: DAS &das,int32 file_id, int32 obj_attr_group_id, const string& vgroup_name) {
 
     int32 num_gobjects = Vntagrefs (obj_attr_group_id);
-cerr<<"num_gobjects is "<<num_gobjects<<endl;
-cerr<<"coming to object_attrs" <<endl;
+//cerr<<"num_gobjects is "<<num_gobjects<<endl;
+//cerr<<"coming to object_attrs" <<endl;
+
+    AttrTable *at = das.get_table(vgroup_name);
+    if(!at)
+        at = das.add_table(vgroup_name,new AttrTable);
 
     for(int i = 0; i<num_gobjects;i++) {
 
@@ -3181,6 +3183,7 @@ cerr<<"coming to object_attrs" <<endl;
                 char vdata_name[VSNAMELENMAX];
                 VSQueryname(vdata_id,vdata_name);
                 string vdatanamestr(vdata_name);
+                string vdataname_cfstr = HDFCFUtil::get_CF_string(vdatanamestr);
                 int32 fieldsize = VFfieldesize(vdata_id,0);
                 char* fieldname = VFfieldname(vdata_id,0);
                 int32 fieldtype = VFfieldtype(vdata_id,0);
@@ -3188,9 +3191,17 @@ cerr<<"coming to object_attrs" <<endl;
                 vector<char> vdata_value;
                 vdata_value.resize(fieldsize);
                 VSread(vdata_id,(uint8*)&vdata_value[0],1,FULL_INTERLACE);
-cerr<<"vdata name is "<<vdatanamestr<<endl;
-cerr<<"vdata size is "<<fieldsize <<endl;
-cerr<<"field name is "<<fieldname <<endl;
+                if(fieldtype == DFNT_UCHAR || fieldtype == DFNT_CHAR){
+                    string tempstring(vdata_value.begin(),vdata_value.end());
+                    // Remove the NULL term
+                    string tempstring2 = string(tempstring.c_str());
+                    at->append_attr(vdataname_cfstr,"String",HDFCFUtil::escattr(tempstring2));
+                }
+                else {
+                    string print_rep = HDFCFUtil::print_attr(fieldtype, 0, (void*) &vdata_value[0]);
+                    at->append_attr(vdataname_cfstr, HDFCFUtil::print_type(fieldtype), print_rep);
+                }
+            
             }
             VSdetach(vdata_id);
 
