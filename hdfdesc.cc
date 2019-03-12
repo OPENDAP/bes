@@ -2668,10 +2668,10 @@ bool read_das_special_eos2_core(DAS &das,HDFSP::File* f,const string& filename,b
 
     }
 
-#if 0
+//#if 0
     // Handle HDF-EOS2 object attributes. These are found in AIRS version 6.
     HDFCFUtil::map_eos2_objects_attrs(das,filename);
-#endif
+//#endif
 
     return true;
 }

@@ -3062,7 +3062,7 @@ void HDFCFUtil::map_eos2_objects_attrs(libdap::DAS &das,const string &filename) 
                 goto cleanFail;
             }
             
-	    status_32 = Vgetnamelen(vgroup_id, &name_len);
+            status_32 = Vgetnamelen(vgroup_id, &name_len);
             if(status_32 == FAIL) {
                 unexpected_fail = true;
                 Vdetach(vgroup_id);
@@ -3080,7 +3080,7 @@ void HDFCFUtil::map_eos2_objects_attrs(libdap::DAS &das,const string &filename) 
                 goto cleanFail;
             }
 
-	    status_32 = Vgetclassnamelen(vgroup_id, &name_len);
+            status_32 = Vgetclassnamelen(vgroup_id, &name_len);
             if(status_32 == FAIL) {
                 unexpected_fail = true;
                 Vdetach(vgroup_id);
@@ -3147,24 +3147,41 @@ void HDFCFUtil::map_eos2_one_object_attrs_wrapper(libdap:: DAS &das,int32 file_i
         if (Visvg (vgroup_id, obj_ref) == TRUE) {
                                                                       
             int32 object_attr_vgroup = Vattach(file_id,obj_ref,"r");
-            // STOP 
+            if(object_attr_vgroup == FAIL) 
+                throw InternalErr(__FILE__,__LINE__,"Failed to attach an EOS2 vgroup.");
+
             uint16 name_len = 0;
-	    int32 status_32 = Vgetnamelen(object_attr_vgroup, &name_len);
+            int32 status_32 = Vgetnamelen(object_attr_vgroup, &name_len);
+            if(status_32 == FAIL) {
+                Vdetach(object_attr_vgroup);
+                throw InternalErr(__FILE__,__LINE__,"Failed to obtain an EOS2 vgroup name length.");
+            }
             vector<char> attr_vgroup_name; 
             attr_vgroup_name.resize(name_len+1);
             status_32 = Vgetname (object_attr_vgroup, &attr_vgroup_name[0]);
+            if(status_32 == FAIL) {
+                Vdetach(object_attr_vgroup);
+                throw InternalErr(__FILE__,__LINE__,"Failed to obtain an EOS2 vgroup name. ");
+            }
+
             string attr_vgroup_name_str(attr_vgroup_name.begin(),attr_vgroup_name.end());
             attr_vgroup_name_str = attr_vgroup_name_str.substr(0,attr_vgroup_name_str.size()-1);
- //cerr<<"attr_vgroup_name_str "<<attr_vgroup_name_str<<endl;
-            if(true == is_grid && attr_vgroup_name_str=="Grid Attributes"){
-                map_eos2_one_object_attrs(das,file_id,object_attr_vgroup,vgroup_name);
-                Vdetach(object_attr_vgroup);
-                break;
+
+            try {
+                if(true == is_grid && attr_vgroup_name_str=="Grid Attributes"){
+                    map_eos2_one_object_attrs(das,file_id,object_attr_vgroup,vgroup_name);
+                    Vdetach(object_attr_vgroup);
+                    break;
+                }
+                else if(false == is_grid && attr_vgroup_name_str=="Swath Attributes") {
+                    map_eos2_one_object_attrs(das,file_id,object_attr_vgroup,vgroup_name);
+                    Vdetach(object_attr_vgroup);
+                    break;
+                }
             }
-            else if(false == is_grid && attr_vgroup_name_str=="Swath Attributes") {
-                map_eos2_one_object_attrs(das,file_id,object_attr_vgroup,vgroup_name);
+            catch(...) {
                 Vdetach(object_attr_vgroup);
-                break;
+                throw InternalErr(__FILE__,__LINE__,"Cannot map eos2 object attributes to DAP2.");
             }
             Vdetach(object_attr_vgroup);
 
@@ -3175,44 +3192,78 @@ void HDFCFUtil::map_eos2_one_object_attrs_wrapper(libdap:: DAS &das,int32 file_i
 
 void HDFCFUtil::map_eos2_one_object_attrs(libdap:: DAS &das,int32 file_id, int32 obj_attr_group_id, const string& vgroup_name) {
 
-    int32 num_gobjects = Vntagrefs (obj_attr_group_id);
-//cerr<<"num_gobjects is "<<num_gobjects<<endl;
-//cerr<<"coming to object_attrs" <<endl;
+    int32 num_gobjects = Vntagrefs(obj_attr_group_id);
+    if(num_gobjects < 0) 
+        throw InternalErr(__FILE__,__LINE__,"Cannot obtain the number of objects under a vgroup.");
 
-    AttrTable *at = das.get_table(vgroup_name);
+    string vgroup_cf_name = HDFCFUtil::get_CF_string(vgroup_name);
+    AttrTable *at = das.get_table(vgroup_cf_name);
     if(!at)
-        at = das.add_table(vgroup_name,new AttrTable);
+        at = das.add_table(vgroup_cf_name,new AttrTable);
 
     for(int i = 0; i<num_gobjects;i++) {
 
         int32 obj_tag, obj_ref;
-        if (Vgettagref (obj_attr_group_id, i, &obj_tag, &obj_ref) == FAIL) {
-            //unexpected_fail = true;
-            cerr<<"Vgettagref failed "<<endl;
-            //err_msg = string(ERR_LOC) + " Vgettagref failed. ";
-            //goto cleanFail;
-        }
+        if (Vgettagref(obj_attr_group_id, i, &obj_tag, &obj_ref) == FAIL) 
+            throw InternalErr(__FILE__,__LINE__,"Failed to obtain the tag and reference of an object under a vgroup.");
 
         if(Visvs(obj_attr_group_id,obj_ref)) {
+
             int32 vdata_id = VSattach(file_id,obj_ref,"r");
+            if(vdata_id == FAIL) 
+                throw InternalErr(__FILE__,__LINE__,"Failed to attach a vdata.");
+            
+            // EOS2 object vdatas are actually EOS2 object attributes.
             if(VSisattr(vdata_id)) {
+
+                // According to EOS2 library, EOS2 number of field and record must be 1.
                 int32 num_field = VFnfields(vdata_id);
-                if(num_field !=1) 
-                    cerr<<"number of field must be 1. "<<endl;
+                if(num_field !=1) { 
+                    VSdetach(vdata_id);
+                    throw InternalErr(__FILE__,__LINE__,"Number of vdata field for an EOS2 object must be 1.");
+                }
                 int32 num_record = VSelts(vdata_id);
-                if(num_record !=1)
-                    cerr<<"number of vdata record must be 1. "<<endl;
+                if(num_record !=1){
+                    VSdetach(vdata_id);
+                    throw InternalErr(__FILE__,__LINE__,"Number of vdata record for an EOS2 object must be 1.");
+                }
                 char vdata_name[VSNAMELENMAX];
-                VSQueryname(vdata_id,vdata_name);
+                if(VSQueryname(vdata_id,vdata_name) == FAIL) {
+                    VSdetach(vdata_id);
+                    throw InternalErr(__FILE__,__LINE__,"Failed to obtain EOS2 object vdata name.");
+                }
                 string vdatanamestr(vdata_name);
                 string vdataname_cfstr = HDFCFUtil::get_CF_string(vdatanamestr);
                 int32 fieldsize = VFfieldesize(vdata_id,0);
+                if(fieldsize == FAIL) {
+                    VSdetach(vdata_id);
+                    throw InternalErr(__FILE__,__LINE__,"Failed to obtain EOS2 object vdata field size.");
+                }
+
                 char* fieldname = VFfieldname(vdata_id,0);
+                if(fieldname == NULL) {
+                    VSdetach(vdata_id);
+                    throw InternalErr(__FILE__,__LINE__,"Failed to obtain EOS2 object vdata field name.");
+                }
                 int32 fieldtype = VFfieldtype(vdata_id,0);
-                VSsetfields(vdata_id,fieldname);
+                if(fieldtype == FAIL) {
+                    VSdetach(vdata_id);
+                    throw InternalErr(__FILE__,__LINE__,"Failed to obtain EOS2 object vdata field type.");
+                }
+
+                if(VSsetfields(vdata_id,fieldname) == FAIL) {
+                    VSdetach(vdata_id);
+                    throw InternalErr(__FILE__,__LINE__,"EOS2 object vdata: VSsetfields failed.");
+                }
+
                 vector<char> vdata_value;
                 vdata_value.resize(fieldsize);
-                VSread(vdata_id,(uint8*)&vdata_value[0],1,FULL_INTERLACE);
+                if(VSread(vdata_id,(uint8*)&vdata_value[0],1,FULL_INTERLACE) == FAIL) {
+                    VSdetach(vdata_id);
+                    throw InternalErr(__FILE__,__LINE__,"EOS2 object vdata: VSread failed.");
+                }
+
+                // Map the attributes to DAP2.
                 if(fieldtype == DFNT_UCHAR || fieldtype == DFNT_CHAR){
                     string tempstring(vdata_value.begin(),vdata_value.end());
                     // Remove the NULL term
