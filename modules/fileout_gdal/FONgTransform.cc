@@ -30,6 +30,7 @@
 
 #include <gdal.h>
 #include <gdal_priv.h>
+#include <gdal_utils.h>
 
 #include <DDS.h>
 #include <ConstraintEvaluator.h>
@@ -38,6 +39,7 @@
 #include <Array.h>
 #include <Grid.h>
 #include <util.h>
+#include <Error.h>
 
 #include <BESDebug.h>
 #include <BESInternalError.h>
@@ -427,11 +429,28 @@ void FONgTransform::transform_to_geotiff()
         options = CSLSetNameValue(options, "PHOTOMETRIC", "MINISBLACK" ); // The default for GDAL
         BESDEBUG("fong3", "Before CreateCopy, number of bands: " << d_dest->GetRasterCount() << endl);
 
-        tif_dst = Driver->CreateCopy(d_localfile.c_str(), d_dest, FALSE/*strict*/,
+        char **argv = NULL;
+                argv = CSLAddString(argv, "-scale");
+                GDALTranslateOptions *opts = GDALTranslateOptionsNew(argv, NULL /*binary options*/);
+                int usage_error = CE_None;
+                GDALDatasetH dst_handle = GDALTranslate("out_dst", d_dest, opts, &usage_error);
+                if (!dst_handle || usage_error != CE_None) {
+                    GDALClose(dst_handle);
+                    GDALTranslateOptionsFree(opts);
+                    string msg = string("Error calling GDAL translate: ") + CPLGetLastErrorMsg();
+                    BESDEBUG("fong3", "ERROR scale_dataset(): " << msg << endl);
+                    throw BESError(msg, BES_INTERNAL_ERROR, __FILE__, __LINE__);
+                }
+                auto_ptr<GDALDataset> dst(static_cast<GDALDataset*>(dst_handle));
+
+
+        tif_dst = Driver->CreateCopy(d_localfile.c_str(), dst, FALSE/*strict*/,
                 options, NULL/*progress*/, NULL/*progress data*/);
 
         if (!tif_dst)
             throw Error("Could not create the GeoTiff dataset: " + string(CPLGetLastErrorMsg()));
+
+
     }
     catch (...) {
         GDALClose(d_dest);
