@@ -35,6 +35,8 @@
  * here.
  */
 class FONgRequestHandler: public BESRequestHandler {
+    static bool d_use_byte_for_geotiff_bands;
+
 public:
     FONgRequestHandler(const string &name);
     virtual ~FONgRequestHandler(void);
@@ -43,6 +45,8 @@ public:
 
     static bool build_help(BESDataHandlerInterface &dhi);
     static bool build_version(BESDataHandlerInterface &dhi);
+
+    static bool get_use_byte_for_geotiff_bands() { return d_use_byte_for_geotiff_bands; }
 };
 
 #endif

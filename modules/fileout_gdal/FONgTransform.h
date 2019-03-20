@@ -66,7 +66,10 @@ private:
 
     int d_num_bands;
 
+#if 0
     void m_scale_data(double *data);
+#endif
+
     bool effectively_two_D(FONgGrid *fbtp);
 
 public:
