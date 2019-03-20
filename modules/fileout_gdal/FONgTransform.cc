@@ -367,19 +367,12 @@ void FONgTransform::transform_to_geotiff()
             // TODO We can read any of the basic DAP2 types and let RasterIO convert it to any other type.
             double *data = fbtp->get_data();
 
-            // hack the values; because the missing value used with many datasets
-            // is often really small it'll skew the mapping of values to the grayscale
-            // that GDAL performs. Move the no_data values to something closer to the
-            // other values in the dataset.
-            BESDEBUG("fong3", "no_data_type(): " << no_data_type() << endl);
-            if (no_data_type() != none)
-                m_scale_data(data);
-
             BESDEBUG("fong3", "calling band->RasterIO" << endl);
 
             // If the latitude values are inverted, the 0th value will be less than
             // the last value.
             vector<double> local_lat;
+            // TODO: Rewrite this to avoid expensive procedure
             extract_double_array(fbtp->d_lat, local_lat);
 
             // NB: Here the 'type' value indicates the type of data in the buffer. The
@@ -403,7 +396,6 @@ void FONgTransform::transform_to_geotiff()
             }
 
             delete[] data;
-
         }
         catch (...) {
             GDALClose(d_dest);
@@ -429,35 +421,34 @@ void FONgTransform::transform_to_geotiff()
         options = CSLSetNameValue(options, "PHOTOMETRIC", "MINISBLACK" ); // The default for GDAL
         BESDEBUG("fong3", "Before CreateCopy, number of bands: " << d_dest->GetRasterCount() << endl);
 
+        // implementation of gdal_translate -scale to adjust color levels
         char **argv = NULL;
-                argv = CSLAddString(argv, "-scale");
-                GDALTranslateOptions *opts = GDALTranslateOptionsNew(argv, NULL /*binary options*/);
-                int usage_error = CE_None;
-                GDALDatasetH dst_handle = GDALTranslate("out_dst", d_dest, opts, &usage_error);
-                if (!dst_handle || usage_error != CE_None) {
-                    GDALClose(dst_handle);
-                    GDALTranslateOptionsFree(opts);
-                    string msg = string("Error calling GDAL translate: ") + CPLGetLastErrorMsg();
-                    BESDEBUG("fong3", "ERROR scale_dataset(): " << msg << endl);
-                    throw BESError(msg, BES_INTERNAL_ERROR, __FILE__, __LINE__);
-                }
-                auto_ptr<GDALDataset> dst(static_cast<GDALDataset*>(dst_handle));
+        argv = CSLAddString(argv, "-scale");
+        GDALTranslateOptions *opts = GDALTranslateOptionsNew(argv, NULL /*binary options*/);
+        int usage_error = CE_None;
+        GDALDatasetH dst_handle = GDALTranslate("tif_out_dst", d_dest, opts, &usage_error);
+        if (!dst_handle || usage_error != CE_None) {
+            GDALClose(dst_handle);
+            GDALTranslateOptionsFree(opts);
+            string msg = string("Error calling GDAL translate: ") + CPLGetLastErrorMsg();
+            BESDEBUG("fong3", "ERROR transform_to_geotiff(): " << msg << endl);
+            throw BESError(msg, BES_INTERNAL_ERROR, __FILE__, __LINE__);
+        }
 
-
-        tif_dst = Driver->CreateCopy(d_localfile.c_str(), dst, FALSE/*strict*/,
+        tif_dst = Driver->CreateCopy(d_localfile.c_str(), reinterpret_cast<GDALDataset*>(dst_handle), FALSE/*strict*/,
                 options, NULL/*progress*/, NULL/*progress data*/);
+
+        GDALClose(dst_handle);
+        GDALTranslateOptionsFree(opts);
 
         if (!tif_dst)
             throw Error("Could not create the GeoTiff dataset: " + string(CPLGetLastErrorMsg()));
-
-
     }
     catch (...) {
         GDALClose(d_dest);
         GDALClose (tif_dst);
         throw;
     }
-
     GDALClose(d_dest);
     GDALClose(tif_dst);
 }
@@ -529,25 +520,16 @@ void FONgTransform::transform_to_jpeg2000()
             // TODO We can read any of the basic DAP2 types and let RasterIO convert it to any other type.
             double *data = fbtp->get_data();
 
-            // hack the values; because the missing value used with many datasets
-            // is often really small it'll skew the mapping of values to the grayscale
-            // that GDAL performs. Move the no_data values to something closer to the
-            // other values in the dataset.
-            BESDEBUG("fong3", "no_data_type(): " << no_data_type() << endl);
-            if (no_data_type() != none)
-                m_scale_data(data);
-
             BESDEBUG("fong3", "calling band->RasterIO" << endl);
 
             // If the latitude values are inverted, the 0th value will be less than
             // the last value.
             vector<double> local_lat;
+            // TODO: Rewrite this to avoid expensive procedure
             extract_double_array(fbtp->d_lat, local_lat);
 
             // NB: Here the 'type' value indicates the type of data in the buffer. The
             // type of the band is set above when the dataset is created.
-//            CPLErr error = band->RasterIO(GF_Write, 0, 0, width(), height(),
-//                                          data, width(), height(), GDT_Float64, 0, 0);
 
             if (local_lat[0] < local_lat[local_lat.size() - 1]) {
                 BESDEBUG("fong3", "Writing reversed raster. Lat[0] = " << local_lat[0] << endl);
@@ -597,8 +579,25 @@ void FONgTransform::transform_to_jpeg2000()
 
         BESDEBUG("fong3", "Before JPEG2000 CreateCopy, number of bands: " << d_dest->GetRasterCount() << endl);
 
-        jpeg_dst = Driver->CreateCopy(d_localfile.c_str(), d_dest, FALSE/*strict*/,
+        // implementation of gdal_translate -scale to adjust color levels
+        char **argv = NULL;
+        argv = CSLAddString(argv, "-scale");
+        GDALTranslateOptions *opts = GDALTranslateOptionsNew(argv, NULL /*binary options*/);
+        int usage_error = CE_None;
+        GDALDatasetH dst_h = GDALTranslate("jp2_out_dst", d_dest, opts, &usage_error);
+        if (!dst_h || usage_error != CE_None) {
+            GDALClose(dst_h);
+            GDALTranslateOptionsFree(opts);
+            string msg = string("Error calling GDAL translate: ") + CPLGetLastErrorMsg();
+            BESDEBUG("fong3", "ERROR transform_to_jpeg2000(): " << msg << endl);
+            throw BESError(msg, BES_INTERNAL_ERROR, __FILE__, __LINE__);
+        }
+
+        jpeg_dst = Driver->CreateCopy(d_localfile.c_str(), reinterpret_cast<GDALDataset*>(dst_h), FALSE/*strict*/,
                 options, NULL/*progress*/, NULL/*progress data*/);
+
+        GDALClose(dst_h);
+        GDALTranslateOptionsFree(opts);
 
         if (!jpeg_dst)
             throw Error("Could not create the JPEG200 dataset: " + string(CPLGetLastErrorMsg()));
