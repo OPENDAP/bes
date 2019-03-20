@@ -1042,14 +1042,6 @@ BESDapResponseBuilder::intern_dap2_data(BESResponseObject *obj, BESDataHandlerIn
     dds->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
     throw_if_dap2_response_too_big(dds);
-#if 0
-    if (dds->get_response_limit() != 0 && ((dds->get_request_size(true)) > dds->get_response_limit())) {
-        string msg = "The Request for " + long_to_string(dds->get_request_size(true) / 1024)
-        + "KB is too large; requests for this user are limited to "
-        + long_to_string(dds->get_response_limit() /1024) + "KB.";
-        throw Error(msg);
-    }
-#endif
 
     // Iterate through the variables in the DataDDS and read
     // in the data if the variable has the send flag set.
@@ -1124,15 +1116,6 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
 
         throw_if_dap2_response_too_big(*dds);
 
-#if 0
-        if ((*dds)->get_response_limit() != 0 && (((*dds)->get_request_size(true)) > (*dds)->get_response_limit())) {
-            string msg = "The Request for " + long_to_string((*dds)->get_request_size(true) / 1024)
-            + "KB is too large; requests for this user are limited to "
-            + long_to_string((*dds)->get_response_limit() / 1024) + "KB.";
-            throw Error(msg);
-        }
-#endif
-
         if (with_mime_headers)
             set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
 
@@ -1154,15 +1137,6 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
         (*dds)->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
         throw_if_dap2_response_too_big(*dds);
-
-#if 0
-        if ((*dds)->get_response_limit() != 0 && (((*dds)->get_request_size(true)) > (*dds)->get_response_limit())) {
-            string msg = "The Request for " + long_to_string((*dds)->get_request_size(true) /1024)
-            + "KB is too large; requests for this user are limited to "
-            + long_to_string((*dds)->get_response_limit() / 1024) + "KB.";
-            throw Error(msg);
-        }
-#endif
 
         if (with_mime_headers)
             set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
