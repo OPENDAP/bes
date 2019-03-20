@@ -426,7 +426,7 @@ void FONgTransform::transform_to_geotiff()
         argv = CSLAddString(argv, "-scale");
         GDALTranslateOptions *opts = GDALTranslateOptionsNew(argv, NULL /*binary options*/);
         int usage_error = CE_None;
-        GDALDatasetH dst_handle = GDALTranslate("tif_out_dst", d_dest, opts, &usage_error);
+        GDALDatasetH dst_handle = GDALTranslate(d_localfile.c_str(), d_dest, opts, &usage_error);
         if (!dst_handle || usage_error != CE_None) {
             GDALClose(dst_handle);
             GDALTranslateOptionsFree(opts);
@@ -584,7 +584,7 @@ void FONgTransform::transform_to_jpeg2000()
         argv = CSLAddString(argv, "-scale");
         GDALTranslateOptions *opts = GDALTranslateOptionsNew(argv, NULL /*binary options*/);
         int usage_error = CE_None;
-        GDALDatasetH dst_h = GDALTranslate("jp2_out_dst", d_dest, opts, &usage_error);
+        GDALDatasetH dst_h = GDALTranslate(d_localfile.c_str(), d_dest, opts, &usage_error);
         if (!dst_h || usage_error != CE_None) {
             GDALClose(dst_h);
             GDALTranslateOptionsFree(opts);
