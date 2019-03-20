@@ -1312,7 +1312,7 @@ void BESDapResponseBuilder::send_dap4_data_using_ce(ostream &out, DMR &dmr, bool
 
     if (dmr.response_limit() != 0 && (dmr.request_size(true) > dmr.response_limit())) {
         string msg = "The Request for " + long_to_string(dmr.request_size(true))
-            + "KB is too large; requests for this user are limited to " + long_to_string(dmr.response_limit())
+            + "KB is too large; requests for this server are limited to " + long_to_string(dmr.response_limit())
             + "KB.";
         throw Error(msg);
     }
