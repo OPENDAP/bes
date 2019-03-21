@@ -4,7 +4,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.63)
 
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
-AC_INIT(bes, 3.20.3, support@opendap.org)
+AC_INIT(bes, 3.20.4, support@opendap.org)
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 
@@ -70,7 +70,7 @@ dnl ==> Increment CURRENT, set AGE and REVISION to 0.
 
 LIB_DIS_CURRENT=18
 LIB_DIS_AGE=3
-LIB_DIS_REVISION=0
+LIB_DIS_REVISION=1
 AC_SUBST(LIB_DIS_CURRENT)
 AC_SUBST(LIB_DIS_AGE)
 AC_SUBST(LIB_DIS_REVISION)
