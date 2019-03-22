@@ -6,7 +6,7 @@
   <img alt="Coverity" src="https://scan.coverity.com/projects/5060/badge.svg"/>
 </a>
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2576017.svg)](https://doi.org/10.5281/zenodo.2576017)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2602168.svg)](https://doi.org/10.5281/zenodo.2602168)
 
 
 README for the OPeNDAP BES 
