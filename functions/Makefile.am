@@ -29,7 +29,7 @@ M_VER=1.1.0
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
-SUBDIRS = . unit-tests tests 
+SUBDIRS = . unit-tests tests stare
 
 if BUILD_GDAL
 # Even if GDAL is found when building the BES, hold off on this code
