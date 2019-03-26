@@ -52,10 +52,12 @@ void findLatLon(std::string dataUrl, const float64 level,
 		//Makes sure only the Latitude and Longitude variables are requested
 		url->request_data(dds, "Latitude,Longitude");
 
+		//Create separate libdap arrays to store the lat and lon arrays individually
 		libdap::Array *urlLatArray = dynamic_cast<libdap::Array *>(dds.var(
 				"Latitude"));
 		libdap::Array *urlLonArray = dynamic_cast<libdap::Array *>(dds.var(
 				"Longitude"));
+
 
 		// ----Error checking---- //
 		if (urlLatArray == 0 || urlLonArray == 0) {
@@ -83,51 +85,13 @@ void findLatLon(std::string dataUrl, const float64 level,
 					"The size of the latitude and longitude arrays are not the same");
 		}
 
+
 		//Initialize the arrays with the correct length for lat and lon
 		lat.resize(urlLatArray->length());
 		urlLatArray->value(&lat[0]);
 		lon.resize(urlLonArray->length());
 		urlLonArray->value(&lon[0]);
 
-#if 0
-		for (libdap::DDS::Vars_iter i = dds.var_begin(); i != dds.var_end(); i++) {
-			libdap::Array *urlArray = dynamic_cast <libdap::Array *>(*i);
-			if (urlArray == 0) {
-				throw libdap::Error("Expected an array");
-			}
-
-			DBG(cerr << urlArray->name() << endl);
-			DBG(cerr << urlArray->length() << endl);
-			DBG(cerr << urlArray->type_name() << endl);
-			DBG(cerr << urlArray->var()->type_name() << endl);
-
-			if (urlArray->name() == "Latitude") {
-				lat.resize(urlArray->length());
-				urlArray->value(&lat[0]);
-			} else if (urlArray->name() == "Longitude") {
-				lon.resize(urlArray->length());
-				urlArray->value(&lon[0]);
-			}
-		}
-
-		//Loop through the lat and lon arrays and add the STARE index values along with their corresponding
-		// iterator to a hash map.
-		/*for (int i = 0; i < size_y; ++i) {
-		 for (int j = 0; j < size_x; ++j) {
-
-		 //cerr << "[" << i << "] [" << j << "]:    " << lat[i * size_x + j] << " " << lon[i * size_x + j] << endl;
-
-		 //Get the STARE index value using the current lat/lon value
-		 //cerr << "\tStare Index: " << index.idByLatLon(lat[i * size_x + j], lon[i * size_x + j]) << endl << endl;
-
-		 iterators.x = j;
-		 iterators.y = i;
-		 indexMap[index.idByLatLon(lat[i * size_x + j], lon[i * size_x + j])] = iterators;
-
-
-		 }
-		 }*/
-#endif
 
 		coords indexVals = coords();
 		std::unordered_map<float, struct coords> indexMap;
@@ -146,6 +110,7 @@ void findLatLon(std::string dataUrl, const float64 level,
 		// Then, loop through the lat and lon arrays at the same time
 		for (vector<float>::iterator i = lat.begin(), e = lat.end(), j =
 				lon.begin(); i != e; ++i, ++j) {
+			//Use an offset since we are using a 1D array and treating it like a 2D array
 			int offset = j - j_begin;
 			indexVals.x = offset / (size_x - 1);	//Get the current index for the lon
 			indexVals.y = offset % (size_x - 1);	//Get the current index for the lat
@@ -164,8 +129,12 @@ void findLatLon(std::string dataUrl, const float64 level,
 			keyVals[arrayLoc].stareIndex = indexVals.stareIndex;
 
 			arrayLoc++;
-
 		}
+
+
+		 /*************
+		 * HDF5 Stuff *
+		 * ***********/
 
 		//DataSpace takes in how many dimensions the provided array will have,
 		//followed by each dimension's size.
@@ -202,7 +171,6 @@ void findLatLon(std::string dataUrl, const float64 level,
 	}
 }
 
-//std::vector<float> findLat(*urlArray);
 
 int main(int argc, char *argv[]) {
 	findLatLon(argv[1], atof(argv[2]), atof(argv[3]));
