@@ -116,6 +116,24 @@ AM_PROG_LEX
 AS_IF([test "$CC" = "gcc"], [AM_CONDITIONAL([COMPILER_IS_GCC],[true])],
     [AM_CONDITIONAL([COMPILER_IS_GCC],[false])])
 
+dnl NB: CentOS 6 does not support C++-11 but does support some features:
+dnl https://gcc.gnu.org/gcc-4.4/cxx0x_status.html.
+dnl For now, I'm counting 0x as supporting C++-11 in our code.
+
+CXX11_FLAG=""
+
+CXX_FLAGS_CHECK([--std=c++11], [CXX11_FLAG=--std=c++11], [])
+
+AS_IF([test -z "$CXX11_FLAG"],
+      [CXX_FLAGS_CHECK([--std=c++0x], [CXX11_FLAG=--std=c++0x], [])])
+
+AS_IF([test -z "$CXX11_FLAG"],
+      [AC_MSG_ERROR([Not using C++-11 (or C++0x)])],
+      [AC_MSG_NOTICE([Using $CXX11_FLAG for C++-11 support])])
+
+AC_SUBST(CXX11_FLAG)
+
+
 dnl We really need bison and not yacc. If you use AC_PROG_YACC, the resulting 
 dnl Makefile will call bison -y which does not know how to make the parsers 
 dnl we require. jhrg 6/15/05
