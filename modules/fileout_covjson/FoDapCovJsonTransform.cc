@@ -1347,13 +1347,13 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::BaseType *bt, strin
     case libdap::dods_uint64_c:
     case libdap::dods_enum_c:
     case libdap::dods_group_c: {
-        string s = (string) "File out COVJSON, " + "DAP4 types not yet supported.";
+        string s = (string) "File out COVJSON, DAP4 types not yet supported.";
         throw BESInternalError(s, __FILE__, __LINE__);
         break;
     }
 
     default: {
-        string s = (string) "File out COVJSON, " + "Unrecognized type.";
+        string s = (string) "File out COVJSON, Unrecognized type.";
         throw BESInternalError(s, __FILE__, __LINE__);
         break;
     }
