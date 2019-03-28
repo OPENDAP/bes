@@ -461,6 +461,23 @@ void BESDapResponseBuilder::split_ce(ConstraintEvaluator &eval, const string &ex
     BESDEBUG("dap", "BESDapResponseBuilder::split_ce() - END" << endl);
 }
 
+/**
+ * @brief convenience function for the response limit test.
+ * The DDS stores the response size limit in Bytes even though the context
+ * param uses KB. The DMR uses KB throughout.
+ * @param dds
+ */
+static void
+throw_if_dap2_response_too_big(DDS *dds)
+{
+    if (dds->get_response_limit() != 0 && ((dds->get_request_size(true)) > dds->get_response_limit())) {
+        string msg = "The Request for " + long_to_string(dds->get_request_size(true) / 1024)
+            + "KB is too large; requests on this server are limited to "
+            + long_to_string(dds->get_response_limit() /1024) + "KB.";
+        throw Error(msg);
+    }
+}
+
 /** This function formats and prints an ASCII representation of a
  DAS on stdout.  This has the effect of sending the DAS object
  back to the client program.
@@ -1024,12 +1041,7 @@ BESDapResponseBuilder::intern_dap2_data(BESResponseObject *obj, BESDataHandlerIn
 
     dds->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
-    if (dds->get_response_limit() != 0 && dds->get_request_size(true) > dds->get_response_limit()) {
-        string msg = "The Request for " + long_to_string(dds->get_request_size(true) / 1024)
-            + "KB is too large; requests for this user are limited to "
-            + long_to_string(dds->get_response_limit() / 1024) + "KB.";
-        throw Error(msg);
-    }
+    throw_if_dap2_response_too_big(dds);
 
     // Iterate through the variables in the DataDDS and read
     // in the data if the variable has the send flag set.
@@ -1102,12 +1114,7 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
 
         (*dds)->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
-        if ((*dds)->get_response_limit() != 0 && (*dds)->get_request_size(true) > (*dds)->get_response_limit()) {
-            string msg = "The Request for " + long_to_string((*dds)->get_request_size(true) / 1024)
-                + "KB is too large; requests for this user are limited to "
-                + long_to_string((*dds)->get_response_limit() / 1024) + "KB.";
-            throw Error(msg);
-        }
+        throw_if_dap2_response_too_big(*dds);
 
         if (with_mime_headers)
             set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
@@ -1129,12 +1136,7 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
 
         (*dds)->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
-        if ((*dds)->get_response_limit() != 0 && (*dds)->get_request_size(true) > (*dds)->get_response_limit()) {
-            string msg = "The Request for " + long_to_string((*dds)->get_request_size(true) / 1024)
-                + "KB is too large; requests for this user are limited to "
-                + long_to_string((*dds)->get_response_limit() / 1024) + "KB.";
-            throw Error(msg);
-        }
+        throw_if_dap2_response_too_big(*dds);
 
         if (with_mime_headers)
             set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
@@ -1282,10 +1284,10 @@ void BESDapResponseBuilder::send_dap4_data_using_ce(ostream &out, DMR &dmr, bool
         dmr.root()->set_send_p(true);
     }
 
-    if (dmr.response_limit() != 0 && dmr.request_size(true) > dmr.response_limit()) {
-        string msg = "The Request for " + long_to_string(dmr.request_size(true) / 1024)
-            + "MB is too large; requests for this user are limited to " + long_to_string(dmr.response_limit() / 1024)
-            + "MB.";
+    if (dmr.response_limit() != 0 && (dmr.request_size(true) > dmr.response_limit())) {
+        string msg = "The Request for " + long_to_string(dmr.request_size(true))
+            + "KB is too large; requests for this server are limited to " + long_to_string(dmr.response_limit())
+            + "KB.";
         throw Error(msg);
     }
 

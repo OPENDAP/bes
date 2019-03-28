@@ -134,7 +134,7 @@ void BESAsciiTransmit::send_dap4_csv(BESResponseObject *obj, BESDataHandlerInter
     try {
         // @TODO Handle *functional* constraint expressions specially
         // Use the D4FunctionDriver class and evaluate the functions, building
-        // an new DMR, then evaluate the D4CE in the context of that DMR.
+        // a new DMR, then evaluate the D4CE in the context of that DMR.
         // This might be coded as "if (there's a function) do this else process the CE".
         // Or it might be coded as "if (there's a function) build the new DMR, then fall
         // through and process the CE but on the new DMR". jhrg 9/3/14
@@ -147,6 +147,14 @@ void BESAsciiTransmit::send_dap4_csv(BESResponseObject *obj, BESDataHandlerInter
         else {
             dmr->root()->set_send_p(true);
         }
+
+        if (dmr->response_limit() != 0 && (dmr->request_size(true) > dmr->response_limit())) {
+            string msg = "The Request for " + long_to_string(dmr->request_size(true))
+                + "KB is too large; requests for this server are limited to " + long_to_string(dmr->response_limit())
+                + "KB.";
+            throw Error(msg);
+        }
+
         // Now that we are ready to start building the response data we
         // cancel any pending timeout alarm according to the configuration.
         BESUtil::conditional_timeout_cancel();

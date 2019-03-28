@@ -2,11 +2,7 @@ AUTOMAKE_OPTIONS = foreign
 
 TESTSUITE_TIF = $(srcdir)/testsuite_tif
 
-# if OPENJPEG_FOUND
-# TESTSUITE_JP2 = $(srcdir)/testsuite_jp2
-# else
-TESTSUITE_JP2 = 
-# endif
+TESTSUITE_JP2 = $(srcdir)/testsuite_jp2
 
 EXTRA_DIST = $(TESTSUITE_TIF).at $(TESTSUITE_TIF) $(srcdir)/package.m4 \
 atlocal.in handler_tests_macros.m4 $(BES_CONF_IN) gdal

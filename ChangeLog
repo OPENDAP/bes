@@ -1,3 +1,158 @@
+2019-03-20  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #241 from OPENDAP/HK-351
+	Hk 351
+
+	Merge pull request #242 from OPENDAP/response-limit-fix
+	Response limit fix
+
+	Removed #if 0... #endif
+	[skip ci]
+
+	Added the jpeg2k tests - they were removed from the Makefile a long time ago
+
+	Modified the code to add an option to get the old behavior for GeoTiff
+	GeoTiff look best when the bands are Bytes, but some users may expect
+	them to be Float32. I made the old behavior an option. jpeg2000 should
+	always be some integer type and Byte is good enough for now.
+
+	Fixed response limit for DAP4 returnAs ascii.
+
+	Fixed the Response Limit feature for DAP2 and partly for DAP4
+	For DAP2, both the binary and ascii responses work WRT response limit;
+	for DAP4, the binary works but ascii does not (it ignores the limit).
+
+2019-03-20  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HK-351. Corrected test files.
+
+	HK-351. Added gdal_translate for tif and jp2.
+
+2019-03-19  James Gallagher  <jgallagher@opendap.org>
+
+	Added test bescmd files for request_limit fix.
+
+	Not quite there.
+	For DAP2he response_size and get/set_response_limit() methods use a
+	confusing set of values in Bytes and KB. For DAP, the dap response
+	works, but ascii does not.
+
+2019-03-19  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HK-351. First try.
+
+2019-03-11  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #240 from OPENDAP/HK-352
+	Hk 352
+
+2019-03-09  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HK-352. Made changes in FONgTransform::transform_to_geotiff() and corrected tests.
+
+	HK-352. Corrected tests in gateway_module.
+
+2019-03-08  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HK-352. Corrected GeoTiff and Jpeg2000 transform.
+
+2019-03-05  H. Joe Lee  <hyoklee@hdfgroup.org>
+
+	Update build_dmrpp.cc
+
+2019-03-05  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #238 from OPENDAP/sonar-build-test
+	Test new logic for sonar scan Travis builds
+
+	Test Travis 'stages' logic
+
+2019-02-28  James Gallagher  <jgallagher@opendap.org>
+
+	Test new logic for sonar scan Travis builds
+
+2019-02-27  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #236 from OPENDAP/sonar-cloud2
+	Sonar cloud2
+
+	Mistakenly added the bes debian build back in. Removed.
+	Fix this, though.
+
+2019-02-26  H. Joe Lee  <hyoklee@hdfgroup.org>
+
+	close #237
+
+2019-02-26  James Gallagher  <jgallagher@opendap.org>
+
+	Removed comments that prevented build and package stages from running
+
+	Merge branch 'master' into sonar-cloud2
+
+	hdf5 update
+
+	Updated the commit hashes for hdf4 and hdf5
+
+2019-02-23  Nathan Potter  <ndp@opendap.org>
+
+	Added required libdap4 DOI to README.md
+
+	Added DOI for version-3.20.3 to README.md
+
+2019-02-21  Nathan Potter  <ndp@opendap.org>
+
+	Dropped distpatch/bes/site.conf.proto from the DISTCLEAN list.
+
+	Updating hdf*_handler hashes
+
+	Dropping generated content (atlocal) from git.
+
+2019-02-21  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Updated the version number in the .spec files.
+
+2019-02-21  James Gallagher  <jgallagher@opendap.org>
+
+	Minor edit to sonar props file
+	[skip ci]
+
+2019-02-20  James Gallagher  <jgallagher@opendap.org>
+
+	again
+
+	Just scan...
+
+	parallel sonar scan - tiral #1
+
+	Merge branch 'master' into sonar-cloud2
+
+2019-02-20  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Updated BES source release.
+
+2019-02-19  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	BES source release.
+
+2019-02-19  James Gallagher  <jgallagher@opendap.org>
+
+	Travis hackery
+
+	Comments in the travis yml file.
+
+2019-02-13  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes from the latest sonar run
+
+2019-02-12  James Gallagher  <jgallagher@opendap.org>
+
+	New commit hashes for hdf4/5
+
+	Sonar-inspired edits
+
+2019-02-11  James Gallagher  <jgallagher@opendap.org>
+
+	sonar-inspires fixes. In hdf4/5, too.
 2019-02-08  James Gallagher  <jgallagher@opendap.org>
 
 	Added sonar-project.properties
