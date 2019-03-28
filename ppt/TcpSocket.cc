@@ -322,7 +322,7 @@ void TcpSocket::listen()
 
         BESDEBUG("besdaemon", "About to bind to port: " << _portVal << " in process: " << getpid() << endl);
 
-        if (bind(_socket, (struct sockaddr*) &server, sizeof server) != -1) {
+        if (::bind(_socket, (struct sockaddr*) &server, sizeof server) != -1) {
             int length = sizeof(server);
 #ifdef _GETSOCKNAME_USES_SOCKLEN_T
             if (getsockname(_socket, (struct sockaddr *) &server, (socklen_t *) &length) == -1) {

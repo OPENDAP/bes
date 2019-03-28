@@ -55,11 +55,9 @@
 #include "CmrError.h"
 #include "rjson_utils.h"
 
-
-
 using namespace std;
 
-#define prolog std::string("CmrApi::").append(__func__).append("() - ")
+#define prolog string("CmrApi::").append(__func__).append("() - ")
 
 namespace cmr {
 
@@ -285,18 +283,18 @@ CmrApi::get_month(const string r_month, const string r_year, const rapidjson::Do
         if(month_id == r_month){
             msg.str("");
             msg << prolog  << "Located requested month ("<<r_month << ")";
-            BESDEBUG(MODULE, msg << endl);
+            BESDEBUG(MODULE, msg.str() << endl);
             return month;
         }
         else {
             msg.str("");
             msg << prolog  << "The month titled '"<<month_id << "' does not match the requested month ("<< r_month <<")";
-            BESDEBUG(MODULE, msg << endl);
+            BESDEBUG(MODULE, msg.str() << endl);
         }
     }
     msg.str("");
     msg << prolog  << "Failed to locate request Year/Month.";
-    BESDEBUG(MODULE, msg << endl);
+    BESDEBUG(MODULE, msg.str() << endl);
     throw CmrError(msg.str(),__FILE__,__LINE__);
 }
 
@@ -315,13 +313,13 @@ CmrApi::get_day_group(const string r_month, const string r_year, const rapidjson
         if(title == day_group_title){
             msg.str("");
             msg << prolog  << "Located Day group for year: " << r_year << " month: "<< r_month;
-            BESDEBUG(MODULE, msg << endl);
+            BESDEBUG(MODULE, msg.str() << endl);
             return object;
         }
     }
     msg.str("");
     msg << prolog  << "Failed to locate requested Day  year: " << r_year << " month: "<< r_month;
-    BESDEBUG(MODULE, msg << endl);
+    BESDEBUG(MODULE, msg.str() << endl);
     throw CmrError(msg.str(),__FILE__,__LINE__);
 }
 
@@ -380,7 +378,7 @@ CmrApi::get_months(string collection_name, string r_year, vector<string> &months
     if(years.Size() != 1){
         msg.str("");
         msg << prolog  << "We expected to get back one year (" << r_year << ") but we got back " << years.Size();
-        BESDEBUG(MODULE, msg << endl);
+        BESDEBUG(MODULE, msg.str() << endl);
         throw CmrError(msg.str(),__FILE__,__LINE__);
     }
 
@@ -389,7 +387,7 @@ CmrApi::get_months(string collection_name, string r_year, vector<string> &months
     if(year_title != r_year){
         msg.str("");
         msg << prolog  << "The returned year (" << year_title << ") does not match the requested year ("<< r_year << ")";
-        BESDEBUG(MODULE, msg << endl);
+        BESDEBUG(MODULE, msg.str() << endl);
         throw CmrError(msg.str(),__FILE__,__LINE__);
     }
 
@@ -397,7 +395,7 @@ CmrApi::get_months(string collection_name, string r_year, vector<string> &months
     if(year_children.Size() != 1){
         msg.str("");
         msg << prolog  << "We expected to get back one child for the year (" << r_year << ") but we got back " << years.Size();
-        BESDEBUG(MODULE, msg << endl);
+        BESDEBUG(MODULE, msg.str() << endl);
         throw CmrError(msg.str(),__FILE__,__LINE__);
     }
 
@@ -406,7 +404,7 @@ CmrApi::get_months(string collection_name, string r_year, vector<string> &months
     if(title != string("Month")){
         msg.str("");
         msg << prolog  << "We expected to get back a Month object, but we did not.";
-        BESDEBUG(MODULE, msg << endl);
+        BESDEBUG(MODULE, msg.str() << endl);
         throw CmrError(msg.str(),__FILE__,__LINE__);
     }
 
