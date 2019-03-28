@@ -81,8 +81,10 @@ bool FoDapCovJsonTransform::canConvert()
     //    - shapeVals[2] = z axis
     //    - shapeVals[3] = t axis
     if(xExists && yExists && zExists && tExists) {
-        // A domain with Grid domain type MUST have the axes "x" and "y"
-        // and MAY have the axes "z" and "t".
+
+        if (shapeVals.size() < 4)
+            return false;
+
         if((shapeVals[0] > 1) && (shapeVals[1] > 1) && (shapeVals[2] >= 1) && (shapeVals[3] >= 0)) {
             domainType = Grid;
             return true;
@@ -118,8 +120,10 @@ bool FoDapCovJsonTransform::canConvert()
     //    - shapeVals[1] = y axis
     //    - shapeVals[2] = t axis
     else if(xExists && yExists && !zExists && tExists) {
-        // A domain with Grid domain type MUST have the axes "x" and "y"
-        // and MAY have the axes "z" and "t".
+
+        if (shapeVals.size() < 3)
+            return false;
+
         if((shapeVals[0] > 1) && (shapeVals[1] > 1) && (shapeVals[2] >= 0)) {
             domainType = Grid;
             return true;
@@ -147,8 +151,10 @@ bool FoDapCovJsonTransform::canConvert()
     //    - shapeVals[0] = x axis
     //    - shapeVals[1] = y axis
     else if(xExists && yExists && !zExists && !tExists) {
-        // A domain with Grid domain type MUST have the axes "x" and "y"
-        // and MAY have the axes "z" and "t".
+
+        if (shapeVals.size() < 2)
+            return false;
+
         if((shapeVals[0] > 1) && (shapeVals[1] > 1)) {
             domainType = Grid;
             return true;
@@ -359,15 +365,8 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
 void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, string indent, bool sendData)
 {
     string childindent = indent + _indent_increment;
-#if 0
-    bool *axisRetrieved = new bool;
-#endif
     bool axisRetrieved = false;
     bool parameterRetrieved = false;
-#if 0
-    *axisRetrieved = false;
-    *parameterRetrieved = false;
-#endif
 
     getAttributes(strm, a->get_attr_table(), a->name(), &axisRetrieved, &parameterRetrieved);
 
@@ -465,12 +464,6 @@ void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, 
             currParameter->values += "\"values\": []";
         }
     }
-
-#if 0
-    free(axisRetrieved);
-    free(parameterRetrieved);
-#endif
-
 }
 
 
@@ -639,6 +632,10 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
                 else if(isAxis == false && isParam == true) {
                     // Push a new parameter
                     if(currParameterUnit.compare("") != 0 && currParameterLongName.compare("") != 0) {
+                        // Kent says: Use LongName to select the new Parameter is too strict.
+                        // but when the test 'currParameterLongName.compare("") != 0' is removed,
+                        // all of the tests fail and do so by generating output that looks clearly
+                        // wrong. I'm going to hold off on this part of the patch for now. jhrg 3/28/19
                         struct Parameter *newParameter = new Parameter;
                         newParameter->name = name;
                         newParameter->dataType = currDataType;
@@ -1348,13 +1345,13 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::BaseType *bt, strin
     case libdap::dods_uint64_c:
     case libdap::dods_enum_c:
     case libdap::dods_group_c: {
-        string s = (string) "File out COVJSON, " + "DAP4 types not yet supported.";
+        string s = (string) "File out COVJSON, DAP4 types not yet supported.";
         throw BESInternalError(s, __FILE__, __LINE__);
         break;
     }
 
     default: {
-        string s = (string) "File out COVJSON, " + "Unrecognized type.";
+        string s = (string) "File out COVJSON, Unrecognized type.";
         throw BESInternalError(s, __FILE__, __LINE__);
         break;
     }
@@ -1466,37 +1463,27 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::Array *a, string in
         break;
     }
 
-    case libdap::dods_structure_c: {
+    case libdap::dods_structure_c:
         throw BESInternalError("File out COVJSON, Arrays of Structure objects not a supported return type.", __FILE__, __LINE__);
-        break;
-    }
-    case libdap::dods_grid_c: {
+
+    case libdap::dods_grid_c:
         throw BESInternalError("File out COVJSON, Arrays of Grid objects not a supported return type.", __FILE__, __LINE__);
-        break;
-    }
 
-    case libdap::dods_sequence_c: {
+    case libdap::dods_sequence_c:
         throw BESInternalError("File out COVJSON, Arrays of Sequence objects not a supported return type.", __FILE__, __LINE__);
-        break;
-    }
 
-    case libdap::dods_array_c: {
+    case libdap::dods_array_c:
         throw BESInternalError("File out COVJSON, Arrays of Array objects not a supported return type.", __FILE__, __LINE__);
-        break;
-    }
+
     case libdap::dods_int8_c:
     case libdap::dods_uint8_c:
     case libdap::dods_int64_c:
     case libdap::dods_uint64_c:
     case libdap::dods_enum_c:
-    case libdap::dods_group_c: {
+    case libdap::dods_group_c:
         throw BESInternalError("File out COVJSON, DAP4 types not yet supported.", __FILE__, __LINE__);
-        break;
-    }
 
-    default: {
+    default:
         throw BESInternalError("File out COVJSON, Unrecognized type.", __FILE__, __LINE__);
-        break;
-    }
     }
 }
