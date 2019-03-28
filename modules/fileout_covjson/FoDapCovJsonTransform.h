@@ -164,7 +164,14 @@ public:
     // FOR TESTING PURPOSES ------------------------------------------------------------------------------------
     FoDapCovJsonTransform(libdap::DDS *dds);
 
-    virtual ~FoDapCovJsonTransform() { }
+    virtual ~FoDapCovJsonTransform()
+    {
+        for (std::vector<Axis*>::const_iterator i = axes.begin(); i != axes.end(); ++i)
+            delete (*i);
+
+        for (std::vector<Parameter *>::const_iterator i = parameters.begin(); i != parameters.end(); ++i)
+            delete (*i);
+    }
 
     virtual void transform(std::ostream &ostrm, bool sendData, bool testOverride);
 

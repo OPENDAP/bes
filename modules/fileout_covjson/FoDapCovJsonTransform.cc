@@ -81,8 +81,6 @@ bool FoDapCovJsonTransform::canConvert()
     //    - shapeVals[2] = z axis
     //    - shapeVals[3] = t axis
     if(xExists && yExists && zExists && tExists) {
-        // A domain with Grid domain type MUST have the axes "x" and "y"
-        // and MAY have the axes "z" and "t".
 
         if (shapeVals.size() < 4)
             return false;
@@ -122,8 +120,6 @@ bool FoDapCovJsonTransform::canConvert()
     //    - shapeVals[1] = y axis
     //    - shapeVals[2] = t axis
     else if(xExists && yExists && !zExists && tExists) {
-        // A domain with Grid domain type MUST have the axes "x" and "y"
-        // and MAY have the axes "z" and "t".
 
         if (shapeVals.size() < 3)
             return false;
@@ -155,8 +151,6 @@ bool FoDapCovJsonTransform::canConvert()
     //    - shapeVals[0] = x axis
     //    - shapeVals[1] = y axis
     else if(xExists && yExists && !zExists && !tExists) {
-        // A domain with Grid domain type MUST have the axes "x" and "y"
-        // and MAY have the axes "z" and "t".
 
         if (shapeVals.size() < 2)
             return false;
@@ -638,6 +632,10 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
                 else if(isAxis == false && isParam == true) {
                     // Push a new parameter
                     if(currParameterUnit.compare("") != 0 && currParameterLongName.compare("") != 0) {
+                        // Kent says: Use LongName to select the new Parameter is too strict.
+                        // but when the test 'currParameterLongName.compare("") != 0' is removed,
+                        // all of the tests fail and do so by generating output that looks clearly
+                        // wrong. I'm going to hold off on this part of the patch for now. jhrg 3/28/19
                         struct Parameter *newParameter = new Parameter;
                         newParameter->name = name;
                         newParameter->dataType = currDataType;
