@@ -1739,9 +1739,9 @@ HDFEOS2ArrayGridGeoField::LatLon2DSubset (T * outlatlon, int majordim,
                                           int32 * offset, int32 * count,
                                           int32 * step)
 {
-    // float64 templatlon[majordim][minordim];
-    T (*templatlonptr)[majordim][minordim] =
-        (typeof templatlonptr) latlon;
+#if 0
+    T (*templatlonptr)[majordim][minordim] = reinterpret_cast<T *[majordim][minordim]>(latlon);
+#endif
     int i, j, k;
 
     // do subsetting
@@ -1762,7 +1762,11 @@ HDFEOS2ArrayGridGeoField::LatLon2DSubset (T * outlatlon, int majordim,
 
     for (i = 0; i < count[0]; i++) {
         for (j = 0; j < count[1]; j++) {
+
+#if 0
             outlatlon[k] = (*templatlonptr)[dim0index[i]][dim1index[j]];
+#endif
+            outlatlon[k] = *(latlon + (dim0index[i] * minordim) + dim1index[j]);
             k++;
 
         }

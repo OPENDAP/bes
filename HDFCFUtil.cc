@@ -504,7 +504,12 @@ void HDFCFUtil::LatLon2DSubset (T * outlatlon,
 {
 
     //  float64 templatlon[majordim][minordim];
+#if 0
+    // --std=c++11 on OSX causes 'typeof' to fail. This is a GNU gcc-specific
+    // keyword. jhrg 3/28/19
     T (*templatlonptr)[majordim][minordim] = (typeof templatlonptr) latlon;
+#endif
+    T (*templatlonptr)[majordim][minordim] = (T *) latlon;
     int i, j, k;
 
     // do subsetting

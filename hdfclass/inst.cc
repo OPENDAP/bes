@@ -52,6 +52,7 @@
 #include <hdfclass.h>
 
 #ifdef __GNUG__                 // force instantiation due to G++ bug
+namespace std {
 template class vector < hdf_sds >;
 template class vector < hdf_attr >;
 template class vector < hdf_dim >;
@@ -60,6 +61,7 @@ template class vector < hdf_field >;
 template class vector < hdf_vdata >;
 template class vector < hdf_palette >;
 template class vector < hdf_gri >;
+}
 #endif
 
 // This dummy function is just so the presence of the HDFClass library 

@@ -35,7 +35,6 @@ HDFEOS2ArraySwathDimMapField::read ()
     if(length() == 0)        
         return true;
 
-
 #if 0
     string check_pass_fileid_key_str="H4.EnablePassFileID";
     bool check_pass_fileid_key = false;
@@ -520,11 +519,10 @@ bool HDFEOS2ArraySwathDimMapField::Field2DSubset (T * outlatlon,
                                                   int32 * count,
                                                   int32 * step)
 {
-
-
-    // float64 templatlon[majordim][minordim];
-    T (*templatlonptr)[majordim][minordim] = (typeof templatlonptr) latlon;
-    int	i = 0, j =0, k = 0; 
+#if 0
+    T (*templatlonptr)[majordim][minordim] = (T *[][]) latlon;
+#endif
+    int	i = 0, j = 0, k = 0;
 
     // do subsetting
     // Find the correct index
@@ -545,7 +543,10 @@ bool HDFEOS2ArraySwathDimMapField::Field2DSubset (T * outlatlon,
 
     for (i = 0; i < count[0]; i++) {
         for (j = 0; j < count[1]; j++) {
+#if 0
             outlatlon[k] = (*templatlonptr)[dim0index[i]][dim1index[j]];
+#endif
+            outlatlon[k] = *(latlon + (dim0index[i] * minordim) + dim1index[j]);
             k++;
         }
     }
@@ -561,14 +562,12 @@ bool HDFEOS2ArraySwathDimMapField::Field3DSubset (T * outlatlon,
                                                   int32 * count,
                                                   int32 * step)
 {
-
-
-    // float64 templatlon[majordim][minordim];
     if (newdims.size() !=3) 
         throw InternalErr(__FILE__, __LINE__,
                           "the rank must be 3 to call this function");
-
-    T (*templatlonptr)[newdims[0]][newdims[1]][newdims[2]] = (typeof templatlonptr) latlon;
+#if 0
+    T (*templatlonptr)[newdims[0]][newdims[1]][newdims[2]] = (T *[][][]) latlon;
+#endif
     int i,j,k,l;
 
     // do subsetting
@@ -594,14 +593,18 @@ bool HDFEOS2ArraySwathDimMapField::Field3DSubset (T * outlatlon,
 
     for (i = 0; i < count[0]; i++) {
         for (j = 0; j < count[1]; j++) {
-            for ( k =0;k<count[2];k++) {
+            for (k =0; k < count[2]; k++) {
+#if 0
                 outlatlon[l] = (*templatlonptr)[dim0index[i]][dim1index[j]][dim2index[k]];
+#endif
+                outlatlon[l] = *(latlon + (dim0index[i] * newdims[1] * newdims[2]) + (dim1index[j] * newdims[2])+ dim2index[k]);
                 l++;
             }
         }
     }
     return true;
 }
+
 int 
 HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid, 
                                                         int nelms, 

@@ -1828,9 +1828,12 @@ void HDFSPArrayGeoField::LatLon2DSubset (T * outlatlon,
                                          int32 * count,
                                          int32 * step)
 {
+#if 0
+    // 'typeof' is supported only by gcc and not on OSX with --std=c++11.
+    // jhrg 3/28/19
+    T templatlonptr[majordim][minordim] (typeof templatlonptr) latlon;
+#endif
 
-    // float64 templatlon[majordim][minordim];
-    T (*templatlonptr)[majordim][minordim] = (typeof templatlonptr) latlon;
     int i = 0;
     int j = 0;
     int k = 0;
@@ -1852,7 +1855,10 @@ void HDFSPArrayGeoField::LatLon2DSubset (T * outlatlon,
 
     for (i = 0; i < count[0]; i++) {
         for (j = 0; j < count[1]; j++) {
-            outlatlon[k] = (*templatlonptr)[dim0index[i]][dim1index[j]];
+#if 0
+            outlatlon[k] = templatlonptr[dim0index[i]][dim1index[j]];
+#endif
+            outlatlon[k] = *(latlon + (dim0index[i] * minordim) + dim1index[j]); //[dim0index[i]][dim1index[j]];
             k++;
         }
     }
