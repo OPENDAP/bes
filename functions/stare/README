@@ -1,0 +1,13 @@
+README
+ Created on: Mar 28, 2019
+     Author: kodi
+
+     
+The STARE mapping function takes a set of STARE data and uses the lat/lon values to calculate STARE indeces and map them to corresponding x/y values.
+
+The function connects to OPeNDAP servers to get the lat/lon data.
+The lat and lon are stored in seperate arrays.
+The arrays are then iterated through and the STARE index is calculated for each lat/lon pair
+The STARE index, iterator values, latitude, and longitude are all stored in a struct
+An unordered hash map is used - with the STARE index being the key and the struct being the value
+An array consisting of the same values is then used to create an hdf5 file 
