@@ -639,12 +639,21 @@ void File::Retrieve_H5_Attr_Info(Attribute * attr, hid_t obj_id, const int j, bo
         attr->dtype = HDF5CFUtil::H5type_to_H5DAPtype(ty_id);
         if (false == HDF5CFUtil::cf_strict_support_type(attr->dtype)) unsup_attr_dtype = true;
 
+        if(H5VSTRING == attr->dtype || H5FSTRING == attr->dtype) {
+            H5T_cset_t c_set_type = H5Tget_cset(ty_id);
+            if(c_set_type <0) 
+                throw2("Cannot get hdf5 character set type for the attribute ", attr_name);
+            // This is a UTF-8 string
+            if(c_set_type == 1)
+                attr->is_cset_ascii = false;
+        }
+
         if ((aspace_id = H5Aget_space(attrid)) < 0)
-        throw2("Cannot get hdf5 dataspace id for the attribute ", attr_name);
+            throw2("Cannot get hdf5 dataspace id for the attribute ", attr_name);
 
         int ndims = H5Sget_simple_extent_ndims(aspace_id);
         if (ndims < 0)
-        throw2("Cannot get the hdf5 dataspace number of dimension for attribute ", attr_name);
+            throw2("Cannot get the hdf5 dataspace number of dimension for attribute ", attr_name);
 
         hsize_t nelmts = 1;
 

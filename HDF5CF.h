@@ -190,7 +190,7 @@ class Attribute {
 
 public:
     Attribute() :
-        dtype(H5UNSUPTYPE), count(0), fstrsize(0)
+        dtype(H5UNSUPTYPE), count(0), fstrsize(0),is_cset_ascii(true)
     {
     }
     ;
@@ -232,6 +232,10 @@ public:
         return this->strsize;
     }
 
+    bool getCsetType() const {
+        return this->is_cset_ascii;
+    }
+
 protected:
     string name;
     string newname;
@@ -240,6 +244,7 @@ protected:
     vector<size_t> strsize;
     size_t fstrsize;
     vector<char> value;
+    bool is_cset_ascii;
 
     friend class File;
     friend class GMFile;

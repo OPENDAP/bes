@@ -544,6 +544,7 @@ void gen_dap_str_attr(AttrTable *at, const HDF5CF::Attribute *attr)
     BESDEBUG("h5", "Coming to gen_dap_str_attr()  "<<endl);
     const vector<size_t>& strsize = attr->getStrSize();
     unsigned int temp_start_pos = 0;
+    bool is_cset_ascii = attr->getCsetType();
     for (unsigned int loc = 0; loc < attr->getCount(); loc++) {
         if (strsize[loc] != 0) {
             string tempstring(attr->getValue().begin() + temp_start_pos,
@@ -556,7 +557,7 @@ void gen_dap_str_attr(AttrTable *at, const HDF5CF::Attribute *attr)
             // The above statement is no longer true. The netCDF Java can handle long string
             // attributes. The long string can be kept and I do think the
             // performance penalty should be small. KY 2018-02-26
-            if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath")) 
+            if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath") && (true == is_cset_ascii)) 
                 tempstring = HDF5CFDAPUtil::escattr(tempstring);
                 at->append_attr(attr->getNewName(), "String", tempstring);
         }
