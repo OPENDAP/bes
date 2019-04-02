@@ -11,10 +11,8 @@ args=parser.parse_args()
 input_url =''.join(args.url)
 
 #Replace the URL with your own server
+# URLs can be ...:8989/opendap/data/test/kent/hdf5_handler_fake/d_int.h5 or ...:8080/opendap/data/NASAFILES/hdf5/MLS-Aura_L2GP-BrO_v04-23-c03_2016d302.he5
 dataset=open_url(input_url)
-#dataset=open_url('https://eosdap.hdfgroup.org:8080/opendap/data/hdf5/grid_1_2d.h5')
-#dataset=open_url('https://eosdap.hdfgroup.org:8080/opendap/data/NASAFILES/hdf5/MLS-Aura_L2GP-BrO_v04-23-c03_2016d302.he5')
-#dataset=open_url('https://eosdap.hdfgroup.org:8989/opendap/data/test/kent/hdf5_handler_fake/d_int.h5')
 
 #Root or group attributes saved to a dictionary 
 Attr_DictT={}
