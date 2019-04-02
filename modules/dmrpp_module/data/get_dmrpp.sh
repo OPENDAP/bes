@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+
+CONF_FILE_TEMPLATE="bes.hdf5.cf.conf"
 
 show_usage() {
     cat <<EOF
@@ -64,14 +66,18 @@ shift $((OPTIND-1))
 
 [ "$1" = "--" ] && shift
 
-# build the xml file
-hdf5_file=$1
-TMP_CMD=$(mktemp -t get_dmr_$$)
-
+###############################################################################
+#
+# Build the (temporary) DMR file for the target dataset.
+#
+function get_dmr() {
+	# build the xml file
+	hdf5_file=$1
+	TMP_CMD=$(mktemp -t get_dmr_$$)
+	
 cat <<EOF > $TMP_CMD 
 <?xml version="1.0" encoding="UTF-8"?>
-<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[http-8080-1:27:bes_request]">
-  <bes:setContext name="xdap_accept">4.0</bes:setContext>
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="get_dmrpp.sh">
   <bes:setContext name="dap_explicit_containers">no</bes:setContext>
   <bes:setContext name="errors">xml</bes:setContext>
   <bes:setContext name="max_response_size">0</bes:setContext>
@@ -87,42 +93,60 @@ cat <<EOF > $TMP_CMD
   
 </bes:request>
 EOF
+	
+	if test -n "$very_verbose"
+	then
+	    echo "TMP_CMD: $TMP_CMD"
+	    cat $TMP_CMD
+	fi
+	
+	TMP_CONF=$(mktemp -t conf_$$)
+	
+	# Use the cwd as the BES's Data Root directory - this is a trick so that the
+	# script can get a DMR using the HDF5 handler algorithm, as tweaked by the 
+	# handler's configuration parameters in the bes.hdf5.cf.template.conf file.
+	echo "Checking for ${CONF_FILE_TEMPLATE}";
+	if  [ ! -f "${CONF_FILE_TEMPLATE}" ]
+	then
+		echo "ERROR: Missing BES configuration file template \"${CONF_FILE_TEMPLATE}\"";
+		echo "       Try running \"make check\" first.";
+		exit 1;
+	fi
 
-if test -n "$very_verbose"
-then
-    echo "$TMP_CMD: $TMP_CMD"
-    cat $TMP_CMD
-fi
+	sed -e "s%[@]hdf5_root_directory[@]%`pwd`%" < ${CONF_FILE_TEMPLATE} > $TMP_CONF
+	
+	if test -n "$very_verbose"
+	then
+	    echo "TMP_CONF: $TMP_CONF"
+	    cat $TMP_CONF
+	fi
+	
+	TMP_DMR_RESP=$(mktemp -t dmr_$$)
+	
+	# use besstandalone to get the DMR
+	besstandalone -c $TMP_CONF -i $TMP_CMD > $TMP_DMR_RESP
+	
+	if test -n "$verbose" || test -n "$just_dmr"
+	then
+	    echo "DMR:"
+	    cat $TMP_DMR_RESP
+	fi
 
-TMP_CONF=$(mktemp -t conf_$$)
+}
+###############################################################################
 
-# Use the cwd as the BES's Data Root directory - this is a trick so that the
-# script can get a DMR using the HDF5 handler algorithm, as tweaked by the 
-# handler's configuration parameters in the bes.hdf5.cf.template.conf file.
-sed -e "s%[@]hdf5_root_directory[@]%`pwd`%" < bes.hdf5.cf.template.conf > $TMP_CONF
-
-if test -n "$very_verbose"
-then
-    echo "$TMP_CONF"
-    cat $TMP_CONF
-fi
-
-TMP_DMR_RESP=$(mktemp -t dmr_$$)
-
-# use besstandalone to get the DMR
-besstandalone -c $TMP_CONF -i $TMP_CMD > $TMP_DMR_RESP
-
-if test -n "$verbose" || test -n "$just_dmr"
-then
-    echo "DMR:"
-    cat $TMP_DMR_RESP
-fi
-
-if test -z "$just_dmr"
-then
-    ./build_dmrpp $verbose -f $hdf5_file -r $TMP_DMR_RESP $dmrpp_url
-fi
-
-# TODO Use trap to ensure these are really removed
-rm $DMR_CMD $TMP_DMR_RESP $TMP_CONF
+###############################################################################
+function mk_dmrpp() {
+	if test -z "$just_dmr"
+	then
+	    ./build_dmrpp $verbose -f $hdf5_file -r $TMP_DMR_RESP $dmrpp_url
+	fi
+	
+	# TODO Use trap to ensure these are really removed
+	rm $DMR_CMD $TMP_DMR_RESP $TMP_CONF
+}
+ ###############################################################################
+ 
+ get_dmr;
+ mk_dmrpp
  

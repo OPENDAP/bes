@@ -28,7 +28,12 @@ noinst_SCRIPTS = get_dmrpp.sh
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
 		-e "s%[@]modulesdir[@]%${modulesdir}%" $< > $@
 
-bes.hdf5.cf.template.conf: $(srcdir)/bes.hdf5.cf.template.conf.in $(top_srcdir)/configure.ac
+bes.hdf5.cf.conf: $(srcdir)/bes.hdf5.cf.conf.in $(top_srcdir)/configure.ac
+
+check-local: bes.hdf5.cf.conf
+
+clean-local:
+	rm -f bes.hdf5.cf.conf
 
 EXTRA_PROGRAMS = 
 
