@@ -50,9 +50,12 @@ void gen_dap_oneobj_das(AttrTable*, const HDF5CF::Attribute*, const HDF5CF::Var*
 
 void add_cf_grid_mapping_attr(DAS &das, const vector<HDF5CF::Var*>& vars, const string& cf_projection,
     const string & dim0name, hsize_t dim0size, const string &dim1name, hsize_t dim1size);
-
+#if 0
 void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridPCType cv_proj_code,
     float cv_point_lower, float cv_point_upper, float cv_point_left, float cv_point_right,
+    const vector<HDF5CF::Dimension*>& dims,const vector<double>&  params,const unsigned short);
+#endif
+void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridPCType cv_proj_code,
     const vector<HDF5CF::Dimension*>& dims,const vector<double>&  params,const unsigned short);
 
 void add_cf_grid_cvs(DDS & dds, EOS5GridPCType cv_proj_code, float cv_point_lower, float cv_point_upper,

@@ -651,10 +651,15 @@ void add_cf_grid_mapinfo_var(DDS & dds, const EOS5GridPCType grid_proj_code, con
 }
 
 // This function adds 1D grid mapping CF attributes to CV and data variables.
+#if 0
 void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridPCType cv_proj_code,
     float /*cv_point_lower*/, float /*cv_point_upper*/, float /*cv_point_left*/, float /*cv_point_right*/,
     const vector<HDF5CF::Dimension*>& dims,const vector<double> &eos5_proj_params,const unsigned short g_suffix)
+#endif
+void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridPCType cv_proj_code,
+    const vector<HDF5CF::Dimension*>& dims,const vector<double> &eos5_proj_params,const unsigned short g_suffix)
 {
+
 
     //1. Check the projection information, now, we handle sinusoidal,PS and LAMAZ projections.
     if (HE5_GCTP_SNSOID == cv_proj_code || HE5_GCTP_PS == cv_proj_code || HE5_GCTP_LAMAZ== cv_proj_code) {
@@ -666,7 +671,8 @@ void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridP
 
         //2. Add 1D CF attributes to the 1-D CV variables and the dummy grid_mapping variable
         AttrTable *at = das.get_table(dim0name);
-        if (!at) at = das.add_table(dim0name, new AttrTable);
+        if (!at) 
+            at = das.add_table(dim0name, new AttrTable);
         at->append_attr("standard_name", "String", "projection_y_coordinate");
 
         string long_name = "y coordinate of projection ";

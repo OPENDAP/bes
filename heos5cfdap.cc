@@ -461,11 +461,12 @@ void  gen_dap_oneeos5cf_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar) {
 void  gen_dap_oneeos5cf_das(DAS &das,const vector<HDF5CF::Var*>& vars, const HDF5CF::EOS5CVar* cvar,const unsigned short g_suffix) {
 
     BESDEBUG("h5","Coming to gen_dap_oneeos5cf_das()  "<<endl);
-
+#if 0
     float cv_point_lower = cvar->getPointLower();       
     float cv_point_upper = cvar->getPointUpper();       
     float cv_point_left  = cvar->getPointLeft();       
     float cv_point_right = cvar->getPointRight();       
+#endif
     EOS5GridPCType cv_proj_code = cvar->getProjCode();
     const vector<HDF5CF::Dimension *>& dims = cvar->getDimensions();
 
@@ -478,7 +479,10 @@ for(vector<HDF5CF::Dimension*>::const_iterator it_d = dims.begin(); it_d != dims
 
    if(dims.size() !=2) 
         throw InternalErr(__FILE__,__LINE__,"Currently we only support the 2-D CF coordinate projection system.");
+#if 0
     add_cf_grid_cv_attrs(das,vars,cv_proj_code,cv_point_lower,cv_point_upper,cv_point_left,cv_point_right,dims,cvar->getParams(),g_suffix);
+#endif
+    add_cf_grid_cv_attrs(das,vars,cv_proj_code,dims,cvar->getParams(),g_suffix);
 
 }
 
