@@ -12,13 +12,10 @@ file = h5py.File('d_dset_many.h5','w')
 # Create a dataset under the Root group.
 #
 data = np.zeros((2, 2))
-print "Writing data...",
 for i in range(2000):
-    print i,
     dataset = file.create_dataset("dset%d" % i,(2, 2), h5py.h5t.STD_I32BE)
     dataset[...] = data
 
-print "Dataset was created in the file", dataset.file
 #
 # Close the file before exiting
 #

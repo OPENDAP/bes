@@ -53,10 +53,6 @@ temp_dset = file.create_dataset ('temp', data=temp_array,
 temp_dset.attrs["long_name"] = "temperature"
 temp_dset.attrs["units"] = "kelvin"
 
-#vlen = h5py.special_dtype (vlen = str)
-#temp_dset.attrs.create ('coordinates', data = ['lat', 'lon'], 
-#            dtype=vlen) 
-
 # must explicitly declare numerical data, or else the datatype is assumed
 #   to be F64LE (we want F32)
 temp_dset.attrs.create ('valid_min', data=0.0, dtype ='f')
