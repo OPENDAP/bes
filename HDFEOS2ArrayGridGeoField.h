@@ -140,8 +140,8 @@ class HDFEOS2ArrayGridGeoField:public Array
         // test for undefined values returned by longitude-latitude calculation
         bool isundef_lat(double value)
         {
-            if(isinf(value)) return(true);
-            if(isnan(value)) return(true);
+            if(::isinf(value)) return(true);
+            if(::isnan(value)) return(true);
             // GCTP_AMAZ returns "1e+51" for values at the opposite poles
             if(value < -90.0 || value > 90.0) return(true);
                 return(false);
@@ -149,8 +149,8 @@ class HDFEOS2ArrayGridGeoField:public Array
 
         bool isundef_lon(double value)
         {
-            if(isinf(value)) return(true);
-            if(isnan(value)) return(true);
+            if(::isinf(value)) return(true);
+            if(::isnan(value)) return(true);
             // GCTP_LAMAZ returns "1e+51" for values at the opposite poles
             if(value < -180.0 || value > 180.0) return(true);
                 return(false);
