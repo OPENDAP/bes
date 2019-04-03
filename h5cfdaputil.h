@@ -40,11 +40,12 @@
 #include <BESUtil.h>
 #include <D4Attributes.h>
 
-#define NC_JAVA_STR_SIZE_LIMIT 32767
+const size_t  NC_JAVA_STR_SIZE_LIMIT=32767;
 
 
-struct HDF5CFDAPUtil {
+class HDF5CFDAPUtil {
 
+    public: 
     static H5DataType get_mem_dtype(H5DataType, size_t);
     static string print_type(H5DataType h5type);
     static string print_attr(H5DataType h5type, int loc, void *vals);

@@ -81,8 +81,10 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
                     try {
                         sca_int64 = new HDF5CFInt64(var->getNewName(), var->getFullPath(), filename);
                     }
-                    catch (...) {
-                        throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFInt64.");
+                    catch (std::exception &e) {
+                        string error_message = e.what();
+                        error_message = "Cannot allocate the HDF5CFInt64: " + error_message;
+                        throw InternalErr(__FILE__, __LINE__, error_message);
                     }
                     sca_int64->set_is_dap4(true);
                     map_cfh5_attrs_to_dap4(var,sca_int64);
@@ -357,30 +359,28 @@ bool is_fvalue_valid(H5DataType var_dtype, const HDF5CF::Attribute* attr)
     switch (attr->getType()) {
     case H5CHAR: {
         signed char final_fill_value = *((signed char*) ((void*) (&(attr->getValue()[0]))));
-        if (var_dtype == H5UCHAR) {
-            if (final_fill_value < 0) ret_value = false;
-        }
+        if ((var_dtype == H5UCHAR) && (final_fill_value<0)) 
+            ret_value = false;
         return ret_value;
 
     }
     case H5INT16: {
         short final_fill_value = *((short*) ((void*) (&(attr->getValue()[0]))));
-        if (var_dtype == H5UCHAR) {
-            if (final_fill_value > 255 || final_fill_value < 0) ret_value = false;
-        }
+        if ((var_dtype == H5UCHAR) &&(final_fill_value > 255 || final_fill_value < 0)) 
+            ret_value = false;
+        
         // No need to check the var_dtype==H5CHAR case since it is mapped to int16.
-        else if (var_dtype == H5UINT16) {
-            if (final_fill_value < 0) ret_value = false;
-        }
+        else if ((var_dtype == H5UINT16) && (final_fill_value < 0)) 
+            ret_value = false;
         return ret_value;
     }
     case H5UINT16: {
         unsigned short final_fill_value = *((unsigned short*) ((void*) (&(attr->getValue()[0]))));
-        if (var_dtype == H5UCHAR) {
-            if (final_fill_value > 255) ret_value = false;
+        if ((var_dtype == H5UCHAR) &&(final_fill_value > 255)) {
+            ret_value = false;
         }
-        else if (var_dtype == H5INT16) {
-            if (final_fill_value > 32767) ret_value = false;
+        else if ((var_dtype == H5INT16) && (final_fill_value >32767)){
+            ret_value = false;
         }
         return ret_value;
 
@@ -399,11 +399,12 @@ bool is_fvalue_valid(H5DataType var_dtype, const HDF5CF::Attribute* attr)
             }
             return ret_value;
         }
-#endif
 
     case H5UCHAR:
     case H5INT32:
     case H5UINT32:
+#endif
+
     default:
         return ret_value;
     }
@@ -559,7 +560,7 @@ void gen_dap_str_attr(AttrTable *at, const HDF5CF::Attribute *attr)
             // performance penalty should be small. KY 2018-02-26
             if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath") && (true == is_cset_ascii)) 
                 tempstring = HDF5CFDAPUtil::escattr(tempstring);
-                at->append_attr(attr->getNewName(), "String", tempstring);
+            at->append_attr(attr->getNewName(), "String", tempstring);
         }
     }
 }
@@ -708,13 +709,9 @@ void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridP
             if (HE5_GCTP_SNSOID == cv_proj_code) {
                 // The following line is not necessary since the attribute is ONLY 
                 // added when the table is created. Leave here just for references.
-                // if(at->simple_find("grid_mapping_name") == at->attr_end())
                 at->append_attr("grid_mapping_name", "String", "sinusoidal");
-                //if(at->simple_find("longitude_of_central_meridian") == at->attr_end())
                 at->append_attr("longitude_of_central_meridian", "Float64", "0.0");
-                //if(at->simple_find("earth_radius") == at->attr_end())
                 at->append_attr("earth_radius", "Float64", "6371007.181");
-
                 at->append_attr("_CoordinateAxisTypes", "string", "GeoX GeoY");
             }
             else if (HE5_GCTP_PS == cv_proj_code) {
@@ -745,7 +742,6 @@ void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridP
                 ostringstream s_lat_true_scale;
                 s_lat_true_scale << lat_true_scale;
 
-                //if(at->simple_find("standard_parallel") == at->attr_end())
                 at->append_attr("standard_parallel", "Float64", s_lat_true_scale.str());
 
                 if(fe == 0.0) 
@@ -882,9 +878,9 @@ void add_ll_valid_range(AttrTable* at, bool is_lat) {
 // This routine is for 64-bit DAP4 CF support: when var type is 64-bit integer.
 bool need_attr_values_for_dap4(const HDF5CF::Var *var) {
     bool ret_value = false;
-    if(HDF5RequestHandler::get_dmr_64bit_int()!=NULL)
-        if(H5INT64 == var->getType() || H5UINT64 == var->getType())
-            ret_value = true;
+    if((HDF5RequestHandler::get_dmr_64bit_int()!=NULL) && 
+        ((H5INT64 == var->getType() || H5UINT64 == var->getType())))
+        ret_value = true;
     return ret_value;
 }
 
@@ -920,7 +916,6 @@ void map_cfh5_attrs_to_dap4(const HDF5CF::Var *var,BaseType* d4_var) {
             for (unsigned int loc = 0; loc < (*it_ra)->getCount(); loc++) {
                 string print_rep = HDF5CFDAPUtil::print_attr(mem_dtype, loc, (void*) &((*it_ra)->getValue()[0]));
                 d4_attr->add_value(print_rep);
-                //at->append_attr((*it_ra)->getNewName(), HDF5CFDAPUtil::print_type((*it_ra)->getType()), print_rep);
             }
         }
         d4_var->attributes()->add_attribute_nocopy(d4_attr);
@@ -938,7 +933,6 @@ void check_update_int64_attr(const string & obj_name, const HDF5CF::Attribute * 
             for (unsigned int loc = 0; loc < attr->getCount(); loc++) {
                 string print_rep = HDF5CFDAPUtil::print_attr(attr->getType(), loc, (void*) &(attr->getValue()[0]));
                 d4_attr->add_value(print_rep);
-                //at->append_attr((*it_ra)->getNewName(), HDF5CFDAPUtil::print_type((*it_ra)->getType()), print_rep);
             }
             D4Group * root_grp = dmr->root();
             D4Attribute *d4_hg_container; 
@@ -966,7 +960,9 @@ void check_update_int64_attr(const string & obj_name, const HDF5CF::Attribute * 
                 D4Attribute *d4_container = root_grp->attributes()->get(test_obj_name);
                 // ISSUES need to search the attributes 
                 //
+#if 0
                 //D4Attribute *d4_container = d4_hg_container->attributes()->find(obj_name);
+#endif
                 if(d4_container == NULL) {
                     d4_container = new D4Attribute;
                     d4_container->set_name(obj_name);
