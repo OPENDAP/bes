@@ -83,7 +83,7 @@ void TcpSocket::connect()
     if (_host == "") _host = "localhost";
 
     struct protoent *pProtoEnt;
-    struct sockaddr_in sin = {};
+    struct sockaddr_in sin; // = {};
     struct hostent *ph;
 #if 0
     long address;
@@ -273,7 +273,7 @@ void TcpSocket::listen()
         throw BESInternalError(err, __FILE__, __LINE__);
     }
 
-    struct sockaddr_in server = {}; // initialize server's fields to zero
+    struct sockaddr_in server; // = {}; // initialize server's fields to zero
     server.sin_family = AF_INET;
     // If the bes.conf file specified an IP address to bind with, use that. jhrg 10/14/15
     if (!_host.empty()) {

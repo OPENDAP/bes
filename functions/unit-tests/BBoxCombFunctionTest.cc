@@ -117,7 +117,7 @@ public:
     {
         BaseType *result = 0;
         try {
-            BaseType *argv[] = {};
+            BaseType *argv[] = {0};
             function_dap2_bbox_comb(0, argv, *float32_2d_array /* DDS & */, &result);
             CPPUNIT_FAIL("bbox_comb() Should throw an exception when called with no arguments");
         }
@@ -133,7 +133,7 @@ public:
     {
         BaseType *result = 0;
         try {
-            BaseType *argv[] = {};
+            BaseType *argv[] = {0, 0, 0};
             function_dap2_bbox_comb(3, argv, *float32_2d_array /* DDS & */, &result);
             CPPUNIT_FAIL("bbox_comb() Should throw an exception when called with three arguments");
         }
