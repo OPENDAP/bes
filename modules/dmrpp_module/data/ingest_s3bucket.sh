@@ -165,6 +165,8 @@ function mk_dmrpp() {
 
 }
 
+echo "START: "`date`;
 # mk_file_list;
 mk_dmrpp;
+echo "END: "`date`;
 
