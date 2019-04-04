@@ -159,7 +159,7 @@ function mk_dmrpp() {
         fi
         mkdir -p `dirname ${target_file}`
         
-        ./get_dmrpp.sh -V -u ${s3_url} -d ${data_root} ${relative_filename} > "${target_file}";
+        ./get_dmrpp.sh -V -u "${s3_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
         
     done
 

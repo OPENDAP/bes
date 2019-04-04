@@ -64,12 +64,22 @@ while getopts "h?vVru:d:" opt; do
     d)
         data_root="$OPTARG"
         ;;
+    o)
+        output_file="$OPTARG"
+        ;;
     esac
 done
 
 shift $((OPTIND-1))
 
 [ "$1" = "--" ] && shift
+
+input_data_file="${1}";
+
+if test -z "${output_file}"
+then
+    output_file="${input_data_file}.dmrpp"
+fi
 
 ###############################################################################
 #
@@ -147,8 +157,6 @@ function mk_dmrpp() {
     datafile="${1}";
 	if test -z "$just_dmr"
 	then
-	set -x
-	set -e
 	    ./build_dmrpp ${verbose} -c "${TMP_CONF}" -f "${data_root}/${datafile}" -r "${TMP_DMR_RESP}" -u "${dmrpp_url}" 
 	fi
 	
@@ -157,7 +165,6 @@ function mk_dmrpp() {
 }
  ###############################################################################
  
-hdf5_file="${1}";
-get_dmr  "${hdf5_file}";
-mk_dmrpp "${hdf5_file}";
+get_dmr  "${input_data_file}";
+mk_dmrpp "${input_data_file}";
  
