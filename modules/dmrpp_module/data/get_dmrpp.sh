@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e;
+set -x;
 
 CONF_FILE_TEMPLATE="bes.hdf5.cf.conf"
 data_root=`pwd`;
