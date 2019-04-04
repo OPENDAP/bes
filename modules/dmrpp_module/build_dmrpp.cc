@@ -1,7 +1,6 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of libdap, A C++ implementation of the OPeNDAP Data
-// Access Protocol.
+// This file is part of the Hyrax data server.
 
 // Copyright (c) 2018 OPeNDAP, Inc.
 // Author: James Gallagher <jgallagher@opendap.org>

@@ -36,10 +36,10 @@ ALL_FILES="./all_files.txt";
 DATA_FILES="./data_files.txt";
 
 function mk_file_list() {
-	echo "ALL_FILES: ${ALL_FILES}";
-    find $data_root -type f > ${ALL_FILES};
- 	echo "DATA_FILES: ${DATA_FILES}";
-    grep -E -e "${dataset_regex_match}" ${ALL_FILES} > ${DATA_FILES};
+	echo "Retrieving ALL_FILES: ${ALL_FILES}";
+    time find $data_root -type f > ${ALL_FILES};
+ 	echo "Locating DATA_FILES: ${DATA_FILES}";
+    time grep -E -e "${dataset_regex_match}" ${ALL_FILES} > ${DATA_FILES};
     dataset_count=`cat ${DATA_FILES} | wc -l`;
     echo "Found ${dataset_count} suitable data files in ${data_root}"
 }
@@ -55,13 +55,13 @@ function mk_dmrpp() {
         s3_url=${s3_bucket_base};
         echo "s3_url: ${s3_url}";
         
-        //get_dmrpp -u ${s3_url} ${dataset_file};
+        # get_dmrpp -u ${s3_url} ${dataset_file};
     
     
     done
 
 }
 
-mk_file_list;
+# mk_file_list;
 mk_dmrpp;
 
