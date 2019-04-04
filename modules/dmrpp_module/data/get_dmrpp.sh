@@ -157,7 +157,7 @@ function mk_dmrpp() {
     datafile="${1}";
 	if test -z "$just_dmr"
 	then
-	    ./build_dmrpp ${verbose} -c "${TMP_CONF}" -f "${data_root}/${datafile}" -r "${TMP_DMR_RESP}" -u "${dmrpp_url}" 
+	    ./build_dmrpp ${verbose} -c "${TMP_CONF}" -f "${data_root}/${datafile}" -r "${TMP_DMR_RESP}" -u "${dmrpp_url}" > "${output_file}";
 	fi
 	
 	# TODO Use trap to ensure these are really removed
