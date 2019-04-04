@@ -38,7 +38,7 @@ very_verbose=
 just_dmr=
 dmrpp_url=
 
-while getopts "h?vVru:d:" opt; do
+while getopts "h?vVru:d:o:" opt; do
     case "$opt" in
     h|\?)
         show_usage
