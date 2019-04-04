@@ -25,15 +25,43 @@
 data_root="/home/centos/hyrax/build/share/hyrax/s3/cloudydap";
 target_dir="/home/centos/hyrax/build/share/hyrax/dmrpp";
 dataset_regex_match="^.*\\.(h5|he5|nc4)(\\.bz2|\\.gz|\\.Z)?$";
+s3_bucket_base_url="https://s3.amazonaws.com/cloudydap/"
+
+
 
 ALL_FILES=$(mktemp -t s3ingest_all_files_XXXX);
 DATA_FILES=$(mktemp -t s3ingest_data_files_XXXX);  
 
+ALL_FILES="./all_files.txt";
+DATA_FILES="./data_files.txt";
+
 function mk_file_list() {
+	echo "ALL_FILES: ${ALL_FILES}";
     find $data_root -type f > ${ALL_FILES};
+ 	echo "DATA_FILES: ${DATA_FILES}";
     grep -E -e "${dataset_regex_match}" ${ALL_FILES} > ${DATA_FILES};
     dataset_count=`cat ${DATA_FILES} | wc -l`;
     echo "Found ${dataset_count} suitable data files in ${data_root}"
 }
 
+function mk_dmrpp() {
+
+	mkdir -p ${target_dir};
+
+    for dataset_file in `cat ${DATA_FILES}`
+    do
+        echo "dataset_file: ${dataset_file}";
+        
+        s3_url=${s3_bucket_base};
+        echo "s3_url: ${s3_url}";
+        
+        //get_dmrpp -u ${s3_url} ${dataset_file};
+    
+    
+    done
+
+}
+
+mk_file_list;
+mk_dmrpp;
 
