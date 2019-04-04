@@ -106,7 +106,7 @@ cmdDoc=`cat <<EOF
 	    cat $TMP_CMD
 	fi
 	
-	TMP_CONF=$(mktemp -t conf_$$)
+	TMP_CONF=$(mktemp -t conf_XXXX)
 	
 	# Use the cwd as the BES's Data Root directory - this is a trick so that the
 	# script can get a DMR using the HDF5 handler algorithm, as tweaked by the 
@@ -127,7 +127,7 @@ cmdDoc=`cat <<EOF
 	    cat ${TMP_CONF}
 	fi
 	
-	TMP_DMR_RESP=$(mktemp -t dmr_$$)
+	TMP_DMR_RESP=$(mktemp -t dmr_XXXX)
 	
 	# use besstandalone to get the DMR
 	besstandalone -c ${TMP_CONF} -i ${TMP_CMD} > ${TMP_DMR_RESP}
