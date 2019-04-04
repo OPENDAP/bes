@@ -6,9 +6,10 @@
 #ifdef USE_HDFEOS2_LIB
 
 #include "HDFEOS2ArrayGridGeoField.h"
+
 #include <stdio.h>
-#include<stdlib.h>
-#include<sys/stat.h>
+#include <stdlib.h>
+#include <sys/stat.h>
 #include <iostream>
 #include <sstream>
 #include <cassert>
@@ -21,18 +22,16 @@
 #include "misrproj.h"
 #include "errormacros.h"
 #include <proj.h>
-#include<sys/types.h>
-#include<fcntl.h>
-#include<unistd.h>
+#include <sys/types.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 #include "BESH4MCache.h"
 #include "HDF4RequestHandler.h"
 
 using namespace std;
 
-
 #define SIGNED_BYTE_TO_INT32 1
-
 
 // These two functions are used to handle MISR products with the SOM projections.
 extern "C" {
@@ -43,9 +42,8 @@ extern "C" {
 bool
 HDFEOS2ArrayGridGeoField::read ()
 {
-
     BESDEBUG("h4","Coming to HDFEOS2ArrayGridGeoField read "<<endl);
-    if(length() == 0)                                                                               
+    if(length() == 0)
         return true; 
 
 #if 0
@@ -54,7 +52,6 @@ HDFEOS2ArrayGridGeoField::read ()
     check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
 #endif
     bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
-
 
     // Currently The latitude and longitude rank from HDF-EOS2 grid must be either 1-D or 2-D.
     // However, For SOM projection the final rank will become 3. 
