@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e;
-set -x;
 
 CONF_FILE_TEMPLATE="bes.hdf5.cf.conf"
 data_root=`pwd`;
@@ -161,6 +160,7 @@ function mk_dmrpp() {
     datafile="${1}";
 	if test -z "$just_dmr"
 	then
+		set -x;
 	    ./build_dmrpp ${verbose} -c "${TMP_CONF}" -f "${data_root}/${datafile}" -r "${TMP_DMR_RESP}" -u "${dmrpp_url}" > "${output_file}";
 	fi
 	
