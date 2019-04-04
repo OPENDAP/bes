@@ -80,6 +80,9 @@ if test -z "${output_file}"
 then
     output_file="${input_data_file}.dmrpp"
 fi
+echo "OUTPUT_FILE: ${output_file}";
+
+
 
 ###############################################################################
 #
