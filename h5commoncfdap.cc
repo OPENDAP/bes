@@ -59,6 +59,8 @@
 
 #include "HDF5Int64.h"
 
+using namespace std;
+using namespace libdap;
 using namespace HDF5CF;
 
 // Generate DDS from one variable

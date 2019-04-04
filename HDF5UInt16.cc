@@ -43,6 +43,8 @@
 #include "h5dds.h"
 #include "HDF5UInt16.h"
 
+using namespace std;
+using namespace libdap;
 
 HDF5UInt16::HDF5UInt16(const string & n, const string &vpath, const string &d) : UInt16(n, d)
 {

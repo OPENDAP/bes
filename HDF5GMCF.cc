@@ -39,7 +39,9 @@
 #include "h5apicompatible.h"
 #include <BESDebug.h>
 #include <algorithm>
-//#include <sstream>
+
+using namespace std;
+using namespace libdap;
 using namespace HDF5CF;
 
 // Copier function.

@@ -44,7 +44,8 @@
 #include "h5dds.h"
 #include "HDF5Int8.h"
 
-
+using namespace std;
+using namespace libdap;
 
 HDF5Int8::HDF5Int8(const string & n, const string &vpath,const string &d):Int8(n, d)
 {

@@ -38,6 +38,9 @@
 #include "hdf5_handler.h"
 #include <BESDebug.h>
 
+using namespace std;
+using namespace libdap;
+
 /// A variable for remembering visited paths to break cyclic HDF5 groups. 
 HDF5PathFinder paths;
 

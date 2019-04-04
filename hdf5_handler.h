@@ -150,5 +150,5 @@ static const char URL[] = "Url";
 
 //#include "h5cfdds.h"
 
-using namespace libdap;
+//using namespace libdap;
 #endif

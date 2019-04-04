@@ -30,7 +30,6 @@
 #include "Sequence.h"
 #include "h5get.h"
 
-using namespace libdap;
 
 /// \file HDF5Sequence.h
 /// \brief A HDF5Sequence class.
@@ -40,19 +39,19 @@ using namespace libdap;
 /// \author James Gallagher
 ///
 /// @see Sequence 
-class HDF5Sequence:public Sequence {
+class HDF5Sequence:public libdap::Sequence {
 
   private:
 
   public:
 
-    HDF5Sequence(const string &n, const string &d);
+    HDF5Sequence(const std::string &n, const std::string &d);
     virtual ~ HDF5Sequence();
 
-    virtual BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate();
 //    virtual bool read();
 
-    friend string return_type(hid_t datatype);
+    friend std::string return_type(hid_t datatype);
 
 
 };

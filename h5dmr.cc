@@ -61,6 +61,8 @@
 #include "HDF5CFUtil.h"
 #include "h5dmr.h"
 
+using namespace std;
+using namespace libdap;
 /// A variable for remembering visited paths to break cyclic HDF5 groups. 
 HDF5PathFinder obj_paths;
 

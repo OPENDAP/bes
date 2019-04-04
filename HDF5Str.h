@@ -43,7 +43,6 @@
 #include "Str.h"
 #include "h5get.h"
 
-using namespace libdap;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \file HDF5Str.h
@@ -58,17 +57,17 @@ using namespace libdap;
 /// 
 /// All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////
-class HDF5Str:public Str {
+class HDF5Str:public libdap::Str {
  private:
 //    hid_t dset_id;
 //    hid_t ty_id;
 //    int array_flag;
-    string var_path;
+    std::string var_path;
 
  public:
 
     /// Constructor
-    HDF5Str(const string &n, const string &vpath, const string &d);
+    HDF5Str(const std::string &n, const std::string &vpath, const std::string &d);
     virtual ~ HDF5Str() { }
 
     /// Clone this instance.
@@ -76,13 +75,13 @@ class HDF5Str:public Str {
     /// Allocate a new instance and copy *this into it. This method must
     /// perform a deep copy.
     /// \return A newly allocated copy of this class    
-    virtual BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate();
 
     /// Reads HDF5 string data into local buffer  
     virtual bool read();
 
     /// See return_type function defined in h5dds.cc.    
-    friend string return_type(hid_t datatype);
+    friend std::string return_type(hid_t datatype);
 
     /// returns HDF5 dataset id.      
     hid_t get_did();

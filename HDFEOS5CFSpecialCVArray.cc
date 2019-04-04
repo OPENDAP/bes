@@ -39,6 +39,9 @@
 #include "HDF5RequestHandler.h"
 #include "HDFEOS5CFSpecialCVArray.h"
 
+using namespace std;
+using namespace libdap;
+
 BaseType *HDFEOS5CFSpecialCVArray::ptr_duplicate()
 {
     return new HDFEOS5CFSpecialCVArray(*this);

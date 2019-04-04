@@ -38,6 +38,9 @@
 
 #include "HDF5GMCFSpecialCVArray.h"
 
+using namespace std;
+using namespace libdap;
+
 BaseType *HDF5GMCFSpecialCVArray::ptr_duplicate()
 {
     return new HDF5GMCFSpecialCVArray(*this);

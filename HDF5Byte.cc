@@ -45,6 +45,8 @@
 #include "HDF5Byte.h"
 
 
+using namespace std;
+using namespace libdap;
 
 HDF5Byte::HDF5Byte(const string & n, const string &vpath, const string &d):Byte(n, d)
 {

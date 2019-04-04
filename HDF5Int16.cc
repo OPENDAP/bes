@@ -46,6 +46,9 @@
 #include "h5dds.h"
 #include "HDF5Int16.h"
 
+using namespace std;
+using namespace libdap;
+
 #if 0
 typedef struct s2_int16_t {
     /// Buffer for a 16 bit integer in compound data

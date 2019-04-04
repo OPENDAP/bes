@@ -33,7 +33,6 @@
 #include "Float32.h"
 #include "h5get.h"
 
-using namespace libdap;
 
 /// \file HDF5Float32.h
 /// \brief A class for mapping HDF5 32-bit float to DAP for the default option
@@ -44,28 +43,28 @@ using namespace libdap;
 /// \author James Gallagher (jgallagher@opendap.org)
 ///
 
-class HDF5Float32:public Float32 {
+class HDF5Float32:public libdap::Float32 {
   private:
 //    hid_t dset_id;
 //    hid_t ty_id;
-    string var_path;
+    std::string var_path;
 
   public:
     /// Constructor
-    HDF5Float32(const string &n, const string &vpath, const string &d);
+    HDF5Float32(const std::string &n, const std::string &vpath, const std::string &d);
     virtual ~ HDF5Float32() { }
 
     /// Clone this instance.
     ///
     /// Allocate a new instance and copy *this into it. This method must perform a deep copy.
     /// \return A newly allocated copy of this class    
-    virtual BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate();
 
     /// Reads HDF5 32-bit float data into local buffer
     virtual bool read();
 
     /// See return_type function defined in h5dds.cc.
-    friend string return_type(hid_t datatype);
+    friend std::string return_type(hid_t datatype);
 
     /// returns HDF5 dataset id.  
 //    hid_t get_did();

@@ -35,7 +35,6 @@
 #include "Url.h"
 #include "h5get.h"
 
-using namespace libdap;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \file HDF5Url.h
@@ -46,31 +45,31 @@ using namespace libdap;
 ///
 /// \see String
 ////////////////////////////////////////////////////////////////////////////////
-class HDF5Url:public Url {
+class HDF5Url:public libdap::Url {
 
   private:
 //    hid_t dset_id;
 //    hid_t ty_id;
 
-    string var_path;
+    std::string var_path;
 
   public:
 
     /// Constructor
-    HDF5Url(const string &n, const string &vname,const string &d);
+    HDF5Url(const std::string &n, const std::string &vname,const std::string &d);
     virtual ~ HDF5Url() { }
 
     /// Clone this instance.
     ///
     /// Allocate a new instance and copy *this into it. This method must perform a deep copy.
     /// \return A newly allocated copy of this class      
-    virtual BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate();
 
     /// Reads HDF5 reference data into local buffer as a string
     virtual bool read();
 
     /// See return_type function defined in h5dds.cc.  
-    friend string return_type(hid_t datatype);
+    friend std::string return_type(hid_t datatype);
 
 #if 0
     /// returns HDF5 dataset id.  

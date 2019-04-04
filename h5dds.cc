@@ -59,6 +59,8 @@
 #include "HDF5CFUtil.h"
 //#endif
 
+using namespace std;
+using namespace libdap;
 
 /// An instance of DS_t structure defined in hdf5_handler.h.
 static DS_t dt_inst; 

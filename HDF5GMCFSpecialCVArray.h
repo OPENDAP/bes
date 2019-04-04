@@ -39,12 +39,11 @@
 #include "HDF5CF.h"
 #include "HDF5BaseArray.h"
 
-using namespace libdap;
 
 class HDF5GMCFSpecialCVArray: public HDF5BaseArray {
 public:
-    HDF5GMCFSpecialCVArray(H5DataType h5_dtype, int h5_tnumelm, const string &varfullpath, H5GCFProduct h5_product_type,
-        const string & n = "", BaseType * v = 0) :
+    HDF5GMCFSpecialCVArray(H5DataType h5_dtype, int h5_tnumelm, const std::string &varfullpath, H5GCFProduct h5_product_type,
+        const std::string & n = "", libdap::BaseType * v = 0) :
         HDF5BaseArray(n, v), dtype(h5_dtype), tnumelm(h5_tnumelm), varname(varfullpath), product_type(h5_product_type), cvartype(
             CV_UNSUPPORTED)
     {
@@ -53,26 +52,26 @@ public:
     virtual ~ HDF5GMCFSpecialCVArray()
     {
     }
-    virtual BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate();
     virtual bool read();
     //int format_constraint (int *cor, int *step, int *edg);
 
 private:
     H5DataType dtype;
     int tnumelm;
-    string varname;
+    std::string varname;
     H5GCFProduct product_type;
     CVType cvartype;
 
     // GPM version 3.0 nlayer values are from the document https://storm.pps.eosdis.nasa.gov/storm/filespec.GPM.V1.pdf
-    void obtain_gpm_l3_layer(int, vector<int>&, vector<int>&, vector<int>& /*FIXME Not used ever? jhrg 7/5/17*/);
+    void obtain_gpm_l3_layer(int, std::vector<int>&, std::vector<int>&, std::vector<int>& );
 
     // GPM version 4.0 nlayer values are from the document
     // http://www.eorc.jaxa.jp/GPM/doc/product/format/en/03.%20GPM_DPR_L2_L3%20Product%20Format%20Documentation_E.pdf
-    void obtain_gpm_l3_layer2(int, vector<int>&, vector<int>&, vector<int>&);
+    void obtain_gpm_l3_layer2(int, std::vector<int>&, std::vector<int>&, std::vector<int>&);
 
-    void obtain_gpm_l3_hgt(int, vector<int>&, vector<int>&, vector<int>&);
-    void obtain_gpm_l3_nalt(int, vector<int>&, vector<int>&, vector<int>&);
+    void obtain_gpm_l3_hgt(int, std::vector<int>&, std::vector<int>&, std::vector<int>&);
+    void obtain_gpm_l3_nalt(int, std::vector<int>&, std::vector<int>&, std::vector<int>&);
     virtual void read_data_NOT_from_mem_cache(bool add_cache, void*buf);
 
 };

@@ -40,11 +40,10 @@
 #include "HDF5CF.h"
 #include "HDF5BaseArray.h"
 
-using namespace libdap;
 
 class HDF5GMCFFillIndexArray: public HDF5BaseArray {
 public:
-    HDF5GMCFFillIndexArray(int h5_rank, H5DataType h5_dtype, const string & n = "", BaseType * v = 0) :
+    HDF5GMCFFillIndexArray(int h5_rank, H5DataType h5_dtype, const string & n = "", libdap::BaseType * v = 0) :
         HDF5BaseArray(n, v), rank(h5_rank), dtype(h5_dtype)
     {
     }
@@ -52,7 +51,7 @@ public:
     virtual ~ HDF5GMCFFillIndexArray()
     {
     }
-    virtual BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate();
     virtual bool read();
     virtual void read_data_NOT_from_mem_cache(bool add_cache, void* /*buf FIXME Not used ever? jhrg 7/5/17*/);
 

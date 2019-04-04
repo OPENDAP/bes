@@ -41,11 +41,10 @@
 //#include <Array.h>
 #include "HDF5BaseArray.h"
 
-using namespace libdap;
 
 class HDF5GMSPCFArray:public HDF5BaseArray {
     public:
-        HDF5GMSPCFArray(int h5_rank, const string & h5_filename, const hid_t h5_fileid, H5DataType h5_dtype, const string &varfullpath, H5DataType h5_otype, int h5_sdbit, int h5_numofdbits, const string & n="",  BaseType * v = 0):
+        HDF5GMSPCFArray(int h5_rank, const std::string & h5_filename, const hid_t h5_fileid, H5DataType h5_dtype, const std::string &varfullpath, H5DataType h5_otype, int h5_sdbit, int h5_numofdbits, const std::string & n="",  libdap::BaseType * v = 0):
         HDF5BaseArray(n,v),
         rank(h5_rank),
         filename(h5_filename),
@@ -61,7 +60,7 @@ class HDF5GMSPCFArray:public HDF5BaseArray {
         
         virtual ~ HDF5GMSPCFArray() {
         }
-        virtual BaseType *ptr_duplicate();
+        virtual libdap::BaseType *ptr_duplicate();
         virtual bool read();
         //int format_constraint (int *cor, int *step, int *edg);
         virtual void read_data_NOT_from_mem_cache(bool add_cache,void*buf);
@@ -69,10 +68,10 @@ class HDF5GMSPCFArray:public HDF5BaseArray {
 
     private:
         int rank;
-        string filename;
+        std::string filename;
         hid_t fileid;
         H5DataType dtype;
-        string varname;
+        std::string varname;
         H5DataType otype;
         int sdbit;
         int numofdbits;

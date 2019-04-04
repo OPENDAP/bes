@@ -40,6 +40,9 @@
 #include "HDF5RequestHandler.h"
 #include "HDF5GMSPCFArray.h"
 
+using namespace std;
+using namespace libdap;
+
 BaseType *HDF5GMSPCFArray::ptr_duplicate()
 {
     return new HDF5GMSPCFArray(*this);

@@ -45,6 +45,8 @@
 #include "HDF5Float64.h"
 #include "BESDebug.h"
 
+using namespace std;
+using namespace libdap;
 
 HDF5Float64::HDF5Float64(const string & n, const string & vpath,const string &d) : Float64(n, d)
 {

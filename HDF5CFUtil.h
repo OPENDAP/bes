@@ -113,7 +113,7 @@ struct HDF5CFUtil {
                static void Split (const char *sz, char sep,
                             std::vector < std::string > &names);
 
-               static void Split_helper(std::vector<string>&tokens, const std::string &text,const char sep);
+               static void Split_helper(std::vector<std::string>&tokens, const std::string &text,const char sep);
 
                // Parse GPM Level 3 GridHeaders
                //static void parser_trmm_v7_gridheader(int& latsize, int&lonsize, float& lat_start, float& lon_start, bool &sw_origin, bool & cr_reg);
@@ -137,10 +137,10 @@ struct HDF5CFUtil {
                static void dtoa(double,char *,int);
 
                // convert double to string
-               static string get_double_str(double x,int total_digit,int after_point);
+               static std::string get_double_str(double x,int total_digit,int after_point);
 
                // convert int to string
-               static string get_int_str(int x);
+               static std::string get_int_str(int x);
 
 
                
@@ -178,7 +178,7 @@ static inline struct flock *lock(int type) {
     return &lock;
 }
 
-static inline string get_errno() {
+static inline std::string get_errno() {
         char *s_err = strerror(errno);
         if (s_err)
                 return s_err;

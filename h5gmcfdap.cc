@@ -58,6 +58,8 @@
 #include "HDF5GMCFSpecialCVArray.h"
 #include "HDF5GMSPCFArray.h"
 
+using namespace std;
+using namespace libdap;
 using namespace HDF5CF;
 
 // Map general HDF5 products to DAP DDS

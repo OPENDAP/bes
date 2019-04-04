@@ -40,6 +40,7 @@
 #include <math.h>
 #include<InternalErr.h>
 
+using namespace std;
 using namespace libdap;
 // For using GCTP to calculate the lat/lon
 extern "C" {

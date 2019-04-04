@@ -39,6 +39,9 @@
 #include "HDF5GMCFMissNonLLCVArray.h"
 #include "HDF5RequestHandler.h"
 
+using namespace std;
+using namespace libdap;
+
 BaseType *HDF5GMCFMissNonLLCVArray::ptr_duplicate()
 {
     return new HDF5GMCFMissNonLLCVArray(*this);

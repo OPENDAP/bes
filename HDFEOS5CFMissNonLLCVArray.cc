@@ -39,6 +39,9 @@
 #include "HDFEOS5CFMissNonLLCVArray.h"
 #include "HDF5RequestHandler.h"
 
+using namespace std;
+using namespace libdap;
+
 BaseType *HDFEOS5CFMissNonLLCVArray::ptr_duplicate()
 {
     return new HDFEOS5CFMissNonLLCVArray(*this);

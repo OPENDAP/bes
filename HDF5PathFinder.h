@@ -27,7 +27,6 @@
 #include <map>
 #include <string>
 
-using namespace std;
 
 /// \file HDF5PathFinder.h
 /// 
@@ -43,7 +42,7 @@ using namespace std;
 class HDF5PathFinder {
 
   private:
-    map < string, string > id_to_name_map;
+    std::map < std::string, std::string > id_to_name_map;
 
 
   public:
@@ -57,7 +56,7 @@ class HDF5PathFinder {
     /// \see h5das.cc
     /// \return true if addition is successful
     /// \return false otherwise
-    bool add(string id, const string name);
+    bool add(std::string id, const std::string name);
 
     /// Check if \a id object is already visited by looking up in the map.
     ///
@@ -65,13 +64,13 @@ class HDF5PathFinder {
     /// \see h5das.cc
     /// \return true if \a id object is already visited 
     /// \return false otherwise
-    bool visited(string id);
+    bool visited(std::string id);
 
     /// Get the object name of \a id object in the map.
     ///
     /// \param id  HDF5 object number
     /// \see h5das.cc
     /// \return object name string
-    string get_name(string id);
+    std::string get_name(std::string id);
 
 };

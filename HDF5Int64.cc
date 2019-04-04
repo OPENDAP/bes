@@ -44,7 +44,8 @@
 #include "h5dds.h"
 #include "HDF5Int64.h"
 
-
+using namespace std;
+using namespace libdap;
 
 HDF5Int64::HDF5Int64(const string & n, const string &vpath, const string &d):Int64(n, d)
 {

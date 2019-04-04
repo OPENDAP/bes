@@ -40,13 +40,12 @@
 //#include <Array.h>
 #include "HDF5BaseArray.h"
 
-using namespace libdap;
 
 class HDFEOS5CFMissNonLLCVArray:public HDF5BaseArray {
 
     public:
         HDFEOS5CFMissNonLLCVArray(int rank, 
-                              int tnumelm, const string & n="",  BaseType * v = 0):
+                              int tnumelm, const string & n="",  libdap::BaseType * v = 0):
         HDF5BaseArray(n,v),
         rank(rank),
         tnumelm(tnumelm) {
@@ -54,7 +53,7 @@ class HDFEOS5CFMissNonLLCVArray:public HDF5BaseArray {
         
     virtual ~ HDFEOS5CFMissNonLLCVArray() {
     }
-    virtual BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate();
     virtual bool read();
     virtual void read_data_NOT_from_mem_cache(bool add_cache,void*buf);
 

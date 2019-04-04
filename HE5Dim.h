@@ -3,10 +3,9 @@
 
 #include <string>
 
-using namespace std;
 
 struct HE5Dim {
-    string name;
+    std::string name;
     int size;
 };
 

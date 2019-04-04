@@ -36,6 +36,8 @@
 #include "BESDebug.h"
 
 using namespace std;
+using namespace libdap;
+
 BaseType *HDF5Structure::ptr_duplicate()
 {
     return new HDF5Structure(*this);

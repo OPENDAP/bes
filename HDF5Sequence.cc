@@ -41,6 +41,9 @@
 #include "HDF5Sequence.h"
 #include "InternalErr.h"
 
+using namespace std;
+using namespace libdap;
+
 BaseType *HDF5Sequence::ptr_duplicate()
 {
     return new HDF5Sequence(*this);

@@ -49,9 +49,10 @@
 
 #include "h5dds.h"
 #include "HDF5Str.h"
-// #define DODS_DEBUG
 #include "BESDebug.h"
 
+using namespace std;
+using namespace libdap;
 
 HDF5Str::HDF5Str(const string & n, const string &vpath, const string &d) 
  : Str(n,d)
@@ -82,7 +83,6 @@ bool HDF5Str::read()
     else
         dset_id = H5Dopen2(file_id,name().c_str(),H5P_DEFAULT);
 
-    //hid_t dset_id = H5Dopen2(file_id,name().c_str(),H5P_DEFAULT);
     if(dset_id < 0) {
         H5Fclose(file_id);
         throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype .");
@@ -106,7 +106,6 @@ bool HDF5Str::read()
     try {
 
         if(H5Tis_variable_str(dtypeid) >0){
-            //H5Tclose(dtypeid);
             vector<string>finstrval;
             finstrval.resize(1);
             read_vlen_string(dset_id,1,NULL,NULL,NULL,finstrval);

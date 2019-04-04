@@ -49,6 +49,7 @@
 #include "HDF5Str.h"
 
 using namespace std;
+using namespace libdap;
 
 BaseType *HDF5Array::ptr_duplicate() {
     return new HDF5Array(*this);

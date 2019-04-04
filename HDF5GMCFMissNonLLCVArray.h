@@ -38,14 +38,12 @@
 // DODS includes
 #include "HDF5BaseArray.h"
 
-using namespace std;
-using namespace libdap;
 
 class HDF5GMCFMissNonLLCVArray:public HDF5BaseArray {
 
   public:
     HDF5GMCFMissNonLLCVArray(int h5_rank, 
-                              int h5_tnumelm, const string & n="",  BaseType * v = 0):
+                              int h5_tnumelm, const std::string & n="",  libdap::BaseType * v = 0):
         HDF5BaseArray(n,v),
         rank(h5_rank),
         tnumelm(h5_tnumelm) {
@@ -53,7 +51,7 @@ class HDF5GMCFMissNonLLCVArray:public HDF5BaseArray {
         
     virtual ~ HDF5GMCFMissNonLLCVArray() {
     }
-    virtual BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate();
     virtual bool read();
     virtual void read_data_NOT_from_mem_cache(bool add_cache,void*buf);
 

@@ -45,6 +45,8 @@
 #include "HDF5UInt32.h"
 #include "BESDebug.h"
 
+using namespace std;
+using namespace libdap;
 
 HDF5UInt32::HDF5UInt32(const string & n, const string &vpath, const string &d) : UInt32(n, d)
 {

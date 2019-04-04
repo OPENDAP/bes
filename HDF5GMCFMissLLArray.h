@@ -41,11 +41,10 @@
 //#include <Array.h>
 #include "HDF5BaseArray.h"
 
-using namespace libdap;
 
 class HDF5GMCFMissLLArray:public HDF5BaseArray {
     public:
-        HDF5GMCFMissLLArray(int h5_rank, const string & h5_filename, const hid_t h5_fileid, H5DataType h5_dtype, const string &varfullpath, H5GCFProduct h5_product_type, CVType h5_cvartype, const string & n="",  BaseType * v = 0):
+        HDF5GMCFMissLLArray(int h5_rank, const string & h5_filename, const hid_t h5_fileid, H5DataType h5_dtype, const string &varfullpath, H5GCFProduct h5_product_type, CVType h5_cvartype, const string & n="",  libdap::BaseType * v = 0):
         HDF5BaseArray(n,v),
         rank(h5_rank),
         filename(h5_filename),
@@ -59,7 +58,7 @@ class HDF5GMCFMissLLArray:public HDF5BaseArray {
         
     virtual ~ HDF5GMCFMissLLArray() {
     }
-    virtual BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate();
     virtual bool read();
     //int format_constraint (int *cor, int *step, int *edg);
     
@@ -75,7 +74,7 @@ class HDF5GMCFMissLLArray:public HDF5BaseArray {
 
     //template<class T> 
     template<typename T> 
-    void obtain_ll_attr_value(hid_t file_id, hid_t s_root_id,const string& s_attr_name, T& attr_value,std::vector<char> & str_attr_value );
+    void obtain_ll_attr_value(hid_t file_id, hid_t s_root_id,const std::string& s_attr_name, T& attr_value,std::vector<char> & str_attr_value );
     virtual void read_data_NOT_from_mem_cache(bool add_cache,void*buf);
     void obtain_aqu_obpg_l3_ll(int* offset,int* step,int nelms,bool add_cache, void*buf);
 

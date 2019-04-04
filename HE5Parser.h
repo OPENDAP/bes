@@ -34,7 +34,6 @@
 #include "HE5Grid.h"
 #include "HE5Za.h"
 
-using namespace std;
 
 /// \file HE5Parser.h
 /// \brief A class for parsing NASA HDF-EOS5 StructMetadata.
@@ -51,9 +50,9 @@ class HE5Parser:public HE5Swath, public HE5Grid, public HE5Za {
 
 
 public:
-    vector<HE5Swath> swath_list;
-    vector<HE5Grid> grid_list;
-    vector<HE5Za> za_list;
+    std::vector<HE5Swath> swath_list;
+    std::vector<HE5Grid> grid_list;
+    std::vector<HE5Za> za_list;
 
     enum {
 	ZA, SWATH, GRID
@@ -69,14 +68,14 @@ public:
     int  parser_state;
 
     /// Have any parse error message.
-    string err_msg;	
+    std::string err_msg;	
 
     HE5Parser();
     virtual ~ HE5Parser();
 
     /// Print the information about the members of the Vector list.
     void print();
-    void add_projparams(const string&);
+    void add_projparams(const std::string&);
 
 };
 #endif

@@ -60,17 +60,17 @@ enum GMPattern {
 enum EOS5AuraName {
     OMI, MLS, HIRDLS, TES, NOTAURA
 };
-static string FILE_ATTR_TABLE_NAME = "HDF5_GLOBAL";
+static std::string FILE_ATTR_TABLE_NAME = "HDF5_GLOBAL";
 
 namespace HDF5CF {
 class File;
 class GMFile;
 class EOS5File;
 
-class Exception: public exception {
+class Exception: public std::exception {
 public:
     /// Constructor
-    Exception(const string & msg) :
+    Exception(const std::string & msg) :
         message(msg)
     {
     }
@@ -84,7 +84,7 @@ public:
         return this->message.c_str();
     }
 
-    virtual void setException(string except_message)
+    virtual void setException(std::string except_message)
     {
         this->message = except_message;
     }
@@ -95,7 +95,7 @@ protected:
 template<typename T, typename U, typename V, typename W, typename X> static void _throw5(const char *fname, int line,
     int numarg, const T & a1, const U & a2, const V & a3, const W & a4, const X & a5)
 {
-    ostringstream ss;
+    std::ostringstream ss;
     ss << fname << ":" << line << ":";
     for (int i = 0; i < numarg; ++i) {
         ss << " ";
@@ -148,11 +148,11 @@ public:
     {
         return this->size;
     }
-    const string & getName() const
+    const std::string & getName() const
     {
         return this->name;
     }
-    const string & getNewName() const
+    const std::string & getNewName() const
     {
         return this->newname;
     }
@@ -171,8 +171,8 @@ protected:
 
 protected:
     hsize_t size;
-    string name;
-    string newname;
+    std::string name;
+    std::string newname;
     bool unlimited_dim;
 
     friend class EOS5File;
@@ -197,12 +197,12 @@ public:
     ~Attribute();
 
 public:
-    const string & getName() const
+    const std::string & getName() const
     {
         return this->name;
     }
 
-    const string & getNewName() const
+    const std::string & getNewName() const
     {
         return this->newname;
     }
@@ -237,13 +237,13 @@ public:
     }
 
 protected:
-    string name;
-    string newname;
+    std::string name;
+    std::string newname;
     H5DataType dtype;
     hsize_t count;
-    vector<size_t> strsize;
+    std::vector<size_t> strsize;
     size_t fstrsize;
-    vector<char> value;
+    std::vector<char> value;
     bool is_cset_ascii;
 
     friend class File;
@@ -270,19 +270,19 @@ public:
 public:
 
     /// Get the original name of this variable
-    const string & getName() const
+    const std::string & getName() const
     {
         return this->name;
     }
 
     /// Get the new name of this variable
-    const string & getNewName() const
+    const std::string & getNewName() const
     {
         return this->newname;
     }
 
     /// Get the full path of this variable
-    const string & getFullPath() const
+    const std::string & getFullPath() const
     {
         return this->fullpath;
     }
@@ -305,13 +305,13 @@ public:
         return this->dtype;
     }
 
-    const vector<Attribute *>&getAttributes() const
+    const std::vector<Attribute *>&getAttributes() const
     {
         return this->attrs;
     }
 
     /// Get the list of the dimensions
-    const vector<Dimension *>&getDimensions() const
+    const std::vector<Dimension *>&getDimensions() const
     {
         return this->dims;
     }
@@ -336,8 +336,8 @@ protected:
     bool unsupported_dspace;
     bool dimnameflag;
 
-    vector<Attribute *> attrs;
-    vector<Dimension *> dims;
+    std::vector<Attribute *> attrs;
+    std::vector<Dimension *> dims;
 
     friend class CVar;
     friend class GMCVar;
@@ -370,7 +370,7 @@ private:
     // Each coordinate variable has and only has one dimension
     // This assumption is based on the exact match between
     // variables and dimensions
-    string cfdimname;
+    std::string cfdimname;
     CVType cvartype;
 
     friend class File;
@@ -550,28 +550,28 @@ public:
 public:
 
     /// Get the original path of this group
-    const string & getPath() const
+    const std::string & getPath() const
     {
         return this->path;
     }
 
     /// Get the new name of this group(flattened,name clashed checked)
-    const string & getNewName() const
+    const std::string & getNewName() const
     {
         return this->newname;
     }
 
-    const vector<Attribute *>&getAttributes() const
+    const std::vector<Attribute *>&getAttributes() const
     {
         return this->attrs;
     }
 
 protected:
 
-    string newname;
-    string path;
+    std::string newname;
+    std::string path;
 
-    vector<Attribute *> attrs;
+    std::vector<Attribute *> attrs;
     bool unsupported_attr_dtype;
     bool unsupported_attr_dspace;
 
@@ -652,25 +652,25 @@ public:
     }
 
     /// Obtain the path of the file
-    const string & getPath() const
+    const std::string & getPath() const
     {
         return this->path;
     }
 
     /// Public interface to obtain information of all variables.
-    const vector<Var *>&getVars() const
+    const std::vector<Var *>&getVars() const
     {
         return this->vars;
     }
 
     /// Public interface to obtain information of all attributes under the root group.
-    const vector<Attribute *>&getAttributes() const
+    const std::vector<Attribute *>&getAttributes() const
     {
         return this->root_attrs;
     }
 
     /// Public interface to obtain all the group info.
-    const vector<Group *>&getGroups() const
+    const std::vector<Group *>&getGroups() const
     {
         return this->groups;
     }
@@ -685,7 +685,7 @@ public:
     virtual bool Get_IgnoredInfo_Flag() = 0;
 
     /// Obtain the message that contains the ignored object info.
-    virtual const string & Get_Ignored_Msg() = 0;
+    virtual const std::string & Get_Ignored_Msg() = 0;
 
     virtual ~File();
 
@@ -694,10 +694,10 @@ protected:
     void Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr) throw (Exception);
     void Retrieve_H5_Attr_Info(Attribute *, hid_t obj_id, const int j, bool& unsup_attr_dtype, bool & unsup_attr_dspace)
         throw (Exception);
-    void Retrieve_H5_Attr_Value(Attribute *attr, string) throw (Exception);
+    void Retrieve_H5_Attr_Value(Attribute *attr, std::string) throw (Exception);
 
-    void Retrieve_H5_VarType(Var*, hid_t dset_id, const string& varname, bool &unsup_var_dtype) throw (Exception);
-    void Retrieve_H5_VarDim(Var*, hid_t dset_id, const string &varname, bool & unsup_var_dspace) throw (Exception);
+    void Retrieve_H5_VarType(Var*, hid_t dset_id, const std::string& varname, bool &unsup_var_dtype) throw (Exception);
+    void Retrieve_H5_VarDim(Var*, hid_t dset_id, const std::string &varname, bool & unsup_var_dspace) throw (Exception);
 
     float Retrieve_H5_VarCompRatio(Var*, hid_t) throw (Exception);
 
@@ -712,39 +712,39 @@ protected:
     void Gen_Var_Unsupported_Dtype_Info() throw (Exception);
     virtual void Gen_VarAttr_Unsupported_Dtype_Info() throw (Exception);
 
-    void Handle_GeneralObj_NameClashing(bool, set<string> &objnameset) throw (Exception);
-    void Handle_Var_NameClashing(set<string> &objnameset) throw (Exception);
-    void Handle_Group_NameClashing(set<string> &objnameset) throw (Exception);
+    void Handle_GeneralObj_NameClashing(bool, std::set<std::string> &objnameset) throw (Exception);
+    void Handle_Var_NameClashing(std::set<std::string> &objnameset) throw (Exception);
+    void Handle_Group_NameClashing(std::set<std::string> &objnameset) throw (Exception);
     void Handle_Obj_AttrNameClashing() throw (Exception);
-    template<typename T> void Handle_General_NameClashing(set<string>&objnameset, vector<T*>& objvec) throw (Exception);
+    template<typename T> void Handle_General_NameClashing(std::set<std::string>&objnameset, std::vector<T*>& objvec) throw (Exception);
 
     void Add_One_FakeDim_Name(Dimension *dim) throw (Exception);
     void Adjust_Duplicate_FakeDim_Name(Dimension * dim) throw (Exception);
-    void Insert_One_NameSizeMap_Element(string name, hsize_t size, bool unlimited) throw (Exception);
-    void Insert_One_NameSizeMap_Element2(map<string, hsize_t> &, map<string, bool>&, string name, hsize_t size,
+    void Insert_One_NameSizeMap_Element(std::string name, hsize_t size, bool unlimited) throw (Exception);
+    void Insert_One_NameSizeMap_Element2(std::map<std::string, hsize_t> &, std::map<std::string, bool>&, std::string name, hsize_t size,
         bool unlimited) throw (Exception);
     //void Replace_Dim_Name_All(const string orig_dim_name,const string new_dim_name) throw(Exception);
 
-    virtual string get_CF_string(string);
+    virtual std::string get_CF_string(std::string);
     virtual void Replace_Var_Info(Var* src, Var *target);
     virtual void Replace_Var_Attrs(Var *src, Var*target);
 
-    void Add_Str_Attr(Attribute* attr, const string &attrname, const string& strvalue) throw (Exception);
+    void Add_Str_Attr(Attribute* attr, const std::string &attrname, const std::string& strvalue) throw (Exception);
     //bool Var_Has_Attr(Var*var,const string &attrname);
-    string Retrieve_Str_Attr_Value(Attribute *attr, const string var_path);
-    bool Is_Str_Attr(Attribute* attr, string varfullpath, const string &attrname, const string& strvalue);
-    void Add_One_Float_Attr(Attribute* attr, const string &attrname, float float_value) throw (Exception);
-    void Replace_Var_Str_Attr(Var* var, const string &attr_name, const string& strvalue);
+    std::string Retrieve_Str_Attr_Value(Attribute *attr, const std::string var_path);
+    bool Is_Str_Attr(Attribute* attr, std::string varfullpath, const std::string &attrname, const std::string& strvalue);
+    void Add_One_Float_Attr(Attribute* attr, const std::string &attrname, float float_value) throw (Exception);
+    void Replace_Var_Str_Attr(Var* var, const std::string &attr_name, const std::string& strvalue);
     void Change_Attr_One_Str_to_Others(Attribute *attr, Var *var) throw (Exception);
 
     // Check if having variable latitude by variable names (containing ???latitude/Latitude/lat)
-    bool Is_geolatlon(const string &var_name, bool is_lat);
-    bool has_latlon_cf_units(Attribute*attr, const string &varfullpath, bool is_lat);
+    bool Is_geolatlon(const std::string &var_name, bool is_lat);
+    bool has_latlon_cf_units(Attribute*attr, const std::string &varfullpath, bool is_lat);
 
     // Check if a variable with a var name is under a specific group with groupname
     // note: the variable's size at each dimension is also returned. The user must allocate the
     // memory for the dimension sizes(an array(vector is perferred).
-    bool is_var_under_group(const string &varname, const string &grpname, const int var_rank, vector<size_t> &var_size);
+    bool is_var_under_group(const std::string &varname, const std::string &grpname, const int var_rank, std::vector<size_t> &var_size);
 
     // Remove netCDF internal attributes. Right now, only CLASS=DIMENSION_SCALE and NAME=Var_name and NAME=pure netCDF dimesnion are handled.
     void remove_netCDF_internal_attributes(bool include_attr);
@@ -757,27 +757,27 @@ protected:
     // void add_ignored_info_obj_dtype_header();
     //void add_ignored_info_obj_dspace_header();
     void add_ignored_info_links_header();
-    void add_ignored_info_links(const string& link_name);
-    void add_ignored_info_namedtypes(const string&, const string&);
-    void add_ignored_info_attrs(bool is_grp, const string & obj_path, const string &attr_name);
-    void add_ignored_info_objs(bool is_dim_related, const string & obj_path);
+    void add_ignored_info_links(const std::string& link_name);
+    void add_ignored_info_namedtypes(const std::string&, const std::string&);
+    void add_ignored_info_attrs(bool is_grp, const std::string & obj_path, const std::string &attr_name);
+    void add_ignored_info_objs(bool is_dim_related, const std::string & obj_path);
     void add_no_ignored_info();
     bool ignored_dimscale_ref_list(Var *var);
     bool Check_DropLongStr(Var *var, Attribute *attr) throw (Exception);
     void add_ignored_var_longstr_info(Var*var, Attribute *attr) throw (Exception);
-    void add_ignored_grp_longstr_info(const string& grp_path, const string& attr_name);
+    void add_ignored_grp_longstr_info(const std::string& grp_path, const std::string& attr_name);
     void add_ignored_droplongstr_hdr();
-    bool Check_VarDropLongStr(const string &varpath, const vector<Dimension *>&, H5DataType) throw (Exception);
+    bool Check_VarDropLongStr(const std::string &varpath, const std::vector<Dimension *>&, H5DataType) throw (Exception);
 
-    void release_standalone_var_vector(vector<Var*>&vars);
+    void release_standalone_var_vector(std::vector<Var*>&vars);
 
     // Handle grid_mapping attributes
-    string Check_Grid_Mapping_VarName(const string& attr_value,const string& var_full_path);
-    string Check_Grid_Mapping_FullPath(const string& attr_value);
+    std::string Check_Grid_Mapping_VarName(const std::string& attr_value,const std::string& var_full_path);
+    std::string Check_Grid_Mapping_FullPath(const std::string& attr_value);
 
 protected:
     File(const char *h5_path, hid_t file_id) :
-        path(string(h5_path)), fileid(file_id), rootid(-1), unsupported_var_dtype(false), unsupported_attr_dtype(false), unsupported_var_dspace(
+        path(std::string(h5_path)), fileid(file_id), rootid(-1), unsupported_var_dtype(false), unsupported_attr_dtype(false), unsupported_var_dspace(
             false), unsupported_attr_dspace(false), unsupported_var_attr_dspace(false), addeddimindex(0), check_ignored(
             false), have_ignored(false), have_udim(false)
     {
@@ -785,18 +785,18 @@ protected:
 
 protected:
 
-    string path;
+    std::string path;
     hid_t fileid;
     hid_t rootid;
 
     /// Var vectors.
-    vector<Var *> vars;
+    std::vector<Var *> vars;
 
     /// Root attribute vectors.
-    vector<Attribute *> root_attrs;
+    std::vector<Attribute *> root_attrs;
 
     /// Non-root group vectors.
-    vector<Group*> groups;
+    std::vector<Group*> groups;
 
     bool unsupported_var_dtype;
     bool unsupported_attr_dtype;
@@ -805,21 +805,21 @@ protected:
     bool unsupported_attr_dspace;
     bool unsupported_var_attr_dspace;
 
-    set<string> dimnamelist;
+    std::set<std::string> dimnamelist;
     //set<string>unlimited_dimnamelist;
-    map<string, hsize_t> dimname_to_dimsize;
+    std::map<std::string, hsize_t> dimname_to_dimsize;
 
     // Unlimited dim. info
-    map<string, bool> dimname_to_unlimited;
+    std::map<std::string, bool> dimname_to_unlimited;
 
     /// Handle added dimension names
-    map<hsize_t, string> dimsize_to_fakedimname;
+    std::map<hsize_t, std::string> dimsize_to_fakedimname;
     int addeddimindex;
 
     bool check_ignored;
     bool have_ignored;
     bool have_udim;
-    string ignored_msg;
+    std::string ignored_msg;
 
 };
 
@@ -834,12 +834,12 @@ public:
         return product_type;
     }
 
-    const vector<GMCVar *>&getCVars() const
+    const std::vector<GMCVar *>&getCVars() const
     {
         return this->cvars;
     }
 
-    const vector<GMSPVar *>&getSPVars() const
+    const std::vector<GMSPVar *>&getSPVars() const
     {
         return this->spvars;
     }
@@ -925,7 +925,7 @@ public:
     }
 
     /// Get the message that contains the ignored obj. info
-    const string& Get_Ignored_Msg()
+    const std::string& Get_Ignored_Msg()
     {
         return ignored_msg;
     }
@@ -938,7 +938,7 @@ protected:
     void Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var *, Attribute*) throw (Exception);
 
     void Add_Dim_Name_Mea_Ozonel3z() throw (Exception);
-    bool check_cv(string & varname) throw (Exception);
+    bool check_cv(std::string & varname) throw (Exception);
 
     void Add_Dim_Name_Aqu_L3() throw (Exception);
     void Add_Dim_Name_OBPG_L3() throw (Exception);
@@ -949,15 +949,15 @@ protected:
     void Check_General_Product_Pattern() throw (Exception);
     bool Check_Dimscale_General_Product_Pattern() throw (Exception);
     bool Check_LatLon2D_General_Product_Pattern() throw (Exception);
-    bool Check_LatLon2D_General_Product_Pattern_Name_Size(const string& latname, const string& lonname)
+    bool Check_LatLon2D_General_Product_Pattern_Name_Size(const std::string& latname, const std::string& lonname)
         throw (Exception);
     bool Check_LatLon1D_General_Product_Pattern() throw (Exception);
-    bool Check_LatLon1D_General_Product_Pattern_Name_Size(const string& latname, const string& lonname)
+    bool Check_LatLon1D_General_Product_Pattern_Name_Size(const std::string& latname, const std::string& lonname)
         throw (Exception);
 
     bool Check_LatLon_With_Coordinate_Attr_General_Product_Pattern() throw (Exception);
-    void Build_lat1D_latlon_candidate(Var*, const vector<Var*>&);
-    void Build_latg1D_latlon_candidate(Var*, const vector<Var*>&);
+    void Build_lat1D_latlon_candidate(Var*, const std::vector<Var*>&);
+    void Build_latg1D_latlon_candidate(Var*, const std::vector<Var*>&);
     void Build_unique_latlon_candidate();
     //bool Check_LatLonName_General_Product(int latlon_rank) throw(Exception);
     void Add_Dim_Name_LatLon1D_Or_CoordAttr_General_Product() throw (Exception);
@@ -972,15 +972,15 @@ protected:
     // Check if we have 2-D lat/lon CVs, and if yes, add those to the CV list.
     void Update_M2DLatLon_Dimscale_CVs() throw (Exception);
     bool Check_1DGeolocation_Dimscale() throw (Exception);
-    void Obtain_1DLatLon_CVs(vector<GMCVar*> &cvar_1dlat, vector<GMCVar*> &cvar_1dlon);
-    void Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat, vector<Var*> &var_2dlon,
-        map<string, int>&latlon2d_path_to_index);
-    void Obtain_2DLLVars_With_Dims_not_1DLLCVars(vector<Var*> &var_2dlat, vector<Var*> &var_2dlon,
-        vector<GMCVar*> &cvar_1dlat, vector<GMCVar*> &cvar_1dlon, map<string, int>&latlon2d_path_to_index);
-    void Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat, vector<Var*> &var_2dlon,
-        map<string, int>&latlon2d_path_to_index) throw (Exception);
-    void Obtain_unique_2dCV(vector<Var*>&, map<string, int>&);
-    void Remove_2DLLCVar_Final_Candidate_from_Vars(vector<int>&) throw (Exception);
+    void Obtain_1DLatLon_CVs(std::vector<GMCVar*> &cvar_1dlat, std::vector<GMCVar*> &cvar_1dlon);
+    void Obtain_2DLatLon_Vars(std::vector<Var*> &var_2dlat, std::vector<Var*> &var_2dlon,
+        std::map<std::string, int>&latlon2d_path_to_index);
+    void Obtain_2DLLVars_With_Dims_not_1DLLCVars(std::vector<Var*> &var_2dlat, std::vector<Var*> &var_2dlon,
+        std::vector<GMCVar*> &cvar_1dlat, std::vector<GMCVar*> &cvar_1dlon, std::map<std::string, int>&latlon2d_path_to_index);
+    void Obtain_2DLLCVar_Candidate(std::vector<Var*> &var_2dlat, std::vector<Var*> &var_2dlon,
+        std::map<std::string, int>&latlon2d_path_to_index) throw (Exception);
+    void Obtain_unique_2dCV(std::vector<Var*>&, std::map<std::string, int>&);
+    void Remove_2DLLCVar_Final_Candidate_from_Vars(std::vector<int>&) throw (Exception);
 
     void Handle_CVar_GPM_L1() throw (Exception);
     void Handle_CVar_GPM_L3() throw (Exception);
@@ -998,32 +998,32 @@ protected:
     void Adjust_Mea_Ozone_Obj_Name() throw (Exception);
     void Adjust_GPM_L3_Obj_Name() throw (Exception);
 
-    void Handle_GMCVar_NameClashing(set<string> &) throw (Exception);
+    void Handle_GMCVar_NameClashing(std::set<std::string> &) throw (Exception);
     void Handle_GMCVar_AttrNameClashing() throw (Exception);
-    void Handle_GMSPVar_NameClashing(set<string> &) throw (Exception);
+    void Handle_GMSPVar_NameClashing(std::set<std::string> &) throw (Exception);
     void Handle_GMSPVar_AttrNameClashing() throw (Exception);
-    template<typename T> void GMHandle_General_NameClashing(set<string>&objnameset, vector<T*>& objvec)
+    template<typename T> void GMHandle_General_NameClashing(std::set<std::string>&objnameset, std::vector<T*>& objvec)
         throw (Exception);
 
-    string get_CF_string(string s);
+    std::string get_CF_string(std::string s);
 
     // The following routines are for generating coordinates attributes for netCDF-4 like 2D-latlon cases.
     bool Check_Var_2D_CVars(Var*) throw (Exception);
     bool Flatten_VarPath_In_Coordinates_Attr(Var*) throw (Exception);
     //bool Flatten_VarPath_In_Coordinates_Attr_EOS5(Var*) throw (Exception);
     void Handle_LatLon_With_CoordinateAttr_Coor_Attr() throw (Exception);
-    bool Coord_Match_LatLon_NameSize(const string & coord_values) throw (Exception);
-    bool Coord_Match_LatLon_NameSize_Same_Group(const string & coord_values, const string &var_path) throw (Exception);
-    void Add_VarPath_In_Coordinates_Attr(Var*, const string &);
+    bool Coord_Match_LatLon_NameSize(const std::string & coord_values) throw (Exception);
+    bool Coord_Match_LatLon_NameSize_Same_Group(const std::string & coord_values, const std::string &var_path) throw (Exception);
+    void Add_VarPath_In_Coordinates_Attr(Var*, const std::string &);
 
     // The following three routines handle the GPM CF-related attributes
     void Handle_GPM_l1_Coor_Attr() throw (Exception);
-    void Correct_GPM_L1_LatLon_units(Var *var, const string unit_value) throw (Exception);
+    void Correct_GPM_L1_LatLon_units(Var *var, const std::string unit_value) throw (Exception);
     void Add_GPM_Attrs() throw (Exception);
 
     void Add_Aqu_Attrs() throw (Exception);
     void Add_SeaWiFS_Attrs() throw (Exception);
-    void Create_Missing_CV(GMCVar*, const string &) throw (Exception);
+    void Create_Missing_CV(GMCVar*, const std::string &) throw (Exception);
 
     bool Is_netCDF_Dimension(Var *var) throw (Exception);
 
@@ -1034,19 +1034,19 @@ protected:
     void Handle_GM_Unsupported_Dtype(bool) throw (Exception);
     void Handle_GM_Unsupported_Dspace(bool) throw (Exception);
 
-    bool Remove_EOS5_Strings(string &);
-    bool Remove_EOS5_Strings_NonEOS_Fields (string &);
-    void release_standalone_GMCVar_vector(vector<GMCVar*> &tempgc_vars);
+    bool Remove_EOS5_Strings(std::string &);
+    bool Remove_EOS5_Strings_NonEOS_Fields (std::string &);
+    void release_standalone_GMCVar_vector(std::vector<GMCVar*> &tempgc_vars);
 
 private:
     H5GCFProduct product_type;
     GMPattern gproduct_pattern;
-    vector<GMCVar *> cvars;
-    vector<GMSPVar *> spvars;
-    string gp_latname;
-    string gp_lonname;
-    set<string> grp_cv_paths;
-    vector<struct Name_Size_2Pairs> latloncv_candidate_pairs;
+    std::vector<GMCVar *> cvars;
+    std::vector<GMSPVar *> spvars;
+    std::string gp_latname;
+    std::string gp_lonname;
+    std::set<std::string> grp_cv_paths;
+    std::vector<struct Name_Size_2Pairs> latloncv_candidate_pairs;
     //map<string,string>dimcvars_2dlatlon;
     bool iscoard;
     bool ll2d_no_cv;
@@ -1067,7 +1067,7 @@ public:
         xdimsize(0), ydimsize(0),
         has_nolatlon(true), has_1dlatlon(false), has_2dlatlon(false), has_g2dlatlon(false)
     {
-        fill_n(param, 13, 0);
+        std::fill_n(param, 13, 0);
     }
 
     ~EOS5CFGrid()
@@ -1090,18 +1090,18 @@ private:
     int zone;
     int sphere;
 
-    vector<string> dimnames;
-    set<string> vardimnames;
-    map<string, hsize_t> dimnames_to_dimsizes;
+    std::vector<std::string> dimnames;
+    std::set<std::string> vardimnames;
+    std::map<std::string, hsize_t> dimnames_to_dimsizes;
 
     // Unlimited dim. info
-    map<string, bool> dimnames_to_unlimited;
+    std::map<std::string, bool> dimnames_to_unlimited;
 
-    map<hsize_t, string> dimsizes_to_dimnames;
+    std::map<hsize_t, std::string> dimsizes_to_dimnames;
     int addeddimindex;
 
-    map<string, string> dnames_to_1dvnames;
-    string name;
+    std::map<std::string, std::string> dnames_to_1dvnames;
+    std::string name;
     int xdimsize;
     int ydimsize;
     //bool has_nodimnames_vars;
@@ -1127,18 +1127,18 @@ public:
 
 private:
 
-    vector<string> dimnames;
-    set<string> vardimnames;
-    map<string, hsize_t> dimnames_to_dimsizes;
+    std::vector<std::string> dimnames;
+    std::set<std::string> vardimnames;
+    std::map<std::string, hsize_t> dimnames_to_dimsizes;
 
     // Unlimited dim. info
-    map<string, bool> dimnames_to_unlimited;
+    std::map<std::string, bool> dimnames_to_unlimited;
 
-    map<hsize_t, string> dimsizes_to_dimnames;
+    std::map<hsize_t, std::string> dimsizes_to_dimnames;
     int addeddimindex;
 
-    map<string, string> dnames_to_geo1dvnames;
-    string name;
+    std::map<std::string, std::string> dnames_to_geo1dvnames;
+    std::string name;
     bool has_nolatlon;
     bool has_1dlatlon;
     bool has_2dlatlon;
@@ -1161,17 +1161,17 @@ public:
 
 private:
 
-    vector<string> dimnames;
-    set<string> vardimnames;
-    map<string, hsize_t> dimnames_to_dimsizes;
+    std::vector<std::string> dimnames;
+    std::set<std::string> vardimnames;
+    std::map<std::string, hsize_t> dimnames_to_dimsizes;
     // Unlimited dim. info
-    map<string, bool> dimnames_to_unlimited;
+    std::map<std::string, bool> dimnames_to_unlimited;
 
-    map<hsize_t, string> dimsizes_to_dimnames;
+    std::map<hsize_t, std::string> dimsizes_to_dimnames;
     int addeddimindex;
 
-    map<string, string> dnames_to_1dvnames;
-    string name;
+    std::map<std::string, std::string> dnames_to_1dvnames;
+    std::string name;
 
     friend class EOS5File;
 };
@@ -1189,7 +1189,7 @@ public:
 public:
 
     /// Obtain coordinate variables for HDF-EOS5 products
-    const vector<EOS5CVar *>&getCVars() const
+    const std::vector<EOS5CVar *>&getCVars() const
     {
         return this->cvars;
     }
@@ -1279,7 +1279,7 @@ public:
         return check_ignored;
     }
 
-    const string& Get_Ignored_Msg()
+    const std::string& Get_Ignored_Msg()
     {
         return ignored_msg;
     }
@@ -1287,31 +1287,31 @@ public:
 protected:
     void Adjust_H5_Attr_Value(Attribute *attr) throw (Exception);
 
-    void Adjust_EOS5Dim_List(vector<HE5Dim>&) throw (Exception);
-    void Condense_EOS5Dim_List(vector<HE5Dim>&) throw (Exception);
-    void Remove_NegativeSizeDims(vector<HE5Dim>&) throw (Exception);
-    void Adjust_EOS5DimSize_List(vector<HE5Dim>&,const vector<HE5Var>&, const EOS5Type,const string & eos5objname) throw(Exception);
-    void Adjust_EOS5VarDim_Info(vector<HE5Dim>&, vector<HE5Dim>&, const string &, EOS5Type) throw (Exception);
+    void Adjust_EOS5Dim_List(std::vector<HE5Dim>&) throw (Exception);
+    void Condense_EOS5Dim_List(std::vector<HE5Dim>&) throw (Exception);
+    void Remove_NegativeSizeDims(std::vector<HE5Dim>&) throw (Exception);
+    void Adjust_EOS5DimSize_List(std::vector<HE5Dim>&,const std::vector<HE5Var>&, const EOS5Type,const std::string & eos5objname) throw(Exception);
+    void Adjust_EOS5VarDim_Info(std::vector<HE5Dim>&, std::vector<HE5Dim>&, const std::string &, EOS5Type) throw (Exception);
 
-    void EOS5Handle_nonlatlon_dimcvars(vector<HE5Var> & eos5varlist, EOS5Type, string groupname,
-        map<string, string>& dnamesgeo1dvnames) throw (Exception);
-    template<class T> void EOS5SwathGrid_Set_LatLon_Flags(T* eos5gridswath, vector<HE5Var>& eos5varlist)
+    void EOS5Handle_nonlatlon_dimcvars(std::vector<HE5Var> & eos5varlist, EOS5Type, std::string groupname,
+        std::map<std::string, std::string>& dnamesgeo1dvnames) throw (Exception);
+    template<class T> void EOS5SwathGrid_Set_LatLon_Flags(T* eos5gridswath, std::vector<HE5Var>& eos5varlist)
         throw (Exception);
 
     void Obtain_Var_NewName(Var*) throw (Exception);
     EOS5Type Get_Var_EOS5_Type(Var*) throw (Exception);
 
     bool Obtain_Var_Dims(Var*, HE5Parser*) throw (Exception);
-    template<class T> bool Set_Var_Dims(T*, Var*, vector<HE5Var>&, const string&, int, EOS5Type) throw (Exception);
-    template<class T> void Create_Unique_DimName(T*, set<string>&, Dimension *, int, EOS5Type) throw (Exception);
+    template<class T> bool Set_Var_Dims(T*, Var*, std::vector<HE5Var>&, const std::string&, int, EOS5Type) throw (Exception);
+    template<class T> void Create_Unique_DimName(T*, std::set<std::string>&, Dimension *, int, EOS5Type) throw (Exception);
 
-    template<class T> bool Check_All_DimNames(T*, string &, hsize_t);
-    string Obtain_Var_EOS5Type_GroupName(Var*, EOS5Type) throw (Exception);
+    template<class T> bool Check_All_DimNames(T*, std::string &, hsize_t);
+    std::string Obtain_Var_EOS5Type_GroupName(Var*, EOS5Type) throw (Exception);
     int Check_EOS5Swath_FieldType(Var*) throw (Exception);
-    void Get_Unique_Name(set<string>&, string&) throw (Exception);
+    void Get_Unique_Name(std::set<std::string>&, std::string&) throw (Exception);
 
-    template<class T> string Create_Unique_FakeDimName(T*, EOS5Type) throw (Exception);
-    template<class T> void Set_NonParse_Var_Dims(T*, Var*, map<hsize_t, string>&, int, EOS5Type) throw (Exception);
+    template<class T> std::string Create_Unique_FakeDimName(T*, EOS5Type) throw (Exception);
+    template<class T> void Set_NonParse_Var_Dims(T*, Var*, std::map<hsize_t, std::string>&, int, EOS5Type) throw (Exception);
 
     void Handle_Grid_CVar(bool) throw (Exception);
     void Handle_Augmented_Grid_CVar() throw (Exception);
@@ -1319,17 +1319,17 @@ protected:
 
     void Handle_Multi_Nonaugment_Grid_CVar() throw (Exception);
     void Handle_Single_Nonaugment_Grid_CVar(EOS5CFGrid*) throw (Exception);
-    bool Handle_Single_Nonaugment_Grid_CVar_OwnLatLon(EOS5CFGrid *, set<string>&) throw (Exception);
-    bool Handle_Single_Nonaugment_Grid_CVar_EOS5LatLon(EOS5CFGrid *, set<string>&) throw (Exception);
-    void Handle_NonLatLon_Grid_CVar(EOS5CFGrid *, set<string>&) throw (Exception);
+    bool Handle_Single_Nonaugment_Grid_CVar_OwnLatLon(EOS5CFGrid *, std::set<std::string>&) throw (Exception);
+    bool Handle_Single_Nonaugment_Grid_CVar_EOS5LatLon(EOS5CFGrid *, std::set<std::string>&) throw (Exception);
+    void Handle_NonLatLon_Grid_CVar(EOS5CFGrid *, std::set<std::string>&) throw (Exception);
     void Remove_MultiDim_LatLon_EOS5CFGrid() throw (Exception);
     void Adjust_EOS5GridDimNames(EOS5CFGrid *) throw (Exception);
 
     void Handle_Swath_CVar(bool) throw (Exception);
     void Handle_Single_1DLatLon_Swath_CVar(EOS5CFSwath *cfswath, bool is_augmented) throw (Exception);
     void Handle_Single_2DLatLon_Swath_CVar(EOS5CFSwath *cfswath, bool is_augmented) throw (Exception);
-    void Handle_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, set<string>& tempvardimnamelist) throw (Exception);
-    void Handle_Special_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, set<string>&tempvardimnamelist) throw (Exception);
+    void Handle_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, std::set<std::string>& tempvardimnamelist) throw (Exception);
+    void Handle_Special_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, std::set<std::string>&tempvardimnamelist) throw (Exception);
 
     void Handle_Za_CVar(bool) throw (Exception);
 
@@ -1347,16 +1347,16 @@ protected:
     void Add_EOS5_Grid_CF_Attr() throw (Exception);
     void Handle_Aura_Special_Attr() throw (Exception);
 
-    string get_CF_string(string s);
+    std::string get_CF_string(std::string s);
     void Replace_Var_Info(EOS5CVar *src, EOS5CVar *target);
     void Replace_Var_Attrs(EOS5CVar *src, EOS5CVar *target);
-    void Handle_EOS5CVar_NameClashing(set<string> &) throw (Exception);
+    void Handle_EOS5CVar_NameClashing(std::set<std::string> &) throw (Exception);
     void Handle_EOS5CVar_AttrNameClashing() throw (Exception);
-    template<typename T> void EOS5Handle_General_NameClashing(set<string>&objnameset, vector<T*>& objvec)
+    template<typename T> void EOS5Handle_General_NameClashing(std::set<std::string>&objnameset, std::vector<T*>& objvec)
         throw (Exception);
     //void Adjust_CF_attr() throw (Exception);
-    template<typename T> void Create_Missing_CV(T*, EOS5CVar*, const string &, EOS5Type, int) throw (Exception);
-    void Create_Added_Var_NewName_FullPath(EOS5Type, const string&, const string&, string &, string &) throw (Exception);
+    template<typename T> void Create_Missing_CV(T*, EOS5CVar*, const std::string &, EOS5Type, int) throw (Exception);
+    void Create_Added_Var_NewName_FullPath(EOS5Type, const std::string&, const std::string&, std::string &, std::string &) throw (Exception);
 
 
     //void add_ignored_info_attrs(bool is_grp,bool is_first);
@@ -1376,17 +1376,17 @@ protected:
     void Gen_Unsupported_Dspace_Info() throw (Exception);
 
 private:
-    vector<EOS5CVar *> cvars;
-    vector<EOS5CFGrid *> eos5cfgrids;
-    vector<EOS5CFSwath *> eos5cfswaths;
-    vector<EOS5CFZa *> eos5cfzas;
-    map<string, string> eos5_to_cf_attr_map;
+    std::vector<EOS5CVar *> cvars;
+    std::vector<EOS5CFGrid *> eos5cfgrids;
+    std::vector<EOS5CFSwath *> eos5cfswaths;
+    std::vector<EOS5CFZa *> eos5cfzas;
+    std::map<std::string, std::string> eos5_to_cf_attr_map;
     bool iscoard;
     bool grids_multi_latloncvs;
     bool isaura;
     EOS5AuraName aura_name;
     int orig_num_grids;
-    multimap<string, string> dimname_to_dupdimnamelist;
+    std::multimap<std::string, std::string> dimname_to_dupdimnamelist;
 };
 
 }

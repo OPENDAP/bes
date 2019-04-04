@@ -29,7 +29,6 @@
 #define _HE5Checker_H
 
 #include "HE5Parser.h"
-using namespace std;
 
 /// \file HE5Checker.h
 /// \brief A class for parsing NASA HDF-EOS5 StructMetadata.

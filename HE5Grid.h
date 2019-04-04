@@ -5,16 +5,15 @@
 #include <vector>
 #include <iostream>
 
-using namespace std;
 
 #include "HE5GridPara.h"
 #include "HE5Var.h"
 
 struct HE5Grid {
 
-    string name;
-    vector<HE5Dim> dim_list;
-    vector<HE5Var> data_var_list;
+    std::string name;
+    std::vector<HE5Dim> dim_list;
+    std::vector<HE5Var> data_var_list;
 
     /// The bottom coordinate value of a Grid
     double point_lower;

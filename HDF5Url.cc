@@ -43,6 +43,9 @@
 #include "HDF5Url.h"
 #include "InternalErr.h"
 
+using namespace std;
+using namespace libdap;
+
 HDF5Url::HDF5Url(const string &n, const string &vpath,const string &d) : Url(n, d)
 {
     var_path = vpath;

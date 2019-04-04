@@ -41,7 +41,8 @@
 #include "Str.h"
 #include "HDF5GMCFFillIndexArray.h"
 
-
+using namespace std;
+using namespace libdap;
 
 BaseType *HDF5GMCFFillIndexArray::ptr_duplicate()
 {

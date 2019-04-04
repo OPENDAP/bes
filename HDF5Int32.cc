@@ -46,6 +46,8 @@
 #include "HDF5Int32.h"
 #include "BESDebug.h"
 
+using namespace std;
+using namespace libdap;
 
 HDF5Int32::HDF5Int32(const string & n, const string &vpath, const string &d) : Int32(n, d)
 {

@@ -46,7 +46,8 @@
 #include "HDF5Float32.h"
 
 
-
+using namespace std;
+using namespace libdap;
 HDF5Float32::HDF5Float32(const string & n, const string &vpath, const string &d) : Float32(n, d)
 {
     var_path = vpath;

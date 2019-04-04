@@ -35,7 +35,6 @@
 #include "UInt32.h"
 #include "h5get.h"
 
-using namespace libdap;
 
 /// \file HDF5UInt32.h
 /// 
@@ -45,30 +44,30 @@ using namespace libdap;
 /// \author Kent Yang       (ymuqun@hdfgroup.org)
 /// \author James Gallagher (jgallagher@opendap.org)
 ///
-class HDF5UInt32:public UInt32 {
+class HDF5UInt32:public libdap::UInt32 {
 
   private:
 //    hid_t dset_id;
 //    hid_t ty_id;
-    string var_path;
+    std::string var_path;
 
   public:
 
     /// Constructor
-    HDF5UInt32(const string &n, const string &vpath, const string &d);
+    HDF5UInt32(const std::string &n, const std::string &vpath, const std::string &d);
     virtual ~ HDF5UInt32() { }
 
     /// Clone this instance.
     ///
     /// Allocate a new instance and copy *this into it. This method must perform a deep copy.
     /// \return A newly allocated copy of this class    
-    virtual BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate();
 
     /// Reads HDF5 unsigned 32-bit integer data into local buffer
     virtual bool read();
 
     /// See return_type function defined in h5dds.cc.  
-    friend string return_type(hid_t datatype);
+    friend std::string return_type(hid_t datatype);
 
 
 #if 0

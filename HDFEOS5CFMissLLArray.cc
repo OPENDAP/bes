@@ -41,6 +41,8 @@
 #include "HDFEOS5CFMissLLArray.h"
 #include "HDF5RequestHandler.h"
 
+using namespace std;
+using namespace libdap;
 
 BaseType *HDFEOS5CFMissLLArray::ptr_duplicate()
 {

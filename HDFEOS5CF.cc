@@ -39,6 +39,8 @@
 #include "h5cfdaputil.h"
 #include "BESDebug.h"
 
+using namespace std;
+using namespace libdap;
 using namespace HDF5CF;
 
 // A constructor of EOS5CVar

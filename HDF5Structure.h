@@ -33,7 +33,6 @@
 #include "HDF5Array.h"
 #include "h5get.h"
 
-using namespace libdap;
 
 /// \file HDF5Structure.h
 /// \brief This class converts HDF5 compound type into DAP structure for the default option.
@@ -41,15 +40,15 @@ using namespace libdap;
 ///\author  Kent Yang
 ///
 /// \see Structure 
-class HDF5Structure:public Structure {
+class HDF5Structure:public libdap::Structure {
   private:
 
-    string var_path;
+    std::string var_path;
     void do_structure_read(hid_t dsetid, hid_t dtypeid,std::vector <char> &values,bool has_values, int values_offset);
     friend class HDF5Array;
   public:
     /// Constructor
-    HDF5Structure(const string &n, const string &vpath, const string &d);
+    HDF5Structure(const std::string &n, const std::string &vpath, const std::string &d);
     HDF5Structure(const HDF5Structure &rhs);
     virtual ~ HDF5Structure();
 
@@ -60,14 +59,14 @@ class HDF5Structure:public Structure {
     /// 
     /// Allocate a new instance and copy *this into it. This method must perform a deep copy.
     /// \return A newly allocated copy of this class  
-    virtual BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate();
 
     /// Reads HDF5 structure data by calling each member's read method in this structure.
     virtual bool read();
 
 
     /// See return_type function defined in h5dds.cc.  
-    friend string return_type(hid_t datatype);
+    friend std::string return_type(hid_t datatype);
 
 
 

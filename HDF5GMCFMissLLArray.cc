@@ -39,6 +39,9 @@
 
 #include "HDF5GMCFMissLLArray.h"
 
+using namespace std;
+using namespace libdap;
+
 BaseType *HDF5GMCFMissLLArray::ptr_duplicate()
 {
     return new HDF5GMCFMissLLArray(*this);

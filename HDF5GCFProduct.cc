@@ -33,6 +33,8 @@
 #include <InternalErr.h>
 #include <assert.h>
 #include "HDF5GCFProduct.h"
+
+using namespace std;
 using namespace libdap;
 
 
