@@ -159,13 +159,13 @@ class HDF5RequestHandler:public BESRequestHandler {
      static bool _default_handle_dimension;
      //static bool _ld_mcache_config;
      //static bool _sd_mcache_config;
-     static string _stp_east_filename;
-     static string _stp_north_filename;
+     static std::string _stp_east_filename;
+     static std::string _stp_north_filename;
      
      static libdap::DMR *dmr_int64;
      static bool _use_disk_cache;
-     static string _disk_cache_dir;
-     static string _disk_cachefile_prefix;
+     static std::string _disk_cache_dir;
+     static std::string _disk_cachefile_prefix;
      static unsigned long long _disk_cache_size;
      static bool _disk_cache_comp_data;
      static bool _disk_cache_float_only_comp_data;
@@ -175,12 +175,12 @@ class HDF5RequestHandler:public BESRequestHandler {
          
      static bool _use_disk_meta_cache;
      static bool _use_disk_dds_cache;
-     static string _disk_meta_cache_path;
+     static std::string _disk_meta_cache_path;
 
      static bool _use_latlon_disk_cache;
      static long _latlon_disk_cache_size;
-     static string _latlon_disk_cache_dir;
-     static string _latlon_disk_cachefile_prefix;
+     static std::string _latlon_disk_cache_dir;
+     static std::string _latlon_disk_cachefile_prefix;
 
      static bool _common_cache_dirs;
      static std::vector<std::string> lrd_cache_dir_list;
@@ -191,18 +191,18 @@ class HDF5RequestHandler:public BESRequestHandler {
      static bool hdf5_build_data_with_IDs(BESDataHandlerInterface &dhi);
      static bool hdf5_build_dmr_with_IDs(BESDataHandlerInterface &dhi);
      //static void get_dds_with_attributes(const string &filename, const string&container_name,libdap::DDS*dds);
-     static void get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDSResponse*data_bdds,const string &container_name,const string &filename, const string &dds_cache_fname, const string &das_cache_fname,bool dds_from_dc,bool das_from_dc, bool build_data);
+     static void get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDSResponse*data_bdds,const std::string &container_name,const std::string &filename, const std::string &dds_cache_fname, const std::string &das_cache_fname,bool dds_from_dc,bool das_from_dc, bool build_data);
 
-     static void read_dds_from_disk_cache(BESDDSResponse* bdds, BESDataDDSResponse* data_bdds,bool build_data,const string & container_name,const string & h5_fname,
-                              const string & dds_cache_fname,const string &das_cache_fname, hid_t h5_fd, bool das_from_dc);
+     static void read_dds_from_disk_cache(BESDDSResponse* bdds, BESDataDDSResponse* data_bdds,bool build_data,const std::string & container_name,const std::string & h5_fname,
+                              const std::string & dds_cache_fname,const std::string &das_cache_fname, hid_t h5_fd, bool das_from_dc);
 
-     static void add_das_to_dds(libdap::DDS *dds,const string &container_name, const string &filename, const string &das_cache_fname,hid_t h5_fd, bool das_from_dc);
+     static void add_das_to_dds(libdap::DDS *dds,const std::string &container_name, const std::string &filename, const std::string &das_cache_fname,hid_t h5_fd, bool das_from_dc);
 
-     static bool write_dds_to_disk_cache(const string& dds_cache_fname,libdap::DDS *dds_ptr);
+     static bool write_dds_to_disk_cache(const std::string& dds_cache_fname,libdap::DDS *dds_ptr);
 
-     static bool write_das_to_disk_cache(const string & das_cache_fname, libdap::DAS *das_ptr);
+     static bool write_das_to_disk_cache(const std::string & das_cache_fname, libdap::DAS *das_ptr);
 
-     static bool read_das_from_disk_cache(const string & cache_filename,libdap::DAS *das_ptr);
+     static bool read_das_from_disk_cache(const std::string & cache_filename,libdap::DAS *das_ptr);
 
 };
 
