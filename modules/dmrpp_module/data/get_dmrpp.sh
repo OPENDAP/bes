@@ -96,6 +96,7 @@ cmdDoc=`cat <<EOF
   <bes:get type="dmr" definition="d" />
   
 </bes:request>
+EOF
 `
 	TMP_CMD=$(mktemp -t get_dmr_XXXX)	
     echo "${cmdDoc}" > $TMP_CMD
