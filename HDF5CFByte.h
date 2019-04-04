@@ -39,17 +39,16 @@
 // DODS includes
 #include <Byte.h>
 
-using namespace libdap;
 
-class HDF5CFByte:public Byte {
+class HDF5CFByte:public libdap::Byte {
 
     private:
         string filename;
     public:
-        HDF5CFByte(const string & n, const string &d);
-        HDF5CFByte(const string & n, const string &d,const string &d_f);
+        HDF5CFByte(const std::string & n, const std::string &d);
+        HDF5CFByte(const std::string & n, const std::string &d,const std::string &d_f);
         virtual ~ HDF5CFByte();
-        virtual BaseType *ptr_duplicate();
+        virtual libdap::BaseType *ptr_duplicate();
         virtual bool read();
 };
 

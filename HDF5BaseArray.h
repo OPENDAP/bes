@@ -34,7 +34,6 @@
 #include <Array.h>
 #include <HDF5CFUtil.h>
 
-using namespace libdap;
 ///////////////////////////////////////////////////////////////////////////////
 /// \file HDF5BaseArray.h
 /// \brief A helper class that aims to reduce code redundence for different special CF derived array class
@@ -53,10 +52,10 @@ using namespace libdap;
 ////////////////////////////////////////////////////////////////////////////////
 
 
-class HDF5BaseArray: public Array {
+class HDF5BaseArray: public libdap::Array {
 public:
-    HDF5BaseArray(const string & n = "", BaseType * v = 0) :
-        Array(n, v)
+    HDF5BaseArray(const std::string & n = "", libdap::BaseType * v = 0) :
+        libdap::Array(n, v)
     {
     }
 
@@ -75,7 +74,7 @@ protected:
     size_t INDEX_nD_TO_1D(const std::vector<size_t> &dims, const std::vector<size_t> &pos);
 
     template<typename T> int subset(    void* input,
-						                int rank,
+                                        int rank,
                                         const std::vector<size_t> & dim,
                                         int start[],
                                         int stride[],

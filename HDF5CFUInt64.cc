@@ -37,6 +37,9 @@
 #include "HDF5CFUInt64.h"
 #include "h5common.h"
 
+using namespace std;
+using namespace libdap;
+
 HDF5CFUInt64::HDF5CFUInt64(const string &n, const string &d) : UInt64(n, d)
 {
 }

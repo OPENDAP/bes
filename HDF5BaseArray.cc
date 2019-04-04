@@ -50,6 +50,8 @@
 #include "HDF5RequestHandler.h"
 #include "ObjMemCache.h"
 
+using namespace std;
+using namespace libdap;
 #if 0
 BaseType *HDF5BaseArray::ptr_duplicate()
 {

@@ -37,12 +37,12 @@
 #include "h5commoncfdap.h"
 #include "HDF5GCFProduct.h"
 
-void map_gmh5_cfdds(DDS &, hid_t, const string &);
-void map_gmh5_cfdas(DAS &, hid_t, const string &);
-void gen_gmh5_cfdds(DDS &, HDF5CF::GMFile *);
-void gen_gmh5_cfdas(DAS &, HDF5CF::GMFile *);
-void gen_gmh5_cf_ignored_obj_info(DAS &, HDF5CF::GMFile *);
-void gen_dap_onegmcvar_dds(DDS &,const HDF5CF::GMCVar*,const hid_t, const string &);
-void gen_dap_onegmspvar_dds(DDS &dds,const HDF5CF::GMSPVar* spvar, const hid_t, const string & filename);
-void update_GPM_special_attrs(DAS &, const HDF5CF::Var* var,bool );
+void map_gmh5_cfdds(libdap::DDS &, hid_t, const std::string &);
+void map_gmh5_cfdas(libdap::DAS &, hid_t, const std::string &);
+void gen_gmh5_cfdds(libdap::DDS &, HDF5CF::GMFile *);
+void gen_gmh5_cfdas(libdap::DAS &, HDF5CF::GMFile *);
+void gen_gmh5_cf_ignored_obj_info(libdap::DAS &, HDF5CF::GMFile *);
+void gen_dap_onegmcvar_dds(libdap::DDS &,const HDF5CF::GMCVar*,const hid_t, const string &);
+void gen_dap_onegmspvar_dds(libdap::DDS &dds,const HDF5CF::GMSPVar* spvar, const hid_t, const string & filename);
+void update_GPM_special_attrs(libdap::DAS &, const HDF5CF::Var* var,bool );
 #endif

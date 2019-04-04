@@ -41,15 +41,14 @@
 #include <hdf5.h>
 #include <DAS.h>
 #include <Str.h>
-using namespace libdap;
 
-void add_group_structure_info(DAS & das, const char *gname, char *oname,
+void add_group_structure_info(libdap::DAS & das, const char *gname, char *oname,
                               bool is_group);
-void depth_first(hid_t, const char *, DAS &);
-void find_gloattr(hid_t file, DAS & das);
-string get_hardlink(hid_t, const string &);
-void get_softlink(DAS &, hid_t, const char*, const string &, int,size_t);
-void read_comments(DAS & das, const string & varname, hid_t oid);
-void read_objects(DAS & das, const string & varname, hid_t dset,
+void depth_first(hid_t, const char *, libdap::DAS &);
+void find_gloattr(hid_t file, libdap::DAS & das);
+string get_hardlink(hid_t, const std::string &);
+void get_softlink(libdap::DAS &, hid_t, const char*, const std::string &, int,size_t);
+void read_comments(libdap::DAS & das, const std::string & varname, hid_t oid);
+void read_objects(libdap::DAS & das, const std::string & varname, hid_t dset,
                   int num_attr);
 #endif

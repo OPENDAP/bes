@@ -36,6 +36,8 @@
 #include "InternalErr.h"
 #include "HDF5CFInt64.h"
 #include "h5common.h"
+using namespace std;
+using namespace libdap;
 
 HDF5CFInt64::HDF5CFInt64(const string &n, const string &d) : Int64(n, d)
 {

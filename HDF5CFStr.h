@@ -38,16 +38,15 @@
 #include <dods-limits.h>
 #include <Str.h>
 
-using namespace libdap;
 
-class HDF5CFStr:public Str {
+class HDF5CFStr:public libdap::Str {
   public:
-    HDF5CFStr(const string &n, const string &d,const string &varname);
+    HDF5CFStr(const std::string &n, const std::string &d,const std::string &varname);
     virtual ~ HDF5CFStr();
-    virtual BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate();
     virtual bool read();
   private:
-   string varname;
+   std::string varname;
 };
 
 #endif                          // _HDF5CFSTR_H

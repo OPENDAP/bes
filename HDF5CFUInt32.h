@@ -38,16 +38,15 @@
 // DODS includes
 #include <UInt32.h>
 
-using namespace libdap;
 
-class HDF5CFUInt32:public UInt32 {
+class HDF5CFUInt32:public libdap::UInt32 {
     private:
-        string filename;
+        std::string filename;
     public:
-        HDF5CFUInt32(const string &n, const string &d);
-        HDF5CFUInt32(const string &n, const string &d,const string &d_f);
+        HDF5CFUInt32(const std::string &n, const std::string &d);
+        HDF5CFUInt32(const std::string &n, const std::string &d,const std::string &d_f);
         virtual ~ HDF5CFUInt32();
-        virtual BaseType *ptr_duplicate();
+        virtual libdap::BaseType *ptr_duplicate();
         virtual bool read();
 };
 

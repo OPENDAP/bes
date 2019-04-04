@@ -45,22 +45,22 @@ hid_t get_attr_info(hid_t dset, int index, bool, DSattr_t * attr_inst, bool*);
 
 string get_dap_type(hid_t type,bool);
 
-void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool has_dimscale);
+void get_dataset(hid_t pid, const std::string &dname, DS_t * dt_inst_ptr,bool has_dimscale);
 
 hid_t get_fileid(const char *filename);
 
-string print_attr(hid_t type, int loc, void *sm_buf);
+std::string print_attr(hid_t type, int loc, void *sm_buf);
 
 D4AttributeType daptype_strrep_to_dap4_attrtype(std::string s);
 
 //static BaseType *Get_bt(const string &vname,
-BaseType *Get_bt(const string &vname,const string &var_path,
-                        const string &dataset,
+libdap::BaseType *Get_bt(const std::string &vname,const std::string &var_path,
+                        const std::string &dataset,
                         hid_t datatype,bool is_dap4);
 
 //static Structure *Get_structure(const string &varname,
-Structure *Get_structure(const string &varname,const string &var_path,
-                                const string &dataset,
+libdap::Structure *Get_structure(const std::string &varname,const std::string &var_path,
+                                const std::string &dataset,
                                 hid_t datatype,bool is_dap4);
 
 bool check_dimscale(hid_t fid);

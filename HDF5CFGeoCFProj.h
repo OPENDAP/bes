@@ -7,13 +7,12 @@
 // DODS includes
 #include <Byte.h>
 
-using namespace libdap;
 
-class HDF5CFGeoCFProj:public Byte {
+class HDF5CFGeoCFProj:public libdap::Byte {
   public:
-    HDF5CFGeoCFProj(const string & varname, const string &datasetname);
+    HDF5CFGeoCFProj(const std::string & varname, const std::string &datasetname);
     virtual ~ HDF5CFGeoCFProj();
-    virtual BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate();
     virtual bool read();
 };
 

@@ -42,6 +42,8 @@
 #include "h5cfdaputil.h"
 #include "ObjMemCache.h"
 
+using namespace std;
+using namespace libdap;
 
 
 BaseType *HDF5CFArray::ptr_duplicate()

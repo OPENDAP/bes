@@ -23,7 +23,7 @@
 // Suite 203, Champaign, IL 61820  
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \file h5dds.h
+/// \file h5dmr.h
 /// \brief Data structure and retrieval processing header for the default option
 ///
 /// This file is part of h5_dap_handler, A C++ implementation of the DAP handler
@@ -49,19 +49,18 @@
 
 #include <DDS.h>
 
-using namespace libdap;
 
 #include <D4Group.h>
 #include <D4Attributes.h>
 
-bool breadth_first(hid_t, char *, D4Group* par_grp, const char *,bool);
+bool breadth_first(hid_t, char *, libdap::D4Group* par_grp, const char *,bool);
 
-void read_objects(D4Group* d4_grp,const string & varname, const string & filename,const hid_t);
-void read_objects_base_type(D4Group* d4_grp,const string & varname, const string & filename,const hid_t);
-void read_objects_structure(D4Group* d4_grp,const string & varname, const string & filename,const hid_t);
+void read_objects(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t);
+void read_objects_base_type(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t);
+void read_objects_structure(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t);
 
 
-string get_hardlink_dmr(hid_t, const string &);
-void get_softlink(D4Group* par_grp, hid_t,  const string &, int,size_t);
-void map_h5_dset_hardlink_to_d4(hid_t h5_objid,const string & full_path, BaseType* d4b,Structure * d4s,int flag);
+string get_hardlink_dmr(hid_t, const std::string &);
+void get_softlink(libdap::D4Group* par_grp, hid_t,  const std::string &, int,size_t);
+void map_h5_dset_hardlink_to_d4(hid_t h5_objid,const std::string & full_path, libdap::BaseType* d4b,libdap::Structure * d4s,int flag);
 

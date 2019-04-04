@@ -37,6 +37,9 @@
 #include "config_hdf5.h"
 #include "h5cfdap.h"
 
+using namespace std;
+using namespace libdap;
+
 void read_cfdds(DDS&,const string&,hid_t);
 void read_cfdas(DAS&, const string&,hid_t);
 

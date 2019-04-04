@@ -35,6 +35,10 @@
 #include <BESDebug.h>
 #include "h5common.h"
 
+using namespace std;
+using namespace libdap;
+
+
 HDF5CFByte::HDF5CFByte(const string & n, const string &d) : Byte(n, d)
 {
 }

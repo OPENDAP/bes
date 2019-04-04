@@ -707,120 +707,7 @@ void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridP
             t_suffix_ss << g_suffix;
             cf_projection = cf_projection_base + "_" + t_suffix_ss.str();
         }
-
-        at = das.get_table(cf_projection);
-        if (!at) {// Only append attributes when the table is created.
-            at = das.add_table(cf_projection, new AttrTable);
-
-            if (HE5_GCTP_SNSOID == cv_proj_code) {
-                // The following line is not necessary since the attribute is ONLY 
-                // added when the table is created. Leave here just for references.
-                at->append_attr("grid_mapping_name", "String", "sinusoidal");
-                at->append_attr("longitude_of_central_meridian", "Float64", "0.0");
-                at->append_attr("earth_radius", "Float64", "6371007.181");
-                at->append_attr("_CoordinateAxisTypes", "string", "GeoX GeoY");
-            }
-            else if (HE5_GCTP_PS == cv_proj_code) {
-
-                // The following information is added according to the HDF-EOS5 user's guide and
-                // CF 1.7 grid_mapping requirement.
-
-                // Longitude down below pole of map
-                double vert_lon_pole =  HE5_EHconvAng(eos5_proj_params[4],HE5_HDFE_DMS_DEG);
-
-                // Latitude of true scale
-                double lat_true_scale = HE5_EHconvAng(eos5_proj_params[5],HE5_HDFE_DMS_DEG);
-
-                // False easting
-                double fe = eos5_proj_params[6];
-
-                // False northing 
-                double fn = eos5_proj_params[7];
-
-                at->append_attr("grid_mapping_name", "String", "polar_stereographic");
-
-                ostringstream s_vert_lon_pole;
-                s_vert_lon_pole << vert_lon_pole;
-
-                // I did this map is based on my best understanding. I cannot be certain about south pole. KY
-                // CF: straight_vertical_longitude_from_pole
-                at->append_attr("straight_vertical_longitude_from_pole", "Float64", s_vert_lon_pole.str());
-                ostringstream s_lat_true_scale;
-                s_lat_true_scale << lat_true_scale;
-
-                at->append_attr("standard_parallel", "Float64", s_lat_true_scale.str());
-
-                if(fe == 0.0) 
-                    at->append_attr("false_easting","Float64","0.0");
-                else { 
-                    ostringstream s_fe;
-                    s_fe << fe;
-                    at->append_attr("false_easting","Float64",s_fe.str());
-                }
-
-
-                if(fn == 0.0) 
-                    at->append_attr("false_northing","Float64","0.0");
-                else { 
-                    ostringstream s_fn;
-                    s_fn << fn;
-                    at->append_attr("false_northing","Float64",s_fn.str());
-                }
-
-            
-                if(lat_true_scale >0) 
-                    at->append_attr("latitude_of_projection_origin","Float64","+90.0");
-                else 
-                    at->append_attr("latitude_of_projection_origin","Float64","-90.0");
-
-
-                at->append_attr("_CoordinateAxisTypes", "string", "GeoX GeoY");
-
-                // From CF, PS has another parameter,
-                // Either standard_parallel (EPSG 9829) or scale_factor_at_projection_origin (EPSG 9810)
-                // I cannot find the corresponding parameter from the EOS5.
-
-           }
-           else if(HE5_GCTP_LAMAZ == cv_proj_code) {
-                double lon_proj_origin = HE5_EHconvAng(eos5_proj_params[4],HE5_HDFE_DMS_DEG);
-                double lat_proj_origin = HE5_EHconvAng(eos5_proj_params[5],HE5_HDFE_DMS_DEG);
-                double fe = eos5_proj_params[6];
-                double fn = eos5_proj_params[7];
-
-                at->append_attr("grid_mapping_name", "String", "lambert_azimuthal_equal_area");
-
-                ostringstream s_lon_proj_origin;
-                s_lon_proj_origin << lon_proj_origin;
-                at->append_attr("longitude_of_projection_origin", "Float64", s_lon_proj_origin.str());
-            
-                ostringstream s_lat_proj_origin;
-                s_lat_proj_origin << lat_proj_origin;
- 
-                at->append_attr("latitude_of_projection_origin", "Float64", s_lat_proj_origin.str());
-
-
-                if(fe == 0.0) 
-                    at->append_attr("false_easting","Float64","0.0");
-                else { 
-                    ostringstream s_fe;
-                    s_fe << fe;
-                    at->append_attr("false_easting","Float64",s_fe.str());
-                }
-
-
-                if(fn == 0.0) 
-                    at->append_attr("false_northing","Float64","0.0");
-                else { 
-                    ostringstream s_fn;
-                    s_fn << fn;
-                    at->append_attr("false_northing","Float64",s_fn.str());
-                }
-
-                at->append_attr("_CoordinateAxisTypes", "string", "GeoX GeoY");
-
-
-           }
-        }
+	add_cf_projection_attrs(das,cv_proj_code,eos5_proj_params,cf_projection);
 
         // Fill in the data fields that contains the dim0name and dim1name dimensions with the grid_mapping
         // We only apply to >=2D data fields.
@@ -828,6 +715,125 @@ void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridP
     }
 
 }
+
+// Add CF projection attribute
+
+void add_cf_projection_attrs(DAS &das,EOS5GridPCType cv_proj_code,const vector<double> &eos5_proj_params,const string& cf_projection) {
+
+    AttrTable* at = das.get_table(cf_projection);
+    if (!at) {// Only append attributes when the table is created.
+        at = das.add_table(cf_projection, new AttrTable);
+
+        if (HE5_GCTP_SNSOID == cv_proj_code) {
+            at->append_attr("grid_mapping_name", "String", "sinusoidal");
+            at->append_attr("longitude_of_central_meridian", "Float64", "0.0");
+            at->append_attr("earth_radius", "Float64", "6371007.181");
+            at->append_attr("_CoordinateAxisTypes", "string", "GeoX GeoY");
+        }
+        else if (HE5_GCTP_PS == cv_proj_code) {
+
+            // The following information is added according to the HDF-EOS5 user's guide and
+            // CF 1.7 grid_mapping requirement.
+
+            // Longitude down below pole of map
+            double vert_lon_pole =  HE5_EHconvAng(eos5_proj_params[4],HE5_HDFE_DMS_DEG);
+
+            // Latitude of true scale
+            double lat_true_scale = HE5_EHconvAng(eos5_proj_params[5],HE5_HDFE_DMS_DEG);
+
+            // False easting
+            double fe = eos5_proj_params[6];
+
+            // False northing 
+            double fn = eos5_proj_params[7];
+
+            at->append_attr("grid_mapping_name", "String", "polar_stereographic");
+
+            ostringstream s_vert_lon_pole;
+            s_vert_lon_pole << vert_lon_pole;
+
+            // I did this map is based on my best understanding. I cannot be certain about south pole. KY
+            // CF: straight_vertical_longitude_from_pole
+            at->append_attr("straight_vertical_longitude_from_pole", "Float64", s_vert_lon_pole.str());
+            ostringstream s_lat_true_scale;
+            s_lat_true_scale << lat_true_scale;
+
+            at->append_attr("standard_parallel", "Float64", s_lat_true_scale.str());
+
+            if(fe == 0.0) 
+                at->append_attr("false_easting","Float64","0.0");
+            else { 
+                ostringstream s_fe;
+                s_fe << fe;
+                at->append_attr("false_easting","Float64",s_fe.str());
+            }
+
+
+            if(fn == 0.0) 
+                at->append_attr("false_northing","Float64","0.0");
+            else { 
+                ostringstream s_fn;
+                s_fn << fn;
+                at->append_attr("false_northing","Float64",s_fn.str());
+            }
+
+            
+            if(lat_true_scale >0) 
+                at->append_attr("latitude_of_projection_origin","Float64","+90.0");
+            else 
+                at->append_attr("latitude_of_projection_origin","Float64","-90.0");
+
+
+            at->append_attr("_CoordinateAxisTypes", "string", "GeoX GeoY");
+
+            // From CF, PS has another parameter,
+            // Either standard_parallel (EPSG 9829) or scale_factor_at_projection_origin (EPSG 9810)
+            // I cannot find the corresponding parameter from the EOS5.
+
+        }
+        else if(HE5_GCTP_LAMAZ == cv_proj_code) {
+            double lon_proj_origin = HE5_EHconvAng(eos5_proj_params[4],HE5_HDFE_DMS_DEG);
+            double lat_proj_origin = HE5_EHconvAng(eos5_proj_params[5],HE5_HDFE_DMS_DEG);
+            double fe = eos5_proj_params[6];
+            double fn = eos5_proj_params[7];
+
+            at->append_attr("grid_mapping_name", "String", "lambert_azimuthal_equal_area");
+
+            ostringstream s_lon_proj_origin;
+            s_lon_proj_origin << lon_proj_origin;
+            at->append_attr("longitude_of_projection_origin", "Float64", s_lon_proj_origin.str());
+            
+            ostringstream s_lat_proj_origin;
+            s_lat_proj_origin << lat_proj_origin;
+ 
+            at->append_attr("latitude_of_projection_origin", "Float64", s_lat_proj_origin.str());
+
+
+            if(fe == 0.0) 
+                at->append_attr("false_easting","Float64","0.0");
+            else { 
+                ostringstream s_fe;
+                s_fe << fe;
+                at->append_attr("false_easting","Float64",s_fe.str());
+            }
+
+
+            if(fn == 0.0) 
+                at->append_attr("false_northing","Float64","0.0");
+            else { 
+                ostringstream s_fn;
+                s_fn << fn;
+                at->append_attr("false_northing","Float64",s_fn.str());
+            }
+
+            at->append_attr("_CoordinateAxisTypes", "string", "GeoX GeoY");
+
+
+        }
+    }
+
+}
+
 
 // This function adds the 1-D cf grid projection mapping attribute to data variables
 // it is called by the function add_cf_grid_attrs. 

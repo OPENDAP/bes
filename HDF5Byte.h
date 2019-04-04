@@ -34,7 +34,6 @@
 #include "Byte.h"
 #include "h5get.h"
 
-using namespace libdap;
 
 /// \file HDF5Byte.h
 /// \brief This class provides a way to map HDF5 byte to DAP Byte for the default option.
@@ -45,41 +44,27 @@ using namespace libdap;
 /// \author James Gallagher (jgallagher@opendap.org)
 ///
 
-class HDF5Byte:public Byte {
+class HDF5Byte:public libdap::Byte {
 
   private:
-//    hid_t dset_id;
-//    hid_t ty_id;
-    string var_path;
+    std::string var_path;
 
   public:
     /// Constructor
-    HDF5Byte(const string &n, const string &vpath, const string &d);
+    HDF5Byte(const std::string &n, const std::string &vpath, const std::string &d);
     virtual ~ HDF5Byte() { }
 
     /// Clone this instance.
     ///
     /// Allocate a new instance and copy *this into it. This method must perform a deep copy.
     /// \return A newly allocated copy of this class  
-    virtual BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate();
 
     /// Reads HDF5 byte data into local buffer
     virtual bool read();
 
     /// See return_type function defined in h5dds.cc.
-    friend string return_type(hid_t datatype);
-
-    /// returns HDF5 dataset id.  
-//    hid_t get_did();
-
-    /// returns HDF5 datatype id.
-//    hid_t get_tid();
-
-    /// remembers HDF5 dataset id.
-//    void set_did(hid_t dset);
-
-    /// remembers HDF5 datatype id.
-//    void set_tid(hid_t type);
+    friend std::string return_type(hid_t datatype);
 
 };
 

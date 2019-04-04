@@ -37,7 +37,6 @@
 #include <iostream>
 #include "hdf5.h"
 
-using namespace std;
 
 enum H5CFModule 
 { HDF5_GENERAL, HDF_EOS5,HDF5_JPSS };
@@ -45,6 +44,6 @@ H5CFModule check_module(hid_t);
 bool check_eos5(hid_t fileid);
 bool check_jpss(hid_t fileid);
 bool check_eos5_module_fields(hid_t fileid);
-bool grp_has_dset(hid_t fileid, const string & grp_path);
+bool grp_has_dset(hid_t fileid, const std::string & grp_path);
 
 #endif

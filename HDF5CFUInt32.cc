@@ -36,6 +36,8 @@
 #include <BESDebug.h>
 #include "h5common.h"
 
+using namespace std;
+using namespace libdap;
 
 HDF5CFUInt32::HDF5CFUInt32(const string &n, const string &d) : UInt32(n, d)
 {

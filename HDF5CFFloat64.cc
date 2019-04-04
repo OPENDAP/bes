@@ -37,6 +37,8 @@
 #include <BESDebug.h>
 #include "h5common.h"
 
+using namespace std;
+using namespace libdap;
 
 HDF5CFFloat64::HDF5CFFloat64(const string &n, const string &d):Float64(n, d)
 {

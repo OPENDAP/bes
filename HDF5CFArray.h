@@ -43,22 +43,21 @@
 #include <D4Attributes.h>
 
 
-using namespace libdap;
 
 class HDF5CFArray:public HDF5BaseArray {
     public:
         HDF5CFArray(int h5_rank, 
                     const hid_t h5_file_id,
-                    const string & h5_filename, 
+                    const std::string & h5_filename, 
                     H5DataType h5_dtype, 
-                    const vector<size_t>& h5_dimsizes,
-                    const string &varfullpath, 
+                    const std::vector<size_t>& h5_dimsizes,
+                    const std::string &varfullpath, 
                     const size_t h5_total_elems,
                     const CVType h5_cvtype,
                     const bool h5_islatlon,
                     const float h5_comp_ratio,
-                    const string & n="",  
-                    BaseType * v = 0):
+                    const std::string & n="",  
+                    libdap::BaseType * v = 0):
                     HDF5BaseArray(n,v),
                     rank(h5_rank),
                     fileid(h5_file_id),
@@ -75,12 +74,12 @@ class HDF5CFArray:public HDF5BaseArray {
         
     virtual ~ HDF5CFArray() {
     }
-    virtual BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate();
     virtual bool read();
     virtual void read_data_NOT_from_mem_cache(bool add_cache,void*buf);
 
     // Currently this routine is only used for 64-bit integer mapping to DAP4.
-    BaseType *h5cfdims_transform_to_dap4(D4Group *root);
+    libdap::BaseType *h5cfdims_transform_to_dap4(libdap::D4Group *root);
 
     //void read_data_from_mem_cache(void*buf);
     //void read_data_from_file(bool add_cache,void*buf);
@@ -89,18 +88,18 @@ class HDF5CFArray:public HDF5BaseArray {
   private:
         int rank;
         hid_t fileid;
-        string filename;
+        std::string filename;
         H5DataType dtype;
-        vector<size_t>dimsizes;
-        string varname;
+        std::vector<size_t>dimsizes;
+        std::string varname;
         size_t total_elems;
         CVType cvtype;
         bool islatlon;
         float comp_ratio;
         bool valid_disk_cache();
         bool valid_disk_cache_for_compressed_data(short dtype_size);
-        bool obtain_cached_data(HDF5DiskCache*,const string&,int, vector<int>&,vector<int>&,size_t,short);
-        void write_data_to_cache(hid_t dset_id, hid_t dspace_id,hid_t mspace_id,hid_t memtype, const string& cache_fpath,short dtype_size,const vector<char> &buf, int nelms);
+        bool obtain_cached_data(HDF5DiskCache*,const std::string&,int, std::vector<int>&,std::vector<int>&,size_t,short);
+        void write_data_to_cache(hid_t dset_id, hid_t dspace_id,hid_t mspace_id,hid_t memtype, const std::string& cache_fpath,short dtype_size,const std::vector<char> &buf, int nelms);
 };
 
 #endif                          // _HDF5CFARRAY_H

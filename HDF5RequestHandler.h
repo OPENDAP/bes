@@ -29,6 +29,7 @@
 
 #include<string>
 #include<map>
+#include<vector>
 #include "BESRequestHandler.h"
 #include "HDF5_DataMemCache.h"
 #include <BESDDSResponse.h>
@@ -54,7 +55,7 @@ namespace libdap {
 /// \author James Gallagher <jgallagher@opendap.org>
 class HDF5RequestHandler:public BESRequestHandler {
   public:
-    HDF5RequestHandler(const string & name);
+    HDF5RequestHandler(const std::string & name);
     virtual ~HDF5RequestHandler(void);
 
     static bool hdf5_build_das(BESDataHandlerInterface & dhi);
@@ -79,8 +80,8 @@ class HDF5RequestHandler:public BESRequestHandler {
     // Default Handle dimension key, only valid when the default option is on.
     static bool get_default_handle_dimension() { return _default_handle_dimension;}
 
-    static void set_dmr_64bit_int(DMR *dmr) { dmr_int64 = dmr;}
-    static DMR* get_dmr_64bit_int() {return dmr_int64;}
+    static void set_dmr_64bit_int(libdap::DMR *dmr) { dmr_int64 = dmr;}
+    static libdap::DMR* get_dmr_64bit_int() {return dmr_int64;}
 
     // Handling Memory Cache
     static string get_stp_east_filename() {return _stp_east_filename;}
@@ -102,13 +103,13 @@ class HDF5RequestHandler:public BESRequestHandler {
                                              {srdata_mem_cache=my_srdata_mem_cache;}
 
     static bool get_common_cache_dirs() { return _common_cache_dirs;}
-    static void get_lrd_cache_dir_list(vector<string>& cur_lrd_cache_dir_list) 
+    static void get_lrd_cache_dir_list(std::vector<string>& cur_lrd_cache_dir_list) 
                                               { cur_lrd_cache_dir_list = lrd_cache_dir_list;}
 
-    static void get_lrd_non_cache_dir_list(vector<string>& cur_lrd_non_cache_dir_list) 
+    static void get_lrd_non_cache_dir_list(std::vector<string>& cur_lrd_non_cache_dir_list) 
                                               { cur_lrd_non_cache_dir_list = lrd_non_cache_dir_list;}
 
-    static void get_lrd_var_cache_file_list(vector<string>& cur_lrd_var_cache_file_list) 
+    static void get_lrd_var_cache_file_list(std::vector<string>& cur_lrd_var_cache_file_list) 
                                               { cur_lrd_var_cache_file_list = lrd_var_cache_file_list;}
 
                                               
@@ -161,7 +162,7 @@ class HDF5RequestHandler:public BESRequestHandler {
      static string _stp_east_filename;
      static string _stp_north_filename;
      
-     static DMR *dmr_int64;
+     static libdap::DMR *dmr_int64;
      static bool _use_disk_cache;
      static string _disk_cache_dir;
      static string _disk_cachefile_prefix;
@@ -182,9 +183,9 @@ class HDF5RequestHandler:public BESRequestHandler {
      static string _latlon_disk_cachefile_prefix;
 
      static bool _common_cache_dirs;
-     static vector<string> lrd_cache_dir_list;
-     static vector<string> lrd_non_cache_dir_list;
-     static vector<string> lrd_var_cache_file_list;
+     static std::vector<std::string> lrd_cache_dir_list;
+     static std::vector<string> lrd_non_cache_dir_list;
+     static std::vector<string> lrd_var_cache_file_list;
      static bool obtain_lrd_common_cache_dirs();
 
      static bool hdf5_build_data_with_IDs(BESDataHandlerInterface &dhi);
@@ -195,13 +196,13 @@ class HDF5RequestHandler:public BESRequestHandler {
      static void read_dds_from_disk_cache(BESDDSResponse* bdds, BESDataDDSResponse* data_bdds,bool build_data,const string & container_name,const string & h5_fname,
                               const string & dds_cache_fname,const string &das_cache_fname, hid_t h5_fd, bool das_from_dc);
 
-     static void add_das_to_dds(DDS *dds,const string &container_name, const string &filename, const string &das_cache_fname,hid_t h5_fd, bool das_from_dc);
+     static void add_das_to_dds(libdap::DDS *dds,const string &container_name, const string &filename, const string &das_cache_fname,hid_t h5_fd, bool das_from_dc);
 
-     static bool write_dds_to_disk_cache(const string& dds_cache_fname,DDS *dds_ptr);
+     static bool write_dds_to_disk_cache(const string& dds_cache_fname,libdap::DDS *dds_ptr);
 
-     static bool write_das_to_disk_cache(const string & das_cache_fname, DAS *das_ptr);
+     static bool write_das_to_disk_cache(const string & das_cache_fname, libdap::DAS *das_ptr);
 
-     static bool read_das_from_disk_cache(const string & cache_filename,DAS *das_ptr);
+     static bool read_das_from_disk_cache(const string & cache_filename,libdap::DAS *das_ptr);
 
 };
 

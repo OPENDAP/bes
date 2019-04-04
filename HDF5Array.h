@@ -33,7 +33,6 @@
 #include "Array.h"
 #include "h5get.h"
 
-using namespace libdap;
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \file HDF5Array.h
@@ -46,7 +45,7 @@ using namespace libdap;
 /// \author James Gallagher (jgallagher@opendap.org)
 ///
 ////////////////////////////////////////////////////////////////////////////////
-class HDF5Array:public Array {
+class HDF5Array:public libdap::Array {
   private:
     int d_num_dim;
     int d_num_elm;
@@ -63,35 +62,35 @@ class HDF5Array:public Array {
     hid_t mkstr(int size, H5T_str_t pad);
 
     //bool m_array_of_structure(vector<char>&,bool,int,int,int*,int*,int*); // Used by read()
-    bool m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_values,int values_offset,int nelms,int* offset,int*count,int*step);
+    bool m_array_of_structure(hid_t dsetid, std::vector<char>&values,bool has_values,int values_offset,int nelms,int* offset,int*count,int*step);
     bool m_array_in_structure();
     bool m_array_of_reference(hid_t dset_id,hid_t dtype_id);
     void m_intern_plain_array_data(char *convbuf,hid_t memtype);
     void m_array_of_atomic(hid_t, hid_t,int,int*,int*,int*);
 
-    void do_array_read(hid_t dset_id,hid_t dtype_id,vector<char>&values,bool has_values,int values_offset,int nelms,int* offset,int* count, int* step);
+    void do_array_read(hid_t dset_id,hid_t dtype_id,std::vector<char>&values,bool has_values,int values_offset,int nelms,int* offset,int* count, int* step);
 
-    bool do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&values,bool has_values,int values_offset, int at_nelms,int* at_offset,int*at_count,int* at_step);
+    bool do_h5_array_type_read(hid_t dsetid, hid_t memb_id,std::vector<char>&values,bool has_values,int values_offset, int at_nelms,int* at_offset,int*at_count,int* at_step);
 
     inline int INDEX_nD_TO_1D (const std::vector < int > &dims,
                                 const std::vector < int > &pos);
-    bool obtain_next_pos(vector<int>& pos, vector<int>&start,vector<int>&end,vector<int>&step,int rank_change);
+    bool obtain_next_pos(std::vector<int>& pos, std::vector<int>&start,std::vector<int>&end,std::vector<int>&step,int rank_change);
 
     template<typename T>  int subset(
             const T input[],
             int rank,
-            vector<int> & dim,
+            std::vector<int> & dim,
             int start[],
             int stride[],
             int edge[],
             std::vector<T> *poutput,
-            vector<int>& pos,
+            std::vector<int>& pos,
             int index);
     friend class HDF5Structure;
   public:
 
     /// Constructor
-    HDF5Array(const string & n, const string &d, BaseType * v);
+    HDF5Array(const std::string & n, const std::string &d, libdap::BaseType * v);
     virtual ~ HDF5Array();
 
     /// Clone this instance.
@@ -99,13 +98,13 @@ class HDF5Array:public Array {
     /// Allocate a new instance and copy *this into it. This method must 
     /// perform a deep copy.
     /// \return A newly allocated copy of this class
-    virtual BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate();
 
     /// Reads HDF5 array data into local buffer
     virtual bool read();
 
     /// See return_type function defined in h5dds.cc.
-    friend string return_type(hid_t datatype);
+    friend std::string return_type(hid_t datatype);
 
     /// remembers memory size needed.    
     void set_memneed(size_t need);
@@ -116,8 +115,8 @@ class HDF5Array:public Array {
     /// remembers number of elements in this array.  
     void set_numelm(int nelms);
 
-    void set_varpath(const string vpath) { var_path = vpath;}
-    BaseType *h5dims_transform_to_dap4(D4Group *root);
+    void set_varpath(const std::string vpath) { var_path = vpath;}
+    libdap::BaseType *h5dims_transform_to_dap4(libdap::D4Group *root);
 };
 
 #endif

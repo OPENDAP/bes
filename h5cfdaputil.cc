@@ -37,6 +37,8 @@
 #include "h5cfdaputil.h"
 #include <math.h>
 
+using namespace std;
+using namespace libdap;
 
 string HDF5CFDAPUtil::escattr(string s)
 {

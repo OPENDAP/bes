@@ -37,6 +37,9 @@
 #include "HDF5CFInt32.h"
 #include "h5common.h"
 
+using namespace std;
+using namespace libdap;
+
 HDF5CFInt32::HDF5CFInt32(const string &n, const string &d) : Int32(n, d)
 {
 }

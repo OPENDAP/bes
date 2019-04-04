@@ -270,7 +270,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
         default:
             break;
         }
-    } //  for (int i = 0; i < nelems; i++)
+    } //  end for 
 
     BESDEBUG("h5", "<depth_first():" << gname << endl);
 }
@@ -310,7 +310,6 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 
     // Check the number of attributes in this HDF5 object and
     // put HDF5 attribute information into the DAS table.
-    //char *print_rep = NULL;
     string print_rep;
     vector<char> temp_buf;
 
@@ -332,8 +331,6 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 
         // Since HDF5 attribute may be in string datatype, it must be dealt
         // properly. Get data type.
-        // The following line doesn't work in HDF5 1.10 at one centos machine but it works on CentOS 7.4.
-        //hid_t ty_id = attr_inst.type;
         hid_t ty_id = H5Aget_type(attr_id);
         string dap_type = get_dap_type(ty_id, false);
         string attr_name = attr_inst.name;
@@ -380,13 +377,11 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
                 }
 
                 // going to the next value.
-                //temp_bp += H5Tget_size(attr_inst.type);
                 temp_bp += H5Tget_size(ty_id);
             }
             if (temp_buf.empty() != true) {
                 // Reclaim any VL memory if necessary.
                 herr_t ret_vlen_claim;
-                //ret_vlen_claim = H5Dvlen_reclaim(attr_inst.type, temp_space_id, H5P_DEFAULT, &temp_buf[0]);
                 ret_vlen_claim = H5Dvlen_reclaim(ty_id, temp_space_id, H5P_DEFAULT, &temp_buf[0]);
                 if(ret_vlen_claim < 0) {
                     H5Sclose(temp_space_id);
@@ -419,7 +414,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 
             }
             else {
-                // If the hdf5 data type is HDF5 string or number of dimension is >  0;
+                // If the hdf5 data type is HDF5 string or number of dimension is positive;
                 // handle this differently.
                 BESDEBUG("h5", "=read_objects(): ndims=" << (int) attr_inst. ndims << endl);
 
@@ -453,7 +448,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
                         throw InternalErr(__FILE__, __LINE__, "unable to convert attibute value to DAP");
                     }
                 }
-            } // if attr_inst.ndims != 0
+            } // end if 
         }
         if (H5Tclose(ty_id) < 0) {
             H5Aclose(attr_id);
@@ -462,7 +457,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
         if (H5Aclose(attr_id) < 0) {
             throw InternalErr(__FILE__, __LINE__, "unable to close attibute id");
         }
-    } // for (int j = 0; j < num_attr; j++)
+    } // end for 
     BESDEBUG("h5", "<read_objects()" << endl);
 }
 
@@ -581,8 +576,6 @@ void get_softlink(DAS & das, hid_t pgroup, const char *gname, const string & ona
 
     char *buf = 0;
     try {
-        // TODO replace buf with vector<char> buf(val_size + 1);
-        // then access as a char * using &buf[0]
         buf = new char[(val_size + 1) * sizeof(char)];
         // get link target name
         if (H5Lget_val(pgroup, oname.c_str(), (void*) buf, val_size + 1, H5P_DEFAULT) < 0) {

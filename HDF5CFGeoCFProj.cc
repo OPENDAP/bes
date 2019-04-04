@@ -5,6 +5,8 @@
 
 #include "HDF5CFGeoCFProj.h"
 
+using namespace std;
+using namespace libdap;
 
 
 HDF5CFGeoCFProj::HDF5CFGeoCFProj(const string & n, const string &d ) : Byte(n, d)

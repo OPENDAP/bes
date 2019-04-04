@@ -74,7 +74,6 @@ enum CVType { CV_EXIST,CV_LAT_MISS,CV_LON_MISS,CV_NONLATLON_MISS,CV_FILLINDEX,CV
 #define HE5_HDFE_DMS_RAD      5
 
 
-using namespace std;
 
 struct Name_Size_2Pairs {
     std::string name1;
@@ -86,7 +85,7 @@ struct Name_Size_2Pairs {
 
 struct HDF5CFUtil {
 
-               static bool use_data_mem_cache(H5DataType h5type,CVType cvtype,const string & varpath);
+               static bool use_data_mem_cache(H5DataType h5type,CVType cvtype,const std::string & varpath);
 
                static size_t H5_numeric_atomic_type_size(H5DataType h5type);
                /// Map HDF5 Datatype to the intermediate H5DAPtype for the future use.
@@ -114,7 +113,7 @@ struct HDF5CFUtil {
                static void Split (const char *sz, char sep,
                             std::vector < std::string > &names);
 
-               static void Split_helper(vector<string>&tokens, const string &text,const char sep);
+               static void Split_helper(std::vector<string>&tokens, const std::string &text,const char sep);
 
                // Parse GPM Level 3 GridHeaders
                //static void parser_trmm_v7_gridheader(int& latsize, int&lonsize, float& lat_start, float& lon_start, bool &sw_origin, bool & cr_reg);

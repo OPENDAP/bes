@@ -38,16 +38,15 @@
 // DODS includes
 #include <Float32.h>
 
-using namespace libdap;
 
-class HDF5CFFloat32:public Float32 {
+class HDF5CFFloat32:public libdap::Float32 {
     private:
-        string filename;
+        std::string filename;
     public:
-        HDF5CFFloat32(const string &n, const string &d);
-        HDF5CFFloat32(const string &n, const string &d,const string &d_f);
+        HDF5CFFloat32(const std::string &n, const std::string &d);
+        HDF5CFFloat32(const std::string &n, const std::string &d,const std::string &d_f);
         virtual ~ HDF5CFFloat32();
-        virtual BaseType *ptr_duplicate();
+        virtual libdap::BaseType *ptr_duplicate();
         virtual bool read();
 };
 

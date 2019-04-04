@@ -3,6 +3,9 @@
 #include <string>
 #include "HDF5_DataMemCache.h"
 
+using namespace std;
+using namespace libdap;
+
 void
 HDF5DataMemCache::dump(ostream &strm) const
 {

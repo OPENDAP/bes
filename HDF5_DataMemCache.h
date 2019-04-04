@@ -13,8 +13,8 @@
 #include<vector>
 #include<string>
 
-using namespace libdap;
-using namespace std;
+//using namespace libdap;
+//using namespace std;
 
 /**
  * bla,bla
@@ -24,7 +24,7 @@ using namespace std;
 class HDF5DataMemCache : public libdap::DapObj {
 private:
     //string varname;
-    vector <char>  databuf;
+    std::vector <char>  databuf;
 public:
     HDF5DataMemCache() { }
     //HDF5DataMemCache(const string &name) {varname = name; }
@@ -34,9 +34,9 @@ public:
     //void get_var_buf(vector<char>&var_buf) { var_buf = databuf;}
     void* get_var_buf() { return &databuf[0];}
     //void set_varname(const string& name) {varname = name; }
-    void set_databuf(vector<char> &buf){databuf = buf;}
+    void set_databuf(std::vector<char> &buf){databuf = buf;}
     virtual ~HDF5DataMemCache() { };
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
     
 };
 
