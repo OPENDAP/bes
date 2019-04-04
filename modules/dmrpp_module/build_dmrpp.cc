@@ -547,7 +547,7 @@ int main(int argc, char*argv[])
                 }
             }
             catch (BESError &e) {
-                cerr << "Error: " << e.get_message() << endl;
+                cerr << "BESError: " << e.get_message() << endl;
                 return 1;
             }
 
@@ -599,11 +599,11 @@ int main(int argc, char*argv[])
         }
     }
     catch (BESError &e) {
-        cerr << "Error: " << e.get_message() << endl;
+        cerr << "BESError: " << e.get_message() << endl;
         status = 1;
     }
     catch (std::exception &e) {
-        cerr << "Error: " << e.what() << endl;
+        cerr << "std::exception: " << e.what() << endl;
         status = 1;
     }
     catch (...) {

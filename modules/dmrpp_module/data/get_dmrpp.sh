@@ -1,6 +1,8 @@
 #!/bin/bash
+set -e;
 
 CONF_FILE_TEMPLATE="bes.hdf5.cf.conf"
+data_root=`pwd`;
 
 show_usage() {
     cat <<EOF
@@ -36,7 +38,7 @@ very_verbose=
 just_dmr=
 dmrpp_url=
 
-while getopts "h?vVru:" opt; do
+while getopts "h?vVru:d:" opt; do
     case "$opt" in
     h|\?)
         show_usage
@@ -57,7 +59,10 @@ while getopts "h?vVru:" opt; do
         just_dmr="yes"
         ;;
     u)
-        dmrpp_url="-u $OPTARG"
+        dmrpp_url="$OPTARG"
+        ;;
+    d)
+        data_root="$OPTARG"
         ;;
     esac
 done
@@ -72,17 +77,16 @@ shift $((OPTIND-1))
 #
 function get_dmr() {
 	# build the xml file
-	hdf5_file=$1
-	TMP_CMD=$(mktemp -t get_dmr_$$)
+	DATAFILE="${1}";
 	
-cat <<EOF > $TMP_CMD 
+cmdDoc=`cat <<EOF 
 <?xml version="1.0" encoding="UTF-8"?>
 <bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="get_dmrpp.sh">
   <bes:setContext name="dap_explicit_containers">no</bes:setContext>
   <bes:setContext name="errors">xml</bes:setContext>
   <bes:setContext name="max_response_size">0</bes:setContext>
   
-  <bes:setContainer name="c" space="catalog">$hdf5_file</bes:setContainer>
+  <bes:setContainer name="c">$DATAFILE</bes:setContainer>
   
   <bes:define name="d" space="default">
     <bes:container name="c">
@@ -92,7 +96,9 @@ cat <<EOF > $TMP_CMD
   <bes:get type="dmr" definition="d" />
   
 </bes:request>
-EOF
+`
+	TMP_CMD=$(mktemp -t get_dmr_XXXX)	
+    echo "${cmdDoc}" > $TMP_CMD
 	
 	if test -n "$very_verbose"
 	then
@@ -105,7 +111,7 @@ EOF
 	# Use the cwd as the BES's Data Root directory - this is a trick so that the
 	# script can get a DMR using the HDF5 handler algorithm, as tweaked by the 
 	# handler's configuration parameters in the bes.hdf5.cf.template.conf file.
-	echo "Checking for ${CONF_FILE_TEMPLATE}";
+	echo "Checking for ${CONF_FILE_TEMPLATE} (pwd: "`pwd`")";
 	if  [ ! -f "${CONF_FILE_TEMPLATE}" ]
 	then
 		echo "ERROR: Missing BES configuration file template \"${CONF_FILE_TEMPLATE}\"";
@@ -113,23 +119,23 @@ EOF
 		exit 1;
 	fi
 
-	sed -e "s%[@]hdf5_root_directory[@]%`pwd`%" < ${CONF_FILE_TEMPLATE} > $TMP_CONF
+	cat  ${CONF_FILE_TEMPLATE} | sed -e "s%[@]hdf5_root_directory[@]%${data_root}%" > ${TMP_CONF};
 	
 	if test -n "$very_verbose"
 	then
-	    echo "TMP_CONF: $TMP_CONF"
-	    cat $TMP_CONF
+	    echo "TMP_CONF: ${TMP_CONF}"
+	    cat ${TMP_CONF}
 	fi
 	
 	TMP_DMR_RESP=$(mktemp -t dmr_$$)
 	
 	# use besstandalone to get the DMR
-	besstandalone -c $TMP_CONF -i $TMP_CMD > $TMP_DMR_RESP
+	besstandalone -c ${TMP_CONF} -i ${TMP_CMD} > ${TMP_DMR_RESP}
 	
 	if test -n "$verbose" || test -n "$just_dmr"
 	then
 	    echo "DMR:"
-	    cat $TMP_DMR_RESP
+	    cat ${TMP_DMR_RESP}
 	fi
 
 }
@@ -137,9 +143,12 @@ EOF
 
 ###############################################################################
 function mk_dmrpp() {
+    datafile="${1}";
 	if test -z "$just_dmr"
 	then
-	    ./build_dmrpp $verbose -f $hdf5_file -r $TMP_DMR_RESP $dmrpp_url
+	set -x
+	set -e
+	    ./build_dmrpp ${verbose} -c "${TMP_CONF}" -f "${data_root}/${datafile}" -r "${TMP_DMR_RESP}" -u "${dmrpp_url}" 
 	fi
 	
 	# TODO Use trap to ensure these are really removed
@@ -147,6 +156,7 @@ function mk_dmrpp() {
 }
  ###############################################################################
  
- get_dmr;
- mk_dmrpp
+hdf5_file="${1}";
+get_dmr  "${hdf5_file}";
+mk_dmrpp "${hdf5_file}";
  
