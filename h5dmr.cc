@@ -527,7 +527,6 @@ bool breadth_first(hid_t pid, char *gname, D4Group* par_grp, const char *fname,b
 
                     // Continue searching the objects under this group
                     breadth_first(cgroup, &t_fpn[0], tem_d4_cgroup,fname,use_dimscale);
-                    //breadth_first(cgroup, &t_fpn[0], dmr, tem_d4_cgroup,fname,use_dimscale);
                 }
                 catch(...) {
                     H5Gclose(cgroup);
@@ -551,7 +550,7 @@ bool breadth_first(hid_t pid, char *gname, D4Group* par_grp, const char *fname,b
             if (H5Gclose(cgroup) < 0){
                 throw InternalErr(__FILE__, __LINE__, "Could not close the group.");
             }
-        }// if(obj_type == H5O_TYPE_GROUP)
+        }// end if
     } // for i is 0 ... nelems
 
     BESDEBUG("h5", "<breadth_first() " << endl);
@@ -591,7 +590,6 @@ read_objects( D4Group * d4_grp, const string &varname, const string &filename, c
     
     default:
         read_objects_base_type(d4_grp,varname, filename,dset_id);
-        //read_objects_base_type(dmr, d4_grp,varname, filename,dset_id);
         break;
     }
     // We must close the datatype obtained in the get_dataset routine since this is the end of reading DDS.
@@ -626,7 +624,7 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
     // Obtain the relative path of the variable name under the leaf group
     string newvarname = HDF5CFUtil::obtain_string_after_lastslash(varname);
 
-    // Get a base type. It should be int, float, double, etc. -- atomic
+    // Get a base type. It should be an HDF5 atomic datatype
     // datatype. 
     BaseType *bt = Get_bt(newvarname, varname,filename, dt_inst.type,true);
     if (!bt) {
@@ -748,60 +746,56 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
             // Create the Array of structure.
             HDF5Array *ar = new HDF5Array(newvarname, filename, structure);
             delete structure; structure = 0;
-            try {
-                // These parameters are used in the data read function.
-                ar->set_memneed(dt_inst.need);
-                ar->set_numdim(dt_inst.ndims);
-                ar->set_numelm((int) (dt_inst.nelmts));
-                ar->set_length((int) (dt_inst.nelmts));
-                ar->set_varpath(varname);
+
+
+            // These parameters are used in the data read function.
+            ar->set_memneed(dt_inst.need);
+            ar->set_numdim(dt_inst.ndims);
+            ar->set_numelm((int) (dt_inst.nelmts));
+            ar->set_length((int) (dt_inst.nelmts));
+            ar->set_varpath(varname);
  
-                // If having dimension names, add the dimension names to DAP.
-                int dimnames_size = 0;
-                if((unsigned int)((int)(dt_inst.dimnames.size())) != dt_inst.dimnames.size())
-                {
-                   delete ar;
-                   throw
+            // If having dimension names, add the dimension names to DAP.
+            int dimnames_size = 0;
+            if((unsigned int)((int)(dt_inst.dimnames.size())) != dt_inst.dimnames.size())
+            {
+                delete ar;
+                throw
                    InternalErr(__FILE__, __LINE__,
                                "number of dimensions: overflow");
-                }
-                dimnames_size = (int)(dt_inst.dimnames.size());
+            }
+            dimnames_size = (int)(dt_inst.dimnames.size());
                 
 
-                if(dimnames_size ==dt_inst.ndims) {
-                   for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
-                       if(dt_inst.dimnames[dim_index] !="")
-                           ar->append_dim(dt_inst.size[dim_index],dt_inst.dimnames[dim_index]);
-                       else 
-                           ar->append_dim(dt_inst.size[dim_index]);
-                   }
-                   dt_inst.dimnames.clear();
-                }
-                else {
-                    for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
+            if(dimnames_size ==dt_inst.ndims) {
+                for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
+                    if(dt_inst.dimnames[dim_index] !="")
+                        ar->append_dim(dt_inst.size[dim_index],dt_inst.dimnames[dim_index]);
+                    else 
                         ar->append_dim(dt_inst.size[dim_index]);
-                    }
                 }
-
-                // We need to transform dimension info. to DAP4 group
-                BaseType* new_var = ar->h5dims_transform_to_dap4(d4_grp);
-
-                // Map HDF5 dataset attributes to DAP4
-                map_h5_attrs_to_dap4(dset_id,NULL,new_var,NULL,1);
-
-                // If this is a hardlink, map the Hardlink info. as an DAP4 attribute.
-                map_h5_dset_hardlink_to_d4(dset_id,varname,new_var,NULL,1);
-
-                // Add this var to DAP4 group
-                if(new_var) 
-                    d4_grp->add_var_nocopy(new_var);
-                delete ar; ar = 0;
-            } // try Array *ar
-            catch (...) {
-                delete ar;
-                throw;
+                dt_inst.dimnames.clear();
             }
-        }//  if (dt_inst.ndims != 0)
+            else {
+                for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) 
+                    ar->append_dim(dt_inst.size[dim_index]);
+                    
+            }
+
+            // We need to transform dimension info. to DAP4 group
+            BaseType* new_var = ar->h5dims_transform_to_dap4(d4_grp);
+
+            // Map HDF5 dataset attributes to DAP4
+            map_h5_attrs_to_dap4(dset_id,NULL,new_var,NULL,1);
+
+            // If this is a hardlink, map the Hardlink info. as an DAP4 attribute.
+            map_h5_dset_hardlink_to_d4(dset_id,varname,new_var,NULL,1);
+
+            // Add this var to DAP4 group
+            if(new_var) 
+                d4_grp->add_var_nocopy(new_var);
+            delete ar; ar = 0;
+        }//  end if 
         else {// A scalar structure
 
             structure->set_is_dap4(true);
@@ -810,7 +804,7 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
             if(structure) 
                 d4_grp->add_var_nocopy(structure);
         }
-    } // try     Structure *structure = Get_structure(...)
+    } // try  Structure 
     catch (...) {
         delete structure;
         throw;

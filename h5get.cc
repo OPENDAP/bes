@@ -783,7 +783,7 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
 
         case H5T_STRING: {
             int str_size = H5Tget_size(type);
-            if(H5Tis_variable_str(type) == true) {
+            if(H5Tis_variable_str(type)>0) {
                 throw InternalErr(__FILE__, __LINE__, 
                       "print_attr function doesn't handle variable length string, variable length string should be handled separately.");
             }
