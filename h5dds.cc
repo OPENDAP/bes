@@ -65,7 +65,6 @@ using namespace libdap;
 /// An instance of DS_t structure defined in hdf5_handler.h.
 static DS_t dt_inst; 
 
-//extern string get_hardlink(hid_t, const string &);
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 /// will fill DDS table.
@@ -260,8 +259,7 @@ read_objects_base_type(DDS & dds_table, const string & varname,
     // Obtain the DDS dataset name.
     dds_table.set_dataset_name(name_path(filename)); 
 
-    // Get a base type. It should be int, float, double, etc. -- atomic
-    // datatype. 
+    // Get a base type. It should be atomic datatype
     // DDS: varname is the absolute path
     BaseType *bt = Get_bt(varname, varname,filename, dt_inst.type,false);
     
