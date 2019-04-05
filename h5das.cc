@@ -341,6 +341,9 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
         // We have to handle variable length string differently. 
         if (H5Tis_variable_str(ty_id)) {
 
+            write_vlen_str_attrs(attr_id,ty_id,&attr_inst,NULL,attr_table_ptr,false);
+
+#if 0
             BESDEBUG("h5", "attribute name " << attr_name <<endl);
             BESDEBUG("h5", "attribute size " <<attr_inst.need <<endl);
             BESDEBUG("h5", "attribute type size " <<(int)(H5Tget_size(ty_id))<<endl);
@@ -393,6 +396,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
                 temp_buf.clear();
             }
             H5Sclose(temp_space_id);
+#endif
         }
         else {
             vector<char> value;

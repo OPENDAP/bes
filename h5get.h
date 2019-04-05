@@ -66,4 +66,5 @@ libdap::Structure *Get_structure(const std::string &varname,const std::string &v
 bool check_dimscale(hid_t fid);
 void obtain_dimnames(hid_t dset,int, DS_t*dt_inst_ptr);
 
+void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, DSattr_t *, libdap::D4Attribute *d4_attr, libdap::AttrTable* d2_attr,bool is_dap4);
 #endif                          //_H5GET_H

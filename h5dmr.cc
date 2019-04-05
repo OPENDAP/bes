@@ -267,7 +267,6 @@ bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
                 }
 
                 try {
-                    //read_objects(dmr, par_grp, full_path_name, fname,dset_id);
                     read_objects(par_grp, full_path_name, fname,dset_id);
                 }
                 catch(...) {
@@ -885,7 +884,8 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
 
         // We have to handle variable length string differently. 
         if (H5Tis_variable_str(ty_id)) { 
-
+            write_vlen_str_attrs(attr_id,ty_id,&attr_inst,d4_attr,NULL,true);
+#if 0
             BESDEBUG("h5","attribute name " << attr_name <<endl);
             BESDEBUG("h5","attribute size " <<attr_inst.need <<endl);
             //BESDEBUG("h5","attribute type size " <<(int)(H5Tget_size(attr_inst.type))<<endl); 
@@ -942,6 +942,7 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
                 temp_buf.clear();
             }
             H5Sclose(temp_space_id);
+#endif
         }// if (H5Tis_variable_str(ty_id)
         else {
 

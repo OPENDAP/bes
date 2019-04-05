@@ -1621,3 +1621,64 @@ void obtain_dimnames(hid_t dset,int ndims, DS_t *dt_inst_ptr) {
     }
     return ;
 }
+
+void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, DSattr_t * attr_inst_ptr,D4Attribute *d4_attr, AttrTable* d2_attr,bool is_dap4){
+
+    BESDEBUG("h5","attribute name " << attr_inst_ptr->name <<endl);
+    BESDEBUG("h5","attribute size " <<attr_inst_ptr->need <<endl);
+    BESDEBUG("h5","attribute type size " <<(int)(H5Tget_size(ty_id))<<endl); 
+
+    hid_t temp_space_id = H5Aget_space(attr_id);
+    BESDEBUG("h5","attribute calculated size "<<(int)(H5Tget_size(ty_id)) *(int)(H5Sget_simple_extent_npoints(temp_space_id)) <<endl);
+    if(temp_space_id <0) {
+        H5Tclose(ty_id);
+        H5Aclose(attr_id);
+        throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
+    }
+
+    vector<char> temp_buf;
+    // Variable length string attribute values only store pointers of the actual string value.
+    temp_buf.resize((size_t)attr_inst_ptr->need);
+                
+    if (H5Aread(attr_id, ty_id, &temp_buf[0]) < 0) {
+        H5Tclose(ty_id);
+        H5Aclose(attr_id);
+        H5Sclose(temp_space_id);
+        throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
+    }
+
+    char *temp_bp;
+    temp_bp = &temp_buf[0];
+    char* onestring;
+    for (unsigned int temp_i = 0; temp_i <attr_inst_ptr->nelmts; temp_i++) {
+
+        // This line will assure that we get the real variable length string value.
+        onestring =*(char **)temp_bp;
+
+        // Change the C-style string to C++ STD string just for easy appending the attributes in DAP.
+        if (onestring !=NULL) {
+            string tempstring(onestring);
+            if(true == is_dap4)
+                d4_attr->add_value(tempstring);
+	    else 
+		d2_attr->append_attr(attr_inst_ptr->name,"String",tempstring);
+        }
+
+        temp_bp +=H5Tget_size(ty_id);
+    }
+    if (temp_buf.empty() != true) {
+
+        // Reclaim any VL memory if necessary.
+        herr_t ret_vlen_claim;
+        ret_vlen_claim = H5Dvlen_reclaim(ty_id,temp_space_id,H5P_DEFAULT,&temp_buf[0]);
+        if(ret_vlen_claim < 0){
+            H5Tclose(ty_id);
+            H5Aclose(attr_id);
+            H5Sclose(temp_space_id);
+            throw InternalErr(__FILE__, __LINE__, "Cannot reclaim the memory buffer of the HDF5 variable length string.");
+        }
+                 
+        temp_buf.clear();
+    }
+    H5Sclose(temp_space_id);
+}
