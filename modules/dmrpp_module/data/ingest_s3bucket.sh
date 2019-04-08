@@ -221,7 +221,7 @@ function mk_dmrpp_from_s3_list() {
         
         
         mkdir -p `dirname ${data_file}`;
-        aws cp "s3://${s3_bucket_name}/${relative_filename}" "${data_file}";
+        aws s3 cp "s3://${s3_bucket_name}/${relative_filename}" "${data_file}";
         
         mkdir -p `dirname ${target_file}`;
                        
