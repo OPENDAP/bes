@@ -206,8 +206,8 @@ function mk_dmrpp_from_s3_list() {
     for relative_filename  in `cat ${S3_DATA_FILES} | awk '{print $4;}' -`
     do        
         s3_url="${s3_service_endpoint}${s3_bucket_name}/${relative_filename}";
-        data_root=`pwd`;
-        data_file="${data_root}/data/${relative_filename}";
+        data_root=`pwd`"/data/${s3_bucket_name}";
+        data_file="${data_root}/${relative_filename}";
         target_file="${target_dir}/${relative_filename}.dmrpp";       
           
         if test -n "$verbose"
