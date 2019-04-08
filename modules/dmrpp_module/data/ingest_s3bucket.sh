@@ -203,7 +203,7 @@ function mk_dmrpp_from_s3_list() {
 
 	mkdir -p ${target_dir};
 
-    for relative_filename  in `cat ${S3_DATA_FILES} | awk '{print $3;}' -`
+    for relative_filename  in `cat ${S3_DATA_FILES} | awk '{print $4;}' -`
     do        
         s3_url="${s3_service_endpoint}${s3_bucket_name}/${relative_filename}";
         data_root=`pwd`;
