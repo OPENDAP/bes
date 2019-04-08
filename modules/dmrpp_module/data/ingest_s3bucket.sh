@@ -26,7 +26,7 @@ data_root="/home/centos/hyrax/build/share/hyrax/s3/cloudydap";
 target_dir="/home/centos/hyrax/build/share/hyrax/dmrpp";
 dataset_regex_match="^.*\\.(h5|he5|nc4)(\\.bz2|\\.gz|\\.Z)?$";
 s3_service_endpoint="https://s3.amazonaws.com/"
-s3_bucket_name="cloudydap/"
+s3_bucket_name="cloudydap"
 
 #target_dir=".";
 
@@ -202,7 +202,7 @@ function mk_dmrpp_from_s3_list() {
 
     for relative_filename  in `cat ${S3_DATA_FILES} | awk '{print $3;}' -`
     do        
-        s3_url="${s3_service_endpoint}${s3_bucket_name}${relative_filename}";
+        s3_url="${s3_service_endpoint}${s3_bucket_name}/${relative_filename}";
         data_root=`pwd`;
         data_file="${data_root}/data/${relative_filename}";
         target_file="${target_dir}/${relative_filename}.dmrpp";       
@@ -291,7 +291,7 @@ function mk_dmrpp() {
             echo "relative_filename: ${relative_filename}";
         fi
 
-        s3_url="${s3_service_endpoint}${s3_bucket_name}${relative_filename}";
+        s3_url="${s3_service_endpoint}${s3_bucket_name}/${relative_filename}";
         if test -n "$very_verbose"
         then
             echo "s3_url:       ${s3_url}";
