@@ -232,7 +232,7 @@ function mk_dmrpp_from_s3_list() {
         	echo "Deleting data file: ${data_file}";
             rm -vf "${data_file}";
         fi
-        
+        exit;
     done
 
 
