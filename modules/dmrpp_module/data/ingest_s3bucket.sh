@@ -101,7 +101,7 @@ dmrpp_url=
 find_s3_files=
 find_local_files=
 
-while getopts "h?vVrs:b:d:t:r:f" opt; do
+while getopts "h?vVrs:b:d:t:r:la" opt; do
     case "$opt" in
     h|\?)
         show_usage
