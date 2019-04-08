@@ -167,14 +167,15 @@ S3_DATA_FILES="./s3_${s3_bucket_name}_data_files.txt"
 #
 # mk_file_list() 
 #
-# Creates a list of all the files in or below data_root using find. The list is 
-# written to ALL_FILES. Once created the regex (either default or supplied with 
+# Creates a list of all the files in or below data_root the AWS CLI. The output
+# of "aws s3 ls --recursive bucket_name" is written to S3_ALL_FILES. Once the 
+# list ahs been created the regex (either default or supplied with 
 # the -r option) is applied to the list and the matching files collected as 
-# DATA_FILES 
+# S3_DATA_FILES 
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 function mk_file_list_from_s3() {
 
-    echo "Retrieving files from S3."
+    echo "Retrieving file list from S3."
     echo "s3_bucket_name: ${s3_bucket_name}"
     echo "S3_ALL_FILES: ${S3_ALL_FILES}";
     
@@ -184,9 +185,11 @@ function mk_file_list_from_s3() {
     time -p grep -E -e "${dataset_regex_match}" "${S3_ALL_FILES}" > "${S3_DATA_FILES}";
     
     dataset_count=`cat ${S3_DATA_FILES} | wc -l`;
-    echo "Found ${dataset_count} suitable data files in ${s3_bucket_name}"
+    echo "Found ${dataset_count} suitable data files in s3 bucket: ${s3_bucket_name}"
 }
 #################################################################################
+
+
 
 
 #################################################################################
@@ -239,9 +242,10 @@ function mk_dmrpp_from_s3_list() {
 
 
 
+
 #################################################################################
 #
-# mk_file_list_s3() 
+# mk_file_list_from_filesystem() 
 #
 # Creates a list of all the files in or below data_root using find. The list is 
 # written to ALL_FILES. Once created the regex (either default or supplied with 
@@ -250,9 +254,7 @@ function mk_dmrpp_from_s3_list() {
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 function mk_file_list_from_filesystem() {
 
-    echo "Retrieving files from local file system. ALL_FILES: ${ALL_FILES}";
-    echo "data_root: ${data_root}"
-    
+    echo "Retrieving file list from ${data_root}. ALL_FILES: ${ALL_FILES}";    
     time -p find ${data_root} -type f > ${ALL_FILES};
     
     echo "Locating DATA_FILES: ${DATA_FILES}";
@@ -262,9 +264,6 @@ function mk_file_list_from_filesystem() {
     echo "Found ${dataset_count} suitable data files in ${data_root}"
 }
 #################################################################################
-
-
-
 
 
 
@@ -282,26 +281,17 @@ function mk_dmrpp() {
 
     for dataset_file in `cat ${DATA_FILES}`
     do
-          relative_filename=${dataset_file#"$data_root/"};
+        relative_filename=${dataset_file#"$data_root/"};
+        target_file="${target_dir}/${relative_filename}.dmrpp";
           
         if test -n "$verbose"
         then
             echo "data_root:    ${data_root}";
             echo "dataset_file: ${dataset_file}";
             echo "relative_filename: ${relative_filename}";
+            echo "target_file: ${target_file}";
         fi
 
-        s3_url="${s3_service_endpoint}${s3_bucket_name}/${relative_filename}";
-        if test -n "$very_verbose"
-        then
-            echo "s3_url:       ${s3_url}";
-        fi
-        
-        target_file="${target_dir}/${relative_filename}.dmrpp";
-        if test -n "$very_verbose"
-        then
-            echo "target_file:  ${target_file}";
-        fi
         mkdir -p `dirname ${target_file}`
         
         ./get_dmrpp.sh -V -u "${s3_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
