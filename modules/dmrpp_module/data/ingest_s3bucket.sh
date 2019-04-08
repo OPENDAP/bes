@@ -100,8 +100,9 @@ just_dmr=
 dmrpp_url=
 find_s3_files=
 find_local_files=
+keep_data_files=
 
-while getopts "h?vVrs:b:d:t:r:la" opt; do
+while getopts "h?vVrs:b:d:t:r:lak" opt; do
     case "$opt" in
     h|\?)
         show_usage
@@ -142,6 +143,9 @@ while getopts "h?vVrs:b:d:t:r:la" opt; do
     a)
         find_s3_files="yes"
         ;;
+    k)
+        keep_data_files="yes";
+        ;;
         
         
     esac
@@ -150,6 +154,10 @@ done
 shift $((OPTIND-1))
 
 [ "$1" = "--" ] && shift
+
+S3_ALL_FILES="./s3_${s3_bucket_name}_all_files.txt"
+S3_DATA_FILES="./s3_${s3_bucket_name}_data_files.txt"
+
 #################################################################################
 
 
@@ -166,19 +174,68 @@ shift $((OPTIND-1))
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 function mk_file_list_from_s3() {
 
-    echo "Retrieving files from S3. ALL_FILES: ${ALL_FILES}";
+    echo "Retrieving files from S3."
     echo "s3_bucket_name: ${s3_bucket_name}"
+    echo "S3_ALL_FILES: ${S3_ALL_FILES}";
     
-    time -p aws s3 ls --recursive ${s3_bucket_name} > ${ALL_FILES};
+    time -p aws s3 ls --recursive "${s3_bucket_name}" > "${S3_ALL_FILES}";
     
-    echo "Locating DATA_FILES: ${DATA_FILES}";
-    time -p grep -E -e "${dataset_regex_match}" ${ALL_FILES} > ${DATA_FILES};
+    echo "Locating S3_DATA_FILES: ${S3_DATA_FILES}";
+    time -p grep -E -e "${dataset_regex_match}" "${S3_ALL_FILES}" > "${S3_DATA_FILES}";
     
-    dataset_count=`cat ${DATA_FILES} | wc -l`;
+    dataset_count=`cat ${S3_DATA_FILES} | wc -l`;
     echo "Found ${dataset_count} suitable data files in ${s3_bucket_name}"
 }
 #################################################################################
 
+
+#################################################################################
+#
+# mk_dmrpp_from_s3_list() 
+#
+# Looks at each file name in DATA_FILES and computes the dmr++ for that file.
+# 
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+function mk_dmrpp_from_s3_list() {
+
+	mkdir -p ${target_dir};
+
+    for relative_filename  in `cat ${S3_DATA_FILES} | awk '{print $3;}' -`
+    do        
+        s3_url="${s3_service_endpoint}${s3_bucket_name}${relative_filename}";
+        data_root=`pwd`;
+        data_file="${data_root}/data/${relative_filename}";
+        target_file="${target_dir}/${relative_filename}.dmrpp";       
+          
+        if test -n "$verbose"
+        then
+            echo "dataset:           ${dataset}";
+            echo "relative_filename: ${relative_filename}";
+            echo "s3_url:            ${s3_url}";
+            echo "data_file:         ${data_file}";
+            echo "target_file:       ${target_file}";
+        fi
+        
+        
+        mkdir -p `dirname ${data_file}`;
+        aws cp "s3://${s3_bucket_name}/${relative_filename}" "${data_file}";
+        
+        mkdir -p `dirname ${target_file}`;
+                       
+        ./get_dmrpp.sh -V -u "${s3_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
+     
+        if test -z "${keep_data_files}"
+        then
+        	echo "Deleting data file: ${data_file}";
+            rm -vf "${data_file}";
+        fi
+        
+    done
+
+
+
+}
+#################################################################################
 
 
 
@@ -205,6 +262,9 @@ function mk_file_list_from_filesystem() {
     echo "Found ${dataset_count} suitable data files in ${data_root}"
 }
 #################################################################################
+
+
+
 
 
 
