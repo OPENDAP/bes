@@ -165,7 +165,7 @@ shift $((OPTIND-1))
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 function mk_file_list_from_s3() {
 
-    echo "Retrieving ALL_FILES: ${ALL_FILES}";
+    echo "Retrieving files from S3. ALL_FILES: ${ALL_FILES}";
     time -p aws s3 ls --recursive ${s3_bucket_name} > ${ALL_FILES};
     
     echo "Locating DATA_FILES: ${DATA_FILES}";
@@ -190,7 +190,7 @@ function mk_file_list_from_s3() {
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 function mk_file_list_from_filesystem() {
 
-    echo "Retrieving ALL_FILES: ${ALL_FILES}";
+    echo "Retrieving files from local file system. ALL_FILES: ${ALL_FILES}";
     time -p find ${data_root} -type f > ${ALL_FILES};
     
     echo "Locating DATA_FILES: ${DATA_FILES}";
