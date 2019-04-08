@@ -257,15 +257,15 @@ function mk_dmrpp() {
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 echo "${0} START: "`date`;
 
-if test -n ${find_local_files}
+if test -n "${find_local_files}"
 then
     mk_file_list_from_filesystem;
-elif test -n ${find_s3_files}
+elif test -n "${find_s3_files}"
 then
     mk_file_list_from_s3;
 fi 
 
-mk_dmrpp;
+# mk_dmrpp;
 
 echo "${0} END:   "`date`;
 #################################################################################
