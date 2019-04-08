@@ -25,7 +25,8 @@
 data_root="/home/centos/hyrax/build/share/hyrax/s3/cloudydap";
 target_dir="/home/centos/hyrax/build/share/hyrax/dmrpp";
 dataset_regex_match="^.*\\.(h5|he5|nc4)(\\.bz2|\\.gz|\\.Z)?$";
-s3_bucket_base_url="https://s3.amazonaws.com/cloudydap/"
+s3_service_endpoint="https://s3.amazonaws.com/"
+s3_bucket_name="cloudydap/"
 
 #target_dir=".";
 
@@ -35,7 +36,13 @@ DATA_FILES=$(mktemp -t s3ingest_data_files_XXXX);
 ALL_FILES="./all_files.txt";
 DATA_FILES="./data_files.txt";
 
-show_usage() {
+#################################################################################
+#
+# show_usage()
+#    Print the usage statement to stdout.
+#
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+function show_usage() {
     cat <<EOF
 
  Usage: $0 [options] 
@@ -53,10 +60,22 @@ show_usage() {
  -V: Very Verbose: print the DMR, the command and the configuration
      file used to build the DMR
  -r: Just print the DMR that will be used to build the DMR++
- -u: Base URL for the HTTP datastore.
- -d: The filesystem base for the data.
+ -s: The endpoint URL for the S3 datastore. 
+     (default: ${s3_service_endpoint})
+ -b: The S3 bucket name. 
+     (default: ${s3_bucket_name})
+ -d: The "local" filesystem base for the data. 
+     (default: ${data_root})
+ -f: Find all matching data files (if missing then dmrpp generation
+     will happen using an exisiting file list, if found.
  -r: The dataset match regex used to screen the base filesystem 
-     for datasets.
+     for datasets. 
+     (default: ${dataset_regex_match})
+ -l: Make the file list from local files. 
+     (default: disabled)
+ -a: Make the file list from AWS S3 bucket listing. 
+     (default: disabled)
+
 
  Limitations: 
  * The pathanme to the hdf5 file must be relative from the
@@ -65,16 +84,23 @@ show_usage() {
  * The bes conf template has to build by hand. jhrg 5/11/18
 EOF
 }
+#################################################################################
 
 
+#################################################################################
+#
+# Process the commandline options.
+#
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 OPTIND=1        # Reset in case getopts has been used previously in this shell
 
 verbose=
 very_verbose=
 just_dmr=
 dmrpp_url=
+find_files=
 
-while getopts "h?vVru:d:t:r:" opt; do
+while getopts "h?vVrs:b:d:t:r:f" opt; do
     case "$opt" in
     h|\?)
         show_usage
@@ -94,8 +120,11 @@ while getopts "h?vVru:d:t:r:" opt; do
     r)
         just_dmr="yes"
         ;;
-    u)
-        s3_bucket_base_url="$OPTARG"
+    s)
+        s3_service_endpoint="$OPTARG"
+        ;;
+    b)
+        s3_bucket_name="$OPTARG"
         ;;
     d)
         data_root="$OPTARG"
@@ -106,7 +135,12 @@ while getopts "h?vVru:d:t:r:" opt; do
     r)
         dataset_regex_match="$OPTARG"
         ;;
-        
+    l)
+        find_local_files="yes"
+        ;;
+    a)
+        find_s3_files="yes"
+        ;;
         
         
     esac
@@ -115,22 +149,68 @@ done
 shift $((OPTIND-1))
 
 [ "$1" = "--" ] && shift
+#################################################################################
 
 
 
 
+#################################################################################
+#
+# mk_file_list() 
+#
+# Creates a list of all the files in or below data_root using find. The list is 
+# written to ALL_FILES. Once created the regex (either default or supplied with 
+# the -r option) is applied to the list and the matching files collected as 
+# DATA_FILES 
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+function mk_file_list_from_s3() {
 
-
-
-function mk_file_list() {
-	echo "Retrieving ALL_FILES: ${ALL_FILES}";
-    time find ${data_root} -type f > ${ALL_FILES};
- 	echo "Locating DATA_FILES: ${DATA_FILES}";
-    time grep -E -e "${dataset_regex_match}" ${ALL_FILES} > ${DATA_FILES};
+    echo "Retrieving ALL_FILES: ${ALL_FILES}";
+    time -p aws s3 ls --recursive ${s3_bucket_name} > ${ALL_FILES};
+    
+    echo "Locating DATA_FILES: ${DATA_FILES}";
+    time -p grep -E -e "${dataset_regex_match}" ${ALL_FILES} > ${DATA_FILES};
+    
     dataset_count=`cat ${DATA_FILES} | wc -l`;
     echo "Found ${dataset_count} suitable data files in ${data_root}"
 }
+#################################################################################
 
+
+
+
+#################################################################################
+#
+# mk_file_list_s3() 
+#
+# Creates a list of all the files in or below data_root using find. The list is 
+# written to ALL_FILES. Once created the regex (either default or supplied with 
+# the -r option) is applied to the list and the matching files collected as 
+# DATA_FILES 
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+function mk_file_list_from_filesystem() {
+
+    echo "Retrieving ALL_FILES: ${ALL_FILES}";
+    time -p find ${data_root} -type f > ${ALL_FILES};
+    
+    echo "Locating DATA_FILES: ${DATA_FILES}";
+    time -p grep -E -e "${dataset_regex_match}" ${ALL_FILES} > ${DATA_FILES};
+    
+    dataset_count=`cat ${DATA_FILES} | wc -l`;
+    echo "Found ${dataset_count} suitable data files in ${data_root}"
+}
+#################################################################################
+
+
+
+
+#################################################################################
+#
+# mk_dmrpp() 
+#
+# Looks at each file name in DATA_FILES and computes the dmr++ for that file.
+# 
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 function mk_dmrpp() {
 
 	mkdir -p ${target_dir};
@@ -146,7 +226,7 @@ function mk_dmrpp() {
             echo "relative_filename: ${relative_filename}";
         fi
 
-        s3_url="${s3_bucket_base_url}${relative_filename}";
+        s3_url="${s3_service_endpoint}${s3_bucket_name}${relative_filename}";
         if test -n "$very_verbose"
         then
             echo "s3_url:       ${s3_url}";
@@ -164,9 +244,28 @@ function mk_dmrpp() {
     done
 
 }
+#################################################################################
 
-echo "START: "`date`;
-# mk_file_list;
+
+
+
+#################################################################################
+#
+# main() 
+# 
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+echo "${0} START: "`date`;
+
+if test -n ${find_local_files}
+then
+    mk_file_list_from_filesystem;
+elif test -n ${find_s3_files}
+then
+    mk_file_list_from_s3;
+fi 
+
 mk_dmrpp;
-echo "END: "`date`;
+
+echo "${0} END:   "`date`;
+#################################################################################
 
