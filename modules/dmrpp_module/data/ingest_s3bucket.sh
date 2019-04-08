@@ -98,7 +98,8 @@ verbose=
 very_verbose=
 just_dmr=
 dmrpp_url=
-find_files=
+find_s3_files=
+find_local_files=
 
 while getopts "h?vVrs:b:d:t:r:f" opt; do
     case "$opt" in
