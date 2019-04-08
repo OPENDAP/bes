@@ -175,7 +175,7 @@ function mk_file_list_from_s3() {
     time -p grep -E -e "${dataset_regex_match}" ${ALL_FILES} > ${DATA_FILES};
     
     dataset_count=`cat ${DATA_FILES} | wc -l`;
-    echo "Found ${dataset_count} suitable data files in ${data_root}"
+    echo "Found ${dataset_count} suitable data files in ${s3_bucket_name}"
 }
 #################################################################################
 
