@@ -106,7 +106,7 @@ find_s3_files=
 find_local_files=
 keep_data_files=
 
-while getopts "h?vVrs:b:d:t:r:lak" opt; do
+while getopts "h?vVjrs:b:d:t:r:lak" opt; do
     case "$opt" in
     h|\?)
         show_usage
@@ -123,7 +123,7 @@ while getopts "h?vVrs:b:d:t:r:lak" opt; do
          echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
         echo "${0} - BEGIN (very_verbose)";
        ;;
-    r)
+    j)
         just_dmr="yes"
         ;;
     s)

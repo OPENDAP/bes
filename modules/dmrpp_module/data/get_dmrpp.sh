@@ -162,6 +162,8 @@ function mk_dmrpp() {
 	then
 		set -x;
 	    ./build_dmrpp ${verbose} -c "${TMP_CONF}" -f "${data_root}/${datafile}" -r "${TMP_DMR_RESP}" -u "${dmrpp_url}" > "${output_file}";
+	else
+	    echo "The just_dmr flag is set, skipping dmr++ construction."
 	fi
 	
 	# TODO Use trap to ensure these are really removed
@@ -170,7 +172,4 @@ function mk_dmrpp() {
  ###############################################################################
  
 get_dmr  "${input_data_file}";
-if test -z "${just_dmr}" 
-then
-    mk_dmrpp "${input_data_file}";
- fi
+mk_dmrpp "${input_data_file}";
