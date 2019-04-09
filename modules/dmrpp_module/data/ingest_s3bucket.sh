@@ -229,7 +229,7 @@ function mk_dmrpp_from_s3_list() {
         
         mkdir -p `dirname ${target_file}`;
 		set -x;
-        ./get_dmrpp.sh -V -u ${just_dmr} "${s3_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
+        ./get_dmrpp.sh -V ${just_dmr} -u "${s3_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
      
         if test -z "${keep_data_files}"
         then
@@ -298,7 +298,7 @@ function mk_dmrpp() {
 
         mkdir -p `dirname ${target_file}`
 		set -x;
-        ./get_dmrpp.sh -V -u ${just_dmr} "${s3_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
+        ./get_dmrpp.sh -V ${just_dmr}  -u "${s3_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
         
     done
 
