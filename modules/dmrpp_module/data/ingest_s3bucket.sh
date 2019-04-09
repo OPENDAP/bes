@@ -24,7 +24,11 @@
 #
 data_root="/home/centos/hyrax/build/share/hyrax/s3/cloudydap";
 target_dir="/home/centos/hyrax/build/share/hyrax/dmrpp";
+
+# Should match the value of BES.Catalog.catalog.TypeMatch in the bes.hdf5.cf.conf(.in) files.
+# TODO - can we make this read the conf file to get the regex info?
 dataset_regex_match="^.*\\.(h5|he5|nc4)(\\.bz2|\\.gz|\\.Z)?$";
+
 s3_service_endpoint="https://s3.amazonaws.com/"
 s3_bucket_name="cloudydap"
 
@@ -224,7 +228,6 @@ function mk_dmrpp_from_s3_list() {
         time -p aws s3 cp --quiet "s3://${s3_bucket_name}/${relative_filename}" "${data_file}";
         
         mkdir -p `dirname ${target_file}`;
-                       
         ./get_dmrpp.sh -V -u "${s3_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
      
         if test -z "${keep_data_files}"
@@ -293,7 +296,6 @@ function mk_dmrpp() {
         fi
 
         mkdir -p `dirname ${target_file}`
-        
         ./get_dmrpp.sh -V -u "${s3_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
         
     done

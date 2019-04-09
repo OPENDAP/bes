@@ -170,5 +170,7 @@ function mk_dmrpp() {
  ###############################################################################
  
 get_dmr  "${input_data_file}";
-mk_dmrpp "${input_data_file}";
- 
+if test -z "${just_dmr}" 
+then
+    mk_dmrpp "${input_data_file}";
+ fi
