@@ -81,6 +81,7 @@ then
     output_file="${input_data_file}.dmrpp"
 fi
 echo "OUTPUT_FILE: ${output_file}";
+echo "just_dmr: ${just_dmr}";
 
 
 
