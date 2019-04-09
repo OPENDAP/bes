@@ -56,6 +56,11 @@
 #include "DmrppParserSax2.h"
 #include "DmrppCommon.h"
 
+#define FIVE_12K  524288;
+#define ONE_MB   1048576;
+#define MAX_INPUT_LINE_LENGTH ONE_MB;
+
+
 static const string module = "dmrpp:2";
 static const string dmrpp_namespace = "http://xml.opendap.org/dap/dmrpp/1.0.0#";
 
@@ -1262,7 +1267,7 @@ void DmrppParserSax2::dmr_get_characters(void * p, const xmlChar * ch, int len)
     case inside_attribute_value:
     case inside_dmrpp_chunkDimensionSizes_element:
         parser->char_data.append((const char *) (ch), len);
-        BESDEBUG(module, "Characters: '" << parser->char_data << "'" << endl);
+        BESDEBUG(module, "Characters[" << parser->char_data.size() << "](max:" << parser->char_data.max_size() << "): '" << parser->char_data << "'" << endl);
         break;
 
     case inside_other_xml_attribute:
@@ -1431,7 +1436,7 @@ void DmrppParserSax2::intern(istream &f, DMR *dest_dmr, bool debug)
 
     d_dmr = dest_dmr; // dump values here
 
-    const int size = 1024;
+    const int size = MAX_INPUT_LINE_LENGTH;
     char chars[size];
     int line = 1;
 
