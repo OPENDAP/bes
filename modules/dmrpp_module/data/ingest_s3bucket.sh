@@ -124,7 +124,7 @@ while getopts "h?vVjrs:b:d:t:r:lak" opt; do
         echo "${0} - BEGIN (very_verbose)";
        ;;
     j)
-        just_dmr="yes"
+        just_dmr="-r";
         ;;
     s)
         s3_service_endpoint="$OPTARG"
@@ -228,7 +228,7 @@ function mk_dmrpp_from_s3_list() {
         time -p aws s3 cp --quiet "s3://${s3_bucket_name}/${relative_filename}" "${data_file}";
         
         mkdir -p `dirname ${target_file}`;
-        ./get_dmrpp.sh -V -u "${s3_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
+        ./get_dmrpp.sh -V -u ${just_dmr} "${s3_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
      
         if test -z "${keep_data_files}"
         then
@@ -296,7 +296,7 @@ function mk_dmrpp() {
         fi
 
         mkdir -p `dirname ${target_file}`
-        ./get_dmrpp.sh -V -u "${s3_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
+        ./get_dmrpp.sh -V -u ${just_dmr} "${s3_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
         
     done
 
