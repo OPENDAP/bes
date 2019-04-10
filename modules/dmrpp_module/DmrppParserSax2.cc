@@ -1267,7 +1267,7 @@ void DmrppParserSax2::dmr_get_characters(void * p, const xmlChar * ch, int len)
     case inside_attribute_value:
     case inside_dmrpp_chunkDimensionSizes_element:
         parser->char_data.append((const char *) (ch), len);
-        BESDEBUG(module, "Characters[" << parser->char_data.size() << "](max:" << parser->char_data.max_size() << "): '" << parser->char_data << "'" << endl);
+        BESDEBUG(module, "Characters[" << parser->char_data.size() << "]" << parser->char_data << "'" << endl);
         break;
 
     case inside_other_xml_attribute:
@@ -1436,23 +1436,84 @@ void DmrppParserSax2::intern(istream &f, DMR *dest_dmr, bool debug)
 
     d_dmr = dest_dmr; // dump values here
 
+    int line_num = 1;
+    string line;
+
+    // Get the <xml ... ?> line
+    getline(f, line);
+    if (line.length() == 0) throw Error("No input found while parsing the DMR.");
+
+    if (debug) cerr << "line: (" << line_num << "): " << endl << line << endl << endl;
+
+    context = xmlCreatePushParserCtxt(&dmr_sax_parser, this, line.c_str(), line.length(), "stream");
+    context->validate = true;
+    push_state(parser_start);
+
+    // Get the first line of stuff
+    getline(f, line);
+    ++line_num;
+
+    if (debug) cerr << "line: (" << line_num << "): " << endl << line << endl << endl;
+
+    while (!f.eof() && (get_state() != parser_end)) {
+        xmlParseChunk(context, line.c_str(), line.length(), 0);
+        // Get the next line
+        getline(f, line);
+        ++line_num;
+        if (debug) cerr << "line: (" << line_num << "): " << endl << line << endl << endl;
+    }
+
+    // This call ends the parse.
+    xmlParseChunk(context, line.c_str(), 0, 1/*terminate*/);
+
+    // This checks that the state on the parser stack is parser_end and throws
+    // an exception if it's not (i.e., the loop exited with gcount() == 0).
+    cleanup_parse();
+}
+
+/**
+ * Read the DMR from a stream.
+ *
+ * @param f The input stream
+ * @param dest_dmr Value-result parameter. Pass a pointer to a DMR in and
+ * the information in the DMR will be added to it.
+ * @param boundary If not empty, use this as the boundary tag in a MPM document
+ * that marks the end of the part hat holds the DMR. Stop reading when the
+ * boundary is found.
+ * @param debug If true, ouput helpful debugging messages, False by default.
+ *
+ * @exception Error Thrown if the XML document could not be read or parsed.
+ * @exception InternalErr Thrown if an internal error is found.
+ */
+void DmrppParserSax2::intern_OLD(istream &f, DMR *dest_dmr, bool debug)
+{
+    d_debug = debug;
+
+    // Code example from libxml2 docs re: read from a stream.
+
+    if (!f.good()) throw Error("Input stream not open or read error");
+    if (!dest_dmr) throw InternalErr(__FILE__, __LINE__, "DMR object is null");
+
+    d_dmr = dest_dmr; // dump values here
+
     const int size = MAX_INPUT_LINE_LENGTH;
     char chars[size];
-    int line = 1;
+    int line_num = 1;
+    string line;
 
     f.getline(chars, size);
     int res = f.gcount();
     if (res == 0) throw Error("No input found while parsing the DMR.");
 
-    if (debug) cerr << "line: (" << line++ << "): " << chars << endl;
+    if (debug) cerr << "line(" << line_num++ << "): " << chars << endl;
 
-    context = xmlCreatePushParserCtxt(&ddx_sax_parser, this, chars, res - 1, "stream");
+    context = xmlCreatePushParserCtxt(&dmr_sax_parser, this, chars, res - 1, "stream");
     context->validate = true;
     push_state(parser_start);
 
     f.getline(chars, size);
     while ((f.gcount() > 0) && (get_state() != parser_end)) {
-        if (debug) cerr << "line: (" << line++ << "): " << chars << endl;
+        if (debug) cerr << "line(" << line_num++ << "): " << chars << endl;
         xmlParseChunk(context, chars, f.gcount() - 1, 0);
         f.getline(chars, size);
     }
@@ -1502,7 +1563,7 @@ void DmrppParserSax2::intern(const char *buffer, int size, DMR *dest_dmr, bool d
     d_dmr = dest_dmr; // dump values in dest_dmr
 
     push_state(parser_start);
-    context = xmlCreatePushParserCtxt(&ddx_sax_parser, this, buffer, size, "stream");
+    context = xmlCreatePushParserCtxt(&dmr_sax_parser, this, buffer, size, "stream");
     context->validate = true;
     //push_state(parser_start);
     //xmlParseChunk(context, buffer, size, 0);
