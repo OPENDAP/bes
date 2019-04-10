@@ -23,19 +23,15 @@
 # You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 #
 data_root="/home/centos/hyrax/build/share/hyrax/s3/cloudydap";
-target_dir="/home/centos/hyrax/build/share/hyrax/dmrpp_from_aws_cli";
+target_dir="/home/centos/hyrax/build/share/hyrax/dmrpp_from_filesystem";
 
 # Should match the value of BES.Catalog.catalog.TypeMatch in the bes.hdf5.cf.conf(.in) files.
 # TODO - can we make this read the conf file to get the regex info?
 dataset_regex_match="^.*\\.(h5|he5|nc4)(\\.bz2|\\.gz|\\.Z)?$";
 
-s3_service_endpoint="https://s3.amazonaws.com/"
-s3_bucket_name="cloudydap"
+dmrpp_url_base="https://s3.amazonaws.com/cloudydap";
 
-#target_dir=".";
-
-ALL_FILES=$(mktemp -t s3ingest_all_files_XXXX);
-DATA_FILES=$(mktemp -t s3ingest_data_files_XXXX);  
+#target_dir=`pwd`"/dmrpp";
 
 ALL_FILES="./all_files.txt";
 DATA_FILES="./data_files.txt";
@@ -101,7 +97,7 @@ OPTIND=1        # Reset in case getopts has been used previously in this shell
 verbose=
 very_verbose=
 just_dmr=
-dmrpp_url=
+dmrpp_url_base=
 find_s3_files=
 find_local_files=
 keep_data_files=
@@ -126,11 +122,8 @@ while getopts "h?vVjrs:b:d:t:r:lak" opt; do
     j)
         just_dmr="-r";
         ;;
-    s)
-        s3_service_endpoint="$OPTARG"
-        ;;
-    b)
-        s3_bucket_name="$OPTARG"
+    u)
+        dmrpp_url_base="$OPTARG"
         ;;
     d)
         data_root="$OPTARG"
@@ -141,11 +134,8 @@ while getopts "h?vVjrs:b:d:t:r:lak" opt; do
     r)
         dataset_regex_match="$OPTARG"
         ;;
-    a)
-        find_s3_files="yes"
-        ;;
-    k)
-        keep_data_files="yes";
+    l)
+        find_local_files="yes"
         ;;
         
         
@@ -156,37 +146,32 @@ shift $((OPTIND-1))
 
 [ "$1" = "--" ] && shift
 
-S3_ALL_FILES="./s3_${s3_bucket_name}_all_files.txt"
-S3_DATA_FILES="./s3_${s3_bucket_name}_data_files.txt"
-
 #################################################################################
+
+
 
 
 
 
 #################################################################################
 #
-# mk_file_list() 
+# mk_file_list_from_filesystem() 
 #
-# Creates a list of all the files in or below data_root the AWS CLI. The output
-# of "aws s3 ls --recursive bucket_name" is written to S3_ALL_FILES. Once the 
-# list ahs been created the regex (either default or supplied with 
+# Creates a list of all the files in or below data_root using find. The list is 
+# written to ALL_FILES. Once created the regex (either default or supplied with 
 # the -r option) is applied to the list and the matching files collected as 
-# S3_DATA_FILES 
+# DATA_FILES 
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-function mk_file_list_from_s3() {
+function mk_file_list_from_filesystem() {
 
-    echo "Retrieving file list from S3."
-    echo "s3_bucket_name: ${s3_bucket_name}"
-    echo "S3_ALL_FILES: ${S3_ALL_FILES}";
+    echo "Retrieving file list from ${data_root}. ALL_FILES: ${ALL_FILES}";    
+    time -p find ${data_root} -type f > ${ALL_FILES};
     
-    time -p aws s3 ls --recursive "${s3_bucket_name}" > "${S3_ALL_FILES}";
+    echo "Locating DATA_FILES: ${DATA_FILES}";
+    time -p grep -E -e "${dataset_regex_match}" ${ALL_FILES} > ${DATA_FILES};
     
-    echo "Locating S3_DATA_FILES: ${S3_DATA_FILES}";
-    time -p grep -E -e "${dataset_regex_match}" "${S3_ALL_FILES}" > "${S3_DATA_FILES}";
-    
-    dataset_count=`cat ${S3_DATA_FILES} | wc -l`;
-    echo "Found ${dataset_count} suitable data files in s3 bucket: ${s3_bucket_name}"
+    dataset_count=`cat ${DATA_FILES} | wc -l`;
+    echo "Found ${dataset_count} suitable data files in ${data_root}"
 }
 #################################################################################
 
@@ -195,48 +180,34 @@ function mk_file_list_from_s3() {
 
 #################################################################################
 #
-# mk_dmrpp_from_s3_list() 
+# mk_dmrpp() 
 #
 # Looks at each file name in DATA_FILES and computes the dmr++ for that file.
 # 
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-function mk_dmrpp_from_s3_list() {
+function mk_dmrpp_files_from_list() {
 
 	mkdir -p ${target_dir};
 
-    for relative_filename  in `cat ${S3_DATA_FILES} | awk '{print $4;}' -`
-    do        
-        s3_url="${s3_service_endpoint}${s3_bucket_name}/${relative_filename}";
-        data_root=`pwd`"/data/${s3_bucket_name}";
-        data_file="${data_root}/${relative_filename}";
-        target_file="${target_dir}/${relative_filename}.dmrpp";       
+    for dataset_file in `cat ${DATA_FILES}`
+    do
+        relative_filename=${dataset_file#"$data_root/"};
+        target_file="${target_dir}/${relative_filename}.dmrpp";
+        dmrpp_url="${dmrpp_url_base}/${relative_filename}";
           
         if test -n "$verbose"
         then
-            echo "dataset:           ${dataset}";
+            echo "data_root:    ${data_root}";
+            echo "dataset_file: ${dataset_file}";
             echo "relative_filename: ${relative_filename}";
-            echo "s3_url:            ${s3_url}";
-            echo "data_file:         ${data_file}";
-            echo "target_file:       ${target_file}";
+            echo "target_file: ${target_file}";
         fi
-        
-        
-        mkdir -p `dirname ${data_file}`;
-        time -p aws s3 cp --quiet "s3://${s3_bucket_name}/${relative_filename}" "${data_file}";
-        
-        mkdir -p `dirname ${target_file}`;
+
+        mkdir -p `dirname ${target_file}`
 		set -x;
-        ./get_dmrpp.sh -V ${just_dmr} -u "${s3_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
-     
-        if test -z "${keep_data_files}"
-        then
-        	echo "Deleting data file: ${data_file}";
-            rm -vf "${data_file}";
-        fi
+        ./get_dmrpp.sh -V ${just_dmr}  -u "${dmrpp_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
         
- done
-
-
+    done
 
 }
 #################################################################################
@@ -251,12 +222,13 @@ function mk_dmrpp_from_s3_list() {
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 echo "${0} START: "`date`;
 
-if test -n "${find_s3_files}"
+if test -n "${find_local_files}"
 then
-    mk_file_list_from_s3;
+    mk_file_list_from_filesystem;
 fi 
 
-mk_dmrpp_from_s3_list
+mk_dmrpp_files_from_list;
+
 
 echo "${0} END:   "`date`;
 #################################################################################
