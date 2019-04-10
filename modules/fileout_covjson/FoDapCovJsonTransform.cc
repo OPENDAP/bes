@@ -85,6 +85,8 @@ bool FoDapCovJsonTransform::canConvert()
         if (shapeVals.size() < 4)
             return false;
 
+        // A domain with Grid domain type MUST have the axes "x" and "y"
+        // and MAY have the axes "z" and "t".
         if((shapeVals[0] > 1) && (shapeVals[1] > 1) && (shapeVals[2] >= 1) && (shapeVals[3] >= 0)) {
             domainType = Grid;
             return true;
@@ -124,6 +126,8 @@ bool FoDapCovJsonTransform::canConvert()
         if (shapeVals.size() < 3)
             return false;
 
+        // A domain with Grid domain type MUST have the axes "x" and "y"
+        // and MAY have the axes "z" and "t".
         if((shapeVals[0] > 1) && (shapeVals[1] > 1) && (shapeVals[2] >= 0)) {
             domainType = Grid;
             return true;
@@ -155,6 +159,8 @@ bool FoDapCovJsonTransform::canConvert()
         if (shapeVals.size() < 2)
             return false;
 
+        // A domain with Grid domain type MUST have the axes "x" and "y"
+        // and MAY have the axes "z" and "t".
         if((shapeVals[0] > 1) && (shapeVals[1] > 1)) {
             domainType = Grid;
             return true;
@@ -188,6 +194,10 @@ unsigned int FoDapCovJsonTransform::covjsonSimpleTypeArrayWorker(ostream *strm, 
     vector<unsigned int> *shape, unsigned int currentDim)
 {
     unsigned int currentDimSize = (*shape)[currentDim];
+
+    // FOR TESTING AND DEBUGGING PURPOSES
+    // *strm << "\"currentDim\": \"" << currentDim << "\"" << endl;
+    // *strm << "\"currentDimSize\": \"" << currentDimSize << "\"" << endl;
 
     *strm << "[";
     for(unsigned int i = 0; i < currentDimSize; i++) {
@@ -245,6 +255,9 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
 
     currDataType = a->var()->type_name();
 
+    // FOR TESTING AND DEBUGGING PURPOSES
+    // *strm << "\"type_name\": \"" << a->var()->type_name() << "\"" << endl;
+
     getAttributes(strm, a->get_attr_table(), a->name(), &axisRetrieved, &parameterRetrieved);
 
     // a->print_val(*strm, "\n", true); // For testing purposes
@@ -259,6 +272,10 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
         int numDim = a->dimensions(true);
         vector<unsigned int> shape(numDim);
         long length = focovjson::computeConstrainedShape(a, &shape);
+
+        // FOR TESTING AND DEBUGGING PURPOSES
+        // *strm << "\"numDimensions\": \"" << numDim << "\"" << endl;
+        // *strm << "\"length\": \"" << length << "\"" << endl << endl;
 
         if (currAxis->name.compare("t") != 0) {
             if (sendData) {
@@ -291,6 +308,10 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
         int numDim = a->dimensions(true);
         vector<unsigned int> shape(numDim);
         long length = focovjson::computeConstrainedShape(a, &shape);
+
+        // FOR TESTING AND DEBUGGING PURPOSES
+        // *strm << "\"numDimensions\": \"" << a->dimensions(true) << "\"" << endl;
+        // *strm << "\"length\": \"" << length << "\"" << endl << endl;
 
         currParameter->shape += "\"shape\": [";
         for(vector<unsigned int>::size_type i = 0; i < shape.size(); i++) {
@@ -367,6 +388,14 @@ void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, 
     string childindent = indent + _indent_increment;
     bool axisRetrieved = false;
     bool parameterRetrieved = false;
+
+    currDataType = a->var()->type_name();
+
+    // FOR TESTING AND DEBUGGING PURPOSES
+    // *strm << "\"attr_tableName\": \"" << a->name() << "\"" << endl;
+
+    // FOR TESTING AND DEBUGGING PURPOSES
+    // *strm << "\"type_name\": \"" << a->var()->type_name() << "\"" << endl;
 
     getAttributes(strm, a->get_attr_table(), a->name(), &axisRetrieved, &parameterRetrieved);
 
@@ -472,7 +501,7 @@ void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, 
  *   class variables to make them accessible for printing.
  *
  * Gets the current attribute values and stores the metadata the data in
- * the corresponding private class variables . Will logically search
+ * the corresponding private class variables. Will logically search
  * for value names (ie "longitude") and store them as required.
  *
  * @note strm is included here for debugging purposes. Otherwise, there is no
@@ -493,8 +522,72 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
 {
     string currAxisName;
     string currAxisTimeOrigin;
-    string currParameterUnit;
-    string currParameterLongName;
+    string currUnit;
+    string currLongName;
+    string currStandardName;
+
+    isAxis = false;
+    isParam = false;
+
+    // FOR TESTING AND DEBUGGING PURPOSES
+    // *strm << "\"attr_tableName\": \"" << name << "\"" << endl;
+
+    // Using CF-1.6 naming conventions -- Also checks for Coads Climatology conventions
+    // http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html
+    if((name.compare("lon") == 0) || (name.compare("LON") == 0)
+        || (name.compare("longitude") == 0) || (name.compare("LONGITUDE") == 0)
+        || (name.compare("COADSX") == 0)) {
+
+        // FOR TESTING AND DEBUGGING PURPOSES
+        // *strm << "\"Found X-Axis\": \"" << name << "\"" << endl;
+
+        if(!xExists) {
+            xExists = true;
+            isAxis = true;
+            currAxisName = "x";
+        }
+    }
+    else if((name.compare("lat") == 0) || (name.compare("LAT") == 0)
+        || (name.compare("latitude") == 0) || (name.compare("LATITUDE") == 0)
+        || (name.compare("COADSY") == 0)) {
+
+        // FOR TESTING AND DEBUGGING PURPOSES
+        // *strm << "\"Found Y-Axis\": \"" << name << "\"" << endl;
+
+        if(!yExists) {
+            yExists = true;
+            isAxis = true;
+            currAxisName = "y";
+        }
+    }
+    else if((name.compare("lev") == 0) || (name.compare("LEV") == 0)
+        || (name.compare("height") == 0) || (name.compare("HEIGHT") == 0)
+        || (name.compare("depth") == 0) || (name.compare("DEPTH") == 0)
+        || (name.compare("pres") == 0) || (name.compare("PRES") == 0)) {
+
+        // FOR TESTING AND DEBUGGING PURPOSES
+        // *strm << "\"Found Z-Axis\": \"" << name << "\"" << endl;
+
+        if(!zExists) {
+            zExists = true;
+            isAxis = true;
+            currAxisName = "z";
+        }
+    }
+    else if((name.compare("time") == 0) || (name.compare("TIME") == 0)) {
+
+        // FOR TESTING AND DEBUGGING PURPOSES
+        // *strm << "\"Found T-Axis\": \"" << name << "\"" << endl;
+
+        if(!tExists) {
+            tExists = true;
+            isAxis = true;
+            currAxisName = "t";
+        }
+    }
+    else {
+        isParam = true;
+    }
 
     // Only do more if there are actually attributes in the table
     if(attr_table.get_size() != 0) {
@@ -522,139 +615,107 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
                     // Parse the attribute table values and try to determine what variables AND
                     // metadata are present -- its not an exact science, and its a little dirty.
                     if(currName.compare("units") == 0) {
-                        if(((currValue.compare("degrees_east") == 0) || (currValue.compare("degree East") == 0)
-                            || (currValue.compare("degrees East") == 0)) && !xExists) {
-                            xExists = true;
-                            isAxis = true;
-                            isParam = false;
-                            currAxisName = "x";
+                        if(isAxis) {
+                            if(currAxisName.compare("t") == 0) {
+                                currAxisTimeOrigin = currValue;
+                            }
                         }
-                        else if(((currValue.compare("degrees_north") == 0) || (currValue.compare("degree North") == 0)
-                            || (currValue.compare("degrees North") == 0)) && !yExists) {
-                            yExists = true;
-                            isAxis = true;
-                            isParam = false;
-                            currAxisName = "y";
-                        }
-                        else if(((currValue.find("z") == 0) || (currValue.find("Z") == 0)) && !zExists) {
-                            zExists = true;
-                            isAxis = true;
-                            isParam = false;
-                            currAxisName = "z";
-                        }
-                        else if(((currValue.find("day") == 0) || (currValue.find("hour") == 0)
-                            || (currValue.find("minute") == 0) || (currValue.find("second") == 0)) && !tExists) {
-                            tExists = true;
-                            isAxis = true;
-                            isParam = false;
-                            currAxisTimeOrigin = currValue;
-                            currAxisName = "t";
-                        }
-                        else {
-                            isAxis = false;
-                            isParam = true;
-                            currParameterUnit = currValue;
+                        else if(isParam) {
+                            currUnit = currValue;
                         }
                     }
                     else if(currName.compare("long_name") == 0) {
-                        isAxis = false;
-                        isParam = true;
-                        currParameterLongName = currValue;
+                        currLongName = currValue;
                     }
-                    else {
-                        isAxis = false;
-                        isParam = false;
+                    else if(currName.compare("standard_name") == 0) {
+                        currStandardName = currValue;
                     }
-                }
-
-                if(isAxis == true && isParam == false) {
-                    // Push a new axis
-                    if(currAxisName.compare("") != 0) {
-                        struct Axis *newAxis = new Axis;
-                        newAxis->name = currAxisName;
-
-                        // If we're dealing with the time axis, capture the time
-                        // origin timestamp value with the appropriate formatting
-                        // for printing.
-
-                        // @TODO See https://covjson.org/spec/#temporal-reference-systems
-                        if(currAxisName.compare("t") == 0) {
-                            // If the calendar is based on years, months, days,
-                            // then the referenced values SHOULD use one of the
-                            // following ISO8601-based lexical representations:
-
-                            //    YYYY
-                            //    ±XYYYY (where X stands for extra year digits)
-                            //    YYYY-MM
-                            //    YYYY-MM-DD
-                            //    YYYY-MM-DDTHH:MM:SS[.F]Z where Z is either “Z”
-                            //              or a time scale offset + -HH:MM
-
-                            // If calendar dates with reduced precision are
-                            // used in a lexical representation (e.g. "2016"),
-                            // then a client SHOULD interpret those dates in
-                            // that reduced precision.
-
-                            // string item;
-                            // vector<string> tokens;
-                            // char *dup = strdup(currAxisTimeOrigin.c_str());
-                            // char *token = strtok(dup, " ");
-                            // while(token != NULL){
-                            //     tokens.push_back(string(token));
-                            //     token = strtok(NULL, " ");
-                            // }
-                            //
-                            // free(token);
-                            // free(dup);
-                            // free(token);
-
-                            // For testing purposes
-                            // for(unsigned int i = 0; i < tokens.size(); i++) {
-                            //     *strm << tokens[i] << endl;
-                            // }
-
-                            // @TODO Need to figure out a way to dynamically parse
-                            // origin timestamps and convert them to an appropriate
-                            // format for CoverageJSON
-
-                            newAxis->values += "\"values\": [\"";
-                            // newAxis->values += currAxisTimeOrigin;
-                            newAxis->values += "2018-01-01T00:12:20Z";
-                            newAxis->values += "\"]";
-                        }
-
-                        axes.push_back(newAxis);
-                        axisCount++;
-                        *axisRetrieved = true;
-                        *parameterRetrieved = false;
-                    }
-                }
-                else if(isAxis == false && isParam == true) {
-                    // Push a new parameter
-                    if(currParameterUnit.compare("") != 0 && currParameterLongName.compare("") != 0) {
-                        // Kent says: Use LongName to select the new Parameter is too strict.
-                        // but when the test 'currParameterLongName.compare("") != 0' is removed,
-                        // all of the tests fail and do so by generating output that looks clearly
-                        // wrong. I'm going to hold off on this part of the patch for now. jhrg 3/28/19
-                        struct Parameter *newParameter = new Parameter;
-                        newParameter->name = name;
-                        newParameter->dataType = currDataType;
-                        newParameter->unit = currParameterUnit;
-                        newParameter->longName = currParameterLongName;
-                        parameters.push_back(newParameter);
-                        parameterCount++;
-                        *axisRetrieved = false;
-                        *parameterRetrieved = true;
-                    }
-                }
-                else {
-                    // Do nothing
                 }
 
                 break;
             }
             }
         }
+    }
+
+    if(isAxis) {
+        // Push a new axis
+        struct Axis *newAxis = new Axis;
+        newAxis->name = currAxisName;
+
+        // If we're dealing with the time axis, capture the time
+        // origin timestamp value with the appropriate formatting
+        // for printing.
+        // @TODO See https://covjson.org/spec/#temporal-reference-systems
+        if(currAxisName.compare("t") == 0) {
+            // If the calendar is based on years, months, days,
+            // then the referenced values SHOULD use one of the
+            // following ISO8601-based lexical representations:
+
+            //  YYYY
+            //  ±XYYYY (where X stands for extra year digits)
+            //  YYYY-MM
+            //  YYYY-MM-DD
+            //  YYYY-MM-DDTHH:MM:SS[.F]Z where Z is either “Z”
+            //      or a time scale offset + -HH:MM
+
+            // If calendar dates with reduced precision are
+            // used in a lexical representation (e.g. "2016"),
+            // then a client SHOULD interpret those dates in
+            // that reduced precision.
+
+            // string item;
+            // vector<string> tokens;
+            // char *dup = strdup(currAxisTimeOrigin.c_str());
+            // char *token = strtok(dup, " ");
+            // while(token != NULL){
+            //     tokens.push_back(string(token));
+            //     token = strtok(NULL, " ");
+            // }
+
+            // free(token);
+            // free(dup);
+            // free(token);
+
+            // For testing purposes
+            // for(unsigned int i = 0; i < tokens.size(); i++) {
+            //     *strm << tokens[i] << endl;
+            // }
+
+            // @TODO Need to figure out a way to dynamically parse
+            // origin timestamps and convert them to an appropriate
+            // format for CoverageJSON
+
+            newAxis->values += "\"values\": [\"";
+            // newAxis->values += currAxisTimeOrigin;
+            newAxis->values += "2018-01-01T00:12:20Z";
+            newAxis->values += "\"]";
+
+            axes.push_back(newAxis);
+            axisCount++;
+            *axisRetrieved = true;
+            *parameterRetrieved = false;
+        }
+    }
+    else if(isParam) {
+        // Push a new parameter
+
+        // Kent says: Use LongName to select the new Parameter is too strict.
+        // but when the test 'currLongName.compare("") != 0' is removed,
+        // all of the tests fail and do so by generating output that looks clearly
+        // wrong. I'm going to hold off on this part of the patch for now. jhrg 3/28/19
+        struct Parameter *newParameter = new Parameter;
+        newParameter->name = name;
+        newParameter->dataType = currDataType;
+        newParameter->unit = currUnit;
+        newParameter->longName = currLongName;
+        parameters.push_back(newParameter);
+        parameterCount++;
+        *axisRetrieved = false;
+        *parameterRetrieved = true;
+    }
+    else {
+        // Do nothing
     }
 }
 
@@ -787,6 +848,10 @@ void FoDapCovJsonTransform::transformNodeWorker(ostream *strm, vector<libdap::Ba
     for(vector<libdap::BaseType *>::size_type l = 0; l < leaves.size(); l++) {
         libdap::BaseType *v = leaves[l];
         BESDEBUG(FoDapCovJsonTransform_debug_key, "Processing LEAF: " << v->name() << endl);
+
+        // FOR TESTING AND DEBUGGING PURPOSES
+        // *strm << "Processing LEAF: " <<  v->name() << endl;
+
         transform(strm, v, indent + _indent_increment, sendData);
     }
 
@@ -794,6 +859,10 @@ void FoDapCovJsonTransform::transformNodeWorker(ostream *strm, vector<libdap::Ba
     for(vector<libdap::BaseType *>::size_type n = 0; n < nodes.size(); n++) {
         libdap::BaseType *v = nodes[n];
         BESDEBUG(FoDapCovJsonTransform_debug_key, "Processing NODE: " << v->name() << endl);
+
+        // FOR TESTING AND DEBUGGING PURPOSES
+        // *strm << "Processing NODE: " <<  v->name() << endl;
+
         transform(strm, v, indent + _indent_increment, sendData);
     }
 }
@@ -1062,7 +1131,17 @@ void FoDapCovJsonTransform::printParametersWorker(ostream *strm, string indent)
         *strm << child_indent2 << "\"observedProperty\": {" << endl;
         *strm << child_indent3 << "\"id\": null," << endl;
         *strm << child_indent3 << "\"label\": {" << endl;
-        *strm << child_indent4 << "\"en\": \"" << parameters[i]->longName << "\"" << endl;
+
+        if(parameters[i]->longName.compare("") != 0) {
+            *strm << child_indent4 << "\"en\": \"" << parameters[i]->longName << "\"" << endl;
+        }
+        else if(parameters[i]->standardName.compare("") != 0) {
+            *strm << child_indent4 << "\"en\": \"" << parameters[i]->standardName << "\"" << endl;
+        }
+        else {
+            *strm << child_indent4 << "\"en\": \"none\"" << endl;
+        }
+
         *strm << child_indent3 << "}" << endl;
         *strm << child_indent2 << "}" << endl;
 
@@ -1139,7 +1218,7 @@ void FoDapCovJsonTransform::printRangesWorker(ostream *strm, string indent)
             dataType = "string";
         }
         else {
-            dataType = "unknown";
+            dataType = "string";
         }
 
         *strm << child_indent1 << "\"" << parameters[i]->name << "\": {" << endl;
