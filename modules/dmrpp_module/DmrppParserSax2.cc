@@ -1471,60 +1471,7 @@ void DmrppParserSax2::intern(istream &f, DMR *dest_dmr, bool debug)
     cleanup_parse();
 }
 
-/**
- * Read the DMR from a stream.
- *
- * @param f The input stream
- * @param dest_dmr Value-result parameter. Pass a pointer to a DMR in and
- * the information in the DMR will be added to it.
- * @param boundary If not empty, use this as the boundary tag in a MPM document
- * that marks the end of the part hat holds the DMR. Stop reading when the
- * boundary is found.
- * @param debug If true, ouput helpful debugging messages, False by default.
- *
- * @exception Error Thrown if the XML document could not be read or parsed.
- * @exception InternalErr Thrown if an internal error is found.
- */
-void DmrppParserSax2::intern_OLD(istream &f, DMR *dest_dmr, bool debug)
-{
-    d_debug = debug;
 
-    // Code example from libxml2 docs re: read from a stream.
-
-    if (!f.good()) throw Error("Input stream not open or read error");
-    if (!dest_dmr) throw InternalErr(__FILE__, __LINE__, "DMR object is null");
-
-    d_dmr = dest_dmr; // dump values here
-
-    const int size = MAX_INPUT_LINE_LENGTH;
-    char chars[size];
-    int line_num = 1;
-    string line;
-
-    f.getline(chars, size);
-    int res = f.gcount();
-    if (res == 0) throw Error("No input found while parsing the DMR.");
-
-    if (debug) cerr << "line(" << line_num++ << "): " << chars << endl;
-
-    context = xmlCreatePushParserCtxt(&dmr_sax_parser, this, chars, res - 1, "stream");
-    context->validate = true;
-    push_state(parser_start);
-
-    f.getline(chars, size);
-    while ((f.gcount() > 0) && (get_state() != parser_end)) {
-        if (debug) cerr << "line(" << line_num++ << "): " << chars << endl;
-        xmlParseChunk(context, chars, f.gcount() - 1, 0);
-        f.getline(chars, size);
-    }
-
-    // This call ends the parse.
-    xmlParseChunk(context, chars, 0, 1/*terminate*/);
-
-    // This checks that the state on the parser stack is parser_end and throws
-    // an exception if it's not (i.e., the loop exited with gcount() == 0).
-    cleanup_parse();
-}
 
 /** Parse a DMR document stored in a string.
  *
