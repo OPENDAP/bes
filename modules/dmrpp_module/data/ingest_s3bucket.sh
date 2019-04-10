@@ -106,7 +106,7 @@ find_s3_files=
 find_local_files=
 keep_data_files=
 
-while getopts "h?vVjrs:b:d:t:r:lak" opt; do
+while getopts "h?vVjs:b:d:t:r:fk" opt; do
     case "$opt" in
     h|\?)
         show_usage
@@ -141,7 +141,7 @@ while getopts "h?vVjrs:b:d:t:r:lak" opt; do
     r)
         dataset_regex_match="$OPTARG"
         ;;
-    a)
+    f)
         find_s3_files="yes"
         ;;
     k)
