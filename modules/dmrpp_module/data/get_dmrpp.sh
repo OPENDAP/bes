@@ -82,7 +82,7 @@ then
 fi
 echo "OUTPUT_FILE: ${output_file}";
 echo "just_dmr: ${just_dmr}";
-
+echo "dmrpp_url: ${dmrpp_url}";
 
 
 ###############################################################################
