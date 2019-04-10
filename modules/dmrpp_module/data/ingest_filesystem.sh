@@ -97,7 +97,6 @@ OPTIND=1        # Reset in case getopts has been used previously in this shell
 verbose=
 very_verbose=
 just_dmr=
-dmrpp_url_base=
 find_s3_files=
 find_local_files=
 keep_data_files=
@@ -201,6 +200,7 @@ function mk_dmrpp_files_from_list() {
             echo "dataset_file: ${dataset_file}";
             echo "relative_filename: ${relative_filename}";
             echo "target_file: ${target_file}";
+            echo "dmrpp_url: ${dmrpp_url}";
         fi
 
         mkdir -p `dirname ${target_file}`
