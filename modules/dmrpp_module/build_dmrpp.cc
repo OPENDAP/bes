@@ -356,7 +356,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
                     // layout object above. jhrg 5/10/18
                     vector<H5D_chunk_rec_t> chunk_st_ptr(num_chunk);
                     unsigned int num_chunk_dims = 0;
-                    if (H5Dget_dataset_storage_info(dataset, &chunk_st_ptr[0], &num_chunk_dims, &storage_status) < 0)
+                    if (H5Dget_dataset_storage_info(dataset, &layout_type, &chunk_st_ptr[0], &storage_status) < 0)
                         throw BESInternalError("Cannot get HDF5 chunk storage info.", __FILE__, __LINE__);
 
                     num_chunk_dims -= 1; // num_chunk_dims is rank + 1. not sure why. jhrg 5/10/18
