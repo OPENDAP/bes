@@ -74,16 +74,24 @@ shift $((OPTIND-1))
 
 [ "$1" = "--" ] && shift
 
+if test -n "$very_verbose"
+then
+    set -x;
+fi
+
 input_data_file="${1}";
 
 if test -z "${output_file}"
 then
     output_file="${input_data_file}.dmrpp"
 fi
-echo "OUTPUT_FILE: ${output_file}";
-echo "just_dmr: ${just_dmr}";
-echo "dmrpp_url: ${dmrpp_url}";
 
+if test -n "${verbose}"
+then
+	echo "OUTPUT_FILE: '${output_file}'";
+	echo "just_dmr: '${just_dmr}'";
+	echo "dmrpp_url: '${dmrpp_url}'";
+fi
 
 ###############################################################################
 #
@@ -161,7 +169,6 @@ function mk_dmrpp() {
     datafile="${1}";
 	if test -z "${just_dmr}"
 	then
-		set -x;
 	    ./build_dmrpp ${verbose} -c "${TMP_CONF}" -f "${data_root}/${datafile}" -r "${TMP_DMR_RESP}" -u "${dmrpp_url}" > "${output_file}";
 	else
 	    echo "The just_dmr flag is set, skipping dmr++ construction."
