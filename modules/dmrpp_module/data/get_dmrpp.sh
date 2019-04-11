@@ -134,7 +134,9 @@ EOF
 	# Use the cwd as the BES's Data Root directory - this is a trick so that the
 	# script can get a DMR using the HDF5 handler algorithm, as tweaked by the 
 	# handler's configuration parameters in the bes.hdf5.cf.template.conf file.
-	echo "Checking for ${CONF_FILE_TEMPLATE} (pwd: "`pwd`")";
+	if test -n "$very_verbose" ; then
+	    echo "Checking for ${CONF_FILE_TEMPLATE} (pwd: "`pwd`")";
+	fi
 	if  [ ! -f "${CONF_FILE_TEMPLATE}" ]
 	then
 		echo "ERROR: Missing BES configuration file template \"${CONF_FILE_TEMPLATE}\"";
