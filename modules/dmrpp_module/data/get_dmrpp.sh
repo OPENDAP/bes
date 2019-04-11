@@ -45,13 +45,13 @@ while getopts "h?vVru:d:o:" opt; do
         exit 0
         ;;
     v)
-        verbose="-v"
+        verbose="yes"
         echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
         echo "${0} - BEGIN (verbose)";
         ;;
     V)
-        very_verbose="yes"
-        verbose="-v"
+        very_verbose="-v"
+        verbose="yes"
         echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
         echo "${0} - BEGIN (very_verbose)";
        ;;
@@ -171,7 +171,7 @@ function mk_dmrpp() {
     datafile="${1}";
 	if test -z "${just_dmr}"
 	then
-	    ./build_dmrpp ${verbose} -c "${TMP_CONF}" -f "${data_root}/${datafile}" -r "${TMP_DMR_RESP}" -u "${dmrpp_url}" > "${output_file}";
+	    ./build_dmrpp ${very_verbose} -c "${TMP_CONF}" -f "${data_root}/${datafile}" -r "${TMP_DMR_RESP}" -u "${dmrpp_url}" > "${output_file}";
 	else
 	    echo "The just_dmr flag is set, skipping dmr++ construction."
 	fi
