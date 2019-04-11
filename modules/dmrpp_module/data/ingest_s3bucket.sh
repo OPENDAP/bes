@@ -258,9 +258,10 @@ function mk_dmrpp_from_s3_list() {
         mkdir -p `dirname ${data_file}`;
         timer=;
         if test -n "$verbose"; then
-            timer="time -p"
-        fi  
-        ${timer} aws s3 cp --quiet "s3://${s3_bucket_name}/${relative_filename}" "${data_file}"
+            time -p aws s3 cp --quiet "s3://${s3_bucket_name}/${relative_filename}" "${data_file}";
+        else
+            aws s3 cp --quiet "s3://${s3_bucket_name}/${relative_filename}" "${data_file}";
+        fi
            
         mkdir -p `dirname ${target_file}`;
         ./get_dmrpp.sh ${verbose} ${very_verbose} ${just_dmr} -u "${s3_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
