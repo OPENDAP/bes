@@ -249,8 +249,7 @@ function mk_dmrpp_from_s3_list() {
      
         if test -z "${keep_data_files}"
         then
-        	echo "Deleting data file: ${data_file}";
-            rm -vf "${data_file}";
+            rm ${verbose} -f "${data_file}";
         fi
         
  done
