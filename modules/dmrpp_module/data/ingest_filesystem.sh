@@ -57,8 +57,7 @@ function show_usage() {
  
  -h: Show help
  -v: Verbose: Print the DMR too
- -V: Very Verbose: print the DMR, the command and the configuration
-     file used to build the DMR
+ -V: Very Verbose: Verbose plus so much more!
  -j: Just print the DMR that will be used to build the DMR++
  -u: The base endpoint URL for the DMRPP data objects. The assumption
      is that they will be organized the same way the source dataset 
@@ -122,7 +121,7 @@ while getopts "h?vVju:d:t:r:f" opt; do
         echo "${0} - BEGIN (verbose)";
         ;;
     V)
-        very_verbose="yes"
+        very_verbose="-V"
         verbose="-v"
          echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
         echo "${0} - BEGIN (very_verbose)";
@@ -154,6 +153,11 @@ shift $((OPTIND-1))
 
 [ "$1" = "--" ] && shift
 
+if test -n "$very_verbose"
+then
+    set -x;
+fi
+
 #################################################################################
 
 
@@ -172,14 +176,23 @@ shift $((OPTIND-1))
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 function mk_file_list_from_filesystem() {
 
-    echo "Retrieving file list from ${data_root}. ALL_FILES: ${ALL_FILES}";    
+    if test -n "$verbose"
+    then 
+        echo "Retrieving file list from ${data_root}. ALL_FILES: ${ALL_FILES}";    
+    fi
     time -p find ${data_root} -type f > ${ALL_FILES};
     
-    echo "Locating DATA_FILES: ${DATA_FILES}";
+    if test -n "$verbose"
+    then 
+        echo "Locating DATA_FILES: ${DATA_FILES}";
+    fi
     time -p grep -E -e "${dataset_regex_match}" ${ALL_FILES} > ${DATA_FILES};
     
     dataset_count=`cat ${DATA_FILES} | wc -l`;
-    echo "Found ${dataset_count} suitable data files in ${data_root}"
+    if test -n "$verbose"
+    then 
+        echo "Found ${dataset_count} suitable data files in ${data_root}"
+    fi
 }
 #################################################################################
 
@@ -213,8 +226,7 @@ function mk_dmrpp_files_from_list() {
         fi
 
         mkdir -p `dirname ${target_file}`
-		set -x;
-        ./get_dmrpp.sh -V ${just_dmr}  -u "${dmrpp_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
+        ./get_dmrpp.sh ${verbose} ${very_verbose} ${just_dmr}  -u "${dmrpp_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
         
     done
 

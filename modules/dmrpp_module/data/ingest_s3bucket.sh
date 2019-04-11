@@ -61,8 +61,8 @@ function show_usage() {
  
  -h: Show help
  -v: Verbose: Print the DMR too
- -V: Very Verbose: print the DMR, the command and the configuration
-     file used to build the DMR
+ -V: Very Verbose: Verbose plus so much more. Your eyes will water from
+     the scanning of it all.
  -j: Just print the DMR that will be used to build the DMR++
  -s: The endpoint URL for the S3 datastore. 
      (default: ${s3_service_endpoint})
@@ -125,7 +125,7 @@ while getopts "h?vVjs:b:d:t:r:fk" opt; do
         echo "${0} - BEGIN (verbose)";
         ;;
     V)
-        very_verbose="yes"
+        very_verbose="-V"
         verbose="-v"
          echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
         echo "${0} - BEGIN (very_verbose)";
@@ -163,6 +163,11 @@ shift $((OPTIND-1))
 
 [ "$1" = "--" ] && shift
 
+if test -n "$very_verbose"
+then
+    set -x;
+fi
+
 S3_ALL_FILES="./s3_${s3_bucket_name}_all_files.txt"
 S3_DATA_FILES="./s3_${s3_bucket_name}_data_files.txt"
 
@@ -183,17 +188,25 @@ S3_DATA_FILES="./s3_${s3_bucket_name}_data_files.txt"
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 function mk_file_list_from_s3() {
 
-    echo "Retrieving file list from S3."
-    echo "s3_bucket_name: ${s3_bucket_name}"
-    echo "S3_ALL_FILES: ${S3_ALL_FILES}";
-    
+    if test -n "$verbose"
+    then
+	    echo "Retrieving file list from S3."
+	    echo "s3_bucket_name: ${s3_bucket_name}"
+	    echo "S3_ALL_FILES: ${S3_ALL_FILES}";
+    fi
     time -p aws s3 ls --recursive "${s3_bucket_name}" > "${S3_ALL_FILES}";
     
-    echo "Locating S3_DATA_FILES: ${S3_DATA_FILES}";
+    if test -n "$verbose"
+    then
+        echo "Locating S3_DATA_FILES: ${S3_DATA_FILES}";
+    fi
     time -p grep -E -e "${dataset_regex_match}" "${S3_ALL_FILES}" > "${S3_DATA_FILES}";
     
-    dataset_count=`cat ${S3_DATA_FILES} | wc -l`;
-    echo "Found ${dataset_count} suitable data files in s3 bucket: ${s3_bucket_name}"
+    if test -n "$verbose"
+    then
+        dataset_count=`cat ${S3_DATA_FILES} | wc -l`;
+        echo "Found ${dataset_count} suitable data files in s3 bucket: ${s3_bucket_name}";
+    fi
 }
 #################################################################################
 
@@ -232,8 +245,7 @@ function mk_dmrpp_from_s3_list() {
         time -p aws s3 cp --quiet "s3://${s3_bucket_name}/${relative_filename}" "${data_file}";
         
         mkdir -p `dirname ${target_file}`;
-		set -x;
-        ./get_dmrpp.sh -V ${just_dmr} -u "${s3_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
+        ./get_dmrpp.sh ${verbose} ${very_verbose} ${just_dmr} -u "${s3_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
      
         if test -z "${keep_data_files}"
         then
