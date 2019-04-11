@@ -167,6 +167,18 @@ if test -n "$very_verbose"
 then
     set -x;
 fi
+if test -n "${verbose}"; then 
+    echo "verbose:             '${verbose}'"
+    echo "very_verbose:        '${very_verbose}'"
+    echo "just_dmr:            '${just_dmr}'"
+    echo "s3_service_endpoint: '${s3_service_endpoint}'"
+    echo "s3_bucket_name:      '${s3_bucket_name}'"
+    echo "data_root:           '${data_root}'"
+    echo "target_dir:          '${target_dir}'"
+    echo "find_s3_files:       '${find_s3_files}'"
+    echo "dataset_regex_match: '${dataset_regex_match}'"
+    echo "keep_data_files:     '${keep_data_files}'"
+fi
 
 S3_ALL_FILES="./s3_${s3_bucket_name}_all_files.txt"
 S3_DATA_FILES="./s3_${s3_bucket_name}_data_files.txt"
