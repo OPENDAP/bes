@@ -59,22 +59,32 @@ function show_usage() {
  -v: Verbose: Print the DMR too
  -V: Very Verbose: print the DMR, the command and the configuration
      file used to build the DMR
- -r: Just print the DMR that will be used to build the DMR++
- -s: The endpoint URL for the S3 datastore. 
-     (default: ${s3_service_endpoint})
- -b: The S3 bucket name. 
-     (default: ${s3_bucket_name})
- -d: The "local" filesystem base for the data. 
+ -j: Just print the DMR that will be used to build the DMR++
+ -u: The base endpoint URL for the DMRPP data objects. The assumption
+     is that they will be organized the same way the source dataset 
+     files below the "data_root" (see -d)
+     (default: ${dmrpp_url_base})
+ -d: The local filesystem root from which the data to be ingested. 
+     The filesystem will searched begining at this point for files names 
+     matching the dataset match regex (see -r).
      (default: ${data_root})
- -f: Find all matching data files (if missing then dmrpp generation
-     will happen using an exisiting file list, if found.
+ -t: The target directory for the dmrpp files. Below this point
+     the structure of the bucket objects vis-a-vis their "/" path
+     separator divided names will be replicted and dmr++ placed into
+     it accordingly.
+     (default: ${target_dir})
  -r: The dataset match regex used to screen the base filesystem 
      for datasets. 
      (default: ${dataset_regex_match})
- -l: Make the file list from local files. 
-     (default: disabled)
- -a: Make the file list from AWS S3 bucket listing. 
-     (default: disabled)
+ -f: Use "find" to list all regular files below the data root directory 
+     and store the list in "${ALL_FILES}" The the dataset match regex is applied
+     to each string in ${ALL_FILES} and the matching data files list is placed in
+     "${DATA_FILES}". If this option is omitted the files named in "${DATA_FILES}"
+      (if any) will be processed.
+     (default: Not Set)
+ -f: Use 'find' to locate all matching data files (if missing then dmrpp generation
+     will happen using an exisiting file list, if found.
+     (default: Not Set)
 
 
  Limitations: 
@@ -82,6 +92,7 @@ function show_usage() {
    directory where this command was run; absolute paths won't work. 
  * The build_dmrpp command must be in the CWD. 
  * The bes conf template has to build by hand. jhrg 5/11/18
+ 
 EOF
 }
 #################################################################################
@@ -97,9 +108,7 @@ OPTIND=1        # Reset in case getopts has been used previously in this shell
 verbose=
 very_verbose=
 just_dmr=
-find_s3_files=
 find_local_files=
-keep_data_files=
 
 while getopts "h?vVju:d:t:r:f" opt; do
     case "$opt" in

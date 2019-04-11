@@ -51,8 +51,8 @@ function show_usage() {
 
  Usage: $0 [options] 
 
- Crawl filesystem and make a DMR++ for every dataset matching the
- default or supplied regex.
+ List an AWS S3 bucket and make a DMR++ for every dataset matching the
+ default (or supplied) regex.
 
  The CWD is set as the BES Data Root directory by default. This utility will
  add an entry to the bes.log specified in the configuration file.
@@ -63,22 +63,28 @@ function show_usage() {
  -v: Verbose: Print the DMR too
  -V: Very Verbose: print the DMR, the command and the configuration
      file used to build the DMR
- -r: Just print the DMR that will be used to build the DMR++
+ -j: Just print the DMR that will be used to build the DMR++
  -s: The endpoint URL for the S3 datastore. 
      (default: ${s3_service_endpoint})
  -b: The S3 bucket name. 
      (default: ${s3_bucket_name})
- -d: The "local" filesystem base for the data. 
+ -d: The "local" filesystem root for the downloaded data. 
      (default: ${data_root})
- -f: Find all matching data files (if missing then dmrpp generation
-     will happen using an exisiting file list, if found.
+ -t: The target directory for the dmrpp files. Below this point
+     the structure of the bucket objects vis-a-vis their "/" path
+     separator divided names will be replicted and dmr++ placed into
+     it accordingly.
+     (default: ${target_dir})
+ -f: Retrieve object list from S3 bucket into ${ALL_FILES} and
+     apply the dataset match regex to the object names to create
+     the data files list in ${DATA_FILES}. If this is omitted the
+     files named in ${DATA_FILES} (if any) will be processed.
+     (default: Not Set)
  -r: The dataset match regex used to screen the base filesystem 
      for datasets. 
      (default: ${dataset_regex_match})
- -l: Make the file list from local files. 
-     (default: disabled)
- -a: Make the file list from AWS S3 bucket listing. 
-     (default: disabled)
+ -k: Keep the downloaded datafiles after the dmr++ file has been 
+     created. Be careful! S3 buckets can be quite large!
 
 
  Limitations: 
@@ -86,6 +92,7 @@ function show_usage() {
    directory where this command was run; absolute paths won't work. 
  * The build_dmrpp command must be in the CWD. 
  * The bes conf template has to build by hand. jhrg 5/11/18
+ 
 EOF
 }
 #################################################################################
@@ -138,11 +145,11 @@ while getopts "h?vVjs:b:d:t:r:fk" opt; do
     t)
         target_dir="$OPTARG"
         ;;
-    r)
-        dataset_regex_match="$OPTARG"
-        ;;
     f)
         find_s3_files="yes"
+        ;;
+    r)
+        dataset_regex_match="$OPTARG"
         ;;
     k)
         keep_data_files="yes";
@@ -246,7 +253,7 @@ function mk_dmrpp_from_s3_list() {
 
 #################################################################################
 #
-# main() 
+# "main()" (such as there is in bash)
 # 
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 echo "${0} START: "`date`;

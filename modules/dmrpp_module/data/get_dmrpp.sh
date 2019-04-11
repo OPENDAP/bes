@@ -52,7 +52,7 @@ while getopts "h?vVru:d:o:" opt; do
     V)
         very_verbose="yes"
         verbose="-v"
-         echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
+        echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
         echo "${0} - BEGIN (very_verbose)";
        ;;
     r)
