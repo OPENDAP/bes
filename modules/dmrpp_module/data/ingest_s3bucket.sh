@@ -22,7 +22,6 @@
 #
 # You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 #
-data_root="/home/centos/hyrax/build/share/hyrax/s3/cloudydap";
 target_dir="/home/centos/hyrax/build/share/hyrax/dmrpp_from_aws_cli";
 
 # Should match the value of BES.Catalog.catalog.TypeMatch in the bes.hdf5.cf.conf(.in) files.
@@ -69,7 +68,7 @@ function show_usage() {
  -b: The S3 bucket name. 
      (default: ${s3_bucket_name})
  -d: The "local" filesystem root for the downloaded data. 
-     (default: ${data_root})
+     (default: ./s3_data/bucket_name})
  -t: The target directory for the dmrpp files. Below this point
      the structure of the bucket objects vis-a-vis their "/" path
      separator divided names will be replicted and dmr++ placed into
@@ -112,6 +111,7 @@ dmrpp_url=
 find_s3_files=
 find_local_files=
 keep_data_files=
+data_root=
 
 while getopts "h?vVjs:b:d:t:r:fk" opt; do
     case "$opt" in
@@ -239,13 +239,15 @@ function mk_dmrpp_from_s3_list() {
     for relative_filename  in `cat ${S3_DATA_FILES} | awk '{print $4;}' -`
     do        
         s3_url="${s3_service_endpoint}${s3_bucket_name}/${relative_filename}";
-        data_root=`pwd`"/data/${s3_bucket_name}";
+        if test -z "${data_root}"; then
+            data_root=`pwd`"/s3_data/${s3_bucket_name}";
+        fi
+        
         data_file="${data_root}/${relative_filename}";
         target_file="${target_dir}/${relative_filename}.dmrpp";       
           
         if test -n "$verbose"
         then
-            echo "dataset:           ${dataset}";
             echo "relative_filename: ${relative_filename}";
             echo "s3_url:            ${s3_url}";
             echo "data_file:         ${data_file}";
