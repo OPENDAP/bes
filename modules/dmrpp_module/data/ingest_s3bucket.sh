@@ -243,7 +243,7 @@ function mk_dmrpp_from_s3_list() {
         
         mkdir -p `dirname ${data_file}`;
         timer=;
-        if test -n "$verbose"
+        if test -n "$verbose"; then
             timer="time -p"
         fi  
         ${timer} aws s3 cp --quiet "s3://${s3_bucket_name}/${relative_filename}" "${data_file}"
