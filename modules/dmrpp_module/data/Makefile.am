@@ -17,7 +17,8 @@ AM_CXXFLAGS =
 
 # noinst_SCRIPTS = keepalive_stats.sh mtest.sh shreddit.sh test_reuse.sh
 
-noinst_SCRIPTS = get_dmrpp.sh
+# noinst_SCRIPTS = get_dmrpp.sh
+dist_bin_SCRIPTS = get_dmrpp.sh ingest_filesystem.sh ingest_s3bucket.sh
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
