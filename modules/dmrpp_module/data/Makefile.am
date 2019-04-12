@@ -17,8 +17,7 @@ AM_CXXFLAGS =
 
 # noinst_SCRIPTS = keepalive_stats.sh mtest.sh shreddit.sh test_reuse.sh
 
-# noinst_SCRIPTS = get_dmrpp.sh
-dist_bin_SCRIPTS = get_dmrpp.sh ingest_filesystem.sh ingest_s3bucket.sh
+dist_bin_SCRIPTS = get_dmrpp ingest_filesystem ingest_s3bucket
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
@@ -30,6 +29,16 @@ dist_bin_SCRIPTS = get_dmrpp.sh ingest_filesystem.sh ingest_s3bucket.sh
 		-e "s%[@]modulesdir[@]%${modulesdir}%" $< > $@
 
 bes.hdf5.cf.conf: $(srcdir)/bes.hdf5.cf.conf.in $(top_srcdir)/configure.ac
+
+# Build the get_dmrpp script so that the value substituted for
+# @abs_top_srcdir@ does not contain '../'. This happens when using 
+# configure's value for the parameter when running the distcheck target.
+get_dmrpp: $(srcdir)/get_dmrpp.in $(top_srcdir)/configure.ac
+	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	cat $(srcdir)/get_dmrpp.in | sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
+		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
+		-e "s%[@]modulesdir[@]%${modulesdir}%" > get_dmrpp
+	
 
 check-local: bes.hdf5.cf.conf
 

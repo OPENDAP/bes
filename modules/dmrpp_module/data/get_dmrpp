@@ -1,0 +1,314 @@
+#!/bin/bash
+set -e;
+
+data_root=`pwd`;
+
+BES_CONF_DOC=`cat <<EOF 
+# This configuration file is read by besstandalone when it is used to 
+# produce DMR documents for use with build_dmrpp. The DAP, XML Command
+# and HDF5 handler modules are the 'installed' ones (not the modules
+# found in the build tree). jhrg 5/11/18
+
+BES.ServerAdministrator=admin.email.address@your.domain.name
+
+BES.User=user_name
+BES.Group=group_name
+
+BES.LogName=./bes.log
+BES.LogVerbose=no
+
+BES.modules=dap,cmd,h5
+
+# Despite the comment at the top, use the development modules for now. jhrg 5/11/18
+
+# BES.module.dap=/libdap_module.so
+# BES.module.cmd=/libdap_xml_module.so
+# BES.module.h5=/libhdf5_module.so
+
+BES.module.dap=/Users/ndp/OPeNDAP/hyrax/bes/dap/.libs/libdap_module.so
+BES.module.cmd=/Users/ndp/OPeNDAP/hyrax/bes/xmlcommand/.libs/libdap_xml_module.so
+BES.module.h5=/Users/ndp/OPeNDAP/hyrax/bes/modules/hdf5_handler/.libs/libhdf5_module.so
+
+BES.Catalog.catalog.RootDirectory=@hdf5_root_directory@
+BES.Data.RootDirectory=/dev/null
+
+BES.Catalog.catalog.TypeMatch=h5:.*\.(h5|he5|nc4)(\.bz2|\.gz|\.Z)?$;
+
+BES.Catalog.catalog.Include=;
+BES.Catalog.catalog.Exclude=^\..*;
+
+BES.FollowSymLinks=Yes
+BES.Catalog.catalog.FollowSymLinks=Yes
+
+BES.Info.Buffered=no
+BES.Info.Type=xml
+
+BES.UncompressCache.dir=/tmp/hyrax_ux
+BES.UncompressCache.prefix=ux_
+BES.UncompressCache.size=500
+BES.Uncompress.Retry=2000
+BES.Uncompress.NumTries=10
+
+BES.Container.Persistence=strict
+
+BES.Memory.GlobalArea.EmergencyPoolSize=1
+BES.Memory.GlobalArea.MaximumHeapSize=20
+BES.Memory.GlobalArea.Verbose=no
+BES.Memory.GlobalArea.ControlHeap=no
+
+BES.ProcessManagerMethod=multiple
+
+BES.DefaultResponseMethod=POST
+
+# Control the Metadata Response Store. Here, DAP metadata responses
+# are stored/cached so that they can be returned by the server w/o
+# having to touch the data files/objects. Setting the 'path' to null
+# disables uses of the MDS. Setting 'size' to zero makes the MDS
+# hold objects forever; setting a positive non-zero size makes the
+# MDS behave like a cache, purging responses when the size is exceeded.
+
+# FIXME This will need to be modified for the DMR++ responses when
+# when enable Arch #2 since regenerating the DMR++ will be more
+# expensive than regenerating other responses from files
+
+DAP.GlobalMetadataStore.path = /Users/ndp/OPeNDAP/hyrax/bes/modules/dmrpp_module/data/mds
+DAP.GlobalMetadataStore.prefix = mds
+DAP.GlobalMetadataStore.size = 0
+
+# The MDS writes a ledger of additions and removals. By default the
+# ledger is kept in 'mds_ledger.txt' in the directory used to start
+# the BES.
+
+DAP.GlobalMetadataStore.ledger = /Users/ndp/OPeNDAP/hyrax/bes/modules/dmrpp_module/data/mds_ledger.txt
+
+#-----------------------------------------------------------------------#
+# HDF5 handler specific parameters: 
+#-----------------------------------------------------------------------#
+# EnableCF: Handle HDF data to follow the CF conventions
+#   (true,yes|false,no, defaults to false)
+# Since most centers  would like to handle HDF5 data that follows CF now,
+# I set the EnableCF to be true, KY 2011-8-4
+#
+H5.EnableCF=true
+H5.KeepVarLeadingUnderscore=false
+H5.EnableCheckNameClashing=true
+H5.EnableAddPathAttrs=true
+H5.EnableDropLongString=true
+H5.DisableStructMetaAttr=true
+H5.EnableFillValueCheck=true
+H5.CheckIgnoreObj=false
+H5.MetaDataMemCacheEntries=300
+H5.LargeDataMemCacheEntries=0
+H5.SmallDataMemCacheEntries=0 
+#H5.CachePurgeLevel=0.2
+
+H5.EnableDiskMetaDataCache=false
+H5.EnableDiskDDSCache=false
+H5.DiskMetaDataCachePath=/tmp
+
+H5.EnableEOSGeoCacheFile=false
+H5.Cache.latlon.path=/tmp/latlon
+H5.Cache.latlon.prefix=l
+H5.Cache.latlon.size=20000
+
+H5.EnableDiskDataCache=false
+H5.DiskCacheDataPath=/tmp
+H5.DiskCacheFilePrefix=c
+H5.DiskCacheSize=10000
+H5.DiskCacheComp=true
+H5.DiskCacheFloatOnlyComp=true
+H5.DiskCacheCompThreshold=2.0
+H5.DiskCacheCompVarSize=10000
+EOF
+`
+
+show_usage() {
+    cat <<EOF
+
+ Usage: $0 [options] <hdf5 file>
+
+ Write the DMR++ for hdf5_file to stdout
+ 
+ By default the BES Data Root directory is set to the CWD. This 
+ utility will add an entry to the bes.log specified in the 
+ configuration file. The DMR++ is built using the DMR as returned 
+ by the HDF5 handler, using options as set in the bes 
+ configuration file found here.
+ 
+ -h: Show help
+ -v: Verbose: Print the DMR too
+ -V: Very Verbose: print the DMR, the command and the configuration
+     file used to build the DMR
+ -r: Just print the DMR that will be used to build the DMR++
+ -u: The binary object URL for use in the DMR++ file
+ -d: Data root directory for the BES.
+ -o: The name of the file  to create.
+
+ Limitations: 
+ * The pathanme to the hdf5 file must be relative from the
+   directory where this command was run; absolute paths will not work. 
+ * The build_dmrpp command must be in the CWD. 
+ * The bes conf template has to build by hand. jhrg 5/11/18
+EOF
+}
+
+OPTIND=1        # Reset in case getopts has been used previously in this shell
+
+verbose=
+very_verbose=
+just_dmr=
+dmrpp_url=
+bes_conf_file=
+
+while getopts "h?vVru:d:o:" opt; do
+    case "$opt" in
+    h|\?)
+        show_usage
+        exit 0
+        ;;
+    v)
+        verbose="yes"
+        echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
+        echo "${0} - BEGIN (verbose)";
+        ;;
+    V)
+        very_verbose="-v"
+        verbose="yes"
+        echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
+        echo "${0} - BEGIN (very_verbose)";
+       ;;
+    c) 
+        bes_conf_file="$OPTARG"
+        ;;
+    r)
+        just_dmr="yes"
+        ;;
+    u)
+        dmrpp_url="$OPTARG"
+        ;;
+    d)
+        data_root="$OPTARG"
+        ;;
+    o)
+        output_file="$OPTARG"
+        ;;
+    esac
+done
+
+shift $((OPTIND-1))
+
+[ "$1" = "--" ] && shift
+
+if test -n "$very_verbose"
+then
+    set -x;
+fi
+
+input_data_file="${1}";
+
+if test -z "${output_file}"
+then
+    output_file="${input_data_file}.dmrpp"
+fi
+
+if test -n "${verbose}"
+then
+	echo "OUTPUT_FILE: '${output_file}'";
+	echo "just_dmr: '${just_dmr}'";
+	echo "dmrpp_url: '${dmrpp_url}'";
+fi
+
+if test -n "${very_verbose}"
+then
+	echo "BES_CONF_DOC: '${BES_CONF_DOC}'";
+fi
+
+###############################################################################
+#
+# Build the (temporary) DMR file for the target dataset.
+#
+function get_dmr() {
+	# build the xml file
+	DATAFILE="${1}";
+	
+cmdDoc=`cat <<EOF 
+<?xml version="1.0" encoding="UTF-8"?>
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="get_dmrpp.sh">
+  <bes:setContext name="dap_explicit_containers">no</bes:setContext>
+  <bes:setContext name="errors">xml</bes:setContext>
+  <bes:setContext name="max_response_size">0</bes:setContext>
+  
+  <bes:setContainer name="c">$DATAFILE</bes:setContainer>
+  
+  <bes:define name="d" space="default">
+    <bes:container name="c">
+    </bes:container>
+  </bes:define>
+  
+  <bes:get type="dmr" definition="d" />
+  
+</bes:request>
+EOF
+`
+	TMP_CMD=$(mktemp -t get_dmr_XXXX)	
+    echo "${cmdDoc}" > $TMP_CMD
+	
+	if test -n "$very_verbose"
+	then
+	    echo "TMP_CMD: $TMP_CMD"
+	    cat $TMP_CMD
+	fi
+	
+	TMP_CONF=$(mktemp -t conf_XXXX)
+	
+	
+	if  test -n "${bes_conf_file}"
+	then
+		if test -n "${verbose}"; then
+		   echo "Using BES Configuration: \"${bes_conf_file}\"";
+		fi
+		BES_CONF_DOC=`cat ${bes_conf_file}`;
+	fi
+
+	# Use the $data_root as the BES Data Root directory - this is a trick so that the
+	# script can get a DMR using the HDF5 handler algorithm, as tweaked by the 
+	# handlers configuration parameters in the BES_CONF_DOC here document.
+	echo  "${BES_CONF_DOC}" | sed -e "s%[@]hdf5_root_directory[@]%${data_root}%" > ${TMP_CONF};
+	
+	if test -n "$very_verbose"
+	then
+	    echo "TMP_CONF: ${TMP_CONF}"
+	    cat ${TMP_CONF}
+	fi
+	
+	TMP_DMR_RESP=$(mktemp -t dmr_XXXX)
+	
+	# use besstandalone to get the DMR
+	besstandalone -c ${TMP_CONF} -i ${TMP_CMD} > ${TMP_DMR_RESP}
+	
+	if test -n "$verbose" || test -n "$just_dmr"
+	then
+	    echo "DMR:"
+	    cat ${TMP_DMR_RESP}
+	fi
+
+}
+###############################################################################
+
+###############################################################################
+function mk_dmrpp() {
+    datafile="${1}";
+	if test -z "${just_dmr}"
+	then
+	    build_dmrpp ${very_verbose} -c "${TMP_CONF}" -f "${data_root}/${datafile}" -r "${TMP_DMR_RESP}" -u "${dmrpp_url}" > "${output_file}";
+	else
+	    echo "The just_dmr flag is set, skipping dmr++ construction."
+	fi
+	
+	# TODO Use trap to ensure these are really removed
+	rm $DMR_CMD $TMP_DMR_RESP $TMP_CONF
+}
+ ###############################################################################
+ 
+get_dmr  "${input_data_file}";
+mk_dmrpp "${input_data_file}";
