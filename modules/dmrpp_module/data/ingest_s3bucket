@@ -264,7 +264,7 @@ function mk_dmrpp_from_s3_list() {
         fi
            
         mkdir -p `dirname ${target_file}`;
-        get_dmrpp.sh ${verbose} ${very_verbose} ${just_dmr} -u "${s3_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
+        get_dmrpp ${verbose} ${very_verbose} ${just_dmr} -u "${s3_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
      
         if test -z "${keep_data_files}"
         then

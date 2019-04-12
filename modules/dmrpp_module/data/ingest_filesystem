@@ -226,7 +226,7 @@ function mk_dmrpp_files_from_list() {
         fi
 
         mkdir -p `dirname ${target_file}`
-        get_dmrpp.sh ${verbose} ${very_verbose} ${just_dmr}  -u "${dmrpp_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
+        get_dmrpp ${verbose} ${very_verbose} ${just_dmr}  -u "${dmrpp_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
         
     done
 
