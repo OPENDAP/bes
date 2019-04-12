@@ -1,8 +1,17 @@
 #!/bin/bash
 set -e;
 
+###############################################################################
+#
+# Default data root for BES
+#
 data_root=`pwd`;
 
+
+###############################################################################
+#
+# Default BES Configuration.
+#
 BES_CONF_DOC=`cat <<EOF 
 # This configuration file is read by besstandalone when it is used to 
 # produce DMR documents for use with build_dmrpp. The DAP, XML Command
@@ -121,7 +130,14 @@ H5.DiskCacheCompThreshold=2.0
 H5.DiskCacheCompVarSize=10000
 EOF
 `
+###############################################################################
 
+
+
+###############################################################################
+#
+# Print the usage information.
+#
 show_usage() {
     cat <<EOF
 

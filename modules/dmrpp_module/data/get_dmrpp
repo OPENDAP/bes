@@ -1,8 +1,17 @@
 #!/bin/bash
 set -e;
 
+###############################################################################
+#
+# Default data root for BES
+#
 data_root=`pwd`;
 
+
+###############################################################################
+#
+# Default BES Configuration.
+#
 BES_CONF_DOC=`cat <<EOF 
 # This configuration file is read by besstandalone when it is used to 
 # produce DMR documents for use with build_dmrpp. The DAP, XML Command
@@ -121,7 +130,14 @@ H5.DiskCacheCompThreshold=2.0
 H5.DiskCacheCompVarSize=10000
 EOF
 `
+###############################################################################
 
+
+
+###############################################################################
+#
+# Print the usage information.
+#
 show_usage() {
     cat <<EOF
 
@@ -300,6 +316,11 @@ function mk_dmrpp() {
     datafile="${1}";
 	if test -z "${just_dmr}"
 	then
+		if test -n "$very_verbose"
+		then
+		    echo "TMP_CONF: ${TMP_CONF}"
+		    cat ${TMP_CONF}
+		fi
 	    build_dmrpp ${very_verbose} -c "${TMP_CONF}" -f "${data_root}/${datafile}" -r "${TMP_DMR_RESP}" -u "${dmrpp_url}" > "${output_file}";
 	else
 	    echo "The just_dmr flag is set, skipping dmr++ construction."
