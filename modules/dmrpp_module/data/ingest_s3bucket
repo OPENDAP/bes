@@ -24,7 +24,8 @@
 #
 target_dir="/home/centos/hyrax/build/share/hyrax/dmrpp_from_aws_cli";
 
-# Should match the value of BES.Catalog.catalog.TypeMatch in the bes.hdf5.cf.conf(.in) files.
+# Should match the value of BES.Catalog.catalog.TypeMatch in the bes 
+# configuration fileused by get_dmrpp.
 # TODO - can we make this read the conf file to get the regex info?
 dataset_regex_match="^.*\\.(h5|he5|nc4)(\\.bz2|\\.gz|\\.Z)?$";
 

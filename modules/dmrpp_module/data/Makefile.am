@@ -28,8 +28,6 @@ dist_bin_SCRIPTS = get_dmrpp ingest_filesystem ingest_s3bucket
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
 		-e "s%[@]modulesdir[@]%${modulesdir}%" $< > $@
 
-bes.hdf5.cf.conf: $(srcdir)/bes.hdf5.cf.conf.in $(top_srcdir)/configure.ac
-
 # Build the get_dmrpp script so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
 # configure's value for the parameter when running the distcheck target.
@@ -38,18 +36,12 @@ get_dmrpp: $(srcdir)/get_dmrpp.in $(top_srcdir)/configure.ac
 	cat $(srcdir)/get_dmrpp.in | sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
 		-e "s%[@]modulesdir[@]%${modulesdir}%" > get_dmrpp
-	
-
-check-local: bes.hdf5.cf.conf
-
-clean-local:
-	rm -f bes.hdf5.cf.conf
 
 EXTRA_PROGRAMS = 
 
 noinst_DATA = mds_for_tests
 
-EXTRA_DIST = get_dmrpp.sh README dmrpp mds_for_tests s3 s3_data
+EXTRA_DIST = get_dmrpp ingest_filesystem ingest_s3bucket README dmrpp mds_for_tests s3 s3_data
 
 CLEANFILES = *~
 
