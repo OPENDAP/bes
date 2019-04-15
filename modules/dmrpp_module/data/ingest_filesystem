@@ -1,0 +1,257 @@
+#!/bin/bash
+# -*- mode: bash; c-basic-offset:4 -*-
+#
+# This file is part of the Hyrax data server.
+#
+# Copyright (c) 2019 OPeNDAP, Inc.
+# Author: Nathan Potter <ndp@opendap.org>
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+#
+# You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+#
+data_root="/home/centos/hyrax/build/share/hyrax/s3/cloudydap";
+target_dir="/home/centos/hyrax/build/share/hyrax/dmrpp_from_filesystem";
+
+# Should match the value of BES.Catalog.catalog.TypeMatch in the bes 
+# configuration fileused by get_dmrpp.
+# TODO - can we make this read the conf file to get the regex info?
+dataset_regex_match="^.*\\.(h5|he5|nc4)(\\.bz2|\\.gz|\\.Z)?$";
+
+dmrpp_url_base="https://s3.amazonaws.com/cloudydap";
+
+#target_dir=`pwd`"/dmrpp";
+
+ALL_FILES="./all_files.txt";
+DATA_FILES="./data_files.txt";
+
+#################################################################################
+#
+# show_usage()
+#    Print the usage statement to stdout.
+#
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+function show_usage() {
+    cat <<EOF
+
+ Usage: $0 [options] 
+
+ Crawl filesystem and make a DMR++ for every dataset matching the
+ default or supplied regex.
+
+ The CWD is set as the BES Data Root directory by default. This utility will
+ add an entry to the bes.log specified in the configuration file.
+ The DMR++ is built using the DMR as returned by the HDF5 handler,
+ using options as set in the bes configuration file found here.
+ 
+ -h: Show help
+ -v: Verbose: Print the DMR too
+ -V: Very Verbose: Verbose plus so much more!
+ -j: Just print the DMR that will be used to build the DMR++
+ -u: The base endpoint URL for the DMRPP data objects. The assumption
+     is that they will be organized the same way the source dataset 
+     files below the "data_root" (see -d)
+     (default: ${dmrpp_url_base})
+ -d: The local filesystem root from which the data to be ingested. 
+     The filesystem will searched begining at this point for files names 
+     matching the dataset match regex (see -r).
+     (default: ${data_root})
+ -t: The target directory for the dmrpp files. Below this point
+     the structure of the bucket objects vis-a-vis their "/" path
+     separator divided names will be replicted and dmr++ placed into
+     it accordingly.
+     (default: ${target_dir})
+ -r: The dataset match regex used to screen the base filesystem 
+     for datasets. 
+     (default: ${dataset_regex_match})
+ -f: Use "find" to list all regular files below the data root directory 
+     and store the list in "${ALL_FILES}" The the dataset match regex is applied
+     to each string in ${ALL_FILES} and the matching data files list is placed in
+     "${DATA_FILES}". If this option is omitted the files named in "${DATA_FILES}"
+      (if any) will be processed.
+     (default: Not Set)
+ -f: Use 'find' to locate all matching data files (if missing then dmrpp generation
+     will happen using an exisiting file list, if found.
+     (default: Not Set)
+
+
+ Limitations: 
+ * The pathanme to the hdf5 file must be relative from the
+   directory where this command was run; absolute paths won't work. 
+ * The build_dmrpp command must be in the CWD. 
+ * The bes conf template has to build by hand. jhrg 5/11/18
+ 
+EOF
+}
+#################################################################################
+
+
+#################################################################################
+#
+# Process the commandline options.
+#
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+OPTIND=1        # Reset in case getopts has been used previously in this shell
+
+verbose=
+very_verbose=
+just_dmr=
+find_local_files=
+
+while getopts "h?vVju:d:t:r:f" opt; do
+    case "$opt" in
+    h|\?)
+        show_usage
+        exit 0
+        ;;
+    v)
+        verbose="-v"
+        echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
+        echo "${0} - BEGIN (verbose)";
+        ;;
+    V)
+        very_verbose="-V"
+        verbose="-v"
+         echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
+        echo "${0} - BEGIN (very_verbose)";
+       ;;
+    j)
+        just_dmr="-r";
+        ;;
+    u)
+        dmrpp_url_base="$OPTARG"
+        ;;
+    d)
+        data_root="$OPTARG"
+        ;;
+    t)
+        target_dir="$OPTARG"
+        ;;
+    r)
+        dataset_regex_match="$OPTARG"
+        ;;
+    f)
+        find_local_files="yes"
+        ;;
+        
+        
+    esac
+done
+
+shift $((OPTIND-1))
+
+[ "$1" = "--" ] && shift
+
+if test -n "$very_verbose"
+then
+    set -x;
+fi
+
+#################################################################################
+
+
+
+
+
+
+#################################################################################
+#
+# mk_file_list_from_filesystem() 
+#
+# Creates a list of all the files in or below data_root using find. The list is 
+# written to ALL_FILES. Once created the regex (either default or supplied with 
+# the -r option) is applied to the list and the matching files collected as 
+# DATA_FILES 
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+function mk_file_list_from_filesystem() {
+
+    if test -n "$verbose"
+    then 
+        echo "Retrieving file list from ${data_root}. ALL_FILES: ${ALL_FILES}";    
+    fi
+    time -p find ${data_root} -type f > ${ALL_FILES};
+    
+    if test -n "$verbose"
+    then 
+        echo "Locating DATA_FILES: ${DATA_FILES}";
+    fi
+    time -p grep -E -e "${dataset_regex_match}" ${ALL_FILES} > ${DATA_FILES};
+    
+    dataset_count=`cat ${DATA_FILES} | wc -l`;
+    if test -n "$verbose"
+    then 
+        echo "Found ${dataset_count} suitable data files in ${data_root}"
+    fi
+}
+#################################################################################
+
+
+
+
+#################################################################################
+#
+# mk_dmrpp() 
+#
+# Looks at each file name in DATA_FILES and computes the dmr++ for that file.
+# 
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+function mk_dmrpp_files_from_list() {
+
+	mkdir -p ${target_dir};
+
+    for dataset_file in `cat ${DATA_FILES}`
+    do
+        relative_filename=${dataset_file#"$data_root/"};
+        target_file="${target_dir}/${relative_filename}.dmrpp";
+        dmrpp_url="${dmrpp_url_base}/${relative_filename}";
+          
+        if test -n "$verbose"
+        then
+            echo "data_root:    ${data_root}";
+            echo "dataset_file: ${dataset_file}";
+            echo "relative_filename: ${relative_filename}";
+            echo "target_file: ${target_file}";
+            echo "dmrpp_url: ${dmrpp_url}";
+        fi
+
+        mkdir -p `dirname ${target_file}`
+        get_dmrpp ${verbose} ${very_verbose} ${just_dmr}  -u "${dmrpp_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
+        
+    done
+
+}
+#################################################################################
+
+
+
+
+#################################################################################
+#
+# main() 
+# 
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+echo "${0} START: "`date`;
+
+if test -n "${find_local_files}"
+then
+    mk_file_list_from_filesystem;
+fi 
+
+mk_dmrpp_files_from_list;
+
+
+echo "${0} END:   "`date`;
+#################################################################################
+
