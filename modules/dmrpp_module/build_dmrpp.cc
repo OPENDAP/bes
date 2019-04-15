@@ -287,20 +287,40 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
     try {
         uint8_t layout_type = 0;
         uint8_t storage_status = 0;
-        hsize_t num_chunk = 0;
+        hsize_t num_chunks = 0;
         hid_t fspace_id = 0;
         hsize_t chk_idx = 0;
-        hsize_t *offset = 0;
-        unsigned *filter_mask = NULL;
-        haddr_t *addr = NULL;
+        hsize_t offset = 0;
+        unsigned filter_mask = 0;
+        haddr_t addr = 0;
+        hsize_t size = 0;
 
-        herr_t status = H5Dget_chunk_info(dataset, fspace_id, chk_idx, offset, filter_mask, addr, &num_chunk);
+        herr_t status;
+
+        fspace_id = H5Dget_space(dataset);
+
+        status = H5Dget_num_chunks(dataset, fspace_id, &num_chunks);
         if (status < 0) {
-            throw BESInternalError("Cannot get HDF5 dataset storage info.", __FILE__, __LINE__);
+        		throw BESInternalError("Could not get the number of chunks", __FILE__, __LINE__);
         }
 
-        VERBOSE(cerr << "layout: " << (int)layout_type << ", chunks: " << num_chunk << endl);
+        VERBOSE(cerr << "num chunks: " << num_chunks << endl);
 
+        //H5Dget_chunk_storage_size(hid_t dset_id, const hsize_t *offset, hsize_t *chunk_bytes);
+        for (int i = 0; i < num_chunks; ++i) {
+
+			//hid_t dset_id, hid_t fspace_id, hsize_t chk_idx, hsize_t *offset, unsigned *filter_mask, haddr_t *addr, hsize_t *size
+			status = H5Dget_chunk_info(dataset, fspace_id, i, &offset, &filter_mask, &addr, &size);
+			if (status < 0) {
+				VERBOSE(cerr << "ERROR" << endl);
+				throw BESInternalError("Cannot get HDF5 dataset storage info.", __FILE__, __LINE__);
+			}
+
+			//VERBOSE(cerr << "layout: " << (int)layout_type << ", chunks: " << num_chunk << endl);
+
+			VERBOSE(cerr << "chk_idk: " << i << ", offset: " << offset << ", filter_mask: " << filter_mask << ", addr: " << addr << ", size: " << size << endl);
+        }
+#if 0
         // Replace this with a 'not found' error? It seems that chunk information
         // is found only when storage_status != 0. jhrg 5/7/18
         //if (storage_status == 0) {
@@ -425,6 +445,8 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
     }
 #endif
 
+#endif
+
     }
     catch (...) {
         H5Dclose(dataset);
@@ -535,7 +557,7 @@ int main(int argc, char*argv[])
     try {
         // Turn off automatic hdf5 error printing.
         // See: https://support.hdfgroup.org/HDF5/doc1.8/RM/RM_H5E.html#Error-SetAuto2
-        if (!verbose) H5Eset_auto2(H5E_DEFAULT, NULL, NULL);
+        //if (!verbose) H5Eset_auto2(H5E_DEFAULT, NULL, NULL);
 
         // For a given HDF5, get info for all the HDF5 datasets in a DMR or for a
         // given HDF5 dataset
