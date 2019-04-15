@@ -1445,7 +1445,7 @@ void DmrppParserSax2::intern(istream &f, DMR *dest_dmr, bool debug)
 
     if (debug) cerr << "line: (" << line_num << "): " << endl << line << endl << endl;
 
-    context = xmlCreatePushParserCtxt(&dmr_sax_parser, this, line.c_str(), line.length(), "stream");
+    context = xmlCreatePushParserCtxt(&dmrpp_sax_parser, this, line.c_str(), line.length(), "stream");
     context->validate = true;
     push_state(parser_start);
 
@@ -1510,7 +1510,7 @@ void DmrppParserSax2::intern(const char *buffer, int size, DMR *dest_dmr, bool d
     d_dmr = dest_dmr; // dump values in dest_dmr
 
     push_state(parser_start);
-    context = xmlCreatePushParserCtxt(&dmr_sax_parser, this, buffer, size, "stream");
+    context = xmlCreatePushParserCtxt(&dmrpp_sax_parser, this, buffer, size, "stream");
     context->validate = true;
     //push_state(parser_start);
     //xmlParseChunk(context, buffer, size, 0);
