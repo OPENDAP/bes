@@ -41,7 +41,7 @@ EXTRA_PROGRAMS =
 
 noinst_DATA = mds_for_tests
 
-EXTRA_DIST = get_dmrpp ingest_filesystem ingest_s3bucket README dmrpp mds_for_tests s3 s3_data
+EXTRA_DIST = get_dmrpp.in ingest_filesystem ingest_s3bucket README dmrpp mds_for_tests s3 s3_data
 
 CLEANFILES = *~
 
