@@ -1,7 +1,6 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of libdap, A C++ implementation of the OPeNDAP Data
-// Access Protocol.
+// This file is part of the Hyrax data server.
 
 // Copyright (c) 2018 OPeNDAP, Inc.
 // Author: James Gallagher <jgallagher@opendap.org>
@@ -548,7 +547,7 @@ int main(int argc, char*argv[])
                 }
             }
             catch (BESError &e) {
-                cerr << "Error: " << e.get_message() << endl;
+                cerr << "BESError: " << e.get_message() << endl;
                 return 1;
             }
 
@@ -600,11 +599,11 @@ int main(int argc, char*argv[])
         }
     }
     catch (BESError &e) {
-        cerr << "Error: " << e.get_message() << endl;
+        cerr << "BESError: " << e.get_message() << endl;
         status = 1;
     }
     catch (std::exception &e) {
-        cerr << "Error: " << e.what() << endl;
+        cerr << "std::exception: " << e.what() << endl;
         status = 1;
     }
     catch (...) {
