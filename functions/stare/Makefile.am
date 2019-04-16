@@ -10,9 +10,9 @@ AUTOMAKE_OPTIONS = foreign
 
 #Define __macosx for STARE
 #Remove hard code for filepath
-AM_CPPFLAGS = $(DAP_CFLAGS) -D__macosx -I/Users/kodi/src/StareProject/STARE/include
+AM_CPPFLAGS = $(DAP_CFLAGS) -D__macosx -I$(top_srcdir)/../hyrax-dependencies/src/STARE/include -I$(prefix)/deps/include
 AM_CXXFLAGS = --std=c++11
-AM_LDADD =  $(DAP_CLIENT_LIBS) -L/Users/kodi/src/StareProject/STARE/src -lSTARE
+AM_LDADD =  $(DAP_CLIENT_LIBS) -L$(top_srcdir)/../hyrax-dependencies/src/STARE/src -lSTARE
 
 #if CPPUNIT
 #AM_CPPFLAGS += $(CPPUNIT_CFLAGS)

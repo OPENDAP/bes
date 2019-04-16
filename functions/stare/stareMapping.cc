@@ -22,7 +22,7 @@
 
 #include <unordered_map>
 #include <array>
-#include "/Users/kodi/src/hyrax/build/deps/include/H5Cpp.h"
+#include "H5Cpp.h"
 
 using namespace H5;
 
