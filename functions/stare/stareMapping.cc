@@ -100,7 +100,6 @@ void findLatLon(std::string dataUrl, const float64 level,
 		std::unordered_map<float, struct coords> indexMap;
 
 		//Array to store the key and values of the indexMap that will be used to write the hdf5 file
-		cout << "y length: " << size_y << endl;
 		vector<coords> keyVals(size_x * size_y);
 
 		//Declare the beginning of the vectors here rather than inside the loop to save compute time
