@@ -236,6 +236,12 @@ void read_attributes(string filename, AttrTable *at)
         iff = find_ancillary_rss_formats(filename);
         SetUps->input_format_file = const_cast<char*>(iff.c_str());
     }
+//--------------------------------------------------------------------------
+    if (FFRequestHandler::get_Regex_format_support()) {
+        iff = get_Regex_format_file(filename);
+        if (!iff.empty())
+            SetUps->input_format_file = const_cast<char*>(iff.c_str());
+    }
 
     SetUps->output_file = NULL;
 
@@ -298,6 +304,13 @@ static void add_variable_containers(DAS &das, const string &filename) throw (Err
     if (FFRequestHandler::get_RSS_format_support()) {
         iff = find_ancillary_rss_formats(filename);
         SetUps->input_format_file = const_cast<char*>(iff.c_str());
+    }
+
+//--------------------------------------------------------------------------
+    if (FFRequestHandler::get_Regex_format_support()) {
+        iff = get_Regex_format_file(filename);
+        if (!iff.empty())
+            SetUps->input_format_file = const_cast<char*>(iff.c_str());
     }
 
     SetUps->output_file = NULL;
