@@ -99,7 +99,7 @@ void ff_read_descriptors(DDS &dds_table, const string &filename)
         iff = find_ancillary_rss_formats(filename);
         SetUps->input_format_file = const_cast<char*>(iff.c_str());
     }
-//---------------------------------------------------------------------------------
+    // Regex support
     if (FFRequestHandler::get_Regex_format_support()) {
         iff = get_Regex_format_file(filename);
         if (!iff.empty())
