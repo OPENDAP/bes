@@ -290,7 +290,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
         hsize_t num_chunks = 0;
         hid_t fspace_id = 0;
         hsize_t chk_idx = 0;
-        hsize_t offset = 0;
+        //hsize_t *offset = 0;
         unsigned filter_mask = 0;
         haddr_t addr = 0;
         hsize_t size = 0;
@@ -306,11 +306,14 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
 
         VERBOSE(cerr << "num chunks: " << num_chunks << endl);
 
-        //H5Dget_chunk_storage_size(hid_t dset_id, const hsize_t *offset, hsize_t *chunk_bytes);
+        vector<H5D_chunk_rec_t> chunk_st_ptr(num_chunks);
+		unsigned int num_chunk_dims = 0;
+		if (H5Dget_dataset_storage_info(dataset, &layout_type, &chunk_st_ptr[0], &storage_status) < 0)
+			throw BESInternalError("Cannot get HDF5 chunk storage info.", __FILE__, __LINE__);
+
         for (int i = 0; i < num_chunks; ++i) {
 
-			//hid_t dset_id, hid_t fspace_id, hsize_t chk_idx, hsize_t *offset, unsigned *filter_mask, haddr_t *addr, hsize_t *size
-			status = H5Dget_chunk_info(dataset, fspace_id, i, &offset, &filter_mask, &addr, &size);
+			status = H5Dget_chunk_info(dataset, fspace_id, i, NULL, &filter_mask, &addr, &size);
 			if (status < 0) {
 				VERBOSE(cerr << "ERROR" << endl);
 				throw BESInternalError("Cannot get HDF5 dataset storage info.", __FILE__, __LINE__);
@@ -318,7 +321,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
 
 			//VERBOSE(cerr << "layout: " << (int)layout_type << ", chunks: " << num_chunk << endl);
 
-			VERBOSE(cerr << "chk_idk: " << i << ", offset: " << offset << ", filter_mask: " << filter_mask << ", addr: " << addr << ", size: " << size << endl);
+			VERBOSE(cerr << "chk_idk: " << i << /*", offset: " << offset <<*/ ", filter_mask: " << filter_mask << ", addr: " << addr << ", size: " << size << endl);
         }
 #if 0
         // Replace this with a 'not found' error? It seems that chunk information
