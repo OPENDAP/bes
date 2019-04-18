@@ -214,7 +214,7 @@ string GMFile::get_CF_string(string s) {
 
 // Retrieve all the HDF5 information.
 void GMFile::Retrieve_H5_Info(const char *path,
-                              hid_t file_id, bool include_attr) throw (Exception) {
+                              hid_t file_id, bool include_attr) {
 
     BESDEBUG("h5", "Coming to Retrieve_H5_Info()"<<endl);
     // GPM needs the attribute info. to obtain the lat/lon.

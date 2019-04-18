@@ -320,9 +320,16 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
         bdas->set_container( dhi.container->get_symbolic_name() ) ;
         DAS *das = bdas->get_das();
 
-        // Look inside the memory cache if it's initialized
+        // Look inside the memory cache to see if it's initialized
         DAS *cached_das_ptr = 0;
-        if (das_cache && (cached_das_ptr = static_cast<DAS*>(das_cache->get(filename)))) {
+        bool use_das_cache = false;
+        if (das_cache) 
+            cached_das_ptr = static_cast<DAS*>(das_cache->get(filename));
+        if (cached_das_ptr) 
+            use_das_cache = true;
+        
+        if (true == use_das_cache) {
+        //if (das_cache && (cached_das_ptr = static_cast<DAS*>(das_cache->get(filename)))) {
 
             // copy the cached DAS into the BES response object
             BESDEBUG(HDF5_NAME, "DAS Cached hit for : " << filename << endl);
@@ -478,7 +485,12 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
 
         // Look in memory cache to see if it's initialized
         DDS* cached_dds_ptr = 0;
-        if (dds_cache && (cached_dds_ptr = static_cast<DDS*>(dds_cache->get(filename)))) {
+        bool use_dds_cache = false;
+        if (dds_cache) 
+            cached_dds_ptr = static_cast<DDS*>(dds_cache->get(filename));
+        if (cached_dds_ptr) 
+            use_dds_cache = true;
+        if (true == use_dds_cache) {
             // copy the cached DDS into the BES response object. Assume that any cached DDS
             // includes the DAS information.
             BESDEBUG(HDF5_NAME, "DDS Metadata Cached hit for : " << filename << endl);
@@ -1066,7 +1078,12 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
     try {
 
         DMR* cached_dmr_ptr = 0;
-        if (dmr_cache && (cached_dmr_ptr = static_cast<DMR*>(dmr_cache->get(filename)))) {
+        bool use_dmr_cache = false;
+        if (dmr_cache) 
+            cached_dmr_ptr = static_cast<DMR*>(dmr_cache->get(filename));
+        if (cached_dmr_ptr) 
+            use_dmr_cache = true;
+        if (true == use_dmr_cache) {
             // copy the cached DMR into the BES response object
             BESDEBUG(HDF5_NAME, "DMR Cached hit for : " << filename << endl);
             *dmr = *cached_dmr_ptr; // Copy the referenced object
@@ -1848,7 +1865,13 @@ void HDF5RequestHandler::add_das_to_dds(DDS *dds, const string &/*container_name
 
     // Check DAS memory cache
     DAS *das = 0 ;
-    if (das_cache && (das = static_cast<DAS*>(das_cache->get(filename)))) {
+    bool use_das_cache = false;
+    if (das_cache) 
+        das = static_cast<DAS*>(das_cache->get(filename));
+    if (das) 
+        use_das_cache = true;
+ 
+    if (true == use_das_cache) {
         BESDEBUG(HDF5_NAME, "DAS Cached hit for : " << filename << endl);
         dds->transfer_attributes(das); // no need to copy the cached DAS
     }

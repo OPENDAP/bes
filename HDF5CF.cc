@@ -172,7 +172,7 @@ Attribute::~Attribute()
 {
 }
 
-void File::Retrieve_H5_Info(const char * /*path*/, hid_t file_id, bool include_attr) throw (Exception)
+void File::Retrieve_H5_Info(const char * /*path*/, hid_t file_id, bool include_attr)
 {
 
     BESDEBUG("h5", "coming to Retrieve_H5_Info" <<endl);

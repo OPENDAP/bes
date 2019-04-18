@@ -1103,6 +1103,8 @@ HE5_EHconvAng(double inAngle, int code)
         outAngle = deg + min / 60.0 + sec / 3600.0;
         outAngle = outAngle * d2r;
         break;
+    default:
+        break;
     }
     return (outAngle);
 }

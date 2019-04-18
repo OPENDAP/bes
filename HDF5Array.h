@@ -24,8 +24,8 @@
 // You can contact The HDF Group, Inc. at 1800 South Oak Street,
 // Suite 203, Champaign, IL 61820  
 
-#ifndef _hdf5array_h
-#define _hdf5array_h 1
+#ifndef _HDF5ARRAY_H
+#define _HDF5ARRAY_H 
 
 #include <H5Ipublic.h>
 #include <H5Rpublic.h>

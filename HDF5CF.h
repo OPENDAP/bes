@@ -70,7 +70,7 @@ class EOS5File;
 class Exception: public std::exception {
 public:
     /// Constructor
-    Exception(const std::string & msg) :
+    explicit Exception(const std::string & msg) :
         message(msg)
     {
     }
@@ -89,7 +89,7 @@ public:
         this->message = except_message;
     }
 
-protected:
+private:
     std::string message;
 };
 template<typename T, typename U, typename V, typename W, typename X> static void _throw5(const char *fname, int line,
@@ -164,12 +164,12 @@ public:
     }
 
 protected:
-    Dimension(hsize_t dimsize) :
+    explicit Dimension(hsize_t dimsize) :
         size(dimsize), name(""), newname(""), unlimited_dim(false)
     {
     }
 
-protected:
+private:
     hsize_t size;
     std::string name;
     std::string newname;
@@ -236,7 +236,7 @@ public:
         return this->is_cset_ascii;
     }
 
-protected:
+private:
     std::string name;
     std::string newname;
     H5DataType dtype;
@@ -264,7 +264,7 @@ public:
         unsupported_attr_dspace(false), unsupported_dspace(false), dimnameflag(false)
     {
     }
-    Var(Var*var);
+    explicit Var(Var*var);
     virtual ~Var();
 
 public:
@@ -322,7 +322,7 @@ public:
         return this->comp_ratio;
     }
 
-protected:
+private:
 
     std::string newname;
     std::string name;
@@ -385,7 +385,7 @@ public:
         otype(H5UNSUPTYPE), sdbit(-1), numofdbits(-1)
     {
     }
-    GMSPVar(Var *var);
+    explicit GMSPVar(Var *var);
     ~GMSPVar()
     {
     }
@@ -420,7 +420,7 @@ public:
         product_type(General_Product)
     {
     }
-    GMCVar(Var*var);
+    explicit GMCVar(Var*var);
     ~GMCVar()
     {
     }
@@ -449,7 +449,7 @@ public:
         std::fill_n(param, 13, 0);
     }
     ;
-    EOS5CVar(Var *);
+    explicit EOS5CVar(Var *);
 
     ~EOS5CVar()
     {
@@ -566,7 +566,7 @@ public:
         return this->attrs;
     }
 
-protected:
+private:
 
     std::string newname;
     std::string path;
@@ -591,7 +591,8 @@ public:
     /// huge memory allocation for some HDF5 files, we separate
     /// the access of DAS from DDS although internally they
     /// still share common routines.
-    virtual void Retrieve_H5_Info(const char *path, hid_t file_id, bool) throw (Exception);
+    //virtual void Retrieve_H5_Info(const char *path, hid_t file_id, bool) throw (Exception);
+    virtual void Retrieve_H5_Info(const char *path, hid_t file_id, bool);
 
     /// Retrieve attribute values for the supported HDF5 datatypes.
     virtual void Retrieve_H5_Supported_Attr_Values() throw (Exception);
@@ -845,7 +846,8 @@ public:
     }
 
     /// Retrieve DDS information from the HDF5 file; real implementation for general HDF5 products.
-    void Retrieve_H5_Info(const char *path, hid_t file_id, bool include_attr) throw (Exception);
+    //void Retrieve_H5_Info(const char *path, hid_t file_id, bool include_attr) throw (Exception);
+    void Retrieve_H5_Info(const char *path, hid_t file_id, bool include_attr);
 
     /// Retrieve attribute values for the supported HDF5 datatypes for general HDF5 products.
     void Retrieve_H5_Supported_Attr_Values() throw (Exception);
@@ -1195,7 +1197,7 @@ public:
     }
 
     /// Retrieve DDS information from the HDF5 file; a real implementation for HDF-EOS5 products
-    void Retrieve_H5_Info(const char *path, hid_t file_id, bool include_attr) throw (Exception);
+    void Retrieve_H5_Info(const char *path, hid_t file_id, bool include_attr);
 
     /// Retrieve attribute values for the supported HDF5 datatypes for HDF-EOS5 products.
     void Retrieve_H5_Supported_Attr_Values() throw (Exception);

@@ -101,7 +101,7 @@ EOS5CVar::EOS5CVar(Var*var)
 void EOS5CFGrid::Update_Dimnamelist()
 {
 
-    BESDEBUG("h5", "coming to Retrieve_H5_Info" <<endl);
+    BESDEBUG("h5", "coming to Update_Dimnamelist" <<endl);
 
     // If I put both "XDim" and "YDim" into one for loop, Mac g++ compiler 
     // gives segmentation fault, which doesn't make sense.
@@ -156,7 +156,7 @@ string EOS5File::get_CF_string(string s)
 }
 
 // Retrieve the HDF5 information for HDF-EOS5 
-void EOS5File::Retrieve_H5_Info(const char *path, hid_t file_id, bool /*include_attr*/) throw (Exception)
+void EOS5File::Retrieve_H5_Info(const char *path, hid_t file_id, bool /*include_attr*/) 
 {
     // Since we need to check the attribute info in order to determine if the file is augmented to netCDF-4,
     // we need to retrieve the attribute info also.

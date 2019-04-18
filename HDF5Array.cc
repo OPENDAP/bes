@@ -6,7 +6,7 @@
 
 // Copyright (c) 2009-2016 The HDF Group, Inc. and OPeNDAP, Inc.
 //
-// This is free software; you can redistribute it and/or modify it under the
+// This is H5free_memory software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
 // Software Foundation; either version 2.1 of the License, or (at your
 // option) any later version.
@@ -508,7 +508,7 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
                         size_t memb_size = H5Tget_size(memb_id);
                         if (memb_size == 0) {
                             H5Tclose(memb_id);
-                            free(memb_name);
+                            H5free_memory(memb_name);
                             delete h5s;
                             throw InternalErr (__FILE__, __LINE__,"Fail to obtain the size of HDF5 compound datatype.");
                         }
@@ -519,7 +519,7 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
                     }
                 }
                 else {
-                    free(memb_name);
+                    H5free_memory(memb_name);
                     H5Tclose(memb_id);
                     delete h5s;
                     throw InternalErr (__FILE__, __LINE__, 
@@ -529,7 +529,7 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
 
                 // Close member type ID 
                 H5Tclose(memb_id);
-                free(memb_name);
+                H5free_memory(memb_name);
                 field->set_read_p(true);
             } // end for(unsigned u = 0)
             h5s->set_read_p(true);
@@ -556,7 +556,7 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
         if(memb_id != -1)
             H5Tclose(memb_id);
         if(memb_name != NULL)
-            free(memb_name);
+            H5free_memory(memb_name);
         if(h5s != NULL)
             delete h5s;
         if(true == has_values) {
@@ -947,7 +947,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                     if(child_at_ndims <= 0) { 
                          H5Tclose(at_base_type);
                          H5Tclose(child_memb_id);
-                         free(child_memb_name);
+                         H5free_memory(child_memb_name);
                          delete h5s;
                          throw InternalErr (__FILE__, __LINE__, "Fail to obtain number of dimensions of the array datatype.");
  
@@ -1008,7 +1008,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                         if (memb_size == 0) {
                             H5Tclose(child_memb_id);
                             H5Tclose(at_base_type);
-                            free(child_memb_name);
+                            H5free_memory(child_memb_name);
                             delete h5s;
                             throw InternalErr (__FILE__, __LINE__,"Fail to obtain the size of HDF5 compound datatype.");
                         }
@@ -1021,14 +1021,14 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                 else {
                         H5Tclose(child_memb_id);
                         H5Tclose(at_base_type);
-                        free(child_memb_name);
+                        H5free_memory(child_memb_name);
                         delete h5s;
                         throw InternalErr (__FILE__, __LINE__, "Unsupported datatype class for the array base type.");
  
 
                 }
                 field->set_read_p(true);
-                free(child_memb_name);
+                H5free_memory(child_memb_name);
                 H5Tclose(child_memb_id);
                
             } // end for ( child_u = 0)
@@ -1484,6 +1484,8 @@ hid_t HDF5Array::mkstr(int size, H5T_str_t pad)
 // We don't inherit libdap Array Class's transform_to_dap4 method since CF option is still using it.
 BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp) {
 
+    if(grp == NULL)
+        return NULL;
     Array *dest = static_cast<HDF5Array*>(ptr_duplicate());
 
     // If there is just a size, don't make

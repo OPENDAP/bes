@@ -1617,6 +1617,8 @@ void HDF5CFArray::read_data_from_mem_cache(void*buf) {
 // DAP4 code.
 BaseType* HDF5CFArray::h5cfdims_transform_to_dap4(D4Group *grp) {
 
+    if(grp == NULL)
+        return NULL;
     Array *dest = static_cast<HDF5CFArray*>(ptr_duplicate());
 
     // If there is just a size, don't make

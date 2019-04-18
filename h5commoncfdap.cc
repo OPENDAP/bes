@@ -83,9 +83,8 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
                     try {
                         sca_int64 = new HDF5CFInt64(var->getNewName(), var->getFullPath(), filename);
                     }
-                    catch (std::exception &e) {
-                        string error_message = e.what();
-                        error_message = "Cannot allocate the HDF5CFInt64: " + error_message;
+                    catch (...) {
+                        string error_message = "Cannot allocate the HDF5CFInt64: " + error_message;
                         throw InternalErr(__FILE__, __LINE__, error_message);
                     }
                     sca_int64->set_is_dap4(true);

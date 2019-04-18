@@ -740,7 +740,7 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
 
         case H5T_FLOAT: {
             rep.resize(32);
-            char gps[30];
+            char gps[32];
 
             if (H5Tget_size(type) == 4) {
                 
@@ -749,8 +749,8 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
                 // Represent the float number.
                 // Some space may be wasted. But it is okay.
                 gp.tfp = (float *) sm_buf;
-                snprintf(gps, 30, "%.10g", *(gp.tfp + loc));
-                int ll = strlen(gps);
+                int ll = snprintf(gps, 30, "%.10g", *(gp.tfp + loc));
+                //int ll = strlen(gps);
 
                 // Add the dot to assure this is a floating number
                 if (!strchr(gps, '.') && !strchr(gps, 'e') && !strchr(gps,'E')
@@ -766,8 +766,8 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
                 double attr_val = *(double*)sm_buf;
                 bool is_a_fin = isfinite(attr_val);
                 gp.tdp = (double *) sm_buf;
-                snprintf(gps, 30, "%.17g", *(gp.tdp + loc));
-                int ll = strlen(gps);
+                int ll = snprintf(gps, 30, "%.17g", *(gp.tdp + loc));
+                //int ll = strlen(gps);
                 if (!strchr(gps, '.') && !strchr(gps, 'e')&& !strchr(gps,'E')
                    && (true == is_a_fin)) {
                     gps[ll++] = '.';
