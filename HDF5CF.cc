@@ -232,7 +232,7 @@ void File::Retrieve_H5_Info(const char * /*path*/, hid_t file_id, bool include_a
     }
 }
 
-void File::Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr) throw (Exception)
+void File::Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr) 
 {
 
     // Iterate through the file to see the members of the group from the root.
@@ -450,7 +450,7 @@ void File::Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr) th
 }
 
 // Retrieve HDF5 dataset datatype
-float File::Retrieve_H5_VarCompRatio(Var *var, hid_t dset_id) throw (Exception)
+float File::Retrieve_H5_VarCompRatio(Var *var, hid_t dset_id) 
 {
 
     float comp_ratio = 1.0;
@@ -484,7 +484,7 @@ float File::Retrieve_H5_VarCompRatio(Var *var, hid_t dset_id) throw (Exception)
 
 }
 // Retrieve HDF5 dataset datatype
-void File::Retrieve_H5_VarType(Var *var, hid_t dset_id, const string & varname, bool &unsup_var_dtype) throw (Exception)
+void File::Retrieve_H5_VarType(Var *var, hid_t dset_id, const string & varname, bool &unsup_var_dtype) 
 {
 
     hid_t ty_id = -1;
@@ -517,7 +517,7 @@ void File::Retrieve_H5_VarType(Var *var, hid_t dset_id, const string & varname, 
 }
 
 // Retrieve the HDF5 dataset dimension information
-void File::Retrieve_H5_VarDim(Var *var, hid_t dset_id, const string & varname, bool &unsup_var_dspace) throw (Exception)
+void File::Retrieve_H5_VarDim(Var *var, hid_t dset_id, const string & varname, bool &unsup_var_dspace) 
 {
 
     vector<hsize_t> dsize;
@@ -589,7 +589,7 @@ void File::Retrieve_H5_VarDim(Var *var, hid_t dset_id, const string & varname, b
 
 // Retrieve the HDF5 attribute information.
 void File::Retrieve_H5_Attr_Info(Attribute * attr, hid_t obj_id, const int j, bool &unsup_attr_dtype,
-    bool &unsup_attr_dspace) throw (Exception)
+    bool &unsup_attr_dspace)
 
 {
 
@@ -728,7 +728,7 @@ void File::Retrieve_H5_Attr_Info(Attribute * attr, hid_t obj_id, const int j, bo
 }
 
 // Retrieve all HDF5 supported attribute values.
-void File::Retrieve_H5_Supported_Attr_Values() throw (Exception)
+void File::Retrieve_H5_Supported_Attr_Values() 
 {
 
     for (vector<Attribute *>::iterator ira = this->root_attrs.begin(); ira != this->root_attrs.end(); ++ira)
@@ -747,7 +747,7 @@ void File::Retrieve_H5_Supported_Attr_Values() throw (Exception)
     }
 }
 
-void File::Retrieve_H5_Var_Attr_Values(Var *var) throw (Exception)
+void File::Retrieve_H5_Var_Attr_Values(Var *var) 
 {
     for (vector<Attribute *>::iterator ira = var->attrs.begin(); ira != var->attrs.end(); ++ira) {
         Retrieve_H5_Attr_Value(*ira, var->fullpath);
@@ -755,7 +755,7 @@ void File::Retrieve_H5_Var_Attr_Values(Var *var) throw (Exception)
 }
 
 // Retrieve the values of a specific HDF5 attribute.
-void File::Retrieve_H5_Attr_Value(Attribute *attr, string obj_name) throw (Exception)
+void File::Retrieve_H5_Attr_Value(Attribute *attr, string obj_name)
 {
 
     // Define HDF5 object Ids.
@@ -918,7 +918,7 @@ void File::Retrieve_H5_Attr_Value(Attribute *attr, string obj_name) throw (Excep
 }
 
 // Handle the unsupported datatype
-void File::Handle_Unsupported_Dtype(bool include_attr) throw (Exception)
+void File::Handle_Unsupported_Dtype(bool include_attr) 
 {
 
     if (true == include_attr) {

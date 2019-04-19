@@ -202,7 +202,7 @@ void EOS5File::Adjust_H5_Attr_Value(Attribute *attr) throw (Exception)
 }
 
 // Handle unsupported datatype
-void EOS5File::Handle_Unsupported_Dtype(bool include_attr) throw (Exception)
+void EOS5File::Handle_Unsupported_Dtype(bool include_attr)
 {
 
     if (true == check_ignored) {

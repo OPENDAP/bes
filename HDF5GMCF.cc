@@ -330,7 +330,7 @@ void GMFile::Retrieve_H5_CVar_Supported_Attr_Values() {
 }
 
 // Retrieve HDF5 supported attribute values.
-void GMFile::Retrieve_H5_Supported_Attr_Values() throw (Exception) {
+void GMFile::Retrieve_H5_Supported_Attr_Values()  {
 
     BESDEBUG("h5", "Coming to Retrieve_H5_Supported_Attr_Values()"<<endl);
 
@@ -382,7 +382,7 @@ void GMFile::Adjust_H5_Attr_Value(Attribute *attr) throw (Exception) {
 }
 
 // Unsupported datatype
-void GMFile:: Handle_Unsupported_Dtype(bool include_attr) throw(Exception) {
+void GMFile:: Handle_Unsupported_Dtype(bool include_attr) {
 
     BESDEBUG("h5", "Coming to Handle_Unsupported_Dtype()"<<endl);
     if(true == check_ignored) {

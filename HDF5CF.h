@@ -595,16 +595,16 @@ public:
     virtual void Retrieve_H5_Info(const char *path, hid_t file_id, bool);
 
     /// Retrieve attribute values for the supported HDF5 datatypes.
-    virtual void Retrieve_H5_Supported_Attr_Values() throw (Exception);
+    virtual void Retrieve_H5_Supported_Attr_Values();
 
     /// Retrieve attribute values for a variable
-    virtual void Retrieve_H5_Var_Attr_Values(Var *var) throw (Exception);
+    virtual void Retrieve_H5_Var_Attr_Values(Var *var);
 
     /// Retrieve coordinate variable attributes.
     virtual void Retrieve_H5_CVar_Supported_Attr_Values() = 0;
 
     /// Handle unsupported HDF5 datatypes
-    virtual void Handle_Unsupported_Dtype(bool) throw (Exception);
+    virtual void Handle_Unsupported_Dtype(bool);
 
     /// Handle unsupported HDF5 dataspaces for datasets
     virtual void Handle_Unsupported_Dspace(bool) throw (Exception);
@@ -692,15 +692,15 @@ public:
 
 protected:
 
-    void Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr) throw (Exception);
-    void Retrieve_H5_Attr_Info(Attribute *, hid_t obj_id, const int j, bool& unsup_attr_dtype, bool & unsup_attr_dspace)
-        throw (Exception);
-    void Retrieve_H5_Attr_Value(Attribute *attr, std::string) throw (Exception);
+    void Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr);
+    void Retrieve_H5_Attr_Info(Attribute *, hid_t obj_id, const int j, bool& unsup_attr_dtype, bool & unsup_attr_dspace);
+        
+    void Retrieve_H5_Attr_Value(Attribute *attr, std::string);
 
-    void Retrieve_H5_VarType(Var*, hid_t dset_id, const std::string& varname, bool &unsup_var_dtype) throw (Exception);
-    void Retrieve_H5_VarDim(Var*, hid_t dset_id, const std::string &varname, bool & unsup_var_dspace) throw (Exception);
+    void Retrieve_H5_VarType(Var*, hid_t dset_id, const std::string& varname, bool &unsup_var_dtype); 
+    void Retrieve_H5_VarDim(Var*, hid_t dset_id, const std::string &varname, bool & unsup_var_dspace);
 
-    float Retrieve_H5_VarCompRatio(Var*, hid_t) throw (Exception);
+    float Retrieve_H5_VarCompRatio(Var*, hid_t);
 
     void Handle_Group_Unsupported_Dtype() throw (Exception);
     void Handle_Var_Unsupported_Dtype() throw (Exception);
@@ -850,7 +850,7 @@ public:
     void Retrieve_H5_Info(const char *path, hid_t file_id, bool include_attr);
 
     /// Retrieve attribute values for the supported HDF5 datatypes for general HDF5 products.
-    void Retrieve_H5_Supported_Attr_Values() throw (Exception);
+    void Retrieve_H5_Supported_Attr_Values();
 
     void Retrieve_H5_CVar_Supported_Attr_Values();
 
@@ -858,7 +858,7 @@ public:
     void Adjust_H5_Attr_Value(Attribute *attr) throw (Exception);
 
     /// Handle unsupported HDF5 datatypes for general HDF5 products.
-    void Handle_Unsupported_Dtype(bool) throw (Exception);
+    void Handle_Unsupported_Dtype(bool) ;
 
     /// Handle unsupported HDF5 dataspaces for general HDF5 products
     void Handle_Unsupported_Dspace(bool) throw (Exception);
@@ -1206,7 +1206,7 @@ public:
     void Retrieve_H5_CVar_Supported_Attr_Values();
 
     /// Handle unsupported HDF5 datatypes for HDF-EOS5 products.
-    void Handle_Unsupported_Dtype(bool) throw (Exception);
+    void Handle_Unsupported_Dtype(bool) ;
 
     /// Handle unsupported HDF5 dataspaces for HDF-EOS5 products.
     void Handle_Unsupported_Dspace(bool) throw (Exception);
