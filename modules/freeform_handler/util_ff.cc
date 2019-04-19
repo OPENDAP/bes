@@ -760,7 +760,7 @@ dods_float64 get_float_value(BaseType * var) throw(InternalErr)
 
 string get_Regex_format_file(const string & filename)
 {
-    string retVal;
+    string retVal = "";
     std::map<string,string> mapFF = FFRequestHandler::get_fmt_regex_map();
     for (auto rgx : mapFF) {
 #if 0
@@ -768,10 +768,9 @@ string get_Regex_format_file(const string & filename)
 #endif
         string::size_type found = filename.find_last_of("/\\");
         if (regex_match (filename.substr(found+1), regex(rgx.first) )){
-            retVal = rgx.second;
+            retVal = string(rgx.second);
             break;
         }
     }
-
-    return string(retVal);
+    return retVal;
 }

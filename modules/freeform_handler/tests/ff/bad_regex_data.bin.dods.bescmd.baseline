@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response reqID="some_unique_value" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <getDODS>
+        <BESError>
+            <Type>1</Type>
+            <Message>Error setting an input format for /Users/vskorole/opendap/hyrax/bes/modules/freeform_handler/data/tb_f18_20190306_nrt_s19v.bin FreeForm error code: 1</Message>
+            <Administrator>support@opendap.org</Administrator>
+            <Location>
+                <File>FFRequestHandler.cc</File>
+                <Line>289</Line>
+            </Location>
+        </BESError>
+    </getDODS>
+</response>

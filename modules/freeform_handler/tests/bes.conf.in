@@ -63,4 +63,5 @@ BES.DefaultResponseMethod=POST
 # Data Handler Specific key/value parameters                            #
 #                                                                       #
 #-----------------------------------------------------------------------#
-
+FF.RegexFormatSupport=true
+FF.Regex = tb_.*n(19|22|37)(h|v).bin:@abs_top_builddir@/modules/freeform_handler/data/n_low.fmt
