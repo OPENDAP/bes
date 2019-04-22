@@ -64,4 +64,4 @@ BES.DefaultResponseMethod=POST
 #                                                                       #
 #-----------------------------------------------------------------------#
 FF.RegexFormatSupport=true
-FF.Regex = tb_.*n(19|22|37)(h|v).bin:@abs_top_builddir@/modules/freeform_handler/data/n_low.fmt
+FF.Regex = tb_.*n(19|22|37)(h|v).bin:@abs_top_srcdir@/modules/freeform_handler/data/n_low.fmt
