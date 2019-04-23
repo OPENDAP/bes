@@ -79,6 +79,9 @@ extern void ff_get_attributes(DAS & das, string filename);
 bool FFRequestHandler::d_RSS_format_support = false;
 string FFRequestHandler::d_RSS_format_files = "";
 
+bool FFRequestHandler::d_Regex_format_support = false;
+std::map<string,string> FFRequestHandler::d_fmt_regex_map;
+
 FFRequestHandler::FFRequestHandler(const string &name) :
         BESRequestHandler(name)
 {
@@ -117,6 +120,43 @@ FFRequestHandler::FFRequestHandler(const string &name) :
 
     BESDEBUG("ff", "d_RSS_format_support: " << d_RSS_format_support << endl);
     BESDEBUG("ff", "d_RSS_format_files: " << d_RSS_format_files << endl);
+
+    // Set regex support for format files
+    key_found = false;
+    string regex_doset;
+    TheBESKeys::TheKeys()->get_value("FF.RegexFormatSupport", regex_doset, key_found);
+    if (key_found) {
+        regex_doset = BESUtil::lowercase(regex_doset);
+        if (regex_doset == "true" || regex_doset == "yes")
+            FFRequestHandler::d_Regex_format_support = true;
+        else
+            FFRequestHandler::d_Regex_format_support = false;
+    }
+    else
+        FFRequestHandler::d_Regex_format_support = false;
+    BESDEBUG("ff", "d_Regex_format_support: " << d_Regex_format_support << endl);
+
+    // Fill a map with regex and format file path
+    key_found = false;
+    vector<string> regex_fmt_files;
+    TheBESKeys::TheKeys()->get_values("FF.Regex", regex_fmt_files, key_found);
+    vector<string>::iterator it;
+    for (it = regex_fmt_files.begin(); it != regex_fmt_files.end(); it++) {
+        string fmt_entry = *it;
+        int index = fmt_entry.find(":");
+        if (index > 0) {
+            string regex = fmt_entry.substr(0, index);
+            string file = fmt_entry.substr(index + 1);
+            BESDEBUG("ff", "regex: '" << regex << "'  file: " << file << endl);
+            d_fmt_regex_map.insert(pair<string, string>(regex, file));
+        } else {
+            throw BESInternalError(
+                    string("The configuration entry for the ")
+                            + "FF.Regex"
+                            + " was incorrectly formatted. entry: "
+                            + fmt_entry, __FILE__, __LINE__);
+        }
+    }
 }
 
 FFRequestHandler::~FFRequestHandler()
@@ -363,3 +403,5 @@ bool FFRequestHandler::ff_build_version(BESDataHandlerInterface & dhi)
 
     return true;
 }
+
+
