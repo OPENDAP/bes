@@ -642,6 +642,8 @@ AC_CHECK_HDF5(
   [],
   $ac_bes_dependencies_prefix
 )
+AC_CHECK_STARE
+AM_CONDITIONAL([BUILD_STARE],[true])
 
 dnl NCML module test
 dnl
