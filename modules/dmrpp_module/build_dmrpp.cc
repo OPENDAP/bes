@@ -306,10 +306,13 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
 
         VERBOSE(cerr << "num chunks: " << num_chunks << endl);
 
+        hid_t dcpl = H5Dget_create_plist(dataset);
+        layout_type = H5Pget_layout(dcpl);
+
         vector<H5D_chunk_rec_t> chunk_st_ptr(num_chunks);
 		unsigned int num_chunk_dims = 0;
-		if (H5Dget_dataset_storage_info(dataset, &layout_type, &chunk_st_ptr[0], &storage_status) < 0)
-			throw BESInternalError("Cannot get HDF5 chunk storage info.", __FILE__, __LINE__);
+		//if (H5Dget_dataset_storage_info(dataset, &layout_type, &chunk_st_ptr[0], &storage_status) < 0)
+		//	throw BESInternalError("Cannot get HDF5 chunk storage info.", __FILE__, __LINE__);
 
         for (int i = 0; i < num_chunks; ++i) {
 
