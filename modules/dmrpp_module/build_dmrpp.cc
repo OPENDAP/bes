@@ -309,8 +309,8 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
         hid_t dcpl = H5Dget_create_plist(dataset);
         layout_type = H5Pget_layout(dcpl);
 
-        vector<H5D_chunk_rec_t> chunk_st_ptr(num_chunks);
-		unsigned int num_chunk_dims = 0;
+        //vector<H5D_chunk_rec_t> chunk_st_ptr(num_chunks);
+		//unsigned int num_chunk_dims = 0;
 		//if (H5Dget_dataset_storage_info(dataset, &layout_type, &chunk_st_ptr[0], &storage_status) < 0)
 		//	throw BESInternalError("Cannot get HDF5 chunk storage info.", __FILE__, __LINE__);
 
@@ -326,7 +326,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
 
 			VERBOSE(cerr << "chk_idk: " << i << /*", offset: " << offset <<*/ ", filter_mask: " << filter_mask << ", addr: " << addr << ", size: " << size << endl);
         }
-#if 0
+#if 1
         // Replace this with a 'not found' error? It seems that chunk information
         // is found only when storage_status != 0. jhrg 5/7/18
         //if (storage_status == 0) {
@@ -355,7 +355,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
             }
             case H5D_CHUNKED: { /*chunking storage */
                 VERBOSE(cerr << "storage: chunked." << endl);
-                VERBOSE(cerr << "Number of chunks is " << num_chunk << endl);
+                VERBOSE(cerr << "Number of chunks is " << num_chunks << endl);
 
                 if (dc) set_filter_information(dataset, dc);
 
@@ -380,10 +380,13 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
                     // Allocate the memory for the struct to obtain the chunk storage information. Kent Yang
                     // wrote the H5Dget_dataset_chunk_storage_info() function; the alternative is to use the
                     // layout object above. jhrg 5/10/18
-                    vector<H5D_chunk_rec_t> chunk_st_ptr(num_chunk);
+                    vector<H5D_chunk_rec_t> chunk_st_ptr(num_chunks);
+                    //hsize_t chunk_arr[num_chunks];	//Probably not needed - Kodi
                     unsigned int num_chunk_dims = 0;
-                    if (H5Dget_dataset_storage_info(dataset, &layout_type, &chunk_st_ptr[0], &storage_status) < 0)
-                        throw BESInternalError("Cannot get HDF5 chunk storage info.", __FILE__, __LINE__);
+
+                    //num_chunk_dims = H5Pget_chunk(dcpl, num_chunks, chunk_arr);	//Probably not correct - Kodi
+                    //if (H5Dget_dataset_storage_info(dataset, &layout_type, &chunk_st_ptr[0], &storage_status) < 0)
+                    //    throw BESInternalError("Cannot get HDF5 chunk storage info.", __FILE__, __LINE__);
 
                     num_chunk_dims -= 1; // num_chunk_dims is rank + 1. not sure why. jhrg 5/10/18
                     VERBOSE(cerr << "Number of dimensions in a chunk is " << num_chunk_dims << endl);
@@ -401,7 +404,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
 
                     if (dc) dc->set_chunk_dimension_sizes(chunk_dims);
 
-                    for (size_t i = 0; i < num_chunk; i++) {
+                    for (size_t i = 0; i < num_chunks; i++) {
                         VERBOSE(cerr << "    Chunk index:  " << i << endl);
                         VERBOSE(cerr << "    Number of bytes: " << chunk_st_ptr[i].nbytes << endl);
                         VERBOSE(cerr << "    Physical offset: " << chunk_st_ptr[i].chunk_addr << endl);
