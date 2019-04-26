@@ -12,7 +12,7 @@ AUTOMAKE_OPTIONS = foreign
 #Remove hard code for filepath
 AM_CPPFLAGS = $(DAP_CFLAGS) -D__macosx -I$(STARE_INC) -I$(prefix)/deps/include
 AM_CXXFLAGS = --std=c++11
-AM_LDADD =  $(DAP_CLIENT_LIBS) -L$(STARE_LIB) -lSTARE
+AM_LDADD =  $(DAP_CLIENT_LIBS) -lSTARE
 
 #if CPPUNIT
 #AM_CPPFLAGS += $(CPPUNIT_CFLAGS)

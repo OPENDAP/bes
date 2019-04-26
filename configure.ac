@@ -642,9 +642,15 @@ AC_CHECK_HDF5(
   [],
   $ac_bes_dependencies_prefix
 )
-AC_CHECK_STARE
-AM_CONDITIONAL([BUILD_STARE],[true])
 
+AC_CHECK_STARE(
+  [AM_CONDITIONAL([BUILD_STARE],[true])
+  ],
+  [AC_MSG_WARN([STARE library not found.])
+  AM_CONDITIONAL([BUILD_STARE],[false])
+  ],
+  $ac_bes_dependencies_prefix
+)
 dnl NCML module test
 dnl
 dnl Look for the minimum version of the icu libs and headers
