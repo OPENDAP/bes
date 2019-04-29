@@ -1309,7 +1309,7 @@ void FoDapCovJsonTransform::printCoverageJSON(ostream *strm, string indent, bool
     string child_indent1 = indent + _indent_increment;
     string child_indent2 = child_indent1 + _indent_increment;
     string child_indent3 = child_indent2 + _indent_increment;
-  
+
     // Determine if the attribute values we read can be converted to CovJSON.
     // Test override forces printing output to stream regardless of whether
     // or not the file can be converted into CoverageJSON format.
@@ -1417,7 +1417,7 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
 
     // Read through the source DDS leaves and nodes, extract all axes and
     // parameter data, and store that data as Axis and Parameters
-    transformNodeWorker(strm, leaves, nodes, child_indent2, sendData);
+    transformNodeWorker(strm, leaves, nodes, indent + _indent_increment + _indent_increment, sendData);
 
     // Print the Coverage data to stream as CoverageJSON
     printCoverageJSON(strm, indent, testOverride);
