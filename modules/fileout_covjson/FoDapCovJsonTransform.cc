@@ -1306,6 +1306,10 @@ void FoDapCovJsonTransform::printCoverageFooterWorker(ostream *strm, string inde
  */
 void FoDapCovJsonTransform::printCoverageJSON(ostream *strm, string indent, bool testOverride)
 {
+    string child_indent1 = indent + _indent_increment;
+    string child_indent2 = child_indent1 + _indent_increment;
+    string child_indent3 = child_indent2 + _indent_increment;
+  
     // Determine if the attribute values we read can be converted to CovJSON.
     // Test override forces printing output to stream regardless of whether
     // or not the file can be converted into CoverageJSON format.
@@ -1389,9 +1393,6 @@ void FoDapCovJsonTransform::printCoverageJSON(ostream *strm, string indent, bool
  */
 void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string indent, bool sendData, bool testOverride)
 {
-    string child_indent1 = indent + _indent_increment;
-    string child_indent2 = child_indent1 + _indent_increment;
-    string child_indent3 = child_indent2 + _indent_increment;
     // Sort the variables into two sets
     vector<libdap::BaseType *> leaves;
     vector<libdap::BaseType *> nodes;
