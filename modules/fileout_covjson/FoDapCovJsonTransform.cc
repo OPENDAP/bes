@@ -978,6 +978,9 @@ void FoDapCovJsonTransform::printAxesWorker(ostream *strm, string indent)
 
     BESDEBUG(FoDapCovJsonTransform_debug_key, "Printing AXES" << endl);
 
+    // FOR TESTING AND DEBUGGING PURPOSES
+    // *strm << "\"type_name\": \"" << a->var()->type_name() << "\"" << endl;
+
     // Write the axes to strm
     *strm << indent << "\"axes\": {" << endl;
     for(unsigned int i = 0; i < axisCount; i++) {
@@ -1292,51 +1295,17 @@ void FoDapCovJsonTransform::printCoverageFooterWorker(ostream *strm, string inde
 
 
 /**
- * @brief Writes a CovJSON representation of the DDS to the passed stream. Data
- *   is sent if the sendData flag is true. Otherwise, only metadata is sent.
- *
- * @note w10 sees the world in terms of leaves and nodes. Leaves have data, nodes
- *   have other nodes and leaves.
+ * @brief Prints the CoverageJSON file to stream via the print Coverage
+ *    worker functions
  *
  * @param strm Write to this output stream
- * @param dds Pointer to a DDS vector, which contains both w10n leaves and nodes
  * @param indent Indent the output so humans can make sense of it
- * @param sendData true: send data; false: send metadata
  * @param testOverride true: print to stream regardless of whether the file can
  *    be converted to CoverageJSON (for testing purposes) false: run canConvert
  *    function to determine if the source DDS can be converted to CovJSON
  */
-void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string indent, bool sendData, bool testOverride)
+void FoDapCovJsonTransform::printCoverageJSON(ostream *strm, string indent, bool testOverride)
 {
-    string child_indent1 = indent + _indent_increment;
-    string child_indent2 = child_indent1 + _indent_increment;
-    string child_indent3 = child_indent2 + _indent_increment;
-    // Sort the variables into two sets
-    vector<libdap::BaseType *> leaves;
-    vector<libdap::BaseType *> nodes;
-
-    libdap::DDS::Vars_iter vi = dds->var_begin();
-    libdap::DDS::Vars_iter ve = dds->var_end();
-    for(; vi != ve; vi++) {
-        if((*vi)->send_p()) {
-            libdap::BaseType *v = *vi;
-            libdap::Type type = v->type();
-            if(type == libdap::dods_array_c) {
-                type = v->var()->type();
-            }
-            if(v->is_constructor_type() || (v->is_vector_type() && v->var()->is_constructor_type())) {
-                nodes.push_back(v);
-            }
-            else {
-                leaves.push_back(v);
-            }
-        }
-    }
-
-    // Read through the source DDS leaves and nodes, extract all axes and
-    // parameter data, and store that data as Axis and Parameters
-    transformNodeWorker(strm, leaves, nodes, child_indent2, sendData);
-
     // Determine if the attribute values we read can be converted to CovJSON.
     // Test override forces printing output to stream regardless of whether
     // or not the file can be converted into CoverageJSON format.
@@ -1387,7 +1356,7 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
         printReferenceWorker(strm, child_indent2);
 
         // Prints parameter metadata
-        printParametersWorker(strm, child_indent1);
+        printParametersWorker(strm, child_indent2);
 
         // Prints the parameter range values
         printRangesWorker(strm, child_indent1);
@@ -1400,6 +1369,57 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
         // If this file can't be converted, then its failing spatial/temporal requirements
         throw BESInternalError("File cannot be converted to COVJSON format due to missing or incompatible spatial dimensions", __FILE__, __LINE__);
     }
+}
+
+
+/**
+ * @brief Writes a CovJSON representation of the DDS to the passed stream. Data
+ *   is sent if the sendData flag is true. Otherwise, only metadata is sent.
+ *
+ * @note w10 sees the world in terms of leaves and nodes. Leaves have data, nodes
+ *   have other nodes and leaves.
+ *
+ * @param strm Write to this output stream
+ * @param dds Pointer to a DDS vector, which contains both w10n leaves and nodes
+ * @param indent Indent the output so humans can make sense of it
+ * @param sendData true: send data; false: send metadata
+ * @param testOverride true: print to stream regardless of whether the file can
+ *    be converted to CoverageJSON (for testing purposes) false: run canConvert
+ *    function to determine if the source DDS can be converted to CovJSON
+ */
+void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string indent, bool sendData, bool testOverride)
+{
+    string child_indent1 = indent + _indent_increment;
+    string child_indent2 = child_indent1 + _indent_increment;
+    string child_indent3 = child_indent2 + _indent_increment;
+    // Sort the variables into two sets
+    vector<libdap::BaseType *> leaves;
+    vector<libdap::BaseType *> nodes;
+
+    libdap::DDS::Vars_iter vi = dds->var_begin();
+    libdap::DDS::Vars_iter ve = dds->var_end();
+    for(; vi != ve; vi++) {
+        if((*vi)->send_p()) {
+            libdap::BaseType *v = *vi;
+            libdap::Type type = v->type();
+            if(type == libdap::dods_array_c) {
+                type = v->var()->type();
+            }
+            if(v->is_constructor_type() || (v->is_vector_type() && v->var()->is_constructor_type())) {
+                nodes.push_back(v);
+            }
+            else {
+                leaves.push_back(v);
+            }
+        }
+    }
+
+    // Read through the source DDS leaves and nodes, extract all axes and
+    // parameter data, and store that data as Axis and Parameters
+    transformNodeWorker(strm, leaves, nodes, child_indent2, sendData);
+
+    // Print the Coverage data to stream as CoverageJSON
+    printCoverageJSON(strm, indent, testOverride);
 }
 
 

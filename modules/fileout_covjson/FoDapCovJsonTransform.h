@@ -114,6 +114,7 @@ private:
     void printParametersWorker(std::ostream *strm, std::string indent);
     void printRangesWorker(std::ostream *strm, std::string indent);
     void printCoverageFooterWorker(std::ostream *strm, std::string indent);
+    void printCoverageJSON(std::ostream *strm, string indent, bool testOverride);
 
     template<typename T>
     void covjsonSimpleTypeArray(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
