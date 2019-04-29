@@ -885,59 +885,83 @@ void FoDapCovJsonTransform::printCoverageHeaderWorker(ostream *strm, string inde
 
     // A lot of conditional printing based on whether we have a single
     // Coverage or a Coverage Collection. Nothing fancy here.
-    if(parameterCount > 1 && isCoverageCollection) {
-        *strm << indent << "{" << endl;
-        *strm << child_indent1 << "\"type\": \"CoverageCollection\"," << endl;
+    *strm << indent << "{" << endl;
+    *strm << child_indent1 << "\"type\": \"Coverage\"," << endl;
+    *strm << child_indent1 << "\"domain\": {" << endl;
+    *strm << child_indent2 << "\"type\" : \"Domain\"," << endl;
+
+    if(domainType == Grid) {
+        *strm << child_indent2 << "\"domainType\": \"Grid\"," << endl;
     }
-    else if(parameterCount > 1 && !isCoverageCollection) {
-        *strm << indent << "\"coverages\": [{" << endl;
-        *strm << child_indent1 << "\"type\": \"Coverage\"," << endl;
-        *strm << child_indent1 << "\"domain\": {" << endl;
+    else if(domainType == VerticalProfile) {
+        *strm << child_indent2 << "\"domainType\": \"Vertical Profile\"," << endl;
+    }
+    else if(domainType == PointSeries) {
+        *strm << child_indent2 << "\"domainType\": \"Point Series\"," << endl;
+    }
+    else if(domainType == Point) {
+        *strm << child_indent2 << "\"domainType\": \"Point\"," << endl;
     }
     else {
-        *strm << indent << "{" << endl;
-        *strm << child_indent1 << "\"type\": \"Coverage\"," << endl;
-        *strm << child_indent1 << "\"domain\": {" << endl;
+        *strm << child_indent2 << "\"domainType\": \"Unknown\"," << endl;
     }
 
-    if(parameterCount > 1 && !isCoverageCollection) {
-        *strm << child_indent2 << "\"type\" : \"Domain\"," << endl;
-    }
+    // @TODO NEEDS REFACTORING FOR BES ISSUE #245
+    // https://github.com/OPENDAP/bes/issues/245
 
-    if(parameterCount == 1 && !isCoverageCollection) {
-        if(domainType == Grid) {
-            *strm << child_indent2 << "\"domainType\": \"Grid\"," << endl;
-        }
-        else if(domainType == VerticalProfile) {
-            *strm << child_indent2 << "\"domainType\": \"Vertical Profile\"," << endl;
-        }
-        else if(domainType == PointSeries) {
-            *strm << child_indent2 << "\"domainType\": \"Point Series\"," << endl;
-        }
-        else if(domainType == Point) {
-            *strm << child_indent2 << "\"domainType\": \"Point\"," << endl;
-        }
-        else {
-            *strm << child_indent2 << "\"domainType\": \"Unknown\"," << endl;
-        }
-    }
-    else if(parameterCount > 1 && isCoverageCollection) {
-        if(domainType == Grid) {
-            *strm << child_indent1 << "\"domainType\": \"Grid\"," << endl;
-        }
-        else if(domainType == VerticalProfile) {
-            *strm << child_indent1 << "\"domainType\": \"Vertical Profile\"," << endl;
-        }
-        else if(domainType == PointSeries) {
-            *strm << child_indent1 << "\"domainType\": \"Point Series\"," << endl;
-        }
-        else if(domainType == Point) {
-            *strm << child_indent1 << "\"domainType\": \"Point\"," << endl;
-        }
-        else {
-            *strm << child_indent1 << "\"domainType\": \"Unknown\"," << endl;
-        }
-    }
+    // if(parameterCount > 1 && isCoverageCollection) {
+    //     *strm << indent << "{" << endl;
+    //     *strm << child_indent1 << "\"type\": \"CoverageCollection\"," << endl;
+    // }
+    // else if(parameterCount > 1 && !isCoverageCollection) {
+    //     *strm << indent << "\"coverages\": [{" << endl;
+    //     *strm << child_indent1 << "\"type\": \"Coverage\"," << endl;
+    //     *strm << child_indent1 << "\"domain\": {" << endl;
+    // }
+    // else {
+    //     *strm << indent << "{" << endl;
+    //     *strm << child_indent1 << "\"type\": \"Coverage\"," << endl;
+    //     *strm << child_indent1 << "\"domain\": {" << endl;
+    // }
+    //
+    // if(parameterCount > 1 && !isCoverageCollection) {
+    //     *strm << child_indent2 << "\"type\" : \"Domain\"," << endl;
+    // }
+    //
+    // if(parameterCount == 1 && !isCoverageCollection) {
+    //     if(domainType == Grid) {
+    //         *strm << child_indent2 << "\"domainType\": \"Grid\"," << endl;
+    //     }
+    //     else if(domainType == VerticalProfile) {
+    //         *strm << child_indent2 << "\"domainType\": \"Vertical Profile\"," << endl;
+    //     }
+    //     else if(domainType == PointSeries) {
+    //         *strm << child_indent2 << "\"domainType\": \"Point Series\"," << endl;
+    //     }
+    //     else if(domainType == Point) {
+    //         *strm << child_indent2 << "\"domainType\": \"Point\"," << endl;
+    //     }
+    //     else {
+    //         *strm << child_indent2 << "\"domainType\": \"Unknown\"," << endl;
+    //     }
+    // }
+    // else if(parameterCount > 1 && isCoverageCollection) {
+    //     if(domainType == Grid) {
+    //         *strm << child_indent1 << "\"domainType\": \"Grid\"," << endl;
+    //     }
+    //     else if(domainType == VerticalProfile) {
+    //         *strm << child_indent1 << "\"domainType\": \"Vertical Profile\"," << endl;
+    //     }
+    //     else if(domainType == PointSeries) {
+    //         *strm << child_indent1 << "\"domainType\": \"Point Series\"," << endl;
+    //     }
+    //     else if(domainType == Point) {
+    //         *strm << child_indent1 << "\"domainType\": \"Point\"," << endl;
+    //     }
+    //     else {
+    //         *strm << child_indent1 << "\"domainType\": \"Unknown\"," << endl;
+    //     }
+    // }
 }
 
 
@@ -1113,6 +1137,8 @@ void FoDapCovJsonTransform::printParametersWorker(ostream *strm, string indent)
 
     BESDEBUG(FoDapCovJsonTransform_debug_key, "Printing PARAMETERS" << endl);
 
+    // @TODO NEEDS REFACTORING FOR BES ISSUE #244
+    // https://github.com/OPENDAP/bes/issues/244
     // Write down the parameter metadata
     *strm << indent << "\"parameters\": {" << endl;
     for(unsigned int i = 0; i < parameterCount; i++) {
@@ -1221,6 +1247,8 @@ void FoDapCovJsonTransform::printRangesWorker(ostream *strm, string indent)
             dataType = "string";
         }
 
+        // @TODO NEEDS REFACTORING FOR BES ISSUE #244
+        // https://github.com/OPENDAP/bes/issues/244
         *strm << child_indent1 << "\"" << parameters[i]->name << "\": {" << endl;
         *strm << child_indent2 << "\"type\": \"NdArray\"," << endl;
         *strm << child_indent2 << "\"dataType\": \"" << dataType << "\", " << endl;
@@ -1323,49 +1351,50 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
     if(canConvertToCovJson) {
         // If we have more than one parameter, we are dealing with a
         // Coverage Collection, so we must print accordingly
-        if(parameterCount > 1) {
-            // Prints header and domain type
-            printCoverageHeaderWorker(strm, indent, true);
+        // if(parameterCount > 1) {
+        //     // Prints header and domain type
+        //     printCoverageHeaderWorker(strm, indent, true);
+        //
+        //     // Prints parameter metadata
+        //     printParametersWorker(strm, child_indent1);
+        //
+        //     // Prints the references for the given Axes
+        //     printReferenceWorker(strm, child_indent1);
+        //
+        //     // Prints header and domain type
+        //     printCoverageHeaderWorker(strm, child_indent1, false);
+        //
+        //     // Prints the axes metadata and range values
+        //     printAxesWorker(strm, child_indent3);
+        //
+        //     // Prints the parameter range values
+        //     printRangesWorker(strm, child_indent2);
+        //
+        //     // Prints footer
+        //     printCoverageFooterWorker(strm, indent);
+        // }
+        // // If we have a single parameter, or even no parameters,
+        // // we will print as a "normal" coverage
+        // else {
 
-            // Prints parameter metadata
-            printParametersWorker(strm, child_indent1);
+        // Prints header and domain type
+        printCoverageHeaderWorker(strm, indent, false);
 
-            // Prints the references for the given Axes
-            printReferenceWorker(strm, child_indent1);
+        // Prints the axes metadata and range values
+        printAxesWorker(strm, child_indent2);
 
-            // Prints header and domain type
-            printCoverageHeaderWorker(strm, child_indent1, false);
+        // Prints the references for the given Axes
+        printReferenceWorker(strm, child_indent2);
 
-            // Prints the axes metadata and range values
-            printAxesWorker(strm, child_indent3);
+        // Prints parameter metadata
+        printParametersWorker(strm, child_indent1);
 
-            // Prints the parameter range values
-            printRangesWorker(strm, child_indent2);
+        // Prints the parameter range values
+        printRangesWorker(strm, child_indent1);
 
-            // Prints footer
-            printCoverageFooterWorker(strm, indent);
-        }
-        // If we have a single parameter, or even no parameters,
-        // we will print as a "normal" coverage
-        else {
-            // Prints header and domain type
-            printCoverageHeaderWorker(strm, indent, false);
-
-            // Prints the axes metadata and range values
-            printAxesWorker(strm, child_indent2);
-
-            // Prints the references for the given Axes
-            printReferenceWorker(strm, child_indent2);
-
-            // Prints parameter metadata
-            printParametersWorker(strm, child_indent1);
-
-            // Prints the parameter range values
-            printRangesWorker(strm, child_indent1);
-
-            // Prints footer
-            printCoverageFooterWorker(strm, indent);
-        }
+        // Prints footer
+        printCoverageFooterWorker(strm, indent);
+        // }
     }
     else {
         // If this file can't be converted, then its failing spatial/temporal requirements
