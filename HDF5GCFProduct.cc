@@ -987,26 +987,73 @@ void obtain_gm_attr_value(hid_t s_root_id, const char* s_attr_name, string & s_a
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
-    vector<char> temp_buf(atype_size*num_elm+1);
-    // "h5","attribute size "<<atype_size*num_elm <<endl;
-    if (H5Aread(s_attr_id,attr_type, &temp_buf[0])<0){
-        string msg = "cannot retrieve the value of  the attribute ";
-        msg += string(s_attr_name);
-        H5Tclose(attr_type);
-        H5Aclose(s_attr_id);
-        H5Sclose(attr_space);
-        H5Gclose(s_root_id);
-        throw InternalErr(__FILE__, __LINE__, msg);
+    if(H5Tis_variable_str(attr_type)) {
+        
+        vector<char> temp_buf;
+        // Variable length string attribute values only store pointers of the actual string value.
+        temp_buf.resize(atype_size*num_elm);
+        if (H5Aread(s_attr_id, attr_type, &temp_buf[0]) < 0) {
+            string msg = "cannot retrieve the value of  the attribute ";
+            msg += string(s_attr_name);
+            H5Tclose(attr_type);
+            H5Aclose(s_attr_id);
+            H5Sclose(attr_space);
+            H5Gclose(s_root_id);
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
 
+        char *temp_bp;
+        temp_bp = &temp_buf[0];
+        char* onestring;
+        for (unsigned int temp_i = 0; temp_i <num_elm; temp_i++) {
+
+            // This line will assure that we get the real variable length string value.
+            onestring =*(char **)temp_bp;
+
+            // Change the C-style string to C++ STD string just for easy appending the attributes in DAP.
+            if (onestring !=NULL) 
+                string tempstring(onestring);
+        }
+
+        temp_bp +=H5Tget_size(attr_type);
+    
+        if (temp_buf.empty() != true) {
+
+            // Reclaim any VL memory if necessary.
+            herr_t ret_vlen_claim;
+            ret_vlen_claim = H5Dvlen_reclaim(attr_type,attr_space,H5P_DEFAULT,&temp_buf[0]);
+            if(ret_vlen_claim < 0){
+                H5Tclose(attr_type);
+                H5Aclose(s_attr_id);
+                H5Sclose(attr_space);
+                throw InternalErr(__FILE__, __LINE__, "Cannot reclaim the memory buffer of the HDF5 variable length string.");
+            }
+                 
+            temp_buf.clear();
+        }
     }
+    else {
+        vector<char> temp_buf(atype_size*num_elm+1);
+        // "h5","attribute size "<<atype_size*num_elm <<endl;
+        if (H5Aread(s_attr_id,attr_type, &temp_buf[0])<0){
+            string msg = "cannot retrieve the value of  the attribute ";
+            msg += string(s_attr_name);
+            H5Tclose(attr_type);
+            H5Aclose(s_attr_id);
+            H5Sclose(attr_space);
+            H5Gclose(s_root_id);
+            throw InternalErr(__FILE__, __LINE__, msg);
 
-    string temp_attr_value(temp_buf.begin(),temp_buf.end());
-    // "h5","size of temp_attr_value "<<temp_attr_value.size() <<endl;
-    size_t temp_null_pos = temp_attr_value.find_first_of('\0');
-    s_attr_value = temp_attr_value.substr(0,temp_null_pos);
-    //s_attr_value(temp_buf.begin(),temp_buf.end()-1);
+        }
+
+        string temp_attr_value(temp_buf.begin(),temp_buf.end());
+        // "h5","size of temp_attr_value "<<temp_attr_value.size() <<endl;
+        size_t temp_null_pos = temp_attr_value.find_first_of('\0');
+        s_attr_value = temp_attr_value.substr(0,temp_null_pos);
+        //s_attr_value(temp_buf.begin(),temp_buf.end()-1);
+    }
     H5Tclose(attr_type);
     H5Sclose(attr_space);
     H5Aclose(s_attr_id);
+    
 }
-
