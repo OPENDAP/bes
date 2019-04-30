@@ -22,8 +22,10 @@
 #
 # You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 #
-data_root="/home/centos/hyrax/build/share/hyrax/s3/cloudydap";
-target_dir="/home/centos/hyrax/build/share/hyrax/dmrpp_from_filesystem";
+#data_root="/home/centos/hyrax/build/share/hyrax/s3/cloudydap";
+#target_dir="/home/centos/hyrax/build/share/hyrax/dmrpp_from_filesystem";
+data_root=`pwd`;
+target_dir=`pwd`;
 
 # Should match the value of BES.Catalog.catalog.TypeMatch in the bes 
 # configuration fileused by get_dmrpp.
@@ -31,8 +33,6 @@ target_dir="/home/centos/hyrax/build/share/hyrax/dmrpp_from_filesystem";
 dataset_regex_match="^.*\\.(h5|he5|nc4)(\\.bz2|\\.gz|\\.Z)?$";
 
 dmrpp_url_base="https://s3.amazonaws.com/cloudydap";
-
-#target_dir=`pwd`"/dmrpp";
 
 ALL_FILES="./all_files.txt";
 DATA_FILES="./data_files.txt";
@@ -76,7 +76,7 @@ function show_usage() {
      (default: ${dataset_regex_match})
  -f: Use "find" to list all regular files below the data root directory 
      and store the list in "${ALL_FILES}" The the dataset match regex is applied
-     to each string in ${ALL_FILES} and the matching data files list is placed in
+     to each line in ${ALL_FILES} and the matching data files list is placed in
      "${DATA_FILES}". If this option is omitted the files named in "${DATA_FILES}"
       (if any) will be processed.
      (default: Not Set)

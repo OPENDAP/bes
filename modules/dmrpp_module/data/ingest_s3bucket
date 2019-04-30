@@ -22,7 +22,8 @@
 #
 # You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 #
-target_dir="/home/centos/hyrax/build/share/hyrax/dmrpp_from_aws_cli";
+# target_dir="/home/centos/hyrax/build/share/hyrax/dmrpp_from_aws_cli";
+target_dir=`pwd`;
 
 # Should match the value of BES.Catalog.catalog.TypeMatch in the bes 
 # configuration fileused by get_dmrpp.
@@ -34,11 +35,6 @@ s3_bucket_name="cloudydap"
 
 #target_dir=".";
 
-ALL_FILES=$(mktemp -t s3ingest_all_files_XXXX);
-DATA_FILES=$(mktemp -t s3ingest_data_files_XXXX);  
-
-ALL_FILES="./all_files.txt";
-DATA_FILES="./data_files.txt";
 
 #################################################################################
 #
@@ -73,10 +69,10 @@ function show_usage() {
      separator divided names will be replicted and dmr++ placed into
      it accordingly.
      (default: ${target_dir})
- -f: Retrieve object list from S3 bucket into ${ALL_FILES} and
+ -f: Retrieve object list from S3 bucket into the list file for the bucket,
      apply the dataset match regex to the object names to create
-     the data files list in ${DATA_FILES}. If this is omitted the
-     files named in ${DATA_FILES} (if any) will be processed.
+     the data files list. If this is omitted the files named in an 
+     exisiting bucket list file (if any) will be processed.
      (default: Not Set)
  -r: The dataset match regex used to screen the filenames 
      for matching datasets. 
@@ -229,7 +225,7 @@ function mk_file_list_from_s3() {
 #
 # mk_dmrpp_from_s3_list() 
 #
-# Looks at each file name in DATA_FILES and computes the dmr++ for that file.
+# Looks at each file name in S3_DATA_FILES and computes the dmr++ for that file.
 # 
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 function mk_dmrpp_from_s3_list() {
