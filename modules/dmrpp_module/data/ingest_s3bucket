@@ -54,11 +54,9 @@ function show_usage() {
  List an AWS S3 bucket and make a DMR++ for every dataset matching the
  default (or supplied) regex.
 
- The CWD is set as the BES Data Root directory by default. This utility will
- add an entry to the bes.log specified in the configuration file.
  The DMR++ is built using the DMR as returned by the HDF5 handler,
- using options as set in the bes configuration file found here.
- 
+ using options as set in the bes configuration file used by get_dmrpp.
+  
  -h: Show help
  -v: Verbose: Print the DMR too
  -V: Very Verbose: Verbose plus so much more. Your eyes will water from
@@ -80,19 +78,20 @@ function show_usage() {
      the data files list in ${DATA_FILES}. If this is omitted the
      files named in ${DATA_FILES} (if any) will be processed.
      (default: Not Set)
- -r: The dataset match regex used to screen the base filesystem 
-     for datasets. 
+ -r: The dataset match regex used to screen the filenames 
+     for matching datasets. 
      (default: ${dataset_regex_match})
  -k: Keep the downloaded datafiles after the dmr++ file has been 
      created. Be careful! S3 buckets can be quite large!
 
+Dependencies:
+This script requires that:
+ - The bes installation directory is on the PATH.
+ - The AWS Commandline Tools are installed and on the path.
+ - The AWS Commandline Tools have been configured for this user with
+   AWS access_key_id and aws_secret_access_key that have adequate permissions
+   to access the target AWS S3 bucket.
 
- Limitations: 
- * The pathanme to the hdf5 file must be relative from the
-   directory where this command was run; absolute paths won't work. 
- * The build_dmrpp command must be in the CWD. 
- * The bes conf template has to build by hand. jhrg 5/11/18
- 
 EOF
 }
 #################################################################################

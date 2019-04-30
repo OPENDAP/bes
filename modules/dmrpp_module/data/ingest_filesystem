@@ -51,10 +51,8 @@ function show_usage() {
  Crawl filesystem and make a DMR++ for every dataset matching the
  default or supplied regex.
 
- The CWD is set as the BES Data Root directory by default. This utility will
- add an entry to the bes.log specified in the configuration file.
  The DMR++ is built using the DMR as returned by the HDF5 handler,
- using options as set in the bes configuration file found here.
+ using options as set in the bes configuration file used by get_dmrpp.
  
  -h: Show help
  -v: Verbose: Print the DMR too
@@ -64,14 +62,14 @@ function show_usage() {
      is that they will be organized the same way the source dataset 
      files below the "data_root" (see -d)
      (default: ${dmrpp_url_base})
- -d: The local filesystem root from which the data to be ingested. 
-     The filesystem will searched begining at this point for files names 
-     matching the dataset match regex (see -r).
+ -d: The local filesystem root from which the data are to be ingested. 
+     The filesystem will be searched beginning at this point for files 
+     whose names match the dataset match regex (see -r).
      (default: ${data_root})
  -t: The target directory for the dmrpp files. Below this point
-     the structure of the bucket objects vis-a-vis their "/" path
-     separator divided names will be replicted and dmr++ placed into
-     it accordingly.
+     the organization of the data files vis-a-vis their "/" path
+     separator divided names will be replicated and dmr++ files placed 
+     accordingly.
      (default: ${target_dir})
  -r: The dataset match regex used to screen the base filesystem 
      for datasets. 
@@ -82,17 +80,7 @@ function show_usage() {
      "${DATA_FILES}". If this option is omitted the files named in "${DATA_FILES}"
       (if any) will be processed.
      (default: Not Set)
- -f: Use 'find' to locate all matching data files (if missing then dmrpp generation
-     will happen using an exisiting file list, if found.
-     (default: Not Set)
 
-
- Limitations: 
- * The pathanme to the hdf5 file must be relative from the
-   directory where this command was run; absolute paths won't work. 
- * The build_dmrpp command must be in the CWD. 
- * The bes conf template has to build by hand. jhrg 5/11/18
- 
 EOF
 }
 #################################################################################
