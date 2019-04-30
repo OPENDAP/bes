@@ -49,7 +49,10 @@
 
 #include "test_config.h"
 
-static bool debug = false;
+// static bool debug = false;
+// This tests fails in CI sometimes for no known reason. Run with debugging
+// by default. jhrg 4/17/19
+static bool debug = true;
 static bool debug_2 = false;
 
 #undef DBG
@@ -380,8 +383,7 @@ CPPUNIT_TEST_SUITE( TemporaryFileTest );
     CPPUNIT_TEST(sigpipe_test);
     CPPUNIT_TEST(multifile_sigpipe_test);
 
-    CPPUNIT_TEST_SUITE_END()
-    ;
+    CPPUNIT_TEST_SUITE_END();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(TemporaryFileTest);

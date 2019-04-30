@@ -94,9 +94,16 @@ void ff_read_descriptors(DDS &dds_table, const string &filename)
     // objects (including FFArray, ...). So I think the RSS format-specific
     // code in those classes is not needed anymore. I'm going to #if 0 #endif
     // them out and check in the result. 10/30/08 jhrg
+    string iff = "";
     if (FFRequestHandler::get_RSS_format_support()) {
-        string iff = find_ancillary_rss_formats(filename);
+        iff = find_ancillary_rss_formats(filename);
         SetUps->input_format_file = const_cast<char*>(iff.c_str());
+    }
+    // Regex support
+    if (FFRequestHandler::get_Regex_format_support()) {
+        iff = get_Regex_format_file(filename);
+        if (!iff.empty())
+            SetUps->input_format_file = const_cast<char*>(iff.c_str());
     }
 
     SetUps->output_file = NULL;

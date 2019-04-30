@@ -49,6 +49,7 @@ static char rcsid[] not_used =
 #include <string>
 #include <vector>
 #include <cstdlib>
+#include <regex>
 
 #include <BESDebug.h>
 
@@ -757,3 +758,19 @@ dods_float64 get_float_value(BaseType * var) throw(InternalErr)
     }
 }
 
+string get_Regex_format_file(const string & filename)
+{
+    string retVal = "";
+    std::map<string,string> mapFF = FFRequestHandler::get_fmt_regex_map();
+    for (auto rgx = mapFF.begin(); rgx != mapFF.end(); ++ rgx) {
+#if 0
+        cout << filename << "   " << rgx.first << "   " << rgx.second << endl;
+#endif
+        string::size_type found = filename.find_last_of("/\\");
+        if (regex_match (filename.substr(found+1), regex((*rgx).first) )){
+            retVal = string((*rgx).second);
+            break;
+        }
+    }
+    return retVal;
+}
