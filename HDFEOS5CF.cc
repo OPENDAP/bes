@@ -402,6 +402,11 @@ void EOS5File::Handle_Unsupported_Others(bool include_attr) throw (Exception)
                         }
 
                     }
+                    else if((*ira)->name == "_Netcdf4Dimid") {
+                        delete((*ira));
+                        ira =(*irv)->attrs.erase(ira);
+                    }
+
                     else {
                         ++ira;
                     }
@@ -444,6 +449,11 @@ void EOS5File::Handle_Unsupported_Others(bool include_attr) throw (Exception)
                         }
                     }
                 }
+                else if((*ira)->name == "_Netcdf4Dimid") {
+                    delete((*ira));
+                    ira =(*irv)->attrs.erase(ira);
+                }
+
                 else {
                     ++ira;
                 }
