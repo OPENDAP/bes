@@ -1,0 +1,847 @@
+Attributes {
+    HDF5_GLOBAL {
+        String identifier_product_doi "10.5067/W8QGIYNKS3JC";
+        String identifier_product_doi_authority "http://dx.doi.org/";
+        String filter_function "oco2_xco2_quality_flag_b9";
+        String bc_function "oco2_bias_correct_b9";
+        String warn_level_function "oco2_warn_levels_b8";
+        String Bias_Correction_land "XCO2_Bias_Corrected = (XCO2_Raw + 0.900*(dpfrac + 0.0) + 0.0290*(co2_grad_del - 15.0) + 9.00*(DWS + 0.0) - footprint_bias)/0.99540";
+        String Bias_Correction_oceanGL "XCO2_Bias_Corrected = (XCO2_Raw + 0.245*(dp_sco2 + 0.0) - 0.0900*((co2_grad_del<(-6.)) + 6.00) - footprint_bias)/0.99530";
+        String Footprint_bias_land "Assumed footprint biases in xco2 [ppm] for footprints 1-8: -0.36, -0.15, -0.16, -0.14, 0.02, 0.33, 0.13, 0.34";
+        String Footprint_bias_oceanGL "Assumed footprint biases in xco2 [ppm] for footprints 1-8: -0.36, -0.15, -0.16, -0.14, 0.02, 0.33, 0.13, 0.34";
+        String Bias_Uncertainty "Bias correction parameter uncertainties are given in the data users guide.";
+        String Note_regarding_bias_correction "There is some uncertainty in not only the bias correction coefficients but in the chosen parameters themselves. This release bias correction may be slightly different that of previous releases, and also somewhat different from those of previous ACOS algorithm versions.  This has to do with details of the particular retrieval algorithm version and is considered normal (though not ideal).";
+        String Platform "OCO-2";
+        String Sensor "OCO-2";
+        String title "ACOS L2 Lite Output";
+        String BuildId "B8.1.00";
+        String filtering_state "Filtered with oco2_lite_file_prefilter_b8a";
+        String creation_date "Sep 2018";
+        String contact "Chris O'Dell: odell@atmos.colostate.edu";
+    }
+    Preprocessors {
+    }
+    Meteorology {
+    }
+    Auxiliary {
+    }
+    Retrieval {
+    }
+    Sounding {
+    }
+    xco2_apriori {
+        String units "ppm";
+        String long_name "A priori XCO2 Value";
+        Float32 missing_value -999999.0000;
+        String origname "xco2_apriori";
+        String fullnamepath "/xco2_apriori";
+    }
+    file_index {
+        String units "none";
+        String long_name "L2 File Index";
+        Int16 missing_value -1;
+        String comment "1-Based Index of L2 File for each sounding";
+        String origname "file_index";
+        String fullnamepath "/file_index";
+    }
+    pressure_levels {
+        String units "hPa";
+        String long_name "Pressure_Levels";
+        Float32 missing_value -999999.0000;
+        String comment "Pressure at each level; Defined on layer boundaries. These are oriented space-to-surface, so the first element defines the TOA, the last element defines the surface.";
+        String origname "pressure_levels";
+        String fullnamepath "/pressure_levels";
+    }
+    xco2 {
+        String units "ppm";
+        String long_name "XCO2";
+        Float32 missing_value -999999.0000;
+        String comment "Column-averaged dry-air mole fraction of CO2 (includes bias correction)";
+        String origname "xco2";
+        String fullnamepath "/xco2";
+    }
+    time {
+        String units "seconds since 1970-01-01 00:00:00";
+        String long_name "time";
+        Float64 missing_value -999999.00000000000;
+        String origname "time";
+        String fullnamepath "/time";
+    }
+    pressure_weight {
+        String units "none";
+        String long_name "Pressure Weighting Function";
+        Float32 missing_value -999999.0000;
+        String comment "Pressure weighting function for each level; Defined on layer boundaries. These are oriented space-to-surface, so the first element defines the TOA, the last element defines the surface.";
+        String origname "pressure_weight";
+        String fullnamepath "/pressure_weight";
+    }
+    Preprocessors_co2_ratio {
+        String units "dimensionless";
+        String long_name "CO2 Ratio";
+        Float32 missing_value -999999.0000;
+        String comment "Bias- and Footprint-corrected Band 3 / Band 2 Ratio of retrieved Single-band XCO2 using IMAP-DOAS algorithm";
+        String origname "co2_ratio";
+        String fullnamepath "/Preprocessors/co2_ratio";
+    }
+    Preprocessors_max_declocking_sco2 {
+        String units "none";
+        String long_name "max_declocking_sco2";
+        Float32 missing_value -999999.0000;
+        String comment "ABS(MaxDeclockingFactor_StrongCO2_Band - 1)*100";
+        String origname "max_declocking_sco2";
+        String fullnamepath "/Preprocessors/max_declocking_sco2";
+    }
+    Preprocessors_max_declocking_o2a {
+        String units "none";
+        String long_name "max_declocking_o2a";
+        Float32 missing_value -999999.0000;
+        String comment "ABS(MaxDeclockingFactor_O2A_Band - 1)*100";
+        String origname "max_declocking_o2a";
+        String fullnamepath "/Preprocessors/max_declocking_o2a";
+    }
+    Preprocessors_xco2_strong_idp {
+        String units "ppm";
+        String long_name "xco2_strong";
+        Float32 missing_value -999999.0000;
+        String comment "XCO2 from Strong CO2 Band only, IMAP-DOAS algorithm";
+        String origname "xco2_strong_idp";
+        String fullnamepath "/Preprocessors/xco2_strong_idp";
+    }
+    Preprocessors_max_declocking_wco2 {
+        String units "none";
+        String long_name "max_declocking_wco2";
+        Float32 missing_value -999999.0000;
+        String comment "ABS(MaxDeclockingFactor_WeakCO2_Band - 1)*100";
+        String origname "max_declocking_wco2";
+        String fullnamepath "/Preprocessors/max_declocking_wco2";
+    }
+    Preprocessors_dp_abp {
+        String units "hPa";
+        String long_name "delta_surface_pressure_abp";
+        Float32 missing_value -999999.0000;
+        String comment "Retrieved-Prior Pressure from the fast O2A-band only preprocessor retrieval";
+        String origname "dp_abp";
+        String fullnamepath "/Preprocessors/dp_abp";
+    }
+    Preprocessors_co2_ratio_offset_per_footprint {
+        String units "dimensionless";
+        String long_name "co2_ratio_offset_per_footprint";
+        Float32 missing_value -999999.0000;
+        String comment "Per footprint offset subtracted from co2_ratio in the L2Std files to form co2_ratio in the lite files";
+        String origname "co2_ratio_offset_per_footprint";
+        String fullnamepath "/Preprocessors/co2_ratio_offset_per_footprint";
+    }
+    Preprocessors_h2o_ratio {
+        String units "dimensionless";
+        String long_name "H2O Ratio";
+        Float32 missing_value -999999.0000;
+        String comment "Footprint-corrected Band 3 / Band 2 Ratio of retrieved Single-band XH2O using IMAP-DOAS algorithm";
+        String origname "h2o_ratio";
+        String fullnamepath "/Preprocessors/h2o_ratio";
+    }
+    Preprocessors_xco2_weak_idp {
+        String units "ppm";
+        String long_name "xco2_weak";
+        Float32 missing_value -999999.0000;
+        String comment "XCO2 from Weak CO2 Band only, IMAP-DOAS algorithm";
+        String origname "xco2_weak_idp";
+        String fullnamepath "/Preprocessors/xco2_weak_idp";
+    }
+    Preprocessors_h2o_ratio_offset_per_footprint {
+        String units "dimensionless";
+        String long_name "h2o_ratio_offset_per_footprint";
+        Float32 missing_value -999999.0000;
+        String comment "Per footprint offset subtracted from h2o_ratio in the L2Std files to form co2_ratio in the lite files";
+        String origname "h2o_ratio_offset_per_footprint";
+        String fullnamepath "/Preprocessors/h2o_ratio_offset_per_footprint";
+    }
+    solar_zenith_angle {
+        String units "degrees";
+        String long_name "sounding_solar_zenith";
+        Float32 missing_value -999999.0000;
+        String comment "solar zenith angle at the time of the measurement";
+        String origname "solar_zenith_angle";
+        String fullnamepath "/solar_zenith_angle";
+    }
+    longitude {
+        String units "degrees_east";
+        String long_name "longitude";
+        Float32 missing_value -999999.0000;
+        String comment "center longitude of the measurement";
+        String origname "longitude";
+        String fullnamepath "/longitude";
+    }
+    xco2_qf_bitflag {
+        String units "none";
+        String long_name "B9 xco2_quality_flag bitflag";
+        Int32 missing_value -9999;
+        String comment "B9 xco2_quality_flag bit flag";
+        String qf_variables "defined_mode, eof3_3_rel, max_declocking_wco2, max_declocking_sco2, albedo_slope_sco2, rms_rel_wco2, h2o_ratio, co2_ratio, dp_o2a, dp_sco2, co2_grad_del, windspeed, dp_abp, aod_ice, xco2_uncertainty, chi2_wco2, albedo_slope_wco2, surface_type_flipped, altitude_stddev, aod_total, dws, albedo_sco2, rms_rel_sco2, aod_water, ice_height, aod_strataer, aod_oc, aod_seasalt";
+        String origname "xco2_qf_bitflag";
+        String fullnamepath "/xco2_qf_bitflag";
+    }
+    latitude {
+        String units "degrees_north";
+        String long_name "latitude";
+        Float32 missing_value -999999.0000;
+        String comment "center latitude of the measurement";
+        String origname "latitude";
+        String fullnamepath "/latitude";
+    }
+    sensor_zenith_angle {
+        String units "degrees";
+        String long_name "sounding_zenith";
+        Float32 missing_value -999999.0000;
+        String comment "zenith angle of the satellite at the time of the measurement";
+        String origname "sensor_zenith_angle";
+        String fullnamepath "/sensor_zenith_angle";
+    }
+    Meteorology_psurf_apriori_o2a {
+        String units "hPa";
+        String long_name "B9 Band 1 Prior Surface Pressure";
+        Float32 missing_value -999999.0000;
+        String comment "Prior surface pressure for Band 1 location, as determined by GEOS5-FP-IT short-term (0-9 hour) forecast";
+        String origname "psurf_apriori_o2a";
+        String fullnamepath "/Meteorology/psurf_apriori_o2a";
+    }
+    Meteorology_psurf_apriori_wco2 {
+        String units "hPa";
+        String long_name "B9 Band 2 Prior Surface Pressure";
+        Float32 missing_value -999999.0000;
+        String comment "Prior surface pressure for Band 2 location, as determined by GEOS5-FP-IT short-term (0-9 hour) forecast";
+        String origname "psurf_apriori_wco2";
+        String fullnamepath "/Meteorology/psurf_apriori_wco2";
+    }
+    Meteorology_psurf_apriori_sco2 {
+        String units "hPa";
+        String long_name "B9 Band 3 Prior Surface Pressure";
+        Float32 missing_value -999999.0000;
+        String comment "Prior surface pressure for Band 3 location, as determined by GEOS5-FP-IT short-term (0-9 hour) forecast";
+        String origname "psurf_apriori_sco2";
+        String fullnamepath "/Meteorology/psurf_apriori_sco2";
+    }
+    Meteorology_windspeed_u_met {
+        String units "m/s";
+        String long_name "B9 Meteorology Surface Wind Speed, U Component";
+        Float32 missing_value -999999.0000;
+        String comment "Taken from the B9 meteorology";
+        String origname "windspeed_u_met";
+        String fullnamepath "/Meteorology/windspeed_u_met";
+    }
+    Meteorology_psurf_apriori {
+        String units "hPa";
+        String long_name "B9 Prior Surface Pressure";
+        Float32 missing_value -999999.0000;
+        String comment "Prior surface pressure for sounding location, as determined by GEOS5-FP-IT short-term (0-9 hour) forecast";
+        String origname "psurf_apriori";
+        String fullnamepath "/Meteorology/psurf_apriori";
+    }
+    Meteorology_windspeed_v_met {
+        String units "m/s";
+        String long_name "B9 Meteorology Surface Wind Speed, V Component";
+        Float32 missing_value -999999.0000;
+        String comment "Taken from the B9 meteorology";
+        String origname "windspeed_v_met";
+        String fullnamepath "/Meteorology/windspeed_v_met";
+    }
+    xco2_quality_flag {
+        String units "none";
+        String long_name "XCO2_Quality_Flag";
+        Int16 missing_value 127;
+        String comment "0=Good, 1=Bad";
+        String origname "xco2_quality_flag";
+        String fullnamepath "/xco2_quality_flag";
+    }
+    xco2_averaging_kernel {
+        String units "none";
+        String long_name "XCO2 Column Averaging Kernel";
+        Float32 missing_value -999999.0000;
+        String comment "Normalized XCO2 averaging kernel; Defined on layer boundaries. These are oriented space-to-surface, so the first element defines the TOA, the last element defines the surface.";
+        String origname "xco2_averaging_kernel";
+        String fullnamepath "/xco2_averaging_kernel";
+    }
+    Auxiliary_xco2_quality_flag_b8 {
+        String units "none";
+        String long_name "XCO2_Quality_Flag_B8";
+        Int16 missing_value 127;
+        String comment "Version B8 QF: 0=Good, 1=Bad";
+        String origname "xco2_quality_flag_b8";
+        String fullnamepath "/Auxiliary/xco2_quality_flag_b8";
+    }
+    Auxiliary_surface_type_flipped {
+        String units "none";
+        String long_name "surface_type_flipped";
+        Int16 missing_value 127;
+        String comment "Set to 1 if the surface type used by L2 was incorrect (land vs. water or vice-versa)";
+        String origname "surface_type_flipped";
+        String fullnamepath "/Auxiliary/surface_type_flipped";
+    }
+    date {
+        String units "none";
+        String long_name "Observation date and time matching sounding_id";
+        Int16 missing_value -9999;
+        String comment "Year, month (1-12), day (1-31), hour (0-23), minute (0-59), second (0-59), millisecond (0,300,or 700). Note this time is chosen to correspond exactly to the first 15 digits of sounding_id";
+        String origname "date";
+        String fullnamepath "/date";
+    }
+    Retrieval_dp_o2a {
+        String units "hPa";
+        String long_name "Delta Psurf from L2, O2A-band Prior";
+        Float32 missing_value -999999.0000;
+        String comment "Retrieved Psurf from the L2 Full-Physics retrieval, minus the O2A-band prior Psurf";
+        String origname "dp_o2a";
+        String fullnamepath "/Retrieval/dp_o2a";
+    }
+    Retrieval_aod_water {
+        String units "dimensionless";
+        String long_name "Water Cloud Optical Depth";
+        Float32 missing_value -999999.0000;
+        String comment "Retrieved Water Cloud Optical Depth at 0.755 microns";
+        String origname "aod_water";
+        String fullnamepath "/Retrieval/aod_water";
+    }
+    Retrieval_s32 {
+        String units "none";
+        String long_name "Signal_band3/Signal_band2";
+        Float32 missing_value -999999.0000;
+        String comment "Ratio of Band 3 to Band 2 signal level";
+        String origname "s32";
+        String fullnamepath "/Retrieval/s32";
+    }
+    Retrieval_chi2_sco2 {
+        String units "dimensionless";
+        String long_name "Band 3 Reduced Chi-Squared of L2 Fit";
+        Float32 missing_value -999999.0000;
+        String comment "Reduced Chi-Squared for Band 3 (Strong CO2 band) of L2 spectral fit";
+        String origname "chi2_sco2";
+        String fullnamepath "/Retrieval/chi2_sco2";
+    }
+    Retrieval_aod_dust {
+        String units "dimensionless";
+        String long_name "Dust Aerosol Optical Depth";
+        Float32 missing_value -999999.0000;
+        String comment "Retrieved Dust Aerosol Optical Depth at 0.755 microns";
+        String origname "aod_dust";
+        String fullnamepath "/Retrieval/aod_dust";
+    }
+    Retrieval_albedo_slope_wco2 {
+        String units "per wn";
+        String long_name "Retrieved Band 2 reflectance slope (land), or slope of lambertian albedo component of BRDF (ocean)";
+        Float32 missing_value -999999.0000;
+        String origname "albedo_slope_wco2";
+        String fullnamepath "/Retrieval/albedo_slope_wco2";
+    }
+    Retrieval_aod_bc {
+        String units "dimensionless";
+        String long_name "Black Carbon Optical Depth";
+        Float32 missing_value -999999.0000;
+        String comment "Retrieved Black Carbon Optical Depth at 0.755 microns";
+        String origname "aod_bc";
+        String fullnamepath "/Retrieval/aod_bc";
+    }
+    Retrieval_aod_strataer {
+        String units "dimensionless";
+        String long_name "Stratospheric Aerosol Optical Depth";
+        Float32 missing_value -999999.0000;
+        String comment "Retrieved Upper Trop+Stratospheric Aerosol Optical Depth at 0.755 microns";
+        String origname "aod_strataer";
+        String fullnamepath "/Retrieval/aod_strataer";
+    }
+    Retrieval_land_brdf_weight_o2a {
+        String units "none";
+        String long_name "Band 1 BRDF Amplitude (land only)";
+        Float32 missing_value -999999.0000;
+        String comment "Retrieved Band 1 reflectance (land), or lambertian albedo component of BRDF (ocean)";
+        String origname "land_brdf_weight_o2a";
+        String fullnamepath "/Retrieval/land_brdf_weight_o2a";
+    }
+    Retrieval_aod_seasalt {
+        String units "dimensionless";
+        String long_name "Sea Salt Optical Depth";
+        Float32 missing_value -999999.0000;
+        String comment "Retrieved Sea Salt Carbon Optical Depth at 0.755 microns";
+        String origname "aod_seasalt";
+        String fullnamepath "/Retrieval/aod_seasalt";
+    }
+    Retrieval_windspeed_apriori {
+        String units "m/s";
+        String long_name "Prior Surface Wind Speed";
+        Float32 missing_value -999999.0000;
+        String comment "Surface wind speed retrieved by the Level-2 retrieval";
+        String origname "windspeed_apriori";
+        String fullnamepath "/Retrieval/windspeed_apriori";
+    }
+    Retrieval_land_brdf_weight_wco2 {
+        String units "none";
+        String long_name "Band 2 BRDF Amplitude (land only)";
+        Float32 missing_value -999999.0000;
+        String comment "Retrieved Band 2 reflectance (land), or lambertian albedo component of BRDF (ocean)";
+        String origname "land_brdf_weight_wco2";
+        String fullnamepath "/Retrieval/land_brdf_weight_wco2";
+    }
+    Retrieval_albedo_slope_sco2 {
+        String units "per wn";
+        String long_name "Retrieved Band 3 reflectance slope (land), or slope of lambertian albedo component of BRDF (ocean)";
+        Float32 missing_value -999999.0000;
+        String origname "albedo_slope_sco2";
+        String fullnamepath "/Retrieval/albedo_slope_sco2";
+    }
+    Retrieval_tcwv_apriori {
+        String units "kg/m^2";
+        String long_name "Total Column Water Vapor A Priori";
+        Float32 missing_value -999999.0000;
+        String comment "Prior TCWV (from GEOS5-FP-IT prior profile)";
+        String origname "tcwv_apriori";
+        String fullnamepath "/Retrieval/tcwv_apriori";
+    }
+    Retrieval_co2_grad_del {
+        String units "ppm";
+        String long_name "Change in CO2 vertical gradient (surface minus level 13), retrieved-apriori";
+        Float32 missing_value -999999.0000;
+        String comment "level 13 is at P/Psurf=0.631579";
+        String origname "co2_grad_del";
+        String fullnamepath "/Retrieval/co2_grad_del";
+    }
+    Retrieval_fs {
+        String units "W/m^2/um/sr";
+        String long_name "Retrieved Fluorescence at 757 nm";
+        Float32 missing_value -999999.0000;
+        String comment "Simultaneous Fluorescence retrieval (at 757 nm) by L2 code; note this is different than the dedicated retrieval using only solar lines";
+        String origname "fs";
+        String fullnamepath "/Retrieval/fs";
+    }
+    Retrieval_SigmaB {
+        String units "dimensionless";
+        String long_name "SigmaB_Coefficient";
+        Float32 missing_value -999999.0000;
+        String comment "Multiply Psurf by these values to get the pressure layer boundaries (= pressure levels)";
+        String origname "SigmaB";
+        String fullnamepath "/Retrieval/SigmaB";
+    }
+    Retrieval_albedo_wco2 {
+        String units "none";
+        String long_name "Band 2 Albedo";
+        Float32 missing_value -999999.0000;
+        String comment "Retrieved Band 2 reflectance (land), or lambertian albedo component of BRDF (ocean)";
+        String origname "albedo_wco2";
+        String fullnamepath "/Retrieval/albedo_wco2";
+    }
+    Retrieval_tcwv {
+        String units "kg/m^2";
+        String long_name "Total Column Water Vapor";
+        Float32 missing_value -999999.0000;
+        String comment "Retrieved TCWV obtained by multiplying retrieved h2o_scale factor to prior TCWV";
+        String origname "tcwv";
+        String fullnamepath "/Retrieval/tcwv";
+    }
+    Retrieval_tcwv_uncertainty {
+        String units "kg/m^2";
+        String long_name "Total Column Water Vapor Uncertainty";
+        Float32 missing_value -999999.0000;
+        String comment "Retrieved TCWV Posterior Uncertainty";
+        String origname "tcwv_uncertainty";
+        String fullnamepath "/Retrieval/tcwv_uncertainty";
+    }
+    Retrieval_land_brdf_weight_sco2 {
+        String units "none";
+        String long_name "Band 3 BRDF Amplitude (land only)";
+        Float32 missing_value -999999.0000;
+        String comment "Retrieved Band 3 reflectance (land), or lambertian albedo component of BRDF (ocean)";
+        String origname "land_brdf_weight_sco2";
+        String fullnamepath "/Retrieval/land_brdf_weight_sco2";
+    }
+    Retrieval_albedo_o2a {
+        String units "none";
+        String long_name "Band 1 Albedo";
+        Float32 missing_value -999999.0000;
+        String comment "Retrieved Band 1 reflectance (land), or lambertian albedo component of BRDF (ocean)";
+        String origname "albedo_o2a";
+        String fullnamepath "/Retrieval/albedo_o2a";
+    }
+    Retrieval_deltaT {
+        String units "Kelvin";
+        String long_name "Retrieved Offset to Prior Temperature Profile in Kelvin";
+        Float32 missing_value -999999.0000;
+        String origname "deltaT";
+        String fullnamepath "/Retrieval/deltaT";
+    }
+    Retrieval_h2o_scale {
+        String units "dimensionless";
+        String long_name "Retrieved scale factor to Prior Water Vapor Profile";
+        Float32 missing_value -999999.0000;
+        String origname "h2o_scale";
+        String fullnamepath "/Retrieval/h2o_scale";
+    }
+    Retrieval_dp_sco2 {
+        String units "hPa";
+        String long_name "Delta Psurf from L2, SCO2-band Prior";
+        Float32 missing_value -999999.0000;
+        String comment "Retrieved Psurf from the L2 Full-Physics retrieval, minus the SCO2-band prior Psurf";
+        String origname "dp_sco2";
+        String fullnamepath "/Retrieval/dp_sco2";
+    }
+    Retrieval_windspeed {
+        String units "m/s";
+        String long_name "Retrieved Surface Wind Speed";
+        Float32 missing_value -999999.0000;
+        String comment "Surface wind speed retrieved by the Level-2 retrieval";
+        String origname "windspeed";
+        String fullnamepath "/Retrieval/windspeed";
+    }
+    Retrieval_dpfrac {
+        String units "ppm";
+        String long_name "dpfrac";
+        Float32 missing_value -999999.0000;
+        String comment "xco2_raw*(1-{Meteorology/psurf_apriori_band3}/{Retrieval/psurf}";
+        String origname "dpfrac";
+        String fullnamepath "/Retrieval/dpfrac";
+    }
+    Retrieval_t700 {
+        String units "K";
+        String long_name "Temperature_at_700hPa";
+        Float32 missing_value -999999.0000;
+        String comment "Temperature at 700 hPa (from GEOS5-FP-IT)";
+        String origname "t700";
+        String fullnamepath "/Retrieval/t700";
+    }
+    Retrieval_chi2_o2a {
+        String units "dimensionless";
+        String long_name "Band 1 Reduced Chi-Squared of L2 Fit";
+        Float32 missing_value -999999.0000;
+        String comment "Reduced Chi-Squared for Band 1 (O2A band) of L2 spectral fit";
+        String origname "chi2_o2a";
+        String fullnamepath "/Retrieval/chi2_o2a";
+    }
+    Retrieval_aod_ice {
+        String units "dimensionless";
+        String long_name "Ice Cloud Optical Depth";
+        Float32 missing_value -999999.0000;
+        String comment "Retrieved Ice Cloud Optical Depth at 0.755 microns";
+        String origname "aod_ice";
+        String fullnamepath "/Retrieval/aod_ice";
+    }
+    Retrieval_iterations {
+        String units "none";
+        String long_name "Iterations";
+        Int16 missing_value 127;
+        String comment "No. of iterations used in retrieval";
+        String origname "iterations";
+        String fullnamepath "/Retrieval/iterations";
+    }
+    Retrieval_ice_height {
+        String units "P/Psurf";
+        String long_name "Ice Cloud Height";
+        Float32 missing_value -999999.0000;
+        String comment "Retrieved Ice Cloud Height";
+        String origname "ice_height";
+        String fullnamepath "/Retrieval/ice_height";
+    }
+    Retrieval_rms_rel_wco2 {
+        String units "percent";
+        String long_name "relative_rms_weak_co2_band";
+        Float32 missing_value -999999.0000;
+        String comment "RMS of the L2 fit residuals in the weak co2 band, relative to the continuum signal, times 100 [so it is in percent]";
+        String origname "rms_rel_wco2";
+        String fullnamepath "/Retrieval/rms_rel_wco2";
+    }
+    Retrieval_aod_sulfate {
+        String units "dimensionless";
+        String long_name "Sulfate Aerosol Optical Depth";
+        Float32 missing_value -999999.0000;
+        String comment "Retrieved Sulfate Aerosol Optical Depth at 0.755 microns";
+        String origname "aod_sulfate";
+        String fullnamepath "/Retrieval/aod_sulfate";
+    }
+    Retrieval_dws {
+        String units "dimensionless";
+        String long_name "Dust+Water+SeaSalt";
+        Float32 missing_value -999999.0000;
+        String comment "Retrieved AOD_dust+AOD_water+AOD_seasalt at 0.755 microns";
+        String origname "dws";
+        String fullnamepath "/Retrieval/dws";
+    }
+    Retrieval_albedo_slope_o2a {
+        String units "per wn";
+        String long_name "Retrieved Band 1 reflectance slope (land), or slope of lambertian albedo component of BRDF (ocean)";
+        Float32 missing_value -999999.0000;
+        String origname "albedo_slope_o2a";
+        String fullnamepath "/Retrieval/albedo_slope_o2a";
+    }
+    Retrieval_rms_rel_sco2 {
+        String units "percent";
+        String long_name "relative_rms_strong_co2_band";
+        Float32 missing_value -999999.0000;
+        String comment "RMS of the L2 fit residuals in the strong co2 band, relative to the continuum signal, times 100 [so it is in percent]";
+        String origname "rms_rel_sco2";
+        String fullnamepath "/Retrieval/rms_rel_sco2";
+    }
+    Retrieval_eof3_3_rel {
+        String units "dimensionless";
+        String long_name "3rd EOF of Band 3, relative to Signal";
+        Float32 missing_value -999999.0000;
+        String comment "A scaled version of the EOF 3, Band 3 amplitude";
+        String origname "eof3_3_rel";
+        String fullnamepath "/Retrieval/eof3_3_rel";
+    }
+    Retrieval_diverging_steps {
+        String units "none";
+        String long_name "diverging_steps";
+        Int16 missing_value 127;
+        String comment "No. of diverging steps taken in retrieval";
+        String origname "diverging_steps";
+        String fullnamepath "/Retrieval/diverging_steps";
+    }
+    Retrieval_albedo_sco2 {
+        String units "none";
+        String long_name "Band 3 Albedo";
+        Float32 missing_value -999999.0000;
+        String comment "Retrieved Band 3 reflectance (land), or lambertian albedo component of BRDF (ocean)";
+        String origname "albedo_sco2";
+        String fullnamepath "/Retrieval/albedo_sco2";
+    }
+    Retrieval_psurf_apriori_b8 {
+        String units "hPa";
+        String long_name "B8 Prior Surface Pressure";
+        Float32 missing_value -999999.0000;
+        String comment "Prior surface pressure used in the B8 retrieval, as determined by GEOS5-FP-IT short-term (0-9 hour) forecast";
+        String origname "psurf_apriori_b8";
+        String fullnamepath "/Retrieval/psurf_apriori_b8";
+    }
+    Retrieval_chi2_wco2 {
+        String units "dimensionless";
+        String long_name "Band 2 Reduced Chi-Squared of L2 Fit";
+        Float32 missing_value -999999.0000;
+        String comment "Reduced Chi-Squared for Band 2 (Weak CO2 band) of L2 spectral fit";
+        String origname "chi2_wco2";
+        String fullnamepath "/Retrieval/chi2_wco2";
+    }
+    Retrieval_surface_type {
+        String units "0=ocean;1=land";
+        String long_name "Surface Type";
+        Int16 missing_value 127;
+        String comment "Surface type used in the retrieval: 0=ocean and corresponds to a Coxmunk+Lambertian surface; 1=land and corresponds to a pure Lambertian surface";
+        String origname "surface_type";
+        String fullnamepath "/Retrieval/surface_type";
+    }
+    Retrieval_s31 {
+        String units "none";
+        String long_name "Signal_band3/Signal_band1";
+        Float32 missing_value -999999.0000;
+        String comment "Ratio of Band 3 to Band 1 signal level";
+        String origname "s31";
+        String fullnamepath "/Retrieval/s31";
+    }
+    Retrieval_psurf {
+        String units "hPa";
+        String long_name "Retrieved Surface Pressure";
+        Float32 missing_value -999999.0000;
+        String comment "Surface pressure retrieved by the Level-2 retrieval";
+        String origname "psurf";
+        String fullnamepath "/Retrieval/psurf";
+    }
+    Retrieval_aod_total {
+        String units "dimensionless";
+        String long_name "Total Cloud+Aerosol Optical Depth";
+        Float32 missing_value -999999.0000;
+        String comment "Retrieved Total Cloud+Aerosol Optical Depth at 0.755 microns";
+        String origname "aod_total";
+        String fullnamepath "/Retrieval/aod_total";
+    }
+    Retrieval_aod_oc {
+        String units "dimensionless";
+        String long_name "Organic Carbon Optical Depth";
+        Float32 missing_value -999999.0000;
+        String comment "Retrieved Organic Carbon Optical Depth at 0.755 microns";
+        String origname "aod_oc";
+        String fullnamepath "/Retrieval/aod_oc";
+    }
+    Retrieval_xco2_raw {
+        String units "ppm";
+        String long_name "Raw value of Retrieved XCO2";
+        Float32 missing_value -999999.0000;
+        String origname "xco2_raw";
+        String fullnamepath "/Retrieval/xco2_raw";
+    }
+    Sounding_snr_sco2 {
+        String units "none";
+        String long_name "snr_strong_CO2_L1b";
+        Float32 missing_value -999999.0000;
+        String comment "Strong CO2-Band Continuum Signal-to-Noise Ratio";
+        String origname "snr_sco2";
+        String fullnamepath "/Sounding/snr_sco2";
+    }
+    Sounding_operation_mode {
+        String units "none";
+        String long_name "OCO-2 Operation Mode: 0=Nadir, 1=Glint, 2=Target, 3=Transition to/from Target";
+        Int16 missing_value 127;
+        String comment "Normalized XCO2 averaging kernel; Defined on layer boundaries. These are oriented space-to-surface, so the first element defines the TOA, the last element defines the surface.";
+        String origname "operation_mode";
+        String fullnamepath "/Sounding/operation_mode";
+    }
+    Sounding_snr_wco2 {
+        String units "none";
+        String long_name "snr_weak_CO2_L1b";
+        Float32 missing_value -999999.0000;
+        String comment "Weak CO2-Band Continuum Signal-to-Noise Ratio";
+        String origname "snr_wco2";
+        String fullnamepath "/Sounding/snr_wco2";
+    }
+    Sounding_glint_angle {
+        String units "degrees";
+        String long_name "sounding_glint_angle";
+        Float32 missing_value -999999.0000;
+        String comment "Angular distance from viewing along the perfect glint direction";
+        String origname "glint_angle";
+        String fullnamepath "/Sounding/glint_angle";
+    }
+    Sounding_altitude_stddev {
+        String units "meters";
+        String long_name "B9 Altitude Stddev";
+        Float32 missing_value -999999.0000;
+        String comment "Standard deviation of surface elevation within the FOV";
+        String origname "altitude_stddev";
+        String fullnamepath "/Sounding/altitude_stddev";
+    }
+    Sounding_sensor_azimuth_angle {
+        String units "degrees East of North";
+        String long_name "sounding_azimuth";
+        Float32 missing_value -999999.0000;
+        String comment "azimuth angle of the satellite at the time of the measurement";
+        String origname "sensor_azimuth_angle";
+        String fullnamepath "/Sounding/sensor_azimuth_angle";
+    }
+    Sounding_airmass {
+        String units "degrees";
+        String long_name "relative_airmass";
+        Float32 missing_value -999999.0000;
+        String comment "Airmass, computed as 1/cos(solar_zenith_angle) + 1/cos(sensor_zenith_angle)";
+        String origname "airmass";
+        String fullnamepath "/Sounding/airmass";
+    }
+    Sounding_land_water_indicator {
+        String units "none";
+        String long_name "B9 Land Water Indicator";
+        Int16 missing_value 127;
+        String comment "0=Land;1=Ocean;2=Inland Water;3=Mixed";
+        String origname "land_water_indicator";
+        String fullnamepath "/Sounding/land_water_indicator";
+    }
+    Sounding_snr_o2a {
+        String units "none";
+        String long_name "snr_O2_L1b";
+        Float32 missing_value -999999.0000;
+        String comment "O2A-Band Continuum Signal-to-Noise Ratio";
+        String origname "snr_o2a";
+        String fullnamepath "/Sounding/snr_o2a";
+    }
+    Sounding_solar_azimuth_angle {
+        String units "degrees East of North";
+        String long_name "sounding_solar_azimuth";
+        Float32 missing_value -999999.0000;
+        String comment "solar azimuth angle at the time of the measurement";
+        String origname "solar_azimuth_angle";
+        String fullnamepath "/Sounding/solar_azimuth_angle";
+    }
+    Sounding_path {
+        String units "none";
+        String long_name "OCO-2 orbit path number";
+        Int16 missing_value -1;
+        String comment "OCO-2 fixed orbit path number ranging from 1-233";
+        String origname "path";
+        String fullnamepath "/Sounding/path";
+    }
+    Sounding_altitude {
+        String units "meters";
+        String long_name "B9 Altitude";
+        Float32 missing_value -999999.0000;
+        String comment "Surface Altitude in meters above sea level";
+        String origname "altitude";
+        String fullnamepath "/Sounding/altitude";
+    }
+    Sounding_l1b_type {
+        String units "none";
+        String long_name "JPL Processing Version";
+        Int32 missing_value -9999;
+        String origname "l1b_type";
+        String fullnamepath "/Sounding/l1b_type";
+    }
+    Sounding_footprint {
+        String units "none";
+        String long_name "Footprint Number";
+        Int16 missing_value 127;
+        String comment "Index of OCO-2 Sounding 1-8";
+        String origname "footprint";
+        String fullnamepath "/Sounding/footprint";
+    }
+    Sounding_land_fraction {
+        String units "percent";
+        String long_name "Land Fraction";
+        Int16 missing_value 127;
+        String comment "Fraction of the footprint that contains land in percent";
+        String origname "land_fraction";
+        String fullnamepath "/Sounding/land_fraction";
+    }
+    Sounding_orbit {
+        String units "none";
+        String long_name "orbit number";
+        Int32 missing_value -9999;
+        String comment "OCO-2 orbit number since mission start";
+        String origname "orbit";
+        String fullnamepath "/Sounding/orbit";
+    }
+    xco2_uncertainty {
+        String units "ppm";
+        String long_name "XCO2_Posterior_Error";
+        Float32 missing_value -999999.0000;
+        String origname "xco2_uncertainty";
+        String fullnamepath "/xco2_uncertainty";
+    }
+    co2_profile_apriori {
+        String units "ppm";
+        String long_name "CO2 Apriori Profile";
+        Float32 missing_value -999999.0000;
+        String comment "Prior CO2 Prior assumed by L2 code; Defined on layer boundaries. These are oriented space-to-surface, so the first element defines the TOA, the last element defines the surface.";
+        String origname "co2_profile_apriori";
+        String fullnamepath "/co2_profile_apriori";
+    }
+    vertices {
+        String origname "vertices";
+        String fullnamepath "/vertices";
+    }
+    bands {
+        String origname "bands";
+        String fullnamepath "/bands";
+    }
+    footprints {
+        String origname "footprints";
+        String fullnamepath "/footprints";
+    }
+    levels {
+        String origname "levels";
+        String fullnamepath "/levels";
+    }
+    source_files {
+        String units "none";
+        String long_name "L2 Source File";
+        String missing_value "Missing";
+        String comment "Source L2 File Names for these soundings";
+        String origname "source_files";
+        String fullnamepath "/source_files";
+    }
+    vertex_latitude {
+        String units "degrees_north";
+        String long_name "vertex_latitude";
+        Float32 missing_value -999999.0000;
+        String comment "corner latitudes of the measurement FOV";
+        String origname "vertex_latitude";
+        String fullnamepath "/vertex_latitude";
+    }
+    vertex_longitude {
+        String units "degrees_east";
+        String long_name "vertex_longitude";
+        Float32 missing_value -999999.0000;
+        String comment "corner longitudes of the measurement FOV";
+        String origname "vertex_longitude";
+        String fullnamepath "/vertex_longitude";
+    }
+}

@@ -69,6 +69,7 @@ $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC
 ## GOSAT/acos
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/acos_L2s_110419_43_Production_v110110_L2s2800_r01_PolB_110430192739.h5
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/NASAHDF/oco2_L2StdND_03945a_150330_B6000_150331024816.h5
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/oco2_LtCO2_180102_B9003r_180929105747s.nc4.h5
 
 # GSFC
 ## mabel (ICESat-2)

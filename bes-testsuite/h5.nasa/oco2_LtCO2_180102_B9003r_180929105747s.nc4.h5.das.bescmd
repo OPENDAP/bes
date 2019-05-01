@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name=" oco2_LtCO2_180102_B9003r_180929105747s" space="catalog">/data/oco2_LtCO2_180102_B9003r_180929105747s.nc4.h5</setContainer>
+    <define name="d">
+	<container name=" oco2_LtCO2_180102_B9003r_180929105747s" />
+    </define>
+    <get type="das" definition="d" />
+</request>
