@@ -27,6 +27,7 @@
 #include <sstream>
 #include <memory>
 #include <iterator>
+#include <algorithm>
 
 #include <cstdlib>
 
@@ -295,46 +296,12 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
         haddr_t addr = 0;
         hsize_t size = 0;
 
-        herr_t status;
-
-        fspace_id = H5Dget_space(dataset);
-
-        status = H5Dget_num_chunks(dataset, fspace_id, &num_chunks);
-        if (status < 0) {
-        		throw BESInternalError("Could not get the number of chunks", __FILE__, __LINE__);
-        }
-
-        VERBOSE(cerr << "num chunks: " << num_chunks << endl);
-
         hid_t dcpl = H5Dget_create_plist(dataset);
         layout_type = H5Pget_layout(dcpl);
 
-        //vector<H5D_chunk_rec_t> chunk_st_ptr(num_chunks);
-		//unsigned int num_chunk_dims = 0;
-		//if (H5Dget_dataset_storage_info(dataset, &layout_type, &chunk_st_ptr[0], &storage_status) < 0)
-		//	throw BESInternalError("Cannot get HDF5 chunk storage info.", __FILE__, __LINE__);
+        fspace_id = H5Dget_space(dataset);
 
-        for (int i = 0; i < num_chunks; ++i) {
-
-			status = H5Dget_chunk_info(dataset, fspace_id, i, NULL, &filter_mask, &addr, &size);
-			if (status < 0) {
-				VERBOSE(cerr << "ERROR" << endl);
-				throw BESInternalError("Cannot get HDF5 dataset storage info.", __FILE__, __LINE__);
-			}
-
-			//VERBOSE(cerr << "layout: " << (int)layout_type << ", chunks: " << num_chunk << endl);
-
-			VERBOSE(cerr << "chk_idk: " << i << /*", offset: " << offset <<*/ ", filter_mask: " << filter_mask << ", addr: " << addr << ", size: " << size << endl);
-        }
-#if 1
-        // Replace this with a 'not found' error? It seems that chunk information
-        // is found only when storage_status != 0. jhrg 5/7/18
-        //if (storage_status == 0) {
-        //    print_dataset_type_info(dataset, layout_type);
-        //}
-#if 0
-        else {
-#endif
+        unsigned int dataset_rank = 4; //FIXME
 
             /* layout_type:  1 contiguous 2 chunk 3 compact */
             switch (layout_type) {
@@ -353,81 +320,50 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
 
                 break;
             }
+
             case H5D_CHUNKED: { /*chunking storage */
-                VERBOSE(cerr << "storage: chunked." << endl);
-                VERBOSE(cerr << "Number of chunks is " << num_chunks << endl);
+				herr_t status = H5Dget_num_chunks(dataset, fspace_id, &num_chunks);
+				if (status < 0) {
+					throw BESInternalError("Could not get the number of chunks",
+							__FILE__, __LINE__);
+				}
 
-                if (dc) set_filter_information(dataset, dc);
+				VERBOSE(cerr << "storage: chunked." << endl);
+				VERBOSE(cerr << "Number of chunks is " << num_chunks << endl);
 
-                // Get the chunk dimensions
-                hid_t cparms = H5Dget_create_plist(dataset);
-                if (cparms < 0) throw BESInternalError("Could not open a property list for the HDF5 dataset.", __FILE__, __LINE__);
 
-                try {
-#if 0
-                    // Property list pointer
-                    H5P_genplist_t *plist = H5P_object_verify(cparms, H5P_DATASET_CREATE);
-                    if (!plist)
-                    throw BESInternalError("Could not open a property list for '" + h5_dset_path + "'.", __FILE__, __LINE__);
+				//FIXME if (dc)
+				//	set_filter_information(dataset, dc);
 
-                    /* Get layout property */
-                    H5O_layout_t layout; /* Layout property */
-                    if (H5P_get(plist, H5D_CRT_LAYOUT_NAME, &layout) < 0)
-                    throw BESInternalError("Could not get the layout for '" + h5_dset_path + "'.", __FILE__, __LINE__);
+				// Get chunking information: rank and dimensions
+				vector<size_t> chunk_dims(dataset_rank);
+				unsigned int rank_chunk = H5Pget_chunk(dcpl, dataset_rank, (hsize_t*)&chunk_dims[0]);
 
-                    // layout.u.chunk.ndims
-#endif
-                    // Allocate the memory for the struct to obtain the chunk storage information. Kent Yang
-                    // wrote the H5Dget_dataset_chunk_storage_info() function; the alternative is to use the
-                    // layout object above. jhrg 5/10/18
-                    vector<H5D_chunk_rec_t> chunk_st_ptr(num_chunks);
-                    //hsize_t chunk_arr[num_chunks];	//Probably not needed - Kodi
-                    unsigned int num_chunk_dims = 0;
+				if (dc) dc->set_chunk_dimension_sizes(chunk_dims);
 
-                    //num_chunk_dims = H5Pget_chunk(dcpl, num_chunks, chunk_arr);	//Probably not correct - Kodi
-                    //if (H5Dget_dataset_storage_info(dataset, &layout_type, &chunk_st_ptr[0], &storage_status) < 0)
-                    //    throw BESInternalError("Cannot get HDF5 chunk storage info.", __FILE__, __LINE__);
+				vector<unsigned int> chunk_coords(dataset_rank); //FIXME
 
-                    num_chunk_dims -= 1; // num_chunk_dims is rank + 1. not sure why. jhrg 5/10/18
-                    VERBOSE(cerr << "Number of dimensions in a chunk is " << num_chunk_dims << endl);
+				for (int i = 0; i < num_chunks; ++i) {
 
-                    // Get chunking information: rank and dimensions
-                    vector<size_t> chunk_dims(num_chunk_dims);
-                    unsigned int rank_chunk = H5Pget_chunk(cparms, num_chunk_dims, (hsize_t*)&chunk_dims[0]);
+					vector<hsize_t> temp_coords(dataset_rank);
 
-                    if (rank_chunk != num_chunk_dims) throw BESInternalError("Unexpected chunk dimension mismatch.", __FILE__, __LINE__);
+					//H5_DLL herr_t H5Dget_chunk_info(hid_t dset_id, hid_t fspace_id, hsize_t chk_idx, hsize_t *coord, unsigned *filter_mask, haddr_t *addr, hsize_t *size);
+					status = H5Dget_chunk_info(dataset, fspace_id, i, &temp_coords[0], &filter_mask, &addr, &size);
+					if (status < 0) {
+						VERBOSE(cerr << "ERROR" << endl);
+						throw BESInternalError("Cannot get HDF5 dataset storage info.", __FILE__, __LINE__);
+					}
 
-                    VERBOSE(cerr << "Chunk rank: " << rank_chunk << endl);
-                    VERBOSE(cerr << "Chunk dimension sizes: ");
-                    VERBOSE(copy(chunk_dims.begin(), chunk_dims.end(), ostream_iterator<hsize_t>(cerr, " ")));
-                    VERBOSE(cerr << endl);
+					VERBOSE(cerr << "chk_idk: " << i << ", filter_mask: " << filter_mask << ", addr: " << addr << ", size: " << size << endl);
 
-                    if (dc) dc->set_chunk_dimension_sizes(chunk_dims);
+					//The coords need to be of type 'unsigned int' when passed into add_chunk()
+					// This loop simply copies the values from the temp_coords to chunk_coords - kln 5/1/19
+					for (int j = 0; j < chunk_coords.size(); ++j) {
+						chunk_coords[j] = temp_coords[j];
+					}
 
-                    for (size_t i = 0; i < num_chunks; i++) {
-                        VERBOSE(cerr << "    Chunk index:  " << i << endl);
-                        VERBOSE(cerr << "    Number of bytes: " << chunk_st_ptr[i].nbytes << endl);
-                        VERBOSE(cerr << "    Physical offset: " << chunk_st_ptr[i].chunk_addr << endl);
-                        VERBOSE(cerr << "    Logical offset: ");
-
-                        vector<unsigned int> chunk_pos_in_array;
-                        for (unsigned int j = 0; j < num_chunk_dims; j++)
-                            chunk_pos_in_array.push_back(chunk_st_ptr[i].scaled[j]);
-
-                        VERBOSE(copy(chunk_pos_in_array.begin(), chunk_pos_in_array.end(), ostream_iterator<unsigned int>(cerr, " ")));
-                        VERBOSE(cerr << endl);
-
-                        // Note that the data_url is an empty string; use the root element href attribute for this value.
-                        // Each chunk has the same data_url in 'architecture #2.' jhrg 5/10/18
-                        if (dc) dc->add_chunk("", chunk_st_ptr[i].nbytes, chunk_st_ptr[i].chunk_addr, chunk_pos_in_array);
-                    }
-                }
-                catch (...) {
-                    H5Pclose(cparms);
-                    throw;
-                }
-
-                H5Pclose(cparms);
+					if (dc) dc->add_chunk("", size, addr, chunk_coords);
+				}
 
                 break;
             }
@@ -450,11 +386,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
                 BESInternalError(oss.str(), __FILE__, __LINE__);
             }
             } // end switch
-#if 0
-    }
-#endif
 
-#endif
 
     }
     catch (...) {
