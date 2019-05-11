@@ -1174,7 +1174,19 @@ void FoDapCovJsonTransform::printParametersWorker(ostream *strm, string indent)
     for(unsigned int i = 0; i < parameterCount; i++) {
         *strm << child_indent1 << "\"" << parameters[i]->name << "\": {" << endl;
         *strm << child_indent2 << "\"type\": \"Parameter\"," << endl;
-        *strm << child_indent2 << "\"description\": \"" << parameters[i]->name << "\"," << endl;
+        *strm << child_indent2 << "\"description\": {" << parameters[i]->name << "\"," << endl;
+
+        if(parameters[i]->longName.compare("") != 0) {
+            *strm << child_indent3 << "\"en\": \"" << parameters[i]->longName << "\"," << endl;
+        }
+        else if(parameters[i]->standardName.compare("") != 0) {
+            *strm << child_indent3 << "\"en\": \"" << parameters[i]->standardName << "\"" << endl;
+        }
+        else {
+            *strm << child_indent3 << "\"en\": \"" << parameters[i]->name << "\"" << endl;
+        }
+
+        *strm << child_indent2 << "}," << endl;
         *strm << child_indent2 << "\"unit\": {" << endl;
         *strm << child_indent3 << "\"label\": {" << endl;
         *strm << child_indent4 << "\"en\": \"" << parameters[i]->unit << "\"" << endl;
@@ -1185,7 +1197,20 @@ void FoDapCovJsonTransform::printParametersWorker(ostream *strm, string indent)
         *strm << child_indent3 << "\"type\": \"\"" << endl;
         *strm << child_indent2 << "}," << endl;
         *strm << child_indent2 << "\"observedProperty\": {" << endl;
-        *strm << child_indent3 << "\"id\": null," << endl;
+
+        // Per Jon Blower:
+        // observedProperty->id comes from the CF standard_name,
+        // mapped to a URI like this: http://vocab.nerc.ac.uk/standard_name/<standard_name>.
+        // If the standard_name is not present, omit the id.
+        if(parameters[i]->standardName.compare("") != 0) {
+            *strm << child_indent3 << "\"id\": \"http://vocab.nerc.ac.uk/standard_name/" << parameters[i]->standardName << "/\"" << endl;
+        }
+
+        // Per Jon Blower:
+        // observedProperty->label comes from:
+        //    - The CF long_name, if it exists
+        //    - If not, the CF standard_name, perhaps with underscores removed
+        //    - If the standard_name doesn’t exist, use the variable ID
         *strm << child_indent3 << "\"label\": {" << endl;
 
         if(parameters[i]->longName.compare("") != 0) {
@@ -1195,7 +1220,7 @@ void FoDapCovJsonTransform::printParametersWorker(ostream *strm, string indent)
             *strm << child_indent4 << "\"en\": \"" << parameters[i]->standardName << "\"" << endl;
         }
         else {
-            *strm << child_indent4 << "\"en\": \"none\"" << endl;
+            *strm << child_indent4 << "\"en\": \"" << parameters[i]->name << "\"" << endl;
         }
 
         *strm << child_indent3 << "}" << endl;
