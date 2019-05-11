@@ -1174,7 +1174,7 @@ void FoDapCovJsonTransform::printParametersWorker(ostream *strm, string indent)
     for(unsigned int i = 0; i < parameterCount; i++) {
         *strm << child_indent1 << "\"" << parameters[i]->name << "\": {" << endl;
         *strm << child_indent2 << "\"type\": \"Parameter\"," << endl;
-        *strm << child_indent2 << "\"description\": {" << parameters[i]->name << "\"," << endl;
+        *strm << child_indent2 << "\"description\": {" << endl;
 
         if(parameters[i]->longName.compare("") != 0) {
             *strm << child_indent3 << "\"en\": \"" << parameters[i]->longName << "\"," << endl;
@@ -1194,7 +1194,7 @@ void FoDapCovJsonTransform::printParametersWorker(ostream *strm, string indent)
         *strm << child_indent2 << "}," << endl;
         *strm << child_indent2 << "\"symbol\": {" << endl;
         *strm << child_indent3 << "\"value\": \"" << parameters[i]->unit << "\"," << endl;
-        *strm << child_indent3 << "\"type\": \"\"" << endl;
+        *strm << child_indent3 << "\"type\": \"http://www.opengis.net/def/uom/UCUM/\"" << endl;
         *strm << child_indent2 << "}," << endl;
         *strm << child_indent2 << "\"observedProperty\": {" << endl;
 
