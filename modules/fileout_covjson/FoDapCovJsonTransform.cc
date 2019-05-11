@@ -612,8 +612,20 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
                     // FOR TESTING AND DEBUGGING PURPOSES
                     // *strm << "\"currName\": \"" << currName << "\", \"currValue\": \"" << currValue << "\"" << endl;
 
-                    // Parse the attribute table values and try to determine what variables AND
-                    // metadata are present -- its not an exact science, and its a little dirty.
+                    // From Climate and Forecast (CF) Conventions:
+                    // http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html#_description_of_the_data
+
+                    // We continue to support the use of the units and long_name attributes as defined in COARDS.
+                    // We extend COARDS by adding the optional standard_name attribute which is used to provide unique
+                    // identifiers for variables. This is important for data exchange since one cannot necessarily
+                    // identify a particular variable based on the name assigned to it by the institution that provided
+                    // the data.
+
+                    // The standard_name attribute can be used to identify variables that contain coordinate data. But since it is an
+                    // optional attribute, applications that implement these standards must continue to be able to identify coordinate
+                    // types based on the COARDS conventions.
+
+                    // See http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html#units
                     if(currName.compare("units") == 0) {
                         if(isAxis) {
                             if(currAxisName.compare("t") == 0) {
@@ -624,9 +636,11 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
                             currUnit = currValue;
                         }
                     }
+                    // See http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html#long-name
                     else if(currName.compare("long_name") == 0) {
                         currLongName = currValue;
                     }
+                    // See http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html#standard-name
                     else if(currName.compare("standard_name") == 0) {
                         currStandardName = currValue;
                     }
@@ -690,20 +704,33 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
             // newAxis->values += currAxisTimeOrigin;
             newAxis->values += "2018-01-01T00:12:20Z";
             newAxis->values += "\"]";
-
-            axes.push_back(newAxis);
-            axisCount++;
-            *axisRetrieved = true;
-            *parameterRetrieved = false;
         }
+        axes.push_back(newAxis);
+        axisCount++;
+        *axisRetrieved = true;
+        *parameterRetrieved = false;
     }
     else if(isParam) {
-        // Push a new parameter
-
         // Kent says: Use LongName to select the new Parameter is too strict.
         // but when the test 'currLongName.compare("") != 0' is removed,
         // all of the tests fail and do so by generating output that looks clearly
         // wrong. I'm going to hold off on this part of the patch for now. jhrg 3/28/19
+
+        // Removed the 'currLongName.compare("") != 0' test statement. The removed
+        // statement was a constraint to ensure that any parameter retrieved would
+        // have a descriptive long_name attribute for printing observedProperty->label.
+        //
+        // Per Jon Blower:
+        // observedProperty->label comes from:
+        //    - The CF long_name, if it exists
+        //    - If not, the CF standard_name, perhaps with underscores removed
+        //    - If the standard_name doesn’t exist, use the variable ID
+        //
+        // This constraint is now evaluated in the printParametersWorker
+        // rather than within this function where the parameter is retrieved.
+        // -CH 5/11/2019
+
+        // Push a new parameter
         struct Parameter *newParameter = new Parameter;
         newParameter->name = name;
         newParameter->dataType = currDataType;
