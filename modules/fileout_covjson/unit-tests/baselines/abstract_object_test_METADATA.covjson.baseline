@@ -159,42 +159,42 @@
   "ranges": {
     "oneDArrayF64": {
       "type": "NdArray",
-      "dataType": "float",
+      "dataType": "float", 
       "axisNames": ["t", "y", "x"],
       "shape": [1],
       "values": []
     },
     "twoDArrayF64": {
       "type": "NdArray",
-      "dataType": "float",
+      "dataType": "float", 
       "axisNames": ["t", "y", "x"],
       "shape": [1, 4],
       "values": []
     },
     "twoDArrayUI32": {
       "type": "NdArray",
-      "dataType": "string",
+      "dataType": "string", 
       "axisNames": ["t", "y", "x"],
       "shape": [1, 4],
       "values": []
     },
     "threeDArrayF64": {
       "type": "NdArray",
-      "dataType": "float",
+      "dataType": "float", 
       "axisNames": ["t", "y", "x"],
       "shape": [1, 4, 5],
       "values": []
     },
     "test_grid": {
       "type": "NdArray",
-      "dataType": "float",
+      "dataType": "float", 
       "axisNames": ["t", "y", "x"],
       "shape": [1, 18, 9],
       "values": []
     },
     "time_origin": {
       "type": "NdArray",
-      "dataType": "float",
+      "dataType": "float", 
       "axisNames": ["t", "y", "x"],
       "shape": [1],
       "values": []
