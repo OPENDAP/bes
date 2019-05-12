@@ -1,18 +1,30 @@
 {
   "type": "Coverage",
   "domain": {
+    "type" : "Domain",
+    "domainType": "Grid",
 {
-  "type": "CoverageCollection",
-  "domainType": "Grid",
+  "type": "Coverage",
+  "domain": {
+    "type" : "Domain",
+    "domainType": "Grid",
 {
-  "type": "CoverageCollection",
-  "domainType": "Grid",
+  "type": "Coverage",
+  "domain": {
+    "type" : "Domain",
+    "domainType": "Grid",
 {
-  "type": "CoverageCollection",
-  "domainType": "Vertical Profile",
+  "type": "Coverage",
+  "domain": {
+    "type" : "Domain",
+    "domainType": "Vertical Profile",
 {
-  "type": "CoverageCollection",
-  "domainType": "Point Series",
+  "type": "Coverage",
+  "domain": {
+    "type" : "Domain",
+    "domainType": "Point Series",
 {
-  "type": "CoverageCollection",
-  "domainType": "Point",
+  "type": "Coverage",
+  "domain": {
+    "type" : "Domain",
+    "domainType": "Point",

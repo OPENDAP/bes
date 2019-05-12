@@ -1,6 +1,8 @@
 {
   "type": "Coverage",
   "domain": {
+    "type" : "Domain",
+    "domainType": "Grid",
     "axes": {
       },
       },
@@ -30,8 +32,173 @@
         "type": "GeographicCRS",
         "id": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
       }
-    }]
-  "parameters": {
+    }],
+    "parameters": {
+      "oneDArrayF64": {
+        "type": "Parameter",
+        "description": {
+          "en": "oneDArrayF64"
+        },
+        "unit": {
+          "label": {
+            "en": ""
+          }
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        },
+        "observedProperty": {
+          "label": {
+            "en": "oneDArrayF64"
+          }
+        }
+      },
+      "twoDArrayF64": {
+        "type": "Parameter",
+        "description": {
+          "en": "twoDArrayF64"
+        },
+        "unit": {
+          "label": {
+            "en": ""
+          }
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        },
+        "observedProperty": {
+          "label": {
+            "en": "twoDArrayF64"
+          }
+        }
+      },
+      "twoDArrayUI32": {
+        "type": "Parameter",
+        "description": {
+          "en": "twoDArrayUI32"
+        },
+        "unit": {
+          "label": {
+            "en": ""
+          }
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        },
+        "observedProperty": {
+          "label": {
+            "en": "twoDArrayUI32"
+          }
+        }
+      },
+      "threeDArrayF64": {
+        "type": "Parameter",
+        "description": {
+          "en": "threeDArrayF64"
+        },
+        "unit": {
+          "label": {
+            "en": ""
+          }
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        },
+        "observedProperty": {
+          "label": {
+            "en": "threeDArrayF64"
+          }
+        }
+      },
+      "test_grid": {
+        "type": "Parameter",
+        "description": {
+          "en": "test_grid"
+        },
+        "unit": {
+          "label": {
+            "en": ""
+          }
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        },
+        "observedProperty": {
+          "label": {
+            "en": "test_grid"
+          }
+        }
+      },
+      "time_origin": {
+        "type": "Parameter",
+        "description": {
+          "en": "time_origin"
+        },
+        "unit": {
+          "label": {
+            "en": ""
+          }
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        },
+        "observedProperty": {
+          "label": {
+            "en": "time_origin"
+          }
+        }
+      }
+    },
   },
   "ranges": {
+    "oneDArrayF64": {
+      "type": "NdArray",
+      "dataType": "float",
+      "axisNames": ["t", "y", "x"],
+      "shape": [1],
+      "values": []
+    },
+    "twoDArrayF64": {
+      "type": "NdArray",
+      "dataType": "float",
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 4],
+      "values": []
+    },
+    "twoDArrayUI32": {
+      "type": "NdArray",
+      "dataType": "string",
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 4],
+      "values": []
+    },
+    "threeDArrayF64": {
+      "type": "NdArray",
+      "dataType": "float",
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 4, 5],
+      "values": []
+    },
+    "test_grid": {
+      "type": "NdArray",
+      "dataType": "float",
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 18, 9],
+      "values": []
+    },
+    "time_origin": {
+      "type": "NdArray",
+      "dataType": "float",
+      "axisNames": ["t", "y", "x"],
+      "shape": [1],
+      "values": []
+    }
+    }
+  }]
 }
