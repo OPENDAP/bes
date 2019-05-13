@@ -51,7 +51,7 @@ class HDF5Byte:public libdap::Byte {
 
   public:
     /// Constructor
-    HDF5Byte(const std::string &n, const std::string &vpath, const std::string &d);
+    HDF5Byte(const std::string &n, const std::string &vpath, const std::string &d):libdap::Byte(n,d),var_path(vpath) {}
     virtual ~ HDF5Byte() { }
 
     /// Clone this instance.

@@ -48,10 +48,12 @@
 using namespace std;
 using namespace libdap;
 
+#if 0
 HDF5Byte::HDF5Byte(const string & n, const string &vpath, const string &d):Byte(n, d)
 {
     var_path = vpath;
 }
+#endif
 
 BaseType *HDF5Byte::ptr_duplicate()
 {

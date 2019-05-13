@@ -64,8 +64,10 @@ public:
     }
 
 protected:
+#if 0
     //virtual BaseType *ptr_duplicate();
     //virtual bool read();
+#endif
     int format_constraint(int *cor, int *step, int *edg);
     void write_nature_number_buffer(int rank, int tnumelm);
     void read_data_from_mem_cache(H5DataType h5type, const std::vector<size_t> &h5_dimsizes, void*buf);

@@ -91,20 +91,15 @@ bool CVar::isLatLon() const
         string attr_name = "units";
         string lat_unit_value = "degrees_north";
         string lon_unit_value = "degrees_east";
-//cerr<<"cv name is "<< this->name <<endl;
 
         for (vector<Attribute *>::const_iterator ira = this->attrs.begin(); ira != this->attrs.end(); ira++) {
 
-//cerr<<"attribute name is "<<(*ira)->newname <<endl;
-//cerr<<"attribnte type is "<<(*ira)->getType() <<endl;
             if ((H5FSTRING == (*ira)->getType()) || (H5VSTRING == (*ira)->getType())) {
                 if (attr_name == (*ira)->newname) {
                     string attr_value1((*ira)->getValue().begin(), (*ira)->getValue().end());
-//cerr<<"CV attribute value outside is "<<attr_value1 <<endl;
 
                     if ((*ira)->getCount() == 1) {
                         string attr_value((*ira)->getValue().begin(), (*ira)->getValue().end());
-//cerr<<"CV attribute value inside is "<<attr_value <<endl;
                         if (attr_value.compare(0, lat_unit_value.size(), lat_unit_value) == 0) {
                             if (attr_value.size() == lat_unit_value.size()) {
                                 ret_value = true;
@@ -113,7 +108,6 @@ bool CVar::isLatLon() const
                             else if (attr_value.size() == (lat_unit_value.size() + 1)) {
                                 if (attr_value[attr_value.size() - 1] == '\0'
                                     || attr_value[attr_value.size() - 1] == ' ') {
-//cerr<<"coming to null term "<<endl;
                                     ret_value = true;
                                     break;
                                 }
@@ -153,7 +147,6 @@ File::~File()
             for_each(this->root_attrs.begin(), this->root_attrs.end(), delete_elem());
             H5Gclose(rootid);
         }
-        //H5Fclose(fileid);
     }
 }
 
@@ -248,7 +241,6 @@ void File::Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr)
 
         hid_t cgroup = -1;
         hid_t cdset = -1;
-        //char *oname = NULL;
         Group *group = NULL;
         Var *var = NULL;
         Attribute *attr = NULL;
@@ -266,7 +258,6 @@ void File::Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr)
             // Obtain the name of the object 
             vector<char> oname;
             oname.resize((size_t) oname_size + 1);
-            //oname = new char[(size_t) oname_size + 1];
 
             if (H5Lget_name_by_idx(grp_id, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, &oname[0], (size_t) (oname_size + 1),
                 H5P_DEFAULT) < 0)
@@ -420,7 +411,7 @@ void File::Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr)
                 break;
             default:
                 break;
-            } // switch (obj_type)
+            } // "switch (obj_type)"
         } // try
         catch (...) {
 
@@ -445,7 +436,7 @@ void File::Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr)
             throw;
 
         } // catch
-    } // for (hsize_t i = 0; i < nelems; i++)
+    } // "for (hsize_t i = 0; i < nelems; i++)"
 
 }
 
@@ -670,9 +661,9 @@ void File::Retrieve_H5_Attr_Info(Attribute * attr, hid_t obj_id, const int j, bo
             throw2("Cannot obtain the dim. info for the attribute ", attr_name);
 
             // Here we need to take care of 0-length attribute. This is legal in HDF5.
-            for (int j = 0; j < ndims; j++) {
+            for (int dim_count = 0;dim_count < ndims; dim_count ++) {
                 // STOP adding unsupported_attr_dspace!
-                if (asize[0] == 0) {
+                if (asize[dim_count] == 0) {
                     unsup_attr_dspace = true;
                     break;
                 }
@@ -680,20 +671,20 @@ void File::Retrieve_H5_Attr_Info(Attribute * attr, hid_t obj_id, const int j, bo
 
             if (false == unsup_attr_dspace) {
                 // Return ndims and size[ndims]. 
-                for (int j = 0; j < ndims; j++)
-                    nelmts *= asize[j];
+                for (int dim_count = 0; dim_count< ndims; dim_count++)
+                    nelmts *= asize[dim_count];
             }
             else
                 nelmts = 0;
-        } // if(ndims != 0)
+        } // "if(ndims != 0)"
 
         size_t ty_size = H5Tget_size(ty_id);
         if (0 == ty_size)
-        throw2("Cannot obtain the dtype size for the attribute ", attr_name);
+            throw2("Cannot obtain the dtype size for the attribute ", attr_name);
 
         memtype = H5Tget_native_type(ty_id, H5T_DIR_ASCEND);
         if (memtype < 0)
-        throw2("Cannot obtain the memory datatype for the attribute ", attr_name);
+            throw2("Cannot obtain the memory datatype for the attribute ", attr_name);
 
         // Store the name and the count
         string temp_aname(attr_name.begin(), attr_name.end());
@@ -703,13 +694,13 @@ void File::Retrieve_H5_Attr_Info(Attribute * attr, hid_t obj_id, const int j, bo
 
         // Release HDF5 resources.
         if (H5Tclose(ty_id) < 0)
-        throw1("Cannot successfully close the attribute datatype.");
+            throw1("Cannot successfully close the attribute datatype.");
         if (H5Tclose(memtype) < 0)
-        throw1("Cannot successfully close the attribute memory datatype.");
+            throw1("Cannot successfully close the attribute memory datatype.");
         if (H5Sclose(aspace_id) < 0)
-        throw1("Cannot successfully close the HDF5 dataspace.");
+            throw1("Cannot successfully close the HDF5 dataspace.");
         if (H5Aclose(attrid) < 0)
-        throw1("Cannot successfully close the HDF5 attribute.");
+            throw1("Cannot successfully close the HDF5 attribute.");
 
     } // try
     catch (...) {
@@ -824,7 +815,6 @@ void File::Retrieve_H5_Attr_Value(Attribute *attr, string obj_name)
             }
 
             if (ptr_1stvlen_ptr != NULL) {
-                //if (&temp_buf[0] != NULL) //Apple clang-602.0.53 doesn't like this.
                 aspace_id = H5Aget_space(attr_id);
                 if (aspace_id < 0)
                 throw4("Cannot obtain space id for ", attr->name, " of object ", obj_name);
@@ -874,15 +864,14 @@ void File::Retrieve_H5_Attr_Value(Attribute *attr, string obj_name)
 
                 string new_total_fstring = HDF5CFUtil::trim_string(memtype_id, total_fstring, num_sect, sect_size,
                     sect_newsize);
-                // "h5","The first new sect size is "<<sect_newsize[0] <<endl; 
                 attr->value.resize(new_total_fstring.size());
                 copy(new_total_fstring.begin(), new_total_fstring.end(), attr->value.begin());
                 attr->strsize.resize(num_sect);
                 for (int temp_i = 0; temp_i < num_sect; temp_i++)
                     attr->strsize[temp_i] = sect_newsize[temp_i];
 
-                // "h5","new string value " <<string(attr->value.begin(), attr->value.end()) <<endl;
 #if 0
+                // "h5","new string value " <<string(attr->value.begin(), attr->value.end()) <<endl;
                 for (int temp_i = 0; temp_i <num_sect; temp_i ++)
                 "h5","string new section size = " << attr->strsize[temp_i] <<endl;
 #endif
@@ -890,13 +879,13 @@ void File::Retrieve_H5_Attr_Value(Attribute *attr, string obj_name)
         }
 
         if (H5Tclose(memtype_id) < 0)
-        throw1("Fail to close the HDF5 memory datatype ID.");
+            throw1("Fail to close the HDF5 memory datatype ID.");
         if (H5Tclose(ty_id) < 0)
-        throw1("Fail to close the HDF5 datatype ID.");
+            throw1("Fail to close the HDF5 datatype ID.");
         if (H5Aclose(attr_id) < 0)
-        throw1("Fail to close the HDF5 attribute ID.");
+            throw1("Fail to close the HDF5 attribute ID.");
         if (H5Oclose(obj_id) < 0)
-        throw1("Fail to close the HDF5 object ID.");
+            throw1("Fail to close the HDF5 object ID.");
 
     }
 
@@ -1012,7 +1001,7 @@ if (true == this->unsupported_var_dtype) {
 }
 #endif
 
-void File::Handle_Group_Unsupported_Dtype() throw (Exception)
+void File::Handle_Group_Unsupported_Dtype() 
 {
 
     // First root
@@ -1053,7 +1042,7 @@ void File::Handle_Group_Unsupported_Dtype() throw (Exception)
 }
 
 // Generate group unsupported datatype Information, this is for the BES ignored object key
-void File::Gen_Group_Unsupported_Dtype_Info() throw (Exception)
+void File::Gen_Group_Unsupported_Dtype_Info() 
 {
 
     // First root
@@ -1086,7 +1075,7 @@ void File::Gen_Group_Unsupported_Dtype_Info() throw (Exception)
 }
 
 // Handler unsupported variable datatype
-void File::Handle_Var_Unsupported_Dtype() throw (Exception)
+void File::Handle_Var_Unsupported_Dtype() 
 {
     if (false == this->vars.empty()) {
         if (true == this->unsupported_var_dtype) {
@@ -1106,12 +1095,11 @@ void File::Handle_Var_Unsupported_Dtype() throw (Exception)
 }
 
 // Generate unsupported variable type info. This is for the ignored objects.
-void File::Gen_Var_Unsupported_Dtype_Info() throw (Exception)
+void File::Gen_Var_Unsupported_Dtype_Info() 
 {
 
     if (false == this->vars.empty()) {
         //if (true == this->unsupported_var_dtype) {
-            // "h5","having unsupported variable datatype" <<endl;
             for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
                 H5DataType temp_dtype = (*irv)->getType();
                 if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)||(H5INT64 == temp_dtype) ||(H5UINT64 == temp_dtype)) {
@@ -1124,7 +1112,7 @@ void File::Gen_Var_Unsupported_Dtype_Info() throw (Exception)
 }
 
 // Handling unsupported datatypes for variable(HDF5 dataset) and the correponding attributes.
-void File::Handle_VarAttr_Unsupported_Dtype() throw (Exception)
+void File::Handle_VarAttr_Unsupported_Dtype() 
 {
     if (false == this->vars.empty()) {
         for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
@@ -1147,7 +1135,7 @@ void File::Handle_VarAttr_Unsupported_Dtype() throw (Exception)
 }
 
 // Generated unsupported var/attribute unsupported datatype Info when the BES ignored object key is on.
-void File::Gen_VarAttr_Unsupported_Dtype_Info() throw (Exception)
+void File::Gen_VarAttr_Unsupported_Dtype_Info() 
 {
 
     if (false == this->vars.empty()) {
@@ -1170,7 +1158,7 @@ void File::Gen_VarAttr_Unsupported_Dtype_Info() throw (Exception)
 // The datatypes of HDF5 dimension scales("DIMENSION_LIST" and "REFERENCE_LIST")
 // are not supported. However, the information
 // are retrieved by the handlers so we don't want to report them as ignored objects.
-void File::Gen_DimScale_VarAttr_Unsupported_Dtype_Info() throw (Exception)
+void File::Gen_DimScale_VarAttr_Unsupported_Dtype_Info() 
 {
 
     for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
@@ -1187,7 +1175,7 @@ void File::Gen_DimScale_VarAttr_Unsupported_Dtype_Info() throw (Exception)
                         // is okay to ignore if the variable has another attribute
                         // CLASS="DIMENSION_SCALE"
                         if (("DIMENSION_LIST" != (*ira)->name)
-                            && (("REFERENCE_LIST" != (*ira)->name || true == is_ignored)))
+                            && ("REFERENCE_LIST" != (*ira)->name || true == is_ignored))
                             this->add_ignored_info_attrs(false, (*irv)->fullpath, (*ira)->name);
                     }
                 }
@@ -1197,7 +1185,7 @@ void File::Gen_DimScale_VarAttr_Unsupported_Dtype_Info() throw (Exception)
 }
 
 // Handle unsupported dataspace for group attributes.
-void File::Handle_GroupAttr_Unsupported_Dspace() throw (Exception)
+void File::Handle_GroupAttr_Unsupported_Dspace() 
 {
 
     // First root
@@ -1237,7 +1225,7 @@ void File::Handle_GroupAttr_Unsupported_Dspace() throw (Exception)
 }
 
 // Handle unsupported data space information for variable and attribute 
-void File::Handle_VarAttr_Unsupported_Dspace() throw (Exception)
+void File::Handle_VarAttr_Unsupported_Dspace() 
 {
 
     if (false == this->vars.empty()) {
@@ -1262,7 +1250,7 @@ void File::Handle_VarAttr_Unsupported_Dspace() throw (Exception)
 }
 
 // Handle unsupported data space. 
-void File::Handle_Unsupported_Dspace(bool include_attr) throw (Exception)
+void File::Handle_Unsupported_Dspace(bool include_attr) 
 {
 
     // The unsupported data space 
@@ -1288,7 +1276,7 @@ void File::Handle_Unsupported_Dspace(bool include_attr) throw (Exception)
 }
 
 // Generated unsupported dataspace Info when the BES ignored object key is on.
-void File::Gen_Unsupported_Dspace_Info() throw (Exception)
+void File::Gen_Unsupported_Dspace_Info() 
 {
 
     // Notice in this function, we deliberately don't put the case when an attribute dimension has 0 length.
@@ -1309,7 +1297,7 @@ void File::Gen_Unsupported_Dspace_Info() throw (Exception)
 }
 
 // Handle other unsupported information.
-void File::Handle_Unsupported_Others(bool include_attr) throw (Exception)
+void File::Handle_Unsupported_Others(bool include_attr) 
 {
 
     if (true == this->check_ignored && true == include_attr) {
@@ -1359,7 +1347,7 @@ void File::Handle_Unsupported_Others(bool include_attr) throw (Exception)
 }
 
 // Flatten the object name, mainly call get_CF_string.
-void File::Flatten_Obj_Name(bool include_attr) throw (Exception)
+void File::Flatten_Obj_Name(bool include_attr) 
 {
 
     for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
@@ -1392,14 +1380,14 @@ void File::Flatten_Obj_Name(bool include_attr) throw (Exception)
 }
 
 // Variable name clashing
-void File::Handle_Var_NameClashing(set<string>&objnameset) throw (Exception)
+void File::Handle_Var_NameClashing(set<string>&objnameset) 
 {
 
     Handle_General_NameClashing(objnameset, this->vars);
 }
 
 // Group name clashing
-void File::Handle_Group_NameClashing(set<string> &objnameset) throw (Exception)
+void File::Handle_Group_NameClashing(set<string> &objnameset) 
 {
 
     pair<set<string>::iterator, bool> setret;
@@ -1427,7 +1415,7 @@ void File::Handle_Group_NameClashing(set<string> &objnameset) throw (Exception)
 }
 
 //Object attribute name clashing
-void File::Handle_Obj_AttrNameClashing() throw (Exception)
+void File::Handle_Obj_AttrNameClashing() 
 {
 
     // Now handling the possible name clashings for attributes
@@ -1458,7 +1446,7 @@ void File::Handle_Obj_AttrNameClashing() throw (Exception)
 
 // Handle General name clashing
 //class T must have member string newname. In our case, T is either groups, attributes or vars.
-template<class T> void File::Handle_General_NameClashing(set<string>&objnameset, vector<T*>& objvec) throw (Exception)
+template<class T> void File::Handle_General_NameClashing(set<string>&objnameset, vector<T*>& objvec) 
 {
 
 //    set<string> objnameset;
@@ -1501,7 +1489,7 @@ template<class T> void File::Handle_General_NameClashing(set<string>&objnameset,
 }
 
 // Handle General object name clashing
-void File::Handle_GeneralObj_NameClashing(bool include_attr, set<string>& objnameset) throw (Exception)
+void File::Handle_GeneralObj_NameClashing(bool include_attr, set<string>& objnameset) 
 {
 
     Handle_Var_NameClashing(objnameset);
@@ -1529,7 +1517,7 @@ string File::get_CF_string(string s)
 }
 
 // For the connection of variable dimensions. Build dimname to dimsize(unlimited) maps
-void File::Insert_One_NameSizeMap_Element(string name, hsize_t size, bool unlimited) throw (Exception)
+void File::Insert_One_NameSizeMap_Element(string name, hsize_t size, bool unlimited) 
 {
     pair<map<string, hsize_t>::iterator, bool> mapret;
     mapret = dimname_to_dimsize.insert(pair<string, hsize_t>(name, size));
@@ -1545,7 +1533,7 @@ void File::Insert_One_NameSizeMap_Element(string name, hsize_t size, bool unlimi
 
 // Similar to Inset_One_NameSizeMap_Element but the maps are provided as parameters.
 void File::Insert_One_NameSizeMap_Element2(map<string, hsize_t>& name_to_size, map<string, bool>& name_to_unlimited,
-    string name, hsize_t size, bool unlimited) throw (Exception)
+    string name, hsize_t size, bool unlimited) 
 {
     pair<map<string, hsize_t>::iterator, bool> mapret;
     mapret = name_to_size.insert(pair<string, hsize_t>(name, size));
@@ -1572,7 +1560,7 @@ void File::Insert_One_NameSizeMap_Element2(map<string, hsize_t>& name_to_size, m
 // Int Foosame[FakeDim1][FakeDim1]. This doesn't make sense for some
 // applications. The fuction Adjust_Duplicate_FakeDim_Name will make sure 
 // this case will not happen. 
-void File::Add_One_FakeDim_Name(Dimension *dim) throw (Exception)
+void File::Add_One_FakeDim_Name(Dimension *dim) 
 {
 
     stringstream sfakedimindex;
@@ -1625,7 +1613,7 @@ void File::Add_One_FakeDim_Name(Dimension *dim) throw (Exception)
 }
 
 // See the function comments of Add_One_FakeDim_Name
-void File::Adjust_Duplicate_FakeDim_Name(Dimension * dim) throw (Exception)
+void File::Adjust_Duplicate_FakeDim_Name(Dimension * dim) 
 {
 
     // No need to adjust the dimsize_to_fakedimname map, only create a new Fakedim
@@ -1660,7 +1648,7 @@ void File::Adjust_Duplicate_FakeDim_Name(Dimension * dim) throw (Exception)
 
 // Replace all dimension names, this function is currently not used. So comment out. May delete it in the future.
 #if 0
-void File::Replace_Dim_Name_All(const string orig_dim_name, const string new_dim_name) throw(Exception) {
+void File::Replace_Dim_Name_All(const string orig_dim_name, const string new_dim_name)  {
 
     // The newname of the original dimension should also be replaced by new_dim_name
     for (vector<Var *>::iterator irv = this->vars.begin();
@@ -1678,7 +1666,7 @@ void File::Replace_Dim_Name_All(const string orig_dim_name, const string new_dim
 #endif
 
 #if 0
-void File::Use_Dim_Name_With_Size_All(const string dim_name, const size_t dim_size) throw(Exception) {
+void File::Use_Dim_Name_With_Size_All(const string dim_name, const size_t dim_size)  {
 
     // The newname of the original dimension should also be replaced by new_dim_name
     for (vector<Var *>::iterator irv = this->vars.begin();
@@ -1697,7 +1685,7 @@ void File::Use_Dim_Name_With_Size_All(const string dim_name, const size_t dim_si
 
 // Often times we need to add a CF attribute with string datatype because some products don't provide them 
 // Examples are units, comment etc.
-void File::Add_Str_Attr(Attribute* attr, const string &attrname, const string& strvalue) throw (Exception)
+void File::Add_Str_Attr(Attribute* attr, const string &attrname, const string& strvalue) 
 {
 
     attr->name = attrname;
@@ -1767,7 +1755,7 @@ bool File::has_latlon_cf_units(Attribute *attr, const string &varfullpath, bool 
 }
 
 // This function is mainly to add _FillValue.
-void File::Add_One_Float_Attr(Attribute* attr, const string &attrname, float float_value) throw (Exception)
+void File::Add_One_Float_Attr(Attribute* attr, const string &attrname, float float_value) 
 {
     attr->name = attrname;
     attr->newname = attr->name;
@@ -1779,7 +1767,7 @@ void File::Add_One_Float_Attr(Attribute* attr, const string &attrname, float flo
 
 // Products like GPM use string type for MissingValue, we need to change them to the corresponding variable datatype and 
 // get the value corrected.
-void File::Change_Attr_One_Str_to_Others(Attribute* attr, Var*var) throw (Exception)
+void File::Change_Attr_One_Str_to_Others(Attribute* attr, Var*var) 
 {
 
     char *pEnd;
@@ -1971,7 +1959,7 @@ bool File::Is_geolatlon(const string & var_name, bool is_lat)
 }
 
 // Add supplementary attributes.
-void File::Add_Supplement_Attrs(bool add_path) throw (Exception)
+void File::Add_Supplement_Attrs(bool add_path) 
 {
 
     if (false == add_path) return;
@@ -2486,7 +2474,7 @@ bool File::ignored_dimscale_ref_list(Var *var)
 }
 
 // Check if the long string can should be dropped from a dataset or an attribute. Users can set up a BES key to turn it off or on.
-bool File::Check_DropLongStr(Var *var, Attribute * attr) throw (Exception)
+bool File::Check_DropLongStr(Var *var, Attribute * attr) 
 {
 
     bool drop_longstr = false;
@@ -2518,7 +2506,7 @@ bool File::Check_DropLongStr(Var *var, Attribute * attr) throw (Exception)
 // However, the Java clients may not access.
 //
 bool File::Check_VarDropLongStr(const string & varpath, const vector<Dimension *>& dims, H5DataType dtype)
-    throw (Exception)
+    
 {
 
     bool drop_longstr = false;
@@ -2608,7 +2596,7 @@ bool File::Check_VarDropLongStr(const string & varpath, const vector<Dimension *
 }
 #if 0
 bool File::Check_VarDropLongStr(const string & varpath, const vector<Dimension *>& dims, H5DataType dtype)
-    throw (Exception)
+    
 {
 
     bool drop_longstr = false;
@@ -2721,7 +2709,7 @@ void File::add_ignored_grp_longstr_info(const string& grp_path, const string & a
 }
 
 // Provide if the long variable string is dropped.
-void File::add_ignored_var_longstr_info(Var *var, Attribute *attr) throw (Exception)
+void File::add_ignored_var_longstr_info(Var *var, Attribute *attr) 
 {
 
     if (NULL == attr)

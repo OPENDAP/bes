@@ -180,7 +180,7 @@ void EOS5File::Retrieve_H5_CVar_Supported_Attr_Values()
 }
 
 // Retrieve the attribute values for the HDF-EOS5
-void EOS5File::Retrieve_H5_Supported_Attr_Values() throw (Exception)
+void EOS5File::Retrieve_H5_Supported_Attr_Values() 
 {
 
     File::Retrieve_H5_Supported_Attr_Values();
@@ -196,7 +196,7 @@ void EOS5File::Retrieve_H5_Supported_Attr_Values() throw (Exception)
 }
 
 // Adjust attribute value
-void EOS5File::Adjust_H5_Attr_Value(Attribute *attr) throw (Exception)
+void EOS5File::Adjust_H5_Attr_Value(Attribute *attr) 
 {
 
 }
@@ -214,7 +214,7 @@ void EOS5File::Handle_Unsupported_Dtype(bool include_attr)
 }
 
 // Handle EOS5 unsupported datatype,add EOS5 coordinate variables
-void EOS5File::Handle_EOS5_Unsupported_Dtype(bool include_attr) throw (Exception)
+void EOS5File::Handle_EOS5_Unsupported_Dtype(bool include_attr) 
 {
 
     for (vector<EOS5CVar *>::iterator ircv = this->cvars.begin(); ircv != this->cvars.end();) {
@@ -259,7 +259,7 @@ void EOS5File::Gen_Unsupported_Dtype_Info(bool include_attr)
 }
 
 // Generate variable attribute datatype info.
-void EOS5File::Gen_VarAttr_Unsupported_Dtype_Info() throw (Exception)
+void EOS5File::Gen_VarAttr_Unsupported_Dtype_Info() 
 {
 
     // Dimension scale info for general variables
@@ -270,7 +270,7 @@ void EOS5File::Gen_VarAttr_Unsupported_Dtype_Info() throw (Exception)
 
 }
 
-void EOS5File::Gen_EOS5_VarAttr_Unsupported_Dtype_Info() throw (Exception)
+void EOS5File::Gen_EOS5_VarAttr_Unsupported_Dtype_Info() 
 {
 
     for (vector<EOS5CVar *>::iterator irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
@@ -296,7 +296,7 @@ void EOS5File::Gen_EOS5_VarAttr_Unsupported_Dtype_Info() throw (Exception)
 }
 
 // Handle unsupported data space.
-void EOS5File::Handle_Unsupported_Dspace(bool include_attr) throw (Exception)
+void EOS5File::Handle_Unsupported_Dspace(bool include_attr)
 {
 
     // Generate unsupported info.
@@ -310,7 +310,7 @@ void EOS5File::Handle_Unsupported_Dspace(bool include_attr) throw (Exception)
 }
 
 // Handle EOS5 unsupported data space.
-void EOS5File::Handle_EOS5_Unsupported_Dspace(bool include_attr) throw (Exception)
+void EOS5File::Handle_EOS5_Unsupported_Dspace(bool include_attr) 
 {
 
     if (true == this->unsupported_var_dspace) {
@@ -347,7 +347,7 @@ void EOS5File::Handle_EOS5_Unsupported_Dspace(bool include_attr) throw (Exceptio
 }
 
 // Generating unsupported data space.
-void EOS5File::Gen_Unsupported_Dspace_Info() throw (Exception)
+void EOS5File::Gen_Unsupported_Dspace_Info()
 {
 
     File::Gen_Unsupported_Dspace_Info();
@@ -355,7 +355,7 @@ void EOS5File::Gen_Unsupported_Dspace_Info() throw (Exception)
 }
 
 // Handle other unsupported EOS5 information
-void EOS5File::Handle_Unsupported_Others(bool include_attr) throw (Exception)
+void EOS5File::Handle_Unsupported_Others(bool include_attr) 
 {
 
     remove_netCDF_internal_attributes(include_attr);
@@ -529,7 +529,7 @@ void EOS5File::Handle_Unsupported_Others(bool include_attr) throw (Exception)
 }
 
 // Adjust HDF-EOS5 dimension info.
-void EOS5File::Adjust_EOS5Dim_Info(HE5Parser*strmeta_info) throw (Exception)
+void EOS5File::Adjust_EOS5Dim_Info(HE5Parser*strmeta_info) 
 {
 
     BESDEBUG("h5", "coming to Adjust_EOS5Dim_Info" <<endl);
@@ -598,7 +598,7 @@ void EOS5File::Adjust_EOS5Dim_Info(HE5Parser*strmeta_info) throw (Exception)
 }
 
 // Adjust HDF-EOS5 dimension list. 
-void EOS5File::Adjust_EOS5Dim_List(vector<HE5Dim>& groupdimlist) throw (Exception)
+void EOS5File::Adjust_EOS5Dim_List(vector<HE5Dim>& groupdimlist) 
 {
 
     BESDEBUG("h5", "Coming to Adjust_EOS5Dim_List"<<endl);
@@ -614,7 +614,7 @@ void EOS5File::Adjust_EOS5Dim_List(vector<HE5Dim>& groupdimlist) throw (Exceptio
 
 //  The negative dimension sizes are found in some HDF-EOS5 files.
 //  We need to remove them.
-void EOS5File::Remove_NegativeSizeDims(vector<HE5Dim>& groupdimlist) throw (Exception)
+void EOS5File::Remove_NegativeSizeDims(vector<HE5Dim>& groupdimlist) 
 {
 
     BESDEBUG("h5", "Coming to Remove_NegativeSizeDims" <<endl);
@@ -641,7 +641,7 @@ void EOS5File::Remove_NegativeSizeDims(vector<HE5Dim>& groupdimlist) throw (Exce
 //  Some products use Xdim rather XDim, Ydim rather than Ydim. 
 //  This is significant for grids. We need to make them "XDim" and "YDim".
 //  See comments of function Adjust_EOS5VarDim_Info for the reason.
-void EOS5File::Condense_EOS5Dim_List(vector<HE5Dim>& groupdimlist) throw (Exception)
+void EOS5File::Condense_EOS5Dim_List(vector<HE5Dim>& groupdimlist) 
 {
 
     BESDEBUG("h5", "Coming to Condense_EOS5Dim_List"<<endl);
@@ -691,7 +691,7 @@ void EOS5File::Condense_EOS5Dim_List(vector<HE5Dim>& groupdimlist) throw (Except
 }
 
 void EOS5File:: Adjust_EOS5DimSize_List(vector<HE5Dim>& eos5objdimlist,const vector<HE5Var> & eos5objvarlist, 
-                                        const EOS5Type eos5type, const string & eos5objname) throw(Exception)
+                                        const EOS5Type eos5type, const string & eos5objname) 
 {
 
     set<string>updated_dimlist;
@@ -753,7 +753,7 @@ for(unsigned int k = 0; k <eos5objdimlist.size();k++) {
 
 // Adjust HDF-EOS5 Variable,dimension information.
 void EOS5File::Adjust_EOS5VarDim_Info(vector<HE5Dim>& vardimlist, vector<HE5Dim>& groupdimlist,
-    const string & eos5_obj_name, EOS5Type eos5type) throw (Exception)
+    const string & eos5_obj_name, EOS5Type eos5type) 
 {
 
     BESDEBUG("h5", "Coming to Adjust_EOS5VarDim_Info"<<endl);
@@ -831,7 +831,7 @@ void EOS5File::Adjust_EOS5VarDim_Info(vector<HE5Dim>& vardimlist, vector<HE5Dim>
 }
 
 // Add EOS5 FIle information
-void EOS5File::Add_EOS5File_Info(HE5Parser * strmeta_info, bool grids_mllcv) throw (Exception)
+void EOS5File::Add_EOS5File_Info(HE5Parser * strmeta_info, bool grids_mllcv) 
 {
 
     BESDEBUG("h5", "Coming to Add_EOS5File_Info"<<endl);
@@ -1096,7 +1096,7 @@ void EOS5File::Add_EOS5File_Info(HE5Parser * strmeta_info, bool grids_mllcv) thr
 
 // Check if EOS5 Swath and Grid hold Latitude and Longitude fields.
 template<class T>
-void EOS5File::EOS5SwathGrid_Set_LatLon_Flags(T* eos5gridswath, vector<HE5Var> &eos5varlist) throw (Exception)
+void EOS5File::EOS5SwathGrid_Set_LatLon_Flags(T* eos5gridswath, vector<HE5Var> &eos5varlist) 
 {
 
     BESDEBUG("h5", "Coming to EOS5SwathGrid_Set_LatLon_Flags"<<endl);
@@ -1165,7 +1165,7 @@ void EOS5File::EOS5SwathGrid_Set_LatLon_Flags(T* eos5gridswath, vector<HE5Var> &
 // This function builds up the map from dimension names to coordinate variables
 // for non-latitude and longitude fields. 
 void EOS5File::EOS5Handle_nonlatlon_dimcvars(vector<HE5Var> & eos5varlist, EOS5Type eos5type, string groupname,
-    map<string, string>& dnamesgeo1dvnames) throw (Exception)
+    map<string, string>& dnamesgeo1dvnames) 
 {
 
     BESDEBUG("h5", "Coming to EOS5Handle_nonlatlon_dimcvars"<<endl);
@@ -1219,7 +1219,7 @@ void EOS5File::EOS5Handle_nonlatlon_dimcvars(vector<HE5Var> & eos5varlist, EOS5T
 }
 
 // Adjust variable names after obtain the parsing information.
-void EOS5File::Adjust_Var_NewName_After_Parsing() throw (Exception)
+void EOS5File::Adjust_Var_NewName_After_Parsing() 
 {
 
     BESDEBUG("h5", "Coming to Adjust_Var_NewName_After_Parsing"<<endl);
@@ -1228,7 +1228,7 @@ void EOS5File::Adjust_Var_NewName_After_Parsing() throw (Exception)
     }
 }
 
-void EOS5File::Obtain_Var_NewName(Var *var) throw (Exception)
+void EOS5File::Obtain_Var_NewName(Var *var) 
 {
 
     BESDEBUG("h5", "Coming to Obtain_Var_NewName"<<endl);
@@ -1282,7 +1282,7 @@ void EOS5File::Obtain_Var_NewName(Var *var) throw (Exception)
 }
 
 // Get the HDF-EOS5 type: The type is either grids, swaths or zonal average
-EOS5Type EOS5File::Get_Var_EOS5_Type(Var* var) throw (Exception)
+EOS5Type EOS5File::Get_Var_EOS5_Type(Var* var) 
 {
 
     BESDEBUG("h5", "Coming to Get_Var_EOS5_Type"<<endl);
@@ -1305,7 +1305,7 @@ EOS5Type EOS5File::Get_Var_EOS5_Type(Var* var) throw (Exception)
 }
 
 // Add dimension information from the parseing info.
-void EOS5File::Add_Dim_Name(HE5Parser *strmeta_info) throw (Exception)
+void EOS5File::Add_Dim_Name(HE5Parser *strmeta_info) 
 {
 
     BESDEBUG("h5", "Coming to Add_Dim_Name"<<endl);
@@ -1322,7 +1322,7 @@ void EOS5File::Add_Dim_Name(HE5Parser *strmeta_info) throw (Exception)
 }
 
 // CHECK if finding the same variables from the parser.
-bool EOS5File::Obtain_Var_Dims(Var *var, HE5Parser * strmeta_info) throw (Exception)
+bool EOS5File::Obtain_Var_Dims(Var *var, HE5Parser * strmeta_info) 
 {
 
     BESDEBUG("h5", "Coming to Obtain_Var_Dims"<<endl);
@@ -1396,7 +1396,7 @@ bool EOS5File::Obtain_Var_Dims(Var *var, HE5Parser * strmeta_info) throw (Except
 // Set dimension info.(dimension names and sizes) to variables.
 template<class T>
 bool EOS5File::Set_Var_Dims(T* eos5data, Var *var, vector<HE5Var> &he5var, const string& groupname, int num_groups,
-    EOS5Type eos5type) throw (Exception)
+    EOS5Type eos5type) 
 {
 
     BESDEBUG("h5", "Coming to Set_Var_Dims"<<endl);
@@ -1495,7 +1495,7 @@ bool EOS5File::Set_Var_Dims(T* eos5data, Var *var, vector<HE5Var> &he5var, const
 // Create unique dimension names. Se the comments below.
 template<class T>
 void EOS5File::Create_Unique_DimName(T*eos5data, set<string>& thisvar_dimname_set, Dimension *dim, int num_groups,
-    EOS5Type eos5type) throw (Exception)
+    EOS5Type eos5type) 
 {
 
     BESDEBUG("h5", "Coming to Create_Unique_DimName"<<endl);
@@ -1592,7 +1592,7 @@ bool EOS5File::Check_All_DimNames(T* eos5data, string& dimname, hsize_t dimsize)
 }
 
 // Get a unique name.
-void EOS5File::Get_Unique_Name(set<string> & nameset, string& dimname_candidate) throw (Exception)
+void EOS5File::Get_Unique_Name(set<string> & nameset, string& dimname_candidate) 
 {
 
     BESDEBUG("h5", "Coming to Get_Unique_Name"<<endl);
@@ -1604,7 +1604,7 @@ void EOS5File::Get_Unique_Name(set<string> & nameset, string& dimname_candidate)
 
 // We may need to generate a unique "fake" dim. name for dimensions that don't have any dimension names.
 template<class T>
-string EOS5File::Create_Unique_FakeDimName(T*eos5data, EOS5Type eos5type) throw (Exception)
+string EOS5File::Create_Unique_FakeDimName(T*eos5data, EOS5Type eos5type) 
 {
 
     BESDEBUG("h5", "Coming to Create_Unique_FakeDimName"<<endl);
@@ -1632,7 +1632,7 @@ string EOS5File::Create_Unique_FakeDimName(T*eos5data, EOS5Type eos5type) throw 
 }
 
 // Obtain the group name this variable belongs.
-string EOS5File::Obtain_Var_EOS5Type_GroupName(Var*var, EOS5Type eos5type) throw (Exception)
+string EOS5File::Obtain_Var_EOS5Type_GroupName(Var*var, EOS5Type eos5type) 
 {
 
     BESDEBUG("h5", "Coming to Obtain_Var_EOS5Type_GroupName"<<endl);
@@ -1665,7 +1665,7 @@ string EOS5File::Obtain_Var_EOS5Type_GroupName(Var*var, EOS5Type eos5type) throw
 }
 
 // Check whether this field belongs to "Geolocation Fields" or "Data Fields"
-int EOS5File::Check_EOS5Swath_FieldType(Var*var) throw (Exception)
+int EOS5File::Check_EOS5Swath_FieldType(Var*var) 
 {
 
     string geofield_relative_path = "/Geolocation Fields/" + var->name;
@@ -1690,7 +1690,7 @@ int EOS5File::Check_EOS5Swath_FieldType(Var*var) throw (Exception)
 // in this EOS5 group.
 template<class T>
 void EOS5File::Set_NonParse_Var_Dims(T*eos5data, Var* var, map<hsize_t, string>& /*dimsizes_to_dimnames*/,
-    int num_groups, EOS5Type eos5type) throw (Exception)
+    int num_groups, EOS5Type eos5type) 
 {
 
     BESDEBUG("h5", "Coming to Set_NonParse_Var_Dims"<<endl);
@@ -1706,7 +1706,7 @@ void EOS5File::Set_NonParse_Var_Dims(T*eos5data, Var* var, map<hsize_t, string>&
 }
 
 // Aura files don't use the CF attribute names for bunch of attributes. We need to make it right.
-void EOS5File::Check_Aura_Product_Status() throw (Exception)
+void EOS5File::Check_Aura_Product_Status() 
 {
 
     BESDEBUG("h5", "Coming to Check_Aura_Product_Status"<<endl);
@@ -1758,7 +1758,7 @@ void EOS5File::Check_Aura_Product_Status() throw (Exception)
 }
 
 // Handle Coordinate variables
-void EOS5File::Handle_CVar() throw (Exception)
+void EOS5File::Handle_CVar() 
 {
 
     BESDEBUG("h5", "Coming to Handle_CVar()"<<endl);
@@ -1792,7 +1792,7 @@ void EOS5File::Handle_CVar() throw (Exception)
 }
 
 // Handle Grid Coordinate variables
-void EOS5File::Handle_Grid_CVar(bool is_augmented) throw (Exception)
+void EOS5File::Handle_Grid_CVar(bool is_augmented) 
 {
 
     BESDEBUG("h5", "Coming to Handle_Grid_CVar"<<endl);
@@ -1818,7 +1818,7 @@ void EOS5File::Handle_Grid_CVar(bool is_augmented) throw (Exception)
 // Check if this file is augmented. The current augmentation tool will
 // add extra variables for every EOS5 object. This function will check
 // if that is the case.
-bool EOS5File::Check_Augmentation_Status() throw (Exception)
+bool EOS5File::Check_Augmentation_Status() 
 {
 
     BESDEBUG("h5", "Coming to Check_Augmentation_Status()"<<endl);
@@ -1868,7 +1868,7 @@ bool EOS5File::Check_Augmentation_Status() throw (Exception)
 // This method is not used. Still keep it now since it may be useful in the future. KY 2012-3-09
 // Don't remove the #if 0 #endif block. 
 #if 0
-bool EOS5File::Check_Augmented_Var_Attrs(Var *var) throw(Exception) {
+bool EOS5File::Check_Augmented_Var_Attrs(Var *var)  {
 
     // We will check whether the attribute "CLASS" and the attribute "REFERENCE_LIST" exist.
     // For the attribute "CLASS", we would like to check if the value is "DIMENSION_SCALE".
@@ -1904,7 +1904,7 @@ bool EOS5File::Check_Augmented_Var_Attrs(Var *var) throw(Exception) {
 // then this file is augmented.
 // Hope that no other hybrid-HDFEOS5 files fall to this category.
 template<class T>
-bool EOS5File::Check_Augmented_Var_Candidate(T *eos5data, Var *var, EOS5Type eos5type) throw (Exception)
+bool EOS5File::Check_Augmented_Var_Candidate(T *eos5data, Var *var, EOS5Type eos5type) 
 {
 
     BESDEBUG("h5", "Coming to Check_Augmented_Var_Candidate"<<endl);
@@ -1942,7 +1942,7 @@ bool EOS5File::Check_Augmented_Var_Candidate(T *eos5data, Var *var, EOS5Type eos
 }
 
 // Handle augmented grid coordinate variables.
-void EOS5File::Handle_Augmented_Grid_CVar() throw (Exception)
+void EOS5File::Handle_Augmented_Grid_CVar() 
 {
     BESDEBUG("h5", "Coming to Handle_Augmented_Grid_CVar()"<<endl);
     for (vector<EOS5CFGrid *>::iterator irv = this->eos5cfgrids.begin(); irv != this->eos5cfgrids.end(); ++irv)
@@ -1951,7 +1951,7 @@ void EOS5File::Handle_Augmented_Grid_CVar() throw (Exception)
 
 // Handle the coordinate variables for the single HDF-EOS5 objects(grid,swath,zonal average) for an augmented file
 template<class T>
-void EOS5File::Handle_Single_Augment_CVar(T* cfeos5data, EOS5Type eos5type) throw (Exception)
+void EOS5File::Handle_Single_Augment_CVar(T* cfeos5data, EOS5Type eos5type) 
 {
 
     BESDEBUG("h5", "Coming to Handle_Single_Augment_CVar()"<<endl);
@@ -2012,7 +2012,7 @@ void EOS5File::Handle_Single_Augment_CVar(T* cfeos5data, EOS5Type eos5type) thro
 //Currently we remove HDF-EOS5 grid if we find the latitude/longitude is >2D. This is a big question mark
 // given some data producers just don't follow the HDF-EOS5 specification to generate the latitude/longitude.
 // KY 2016-07-12
-void EOS5File::Remove_MultiDim_LatLon_EOS5CFGrid() throw (Exception)
+void EOS5File::Remove_MultiDim_LatLon_EOS5CFGrid() 
 {
 
     BESDEBUG("h5", "Coming to Remove_MultiDim_LatLon_EOS5CFGrid()"<<endl);
@@ -2102,7 +2102,7 @@ void EOS5File::Remove_MultiDim_LatLon_EOS5CFGrid() throw (Exception)
 }
 
 // Handle single nonaugmented grid coordinate variables.
-void EOS5File::Handle_Single_Nonaugment_Grid_CVar(EOS5CFGrid* cfgrid) throw (Exception)
+void EOS5File::Handle_Single_Nonaugment_Grid_CVar(EOS5CFGrid* cfgrid) 
 {
 
     BESDEBUG("h5", "Coming to Handle_Single_Nonaugment_Grid_CVar()"<<endl);
@@ -2134,7 +2134,7 @@ void EOS5File::Handle_Single_Nonaugment_Grid_CVar(EOS5CFGrid* cfgrid) throw (Exc
 
 // Handle single nonaugmented grid coordinate variables with its own lat/lon
 bool EOS5File::Handle_Single_Nonaugment_Grid_CVar_OwnLatLon(EOS5CFGrid *cfgrid, set<string>& tempvardimnamelist)
-    throw (Exception)
+    
 {
 
     BESDEBUG("h5", "Coming to Handle_Single_Nonaugment_Grid_CVar_OwnLatLon()"<<endl);
@@ -2229,7 +2229,7 @@ bool EOS5File::Handle_Single_Nonaugment_Grid_CVar_OwnLatLon(EOS5CFGrid *cfgrid, 
 
 // Handle single non-augmented grid latitude/longitude coordinate variables.
 bool EOS5File::Handle_Single_Nonaugment_Grid_CVar_EOS5LatLon(EOS5CFGrid *cfgrid, set<string>& tempvardimnamelist)
-    throw (Exception)
+    
 {
 
     BESDEBUG("h5", "Coming to Handle_Single_Nonaugment_Grid_CVar_EOS5LatLon()"<<endl);
@@ -2389,7 +2389,7 @@ bool EOS5File::Handle_Single_Nonaugment_Grid_CVar_EOS5LatLon(EOS5CFGrid *cfgrid,
 }
 
 // Handle non-latitude/longitude grid coordinate variables.
-void EOS5File::Handle_NonLatLon_Grid_CVar(EOS5CFGrid *cfgrid, set<string>& tempvardimnamelist) throw (Exception)
+void EOS5File::Handle_NonLatLon_Grid_CVar(EOS5CFGrid *cfgrid, set<string>& tempvardimnamelist) 
 {
 
     // First check if we have existing coordinate variable
@@ -2450,7 +2450,7 @@ void EOS5File::Handle_NonLatLon_Grid_CVar(EOS5CFGrid *cfgrid, set<string>& tempv
 }
 
 // Handle none-augmented grid coordinate variables for mutliple grids.
-void EOS5File::Handle_Multi_Nonaugment_Grid_CVar() throw (Exception)
+void EOS5File::Handle_Multi_Nonaugment_Grid_CVar() 
 {
 
     BESDEBUG("h5", "Coming to Handle_Multi_nonaugment_Grid_CVar()"<<endl);
@@ -2527,7 +2527,7 @@ void EOS5File::Handle_Multi_Nonaugment_Grid_CVar() throw (Exception)
 // Adjust the HDF-EOS5 grid dimension names for XDim and YDim, we need to remember the grid path  
 // Note this function is used under the assumption that only one lat/lon pair is used for all grids.
 // This is the case for Aura.
-void EOS5File::Adjust_EOS5GridDimNames(EOS5CFGrid *cfgrid) throw (Exception)
+void EOS5File::Adjust_EOS5GridDimNames(EOS5CFGrid *cfgrid) 
 {
 
     BESDEBUG("h5", "Coming to Adjust_EOS5GridDimNames()"<<endl);
@@ -2565,7 +2565,7 @@ void EOS5File::Adjust_EOS5GridDimNames(EOS5CFGrid *cfgrid) throw (Exception)
 }
 
 // Handle Swath Coordinate variables. 
-void EOS5File::Handle_Swath_CVar(bool isaugmented) throw (Exception)
+void EOS5File::Handle_Swath_CVar(bool isaugmented) 
 {
 
     BESDEBUG("h5", "Coming to Handle_Swath_CVar()"<<endl);
@@ -2596,7 +2596,7 @@ void EOS5File::Handle_Swath_CVar(bool isaugmented) throw (Exception)
 }
 
 // Handle single 1D LatLon Swath Coordinate variables.
-void EOS5File::Handle_Single_1DLatLon_Swath_CVar(EOS5CFSwath *cfswath, bool is_augmented) throw (Exception)
+void EOS5File::Handle_Single_1DLatLon_Swath_CVar(EOS5CFSwath *cfswath, bool is_augmented) 
 {
 
     BESDEBUG("h5", "Coming to Handle_Single_1DLatLon_Swath_CVar"<<endl);
@@ -2701,7 +2701,7 @@ void EOS5File::Handle_Single_1DLatLon_Swath_CVar(EOS5CFSwath *cfswath, bool is_a
 }
 
 // Handle Single 2D lat/lon Coordinate variables for Swath
-void EOS5File::Handle_Single_2DLatLon_Swath_CVar(EOS5CFSwath *cfswath, bool is_augmented) throw (Exception)
+void EOS5File::Handle_Single_2DLatLon_Swath_CVar(EOS5CFSwath *cfswath, bool is_augmented) 
 {
 
     BESDEBUG("h5", "Coming to Handle_Single_2DLatLon_Swath_CVar()"<<endl);
@@ -2848,7 +2848,7 @@ void EOS5File::Handle_Single_2DLatLon_Swath_CVar(EOS5CFSwath *cfswath, bool is_a
 }
 
 // Handle non-lat/lon Swath coordinate variables.
-void EOS5File::Handle_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, set<string>& tempvardimnamelist) throw (Exception)
+void EOS5File::Handle_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, set<string>& tempvardimnamelist) 
 {
 
     BESDEBUG("h5", "Coming to Handle_NonLatLon_Swath_CVar()"<<endl);
@@ -2919,7 +2919,7 @@ void EOS5File::Handle_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, set<string>& te
 
 // Handle special non-lat/lon coordinate variables for swath.
 void EOS5File::Handle_Special_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, set<string>& tempvardimnamelist)
-    throw (Exception)
+    
 {
 
     BESDEBUG("h5", "Handle_Special_NonLatLon_Swath_CVar()"<<endl);
@@ -3027,7 +3027,7 @@ void EOS5File::Handle_Special_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, set<str
 }
 
 // Handle Zonal average coordinate variables.    
-void EOS5File::Handle_Za_CVar(bool isaugmented) throw (Exception)
+void EOS5File::Handle_Za_CVar(bool isaugmented) 
 {
 
     BESDEBUG("h5", "Coming to Handle_Za_CVar()"<<endl);
@@ -3040,7 +3040,7 @@ void EOS5File::Handle_Za_CVar(bool isaugmented) throw (Exception)
 }
 
 // Adjust the newname(final names appeared at DDS) for variable and dimensions before flattening.
-void EOS5File::Adjust_Var_Dim_NewName_Before_Flattening() throw (Exception)
+void EOS5File::Adjust_Var_Dim_NewName_Before_Flattening() 
 {
 
     BESDEBUG("h5", "Coming to Adjust_Var_Dim_NewName_Before_Flattening()"<<endl);
@@ -3078,7 +3078,7 @@ void EOS5File::Adjust_Var_Dim_NewName_Before_Flattening() throw (Exception)
 // Adjust the final name of one variable or dim. before flattening the names
 template<class T>
 void EOS5File::Adjust_Per_Var_Dim_NewName_Before_Flattening(T* var, bool mixed_eos5type, int num_grids, int num_swaths,
-    int num_zas) throw (Exception)
+    int num_zas) 
 {
 
     BESDEBUG("h5", "Coming to Adjust_Per_Var_Dim_NewName_Before_Flattening()"<<endl);
@@ -3171,7 +3171,7 @@ void EOS5File::Adjust_Per_Var_Dim_NewName_Before_Flattening(T* var, bool mixed_e
 }
 
 // Adjust shared var and dim names for shared lat/lon grid case.
-void EOS5File::Adjust_SharedLatLon_Grid_Var_Dim_Name() throw (Exception)
+void EOS5File::Adjust_SharedLatLon_Grid_Var_Dim_Name() 
 {
 
     BESDEBUG("h5", "Adjust_SharedLatLon_Grid_Var_Dim_Name()"<<endl);
@@ -3219,7 +3219,7 @@ void EOS5File::Adjust_SharedLatLon_Grid_Var_Dim_Name() throw (Exception)
 }
 
 // Flatten the object names.
-void EOS5File::Flatten_Obj_Name(bool include_attr) throw (Exception)
+void EOS5File::Flatten_Obj_Name(bool include_attr) 
 {
 
     BESDEBUG("h5", "Coming to Flatten_Obj_Name()"<<endl);
@@ -3241,7 +3241,7 @@ void EOS5File::Flatten_Obj_Name(bool include_attr) throw (Exception)
 }
 
 // Handle Object Name clashing
-void EOS5File::Handle_Obj_NameClashing(bool include_attr) throw (Exception)
+void EOS5File::Handle_Obj_NameClashing(bool include_attr) 
 {
 
     BESDEBUG("h5", "Coming to Handle_Obj_NameClashing()"<<endl);
@@ -3260,7 +3260,7 @@ void EOS5File::Handle_Obj_NameClashing(bool include_attr) throw (Exception)
 }
 
 // Handle EOS5 coordinate variable name clashing
-void EOS5File::Handle_EOS5CVar_NameClashing(set<string> &objnameset) throw (Exception)
+void EOS5File::Handle_EOS5CVar_NameClashing(set<string> &objnameset) 
 {
 
     BESDEBUG("h5", "Coming to Handle_EOS5CVar_NameClashing()"<<endl);
@@ -3268,7 +3268,7 @@ void EOS5File::Handle_EOS5CVar_NameClashing(set<string> &objnameset) throw (Exce
 }
 
 // Handle EOS5 coordinate varaible attribute name clashing
-void EOS5File::Handle_EOS5CVar_AttrNameClashing() throw (Exception)
+void EOS5File::Handle_EOS5CVar_AttrNameClashing() 
 {
 
     BESDEBUG("h5", "Coming to Handle_EOS5CVar_AttrNameClashing()"<<endl);
@@ -3282,7 +3282,7 @@ void EOS5File::Handle_EOS5CVar_AttrNameClashing() throw (Exception)
 // The routine to handle general name clashing 
 //class T must have member string newname
 template<class T> void EOS5File::EOS5Handle_General_NameClashing(set<string>&objnameset, vector<T*>& objvec)
-    throw (Exception)
+    
 {
 
     BESDEBUG("h5", "Coming to EOS5Handle_General_NameClashing()"<<endl);
@@ -3325,7 +3325,7 @@ template<class T> void EOS5File::EOS5Handle_General_NameClashing(set<string>&obj
 }
 
 // Handle Dimension name clashing
-void EOS5File::Handle_DimNameClashing() throw (Exception)
+void EOS5File::Handle_DimNameClashing() 
 {
 
     BESDEBUG("h5", "Coming to Handle_DimNameClashing()"<<endl);
@@ -3386,7 +3386,7 @@ void EOS5File::Handle_DimNameClashing() throw (Exception)
 
 // Set COARDS Status, if we can follow COARDS, we should follow COARDS.
 // http://ferret.wrc.noaa.gov/noaa_coop/coop_cdf_profile.html
-void EOS5File::Set_COARDS_Status() throw (Exception)
+void EOS5File::Set_COARDS_Status() 
 {
 
     BESDEBUG("h5", "Coming to Set_COARDS_Status()"<<endl);
@@ -3409,7 +3409,7 @@ void EOS5File::Set_COARDS_Status() throw (Exception)
 }
 
 // Adjust attribute info., mostly for CF name correction of Aura files.
-void EOS5File::Adjust_Attr_Info() throw (Exception)
+void EOS5File::Adjust_Attr_Info() 
 {
 
     BESDEBUG("h5", "Coming to Adjust_Attr_Info()"<<endl);
@@ -3424,7 +3424,7 @@ void EOS5File::Adjust_Attr_Info() throw (Exception)
 }
 
 // Adjust Attribute Name, mostly for Aura files.
-void EOS5File::Adjust_Aura_Attr_Name() throw (Exception)
+void EOS5File::Adjust_Aura_Attr_Name() 
 {
 
     BESDEBUG("h5", "Coming to Adjust_Attr_Name() for Aura"<<endl);
@@ -3445,7 +3445,7 @@ void EOS5File::Adjust_Aura_Attr_Name() throw (Exception)
     }
 }
 
-void EOS5File::Adjust_Aura_Attr_Value() throw (Exception)
+void EOS5File::Adjust_Aura_Attr_Value() 
 {
 
     BESDEBUG("h5", "Coming to Adjust_Attr_Value() for Aura"<<endl);
@@ -3482,7 +3482,7 @@ void EOS5File::Adjust_Aura_Attr_Value() throw (Exception)
 }
 
 // Handle EOS5 coordinate variable special attributes. 
-void EOS5File::Handle_Aura_Special_Attr() throw (Exception)
+void EOS5File::Handle_Aura_Special_Attr() 
 {
 
     BESDEBUG("h5", "Coming to Handle_Aura_Special_Attr()"<<endl);
@@ -3519,7 +3519,7 @@ void EOS5File::Handle_Aura_Special_Attr() throw (Exception)
 }
 
 // Handle coordinate variable units attribute     
-void EOS5File::Handle_EOS5CVar_Unit_Attr() throw (Exception)
+void EOS5File::Handle_EOS5CVar_Unit_Attr() 
 {
 
     BESDEBUG("h5", "Coming to Handle_EOS5CVar_Unit_Attr()"<<endl);
@@ -3600,7 +3600,7 @@ void EOS5File::Handle_EOS5CVar_Unit_Attr() throw (Exception)
     } // for (vector<EOS5CVar *>::iterator irv = this->cvars.begin() ...
 }
 
-void EOS5File::Add_EOS5_Grid_CF_Attr() throw(Exception) 
+void EOS5File::Add_EOS5_Grid_CF_Attr()  
 {
     BESDEBUG("h5", "Coming to Add_EOS5_Grid_CF_Attr()"<<endl);
 
@@ -3641,7 +3641,7 @@ void EOS5File::Add_EOS5_Grid_CF_Attr() throw(Exception)
 
 
 // Adjust Dimension name
-void EOS5File::Adjust_Dim_Name() throw (Exception)
+void EOS5File::Adjust_Dim_Name() 
 {
 
     BESDEBUG("h5", "Coming to Adjust_Dim_Name()"<<endl);
@@ -3671,7 +3671,7 @@ void EOS5File::Adjust_Dim_Name() throw (Exception)
 }
 
 // Add supplemental attributes such as origname and fullpath.
-void EOS5File::Add_Supplement_Attrs(bool add_path) throw (Exception)
+void EOS5File::Add_Supplement_Attrs(bool add_path) 
 {
 
     BESDEBUG("h5", "Coming to Add_Supplement_Attrs()"<<endl);
@@ -3826,7 +3826,7 @@ void EOS5File::Handle_Coor_Attr()
 // This function is from the original requirement of NASA, then
 // NASA changes the requirment. Still leave it here for future usage.
 #if 0
-void EOS5File::Adjust_Special_EOS5CVar_Name() throw(Exception) {
+void EOS5File::Adjust_Special_EOS5CVar_Name()  {
 
     int num_grids =this->eos5cfgrids.size();
     int num_swaths = this->eos5cfswaths.size();
@@ -3904,7 +3904,7 @@ void EOS5File::Adjust_Special_EOS5CVar_Name() throw(Exception) {
 // These missing coordinate variables are all 1-D.
 template<class T>
 void EOS5File::Create_Missing_CV(T* eos5data, EOS5CVar *EOS5cvar, const string& dimname, EOS5Type eos5type,
-    int num_eos5data) throw (Exception)
+    int num_eos5data) 
 {
 
     BESDEBUG("h5", "Coming to Create_Missing_CV()"<<endl);
@@ -3932,7 +3932,7 @@ void EOS5File::Create_Missing_CV(T* eos5data, EOS5CVar *EOS5cvar, const string& 
 
 // Helper function for Create_Missing_CV
 void EOS5File::Create_Added_Var_NewName_FullPath(EOS5Type eos5type, const string& eos5_groupname, const string& varname,
-    string &var_newname, string &var_fullpath) throw (Exception)
+    string &var_newname, string &var_fullpath) 
 {
 
     BESDEBUG("h5", "Coming to Create_Added_Var_NewName_FullPath()"<<endl);
@@ -3970,7 +3970,7 @@ void EOS5File::Create_Added_Var_NewName_FullPath(EOS5Type eos5type, const string
 }
 
 // Handle special variables, various speical cases are handled here.
-void EOS5File::Handle_SpVar() throw (Exception)
+void EOS5File::Handle_SpVar() 
 {
 
     BESDEBUG("h5", "Coming to Handle_SpVar()"<<endl);
@@ -4094,7 +4094,7 @@ void EOS5File::Handle_SpVar() throw (Exception)
 }
 
 // Handle special variable attributes
-void EOS5File::Handle_SpVar_Attr() throw (Exception)
+void EOS5File::Handle_SpVar_Attr() 
 {
 
     BESDEBUG("h5", "Coming to Handle_SpVar_Attr()"<<endl);
@@ -4130,7 +4130,7 @@ void EOS5File::Handle_SpVar_Attr() throw (Exception)
         } // for (itmm = dimname_to_dupdimnamelist.begin();
     } // if(dimname_to_dupdimnamelist.size() > 0)
 }
-void EOS5File::Adjust_Obj_Name() throw (Exception)
+void EOS5File::Adjust_Obj_Name() 
 {
 
 }

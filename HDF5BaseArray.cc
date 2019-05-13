@@ -106,7 +106,7 @@ HDF5BaseArray::format_constraint (int *offset, int *step, int *count)
 
         id++;
         p++;
-    }// while (p != dim_end ())
+    }// "while (p != dim_end ())"
 
     return nels;
 }
@@ -414,7 +414,7 @@ int HDF5BaseArray::subset(
             size_t cur_pos = INDEX_nD_TO_1D( dim, pos);
             void* tempbuf = (void*)((char*)input+cur_pos*sizeof(T));
             poutput->push_back(*(static_cast<T*>(tempbuf)));
-            //poutput->push_back(input[HDF5CFUtil::INDEX_nD_TO_1D( dim, pos)]);
+            //"poutput->push_back(input[HDF5CFUtil::INDEX_nD_TO_1D( dim, pos)]);"
         }
     } // end of for
     return 0;
@@ -423,8 +423,8 @@ int HDF5BaseArray::subset(
 size_t HDF5BaseArray::INDEX_nD_TO_1D (const std::vector < size_t > &dims,
                                  const std::vector < size_t > &pos){
     //
-    //  int a[10][20][30];  // & a[1][2][3] == a + (20*30+1 + 30*2 + 1 *3);
-    //  int b[10][2]; // &b[1][1] == b + (2*1 + 1);
+    //  "int a[10][20][30]  // & a[1][2][3] == a + (20*30+1 + 30*2 + 1 *3)"
+    //  "int b[10][2] // &b[1][1] == b + (2*1 + 1)"
     // 
     if(dims.size () != pos.size ())
         throw InternalErr(__FILE__,__LINE__,"dimension error in INDEX_nD_TO_1D routine.");
@@ -461,10 +461,13 @@ check_str_sect_in_list(const vector<string>&str_list, const string &cur_str,cons
     }
 
     // We will not include the last sect (rightmost sect) of cur_str.
+#if 0
     //if(ret_str != "") {
     //    if(ret_str == cur_str.substr(cur_str.find_last_of(sep)+1))  
     //        ret_str ="";
     //}
+    //
+#endif
 
     return ret_str;
 
@@ -498,12 +501,13 @@ check_var_cache_files(const vector<string>&slist, const string &fname,const stri
         
 
     for(unsigned int i = 0; i<slist.size();i++) {
+#if 0
 //cerr<<"fullpath is "<<fullpath <<endl;
 //cerr<<"slist[i] is "<<slist[i] <<endl;
 //cerr<<"fullpath - slist size"<<fullpath.size() -slist[i].size()<<endl;
 //cerr<<"fullpath.rfind(slist[i] is "<<fullpath.rfind(slist[i]) <<endl;
+#endif
         if(fullpath.rfind(slist[i])==(fullpath.size()-slist[i].size())){
-//cerr<<"find the list "<<endl;
             ret_value = true;
             break;
         }
@@ -522,11 +526,13 @@ handle_data_with_mem_cache(H5DataType h5_dtype, size_t total_elems,const short c
     else if(cache_flag > 1) {
         mem_data_cache = HDF5RequestHandler::get_lrdata_mem_cache();
 
+#if 0
 //cerr<<"coming to the large metadata cache "<<endl;
 //cerr<<"The cache key is "<<cache_key <<endl;
 
 // dump the values in the cache,keep this line to check if memory cache works.
 //mem_data_cache->dump(cerr);
+#endif
 
     }
 
@@ -536,7 +542,6 @@ handle_data_with_mem_cache(H5DataType h5_dtype, size_t total_elems,const short c
 
     HDF5DataMemCache* mem_cache_ptr = static_cast<HDF5DataMemCache*>(mem_data_cache->get(cache_key));
     if(mem_cache_ptr) {
-//cerr<<"coming to the cache hit"<<endl;
         
         BESDEBUG("h5","Cache flag: 1 small data cache, 2 large data cache genenral"
                  <<" 3 large data cache common dir, 4 large data cache real var" <<endl);
@@ -566,7 +571,6 @@ handle_data_with_mem_cache(H5DataType h5_dtype, size_t total_elems,const short c
 	}
     }
     else{ 
-//cerr<<"coming to add the cache  "<<endl;
 
         BESDEBUG("h5","Cache flag: 1 small data cache, 2 large data cache genenral"
                  <<" 3 large data cache common dir, 4 large data cache real var" <<endl);
@@ -583,7 +587,9 @@ handle_data_with_mem_cache(H5DataType h5_dtype, size_t total_elems,const short c
   	read_data_NOT_from_mem_cache(true,&buf[0]);
             
         // Create a new cache element.
+#if 0
     	//HDF5DataMemCache* new_mem_cache = new HDF5DataMemCache(varname);
+#endif
     	HDF5DataMemCache* new_mem_cache_ele = new HDF5DataMemCache();
        	new_mem_cache_ele->set_databuf(buf);
 

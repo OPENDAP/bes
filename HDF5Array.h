@@ -50,8 +50,6 @@ class HDF5Array:public libdap::Array {
     int d_num_dim;
     int d_num_elm;
     
-//    hid_t d_dset_id;
-//    hid_t d_ty_id;
     hsize_t d_memneed;
     string var_path;
     
@@ -61,7 +59,6 @@ class HDF5Array:public libdap::Array {
 
     hid_t mkstr(int size, H5T_str_t pad);
 
-    //bool m_array_of_structure(vector<char>&,bool,int,int,int*,int*,int*); // Used by read()
     bool m_array_of_structure(hid_t dsetid, std::vector<char>&values,bool has_values,int values_offset,int nelms,int* offset,int*count,int*step);
     bool m_array_in_structure();
     bool m_array_of_reference(hid_t dset_id,hid_t dtype_id);
