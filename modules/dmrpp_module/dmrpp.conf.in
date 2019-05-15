@@ -17,7 +17,7 @@ BES.module.dmrpp=@bes_modules_dir@/libdmrpp_module.so
 #-----------------------------------------------------------------------#
 # Setting the data information
 #-----------------------------------------------------------------------#
-BES.Catalog.catalog.TypeMatch+=dmrpp:.*\.(dmrpp)$;
+BES.Catalog.catalog.TypeMatch+=dmrpp:.*\.(dmrpp)(\.bz2|\.gz|\.Z)?$;
 
 #-----------------------------------------------------------------------#
 # DMR++ module specific parameters
