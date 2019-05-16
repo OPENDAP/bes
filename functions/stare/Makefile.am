@@ -31,7 +31,7 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 bin_PROGRAMS = build_sidecar opendapTest
 
 build_sidecar_SOURCES = stareMapping.cc
-build_sidecar_LDADD = $(AM_LDADD) $(H5_LDFLAGS) $(H5_LIBS) -lhdf5_cpp
+build_sidecar_LDADD = $(AM_LDADD) $(H5_LDFLAGS) $(H5_LIBS)
 opendapTest_SOURCES = opendapTest.cpp
 opendapTest_LDADD = $(AM_LDADD)
 

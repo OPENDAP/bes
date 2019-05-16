@@ -11,3 +11,11 @@ The arrays are then iterated through and the STARE index is calculated for each 
 The STARE index, iterator values, latitude, and longitude are all stored in a struct
 An unordered hash map is used - with the STARE index being the key and the struct being the value
 An array consisting of the same values is then used to create an hdf5 file 
+
+
+Example run:
+./build_sidecar -o testFile.h5 -v http://test.opendap.org/opendap/STARE/MYD09.A2019003.2040.006.2019005020913.hdf 10 20
+	-o testFile.h5 		Will save the data to the file testFile.h5
+	<url>				Data url to get the lat/lon data from
+	10 					The level of detail to use when calculating the STARE index
+	20					The build level used when calculating the STARE index
