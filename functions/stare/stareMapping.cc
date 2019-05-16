@@ -169,7 +169,11 @@ void writeHDF5(const string &filename, const vector<coords> &keyVals) {
 	// !---Must be removed if a feature from 1.10 is required to use---!
 	// kln - 5/16/19
 	hid_t fapl = H5Pcreate (H5P_FILE_ACCESS);
+#ifdef H5F_LIBVER_V18
 	H5Pset_libver_bounds (fapl, H5F_LIBVER_EARLIEST, H5F_LIBVER_V18);
+#else
+	H5Pset_libver_bounds (fapl, H5F_LIBVER_EARLIEST, H5F_LIBVER_LATEST);
+#endif
 
 	//H5Fcreate returns a file id that will be saved in variable "file"
 	file = H5Fcreate(filename.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, fapl);
