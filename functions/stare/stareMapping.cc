@@ -165,8 +165,14 @@ void writeHDF5(const string &filename, const vector<coords> &keyVals) {
 	// In other cases where the array is more than 1 dimension each dimension's length would be stored in this array.
 	hsize_t arrayLength[1] = { keyVals.size() };
 
+	//Allows us to use hdf5 1.10 generated files with hdf5 1.8
+	// !---Must be removed if a feature from 1.10 is required to use---!
+	// kln - 5/16/19
+	hid_t fapl = H5Pcreate (H5P_FILE_ACCESS);
+	H5Pset_libver_bounds (fapl, H5F_LIBVER_EARLIEST, H5F_LIBVER_V18);
+
 	//H5Fcreate returns a file id that will be saved in variable "file"
-	file = H5Fcreate(filename.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+	file = H5Fcreate(filename.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, fapl);
 
 	//The rank is used to determine the dimensions for the dataspace
 	//	Since we only use a one dimension array we can always assume the Rank should be 1
