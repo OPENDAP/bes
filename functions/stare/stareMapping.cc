@@ -22,6 +22,7 @@
 
 #include <unordered_map>
 #include <array>
+#include <memory>
 #include "hdf5.h"
 
 using namespace std;
