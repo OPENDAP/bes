@@ -44,9 +44,8 @@ HDF5CFInt32::HDF5CFInt32(const string &n, const string &d) : Int32(n, d)
 {
 }
 
-HDF5CFInt32::HDF5CFInt32(const string &n, const string &d,const string &d_f) : Int32(n, d)
+HDF5CFInt32::HDF5CFInt32(const string &n, const string &d,const string &d_f) : Int32(n, d),filename(d_f)
 {
-    filename = d_f;
 }
 HDF5CFInt32::~HDF5CFInt32()
 {

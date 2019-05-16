@@ -47,9 +47,8 @@
 using namespace std;
 using namespace libdap;
 
-HDF5Int8::HDF5Int8(const string & n, const string &vpath,const string &d):Int8(n, d)
+HDF5Int8::HDF5Int8(const string & n, const string &vpath,const string &d):Int8(n, d),var_path(vpath)
 {
-    var_path = vpath;
 }
 
 BaseType *HDF5Int8::ptr_duplicate()
@@ -60,7 +59,7 @@ BaseType *HDF5Int8::ptr_duplicate()
 bool HDF5Int8::read()
 {
     if (read_p())
-	return true;
+        return true;
 
     hid_t file_id = H5Fopen(dataset().c_str(),H5F_ACC_RDONLY,H5P_DEFAULT);
     if(file_id < 0) {
@@ -73,7 +72,6 @@ bool HDF5Int8::read()
     else
         dset_id = H5Dopen2(file_id,name().c_str(),H5P_DEFAULT);
 
-//    hid_t dset_id = H5Dopen2(file_id,name().c_str(),H5P_DEFAULT);
     if(dset_id < 0) {
         H5Fclose(file_id);
         throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype .");
@@ -81,10 +79,10 @@ bool HDF5Int8::read()
     
 
     try {
-	dods_int8 buf;
-	get_data(dset_id, (void *) &buf);
-	set_read_p(true);
-	set_value(buf);
+        dods_int8 buf;
+        get_data(dset_id, (void *) &buf);
+        set_read_p(true);
+        set_value(buf);
 
         if (H5Dclose(dset_id) < 0) {
             throw InternalErr(__FILE__, __LINE__, "Unable to close the dset.");

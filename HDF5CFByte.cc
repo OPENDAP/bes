@@ -43,9 +43,8 @@ HDF5CFByte::HDF5CFByte(const string & n, const string &d) : Byte(n, d)
 {
 }
 
-HDF5CFByte::HDF5CFByte(const string &n, const string &d,const string &d_f) : Byte(n, d)
+HDF5CFByte::HDF5CFByte(const string &n, const string &d,const string &d_f) : Byte(n, d),filename(d_f)
 {
-    filename = d_f;
 }
 
 HDF5CFByte::~HDF5CFByte()

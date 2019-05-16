@@ -32,9 +32,6 @@
 /// \author  Patrick West <pwest@ucar.edu>
 
 #include <iostream>
-
-using std::endl;
-
 #include "HDF5Module.h"
 #include <BESRequestHandlerList.h>
 #include "HDF5RequestHandler.h"
@@ -44,8 +41,9 @@ using std::endl;
 #include <BESCatalogDirectory.h>
 #include <BESCatalogList.h>
 #include <BESDebug.h>
-
 #define HDF5_CATALOG "catalog"
+
+using std::endl;
 
 void HDF5Module::initialize(const string & modname)
 {

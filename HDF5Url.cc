@@ -46,9 +46,8 @@
 using namespace std;
 using namespace libdap;
 
-HDF5Url::HDF5Url(const string &n, const string &vpath,const string &d) : Url(n, d)
+HDF5Url::HDF5Url(const string &n, const string &vpath,const string &d) : Url(n, d),var_path(vpath)
 {
-    var_path = vpath;
 }
 
 BaseType *HDF5Url::ptr_duplicate()

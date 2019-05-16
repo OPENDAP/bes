@@ -49,9 +49,8 @@
 using namespace std;
 using namespace libdap;
 
-HDF5Int32::HDF5Int32(const string & n, const string &vpath, const string &d) : Int32(n, d)
+HDF5Int32::HDF5Int32(const string & n, const string &vpath, const string &d) : Int32(n, d),var_path(vpath)
 {
-    var_path = vpath;
 }
 
 BaseType *HDF5Int32::ptr_duplicate()
@@ -70,7 +69,6 @@ bool HDF5Int32::read()
         throw InternalErr(__FILE__,__LINE__, "Fail to obtain the HDF5 file ID .");
     }
    
-//cerr<<"variable name is : "<<name() <<endl;
 
     hid_t dset_id = -1;
     if(true == is_dap4())
@@ -85,10 +83,10 @@ bool HDF5Int32::read()
     
     try {
         dods_int32 buf;
-	get_data(dset_id, (void *) &buf);
+        get_data(dset_id, (void *) &buf);
 
         set_read_p(true);
-	set_value(buf);
+        set_value(buf);
 
         // Release the handles.
         if (H5Dclose(dset_id) < 0) {

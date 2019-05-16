@@ -45,9 +45,8 @@ HDF5CFInt16::HDF5CFInt16(const string &n, const string &d) : Int16(n, d)
 
 }
 
-HDF5CFInt16::HDF5CFInt16(const string &n, const string &d,const string &d_f) : Int16(n, d)
+HDF5CFInt16::HDF5CFInt16(const string &n, const string &d,const string &d_f) : Int16(n, d),filename(d_f)
 {
-    filename = d_f;
 }
 
 HDF5CFInt16::~HDF5CFInt16()

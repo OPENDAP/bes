@@ -48,8 +48,6 @@
 class HDF5Int32:public libdap::Int32 {
 
   private:
-//    hid_t dset_id;
-//    hid_t ty_id;
     std::string var_path;
 
   public:
@@ -68,19 +66,6 @@ class HDF5Int32:public libdap::Int32 {
 
     /// See return_type function defined in h5dds.cc.  
     friend std::string return_type(hid_t datatype);
-
-    /// returns HDF5 dataset id.      
-//    hid_t get_did();
-
-    /// returns HDF5 datatype id.
-//    hid_t get_tid();
-
-    /// remembers HDF5 dataset id.      
-//    void set_did(hid_t dset);
-
-    /// remembers HDF5 datatype id.
-//    void set_tid(hid_t type);
-
 
 };
 

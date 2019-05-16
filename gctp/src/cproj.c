@@ -79,7 +79,7 @@ double msfnz (
 double con;
 
       con = eccent * sinphi;
-      return((cosphi / (sqrt (1.0 - con * con))));
+      return(cosphi / (sqrt (1.0 - con * con)));
 }
 
 /* Function to compute constant small q which is the radius of a 
@@ -238,11 +238,13 @@ long i;
         tanphi = tan(*phi);
         *c = tanphi * sqrt (1.0 - eccent * sinphi * sinphi);
         sin2ph = sin (2.0 * *phi);
+#if 0
 /*
         ml = e0 * *phi - e1 * sin2ph + e2 * sin (4.0 *  *phi);
         mlp = e0 - 2.0 * e1 * cos (2.0 *  *phi) + 4.0 * e2 *
               cos (4.0 *  *phi);
 */
+#endif
         ml = e0 * *phi - e1 * sin2ph + e2 * sin (4.0 *  *phi) - e3 * 
  	     sin (6.0 *  *phi);
         mlp = e0 - 2.0 * e1 * cos (2.0 *  *phi) + 4.0 * e2 *

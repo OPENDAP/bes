@@ -110,7 +110,7 @@ e_p6 = e_p4 *es;
  else
    {
      ind = 0; /* ellipsoid */
-     qp = (1.0 - es)* (((1.0/(1.0 - es))-(1.0/(2.0*e))*log((1.0 - e)/(1.0 + e))));
+     qp = (1.0 - es)* ((1.0/(1.0 - es))-(1.0/(2.0*e))*log((1.0 - e)/(1.0 + e)));
 
      if((fabs(lat_center - HALF_PI) <=  EPSLN ) || (fabs(lat_center + HALF_PI) <=  EPSLN ))
        {
@@ -268,7 +268,7 @@ y -= false_northing;
 	   }
 	 *lat = phi;
        }
-     
+#if 0     
      /* Approximate calculation of lat using series
 
      if (fabs(lat_center - HALF_PI) <= EPSLN)  // if Norther Polar Aspect
@@ -322,6 +322,7 @@ y -= false_northing;
 	   }
        }
      */
+#endif
    }
 
 return(OK);

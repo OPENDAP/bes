@@ -65,7 +65,6 @@ bool HDF5CFArray::read()
         return true;
     }
 
-//cerr<<"varname is "<<varname <<endl;
     // Flag to check if using large raw data cache or small raw data cache.
     short use_cache_flag = 0;
 
@@ -75,7 +74,7 @@ bool HDF5CFArray::read()
             || (cvtype == CV_FILLINDEX) ||(cvtype == CV_MODIFY) ||(cvtype == CV_SPECIAL)){
 
             if(HDF5CFUtil::cf_dap2_support_numeric_type(dtype)==true) 
-		use_cache_flag = 1;
+                use_cache_flag = 1;
         }
     }
 
@@ -90,8 +89,9 @@ bool HDF5CFArray::read()
             if(HDF5RequestHandler::get_common_cache_dirs() == false) {
 		        if(cvtype == CV_LAT_MISS || cvtype == CV_LON_MISS 
                     || (cvtype == CV_EXIST && islatlon == true)) {
+#if 0
 //cerr<<"coming to use_cache_flag =2 "<<endl;
-
+#endif
                     // Only the data with the numeric datatype DAP2 and CF support are cached.
 		            if(HDF5CFUtil::cf_dap2_support_numeric_type(dtype)==true)
 		                use_cache_flag = 2;
@@ -121,11 +121,15 @@ bool HDF5CFArray::read()
                 vector<string> cur_lrd_var_cache_file_list;
                 HDF5RequestHandler::get_lrd_var_cache_file_list(cur_lrd_var_cache_file_list);
                 if(cur_lrd_var_cache_file_list.size() >0){
+#if 0
 ///for(int i =0; i<cur_lrd_var_cache_file_list.size();i++)
 //cerr<<"lrd var cache is "<<cur_lrd_var_cache_file_list[i]<<endl;
+#endif
                     if(true == check_var_cache_files(cur_lrd_var_cache_file_list,filename,varname)){
+#if 0
 //cerr<<"varname is "<<varname <<endl;
 //cerr<<"have var cached "<<endl;
+#endif
 
                          // Only the data with the numeric datatype DAP2 and CF support are cached. 
                         if(HDF5CFUtil::cf_dap2_support_numeric_type(dtype)==true) 
@@ -222,12 +226,12 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
         string cache_fname=HDF5CFUtil::obtain_cache_fname(diskcache_prefix,filename,varname);
         cache_fpath = diskcache_dir + "/"+ cache_fname;
         
-        int total_elems = 1;
+        int temp_total_elems = 1;
         for (unsigned int i = 0; i <dimsizes.size();i++)
-            total_elems = total_elems*dimsizes[i];
+            temp_total_elems = temp_total_elems*dimsizes[i];
         short dtype_size = HDF5CFUtil::H5_numeric_atomic_type_size(dtype);
 
-        int expected_file_size = dtype_size *total_elems;
+        int expected_file_size = dtype_size *temp_total_elems;
         int fd = 0;
         HDF5DiskCache *disk_cache = HDF5DiskCache::get_instance(disk_cache_size,diskcache_dir,diskcache_prefix);
         if( true == disk_cache->get_data_from_cache(cache_fpath, expected_file_size,fd)) {
@@ -242,8 +246,10 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
             for (int i = 0; i < rank; i++)
                 end[i] = offset[i] +(count[i]-1)*step[i];
             size_t offset_last = INDEX_nD_TO_1D(dimsizes,end);
+#if 0
 //cerr<<"offset_1d is "<<offset_1st <<endl;
 //cerr<<"offset_last is "<<offset_last <<endl;
+#endif
             size_t total_read = dtype_size*(offset_last-offset_1st+1);
             
             off_t fpos = lseek(fd,dtype_size*offset_1st,SEEK_SET);
@@ -313,7 +319,6 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
             H5Sclose(dspace);
             H5Dclose(dsetid); 
             HDF5CFUtil::close_fileid(fileid,pass_fileid);
-            //H5Fclose(fileid);
             ostringstream eherr;
             eherr << "The creation of the memory space of the  HDF5 dataset " << varname
                   << " fails. "<<endl;
@@ -461,7 +466,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
 
             }
-            //set_value ((dods_byte *) &val[0], nelms);
+            // Not sure if "set_value ((dods_byte *) &val[0], nelms);" works.
             val2buf(&val[0]);
             set_read_p(true);
 
@@ -887,8 +892,6 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
     ssize_t ret_read_val = -1;
     vector<char>buf;
 
-    //char* buf;
-    //buf = malloc(total_read);
     buf.resize(total_read);
     ret_read_val = HDF5CFUtil::read_buffer_from_file(fd,(void*)&buf[0],total_read);
     disk_cache->unlock_and_close(cache_fpath);
@@ -902,7 +905,6 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
             nele_to_read *=cd_count[i];
 
         if(nele_to_read == (total_read/dtype_size)) {
-//cerr<<"use the buffer" <<endl;
             val2buf(&buf[0]);
             set_read_p(true);
         }
@@ -1302,10 +1304,10 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
                 default:
                     throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
 
-            }// end switch(dtype)
-        }// end else (stride is not 1)
+            }// "end switch(dtype)"
+        }// "end else (stride is not 1)"
         return true;
-    }// end else(full_read = true)
+    }// "end else(full_read = true)"
 }
 
 
@@ -1652,7 +1654,9 @@ BaseType* HDF5CFArray::h5cfdims_transform_to_dap4(D4Group *grp) {
             // The following block is fine, but to avoid the complaint from sonarcloud.
             // Use a bool.
             bool d4_dim_null = ((d4_dim==NULL)?true:false);
+#if 0
             //if(d4_dim == NULL) {
+#endif
             // Not find this dimension in any of the ancestor groups, add it to this group.
             if(d4_dim_null == true) {
 

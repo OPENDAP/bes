@@ -68,7 +68,6 @@ bool check_eos5(hid_t file_id) {
 
             string msg = "cannot open the HDF5 group  ";
             msg += eos5_check_group;
-//            H5Fclose(file_id);
             throw InternalErr(__FILE__, __LINE__, msg);
         }
 
@@ -99,7 +98,6 @@ bool check_eos5(hid_t file_id) {
                 msg += eos5_dataset;
                 msg +=" exists ";
                 H5Gclose(eos_group_id);
-//                H5Fclose(file_id);
                 throw InternalErr(__FILE__, __LINE__, msg);
             }
         }
@@ -110,7 +108,6 @@ bool check_eos5(hid_t file_id) {
             msg += eos5_check_attr;
             msg +=" exists ";
             H5Gclose(eos_group_id);
- //           H5Fclose(file_id);
             throw InternalErr(__FILE__, __LINE__, msg);
         }
     }
@@ -121,7 +118,9 @@ bool check_eos5(hid_t file_id) {
         string msg = "Fail to determine if the HDF5 group  ";
         msg += eos5_check_group;
         msg +=" exists ";
+#if 0
 //        H5Fclose(file_id);
+#endif
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 }

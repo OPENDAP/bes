@@ -60,7 +60,6 @@ class HDF5GMCFMissLLArray:public HDF5BaseArray {
     }
     virtual libdap::BaseType *ptr_duplicate();
     virtual bool read();
-    //int format_constraint (int *cor, int *step, int *edg);
     
 
     private:

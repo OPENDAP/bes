@@ -448,7 +448,8 @@ string HDF5BaseArray::
 check_str_sect_in_list(const vector<string>&str_list, const string &cur_str,const char sep) {
 
     string ret_str;
-    string::size_type start = 0, end = 0;
+    string::size_type start = 0;
+    string::size_type end = 0;
     // Obtain the ret_str value
     // The cur_str will be chopped into tokens separated by sep.
     while ((end = cur_str.find(sep, start)) != string::npos) {

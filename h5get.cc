@@ -767,7 +767,9 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
                 bool is_a_fin = isfinite(attr_val);
                 gp.tdp = (double *) sm_buf;
                 int ll = snprintf(gps, 30, "%.17g", *(gp.tdp + loc));
+#if 0
                 //int ll = strlen(gps);
+#endif
                 if (!strchr(gps, '.') && !strchr(gps, 'e')&& !strchr(gps,'E')
                    && (true == is_a_fin)) {
                     gps[ll++] = '.';
@@ -1104,7 +1106,7 @@ Structure *Get_structure(const string &varname,const string &vpath,
             if (memb_name == NULL){
                 throw InternalErr(__FILE__, __LINE__, "cannot retrieve the name of the member");
             }
-            if ((memb_cls < 0) | (memb_type < 0)) {
+            if ((memb_cls < 0) || (memb_type < 0)) {
                 throw InternalErr(__FILE__, __LINE__,
                                   string("Type mapping error for ")
                                   + string(memb_name) );

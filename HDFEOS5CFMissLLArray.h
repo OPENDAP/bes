@@ -38,7 +38,6 @@
 
 // DODS includes
 #include "HDF5CF.h"
-//#include <Array.h>
 #include "HDF5BaseArray.h"
 #include "HDF5DiskCache.h"
 
@@ -73,7 +72,6 @@ class HDFEOS5CFMissLLArray:public HDF5BaseArray {
     virtual void read_data_NOT_from_mem_cache(bool add_cache,void*buf);
     void read_data_NOT_from_mem_cache_geo(bool add_cache,void*buf);
     std::string  obtain_ll_cache_name();
-    //int format_constraint (int *cor, int *step, int *edg);
 
     private:
         int rank;

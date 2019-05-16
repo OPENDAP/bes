@@ -47,9 +47,8 @@
 using namespace std;
 using namespace libdap;
 
-HDF5Int64::HDF5Int64(const string & n, const string &vpath, const string &d):Int64(n, d)
+HDF5Int64::HDF5Int64(const string & n, const string &vpath, const string &d):Int64(n, d),var_path(vpath)
 {
-    var_path = vpath;
 }
 
 BaseType *HDF5Int64::ptr_duplicate()

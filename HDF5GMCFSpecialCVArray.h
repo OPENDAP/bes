@@ -54,7 +54,6 @@ public:
     }
     virtual libdap::BaseType *ptr_duplicate();
     virtual bool read();
-    //int format_constraint (int *cor, int *step, int *edg);
 
 private:
     H5DataType dtype;

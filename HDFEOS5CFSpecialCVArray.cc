@@ -80,19 +80,17 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
 
     }
 
-   // hid_t fileid = -1;
     if(false == check_pass_fileid_key) {
-    if ((fileid = H5Fopen(filename.c_str(),H5F_ACC_RDONLY,H5P_DEFAULT))<0) {
+        if ((fileid = H5Fopen(filename.c_str(),H5F_ACC_RDONLY,H5P_DEFAULT))<0) {
 
-        ostringstream eherr;
-        eherr << "HDF5 File " << filename 
-              << " cannot be opened. "<<endl;
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
-    }
+            ostringstream eherr;
+            eherr << "HDF5 File " << filename 
+                  << " cannot be opened. "<<endl;
+            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        }
     }
     string cv_name = HDF5CFUtil::obtain_string_after_lastslash(varname);
     if ("" == cv_name) {
-     //   H5Fclose(fileid);
         throw InternalErr (__FILE__, __LINE__, "Cannot obtain TES CV attribute");
     }
 
@@ -101,7 +99,6 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
     size_t cv_name_sep_pos = cv_name.find_first_of('_',0);  
 
     if (string::npos == cv_name_sep_pos) {
-      //  H5Fclose(fileid);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         throw InternalErr (__FILE__, __LINE__, "Cannot obtain TES CV attribute");
     }
@@ -110,7 +107,6 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
     htri_t swath_link_exist = H5Lexists(fileid,group_name.c_str(),H5P_DEFAULT);
 
     if (swath_link_exist <= 0) {
-       // H5Fclose(fileid);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         throw InternalErr (__FILE__, __LINE__, "The TES swath link doesn't exist");
     }
@@ -118,21 +114,18 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
     htri_t swath_exist = H5Oexists_by_name(fileid,group_name.c_str(),H5P_DEFAULT); 
     if (swath_exist <= 0) {
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        //H5Fclose(fileid);
         throw InternalErr (__FILE__, __LINE__, "The TES swath doesn't exist");
     }
 
     htri_t cv_attr_exist = H5Aexists_by_name(fileid,group_name.c_str(),cv_attr_name.c_str(),H5P_DEFAULT);
     if (cv_attr_exist <= 0) {
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        //H5Fclose(fileid);
         throw InternalErr (__FILE__, __LINE__, "The TES swath CV attribute doesn't exist");
     }
 
     hid_t cv_attr_id = H5Aopen_by_name(fileid,group_name.c_str(),cv_attr_name.c_str(),H5P_DEFAULT,H5P_DEFAULT);
     if (cv_attr_id <0) {
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        //H5Fclose(fileid);
         throw InternalErr (__FILE__, __LINE__, "Cannot obtain the TES CV attribute id");
     }
 
@@ -142,7 +135,6 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
         msg += cv_attr_name;
         H5Aclose(cv_attr_id);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        //H5Fclose(fileid);
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
@@ -153,7 +145,6 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
         H5Tclose(attr_type);
         H5Aclose(cv_attr_id);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        //H5Fclose(fileid);
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
@@ -165,7 +156,6 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
         H5Aclose(cv_attr_id);
         H5Sclose(attr_space);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        //H5Fclose(fileid);
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
@@ -176,7 +166,6 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
         H5Aclose(cv_attr_id);
         H5Sclose(attr_space);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        //H5Fclose(fileid);
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
@@ -187,7 +176,6 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
         H5Aclose(cv_attr_id);
         H5Sclose(attr_space);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        //H5Fclose(fileid);
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
@@ -199,7 +187,6 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
         H5Aclose(cv_attr_id);
         H5Sclose(attr_space);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        //H5Fclose(fileid);
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
@@ -209,7 +196,6 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
         H5Aclose(cv_attr_id);
         H5Sclose(attr_space);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        //H5Fclose(fileid);
         throw InternalErr(__FILE__,__LINE__,
                          "Number of elements must be greater than 0");
     }
@@ -232,8 +218,7 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
         H5Aclose(cv_attr_id);
         H5Sclose(attr_space);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        //H5Fclose(fileid);
-        //throw InternalErr(__FILE__, __LINE__, msg);
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
  
     
@@ -267,8 +252,6 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
     H5Aclose(cv_attr_id);
     H5Sclose(attr_space);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-    //H5Fclose(fileid);
-
  
     return;
 

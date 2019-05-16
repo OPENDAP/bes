@@ -27,13 +27,19 @@ private:
     std::vector <char>  databuf;
 public:
     HDF5DataMemCache() { }
+#if 0
     //HDF5DataMemCache(const string &name) {varname = name; }
     //HDF5DataMemCache(const HDF5DataMemCache & h5datacache);
     //const string get_varname() {return varname;}
+#endif
     size_t get_var_buf_size() {return databuf.size();}
+#if 0
     //void get_var_buf(vector<char>&var_buf) { var_buf = databuf;}
+#endif
     void* get_var_buf() { return &databuf[0];}
+#if 0
     //void set_varname(const string& name) {varname = name; }
+#endif
     void set_databuf(std::vector<char> &buf){databuf = buf;}
     virtual ~HDF5DataMemCache() { };
     virtual void dump(std::ostream &strm) const;

@@ -863,7 +863,9 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
 
         // Get the corresponding DAP data type of the HDF5 datatype.
         // The following line doesn't work in HDF5 1.10.
+#if 0
         //hid_t ty_id = attr_inst.type;
+#endif
         hid_t ty_id = H5Aget_type(attr_id);
         string dap_type = get_dap_type(ty_id,true);
 

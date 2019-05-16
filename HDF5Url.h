@@ -48,8 +48,6 @@
 class HDF5Url:public libdap::Url {
 
   private:
-//    hid_t dset_id;
-//    hid_t ty_id;
 
     std::string var_path;
 

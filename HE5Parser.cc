@@ -175,7 +175,7 @@ void HE5Parser::print()
         cout <<"Grid sphere= "<<g.sphere<<endl;
 
         cout<<"Grid projection parameters are "<<endl;
-        for(int j= 0;j<13;j++) 
+        for(j= 0;j<13;j++) 
             cout<<g.param[j]<<endl;
     }
     

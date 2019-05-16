@@ -116,7 +116,6 @@ struct HDF5CFUtil {
                static void Split_helper(std::vector<std::string>&tokens, const std::string &text,const char sep);
 
                // Parse GPM Level 3 GridHeaders
-               //static void parser_trmm_v7_gridheader(int& latsize, int&lonsize, float& lat_start, float& lon_start, bool &sw_origin, bool & cr_reg);
                static void parser_gpm_l3_gridheader(const std:: vector<char>&value, int& latsize, int&lonsize, 
                                                     float& lat_start, float& lon_start, float& lat_res, float& lon_res, bool check_reg_orig);
 
@@ -143,7 +142,7 @@ struct HDF5CFUtil {
                static std::string get_int_str(int x);
 
 
-               
+#if 0               
                //static int GDij2ll(int projcode, int zonecode, double projparm[],
                //                   int spherecode, int xdimsize, int ydimsize,
                //                   double upleftpt[], double lowrightpt[],
@@ -152,7 +151,7 @@ struct HDF5CFUtil {
 
                //static size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
                //                           const std::vector < size_t > &pos);
-
+#endif
 #if 0
                template<typename T>  int subset(
                                                 const T input[],
@@ -187,8 +186,6 @@ static inline std::string get_errno() {
 }
 
 
-//size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
- //                                const std::vector < size_t > &pos);
 
 #if 0
 {
@@ -217,9 +214,10 @@ static inline std::string get_errno() {
                     double upleftpt[], double lowrightpt[],
                     int npnts, int row[], int col[],
                     double longitude[], double latitude[], EOS5GridPRType pixcen, EOS5GridOriginType pixcnr);
-
+#if 0
 //extern int inv_init(int insys, int inzone, double *inparm, int indatum, char *fn27, char *fn83, int *iflg, int (*inv_trans[])(double, double, double*, double*));
 
 //extern int for_init(int outsys, int outzone, double *outparm, int outdatum, char *fn27, char *fn83, int *iflg, int (*for_trans[])(double, double, double *, double *));
+#endif
        double HE5_EHconvAng(double inAngle, int code);
 #endif

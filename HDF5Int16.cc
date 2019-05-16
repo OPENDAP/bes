@@ -57,9 +57,8 @@ typedef struct s2_int16_t {
 
 #endif
 
-HDF5Int16::HDF5Int16(const string & n, const string &vpath,const string &d) : Int16(n, d)
+HDF5Int16::HDF5Int16(const string & n, const string &vpath,const string &d) : Int16(n, d),var_path(vpath)
 {
-    var_path = vpath;
 }
 
 BaseType *HDF5Int16::ptr_duplicate()
@@ -71,7 +70,7 @@ BaseType *HDF5Int16::ptr_duplicate()
 bool HDF5Int16::read()
 {
     if (read_p())
-	return true;
+     return true;
 
     hid_t file_id = H5Fopen(dataset().c_str(),H5F_ACC_RDONLY,H5P_DEFAULT);
     if(file_id < 0) {
@@ -107,34 +106,31 @@ bool HDF5Int16::read()
 
     try {
       if(false == is_dap4()) {
-        if (1 == H5Tget_size(memtype) && H5T_SGN_2 == H5Tget_sign(memtype)) {
-	    dods_int16 buf;
-	    signed char buf2; // wrong, needs to be corrected with signed int8 buffer.
-	    get_data(dset_id, (void *) &buf2);
-//cerr<<"buf2 is "<<buf2 <<endl;
-	    buf = (short) buf2;
-//cerr<<"buf is "<<buf <<endl;
-	    set_read_p(true);
-	    set_value(buf);
-            //val2buf(&buf);
+         if (1 == H5Tget_size(memtype) && H5T_SGN_2 == H5Tget_sign(memtype)) {
+            dods_int16 buf;
+            signed char buf2; // Needs to be corrected with signed int8 buffer.
+            get_data(dset_id, (void *) &buf2);
+            buf = (short) buf2;
+            set_read_p(true);
+            set_value(buf);
 
         }
 
         else if (get_dap_type(memtype,false) == "Int16") {
-    	    dods_int16 buf;
-	    get_data(dset_id, (void *) &buf);
+             dods_int16 buf;
+             get_data(dset_id, (void *) &buf);
 
-	    set_read_p(true);
-	    set_value(buf);
+             set_read_p(true);
+             set_value(buf);
 
         }
       }
       else {
-    	    dods_int16 buf;
-	    get_data(dset_id, (void *) &buf);
+         dods_int16 buf;
+         get_data(dset_id, (void *) &buf);
 
-	    set_read_p(true);
-	    set_value(buf);
+         set_read_p(true);
+         set_value(buf);
 
       }
          

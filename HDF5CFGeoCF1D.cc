@@ -36,14 +36,15 @@ bool HDF5CFGeoCF1D::read()
 
     //Based on the HFRHANDLER-303, the number of element represents cells according
     //to the data scientist at LP DAAC.
+    // Use meter instead of km. KY 2016-04-22
+#if 0
     //double step_v = (evalue - svalue)/((tnumelm-1)*1000);
-    // Use meter instead of km. KY 2016-04-22
-    //double step_v = (evalue - svalue)/(tnumelm*1000);
-    double step_v = (evalue - svalue)/tnumelm;
-//    double newsvalue = svalue/1000;
-//
-    // Use meter instead of km. KY 2016-04-22
+    //    double newsvalue = svalue/1000;
     //val[0] = svalue/1000;
+    //double step_v = (evalue - svalue)/(tnumelm*1000);
+#endif
+    
+    double step_v = (evalue - svalue)/tnumelm;
     val[0] = svalue;
     for(int i = 1;i<tnumelm; i++)
         val[i] = val[i-1] + step_v;

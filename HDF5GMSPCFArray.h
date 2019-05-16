@@ -62,7 +62,6 @@ class HDF5GMSPCFArray:public HDF5BaseArray {
         }
         virtual libdap::BaseType *ptr_duplicate();
         virtual bool read();
-        //int format_constraint (int *cor, int *step, int *edg);
         virtual void read_data_NOT_from_mem_cache(bool add_cache,void*buf);
 
 

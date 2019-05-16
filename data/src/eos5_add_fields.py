@@ -7,7 +7,7 @@ def add_extra_field(fname,varname,varsize):
     file = h5py.File (fname, 'a')
     # initialize temperature array
     var_array = numpy.arange(varsize)
-    temp_dset = file.create_dataset (varname, data=var_array,
+    file.create_dataset (varname, data=var_array,
                                      dtype=numpy.int32)
     
     file.close
@@ -18,8 +18,6 @@ def add_grid_dim_info(fname,xdim,ydim,var1name,var2name):
     
     #obtain temperature array
     v1dset = file[var1name]
-    ydimsize = v1dset.shape[0]
-    xdimsize = v1dset.shape[1]
     
     file[xdim].dims.create_scale(file[xdim])
     file[ydim].dims.create_scale(file[ydim])
@@ -34,11 +32,11 @@ def add_grid_dim_info(fname,xdim,ydim,var1name,var2name):
 def add_grid_mapping_info(fname,v1path,v1name,projv1name,v2path,v2name,projv2name):
     file = h5py.File (fname, 'a')
     grp1 = file[v1path];
-    projv1dset = grp1.create_dataset(projv1name,(),dtype=numpy.int8);
+    grp1.create_dataset(projv1name,(),dtype=numpy.int8);
     v1dset = grp1[v1name];
     v1dset.attrs["grid_mapping"]=projv1name;
     grp2 = file[v2path];
-    projv2dset = grp2.create_dataset(projv2name,(),dtype=numpy.int8);
+    grp2.create_dataset(projv2name,(),dtype=numpy.int8);
     v2dset = grp2[v2name];
     v2dset.attrs["grid_mapping"]=v2path+"/"+projv2name;
     file.close
@@ -48,7 +46,6 @@ def add_swath_dim_info(file,fname,xdimname,ydimname,zdimname,v1name):
     
     # obtain temperature array
     v1dset = file[v1name]
-    zdimsize = v1dset.shape[0]
     ydimsize = v1dset.shape[1]
     xdimsize = v1dset.shape[2]
     file[zdimname].dims.create_scale(file[zdimname])
@@ -70,12 +67,7 @@ def add_swath_dim_info(file,fname,xdimname,ydimname,zdimname,v1name):
 
 def add_swath_coordinates(file,v1path,v1name,v2path,v2name,geo1path,geo2path):
     grp1 = file[v1path]
-    v1dset = grp1[v1name]
-    #v1dset.attrs["coordinates"]=geo1path+"/"+"Latitude"+" "+geo1path+"/"+"Longitude"+" "+geo1path+"/"+"Pressure";
     grp2 = file[v2path];
-    v2dset = grp2[v2name];
-    #v2dset.attrs["coordinates"]=v2path+"/"+"Latitude"+" "+v2path+"/"+"Longitude";
-    #v2dset.attrs["coordinates"]=geo2path+"/"+"Latitude"+" "+geo2path+"/"+"Longitude"+" "+geo2path+"/"+"Pressure";
     return
 
 def attach_2d_scales(file,swath_geov_2d_list,dim0name,dim1name):

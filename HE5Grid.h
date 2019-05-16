@@ -17,7 +17,6 @@ struct HE5Grid {
 
     /// The bottom coordinate value of a Grid
     double point_lower;
-    //float  point_lower;
     /// The top coordinate value of a Grid
     double point_upper;
     /// The leftmost coordinate value of a Grid

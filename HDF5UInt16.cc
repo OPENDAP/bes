@@ -46,9 +46,8 @@
 using namespace std;
 using namespace libdap;
 
-HDF5UInt16::HDF5UInt16(const string & n, const string &vpath, const string &d) : UInt16(n, d)
+HDF5UInt16::HDF5UInt16(const string & n, const string &vpath, const string &d) : UInt16(n, d),var_path(vpath)
 {
-    var_path = vpath;
 }
 
 BaseType *HDF5UInt16::ptr_duplicate()

@@ -231,7 +231,7 @@ bool HDF5CFStr::read()
         }
 
         string total_string(strval.begin(),strval.end());
-        strval.clear();//release some memory;
+        strval.clear();//release some memory
 
         // Need to trim the null parameters 
         size_t temp_pos;

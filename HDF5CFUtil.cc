@@ -62,7 +62,7 @@ HDF5CFUtil:: H5type_to_H5DAPtype(hid_t h5_type_id)
             size = H5Tget_size(h5_type_id);
             sign = H5Tget_sign(h5_type_id);
 
-	    if (size == 1) { // Either signed char or unsigned char
+            if (size == 1) { // Either signed char or unsigned char
                 if (sign == H5T_SGN_2) 
                     return H5CHAR; 
                 else 
@@ -182,8 +182,9 @@ bool HDF5CFUtil::use_data_mem_cache(H5DataType h5type, CVType cvtype, const stri
 bool HDF5CFUtil::cf_strict_support_type(H5DataType dtype) {
     if ((H5UNSUPTYPE == dtype)||(H5REFERENCE == dtype)
         || (H5COMPOUND == dtype) || (H5ARRAY == dtype))
+        // Important comments for the future work. 
         // Try to suport 64-bit integer for DAP4 CF, check the starting code at get_dmr_64bit_int()
-        //|| (H5INT64 == dtype)    ||(H5UINT64 == dtype))
+        //"|| (H5INT64 == dtype)    ||(H5UINT64 == dtype))"
         return false;
     else 
         return true;
@@ -352,10 +353,6 @@ void HDF5CFUtil::parser_gpm_l3_gridheader(const vector<char>& value,
                                           float& lat_res, float& lon_res,
                                           bool check_reg_orig ){
 
-    //bool cr_reg = false;
-    //bool sw_origin = true;
-    //float lat_res = 1.;
-    //float lon_res = 1.;
     float lat_north = 0.;
     float lat_south = 0.;
     float lon_east = 0.;
@@ -606,17 +603,13 @@ string HDF5CFUtil::get_int_str(int x) {
          num_digit++;
       if(x<=0)
          num_digit++;
-      //char buf[num_digit];
       vector<char> buf;
       buf.resize(num_digit);
       snprintf(&buf[0],num_digit,"%d",x);
-      //sprintf(buf,"%d",x);
       str.assign(&buf[0]);
-      //str.assign(buf);
 
    }      
 
-//cerr<<"int str is "<<str<<endl;
    return str;
 
 }
@@ -652,8 +645,6 @@ string HDF5CFUtil::get_double_str(double x,int total_digit,int after_point) {
     else 
        str.push_back('0');
         
-//std::cerr<<"str length is "<<str.size() <<std::endl;
-//std::cerr<<"str is "<<str <<std::endl;
     return str;
 
 }
@@ -683,7 +674,6 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
     double          scaleY   = 0.;  /* Y scale factor                       */
     double          lonrad   = 0.;  /* Longitude in radians of point        */
     double          latrad   = 0.;  /* Latitude in radians of point         */
-    //double          HE5_EHconvAng(double, int);/* Angle conversion routine  */
     double          xMtr0, yMtr0, xMtr1, yMtr1;
 
 
@@ -691,107 +681,109 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
     /* Compute adjustment of position within pixel */
   /* ------------------------------------------- */
   if (pixcen == HE5_HDFE_CENTER)
-    {
+  {
       /* Pixel defined at center */
       /* ----------------------- */
       pixadjX = 0.5;
       pixadjY = 0.5;
-    }
+  }
   else
-    {
+  {
       switch (pixcnr)
-        {
-		  
+      {
+  
         case HE5_HDFE_GD_UL:
-	  {
-	    /* Pixel defined at upper left corner */
-	    /* ---------------------------------- */
-	    pixadjX = 0.0;
-	    pixadjY = 0.0;
-	    break;
-	  }
+        {
+            /* Pixel defined at upper left corner */
+            /* ---------------------------------- */
+            pixadjX = 0.0;
+            pixadjY = 0.0;
+            break;
+          }
 
         case HE5_HDFE_GD_UR:
-	  {
-	    /* Pixel defined at upper right corner */
-	    /* ----------------------------------- */
-	    pixadjX = 1.0;
-	    pixadjY = 0.0;
-	    break;
-	  }
+        {
+            /* Pixel defined at upper right corner */
+            /* ----------------------------------- */
+            pixadjX = 1.0;
+            pixadjY = 0.0;
+            break;
+        }
 
         case HE5_HDFE_GD_LL:
-	  {
-	    /* Pixel defined at lower left corner */
-	    /* ---------------------------------- */
-	    pixadjX = 0.0;
-	    pixadjY = 1.0;
-	    break;
-	  }
+        {
+            /* Pixel defined at lower left corner */
+            /* ---------------------------------- */
+            pixadjX = 0.0;
+            pixadjY = 1.0;
+            break;
+        }
 
         case HE5_HDFE_GD_LR:
-	  {
-	    /* Pixel defined at lower right corner */
-	    /* ----------------------------------- */
-	    pixadjX = 1.0;
-	    pixadjY = 1.0;
-	    break;
-	  }
+        {
 
-	default:
-	  {
+            /* Pixel defined at lower right corner */
+            /* ----------------------------------- */
+            pixadjX = 1.0;
+            pixadjY = 1.0;
+            break;
+        }
+
+        default:
+        {
             throw InternalErr(__FILE__,__LINE__,"Unknown pixel corner to retrieve lat/lon from a grid.");
-	  }
         }
     }
+  }
 
 
 
   // If projection not GEO or BCEA call GCTP initialization routine 
   if (projcode != HE5_GCTP_GEO && projcode != HE5_GCTP_BCEA)
-    {
+  {
 
       scaleX = (lowrightpt[0] - upleftpt[0]) / xdimsize;
       scaleY = (lowrightpt[1] - upleftpt[1]) / ydimsize;
       string eastFile = HDF5RequestHandler::get_stp_east_filename();
       string northFile = HDF5RequestHandler::get_stp_north_filename();
-      //string northFile;
 
       hinv_init(projcode, zonecode, projparm, spherecode, (char*)eastFile.c_str(), (char*)northFile.c_str(), 
-	       &errorcode, hinv_trans);
+       &errorcode, hinv_trans);
 
 
       /* Report error if any */
       /* ------------------- */
       if (errorcode != 0)
-        {
+      {
             throw InternalErr(__FILE__,__LINE__,"GCTP hinv_init Error to retrieve lat/lon from a grid.");
 
-        }
+      }
       else
-        {
-	  /* For each point ... */
-	  /* ------------------ */
-	  for (int i = 0; i < npnts; i++)
+      {
+        /* For each point ... */
+        /* ------------------ */
+        for (int i = 0; i < npnts; i++)
             {
-	      /* Convert from meters to lon/lat (radians) using GCTP */
-	      /* --------------------------------------------------- */
-	      /*errorcode = hinv_trans[projcode] ((col[i] + pixadjX) * scaleX + upleftpt[0], (row[i] + pixadjY) * scaleY + upleftpt[1], &lonrad, &latrad);*/
+        /* Convert from meters to lon/lat (radians) using GCTP */
+        /* --------------------------------------------------- */
+#if 0
+      /*errorcode = hinv_trans[projcode] ((col[i] + pixadjX) * scaleX + upleftpt[0], (row[i] + pixadjY) * scaleY + upleftpt[1], &lonrad, &latrad);*/
+#endif
 
-	      /* modified previous line to the following for the linux64 with -fPIC in cmpilation. 
-		 Whithout the change col[] and row[] values are ridiclous numbers, resulting a strange 
-		 number (very big) for arg1 and arg2. But with (int) typecast they become normal integers,
-		 resulting in a acceptable values for arg1 and arg2. The problem was discovered during the
-		 lat/lon geolocating of an hdfeos5 file with 64-bit hadview plug-in, developped for linux64.
-	      */
-	      arg1 = (((int)col[i] + pixadjX) * scaleX + upleftpt[0]);
-	      arg2 = (((int)row[i] + pixadjY) * scaleY + upleftpt[1]);
-	      errorcode = hinv_trans[projcode] (arg1, arg2, &lonrad, &latrad);
+       /* modified previous line to the following for the linux64 with -fPIC in cmpilation. 
+ Whithout the change col[] and row[] values are ridiclous numbers, resulting a strange 
+ number (very big) for arg1 and arg2. But with (int) typecast they become normal integers,
+ resulting in a acceptable values for arg1 and arg2. The problem was discovered during the
+ lat/lon geolocating of an hdfeos5 file with 64-bit hadview plug-in, developped for linux64.
+      */
+        arg1 = (((int)col[i] + pixadjX) * scaleX + upleftpt[0]);
+        arg2 = (((int)row[i] + pixadjY) * scaleY + upleftpt[1]);
+        errorcode = hinv_trans[projcode] (arg1, arg2, &lonrad, &latrad);
 
-	      /* Report error if any */
-	      /* ------------------- */
-	      if (errorcode != 0)
-		{
+        /* Report error if any */
+        /* ------------------- */
+        if (errorcode != 0)
+        {
 
             if(projcode == HE5_GCTP_LAMAZ) {
                 longitude[i] = 1.0e51;
@@ -800,26 +792,26 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
             else 
                throw InternalErr(__FILE__,__LINE__,"GCTP hinv_trans Error to retrieve lat/lon from a grid.");
 
-		}
-	      else
-		{
+        }
+        else
+        {
 
-		  /* Convert from radians to decimal degrees */
-		  /* --------------------------------------- */
-		  longitude[i] = HE5_EHconvAng(lonrad, HE5_HDFE_RAD_DEG);
-		  latitude[i]  = HE5_EHconvAng(latrad, HE5_HDFE_RAD_DEG);
+            /* Convert from radians to decimal degrees */
+            /* --------------------------------------- */
+            longitude[i] = HE5_EHconvAng(lonrad, HE5_HDFE_RAD_DEG);
+            latitude[i]  = HE5_EHconvAng(latrad, HE5_HDFE_RAD_DEG);
 
-		}
-	    }
-	}
+        }
+      }
     }
-    else if (projcode == HE5_GCTP_BCEA)
-    {
+  }
+  else if (projcode == HE5_GCTP_BCEA)
+  {
       /* BCEA projection */
       /* -------------- */
  
       /* Note: upleftpt and lowrightpt are in packed degrees, so they
-	 must be converted to meters for this projection */
+ must be converted to meters for this projection */
 
       /* Initialize forward transformation */
       /* --------------------------------- */
@@ -828,9 +820,9 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
       /* Report error if any */
       /* ------------------- */
       if (errorcode != 0)
-	{
+      {
           throw InternalErr(__FILE__,__LINE__,"GCTP hfor_init Error to retrieve lat/lon from a grid.");
-	}
+      }
 
       /* Convert upleft and lowright X coords from DMS to radians */
       /* -------------------------------------------------------- */
@@ -843,27 +835,27 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
       latrad = HE5_EHconvAng(lowrightpt[1], HE5_HDFE_DMS_RAD);
 
       /* Convert form lon/lat to meters(or whatever unit is, i.e unit
-	 of r_major and r_minor) using GCTP */
+          of r_major and r_minor) using GCTP */
       /* ----------------------------------------- */
       errorcode = hfor_trans[projcode] (lonrad0, latrad0, &xMtr0, &yMtr0);
 
       /* Report error if any */
       if (errorcode != 0)
-	{
+      {
           throw InternalErr(__FILE__,__LINE__,"GCTP hfor_trans Error to retrieve lat/lon from a grid.");
 
-	}
+      }
 
       /* Convert from lon/lat to meters or whatever unit is, i.e unit
-	 of r_major and r_minor) using GCTP */
+         of r_major and r_minor) using GCTP */
       /* ----------------------------------------- */
       errorcode = hfor_trans[projcode] (lonrad, latrad, &xMtr1, &yMtr1);
 
       /* Report error if any */
       if (errorcode != 0)
-	{
+      {
           throw InternalErr(__FILE__,__LINE__,"GCTP hfor_trans Error to retrieve lat/lon from a grid.");
-	}
+      }
 
       /* Compute x scale factor */
       /* ---------------------- */
@@ -879,43 +871,45 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
       /* Report error if any */
       /* ------------------- */
       if (errorcode != 0)
-	{
+      {
           throw InternalErr(__FILE__,__LINE__,"GCTP hinv_init Error to retrieve lat/lon from a grid.");
-	}
+      }
       /* For each point ... */
       /* ------------------ */
       for (int i = 0; i < npnts; i++)
-	{
-	  /* Convert from meters (or any units that r_major and
-	     r_minor has) to lon/lat (radians) using GCTP */
-	  /* --------------------------------------------------- */
-	  errorcode = hinv_trans[projcode] (
-					   (col[i] + pixadjX) * scaleX + xMtr0,
-					   (row[i] + pixadjY) * scaleY + yMtr0,
-					   &lonrad, &latrad);
+      {
+        /* Convert from meters (or any units that r_major and
+           r_minor has) to lon/lat (radians) using GCTP */
+        /* --------------------------------------------------- */
+        errorcode = hinv_trans[projcode] (
+                       (col[i] + pixadjX) * scaleX + xMtr0,
+                       (row[i] + pixadjY) * scaleY + yMtr0,
+                       &lonrad, &latrad);
 
-	  /* Report error if any */
-	  /* ------------------- */
-	  if (errorcode != 0)
-	    {
+        /* Report error if any */
+        /* ------------------- */
+        if (errorcode != 0)
+        {
+#if 0
               /* status = -1;
-		 sprintf(errbuf, "GCTP Error: %li\n", errorcode);
-		 H5Epush(__FILE__, "HE5_GDij2ll", __LINE__, H5E_ARGS, H5E_BADVALUE , errbuf);
-		 HE5_EHprint(errbuf, __FILE__, __LINE__);
+ sprintf(errbuf, "GCTP Error: %li\n", errorcode);
+ H5Epush(__FILE__, "HE5_GDij2ll", __LINE__, H5E_ARGS, H5E_BADVALUE , errbuf);
+ HE5_EHprint(errbuf, __FILE__, __LINE__);
                  return (status); */
-	      longitude[i] = 1.0e51; /* PGSd_GCT_IN_ERROR */
-	      latitude[i] = 1.0e51; /* PGSd_GCT_IN_ERROR */
-	    }
+#endif
+          longitude[i] = 1.0e51; /* PGSd_GCT_IN_ERROR */
+          latitude[i] = 1.0e51; /* PGSd_GCT_IN_ERROR */
+        }
 
-	  /* Convert from radians to decimal degrees */
-	  /* --------------------------------------- */
-	  longitude[i] = HE5_EHconvAng(lonrad, HE5_HDFE_RAD_DEG);
-	  latitude[i] = HE5_EHconvAng(latrad, HE5_HDFE_RAD_DEG);
-	}
+        /* Convert from radians to decimal degrees */
+        /* --------------------------------------- */
+        longitude[i] = HE5_EHconvAng(lonrad, HE5_HDFE_RAD_DEG);
+        latitude[i] = HE5_EHconvAng(latrad, HE5_HDFE_RAD_DEG);
     }
+  }
 
-    else if (projcode == HE5_GCTP_GEO)
-    {
+  else if (projcode == HE5_GCTP_GEO)
+  {
       /* GEO projection */
       /* -------------- */
 
@@ -946,13 +940,13 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
       /* For each point ... */
       /* ------------------ */
       for (int i = 0; i < npnts; i++)
-        {
-	  /* Convert to lon/lat (decimal degrees) */
-	  /* ------------------------------------ */
-	  longitude[i] = (col[i] + pixadjX) * scaleX + lonrad0;
-	  latitude[i]  = (row[i] + pixadjY) * scaleY + latrad0;
-        }
-    }
+      {
+        /* Convert to lon/lat (decimal degrees) */
+        /* ------------------------------------ */
+        longitude[i] = (col[i] + pixadjX) * scaleX + lonrad0;
+        latitude[i]  = (row[i] + pixadjY) * scaleY + latrad0;
+      }
+   }
 
 
 #if 0
@@ -1024,26 +1018,28 @@ HE5_EHconvAng(double inAngle, int code)
         deg = (long)inAngle;
         min = (long)((inAngle - deg) * 60);
         sec = (inAngle - deg - min / 60.0) * 3600;
-	/*
+#if 0
+/*
         if ((int)sec == 60)
         {
             sec = sec - 60;
             min = min + 1;
         }
-	*/
-	if ( fabs(sec - 0.0) < 1.e-7 )
-	  {
-	    sec = 0.0;
-	  }
+*/
+#endif
+        if ( fabs(sec - 0.0) < 1.e-7 )
+        {
+            sec = 0.0;
+        }
 
         if ( (fabs(sec - 60) < 1.e-7 ) || ( sec > 60.0 ))
         {
-	  sec = sec - 60;
-	  min = min + 1;
-	  if(sec < 0.0)
-	    {
-	      sec = 0.0;
-	    }
+            sec = sec - 60;
+            min = min + 1;
+            if(sec < 0.0)
+            {
+                sec = 0.0;
+            }
         }
         if (min == 60)
         {
@@ -1063,26 +1059,28 @@ HE5_EHconvAng(double inAngle, int code)
         deg = (long)inAngle;
         min = (long)((inAngle - deg) * 60);
         sec = ((inAngle - deg - min / 60.0) * 3600);
-	/*
+#if 0
+/*
         if ((int)sec == 60)
         {
             sec = sec - 60;
             min = min + 1;
         }
-	*/
-	if ( fabs(sec - 0.0) < 1.e-7 )
-	  {
-	    sec = 0.0;
-	  }
+*/
+#endif
+        if ( fabs(sec - 0.0) < 1.e-7 )
+        {
+            sec = 0.0;
+        }
 
         if ( (fabs(sec - 60) < 1.e-7 ) || ( sec > 60.0 ))
         {
-	  sec = sec - 60;
-	  min = min + 1;
-	  if(sec < 0.0)
-	    {
-	      sec = 0.0;
-	    }
+            sec = sec - 60;
+            min = min + 1;
+            if(sec < 0.0)
+            {
+                sec = 0.0;
+            }
         }
         if (min == 60)
         {
@@ -1148,7 +1146,7 @@ HDF5CFUtil::INDEX_nD_TO_1D (const std::vector <size_t > &dims,
 //       \param stride stride of each dim
 //       \param edge count of each dim
 //       \param poutput output variable
-// 	\parrm index dimension index
+// \parrm index dimension index
 //       \return 0 if successful. -1 otherwise.
 //
 //
@@ -1166,10 +1164,10 @@ int HDF5CFUtil::subset(
     int index)
 {
     for(int k=0; k<edge[index]; k++) 
-    {	
+    {
         pos[index] = start[index] + k*stride[index];
         if(index+1<rank)
-            subset(input, rank, dim, start, stride, edge, poutput,pos,index+1);			
+            subset(input, rank, dim, start, stride, edge, poutput,pos,index+1);
         if(index==rank-1)
         {
             poutput->push_back(input[INDEX_nD_TO_1D( dim, pos)]);
@@ -1210,8 +1208,8 @@ string HDF5CFUtil::obtain_cache_fname(const string & fprefix, const string &fnam
 size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
                                  const std::vector < size_t > &pos){
     //
-    //  int a[10][20][30];  // & a[1][2][3] == a + (20*30+1 + 30*2 + 1 *3);
-    //  int b[10][2]; // &b[1][2] == b + (20*1 + 2);
+    //  "int a[10][20][30]  // & a[1][2][3] == a + (20*30+1 + 30*2 + 1 *3)"
+    //  "int b[10][2] // &b[1][2] == b + (20*1 + 2)"
     // 
     if(dims.size () != pos.size ())
         throw InternalErr(__FILE__,__LINE__,"dimension error in INDEX_nD_TO_1D routine.");       

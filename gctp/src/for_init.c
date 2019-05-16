@@ -619,10 +619,12 @@ iflg64 = &thing;		/* the 8-byte pointer address           */
        }
     else
        mode = 0;
+#if 0
 /*
     *iflg64 = somforint(r_major,r_minor,satnum,path,false_easting,false_northing);
       *iflg = (int)*iflg64;
 */
+#endif
     *iflg64 = somforint(r_major,r_minor,satnum,path,alf,lon1,false_easting,
 		      false_northing,time,start,mode,sat_ratio);
       *iflg = (int)*iflg64;

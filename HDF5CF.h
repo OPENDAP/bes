@@ -50,7 +50,7 @@
 #include "HDF5GCFProduct.h"
 #include "HE5Parser.h"
 
-//enum CVType { CV_EXIST,CV_LAT_MISS,CV_LON_MISS,CV_NONLATLON_MISS,CV_FILLINDEX,CV_MODIFY,CV_SPECIAL,CV_UNSUPPORTED};
+// "enum CVType: CV_EXIST,CV_LAT_MISS,CV_LON_MISS,CV_NONLATLON_MISS,CV_FILLINDEX,CV_MODIFY,CV_SPECIAL,CV_UNSUPPORTED"
 enum EOS5Type {
     GRID, SWATH, ZA, OTHERVARS
 };
@@ -196,7 +196,6 @@ public:
     ;
     ~Attribute();
 
-public:
     const std::string & getName() const
     {
         return this->name;
@@ -267,7 +266,6 @@ public:
     explicit Var(Var*var);
     virtual ~Var();
 
-public:
 
     /// Get the original name of this variable
     const std::string & getName() const
@@ -547,7 +545,6 @@ public:
     }
     ~Group();
 
-public:
 
     /// Get the original path of this group
     const std::string & getPath() const
@@ -591,7 +588,6 @@ public:
     /// huge memory allocation for some HDF5 files, we separate
     /// the access of DAS from DDS although internally they
     /// still share common routines.
-    //virtual void Retrieve_H5_Info(const char *path, hid_t file_id, bool) ;
     virtual void Retrieve_H5_Info(const char *path, hid_t file_id, bool);
 
     /// Retrieve attribute values for the supported HDF5 datatypes.
@@ -724,14 +720,12 @@ protected:
     void Insert_One_NameSizeMap_Element(std::string name, hsize_t size, bool unlimited) ;
     void Insert_One_NameSizeMap_Element2(std::map<std::string, hsize_t> &, std::map<std::string, bool>&, std::string name, hsize_t size,
         bool unlimited) ;
-    //void Replace_Dim_Name_All(const string orig_dim_name,const string new_dim_name);
 
     virtual std::string get_CF_string(std::string);
     virtual void Replace_Var_Info(Var* src, Var *target);
     virtual void Replace_Var_Attrs(Var *src, Var*target);
 
     void Add_Str_Attr(Attribute* attr, const std::string &attrname, const std::string& strvalue) ;
-    //bool Var_Has_Attr(Var*var,const string &attrname);
     std::string Retrieve_Str_Attr_Value(Attribute *attr, const std::string var_path);
     bool Is_Str_Attr(Attribute* attr, std::string varfullpath, const std::string &attrname, const std::string& strvalue);
     void Add_One_Float_Attr(Attribute* attr, const std::string &attrname, float float_value) ;
@@ -784,8 +778,6 @@ protected:
     {
     }
 
-protected:
-
     // TODO: Will see if having time to make the following memembers private. See ESDIS-560
     std::string path;
     hid_t fileid;
@@ -808,7 +800,7 @@ protected:
     bool unsupported_var_attr_dspace;
 
     std::set<std::string> dimnamelist;
-    //set<string>unlimited_dimnamelist;
+    //"set<string>unlimited_dimnamelist "
     std::map<std::string, hsize_t> dimname_to_dimsize;
 
     // Unlimited dim. info
@@ -830,7 +822,7 @@ class GMFile: public File {
 public:
     GMFile(const char*path, hid_t file_id, H5GCFProduct product, GMPattern gproduct_pattern);
     virtual ~GMFile();
-public:
+
     H5GCFProduct getProductType() const
     {
         return product_type;
@@ -847,7 +839,6 @@ public:
     }
 
     /// Retrieve DDS information from the HDF5 file; real implementation for general HDF5 products.
-    //void Retrieve_H5_Info(const char *path, hid_t file_id, bool include_attr) ;
     void Retrieve_H5_Info(const char *path, hid_t file_id, bool include_attr);
 
     /// Retrieve attribute values for the supported HDF5 datatypes for general HDF5 products.
@@ -962,15 +953,11 @@ protected:
     void Build_lat1D_latlon_candidate(Var*, const std::vector<Var*>&);
     void Build_latg1D_latlon_candidate(Var*, const std::vector<Var*>&);
     void Build_unique_latlon_candidate();
-    //bool Check_LatLonName_General_Product(int latlon_rank) throw(Exception);
     void Add_Dim_Name_LatLon1D_Or_CoordAttr_General_Product() ;
     void Add_Dim_Name_LatLon2D_General_Product() ;
     void Add_Dim_Name_Dimscale_General_Product() ;
     void Handle_UseDimscale_Var_Dim_Names_General_Product(Var*) ;
     void Add_UseDimscale_Var_Dim_Names_General_Product(Var*, Attribute*) ;
-
-    //bool Check_2DLatLon_Dimscale(string &latname, string &lonname) throw(Exception);
-    //void Update_2DLatLon_Dimscale_CV(const string & latname, const string & lonname) throw(Exception);
 
     // Check if we have 2-D lat/lon CVs, and if yes, add those to the CV list.
     void Update_M2DLatLon_Dimscale_CVs() ;
@@ -1050,9 +1037,11 @@ private:
     std::string gp_lonname;
     std::set<std::string> grp_cv_paths;
     std::vector<struct Name_Size_2Pairs> latloncv_candidate_pairs;
-    //map<string,string>dimcvars_2dlatlon;
+    //"map<string,string>dimcvars_2dlatlon"
     bool iscoard;
+#if 0
     bool ll2d_no_cv;
+#endif
     bool have_nc4_non_coord;
 
 };
@@ -1107,7 +1096,6 @@ private:
     std::string name;
     int xdimsize;
     int ydimsize;
-    //bool has_nodimnames_vars;
     bool has_nolatlon;
     bool has_1dlatlon;
     bool has_2dlatlon;
@@ -1254,8 +1242,6 @@ public:
     /// Adjust the attribute info for HDF-EOS5 products
     void Adjust_Attr_Info() ;
 
-//        void Adjust_Special_EOS5CVar_Name() throw(Exception);
-
     /// Handle the object name clashing for HDF-EOS5 products
     void Handle_Obj_NameClashing(bool) ;
 
@@ -1337,8 +1323,10 @@ protected:
     void Handle_Za_CVar(bool) ;
 
     bool Check_Augmentation_Status() ;
-    // Don't remove the following commented line!
+    // Don't remove the following commented if 0 line!
+#if 0
     //bool Check_Augmented_Var_Attrs(Var *var) throw(Exception);
+#endif
     template<class T> bool Check_Augmented_Var_Candidate(T*, Var*, EOS5Type) ;
 
     template<class T> void Adjust_Per_Var_Dim_NewName_Before_Flattening(T*, bool, int, int, int) ;
@@ -1357,16 +1345,8 @@ protected:
     void Handle_EOS5CVar_AttrNameClashing() ;
     template<typename T> void EOS5Handle_General_NameClashing(std::set<std::string>&objnameset, std::vector<T*>& objvec)
         ;
-    //void Adjust_CF_attr() ;
     template<typename T> void Create_Missing_CV(T*, EOS5CVar*, const std::string &, EOS5Type, int) ;
     void Create_Added_Var_NewName_FullPath(EOS5Type, const std::string&, const std::string&, std::string &, std::string &) ;
-
-
-    //void add_ignored_info_attrs(bool is_grp,bool is_first);
-    //void add_ignored_info_objs(bool is_dim_related, bool is_first);
-
-    //bool ignored_var_transformed();
-    //bool ignored_var_attr_transformed();
 
     void Handle_EOS5_Unsupported_Dtype(bool) ;
     void Handle_EOS5_Unsupported_Dspace(bool) ;
@@ -1375,7 +1355,6 @@ protected:
     void Gen_VarAttr_Unsupported_Dtype_Info() ;
     void Gen_EOS5_VarAttr_Unsupported_Dtype_Info() ;
 
-    //void Gen_DimScale_VarAttr_Unsupported_Dtype_Info() throw(Exception);
     void Gen_Unsupported_Dspace_Info() ;
 
 private:

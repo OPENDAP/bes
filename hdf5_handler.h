@@ -69,7 +69,9 @@ typedef struct DS {
     /// Name of HDF5 group or dataset
     char name[DODS_NAMELEN];
     /// HDF5 data set id
+#if 0
     //hid_t dset;
+#endif
     /// HDF5 data type id
     hid_t type;
     /// HDF5 data space id

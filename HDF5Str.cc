@@ -55,10 +55,8 @@ using namespace std;
 using namespace libdap;
 
 HDF5Str::HDF5Str(const string & n, const string &vpath, const string &d) 
- : Str(n,d)
-// : Str(n,d),dset_id(-1),dtypeid(-1), array_flag(0)
+ : Str(n,d),var_path(vpath)
 {
-    var_path = vpath;
 }
 
 BaseType *HDF5Str::ptr_duplicate()

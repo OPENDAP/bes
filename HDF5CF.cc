@@ -1376,7 +1376,7 @@ void File::Flatten_Obj_Name(bool include_attr)
                 (*ira)->newname = get_CF_string((*ira)->newname);
             }
         }
-    } // if (true == include_attr)
+    } // "if (true == include_attr)"
 }
 
 // Variable name clashing
@@ -1473,7 +1473,7 @@ template<class T> void File::Handle_General_NameClashing(set<string>&objnameset,
         ol_index++;
     }
 
-    // Now change the clashed elements to unique elements; 
+    // Now change the clashed elements to unique elements, 
     // Generate the set which has the same size as the original vector.
     for (ivs = clashnamelist.begin(); ivs != clashnamelist.end(); ivs++) {
         int clash_index = 1;
@@ -1600,7 +1600,7 @@ void File::Add_One_FakeDim_Name(Dimension *dim)
             mapret = dimsize_to_fakedimname.insert(pair<hsize_t, string>(dim->size, dim->name));
             if (false == mapret.second)
             throw4("The dimension size ", dim->size, " should map to ", dim->name);
-        }           // if(false == setret.second)
+        } // "if(false == setret.second)"
 
         // New dim name is inserted successfully, update the dimname_to_dimsize map.
         dim->name = added_dimname;
@@ -1794,7 +1794,6 @@ void File::Change_Attr_One_Str_to_Others(Attribute* attr, Var*var)
         else {
             unsigned char num_suc = (unsigned char) num_sli;
             attr->dtype = H5UCHAR;
-            //attr->count = 1;
             attr->value.resize(sizeof(unsigned char));
             memcpy(&(attr->value[0]), (void*) (&num_suc), sizeof(unsigned char));
         }
@@ -1809,7 +1808,6 @@ void File::Change_Attr_One_Str_to_Others(Attribute* attr, Var*var)
         else {
             char num_sc = (char) num_sli;
             attr->dtype = H5CHAR;
-            //attr->count = 1;
             attr->value.resize(sizeof(char));
             memcpy(&(attr->value[0]), (void*) (&num_sc), sizeof(char));
         }
@@ -1824,7 +1822,6 @@ void File::Change_Attr_One_Str_to_Others(Attribute* attr, Var*var)
         else {
             short num_ss = (short) num_sli;
             attr->dtype = H5INT16;
-            //attr->count = 1;
             attr->value.resize(sizeof(short));
             memcpy(&(attr->value[0]), (void*) (&num_ss), sizeof(short));
         }
@@ -1839,7 +1836,6 @@ void File::Change_Attr_One_Str_to_Others(Attribute* attr, Var*var)
         else {
             unsigned short num_uss = (unsigned short) num_sli;
             attr->dtype = H5UINT16;
-            //attr->count = 1;
             attr->value.resize(sizeof(unsigned short));
             memcpy(&(attr->value[0]), (void*) (&num_uss), sizeof(unsigned short));
         }
@@ -1848,35 +1844,28 @@ void File::Change_Attr_One_Str_to_Others(Attribute* attr, Var*var)
     case H5INT32: {
         num_sli = strtol(&(attr->value[0]), &pEnd, 10);
         //No need to check overflow, the number will always be in the range.
+#if 0
         //if(num_sli <LONG_MIN || num_sli >LONG_MAX)
         //    throw5("Attribute type is 32-bit integer, the current attribute ",attr->name, " has the value ",num_sli, ". It is overflowed. ");
-        //else {
+#endif
         attr->dtype = H5INT32;
-        //attr->count = 1;
         attr->value.resize(sizeof(long int));
         memcpy(&(attr->value[0]), (void*) (&num_sli), sizeof(long int));
-        //}
 
     }
         break;
     case H5UINT32: {
         unsigned long int num_suli = strtoul(&(attr->value[0]), &pEnd, 10);
         // No need to check since num_suli will not be bigger than ULONG_MAX.
-        //if(num_suli >ULONG_MAX)
-        //    throw5("Attribute type is 32-bit unsigned integer, the current attribute ",attr->name, " has the value ",num_suli, ". It is overflowed. ");
-        //else {
         attr->dtype = H5UINT32;
-        //attr->count = 1;
         attr->value.resize(sizeof(unsigned long int));
         memcpy(&(attr->value[0]), (void*) (&num_suli), sizeof(unsigned long int));
-        //}
     }
         break;
     case H5FLOAT32: {
         float num_sf = strtof(&(attr->value[0]), NULL);
         // Don't think it is necessary to check if floating-point is oveflowed for this routine. ignore it now. KY 2014-09-22
         attr->dtype = H5FLOAT32;
-        //attr->count = 1;
         attr->value.resize(sizeof(float));
         memcpy(&(attr->value[0]), (void*) (&num_sf), sizeof(float));
     }
@@ -1885,7 +1874,6 @@ void File::Change_Attr_One_Str_to_Others(Attribute* attr, Var*var)
         double num_sd = strtod(&(attr->value[0]), NULL);
         // Don't think it is necessary to check if floating-point is oveflowed for this routine. ignore it now. KY 2014-09-22
         attr->dtype = H5FLOAT64;
-        //attr->count = 1;
         attr->value.resize(sizeof(double));
         memcpy(&(attr->value[0]), (void*) (&num_sd), sizeof(double));
     }
@@ -1894,7 +1882,7 @@ void File::Change_Attr_One_Str_to_Others(Attribute* attr, Var*var)
     default:
         throw4("Unsupported HDF5 datatype that the string is converted to for the attribute ", attr->name,
             " of the variable ", var->fullpath);
-    } // switch(var->dtype)
+    } // "switch(var->dtype)"
 
 }
 
@@ -1944,8 +1932,6 @@ bool File::Is_geolatlon(const string & var_name, bool is_lat)
         string lat3 = "Latitude";
 
         if (var_name.compare(lat1) == 0 || var_name.compare(lat2) == 0 || var_name.compare(lat3) == 0) ret_value = true;
-        //else if(var_name.size()>=latsuffix2.size()) 
-        //else if(var_name.compare((var_name.size()-latsuffix3.size()),lat_suffix3.size(),latsuffix3) ==0)
     }
 
     else {
@@ -2027,8 +2013,6 @@ void File::Replace_Var_Info(Var *src, Var *target)
     for (vector<Dimension*>::iterator ird = target->dims.begin(); ird != target->dims.end();) {
         delete (*ird);
         ird = target->dims.erase(ird);
-        //ird--;
-
     }
 
     // Somehow attributes cannot be replaced. 
@@ -2070,7 +2054,6 @@ void File::Replace_Var_Attrs(Var *src, Var *target)
     for (vector<Attribute*>::iterator ira = target->attrs.begin(); ira != target->attrs.end();) {
         delete (*ira);
         ira = target->attrs.erase(ira);
-        //ira--;
     }
     for (vector<Attribute*>::iterator ira = src->attrs.begin(); ira != src->attrs.end(); ++ira) {
         Attribute* attr = new Attribute();
@@ -2110,8 +2093,9 @@ bool File::is_var_under_group(const string &varname, const string &grpname, cons
                     break;
                 }
             }
-        } // if((*irv)->rank == var_rank)
-    } // for (vector<Var *>::iterator irv = this->vars.begin();
+        } // "if((*irv)->rank == var_rank)"
+    } // "for (vector<Var *>::iterator irv = this->vars.begin()"
+
 
     return ret_value;
 
@@ -2157,9 +2141,9 @@ void File::Handle_Grid_Mapping_Vars(){
         }
         else {
             string new_name = Check_Grid_Mapping_FullPath(attr_value);
+            //Using new_name as the attribute value
             if(new_name != "")
                 Replace_Var_Str_Attr((*irv),"grid_mapping",new_name);
-                //Using new_name as the attribute value
         }
     }
 
@@ -2207,7 +2191,7 @@ void File::remove_netCDF_internal_attributes(bool include_attr) {
                     // Compare the attribute "CLASS" value with "DIMENSION_SCALE". We only compare the string with the size of
                     // "DIMENSION_SCALE", which is 15.
                     if (0 == class_value.compare(0,15,"DIMENSION_SCALE")) {
-                        delete((*ira));
+                        delete(*ira);
                         ira = (*irv)->attrs.erase(ira);
                     }
 #if 0
@@ -2222,13 +2206,13 @@ void File::remove_netCDF_internal_attributes(bool include_attr) {
                 else if((*ira)->name == "NAME") {// Add a BES Key 
                     string name_value = Retrieve_Str_Attr_Value(*ira,(*irv)->fullpath);
                     if( 0 == name_value.compare(0,(*irv)->name.size(),(*irv)->name)) {
-                        delete((*ira));
+                        delete(*ira);
                         ira =(*irv)->attrs.erase(ira);
                     }
                     else {
                         string netcdf_dim_mark= "This is a netCDF dimension but not a netCDF variable";
                         if( 0 == name_value.compare(0,netcdf_dim_mark.size(),netcdf_dim_mark)) {
-                            delete((*ira));
+                            delete(*ira);
                             ira =(*irv)->attrs.erase(ira);
                         }
                         else {
@@ -2238,7 +2222,7 @@ void File::remove_netCDF_internal_attributes(bool include_attr) {
 
                 }
                 else if((*ira)->name == "_Netcdf4Dimid") {
-                        delete((*ira));
+                        delete(*ira);
                         ira =(*irv)->attrs.erase(ira);
                 }
 #if 0
@@ -2366,7 +2350,6 @@ void File::add_ignored_info_attrs(bool is_grp, const string & obj_path, const st
         have_ignored = true;
     }
 
-    //   string ignored_dtype_header_substr = "unsupported datatypes include: ";
 
     string ignored_warning_str = "\n******WARNING******";
     string ignored_HDF5_grp_hdr = ignored_warning_str + "\n Ignored attributes under root and groups:\n";
@@ -2374,8 +2357,6 @@ void File::add_ignored_info_attrs(bool is_grp, const string & obj_path, const st
     string ignored_HDF5_var_hdr = ignored_warning_str + "\n Ignored attributes for variables:\n";
     string ignored_HDF5_var_msg = " Variable path: " + obj_path + "  Attribute names: " + attr_name + "\n";
 
-//    if(ignored_msg.find(ignored_dtype_header_substr) == string::npos)
-    //       add_ignored_info_obj_dtype_header();
 
     if (true == is_grp) {
         if (ignored_msg.find(ignored_HDF5_grp_hdr) == string::npos)
@@ -2402,16 +2383,12 @@ void File::add_ignored_info_objs(bool is_dim_related, const string & obj_path)
         have_ignored = true;
     }
 
-    //   string ignored_dtype_header_substr = "unsupported datatypes include";
-    //   string ignored_dspace_header_substr = "unsupported dimensions include";
     string ignored_warning_str = "\n******WARNING******";
     string ignored_HDF5_dtype_var_hdr = ignored_warning_str + "\n IGNORED variables due to unsupported datatypes:\n";
     string ignored_HDF5_dspace_var_hdr = ignored_warning_str + "\n IGNORED variables due to unsupported dimensions:\n";
     string ignored_HDF5_var_msg = " Variable path: " + obj_path + "\n";
 
     if (true == is_dim_related) {
-        //      if(ignored_msg.find(ignored_dspace_header_substr) == string::npos)
-        //         add_ignored_info_obj_dspace_header();
         if (ignored_msg.find(ignored_HDF5_dspace_var_hdr) == string::npos)
             ignored_msg += ignored_HDF5_dspace_var_hdr + ignored_HDF5_var_msg;
         else
@@ -2419,8 +2396,6 @@ void File::add_ignored_info_objs(bool is_dim_related, const string & obj_path)
 
     }
     else {
-        //    if(ignored_msg.find(ignored_dtype_header_substr) == string::npos)
-        //        add_ignored_info_obj_dtype_header();
         if (ignored_msg.find(ignored_HDF5_dtype_var_hdr) == string::npos)
             ignored_msg += ignored_HDF5_dtype_var_hdr + ignored_HDF5_var_msg;
         else
@@ -2443,7 +2418,7 @@ bool File::ignored_dimscale_ref_list(Var *var)
 {
 
     bool ignored_dimscale = true;
-    //if(General_Product == this->product_type && GENERAL_DIMSCALE== this->gproduct_pattern) {
+    // Only when "General_Product == this->product_type && GENERAL_DIMSCALE== this->gproduct_pattern)" 
 
     bool has_dimscale = false;
     bool has_reference_list = false;
@@ -2736,12 +2711,12 @@ void File::add_ignored_droplongstr_hdr()
 }
 
 // Sometimes, we need to release the temporary added resources.
-void File::release_standalone_var_vector(vector<Var*>&vars)
+void File::release_standalone_var_vector(vector<Var*>&temp_vars)
 {
 
-    for (vector<Var *>::iterator i = vars.begin(); i != vars.end();) {
+    for (vector<Var *>::iterator i = temp_vars.begin(); i != temp_vars.end();) {
         delete (*i);
-        i = vars.erase(i);
+        i = temp_vars.erase(i);
     }
 
 }

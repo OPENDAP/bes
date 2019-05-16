@@ -310,7 +310,6 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(int* offset, int* step, int nelms, bo
     }
 
     float lat_start = 0;
-    ;
     float lon_start = 0.;
     float lat_res = 0.;
     float lon_res = 0.;
@@ -318,7 +317,6 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(int* offset, int* step, int nelms, bo
     int latsize = 0;
     int lonsize = 0;
 
-    //vector<char> info_value(grid_info_value.begin(),grid_info_value.end());
     HDF5CFUtil::parser_gpm_l3_gridheader(grid_info_value, latsize, lonsize, lat_start, lon_start, lat_res, lon_res,
         false);
 

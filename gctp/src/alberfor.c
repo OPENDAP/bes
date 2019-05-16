@@ -47,7 +47,8 @@ double lat0,			/* center lattitude			*/
 double false_east,		/* x offset in meters			*/
 double false_north)		/* y offset in meters			*/
 {
-double sin_po,cos_po;		/* sin and cos values			*/
+double sin_po;
+double cos_po;		/* sin and cos values			*/
 double con;			/* temporary variable			*/
 double es,temp;			/* eccentricity squared and temp var	*/
 double ms1;			/* small m 1				*/

@@ -174,14 +174,19 @@ string HDF5RequestHandler::_latlon_disk_cachefile_prefix="";
 DMR* HDF5RequestHandler::dmr_int64 = 0;
 
 
+#if 0
 //BaseTypeFactory factory;
 //libdap::DDS HDF5RequestHandler::hd_dds(&factory,"");
+#endif
 string HDF5RequestHandler::_stp_east_filename;
 string HDF5RequestHandler::_stp_north_filename;
 vector<string> HDF5RequestHandler::lrd_cache_dir_list;
 vector<string> HDF5RequestHandler::lrd_non_cache_dir_list;
 vector<string> HDF5RequestHandler::lrd_var_cache_file_list;
+
+#if 0
 //libdap::DDS*cache_dds;
+#endif
 
 
 HDF5RequestHandler::HDF5RequestHandler(const string & name)
@@ -262,7 +267,6 @@ cerr<<"No specific cache info"<<endl;
 
             BESDEBUG(HDF5_NAME, "Generate memory cache for smaller coordinate variables" << endl);
             srdata_mem_cache = new ObjMemCache(get_srdcache_entries(),get_cache_purge_level());
-//cerr<<"small memory data cache "<<endl;
 
         }
 
@@ -329,7 +333,6 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
             use_das_cache = true;
         
         if (true == use_das_cache) {
-        //if (das_cache && (cached_das_ptr = static_cast<DAS*>(das_cache->get(filename)))) {
 
             // copy the cached DAS into the BES response object
             BESDEBUG(HDF5_NAME, "DAS Cached hit for : " << filename << endl);
@@ -841,7 +844,8 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         bool dds_from_dc = false;
         bool das_from_dc = false;
         bool build_data  = false;
-        string dds_cache_fname,das_cache_fname;
+        string dds_cache_fname;
+        string das_cache_fname;
 
         if(_use_disk_meta_cache == true) {
 
@@ -932,7 +936,8 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         bool dds_from_dc = false;
         bool das_from_dc = false;
         bool build_data  = true;
-        string dds_cache_fname,das_cache_fname;
+        string dds_cache_fname;
+        string das_cache_fname;
 
         // Only DAS is read from the cache. dds_from_dc is always false.
         if(_use_disk_meta_cache == true) {
@@ -1136,7 +1141,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
 
                 dmr->build_using_dds(dds);
 
-            }// if(true == _usecf)	
+            }// "if(true == _usecf)"
             else {// default option
 
                 // Obtain the HDF5 file ID. 
@@ -1312,8 +1317,6 @@ bool HDF5RequestHandler::hdf5_build_dmr_with_IDs(BESDataHandlerInterface & dhi)
         throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
 
-    //dds.print(cout);
-    //dds.print_das(cout);
     // Extract the DMR Response object - this holds the DMR used by the
     // other parts of the framework.
     BESResponseObject *response = dhi.response_handler->get_response_object();
@@ -1475,7 +1478,6 @@ bool HDF5RequestHandler::obtain_lrd_common_cache_dirs()
                     }
                 }
 
-                //lrd_var_cache_file_list +=temp_name_list;
                 lrd_var_cache_file_list.insert(lrd_var_cache_file_list.end(),temp_name_list.begin(),temp_name_list.end());
             }
         }
@@ -1549,7 +1551,10 @@ bool HDF5RequestHandler::read_das_from_disk_cache(const string & cache_filename,
 
             AttrTable*at = NULL;
             // recursively build DAS
+//#if 0
             temp_pointer = get_attr_info_from_dc(temp_pointer,das_ptr,at);
+//#endif
+
 
         }
         catch(...) {
@@ -1824,9 +1829,7 @@ void HDF5RequestHandler::read_dds_from_disk_cache(BESDDSResponse* bdds, BESDataD
      tdds.filename(h5_fname);
 
      FILE *dds_file = fopen(dds_cache_fname.c_str(),"r");
-//cerr<<"before parsing "<<endl;
      tdds.parse(dds_file);
-//cerr<<"after parsing "<<endl;
      DDS* cache_dds = new DDS(tdds);
 #if 0
 cerr<<"before dds "<<endl;
@@ -1842,7 +1845,6 @@ cerr<<"after tdds "<<endl;
      Ancillary::read_ancillary_dds( *cache_dds, h5_fname ) ;
 
      add_das_to_dds(cache_dds,container_name,h5_fname,das_cache_fname,h5_fd,das_from_dc);
-//cache_dds->print(cerr);
      if(true == build_data)
         data_bdds->set_dds(cache_dds);
      else 

@@ -44,9 +44,8 @@ BaseType *HDF5Structure::ptr_duplicate()
 }
 
 HDF5Structure::HDF5Structure(const string & n, const string &vpath, const string &d)
-    : Structure(n, d)
+    : Structure(n, d),var_path(vpath)
 {
-    var_path = vpath;
 }
 
 HDF5Structure::~HDF5Structure()
@@ -61,7 +60,6 @@ HDF5Structure & HDF5Structure::operator=(const HDF5Structure & rhs)
     if (this == &rhs)
         return *this;
 
-    //static_cast < Structure & >(*this) = rhs;  // run Structure assignment
     dynamic_cast < Structure & >(*this) = rhs;  // run Structure assignment
 
 
@@ -240,11 +238,13 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
                     memcpy(&str_val[0],src,memb_size);
                     string temp_string(str_val.begin(),str_val.end());
                     var(memb_name)->val2buf(&temp_string);
-// This doesn't work either.                var(memb_name)->val2buf(&str_val[0]);
+#if 0
+                  // This doesn't work either.                var(memb_name)->val2buf(&str_val[0]);
                     
                 // We may just pass the string, (maybe string pad is preserved.)
                 // Probably not, DAP string may not keep the size. This doesn't work.
                 //var(memb_name)->val2buf(&values[0]+value_offset + memb_offset);
+#endif
                 }
             }
             else {

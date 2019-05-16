@@ -48,9 +48,8 @@
 using namespace std;
 using namespace libdap;
 
-HDF5Float64::HDF5Float64(const string & n, const string & vpath,const string &d) : Float64(n, d)
+HDF5Float64::HDF5Float64(const string & n, const string & vpath,const string &d) : Float64(n, d),var_path(vpath)
 {
-    var_path = vpath;
 }
 
 BaseType *HDF5Float64::ptr_duplicate()
@@ -73,7 +72,6 @@ bool HDF5Float64::read()
     else
         dset_id = H5Dopen2(file_id,name().c_str(),H5P_DEFAULT);
 
-//    hid_t dset_id = H5Dopen2(file_id,name().c_str(),H5P_DEFAULT);
     if(dset_id < 0) {
         H5Fclose(file_id);
         throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype .");

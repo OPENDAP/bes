@@ -157,8 +157,6 @@ class HDF5RequestHandler:public BESRequestHandler {
 
      // For the default option
      static bool _default_handle_dimension;
-     //static bool _ld_mcache_config;
-     //static bool _sd_mcache_config;
      static std::string _stp_east_filename;
      static std::string _stp_north_filename;
      
@@ -190,7 +188,6 @@ class HDF5RequestHandler:public BESRequestHandler {
 
      static bool hdf5_build_data_with_IDs(BESDataHandlerInterface &dhi);
      static bool hdf5_build_dmr_with_IDs(BESDataHandlerInterface &dhi);
-     //static void get_dds_with_attributes(const string &filename, const string&container_name,libdap::DDS*dds);
      static void get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDSResponse*data_bdds,const std::string &container_name,const std::string &filename, const std::string &dds_cache_fname, const std::string &das_cache_fname,bool dds_from_dc,bool das_from_dc, bool build_data);
 
      static void read_dds_from_disk_cache(BESDDSResponse* bdds, BESDataDDSResponse* data_bdds,bool build_data,const std::string & container_name,const std::string & h5_fname,

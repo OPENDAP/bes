@@ -892,7 +892,7 @@ void add_ll_valid_range(AttrTable* at, bool is_lat) {
 bool need_attr_values_for_dap4(const HDF5CF::Var *var) {
     bool ret_value = false;
     if((HDF5RequestHandler::get_dmr_64bit_int()!=NULL) && 
-        ((H5INT64 == var->getType() || H5UINT64 == var->getType())))
+        (H5INT64 == var->getType() || H5UINT64 == var->getType()))
         ret_value = true;
     return ret_value;
 }

@@ -44,9 +44,8 @@ HDF5CFFloat64::HDF5CFFloat64(const string &n, const string &d):Float64(n, d)
 {
 }
 
-HDF5CFFloat64::HDF5CFFloat64(const string &n, const string &d,const string &d_f) : Float64(n, d)
+HDF5CFFloat64::HDF5CFFloat64(const string &n, const string &d,const string &d_f) : Float64(n, d),filename(d_f)
 {
-    filename = d_f;
 }
 
 

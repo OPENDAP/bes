@@ -106,7 +106,7 @@ e = sqrt(es);
  else
    {
      ind = 0; /* ellipsoid */
-     qp = (1.0 - es)* (((1.0/(1.0 - es))-(1.0/(2.0*e))*log((1.0 - e)/(1.0 + e))));
+     qp = (1.0 - es)* ((1.0/(1.0 - es))-(1.0/(2.0*e))*log((1.0 - e)/(1.0 + e)));
      
      if((fabs (lat_center - HALF_PI) <=  EPSLN ) || (fabs (lat_center + HALF_PI) <=  EPSLN ))
        {
@@ -224,7 +224,7 @@ double q, B;
        {
 	 beta = asinz(q/qp);
 	 tsincos(beta, &sin_beta, &cos_beta);
-	 B = Rq * sqrt((2.0/(1.0 + sin_beta1 * sin_beta + cos_beta1 * cos_beta * cos(delta_lon))));
+	 B = Rq * sqrt(2.0/(1.0 + sin_beta1 * sin_beta + cos_beta1 * cos_beta * cos(delta_lon)));
 
 	 *x = false_easting  + (B*D) * (cos_beta * sin(delta_lon));
 	 *y = false_northing + (B/D) * (cos_beta1 * sin_beta - sin_beta1 * cos_beta * cos(delta_lon));

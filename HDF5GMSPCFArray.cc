@@ -101,7 +101,6 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf
         }
     }
 
-//    hid_t fileid = -1;
     hid_t dsetid = -1;
     hid_t dspace = -1;
     hid_t mspace = -1;

@@ -146,7 +146,9 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
     lowright[1] = point_lower;
 
 
-    int i = 0, j = 0, k = 0;
+    int i = 0;
+    int j = 0;
+    int k = 0;
 
     int r = -1;
 
@@ -396,7 +398,6 @@ string HDFEOS5CFMissLLArray::obtain_ll_cache_name() {
         }
     }
 
-    //string cache_fname=llcache->getCachePrefixFromConfig();
     string cache_fname=HDF5RequestHandler::get_latlon_disk_cachefile_prefix();
 
     // Projection code,zone,sphere,pix,origin
@@ -418,7 +419,6 @@ string HDFEOS5CFMissLLArray::obtain_ll_cache_name() {
 
     // According to HDF-EOS2 document, only 13 parameters are used.
     for(int ipar = 0; ipar<13;ipar++) {
-//cerr<<"params["<<ipar<<"] is "<<params[ipar]<<endl;
         cache_fname+=HDF5CFUtil::get_double_str(eos5_params[ipar],17,6);
     }
             
@@ -480,14 +480,14 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache_geo(bool add_cache,void*
 	// Now offset,step and val will always be valid. line 74 and 85 assure this.
 	if ( HE5_HDFE_CENTER == eos5_pixelreg ) {
 	    for (int i = 0; i < nelms; i++)
-		val[i] = ((float)(offset[0]+i*step[0] + 0.5f) * lat_step + start) / 1000000.0;
+		val[i] = ((float)(offset[0]+i*step[0] + 0.5F) * lat_step + start) / 1000000.0;
 
             // If the memory cache is turned on, we have to save all values to the buf
             if(add_cache == true) {
             	vector<float>total_val;
 		total_val.resize(ydimsize);
                 for (int total_i = 0; total_i < ydimsize; total_i++)
-		    total_val[total_i] = ((float)(total_i + 0.5f) * lat_step + start) / 1000000.0;
+		    total_val[total_i] = ((float)(total_i + 0.5F) * lat_step + start) / 1000000.0;
                 // Note: the float is size 4 
                 memcpy(buf,&total_val[0],4*ydimsize);
             }
@@ -531,14 +531,14 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache_geo(bool add_cache,void*
 
 	if (HE5_HDFE_CENTER == eos5_pixelreg) {
 	    for (int i = 0; i < nelms; i++)
-		val[i] = ((float)(offset[0] + i *step[0] + 0.5f) * lon_step + start ) / 1000000.0;
+		val[i] = ((float)(offset[0] + i *step[0] + 0.5F) * lon_step + start ) / 1000000.0;
 
             // If the memory cache is turned on, we have to save all values to the buf
             if(add_cache == true) {
             	vector<float>total_val;
 		total_val.resize(xdimsize);
                 for (int total_i = 0; total_i < xdimsize; total_i++)
-		    total_val[total_i] = ((float)(total_i+0.5f) * lon_step + start) / 1000000.0;
+		    total_val[total_i] = ((float)(total_i+0.5F) * lon_step + start) / 1000000.0;
                 // Note: the float is size 4 
                 memcpy(buf,&total_val[0],4*xdimsize);
             }

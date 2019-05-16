@@ -41,7 +41,6 @@
 /// @see Sequence 
 class HDF5Sequence:public libdap::Sequence {
 
-  private:
 
   public:
 
@@ -49,7 +48,6 @@ class HDF5Sequence:public libdap::Sequence {
     virtual ~ HDF5Sequence();
 
     virtual libdap::BaseType *ptr_duplicate();
-//    virtual bool read();
 
     friend std::string return_type(hid_t datatype);
 

@@ -26,7 +26,6 @@ const string HDF5DiskCache::SIZE_KEY = "H5.DiskCacheSize";
 
 long HDF5DiskCache::getCacheSizeFromConfig(const long cache_size)
 {
-    //long cache_size = HDF5RequestHandler::get_disk_cache_size();
     if (cache_size >0) {
         BESDEBUG("cache",
             "In HDF5DiskCache::getCacheSizeFromConfig(): Located BES key " << SIZE_KEY<< "=" << cache_size << endl);
@@ -42,7 +41,6 @@ long HDF5DiskCache::getCacheSizeFromConfig(const long cache_size)
 
 string HDF5DiskCache::getCachePrefixFromConfig(const string& cache_prefix)
 {
-    //string cache_prefix = HDF5RequestHandler::get_disk_cachefile_prefix();
     if (cache_prefix!="") {
         BESDEBUG("cache",
             "In HDF5DiskCache::getCachePrefixFromConfig(): Located BES key " << PATH_KEY<< "=" << cache_prefix << endl);
@@ -58,7 +56,6 @@ string HDF5DiskCache::getCachePrefixFromConfig(const string& cache_prefix)
 
 string HDF5DiskCache::getCacheDirFromConfig(const string& cache_dir)
 {
-    //string cache_dir = HDF5RequestHandler::get_disk_cache_dir();
     if (cache_dir!="") {
         BESDEBUG("cache",
             "In HDF5DiskCache::getCacheDirFromConfig(): Located BES key " << PATH_KEY<< "=" << cache_dir << endl);

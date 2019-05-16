@@ -47,8 +47,6 @@
 class HDF5UInt16:public libdap::UInt16 {
 
   private:
-//    hid_t dset_id;
-//    hid_t ty_id;
     std::string var_path;
 
   public:

@@ -170,7 +170,6 @@ void EOS5File::Retrieve_H5_CVar_Supported_Attr_Values()
 
         // When the coordinate variables exist in the file, retrieve the attribute values.
         if ((CV_EXIST == (*ircv)->cvartype) || (CV_MODIFY == (*ircv)->cvartype)) {
-//cerr<<"CVar name is: "<<(*ircv)->fullpath <<endl;
             for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin(); ira != (*ircv)->attrs.end(); ++ira)
                 Retrieve_H5_Attr_Value(*ira, (*ircv)->fullpath);
 
@@ -236,7 +235,6 @@ void EOS5File::Handle_EOS5_Unsupported_Dtype(bool include_attr)
         if (!HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
             delete (*ircv);
             ircv = this->cvars.erase(ircv);
-            //ircv--;
         }
         else {
             ++ircv;
@@ -424,7 +422,7 @@ void EOS5File::Handle_Unsupported_Others(bool include_attr)
                     // Compare the attribute "CLASS" value with "DIMENSION_SCALE". We only compare the string with the size of
                     // "DIMENSION_SCALE", which is 15.
                     if (0 == class_value.compare(0,15,"DIMENSION_SCALE")) {
-                        delete((*ira));
+                        delete(*ira);
                         ira = (*irv)->attrs.erase(ira);
                         // Add another block to set a key
                     }
@@ -435,13 +433,13 @@ void EOS5File::Handle_Unsupported_Others(bool include_attr)
                 else if((*ira)->name == "NAME") {// Add a BES Key later
                     string name_value = Retrieve_Str_Attr_Value(*ira,(*irv)->fullpath);
                     if( 0 == name_value.compare(0,(*irv)->name.size(),(*irv)->name)) {
-                        delete((*ira));
+                        delete(*ira);
                         ira =(*irv)->attrs.erase(ira);
                     }
                     else {
                         string netcdf_dim_mark= "This is a netCDF dimension but not a netCDF variable";
                         if( 0 == name_value.compare(0,netcdf_dim_mark.size(),netcdf_dim_mark)) {
-                            delete((*ira));
+                            delete(*ira);
                             ira =(*irv)->attrs.erase(ira);
                         }
                         else {
@@ -450,7 +448,7 @@ void EOS5File::Handle_Unsupported_Others(bool include_attr)
                     }
                 }
                 else if((*ira)->name == "_Netcdf4Dimid") {
-                    delete((*ira));
+                    delete(*ira);
                     ira =(*irv)->attrs.erase(ira);
                 }
 
@@ -547,7 +545,7 @@ void EOS5File::Adjust_EOS5Dim_Info(HE5Parser*strmeta_info)
         // Function parameters will be the object dim. list(he5s.dim_list), EOS5Type(SWATH,GRID...) and varlist
         // Need to use Obtain_Var_EOS5Type_GroupName to find var's group name and Get_Var_EOS5_Type(var) to find 
         // Var's EOS5Type. 
-        // After checking group and type, check if(he5v.name == var->name) and change the he5v dim. size to var size.
+        // After checking group and type, check "if(he5v.name == var->name)" and change the he5v dim. size to var size.
         if(this->have_udim == true) {
             vector<HE5Var> svlist = he5s.geo_var_list;
             svlist.insert(svlist.end(),he5s.data_var_list.begin(),he5s.data_var_list.end());
@@ -825,8 +823,8 @@ void EOS5File::Adjust_EOS5VarDim_Info(vector<HE5Dim>& vardimlist, vector<HE5Dim>
                 groupdimlist.push_back(he5d);
             }
 
-        }        //if(false == setret.second)
-    }        // for (unsigned int i = 0; i <vardimlist.size(); ++i)
+        }        //"if(false == setret.second)"
+    }        // "for (unsigned int i = 0; i <vardimlist.size(); ++i)"
 
 }
 
@@ -839,7 +837,6 @@ void EOS5File::Add_EOS5File_Info(HE5Parser * strmeta_info, bool grids_mllcv)
     string grid_str = "/GRIDS/";
     string swath_str = "/SWATHS/";
     string za_str = "/ZAS/";
-    // cerr<<"coming to Add_EOSFile_Info "<<endl;
 
     // Assign the original number of grids. These number will be useful
     // to generate the final DAP object names for grids/swaths/zas that don't have coordinate
@@ -885,7 +882,7 @@ void EOS5File::Add_EOS5File_Info(HE5Parser * strmeta_info, bool grids_mllcv)
             if (false == mapret2.second)
             throw5("The dimension name ", unique_dimname, " with the dimension size ", he5d.size, "is not unique");
 
-        } // for (int j=0; j <he5g.dim_list.size(); j++)
+        } // "for (int j=0; j <he5g.dim_list.size(); j++)"
 
         // Check if having  Latitude/Longitude. We will use those Latitude and Longitude as CVs if possible.
         EOS5SwathGrid_Set_LatLon_Flags(eos5grid, he5g.data_var_list);
@@ -910,7 +907,7 @@ void EOS5File::Add_EOS5File_Info(HE5Parser * strmeta_info, bool grids_mllcv)
 
         this->eos5cfgrids.push_back(eos5grid);
 
-    } // for(int i=0; i < strmeta_info->grid_list.size(); i++)
+    } // "for(int i=0; i < strmeta_info->grid_list.size(); i++)"
 
     // Adding this here seems a hack. 
     this->grids_multi_latloncvs = grids_mllcv;
@@ -953,7 +950,7 @@ void EOS5File::Add_EOS5File_Info(HE5Parser * strmeta_info, bool grids_mllcv)
             if (false == mapret2.second)
             throw5("The dimension name ", unique_dimname, " with the dimension size ", he5d.size, "is not unique");
 
-        } // for (int j=0; j <he5s.dim_list.size(); j++)
+        } // "for (int j=0; j <he5s.dim_list.size(); j++)"
 
         // Check if having  Latitude/Longitude.
         EOS5SwathGrid_Set_LatLon_Flags(eos5swath, he5s.geo_var_list);
@@ -963,7 +960,7 @@ void EOS5File::Add_EOS5File_Info(HE5Parser * strmeta_info, bool grids_mllcv)
         EOS5Handle_nonlatlon_dimcvars(he5s.geo_var_list, SWATH, he5s.name, dnames_to_geo1dvnames);
         eos5swath->dnames_to_geo1dvnames = dnames_to_geo1dvnames;
         this->eos5cfswaths.push_back(eos5swath);
-    } // for (int i=0; i < strmeta_info->swath_list.size(); i++)
+    } // "for (int i=0; i < strmeta_info->swath_list.size(); i++)"
 
     // Third Zonal average
     for (unsigned int i = 0; i < strmeta_info->za_list.size(); i++) {
@@ -995,14 +992,14 @@ void EOS5File::Add_EOS5File_Info(HE5Parser * strmeta_info, bool grids_mllcv)
             if (false == mapret2.second)
             throw5("The dimension name ", unique_dimname, " with the dimension size ", he5d.size, "is not unique");
 
-        } // for (int j=0; j <he5z.dim_list.size(); j++) 
+        } // "for (int j=0; j <he5z.dim_list.size(); j++) "
 
         // Using map for possible the third-D CVs.
         map<string, string> dnames_to_1dvnames;
         EOS5Handle_nonlatlon_dimcvars(he5z.data_var_list, ZA, he5z.name, dnames_to_1dvnames);
         eos5za->dnames_to_1dvnames = dnames_to_1dvnames;
         this->eos5cfzas.push_back(eos5za);
-    } // for(int i=0; i < strmeta_info->za_list.size(); i++)
+    } // "for(int i=0; i < strmeta_info->za_list.size(); i++)"
 
 // Debugging info,leave it here. They are very useful.
 #if 0
@@ -1129,7 +1126,7 @@ void EOS5File::EOS5SwathGrid_Set_LatLon_Flags(T* eos5gridswath, vector<HE5Var> &
                 has_g2dlat = true;
             else
                 throw1("The number of dimension should not be 0 for grids or swaths");
-        } // if ("Latitude" == he5v.name)
+        } // "if ("Latitude" == he5v.name)"
 
         if ("Longitude" == he5v.name) {
             find_lon = true;
@@ -1145,7 +1142,7 @@ void EOS5File::EOS5SwathGrid_Set_LatLon_Flags(T* eos5gridswath, vector<HE5Var> &
                 has_g2dlon = true;
             else
                 throw1("The number of dimension should not be 0 for grids or swaths");
-        } // if ("Longitude" == he5v.name)
+        } // "if ("Longitude" == he5v.name)"
 
         if (true == find_lat && true == find_lon) {
             if (true == has_1dlat && true == has_1dlon) eos5gridswath->has_1dlatlon = true;
@@ -1158,8 +1155,8 @@ void EOS5File::EOS5SwathGrid_Set_LatLon_Flags(T* eos5gridswath, vector<HE5Var> &
 
             eos5gridswath->has_nolatlon = false;
             break;
-        } // if (true == find_lat && true == find_lon) 
-    } // for (unsigned int i = 0; i < eos5varlist.size(); ++i)
+        } // "if (true == find_lat && true == find_lon) "
+    } // "for (unsigned int i = 0; i < eos5varlist.size(); ++i)"
 }
 
 // This function builds up the map from dimension names to coordinate variables
@@ -1245,8 +1242,10 @@ void EOS5File::Obtain_Var_NewName(Var *var)
     case GRID: {
         eos5typestr = "/GRIDS/";
         string eos5_groupname = Obtain_Var_EOS5Type_GroupName(var, vartype);
+#if 0
         // var->newname = ((1 == num_grids)?var->name:
         //  eos5typestr + eos5_groupname + fslash_str + var->name);
+#endif
         var->newname = eos5typestr + eos5_groupname + fslash_str + var->name;
     }
         break;
@@ -1254,16 +1253,20 @@ void EOS5File::Obtain_Var_NewName(Var *var)
     case SWATH: {
         eos5typestr = "/SWATHS/";
         string eos5_groupname = Obtain_Var_EOS5Type_GroupName(var, vartype);
+#if 0
         //  var->newname = ((1 == num_swaths)?var->name:
         //  eos5typestr + eos5_groupname + fslash_str + var->name);
+#endif
         var->newname = eos5typestr + eos5_groupname + fslash_str + var->name;
     }
         break;
     case ZA: {
         eos5typestr = "/ZAS/";
         string eos5_groupname = Obtain_Var_EOS5Type_GroupName(var, vartype);
+#if 0
         //  var->newname = ((1 == num_zas)?var->name:
         //  eos5typestr + eos5_groupname + fslash_str + var->name);
+#endif
         var->newname = eos5typestr + eos5_groupname + fslash_str + var->name;
     }
         break;
@@ -1278,7 +1281,7 @@ void EOS5File::Obtain_Var_NewName(Var *var)
         break;
     default:
         throw1("Non-supported EOS type");
-    } // switch(vartype)
+    } // "switch(vartype)"
 }
 
 // Get the HDF-EOS5 type: The type is either grids, swaths or zonal average
@@ -1345,8 +1348,8 @@ bool EOS5File::Obtain_Var_Dims(Var *var, HE5Parser * strmeta_info)
                     Set_NonParse_Var_Dims(eos5cfgrid, var, dimsizes_to_dimnames, num_grids, vartype);
                 }
             }
-        }// for (unsigned int i = 0; i < num_grids; ++i)
-    }// if (GRID == vartype)
+        }// "for (unsigned int i = 0; i < num_grids; ++i)"
+    }// "if (GRID == vartype)"
     else if (SWATH == vartype) {
         int num_swaths = strmeta_info->swath_list.size();
         for (int i = 0; i < num_swaths; ++i) {
@@ -1371,9 +1374,9 @@ bool EOS5File::Obtain_Var_Dims(Var *var, HE5Parser * strmeta_info)
                     map<hsize_t, string> dimsizes_to_dimnames = eos5cfswath->dimsizes_to_dimnames;
                     Set_NonParse_Var_Dims(eos5cfswath, var, dimsizes_to_dimnames, num_swaths, vartype);
                 }
-            } // if (he5s.name == Obtain_Var_EOS5Type_GroupName(var,vartype))
-        } // for (unsigned int i = 0; i < num_swaths; ++i)
-    } // else if (SWATH == vartype)
+            } // "if (he5s.name == Obtain_Var_EOS5Type_GroupName(var,vartype))"
+        } // "for (unsigned int i = 0; i < num_swaths; ++i)"
+    } // "else if (SWATH == vartype)"
 
     else if (ZA == vartype) {
 
@@ -1457,8 +1460,6 @@ bool EOS5File::Set_Var_Dims(T* eos5data, Var *var, vector<HE5Var> &he5var, const
 
             for (unsigned int j = 0; j < he5v.dim_list.size(); j++) {
                 HE5Dim he5d = he5v.dim_list.at(j);
-//cerr<<"he5d.dimname is "<<he5d.name <<endl;
-//cerr<<"he5d.dimsize is "<<he5d.size <<endl;
                 for (vector<Dimension *>::iterator ird = var->dims.begin(); ird != var->dims.end(); ++ird) {
 
                     if ((hsize_t) (he5d.size) == (*ird)->size) {
@@ -1479,7 +1480,7 @@ bool EOS5File::Set_Var_Dims(T* eos5data, Var *var, vector<HE5Var> &he5var, const
                         }
                     }
                 }
-            } // for (unsigned int j=0; j<he5v.dim_list.size();j++)
+            } // "for (unsigned int j=0; j<he5v.dim_list.size();j++)"
 
             // We have to go through the dimension list of this variable again to assure that every dimension has a name.
             // This is how that FakeDim is added. We still need it just in case. KY 2017-10-19
@@ -1487,8 +1488,8 @@ bool EOS5File::Set_Var_Dims(T* eos5data, Var *var, vector<HE5Var> &he5var, const
                 if ("" == (*ird)->name)
                     Create_Unique_DimName(eos5data, thisvar_dimname_set, *ird, num_groups, eos5type);
             }
-        } // if (he5v.name == var->name) 
-    } // for (unsigned int i = 0; i < he5var.size(); i++)
+        } // "if (he5v.name == var->name) "
+    } // "for (unsigned int i = 0; i < he5var.size(); i++)"
     return is_parsed;
 }
 
@@ -1549,7 +1550,6 @@ void EOS5File::Create_Unique_DimName(T*eos5data, set<string>& thisvar_dimname_se
 
     else { // No dimension names match or close to march this dimension name, we will create a fakedim. 
            // Check Add_One_FakeDim_Name in HDF5CF.cc Fakedimname must be as a string reference.
-           // "h5","NO DIMNAME dim size = "<<(int)(dim->size) <<endl;
         string Fakedimname = Create_Unique_FakeDimName(eos5data, eos5type);
         thisvar_dimname_set.insert(Fakedimname);
 
@@ -1580,7 +1580,6 @@ bool EOS5File::Check_All_DimNames(T* eos5data, string& dimname, hsize_t dimsize)
     bool ret_flag = false;
     for (map<string, hsize_t>::iterator im = eos5data->dimnames_to_dimsizes.begin();
         im != eos5data->dimnames_to_dimsizes.end(); ++im) {
-        // cerr<<"name to size"<< (*im).first <<"=> "<<(int)((*im).second) <<endl;
         // dimname must not be the same one since the same one is rejected.
         if (dimsize == (*im).second && dimname != (*im).first) {
             dimname = (*im).first;
@@ -1680,7 +1679,6 @@ int EOS5File::Check_EOS5Swath_FieldType(Var*var)
 
     if (tempflag != 0 && (var->fullpath.size() > geofield_relative_path.size())) {
         size_t field_pos_in_full_path = var->fullpath.size() - geofield_relative_path.size();
-//cerr<<"field_pos_in_full_path= "<<(int)field_pos_in_full_path <<endl;
         if (var->fullpath.rfind(geofield_relative_path, field_pos_in_full_path) != string::npos) tempflag = 1;
     }
     return tempflag;
@@ -1797,14 +1795,11 @@ void EOS5File::Handle_Grid_CVar(bool is_augmented)
 
     BESDEBUG("h5", "Coming to Handle_Grid_CVar"<<endl);
     if (true == is_augmented) {
-//cerr<<"IS Augmented "<<endl;
         // Create latitude/longitude based on the first XDim and YDim
         Handle_Augmented_Grid_CVar();
     }
     else {
-        // cerr<<"before this->eos5cfgrids.size() = " << this->eos5cfgrids.size() << endl;
         Remove_MultiDim_LatLon_EOS5CFGrid();
-        // cerr<<"this->eos5cfgrids.size() = " << this->eos5cfgrids.size() << endl;
         // If the grid size is 0, it must be a Grid file that cannot be handled
         // with the CF option, simply return with handling any coordinate variables.
         if (0 == this->eos5cfgrids.size()) return;
@@ -1967,9 +1962,7 @@ void EOS5File::Handle_Single_Augment_CVar(T* cfeos5data, EOS5Type eos5type)
 
                 // Since we have already checked if this file is augmented or not, we can safely
                 // compare the dimension name with the var name now.
-//cerr<<"dimension name "<<*its <<endl;
                 string tempdimname = HDF5CFUtil::obtain_string_after_lastslash(*its);
-//cerr<<"tempdimname "<<tempdimname <<endl;
 
                 // The added variable name is always the same as the dimension name.
                 if (tempdimname == (*irv)->name) {
@@ -1993,12 +1986,12 @@ void EOS5File::Handle_Single_Augment_CVar(T* cfeos5data, EOS5Type eos5type)
                 else {
                     ++irv;
                 }
-            } // if (true == is_augmented)
+            } // "if (true == is_augmented)"
             else {
                 ++irv;
             }
-        } // for (vector<Var *>::iterator irv = this->vars.begin();....
-    } // for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its)
+        } // "for (vector<Var *>::iterator irv = this->vars.begin();...."
+    } // "for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its)"
 
     for (vector<EOS5CVar *>::iterator irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
         its = tempvardimnamelist.find((*irv)->cfdimname);
@@ -2045,13 +2038,12 @@ void EOS5File::Remove_MultiDim_LatLon_EOS5CFGrid()
                     if (GRID == Get_Var_EOS5_Type(*irv) && ((*irv)->fullpath.size() > THIS_EOS5GRIDPATH.size())) {
 
                         string var_grid_name = Obtain_Var_EOS5Type_GroupName(*irv, GRID);
-                        if ((var_grid_name == (*irg)->name)) {
+                        if (var_grid_name == (*irg)->name) {
                             if (("Longitude" == (*irv)->name) || ("Latitude" == (*irv)->name)) {
                                 catch_latlon++;
                                 // Remove this var from the var vector since it becomes a cv.
                                 delete (*irv);
                                 irv = this->vars.erase(irv);
-                                //irv--;
                             }
                             else {
                                 ++irv;
@@ -2064,28 +2056,25 @@ void EOS5File::Remove_MultiDim_LatLon_EOS5CFGrid()
                     else {
                         ++irv;
                     }
-                } //  for (vector<Var *>::iterator irv = this->vars.begin() ...
+                } //  "for (vector<Var *>::iterator irv = this->vars.begin() ..."
                 if (2 == catch_latlon) {
-                    // "h5","coming to the catch "<<endl;
                     (*irg)->has_nolatlon = true;
                     (*irg)->has_2dlatlon = false;
                 }
 
-            } // if ((true == this->isaura) ...
+            } // "if ((true == this->isaura) ..."
             else { // remove this grid from the eos5cfgrids list.
                 delete (*irg);
                 irg = this->eos5cfgrids.erase(irg);
                 irg_erase = true;
-
-                //irg--;
             }
-        } // if (true  == (*irg) ...
+        } // "if (true  == (*irg) ..."
 
         if (false == irg_erase) {
             ++irg;
         }
 
-    } // for (vector <EOS5CFGrid *>::iterator irg = this->eos5cfgrids.begin() ...
+    } // "for (vector <EOS5CFGrid *>::iterator irg = this->eos5cfgrids.begin() ..."
 
     // Also remove >2d latlon grids.
     for (vector<EOS5CFGrid *>::iterator irg = this->eos5cfgrids.begin(); irg != this->eos5cfgrids.end();) {
@@ -2093,12 +2082,11 @@ void EOS5File::Remove_MultiDim_LatLon_EOS5CFGrid()
         if (true == (*irg)->has_g2dlatlon) {
             delete (*irg);
             irg = this->eos5cfgrids.erase(irg);
-            //irg--;
         }
         else {
             ++irg;
         }
-    } // for (vector <EOS5CFGrid *>::iterator irg = this->eos5cfgrids.begin() ...
+    } // "for (vector <EOS5CFGrid *>::iterator irg = this->eos5cfgrids.begin() ..."
 }
 
 // Handle single nonaugmented grid coordinate variables.
@@ -2127,7 +2115,6 @@ void EOS5File::Handle_Single_Nonaugment_Grid_CVar(EOS5CFGrid* cfgrid)
     }
 
     // Else handling non-latlon grids
-//cerr<<"tempvardim set size "<<tempvardimnamelist.size() <<endl;
     Handle_NonLatLon_Grid_CVar(cfgrid, tempvardimnamelist);
 
 }
@@ -2175,10 +2162,10 @@ bool EOS5File::Handle_Single_Nonaugment_Grid_CVar_OwnLatLon(EOS5CFGrid *cfgrid, 
                     // No need to remove back the iterator since it will go out of the loop.
                     find_latydim = true;
                     break;
-                } // if ("YDim" == HDF5CFUtil::obtain_string_after_lastslash(tempdimname))
-            } // if ((var_grid_name == cfgrid->name) && ((*irv)->name == "Latitude"))
-        } // if (GRID == Get_Var_EOS5_Type(*irv) ...
-    } // for (vector<Var *>::iterator irv = this->vars.begin() ...
+                } // <if ("YDim" == HDF5CFUtil::obtain_string_after_lastslash(tempdimname))>
+            } // <if ((var_grid_name == cfgrid->name) && ((*irv)->name == "Latitude"))>
+        } // <if (GRID == Get_Var_EOS5_Type(*irv) ...>
+    } // <for (vector<Var *>::iterator irv = this->vars.begin() ...>
 
     for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
 
@@ -2208,10 +2195,10 @@ bool EOS5File::Handle_Single_Nonaugment_Grid_CVar_OwnLatLon(EOS5CFGrid *cfgrid, 
                     this->vars.erase(irv);
                     find_lonxdim = true;
                     break;
-                } // if ("XDim" == HDF5CFUtil::obtain_string_after_lastslash(tempdimname))
-            } // if ((var_grid_name == cfgrid->name) && ((*irv)->name == "Longitude"))
-        } // if (GRID == Get_Var_EOS5_Type(*irv) ...
-    } // for (vector<Var *>::iterator irv = this->vars.begin(); ...
+                } // <if ("XDim" == HDF5CFUtil::obtain_string_after_lastslash(tempdimname))>
+            } // "if ((var_grid_name == cfgrid->name) && ((*irv)->name == "Longitude"))"
+        } // <if (GRID == Get_Var_EOS5_Type(*irv) ...>
+    } // for (vector<Var *>::iterator irv = this->vars.begin() ...
 
     for (vector<EOS5CVar *>::iterator irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
         its = tempvardimnamelist.find((*irv)->cfdimname);
@@ -2256,7 +2243,6 @@ bool EOS5File::Handle_Single_Nonaugment_Grid_CVar_EOS5LatLon(EOS5CFGrid *cfgrid,
         }
     }
 
-    //for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its) {
 
     for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end();) {
         if ("YDim" == HDF5CFUtil::obtain_string_after_lastslash(*its)) {
@@ -2278,7 +2264,7 @@ bool EOS5File::Handle_Single_Nonaugment_Grid_CVar_EOS5LatLon(EOS5CFGrid *cfgrid,
 
             Dimension* eos5cvar_dim = new Dimension((hsize_t) cfgrid->ydimsize);
             eos5cvar_dim->name = *its;
-            eos5cvar_dim->newname = (this->eos5cfgrids.size() == 1) ? "YDim" : (*its);
+            eos5cvar_dim->newname = (this->eos5cfgrids.size() == 1) ? "YDim" : *its;
             EOS5cvar->dims.push_back(eos5cvar_dim);
             EOS5cvar->cfdimname = eos5cvar_dim->name;
 
@@ -2306,7 +2292,6 @@ bool EOS5File::Handle_Single_Nonaugment_Grid_CVar_EOS5LatLon(EOS5CFGrid *cfgrid,
 
             for (unsigned int k = 0; k < 13; k++)
                 EOS5cvar->param[k] = cfgrid->param[k];
-//cerr<<"param "<< cfgrid->param[k];
 
             EOS5cvar->zone = cfgrid->zone;
             EOS5cvar->sphere = cfgrid->sphere;
@@ -2319,7 +2304,7 @@ bool EOS5File::Handle_Single_Nonaugment_Grid_CVar_EOS5LatLon(EOS5CFGrid *cfgrid,
             tempvardimnamelist.erase(its++);
             find_ydim = true;
 
-        } // if ("YDim" == HDF5CFUtil::obtain_string_after_lastslash(*its))
+        } // <if ("YDim" == HDF5CFUtil::obtain_string_after_lastslash(*its))>
         else if ("XDim" == HDF5CFUtil::obtain_string_after_lastslash(*its)) {
 
             // Create EOS5 Latitude CV
@@ -2327,8 +2312,10 @@ bool EOS5File::Handle_Single_Nonaugment_Grid_CVar_EOS5LatLon(EOS5CFGrid *cfgrid,
             EOS5cvar->name = "lon";
             Create_Added_Var_NewName_FullPath(GRID, cfgrid->name, EOS5cvar->name, EOS5cvar->newname,
                 EOS5cvar->fullpath);
+#if 0
             //EOS5cvar->newname = EOS5cvar->name;
             //EOS5cvar->fullpath = EOS5cvar->name;
+#endif
             if (cfgrid->eos5_projcode != HE5_GCTP_GEO) {
                 EOS5cvar->rank = 2;
                 EOS5cvar->dtype = H5FLOAT64;
@@ -2341,16 +2328,20 @@ bool EOS5File::Handle_Single_Nonaugment_Grid_CVar_EOS5LatLon(EOS5CFGrid *cfgrid,
             Dimension* eos5cvar_dim = NULL;
             if (EOS5cvar->rank == 2) {
                 eos5cvar_dim = new Dimension((hsize_t) cfgrid->ydimsize);
+#if 0
                 //eos5cvar_dim->name = EOS5cvar->name;
+#endif
                 eos5cvar_dim->name = ydim_full_path;
                 eos5cvar_dim->newname = (this->eos5cfgrids.size() == 1) ? "YDim" : ydim_full_path;
                 EOS5cvar->dims.push_back(eos5cvar_dim);
             }
 
             eos5cvar_dim = new Dimension((hsize_t) cfgrid->xdimsize);
+#if 0
             //eos5cvar_dim->name = EOS5cvar->name;
+#endif
             eos5cvar_dim->name = *its;
-            eos5cvar_dim->newname = (this->eos5cfgrids.size() == 1) ? "XDim" : (*its);
+            eos5cvar_dim->newname = (this->eos5cfgrids.size() == 1) ? "XDim" : *its;
             EOS5cvar->dims.push_back(eos5cvar_dim);
             EOS5cvar->cfdimname = eos5cvar_dim->name;
 
@@ -2379,11 +2370,11 @@ bool EOS5File::Handle_Single_Nonaugment_Grid_CVar_EOS5LatLon(EOS5CFGrid *cfgrid,
             tempvardimnamelist.erase(its++);
             find_xdim = true;
 
-        } // else if ("XDim" == HDF5CFUtil::obtain_string_after_lastslash(*its))
+        } // "else if ("XDim" == HDF5CFUtil::obtain_string_after_lastslash(*its))"
         else
             ++its;
         if (true == find_xdim && true == find_ydim) break;
-    } // for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its)
+    } // <for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its)>
 
     return (true == find_xdim && true == find_ydim);
 }
@@ -2407,8 +2398,6 @@ void EOS5File::Handle_NonLatLon_Grid_CVar(EOS5CFGrid *cfgrid, set<string>& tempv
 
                     //Find it, create a coordinate variable.
                     EOS5CVar *EOS5cvar = new EOS5CVar(*irv);
-//cerr<<"Handling 3rd CV variable new name is "<<(*irv)->newname <<endl;
-//cerr<<"(*irv)->total_elems is "<<(*irv)->total_elems <<endl;
 
                     // Still keep the original dimension name to avoid the nameclashing when
                     // one grid and one swath and one za occur in the same file
@@ -2422,7 +2411,6 @@ void EOS5File::Handle_NonLatLon_Grid_CVar(EOS5CFGrid *cfgrid, set<string>& tempv
                     // Remove this var from the var vector since it becomes a cv.
                     delete (*irv);
                     irv = this->vars.erase(irv);
-                    //irv--;
                     num_dimnames--;
                     if (0 == num_dimnames) has_dimnames = false;
                 } // if (GRID == Get_Var_EOS5_Type(*irv) ...
@@ -2589,9 +2577,7 @@ void EOS5File::Handle_Swath_CVar(bool isaugmented)
         else {
             delete (*irs);
             irs = this->eos5cfswaths.erase(irs);
-            //irs--;
         }
-//cerr<<"eos5 cf swath name "<<(*irs)->name <<endl;
     } // for (vector <EOS5CFSwath *>::iterator irs = this->eos5cfswaths.begin();
 }
 
@@ -2606,7 +2592,6 @@ void EOS5File::Handle_Single_1DLatLon_Swath_CVar(EOS5CFSwath *cfswath, bool is_a
     string EOS5SWATHPATH = "/HDFEOS/SWATHS/";
     string fslash_str = "/";
     string THIS_EOS5SWATHPATH = EOS5SWATHPATH + cfswath->name + fslash_str;
-    //bool find_lat = false;
 #if 0
     for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its)
     cerr<<"Dimension name befor latitude " << *its << endl;
@@ -2683,7 +2668,6 @@ void EOS5File::Handle_Single_1DLatLon_Swath_CVar(EOS5CFSwath *cfswath, bool is_a
                     if (var_path_after_swathname == (*irv)->name) {
                         delete (*irv);
                         irv = this->vars.erase(irv);
-                        //irv--;
                     }
                     else {
                         ++irv;
@@ -2741,7 +2725,6 @@ void EOS5File::Handle_Single_2DLatLon_Swath_CVar(EOS5CFSwath *cfswath, bool is_a
                 // Remove this var from the var vector since it becomes a cv.
                 delete (*irv);
                 irv = this->vars.erase(irv);
-                //irv--;
                 find_lat = true;
             } // if ( (var_swath_name == cfswath->name) && ...
             else if ((var_swath_name == cfswath->name) && ((*irv)->name == "Longitude")) {
@@ -2762,7 +2745,6 @@ void EOS5File::Handle_Single_2DLatLon_Swath_CVar(EOS5CFSwath *cfswath, bool is_a
                 // Remove this var from the var vector since it becomes a cv.
                 delete (*irv);
                 irv = this->vars.erase(irv);
-                //irv--;
                 find_lon = true;
 
             } // else if ( (var_swath_name == cfswath->name) && ...
@@ -2830,7 +2812,6 @@ void EOS5File::Handle_Single_2DLatLon_Swath_CVar(EOS5CFSwath *cfswath, bool is_a
                     if (var_path_after_swathname == (*irv)->name) {
                         delete (*irv);
                         irv = this->vars.erase(irv);
-                        //irv--;
                     }
                     else {
                         ++irv;
@@ -3128,7 +3109,6 @@ void EOS5File::Adjust_Per_Var_Dim_NewName_Before_Flattening(T* var, bool mixed_e
         eos5typestr = "/SWATHS/";
         if (false == mixed_eos5type) {
             var->newname = ((1 == num_swaths) ? var->name : var->newname.substr(eos5typestr.size()));
-//cerr<<"var->newname "<<var->newname <<endl;
             if (num_swaths > 1) {
                 for (vector<Dimension *>::iterator ird = var->dims.begin(); ird != var->dims.end(); ird++) {
                     if ((*ird)->newname.size() <= eos5typestr.size())
@@ -3254,9 +3234,10 @@ void EOS5File::Handle_Obj_NameClashing(bool include_attr)
     if (true == include_attr) {
         Handle_EOS5CVar_AttrNameClashing();
     }
-
+#if 0
     //if (this->cvars.size() >0) 
     //  Handle_DimNameClashing();
+#endif
 }
 
 // Handle EOS5 coordinate variable name clashing
@@ -3339,7 +3320,9 @@ void EOS5File::Handle_DimNameClashing()
     // First: Generate the dimset/dimvar based on coordinate variables.
     for (vector<EOS5CVar *>::iterator irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
         for (vector<Dimension *>::iterator ird = (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ird) {
+#if 0
             //setret = dimnameset.insert((*ird)->newname);
+#endif
             setret = dimnameset.insert((*ird)->name);
             if (setret.second) vdims.push_back(*ird);
         }
@@ -3351,7 +3334,9 @@ void EOS5File::Handle_DimNameClashing()
 
     for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
         for (vector<Dimension *>::iterator ird = (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ird) {
+#if 0
             //setret = dimnameset.insert((*ird)->newname);
+#endif
             setret = dimnameset.insert((*ird)->name);
             if (setret.second) vdims.push_back(*ird);
         }
@@ -3540,15 +3525,16 @@ void EOS5File::Handle_EOS5CVar_Unit_Attr()
                     if ((lat_cf_unit_attrvalue != units_value)
                         && (((*irv)->name == "Latitude") || ((this->eos5cfzas.size() > 0) && ((*irv)->name == "nLats")))) {
                         units_value = lat_cf_unit_attrvalue;
+#if 0
 //cerr<<"coming to obtain the correct units_value: "<<units_value <<endl;
 //cerr<<"cvar name is "<<(*irv)->newname <<endl;
+#endif
                         (*ira)->value.resize(units_value.size());
                         if (H5FSTRING == (*ira)->dtype) (*ira)->fstrsize = units_value.size();
                         // strsize is used by both fixed and variable length strings.
                         (*ira)->strsize.resize(1);
                         (*ira)->strsize[0] = units_value.size();
                         copy(units_value.begin(), units_value.end(), (*ira)->value.begin());
-                        //string tempstring((*ira)->value.begin(), (*ira)->value.end());
                     }
                     else if ((lon_cf_unit_attrvalue != units_value) && (*irv)->name == "Longitude") {
                         units_value = lon_cf_unit_attrvalue;
@@ -3792,7 +3778,8 @@ void EOS5File::Handle_Coor_Attr()
 
     if (true == has_2dlatlon_cv) {
 
-        string dimname1, dimname2;
+        string dimname1;
+        string dimname2;
         for (vector<EOS5CVar *>::iterator ircv = this->cvars.begin(); ircv != this->cvars.end(); ++ircv) {
             if (true == (*ircv)->is_2dlatlon) {
                 dimname1 = (((*ircv)->dims)[0])->name;
@@ -3922,7 +3909,6 @@ void EOS5File::Create_Missing_CV(T* eos5data, EOS5CVar *EOS5cvar, const string& 
         eos5cvar_dim->newname = reduced_dimname;
     else
         eos5cvar_dim->newname = dimname;
-//cerr<<"eos5 missing cv name is "<<EOS5cvar->newname <<endl;
 
     EOS5cvar->dims.push_back(eos5cvar_dim);
     EOS5cvar->cfdimname = dimname;
@@ -3993,7 +3979,6 @@ void EOS5File::Handle_SpVar()
                 multimap<string, string>::iterator itmm;
                 for (itmm = dimname_to_dupdimnamelist.begin(); itmm != dimname_to_dupdimnamelist.end(); ++itmm) {
 
-                    //cerr<<"the first dim. name is "<<(*itmm).first <<endl;
                     // Find the original dimension(the coordinate variable)
                     if ((*ircv)->cfdimname == (*itmm).first) {
 
@@ -4006,13 +3991,12 @@ void EOS5File::Handle_SpVar()
                                 //if((*irv2)->cfdimname == (*ircv)->cfdimname) {
                                 if ((*irv2)->cfdimname == (*itmm).second) {
 
-                                    //cerr<<"find the duplicate dimension name "<<endl;
+                                    //find the duplicate dimension name 
                                     string dup_var_name = (*irv2)->newname;
                                     Replace_Var_Info((*ircv), (*irv2));
                                     // The following two lines are key to make sure duplicate CV
                                     //  using a different name but keep all other info.
                                     (*irv2)->newname = dup_var_name;
-//cerr<<"EOS5CVar new name at special var is "<<(*irv2)->newname <<endl;
                                     (*irv2)->getDimensions()[0]->newname = dup_var_name;
                                 }
                             }

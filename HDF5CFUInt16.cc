@@ -42,9 +42,8 @@ HDF5CFUInt16::HDF5CFUInt16(const string &n, const string &d) : UInt16(n, d)
 {
 }
 
-HDF5CFUInt16::HDF5CFUInt16(const string &n, const string &d,const string &d_f) : UInt16(n, d)
+HDF5CFUInt16::HDF5CFUInt16(const string &n, const string &d,const string &d_f) : UInt16(n, d),filename(d_f)
 {
-    filename = d_f;
 }
 
 
@@ -78,10 +77,10 @@ bool HDF5CFUInt16::read()
     }
 
     try {
-	dods_uint16 buf;
-	get_data(dset_id, (void *) &buf);
-	set_read_p(true);
-	set_value(buf);
+	    dods_uint16 buf;
+	    get_data(dset_id, (void *) &buf);
+	    set_read_p(true);
+	    set_value(buf);
 
         // Release the handles.
         if (H5Dclose(dset_id) < 0) {
