@@ -1,3 +1,12 @@
+News for 3.20.4
+
+Hk-351 Improved Jpeg2000 and GeoTiff responses.
+HK-352 Improved Jpeg2000 and GeoTiff responses.
+
+HK-22 Repaired maximum response size limits feature.
+
+Ironed out a number of issues with sonar scan builds.
+
 News for version 3.20.3
 
 Multiple bug fixes (See ChangeLog for specifics)

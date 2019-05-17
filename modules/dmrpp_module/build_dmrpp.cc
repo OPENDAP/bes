@@ -487,7 +487,7 @@ int main(int argc, char*argv[])
             TheBESKeys::ConfigFile = getopt.optarg;
             break;
         case 'h':
-            cerr << "build_dmrpp [-v] -c <bes.conf> -f <data file>  [-u <href url>] | build_dmrpp -f <data file> -r <dmr file> build_dmrpp -h" << endl;
+            cerr << "build_dmrpp [-v] -c <bes.conf> -f <data file>  [-u <href url>] | build_dmrpp -f <data file> -r <dmr file> | build_dmrpp -h" << endl;
             exit(1);
         default:
             break;

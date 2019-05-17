@@ -1,3 +1,7 @@
+bes (3.20.4-1) trusty; urgency=medium
+
+  * Bugs fixes and production rule changes
+
 bes (3.20.3-1) trusty; urgency=medium
 
   * Bugs, roi() function fixes, Added Docker builds for debian

@@ -44,4 +44,5 @@ BES.ProcessManagerMethod=multiple
 
 BES.DefaultResponseMethod=POST
 
-FONg.TempDirectory=@abs_top_srcdir@/tests
+FONg.TempDirectory = @abs_top_srcdir@/tests
+FONg.GeoTiff.band.type.byte = true

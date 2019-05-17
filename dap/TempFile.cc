@@ -130,16 +130,20 @@ TempFile::~TempFile()
             }
         }
     }
+    catch (BESError &e) {
+        // This  protects against BESLog (i.e., ERROR) throwing an exception.
+        // If BESLog has failed, we cannot log the error, punt and write to stderr.
+        cerr << "Could not close temporary file '" << d_fname << "' due to an error in BESlog (" << e.get_verbose_message() << ").";
+    }
     catch (...) {
-        // Do nothing. This just protects against BESLog (i.e., ERROR)
-        // throwing an exception
+        cerr << "Could not close temporary file '" << d_fname << "' due to an error in BESlog.";
     }
 
     open_files->erase(d_fname);
 
     if (open_files->size() == 0) {
         if (sigaction(SIGPIPE, &cached_sigpipe_handler, 0)) {
-            throw BESInternalFatalError("Could not register a handler to catch SIGPIPE.", __FILE__, __LINE__);
+            ERROR(string("Could not register a handler to catch SIGPIPE. ").append("(").append(strerror(errno)).append(")"));
         }
     }
 }
