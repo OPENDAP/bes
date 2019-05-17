@@ -49,7 +49,7 @@ struct coords {
  * @param keyVals return value param containing the STARE info
  */
 void findLatLon(std::string dataUrl, const float64 level,
-	const float64 buildlevel, vector<coords> &keyVals) {
+	const float64 buildlevel, vector<int> &xArray, vector<int> &yArray, vector<float> &latArray, vector<float> &lonArray, vector<int> &stareArray) {
 	//Create an htmInterface that will be used to get the STARE index
 	htmInterface htm(level, buildlevel);
 	const SpatialIndex &index = htm.index();
@@ -112,8 +112,20 @@ void findLatLon(std::string dataUrl, const float64 level,
 		coords indexVals = coords();
 		std::unordered_map<float, struct coords> indexMap;
 
+#if 0
+		//Taken out because CF doesn't support compound types,
+		//	so each variable will need to be stored in its own array
+		// -kln 5/17/19
+
 		//Array to store the key and values of the indexMap that will be used to write the hdf5 file
 		keyVals.resize(size_x * size_y);
+#endif
+
+		xArray.resize(lat.size());
+		yArray.resize(lat.size());
+		latArray.resize(lat.size());
+		lonArray.resize(lat.size());
+		stareArray.resize(lat.size());
 
 		//Declare the beginning of the vectors here rather than inside the loop to save compute time
 		//vector<float>::iterator i_begin = lat.begin();		FIXME: Probably not needed since we just use a single dimension array
@@ -138,12 +150,25 @@ void findLatLon(std::string dataUrl, const float64 level,
 			//Map the STARE index value to the x,y indices
 			indexMap[indexVals.stareIndex] = indexVals;
 
+			//Store the values calculated for indexVals and store them in their arrays to be used in the hdf5 file
+			xArray[arrayLoc] = indexVals.x;
+			yArray[arrayLoc] = indexVals.y;
+			latArray[arrayLoc] = *i;
+			lonArray[arrayLoc] = *j;
+			stareArray[arrayLoc] = indexVals.stareIndex;
+
+#if 0
+			//Taken out because CF doesn't support compound types,
+			//	so each variable will need to be stored in its own array
+			// -kln 5/17/19
+
 			//Store the same previous values inside the coords vector for use in the hdf5 file
 			keyVals[arrayLoc].x = indexVals.x;
 			keyVals[arrayLoc].y = indexVals.y;
 			keyVals[arrayLoc].lat = *i;
 			keyVals[arrayLoc].lon = *j;
 			keyVals[arrayLoc].stareIndex = indexVals.stareIndex;
+#endif
 
 			arrayLoc++;
 		}
@@ -157,17 +182,17 @@ void findLatLon(std::string dataUrl, const float64 level,
 /*************
  * HDF5 Stuff *
  *************/
-void writeHDF5(const string &filename, const vector<coords> &keyVals) {
-	hid_t file, dataset;
-	hid_t dataTypes, dataspace; /* handles */
+void writeHDF5(const string &filename, const vector<int> &xArray, const vector<int> &yArray, const vector<float> &latArray, const vector<float> &lonArray, const vector<int> &stareArray) {
+	hid_t file, datasetX, datasetY, datasetLat, datasetLon, datasetStare;
+	hid_t dataspace; /* handle */
 
 	//Used to store the the size of the array.
 	// In other cases where the array is more than 1 dimension each dimension's length would be stored in this array.
-	hsize_t arrayLength[1] = { keyVals.size() };
+	hsize_t arrayLength[1] = { xArray.size() };
 
 	//Allows us to use hdf5 1.10 generated files with hdf5 1.8
 	// !---Must be removed if a feature from 1.10 is required to use---!
-	// kln - 5/16/19
+	// -kln 5/16/19
 	hid_t fapl = H5Pcreate (H5P_FILE_ACCESS);
 #ifdef H5F_LIBVER_V18
 	H5Pset_libver_bounds (fapl, H5F_LIBVER_EARLIEST, H5F_LIBVER_V18);
@@ -181,6 +206,11 @@ void writeHDF5(const string &filename, const vector<coords> &keyVals) {
 	//The rank is used to determine the dimensions for the dataspace
 	//	Since we only use a one dimension array we can always assume the Rank should be 1
 	dataspace = H5Screate_simple(1 /*RANK*/, arrayLength, NULL);
+
+#if 0
+	//Taken out because CF doesn't support compound types,
+	//	so each variable will need to be stored in its own array
+	// -kln 5/17/19
 
 	/*
 	 * Create the memory datatype.
@@ -203,18 +233,47 @@ void writeHDF5(const string &filename, const vector<coords> &keyVals) {
 	VERBOSE(cerr << "Creating dataset: " << datasetName << " -> ");
 	dataset = H5Dcreate2(file, datasetName, dataTypes, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 
-	/*
-	 * Write the data to the dataset
-	 */
 	VERBOSE(cerr << "Writing data to dataset" << endl);
 	H5Dwrite(dataset, dataTypes, H5S_ALL, H5S_ALL, H5P_DEFAULT, &keyVals[0]);
+#endif
+
+	/*
+	 * Create the datasets
+	 */
+	const char *datasetName = "X";
+	VERBOSE(cerr << "Creating dataset: " << datasetName << " -> ");
+	datasetX = H5Dcreate2(file, datasetName, H5T_NATIVE_INT, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+
+	datasetName = "Y";
+	VERBOSE(cerr << "Creating dataset: " << datasetName << " -> ");
+	datasetY = H5Dcreate2(file, datasetName, H5T_NATIVE_INT, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+
+	datasetName = "Latitude";
+	VERBOSE(cerr << "Creating dataset: " << datasetName << " -> ");
+	datasetLat = H5Dcreate2(file, datasetName, H5T_NATIVE_FLOAT, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+
+	datasetName = "Longitude";
+	VERBOSE(cerr << "Creating dataset: " << datasetName << " -> ");
+	datasetLon = H5Dcreate2(file, datasetName, H5T_NATIVE_FLOAT, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+
+	datasetName = "Stare Index";
+	VERBOSE(cerr << "Creating dataset: " << datasetName << " -> ");
+	datasetStare = H5Dcreate2(file, datasetName, H5T_NATIVE_INT, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+
+	/*
+	 * Write the data to the datasets
+	 */
+	VERBOSE(cerr << "Writing data to dataset" << endl);
+	H5Dwrite(datasetX, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, &xArray[0]);
+	H5Dwrite(datasetY, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, &yArray[0]);
+	H5Dwrite(datasetLat, H5T_NATIVE_FLOAT, H5S_ALL, H5S_ALL, H5P_DEFAULT, &latArray[0]);
+	H5Dwrite(datasetLon, H5T_NATIVE_FLOAT, H5S_ALL, H5S_ALL, H5P_DEFAULT, &lonArray[0]);
+	H5Dwrite(datasetStare, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, &stareArray[0]);
 
 	/*
 	 * Close/release resources.
 	 */
 	H5Sclose(dataspace);
-	H5Tclose(dataTypes);
-	H5Dclose(dataset);
 	H5Fclose(file);
 
 	VERBOSE(cerr << "Data written to file: " << filename << endl);
@@ -259,8 +318,22 @@ int main(int argc, char *argv[]) {
 	}*/
 
 	try {
+		//Need to store each value in its own array
+		vector<int> xVals;
+		vector<int> yVals;
+		vector<float> latVals;
+		vector<float> lonVals;
+		vector<int> stareVals;
+
+		findLatLon(dataUrl, level, build_level, xVals, yVals, latVals, lonVals, stareVals);
+#if 0
+		//Taken out because CF doesn't support compound types,
+		//	so each variable will need to be stored in its own array
+		// -kln 5/17/19
+
 		vector<coords> keyVals;
 		findLatLon(dataUrl, level, build_level, keyVals);
+#endif
 
 		if (newName.empty()) {
 			//Locate the granule name inside the provided url.
@@ -272,7 +345,7 @@ int main(int argc, char *argv[]) {
 			newName = granuleName.substr(0, findDot) + "_sidecar.h5";
 		}
 
-		writeHDF5(newName, keyVals);
+		writeHDF5(newName, xVals, yVals, latVals, lonVals, stareVals);
 	}
 	catch(libdap::Error &e) {
 		cerr << "Error: " << e.get_error_message() << endl;
