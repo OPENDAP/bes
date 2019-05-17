@@ -666,6 +666,14 @@ AC_CHECK_HDF5(
   $ac_bes_dependencies_prefix
 )
 
+AC_CHECK_STARE(
+  [AM_CONDITIONAL([BUILD_STARE],[true])
+  ],
+  [AC_MSG_WARN([STARE library not found.])
+  AM_CONDITIONAL([BUILD_STARE],[false])
+  ],
+  $ac_bes_dependencies_prefix
+)
 dnl NCML module test
 dnl
 dnl Look for the minimum version of the icu libs and headers
@@ -866,6 +874,7 @@ AC_CONFIG_FILES([Makefile
 		 functions/tests/Makefile
 		 functions/tests/atlocal
 		 functions/unit-tests/Makefile
+		 functions/stare/Makefile
 		 ])
 dnl These need to be moved into the AC_CONFIG_FILES above 
 dnl when geo-functions is reenabled.
