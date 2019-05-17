@@ -25,7 +25,7 @@
 // Suite 203, Champaign, IL 61820  
 
 #ifndef _HDF5Structure_h
-#define _HDF5Structure_h 1
+#define _HDF5Structure_h 
 
 #include <string>
 #include <H5Ipublic.h>

@@ -2,7 +2,7 @@
 // -*- C++ -*-
 
 #ifndef _config_hdf5_h
-#define _config_hdf5_h 1
+#define _config_hdf5_h 
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>

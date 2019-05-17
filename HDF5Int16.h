@@ -25,7 +25,7 @@
 // Suite 203, Champaign, IL 61820  
 
 #ifndef _HDF5Int16_h
-#define _HDF5Int16_h 1
+#define _HDF5Int16_h 
 
 #include <stdlib.h>
 #include <stdio.h>

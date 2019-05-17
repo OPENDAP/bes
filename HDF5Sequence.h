@@ -25,7 +25,7 @@
 // Suite 203, Champaign, IL 61820  
 
 #ifndef _HDF5Sequence_h
-#define _HDF5Sequence_h 1
+#define _HDF5Sequence_h 
 
 #include "Sequence.h"
 #include "h5get.h"

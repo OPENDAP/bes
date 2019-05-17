@@ -66,12 +66,12 @@ enum CVType { CV_EXIST,CV_LAT_MISS,CV_LON_MISS,CV_NONLATLON_MISS,CV_FILLINDEX,CV
 // Angle Conversion Codes, this is for using GCTP to calculate lat/lon. Since currently we only have HDF-EOS5 grid products
 // to test and we adopt the way how HDF-EOS uses GCTP, we still keep HDF-EOS5 mark(HE5) although our functions can be
 // used to handle non-HDF-EOS5 products.
-#define HE5_HDFE_RAD_DEG      0
-#define HE5_HDFE_DEG_RAD      1
-#define HE5_HDFE_DMS_DEG      2
-#define HE5_HDFE_DEG_DMS      3
-#define HE5_HDFE_RAD_DMS      4
-#define HE5_HDFE_DMS_RAD      5
+const int HE5_HDFE_RAD_DEG=0;
+const int HE5_HDFE_DEG_RAD=1;
+const int HE5_HDFE_DMS_DEG=2;
+const int HE5_HDFE_DEG_DMS=3;
+const int HE5_HDFE_RAD_DMS=4;
+const int HE5_HDFE_DMS_RAD=5;
 
 
 

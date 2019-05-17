@@ -163,8 +163,8 @@ GMSPVar::GMSPVar(Var*var) {
 }
 
 
-GMFile::GMFile(const char*path, hid_t file_id, H5GCFProduct product_type, GMPattern gproduct_pattern):
-File(path,file_id), product_type(product_type),gproduct_pattern(gproduct_pattern),iscoard(false),have_nc4_non_coord(false)
+GMFile::GMFile(const char*file_fullpath, hid_t file_id, H5GCFProduct product_type, GMPattern gproduct_pattern):
+File(file_fullpath,file_id), product_type(product_type),gproduct_pattern(gproduct_pattern),iscoard(false),have_nc4_non_coord(false)
 {
 
 }
@@ -213,7 +213,7 @@ string GMFile::get_CF_string(string s) {
 }
 
 // Retrieve all the HDF5 information.
-void GMFile::Retrieve_H5_Info(const char *path,
+void GMFile::Retrieve_H5_Info(const char *file_fullpath,
                               hid_t file_id, bool include_attr) {
 
     BESDEBUG("h5", "Coming to Retrieve_H5_Info()"<<endl);
@@ -222,9 +222,9 @@ void GMFile::Retrieve_H5_Info(const char *path,
     if (product_type == Mea_SeaWiFS_L2 || product_type == Mea_SeaWiFS_L3
         || GPMS_L3 == product_type  || GPMM_L3 == product_type || GPM_L1 == product_type || OBPG_L3 == product_type
         || Mea_Ozone == product_type || General_Product == product_type)  
-        File::Retrieve_H5_Info(path,file_id,true);
+        File::Retrieve_H5_Info(file_fullpath,file_id,true);
     else 
-        File::Retrieve_H5_Info(path,file_id,include_attr);
+        File::Retrieve_H5_Info(file_fullpath,file_id,include_attr);
 
 }
 

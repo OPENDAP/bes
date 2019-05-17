@@ -25,7 +25,7 @@
 // Suite 203, Champaign, IL 61820  
 
 #ifndef _hdf5Int64_h
-#define _hdf5Int64_h 1
+#define _hdf5Int64_h 
 
 #include <string>
 

@@ -30,7 +30,7 @@
 
 
 #ifndef A_HDF5Module_H
-#define A_HDF5Module_H 1
+#define A_HDF5Module_H 
 
 #include "BESAbstractModule.h"
 

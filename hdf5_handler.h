@@ -37,12 +37,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 #ifndef _hdf5_handler_H
 #define _hdf5_handler_H
-/// Maximum number of dimensions in an array(default option only).
-#define DODS_MAX_RANK 30
-/// Maximum length of variable or attribute name(default option only).
-#define DODS_NAMELEN    1024
-/// The special DAS attribute name for HDF5 path information from the top(root) group.
-#define HDF5_OBJ_FULLPATH "HDF5_OBJ_FULLPATH"
 
 #include "config_hdf5.h"
 
@@ -63,6 +57,14 @@
 #include <ConstraintEvaluator.h>
 #include <InternalErr.h>
 #include <hdf5.h>
+
+/// Maximum number of dimensions in an array(default option only).
+const int DODS_MAX_RANK=30;
+/// Maximum length of variable or attribute name(default option only).
+const int DODS_NAMELEN=1024;
+/// The special DAS attribute name for HDF5 path information from the top(root) group.
+const std::string HDF5_OBJ_FULLPATH="HDF5_OBJ_FULLPATH";
+
 
 /// \brief A structure for DDS generation
 typedef struct DS {

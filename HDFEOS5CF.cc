@@ -156,11 +156,11 @@ string EOS5File::get_CF_string(string s)
 }
 
 // Retrieve the HDF5 information for HDF-EOS5 
-void EOS5File::Retrieve_H5_Info(const char *path, hid_t file_id, bool /*include_attr*/) 
+void EOS5File::Retrieve_H5_Info(const char *file_fullpath, hid_t file_id, bool /*include_attr*/) 
 {
     // Since we need to check the attribute info in order to determine if the file is augmented to netCDF-4,
     // we need to retrieve the attribute info also.
-    File::Retrieve_H5_Info(path, file_id, true);
+    File::Retrieve_H5_Info(file_fullpath, file_id, true);
 }
 
 void EOS5File::Retrieve_H5_CVar_Supported_Attr_Values()
@@ -1771,10 +1771,11 @@ void EOS5File::Handle_CVar()
 
     // Handle coordinate variables for grids.
     if (this->eos5cfgrids.size() > 0)
-
-    Handle_Grid_CVar(is_augmented);
-    if (this->eos5cfswaths.size() > 0) Handle_Swath_CVar(is_augmented);
-    if (this->eos5cfzas.size() > 0) Handle_Za_CVar(is_augmented);
+        Handle_Grid_CVar(is_augmented);
+    if (this->eos5cfswaths.size() > 0) 
+        Handle_Swath_CVar(is_augmented);
+    if (this->eos5cfzas.size() > 0) 
+        Handle_Za_CVar(is_augmented);
 
 #if 0
     for (vector<EOS5CVar *>::iterator irv = this->cvars.begin();
@@ -4116,7 +4117,7 @@ void EOS5File::Handle_SpVar_Attr()
 }
 void EOS5File::Adjust_Obj_Name() 
 {
-
+    //Intentionally unimplemented, may have use cases for the future.
 }
 
 bool EOS5File::Have_Grid_Mapping_Attrs() {

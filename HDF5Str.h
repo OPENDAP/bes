@@ -25,19 +25,21 @@
 // Suite 203, Champaign, IL 61820  
 
 #ifndef _hdf5str_h
-#define _hdf5str_h 1
+#define _hdf5str_h 
 
 #include <string>
 #include <H5Ipublic.h>
 
 #include <limits.h>
 
+#if 0
 #ifndef STR_FLAG
 #define STR_FLAG 1
 #endif
 
 #ifndef STR_NOFLAG
 #define STR_NOFLAG 0
+#endif
 #endif
 
 #include "Str.h"

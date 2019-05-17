@@ -25,7 +25,7 @@
 // HDF5RequestHandler.h
 
 #ifndef I_HDF5RequestHandler_H
-#define I_HDF5RequestHandler_H 1
+#define I_HDF5RequestHandler_H 
 
 #include<string>
 #include<map>
