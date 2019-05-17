@@ -106,6 +106,7 @@ void FONcStructure::convert(vector<string> embed)
         if (bt->send_p()) {
             BESDEBUG("fonc", "FONcStructure::convert - converting " << bt->name() << endl);
             FONcBaseType *fbt = FONcUtils::convert(bt);
+            fbt->setVersion(this->_ncVersion);
             _vars.push_back(fbt);
             fbt->convert(embed);
         }

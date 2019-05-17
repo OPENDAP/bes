@@ -15,3 +15,12 @@ tell if the hdf5 handler can read these files. If it cannot, then
 it will be impossible to get a DMR file for input to build_dmrpp to
 build the DMR++ file for this code. The new test files were made
 using the mkChunkNewTypes.py script. jhrg 
+
+4/3/19
+- Renamed conf files to something less tedious, bes.hdf5.cf.conf(.in)
+
+- Removed  bes.hdf5.cf.conf from git as it will now be built.
+
+- Created "check-local" and "clean-local" targets that cause the 
+bes.hdf5.cf.conf gile to be built correctly for use with get_dmrpp.sh
+This all happens when running "make check"

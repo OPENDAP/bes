@@ -175,7 +175,7 @@ public:
             ostringstream c;
             c << "type" << i;
 
-            DBG(cerr << "    looking for " << s << endl);
+            DBG(cerr << "    looking for " << s.str() << endl);
 
             BESContainer *d = cpv->look_for(s.str());
             CPPUNIT_ASSERT(d);
@@ -220,7 +220,7 @@ public:
                 ostringstream c;
                 c << "type" << i;
 
-                DBG(cerr << "    looking for " << s << endl);
+                DBG(cerr << "    looking for " << s.str() << endl);
 
                 BESContainer *d = cpv->look_for(s.str());
                 CPPUNIT_ASSERT(d);

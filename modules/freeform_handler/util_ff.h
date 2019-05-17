@@ -86,6 +86,8 @@ bool is_float_type(BaseType *btp);
 dods_uint32 get_integer_value(BaseType *var) throw(InternalErr);
 dods_float64 get_float_value(BaseType *var) throw(InternalErr);
 
+string get_Regex_format_file(const string &filename);
+
 #endif // _util_ff_h_
 
 
