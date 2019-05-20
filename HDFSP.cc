@@ -467,71 +467,82 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
                                         " number of field record ", nelms," is wrong.");
                             }
 
+                            string err_msg;
+                            bool data_buf_err = false;
+                            bool VS_fun_err = false;
+
                             // Allocate data buf
                             char *databuf = (char *) malloc (fieldsize * nelms);
                             if (databuf == NULL) {
-                                VSdetach (vdata_id);
-                                throw1("no enough memory to allocate buffer.");
+                                err_msg = string(ERR_LOC) + "No enough memory to allocate buffer.";
+                                data_buf_err = true;
+                                goto cleanFail;
                             }
 
                             // Initialize the seeking process
                             if (VSseek (vdata_id, 0) == FAIL) {
-                                VSdetach (vdata_id);
-                                free (databuf);
-                                throw5 ("vdata ", vdata_name, "field ",
-                                         CERE_META_FIELD_NAME," VSseek failed.");
+                                err_msg = string(ERR_LOC) + "VSseek failed";
+                                VS_fun_err = true;
+                                goto cleanFail;
                             }
 
                             // The field to seek is CERE_META_FIELD_NAME
                             if (VSsetfields (vdata_id, CERE_META_FIELD_NAME) == FAIL) {
-                                VSdetach (vdata_id);
-                                free (databuf);
-                                throw5 ("vdata ", vdata_name, "field ",
-                                         CERE_META_FIELD_NAME," VSsetfields failed.");
+                                err_msg = "VSsetfields failed";
+                                VS_fun_err = true;
+                                goto cleanFail;
                             }
 
                             // Read this vdata field value
                             if (VSread(vdata_id, (uint8 *) databuf, 1,FULL_INTERLACE) 
                                 == FAIL) {
-                                VSdetach (vdata_id);
-                                free (databuf);
-                                throw5 ("vdata ", vdata_name, "field ",
-                                         CERE_META_FIELD_NAME," VSread failed.");
+                                err_msg = "VSread failed";
+                                VS_fun_err = true;
+                                goto cleanFail;
                             }
 
                             // Assign the corresponding special product indicator we supported for CF
-                            if(databuf !=NULL) {//Just make coverity happy
-                                if (!strncmp(databuf, CER_AVG_NAME,strlen (CER_AVG_NAME)))
-                                    file->sptype = CER_AVG;
-                                else if (!strncmp
-                                         (databuf, CER_ES4_NAME,strlen(CER_ES4_NAME)))
-                                    file->sptype = CER_ES4;
-                                else if (!strncmp
-                                         (databuf, CER_CDAY_NAME,strlen (CER_CDAY_NAME)))
-                                    file->sptype = CER_CDAY;
-                                else if (!strncmp
-                                         (databuf, CER_CGEO_NAME,strlen (CER_CGEO_NAME)))
-                                    file->sptype = CER_CGEO;
-                                else if (!strncmp
-                                         (databuf, CER_SRB_NAME,strlen (CER_SRB_NAME)))
-                                    file->sptype = CER_SRB;
-                                else if (!strncmp
-                                         (databuf, CER_SYN_NAME,strlen (CER_SYN_NAME)))
-                                    file->sptype = CER_SYN;
-                                else if (!strncmp
-                                             (databuf, CER_ZAVG_NAME,
-                                          strlen (CER_ZAVG_NAME)))
-                                    file->sptype = CER_ZAVG;
-                                else;
-
-                                free (databuf);
+                            if (!strncmp(databuf, CER_AVG_NAME,strlen (CER_AVG_NAME)))
+                                file->sptype = CER_AVG;
+                            else if (!strncmp
+                                     (databuf, CER_ES4_NAME,strlen(CER_ES4_NAME)))
+                                file->sptype = CER_ES4;
+                            else if (!strncmp
+                                     (databuf, CER_CDAY_NAME,strlen (CER_CDAY_NAME)))
+                                file->sptype = CER_CDAY;
+                            else if (!strncmp
+                                     (databuf, CER_CGEO_NAME,strlen (CER_CGEO_NAME)))
+                                file->sptype = CER_CGEO;
+                            else if (!strncmp
+                                     (databuf, CER_SRB_NAME,strlen (CER_SRB_NAME)))
+                                file->sptype = CER_SRB;
+                            else if (!strncmp
+                                     (databuf, CER_SYN_NAME,strlen (CER_SYN_NAME)))
+                                file->sptype = CER_SYN;
+                            else if (!strncmp
+                                     (databuf, CER_ZAVG_NAME,
+                                      strlen (CER_ZAVG_NAME)))
+                                file->sptype = CER_ZAVG;
+                        
+cleanFail:
+                            if(data_buf_err == true || VS_fun_err == true) {
+                                VSdetach(vdata_id);
+                                if(data_buf_err == true) 
+                                    throw1(err_msg);
+                                else {
+                                    free(databuf);
+                                    throw5("vdata ",vdata_name,"field ",
+                                            CERE_META_FIELD_NAME,err_msg);
+                                }
                             }
+                            else 
+                                free(databuf);
                         }
                     }
                 }
+                VSdetach (vdata_id);
             }
 
-            VSdetach (vdata_id);
         }
     }
 }
@@ -649,15 +660,22 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                 throw3 ("Vntagrefs failed ", "vgroup_name is ", vgroup_name);
             }
 
+            // STOP: error handling to avoid the false alarm from coverity scan or sonar cloud 
+            string err_msg;
+            bool VS_or_mem_err = false;
+
             // Allocate enough buffer for the full path
             // MAX_FULL_PATH_LEN(1024) is long enough
             // to cover any HDF4 object path for all NASA HDF4 products.
             // We replace strcpy and strcat with strncpy and strncat as suggested. KY 2013-08-29
             full_path = (char *) malloc (MAX_FULL_PATH_LEN);
             if (full_path == NULL) {
-                Vdetach (vgroup_id);
+                err_msg = "No enough memory to allocate the buffer for full_path.";
+                VS_or_mem_err = true;
+                goto cleanFail;
+                //Vdetach (vgroup_id);
                 //throw;
-                throw1 ("No enough memory to allocate the buffer.");
+                //throw1 ("No enough memory to allocate the buffer.");
             }
             else
                 memset(full_path,'\0',MAX_FULL_PATH_LEN);
@@ -670,25 +688,32 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
             // Make a copy the current vgroup full path since full path may be passed to a recursive routine
             cfull_path = (char *) malloc (MAX_FULL_PATH_LEN);
             if (cfull_path == NULL) {
-                Vdetach (vgroup_id);
-                free (full_path);
+                //Vdetach (vgroup_id);
+                //free (full_path);
+                err_msg = "No enough memory to allocate the buffer for cfull_path.";
+                VS_or_mem_err = true;
+                goto cleanFail;
                 //throw;
-                throw1 ("No enough memory to allocate the buffer.");
+                //throw1 ("No enough memory to allocate the buffer.");
             }
             else 
                 memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
             strncpy(cfull_path,full_path,strlen(full_path));
 
             // Loop all vgroup objects
+
             for (int i = 0; i < num_gobjects; i++) {
 
                 // Obtain the object tag/ref pair of an object
                 if (Vgettagref (vgroup_id, i, &obj_tag, &obj_ref) == FAIL) {
-                    Vdetach (vgroup_id);
-                    free (full_path);
-                    free (cfull_path);
-                    throw5 ("Vgettagref failed ", "vgroup_name is ",
-                             vgroup_name, " reference number is ", obj_ref);
+                    err_msg = "Vgettagref failed";
+                    VS_or_mem_err = true;
+                    goto cleanFail;
+                    //Vdetach (vgroup_id);
+                    //free (full_path);
+                    //free (cfull_path);
+                    //throw5 ("Vgettagref failed ", "vgroup_name is ",
+                    //         vgroup_name, " reference number is ", obj_ref);
                 }
 
                 // If the object is a vgroup,always pass the original full path to its decendant vgroup
@@ -705,34 +730,25 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                     // Obtain vdata ID
                     vdata_id = VSattach (file_id, obj_ref, "r");
                     if (vdata_id == FAIL) {
-                        Vdetach (vgroup_id);
-                        free (full_path);
-                        free (cfull_path);
-                        throw5 ("VSattach failed ", "vgroup_name is ",
-                                 vgroup_name, " reference number is ",
-                                 obj_ref);
+                        err_msg = "VSattach failed";
+                        VS_or_mem_err = true;
+                        goto cleanFail;
                     }
                   
                     // Obtain vdata name
                     status = VSgetname (vdata_id, vdata_name);
                     if (status == FAIL) {
-                        Vdetach (vgroup_id);
-                        free (full_path);
-                        free (cfull_path);
-                        throw5 ("VSgetclass failed ", "vgroup_name is ",
-                                 vgroup_name, " reference number is ",
-                                 obj_ref);
+                        err_msg = "VSgetname failed";
+                        VS_or_mem_err = true;
+                        goto cleanFail;
                     }
 
                     // Obtain vdata class name
                     status = VSgetclass (vdata_id, vdata_class);
                     if (status == FAIL) {
-                        Vdetach (vgroup_id);
-                        free (full_path);
-                        free (cfull_path);
-                        throw5 ("VSgetclass failed ", "vgroup_name is ",
-                                 vgroup_name, " reference number is ",
-                                 obj_ref);
+                        err_msg = "VSgetclass failed";
+                        VS_or_mem_err = true;
+                        goto cleanFail;
                     }
 
                     // Ignore the vdata to store internal HDF structure and the vdata used as an attribute
@@ -753,11 +769,9 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
 
                         status = VSdetach (vdata_id);
                         if (status == FAIL) {
-                            Vdetach (vgroup_id);
-                            free (full_path);
-                            free (cfull_path);
-                            throw3 ("VSdetach failed ",
-                                    "Vdata is under vgroup ", vgroup_name);
+                            err_msg = "VSdetach failed in the if block to ignore the HDF4 internal attributes.";
+                            VS_or_mem_err = true;
+                            goto cleanFail;
                         }
 
                     }
@@ -807,11 +821,9 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
 
                         status = VSdetach (vdata_id);
                         if (status == FAIL) {
-                            Vdetach (vgroup_id);
-                            free (full_path);
-                            free (cfull_path);
-                            throw3 ("VSdetach failed ",
-                                    "Vdata is under vgroup ", vgroup_name);
+                            err_msg = "VSdetach failed in the user-defined vdata block";
+                            VS_or_mem_err = true;
+                            goto cleanFail;
                         }
                     }
                 }
@@ -819,15 +831,20 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                 //Ignore the handling of SDS objects. They are handled elsewhere. 
                 else;
             }
-            //if(full_path != NULL)
+// STOP: add error handling
+cleanFail:            
+            if(full_path != NULL)
                 free (full_path);
-            //if(cfull_path != NULL)
+            if(cfull_path != NULL)
                 free (cfull_path);
 
             status = Vdetach (vgroup_id);
             if (status == FAIL) {
                 throw3 ("Vdetach failed ", "vgroup_name is ", vgroup_name);
             }
+            if(true == VS_or_mem_err) 
+                throw3(err_msg,"vgroup_name is ",vgroup_name);
+
         }//end of the for loop
 
     }// end of the if loop
@@ -3424,8 +3441,11 @@ throw (Exception)
     int32 vdata_id = -1;
     int32 obj_tag = -1;
     int32 obj_ref = -1;
-    char *cfull_path;
+    char *cfull_path = NULL;
 
+    string temp_str;
+    bool unexpected_fail = false;
+    string err_msg;
     // MAX_FULL_PATH_LEN(1024) is long enough
     // to cover any HDF4 object path for all NASA HDF4 products.
     // So using strcpy and strcat is safe in a practical sense.
@@ -3443,20 +3463,22 @@ throw (Exception)
 
     vgroup_cid = Vattach (file_id, pobj_ref, "r");
     if (vgroup_cid == FAIL) {
-        free (cfull_path);
-        throw3 ("Vattach failed ", "Object reference number is ", pobj_ref);
+        unexpected_fail = true;
+        err_msg = string(ERR_LOC)+"Vattach failed";
+        goto cleanFail;
+        //throw3 ("Vattach failed ", "Object reference number is ", pobj_ref);
     }
 
     if (Vgetname (vgroup_cid, cvgroup_name) == FAIL) {
-        Vdetach (vgroup_cid);
-        free (cfull_path);
-        throw3 ("Vgetname failed ", "Object reference number is ", pobj_ref);
+        unexpected_fail = true;
+        err_msg = string(ERR_LOC)+"Vgetname failed";
+        goto cleanFail;
     }
     num_gobjects = Vntagrefs (vgroup_cid);
     if (num_gobjects < 0) {
-        Vdetach (vgroup_cid);
-        free (cfull_path);
-        throw3 ("Vntagrefs failed ", "Object reference number is ", pobj_ref);
+        unexpected_fail = true;
+        err_msg = string(ERR_LOC)+"Vntagrefs failed";
+        goto cleanFail;
     }
 
     strncpy(cfull_path,full_path,strlen(full_path));
@@ -3465,7 +3487,7 @@ throw (Exception)
 
 
     // If having a vgroup "Geolocation Fields", we would like to set the EOS2Swath flag.
-    std::string temp_str = std::string(cfull_path);
+    temp_str = string(cfull_path);
 
     if (temp_str.find("Geolocation Fields") != string::npos) {
             if(false == this->EOS2Swathflag) 
@@ -3475,9 +3497,9 @@ throw (Exception)
     for (i = 0; i < num_gobjects; i++) {
 
         if (Vgettagref (vgroup_cid, i, &obj_tag, &obj_ref) == FAIL) {
-            Vdetach (vgroup_cid);
-            free (cfull_path);
-            throw3 ("Vgettagref failed ", "object index is ", i);
+            unexpected_fail = true;
+            err_msg = string(ERR_LOC)+"Vgettagref failed";
+            goto cleanFail;
         }
 
         if (Visvg (vgroup_cid, obj_ref) == TRUE) {
@@ -3489,27 +3511,27 @@ throw (Exception)
 
             vdata_id = VSattach (file_id, obj_ref, "r");
             if (vdata_id == FAIL) {
-                Vdetach (vgroup_cid);
-                free (cfull_path);
-                throw3 ("VSattach failed ", "object index is ", i);
+                unexpected_fail = true;
+                err_msg = string(ERR_LOC)+"VSattach failed";
+                goto cleanFail;
             }
 
             status = VSQueryname (vdata_id, vdata_name);
             if (status == FAIL) {
-                Vdetach (vgroup_cid);
-                free (cfull_path);
-                throw3 ("VSgetclass failed ", "object index is ", i);
+                unexpected_fail = true;
+                err_msg = string(ERR_LOC)+"VSQueryname failed";
+                goto cleanFail;
             }
 
             status = VSgetclass (vdata_id, vdata_class);
             if (status == FAIL) {
-                Vdetach (vgroup_cid);
-                free (cfull_path);
-                throw3 ("VSgetclass failed ", "object index is ", i);
+                unexpected_fail = true;
+                err_msg = string(ERR_LOC)+"VSgetclass failed";
+                goto cleanFail;
             }
 
             // Obtain the C++ string format of the path.
-            string temp_str = string(cfull_path);
+            string temp_str2 = string(cfull_path);
 
             // Swath 1-D is mapped to Vdata, we need to ignore them.
             // But if vdata is added to a grid, we should not ignore.
@@ -3521,12 +3543,12 @@ throw (Exception)
 
             bool ignore_eos2_geo_vdata = false;
             bool ignore_eos2_data_vdata = false;
-            if (temp_str.find("Geolocation Fields") != string::npos) {
+            if (temp_str2.find("Geolocation Fields") != string::npos) {
                 ignore_eos2_geo_vdata = true;
             }
 
             // Only ignore "Data Fields" vdata when "Geolocation Fields" appears.
-            if (temp_str.find("Data Fields") != string::npos) {
+            if (temp_str2.find("Data Fields") != string::npos) {
                 if (true == this->EOS2Swathflag)  
                     ignore_eos2_data_vdata = true;
             }
@@ -3549,10 +3571,9 @@ throw (Exception)
 
                 status = VSdetach (vdata_id);
                 if (status == FAIL) {
-                    Vdetach (vgroup_cid);
-                    free (cfull_path);
-                    throw3 ("VSdetach failed ",
-                            "Vdata is under vgroup ", cvgroup_name);
+                    unexpected_fail = true;
+                    err_msg = string(ERR_LOC)+"VSdetach failed";
+                    goto cleanFail;
                 }
             }
             else {
@@ -3592,20 +3613,28 @@ throw (Exception)
                 this->vds.push_back (vdataobj);
                 status = VSdetach (vdata_id);
                 if (status == FAIL) {
-                    free(cfull_path);
-                    Vdetach(vgroup_cid);
-                    throw3 ("VSdetach failed ", "object index is ", i);
+                    unexpected_fail = true;
+                    err_msg = string(ERR_LOC)+"VSdetach failed";
+                    goto cleanFail;
                 }
             }
         }
         else;
     }
-    status = Vdetach (vgroup_cid);
-    if (status == FAIL) {
-        free (cfull_path);
-        throw3 ("Vdetach failed ", "vgroup name is ", cvgroup_name);
-    }
+
+cleanFail:
     free (cfull_path);
+    if(vgroup_cid != -1) {
+        status = Vdetach(vgroup_cid);
+        if (status == FAIL) {
+            string err_msg2 = "In the cleanup " + string(ERR_LOC) + " Vdetached failed. ";
+            err_msg = err_msg + err_msg2;
+            throw3(err_msg,"vgroup name is ",cvgroup_name);
+        }
+        else if(true == unexpected_fail)
+            throw3(err_msg,"vgroup name is ",cvgroup_name);
+    }
+
 
 }
 

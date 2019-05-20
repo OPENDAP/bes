@@ -1207,7 +1207,6 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
     bool turn_on_enable_spec_eos_key= false;
     turn_on_enable_spec_eos_key = HDFCFUtil::check_beskeys(check_enable_spec_eos_key);
 #endif
-    //if(true == turn_on_enable_spec_eos_key) {
     if(true == HDF4RequestHandler::get_enable_special_eos()) {
 
         string grid_name;
@@ -1682,7 +1681,6 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
             is_check_disable_smetadata = HDFCFUtil::check_beskeys(check_disable_smetadata_key);
 #endif
 
-            //if (false == is_check_disable_smetadata) {
             if (false == HDF4RequestHandler::get_disable_structmeta() ) {
                 write_ecsmetadata(das, cf, "StructMetadata");
             }
@@ -1707,7 +1705,6 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
         turn_on_enable_sg_attr_key = HDFCFUtil::check_beskeys(check_enable_sg_attr_key);
 #endif
 
-        //if(true == turn_on_enable_sg_attr_key) {
         if(true == HDF4RequestHandler::get_enable_swath_grid_attr()) {
 
             // MAP grid attributes  to DAS.
@@ -1721,35 +1718,37 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
                 AttrTable*at = NULL;
 
                 // Create a "grid" DAS table if this grid has attributes.
-                if(grid->getAttributes().size() != 0) {
+                if(grid->getAttributes().size() != 0){ 
                     at = das.get_table(gname);
                     if (!at)
                         at = das.add_table(gname, new AttrTable);
                 }
+                if(at!= NULL) {
 
-                //  Process grid attributes
-                const vector<HDFEOS2::Attribute *> grid_attrs = grid->getAttributes();
-                vector<HDFEOS2::Attribute*>::const_iterator it_a;
-                for (it_a = grid_attrs.begin(); it_a != grid_attrs.end(); ++it_a) {
+                    //  Process grid attributes
+                    const vector<HDFEOS2::Attribute *> grid_attrs = grid->getAttributes();
+                    vector<HDFEOS2::Attribute*>::const_iterator it_a;
+                    for (it_a = grid_attrs.begin(); it_a != grid_attrs.end(); ++it_a) {
 
-                    int attr_type = (*it_a)->getType();
+                        int attr_type = (*it_a)->getType();
 
-                    // We treat string differently. DFNT_UCHAR and DFNT_CHAR are treated as strings.
-                    if(attr_type==DFNT_UCHAR || attr_type == DFNT_CHAR){
-                        string tempstring2((*it_a)->getValue().begin(),(*it_a)->getValue().end());
-                        string tempfinalstr= string(tempstring2.c_str());
+                        // We treat string differently. DFNT_UCHAR and DFNT_CHAR are treated as strings.
+                        if(attr_type==DFNT_UCHAR || attr_type == DFNT_CHAR){
+                            string tempstring2((*it_a)->getValue().begin(),(*it_a)->getValue().end());
+                            string tempfinalstr= string(tempstring2.c_str());
                     
-                        // Using the customized escattr function to escape special characters except
-                        // \n,\r,\t since escaping them may make the attributes hard to read. KY 2013-10-14
-                        // at->append_attr((*i)->getNewName(), "String" , escattr(tempfinalstr));
-                        at->append_attr((*it_a)->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
-                    }
+                            // Using the customized escattr function to escape special characters except
+                            // \n,\r,\t since escaping them may make the attributes hard to read. KY 2013-10-14
+                            // at->append_attr((*i)->getNewName(), "String" , escattr(tempfinalstr));
+                            at->append_attr((*it_a)->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
+                        }
             
 
-                    else {
-                        for (int loc=0; loc < (*it_a)->getCount() ; loc++) {
-                            string print_rep = HDFCFUtil::print_attr((*it_a)->getType(), loc, (void*) &((*it_a)->getValue()[0]));
-                            at->append_attr((*it_a)->getNewName(), HDFCFUtil::print_type((*it_a)->getType()), print_rep);
+                        else {
+                            for (int loc=0; loc < (*it_a)->getCount() ; loc++) {
+                                string print_rep = HDFCFUtil::print_attr((*it_a)->getType(), loc, (void*) &((*it_a)->getValue()[0]));
+                                at->append_attr((*it_a)->getNewName(), HDFCFUtil::print_type((*it_a)->getType()), print_rep);
+                            }
                         }
                     }
                 }
@@ -1766,34 +1765,34 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
                 // Create a "swath" DAS table if this swath has attributes.
                 if(swath->getAttributes().size() != 0) {
                     at = das.get_table(sname);
-                    if (!at)
+                    if (!at) 
                         at = das.add_table(sname, new AttrTable);
                 }
 
-                const vector<HDFEOS2::Attribute *> swath_attrs = swath->getAttributes();
-                vector<HDFEOS2::Attribute*>::const_iterator it_a;
-                for (it_a = swath_attrs.begin(); it_a != swath_attrs.end(); ++it_a) {
+                if(at != NULL) {
+                    const vector<HDFEOS2::Attribute *> swath_attrs = swath->getAttributes();
+                    vector<HDFEOS2::Attribute*>::const_iterator it_a;
+                    for (it_a = swath_attrs.begin(); it_a != swath_attrs.end(); ++it_a) {
 
-                    int attr_type = (*it_a)->getType();
+                        int attr_type = (*it_a)->getType();
 
-                    // We treat string differently. DFNT_UCHAR and DFNT_CHAR are treated as strings.
-                    if(attr_type==DFNT_UCHAR || attr_type == DFNT_CHAR){
-                        string tempstring2((*it_a)->getValue().begin(),(*it_a)->getValue().end());
-                        string tempfinalstr= string(tempstring2.c_str());
+                        // We treat string differently. DFNT_UCHAR and DFNT_CHAR are treated as strings.
+                        if(attr_type==DFNT_UCHAR || attr_type == DFNT_CHAR){
+                            string tempstring2((*it_a)->getValue().begin(),(*it_a)->getValue().end());
+                            string tempfinalstr= string(tempstring2.c_str());
                 
-                         // Using the customized escattr function to escape special characters except
-                         // \n,\r,\t since escaping them may make the attributes hard to read. KY 2013-10-14
-                        // at->append_attr((*i)->getNewName(), "String" , escattr(tempfinalstr));
-                        at->append_attr((*it_a)->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
-                    }
-            
-
-                    else {
-                        for (int loc=0; loc < (*it_a)->getCount() ; loc++) {
-                            string print_rep = HDFCFUtil::print_attr((*it_a)->getType(), loc, (void*) &((*it_a)->getValue()[0]));
-                            at->append_attr((*it_a)->getNewName(), HDFCFUtil::print_type((*it_a)->getType()), print_rep);
+                             // Using the customized escattr function to escape special characters except
+                             // \n,\r,\t since escaping them may make the attributes hard to read. KY 2013-10-14
+                            // at->append_attr((*i)->getNewName(), "String" , escattr(tempfinalstr));
+                            at->append_attr((*it_a)->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
                         }
+                        else {
+                            for (int loc=0; loc < (*it_a)->getCount() ; loc++) {
+                                string print_rep = HDFCFUtil::print_attr((*it_a)->getType(), loc, (void*) &((*it_a)->getValue()[0]));
+                                at->append_attr((*it_a)->getNewName(), HDFCFUtil::print_type((*it_a)->getType()), print_rep);
+                            }
           
+                        }
                     }
                 }
             }

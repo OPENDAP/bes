@@ -206,7 +206,7 @@ namespace HDFEOS2
 
             LightVector < T > &operator= (const LightVector < T > &that)
             {
-                if (&that != this) {
+                if (this != &that) {
                     this->data = new T[that.length];
                     for (unsigned int i = 0; i < that.length; ++i)
                         this->data[i] = that[i];

@@ -30,14 +30,13 @@
 
 #include <string>
 
-using std::string;
 
 #include "BESRequestHandler.h"
 
 class HDF4RequestHandler:public BESRequestHandler {
 
   private:
-    static string _cachedir;
+    static std::string _cachedir;
     static bool hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi);
     static bool hdf4_build_dds_cf_sds(BESDataHandlerInterface & dhi);
     static bool hdf4_build_das_cf_sds(BESDataHandlerInterface & dhi);
@@ -77,14 +76,14 @@ class HDF4RequestHandler:public BESRequestHandler {
   static bool _enable_check_scale_offset_type;
 
   static bool _cache_latlon_path_exist;
-  static string _cache_latlon_path;
+  static std::string _cache_latlon_path;
   static bool _cache_latlon_prefix_exist;
-  static string _cache_latlon_prefix;
+  static std::string _cache_latlon_prefix;
   static bool _cache_latlon_size_exist;
   static long _cache_latlon_size;
 
   static bool _cache_metadata_path_exist;
-  static string _cache_metadata_path;
+  static std::string _cache_metadata_path;
    
   public:
     HDF4RequestHandler(const string & name);
@@ -128,16 +127,16 @@ class HDF4RequestHandler:public BESRequestHandler {
     static bool get_enable_check_scale_offset_type() { return _enable_check_scale_offset_type;}
 
     static bool get_cache_latlon_path_exist() { return _cache_latlon_path_exist; }
-    static string get_cache_latlon_path() {return _cache_latlon_path; }
+    static std::string get_cache_latlon_path() {return _cache_latlon_path; }
 
     static bool get_cache_latlon_prefix_exist() { return _cache_latlon_prefix_exist; }
-    static string get_cache_latlon_prefix() {return _cache_latlon_prefix;}
+    static std::string get_cache_latlon_prefix() {return _cache_latlon_prefix;}
 
     static bool get_cache_latlon_size_exist() { return _cache_latlon_size_exist; }
     static long get_cache_latlon_size() { return _cache_latlon_size; }
 
     static bool get_cache_metadata_path_exist() { return _cache_metadata_path_exist; }
-    static string get_cache_metadata_path() { return _cache_metadata_path;}
+    static std::string get_cache_metadata_path() { return _cache_metadata_path;}
 
 };
 

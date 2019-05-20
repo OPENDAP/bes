@@ -21,7 +21,6 @@
 #include <DMR.h>
 #include <InternalErr.h>
 
-using namespace libdap;
 
 /**
  * This specialization of DMR is used to manage the 'resource' of the open

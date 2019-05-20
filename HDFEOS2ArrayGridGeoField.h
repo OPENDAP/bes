@@ -25,13 +25,12 @@
 #include "hdf.h"
 #include "HdfEosDef.h"
 
-using namespace libdap;
 
-class HDFEOS2ArrayGridGeoField:public Array
+class HDFEOS2ArrayGridGeoField:public libdap::Array
 {
     public:
-        HDFEOS2ArrayGridGeoField (int rank, int fieldtype, bool llflag, bool ydimmajor, bool condenseddim, bool speciallon, int specialformat, /*short field_cache,*/const std::string &filename, const int gridfd,  const std::string & gridname, const std::string & fieldname,const string & n = "", BaseType * v = 0):
-            Array (n, v),
+        HDFEOS2ArrayGridGeoField (int rank, int fieldtype, bool llflag, bool ydimmajor, bool condenseddim, bool speciallon, int specialformat, /*short field_cache,*/const std::string &filename, const int gridfd,  const std::string & gridname, const std::string & fieldname,const string & n = "", libdap::BaseType * v = 0):
+            libdap::Array (n, v),
             rank (rank),
             fieldtype (fieldtype),
             llflag (llflag),
@@ -51,7 +50,7 @@ class HDFEOS2ArrayGridGeoField:public Array
         }
         int format_constraint (int *cor, int *step, int *edg);
 
-        BaseType *ptr_duplicate ()
+        libdap::BaseType *ptr_duplicate ()
         {
             return new HDFEOS2ArrayGridGeoField (*this);
         }

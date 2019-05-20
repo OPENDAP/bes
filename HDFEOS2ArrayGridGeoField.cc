@@ -30,6 +30,7 @@
 #include "HDF4RequestHandler.h"
 
 using namespace std;
+using namespace libdap;
 
 #define SIGNED_BYTE_TO_INT32 1
 

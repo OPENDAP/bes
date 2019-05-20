@@ -3285,7 +3285,7 @@ void Dataset::ReadFields(int32 (*entries)(int32, int32, int32 *),
             i != fieldnames.end(); ++i) {
             Field *field = new Field();
             if(field == NULL)
-                throw;
+                throw1("The field is NULL");
             field->name = *i;
 
             // XXX: We assume the maximum number of dimension for an EOS field
@@ -3297,9 +3297,9 @@ void Dataset::ReadFields(int32 (*entries)(int32, int32, int32 *),
             if ((fldinfo(this->datasetid,
                          const_cast<char *>(field->name.c_str()),
                          &field->rank, dimsize, &field->type, dimlist)) == -1){
+                string fieldname_for_eh = field->name;
                 delete field;
-                throw;
-                //throw3("field info", this->name, field->name);
+                throw3("field info", this->name, fieldname_for_eh);
             }
             {
                 vector<string> dimnames;
@@ -3308,8 +3308,9 @@ void Dataset::ReadFields(int32 (*entries)(int32, int32, int32 *),
                 HDFCFUtil::Split(dimlist, ',', dimnames);
                //if(field != NULL) {// Coverity doesn't understand throw macros.See if coverity is happy.
                 if ((int)dimnames.size() != field->rank) {
+                    int rank_for_eh = field->rank;
                     delete field;
-                    throw4("field rank", dimnames.size(), field->rank,
+                    throw4("field rank", dimnames.size(), rank_for_eh,
                            this->name);
                 }
                 for (int k = 0; k < field->rank; ++k) {
@@ -3411,13 +3412,16 @@ GridDataset::~GridDataset()
 GridDataset * GridDataset::Read(int32 fd, const string &gridname)
     throw(Exception)
 {
+    string err_msg;
+    bool GD_fun_err = false;
     GridDataset *grid = new GridDataset(gridname);
 
     // Open this Grid object 
     if ((grid->datasetid = GDattach(fd, const_cast<char *>(gridname.c_str())))
         == -1) {
-        delete grid;
-        throw2("attach grid", gridname);
+        err_msg = "attach grid";
+        GD_fun_err = true;
+        goto cleanFail;
     }
 
     // Obtain the size of XDim and YDim as well as latitude and longitude of
@@ -3426,8 +3430,9 @@ GridDataset * GridDataset::Read(int32 fd, const string &gridname)
         Info &info = grid->info;
         if (GDgridinfo(grid->datasetid, &info.xdim, &info.ydim, info.upleft,
                        info.lowright) == -1) {
-            delete grid;
-            throw2("grid info", gridname);
+            err_msg = "grid info";
+            GD_fun_err = true;
+            goto cleanFail;
         }
     }
 
@@ -3436,20 +3441,28 @@ GridDataset * GridDataset::Read(int32 fd, const string &gridname)
         Projection &proj = grid->proj;
         if (GDprojinfo(grid->datasetid, &proj.code, &proj.zone, &proj.sphere,
                        proj.param) == -1) { 
-            delete grid;
-            throw2("projection info", gridname);
+            err_msg = "projection info";
+            GD_fun_err = true;
+            goto cleanFail;
         }
         if (GDpixreginfo(grid->datasetid, &proj.pix) == -1) {
-            delete grid;
-            throw2("pixreg info", gridname);
+            err_msg = "pixreg info";
+            GD_fun_err = true;
+            goto cleanFail;
         }
         if (GDorigininfo(grid->datasetid, &proj.origin) == -1){
-            delete grid;
-            throw2("origin info", gridname);
+            err_msg = "origin info";
+            GD_fun_err = true;
+            goto cleanFail;
         }
     }
+cleanFail: 
+    if(true == GD_fun_err){
+        delete grid;
+        throw2(err_msg,gridname);
+    }
 
-    try {
+   try {
         // Read dimensions
         grid->ReadDimensions(GDnentries, GDinqdims, grid->dims);
 
@@ -3464,7 +3477,7 @@ GridDataset * GridDataset::Read(int32 fd, const string &gridname)
         delete grid;
         throw;
     }
-
+    
     return grid;
 }
 
@@ -3665,15 +3678,14 @@ SwathDataset * SwathDataset::Read(int32 fd, const string &swathname)
 {
     SwathDataset *swath = new SwathDataset(swathname);
     if(swath == NULL)
-        throw;
+        throw1("Cannot allocate HDF5 Swath object");
 
     // Open this Swath object
     if ((swath->datasetid = SWattach(fd,
         const_cast<char *>(swathname.c_str())))
         == -1) {
         delete swath;
-        throw;
-        //throw2("attach swath", swathname);
+        throw2("attach swath", swathname);
     }
 
     //if(swath != NULL) {// See if I can make coverity happy.coverity doesn't know I call throw already.

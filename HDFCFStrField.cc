@@ -18,6 +18,7 @@
 #include "HDF4RequestHandler.h"
 
 using namespace std;
+using namespace libdap;
 
 
 bool

@@ -114,9 +114,9 @@ BESH4Cache::get_instance()
                         "Cache is DISABLED"<< endl);
                 }
                 else {
-    #ifdef HAVE_ATEXIT
+#ifdef HAVE_ATEXIT
                     atexit(delete_instance);
-    #endif
+#endif
                     BESDEBUG("cache", "BESH4Cache::" << __func__ << "() - " <<
                         "Cache is ENABLED"<< endl);
                 }

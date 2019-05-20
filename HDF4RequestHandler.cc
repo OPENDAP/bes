@@ -79,6 +79,9 @@
 #include <sys/time.h>
 //#endif
 
+using namespace std;
+using namespace libdap;
+
 bool check_beskeys(const string);
 bool get_beskeys(const string,string &);
 //int get_cachekey_int(const string);

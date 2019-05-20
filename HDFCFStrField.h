@@ -11,9 +11,8 @@
 #include "Array.h"
 #include "HDFCFUtil.h"
 
-using namespace libdap;
 
-class HDFCFStrField:public Array
+class HDFCFStrField:public libdap::Array
 {
     public:
     HDFCFStrField (int rank, 
@@ -24,7 +23,7 @@ class HDFCFStrField:public Array
                    int32 fieldorder, 
                    const std::string & fieldname,  
                    const std::string & n = "", 
-                   BaseType * v = 0):
+                   libdap::BaseType * v = 0):
         Array (n, v),
         rank (rank),
         filename(filename),

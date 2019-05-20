@@ -37,7 +37,7 @@ using namespace libdap;
  * destructor closes the file.
  *
  */
-class HDF4DDS : public DDS {
+class HDF4DDS : public libdap::DDS {
 private:
     int sdfd;
     int fileid;
@@ -53,9 +53,9 @@ private:
     }
 
 public:
-    HDF4DDS(DDS *ddsIn) : DDS(*ddsIn), sdfd(-1),fileid(-1),gridfd(-1),swathfd(-1) {}
+    HDF4DDS(libdap::DDS *ddsIn) : libdap::DDS(*ddsIn), sdfd(-1),fileid(-1),gridfd(-1),swathfd(-1) {}
 
-    HDF4DDS(const HDF4DDS &rhs) : DDS(rhs) {
+    HDF4DDS(const HDF4DDS &rhs) : libdap::DDS(rhs) {
         m_duplicate(rhs);
     }
 

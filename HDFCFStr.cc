@@ -39,7 +39,8 @@
 #include "HDFCFUtil.h"
 #include "HDF4RequestHandler.h"
 
-
+using namespace std;
+using namespace libdap;
 HDFCFStr::HDFCFStr(const int this_h4fd, int32 sds_field_ref,const string &h4_filename,const string &sds_varname,const string &sds_varnewname, bool is_h4_vdata) 
       : Str(sds_varnewname, h4_filename),
         filename(h4_filename),

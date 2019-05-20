@@ -30,7 +30,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 
 #ifndef A_HDF4Module_H
-#define A_HDF4Module_H 1
+#define A_HDF4Module_H 
 
 #include "BESAbstractModule.h"
 
