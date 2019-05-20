@@ -29,6 +29,7 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 
+#define HDF4_CATALOG "catalog"
 #include <iostream>
 
 using std::endl;
@@ -43,7 +44,6 @@ using std::endl;
 #include <BESCatalogList.h>
 #include <BESDebug.h>
 
-#define HDF4_CATALOG "catalog"
 
 void HDF4Module::initialize(const string & modname)
 {

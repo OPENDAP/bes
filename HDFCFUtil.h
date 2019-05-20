@@ -39,10 +39,11 @@
 #include "escaping.h" // for escattr
 
 // This is the maximum number of MODIS special values.
-#define MAX_NON_SCALE_SPECIAL_VALUE 65535
+const int MAX_NON_SCALE_SPECIAL_VALUE=65535;
 
 // This is the minimum number of MODIS special values.
-#define MIN_NON_SCALE_SPECIAL_VALUE 65500
+const int MIN_NON_SCALE_SPECIAL_VALUE=65500;
+
 
 
 // This is used to retrieve dimension map info. when retrieving the data values of HDF-EOS swath that 

@@ -84,7 +84,6 @@ using namespace libdap;
 
 bool check_beskeys(const string);
 bool get_beskeys(const string,string &);
-//int get_cachekey_int(const string);
 
 extern void read_das(DAS & das, const string & filename);
 extern void read_dds(DDS & dds, const string & filename);
@@ -232,7 +231,7 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
         // Identify this file from product name: AIRS, product level: .L3. or .L2. and version .v6. 
         if((base_file_name.size() >12) && (base_file_name.compare(0,4,"AIRS") == 0)
                 && ((base_file_name.find(".L3.")!=string::npos) || (base_file_name.find(".L2.")!=string::npos))
-                && ((base_file_name.find(".v6.")!=string::npos))) {
+                && (base_file_name.find(".v6.")!=string::npos)) {
                 return hdf4_build_das_cf_sds(dhi);
 
         }
@@ -262,7 +261,6 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
             //SDstart
             sdfd = SDstart (const_cast < char *>(accessed.c_str()), DFACC_READ);
             if( -1 == sdfd){
-                //throw Error(cannot_read_file,"HDF4 SDstart error");
                 string invalid_file_msg="HDF4 SDstart error for the file ";
                 invalid_file_msg +=accessed;
                 invalid_file_msg +=". It is very possible that this file is not an HDF4 file. ";
@@ -310,7 +308,6 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
             }
             
             try {
-                //bool ecs_metadata = !(HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll"));
                 bool ecs_metadata = !(_disable_ecsmetadata_all);
 #if 0
 if(ecs_metadata == true)
@@ -323,7 +320,9 @@ cerr<<"Don't output ecs metadata "<<endl;
             catch(...) {
                 close_fileid(sdfd,fileid,gridfd,swathfd,h4file,eosfile);
                 throw;
+#if 0
                 //throw InternalErr(__FILE__,__LINE__,"read_das_use_eos2lib error");
+#endif
             }
             if(eosfile != NULL)
                 delete eosfile;
@@ -394,7 +393,7 @@ bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi) {
         // Identify this file from product name: AIRS, product level: .L3. or .L2. and version .v6. 
         if((base_file_name.size() >12) && (base_file_name.compare(0,4,"AIRS") == 0)
                 && ((base_file_name.find(".L3.")!=string::npos) || (base_file_name.find(".L2.")!=string::npos))
-                && ((base_file_name.find(".v6.")!=string::npos))) {
+                && (base_file_name.find(".v6.")!=string::npos)) {
                 return hdf4_build_dds_cf_sds(dhi);
 
         }
@@ -414,7 +413,9 @@ gettimeofday(&start_time,NULL);
     try {
         bdds->set_container(dhi.container->get_symbolic_name());
         DDS *dds = bdds->get_dds();
+#if 0
         //ConstraintEvaluator & ce = bdds->get_ce();
+#endif
 
         string accessed = dhi.container->access();
         dds->filename(accessed);
@@ -481,7 +482,6 @@ gettimeofday(&start_time,NULL);
             }
  
             try {
-                //bool ecs_metadata = !(HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll"));
                 bool ecs_metadata = !(_disable_ecsmetadata_all);
                 read_das_use_eos2lib(*das, accessed,sdfd,fileid,gridfd,swathfd,ecs_metadata,&h4file,&eosfile);
                 Ancillary::read_ancillary_das(*das, accessed);
@@ -586,11 +586,10 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
         // Identify this file from product name: AIRS, product level: .L3. or .L2. and version .v6. 
         if((base_file_name.size() >12) && (base_file_name.compare(0,4,"AIRS") == 0)
                 && ((base_file_name.find(".L3.")!=string::npos) || (base_file_name.find(".L2.")!=string::npos))
-                && ((base_file_name.find(".v6.")!=string::npos))) {
+                && (base_file_name.find(".v6.")!=string::npos)) {
 
             BESDEBUG("h4", "Coming to read the data of AIRS level 3 or level 2 products." << endl);
 
-            //if(true == HDFCFUtil::check_beskeys("H4.EnablePassFileID")) 
             if(true == _pass_fileid) 
                 return hdf4_build_data_cf_sds_with_IDs(dhi);
             else 
@@ -598,7 +597,6 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
 
         }
 
-        //if(true == HDFCFUtil::check_beskeys("H4.EnablePassFileID"))
         if(true == _pass_fileid)
             return hdf4_build_data_with_IDs(dhi);
 
@@ -791,7 +789,9 @@ bool HDF4RequestHandler::hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi)
 
         bdds->set_dds(hdds);
 
+#if 0
         //ConstraintEvaluator & ce = bdds->get_ce();
+#endif
 
         string accessed = dhi.container->access();
         hdds->filename(accessed);
@@ -863,7 +863,10 @@ bool HDF4RequestHandler::hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi)
             ecs_metadata = false;
 
         read_das_use_eos2lib(*das, accessed,sdfd,fileid,gridfd,swathfd,ecs_metadata,&h4file,&eosfile);
+
+#if 0
         //read_das_use_eos2lib(*das, accessed,sdfd,fileid,gridfd,swathfd,true);
+#endif
 
         Ancillary::read_ancillary_das(*das, accessed);
 
@@ -907,9 +910,6 @@ bool HDF4RequestHandler::hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi)
 #endif
     }
 
-    catch (BESError & e) {
-        throw;
-    }
     catch (InternalErr & e) {
         throw BESDapError(e.get_error_message(), true, e.get_error_code(),
                                 __FILE__, __LINE__);
@@ -949,8 +949,10 @@ bool HDF4RequestHandler::hdf4_build_dds_cf_sds(BESDataHandlerInterface &dhi){
 
         DDS *dds = bdds->get_dds();
 
+#if 0
         //BaseTypeFactory* factory = new BaseTypeFactory ;
         //dds->set_factory( factory ) ;
+#endif
 
         string accessed = dhi.container->access();
         dds->filename(accessed);
@@ -1021,7 +1023,6 @@ bool HDF4RequestHandler::hdf4_build_dds_cf_sds(BESDataHandlerInterface &dhi){
 
             // Here we will check if ECS_Metadata key if set. For DDS and DAS, 
             // only when the DisableECSMetaDataAll key is set, ecs_metadata is off.
-            //bool ecs_metadata = !(HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll"));
             bool ecs_metadata = !(_disable_ecsmetadata_all);
 #if 0
         bool ecs_metadata = true;
@@ -1058,9 +1059,11 @@ bool HDF4RequestHandler::hdf4_build_dds_cf_sds(BESDataHandlerInterface &dhi){
 
         if(sdfd != -1)
             SDend(sdfd); 
+#if 0
         // Cannot(should not) delete factory here. factory will be released by DAP? or errors occur.
         //if(factory != NULL)
         //    delete factory;
+#endif
 
     }
 
@@ -1129,7 +1132,6 @@ bool HDF4RequestHandler::hdf4_build_das_cf_sds(BESDataHandlerInterface &dhi){
             if(true == _cache_metadata_path_exist) {
 
                 // Create the DAS cache file name.
-                //das_filename = md_cache_dir + "/" + base_file_name +"_das";
                 das_filename = _cache_metadata_path + "/" + base_file_name +"_das";
 
                 // Read the DAS from the cached file, if das_set_cache is false.
@@ -1162,7 +1164,6 @@ bool HDF4RequestHandler::hdf4_build_das_cf_sds(BESDataHandlerInterface &dhi){
 #endif
             // Here we will check if ECS_Metadata key if set. For DDS and DAS, 
             // only when the DisableECSMetaDataAll key is set, ecs_metadata is off.
-            //bool ecs_metadata = !(HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll"));
             bool ecs_metadata = !(_disable_ecsmetadata_all);
                
             read_das_sds(*das, accessed,sdfd,ecs_metadata,&h4file);
@@ -1230,8 +1231,10 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds(BESDataHandlerInterface &dhi){
         BESDASResponse bdas(das);
         bdas.set_container(dhi.container->get_symbolic_name());
 
+#if 0
         //BaseTypeFactory* factory = new BaseTypeFactory ;
         //dds->set_factory( factory ) ;
+#endif
 
         string base_file_name = basename(dhi.container->access());
 
@@ -1403,7 +1406,9 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds_with_IDs(BESDataHandlerInterface
             ecs_metadata = false;
                
         read_das_sds(*das, accessed,sdfd,ecs_metadata,&h4file);
+#if 0
         //read_das_use_eos2lib(*das, accessed,sdfd,fileid,gridfd,swathfd,true);
+#endif
 
         Ancillary::read_ancillary_das(*das, accessed);
 
@@ -1472,7 +1477,6 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
     // another method.
     if(true == _usecf) {
        
-        //if(true == HDFCFUtil::check_beskeys("H4.EnablePassFileID"))
         if(true == _pass_fileid)
             return hdf4_build_dmr_with_IDs(dhi);
 
@@ -1555,8 +1559,9 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
             try {
 
                 read_das_use_eos2lib(das, data_path,sdfd,fileid,gridfd,swathfd,ecs_metadata,&h4file,&eosfile);
-
+#if 0
                 //read_das_use_eos2lib(*das, data_path,sdfd,fileid,gridfd,swathfd,true);
+#endif
                 Ancillary::read_ancillary_das(das, data_path);
 
                 // Pass file pointer(h4file, eosfile) from DAS to DDS
@@ -1602,9 +1607,6 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
 
     }
 
-    catch (BESError & e) {
-        throw;
-    }
     catch (InternalErr & e) {
         throw BESDapError(e.get_error_message(), true, e.get_error_code(),
                                 __FILE__, __LINE__);
@@ -1618,9 +1620,10 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
         throw BESDapError(s, true, unknown_error, __FILE__, __LINE__);
     }
 
-
+#if 0
     //dds.print(cout);
     //dds.print_das(cout);
+#endif
     //
     // Extract the DMR Response object - this holds the DMR used by the
     // other parts of the framework.
@@ -1631,10 +1634,14 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
 
     D4BaseTypeFactory MyD4TypeFactory;
     dmr->set_factory(&MyD4TypeFactory);
+#if 0
     //dmr->set_factory(new D4BaseTypeFactory);
+#endif
     dmr->build_using_dds(dds);
 
+#if 0
     //dmr->print(cout);
+#endif
 
     // Instead of fiddling with the internal storage of the DHI object,
     // (by setting dhi.data[DAP4_CONSTRAINT], etc., directly) use these
@@ -1741,7 +1748,9 @@ bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) 
     try {
 
         read_das_use_eos2lib(das, data_path,sdfd,fileid,gridfd,swathfd,ecs_metadata,&h4file,&eosfile);
+#if 0
         //read_das_use_eos2lib(*das, data_path,sdfd,fileid,gridfd,swathfd,true);
+#endif
         Ancillary::read_ancillary_das(das, data_path);
 
         // Pass file pointer(h4file, eosfile) from DAS to DDS.
@@ -1787,10 +1796,10 @@ bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) 
             SDend(sdfd);  
             Hclose(fileid);
         }
-#endif
 
     //dds.print(cout);
     //dds.print_das(cout);
+#endif
     // Extract the DMR Response object - this holds the DMR used by the
     // other parts of the framework.
     BESResponseObject *response = dhi.response_handler->get_response_object();
