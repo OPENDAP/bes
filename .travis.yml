@@ -101,6 +101,9 @@ jobs:
       sonarcloud: 
     script:
     - export BES_BUILD=sonar-bes-modules
+    # Adding this 'fetch --unshallow' since I think sonar is excluding the hdf handlers
+    # because they are submodules.
+    - git fetch --unshallow
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
     - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
     - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN

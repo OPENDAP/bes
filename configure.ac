@@ -56,8 +56,14 @@ AC_ARG_WITH([cmr], [AS_HELP_STRING([--with-cmr], [Build and include the CMR Modu
     [AM_CONDITIONAL([WITH_CMR], [true])],
     [AM_CONDITIONAL([WITH_CMR], [AM_COND_IF([BES_DEVELOPER], [true], [flase])])])
 
+AS_IF([test "$CC" = "gcc"], [AM_CONDITIONAL([COMPILER_IS_GCC],[true])],
+    [AM_CONDITIONAL([COMPILER_IS_GCC],[false])])
+
 dnl Only set CXXFLAGS if the caller didn't supply a value
-AS_IF([test -z "${CXXFLAGS+set}"], [CXXFLAGS="$cxx_debug_flags"])
+dnl AS_IF([test -z "${CXXFLAGS+set}"], [CXXFLAGS="$cxx_debug_flags"])
+AS_IF([test -z "${CXXFLAGS+set}"], [CXXFLAGS=])
+
+dnl : ${CXXFLAGS=""}
 
 dnl library visioning: Update these when the interface changes.
 dnl
@@ -113,8 +119,25 @@ AC_PROG_INSTALL
 dnl AC_PROG_LEX
 AM_PROG_LEX
 
-AS_IF([test "$CC" = "gcc"], [AM_CONDITIONAL([COMPILER_IS_GCC],[true])],
-    [AM_CONDITIONAL([COMPILER_IS_GCC],[false])])
+dnl NB: CentOS 6 does not support C++-11 but does support some features:
+dnl https://gcc.gnu.org/gcc-4.4/cxx0x_status.html.
+dnl For now, I'm counting 0x as supporting C++-11 in our code.
+
+CXX11_FLAG=""
+
+CXX_FLAGS_CHECK([--std=c++11], [CXX11_FLAG=--std=c++11], [])
+
+AS_IF([test -z "$CXX11_FLAG"],
+      [CXX_FLAGS_CHECK([--std=c++0x], [CXX11_FLAG=--std=c++0x], [])])
+
+AS_IF([test -z "$CXX11_FLAG"],
+      [AC_MSG_ERROR([Not using C++-11 (or C++0x)])],
+      [AC_MSG_NOTICE([Using $CXX11_FLAG for C++-11 support])
+       cxx_debug_flags="$cxx_debug_flags --pedantic $CXX11_FLAG"])
+
+AC_SUBST(CXX11_FLAG)
+
+AS_IF([test -n "$cxx_debug_flags"], [CXXFLAGS="$cxx_debug_flags"])
 
 dnl We really need bison and not yacc. If you use AC_PROG_YACC, the resulting 
 dnl Makefile will call bison -y which does not know how to make the parsers 

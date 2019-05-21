@@ -1,0 +1,7 @@
+// 2-byte integers representing brightness temperature values (in tenths of a kelvin)
+
+binary_input_data   "two_byte_int_data"
+temperature 1 2 ARRAY["temp" 1 to 10] of int16 0
+
+ASCII_output_data "brightness in K * 10"
+temperature 1 4 short 0

@@ -104,7 +104,7 @@ private:
         parser_end
     };
 
-    xmlSAXHandler ddx_sax_parser;
+    xmlSAXHandler dmrpp_sax_parser;
 
     // The results of the parse operation are stored in these fields.
     // This is passed into the parser using the intern() methods.
@@ -253,20 +253,20 @@ public:
         dmrpp_dataset_href("")
     {
         //xmlSAXHandler ddx_sax_parser;
-        memset(&ddx_sax_parser, 0, sizeof(xmlSAXHandler));
+        memset(&dmrpp_sax_parser, 0, sizeof(xmlSAXHandler));
 
-        ddx_sax_parser.getEntity = &DmrppParserSax2::dmr_get_entity;
-        ddx_sax_parser.startDocument = &DmrppParserSax2::dmr_start_document;
-        ddx_sax_parser.endDocument = &DmrppParserSax2::dmr_end_document;
-        ddx_sax_parser.characters = &DmrppParserSax2::dmr_get_characters;
-        ddx_sax_parser.ignorableWhitespace = &DmrppParserSax2::dmr_ignoreable_whitespace;
-        ddx_sax_parser.cdataBlock = &DmrppParserSax2::dmr_get_cdata;
-        ddx_sax_parser.warning = &DmrppParserSax2::dmr_error;
-        ddx_sax_parser.error = &DmrppParserSax2::dmr_error;
-        ddx_sax_parser.fatalError = &DmrppParserSax2::dmr_fatal_error;
-        ddx_sax_parser.initialized = XML_SAX2_MAGIC;
-        ddx_sax_parser.startElementNs = &DmrppParserSax2::dmr_start_element;
-        ddx_sax_parser.endElementNs = &DmrppParserSax2::dmr_end_element;
+        dmrpp_sax_parser.getEntity = &DmrppParserSax2::dmr_get_entity;
+        dmrpp_sax_parser.startDocument = &DmrppParserSax2::dmr_start_document;
+        dmrpp_sax_parser.endDocument = &DmrppParserSax2::dmr_end_document;
+        dmrpp_sax_parser.characters = &DmrppParserSax2::dmr_get_characters;
+        dmrpp_sax_parser.ignorableWhitespace = &DmrppParserSax2::dmr_ignoreable_whitespace;
+        dmrpp_sax_parser.cdataBlock = &DmrppParserSax2::dmr_get_cdata;
+        dmrpp_sax_parser.warning = &DmrppParserSax2::dmr_error;
+        dmrpp_sax_parser.error = &DmrppParserSax2::dmr_error;
+        dmrpp_sax_parser.fatalError = &DmrppParserSax2::dmr_fatal_error;
+        dmrpp_sax_parser.initialized = XML_SAX2_MAGIC;
+        dmrpp_sax_parser.startElementNs = &DmrppParserSax2::dmr_start_element;
+        dmrpp_sax_parser.endElementNs = &DmrppParserSax2::dmr_end_element;
     }
 
     void intern(std::istream &f, libdap::DMR *dest_dmr, bool debug = false);

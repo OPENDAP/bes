@@ -177,7 +177,7 @@ public:
 
         BaseType *result = 0;
         try {
-            BaseType *argv[] = {};
+            BaseType *argv[] = {0};
             DDS *dds = new DDS(&btf, "empty");
             function_mask_dap2_array(0, argv, *dds /* DDS & */, &result);
             CPPUNIT_ASSERT(result->type() == dods_str_c);

@@ -111,7 +111,7 @@ public:
     {
         BaseType *result = 0;
         try {
-            BaseType *argv[] = {};
+            BaseType *argv[] = {0};
             function_dap2_bbox(0, argv, *float32_array /* DDS & */, &result);
             CPPUNIT_FAIL("bbox() Should throw an exception when called with no arguments");
         }
@@ -393,7 +393,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BBoxFunctionTest);
 
 } // namespace functions
 
-int main(int argc, char*argv[])
+int main(int argc, char *argv[])
 {
 
     GetOpt getopt(argc, argv, "dDh");

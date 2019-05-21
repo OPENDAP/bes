@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContainer name="c" space="catalog">/data/tb_f18_20190306_nrt_s19v.bin</setContainer>
+    <define name="d">
+	    <container name="c" />
+    </define>
+    <get type="dods" definition="d" />
+</request>

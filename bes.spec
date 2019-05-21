@@ -174,6 +174,9 @@ exit 0
 %{_bindir}/build_dmrpp
 %{_bindir}/localBesGetDap
 %{_bindir}/populateMDS
+%{_bindir}/get_dmrpp
+%{_bindir}/ingest_filesystem
+%{_bindir}/ingest_s3bucket
 
 %{_libdir}/*.so.*
 %{_libdir}/bes/

@@ -94,6 +94,10 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([ff/int_data.bin.data.bescmd], [pass])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([ff/int_data2.bin.data.bescmd], [pass])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([ff/int_data3.bin.data.bescmd], [pass])
 
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([ff/regex_data.bin.dods.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([ff/bad_regex_data.bin.dods.bescmd], [xfail])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([ff/tb_f17_20130101_nrt_s91h.bescmd], [pass])
+
 AT_BESCMD_DAP4DATA_RESPONSE_TEST([ff/int_data.bin.dap.bescmd], [pass])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST([ff/int_data2.bin.dap.bescmd], [pass])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST([ff/int_data3.bin.dap.bescmd], [pass])
