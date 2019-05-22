@@ -226,7 +226,7 @@ HDFCFUtil::Handle_NameClashing(vector<string>&newobjnamelist,set<string>&objname
     vector<string>::const_iterator irv;
 
     for (irv = newobjnamelist.begin(); irv != newobjnamelist.end(); ++irv) {
-        setret = objnameset.insert((*irv));
+        setret = objnameset.insert(*irv);
         if (false == setret.second ) {
             clashnamelist.insert(clashnamelist.end(),(*irv));
             cl_to_ol[cl_index] = ol_index;
@@ -812,7 +812,6 @@ void HDFCFUtil::obtain_dimmap_info(const string& filename,HDFEOS2::Dataset*datas
 
     // Only when there is dimension map, we need to consider the additional MODIS geolocation files.
     // Will check if the check modis_geo_location file key is turned on.
-    //if((origdimmaps.size() != 0) && (true == check_geofile_key) ) {
     if((origdimmaps.size() != 0) && (true == HDF4RequestHandler::get_enable_check_modis_geo_file()) ) {
 
         // Has to use C-style since basename and dirname are not C++ routines.
@@ -943,7 +942,6 @@ void HDFCFUtil::add_scale_offset_attrs(AttrTable*at,const std::string& s_type, f
                
     if (true == add_offset_found) {
         at->del_attr("add_offset");
-        string print_rep;
         if(o_type!="Float64") {
             //float new_offset_value = (orig_offset_value ==0)?0:(-1 * orig_offset_value *orig_scale_value); 
             print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&ovalue_f));
@@ -1098,7 +1096,7 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
       
         }    
 
-        if ((MODIS_DIV_SCALE == sotype)) {
+        if (MODIS_DIV_SCALE == sotype) {
 
             float new_scale_value_float=1;
             double new_scale_value_double=1;
@@ -1541,8 +1539,10 @@ void HDFCFUtil::handle_modis_vip_special_attrs(const std::string& valid_range_va
     if (found != found_from_end)
         throw InternalErr(__FILE__,__LINE__,"There should be only one separator.");
                         
+#if 0
     //istringstream(valid_range_value.substr(0,found))>>orig_valid_min;
     //istringstream(valid_range_value.substr(found+1))>>orig_valid_max;
+#endif
 
     vip_orig_valid_min = atoi((valid_range_value.substr(0,found)).c_str());
     vip_orig_valid_max = atoi((valid_range_value.substr(found+1)).c_str());
@@ -1772,9 +1772,7 @@ void HDFCFUtil::add_cf_grid_cv_attrs(DAS & das, HDFEOS2::GridDataset *gdset) {
 
         //if(at->simple_find("grid_mapping_name") == at->attr_end())
         at->append_attr("grid_mapping_name","String","sinusoidal");
-        //if(at->simple_find("longitude_of_central_meridian") == at->attr_end())
         at->append_attr("longitude_of_central_meridian","Float64","0.0");
-        //if(at->simple_find("earth_radius") == at->attr_end())
         at->append_attr("earth_radius","Float64","6371007.181");
 
         at->append_attr("_CoordinateAxisTypes","string","GeoX GeoY");
@@ -2772,7 +2770,6 @@ void HDFCFUtil::handle_merra_ceres_attrs_with_bes_keys(HDFSP::File *f, DAS &das,
         }
     }
 
-    //if (true == turn_on_ceres_merra_short_name_key && (CER_ES4 == f->getSPType() || CER_SRB == f->getSPType()
     if (true == HDF4RequestHandler::get_enable_ceres_merra_short_name() && (CER_ES4 == f->getSPType() || CER_SRB == f->getSPType()
         || CER_CDAY == f->getSPType() || CER_CGEO == f->getSPType() 
         || CER_SYN == f->getSPType() || CER_ZAVG == f->getSPType()
@@ -2823,7 +2820,6 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
 #endif
                 
     bool output_vdata_flag = true;
-    //if (false == turn_on_ceres_vdata_key && 
     if (false == HDF4RequestHandler::get_enable_ceres_vdata() && 
         (CER_AVG == f->getSPType() || 
          CER_ES4 == f->getSPType() ||   
@@ -2840,7 +2836,6 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
             if(!at)
                 at = das.add_table((*i)->getNewName(),new AttrTable);
  
-            //if (true == turn_on_vdata_desc_key) {
             if (true == HDF4RequestHandler::get_enable_vdata_desc_attr()) {
                 // Add special vdata attributes
                 bool emptyvddasflag = true;
@@ -2880,7 +2875,6 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
 
             if(false == ((*i)->getTreatAsAttrFlag())){ 
 
-                //if (true == turn_on_vdata_desc_key) {
                 if (true == HDF4RequestHandler::get_enable_vdata_desc_attr()) {
 
                     //NOTE: for vdata field, we assume that no special characters are found. We need to escape the special characters when the data type is char. 
@@ -2984,7 +2978,6 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
                     }
 
          
-                    //if (true == turn_on_vdata_desc_key) {
                     if (true == HDF4RequestHandler::get_enable_vdata_desc_attr()) {
                         for(vector<HDFSP::Attribute *>::const_iterator it_va = (*j)->getAttributes().begin();it_va!=(*j)->getAttributes().end();it_va++) {
 
@@ -3120,14 +3113,14 @@ void HDFCFUtil::map_eos2_objects_attrs(libdap::DAS &das,const string &filename) 
                 Hclose(file_id);
                 throw InternalErr(__FILE__,__LINE__,"map_eos2_one_object_attrs_wrapper failed.");
             }
-            status_32 = Vdetach (vgroup_id);
+            Vdetach (vgroup_id);
         }// for  
     }// if 
 
     //Terminate access to the V interface and close the file.
 cleanFail:
-    status_n = Vend (file_id);
-    status_n = Hclose (file_id);
+    Vend (file_id);
+    Hclose (file_id);
     if(true == unexpected_fail)
         throw InternalErr(__FILE__,__LINE__,err_msg);
 
@@ -3301,7 +3294,7 @@ string HDFCFUtil::escattr(string s)
     // escape \ with a second backslash
     //string::size_type ind = 0;
     size_t ind = 0;
-    while ((ind = s.find(ESC, ind)) != s.npos) {
+    while ((ind = s.find(ESC, ind)) != string::npos) {
         s.replace(ind, 1, DOUBLE_ESC);
         ind += DOUBLE_ESC.length();
     }
@@ -3309,7 +3302,7 @@ string HDFCFUtil::escattr(string s)
     // Coverity complains the possiblity of using a negative number as an index. 
     // But this will never happen. I will try to see if I can make coverity understand this.
     ind = 0;
-    while ((ind = s.find_first_not_of(printable, ind)) != s.npos) {
+    while ((ind = s.find_first_not_of(printable, ind)) != string::npos) {
         s.replace(ind, 1, ESC + octstring(s[ind]));
     }
 
@@ -3342,12 +3335,10 @@ string HDFCFUtil::escattr(string s)
 
     // escape " with backslash
     ind = 0;
-    while ((ind = s.find(QUOTE, ind)) != s.npos) {
+    while ((ind = s.find(QUOTE, ind)) != string::npos) {
         //comment out the following line since it wastes the CPU operation.
-        //if(ind >=0) {// Make coverity happy
-            s.replace(ind, 1, ESCQUOTE);
-            ind += ESCQUOTE.length();
-        //}
+        s.replace(ind, 1, ESCQUOTE);
+        ind += ESCQUOTE.length();
     }
 
     return s;
@@ -3360,10 +3351,6 @@ void HDFCFUtil::parser_trmm_v7_gridheader(const vector<char>& value,
                                           float& lat_res, float& lon_res,
                                           bool check_reg_orig ){
 
-     //bool cr_reg = false;
-     //bool sw_origin = true;
-     //float lat_res = 1.;
-     //float lon_res = 1.;
      float lat_north = 0.;
      float lat_south = 0.;
      float lon_east = 0.;
@@ -3495,8 +3482,6 @@ void HDFCFUtil::parser_trmm_v7_gridheader(const vector<char>& value,
             if (equal_pos < scolon_pos){
                 string lon_west_str = ind_elems[7].substr(equal_pos+1,scolon_pos-equal_pos-1);
                 lon_west = strtof(lon_west_str.c_str(),NULL);
-//cerr<<"latres str is "<<lon_west_str <<endl;
-//cerr<<"latres is "<<lon_west <<endl;
             }
             else 
                 throw InternalErr(__FILE__,__LINE__,"south bound coordinate is not right for TRMM level 3 products");
@@ -3596,7 +3581,6 @@ string HDFCFUtil::get_double_str(double x,int total_digit,int after_point) {
     
     string str;
     if(x!=0) {
-        //char res[total_digit];
         vector<char> res;
         res.resize(total_digit);
         for(int i = 0; i<total_digit;i++)
@@ -3611,7 +3595,6 @@ string HDFCFUtil::get_double_str(double x,int total_digit,int after_point) {
         }
         else {
            dtoa(x, &res[0], after_point);
-           //dtoa(x, res, after_point);
            for(int i = 0; i<total_digit;i++) {
                if(res[i] != '\0')
                   str.push_back(res[i]);
@@ -3622,8 +3605,6 @@ string HDFCFUtil::get_double_str(double x,int total_digit,int after_point) {
     else 
        str.push_back('0');
         
-//std::cerr<<"str length is "<<str.size() <<std::endl;
-//std::cerr<<"str is "<<str <<std::endl;
     return str;
 
 }
@@ -3645,17 +3626,13 @@ string HDFCFUtil::get_int_str(int x) {
          num_digit++;
       if(x<=0)
          num_digit++;
-      //char buf[num_digit];
       vector<char> buf;
       buf.resize(num_digit);
       snprintf(&buf[0],num_digit,"%d",x);
-      //sprintf(buf,"%d",x);
       str.assign(&buf[0]);
-      //str.assign(buf);
 
    }      
 
-//cerr<<"int str is "<<str<<endl;
    return str;
 
 }
@@ -3695,7 +3672,6 @@ cerr<<"ret_val for write is "<<ret_val <<endl;
 ssize_t HDFCFUtil::read_vector_from_file(int fd, vector<double> &val, size_t dtypesize) {
 
     ssize_t ret_val;
-    //FILE* pFile;
     ret_val = read(fd,&val[0],val.size()*dtypesize);
     
 #if 0

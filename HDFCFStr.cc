@@ -85,7 +85,6 @@ bool HDFCFStr::read()
         else
             sdid = h4fd;
 
-        //int32 sdid = h4fd;
         int32 sdsid = 0;
 
         int32 sdsindex = SDreftoindex (sdid, field_ref);
@@ -229,9 +228,15 @@ bool HDFCFStr::read()
         val.resize(num_rec);
 
         // Read the data
-        r = VSread (vdata_id, (uint8 *) &val[0], num_rec,
-                    FULL_INTERLACE);
-
+        if(VSread (vdata_id, (uint8 *) &val[0], num_rec,
+                    FULL_INTERLACE) == -1) {
+            VSdetach (vdata_id);
+            Vend (file_id);
+            HDFCFUtil::close_fileid(-1,file_id,-1,-1,check_pass_fileid_key);
+            ostringstream eherr;
+            eherr << "VSread failed.";
+            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        }
 
         string final_str(val.begin(),val.end());
         set_value(final_str);

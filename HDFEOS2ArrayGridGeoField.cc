@@ -152,7 +152,6 @@ HDFEOS2ArrayGridGeoField::read ()
 
         if(true == HDF4RequestHandler::get_enable_eosgeo_cachefile()) {
 
-//cerr<<"geo cache is true "<<endl;
             use_cache = true;
             BESH4Cache *llcache = BESH4Cache::get_instance();
 
@@ -479,7 +478,6 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                 HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                 throw;
             }
-            //detachfunc(gridid);
                 
         }
         
@@ -591,8 +589,8 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                     BESH4Cache *llcache = BESH4Cache::get_instance();
                     llcache->write_cached_data(cache_fpath,(xdim+ydim)*sizeof(double),latlon_all);
 
-//                    if(HDFCFUtil::write_vector_to_file(cache_fpath,latlon_all,sizeof(double)) != ((xdim+ydim))) 
 #if 0
+//                    if(HDFCFUtil::write_vector_to_file(cache_fpath,latlon_all,sizeof(double)) != ((xdim+ydim))) 
                     if(HDFCFUtil::write_vector_to_file2(cache_fpath,latlon_all,sizeof(double)) != ((xdim+ydim)*sizeof(double))) {
                         if(remove(cache_fpath.c_str()) !=0) {
                             throw InternalErr(__FILE__,__LINE__,"Cannot remove the cached file.");
@@ -688,11 +686,12 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
     }
 
     // Retrieve dimensions and X-Y coordinates of corners
+#if 0
     //int32 xdim = 0;
     //int32 ydim = 0;
-
     //float64 upleft[2];
     //float64 lowright[2];
+#endif
 
     r = GDgridinfo (gridid, &xdim, &ydim, upleft, lowright);
     if (r != 0) {
@@ -1486,7 +1485,7 @@ HDFEOS2ArrayGridGeoField::format_constraint (int *offset, int *step,
 
         id++;
         p++;
-    }// while (p != dim_end ())
+    }// end while 
 
     return nels;
 }
@@ -1494,8 +1493,8 @@ HDFEOS2ArrayGridGeoField::format_constraint (int *offset, int *step,
 
 // Calculate lat/lon based on HDF-EOS2 APIs.
 void
-HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
-                                           int specialformat,
+HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int g_fieldtype,
+                                           int g_specialformat,
                                            float64 * outlatlon,float64* latlon_all,
                                            int32 * offset, int32 * count,
                                            int32 * step, int nelms,bool write_latlon_cache)
@@ -1518,7 +1517,7 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
     // The coordinate values(MCD products) are set to -180.0, -90.0, etc.
     // We have to change them to DDDMMMSSS.SS format, so 
     // we have to multiply them by 1000000.
-    if (specialformat == 1) {
+    if (g_specialformat == 1) {
         upleft[0] = upleft[0] * 1000000;
         upleft[1] = upleft[1] * 1000000;
         lowright[0] = lowright[0] * 1000000;
@@ -1529,7 +1528,7 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
     // Based on the grid names and size, we find it covers the whole global.
     // So we set the corner coordinates to (-180000000.00,90000000.00) and
     // (180000000.00,-90000000.00).
-    if (specialformat == 2) {
+    if (g_specialformat == 2) {
         upleft[0] = 0.0;
         upleft[1] = 90000000.0;
         lowright[0] = 360000000.0;
@@ -1627,10 +1626,8 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
     }
 
     // ADDING CACHE file routine,save lon and lat to a cached file. lat first, lon second.
-    //vector<double>latlon_all;
     if(true == write_latlon_cache) {
         if(GCTP_CEA == projcode || GCTP_GEO == projcode) {
-            //latlon_all.resize(xdim+ydim);
             vector<double>temp_lat;
             vector<double>temp_lon;
             int32 temp_offset[2];
@@ -1653,7 +1650,7 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
                 temp_lon.resize(xdim);
                 LatLon2DSubset(&temp_lon[0],ydim,xdim,&lon[0],temp_offset,temp_count,temp_step);
 
-                for(int i = 0; i<ydim;i++)
+                for(i = 0; i<ydim;i++)
                     latlon_all[i] = temp_lat[i];
 
                 // Longitude values for the simple projections are mapped to 0 to 360 and we need to map them between -180 and 180.
@@ -1663,7 +1660,7 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
                     CorSpeLon(&temp_lon[0],xdim);
                 }
 
-                for(int i = 0; i<xdim;i++) 
+                for(i = 0; i<xdim;i++) 
                     latlon_all[i+ydim] = temp_lon[i];
 
             }
@@ -1680,7 +1677,7 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
                 temp_lon.resize(xdim);
                 LatLon2DSubset(&temp_lon[0],xdim,ydim,&lon[0],temp_offset,temp_count,temp_step);
 
-                for(int i = 0; i<ydim;i++)
+                for(i = 0; i<ydim;i++)
                     latlon_all[i] = temp_lat[i];
 
                 // Longitude values for the simple projections are mapped to 0 to 360 and we need to map them between -180 and 180.
@@ -1689,7 +1686,7 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
                 if(speciallon == true) //Must also apply to the latitude case since the lat/lon is stored in one cached file
                     CorSpeLon(&temp_lon[0],xdim);
 
-                for(int i = 0; i<xdim;i++)
+                for(i = 0; i<xdim;i++)
                     latlon_all[i+ydim] = temp_lon[i];
 
             }
@@ -1704,14 +1701,14 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
 
     // 2-D Lat/Lon, need to decompose the data for subsetting.
     if (nelms == (xdim * ydim)) {	// no subsetting return all, for the performance reason.
-        if (fieldtype == 1)
+        if (g_fieldtype == 1)
             memcpy (outlatlon, &lat[0], xdim * ydim * sizeof (double));
         else
             memcpy (outlatlon, &lon[0], xdim * ydim * sizeof (double));
     }
     else {	// Messy subsetting case, needs to know the major dimension
         if (ydimmajor) {
-            if (fieldtype == 1) // Lat 
+            if (g_fieldtype == 1) // Lat 
                 LatLon2DSubset (outlatlon, ydim, xdim, &lat[0], offset, count,
                                 step);
             else // Lon
@@ -1719,7 +1716,7 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
                                 step);
         }
         else {
-            if (fieldtype == 1) // Lat
+            if (g_fieldtype == 1) // Lat
                 LatLon2DSubset (outlatlon, xdim, ydim, &lat[0], offset, count,
                                 step);
             else // Lon
@@ -1775,7 +1772,7 @@ HDFEOS2ArrayGridGeoField::LatLon2DSubset (T * outlatlon, int majordim,
 // This routine is used to replace those fill values by using the formula to calculate
 // the lat/lon of the geographic projection.
 template < class T > bool HDFEOS2ArrayGridGeoField::CorLatLon (T * latlon,
-                                                               int fieldtype,
+                                                               int g_fieldtype,
                                                                int elms,
                                                                int fv)
 {
@@ -1820,7 +1817,7 @@ template < class T > bool HDFEOS2ArrayGridGeoField::CorLatLon (T * latlon,
         latlon[i] = latlon[i - 1] + increment;
 
         // The latitude must be within (-90,90)
-        if (i != (elms - 1) && (fieldtype == 1) &&
+        if (i != (elms - 1) && (g_fieldtype == 1) &&
             ((float) (latlon[i]) < -90.0 || (float) (latlon[i]) > 90.0))
             return false;
 
@@ -1828,18 +1825,18 @@ template < class T > bool HDFEOS2ArrayGridGeoField::CorLatLon (T * latlon,
         // some files use (-180,180), for simple check
         // we just choose (-180,360). 
         // I haven't found longitude has missing values.
-        if (i != (elms - 1) && (fieldtype == 2) &&
+        if (i != (elms - 1) && (g_fieldtype == 2) &&
             ((float) (latlon[i]) < -180.0 || (float) (latlon[i]) > 360.0))
             return false;
     }
-    if (fieldtype == 1) {
+    if (g_fieldtype == 1) {
         if ((float) (latlon[elms - 1]) < -90.0)
             latlon[elms - 1] = (T)-90;
         if ((float) (latlon[elms - 1]) > 90.0)
             latlon[elms - 1] = (T)90;
     }
 
-    if (fieldtype == 2) {
+    if (g_fieldtype == 2) {
         if ((float) (latlon[elms - 1]) < -180.0)
             latlon[elms - 1] = (T)-180.0;
         if ((float) (latlon[elms - 1]) > 360.0)

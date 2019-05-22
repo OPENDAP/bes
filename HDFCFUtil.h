@@ -68,7 +68,6 @@ struct HDFCFUtil
     /// for one operation(DDS,DAS or DATA). In case of exceptions, these IDs need to be closed.
     static void close_fileid(int32 sdfd,int32 file_id,int32 gridfd,int32 swathfd,bool pass_fileid_key);
 
-    //static void reset_fileid(int& sdfd, int&file_id,int&gridfd,int&swathfd);
 
     /// A customized escaping function to escape special characters following OPeNDAP's escattr function
     /// that can be found at escaping.cc and escaping.h. i
@@ -78,14 +77,6 @@ struct HDFCFUtil
     /// will use \012 etc to replace \n etc. in these attributes and make attributes hard to read.
     static std::string escattr(std::string  s);
 
-    /// Check the BES key. 
-    /// This function will check a BES key specified at the file h4.conf.in.
-    /// If the key's value is either true or yes. The handler claims to find
-    /// a key and will do some operations. Otherwise, will do different operations.
-    /// For example, One may find a line H4.EnableCF=true at h4.conf.in.
-    /// That means, the HDF4 handler will handle the HDF4 files by following CF conventions.
-
-    //static bool check_beskeys(const std::string& key);
 
     /// From a string separated by a separator to a list of string,
     /// for example, split "ab,c" to {"ab","c"}
@@ -237,7 +228,6 @@ struct HDFCFUtil
     static void map_eos2_one_object_attrs(libdap::DAS &das,int32 file_id,int32 obj_attr_group_id, const string &vgroup_name);
 
     // Parse TRMM V7 GridHeaders
-    //static void parser_trmm_v7_gridheader(int& latsize, int&lonsize, float& lat_start, float& lon_start, bool &sw_origin, bool & cr_reg);
     static void parser_trmm_v7_gridheader(const std:: vector<char>&value, int& latsize, int&lonsize, float& lat_start, float& lon_start, float& lat_res, float& lon_res, bool check_reg_orig);
 
     // Use to generate cache file name.
@@ -256,7 +246,6 @@ struct HDFCFUtil
     // Obtain the integer in the string format
     static std::string get_int_str(int);
      
-    //template<typename T> static size_t write_vector_to_file(const std::string &,const vector<T> &,size_t);
    
 #if 0
     static size_t write_vector_to_file(const std::string &,const vector<double> &,size_t);

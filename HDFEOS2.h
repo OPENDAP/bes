@@ -520,14 +520,6 @@ namespace HDFEOS2
             // Check if this swath uses the dimension map. 
             bool dmap;
 
-            // Flag to indicate the field cache. Now this only applies to some HDF-EOS2 grid lat/lon fields.
-            //short field_cache;
-
-            /// Add a special_flag to indicate if the field data needs to be adjusted(dimension map case)
-            /// KY 2009-12-3
-            // This may not necessary. Check in the next release. KY 2012-09-20
-            // bool need_adjustment;
-
         friend class Dataset;
         friend class SwathDimensionAdjustment;
         friend class GridDataset;
@@ -1194,6 +1186,7 @@ namespace HDFEOS2
 
                 const std::string get_first_grid_name() const 
                 { return this->grids[0]->getName();}
+#if 0
                 /// Get the scale and offset type  
                 /// const SOType getScaleType () const
                 /// Move to the group level since I found that 
@@ -1201,6 +1194,7 @@ namespace HDFEOS2
                 /// {
                 ///    return this->scaletype;
                 /// }
+#endif
 
 
             protected:

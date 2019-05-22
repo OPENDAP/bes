@@ -202,7 +202,6 @@ HDFCFStrField::read ()
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
         }
 
-        int32 r = -1;
 
         // Seek the position of the starting point
         if (VSseek (vdata_id, (int32) offset32[0]) == -1) {
@@ -297,7 +296,7 @@ HDFCFStrField::format_constraint (int *offset, int *step, int *count)
 
         id++;
         p++;
-    }// while (p != dim_end ())
+    }// while 
 
     return nels;
 }
