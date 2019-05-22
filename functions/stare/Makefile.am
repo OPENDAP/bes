@@ -10,8 +10,8 @@ AUTOMAKE_OPTIONS = foreign
 
 #Define __macosx for STARE
 #Remove hard code for filepath
-AM_CPPFLAGS = $(DAP_CFLAGS) -D__macosx -I$(STARE_INC) -I$(prefix)/deps/include
-AM_CXXFLAGS = --std=c++11
+AM_CPPFLAGS = $(DAP_CFLAGS) -I$(STARE_INC) -I$(prefix)/deps/include
+AM_CXXFLAGS = 
 AM_LDADD =  $(DAP_CLIENT_LIBS) -lSTARE
 
 #if CPPUNIT
