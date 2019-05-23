@@ -300,9 +300,15 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
             haddr_t cont_addr = 0;
             hsize_t cont_size = 0;
             VERBOSE(cerr << "Storage: contiguous" << endl);
-            //if (H5Dget_dataset_contiguous_storage_info(dataset, &cont_addr, &cont_size) < 0) {
-            //    throw BESInternalError("Cannot obtain the contiguous storage info.", __FILE__, __LINE__);
-            //}
+
+            cont_addr = H5Dget_offset(dataset);
+            if (cont_addr < 0) {
+            		throw BESInternalError("Cannot obtain the offset.", __FILE__, __LINE__);
+            }
+            cont_size = H5Dget_storage_size(dataset);
+            if (cont_size < 0) {
+            		throw BESInternalError("Cannot obtain the storage size.", __FILE__, __LINE__);
+            }
             VERBOSE(cerr << "    Addr: " << cont_addr << endl);
             VERBOSE(cerr << "    Size: " << cont_size << endl);
 
@@ -372,6 +378,10 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
             //if (H5Dget_dataset_compact_storage_info(dataset, &comp_size) < 0) {
             //    throw BESInternalError("Cannot obtain the compact storage info.", __FILE__, __LINE__);
             //}
+            comp_size = H5Dget_storage_size(dataset);
+			if (comp_size < 0) {
+				throw BESInternalError("Cannot obtain the compact storage size.", __FILE__, __LINE__);
+			}
             VERBOSE(cerr << "   Size: " << comp_size << endl);
 
             break;
