@@ -37,6 +37,7 @@ AC_DEFUN([AC_CHECK_STARE],
     
     LDFLAGS=$ac_stare_save_LDFLAGS
 
+    STARE_INC=
     ac_check_stare_header_checked=SpatialGeneral.h
     ac_stare_save_CPPFLAGS=$CPPFLAGS
     
@@ -49,14 +50,12 @@ AC_DEFUN([AC_CHECK_STARE],
     
     AC_LANG_POP([C++])
     
-    echo "ac_stare_lib_ok: $ac_stare_lib_ok"
-    echo "ac_stare_include_ok: $ac_stare_include_ok" 
+    # echo "ac_stare_lib_ok: $ac_stare_lib_ok"
+    # echo "ac_stare_include_ok: $ac_stare_include_ok" 
     
-    AS_IF([test "x$ac_stare_lib_ok" = "xyes" -a "x$ac_stare_include_ok" = "xyes"],
-        [AC_SUBST(STARE_LDFLAGS)
-         AC_SUBST(STARE_LIBS)
-         AC_SUBST(STARE_INC)],
-        [])
+    AC_SUBST(STARE_LDFLAGS)
+    AC_SUBST(STARE_LIBS)
+    AC_SUBST(STARE_INC)
     	
     AS_IF([test "x$ac_stare_lib_ok" = "xyes" -a "x$ac_stare_include_ok" = "xyes"],
         [m4_if([$1], [], [:], [$1])],
