@@ -544,8 +544,6 @@ GlobalMetadataStore::store_dap_response(StreamDAP &writer, const string &key, co
 
     int fd;
     if (create_and_lock(item_name, fd)) {
-        // If here, the cache_file_name could not be locked for read access;
-        // try to build it. First make an empty files and get an exclusive lock on them.
         BESDEBUG(DEBUG_KEY,__FUNCTION__ << " Storing " << item_name << endl);
 
         // Get an output stream directed at the locked cache file

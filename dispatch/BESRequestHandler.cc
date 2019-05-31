@@ -114,6 +114,21 @@ string BESRequestHandler::get_method_names()
     return ret;
 }
 
+/**
+ * @brief Get the Last modified time for \arg name
+ *
+ * Handlers that need a more sophisticated method should subclass.
+ *
+ * @param name
+ * @return The LMT
+ */
+time_t get_lmt(const string &name)
+{
+    // Get the bes catalog root path from the conf info
+    // string root_dir = TheBESKeys::TheKeys()->read_string_key("BES.Catalog.catalog.RootDirectory", "");
+    // Get the name's LMT from the file system
+}
+
 /** @brief dumps information about this object
  *
  * Displays the pointer value of this instance, the name of the request
