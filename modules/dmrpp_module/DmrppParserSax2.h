@@ -219,6 +219,7 @@ private:
     end_element callbacks. Most of what takes place in those has been
     factored out to this set of functions. */
     //@{
+    void find_attribute(const char *name, const xmlChar **attributes, int num_attributes);	//TODO: Might need to be changed from 'void'
     void transfer_xml_attrs(const xmlChar **attrs, int nb_attributes);
     void transfer_xml_ns(const xmlChar **namespaces, int nb_namespaces);
     bool check_required_attribute(const std::string &attr);

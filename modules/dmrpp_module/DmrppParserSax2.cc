@@ -132,6 +132,21 @@ DmrppParserSax2::dim_def()
     return d_dim_def;
 }
 
+/** Search for an attribute name to see if it is already present in the
+ * XML.
+ * @param name: The attribute name to search for
+ * @param attributes: The XML attribute array
+ * @param num_attributes: The number of attributes
+ * @return success: pointer to attribute
+ * 		   failure: NULL
+ */
+void DmrppParserSax2::find_attribute(const char *name, const xmlChar **attributes, int num_attributes)
+{
+	if (xml_attrs.find(name) == xml_attrs.end()) {
+
+	}
+}
+
 /** Dump XML attributes to local store so they can be easily manipulated.
  * XML attribute names are always folded to lower case.
  * @param attributes The XML attribute array
