@@ -132,34 +132,13 @@ DmrppParserSax2::dim_def()
     return d_dim_def;
 }
 
-/** Search for an attribute name to see if it is already present in the
- * XML.
- * @param name: The attribute name to search for
- * @param attributes: The XML attribute array
- * @param num_attributes: The number of attributes
- * @return success: pointer to attribute
- * 		   failure: NULL
+/* Search through the attribute array for a given attribute name.
+ * If the name is found, return the string value for that attribute
+ * @param name: 			The name to search for
+ * @param attributes: 		Array that holds the attribute values to search for
+ * @param num_attributes: 	Number of attributes
+ * @return string value of attribute
  */
-bool DmrppParserSax2::check_attribute(const string &name, const xmlChar **attributes, int num_attributes)
-{
-#if 0
-	cerr << "attributes 5: " << attributes[5] << endl;
-	cerr << "name: " << name << endl;
-	cerr << "num attributes: " << num_attributes << endl;
-
-	cerr << "xml_attrs name: " << xml_attrs["name"].value << endl;
-	cerr << "xml_attrs href: " << xml_attrs["href"].value << endl;
-#endif
-
-	unsigned int index = 0;
-	for (int i = 0; i < num_attributes; ++i, index += 5) {
-		if (strncmp(name.c_str(), (const char *)attributes[index], name.length()) == 0) {
-			return true;
-		}
-	}
-	return false;
-}
-
 string DmrppParserSax2::get_attribute_val(const string &name, const xmlChar **attributes, int num_attributes)
 {
 	unsigned int index = 0;
@@ -171,6 +150,7 @@ string DmrppParserSax2::get_attribute_val(const string &name, const xmlChar **at
 	return "";
 }
 
+#if 0
 /** Dump XML attributes to local store so they can be easily manipulated.
  * XML attribute names are always folded to lower case.
  * @param attributes The XML attribute array
@@ -192,6 +172,7 @@ void DmrppParserSax2::transfer_xml_attrs(const xmlChar **attributes, int nb_attr
             "XML Attribute '" << (const char *)attributes[index] << "': " << xml_attrs[(const char *)attributes[index]].value << endl);
     }
 }
+#endif
 
 /** Transfer the XML namespaces to the local store so they can be manipulated
  * more easily.
@@ -209,6 +190,7 @@ void DmrppParserSax2::transfer_xml_ns(const xmlChar **namespaces, int nb_namespa
     }
 }
 
+#if 0
 /** Is a required XML attribute present? Attribute names are always lower case.
  * @note To use this method, first call transfer_xml_attrs.
  * @param attr The XML attribute
@@ -224,7 +206,17 @@ bool DmrppParserSax2::check_required_attribute(const string & attr)
     else
         return true;
 }
+#endif
 
+/*
+ * An improved version of the previous check_required_attribute.
+ * Searches for an attribute name within the attribute array.
+ * @param name: The attribute name to search for
+ * @param attributes: The attribute array
+ * @param num_attributes: The number of attributes
+ * @return success: true
+ * 		   failure: false
+ */
 bool DmrppParserSax2::check_required_attribute(const string &name, const xmlChar **attributes, int num_attributes)
 {
 	unsigned int index = 0;
@@ -238,6 +230,7 @@ bool DmrppParserSax2::check_required_attribute(const string &name, const xmlChar
 	return false;
 }
 
+#if 0
 /** Is a XML attribute present? Attribute names are always lower case.
  * @note To use this method, first call transfer_xml_attrs.
  * @param attr The XML attribute
@@ -247,6 +240,28 @@ bool DmrppParserSax2::check_required_attribute(const string &name, const xmlChar
 bool DmrppParserSax2::check_attribute(const string & attr)
 {
     return (xml_attrs.find(attr) != xml_attrs.end());
+}
+#endif
+
+/**
+ * An improved version of the check_attribute function.
+ * Search for an attribute name to see if it is already present in the
+ * provided attribute array.
+ * @param name: The attribute name to search for
+ * @param attributes: The attribute array
+ * @param num_attributes: The number of attributes
+ * @return success: true
+ * 		   failure: false
+ */
+bool DmrppParserSax2::check_attribute(const string &name, const xmlChar **attributes, int num_attributes)
+{
+	unsigned int index = 0;
+	for (int i = 0; i < num_attributes; ++i, index += 5) {
+		if (strncmp(name.c_str(), (const char *)attributes[index], name.length()) == 0) {
+			return true;
+		}
+	}
+	return false;
 }
 
 bool DmrppParserSax2::process_dimension_def(const char *name, const xmlChar **attrs, int nb_attributes)
@@ -739,7 +754,10 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 localname);
 
         parser->root_ns = URI ? (const char *) URI : "";
-        //parser->transfer_xml_attrs(attributes, nb_attributes);
+
+#if 0
+        parser->transfer_xml_attrs(attributes, nb_attributes);
+#endif
 
         if (parser->check_required_attribute(string("name"), attributes, nb_attributes)) parser->dmr()->set_name(parser->get_attribute_val("name", attributes, nb_attributes));
 
@@ -921,7 +939,9 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         if (parser->debug()) cerr << "Inside dmrpp namespaced element. localname: " << localname << endl;
         assert(this_element_ns_name == dmrpp_namespace);
 
+#if 0
         parser->transfer_xml_attrs(attributes, nb_attributes); // load up xml_attrs
+#endif
 
         BaseType *bt = parser->top_basetype();
         if (!bt) throw BESInternalError("Could locate parent BaseType during parse operation.", __FILE__, __LINE__);
