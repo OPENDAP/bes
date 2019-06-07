@@ -749,8 +749,37 @@ GlobalMetadataStore::get_read_lock_helper(const string &name, const string &suff
 GlobalMetadataStore::MDSReadLock
 GlobalMetadataStore::is_dmr_available(const string &name)
 {
-    return get_read_lock_helper(name, "dmr_r", "DMR");
-}
+    //return get_read_lock_helper(name, "dmr_r", "DMR");
+	//call get_read_lock_helper
+	MDSReadLock lock = get_read_lock_helper(name,"dmr_r","DMR");
+	if (lock()){
+
+		//get type from container
+		string type = container->get_container_type();
+
+		//use type with find_handler() to get handler
+		BESRequestHandler besRH = BESRequestHandlerList::find_handler(type);
+
+		//use handler.get_lmt()
+		time_t file_time = besRH.get_lmt(container->get_relative_name());
+
+		//get the cache time of the handler
+		time_t cache_time = get_cache_lmt(name, "dmr_r");
+
+		//compare file lmt and time of creation of cache
+		if (file_time > cache_time){
+			lock.clearLock();
+			return lock;
+		}//end if(file > cache)
+		else {
+			return lock;
+		}//end else
+	}//end if(is locked)
+	else{
+		return lock;
+	}//end else
+
+}//end is_dmr_available()
 
 /**
  * @brief Is the DDS response for \arg name in the MDS?
@@ -761,8 +790,37 @@ GlobalMetadataStore::is_dmr_available(const string &name)
 GlobalMetadataStore::MDSReadLock
 GlobalMetadataStore::is_dds_available(const string &name)
 {
-    return get_read_lock_helper(name, "dds_r", "DDS");
-}
+    //return get_read_lock_helper(name, "dds_r", "DDS");
+	//call get_read_lock_helper
+	MDSReadLock lock = get_read_lock_helper(name,"dds_r","DDS");
+	if (lock()){
+
+		//get type from container
+		string type = container->get_container_type();
+
+		//use type with find_handler() to get handler
+		BESRequestHandler besRH = BESRequestHandlerList::find_handler(type);
+
+		//use handler.get_lmt()
+		time_t file_time = besRH.get_lmt(container->get_relative_name());
+
+		//get the cache time of the handler
+		time_t cache_time = get_cache_lmt(name, "dds_r");
+
+		//compare file lmt and time of creation of cache
+		if (file_time > cache_time){
+			lock.clearLock();
+			return lock;
+		}//end if(file > cache)
+		else {
+			return lock;
+		}//end else
+	}//end if(is locked)
+	else{
+		return lock;
+	}//end else
+
+}//end is_dds_available()
 
 /**
  * @brief Is the DAS response for \arg name in the MDS?
@@ -773,8 +831,37 @@ GlobalMetadataStore::is_dds_available(const string &name)
 GlobalMetadataStore::MDSReadLock
 GlobalMetadataStore::is_das_available(const string &name)
 {
-    return get_read_lock_helper(name, "das_r", "DAS");
-}
+    //return get_read_lock_helper(name, "das_r", "DAS");
+	//call get_read_lock_helper
+	MDSReadLock lock = get_read_lock_helper(name,"das_r","DAS");
+	if (lock()){
+
+		//get type from container
+		string type = container->get_container_type();
+
+		//use type with find_handler() to get handler
+		BESRequestHandler besRH = BESRequestHandlerList::find_handler(type);
+
+		//use handler.get_lmt()
+		time_t file_time = besRH.get_lmt(container->get_relative_name());
+
+		//get the cache time of the handler
+		time_t cache_time = get_cache_lmt(name, "das_r");
+
+		//compare file lmt and time of creation of cache
+		if (file_time > cache_time){
+			lock.clearLock();
+			return lock;
+		}//end if(file > cache)
+		else {
+			return lock;
+		}//end else
+	}//end if(is locked)
+	else{
+		return lock;
+	}//end else
+
+}//end is_das_available()
 
 /**
  * @brief Is the DMR++ response for \arg name in the MDS?
@@ -796,8 +883,57 @@ GlobalMetadataStore::is_das_available(const string &name)
 GlobalMetadataStore::MDSReadLock
 GlobalMetadataStore::is_dmrpp_available(const string &name)
 {
-    return get_read_lock_helper(name, "dmrpp_r", "DMR++");
-}
+    //return get_read_lock_helper(name, "dmrpp_r", "DMR++");
+	//call get_read_lock_helper
+	MDSReadLock lock = get_read_lock_helper(name,"dmrpp_r","DMR++");
+	if (lock()){
+
+		//get type from container
+		string type = container->get_container_type();
+
+		//use type with find_handler() to get handler
+		BESRequestHandler besRH = BESRequestHandlerList::find_handler(type);
+
+		//use handler.get_lmt()
+		time_t file_time = besRH.get_lmt(container->get_relative_name());
+
+		//get the cache time of the handler
+		time_t cache_time = get_cache_lmt(name, "dmrpp_r");
+
+		//compare file lmt and time of creation of cache
+		if (file_time > cache_time){
+			lock.clearLock();
+			return lock;
+		}//end if(file > cache)
+		else {
+			return lock;
+		}//end else
+	}//end if(is locked)
+	else{
+		return lock;
+	}//end else
+
+}//end is_dmrpp_available()
+
+/**
+ * @brief Get the last modified time for the cached object file
+ *
+ * @param name - name of the object
+ * @param suffix - suffix of the object
+ * @return The last modified time.
+ */
+time_t
+GlobalMetadataStore::get_cache_lmt(const string &name, const string &suffix)
+{
+	string item_name = get_cache_file_name(get_hash(name + suffix), false);
+	struct stat statbuf;
+
+	if (stat(item_name.c_str(), &statbuf) == -1){
+		throw BESNotFoundError(strerror(errno), __FILE__, __LINE__);
+	}//end if(error)
+
+	return statbuf.st_mtime;
+}//end get_cache_lmt()
 
 ///@name write_response_helper
 ///@{

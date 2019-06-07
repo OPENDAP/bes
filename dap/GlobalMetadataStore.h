@@ -197,6 +197,12 @@ public:
         }
 
          virtual bool operator()() { return locked; }
+
+         //used to set 'locked' to false to force reload of file in cache. SBL 6/7/19
+         virtual void clearLock() {
+        	 if (locked) mds->unlock_and_close(name);
+        	 locked = false;
+         }//end clearLock()
      };
 
     typedef struct MDSReadLock MDSReadLock;

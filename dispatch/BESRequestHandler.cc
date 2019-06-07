@@ -122,12 +122,21 @@ string BESRequestHandler::get_method_names()
  * @param name
  * @return The LMT
  */
-time_t get_lmt(const string &name)
-{
+time_t get_lmt(const string &name){
+// 5/31/19 - SBL - Initial code
+// 6/03/19 - SBL - using BESUtil::pathConcat and throws BESNotFoundError
     // Get the bes catalog root path from the conf info
-    // string root_dir = TheBESKeys::TheKeys()->read_string_key("BES.Catalog.catalog.RootDirectory", "");
+    string root_dir = TheBESKeys::TheKeys()->read_string_key("BES.Catalog.catalog.RootDirectory", "");
     // Get the name's LMT from the file system
-}
+    string filepath = BESUtil::pathConcat(root_dir, name, '/');
+    struct stat statbuf;
+    if (stat(filepath.c_str(), &statbuf) == -1){
+    	//perror(filepath);
+    	throw BESNotFoundError(strerror(errno), __FILE__, __LINE__);
+    }//end if
+
+    return statbuf.st_mtime;
+}//end get_lmt()
 
 /** @brief dumps information about this object
  *
