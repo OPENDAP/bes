@@ -33,6 +33,7 @@
 #include <string>
 #include <iostream>
 #include <map>
+#include <unordered_map>
 #include <stack>
 
 #include <libxml/parserInternals.h>
@@ -202,7 +203,7 @@ private:
         }
     };
 
-    typedef std::map<std::string, XMLAttribute> XMLAttrMap;
+    typedef std::unordered_map<std::string, XMLAttribute> XMLAttrMap;
     XMLAttrMap xml_attrs; // dump XML attributes here
 
     XMLAttrMap::iterator xml_attr_begin() { return xml_attrs.begin(); }
@@ -219,10 +220,15 @@ private:
     end_element callbacks. Most of what takes place in those has been
     factored out to this set of functions. */
     //@{
+#if 0
     void transfer_xml_attrs(const xmlChar **attrs, int nb_attributes);
+#endif
+    string get_attribute_val(const string &name, const xmlChar **attributes, int num_attributes);
     void transfer_xml_ns(const xmlChar **namespaces, int nb_namespaces);
     bool check_required_attribute(const std::string &attr);
+    bool check_required_attribute(const std::string &attr, const xmlChar **attributes, int num_attributes);
     bool check_attribute(const std::string & attr);
+    bool check_attribute(const string &name, const xmlChar **attributes, int num_attributes);
     void process_variable_helper(libdap::Type t, ParseState s, const xmlChar **attrs, int nb_attributes);
 
     void process_enum_const_helper(const xmlChar **attrs, int nb_attributes);
