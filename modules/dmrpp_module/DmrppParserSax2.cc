@@ -134,10 +134,10 @@ DmrppParserSax2::dim_def()
 
 /* Search through the attribute array for a given attribute name.
  * If the name is found, return the string value for that attribute
- * @param name: 			The name to search for
- * @param attributes: 		Array that holds the attribute values to search for
- * @param num_attributes: 	Number of attributes
- * @return string value of attribute
+ * @param name: Search for this name
+ * @param attributes: Array that holds the attribute values to search
+ * @param num_attributes: Number of attributes
+ * @return string value of attribute; the empty string if the name was not found
  */
 string DmrppParserSax2::get_attribute_val(const string &name, const xmlChar **attributes, int num_attributes)
 {
