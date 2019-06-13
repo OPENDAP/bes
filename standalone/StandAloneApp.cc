@@ -308,8 +308,6 @@ int StandAloneApp::terminate(int sig)
 
     xmlCleanupParser();
 
-    delete _outputStrm;
-
     return sig;
 }
 
