@@ -54,6 +54,7 @@
 #include "BESLog.h"
 #include "BESContextManager.h"
 #include "BESDebug.h"
+#include "BESRequestHandler.h"
 
 #include "BESInternalError.h"
 #include "BESInternalFatalError.h"
@@ -747,11 +748,11 @@ GlobalMetadataStore::get_read_lock_helper(const string &name, const string &suff
  * released.
  */
 GlobalMetadataStore::MDSReadLock
-GlobalMetadataStore::is_dmr_available(const string &name)
+GlobalMetadataStore::is_dmr_available(const BESContainer &container)
 {
     //return get_read_lock_helper(name, "dmr_r", "DMR");
 	//call get_read_lock_helper
-	MDSReadLock lock = get_read_lock_helper(name,"dmr_r","DMR");
+	MDSReadLock lock = get_read_lock_helper(container->get_relative_name(),"dmr_r","DMR");
 	if (lock()){
 
 		//get type from container
@@ -761,10 +762,10 @@ GlobalMetadataStore::is_dmr_available(const string &name)
 		BESRequestHandler besRH = BESRequestHandlerList::find_handler(type);
 
 		//use handler.get_lmt()
-		time_t file_time = besRH.get_lmt(container->get_relative_name());
+		time_t file_time = besRH.get_lmt(container->get_real_name());
 
 		//get the cache time of the handler
-		time_t cache_time = get_cache_lmt(name, "dmr_r");
+		time_t cache_time = get_cache_lmt(container->get_relative_name(), "dmr_r");
 
 		//compare file lmt and time of creation of cache
 		if (file_time > cache_time){
@@ -788,11 +789,11 @@ GlobalMetadataStore::is_dmr_available(const string &name)
  * @see is_dmr_available() for more information.
  */
 GlobalMetadataStore::MDSReadLock
-GlobalMetadataStore::is_dds_available(const string &name)
+GlobalMetadataStore::is_dds_available(const BESContainer &container)
 {
     //return get_read_lock_helper(name, "dds_r", "DDS");
 	//call get_read_lock_helper
-	MDSReadLock lock = get_read_lock_helper(name,"dds_r","DDS");
+	MDSReadLock lock = get_read_lock_helper(container->get_relative_name(),"dds_r","DDS");
 	if (lock()){
 
 		//get type from container
@@ -802,10 +803,10 @@ GlobalMetadataStore::is_dds_available(const string &name)
 		BESRequestHandler besRH = BESRequestHandlerList::find_handler(type);
 
 		//use handler.get_lmt()
-		time_t file_time = besRH.get_lmt(container->get_relative_name());
+		time_t file_time = besRH.get_lmt(container->get_real_name());
 
 		//get the cache time of the handler
-		time_t cache_time = get_cache_lmt(name, "dds_r");
+		time_t cache_time = get_cache_lmt(container->get_relative_name(), "dds_r");
 
 		//compare file lmt and time of creation of cache
 		if (file_time > cache_time){
@@ -829,11 +830,11 @@ GlobalMetadataStore::is_dds_available(const string &name)
  * @see is_dmr_available() for more information.
  */
 GlobalMetadataStore::MDSReadLock
-GlobalMetadataStore::is_das_available(const string &name)
+GlobalMetadataStore::is_das_available(const BESContainer &container)
 {
     //return get_read_lock_helper(name, "das_r", "DAS");
 	//call get_read_lock_helper
-	MDSReadLock lock = get_read_lock_helper(name,"das_r","DAS");
+	MDSReadLock lock = get_read_lock_helper(container->get_relative_name(),"das_r","DAS");
 	if (lock()){
 
 		//get type from container
@@ -843,10 +844,10 @@ GlobalMetadataStore::is_das_available(const string &name)
 		BESRequestHandler besRH = BESRequestHandlerList::find_handler(type);
 
 		//use handler.get_lmt()
-		time_t file_time = besRH.get_lmt(container->get_relative_name());
+		time_t file_time = besRH.get_lmt(container->get_real_name());
 
 		//get the cache time of the handler
-		time_t cache_time = get_cache_lmt(name, "das_r");
+		time_t cache_time = get_cache_lmt(container->get_relative_name(), "das_r");
 
 		//compare file lmt and time of creation of cache
 		if (file_time > cache_time){
@@ -881,11 +882,11 @@ GlobalMetadataStore::is_das_available(const string &name)
  * released.
  */
 GlobalMetadataStore::MDSReadLock
-GlobalMetadataStore::is_dmrpp_available(const string &name)
+GlobalMetadataStore::is_dmrpp_available(const BESContainer &container)
 {
     //return get_read_lock_helper(name, "dmrpp_r", "DMR++");
 	//call get_read_lock_helper
-	MDSReadLock lock = get_read_lock_helper(name,"dmrpp_r","DMR++");
+	MDSReadLock lock = get_read_lock_helper(container->get_relative_name(),"dmrpp_r","DMR++");
 	if (lock()){
 
 		//get type from container
@@ -895,10 +896,10 @@ GlobalMetadataStore::is_dmrpp_available(const string &name)
 		BESRequestHandler besRH = BESRequestHandlerList::find_handler(type);
 
 		//use handler.get_lmt()
-		time_t file_time = besRH.get_lmt(container->get_relative_name());
+		time_t file_time = besRH.get_lmt(container->get_real_name());
 
 		//get the cache time of the handler
-		time_t cache_time = get_cache_lmt(name, "dmrpp_r");
+		time_t cache_time = get_cache_lmt(container->get_relative_name(), "dmrpp_r");
 
 		//compare file lmt and time of creation of cache
 		if (file_time > cache_time){

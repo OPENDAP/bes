@@ -101,7 +101,7 @@ void BESDDSResponseHandler::execute(BESDataHandlerInterface &dhi)
     GlobalMetadataStore::MDSReadLock lock;
 
     dhi.first_container();
-    if (mds) lock = mds->is_dds_available(dhi.container->get_relative_name());
+    if (mds) lock = mds->is_dds_available(dhi.container);
 
     if (mds && lock() && dhi.container->get_constraint().empty()) {
         // Unconstrained DDS requests; send the stored response
