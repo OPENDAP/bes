@@ -20,6 +20,7 @@
 #include "HDF4RequestHandler.h"
 
 using namespace std;
+using namespace libdap;
 #define SIGNED_BYTE_TO_INT32 1
 
 bool
@@ -65,7 +66,6 @@ HDFEOS2ArraySwathGeoField::read ()
     }
 
     int32 (*openfunc) (char *, intn);
-    intn (*closefunc) (int32);
     int32 (*attachfunc) (int32, char *);
     intn (*detachfunc) (int32);
     intn (*fieldinfofunc) (int32, char *, int32 *, int32 *, int32 *, char *);
@@ -74,7 +74,6 @@ HDFEOS2ArraySwathGeoField::read ()
     // Define function pointers to handle the swath
     string datasetname;
     openfunc = SWopen;
-    closefunc = SWclose;
     attachfunc = SWattach;
     detachfunc = SWdetach;
     fieldinfofunc = SWfieldinfo;
@@ -84,7 +83,8 @@ HDFEOS2ArraySwathGeoField::read ()
     // We may eventually combine the following code with other code, so
     // we don't add many comments from here to the end of the file. 
     // The jira ticket about combining code is HFRHANDLER-166.
-    int32 sfid = -1, swathid = -1;
+    int32 sfid = -1;
+    int32 swathid = -1;
 
     if(false == check_pass_fileid_key) {
         sfid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
@@ -107,10 +107,11 @@ HDFEOS2ArraySwathGeoField::read ()
     }
 
 
-    int32 tmp_rank, tmp_dims[rank];
+    int32 tmp_rank = -1;
+    int32 tmp_dims[rank];
     char tmp_dimlist[1024];
-    int32 type;
-    intn r;
+    int32 type =-1;
+    intn r = -1;
     r = fieldinfofunc (swathid, const_cast < char *>(fieldname.c_str ()),
         &tmp_rank, tmp_dims, &type, tmp_dimlist);
     if (r != 0) {

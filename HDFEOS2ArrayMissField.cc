@@ -21,6 +21,8 @@
 
 #include "HDFEOS2.h"
 
+using namespace libdap;
+using namespace std;
 // Now we use the vector to replace new []. KY 2012-12-30
 bool HDFEOS2ArrayMissGeoField::read()
 {
@@ -99,7 +101,7 @@ HDFEOS2ArrayMissGeoField::format_constraint (int *offset, int *step, int *count)
 
         id++;
         p++;
-    }// while (p != dim_end ())
+    }
 
     return nels;
 }

@@ -23,6 +23,8 @@
 #include "BESDebug.h"
 
 using namespace std;
+using namespace libdap;
+
 #define SIGNED_BYTE_TO_INT32 1
 
 
@@ -82,7 +84,8 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
     // We may eventually combine the following code with other code, so
     // we don't add many comments from here to the end of the file. 
     // The jira ticket about combining code is HFRHANDLER-166.
-    int32 fileid = -1, swathid = -1; 
+    int32 fileid = -1;
+    int32 swathid = -1; 
 
     fileid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
     if (fileid < 0) {
@@ -134,7 +137,8 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 
     delete[]swathname;
 
-    int32 tmp_rank = 0, tmp_dims[rank];
+    int32 tmp_rank = 0;
+    int32 tmp_dims[rank];
     char tmp_dimlist[1024];
     int32 type = 0;
     intn r = -1;
@@ -363,7 +367,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::format_constraint (int *offset, int *step,
 
         id++;
         p++;
-    }// while (p != dim_end ())
+    }// while 
 
     return nels;
 }

@@ -17,11 +17,11 @@
 
 using namespace libdap;
 
-class HDFEOS2ArraySwathGeoField:public Array
+class HDFEOS2ArraySwathGeoField:public libdap::Array
 {
     public:
-        HDFEOS2ArraySwathGeoField (int rank, const std::string & filename, const int swathfd, const std::string & swathname, const std::string & fieldname, const string & n = "", BaseType * v = 0):
-            Array (n, v),
+        HDFEOS2ArraySwathGeoField (int rank, const std::string & filename, const int swathfd, const std::string & swathname, const std::string & fieldname, const string & n = "", libdap::BaseType * v = 0):
+            libdap::Array (n, v),
             rank (rank),
             filename(filename),
             swathfd (swathfd), 
@@ -35,7 +35,7 @@ class HDFEOS2ArraySwathGeoField:public Array
         // Standard way to pass the coordinates of the subsetted region from the client to the handlers
         int format_constraint (int *cor, int *step, int *edg);
 
-        BaseType *ptr_duplicate ()
+        libdap::BaseType *ptr_duplicate ()
         {
             return new HDFEOS2ArraySwathGeoField (*this);
         }

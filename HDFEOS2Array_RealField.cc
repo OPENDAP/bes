@@ -20,6 +20,7 @@
 #include "HDF4RequestHandler.h"
 
 using namespace std;
+using namespace libdap;
 
 #define SIGNED_BYTE_TO_INT32 1
 
@@ -72,10 +73,6 @@ HDFEOS2Array_RealField::read ()
     int32 (*attachfunc) (int32, char *);
     intn (*detachfunc) (int32);
     intn (*fieldinfofunc) (int32, char *, int32 *, int32 *, int32 *, char *);
-    intn (*readfieldfunc) (int32, char *, int32 *, int32 *, int32 *, void *);
-
-    intn (*attrinfofunc) (int32, char *, int32 *, int32 *);
-    intn (*readattrfunc) (int32, char *, void*);
 
     string datasetname;
     if (swathname == "") {
@@ -84,11 +81,7 @@ HDFEOS2Array_RealField::read ()
         attachfunc = GDattach;
         detachfunc = GDdetach;
         fieldinfofunc = GDfieldinfo;
-        readfieldfunc = GDreadfield;
         datasetname = gridname;
-
-        attrinfofunc = GDattrinfo;
-        readattrfunc = GDreadattr;
     }
     else if (gridname == "") {
         openfunc = SWopen;
@@ -96,11 +89,7 @@ HDFEOS2Array_RealField::read ()
         attachfunc = SWattach;
         detachfunc = SWdetach;
         fieldinfofunc = SWfieldinfo;
-        readfieldfunc = SWreadfield;
         datasetname = swathname;
-
-        attrinfofunc = SWattrinfo;
-        readattrfunc = SWreadattr;
     }
     else 
         throw InternalErr (__FILE__, __LINE__, "It should be either grid or swath.");
@@ -118,8 +107,6 @@ HDFEOS2Array_RealField::read ()
             eherr << "File " << filename.c_str () << " cannot be open.";
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
         }
-//cerr<<"filename is "<<filename <<endl;
-//cerr<<"coming to open grid "<<endl;
     }
     else 
         gfid = gsfd;
@@ -225,7 +212,7 @@ HDFEOS2Array_RealField::read ()
         // errors happen. If no such attribute can be found, SDfindattr still returns FAIL.
         // The correct way is to use SDgetinfo and SDattrinfo to check if attributes 
         // "radiance_scales" etc exist.
-        // For the time being, I won't do this, due to the performance reason and code simplity and also the
+        // For the time being, I won't do this, due to the performance reason and code simplicity and also the
         // very small chance of real FAIL for SDfindattr.
         if(SDfindattr(sdsid, "Key")!=FAIL) 
             has_Key_attr = true;
@@ -240,7 +227,6 @@ HDFEOS2Array_RealField::read ()
     try {
         if((false == is_modis_l1b) && (false == is_modis_vip)
            &&(false == has_Key_attr) && (true == HDF4RequestHandler::get_disable_scaleoffset_comp()))
-           //&&(false == has_Key_attr) && (true == turn_on_disable_scale_comp_key))
             write_dap_data_disable_scale_comp(gridid,nelms,&offset32[0],&count32[0],&step32[0]);
         else 
             write_dap_data_scale_comp(gridid,nelms,offset32,count32,step32);
@@ -296,22 +282,14 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
     intn (*fieldinfofunc) (int32, char *, int32 *, int32 *, int32 *, char *);
     intn (*readfieldfunc) (int32, char *, int32 *, int32 *, int32 *, void *);
 
-    intn (*attrinfofunc) (int32, char *, int32 *, int32 *);
-    intn (*readattrfunc) (int32, char *, void*);
 
     if (swathname == "") {
         fieldinfofunc = GDfieldinfo;
         readfieldfunc = GDreadfield;
-
-        attrinfofunc = GDattrinfo;
-        readattrfunc = GDreadattr;
     }
     else if (gridname == "") {
         fieldinfofunc = SWfieldinfo;
         readfieldfunc = SWreadfield;
-
-        attrinfofunc = SWattrinfo;
-        readattrfunc = SWreadattr;
     }
     else 
         throw InternalErr (__FILE__, __LINE__, "It should be either grid or swath.");
@@ -573,7 +551,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
         break;
                     GET_RADIANCE_SCALES_OFFSETS_ATTR_VALUES(FLOAT32, float);
                     GET_RADIANCE_SCALES_OFFSETS_ATTR_VALUES(FLOAT64, double);
-                };
+                }
 #undef GET_RADIANCE_SCALES_OFFSETS_ATTR_VALUES
                 num_eles_of_an_attr = temp_attrcount; // Store the count of attributes.
             }
@@ -651,7 +629,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
         break;
                     GET_REFLECTANCE_SCALES_OFFSETS_ATTR_VALUES(FLOAT32, float);
                     GET_REFLECTANCE_SCALES_OFFSETS_ATTR_VALUES(FLOAT64, double);
-                };
+                }
 #undef GET_REFLECTANCE_SCALES_OFFSETS_ATTR_VALUES
                 num_eles_of_an_attr = temp_attrcount; // Store the count of attributes. 
             }
@@ -891,8 +869,10 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                                               "Only one separator , should be available.");
                         }
 
+#if 0
                         //istringstream(attrbuf_str.substr(0,found))>> orig_valid_min;
                         //istringstream(attrbuf_str.substr(found+1))>> orig_valid_max;
+#endif
                         
                         orig_valid_min = atof((attrbuf_str.substr(0,found)).c_str());
                         orig_valid_max = atof((attrbuf_str.substr(found+1)).c_str());
@@ -1185,7 +1165,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                     default:
                         throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
 
-                };
+                }
 #undef GET_RADIANCE_SCALES_OFFSETS_ATTR_VALUES
                 // Store the count of attributes.
                 num_eles_of_an_attr = temp_attrcount; 
@@ -1278,7 +1258,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                     default:
                         throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
 
-                };
+                }
 #undef GET_REFLECTANCE_SCALES_OFFSETS_ATTR_VALUES
                 num_eles_of_an_attr = temp_attrcount; // Store the count of attributes. 
             }
@@ -1316,13 +1296,6 @@ cerr<<"tmp_rank 4 is "<<tmp_rank <<endl;
             BESDEBUG("h4","scale is "<<scale <<endl);
             BESDEBUG("h4","offset is "<<field_offset <<endl);
             BESDEBUG("h4","fillvalue is "<<fillvalue <<endl);
-            // For testing only. Use BESDEBUG later. 
-            //cerr << "scale=" << scale << endl;	
-            //cerr << "offset=" << field_offset << endl;
-            //cerr << "fillvalue=" << fillvalue << endl;
-            //cerr << "sotype=" << sotype << endl;
-
-	    //SDend(sdfileid);
         }
     }
 
@@ -1677,7 +1650,6 @@ cerr<<"tmp_rank again is "<<tmp_rank <<endl;
 
 #ifndef SIGNED_BYTE_TO_INT32
             RECALCULATE(int8*, dods_byte*, &val[0]);
-            //set_value((dods_byte*)&val[0],nelms);
 #else
 
             vector<int32>newval;
@@ -1687,7 +1659,6 @@ cerr<<"tmp_rank again is "<<tmp_rank <<endl;
                 newval[counter] = (int32) (val[counter]);
 
             RECALCULATE(int32*, dods_int32*, &newval[0]);
-            //set_value((dods_int32*)&newval[0],nelms);
 #endif
         }
             break;
@@ -1709,7 +1680,6 @@ cerr<<"tmp_rank again is "<<tmp_rank <<endl;
             }
 
             RECALCULATE(uint8*, dods_byte*, &val[0]);
-            //set_value((dods_byte*)&val[0],nelms);
         }
             break;
 
@@ -1730,7 +1700,6 @@ cerr<<"tmp_rank again is "<<tmp_rank <<endl;
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
             RECALCULATE(int16*, dods_int16*, &val[0]);
-           //set_value((dods_int16*)&val[0],nelms);
         }
             break;
         case DFNT_UINT16:
@@ -1767,7 +1736,6 @@ if (r != 0) {
             }
 
             RECALCULATE(uint16*, dods_uint16*, &val[0]);
-            //set_value((dods_uint16*)&val[0],nelms);
         }
             break;
         case DFNT_INT32:
@@ -1787,7 +1755,6 @@ if (r != 0) {
             }
 
             RECALCULATE(int32*, dods_int32*, &val[0]);
-            //set_value((dods_int32*)&val[0],nelms);
         }
             break;
         case DFNT_UINT32:
@@ -1807,7 +1774,6 @@ if (r != 0) {
             }
 
             RECALCULATE(uint32*, dods_uint32*, &val[0]);
-            //set_value((dods_uint32*)&val[0],nelms);
         }
             break;
         case DFNT_FLOAT32:
@@ -1966,7 +1932,6 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
             for (int counter = 0; counter < nelms; counter++)
                 newval[counter] = (int32) (val[counter]);
 
-//            RECALCULATE(int32*, dods_int32*, &newval[0]);
             set_value((dods_int32*)&newval[0],nelms);
 #endif
         }
@@ -1986,7 +1951,6 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            //RECALCULATE(uint8*, dods_byte*, &val[0]);
             set_value((dods_byte*)&val[0],nelms);
         }
             break;
@@ -2003,7 +1967,6 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
                 eherr << "field " << fieldname.c_str () << "cannot be read.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
-            //RECALCULATE(int16*, dods_int16*, &val[0]);
            set_value((dods_int16*)&val[0],nelms);
         }
             break;
@@ -2019,7 +1982,6 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            //RECALCULATE(uint16*, dods_uint16*, &val[0]);
             set_value((dods_uint16*)&val[0],nelms);
         }
             break;
@@ -2035,7 +1997,6 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            //RECALCULATE(int32*, dods_int32*, &val[0]);
             set_value((dods_int32*)&val[0],nelms);
         }
             break;
@@ -2051,7 +2012,6 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            //RECALCULATE(uint32*, dods_uint32*, &val[0]);
             set_value((dods_uint32*)&val[0],nelms);
         }
             break;
@@ -2068,7 +2028,6 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
             }
 
             // Recalculate seems not necessary.
-            //RECALCULATE(float32*, dods_float32*, &val[0]);
             set_value((dods_float32*)&val[0],nelms);
         }
             break;

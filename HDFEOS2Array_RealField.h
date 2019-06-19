@@ -17,13 +17,12 @@
 
 #include "HDFEOS2EnumType.h"
 
-using namespace libdap;
 
-class HDFEOS2Array_RealField:public Array
+class HDFEOS2Array_RealField:public libdap::Array
 {
     public:
-    HDFEOS2Array_RealField (int rank, const std::string & filename, bool isgeofile, const int sdfd, const int gridswathfd, const std::string & gridname, const std::string & swathname, const std::string & fieldname, SOType sotype, const std::string & n = "", BaseType * v = 0):
-        Array (n, v),
+    HDFEOS2Array_RealField (int rank, const std::string & filename, bool isgeofile, const int sdfd, const int gridswathfd, const std::string & gridname, const std::string & swathname, const std::string & fieldname, SOType sotype, const std::string & n = "", libdap::BaseType * v = 0):
+        libdap::Array (n, v),
         rank (rank),
         filename (filename),
         isgeofile(isgeofile),
@@ -41,7 +40,7 @@ class HDFEOS2Array_RealField:public Array
         // Standard way to pass the coordinates of the subsetted region from the client to the handlers
         int format_constraint (int *cor, int *step, int *edg);
 
-        BaseType *ptr_duplicate ()
+        libdap::BaseType *ptr_duplicate ()
         {
             return new HDFEOS2Array_RealField (*this);
         }

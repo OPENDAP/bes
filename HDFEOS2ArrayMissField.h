@@ -14,13 +14,12 @@
 #define HDFEOS2ARRAY_MISSFIELD_H
 
 #include "Array.h"
-using namespace libdap;
 
-class HDFEOS2ArrayMissGeoField:public Array
+class HDFEOS2ArrayMissGeoField:public libdap::Array
 {
     public:
-        HDFEOS2ArrayMissGeoField (int rank, int tnumelm, const std::string & n = "", BaseType * v = 0):
-            Array (n, v), rank (rank), tnumelm (tnumelm) {
+        HDFEOS2ArrayMissGeoField (int rank, int tnumelm, const std::string & n = "", libdap::BaseType * v = 0):
+            libdap::Array (n, v), rank (rank), tnumelm (tnumelm) {
             }
         virtual ~ HDFEOS2ArrayMissGeoField ()
         {
@@ -29,7 +28,7 @@ class HDFEOS2ArrayMissGeoField:public Array
         // Standard way to pass the coordinates of the subsetted region from the client to the handlers
         int format_constraint (int *cor, int *step, int *edg);
 
-        BaseType *ptr_duplicate ()
+        libdap::BaseType *ptr_duplicate ()
         {
             return new HDFEOS2ArrayMissGeoField (*this);
         }

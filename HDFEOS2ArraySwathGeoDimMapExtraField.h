@@ -16,15 +16,13 @@
 #include "HdfEosDef.h"
 
 
-using namespace libdap;
-
 // swathname is not provided because the additional geo-location file uses 
 // a different swath name.
-class HDFEOS2ArraySwathGeoDimMapExtraField:public Array
+class HDFEOS2ArraySwathGeoDimMapExtraField:public libdap::Array
 {
     public:
-    HDFEOS2ArraySwathGeoDimMapExtraField (int rank, const std::string & filename, const std::string & fieldname, const string & n = "", BaseType * v = 0):
-        Array (n, v), rank (rank), filename (filename), fieldname (fieldname) {
+    HDFEOS2ArraySwathGeoDimMapExtraField (int rank, const std::string & filename, const std::string & fieldname, const string & n = "", libdap::BaseType * v = 0):
+        libdap::Array (n, v), rank (rank), filename (filename), fieldname (fieldname) {
         }
         virtual ~ HDFEOS2ArraySwathGeoDimMapExtraField ()
         {
@@ -33,7 +31,7 @@ class HDFEOS2ArraySwathGeoDimMapExtraField:public Array
         // Standard way to pass the coordinates of the subsetted region from the client to the handlers
         int format_constraint (int *cor, int *step, int *edg);
 
-        BaseType *ptr_duplicate ()
+        libdap::BaseType *ptr_duplicate ()
         {
             return new HDFEOS2ArraySwathGeoDimMapExtraField (*this);
         }
