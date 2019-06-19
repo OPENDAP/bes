@@ -31,9 +31,6 @@
 
 #define HDF4_CATALOG "catalog"
 #include <iostream>
-
-using std::endl;
-
 #include "HDF4Module.h"
 #include <BESRequestHandlerList.h>
 #include "HDF4RequestHandler.h"
@@ -44,6 +41,7 @@ using std::endl;
 #include <BESCatalogList.h>
 #include <BESDebug.h>
 
+using namespace std;
 
 void HDF4Module::initialize(const string & modname)
 {

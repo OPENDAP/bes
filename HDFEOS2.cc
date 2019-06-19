@@ -1850,11 +1850,6 @@ void File::handle_grid_SOM_projection() throw(Exception) {
                     cor_som_cvname = (*j)->newname;
                     delete (*j);
                     j = (*i)->datafields.erase(j);
-                    // When erasing the iterator for the vector, the iterator will automatically go to the next element, 
-                    // so we need to go back 1 in order not to miss the next element.
-                    // Again, check stackoverflow and find this is true. So the following operation is valid.
-                    // KY 2014-02-27
-                    //j--;
                 }
                 else {
                    ++j;
@@ -3264,10 +3259,14 @@ void Dataset::ReadFields(int32 (*entries)(int32, int32, int32 *),
         HDFCFUtil::Split(&namelist[0], bufsize, ',', fieldnames);
         for (vector<string>::const_iterator i = fieldnames.begin();
             i != fieldnames.end(); ++i) {
+
             Field *field = new Field();
             if(field == NULL)
                 throw1("The field is NULL");
             field->name = *i;
+
+            bool throw_error = false;
+            string err_msg;
 
             // XXX: We assume the maximum number of dimension for an EOS field
             // is 16.
@@ -3279,35 +3278,44 @@ void Dataset::ReadFields(int32 (*entries)(int32, int32, int32 *),
                          const_cast<char *>(field->name.c_str()),
                          &field->rank, dimsize, &field->type, dimlist)) == -1){
                 string fieldname_for_eh = field->name;
-                delete field;
-                throw3("field info", this->name, fieldname_for_eh);
+		throw_error = true;
+		err_msg ="Obtain field info error for field name "+fieldname_for_eh;
             }
-            {
+
+	    if(false == throw_error) {
+            
                 vector<string> dimnames;
 
                 // Split the dimension name list for a field
                 HDFCFUtil::Split(dimlist, ',', dimnames);
                 if ((int)dimnames.size() != field->rank) {
-                    int rank_for_eh = field->rank;
-                    delete field;
-                    throw4("field rank", dimnames.size(), rank_for_eh,
-                           this->name);
+                    throw_error = true;
+                    err_msg = "Dimension names size is not consistent with field rank. ";
+                    err_msg += "Field name is "+field->name;
                 }
-                for (int k = 0; k < field->rank; ++k) {
-                    Dimension *dim = new Dimension(dimnames[k], dimsize[k]);
-                    field->dims.push_back(dim);
-                }
-            }
+                else {
+                    for (int k = 0; k < field->rank; ++k) {
+                        Dimension *dim = new Dimension(dimnames[k], dimsize[k]);
+                        field->dims.push_back(dim);
+                    }
 
-            // Get fill value of a field
-            field->filler.resize(DFKNTsize(field->type));
-            if (getfill(this->datasetid,
+                    // Get fill value of a field
+                    field->filler.resize(DFKNTsize(field->type));
+                    if (getfill(this->datasetid,
                         const_cast<char *>(field->name.c_str()),
                         &field->filler[0]) == -1)
-                field->filler.clear();
+                        field->filler.clear();
 
-            // Append the field into the fields vector.
-            fields.push_back(field);
+                    // Append the field into the fields vector.
+                    fields.push_back(field);
+               }
+            }
+            
+            if(true == throw_error) {
+                delete field;
+                throw1(err_msg);
+
+	    }
         }
     }
 }

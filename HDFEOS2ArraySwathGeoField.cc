@@ -108,12 +108,13 @@ HDFEOS2ArraySwathGeoField::read ()
 
 
     int32 tmp_rank = -1;
-    int32 tmp_dims[rank];
+    vector<int32>tmp_dims;
+    tmp_dims.resize(rank);
     char tmp_dimlist[1024];
     int32 type =-1;
     intn r = -1;
     r = fieldinfofunc (swathid, const_cast < char *>(fieldname.c_str ()),
-        &tmp_rank, tmp_dims, &type, tmp_dimlist);
+        &tmp_rank, &tmp_dims[0], &type, tmp_dimlist);
     if (r != 0) {
         detachfunc (swathid);
         HDFCFUtil::close_fileid(-1,-1,-1,sfid,check_pass_fileid_key);

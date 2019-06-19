@@ -114,7 +114,7 @@ HDFSPArray_RealField::read ()
         int total_elems = 1;
         for (unsigned int i = 0; i <dimsizes.size();i++)
             total_elems = total_elems*dimsizes[i];
-        short dtype_size = HDFCFUtil::obtain_type_size(dtype);
+        dtype_size = HDFCFUtil::obtain_type_size(dtype);
         if(-1 == dtype_size) {
             string err_mesg = "Wrong data type size for the variable ";
             err_mesg += name();
@@ -734,7 +734,7 @@ HDFSPArray_RealField::format_constraint (int *offset, int *step, int *count)
 template<typename T> int
 HDFSPArray_RealField::subset(
     const T input[],
-    int rank,
+    int sf_rank,
     vector<int32> & dim,
     vector<int> & start,
     vector<int> & stride,
@@ -746,9 +746,9 @@ HDFSPArray_RealField::subset(
     for(int k=0; k<edge[index]; k++)
     {
         pos[index] = start[index] + k*stride[index];
-        if(index+1<rank)
-            subset(input, rank, dim, start, stride, edge, poutput,pos,index+1);
-        if(index==rank-1)
+        if(index+1<sf_rank)
+            subset(input, sf_rank, dim, start, stride, edge, poutput,pos,index+1);
+        if(index==sf_rank-1)
         {
             poutput->push_back(input[INDEX_nD_TO_1D( dim, pos)]);
         }

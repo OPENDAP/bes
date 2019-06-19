@@ -36,10 +36,6 @@
 #include "HDFCFUtil.h"
 
 
-using namespace std;
-using namespace libdap;
-
-
 /// A class for writing attributes from an HDF-EOS2 file.
 ///
 /// This class contains functions that generates SDS attributes
@@ -59,7 +55,7 @@ class HE2CF
 
     private:
 
-        DAS* das;
+        libdap::DAS* das;
 
         // SDStart ID
         int32 sd_id;
@@ -71,80 +67,80 @@ class HE2CF
         int32 num_global_attributes;
 
         // ECS metadata 
-        string metadata;
+        std::string metadata;
 
         // group name
-        string gname;
+        std::string gname;
 
         // Store all metadata names.
         // Not an ideal approach, need to re-visit later. KY 2012-6-11
-        vector<string>  eosmetadata_namelist;
+        std::vector<std::string>  eosmetadata_namelist;
     
         // Data field SDS name to SDS id 
-        map < string, int32 > vg_dsd_map;
+        std::map < std::string, int32 > vg_dsd_map;
 
         // Data field vdata name to vdata id
-        map < string, int32 > vg_dvd_map;
+        std::map < std::string, int32 > vg_dvd_map;
 
         // Geolocation field SDS name to SDS id 
-        map < string, int32 > vg_gsd_map;
+        std::map < std::string, int32 > vg_gsd_map;
 
         // Geolocation field vdata name to vdata id
-        map < string, int32 > vg_gvd_map;
+        std::map < std::string, int32 > vg_gvd_map;
 
         // Add metadata_name to the metadata name list.
-        void set_eosmetadata_namelist(const string &metadata_name)
+        void set_eosmetadata_namelist(const std::string &metadata_name)
         {
             eosmetadata_namelist.push_back(metadata_name);
         }
 
         // Is this EOS metadata
-        bool is_eosmetadata(const string& metadata_name) {
-            return (find(eosmetadata_namelist.begin(),eosmetadata_namelist.end(),metadata_name) !=eosmetadata_namelist.end());
+        bool is_eosmetadata(const std::string& metadata_name) {
+            return (std::find(eosmetadata_namelist.begin(),eosmetadata_namelist.end(),metadata_name) !=eosmetadata_namelist.end());
         }
          
         // Get HDF-EOS2 "Data Fields" and "Geolocation Fields" group object tag and object reference numbers.
-        bool get_vgroup_field_refids(const string&  _gname, int32* _ref_df, int32* _ref_gf);
+        bool get_vgroup_field_refids(const std::string&  _gname, int32* _ref_df, int32* _ref_gf);
 
         // Open SD 
-        bool open_sd(const string& filename,const int sd_id);
+        bool open_sd(const std::string& filename,const int sd_id);
 
         // Open vgroup
-        bool open_vgroup(const string& filename,const int fileid);
+        bool open_vgroup(const std::string& filename,const int fileid);
 
         // Combine ECS metadata coremetadata.0, coremetadata.1 etc. into one string.
-        bool set_metadata(const string& metadataname,vector<string>&non_num_names, vector<string>&non_num_data);
+        bool set_metadata(const std::string& metadataname,std::vector<std::string>&non_num_names, std::vector<std::string>&non_num_data);
 
         // This routine will generate three ECS metadata lists. Note in theory list sl1 and sl2 should be sorted.
         // Since the ECS metadata is always written(sorted) in increasing numeric order, we don't perform this now.
         // Should watch if there are any outliers. 
-        void arrange_list(list<string> & sl1, list<string>&sl2,vector<string>&v1,string name,int& flag);
+        void arrange_list(std::list<std::string> & sl1, std::list<std::string>&sl2,std::vector<std::string>&v1,std::string name,int& flag);
 
         // Obtain SD attribute value
-        void obtain_SD_attr_value(const string &,string&);
+        void obtain_SD_attr_value(const std::string &,std::string&);
 
         // Create SDS name to SDS ID and Vdata name to vdata ID maps.
         bool set_vgroup_map(int32 refid,bool isgeo);
 
         // Write the long_name attribute.
-        bool write_attr_long_name(const string& long_name, 
-            const string& varname,
+        bool write_attr_long_name(const std::string& long_name, 
+            const std::string& varname,
             int fieldtype);
-        bool write_attr_long_name(const string& group_name, 
-            const string& long_name, 
-            const string& varname,
+        bool write_attr_long_name(const std::string& group_name, 
+            const std::string& long_name, 
+            const std::string& varname,
             int fieldtype);
 
         // Write the SD attribute.
-        bool write_attr_sd(int32 sds_id, const string& newfname,int fieldtype);
+        bool write_attr_sd(int32 sds_id, const std::string& newfname,int fieldtype);
 
         /// Check if we can ignore lat/lon scale/offset factors
         short check_scale_offset(int32 sds_id, bool is_scale);
 
 
         // Write the Vdata attribute.
-        bool write_attr_vdata(int32 vd_id, const string& newfname,int fieldtype);
-        void throw_error(string _error);
+        bool write_attr_vdata(int32 vd_id, const std::string& newfname,int fieldtype);
+        void throw_error(std::string _error);
     
     public:
         HE2CF();
@@ -154,20 +150,20 @@ class HE2CF
         bool   close();
 
         /// retrieves the merged metadata.
-        string get_metadata(const string& metadataname,bool&suffix_is_num,vector<string>&non_num_names, vector<string>&non_num_data);
+        string get_metadata(const std::string& metadataname,bool&suffix_is_num,std::vector<std::string>&non_num_names, std::vector<std::string>&non_num_data);
         bool set_non_ecsmetadata_attrs();
 
         /// openes \afilename  HDF4 file.
-        bool   open(const string& filename,const int sd_id, const int file_id);
+        bool   open(const std::string& filename,const int sd_id, const int file_id);
 
         /// sets DAS pointer so that we can bulid attribute tables.
-        void   set_DAS(DAS* das);
+        void   set_DAS(libdap::DAS* das);
 
         /// writes attribute table into DAS given grid/swath name and
         /// its field name.
-        bool   write_attribute(const string& gname, 
-            const string& fname, 
-            const string& newfname,
+        bool   write_attribute(const std::string& gname, 
+            const std::string& fname, 
+            const std::string& newfname,
             int n_groups,
             int fieldtype);
 
@@ -175,18 +171,18 @@ class HE2CF
         /// 
         /// This attribute plays an essential role for two dimensional
         /// coordinate system like Swath.
-        bool write_attribute_FillValue(const string& varname, int type, float val);
+        bool write_attribute_FillValue(const std::string& varname, int type, float val);
 
         /// writes coordinates attribute into \a varname attribute table.
         /// 
         /// This attribute plays an essential role for two dimensional
         /// coordinate system like Swath.
-        bool write_attribute_coordinates(const string& varname, string coord);
+        bool write_attribute_coordinates(const std::string& varname, std::string coord);
 
         /// writes units attribute into \a varname attribute table.
         /// 
         /// Any existing units attribute will be overwritten by this function.
-        bool write_attribute_units(const string& varname, string units);
+        bool write_attribute_units(const std::string& varname, std::string units);
 
 
 };

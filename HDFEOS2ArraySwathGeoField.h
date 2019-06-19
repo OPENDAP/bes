@@ -15,7 +15,6 @@
 #include "HDFCFUtil.h"
 #include "HdfEosDef.h"
 
-using namespace libdap;
 
 class HDFEOS2ArraySwathGeoField:public libdap::Array
 {

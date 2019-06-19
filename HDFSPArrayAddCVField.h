@@ -20,13 +20,12 @@
 
 #include "Array.h"
 #include "HDFSPEnumType.h"
-using namespace libdap;
 
-class HDFSPArrayAddCVField:public Array
+class HDFSPArrayAddCVField:public libdap::Array
 {
     public:
-        HDFSPArrayAddCVField (int32 dtype, SPType sptype, const::string & fieldname, int tnumelm, const string & n = "", BaseType * v = 0):
-            Array (n, v), 
+        HDFSPArrayAddCVField (int32 dtype, SPType sptype, const std::string & fieldname, int tnumelm, const std::string & n = "", libdap::BaseType * v = 0):
+            libdap::Array (n, v), 
             dtype(dtype),
             sptype(sptype),
             name(fieldname),
@@ -41,7 +40,7 @@ class HDFSPArrayAddCVField:public Array
         // Return the number of elements to read. 
         int format_constraint (int *cor, int *step, int *edg);
 
-        BaseType *ptr_duplicate ()
+        libdap::BaseType *ptr_duplicate ()
         {
             return new HDFSPArrayAddCVField (*this);
         }
@@ -62,10 +61,10 @@ class HDFSPArrayAddCVField:public Array
      
         int tnumelm;
         // TRMM version 7 nlayer values are from the document
-        void Obtain_trmm_v7_layer(int, vector<int>&,vector<int>&);
+        void Obtain_trmm_v7_layer(int, std::vector<int>&,std::vector<int>&);
 
         // TRMM version 7 nthrash values are from the document
-        void Obtain_trmml3s_v7_nthrash(int, vector<int>&,vector<int>&);
+        void Obtain_trmml3s_v7_nthrash(int, std::vector<int>&,std::vector<int>&);
 
 };
 

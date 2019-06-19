@@ -1053,8 +1053,8 @@ HDFSPArrayGeoField::readobpgl3 (int *offset,  int *step, int nelms)
     attr_index = SDfindattr (sdid, NUM_LON_NAME);
     if (attr_index == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        string attr_name(NUM_LON_NAME);
-        string err_mesg = "SDfindattr failed,should find attribute "+attr_name+" .";
+        string attr_name2(NUM_LON_NAME);
+        string err_mesg = "SDfindattr failed,should find attribute "+attr_name2+" .";
         throw InternalErr (__FILE__, __LINE__, err_mesg);
 //        throw InternalErr (__FILE__, __LINE__, "SDfindattr failed ");
     }
@@ -1081,8 +1081,8 @@ HDFSPArrayGeoField::readobpgl3 (int *offset,  int *step, int nelms)
     attr_index = SDfindattr (sdid, LAT_STEP_NAME);
     if (attr_index == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        string attr_name(LAT_STEP_NAME);
-        string err_mesg = "SDfindattr failed,should find attribute "+attr_name+" .";
+        string attr_name2(LAT_STEP_NAME);
+        string err_mesg = "SDfindattr failed,should find attribute "+attr_name2+" .";
         throw InternalErr (__FILE__, __LINE__, err_mesg);
 //       throw InternalErr (__FILE__, __LINE__, "SDfindattr failed ");
     }
@@ -1109,8 +1109,8 @@ HDFSPArrayGeoField::readobpgl3 (int *offset,  int *step, int nelms)
     attr_index = SDfindattr (sdid, LON_STEP_NAME);
     if (attr_index == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        string attr_name(LON_STEP_NAME);
-        string err_mesg = "SDfindattr failed,should find attribute "+attr_name+" .";
+        string attr_name2(LON_STEP_NAME);
+        string err_mesg = "SDfindattr failed,should find attribute "+attr_name2+" .";
         throw InternalErr (__FILE__, __LINE__, err_mesg);
 // throw InternalErr (__FILE__, __LINE__, "SDfindattr failed ");
     }
@@ -1137,8 +1137,8 @@ HDFSPArrayGeoField::readobpgl3 (int *offset,  int *step, int nelms)
     attr_index = SDfindattr (sdid, SWP_LAT_NAME);
     if (attr_index == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        string attr_name(SWP_LAT_NAME);
-        string err_mesg = "SDfindattr failed,should find attribute "+attr_name+" .";
+        string attr_name2(SWP_LAT_NAME);
+        string err_mesg = "SDfindattr failed,should find attribute "+attr_name2+" .";
         throw InternalErr (__FILE__, __LINE__, err_mesg);
 //throw InternalErr (__FILE__, __LINE__, "SDfindattr failed ");
     }
@@ -1165,8 +1165,8 @@ HDFSPArrayGeoField::readobpgl3 (int *offset,  int *step, int nelms)
     attr_index = SDfindattr (sdid, SWP_LON_NAME);
     if (attr_index == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        string attr_name(SWP_LON_NAME);
-        string err_mesg = "SDfindattr failed,should find attribute "+attr_name+" .";
+        string attr_name2(SWP_LON_NAME);
+        string err_mesg = "SDfindattr failed,should find attribute "+attr_name2+" .";
         throw InternalErr (__FILE__, __LINE__, err_mesg);
 //throw InternalErr (__FILE__, __LINE__, "SDfindattr failed,should find this attribute. ");
     }
@@ -1363,8 +1363,8 @@ HDFSPArrayGeoField::readcersavgid2 (int *offset, int *count, int *step,
                     orival[i + latindex_south][j * lonextent + k] =
                                                         -179.5 + lonextent * j;
 
-        for (int i = 0; i < count[0]; i++) {
-            for (int j = 0; j < count[1]; j++) {
+        for (i = 0; i < count[0]; i++) {
+            for (j = 0; j < count[1]; j++) {
                 val[i][j] =
                     orival[offset[0] + step[0] * i][offset[1] + step[1] * j];
             }

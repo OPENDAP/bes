@@ -78,8 +78,6 @@ HDFEOS2ArraySwathDimMapField::read ()
     intn (*closefunc) (int32);
     int32 (*attachfunc) (int32, char *);
     intn (*detachfunc) (int32);
-    intn (*fieldinfofunc) (int32, char *, int32 *, int32 *, int32 *, char *);
-    intn (*readfieldfunc) (int32, char *, int32 *, int32 *, int32 *, void *);
 
     string datasetname;
 
@@ -91,8 +89,6 @@ HDFEOS2ArraySwathDimMapField::read ()
         closefunc = SWclose;
         attachfunc = SWattach;
         detachfunc = SWdetach;
-        fieldinfofunc = SWfieldinfo;
-        readfieldfunc = SWreadfield;
         datasetname = swathname;
     }
     else {
@@ -151,12 +147,12 @@ HDFEOS2ArraySwathDimMapField::read ()
         }
 
         vector<char> namelist;
-        vector<int32> offset, increment;
+        vector<int32> map_offset, increment;
 
         namelist.resize(bufsize + 1);
-        offset.resize(nummaps);
+        map_offset.resize(nummaps);
         increment.resize(nummaps);
-        if (SWinqmaps(swathid, &namelist[0], &offset[0], &increment[0])
+        if (SWinqmaps(swathid, &namelist[0], &map_offset[0], &increment[0])
             == -1) {
             detachfunc(swathid);
             close_fileid(sfid,-1);
@@ -165,7 +161,7 @@ HDFEOS2ArraySwathDimMapField::read ()
 
         vector<string> mapnames;
         HDFCFUtil::Split(&namelist[0], bufsize, ',', mapnames);
-        int count = 0;
+        int map_count = 0;
         for (vector<string>::const_iterator i = mapnames.begin();
             i != mapnames.end(); ++i) {
             vector<string> parts;
@@ -179,11 +175,11 @@ HDFEOS2ArraySwathDimMapField::read ()
             struct dimmap_entry tempdimmap;
             tempdimmap.geodim = parts[0];
             tempdimmap.datadim = parts[1];
-            tempdimmap.offset = offset[count];
-            tempdimmap.inc    = increment[count];
+            tempdimmap.offset = map_offset[map_count];
+            tempdimmap.inc    = increment[map_count];
 
             dimmaps.push_back(tempdimmap);
-            ++count;
+            ++map_count;
         }
     }
 
@@ -310,24 +306,26 @@ HDFEOS2ArraySwathDimMapField::format_constraint (int *offset, int *step, int *co
 template < class T > int
 HDFEOS2ArraySwathDimMapField::
 GetFieldValue (int32 swathid, const string & geofieldname,
-    vector < struct dimmap_entry >&dimmaps,
+    vector < struct dimmap_entry >&sw_dimmaps,
     vector < T > &vals, vector<int32>&newdims)
 {
 
     int32 ret = -1; 
     int32 size = -1;
-    int32 rank = -1, dims[130], type = -1;
+    int32 sw_rank = -1;
+    int32 dims[130];
+    int32  type = -1;
 
     // Two dimensions for lat/lon; each dimension name is < 64 characters,
     // The dimension names are separated by a comma.
     char dimlist[130];
     ret = SWfieldinfo (swathid, const_cast < char *>(geofieldname.c_str ()),
-        &rank, dims, &type, dimlist);
+        &sw_rank, dims, &type, dimlist);
     if (ret != 0)
         return -1;
 
     size = 1;
-    for (int i = 0; i < rank; i++)
+    for (int i = 0; i <sw_rank; i++)
         size *= dims[i];
 
     vals.resize (size);
@@ -340,17 +338,17 @@ GetFieldValue (int32 swathid, const string & geofieldname,
     vector < string > dimname;
     HDFCFUtil::Split (dimlist, ',', dimname);
 
-    for (int i = 0; i < rank; i++) {
+    for (int i = 0; i < sw_rank; i++) {
         vector < struct dimmap_entry >::iterator it;
 
-        for (it = dimmaps.begin (); it != dimmaps.end (); it++) {
+        for (it = sw_dimmaps.begin (); it != sw_dimmaps.end (); it++) {
             if (it->geodim == dimname[i]) {
                 int32 ddimsize = SWdiminfo (swathid, (char *) it->datadim.c_str ());
                 if (ddimsize == -1)
                     return -1;
                 int r;
 
-                r = _expand_dimmap_field (&vals, rank, dims, i, ddimsize, it->offset, it->inc);
+                r = _expand_dimmap_field (&vals, sw_rank, dims, i, ddimsize, it->offset, it->inc);
                 if (r != 0)
                     return -1;
             }
@@ -358,7 +356,7 @@ GetFieldValue (int32 swathid, const string & geofieldname,
     }
 
     // dims[] are expanded already.
-    for (int i = 0; i < rank; i++) { 
+    for (int i = 0; i < sw_rank; i++) { 
         //cerr<<"i "<< i << " "<< dims[i] <<endl;
         if (dims[i] < 0)
             return -1;
@@ -371,7 +369,7 @@ GetFieldValue (int32 swathid, const string & geofieldname,
 // expand the dimension map field.
 template < class T > int
 HDFEOS2ArraySwathDimMapField::_expand_dimmap_field (vector < T >
-                                                    *pvals, int32 rank,
+                                                    *pvals, int32 sw_rank,
                                                     int32 dimsa[],
                                                     int dimindex,
                                                     int32 ddimsize,
@@ -382,10 +380,10 @@ HDFEOS2ArraySwathDimMapField::_expand_dimmap_field (vector < T >
     vector < int32 > pos;
     vector < int32 > dims;
     vector < int32 > newdims;
-    pos.resize (rank);
-    dims.resize (rank);
+    pos.resize (sw_rank);
+    dims.resize (sw_rank);
 
-    for (int i = 0; i < rank; i++) {
+    for (int i = 0; i < sw_rank; i++) {
         pos[i] = 0;
         dims[i] = dimsa[i];
     }
@@ -395,7 +393,7 @@ HDFEOS2ArraySwathDimMapField::_expand_dimmap_field (vector < T >
 
     int newsize = 1;
 
-    for (int i = 0; i < rank; i++) {
+    for (int i = 0; i < sw_rank; i++) {
         newsize *= newdims[i];
     }
     pvals->clear ();
@@ -456,8 +454,8 @@ HDFEOS2ArraySwathDimMapField::_expand_dimmap_field (vector < T >
             pos[dimindex] = 0;
         }
         // next pos
-        pos[rank - 1]++;
-        for (int i = rank - 1; i > 0; i--) {
+        pos[sw_rank - 1]++;
+        for (int i = sw_rank - 1; i > 0; i--) {
             if (pos[i] == dims[i]) {
                 pos[i] = 0;
                 pos[i - 1]++;
@@ -622,16 +620,9 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
 
   // Define function pointers to handle both grid and swath
     intn (*fieldinfofunc) (int32, char *, int32 *, int32 *, int32 *, char *);
-    intn (*readfieldfunc) (int32, char *, int32 *, int32 *, int32 *, void *);
 
-    intn (*attrinfofunc) (int32, char *, int32 *, int32 *);
-    intn (*readattrfunc) (int32, char *, void*);
 
     fieldinfofunc = SWfieldinfo;
-    readfieldfunc = SWreadfield;
-
-    attrinfofunc = SWattrinfo;
-    readattrfunc = SWreadattr;
 
     int32 attrtype = -1, attrcount = -1;
     int32 attrindex = -1;
@@ -820,10 +811,11 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                     GET_FILLVALUE_ATTR_VALUE(UINT16, uint16);
                     GET_FILLVALUE_ATTR_VALUE(UINT32, uint32);
                     // Float and double are not considered. Handle them later.
-                    //default:
+                    default:
+                        ;
                      //   throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
 
-                };
+                }
 #undef GET_FILLVALUE_ATTR_VALUE
         }
 
@@ -992,10 +984,12 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
 #endif
 
 
+#if 0
         // For testing only.
         //cerr << "scale=" << scale << endl;
         //cerr << "offset=" << offset2 << endl;
         //cerr << "fillvalue=" << fillvalue << endl;
+#endif
 	
         SDendaccess(sdsid);
         if(true == isgeofile || false == check_pass_fileid_key)
@@ -1336,16 +1330,8 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_disable_scale_comp(int32 swathid,
 
      // Define function pointers to handle both grid and swath
     intn (*fieldinfofunc) (int32, char *, int32 *, int32 *, int32 *, char *);
-    intn (*readfieldfunc) (int32, char *, int32 *, int32 *, int32 *, void *);
-
-    intn (*attrinfofunc) (int32, char *, int32 *, int32 *);
-    intn (*readattrfunc) (int32, char *, void*);
 
     fieldinfofunc = SWfieldinfo;
-    readfieldfunc = SWreadfield;
-
-    attrinfofunc = SWattrinfo;
-    readattrfunc = SWreadattr;
 
 
     // tmp_rank and tmp_dimlist are two dummy variables 

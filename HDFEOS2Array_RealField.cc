@@ -1862,22 +1862,16 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
     intn (*fieldinfofunc) (int32, char *, int32 *, int32 *, int32 *, char *);
     intn (*readfieldfunc) (int32, char *, int32 *, int32 *, int32 *, void *);
 
-    intn (*attrinfofunc) (int32, char *, int32 *, int32 *);
-    intn (*readattrfunc) (int32, char *, void*);
 
     if (swathname == "") {
         fieldinfofunc = GDfieldinfo;
         readfieldfunc = GDreadfield;
 
-        attrinfofunc = GDattrinfo;
-        readattrfunc = GDreadattr;
     }
     else if (gridname == "") {
         fieldinfofunc = SWfieldinfo;
         readfieldfunc = SWreadfield;
 
-        attrinfofunc = SWattrinfo;
-        readattrfunc = SWreadattr;
     }
     else 
         throw InternalErr (__FILE__, __LINE__, "It should be either grid or swath.");

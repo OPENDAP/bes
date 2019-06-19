@@ -86,7 +86,7 @@ class HDF4RequestHandler:public BESRequestHandler {
   static std::string _cache_metadata_path;
    
   public:
-    HDF4RequestHandler(const string & name);
+    explicit HDF4RequestHandler(const string & name);
     virtual ~ HDF4RequestHandler(void);
 
     static bool hdf4_build_das(BESDataHandlerInterface & dhi);

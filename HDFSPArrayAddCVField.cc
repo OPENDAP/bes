@@ -22,6 +22,8 @@
 #include "InternalErr.h"
 #include <BESDebug.h>
 
+using namespace libdap;
+using namespace std;
 
 bool
 HDFSPArrayAddCVField::read ()

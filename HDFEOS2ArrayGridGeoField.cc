@@ -668,14 +668,16 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
 
     // Now lat and lon are stored as HDF-EOS2 fields. We need to read the lat and lon values from the fields.
     int32 tmp_rank = -1;
-    int32 tmp_dims[rank];
+    vector<int32> tmp_dims;
+    tmp_dims.resize(rank);
+
     char tmp_dimlist[1024];
     int32 type     = -1;
     intn r         = -1;
 
     // Obtain field info.
     r = fieldinfofunc (gridid, const_cast < char *>(fieldname.c_str ()),
-                       &tmp_rank, tmp_dims, &type, tmp_dimlist);
+                       &tmp_rank, &tmp_dims[0], &type, tmp_dimlist);
 
     if (r != 0) {
         detachfunc(gridid);
@@ -1889,41 +1891,41 @@ void
 HDFEOS2ArrayGridGeoField::getCorrectSubset (int *offset, int *count,
                                             int *step, int32 * offset32,
                                             int32 * count32, int32 * step32,
-                                            bool condenseddim, bool ydimmajor,
-                                            int fieldtype, int rank)
+                                            bool gf_condenseddim, bool gf_ydimmajor,
+                                            int gf_fieldtype, int gf_rank)
 {
 
-    if (rank == 1) {
+    if (gf_rank == 1) {
         offset32[0] = (int32) offset[0];
         count32[0] = (int32) count[0];
         step32[0] = (int32) step[0];
     }
-    else if (condenseddim) {
+    else if (gf_condenseddim) {
 
         // Since offset,count and step for some dimensions will always
         // be 1, so first assign offset32,count32,step32 to 1.
-        for (int i = 0; i < rank; i++) {
+        for (int i = 0; i < gf_rank; i++) {
             offset32[i] = 0;
             count32[i] = 1;
             step32[i] = 1;
         }
 
-        if (ydimmajor && fieldtype == 1) {// YDim major, User: Lat[YDim], File: Lat[YDim][XDim]
+        if (gf_ydimmajor && gf_fieldtype == 1) {// YDim major, User: Lat[YDim], File: Lat[YDim][XDim]
             offset32[0] = (int32) offset[0];
             count32[0] = (int32) count[0];
             step32[0] = (int32) step[0];
         }
-        else if (ydimmajor && fieldtype == 2) {	// YDim major, User: Lon[XDim],File: Lon[YDim][XDim]
+        else if (gf_ydimmajor && gf_fieldtype == 2) {	// YDim major, User: Lon[XDim],File: Lon[YDim][XDim]
             offset32[1] = (int32) offset[0];
             count32[1] = (int32) count[0];
             step32[1] = (int32) step[0];
         }
-        else if (!ydimmajor && fieldtype == 1) {// XDim major, User: Lat[YDim], File: Lat[XDim][YDim]
+        else if (!gf_ydimmajor && gf_fieldtype == 1) {// XDim major, User: Lat[YDim], File: Lat[XDim][YDim]
             offset32[1] = (int32) offset[0];
             count32[1] = (int32) count[0];
             step32[1] = (int32) step[0];
         }
-        else if (!ydimmajor && fieldtype == 2) {// XDim major, User: Lon[XDim], File: Lon[XDim][YDim]
+        else if (!gf_ydimmajor && gf_fieldtype == 2) {// XDim major, User: Lon[XDim], File: Lon[XDim][YDim]
             offset32[0] = (int32) offset[0];
             count32[0] = (int32) count[0];
             step32[0] = (int32) step[0];
@@ -1935,7 +1937,7 @@ HDFEOS2ArrayGridGeoField::getCorrectSubset (int *offset, int *count,
         }
     }
     else {
-        for (int i = 0; i < rank; i++) {
+        for (int i = 0; i < gf_rank; i++) {
             offset32[i] = (int32) offset[i];
             count32[i] = (int32) count[i];
             step32[i] = (int32) step[i];
@@ -1947,19 +1949,19 @@ HDFEOS2ArrayGridGeoField::getCorrectSubset (int *offset, int *count,
 // happens for AIRS CO2 grids, I still implemented this as general as I can.
 
 template <class T> void
-HDFEOS2ArrayGridGeoField::HandleFillLatLon(vector<T> total_latlon, T* latlon,bool ydimmajor, int fieldtype, int32 xdim , int32 ydim, int32* offset, int32* count, int32* step, int fv)  {
+HDFEOS2ArrayGridGeoField::HandleFillLatLon(vector<T> total_latlon, T* latlon,bool gf_ydimmajor, int gf_fieldtype, int32 xdim , int32 ydim, int32* offset, int32* count, int32* step, int fv)  {
 
    class vector <T> temp_lat;
    class vector <T> temp_lon;
 
-   if (true == ydimmajor) {
+   if (true == gf_ydimmajor) {
 
-        if (1 == fieldtype) {
+        if (1 == gf_fieldtype) {
             temp_lat.resize(ydim);
             for (int i = 0; i <(int)ydim; i++)
                 temp_lat[i] = total_latlon[i*xdim];
 
-            if (false == CorLatLon(&temp_lat[0],fieldtype,ydim,fv))
+            if (false == CorLatLon(&temp_lat[0],gf_fieldtype,ydim,fv))
                 throw InternalErr(__FILE__,__LINE__,"Cannot handle the fill values in lat/lon correctly");
            
             for (int i = 0; i <(int)(count[0]); i++)
@@ -1972,7 +1974,7 @@ HDFEOS2ArrayGridGeoField::HandleFillLatLon(vector<T> total_latlon, T* latlon,boo
                 temp_lon[i] = total_latlon[i];
 
 
-            if (false == CorLatLon(&temp_lon[0],fieldtype,xdim,fv))
+            if (false == CorLatLon(&temp_lon[0],gf_fieldtype,xdim,fv))
                 throw InternalErr(__FILE__,__LINE__,"Cannot handle the fill values in lat/lon correctly");
            
             for (int i = 0; i <(int)(count[1]); i++)
@@ -1982,12 +1984,12 @@ HDFEOS2ArrayGridGeoField::HandleFillLatLon(vector<T> total_latlon, T* latlon,boo
    }
    else {
 
-        if (1 == fieldtype) {
+        if (1 == gf_fieldtype) {
             temp_lat.resize(xdim);
             for (int i = 0; i <(int)xdim; i++)
                 temp_lat[i] = total_latlon[i];
 
-            if (false == CorLatLon(&temp_lat[0],fieldtype,ydim,fv))
+            if (false == CorLatLon(&temp_lat[0],gf_fieldtype,ydim,fv))
                 throw InternalErr(__FILE__,__LINE__,"Cannot handle the fill values in lat/lon correctly");
            
             for (int i = 0; i <(int)(count[1]); i++)
@@ -2000,7 +2002,7 @@ HDFEOS2ArrayGridGeoField::HandleFillLatLon(vector<T> total_latlon, T* latlon,boo
                 temp_lon[i] = total_latlon[i*xdim];
 
 
-            if (false == CorLatLon(&temp_lon[0],fieldtype,xdim,fv))
+            if (false == CorLatLon(&temp_lon[0],gf_fieldtype,xdim,fv))
                 throw InternalErr(__FILE__,__LINE__,"Cannot handle the fill values in lat/lon correctly");
            
             for (int i = 0; i <(int)(count[0]); i++)
@@ -2040,7 +2042,7 @@ HDFEOS2ArrayGridGeoField::findfirstfv (T * array, int start, int end,
 // and find that it covers the whole globe with 0.05 degree resolution.
 // Lat. is from 90 to -90 and Lon is from -180 to 180.
 void
-HDFEOS2ArrayGridGeoField::CalculateSpeLatLon (int32 gridid, int fieldtype,
+HDFEOS2ArrayGridGeoField::CalculateSpeLatLon (int32 gridid, int gf_fieldtype,
                                               float64 * outlatlon,
                                               int32 * offset32,
                                               int32 * count32, int32 * step32)
@@ -2070,7 +2072,7 @@ HDFEOS2ArrayGridGeoField::CalculateSpeLatLon (int32 gridid, int fieldtype,
     if(0 == xdim || 0 == ydim) 
         throw InternalErr(__FILE__,__LINE__,"xdim or ydim cannot be zero");
 
-    if (fieldtype == 1) {
+    if (gf_fieldtype == 1) {
         double latstep = 180.0 / ydim;
 
         for (int i = 0; i < (int) (count32[0]); i++)
@@ -2153,7 +2155,6 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, int *start, int *coun
         throw InternalErr(__FILE__,__LINE__,"inv_init doesn't return correct values");
 
     // Change to vector in the future. KY 2012-09-20
-    //double *latlon = NULL;
     double somx = 0.;
     double somy = 0.;
     double lat_r = 0.;
@@ -2174,9 +2175,9 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, int *start, int *coun
         if(true == write_latlon_cache) {
             vector<double>latlon_all;
             latlon_all.resize(xdim*ydim*NBLOCK*2);
-            for(int i =1; i <NBLOCK+1;i++)
-                for(int j=0;j<xdim;j++)
-                    for(int k=0;k<ydim;k++) 
+            for(i =1; i <NBLOCK+1;i++)
+                for(j=0;j<xdim;j++)
+                    for(k=0;k<ydim;k++) 
             {
                 b = i;
                 l = j;
@@ -2213,9 +2214,9 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, int *start, int *coun
 
 
             npts =0;
-            for(int i=0; i<count[0]; i++) //i = 1; i<180+1; i++)
-                for(int j=0; j<count[1]; j++)//j=0; j<xdim; j++)
-                    for(int k=0; k<count[2]; k++)//k=0; k<ydim; k++)
+            for(i=0; i<count[0]; i++) //i = 1; i<180+1; i++)
+                for(j=0; j<count[1]; j++)//j=0; j<xdim; j++)
+                    for(k=0; k<count[2]; k++)//k=0; k<ydim; k++)
             {
                 if(fieldtype == 1) {
                     latlon[npts] = latlon_all[start[0]*ydim*xdim+start[1]*ydim+start[2]+
@@ -2265,7 +2266,7 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, int *start, int *coun
 // HDF-EOS2 library won't give the correct value based on these value.
 // We need to calculate the latitude and longitude values.
 void
-HDFEOS2ArrayGridGeoField::CalculateLargeGeoLatLon(int32 gridid,  int fieldtype, float64* latlon, float64* latlon_all,int *start, int *count, int *step, int nelms,bool write_latlon_cache)
+HDFEOS2ArrayGridGeoField::CalculateLargeGeoLatLon(int32 gridid,  int gf_fieldtype, float64* latlon, float64* latlon_all,int *start, int *count, int *step, int nelms,bool write_latlon_cache)
 {
 
     int32 xdim = 0;
@@ -2308,7 +2309,7 @@ HDFEOS2ArrayGridGeoField::CalculateLargeGeoLatLon(int32 gridid,  int fieldtype, 
 
     // Treat the origin of the coordinate as the center of the cell.
     // This has been the setting of MCD43 data.  KY 2012-09-10
-    if (1 == fieldtype) { //Latitude
+    if (1 == gf_fieldtype) { //Latitude
         float start_lat = upleft[1] + start[0] *lat_step + lat_step/2;
         float step_lat  = lat_step *step[0];
         for (int i = 0; i < count[0]; i++) 
@@ -2327,7 +2328,7 @@ HDFEOS2ArrayGridGeoField::CalculateLargeGeoLatLon(int32 gridid,  int fieldtype, 
 // Calculate latitude and longitude for LAMAZ projection lat/lon products.
 // GDij2ll returns infinite numbers over the north pole or the south pole.
 void
-HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int fieldtype, float64* latlon, float64* latlon_all, int *start, int *count, int *step, bool write_latlon_cache)
+HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int gf_fieldtype, float64* latlon, float64* latlon_all, int *start, int *count, int *step, bool write_latlon_cache)
 {
     int32 xdim = 0;
     int32 ydim = 0;
@@ -2345,7 +2346,7 @@ HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int fieldtype, floa
     int32 tmp3[] = {xdim, ydim};
     int32 tmp4[] = {1, 1};
 	
-    CalculateLatLon (gridid, fieldtype, specialformat, &tmp1[0], latlon_all, tmp2, tmp3, tmp4, xdim*ydim,write_latlon_cache);
+    CalculateLatLon (gridid, gf_fieldtype, specialformat, &tmp1[0], latlon_all, tmp2, tmp3, tmp4, xdim*ydim,write_latlon_cache);
 
     if(write_latlon_cache == true) {
 
@@ -2404,24 +2405,24 @@ HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int fieldtype, floa
 
     // If we find infinite number among lat or lon values, we use the nearest neighbor method to calculate lat or lon.
     if(ydimmajor) {
-        if(fieldtype==1) {// Lat.
+        if(gf_fieldtype==1) {// Lat.
             for(int i=0; i<ydim; i++)
                 for(int j=0; j<xdim; j++)
                     if(isundef_lat(tmp1[i*xdim+j]))
                         tmp1[i*xdim+j]=nearestNeighborLatVal(&tmp5[0], i, j, ydim, xdim);
-        } else if(fieldtype==2){ // Lon.
+        } else if(gf_fieldtype==2){ // Lon.
             for(int i=0; i<ydim; i++)
                 for(int j=0; j<xdim; j++)
                     if(isundef_lon(tmp1[i*xdim+j]))
                         tmp1[i*xdim+j]=nearestNeighborLonVal(&tmp5[0], i, j, ydim, xdim);
         }
     } else { // end if(ydimmajor)
-        if(fieldtype==1) {
+        if(gf_fieldtype==1) {
             for(int i=0; i<xdim; i++)
                 for(int j=0; j<ydim; j++)
                     if(isundef_lat(tmp1[i*ydim+j]))
                         tmp1[i*ydim+j]=nearestNeighborLatVal(&tmp5[0], i, j, xdim, ydim);
-            } else if(fieldtype==2) {
+            } else if(gf_fieldtype==2) {
                 for(int i=0; i<xdim; i++)
                     for(int j=0; j<ydim; j++)
                         if(isundef_lon(tmp1[i*ydim+j]))

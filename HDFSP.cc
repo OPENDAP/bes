@@ -890,12 +890,10 @@ File::Check_update_special(const string& grid_name) throw(Exception) {
         }
 
         if (1==(*i)->getRank())
-            fldset.insert((*i));
+            fldset.insert(*i);
 
     }
 
-//cerr<<"field size is= "<<fldset.size() <<endl;
-//cerr<<"dim. size is= "<<dimnameset.size() <<endl;
    
     // Check if all dimension names in the dimension set can be found in the 1-D variable sets. Moreover, the size of a dimension 
     // should be smaller or the same as the size of 1-D variable.
@@ -1036,8 +1034,8 @@ File::Handle_AIRS_L23() throw(Exception) {
             (*i)->getDimensions ().begin ();
             k != (*i)->getDimensions ().end (); ++k) {
 
-            string tempname = (*k)->name;
-            size_t found_colon = tempname.find_first_of(':');
+            tempname = (*k)->name;
+            found_colon = tempname.find_first_of(':');
             if(found_colon!=string::npos) 
                 (*k)->name = tempname.substr(0,found_colon);
 
@@ -1089,11 +1087,8 @@ cerr<<"scaled dim. name "<<*sdim_it <<endl;
                 }
 
                 else {// Redundant variables
-//cerr<<"redundant variable names "<< (*i)->newname <<endl;
                     delete(*i);
                     i= file->sd->sdfields.erase(i);
-                    // when erasing the iterator, it always goes to the next elment, so move back.
-                    //i--;
                 }
             }
             else {
@@ -1105,7 +1100,6 @@ cerr<<"scaled dim. name "<<*sdim_it <<endl;
             if ("Latitude" == (*i)->getNewName() ||  "Longitude" == (*i)->getNewName()) {
                 delete(*i);
                 i = file->sd->sdfields.erase(i);
-                //i--;
             }
             else {
                 ++i;
@@ -1542,7 +1536,7 @@ cerr<<"CSH products "<<endl;
             else if ((attrvalue.find_first_of ('C', 0) == 0)
                     && ((attrvalue.find (".L2", 0) != std::string::npos)
                     ||
-                    ((attrvalue.find (".L1A", 0) != std::string::npos))))
+                    (attrvalue.find (".L1A", 0) != std::string::npos)))
                 czcsl2flag++;
             else if ((attrvalue.find_first_of ('C', 0) == 0)
                     && (attrvalue.find (".L3m", 0) != std::string::npos))
@@ -1817,8 +1811,8 @@ throw (Exception)
                         throw3 ("SDattrinfo failed ", "SDS name ", sds_name);
                     }
 
-                    string tempname(attr_name);
-                    if ("name"==tempname) {
+                    string tempname2(attr_name);
+                    if ("name"==tempname2) {
                         dimname_flag = true;
                         break;
                     }
@@ -1836,11 +1830,11 @@ throw (Exception)
                         SDendaccess (sds_id);
                         throw3 ("SDattrinfo failed ", "SDS name ", sds_name);
                     }
-                    string tempname (attr_name);
-                    attr->name = tempname;
-                    tempname = HDFCFUtil::get_CF_string(tempname);
+                    string tempname3 (attr_name);
+                    attr->name = tempname3;
+                    tempname3 = HDFCFUtil::get_CF_string(tempname3);
 
-                    attr->newname = tempname;
+                    attr->newname = tempname3;
                     attr->count = attr_value_count;
                     attr->value.resize (attr_value_count * DFKNTsize (attr->type));
                     if (SDreadattr (dimids[dimindex], attrindex, &attr->value[0]) == -1) {
@@ -1889,11 +1883,11 @@ throw (Exception)
             }
 
            if(attr != NULL) {//Make coverity happy(it doesn't understand the throw macro.
-            string tempname (attr_name);
-            attr->name = tempname;
-            tempname = HDFCFUtil::get_CF_string(tempname);
+            string tempname4 (attr_name);
+            attr->name = tempname4;
+            tempname4 = HDFCFUtil::get_CF_string(tempname4);
 
-            attr->newname = tempname;
+            attr->newname = tempname4;
             attr->count = attr_value_count;
             attr->value.resize (attr_value_count * DFKNTsize (attr->type));
             if (SDreadattr (sds_id, attrindex, &attr->value[0]) == -1) {
@@ -1925,12 +1919,12 @@ throw (Exception)
             throw3 ("SDattrinfo failed ", "SD id ", sdfd);
         }
        if(attr != NULL) {//Make coverity happy because it doesn't understand throw3
-        std::string tempname (attr_name);
-        attr->name = tempname;
+        std::string tempname5 (attr_name);
+        attr->name = tempname5;
 
         // Checking and handling the special characters for the SDS attribute name.
-        tempname = HDFCFUtil::get_CF_string(tempname);
-        attr->newname = tempname;
+        tempname5 = HDFCFUtil::get_CF_string(tempname5);
+        attr->newname = tempname5;
         attr->count = attr_value_count;
         attr->value.resize (attr_value_count * DFKNTsize (attr->type));
         if (SDreadattr (sdfd, attrindex, &attr->value[0]) == -1) {
@@ -4395,7 +4389,6 @@ void File::PrepareTRMML2_V7() throw(Exception) {
         size_t temp_pos = temp_name.find_first_of('/');
         if (temp_pos !=string::npos) 
             (*i)->newname = temp_name.substr(temp_pos+1);
-//cerr<<"temp_name is "<<temp_name<<endl;
         
     }
 
@@ -4512,17 +4505,14 @@ File::PrepareTRMML3S_V7() throw(Exception) {
         if((*i)->name == "InputFileNames") {
             delete (*i);
             i = file->sd->sdfields.erase(i); 
-            //i--;
         }
         else if((*i)->name == "InputAlgorithmVersions") {
             delete (*i);
             i = file->sd->sdfields.erase(i);
-            //i--;
         }
         else if((*i)->name == "InputGenerationDateTimes") {
             delete (*i);
             i = file->sd->sdfields.erase(i);
-            //i--;
         }
         else {// Just use SDS names and for performance reasons, change them here.
             (*i)->newname = (*i)->name;
@@ -5936,8 +5926,8 @@ throw (Exception)
             for (std::vector < Dimension * >::const_iterator j =
                 (*i)->getDimensions ().begin ();
                 j != (*i)->getDimensions ().end (); ++j) {
-                if ((((*j)->getName ()).find ("regional colat") !=
-                    std::string::npos)) {
+                if (((*j)->getName ()).find ("regional colat") !=
+                    std::string::npos) {
                     tempsetit = tempdimnameset.insert ((*j)->getName ());
                     if (tempsetit.second == true) {
                         tempdimname1 = (*j)->getName ();

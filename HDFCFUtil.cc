@@ -235,7 +235,7 @@ HDFCFUtil::Handle_NameClashing(vector<string>&newobjnamelist,set<string>&objname
         ol_index++;
     }
 
-    // Now change the clashed elements to unique elements; 
+    // Now change the clashed elements to unique elements,
     // Generate the set which has the same size as the original vector.
     for (ivs=clashnamelist.begin(); ivs!=clashnamelist.end(); ivs++) {
         int clash_index = 1;
@@ -943,7 +943,6 @@ void HDFCFUtil::add_scale_offset_attrs(AttrTable*at,const std::string& s_type, f
     if (true == add_offset_found) {
         at->del_attr("add_offset");
         if(o_type!="Float64") {
-            //float new_offset_value = (orig_offset_value ==0)?0:(-1 * orig_offset_value *orig_scale_value); 
             print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&ovalue_f));
             at->append_attr("add_offset", "Float32", print_rep);
         }
@@ -965,9 +964,7 @@ void HDFCFUtil::add_scale_str_offset_attrs(AttrTable*at,const std::string& s_typ
                
     if (true == add_offset_found) {
         at->del_attr("add_offset");
-        string print_rep;
         if(o_type!="Float64") {
-            //float new_offset_value = (orig_offset_value ==0)?0:(-1 * orig_offset_value *orig_scale_value); 
             print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&ovalue_f));
             at->append_attr("add_offset", "Float32", print_rep);
         }
@@ -1549,7 +1546,6 @@ void HDFCFUtil::handle_modis_vip_special_attrs(const std::string& valid_range_va
 
     int16 scale_factor_number = 1;
 
-    //istringstream(scale_factor_value)>>scale_factor_number;
     scale_factor_number = atoi(scale_factor_value.c_str());
 
     if(scale_factor_number !=0) {
@@ -1740,12 +1736,10 @@ void HDFCFUtil::add_cf_grid_cv_attrs(DAS & das, HDFEOS2::GridDataset *gdset) {
             at = das.add_table(dim0name, new AttrTable);
         at->append_attr("standard_name","String","projection_y_coordinate");
 
-        //at->append_attr("long_name","String","y coordinate" );
         string long_name="y coordinate of projection for grid "+ gdset->getName();
         at->append_attr("long_name","String",long_name);
         // Change this to meter.
         at->append_attr("units","string","meter");
-        //at->append_attr("units","string","km");
         
         at->append_attr("_CoordinateAxisType","string","GeoY");
 
@@ -1754,13 +1748,11 @@ void HDFCFUtil::add_cf_grid_cv_attrs(DAS & das, HDFEOS2::GridDataset *gdset) {
             at = das.add_table(dim1name, new AttrTable);
  
         at->append_attr("standard_name","String","projection_x_coordinate");
-        //at->append_attr("long_name","String","x coordinate");
         long_name="x coordinate of projection for grid "+ gdset->getName();
         at->append_attr("long_name","String",long_name);
          
         // change this to meter.
         at->append_attr("units","string","meter");
-        //at->append_attr("units","string","km");
         at->append_attr("_CoordinateAxisType","string","GeoX");
         
         // Add the attributes for the dummy projection variable.
@@ -1770,7 +1762,6 @@ void HDFCFUtil::add_cf_grid_cv_attrs(DAS & das, HDFEOS2::GridDataset *gdset) {
         if (!at)
             at = das.add_table(cf_projection, new AttrTable);
 
-        //if(at->simple_find("grid_mapping_name") == at->attr_end())
         at->append_attr("grid_mapping_name","String","sinusoidal");
         at->append_attr("longitude_of_central_meridian","Float64","0.0");
         at->append_attr("earth_radius","Float64","6371007.181");
@@ -2523,7 +2514,7 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
                         }
                             if(at->get_name(it)=="scale_factor")
                         {
-                            scale_factor_value = (*at->get_attr_vector(it)->begin());
+                            scale_factor_value = *at->get_attr_vector(it)->begin();
                             scale_factor_type = at->get_type(it);
                                 has_scale = true;
                         }
@@ -2595,7 +2586,7 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
                         while (it!=at->attr_end()) {
                             if(at->get_name(it)=="units"){
                              
-                                string units_value = (*at->get_attr_vector(it)->begin());
+                                string units_value = *at->get_attr_vector(it)->begin();
                                 if("dBm" == units_value) { 
                                     has_dBm = true;
                                     break;
@@ -2615,7 +2606,7 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
                                 if(at->get_name(it)=="scale_factor")
                                 {
 
-                                    string scale_value = (*at->get_attr_vector(it)->begin());
+                                    string scale_value = *at->get_attr_vector(it)->begin();
                             
                                     if(true == has_dBm) {
                                        short valid_min = (short)(-120 *strtof(scale_value.c_str(),NULL));
@@ -2827,7 +2818,6 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
          CER_ZAVG == f->getSPType()))
         output_vdata_flag = false;
 
-    //if(f->getSPType() != CER_AVG && f->getSPType() != CER_ES4 && f->getSPType() !=CER_SRB && f->getSPType() != CER_ZAVG) {
     if (true == output_vdata_flag) {
 
         for(vector<HDFSP::VDATA *>::const_iterator i=f->getVDATAs().begin(); i!=f->getVDATAs().end();i++) {
@@ -2840,7 +2830,7 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
                 // Add special vdata attributes
                 bool emptyvddasflag = true;
                 if(!((*i)->getAttributes().empty())) emptyvddasflag = false;
-                if(((*i)->getTreatAsAttrFlag()))
+                if((*i)->getTreatAsAttrFlag())
                     emptyvddasflag = false;
                 else {
                     for(vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) {
@@ -3292,7 +3282,6 @@ string HDFCFUtil::escattr(string s)
 
 
     // escape \ with a second backslash
-    //string::size_type ind = 0;
     size_t ind = 0;
     while ((ind = s.find(ESC, ind)) != string::npos) {
         s.replace(ind, 1, DOUBLE_ESC);

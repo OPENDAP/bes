@@ -21,7 +21,6 @@
 #include <DDS.h>
 #include <InternalErr.h>
 
-using namespace libdap;
 
 /**
  * This specialization of DDS is used to manage the 'resource' of the open
@@ -53,7 +52,7 @@ private:
     }
 
 public:
-    HDF4DDS(libdap::DDS *ddsIn) : libdap::DDS(*ddsIn), sdfd(-1),fileid(-1),gridfd(-1),swathfd(-1) {}
+    explicit HDF4DDS(libdap::DDS *ddsIn) : libdap::DDS(*ddsIn), sdfd(-1),fileid(-1),gridfd(-1),swathfd(-1) {}
 
     HDF4DDS(const HDF4DDS &rhs) : libdap::DDS(rhs) {
         m_duplicate(rhs);

@@ -631,7 +631,7 @@ namespace HDFEOS2
 
 
         protected:
-            Dataset (const std::string & n)
+            explicit Dataset (const std::string & n)
                 : datasetid (-1), addfvalueattr(false),name (n),scaletype(DEFAULT_CF_EQU)
             {
                 
@@ -855,7 +855,7 @@ namespace HDFEOS2
 
                 protected:
 
-                    Calculated (const GridDataset * eos_grid)
+                    explicit Calculated (const GridDataset * eos_grid)
                         : grid (eos_grid),  ydimmajor (false)
                     {
                     }
@@ -924,8 +924,8 @@ namespace HDFEOS2
                 }
 
             private:
-                GridDataset (const std::string & name)
-                    : Dataset (name), calculated (0), ownllflag (false), iscoard (false)
+                explicit GridDataset (const std::string & g_name)
+                    : Dataset (g_name), calculated (0), ownllflag (false), iscoard (false)
                 {
                     latfield = NULL;
                     lonfield = NULL;
@@ -1085,7 +1085,7 @@ namespace HDFEOS2
                 };
 
             private:
-                 SwathDataset (const std::string & swath_name)
+                 explicit SwathDataset (const std::string & swath_name)
                     : Dataset (swath_name),num_map(0) {
                  }
 
@@ -1128,7 +1128,7 @@ namespace HDFEOS2
                 virtual ~ PointDataset ();
 
             private:
-                PointDataset (const std::string & point_name)
+                explicit PointDataset (const std::string & point_name)
                     : Dataset (point_name)
                 {
                 }
@@ -1198,7 +1198,7 @@ namespace HDFEOS2
 
 
             protected:
-                File (const char *eos2_file_path)
+                explicit File (const char *eos2_file_path)
                     : path (eos2_file_path), onelatlon (false), iscoard (false), gridfd (-1), swathfd (-1)
                 {
                 }

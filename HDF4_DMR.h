@@ -52,7 +52,7 @@ private:
     }
 
 public:
-    HDF4DMR(libdap::DMR *dmr) : libdap::DMR(*dmr), sdfd(-1),fileid(-1),gridfd(-1),swathfd(-1) {}
+    explicit HDF4DMR(libdap::DMR *dmr) : libdap::DMR(*dmr), sdfd(-1),fileid(-1),gridfd(-1),swathfd(-1) {}
     HDF4DMR(libdap::D4BaseTypeFactory *factory,const string &name):libdap::DMR(factory,name),sdfd(-1),fileid(-1),gridfd(-1),swathfd(-1) {}
 
     HDF4DMR(const HDF4DMR &rhs) : libdap::DMR(rhs) {

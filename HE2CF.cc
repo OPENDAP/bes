@@ -26,6 +26,9 @@
 #include "HDFCFUtil.h"
 #include <iomanip>
 
+using namespace libdap;
+using namespace std;
+
 // Private member functions
 bool 
 HE2CF::get_vgroup_field_refids(const string& _gname,
@@ -946,7 +949,7 @@ HE2CF::get_metadata(const string& _name, bool& suffix_is_number,vector<string>&m
 }
 
 bool
-HE2CF::open(const string& _filename,const int sd_id, const int file_id)
+HE2CF::open(const string& _filename,const int hc_sd_id, const int hc_file_id)
 {
     if(_filename == ""){
         ostringstream error;                
@@ -955,14 +958,14 @@ HE2CF::open(const string& _filename,const int sd_id, const int file_id)
         return false;
     }
     
-    if(!open_vgroup(_filename,file_id)){
+    if(!open_vgroup(_filename,hc_file_id)){
         ostringstream error;                
         error << "=open(): failed to open vgroup.";
         throw_error(error.str());        
         return false;        
     }
     
-    if(!open_sd(_filename,sd_id)){
+    if(!open_sd(_filename,hc_sd_id)){
         ostringstream error;                
         error << "=open(): failed to open sd.";
         throw_error(error.str());        
