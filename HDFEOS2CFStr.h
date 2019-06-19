@@ -41,9 +41,8 @@
 #include "hdf.h"
 #include "HdfEosDef.h"
 
-using namespace libdap;
 
-class HDFEOS2CFStr:public Str {
+class HDFEOS2CFStr:public libdap::Str {
   public:
     HDFEOS2CFStr(const int gsfd, 
                  const std::string &filename,
@@ -53,7 +52,7 @@ class HDFEOS2CFStr:public Str {
                  int grid_or_swath);
 
     virtual ~ HDFEOS2CFStr();
-    virtual BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate();
 
     virtual bool read();
 

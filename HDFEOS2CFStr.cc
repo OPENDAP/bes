@@ -20,6 +20,7 @@
 #include "HDF4RequestHandler.h"
 
 using namespace std;
+using namespace libdap;
 
 HDFEOS2CFStr::HDFEOS2CFStr(const int gsfd,
                         const std::string &filename,
@@ -64,7 +65,6 @@ HDFEOS2CFStr::read ()
     intn (*detachfunc) (int32);
     intn (*fieldinfofunc) (int32, char *, int32 *, int32 *, int32 *, char *);
     intn (*readfieldfunc) (int32, char *, int32 *, int32 *, int32 *, void *);
-    int32 (*inqfunc) (char *, char *, int32 *);
 
 
     // Define function pointers to handle the swath
@@ -75,7 +75,6 @@ HDFEOS2CFStr::read ()
         detachfunc = GDdetach;
         fieldinfofunc = GDfieldinfo;
         readfieldfunc = GDreadfield;
-        inqfunc = GDinqgrid;
  
     }
     else {
@@ -85,7 +84,6 @@ HDFEOS2CFStr::read ()
         detachfunc = SWdetach;
         fieldinfofunc = SWfieldinfo;
         readfieldfunc = SWreadfield;
-        inqfunc = SWinqswath;
     }
 
     int32 gfid = -1;

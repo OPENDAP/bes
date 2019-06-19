@@ -41,9 +41,8 @@
 #include "hdf.h"
 #include "HdfEosDef.h"
 
-using namespace libdap;
 
-class HDFEOS2CFStrField:public Array {
+class HDFEOS2CFStrField:public libdap::Array {
   public:
     HDFEOS2CFStrField(
                         const int rank,
@@ -53,8 +52,8 @@ class HDFEOS2CFStrField:public Array {
                         const std::string &varname, 
                         int grid_or_swath,
                         const std::string &n="",
-                        BaseType*v=0):
-        Array (n, v),
+                        libdap::BaseType*v=0):
+        libdap::Array (n, v),
         rank(rank),
         gsfd(gsfd),
         filename(filename),
@@ -67,7 +66,7 @@ class HDFEOS2CFStrField:public Array {
     virtual ~ HDFEOS2CFStrField()
     {
     }
-    virtual BaseType *ptr_duplicate(){
+    virtual libdap::BaseType *ptr_duplicate(){
         return new HDFEOS2CFStrField(*this);
     }
 

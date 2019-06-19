@@ -14,6 +14,7 @@
 #include <InternalErr.h>
 #include <BESDebug.h>
 
+using namespace libdap;
 
 bool HDFEOS2GeoCF1D::read()
 {

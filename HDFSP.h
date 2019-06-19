@@ -95,7 +95,7 @@ namespace HDFSP
          public:
 
             /// Constructor
-            Exception (const std::string & msg)
+            explicit Exception (const std::string & msg)
                 : message (msg)
             {
             }
@@ -154,8 +154,6 @@ namespace HDFSP
                 : name (dim_name), dimsize (hdf4_dimsize), dimtype (hdf4_dimtype)
             {
             }
-
-        protected:
 
             // dimension name
             std::string name;
@@ -235,6 +233,7 @@ namespace HDFSP
     /// In DAP DAS, AttrContainers are used to create attribute containers for each dimension.
     /// For each dimension, the attribute container is variable_name_dim_0 (string name "longitude")
     class AttrContainer {
+
         public:
             AttrContainer()
             {
@@ -242,7 +241,6 @@ namespace HDFSP
             }
             ~AttrContainer();
 
-        public:
 
             /// Get the name of this attribute container
             const std::string & getName () const
@@ -252,11 +250,12 @@ namespace HDFSP
 
             /// No need to have the newname since we will make the name follow CF conventions
             /// Get the new name of this field
+#if 0
             // const std::string & getNewName () const
             //{
             //       return this->newname;
             //}
-
+#endif
             const std::vector < Attribute * >&getAttributes () const
             {
                 return this->attrs;
@@ -286,8 +285,6 @@ namespace HDFSP
                 newname="";
             }
             virtual ~ Field ();
-
-        public:
 
             /// Get the name of this field
             const std::string & getName () const
@@ -356,8 +353,6 @@ namespace HDFSP
                 rootfieldname="";
             }
             ~SDField ();
-
-        public:
 
 
             /// Get the list of the corrected dimensions
@@ -512,8 +507,6 @@ namespace HDFSP
             }
             ~VDField ();
 
-        public:
-
             /// Get the order of this field
             int32 getFieldOrder ()const
             {
@@ -603,12 +596,6 @@ namespace HDFSP
                 : sdfd (sdfileid), fileid (hfileid)
             {
             }
-
-        protected:
-
-            /// The full path of the file(file name). 
-            //  Redundant member.
-            ///std::string path;
 
             /// SDS objects stored in vectors
             std::vector < SDField * >sdfields;
@@ -707,8 +694,6 @@ namespace HDFSP
                 name ="";
             }
 
-        protected:
-
             /// New name with path and CF compliant(no special characters and name clashing).
             std::string newname;
 
@@ -802,12 +787,11 @@ namespace HDFSP
 
 
         protected:
-            File (const char *hdf4file_path)
+            explicit File (const char *hdf4file_path)
                 : path (hdf4file_path), sd(NULL),sdfd (-1), fileid (-1), sptype (OTHERHDF),OTHERHDF_Has_Dim_NoScale_Field(false),EOS2Swathflag(false)
             {
             }
 
-        protected:
 
             /// The absolute path of the file
             std::string path;
@@ -821,9 +805,6 @@ namespace HDFSP
             ///  Vgroup attribute information. See the description of the class AttrContainer.
             std::vector<AttrContainer *>vg_attrs;
 
-            /// Check name clashing for fields. Borrowed from HDFEOS.cc, unused.
-            ///bool check_field_name_clashing (bool bUseDimNameMatching) const;
-          
             /// Handle SDS fakedim names: make the dimensions with the same dimension size 
             /// share the same dimension name. In this way, we can reduce many fakedims.
             void handle_sds_fakedim_names() throw(Exception);
@@ -873,7 +854,6 @@ namespace HDFSP
             void PrepareTRMML3S_V7 () throw (Exception);
 
             /// Special method to prepare TRMM multiple grid Level 3 geolocation fields(latitude,longitude,etc) information.
-            //void PrepareTRMML3M_V7 () throw (Exception);
             void PrepareTRMML3M_V7 () ;
 
 

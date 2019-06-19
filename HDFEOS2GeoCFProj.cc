@@ -9,6 +9,8 @@
 #include "HDFEOS2GeoCFProj.h"
 
 
+using namespace libdap;
+using namespace std;
 
 HDFEOS2GeoCFProj::HDFEOS2GeoCFProj(const string & n, const string &d ) : Byte(n, d)
 {

@@ -19,6 +19,8 @@
 #include "HDF4RequestHandler.h"
 
 using namespace std;
+using namespace libdap;
+
 
 
 bool
@@ -80,7 +82,6 @@ HDFEOS2CFStrField::read ()
     intn (*detachfunc) (int32);
     intn (*fieldinfofunc) (int32, char *, int32 *, int32 *, int32 *, char *);
     intn (*readfieldfunc) (int32, char *, int32 *, int32 *, int32 *, void *);
-    int32 (*inqfunc) (char *, char *, int32 *);
 
 
     // Define function pointers to handle the swath
@@ -91,7 +92,6 @@ HDFEOS2CFStrField::read ()
         detachfunc = GDdetach;
         fieldinfofunc = GDfieldinfo;
         readfieldfunc = GDreadfield;
-        inqfunc = GDinqgrid;
  
     }
     else {
@@ -101,7 +101,6 @@ HDFEOS2CFStrField::read ()
         detachfunc = SWdetach;
         fieldinfofunc = SWfieldinfo;
         readfieldfunc = SWreadfield;
-        inqfunc = SWinqswath;
     }
 
     int32 gfid = -1;
@@ -222,7 +221,7 @@ HDFEOS2CFStrField::format_constraint (int *offset, int *step, int *count)
 
         id++;
         p++;
-    }// while (p != dim_end ())
+    }
 
     return nels;
 }
