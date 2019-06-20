@@ -362,9 +362,9 @@ void FONcAttributes::add_attributes_worker(int ncid, int varid, const string &va
             val += "\n" + attrs.get_attr(attr, attri);
         }
         if (attr_name != _FillValue) {
-            stax = nc_put_att_text(ncid, varid, new_name.c_str(), val.length(),
-                                   val.c_str());
-        } else {
+            stax = nc_put_att_text(ncid, varid, new_name.c_str(), val.length(), val.c_str());
+        } 
+        else {
             BESDEBUG("fonc",
                      "FONcAttributes::add_attributes_worker - Original attribute value is first character: " << val.c_str()[0]<< endl);
             stax = nc_put_att_text(ncid, varid, new_name.c_str(), 1, val.c_str());
@@ -377,6 +377,7 @@ void FONcAttributes::add_attributes_worker(int ncid, int varid, const string &va
                 stax = nc_put_att_text(ncid, varid, new_name_fillvalue.c_str(), val.length(), val.c_str());
             }
         }
+        
         if (stax != NC_NOERR) {
             string err = (string) "File out netcdf, "
                     + "failed to write string attribute " + new_name;
@@ -384,6 +385,7 @@ void FONcAttributes::add_attributes_worker(int ncid, int varid, const string &va
         }
     }
         break;
+            
     case Attr_unknown: {
         string err = (string) "File out netcdf, "
                 + "failed to write unknown type of attribute " + new_name;
