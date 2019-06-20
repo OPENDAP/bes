@@ -785,7 +785,44 @@ GlobalMetadataStore::is_dmr_available(const BESContainer &container)
 		return lock;
 	}//end else
 
-}//end is_dmr_available()
+}//end is_dmr_available(BESContainer)
+
+GlobalMetadataStore::MDSReadLock
+GlobalMetadataStore::is_dmr_available(const std::string &realName, const std::string &relativeName, const std::string &fileType)
+{
+    //return get_read_lock_helper(name, "dmr_r", "DMR");
+	//call get_read_lock_helper
+	MDSReadLock lock = get_read_lock_helper(relativeName,"dmr_r","DMR");
+	if (lock()){
+
+		//get type from container
+		//string type = container.get_container_type();
+
+		//use type with find_handler() to get handler
+		//BESRequestHandlerList besRHL;
+		//BESRequestHandler *besRH = besRHL.find_handler(type);
+		BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(fileType);
+
+		//use handler.get_lmt()
+		time_t file_time = besRH->get_lmt(realName);
+
+		//get the cache time of the handler
+		time_t cache_time = get_cache_lmt(relativeName, "dmr_r");
+
+		//compare file lmt and time of creation of cache
+		if (file_time > cache_time){
+			lock.clearLock();
+			return lock;
+		}//end if(file > cache)
+		else {
+			return lock;
+		}//end else
+	}//end if(is locked)
+	else{
+		return lock;
+	}//end else
+
+}//end is_dmr_available(string, string)
 
 /**
  * @brief Is the DDS response for \arg name in the MDS?

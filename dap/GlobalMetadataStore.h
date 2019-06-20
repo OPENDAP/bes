@@ -238,6 +238,7 @@ public:
     virtual bool add_responses(libdap::DMR *dmr, const std::string &name);
 
     virtual MDSReadLock is_dmr_available(const BESContainer &container);
+    virtual MDSReadLock is_dmr_available(const std::string &realName, const std::string &relativeName, const std::string &fileType);
     virtual MDSReadLock is_dds_available(const BESContainer &container);
     virtual MDSReadLock is_das_available(const BESContainer &container);
     virtual MDSReadLock is_dmrpp_available(const BESContainer &container);
