@@ -306,6 +306,8 @@ bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi)
             bdds->set_dds(dds);
             bdds->set_constraint(dhi);
 
+            delete dmr;
+
             // Cache it, if the cache is active.
             if (dds_cache) {
                 dds_cache->add(new DDS(*dds), accessed);
