@@ -17,6 +17,8 @@
         <Attribute name="temp" type="Float32">
             <Value>98.6</Value>
         </Attribute>
-        <Attribute name="xmltest" type="OtherXML">            <xml>barf</xml>        </Attribute>
+        <Attribute name="xmltest" type="OtherXML">
+            <xml>barf</xml>
+        </Attribute>
     </Attribute>
 </Dataset>
