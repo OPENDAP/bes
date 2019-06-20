@@ -86,7 +86,7 @@ void BESDataResponseHandler::execute(BESDataHandlerInterface &dhi)
 
         GlobalMetadataStore::MDSReadLock lock;
         dhi.first_container();
-        if (mds) lock = mds->is_dmrpp_available(dhi.container);
+        if (mds) lock = mds->is_dmrpp_available(*(dhi.container));
 
         // If we were able to lock the DMR++ it must exist; use it.
         if (mds && lock()) {

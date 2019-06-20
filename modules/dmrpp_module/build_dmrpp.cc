@@ -45,10 +45,12 @@
 #include <BESDebug.h>
 #include <BESError.h>
 #include <BESInternalError.h>
+#include <BESDataHandlerInterface.h>
 
 #include "DmrppTypeFactory.h"
 #include "DmrppD4Group.h"
 #include "DmrppMetadataStore.h"
+#include "BESDapNames.h"
 
 using namespace std;
 using namespace libdap;
@@ -564,7 +566,18 @@ int main(int argc, char*argv[])
             // is fragile. - ndp 6/6/18
             string h5_file_path = BESUtil::assemblePath(bes_data_root,h5_file_name);
 
-            bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_name /*h5_file_path*/);
+            BESDataHandlerInterface dhi;
+
+            dhi.action_name = DMR_RESPONSE_STR;
+            dhi.first_container();
+
+            // not sure if setting these will overwrite current values and lead to errors later
+            // so i'm leaving these commented out for now. SBL 6/20/19
+            //dhi.container.set_real_name(h5_file_path);
+            //dhi.container.set_relative_name(h5_file_name);
+
+            //bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_name /*h5_file_path*/);
+            bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(*(dhi.container));
             if (lock()) {
                 // parse the DMR into a DMRpp (that uses the DmrppTypes)
                 auto_ptr<DMRpp> dmrpp(dynamic_cast<DMRpp*>(mds->get_dmr_object(h5_file_name /*h5_file_path*/)));

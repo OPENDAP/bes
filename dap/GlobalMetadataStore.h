@@ -30,6 +30,7 @@
 
 #include "BESFileLockingCache.h"
 #include "BESInternalFatalError.h"
+#include "BESContainer.h"
 
 /// Setting XML_BASE_MISSING_MEANS_OMIT_ATTRIBUTE to zero causes the MDS to throw
 /// BESInternalError when the xml:base context is not defined and a DMR/++ response
@@ -236,10 +237,12 @@ public:
     virtual bool add_responses(libdap::DDS *dds, const std::string &name);
     virtual bool add_responses(libdap::DMR *dmr, const std::string &name);
 
-    virtual MDSReadLock is_dmr_available(const std::string &name);
-    virtual MDSReadLock is_dds_available(const std::string &name);
-    virtual MDSReadLock is_das_available(const std::string &name);
-    virtual MDSReadLock is_dmrpp_available(const std::string &name);
+    virtual MDSReadLock is_dmr_available(const BESContainer &container);
+    virtual MDSReadLock is_dds_available(const BESContainer &container);
+    virtual MDSReadLock is_das_available(const BESContainer &container);
+    virtual MDSReadLock is_dmrpp_available(const BESContainer &container);
+
+    virtual time_t get_cache_lmt(const string &name, const string &suffix);
 
     virtual void write_dds_response(const std::string &name, std::ostream &os);
     virtual void write_das_response(const std::string &name, std::ostream &os);
