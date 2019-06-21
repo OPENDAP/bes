@@ -168,16 +168,23 @@ string HttpdDirScraper::httpd_time_to_iso_8601(const string httpd_time) const
 
     if (tokens.size() > 2) {
         std::istringstream(tokens[0]) >> tm.tm_mday;
+        BESDEBUG(MODULE, prolog << "    tm.tm_mday: "<< tm.tm_mday << endl);
 
         pair<string, int> mnth = *d_months.find(BESUtil::lowercase(tokens[1]));
+        BESDEBUG(MODULE, prolog << "    mnth.first: "<< mnth.first << endl);
+        BESDEBUG(MODULE, prolog << "    mnth.second: "<< mnth.second << endl);
         tm.tm_mon = mnth.second;
+        BESDEBUG(MODULE, prolog << "    tm.tm_mon: "<< tm.tm_mon << endl);
 
         std::istringstream(tokens[2]) >> tm.tm_year;
         tm.tm_year -= 1900;
+        BESDEBUG(MODULE, prolog << "    tm.tm_year: "<< tm.tm_year << endl);
 
         if (tokens.size() > 4) {
             std::istringstream(tokens[3]) >> tm.tm_hour;
+            BESDEBUG(MODULE, prolog << "    tm.tm_hour: "<< tm.tm_hour << endl);
             std::istringstream(tokens[4]) >> tm.tm_min;
+            BESDEBUG(MODULE, prolog << "    tm.tm_min: "<< tm.tm_min << endl);
         }
     }
 
