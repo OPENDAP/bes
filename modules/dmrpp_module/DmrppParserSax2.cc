@@ -1476,7 +1476,7 @@ void DmrppParserSax2::cleanup_parse()
     bool wellFormed = context->wellFormed;
     bool valid = context->valid;
 
-    context->sax = NULL;
+    // FIXME jhrg 6/19/19 context->sax = NULL;
     xmlFreeParserCtxt(context);
 
     delete d_enum_def;
