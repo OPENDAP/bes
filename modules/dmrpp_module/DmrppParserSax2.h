@@ -105,6 +105,7 @@ private:
 
         parser_end
     };
+
     char d_parse_buffer[D4_PARSE_BUFF_SIZE+1]; // Buff size plus one byte for NULL termination.
 
     xmlSAXHandler dmrpp_sax_parser;

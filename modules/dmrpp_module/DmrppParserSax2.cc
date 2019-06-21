@@ -1476,7 +1476,8 @@ void DmrppParserSax2::cleanup_parse()
     bool wellFormed = context->wellFormed;
     bool valid = context->valid;
 
-    // FIXME jhrg 6/19/19 context->sax = NULL;
+    // context->sax = NULL;
+    // Leak. Removed the above. jhrg 6/19/19
     xmlFreeParserCtxt(context);
 
     delete d_enum_def;
@@ -1640,8 +1641,6 @@ void DmrppParserSax2::intern(const char *buffer, int size, DMR *dest_dmr, bool d
     push_state(parser_start);
     context = xmlCreatePushParserCtxt(&dmrpp_sax_parser, this, buffer, size, "stream");
     context->validate = true;
-    //push_state(parser_start);
-    //xmlParseChunk(context, buffer, size, 0);
 
     // This call ends the parse.
     xmlParseChunk(context, buffer, 0, 1/*terminate*/);
