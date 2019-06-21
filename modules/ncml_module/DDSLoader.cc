@@ -166,6 +166,7 @@ void DDSLoader::loadInto(const std::string& location, ResponseType type, BESDapR
     BESContainer* container = addNewContainerToStorage();
 
     // Take over the dhi
+    // Container is allocated using ptr_duplicate. Must free existing container. See RestoreDHI. jhrg 6/19/19
     _dhi.container = container;
     _dhi.response_handler->set_response_object(pResponse);
 
@@ -330,6 +331,8 @@ void DDSLoader::restoreDHI()
     // file and frees the lock. This was the bug associated with
     // ticket HR-64. jhrg 10/16/15
     _dhi.container->release();
+    // Leak. Allocated locally by addNewContainerToStorage() in loadInto(). jhrg 6/19/19
+    delete _dhi.container;
 
     // Restore saved state
     _dhi.container = _origContainer;
@@ -377,10 +380,12 @@ std::string DDSLoader::getNextContainerName()
 std::auto_ptr<BESDapResponse> DDSLoader::makeResponseForType(ResponseType type)
 {
     if (type == eRT_RequestDDX) {
-        return auto_ptr<BESDapResponse>(new BESDDSResponse(new DDS(new BaseTypeFactory(), "virtual")));
+        // The BaseTypeFactory is leaked. jhrg 6/19/19
+        return auto_ptr<BESDapResponse>(new BESDDSResponse(new DDS(nullptr /*new BaseTypeFactory()*/, "virtual")));
     }
     else if (type == eRT_RequestDataDDS) {
-        return auto_ptr<BESDapResponse>(new BESDataDDSResponse(new DDS(new BaseTypeFactory(), "virtual")));
+        // Leak fix jhrg 6/19/19
+        return auto_ptr<BESDapResponse>(new BESDataDDSResponse(new DDS(nullptr /*new BaseTypeFactory()*/, "virtual")));
     }
     else {
         THROW_NCML_INTERNAL_ERROR("DDSLoader::makeResponseForType() got unknown type!");
