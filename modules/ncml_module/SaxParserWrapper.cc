@@ -301,8 +301,8 @@ static void ncmlFatalError(void* userData, const char* msg, ...)
 // class SaxParserWrapper impl
 
 SaxParserWrapper::SaxParserWrapper(SaxParser& parser) :
-    _parser(parser), _handler() // inits to all nulls.
-    , _context(0), _state(NOT_PARSING), _errorMsg(""), _errorType(0), _errorFile(""), _errorLine(-1)
+    _parser(parser), _handler(), // inits to all nulls.
+    /*_context(0),*/ _state(NOT_PARSING), _errorMsg(""), _errorType(0), _errorFile(""), _errorLine(-1)
 {
 }
 
@@ -310,7 +310,11 @@ SaxParserWrapper::~SaxParserWrapper()
 {
     // Really not much to do...  everything cleans itself up.
     _state = NOT_PARSING;
+#if 0
+    // Leak fix. jhrg 6/21/19
     cleanupParser();
+#endif
+
 }
 
 bool SaxParserWrapper::parse(const string& ncmlFilename)
@@ -400,12 +404,15 @@ void SaxParserWrapper::rethrowException()
 
 int SaxParserWrapper::getCurrentParseLine() const
 {
+#if 0
     if (_context) {
         return xmlSAX2GetLineNumber(_context);
     }
     else {
         return -1;
     }
+#endif
+    return -1;  //FIXME part of leak fix. jhrg 6.21.19
 }
 
 static void setAllHandlerCBToNulls(xmlSAXHandler& h)
@@ -484,6 +491,7 @@ void SaxParserWrapper::setupParser(const string& filename)
     // C++ calls.
 
 #if 0
+    // Leak fix. jhrg 6/21/19
     _context = xmlCreateFileParserCtxt(filename.c_str());
     if (!_context) {
         THROW_NCML_PARSE_ERROR(-1, "Cannot parse: Unable to create a libxml parse context for " + filename);
@@ -494,9 +502,12 @@ void SaxParserWrapper::setupParser(const string& filename)
 #endif
 }
 
+#if 0
+// Leak fix. jhrg 6/21/19
 void SaxParserWrapper::cleanupParser() throw ()
 {
 #if 0
+    // Leak fix. jhrg 6/21/19
     if (_context) {
         // Remove our handler from it.
         _context->sax = NULL;
@@ -507,4 +518,6 @@ void SaxParserWrapper::cleanupParser() throw ()
     }
 #endif
 }
+#endif
+
 
