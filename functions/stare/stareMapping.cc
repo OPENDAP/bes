@@ -35,10 +35,10 @@ struct coords {
 	int x;
 	int y;
 
-	float lat;
-	float lon;
+	float64 lat;
+	float64 lon;
 
-	int stareIndex;
+	uint64 stareIndex;
 };
 
 /**
@@ -49,7 +49,7 @@ struct coords {
  * @param keyVals return value param containing the STARE info
  */
 void findLatLon(std::string dataUrl, const float64 level,
-	const float64 buildlevel, vector<int> &xArray, vector<int> &yArray, vector<float> &latArray, vector<float> &lonArray, vector<int> &stareArray) {
+	const float64 buildlevel, vector<int> &xArray, vector<int> &yArray, vector<float> &latArray, vector<float> &lonArray, vector<uint64> &stareArray) {
 	//Create an htmInterface that will be used to get the STARE index
 	htmInterface htm(level, buildlevel);
 	const SpatialIndex &index = htm.index();
@@ -182,7 +182,7 @@ void findLatLon(std::string dataUrl, const float64 level,
 /*************
  * HDF5 Stuff *
  *************/
-void writeHDF5(const string &filename, const vector<int> &xArray, const vector<int> &yArray, const vector<float> &latArray, const vector<float> &lonArray, const vector<int> &stareArray) {
+void writeHDF5(const string &filename, const vector<int> &xArray, const vector<int> &yArray, const vector<float> &latArray, const vector<float> &lonArray, const vector<uint64> &stareArray) {
 	hid_t file, datasetX, datasetY, datasetLat, datasetLon, datasetStare;
 	hid_t dataspace; /* handle */
 
@@ -258,7 +258,7 @@ void writeHDF5(const string &filename, const vector<int> &xArray, const vector<i
 
 	datasetName = "Stare Index";
 	VERBOSE(cerr << "Creating dataset: " << datasetName << " -> ");
-	datasetStare = H5Dcreate2(file, datasetName, H5T_NATIVE_INT, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+	datasetStare = H5Dcreate2(file, datasetName, H5T_NATIVE_INT64, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 
 	/*
 	 * Write the data to the datasets
@@ -268,7 +268,7 @@ void writeHDF5(const string &filename, const vector<int> &xArray, const vector<i
 	H5Dwrite(datasetY, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, &yArray[0]);
 	H5Dwrite(datasetLat, H5T_NATIVE_FLOAT, H5S_ALL, H5S_ALL, H5P_DEFAULT, &latArray[0]);
 	H5Dwrite(datasetLon, H5T_NATIVE_FLOAT, H5S_ALL, H5S_ALL, H5P_DEFAULT, &lonArray[0]);
-	H5Dwrite(datasetStare, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, &stareArray[0]);
+	H5Dwrite(datasetStare, H5T_NATIVE_INT64, H5S_ALL, H5S_ALL, H5P_DEFAULT, &stareArray[0]);
 
 	/*
 	 * Close/release resources.
@@ -323,7 +323,7 @@ int main(int argc, char *argv[]) {
 		vector<int> yVals;
 		vector<float> latVals;
 		vector<float> lonVals;
-		vector<int> stareVals;
+		vector<uint64> stareVals;
 
 		findLatLon(dataUrl, level, build_level, xVals, yVals, latVals, lonVals, stareVals);
 #if 0
