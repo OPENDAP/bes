@@ -141,17 +141,9 @@ void zero_tm_struct(tm &tms)
     tms.tm_isdst = 0;
 }
 
-/**
- * Apache httpd directories utilize a time format of
- *  "DD-MM-YYY hh:mm" example: "19-Oct-2018 19:32"
- *  here we assume the time zone is UTC and off we go.
- */
+
 string HttpdDirScraper::httpd_time_to_iso_8601(const string httpd_time) const
 {
-    // void BESUtil::tokenize(const string& str, vector<string>& tokens, const string& delimiters)
-    struct tm tm;
-    zero_tm_struct(tm);
-
     vector<string> tokens;
     string delimiters = "- :";
     BESUtil::tokenize(httpd_time, tokens, delimiters);
@@ -165,6 +157,37 @@ string HttpdDirScraper::httpd_time_to_iso_8601(const string httpd_time) const
             it++;
         }
     }
+
+    BESDEBUG(MODULE, prolog << "Second Field: "<< tokens[1] << endl);
+
+    const char *second_field = tokens[1].c_str();
+    bool is_alpha = true;
+    for(unsigned long i=0; is_alpha && i< tokens[1].length(); i++){
+        is_alpha = isalpha(second_field[i]);
+    }
+    time_t theTime;
+    if(is_alpha){
+        BESDEBUG(MODULE, prolog << "Detected Time Format A (\"DD-MM-YYY hh:mm\")" << endl);
+        theTime = parse_time_format_A(tokens);
+    }
+    else {
+        BESDEBUG(MODULE, prolog << "Detected Time Format B (\"YYYY-MM-DD hh:mm\")" << endl);
+        theTime = parse_time_format_B(tokens);
+    }
+    return BESUtil::get_time(theTime, false);
+
+}
+
+/**
+ * Apache httpd directories utilize a time format of
+ *  "DD-MM-YYY hh:mm" example: "19-Oct-2018 19:32"
+ *  here we assume the time zone is UTC and off we go.
+ */
+time_t HttpdDirScraper::parse_time_format_A(const vector<string> tokens) const
+{
+    // void BESUtil::tokenize(const string& str, vector<string>& tokens, const string& delimiters)
+    struct tm tm;
+    zero_tm_struct(tm);
 
     if (tokens.size() > 2) {
         std::istringstream(tokens[0]) >> tm.tm_mday;
@@ -192,7 +215,7 @@ string HttpdDirScraper::httpd_time_to_iso_8601(const string httpd_time) const
 
     time_t theTime = mktime(&tm);
     BESDEBUG(MODULE, prolog << "theTime: " << theTime << endl);
-    return BESUtil::get_time(theTime, false);
+    return theTime;
 }
 
 /**
@@ -200,25 +223,11 @@ string HttpdDirScraper::httpd_time_to_iso_8601(const string httpd_time) const
  *  "YYYY-MM-DD hh:mm" example: "2012-01-02 10:03"
  *  here we assume the time zone is UTC and off we go.
  */
-string HttpdDirScraper::httpd_time_to_iso_8601_new(const string httpd_time) const
+time_t HttpdDirScraper::parse_time_format_B(const vector<string> tokens) const
 {
     // void BESUtil::tokenize(const string& str, vector<string>& tokens, const string& delimiters)
     struct tm tm;
     zero_tm_struct(tm);
-
-    vector<string> tokens;
-    string delimiters = "- :";
-    BESUtil::tokenize(httpd_time, tokens, delimiters);
-
-    BESDEBUG(MODULE, prolog << "Found " << tokens.size() << " tokens." << endl);
-    vector<string>::iterator it = tokens.begin();
-    int i = 0;
-    if (BESDebug::IsSet(MODULE)) {
-        while (it != tokens.end()) {
-            BESDEBUG(MODULE, prolog << "    token["<< i++ << "]: "<< *it << endl);
-            it++;
-        }
-    }
 
     if (tokens.size() > 2) {
         std::istringstream(tokens[0]) >> tm.tm_year;
@@ -243,7 +252,7 @@ string HttpdDirScraper::httpd_time_to_iso_8601_new(const string httpd_time) cons
 
     time_t theTime = mktime(&tm);
     BESDEBUG(MODULE, prolog << "ISO-8601 Time: " << theTime << endl);
-    return BESUtil::get_time(theTime, false);
+    return theTime;
 }
 
 /**
@@ -354,7 +363,7 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std:
                         childNode->set_type(CatalogItem::node);
                         childNode->set_name(node_name);
                         childNode->set_is_data(false);
-                        string iso_8601_time = httpd_time_to_iso_8601_new(time_str);
+                        string iso_8601_time = httpd_time_to_iso_8601(time_str);
                         childNode->set_lmt(iso_8601_time);
                         // FIXME: For nodes the size should be the number of children, but how without crawling?
                         long size = get_size_val(size_str);
@@ -369,7 +378,7 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std:
                         leafItem->set_type(CatalogItem::leaf);
                         leafItem->set_name(href);
                         leafItem->set_is_data(cat_utils->is_data(href));
-                        string iso_8601_time = httpd_time_to_iso_8601_new(time_str);
+                        string iso_8601_time = httpd_time_to_iso_8601(time_str);
                         leafItem->set_lmt(iso_8601_time);
                         long size = get_size_val(size_str);
                         leafItem->set_size(size);
