@@ -196,6 +196,57 @@ string HttpdDirScraper::httpd_time_to_iso_8601(const string httpd_time) const
 }
 
 /**
+ * Newer (??) Apache httpd directories utilize a time format of
+ *  "YYYY-MM-DD hh:mm" example: "2012-01-02 10:03"
+ *  here we assume the time zone is UTC and off we go.
+ */
+string HttpdDirScraper::httpd_time_to_iso_8601_new(const string httpd_time) const
+{
+    // void BESUtil::tokenize(const string& str, vector<string>& tokens, const string& delimiters)
+    struct tm tm;
+    zero_tm_struct(tm);
+
+    vector<string> tokens;
+    string delimiters = "- :";
+    BESUtil::tokenize(httpd_time, tokens, delimiters);
+
+    BESDEBUG(MODULE, prolog << "Found " << tokens.size() << " tokens." << endl);
+    vector<string>::iterator it = tokens.begin();
+    int i = 0;
+    if (BESDebug::IsSet(MODULE)) {
+        while (it != tokens.end()) {
+            BESDEBUG(MODULE, prolog << "    token["<< i++ << "]: "<< *it << endl);
+            it++;
+        }
+    }
+
+    if (tokens.size() > 2) {
+        std::istringstream(tokens[0]) >> tm.tm_year;
+        tm.tm_year -= 1900;
+        BESDEBUG(MODULE, prolog << "    tm.tm_year: "<< tm.tm_year << endl);
+
+        std::istringstream(tokens[1]) >> tm.tm_mon;
+        BESDEBUG(MODULE, prolog << "    tm.tm_mon: "<< tm.tm_mon << endl);
+
+        std::istringstream(tokens[2]) >> tm.tm_mday;
+        BESDEBUG(MODULE, prolog << "    tm.tm_mday: "<< tm.tm_mday << endl);
+
+        if (tokens.size() > 4) {
+            std::istringstream(tokens[3]) >> tm.tm_hour;
+            BESDEBUG(MODULE, prolog << "    tm.tm_hour: "<< tm.tm_hour << endl);
+            std::istringstream(tokens[4]) >> tm.tm_min;
+            BESDEBUG(MODULE, prolog << "    tm.tm_min: "<< tm.tm_min << endl);
+        }
+    }
+
+    BESDEBUG(MODULE, prolog << "tm struct: " << endl << show_tm_struct(tm));
+
+    time_t theTime = mktime(&tm);
+    BESDEBUG(MODULE, prolog << "theTime: " << theTime << endl);
+    return BESUtil::get_time(theTime, false);
+}
+
+/**
  * @brief Converts an Apache httpd directory page into a collection of bes::CatalogItems.
  *
  * If one considers each Apache httpd generated directory page to be equivalent to
@@ -303,7 +354,7 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std:
                         childNode->set_type(CatalogItem::node);
                         childNode->set_name(node_name);
                         childNode->set_is_data(false);
-                        string iso_8601_time = httpd_time_to_iso_8601(time_str);
+                        string iso_8601_time = httpd_time_to_iso_8601_new(time_str);
                         childNode->set_lmt(iso_8601_time);
                         // FIXME: For nodes the size should be the number of children, but how without crawling?
                         long size = get_size_val(size_str);
