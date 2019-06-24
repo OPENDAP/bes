@@ -42,17 +42,20 @@ namespace httpd_catalog {
  */
 class HttpdDirScraper {
 private:
-    map<string,int> d_months;
+    std::map<std::string,int> d_months;
 
-    int getNextElementText(const string &page_str, string element_name, int startIndex, string &resultText, bool trim=true) const;
+    int getNextElementText(const std::string &page_str, std::string element_name, int startIndex, std::string &resultText, bool trim=true) const;
     void createHttpdDirectoryPageMap(std::string url, std::map<std::string, bes::CatalogItem *> &items) const;
-    long get_size_val(const string size_str) const;
-    string httpd_time_to_iso_8601(const string httpd_time) const;
+    long get_size_val(const std::string size_str) const;
+    std::string httpd_time_to_iso_8601(const std::string httpd_time) const;
+    std::string httpd_time_to_iso_8601_new(const string httpd_time) const;
+    time_t parse_time_format_A(const std::vector<std::string> tokens) const;
+    time_t parse_time_format_B(const std::vector<std::string> tokens) const;
 
 public:
     HttpdDirScraper();
     ~HttpdDirScraper() { }
-    virtual bes::CatalogNode *get_node(const string &url, const string &path) const;
+    virtual bes::CatalogNode *get_node(const std::string &url, const std::string &path) const;
 };
 } // namespace httpd_catalog
 
