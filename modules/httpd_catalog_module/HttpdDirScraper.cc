@@ -242,7 +242,7 @@ string HttpdDirScraper::httpd_time_to_iso_8601_new(const string httpd_time) cons
     BESDEBUG(MODULE, prolog << "tm struct: " << endl << show_tm_struct(tm));
 
     time_t theTime = mktime(&tm);
-    BESDEBUG(MODULE, prolog << "theTime: " << theTime << endl);
+    BESDEBUG(MODULE, prolog << "ISO-8601 Time: " << theTime << endl);
     return BESUtil::get_time(theTime, false);
 }
 
@@ -369,7 +369,7 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std:
                         leafItem->set_type(CatalogItem::leaf);
                         leafItem->set_name(href);
                         leafItem->set_is_data(cat_utils->is_data(href));
-                        string iso_8601_time = httpd_time_to_iso_8601(time_str);
+                        string iso_8601_time = httpd_time_to_iso_8601_new(time_str);
                         leafItem->set_lmt(iso_8601_time);
                         long size = get_size_val(size_str);
                         leafItem->set_size(size);
