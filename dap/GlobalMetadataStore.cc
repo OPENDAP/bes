@@ -750,12 +750,19 @@ GlobalMetadataStore::get_read_lock_helper(const string &name, const string &suff
  * true. When the MDSReadLock object goes out of scope, the read lock is
  * released.
  */
+// @Deprecated // 6.25.19 SBL
+GlobalMetadataStore::MDSReadLock
+GlobalMetadataStore::is_dmr_available(const string &name)
+{
+	return get_read_lock_helper(name,"dmr_r","DMR");
+}//end is_dmr_available(string)
+
 GlobalMetadataStore::MDSReadLock
 GlobalMetadataStore::is_dmr_available(const BESContainer &container)
 {
     //return get_read_lock_helper(name, "dmr_r", "DMR");
 	//call get_read_lock_helper
-	MDSReadLock lock = get_read_lock_helper(container.get_relative_name(),"dmr_r","DMR");
+	MDSReadLock lock = get_read_lock_helper(container.get_relative_name(), "dmr_r", "DMR");
 	if (lock()){
 
 		//get type from container
@@ -822,7 +829,7 @@ GlobalMetadataStore::is_dmr_available(const std::string &realName, const std::st
 		return lock;
 	}//end else
 
-}//end is_dmr_available(string, string)
+}//end is_dmr_available(string, string, string)
 
 /**
  * @brief Is the DDS response for \arg name in the MDS?
@@ -830,6 +837,13 @@ GlobalMetadataStore::is_dmr_available(const std::string &realName, const std::st
  * @return A MDSReadLock object.
  * @see is_dmr_available() for more information.
  */
+// @Deprecated // 6.25.19 SBL
+GlobalMetadataStore::MDSReadLock
+GlobalMetadataStore::is_dds_available(const string &name)
+{
+	return get_read_lock_helper(name,"dds_r","DDS");
+}//end is_dds_available(string)
+
 GlobalMetadataStore::MDSReadLock
 GlobalMetadataStore::is_dds_available(const BESContainer &container)
 {
@@ -863,7 +877,7 @@ GlobalMetadataStore::is_dds_available(const BESContainer &container)
 		return lock;
 	}//end else
 
-}//end is_dds_available()
+}//end is_dds_available(BESContainer)
 
 /**
  * @brief Is the DAS response for \arg name in the MDS?
@@ -871,6 +885,13 @@ GlobalMetadataStore::is_dds_available(const BESContainer &container)
  * @return A MDSReadLock object.
  * @see is_dmr_available() for more information.
  */
+// @Deprecated // 6.25.19 SBL
+GlobalMetadataStore::MDSReadLock
+GlobalMetadataStore::is_das_available(const string &name)
+{
+	return get_read_lock_helper(name,"das_r","DAS");
+}//end is_das_available(string)
+
 GlobalMetadataStore::MDSReadLock
 GlobalMetadataStore::is_das_available(const BESContainer &container)
 {
@@ -904,7 +925,7 @@ GlobalMetadataStore::is_das_available(const BESContainer &container)
 		return lock;
 	}//end else
 
-}//end is_das_available()
+}//end is_das_available(BESContainer)
 
 /**
  * @brief Is the DMR++ response for \arg name in the MDS?
@@ -923,6 +944,13 @@ GlobalMetadataStore::is_das_available(const BESContainer &container)
  * true. When the MDSReadLock object goes out of scope, the read lock is
  * released.
  */
+// @Deprecated // 6.25.19 SBL
+GlobalMetadataStore::MDSReadLock
+GlobalMetadataStore::is_dmrpp_available(const string &name)
+{
+	return get_read_lock_helper(name,"dmrpp_r","DMR++");
+}//end is_dmrpp_available(string)
+
 GlobalMetadataStore::MDSReadLock
 GlobalMetadataStore::is_dmrpp_available(const BESContainer &container)
 {
@@ -956,7 +984,7 @@ GlobalMetadataStore::is_dmrpp_available(const BESContainer &container)
 		return lock;
 	}//end else
 
-}//end is_dmrpp_available()
+}//end is_dmrpp_available(BESContainer)
 
 /**
  * @brief Get the last modified time for the cached object file

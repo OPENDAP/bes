@@ -49,6 +49,9 @@
 
 #include "TheBESKeys.h"
 #include "BESContextManager.h"
+#include "BESFileContainer.h"
+#include "BESRequestHandlerList.h"
+#include "BESRequestHandler.h"
 #include "BESDebug.h"
 #include "BESInternalError.h"
 
@@ -87,6 +90,9 @@ private:
 
     string d_mds_dir;
     GlobalMetadataStore *d_mds;
+
+    // BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(type);
+    BESRequestHandler d_handler;
 
     /**
      * This is like SetUp() but is run selectively by tests. It won't work
@@ -193,8 +199,10 @@ private:
 
 public:
     GlobalMetadataStoreTest() :
-        d_test_dds(0), d_test_dmr(0), d_mds_dir(string(TEST_BUILD_DIR).append(c_mds_name)), d_mds(0)
+        d_test_dds(0), d_test_dmr(0), d_mds_dir(string(TEST_BUILD_DIR).append(c_mds_name)), d_mds(0),
+		d_handler("test_handler")
     {
+    	BESRequestHandlerList::TheList()->add_handler("test_handler", &d_handler);
     }
 
     ~GlobalMetadataStoreTest()
@@ -421,6 +429,137 @@ public:
 
         DBG(cerr << __func__ << " - END" << endl);
     }
+
+    //GlobalMetadataStore::MDSReadLock
+    //GlobalMetadataStore::is_dmr_available(const BESContainer &container)
+
+    // TODO This test depends on the path /relative/name not existing. Fix.
+    void is_dmr_available_test_1() {
+    	init_dmr_and_mds();
+
+    	BESFileContainer cont("cont", "/real/relative/name", "test_handler");
+    	cont.set_relative_name("/relative/name");
+
+    	DBG(cerr << "cont.get_real_name: " << cont.get_real_name() << endl);
+    	DBG(cerr << "cont.get_relative_name: " << cont.get_relative_name() << endl);
+
+    	CPPUNIT_ASSERT(cont.get_real_name() == "/real/relative/name");
+    	CPPUNIT_ASSERT(cont.get_relative_name() == "/relative/name");
+
+    	GlobalMetadataStore::MDSReadLock lock = d_mds->is_dmr_available(cont);
+    	CPPUNIT_ASSERT(!lock()); // The path /relative/name should not exist
+    }//end is_dmr_available_test_1()
+
+    void is_dmr_available_test_2() {
+    	init_dmr_and_mds();
+
+    	// BESFileContainer(const string &sym_name, const string &real_name, const string &type);
+    	string real_name = string(TEST_SRC_DIR) + "/input-files/test_01.dmr";
+    	BESFileContainer cont("cont", real_name, "test_handler");
+    	cont.set_relative_name("/input-files/test_01.dmr");
+
+    	DBG(cerr << "cont.get_real_name: " << cont.get_real_name() << endl);
+    	DBG(cerr << "cont.get_relative_name: " << cont.get_relative_name() << endl);
+
+    	CPPUNIT_ASSERT(cont.get_real_name() == real_name);
+    	CPPUNIT_ASSERT(cont.get_relative_name() == "/input-files/test_01.dmr");
+
+    	BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler("test_handler");
+    	DBG(cerr << "besRH: " << (void*)besRH << endl);
+    	DBG(cerr << "d_handler: " << (void*)&d_handler << endl);
+    	CPPUNIT_ASSERT(besRH != 0);
+    	DBG(cerr << "d_handler.get_name(): " << d_handler.get_name() << endl);
+    	DBG(cerr << "besRH->get_name(): " << besRH->get_name() << endl);
+
+    	//string item_name = get_cache_file_name(get_hash(cont.get_relative_name() + "dmr_r"), false);
+    	string hash_name = d_mds->get_hash(cont.get_relative_name() + "dmr_r");
+    	DBG(cerr << "hash_name: " << hash_name << endl);
+
+    	string item_name = d_mds->get_cache_file_name(hash_name, false /*mangle*/);
+    	DBG(cerr << "item_name: " << item_name << endl);
+
+    	try {
+    		int fd = open(item_name.c_str(), O_RDWR | O_CREAT, 00664 /*mode = rw rw r*/);
+    		CPPUNIT_ASSERT(fd != -1);
+
+    		GlobalMetadataStore::MDSReadLock lock = d_mds->is_dmr_available(cont);
+    		// since the cache file is newer than the 'real' file, we should have the lock
+    		CPPUNIT_ASSERT(lock());
+    	}
+    	catch (BESError &e) {
+    		unlink(item_name.c_str());
+    		ostringstream oss;
+    		oss << "Error: " << e.get_message() << " " << e.get_file() << ":" << e.get_line();
+    		CPPUNIT_FAIL(oss.str());
+    	}
+    	catch (...) {
+    		unlink(item_name.c_str());
+    		throw;
+    	}
+
+    	// TODO The clean_cache_dir() function hangs if this file is left in the cache
+    	unlink(item_name.c_str());
+    }//end is_dmr_available_test_2()
+
+    void is_dmr_available_test_3() {
+    	init_dmr_and_mds();
+
+    	// BESFileContainer(const string &sym_name, const string &real_name, const string &type);
+    	string relative_file = "/input-files/temp_01.dmr";
+    	string real_name = string(TEST_SRC_DIR) + relative_file;
+    	BESFileContainer cont("cont", real_name, "test_handler");
+    	cont.set_relative_name(relative_file);
+
+    	DBG(cerr << "cont.get_real_name: " << cont.get_real_name() << endl);
+    	DBG(cerr << "cont.get_relative_name: " << cont.get_relative_name() << endl);
+
+    	CPPUNIT_ASSERT(cont.get_real_name() == real_name);
+    	CPPUNIT_ASSERT(cont.get_relative_name() == "/input-files/temp_01.dmr");
+
+    	BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler("test_handler");
+    	DBG(cerr << "besRH: " << (void*)besRH << endl);
+    	DBG(cerr << "d_handler: " << (void*)&d_handler << endl);
+    	CPPUNIT_ASSERT(besRH != 0);
+    	DBG(cerr << "d_handler.get_name(): " << d_handler.get_name() << endl);
+    	DBG(cerr << "besRH->get_name(): " << besRH->get_name() << endl);
+
+    	//string item_name = get_cache_file_name(get_hash(cont.get_relative_name() + "dmr_r"), false);
+    	string hash_name = d_mds->get_hash(cont.get_relative_name() + "dmr_r");
+    	DBG(cerr << "hash_name: " << hash_name << endl);
+
+    	string item_name = d_mds->get_cache_file_name(hash_name, false /*mangle*/);
+    	DBG(cerr << "item_name: " << item_name << endl);
+
+    	try {
+    		int fd = open(item_name.c_str(), O_RDWR | O_CREAT, 00664 /*mode = rw rw r*/);
+    		CPPUNIT_ASSERT(fd != -1);
+
+    		sleep(3);
+
+    		int gd = open(real_name.c_str(), O_RDWR | O_CREAT, 00664 /*mode = rw rw r*/);
+    		CPPUNIT_ASSERT(gd != -1);
+
+    		GlobalMetadataStore::MDSReadLock lock = d_mds->is_dmr_available(cont);
+    		// since the cache file is newer than the 'real' file, we should have the lock
+    		CPPUNIT_ASSERT(!lock());
+    	}
+    	catch (BESError &e) {
+    		unlink(item_name.c_str());
+    		unlink(real_name.c_str());
+    		ostringstream oss;
+    		oss << "Error: " << e.get_message() << " " << e.get_file() << ":" << e.get_line();
+    		CPPUNIT_FAIL(oss.str());
+    	}
+    	catch (...) {
+    		unlink(item_name.c_str());
+    		unlink(real_name.c_str());
+    		throw;
+    	}
+
+    	// TODO The clean_cache_dir() function hangs if this file is left in the cache
+    	unlink(item_name.c_str());
+    	unlink(real_name.c_str());
+    }//end is_dmr_available_test_3()
 
 #if 0
     void cache_a_dmrpp_response()
@@ -1017,6 +1156,10 @@ public:
     CPPUNIT_TEST(cache_a_dds_response);
     CPPUNIT_TEST(cache_a_das_response);
     CPPUNIT_TEST(cache_a_dmr_response);
+
+    CPPUNIT_TEST(is_dmr_available_test_1);
+    CPPUNIT_TEST(is_dmr_available_test_2);
+    CPPUNIT_TEST(is_dmr_available_test_3);
 
     CPPUNIT_TEST(add_response_test);
 

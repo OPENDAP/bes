@@ -237,10 +237,18 @@ public:
     virtual bool add_responses(libdap::DDS *dds, const std::string &name);
     virtual bool add_responses(libdap::DMR *dmr, const std::string &name);
 
+    virtual MDSReadLock is_dmr_available(const std::string &name);
     virtual MDSReadLock is_dmr_available(const BESContainer &container);
+    //added a third method here to handle case in build_dmrpp.cc - SBL 6.19.19
     virtual MDSReadLock is_dmr_available(const std::string &realName, const std::string &relativeName, const std::string &fileType);
+
+    virtual MDSReadLock is_dds_available(const std::string &name);
     virtual MDSReadLock is_dds_available(const BESContainer &container);
+
+    virtual MDSReadLock is_das_available(const std::string &name);
     virtual MDSReadLock is_das_available(const BESContainer &container);
+
+    virtual MDSReadLock is_dmrpp_available(const std::string &name);
     virtual MDSReadLock is_dmrpp_available(const BESContainer &container);
 
     virtual time_t get_cache_lmt(const string &name, const string &suffix);
