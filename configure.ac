@@ -674,6 +674,7 @@ AC_CHECK_STARE(
   ],
   $ac_bes_dependencies_prefix
 )
+
 dnl NCML module test
 dnl
 dnl Look for the minimum version of the icu libs and headers

@@ -26,13 +26,37 @@
 #include <sstream>
 #include <memory>
 #include <iterator>
+#include <algorithm>
 
 #include <cstdlib>
 
+//#define H5D_FRIEND		// Workaround, needed to use H5D_chunk_rec_t
+//#include <H5Dpkg.h>
+#define H5S_MAX_RANK    32
+#define H5O_LAYOUT_NDIMS	(H5S_MAX_RANK+1)
 #include <H5Ppublic.h>
 #include <H5Dpublic.h>
 #include <H5Epublic.h>
 #include <H5Zpublic.h>  // Constants for compression filters
+#include <H5Spublic.h>
+
+/*
+ * "Generic" chunk record.  Each chunk is keyed by the minimum logical
+ * N-dimensional coordinates and the datatype size of the chunk.
+ * The fastest-varying dimension is assumed to reference individual bytes of
+ * the array, so a 100-element 1-D array of 4-byte integers would really be a
+ * 2-D array with the slow varying dimension of size 100 and the fast varying
+ * dimension of size 4 (the storage dimensionality has very little to do with
+ * the real dimensionality).
+ *
+ * The chunk's file address, filter mask and size on disk are not key values.
+ */
+typedef struct H5D_chunk_rec_t {
+    hsize_t     scaled[H5O_LAYOUT_NDIMS];    /* Logical offset to start */
+    uint32_t    nbytes;                      /* Size of stored data */
+    uint32_t    filter_mask;                 /* Excluded filters */
+    haddr_t     chunk_addr;                  /* Address of chunk in file */
+} H5D_chunk_rec_t;
 
 #include <DMRpp.h>
 #include <D4Attributes.h>
@@ -43,7 +67,7 @@
 #include <TheBESKeys.h>
 #include <BESUtil.h>
 #include <BESDebug.h>
-#include <BESError.h>
+#include <BESNotFoundError.h>
 #include <BESInternalError.h>
 
 #include "DmrppTypeFactory.h"
@@ -262,141 +286,113 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc)
 static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
 {
     try {
-        uint8_t layout_type = 0;
-        uint8_t storage_status = 0;
-        hsize_t num_chunk = 0;
+        hid_t dcpl = H5Dget_create_plist(dataset);
+        uint8_t layout_type = H5Pget_layout(dcpl);
 
-        herr_t status = H5Dget_dataset_storage_info(dataset, &layout_type, &num_chunk, &storage_status);
-        if (status < 0) {
-            throw BESInternalError("Cannot get HDF5 dataset storage info.", __FILE__, __LINE__);
+        hid_t fspace_id = H5Dget_space(dataset);
+
+        unsigned int dataset_rank = H5Sget_simple_extent_ndims(fspace_id);
+
+        /* layout_type:  1 contiguous 2 chunk 3 compact */
+        switch (layout_type) {
+
+        case H5D_CONTIGUOUS: { /* Contiguous storage */
+            haddr_t cont_addr = 0;
+            hsize_t cont_size = 0;
+            VERBOSE(cerr << "Storage: contiguous" << endl);
+
+            cont_addr = H5Dget_offset(dataset);
+            if (cont_addr < 0) {
+            		throw BESInternalError("Cannot obtain the offset.", __FILE__, __LINE__);
+            }
+            cont_size = H5Dget_storage_size(dataset);
+            if (cont_size < 0) {
+            		throw BESInternalError("Cannot obtain the storage size.", __FILE__, __LINE__);
+            }
+            VERBOSE(cerr << "    Addr: " << cont_addr << endl);
+            VERBOSE(cerr << "    Size: " << cont_size << endl);
+
+            if (dc) dc->add_chunk("", cont_size, cont_addr, "" /*pos in array*/);
+
+            break;
         }
 
-        VERBOSE(cerr << "layout: " << (int)layout_type << ", chunks: " << num_chunk << ", storage: " << (int)storage_status << endl);
+        case H5D_CHUNKED: { /*chunking storage */
+            hsize_t num_chunks = 0;
+            herr_t status = H5Dget_num_chunks(dataset, fspace_id, &num_chunks);
+            if (status < 0) {
+                throw BESInternalError("Could not get the number of chunks",
+                __FILE__, __LINE__);
+            }
 
-        // Replace this with a 'not found' error? It seems that chunk information
-        // is found only when storage_status != 0. jhrg 5/7/18
-        if (storage_status == 0) {
-            print_dataset_type_info(dataset, layout_type);
+            VERBOSE(cerr << "storage: chunked." << endl);
+            VERBOSE(cerr << "Number of chunks is " << num_chunks << endl);
+
+            if (dc)
+            	set_filter_information(dataset, dc);
+
+            // Get chunking information: rank and dimensions
+            vector<size_t> chunk_dims(dataset_rank);
+            unsigned int chunk_rank = H5Pget_chunk(dcpl, dataset_rank, (hsize_t*) &chunk_dims[0]);
+            if (chunk_rank != dataset_rank)
+                throw BESNotFoundError("Found a chunk with rank different than the dataset's (aka variables's) rank", __FILE__, __LINE__);
+
+            if (dc) dc->set_chunk_dimension_sizes(chunk_dims);
+
+            for (unsigned int i = 0; i < num_chunks; ++i) {
+
+                vector<hsize_t> temp_coords(dataset_rank);
+                vector<unsigned int> chunk_coords(dataset_rank); //FIXME - see below
+
+                haddr_t addr = 0;
+                hsize_t size = 0;
+
+                //H5_DLL herr_t H5Dget_chunk_info(hid_t dset_id, hid_t fspace_id, hsize_t chk_idx, hsize_t *coord, unsigned *filter_mask, haddr_t *addr, hsize_t *size);
+                status = H5Dget_chunk_info(dataset, fspace_id, i, &temp_coords[0], NULL, &addr, &size);
+                if (status < 0) {
+                    VERBOSE(cerr << "ERROR" << endl);
+                    throw BESInternalError("Cannot get HDF5 dataset storage info.", __FILE__, __LINE__);
+                }
+
+                VERBOSE(cerr << "chk_idk: " << i  << ", addr: " << addr << ", size: " << size << endl);
+
+                //The coords need to be of type 'unsigned int' when passed into add_chunk()
+                // This loop simply copies the values from the temp_coords to chunk_coords - kln 5/1/19
+                for (unsigned int j = 0; j < chunk_coords.size(); ++j) {
+                    chunk_coords[j] = temp_coords[j];
+                }
+
+                // FIXME Modify add_chunk so that it takes a vector<unsigned long long> or <unsined long>
+                // (depending on the machine/OS/compiler). Limiting the offset to 32-bits won't work
+                // for large files. jhrg 5/21/19
+                if (dc) dc->add_chunk("", size, addr, chunk_coords);
+            }
+
+            break;
         }
-#if 0
-        else {
-#endif
 
-            /* layout_type:  1 contiguous 2 chunk 3 compact */
-            switch (layout_type) {
+        case H5D_COMPACT: { /* Compact storage */
+            //else if (layout_type == 3) {
+            VERBOSE(cerr << "Storage: compact" << endl);
+            size_t comp_size = 0;
+            //if (H5Dget_dataset_compact_storage_info(dataset, &comp_size) < 0) {
+            //    throw BESInternalError("Cannot obtain the compact storage info.", __FILE__, __LINE__);
+            //}
+            comp_size = H5Dget_storage_size(dataset);
+			if (comp_size < 0) {
+				throw BESInternalError("Cannot obtain the compact storage size.", __FILE__, __LINE__);
+			}
+            VERBOSE(cerr << "   Size: " << comp_size << endl);
 
-            case H5D_CONTIGUOUS: { /* Contiguous storage */
-                haddr_t cont_addr = 0;
-                hsize_t cont_size = 0;
-                VERBOSE(cerr << "Storage: contiguous" << endl);
-                if (H5Dget_dataset_contiguous_storage_info(dataset, &cont_addr, &cont_size) < 0) {
-                    throw BESInternalError("Cannot obtain the contiguous storage info.", __FILE__, __LINE__);
-                }
-                VERBOSE(cerr << "    Addr: " << cont_addr << endl);
-                VERBOSE(cerr << "    Size: " << cont_size << endl);
+            break;
+        }
 
-                if (dc) dc->add_chunk("", cont_size, cont_addr, "" /*pos in array*/);
-
-                break;
-            }
-            case H5D_CHUNKED: { /*chunking storage */
-                VERBOSE(cerr << "storage: chunked." << endl);
-                VERBOSE(cerr << "Number of chunks is " << num_chunk << endl);
-
-                if (dc) set_filter_information(dataset, dc);
-
-                // Get the chunk dimensions
-                hid_t cparms = H5Dget_create_plist(dataset);
-                if (cparms < 0) throw BESInternalError("Could not open a property list for the HDF5 dataset.", __FILE__, __LINE__);
-
-                try {
-#if 0
-                    // Property list pointer
-                    H5P_genplist_t *plist = H5P_object_verify(cparms, H5P_DATASET_CREATE);
-                    if (!plist)
-                    throw BESInternalError("Could not open a property list for '" + h5_dset_path + "'.", __FILE__, __LINE__);
-
-                    /* Get layout property */
-                    H5O_layout_t layout; /* Layout property */
-                    if (H5P_get(plist, H5D_CRT_LAYOUT_NAME, &layout) < 0)
-                    throw BESInternalError("Could not get the layout for '" + h5_dset_path + "'.", __FILE__, __LINE__);
-
-                    // layout.u.chunk.ndims
-#endif
-                    // Allocate the memory for the struct to obtain the chunk storage information. Kent Yang
-                    // wrote the H5Dget_dataset_chunk_storage_info() function; the alternative is to use the
-                    // layout object above. jhrg 5/10/18
-                    vector<H5D_chunk_storage_info_t> chunk_st_ptr(num_chunk);
-                    unsigned int num_chunk_dims = 0;
-                    if (H5Dget_dataset_chunk_storage_info(dataset, &chunk_st_ptr[0], &num_chunk_dims) < 0)
-                        throw BESInternalError("Cannot get HDF5 chunk storage info.", __FILE__, __LINE__);
-
-                    num_chunk_dims -= 1; // num_chunk_dims is rank + 1. not sure why. jhrg 5/10/18
-                    VERBOSE(cerr << "Number of dimensions in a chunk is " << num_chunk_dims << endl);
-
-                    // Get chunking information: rank and dimensions
-                    vector<size_t> chunk_dims(num_chunk_dims);
-                    unsigned int rank_chunk = H5Pget_chunk(cparms, num_chunk_dims, (hsize_t*)&chunk_dims[0]);
-
-                    if (rank_chunk != num_chunk_dims) throw BESInternalError("Unexpected chunk dimension mismatch.", __FILE__, __LINE__);
-
-                    VERBOSE(cerr << "Chunk rank: " << rank_chunk << endl);
-                    VERBOSE(cerr << "Chunk dimension sizes: ");
-                    VERBOSE(copy(chunk_dims.begin(), chunk_dims.end(), ostream_iterator<hsize_t>(cerr, " ")));
-                    VERBOSE(cerr << endl);
-
-                    if (dc) dc->set_chunk_dimension_sizes(chunk_dims);
-
-                    for (size_t i = 0; i < num_chunk; i++) {
-                        VERBOSE(cerr << "    Chunk index:  " << i << endl);
-                        VERBOSE(cerr << "    Number of bytes: " << chunk_st_ptr[i].nbytes << endl);
-                        VERBOSE(cerr << "    Physical offset: " << chunk_st_ptr[i].chunk_addr << endl);
-                        VERBOSE(cerr << "    Logical offset: ");
-
-                        vector<unsigned int> chunk_pos_in_array;
-                        for (unsigned int j = 0; j < num_chunk_dims; j++)
-                            chunk_pos_in_array.push_back(chunk_st_ptr[i].chunk_offset[j]);
-
-                        VERBOSE(copy(chunk_pos_in_array.begin(), chunk_pos_in_array.end(), ostream_iterator<unsigned int>(cerr, " ")));
-                        VERBOSE(cerr << endl);
-
-                        // Note that the data_url is an empty string; use the root element href attribute for this value.
-                        // Each chunk has the same data_url in 'architecture #2.' jhrg 5/10/18
-                        if (dc) dc->add_chunk("", chunk_st_ptr[i].nbytes, chunk_st_ptr[i].chunk_addr, chunk_pos_in_array);
-                    }
-                }
-                catch (...) {
-                    H5Pclose(cparms);
-                    throw;
-                }
-
-                H5Pclose(cparms);
-
-                break;
-            }
-
-            case H5D_COMPACT: { /* Compact storage */
-                //else if (layout_type == 3) {
-                VERBOSE(cerr << "Storage: compact" << endl);
-                size_t comp_size = 0;
-                if (H5Dget_dataset_compact_storage_info(dataset, &comp_size) < 0) {
-                    throw BESInternalError("Cannot obtain the compact storage info.", __FILE__, __LINE__);
-                }
-                VERBOSE(cerr << "   Size: " << comp_size << endl);
-
-                break;
-            }
-
-            default: {
-                ostringstream oss("Unsupported HDF5 dataset layout type: ", std::ios::ate);
-                oss << layout_type << ".";
-                BESInternalError(oss.str(), __FILE__, __LINE__);
-            }
-            } // end switch
-#if 0
-    }
-#endif
-
+        default: {
+            ostringstream oss("Unsupported HDF5 dataset layout type: ", std::ios::ate);
+            oss << layout_type << ".";
+            BESInternalError(oss.str(), __FILE__, __LINE__);
+        }
+        } // end switch
     }
     catch (...) {
         H5Dclose(dataset);
@@ -497,17 +493,12 @@ int main(int argc, char*argv[])
         cerr << "HDF5 file name must be given (-f <input>)." << endl;
         return 1;
     }
-#if 0
-    if(h5_file_name[0] != '/')
-    h5_file_name = "/" + h5_file_name;
-#endif
-
 
     hid_t file = 0;
     try {
         // Turn off automatic hdf5 error printing.
         // See: https://support.hdfgroup.org/HDF5/doc1.8/RM/RM_H5E.html#Error-SetAuto2
-        if (!verbose) H5Eset_auto2(H5E_DEFAULT, NULL, NULL);
+        //if (!verbose) H5Eset_auto2(H5E_DEFAULT, NULL, NULL);
 
         // For a given HDF5, get info for all the HDF5 datasets in a DMR or for a
         // given HDF5 dataset
