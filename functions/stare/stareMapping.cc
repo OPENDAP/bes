@@ -42,22 +42,20 @@ struct coords {
 };
 
 /**
- * @brief Compute STARE indices and tie the values to x/y coords using lat/lon referenced by data url.
- * @param dataUrl
- * @param level
- * @param buildlevel
- * @param keyVals return value param containing the STARE info
+ * @brief Returns a an array of coords where each entry holds the x and y values
+ *  that correlate to the lat and lon values generated from the url
+ * @param url
+ * @return coords
  */
-void findLatLon(std::string dataUrl, const float64 level,
-	const float64 buildlevel, vector<int> &xArray, vector<int> &yArray, vector<float> &latArray, vector<float> &lonArray, vector<uint64> &stareArray) {
-	//Create an htmInterface that will be used to get the STARE index
-	htmInterface htm(level, buildlevel);
-	const SpatialIndex &index = htm.index();
-
+vector<coords> readUrl(string dataUrl, string latName, string lonName) {
 	auto_ptr < libdap::Connect > url(new libdap::Connect(dataUrl));
+
+	string latlonName = latName + "," + lonName;
 
 	std::vector<float> lat;
 	std::vector<float> lon;
+
+	vector<coords> indexArray;
 
 	try {
 		libdap::BaseTypeFactory factory;
@@ -66,13 +64,13 @@ void findLatLon(std::string dataUrl, const float64 level,
 		VERBOSE(cerr << "\n\n\tRequesting data from " << dataUrl << endl);
 
 		//Makes sure only the Latitude and Longitude variables are requested
-		url->request_data(dds, "Latitude,Longitude");
+		url->request_data(dds, latlonName);
 
 		//Create separate libdap arrays to store the lat and lon arrays individually
 		libdap::Array *urlLatArray = dynamic_cast<libdap::Array *>(dds.var(
-				"Latitude"));
+				latName));
 		libdap::Array *urlLonArray = dynamic_cast<libdap::Array *>(dds.var(
-				"Longitude"));
+				lonName));
 
 		// ----Error checking---- //
 		if (urlLatArray == 0 || urlLonArray == 0) {
@@ -110,33 +108,11 @@ void findLatLon(std::string dataUrl, const float64 level,
 		VERBOSE(cerr << "\tsize of lon array: " << lon.size() << endl);
 
 		coords indexVals = coords();
-		std::unordered_map<float, struct coords> indexMap;
-
-#if 0
-		//Taken out because CF doesn't support compound types,
-		//	so each variable will need to be stored in its own array
-		// -kln 5/17/19
-
-		//Array to store the key and values of the indexMap that will be used to write the hdf5 file
-		keyVals.resize(size_x * size_y);
-#endif
-
-		xArray.resize(lat.size());
-		yArray.resize(lat.size());
-		latArray.resize(lat.size());
-		lonArray.resize(lat.size());
-		stareArray.resize(lat.size());
 
 		//Declare the beginning of the vectors here rather than inside the loop to save compute time
 		//vector<float>::iterator i_begin = lat.begin();		FIXME: Probably not needed since we just use a single dimension array
 		vector<float>::iterator j_begin = lon.begin();
 
-		int arrayLoc = 0;
-
-		VERBOSE (cerr << "\nCalculating the STARE indices" << endl);
-
-		//Make a separate iterator to point at the lat vector and the lon vector inside the same loop.
-		// Then, loop through the lat and lon arrays at the same time
 		for (vector<float>::iterator i = lat.begin(), e = lat.end(), j =
 				lon.begin(); i != e; ++i, ++j) {
 			//Use an offset since we are using a 1D array and treating it like a 2D array
@@ -145,46 +121,63 @@ void findLatLon(std::string dataUrl, const float64 level,
 			indexVals.y = offset % (size_x - 1);//Get the current index for the lat
 			indexVals.lat = *i;
 			indexVals.lon = *j;
-			indexVals.stareIndex = index.idByLatLon(*i, *j);//Use the lat/lon values to calculate the Stare index
 
-			//Map the STARE index value to the x,y indices
-			indexMap[indexVals.stareIndex] = indexVals;
-
-			//Store the values calculated for indexVals and store them in their arrays to be used in the hdf5 file
-			xArray[arrayLoc] = indexVals.x;
-			yArray[arrayLoc] = indexVals.y;
-			latArray[arrayLoc] = *i;
-			lonArray[arrayLoc] = *j;
-			stareArray[arrayLoc] = indexVals.stareIndex;
-
-#if 0
-			//Taken out because CF doesn't support compound types,
-			//	so each variable will need to be stored in its own array
-			// -kln 5/17/19
-
-			//Store the same previous values inside the coords vector for use in the hdf5 file
-			keyVals[arrayLoc].x = indexVals.x;
-			keyVals[arrayLoc].y = indexVals.y;
-			keyVals[arrayLoc].lat = *i;
-			keyVals[arrayLoc].lon = *j;
-			keyVals[arrayLoc].stareIndex = indexVals.stareIndex;
-#endif
-
-			arrayLoc++;
+			indexArray.push_back(indexVals);
 		}
 
 	} catch (libdap::Error &e) {
 		cerr << "ERROR: " << e.get_error_message() << endl;
 	}
+
+	return indexArray;
 }
 
+/**
+ * @brief Use the coords struct to calculate the stare index based on the lat/lon values
+ * @param latlonVals
+ * @param level
+ * @param buildlevel
+ */
+vector<uint64> calculateStareIndex(const float64 level, const float64 buildlevel, vector<coords> latlonVals) {
+	//Create an htmInterface that will be used to get the STARE index
+	htmInterface htm(level, buildlevel);
+	const SpatialIndex &index = htm.index();
+
+	vector<uint64> stareVals;
+	uint64 stareIndex;
+
+	std::unordered_map<float, struct coords> indexMap;
+
+	for (vector<coords>::iterator i = latlonVals.begin(); i != latlonVals.end(); ++i) {
+		stareIndex = index.idByLatLon(i->lat, i->lon);
+		stareVals.push_back(stareIndex);
+
+		//Map the stare values to its corresponding lat/lon and the iterators x/y
+		indexMap[stareIndex] = *i;
+	}
+
+	return stareVals;
+}
 
 /*************
  * HDF5 Stuff *
  *************/
-void writeHDF5(const string &filename, const vector<int> &xArray, const vector<int> &yArray, const vector<float> &latArray, const vector<float> &lonArray, const vector<uint64> &stareArray) {
+void writeHDF5(const string &filename, vector<coords> coordVals, vector<uint64> stareVals) {
 	hid_t file, datasetX, datasetY, datasetLat, datasetLon, datasetStare;
 	hid_t dataspace; /* handle */
+
+	//Need to store each value in its own array
+	vector<int> xArray;
+	vector<int> yArray;
+	vector<float> latArray;
+	vector<float> lonArray;
+
+	for (vector<coords>::iterator i = coordVals.begin(); i != coordVals.end(); ++i) {
+		xArray.push_back(i->x);
+		yArray.push_back(i->y);
+		latArray.push_back(i->lat);
+		lonArray.push_back(i->lon);
+	}
 
 	//Used to store the the size of the array.
 	// In other cases where the array is more than 1 dimension each dimension's length would be stored in this array.
@@ -268,7 +261,7 @@ void writeHDF5(const string &filename, const vector<int> &xArray, const vector<i
 	H5Dwrite(datasetY, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, &yArray[0]);
 	H5Dwrite(datasetLat, H5T_NATIVE_FLOAT, H5S_ALL, H5S_ALL, H5P_DEFAULT, &latArray[0]);
 	H5Dwrite(datasetLon, H5T_NATIVE_FLOAT, H5S_ALL, H5S_ALL, H5P_DEFAULT, &lonArray[0]);
-	H5Dwrite(datasetStare, H5T_NATIVE_INT64, H5S_ALL, H5S_ALL, H5P_DEFAULT, &stareArray[0]);
+	H5Dwrite(datasetStare, H5T_NATIVE_INT64, H5S_ALL, H5S_ALL, H5P_DEFAULT, &stareVals[0]);
 
 	/*
 	 * Close/release resources.
@@ -293,7 +286,7 @@ int main(int argc, char *argv[]) {
 	while ((c = getopt(argc, argv, "hvo:")) != -1) {
 		switch (c) {
 		case 'h':
-			cerr << "\nbuild_sidecar [options] <filename> level buildlevel\n\n";
+			cerr << "\nbuild_sidecar [options] <filename> latitude-name longitude-name level buildlevel\n\n";
 			cerr << "-o output file: \tOutput the STARE data to the given output file\n\n";
 			cerr << "-v verbose\n" << endl;
 			exit(1);
@@ -308,7 +301,9 @@ int main(int argc, char *argv[]) {
 	}
 
 	//Argument values
-	string dataUrl = argv[argc-3];
+	string dataUrl = argv[argc-5];
+	string latName = argv[argc-4];
+	string lonName = argv[argc-3];
 	float level = atof(argv[argc-2]);
 	float build_level = atof(argv[argc-1]);
 
@@ -318,14 +313,10 @@ int main(int argc, char *argv[]) {
 	}*/
 
 	try {
-		//Need to store each value in its own array
-		vector<int> xVals;
-		vector<int> yVals;
-		vector<float> latVals;
-		vector<float> lonVals;
-		vector<uint64> stareVals;
 
-		findLatLon(dataUrl, level, build_level, xVals, yVals, latVals, lonVals, stareVals);
+		vector<coords> coordResults = readUrl(dataUrl, latName, lonName);
+
+		vector<uint64> stareResults = calculateStareIndex(level, build_level, coordResults);
 #if 0
 		//Taken out because CF doesn't support compound types,
 		//	so each variable will need to be stored in its own array
@@ -345,7 +336,7 @@ int main(int argc, char *argv[]) {
 			newName = granuleName.substr(0, findDot) + "_sidecar.h5";
 		}
 
-		writeHDF5(newName, xVals, yVals, latVals, lonVals, stareVals);
+		writeHDF5(newName, coordResults, stareResults);
 	}
 	catch(libdap::Error &e) {
 		cerr << "Error: " << e.get_error_message() << endl;
