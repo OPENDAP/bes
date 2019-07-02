@@ -251,7 +251,9 @@ public:
     virtual MDSReadLock is_dmrpp_available(const std::string &name);
     virtual MDSReadLock is_dmrpp_available(const BESContainer &container);
 
-    virtual time_t get_cache_lmt(const string &name, const string &suffix);
+    virtual bool is_available_helper(const std::string &realName, const std::string &relativeName, const std::string &fileType, const std::string &suffix);
+
+    virtual time_t get_cache_lmt(const string &fileName, const string &suffix);
 
     virtual void write_dds_response(const std::string &name, std::ostream &os);
     virtual void write_das_response(const std::string &name, std::ostream &os);
