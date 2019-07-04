@@ -51,21 +51,20 @@
 
 #include "ReadTagRef.h"
 
-using namespace libdap;
 
-class HDFArray:public Array, public ReadTagRef {
+class HDFArray:public libdap::Array, public ReadTagRef {
   public:
-    HDFArray(const string & n, const string &d, BaseType * v);
+    HDFArray(const std::string & n, const std::string &d, libdap::BaseType * v);
     virtual ~ HDFArray();
-    virtual BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate();
     virtual bool read();
     virtual bool read_tagref(int32 tag, int32 ref, int &error);
-    bool GetSlabConstraint(vector < int >&start_array,
-                           vector < int >&edge_array,
-                           vector < int >&stride_array);
+    bool GetSlabConstraint(std::vector < int >&start_array,
+                           std::vector < int >&edge_array,
+                           std::vector < int >&stride_array);
 
-    virtual void transfer_attributes(AttrTable *at_container);
-    virtual void transfer_dimension_attribute(AttrTable *dim);
+    virtual void transfer_attributes(libdap::AttrTable *at_container);
+    virtual void transfer_dimension_attribute(libdap::AttrTable *dim);
 };
 
 #endif                          // _HDFARRAY_H

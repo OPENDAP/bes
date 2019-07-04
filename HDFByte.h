@@ -46,13 +46,12 @@
 // DODS includes
 #include <Byte.h>
 
-using namespace libdap;
 
-class HDFByte:public Byte {
+class HDFByte:public libdap::Byte {
   public:
-    HDFByte(const string & n, const string &d);
+    HDFByte(const std::string & n, const std::string &d);
      virtual ~ HDFByte();
-    virtual BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate();
     virtual bool read();
 };
 

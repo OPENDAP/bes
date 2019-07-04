@@ -21,6 +21,7 @@
 #include "HDF4RequestHandler.h"
 
 using namespace std;
+using namespace libdap;
 #define SIGNED_BYTE_TO_INT32 1
 
 // The following macros provide names of latitude and longitude for specific HDF4 products.

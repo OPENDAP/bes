@@ -60,6 +60,9 @@
 #include "HDFArray.h"
 #include "dhdferr.h"
 
+using namespace libdap;
+using namespace std;
+
 HDFArray::HDFArray(const string &n, const string &d, BaseType * v) :
 	Array(n, d, v) {
 }

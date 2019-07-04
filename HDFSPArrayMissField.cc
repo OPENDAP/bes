@@ -23,6 +23,9 @@
 #include <BESDebug.h>
 
 
+using namespace std;
+using namespace libdap;
+
 bool
 HDFSPArrayMissGeoField::read ()
 {

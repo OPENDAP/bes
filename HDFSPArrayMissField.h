@@ -16,13 +16,12 @@
 #define HDFSPARRAY_MISSFIELD_H
 
 #include "Array.h"
-using namespace libdap;
 
-class HDFSPArrayMissGeoField:public Array
+class HDFSPArrayMissGeoField:public libdap::Array
 {
     public:
-        HDFSPArrayMissGeoField (int rank, int tnumelm, const string & n = "", BaseType * v = 0):
-            Array (n, v), rank (rank), tnumelm (tnumelm) {
+        HDFSPArrayMissGeoField (int rank, int tnumelm, const std::string & n = "", libdap::BaseType * v = 0):
+            libdap::Array (n, v), rank (rank), tnumelm (tnumelm) {
         }
         virtual ~ HDFSPArrayMissGeoField ()
         {
@@ -32,7 +31,7 @@ class HDFSPArrayMissGeoField:public Array
         // Return the number of elements to read. 
         int format_constraint (int *cor, int *step, int *edg);
 
-        BaseType *ptr_duplicate ()
+        libdap::BaseType *ptr_duplicate ()
         {
             return new HDFSPArrayMissGeoField (*this);
         }

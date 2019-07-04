@@ -14,13 +14,12 @@
 #include "hdf.h"
 #include "mfhdf.h"
 #include "HDFSPEnumType.h"
-using namespace libdap;
 
-class HDFSPArrayGeoField:public Array
+class HDFSPArrayGeoField:public libdap::Array
 {
     public:
-        HDFSPArrayGeoField (int32 rank, const std::string& filename, const int sdfd, int32 fieldref, int32 dtype, SPType sptype, int fieldtype, const std::string & fieldname, const std::string & n = "", BaseType * v = 0):
-            Array (n, v),
+        HDFSPArrayGeoField (int32 rank, const std::string& filename, const int sdfd, int32 fieldref, int32 dtype, SPType sptype, int fieldtype, const std::string & fieldname, const std::string & n = "", libdap::BaseType * v = 0):
+            libdap::Array (n, v),
             rank (rank),
             filename(filename),
             sdfd(sdfd),
@@ -38,7 +37,7 @@ class HDFSPArrayGeoField:public Array
         // Return the number of elements to read. 
         int format_constraint (int *cor, int *step, int *edg);
 
-        BaseType *ptr_duplicate ()
+        libdap::BaseType *ptr_duplicate ()
         {
             return new HDFSPArrayGeoField (*this);
         }

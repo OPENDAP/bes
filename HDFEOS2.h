@@ -68,7 +68,7 @@ namespace HDFEOS2
     {
         public:
             /// Constructor
-            Exception (const std::string & msg)
+            explicit Exception (const std::string & msg)
                 : message (msg), isHDFEOS2 (true)
             {
             }
@@ -103,7 +103,7 @@ namespace HDFEOS2
                 this->message = exception_message;
             }
 
-        protected:
+        private:
             std::string message;
             bool isHDFEOS2;
     };
@@ -245,7 +245,7 @@ namespace HDFEOS2
             {
             }
 
-        protected:
+        private:
             std::string name;
             int32 dimsize;
 
@@ -439,7 +439,6 @@ namespace HDFEOS2
             }
 #endif
         protected:
-
             // field name
             std::string name;
 
@@ -575,7 +574,7 @@ namespace HDFEOS2
                 return this->value;
             }
 
-        protected:
+        private:
 
             /// Attribute name
             std::string name;
@@ -768,7 +767,7 @@ namespace HDFEOS2
                         ydim = -1;
                     }
 
-                protected:
+                private:
                     int32 xdim;
                     int32 ydim;
                     float64 upleft[2];
@@ -829,7 +828,7 @@ namespace HDFEOS2
                         origin = -1;
 
                     }
-                protected:
+                private:
                     int32 code;
                     int32 zone;
                     int32 sphere;
@@ -877,7 +876,7 @@ namespace HDFEOS2
                     int DetectFieldMajorDimension () throw (Exception);
 
 
-                protected:
+                private:
                     const GridDataset *grid;
                     bool ydimmajor;
 
@@ -931,7 +930,7 @@ namespace HDFEOS2
                     lonfield = NULL;
                 }
 
-            protected:
+            private:
 
                 /// Info consists of the sizes, lower right and upper left coordinates of the grid.
                 Info info;
@@ -1012,7 +1011,7 @@ namespace HDFEOS2
                         {
                         }
 
-                    protected:
+                    private:
 
                         std::string geodim;
                         std::string datadim;
@@ -1043,7 +1042,7 @@ namespace HDFEOS2
                             return this->indices;
                         }
 
-                    protected:
+                    private:
                         std::string geo;
                         std::string data;
                         LightVector < int32 > indices;
@@ -1097,7 +1096,6 @@ namespace HDFEOS2
                 /// Not used.
                 void ReadIndexMaps (std::vector < IndexMap * >&indexmaps) throw (Exception);
 
-            protected:
 
                 /// dimension map list.
                 std::vector < DimensionMap * >dimmaps;
@@ -1203,7 +1201,7 @@ namespace HDFEOS2
                 {
                 }
 
-            protected:
+            private:
 
                 /// The absolute path of the file.
                 std::string path;
@@ -1228,6 +1226,7 @@ namespace HDFEOS2
                 /// If this file should follow COARDS, this is necessary to cover one pair lat/lon grids case.
                 bool iscoard;
 
+            protected:
                 /* 
                   A grid's X-dimension can have different names: XDim, LatDim, etc.
                  * Y-dimension also has YDim, LonDim, etc.

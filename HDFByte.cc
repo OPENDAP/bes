@@ -41,6 +41,8 @@
 
 #include "InternalErr.h"
 #include "HDFByte.h"
+using namespace libdap;
+using namespace std;
 
 HDFByte::HDFByte(const string & n, const string &d) : Byte(n, d)
 {

@@ -118,7 +118,7 @@ namespace HDFSP
             }
 
 
-        protected:
+        private:
             /// Exception message
             std::string message;
     };
@@ -155,6 +155,7 @@ namespace HDFSP
             {
             }
 
+        private:
             // dimension name
             std::string name;
 
@@ -204,7 +205,7 @@ namespace HDFSP
                 return this->value;
             }
 
-        protected:
+        private:
 
             /// Original attribute name
             std::string name;
@@ -261,7 +262,7 @@ namespace HDFSP
                 return this->attrs;
             }
 
-        protected:
+        private:
             //  std:: string newname;
 
             // The name of this attribute container(an attribute container is a DAP DAS table)
@@ -439,7 +440,7 @@ namespace HDFSP
             {
                 return special_product_fullpath;
             }
-        protected:
+        private:
 
             /// Dimensions of this field
             std::vector < Dimension * >dims;
@@ -534,7 +535,7 @@ namespace HDFSP
             /// Read vdata field attributes.
             void ReadAttributes (int32 vdata_id, int32 fieldindex) throw (Exception);
 
-        protected:
+        private:
 
             /// Vdata field order
             int32 order;
