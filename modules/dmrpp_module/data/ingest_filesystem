@@ -32,7 +32,7 @@ target_dir=`pwd`;
 # TODO - can we make this read the conf file to get the regex info?
 dataset_regex_match="^.*\\.(h5|he5|nc4)(\\.bz2|\\.gz|\\.Z)?$";
 
-dmrpp_url_base="https://s3.amazonaws.com/cloudydap";
+# dmrpp_url_base="https://s3.amazonaws.com/cloudydap";
 
 ALL_FILES="./all_files.txt";
 DATA_FILES="./data_files.txt";
@@ -49,7 +49,7 @@ function show_usage() {
  Usage: $0 [options] 
 
  Crawl filesystem and make a DMR++ for every dataset matching the
- default or supplied regex.
+ default (or supplied) regex.
 
  The DMR++ is built using the DMR as returned by the HDF5 handler,
  using options as set in the bes configuration file used by get_dmrpp.
@@ -61,7 +61,7 @@ function show_usage() {
  -u: The base endpoint URL for the DMRPP data objects. The assumption
      is that they will be organized the same way the source dataset 
      files below the "data_root" (see -d)
-     (default: ${dmrpp_url_base})
+     (default: file://${data_root})
  -d: The local filesystem root from which the data are to be ingested. 
      The filesystem will be searched beginning at this point for files 
      whose names match the dataset match regex (see -r).
@@ -74,11 +74,11 @@ function show_usage() {
  -r: The dataset match regex used to screen the base filesystem 
      for datasets. 
      (default: ${dataset_regex_match})
- -f: Use "find" to list all regular files below the data root directory 
-     and store the list in "${ALL_FILES}" The the dataset match regex is applied
-     to each line in ${ALL_FILES} and the matching data files list is placed in
-     "${DATA_FILES}". If this option is omitted the files named in "${DATA_FILES}"
-      (if any) will be processed.
+ -f: Tells the software to "find" to list all regular files below the data root  
+     directory and store the list in "${ALL_FILES}" The the dataset match regex 
+     is applied to each line in ${ALL_FILES} and the matching data files list is 
+     placed in "${DATA_FILES}". If this option is omitted the files named in 
+     "${DATA_FILES}" (if any) will be processed.
      (default: Not Set)
 
 EOF
@@ -97,6 +97,7 @@ verbose=
 very_verbose=
 just_dmr=
 find_local_files=
+dmrpp_url_base=
 
 while getopts "h?vVju:d:t:r:f" opt; do
     case "$opt" in
@@ -146,6 +147,12 @@ if test -n "$very_verbose"
 then
     set -x;
 fi
+
+if [ -z ${dmrpp_url_base} ] 
+then
+    dmrpp_url_base="file://${data_root}";
+fi
+
 
 #################################################################################
 
