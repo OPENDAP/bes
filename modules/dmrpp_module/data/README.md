@@ -15,6 +15,10 @@ a web object store like AWS S3.
 
 There are two scripts for building the dmr++ files. The first builds dmr++ files from data held in the locally mounted filesystem. The second builds dmr++ files from data held in Amazon's S3 storage.
 
+## Building
+
+Despite the fact that these programs are shell scripts a localization step must take place. This happens when the parent software (the `dmrpp_module`) is built and installed as part of the BES. Once this is done the scripts will have been installed and should be in `$prefix/bin` and ready to use.
+
 ## `ingest_filesystem` - building dmr++ files from local files.
 The shell script `ingest_filesystem` is used to crawl through part of the local filesystem, identifying files that match a regular expression (default or supplied), and then attempting to build a dmr++ file for each matching file.
 
