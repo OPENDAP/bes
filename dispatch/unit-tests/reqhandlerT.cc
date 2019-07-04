@@ -37,13 +37,24 @@
 using namespace CppUnit;
 
 #include <iostream>
+#include <sys/stat.h>
+#include <string.h>
+#include <util.h>
+#include <fcntl.h>
 
 using std::cerr;
 using std::cout;
 using std::endl;
 
 #include "TestRequestHandler.h"
+#include "BESRequestHandlerList.h"
+#include "BESRequestHandler.h"
+#include "BESFileContainer.h"
+#include "BESNotFoundError.h"
+#include "BESContextManager.h"
 #include <GetOpt.h>
+
+#include "test_config.h"
 
 static bool debug = false;
 
@@ -69,7 +80,48 @@ public:
     {
     }
 
+    void get_lmt_test(){
+
+    	string relative_file = "/input-files/temp_01.dmr";
+		string real_name = string(TEST_SRC_DIR) + relative_file;
+		BESFileContainer cont("cont", real_name, "test_handler");
+		cont.set_relative_name(relative_file);
+
+    	BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler("test_handler");
+    	CPPUNIT_ASSERT(besRH != 0);
+
+    	try{
+    		int fd = open(real_name.c_str(), O_RDWR | O_CREAT, 00664 /*mode = rw rw r*/);
+    		CPPUNIT_ASSERT(fd != -1);
+
+			struct stat statbuf;
+			if (stat(real_name.c_str(), &statbuf) == -1){
+				throw BESNotFoundError(strerror(errno), __FILE__, __LINE__);
+			}//end if
+
+			time_t ctime = statbuf.st_ctime;
+			DBG(cerr << "ctime: " << ctime << endl);
+			time_t mtime = besRH->get_lmt(real_name);
+			DBG(cerr << "mtime: " << mtime << endl);
+
+			bool test = ((ctime - mtime) <= 2);
+			CPPUNIT_ASSERT(test);
+    	}
+    	catch (BESError &e) {
+    		ostringstream oss;
+    		oss << "Error: " << e.get_message() << " " << e.get_file() << ":" << e.get_line();
+    		CPPUNIT_FAIL(oss.str());
+    	}
+    	catch (...) {
+    		throw;
+    	}
+
+
+    }//get_lmt_test()
+
 CPPUNIT_TEST_SUITE( reqhandlerT );
+
+	CPPUNIT_TEST(get_lmt_test);
 
     CPPUNIT_TEST( do_test );
 
