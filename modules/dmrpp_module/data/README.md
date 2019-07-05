@@ -2,25 +2,35 @@
 
 # README
 ## Overview
-This "data" directory and it's child "dmrpp" exist in this hierarchy
-in order to mimic the deployment structure resulting from running
-"make install". Most modules do not need to do this but since dmr++
-files reference other files, and they do so using paths relative the
-the BES Catalog Root the mimicry is required.
+This directory (_data_) contains module test data, and the scripts, 
+source code, and production rules for tools that can used to create 
+and process hdf5/netcdf-4 data files to create portable dmr++ files 
+whose binary data objects are held in a web object store like AWS S3.
 
-Also in this directory are scripts, source code, and production rules
-for tools that can used to create and process hdf5/netcdf-4 data files
-to create portable dmr++ files whose binary data objects are held in 
-a web object store like AWS S3.
+There are two scripts for building the dmr++ files. The first builds 
+dmr++ files from data held in the locally mounted filesystem. The 
+second builds dmr++ files from data held in Amazon's S3 storage.
 
-There are two scripts for building the dmr++ files. The first builds dmr++ files from data held in the locally mounted filesystem. The second builds dmr++ files from data held in Amazon's S3 storage.
+NOTE: Organizationally, this directory (_data_) and it's child directory 
+_dmrpp_ are arranged in this hierarchy in order to mimic the deployment 
+structure resulting from running "make install". Most modules do not 
+need to do this but since dmr++ files reference other files, and they 
+do so using paths relative the BES Catalog Root the mimicry is required.
 
-## Building
 
-Despite the fact that these programs are shell scripts a localization step must take place. This happens when the parent software (the `dmrpp_module`) is built and installed as part of the BES. Once this is done the scripts will have been installed and should be in `$prefix/bin` and ready to use.
+## Building the software
+
+In order for these programs (shell scripts) to function correctly a 
+localization step must take place. This happens when the parent software 
+(the `dmrpp_module`) is built and installed as part of the BES. Once this 
+is done the scripts will have been installed and should be in `$prefix/bin` 
+and ready to use.
 
 ## `ingest_filesystem` - building dmr++ files from local files.
-The shell script `ingest_filesystem` is used to crawl through part of the local filesystem, identifying files that match a regular expression (default or supplied), and then attempting to build a dmr++ file for each matching file.
+The shell script `ingest_filesystem` is used to crawl through a branch of 
+the local filesystem, identifying files that match a regular expression 
+(default or supplied), and then attempting to build a dmr++ file for each 
+matching file.
 
 ```
  Usage: ingest_filesystem [options] 
