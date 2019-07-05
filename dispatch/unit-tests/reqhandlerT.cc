@@ -41,6 +41,7 @@ using namespace CppUnit;
 #include <string.h>
 #include <util.h>
 #include <fcntl.h>
+#include <unistd.h>
 
 using std::cerr;
 using std::cout;
@@ -63,11 +64,14 @@ static bool debug = false;
 
 class reqhandlerT: public TestFixture {
 private:
+	BESRequestHandler d_handler;
 
 public:
-    reqhandlerT()
+    reqhandlerT() : d_handler("test_handler")
     {
+    	BESRequestHandlerList::TheList()->add_handler("test_handler", &d_handler);
     }
+
     ~reqhandlerT()
     {
     }
@@ -80,12 +84,15 @@ public:
     {
     }
 
-    void get_lmt_test(){
+    void get_lmt_test_1(){
 
-    	string relative_file = "/input-files/temp_01.dmr";
+    	string relative_file = "/catalog_test_baselines/temp_01.dmr";
 		string real_name = string(TEST_SRC_DIR) + relative_file;
 		BESFileContainer cont("cont", real_name, "test_handler");
 		cont.set_relative_name(relative_file);
+
+    	DBG(cerr << "cont.get_real_name: " << cont.get_real_name() << endl);
+    	DBG(cerr << "cont.get_relative_name: " << cont.get_relative_name() << endl);
 
     	BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler("test_handler");
     	CPPUNIT_ASSERT(besRH != 0);
@@ -104,24 +111,76 @@ public:
 			time_t mtime = besRH->get_lmt(real_name);
 			DBG(cerr << "mtime: " << mtime << endl);
 
-			bool test = ((ctime - mtime) <= 2);
+			bool test = ((mtime - ctime) < 2);
 			CPPUNIT_ASSERT(test);
     	}
     	catch (BESError &e) {
+    		unlink(real_name.c_str());
     		ostringstream oss;
     		oss << "Error: " << e.get_message() << " " << e.get_file() << ":" << e.get_line();
     		CPPUNIT_FAIL(oss.str());
     	}
     	catch (...) {
+    		unlink(real_name.c_str());
     		throw;
     	}
 
+    	unlink(real_name.c_str());
+    }//get_lmt_test_1()
 
-    }//get_lmt_test()
+    void get_lmt_test_2(){
+
+    	string relative_file = "/catalog_test_baselines/temp_01.dmr";
+		string real_name = string(TEST_SRC_DIR) + relative_file;
+		BESFileContainer cont("cont", real_name, "test_handler");
+		cont.set_relative_name(relative_file);
+
+    	DBG(cerr << "cont.get_real_name: " << cont.get_real_name() << endl);
+    	DBG(cerr << "cont.get_relative_name: " << cont.get_relative_name() << endl);
+
+    	BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler("test_handler");
+    	CPPUNIT_ASSERT(besRH != 0);
+
+    	try{
+    		int fd = open(real_name.c_str(), O_RDWR | O_CREAT, 00664 /*mode = rw rw r*/);
+    		CPPUNIT_ASSERT(fd != -1);
+
+			struct stat statbuf;
+			if (stat(real_name.c_str(), &statbuf) == -1){
+				throw BESNotFoundError(strerror(errno), __FILE__, __LINE__);
+			}//end if
+
+			time_t ctime = statbuf.st_ctime;
+			DBG(cerr << "ctime: " << ctime << endl);
+
+			sleep(4);
+
+			write(fd, "Test String\n", strlen("Test String\n"));
+
+			time_t mtime = besRH->get_lmt(real_name);
+			DBG(cerr << "mtime: " << mtime << endl);
+
+			bool test = ((mtime - ctime) < 2);
+			CPPUNIT_ASSERT(!test);
+    	}
+    	catch (BESError &e) {
+    		unlink(real_name.c_str());
+    		ostringstream oss;
+    		oss << "Error: " << e.get_message() << " " << e.get_file() << ":" << e.get_line();
+    		CPPUNIT_FAIL(oss.str());
+    	}
+    	catch (...) {
+    		unlink(real_name.c_str());
+    		throw;
+    	}
+
+    	unlink(real_name.c_str());
+    }//get_lmt_test_2()
 
 CPPUNIT_TEST_SUITE( reqhandlerT );
 
-	CPPUNIT_TEST(get_lmt_test);
+	CPPUNIT_TEST(get_lmt_test_1);
+	CPPUNIT_TEST(get_lmt_test_2);
 
     CPPUNIT_TEST( do_test );
 
