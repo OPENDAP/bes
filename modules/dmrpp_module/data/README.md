@@ -70,7 +70,7 @@ NOTE: This example can be run as shown from the _bes/modules/dmrpp_module/data_ 
 get_dmrpp -v -d `pwd` -o foo.dmrpp -u file://`pwd`/dmrpp/chunked_shuffled_fourD.h5 dmrpp/chunked_shuffled_fourD.h5
 ```
 option | explanation
------- | -----------
+:----: | -----------
   -v  | _verbose_
   -d `pwd`  | _The data root directory to be used by the BES. In this example it is set to the current directory._
   -o  foo.dmrpp | _The *dmr++* file will be written to the file *foo.dmrpp*_
