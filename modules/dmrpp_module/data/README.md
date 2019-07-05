@@ -82,6 +82,23 @@ _The **dmr++** file holds this full qualified file URL
 as its binary data location._
   `dmrpp/chunked_shuffled_fourD.h5` | _The hdf5 file from which to build the **dmr++** file._
 
+
+`-v`
+: _verbose mode_
+``-d  `pwd` ``
+: _The data root directory to be used by the BES. In this example it is set to the current directory._
+`-o  foo.dmrpp` 
+: _The **dmr++** file will be written to the file **foo.dmrpp**_
+``-u  file://`pwd`/dmrpp/chunked_shuffled_fourD.h5``
+: _The **dmr++** file holds this full qualified file URL as its binary data location._
+`dmrpp/chunked_shuffled_fourD.h5`
+: _The hdf5 file from which to build the **dmr++** file._
+
+
+
+
+
+
 ### Example 2
 
 Creates a _dmr++_ file (_foo.dmrpp_) whose binary object URL references an object in Amazon's S3. 
