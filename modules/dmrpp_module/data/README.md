@@ -72,15 +72,16 @@ get_dmrpp -v -d `pwd` -o foo.dmrpp -u file://`pwd`/dmrpp/chunked_shuffled_fourD.
 option | explanation
 :----: | -----------
   -v  | _verbose_
-  -d `pwd`  | _The data root directory to be used by the BES. In this example it is set to the current directory._
+  -d \`pwd\`  | _The data root directory to be used by the BES. In this example it is set to the current directory._
   -o  foo.dmrpp | _The *dmr++* file will be written to the file *foo.dmrpp*_
-  -u  file://`pwd`/dmrpp/chunked_shuffled_fourD.h5 | _The *dmr++* file hold this full qualified *file* URL 
+  -u  file://\`pwd\`/dmrpp/chunked_shuffled_fourD.h5 | _The *dmr++* file hold this full qualified *file* URL 
   as its binary data location.
   dmrpp/chunked_shuffled_fourD.h5   | _The hdf5 file from which to build the *dmr++* file._
 
 Creates a _dmr++_ file (_foo.dmrpp_) with a binary object URL which is a file URL with the fully qualifed path to the source data file as it's value. 
 ### Example 2
 ### Example 3
+
 
 ## `ingest_filesystem` - building _dmr++_ files from local files.
 The shell script `ingest_filesystem` is used to crawl through a branch of 
