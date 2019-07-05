@@ -72,33 +72,21 @@ NOTE: This example can be run as shown from the _bes/modules/dmrpp___module/data
 ```
 get_dmrpp -v -d `pwd` -o foo.dmrpp -u file://`pwd`/dmrpp/chunked_shuffled_fourD.h5 dmrpp/chunked_shuffled_fourD.h5
 ```
-option | explanation
-:----: | -----------
-  `-v`  | _verbose mode_
-  ``-d  `pwd` ``  | _The data root directory to be used by the BES. In this example it is set to the current directory._
-  `-o  foo.dmrpp` | _The **dmr++** file will be written to the file **foo.dmrpp**_
-  ``-u  file://`pwd`/dmrpp/chunked_shuffled_fourD.h5`` |
-_The **dmr++** file holds this full qualified file URL 
-as its binary data location._
-  `dmrpp/chunked_shuffled_fourD.h5` | _The hdf5 file from which to build the **dmr++** file._
-
 <dl>
-    <dt>-v</dt>
-    <dd>_verbose mode_</dd>
-    <dt>-d  `pwd`</dt>
-    <dd>_The data root directory to be used by the BES. In this example it is set to the current directory._</dd>
-    <dt>`-o  foo.dmrpp`</dt>
-    <dd>_The **dmr++** file will be written to the file **foo.dmrpp**_</dd>
-    <dt>``-u  file://`pwd`/dmrpp/chunked_shuffled_fourD.h5``</dt>
-    <dd>_The **dmr++** file holds this full qualified file URL as its binary data location._</dd>
-    <dt>`dmrpp/chunked_shuffled_fourD.h5`</dt>
-    <dd>_The hdf5 file from which to build the **dmr++** file._</dd>
+    <dt><tt>option</tt></dt>
+    <dd><em>explanation</em></dd>
+    <dt><tt>-v</tt></dt>
+    <dd><em>verbose mode</em></dd>
+    <dt><tt>-d  `pwd`</tt></dt>
+    <dd><em>The data root directory to be used by the BES. 
+            In this example it is set to the current directory.</em></dd>
+    <dt><tt>-o  foo.dmrpp</tt></dt>
+    <dd><em>The dmr++ content will be written to the file foo.dmrpp<</em></dd>
+    <dt><tt>-u  file://`pwd`/dmrpp/chunked_shuffled_fourD.h5</tt></dt>
+    <dd><em>The dmr++ file will use this full qualified file URL as its binary data location.</em></dd>
+    <dt><tt>dmrpp/chunked_shuffled_fourD.h5</tt></dt>
+    <dd><em>The hdf5 file from which to build the dmr++ file.</em></dd>
 </dl>
-
-
-
-
-
 
 ### Example 2
 
@@ -107,15 +95,23 @@ Creates a _dmr++_ file (_foo.dmrpp_) whose binary object URL references an objec
 ```
 get_dmrpp -v -d `pwd` -o foo.dmrpp -u https://s3.amazonaws.com/opendap.scratch/data/dmrpp/chunked_fourD.h5  dmrpp/chunked_shuffled_fourD.h5
 ```
-option | explanation
-:----: | -----------
-  `-v`  | _verbose mode_
-  ``-d  `pwd` ``  | _The data root directory to be used by the BES. In this example it is set to the current directory._
-  `-o  foo.dmrpp` | _The **dmr++** file will be written to the file **foo.dmrpp**_
-  `-u  https://s3.amazonaws.com/opendap.scratch/data/dmrpp/chunked_fourD.h5` | _The **dmr++** file holds this AWS S3 object URL as its binary data location.
-  `dmrpp/chunked_shuffled_fourD.h5`   | _The hdf5 file from which to build the **dmr++** file._
+<dl>
+    <dt><tt>option</tt></dt>
+    <dd><em>explanation</em></dd>
+    <dt><tt>-v</tt></dt>
+    <dd><em>verbose mode</em></dd>
+    <dt><tt>-d  `pwd`</tt></dt>
+    <dd><em>The data root directory to be used by the BES. 
+            In this example it is set to the current directory.</em></dd>
+    <dt><tt>-o  foo.dmrpp</tt></dt>
+    <dd><em>The dmr++ content will be written to the file foo.dmrpp<</em></dd>
+    <dt><tt>-u  https://s3.amazonaws.com/opendap.scratch/data/dmrpp/chunked_fourD.h5</tt></dt>
+    <dd><em>The dmr++ file will use this AWS S3 object URL as its binary data location..</em></dd>
+    <dt><tt>dmrpp/chunked_shuffled_fourD.h5</tt></dt>
+    <dd><em>The hdf5 file from which to build the dmr++ file.</em></dd>
+</dl>
 
-**-h**  helpity helpness
+
 
 ## `ingest_filesystem` - building _dmr++_ files from local files.
 The shell script `ingest_filesystem` is used to crawl through a branch of 
