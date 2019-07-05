@@ -42,6 +42,9 @@
 #include "InternalErr.h"
 #include "HDFUrl.h"
 
+using namespace libdap;
+using namespace std;
+
 HDFUrl::HDFUrl(const string &n, const string &d) : Url(n, d)
 {
 }

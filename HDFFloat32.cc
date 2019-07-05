@@ -30,6 +30,9 @@
 #include "InternalErr.h"
 #include "HDFFloat32.h"
 
+using namespace libdap;
+using namespace std;
+
 HDFFloat32::HDFFloat32(const string & n, const string &d) : Float32(n, d)
 {
 }

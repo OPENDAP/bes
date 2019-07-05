@@ -107,7 +107,10 @@ void hdfistream_annot::_get_anninfo(void)
 // retrieve information about the file annotations for current file
 void hdfistream_annot::_get_file_anninfo(void)
 {
-    int32 nlab, ndesc, junk, junk2;
+    int32 nlab;
+    int32 ndesc;
+    int32 junk;
+    int32 junk2;
     if (ANfileinfo(_an_id, &nlab, &ndesc, &junk, &junk2) == FAIL)
         THROW(hcerr_anninfo);
 

@@ -2503,7 +2503,7 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
                     AttrTable::Attr_iter it = at->attr_begin();
                     while (it!=at->attr_end()) {
                         if(at->get_name(it)=="units"){
-                            string units_value = (*at->get_attr_vector(it)->begin());
+                            string units_value = *at->get_attr_vector(it)->begin();
                             if("dBZ" == units_value) { 
                                 has_dBZ = true;
                             }

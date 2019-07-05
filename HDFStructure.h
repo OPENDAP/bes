@@ -48,18 +48,17 @@
 
 #include "ReadTagRef.h"
 
-using namespace libdap;
 
-class HDFStructure: public Structure, public ReadTagRef {
+class HDFStructure: public libdap::Structure, public ReadTagRef {
  public:
-    HDFStructure(const string &n, const string &d);
+    HDFStructure(const std::string &n, const std::string &d);
     virtual ~ HDFStructure();
-    virtual BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate();
     virtual bool read();
     virtual bool read_tagref(int32 tag, int32 ref, int &error);
     virtual void set_read_p(bool state);
 
-    virtual void transfer_attributes(AttrTable *at_container);
+    virtual void transfer_attributes(libdap::AttrTable *at_container);
 };
 
 #endif                          // _HDFSTRUCTURE_H

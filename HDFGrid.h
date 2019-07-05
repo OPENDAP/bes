@@ -52,18 +52,17 @@
 
 #include "ReadTagRef.h"
 
-using namespace libdap;
 
-class HDFGrid:public Grid, public ReadTagRef {
+class HDFGrid:public libdap::Grid, public ReadTagRef {
   public:
-    HDFGrid(const string &n, const string &d);
+    HDFGrid(const std::string &n, const std::string &d);
     virtual ~ HDFGrid();
-    virtual BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate();
     virtual bool read();
-    virtual vector < array_ce > get_map_constraints();
+    virtual std::vector < array_ce > get_map_constraints();
     virtual bool read_tagref(int32 tag, int32 ref, int &error);
 
-    virtual void transfer_attributes(AttrTable *at_container);
+    virtual void transfer_attributes(libdap::AttrTable *at_container);
 };
 
 #endif                          // _HDFGRID_H

@@ -46,13 +46,12 @@
 // DODS includes
 #include <UInt32.h>
 
-using namespace libdap;
 
-class HDFUInt32:public UInt32 {
+class HDFUInt32:public libdap::UInt32 {
   public:
-    HDFUInt32(const string &n, const string &d);
+    HDFUInt32(const std::string &n, const std::string &d);
     virtual ~ HDFUInt32();
-    virtual BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate();
     virtual bool read();
 };
 

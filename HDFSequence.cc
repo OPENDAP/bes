@@ -55,6 +55,9 @@
 
 #include "Error.h"
 
+using namespace libdap;
+using namespace std;
+
 HDFSequence::HDFSequence(const string &n, const string &d)
     : Sequence(n, d), row(0)
 {

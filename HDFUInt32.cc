@@ -44,6 +44,9 @@
 #include "InternalErr.h"
 #include "HDFUInt32.h"
 
+using namespace libdap;
+using namespace std;
+
 HDFUInt32::HDFUInt32(const string &n, const string &d) : UInt32(n, d)
 {
 }

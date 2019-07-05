@@ -104,7 +104,7 @@ void LoadStructureFromField(HDFStructure * stru, hdf_field & f, int row);
 // STL predicate comparing equality of hdf_field objects based on their names
 class fieldeq {
 public:
-    fieldeq(const string & s) {
+    explicit fieldeq(const string & s) {
         _val = s;
     }
 

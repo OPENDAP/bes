@@ -15,12 +15,11 @@
 #include "mfhdf.h"
 
 #include "Array.h"
-using namespace libdap;
 
-class HDFSPArray_VDField:public Array
+class HDFSPArray_VDField:public libdap::Array
 {
     public:
-        HDFSPArray_VDField (int vdrank, const std::string& filename, const int fileid, int32 objref, int32 dtype, int32 fieldorder, const std::string & fieldname, const std::string & n = "", BaseType * v = 0):
+        HDFSPArray_VDField (int vdrank, const std::string& filename, const int fileid, int32 objref, int32 dtype, int32 fieldorder, const std::string & fieldname, const std::string & n = "", libdap::BaseType * v = 0):
             Array (n, v),
             rank (vdrank),
             filename(filename),
@@ -38,7 +37,7 @@ class HDFSPArray_VDField:public Array
         // Return the number of elements to read.  
         int format_constraint (int *cor, int *step, int *edg);
 
-        BaseType *ptr_duplicate ()
+        libdap::BaseType *ptr_duplicate ()
         {
             return new HDFSPArray_VDField (*this);
         }

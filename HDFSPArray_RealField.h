@@ -16,12 +16,11 @@
 #include "HDFSPEnumType.h"
 #include "BESH4MCache.h"
 
-using namespace libdap;
 
-class HDFSPArray_RealField:public Array
+class HDFSPArray_RealField:public libdap::Array
 {
     public:
-        HDFSPArray_RealField (int32 rank, const std::string& filename, const int sdfd, int32 fieldref, int32 dtype, SPType & sptype, const std::string & fieldname, const std::vector<int32> & h4_dimsizes, const std::string & n = "", BaseType * v = 0):
+        HDFSPArray_RealField (int32 rank, const std::string& filename, const int sdfd, int32 fieldref, int32 dtype, SPType & sptype, const std::string & fieldname, const std::vector<int32> & h4_dimsizes, const std::string & n = "", libdap::BaseType * v = 0):
             Array (n, v),
             rank (rank),
             filename(filename),
@@ -37,7 +36,7 @@ class HDFSPArray_RealField:public Array
         }
         int format_constraint (int *cor, int *step, int *edg);
 
-        BaseType *ptr_duplicate ()
+        libdap::BaseType *ptr_duplicate ()
         {
             return new HDFSPArray_RealField (*this);
         }
@@ -54,9 +53,9 @@ class HDFSPArray_RealField:public Array
         std::string fieldname;
         std::vector<int32>dimsizes;
         //void write_data_to_cache(int32,const std::string&,short);
-        void write_data_to_cache(int32,const std::string&,short,const vector<char>&, int);
+        void write_data_to_cache(int32,const std::string&,short,const std::vector<char>&, int);
         bool obtain_cached_data(BESH4Cache*,const std::string&, int,std::vector<int>&, std::vector<int>&,size_t,short);
-        template<typename T> int subset(const T input[],int,vector<int32>&,vector<int>&,vector<int>&,vector<int>&,vector<T>*,vector<int32>&,int);
+        template<typename T> int subset(const T input[],int,std::vector<int32>&,std::vector<int>&,std::vector<int>&,std::vector<int>&,std::vector<T>*,std::vector<int32>&,int);
 #if 0
 int subset(
     const T input[],

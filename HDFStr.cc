@@ -42,6 +42,9 @@
 #include "InternalErr.h"
 #include "HDFStr.h"
 
+using namespace libdap;
+using namespace std;
+
 HDFStr::HDFStr(const string &n, const string &d) : Str(n, d)
 {
 }

@@ -32,6 +32,9 @@
 
 #include "HDFUInt16.h"
 
+using namespace libdap;
+using namespace std;
+
 HDFUInt16::HDFUInt16(const string &n, const string &d) : UInt16(n, d)
 {
 }

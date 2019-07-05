@@ -59,7 +59,7 @@ private:
     string d_filename ;
     HDFTypeFactory() {}
 public:
-    HDFTypeFactory( const string &filename ) : d_filename( filename ) {} 
+    explicit HDFTypeFactory( const string &filename ) : d_filename( filename ) {} 
     virtual ~HDFTypeFactory() {}
 
     virtual Byte *NewByte(const string & n = "") const;

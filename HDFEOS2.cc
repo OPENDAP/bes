@@ -1485,7 +1485,6 @@ void File::handle_grid_coards() throw(Exception) {
                 }
             }
             else {
-                ;
             }
         }
     }

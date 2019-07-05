@@ -46,13 +46,12 @@
 // DODS includes
 #include <Url.h>
 
-using namespace libdap;
 
-class HDFUrl:public Url {
+class HDFUrl:public libdap::Url {
   public:
-    HDFUrl(const string &n, const string &d);
+    HDFUrl(const std::string &n, const std::string &d);
     virtual ~ HDFUrl();
-    virtual BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate();
     virtual bool read();
 };
 

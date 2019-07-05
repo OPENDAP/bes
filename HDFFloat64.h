@@ -46,13 +46,12 @@
 // DODS includes
 #include <Float64.h>
 
-using namespace libdap;
 
-class HDFFloat64:public Float64 {
+class HDFFloat64:public libdap::Float64 {
   public:
-    HDFFloat64(const string &n, const string &d);
+    HDFFloat64(const std::string &n, const std::string &d);
     virtual ~ HDFFloat64();
-    virtual BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate();
     virtual bool read();
 };
 

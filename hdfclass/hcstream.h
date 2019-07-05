@@ -50,7 +50,7 @@
 
 class hdfistream_obj {          // base class for streams reading HDF objects
   public:
-    hdfistream_obj(const string filename = "") {
+    explicit hdfistream_obj(const string filename = "") {
         _init(filename);
     }
     hdfistream_obj(const hdfistream_obj &) {
@@ -84,7 +84,7 @@ class hdfistream_obj {          // base class for streams reading HDF objects
 class hdfistream_sds:public hdfistream_obj {
   
   public:
-    hdfistream_sds(const string filename = "");
+    explicit hdfistream_sds(const string filename = "");
     hdfistream_sds(const hdfistream_sds &):hdfistream_obj(*this) {
         THROW(hcerr_copystream);
     }
@@ -316,7 +316,7 @@ class hdfistream_vdata:public hdfistream_obj {
 
 class hdfistream_vgroup:public hdfistream_obj {
   public:
-    hdfistream_vgroup(const string filename = "");
+    explicit hdfistream_vgroup(const string filename = "");
     hdfistream_vgroup(const hdfistream_vgroup &):hdfistream_obj(*this) {
         THROW(hcerr_copystream);
     }

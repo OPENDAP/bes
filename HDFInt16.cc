@@ -31,6 +31,9 @@
 #include "InternalErr.h"
 #include "HDFInt16.h"
 
+using namespace libdap;
+using namespace std;
+
 HDFInt16::HDFInt16(const string &n, const string &d) : Int16(n, d)
 {
 }

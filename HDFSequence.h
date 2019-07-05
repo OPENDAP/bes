@@ -49,17 +49,16 @@
 #include <hdfclass.h>
 #include "ReadTagRef.h"
 
-using namespace libdap;
 
-class HDFSequence:public Sequence, public ReadTagRef {
+class HDFSequence:public libdap::Sequence, public ReadTagRef {
   public:
-    HDFSequence(const string &n, const string &d);
+    HDFSequence(const std::string &n, const std::string &d);
     virtual ~ HDFSequence();
-    virtual BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate();
     virtual bool read();
     virtual bool read_tagref(int32 tag, int32 ref, int &error);
 
-    virtual void transfer_attributes(AttrTable *at_container);
+    virtual void transfer_attributes(libdap::AttrTable *at_container);
 
   protected:
     int row;                    // current row

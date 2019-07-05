@@ -47,13 +47,12 @@
 #include <dods-limits.h>
 #include <Str.h>
 
-using namespace libdap;
 
-class HDFStr:public Str {
+class HDFStr:public libdap::Str {
   public:
-    HDFStr(const string &n, const string &d);
+    HDFStr(const std::string &n, const std::string &d);
     virtual ~ HDFStr();
-    virtual BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate();
     virtual bool read();
 };
 

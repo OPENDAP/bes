@@ -60,6 +60,9 @@
 #include "HDFArray.h"
 #include "hdfutil.h"
 
+using namespace libdap;
+using namespace std;
+
 HDFGrid::HDFGrid(const string &n, const string &d) :
 	Grid(n, d) {
 }

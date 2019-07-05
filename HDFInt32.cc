@@ -42,6 +42,9 @@
 #include "InternalErr.h"
 #include "HDFInt32.h"
 
+using namespace libdap;
+using namespace std;
+
 HDFInt32::HDFInt32(const string &n, const string &d) : Int32(n, d)
 {
 }

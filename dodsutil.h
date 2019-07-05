@@ -49,12 +49,12 @@
 
 class Stat {
   public:
-    Stat(const char *filename) {
+    explicit Stat(const char *filename) {
 	_badstat = (stat(filename, &_sbuf) != 0);
 	// Stat(string(filename)); Stat is destroyed immediately. jhrg
     }
 
-    Stat(const string & filename):_filename(filename) {
+    explicit Stat(const string & filename):_filename(filename) {
         _badstat = (stat(filename.c_str(), &_sbuf) != 0);
     }
 
@@ -123,7 +123,8 @@ class Stat {
     // convenience operator: return badstat 
     bool operator!() const {
         return bad();
-  } protected:
+  } 
+  private:
     string _filename;          // name of file
     struct stat _sbuf;          // buffer to hold stat() results
     bool _badstat;              // indicates whether stat() was successful

@@ -42,6 +42,9 @@
 #include "InternalErr.h"
 #include "HDFFloat64.h"
 
+using namespace libdap;
+using namespace std;
+
 HDFFloat64::HDFFloat64(const string &n, const string &d):Float64(n, d)
 {
 }

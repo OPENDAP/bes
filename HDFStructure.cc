@@ -59,6 +59,9 @@
 
 #include "HDFStructure.h"
 
+using namespace libdap;
+using namespace std;
+
 HDFStructure::HDFStructure(const string &n, const string &d) :
 	Structure(n, d) {
 }

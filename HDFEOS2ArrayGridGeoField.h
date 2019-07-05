@@ -143,20 +143,22 @@ class HDFEOS2ArrayGridGeoField:public libdap::Array
         // test for undefined values returned by longitude-latitude calculation
         bool isundef_lat(double value)
         {
-	  if (std::isinf(value)) return(true);
-	  if (std::isnan(value)) return(true);
+            if (std::isinf(value)) return(true);
+            if (std::isnan(value)) return(true);
             // GCTP_AMAZ returns "1e+51" for values at the opposite poles
-            if(value < -90.0 || value > 90.0) return(true);
-                return(false);
+            if(value < -90.0 || value > 90.0) 
+                return(true);
+            // This is ok. 
+            return(false);
         } // end bool isundef_lat(double value)
 
         bool isundef_lon(double value)
         {
-	  if (std::isinf(value)) return(true);
-	  if (std::isnan(value)) return(true);
+            if (std::isinf(value)) return(true);
+            if (std::isnan(value)) return(true);
             // GCTP_LAMAZ returns "1e+51" for values at the opposite poles
             if(value < -180.0 || value > 180.0) return(true);
-                return(false);
+            return(false);
         } // end bool isundef_lat(double value)
 
         // Given rol, col address in double array of dimension YDim x XDim
