@@ -30,10 +30,10 @@ localization step must take place. This happens when the parent software
 is done the scripts will have been installed and should be in `$prefix/bin` 
 and ready to use.
 
-## `get_dmrpp` build a _dmr++_ file from an _hdf5_/_nectdf-4_ file.
+## `get_dmrpp` - build a _dmr++_ file from an _hdf5_/_nectdf-4_ file.
 
 The `get_dmrpp` shell script generates a single _dmr++_ file from a single 
-netcdf-4/hdf5 file. It is used by both `ingest_filesystem` and `ingest_s3bucket`
+netcdf-4/hdf5 file. It is used by both `ingest_filesystem` and `ingest_s3bucket`.
 
 
 ```
@@ -64,7 +64,21 @@ netcdf-4/hdf5 file. It is used by both `ingest_filesystem` and `ingest_s3bucket`
 ```
 
 ### Example 1
+NOTE: This example can be run as shown from the _bes/modules/dmrpp_module/data_ directory.
 
+```
+get_dmrpp -v -d `pwd` -o foo.dmrpp -u file://`pwd`/dmrpp/chunked_shuffled_fourD.h5 dmrpp/chunked_shuffled_fourD.h5
+```
+option | explanation
+------ | -----------
+  -v  | _verbose_
+  -d `pwd`  | _The data root directory to be used by the BES. In this example it is set to the current directory._
+  -o  foo.dmrpp | _The *dmr++* file will be written to the file *foo.dmrpp*_
+  -u  file://`pwd`/dmrpp/chunked_shuffled_fourD.h5 | _The *dmr++* file hold this full qualified *file* URL 
+  as its binary data location.
+  dmrpp/chunked_shuffled_fourD.h5   | _The hdf5 file from which to build the *dmr++* file._
+
+Creates a _dmr++_ file (_foo.dmrpp_) with a binary object URL which is a file URL with the fully qualifed path to the source data file as it's value. 
 ### Example 2
 ### Example 3
 
