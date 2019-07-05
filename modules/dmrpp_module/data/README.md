@@ -4,17 +4,21 @@
 ## Overview
 This directory (_data_) contains module test data, and the scripts, 
 source code, and production rules for tools that can used to create 
-and process hdf5/netcdf-4 data files to create portable dmr++ files 
+and process hdf5/netcdf-4 data files to create portable _dmr++_ files 
 whose binary data objects are held in a web object store like AWS S3.
 
-There are two scripts for building the dmr++ files. The first builds 
-dmr++ files from data held in the locally mounted filesystem. The 
-second builds dmr++ files from data held in Amazon's S3 storage.
+There are three programs for building _dmr++_ files:
+- The program `get_dmrpp` builds a single _dmr++_ file from a single 
+`netcdf-4`/`hdf5` file. 
+- The program `ingest_filesystem` builds a collection of _dmr++_ files
+from from data held in the locally mounted filesystem. 
+- The program `ingest3bucket` builds a collection of _dmr++_ files
+from from data held in Amazon's S3 storage.
 
 NOTE: Organizationally, this directory (_data_) and it's child directory 
 _dmrpp_ are arranged in this hierarchy in order to mimic the deployment 
 structure resulting from running "make install". Most modules do not 
-need to do this but since dmr++ files reference other files, and they 
+need to do this but since _dmr++_ files reference other files, and they 
 do so using paths relative the BES Catalog Root the mimicry is required.
 
 
@@ -26,10 +30,48 @@ localization step must take place. This happens when the parent software
 is done the scripts will have been installed and should be in `$prefix/bin` 
 and ready to use.
 
-## `ingest_filesystem` - building dmr++ files from local files.
+## `get_dmrpp` build a _dmr++_ file from an _hdf5_/_nectdf-4_ file.
+
+The `get_dmrpp` shell script generates a single _dmr++_ file from a single 
+netcdf-4/hdf5 file. It is used by both `ingest_filesystem` and `ingest_s3bucket`
+
+
+```
+ Usage: get_dmrpp [options] <hdf5_file>
+
+ Write the DMR++ for hdf5_file to stdout
+ 
+ By default the BES Data Root directory is set to the CWD. This 
+ utility will add an entry to the bes.log specified in the 
+ configuration file. The DMR++ is built using the DMR as returned 
+ by the HDF5 handler, using options as set in the bes 
+ configuration file found here.
+ 
+ -h: Show help
+ -v: Verbose: Print the DMR too
+ -V: Very Verbose: print the DMR, the command and the configuration
+     file used to build the DMR
+ -r: Just print the DMR that will be used to build the DMR++
+ -u: The binary object URL for use in the DMR++ file
+ -d: Data root directory for the BES.
+ -o: The name of the file  to create.
+
+ Limitations: 
+ * The pathanme to the hdf5 file must be relative from the
+   directory where this command was run; absolute paths will not work. 
+ * The build_dmrpp command must be in the CWD. 
+ * The bes conf template has to build by hand. jhrg 5/11/18
+```
+
+### Example 1
+
+### Example 2
+### Example 3
+
+## `ingest_filesystem` - building _dmr++_ files from local files.
 The shell script `ingest_filesystem` is used to crawl through a branch of 
 the local filesystem, identifying files that match a regular expression 
-(default or supplied), and then attempting to build a dmr++ file for each 
+(default or supplied), and then attempting to build a _dmr++_ file for each 
 matching file.
 
 ```
@@ -69,8 +111,8 @@ matching file.
      (default: Not Set)
 ```
 
-## `ingest_s3bucket` - building dmr++ files from files held in S3.
-The shell script `ingest_s3bucket` utilizes the AWS CLI to list the contents of an S3 bucket. The name of each object in the bucket checked against a (defaukt or supplied) regex. Each matching file is retrieved from S3 and then a dmr++ is built from the retrived data object. Once the dmr++ file is built the downloaded object is deleted.
+## `ingest_s3bucket` - building _dmr++_ files from files held in S3.
+The shell script `ingest_s3bucket` utilizes the AWS CLI to list the contents of an S3 bucket. The name of each object in the bucket checked against a (defaukt or supplied) regex. Each matching file is retrieved from S3 and then a _dmr++_ is built from the retrived data object. Once the _dmr++_ file is built the downloaded object is deleted.
 
 
 ``` 
@@ -120,38 +162,6 @@ This script requires that:
 ```
 
 
-## `get_dmrpp`
-
-The `get_dmrpp` shell script generates a single dmr++ file from a single 
-netcdf-4/hdf5 file. It is used by both `ingest_filesystem` and `ingest_s3bucket`
-
-
-```
- Usage: get_dmrpp [options] <hdf5_file>
-
- Write the DMR++ for hdf5_file to stdout
- 
- By default the BES Data Root directory is set to the CWD. This 
- utility will add an entry to the bes.log specified in the 
- configuration file. The DMR++ is built using the DMR as returned 
- by the HDF5 handler, using options as set in the bes 
- configuration file found here.
- 
- -h: Show help
- -v: Verbose: Print the DMR too
- -V: Very Verbose: print the DMR, the command and the configuration
-     file used to build the DMR
- -r: Just print the DMR that will be used to build the DMR++
- -u: The binary object URL for use in the DMR++ file
- -d: Data root directory for the BES.
- -o: The name of the file  to create.
-
- Limitations: 
- * The pathanme to the hdf5 file must be relative from the
-   directory where this command was run; absolute paths will not work. 
- * The build_dmrpp command must be in the CWD. 
- * The bes conf template has to build by hand. jhrg 5/11/18
-```
 
 ## ChangeLog
 
