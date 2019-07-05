@@ -75,9 +75,9 @@ get_dmrpp -v -d `pwd` -o foo.dmrpp -u file://`pwd`/dmrpp/chunked_shuffled_fourD.
 option | explanation
 :----: | -----------
   `-v`  | _verbose mode_
-  `-d \`pwd\``  | _The data root directory to be used by the BES. In this example it is set to the current directory._
+  ``-d  `pwd` ``  | _The data root directory to be used by the BES. In this example it is set to the current directory._
   `-o  foo.dmrpp` | _The **dmr++** file will be written to the file **foo.dmrpp**_
-  `-u  file://\`pwd\`/dmrpp/chunked_shuffled_fourD.h5` |
+  ``-u  file://`pwd`/dmrpp/chunked_shuffled_fourD.h5`` |
 _The **dmr++** file holds this full qualified file URL 
 as its binary data location._
   `dmrpp/chunked_shuffled_fourD.h5` | _The hdf5 file from which to build the **dmr++** file._
@@ -91,11 +91,11 @@ get_dmrpp -v -d `pwd` -o foo.dmrpp -u https://s3.amazonaws.com/opendap.scratch/d
 ```
 option | explanation
 :----: | -----------
-  **-v**  | _verbose mode_
-  **-d \`pwd\`**  | _The data root directory to be used by the BES. In this example it is set to the current directory._
-  **-o  foo.dmrpp** | _The **dmr++** file will be written to the file **foo.dmrpp**_
-  **-u  https://s3.amazonaws.com/opendap.scratch/data/dmrpp/chunked_fourD.h5** | _The **dmr++** file holds this AWS S3 object URL as its binary data location.
-  **dmrpp/chunked_shuffled_fourD.h5**   | _The hdf5 file from which to build the **dmr++** file._
+  `-v`  | _verbose mode_
+  ``-d  `pwd` ``  | _The data root directory to be used by the BES. In this example it is set to the current directory._
+  `-o  foo.dmrpp` | _The **dmr++** file will be written to the file **foo.dmrpp**_
+  `-u  https://s3.amazonaws.com/opendap.scratch/data/dmrpp/chunked_fourD.h5` | _The **dmr++** file holds this AWS S3 object URL as its binary data location.
+  `dmrpp/chunked_shuffled_fourD.h5`   | _The hdf5 file from which to build the **dmr++** file._
 
 **-h**  helpity helpness
 
