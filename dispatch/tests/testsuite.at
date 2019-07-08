@@ -1,8 +1,8 @@
 
-AT_INIT([bes/dispatch/tests (FileLockingCacheTest)])
-# AT_COPYRIGHT([])
+AT_INIT([bes/dispatch/tests (testsuite)])
+AT_COPYRIGHT([2019 OPeNDAP])
 
-AT_TESTED([./FileLockingCacheTest])
+AT_TESTED([./testsuite])
 
 # Usage: AT_TEST_BLOCKING [v]
 # including "v" provides verbose output.
