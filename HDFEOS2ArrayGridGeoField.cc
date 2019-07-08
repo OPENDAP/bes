@@ -1581,7 +1581,9 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int g_fieldtype,
     lat.resize(xdim*ydim);
 
 
-    int i = 0, j = 0, k = 0; 
+    int i = 0;
+    int j = 0;
+    int k = 0; 
 
     if (ydimmajor) {
         /* Fill two arguments, rows and columns */
@@ -1739,7 +1741,8 @@ HDFEOS2ArrayGridGeoField::LatLon2DSubset (T * outlatlon, int majordim,
 #if 0
     T (*templatlonptr)[majordim][minordim] = reinterpret_cast<T *[majordim][minordim]>(latlon);
 #endif
-    int i, j, k;
+    int i = 0;
+    int j = 0;
 
     // do subsetting
     // Find the correct index
@@ -1755,7 +1758,7 @@ HDFEOS2ArrayGridGeoField::LatLon2DSubset (T * outlatlon, int majordim,
         dim1index[j] = offset[1] + j * step[1];
 
     // Now assign the subsetting data
-    k = 0;
+    int k = 0;
 
     for (i = 0; i < count[0]; i++) {
         for (j = 0; j < count[1]; j++) {
@@ -2235,9 +2238,12 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, int *start, int *coun
         else {
             vector<double>latlon;
             latlon.resize(nelms); //double[180*xdim*ydim];
-            int s1=start[0]+1, e1=s1+count[0]*step[0];
-            int s2=start[1],   e2=s2+count[1]*step[1];
-            int s3=start[2],   e3=s3+count[2]*step[2];
+            int s1=start[0]+1; 
+            int e1=s1+count[0]*step[0];
+            int s2=start[1];
+            int e2=s2+count[1]*step[1];
+            int s3=start[2];
+            int e3=s3+count[2]*step[2];
             for(i=s1; i<e1; i+=step[0]) //i = 1; i<180+1; i++)
                 for(j=s2; j<e2; j+=step[1])//j=0; j<xdim; j++)
                     for(k=s3; k<e3; k+=step[2])//k=0; k<ydim; k++)
@@ -2350,11 +2356,13 @@ HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int gf_fieldtype, f
 
     if(write_latlon_cache == true) {
 
-        vector<float64> temp_lat_all,lat_all;
+        vector<float64> temp_lat_all;
+        vector<float64> lat_all;
         temp_lat_all.resize(xdim*ydim);
         lat_all.resize(xdim*ydim);
 
-        vector<float64> temp_lon_all,lon_all;
+        vector<float64> temp_lon_all;
+        vector<float64> lon_all;
         temp_lon_all.resize(xdim*ydim);
         lon_all.resize(xdim*ydim);
 

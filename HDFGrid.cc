@@ -118,7 +118,9 @@ bool HDFGrid::read_tagref(int32, int32 ref, int &err) {
 	// read in SDS
 	hdfistream_sds sdsin(hdf_file.c_str());
 	try {
-		vector<int> start, edge, stride;
+		vector<int> start;
+        vector<int> edge;
+        vector<int> stride;
 		HDFArray *primary_array = static_cast<HDFArray *> (array_var());
 		if (!primary_array)
 			throw InternalErr(__FILE__, __LINE__, "Expected an HDFArray.");

@@ -147,7 +147,8 @@ HDFEOS2ArraySwathDimMapField::read ()
         }
 
         vector<char> namelist;
-        vector<int32> map_offset, increment;
+        vector<int32> map_offset;
+        vector<int32> increment;
 
         namelist.resize(bufsize + 1);
         map_offset.resize(nummaps);
@@ -520,14 +521,16 @@ bool HDFEOS2ArraySwathDimMapField::Field2DSubset (T * outlatlon,
 #if 0
     T (*templatlonptr)[majordim][minordim] = (T *[][]) latlon;
 #endif
-    int	i = 0, j = 0, k = 0;
+    int	i = 0;
+    int j = 0; 
 
     // do subsetting
     // Find the correct index
     int	dim0count = count[0];
     int dim1count = count[1];
 
-    int	dim0index[dim0count], dim1index[dim1count];
+    int	dim0index[dim0count];
+    int dim1index[dim1count];
 
     for (i = 0; i < count[0]; i++) // count[0] is the least changing dimension
         dim0index[i] = offset[0] + i * step[0];
@@ -537,7 +540,7 @@ bool HDFEOS2ArraySwathDimMapField::Field2DSubset (T * outlatlon,
         dim1index[j] = offset[1] + j * step[1];
 
     // Now assign the subsetting data
-    k = 0;
+    int k = 0;
 
     for (i = 0; i < count[0]; i++) {
         for (j = 0; j < count[1]; j++) {
@@ -566,7 +569,9 @@ bool HDFEOS2ArraySwathDimMapField::Field3DSubset (T * outlatlon,
 #if 0
     T (*templatlonptr)[newdims[0]][newdims[1]][newdims[2]] = (T *[][][]) latlon;
 #endif
-    int i,j,k,l;
+    int i = 0;
+    int j = 0;
+    int k = 0;
 
     // do subsetting
     // Find the correct index
@@ -587,7 +592,7 @@ bool HDFEOS2ArraySwathDimMapField::Field3DSubset (T * outlatlon,
         dim2index[k] = offset[2] + k * step[2];
 
     // Now assign the subsetting data
-    l = 0;
+    int l = 0;
 
     for (i = 0; i < count[0]; i++) {
         for (j = 0; j < count[1]; j++) {
@@ -624,10 +629,16 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
 
     fieldinfofunc = SWfieldinfo;
 
-    int32 attrtype = -1, attrcount = -1;
+    int32 attrtype = -1;
+    int32 attrcount = -1;
     int32 attrindex = -1;
-    int32 scale_factor_attr_index = -1, add_offset_attr_index =-1;
-    float scale=1, offset2=0, fillvalue = 0.;
+
+    int32 scale_factor_attr_index = -1;
+    int32 add_offset_attr_index =-1;
+
+    float scale=1;
+    float offset2=0;
+    float fillvalue = 0.;
 
     if (sotype!=DEFAULT_CF_EQU) {
 
@@ -645,7 +656,9 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
         else
             sdfileid = sdfd;
 
-        int32 sdsindex = -1, sdsid = -1; 
+        int32 sdsindex = -1;
+        int32 sdsid = -1; 
+
         sdsindex = SDnametoindex(sdfileid, fieldname.c_str());
         if (FAIL == sdsindex) {
             if(true == isgeofile || false == check_pass_fileid_key) 
@@ -665,7 +678,8 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
         }
 
         char attrname[H4_MAX_NC_NAME + 1];
-        vector<char> attrbuf, attrbuf2;
+        vector<char> attrbuf;
+        vector<char> attrbuf2;
 
         scale_factor_attr_index = SDfindattr(sdsid, "scale_factor");
         if(scale_factor_attr_index!=FAIL)
@@ -716,7 +730,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                     default:
                         throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
 
-            };
+            }
             
 #undef GET_SCALE_FACTOR_ATTR_VALUE
         }
@@ -762,7 +776,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                     GET_ADD_OFFSET_ATTR_VALUE(FLOAT64, double);
                     default:
                         throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
-                };
+                }
 #undef GET_ADD_OFFSET_ATTR_VALUE
         }
 	

@@ -56,7 +56,7 @@ HE2CF::get_vgroup_field_refids(const string& _gname,
 
     int32 npairs = Vntagrefs(vgroup_id);
     int32 ref_df = -1;
-    int32 ref_gf = -1;;
+    int32 ref_gf = -1;
 
     if(npairs < 0){
         Vdetach(vgroup_id);
@@ -491,7 +491,8 @@ bool HE2CF::set_vgroup_map(int32 _refid,bool isgeo)
     
     for (int i = 0; i < npairs; ++i) {
 
-        int32 tag2, ref2;
+        int32 tag2 = 0;
+        int32 ref2 = 0;
         char buf[H4_MAX_NC_NAME];
         
         if (Vgettagref(vgroup_id, i, &tag2, &ref2) < 0){
@@ -791,10 +792,12 @@ HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname,int _fieldtype)
 
 bool HE2CF::write_attr_vdata(int32 _vd_id, const string& _newfname, int _fieldtype)
 {
-    int32 number_type, count, size;
+    int32 number_type = 0;
+    int32 count = 0;
+    int32 size = 0;
     char buf[H4_MAX_NC_NAME];
     
-    int vid;
+    int vid = 0;
     
     if ((vid = VSattach(file_id, _vd_id, "r")) < 0) {
 

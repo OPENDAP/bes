@@ -332,7 +332,8 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
     // Now HDF4 provides a dynamic way to allocate the length of vdata_class, should update to use that in the future.
     // Documented in a jira ticket HFRHANDLER-168.
     // KY 2013-07-11
-    char vdata_class[VSNAMELENMAX], vdata_name[VSNAMELENMAX];
+    char vdata_class[VSNAMELENMAX];
+    char vdata_name[VSNAMELENMAX];
 
     if (num_lone_vdata > 0) {
 
@@ -871,7 +872,8 @@ File::Check_update_special(const string& grid_name) throw(Exception) {
     // "XDim" and "YDim" and excluding "XDim" and "YDim" may save some time if there are many 
     // dimensions in the dimnameset.
 
-    string FullXDim,FullYDim;
+    string FullXDim;
+    string FullYDim;
     FullXDim="XDim:" ;
     FullYDim="YDim:";
 
@@ -3325,7 +3327,8 @@ throw (Exception)
     // KY 2013-07-11 
     char cvgroup_name[VGNAMELENMAX*4];
 
-    int32 obj_tag, obj_ref;
+    int32 obj_tag =0;
+    int32 obj_ref = 0;
     char *cfull_path = NULL;
 
     bool unexpected_fail = false;
@@ -4011,7 +4014,8 @@ File::handle_sds_coords(bool & COARDFLAG,std::string & lldimname1, std::string &
     std::map < std::string, std::string >::iterator tempmapit;
     int tempcount;
 
-    std::string tempcoordinates, tempfieldname;
+    std::string tempcoordinates;
+    std::string tempfieldname;
     for (std::vector < SDField * >::const_iterator i =
         file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
         if ((*i)->fieldtype == 0) {
@@ -4353,8 +4357,10 @@ void File::PrepareTRMML2_V7() throw(Exception) {
 
     // 1. Obtain the geolocation field: type,dimension size and dimension name
     // 2. Create latitude and longtiude fields according to the geolocation field.
-    std::string tempdimname1, tempdimname2;
-    std::string tempnewdimname1, tempnewdimname2;
+    std::string tempdimname1;
+    std::string tempdimname2;
+    std::string tempnewdimname1;
+    std::string tempnewdimname2;
     std::string temppath;
 
     //int32 tempdimsize1, tempdimsize2;
@@ -4991,11 +4997,14 @@ throw (Exception)
 
     // 1. Obtain the geolocation field: type,dimension size and dimension name
     // 2. Create latitude and longtiude fields according to the geolocation field.
-    std::string tempdimname1, tempdimname2;
-    std::string tempnewdimname1, tempnewdimname2;
+    std::string tempdimname1;
+    std::string tempdimname2;
+    std::string tempnewdimname1;
+    std::string tempnewdimname2;
     std::string temppath;
 
-    int32 tempdimsize1, tempdimsize2;
+    int32 tempdimsize1;
+    int32 tempdimsize2;
     SDField *longitude = NULL;
     SDField *latitude = NULL;
 
@@ -5248,7 +5257,8 @@ void
 File::PrepareTRMML3A_V6 ()
 throw (Exception)
 {
-    std::string tempnewdimname1, tempnewdimname2;
+    std::string tempnewdimname1;
+    std::string tempnewdimname2;
     bool latflag = false;
     bool lonflag = false;
 
@@ -5418,7 +5428,9 @@ File::PrepareTRMML3C_V6 ()
 throw (Exception)
 {
 
-    std::string tempnewdimname1, tempnewdimname2,tempnewdimname3;
+    std::string tempnewdimname1;
+    std::string tempnewdimname2;
+    std::string tempnewdimname3;
     bool latflag = false;
     bool lonflag = false;
     bool heiflag = false;
@@ -5822,8 +5834,10 @@ throw (Exception)
     bool colatflag = false;
     bool lonflag = false;
 
-    std::string tempnewdimname1, tempnewdimname2;
-    std::string tempcvarname1, tempcvarname2;
+    std::string tempnewdimname1;
+    std::string tempnewdimname2;
+    std::string tempcvarname1;
+    std::string tempcvarname2;
     File *file = this;
     // int eraseflag = 0; Unused jhrg 3/16/11
 
@@ -5904,10 +5918,12 @@ File::PrepareCERES4IG ()
 throw (Exception)
 {
 
-    std::string tempdimname1, tempdimname2;
+    std::string tempdimname1;
+    std::string tempdimname2;
     int tempdimsize1 = 0;
     int tempdimsize2 = 0;
-    std::string tempcvarname1, tempcvarname2;
+    std::string tempcvarname1;
+    std::string tempcvarname2;
     std::string temppath;
     std::set < std::string > tempdimnameset;
     std::pair < std::set < std::string >::iterator, bool > tempsetit;
@@ -6054,8 +6070,10 @@ throw (Exception)
     int tempdimsize3 = 180;
     int tempdimsize4 = 1;
 
-    std::string tempnewdimname1, tempnewdimname2;
-    std::string tempcvarname1, tempcvarname2;
+    std::string tempnewdimname1;
+    std::string tempnewdimname2;
+    std::string tempcvarname1;
+    std::string tempcvarname2;
     File *file;
 
     file = this;

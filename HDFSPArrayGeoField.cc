@@ -1843,7 +1843,8 @@ void HDFSPArrayGeoField::LatLon2DSubset (T * outlatlon,
     // Find the correct index
     const int dim0count = count[0];
     const int dim1count = count[1]; 
-    int dim0index[dim0count], dim1index[dim1count];
+    int dim0index[dim0count];
+    int dim1index[dim1count];
 
     for (i = 0; i < count[0]; i++)      // count[0] is the least changing dimension 
         dim0index[i] = offset[0] + i * step[0];
