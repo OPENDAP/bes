@@ -63,7 +63,7 @@ function show_usage() {
  -b: The S3 bucket name. 
      (default: ${s3_bucket_name})
  -d: The "local" filesystem root for the downloaded data. 
-     (default: ./s3_data/bucket_name})
+     (default: ./s3_data/${s3_bucket_name})
  -t: The target directory for the dmrpp files. Below this point
      the structure of the bucket objects vis-a-vis their "/" path
      separator divided names will be replicted and dmr++ placed into

@@ -21,6 +21,9 @@ structure resulting from running "make install". Most modules do not
 need to do this but since _dmr++_ files reference other files, and they 
 do so using paths relative the BES Catalog Root the mimicry is required.
 
+NOTE: Examples can be run as shown from the _bes/modules/dmrpp___module/data_ 
+directory.
+
 
 ## Building the software
 
@@ -67,7 +70,6 @@ netcdf-4/hdf5 file. It is used by both `ingest_filesystem` and `ingest_s3bucket`
 
 Creates a _dmr++_ file (_foo.dmrpp_) whose binary object URL is a file URL containing the fully qualifed path to the source data file as it's value. 
 
-NOTE: This example can be run as shown from the _bes/modules/dmrpp___module/data_ directory.
 
 ```
 get_dmrpp -v -d `pwd` -o foo.dmrpp -u file://`pwd`/dmrpp/chunked_shuffled_fourD.h5 dmrpp/chunked_shuffled_fourD.h5
@@ -135,7 +137,7 @@ matching file using the `get_dmrpp` program.
  -u: The base endpoint URL for the DMRPP data objects. The assumption
      is that they will be organized the same way the source dataset 
      files below the "data_root" (see -d)
-     (default: file://$CWD)
+     (default: file://${data_root})
  -d: The local filesystem root from which the data are to be ingested. 
      The filesystem will be searched beginning at this point for files 
      whose names match the dataset match regex (see -r).
@@ -155,6 +157,22 @@ matching file using the `get_dmrpp` program.
       (if any) will be processed.
      (default: Not Set)
 ```
+### Example 1
+
+In its simplest invocation, `ingest_filesystem`'s defaults will cause it check for the file `./data_files.txt`. If found `ingest_filesystem` will treat every line in `./data_files.txt` as a fully qualifed path to an `hdf5`/`netcdf-4` file for which a `dmr++` file is to be computed. By default the output tree will be placed in the current working directory. The base end point for the `dmr++` binary object will be set to the current working directory.
+
+```
+ingest_filesystem 
+```
+
+### Example 2
+In this invocation, `ingest_filesystem`'s crawl the local filesystem beginning with the CWD every file that matches the default regular expression (`^.*\\.(h5|he5|nc4)(\\.bz2|\\.gz|\\.Z)?$`) will be treated as an `hdf5`/`netcdf-4` file for which a `dmr++` file is to be computed. The output tree will be placed in a directory called scratch in the current working directory. The base end point for the `dmr++` binary object will be set to the current working directory.
+
+
+```
+ingest_filesystem  -f -t scratch
+```
+
 
 ## `ingest_s3bucket` - building _dmr++_ files from files held in S3.
 The shell script `ingest_s3bucket` utilizes the AWS CLI to list the contents of an S3 bucket. The name of each object in the bucket checked against a (defaukt or supplied) regex. Each matching file is retrieved from S3 and then a _dmr++_ is built from the retrived data object. Once the _dmr++_ file is built the downloaded object is deleted.
