@@ -3,7 +3,7 @@
 # README
 ## Overview
 This directory (_data_) contains module test data, and the scripts, 
-source code, and production rules for tools that can used to create 
+source code, and production rules for tools that can be used to create 
 and process hdf5/netcdf-4 data files to create portable _dmr++_ files 
 whose binary data objects are held in a web object store like AWS S3.
 
@@ -24,7 +24,6 @@ do so using paths relative the BES Catalog Root the mimicry is required.
 NOTE: Examples can be run as shown from the _bes/modules/dmrpp___module/data_ 
 directory.
 
-
 ## Building the software
 
 In order for these programs (shell scripts) to function correctly a 
@@ -37,7 +36,6 @@ and ready to use.
 
 The `get_dmrpp` shell script generates a single _dmr++_ file from a single 
 netcdf-4/hdf5 file. It is used by both `ingest_filesystem` and `ingest_s3bucket`.
-
 
 ```
  Usage: get_dmrpp [options] <hdf5_file>
@@ -69,7 +67,6 @@ netcdf-4/hdf5 file. It is used by both `ingest_filesystem` and `ingest_s3bucket`
 ### Example 1
 
 Creates a _dmr++_ file (_foo.dmrpp_) whose binary object URL is a file URL containing the fully qualifed path to the source data file as it's value. 
-
 
 ```
 get_dmrpp -v -d `pwd` -o foo.dmrpp -u file://`pwd`/dmrpp/chunked_shuffled_fourD.h5 dmrpp/chunked_shuffled_fourD.h5
@@ -108,8 +105,6 @@ get_dmrpp -v -d `pwd` -o foo.dmrpp -u https://s3.amazonaws.com/opendap.scratch/d
     <dt><tt>dmrpp/chunked_shuffled_fourD.h5</tt></dt>
     <dd><em>The hdf5 file from which to build the dmr++ file.</em></dd>
 </dl>
-
-
 
 ## `ingest_filesystem` - building _dmr++_ files from local files.
 The shell script `ingest_filesystem` is used to crawl through a branch of 
@@ -164,7 +159,6 @@ ingest_filesystem
 ### Example 2
 In this invocation, `ingest_filesystem` crawls the local filesystem beginning with the CWD every file that matches the default regular expression (`^.*\\.(h5|he5|nc4)(\\.bz2|\\.gz|\\.Z)?$`) will be treated as an `hdf5`/`netcdf-4` file for which a `dmr++` file is to be computed. The output tree will be placed in a directory called scratch in the current working directory. The base URL for the `dmr++` binary objects will be set to the current working directory.
 
-
 ```
 ingest_filesystem -f -t scratch
 ```
@@ -177,11 +171,9 @@ ingest_filesystem -f -t scratch
     <dd><em>Sets name of the directory to which the dmr++ output tree will be written to $CWD/scratch</em></dd>
 </dl>
 
-
 ### Example 3
 
 In this invocation, `ingest_filesystem` crawls the local filesystem beginning at `/usr/share/hyrax`. Every file that matches the default regular expression (`^.*\\.(h5|he5|nc4)(\\.bz2|\\.gz|\\.Z)?$`) will be treated as an `hdf5`/`netcdf-4` file for which a `dmr++` file is to be computed. The output tree will be placed in `/tmp/dmrpp`. The base URL for the `dmr++` binary objects will be set to the AWS S3 bucket URL `https://s3.amazonaws.com/cloudydap` .
-
 
 ```
 ingest_filesystem -f -u https://s3.amazonaws.com/cloudydap -d /usr/share/hyrax -t /tmp/dmrpp
@@ -205,8 +197,7 @@ ingest_filesystem -f -u https://s3.amazonaws.com/cloudydap -d /usr/share/hyrax -
 
 
 ## `ingest_s3bucket` - building _dmr++_ files from files held in S3.
-The shell script `ingest_s3bucket` utilizes the AWS CLI to list the contents of an S3 bucket. The name of each object in the bucket is checked against either the default or user supplied regex. Each matching file is retrieved from S3 and then a _dmr++_ is built from it. Once the _dmr++_ file is built the downloaded object is deleted, unless otherwise instructed. The code relies on the AWS CLI being installed and configured using the `aws configure` command (or it's equivalent).
-
+The shell script `ingest_s3bucket` utilizes the AWS CLI to list the contents of an S3 bucket. The name of each object in the bucket is checked against either the defaukt or user supplied regex. Each matching file is retrieved from S3 and then a _dmr++_ is built from the retrived data object. Once the _dmr++_ file is built the downloaded object is deleted unless otherwise instructed. The code relies on the AWS CLI being installed and configured using the `aws configure` command (or it's equivalent).
 
 ``` 
  Usage: ingest_s3bucket [options] 
@@ -264,8 +255,6 @@ In its simplest invocation, `ingest_s3bucket`'s defaults will cause it check for
 and the software caches bucket information in the files named in the patterns `s3_BUCKETNAME_all_files.txt` `s3_BUCKETNAME_data_files.txt`. Changing the bucket name will change the name of the file information files accordingly). If the file is found, `ingest_s3bucket` will treat the 4th column of every line in `./s3_cloudydap_data_files.txt` as a relative path to an `hdf5`/`netcdf-4` file in the default bucket (`cloudydap`) for which a `dmr++` file is to be computed. By default the output tree will be placed in the current working directory. The base end point for the `dmr++` binary object will be set the URL of the S3 binary file that
 was used to create the `https://s3.amazonaws.comdmr++` file.
 
-
-
 ### Example 2
 
 In this example we have `ingest_s3bucket` locate all the matching data files in the S3 bucket `opendap.scratch`, store the downloaded data files in `/tmp/s3_scratch`, and place the resulting dmr++ files in `/usr/share/hyrax`.
@@ -292,10 +281,7 @@ ingest_s3bucket -v -f -b opendap.scratch -d /tmp/s3_scratch -t /usr/share/hyrax
     <tt> /usr/share/hyrax</tt>, the default data directry for Hyrax.</em></dd>
 </dl>
 
-
-
 ## ChangeLog
-
 
 5/25/18
 
