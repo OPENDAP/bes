@@ -258,14 +258,20 @@ function mk_dmrpp_from_s3_list() {
         else
             aws s3 cp --quiet "s3://${s3_bucket_name}/${relative_filename}" "${data_file}";
         fi
-           
-        mkdir -p `dirname ${target_file}`;
-        get_dmrpp ${verbose} ${very_verbose} ${just_dmr} -u "${s3_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
-     
-        if test -z "${keep_data_files}"
+        status=$?
+        if [ ${status} -ne 0 ]
         then
-            rm ${verbose} -f "${data_file}";
-        fi
+            echo "Encountered AWS CLI error (status: ${status}) Skipping ${relative_filename}"
+            echo ""
+        else 
+	        mkdir -p `dirname ${target_file}`;
+	        get_dmrpp ${verbose} ${very_verbose} ${just_dmr} -u "${s3_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
+	     
+	        if test -z "${keep_data_files}"
+	        then
+	            rm ${verbose} -f "${data_file}";
+	        fi
+	    fi
         
  done
 
