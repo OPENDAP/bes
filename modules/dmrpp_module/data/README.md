@@ -11,7 +11,7 @@ filesystems. For data users, access is seamless - there is no difference between
 access to data stored in S3 or on spinning disk.
 
 We have conducted tests of this software and the Google Cloud Store and 
-found that it orks with that Web Object Store as well. In fact, reconfiguration
+found that it works with that Web Object Store as well. In fact, reconfiguration
 to GCS is trivial.
 
 ## Overview
