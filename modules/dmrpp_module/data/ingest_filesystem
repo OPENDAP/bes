@@ -208,14 +208,15 @@ function mk_dmrpp_files_from_list() {
 
     for dataset_file in `cat ${DATA_FILES}`
     do
+        echo "dataset_file: ${dataset_file}";
         relative_filename=${dataset_file#"$data_root/"};
         target_file="${target_dir}/${relative_filename}.dmrpp";
         dmrpp_url="${dmrpp_url_base}/${relative_filename}";
           
         if test -n "$verbose"
         then
-            echo "data_root:    ${data_root}";
             echo "dataset_file: ${dataset_file}";
+            echo "data_root:    ${data_root}";
             echo "relative_filename: ${relative_filename}";
             echo "target_file: ${target_file}";
             echo "dmrpp_url: ${dmrpp_url}";
