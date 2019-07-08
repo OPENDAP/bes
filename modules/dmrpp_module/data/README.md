@@ -205,7 +205,7 @@ ingest_filesystem -f -u https://s3.amazonaws.com/cloudydap -d /usr/share/hyrax -
 
 
 ## `ingest_s3bucket` - building _dmr++_ files from files held in S3.
-The shell script `ingest_s3bucket` utilizes the AWS CLI to list the contents of an S3 bucket. The name of each object in the bucket is checked against either the defaukt or user supplied regex. Each matching file is retrieved from S3 and then a _dmr++_ is built from the retrived data object. Once the _dmr++_ file is built the downloaded object is deleted unless otherwise instructed. The code relies on the AWS CLI being installed and configured using the `aws configure` command (or it's equivalent).
+The shell script `ingest_s3bucket` utilizes the AWS CLI to list the contents of an S3 bucket. The name of each object in the bucket is checked against either the default or user supplied regex. Each matching file is retrieved from S3 and then a _dmr++_ is built from it. Once the _dmr++_ file is built the downloaded object is deleted, unless otherwise instructed. The code relies on the AWS CLI being installed and configured using the `aws configure` command (or it's equivalent).
 
 
 ``` 
