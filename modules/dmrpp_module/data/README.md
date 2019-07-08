@@ -1,10 +1,27 @@
 
 # README
+We have developed an initial set of tools that enable a data provider to 
+easily serve data stored in Amazon's S3 Web Object Store. In the current
+implementaiton, the data must be stored in HDF5 or NetCDF4 files. The data
+do not, however, have to be reformatted to be used with the Hyrax server.
+Furthermore, the data objects are subset 'in-place' from S3 instead of first
+transferring the object and then serving it, resulting in lower response 
+latency than other solutions for S3 darta access such as those based on FUSE
+filesystems. For data users, access is seamless - there is no difference between
+access to data stored in S3 or on spinning disk.
+
+We have conducted tests of this software and the Google Cloud Store and 
+found that it orks with that Web Object Store as well. In fact, reconfiguration
+to GCS is trivial.
+
 ## Overview
 This directory (_data_) contains module test data, and the scripts, 
 source code, and production rules for tools that can be used to create 
 and process hdf5/netcdf-4 data files to create portable _dmr++_ files 
 whose binary data objects are held in a web object store like AWS S3.
+
+The _dmr+_ files are the control data used by the server to emnable 
+'in-place' access and subsetting of data in S3.
 
 There are three programs for building _dmr++_ files:
 - The program `get_dmrpp` builds a single _dmr++_ file from a single 
