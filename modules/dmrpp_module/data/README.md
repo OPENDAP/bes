@@ -289,7 +289,7 @@ ingest_s3bucket -v -f -b opendap.scratch -d /tmp/s3_scratch -t /usr/share/hyrax
     <tt>/tmp/s3_scratch</tt></em></dd>
     <dt><tt>-t /usr/share/hyrax</dt>
     <dd><em>Sets the directory to which the dmr++ output tree will be written to: 
-    <tt> /usr/share/hyrax</tt> the default data directry for Hyrax.</em></dd>
+    <tt> /usr/share/hyrax</tt>, the default data directry for Hyrax.</em></dd>
 </dl>
 
 
