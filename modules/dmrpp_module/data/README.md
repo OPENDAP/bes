@@ -77,13 +77,17 @@ get_dmrpp -v -d `pwd` -o foo.dmrpp -u file://`pwd`/dmrpp/chunked_shuffled_fourD.
 <dl>
     <dt><tt>-v</tt></dt>
     <dd><em>verbose mode</em></dd>
+    
     <dt><tt>-d  `pwd`</tt></dt>
     <dd><em>The data root directory to be used by the BES. 
-            In this example it is set to the current directory.</em></dd>
+    In this example it is set to the current directory.</em></dd>
+            
     <dt><tt>-o  foo.dmrpp</tt></dt>
     <dd><em>The dmr++ content will be written to the file foo.dmrpp<</em></dd>
+    
     <dt><tt>-u  file://`pwd`/dmrpp/chunked_shuffled_fourD.h5</tt></dt>
     <dd><em>The dmr++ file will use this full qualified file URL as its binary data location.</em></dd>
+    
     <dt><tt>dmrpp/chunked_shuffled_fourD.h5</tt></dt>
     <dd><em>The hdf5 file from which to build the dmr++ file.</em></dd>
 </dl>
@@ -98,13 +102,17 @@ get_dmrpp -v -d `pwd` -o foo.dmrpp -u https://s3.amazonaws.com/opendap.scratch/d
 <dl>
     <dt><tt>-v</tt></dt>
     <dd><em>verbose mode</em></dd>
+    
     <dt><tt>-d  `pwd`</tt></dt>
     <dd><em>The data root directory to be used by the BES. 
             In this example it is set to the current directory.</em></dd>
+            
     <dt><tt>-o  foo.dmrpp</tt></dt>
     <dd><em>The dmr++ content will be written to the file foo.dmrpp<</em></dd>
+    
     <dt><tt>-u  https://s3.amazonaws.com/opendap.scratch/data/dmrpp/chunked_fourD.h5</tt></dt>
     <dd><em>The dmr++ file will use this AWS S3 object URL as its binary data location..</em></dd>
+    
     <dt><tt>dmrpp/chunked_shuffled_fourD.h5</tt></dt>
     <dd><em>The hdf5 file from which to build the dmr++ file.</em></dd>
 </dl>
@@ -173,6 +181,7 @@ ingest_filesystem -f -t scratch
     <dd><em>Use the `find` command along with the regular expression to traverse the filesystem
     and locate all of the matching files. These file names are placed, as fully qualified path 
     names, in the file `./data_files.txt` to be reused or hand edited if needed.</em></dd>
+    
     <dt><tt>-t  scratch</tt></dt>
     <dd><em>Sets name of the directory to which the dmr++ output tree will be written to $CWD/scratch</em></dd>
 </dl>
@@ -191,14 +200,17 @@ ingest_filesystem -f -u https://s3.amazonaws.com/cloudydap -d /usr/share/hyrax -
     <dd><em>Use the `find` command along with the regular expression to traverse the filesystem
     and locate all of the matching files. These file names are placed, as fully qualified path 
     names, in the file `./data_files.txt` to be reused or hand edited if needed.</em></dd>
+    
     <dt><tt>-u  https://s3.amazonaws.com/cloudydap</tt></dt>
     <dd><em>Sets the base URL for the web accessible binary data files to the AWS S3 bucket 
     URL <tt>https://s3.amazonaws.com/cloudydap</tt> File paths relative to the 
     BES DataRoot will be appended to this URL to form the binary access URL for each dmr++ file. 
     </em></dd>
+    
     <dt><tt>-d  /usr/share/hyrax</tt></dt>
     <dd><em>Sets the BES data root to <tt>/usr/share/hyrax</tt> for this invocataion. Since the -f option 
     is also present the crawl of the file system will begin here.</em></dd>
+    
     <dt><tt>-t  /tmp/dmrpp</tt></dt>
     <dd><em>Sets the directory to which the dmr++ output tree will be written to: <tt>/tmp/dmrpp</tt></em></dd>
 </dl>
@@ -223,16 +235,16 @@ The shell script `ingest_s3bucket` utilizes the AWS CLI to list the contents of 
      the scanning of it all.
  -j: Just print the DMR that will be used to build the DMR++
  -s: The endpoint URL for the S3 datastore. 
-     (default: ${s3_service_endpoint})
+     (default: https://s3.amazonaws.com)
  -b: The S3 bucket name. 
-     (default: ${s3_bucket_name})
+     (default: cloudydap)
  -d: The "local" filesystem root for the downloaded data. 
      (default: ./s3_data/bucket_name})
  -t: The target directory for the dmrpp files. Below this point
      the structure of the bucket objects vis-a-vis their "/" path
      separator divided names will be replicted and dmr++ placed into
      it accordingly.
-     (default: ${target_dir})
+     (default: $CWD)
  -f: Retrieve object list from S3 bucket into the list file for the bucket,
      apply the dataset match regex to the object names to create
      the data files list. If this is omitted the files named in an 
@@ -256,15 +268,47 @@ This script requires that:
 
 ### Example 1
 
-In its simplest invocation, `ingest_s3bucket`'s defaults will cause it check for the file `./data_files.txt`. If found `ingest_filesystem` will treat every line in `./data_files.txt` as a fully qualifed path to an `hdf5`/`netcdf-4` file for which a `dmr++` file is to be computed. By default the output tree will be placed in the current working directory. The base end point for the `dmr++` binary object will be set to the current working directory.
-
-s3_cloudydap_data_files.txt
-s3_cloudydap_all_files.txt
-
 ```
 ingest_s3bucket 
 ```
 
+In its simplest invocation, `ingest_s3bucket`'s defaults will cause it check for the file `./s3_cloudydap_data_files.txt`. (It looks for this file because the default bucket name is `cloudydap`
+and the software caches bucket information in the files named in the patterns `s3_BUCKETNAME_all_files.txt` `s3_BUCKETNAME_data_files.txt`. Changing the bucket name will change the name of the file information files accordingly). If the file is found, `ingest_s3bucket` will treat the 4th column of every line in `./s3_cloudydap_data_files.txt` as a relative path to an `hdf5`/`netcdf-4` file in the default bucket (`cloudydap`) for which a `dmr++` file is to be computed. By default the output tree will be placed in the current working directory. The base end point for the `dmr++` binary object will be set the URL of the S3 binary file that
+was used to create the `https://s3.amazonaws.comdmr++` file.
+
+
+
+### Example 2
+
+In this example we have `ingest_s3bucket` locate all the matching data files in the S3 bucket `opendap.scratch`, store the downloaded data files in `/tmp/s3_scratch`, and place the resulting dmr++ files in `/usr/share/hyrax`.
+
+```
+ingest_s3bucket -v -f -b opendap.scratch -d /tmp/s3_scratch -t /usr/share/hyrax 
+```
+
+<dl>
+    <dt><tt>-v</tt></dt>
+    <dd><em>verbose mode</em></dd>
+    
+    <dt><tt>-f</tt></dt>
+    <dd><em>Use the `find` command along with the regular expression to traverse the object names
+    retrieved from S3 and locate all of the matching files. These file names saved in the file
+     `./s3_BUCKETNAME_data_files.txt` to be reused or hand edited if needed.</em></dd>
+        <dt><tt>-v</tt></dt>
+    <dd><em>verbose mode</em></dd>
+     
+    <dt><tt>-b opendap.scratch</tt></dt>
+    <dd><em>Sets the source S3 bucket name to <tt>opendap.scratch</tt></em></dd>
+    
+    <dt><tt>-d /tmp/s3_scratch</tt></dt>
+    <dd><em>Sets the target directory for the data files downloaded from the S3 bucket to 
+    <tt>/tmp/s3_scratch</tt></em></dd>
+    
+     
+    <dt><tt>-t /usr/share/hyrax</dt>
+    <dd><em>Sets the directory to which the dmr++ output tree will be written to: 
+    <tt> /usr/share/hyrax</tt> the default data directry for Hyrax.</em></dd>
+</dl>
 
 
 
