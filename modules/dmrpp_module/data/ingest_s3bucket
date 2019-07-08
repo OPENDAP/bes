@@ -203,18 +203,25 @@ function mk_file_list_from_s3() {
 	    echo "S3_ALL_FILES: ${S3_ALL_FILES}";
     fi
     time -p aws s3 ls --recursive "${s3_bucket_name}" > "${S3_ALL_FILES}";
-    
-    if test -n "$verbose"
+    status=$?
+    if [ ${status} -ne 0 ]
     then
-        echo "Locating S3_DATA_FILES: ${S3_DATA_FILES}";
-    fi
-    time -p grep -E -e "${dataset_regex_match}" "${S3_ALL_FILES}" > "${S3_DATA_FILES}";
+        echo "Encountered AWS CLI error (status: ${status}) Unable to list bucket ${s3_bucket_name}"
+        echo ""
+    else
     
-    if test -n "$verbose"
-    then
-        dataset_count=`cat ${S3_DATA_FILES} | wc -l`;
-        echo "Found ${dataset_count} suitable data files in s3 bucket: ${s3_bucket_name}";
-    fi
+        if test -n "$verbose"
+        then
+            echo "Locating S3_DATA_FILES: ${S3_DATA_FILES}";
+        fi
+        time -p grep -E -e "${dataset_regex_match}" "${S3_ALL_FILES}" > "${S3_DATA_FILES}";
+    
+        if test -n "$verbose"
+        then
+            dataset_count=`cat ${S3_DATA_FILES} | wc -l`;
+            echo "Found ${dataset_count} suitable data files in s3 bucket: ${s3_bucket_name}";
+        fi
+    fi 
 }
 #################################################################################
 

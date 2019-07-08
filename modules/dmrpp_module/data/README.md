@@ -197,15 +197,15 @@ ingest_filesystem -f -u https://s3.amazonaws.com/cloudydap -d /usr/share/hyrax -
     BES DataRoot will be appended to this URL to form the binary access URL for each dmr++ file. 
     </em></dd>
     <dt><tt>-d  /usr/share/hyrax</tt></dt>
-    <dd><em>Sets the BES data root to /usr/share/hyrax for this invocataion. Since the -f option 
-    is also present then that means that the crawl of the file system will begin here.</em></dd>
+    <dd><em>Sets the BES data root to <tt>/usr/share/hyrax</tt> for this invocataion. Since the -f option 
+    is also present the crawl of the file system will begin here.</em></dd>
     <dt><tt>-t  /tmp/dmrpp</tt></dt>
     <dd><em>Sets the directory to which the dmr++ output tree will be written to: <tt>/tmp/dmrpp</tt></em></dd>
 </dl>
 
 
 ## `ingest_s3bucket` - building _dmr++_ files from files held in S3.
-The shell script `ingest_s3bucket` utilizes the AWS CLI to list the contents of an S3 bucket. The name of each object in the bucket checked against a (defaukt or supplied) regex. Each matching file is retrieved from S3 and then a _dmr++_ is built from the retrived data object. Once the _dmr++_ file is built the downloaded object is deleted.
+The shell script `ingest_s3bucket` utilizes the AWS CLI to list the contents of an S3 bucket. The name of each object in the bucket is checked against either the defaukt or user supplied regex. Each matching file is retrieved from S3 and then a _dmr++_ is built from the retrived data object. Once the _dmr++_ file is built the downloaded object is deleted unless otherwise instructed. The code relies on the AWS CLI being installed and configured using the `aws configure` command (or it's equivalent).
 
 
 ``` 
@@ -253,6 +253,18 @@ This script requires that:
    to access the target AWS S3 bucket.
 
 ```
+
+### Example 1
+
+In its simplest invocation, `ingest_s3bucket`'s defaults will cause it check for the file `./data_files.txt`. If found `ingest_filesystem` will treat every line in `./data_files.txt` as a fully qualifed path to an `hdf5`/`netcdf-4` file for which a `dmr++` file is to be computed. By default the output tree will be placed in the current working directory. The base end point for the `dmr++` binary object will be set to the current working directory.
+
+s3_cloudydap_data_files.txt
+s3_cloudydap_all_files.txt
+
+```
+ingest_s3bucket 
+```
+
 
 
 
