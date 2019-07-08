@@ -162,7 +162,7 @@ ingest_filesystem
 ```
 
 ### Example 2
-In this invocation, `ingest_filesystem`'s crawl the local filesystem beginning with the CWD every file that matches the default regular expression (`^.*\\.(h5|he5|nc4)(\\.bz2|\\.gz|\\.Z)?$`) will be treated as an `hdf5`/`netcdf-4` file for which a `dmr++` file is to be computed. The output tree will be placed in a directory called scratch in the current working directory. The base end point for the `dmr++` binary object will be set to the current working directory.
+In this invocation, `ingest_filesystem` crawls the local filesystem beginning with the CWD every file that matches the default regular expression (`^.*\\.(h5|he5|nc4)(\\.bz2|\\.gz|\\.Z)?$`) will be treated as an `hdf5`/`netcdf-4` file for which a `dmr++` file is to be computed. The output tree will be placed in a directory called scratch in the current working directory. The base URL for the `dmr++` binary objects will be set to the current working directory.
 
 
 ```
@@ -174,12 +174,13 @@ ingest_filesystem -f -t scratch
     and locate all of the matching files. These file names are placed, as fully qualified path 
     names, in the file `./data_files.txt` to be reused or hand edited if needed.</em></dd>
     <dt><tt>-t  scratch</tt></dt>
-    <dd><em>The name of the directory to which the dmr++ output tree will be written.</em></dd>
+    <dd><em>Sets name of the directory to which the dmr++ output tree will be written to $CWD/scratch</em></dd>
 </dl>
 
 
 ### Example 3
-In this invocation, `ingest_filesystem`'s crawl the local filesystem beginning with the CWD every file that matches the default regular expression (`^.*\\.(h5|he5|nc4)(\\.bz2|\\.gz|\\.Z)?$`) will be treated as an `hdf5`/`netcdf-4` file for which a `dmr++` file is to be computed. The output tree will be placed in a directory called scratch in the current working directory. The base end point for the `dmr++` binary object will be set to the current working directory.
+
+In this invocation, `ingest_filesystem` crawls the local filesystem beginning at `/usr/share/hyrax`. Every file that matches the default regular expression (`^.*\\.(h5|he5|nc4)(\\.bz2|\\.gz|\\.Z)?$`) will be treated as an `hdf5`/`netcdf-4` file for which a `dmr++` file is to be computed. The output tree will be placed in `/tmp/dmrpp`. The base URL for the `dmr++` binary objects will be set to the AWS S3 bucket URL `https://s3.amazonaws.com/cloudydap` .
 
 
 ```
@@ -191,14 +192,15 @@ ingest_filesystem -f -u https://s3.amazonaws.com/cloudydap -d /usr/share/hyrax -
     and locate all of the matching files. These file names are placed, as fully qualified path 
     names, in the file `./data_files.txt` to be reused or hand edited if needed.</em></dd>
     <dt><tt>-u  https://s3.amazonaws.com/cloudydap</tt></dt>
-    <dd><em>The base URL for the web accessible binary data files. File paths relative to the 
+    <dd><em>Sets the base URL for the web accessible binary data files to the AWS S3 bucket 
+    URL <tt>https://s3.amazonaws.com/cloudydap</tt> File paths relative to the 
     BES DataRoot will be appended to this URL to form the binary access URL for each dmr++ file. 
     </em></dd>
     <dt><tt>-d  /usr/share/hyrax</tt></dt>
     <dd><em>Sets the BES data root to /usr/share/hyrax for this invocataion. Since the -f option 
     is also present then that means that the crawl of the file system will begin here.</em></dd>
     <dt><tt>-t  /tmp/dmrpp</tt></dt>
-    <dd><em>Sets the directory to which the dmr++ output tree will be written to /tmp/dmrpp</em></dd>
+    <dd><em>Sets the directory to which the dmr++ output tree will be written to: <tt>/tmp/dmrpp</tt></em></dd>
 </dl>
 
 
