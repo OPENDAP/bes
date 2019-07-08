@@ -240,7 +240,7 @@ The shell script `ingest_s3bucket` utilizes the AWS CLI to list the contents of 
      (default: Not Set)
  -r: The dataset match regex used to screen the filenames 
      for matching datasets. 
-     (default: ${dataset_regex_match})
+     (default: `^.*\\.(h5|he5|nc4)(\\.bz2|\\.gz|\\.Z)?$`)
  -k: Keep the downloaded datafiles after the dmr++ file has been 
      created. Be careful! S3 buckets can be quite large!
 
