@@ -1,3 +1,108 @@
+2019-05-17  Muqun Yang  <myang6@hdfgroup.org>
+
+	ESDIS-560, remove unused catch block.
+
+	ESDIS-560, change some macros to constant.
+
+2019-05-16  Muqun Yang  <myang6@hdfgroup.org>
+
+	ESDIS-560, go over sonarcloud issues. Correct the obvious ones and the ones that make sense.
+
+2019-05-13  Kent Yang  <myang6@hdfgroup.org>
+
+	ESDIS-560, improve coding style, fix a minor bug.
+
+2019-05-01  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-298, add OCO2 testing files to the handler.
+
+2019-04-30  Kent Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-298, add netCDF-4 predefined attribute check for EOS5 files.
+
+	HFVHANDLER-298, add the code to handle variable length type to check product name.
+
+2019-04-18  Kent Yang  <myang6@hdfgroup.org>
+
+	ESDIS-560, improve code by following sonar cloud analysis.
+
+2019-04-18  Muqun Yang  <myang6@hdfgroup.org>
+
+	ESDIS-560, improve the code by following sonarcloud analysis.
+
+2019-04-05  Kent Yang  <myang6@hdfgroup.org>
+
+	ESDIS-560, reduce code complexity - create a function to handle variable length string attributes
+
+	ESDIS-560, improve error handlings for h5get.cc and h5dmr.cc
+
+	Minor edit of a comment.
+
+2019-04-04  Kent Yang  <myang6@hdfgroup.org>
+
+	ESDIS-560, move "using namespace" out of header files.
+
+	ESDIS-560, add namespace in the header files.
+
+2019-04-03  Kent Yang  <myang6@hdfgroup.org>
+
+	ESDIS-560, fix issues discovered by solarcloud -remove"using namespace" out of headers.
+
+	ESDIS-560, remove unused parameters.
+
+2019-04-03  Muqun Yang  <myang6@hdfgroup.org>
+
+	ESDIS-560, reduce some warnings from solarcloud.
+
+2019-04-02  Kent Yang  <myang6@hdfgroup.org>
+
+	ESDIS-560, remove some comments to make solarcloud happy.
+
+	ESDIS-560, remove a comment.
+
+2019-04-01  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-296, add code to ensure the UTF-8 string attribute won't be escaped for the CF option.
+
+2019-03-22  James Gallagher  <jgallagher@opendap.org>
+
+	Two fixes from sonar cloud: sprintf --> snprintf
+
+2019-02-21  Muqun Yang  <myang6@hdfgroup.org>
+
+	ESDIS-559, clean up some issues from sonarcloud.
+
+2019-02-20  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Updated the changelog and NEWS for hdf4 and hdf5
+
+2019-02-18  Kent Yang  <myang6@hdfgroup.org>
+
+	ESDIS-559, remove some issues discovered by sonarcloud.
+
+2019-02-13  Kent Yang  <myang6@hdfgroup.org>
+
+	ESDIS-559, fix warnings/issues discovered by solarcloud.
+
+2019-02-13  Muqun Yang  <myang6@hdfgroup.org>
+
+	Address issues discovered by sonarclound.
+
+2019-02-12  Kent Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' of https://github.com/opendap/hdf5_handler JG checked in minor edits.
+
+	HFVHANDLER-295, clean up compiling warnings - not including the warnings in gctp and the parser.
+
+2019-02-12  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/hdf5_handler
+
+	Changed based on the sonarqube static source checker
+
+2019-02-12  Kent Yang  <myang6@hdfgroup.org>
+
+	ESDIS-559, update README for Hyrax 1.15.3.
 2019-02-08  James Gallagher  <jgallagher@opendap.org>
 
 	Updated hdf4 and hdf5_handler commit hashes
