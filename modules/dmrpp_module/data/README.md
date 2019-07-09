@@ -1,5 +1,13 @@
 
 # README
+This directory (_data_) contains:
+- module test data
+- The _dmr++_ tools: scripts, source code, and production rules for tools 
+that can be used to create and process `hdf5`/`netcdf-4` data files to create 
+portable _dmr++_ files whose binary data objects are held in a web object store
+ like AWS S3.
+
+## Overview
 We have developed an initial set of tools that enable a data provider to 
 easily serve data stored in Amazon's S3 Web Object Store. In the current
 implementaiton, the data must be stored in HDF5 or NetCDF4 files. The data
@@ -14,11 +22,6 @@ We have conducted tests of this software and the Google Cloud Store and
 found that it works with that Web Object Store as well. In fact, reconfiguration
 to GCS is trivial.
 
-## Overview
-This directory (_data_) contains module test data, and the scripts, 
-source code, and production rules for tools that can be used to create 
-and process `hdf5`/`netcdf-4` data files to create portable _dmr++_ files 
-whose binary data objects are held in a web object store like AWS S3.
 
 ### dmr++
 The _dmr++_ files are the control data used by the server to enable 
@@ -307,7 +310,18 @@ ingest_s3bucket -v -f -b opendap.scratch -d /tmp/s3_scratch -t /usr/share/hyrax
     <tt> /usr/share/hyrax</tt>, the default data directry for Hyrax.</em></dd>
 </dl>
 
-## Previously
+## What To Do
+
+1. Determine the base URL of the hosting service (AWS S3, Google Cloud Store, Apache httpd, etc) you 
+intend to utilize. For example in S3 you need to know the _bucket___name_ and the AWS S3 URL (https://s3.amazonaws.com)  
+1. If you haven't already done so put your data into the hosting service space (And if you _do_ have it locally 
+don't remove it until the _dmr++_ process is completed!)
+1. Use the tools discussed below to make one or dmr++ files for your data (you'll need the bucket name and all that from previosuly)
+1. Place the _dmr++_ files, in any organization desired, into the BES.Catalog.catalog.RootDirectory tree.
+1. You can now access the remote data by navigating to the location of the _dmr++_ files and access them through the Data REquest Form or the DAP2 and DAP4 protocols.
+
+
+# Previously
 ChangeLog
 
 5/25/18
