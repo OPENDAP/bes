@@ -17,11 +17,21 @@ to GCS is trivial.
 ## Overview
 This directory (_data_) contains module test data, and the scripts, 
 source code, and production rules for tools that can be used to create 
-and process hdf5/netcdf-4 data files to create portable _dmr++_ files 
+and process `hdf5`/`netcdf-4` data files to create portable _dmr++_ files 
 whose binary data objects are held in a web object store like AWS S3.
 
-The _dmr+_ files are the control data used by the server to emnable 
-'in-place' access and subsetting of data in S3.
+### dmr++
+The _dmr++_ files are the control data used by the server to enable 
+'in-place' access and subsetting of data in S3. 
+
+**self-contained and portable**: The _dmr++_ files are self contained. They can 
+be served by any Hyrax server (version 1.16.0 or higher) simply by placing them 
+in the server's data file system.
+
+**size**: The _dmr++_ files are typically very much smaller than their source 
+`hdf5`/`nectdf-4` files, by as much as 2 or even 3 orders of magnitude (YMMV).
+
+## dmr++ tools
 
 There are three programs for building _dmr++_ files:
 - The program `get_dmrpp` builds a single _dmr++_ file from a single 
@@ -40,7 +50,7 @@ do so using paths relative the BES Catalog Root the mimicry is required.
 NOTE: Examples can be run as shown from the _bes/modules/dmrpp___module/data_ 
 directory.
 
-## Building the software
+## building the software
 
 In order for these programs (shell scripts) to function correctly a 
 localization step must take place. This happens when the parent software 
@@ -80,7 +90,7 @@ netcdf-4/hdf5 file. It is used by both `ingest_filesystem` and `ingest_s3bucket`
  * The bes conf template has to build by hand. jhrg 5/11/18
 ```
 
-### Example 1
+### example 1
 
 Creates a _dmr++_ file (_foo.dmrpp_) whose binary object URL is a file URL containing the fully qualifed path to the source data file as it's value. 
 
@@ -101,7 +111,7 @@ get_dmrpp -v -d `pwd` -o foo.dmrpp -u file://`pwd`/dmrpp/chunked_shuffled_fourD.
     <dd><em>The hdf5 file from which to build the dmr++ file.</em></dd>
 </dl>
 
-### Example 2
+### example 2
 
 Creates a _dmr++_ file (_foo.dmrpp_) whose binary object URL references an object in Amazon's S3. 
 
@@ -164,7 +174,7 @@ matching file using the `get_dmrpp` program.
       (if any) will be processed.
      (default: Not Set)
 ```
-### Example 1
+### example 1
 
 In its simplest invocation, `ingest_filesystem`'s defaults will cause it check for the file `./data_files.txt`. If found `ingest_filesystem` will treat every line in `./data_files.txt` as a fully qualifed path to an `hdf5`/`netcdf-4` file for which a `dmr++` file is to be computed. By default the output tree will be placed in the current working directory. The base end point for the `dmr++` binary object will be set to the current working directory.
 
@@ -172,7 +182,7 @@ In its simplest invocation, `ingest_filesystem`'s defaults will cause it check f
 ingest_filesystem 
 ```
 
-### Example 2
+### example 2
 In this invocation, `ingest_filesystem` crawls the local filesystem beginning with the CWD every file that matches the default regular expression (`^.*\\.(h5|he5|nc4)(\\.bz2|\\.gz|\\.Z)?$`) will be treated as an `hdf5`/`netcdf-4` file for which a `dmr++` file is to be computed. The output tree will be placed in a directory called scratch in the current working directory. The base URL for the `dmr++` binary objects will be set to the current working directory.
 
 ```
@@ -187,7 +197,7 @@ ingest_filesystem -f -t scratch
     <dd><em>Sets name of the directory to which the dmr++ output tree will be written to $CWD/scratch</em></dd>
 </dl>
 
-### Example 3
+### example 3
 
 In this invocation, `ingest_filesystem` crawls the local filesystem beginning at `/usr/share/hyrax`. Every file that matches the default regular expression (`^.*\\.(h5|he5|nc4)(\\.bz2|\\.gz|\\.Z)?$`) will be treated as an `hdf5`/`netcdf-4` file for which a `dmr++` file is to be computed. The output tree will be placed in `/tmp/dmrpp`. The base URL for the `dmr++` binary objects will be set to the AWS S3 bucket URL `https://s3.amazonaws.com/cloudydap` .
 
@@ -261,7 +271,7 @@ This script requires that:
 
 ```
 
-### Example 1
+### example 1
 
 ```
 ingest_s3bucket 
@@ -271,7 +281,7 @@ In its simplest invocation, `ingest_s3bucket`'s defaults will cause it check for
 and the software caches bucket information in the files named in the patterns `s3_BUCKETNAME_all_files.txt` `s3_BUCKETNAME_data_files.txt`. Changing the bucket name will change the name of the file information files accordingly). If the file is found, `ingest_s3bucket` will treat the 4th column of every line in `./s3_cloudydap_data_files.txt` as a relative path to an `hdf5`/`netcdf-4` file in the default bucket (`cloudydap`) for which a `dmr++` file is to be computed. By default the output tree will be placed in the current working directory. The base end point for the `dmr++` binary object will be set the URL of the S3 binary file that
 was used to create the `https://s3.amazonaws.comdmr++` file.
 
-### Example 2
+### example 2
 
 In this example we have `ingest_s3bucket` locate all the matching data files in the S3 bucket `opendap.scratch`, store the downloaded data files in `/tmp/s3_scratch`, and place the resulting dmr++ files in `/usr/share/hyrax`.
 
@@ -292,12 +302,13 @@ ingest_s3bucket -v -f -b opendap.scratch -d /tmp/s3_scratch -t /usr/share/hyrax
     <dt><tt>-d /tmp/s3_scratch</tt></dt>
     <dd><em>Sets the target directory for the data files downloaded from the S3 bucket to 
     <tt>/tmp/s3_scratch</tt></em></dd>
-    <dt><tt>-t /usr/share/hyrax</dt>
+    <dt><tt>-t /usr/share/hyrax</tt></dt>
     <dd><em>Sets the directory to which the dmr++ output tree will be written to: 
     <tt> /usr/share/hyrax</tt>, the default data directry for Hyrax.</em></dd>
 </dl>
 
-## ChangeLog
+## Previously
+ChangeLog
 
 5/25/18
 
