@@ -1,3 +1,36 @@
+News for 3.20.5
+
+Improved and fixed bugs in the the CovJSON response format
+(contributed by Corey Hemphill  <hemphilc@oregonstate.edu>).
+
+Added support for c++11 and c++0x builds including tests in
+configure that look for those options and use c++11 over c++0x.
+This works with the stock compiler on CentOS 6 .
+
+We have added much more support for S3. Data can now be served
+from S3 without transferring whole files (Hyrax supports subset
+in-place) and without reformatting the data. This version of Hyrax
+supports configuration of data already in S3 as well as files
+still on spinning disk. See the README.md file in
+bes/modules/dmrpp_handler/data
+
+Performance improvements and bug fixes to the XML parsers.
+
+Added a fix from Aron.Bartle@mechdyne.com.
+Netcdf file responses were not compressed when they should have been
+if the dataset had Structures. Fixed by patching FONcStructure as Aron
+suggested.
+
+We have added experimentatl support for STARE (Spatio Temporal
+Adaptive-Resolution Encoding) as part of our work on NASA ACCESS
+grant 17-ACCESS17-0039.
+
+We have added support for Dataset crawler/indexer systems that
+use JSON-LD as part of our work on NSF grant #1740704.
+
+The FreeForm handlers now support regular expression matching
+when looking for format file.
+
 News for 3.20.4
 
 Hk-351 Improved Jpeg2000 and GeoTiff responses.
