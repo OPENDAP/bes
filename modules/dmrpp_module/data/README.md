@@ -313,7 +313,7 @@ ingest_s3bucket -v -f -b opendap.scratch -d /tmp/s3_scratch -t /usr/share/hyrax
 ## What To Do
 
 1. Determine the base URL of the hosting service (AWS S3, Google Cloud Store, Apache httpd, etc) you 
-intend to utilize. For example in S3 you need to know the _bucket___name_ and the AWS S3 URL (https://s3.amazonaws.com)  
+intend to utilize. For example in S3 you need to know the _bucket name_ and the AWS S3 URL (https://s3.amazonaws.com)  
 1. If you haven't already done so put your data into the hosting service space (And if you _do_ have it locally 
 don't remove it until the _dmr++_ process is completed!)
 1. Use the tools discussed below to make one or dmr++ files for your data (you'll need the bucket name and all that from previosuly)
