@@ -49,7 +49,11 @@ static char rcsid[] not_used =
 #include <string>
 #include <vector>
 #include <cstdlib>
+#if __cplusplus >= 201103L
 #include <regex>
+#else
+#include <tr1/regex>
+#endif
 
 #include <BESDebug.h>
 
