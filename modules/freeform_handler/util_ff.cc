@@ -49,9 +49,13 @@ static char rcsid[] not_used =
 #include <string>
 #include <vector>
 #include <cstdlib>
-#include <regex>
 
+#if 0
+#include <regex>
+#else
 #include <BESRegex.h>
+#endif
+
 #include <BESDebug.h>
 
 #include <BaseType.h>
