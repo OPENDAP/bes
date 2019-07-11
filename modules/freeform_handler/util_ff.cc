@@ -50,12 +50,7 @@ static char rcsid[] not_used =
 #include <vector>
 #include <cstdlib>
 
-#if 0
-#include <regex>
-#else
 #include <BESRegex.h>
-#endif
-
 #include <BESDebug.h>
 
 #include <BaseType.h>
@@ -771,18 +766,11 @@ string get_Regex_format_file(const string & filename)
     std::map<string,string> mapFF = FFRequestHandler::get_fmt_regex_map();
     for (auto rgx = mapFF.begin(); rgx != mapFF.end(); ++ rgx) {
         BESDEBUG("ff", "get_Regex_format_file() - filename: '" << filename << "'  regex: '" << (*rgx).first << "'  format: '" << (*rgx).second << "'" << endl);
-#if 0
-        if (regex_match (base_name, regex((*rgx).first) )){
-            retVal = string((*rgx).second);
-            break;
-        }
-#else
         BESRegex regex(((*rgx).first).c_str());
-         if ( regex.match(base_name.c_str(), base_name.length()) > 0 ){
+         if (  (unsigned long) regex.match(base_name.c_str(), base_name.length()) == base_name.length() ){
              retVal = string((*rgx).second);
              break;
          }
-#endif
     }
     BESDEBUG("ff", "get_Regex_format_file() - returning format filename: '"<< retVal << "'" << endl);
     return retVal;
