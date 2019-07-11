@@ -767,14 +767,14 @@ string get_Regex_format_file(const string & filename)
     std::map<string,string> mapFF = FFRequestHandler::get_fmt_regex_map();
     for (auto rgx = mapFF.begin(); rgx != mapFF.end(); ++ rgx) {
         BESDEBUG("ff", "get_Regex_format_file() - filename: '" << filename << "'  regex: '" << (*rgx).first << "'  format: '" << (*rgx).second << "'" << endl);
-#if 1
+#if 0
         if (regex_match (base_name, regex((*rgx).first) )){
             retVal = string((*rgx).second);
             break;
         }
 #else
         BESRegex regex(((*rgx).first).c_str());
-         if (regex.match(base_name.c_str(), 0, base_name.length() )){
+         if ( regex.match(base_name.c_str(), base_name.length()) ){
              retVal = string((*rgx).second);
              break;
          }
