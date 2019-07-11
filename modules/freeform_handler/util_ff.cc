@@ -774,7 +774,7 @@ string get_Regex_format_file(const string & filename)
         }
 #else
         BESRegex regex(((*rgx).first).c_str());
-         if ( regex.match(base_name.c_str(), base_name.length()) ){
+         if ( regex.match(base_name.c_str(), base_name.length()) > 0 ){
              retVal = string((*rgx).second);
              break;
          }
