@@ -240,6 +240,13 @@ then
 	echo "BES_CONF_DOC: '${BES_CONF_DOC}'";
 fi
 
+if test -z "${dmrpp_url}"
+then
+	>&2 echo "ERROR! You must supply a dmrpp_url value using the -u option."
+    show_usage
+	exit 666
+fi
+
 ###############################################################################
 #
 # Build the (temporary) DMR file for the target dataset.
