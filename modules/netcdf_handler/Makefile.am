@@ -11,7 +11,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=netcdf_handler
-M_VER=3.12.0
+M_VER=3.11.9
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(NC_CPPFLAGS) $(DAP_CFLAGS)
 LIBADD = $(NC_LDFLAGS) $(NC_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -28,7 +28,7 @@ libnc_module_la_SOURCES = $(NCTYPE_SRC) $(NCTYPE_HDR) $(SERVER_SRC) $(SERVER_HDR
 libnc_module_la_LDFLAGS = -avoid-version -module 
 libnc_module_la_LIBADD = $(LIBADD)
 
-NCTYPE_SRC = ncdas.cc ncdds.cc nc_util.cc \
+NCTYPE_SRC = ncdas.cc ncdds.cc nc_util.cc ncdmr.cc \
 	NCArray.cc NCByte.cc NCFloat64.cc NCGrid.cc NCUInt32.cc		\
 	NCInt32.cc NCSequence.cc NCStr.cc NCStructure.cc NCUrl.cc	\
 	NCUInt16.cc NCInt16.cc NCFloat32.cc

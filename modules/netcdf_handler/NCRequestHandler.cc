@@ -82,6 +82,7 @@ ObjMemCache *NCRequestHandler::dds_cache = 0;
 ObjMemCache *NCRequestHandler::dmr_cache = 0;
 
 extern void nc_read_dataset_attributes(DAS & das, const string & filename);
+extern void nc_read_dataset_variables_dmr(DDS & dds, const string & filename);
 extern void nc_read_dataset_variables(DDS & dds, const string & filename);
 
 /** Is the version number string greater than or equal to the value.
@@ -321,7 +322,7 @@ void NCRequestHandler::get_dds_with_attributes(const string& dataset_name, const
         if (!container_name.empty()) dds->container_name(container_name);
         dds->filename(dataset_name);
 
-        nc_read_dataset_variables(*dds, dataset_name);
+        nc_read_dataset_variables_dmr(*dds, dataset_name);
 
         DAS* das = 0;
         if (das_cache && (das = static_cast<DAS*>(das_cache->get(dataset_name)))) {
