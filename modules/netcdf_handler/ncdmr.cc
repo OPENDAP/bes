@@ -559,47 +559,51 @@ static void read_variables(DMR & dmr, const string &filename, int ncid, int nvar
         else if (ndims == 0 || (ndims == 1 && nctype == NC_CHAR)) {
             BaseType *bt = build_scalar(name, filename, nctype);
             dmr.root()->add_var_nocopy(bt);
-        }
-        else if (is_grid(ncid, varid, ndims, dim_ids, map_sizes, map_names, map_types)) {
+        } else if (is_grid(ncid, varid, ndims, dim_ids, map_sizes, map_names, map_types)) {
             BaseType *bt = build_scalar(name, filename, nctype);
             Array *ar = new NCArray(name, filename, bt);
             dmr.root()->add_var_nocopy(ar);
-            //
+            // dimensions from map
             D4Dimension *d4d;
-            for(int dd = 0; dd < ndims; dd++) {
+            for (int dd = 0; dd < ndims; dd++) {
                 ar->append_dim(map_sizes[dd], map_names[dd]);
-                // Save the map names for latter use, which might not happen...
-                all_maps.push_back(string(map_names[dd]));
-                d4d = new D4Dimension(map_names[dd], map_sizes[dd]);
-                dmr.root()->dims()->add_dim_nocopy(d4d);
+                if (!is_dimension(string(map_names[dd]), all_maps)) {
+                    // Save the map names for latter use, which might not happen...
+                    all_maps.push_back(string(map_names[dd]));
+                    d4d = new D4Dimension(map_names[dd], map_sizes[dd]);
+                    dmr.root()->dims()->add_dim_nocopy(d4d);
+                }
             }
         }
         else {
-                BaseType *bt = build_scalar(name, filename, nctype);
-                NCArray *ar = build_array(bt, ncid, varid, nctype, ndims, dim_ids);
-                dmr.root()->add_var_nocopy(ar);
-#if 0
+            BaseType *bt = build_scalar(name, filename, nctype);
+            Array *ar = build_array(bt, ncid, varid, nctype, ndims, dim_ids);
+            dmr.root()->add_var_nocopy(ar);
             if (!NCRequestHandler::get_show_shared_dims()) {
-                BaseType *bt = build_scalar(name, filename, nctype);
-                dmr.root()->add_var_nocopy(bt);
-                array_vars.push_back(varid);
-            } else {
-                BaseType *bt = build_scalar(name, filename, nctype);
-                NCArray *ar = build_array(bt, ncid, varid, nctype, ndims, dim_ids);
-                dmr.root()->add_var_nocopy(ar);
-                //delete bt;
-                //dds_table.add_var(ar);
-                //delete ar;
+                for (int d = 0; d < ndims; ++d) {
+                    char dimname[MAX_NC_NAME];
+                    size_t dim_sz;
+                    int errstat = nc_inq_dim(ncid, dim_ids[d], dimname, &dim_sz);
+                    if (errstat != NC_NOERR) {
+                        throw Error("netcdf: could not get size for dimension " + long_to_string(d) + " in variable " +
+                                    dimname);
+                    }
+                    if (!is_dimension(string(dimname), all_maps)) {
+                        D4Dimension *dmr_dim = new D4Dimension(dimname, dim_sz);
+                        dmr.root()->dims()->add_dim_nocopy(dmr_dim);
+                        all_maps.push_back(dimname);
+                    }
+                }
             }
-#endif
         }
     }
-
+#if 0
     // This code is only run if elide_dimension_arrays is true and in that case the
     // loop above did not create any simple arrays. Instead it pushed the
     // var ids of things that look like simple arrays onto a vector. This code
     // will add all of those that really are arrays and not the ones that are
     // dimensions used by a Grid.
+
     if (!NCRequestHandler::get_show_shared_dims()) {
         // Now just loop through the saved array variables, writing out only
         // those that are not Grid Maps
@@ -623,6 +627,7 @@ static void read_variables(DMR & dmr, const string &filename, int ncid, int nvar
             BaseType *bt = build_scalar(name, filename, nctype);
             Array *ar = build_array(bt, ncid, var, nctype, ndims, dim_ids);
             dmr.root()->add_var_nocopy(ar);
+
             for (int d = 0; d < ndims; ++d) {
                 char dimname[MAX_NC_NAME];
                 size_t dim_sz;
@@ -635,6 +640,7 @@ static void read_variables(DMR & dmr, const string &filename, int ncid, int nvar
             }
         }
     }
+#endif
 }
 
 static void read_attributes(DMR & dmr, const string &filename, int ncid, int nvars) {
@@ -745,6 +751,24 @@ static void read_attributes(DMR & dmr, const string &filename, int ncid, int nva
     BESDEBUG("nc", "Exiting nc_read_dataset_attributes" << endl);
 }
 
+void read_group(DMR & dmr, const string &filename, int ncid, D4Group group)
+{
+    int errstat;
+    int nvars;
+
+    // how many variables?
+    errstat = nc_inq_nvars(ncid, &nvars);
+    if (errstat != NC_NOERR)
+        throw Error(errstat, "Could not inquire about netcdf file: " + path_to_filename(filename) + ".");
+    read_variables(dmr, filename, ncid, nvars);
+    read_attributes(dmr, filename, ncid, nvars);
+
+
+    BESDEBUG("nc", "Exiting read_group" << endl);
+
+
+}
+
 /** Given a reference to an instance of class DDS and a filename that refers
     to a netcdf file, read the netcdf file and extract all the dimensions of
     each of its variables. Add the variables and their dimensions to the
@@ -757,30 +781,34 @@ void nc_read_dataset_variables_dmr(DDS &dds, const string &filename)
     ncopts = 0;
     int ncid, errstat;
     int nvars;
+
+    D4Group *group = new D4Group("/");
     DMR *dmr = new DMR();
 
     errstat = nc_open(filename.c_str(), NC_NOWRITE, &ncid);
     if (errstat != NC_NOERR)
         throw Error(errstat, "Could not open " + filename + ".");
 
-    // how many variables?
-    errstat = nc_inq_nvars(ncid, &nvars);
-    if (errstat != NC_NOERR)
-        throw Error(errstat, "Could not inquire about netcdf file: " + path_to_filename(filename) + ".");
 
     // dataset name
     dmr->set_factory(new D4BaseTypeFactory);
-    dmr->factory()->NewVariable(dods_group_c,"/");
-    //dmr->root()->add();
+    //dmr->factory()->NewVariable(dods_group_c,"/");
+    dmr->root()->add_var_nocopy(group);
 
     dmr->set_name(name_path(filename));
     dmr->set_filename(filename);
     dmr->set_dap_version(dds.get_dap_version());
 
     // read variables' classes
-    read_variables(*dmr, filename, ncid, nvars);
+    read_group(*dmr, filename, ncid, *group);
 
-    read_attributes(*dmr, filename, ncid, nvars);
+//    // how many variables?
+//    errstat = nc_inq_nvars(ncid, &nvars);
+//    if (errstat != NC_NOERR)
+//        throw Error(errstat, "Could not inquire about netcdf file: " + path_to_filename(filename) + ".");
+//
+//    read_variables(*dmr, filename, ncid, nvars);
+//    read_attributes(*dmr, filename, ncid, nvars);
 
 //    DAS das;
 //
