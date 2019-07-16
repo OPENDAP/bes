@@ -577,7 +577,7 @@ static void read_variables(DMR & dmr, const string &filename, int ncid, int nvar
         }
         else {
             BaseType *bt = build_scalar(name, filename, nctype);
-            Array *ar = build_array(bt, ncid, varid, nctype, ndims, dim_ids);
+            NCArray *ar = build_array(bt, ncid, varid, nctype, ndims, dim_ids);
             dmr.root()->add_var_nocopy(ar);
             if (!NCRequestHandler::get_show_shared_dims()) {
                 for (int d = 0; d < ndims; ++d) {
