@@ -322,7 +322,7 @@ void NCRequestHandler::get_dds_with_attributes(const string& dataset_name, const
         if (!container_name.empty()) dds->container_name(container_name);
         dds->filename(dataset_name);
 
-        nc_read_dataset_variables(*dds, dataset_name);
+        nc_read_dataset_variables_dmr(*dds, dataset_name);
 
         DAS* das = 0;
         if (das_cache && (das = static_cast<DAS*>(das_cache->get(dataset_name)))) {
