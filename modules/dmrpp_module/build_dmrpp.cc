@@ -69,6 +69,7 @@ typedef struct H5D_chunk_rec_t {
 #include <BESDebug.h>
 
 #include <BESError.h>
+#include <BESNotFoundError.h>
 #include <BESInternalError.h>
 #include <BESDataHandlerInterface.h>
 
