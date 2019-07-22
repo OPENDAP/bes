@@ -67,14 +67,10 @@ typedef struct H5D_chunk_rec_t {
 #include <TheBESKeys.h>
 #include <BESUtil.h>
 #include <BESDebug.h>
-<<<<<<< HEAD
+
 #include <BESError.h>
 #include <BESInternalError.h>
 #include <BESDataHandlerInterface.h>
-=======
-#include <BESNotFoundError.h>
-#include <BESInternalError.h>
->>>>>>> master
 
 #include "DmrppTypeFactory.h"
 #include "DmrppD4Group.h"
