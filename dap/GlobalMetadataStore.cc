@@ -35,12 +35,12 @@
 #include <fstream>
 #include <sstream>
 #include <functional>
+#include <DAS.h>
 #include <memory>
 #include <sys/stat.h>
 
 #include <DapObj.h>
 #include <DDS.h>
-#include <DAS.h>
 #include <DMR.h>
 #include <D4ParserSax2.h>
 #include <XMLWriter.h>
@@ -734,6 +734,7 @@ GlobalMetadataStore::get_read_lock_helper(const string &name, const string &suff
  }
 
 /**
+ * @Deprecated - 6.25.19 SBL
  * @brief Is the DMR response for \arg name in the MDS?
  *
  * Look in the MDS to see if the DMR response has been stored/cached for
@@ -750,7 +751,6 @@ GlobalMetadataStore::get_read_lock_helper(const string &name, const string &suff
  * true. When the MDSReadLock object goes out of scope, the read lock is
  * released.
  */
-// @Deprecated // 6.25.19 SBL
 GlobalMetadataStore::MDSReadLock
 GlobalMetadataStore::is_dmr_available(const string &name)
 {
@@ -806,12 +806,12 @@ GlobalMetadataStore::is_dmr_available(const std::string &realName, const std::st
 }//end is_dmr_available(string, string, string)
 
 /**
+ * @Deprecated - 6.25.19 SBL
  * @brief Is the DDS response for \arg name in the MDS?
  * @param name Find the DDS response for \arg name.
  * @return A MDSReadLock object.
  * @see is_dmr_available() for more information.
  */
-// @Deprecated // 6.25.19 SBL
 GlobalMetadataStore::MDSReadLock
 GlobalMetadataStore::is_dds_available(const string &name)
 {
@@ -843,12 +843,12 @@ GlobalMetadataStore::is_dds_available(const BESContainer &container)
 }//end is_dds_available(BESContainer)
 
 /**
+ * @Deprecated - 6.25.19 SBL
  * @brief Is the DAS response for \arg name in the MDS?
  * @param name Find the DAS response for \arg name.
  * @return A MDSReadLock object.
  * @see is_dmr_available() for more information.
  */
-// @Deprecated // 6.25.19 SBL
 GlobalMetadataStore::MDSReadLock
 GlobalMetadataStore::is_das_available(const string &name)
 {
@@ -881,6 +881,7 @@ GlobalMetadataStore::is_das_available(const BESContainer &container)
 }//end is_das_available(BESContainer)
 
 /**
+ * @Deprecated - 6.25.19 SBL
  * @brief Is the DMR++ response for \arg name in the MDS?
  *
  * Look in the MDS to see if the DMR++ response has been stored/cached for
@@ -897,7 +898,6 @@ GlobalMetadataStore::is_das_available(const BESContainer &container)
  * true. When the MDSReadLock object goes out of scope, the read lock is
  * released.
  */
-// @Deprecated // 6.25.19 SBL
 GlobalMetadataStore::MDSReadLock
 GlobalMetadataStore::is_dmrpp_available(const string &name)
 {
