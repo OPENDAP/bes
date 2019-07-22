@@ -141,17 +141,9 @@ void zero_tm_struct(tm &tms)
     tms.tm_isdst = 0;
 }
 
-/**
- * Apache httpd directories utilize a time format of
- *  "DD-MM-YYY hh:mm" example: "19-Oct-2018 19:32"
- *  here we assume the time zone is UTC and off we go.
- */
+
 string HttpdDirScraper::httpd_time_to_iso_8601(const string httpd_time) const
 {
-    // void BESUtil::tokenize(const string& str, vector<string>& tokens, const string& delimiters)
-    struct tm tm;
-    zero_tm_struct(tm);
-
     vector<string> tokens;
     string delimiters = "- :";
     BESUtil::tokenize(httpd_time, tokens, delimiters);
@@ -166,18 +158,56 @@ string HttpdDirScraper::httpd_time_to_iso_8601(const string httpd_time) const
         }
     }
 
+    BESDEBUG(MODULE, prolog << "Second Field: "<< tokens[1] << endl);
+
+    const char *second_field = tokens[1].c_str();
+    bool is_alpha = true;
+    for(unsigned long i=0; is_alpha && i< tokens[1].length(); i++){
+        is_alpha = isalpha(second_field[i]);
+    }
+    time_t theTime;
+    if(is_alpha){
+        BESDEBUG(MODULE, prolog << "Detected Time Format A (\"DD-MM-YYY hh:mm\")" << endl);
+        theTime = parse_time_format_A(tokens);
+    }
+    else {
+        BESDEBUG(MODULE, prolog << "Detected Time Format B (\"YYYY-MM-DD hh:mm\")" << endl);
+        theTime = parse_time_format_B(tokens);
+    }
+    return BESUtil::get_time(theTime, false);
+
+}
+
+/**
+ * Apache httpd directories utilize a time format of
+ *  "DD-MM-YYY hh:mm" example: "19-Oct-2018 19:32"
+ *  here we assume the time zone is UTC and off we go.
+ */
+time_t HttpdDirScraper::parse_time_format_A(const vector<string> tokens) const
+{
+    // void BESUtil::tokenize(const string& str, vector<string>& tokens, const string& delimiters)
+    struct tm tm;
+    zero_tm_struct(tm);
+
     if (tokens.size() > 2) {
         std::istringstream(tokens[0]) >> tm.tm_mday;
+        BESDEBUG(MODULE, prolog << "    tm.tm_mday: "<< tm.tm_mday << endl);
 
         pair<string, int> mnth = *d_months.find(BESUtil::lowercase(tokens[1]));
+        BESDEBUG(MODULE, prolog << "    mnth.first: "<< mnth.first << endl);
+        BESDEBUG(MODULE, prolog << "    mnth.second: "<< mnth.second << endl);
         tm.tm_mon = mnth.second;
+        BESDEBUG(MODULE, prolog << "    tm.tm_mon: "<< tm.tm_mon << endl);
 
         std::istringstream(tokens[2]) >> tm.tm_year;
         tm.tm_year -= 1900;
+        BESDEBUG(MODULE, prolog << "    tm.tm_year: "<< tm.tm_year << endl);
 
         if (tokens.size() > 4) {
             std::istringstream(tokens[3]) >> tm.tm_hour;
+            BESDEBUG(MODULE, prolog << "    tm.tm_hour: "<< tm.tm_hour << endl);
             std::istringstream(tokens[4]) >> tm.tm_min;
+            BESDEBUG(MODULE, prolog << "    tm.tm_min: "<< tm.tm_min << endl);
         }
     }
 
@@ -185,7 +215,44 @@ string HttpdDirScraper::httpd_time_to_iso_8601(const string httpd_time) const
 
     time_t theTime = mktime(&tm);
     BESDEBUG(MODULE, prolog << "theTime: " << theTime << endl);
-    return BESUtil::get_time(theTime, false);
+    return theTime;
+}
+
+/**
+ * Newer (??) Apache httpd directories utilize a time format of
+ *  "YYYY-MM-DD hh:mm" example: "2012-01-02 10:03"
+ *  here we assume the time zone is UTC and off we go.
+ */
+time_t HttpdDirScraper::parse_time_format_B(const vector<string> tokens) const
+{
+    // void BESUtil::tokenize(const string& str, vector<string>& tokens, const string& delimiters)
+    struct tm tm;
+    zero_tm_struct(tm);
+
+    if (tokens.size() > 2) {
+        std::istringstream(tokens[0]) >> tm.tm_year;
+        tm.tm_year -= 1900;
+        BESDEBUG(MODULE, prolog << "    tm.tm_year: "<< tm.tm_year << endl);
+
+        std::istringstream(tokens[1]) >> tm.tm_mon;
+        BESDEBUG(MODULE, prolog << "    tm.tm_mon: "<< tm.tm_mon << endl);
+
+        std::istringstream(tokens[2]) >> tm.tm_mday;
+        BESDEBUG(MODULE, prolog << "    tm.tm_mday: "<< tm.tm_mday << endl);
+
+        if (tokens.size() > 4) {
+            std::istringstream(tokens[3]) >> tm.tm_hour;
+            BESDEBUG(MODULE, prolog << "    tm.tm_hour: "<< tm.tm_hour << endl);
+            std::istringstream(tokens[4]) >> tm.tm_min;
+            BESDEBUG(MODULE, prolog << "    tm.tm_min: "<< tm.tm_min << endl);
+        }
+    }
+
+    BESDEBUG(MODULE, prolog << "tm struct: " << endl << show_tm_struct(tm));
+
+    time_t theTime = mktime(&tm);
+    BESDEBUG(MODULE, prolog << "ISO-8601 Time: " << theTime << endl);
+    return theTime;
 }
 
 /**

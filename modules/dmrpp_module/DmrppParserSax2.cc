@@ -132,6 +132,25 @@ DmrppParserSax2::dim_def()
     return d_dim_def;
 }
 
+/* Search through the attribute array for a given attribute name.
+ * If the name is found, return the string value for that attribute
+ * @param name: Search for this name
+ * @param attributes: Array that holds the attribute values to search
+ * @param num_attributes: Number of attributes
+ * @return string value of attribute; the empty string if the name was not found
+ */
+string DmrppParserSax2::get_attribute_val(const string &name, const xmlChar **attributes, int num_attributes)
+{
+	unsigned int index = 0;
+	for (int i = 0; i < num_attributes; ++i, index += 5) {
+		if (strncmp(name.c_str(), (const char *)attributes[index], name.length()) == 0) {
+			return string((const char *)attributes[index+3],  (const char *)attributes[index+4]);
+		}
+	}
+	return "";
+}
+
+#if 0
 /** Dump XML attributes to local store so they can be easily manipulated.
  * XML attribute names are always folded to lower case.
  * @param attributes The XML attribute array
@@ -153,6 +172,7 @@ void DmrppParserSax2::transfer_xml_attrs(const xmlChar **attributes, int nb_attr
             "XML Attribute '" << (const char *)attributes[index] << "': " << xml_attrs[(const char *)attributes[index]].value << endl);
     }
 }
+#endif
 
 /** Transfer the XML namespaces to the local store so they can be manipulated
  * more easily.
@@ -170,6 +190,7 @@ void DmrppParserSax2::transfer_xml_ns(const xmlChar **namespaces, int nb_namespa
     }
 }
 
+#if 0
 /** Is a required XML attribute present? Attribute names are always lower case.
  * @note To use this method, first call transfer_xml_attrs.
  * @param attr The XML attribute
@@ -185,7 +206,31 @@ bool DmrppParserSax2::check_required_attribute(const string & attr)
     else
         return true;
 }
+#endif
 
+/*
+ * An improved version of the previous check_required_attribute.
+ * Searches for an attribute name within the attribute array.
+ * @param name: The attribute name to search for
+ * @param attributes: The attribute array
+ * @param num_attributes: The number of attributes
+ * @return success: true
+ * 		   failure: false
+ */
+bool DmrppParserSax2::check_required_attribute(const string &name, const xmlChar **attributes, int num_attributes)
+{
+	unsigned int index = 0;
+	for (int i = 0; i < num_attributes; ++i, index += 5) {
+		if (strncmp(name.c_str(), (const char *)attributes[index], name.length()) == 0) {
+			return true;
+		}
+	}
+
+	dmr_error(this, "Required attribute '%s' not found.", name.c_str());
+	return false;
+}
+
+#if 0
 /** Is a XML attribute present? Attribute names are always lower case.
  * @note To use this method, first call transfer_xml_attrs.
  * @param attr The XML attribute
@@ -196,22 +241,46 @@ bool DmrppParserSax2::check_attribute(const string & attr)
 {
     return (xml_attrs.find(attr) != xml_attrs.end());
 }
+#endif
+
+/**
+ * An improved version of the check_attribute function.
+ * Search for an attribute name to see if it is already present in the
+ * provided attribute array.
+ * @param name: The attribute name to search for
+ * @param attributes: The attribute array
+ * @param num_attributes: The number of attributes
+ * @return success: true
+ * 		   failure: false
+ */
+bool DmrppParserSax2::check_attribute(const string &name, const xmlChar **attributes, int num_attributes)
+{
+	unsigned int index = 0;
+	for (int i = 0; i < num_attributes; ++i, index += 5) {
+		if (strncmp(name.c_str(), (const char *)attributes[index], name.length()) == 0) {
+			return true;
+		}
+	}
+	return false;
+}
 
 bool DmrppParserSax2::process_dimension_def(const char *name, const xmlChar **attrs, int nb_attributes)
 {
     if (is_not(name, "Dimension")) return false;
 
+#if 0
     transfer_xml_attrs(attrs, nb_attributes);
+#endif
 
-    if (!(check_required_attribute("name") && check_required_attribute("size"))) {
+    if (!(check_required_attribute("name", attrs, nb_attributes) && check_required_attribute("size", attrs, nb_attributes))) {
         dmr_error(this, "The required attribute 'name' or 'size' was missing from a Dimension element.");
         return false;
     }
 
     // This getter (dim_def) allocates a new object if needed.
-    dim_def()->set_name(xml_attrs["name"].value);
+    dim_def()->set_name(get_attribute_val("name", attrs, nb_attributes));
     try {
-        dim_def()->set_size(xml_attrs["size"].value);
+        dim_def()->set_size(get_attribute_val("size", attrs, nb_attributes));
     }
     catch (Error &e) {
         dmr_error(this, e.get_error_message().c_str());
@@ -242,13 +311,15 @@ bool DmrppParserSax2::process_dimension(const char *name, const xmlChar **attrs,
 {
     if (is_not(name, "Dim")) return false;
 
+#if 0
     transfer_xml_attrs(attrs, nb_attributes);
+#endif
 
-    if (check_attribute("size") && check_attribute("name")) {
+    if (check_attribute("size", attrs, nb_attributes) && check_attribute("name", attrs, nb_attributes)) {
         dmr_error(this, "Only one of 'size' and 'name' are allowed in a Dim element, but both were used.");
         return false;
     }
-    if (!(check_attribute("size") || check_attribute("name"))) {
+    if (!(check_attribute("size", attrs, nb_attributes) || check_attribute("name", attrs, nb_attributes))) {
         dmr_error(this, "Either 'size' or 'name' must be used in a Dim element.");
         return false;
     }
@@ -273,12 +344,12 @@ bool DmrppParserSax2::process_dimension(const char *name, const xmlChar **attrs,
     assert(top_basetype()->is_vector_type());
 
     Array *a = static_cast<Array*>(top_basetype());
-    if (check_attribute("size")) {
-        a->append_dim(atoi(xml_attrs["size"].value.c_str())); // low budget code for now. jhrg 8/20/13
+    if (check_attribute("size", attrs, nb_attributes)) {
+        a->append_dim(stoi(get_attribute_val("size", attrs, nb_attributes))); // low budget code for now. jhrg 8/20/13, modified to use new function. kln 9/7/19
         return true;
     }
-    else if (check_attribute("name")) {
-        string name = xml_attrs["name"].value;
+    else if (check_attribute("name", attrs, nb_attributes)) {
+        string name = get_attribute_val("name", attrs, nb_attributes);
 
         D4Dimension *dim = 0;
         if (name[0] == '/')		// lookup the Dimension in the root group
@@ -300,9 +371,11 @@ bool DmrppParserSax2::process_map(const char *name, const xmlChar **attrs, int n
 {
     if (is_not(name, "Map")) return false;
 
+#if 0
     transfer_xml_attrs(attrs, nb_attributes);
+#endif
 
-    if (!check_attribute("name")) {
+    if (!check_attribute("name", attrs, nb_attributes)) {
         dmr_error(this, "The 'name' attribute must be used in a Map element.");
         return false;
     }
@@ -328,8 +401,8 @@ bool DmrppParserSax2::process_map(const char *name, const xmlChar **attrs, int n
 
     Array *a = static_cast<Array*>(top_basetype());
 
-    string map_name = xml_attrs["name"].value;
-    if (xml_attrs["name"].value[0] != '/') map_name = top_group()->FQN() + map_name;
+    string map_name = get_attribute_val("name", attrs, nb_attributes);
+    if (get_attribute_val("name", attrs, nb_attributes).at(0) != '/') map_name = top_group()->FQN() + map_name;
 
     Array *map_source = 0;	// The array variable that holds the data for the Map
 
@@ -357,16 +430,18 @@ bool DmrppParserSax2::process_group(const char *name, const xmlChar **attrs, int
 {
     if (is_not(name, "Group")) return false;
 
+#if 0
     transfer_xml_attrs(attrs, nb_attributes);
+#endif
 
-    if (!check_required_attribute("name")) {
+    if (!check_required_attribute("name", attrs, nb_attributes)) {
         dmr_error(this, "The required attribute 'name' was missing from a Group element.");
         return false;
     }
 
-    BaseType *btp = dmr()->factory()->NewVariable(dods_group_c, xml_attrs["name"].value);
+    BaseType *btp = dmr()->factory()->NewVariable(dods_group_c, get_attribute_val("name", attrs, nb_attributes));
     if (!btp) {
-        dmr_fatal_error(this, "Could not instantiate the Group '%s'.", xml_attrs["name"].value.c_str());
+        dmr_fatal_error(this, "Could not instantiate the Group '%s'.", get_attribute_val("name", attrs, nb_attributes).c_str());
         return false;
     }
 
@@ -401,20 +476,22 @@ inline bool DmrppParserSax2::process_attribute(const char *name, const xmlChar *
 {
     if (is_not(name, "Attribute")) return false;
 
+#if 0
     // These methods set the state to parser_error if a problem is found.
     transfer_xml_attrs(attrs, nb_attributes);
+#endif
 
     // add error
-    if (!(check_required_attribute(string("name")) && check_required_attribute(string("type")))) {
+    if (!(check_required_attribute(string("name"), attrs, nb_attributes) && check_required_attribute(string("type"), attrs, nb_attributes))) {
         dmr_error(this, "The required attribute 'name' or 'type' was missing from an Attribute element.");
         return false;
     }
 
-    if (xml_attrs["type"].value == "Container") {
+    if (get_attribute_val("type", attrs, nb_attributes) == "Container") {
         push_state(inside_attribute_container);
 
-        BESDEBUG(module, "Pushing attribute container " << xml_attrs["name"].value << endl);
-        D4Attribute *child = new D4Attribute(xml_attrs["name"].value, attr_container_c);
+        BESDEBUG(module, "Pushing attribute container " << get_attribute_val("name", attrs, nb_attributes) << endl);
+        D4Attribute *child = new D4Attribute(get_attribute_val("name", attrs, nb_attributes), attr_container_c);
 
         D4Attributes *tos = top_attributes();
         // add return
@@ -427,17 +504,17 @@ inline bool DmrppParserSax2::process_attribute(const char *name, const xmlChar *
         tos->add_attribute_nocopy(child);
         push_attributes(child->attributes());
     }
-    else if (xml_attrs["type"].value == "OtherXML") {
+    else if (get_attribute_val("type", attrs, nb_attributes) == "OtherXML") {
         push_state(inside_other_xml_attribute);
 
-        dods_attr_name = xml_attrs["name"].value;
-        dods_attr_type = xml_attrs["type"].value;
+        dods_attr_name = get_attribute_val("name", attrs, nb_attributes);
+        dods_attr_type = get_attribute_val("type", attrs, nb_attributes);
     }
     else {
         push_state(inside_attribute);
 
-        dods_attr_name = xml_attrs["name"].value;
-        dods_attr_type = xml_attrs["type"].value;
+        dods_attr_name = get_attribute_val("name", attrs, nb_attributes);
+        dods_attr_type = get_attribute_val("type", attrs, nb_attributes);
     }
 
     return true;
@@ -452,22 +529,24 @@ inline bool DmrppParserSax2::process_enum_def(const char *name, const xmlChar **
 {
     if (is_not(name, "Enumeration")) return false;
 
+#if 0
     transfer_xml_attrs(attrs, nb_attributes);
+#endif
 
-    if (!(check_required_attribute("name") && check_required_attribute("basetype"))) {
+    if (!(check_required_attribute("name", attrs, nb_attributes) && check_required_attribute("basetype", attrs, nb_attributes))) {
         dmr_error(this, "The required attribute 'name' or 'basetype' was missing from an Enumeration element.");
         return false;
     }
 
-    Type t = get_type(xml_attrs["basetype"].value.c_str());
+    Type t = get_type(get_attribute_val("basetype", attrs, nb_attributes).c_str());
     if (!is_integer_type(t)) {
         dmr_error(this, "The Enumeration '%s' must have an integer type, instead the type '%s' was used.",
-            xml_attrs["name"].value.c_str(), xml_attrs["basetype"].value.c_str());
+        		get_attribute_val("name", attrs, nb_attributes).c_str(), get_attribute_val("basetype", attrs, nb_attributes).c_str());
         return false;
     }
 
     // This getter allocates a new object if needed.
-    string enum_def_path = xml_attrs["name"].value;
+    string enum_def_path = get_attribute_val("name", attrs, nb_attributes);
 #if 0
     // Use FQNs when things are referenced, not when they are defined
     if (xml_attrs["name"].value[0] != '/')
@@ -483,28 +562,30 @@ inline bool DmrppParserSax2::process_enum_const(const char *name, const xmlChar 
 {
     if (is_not(name, "EnumConst")) return false;
 
+#if 0
     // These methods set the state to parser_error if a problem is found.
     transfer_xml_attrs(attrs, nb_attributes);
+#endif
 
-    if (!(check_required_attribute("name") && check_required_attribute("value"))) {
+    if (!(check_required_attribute("name", attrs, nb_attributes) && check_required_attribute("value", attrs, nb_attributes))) {
         dmr_error(this, "The required attribute 'name' or 'value' was missing from an EnumConst element.");
         return false;
     }
 
-    istringstream iss(xml_attrs["value"].value);
+    istringstream iss(get_attribute_val("value", attrs, nb_attributes));
     long long value = 0;
     iss >> skipws >> value;
     if (iss.fail() || iss.bad()) {
         dmr_error(this, "Expected an integer value for an Enumeration constant, got '%s' instead.",
-            xml_attrs["value"].value.c_str());
+        		get_attribute_val("value", attrs, nb_attributes).c_str());
     }
     else if (!enum_def()->is_valid_enum_value(value)) {
         dmr_error(this, "In an Enumeration constant, the value '%s' cannot fit in a variable of type '%s'.",
-            xml_attrs["value"].value.c_str(), D4type_name(d_enum_def->type()).c_str());
+        		get_attribute_val("value", attrs, nb_attributes).c_str(), D4type_name(d_enum_def->type()).c_str());
     }
     else {
         // unfortunate choice of names... args are 'label' and 'value'
-        enum_def()->add_value(xml_attrs["name"].value, value);
+        enum_def()->add_value(get_attribute_val("name", attrs, nb_attributes), value);
     }
 
     return true;
@@ -547,18 +628,20 @@ inline bool DmrppParserSax2::process_variable(const char *name, const xmlChar **
  @param attrs the attributes read with the tag */
 void DmrppParserSax2::process_variable_helper(Type t, ParseState s, const xmlChar **attrs, int nb_attributes)
 {
-    transfer_xml_attrs(attrs, nb_attributes);
+#if 0
+	transfer_xml_attrs(attrs, nb_attributes);
+#endif
 
-    if (check_required_attribute("name")) {
-        BaseType *btp = dmr()->factory()->NewVariable(t, xml_attrs["name"].value);
+    if (check_required_attribute("name", attrs, nb_attributes)) {
+        BaseType *btp = dmr()->factory()->NewVariable(t, get_attribute_val("name", attrs, nb_attributes));
         if (!btp) {
             dmr_fatal_error(this, "Could not instantiate the variable '%s'.", xml_attrs["name"].value.c_str());
             return;
         }
 
-        if ((t == dods_enum_c) && check_required_attribute("enum")) {
+        if ((t == dods_enum_c) && check_required_attribute("enum", attrs, nb_attributes)) {
             D4EnumDef *enum_def = 0;
-            string enum_path = xml_attrs["enum"].value;
+            string enum_path = get_attribute_val("enum", attrs, nb_attributes);
             if (enum_path[0] == '/')
                 enum_def = dmr()->root()->find_enum_def(enum_path);
             else
@@ -671,23 +754,26 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 localname);
 
         parser->root_ns = URI ? (const char *) URI : "";
+
+#if 0
         parser->transfer_xml_attrs(attributes, nb_attributes);
+#endif
 
-        if (parser->check_required_attribute(string("name"))) parser->dmr()->set_name(parser->xml_attrs["name"].value);
+        if (parser->check_required_attribute(string("name"), attributes, nb_attributes)) parser->dmr()->set_name(parser->get_attribute_val("name", attributes, nb_attributes));
 
-        if (parser->check_attribute("dapVersion"))
-            parser->dmr()->set_dap_version(parser->xml_attrs["dapVersion"].value);
+        if (parser->check_attribute("dapVersion", attributes, nb_attributes))
+            parser->dmr()->set_dap_version(parser->get_attribute_val("dapVersion", attributes, nb_attributes));
 
-        if (parser->check_attribute("dmrVersion"))
-            parser->dmr()->set_dmr_version(parser->xml_attrs["dmrVersion"].value);
+        if (parser->check_attribute("dmrVersion", attributes, nb_attributes))
+            parser->dmr()->set_dmr_version(parser->get_attribute_val("dmrVersion", attributes, nb_attributes));
 
-        if (parser->check_attribute("base")) {
-            parser->dmr()->set_request_xml_base(parser->xml_attrs["base"].value);
+        if (parser->check_attribute("base", attributes, nb_attributes)) {
+            parser->dmr()->set_request_xml_base(parser->get_attribute_val("base", attributes, nb_attributes));
         }
         if (parser->debug()) cerr << "Dataset xml:base is set to '" << parser->dmr()->request_xml_base() << "'" << endl;
 
-        if (parser->check_attribute("href")) {
-            parser->dmrpp_dataset_href = parser->xml_attrs["href"].value;
+        if (parser->check_attribute("href", attributes, nb_attributes)) {
+            parser->dmrpp_dataset_href = parser->get_attribute_val("href", attributes, nb_attributes);
         }
         if (parser->debug()) cerr << "Dataset dmrpp:href is set to '" << parser->dmrpp_dataset_href << "'" << endl;
 
@@ -773,8 +859,10 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         }
 
         if (nb_attributes != 0) {
-            parser->transfer_xml_attrs(attributes, nb_attributes);
-            for (XMLAttrMap::iterator i = parser->xml_attr_begin(); i != parser->xml_attr_end(); ++i) {
+#if 0
+        	parser->transfer_xml_attrs(attributes, nb_attributes);
+#endif
+        	for (XMLAttrMap::iterator i = parser->xml_attr_begin(); i != parser->xml_attr_end(); ++i) {
                 parser->other_xml.append(" ");
                 if (!i->second.prefix.empty()) {
                     parser->other_xml.append(i->second.prefix);
@@ -851,7 +939,9 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         if (parser->debug()) cerr << "Inside dmrpp namespaced element. localname: " << localname << endl;
         assert(this_element_ns_name == dmrpp_namespace);
 
+#if 0
         parser->transfer_xml_attrs(attributes, nb_attributes); // load up xml_attrs
+#endif
 
         BaseType *bt = parser->top_basetype();
         if (!bt) throw BESInternalError("Could locate parent BaseType during parse operation.", __FILE__, __LINE__);
@@ -864,8 +954,8 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         if (strcmp(localname, "chunks") == 0) {
             if (parser->debug()) cerr << "DMR++ chunks element. localname: " << localname << endl;
 
-            if (parser->check_attribute("compressionType")) {
-                string compression_type_string(parser->xml_attrs["compressionType"].value);
+            if (parser->check_attribute("compressionType", attributes, nb_attributes)) {
+                string compression_type_string(parser->get_attribute_val("compressionType", attributes, nb_attributes));
                 dc->ingest_compression_type(compression_type_string);
 
                 if (parser->debug())
@@ -880,7 +970,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         // Ingest an dmrpp:chunk element and its attributes
         else if (strcmp(localname, "chunk") == 0) {
             string data_url = "unknown_data_location";
-            if (parser->check_attribute("href")) {
+            if (parser->check_attribute("href", attributes, nb_attributes)) {
 #if 0
                 istringstream data_url_ss(parser->xml_attrs["href"].value);
                 data_url = data_url_ss.str();
@@ -888,7 +978,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 cerr << "Processing 'href' value into data_url. href: " << data_url_ss.str() << endl;
 #endif
 
-                data_url = parser->xml_attrs["href"].value;
+                data_url = parser->get_attribute_val("href", attributes, nb_attributes);
                 if (parser->debug())
                     cerr << "Processing 'href' value into data_url. href: " << data_url << endl;
             }
@@ -937,8 +1027,8 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             unsigned long long size = 0;
             string chunk_position_in_array("");
 
-            if (parser->check_required_attribute("offset")) {
-                istringstream offset_ss(parser->xml_attrs["offset"].value);
+            if (parser->check_required_attribute("offset", attributes, nb_attributes)) {
+                istringstream offset_ss(parser->get_attribute_val("offset", attributes, nb_attributes));
                 offset_ss >> offset;
                 if (parser->debug()) cerr << "Processed attribute 'offset=\"" << offset << "\"'" << endl;
             }
@@ -946,8 +1036,8 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 dmr_error(parser, "The hdf:byteStream element is missing the required attribute 'offset'.");
             }
 
-            if (parser->check_required_attribute("nBytes")) {
-                istringstream size_ss(parser->xml_attrs["nBytes"].value);
+            if (parser->check_required_attribute("nBytes", attributes, nb_attributes)) {
+                istringstream size_ss(parser->get_attribute_val("nBytes", attributes, nb_attributes));
                 size_ss >> size;
                 if (parser->debug()) cerr << "Processed attribute 'nBytes=\"" << size << "\"'" << endl;
             }
@@ -955,8 +1045,8 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 dmr_error(parser, "The hdf:byteStream element is missing the required attribute 'size'.");
             }
 
-            if (parser->check_attribute("chunkPositionInArray")) {
-                istringstream chunk_position_ss(parser->xml_attrs["chunkPositionInArray"].value);
+            if (parser->check_attribute("chunkPositionInArray", attributes, nb_attributes)) {
+                istringstream chunk_position_ss(parser->get_attribute_val("chunkPositionInArray", attributes, nb_attributes));
                 chunk_position_in_array = chunk_position_ss.str();
                 if (parser->debug())
                     cerr << "Found attribute 'chunkPositionInArray' value: " << chunk_position_ss.str() << endl;
@@ -1386,7 +1476,8 @@ void DmrppParserSax2::cleanup_parse()
     bool wellFormed = context->wellFormed;
     bool valid = context->valid;
 
-    context->sax = NULL;
+    // context->sax = NULL;
+    // Leak. Removed the above. jhrg 6/19/19
     xmlFreeParserCtxt(context);
 
     delete d_enum_def;
@@ -1436,6 +1527,7 @@ void DmrppParserSax2::intern(istream &f, DMR *dest_dmr, bool debug)
 
     d_dmr = dest_dmr; // dump values here
 
+#if 0
     int line_num = 1;
     string line;
 
@@ -1465,6 +1557,43 @@ void DmrppParserSax2::intern(istream &f, DMR *dest_dmr, bool debug)
 
     // This call ends the parse.
     xmlParseChunk(context, line.c_str(), 0, 1/*terminate*/);
+#else
+    int line_num = 1;
+    string line;
+
+    // Get the XML prolog line (looks like: <?xml ... ?> )
+    getline(f, line);
+    if (line.length() == 0) throw Error("No input found while parsing the DMR.");
+
+    if (debug) cerr << "line: (" << line_num << "): " << endl << line << endl << endl;
+
+    context = xmlCreatePushParserCtxt(&dmrpp_sax_parser, this, line.c_str(), line.length(), "stream");
+    context->validate = true;
+    push_state(parser_start);
+
+    // Get the first chunk of the stuff
+    long chunk_count = 0;
+    long chunk_size = 0;
+
+    f.read(d_parse_buffer, D4_PARSE_BUFF_SIZE);
+    chunk_size=f.gcount();
+    d_parse_buffer[chunk_size]=0; // null terminate the string. We can do it this way because the buffer is +1 bigger than D4_PARSE_BUFF_SIZE
+    if (debug) cerr << "chunk: (" << chunk_count++ << "): " << endl << d_parse_buffer << endl << endl;
+
+    while(!f.eof()  && (get_state() != parser_end)){
+
+        xmlParseChunk(context, d_parse_buffer, chunk_size, 0);
+
+        // There is more to read. Get the next chunk
+        f.read(d_parse_buffer, D4_PARSE_BUFF_SIZE);
+        chunk_size=f.gcount();
+        d_parse_buffer[chunk_size]=0; // null terminate the string. We can do it this way because the buffer is +1 bigger than D4_PARSE_BUFF_SIZE
+        if (debug) cerr << "chunk: (" << chunk_count++ << "): " << endl << d_parse_buffer << endl << endl;
+    }
+
+    // This call ends the parse.
+    xmlParseChunk(context, d_parse_buffer, chunk_size, 1/*terminate*/);
+#endif
 
     // This checks that the state on the parser stack is parser_end and throws
     // an exception if it's not (i.e., the loop exited with gcount() == 0).
@@ -1512,8 +1641,6 @@ void DmrppParserSax2::intern(const char *buffer, int size, DMR *dest_dmr, bool d
     push_state(parser_start);
     context = xmlCreatePushParserCtxt(&dmrpp_sax_parser, this, buffer, size, "stream");
     context->validate = true;
-    //push_state(parser_start);
-    //xmlParseChunk(context, buffer, size, 0);
 
     // This call ends the parse.
     xmlParseChunk(context, buffer, 0, 1/*terminate*/);
