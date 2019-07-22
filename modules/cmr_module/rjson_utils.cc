@@ -68,6 +68,7 @@ rjson_utils::getJsonDoc(const string &url, rapidjson::Document &doc){
     char readBuffer[65536];
     rapidjson::FileReadStream frs(fp, readBuffer, sizeof(readBuffer));
     doc.ParseStream(frs);
+    fclose(fp);
 }
 
 

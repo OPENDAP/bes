@@ -49,8 +49,8 @@ static char rcsid[] not_used =
 #include <string>
 #include <vector>
 #include <cstdlib>
-#include <regex>
 
+#include <BESRegex.h>
 #include <BESDebug.h>
 
 #include <BaseType.h>
@@ -760,17 +760,20 @@ dods_float64 get_float_value(BaseType * var) throw(InternalErr)
 
 string get_Regex_format_file(const string & filename)
 {
+    string::size_type found = filename.find_last_of("/\\");
+    string base_name = filename.substr(found+1);
     string retVal = "";
     std::map<string,string> mapFF = FFRequestHandler::get_fmt_regex_map();
     for (auto rgx = mapFF.begin(); rgx != mapFF.end(); ++ rgx) {
-#if 0
-        cout << filename << "   " << rgx.first << "   " << rgx.second << endl;
-#endif
-        string::size_type found = filename.find_last_of("/\\");
-        if (regex_match (filename.substr(found+1), regex((*rgx).first) )){
-            retVal = string((*rgx).second);
-            break;
-        }
+        BESDEBUG("ff", "get_Regex_format_file() - filename: '" << filename << "'" <<
+		 " regex: '" << (*rgx).first << "'" <<
+		 " format: '" << (*rgx).second << "'" << endl);
+        BESRegex regex(((*rgx).first).c_str());
+         if (  (unsigned long) regex.match(base_name.c_str(), base_name.length()) == base_name.length() ){
+             retVal = string((*rgx).second);
+             break;
+         }
     }
+    BESDEBUG("ff", "get_Regex_format_file() - returning format filename: '"<< retVal << "'" << endl);
     return retVal;
 }

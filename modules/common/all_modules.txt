@@ -1,7 +1,6 @@
 asciival
 cmr_module
 csv_handler
-dap-server
 debug_functions
 dmrpp_module
 fileout_covjson
@@ -12,6 +11,9 @@ fits_handler
 freeform_handler
 gateway_module
 gdal_handler
+hdf4_handler
+hdf5_handler
+httpd_catalog_module
 ncml_module
 netcdf_handler
 ugrid_functions
