@@ -97,7 +97,7 @@ BESRegex::BESRegex(const char* t, int)
     @param s The string
     @param len The length of string to consider
     @param pos Start looking at this position in the string
-    @return The number of characters that match, -1 if there's no match. */
+    @return The number of characters that match, 0 if there's no match. */
 int 
 BESRegex::match(const char* s, int len, int pos)
 {
@@ -109,7 +109,7 @@ BESRegex::match(const char* s, int len, int pos)
                          ss.substr(pos, len-pos).c_str(), len, pmatch, 0);
 	int matchnum;
     if (result == REG_NOMATCH)
-        matchnum = -1;
+        matchnum = 0; //changed from -1 to 0. SBL 7.23.19
 	else
 		matchnum = pmatch[0].rm_eo - pmatch[0].rm_so;
 		
@@ -126,7 +126,7 @@ BESRegex::match(const char* s, int len, int pos)
     value-result parameter.
     @param pos Start looking at this position in the string
     @return The start position of the first match. This is different from 
-    POSIX regular expressions, whcih return the start position of the 
+    POSIX regular expressions, which return the start position of the
     longest match. */
 int 
 BESRegex::search(const char* s, int len, int& matchlen, int pos)

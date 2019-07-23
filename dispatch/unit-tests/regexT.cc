@@ -101,7 +101,7 @@ CPPUNIT_TEST_SUITE( regexT );
             BESRegex reg_expr("^123456$");
             string inQuestion = "01234567";
             int result = reg_expr.match(inQuestion.c_str(), inQuestion.length());
-            CPPUNIT_ASSERT( result == -1 );
+            CPPUNIT_ASSERT( result == 0 );
         }
         catch (BESError &e) {
             cerr << e.get_message() << endl;
@@ -141,7 +141,7 @@ CPPUNIT_TEST_SUITE( regexT );
             BESRegex reg_expr(".*\\.nc$");
             string inQuestion = "fnoc1.ncd";
             int result = reg_expr.match(inQuestion.c_str(), inQuestion.length());
-            CPPUNIT_ASSERT( result == -1 );
+            CPPUNIT_ASSERT( result == 0 );
         }
         catch (BESError &e) {
             cerr << e.get_message() << endl;
