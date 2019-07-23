@@ -226,7 +226,7 @@ input_data_file="${1}";
 
 if test -z "${output_file}"
 then
-    output_file="${input_data_file}.dmrpp"
+    output_file="./get_dmrpp_result.dmrpp"
 fi
 
 if test -n "${verbose}"
