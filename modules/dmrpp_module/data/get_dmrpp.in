@@ -326,6 +326,8 @@ function mk_dmrpp() {
 	full_data_path="${data_root}/${datafile}";
 	if test -n "$verbose"
 	then
+	    echo "data_root:      ${data_root}"
+	    echo "datafile:       ${datafile}"
 	    echo "full_data_path: ${full_data_path}"
 	fi
 	if test -z "${just_dmr}"
