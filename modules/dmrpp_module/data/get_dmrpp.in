@@ -159,6 +159,7 @@ show_usage() {
  -r: Just print the DMR that will be used to build the DMR++
  -u: The binary object URL for use in the DMR++ file
  -d: Data root directory for the BES.
+ -c: The path to the bes configuration file to use.
  -o: The name of the file  to create.
 
  Limitations: 
@@ -177,7 +178,7 @@ just_dmr=
 dmrpp_url=
 bes_conf_file=
 
-while getopts "h?vVru:d:o:" opt; do
+while getopts "h?vVru:d:o:c:" opt; do
     case "$opt" in
     h|\?)
         show_usage
