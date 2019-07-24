@@ -84,8 +84,8 @@ public:
     {
     }
 
-    void get_lmt_test_1(){
-
+    void get_lmt_test_1()
+    { //test for file that has HAS NOT been modified since it was created
     	string relative_file = "/catalog_test_baselines/temp_01.dmr";
 		string real_name = string(TEST_SRC_DIR) + relative_file;
 		BESFileContainer cont("cont", real_name, "test_handler");
@@ -128,8 +128,8 @@ public:
     	unlink(real_name.c_str());
     }//get_lmt_test_1()
 
-    void get_lmt_test_2(){
-
+    void get_lmt_test_2()
+    { //test for file that has HAS been modified since it was created
     	string relative_file = "/catalog_test_baselines/temp_01.dmr";
 		string real_name = string(TEST_SRC_DIR) + relative_file;
 		BESFileContainer cont("cont", real_name, "test_handler");
