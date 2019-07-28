@@ -508,7 +508,7 @@ static NCArray *build_array(BaseType *bt, int ncid, int var,
      @param ncid The id of the netcdf file
      @param nvars The number of variables in the opened file
  */
-static void read_variables(DMR & dmr, const string &filename, int ncid, int nvars)
+static void read_variables(DMR & dmr, const string &filename, int ncid, int nvars, string path)
 {
     // How this function works: The variables are scanned once but because
     // netCDF includes shared dimensions as variables there are two versions
@@ -531,7 +531,6 @@ static void read_variables(DMR & dmr, const string &filename, int ncid, int nvar
     int ndims;
     int dim_ids[MAX_VAR_DIMS];
 
-
     // Examine each variable in the file; if 'elide_grid_maps' is true, adds
     // only scalars and Grids (Arrays are added in the following loop). If
     // false, all variables are added in this loop.
@@ -539,6 +538,11 @@ static void read_variables(DMR & dmr, const string &filename, int ncid, int nvar
         int errstat = nc_inq_var(ncid, varid, name, &nctype, &ndims, dim_ids, (int *) 0);
         if (errstat != NC_NOERR)
             throw Error("netcdf: could not get name or dimension number for variable " + long_to_string(varid));
+
+        string var_name = name;
+        if(path.find('_') != string::npos) var_name = path + var_name;
+
+        // TODO: Replace dots in var_name to underscore ? Vars for X and Y ?
 
         // These are defined here because they are value-result parameters for
         // is_grid() called below.
@@ -548,6 +552,7 @@ static void read_variables(DMR & dmr, const string &filename, int ncid, int nvar
 
         // a scalar? NB a one-dim NC_CHAR array will have DAP type of
         // dods_str_c because it's really a scalar string, not an array.
+        // TODO: Same dimensions in different groups ?
         if (is_user_defined_type(ncid, nctype)) {
 
 #if NETCDF_VERSION >= 4
@@ -557,39 +562,50 @@ static void read_variables(DMR & dmr, const string &filename, int ncid, int nvar
 #endif
         }
         else if (ndims == 0 || (ndims == 1 && nctype == NC_CHAR)) {
-            BaseType *bt = build_scalar(name, filename, nctype);
+            BaseType *bt = build_scalar(var_name, filename, nctype);
             dmr.root()->add_var_nocopy(bt);
         } else if (is_grid(ncid, varid, ndims, dim_ids, map_sizes, map_names, map_types)) {
-            BaseType *bt = build_scalar(name, filename, nctype);
-            Array *ar = new NCArray(name, filename, bt);
+            BaseType *bt = build_scalar(var_name, filename, nctype);
+            Array *ar = new NCArray(var_name, filename, bt);
             dmr.root()->add_var_nocopy(ar);
             // dimensions from map
             D4Dimension *d4d;
             for (int dd = 0; dd < ndims; dd++) {
-                ar->append_dim(map_sizes[dd], map_names[dd]);
+
+                string grid_dim_name = map_names[dd];
+                if(path.find('_') != string::npos) grid_dim_name = path + grid_dim_name;
+
+                ar->append_dim(map_sizes[dd], grid_dim_name);
+
                 if (!is_dimension(string(map_names[dd]), all_maps)) {
                     // Save the map names for latter use, which might not happen...
                     all_maps.push_back(string(map_names[dd]));
-                    d4d = new D4Dimension(map_names[dd], map_sizes[dd]);
+                    d4d = new D4Dimension(grid_dim_name, map_sizes[dd]);
                     dmr.root()->dims()->add_dim_nocopy(d4d);
                 }
             }
         }
         else {
-            BaseType *bt = build_scalar(name, filename, nctype);
+            BaseType *bt = build_scalar(var_name, filename, nctype);
             NCArray *ar = build_array(bt, ncid, varid, nctype, ndims, dim_ids);
             dmr.root()->add_var_nocopy(ar);
             if (!NCRequestHandler::get_show_shared_dims()) {
                 for (int d = 0; d < ndims; ++d) {
                     char dimname[MAX_NC_NAME];
                     size_t dim_sz;
+
                     int errstat = nc_inq_dim(ncid, dim_ids[d], dimname, &dim_sz);
                     if (errstat != NC_NOERR) {
                         throw Error("netcdf: could not get size for dimension " + long_to_string(d) + " in variable " +
                                     dimname);
                     }
+
+                    string dim_name = dimname;
+                    if(path.find('_') != string::npos) dim_name = path + dim_name;
+
+                    // Add only new dimension
                     if (!is_dimension(string(dimname), all_maps)) {
-                        D4Dimension *dmr_dim = new D4Dimension(dimname, dim_sz);
+                        D4Dimension *dmr_dim = new D4Dimension(dim_name, dim_sz);
                         dmr.root()->dims()->add_dim_nocopy(dmr_dim);
                         all_maps.push_back(dimname);
                     }
@@ -643,12 +659,10 @@ static void read_variables(DMR & dmr, const string &filename, int ncid, int nvar
 #endif
 }
 
-static void read_attributes(DMR & dmr, const string &filename, int ncid, int nvars) {
-    BESDEBUG("nc", "In nc_read_dataset_attributes" << endl);
+static void read_attributes(DMR & dmr, const string &filename, int ncid, int nvars, string path, string full_path) {
+    BESDEBUG("nc", "Starting read attributes ncid = " << ncid << endl);
 
     int errstat;
-    errstat = nc_open(filename.c_str(), NC_NOWRITE, &ncid);
-    if (errstat != NC_NOERR) throw Error(errstat, "NetCDF handler: Could not open " + filename + ".");
 
     // how many variables? how many global attributes?
     int ngatts;
@@ -657,24 +671,29 @@ static void read_attributes(DMR & dmr, const string &filename, int ncid, int nva
         throw Error(errstat, "NetCDF handler: Could not inquire about netcdf file: " + path_to_filename(filename) +
                              ".");
 
-
     char varname[MAX_NC_NAME];
     int natts = 0;
     nc_type var_type;
     // for each variable
     for (int varid = 0; varid < nvars; ++varid) {
-        BESDEBUG("nc", "Top of for loop; for var... " << varid << endl);
-
         errstat = nc_inq_var(ncid, varid, varname, &var_type, (int *) 0, (int *) 0, &natts);
         if (errstat != NC_NOERR)
             throw Error(errstat, "Could not get information for variable: " + long_to_string(varid));
 
-        AttrTable attr_table_ptr = dmr.root()->find_var(varname)->get_attr_table();
-        //attr_table_ptr.set_is_global_attribute(false);
+        string var_name = varname;
+        if(path.find('_') != string::npos)
+            var_name = path + varname;
 
+        AttrTable attr_table_ptr = dmr.root()->find_var(var_name)->get_attr_table();
         read_attributes_netcdf4(ncid, varid, natts, &attr_table_ptr);
-        dmr.root()->find_var(varname)->set_attr_table(attr_table_ptr);
-        dmr.root()->find_var(varname)->attributes()->transform_to_dap4(attr_table_ptr);
+        dmr.root()->find_var(var_name)->set_attr_table(attr_table_ptr);
+        // Append attributes "fullnamepath" and "orgname" to variable
+        if(path.find('_') != string::npos) {
+            string fpath = full_path + varname;
+            attr_table_ptr.append_attr("orgname", "string", varname);
+            attr_table_ptr.append_attr("fullnamepath", "string", fpath);
+        }
+        dmr.root()->find_var(var_name)->attributes()->transform_to_dap4(attr_table_ptr);
 
         // Add a special attribute for string lengths
         if (var_type == NC_CHAR) {
@@ -710,17 +729,14 @@ static void read_attributes(DMR & dmr, const string &filename, int ncid, int nva
 // netcdf 4 here
     }
 
-    BESDEBUG("nc", "Starting global attributes" << endl);
-
+    // TODO: Replace dots in attribute names ?
     // global attributes
     if (ngatts > 0) {
         AttrTable attr_table_ptr = dmr.root()->get_attr_table();
         AttrTable *at = new AttrTable();
         read_attributes_netcdf4(ncid, NC_GLOBAL, ngatts, at);
-         //.add_table("NC_GLOBAL", new AttrTable);
         attr_table_ptr.append_container(at, "NC_GLOBAL");
         dmr.root()->attributes()->transform_to_dap4(attr_table_ptr);
-
     }
 
     // Add unlimited dimension name in DODS_EXTRA attribute table
@@ -742,16 +758,11 @@ static void read_attributes(DMR & dmr, const string &filename, int ncid, int nva
         at->append_attr("Unlimited_Dimension", print_type(datatype), print_rep);
         attr_table_ptr.append_container(at, "DODS_EXTRA");
         dmr.root()->set_attr_table(attr_table_ptr);
-
         dmr.root()->attributes()->transform_to_dap4(attr_table_ptr);
     }
-    if (nc_close(ncid) != NC_NOERR)
-        throw InternalErr(__FILE__, __LINE__, "NetCDF handler: Could not close the dataset!");
-
-    BESDEBUG("nc", "Exiting nc_read_dataset_attributes" << endl);
 }
 
-void read_group(DMR & dmr, const string &filename, int ncid, D4Group group)
+void read_group(DMR & dmr, const string &filename, int ncid, D4Group group, string path, string full_path)
 {
     int errstat;
     int nvars;
@@ -760,13 +771,34 @@ void read_group(DMR & dmr, const string &filename, int ncid, D4Group group)
     errstat = nc_inq_nvars(ncid, &nvars);
     if (errstat != NC_NOERR)
         throw Error(errstat, "Could not inquire about netcdf file: " + path_to_filename(filename) + ".");
-    read_variables(dmr, filename, ncid, nvars);
-    read_attributes(dmr, filename, ncid, nvars);
+    read_variables(dmr, filename, ncid, nvars, path);
+    read_attributes(dmr, filename, ncid, nvars, path, full_path);
 
+    // how many groups?
+    int numgrps;
+    int *ncids;
+    errstat = nc_inq_grps(ncid, &numgrps, NULL);
+    if (errstat != NC_NOERR)
+        throw Error(errstat, "Could not inquire about netcdf file: " + path_to_filename(filename) + ".");
+    if(numgrps != 0){
+        // underscore replaces slash
+        if(path.empty()) path = "_";
+        if(full_path.empty()) full_path = "/";
 
-    BESDEBUG("nc", "Exiting read_group" << endl);
+        ncids = (int *) malloc(sizeof(int) * numgrps);
+        errstat = nc_inq_grps(ncid, NULL, ncids);
+        for (int i = 0; i < numgrps; i++) {
+            char name[MAX_NC_NAME];
+            errstat = nc_inq_grpname(ncids[i], name);
 
+            string grp_path_name = path + name + "_";
+            string grp_full_path = full_path + name + "/";
 
+            D4Group *grp = dmr.factory()->NewGroup(grp_path_name);
+            group.add_group_nocopy(grp);
+            read_group(dmr, filename, ncids[i], *grp, grp_path_name, grp_full_path) ;
+        }
+    }
 }
 
 /** Given a reference to an instance of class DDS and a filename that refers
@@ -780,7 +812,10 @@ void nc_read_dataset_variables_dmr(DDS &dds, const string &filename)
 {
     ncopts = 0;
     int ncid, errstat;
-    int nvars;
+
+    // path is used for var names and full_path for full name path in the var attribute
+    string path = "";
+    string full_path = "";
 
     D4Group *group = new D4Group("/");
     DMR *dmr = new DMR();
@@ -799,24 +834,8 @@ void nc_read_dataset_variables_dmr(DDS &dds, const string &filename)
     dmr->set_filename(filename);
     dmr->set_dap_version(dds.get_dap_version());
 
-    // read variables' classes
-    read_group(*dmr, filename, ncid, *group);
-
-//    // how many variables?
-//    errstat = nc_inq_nvars(ncid, &nvars);
-//    if (errstat != NC_NOERR)
-//        throw Error(errstat, "Could not inquire about netcdf file: " + path_to_filename(filename) + ".");
-//
-//    read_variables(*dmr, filename, ncid, nvars);
-//    read_attributes(*dmr, filename, ncid, nvars);
-
-//    DAS das;
-//
-//    nc_read_dataset_attributes(das, filename);
-//    Ancillary::read_ancillary_das(das, filename);
-//
-//    dds.transfer_attributes(&das);
-//    dmr->build_using_dds(dds);
+    // read groups
+    read_group(*dmr, filename, ncid, *group, path, full_path);
 
     // print DMR
     XMLWriter xmlw;
