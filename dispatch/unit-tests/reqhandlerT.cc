@@ -65,15 +65,18 @@ static bool debug = false;
 class reqhandlerT: public TestFixture {
 private:
 	BESRequestHandler d_handler;
+	string tmp = string(TEST_BUILD_DIR) + "/tmp";
 
 public:
     reqhandlerT() : d_handler("test_handler")
     {
     	BESRequestHandlerList::TheList()->add_handler("test_handler", &d_handler);
+    	mkdir(tmp.c_str(),0755);
     }
 
     ~reqhandlerT()
     {
+    	rmdir(tmp.c_str());
     }
 
     void setUp()
@@ -86,8 +89,8 @@ public:
 
     void get_lmt_test_1()
     { //test for file that has HAS NOT been modified since it was created
-    	string relative_file = "/catalog_test_baselines/temp_01.dmr";
-		string real_name = string(TEST_SRC_DIR) + relative_file;
+    	string relative_file = "/tmp/temp_01.dmr";
+		string real_name = string(TEST_BUILD_DIR) + relative_file;
 		BESFileContainer cont("cont", real_name, "test_handler");
 		cont.set_relative_name(relative_file);
 
@@ -130,8 +133,8 @@ public:
 
     void get_lmt_test_2()
     { //test for file that has HAS been modified since it was created
-    	string relative_file = "/catalog_test_baselines/temp_01.dmr";
-		string real_name = string(TEST_SRC_DIR) + relative_file;
+    	string relative_file = "/tmp/temp_01.dmr";
+		string real_name = string(TEST_BUILD_DIR) + relative_file;
 		BESFileContainer cont("cont", real_name, "test_handler");
 		cont.set_relative_name(relative_file);
 
