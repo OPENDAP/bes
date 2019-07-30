@@ -3,3 +3,6 @@
 
 BES.LogName=./bes.log
 BES.LogVerbose=yes
+
+DAP.GlobalMetadataStore.path=@abs_top_builddir@/dap/unit-tests/mds
+DAP.GlobalMetadataStore.prefix=mds_

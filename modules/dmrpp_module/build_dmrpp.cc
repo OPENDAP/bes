@@ -67,12 +67,16 @@ typedef struct H5D_chunk_rec_t {
 #include <TheBESKeys.h>
 #include <BESUtil.h>
 #include <BESDebug.h>
+
+#include <BESError.h>
 #include <BESNotFoundError.h>
 #include <BESInternalError.h>
+#include <BESDataHandlerInterface.h>
 
 #include "DmrppTypeFactory.h"
 #include "DmrppD4Group.h"
 #include "DmrppMetadataStore.h"
+#include "BESDapNames.h"
 
 using namespace std;
 using namespace libdap;
@@ -555,7 +559,8 @@ int main(int argc, char*argv[])
             // is fragile. - ndp 6/6/18
             string h5_file_path = BESUtil::assemblePath(bes_data_root,h5_file_name);
 
-            bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_name /*h5_file_path*/);
+            //bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_name /*h5_file_path*/);
+            bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_path, h5_file_name, "h5");
             if (lock()) {
                 // parse the DMR into a DMRpp (that uses the DmrppTypes)
                 auto_ptr<DMRpp> dmrpp(dynamic_cast<DMRpp*>(mds->get_dmr_object(h5_file_name /*h5_file_path*/)));
