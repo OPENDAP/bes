@@ -110,7 +110,7 @@ private:
             DBG(cerr << "Retrieved GlobalMetadataStore object: " << d_mds << endl);
 
             // Get a DDS to cache.
-            string file_name = string(TEST_SRC_DIR).append("/input-files/sequence_1.dds");
+            string file_name = string(TEST_BUILD_DIR).append("/input-files/sequence_1.dds");
 
             // Get a DDS to cache.
             d_test_dds = new DDS(&d_btf);
@@ -168,6 +168,8 @@ private:
         }
     }
 
+    string tmp = string(TEST_BUILD_DIR) + "/tmp";
+
 #if 0
     void init_dmrpp_and_mds()
     {
@@ -208,10 +210,12 @@ public:
 		d_handler("test_handler")
     {
     	BESRequestHandlerList::TheList()->add_handler("test_handler", &d_handler);
+    	mkdir(tmp.c_str(),0755);
     }
 
     ~GlobalMetadataStoreTest()
     {
+    	rmdir(tmp.c_str());
     }
 
     void setUp()
@@ -526,8 +530,8 @@ public:
     void is_available_helper_dmr_test_2(){
     	init_dmr_and_mds();
 
-    	string relative_file = "/input-files/temp_01.dmr";
-    	string real_name = string(TEST_SRC_DIR) + relative_file;
+    	string relative_file = "/tmp/temp_01.dmr";
+    	string real_name = string(TEST_BUILD_DIR) + relative_file;
     	BESFileContainer cont("cont", real_name, "test_handler");
     	cont.set_relative_name(relative_file);
 
@@ -613,8 +617,8 @@ public:
     void is_available_helper_dds_test_2(){
     	init_dds_and_mds();
 
-    	string relative_file = "/input-files/temp_02.dds";
-    	string real_name = string(TEST_SRC_DIR) + relative_file;
+    	string relative_file = "/tmp/temp_02.dds";
+    	string real_name = string(TEST_BUILD_DIR) + relative_file;
     	BESFileContainer cont("cont", real_name, "test_handler");
     	cont.set_relative_name(relative_file);
 
@@ -661,9 +665,9 @@ public:
     void is_available_helper_das_test_1(){
     	init_dds_and_mds();
 
-    	string real_name = string(TEST_SRC_DIR) + "/input-files/sequence_1.das";
+    	string real_name = string(TEST_BUILD_DIR) + "/tmp/test_01.das";
     	BESFileContainer cont("cont", real_name, "test_handler");
-    	cont.set_relative_name("/input-files/sequence_1.das");
+    	cont.set_relative_name("/tmp/test_01.das");
 
 		BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler("test_handler");
     	CPPUNIT_ASSERT(besRH != 0);
@@ -708,8 +712,8 @@ public:
     void is_available_helper_das_test_2(){
     	init_dds_and_mds();
 
-    	string relative_file = "/input-files/temp_03.das";
-    	string real_name = string(TEST_SRC_DIR) + relative_file;
+    	string relative_file = "/tmp/temp_03.das";
+    	string real_name = string(TEST_BUILD_DIR) + relative_file;
     	BESFileContainer cont("cont", real_name, "test_handler");
     	cont.set_relative_name(relative_file);
 
@@ -795,8 +799,8 @@ public:
     void is_available_helper_dmrpp_test_2(){
     	init_dmr_and_mds();
 
-    	string relative_file = "/input-files/temp_04.dmrpp";
-    	string real_name = string(TEST_SRC_DIR) + relative_file;
+    	string relative_file = "/tmp/temp_04.dmrpp";
+    	string real_name = string(TEST_BUILD_DIR) + relative_file;
     	BESFileContainer cont("cont", real_name, "test_handler");
     	cont.set_relative_name(relative_file);
 
@@ -911,8 +915,8 @@ public:
     	init_dmr_and_mds();
 
     	// BESFileContainer(const string &sym_name, const string &real_name, const string &type);
-    	string relative_file = "/input-files/temp_01.dmr";
-    	string real_name = string(TEST_SRC_DIR) + relative_file;
+    	string relative_file = "/tmp/temp_01.dmr";
+    	string real_name = string(TEST_BUILD_DIR) + relative_file;
     	BESFileContainer cont("cont", real_name, "test_handler");
     	cont.set_relative_name(relative_file);
 
@@ -920,7 +924,7 @@ public:
     	DBG(cerr << "cont.get_relative_name: " << cont.get_relative_name() << endl);
 
     	CPPUNIT_ASSERT(cont.get_real_name() == real_name);
-    	CPPUNIT_ASSERT(cont.get_relative_name() == "/input-files/temp_01.dmr");
+    	CPPUNIT_ASSERT(cont.get_relative_name() == "/tmp/temp_01.dmr");
 
     	BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler("test_handler");
     	DBG(cerr << "besRH: " << (void*)besRH << endl);
@@ -1023,8 +1027,8 @@ public:
     	init_dmr_and_mds();
 
     	// BESFileContainer(const string &sym_name, const string &real_name, const string &type);
-    	string relative_file = "/input-files/temp_01.dmr";
-    	string real_name = string(TEST_SRC_DIR) + relative_file;
+    	string relative_file = "/tmp/temp_01.dmr";
+    	string real_name = string(TEST_BUILD_DIR) + relative_file;
     	BESFileContainer cont("cont", real_name, "test_handler");
     	cont.set_relative_name(relative_file);
 
@@ -1032,7 +1036,7 @@ public:
     	DBG(cerr << "cont.get_relative_name: " << cont.get_relative_name() << endl);
 
     	CPPUNIT_ASSERT(cont.get_real_name() == real_name);
-    	CPPUNIT_ASSERT(cont.get_relative_name() == "/input-files/temp_01.dmr");
+    	CPPUNIT_ASSERT(cont.get_relative_name() == "/tmp/temp_01.dmr");
 
     	BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler("test_handler");
     	DBG(cerr << "besRH: " << (void*)besRH << endl);
@@ -1150,8 +1154,8 @@ public:
     void is_dds_available_test_3() {
     	init_dds_and_mds();
     	// BESFileContainer(const string &sym_name, const string &real_name, const string &type);
-    	string relative_file = "/input-files/temp_02.dds";
-    	string real_name = string(TEST_SRC_DIR) + relative_file;
+    	string relative_file = "/tmp/temp_02.dds";
+    	string real_name = string(TEST_BUILD_DIR) + relative_file;
     	BESFileContainer cont("cont", real_name, "test_handler");
     	cont.set_relative_name(relative_file);
 
@@ -1159,7 +1163,7 @@ public:
     	DBG(cerr << "cont.get_relative_name: " << cont.get_relative_name() << endl);
 
     	CPPUNIT_ASSERT(cont.get_real_name() == real_name);
-    	CPPUNIT_ASSERT(cont.get_relative_name() == "/input-files/temp_02.dds");
+    	CPPUNIT_ASSERT(cont.get_relative_name() == "/tmp/temp_02.dds");
 
     	BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler("test_handler");
     	DBG(cerr << "besRH: " << (void*)besRH << endl);
@@ -1226,15 +1230,15 @@ public:
     void is_das_available_test_2() {
     	init_dds_and_mds();
     	// BESFileContainer(const string &sym_name, const string &real_name, const string &type);
-    	string real_name = string(TEST_SRC_DIR) + "/input-files/sequence_1.das";
+    	string real_name = string(TEST_BUILD_DIR) + "/tmp/test_01.das";
     	BESFileContainer cont("cont", real_name, "test_handler");
-    	cont.set_relative_name("/input-files/sequence_1.das");
+    	cont.set_relative_name("/tmp/test_01.das");
 
     	DBG(cerr << "cont.get_real_name: " << cont.get_real_name() << endl);
     	DBG(cerr << "cont.get_relative_name: " << cont.get_relative_name() << endl);
 
     	CPPUNIT_ASSERT(cont.get_real_name() == real_name);
-    	CPPUNIT_ASSERT(cont.get_relative_name() == "/input-files/sequence_1.das");
+    	CPPUNIT_ASSERT(cont.get_relative_name() == "/tmp/test_01.das");
 
     	BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler("test_handler");
     	DBG(cerr << "besRH: " << (void*)besRH << endl);
@@ -1284,8 +1288,8 @@ public:
     void is_das_available_test_3() {
     	init_dds_and_mds();
     	// BESFileContainer(const string &sym_name, const string &real_name, const string &type);
-    	string relative_file = "/input-files/temp_03.das";
-    	string real_name = string(TEST_SRC_DIR) + relative_file;
+    	string relative_file = "/tmp/temp_03.das";
+    	string real_name = string(TEST_BUILD_DIR) + relative_file;
     	BESFileContainer cont("cont", real_name, "test_handler");
     	cont.set_relative_name(relative_file);
 
@@ -1293,7 +1297,7 @@ public:
     	DBG(cerr << "cont.get_relative_name: " << cont.get_relative_name() << endl);
 
     	CPPUNIT_ASSERT(cont.get_real_name() == real_name);
-    	CPPUNIT_ASSERT(cont.get_relative_name() == "/input-files/temp_03.das");
+    	CPPUNIT_ASSERT(cont.get_relative_name() == "/tmp/temp_03.das");
 
     	BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler("test_handler");
     	DBG(cerr << "besRH: " << (void*)besRH << endl);
@@ -1411,8 +1415,8 @@ public:
     	init_dmr_and_mds();
 
     	// BESFileContainer(const string &sym_name, const string &real_name, const string &type);
-    	string relative_file = "/input-files/temp_04.dmrpp";
-    	string real_name = string(TEST_SRC_DIR) + relative_file;
+    	string relative_file = "/tmp/temp_04.dmrpp";
+    	string real_name = string(TEST_BUILD_DIR) + relative_file;
     	BESFileContainer cont("cont", real_name, "test_handler");
     	cont.set_relative_name(relative_file);
 
@@ -1420,7 +1424,7 @@ public:
     	DBG(cerr << "cont.get_relative_name: " << cont.get_relative_name() << endl);
 
     	CPPUNIT_ASSERT(cont.get_real_name() == real_name);
-    	CPPUNIT_ASSERT(cont.get_relative_name() == "/input-files/temp_04.dmrpp");
+    	CPPUNIT_ASSERT(cont.get_relative_name() == "/tmp/temp_04.dmrpp");
 
     	BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler("test_handler");
     	DBG(cerr << "besRH: " << (void*)besRH << endl);
