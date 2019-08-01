@@ -10,8 +10,7 @@
  *      																*
  ********************************************************************/
 
-#include "SpatialIndex.h"
-#include "SpatialInterface.h"
+#include "STARE.h"
 
 #include <D4Connect.h>
 #include <Connect.h>
@@ -140,8 +139,9 @@ vector<coords> readUrl(string dataUrl, string latName, string lonName) {
  */
 vector<uint64> calculateStareIndex(const float64 level, const float64 buildlevel, vector<coords> latlonVals) {
 	//Create an htmInterface that will be used to get the STARE index
-	htmInterface htm(level, buildlevel);
-	const SpatialIndex &index = htm.index();
+	//htmInterface htm(level, buildlevel);
+	//const SpatialIndex &index = htm.index();
+	STARE index(level,buildlevel);
 
 	vector<uint64> stareVals;
 	uint64 stareIndex;
@@ -149,7 +149,7 @@ vector<uint64> calculateStareIndex(const float64 level, const float64 buildlevel
 	std::unordered_map<float, struct coords> indexMap;
 
 	for (vector<coords>::iterator i = latlonVals.begin(); i != latlonVals.end(); ++i) {
-		stareIndex = index.idByLatLon(i->lat, i->lon);
+		stareIndex = index.ValueFromLatLonDegrees(i->lat, i->lon, level);
 		stareVals.push_back(stareIndex);
 
 		//Map the stare values to its corresponding lat/lon and the iterators x/y
