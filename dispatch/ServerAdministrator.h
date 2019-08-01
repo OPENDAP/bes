@@ -78,6 +78,7 @@ public:
     virtual std::string get_street() const { return  d_street; }
     virtual std::string get_city() const { return  d_city; }
     virtual std::string get_region() const { return  d_region; }
+    virtual std::string get_state() const { return  d_region; }
     virtual std::string get_postal_code() const { return  d_postal_code; }
     virtual std::string get_country() const { return  d_country; }
     virtual std::string get_telephone() const { return  d_telephone; }

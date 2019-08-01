@@ -78,7 +78,7 @@ void BESVersionResponseHandler::execute(BESDataHandlerInterface &dhi)
     string admin_email = "";
     try {
         bes::ServerAdministrator sd;
-        admin_email = sd.get("email");
+        admin_email = sd.get_email();
     }
     catch (...) {
         admin_email = DEFAULT_ADMINISTRATOR;

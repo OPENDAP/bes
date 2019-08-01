@@ -25,8 +25,9 @@ BES.ServerAdministrator=email:admin.email.address@your.domain.name
 BES.ServerAdministrator+=organization:Company/Insitution Name
 BES.ServerAdministrator+=street:Street Address
 BES.ServerAdministrator+=city:City
-BES.ServerAdministrator+=state:State
+BES.ServerAdministrator+=region:State
 BES.ServerAdministrator+=postalCode:12345
+BES.ServerAdministrator+=country:USA
 BES.ServerAdministrator+=telephone:+1.800.555.1212
 BES.ServerAdministrator+=website:http://www.your.domain.name
 
@@ -34,3 +35,4 @@ BES.ServerAdministrator+=website:http://www.your.domain.name
 # ctor pick these up?
 BES.AnnotationServiceURL = http://localhost:8083/Feedback/form
 BES.IncludeDatasetInAnnotationURL = true
+

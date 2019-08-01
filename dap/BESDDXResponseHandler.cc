@@ -99,7 +99,7 @@ void BESDDXResponseHandler::execute(BESDataHandlerInterface &dhi)
     GlobalMetadataStore::MDSReadLock lock;
 
     dhi.first_container();
-    if (mds) lock = mds->is_dds_available(dhi.container->get_relative_name());
+    if (mds) lock = mds->is_dds_available(*(dhi.container));
 
     if (mds && lock() && !function_in_ce(dhi.container->get_constraint())) {
         DDS *dds = mds->get_dds_object(dhi.container->get_relative_name());
