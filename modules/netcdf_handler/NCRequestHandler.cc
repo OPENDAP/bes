@@ -323,7 +323,7 @@ void NCRequestHandler::get_dds_with_attributes(const string& dataset_name, const
         dds->filename(dataset_name);
 
         nc_read_dataset_variables_dmr(*dds, dataset_name);
-
+#if 0
         DAS* das = 0;
         if (das_cache && (das = static_cast<DAS*>(das_cache->get(dataset_name)))) {
             BESDEBUG(NC_NAME, "DAS Cached hit for : " << dataset_name << endl);
@@ -350,7 +350,7 @@ void NCRequestHandler::get_dds_with_attributes(const string& dataset_name, const
                 delete das;
             }
         }
-
+#endif
         if (dds_cache) {
             // add a copy
             BESDEBUG(NC_NAME, "DDS added to the cache for : " << dataset_name << endl);

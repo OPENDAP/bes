@@ -81,56 +81,48 @@
 #include <BESDebug.h>
 #include <Ancillary.h>
 
-using namespace libdap ;
+using namespace libdap;
 
 //extern void nc_read_dataset_attributes(DAS & das, const string & filename);
 extern void read_attributes_netcdf4(int ncid, int varid, int natts, AttrTable *at);
+
 extern string print_attr(nc_type type, int loc, void *vals);
+
 extern string print_type(nc_type datatype);
 
 /** This function returns the appropriate DODS BaseType for the given
     netCDF data type. */
 static BaseType *
-build_scalar(const string &varname, const string &dataset, nc_type datatype)
-{
+build_scalar(const string &varname, const string &dataset, nc_type datatype) {
     switch (datatype) {
 #if NETCDF_VERSION >= 4
         case NC_STRING:
 #endif
         case NC_CHAR:
             return (new NCStr(varname, dataset));
-
         case NC_BYTE:
             if (NCRequestHandler::get_promote_byte_to_short()) {
                 return (new NCInt16(varname, dataset));
-            }
-            else {
+            } else {
                 return (new NCByte(varname, dataset));
             }
-
         case NC_SHORT:
             return (new NCInt16(varname, dataset));
-
-       case NC_INT:
+        case NC_INT:
             return (new NCInt32(varname, dataset));
-
 #if NETCDF_VERSION >= 4
         case NC_UBYTE:
             // NB: the dods_byte type is unsigned
             return (new NCByte(varname, dataset));
-
         case NC_USHORT:
             return (new NCUInt16(varname, dataset));
-
         case NC_UINT:
             return (new NCUInt32(varname, dataset));
 #endif
         case NC_FLOAT:
             return (new NCFloat32(varname, dataset));
-
         case NC_DOUBLE:
             return (new NCFloat64(varname, dataset));
-
 #if NETCDF_VERSION >= 4
         case NC_INT64:
         case NC_UINT64:
@@ -140,11 +132,10 @@ build_scalar(const string &varname, const string &dataset, nc_type datatype)
                 throw Error("The netCDF handler does not currently support 64 bit integers.");
             break;
 #endif
-
         default:
-            throw InternalErr(__FILE__, __LINE__, "Unknown type (" + long_to_string(datatype) + ") for variable '" + varname + "'");
+            throw InternalErr(__FILE__, __LINE__,
+                              "Unknown type (" + long_to_string(datatype) + ") for variable '" + varname + "'");
     }
-
     return 0;
 }
 
@@ -161,7 +152,6 @@ static bool is_user_defined(nc_type type)
 }
 #endif
 
-#if 0
 /** Build a grid given that one has been found. The Grid's Array is already
     allocated and is passed in along with a number of arrays containing
     information about the dimensions of the Grid.
@@ -169,11 +159,10 @@ static bool is_user_defined(nc_type type)
     Note: The dim_szs and dim_nms arrays could be removed since that information
     is already in the Array ar. */
 static Grid *build_grid(Array *ar, int ndims, const nc_type array_type,
-        const char map_names[MAX_NC_VARS][MAX_NC_NAME],
-        const nc_type map_types[MAX_NC_VARS],
-        const size_t map_sizes[MAX_VAR_DIMS],
-        vector<string> *all_maps)
-{
+                        const char map_names[MAX_NC_VARS][MAX_NC_NAME],
+                        const nc_type map_types[MAX_NC_VARS],
+                        const size_t map_sizes[MAX_VAR_DIMS],
+                        vector<string> *all_maps) {
     // Grids of NC_CHARs are treated as Grids of strings; the outermost
     // dimension (the char vector) becomes the string.
     if (array_type == NC_CHAR)
@@ -201,14 +190,14 @@ static Grid *build_grid(Array *ar, int ndims, const nc_type array_type,
 
     return gr;
 }
-#endif
+
 
 #if NETCDF_VERSION >= 4
 /** Build an instance of a user defined type. These can be recursively
  * defined.
  */
 static BaseType *build_user_defined(int ncid, int varid, nc_type xtype, const string &dataset,
-        int ndims, int dim_ids[MAX_VAR_DIMS])
+        int ndims, int dim_ids[MAX_VAR_DIMS], string path)
 {
     size_t size;
     nc_type base_type;
@@ -223,6 +212,9 @@ static BaseType *build_user_defined(int ncid, int varid, nc_type xtype, const st
             char var_name[NC_MAX_NAME+1];
             nc_inq_varname(ncid, varid, var_name);
 
+            if(path.length() != 0)
+                strcpy(var_name,(path + var_name).c_str());
+
             NCStructure *ncs = new NCStructure(var_name, dataset);
 
             for (size_t i = 0; i < nfields; ++i) {
@@ -233,13 +225,13 @@ static BaseType *build_user_defined(int ncid, int varid, nc_type xtype, const st
                 nc_inq_compound_field(ncid, xtype, i, field_name, 0, &field_typeid, &field_ndims, &field_sizes[0]);
                 BaseType *field;
                 if (is_user_defined_type(ncid, field_typeid)) {
-		    //is_user_defined(field_typeid)) {
                     // Odd: 'varid' here seems wrong, but works.
-                    field = build_user_defined(ncid, varid, field_typeid, dataset, field_ndims, field_sizes);
+                    field = build_user_defined(ncid, varid, field_typeid, dataset, field_ndims, field_sizes, path);
                     // Child compound types become anonymous variables but DAP
                     // requires names, so use the type name.
                     char var_name[NC_MAX_NAME+1];
                     nc_inq_compound_name(ncid, field_typeid, var_name);
+                    //TODO: path?
                     field->set_name(var_name);
                 }
                 else {
@@ -248,6 +240,7 @@ static BaseType *build_user_defined(int ncid, int varid, nc_type xtype, const st
                 // is this a scalar or an array? Note that an array of CHAR is
                 // a scalar string in netcdf3.
                 if (field_ndims == 0 || (field_ndims == 1 && field_typeid == NC_CHAR)) {
+                    //TODO: path?
                     ncs->add_var(field);
                 }
                 else {
@@ -269,19 +262,17 @@ static BaseType *build_user_defined(int ncid, int varid, nc_type xtype, const st
                         delete ar;
                         throw InternalErr(__FILE__, __LINE__, string("Failed to read dimension information for the compound variable ") + var_name);
                     }
-
+                    if(path.length() != 0)
+                        strcpy(dimname,(path + dimname).c_str());
                     ar->append_dim(dim_sz, dimname);
                 }
-
                 return ar;
             }
             else {
                 return ncs;
             }
-
             break;
         }
-
         case NC_VLEN:
             if (NCRequestHandler::get_ignore_unknown_types()) {
                 cerr << "in build_user_defined; found a vlen." << endl;
@@ -290,12 +281,13 @@ static BaseType *build_user_defined(int ncid, int varid, nc_type xtype, const st
             else
                 throw Error("The netCDF handler does not yet suppor the NC_VLEN type.");
             break;
-
         case NC_OPAQUE: {
             vector<char> name(NC_MAX_NAME+1);
             status = nc_inq_varname(ncid, varid, &name[0]);
             if (status != NC_NOERR)
                 throw InternalErr(__FILE__, __LINE__, "Could not get name of an opaque (" + long_to_string(status) + ").");
+
+            //TODO: path?
 
             NCArray *opaque = new NCArray(&name[0], dataset, new NCByte(&name[0], dataset));
 
@@ -308,6 +300,7 @@ static BaseType *build_user_defined(int ncid, int varid, nc_type xtype, const st
                         delete opaque;
                         throw InternalErr(__FILE__, __LINE__, string("Failed to read dimension information for the compound variable ") + &name[0]);
                     }
+                    //TODO: path?
                     opaque->append_dim(dim_sz, dimname);
                 }
             }
@@ -315,7 +308,6 @@ static BaseType *build_user_defined(int ncid, int varid, nc_type xtype, const st
             return opaque;
             break;
         }
-
         case NC_ENUM: {
             nc_type base_nc_type;
             size_t base_size;
@@ -328,7 +320,7 @@ static BaseType *build_user_defined(int ncid, int varid, nc_type xtype, const st
             status = nc_inq_varname(ncid, varid, &name[0]);
             if (status != NC_NOERR)
                 throw InternalErr(__FILE__, __LINE__, "Could not get name of an opaque (" + long_to_string(status) + ").");
-
+            //TODO: path?
 
             BaseType *enum_var = build_scalar(&name[0], dataset, base_nc_type);
 
@@ -343,9 +335,9 @@ static BaseType *build_user_defined(int ncid, int varid, nc_type xtype, const st
                         delete ar;
                         throw InternalErr(__FILE__, __LINE__, string("Failed to read dimension information for the compound variable ") + &name[0]);
                     }
+                    //TODO: path?
                     ar->append_dim(dim_sz, dimname);
                 }
-
                 return ar;
             }
             else {
@@ -353,11 +345,9 @@ static BaseType *build_user_defined(int ncid, int varid, nc_type xtype, const st
             }
             break;
         }
-
         default:
             throw InternalErr(__FILE__, __LINE__, "Expected one of NC_COMPOUND, NC_VLEN, NC_OPAQUE or NC_ENUM");
     }
-
     return 0;
 }
 #endif
@@ -380,8 +370,7 @@ static BaseType *build_user_defined(int ncid, int varid, nc_type xtype, const st
      at (only) all the shared dimensions?
  */
 static bool find_matching_coordinate_variable(int ncid, int var,
-        char dimname[], size_t dim_sz, nc_type *match_type)
-{
+                                              char dimname[], size_t dim_sz, nc_type *match_type) {
     // For netCDF, a Grid's Map must be a netCDF dimension
     int id;
     // get the id matching the name.
@@ -435,10 +424,9 @@ static bool find_matching_coordinate_variable(int ncid, int var,
      @param map_types Value-result parameter; the type of each map.
  */
 static bool is_grid(int ncid, int var, int ndims, const int dim_ids[MAX_VAR_DIMS],
-        size_t map_sizes[MAX_VAR_DIMS],
-        char map_names[MAX_NC_VARS][MAX_NC_NAME],
-        nc_type map_types[MAX_NC_VARS])
-{
+                    size_t map_sizes[MAX_VAR_DIMS],
+                    char map_names[MAX_NC_VARS][MAX_NC_NAME],
+                    nc_type map_types[MAX_NC_VARS]) {
     // Look at each dimension of the variable.
     for (int d = 0; d < ndims; ++d) {
         char dimname[MAX_NC_NAME];
@@ -459,17 +447,14 @@ static bool is_grid(int ncid, int var, int ndims, const int dim_ids[MAX_VAR_DIMS
             map_sizes[d] = dim_sz;
             strncpy(map_names[d], dimname, MAX_NC_NAME - 1);
             map_names[d][MAX_NC_NAME - 1] = '\0';
-        }
-        else {
+        } else {
             return false;
         }
     }
-
     return true;
 }
 
-static bool is_dimension(const string &name, vector<string> maps)
-{
+static bool is_dimension(const string &name, vector<string> maps) {
     vector<string>::iterator i = find(maps.begin(), maps.end(), name);
     if (i != maps.end())
         return true;
@@ -478,9 +463,8 @@ static bool is_dimension(const string &name, vector<string> maps)
 }
 
 static NCArray *build_array(BaseType *bt, int ncid, int var,
-        const nc_type array_type, int ndims,
-        const int dim_ids[MAX_NC_DIMS])
-{
+                            const nc_type array_type, int ndims,
+                            const int dim_ids[MAX_NC_DIMS]) {
     NCArray *ar = new NCArray(bt->name(), bt->dataset(), bt);
 
     if (array_type == NC_CHAR)
@@ -491,8 +475,9 @@ static NCArray *build_array(BaseType *bt, int ncid, int var,
         size_t dim_sz;
         int errstat = nc_inq_dim(ncid, dim_ids[d], dimname, &dim_sz);
         if (errstat != NC_NOERR) {
-        	delete ar;
-            throw Error("netcdf: could not get size for dimension " + long_to_string(d) + " in variable " + long_to_string(var));
+            delete ar;
+            throw Error("netcdf: could not get size for dimension " + long_to_string(d) + " in variable " +
+                        long_to_string(var));
         }
         ar->append_dim(dim_sz, dimname);
     }
@@ -508,8 +493,7 @@ static NCArray *build_array(BaseType *bt, int ncid, int var,
      @param ncid The id of the netcdf file
      @param nvars The number of variables in the opened file
  */
-static void read_variables(DMR & dmr, const string &filename, int ncid, int nvars, string path)
-{
+static void read_variables(DMR &dmr, const string &filename, int ncid, int nvars, string path) {
     // How this function works: The variables are scanned once but because
     // netCDF includes shared dimensions as variables there are two versions
     // of this function. One writes out the variables as they are found while
@@ -540,7 +524,8 @@ static void read_variables(DMR & dmr, const string &filename, int ncid, int nvar
             throw Error("netcdf: could not get name or dimension number for variable " + long_to_string(varid));
 
         string var_name = name;
-        if(path.find('_') != string::npos) var_name = path + var_name;
+        // TODO: path  = "_" ?
+        if (path.find('_') != string::npos) var_name = path + var_name;
 
         // TODO: Replace dots in var_name to underscore ? Vars for X and Y ?
 
@@ -556,59 +541,39 @@ static void read_variables(DMR & dmr, const string &filename, int ncid, int nvar
         if (is_user_defined_type(ncid, nctype)) {
 
 #if NETCDF_VERSION >= 4
-            BaseType *bt = build_user_defined(ncid, varid, nctype, filename, ndims, dim_ids);
-            //dds_table.add_var(bt);
-            delete bt;
+            BaseType *bt = build_user_defined(ncid, varid, nctype, filename, ndims, dim_ids, path);
+            dmr.root()->add_var_nocopy(bt);
 #endif
-        }
-        else if (ndims == 0 || (ndims == 1 && nctype == NC_CHAR)) {
+        } else if (ndims == 0 || (ndims == 1 && nctype == NC_CHAR)) {
             BaseType *bt = build_scalar(var_name, filename, nctype);
             dmr.root()->add_var_nocopy(bt);
         } else if (is_grid(ncid, varid, ndims, dim_ids, map_sizes, map_names, map_types)) {
             BaseType *bt = build_scalar(var_name, filename, nctype);
             Array *ar = new NCArray(var_name, filename, bt);
-            dmr.root()->add_var_nocopy(ar);
-            // dimensions from map
-            D4Dimension *d4d;
-            for (int dd = 0; dd < ndims; dd++) {
-
-                string grid_dim_name = map_names[dd];
-                if(path.find('_') != string::npos) grid_dim_name = path + grid_dim_name;
-
-                ar->append_dim(map_sizes[dd], grid_dim_name);
-
-                if (!is_dimension(string(map_names[dd]), all_maps)) {
-                    // Save the map names for latter use, which might not happen...
-                    all_maps.push_back(string(map_names[dd]));
-                    d4d = new D4Dimension(grid_dim_name, map_sizes[dd]);
-                    dmr.root()->dims()->add_dim_nocopy(d4d);
-                }
-            }
-        }
-        else {
+            Grid *gr = build_grid(ar, ndims, nctype, map_names, map_types, map_sizes, &all_maps);
+            dmr.root()->add_var_nocopy(gr);
+        } else {
             BaseType *bt = build_scalar(var_name, filename, nctype);
             NCArray *ar = build_array(bt, ncid, varid, nctype, ndims, dim_ids);
             dmr.root()->add_var_nocopy(ar);
-            if (!NCRequestHandler::get_show_shared_dims()) {
-                for (int d = 0; d < ndims; ++d) {
-                    char dimname[MAX_NC_NAME];
-                    size_t dim_sz;
 
-                    int errstat = nc_inq_dim(ncid, dim_ids[d], dimname, &dim_sz);
-                    if (errstat != NC_NOERR) {
-                        throw Error("netcdf: could not get size for dimension " + long_to_string(d) + " in variable " +
-                                    dimname);
-                    }
+            for (int d = 0; d < ndims; ++d) {
+                char dimname[MAX_NC_NAME];
+                size_t dim_sz;
+                int errstat = nc_inq_dim(ncid, dim_ids[d], dimname, &dim_sz);
+                if (errstat != NC_NOERR) {
+                    throw Error("netcdf: could not get size for dimension " + long_to_string(d) + " in variable " +
+                                long_to_string(varid));
+                }
 
-                    string dim_name = dimname;
-                    if(path.find('_') != string::npos) dim_name = path + dim_name;
+                string dim_name = dimname;
+                if (path.find('_') != string::npos) dim_name = path + dim_name;
 
-                    // Add only new dimension
-                    if (!is_dimension(string(dimname), all_maps)) {
-                        D4Dimension *dmr_dim = new D4Dimension(dim_name, dim_sz);
-                        dmr.root()->dims()->add_dim_nocopy(dmr_dim);
-                        all_maps.push_back(dimname);
-                    }
+                // Add only new dimension
+                if (!is_dimension(string(dimname), all_maps)) {
+                    D4Dimension *dmr_dim = new D4Dimension(dim_name, dim_sz);
+                    dmr.root()->dims()->add_dim_nocopy(dmr_dim);
+                    all_maps.push_back(dimname);
                 }
             }
         }
@@ -626,21 +591,21 @@ static void read_variables(DMR & dmr, const string &filename, int ncid, int nvar
         nvars = array_vars.size();
         for (int i = 0; i < nvars; ++i) {
             int var = array_vars.at(i);
-
-            int errstat = nc_inq_var(ncid, var, name, &nctype, &ndims,
-                    dim_ids, (int *) 0);
+            int errstat = nc_inq_var(ncid, var, name, &nctype, &ndims, dim_ids, (int *) 0);
             if (errstat != NC_NOERR) {
                 string msg = "netcdf 3: could not get name or dimension number for variable ";
                 msg += long_to_string(var);
                 throw Error(msg);
             }
-
             // If an array already appears as a Grid Map, don't write it out
             // as an array too.
-            if (is_dimension(string(name), all_maps))
+            string var_name = name;
+            if (path.find('_') != string::npos) var_name = path + var_name;
+
+            if (is_dimension(string(var_name), all_maps))
                 continue;
 
-            BaseType *bt = build_scalar(name, filename, nctype);
+            BaseType *bt = build_scalar(var_name, filename, nctype);
             Array *ar = build_array(bt, ncid, var, nctype, ndims, dim_ids);
             dmr.root()->add_var_nocopy(ar);
 
@@ -649,17 +614,25 @@ static void read_variables(DMR & dmr, const string &filename, int ncid, int nvar
                 size_t dim_sz;
                 int errstat = nc_inq_dim(ncid, dim_ids[d], dimname, &dim_sz);
                 if (errstat != NC_NOERR) {
-                    throw Error("netcdf: could not get size for dimension " + long_to_string(d) + " in variable " + long_to_string(var));
+                    throw Error("netcdf: could not get size for dimension " + long_to_string(d) + " in variable " +
+                                long_to_string(var));
                 }
-                D4Dimension *dmr_dim = new D4Dimension(dimname, dim_sz);
-                dmr.root()->dims()->add_dim_nocopy(dmr_dim);
+                string dim_name = dimname;
+                if (path.find('_') != string::npos) dim_name = path + dim_name;
+
+                // Add only new dimension
+                if (!is_dimension(string(dimname), all_maps)) {
+                    D4Dimension *dmr_dim = new D4Dimension(dim_name, dim_sz);
+                    dmr.root()->dims()->add_dim_nocopy(dmr_dim);
+                    all_maps.push_back(dimname);
+                }
             }
         }
     }
 #endif
 }
 
-static void read_attributes(DMR & dmr, const string &filename, int ncid, int nvars, string path, string full_path) {
+static void read_attributes(DMR &dmr, const string &filename, int ncid, int nvars, string path, string full_path) {
     BESDEBUG("nc", "Starting read attributes ncid = " << ncid << endl);
 
     int errstat;
@@ -681,14 +654,14 @@ static void read_attributes(DMR & dmr, const string &filename, int ncid, int nva
             throw Error(errstat, "Could not get information for variable: " + long_to_string(varid));
 
         string var_name = varname;
-        if(path.find('_') != string::npos)
+        if (path.find('_') != string::npos)
             var_name = path + varname;
 
-        AttrTable attr_table_ptr = dmr.root()->find_var(var_name)->get_attr_table();
+        AttrTable attr_table_ptr = dmr.root()->var(var_name, true)->get_attr_table();
         read_attributes_netcdf4(ncid, varid, natts, &attr_table_ptr);
         dmr.root()->find_var(var_name)->set_attr_table(attr_table_ptr);
         // Append attributes "fullnamepath" and "orgname" to variable
-        if(path.find('_') != string::npos) {
+        if (path.find('_') != string::npos) {
             string fpath = full_path + varname;
             attr_table_ptr.append_attr("orgname", "string", varname);
             attr_table_ptr.append_attr("fullnamepath", "string", fpath);
@@ -726,7 +699,62 @@ static void read_attributes(DMR & dmr, const string &filename, int ncid, int nva
                 attr_table_ptr.append_attr("string_length", print_type(NC_INT), print_rep);
             }
         }
-// netcdf 4 here
+#if NETCDF_VERSION >= 4
+        else if (is_user_defined_type(ncid, var_type)) {
+            //var_type >= NC_FIRSTUSERTYPEID) {
+            vector<char> name(MAX_NC_NAME + 1);
+            int class_type;
+            errstat = nc_inq_user_type(ncid, var_type, &name[0], 0, 0, 0, &class_type);
+            if (errstat != NC_NOERR)
+                throw(InternalErr(__FILE__, __LINE__, "Could not get information about a user-defined type (" + long_to_string(errstat) + ")."));
+            AttrTable attr_table_ptr = dmr.root()->get_attr_table();
+            switch (class_type) {
+            case NC_OPAQUE: {
+                attr_table_ptr.append_attr("DAP2_OriginalNetCDFBaseType", print_type(NC_STRING), "NC_OPAQUE");
+                attr_table_ptr.append_attr("DAP2_OriginalNetCDFTypeName", print_type(NC_STRING), &name[0]);
+                break;
+            }
+
+            case NC_ENUM: {
+                //vector<char> name(MAX_NC_NAME + 1);
+                nc_type base_nc_type;
+                size_t base_size, num_members;
+                errstat = nc_inq_enum(ncid, var_type, 0/*&name[0]*/, &base_nc_type, &base_size, &num_members);
+                if (errstat != NC_NOERR)
+                    throw(InternalErr(__FILE__, __LINE__, "Could not get information about an enum(" + long_to_string(errstat) + ")."));
+
+                // If the base type is a 64-bit int, bail with an error or
+                // a message about unsupported types
+                if (base_nc_type == NC_INT64 || base_nc_type == NC_UINT64) {
+                    if (NCRequestHandler::get_ignore_unknown_types())
+                        cerr << "An Enum uses 64-bit integers, but this handler does not support that type." << endl;
+                    else
+                        throw Error("An Enum uses 64-bit integers, but this handler does not support that type.");
+                    break;
+                }
+
+                for (size_t i = 0; i < num_members; ++i) {
+                    vector<char> member_name(MAX_NC_NAME + 1);
+                    vector<char> member_value(base_size);
+                    errstat = nc_inq_enum_member(ncid, var_type, i, &member_name[0], &member_value[0]);
+                    if (errstat != NC_NOERR)
+                        throw(InternalErr(__FILE__, __LINE__, "Could not get information about an enum value (" + long_to_string(errstat) + ")."));
+                    attr_table_ptr.append_attr("DAP2_EnumValues", print_type(base_nc_type), print_attr(base_nc_type, 0, &member_value[0]));
+                    attr_table_ptr.append_attr("DAP2_EnumNames", print_type(NC_STRING), &member_name[0]);
+                }
+
+                attr_table_ptr.append_attr("DAP2_OriginalNetCDFBaseType", print_type(NC_STRING), "NC_ENUM");
+                attr_table_ptr.append_attr("DAP2_OriginalNetCDFTypeName", print_type(NC_STRING), &name[0]);
+
+                break;
+            }
+
+            default:
+                break;
+            }
+            dmr.root()->find_var(var_name)->attributes()->transform_to_dap4(attr_table_ptr);
+        }
+#endif // NETCDF_VERSION >= 4
     }
 
     // TODO: Replace dots in attribute names ?
@@ -750,10 +778,8 @@ static void read_attributes(DMR & dmr, const string &filename, int ncid, int nva
         if ((errstat = nc_inq_dim(ncid, xdimid, dimname, (size_t *) 0)) != NC_NOERR)
             throw InternalErr(__FILE__, __LINE__, string("NetCDF handler: Could not access dimension information: ") +
                                                   nc_strerror(errstat));
-
-
         AttrTable attr_table_ptr = dmr.root()->get_attr_table();
-        AttrTable *at= new AttrTable();  //das.add_table("DODS_EXTRA", new AttrTable);
+        AttrTable *at = new AttrTable();  //das.add_table("DODS_EXTRA", new AttrTable);
         string print_rep = print_attr(datatype, 0, dimname);
         at->append_attr("Unlimited_Dimension", print_type(datatype), print_rep);
         attr_table_ptr.append_container(at, "DODS_EXTRA");
@@ -762,8 +788,7 @@ static void read_attributes(DMR & dmr, const string &filename, int ncid, int nva
     }
 }
 
-void read_group(DMR & dmr, const string &filename, int ncid, D4Group group, string path, string full_path)
-{
+void read_group(DMR &dmr, const string &filename, int ncid, D4Group group, string path, string full_path) {
     int errstat;
     int nvars;
 
@@ -780,10 +805,10 @@ void read_group(DMR & dmr, const string &filename, int ncid, D4Group group, stri
     errstat = nc_inq_grps(ncid, &numgrps, NULL);
     if (errstat != NC_NOERR)
         throw Error(errstat, "Could not inquire about netcdf file: " + path_to_filename(filename) + ".");
-    if(numgrps != 0){
+    if (numgrps != 0) {
         // underscore replaces slash
-        if(path.empty()) path = "_";
-        if(full_path.empty()) full_path = "/";
+        if (path.empty()) path = "_";
+        if (full_path.empty()) full_path = "/";
 
         ncids = (int *) malloc(sizeof(int) * numgrps);
         errstat = nc_inq_grps(ncid, NULL, ncids);
@@ -796,7 +821,7 @@ void read_group(DMR & dmr, const string &filename, int ncid, D4Group group, stri
 
             D4Group *grp = dmr.factory()->NewGroup(grp_path_name);
             group.add_group_nocopy(grp);
-            read_group(dmr, filename, ncids[i], *grp, grp_path_name, grp_full_path) ;
+            read_group(dmr, filename, ncids[i], *grp, grp_path_name, grp_full_path);
         }
     }
 }
@@ -808,8 +833,7 @@ void read_group(DMR & dmr, const string &filename, int ncid, D4Group group, stri
 
     @param elide_dimension_arrays If true, don't include an array if it's
     really a dimension used by a Grid. */
-void nc_read_dataset_variables_dmr(DDS &dds, const string &filename)
-{
+void nc_read_dataset_variables_dmr(DDS &dds, const string &filename) {
     ncopts = 0;
     int ncid, errstat;
 
