@@ -841,22 +841,18 @@ void nc_read_dataset_variables_dmr(DDS &dds, const string &filename) {
     string path = "";
     string full_path = "";
 
-    D4Group *group = new D4Group("/");
+
     DMR *dmr = new DMR();
+    dmr->set_factory(new D4BaseTypeFactory);
+    dmr->set_name(name_path(filename));
+    dmr->set_filename(filename);
 
     errstat = nc_open(filename.c_str(), NC_NOWRITE, &ncid);
     if (errstat != NC_NOERR)
         throw Error(errstat, "Could not open " + filename + ".");
 
-
-    // dataset name
-    dmr->set_factory(new D4BaseTypeFactory);
-    //dmr->factory()->NewVariable(dods_group_c,"/");
+    D4Group *group = new D4Group("/");
     dmr->root()->add_var_nocopy(group);
-
-    dmr->set_name(name_path(filename));
-    dmr->set_filename(filename);
-    dmr->set_dap_version(dds.get_dap_version());
 
     // read groups
     read_group(*dmr, filename, ncid, *group, path, full_path);
