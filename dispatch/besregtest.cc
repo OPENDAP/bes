@@ -107,7 +107,7 @@ int main(int argc, char **argv) {
             BESRegex reg_expr(reg.c_str());
             int result = reg_expr.match(inQuestion.c_str(),
                     inQuestion.length());
-            if (result != 0) {
+            if (result != -1) {
                 if ((unsigned int)result == inQuestion.length()) {
                     cout << "expression \"" << reg << "\" matches exactly";
                 } else {

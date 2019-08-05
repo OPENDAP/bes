@@ -93,11 +93,14 @@ BESRegex::BESRegex(const char* t, int)
 }
 
 /** Does the regular expression match the string? 
+ *  Warning : this function can be used to match strings of zero length
+ *  	if the regex pattern accepts empty strings.
+ *  Therefore this function returns -1 if the pattern does not match.
 
     @param s The string
     @param len The length of string to consider
     @param pos Start looking at this position in the string
-    @return The number of characters that match, 0 if there's no match. */
+    @return The number of characters that match, -1 if there's no match. */
 int 
 BESRegex::match(const char* s, int len, int pos)
 {
@@ -109,7 +112,7 @@ BESRegex::match(const char* s, int len, int pos)
                          ss.substr(pos, len-pos).c_str(), len, pmatch, 0);
 	int matchnum;
     if (result == REG_NOMATCH)
-        matchnum = 0; //changed from -1 to 0. SBL 7.23.19
+        matchnum = -1;
 	else
 		matchnum = pmatch[0].rm_eo - pmatch[0].rm_so;
 		
