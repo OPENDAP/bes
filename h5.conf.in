@@ -40,13 +40,6 @@ BES.Catalog.catalog.TypeMatch+=h5:.*\.(HDF5|h5|he5)(\.bz2|\.gz|\.Z)?$;
 #-----------------------------------------------------------------------#
 # HDF5 handler specific parameters: 
 #-----------------------------------------------------------------------#
-# Setting H5.IgnoreUnknownTypes to true will cause this handler to ignore
-# 64-bit integer types (the only HDF5 it will not process). The default
-# value of false causes the handler to return an error to the client 
-# that explains that 64-bit types are not supported. Variables of the 
-# ignored types simply don't show up in the output.
-#
-# H5.IgnoreUnknownTypes = true
 
 #
 # EnableCF: Handle HDF data to follow the CF conventions
@@ -59,15 +52,17 @@ H5.EnableCF=true
 # The following keys only work when H5.EnableCF is set to true.
 # ######################################
 #
-#
+# EnablePassFileID
 # When this key is set to true, HDF5 file ID is passed from metadata to data
 # services. This may improve performance. However, it may cause NcML module
 # fail to access different granules. So set this key to false by default.
 H5.EnablePassFileID=false
 
-# ECS Struct metadata attribute is not mapped to DAP
-# The handler makes metadata to follow CF based on this attribute
+# DisableStructMetaAttr: Turn off HDF-EOS5 struct metadata
+# In general, ECS Struct metadata attribute is not necessary to map to DAP
+# since the handler already uses this attribute to make metadata follow CF 
 H5.DisableStructMetaAttr=true
+
 
 H5.DisableECSMetaAttr=false
 
