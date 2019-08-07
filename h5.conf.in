@@ -64,32 +64,47 @@ H5.EnablePassFileID=false
 H5.DisableStructMetaAttr=true
 
 
+# DisableECSMetaAttr: Turn off HDF-EOS5 metadata such as coremetadata,archivemetada.
 H5.DisableECSMetaAttr=false
+
+# KeepVarLeadingUnderscore: Keep the underscore(_) in the variable path.
 
 # HDF5 group or dataset(variable) path always start with a '/'. When the CF naming rule is applied,
 # the first '/' is always changes to "_". This is not necessary and may potentially confuse with
 # CF predefined attributes(_FillValue e.g.). 
 # So by keeping the following key's value be 'false', the leading underscore of a variable name
-# or a group path in DAS are removed. For example, a variable path /a/b will be changed to a_b rather than _a_b.
+# or a group path in DDS and DAS are removed. For example, a variable path /a/b will be changed 
+# to a_b rather than _a_b.
 # One can set this BES key be true to keep the leading underscore in the variable name.
 # Note this key only applies to general HDF5 products. 
-# The leading underscore in a variable name is always stripped off for some NASA HDF5 products and netCDF-4-like HDF5 products.
+# The leading underscore in a variable name is always stripped off for some NASA HDF5 products 
+# and netCDF-4-like HDF5 products.
+
 H5.KeepVarLeadingUnderscore=false
+
+# EnableCheckNameClashing: Check if there are variable name clashing and resolve the clashed names.
 
 # When this key is set to true, the handler will check if
 # there are name clashings among variables and attributes. 
+# If name clashing occurs, the handler tries to resolve the
+# name clashing by generating unique names for the clashed ones.
 # For NASA HDF5 and HDF-EOS5 products, we don't see any
 # name clashings for variables and attributes. In fact,
 # unlike HDF4, it is very rare to have name clashing for HDF5.
 # So to reduce performance overhead, we set this key to false by default. 
 # Users can set this key to true if it becomes necessary.
+
 H5.EnableCheckNameClashing=false
+
+# EnableAddPathAttrs: The original path of a variable is kept as an attribute.
 
 # When this key is set to true, the original path of the HDF5 objects is
 # kept as an attribute. Users can set this key to false if users don't
 # care about the absolute path of object names. Performance may get improved.
 H5.EnableAddPathAttrs=true
 
+
+# EnableDropLongString: Drop long string variables or attributes. 
 
 # We find netCDF java has a string size limit(currently 32767). If an HDF5 string dataset
 # has an individual element of which the size is greater than this limit, 
@@ -98,16 +113,19 @@ H5.EnableAddPathAttrs=true
 # skip the HDF5 string of which size is greater than 32767. Users should set this
 # key to false if that long string information is necessary or visualization clients
 # are not used.
-# Note: For the following two cases:
-# 1) The latest netCDF Java works fine if the size of an HDF5 string attribute exceeds
-# 32767. 
-# 2) Also even if the total size of an HDF5 string dataset exceeds 32767, but the 
-# individual string element size doesn't exceed 32767.
-# For the above cases, the handler will not drop the long string even this key is turned to be true.
+# Note: For the following two cases,the long string won't be dropped since the latest
+# netCDF Java works fine.
+# 1) The size of an HDF5 string attribute exceeds 32767.
+# 2) Even if the total size of an HDF5 string dataset exceeds 32767, but the 
+#    individual string element size doesn't exceed 32767.
+
 H5.EnableDropLongString=true
 
-# We find that occassionally NASA HDF5 products may have the attribute_FillValue datatype 
-# dfferent than the variable datatype. This violates the CF conventions. So the handler
+# EnableFillValueCheck: Check if the _FillValue is within the correct datatype and data range.
+
+# We find that occassionally that the datatype of attribute _FillValue is different 
+# than the datatype of the corresponding variable for some NASA HDF5 products. 
+# This violates the CF conventions. So the handler
 # corrects the FillValue datatype to be the corresponding variable datatype. However, the
 # original value of the fillvalue may fall out of the range of the variable datatype.
 # An example, var dtype: 'unsigned char';  original fillvalue dtype: 'signed char';
@@ -115,26 +133,31 @@ H5.EnableDropLongString=true
 # If such a case occurs, we believe this is a data producer's mistake and should fail the service
 # and let the data center reports this issue back to the data producer. 
 # However, this may only occur for one or two variables and the data center may not 
-# want to discontinue the data service. So we provide the following BES keys to give the
-# flexibility to the data center to continue the service and may use NcML to patch the 
+# want to stop the hyrax service of this product. So we provide the following BES key so that 
+# the data center can have an option to continue the service and may use NcML to patch the 
 # wrong fillvalue until the data producer corrects it in the new release.
-# By default, the key FillValueCheck is true. If the fillvalue is out of the range of the variable type, 
+# By default, this key is set to true. If the fillvalue is out of the range of the variable type, 
 # DAP service stops. 
 # **To ignore the fillvalue check**, set this key to false. The service runs normally but
 # the _Fillvalue of some variables may be wrong. netCDF-Java clients may not access the data correctly.
+
 H5.EnableFillValueCheck=true
 
+# CheckIgnoreObj: Check and list the HDF5 objects that are not mapped to DAP2.
 
-# This BES key must be set to false for the real service. Set it to true 
+# This key is used for data distributors to check if any HDF5 object is not mapped to DAP2. 
+# This key must be set to false for the real service. Set it to true 
 # will generate a DAS output that lists the ignored HDF5 objects and attributes
-# during the mapping from HDF5 to DAP2.
+# when mapping HDF5 to DAP2.
 # Also this key should only be used when the H5.EnableCF key is set to true.
 H5.CheckIgnoreObj=false
+
 
 # If this key is turned to be true, the handler will try to flatten the
 # the coordinate variable path stored inside the "coordinates" attribute.
 # Currently this key only takes effect for the HDF5 file that follows
 # the netCDF-4 data model when the 2-D latitude/longitude fields present.
+
 H5.ForceFlattenNDCoorAttr=true
 
 # Caching 
