@@ -112,7 +112,7 @@ BESRegex::match(const char* s, int len, int pos)
                          ss.substr(pos, len-pos).c_str(), len, pmatch, 0);
 	int matchnum;
     if (result == REG_NOMATCH)
-        matchnum = -1;
+        matchnum = -1; //returns -1 due to function being able to match strings of 0 length
 	else
 		matchnum = pmatch[0].rm_eo - pmatch[0].rm_so;
 		
