@@ -150,8 +150,10 @@ H5.EnableFillValueCheck=true
 # will generate a DAS output that lists the ignored HDF5 objects and attributes
 # when mapping HDF5 to DAP2.
 # Also this key should only be used when the H5.EnableCF key is set to true.
+
 H5.CheckIgnoreObj=false
 
+# ForceFlattenNDCoorAttr: Flatten the variable path stored in the "coordinates" attribute.
 
 # If this key is turned to be true, the handler will try to flatten the
 # the coordinate variable path stored inside the "coordinates" attribute.
@@ -160,8 +162,13 @@ H5.CheckIgnoreObj=false
 
 H5.ForceFlattenNDCoorAttr=true
 
-# Caching 
-# 1. Caching DAP metadata responses. 
+# CACHING 
+# C1. Caching DAP metadata response in memory. 
+#
+# MetaDataMemCacheEntries: 
+# Cache the DDS,DAS and DMR in the memory, the cache will start purging its objects
+# only after the number of entries exceeds the number defined by this key.
+#
 # The HDF5 handler can cache (in memory)DDS,DAS and DMR 
 # responses it builds. If the H5.MetaDataMemCacheEntries value is zero, the cache
 # is turned off. Setting the H5.MetaDataMemCacheEntries to a value greater than
@@ -173,6 +180,126 @@ H5.ForceFlattenNDCoorAttr=true
 H5.MetaDataMemCacheEntries=1000
 #H5.MetaDataMemCacheEntries=0
 
+# CachePurgeLevel: how much of the in-memory cahce is removed when it is purged.
+#
+# The H5.CachePurgeLevel key determines how much of the in-memory cache is
+# removed when it is purged. The value 0.2 (the default) configures the
+# software to remove the oldest 20% of items from the cache. You do not
+# need to edit this to use the cache since 0.2 is the default value.
+
+# H5.CachePurgeLevel = 0.2
+
+# C2. Caching DAP metadata response in the disk
+#
+# EnableDiskMetaDataCache: HDF5 DAS will be read from a cached file.
+#
+# If this key is set to true, the DAS will be cached into a file.
+# The handler will read DAS from the cached file instead of using the HDF5 library to build since the second time.
+# Since Hyrax 1.15, MetaData Store(MDS) has the similar feature as this key achieves. Users are
+# encourged to check if turning this key on can improve performance before setting this key true.
+#
+
+H5.EnableDiskMetaDataCache=false
+
+# C3. Caching DAP data response in the disk
+# (STOP editing)
+
+# When the H5.EnableDiskDataCache is set to true, the variable data
+# will write to a binary file in the
+# server. Data will be read in from the cached file since the second
+# fetch. Several associated keys must be set correctly when this key
+# is set to true.
+#
+#
+# # The description of these associated keys are:
+# #
+# # H5.DiskCacheDataPath - An existing directory with read and write
+# # permissions for the BES process.
+# #
+# # H5.DiskCacheFilePrefix - The cache file prefix, it must be given
+# # for the cache to work. This requirement comes from the hyrax BES.
+#
+# # H5.DiskCacheSize - The size of the cache in megabytes, the
+# # must must be > 0.
+# #
+# # Example:
+# # H5.EnableDiskDataCache=true
+# # H5.DiskCacheDataPath=/opt/tmp
+# # H5.DiskCacheSize=100000
+H5.EnableDiskDataCache=false
+H5.DiskCacheDataPath=/tmp
+H5.DiskCacheFilePrefix=c
+#Set to ~100GB.
+H5.DiskCacheSize=100000
+
+# The following keys provide a way for users to fine tune the data to be cached in the disk.
+# The main concern here is that users may not want to cache all variables either because the disk limitations or
+# the performance gain is less optimal for some variables. 
+# These BES keys will help mitigate these issues. 
+# If H5.DiskCacheComp is true, only compressed HDF5 variables are cached. If compressed variables
+# are cached, there is no data decompression time. 
+# We further provide more BES keys for users to fine tune according to their specific patterns.
+# 
+# If H5.DiskCacheFloatOnlyComp is set to be true, only floating-point variables are cached.
+# If H5.DiskCacheCompThreshold is set, it should be a floating-point number that is greater than 1. 
+# The handler will compare the compression ratio of a variable with this number, only when the compression
+# ratio is smaller than this number, the variable is cached. In other words, hard compressed variable
+# usually takes longer decompression time. 
+# H5.DiskCacheCompVarSize must be a positive integer number. It represents the variable size in kilobytes 
+# Only the (uncompressed) variable size that is greater than this VarSize, the variable will be cached.
+# For example, if this number is 100, only the size of variable that is >100K will be cached.
+# 
+#
+H5.DiskCacheComp=false
+H5.DiskCacheFloatOnlyComp=true
+H5.DiskCacheCompThreshold=2.0
+H5.DiskCacheCompVarSize=100
+
+# HDF5 metadata disk cache key. If this key is set to true, the DAS will be cached into a file.
+# The handler will no longer use the HDF5 library to build DAS since the second time.
+H5.EnableDiskMetaDataCache=false
+
+# The following is the directory where the DAS cache file will be put.
+H5.DiskMetaDataCachePath=/tmp
+
+#
+# HDF-EOS5 geolocation data cache key
+#
+# The latitude and longitude of an HDF-EOS5 grid will be calculated
+# on-the-fly according to projection parameters stored in the HDF-EOS5
+# file. The same latitude and longitude are calculated each time when
+# an HDF-EOS5 grid is fetched. When the H4.EnableEOSGeoCacheFile key
+# is set to true, the calculated latitude and longitude are cached to
+# two flat binary files so that the same latitude and longitude will
+# be obtained from the cached files starting from the second fetch.
+# Several associated keys must be set correctly when this key is set
+# to true.
+#
+# The description of these associated keys are:
+#
+# HDF5.Cache.latlon.path - An existing directory with read and write
+# permissions for the BES process.
+#
+# HDF5.Cache.latlon.prefix - The cache file prefix, it must be given
+# for the cache to work.
+#
+# HDF5.Cache.latlon.size - The size of the cache in megabytes, the
+# must must be > 0.
+#
+# Example:  
+# H5.EnableEOSGeoCacheFile=true
+# H5.Cache.latlon.path=/tmp/latlon
+# H5.Cache.latlon.prefix=l
+# H5.Cache.latlon.size=20000
+#
+H5.EnableEOSGeoCacheFile=false
+H5.Cache.latlon.path=/tmp/latlon
+H5.Cache.latlon.prefix=l
+H5.Cache.latlon.size=20000
+#
+#
+#
+#
 # 2. Caching the data values of HDF5 coordinate variables or specific variables.
 #
 # The HDF5 handler also provides a way for the data service agents to 
