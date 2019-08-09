@@ -225,7 +225,7 @@ H5.EnableDiskMetaDataCache=false
 # #
 # # Example:
 # # H5.EnableDiskDataCache=true
-# # H5.DiskCacheDataPath=/opt/tmp
+# # H5.DiskCacheDataPath=/tmp
 # # H5.DiskCacheSize=100000
 
 H5.EnableDiskDataCache=false
@@ -259,7 +259,6 @@ H5.DiskCacheFloatOnlyComp=true
 H5.DiskCacheCompThreshold=2.0
 H5.DiskCacheCompVarSize=100
 
-
 #
 # C4. Caching HDF-EOS5 geolocation data in the disk
 #
@@ -277,29 +276,40 @@ H5.DiskCacheCompVarSize=100
 #
 # The description of these associated keys are:
 #
-# HDF5.Cache.latlon.path - An existing directory with read and write
-# permissions for the BES process.
+# H5.Cache.latlon.path - An existing directory with read and write
+# permissions of GeoCache files for the BES process.
 #
-# HDF5.Cache.latlon.prefix - The cache file prefix, it must be given
+# H5.Cache.latlon.prefix - The cache file prefix, it must be given
 # for the cache to work.
 #
-# HDF5.Cache.latlon.size - The size of the cache in megabytes, the
+# H5.Cache.latlon.size - The size of the cache in megabytes, the
 # must must be > 0.
 #
 # Example:  
-# H5.EnableEOSGeoCacheFile=true
-# H5.Cache.latlon.path=/tmp/latlon
-# H5.Cache.latlon.prefix=l
-# H5.Cache.latlon.size=20000
+# # H5.EnableEOSGeoCacheFile=true
+# # H5.Cache.latlon.path=/tmp/latlon
+# # H5.Cache.latlon.prefix=l
+# # H5.Cache.latlon.size=20000
 #
 H5.EnableEOSGeoCacheFile=false
 H5.Cache.latlon.path=/tmp/latlon
 H5.Cache.latlon.prefix=l
 H5.Cache.latlon.size=20000
+
+## End of general CF option BES keys
+
+# Keys for the default Option
+# For the default option, change the key value to false if the dimension cannot be handled.
+H5.DefaultHandleDimension=true
+
+# More CF option BES keys for Cache 
 #
-#
-#[STOP EDITING]
-# 2. Caching the data values of HDF5 coordinate variables or specific variables.
+# The following BES keys are tuned to store variable data in the memory. 
+# They are supposed to improve performance for some use cases. However, our testing of some use
+# cases don't show performance gain. This may be due to the internal caching mechanism of the tomcat 
+# server. Nevertheless, we still keep the information in this file.
+
+# 1. Caching the data values of HDF5 coordinate variables or specific variables in memory.
 #
 # The HDF5 handler also provides a way for the data service agents to 
 # cache the data values of coordinate variables or specific variables.
@@ -313,9 +323,9 @@ H5.Cache.latlon.size=20000
 # to acheieve the best performance.
 #
 # 2) This feature only takes effect when the EnableCF key is set to true.
-# End of Note:
+# End of Note.
 # 
-# 2.1 Caching the latitude/longitude coordinate variables and specific data variables
+# 1.1 Caching the latitude/longitude coordinate variables and specific data variables
 #
 # Compared with other coordinate variables, arrays to store latitude/longitude are usually large 
 # and arrays to store data variables in the memory cache are also relatively large.
@@ -335,7 +345,7 @@ H5.LargeDataMemCacheEntries=0
 # H5.LargeDataMemCacheEntries is not 0, the values of latitude and longitude coordinate variables are still 
 # cached in the memory by per file base. If the users choose to do this way, we recommend that
 # the users may choose a bigger value for  H5.LargeDataMemCacheEntries to avoid constant purging and refilling.
-# H5.LargeDataMemCacheEntries=100 or higher.
+# For example, H5.LargeDataMemCacheEntries=100 or higher.
 # 
 #
 # H5.DataCachePath tells the handler where the configuration file is located. It should be a full path of
@@ -448,7 +458,7 @@ H5.LargeDataMemCacheFileName=
 #H5.LargeDataMemCacheFileName=ldatamem.conf
 
 
-# 2.2 Caching the non-latitude/longitude coordinate variables 
+# 1.2 Caching the non-latitude/longitude coordinate variables 
 # These coordinate variables include height or other non-lat/lon coordinate variables.
 # Usually these coordinate variables are stored in 1-D array and the storage size is small.
 # That implies that the number of cache entries can be bigger.
@@ -459,116 +469,8 @@ H5.LargeDataMemCacheFileName=
 H5.SmallDataMemCacheEntries=0
 #H5.SmallDataMemCacheEntries=200
 
-
-# The H5.CachePurgeLevel key determines how much of the in-memory cache is
-# removed when it is purged. The value 0.2 (the default) configures the
-# software to remove the oldest 20% of items from the cache. You do not
-# need to edit this to use the cache since 0.2 is the default value.
-
-# H5.CachePurgeLevel = 0.2
-
-# HDF5 variable disk data cache key for the CF option
-# 
-# When the H5.EnableDiskDataCache is set to true, the variable data
-# will write to a binary file in the
-# server. Data will be read in from the cached file since the second
-# fetch. Several associated keys must be set correctly when this key
-# is set to true.
-#
-#
-# # The description of these associated keys are:
-# #
-# # H5.DiskCacheDataPath - An existing directory with read and write
-# # permissions for the BES process.
-# #
-# # H5.DiskCacheFilePrefix - The cache file prefix, it must be given
-# # for the cache to work. This requirement comes from the hyrax BES.
-#
-# # H5.DiskCacheSize - The size of the cache in megabytes, the
-# # must must be > 0.
-# #
-# # Example:
-# # H5.EnableDiskDataCache=true
-# # H5.DiskCacheDataPath=/opt/tmp
-# # H5.DiskCacheSize=100000
-H5.EnableDiskDataCache=false
-H5.DiskCacheDataPath=/tmp
-H5.DiskCacheFilePrefix=c
-#Set to ~100GB.
-H5.DiskCacheSize=100000
-
-# The following keys provide a way for users to fine tune the data to be cached in the disk.
-# The main concern here is that users may not want to cache all variables either because the disk limitations or
-# the performance gain is less optimal for some variables. 
-# These BES keys will help mitigate these issues. 
-# If H5.DiskCacheComp is true, only compressed HDF5 variables are cached. If compressed variables
-# are cached, there is no data decompression time. 
-# We further provide more BES keys for users to fine tune according to their specific patterns.
-# 
-# If H5.DiskCacheFloatOnlyComp is set to be true, only floating-point variables are cached.
-# If H5.DiskCacheCompThreshold is set, it should be a floating-point number that is greater than 1. 
-# The handler will compare the compression ratio of a variable with this number, only when the compression
-# ratio is smaller than this number, the variable is cached. In other words, hard compressed variable
-# usually takes longer decompression time. 
-# H5.DiskCacheCompVarSize must be a positive integer number. It represents the variable size in kilobytes 
-# Only the (uncompressed) variable size that is greater than this VarSize, the variable will be cached.
-# For example, if this number is 100, only the size of variable that is >100K will be cached.
-# 
-#
-H5.DiskCacheComp=false
-H5.DiskCacheFloatOnlyComp=true
-H5.DiskCacheCompThreshold=2.0
-H5.DiskCacheCompVarSize=100
-
-# HDF5 metadata disk cache key. If this key is set to true, the DAS will be cached into a file.
-# The handler will no longer use the HDF5 library to build DAS since the second time.
-H5.EnableDiskMetaDataCache=false
-
-# The following is the directory where the DAS cache file will be put.
-H5.DiskMetaDataCachePath=/tmp
-
-#
-# HDF-EOS5 geolocation data cache key
-#
-# The latitude and longitude of an HDF-EOS5 grid will be calculated
-# on-the-fly according to projection parameters stored in the HDF-EOS5
-# file. The same latitude and longitude are calculated each time when
-# an HDF-EOS5 grid is fetched. When the H4.EnableEOSGeoCacheFile key
-# is set to true, the calculated latitude and longitude are cached to
-# two flat binary files so that the same latitude and longitude will
-# be obtained from the cached files starting from the second fetch.
-# Several associated keys must be set correctly when this key is set
-# to true.
-#
-# The description of these associated keys are:
-#
-# HDF5.Cache.latlon.path - An existing directory with read and write
-# permissions for the BES process.
-#
-# HDF5.Cache.latlon.prefix - The cache file prefix, it must be given
-# for the cache to work.
-#
-# HDF5.Cache.latlon.size - The size of the cache in megabytes, the
-# must must be > 0.
-#
-# Example:  
-# H5.EnableEOSGeoCacheFile=true
-# H5.Cache.latlon.path=/tmp/latlon
-# H5.Cache.latlon.prefix=l
-# H5.Cache.latlon.size=20000
-#
-H5.EnableEOSGeoCacheFile=false
-H5.Cache.latlon.path=/tmp/latlon
-H5.Cache.latlon.prefix=l
-H5.Cache.latlon.size=20000
-#
-#
-#
-#
+# Keys for future use
 #  State Plane Projection east and north files: Must provide the absolute path
 #H5.STPEastFileName=/usr/tmp/nad27sp_le
 #H5.STPNorthFileName=/usr/tmp/nad83sp_le
 #
-# This key is only valid for the default option
-# Change the key value to false if the dimension cannot be handled.
-H5.DefaultHandleDimension=true
