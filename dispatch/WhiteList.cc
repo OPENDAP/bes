@@ -110,9 +110,12 @@ bool WhiteList::is_white_listed(const std::string &url)
 
         string catalog_root = bcat->get_root();
         BESDEBUG("bes", "WhiteList::Is_Whitelisted() - Catalog root: "<< catalog_root << endl);
-
-        whitelisted = file_path.compare(0, catalog_root.size(), catalog_root) == 0;
-        BESDEBUG("bes", "WhiteList::Is_Whitelisted() - Is_Whitelisted: "<< (whitelisted?"true":"false") << endl);
+        int ret = file_path.compare(0, catalog_root.npos, catalog_root) == 0;
+        // string::compare() returns 0 if the path strings match exactly.
+        // And since we are just looking at the catalog.root as a prefix of the resource
+        // name we only allow to be white-listed for an exact match.
+        whitelisted=(ret==0);
+        BESDEBUG("bes", "WhiteList::Is_Whitelisted() - Is_Whitelisted: "<< (whitelisted?"true ":"false ") << "(ret: " << ret << ")" << endl);
     }
     else {
         // This checks HTTP and HTTPS URLs against the whitelist patterns.
