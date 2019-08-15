@@ -142,7 +142,7 @@ public:
         CPPUNIT_ASSERT(
             can_access("http://cloudydap.opendap.org/opendap/Arch-2/ebs/samples/3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.h5"));
 
-        CPPUNIT_ASSERT(!can_access("file://foo"));
+        CPPUNIT_ASSERT(!can_access("file:///foo"));
 
         CPPUNIT_ASSERT(can_access(BESUtil::assemblePath(catalog_root_url, "nc/fnoc1.nc")));
 
