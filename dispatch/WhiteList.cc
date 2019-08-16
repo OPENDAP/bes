@@ -36,6 +36,7 @@
 #include <BESInternalError.h>
 #include <BESSyntaxUserError.h>
 #include <BESDebug.h>
+#include <BESNotFoundError.h>
 #include <BESForbiddenError.h>
 
 #include "WhiteList.h"
@@ -110,12 +111,52 @@ bool WhiteList::is_white_listed(const std::string &url)
 
         string catalog_root = bcat->get_root();
         BESDEBUG("bes", "WhiteList::Is_Whitelisted() - Catalog root: "<< catalog_root << endl);
-        int ret = file_path.compare(0, catalog_root.npos, catalog_root) == 0;
+
+
+        // Never a relative path shall be accepted.
+        // change??
+       // if( file_path[0] != '/'){
+       //     file_path.insert(0,"/");
+        //}
+
+        string relative_path;
+        if(file_path[0] == '/'){
+            if(file_path.length() < catalog_root.length()) {
+                whitelisted = false;
+            }
+            else {
+                int ret = file_path.compare(0, catalog_root.npos, catalog_root) == 0;
+                BESDEBUG("bes", "WhiteList::Is_Whitelisted() - file_path.compare(): " << ret << endl);
+                whitelisted = (ret==0);
+                relative_path = file_path.substr(catalog_root.length());
+            }
+        }
+        else {
+            BESDEBUG("bes", "WhiteList::Is_Whitelisted() - relative path detected");
+            relative_path = file_path;
+            whitelisted = true;
+        }
+
         // string::compare() returns 0 if the path strings match exactly.
         // And since we are just looking at the catalog.root as a prefix of the resource
         // name we only allow to be white-listed for an exact match.
-        whitelisted=(ret==0);
-        BESDEBUG("bes", "WhiteList::Is_Whitelisted() - Is_Whitelisted: "<< (whitelisted?"true ":"false ") << "(ret: " << ret << ")" << endl);
+        if(whitelisted){
+            // If we stop adding a '/' to file_path values that don't begin with one
+            // then we need to detect the use of the relative path here
+            bool follow_sym_links = bcat->get_catalog_utils()->follow_sym_links();
+            try {
+                BESUtil::check_path(relative_path, catalog_root, follow_sym_links);
+            }
+            catch (BESNotFoundError &e) {
+                whitelisted=false;
+            }
+            catch (BESForbiddenError &e) {
+                whitelisted=false;
+            }
+        }
+
+
+        BESDEBUG("bes", "WhiteList::Is_Whitelisted() - Is_Whitelisted: "<< (whitelisted?"true ":"false ") << endl);
     }
     else {
         // This checks HTTP and HTTPS URLs against the whitelist patterns.
