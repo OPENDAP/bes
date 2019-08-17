@@ -81,7 +81,7 @@ using namespace libdap;
  @param type The nc_type of this attribute
  @param loc The offset within \e vals
  @param vals a void* to the array of values */
-static string print_attr(nc_type type, int loc, void *vals)
+string print_attr(nc_type type, int loc, void *vals)
 {
     ostringstream rep;
     union {
@@ -223,7 +223,7 @@ static string print_attr(nc_type type, int loc, void *vals)
  @param datatype A nc_type
  @return A string that holds the type name.
  */
-static string print_type(nc_type datatype)
+string print_type(nc_type datatype)
 {
     switch (datatype) {
 #if NETCDF_VERSION >= 4
@@ -402,7 +402,7 @@ static void read_attributes_netcdf3(int ncid, int v, int natts, AttrTable *at)
  @param at A value-result parameter; a point to the attribute table to which
  the new information will be added.
  */
-static void read_attributes_netcdf4(int ncid, int varid, int natts, AttrTable *at)
+void read_attributes_netcdf4(int ncid, int varid, int natts, AttrTable *at)
 {
     BESDEBUG("nc", "In read_attributes_netcdf4" << endl);
 
