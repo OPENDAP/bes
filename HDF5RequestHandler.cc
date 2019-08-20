@@ -915,6 +915,14 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         string dds_cache_fname;
         string das_cache_fname;
 
+        // May uncomment the following code to check if the server-side function is used.
+#if 0
+        ConstraintEvaluator & eval = bdds->get_ce();
+        string t_constraint = dhi.container->get_constraint();
+
+        bool function_in_constraint = is_function_used(eval,t_constraint);
+#endif
+
         // Only DAS is read from the cache. dds_from_dc is always false.
         if(_use_disk_meta_cache == true) {
 
