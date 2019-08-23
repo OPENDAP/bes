@@ -60,6 +60,8 @@
 #include <Ancillary.h>
 
 #include "NCRequestHandler.h"
+#include <netcdf.h>
+#include "D4Group.h"
 
 #define NC_NAME "nc"
 
@@ -82,7 +84,7 @@ ObjMemCache *NCRequestHandler::dds_cache = 0;
 ObjMemCache *NCRequestHandler::dmr_cache = 0;
 
 extern void nc_read_dataset_attributes(DAS & das, const string & filename);
-extern void nc_read_dataset_variables_dmr(DDS & dds, const string & filename);
+extern void read_group(DMR &dmr, const string &filename, int ncid, D4Group group, string path, string full_path);
 extern void nc_read_dataset_variables(DDS & dds, const string & filename);
 
 /** Is the version number string greater than or equal to the value.
@@ -322,7 +324,7 @@ void NCRequestHandler::get_dds_with_attributes(const string& dataset_name, const
         if (!container_name.empty()) dds->container_name(container_name);
         dds->filename(dataset_name);
 
-        nc_read_dataset_variables_dmr(*dds, dataset_name);
+        nc_read_dataset_variables(*dds, dataset_name);
 #if 0
         DAS* das = 0;
         if (das_cache && (das = static_cast<DAS*>(das_cache->get(dataset_name)))) {
@@ -519,34 +521,56 @@ bool NCRequestHandler::nc_build_dmr(BESDataHandlerInterface &dhi)
             dmr->set_factory(new D4BaseTypeFactory);
             dmr->build_using_dds(dds);
 #else
+            ncopts = 0;
+            int ncid, errstat;
+
+            // path is used for var names and full_path for full name path in the var attribute
+            string path = "";
+            string full_path = "";
+
+            dmr->set_factory(new D4BaseTypeFactory);
+            dmr->set_name(name_path(dataset_name));
+            dmr->set_filename(dataset_name);
+
+            errstat = nc_open(dataset_name.c_str(), NC_NOWRITE, &ncid);
+            if (errstat != NC_NOERR)
+                throw Error(errstat, "Could not open " + dataset_name + ".");
+
+            D4Group *group = new D4Group("/");
+            dmr->root()->add_var_nocopy(group);
+
+            // read groups
+            read_group(*dmr, dataset_name, ncid, *group, path, full_path);
+//------------------------------------------------
             // This version builds a DDS only to build the resulting DMR. The DDS is
             // not cached. It does look in the DDS cache, just in case...
-            dmr->set_factory(new D4BaseTypeFactory);
-
-            DDS *dds_ptr = 0;
-            if (dds_cache && (dds_ptr = static_cast<DDS*>(dds_cache->get(dataset_name)))) {
-                // Use the cached DDS; Assume that all cached DDS objects hold DAS info too
-                BESDEBUG(NC_NAME, "DDS Cached hit (while building DMR) for : " << dataset_name << endl);
-
-                dmr->build_using_dds(*dds_ptr);
-            }
-            else {
-                // Build a throw-away DDS; don't bother to cache it. DMR's don't support
-                // containers.
-                BaseTypeFactory factory;
-                DDS dds(&factory, name_path(dataset_name), "3.2");
-
-                dds.filename(dataset_name);
-                nc_read_dataset_variables(dds, dataset_name);
-
-                DAS das;
-
-                nc_read_dataset_attributes(das, dataset_name);
-                Ancillary::read_ancillary_das(das, dataset_name);
-
-                dds.transfer_attributes(&das);
-                dmr->build_using_dds(dds);
-            }
+//            dmr->set_factory(new D4BaseTypeFactory);
+//
+//            DDS *dds_ptr = 0;
+//            if (dds_cache && (dds_ptr = static_cast<DDS*>(dds_cache->get(dataset_name)))) {
+//                // Use the cached DDS; Assume that all cached DDS objects hold DAS info too
+//                BESDEBUG(NC_NAME, "DDS Cached hit (while building DMR) for : " << dataset_name << endl);
+//
+//                dmr->build_using_dds(*dds_ptr);
+//            }
+//            else {
+//                // Build a throw-away DDS; don't bother to cache it. DMR's don't support
+//                // containers.
+//                BaseTypeFactory factory;
+//                DDS dds(&factory, name_path(dataset_name), "3.2");
+//
+//                dds.filename(dataset_name);
+//                nc_read_dataset_variables(dds, dataset_name);
+//
+//                DAS das;
+//
+//                nc_read_dataset_attributes(das, dataset_name);
+//                Ancillary::read_ancillary_das(das, dataset_name);
+//
+//                dds.transfer_attributes(&das);
+//                dmr->build_using_dds(dds);
+//            }
+// -------------------------------------------------
 #endif
 
             if (dmr_cache) {
