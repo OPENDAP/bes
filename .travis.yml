@@ -119,7 +119,8 @@ jobs:
     - export BES_BUILD=distcheck
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
     - make distcheck -j7
-
+  
+  # Debian Target (unused)
   # - stage: package
   #  script: 
   #  - export BES_BUILD=deb
@@ -151,13 +152,16 @@ after_script:
 
 before_deploy:
 - test -d $TRAVIS_BUILD_DIR/package || mkdir $TRAVIS_BUILD_DIR/package
-- if test $BES_BUILD = deb; then mv $TRAVIS_BUILD_DIR/../bes*-*_amd64.deb $TRAVIS_BUILD_DIR/package/; fi
+
+# The following is part of deb(ian) target
+# - if test $BES_BUILD = deb; then mv $TRAVIS_BUILD_DIR/../bes*-*_amd64.deb $TRAVIS_BUILD_DIR/package/; fi
+
 - if test "$BES_BUILD" = "centos6"; 
    then 
         cp $prefix/rpmbuild/RPMS/x86_64/* $TRAVIS_BUILD_DIR/package/; 
         for file in ${prefix}/rpmbuild/RPMS/x86_64/*; do
-            echo "Updating libdap CentOS-6 snapshot with ${file}";
-            ver=`basename ${file} | sed -e "s|libdap-debuginfo-||g" -e "s|libdap-devel-||g" -e "s|libdap-||g" -e "s|.static.el6.x86_64.rpm||g"`;
+            echo "Updating BES CentOS-6 snapshot with ${file}";
+            ver=`basename ${file} | sed -e "s|bes-debuginfo-||g" -e "s|bes-devel-||g" -e "s|bes-||g" -e "s|.static.el6.x86_64.rpm||g"`;
             snap=`basename ${file} | sed "s|${ver}|snapshot|g"`;
             cp ${file} ${TRAVIS_BUILD_DIR}/package/${snap};
         done
@@ -166,8 +170,8 @@ before_deploy:
     then 
         cp $prefix/rpmbuild/RPMS/x86_64/* $TRAVIS_BUILD_DIR/package/;
         for file in ${prefix}/rpmbuild/RPMS/x86_64/*; do
-            echo "Updating libdap CentOS-7 snapshot with ${file}";
-            ver=`basename ${file} | sed -e "s|libdap-debuginfo-||g" -e "s|libdap-devel-||g" -e "s|libdap-||g" -e "s|.static.el7.x86_64.rpm||g"`;
+            echo "Updating BES CentOS-7 snapshot with ${file}";
+            ver=`basename ${file} | sed -e "s|bes-debuginfo-||g" -e "s|bes-devel-||g" -e "s|bes-||g" -e "s|.static.el7.x86_64.rpm||g"`;
             snap=`basename ${file} | sed "s|${ver}|snapshot|g"`;
             cp ${file} ${TRAVIS_BUILD_DIR}/package/${snap};
         done
