@@ -5,6 +5,6 @@
     <define name="d">
 	<container name="c" />
     </define>
-    <get type="dds" definition="d" />
+    <get type="dmr" definition="d" />
 </request>
 

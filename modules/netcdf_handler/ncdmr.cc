@@ -231,7 +231,6 @@ static BaseType *build_user_defined(int ncid, int varid, nc_type xtype, const st
                     // requires names, so use the type name.
                     char var_name[NC_MAX_NAME+1];
                     nc_inq_compound_name(ncid, field_typeid, var_name);
-                    //TODO: path?
                     field->set_name(var_name);
                 }
                 else {
@@ -240,7 +239,6 @@ static BaseType *build_user_defined(int ncid, int varid, nc_type xtype, const st
                 // is this a scalar or an array? Note that an array of CHAR is
                 // a scalar string in netcdf3.
                 if (field_ndims == 0 || (field_ndims == 1 && field_typeid == NC_CHAR)) {
-                    //TODO: path?
                     ncs->add_var(field);
                 }
                 else {
@@ -287,8 +285,6 @@ static BaseType *build_user_defined(int ncid, int varid, nc_type xtype, const st
             if (status != NC_NOERR)
                 throw InternalErr(__FILE__, __LINE__, "Could not get name of an opaque (" + long_to_string(status) + ").");
 
-            //TODO: path?
-
             NCArray *opaque = new NCArray(&name[0], dataset, new NCByte(&name[0], dataset));
 
             if (ndims > 0) {
@@ -300,7 +296,6 @@ static BaseType *build_user_defined(int ncid, int varid, nc_type xtype, const st
                         delete opaque;
                         throw InternalErr(__FILE__, __LINE__, string("Failed to read dimension information for the compound variable ") + &name[0]);
                     }
-                    //TODO: path?
                     opaque->append_dim(dim_sz, dimname);
                 }
             }
@@ -320,7 +315,6 @@ static BaseType *build_user_defined(int ncid, int varid, nc_type xtype, const st
             status = nc_inq_varname(ncid, varid, &name[0]);
             if (status != NC_NOERR)
                 throw InternalErr(__FILE__, __LINE__, "Could not get name of an opaque (" + long_to_string(status) + ").");
-            //TODO: path?
 
             BaseType *enum_var = build_scalar(&name[0], dataset, base_nc_type);
 
@@ -335,7 +329,6 @@ static BaseType *build_user_defined(int ncid, int varid, nc_type xtype, const st
                         delete ar;
                         throw InternalErr(__FILE__, __LINE__, string("Failed to read dimension information for the compound variable ") + &name[0]);
                     }
-                    //TODO: path?
                     ar->append_dim(dim_sz, dimname);
                 }
                 return ar;
@@ -515,6 +508,7 @@ static void read_variables(DMR &dmr, const string &filename, int ncid, int nvars
     int ndims;
     int dim_ids[MAX_VAR_DIMS];
 
+    D4Group *grp_root = dmr.root();
     // Examine each variable in the file; if 'elide_grid_maps' is true, adds
     // only scalars and Grids (Arrays are added in the following loop). If
     // false, all variables are added in this loop.
@@ -524,7 +518,6 @@ static void read_variables(DMR &dmr, const string &filename, int ncid, int nvars
             throw Error("netcdf: could not get name or dimension number for variable " + long_to_string(varid));
 
         string var_name = name;
-        // TODO: path  = "_" ?
         if (path.find('_') != string::npos) var_name = path + var_name;
 
         // TODO: Replace dots in var_name to underscore ? Vars for X and Y ?
@@ -539,23 +532,29 @@ static void read_variables(DMR &dmr, const string &filename, int ncid, int nvars
         // dods_str_c because it's really a scalar string, not an array.
         // TODO: Same dimensions in different groups ?
         if (is_user_defined_type(ncid, nctype)) {
-
 #if NETCDF_VERSION >= 4
             BaseType *bt = build_user_defined(ncid, varid, nctype, filename, ndims, dim_ids, path);
-            dmr.root()->add_var_nocopy(bt);
+            (*bt).transform_to_dap4(grp_root,grp_root);
+            delete bt;
 #endif
         } else if (ndims == 0 || (ndims == 1 && nctype == NC_CHAR)) {
             BaseType *bt = build_scalar(var_name, filename, nctype);
-            dmr.root()->add_var_nocopy(bt);
+            (*bt).transform_to_dap4(grp_root,grp_root);
+            delete bt;
         } else if (is_grid(ncid, varid, ndims, dim_ids, map_sizes, map_names, map_types)) {
             BaseType *bt = build_scalar(var_name, filename, nctype);
             Array *ar = new NCArray(var_name, filename, bt);
             Grid *gr = build_grid(ar, ndims, nctype, map_names, map_types, map_sizes, &all_maps);
-            dmr.root()->add_var_nocopy(gr);
+            (*gr).transform_to_dap4(grp_root,grp_root);
+            delete bt;
+            delete ar;
+            delete gr;
         } else {
             BaseType *bt = build_scalar(var_name, filename, nctype);
-            NCArray *ar = build_array(bt, ncid, varid, nctype, ndims, dim_ids);
-            dmr.root()->add_var_nocopy(ar);
+            Array *ar = build_array(bt, ncid, varid, nctype, ndims, dim_ids);
+            (*ar).transform_to_dap4(grp_root,grp_root);
+            delete bt;
+            delete ar;
 
             for (int d = 0; d < ndims; ++d) {
                 char dimname[MAX_NC_NAME];
@@ -572,7 +571,7 @@ static void read_variables(DMR &dmr, const string &filename, int ncid, int nvars
                 // Add only new dimension
                 if (!is_dimension(string(dimname), all_maps)) {
                     D4Dimension *dmr_dim = new D4Dimension(dim_name, dim_sz);
-                    dmr.root()->dims()->add_dim_nocopy(dmr_dim);
+                    grp_root->dims()->add_dim_nocopy(dmr_dim);
                     all_maps.push_back(dimname);
                 }
             }
