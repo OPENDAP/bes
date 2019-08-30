@@ -555,7 +555,7 @@ static void read_variables(DMR &dmr, const string &filename, int ncid, int nvars
             (*ar).transform_to_dap4(grp_root,grp_root);
             delete bt;
             delete ar;
-
+#if 0
             for (int d = 0; d < ndims; ++d) {
                 char dimname[MAX_NC_NAME];
                 size_t dim_sz;
@@ -575,6 +575,7 @@ static void read_variables(DMR &dmr, const string &filename, int ncid, int nvars
                     all_maps.push_back(dimname);
                 }
             }
+#endif
         }
     }
 #if 0
@@ -635,6 +636,7 @@ static void read_attributes(DMR &dmr, const string &filename, int ncid, int nvar
     BESDEBUG("nc", "Starting read attributes ncid = " << ncid << endl);
 
     int errstat;
+    D4Group *root_grp = dmr.root();
 
     // how many variables? how many global attributes?
     int ngatts;
@@ -656,16 +658,16 @@ static void read_attributes(DMR &dmr, const string &filename, int ncid, int nvar
         if (path.find('_') != string::npos)
             var_name = path + varname;
 
-        AttrTable attr_table_ptr = dmr.root()->var(var_name, true)->get_attr_table();
+        AttrTable attr_table_ptr = root_grp->var(var_name, true)->get_attr_table();
         read_attributes_netcdf4(ncid, varid, natts, &attr_table_ptr);
-        dmr.root()->find_var(var_name)->set_attr_table(attr_table_ptr);
+        root_grp->find_var(var_name)->set_attr_table(attr_table_ptr);
         // Append attributes "fullnamepath" and "orgname" to variable
         if (path.find('_') != string::npos) {
             string fpath = full_path + varname;
             attr_table_ptr.append_attr("orgname", "string", varname);
             attr_table_ptr.append_attr("fullnamepath", "string", fpath);
         }
-        dmr.root()->find_var(var_name)->attributes()->transform_to_dap4(attr_table_ptr);
+        root_grp->find_var(var_name)->attributes()->transform_to_dap4(attr_table_ptr);
 
         // Add a special attribute for string lengths
         if (var_type == NC_CHAR) {
@@ -682,6 +684,7 @@ static void read_attributes(DMR &dmr, const string &filename, int ncid, int nvar
                 int size = 1;
                 string print_rep = print_attr(NC_INT, 0, (void *) &size);
                 attr_table_ptr.append_attr("string_length", print_type(NC_INT), print_rep);
+                root_grp->find_var(var_name)->attributes()->transform_to_dap4(attr_table_ptr);
             } else {
                 // size_t *dim_sizes = new size_t[num_dim];
                 vector<size_t> dim_sizes(num_dim);
@@ -696,6 +699,7 @@ static void read_attributes(DMR &dmr, const string &filename, int ncid, int nvar
                 // add attribute
                 string print_rep = print_attr(NC_INT, 0, (void *) (&dim_sizes[num_dim - 1]));
                 attr_table_ptr.append_attr("string_length", print_type(NC_INT), print_rep);
+                root_grp->find_var(var_name)->attributes()->transform_to_dap4(attr_table_ptr);
             }
         }
 #if NETCDF_VERSION >= 4
@@ -706,7 +710,7 @@ static void read_attributes(DMR &dmr, const string &filename, int ncid, int nvar
             errstat = nc_inq_user_type(ncid, var_type, &name[0], 0, 0, 0, &class_type);
             if (errstat != NC_NOERR)
                 throw(InternalErr(__FILE__, __LINE__, "Could not get information about a user-defined type (" + long_to_string(errstat) + ")."));
-            AttrTable attr_table_ptr = dmr.root()->get_attr_table();
+            AttrTable attr_table_ptr = root_grp->get_attr_table();
             switch (class_type) {
             case NC_OPAQUE: {
                 attr_table_ptr.append_attr("DAP2_OriginalNetCDFBaseType", print_type(NC_STRING), "NC_OPAQUE");
@@ -751,7 +755,7 @@ static void read_attributes(DMR &dmr, const string &filename, int ncid, int nvar
             default:
                 break;
             }
-            dmr.root()->find_var(var_name)->attributes()->transform_to_dap4(attr_table_ptr);
+            root_grp->find_var(var_name)->attributes()->transform_to_dap4(attr_table_ptr);
         }
 #endif // NETCDF_VERSION >= 4
     }
@@ -759,11 +763,11 @@ static void read_attributes(DMR &dmr, const string &filename, int ncid, int nvar
     // TODO: Replace dots in attribute names ?
     // global attributes
     if (ngatts > 0) {
-        AttrTable attr_table_ptr = dmr.root()->get_attr_table();
+        AttrTable attr_table_ptr = root_grp->get_attr_table();
         AttrTable *at = new AttrTable();
         read_attributes_netcdf4(ncid, NC_GLOBAL, ngatts, at);
         attr_table_ptr.append_container(at, "NC_GLOBAL");
-        dmr.root()->attributes()->transform_to_dap4(attr_table_ptr);
+        root_grp->attributes()->transform_to_dap4(attr_table_ptr);
     }
 
     // Add unlimited dimension name in DODS_EXTRA attribute table
@@ -777,13 +781,29 @@ static void read_attributes(DMR &dmr, const string &filename, int ncid, int nvar
         if ((errstat = nc_inq_dim(ncid, xdimid, dimname, (size_t *) 0)) != NC_NOERR)
             throw InternalErr(__FILE__, __LINE__, string("NetCDF handler: Could not access dimension information: ") +
                                                   nc_strerror(errstat));
-        AttrTable attr_table_ptr = dmr.root()->get_attr_table();
+        AttrTable attr_table_ptr = root_grp->get_attr_table();
         AttrTable *at = new AttrTable();  //das.add_table("DODS_EXTRA", new AttrTable);
         string print_rep = print_attr(datatype, 0, dimname);
         at->append_attr("Unlimited_Dimension", print_type(datatype), print_rep);
         attr_table_ptr.append_container(at, "DODS_EXTRA");
-        dmr.root()->set_attr_table(attr_table_ptr);
-        dmr.root()->attributes()->transform_to_dap4(attr_table_ptr);
+        root_grp->set_attr_table(attr_table_ptr);
+        root_grp->attributes()->transform_to_dap4(attr_table_ptr);
+    }
+
+    //Add ancillary attributes if file .das exists
+    string name = Ancillary::find_ancillary_file(filename,"das","","");
+    if(name != ""){
+         DAS *das = new DAS();
+        FILE *in = fopen( name.c_str(), "r" ) ;
+        if( in ) {
+            das->parse(in);
+            (void) fclose(in);
+        }
+        for (AttrTable::Attr_iter p = das->var_begin(); p != das->var_end(); p++) {
+            string var_name = das->get_name(p);
+            AttrTable *attr_tab_ptr = das->get_table(var_name);
+            root_grp->find_var(var_name)->attributes()->transform_to_dap4(*attr_tab_ptr);
+        }
     }
 }
 
@@ -824,7 +844,7 @@ void read_group(DMR &dmr, const string &filename, int ncid, D4Group group, strin
         }
     }
 }
-
+#if 0
 /** Given a reference to an instance of class DDS and a filename that refers
     to a netcdf file, read the netcdf file and extract all the dimensions of
     each of its variables. Add the variables and their dimensions to the
@@ -867,4 +887,4 @@ void nc_read_dataset_variables_dmr(DDS &dds, const string &filename) {
     if (nc_close(ncid) != NC_NOERR)
         throw InternalErr(__FILE__, __LINE__, "ncdds: Could not close the dataset!");
 }
-
+#endif
