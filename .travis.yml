@@ -204,8 +204,8 @@ after_deploy:
         cd hyrax-docker
         git checkout snapshot
         cd hyrax-snapshot
-        date +%s > snapshot.time
-        git commit -am "BES completed. Triggering Docker snapshot build."
+        date +%s | tee snapshot.time
+        git commit -am "BES build completed. Triggering Docker snapshot build."
         git status
         git push https://$GIT_UID:$GIT_PSWD@github.com/opendap/hyrax-docker --all
     else 
