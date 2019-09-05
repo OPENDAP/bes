@@ -196,20 +196,20 @@ deploy:
 after_deploy:
 - echo "-- -- -- -- -- -- -- -- -- after_deploy BEGIN -- -- -- -- -- -- -- -- --";
 - echo "$BES_BUILD";
-- if test "$BES_BUILD" = "centos7"; \
-    then \
-        git clone https://github.com/opendap/hyrax-docker; \
-        git config --global user.name "The-Robot-Travis"; \
-        git config --global user.email "npotter@opendap.org" ; \
-        cd hyrax-docker; \
-        git checkout snapshot; \
-        cd hyrax-snapshot; \
-        date +%s > snapshot.time; \
-        git commit -am "BES completed. Triggering Docker snapshot build."; \
-        git status; \
-        git push https://$GIT_UID:$GIT_PSWD@github.com/opendap/hyrax-docker --all; \
-    else \
-        echo "Not triggering a docker build"; \
+- if test "$BES_BUILD" = "centos7"
+    then 
+        git clone https://github.com/opendap/hyrax-docker
+        git config --global user.name "The-Robot-Travis"
+        git config --global user.email "npotter@opendap.org" 
+        cd hyrax-docker
+        git checkout snapshot
+        cd hyrax-snapshot
+        date +%s > snapshot.time
+        git commit -am "BES completed. Triggering Docker snapshot build."
+        git status
+        git push https://$GIT_UID:$GIT_PSWD@github.com/opendap/hyrax-docker --all
+    else 
+        echo "Not triggering a docker build"
     fi
 - echo "-- -- -- -- -- -- -- -- -- after_deploy END -- -- -- -- -- -- -- -- --";
         
