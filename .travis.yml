@@ -91,38 +91,38 @@ stages:
 
 jobs:
   include:
-  - stage: scan
-    addons: 
-      sonarcloud: 
-    script:
-    - export BES_BUILD=sonar-bes-framework
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-    - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
-    - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
-
-  - stage: scan
-    addons: 
-      sonarcloud: 
-    script:
-    - export BES_BUILD=sonar-bes-modules
-    # Adding this 'fetch --unshallow' since I think sonar is excluding the hdf handlers
-    # because they are submodules.
-    - git fetch --unshallow
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-    - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
-    - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
-
-  - stage: build
-    script: 
-    - export BES_BUILD=main
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-    - make -j7 && make install && besctl start && make check -j7 && besctl stop
-
-  - stage: build
-    script:
-    - export BES_BUILD=distcheck
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
-    - make distcheck -j7
+#  - stage: scan
+#    addons: 
+#      sonarcloud: 
+#    script:
+#    - export BES_BUILD=sonar-bes-framework
+#    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+#    - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+#    - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
+#
+#  - stage: scan
+#    addons: 
+#      sonarcloud: 
+#    script:
+#    - export BES_BUILD=sonar-bes-modules
+#    # Adding this 'fetch --unshallow' since I think sonar is excluding the hdf handlers
+#    # because they are submodules.
+#    - git fetch --unshallow
+#    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+#    - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+#    - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
+#
+#  - stage: build
+#    script: 
+#    - export BES_BUILD=main
+#    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+#    - make -j7 && make install && besctl start && make check -j7 && besctl stop
+#
+#  - stage: build
+#    script:
+#    - export BES_BUILD=distcheck
+#    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
+#    - make distcheck -j7
   
   # Debian Target (unused)
   # - stage: package
@@ -206,7 +206,7 @@ after_deploy:
         cd hyrax-snapshot; \
         date +%s > snapshot.time; \
         git commit -am "BES completed. Triggering Docker snapshot build."; \
-        git status;\
+        git status; \
         git push https://$GIT_UID:$GIT_PSWD@github.com/opendap/hyrax-docker --all; \
     else \
         echo "Not triggering a docker build"; \
