@@ -194,6 +194,9 @@ deploy:
     condition: $BES_BUILD =~ ^deb|centos7|centos6$
 
 after_deploy:
+  on:
+    branch: master
+    condition: $BES_BUILD =~ ^centos7$
     - git clone https://github.com/opendap/hyrax-docker;
     - git config --global user.name "The-Robot-Travis"
     - git config --global user.email "npotter@opendap.org"
@@ -201,7 +204,7 @@ after_deploy:
     - git checkout snapshot;
     - cd hyrax-snapshot;
     - date +%s > snapshot.time;
-    - git commit -am "Triggering snapshot build.";
+    - git commit -am "BES completed. Triggering Docker snapshot build.";
     - git status;
     - git push https://$GIT_UID:$GIT_PSWD@github.com/opendap/hyrax-docker --all 
 
