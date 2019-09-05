@@ -82,10 +82,10 @@ before_script:
 # Build all the stages for 'master'. For a PR, run the 'build' and 'package' stages,
 # but do not run the scan.
 stages:
-- name: build
-  if:  branch = master
-- name: scan
-  if:  branch = master AND NOT type = pull_request
+#- name: build
+#  if:  branch = master
+#- name: scan
+#  if:  branch = master AND NOT type = pull_request
 - name: package
   if:  branch = master
 
