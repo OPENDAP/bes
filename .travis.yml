@@ -208,7 +208,8 @@ after_deploy:
         git status;
         git push https://$GIT_UID:$GIT_PSWD@github.com/opendap/hyrax-docker --all 
     else
-        echo "Not triggering a docker build (stage: $BES_BUILD)"
+        echo "$BES_BUILD"
+        echo "Not triggering a docker build"
     fi
 - echo "-- -- -- -- -- -- -- -- -- after_deploy END -- -- -- -- -- -- -- -- --"
         
