@@ -194,6 +194,7 @@ deploy:
     condition: $BES_BUILD =~ ^deb|centos7|centos6$
 
 after_deploy:
+- echo "-- -- -- -- -- -- -- -- -- after_deploy BEGIN -- -- -- -- -- -- -- -- --"
 - if test "$BES_BUILD" = "centos7"; 
     then 
         git clone https://github.com/opendap/hyrax-docker;
@@ -206,6 +207,9 @@ after_deploy:
         git commit -am "BES completed. Triggering Docker snapshot build.";
         git status;
         git push https://$GIT_UID:$GIT_PSWD@github.com/opendap/hyrax-docker --all 
+    else
+        echo "Not triggering a docker build (stage: $BES_BUILD)"
     fi
-
+- echo "-- -- -- -- -- -- -- -- -- after_deploy END -- -- -- -- -- -- -- -- --"
+        
 
