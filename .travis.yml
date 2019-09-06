@@ -198,7 +198,7 @@ after_deploy:
 - echo "$BES_BUILD";
 - if test "$BES_BUILD" = "centos7"; 
     then  
-        echo "Triggering a Docker build"; 
+        echo "New CentOS-7 snapshot of BES pushed. Triggering a Docker build"; 
         git clone https://github.com/opendap/hyrax-docker;
         git config --global user.name "The-Robot-Travis";
         git config --global user.email "npotter@opendap.org";
@@ -210,7 +210,6 @@ after_deploy:
         git commit -am "BES build completed. Triggering Docker snapshot build.";
         git status;
         git push https://$GIT_UID:$GIT_PSWD@github.com/opendap/hyrax-docker --all;
-
     else  
         echo "Not triggering a Docker build"; 
   fi
