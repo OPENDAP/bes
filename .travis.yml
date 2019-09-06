@@ -73,7 +73,7 @@ before_install:
 install:
 - aws --region us-east-1 s3 cp s3://opendap.travis.build/hyrax-dependencies-build.tar.gz $TRAVIS_BUILD_DIR
 - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/hyrax-dependencies-build.tar.gz
-- aws s3 cp s3://opendap.travis.build/libdap-build.tar.gz $TRAVIS_BUILD_DIR
+- aws --region us-east-1 s3 cp s3://opendap.travis.build/libdap-build.tar.gz $TRAVIS_BUILD_DIR
 - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/libdap-build.tar.gz
 
 before_script:
