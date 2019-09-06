@@ -196,12 +196,7 @@ deploy:
 after_deploy:
 - echo "-- -- -- -- -- -- -- -- -- after_deploy BEGIN -- -- -- -- -- -- -- -- --";
 - echo "$BES_BUILD";
-- if test "$BES_BUILD" = "centos7";
-    then 
-        echo "Triggering a Docker build"
-    else 
-        echo "Not triggering a Docker build"
-    fi
+- if test "$BES_BUILD" = "centos7"; then  echo "Triggering a Docker build"; else  echo "Not triggering a Docker build"; fi
 - echo "-- -- -- -- -- -- -- -- -- after_deploy END -- -- -- -- -- -- -- -- --";
         
 
