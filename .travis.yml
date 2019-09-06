@@ -206,6 +206,7 @@ after_deploy:
         git checkout snapshot;
         cd hyrax-snapshot;
         date +%s | tee -a snapshot.time;
+        cat snapshot.time;
     else  
         echo "Not triggering a Docker build"; 
   fi
