@@ -204,6 +204,8 @@ after_deploy:
         git config --global user.email "npotter@opendap.org";
         cd hyrax-docker;
         git checkout snapshot;
+        cd hyrax-snapshot;
+        date +%s | tee -a snapshot.time;
     else  
         echo "Not triggering a Docker build"; 
   fi
