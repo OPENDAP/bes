@@ -66,7 +66,7 @@ env:
     # GIT_PSWD for travis-ci-opendap
     - secure: "jdEmVdM35qoAmIXTqTCL11IbjEMh6I+jrov/nqQ4wdoJf79O7H7tuuDVkIJ+5RSIjUXsIYgfQAG8Cn+DIJRMnv7mj7TrWGS9LT22bBGErzCcCkrHGKMDH4okbd8cCNQcnb/9woYSYZ38U8QCBsYH1Ma2r4bFU4jAY2KiMOyaY6w="
 
-before_install:
+#before_install:
 #- pip install --user awscli
 
 # hyrax-dependencies-build.tar.gz includes/makes the build directory
@@ -83,47 +83,47 @@ before_script:
 # Build all the stages for 'master'. For a PR, run the 'build' and 'package' stages,
 # but do not run the scan.
 stages:
-#- name: build
-#  if:  branch = master
-#- name: scan
-#  if:  branch = master AND NOT type = pull_request
+- name: build
+  if:  branch = master
+- name: scan
+  if:  branch = master AND NOT type = pull_request
 - name: package
   if:  branch = master
 
 jobs:
   include:
-#  - stage: scan
-#    addons: 
-#      sonarcloud: 
-#    script:
-#    - export BES_BUILD=sonar-bes-framework
-#    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-#    - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
-#    - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
-#
-#  - stage: scan
-#    addons: 
-#      sonarcloud: 
-#    script:
-#    - export BES_BUILD=sonar-bes-modules
-#    # Adding this 'fetch --unshallow' since I think sonar is excluding the hdf handlers
-#    # because they are submodules.
-#    - git fetch --unshallow
-#    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-#    - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
-#    - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
-#
-#  - stage: build
-#    script: 
-#    - export BES_BUILD=main
-#    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-#    - make -j7 && make install && besctl start && make check -j7 && besctl stop
-#
-#  - stage: build
-#    script:
-#    - export BES_BUILD=distcheck
-#    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
-#    - make distcheck -j7
+  - stage: scan
+    addons: 
+      sonarcloud: 
+    script:
+    - export BES_BUILD=sonar-bes-framework
+    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+    - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+    - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
+
+  - stage: scan
+    addons: 
+      sonarcloud: 
+    script:
+    - export BES_BUILD=sonar-bes-modules
+    # Adding this 'fetch --unshallow' since I think sonar is excluding the hdf handlers
+    # because they are submodules.
+    - git fetch --unshallow
+    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+    - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+    - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
+
+  - stage: build
+    script: 
+    - export BES_BUILD=main
+    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+    - make -j7 && make install && besctl start && make check -j7 && besctl stop
+
+  - stage: build
+    script:
+    - export BES_BUILD=distcheck
+    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
+    - make distcheck -j7
   
   # Debian Target (unused)
   # - stage: package
