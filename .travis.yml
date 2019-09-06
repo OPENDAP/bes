@@ -41,6 +41,7 @@ addons:
     - lintian
     - fakeroot
     - build-essential
+    - awscli
 
 env:
   global:
@@ -65,8 +66,8 @@ env:
     # GIT_PSWD for travis-ci-opendap
     - secure: "jdEmVdM35qoAmIXTqTCL11IbjEMh6I+jrov/nqQ4wdoJf79O7H7tuuDVkIJ+5RSIjUXsIYgfQAG8Cn+DIJRMnv7mj7TrWGS9LT22bBGErzCcCkrHGKMDH4okbd8cCNQcnb/9woYSYZ38U8QCBsYH1Ma2r4bFU4jAY2KiMOyaY6w="
 
-before_install:
-- pip install --user awscli
+#before_install:
+#- pip install --user awscli
 
 # hyrax-dependencies-build.tar.gz includes/makes the build directory
 install:
