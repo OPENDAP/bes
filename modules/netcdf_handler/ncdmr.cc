@@ -658,16 +658,24 @@ static void read_attributes(DMR &dmr, const string &filename, int ncid, int nvar
         if (path.find('_') != string::npos)
             var_name = path + varname;
 
-        AttrTable attr_table_ptr = root_grp->var(var_name, true)->get_attr_table();
-        read_attributes_netcdf4(ncid, varid, natts, &attr_table_ptr);
-        root_grp->find_var(var_name)->set_attr_table(attr_table_ptr);
+        AttrTable attr_table_ptr = root_grp->find_var(var_name)->get_attr_table();
+        if(root_grp->find_var(var_name)->type() == dods_structure_c) {
+            AttrTable *attr_table = new AttrTable();
+            attr_table->set_name(var_name);
+            attr_table->set_is_global_attribute(false);
+            read_attributes_netcdf4(ncid, varid, natts, attr_table);
+            attr_table_ptr.append_container(attr_table, var_name);
+            root_grp->attributes()->transform_to_dap4(attr_table_ptr);
+            continue;
+        } else {
+            read_attributes_netcdf4(ncid, varid, natts, &attr_table_ptr);
+        }
         // Append attributes "fullnamepath" and "orgname" to variable
         if (path.find('_') != string::npos) {
             string fpath = full_path + varname;
             attr_table_ptr.append_attr("orgname", "string", varname);
             attr_table_ptr.append_attr("fullnamepath", "string", fpath);
         }
-        root_grp->find_var(var_name)->attributes()->transform_to_dap4(attr_table_ptr);
 
         // Add a special attribute for string lengths
         if (var_type == NC_CHAR) {
@@ -684,7 +692,6 @@ static void read_attributes(DMR &dmr, const string &filename, int ncid, int nvar
                 int size = 1;
                 string print_rep = print_attr(NC_INT, 0, (void *) &size);
                 attr_table_ptr.append_attr("string_length", print_type(NC_INT), print_rep);
-                root_grp->find_var(var_name)->attributes()->transform_to_dap4(attr_table_ptr);
             } else {
                 // size_t *dim_sizes = new size_t[num_dim];
                 vector<size_t> dim_sizes(num_dim);
@@ -699,25 +706,22 @@ static void read_attributes(DMR &dmr, const string &filename, int ncid, int nvar
                 // add attribute
                 string print_rep = print_attr(NC_INT, 0, (void *) (&dim_sizes[num_dim - 1]));
                 attr_table_ptr.append_attr("string_length", print_type(NC_INT), print_rep);
-                root_grp->find_var(var_name)->attributes()->transform_to_dap4(attr_table_ptr);
             }
         }
 #if NETCDF_VERSION >= 4
         else if (is_user_defined_type(ncid, var_type)) {
-            //var_type >= NC_FIRSTUSERTYPEID) {
             vector<char> name(MAX_NC_NAME + 1);
             int class_type;
             errstat = nc_inq_user_type(ncid, var_type, &name[0], 0, 0, 0, &class_type);
             if (errstat != NC_NOERR)
                 throw(InternalErr(__FILE__, __LINE__, "Could not get information about a user-defined type (" + long_to_string(errstat) + ")."));
-            AttrTable attr_table_ptr = root_grp->get_attr_table();
+
             switch (class_type) {
             case NC_OPAQUE: {
                 attr_table_ptr.append_attr("DAP2_OriginalNetCDFBaseType", print_type(NC_STRING), "NC_OPAQUE");
                 attr_table_ptr.append_attr("DAP2_OriginalNetCDFTypeName", print_type(NC_STRING), &name[0]);
                 break;
             }
-
             case NC_ENUM: {
                 //vector<char> name(MAX_NC_NAME + 1);
                 nc_type base_nc_type;
@@ -751,13 +755,12 @@ static void read_attributes(DMR &dmr, const string &filename, int ncid, int nvar
 
                 break;
             }
-
             default:
                 break;
             }
-            root_grp->find_var(var_name)->attributes()->transform_to_dap4(attr_table_ptr);
         }
 #endif // NETCDF_VERSION >= 4
+        root_grp->find_var(var_name)->attributes()->transform_to_dap4(attr_table_ptr);
     }
 
     // TODO: Replace dots in attribute names ?
@@ -786,7 +789,6 @@ static void read_attributes(DMR &dmr, const string &filename, int ncid, int nvar
         string print_rep = print_attr(datatype, 0, dimname);
         at->append_attr("Unlimited_Dimension", print_type(datatype), print_rep);
         attr_table_ptr.append_container(at, "DODS_EXTRA");
-        root_grp->set_attr_table(attr_table_ptr);
         root_grp->attributes()->transform_to_dap4(attr_table_ptr);
     }
 
