@@ -202,9 +202,7 @@ after_deploy:
         git clone https://github.com/opendap/hyrax-docker;
         git config --global user.name "The-Robot-Travis";
         git config --global user.email "npotter@opendap.org";
-        cd hyrax-docker;
-        git checkout snapshot;
-        cd hyrax-snapshot;
+        cd hyrax-docker/hyrax-snapshot;
         date +%s | tee -a snapshot.time;
         cat snapshot.time;
         git commit -am "BES build completed. Triggering Docker snapshot build.";
