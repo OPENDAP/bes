@@ -24,7 +24,11 @@ if [ -z "$GET" ]; then
   exit
 fi
 
+FNC_CP_TEST="fnc_test"
+mkdir $FNC_CP_TEST
+cd $FNC_CP_TEST
 #Fake files
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/hdf5_handler/grid_1_2d.h5 
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/hdf5_handler/dim_scale.h5 
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/hdf5_handler/t_2d_2dll.nc4.h5
 
@@ -35,7 +39,11 @@ $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/LPDAAC/
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/NSIDC/SMAP_L3_SM_P_20150406_R14010_001.h5
 
 cd $CURDIR
+mkdir $FNC_CP_TEST
 ls
 #/opt/kent/opendap/bes-dev/opendapbin/bin/besstandalone -c /opt/kent/opendap/bes-dev/opendapbin/etc/bes/bes.conf -i grid_1_2d.nc.bescmd >grid_1_2d.h5.nc
-$BESSTANDALONE -c $BESCONF -i grid_1_2d.nc.bescmd > grid_1_2d.h5.nc
+$BESSTANDALONE -c $BESCONF -i grid_1_2d.nc.bescmd > $FNC_CP_TEST/grid_1_2d.h5.nc
 
+#Remove all the HDF5 files under BES hyrax share directory 
+cd $SHAREDIR
+rm -rf $FNC_CP_TEST
