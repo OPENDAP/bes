@@ -26,7 +26,7 @@ Hyrax 1.16 has prototype support for subset-in-place of HDF5 and NetCDF4
 data files that are stored on AWS S3. See the preliminary documentation in
 https://github.com/OPENDAP/bes/blob/master/modules/dmrpp_module/data/README.md.
 
-The new support includes software that can configure data in Se and on
+The new support includes software that can configure data in S3 and on
 disk so that it can be served (and subset) in-place from S3 without reformatting
 the original data files. Support for other web object stores besides S3
 has also been demonstrated.
