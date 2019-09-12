@@ -29,16 +29,12 @@
 //
 // Authors:
 //      reza            Reza Nekovei (reza@intcomm.net)
+//      Slav            Slav Korolev (vyacheslav.s.korolev@raytheon.com)
 
 // This file contains functions which read the variables and their description
-// from a netcdf file and build the in-memory DDS. These functions form the
-// core of the server-side software necessary to extract the DDS from a
+// from a netcdf file and build the in-memory DMR. These functions form the
+// core of the server-side software necessary to extract the DMR from a
 // netcdf data file.
-//
-// It also contains test code which will print the in-memory DDS to
-// stdout.
-//
-// ReZa 10/20/94
 
 #include "config_nc.h"
 
@@ -138,19 +134,6 @@ build_scalar(const string &varname, const string &dataset, nc_type datatype) {
     }
     return 0;
 }
-
-#if 0
-// Replaced by code in nc_util.cc. jhrg 2/9/12
-
-static bool is_user_defined(nc_type type)
-{
-#if NETCDF_VERSION >= 4
-    return type >= NC_FIRSTUSERTYPEID;
-#else
-    return false;
-#endif
-}
-#endif
 
 /** Build a grid given that one has been found. The Grid's Array is already
     allocated and is passed in along with a number of arrays containing
@@ -398,7 +381,6 @@ static bool find_matching_coordinate_variable(int ncid, int var,
                 msg += string(dimname);
                 throw Error(msg);
             }
-
             return true;
         }
     }
@@ -447,14 +429,6 @@ static bool is_grid(int ncid, int var, int ndims, const int dim_ids[MAX_VAR_DIMS
     return true;
 }
 
-static bool is_dimension(const string &name, vector<string> maps) {
-    vector<string>::iterator i = find(maps.begin(), maps.end(), name);
-    if (i != maps.end())
-        return true;
-    else
-        return false;
-}
-
 static NCArray *build_array(BaseType *bt, int ncid, int var,
                             const nc_type array_type, int ndims,
                             const int dim_ids[MAX_NC_DIMS]) {
@@ -479,12 +453,13 @@ static NCArray *build_array(BaseType *bt, int ncid, int var,
 
 /** Read given number of variables (nvars) from the opened netCDF file
      (ncid) and add them with their appropriate type and dimensions to
-     the given instance of the DDS class.
+     the given instance of the DMR class.
 
      @param dmr Add variables to this DMR object
      @param filename When making new variables, record this as the source
      @param ncid The id of the netcdf file
      @param nvars The number of variables in the opened file
+     @param path The path of variable in NetCDF structure with "_" separator
  */
 static void read_variables(DMR &dmr, const string &filename, int ncid, int nvars, string path) {
     // How this function works: The variables are scanned once but because
@@ -519,8 +494,7 @@ static void read_variables(DMR &dmr, const string &filename, int ncid, int nvars
 
         string var_name = name;
         if (path.find('_') != string::npos) var_name = path + var_name;
-
-        // TODO: Replace dots in var_name to underscore ? Vars for X and Y ?
+        // TODO: Replace dots in var_name to underscore?
 
         // These are defined here because they are value-result parameters for
         // is_grid() called below.
@@ -530,7 +504,7 @@ static void read_variables(DMR &dmr, const string &filename, int ncid, int nvars
 
         // a scalar? NB a one-dim NC_CHAR array will have DAP type of
         // dods_str_c because it's really a scalar string, not an array.
-        // TODO: Same dimensions in different groups ?
+
         if (is_user_defined_type(ncid, nctype)) {
 #if NETCDF_VERSION >= 4
             BaseType *bt = build_user_defined(ncid, varid, nctype, filename, ndims, dim_ids, path);
@@ -539,99 +513,33 @@ static void read_variables(DMR &dmr, const string &filename, int ncid, int nvars
 #endif
         } else if (ndims == 0 || (ndims == 1 && nctype == NC_CHAR)) {
             BaseType *bt = build_scalar(var_name, filename, nctype);
-            (*bt).transform_to_dap4(grp_root,grp_root);
+            (*bt).transform_to_dap4(grp_root, grp_root);
             delete bt;
         } else if (is_grid(ncid, varid, ndims, dim_ids, map_sizes, map_names, map_types)) {
             BaseType *bt = build_scalar(var_name, filename, nctype);
             Array *ar = new NCArray(var_name, filename, bt);
             Grid *gr = build_grid(ar, ndims, nctype, map_names, map_types, map_sizes, &all_maps);
-            (*gr).transform_to_dap4(grp_root,grp_root);
+            (*gr).transform_to_dap4(grp_root, grp_root);
             delete bt;
             delete ar;
             delete gr;
         } else {
             BaseType *bt = build_scalar(var_name, filename, nctype);
             Array *ar = build_array(bt, ncid, varid, nctype, ndims, dim_ids);
-            (*ar).transform_to_dap4(grp_root,grp_root);
+            (*ar).transform_to_dap4(grp_root, grp_root);
             delete bt;
             delete ar;
-#if 0
-            for (int d = 0; d < ndims; ++d) {
-                char dimname[MAX_NC_NAME];
-                size_t dim_sz;
-                int errstat = nc_inq_dim(ncid, dim_ids[d], dimname, &dim_sz);
-                if (errstat != NC_NOERR) {
-                    throw Error("netcdf: could not get size for dimension " + long_to_string(d) + " in variable " +
-                                long_to_string(varid));
-                }
-
-                string dim_name = dimname;
-                if (path.find('_') != string::npos) dim_name = path + dim_name;
-
-                // Add only new dimension
-                if (!is_dimension(string(dimname), all_maps)) {
-                    D4Dimension *dmr_dim = new D4Dimension(dim_name, dim_sz);
-                    grp_root->dims()->add_dim_nocopy(dmr_dim);
-                    all_maps.push_back(dimname);
-                }
-            }
-#endif
         }
     }
-#if 0
-    // This code is only run if elide_dimension_arrays is true and in that case the
-    // loop above did not create any simple arrays. Instead it pushed the
-    // var ids of things that look like simple arrays onto a vector. This code
-    // will add all of those that really are arrays and not the ones that are
-    // dimensions used by a Grid.
-
-    if (!NCRequestHandler::get_show_shared_dims()) {
-        // Now just loop through the saved array variables, writing out only
-        // those that are not Grid Maps
-        nvars = array_vars.size();
-        for (int i = 0; i < nvars; ++i) {
-            int var = array_vars.at(i);
-            int errstat = nc_inq_var(ncid, var, name, &nctype, &ndims, dim_ids, (int *) 0);
-            if (errstat != NC_NOERR) {
-                string msg = "netcdf 3: could not get name or dimension number for variable ";
-                msg += long_to_string(var);
-                throw Error(msg);
-            }
-            // If an array already appears as a Grid Map, don't write it out
-            // as an array too.
-            string var_name = name;
-            if (path.find('_') != string::npos) var_name = path + var_name;
-
-            if (is_dimension(string(var_name), all_maps))
-                continue;
-
-            BaseType *bt = build_scalar(var_name, filename, nctype);
-            Array *ar = build_array(bt, ncid, var, nctype, ndims, dim_ids);
-            dmr.root()->add_var_nocopy(ar);
-
-            for (int d = 0; d < ndims; ++d) {
-                char dimname[MAX_NC_NAME];
-                size_t dim_sz;
-                int errstat = nc_inq_dim(ncid, dim_ids[d], dimname, &dim_sz);
-                if (errstat != NC_NOERR) {
-                    throw Error("netcdf: could not get size for dimension " + long_to_string(d) + " in variable " +
-                                long_to_string(var));
-                }
-                string dim_name = dimname;
-                if (path.find('_') != string::npos) dim_name = path + dim_name;
-
-                // Add only new dimension
-                if (!is_dimension(string(dimname), all_maps)) {
-                    D4Dimension *dmr_dim = new D4Dimension(dim_name, dim_sz);
-                    dmr.root()->dims()->add_dim_nocopy(dmr_dim);
-                    all_maps.push_back(dimname);
-                }
-            }
-        }
-    }
-#endif
 }
-
+/** Read attribute for all variables in DMR object.
+ @param dmr Add attribute to variables of this DMR object
+ @param filename This is the source file
+ @param ncid The id of the netcdf file
+ @param nvars The number of variables in the opened file
+ @param path The name path of variable in NetCDF structure with "_" separator
+ @param full_path The name path of variable in NetCDF structure with "/" separator
+ */
 static void read_attributes(DMR &dmr, const string &filename, int ncid, int nvars, string path, string full_path) {
     BESDEBUG("nc", "Starting read attributes ncid = " << ncid << endl);
 
@@ -763,7 +671,7 @@ static void read_attributes(DMR &dmr, const string &filename, int ncid, int nvar
         root_grp->find_var(var_name)->attributes()->transform_to_dap4(attr_table_ptr);
     }
 
-    // TODO: Replace dots in attribute names ?
+    // TODO: Replace dots in attribute names?
     // global attributes
     if (ngatts > 0) {
         AttrTable attr_table_ptr = root_grp->get_attr_table();
@@ -809,6 +717,14 @@ static void read_attributes(DMR &dmr, const string &filename, int ncid, int nvar
     }
 }
 
+/** Read NetCDF groups.
+ @param dmr Add group to this DMR object
+ @param filename This is the source file
+ @param ncid The id of the netcdf file
+ @param group The parent group
+ @param path The name path of variable in NetCDF structure with "_" separator
+ @param full_path The name path of variable in NetCDF structure with "/" separator
+*/
 void read_group(DMR &dmr, const string &filename, int ncid, D4Group group, string path, string full_path) {
     int errstat;
     int nvars;
@@ -846,47 +762,3 @@ void read_group(DMR &dmr, const string &filename, int ncid, D4Group group, strin
         }
     }
 }
-#if 0
-/** Given a reference to an instance of class DDS and a filename that refers
-    to a netcdf file, read the netcdf file and extract all the dimensions of
-    each of its variables. Add the variables and their dimensions to the
-    instance of DDS using DMR.
-
-    @param elide_dimension_arrays If true, don't include an array if it's
-    really a dimension used by a Grid. */
-void nc_read_dataset_variables_dmr(DDS &dds, const string &filename) {
-    ncopts = 0;
-    int ncid, errstat;
-
-    // path is used for var names and full_path for full name path in the var attribute
-    string path = "";
-    string full_path = "";
-
-
-    DMR *dmr = new DMR();
-    dmr->set_factory(new D4BaseTypeFactory);
-    dmr->set_name(name_path(filename));
-    dmr->set_filename(filename);
-
-    errstat = nc_open(filename.c_str(), NC_NOWRITE, &ncid);
-    if (errstat != NC_NOERR)
-        throw Error(errstat, "Could not open " + filename + ".");
-
-    D4Group *group = new D4Group("/");
-    dmr->root()->add_var_nocopy(group);
-
-    // read groups
-    read_group(*dmr, filename, ncid, *group, path, full_path);
-
-    // print DMR
-    XMLWriter xmlw;
-    dmr->print_dap4(xmlw);
-    cerr << xmlw.get_doc() << endl;
-
-    // Get DDS
-    dds = *dmr->getDDS();
-
-    if (nc_close(ncid) != NC_NOERR)
-        throw InternalErr(__FILE__, __LINE__, "ncdds: Could not close the dataset!");
-}
-#endif

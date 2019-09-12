@@ -537,11 +537,10 @@ bool NCRequestHandler::nc_build_dmr(BESDataHandlerInterface &dhi)
                 throw Error(errstat, "Could not open " + dataset_name + ".");
 
             D4Group *group = new D4Group("/");
-            dmr->root()->add_var_nocopy(group);
 
             // read groups
             read_group(*dmr, dataset_name, ncid, *group, path, full_path);
-//------------------------------------------------
+#if 0
             // This version builds a DDS only to build the resulting DMR. The DDS is
             // not cached. It does look in the DDS cache, just in case...
 //            dmr->set_factory(new D4BaseTypeFactory);
@@ -570,7 +569,7 @@ bool NCRequestHandler::nc_build_dmr(BESDataHandlerInterface &dhi)
 //                dds.transfer_attributes(&das);
 //                dmr->build_using_dds(dds);
 //            }
-// -------------------------------------------------
+#endif
 #endif
 
             if (dmr_cache) {
