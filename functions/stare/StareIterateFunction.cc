@@ -33,6 +33,16 @@
 #include "D4RValue.h"
 #include "hdf5.h"
 
+#include "Byte.h"
+#include "Int16.h"
+#include "Int32.h"
+#include "UInt16.h"
+#include "UInt32.h"
+#include "Float32.h"
+#include "Int64.h"
+#include "UInt64.h"
+#include "Int8.h"
+
 #include <TheBESKeys.h>
 
 #include <Error.h>
@@ -62,7 +72,7 @@ struct returnVal {
 namespace functions {
 
 //May need to be moved to libdap/util
-/*uint64 extract_uint64_value(BaseType *arg) {
+uint64 extract_uint64_value(BaseType *arg) {
 	assert(arg);
 
 	// Simple types are Byte, ..., Float64, String and Url.
@@ -107,7 +117,7 @@ namespace functions {
 		throw InternalErr(__FILE__, __LINE__,
 				"The argument list built by the parser contained an unsupported numeric type.");
 	}
-}*/
+}
 
 //May need to be moved to libdap/util
 // This helper function assumes 'var' is the correct size.
@@ -133,7 +143,7 @@ uint64 *extract_uint64_array(Array *var)
  * @param *bt - The variable array
  * @param stareIndices - A vector of stare values
  */
-bool hasValue(uint64 stareVal, uint64 *stareIndices) {
+bool hasValue(uint64 stareVal, BaseType *stareIndices) {
 	uint64 *stareData;
 
 	Array &stareSrc = dynamic_cast<Array&>(*stareIndices);
@@ -181,10 +191,6 @@ int count(BaseType *bt, BaseType *stareIndices) {
 }
 
 BaseType *stare_dap4_function(D4RValueList *args, DMR &dmr) {
-	int xArray[20];
-	int yArray[20];
-	uint64 stareArray[20];
-
 /*	size_t granulePos = dmr.find_last_of("/");
 	string granuleName = dmr.substr(granulePos + 1);
 	size_t findDot = granuleName.find_last_of(".");
@@ -200,7 +206,11 @@ BaseType *stare_dap4_function(D4RValueList *args, DMR &dmr) {
 	hid_t xMemspace, yMemspace, stareMemspace;
 	hid_t xDataset, yDataset, stareDataset;
 
-	string fileName = "test";
+	vector<int> xArray;
+	vector<int> yArray;
+	vector<BaseType> stareArray;
+
+	const char *fileName ="test";
 	file = H5Fopen(fileName, H5F_ACC_RDONLY, H5P_DEFAULT);
 	xDataset = H5Dopen(file, "X", H5P_DEFAULT);
 	yDataset = H5Dopen(file, "Y", H5P_DEFAULT);
@@ -214,9 +224,9 @@ BaseType *stare_dap4_function(D4RValueList *args, DMR &dmr) {
 	yMemspace = H5Screate_simple(1,dims,NULL);
 	stareMemspace = H5Screate_simple(1,dims,NULL);
 
-	H5Dread(xDataset, H5T_NATIVE_INT, xMemspace, xFilespace, H5P_DEFAULT, xArray);
-	H5Dread(yDataset, H5T_NATIVE_INT, yMemspace, yFilespace, H5P_DEFAULT, yArray);
-	H5Dread(stareDataset, H5T_NATIVE_INT, stareMemspace, stareFilespace, H5P_DEFAULT, stareArray);
+	H5Dread(xDataset, H5T_NATIVE_INT, xMemspace, xFilespace, H5P_DEFAULT, &xArray[0]);
+	H5Dread(yDataset, H5T_NATIVE_INT, yMemspace, yFilespace, H5P_DEFAULT, &yArray[0]);
+	H5Dread(stareDataset, H5T_NATIVE_INT, stareMemspace, stareFilespace, H5P_DEFAULT, &stareArray[0]);
 
 #if 0
 	H5File file(fullPath, H5F_ACC_RDONLY);
@@ -236,19 +246,23 @@ BaseType *stare_dap4_function(D4RValueList *args, DMR &dmr) {
 	stareIndex.read(stareArray, PredType::NATIVE_UINT64, memspace, stareDataspace); //TODO: Finish
 #endif
 
-	std::unordered_map<uint64, struct coords> stareMap;
 
-	for (int i = 0; stareArray.size(); i++) {
-		stareMap[stareArray[i]].x = xArray[i];
-		stareMap[stareArray[i]].y = yArray[i];
+//TODO: Refactor to work with BaseType. May be able to put this in a seperate function
+/*	std::unordered_map<uint64, struct coords> stareMap;
+
+	vector<int>::iterator xIter = xArray.begin();
+	vector<int>::iterator yIter = yArray.begin();
+	for (vector<uint64>::iterator i = stareArray.begin(), e = stareArray.end(); i != e; i++, xIter++, yIter++) {
+		stareMap[*i].x = *xIter;
+		stareMap[*i].y = *yIter;
 	}
-
+*/
 	BaseType *result = 0;
 
 	BaseType *varCheck = args->get_rvalue(0)->value(dmr);
 	uint64 stareVal = extract_uint64_value(args->get_rvalue(1)->value(dmr));
 
-	if (!hasValue(stareVal, stareArray))
+	if (!hasValue(stareVal, &stareArray[0]))
 		throw Error(malformed_expr, "Could not find any STARE values in the provided variable array");
 
 	//TODO: Should return a BaseType struct that contains arrays of: x, y, stare index, and data value
