@@ -388,12 +388,14 @@ bool NCRequestHandler::nc_build_dds(BESDataHandlerInterface & dhi)
                     NCRequestHandler::_show_shared_dims = true;
             }
         }
-
         string container_name = bdds->get_explicit_containers() ? dhi.container->get_symbolic_name(): "";
-        DDS *dds = bdds->get_dds();
+
+        DMR *dmr = new DMR();
+        get_dmr(dhi.container->access(), dmr);
 
         // Build a DDS in the empty DDS object
-        get_dds_with_attributes(dhi.container->access(), container_name, dds);
+        DDS *dds = dmr->getDDS();
+        bdds->set_dds(dds);
 
         bdds->set_constraint(dhi);
         bdds->clear_container();
@@ -448,10 +450,12 @@ bool NCRequestHandler::nc_build_data(BESDataHandlerInterface & dhi)
         }
 
         string container_name = bdds->get_explicit_containers() ? dhi.container->get_symbolic_name(): "";
-        DDS *dds = bdds->get_dds();
+        DMR *dmr = new DMR();
+        get_dmr(dhi.container->access(), dmr);
 
         // Build a DDS in the empty DDS object
-        get_dds_with_attributes(dhi.container->access(), container_name, dds);
+        DDS *dds = dmr->getDDS();
+        bdds->set_dds(dds);
 
         bdds->set_constraint(dhi);
         bdds->clear_container();
@@ -503,81 +507,7 @@ bool NCRequestHandler::nc_build_dmr(BESDataHandlerInterface &dhi)
     DMR *dmr = bdmr.get_dmr();
 
 	try {
-        DMR* cached_dmr_ptr = 0;
-        if (dmr_cache && (cached_dmr_ptr = static_cast<DMR*>(dmr_cache->get(dataset_name)))) {
-            // copy the cached DMR into the BES response object
-            BESDEBUG(NC_NAME, "DMR Cached hit for : " << dataset_name << endl);
-            *dmr = *cached_dmr_ptr; // Copy the referenced object
-        }
-        else {
-#if 0
-            // this version builds and caches the DDS/DAS info.
-            BaseTypeFactory factory;
-            DDS dds(&factory, name_path(dataset_name), "3.2");
-
-            // This will get the DDS, either by building it or from the cache
-            get_dds_with_attributes(dataset_name, "", &dds);
-
-            dmr->set_factory(new D4BaseTypeFactory);
-            dmr->build_using_dds(dds);
-#else
-            ncopts = 0;
-            int ncid, errstat;
-
-            // path is used for var names and full_path for full name path in the var attribute
-            string path = "";
-            string full_path = "";
-
-            dmr->set_factory(new D4BaseTypeFactory);
-            dmr->set_name(name_path(dataset_name));
-            dmr->set_filename(dataset_name);
-
-            errstat = nc_open(dataset_name.c_str(), NC_NOWRITE, &ncid);
-            if (errstat != NC_NOERR)
-                throw Error(errstat, "Could not open " + dataset_name + ".");
-
-            D4Group *group = new D4Group("/");
-
-            // read groups
-            read_group(*dmr, dataset_name, ncid, *group, path, full_path);
-#if 0
-            // This version builds a DDS only to build the resulting DMR. The DDS is
-            // not cached. It does look in the DDS cache, just in case...
-//            dmr->set_factory(new D4BaseTypeFactory);
-//
-//            DDS *dds_ptr = 0;
-//            if (dds_cache && (dds_ptr = static_cast<DDS*>(dds_cache->get(dataset_name)))) {
-//                // Use the cached DDS; Assume that all cached DDS objects hold DAS info too
-//                BESDEBUG(NC_NAME, "DDS Cached hit (while building DMR) for : " << dataset_name << endl);
-//
-//                dmr->build_using_dds(*dds_ptr);
-//            }
-//            else {
-//                // Build a throw-away DDS; don't bother to cache it. DMR's don't support
-//                // containers.
-//                BaseTypeFactory factory;
-//                DDS dds(&factory, name_path(dataset_name), "3.2");
-//
-//                dds.filename(dataset_name);
-//                nc_read_dataset_variables(dds, dataset_name);
-//
-//                DAS das;
-//
-//                nc_read_dataset_attributes(das, dataset_name);
-//                Ancillary::read_ancillary_das(das, dataset_name);
-//
-//                dds.transfer_attributes(&das);
-//                dmr->build_using_dds(dds);
-//            }
-#endif
-#endif
-
-            if (dmr_cache) {
-                // add a copy
-                BESDEBUG(NC_NAME, "DMR added to the cache for : " << dataset_name << endl);
-                dmr_cache->add(new DMR(*dmr), dataset_name);
-            }
-        }
+        NCRequestHandler::get_dmr(dataset_name, dmr);
 
         // Instead of fiddling with the internal storage of the DHI object,
         // (by setting dhi.data[DAP4_CONSTRAINT], etc., directly) use these
@@ -647,4 +577,46 @@ bool NCRequestHandler::nc_build_version(BESDataHandlerInterface & dhi)
     info->add_module(MODULE_NAME, MODULE_VERSION);
 
     return true;
+}
+
+/**
+ * @brief Using the empty DMR object, build a DMR
+ * @param dataset_name
+ * @param container_name
+ * @param dmr
+ */
+void NCRequestHandler::get_dmr(const string& dataset_name, DMR* dmr){
+    // Look in memory cache if it's initialized
+    DMR* cached_dmr_ptr = 0;
+    if (dmr_cache && (cached_dmr_ptr = static_cast<DMR*>(dmr_cache->get(dataset_name)))) {
+        // copy the cached DMR into the BES response object
+        BESDEBUG(NC_NAME, "DMR Cached hit for : " << dataset_name << endl);
+        *dmr = *cached_dmr_ptr; // Copy the referenced object
+    }
+    else {
+        ncopts = 0;
+        int ncid, errstat;
+
+        // path is used for var names and full_path for full name path in the var attribute
+        string path = "";
+        string full_path = "";
+
+        dmr->set_factory(new D4BaseTypeFactory);
+        dmr->set_name(name_path(dataset_name));
+        dmr->set_filename(dataset_name);
+
+        errstat = nc_open(dataset_name.c_str(), NC_NOWRITE, &ncid);
+        if (errstat != NC_NOERR)
+            throw Error(errstat, "Could not open " + dataset_name + ".");
+
+        D4Group *group = new D4Group("/");
+
+        // read groups
+        read_group(*dmr, dataset_name, ncid, *group, path, full_path);
+        if (dmr_cache) {
+            // add a copy
+            BESDEBUG(NC_NAME, "DMR added to the cache for : " << dataset_name << endl);
+            dmr_cache->add(new DMR(*dmr), dataset_name);
+        }
+    }
 }

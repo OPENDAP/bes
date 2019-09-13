@@ -33,6 +33,7 @@ class ObjMemCache;  // in bes/dap
 
 namespace libdap {
 class DDS;
+class DMR;
 }
 
 class NCRequestHandler: public BESRequestHandler {
@@ -54,6 +55,7 @@ private:
     static ObjMemCache *dmr_cache;
 
     static void get_dds_with_attributes(const std::string& dataset_name, const std::string& container_name, libdap::DDS* dds);
+    static void get_dmr(const string& dataset_name, libdap::DMR* dmr);
 
 public:
 	NCRequestHandler(const string &name);
