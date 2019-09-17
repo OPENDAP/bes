@@ -220,13 +220,13 @@ after_deploy:
         git commit -am "BES build completed. Triggering Docker snapshot build.";
         git status;
         git push https://$GIT_UID:$GIT_PSWD@github.com/opendap/hyrax-docker --all;
-    elif  test "$BES_BUILD" = "centos6"; 
+    fi
+
+- if test "$BES_BUILD" = "centos6"; 
     then  
-        echo $"$WOO_PSWD" | sshpass scp -v ${TRAVIS_BUILD_DIR}/package/* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-6.x
         echo "Not triggering a Docker build";     
-    else  
-        echo "Not triggering a Docker build"; 
-  fi
+        echo $"$WOO_PSWD" | sshpass scp -v ${TRAVIS_BUILD_DIR}/package/* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-6.x
+    fi
 - echo "-- -- -- -- -- -- -- -- -- after_deploy END -- -- -- -- -- -- -- -- --";
         
 
