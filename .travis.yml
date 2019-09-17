@@ -146,7 +146,8 @@ jobs:
     - export BES_BUILD=srcdist
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
     - make dist -j7
-    - echo $"$WOO_PSWD" | sshpass scp -v ${TRAVIS_BUILD_DIR}/package/*snapshot* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-6.x;
+    - cp bes-*.tar.gz bes-snapshot.tar.gz;
+    - echo $"$WOO_PSWD" | sshpass scp -v ${TRAVIS_BUILD_DIR}/package/${snap} $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src;
 
 
 #  - stage: package
