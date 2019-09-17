@@ -42,6 +42,7 @@ addons:
     - lintian
     - fakeroot
     - build-essential
+    - sshpass
 
 env:
   global:
