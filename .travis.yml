@@ -22,6 +22,7 @@ branches:
   - coverity_scan
 
 addons:
+  ssh_known_hosts: www.opendap.org
   coverity_scan:
     project:
       name: "OPENDAP/bes"
@@ -63,7 +64,13 @@ env:
     # GIT_UID travis-ci-opendap
     - secure: "eUL/RY4kJD9sb3q98Xbfbcdhs6eyFWkfWNb0tvRzksBi/+tYiuojsek0qoBFZnRnO0wwyDAaDrZgu2yoLQTBxGSTqCsYaoDiFtw2m8aW3r+FdjpfmyVR52U9vMoZtpiPGYYM9utlyQ6YRNhzq+XzDJ4juygoIlzbp7qXTALqIL8="
     # GIT_PSWD for travis-ci-opendap
-    - secure: "jdEmVdM35qoAmIXTqTCL11IbjEMh6I+jrov/nqQ4wdoJf79O7H7tuuDVkIJ+5RSIjUXsIYgfQAG8Cn+DIJRMnv7mj7TrWGS9LT22bBGErzCcCkrHGKMDH4okbd8cCNQcnb/9woYSYZ38U8QCBsYH1Ma2r4bFU4jAY2KiMOyaY6w="
+    - secure: "jdEmVdM35qoAmIXTqTCL11IbjEMh6I+jrov/nqQ4wdoJf79O7H7tuuDVkIJ+5RSIjUXsIYgfQAG8Cn+DIJRMnv7mj7TrWGS9LT22bBGErzCcCkrHGKMDH4okbd8cCNQcnb/9woYSYZ38U8QCBsYH1Ma2r4bFU4jAY2KiMOyaY6w="    
+    # WOO_UID for travis
+    secure: "Epi5Y8QwDzbolfbMTdLD2+d9QODN2SOOq9jm2Tma/sjHuKJQL4aIlQe4n1KV5kxdrFDmDFuFSKWbxrOCz5s7u/ZJ6ui2NzQsLYFrcpC1zF85pcxZLmoEmPjIe9isFmc7H8tVLikmL2pgEl6YMilVLrnCdsReoxNs+EF/wpr1lsI="
+    # WOO_PSWD for travis
+    secure: "IjG5mWToqJRjW5WUTkUidtR3sM+ZubI060gsSuO7FQccn2SWVPJjHL/cSJJ2n3eimp9+ZyHJ47p/TwRxXdOuuknIFTw0ozOCk/MXK1yjB4Vu9arRLLgwwOenu+TXs6MwRT+TSVh1kJ64rcYSUya9HcJIqXwuevRsoWlx7BADGH4="
+
+
 
 before_install:
 - pip install --user awscli
@@ -82,48 +89,48 @@ before_script:
 # Build all the stages for 'master'. For a PR, run the 'build' and 'package' stages,
 # but do not run the scan.
 stages:
-- name: build
-  if:  branch = master
-- name: scan
-  if:  branch = master AND NOT type = pull_request
+#- name: build
+#  if:  branch = master
+#- name: scan
+#  if:  branch = master AND NOT type = pull_request
 - name: package
   if:  branch = master
 
 jobs:
   include:
-  - stage: scan
-    addons: 
-      sonarcloud: 
-    script:
-    - export BES_BUILD=sonar-bes-framework
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-    - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
-    - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
-
-  - stage: scan
-    addons: 
-      sonarcloud: 
-    script:
-    - export BES_BUILD=sonar-bes-modules
-    # Adding this 'fetch --unshallow' since I think sonar is excluding the hdf handlers
-    # because they are submodules.
-    - git fetch --unshallow
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-    - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
-    - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
-
-  - stage: build
-    script: 
-    - export BES_BUILD=main
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-    - make -j7 && make install && besctl start && make check -j7 && besctl stop
-
-  - stage: build
-    script:
-    - export BES_BUILD=distcheck
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
-    - make distcheck -j7
-  
+#  - stage: scan
+#    addons: 
+#      sonarcloud: 
+#    script:
+#    - export BES_BUILD=sonar-bes-framework
+#    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+#    - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+#    - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
+#
+#  - stage: scan
+#    addons: 
+#      sonarcloud: 
+#    script:
+#    - export BES_BUILD=sonar-bes-modules
+#    # Adding this 'fetch --unshallow' since I think sonar is excluding the hdf handlers
+#    # because they are submodules.
+#    - git fetch --unshallow
+#    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+#    - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+#    - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
+#
+#  - stage: build
+#    script: 
+#    - export BES_BUILD=main
+#    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+#    - make -j7 && make install && besctl start && make check -j7 && besctl stop
+#
+#  - stage: build
+#    script:
+#    - export BES_BUILD=distcheck
+#    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
+#    - make distcheck -j7
+#  
   # Debian Target (unused)
   # - stage: package
   #  script: 
@@ -182,6 +189,7 @@ before_deploy:
     fi
 - ls -l $TRAVIS_BUILD_DIR/package
 
+# The deploy section copies the snapshot build product our S3 bucket
 deploy:
   provider: s3
   access_key_id: $AWS_ACCESS_KEY_ID
@@ -193,11 +201,15 @@ deploy:
     branch: master
     condition: $BES_BUILD =~ ^deb|centos7|centos6$
 
+# The after_deploy section grabs the hyrax-docker project, sets the current snapshot time 
+# and pushes the result to GitHub. This push triggers TravisCI to build the Docker containers
+# for all of the Hyrax snapshot products. 
 after_deploy:
 - echo "-- -- -- -- -- -- -- -- -- after_deploy BEGIN -- -- -- -- -- -- -- -- --";
 - echo "$BES_BUILD";
 - if test "$BES_BUILD" = "centos7"; 
     then  
+        echo $"$WOO_PSWD" | sshpass scp -v ${TRAVIS_BUILD_DIR}/package/* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-7.x
         echo "New CentOS-7 snapshot of BES pushed. Triggering a Docker build"; 
         git clone https://github.com/opendap/hyrax-docker;
         git config --global user.name "The-Robot-Travis";
@@ -208,6 +220,10 @@ after_deploy:
         git commit -am "BES build completed. Triggering Docker snapshot build.";
         git status;
         git push https://$GIT_UID:$GIT_PSWD@github.com/opendap/hyrax-docker --all;
+    elif  test "$BES_BUILD" = "centos6"; 
+    then  
+        echo $"$WOO_PSWD" | sshpass scp -v ${TRAVIS_BUILD_DIR}/package/* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-6.x
+        echo "Not triggering a Docker build";     
     else  
         echo "Not triggering a Docker build"; 
   fi
