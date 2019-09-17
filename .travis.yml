@@ -66,9 +66,9 @@ env:
     # GIT_PSWD for travis-ci-opendap
     - secure: "jdEmVdM35qoAmIXTqTCL11IbjEMh6I+jrov/nqQ4wdoJf79O7H7tuuDVkIJ+5RSIjUXsIYgfQAG8Cn+DIJRMnv7mj7TrWGS9LT22bBGErzCcCkrHGKMDH4okbd8cCNQcnb/9woYSYZ38U8QCBsYH1Ma2r4bFU4jAY2KiMOyaY6w="    
     # WOO_UID for travis
-    secure: "Epi5Y8QwDzbolfbMTdLD2+d9QODN2SOOq9jm2Tma/sjHuKJQL4aIlQe4n1KV5kxdrFDmDFuFSKWbxrOCz5s7u/ZJ6ui2NzQsLYFrcpC1zF85pcxZLmoEmPjIe9isFmc7H8tVLikmL2pgEl6YMilVLrnCdsReoxNs+EF/wpr1lsI="
+    - secure: "Epi5Y8QwDzbolfbMTdLD2+d9QODN2SOOq9jm2Tma/sjHuKJQL4aIlQe4n1KV5kxdrFDmDFuFSKWbxrOCz5s7u/ZJ6ui2NzQsLYFrcpC1zF85pcxZLmoEmPjIe9isFmc7H8tVLikmL2pgEl6YMilVLrnCdsReoxNs+EF/wpr1lsI="
     # WOO_PSWD for travis
-    secure: "IjG5mWToqJRjW5WUTkUidtR3sM+ZubI060gsSuO7FQccn2SWVPJjHL/cSJJ2n3eimp9+ZyHJ47p/TwRxXdOuuknIFTw0ozOCk/MXK1yjB4Vu9arRLLgwwOenu+TXs6MwRT+TSVh1kJ64rcYSUya9HcJIqXwuevRsoWlx7BADGH4="
+    - secure: "IjG5mWToqJRjW5WUTkUidtR3sM+ZubI060gsSuO7FQccn2SWVPJjHL/cSJJ2n3eimp9+ZyHJ47p/TwRxXdOuuknIFTw0ozOCk/MXK1yjB4Vu9arRLLgwwOenu+TXs6MwRT+TSVh1kJ64rcYSUya9HcJIqXwuevRsoWlx7BADGH4="
 
 
 
@@ -220,9 +220,7 @@ after_deploy:
         git commit -am "BES build completed. Triggering Docker snapshot build.";
         git status;
         git push https://$GIT_UID:$GIT_PSWD@github.com/opendap/hyrax-docker --all;
-    fi
-
-- if test "$BES_BUILD" = "centos6"; 
+    elif test "$BES_BUILD" = "centos6"; 
     then  
         echo "Not triggering a Docker build";     
         echo $"$WOO_PSWD" | sshpass scp -v ${TRAVIS_BUILD_DIR}/package/* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-6.x
