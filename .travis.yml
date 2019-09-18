@@ -206,37 +206,37 @@ before_deploy:
 
 # The deploy section copies the snapshot build product our S3 bucket
 deploy:
-  provider: s3
-  access_key_id: $AWS_ACCESS_KEY_ID
-  secret_access_key: $AWS_SECRET_ACCESS_KEY
-  bucket: opendap.travis.build
-  skip_cleanup: true
-  local_dir: $TRAVIS_BUILD_DIR/package
-  on:
-    branch: master
-    condition: $BES_BUILD =~ ^deb|centos7|centos6|src_dist$
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    bucket: opendap.travis.build
+    skip_cleanup: true
+    local_dir: $TRAVIS_BUILD_DIR/package
+    on:
+      branch: master
+      condition: $BES_BUILD =~ ^deb|centos7|centos6|src_dist$
 
-  provider: script
-  skip_cleanup: true
-  script: echo $"$WOO_PSWD" | sshpass scp -v $TRAVIS_BUILD_DIR/package/bes-snapshot.tar.gz $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/source;
-  on:
-    branch: master
-    condition: $BES_BUILD =~ ^src_dist$
+  - provider: script
+    skip_cleanup: true
+    script: echo $"$WOO_PSWD" | sshpass scp -v $TRAVIS_BUILD_DIR/package/bes-snapshot.tar.gz $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/source;
+    on:
+      branch: master
+      condition: $BES_BUILD =~ ^src_dist$
 
-  provider: script
-  skip_cleanup: true
-  script: echo $"$WOO_PSWD" | sshpass scp -v $TRAVIS_BUILD_DIR/package/*snapshot* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-7.x;
-  on:
-    branch: master
-    condition: $BES_BUILD =~ ^centos7$
+  - provider: script
+    skip_cleanup: true
+    script: echo $"$WOO_PSWD" | sshpass scp -v $TRAVIS_BUILD_DIR/package/*snapshot* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-7.x;
+    on:
+      branch: master
+      condition: $BES_BUILD =~ ^centos7$
 
-  provider: script
-  skip_cleanup: true
-  script: echo $"$WOO_PSWD" | sshpass scp -v $TRAVIS_BUILD_DIR/package/*snapshot* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-6.x;
-  on:
-    branch: master
-    condition: $BES_BUILD =~ ^centos6$
-
+  - provider: script
+    skip_cleanup: true
+    script: echo $"$WOO_PSWD" | sshpass scp -v $TRAVIS_BUILD_DIR/package/*snapshot* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-6.x;
+    on:
+      branch: master
+      condition: $BES_BUILD =~ ^centos6$
+  
 # The after_deploy section grabs the hyrax-docker project, sets the current snapshot time 
 # and pushes the result to GitHub. This push triggers TravisCI to build the Docker containers
 # for all of the Hyrax snapshot products. 
