@@ -177,7 +177,6 @@ before_deploy:
 - if test "$BES_BUILD" = "srcdist"; 
     then
         cp bes-*.tar.gz $TRAVIS_BUILD_DIR/package;
-        cp bes-*.tar.gz bes-snapshot.tar.gz;
         cp bes-snapshot.tar.gz $TRAVIS_BUILD_DIR/package;
     fi
     
