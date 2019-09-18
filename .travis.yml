@@ -159,12 +159,12 @@ jobs:
                  --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
                  opendap/centos7_hyrax_builder:1.2 /root/travis/build-rpm.sh
 
-  - stage: srcdist
+  - stage: src_dist
     script:
-    - export BES_BUILD=srcdist
+    - export BES_BUILD=src_dist
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
     - make dist -j7
-    - cp bes-*.tar.gz bes-snapshot.tar.gz;
+    # - cp bes-*.tar.gz bes-snapshot.tar.gz;
 
     
 after_script:
@@ -172,7 +172,7 @@ after_script:
 
 before_deploy:
 - test -d $TRAVIS_BUILD_DIR/package || mkdir $TRAVIS_BUILD_DIR/package;
-- if test "$BES_BUILD" = "srcdist"; 
+- if test "$BES_BUILD" = "src_dist"; 
     then
         cp bes-*.tar.gz $TRAVIS_BUILD_DIR/package;
         cp bes-*.tar.gz bes-snapshot.tar.gz;
@@ -212,10 +212,30 @@ deploy:
   bucket: opendap.travis.build
   skip_cleanup: true
   local_dir: $TRAVIS_BUILD_DIR/package
-  # script: echo $"$WOO_PSWD" | sshpass scp -v $TRAVIS_BUILD_DIR/package/bes-snapshot.tar.gz $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src;
   on:
     branch: master
-    condition: $BES_BUILD =~ ^deb|centos7|centos6$
+    condition: $BES_BUILD =~ ^deb|centos7|centos6|src_dist$
+
+  provider: script
+  skip_cleanup: true
+  script: echo $"$WOO_PSWD" | sshpass scp -v $TRAVIS_BUILD_DIR/package/bes-snapshot.tar.gz $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/source;
+  on:
+    branch: master
+    condition: $BES_BUILD =~ ^src_dist$
+
+  provider: script
+  skip_cleanup: true
+  script: echo $"$WOO_PSWD" | sshpass scp -v $TRAVIS_BUILD_DIR/package/*snapshot* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-7.x;
+  on:
+    branch: master
+    condition: $BES_BUILD =~ ^centos7$
+
+  provider: script
+  skip_cleanup: true
+  script: echo $"$WOO_PSWD" | sshpass scp -v $TRAVIS_BUILD_DIR/package/*snapshot* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-6.x;
+  on:
+    branch: master
+    condition: $BES_BUILD =~ ^centos6$
 
 # The after_deploy section grabs the hyrax-docker project, sets the current snapshot time 
 # and pushes the result to GitHub. This push triggers TravisCI to build the Docker containers
@@ -225,7 +245,7 @@ after_deploy:
 - echo "$BES_BUILD";
 - if test "$BES_BUILD" = "centos7"; 
     then  
-        echo $"$WOO_PSWD" | sshpass scp -v ${TRAVIS_BUILD_DIR}/package/*snapshot* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-7.x;
+        # echo $"$WOO_PSWD" | sshpass scp -v ${TRAVIS_BUILD_DIR}/package/*snapshot* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-7.x;
         echo "New CentOS-7 snapshot of BES pushed. Triggering a Docker build"; 
         git clone https://github.com/OPENDAP/hyrax-docker;
         git config --global user.name "The-Robot-Travis";
@@ -238,11 +258,11 @@ after_deploy:
         git push https://$GIT_UID:$GIT_PSWD@github.com/opendap/hyrax-docker --all;
     elif test "$BES_BUILD" = "centos6"; 
     then  
-        echo $"$WOO_PSWD" | sshpass scp -v ${TRAVIS_BUILD_DIR}/package/*snapshot* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-6.x;
+        #echo $"$WOO_PSWD" | sshpass scp -v ${TRAVIS_BUILD_DIR}/package/*snapshot* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-6.x;
         echo "New CentOS-6 snapshot of BES pushed. No Docker build initiated";     
-    elif test "$BES_BUILD" = "srcdist"; 
+    elif test "$BES_BUILD" = "src_dist"; 
     then  
-        echo $"$WOO_PSWD" | sshpass scp -v ${TRAVIS_BUILD_DIR}/package/*snapshot* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src;
+        #echo $"$WOO_PSWD" | sshpass scp -v ${TRAVIS_BUILD_DIR}/package/*snapshot* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src;
         echo "New source snapshot pushed. No Docker build initiated.";     
     fi
 - echo "-- -- -- -- -- -- -- -- -- after_deploy END -- -- -- -- -- -- -- -- --";
