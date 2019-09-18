@@ -171,10 +171,14 @@ after_script:
 - ./upload-test-results.sh
 
 before_deploy:
-- test -d $TRAVIS_BUILD_DIR/package || mkdir $TRAVIS_BUILD_DIR/package
-- cp bes-*.tar.gz $TRAVIS_BUILD_DIR/package 
-- cp bes-*.tar.gz bes-snapshot.tar.gz;
-
+- test -d $TRAVIS_BUILD_DIR/package || mkdir $TRAVIS_BUILD_DIR/package;
+- if test "$BES_BUILD" = "centos6"; 
+    then
+        cp bes-*.tar.gz $TRAVIS_BUILD_DIR/package;
+        cp bes-*.tar.gz bes-snapshot.tar.gz;
+        cp bes-snapshot.tar.gz $TRAVIS_BUILD_DIR/package;
+    fi
+    
 # The following is part of deb(ian) target
 # - if test $BES_BUILD = deb; then mv $TRAVIS_BUILD_DIR/../bes*-*_amd64.deb $TRAVIS_BUILD_DIR/package/; fi
 
@@ -208,7 +212,7 @@ deploy:
   bucket: opendap.travis.build
   skip_cleanup: true
   local_dir: $TRAVIS_BUILD_DIR/package
-  script: echo $"$WOO_PSWD" | sshpass scp -v bes-snapshot.tar.gz $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src;
+  script: echo $"$WOO_PSWD" | sshpass scp -v $TRAVIS_BUILD_DIR/package/bes-snapshot.tar.gz $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src;
   on:
     branch: master
     condition: $BES_BUILD =~ ^deb|centos7|centos6$
