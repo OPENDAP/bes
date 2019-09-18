@@ -214,7 +214,7 @@ deploy:
     local_dir: $TRAVIS_BUILD_DIR/package
     on:
       branch: master
-      condition: $BES_BUILD =~ ^deb|centos7|centos6|src_dist$
+      condition: $BES_BUILD =~ ^deb|centos7|centos6$
 
 
 # The after_deploy section grabs the hyrax-docker project, sets the current snapshot time 
