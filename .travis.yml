@@ -216,13 +216,6 @@ deploy:
       branch: master
       condition: $BES_BUILD =~ ^deb|centos7|centos6|src_dist$
 
-  - provider: script
-    skip_cleanup: true
-    script: 
-      - echo $"$WOO_PSWD" | sshpass scp -v $TRAVIS_BUILD_DIR/package/bes-snapshot.tar.gz $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/source;
-    on:
-      branch: master
-      condition: $BES_BUILD =~ ^src_dist$
 
 # The after_deploy section grabs the hyrax-docker project, sets the current snapshot time 
 # and pushes the result to GitHub. This push triggers TravisCI to build the Docker containers
