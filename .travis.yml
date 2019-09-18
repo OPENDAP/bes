@@ -172,7 +172,7 @@ after_script:
 
 before_deploy:
 - test -d $TRAVIS_BUILD_DIR/package || mkdir $TRAVIS_BUILD_DIR/package;
-- if test "$BES_BUILD" = "centos6"; 
+- if test "$BES_BUILD" = "srcdist"; 
     then
         cp bes-*.tar.gz $TRAVIS_BUILD_DIR/package;
         cp bes-*.tar.gz bes-snapshot.tar.gz;
@@ -212,7 +212,7 @@ deploy:
   bucket: opendap.travis.build
   skip_cleanup: true
   local_dir: $TRAVIS_BUILD_DIR/package
-  script: echo $"$WOO_PSWD" | sshpass scp -v $TRAVIS_BUILD_DIR/package/bes-snapshot.tar.gz $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src;
+  # script: echo $"$WOO_PSWD" | sshpass scp -v $TRAVIS_BUILD_DIR/package/bes-snapshot.tar.gz $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src;
   on:
     branch: master
     condition: $BES_BUILD =~ ^deb|centos7|centos6$
@@ -227,7 +227,7 @@ after_deploy:
     then  
         echo $"$WOO_PSWD" | sshpass scp -v ${TRAVIS_BUILD_DIR}/package/*snapshot* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-7.x;
         echo "New CentOS-7 snapshot of BES pushed. Triggering a Docker build"; 
-        git clone https://github.com/opendap/hyrax-docker;
+        git clone https://github.com/OPENDAP/hyrax-docker;
         git config --global user.name "The-Robot-Travis";
         git config --global user.email "npotter@opendap.org";
         cd hyrax-docker/hyrax-snapshot;
@@ -239,7 +239,11 @@ after_deploy:
     elif test "$BES_BUILD" = "centos6"; 
     then  
         echo $"$WOO_PSWD" | sshpass scp -v ${TRAVIS_BUILD_DIR}/package/*snapshot* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-6.x;
-        echo "New CentOS-6 snapshot of BES pushed. No Docker build initiated.";     
+        echo "New CentOS-6 snapshot of BES pushed. No Docker build initiated";     
+    elif test "$BES_BUILD" = "srcdist"; 
+    then  
+        echo $"$WOO_PSWD" | sshpass scp -v ${TRAVIS_BUILD_DIR}/package/*snapshot* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src;
+        echo "New source snapshot pushed. No Docker build initiated.";     
     fi
 - echo "-- -- -- -- -- -- -- -- -- after_deploy END -- -- -- -- -- -- -- -- --";
         
