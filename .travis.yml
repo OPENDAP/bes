@@ -220,7 +220,7 @@ deploy:
   - provider: script
     skip_cleanup: true
     script: 
-      - echo $"muy thang: $WOO_PSWD" # | sshpass scp -v $TRAVIS_BUILD_DIR/package/bes-snapshot.tar.gz $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src;
+      - echo $"$WOO_PSWD" # | sshpass scp -v $TRAVIS_BUILD_DIR/package/bes-snapshot.tar.gz $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src;
     on:
       branch: master
       condition: $BES_BUILD =~ ^srcdist$
