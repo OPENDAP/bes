@@ -220,7 +220,7 @@ deploy:
   - provider: script
     skip_cleanup: true
     script: 
-      # - echo "first script provider.";
+      - echo $"first script provider.";
       - echo $"$WOO_PSWD" # | sshpass scp -v $TRAVIS_BUILD_DIR/package/bes-snapshot.tar.gz $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src;
     on:
       branch: master
