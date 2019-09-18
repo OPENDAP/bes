@@ -206,7 +206,7 @@ before_deploy:
 
 # The deploy section copies the snapshot build product our S3 bucket
 deploy:
-  - provider: s3
+    provider: s3
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     bucket: opendap.travis.build
