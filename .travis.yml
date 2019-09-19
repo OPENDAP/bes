@@ -165,14 +165,20 @@ jobs:
     script:
     - export BES_BUILD=srcdist
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
-    - make dist -j7
-    - cp bes-*.tar.gz bes-snapshot.tar.gz;
+    #- make dist -j7
+    #- cp bes-*.tar.gz bes-snapshot.tar.gz;
+    - echo "Test is a test my besty." > bes-3.20.1999.tar.gz;
+    - cp bes-3.20.1999.tar.gz bes-snapshot.tar.gz;
 
     
 after_script:
 - ./upload-test-results.sh
 
 before_deploy:
+- openssl aes-256-cbc -K $encrypted_f3adba893add_key -iv $encrypted_f3adba893add_iv -in travis/woo_deploy_rsa.enc -out /tmp/woo_deploy_rsa -d
+- eval "$(ssh-agent -s)"
+- chmod 600 /tmp/woo_deploy_rsa
+- ssh-add /tmp/woo_deploy_rsa
 - test -d $TRAVIS_BUILD_DIR/package || mkdir $TRAVIS_BUILD_DIR/package;
 - if test "$BES_BUILD" = "srcdist"; 
     then
@@ -220,8 +226,8 @@ deploy:
   - provider: script
     skip_cleanup: true
     script: 
-      - echo "first script provider.";
       - echo $"$WOO_PSWD" # | sshpass scp -v $TRAVIS_BUILD_DIR/package/bes-snapshot.tar.gz $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src;
+      - rsync -r --delete-after --quiet $TRAVIS_BUILD_DIR/package/$WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src
     on:
       branch: master
       condition: $BES_BUILD =~ ^srcdist$
@@ -251,6 +257,7 @@ after_deploy:
         echo "New CentOS-6 snapshot of BES pushed. No Docker build initiated";     
     elif test "$BES_BUILD" = "srcdist"; 
     then  
+        echo $"$WOO_PSWD" | sshpass scp -v $TRAVIS_BUILD_DIR/package/bes-snapshot.tar.gz $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src;
         echo "New source snapshot pushed. No Docker build initiated.";     
     fi
 - echo "-- -- -- -- -- -- -- -- -- after_deploy END -- -- -- -- -- -- -- -- --";
