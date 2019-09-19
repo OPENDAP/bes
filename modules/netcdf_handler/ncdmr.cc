@@ -677,7 +677,12 @@ static void read_attributes(DMR &dmr, const string &filename, int ncid, int nvar
         AttrTable attr_table_ptr = root_grp->get_attr_table();
         AttrTable *at = new AttrTable();
         read_attributes_netcdf4(ncid, NC_GLOBAL, ngatts, at);
-        attr_table_ptr.append_container(at, "NC_GLOBAL");
+        // group attributes:
+        string att_name = "NC_GLOBAL";
+        if (path.find('_') != string::npos)
+            att_name = path + "NC_GROUP";
+        attr_table_ptr.append_container(at, att_name);
+
         root_grp->attributes()->transform_to_dap4(attr_table_ptr);
     }
 
