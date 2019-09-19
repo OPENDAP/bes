@@ -66,10 +66,6 @@ env:
     - secure: "eUL/RY4kJD9sb3q98Xbfbcdhs6eyFWkfWNb0tvRzksBi/+tYiuojsek0qoBFZnRnO0wwyDAaDrZgu2yoLQTBxGSTqCsYaoDiFtw2m8aW3r+FdjpfmyVR52U9vMoZtpiPGYYM9utlyQ6YRNhzq+XzDJ4juygoIlzbp7qXTALqIL8="
     # GIT_PSWD for travis-ci-opendap
     - secure: "jdEmVdM35qoAmIXTqTCL11IbjEMh6I+jrov/nqQ4wdoJf79O7H7tuuDVkIJ+5RSIjUXsIYgfQAG8Cn+DIJRMnv7mj7TrWGS9LT22bBGErzCcCkrHGKMDH4okbd8cCNQcnb/9woYSYZ38U8QCBsYH1Ma2r4bFU4jAY2KiMOyaY6w="    
-    # WOO_UID for travis
-    - secure: "Epi5Y8QwDzbolfbMTdLD2+d9QODN2SOOq9jm2Tma/sjHuKJQL4aIlQe4n1KV5kxdrFDmDFuFSKWbxrOCz5s7u/ZJ6ui2NzQsLYFrcpC1zF85pcxZLmoEmPjIe9isFmc7H8tVLikmL2pgEl6YMilVLrnCdsReoxNs+EF/wpr1lsI="
-    # WOO_PSWD for travis
-    - secure: "IjG5mWToqJRjW5WUTkUidtR3sM+ZubI060gsSuO7FQccn2SWVPJjHL/cSJJ2n3eimp9+ZyHJ47p/TwRxXdOuuknIFTw0ozOCk/MXK1yjB4Vu9arRLLgwwOenu+TXs6MwRT+TSVh1kJ64rcYSUya9HcJIqXwuevRsoWlx7BADGH4="
 
 
 
@@ -175,7 +171,7 @@ after_script:
 - ./upload-test-results.sh
 
 before_deploy:
-- ls -l ./travis
+# - ls -l ./travis
 - openssl aes-256-cbc -K $encrypted_f3adba893add_key -iv $encrypted_f3adba893add_iv -in travis/woo_deploy_rsa_enc -out /tmp/woo_deploy_rsa -d
 - eval "$(ssh-agent -s)"
 - chmod 600 /tmp/woo_deploy_rsa
