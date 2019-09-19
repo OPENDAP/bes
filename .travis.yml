@@ -222,7 +222,7 @@ deploy:
     local_dir: $TRAVIS_BUILD_DIR/package
     on:
       branch: master
-      condition: $BES_BUILD =~ ^deb|centos7|centos6$
+      condition: $BES_BUILD =~ ^deb|centos7|centos6|srcdist$
 
   - provider: script
     skip_cleanup: true
