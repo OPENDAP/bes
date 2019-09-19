@@ -165,10 +165,10 @@ jobs:
     script:
     - export BES_BUILD=srcdist
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
-    #- make dist -j7
-    #- cp bes-*.tar.gz bes-snapshot.tar.gz;
-    - echo "Test is a test my besty." > bes-3.20.1999.tar.gz;
-    - cp bes-3.20.1999.tar.gz bes-snapshot.tar.gz;
+    - make dist -j7
+    - cp bes-*.tar.gz bes-snapshot.tar.gz;
+    #- echo "Test is a test my besty." > bes-3.20.1999.tar.gz;
+    #- cp bes-3.20.1999.tar.gz bes-snapshot.tar.gz;
 
     
 after_script:
@@ -227,8 +227,23 @@ deploy:
   - provider: script
     skip_cleanup: true
     script: 
+      - scp -v $TRAVIS_BUILD_DIR/package/*el7* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-7.x;
+    on:
+      branch: master
+      condition: $BES_BUILD =~ ^centos7$
+
+  - provider: script
+    skip_cleanup: true
+    script: 
+      - scp -v $TRAVIS_BUILD_DIR/package/*el6* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-6.x;
+    on:
+      branch: master
+      condition: $BES_BUILD =~ ^centos6$
+
+  - provider: script
+    skip_cleanup: true
+    script: 
       - scp -v $TRAVIS_BUILD_DIR/package/*snapshot* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src;
-      # - rsync -r --delete-after --quiet $TRAVIS_BUILD_DIR/package/ $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src
     on:
       branch: master
       condition: $BES_BUILD =~ ^srcdist$
@@ -241,7 +256,6 @@ after_deploy:
 - echo "$BES_BUILD";
 - if test "$BES_BUILD" = "centos7"; 
     then  
-        echo $"$WOO_PSWD" | sshpass scp -v ${TRAVIS_BUILD_DIR}/package/*snapshot* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-7.x;
         echo "New CentOS-7 snapshot of BES pushed. Triggering a Docker build"; 
         git clone https://github.com/OPENDAP/hyrax-docker;
         git config --global user.name "The-Robot-Travis";
@@ -254,7 +268,6 @@ after_deploy:
         git push https://$GIT_UID:$GIT_PSWD@github.com/opendap/hyrax-docker --all;
     elif test "$BES_BUILD" = "centos6"; 
     then  
-        echo $"$WOO_PSWD" | sshpass scp -v ${TRAVIS_BUILD_DIR}/package/*snapshot* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-6.x;
         echo "New CentOS-6 snapshot of BES pushed. No Docker build initiated";     
     elif test "$BES_BUILD" = "srcdist"; 
     then  
