@@ -74,6 +74,7 @@ env:
 
 
 before_install:
+- yum -y update
 - pip install --user awscli
 
 # hyrax-dependencies-build.tar.gz includes/makes the build directory
