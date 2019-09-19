@@ -258,7 +258,6 @@ after_deploy:
         echo "New CentOS-6 snapshot of BES pushed. No Docker build initiated";     
     elif test "$BES_BUILD" = "srcdist"; 
     then  
-        # echo $"$WOO_PSWD" | sshpass scp -v $TRAVIS_BUILD_DIR/package/bes-snapshot.tar.gz $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src;
         echo "New source snapshot pushed. No Docker build initiated.";     
     fi
 - echo "-- -- -- -- -- -- -- -- -- after_deploy END -- -- -- -- -- -- -- -- --";
