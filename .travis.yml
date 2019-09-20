@@ -171,12 +171,19 @@ after_script:
 - ./upload-test-results.sh
 
 before_deploy:
-# - ls -l ./travis
-- openssl aes-256-cbc -K $encrypted_f3adba893add_key -iv $encrypted_f3adba893add_iv -in $HOME/travis/woo_deploy_rsa_enc -out /tmp/woo_deploy_rsa -d
-- eval "$(ssh-agent -s)"
-- chmod 600 /tmp/woo_deploy_rsa
-- ssh-add /tmp/woo_deploy_rsa
+# Make sure that we have the target dir...
 - test -d $TRAVIS_BUILD_DIR/package || mkdir $TRAVIS_BUILD_DIR/package;
+#
+# Get creds for push to woo
+- if  test "$BES_BUILD" = "srcdist" || test "$BES_BUILD" = "centos6" || test "$BES_BUILD" = "centos7" ; 
+    then
+        ls -l ./travis;
+        openssl aes-256-cbc -K $encrypted_f3adba893add_key -iv $encrypted_f3adba893add_iv -in $HOME/travis/woo_deploy_rsa_enc -out /tmp/woo_deploy_rsa -d;
+        eval "$(ssh-agent -s)";
+        chmod 600 /tmp/woo_deploy_rsa;
+        ssh-add /tmp/woo_deploy_rsa;
+    fi
+# Source distribution prep
 - if test "$BES_BUILD" = "srcdist"; 
     then
         cp bes-*.tar.gz $TRAVIS_BUILD_DIR/package;
@@ -186,6 +193,7 @@ before_deploy:
 # The following is part of deb(ian) target
 # - if test $BES_BUILD = deb; then mv $TRAVIS_BUILD_DIR/../bes*-*_amd64.deb $TRAVIS_BUILD_DIR/package/; fi
 
+# CentOS-7  distribution prep
 - if test "$BES_BUILD" = "centos6"; 
    then 
         cp $prefix/rpmbuild/RPMS/x86_64/* $TRAVIS_BUILD_DIR/package/; 
@@ -196,6 +204,7 @@ before_deploy:
             cp ${file} ${TRAVIS_BUILD_DIR}/package/${snap};
         done
     fi
+# CentOS-6 distribution prep
 - if test "$BES_BUILD" = "centos7"; 
     then 
         cp $prefix/rpmbuild/RPMS/x86_64/* $TRAVIS_BUILD_DIR/package/;
@@ -206,6 +215,7 @@ before_deploy:
             cp ${file} ${TRAVIS_BUILD_DIR}/package/${snap};
         done
     fi
+# Check for the stuff...
 - ls -l $TRAVIS_BUILD_DIR/package
 
 # The deploy section copies the snapshot build product our S3 bucket
