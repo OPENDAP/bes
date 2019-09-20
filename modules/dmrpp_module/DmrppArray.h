@@ -117,7 +117,7 @@ public:
 
 /// Chunk data insert args for use with pthreads
 struct one_chunk_unconstrained_args {
-    int *fds;             // pipe back to parent
+    int *fds;               // pipe back to parent
     unsigned char tid;      // thread id as a byte
     Chunk *chunk;
     DmrppArray *array;
@@ -126,6 +126,22 @@ struct one_chunk_unconstrained_args {
 
     one_chunk_unconstrained_args(int *pipe, unsigned char id, Chunk *c, DmrppArray *a, const vector<unsigned int> &a_s, const vector<unsigned int> &c_s)
         : fds(pipe), tid(id), chunk(c), array(a), array_shape(a_s), chunk_shape(c_s) {}
+};
+
+/// Chunk data insert args for use with pthreads. Used for reading contiguous data
+/// in parallel.
+struct one_child_chunk_args {
+    int *fds;               // pipe back to parent
+    unsigned char tid;      // thread id as a byte
+    Chunk *child_chunk;     // this chunk reads data; temporary allocation
+    Chunk *master_chunk;    // this chunk gets the data; shared memory, managed by DmrppArray
+
+    one_child_chunk_args(int *pipe, unsigned char id, Chunk *c_c, Chunk *m_c)
+        : fds(pipe), tid(id), child_chunk(c_c), master_chunk(m_c) {}
+
+    ~one_child_chunk_args() { // FIXME delete child_chunk;
+     }
+
 };
 
 } // namespace dmrpp

@@ -302,6 +302,39 @@ void *one_chunk_unconstrained_thread(void *arg_list)
 }
 
 /**
+ * @brief Manage parallel transfer for contiguous data
+ *
+ * Read data for one of the 'child chunks' made to read data for a variable
+ * with contiguous storage in parallel.
+ *
+ * @param arg_list
+ */
+void *one_child_chunk_thread(void *arg_list)
+{
+    one_child_chunk_args *args = reinterpret_cast<one_child_chunk_args*>(arg_list);
+
+    try {
+        args->child_chunk->read_chunk();
+
+        // FIXME BESDEBUG(dmrpp_3, "one_child_chunk_thread: " << args->tid << ", " << args->child_chunk->get_offset() << endl);
+        memcpy(args->master_chunk->get_rbuf() + args->child_chunk->get_offset(), args->child_chunk->get_rbuf(), args->child_chunk->get_size());
+    }
+    catch (BESError &error) {
+        write(args->fds[1], &args->tid, sizeof(args->tid));
+
+        delete args;
+        pthread_exit(new string(error.get_verbose_message()));
+    }
+
+    // tid is a char and thus us written atomically. Writing this tells the parent
+    // thread the child is complete and it should call pthread_join(tid, ...)
+    write(args->fds[1], &args->tid, sizeof(args->tid));
+
+    delete args;
+    pthread_exit(NULL);
+}
+
+/**
  * @brief Read an array that is stored using one 'chunk.'
  *
  * @return Always returns true, matching the libdap::Array::read() behavior.
@@ -316,22 +349,16 @@ void DmrppArray::read_contiguous()
 
     if (chunk_refs.size() != 1) throw BESInternalError(string("Expected only a single chunk for variable ") + name(), __FILE__, __LINE__);
 
-    Chunk &chunk = chunk_refs[0];
+    // This is the original chunk for this 'contiguous' variable.
+    Chunk &master_chunk = chunk_refs[0];
 
     //If we want to read the chunk in parallel
     if (DmrppRequestHandler::d_use_parallel_transfers) {
-#if 0
-    	// The size, in elements, of each of the chunk's dimensions.
-    	// Since there is only one chunk, save the size to a separate variable
-    	const vector<unsigned int> &chunk_shape = get_chunk_dimension_sizes();
-    	const unsigned int chunk_size = chunk_shape[0];
-#endif
 
-    	// The size in element of each of the array's dimensions
-		const vector<unsigned int> array_shape = get_shape(true);	// This should be true; we want the constrained size. jhrg
-		// The size, in elements, of each of the chunk's dimensions
-		// May be unnecessary since we know that there is only one chunk
-		const vector<unsigned int> chunk_shape = get_chunk_dimension_sizes();
+        // Allocated memory for the 'master chunk' so the trheads can transfer data
+        // from the child chunks to it.
+        master_chunk.set_rbuf_to_size();
+        BESDEBUG(dmrpp_3, "master chunk size: " << master_chunk.get_rbuf_size() << endl);
 
 		// This pipe is used by the child threads to indicate completion
 		int fds[2];
@@ -339,48 +366,57 @@ void DmrppArray::read_contiguous()
 		if (status < 0)
 			throw BESInternalError(string("Could not open a pipe for thread communication: ").append(strerror(errno)), __FILE__, __LINE__);
 
+        // Create 4 equally sized chunks from the original chunk
+        // Initial test will be 4 chunks, may change. kln 9/19/19
+		const int num_chunks = 4;
+
     	// Use the original chunk's size and offset to evenly split it into smaller chunks
-    	unsigned long long chunk_size = chunk.get_size();
-    	unsigned long long chunk_offset = chunk.get_offset();
+    	unsigned long long chunk_size = master_chunk.get_size() / num_chunks;
+    	unsigned long long chunk_offset = master_chunk.get_offset();
 
-    	string chunk_url = chunk.get_data_url();
+    	string chunk_url = master_chunk.get_data_url();
 
-    	// Setup a queue to break up the original chunk and keep track of the pieces
+    	// Setup a queue to break up the original master_chunk and keep track of the pieces
 		queue<Chunk *> chunks_to_read;
 
-		// Create 4 equally sized chunks from the original chunk
-		// Initial test will be 4 chunks, may change. kln 9/19/19
-		Chunk *littleChunk;
-		for (int i = 0; i < 4; i++) {
-		    // FIXME chunk_size and chunk_offset must be computed. jhrg
-		    // FIXME Must allocate Chunks. jhrg
-			*littleChunk = Chunk(chunk_url, chunk_size, (chunk_size * i) + chunk_offset);
-			chunks_to_read.push(littleChunk);
-		}
+        for (int i = 0; i < num_chunks; i++) {
+            // TODO If num_chunks does not evenly divide chunk_size, then the
+            // final chunk will need to include the remainder.
+            chunks_to_read.push(new Chunk(chunk_url, chunk_size, (chunk_size * i) + chunk_offset));
+        }
 
-    	// Start the max number of processing pipelines
+	        // Start the max number of processing pipelines
 		pthread_t threads[DmrppRequestHandler::d_max_parallel_transfers];
+		memset(&threads[0], 0, sizeof(pthread_t) * DmrppRequestHandler::d_max_parallel_transfers);
 
+#if 0
 		// set the thread[] elements to null - this serves as a sentinel value
 		for (unsigned int i = 0; i < (unsigned int)DmrppRequestHandler::d_max_parallel_transfers; ++i) {
 			memset(&threads[i], 0, sizeof(pthread_t));
 		}
+#endif
 
 		try {
 			unsigned int num_threads = 0;
+
+			// start initial set of threads
 			for (unsigned int i = 0; i < (unsigned int) DmrppRequestHandler::d_max_parallel_transfers && chunks_to_read.size() > 0; ++i) {
 				Chunk *current_chunk = chunks_to_read.front();
 				chunks_to_read.pop();
 
-				// thread number is 'i'
-				one_chunk_unconstrained_args *args = new one_chunk_unconstrained_args(fds, i, current_chunk, this, array_shape, chunk_shape);
-				int status = pthread_create(&threads[i], NULL, dmrpp::one_chunk_unconstrained_thread, (void*) args);
+				current_chunk->set_rbuf_to_size(); // FIXME
+				BESDEBUG(dmrpp_3, "child chunk: size: " << current_chunk->get_rbuf_size() << " offset: " << current_chunk->get_offset() << endl);
+
+                // thread number is 'i'
+                one_child_chunk_args *args = new one_child_chunk_args(fds, i, current_chunk, &master_chunk);
+                int status = pthread_create(&threads[i], NULL, dmrpp::one_child_chunk_thread, (void*) args);
+
 				if (status == 0) {
 					++num_threads;
 					BESDEBUG(dmrpp_3, "started thread: " << i << endl);
 				}
 				else {
-					ostringstream oss("Could not start process_one_chunk_unconstrained thread for chunk ", std::ios::ate);
+					ostringstream oss("Could not start process_one_chunk_unconstrained thread for master_chunk ", std::ios::ate);
 					oss << i << ": " << strerror(status);
 					BESDEBUG(dmrpp_3, oss.str());
 					throw BESInternalError(oss.str(), __FILE__, __LINE__);
@@ -407,7 +443,7 @@ void DmrppArray::read_contiguous()
 				BESDEBUG(dmrpp_3, "joined thread: " << (unsigned int)tid << ", there are: " << num_threads << endl);
 
 				if (status != 0) {
-					ostringstream oss("Could not join process_one_chunk_unconstrained thread for chunk ", std::ios::ate);
+					ostringstream oss("Could not join process_one_chunk_unconstrained thread for master_chunk ", std::ios::ate);
 					oss << tid << ": " << strerror(status);
 					throw BESInternalError(oss.str(), __FILE__, __LINE__);
 				}
@@ -420,12 +456,13 @@ void DmrppArray::read_contiguous()
 					Chunk *current_chunk = chunks_to_read.front();
 					chunks_to_read.pop();
 
-					// thread number is 'tid,' the number of the thread that just completed
-					one_chunk_unconstrained_args *args = new one_chunk_unconstrained_args(fds, tid, current_chunk, this, array_shape, chunk_shape);
-					int status = pthread_create(&threads[tid], NULL, dmrpp::one_chunk_unconstrained_thread, (void*) args);
+                    // thread number is 'tid,' the number of the thread that just completed
+	                one_child_chunk_args *args = new one_child_chunk_args(fds, tid, current_chunk, &master_chunk);
+	                int status = pthread_create(&threads[tid], NULL, dmrpp::one_child_chunk_thread, (void*) args);
+
 					if (status != 0) {
 						ostringstream oss;
-						oss << "Could not start process_one_chunk_unconstrained thread for chunk " << tid << ": " << strerror(status);
+						oss << "Could not start process_one_chunk_unconstrained thread for master_chunk " << tid << ": " << strerror(status);
 						throw BESInternalError(oss.str(), __FILE__, __LINE__);
 					}
 					++num_threads;
@@ -449,16 +486,17 @@ void DmrppArray::read_contiguous()
 		}
     }
 
-    // Else read the chunk as is
+    // Else read the master_chunk as is
     else {
-		chunk.read_chunk();
+		master_chunk.read_chunk();
 
-		chunk.inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(), var()->width());
+#if 0
+		master_chunk.inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(), var()->width());
 
-		// 'chunk' now holds the data. Transfer it to the Array.
+		// 'master_chunk' now holds the data. Transfer it to the Array.
 
 		if (!is_projected()) {  // if there is no projection constraint
-			val2buf(chunk.get_rbuf());      // yes, it's not type-safe
+			val2buf(master_chunk.get_rbuf());      // yes, it's not type-safe
 		}
 		else {                  // apply the constraint
 			vector<unsigned int> array_shape = get_shape(false);
@@ -468,8 +506,28 @@ void DmrppArray::read_contiguous()
 			unsigned long target_index = 0;
 			vector<unsigned int> subset;
 
-			insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, chunk.get_rbuf());
+			insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, master_chunk.get_rbuf());
 		}
+#endif
+
+    }
+
+    master_chunk.inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(), var()->width());
+
+    // 'master_chunk' now holds the data. Transfer it to the Array.
+
+    if (!is_projected()) {  // if there is no projection constraint
+        val2buf(master_chunk.get_rbuf());      // yes, it's not type-safe
+    }
+    else {                  // apply the constraint
+        vector<unsigned int> array_shape = get_shape(false);
+
+        // Reserve space in this array for the constrained size of the data request
+        reserve_value_capacity(get_size(true));
+        unsigned long target_index = 0;
+        vector<unsigned int> subset;
+
+        insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, master_chunk.get_rbuf());
     }
 
     set_read_p(true);
