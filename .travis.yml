@@ -229,7 +229,8 @@ deploy:
     on:
       branch: master
       condition: $BES_BUILD =~ ^deb|centos7|centos6|srcdist$
-
+  
+  # Push CentOS-7 snapshot rpms to woo 
   - provider: script
     skip_cleanup: true
     script: 
@@ -238,6 +239,7 @@ deploy:
       branch: master
       condition: $BES_BUILD =~ ^centos7$
 
+  # Push CentOS-6 snapshot rpms to woo 
   - provider: script
     skip_cleanup: true
     script: 
@@ -246,6 +248,7 @@ deploy:
       branch: master
       condition: $BES_BUILD =~ ^centos6$
 
+  # Push source snapshot rpms to woo 
   - provider: script
     skip_cleanup: true
     script: 
