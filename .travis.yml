@@ -270,7 +270,7 @@ after_deploy:
         cd hyrax-docker/hyrax-snapshot;
         date +%s | tee -a snapshot.time;
         cat snapshot.time;
-        git commit -am "BES build completed. Triggering Docker snapshot build.";
+        git commit -am "The BES has produced new snapshot files. Triggering Hyrax-Docker image builds for snapshots.";
         git status;
         git push https://$GIT_UID:$GIT_PSWD@github.com/opendap/hyrax-docker --all;
     elif test "$BES_BUILD" = "centos6"; 
