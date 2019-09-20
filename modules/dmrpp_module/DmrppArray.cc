@@ -318,7 +318,6 @@ void DmrppArray::read_contiguous()
 
     Chunk &chunk = chunk_refs[0];
 
-
     //If we want to read the chunk in parallel
     if (DmrppRequestHandler::d_use_parallel_transfers) {
 #if 0
@@ -329,8 +328,9 @@ void DmrppArray::read_contiguous()
 #endif
 
     	// The size in element of each of the array's dimensions
-		const vector<unsigned int> array_shape = get_shape(true);
+		const vector<unsigned int> array_shape = get_shape(true);	//TODO: Should this be false?
 		// The size, in elements, of each of the chunk's dimensions
+		// May be unnecessary since we know that there is only one chunk
 		const vector<unsigned int> chunk_shape = get_chunk_dimension_sizes();
 
 		// This pipe is used by the child threads to indicate completion
@@ -352,7 +352,7 @@ void DmrppArray::read_contiguous()
 		// Initial test will be 4 chunks, may change. kln 9/19/19
 		Chunk *littleChunk;
 		for (int i = 0; i < 4; i++) {
-			*littleChunk = Chunk(chunk_url, chunk_size, chunk_offset * (i + 1));
+			*littleChunk = Chunk(chunk_url, chunk_size, (chunk_size * i) + chunk_offset);
 			chunks_to_read.push(littleChunk);
 		}
 
@@ -449,7 +449,6 @@ void DmrppArray::read_contiguous()
 
     //Else read the chunk as is
     else {
-
 
 		// TODO Break this call down so that data can be read in parallel. jhrg 8/21/18
 		chunk.read_chunk();
