@@ -316,7 +316,7 @@ void *one_child_chunk_thread(void *arg_list)
     try {
         args->child_chunk->read_chunk();
 
-        // FIXME BESDEBUG(dmrpp_3, "one_child_chunk_thread: " << args->tid << ", " << args->child_chunk->get_offset() << endl);
+        BESDEBUG(dmrpp_3, "one_child_chunk_thread: " << (unsigned int)args->tid << ", " << args->child_chunk->get_offset() << ", " << args->child_chunk->get_rbuf_size() << endl);
         memcpy(args->master_chunk->get_rbuf() + args->child_chunk->get_offset(), args->child_chunk->get_rbuf(), args->child_chunk->get_size());
     }
     catch (BESError &error) {
@@ -368,7 +368,7 @@ void DmrppArray::read_contiguous()
 
         // Create 4 equally sized chunks from the original chunk
         // Initial test will be 4 chunks, may change. kln 9/19/19
-		const int num_chunks = 4;
+		const int num_chunks = 1;//4;
 
     	// Use the original chunk's size and offset to evenly split it into smaller chunks
     	unsigned long long chunk_size = master_chunk.get_size() / num_chunks;
