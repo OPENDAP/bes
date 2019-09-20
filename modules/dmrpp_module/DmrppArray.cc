@@ -276,6 +276,32 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dimIter, unsigned long *
 }
 
 /**
+ * @brief Thread to insert data from one chunk
+ *
+ * @param arg_list
+ */
+void *one_chunk_unconstrained_thread(void *arg_list)
+{
+    one_chunk_unconstrained_args *args = reinterpret_cast<one_chunk_unconstrained_args*>(arg_list);
+
+    try {
+        process_one_chunk_unconstrained(args->chunk, args->array, args->array_shape, args->chunk_shape);
+    }
+    catch (BESError &error) {
+        write(args->fds[1], &args->tid, sizeof(args->tid));
+        delete args;
+        pthread_exit(new string(error.get_verbose_message()));
+    }
+
+    // tid is a char and thus us written atomically. Writing this tells the parent
+    // thread the child is complete and it should call pthread_join(tid, ...)
+    write(args->fds[1], &args->tid, sizeof(args->tid));
+
+    delete args;
+    pthread_exit(NULL);
+}
+
+/**
  * @brief Read an array that is stored using one 'chunk.'
  *
  * @return Always returns true, matching the libdap::Array::read() behavior.
@@ -292,25 +318,159 @@ void DmrppArray::read_contiguous()
 
     Chunk &chunk = chunk_refs[0];
 
-    // TODO Break this call down so that data can be read in parallel. jhrg 8/21/18
-    chunk.read_chunk();
 
-    chunk.inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(), var()->width());
+    //If we want to read the chunk in parallel
+    if (DmrppRequestHandler::d_use_parallel_transfers) {
+#if 0
+    	// The size, in elements, of each of the chunk's dimensions.
+    	// Since there is only one chunk, save the size to a separate variable
+    	const vector<unsigned int> &chunk_shape = get_chunk_dimension_sizes();
+    	const unsigned int chunk_size = chunk_shape[0];
+#endif
 
-    // 'chunk' now holds the data. Transfer it to the Array.
+    	// The size in element of each of the array's dimensions
+		const vector<unsigned int> array_shape = get_shape(true);
+		// The size, in elements, of each of the chunk's dimensions
+		const vector<unsigned int> chunk_shape = get_chunk_dimension_sizes();
 
-    if (!is_projected()) {  // if there is no projection constraint
-        val2buf(chunk.get_rbuf());      // yes, it's not type-safe
+		// This pipe is used by the child threads to indicate completion
+		int fds[2];
+		int status = pipe(fds);
+		if (status < 0)
+			throw BESInternalError(string("Could not open a pipe for thread communication: ").append(strerror(errno)), __FILE__, __LINE__);
+
+    	// Use the original chunk's size and offset to evenly split it into smaller chunks
+    	unsigned long long chunk_size = chunk.get_size();
+    	unsigned long long chunk_offset = chunk.get_offset();
+
+    	string chunk_url = chunk.get_data_url();
+
+    	// Setup a queue to break up the original chunk and keep track of the pieces
+		queue<Chunk *> chunks_to_read;
+
+		// Create 4 equally sized chunks from the original chunk
+		// Initial test will be 4 chunks, may change. kln 9/19/19
+		Chunk *littleChunk;
+		for (int i = 0; i < 4; i++) {
+			*littleChunk = Chunk(chunk_url, chunk_size, chunk_offset * (i + 1));
+			chunks_to_read.push(littleChunk);
+		}
+
+    	// Start the max number of processing pipelines
+		pthread_t threads[DmrppRequestHandler::d_max_parallel_transfers];
+
+		// set the thread[] elements to null - this serves as a sentinel value
+		for (unsigned int i = 0; i < (unsigned int)DmrppRequestHandler::d_max_parallel_transfers; ++i) {
+			memset(&threads[i], 0, sizeof(pthread_t));
+		}
+
+		try {
+			unsigned int num_threads = 0;
+			for (unsigned int i = 0; i < (unsigned int) DmrppRequestHandler::d_max_parallel_transfers && chunks_to_read.size() > 0; ++i) {
+				Chunk *chunk = chunks_to_read.front();
+				chunks_to_read.pop();
+
+				// thread number is 'i'
+				one_chunk_unconstrained_args *args = new one_chunk_unconstrained_args(fds, i, chunk, this, array_shape, chunk_shape);
+				int status = pthread_create(&threads[i], NULL, dmrpp::one_chunk_unconstrained_thread, (void*) args);
+				if (status == 0) {
+					++num_threads;
+					BESDEBUG(dmrpp_3, "started thread: " << i << endl);
+				}
+				else {
+					ostringstream oss("Could not start process_one_chunk_unconstrained thread for chunk ", std::ios::ate);
+					oss << i << ": " << strerror(status);
+					BESDEBUG(dmrpp_3, oss.str());
+					throw BESInternalError(oss.str(), __FILE__, __LINE__);
+				}
+			}
+
+			// Now join the child threads, creating replacement threads if needed
+			while (num_threads > 0) {
+				unsigned char tid;   // bytes can be written atomically
+				// Block here until a child thread writes to the pipe, then read the byte
+				int bytes = ::read(fds[0], &tid, sizeof(tid));
+				if (bytes != sizeof(tid))
+					throw BESInternalError(string("Could not read the thread id: ").append(strerror(errno)), __FILE__, __LINE__);
+
+				if (!(tid < DmrppRequestHandler::d_max_parallel_transfers)) {
+					ostringstream oss("Invalid thread id read after thread exit: ", std::ios::ate);
+					oss << tid;
+					throw BESInternalError(oss.str(), __FILE__, __LINE__);
+				}
+
+				string *error;
+				int status = pthread_join(threads[tid], (void**)&error);
+				--num_threads;
+				BESDEBUG(dmrpp_3, "joined thread: " << (unsigned int)tid << ", there are: " << num_threads << endl);
+
+				if (status != 0) {
+					ostringstream oss("Could not join process_one_chunk_unconstrained thread for chunk ", std::ios::ate);
+					oss << tid << ": " << strerror(status);
+					throw BESInternalError(oss.str(), __FILE__, __LINE__);
+				}
+				else if (error != 0) {
+					BESInternalError e(*error, __FILE__, __LINE__);
+					delete error;
+					throw e;
+				}
+				else if (chunks_to_read.size() > 0) {
+					Chunk *chunk = chunks_to_read.front();
+					chunks_to_read.pop();
+
+					// thread number is 'tid,' the number of the thread that just completed
+					one_chunk_unconstrained_args *args = new one_chunk_unconstrained_args(fds, tid, chunk, this, array_shape, chunk_shape);
+					int status = pthread_create(&threads[tid], NULL, dmrpp::one_chunk_unconstrained_thread, (void*) args);
+					if (status != 0) {
+						ostringstream oss;
+						oss << "Could not start process_one_chunk_unconstrained thread for chunk " << tid << ": " << strerror(status);
+						throw BESInternalError(oss.str(), __FILE__, __LINE__);
+					}
+					++num_threads;
+					BESDEBUG(dmrpp_3, "started thread: " << (unsigned int)tid << ", there are: " << threads << endl);
+				}
+			}
+
+			// Once done with the threads, close the communication pipe.
+			close(fds[0]);
+			close(fds[1]);
+		}
+		catch (...) {
+			// cancel all the threads, otherwise we'll have threads out there using up resources
+			// defined in DmrppCommon.cc
+			join_threads(threads, DmrppRequestHandler::d_max_parallel_transfers);
+			// close the pipe used to communicate with the child threads
+			close(fds[0]);
+			close(fds[1]);
+			// re-throw the exception
+			throw;
+		}
     }
-    else {                  // apply the constraint
-        vector<unsigned int> array_shape = get_shape(false);
 
-        // Reserve space in this array for the constrained size of the data request
-        reserve_value_capacity(get_size(true));
-        unsigned long target_index = 0;
-        vector<unsigned int> subset;
+    //Else read the chunk as is
+    else {
 
-        insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, chunk.get_rbuf());
+
+		// TODO Break this call down so that data can be read in parallel. jhrg 8/21/18
+		chunk.read_chunk();
+
+		chunk.inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(), var()->width());
+
+		// 'chunk' now holds the data. Transfer it to the Array.
+
+		if (!is_projected()) {  // if there is no projection constraint
+			val2buf(chunk.get_rbuf());      // yes, it's not type-safe
+		}
+		else {                  // apply the constraint
+			vector<unsigned int> array_shape = get_shape(false);
+
+			// Reserve space in this array for the constrained size of the data request
+			reserve_value_capacity(get_size(true));
+			unsigned long target_index = 0;
+			vector<unsigned int> subset;
+
+			insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, chunk.get_rbuf());
+		}
     }
 
     set_read_p(true);
@@ -860,32 +1020,6 @@ void process_one_chunk_unconstrained(Chunk *chunk, DmrppArray *array, const vect
             array->var()->width());
 
     array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());
-}
-
-/**
- * @brief Thread to insert data from one chunk
- *
- * @param arg_list
- */
-void *one_chunk_unconstrained_thread(void *arg_list)
-{
-    one_chunk_unconstrained_args *args = reinterpret_cast<one_chunk_unconstrained_args*>(arg_list);
-
-    try {
-        process_one_chunk_unconstrained(args->chunk, args->array, args->array_shape, args->chunk_shape);
-    }
-    catch (BESError &error) {
-        write(args->fds[1], &args->tid, sizeof(args->tid));
-        delete args;
-        pthread_exit(new string(error.get_verbose_message()));
-    }
-
-    // tid is a char and thus us written atomically. Writing this tells the parent
-    // thread the child is complete and it should call pthread_join(tid, ...)
-    write(args->fds[1], &args->tid, sizeof(args->tid));
-
-    delete args;
-    pthread_exit(NULL);
 }
 
 void DmrppArray::read_chunks_unconstrained()
