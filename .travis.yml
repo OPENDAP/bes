@@ -92,8 +92,8 @@ stages:
   if:  branch = foo AND NOT type = pull_request
 - name: package
   if:  branch = master
-- name: srcdist
-  if:  branch = master
+#- name: srcdist
+#  if:  branch = master
 
 jobs:
   include:
@@ -157,7 +157,7 @@ jobs:
                  --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
                  opendap/centos7_hyrax_builder:1.2 /root/travis/build-rpm.sh
 
-  - stage: srcdist
+  - stage: package
     script:
     - export BES_BUILD=srcdist
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
