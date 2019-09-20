@@ -328,7 +328,7 @@ void DmrppArray::read_contiguous()
 #endif
 
     	// The size in element of each of the array's dimensions
-		const vector<unsigned int> array_shape = get_shape(true);	//TODO: Should this be false?
+		const vector<unsigned int> array_shape = get_shape(true);	// This should be true; we want the constrained size. jhrg
 		// The size, in elements, of each of the chunk's dimensions
 		// May be unnecessary since we know that there is only one chunk
 		const vector<unsigned int> chunk_shape = get_chunk_dimension_sizes();
@@ -352,6 +352,8 @@ void DmrppArray::read_contiguous()
 		// Initial test will be 4 chunks, may change. kln 9/19/19
 		Chunk *littleChunk;
 		for (int i = 0; i < 4; i++) {
+		    // FIXME chunk_size and chunk_offset must be computed. jhrg
+		    // FIXME Must allocate Chunks. jhrg
 			*littleChunk = Chunk(chunk_url, chunk_size, (chunk_size * i) + chunk_offset);
 			chunks_to_read.push(littleChunk);
 		}
@@ -447,10 +449,8 @@ void DmrppArray::read_contiguous()
 		}
     }
 
-    //Else read the chunk as is
+    // Else read the chunk as is
     else {
-
-		// TODO Break this call down so that data can be read in parallel. jhrg 8/21/18
 		chunk.read_chunk();
 
 		chunk.inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(), var()->width());
