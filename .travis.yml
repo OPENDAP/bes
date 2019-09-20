@@ -89,11 +89,9 @@ stages:
 - name: build
   if:  branch = master
 - name: scan
-  if:  branch = foo AND NOT type = pull_request
+  if:  branch = master AND NOT type = pull_request
 - name: package
   if:  branch = master
-#- name: srcdist
-#  if:  branch = master
 
 jobs:
   include:
@@ -174,7 +172,7 @@ before_deploy:
 # Make sure that we have the target dir...
 - test -d $TRAVIS_BUILD_DIR/package || mkdir $TRAVIS_BUILD_DIR/package;
 #
-# Get creds for push to woo
+# Get creds for pushing snapshots to w.o.o.
 - if  test "$BES_BUILD" = "srcdist" || test "$BES_BUILD" = "centos6" || test "$BES_BUILD" = "centos7" ; 
     then
         ls -l ./travis;
@@ -218,7 +216,7 @@ before_deploy:
 # Check for the stuff...
 - ls -l $TRAVIS_BUILD_DIR/package
 
-# The deploy section copies the snapshot build product our S3 bucket
+# The deploy section copies the snapshot build product our S3 bucket and to www.opendap.org
 deploy:
   - provider: s3
     access_key_id: $AWS_ACCESS_KEY_ID
@@ -230,7 +228,7 @@ deploy:
       branch: master
       condition: $BES_BUILD =~ ^deb|centos7|centos6|srcdist$
   
-  # Push CentOS-7 snapshot rpms to woo 
+  # Push CentOS-7 snapshot rpms to w.o.o
   - provider: script
     skip_cleanup: true
     script: 
@@ -239,7 +237,7 @@ deploy:
       branch: master
       condition: $BES_BUILD =~ ^centos7$
 
-  # Push CentOS-6 snapshot rpms to woo 
+  # Push CentOS-6 snapshot rpms to w.o.o
   - provider: script
     skip_cleanup: true
     script: 
@@ -248,7 +246,7 @@ deploy:
       branch: master
       condition: $BES_BUILD =~ ^centos6$
 
-  # Push source snapshot rpms to woo 
+  # Push source snapshot rpms to w.o.o
   - provider: script
     skip_cleanup: true
     script: 
