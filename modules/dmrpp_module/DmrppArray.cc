@@ -367,11 +367,11 @@ void DmrppArray::read_contiguous()
 		try {
 			unsigned int num_threads = 0;
 			for (unsigned int i = 0; i < (unsigned int) DmrppRequestHandler::d_max_parallel_transfers && chunks_to_read.size() > 0; ++i) {
-				Chunk *chunk = chunks_to_read.front();
+				Chunk *current_chunk = chunks_to_read.front();
 				chunks_to_read.pop();
 
 				// thread number is 'i'
-				one_chunk_unconstrained_args *args = new one_chunk_unconstrained_args(fds, i, chunk, this, array_shape, chunk_shape);
+				one_chunk_unconstrained_args *args = new one_chunk_unconstrained_args(fds, i, current_chunk, this, array_shape, chunk_shape);
 				int status = pthread_create(&threads[i], NULL, dmrpp::one_chunk_unconstrained_thread, (void*) args);
 				if (status == 0) {
 					++num_threads;
@@ -415,11 +415,11 @@ void DmrppArray::read_contiguous()
 					throw e;
 				}
 				else if (chunks_to_read.size() > 0) {
-					Chunk *chunk = chunks_to_read.front();
+					Chunk *current_chunk = chunks_to_read.front();
 					chunks_to_read.pop();
 
 					// thread number is 'tid,' the number of the thread that just completed
-					one_chunk_unconstrained_args *args = new one_chunk_unconstrained_args(fds, tid, chunk, this, array_shape, chunk_shape);
+					one_chunk_unconstrained_args *args = new one_chunk_unconstrained_args(fds, tid, current_chunk, this, array_shape, chunk_shape);
 					int status = pthread_create(&threads[tid], NULL, dmrpp::one_chunk_unconstrained_thread, (void*) args);
 					if (status != 0) {
 						ostringstream oss;
