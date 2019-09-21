@@ -326,12 +326,6 @@ void *one_child_chunk_thread(void *arg_list)
 
         BESDEBUG(dmrpp_3, "child buf:" << (void *)args->child_chunk->get_rbuf() << ", master buf:" << (void *)args->master_chunk->get_rbuf() << endl);
 
-#if 0
-        for (unsigned int i = 0; i < args->child_chunk->get_bytes_read(); ++i) {
-            *(args->master_chunk->get_rbuf() + i) = *(args->child_chunk->get_rbuf() + i);
-        }
-#endif
-
         unsigned int offset_within_master_chunk = args->child_chunk->get_offset() - args->master_chunk->get_offset();
 
         BESDEBUG(dmrpp_3, "offset_within_master_chunk:" << offset_within_master_chunk << endl);
@@ -371,7 +365,8 @@ void DmrppArray::read_contiguous()
     // This is the original chunk for this 'contiguous' variable.
     Chunk &master_chunk = chunk_refs[0];
 
-    //If we want to read the chunk in parallel
+    // If we want to read the chunk in parallel. Only read in parallel above some
+    // threshold. jhrg 9/21/19
     if (DmrppRequestHandler::d_use_parallel_transfers) {
 
         // Allocated memory for the 'master chunk' so the trheads can transfer data
@@ -386,24 +381,29 @@ void DmrppArray::read_contiguous()
 
         // Create 4 equally sized chunks from the original chunk
         // Initial test will be 4 chunks, may change. kln 9/19/19
+		// TODO Make this smarter.
 		const int num_chunks = 4;
 
     	// Use the original chunk's size and offset to evenly split it into smaller chunks
     	unsigned long long chunk_size = master_chunk.get_size() / num_chunks;
     	unsigned long long chunk_offset = master_chunk.get_offset();
 
+    	// If the size of the master chunk is not evenly divisible by num_chunks, capture
+    	// the remainder here and increase the size of the last chunk by this number of bytes.
+    	unsigned int chunk_remainder = master_chunk.get_size() % num_chunks;
+
     	string chunk_url = master_chunk.get_data_url();
 
     	// Setup a queue to break up the original master_chunk and keep track of the pieces
 		queue<Chunk *> chunks_to_read;
 
-        for (int i = 0; i < num_chunks; i++) {
-            // TODO If num_chunks does not evenly divide chunk_size, then the
-            // final chunk will need to include the remainder.
+        for (int i = 0; i < num_chunks-1; i++) {
             chunks_to_read.push(new Chunk(chunk_url, chunk_size, (chunk_size * i) + chunk_offset));
         }
+        // See above for details about chunk_remainder. jhrg 9/21/19
+        chunks_to_read.push(new Chunk(chunk_url, chunk_size + chunk_remainder, (chunk_size * (num_chunks-1)) + chunk_offset));
 
-	        // Start the max number of processing pipelines
+	    // Start the max number of processing pipelines
 		pthread_t threads[DmrppRequestHandler::d_max_parallel_transfers];
 		memset(&threads[0], 0, sizeof(pthread_t) * DmrppRequestHandler::d_max_parallel_transfers);
 
@@ -414,9 +414,6 @@ void DmrppArray::read_contiguous()
 			for (unsigned int i = 0; i < (unsigned int) DmrppRequestHandler::d_max_parallel_transfers && chunks_to_read.size() > 0; ++i) {
 				Chunk *current_chunk = chunks_to_read.front();
 				chunks_to_read.pop();
-
-				//current_chunk->set_rbuf_to_size(); // FIXME
-				BESDEBUG(dmrpp_3, "child chunk: size: " << current_chunk->get_rbuf_size() << " offset: " << current_chunk->get_offset() << endl);
 
                 // thread number is 'i'
                 one_child_chunk_args *args = new one_child_chunk_args(fds, i, current_chunk, &master_chunk);
@@ -1100,11 +1097,15 @@ void DmrppArray::read_chunks_unconstrained()
 
         // Start the max number of processing pipelines
         pthread_t threads[DmrppRequestHandler::d_max_parallel_transfers];
+        memset(&threads[0], 0, sizeof(pthread_t) * DmrppRequestHandler::d_max_parallel_transfers);
 
+#if 0
         // set the thread[] elements to null - this serves as a sentinel value
         for (unsigned int i = 0; i < (unsigned int)DmrppRequestHandler::d_max_parallel_transfers; ++i) {
             memset(&threads[i], 0, sizeof(pthread_t));
         }
+#endif
+
 
         try {
             unsigned int num_threads = 0;
