@@ -139,7 +139,8 @@ struct one_child_chunk_args {
     one_child_chunk_args(int *pipe, unsigned char id, Chunk *c_c, Chunk *m_c)
         : fds(pipe), tid(id), child_chunk(c_c), master_chunk(m_c) {}
 
-    ~one_child_chunk_args() { // FIXME delete child_chunk;
+    ~one_child_chunk_args() {
+        delete child_chunk;
      }
 
 };
