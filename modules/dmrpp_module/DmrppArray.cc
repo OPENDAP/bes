@@ -320,15 +320,18 @@ void *one_child_chunk_thread(void *arg_list)
         assert(args->child_chunk->get_rbuf());
         assert(args->child_chunk->get_bytes_read() == args->child_chunk->get_size());
 
-        BESDEBUG(dmrpp_3, "one_child_chunk_thread: tid:" << (unsigned int)args->tid << ", child offset:" << args->child_chunk->get_offset() <<  ", child bytes read:" << args->child_chunk->get_bytes_read() << endl);
-
-        BESDEBUG(dmrpp_3, "child rbuf size:" << args->child_chunk->get_rbuf_size() << " master rbuf size:" << args->master_chunk->get_rbuf_size() << endl);
-
-        BESDEBUG(dmrpp_3, "child buf:" << (void *)args->child_chunk->get_rbuf() << ", master buf:" << (void *)args->master_chunk->get_rbuf() << endl);
+        // master offset \/
+        // master chunk:  mmmmmmmmmmmmmmmm
+        // child chunks:  1111222233334444 (there are four child chunks)
+        // child offsets: ^   ^   ^   ^
+        // For this example, child_1_offset - master_offset == 0 (that's always true)
+        // child_2_offset - master_offset == 4; child_2_offset - master_offset == 8
+        // and child_3_offset - master_offset == 12.
+        // Those are the starting locations with in the data buffer of the master chunk
+        // where that child chunk should be written.
+        // Note: all of the offset values start at the begining of the file.
 
         unsigned int offset_within_master_chunk = args->child_chunk->get_offset() - args->master_chunk->get_offset();
-
-        BESDEBUG(dmrpp_3, "offset_within_master_chunk:" << offset_within_master_chunk << endl);
 
         memcpy(args->master_chunk->get_rbuf() + offset_within_master_chunk, args->child_chunk->get_rbuf(), args->child_chunk->get_bytes_read());
     }
