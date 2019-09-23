@@ -372,7 +372,7 @@ void DmrppArray::read_contiguous()
     // threshold. jhrg 9/21/19
     if (DmrppRequestHandler::d_use_parallel_transfers) {
 
-        // Allocated memory for the 'master chunk' so the trheads can transfer data
+        // Allocated memory for the 'master chunk' so the threads can transfer data
         // from the child chunks to it.
         master_chunk.set_rbuf_to_size();
 
