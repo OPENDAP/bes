@@ -1,9 +1,3 @@
-nccopy -k 'classic' http://alpaca:8080/opendap/data/hdf5/hdf5-files/fake-files-for-handler/t_2d_2dll.nc4.h5 t_2d_2dll.nc
-nccopy -k 'netCDF-4 classic model' http://alpaca:8080/opendap/data/hdf5/hdf5-files/fake-files-for-handler/t_2d_2dll.nc4.h5 t_2d_2dll.nc4
-nccopy -k 'classic' http://alpaca:8080/opendap/data/hdf5/hdf5-files/fake-files-for-handler/grid_1_2d.h5 grid_1_2d.nc
-nccopy -k 'netCDF-4 classic model' http://alpaca:8080/opendap/data/hdf5/hdf5-files/fake-files-for-handler/grid_1_2d.h5 grid_1_2d.nc4
-nccopy -k 'classic' http://alpaca:8080/opendap/data/hdf5/hdf5-files/fake-files-for-handler/dim_scale.h5  dim_scale.nc
-nccopy -k 'netCDF-4 classic model' http://alpaca:8080/opendap/data/hdf5/hdf5-files/fake-files-for-handler/dim_scale.h5 dim_scale.nc4
 #!/bin/sh
 
 #The path BES is installed must be provided explicitly.
@@ -15,10 +9,10 @@ fi
 #FNC_NOCLEANUP="yes"
 
 # Use this path to figure out the location of besstandalone, bes.conf and the data.
-BESSTANDALONE="$BESPATH/bin/besstandalone"
 BESCONF="$BESPATH/etc/bes/bes.conf"
 BESH5SHARE="$BESPATH/share/hyrax/data/hdf5"
-
+NCCOPY="$BESPATH/deps/bin/nccopy"
+NCDUMP="$BESPATH/deps/bin/ncdump"
 #1. Remember the current directory
 CURDIR=`pwd`
 echo $CURDIR
@@ -38,31 +32,29 @@ if [ -z "$GET" ]; then
   exit
 fi
 
-FNC_CP_TEST="fnc_test"
-mkdir $FNC_CP_TEST
-cd $FNC_CP_TEST
+NC_CP_TEST="nccp_test"
+mkdir $NC_CP_TEST
+cd $NC_CP_TEST
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/hdf5_handler/grid_1_2d.h5 
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/hdf5_handler/dim_scale.h5 
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/hdf5_handler/t_2d_2dll.nc4.h5
 
-#3. Use fileout netcdf modules to generate the netCDF-3 and the netCDF-4
+#3. Use Unidata's nccopy to generate the netCDF-3 and the netCDF-4
 cd $CURDIR
-BCMD_DIR="default_test" 
-cd $BCMD_DIR
-mkdir $FNC_CP_TEST
 
+#nccopy -k 'classic' http://alpaca:8080/opendap/data/hdf5/hdf5-files/fake-files-for-handler/t_2d_2dll.nc4.h5 t_2d_2dll.nc
+#nccopy -k 'netCDF-4 classic model' http://alpaca:8080/opendap/data/hdf5/hdf5-files/fake-files-for-handler/t_2d_2dll.nc4.h5 t_2d_2dll.nc4
 #/opt/kent/opendap/bes-dev/opendapbin/bin/besstandalone -c /opt/kent/opendap/bes-dev/opendapbin/etc/bes/bes.conf -i grid_1_2d.nc.bescmd >grid_1_2d.h5.nc
-echo "Generate netcdf-3 and netcdf-4 files by using the filenetCDF modules"
-for BCMD in *.bescmd
-do 
-	NCF=${BCMD%.bescmd}
-        echo "$NCF"
-	$BESSTANDALONE -c $BESCONF -i $BCMD > $FNC_CP_TEST/$NCF
-done
+echo "Generate netcdf-3 and netcdf-4 files by using nccopy"
+nccopy -k 'classic' http://localhost:8080/opendap/data/hdf5/$NC_CP_TEST/t_2d_2dll.nc4.h5 t_2d_2dll.nc
+nccopy -k 'classic' http://localhost:8080/opendap/data/hdf5/$NC_CP_TEST/grid_1_2d.h5 grid_1_2d.nc
+nccopy -k 'classic' http://localhost:8080/opendap/data/hdf5/$NC_CP_TEST/dim_scale.h5 dim_scale.nc
+nccopy -k 'netCDF-4 classic model' http://localhost:8080/opendap/data/hdf5/$NC_CP_TEST/t_2d_2dll.nc4.h5 t_2d_2dll.nc4
+nccopy -k 'netCDF-4 classic model' http://localhost:8080/opendap/data/hdf5/$NC_CP_TEST/grid_1_2d.h5 grid_1_2d.nc4
+nccopy -k 'netCDF-4 classic model' http://localhost:8080/opendap/data/hdf5/$NC_CP_TEST/dim_scale.h5 dim_scale.nc4
+
 
 echo "Compare ncdump output (ncdump -h for big files) for nc and nc-4 files"
-cd $FNC_CP_TEST
-NCDUMP="$BESPATH/deps/bin/ncdump"
 command -v $NCDUMP >/dev/null
 if [ "$?" -ne "0" ]
 then 
@@ -134,4 +126,5 @@ if [ -z "$FNC_NOCLEANUP" ]; then
 	cd $SHAREDIR
         rm -rf $FNC_CP_TEST 
 fi
-
+<<'COMMENT'
+COMMENT
