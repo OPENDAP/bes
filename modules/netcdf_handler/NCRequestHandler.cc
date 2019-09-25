@@ -395,6 +395,7 @@ bool NCRequestHandler::nc_build_dds(BESDataHandlerInterface & dhi)
 
         // Build a DDS in the empty DDS object
         DDS *dds = dmr->getDDS();
+        // TODO:
         bdds->set_dds(dds);
 
         bdds->set_constraint(dhi);
