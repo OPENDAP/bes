@@ -120,9 +120,7 @@ do
 	#OMPS-NPP's history attribute contains two lines. We need to remove them for comparsion
 	if [[ $NCF_NO_SUFFIX == *"OMPS-NPP"* ]]; then
 		tt=$(echo "$tt" | grep -n history $NCF_NO_SUFFIX.ndr3)
-        	#echo $tt
-        	tt=$(echo "$tt" | cut -d ":" -f1)
-        	#echo $tt
+                tt=$(echo "${tt:0:3}")
                 md=d
                 sed -i $tt$md $NCF_NO_SUFFIX.ndr3
                 sed -i $tt$md $NCF_NO_SUFFIX.ndr3

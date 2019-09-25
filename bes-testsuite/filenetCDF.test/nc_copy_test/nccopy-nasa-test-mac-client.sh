@@ -10,7 +10,6 @@ fi
 
 # Use this path to figure out the location of besstandalone, bes.conf and the data.
 BESCONF="$BESPATH/etc/bes/bes.conf"
-BESH5SHARE="$BESPATH/share/hyrax/data/hdf5"
 NCCOPY="$BESPATH/deps/bin/nccopy"
 NCDUMP="$BESPATH/deps/bin/ncdump"
 #1. Remember the current directory
@@ -18,48 +17,25 @@ CURDIR=`pwd`
 echo $CURDIR
 
 #2. Obtain HDF5 files
-cd $BESH5SHARE
-SHAREDIR=`pwd`
-echo $SHAREDIR
-GET=""
-command -v  wget > /dev/null && GET="wget -N --retr-symlinks"
-if [ -z "$GET" ]; then
-  command -v  curl > /dev/null && GET="curl -O"
-fi
-
-if [ -z "$GET" ]; then
-  echo "Neither wget nor curl found in your system."
-  exit
-fi
-
-NC_CP_TEST="nccp_nasa_test"
-mkdir $NC_CP_TEST
-cd $NC_CP_TEST
-HDF5_FILE_DIR=`pwd`
-
-#NASA files
-$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.h5
-$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/OMPS-NPP_NMTO3-L3-DAILY_v2.1_2018m0102_2018m0104t012837.h5
-$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/LPDAAC/VNP09A1.A2015257.h29v11.001.2016221164845.h5
-$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/NSIDC/SMAP_L3_SM_P_20150406_R14010_001.h5
-
+# use jaguar
 
 #3. Use Unidata's nccopy to generate the netCDF-3 and the netCDF-4
 cd $CURDIR
+NC_CP_TEST="fnc_nasa_test"
 
 #nccopy -k 'classic' http://alpaca:8080/opendap/data/hdf5/hdf5-files/fake-files-for-handler/t_2d_2dll.nc4.h5 t_2d_2dll.nc
 #nccopy -k 'netCDF-4 classic model' http://alpaca:8080/opendap/data/hdf5/hdf5-files/fake-files-for-handler/t_2d_2dll.nc4.h5 t_2d_2dll.nc4
 #/opt/kent/opendap/bes-dev/opendapbin/bin/besstandalone -c /opt/kent/opendap/bes-dev/opendapbin/etc/bes/bes.conf -i grid_1_2d.nc.bescmd >grid_1_2d.h5.nc
 echo "Generate netcdf-3 and netcdf-4 files by using nccopy"
 
-nccopy -k "classic" -m 500000000 http://localhost:8080/opendap/data/hdf5/$NC_CP_TEST/3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.h5 3A-MO.nc
-nccopy -k "netCDF-4 classic model" -m 500000000 -d 2 -s http://localhost:8080/opendap/data/hdf5/$NC_CP_TEST/3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.h5 3A-MO.nc4
-nccopy -k "classic" -m 500000000 http://localhost:8080/opendap/data/hdf5/$NC_CP_TEST/OMPS-NPP_NMTO3-L3-DAILY_v2.1_2018m0102_2018m0104t012837.h5 OMPS.nc
-nccopy -k "netCDF-4 classic model" -m 500000000 -d 2 -s http://localhost:8080/opendap/data/hdf5/$NC_CP_TEST/OMPS-NPP_NMTO3-L3-DAILY_v2.1_2018m0102_2018m0104t012837.h5 OMPS.nc4
-nccopy -k "netCDF-4 classic model" -m 500000000 -d 2 -s http://localhost:8080/opendap/data/hdf5/$NC_CP_TEST/SMAP_L3_SM_P_20150406_R14010_001.h5 SMAP_L3.nc4
-nccopy -k "classic" -m 500000000  http://localhost:8080/opendap/data/hdf5/$NC_CP_TEST/SMAP_L3_SM_P_20150406_R14010_001.h5 SMAP_L3.nc
-nccopy -k "classic" -m 500000000  http://localhost:8080/opendap/data/hdf5/$NC_CP_TEST/VNP09A1.A2015257.h29v11.001.2016221164845.h5 VNP.nc
-nccopy -k "netCDF-4 classic model" -m 500000000 -d 2 -s http://localhost:8080/opendap/data/hdf5/$NC_CP_TEST/VNP09A1.A2015257.h29v11.001.2016221164845.h5 VNP.nc4
+nccopy -k "classic" -m 500000000 http://jaguar:8080/opendap/data/hdf5/$NC_CP_TEST/3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.h5 3A-MO.nc
+nccopy -k "netCDF-4 classic model" -m 500000000 -d 2 -s http://jaguar:8080/opendap/data/hdf5/$NC_CP_TEST/3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.h5 3A-MO.nc4
+nccopy -k "classic" -m 500000000 http://jaguar:8080/opendap/data/hdf5/$NC_CP_TEST/OMPS-NPP_NMTO3-L3-DAILY_v2.1_2018m0102_2018m0104t012837.h5 OMPS.nc
+nccopy -k "netCDF-4 classic model" -m 500000000 -d 2 -s http://jaguar:8080/opendap/data/hdf5/$NC_CP_TEST/OMPS-NPP_NMTO3-L3-DAILY_v2.1_2018m0102_2018m0104t012837.h5 OMPS.nc4
+nccopy -k "netCDF-4 classic model" -m 500000000 -d 2 -s http://jaguar:8080/opendap/data/hdf5/$NC_CP_TEST/SMAP_L3_SM_P_20150406_R14010_001.h5 SMAP_L3.nc4
+nccopy -k "classic" -m 500000000  http://jaguar:8080/opendap/data/hdf5/$NC_CP_TEST/SMAP_L3_SM_P_20150406_R14010_001.h5 SMAP_L3.nc
+nccopy -k "classic" -m 500000000  http://jaguar:8080/opendap/data/hdf5/$NC_CP_TEST/VNP09A1.A2015257.h29v11.001.2016221164845.h5 VNP.nc
+nccopy -k "netCDF-4 classic model" -m 500000000 -d 2 -s http://jaguar:8080/opendap/data/hdf5/$NC_CP_TEST/VNP09A1.A2015257.h29v11.001.2016221164845.h5 VNP.nc4
 
 
 echo "Compare ncdump output (ncdump -h for big files) for nc and nc-4 files"
@@ -120,9 +96,7 @@ do
 	#OMPS-NPP's history attribute contains two lines. We need to remove them for comparsion
 	if [[ $NCF_NO_SUFFIX == *"OMPS-NPP"* ]]; then
 		tt=$(echo "$tt" | grep -n history $NCF_NO_SUFFIX.ndr3)
-        	#echo $tt
-        	tt=$(echo "$tt" | cut -d ":" -f1)
-        	#echo $tt
+                tt=$(echo "${tt:0:3}")
                 md=d
                 sed -i $tt$md $NCF_NO_SUFFIX.ndr3
                 sed -i $tt$md $NCF_NO_SUFFIX.ndr3
