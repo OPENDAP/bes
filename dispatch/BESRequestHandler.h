@@ -110,6 +110,7 @@ public:
     virtual p_request_handler_method find_method(const string &name);
 
     virtual string get_method_names();
+    virtual time_t get_lmt(const std::string &name);
 
     virtual void dump(ostream &strm) const;
 };
