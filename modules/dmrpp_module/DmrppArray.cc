@@ -374,7 +374,7 @@ void DmrppArray::read_contiguous()
     // If we want to read the chunk in parallel. Only read in parallel above some
     // threshold. jhrg 9/21/19
     // Only use parallel read if the chunk is over 2MB, otherwise it is easier to just read it as is kln 9/23/19
-    if (DmrppRequestHandler::d_use_parallel_transfers && master_chunk_size > 2 * (1024*1024)) {
+    if (DmrppRequestHandler::d_use_parallel_transfers && master_chunk_size > DmrppRequestHandler::d_min_size) {
 
         // Allocated memory for the 'master chunk' so the threads can transfer data
         // from the child chunks to it.
