@@ -35,7 +35,7 @@
 #include <cerrno>
 
 #include <pthread.h>
-#include <math.h>
+#include <cmath>
 
 #include <unistd.h>
 
@@ -60,6 +60,8 @@ static const string dmrpp_4 = "dmrpp:4";
 
 using namespace libdap;
 using namespace std;
+
+#define MB (1024*1024)
 
 namespace dmrpp {
 
@@ -383,7 +385,7 @@ void DmrppArray::read_contiguous()
 		// The number of child chunks are determined based on the size of the data.
         // If the size of the master chunk is 3MB then 3 chunks will be made. We will round down
         //  when necessary and handle the remainder later on (3.3MB = 3 chunks, 4.2MB = 4 chunks, etc.) kln 9/23/19
-        unsigned int num_chunks = floor(master_chunk_size/(1024*1024));
+        unsigned int num_chunks = floor(master_chunk_size/MB);
         if ( num_chunks >= DmrppRequestHandler::d_max_parallel_transfers)
         	num_chunks = DmrppRequestHandler::d_max_parallel_transfers;
 
@@ -406,7 +408,7 @@ void DmrppArray::read_contiguous()
 		// Setup a queue to break up the original master_chunk and keep track of the pieces
 		queue<Chunk *> chunks_to_read;
 
-		for (int i = 0; i < num_chunks-1; i++) {
+		for (unsigned int i = 0; i < num_chunks-1; i++) {
 			chunks_to_read.push(new Chunk(chunk_url, chunk_size, (chunk_size * i) + chunk_offset));
 		}
 		// See above for details about chunk_remainder. jhrg 9/21/19
