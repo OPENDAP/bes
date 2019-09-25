@@ -67,9 +67,7 @@ env:
     # GIT_PSWD for travis-ci-opendap
     - secure: "jdEmVdM35qoAmIXTqTCL11IbjEMh6I+jrov/nqQ4wdoJf79O7H7tuuDVkIJ+5RSIjUXsIYgfQAG8Cn+DIJRMnv7mj7TrWGS9LT22bBGErzCcCkrHGKMDH4okbd8cCNQcnb/9woYSYZ38U8QCBsYH1Ma2r4bFU4jAY2KiMOyaY6w="    
     # WOO_UID for travis
-    - secure: "Epi5Y8QwDzbolfbMTdLD2+d9QODN2SOOq9jm2Tma/sjHuKJQL4aIlQe4n1KV5kxdrFDmDFuFSKWbxrOCz5s7u/ZJ6ui2NzQsLYFrcpC1zF85pcxZLmoEmPjIe9isFmc7H8tVLikmL2pgEl6YMilVLrnCdsReoxNs+EF/wpr1lsI="
-    # WOO_PSWD for travis
-    - secure: "IjG5mWToqJRjW5WUTkUidtR3sM+ZubI060gsSuO7FQccn2SWVPJjHL/cSJJ2n3eimp9+ZyHJ47p/TwRxXdOuuknIFTw0ozOCk/MXK1yjB4Vu9arRLLgwwOenu+TXs6MwRT+TSVh1kJ64rcYSUya9HcJIqXwuevRsoWlx7BADGH4="
+    - secure: "YKSsiV7fjngZ+Xha9oyHUT2Xirz8Iy7bghAzlGk2TyXZwWGbZyFDMeTfE0ZGaAEykhNF9fsqsD6XMzFlwBcYIB5ocP6LfnQ1qMualHVTVbVldo/T2e8uv/9jVIAnfwwT2IbgWpVUXZ1I24kIqHCxnZWYZpbfclSEDnQnkYG9tMg="
 
 
 
@@ -90,50 +88,48 @@ before_script:
 # Build all the stages for 'master'. For a PR, run the 'build' and 'package' stages,
 # but do not run the scan.
 stages:
-#- name: build
-#  if:  branch = master
-#- name: scan
-#  if:  branch = master AND NOT type = pull_request
-#- name: package
-#  if:  branch = master
-- name: srcdist
+- name: build
+  if:  branch = master
+- name: scan
+  if:  branch = master AND NOT type = pull_request
+- name: package
   if:  branch = master
 
 jobs:
   include:
-#  - stage: scan
-#    addons: 
-#      sonarcloud: 
-#    script:
-#    - export BES_BUILD=sonar-bes-framework
-#    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-#    - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
-#    - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
-#
-#  - stage: scan
-#    addons: 
-#      sonarcloud: 
-#    script:
-#    - export BES_BUILD=sonar-bes-modules
-#    # Adding this 'fetch --unshallow' since I think sonar is excluding the hdf handlers
-#    # because they are submodules.
-#    - git fetch --unshallow
-#    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-#    - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
-#    - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
-#
-#  - stage: build
-#    script: 
-#    - export BES_BUILD=main
-#    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-#    - make -j7 && make install && besctl start && make check -j7 && besctl stop
-#
-#  - stage: build
-#    script:
-#    - export BES_BUILD=distcheck
-#    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
-#    - make distcheck -j7
-#  
+  - stage: scan
+    addons: 
+      sonarcloud: 
+    script:
+    - export BES_BUILD=sonar-bes-framework
+    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+    - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+    - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
+
+  - stage: scan
+    addons: 
+      sonarcloud: 
+    script:
+    - export BES_BUILD=sonar-bes-modules
+    # Adding this 'fetch --unshallow' since I think sonar is excluding the hdf handlers
+    # because they are submodules.
+    - git fetch --unshallow
+    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+    - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+    - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
+
+  - stage: build
+    script: 
+    - export BES_BUILD=main
+    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+    - make -j7 && make install && besctl start && make check -j7 && besctl stop
+
+  - stage: build
+    script:
+    - export BES_BUILD=distcheck
+    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
+    - make distcheck -j7
+  
   # Debian Target (unused)
   # - stage: package
   #  script: 
@@ -143,37 +139,51 @@ jobs:
   #               --env OS=ubuntu14 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
   #               opendap/ubuntu14_hyrax_build:1.4 /root/travis/build-deb.sh
 
-#  - stage: package
-#    script: 
-#    - export BES_BUILD=centos6
-#    - mkdir -p $prefix/rpmbuild
-#    - docker run --volume $prefix/rpmbuild:/root/rpmbuild --volume $TRAVIS_BUILD_DIR:/root/travis
-#                 --env OS=centos6 --env DIST=el6 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
-#                 --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-#                 opendap/centos6_hyrax_builder:1.3 /root/travis/build-rpm.sh
-#
-#  - stage: package
-#    script: 
-#    - export BES_BUILD=centos7
-#    - mkdir -p $prefix/rpmbuild
-#    - docker run --volume $prefix/rpmbuild:/root/rpmbuild --volume $TRAVIS_BUILD_DIR:/root/travis
-#                 --env OS=centos7 --env DIST=el7 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
-#                 --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-#                 opendap/centos7_hyrax_builder:1.2 /root/travis/build-rpm.sh
+  - stage: package
+    script: 
+    - export BES_BUILD=centos6
+    - mkdir -p $prefix/rpmbuild
+    - docker run --volume $prefix/rpmbuild:/root/rpmbuild --volume $TRAVIS_BUILD_DIR:/root/travis
+                 --env OS=centos6 --env DIST=el6 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
+                 --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+                 opendap/centos6_hyrax_builder:1.3 /root/travis/build-rpm.sh
 
-  - stage: srcdist
+  - stage: package
+    script: 
+    - export BES_BUILD=centos7
+    - mkdir -p $prefix/rpmbuild
+    - docker run --volume $prefix/rpmbuild:/root/rpmbuild --volume $TRAVIS_BUILD_DIR:/root/travis
+                 --env OS=centos7 --env DIST=el7 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
+                 --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+                 opendap/centos7_hyrax_builder:1.2 /root/travis/build-rpm.sh
+
+  - stage: package
     script:
     - export BES_BUILD=srcdist
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
     - make dist -j7
     - cp bes-*.tar.gz bes-snapshot.tar.gz;
+    #- echo "Test is a test my besty." > bes-3.20.1999.tar.gz;
+    #- cp bes-3.20.1999.tar.gz bes-snapshot.tar.gz;
 
     
 after_script:
 - ./upload-test-results.sh
 
 before_deploy:
+# Make sure that we have the target dir...
 - test -d $TRAVIS_BUILD_DIR/package || mkdir $TRAVIS_BUILD_DIR/package;
+#
+# Get creds for pushing snapshots to w.o.o.
+- if  test "$BES_BUILD" = "srcdist" || test "$BES_BUILD" = "centos6" || test "$BES_BUILD" = "centos7" ; 
+    then
+        ls -l ./travis;
+        openssl aes-256-cbc -K $encrypted_f3adba893add_key -iv $encrypted_f3adba893add_iv -in ./travis/woo_deploy_rsa_enc -out /tmp/woo_deploy_rsa -d;
+        eval "$(ssh-agent -s)";
+        chmod 600 /tmp/woo_deploy_rsa;
+        ssh-add /tmp/woo_deploy_rsa;
+    fi
+# Source distribution prep
 - if test "$BES_BUILD" = "srcdist"; 
     then
         cp bes-*.tar.gz $TRAVIS_BUILD_DIR/package;
@@ -183,6 +193,7 @@ before_deploy:
 # The following is part of deb(ian) target
 # - if test $BES_BUILD = deb; then mv $TRAVIS_BUILD_DIR/../bes*-*_amd64.deb $TRAVIS_BUILD_DIR/package/; fi
 
+# CentOS-7  distribution prep
 - if test "$BES_BUILD" = "centos6"; 
    then 
         cp $prefix/rpmbuild/RPMS/x86_64/* $TRAVIS_BUILD_DIR/package/; 
@@ -193,6 +204,7 @@ before_deploy:
             cp ${file} ${TRAVIS_BUILD_DIR}/package/${snap};
         done
     fi
+# CentOS-6 distribution prep
 - if test "$BES_BUILD" = "centos7"; 
     then 
         cp $prefix/rpmbuild/RPMS/x86_64/* $TRAVIS_BUILD_DIR/package/;
@@ -203,9 +215,10 @@ before_deploy:
             cp ${file} ${TRAVIS_BUILD_DIR}/package/${snap};
         done
     fi
+# Check for the stuff...
 - ls -l $TRAVIS_BUILD_DIR/package
 
-# The deploy section copies the snapshot build product our S3 bucket
+# The deploy section copies the snapshot build product our S3 bucket and to www.opendap.org
 deploy:
   - provider: s3
     access_key_id: $AWS_ACCESS_KEY_ID
@@ -215,13 +228,31 @@ deploy:
     local_dir: $TRAVIS_BUILD_DIR/package
     on:
       branch: master
-      condition: $BES_BUILD =~ ^deb|centos7|centos6$
-
+      condition: $BES_BUILD =~ ^deb|centos7|centos6|srcdist$
+  
+  # Push CentOS-7 snapshot rpms to w.o.o
   - provider: script
     skip_cleanup: true
     script: 
-      - echo "first script provider.";
-      - echo $"$WOO_PSWD" # | sshpass scp -v $TRAVIS_BUILD_DIR/package/bes-snapshot.tar.gz $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src;
+      - scp -v $TRAVIS_BUILD_DIR/package/*snapshot*el7* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-7.x;
+    on:
+      branch: master
+      condition: $BES_BUILD =~ ^centos7$
+
+  # Push CentOS-6 snapshot rpms to w.o.o
+  - provider: script
+    skip_cleanup: true
+    script: 
+      - scp -v $TRAVIS_BUILD_DIR/package/*snapshot*el6* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-6.x;
+    on:
+      branch: master
+      condition: $BES_BUILD =~ ^centos6$
+
+  # Push source snapshot rpms to w.o.o
+  - provider: script
+    skip_cleanup: true
+    script: 
+      - scp -v $TRAVIS_BUILD_DIR/package/*snapshot.tar.gz $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src;
     on:
       branch: master
       condition: $BES_BUILD =~ ^srcdist$
@@ -234,7 +265,6 @@ after_deploy:
 - echo "$BES_BUILD";
 - if test "$BES_BUILD" = "centos7"; 
     then  
-        echo $"$WOO_PSWD" | sshpass scp -v ${TRAVIS_BUILD_DIR}/package/*snapshot* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-7.x;
         echo "New CentOS-7 snapshot of BES pushed. Triggering a Docker build"; 
         git clone https://github.com/OPENDAP/hyrax-docker;
         git config --global user.name "The-Robot-Travis";
@@ -242,12 +272,11 @@ after_deploy:
         cd hyrax-docker/hyrax-snapshot;
         date +%s | tee -a snapshot.time;
         cat snapshot.time;
-        git commit -am "BES build completed. Triggering Docker snapshot build.";
+        git commit -am "The BES has produced new snapshot files. Triggering Hyrax-Docker image builds for snapshots.";
         git status;
         git push https://$GIT_UID:$GIT_PSWD@github.com/opendap/hyrax-docker --all;
     elif test "$BES_BUILD" = "centos6"; 
     then  
-        echo $"$WOO_PSWD" | sshpass scp -v ${TRAVIS_BUILD_DIR}/package/*snapshot* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-6.x;
         echo "New CentOS-6 snapshot of BES pushed. No Docker build initiated";     
     elif test "$BES_BUILD" = "srcdist"; 
     then  
