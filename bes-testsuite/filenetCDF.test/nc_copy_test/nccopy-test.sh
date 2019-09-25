@@ -35,6 +35,7 @@ fi
 NC_CP_TEST="nccp_test"
 mkdir $NC_CP_TEST
 cd $NC_CP_TEST
+HDF5_FILE_DIR=`pwd`
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/hdf5_handler/grid_1_2d.h5 
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/hdf5_handler/dim_scale.h5 
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/hdf5_handler/t_2d_2dll.nc4.h5
@@ -61,9 +62,10 @@ then
 	echo "ncdump is not provided by the Hyrax dependencies under BESPATH. Won't check ncdump output."
         echo "Abort the program"
         cd ..
-        rm -rf $FNC_CP_TEST
        	if [ -z "$FNC_NOCLEANUP" ]; then 
-       		rm -rf $FNC_CP_TEST
+       		rm -rf $HDF5_FILE_DIR
+                rm -rf *.nc
+                rm -rf *.nc4
 	fi
 	exit 1
 fi
@@ -77,9 +79,10 @@ do
 	then 
 		echo "ncdump FAIL to dump $NCF"
         	echo "Abort the program"
-        	cd ..
 	       	if [ -z "$FNC_NOCLEANUP" ]; then 
-       			rm -rf $FNC_CP_TEST
+       			rm -rf $HDF5_FILE_DIR
+                        rm -rf *.nc
+                        rm -rf *.nc4
 		fi
          	exit 1
 	fi
@@ -95,7 +98,10 @@ do
         	echo "Abort the program"
         	cd ..
        		if [ -z "$FNC_NOCLEANUP" ]; then 
-       			rm -rf $FNC_CP_TEST
+       			rm -rf $HDF5_FILE_DIR
+                        rm -rf *.nc
+                        rm -rf *.nc4
+			rm -rf *.ndp3
 		fi
         	exit 1
 	fi
@@ -111,7 +117,11 @@ do
         	echo "Abort the program"
         	cd ..
        		if [ -z "$FNC_NOCLEANUP" ]; then 
-       			rm -rf $FNC_CP_TEST
+       			rm -rf $HDF5_FILE_DIR
+                        rm -rf *.nc
+                        rm -rf *.nc4
+			rm -rf *.ndp3
+			rm -rf *.ndp4
 		fi
         	exit 1
 	fi
@@ -119,12 +129,14 @@ do
 done
 
 echo "All default tests get PASSED"
-cd ..
 #Remove all the HDF5 files under BES hyrax share directory and the generated NC files
 if [ -z "$FNC_NOCLEANUP" ]; then 
-  	rm -rf $FNC_CP_TEST
-	cd $SHAREDIR
-        rm -rf $FNC_CP_TEST 
+   rm -rf $HDF5_FILE_DIR
+   rm -rf *.nc
+   rm -rf *.nc4
+   rm -rf *.ndp3
+   rm -rf *.ndp4
+	
 fi
 <<'COMMENT'
 COMMENT

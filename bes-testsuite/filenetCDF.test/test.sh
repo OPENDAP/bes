@@ -63,7 +63,6 @@ then
 	echo "ncdump is not provided by the Hyrax dependencies under BESPATH. Won't check ncdump output."
         echo "Abort the program"
         cd ..
-        rm -rf $FNC_CP_TEST
        	if [ -z "$FNC_NOCLEANUP" ]; then 
        		rm -rf $FNC_CP_TEST
 	fi
