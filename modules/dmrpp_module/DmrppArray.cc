@@ -35,6 +35,7 @@
 #include <cerrno>
 
 #include <pthread.h>
+#include <cmath>
 
 #include <unistd.h>
 
@@ -59,6 +60,8 @@ static const string dmrpp_4 = "dmrpp:4";
 
 using namespace libdap;
 using namespace std;
+
+#define MB (1024*1024)
 
 namespace dmrpp {
 
@@ -368,13 +371,23 @@ void DmrppArray::read_contiguous()
     // This is the original chunk for this 'contiguous' variable.
     Chunk &master_chunk = chunk_refs[0];
 
+    unsigned long long master_chunk_size = master_chunk.get_size();
+
     // If we want to read the chunk in parallel. Only read in parallel above some
     // threshold. jhrg 9/21/19
-    if (DmrppRequestHandler::d_use_parallel_transfers) {
+    // Only use parallel read if the chunk is over 2MB, otherwise it is easier to just read it as is kln 9/23/19
+    if (DmrppRequestHandler::d_use_parallel_transfers && master_chunk_size > DmrppRequestHandler::d_min_size) {
 
         // Allocated memory for the 'master chunk' so the threads can transfer data
         // from the child chunks to it.
         master_chunk.set_rbuf_to_size();
+
+		// The number of child chunks are determined based on the size of the data.
+        // If the size of the master chunk is 3MB then 3 chunks will be made. We will round down
+        //  when necessary and handle the remainder later on (3.3MB = 3 chunks, 4.2MB = 4 chunks, etc.) kln 9/23/19
+        unsigned int num_chunks = floor(master_chunk_size/MB);
+        if ( num_chunks >= DmrppRequestHandler::d_max_parallel_transfers)
+        	num_chunks = DmrppRequestHandler::d_max_parallel_transfers;
 
 		// This pipe is used by the child threads to indicate completion
 		int fds[2];
@@ -382,31 +395,26 @@ void DmrppArray::read_contiguous()
 		if (status < 0)
 			throw BESInternalError(string("Could not open a pipe for thread communication: ").append(strerror(errno)), __FILE__, __LINE__);
 
-        // Create 4 equally sized chunks from the original chunk
-        // Initial test will be 4 chunks, may change. kln 9/19/19
-		// TODO Make this smarter.
-		const int num_chunks = 4;
+		// Use the original chunk's size and offset to evenly split it into smaller chunks
+		unsigned long long chunk_size = master_chunk_size / num_chunks;
+		unsigned long long chunk_offset = master_chunk.get_offset();
 
-    	// Use the original chunk's size and offset to evenly split it into smaller chunks
-    	unsigned long long chunk_size = master_chunk.get_size() / num_chunks;
-    	unsigned long long chunk_offset = master_chunk.get_offset();
+		// If the size of the master chunk is not evenly divisible by num_chunks, capture
+		// the remainder here and increase the size of the last chunk by this number of bytes.
+		unsigned int chunk_remainder = master_chunk.get_size() % num_chunks;
 
-    	// If the size of the master chunk is not evenly divisible by num_chunks, capture
-    	// the remainder here and increase the size of the last chunk by this number of bytes.
-    	unsigned int chunk_remainder = master_chunk.get_size() % num_chunks;
+		string chunk_url = master_chunk.get_data_url();
 
-    	string chunk_url = master_chunk.get_data_url();
-
-    	// Setup a queue to break up the original master_chunk and keep track of the pieces
+		// Setup a queue to break up the original master_chunk and keep track of the pieces
 		queue<Chunk *> chunks_to_read;
 
-        for (int i = 0; i < num_chunks-1; i++) {
-            chunks_to_read.push(new Chunk(chunk_url, chunk_size, (chunk_size * i) + chunk_offset));
-        }
-        // See above for details about chunk_remainder. jhrg 9/21/19
-        chunks_to_read.push(new Chunk(chunk_url, chunk_size + chunk_remainder, (chunk_size * (num_chunks-1)) + chunk_offset));
+		for (unsigned int i = 0; i < num_chunks-1; i++) {
+			chunks_to_read.push(new Chunk(chunk_url, chunk_size, (chunk_size * i) + chunk_offset));
+		}
+		// See above for details about chunk_remainder. jhrg 9/21/19
+		chunks_to_read.push(new Chunk(chunk_url, chunk_size + chunk_remainder, (chunk_size * (num_chunks-1)) + chunk_offset));
 
-	    // Start the max number of processing pipelines
+		// Start the max number of processing pipelines
 		pthread_t threads[DmrppRequestHandler::d_max_parallel_transfers];
 		memset(&threads[0], 0, sizeof(pthread_t) * DmrppRequestHandler::d_max_parallel_transfers);
 
@@ -418,9 +426,9 @@ void DmrppArray::read_contiguous()
 				Chunk *current_chunk = chunks_to_read.front();
 				chunks_to_read.pop();
 
-                // thread number is 'i'
-                one_child_chunk_args *args = new one_child_chunk_args(fds, i, current_chunk, &master_chunk);
-                int status = pthread_create(&threads[i], NULL, dmrpp::one_child_chunk_thread, (void*) args);
+				// thread number is 'i'
+				one_child_chunk_args *args = new one_child_chunk_args(fds, i, current_chunk, &master_chunk);
+				int status = pthread_create(&threads[i], NULL, dmrpp::one_child_chunk_thread, (void*) args);
 
 				if (status == 0) {
 					++num_threads;
@@ -467,9 +475,9 @@ void DmrppArray::read_contiguous()
 					Chunk *current_chunk = chunks_to_read.front();
 					chunks_to_read.pop();
 
-                    // thread number is 'tid,' the number of the thread that just completed
-	                one_child_chunk_args *args = new one_child_chunk_args(fds, tid, current_chunk, &master_chunk);
-	                int status = pthread_create(&threads[tid], NULL, dmrpp::one_child_chunk_thread, (void*) args);
+					// thread number is 'tid,' the number of the thread that just completed
+					one_child_chunk_args *args = new one_child_chunk_args(fds, tid, current_chunk, &master_chunk);
+					int status = pthread_create(&threads[tid], NULL, dmrpp::one_child_chunk_thread, (void*) args);
 
 					if (status != 0) {
 						ostringstream oss;
