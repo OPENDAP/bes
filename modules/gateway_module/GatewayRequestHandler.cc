@@ -43,6 +43,7 @@
 #include "GatewayRequestHandler.h"
 #include "GatewayResponseNames.h"
 
+using std::endl;
 using namespace libdap;
 using namespace gateway;
 

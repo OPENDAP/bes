@@ -41,6 +41,8 @@
 
 #include "BESDebug.h"
 
+using std::endl;
+
 /** @brief construct a container representing a file
  *
  * @param sym_name symbolic name of the container

@@ -52,7 +52,7 @@ public:
     virtual void	dump( ostream &strm ) const
 			{
 			    strm << "BESNotFoundError::dump - ("
-			         << (void *)this << ")" << endl ;
+			         << (void *)this << ")" << std::endl ;
 			    BESIndent::Indent() ;
 			    BESError::dump( strm ) ;
 			    BESIndent::UnIndent() ;

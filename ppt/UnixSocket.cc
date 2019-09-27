@@ -44,6 +44,8 @@
 #include "BESInternalError.h"
 #include "SocketUtilities.h"
 
+using std::endl;
+
 void UnixSocket::connect()
 {
     if (_listening) {

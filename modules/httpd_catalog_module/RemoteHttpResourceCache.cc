@@ -49,6 +49,7 @@
 #define AT_EXIT(x)
 #endif
 
+using std::endl;
 namespace httpd_catalog {
 
 RemoteHttpResourceCache *RemoteHttpResourceCache::d_instance = 0;

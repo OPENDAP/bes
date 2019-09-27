@@ -34,6 +34,8 @@
 #include "BESDefine.h"
 #include "BESInfo.h"
 
+using std::endl;
+
 BESDefinitionStorageVolatile::~BESDefinitionStorageVolatile()
 {
     del_definitions();

@@ -36,6 +36,8 @@
 #include "BESSyntaxUserError.h"
 #include "BESDebug.h"
 
+using std::endl;
+
 BESXMLShowCommand::BESXMLShowCommand(const BESDataHandlerInterface &base_dhi) :
     BESXMLCommand(base_dhi)
 {

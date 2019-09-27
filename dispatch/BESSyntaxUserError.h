@@ -55,7 +55,7 @@ public:
 
     virtual void dump(ostream &strm) const
     {
-        strm << "BESSyntaxUserError::dump - (" << (void *) this << ")" << endl;
+        strm << "BESSyntaxUserError::dump - (" << (void *) this << ")" << std::endl;
         BESIndent::Indent();
         BESError::dump(strm);
         BESIndent::UnIndent();

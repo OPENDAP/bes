@@ -47,6 +47,8 @@
 
 #include "BESTransmitter.h"
 
+using std::endl;
+
 bool BESTransmitter::add_method(string method_name, p_transmitter trans_method)
 {
 	BESTransmitter::_method_citer i;

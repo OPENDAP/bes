@@ -32,6 +32,8 @@
 
 #include "BESContainer.h"
 
+using std::endl;
+
 /** @brief make a copy of the passed container
  *
  * @param copy_from The container to copy

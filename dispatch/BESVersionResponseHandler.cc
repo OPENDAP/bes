@@ -124,7 +124,7 @@ void BESVersionResponseHandler::transmit(BESTransmitter *transmitter, BESDataHan
  */
 void BESVersionResponseHandler::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESVersionResponseHandler::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "BESVersionResponseHandler::dump - (" << (void *) this << ")" << std::endl;
     BESIndent::Indent();
     BESResponseHandler::dump(strm);
     BESIndent::UnIndent();

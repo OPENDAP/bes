@@ -57,6 +57,8 @@
 #include "BESNotFoundError.h"
 #include "BESStopWatch.h"
 
+using std::endl;
+
 #define PATH_INFO_RESPONSE "PathInfo"
 #define PATH "path"
 #define VALID_PATH "validPath"

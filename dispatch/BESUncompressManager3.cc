@@ -28,6 +28,7 @@
 #include <sstream>
 
 using std::istringstream;
+using std::endl;
 
 #include "BESUncompressManager3.h"
 #include "BESUncompress3GZ.h"

@@ -32,6 +32,8 @@
 
 #include "BESDefine.h"
 
+using std::endl;
+
 BESDefine::~BESDefine()
 {
     // delete all of the containers in my list, they belong to me

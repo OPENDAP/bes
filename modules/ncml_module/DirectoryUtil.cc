@@ -50,6 +50,7 @@
 
 using std::string;
 using std::vector;
+using std::endl;
 
 namespace agg_util {
 /**

@@ -33,9 +33,8 @@
 #ifndef I_BESIndent_h
 #define I_BESIndent_h 1
 
-// these includes not needed - SBL 9.27.19
-//#include <string>
-//#include <iostream>
+#include <string>
+#include <iostream>
 
 using std::string;
 using std::ostream;

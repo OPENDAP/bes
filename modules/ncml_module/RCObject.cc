@@ -35,6 +35,8 @@
 #include <sstream>
 #include <vector>
 
+using std::endl;
+
 namespace agg_util {
 
 RCObject::RCObject(RCObjectPool* pool/*=0*/) :

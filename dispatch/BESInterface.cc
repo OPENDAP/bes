@@ -77,6 +77,7 @@
 #define EXCLUDE_FILE_INFO_FROM_LOG "BES.DoNotLogSourceFilenames"
 
 using namespace std;
+using std::endl;
 
 static jmp_buf timeout_jump;
 static bool timeout_jump_valid = false;

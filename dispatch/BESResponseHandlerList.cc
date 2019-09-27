@@ -32,6 +32,8 @@
 
 #include "BESResponseHandlerList.h"
 
+using std::endl;
+
 BESResponseHandlerList *BESResponseHandlerList::_instance = 0;
 
 /** @brief add a response handler to the list
