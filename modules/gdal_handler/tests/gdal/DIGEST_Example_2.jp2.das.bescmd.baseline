@@ -3,7 +3,7 @@ Attributes {
         Float64 Northernmost_Northing -20.30846;
         Float64 Southernmost_Northing -20.326892;
         Float64 Easternmost_Easting 118.59356;
-        Float64 Westernmost_Northing 118.575128;
+        Float64 Westernmost_Easting 118.575128;
         String GeoTransform "118.575128 1.800000000000239e-05 0 -20.30846 0 -1.800000000000239e-05";
         Metadata {
             String TIFFTAG_RESOLUTIONUNIT "3 (pixels/cm)";
