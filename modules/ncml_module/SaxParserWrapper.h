@@ -85,7 +85,7 @@ private:
      */
     xmlSAXHandler _handler;
 
-#if 0
+#if 1
     /** the xml parser context (internals) so we can get access to line numbers
      *  in the parse and pass them along for better debug output on exception.
      */
@@ -170,7 +170,7 @@ private:
     /** Prepare the parser to load the given filename, setting up the handler and context */
     void setupParser(const string& filename);
 
-#if 0
+#if 1
     // Leak fix. jhrg 6/21/19
     /** Clean the _context and any other state */
     void cleanupParser() throw ();
