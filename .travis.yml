@@ -226,6 +226,7 @@ deploy:
     bucket: opendap.travis.build
     skip_cleanup: true
     local_dir: $TRAVIS_BUILD_DIR/package
+    script: export DEPLOY=s3
     on:
       branch: master
       condition: $BES_BUILD =~ ^deb|centos7|centos6|srcdist$
@@ -234,6 +235,7 @@ deploy:
   - provider: script
     skip_cleanup: true
     script: 
+      - export DEPLOY=woo
       - scp -v $TRAVIS_BUILD_DIR/package/*snapshot*el7* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-7.x;
     on:
       branch: master
@@ -243,6 +245,7 @@ deploy:
   - provider: script
     skip_cleanup: true
     script: 
+      - export DEPLOY=woo
       - scp -v $TRAVIS_BUILD_DIR/package/*snapshot*el6* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-6.x;
     on:
       branch: master
@@ -252,6 +255,7 @@ deploy:
   - provider: script
     skip_cleanup: true
     script: 
+      - export DEPLOY=woo
       - scp -v $TRAVIS_BUILD_DIR/package/*snapshot.tar.gz $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src;
     on:
       branch: master
@@ -263,7 +267,7 @@ deploy:
 after_deploy:
 - echo "-- -- -- -- -- -- -- -- -- after_deploy BEGIN -- -- -- -- -- -- -- -- --";
 - echo "$BES_BUILD";
-- if test "$BES_BUILD" = "centos7"; 
+- if test "$BES_BUILD" = "centos7" && "$DEPLOY" = "s3"; 
     then  
         echo "New CentOS-7 snapshot of BES pushed. Triggering a Docker build"; 
         git clone https://github.com/OPENDAP/hyrax-docker;
