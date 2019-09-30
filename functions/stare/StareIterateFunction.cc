@@ -32,6 +32,7 @@
 #include <Grid.h>
 #include "D4RValue.h"
 #include "hdf5.h"
+#include "DMR.h"
 
 #include "Byte.h"
 #include "Int16.h"
@@ -53,6 +54,7 @@
 #include <unordered_map>
 
 #include "BESDebug.h"
+#include "BESUtil.h"
 
 using namespace libdap;
 
@@ -191,15 +193,28 @@ int count(BaseType *bt, BaseType *stareIndices) {
 }
 
 BaseType *stare_dap4_function(D4RValueList *args, DMR &dmr) {
-/*	size_t granulePos = dmr.find_last_of("/");
-	string granuleName = dmr.substr(granulePos + 1);
+	//Setup a stringstream to convert the dmr value to a string
+	stringstream ss;
+	ss << args->get_rvalue(0)->value(dmr);
+	string dmrVal;
+	ss >> dmrVal;
+
+	//Find the filename from the dmr
+	size_t granulePos = dmrVal.find_last_of("/");
+	string granuleName = dmrVal.substr(granulePos + 1);
 	size_t findDot = granuleName.find_last_of(".");
 	string fileName = granuleName.substr(0, findDot) + "_sidecar.h5";
 
 	string pathName = dmr.filename();
 
 	string fullPath = BESUtil::pathConcat(pathName, fileName);
-*/
+
+	//The H5Fopen function needs to read in a char *
+	int n = fullPath.length();
+	char fullPathChar[n + 1];
+	strcpy(fullPathChar, fullPath.c_str());
+
+	//Initialize the various variables for the datasets' info
 	hsize_t dims[1];
 	hid_t file;
 	hid_t xFilespace, yFilespace, stareFilespace;
@@ -210,12 +225,14 @@ BaseType *stare_dap4_function(D4RValueList *args, DMR &dmr) {
 	vector<int> yArray;
 	vector<BaseType> stareArray;
 
-	const char *fileName ="test";
-	file = H5Fopen(fileName, H5F_ACC_RDONLY, H5P_DEFAULT);
+	//Read the file and store the datasets
+	//const char *fileName ="test";
+	file = H5Fopen(fullPathChar, H5F_ACC_RDONLY, H5P_DEFAULT);
 	xDataset = H5Dopen(file, "X", H5P_DEFAULT);
 	yDataset = H5Dopen(file, "Y", H5P_DEFAULT);
 	stareDataset = H5Dopen(file, "Stare Index", H5P_DEFAULT);
 
+	//We need to get the filespace and memspace before reading the values from each dataset
 	xFilespace = H5Dget_space(xDataset);
 	yFilespace = H5Dget_space(yDataset);
 	stareFilespace = H5Dget_space(stareDataset);
@@ -224,6 +241,7 @@ BaseType *stare_dap4_function(D4RValueList *args, DMR &dmr) {
 	yMemspace = H5Screate_simple(1,dims,NULL);
 	stareMemspace = H5Screate_simple(1,dims,NULL);
 
+	//Read the data file and store the values of each dataset into an array
 	H5Dread(xDataset, H5T_NATIVE_INT, xMemspace, xFilespace, H5P_DEFAULT, &xArray[0]);
 	H5Dread(yDataset, H5T_NATIVE_INT, yMemspace, yFilespace, H5P_DEFAULT, &yArray[0]);
 	H5Dread(stareDataset, H5T_NATIVE_INT, stareMemspace, stareFilespace, H5P_DEFAULT, &stareArray[0]);
