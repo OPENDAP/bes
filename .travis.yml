@@ -89,9 +89,9 @@ before_script:
 # but do not run the scan.
 stages:
 - name: build
-  if:  branch = master
+  if:  branch = foo
 - name: scan
-  if:  branch = master AND NOT type = pull_request
+  if:  branch = foo AND NOT type = pull_request
 - name: package
   if:  branch = master
 
