@@ -89,9 +89,9 @@ before_script:
 # but do not run the scan.
 stages:
 - name: build
-  if:  branch = foo
+  if:  branch = master
 - name: scan
-  if:  branch = foo AND NOT type = pull_request
+  if:  branch = master AND NOT type = pull_request
 - name: package
   if:  branch = master
 
@@ -172,7 +172,6 @@ after_script:
 
 before_deploy:
 # Make sure that we have the target dir...
-- export DEPLOY="docker";
 - test -d $TRAVIS_BUILD_DIR/package || mkdir $TRAVIS_BUILD_DIR/package;
 #
 # Get creds for pushing snapshots to w.o.o.
@@ -264,8 +263,7 @@ deploy:
 after_deploy:
 - echo "-- -- -- -- -- -- -- -- -- after_deploy BEGIN -- -- -- -- -- -- -- -- --";
 - echo "$BES_BUILD";
-- echo "$DEPLOY";
-- if test "$BES_BUILD" = "centos7" && test "$DEPLOY" = "docker"; 
+- if test "$BES_BUILD" = "centos7"; 
     then  
         echo "New CentOS-7 snapshot of BES pushed. Triggering a Docker build"; 
         git clone https://github.com/OPENDAP/hyrax-docker;
@@ -284,7 +282,6 @@ after_deploy:
     then  
         echo "New source snapshot pushed. No Docker build initiated.";     
     fi
-- export DEPLOY="done";
 - echo "-- -- -- -- -- -- -- -- -- after_deploy END -- -- -- -- -- -- -- -- --";
         
 
