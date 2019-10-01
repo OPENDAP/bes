@@ -235,7 +235,7 @@ deploy:
   - provider: script
     skip_cleanup: true
     script: 
-      - export DEPLOY=not_S3;
+      - export DEPLOY="not_S3";
       - scp -v $TRAVIS_BUILD_DIR/package/*snapshot*el7* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-7.x;
     on:
       branch: master
@@ -245,7 +245,7 @@ deploy:
   - provider: script
     skip_cleanup: true
     script:
-      - export DEPLOY=not_S3;
+      - export DEPLOY="not_S3";
       - scp -v $TRAVIS_BUILD_DIR/package/*snapshot*el6* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-6.x;
     on:
       branch: master
@@ -255,7 +255,7 @@ deploy:
   - provider: script
     skip_cleanup: true
     script: 
-      - export DEPLOY=not_S3;
+      - export DEPLOY="not_S3";
       - scp -v $TRAVIS_BUILD_DIR/package/*snapshot.tar.gz $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src;
     on:
       branch: master
