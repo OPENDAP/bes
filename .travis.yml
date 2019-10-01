@@ -227,7 +227,8 @@ deploy:
     bucket: opendap.travis.build
     skip_cleanup: true
     local_dir: $TRAVIS_BUILD_DIR/package
-    script: export DEPLOY=s3
+    script: 
+      - export DEPLOY=s3
     on:
       branch: master
       condition: $BES_BUILD =~ ^deb|centos7|centos6|srcdist$
