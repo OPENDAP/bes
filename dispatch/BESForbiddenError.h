@@ -42,8 +42,8 @@ class BESForbiddenError : public BESError
 protected:
       			BESForbiddenError() {}
 public:
-      			BESForbiddenError( const string &s,
-					  const string &file,
+      			BESForbiddenError( const std::string &s,
+					  const std::string &file,
 					  unsigned int line )
 			    : BESError( s, BES_FORBIDDEN_ERROR,
 			                file, line ) {}

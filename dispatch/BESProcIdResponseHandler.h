@@ -48,7 +48,7 @@
 class BESProcIdResponseHandler : public BESResponseHandler
 {
 public:
-				BESProcIdResponseHandler( const string &name ) ;
+				BESProcIdResponseHandler( const std::string &name ) ;
     virtual			~BESProcIdResponseHandler( void ) ;
 
     virtual void		execute( BESDataHandlerInterface &dhi ) ;
@@ -57,7 +57,7 @@ public:
 
     virtual void		dump( ostream &strm ) const ;
 
-    static BESResponseHandler *ProcIdResponseBuilder( const string &name ) ;
+    static BESResponseHandler *ProcIdResponseBuilder( const std::string &name ) ;
 };
 
 #endif // I_BESProcIdResponseHandler_h

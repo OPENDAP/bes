@@ -47,7 +47,7 @@
 class BESCatalogResponseHandler: public BESResponseHandler {
 private:
 public:
-    BESCatalogResponseHandler(const string &name);
+    BESCatalogResponseHandler(const std::string &name);
     virtual ~BESCatalogResponseHandler(void);
 
     virtual void execute(BESDataHandlerInterface &dhi);
@@ -55,7 +55,7 @@ public:
 
     virtual void dump(ostream &strm) const;
 
-    static BESResponseHandler *CatalogResponseBuilder(const string &name);
+    static BESResponseHandler *CatalogResponseBuilder(const std::string &name);
 };
 
 #endif // I_BESCatalogResponseHandler_h

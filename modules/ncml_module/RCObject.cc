@@ -36,6 +36,7 @@
 #include <vector>
 
 using std::endl;
+using std::string;
 
 namespace agg_util {
 

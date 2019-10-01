@@ -49,7 +49,7 @@
 class BESShowDefsResponseHandler : public BESResponseHandler
 {
 public:
-				BESShowDefsResponseHandler( const string &name ) ;
+				BESShowDefsResponseHandler( const std::string &name ) ;
     virtual			~BESShowDefsResponseHandler( void ) ;
 
     virtual void		execute( BESDataHandlerInterface &dhi ) ;
@@ -58,7 +58,7 @@ public:
 
     virtual void		dump( ostream &strm ) const ;
 
-    static BESResponseHandler *ShowDefsResponseBuilder( const string &handler_name ) ;
+    static BESResponseHandler *ShowDefsResponseBuilder( const std::string &handler_name ) ;
 };
 
 #endif // I_BESShowDefsResponseHandler_h

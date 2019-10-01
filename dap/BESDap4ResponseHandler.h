@@ -54,7 +54,7 @@ class BESDap4ResponseHandler: public BESResponseHandler {
     friend class Dap4ResponseHandlerTest;
 
 public:
-	BESDap4ResponseHandler(const string &name);
+	BESDap4ResponseHandler(const std::string &name);
 	virtual ~BESDap4ResponseHandler();
 
 	virtual void execute(BESDataHandlerInterface &dhi);
@@ -78,7 +78,7 @@ public:
 
 	virtual void dump(ostream &strm) const;
 
-	static BESResponseHandler *Dap4ResponseBuilder(const string &name);
+	static BESResponseHandler *Dap4ResponseBuilder(const std::string &name);
 };
 
 #endif // I_BESDap4ResponseHandler_h

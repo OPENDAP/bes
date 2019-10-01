@@ -51,7 +51,7 @@
 class BESDelContainerResponseHandler : public BESResponseHandler
 {
 public:
-				BESDelContainerResponseHandler( const string &name ) ;
+				BESDelContainerResponseHandler( const std::string &name ) ;
     virtual			~BESDelContainerResponseHandler( void ) ;
 
     virtual void		execute( BESDataHandlerInterface &dhi ) ;
@@ -60,7 +60,7 @@ public:
 
     virtual void		dump( ostream &strm ) const ;
 
-    static BESResponseHandler *DelContainerResponseBuilder( const string &name ) ;
+    static BESResponseHandler *DelContainerResponseBuilder( const std::string &name ) ;
 };
 
 #endif // I_BESDelContainerResponseHandler_h

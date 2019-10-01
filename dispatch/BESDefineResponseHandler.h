@@ -76,7 +76,7 @@
 class BESDefineResponseHandler : public BESResponseHandler
 {
 public:
-				BESDefineResponseHandler( const string &name ) ;
+				BESDefineResponseHandler( const std::string &name ) ;
     virtual			~BESDefineResponseHandler( void ) ;
 
     virtual void		execute( BESDataHandlerInterface &dhi ) ;
@@ -85,7 +85,7 @@ public:
 
     virtual void		dump( ostream &strm ) const ;
 
-    static BESResponseHandler *DefineResponseBuilder( const string &name ) ;
+    static BESResponseHandler *DefineResponseBuilder( const std::string &name ) ;
 };
 
 #endif // I_BESDefineResponseHandler_h

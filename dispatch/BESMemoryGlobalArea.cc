@@ -41,6 +41,7 @@
 
 using std::cerr;
 using std::endl;
+using std::string;
 
 #include "BESMemoryGlobalArea.h"
 #include "BESInternalFatalError.h"

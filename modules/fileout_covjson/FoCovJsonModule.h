@@ -52,8 +52,8 @@ class FoCovJsonModule : public BESAbstractModule
 public:
     				FoCovJsonModule() {}
     virtual		    	~FoCovJsonModule() {}
-    virtual void		initialize( const string &modname ) ;
-    virtual void		terminate( const string &modname ) ;
+    virtual void		initialize( const std::string &modname ) ;
+    virtual void		terminate( const std::string &modname ) ;
     virtual void		dump( ostream &strm ) const ;
 } ;
 

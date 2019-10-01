@@ -44,7 +44,7 @@ protected:
     {
     }
 public:
-    BESSyntaxUserError(const string &s, const string &file, unsigned int line) :
+    BESSyntaxUserError(const std::string &s, const std::string &file, unsigned int line) :
         BESError(s, BES_SYNTAX_USER_ERROR, file, line)
     {
     }

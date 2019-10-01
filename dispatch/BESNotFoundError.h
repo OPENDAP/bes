@@ -42,8 +42,8 @@ class BESNotFoundError : public BESError
 protected:
       			BESNotFoundError() {}
 public:
-      			BESNotFoundError( const string &s,
-					  const string &file,
+      			BESNotFoundError( const std::string &s,
+					  const std::string &file,
 					  unsigned int line )
 			    : BESError( s, BES_NOT_FOUND_ERROR,
 			                file, line ) {}

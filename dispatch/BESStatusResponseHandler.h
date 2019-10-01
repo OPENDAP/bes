@@ -49,7 +49,7 @@
 class BESStatusResponseHandler : public BESResponseHandler
 {
 public:
-				BESStatusResponseHandler( const string &name ) ;
+				BESStatusResponseHandler( const std::string &name ) ;
     virtual			~BESStatusResponseHandler( void ) ;
 
     virtual void		execute( BESDataHandlerInterface &dhi ) ;
@@ -58,7 +58,7 @@ public:
 
     virtual void		dump( ostream &strm ) const ;
 
-    static BESResponseHandler *StatusResponseBuilder( const string &name ) ;
+    static BESResponseHandler *StatusResponseBuilder( const std::string &name ) ;
 };
 
 #endif // I_BESStatusResponseHandler_h

@@ -52,7 +52,7 @@
  */
 class BESSetContextResponseHandler: public BESResponseHandler {
 public:
-    BESSetContextResponseHandler(const string &name);
+    BESSetContextResponseHandler(const std::string &name);
     virtual ~BESSetContextResponseHandler(void);
 
     virtual void execute(BESDataHandlerInterface &dhi);
@@ -60,7 +60,7 @@ public:
 
     virtual void dump(ostream &strm) const;
 
-    static BESResponseHandler *SetContextResponseBuilder(const string &name);
+    static BESResponseHandler *SetContextResponseBuilder(const std::string &name);
 };
 
 #endif // I_BESSetContextResponseHandler_h
