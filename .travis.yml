@@ -172,7 +172,7 @@ after_script:
 
 before_deploy:
 # Make sure that we have the target dir...
-- export DEPLOY=not_S3
+- export DEPLOY=s3
 - test -d $TRAVIS_BUILD_DIR/package || mkdir $TRAVIS_BUILD_DIR/package;
 #
 # Get creds for pushing snapshots to w.o.o.
@@ -227,8 +227,6 @@ deploy:
     bucket: opendap.travis.build
     skip_cleanup: true
     local_dir: $TRAVIS_BUILD_DIR/package
-    script: 
-      - export DEPLOY=s3
     on:
       branch: master
       condition: $BES_BUILD =~ ^deb|centos7|centos6|srcdist$
@@ -237,6 +235,7 @@ deploy:
   - provider: script
     skip_cleanup: true
     script: 
+      - export DEPLOY=not_S3
       - scp -v $TRAVIS_BUILD_DIR/package/*snapshot*el7* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-7.x;
     on:
       branch: master
@@ -245,7 +244,8 @@ deploy:
   # Push CentOS-6 snapshot rpms to w.o.o
   - provider: script
     skip_cleanup: true
-    script: 
+    script:
+      - export DEPLOY=not_S3
       - scp -v $TRAVIS_BUILD_DIR/package/*snapshot*el6* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-6.x;
     on:
       branch: master
@@ -255,6 +255,7 @@ deploy:
   - provider: script
     skip_cleanup: true
     script: 
+      - export DEPLOY=not_S3
       - scp -v $TRAVIS_BUILD_DIR/package/*snapshot.tar.gz $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src;
     on:
       branch: master
