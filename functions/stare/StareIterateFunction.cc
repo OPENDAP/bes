@@ -142,7 +142,7 @@ uint64 *extract_uint64_array(Array *var)
 /*
  * Use the passed in Stare Index to see if the sidecar file contains
  *  the provided Stare Index.
- * @param *bt - The variable array
+ * @param stareVal - the stare value to compare
  * @param stareIndices - A vector of stare values
  */
 bool hasValue(uint64 stareVal, BaseType *stareIndices) {
@@ -167,26 +167,20 @@ bool hasValue(uint64 stareVal, BaseType *stareIndices) {
  *  variable array
  *
  */
-int count(BaseType *bt, BaseType *stareIndices) {
-	int counter = 0;
-
-	uint64 *data;
+int count(uint64 stareVal, BaseType *stareIndices) {
 	uint64 *stareData;
 
-	Array &source = dynamic_cast<Array&>(*bt);
 	Array &stareSrc = dynamic_cast<Array&>(*stareIndices);
 
-	source.read();
 	stareSrc.read();
 
-	data = extract_uint64_array(&source);
-	stareData = extract_uint64_array(&source);
+	stareData = extract_uint64_array(&stareSrc);
 
-	for (int i = 0; i < source.length(); i++) {
+	int counter = 0;
+	for (int i = 0; i < stareSrc.length(); i++) {
 		//for (vector<uint64>::iterator j = stareIndices.begin(), e = stareIndices.end(); j != e; j++)
-		for (int j = 0; j < stareSrc.length(); j++)
-			if (stareData[j] == data[i])
-				counter++;
+		if (stareData[i] == stareVal)
+			counter++;
 	}
 
 	return counter;
@@ -226,7 +220,6 @@ BaseType *stare_dap4_function(D4RValueList *args, DMR &dmr) {
 	vector<BaseType> stareArray;
 
 	//Read the file and store the datasets
-	//const char *fileName ="test";
 	file = H5Fopen(fullPathChar, H5F_ACC_RDONLY, H5P_DEFAULT);
 	xDataset = H5Dopen(file, "X", H5P_DEFAULT);
 	yDataset = H5Dopen(file, "Y", H5P_DEFAULT);
