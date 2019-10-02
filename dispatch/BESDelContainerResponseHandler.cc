@@ -47,7 +47,7 @@
 #include "BESResponseNames.h"
 #include "BESDataHandlerInterface.h"
 
-//using std::endl;
+using std::endl;
 
 BESDelContainerResponseHandler::BESDelContainerResponseHandler(const string &name) :
         BESResponseHandler(name)
@@ -142,7 +142,7 @@ void BESDelContainerResponseHandler::transmit(BESTransmitter */*transmitter*/, B
  */
 void BESDelContainerResponseHandler::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESDelContainerResponseHandler::dump - (" << (void *) this << ")" << std::endl;
+    strm << BESIndent::LMarg << "BESDelContainerResponseHandler::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     BESResponseHandler::dump(strm);
     BESIndent::UnIndent();
