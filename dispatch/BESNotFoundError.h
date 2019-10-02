@@ -42,17 +42,17 @@ class BESNotFoundError : public BESError
 protected:
       			BESNotFoundError() {}
 public:
-      			BESNotFoundError( const string &s,
-					  const string &file,
+      			BESNotFoundError( const std::string &s,
+					  const std::string &file,
 					  unsigned int line )
 			    : BESError( s, BES_NOT_FOUND_ERROR,
 			                file, line ) {}
     virtual		~BESNotFoundError() {}
 
-    virtual void	dump( ostream &strm ) const
+    virtual void	dump( std::ostream &strm ) const
 			{
 			    strm << "BESNotFoundError::dump - ("
-			         << (void *)this << ")" << endl ;
+			         << (void *)this << ")" << std::endl ;
 			    BESIndent::Indent() ;
 			    BESError::dump( strm ) ;
 			    BESIndent::UnIndent() ;

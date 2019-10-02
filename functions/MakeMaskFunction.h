@@ -34,7 +34,7 @@ class DDS;
 typedef struct 
 {
     int size;
-    string name;
+    std::string name;
     int offset;
 } MaskDIM;
 

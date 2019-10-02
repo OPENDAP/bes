@@ -51,16 +51,16 @@
 class BESShowContextResponseHandler : public BESResponseHandler
 {
 public:
-				BESShowContextResponseHandler( const string &name ) ;
+				BESShowContextResponseHandler( const std::string &name ) ;
     virtual			~BESShowContextResponseHandler( void ) ;
 
     virtual void		execute( BESDataHandlerInterface &dhi ) ;
     virtual void		transmit( BESTransmitter *transmitter,
                                           BESDataHandlerInterface &dhi ) ;
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void		dump( std::ostream &strm ) const ;
 
-    static BESResponseHandler *ShowContextResponseBuilder( const string &name ) ;
+    static BESResponseHandler *ShowContextResponseBuilder( const std::string &name ) ;
 };
 
 #endif // I_BESShowContextResponseHandler_h

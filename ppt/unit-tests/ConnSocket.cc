@@ -37,6 +37,8 @@
 
 using std::cout ;
 using std::endl ;
+using std::string ;
+using std::ostream ;
 
 #include "ConnSocket.h"
 #include "ConnTestStrs.h"

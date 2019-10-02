@@ -40,6 +40,8 @@
 #include "BESServiceRegistry.h"
 #include "BESDebug.h"
 
+using std::endl;
+
 /** @brief create an instance of this persistent store with the given name.
  *
  * Creates an instances of BESContainerStorageVolatile with the given name.

@@ -43,6 +43,8 @@
 #include "BESResponseNames.h"
 #include "BESDataHandlerInterface.h"
 
+using std::endl;
+
 BESSetContextResponseHandler::BESSetContextResponseHandler(const string &name) :
     BESResponseHandler(name)
 {
