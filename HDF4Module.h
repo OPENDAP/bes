@@ -39,10 +39,10 @@ class HDF4Module:public BESAbstractModule {
     HDF4Module() {
     } virtual ~ HDF4Module() {
     }
-    virtual void initialize(const string & modname);
-    virtual void terminate(const string & modname);
+    virtual void initialize(const std::string & modname);
+    virtual void terminate(const std::string & modname);
 
-    virtual void dump(ostream & strm) const;
+    virtual void dump(std::ostream & strm) const;
 };
 
 #endif                          // A_HDF4Module_H
