@@ -268,7 +268,7 @@ after_deploy:
 - echo "-- -- -- -- -- -- -- -- -- after_deploy BEGIN -- -- -- -- -- -- -- -- --";
 - echo "$BES_BUILD";
 - echo "$DEPLOY";
-- if test "$BES_BUILD" = "centos7"; 
+- if test "$BES_BUILD" = "centos7" && "$DEPLOY" = "S3"; 
     then  
         echo "New CentOS-7 snapshot of BES pushed. Triggering a Docker build"; 
         git clone https://github.com/OPENDAP/hyrax-docker;
