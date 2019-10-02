@@ -65,7 +65,7 @@ public:
         return _size;
     }
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // BESMemoryGlobalArea_h_

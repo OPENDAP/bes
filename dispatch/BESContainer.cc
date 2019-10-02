@@ -33,6 +33,7 @@
 #include "BESContainer.h"
 
 using std::endl;
+using std::ostream;
 
 /** @brief make a copy of the passed container
  *

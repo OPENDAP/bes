@@ -33,6 +33,7 @@
 #include "BESResponseHandlerList.h"
 
 using std::endl;
+using std::ostream;
 
 BESResponseHandlerList *BESResponseHandlerList::_instance = 0;
 

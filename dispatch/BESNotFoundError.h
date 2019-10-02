@@ -49,7 +49,7 @@ public:
 			                file, line ) {}
     virtual		~BESNotFoundError() {}
 
-    virtual void	dump( ostream &strm ) const
+    virtual void	dump( std::ostream &strm ) const
 			{
 			    strm << "BESNotFoundError::dump - ("
 			         << (void *)this << ")" << std::endl ;

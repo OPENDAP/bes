@@ -33,6 +33,7 @@
 #include "BESDefine.h"
 
 using std::endl;
+using std::ostream;
 
 BESDefine::~BESDefine()
 {

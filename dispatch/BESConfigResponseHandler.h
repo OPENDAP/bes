@@ -56,7 +56,7 @@ public:
     virtual void		transmit( BESTransmitter *transmitter,
                                           BESDataHandlerInterface &dhi ) ;
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void		dump( std::ostream &strm ) const ;
 
     static BESResponseHandler *ConfigResponseBuilder( const std::string &handler_name ) ;
 };

@@ -40,7 +40,7 @@ class BESContainer;
  */
 class GeoTiffTransmitter: public BESTransmitter {
 private:
-    static void return_temp_stream(const std::string &filename, ostream &strm);
+    static void return_temp_stream(const std::string &filename, std::ostream &strm);
     static std::string temp_dir;
 
 

@@ -49,7 +49,7 @@ public:
 			                file, line ) {}
     virtual		~BESForbiddenError() {}
 
-    virtual void	dump( ostream &strm ) const
+    virtual void	dump( std::ostream &strm ) const
 			{
 			    strm << "BESForbiddenError::dump - ("
 			         << (void *)this << ")" << std::endl ;

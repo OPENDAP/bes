@@ -131,10 +131,10 @@ public:
     // a directory, but BESCatalogUtils::include() on a file).
     virtual bes::CatalogNode *get_node(const std::string &path) const = 0;
 
-    virtual void get_site_map(const std::string &prefix, const std::string &node_suffix, const std::string &leaf_suffix, ostream &out,
+    virtual void get_site_map(const std::string &prefix, const std::string &node_suffix, const std::string &leaf_suffix, std::ostream &out,
         const std::string &path = "/") const = 0;
 
-    virtual void dump(ostream &strm) const = 0;
+    virtual void dump(std::ostream &strm) const = 0;
 };
 
 #endif // I_BESCatalog_h

@@ -63,7 +63,7 @@ public:
     virtual int			dimid() { return _dimid ; }
     virtual bool		defined() { return _defined ; }
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void		dump( std::ostream &strm ) const ;
 
     static int			DimNameNum ;
 } ;

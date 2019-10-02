@@ -76,7 +76,7 @@ public:
 				    return _agg_handler ;
 				}
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void		dump( std::ostream &strm ) const ;
 } ;
 
 #endif // BESDefine_h_

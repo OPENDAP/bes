@@ -45,6 +45,7 @@
 #include "SocketUtilities.h"
 
 using std::endl;
+using std::ostream;
 
 void UnixSocket::connect()
 {

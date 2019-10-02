@@ -40,7 +40,7 @@ public:
     virtual void initialize(const std::string &modname);
     virtual void terminate(const std::string &modname);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // A_GDALModule_H

@@ -37,7 +37,7 @@
 #include <iostream>
 
 //using std::string;
-using std::ostream;
+//using std::ostream;
 
 class BESIndent {
 private:

@@ -42,6 +42,7 @@
 #include "BESDebug.h"
 
 using std::endl;
+using std::ostream;
 
 /** @brief construct a container representing a file
  *

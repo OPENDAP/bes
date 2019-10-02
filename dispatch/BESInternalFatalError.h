@@ -54,7 +54,7 @@ public:
     {
     }
 
-    virtual void dump(ostream &strm) const
+    virtual void dump(std::ostream &strm) const
     {
         strm << "BESInternalFatalError::dump - (" << (void *) this << ")" << std::endl;
         BESIndent::Indent();

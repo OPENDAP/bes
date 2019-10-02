@@ -82,7 +82,7 @@ public:
 
     virtual void show_definitions(BESInfo &info);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // BESDefinitionStorageVolatile_h_

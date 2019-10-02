@@ -76,7 +76,7 @@ public:
 	    return d_dmrpp_name;
 	}
 
-	virtual void dump(ostream &strm) const;
+	virtual void dump(std::ostream &strm) const;
 
 	static BESResponseHandler *Dap4ResponseBuilder(const std::string &name);
 };
