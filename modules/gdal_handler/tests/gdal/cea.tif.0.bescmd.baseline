@@ -3,7 +3,7 @@ Attributes {
         Float64 Northernmost_Northing 4255884.543802192;
         Float64 Southernmost_Northing 4224973.143255847;
         Float64 Easternmost_Easting 2358.211624949061;
-        Float64 Westernmost_Northing -28493.16678441252;
+        Float64 Westernmost_Easting -28493.16678441252;
         String GeoTransform "-28493.16678441252 60.02213698319374 0 4255884.543802192 0 -60.02213698319374";
         Metadata {
             String AREA_OR_POINT "Area";

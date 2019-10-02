@@ -10,7 +10,7 @@
         <Attribute name="Easternmost_Easting" type="Float64">
             <value>2358.211624949061</value>
         </Attribute>
-        <Attribute name="Westernmost_Northing" type="Float64">
+        <Attribute name="Westernmost_Easting" type="Float64">
             <value>-28493.16678441252</value>
         </Attribute>
         <Attribute name="GeoTransform" type="String">
@@ -72,7 +72,7 @@
         <Attribute name="Easternmost_Easting" type="Float64">
             <value>2358.211624949061</value>
         </Attribute>
-        <Attribute name="Westernmost_Northing" type="Float64">
+        <Attribute name="Westernmost_Easting" type="Float64">
             <value>-28493.16678441252</value>
         </Attribute>
         <Attribute name="GeoTransform" type="String">
@@ -134,7 +134,7 @@
         <Attribute name="Easternmost_Easting" type="Float64">
             <value>2358.211624949061</value>
         </Attribute>
-        <Attribute name="Westernmost_Northing" type="Float64">
+        <Attribute name="Westernmost_Easting" type="Float64">
             <value>-28493.16678441252</value>
         </Attribute>
         <Attribute name="GeoTransform" type="String">

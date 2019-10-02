@@ -135,7 +135,11 @@ static void build_global_attributes(const GDALDatasetH& hDS, AttrTable* attr_tab
         attr_table->append_attr("Northernmost_Northing", "Float64", CPLSPrintf("%.16g", dfMaxY));
         attr_table->append_attr("Southernmost_Northing", "Float64", CPLSPrintf("%.16g", dfMinY));
         attr_table->append_attr("Easternmost_Easting", "Float64", CPLSPrintf("%.16g", dfMaxX));
+#if 0
+        // Gareth Williams pointed out this typo. jhrg 9/26/19
         attr_table->append_attr("Westernmost_Northing", "Float64", CPLSPrintf("%.16g", dfMinX));
+#endif
+        attr_table->append_attr("Westernmost_Easting", "Float64", CPLSPrintf("%.16g", dfMinX));
 
         snprintf(szGeoTransform, 200, "%.16g %.16g %.16g %.16g %.16g %.16g", adfGeoTransform[0], adfGeoTransform[1],
             adfGeoTransform[2], adfGeoTransform[3], adfGeoTransform[4], adfGeoTransform[5]);
