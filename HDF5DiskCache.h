@@ -19,23 +19,23 @@ private:
     static HDF5DiskCache *d_instance;
     static void delete_instance() { delete d_instance; d_instance = 0; }
 
-    HDF5DiskCache(const unsigned long long,const string&, const string&);
+    HDF5DiskCache(const unsigned long long,const std::string&, const std::string&);
 
 public:
-    static const string PATH_KEY;
-    static const string SIZE_KEY;
-    static const string PREFIX_KEY;
+    static const std::string PATH_KEY;
+    static const std::string SIZE_KEY;
+    static const std::string PREFIX_KEY;
     virtual ~HDF5DiskCache() {}
 
     static long getCacheSizeFromConfig(const long cache_size);
-    static string getCachePrefixFromConfig(const string&);
-    static string getCacheDirFromConfig(const string&);
+    static std::string getCachePrefixFromConfig(const std::string&);
+    static std::string getCacheDirFromConfig(const std::string&);
 
-    bool is_valid(const string & cache_file_name, const int expected_file_size);
-    static HDF5DiskCache *get_instance(const long, const string&, const string&);
-    bool get_data_from_cache(const string &cache_file_name, const int expected_file_size,int &fd);
-    bool write_cached_data(const string &cache_file_name,const int expected_file_size,const std::vector<double> &val);
-    bool write_cached_data2(const string &cache_file_name,const int expected_file_size,const void *buf);
+    bool is_valid(const std::string & cache_file_name, const int expected_file_size);
+    static HDF5DiskCache *get_instance(const long, const std::string&, const std::string&);
+    bool get_data_from_cache(const std::string &cache_file_name, const int expected_file_size,int &fd);
+    bool write_cached_data(const std::string &cache_file_name,const int expected_file_size,const std::vector<double> &val);
+    bool write_cached_data2(const std::string &cache_file_name,const int expected_file_size,const void *buf);
 };
 
 #endif
