@@ -221,6 +221,8 @@ before_deploy:
 
 # The deploy section copies the snapshot build product our S3 bucket and to www.opendap.org
 deploy:
+
+  # Push all build results to our S3 bucket
   - provider: s3
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY

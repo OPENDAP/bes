@@ -41,6 +41,7 @@ using namespace std;
 #include "BESXMLCommand.h"
 #include "BESXMLUtils.h"
 #include "BESDataNames.h"
+#include "BESContextManager.h"
 
 #include "BESResponseHandler.h"
 #include "BESReturnManager.h"
@@ -234,22 +235,36 @@ void BESXMLInterface::execute_data_request_plan()
         // only log the get command.
         if (d_dhi_ptr->action.find("get.") != string::npos) {
 
-            string new_log_info = d_dhi_ptr->action;
+            string log_delim="|&|"; //",";
+
+            string new_log_info = "";
+
+            // If the OLFS sent it's log info, integrate that into the log output
+            bool found = false;
+            string olfs_log_line = BESContextManager::TheManager()->get_context("olfsLog", found);
+            if(found){
+                new_log_info.append("OLFS").append(log_delim).append(olfs_log_line).append(log_delim);
+                new_log_info.append("BES").append(log_delim);
+            }
+
+            new_log_info.append(d_dhi_ptr->action);
+
+
             if (!d_dhi_ptr->data[RETURN_CMD].empty())
-                new_log_info.append(",").append(d_dhi_ptr->data[RETURN_CMD]);
+                new_log_info.append(log_delim).append(d_dhi_ptr->data[RETURN_CMD]);
 
             // Assume this is DAP and thus there is at most one container. Log a warning if that's
             // not true. jhrg 11/14/17
             BESContainer *c = *(d_dhi_ptr->containers.begin());
             if (c) {
-                if (!c->get_real_name().empty()) new_log_info.append(",").append(c->get_real_name());
+                if (!c->get_real_name().empty()) new_log_info.append(log_delim).append(c->get_real_name());
 
                 if (!c->get_constraint().empty()) {
-                    new_log_info.append(",").append(c->get_constraint());
+                    new_log_info.append(log_delim).append(c->get_constraint());
                 }
                 else {
-                    if (!c->get_dap4_constraint().empty()) new_log_info.append(",").append(c->get_dap4_constraint());
-                    if (!c->get_dap4_function().empty()) new_log_info.append(",").append(c->get_dap4_function());
+                    if (!c->get_dap4_constraint().empty()) new_log_info.append(log_delim).append(c->get_dap4_constraint());
+                    if (!c->get_dap4_function().empty()) new_log_info.append(log_delim).append(c->get_dap4_function());
                 }
             }
 
