@@ -123,30 +123,27 @@ uint64 extract_uint64_value(BaseType *arg) {
 
 //May need to be moved to libdap/util
 // This helper function assumes 'var' is the correct size.
-uint64 *extract_uint64_array(Array *var)
+vector<uint64> *extract_uint64_array(Array *var)
 {
     assert(var);
 
     int length = var->length();
 
-    vector<uint64> newVar(length);
-    var->value(&newVar[0]);    // Extract the values of 'var' to 'newVar'
+    vector<uint64> *newVar = new vector<uint64>;
+    newVar->resize(length);
+    var->value(&(*newVar)[0]);    // Extract the values of 'var' to 'newVar'
 
-    uint64 *dest = new uint64[length];
-    for (int i = 0; i < length; ++i)
-        dest[i] = (uint64) newVar[i];
-
-    return dest;
+    return newVar;
 }
 
 /*
  * Use the passed in Stare Index to see if the sidecar file contains
  *  the provided Stare Index.
- * @param stareVal - the stare value to compare
- * @param stareIndices - A vector of stare values
+ * @param stareVal - stare values from given dataset
+ * @param stareIndices - stare values being compared, retrieved from the sidecar file
  */
-bool hasValue(uint64 stareVal, BaseType *stareIndices) {
-	uint64 *stareData;
+bool hasValue(vector<uint64> *stareVal, BaseType *stareIndices) {
+	vector<uint64> *stareData;
 
 	Array &stareSrc = dynamic_cast<Array&>(*stareIndices);
 
@@ -154,9 +151,10 @@ bool hasValue(uint64 stareVal, BaseType *stareIndices) {
 
 	stareData = extract_uint64_array(&stareSrc);
 
-	for (int i = 0; i < stareSrc.length(); i++) {
-		if (stareData[i] == stareVal)
-			return true;
+	for (vector<uint64>::iterator i = stareData->begin(), end = stareData->end(); i != end; i++) {
+		for (vector<uint64>::iterator j = stareVal->begin(), e = stareVal->end(); j != e; j++)
+			if (*i == *j)
+				return true;
 	}
 
 	return false;
@@ -167,7 +165,7 @@ bool hasValue(uint64 stareVal, BaseType *stareIndices) {
  *  variable array
  *
  */
-int count(uint64 stareVal, BaseType *stareIndices) {
+/*int count(vector<uint64> stareVal, BaseType *stareIndices) {
 	uint64 *stareData;
 
 	Array &stareSrc = dynamic_cast<Array&>(*stareIndices);
@@ -184,24 +182,23 @@ int count(uint64 stareVal, BaseType *stareIndices) {
 	}
 
 	return counter;
-}
+}*/
 
+/**
+ * Get pathname to file from dmr.
+ */
 BaseType *stare_dap4_function(D4RValueList *args, DMR &dmr) {
-	//Setup a stringstream to convert the dmr value to a string
-	stringstream ss;
-	ss << args->get_rvalue(0)->value(dmr);
-	string dmrVal;
-	ss >> dmrVal;
-
-	//Find the filename from the dmr
-	size_t granulePos = dmrVal.find_last_of("/");
-	string granuleName = dmrVal.substr(granulePos + 1);
-	size_t findDot = granuleName.find_last_of(".");
-	string fileName = granuleName.substr(0, findDot) + "_sidecar.h5";
-
 	string pathName = dmr.filename();
 
-	string fullPath = BESUtil::pathConcat(pathName, fileName);
+	//Find the filename from the dmr
+	size_t granulePos = pathName.find_last_of("/");
+	string granuleName = pathName.substr(granulePos + 1);
+	size_t findDot = granuleName.find_last_of(".");
+	string newPathName = granuleName.substr(0, findDot) + "_sidecar.h5";
+
+	string rootDirectory = TheBESKeys::TheKeys()->read_string_key("BES.Catalog.catalog.RootDirectory", "");
+
+	string fullPath = BESUtil::pathConcat(rootDirectory, newPathName);
 
 	//The H5Fopen function needs to read in a char *
 	int n = fullPath.length();
@@ -239,26 +236,7 @@ BaseType *stare_dap4_function(D4RValueList *args, DMR &dmr) {
 	H5Dread(yDataset, H5T_NATIVE_INT, yMemspace, yFilespace, H5P_DEFAULT, &yArray[0]);
 	H5Dread(stareDataset, H5T_NATIVE_INT, stareMemspace, stareFilespace, H5P_DEFAULT, &stareArray[0]);
 
-#if 0
-	H5File file(fullPath, H5F_ACC_RDONLY);
-	DataSet x = file.openDataSet("X");
-	DataSet y = file.openDataSet("Y");
-	DataSet stareIndex = file.openDataSet("Stare Index");
-
-	DataSpace xDataspace = x.getSpace();
-	DataSpace yDataspace = y.getSpace();
-	DataSpace stareDataspace = stareIndex.getSpace();
-
-
-	DataSpace memspace (1, dims);
-
-	x.read(xArray, PredType::NATIVE_INT, memspace, xDataspace); //TODO: Finish
-	y.read(yArray, PredType::NATIVE_INT, memspace, yDataspace); //TODO: Finish
-	stareIndex.read(stareArray, PredType::NATIVE_UINT64, memspace, stareDataspace); //TODO: Finish
-#endif
-
-
-//TODO: Refactor to work with BaseType. May be able to put this in a seperate function
+//TODO: Refactor to work with BaseType. May be able to put this in a separate function
 /*	std::unordered_map<uint64, struct coords> stareMap;
 
 	vector<int>::iterator xIter = xArray.begin();
@@ -268,15 +246,24 @@ BaseType *stare_dap4_function(D4RValueList *args, DMR &dmr) {
 		stareMap[*i].y = *yIter;
 	}
 */
-	BaseType *result = 0;
 
-	BaseType *varCheck = args->get_rvalue(0)->value(dmr);
-	uint64 stareVal = extract_uint64_value(args->get_rvalue(1)->value(dmr));
+	BaseType *stareVal = args->get_rvalue(1)->value(dmr);
+	Array &stareSrc = dynamic_cast<Array&>(*stareVal);
 
-	if (!hasValue(stareVal, &stareArray[0]))
-		throw Error(malformed_expr, "Could not find any STARE values in the provided variable array");
+	stareSrc.read();
 
-	//TODO: Should return a BaseType struct that contains arrays of: x, y, stare index, and data value
+	vector<uint64> *stareData;
+	stareData = extract_uint64_array(&stareSrc);
+
+	bool status = hasValue(stareData, &stareArray[0]);
+
+	Int32 *result = new Int32 ("result");
+	if (status) {
+		result->set_value(1);
+	} else {
+		result->set_value(0);
+	}
+
 	return result;
 }
 

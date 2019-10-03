@@ -30,8 +30,6 @@ using namespace functions;
 
 class StareFunctionsTest: public TestFixture {
 private:
-	DDS *dds;
-
 	DMR *two_arrays_dmr;
 	D4BaseTypeFactory *d4_btf;
 public:
@@ -50,54 +48,51 @@ public:
         two_arrays_dmr = new DMR(d4_btf);
         DBG(cerr << "setup() - Built DMR(D4BaseTypeFactory *) " << endl);
 
-		BaseType *a_var = two_arrays_dmr->root()->var("a");
-		BaseType *b_var = two_arrays_dmr->root()->var("b");
+		string filename = "MYD09.A2019003.2040.006.2019005020913.h5";
 
-		// Load values into the grid variables
-		Array & a = dynamic_cast<Array &>(*a_var);
-		Array & b = dynamic_cast<Array &>(*b_var);
+		two_arrays_dmr->set_filename(filename);
 
-		//Lat - 32.2739, 32.2736, 32.2733, 32.2731, 32.2728, 32.2725, 32.2723, 32.272, 32.2718, 32.2715
-		//Lon - -98.8324, -98.8388, -98.8452, -98.8516, -98.858, -98.8644, -98.8708, -98.8772, -98.8836, -98.8899
-		//Stare - 3440016191299518474 x 10
-		//Array a - uint64 for stare indices
-		dods_uint64 first_a[10] = { [0 ... 9] = 3440016191299518474};
-
-		a.set_value(first_a, 10);
-		a.set_read_p(true);
+		TheBESKeys::ConfigFile = "/Users/kodi/src/hyrax/bes/functions/stare/unit-tests/bes.conf";
 	}
 
 	void tearDown() {
-		delete dds;
-		dds = 0;
-
 		delete two_arrays_dmr;
 		two_arrays_dmr = 0;
 		delete d4_btf;
 		d4_btf = 0;
 	}
 
-CPPUNIT_TEST_SUITE( StareFunctionsTest );
+	CPPUNIT_TEST_SUITE( StareFunctionsTest );
 
 	CPPUNIT_TEST(serverside_compare_test);
 
-	CPPUNIT_TEST_SUITE_END()
-	;
+	CPPUNIT_TEST_SUITE_END();
 
 	void serverside_compare_test() {
 		DBG(cerr << "--Test basic setup of function--" << endl);
+
+		Array *a_var = new Array("a_var");
+
+		two_arrays_dmr->root()->add_var_nocopy(a_var);
+
+		//MYD09.A2019003.2040.006.2019005020913_sidecar.h5 values:
+		//Lat - 32.2739, 32.2736, 32.2733, 32.2731, 32.2728, 32.2725, 32.2723, 32.272, 32.2718, 32.2715
+		//Lon - -98.8324, -98.8388, -98.8452, -98.8516, -98.858, -98.8644, -98.8708, -98.8772, -98.8836, -98.8899
+		//Stare - 3440016191299518474 x 10
+
+		//Array a - uint64 for stare indices
+		//First two indices are actual stare values from: MYD09.A2019003.2040.006.2019005020913_sidecar.h5
+		//The final value is made up.
+		vector<dods_uint64> target_indices = {3440016191299518474, 3440018390322774026, 3440016191299518400};
+
 		try {
 			D4RValueList params;
 
-			Array & stareIndices = dynamic_cast<Array &>(*two_arrays_dmr->root()->var("a"));
+			params.add_rvalue(new D4RValue(target_indices));
 
-			//Parameters will be an array of uint64
-			params.add_rvalue(new D4RValue(&stareIndices));
+			BaseType *checkHasValue = stare_dap4_function(&params, two_arrays_dmr);
 
-			BaseType *btype = stare_dap4_function(&params, &btf);
-
-
-			CPPUNIT_ASSERT(checkHasValue == true);
+			CPPUNIT_ASSERT(dynamic_cast<Int32*> (checkHasValue).value() == 1);
 		}
 		catch(Error &e) {
 			DBG(cerr << e.get_error_message() << endl);
