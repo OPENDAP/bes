@@ -43,6 +43,8 @@
 #include "BESInternalFatalError.h"
 #include "BESDebug.h"
 
+using std::endl;
+
 BESXMLDefineCommand::BESXMLDefineCommand(const BESDataHandlerInterface &base_dhi) :
     BESXMLCommand(base_dhi), _default_constraint(""), _default_dap4_constraint(""), _default_dap4_function("")
 {

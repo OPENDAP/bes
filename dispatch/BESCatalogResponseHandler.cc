@@ -46,6 +46,8 @@
 #include "BESDebug.h"
 #include "BESStopWatch.h"
 
+using std::endl;
+
 BESCatalogResponseHandler::BESCatalogResponseHandler(const string &name) :
     BESResponseHandler(name)
 {

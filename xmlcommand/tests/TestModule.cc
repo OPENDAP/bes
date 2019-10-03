@@ -35,6 +35,8 @@
 
 #include "TestModule.h"
 
+using std::endl;
+
 const string &catalog_name = "second";
 
 /**

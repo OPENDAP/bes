@@ -77,7 +77,7 @@ public:
 
     virtual bool		allowConnection() ;
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void		dump( std::ostream &strm ) const ;
 } ;
 
 #endif // UnixSocket_h

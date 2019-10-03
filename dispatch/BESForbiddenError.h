@@ -42,17 +42,17 @@ class BESForbiddenError : public BESError
 protected:
       			BESForbiddenError() {}
 public:
-      			BESForbiddenError( const string &s,
-					  const string &file,
+      			BESForbiddenError( const std::string &s,
+					  const std::string &file,
 					  unsigned int line )
 			    : BESError( s, BES_FORBIDDEN_ERROR,
 			                file, line ) {}
     virtual		~BESForbiddenError() {}
 
-    virtual void	dump( ostream &strm ) const
+    virtual void	dump( std::ostream &strm ) const
 			{
 			    strm << "BESForbiddenError::dump - ("
-			         << (void *)this << ")" << endl ;
+			         << (void *)this << ")" << std::endl ;
 			    BESIndent::Indent() ;
 			    BESError::dump( strm ) ;
 			    BESIndent::UnIndent() ;

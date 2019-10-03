@@ -35,6 +35,8 @@
 #include <TheBESKeys.h>
 #include "config.h"
 
+using std::endl;
+
 /** @brief Constructor for FileOut NetCDF module
  *
  * This constructor adds functions to add to the build of a help request

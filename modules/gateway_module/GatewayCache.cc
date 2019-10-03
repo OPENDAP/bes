@@ -52,6 +52,7 @@
 #define AT_EXIT(x)
 #endif
 
+using std::endl;
 using namespace gateway;
 
 GatewayCache *GatewayCache::d_instance = 0;
