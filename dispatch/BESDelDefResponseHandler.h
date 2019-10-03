@@ -53,16 +53,16 @@
 class BESDelDefResponseHandler : public BESResponseHandler
 {
 public:
-				BESDelDefResponseHandler( const string &name ) ;
+				BESDelDefResponseHandler( const std::string &name ) ;
     virtual			~BESDelDefResponseHandler( void ) ;
 
     virtual void		execute( BESDataHandlerInterface &dhi ) ;
     virtual void		transmit( BESTransmitter *transmitter,
                                           BESDataHandlerInterface &dhi ) ;
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void		dump( std::ostream &strm ) const ;
 
-    static BESResponseHandler *DelDefResponseBuilder( const string &name ) ;
+    static BESResponseHandler *DelDefResponseBuilder( const std::string &name ) ;
 };
 
 #endif // I_BESDelDefResponseHandler_h

@@ -76,11 +76,11 @@ public:
      */
     virtual void dump( ostream &strm ) const {
         strm << BESIndent::LMarg << "BESUsage::dump - ("
-			 << (void *)this << ")" << endl ;
+			 << (void *)this << ")" << std::endl ;
 
 	BESIndent::Indent() ;
-	strm << BESIndent::LMarg << "das: " << *_das << endl ;
-	strm << BESIndent::LMarg << "dds: " << *_dds << endl ;
+	strm << BESIndent::LMarg << "das: " << *_das << std::endl ;
+	strm << BESIndent::LMarg << "dds: " << *_dds << std::endl ;
 	BESIndent::UnIndent() ;
     }
 } ;

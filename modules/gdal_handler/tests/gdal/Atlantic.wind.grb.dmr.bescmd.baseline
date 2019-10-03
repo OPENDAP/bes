@@ -5020,7 +5020,7 @@
         <Attribute name="Easternmost_Easting" type="Float64">
             <Value>-39.375</Value>
         </Attribute>
-        <Attribute name="Westernmost_Northing" type="Float64">
+        <Attribute name="Westernmost_Easting" type="Float64">
             <Value>-100.625</Value>
         </Attribute>
         <Attribute name="GeoTransform" type="String">

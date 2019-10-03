@@ -38,6 +38,8 @@
 #include "BESResponseNames.h"
 #include "BESUtil.h"
 
+using std::endl;
+
 BESProcIdResponseHandler::BESProcIdResponseHandler( const string &name )
     : BESResponseHandler( name )
 {

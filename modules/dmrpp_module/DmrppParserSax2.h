@@ -149,7 +149,7 @@ private:
     void clear_dim_def() { d_dim_def = 0; }
 
     // Accumulate stuff inside an 'OtherXML' DAP attribute here
-    string other_xml;
+    std::string other_xml;
 
     // When we're parsing unknown XML, how deeply is it nested? This is used
     // for the OtherXML DAP attributes.
@@ -157,27 +157,27 @@ private:
     unsigned int unknown_depth;
 
     // These are used for processing errors.
-    string error_msg;  // Error message(s), if any.
+    std::string error_msg;  // Error message(s), if any.
     xmlParserCtxtPtr context; // used for error message line numbers
 
     // These hold temporary values read during the parse.
-    string dods_attr_name; // DAP4 attributes, not XML attributes
-    string dods_attr_type; // ... not XML ...
-    string char_data;  // char data in value elements; null after use
-    string root_ns;     // What is the namespace of the root node (Group)
+    std::string dods_attr_name; // DAP4 attributes, not XML attributes
+    std::string dods_attr_type; // ... not XML ...
+    std::string char_data;  // char data in value elements; null after use
+    std::string root_ns;     // What is the namespace of the root node (Group)
 
     bool d_debug;
     bool debug() const { return d_debug; }
 
     bool d_strict;
 
-    string dmrpp_dataset_href;
+    std::string dmrpp_dataset_href;
 
     class XMLAttribute {
         public:
-        string prefix;
-        string nsURI;
-        string value;
+        std::string prefix;
+        std::string nsURI;
+        std::string value;
 
         void clone(const XMLAttribute &src) {
             prefix = src.prefix;
@@ -186,14 +186,14 @@ private:
         }
 
         XMLAttribute() : prefix(""), nsURI(""), value("") {}
-        XMLAttribute(const string &p, const string &ns, const string &v)
+        XMLAttribute(const std::string &p, const std::string &ns, const std::string &v)
             : prefix(p), nsURI(ns), value(v) {}
         // 'attributes' as passed from libxml2 is a five element array but this
         // ctor gets the back four elements.
         XMLAttribute(const xmlChar **attributes/*[4]*/) {
             prefix = attributes[0] != 0 ? (const char *)attributes[0]: "";
             nsURI = attributes[1] != 0 ? (const char *)attributes[1]: "";
-            value = string((const char *)attributes[2], (const char *)attributes[3]);
+            value = std::string((const char *)attributes[2], (const char *)attributes[3]);
         }
         XMLAttribute(const XMLAttribute &rhs) {
             clone(rhs);
@@ -226,12 +226,12 @@ private:
 #if 0
     void transfer_xml_attrs(const xmlChar **attrs, int nb_attributes);
 #endif
-    string get_attribute_val(const string &name, const xmlChar **attributes, int num_attributes);
+    std::string get_attribute_val(const std::string &name, const xmlChar **attributes, int num_attributes);
     void transfer_xml_ns(const xmlChar **namespaces, int nb_namespaces);
     bool check_required_attribute(const std::string &attr);
     bool check_required_attribute(const std::string &attr, const xmlChar **attributes, int num_attributes);
     bool check_attribute(const std::string & attr);
-    bool check_attribute(const string &name, const xmlChar **attributes, int num_attributes);
+    bool check_attribute(const std::string &name, const xmlChar **attributes, int num_attributes);
     void process_variable_helper(libdap::Type t, ParseState s, const xmlChar **attrs, int nb_attributes);
 
     void process_enum_const_helper(const xmlChar **attrs, int nb_attributes);
@@ -279,7 +279,7 @@ public:
     }
 
     void intern(std::istream &f, libdap::DMR *dest_dmr, bool debug = false);
-    void intern(const string &document, libdap::DMR *dest_dmr, bool debug = false);
+    void intern(const std::string &document, libdap::DMR *dest_dmr, bool debug = false);
     void intern(const char *buffer, int size, libdap::DMR *dest_dmr, bool debug = false);
 
     /**

@@ -47,6 +47,8 @@
 #include "BESLog.h"
 #include "BESDebug.h"
 
+using std::endl;
+
 BESXMLSetContainerCommand::BESXMLSetContainerCommand(const BESDataHandlerInterface &base_dhi) :
     BESXMLCommand(base_dhi)
 {

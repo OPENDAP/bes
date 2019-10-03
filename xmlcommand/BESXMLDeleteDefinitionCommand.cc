@@ -39,6 +39,8 @@
 #include "BESSyntaxUserError.h"
 #include "BESDebug.h"
 
+using std::endl;
+
 BESXMLDeleteDefinitionCommand::BESXMLDeleteDefinitionCommand(const BESDataHandlerInterface &base_dhi) :
     BESXMLCommand(base_dhi)
 {

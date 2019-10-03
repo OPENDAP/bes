@@ -38,6 +38,7 @@ using std::cerr;
 using std::cout;
 using std::list;
 using std::map;
+using std::endl;
 
 #include "CmdTranslation.h"
 #include "BESTokenizer.h"

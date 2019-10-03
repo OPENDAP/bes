@@ -38,6 +38,8 @@
 #include "BESDataNames.h"
 #include "config.h"
 
+using std::endl;
+
 BESWWWRequestHandler::BESWWWRequestHandler( const string &name )
     : BESRequestHandler( name )
 {

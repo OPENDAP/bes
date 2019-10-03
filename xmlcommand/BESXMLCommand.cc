@@ -38,6 +38,8 @@
 #include "BESDataNames.h"
 #include "BESLog.h"
 
+using std::endl;
+
 map<string, p_xmlcmd_builder> BESXMLCommand::factory;
 
 /** @brief Creates a BESXMLCommand document given a base data handler

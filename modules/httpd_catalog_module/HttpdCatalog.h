@@ -77,7 +77,7 @@ public:
         const std::string &/*leaf_suffix*/,
         ostream &/*out*/,
         const std::string &/*path = "/"*/) const {
-        BESDEBUG(MODULE, "The HttpdCatalog::get_site_map() method is not currently supported. SKIPPING. file: " << __FILE__ << " line: "  << __LINE__ << endl);
+        BESDEBUG(MODULE, "The HttpdCatalog::get_site_map() method is not currently supported. SKIPPING. file: " << __FILE__ << " line: "  << __LINE__ << std::endl);
     }
 
     virtual bes::CatalogNode *get_node(const std::string &path) const;

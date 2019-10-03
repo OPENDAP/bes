@@ -71,7 +71,7 @@ public:
 	virtual int initialize(int argC, char **argV);
 	virtual int terminate(int sig = 0);
 
-	virtual void dump(ostream &strm) const;
+	virtual void dump(std::ostream &strm) const;
 };
 
 #endif

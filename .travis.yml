@@ -89,9 +89,9 @@ before_script:
 # but do not run the scan.
 stages:
 - name: build
-  if:  branch = master
+  if:  branch = foo
 - name: scan
-  if:  branch = master AND NOT type = pull_request
+  if:  branch = foo AND NOT type = pull_request
 - name: package
   if:  branch = master
 
@@ -172,6 +172,7 @@ after_script:
 
 before_deploy:
 # Make sure that we have the target dir...
+- export DEPLOY="S3"
 - test -d $TRAVIS_BUILD_DIR/package || mkdir $TRAVIS_BUILD_DIR/package;
 #
 # Get creds for pushing snapshots to w.o.o.
@@ -233,6 +234,7 @@ deploy:
   # Push CentOS-7 snapshot rpms to w.o.o
   - provider: script
     skip_cleanup: true
+    env: DEPLOY="NOT_S3"
     script: 
       - scp -v $TRAVIS_BUILD_DIR/package/*snapshot*el7* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-7.x;
     on:
@@ -242,7 +244,8 @@ deploy:
   # Push CentOS-6 snapshot rpms to w.o.o
   - provider: script
     skip_cleanup: true
-    script: 
+    env: DEPLOY="NOT_S3"
+    script:
       - scp -v $TRAVIS_BUILD_DIR/package/*snapshot*el6* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-6.x;
     on:
       branch: master
@@ -251,6 +254,7 @@ deploy:
   # Push source snapshot rpms to w.o.o
   - provider: script
     skip_cleanup: true
+    env: DEPLOY="NOT_S3"
     script: 
       - scp -v $TRAVIS_BUILD_DIR/package/*snapshot.tar.gz $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src;
     on:
@@ -263,7 +267,8 @@ deploy:
 after_deploy:
 - echo "-- -- -- -- -- -- -- -- -- after_deploy BEGIN -- -- -- -- -- -- -- -- --";
 - echo "$BES_BUILD";
-- if test "$BES_BUILD" = "centos7"; 
+- echo "$DEPLOY";
+- if test "$BES_BUILD" = "centos7" && "$DEPLOY" = "S3"; 
     then  
         echo "New CentOS-7 snapshot of BES pushed. Triggering a Docker build"; 
         git clone https://github.com/OPENDAP/hyrax-docker;

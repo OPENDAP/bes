@@ -33,6 +33,8 @@
 #include "ConnTest.h"
 #include "ConnSocket.h"
 
+using std::endl;
+
 ConnTest::ConnTest( )
     : PPTConnection( 0 )
 {

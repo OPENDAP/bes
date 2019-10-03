@@ -37,7 +37,7 @@
 
 class TestResponseHandler: public BESResponseHandler {
 public:
-    TestResponseHandler(const string &name);
+    TestResponseHandler(const std::string &name);
     virtual ~TestResponseHandler();
 
     virtual void execute(BESDataHandlerInterface &dhi);
@@ -46,7 +46,7 @@ public:
     virtual void execute_all(BESDataHandlerInterface &dhi);
     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
 
-    static BESResponseHandler *TestResponseBuilder(const string &name);
+    static BESResponseHandler *TestResponseBuilder(const std::string &name);
 };
 
 #endif
