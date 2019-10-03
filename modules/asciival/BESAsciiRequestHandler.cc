@@ -37,6 +37,8 @@
 #include "BESDataNames.h"
 #include "config.h"
 
+using std::endl;
+
 BESAsciiRequestHandler::BESAsciiRequestHandler(const string &name) :
         BESRequestHandler(name)
 {

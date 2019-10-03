@@ -36,6 +36,8 @@
 #include "BESRequestHandler.h"
 #include "BESInternalError.h"
 
+using std::endl;
+
 BESRequestHandlerList *BESRequestHandlerList::_instance = 0;
 
 /** @brief add a request handler to the list of registered handlers for this

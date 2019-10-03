@@ -140,7 +140,7 @@ protected:
 
     virtual void clean() = 0;
 
-    BESInterface(ostream *strm);
+    BESInterface(std::ostream *strm);
 
     virtual ~BESInterface() { }
 

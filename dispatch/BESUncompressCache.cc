@@ -30,6 +30,8 @@
 #include "BESDebug.h"
 #include "TheBESKeys.h"
 
+using std::endl;
+
 BESUncompressCache *BESUncompressCache::d_instance = 0;
 bool BESUncompressCache::d_enabled = true;
 

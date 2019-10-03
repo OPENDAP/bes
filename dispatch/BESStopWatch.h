@@ -120,7 +120,7 @@ class BESStopWatch : public BESObj
      */
     virtual bool		start(string name, string reqID) ;
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void		dump( std::ostream &strm ) const ;
 } ;
 
 #endif // I_BESStopWatch_h

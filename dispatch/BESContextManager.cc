@@ -39,6 +39,8 @@
 #include "BESContextManager.h"
 #include "BESInfo.h"
 
+using std::endl;
+
 BESContextManager *BESContextManager::_instance = 0;
 
 /** @brief set context in the BES

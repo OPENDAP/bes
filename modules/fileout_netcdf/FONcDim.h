@@ -44,26 +44,26 @@
 class FONcDim : public BESObj
 {
 private:
-    string			_name ;
+    std::string			_name ;
     int				_size ;
     int				_dimid ;
     bool			_defined ;
     int				_ref ;
 public:
-    				FONcDim( const string &name, int size ) ;
+    				FONcDim( const std::string &name, int size ) ;
     virtual			~FONcDim() {}
     virtual void		incref() { _ref++ ; }
     virtual void		decref() ;
 
     virtual void		define( int ncid ) ;
 
-    virtual string		name() { return _name ; }
+    virtual std::string	name() { return _name ; }
     virtual int			size() { return _size ; }
     virtual void		update_size( int newsize ) { _size = newsize ; }
     virtual int			dimid() { return _dimid ; }
     virtual bool		defined() { return _defined ; }
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void		dump( std::ostream &strm ) const ;
 
     static int			DimNameNum ;
 } ;

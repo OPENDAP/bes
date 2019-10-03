@@ -33,6 +33,8 @@
 #include "BESReporterList.h"
 #include "BESReporter.h"
 
+using std::endl;
+
 BESReporterList *BESReporterList::_instance = 0 ;
 
 BESReporterList::BESReporterList()

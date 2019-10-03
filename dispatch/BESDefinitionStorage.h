@@ -136,7 +136,7 @@ public:
      *
      * @param strm output stream to use to dump the contents of this object
      */
-    virtual void		dump( ostream &strm ) const = 0 ;
+    virtual void		dump( std::ostream &strm ) const = 0 ;
 };
 
 #endif // BESDefinitionStorage_h_

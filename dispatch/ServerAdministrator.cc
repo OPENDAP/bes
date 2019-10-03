@@ -40,6 +40,7 @@
 #include "ServerAdministrator.h"
 
 using std::vector;
+using std::endl;
 
 #define MODULE "bes"
 

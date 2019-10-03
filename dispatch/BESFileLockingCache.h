@@ -208,7 +208,7 @@ public:
         d_cache_enabled = true;
     }
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // BESFileLockingCache_h_

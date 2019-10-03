@@ -42,6 +42,8 @@
 #include "BESDebug.h"
 #include "BESUtil.h"
 
+using std::endl;
+
 #define MODULE "bes"
 #define prolog std::string("BESSetContainerResponseHandler::").append(__func__).append("() - ")
 
