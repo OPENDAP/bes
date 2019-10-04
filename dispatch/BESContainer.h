@@ -261,7 +261,7 @@ public:
     virtual string access() = 0;
     virtual bool release() = 0;
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // BESContainer_h_

@@ -36,6 +36,8 @@
 #include "BESRequestHandler.h"
 #include "BESNotFoundError.h"
 
+using std::endl;
+
 
 /** @brief add a handler method to the request handler that knows how to fill
  * in a specific response object

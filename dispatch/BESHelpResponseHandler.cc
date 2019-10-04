@@ -38,6 +38,8 @@
 #include "BESRequestHandler.h"
 #include "BESResponseNames.h"
 
+using std::endl;
+
 BESHelpResponseHandler::BESHelpResponseHandler( const string &name )
     : BESResponseHandler( name )
 {

@@ -49,6 +49,8 @@
 #include "CmrNames.h"
 #include "CmrCache.h"
 
+using std::endl;
+
 #ifdef HAVE_ATEXIT
 #define AT_EXIT(x) atexit((x))
 #else

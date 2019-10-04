@@ -59,7 +59,7 @@ public:
 
     virtual void handle(Connection *c);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // BESServerHandler_h

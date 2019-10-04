@@ -34,6 +34,8 @@
 
 #include "FONgRequestHandler.h"
 
+using std::endl;
+
 // Added hrg 3/20/19
 bool FONgRequestHandler::d_use_byte_for_geotiff_bands = true;
 

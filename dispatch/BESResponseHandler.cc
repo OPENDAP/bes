@@ -39,6 +39,8 @@
 
 #include "TheBESKeys.h"
 
+using std::endl;
+
 // Experimental: Annotation service URL. Set this parameter to the URL
 // of an annotation service. If the value is not null, then a global
 // attribute will be added to the DAS/DMR response for every dataset

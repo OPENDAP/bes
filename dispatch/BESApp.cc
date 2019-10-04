@@ -34,6 +34,7 @@
 
 using std::cerr;
 using std::endl;
+using std::ostream;
 
 #include "BESApp.h"
 #include "BESInternalError.h"

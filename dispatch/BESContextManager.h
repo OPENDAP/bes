@@ -75,7 +75,7 @@ public:
 
     virtual void list_context(BESInfo &info);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 
     static BESContextManager * TheManager();
 };

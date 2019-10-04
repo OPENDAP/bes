@@ -83,12 +83,12 @@ public:
      * @param strm C++ i/o stream to dump the information to
      */
     virtual void dump(ostream & strm) const {
-        strm << BESIndent::LMarg << "dump - (" << (void *) this << ")" << endl;
+        strm << BESIndent::LMarg << "dump - (" << (void *) this << ")" << std::endl;
         BESIndent::Indent();
 #if 0
-        strm << BESIndent::LMarg << "das: " << *_das << endl;
+        strm << BESIndent::LMarg << "das: " << *_das << std::endl;
 #endif
-        strm << BESIndent::LMarg << "dds: " << *_dds << endl;
+        strm << BESIndent::LMarg << "dds: " << *_dds << std::endl;
         BESIndent::UnIndent();
     }
 } ;

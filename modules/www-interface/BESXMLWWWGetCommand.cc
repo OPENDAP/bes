@@ -42,6 +42,8 @@
 #include "BESSyntaxUserError.h"
 #include "BESDebug.h"
 
+using std::endl;
+
 BESXMLWWWGetCommand::BESXMLWWWGetCommand(const BESDataHandlerInterface &base_dhi) :
         BESXMLGetCommand(base_dhi)
 {

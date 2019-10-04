@@ -46,6 +46,8 @@
 #include "BESInternalError.h"
 #include "BESDebug.h"
 
+using std::endl;
+
 /** @brief uncompress a file with the .gz file extension
  *
  * @param src file that will be uncompressed

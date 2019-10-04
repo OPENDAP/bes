@@ -58,6 +58,6 @@ public:
 	virtual int run();
 	virtual int terminate(int sig = 0);
 
-	virtual void dump(ostream &strm) const;
+	virtual void dump(std::ostream &strm) const;
 };
 

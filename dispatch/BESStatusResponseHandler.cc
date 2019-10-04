@@ -36,6 +36,8 @@
 #include "BESStatus.h"
 #include "BESResponseNames.h"
 
+using std::endl;
+
 BESStatusResponseHandler::BESStatusResponseHandler( const string &name )
     : BESResponseHandler( name )
 {

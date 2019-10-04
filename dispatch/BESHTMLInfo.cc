@@ -34,6 +34,7 @@
 #include <iostream>
 
 using std::ostringstream;
+using std::endl;
 
 #include "BESHTMLInfo.h"
 #include "BESUtil.h"

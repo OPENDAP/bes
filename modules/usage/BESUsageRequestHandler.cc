@@ -39,6 +39,8 @@
 #include "BESDataNames.h"
 #include "config.h"
 
+using std::endl;
+
 BESUsageRequestHandler::BESUsageRequestHandler( const string &name )
     : BESRequestHandler( name )
 {

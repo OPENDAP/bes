@@ -34,6 +34,8 @@
 #include "BESInfo.h"
 #include "TheBESKeys.h"
 
+using std::endl;
+
 #define BES_DEFAULT_INFO_TYPE "txt"
 
 BESInfoList *BESInfoList::_instance = 0 ;
