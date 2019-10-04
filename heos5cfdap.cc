@@ -775,7 +775,8 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
                  it_ra != (*it_g)->getAttributes().end(); ++it_ra) {
                 //gen_dap_oneobj_das(at,*it_ra,NULL);
                 // TODO: ADDING a BES KEY
-                if((*it_ra)->getNewName()=="Conventions" &&((*it_g)->getNewName() == "HDFEOS_ADDITIONAL_FILE_ATTRIBUTES")) {
+                if((*it_ra)->getNewName()=="Conventions" &&((*it_g)->getNewName() == "HDFEOS_ADDITIONAL_FILE_ATTRIBUTES")
+                        && (true==HDF5RequestHandler::get_eos5_rm_convention_attr_path())) {
                     AttrTable *at_das = das.get_table(FILE_ATTR_TABLE_NAME);
                     if (NULL == at_das)
                         at_das = das.add_table(FILE_ATTR_TABLE_NAME, new AttrTable);

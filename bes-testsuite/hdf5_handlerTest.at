@@ -402,6 +402,10 @@ AT_BESCMD_RESPONSE_TEST([swath_2_3d_2x2yz_ef.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([za_1_2d_yz_ef.h5.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([za_1_2d_yz_ef.h5.dds.bescmd])
 
+#HDF-EOS5 CF "Conventions" attribute group path removed
+AT_BESCMD_RESPONSE_TEST([grid_1_2d_convention.h5.das.bescmd])
+
+
 #big string not ignored(Attributes and < netCDF java limit)
 AT_BESCMD_RESPONSE_TEST([t_big_str.h5.das.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([t_big_str.h5.data.bescmd])
