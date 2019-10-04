@@ -165,8 +165,8 @@ bool hasValue(vector<uint64> *stareVal, BaseType *stareIndices) {
  *  variable array
  *
  */
-/*int count(vector<uint64> stareVal, BaseType *stareIndices) {
-	uint64 *stareData;
+int count(vector<uint64> *stareVal, BaseType *stareIndices) {
+	vector<uint64> *stareData;
 
 	Array &stareSrc = dynamic_cast<Array&>(*stareIndices);
 
@@ -174,15 +174,15 @@ bool hasValue(vector<uint64> *stareVal, BaseType *stareIndices) {
 
 	stareData = extract_uint64_array(&stareSrc);
 
-	int counter = 0;
-	for (int i = 0; i < stareSrc.length(); i++) {
-		//for (vector<uint64>::iterator j = stareIndices.begin(), e = stareIndices.end(); j != e; j++)
-		if (stareData[i] == stareVal)
-			counter++;
+	unsigned int counter = 0;
+	for (vector<uint64>::iterator i = stareData->begin(), end = stareData->end(); i != end; i++) {
+		for (vector<uint64>::iterator j = stareVal->begin(), e = stareVal->end(); j != e; j++)
+			if (*i == *j)
+				counter++;
 	}
 
 	return counter;
-}*/
+}
 
 /**
  * Get pathname to file from dmr.
