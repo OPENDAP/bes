@@ -9,8 +9,7 @@ CLEANFILES = bes.conf bes.mds.conf mds_ledger.txt bes.log $(srcdir)/package.m4 \
 $(TESTSUITE) 
 
 EXTRA_DIST = dap $(TESTSUITE) $(TESTSUITE).at atlocal.in \
-$(srcdir)/handler_tests_macros.m4 bes.conf.in bes.mds.conf.in \
-$(srcdir)/package.m4
+bes.conf.in bes.mds.conf.in $(srcdir)/package.m4
 
 DISTCLEANFILES = atconfig
 
@@ -54,7 +53,7 @@ clean-local:
 
 %: %.at 
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
-$(TESTSUITE): $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
+$(TESTSUITE): $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
 
 # The `:;' works around a Bash 3.2 bug when the output is not writeable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac

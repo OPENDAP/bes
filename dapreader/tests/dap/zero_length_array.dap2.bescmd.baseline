@@ -9,10 +9,10 @@
             <Value>degrees_north</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>535a6f2c</Value>
+            removed checksum
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>170da4cf</Value>
+            removed checksum
         </Attribute>
     </Int32>
     <Int32 name="lon">
@@ -21,10 +21,10 @@
             <Value>degrees_east</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>a793a1fc</Value>
+            removed checksum
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>33fc3688</Value>
+            removed checksum
         </Attribute>
     </Int32>
     <Int32 name="time">
@@ -33,10 +33,10 @@
             <Value>seconds</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>00000000</Value>
+            removed checksum
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>00000000</Value>
+            removed checksum
         </Attribute>
     </Int32>
     <Float32 name="z">
@@ -53,10 +53,10 @@
             <Value>1.00000000</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>230409a7</Value>
+            removed checksum
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>fa670768</Value>
+            removed checksum
         </Attribute>
         <Map name="/lat"/>
         <Map name="/lon"/>
@@ -65,10 +65,10 @@
         <Dim name="/lat"/>
         <Dim name="/lon"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>85962e3b</Value>
+            removed checksum
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>fa670768</Value>
+            removed checksum
         </Attribute>
         <Map name="/lat"/>
         <Map name="/lon"/>
@@ -77,10 +77,10 @@
         <Dim name="/lat"/>
         <Dim name="/lon"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>2af4c771</Value>
+            removed checksum
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>a2f49d8d</Value>
+            removed checksum
         </Attribute>
         <Map name="/lat"/>
         <Map name="/lon"/>
