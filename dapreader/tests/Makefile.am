@@ -9,8 +9,7 @@ CLEANFILES = bes.conf bes.mds.conf mds_ledger.txt bes.log $(srcdir)/package.m4 \
 $(TESTSUITE) 
 
 EXTRA_DIST = dap $(TESTSUITE) $(TESTSUITE).at atlocal.in \
-$(srcdir)/handler_tests_macros.m4 bes.conf.in bes.mds.conf.in \
-$(srcdir)/package.m4
+bes.conf.in bes.mds.conf.in $(srcdir)/package.m4
 
 DISTCLEANFILES = atconfig
 
