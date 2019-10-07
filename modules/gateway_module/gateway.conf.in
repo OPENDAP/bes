@@ -23,16 +23,15 @@ BES.module.gateway=@bes_modules_dir@/libgateway_module.so
 #-----------------------------------------------------------------------#
 # Gateway.Whitelist - provides a list of URL of the form
 #       protocol://host.domain:port
-# that are allowed to be passed through the gateway module. If none
-# specified, then an error will be thrown during BES initialization. One
-# URL per line, as in the example below.
+# that are allowed to be passed through the gateway module. 
 #
+# One URL per line, as in the example below.
 # example:
 # Gateway.Whitelist=http://test.opendap.org/opendap
 # Gateway.Whitelist+=http://opendap.rpi.edu/opendap
 #
-Gateway.Whitelist=http://localhost
-
+#
+#
 # Gateway.MimeTypes - provides a list of mappings from data handler
 # module to returned mime types. These are the default types. Please do
 # not erase. One per line, as in these default values.
@@ -63,7 +62,7 @@ Gateway.MimeTypes+=h5:application/x-hdf5
 
 # Gateway.Cache.size - The maxium size of the Gateway cache, in megabytes.
 
-Gateway.Cache.dir=/tmp
-Gateway.Cache.prefix=gateway_cache
+Gateway.Cache.dir=/tmp/hyrax_gw
+Gateway.Cache.prefix=gw_
 Gateway.Cache.size=500
 

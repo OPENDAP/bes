@@ -35,19 +35,18 @@
 
 #include "BESResponseHandler.h"
 
-class TestResponseHandler : public BESResponseHandler {
+class TestResponseHandler: public BESResponseHandler {
 public:
-				TestResponseHandler( const string &name ) ;
-    virtual			~TestResponseHandler( void ) ;
+    TestResponseHandler(const std::string &name);
+    virtual ~TestResponseHandler();
 
-    virtual void		execute( BESDataHandlerInterface &dhi ) ;
-    virtual void		transmit( BESDataHandlerInterface &dhi ) ;
-    virtual void		execute_each( BESDataHandlerInterface &dhi ) ;
-    virtual void		execute_all( BESDataHandlerInterface &dhi ) ;
-    virtual void		transmit( BESTransmitter *transmitter,
-                                          BESDataHandlerInterface &dhi ) ;
+    virtual void execute(BESDataHandlerInterface &dhi);
+    virtual void transmit(BESDataHandlerInterface &dhi);
+    virtual void execute_each(BESDataHandlerInterface &dhi);
+    virtual void execute_all(BESDataHandlerInterface &dhi);
+    virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
 
-    static BESResponseHandler	*TestResponseBuilder( const string &name ) ;
+    static BESResponseHandler *TestResponseBuilder(const std::string &name);
 };
 
 #endif

@@ -8,7 +8,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=xml_data_handler
-M_VER=1.1.5
+M_VER=1.1.7
 
 AM_CPPFLAGS = -I$(top_srcdir)/modules/xml_data_handler -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -51,15 +51,8 @@ EXTRA_DIST = xml_data_handler.conf.in data
 CLEANFILES = *~ *.log *.sum
 DISTCLEANFILES = xml_data_handler.conf
 
-install-data-local: xml_data_handler.conf
-	@currdate=`date +"%y%m%d%H%M"`; \
-	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
-	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/xml_data_handler.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/xml_data_handler.conf $(DESTDIR)$(sysconfdir)/bes/modules/xml_data_handler.conf.$$currdate; \
-	$(INSTALL_DATA) xml_data_handler.conf $(DESTDIR)$(sysconfdir)/bes/modules/xml_data_handler.conf
-
-uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/xml_data_handler.conf
+moduledir = $(sysconfdir)/bes/modules
+module_DATA = xml_data_handler.conf
 
 xml_data_handler.conf: xml_data_handler.conf.in $(top_srcdir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > xml_data_handler.conf

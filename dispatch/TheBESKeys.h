@@ -38,14 +38,6 @@
 #include <vector>
 #include <string>
 
-#if 0
-using std::string;
-using std::map;
-using std::vector;
-using std::ifstream;
-#endif
-
-
 #include "BESObj.h"
 
 /** @brief mapping of key/value pairs defining different behaviors of an
@@ -67,7 +59,7 @@ using std::ifstream;
  #
  # Who is responsible for this server
  #
- BES.ServerAdministrator=support@opendap.org
+ BES.ServerAdministrator=email:support@opendap.org
 
  #
  # Default server port and unix socket information and whether the server

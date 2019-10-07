@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf xmlns="http://www.unidata.ucar.edu/namespaces/netcdf/ncml-2.2" location="/data/ncml/fnoc1.nc">
+  <!-- 1) Remove leaf dimension name within a variable -->
+  <variable name="v">
+    <remove name="lon" type="dimension"/>
+  </variable>
+  
+  <!-- 2) Remove dimension name within all variables -->
+  <remove name="time_a" type="dimension"/>
+
+</netcdf>

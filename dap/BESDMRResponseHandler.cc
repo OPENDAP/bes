@@ -22,9 +22,15 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
+#include "config.h"
+
 #include <sstream>
+#include <memory>
 
 #include <DMR.h>
+#include <D4Group.h>
+#include <D4Attributes.h>
+#include <D4BaseTypeFactory.h>
 
 #include "BESDMRResponseHandler.h"
 #include "BESDMRResponse.h"
@@ -33,6 +39,8 @@
 #include "BESDapTransmit.h"
 #include "BESContextManager.h"
 #include "GlobalMetadataStore.h"
+
+#include "BESLog.h"
 #include "BESDebug.h"
 
 using namespace bes;
@@ -79,9 +87,9 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
     GlobalMetadataStore::MDSReadLock lock;
 
     dhi.first_container();
-    if (mds) lock = mds->is_dmr_available(dhi.container->get_relative_name());
+    if (mds) lock = mds->is_dmr_available(*(dhi.container));
 
-    if (mds && lock() && dhi.container->get_dap4_constraint().empty()) {    // no CE
+    if (mds && lock() && dhi.container->get_dap4_constraint().empty() && dhi.container->get_dap4_function().empty()) {    // no CE
         // send the response
         mds->write_dmr_response(dhi.container->get_relative_name(), dhi.get_output_stream());
         // suppress transmitting a ResponseObject in transmit()
@@ -89,7 +97,7 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
     }
     else {
         DMR *dmr = 0;
-                if (mds && lock()) {
+        if (mds && lock() && dhi.container->get_dap4_function().empty()) {
             // If mds and lock(), the DDS is in the cache, get the _object_
             dmr = mds->get_dmr_object(dhi.container->get_relative_name());
 
@@ -114,12 +122,40 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
             // The RequestHandlers set the constraint and reset the container(s)
             BESRequestHandlerList::TheList()->execute_each(dhi);
 
-            // Cache the DMR if the MDS is not null but the response was not present.
-            if (mds && !lock()) {
-                dhi.first_container();  // must reset container; execute_each() iterates over all of them
-                BESDEBUG("dmr", __func__ << " Storing: " << dhi.container->get_real_name() << endl);
-                mds->add_responses(static_cast<BESDMRResponse*>(d_response_object)->get_dmr(),
-                    dhi.container->get_relative_name());
+            dhi.first_container();  // must reset container; execute_each() iterates over all of them
+
+#if ANNOTATION_SYSTEM
+            // Support for the experimental Dataset Annotation system. jhrg 12/19/18
+            if (!d_annotation_service_url.empty()) {
+                auto_ptr<D4Attribute> annotation_url(new D4Attribute(DODS_EXTRA_ANNOTATION_ATTR, attr_str_c));
+                annotation_url->add_value(d_annotation_service_url);
+
+                // If there is already a DODS_EXTRA container, use it
+                if (dmr->root() && dmr->root()->attributes()->get(DODS_EXTRA_ATTR_TABLE)) {
+                    dmr->root()->attributes()->get(DODS_EXTRA_ATTR_TABLE)->attributes()->add_attribute_nocopy(annotation_url.release());
+                }
+                else {
+                    // Make DODS_EXTRA and load the attribute into it.
+                    auto_ptr<D4Attribute> dods_extra(new D4Attribute(DODS_EXTRA_ATTR_TABLE, attr_container_c));
+                    dods_extra->attributes()->add_attribute_nocopy(annotation_url.release());
+
+                    // If the root group is null, set the factory (this is an edge case!)
+                    if (!dmr->root()) {
+                        auto_ptr<D4BaseTypeFactory> factory(new D4BaseTypeFactory);
+                        dmr->set_factory(factory.get());
+                        dmr->root()->attributes()->add_attribute_nocopy(dods_extra.release());
+                        dmr->set_factory(0);
+                    }
+                    else {
+                        dmr->root()->attributes()->add_attribute_nocopy(dods_extra.release());
+                    }
+                }
+            }
+#endif
+            // Cache the DMR if the MDS is not null but the response was not present, and..
+            // This request does not contain a server function call.
+            if (mds && !lock() && dhi.container->get_dap4_function().empty()) {
+                mds->add_responses(static_cast<BESDMRResponse*>(d_response_object)->get_dmr(), dhi.container->get_relative_name());
             }
         }
     }

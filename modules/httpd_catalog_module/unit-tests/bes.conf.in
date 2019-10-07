@@ -1,0 +1,42 @@
+#-----------------------------------------------------------------------#
+# Gateway module specific parameters
+#-----------------------------------------------------------------------#
+# Gateway.Whitelist - provides a list of URL of the form
+#       protocol://host.domain:port
+# that are allowed to be passed through the gateway module. If none
+# specified, then an error will be thrown during BES initialization. One
+# URL per line, as in the example below.
+#
+# example:
+# Gateway.Whitelist=http://test.opendap.org/opendap
+# Gateway.Whitelist+=http://opendap.rpi.edu/opendap
+#
+
+# Where we can go for stuff...
+Gateway.Whitelist=http://localhost
+Gateway.Whitelist+=http://test.opendap.org
+
+# Configure dat cache
+HttpResourceCache.dir=@abs_top_builddir@/modules/httpd_catalog_module/unit-tests/static-cache
+#HttpResourceCache.dir=/tmp/cache
+HttpResourceCache.prefix=httpd_cat_
+HttpResourceCache.size=500
+
+
+BES.Catalog.Default=catalog
+BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@
+BES.Catalog.catalog.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$
+
+
+Httpd_Catalog.MimeTypes=nc:application/x-netcdf
+Httpd_Catalog.MimeTypes+=h4:application/x-hdf
+Httpd_Catalog.MimeTypes+=h5:application/x-hdf5
+
+Httpd_Catalog.Collections=woo:https://www.opendap.org/pub/
+Httpd_Catalog.Collections+=iris:https://ds.iris.edu/files/products/
+
+
+BES.Catalog.RemoteResources.RootDirectory=UNUSED
+BES.Catalog.RemoteResources.TypeMatch+=unused:*;
+
+

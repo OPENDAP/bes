@@ -85,7 +85,7 @@ private:
 
 public:
     /// @brief Make an empty instance.
-    CatalogItem() : d_name(""), d_size(0), d_lmt(""), d_is_data(false),  d_type(unknown){ }
+    CatalogItem() : d_name(""), d_size(0), d_lmt(""), d_is_data(false),  d_type(unknown) { }
 
     /**
      * @brief Hold information about an item in a BES Catalog
@@ -101,7 +101,7 @@ public:
      * @param lmt
      * @param type
      */
-    CatalogItem(const string &name, size_t size, const string &lmt, item_type type)
+    CatalogItem(const std::string &name, size_t size, const std::string &lmt, item_type type)
         : d_name(name), d_size(size), d_lmt(lmt), d_is_data(false), d_type(type) { }
 
     /**
@@ -120,7 +120,7 @@ public:
      * @param is_data
      * @param type
      */
-    CatalogItem(const string &name, size_t size, const string &lmt, bool is_data, item_type type)
+    CatalogItem(const std::string &name, size_t size, const std::string &lmt, bool is_data, item_type type)
         : d_name(name), d_size(size), d_lmt(lmt), d_is_data(is_data), d_type(type) { }
 
     virtual ~CatalogItem() { }
@@ -156,7 +156,7 @@ public:
 
     void encode_item(BESInfo *info);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 } // namespace bes

@@ -10,7 +10,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=usage
-M_VER=4.2.7
+M_VER=4.2.9
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -39,15 +39,8 @@ EXTRA_DIST = usage.conf.in
 
 DISTCLEANFILES = usage.conf
 
-install-data-local: usage.conf
-	@currdate=`date +"%y%m%d%H%M"`; \
-	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
-	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/modules/usage.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/usage.conf $(DESTDIR)$(sysconfdir)/bes/modules/usage.conf.$$currdate; \
-	$(INSTALL_DATA) usage.conf $(DESTDIR)$(sysconfdir)/bes/modules/usage.conf
-
-uninstall-local:
-	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/usage.conf
+moduledir = $(sysconfdir)/bes/modules
+module_DATA = usage.conf
 
 usage.conf: usage.conf.in $(top_srcdir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > usage.conf

@@ -30,6 +30,10 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
+#include <memory>
+
 #include <DDS.h>
 
 #include "BESDDSResponseHandler.h"
@@ -52,6 +56,21 @@ BESDDSResponseHandler::BESDDSResponseHandler(const string &name) :
 
 BESDDSResponseHandler::~BESDDSResponseHandler()
 {
+}
+
+/**
+ * Is there a function call in this CE? This function tests for a left paren
+ * to indicate that a function is present. The CE will still be encoded at
+ * this point, so test for the escape characters (%28) too.
+ *
+ * @param ce The Constraint expression to test
+ * @return True if there is a function call, false otherwise
+ */
+static bool
+function_in_ce(const string &ce)
+{
+    // 0x28 is '('
+    return ce.find("(") != string::npos || ce.find("%28") != string::npos;   // hack
 }
 
 /**
@@ -82,7 +101,7 @@ void BESDDSResponseHandler::execute(BESDataHandlerInterface &dhi)
     GlobalMetadataStore::MDSReadLock lock;
 
     dhi.first_container();
-    if (mds) lock = mds->is_dds_available(dhi.container->get_relative_name());
+    if (mds) lock = mds->is_dds_available(*(dhi.container));
 
     if (mds && lock() && dhi.container->get_constraint().empty()) {
         // Unconstrained DDS requests; send the stored response
@@ -91,8 +110,10 @@ void BESDDSResponseHandler::execute(BESDataHandlerInterface &dhi)
         d_response_object = 0;
     }
     else {
-        DDS *dds = 0; // new DDS(NULL, "virtual");
-        if (mds && lock()) {
+        DDS *dds = 0;
+
+        // Constrained DDS request (but not a CE with a function).
+        if (mds && lock() && !function_in_ce(dhi.container->get_constraint())) {
             // If mds and lock(), the DDS is in the cache, get the _object_
             dds = mds->get_dds_object(dhi.container->get_relative_name());
             BESDDSResponse *bdds = new BESDDSResponse(dds);
@@ -102,13 +123,34 @@ void BESDDSResponseHandler::execute(BESDataHandlerInterface &dhi)
         }
         else {
             dds = new DDS(NULL, "virtual");
+
             d_response_object = new BESDDSResponse(dds);
 
             BESRequestHandlerList::TheList()->execute_each(dhi);
 
+            dhi.first_container();  // must reset container; execute_each() iterates over all of them
+
+#if ANNOTATION_SYSTEM
+            // Support for the experimental Dataset Annotation system. jhrg 12/19/18
+            if (!d_annotation_service_url.empty()) {
+                // resp_dds is a convenience object
+                BESDDSResponse *resp_dds = static_cast<BESDDSResponse*>(d_response_object);
+
+                // Add the Annotation Service URL attribute in the DODS_EXTRA container.
+                AttrTable *dods_extra = resp_dds->get_dds()->get_attr_table().find_container(DODS_EXTRA_ATTR_TABLE);
+                if (dods_extra)
+                    dods_extra->append_attr(DODS_EXTRA_ANNOTATION_ATTR, "String", d_annotation_service_url);
+                else {
+                    auto_ptr<AttrTable> new_dods_extra(new AttrTable);
+                    new_dods_extra->append_attr(DODS_EXTRA_ANNOTATION_ATTR, "String", d_annotation_service_url);
+                    resp_dds->get_dds()->get_attr_table().append_container(new_dods_extra.release(), DODS_EXTRA_ATTR_TABLE);
+                }
+            }
+#endif
+
             // Cache the DDS if the MDS is not null but the DDS response was not in the cache
-            if (mds && !lock()) {
-                dhi.first_container();  // must reset container; execute_each() iterates over all of them
+            if (mds && !lock() && !function_in_ce(dhi.container->get_constraint())) {
+                // moved dhi.first_container();  // must reset container; execute_each() iterates over all of them
                 mds->add_responses(static_cast<BESDDSResponse*>(d_response_object)->get_dds(),
                     dhi.container->get_relative_name());
             }

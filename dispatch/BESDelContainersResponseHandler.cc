@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,7 +36,6 @@
 #include "BESSilentInfo.h"
 #endif
 
-
 #include "BESDefinitionStorageList.h"
 #include "BESDefinitionStorage.h"
 #include "BESDefine.h"
@@ -48,12 +47,14 @@
 #include "BESResponseNames.h"
 #include "BESDataHandlerInterface.h"
 
-BESDelContainersResponseHandler::BESDelContainersResponseHandler( const string &name )
-    : BESResponseHandler( name )
+using std::endl;
+
+BESDelContainersResponseHandler::BESDelContainersResponseHandler(const string &name) :
+    BESResponseHandler(name)
 {
 }
 
-BESDelContainersResponseHandler::~BESDelContainersResponseHandler( )
+BESDelContainersResponseHandler::~BESDelContainersResponseHandler()
 {
 }
 
@@ -77,40 +78,30 @@ BESDelContainersResponseHandler::~BESDelContainersResponseHandler( )
  * @see BESContainerStorage
  * @see BESContainerStorageList
  */
-void
-BESDelContainersResponseHandler::execute( BESDataHandlerInterface &dhi )
+void BESDelContainersResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
 #if 0
-    dhi.action_name = DELETE_CONTAINERS_STR ;
-    BESInfo *info = new BESSilentInfo() ;
-    d_response_object = info ;
+    dhi.action_name = DELETE_CONTAINERS_STR;
+    BESInfo *info = new BESSilentInfo();
+    d_response_object = info;
 #endif
 
-    string store_name = dhi.data[STORE_NAME] ;
-    if( store_name == "" )
-    {
-	store_name = PERSISTENCE_VOLATILE ;
+    string store_name = dhi.data[STORE_NAME];
+    if (store_name == "") {
+        store_name = CATALOG /* DEFAULT jhrg 12/27/18 */;
     }
-    BESContainerStorage *cp =
-	BESContainerStorageList::TheList()->find_persistence( store_name ) ;
-    if( cp )
-    {
-	bool deleted =  cp->del_containers( ) ;
-	if( !deleted )
-	{
-	    string line = (string)"Unable to delete containers from \""
-			  + dhi.data[STORE_NAME]
-			  + "\" container store" ;
-	    throw BESSyntaxUserError( line, __FILE__, __LINE__ ) ;
-	}
+
+    BESContainerStorage *cp = BESContainerStorageList::TheList()->find_persistence(store_name);
+    if (cp) {
+        bool deleted = cp->del_containers();
+        if (!deleted) {
+            string line = (string) "Unable to delete containers from \"" + dhi.data[STORE_NAME] + "\" container store";
+            throw BESSyntaxUserError(line, __FILE__, __LINE__);
+        }
     }
-    else
-    {
-	string line = (string)"Container storage \""
-		      + dhi.data[STORE_NAME]
-		      + "\" does not exist. "
-		      + "Unable to delete containers" ;
-	throw BESSyntaxUserError( line, __FILE__, __LINE__ ) ;
+    else {
+        string line = (string) "Container storage \"" + dhi.data[STORE_NAME] + "\" does not exist. " + "Unable to delete containers";
+        throw BESSyntaxUserError(line, __FILE__, __LINE__);
     }
 }
 
@@ -126,16 +117,15 @@ BESDelContainersResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void
-BESDelContainersResponseHandler::transmit( BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/ )
+void BESDelContainersResponseHandler::transmit(BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/)
 {
 #if 0
     if( d_response_object )
     {
-	BESInfo *info = dynamic_cast<BESInfo *>(d_response_object) ;
-	if( !info )
-	    throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
-	info->transmit( transmitter, dhi ) ;
+        BESInfo *info = dynamic_cast<BESInfo *>(d_response_object);
+        if( !info )
+        throw BESInternalError( "cast error", __FILE__, __LINE__ );
+        info->transmit( transmitter, dhi );
     }
 #endif
 }
@@ -146,18 +136,16 @@ BESDelContainersResponseHandler::transmit( BESTransmitter */*transmitter*/, BESD
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESDelContainersResponseHandler::dump( ostream &strm ) const
+void BESDelContainersResponseHandler::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESDelContainersResponseHandler::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    BESResponseHandler::dump( strm ) ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESDelContainersResponseHandler::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    BESResponseHandler::dump(strm);
+    BESIndent::UnIndent();
 }
 
 BESResponseHandler *
-BESDelContainersResponseHandler::DelContainersResponseBuilder( const string &name )
+BESDelContainersResponseHandler::DelContainersResponseBuilder(const string &name)
 {
-    return new BESDelContainersResponseHandler( name ) ;
+    return new BESDelContainersResponseHandler(name);
 }

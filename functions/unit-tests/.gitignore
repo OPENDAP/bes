@@ -11,3 +11,4 @@ MakeNormalizedMaskFunctionTest
 ScaleUtilTest
 RangeFunctionTest
 ScaleUtilTest3D
+/BBoxCombFunctionTest

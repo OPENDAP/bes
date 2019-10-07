@@ -33,6 +33,8 @@
 
 #include "curl_utils.h"
 
+using namespace std;
+
 namespace gateway {
 
 // Set this to 1 to turn on libcurl's verbose mode (for debugging).
@@ -49,7 +51,7 @@ const char *http_client_errors[CLIENT_ERR_MAX - CLIENT_ERR_MIN +1] =
         "Payment Required.",
         "Forbidden: Contact the server administrator.",
         "Not Found: The data source or server could not be found.\n"
-            "Often this means that the OPeNDAP server is missing or needs attention;\n"
+            "Often this means that the OPeNDAP server is missing or needs attention.\n"
             "Please contact the server administrator.",
         "Method Not Allowed.",
         "Not Acceptable.",

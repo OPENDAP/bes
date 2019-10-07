@@ -1,28 +1,23 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir)
-
-# These are not used by automake but are often useful for certain types of
-# debugging. The best way to use these is to run configure as:
-#     export CXXFLAGS='...'; ./configure --disable-shared
-# the --disable-shared is not required, but it seems to help with debuggers.
-CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
-TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
-
 CLEANFILES = *.log *.sum $(srcdir)/package.m4
 
-EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) atlocal.in ff hdf4 hdf5 nc show ssfunc
+EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) atlocal.in ff hdf4 hdf5 nc show ssfunc \
+mds_initial_state
 
 DISTCLEANFILES = $(TESTSUITE)
+
+mds_cachedir = $(datadir)/mds
+mds_cache_DATA = $(srcdir)/mds_initial_state/*
 
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te
 
-TESTSUITE = $(srcdir)/besTest
+TESTSUITE = $(srcdir)/testsuite
 
-check-local: atconfig atlocal $(TESTSUITE)
+check-local: atconfig atlocal $(TESTSUITE) install-data
 	@if bescmdln -x "show version;"; \
 		then $(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS); \
 		else echo "no bes found, not running cmdln-based tests"; \
@@ -35,9 +30,9 @@ distclean-local:
 	-rm atconfig
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
+
 $(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4
-	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
-	mv $@.tmp $@
+	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
 # The `:;' works around a Bash 3.2 bug when the output is not writable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac

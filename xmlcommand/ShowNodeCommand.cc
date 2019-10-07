@@ -35,6 +35,8 @@
 
 #include "ShowNodeCommand.h"
 
+using std::endl;
+
 using namespace bes;
 
 ShowNodeCommand::ShowNodeCommand(const BESDataHandlerInterface &base_dhi) :

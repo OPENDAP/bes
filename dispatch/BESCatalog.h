@@ -60,12 +60,14 @@ private:
 public:
     BESCatalog(const std::string &catalog_name);
 
-    virtual ~BESCatalog()
+    virtual ~BESCatalog();
+#if 0
     {
         // TODO delete d_utils when it's no longer a singleton.
         // Or leave that class as the weird singleton it is and treat this
         // as a weak pointer. jhrg 7/21/18
     }
+#endif
 
     /**
      * @brief Increase the count of clients that reference this catalog.
@@ -129,10 +131,10 @@ public:
     // a directory, but BESCatalogUtils::include() on a file).
     virtual bes::CatalogNode *get_node(const std::string &path) const = 0;
 
-    virtual void get_site_map(const string &prefix, const string &node_suffix, const string &leaf_suffix, ostream &out,
-        const string &path = "/") const = 0;
+    virtual void get_site_map(const std::string &prefix, const std::string &node_suffix, const std::string &leaf_suffix, std::ostream &out,
+        const std::string &path = "/") const = 0;
 
-    virtual void dump(ostream &strm) const = 0;
+    virtual void dump(std::ostream &strm) const = 0;
 };
 
 #endif // I_BESCatalog_h

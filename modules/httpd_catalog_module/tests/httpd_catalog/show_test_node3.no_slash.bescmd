@@ -1,0 +1,5 @@
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[thread:http-nio-8080-exec-4-42][bes_client:/-2]">
+  <bes:setContext name="errors">xml</bes:setContext>
+  <!-- The 'missing' slash after test triggers an exception -->
+  <bes:showNode node="/RemoteResources/test" />
+</bes:request>

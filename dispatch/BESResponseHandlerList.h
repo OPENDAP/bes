@@ -64,6 +64,8 @@ private:
     static BESResponseHandlerList * _instance;
     map<string, p_response_handler> _handler_list;
 
+    friend class resplistT;
+
 protected:
     BESResponseHandlerList(void)
     {
@@ -83,7 +85,7 @@ public:
 
     virtual string get_handler_names();
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 
     static BESResponseHandlerList * TheList();
 };

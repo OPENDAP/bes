@@ -91,8 +91,8 @@ CPPUNIT_TEST_SUITE( defT );
         cout << "*****************************************" << endl;
         cout << "Entered defT::run" << endl;
 
-        BESDefinitionStorageList::TheList()->add_persistence(new BESDefinitionStorageVolatile( PERSISTENCE_VOLATILE));
-        BESDefinitionStorage *store = BESDefinitionStorageList::TheList()->find_persistence( PERSISTENCE_VOLATILE);
+        BESDefinitionStorageList::TheList()->add_persistence(new BESDefinitionStorageVolatile( DEFAULT));
+        BESDefinitionStorage *store = BESDefinitionStorageList::TheList()->find_persistence( DEFAULT);
 
         cout << "*****************************************" << endl;
         cout << "add d1, d2, d3, d4, d5" << endl;

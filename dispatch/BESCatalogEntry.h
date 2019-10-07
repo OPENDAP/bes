@@ -149,7 +149,7 @@ public:
         return _entry_list.end();
     }
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // I_BESCatalogEntry_h

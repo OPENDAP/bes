@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="joinNew_simple_2.ncml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Array name="day">
+        <String/>
+        <dimension name="day" size="4"/>
+    </Array>
+    <Array name="V">
+        <Int32/>
+        <dimension name="day" size="4"/>
+        <dimension name="station" size="5"/>
+    </Array>
+    <Array name="V_expected">
+        <Int32/>
+        <dimension name="day" size="4"/>
+        <dimension name="station" size="5"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>
+

@@ -1,7 +1,5 @@
-#-----------------------OPeNDAP BES Initialization file-----------------#
+#------------------ OPeNDAP BES Initialization file --------------------#
 #                                                                       #
-#       National Center for Atmospheric Research (NCAR)                 #
-#       High Altitude Observatory (HAO)	                                #
 #       Key entries for OPeNDAP BES run time behavior                   #
 #                                                                       #
 #-----------------------------------------------------------------------#
@@ -10,7 +8,17 @@
 # administrator. This is the address where users should send basic
 # questions about the server and the data it provides.
 
-BES.ServerAdministrator=admin.email.address@your.domain.name
+SupportEmail=support@opendap.org
+
+BES.ServerAdministrator=email:support@opendap.org
+BES.ServerAdministrator+=organization:OPeNDAP Inc.
+BES.ServerAdministrator+=street:165 NW Dean Knauss Dr.
+BES.ServerAdministrator+=city:Narragansett
+BES.ServerAdministrator+=region:RI
+BES.ServerAdministrator+=postalCode:02882
+BES.ServerAdministrator+=country:US
+BES.ServerAdministrator+=telephone:+1.401.575.4835
+BES.ServerAdministrator+=website:http://www.opendap.org
 
 # User and Group for the BES
 #
@@ -32,6 +40,10 @@ BES.LogVerbose=no
 
 # Set to 'yes' to use local time in the bes log. UTC is used by default.
 # BES.LogTimeLocal=yes
+
+# Set this to true to suppress source file name from the log file. The 
+# default value is false.
+# BES.DoNotLogSourceFilenames
 
 # Set the value of BES.Catalog.catalog.RootDirectory to the root
 # directory of the data this BES will serve. If you are not using the 
@@ -59,8 +71,8 @@ BES.Catalog.catalog.FollowSymLinks=No
 # easy to see what's in the cache at any given time, even when it's a 
 # directory like /tmp that's used by many programs. 
 
-BES.UncompressCache.dir=/tmp
-BES.UncompressCache.prefix=uncompress_cache
+BES.UncompressCache.dir=/tmp/hyrax_ux
+BES.UncompressCache.prefix=ux_
 BES.UncompressCache.size=500
 
 # Configure the BES timeout feature. In practice, the timeout value is
@@ -78,10 +90,32 @@ BES.UncompressCache.size=500
 
 # BES.CancelTimeoutOnSend=true
 
-#-----------------------------------------------------------------------#
+# Experimental: Annotation service URL. Set this parameter to the URL
+# of an annotation service. If the value is not null, then a global
+# attribute will be added to the DAS/DMR response for every dataset
+# available using this server so that clients can access the annotation
+# service. The name of the attribute will be 'Annotation'.
+
+BES.AnnotationServiceURL = 
+
+# BES.AnnotationServiceURL = http://localhost:8083/Feedback/form
+
+#########################################################################
+#                                                                       #
 # NOTE: It is unlikely that you will need to change anything below      #
 #       this comment.                                                   #
 #-----------------------------------------------------------------------#
+
+# Because the Hyrax is often tasked with accessing services using the 
+# internets we maintain a whitelist of services which Hyrax is allowed 
+# to access. By default, Hyrax is allowed to access itself. If additional
+# services are to be added to the whitelist do so by adding the new 
+# service URL to the site.conf file using += syntax like this:
+#
+#     Gateway.Whitelist+=http://test.opendap.org/opendap
+# 
+#
+Gateway.Whitelist=http://localhost
 
 # If you intend to use the BES as a standalone server, set the value
 # of BES.Data.RootDirectory to point to your data and disregard the

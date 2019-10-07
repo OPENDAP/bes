@@ -80,11 +80,6 @@ BESCatalogList *BESCatalogList::d_instance = 0;
 BESCatalogList *
 BESCatalogList::TheCatalogList()
 {
-#if 0
-    pthread_once(&BESCatalogList_instance_control, initialize_instance);
-#endif
-
-
     if (d_instance == 0) initialize_instance();
 
     return d_instance;
@@ -96,15 +91,6 @@ BESCatalogList::TheCatalogList()
  */
 void BESCatalogList::initialize_instance()
 {
-#if 0
-    if (d_instance == 0) {
-        d_instance = new BESCatalogList;
-#ifdef HAVE_ATEXIT
-        atexit(delete_instance);
-#endif
-    }
-#endif
-
     d_instance = new BESCatalogList;
 #ifdef HAVE_ATEXIT
     atexit(delete_instance);
@@ -129,17 +115,6 @@ BESCatalogList::BESCatalogList()
 {
     bool found = false;
     string key = "BES.Catalog.Default";
-
-#if 0
-    // FIXME Broken logic: If the default catalog key is not found, it should result in an exception...
-    // jhrg 7/21/18
-    try {
-        TheBESKeys::TheKeys()->get_value(key, d_default_catalog_name, found);
-    }
-    catch (BESError &) {
-        found = false;
-    }
-#endif
 
     // The only way get_value() throws is when a single key has multiple values.
     // However, TheKeys() throws if the bes.conf file cannot be found.

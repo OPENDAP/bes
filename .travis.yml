@@ -20,9 +20,9 @@ branches:
   only:
   - master
   - coverity_scan
-  - travis
 
 addons:
+  ssh_known_hosts: www.opendap.org
   coverity_scan:
     project:
       name: "OPENDAP/bes"
@@ -37,71 +37,258 @@ addons:
     - libcurl4-openssl-dev
     - libcppunit-dev
     - libicu-dev
-
-#    - sshpass
-#   ssh_known_hosts: www.opendap.org
+    - debhelper
+    - devscripts
+    - lintian
+    - fakeroot
+    - build-essential
+    - sshpass
 
 env:
   global:
-  # NB: This value of $prefix must be shared between the hyrax-deps, libdap and bes builds.
-  - prefix=$HOME/install
-  - PATH=$prefix/bin:$prefix/deps/bin:$PATH
-  - TESTSUITEFLAGS=-j7  
-  # COVERITY_SCAN_TOKEN
-  - secure: "KNE6gkK7+WEQkNLiW/oap/3E/YSq6nzH6icXWpgA3MZj2KX0i6IzQgteeEGFUC1vDTzkCpqSidvGxdd22V33s0sHDuLRI5e17VFMjI5WyWjRQaXMhWmyO5/ofx7AArvaCWq6w6zfn1T/LiIuHXc14Rg8uuWEgDGWM0USiSbMepc="
-  # AWS_ACCESS_KEY_ID
-  - secure: "NNcSfmrBN9ctc8LoRVeLcYPzf2wYCSLUNCdNuVEsBdOMa5JLTdFMBEhfrgkLmiUSf1K+V97tw3rJuRcdwAXbwBMuJ0o8+gDG4c63clDDWYDXa08gdpKhy0FFqlUohVeMNpfCawvTm46/p6P0SlKg245by5OcVZ4HfjIGUasJHEw="
-  # AWS_SECRET_ACCESS_KEY
-  - secure: "BVETDaGI/cwfUHdvsGPkV1o7jd6OnqyvtFCPk0WsmCWh6PdpwXQ8D4yFdk4jejWxa0YFdRiCgK3ThHqqzv+6pDxrMnpYOx2O+ZjK//ErECjDa+OCJr2ObCwlqOPE6+4aVmPDz5ecjd2inVR5CfL5/Kt3Zgn4U9fNBUz9OMYpRF4="
+    # NB: This value of $prefix must be shared between the hyrax-deps, libdap and bes builds.
+    - prefix=$HOME/install
+    - PATH=$prefix/bin:$prefix/deps/bin:$PATH
+    - TESTSUITEFLAGS=-j7
+    # Change this when libdap version numbers change
+    - LIBDAP_RPM_VERSION=3.20.4-1
+    # SONAR_LOGIN, made using "travis encrypt --org -r OPENDAP/bes SONAR_LOGIN=335df..."
+    - secure: "TmoFcgeIyAEjFyrlqB6rhdUhDqPJfxVZmT5fewgVHj0xm767VZ6DU21mM6ZHgNGyk99TzX0Gx/dwSqbsUj18hSSAvEa7fJQSKJ5IBJvTeMKhXn1DPPG9VpuZ4ti5afRDiNr6EJKbVxwBTkz+3798S8LajPuXGupYupir8IJQCt8="
+    # SONAR_MODULES_LOGIN, using "travis encrypt --org -r OPENDAP/bes SONAR_MODULES_LOGIN=42ba..."
+    - secure: "V3fMZgzMRRB0xFQMTvXf2fFPHIdwvg2y6bNFKqSGI5HP2sZEtc7XqSC4hjboR9RjnyZY/H1L/EuYQCS45gmJMsmtzo4g1Cn0oTfuPRJzDSi00jRlB1wUl5p1pU0Fdv2ffrGF4m6/SRfYFT0KkR/Tp8hdIoYx5/8R4MajysABMT4="
+    # COVERITY_SCAN_TOKEN
+    - secure: "KNE6gkK7+WEQkNLiW/oap/3E/YSq6nzH6icXWpgA3MZj2KX0i6IzQgteeEGFUC1vDTzkCpqSidvGxdd22V33s0sHDuLRI5e17VFMjI5WyWjRQaXMhWmyO5/ofx7AArvaCWq6w6zfn1T/LiIuHXc14Rg8uuWEgDGWM0USiSbMepc="
+    # AWS_ACCESS_KEY_ID
+    - secure: "NNcSfmrBN9ctc8LoRVeLcYPzf2wYCSLUNCdNuVEsBdOMa5JLTdFMBEhfrgkLmiUSf1K+V97tw3rJuRcdwAXbwBMuJ0o8+gDG4c63clDDWYDXa08gdpKhy0FFqlUohVeMNpfCawvTm46/p6P0SlKg245by5OcVZ4HfjIGUasJHEw="
+    # AWS_SECRET_ACCESS_KEY
+    - secure: "BVETDaGI/cwfUHdvsGPkV1o7jd6OnqyvtFCPk0WsmCWh6PdpwXQ8D4yFdk4jejWxa0YFdRiCgK3ThHqqzv+6pDxrMnpYOx2O+ZjK//ErECjDa+OCJr2ObCwlqOPE6+4aVmPDz5ecjd2inVR5CfL5/Kt3Zgn4U9fNBUz9OMYpRF4="
+    # GIT_UID travis-ci-opendap
+    - secure: "eUL/RY4kJD9sb3q98Xbfbcdhs6eyFWkfWNb0tvRzksBi/+tYiuojsek0qoBFZnRnO0wwyDAaDrZgu2yoLQTBxGSTqCsYaoDiFtw2m8aW3r+FdjpfmyVR52U9vMoZtpiPGYYM9utlyQ6YRNhzq+XzDJ4juygoIlzbp7qXTALqIL8="
+    # GIT_PSWD for travis-ci-opendap
+    - secure: "jdEmVdM35qoAmIXTqTCL11IbjEMh6I+jrov/nqQ4wdoJf79O7H7tuuDVkIJ+5RSIjUXsIYgfQAG8Cn+DIJRMnv7mj7TrWGS9LT22bBGErzCcCkrHGKMDH4okbd8cCNQcnb/9woYSYZ38U8QCBsYH1Ma2r4bFU4jAY2KiMOyaY6w="    
+    # WOO_UID for travis
+    - secure: "YKSsiV7fjngZ+Xha9oyHUT2Xirz8Iy7bghAzlGk2TyXZwWGbZyFDMeTfE0ZGaAEykhNF9fsqsD6XMzFlwBcYIB5ocP6LfnQ1qMualHVTVbVldo/T2e8uv/9jVIAnfwwT2IbgWpVUXZ1I24kIqHCxnZWYZpbfclSEDnQnkYG9tMg="
 
-# The env var $TRAVIS_AT_OO must be made using 
-# "travis encrypt TRAVIS_AT_OO=<secret> -r OPENDAP/bes"
-# where -r <...> is the name of the travis repo from our Travis landing page
-# and the <secret> is the 'travis' user's password on www.opendap.org.
-#
-# TRAVIS_AT_OO
-# - secure: "J0HEROlR4GbOB1ZSoUIo5mEUzVzmxTKSvpS/jrAWbFB5JJHxCHd/oQh5dzTK9NiDaGGPN9Y2acA8Oyuz4Hsle7+DgAWvtGr4+hFqfYx7oLsxhhb3VTRNivuSsldsbNCUO4ebtezArH4hVLYw6ScwgDpnQfVrPkBMpyf4Iu3UMYs="
+
 
 before_install:
+- pip install --user awscli
 
 # hyrax-dependencies-build.tar.gz includes/makes the build directory
 install:
-- (cd $TRAVIS_BUILD_DIR && curl -s -O https://s3.amazonaws.com/opendap.travis.build/hyrax-dependencies-build.tar.gz) 
+- aws s3 cp s3://opendap.travis.build/hyrax-dependencies-build.tar.gz $TRAVIS_BUILD_DIR
 - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/hyrax-dependencies-build.tar.gz
-- (cd $TRAVIS_BUILD_DIR && curl -s -O https://s3.amazonaws.com/opendap.travis.build/libdap-build.tar.gz) 
+- aws s3 cp s3://opendap.travis.build/libdap-build.tar.gz $TRAVIS_BUILD_DIR
 - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/libdap-build.tar.gz
-
-# - aws s3 cp s3://opendap.travis.build/libdap-build.tar.gz $TRAVIS_BUILD_DIR
-# - aws s3 cp s3://opendap.travis.build/hyrax-dependencies-build.tar.gz $TRAVIS_BUILD_DIR
 
 before_script:
 - printenv
 - autoreconf --force --install --verbose
 
+# Build all the stages for 'master'. For a PR, run the 'build' and 'package' stages,
+# but do not run the scan.
+stages:
+- name: build
+  if:  branch = foo
+- name: scan
+  if:  branch = foo AND NOT type = pull_request
+- name: package
+  if:  branch = master
+
 jobs:
-  stages:
-  - name: build
-    if:  branch != coverity_scan
   include:
+  - stage: scan
+    addons: 
+      sonarcloud: 
+    script:
+    - export BES_BUILD=sonar-bes-framework
+    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+    - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+    - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
+
+  - stage: scan
+    addons: 
+      sonarcloud: 
+    script:
+    - export BES_BUILD=sonar-bes-modules
+    # Adding this 'fetch --unshallow' since I think sonar is excluding the hdf handlers
+    # because they are submodules.
+    - git fetch --unshallow
+    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+    - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+    - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
+
   - stage: build
     script: 
-    - export BES_MAIN_BUILD=yes
+    - export BES_BUILD=main
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-    - make -j7 && make check -j7 && make install
+    - make -j7 && make install && besctl start && make check -j7 && besctl stop
+
   - stage: build
     script:
-    - export BES_MAIN_BUILD=no
+    - export BES_BUILD=distcheck
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
     - make distcheck -j7
+  
+  # Debian Target (unused)
+  # - stage: package
+  #  script: 
+  #  - export BES_BUILD=deb
+  #  - mkdir -p $prefix/debbuild
+  #  - docker run --volume $prefix/debbuild:/root --volume $TRAVIS_BUILD_DIR:/root/travis
+  #               --env OS=ubuntu14 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
+  #               opendap/ubuntu14_hyrax_build:1.4 /root/travis/build-deb.sh
 
-# using: 'test -z "$AWS_ACCESS_KEY_ID" || ...' keeps after_script from running
-# the aws cli for forked PRs (where secure env vars are null). I could've used
-# an 'if' to block out the whole script, but I didn't... jhrg 3/21/18
+  - stage: package
+    script: 
+    - export BES_BUILD=centos6
+    - mkdir -p $prefix/rpmbuild
+    - docker run --volume $prefix/rpmbuild:/root/rpmbuild --volume $TRAVIS_BUILD_DIR:/root/travis
+                 --env OS=centos6 --env DIST=el6 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
+                 --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+                 opendap/centos6_hyrax_builder:1.3 /root/travis/build-rpm.sh
+
+  - stage: package
+    script: 
+    - export BES_BUILD=centos7
+    - mkdir -p $prefix/rpmbuild
+    - docker run --volume $prefix/rpmbuild:/root/rpmbuild --volume $TRAVIS_BUILD_DIR:/root/travis
+                 --env OS=centos7 --env DIST=el7 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
+                 --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+                 opendap/centos7_hyrax_builder:1.2 /root/travis/build-rpm.sh
+
+  - stage: package
+    script:
+    - export BES_BUILD=srcdist
+    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
+    - make dist -j7
+    - cp bes-*.tar.gz bes-snapshot.tar.gz;
+    #- echo "Test is a test my besty." > bes-3.20.1999.tar.gz;
+    #- cp bes-3.20.1999.tar.gz bes-snapshot.tar.gz;
+
+    
 after_script:
-- LOG_FILE_TGZ=bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz
-- tar -czf /tmp/${LOG_FILE_TGZ} `find . -name timing -prune -o -name '*.log' -print -o -name '*site_map.txt' -print`
-- sudo apt-get update -qq
-- pip install --user awscli
-- test -z "$AWS_ACCESS_KEY_ID" || aws s3 cp /tmp/${LOG_FILE_TGZ} s3://opendap.travis.build/
+- ./upload-test-results.sh
 
-# - sshpass -p ${TRAVIS_AT_OO} scp /tmp/${LOG_FILE_TGZ} travis@www.opendap.org:tmp/${LOG_FILE_TGZ}
+before_deploy:
+# Make sure that we have the target dir...
+- export DEPLOY="S3"
+- test -d $TRAVIS_BUILD_DIR/package || mkdir $TRAVIS_BUILD_DIR/package;
+#
+# Get creds for pushing snapshots to w.o.o.
+- if  test "$BES_BUILD" = "srcdist" || test "$BES_BUILD" = "centos6" || test "$BES_BUILD" = "centos7" ; 
+    then
+        ls -l ./travis;
+        openssl aes-256-cbc -K $encrypted_f3adba893add_key -iv $encrypted_f3adba893add_iv -in ./travis/woo_deploy_rsa_enc -out /tmp/woo_deploy_rsa -d;
+        eval "$(ssh-agent -s)";
+        chmod 600 /tmp/woo_deploy_rsa;
+        ssh-add /tmp/woo_deploy_rsa;
+    fi
+# Source distribution prep
+- if test "$BES_BUILD" = "srcdist"; 
+    then
+        cp bes-*.tar.gz $TRAVIS_BUILD_DIR/package;
+        cp bes-snapshot.tar.gz $TRAVIS_BUILD_DIR/package;
+    fi
+    
+# The following is part of deb(ian) target
+# - if test $BES_BUILD = deb; then mv $TRAVIS_BUILD_DIR/../bes*-*_amd64.deb $TRAVIS_BUILD_DIR/package/; fi
+
+# CentOS-7  distribution prep
+- if test "$BES_BUILD" = "centos6"; 
+   then 
+        cp $prefix/rpmbuild/RPMS/x86_64/* $TRAVIS_BUILD_DIR/package/; 
+        for file in ${prefix}/rpmbuild/RPMS/x86_64/*; do
+            echo "Updating BES CentOS-6 snapshot with ${file}";
+            ver=`basename ${file} | sed -e "s|bes-debuginfo-||g" -e "s|bes-devel-||g" -e "s|bes-||g" -e "s|.static.el6.x86_64.rpm||g"`;
+            snap=`basename ${file} | sed "s|${ver}|snapshot|g"`;
+            cp ${file} ${TRAVIS_BUILD_DIR}/package/${snap};
+        done
+    fi
+# CentOS-6 distribution prep
+- if test "$BES_BUILD" = "centos7"; 
+    then 
+        cp $prefix/rpmbuild/RPMS/x86_64/* $TRAVIS_BUILD_DIR/package/;
+        for file in ${prefix}/rpmbuild/RPMS/x86_64/*; do
+            echo "Updating BES CentOS-7 snapshot with ${file}";
+            ver=`basename ${file} | sed -e "s|bes-debuginfo-||g" -e "s|bes-devel-||g" -e "s|bes-||g" -e "s|.static.el7.x86_64.rpm||g"`;
+            snap=`basename ${file} | sed "s|${ver}|snapshot|g"`;
+            cp ${file} ${TRAVIS_BUILD_DIR}/package/${snap};
+        done
+    fi
+# Check for the stuff...
+- ls -l $TRAVIS_BUILD_DIR/package
+
+# The deploy section copies the snapshot build product our S3 bucket and to www.opendap.org
+deploy:
+
+  # Push all build results to our S3 bucket
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    bucket: opendap.travis.build
+    skip_cleanup: true
+    local_dir: $TRAVIS_BUILD_DIR/package
+    on:
+      branch: master
+      condition: $BES_BUILD =~ ^deb|centos7|centos6|srcdist$
+  
+  # Push CentOS-7 snapshot rpms to w.o.o
+  - provider: script
+    skip_cleanup: true
+    env: DEPLOY="NOT_S3"
+    script: 
+      - scp -v $TRAVIS_BUILD_DIR/package/*snapshot*el7* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-7.x;
+    on:
+      branch: master
+      condition: $BES_BUILD =~ ^centos7$
+
+  # Push CentOS-6 snapshot rpms to w.o.o
+  - provider: script
+    skip_cleanup: true
+    env: DEPLOY="NOT_S3"
+    script:
+      - scp -v $TRAVIS_BUILD_DIR/package/*snapshot*el6* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-6.x;
+    on:
+      branch: master
+      condition: $BES_BUILD =~ ^centos6$
+
+  # Push source snapshot rpms to w.o.o
+  - provider: script
+    skip_cleanup: true
+    env: DEPLOY="NOT_S3"
+    script: 
+      - scp -v $TRAVIS_BUILD_DIR/package/*snapshot.tar.gz $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src;
+    on:
+      branch: master
+      condition: $BES_BUILD =~ ^srcdist$
+
+# The after_deploy section grabs the hyrax-docker project, sets the current snapshot time 
+# and pushes the result to GitHub. This push triggers TravisCI to build the Docker containers
+# for all of the Hyrax snapshot products. 
+after_deploy:
+- echo "-- -- -- -- -- -- -- -- -- after_deploy BEGIN -- -- -- -- -- -- -- -- --";
+- echo "$BES_BUILD";
+- echo "$DEPLOY";
+- if test "$BES_BUILD" = "centos7" && "$DEPLOY" = "S3"; 
+    then  
+        echo "New CentOS-7 snapshot of BES pushed. Triggering a Docker build"; 
+        git clone https://github.com/OPENDAP/hyrax-docker;
+        git config --global user.name "The-Robot-Travis";
+        git config --global user.email "npotter@opendap.org";
+        cd hyrax-docker/hyrax-snapshot;
+        date +%s | tee -a snapshot.time;
+        cat snapshot.time;
+        git commit -am "The BES has produced new snapshot files. Triggering Hyrax-Docker image builds for snapshots.";
+        git status;
+        git push https://$GIT_UID:$GIT_PSWD@github.com/opendap/hyrax-docker --all;
+    elif test "$BES_BUILD" = "centos6"; 
+    then  
+        echo "New CentOS-6 snapshot of BES pushed. No Docker build initiated";     
+    elif test "$BES_BUILD" = "srcdist"; 
+    then  
+        echo "New source snapshot pushed. No Docker build initiated.";     
+    fi
+- echo "-- -- -- -- -- -- -- -- -- after_deploy END -- -- -- -- -- -- -- -- --";
+        
+

@@ -29,13 +29,14 @@ BUILT_SOURCES = test_config.h bes.conf
 
 if CPPUNIT
 # This determines what gets run by 'make check.'
-TESTS = constraintT defT keysT pfileT plistT pvolT replistT	\
-reqhandlerT reqlistT resplistT infoT agglistT debugT utilT regexT \
-scrubT checkT servicesT fsT urlT containerT	uncompressT cacheT \
-BESCatalogListTest WhiteListTest CatalogNodeTest CatalogItemTest
+TESTS = constraintT defT keysT pfileT plistT pvolT replistT		\
+reqhandlerT reqlistT resplistT infoT debugT utilT regexT scrubT		\
+checkT servicesT fsT urlT containerT uncompressT cacheT			\
+BESCatalogListTest WhiteListTest CatalogNodeTest CatalogItemTest \
+ServerAdministratorTest
 
 # This is tool to look at CatalogEntry objects. jhrg 3.5.18
-# complete_catalog_lister
+# complete_catalog_lister agglistT 
 
 if LIBDAP
 TESTS += catT
@@ -67,7 +68,7 @@ EXTRA_DIST = $(CACHE) catalog_test catalog_test_baselines bad_keys1.ini \
 	persistence_file1.txt persistence_file2.txt \
 	persistence_file3.txt persistence_file4.txt \
 	persistence_file_test.txt test_config.h.in \
-    bes.conf remote_access_test.ini
+	bes.conf.in remote_access_test.ini
 
 DISTCLEANFILES = 
 
@@ -88,7 +89,7 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 	mod_abs_builddir=`echo ${abs_builddir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
 	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
 		-e "s%[@]abs_top_srcdir[@]%$${mod_abs_top_srcdir}%" \
-	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
+		-e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
 
 bes.conf: $(srcdir)/bes.conf.in Makefile
 	@mod_abs_srcdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
@@ -96,7 +97,7 @@ bes.conf: $(srcdir)/bes.conf.in Makefile
 	mod_abs_builddir=`echo ${abs_builddir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
 	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
 		-e "s%[@]abs_top_srcdir[@]%$${mod_abs_top_srcdir}%" \
-	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > bes.conf
+		-e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > bes.conf
 
 clean-local:
 	cd $(srcdir)/cache && rm -f *_cache*
@@ -130,7 +131,7 @@ resplistT_SOURCES = resplistT.cc TestResponseHandler.cc TestResponseHandler.h
 infoT_SOURCES = infoT.cc
 infoT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
 
-agglistT_SOURCES = agglistT.cc TestAggServer.cc TestAggServer.h
+# agglistT_SOURCES = agglistT.cc TestAggServer.cc TestAggServer.h
 
 cacheT_SOURCES = cacheT.cc
 
@@ -177,4 +178,9 @@ BESCatalogListTest_CPPFLAGS = $(AM_CPPFLAGS) -Wno-deprecated
 # complete_catalog_lister_OBJ = ../BESCatalogResponseHandler.o
 # complete_catalog_lister_CPPFLAGS =  $(AM_CPPFLAGS) $(XML2_CFLAGS)
 # complete_catalog_lister_LDADD = $(complete_catalog_lister_OBJ) $(LDADD)
+
+
+
+ServerAdministratorTest_SOURCES = ServerAdministratorTest.cc
+ServerAdministratorTest_LDADD = ../ServerAdministrator.o $(LDADD)
 

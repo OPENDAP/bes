@@ -30,6 +30,8 @@
 #include "BESXMLUtils.h"
 #include "BESSyntaxUserError.h"
 
+using std::endl;
+
 #define SPI_DEBUG_KEY "show-path-info"
 
 #define SHOW_PATH_INFO_RESPONSE "show.pathInfo"

@@ -54,7 +54,7 @@ public:
     BESResponseObject() {} ;
     virtual ~BESResponseObject() {} ;
 
-    virtual void dump( ostream &strm ) const = 0 ;
+    virtual void dump( std::ostream &strm ) const = 0 ;
 };
 
 #endif //BESResponseObject_h_

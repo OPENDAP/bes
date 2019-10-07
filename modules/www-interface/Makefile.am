@@ -8,8 +8,8 @@
 AUTOMAKE_OPTIONS = foreign
 
 # Set the module version here, in the spec file and in configure.ac
-M_NAME=dap-server/www
-M_VER=4.1.6
+M_NAME=www-interface
+M_VER=4.1.8
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
 -I$(top_srcdir)/xmlcommand -I$(top_srcdir) $(DAP_CFLAGS)
@@ -48,6 +48,6 @@ BES_SOURCES = BESWWWModule.cc BESWWWResponseHandler.cc BESWWWTransmit.cc \
 EXTRA_DIST = js2h.pl www.js
 
 javascript.h: www.js js2h.pl js2h.pl.in
-	./js2h.pl $< > $@
+	perl js2h.pl $< > $@
 
 CLEANFILES = *~ javascript.h

@@ -112,7 +112,7 @@ public:
     {
         BaseType *result = 0;
         try {
-            BaseType *argv[] = {};
+            BaseType *argv[] = {0};
             function_dap2_bbox_union(0, argv, *float32_array /* DDS & */, &result);
             CPPUNIT_FAIL("bbox_union() Should throw an exception when called with no arguments");
         }

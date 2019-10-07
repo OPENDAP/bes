@@ -5,12 +5,16 @@
 AUTOMAKE_OPTIONS = foreign
 
 # Might move these to a child directory for testing things. jhrg 5/16/18
-EXTRA_DIST = read_test_baseline.cc read_test_baseline.h
+EXTRA_DIST = read_test_baseline.cc read_test_baseline.h handler_tests_macros.m4
 
-SUBDIRS = csv_handler usage asciival www-interface freeform_handler
+SUBDIRS = csv_handler usage asciival www-interface freeform_handler dmrpp_module
+
+if WITH_CMR
+SUBDIRS += cmr_module 
+endif
 
 if BES_DEVELOPER
-SUBDIRS += debug_functions dmrpp_module
+SUBDIRS += debug_functions
 endif
 
 if BUILD_HDF4
@@ -30,9 +34,7 @@ endif
 # Why are these here? Because they have tests that depend on
 # netcdf.
 # FIXME Rewrite the tests to use the dapread handler. jhrg 12/12/14
-SUBDIRS += fileout_json w10n_handler
-
-SUBDIRS += gateway_module
+SUBDIRS += fileout_json w10n_handler gateway_module httpd_catalog_module xml_data_handler
 
 if BUILD_GDAL
 SUBDIRS += fileout_gdal gdal_handler
@@ -41,9 +43,6 @@ endif
 if BUILD_FITS
 SUBDIRS += fits_handler
 endif
-
-# Same deal as above, but this uses HDF4/5 too... jhrg 12/12/14
-SUBDIRS += xml_data_handler
 
 if BUILD_NCML
 SUBDIRS += ncml_module

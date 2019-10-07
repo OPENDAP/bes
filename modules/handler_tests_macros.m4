@@ -46,6 +46,35 @@ m4_define([_AT_BESCMD_TEST], [dnl
     AT_CLEANUP
 ])
 
+m4_define([_AT_BESCMD_SCRUB_DATES_TEST], [dnl
+
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([bescmd])
+
+    input=$1
+    baseline=$2
+    pass=$3
+    
+    dnl I'm not sure about this. jhrg 1/3/19
+    dnl AS_IF([test -z "$at_verbose"],[echo "COMMAND: besstandalone $repeat -c $abs_builddir/$bes_conf -i $input"])
+    
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
+        REMOVE_DATE_TIME([stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
+        REMOVE_DATE_TIME([stdout])
+        AT_CHECK([diff -b -B $baseline stdout])
+        AT_XFAIL_IF([test z$pass = zxfail])
+        ])
+        
+    AT_CLEANUP
+    
+])
+
 dnl This PATTREN test reads a set of patterns from a file and if any
 dnl of those patterns match, the test passes. In many ways it's just
 dnl a better version of _AT_BESCMD_ERROR_TEST below
@@ -116,6 +145,7 @@ m4_define([_AT_BESCMD_BINARYDATA_TEST],  [dnl
     AT_CLEANUP
 ])
     
+dnl OLD - Do not use this. See the macro below. jhrg 8/1/18
 m4_define([_AT_BESCMD_DAP4_BINARYDATA_TEST],  [dnl
 
     AT_SETUP([BESCMD $1])
@@ -148,12 +178,14 @@ m4_define([_AT_NEW_BESCMD_DAP4_BINARYDATA_TEST],  [dnl
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [], [stdout])
+        PRINT_DAP4_DATA_RESPONSE([stdout])
         REMOVE_DAP4_CHECKSUM([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [], [stdout])
+        PRINT_DAP4_DATA_RESPONSE([stdout])
         REMOVE_DAP4_CHECKSUM([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test "$3" = "xfail"])
@@ -172,12 +204,34 @@ dnl
 dnl Note that the macro depends on the baseline being a file.
 dnl
 dnl jhrg 6/3/16
- 
+dnl
+dnl
+dnl I replaced this function with the one following which is somewhat more lenient w.r.t. format and time zone. 
+dnl ndp - 8/29/18
+dnl m4_define([REMOVE_DATE_TIME], [dnl
+dnl    sed 's@[[0-9]]\{4\}-[[0-9]]\{2\}-[[0-9]]\{2\} [[0-9]]\{2\}:[[0-9]]\{2\}:[[0-9]]\{2\}@removed date-time@g' < $1 > $1.sed
+dnl    dnl '
+dnl    mv $1.sed $1
+dnl])
+
+
+dnl Here is a correct (and lenient) regex for ISO-8601 date-time:
+dnl [0-9]{4}-[0-9]{2}-[0-9]{2}(T| )[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]{3})?([a-zA-Z])?([a-zA-Z])?([a-zA-Z])?([a-zA-Z])?([a-zA-Z])?
+dnl
+dnl Unfortunately sed won't run that so I have had to dissemble the regex into a shoddy spectre of its full
+dnl glory.
+dnl
 m4_define([REMOVE_DATE_TIME], [dnl
-    sed 's@[[0-9]]\{4\}-[[0-9]]\{2\}-[[0-9]]\{2\} [[0-9]]\{2\}:[[0-9]]\{2\}:[[0-9]]\{2\}@removed date-time@g' < $1 > $1.sed
-    dnl '
+    sed -e 's@[[0-9]]\{4\}-[[0-9]]\{2\}-[[0-9]]\{2\}T[[0-9]]\{2\}:[[0-9]]\{2\}:[[0-9]]\{2\}@_DATE_TIME_SUB_@g' \
+    -e 's@[[0-9]]\{4\}-[[0-9]]\{2\}-[[0-9]]\{2\} [[0-9]]\{2\}:[[0-9]]\{2\}:[[0-9]]\{2\}@_DATE_TIME_SUB_@g' \
+    -e 's@_DATE_TIME_SUB_.[[0-9]]\{3\}@_DATE_TIME_SUB_@g' \
+    -e 's@_DATE_TIME_SUB_[[a-zA-Z]]\{1,3\}@removed date-time@g' \
+    < $1 > $1.sed
     mv $1.sed $1
 ])
+
+
+
 
 dnl Given a filename, remove the <Value> element of a DAP4 data response as
 dnl printed by getdap4 so that we don't have issues with comparing data values
@@ -188,6 +242,16 @@ m4_define([REMOVE_DAP4_CHECKSUM], [dnl
     sed 's@<Value>[[0-9a-f]]\{8\}</Value>@removed checksum@g' < $1 > $1.sed
     dnl '
     mv $1.sed $1
+])
+
+dnl This enables the besstandalone to run by itself in AT_CHECK so we can see 
+dnl Error messages more easily. The conversion from a binry response to text
+dnl is done here and then the text is used with diff against a text baseline.
+dnl jhrg 8/1/18
+ 
+m4_define([PRINT_DAP4_DATA_RESPONSE], [dnl
+    getdap4 -D -M -s $1 > $1.txt
+    mv $1.txt $1
 ])
 
 dnl This is similar to the "binary data" macro above, but instead assumes the
@@ -281,6 +345,11 @@ dnl END OLD. jhrg 9/21/16
 m4_define([AT_BESCMD_RESPONSE_TEST],
 [_AT_BESCMD_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])
 ])
+
+m4_define([AT_BESCMD_RESPONSE_SCRUB_DATES_TEST],
+[_AT_BESCMD_SCRUB_DATES_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])
+])
+
 
 m4_define([AT_BESCMD_REPEAT_RESPONSE_TEST],
 [_AT_BESCMD_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2], [$3])

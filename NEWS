@@ -1,3 +1,144 @@
+News for 3.20.5
+
+Improved and fixed bugs in the the CovJSON response format
+(contributed by Corey Hemphill  <hemphilc@oregonstate.edu>).
+
+Added support for c++11 and c++0x builds including tests in
+configure that look for those options and use c++11 over c++0x.
+This works with the stock compiler on CentOS 6 .
+
+We have added much more support for S3. Data can now be served
+from S3 without transferring whole files (Hyrax supports subset
+in-place) and without reformatting the data. This version of Hyrax
+supports configuration of data already in S3 as well as files
+still on spinning disk. See the README.md file in
+bes/modules/dmrpp_handler/data
+
+Performance improvements and bug fixes to the XML parsers.
+
+Added a fix from Aron.Bartle@mechdyne.com.
+Netcdf file responses were not compressed when they should have been
+if the dataset had Structures. Fixed by patching FONcStructure as Aron
+suggested.
+
+We have added experimentatl support for STARE (Spatio Temporal
+Adaptive-Resolution Encoding) as part of our work on NASA ACCESS
+grant 17-ACCESS17-0039.
+
+We have added support for Dataset crawler/indexer systems that
+use JSON-LD as part of our work on NSF grant #1740704.
+
+The FreeForm handlers now support regular expression matching
+when looking for format file.
+
+News for 3.20.4
+
+Hk-351 Improved Jpeg2000 and GeoTiff responses.
+HK-352 Improved Jpeg2000 and GeoTiff responses.
+
+HK-22 Repaired maximum response size limits feature.
+
+Ironed out a number of issues with sonar scan builds.
+
+News for version 3.20.3
+
+Multiple bug fixes (See ChangeLog for specifics)
+
+HK-320 fixed - libcurl fails when called from the bes daemon on OSX
+
+HK-275 fixed - bes cmdln tests fail on master for the Travis build
+
+HK-285 fixed/completed - The BES Centos 7 RPM as packaged does not
+support `systemctl enable bes`
+
+Created docker build for debian packaging
+
+HK-304 Created docker build for debian packages.
+
+News for version 3.20.2
+
+HK-40 and HK-247 fixed - Renaming dimensions using NCML now works correctly
+for aggregations.
+
+Added automatic generation of site maps, including 'virtual' catalogs.
+
+HK-258 fixed/completed - Now the roi() function will work for variables with
+more than two dimensions. If the roi() function's bounding box has a different
+number of dimensions than a variable, it adapts, applying the b-box to the
+dimensions that correspond and not constraining the ones that don't.
+
+News for version 3.20.1
+
+Added server side function 'bbox_comb' that provides a way to combine to
+bounding box (with dimensions M and N, respectively) to a single bbox with
+dimensions M+N.
+
+Fixed the roi() function so that it's more flexible about the bbox dimensions
+and variable dimensions (it allows some variables to have different dimensions
+than the bbox - the extra/unmatching dimensions are now ignored).
+
+Fixed the MDS install error in the RPM packages
+
+Added support for continuous delivery for CentOS 6 and 7 and Ubuntu Trusty.
+
+Added a BES catalog for remote directories visible using Apache httpd. Currently
+in the developer build only.
+
+Fixes for the DMR++ handler - it now recovers from the odd '500' errors
+that S3 returns (about 1 in 6,000 requests). Some other bugs in teh DMR++
+code were also fixed - see the ChangeLog.
+
+News for version 3.20.0
+
+For more information about the new features and bug fixes, see README.md
+
+* Updates for the HDF4 and HDF5 handlers in addition to bug fixes for other
+handles as noted in the README.md file.
+
+* Site-specific configuration
+
+The BES uses a number of configuration files, and until now, a site has to
+customize these for their server. Each server installation would overwrite
+those files. No more.
+
+* The MDS
+
+A new cache has been added to the BES for Metadata Responses (aka, the MDS
+or MetaData Store). This cache is unlike the other BES caches in that it is
+intended to be operated as either a 'cache' or a 'store.' In the latter case,
+items added will never be removed - it is an open-ended place where metadata
+response objects will be kept indefinitely. The MDS contents (as a cache or 
+a store) will survive Hyrax restarts.
+
+* COVJSON Response
+
+For datasets that contain geo-spatial data, we now provide the option to
+get those data (and related metadata) encoded using the covjson format. 
+(See https://covjson.org/). Thanks to Corey Hemphill, Riley Rimer, and 
+Lewis McGibbney for this contribution.
+
+* Improved support for data stored on Amazon's S3 Web Object Store
+
+Hyrax has been about to work with data stored on S3 by copying those datasets
+to a local cache for some time. With Hyrax 1.15 we have added support for 
+subset-in-place for HDF5 and NetCDF4 data files.
+
+We welcome feedback on this new feature.
+
+* Improved catalog support
+
+We have generalized the BESCatalog system so that it is much easier to use. 
+As an example of new Catalog sub-system's ease of use, we have implemented a 
+new module that reads information about datasets from NASA's Common Metadata
+Repository (CMR) and uses that to display a Virtual Directory for NASA data
+
+This software is currently available in source form only - contact us if you
+would like to extend the BES Catalog system for your own data collections.
+
+* Bug Fixes
+
+About 40 bugs have been fixed for this release. See README.md
+
 News for version 3.19.1
 
 Logging Improvements

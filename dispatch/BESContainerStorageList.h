@@ -35,15 +35,19 @@
 
 #include <string>
 
-using std::string;
-
 #include "BESObj.h"
 
 class BESContainerStorage;
 class BESContainer;
 class BESInfo;
 
-#define PERSISTENCE_VOLATILE "default"
+#ifndef DEFAULT
+#define DEFAULT "default"
+#endif
+
+#ifndef CATALOG
+#define CATALOG "catalog"
+#endif
 
 /** @brief Provides a mechanism for accessing container information from
  * different container stores registered with this server.
@@ -82,16 +86,20 @@ public:
     virtual ~BESContainerStorageList();
 
     virtual bool add_persistence(BESContainerStorage *p);
-    virtual bool ref_persistence(const string &persist_name);
-    virtual bool deref_persistence(const string &persist_name);
-    virtual BESContainerStorage *find_persistence(const string &persist_name);
+    virtual bool ref_persistence(const std::string &persist_name);
+    virtual bool deref_persistence(const std::string &persist_name);
+    virtual BESContainerStorage *find_persistence(const std::string &persist_name);
     virtual bool isnice();
 
-    virtual BESContainer *look_for(const string &sym_name);
+    // These methods scan all of the container stores. Currently, this is used
+    // by both <setContainer> and <define>. However, a better design would disentangle
+    // the ContainerStorage from the Container creation. jhrg 1/8/19
+    virtual BESContainer *look_for(const std::string &sym_name);
+    virtual void delete_container(const std::string &sym_name);
 
     virtual void show_containers(BESInfo &info);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 
     static BESContainerStorageList *TheList();
 };

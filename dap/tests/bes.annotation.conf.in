@@ -1,0 +1,39 @@
+# 
+# This bes.conf file sets the RootDirectory at bes/dapreader
+# so that we can read from its dapreader-ready data collection
+
+BES.User=user_name
+BES.Group=group_name
+
+BES.LogName=./bes.log
+BES.LogVerbose=no
+
+BES.modules=dap,cmd,dapreader
+
+BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
+BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
+BES.module.dapreader=@abs_top_builddir@/dapreader/.libs/libdapreader_module.so
+
+BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/dap
+BES.Data.RootDirectory=/dev/null
+
+BES.Catalog.catalog.TypeMatch=dapreader:.*\.(das|dds|dods|data|dmr|dap)$;
+
+BES.Catalog.catalog.Include=;
+BES.Catalog.catalog.Exclude=^\..*;
+
+BES.FollowSymLinks=No
+BES.Catalog.catalog.FollowSymLinks=No
+
+BES.Info.Buffered=no
+BES.Info.Type=xml
+
+BES.UncompressCache.dir=/tmp/hyrax_ux
+BES.UncompressCache.prefix=ux_
+BES.UncompressCache.size=500
+
+DAP.FunctionResponseCache.path=./response_cache
+DAP.FunctionResponseCache.prefix=/rc
+DAP.FunctionResponseCache.size=500
+
+BES.AnnotationServiceURL = http://localhost:8083/Feedback/form

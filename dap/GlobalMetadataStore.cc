@@ -35,11 +35,12 @@
 #include <fstream>
 #include <sstream>
 #include <functional>
+#include <DAS.h>
 #include <memory>
+#include <sys/stat.h>
 
 #include <DapObj.h>
 #include <DDS.h>
-#include <DAS.h>
 #include <DMR.h>
 #include <D4ParserSax2.h>
 #include <XMLWriter.h>
@@ -54,6 +55,9 @@
 #include "BESLog.h"
 #include "BESContextManager.h"
 #include "BESDebug.h"
+#include "BESRequestHandler.h"
+#include "BESRequestHandlerList.h"
+#include "BESNotFoundError.h"
 
 #include "BESInternalError.h"
 #include "BESInternalFatalError.h"
@@ -120,7 +124,7 @@ void GlobalMetadataStore::transfer_bytes(int fd, ostream &os)
     /* Advise the kernel of our access pattern.  */
     int status = posix_fadvise(fd, 0, 0, POSIX_FADV_SEQUENTIAL);
     if (status != 0)
-        LOG("Error calling posix_advise() in the GlobalMetadataStore: " << strerror(status) << endl);
+        ERROR("Error calling posix_advise() in the GlobalMetadataStore: " << strerror(status) << endl);
 #endif
 
     char buf[BUFFER_SIZE + 1];
@@ -156,7 +160,7 @@ void GlobalMetadataStore::insert_xml_base(int fd, ostream &os, const string &xml
     /* Advise the kernel of our access pattern.  */
     int status = posix_fadvise(fd, 0, 0, POSIX_FADV_SEQUENTIAL);
     if (status != 0)
-        LOG("Error calling posix_advise() in the GlobalMetadataStore: " << strerror(status) << endl);
+        ERROR("Error calling posix_advise() in the GlobalMetadataStore: " << strerror(status) << endl);
 #endif
 
     char buf[BUFFER_SIZE + 1];
@@ -456,7 +460,7 @@ GlobalMetadataStore::write_ledger()
  * @param name The name to hash
  * @return The SHA256 hash of the name.
  */
-inline string
+string
 GlobalMetadataStore::get_hash(const string &name)
 {
     if (name.empty())
@@ -544,8 +548,6 @@ GlobalMetadataStore::store_dap_response(StreamDAP &writer, const string &key, co
 
     int fd;
     if (create_and_lock(item_name, fd)) {
-        // If here, the cache_file_name could not be locked for read access;
-        // try to build it. First make an empty files and get an exclusive lock on them.
         BESDEBUG(DEBUG_KEY,__FUNCTION__ << " Storing " << item_name << endl);
 
         // Get an output stream directed at the locked cache file
@@ -714,10 +716,9 @@ GlobalMetadataStore::get_read_lock_helper(const string &name, const string &suff
 {
     BESDEBUG(DEBUG_KEY, __func__ << "() MDS hashing name '" << name << "', '" << suffix << "'"<< endl);
 
-    if(name.empty())
+    if (name.empty())
         throw BESInternalError("An empty name string was received by "
                 "GlobalMetadataStore::get_read_lock_helper(). That should never happen.", __FILE__, __LINE__);
-
 
     string item_name = get_cache_file_name(get_hash(name + suffix), false);
     int fd;
@@ -733,6 +734,7 @@ GlobalMetadataStore::get_read_lock_helper(const string &name, const string &suff
  }
 
 /**
+ * @Deprecated - 6.25.19 SBL
  * @brief Is the DMR response for \arg name in the MDS?
  *
  * Look in the MDS to see if the DMR response has been stored/cached for
@@ -752,10 +754,59 @@ GlobalMetadataStore::get_read_lock_helper(const string &name, const string &suff
 GlobalMetadataStore::MDSReadLock
 GlobalMetadataStore::is_dmr_available(const string &name)
 {
-    return get_read_lock_helper(name, "dmr_r", "DMR");
-}
+	return get_read_lock_helper(name,"dmr_r","DMR");
+}//end is_dmr_available(string)
+
+GlobalMetadataStore::MDSReadLock
+GlobalMetadataStore::is_dmr_available(const BESContainer &container)
+{
+	//call get_read_lock_helper
+	MDSReadLock lock = get_read_lock_helper(container.get_relative_name(), "dmr_r", "DMR");
+	if (lock()){
+
+		bool reload = is_available_helper(container.get_real_name(), container.get_relative_name(), container.get_container_type(), "dmr_r");
+
+		if(reload){
+			lock.clearLock();
+			return lock;
+		}//end if
+		else{
+			return lock;
+		}//end else
+
+	}//end if(is locked)
+	else{
+		return lock;
+	}//end else
+
+}//end is_dmr_available(BESContainer)
+
+GlobalMetadataStore::MDSReadLock
+GlobalMetadataStore::is_dmr_available(const std::string &realName, const std::string &relativeName, const std::string &fileType)
+{
+	//call get_read_lock_helper
+	MDSReadLock lock = get_read_lock_helper(relativeName,"dmr_r","DMR");
+	if (lock()){
+
+		bool reload = is_available_helper(realName, relativeName, fileType, "dmr_r");
+
+		if(reload){
+			lock.clearLock();
+			return lock;
+		}//end if
+		else{
+			return lock;
+		}//end else
+
+	}//end if(is locked)
+	else{
+		return lock;
+	}//end else
+
+}//end is_dmr_available(string, string, string)
 
 /**
+ * @Deprecated - 6.25.19 SBL
  * @brief Is the DDS response for \arg name in the MDS?
  * @param name Find the DDS response for \arg name.
  * @return A MDSReadLock object.
@@ -764,10 +815,35 @@ GlobalMetadataStore::is_dmr_available(const string &name)
 GlobalMetadataStore::MDSReadLock
 GlobalMetadataStore::is_dds_available(const string &name)
 {
-    return get_read_lock_helper(name, "dds_r", "DDS");
-}
+	return get_read_lock_helper(name,"dds_r","DDS");
+}//end is_dds_available(string)
+
+GlobalMetadataStore::MDSReadLock
+GlobalMetadataStore::is_dds_available(const BESContainer &container)
+{
+	//call get_read_lock_helper
+	MDSReadLock lock = get_read_lock_helper(container.get_relative_name(),"dds_r","DDS");
+	if (lock()){
+
+		bool reload = is_available_helper(container.get_real_name(), container.get_relative_name(), container.get_container_type(), "dds_r");
+
+		if(reload){
+			lock.clearLock();
+			return lock;
+		}//end if
+		else{
+			return lock;
+		}//end else
+
+	}//end if(is locked)
+	else{
+		return lock;
+	}//end else
+
+}//end is_dds_available(BESContainer)
 
 /**
+ * @Deprecated - 6.25.19 SBL
  * @brief Is the DAS response for \arg name in the MDS?
  * @param name Find the DAS response for \arg name.
  * @return A MDSReadLock object.
@@ -776,10 +852,36 @@ GlobalMetadataStore::is_dds_available(const string &name)
 GlobalMetadataStore::MDSReadLock
 GlobalMetadataStore::is_das_available(const string &name)
 {
-    return get_read_lock_helper(name, "das_r", "DAS");
-}
+	return get_read_lock_helper(name,"das_r","DAS");
+}//end is_das_available(string)
+
+GlobalMetadataStore::MDSReadLock
+GlobalMetadataStore::is_das_available(const BESContainer &container)
+{
+    //return get_read_lock_helper(name, "das_r", "DAS");
+	//call get_read_lock_helper
+	MDSReadLock lock = get_read_lock_helper(container.get_relative_name(),"das_r","DAS");
+	if (lock()){
+
+		bool reload = is_available_helper(container.get_real_name(), container.get_relative_name(), container.get_container_type(), "das_r");
+
+		if(reload){
+			lock.clearLock();
+			return lock;
+		}//end if
+		else{
+			return lock;
+		}//end else
+
+	}//end if(is locked)
+	else{
+		return lock;
+	}//end else
+
+}//end is_das_available(BESContainer)
 
 /**
+ * @Deprecated - 6.25.19 SBL
  * @brief Is the DMR++ response for \arg name in the MDS?
  *
  * Look in the MDS to see if the DMR++ response has been stored/cached for
@@ -799,8 +901,84 @@ GlobalMetadataStore::is_das_available(const string &name)
 GlobalMetadataStore::MDSReadLock
 GlobalMetadataStore::is_dmrpp_available(const string &name)
 {
-    return get_read_lock_helper(name, "dmrpp_r", "DMR++");
+	return get_read_lock_helper(name,"dmrpp_r","DMR++");
+}//end is_dmrpp_available(string)
+
+GlobalMetadataStore::MDSReadLock
+GlobalMetadataStore::is_dmrpp_available(const BESContainer &container)
+{
+    //return get_read_lock_helper(name, "dmrpp_r", "DMR++");
+	//call get_read_lock_helper
+	MDSReadLock lock = get_read_lock_helper(container.get_relative_name(),"dmrpp_r","DMR++");
+	if (lock()){
+
+		bool reload = is_available_helper(container.get_real_name(), container.get_relative_name(), container.get_container_type(), "dmrpp_r");
+
+		if(reload){
+			lock.clearLock();
+			return lock;
+		}//end if
+		else{
+			return lock;
+		}//end else
+
+	}//end if(is locked)
+	else{
+		return lock;
+	}//end else
+
+}//end is_dmrpp_available(BESContainer)
+
+/**
+ * @brief helper function that checks if last modified time is greater than cached file
+ *
+ * @param realName - complete path to file used to find actual file
+ * @param relativeName - relative filename used to find cached file
+ * @param fileType - used to retrieve correct BESRequestHandler from BESRequestHandlerList
+ * @param suffix - One of 'dmr_r', 'dds_r', 'das_r' or 'dmrpp_r'
+ *
+ * @return true if actual file has been modified since cached file has been created, false otherwiseS
+ */
+bool
+GlobalMetadataStore::is_available_helper(const string &realName, const string &relativeName, const string &fileType, const string &suffix)
+{
+	//use type with find_handler() to get handler
+	BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(fileType);
+
+	//use handler.get_lmt()
+	time_t file_time = besRH->get_lmt(realName);
+
+	//get the cache time of the handler
+	time_t cache_time = get_cache_lmt(relativeName, suffix);
+
+	//compare file lmt and time of creation of cache
+	if (file_time > cache_time){
+		return true;
+	}//end if(file > cache)
+	else {
+		return false;
+	}//end else
 }
+
+/**
+ * @brief Get the last modified time for the cached object file
+ *
+ * @param name - name of the object
+ * @param suffix - suffix of the object
+ * @return The last modified time.
+ */
+time_t
+GlobalMetadataStore::get_cache_lmt(const string &fileName, const string &suffix)
+{
+	string item_name = get_cache_file_name(get_hash(fileName + suffix), false);
+	struct stat statbuf;
+
+	if (stat(item_name.c_str(), &statbuf) == -1){
+		throw BESNotFoundError(strerror(errno), __FILE__, __LINE__);
+	}//end if(error)
+
+	return statbuf.st_mtime;
+}//end get_cache_lmt()
 
 ///@name write_response_helper
 ///@{
@@ -820,8 +998,14 @@ GlobalMetadataStore::write_response_helper(const string &name, ostream &os, cons
     if (get_read_lock(item_name, fd)) {
         VERBOSE("Metadata store: Cache hit: read " << object_name << " response for '" << name << "'." << endl);
         BESDEBUG(DEBUG_KEY, __FUNCTION__ << " Found " << item_name << " in the store." << endl);
-        transfer_bytes(fd, os);
-        unlock_and_close(item_name); // closes fd
+        try {
+            transfer_bytes(fd, os);
+            unlock_and_close(item_name); // closes fd
+        }
+        catch (...) {
+            unlock_and_close(item_name);
+            throw;
+        }
     }
     else {
         throw BESInternalError("Could not open '" + item_name + "' in the metadata store.", __FILE__, __LINE__);
@@ -845,11 +1029,16 @@ GlobalMetadataStore::write_response_helper(const string &name, ostream &os, cons
     if (get_read_lock(item_name, fd)) {
         VERBOSE("Metadata store: Cache hit: read " << object_name << " response for '" << name << "'." << endl);
         BESDEBUG(DEBUG_KEY, __FUNCTION__ << " Found " << item_name << " in the store." << endl);
+        try {
+            insert_xml_base(fd, os, xml_base);
 
-        insert_xml_base(fd, os, xml_base);
-
-        transfer_bytes(fd, os);
-        unlock_and_close(item_name); // closes fd
+            transfer_bytes(fd, os);
+            unlock_and_close(item_name); // closes fd
+        }
+        catch (...) {
+            unlock_and_close(item_name);
+            throw;
+        }
     }
     else {
         throw BESInternalError("Could not open '" + item_name + "' in the metadata store.", __FILE__, __LINE__);
@@ -1035,8 +1224,14 @@ GlobalMetadataStore::get_dds_object(const string &name)
     TempFile dds_tmp(get_cache_directory() + "/opendapXXXXXX");
 
     fstream dds_fs(dds_tmp.get_name().c_str(), std::fstream::out);
-    write_dds_response(name, dds_fs);     // throws BESInternalError if not found
-    dds_fs.close();
+    try {
+        write_dds_response(name, dds_fs);     // throws BESInternalError if not found
+        dds_fs.close();
+    }
+    catch (...) {
+        dds_fs.close();
+        throw;
+    }
 
     BaseTypeFactory btf;
     auto_ptr<DDS> dds(new DDS(&btf));
@@ -1044,8 +1239,14 @@ GlobalMetadataStore::get_dds_object(const string &name)
 
     TempFile das_tmp(get_cache_directory() + "/opendapXXXXXX");
     fstream das_fs(das_tmp.get_name().c_str(), std::fstream::out);
-    write_das_response(name, das_fs);     // throws BESInternalError if not found
-    das_fs.close();
+    try {
+        write_das_response(name, das_fs);     // throws BESInternalError if not found
+        das_fs.close();
+    }
+    catch (...) {
+        das_fs.close();
+        throw;
+    }
 
     auto_ptr<DAS> das(new DAS());
     das->parse(das_tmp.get_name());

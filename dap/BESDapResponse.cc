@@ -36,6 +36,8 @@
 #include "BESDataNames.h"
 #include "BESError.h"
 
+using std::endl;
+
 /** @brief Extract the dap protocol from the setConext information
 
  This method checks three contexts: dap_explicit_containers, dap_format and

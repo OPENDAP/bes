@@ -32,11 +32,7 @@
 
 #include "BESSetContainerResponseHandler.h"
 
-#if 0
-#include "BESSilentInfo.h"
-#endif
-
-
+#include "BESCatalogList.h"
 #include "BESContainerStorageList.h"
 #include "BESContainerStorage.h"
 #include "BESDataNames.h"
@@ -44,9 +40,15 @@
 #include "BESResponseNames.h"
 #include "BESDataHandlerInterface.h"
 #include "BESDebug.h"
+#include "BESUtil.h"
+
+using std::endl;
+
+#define MODULE "bes"
+#define prolog std::string("BESSetContainerResponseHandler::").append(__func__).append("() - ")
 
 BESSetContainerResponseHandler::BESSetContainerResponseHandler(const string &name) :
-        BESResponseHandler(name)
+    BESResponseHandler(name)
 {
 }
 
@@ -75,60 +77,38 @@ BESSetContainerResponseHandler::~BESSetContainerResponseHandler()
  */
 void BESSetContainerResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
-#if 0
-	dhi.action_name = SETCONTAINER_STR;
-    BESInfo *info = new BESSilentInfo();
-    d_response_object = info;
-#endif
+    BESDEBUG(MODULE, prolog << "store = " << dhi.data[STORE_NAME] << endl);
+    BESDEBUG(MODULE, prolog << "symbolic = " << dhi.data[SYMBOLIC_NAME] << endl);
+    BESDEBUG(MODULE, prolog << "real = " << dhi.data[REAL_NAME] << endl);
+    BESDEBUG(MODULE, prolog << "type = " << dhi.data[CONTAINER_TYPE] << endl);
 
-    string store_name = dhi.data[STORE_NAME];
-    string symbolic_name = dhi.data[SYMBOLIC_NAME];
-    string real_name = dhi.data[REAL_NAME];
-    string container_type = dhi.data[CONTAINER_TYPE];
+    BESContainerStorageList::TheList()->delete_container(dhi.data[SYMBOLIC_NAME]);
 
-    BESDEBUG("bes", "BESSetContainerResponseHandler::execute store = " << dhi.data[STORE_NAME] << endl);
-    BESDEBUG("bes", "BESSetContainerResponseHandler::execute symbolic = " << dhi.data[SYMBOLIC_NAME] << endl);
-    BESDEBUG("bes", "BESSetContainerResponseHandler::execute real = " << dhi.data[REAL_NAME] << endl);
-    BESDEBUG("bes", "BESSetContainerResponseHandler::execute type = " << dhi.data[CONTAINER_TYPE] << endl);
-
-    BESContainerStorage *cp = BESContainerStorageList::TheList()->find_persistence(store_name);
+    BESContainerStorage *cp = BESContainerStorageList::TheList()->find_persistence(dhi.data[STORE_NAME]);
     if (cp) {
-        BESDEBUG("bes", "BESSetContainerResponseHandler::execute adding the container..." << endl);
-
-        cp->del_container(symbolic_name);
-        cp->add_container(symbolic_name, real_name, container_type);
-
-        BESDEBUG("bes", "BESSetContainerResponseHandler::execute Done" << endl);
+        cp->del_container(dhi.data[SYMBOLIC_NAME]);
+        // FIXME Change this so that we make a container and then add it. Do not depend on the store
+        // to make the container. This will require re-design of the Catalog/Container/ContainerStorage
+        // classes and maybe the handlers. jhrg 1/7/19
+        cp->add_container(dhi.data[SYMBOLIC_NAME], dhi.data[REAL_NAME], dhi.data[CONTAINER_TYPE]);
     }
     else {
-        string ret = (string) "Unable to add container '" + symbolic_name + "' to container storage '" + store_name
-                + "'. Store does not exist.";
+        string ret = (string) "Unable to add container '" + dhi.data[SYMBOLIC_NAME] + "' to container storage '" + dhi.data[STORE_NAME] + "'. Store does not exist.";
         throw BESSyntaxUserError(ret, __FILE__, __LINE__);
     }
 }
 
-/** @brief transmit the response object built by the execute command
- * using the specified transmitter object
- *
- * If a response object was built then transmit it as text using the specified
- * transmitter object.
+/** @brief The setContainer command does not return a response.
  *
  * @param transmitter object that knows how to transmit specific basic types
  * @param dhi structure that holds the request and response information
+ *
  * @see BESInfo
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
 void BESSetContainerResponseHandler::transmit(BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/)
 {
-#if 0
-    if (d_response_object) {
-        BESInfo *info = dynamic_cast<BESInfo *>(d_response_object);
-        if (!info)
-            throw BESInternalError("cast error", __FILE__, __LINE__);
-        info->transmit(transmitter, dhi);
-    }
-#endif
 }
 
 /** @brief dumps information about this object

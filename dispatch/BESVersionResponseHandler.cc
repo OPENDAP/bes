@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -34,22 +34,23 @@
 
 #include <vector>
 
-using std::vector ;
+using std::vector;
 
 #include "BESVersionResponseHandler.h"
 #include "BESVersionInfo.h"
 #include "BESRequestHandlerList.h"
 #include "BESResponseNames.h"
+#include "ServerAdministrator.h"
 #include "TheBESKeys.h"
 
 #define DEFAULT_ADMINISTRATOR "support@opendap.org"
 
-BESVersionResponseHandler::BESVersionResponseHandler( const string &name )
-    : BESResponseHandler( name )
+BESVersionResponseHandler::BESVersionResponseHandler(const string &name) :
+    BESResponseHandler(name)
 {
 }
 
-BESVersionResponseHandler::~BESVersionResponseHandler( )
+BESVersionResponseHandler::~BESVersionResponseHandler()
 {
 }
 
@@ -67,37 +68,31 @@ BESVersionResponseHandler::~BESVersionResponseHandler( )
  * @see BESVersionInfo
  * @see BESRequestHandlerList
  */
-void
-BESVersionResponseHandler::execute( BESDataHandlerInterface &dhi )
+void BESVersionResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
-    BESVersionInfo *info = new BESVersionInfo() ;
-    d_response_object = info ;
-    dhi.action_name = VERS_RESPONSE_STR ;
-    info->begin_response( VERS_RESPONSE_STR, dhi ) ;
+    BESVersionInfo *info = new BESVersionInfo();
+    d_response_object = info;
+    dhi.action_name = VERS_RESPONSE_STR;
+    info->begin_response( VERS_RESPONSE_STR, dhi);
 
-    string administrator = "" ;
-    try
-    {
-	bool found = false ;
-	vector<string> vals ;
-	string key = "BES.ServerAdministrator" ;
-	TheBESKeys::TheKeys()->get_value( key, administrator, found ) ;
+    string admin_email = "";
+    try {
+        bes::ServerAdministrator sd;
+        admin_email = sd.get_email();
     }
-    catch( ... )
-    {
-	administrator = DEFAULT_ADMINISTRATOR ;
+    catch (...) {
+        admin_email = DEFAULT_ADMINISTRATOR;
     }
-    if( administrator.empty() )
-    {
-	administrator = DEFAULT_ADMINISTRATOR ;
+    if (admin_email.empty()) {
+        admin_email = DEFAULT_ADMINISTRATOR;
     }
-    info->add_tag( "Administrator", administrator ) ;
+    info->add_tag("Administrator", admin_email);
 
-    info->add_library( PACKAGE_NAME, PACKAGE_VERSION ) ;
+    info->add_library( PACKAGE_NAME, PACKAGE_VERSION);
 
-    BESRequestHandlerList::TheList()->execute_all( dhi ) ;
+    BESRequestHandlerList::TheList()->execute_all(dhi);
 
-    info->end_response() ;
+    info->end_response();
 }
 
 /** @brief transmit the response object built by the execute command
@@ -112,16 +107,12 @@ BESVersionResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void
-BESVersionResponseHandler::transmit( BESTransmitter *transmitter,
-                                  BESDataHandlerInterface &dhi )
+void BESVersionResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
 {
-    if( d_response_object )
-    {
-	BESVersionInfo *info = dynamic_cast<BESVersionInfo *>(d_response_object) ;
-	if( !info )
-	    throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
-	info->transmit( transmitter, dhi ) ;
+    if (d_response_object) {
+        BESVersionInfo *info = dynamic_cast<BESVersionInfo *>(d_response_object);
+        if (!info) throw BESInternalError("cast error", __FILE__, __LINE__);
+        info->transmit(transmitter, dhi);
     }
 }
 
@@ -131,19 +122,17 @@ BESVersionResponseHandler::transmit( BESTransmitter *transmitter,
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESVersionResponseHandler::dump( ostream &strm ) const
+void BESVersionResponseHandler::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESVersionResponseHandler::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    BESResponseHandler::dump( strm ) ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESVersionResponseHandler::dump - (" << (void *) this << ")" << std::endl;
+    BESIndent::Indent();
+    BESResponseHandler::dump(strm);
+    BESIndent::UnIndent();
 }
 
 BESResponseHandler *
-BESVersionResponseHandler::VersionResponseBuilder( const string &name )
+BESVersionResponseHandler::VersionResponseBuilder(const string &name)
 {
-    return new BESVersionResponseHandler( name ) ;
+    return new BESVersionResponseHandler(name);
 }
 

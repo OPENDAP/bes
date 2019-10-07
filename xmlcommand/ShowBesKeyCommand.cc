@@ -32,7 +32,7 @@
 #include "BESXMLUtils.h"
 #include "BESSyntaxUserError.h"
 
-
+using std::endl;
 
 ShowBesKeyCommand::ShowBesKeyCommand(const BESDataHandlerInterface &base_dhi) :
     BESXMLCommand(base_dhi)
@@ -42,7 +42,9 @@ ShowBesKeyCommand::ShowBesKeyCommand(const BESDataHandlerInterface &base_dhi) :
 
 /** @brief parse a show command. No properties or children elements
  *
- &lt;showCatalog node="containerName" /&gt;
+ * ~~~{.xml}
+ * <showBesKey key="key_name" />
+ * ~~~
  *
  * @param node xml2 element node pointer
  */
@@ -62,14 +64,15 @@ void ShowBesKeyCommand::parse_request(xmlNode *node)
     d_xmlcmd_dhi.data[SHOW_BES_KEY_RESPONSE] = SHOW_BES_KEY_RESPONSE;
     d_cmd_log_info = "show besKey";
 
-    // key is a required property, so MAY NOT be empty string
+    // key is a required property, so it MAY NOT be the empty string
 
     string requested_bes_key =  props["key"];
 
     if(requested_bes_key.empty())
-        throw BESError("Ouch! A Key name was not submitted with the request for a Key value from BESKeys",BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
+        throw BESError("Ouch! A Key name was not submitted with the request for a Key value from BESKeys", BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
 
     d_xmlcmd_dhi.data[BES_KEY] = requested_bes_key;
+
     if (!d_xmlcmd_dhi.data[BES_KEY].empty()) {
         d_cmd_log_info += " for " + d_xmlcmd_dhi.data[BES_KEY];
     }
@@ -77,7 +80,7 @@ void ShowBesKeyCommand::parse_request(xmlNode *node)
 
     BESDEBUG(SBK_DEBUG_KEY, "Built BES Command: '" << d_cmd_log_info << "'"<< endl );
 
-    // now that we've set the action, go get the response handler for the
+    // Given that we've set the action above, set the response handler for the
     // action by calling set_response() in our parent class
     BESXMLCommand::set_response();
 }

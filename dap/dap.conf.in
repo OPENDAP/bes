@@ -41,16 +41,19 @@ DAP.Help.XML=@pkgdatadir@/dap_help.xml
 # disables uses of the MDS. Setting 'size' to zero makes the MDS
 # hold objects forever; setting a positive non-zero size makes the
 # MDS behave like a cache, purging responses when the size is exceeded.
+#
+# Off by default for Hyrax 1.15.x
 
 # DAP.GlobalMetadataStore.path = @datadir@/mds
-DAP.GlobalMetadataStore.prefix = mds
-DAP.GlobalMetadataStore.size = 0
+DAP.GlobalMetadataStore.prefix = mds_
+
+# Size in MB
+DAP.GlobalMetadataStore.size = 200
 
 # The MDS writes a ledger of additions and removals. By default the
-# ledger is kept in 'mds_ledger.txt' in the directory used to start
-# the BES.
+# ledger is kept in 'mds_ledger.txt' in the MDS directory.
 
-DAP.GlobalMetadataStore.ledger = @datadir@/mds_ledger.txt
+DAP.GlobalMetadataStore.ledger = @datadir@/mds/mds_ledger.txt
 
 # This tells the BES Framework's DAP module to use the DMR++
 # handler for data requests if it find a DMR++ response in the MDS
@@ -69,8 +72,8 @@ DAP.GlobalMetadataStore.ledger = @datadir@/mds_ledger.txt
 # the empty string ("") shuts off the cache, regardless of the other 
 # DAP.FunctionResponseCache parameter values.
 
-DAP.FunctionResponseCache.path=/tmp/dap_cache
-DAP.FunctionResponseCache.prefix=rc
+DAP.FunctionResponseCache.path=/tmp/hyrax_func
+DAP.FunctionResponseCache.prefix=func_
 
 # This is the size of the cache in megabytes; e.g., 20,000 is a 20GB cache
 DAP.FunctionResponseCache.size=20000
@@ -80,7 +83,7 @@ DAP.FunctionResponseCache.size=20000
 #-----------------------------------------------------------------------#
 
 DAP.StoredResultsCache.subdir=stored_results
-DAP.StoredResultsCache.prefix=result
+DAP.StoredResultsCache.prefix=result_
 
 # This is the size of the cache in megabytes; e.g., 20,000 is a 20GB cache
 DAP.StoredResultsCache.size=20000

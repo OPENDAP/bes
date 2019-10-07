@@ -12,9 +12,9 @@ BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
 BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
 BES.module.dmrpp=@abs_top_builddir@/modules/dmrpp_module/.libs/libdmrpp_module.so
 
-BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/dmrpp_module
-BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;
-BES.Catalog.catalog.FollowSymLinks=No
+BES.Catalog.catalog.RootDirectory = @abs_top_srcdir@/modules/dmrpp_module
+BES.Catalog.catalog.TypeMatch = dmrpp:.*\.(dmrpp)$;
+BES.Catalog.catalog.FollowSymLinks = No
 
 # TRICK: Without a type match for the underlying data files that are
 # to be accessed by the DMR++ the BES framework will kick out the request
@@ -25,7 +25,7 @@ BES.Catalog.catalog.FollowSymLinks=No
 # that some type be associated with them during the initial stages of
 # request processing. jhrg 6/1/18
 
-BES.Catalog.catalog.TypeMatch=h5:.*\.(h5)$;
+BES.Catalog.catalog.TypeMatch += dmrpp:.*\.(h5)$;
 
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
@@ -36,8 +36,8 @@ BES.Data.RootDirectory=/dev/null
 BES.Info.Buffered=no
 BES.Info.Type=xml
 
-BES.UncompressCache.dir=/tmp
-BES.UncompressCache.prefix=dmrpp_
+BES.UncompressCache.dir=/tmp/hyrax_ux
+BES.UncompressCache.prefix=ux_
 BES.UncompressCache.size=500
 
 # MDS configuration - for the tests the read the DMR++ from the MDS,

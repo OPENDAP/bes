@@ -1,0 +1,59 @@
+###
+### OPeNDAP httpd Catalog BES Module Configuration file
+###
+
+# Require dap configuration to be loaded first
+
+BES.Include = dap.conf
+
+# By default, this module is turned off. Add 'BES.modules += httpd' to
+# your site.conf file or uncomment the following line. NB: This file 
+# will be overwritten by subsequent installs of the server; the site.conf
+# will not be altered by future installs.
+
+# BES.modules += httpd
+
+BES.module.httpd = @bes_modules_dir@/libhttpd_catalog_module.so
+
+# Httpd_Catalog.Reference: URL to the Httpd_Catalog Reference Page at docs.opendap.org"
+
+Httpd_Catalog.Reference=http://docs.opendap.org/index.php/BES_-_Modules_-_Httpd_Catalog
+
+# These can be used for the RemoteRsources catalog
+
+# BES.Catalog.RemoteResources.FollowSymLinks =
+# BES.Catalog.RemoteResources.Exclude =
+# BES.Catalog.RemoteResources.Include =
+
+# The values of these parameters are not used by the httpd catalog module
+# but they must be defined or the framework will signal an error.
+
+BES.Catalog.RemoteResources.RootDirectory = UNUSED
+BES.Catalog.RemoteResources.TypeMatch += unused:unused;
+
+# The cache used by the BES for the retrieved items.
+
+HttpResourceCache.dir = /tmp/hyrax_hc
+HttpResourceCache.prefix = hc_
+HttpResourceCache.size = 500
+
+# The mapping between files/responses from the remote httpd an modules that 
+# read data on the local Hyrax server.
+
+Httpd_Catalog.MimeTypes = nc:application/x-netcdf
+Httpd_Catalog.MimeTypes += h4:application/x-hdf
+Httpd_Catalog.MimeTypes += h5:application/x-hdf5
+
+
+# 'Collections' add virtual directory hierarchies under the literal 
+# '/RemoteResources/'. For example the Collections value below will 
+# make the path '/RemoteResources/test/' access the files in the remote
+# directory at http://test.opendap.org/data/.
+
+Httpd_Catalog.Collections = test:http://test.opendap.org/data/
+
+# The hosts listed in Collections have to be on the Whitelist of allowable
+# remote hosts this server may connect to. The Whitelist should have hosts
+# added to is using '+=' because using '=' will remove all previous values.
+
+Gateway.Whitelist += http://test.opendap.org

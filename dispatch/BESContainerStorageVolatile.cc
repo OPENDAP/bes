@@ -40,6 +40,8 @@
 #include "BESServiceRegistry.h"
 #include "BESDebug.h"
 
+using std::endl;
+
 /** @brief create an instance of this persistent store with the given name.
  *
  * Creates an instances of BESContainerStorageVolatile with the given name.
@@ -122,24 +124,15 @@ BESContainerStorageVolatile::look_for(const string &sym_name)
  */
 void BESContainerStorageVolatile::add_container(const string &sym_name, const string &real_name, const string &type)
 {
-    BESDEBUG( "bes", "BESContainerStorageVolatile::add_container() - "
-            << "Adding container with name \"" << sym_name
-            << "\", real name \"" << real_name
-            << "\", type \"" << type << "\"" << endl );
-
     // The type must be specified so that we can find the request handler
     // that knows how to handle the container.
-    if (type == "") {
-        string s = "Unable to add container, type of data must be specified";
-        throw BESInternalError(s, __FILE__, __LINE__);
-    }
+    if (type.empty())
+        throw BESInternalError(string("Unable to add container '").append(sym_name).append("', type of data must be specified"), __FILE__, __LINE__);
 
     // if the container already exists then throw an error
-    BESContainerStorageVolatile::Container_citer i;
-    i = _container_list.find(sym_name);
+    BESContainerStorageVolatile::Container_citer i = _container_list.find(sym_name);
     if (i != _container_list.end()) {
-        string s = (string) "A container with the name " + sym_name + " already exists";
-        throw BESInternalError(s, __FILE__, __LINE__);
+        throw BESInternalError(string("A container with the name '").append(sym_name).append("' already exists"), __FILE__, __LINE__);
     }
 
     // make sure that the path to the container exists. If follow_sym_links
@@ -153,7 +146,9 @@ void BESContainerStorageVolatile::add_container(const string &sym_name, const st
     BESDEBUG("container","BESContainerStorageVolatile::add_container() - "
     		<< " _root_dir: " << _root_dir
     		<< " real_name: " << real_name
+    		<< " symbolic name: " << sym_name
 			<< " fully_qualified_real_name: " << fully_qualified_real_name
+			<< " type: " << type
 			<< endl);
 
     // Create the file container with the new information
@@ -184,20 +179,19 @@ void BESContainerStorageVolatile::add_container(const string &sym_name, const st
 void BESContainerStorageVolatile::add_container(BESContainer *c)
 {
     if (!c) {
-        string s = "Unable to add container, container passed is null";
-        throw BESInternalError(s, __FILE__, __LINE__);
+        throw BESInternalError("Unable to add container, container passed is null", __FILE__, __LINE__);
     }
-    if (c->get_container_type() == "") {
-        string s = "Unable to add container, type of data must be specified";
-        throw BESInternalError(s, __FILE__, __LINE__);
+    if (c->get_container_type().empty()) {
+        throw BESInternalError("Unable to add container, type of data must be specified", __FILE__, __LINE__);
     }
+
     string sym_name = c->get_symbolic_name();
-    BESContainerStorageVolatile::Container_citer i;
-    i = _container_list.find(sym_name);
+
+    BESContainerStorageVolatile::Container_citer i = _container_list.find(sym_name);
     if (i != _container_list.end()) {
-        string s = (string) "A container with the name " + sym_name + " already exists";
-        throw BESInternalError(s, __FILE__, __LINE__);
+        throw BESInternalError(string("A container with the name '").append(sym_name).append("' already exists"), __FILE__, __LINE__);
     }
+
     _container_list[sym_name] = c;
 }
 
@@ -210,8 +204,7 @@ void BESContainerStorageVolatile::add_container(BESContainer *c)
 bool BESContainerStorageVolatile::del_container(const string &s_name)
 {
     bool ret = false;
-    BESContainerStorageVolatile::Container_iter i;
-    i = _container_list.find(s_name);
+    BESContainerStorageVolatile::Container_iter i = _container_list.find(s_name);
     if (i != _container_list.end()) {
         BESContainer *c = (*i).second;
         _container_list.erase(i);

@@ -1,0 +1,30 @@
+
+HTTP Catalog module.
+
+Notes:
+
+1) The initial token in the path that triggers this module is set in the 
+HttpdMCatalogModule.cc file at the call
+
+    BESCatalogList::TheCatalogList()->add_catalog(new HttpdCatalog(HTTPD_CATALOG_NAME));
+        
+where HTTPD_CATALOG_NAME is "RemoteResources"
+
+2) While the default catalog is lenient WRT trailing slashes on pathnames,
+code (and thus the /RemoteResources catalog) is not. This is because there
+is no way for the code to know whether a given path is a 'node' or a 'leaf'
+until it makes a call. Use information from the <showNode> command for the
+parent to determine if a given path is a node or leaf and append a / as needed.
+
+Note that the 'RemoteResourse catalog can have many remote 'collections,'
+each of which has a name bound to a HTTP/S URL:
+
+    Httpd_Catalog.Collections = test:http://test.opendap.org/data/
+    
+To access this collection, use /RemoteResources/test/ in the path.
+
+For this to properly build DAP responses, the returned item needs to be recognized
+by the default catalog's TypeMatch parameter. For example, to work with HDF5 data
+named *.h5, the value 'h5:.*\.h5$' should be part of the TypeMatch parameter. This
+is odd because the type of the container is determined using the MIME type of the
+response from the remote resource.

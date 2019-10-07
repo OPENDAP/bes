@@ -1,0 +1,309 @@
+#!/bin/bash
+# -*- mode: bash; c-basic-offset:4 -*-
+#
+# This file is part of the Hyrax data server.
+#
+# Copyright (c) 2019 OPeNDAP, Inc.
+# Author: Nathan Potter <ndp@opendap.org>
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+#
+# You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+#
+# target_dir="/home/centos/hyrax/build/share/hyrax/dmrpp_from_aws_cli";
+target_dir=`pwd`;
+
+# Should match the value of BES.Catalog.catalog.TypeMatch in the bes 
+# configuration fileused by get_dmrpp.
+# TODO - can we make this read the conf file to get the regex info?
+dataset_regex_match="^.*\\.(h5|he5|nc4)(\\.bz2|\\.gz|\\.Z)?$";
+
+s3_service_endpoint="https://s3.amazonaws.com/"
+s3_bucket_name="cloudydap"
+
+#target_dir=".";
+
+
+#################################################################################
+#
+# show_usage()
+#    Print the usage statement to stdout.
+#
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+function show_usage() {
+    cat <<EOF
+
+ Usage: $0 [options] 
+
+ List an AWS S3 bucket and make a DMR++ for every dataset matching the
+ default (or supplied) regex.
+
+ The DMR++ is built using the DMR as returned by the HDF5 handler,
+ using options as set in the bes configuration file used by get_dmrpp.
+  
+ -h: Show help
+ -v: Verbose: Print the DMR too
+ -V: Very Verbose: Verbose plus so much more. Your eyes will water from
+     the scanning of it all.
+ -j: Just print the DMR that will be used to build the DMR++
+ -s: The endpoint URL for the S3 datastore. 
+     (default: ${s3_service_endpoint})
+ -b: The S3 bucket name. 
+     (default: ${s3_bucket_name})
+ -d: The "local" filesystem root for the downloaded data. 
+     (default: ./s3_data/${s3_bucket_name})
+ -t: The target directory for the dmrpp files. Below this point
+     the structure of the bucket objects vis-a-vis their "/" path
+     separator divided names will be replicted and dmr++ placed into
+     it accordingly.
+     (default: ${target_dir})
+ -f: Retrieve object list from S3 bucket into the list file for the bucket,
+     apply the dataset match regex to the object names to create
+     the data files list. If this is omitted the files named in an 
+     exisiting bucket list file (if any) will be processed.
+     (default: Not Set)
+ -r: The dataset match regex used to screen the filenames 
+     for matching datasets. 
+     (default: ${dataset_regex_match})
+ -k: Keep the downloaded datafiles after the dmr++ file has been 
+     created. Be careful! S3 buckets can be quite large!
+
+Dependencies:
+This script requires that:
+ - The bes installation directory is on the PATH.
+ - The AWS Commandline Tools are installed and on the path.
+ - The AWS Commandline Tools have been configured for this user with
+   AWS access_key_id and aws_secret_access_key that have adequate permissions
+   to access the target AWS S3 bucket.
+
+EOF
+}
+#################################################################################
+
+
+#################################################################################
+#
+# Process the commandline options.
+#
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+OPTIND=1        # Reset in case getopts has been used previously in this shell
+
+verbose=
+very_verbose=
+just_dmr=
+dmrpp_url=
+find_s3_files=
+find_local_files=
+keep_data_files=
+data_root=
+
+while getopts "h?vVjs:b:d:t:r:fk" opt; do
+    case "$opt" in
+    h|\?)
+        show_usage
+        exit 0
+        ;;
+    v)
+        verbose="-v"
+        echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
+        echo "${0} - BEGIN (verbose)";
+        ;;
+    V)
+        very_verbose="-V"
+        verbose="-v"
+         echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
+        echo "${0} - BEGIN (very_verbose)";
+       ;;
+    j)
+        just_dmr="-r";
+        ;;
+    s)
+        s3_service_endpoint="$OPTARG"
+        ;;
+    b)
+        s3_bucket_name="$OPTARG"
+        ;;
+    d)
+        data_root="$OPTARG"
+        ;;
+    t)
+        target_dir="$OPTARG"
+        ;;
+    f)
+        find_s3_files="yes"
+        ;;
+    r)
+        dataset_regex_match="$OPTARG"
+        ;;
+    k)
+        keep_data_files="yes";
+        ;;
+        
+        
+    esac
+done
+
+shift $((OPTIND-1))
+
+[ "$1" = "--" ] && shift
+
+if test -n "$very_verbose"
+then
+    set -x;
+fi
+if test -n "${verbose}"; then 
+    echo "verbose:             '${verbose}'"
+    echo "very_verbose:        '${very_verbose}'"
+    echo "just_dmr:            '${just_dmr}'"
+    echo "s3_service_endpoint: '${s3_service_endpoint}'"
+    echo "s3_bucket_name:      '${s3_bucket_name}'"
+    echo "data_root:           '${data_root}'"
+    echo "target_dir:          '${target_dir}'"
+    echo "find_s3_files:       '${find_s3_files}'"
+    echo "dataset_regex_match: '${dataset_regex_match}'"
+    echo "keep_data_files:     '${keep_data_files}'"
+fi
+
+S3_ALL_FILES="./s3_${s3_bucket_name}_all_files.txt"
+S3_DATA_FILES="./s3_${s3_bucket_name}_data_files.txt"
+
+#################################################################################
+
+
+
+
+#################################################################################
+#
+# mk_file_list() 
+#
+# Creates a list of all the files in or below data_root the AWS CLI. The output
+# of "aws s3 ls --recursive bucket_name" is written to S3_ALL_FILES. Once the 
+# list ahs been created the regex (either default or supplied with 
+# the -r option) is applied to the list and the matching files collected as 
+# S3_DATA_FILES 
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+function mk_file_list_from_s3() {
+
+    if test -n "$verbose"
+    then
+	    echo "Retrieving file list from S3."
+	    echo "s3_bucket_name: ${s3_bucket_name}"
+	    echo "S3_ALL_FILES: ${S3_ALL_FILES}";
+    fi
+    time -p aws s3 ls --recursive "${s3_bucket_name}" > "${S3_ALL_FILES}";
+    status=$?
+    if [ ${status} -ne 0 ]
+    then
+        echo "Encountered AWS CLI error (status: ${status}) Unable to list bucket ${s3_bucket_name}"
+        echo "Terminating now."
+        exit 1
+    else
+        if test -n "$verbose"
+        then
+            echo "Locating S3_DATA_FILES: ${S3_DATA_FILES}";
+        fi
+        time -p grep -E -e "${dataset_regex_match}" "${S3_ALL_FILES}" > "${S3_DATA_FILES}";
+    
+        if test -n "$verbose"
+        then
+            dataset_count=`cat ${S3_DATA_FILES} | wc -l`;
+            echo "Found ${dataset_count} suitable data files in s3 bucket: ${s3_bucket_name}";
+        fi
+    fi 
+}
+#################################################################################
+
+
+
+
+#################################################################################
+#
+# mk_dmrpp_from_s3_list() 
+#
+# Looks at each file name in S3_DATA_FILES and computes the dmr++ for that file.
+# 
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+function mk_dmrpp_from_s3_list() {
+
+	mkdir -p ${target_dir};
+
+    for relative_filename  in `cat ${S3_DATA_FILES} | awk '{print $4;}' -`
+    do        
+        s3_url="${s3_service_endpoint}${s3_bucket_name}/${relative_filename}";
+        if test -z "${data_root}"; then
+            data_root=`pwd`"/s3_data/${s3_bucket_name}";
+        fi
+        
+        data_file="${data_root}/${relative_filename}";
+        target_file="${target_dir}/${relative_filename}.dmrpp";       
+          
+        if test -n "$verbose"
+        then
+            echo "relative_filename: ${relative_filename}";
+            echo "s3_url:            ${s3_url}";
+            echo "data_file:         ${data_file}";
+            echo "target_file:       ${target_file}";
+        fi
+        
+        
+        mkdir -p `dirname ${data_file}`;
+        timer=;
+        if test -n "$verbose"; then
+            time -p aws s3 cp --quiet "s3://${s3_bucket_name}/${relative_filename}" "${data_file}";
+        else
+            aws s3 cp --quiet "s3://${s3_bucket_name}/${relative_filename}" "${data_file}";
+        fi
+        status=$?
+        if [ ${status} -ne 0 ]
+        then
+            echo "Encountered AWS CLI error (status: ${status}) Skipping ${relative_filename}"
+            echo ""
+        else 
+	        mkdir -p `dirname ${target_file}`;
+	        get_dmrpp ${verbose} ${very_verbose} ${just_dmr} -u "${s3_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
+	     
+	        if test -z "${keep_data_files}"
+	        then
+	            rm ${verbose} -f "${data_file}";
+	        fi
+	    fi
+        
+ done
+
+
+
+}
+#################################################################################
+
+
+
+
+#################################################################################
+#
+# "main()" (such as there is in bash)
+# 
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+echo "${0} START: "`date`;
+
+if test -n "${find_s3_files}"
+then
+    mk_file_list_from_s3;
+fi 
+
+mk_dmrpp_from_s3_list
+
+echo "${0} END:   "`date`;
+#################################################################################
+

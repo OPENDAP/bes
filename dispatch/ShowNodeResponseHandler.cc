@@ -67,85 +67,77 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
     // Get the container. By convention, the path can start with a slash,
     // but doesn't have too. However, get_node() requires the leading '/'.
     string container = dhi.data[CONTAINER];
-    BESDEBUG(MODULE, prolog << "container: " << container << endl);
 
-    //---------------------------------------------------------------
-    // In this next section we look for a catalog name in the first
-    // node of the container/file/resource name/path. If we find that
-    // the name/path starts with a catalog name then we utilize the
-    // specified catalog and we remove the catalog name from the
-    // name/path and store the result in the variable "use_container".
+    BESDEBUG(MODULE, prolog << "Requested container: " << container << endl);
 
-    BESCatalogList *datCatalogList = BESCatalogList::TheCatalogList(); // convenience variable
-    BESCatalog *catalog = 0;    // pointer to a singleton; do not delete
+    // Look for the name of a catalog in the first part of the pathname in
+    // 'container' and, if found, set 'catalog' to that catalog. The value
+    // null is used as a sentinel that the path in 'container' does not
+    // name a catalog.
+    BESCatalog *catalog = 0;
+
     vector<string> path_tokens;
-
-    // BESUtil::normalize_path() removes duplicate separators and adds leading and trailing separators as directed.
-    string path = BESUtil::normalize_path(container, false, false);
-    BESDEBUG(MODULE, prolog << "Normalized path: " << path << endl);
-
-    // Because we may need to alter the container/file/resource name by removing
-    // a catalog name from the first node in the path we use "use_container" to store
-    // the altered container path.
-    string use_container = container;
-
-    // Breaks path into tokens
-    BESUtil::tokenize(path, path_tokens);
+    BESUtil::tokenize(container, path_tokens);
     if (!path_tokens.empty()) {
-        BESDEBUG(MODULE, "First path token: " << path_tokens[0] << endl);
-        catalog = datCatalogList->find_catalog(path_tokens[0]);
+
+        catalog = BESCatalogList::TheCatalogList()->find_catalog(path_tokens[0]);
         if (catalog) {
-            BESDEBUG(MODULE, prolog << "Located catalog " << catalog->get_catalog_name() << " from path component" << endl);
-            // Since the catalog name is in the path we
-            // need to drop it this should leave container
-            // with a leading
-            use_container = BESUtil::normalize_path(path.substr(path_tokens[0].length()), true, false);
-            BESDEBUG(MODULE, prolog << "Modified container/path value to:  " << use_container << endl);
+            string catalog_name = catalog->get_catalog_name();
+
+            // Remove the catalog name from the start of 'container.' Now 'container'
+            // is a relative path within the catalog.
+            container = container.substr(container.find(catalog_name) + catalog_name.length());
+
+            BESDEBUG(MODULE, prolog << "Modified container/path value to:  " << container << endl);
         }
     }
 
+    // if we found no catalog name in the first part of the container name/path,
+    // use the default catalog.
     if (!catalog) {
-        // No obvious catalog name in the path, so we go with the default catalog..
-        catalog = datCatalogList->default_catalog();
-        if (!catalog) throw BESSyntaxUserError(string("Could not find the default catalog."), __FILE__, __LINE__);
+        catalog = BESCatalogList::TheCatalogList()->default_catalog();
+        if (!catalog) throw BESInternalError(string("Could not find the default catalog."), __FILE__, __LINE__);
     }
-    //---------------------------------------------------------------
 
     BESDEBUG(MODULE, prolog << "Using the '" << catalog->get_catalog_name() << "' catalog."<< endl);
-    BESDEBUG(MODULE, prolog << "use_container: " << use_container << endl);
+    BESDEBUG(MODULE, prolog << "use_container: " << container << endl);
 
     // Get the node info from the catalog.
-    auto_ptr<CatalogNode> node(catalog->get_node(use_container));
+    auto_ptr<CatalogNode> node(catalog->get_node(container));
 
-    //---------------------------------------------------------------
-    // Now, if this is the top level catalog (which is always the default catalog)
-    // we need to add the other catalogs, if any, as child nodes.
-    // We check 'container', the unmodified name from the dhi.data[], to see if this is the top
-    // catalog
-    if (container == "/") {
-        BESDEBUG(MODULE,
-            prolog << "Preparing to add alternate catalog nodes to top level of default catalog. " "(default: " << (void *) datCatalogList->default_catalog() << ")" << endl);
-        BESCatalogList::catalog_citer catItr;
-        for (catItr = datCatalogList->first_catalog(); catItr != datCatalogList->end_catalog(); catItr++) {
-            string catalog_name = catItr->first;
-            BESCatalog *catalog = catItr->second;
+    // If the path name passed into this command is '/' we are using the default
+    // catalog and must add any other catalogs to the set of nodes shown at the
+    // top level. Since the variable 'container' may have been modified above,
+    // use the value of dhi.data[CONTAINER] for the path passed to the command.
+    if (dhi.data[CONTAINER] == "/") {
+
+        BESDEBUG(MODULE, prolog << "Adding additional catalog nodes to top level node." << endl);
+
+        BESCatalogList::catalog_citer i = BESCatalogList::TheCatalogList()->first_catalog();
+        BESCatalogList::catalog_citer e = BESCatalogList::TheCatalogList()->end_catalog();
+        for (; i != e; i++) {
+            string catalog_name = i->first;
+            BESCatalog *catalog = i->second;
+
             BESDEBUG(MODULE, prolog << "Checking catalog '" << catalog_name << "' ptr: " << (void *) catalog << endl);
-            if (catalog != datCatalogList->default_catalog()) {
+
+            if (catalog != BESCatalogList::TheCatalogList()->default_catalog()) {
                 CatalogItem *collection = new CatalogItem(catalog_name, 0, BESUtil::get_time(), false, CatalogItem::node);
                 node->add_node(collection);
+
                 BESDEBUG(MODULE, prolog << "Added catalog node " << catalog_name << " to top level node." << endl);
             }
         }
     }
-    //---------------------------------------------------------------
 
     BESInfo *info = BESInfoList::TheList()->build_info();
 
     // Transfer the catalog's node info to the BESInfo object
     info->begin_response(NODE_RESPONSE_STR, dhi);
+
     // calls encode_item()
     node->encode_node(info);
-    // end the response object
+
     info->end_response();
 
     // set the state and return

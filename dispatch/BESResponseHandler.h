@@ -37,18 +37,9 @@
 
 #include "BESObj.h"
 
-#if 0
-#include "BESResponseObject.h"
-#include "BESDataHandlerInterface.h"
-#include "BESTransmitter.h"
-#endif
-
-
-#if 1
 class BESResponseObject;
 class BESDataHandlerInterface;
 class BESTransmitter;
-#endif
 
 /** @brief handler object that knows how to create a specific response object
  *
@@ -88,10 +79,18 @@ protected:
     std::string d_response_name;
     BESResponseObject *d_response_object;
 
+    std::string d_annotation_service_url;   //< If not null, include this in the DAS/DMR
+#if 0
+    // Do this later if it seems advisable to 'bake the web api' into this. jhrg 12/19/18
+    bool d_include_dataset_in_annotation_url;    //< include the dataset URL if true
+#endif
+
+    friend class resplistT;
+
     BESResponseHandler(const std::string &name);
 
 public:
-    virtual ~BESResponseHandler(void);
+    virtual ~BESResponseHandler();
 
     /** @brief return the current response object
      *
@@ -148,6 +147,7 @@ public:
      * @see BESTransmitException
      */
     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) = 0;
+
 #if 0
     /** @brief return the name of this response object
      *
@@ -165,6 +165,7 @@ public:
         return d_response_name;
     }
 #endif
+
     virtual void dump(std::ostream &strm) const;
 };
 

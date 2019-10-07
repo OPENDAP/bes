@@ -30,6 +30,7 @@
 
 #include "BESFileLockingCache.h"
 #include "BESInternalFatalError.h"
+#include "BESContainer.h"
 
 /// Setting XML_BASE_MISSING_MEANS_OMIT_ATTRIBUTE to zero causes the MDS to throw
 /// BESInternalError when the xml:base context is not defined and a DMR/++ response
@@ -98,6 +99,7 @@ private:
         d_instance = 0;
     }
 
+    friend class DmrppMetadataStore;
     friend class DmrppMetadataStoreTest;
     friend class GlobalMetadataStoreTest;
 
@@ -127,7 +129,7 @@ protected:
         libdap::DDS *d_dds;
         libdap::DMR *d_dmr;
 
-        StreamDAP() {
+        StreamDAP() : d_dds(0), d_dmr(0) {
             throw BESInternalFatalError("Unknown DAP object type.", __FILE__, __LINE__);
         }
         StreamDAP(libdap::DDS *dds) : d_dds(dds), d_dmr(0) { }
@@ -196,6 +198,12 @@ public:
         }
 
          virtual bool operator()() { return locked; }
+
+         //used to set 'locked' to false to force reload of file in cache. SBL 6/7/19
+         virtual void clearLock() {
+        	 if (locked) mds->unlock_and_close(name);
+        	 locked = false;
+         }//end clearLock()
      };
 
     typedef struct MDSReadLock MDSReadLock;
@@ -230,9 +238,22 @@ public:
     virtual bool add_responses(libdap::DMR *dmr, const std::string &name);
 
     virtual MDSReadLock is_dmr_available(const std::string &name);
+    virtual MDSReadLock is_dmr_available(const BESContainer &container);
+    //added a third method here to handle case in build_dmrpp.cc - SBL 6.19.19
+    virtual MDSReadLock is_dmr_available(const std::string &realName, const std::string &relativeName, const std::string &fileType);
+
     virtual MDSReadLock is_dds_available(const std::string &name);
+    virtual MDSReadLock is_dds_available(const BESContainer &container);
+
     virtual MDSReadLock is_das_available(const std::string &name);
+    virtual MDSReadLock is_das_available(const BESContainer &container);
+
     virtual MDSReadLock is_dmrpp_available(const std::string &name);
+    virtual MDSReadLock is_dmrpp_available(const BESContainer &container);
+
+    virtual bool is_available_helper(const std::string &realName, const std::string &relativeName, const std::string &fileType, const std::string &suffix);
+
+    virtual time_t get_cache_lmt(const string &fileName, const string &suffix);
 
     virtual void write_dds_response(const std::string &name, std::ostream &os);
     virtual void write_das_response(const std::string &name, std::ostream &os);

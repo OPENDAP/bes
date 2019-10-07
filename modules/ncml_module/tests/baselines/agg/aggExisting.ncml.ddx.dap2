@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="aggExisting.ncml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="NC_GLOBAL" type="Container">
+        <Attribute name="title" type="String">
+            <value>Example Data</value>
+        </Attribute>
+    </Attribute>
+    <Array name="lat">
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="lat" size="3"/>
+    </Array>
+    <Array name="lon">
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="lon" size="4"/>
+    </Array>
+    <Grid name="P">
+        <Array name="P">
+            <Float64/>
+            <dimension name="time" size="59"/>
+            <dimension name="lat" size="3"/>
+            <dimension name="lon" size="4"/>
+        </Array>
+        <Map name="time">
+            <Attribute name="units" type="String">
+                <value>days since Jan 1, 2000</value>
+            </Attribute>
+            <Int32/>
+            <dimension name="time" size="59"/>
+        </Map>
+        <Map name="lat">
+            <Attribute name="units" type="String">
+                <value>degrees_north</value>
+            </Attribute>
+            <Float32/>
+            <dimension name="lat" size="3"/>
+        </Map>
+        <Map name="lon">
+            <Attribute name="units" type="String">
+                <value>degrees_east</value>
+            </Attribute>
+            <Float32/>
+            <dimension name="lon" size="4"/>
+        </Map>
+    </Grid>
+    <Grid name="T">
+        <Array name="T">
+            <Attribute name="long_name" type="String">
+                <value>surface temperature</value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <value>degC</value>
+            </Attribute>
+            <Float64/>
+            <dimension name="time" size="59"/>
+            <dimension name="lat" size="3"/>
+            <dimension name="lon" size="4"/>
+        </Array>
+        <Map name="time">
+            <Attribute name="units" type="String">
+                <value>days since Jan 1, 2000</value>
+            </Attribute>
+            <Int32/>
+            <dimension name="time" size="59"/>
+        </Map>
+        <Map name="lat">
+            <Attribute name="units" type="String">
+                <value>degrees_north</value>
+            </Attribute>
+            <Float32/>
+            <dimension name="lat" size="3"/>
+        </Map>
+        <Map name="lon">
+            <Attribute name="units" type="String">
+                <value>degrees_east</value>
+            </Attribute>
+            <Float32/>
+            <dimension name="lon" size="4"/>
+        </Map>
+    </Grid>
+    <Array name="time">
+        <Attribute name="units" type="String">
+            <value>days since Jan 1, 2000</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="time" size="59"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

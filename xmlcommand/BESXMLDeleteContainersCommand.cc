@@ -39,6 +39,8 @@
 #include "BESSyntaxUserError.h"
 #include "BESDebug.h"
 
+using std::endl;
+
 BESXMLDeleteContainersCommand::BESXMLDeleteContainersCommand(const BESDataHandlerInterface &base_dhi) :
     BESXMLCommand(base_dhi)
 {
@@ -65,8 +67,8 @@ void BESXMLDeleteContainersCommand::parse_request(xmlNode *node)
     string storage = props["space"];
     d_xmlcmd_dhi.data[STORE_NAME] = storage;
     if (d_xmlcmd_dhi.data[STORE_NAME].empty()) {
-        d_xmlcmd_dhi.data[STORE_NAME] = PERSISTENCE_VOLATILE;
-        storage = PERSISTENCE_VOLATILE;
+        d_xmlcmd_dhi.data[STORE_NAME] = CATALOG /* DEFAULT jhrg 12/27/18 */;
+        storage = CATALOG /* DEFAULT jhrg 12/27/18 */;
     }
 
     d_xmlcmd_dhi.action = DELETE_CONTAINERS;

@@ -2,9 +2,9 @@
 <response reqID="some_unique_value" xmlns="http://xml.opendap.org/ns/bes/1.0#">
     <getDODS>
         <BESError>
-            <Type>1001</Type>
+            <Type>1</Type>
             <Message>Failed to get values as ascii: The upper and lower latitude indices appear to be reversed. Please provide the latitude bounding box numbers giving the northern-most latitude first.</Message>
-            <Administrator>admin.email.address@your.domain.name</Administrator>
+            <Administrator>support@opendap.org</Administrator>
             <Location>
                 
                 

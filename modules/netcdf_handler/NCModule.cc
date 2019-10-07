@@ -34,7 +34,7 @@
 #include <BESRequestHandlerList.h>
 #include <BESDapService.h>
 #include <BESContainerStorageList.h>
-#include <BESContainerStorageCatalog.h>
+#include <BESFileContainerStorage.h>
 #include <BESCatalogDirectory.h>
 #include <BESCatalogList.h>
 #include <BESDebug.h>
@@ -63,7 +63,7 @@ void NCModule::initialize(const string & modname)
 	}
 
 	if (!BESContainerStorageList::TheList()->ref_persistence( NC_CATALOG)) {
-		BESContainerStorageList::TheList()->add_persistence(new BESContainerStorageCatalog( NC_CATALOG));
+		BESContainerStorageList::TheList()->add_persistence(new BESFileContainerStorage( NC_CATALOG));
 	}
 	else {
 		BESDEBUG("nc", "    storage already exists, skipping" << endl);

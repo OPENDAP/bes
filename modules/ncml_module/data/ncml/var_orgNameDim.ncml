@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<netcdf location="/data/ncml/fnoc1.nc">
+     <!-- Test renaming of a leaf variable -->
+     <variable name="wind_u" orgName="u"/>
+     <variable name="latitude" orgName="lat"/>
+  
+     <!-- Test renaming of dimension names -->
+     <dimension name="latitude" orgName="lat"/>
+</netcdf>
+

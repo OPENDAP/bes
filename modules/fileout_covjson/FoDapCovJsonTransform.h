@@ -70,11 +70,13 @@ private:
     };
 
     struct Parameter {
+        std::string id;
         std::string name;
         std::string type;
         std::string dataType;
         std::string unit;
         std::string longName;
+        std::string standardName;
         std::string shape;
         std::string values;
     };
@@ -112,6 +114,7 @@ private:
     void printParametersWorker(std::ostream *strm, std::string indent);
     void printRangesWorker(std::ostream *strm, std::string indent);
     void printCoverageFooterWorker(std::ostream *strm, std::string indent);
+    void printCoverageJSON(std::ostream *strm, string indent, bool testOverride);
 
     template<typename T>
     void covjsonSimpleTypeArray(std::ostream *strm, libdap::Array *a, std::string indent, bool sendData);
@@ -132,15 +135,17 @@ private:
         this->axisCount++;
     }
 
-    void addParameter(std::string name, std::string type, std::string dataType, std::string unit,
-            std::string longName, std::string shape, std::string values) {
+    void addParameter(std::string id, std::string name, std::string type, std::string dataType, std::string unit,
+            std::string longName, std::string standardName, std::string shape, std::string values) {
         struct Parameter *newParameter = new Parameter;
 
+        newParameter->id = id;
         newParameter->name = name;
         newParameter->type = type;
         newParameter->dataType = dataType;
         newParameter->unit = unit;
         newParameter->longName = longName;
+        newParameter->standardName = standardName;
         newParameter->shape = shape;
         newParameter->values = values;
 
@@ -164,7 +169,14 @@ public:
     // FOR TESTING PURPOSES ------------------------------------------------------------------------------------
     FoDapCovJsonTransform(libdap::DDS *dds);
 
-    virtual ~FoDapCovJsonTransform() { }
+    virtual ~FoDapCovJsonTransform()
+    {
+        for (std::vector<Axis*>::const_iterator i = axes.begin(); i != axes.end(); ++i)
+            delete (*i);
+
+        for (std::vector<Parameter *>::const_iterator i = parameters.begin(); i != parameters.end(); ++i)
+            delete (*i);
+    }
 
     virtual void transform(std::ostream &ostrm, bool sendData, bool testOverride);
 
@@ -174,9 +186,9 @@ public:
         addAxis(name, values);
     }
 
-    virtual void addTestParameter(std::string name, std::string type, std::string dataType, std::string unit,
-            std::string longName, std::string shape, std::string values) {
-        addParameter(name, type, dataType, unit, longName, shape, values);
+    virtual void addTestParameter(std::string id, std::string name, std::string type, std::string dataType, std::string unit,
+            std::string longName, std::string standardName, std::string shape, std::string values) {
+        addParameter(id, name, type, dataType, unit, longName, standardName, shape, values);
     }
 
     virtual void setTestAxesExistence(bool x, bool y, bool z, bool t) {

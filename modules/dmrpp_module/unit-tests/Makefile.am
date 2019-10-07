@@ -8,7 +8,7 @@ AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)/modules -I$(top_srcdir)/modules/dmr
 
 # Added -lz for ubuntu
 LIBADD = $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_EXTRA_LIBS) \
-$(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
+$(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(XML2_LIBS) -lz
 
 
 if CPPUNIT
@@ -35,7 +35,7 @@ noinst_HEADERS = test_config.h
 
 noinst_DATA = bes.conf
 
-EXTRA_DIST = baselines input-files
+EXTRA_DIST = bes.conf.in test_config.h.in baselines input-files
 
 CLEANFILES = *.gcda *.gcno *.strm *.file test_config.h tmp.txt
 
@@ -82,7 +82,14 @@ endif
 clean-local:
 	-rm -rf mds mds_ledger.txt
 
-OBJS = ../*.o
+OBJS = ../DMRpp.o ../DmrppCommon.o ../Chunk.o ../CurlHandlePool.o	\
+../DmrppByte.o ../DmrppArray.o ../DmrppFloat32.o ../DmrppFloat64.o	\
+../DmrppInt16.o ../DmrppInt32.o ../DmrppInt64.o ../DmrppInt8.o		\
+../DmrppUInt16.o ../DmrppUInt32.o ../DmrppUInt64.o ../DmrppStr.o	\
+../DmrppStructure.o ../DmrppUrl.o ../DmrppD4Enum.o ../DmrppD4Group.o	\
+../DmrppD4Opaque.o ../DmrppD4Sequence.o ../DmrppTypeFactory.o		\
+../DmrppParserSax2.o ../DmrppMetadataStore.o ../DmrppRequestHandler.o
+
 
 ChunkTest_SOURCES = ChunkTest.cc
 ChunkTest_LDADD = $(OBJS) $(LIBADD)

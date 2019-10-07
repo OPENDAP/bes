@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[http-8080-1:27:bes_request]">
+
+    <buildSiteMap prefix="http://machine/opendap" nodeSuffix="contents.html" leafSuffix=".html" catalog="second"/>
+    
+    <!-- the catalog and filename attributes default to the following values -->
+    <!-- prefix and suffix must be supplied -->
+    <!-- buildSiteMap prefix="..." nodeSuffix="..." leafSuffix="..." catalog=default " -->
+</request>

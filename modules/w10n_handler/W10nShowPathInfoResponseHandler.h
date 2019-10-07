@@ -49,16 +49,16 @@ class W10nShowPathInfoResponseHandler : public BESResponseHandler
 {
 private:
 public:
-    W10nShowPathInfoResponseHandler( const string &name );
+    W10nShowPathInfoResponseHandler( const std::string &name );
     virtual	~W10nShowPathInfoResponseHandler( void ) ;
 
     virtual void		execute( BESDataHandlerInterface &dhi ) ;
     virtual void		transmit( BESTransmitter *transmitter,
                                           BESDataHandlerInterface &dhi ) ;
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void		dump( std::ostream &strm ) const ;
 
-    static BESResponseHandler *W10nShowPathInfoResponseBuilder( const string &name ) ;
+    static BESResponseHandler *W10nShowPathInfoResponseBuilder( const std::string &name ) ;
 };
 
 #endif // I_W10NShowPathInfoResponseHandler_h

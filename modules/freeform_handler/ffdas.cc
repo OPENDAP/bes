@@ -201,6 +201,9 @@ static void header_to_attributes(AttrTable *at, DATA_BIN_PTR dbin)
             var = ((VARIABLE_PTR) (vlist)->data.u.var);
         }
     }
+    if (pinfo_list)
+        ff_destroy_process_info_list(pinfo_list);
+ 
 }
 
 /** Read the attributes and store their names and values in the attribute
@@ -235,6 +238,12 @@ void read_attributes(string filename, AttrTable *at)
     if (FFRequestHandler::get_RSS_format_support()) {
         iff = find_ancillary_rss_formats(filename);
         SetUps->input_format_file = const_cast<char*>(iff.c_str());
+    }
+    // Regex support
+    if (FFRequestHandler::get_Regex_format_support()) {
+        iff = get_Regex_format_file(filename);
+        if (!iff.empty())
+            SetUps->input_format_file = const_cast<char*>(iff.c_str());
     }
 
     SetUps->output_file = NULL;
@@ -298,6 +307,13 @@ static void add_variable_containers(DAS &das, const string &filename) throw (Err
     if (FFRequestHandler::get_RSS_format_support()) {
         iff = find_ancillary_rss_formats(filename);
         SetUps->input_format_file = const_cast<char*>(iff.c_str());
+    }
+
+    // Regex support
+    if (FFRequestHandler::get_Regex_format_support()) {
+        iff = get_Regex_format_file(filename);
+        if (!iff.empty())
+            SetUps->input_format_file = const_cast<char*>(iff.c_str());
     }
 
     SetUps->output_file = NULL;

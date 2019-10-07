@@ -32,6 +32,8 @@
 
 #include "BESReturnManager.h"
 
+using std::endl;
+
 BESReturnManager *BESReturnManager::_instance = 0;
 
 BESReturnManager::BESReturnManager()

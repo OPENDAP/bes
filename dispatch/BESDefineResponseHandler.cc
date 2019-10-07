@@ -32,22 +32,20 @@
 
 #include <iostream>
 
-using std::endl;
-
 #include "BESDefineResponseHandler.h"
-
-#if 0
-#include "BESSilentInfo.h"
-#endif
-
 
 #include "BESDefine.h"
 #include "BESDefinitionStorageList.h"
 #include "BESDefinitionStorage.h"
+
 #include "BESDataNames.h"
 #include "BESSyntaxUserError.h"
 #include "BESResponseNames.h"
 #include "BESDataHandlerInterface.h"
+
+#include "BESDebug.h"
+
+using namespace std;
 
 BESDefineResponseHandler::BESDefineResponseHandler(const string &name) :
     BESResponseHandler(name)
@@ -79,16 +77,9 @@ BESDefineResponseHandler::~BESDefineResponseHandler()
 void BESDefineResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
     dhi.action_name = DEFINE_RESPONSE_STR;
-#if 0
-    BESInfo *info = new BESSilentInfo();
-    d_response_object = info;
-#endif
 
     string def_name = dhi.data[DEF_NAME];
     string store_name = dhi.data[STORE_NAME];
-
-
-    if (store_name == "") store_name = PERSISTENCE_VOLATILE;
 
     BESDefinitionStorage *store = BESDefinitionStorageList::TheList()->find_persistence(store_name);
     if (store) {
@@ -101,14 +92,6 @@ void BESDefineResponseHandler::execute(BESDataHandlerInterface &dhi)
             dhi.next_container();
         }
 
-        // TODO Now no-ops. Aggreagtion removed. jhrg 2/11/18
-#if 0
-        dd->set_agg_cmd(dhi.data[AGG_CMD]);
-        dd->set_agg_handler(dhi.data[AGG_HANDLER]);
-        dhi.data[AGG_CMD] = "";
-        dhi.data[AGG_HANDLER] = "";
-#endif
-
         store->add_definition(def_name, dd);
     }
     else {
@@ -117,28 +100,17 @@ void BESDefineResponseHandler::execute(BESDataHandlerInterface &dhi)
     }
 }
 
-/** @brief transmit the response object built by the execute command
- * using the specified transmitter object
- *
- * A BESInfo response object was built in the execute command to inform
- * the user whether the definition was successfully added or replaced. The
- * method send_text is called on the BESTransmitter object.
+/** @brief The Define command does not return a response
  *
  * @param transmitter object that knows how to transmit specific basic types
  * @param dhi structure that holds the request and response information
+ *
  * @see BESInfo
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
 void BESDefineResponseHandler::transmit(BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/)
 {
-#if 0
-	if (d_response_object) {
-        BESInfo *info = dynamic_cast<BESInfo *>(d_response_object);
-        if (!info) throw BESInternalError("cast error", __FILE__, __LINE__);
-        info->transmit(transmitter, dhi);
-    }
-#endif
 }
 
 /** @brief dumps information about this object

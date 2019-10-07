@@ -33,6 +33,7 @@
 #include <sstream>
 
 using std::ostringstream;
+using std::endl;
 
 #include "BESXMLInfo.h"
 #include "BESUtil.h"
@@ -108,10 +109,9 @@ void BESXMLInfo::begin_response(const string &response_name, map<string, string>
 
     _response_name = response_name;
 
-#if 0
+#if 1
     LIBXML_TEST_VERSION
 #endif
-
 
     int rc = 0;
 
@@ -161,9 +161,7 @@ void BESXMLInfo::begin_response(const string &response_name, map<string, string>
 
     /* Start an element named "response". Since this is the first element,
      * this will be the root element of the document */
-    rc = xmlTextWriterStartElementNS( _writer, NULL,
-        BAD_CAST "response",
-        BAD_CAST BES_SCHEMA );
+    rc = xmlTextWriterStartElementNS(_writer, NULL, BAD_CAST "response", BAD_CAST BES_SCHEMA);
     if (rc < 0) {
         cleanup();
         string err = (string) "Error starting the response element for response " + _response_name;
@@ -258,7 +256,7 @@ void BESXMLInfo::end_response()
     cleanup();
 }
 
-/** @brief add tagged information to the inforamtional response
+/** @brief add tagged information to the informational response
  *
  * @param tag_name name of the tag to be added to the response
  * @param tag_data information describing the tag
@@ -438,7 +436,15 @@ void BESXMLInfo::add_break(unsigned long num_breaks)
 
 void BESXMLInfo::add_data(const string &s)
 {
+#if 0
     BESInfo::add_data(s);
+#else
+    int rc = xmlTextWriterWriteString( _writer, BAD_CAST s.c_str() );
+    if (rc < 0) {
+        cleanup();
+        throw BESInternalError(string("Error writing String data for response ") + _response_name, __FILE__, __LINE__);
+    }
+#endif
 }
 
 /** @brief add data from a file to the informational object

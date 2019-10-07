@@ -37,7 +37,8 @@
 #include <cstring>
 
 using std::string ;
-using std::endl ;
+using std::endl;
+using std::ostream;
 
 #include "BESStopWatch.h"
 #include "BESDebug.h"

@@ -32,6 +32,8 @@
 
 #include "BESDapErrorInfo.h"
 
+using std::endl;
+
 /** @brief constructs an informational object that doesn't
  *         write any output to the stream
  */

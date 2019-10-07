@@ -4,7 +4,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.63)
 
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
-AC_INIT(bes, 3.19.1, support@opendap.org)
+AC_INIT(bes, 3.20.5, support@opendap.org)
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 
@@ -49,16 +49,33 @@ AC_ARG_ENABLE([developer], [AS_HELP_STRING([--enable-developer], [Developer mode
 
 AC_ARG_ENABLE([asan], [AS_HELP_STRING([--enable-asan], [Use the address sanitizer; won't override CXXFLAGS on the command line])], 
     [AM_CONDITIONAL([USE_ASAN], [true])
-     cxx_debug_flags="$cxx_debug_flags -fsanitize=address -fno-omit-frame-pointer"], 
+     cxx_debug_flags="$cxx_debug_flags -fsanitize=address -fno-omit-frame-pointer -fno-common"], 
     [AM_CONDITIONAL([USE_ASAN], [false])])
 
-dnl Only set CXXFLAGS if the caller didn't supply a value
-AS_IF([test -z "${CXXFLAGS+set}"], [CXXFLAGS="$cxx_debug_flags"])
+AC_ARG_WITH([cmr], [AS_HELP_STRING([--with-cmr], [Build and include the CMR Module (built by default in developer mode)])], 
+    [AM_CONDITIONAL([WITH_CMR], [true])],
+    [AM_CONDITIONAL([WITH_CMR], [AM_COND_IF([BES_DEVELOPER], [true], [flase])])])
 
-dnl library visioning: Update these when the interface changes. Generally,
-dnl assume that the interface tracks the major and minor release numbers.
-LIB_DIS_CURRENT=15
-LIB_DIS_AGE=0
+AS_IF([test "$CC" = "gcc"], [AM_CONDITIONAL([COMPILER_IS_GCC],[true])],
+    [AM_CONDITIONAL([COMPILER_IS_GCC],[false])])
+
+dnl Only set CXXFLAGS if the caller didn't supply a value
+dnl AS_IF([test -z "${CXXFLAGS+set}"], [CXXFLAGS="$cxx_debug_flags"])
+AS_IF([test -z "${CXXFLAGS+set}"], [CXXFLAGS=])
+
+dnl : ${CXXFLAGS=""}
+
+dnl library visioning: Update these when the interface changes.
+dnl
+dnl How to set these SO variables:
+dnl No interfaces changed, only implementations (good): ==> Increment REVISION.
+dnl Interfaces added, none removed (good): ==> Increment CURRENT,
+dnl increment AGE, set REVISION to 0.
+dnl Interfaces removed or changed (BAD, breaks upward compatibility):
+dnl ==> Increment CURRENT, set AGE and REVISION to 0.
+
+LIB_DIS_CURRENT=18
+LIB_DIS_AGE=3
 LIB_DIS_REVISION=2
 AC_SUBST(LIB_DIS_CURRENT)
 AC_SUBST(LIB_DIS_AGE)
@@ -66,18 +83,18 @@ AC_SUBST(LIB_DIS_REVISION)
 LIBDISPATCH_VERSION="$LIB_DIS_CURRENT:$LIB_DIS_REVISION:$LIB_DIS_AGE"
 AC_SUBST(LIBDISPATCH_VERSION)
 
-LIB_PPT_CURRENT=4
-LIB_PPT_AGE=0
-LIB_PPT_REVISION=11
+LIB_PPT_CURRENT=5
+LIB_PPT_AGE=1
+LIB_PPT_REVISION=1
 AC_SUBST(LIB_PPT_CURRENT)
 AC_SUBST(LIB_PPT_AGE)
 AC_SUBST(LIB_PPT_REVISION)
 LIBPPT_VERSION="$LIB_PPT_CURRENT:$LIB_PPT_REVISION:$LIB_PPT_AGE"
 AC_SUBST(LIBPPT_VERSION)
 
-LIB_XML_CMD_CURRENT=3
-LIB_XML_CMD_AGE=2
-LIB_XML_CMD_REVISION=4
+LIB_XML_CMD_CURRENT=5
+LIB_XML_CMD_AGE=4
+LIB_XML_CMD_REVISION=1
 AC_SUBST(LIB_XML_CMD_CURRENT)
 AC_SUBST(LIB_XML_CMD_AGE)
 AC_SUBST(LIB_XML_CMD_REVISION)
@@ -102,8 +119,25 @@ AC_PROG_INSTALL
 dnl AC_PROG_LEX
 AM_PROG_LEX
 
-AS_IF([test "$CC" = "gcc"], [AM_CONDITIONAL([COMPILER_IS_GCC],[true])],
-    [AM_CONDITIONAL([COMPILER_IS_GCC],[false])])
+dnl NB: CentOS 6 does not support C++-11 but does support some features:
+dnl https://gcc.gnu.org/gcc-4.4/cxx0x_status.html.
+dnl For now, I'm counting 0x as supporting C++-11 in our code.
+
+CXX11_FLAG=""
+
+CXX_FLAGS_CHECK([--std=c++11], [CXX11_FLAG=--std=c++11], [])
+
+AS_IF([test -z "$CXX11_FLAG"],
+      [CXX_FLAGS_CHECK([--std=c++0x], [CXX11_FLAG=--std=c++0x], [])])
+
+AS_IF([test -z "$CXX11_FLAG"],
+      [AC_MSG_ERROR([Not using C++-11 (or C++0x)])],
+      [AC_MSG_NOTICE([Using $CXX11_FLAG for C++-11 support])
+       cxx_debug_flags="$cxx_debug_flags --pedantic $CXX11_FLAG"])
+
+AC_SUBST(CXX11_FLAG)
+
+AS_IF([test -n "$cxx_debug_flags"], [CXXFLAGS="$cxx_debug_flags"])
 
 dnl We really need bison and not yacc. If you use AC_PROG_YACC, the resulting 
 dnl Makefile will call bison -y which does not know how to make the parsers 
@@ -127,6 +161,14 @@ AC_CHECK_PROG([PERL], [perl], [`which perl`])
 dnl We need the *-config scripts to build, so the AC_CHECK_LIB 
 dnl macro is not needed.
 AC_PATH_PROG([CURL], [curl], [Where is curl?], [/bin:/usr/bin:/usr/local/bin])
+
+dnl The DMR++ handler uses, conditionally, the Multi API. These tests determine
+dnl if that API is present (iff the multi.h header is present). jhrg 8/27/18
+AC_CHECK_HEADERS([curl/curl.h])
+AC_CHECK_HEADERS([curl/multi.h])
+
+AC_SEARCH_LIBS([curl_multi_wait], [curl],
+    [AC_DEFINE([HAVE_CURL_MULTI_API],[1],[Does libcurl have the multi API])], [], [])
 
 dnl Checks for header files.
 AC_HEADER_STDC
@@ -624,6 +666,15 @@ AC_CHECK_HDF5(
   $ac_bes_dependencies_prefix
 )
 
+AC_CHECK_STARE(
+  [AM_CONDITIONAL([BUILD_STARE],[true])
+  ],
+  [AC_MSG_WARN([STARE library not found.])
+  AM_CONDITIONAL([BUILD_STARE],[false])
+  ],
+  $ac_bes_dependencies_prefix
+)
+
 dnl NCML module test
 dnl
 dnl Look for the minimum version of the icu libs and headers
@@ -759,6 +810,10 @@ AH_TOP([#ifndef _config_h
 #define _config_h])
 
 AH_BOTTOM([
+
+// These values are defined in configure.ac
+#define ANNOTATION_SYSTEM 1
+
 #if defined(__GNUG__) || defined(__GNUC__)
 #define not_used __attribute__ ((unused))
 #else
@@ -820,6 +875,7 @@ AC_CONFIG_FILES([Makefile
 		 functions/tests/Makefile
 		 functions/tests/atlocal
 		 functions/unit-tests/Makefile
+		 functions/stare/Makefile
 		 ])
 dnl These need to be moved into the AC_CONFIG_FILES above 
 dnl when geo-functions is reenabled.
@@ -859,6 +915,16 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/asciival/tests/Makefile
     modules/asciival/tests/atlocal
     modules/asciival/unit-tests/Makefile
+
+    modules/cmr_module/Makefile
+    modules/cmr_module/tests/Makefile
+    modules/cmr_module/tests/atlocal
+    modules/cmr_module/unit-tests/Makefile
+    
+    modules/httpd_catalog_module/Makefile
+    modules/httpd_catalog_module/unit-tests/Makefile
+    modules/httpd_catalog_module/tests/Makefile
+    modules/httpd_catalog_module/tests/atlocal
 
     modules/www-interface/Makefile
 
@@ -963,6 +1029,10 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
 
     AC_CONFIG_TESTDIR(modules/csv_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/asciival/tests, [standalone])
+        
+    AC_CONFIG_TESTDIR(modules/httpd_catalog_module/tests, [standalone])
+
+    AC_CONFIG_TESTDIR(modules/cmr_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_json/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_covjson/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/debug_functions/tests, [standalone])
@@ -978,7 +1048,7 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     AC_CONFIG_TESTDIR(modules/ncml_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/ugrid_functions/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/w10n_handler/tests, [standalone])
-    
+
     AC_CONFIG_TESTDIR(modules/hdf4_handler/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/hdf5_handler/bes-testsuite, [standalone])
     

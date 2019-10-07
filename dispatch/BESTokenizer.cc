@@ -35,6 +35,7 @@
 
 using std::cout;
 using std::endl;
+using std::ostream;
 
 #include "BESTokenizer.h"
 #include "BESSyntaxUserError.h"

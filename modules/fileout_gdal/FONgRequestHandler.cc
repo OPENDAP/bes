@@ -34,6 +34,11 @@
 
 #include "FONgRequestHandler.h"
 
+using std::endl;
+
+// Added hrg 3/20/19
+bool FONgRequestHandler::d_use_byte_for_geotiff_bands = true;
+
 /** @brief Constructor for FileOut GDAL module
  *
  * This constructor adds functions to add to the build of a help request
@@ -47,6 +52,8 @@ FONgRequestHandler::FONgRequestHandler(const string &name) :
 {
     add_method(HELP_RESPONSE, FONgRequestHandler::build_help);
     add_method(VERS_RESPONSE, FONgRequestHandler::build_version);
+
+    FONgRequestHandler::d_use_byte_for_geotiff_bands = TheBESKeys::TheKeys()->read_bool_key("FONg.GeoTiff.band.type.byte", true);
 
     GDALAllRegister();
     CPLSetErrorHandler(CPLQuietErrorHandler);

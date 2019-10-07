@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="ref_tst_opaque_data.nc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Array name="raw_obs">
+        <Attribute name="_FillValue" type="Byte">
+            <value>202</value>
+            <value>254</value>
+            <value>186</value>
+            <value>190</value>
+            <value>202</value>
+            <value>254</value>
+            <value>186</value>
+            <value>190</value>
+            <value>202</value>
+            <value>254</value>
+            <value>186</value>
+        </Attribute>
+        <Attribute name="DAP2_OriginalNetCDFBaseType" type="String">
+            <value>NC_OPAQUE</value>
+        </Attribute>
+        <Attribute name="DAP2_OriginalNetCDFTypeName" type="String">
+            <value>raw_obs_t</value>
+        </Attribute>
+        <Byte/>
+        <dimension name="time" size="5"/>
+        <dimension size="11"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

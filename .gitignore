@@ -3,6 +3,7 @@
 .libs
 .pydevproject
 .autotools
+.dir
 autom4te.cache
 /bes-*
 docs
@@ -34,9 +35,6 @@ lex.*.cc
 
 Makefile
 Makefile.in
-# Normally you would not ignore this, but here it is a symlink
-# to one of configure_modules.ac or configure_standard.ac
-configure.ac
 doxy.conf
 doxygen_warnings.txt
 main_page.doxygen
@@ -70,6 +68,8 @@ libtool
 **/generate_metadata_baseline.sh
 **/test_config.h
 **/bes.conf
+**/testsuite
+**/testsuite.dir
 
 abi_checker.xml
 bes-config
@@ -152,3 +152,6 @@ timing/*/*.result
 timing/*/*.dtps
 /html/
 /.externalToolBuilders/
+/.scannerwork/
+/bw-output/
+/1

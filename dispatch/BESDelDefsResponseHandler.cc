@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,7 +36,6 @@
 #include "BESSilentInfo.h"
 #endif
 
-
 #include "BESDefinitionStorageList.h"
 #include "BESDefinitionStorage.h"
 #include "BESDefine.h"
@@ -48,12 +47,14 @@
 #include "BESResponseNames.h"
 #include "BESDataHandlerInterface.h"
 
-BESDelDefsResponseHandler::BESDelDefsResponseHandler( const string &name )
-    : BESResponseHandler( name )
+using std::endl;
+
+BESDelDefsResponseHandler::BESDelDefsResponseHandler(const string &name) :
+    BESResponseHandler(name)
 {
 }
 
-BESDelDefsResponseHandler::~BESDelDefsResponseHandler( )
+BESDelDefsResponseHandler::~BESDelDefsResponseHandler()
 {
 }
 
@@ -77,36 +78,27 @@ BESDelDefsResponseHandler::~BESDelDefsResponseHandler( )
  * @see BESDefinitionStorage
  * @see BESDefinitionStorageList
  */
-void
-BESDelDefsResponseHandler::execute( BESDataHandlerInterface &dhi )
+void BESDelDefsResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
 #if 0
-	dhi.action_name = DELETE_DEFINITIONS_STR ;
-    BESInfo *info = new BESSilentInfo() ;
-    d_response_object = info ;
+    dhi.action_name = DELETE_DEFINITIONS_STR;
+    BESInfo *info = new BESSilentInfo();
+    d_response_object = info;
 #endif
 
-    string store_name = dhi.data[STORE_NAME] ;
-    if( store_name == "" )
-	store_name = PERSISTENCE_VOLATILE ;
-    BESDefinitionStorage *store =
-	BESDefinitionStorageList::TheList()->find_persistence( store_name ) ;
-    if( store )
-    {
-	bool deleted = store->del_definitions() ;
-	if( !deleted )
-	{
-	    string line = (string)"Unable to delete all definitions "
-			  + "from definition store \"" + store_name + "\"" ;
-	    throw BESSyntaxUserError( line, __FILE__, __LINE__ ) ;
-	}
+    string store_name = dhi.data[STORE_NAME];
+    if (store_name == "") store_name = DEFAULT;
+    BESDefinitionStorage *store = BESDefinitionStorageList::TheList()->find_persistence(store_name);
+    if (store) {
+        bool deleted = store->del_definitions();
+        if (!deleted) {
+            string line = (string) "Unable to delete all definitions " + "from definition store \"" + store_name + "\"";
+            throw BESSyntaxUserError(line, __FILE__, __LINE__);
+        }
     }
-    else
-    {
-	string line = (string)"Definition store \""
-		      + store_name
-		      + "\" does not exist.  Unable to delete." ;
-	throw BESSyntaxUserError( line, __FILE__, __LINE__ ) ;
+    else {
+        string line = (string) "Definition store \"" + store_name + "\" does not exist.  Unable to delete.";
+        throw BESSyntaxUserError(line, __FILE__, __LINE__);
     }
 }
 
@@ -122,16 +114,15 @@ BESDelDefsResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void
-BESDelDefsResponseHandler::transmit( BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/ )
+void BESDelDefsResponseHandler::transmit(BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/)
 {
 #if 0
-	if( d_response_object )
+    if( d_response_object )
     {
-	BESInfo *info = dynamic_cast<BESInfo *>(d_response_object) ;
-	if( !info )
-	    throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
-	info->transmit( transmitter, dhi ) ;
+        BESInfo *info = dynamic_cast<BESInfo *>(d_response_object);
+        if( !info )
+        throw BESInternalError( "cast error", __FILE__, __LINE__ );
+        info->transmit( transmitter, dhi );
     }
 #endif
 }
@@ -142,19 +133,17 @@ BESDelDefsResponseHandler::transmit( BESTransmitter */*transmitter*/, BESDataHan
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESDelDefsResponseHandler::dump( ostream &strm ) const
+void BESDelDefsResponseHandler::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESDelDefsResponseHandler::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    BESResponseHandler::dump( strm ) ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESDelDefsResponseHandler::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    BESResponseHandler::dump(strm);
+    BESIndent::UnIndent();
 }
 
 BESResponseHandler *
-BESDelDefsResponseHandler::DelDefsResponseBuilder( const string &name )
+BESDelDefsResponseHandler::DelDefsResponseBuilder(const string &name)
 {
-    return new BESDelDefsResponseHandler( name ) ;
+    return new BESDelDefsResponseHandler(name);
 }
 

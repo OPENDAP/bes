@@ -667,7 +667,10 @@ static void store_daemon_id(int pid)
         cerr << errno_str(": unable to create pid file " + file_for_daemon_pid + ": ");
     }
     else {
-        f << "PID: " << pid << " UID: " << getuid() << endl;
+        // systemd/systemctl (CentOS 7 and elsewhere) expects just a PID number as text.
+        // jhrg 1/31/19
+        // f << "PID: " << pid << " UID: " << getuid() << endl;
+        f << pid << endl;
         f.close();
         mode_t new_mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
         (void) chmod(file_for_daemon_pid.c_str(), new_mode);
@@ -693,9 +696,11 @@ static bool load_names(const string &install_dir, const string &pid_dir)
         beslistener_path = install_dir;
         beslistener_path += bindir;
         if (file_for_daemon_pid.empty()) {
-            // file_for_daemon_pid = install_dir + "/var/run";
-            // Added jhrg 2/9/12
-            file_for_daemon_pid = install_dir + "/var/run/bes";
+            file_for_daemon_pid = install_dir + "/var/run";
+            // Added jhrg 2/9/12 ... and removed 1/31/19. The special dir breaks
+            // systemctl/systemd on CentOS 7. We might be able to tweak things so
+            // it would work, but I'm switching back to what other daemons do. jhrg
+            // file_for_daemon_pid = install_dir + "/var/run/bes";
 
         }
     }
@@ -708,9 +713,9 @@ static bool load_names(const string &install_dir, const string &pid_dir)
             if (slash != string::npos) {
                 string root = prog.substr(0, slash);
                 if (file_for_daemon_pid.empty()) {
-                    //file_for_daemon_pid = root + "/var/run";
-                    // Added jhrg 2/9/12
-                    file_for_daemon_pid = root + "/var/run/bes";
+                    file_for_daemon_pid = root + "/var/run";
+                    // Added jhrg 2/9/12. See about 1/31/19 jhrg
+                    // file_for_daemon_pid = root + "/var/run/bes";
                 }
             }
             else {
@@ -724,7 +729,7 @@ static bool load_names(const string &install_dir, const string &pid_dir)
     if (beslistener_path == "") {
         beslistener_path = ".";
         if (file_for_daemon_pid.empty()) {
-            file_for_daemon_pid = "./run/bes";
+            file_for_daemon_pid = "./run";
         }
     }
 

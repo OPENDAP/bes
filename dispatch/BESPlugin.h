@@ -184,7 +184,7 @@ public:
         return my_M;
     }
 
-    virtual void dump(ostream &strm) const
+    virtual void dump(std::ostream &strm) const
     {
         strm << "BESPlugin::dump - (" << (void *) this << ")" << endl;
         strm << "    plugin name: " << d_filename << endl;

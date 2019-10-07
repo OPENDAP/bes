@@ -17,7 +17,10 @@ then
     exit 1
 fi
 
-piddir=${localstatedir}/run/bes
+piddir=${localstatedir}/run
+# Remove '/bes' so that systemctl on CentOS 7 (and elsewhere?) works.
+# It expects the pid file to be in /var/run. jhrg 1/31/19
+# /bes
 pidfile=${piddir}/bes.pid
 
 ###########################################################################
@@ -266,7 +269,8 @@ do
     case $param in
 	-i)
 	    prefix=$2
-	    piddir=${prefix}/var/run/bes
+	    piddir=${prefix}/var/run
+	    # See comment at top of the file. jhrg 1/31/19 /bes
 	    pidfile=${piddir}/bes.pid
 	    bindir=${prefix}/bin
 	    dashi="yes"

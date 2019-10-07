@@ -87,8 +87,8 @@ public:
     {
         if (bes_debug) BESDebug::SetUp("cerr,all");
 
+        string bes_conf = BESUtil::assemblePath(TEST_SRC_DIR,"remote_access_test.ini");
 
-        string bes_conf = (string) TEST_SRC_DIR + "/remote_access_test.ini";
         TheBESKeys::ConfigFile = bes_conf;
 
         TheBESKeys::TheKeys()->set_key("BES.Catalog.catalog.RootDirectory",catalog_root_dir);
@@ -113,7 +113,8 @@ public:
 
     CPPUNIT_TEST_SUITE( RemoteAccessTest );
 
-    CPPUNIT_TEST(do_test);
+    CPPUNIT_TEST(do_http_test);
+    CPPUNIT_TEST(do_file_test);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -125,28 +126,50 @@ public:
         return result;
     }
 
-    void do_test()
+    void do_http_test()
     {
-        string catalog_root_url = "file://" + catalog_root_dir;
-
         CPPUNIT_ASSERT(!can_access("http://google.com"));
-
         CPPUNIT_ASSERT(can_access("http://test.opendap.org/opendap/data/nc/fnoc1.nc"));
-
         CPPUNIT_ASSERT(can_access("https://s3.amazonaws.com/somewhereovertherainbow/data/nc/fnoc1.nc"));
         CPPUNIT_ASSERT(!can_access("http://s3.amazonaws.com/somewhereovertherainbow/data/nc/fnoc1.nc"));
-
         CPPUNIT_ASSERT(can_access("http://thredds.ucar.edu/thredds/dodsC/data/nc/fnoc1.nc"));
         CPPUNIT_ASSERT(!can_access("https://thredds.ucar.edu/thredds/dodsC/data/nc/fnoc1.nc"));
-
         CPPUNIT_ASSERT(
             can_access("http://cloudydap.opendap.org/opendap/Arch-2/ebs/samples/3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.h5"));
 
-        CPPUNIT_ASSERT(!can_access("file://foo"));
+    }
+    void do_file_test()
+    {
 
-        CPPUNIT_ASSERT(can_access(BESUtil::assemblePath(catalog_root_url, "nc/fnoc1.nc")));
 
+        /* Listing the data dir...
+
+            ls -1 CATALOG_ROOT
+
+            CATALOG_ROOT:
+                README
+                file1
+                file2
+                keys_test_m3.ini
+                child_dir:
+                    child_file.conf
+                    child_file1
+         */
+        string catalog_root_url = "file://" + catalog_root_dir;
+
+        // Rejected Does not exist in catalog_root
+        CPPUNIT_ASSERT(!can_access("file:///foo"));
+
+        // Accepted - Relative path successful access
+        CPPUNIT_ASSERT(can_access("file://child_dir/child_file1"));
+
+        // Accepted - Absolute path successful access
+        CPPUNIT_ASSERT(can_access(BESUtil::assemblePath(catalog_root_url, "child_dir/child_file1")));
+
+        // Rejected - does not exist in catalog_root
         CPPUNIT_ASSERT(!can_access("file://tmp/data/nc/fnoc1.nc"));
+
+        // Rejected - does not begin with catalog_root
         CPPUNIT_ASSERT(!can_access("file:///etc/password"));
     }
 };

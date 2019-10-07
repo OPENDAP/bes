@@ -90,8 +90,7 @@ TheBESKeys *TheBESKeys::TheKeys()
         _instance = new TheBESKeys(TheBESKeys::ConfigFile);
         return _instance;
     }
-
-    throw BESInternalFatalError("Unable to find the BES configuration file.", __FILE__, __LINE__);
+    throw BESInternalFatalError("Unable to locate a BES configuration file.", __FILE__, __LINE__);
 }
 
 /** @brief default constructor that reads loads key/value pairs from the

@@ -1,0 +1,22 @@
+#!/usr/bin/make -f
+%:
+	dh $@
+
+override_dh_auto_install:
+	$(MAKE) DESTDIR=$$(pwd)/debian/bes install
+
+override_dh_auto_test:
+	$(MAKE) DESTDIR=$$(pwd)/debian/bes check
+
+override_dh_shlibdeps:
+	dh_shlibdeps --dpkg-shlibdeps-params=--ignore-missing-info
+
+override_dh_auto_configure:
+	dh_auto_configure -- --with-dependencies=$(prefix)/deps
+
+override_dh_fixperms:
+	dh_fixperms
+	sudo useradd -m bes 
+	sudo chown bes:bes /var/run/bes/
+
+#export PATH="/home/ubuntu/src/hyrax/build/bin:/home/ubuntu/src/hyrax/build/deps/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"

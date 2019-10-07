@@ -34,6 +34,10 @@ class FFRequestHandler : public BESRequestHandler {
 private:
     static bool d_RSS_format_support;
     static string d_RSS_format_files;
+
+    static bool d_Regex_format_support;
+    static map<string,string> d_fmt_regex_map;
+    //static string d_Regex_expr;
 public:
 	FFRequestHandler( const string &name ) ;
     virtual	~FFRequestHandler( void ) ;
@@ -49,6 +53,10 @@ public:
 
     static bool get_RSS_format_support() { return d_RSS_format_support; }
     static string get_RSS_format_files() { return d_RSS_format_files; }
+
+    static bool get_Regex_format_support() { return d_Regex_format_support; }
+    static map<string,string> get_fmt_regex_map() { return d_fmt_regex_map; }
+
 };
 
 #endif

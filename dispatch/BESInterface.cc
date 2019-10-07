@@ -45,22 +45,15 @@
 #include <sstream>
 #include <iostream>
 
-#include "Error.h"
+#include <Error.h>
 
 #include "BESInterface.h"
 
 #include "TheBESKeys.h"
 #include "BESResponseHandler.h"
-#include "BESAggFactory.h"
-#include "BESAggregationServer.h"
-// #include "BESReporterList.h"
 #include "BESContextManager.h"
 
 #include "BESDapError.h"
-#if 0
-#include "BESDapErrorInfo.h"
-#include "BESInfoList.h"
-#endif
 
 #include "BESTransmitterNames.h"
 #include "BESDataNames.h"
@@ -76,10 +69,15 @@
 #include "BESTimeoutError.h"
 #include "BESInternalError.h"
 #include "BESInternalFatalError.h"
+#include "ServerAdministrator.h"
 
 #include "BESLog.h"
 
+// If not defined, this is false (source code file names are logged). jhrg 10/4/18
+#define EXCLUDE_FILE_INFO_FROM_LOG "BES.DoNotLogSourceFilenames"
+
 using namespace std;
+using std::endl;
 
 static jmp_buf timeout_jump;
 static bool timeout_jump_valid = false;
@@ -153,9 +151,13 @@ static inline void downcase(string &s)
 static void log_error(BESError &e)
 {
     string error_name = "";
+#if 0
     // TODO This should be configurable; I'm changing the values below to always log all errors.
     // I'm also confused about the actual intention. jhrg 11/14/17
+    //
+    // Simplified. jhrg 10/03/18
     bool only_log_to_verbose = false;
+#endif
     switch (e.get_bes_error_type()) {
     case BES_INTERNAL_FATAL_ERROR:
         error_name = "BES Internal Fatal Error";
@@ -167,7 +169,7 @@ static void log_error(BESError &e)
 
     case BES_SYNTAX_USER_ERROR:
         error_name = "BES User Syntax Error";
-        only_log_to_verbose = false; // TODO Was 'true.' jhrg 11/14/17
+        // only_log_to_verbose = false; // TODO Was 'true.' jhrg 11/14/17
         break;
 
     case BES_FORBIDDEN_ERROR:
@@ -176,7 +178,7 @@ static void log_error(BESError &e)
 
     case BES_NOT_FOUND_ERROR:
         error_name = "BES Not Found Error";
-        only_log_to_verbose = false; // TODO was 'true.' jhrg 11/14/17
+        // only_log_to_verbose = false; // TODO was 'true.' jhrg 11/14/17
         break;
 
     default:
@@ -184,14 +186,25 @@ static void log_error(BESError &e)
         break;
     }
 
+    if (TheBESKeys::TheKeys()->read_bool_key(EXCLUDE_FILE_INFO_FROM_LOG, false)) {
+        LOG("ERROR: " << error_name << ": " << e.get_message() << endl);
+    }
+    else {
+        LOG("ERROR: " << error_name << ": " << e.get_message() << " (" << e.get_file() << ":" << e.get_line() << ")" << endl);
+    }
+
+#if 0
     if (only_log_to_verbose) {
-            VERBOSE("ERROR: " << error_name << ", error code: " << e.get_bes_error_type() << ", file: " << e.get_file() << ":"
+        VERBOSE("ERROR: " << error_name << ", error code: " << e.get_bes_error_type() << ", file: " << e.get_file() << ":"
                     << e.get_line()  << ", message: " << e.get_message() << endl);
 
     }
-	else {
-		LOG("ERROR: " << error_name << ": " << e.get_message() << "(error code: " << e.get_bes_error_type() << ")." << endl);
-	}
+    else {
+      LOG("ERROR: " << error_name << ": " << e.get_message() << " (BES error code: " << e.get_bes_error_type() << ")." << endl);
+      VERBOSE(" at: " << e.get_file() << ":" << e.get_line() << endl);
+    }
+#endif
+
 }
 
 #if USE_SIGWAIT
@@ -331,23 +344,21 @@ int BESInterface::handleException(BESError &e, BESDataHandlerInterface &dhi)
 
     log_error(e);
 
-    string administrator = "";
+    string admin_email = "";
     try {
-        bool found = false;
-        vector<string> vals;
-        string key = "BES.ServerAdministrator";
-        TheBESKeys::TheKeys()->get_value(key, administrator, found);
+        bes::ServerAdministrator sd;
+        admin_email = sd.get_email();
     }
     catch (...) {
-        administrator = "support@opendap.org";
+        admin_email = "support@opendap.org";
     }
-    if (administrator.empty()) {
-        administrator = "support@opendap.org";
+    if (admin_email.empty()) {
+        admin_email = "support@opendap.org";
     }
 
     dhi.error_info->begin_response(dhi.action_name.empty() ? "BES" : dhi.action_name, dhi);
 
-    dhi.error_info->add_exception(e, administrator);
+    dhi.error_info->add_exception(e, admin_email);
 
     dhi.error_info->end_response();
 
@@ -529,6 +540,11 @@ int BESInterface::execute_request(const string &from)
 
         d_dhi_ptr->executed = true;
     }
+    catch (libdap::Error &e) {
+        timeout_jump_valid = false;
+        BESInternalFatalError ex(string("BES caught a libdap exception: ") + e.get_error_message(), __FILE__, __LINE__);
+        status = handleException(ex, *d_dhi_ptr);
+    }
     catch (BESError &e) {
         timeout_jump_valid = false;
         status = handleException(e, *d_dhi_ptr);
@@ -558,7 +574,7 @@ int BESInterface::execute_request(const string &from)
     }
     catch (...) {
         timeout_jump_valid = false;
-        BESInternalError ex("An undefined exception has been thrown", __FILE__, __LINE__);
+        BESInternalError ex("An unidentified exception has been thrown", __FILE__, __LINE__);
         status = handleException(ex, *d_dhi_ptr);
     }
 

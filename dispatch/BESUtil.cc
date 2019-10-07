@@ -50,6 +50,7 @@
 #include <sstream>
 #include <iostream>
 
+using std::stringstream;
 using std::istringstream;
 using std::cout;
 using std::endl;
@@ -63,10 +64,12 @@ using std::string;
 #include "BESNotFoundError.h"
 #include "BESInternalError.h"
 #include "BESLog.h"
+#include "BESCatalogList.h"
 
 #define CRLF "\r\n"
 
-#define debug_key "BesUtil"
+#define debug_key "util"
+#define prolog string("BESUtil::").append(__func__).append("() - ")
 
 const string BES_KEY_TIMEOUT_CANCEL = "BES.CancelTimeoutOnSend";
 
@@ -752,6 +755,46 @@ string BESUtil::url_create(BESUtil::url &url_parts)
     return url;
 }
 
+
+/**
+ * @brief Concatenate path fragments making sure that they are separated by a single '/' character.
+ *
+ * Returns a new string made from appending secondPart to firstPart while
+ * ensuring that a single separator appears between the two parts.
+ *
+ * @param firstPart The first string to concatenate.
+ * @param secondPart The second string to concatenate.
+ * @param separator The separator character to use between the two concatenated strings. Default: '/'
+ */
+string BESUtil::pathConcat(const string &firstPart, const string &secondPart, char separator)
+{
+    string first = firstPart;
+    string second = secondPart;
+    string sep(1,separator);
+
+    // make sure there are not multiple slashes at the end of the first part...
+    // Note that this removes all of the slashes. jhrg 9/27/16
+    while (!first.empty() && *first.rbegin() == separator) {
+        // C++-11 first.pop_back();
+        first = first.substr(0, first.length() - 1);
+    }
+    // make sure second part does not BEGIN with a slash
+    while (!second.empty() && second[0] == separator) {
+        // erase is faster? second = second.substr(1);
+        second.erase(0, 1);
+    }
+    string newPath;
+    if (first.empty()) {
+        newPath = second;
+    }
+    else if (second.empty()) {
+        newPath = first;
+    }
+    else {
+        newPath = first.append(sep).append(second);
+    }
+    return newPath;
+}
 /**
  * @brief Assemble path fragments making sure that they are separated by a single '/' character.
  *
@@ -763,8 +806,16 @@ string BESUtil::url_create(BESUtil::url &url_parts)
  * arguments do not contain multiple consecutive slashes - I don't think the original
  * version will work in cases where the string is only slashes because it will dereference
  * the return value of begin()
+ * @param firstPart The first string to concatenate.
+ * @param secondPart The second string to concatenate.
+ * @param leadingSlash If this bool value is true then the returned string will have a leading slash.
+ *  If the value of leadingSlash is false then the first character  of the returned string will
+ *  be the first character of the passed firstPart.
+ *  @param trailingSlash If this bool is true then the returned string will end it a slash. If
+ *   trailingSlash is false, then the returned string will not end with a slash. If trailing
+ *   slash(es) need to be removed to accomplish this, then they will be removed.
  */
-string BESUtil::assemblePath(const string &firstPart, const string &secondPart, bool ensureLeadingSlash)
+string BESUtil::assemblePath(const string &firstPart, const string &secondPart, bool leadingSlash, bool trailingSlash)
 {
 #if 0
     assert(!firstPart.empty());
@@ -789,9 +840,10 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
 #endif
 
 #if 1
-    BESDEBUG("util", "BESUtil::assemblePath() -  firstPart:  '" << firstPart << "'" << endl);
-    BESDEBUG("util", "BESUtil::assemblePath() -  secondPart: '" << secondPart << "'" << endl);
+    BESDEBUG(debug_key, prolog << "firstPart:  '" << firstPart << "'" << endl);
+    BESDEBUG(debug_key, prolog << "secondPart: '" << secondPart << "'" << endl);
 
+#if 0
     // assert(!firstPart.empty()); // I dropped this because I had to ask, why? Why does it matter? ndp 2017
 
     string first = firstPart;
@@ -821,8 +873,10 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
     else {
         newPath = first.append("/").append(second);
     }
+#endif
 
-    if (ensureLeadingSlash) {
+    string newPath = BESUtil::pathConcat(firstPart,secondPart);
+    if (leadingSlash) {
         if (newPath.empty()) {
             newPath = "/";
         }
@@ -831,8 +885,16 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
         }
     }
 
-    BESDEBUG("util", "BESUtil::assemblePath() -  newPath: "<< newPath << endl);
-
+    if (trailingSlash) {
+        if (newPath.compare(newPath.length(), 1, "/")) {
+            newPath = newPath.append("/");
+        }
+    }
+    else {
+        while(newPath.length()>1 &&  *newPath.rbegin() == '/')
+            newPath = newPath.substr(0,newPath.length()-1);
+    }
+    BESDEBUG(debug_key, prolog << "newPath: "<< newPath << endl);
     return newPath;
 #endif
 
@@ -912,7 +974,7 @@ void BESUtil::conditional_timeout_cancel()
         doset = BESUtil::lowercase(doset);
         if (dosettrue == doset || dosetyes == doset) cancel_timeout_on_send = true;
     }
-    BESDEBUG("util", __func__ << "() - cancel_timeout_on_send: " <<(cancel_timeout_on_send?"true":"false") << endl);
+    BESDEBUG(debug_key, __func__ << "() - cancel_timeout_on_send: " <<(cancel_timeout_on_send?"true":"false") << endl);
     if (cancel_timeout_on_send) alarm(0);
 }
 
@@ -943,7 +1005,7 @@ void BESUtil::replace_all(string &s, string find_this, string replace_with_this)
  * @param separator A string, of length one, containing the separator character for the path. This
  * parameter is optional and its value defaults to the slash '/' character.
  */
-string BESUtil::normalize_path(const string &raw_path, bool leading_separator, bool trailing_separator, const string separator)
+string BESUtil::normalize_path(const string &raw_path, bool leading_separator, bool trailing_separator, const string separator /* = "/" */)
 {
     if (separator.length() != 1)
         throw BESInternalError("Path separators must be a single character. The string '" + separator + "' does not qualify.", __FILE__, __LINE__);
@@ -989,7 +1051,7 @@ string BESUtil::normalize_path(const string &raw_path, bool leading_separator, b
  * http://www.oopweb.com/CPP/Documents/CPPHOWTO/Volume/C++Programming-HOWTO-7.html
  * for the tokenizer.
  */
-void BESUtil::tokenize(const string& str, vector<string>& tokens, const string& delimiters)
+void BESUtil::tokenize(const string& str, vector<string>& tokens, const string& delimiters /* = "/" */)
 {
     // Skip delimiters at beginning.
     string::size_type lastPos = str.find_first_not_of(delimiters, 0);
@@ -1025,7 +1087,7 @@ string BESUtil::get_time(bool use_local_time)
  */
 string BESUtil::get_time(time_t the_time, bool use_local_time)
 {
-    char buf[sizeof "YYYY-MM-DDTHH:MM:SSzone"];
+    char buf[sizeof "YYYY-MM-DDTHH:MM:SS zones"];
     int status = 0;
 
     // From StackOverflow:
@@ -1039,9 +1101,79 @@ string BESUtil::get_time(time_t the_time, bool use_local_time)
     else
         status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&the_time));
 
-    if (!status)
-    LOG("Error getting last modified time time for a leaf item in CMRCatalog.");
+    if (!status) {
+        LOG(prolog + "Error formatting time value!");
+        return "date-format-error";
+    }
 
     return buf;
 }
+
+/**
+ * @brief Splits the string s into the return vector of tokens using the delimiter delim
+ * and skipping empty values as instructed by skip_empty.
+ *
+ * @param s The string to tokenize.
+ * @param delim The character delimiter to utilize during tokenization. default: '/'
+ * @param skip_empty A boolean flag which controls if empty tokens are returned.
+ * @return A vector of strings each of which is a token in the string read left to right.
+ * @see BESUtil::tokenize() is probably faster
+ */
+vector<string> BESUtil::split(const string &s, char delim /* '/' */, bool skip_empty /* true */)
+{
+    stringstream ss(s);
+    string item;
+    vector<string> tokens;
+
+    while (getline(ss, item, delim)) {
+
+        if (item.empty() && skip_empty)
+            continue;
+
+        tokens.push_back(item);
+
+#if 0
+        // If skip_empty is false, item is not ever pushed, regardless of whether it's empty. jhrg 1/24/19
+        if (skip_empty && !item.empty())
+            tokens.push_back(item);
+#endif
+
+    }
+
+    return tokens;
+}
+
+BESCatalog *BESUtil::separateCatalogFromPath(std::string &ppath)
+{
+    BESCatalog *catalog = 0;    // pointer to a singleton; do not delete
+    vector<string> path_tokens;
+
+    // BESUtil::normalize_path() removes duplicate separators and adds leading and trailing separators as directed.
+    string path = BESUtil::normalize_path(ppath, false, false);
+    BESDEBUG(debug_key, prolog << "Normalized path: " << path << endl);
+
+    // Because we may need to alter the container/file/resource name by removing
+    // a catalog name from the first node in the path we use "use_container" to store
+    // the altered container path.
+    string use_container = ppath;
+
+    // Breaks path into tokens
+    BESUtil::tokenize(path, path_tokens);
+    if (!path_tokens.empty()) {
+        BESDEBUG(debug_key, "First path token: " << path_tokens[0] << endl);
+        catalog = BESCatalogList::TheCatalogList()->find_catalog(path_tokens[0]);
+        if (catalog) {
+            BESDEBUG(debug_key, prolog << "Located catalog " << catalog->get_catalog_name() << " from path component" << endl);
+            // Since the catalog name is in the path we
+            // need to drop it this should leave container
+            // with a leading
+            ppath = BESUtil::normalize_path(path.substr(path_tokens[0].length()), true, false);
+            BESDEBUG(debug_key, prolog << "Modified container/path value to:  " << use_container << endl);
+        }
+    }
+
+    return catalog;
+}
+
+
 
