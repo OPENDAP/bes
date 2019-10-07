@@ -54,7 +54,7 @@ clean-local:
 
 %: %.at 
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
-$(TESTSUITE): $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
+$(TESTSUITE): $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
 
 # The `:;' works around a Bash 3.2 bug when the output is not writeable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac
