@@ -1,6 +1,8 @@
 # Process with autom4te to create an -*- Autotest -*- test suite.
 
-m4_include([handler_tests_macros.m4])
+AT_INIT([bes/dapreader/tests ./testsuite])
+
+m4_include([../../modules/handler_tests_macros.m4])
 
 ## These initial tests look at the basic operation of the dapreader
 ## handler.
@@ -65,7 +67,12 @@ AT_BESCMD_RESPONSE_TEST([dap/test_array_6.xml.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([dap/test_array_7.xml.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([dap/test_array_8.xml.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([dap/test_escaped_paths_simple.xml.dmr.bescmd])
-AT_BESCMD_RESPONSE_TEST([dap/test_escaped_paths.xml.dmr.bescmd], [xfail])
+
+# The following test returns an error and for the newest handlers tests macros,
+# wee need a slightly different macro. jhrg 10/7/19
+# AT_BESCMD_RESPONSE_TEST([dap/test_escaped_paths.xml.dmr.bescmd], [xfail])
+
+AT_BESCMD_ERROR_RESPONSE_TEST([dap/test_escaped_paths.xml.dmr.bescmd], [xfail])
 AT_BESCMD_RESPONSE_TEST([dap/test_simple_1.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([dap/test_simple_1.xml.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([dap/test_simple_10.xml.dmr.bescmd])
