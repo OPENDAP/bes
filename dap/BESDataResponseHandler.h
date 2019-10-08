@@ -59,15 +59,15 @@ class BESDataResponseHandler: public BESResponseHandler {
     std::string d_dmrpp_name;   ///< The name of the DMR++ module
 
 public:
-    BESDataResponseHandler(const string &name);
+    BESDataResponseHandler(const std::string &name);
     virtual ~BESDataResponseHandler(void);
 
     virtual void execute(BESDataHandlerInterface &dhi);
     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 
-    static BESResponseHandler *DataResponseBuilder(const string &name);
+    static BESResponseHandler *DataResponseBuilder(const std::string &name);
 };
 
 #endif

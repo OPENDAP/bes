@@ -34,6 +34,7 @@
 #include <iostream>
 
 using std::endl;
+using std::ostream;
 
 #include "BESWWWModule.h"
 #include "BESDebug.h"

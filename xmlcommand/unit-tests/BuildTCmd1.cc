@@ -40,6 +40,7 @@ using namespace CppUnit ;
 
 using std::cout ;
 using std::endl ;
+using std::ostream;
 
 #include "BuildTCmd1.h"
 #include "BESXMLUtils.h"

@@ -32,6 +32,7 @@
 #include <iostream>
 
 using std::endl;
+using std::ostream;
 
 #include "FoJsonModule.h"
 #include "FoDapJsonTransmitter.h"

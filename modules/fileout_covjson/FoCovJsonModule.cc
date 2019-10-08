@@ -31,6 +31,7 @@
 #include <iostream>
 
 using std::endl;
+using std::ostream;
 
 #include "FoCovJsonModule.h"
 #include "FoDapCovJsonTransmitter.h"

@@ -33,6 +33,7 @@
 #include <iostream>
 
 using std::endl;
+using std::ostream;
 
 #include "FitsModule.h"
 #include <BESRequestHandlerList.h>

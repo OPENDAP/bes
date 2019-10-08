@@ -33,6 +33,7 @@
 #include "BESReturnManager.h"
 
 using std::endl;
+using std::ostream;
 
 BESReturnManager *BESReturnManager::_instance = 0;
 

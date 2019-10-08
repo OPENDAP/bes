@@ -38,10 +38,10 @@ class FONgRequestHandler: public BESRequestHandler {
     static bool d_use_byte_for_geotiff_bands;
 
 public:
-    FONgRequestHandler(const string &name);
+    FONgRequestHandler(const std::string &name);
     virtual ~FONgRequestHandler(void);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 
     static bool build_help(BESDataHandlerInterface &dhi);
     static bool build_version(BESDataHandlerInterface &dhi);

@@ -35,33 +35,31 @@
 
 #include <vector>
 
-using std::vector;
-
 #include "BESXMLCommand.h"
 #include "BESDataHandlerInterface.h"
 
 class BESXMLDefineCommand: public BESXMLCommand {
 private:
-    string _default_constraint;
-    string _default_dap4_constraint;
-    string _default_dap4_function;
+	std::string _default_constraint;
+	std::string _default_dap4_constraint;
+	std::string _default_dap4_function;
 
-    vector<string> container_names;
+	std::vector<std::string> container_names;
 
-    map<string, string> container_store_names;
+	std::map<std::string, std::string> container_store_names;
 
-    map<string, string> container_constraints;
-    map<string, string> container_dap4constraints;
-    map<string, string> container_dap4functions;
+	std::map<std::string, std::string> container_constraints;
+	std::map<std::string, std::string> container_dap4constraints;
+	std::map<std::string, std::string> container_dap4functions;
 
-    map<string, string> container_attributes;
+	std::map<std::string, std::string> container_attributes;
 
-    void handle_container_element(const string &action, xmlNode *node, const string &vallues,
-        map<string, string> &props);
+    void handle_container_element(const std::string &action, xmlNode *node, const std::string &vallues,
+    		std::map<std::string, std::string> &props);
 
 #if 0
-    void handle_aggregate_element(const string &action, xmlNode *node, const string &vallues,
-        map<string, string> &props);
+    void handle_aggregate_element(const std::string &action, xmlNode *node, const std::string &vallues,
+    		std::map<std::string, std::string> &props);
 #endif
 
 public:
@@ -80,7 +78,7 @@ public:
 
     virtual void prep_request();
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 
     static BESXMLCommand * CommandBuilder(const BESDataHandlerInterface &base_dhi);
 };

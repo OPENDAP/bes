@@ -56,7 +56,7 @@ public:
 
     virtual void add_library(const string &n, const string &v);
     virtual void add_module(const string &n, const string &v);
-    virtual void add_service(const string &n, const list<string> &vers);
+    virtual void add_service(const string &n, const std::list<string> &vers);
 
     virtual void begin_response(const string &response_name, BESDataHandlerInterface &dhi)
     {

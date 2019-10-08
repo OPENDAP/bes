@@ -66,7 +66,7 @@ public:
 	virtual bool del_transmitter(const string &name);
 	virtual BESTransmitter * find_transmitter(const string &name);
 
-	virtual void dump(ostream &strm) const;
+	virtual void dump(std::ostream &strm) const;
 
 	static BESReturnManager * TheManager();
 };

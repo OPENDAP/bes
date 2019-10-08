@@ -57,6 +57,7 @@
 #include "ScaleGrid.h"
 
 using std::endl;
+using std::ostream;
 
 namespace functions {
 

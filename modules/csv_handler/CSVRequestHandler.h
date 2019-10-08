@@ -39,10 +39,10 @@
 
 class CSVRequestHandler: public BESRequestHandler {
 public:
-	CSVRequestHandler(string name);
+	CSVRequestHandler(std::string name);
 	virtual ~CSVRequestHandler(void);
 
-	virtual void dump(ostream &strm) const;
+	virtual void dump(std::ostream &strm) const;
 
 	static bool csv_build_das(BESDataHandlerInterface &dhi);
 	static bool csv_build_dds(BESDataHandlerInterface &dhi);

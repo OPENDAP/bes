@@ -27,6 +27,7 @@
 #include <iostream>
 
 using std::endl;
+using std::ostream;
 
 #include "FONgModule.h"
 #include "GeoTiffTransmitter.h"

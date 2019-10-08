@@ -45,6 +45,7 @@ using std::ofstream;
 using std::ostringstream;
 using std::ios;
 using std::map;
+using std::ifstream;
 
 #ifdef HAVE_LIBREADLINE
 #  if defined(HAVE_READLINE_READLINE_H)

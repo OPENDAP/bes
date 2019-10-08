@@ -36,9 +36,6 @@
 #include <map>
 #include <string>
 
-using std::map;
-using std::string;
-
 #include "BESObj.h"
 
 class BESInfo;
@@ -53,7 +50,7 @@ class BESInfo;
 class BESContextManager: public BESObj {
 private:
     static BESContextManager * _instance;
-    map<string, string> _context_list;
+    std::map<std::string, std::string> _context_list;
 
 protected:
     BESContextManager(void)
@@ -65,13 +62,13 @@ public:
     {
     }
 
-    typedef map<string, string>::const_iterator Context_citer;
-    typedef map<string, string>::iterator Context_iter;
+    typedef std::map<std::string, std::string>::const_iterator Context_citer;
+    typedef std::map<std::string, std::string>::iterator Context_iter;
 
-    virtual void set_context(const string &name, const string &value);
-    virtual void unset_context(const string &name);
-    virtual string get_context(const string &name, bool &found);
-    virtual int get_context_int(const string &name, bool &found);
+    virtual void set_context(const std::string &name, const std::string &value);
+    virtual void unset_context(const std::string &name);
+    virtual std::string get_context(const std::string &name, bool &found);
+    virtual int get_context_int(const std::string &name, bool &found);
 
     virtual void list_context(BESInfo &info);
 

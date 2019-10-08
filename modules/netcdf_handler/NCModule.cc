@@ -43,6 +43,7 @@
 #include "NCRequestHandler.h"
 
 using std::endl;
+using std::ostream;
 
 #define NC_CATALOG "catalog"
 

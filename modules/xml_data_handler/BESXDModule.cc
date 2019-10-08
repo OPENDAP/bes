@@ -29,6 +29,7 @@
 #include <iostream>
 
 using std::endl;
+using std::ostream;
 
 #include <BESXDModule.h>
 #include <BESDebug.h>

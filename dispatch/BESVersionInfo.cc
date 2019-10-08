@@ -35,6 +35,7 @@
 #include "BESInternalError.h"
 
 using std::endl;
+using std::list;
 
 /** @brief constructs a basic text information response object to write version
  *         information

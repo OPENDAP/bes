@@ -36,9 +36,6 @@
 #include <list>
 #include <string>
 
-using std::list;
-using std::string;
-
 #include "BESObj.h"
 
 /** @brief A container is something that holds data. E.G., a netcdf file or a
@@ -67,16 +64,16 @@ using std::string;
  */
 class BESContainer: public BESObj {
 private:
-    string d_symbolic_name;     ///< The name of the container
-    string d_real_name;         ///< The full name of the thing (filename, database table name, ...)
-    string d_relative_name;     ///< The name relative to the Data Root dir
-    string d_container_type;    ///< The handler that can read this kind of data (e.g., HDF5)
+    std::string d_symbolic_name;     ///< The name of the container
+    std::string d_real_name;         ///< The full name of the thing (filename, database table name, ...)
+    std::string d_relative_name;     ///< The name relative to the Data Root dir
+    std::string d_container_type;    ///< The handler that can read this kind of data (e.g., HDF5)
 
-    string d_constraint;
-    string d_dap4_constraint;
-    string d_dap4_function;
+    std::string d_constraint;
+    std::string d_dap4_constraint;
+    std::string d_dap4_function;
 
-    string d_attributes;     ///< See DefinitionStorageList, XMLDefineCommand
+    std::string d_attributes;     ///< See DefinitionStorageList, XMLDefineCommand
 
 protected:
     BESContainer()
@@ -94,7 +91,7 @@ protected:
      * @param real_name real name of the container, such as a file name
      * @param type type of data represented by this container, such as netcdf
      */
-    BESContainer(const string &sym_name, const string &real_name, const string &type) :
+    BESContainer(const std::string &sym_name, const std::string &real_name, const std::string &type) :
         d_symbolic_name(sym_name), d_real_name(real_name), d_relative_name(""), d_container_type(type),
         d_constraint(""), d_dap4_constraint(""), d_dap4_function(""), d_attributes("")
     {
@@ -118,7 +115,7 @@ public:
      *
      * @param s constraint
      */
-    void set_constraint(const string &s)
+    void set_constraint(const std::string &s)
     {
         d_constraint = s;
     }
@@ -127,7 +124,7 @@ public:
      *
      * @param s constraint
      */
-    void set_dap4_constraint(const string &s)
+    void set_dap4_constraint(const std::string &s)
     {
         d_dap4_constraint = s;
     }
@@ -136,7 +133,7 @@ public:
      *
      * @param s constraint
      */
-    void set_dap4_function(const string &s)
+    void set_dap4_function(const std::string &s)
     {
         d_dap4_function = s;
     }
@@ -146,7 +143,7 @@ public:
      *
      * @param real_name real name, such as the file name
      */
-    void set_real_name(const string &real_name)
+    void set_real_name(const std::string &real_name)
     {
         d_real_name = real_name;
     }
@@ -161,7 +158,7 @@ public:
      *
      * @param type type of data, such as cedar or netcdf
      */
-    void set_container_type(const string &type)
+    void set_container_type(const std::string &type)
     {
         d_container_type = type;
     }
@@ -170,7 +167,7 @@ public:
      *
      * @param attrs attributes desired to access for this container
      */
-    void set_attributes(const string &attrs)
+    void set_attributes(const std::string &attrs)
     {
         d_attributes = attrs;
     }
@@ -180,7 +177,7 @@ public:
      *
      * @return real name, such as file name
      */
-    string get_real_name() const
+    std::string get_real_name() const
     {
         return d_real_name;
     }
@@ -194,7 +191,7 @@ public:
      *
      * @return constraint expression for this execution for the symbolic name
      */
-    string get_constraint() const
+    std::string get_constraint() const
     {
         return d_constraint;
     }
@@ -203,7 +200,7 @@ public:
      *
      * @return constraint expression for this execution for the symbolic name
      */
-    string get_dap4_constraint() const
+    std::string get_dap4_constraint() const
     {
         return d_dap4_constraint;
     }
@@ -212,7 +209,7 @@ public:
      *
      * @return constraint expression for this execution for the symbolic name
      */
-    string get_dap4_function() const
+    std::string get_dap4_function() const
     {
         return d_dap4_function;
     }
@@ -221,7 +218,7 @@ public:
      *
      * @return symbolic name for this container
      */
-    string get_symbolic_name() const
+    std::string get_symbolic_name() const
     {
         return d_symbolic_name;
     }
@@ -232,7 +229,7 @@ public:
      * @return type of data this container represents, such as cedar or
      * netcdf
      */
-    string get_container_type() const
+    std::string get_container_type() const
     {
         return d_container_type;
     }
@@ -242,7 +239,7 @@ public:
      *
      * @return attributes desired from this container
      */
-    string get_attributes() const
+    std::string get_attributes() const
     {
         return d_attributes;
     }
@@ -258,7 +255,7 @@ public:
      *
      * @return name of file to access
      */
-    virtual string access() = 0;
+    virtual std::string access() = 0;
     virtual bool release() = 0;
 
     virtual void dump(std::ostream &strm) const;

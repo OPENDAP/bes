@@ -37,6 +37,7 @@
 #include "BESInternalError.h"
 
 using std::endl;
+using std::ostream;
 
 BESRequestHandlerList *BESRequestHandlerList::_instance = 0;
 

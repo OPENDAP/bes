@@ -64,7 +64,7 @@ public:
 
     virtual void		report( BESDataHandlerInterface &dhi ) ;
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void		dump( std::ostream &strm ) const ;
 
     static BESReporterList *	TheList() ;
 };

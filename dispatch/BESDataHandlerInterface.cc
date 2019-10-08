@@ -37,6 +37,7 @@
 #include "BESIndent.h"
 
 using std::endl;
+using std::list;
 
 /** @brief make a copy of only some data from specified object
  *

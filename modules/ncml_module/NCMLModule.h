@@ -41,15 +41,15 @@ public:
     virtual ~NCMLModule()
     {
     }
-    virtual void initialize(const string &modname);
-    virtual void terminate(const string &modname);
+    virtual void initialize(const std::string &modname);
+    virtual void terminate(const std::string &modname);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 
 private:
     // Helpers for initialize(), added the handlers under the given modname
-    void addCommandAndResponseHandlers(const string& modname);
-    void addCacheAggCommandAndResponseHandlers(const string& modname);
+    void addCommandAndResponseHandlers(const std::string& modname);
+    void addCacheAggCommandAndResponseHandlers(const std::string& modname);
 
     // Helpers for terminate()
     void removeCommandAndResponseHandlers();

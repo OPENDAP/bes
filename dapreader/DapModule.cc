@@ -23,6 +23,7 @@
 #include <iostream>
 
 using std::endl;
+using std::ostream;
 
 #include "DapModule.h"
 #include "DapRequestHandler.h"

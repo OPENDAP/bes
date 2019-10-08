@@ -32,6 +32,7 @@
 #include <iostream>
 
 using std::endl;
+using std::ostream;
 
 #include <BESRequestHandlerList.h>
 #include <BESDapService.h>

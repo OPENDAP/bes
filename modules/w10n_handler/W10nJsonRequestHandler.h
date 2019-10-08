@@ -41,10 +41,10 @@
 class W10nJsonRequestHandler : public BESRequestHandler
 {
 public:
-	W10nJsonRequestHandler( const string &name ) ;
+	W10nJsonRequestHandler( const std::string &name ) ;
     virtual ~W10nJsonRequestHandler( void ) ;
 
-    virtual void	dump( ostream &strm ) const ;
+    virtual void	dump( std::ostream &strm ) const ;
 
     static bool		build_help( BESDataHandlerInterface &dhi ) ;
     static bool		build_version( BESDataHandlerInterface &dhi ) ;

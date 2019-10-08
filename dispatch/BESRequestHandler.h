@@ -112,7 +112,7 @@ public:
     virtual string get_method_names();
     virtual time_t get_lmt(const std::string &name);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // I_BESRequestHandler_h

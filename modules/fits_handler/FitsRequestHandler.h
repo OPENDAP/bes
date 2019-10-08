@@ -37,10 +37,10 @@
 
 class FitsRequestHandler: public BESRequestHandler {
 public:
-	FitsRequestHandler(const string &name);
+	FitsRequestHandler(const std::string &name);
 	virtual ~FitsRequestHandler(void);
 
-	virtual void dump(ostream &strm) const;
+	virtual void dump(std::ostream &strm) const;
 
 	static bool fits_build_das(BESDataHandlerInterface &dhi);
 	static bool fits_build_dds(BESDataHandlerInterface &dhi);
