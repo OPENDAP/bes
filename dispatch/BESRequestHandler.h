@@ -112,6 +112,8 @@ public:
     virtual string get_method_names();
     virtual time_t get_lmt(const std::string &name);
 
+    virtual void add_attributes(BESDataHandlerInterface &dhi);
+
     virtual void dump(ostream &strm) const;
 };
 

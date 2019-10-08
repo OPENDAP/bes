@@ -145,6 +145,10 @@ time_t BESRequestHandler::get_lmt(const string &name){
     return statbuf.st_mtime;
 }//end get_lmt()
 
+void BESRequestHandler::add_attributes(BESDataHandlerInterface &dhi){
+    return;
+}
+
 /** @brief dumps information about this object
  *
  * Displays the pointer value of this instance, the name of the request

@@ -54,6 +54,8 @@ public:
     static bool get_RSS_format_support() { return d_RSS_format_support; }
     static string get_RSS_format_files() { return d_RSS_format_files; }
 
+    void add_attributes(BESDataHandlerInterface &dhi);
+
     static bool get_Regex_format_support() { return d_Regex_format_support; }
     static map<string,string> get_fmt_regex_map() { return d_fmt_regex_map; }
 

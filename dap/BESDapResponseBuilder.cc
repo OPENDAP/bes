@@ -1091,7 +1091,10 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
             "BESDapResponseBuilder::send_dap2_data() - Found function(s) in CE: " << get_btp_func_ce() << endl);
 
         BESDapFunctionResponseCache *response_cache = BESDapFunctionResponseCache::get_instance();
+#define KENT 0
+#if KENT
 
+#endif 
         ConstraintEvaluator func_eval;
         DDS *fdds = 0; // nulll_ptr
         if (response_cache && response_cache->can_be_cached(*dds, get_btp_func_ce())) {
