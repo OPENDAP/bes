@@ -103,6 +103,10 @@
 #include "BESInternalFatalError.h"
 #include "BESDataNames.h"
 
+#include "BESRequestHandler.h"
+#include "BESRequestHandlerList.h"
+#include "BESNotFoundError.h"
+
 #include "BESUtil.h"
 #include "BESDebug.h"
 #include "BESStopWatch.h"
@@ -1091,8 +1095,111 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
             "BESDapResponseBuilder::send_dap2_data() - Found function(s) in CE: " << get_btp_func_ce() << endl);
 
         BESDapFunctionResponseCache *response_cache = BESDapFunctionResponseCache::get_instance();
-#define KENT 0
+
+        ConstraintEvaluator func_eval;
+        DDS *fdds = 0; // nulll_ptr
+        if (response_cache && response_cache->can_be_cached(*dds, get_btp_func_ce())) {
+            fdds = response_cache->get_or_cache_dataset(*dds, get_btp_func_ce());
+        }
+        else {
+            func_eval.parse_constraint(get_btp_func_ce(), **dds);
+            fdds = func_eval.eval_function_clauses(**dds);
+        }
+
+        delete *dds; *dds = 0;
+        *dds = fdds;
+
+        (*dds)->mark_all(false);
+
+        promote_function_output_structures(*dds);
+
+        // evaluate the rest of the CE - the part that follows the function calls.
+        eval.parse_constraint(get_ce(), **dds);
+
+        (*dds)->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
+
+        throw_if_dap2_response_too_big(*dds);
+
+        if (with_mime_headers)
+            set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
+
+#if STORE_DAP2_RESULT_FEATURE
+        // This means: if we are not supposed to store the result, then serialize it.
+        if (!store_dap2_result(data_stream, **dds, eval)) {
+            serialize_dap2_data_dds(data_stream, dds, eval, true /* was 'false'. jhrg 3/10/15 */);
+        }
+#else
+        serialize_dap2_data_dds(data_stream, dds, eval, true /* was 'false'. jhrg 3/10/15 */);
+#endif
+
+    }
+    else {
+        BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - Simple constraint" << endl);
+
+        eval.parse_constraint(get_ce(), **dds); // Throws Error if the ce doesn't parse.
+
+        (*dds)->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
+
+        throw_if_dap2_response_too_big(*dds);
+
+        if (with_mime_headers)
+            set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
+
+#if STORE_DAP2_RESULT_FEATURE
+        // This means: if we are not supposed to store the result, then serialize it.
+        if (!store_dap2_result(data_stream, **dds, eval)) {
+            serialize_dap2_data_dds(data_stream, dds, eval);
+        }
+#else
+        serialize_dap2_data_dds(data_stream, dds, eval);
+#endif
+    }
+
+    data_stream << flush;
+
+    BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - END"<< endl);
+
+}
+
+void BESDapResponseBuilder::send_dap2_data(BESDataHandlerInterface &dhi, DDS **dds, ConstraintEvaluator &eval,
+    bool with_mime_headers)
+{
+    BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - BEGIN"<< endl);
+
+    ostream & data_stream = dhi.get_output_stream();
+#if USE_LOCAL_TIMEOUT_SCHEME
+    // Set up the alarm.
+    establish_timeout(data_stream);
+    dds.set_timeout(d_timeout);
+#endif
+
+    // Split constraint into two halves
+    split_ce(eval);
+
+#define KENT 1
 #if KENT
+        {
+            BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(dhi.container->get_container_type());
+            besRH->add_attributes(dhi);
+
+        }
+
+#endif 
+
+    // If there are functions, parse them and eval.
+    // Use that DDS and parse the non-function ce
+    // Serialize using the second ce and the second dds
+    if (!get_btp_func_ce().empty()) {
+        BESDEBUG("dap",
+            "BESDapResponseBuilder::send_dap2_data() - Found function(s) in CE: " << get_btp_func_ce() << endl);
+
+        BESDapFunctionResponseCache *response_cache = BESDapFunctionResponseCache::get_instance();
+#if KENT
+        {
+            BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(dhi.container->get_container_type());
+            besRH->add_attributes(dhi);
+
+        }
 
 #endif 
         ConstraintEvaluator func_eval;
@@ -1159,8 +1266,6 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
     BESDEBUG("dap", "BESDapResponseBuilder::send_dap2_data() - END"<< endl);
 
 }
-
-
 /** Send the DDX response. The DDX never contains data, instead it holds a
  reference to a Blob response which is used to get the data values. The
  DDS and DAS objects are built using code that already exists in the

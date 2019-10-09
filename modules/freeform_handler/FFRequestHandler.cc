@@ -252,7 +252,7 @@ bool FFRequestHandler::ff_build_dds(BESDataHandlerInterface & dhi)
     return true;
 }
 
-#define INCLUDE_ATTRS_IN_DDS 0
+#define INCLUDE_ATTRS_IN_DDS 1
 bool FFRequestHandler::ff_build_data(BESDataHandlerInterface & dhi)
 {
     BufPtr = 0; // cache pointer
@@ -409,6 +409,6 @@ bool FFRequestHandler::ff_build_version(BESDataHandlerInterface & dhi)
 }
 
 void FFRequestHandler::add_attributes(BESDataHandlerInterface & dhi) {
-
+cerr<<"coming to FF handler add_attributes routine" <<endl;
 
 }

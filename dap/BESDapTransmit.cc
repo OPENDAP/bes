@@ -206,7 +206,8 @@ private:
         rb.set_store_result(dhi.data[STORE_RESULT]);
 
         BESDEBUG("dap", "dhi.data[POST_CONSTRAINT]: " << dhi.data[POST_CONSTRAINT] << endl);
-        rb.send_dap2_data(dhi.get_output_stream(), &dds, ce, print_mime);
+        //rb.send_dap2_data(dhi.get_output_stream(), &dds, ce, print_mime);
+        rb.send_dap2_data(dhi, &dds, ce, print_mime);
         bdds->set_dds(dds);
    }
 };
