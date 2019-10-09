@@ -1199,7 +1199,7 @@ void BESDapResponseBuilder::send_dap2_data(BESDataHandlerInterface &dhi, DDS **d
 
 #if KENT
         {
-            cerr<<"run function ce "<<endl;
+            //cerr<<"run function ce "<<endl;
         if(dhi.container->get_container_type()!="ff") {
             BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(dhi.container->get_container_type());
             besRH->add_attributes(dhi);
