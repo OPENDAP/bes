@@ -146,7 +146,10 @@ time_t BESRequestHandler::get_lmt(const string &name){
 }//end get_lmt()
 
 void BESRequestHandler::add_attributes(BESDataHandlerInterface &dhi){
-std::cerr<<"BESRequestHandler add_attributes "<<std::endl;
+    std::cerr<<"BESRequestHandler add_attributes "<<std::endl;
+    std::cerr<<"File type is "<<dhi.container->get_container_type()<<endl;
+
+    //  throw BESNotFoundError(strerror(errno), __FILE__, __LINE__);
     return;
 }
 

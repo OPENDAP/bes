@@ -1176,15 +1176,19 @@ void BESDapResponseBuilder::send_dap2_data(BESDataHandlerInterface &dhi, DDS **d
     // Split constraint into two halves
     split_ce(eval);
 
-#define KENT 1
-#if KENT
+#define KENTOUT 0
+#if KENTOUT
         {
             BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(dhi.container->get_container_type());
             besRH->add_attributes(dhi);
+            cerr<<"container type is  "<<dhi.container->get_container_type() <<endl;
 
         }
 
 #endif 
+
+
+#define KENT 1
 
     // If there are functions, parse them and eval.
     // Use that DDS and parse the non-function ce
@@ -1193,15 +1197,17 @@ void BESDapResponseBuilder::send_dap2_data(BESDataHandlerInterface &dhi, DDS **d
         BESDEBUG("dap",
             "BESDapResponseBuilder::send_dap2_data() - Found function(s) in CE: " << get_btp_func_ce() << endl);
 
-        BESDapFunctionResponseCache *response_cache = BESDapFunctionResponseCache::get_instance();
 #if KENT
         {
+            cerr<<"run function ce "<<endl;
+        if(dhi.container->get_container_type()!="ff") {
             BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(dhi.container->get_container_type());
             besRH->add_attributes(dhi);
-
+        }
         }
 
 #endif 
+        BESDapFunctionResponseCache *response_cache = BESDapFunctionResponseCache::get_instance();
         ConstraintEvaluator func_eval;
         DDS *fdds = 0; // nulll_ptr
         if (response_cache && response_cache->can_be_cached(*dds, get_btp_func_ce())) {
