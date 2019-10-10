@@ -330,7 +330,7 @@ bool SaxParserWrapper::parse(const string& ncmlFilename)
 
     bool success = xmlSAXUserParseFile(&_handler, this, ncmlFilename.c_str());
 
-#if 1
+#if 0
     // Old way where we have no context.
     //  int errNo = xmlSAXUserParseFile(&_handler, this, ncmlFilename.c_str());
     //  success = (errNo == 0);
@@ -480,7 +480,7 @@ void SaxParserWrapper::setupParser()
     // using this as the userData for making exception-safe
     // C++ calls.
 
-#if 1
+#if 0
     // Leak fix. jhrg 6/21/19
     _context = xmlCreateFileParserCtxt(filename.c_str());
     if (!_context) {
@@ -496,7 +496,7 @@ void SaxParserWrapper::setupParser()
 // Leak fix. jhrg 6/21/19
 void SaxParserWrapper::cleanupParser() throw ()
 {
-#if 1
+#if 0
     // Leak fix. jhrg 6/21/19
     //if (_context) {
         // Remove our handler from it.
