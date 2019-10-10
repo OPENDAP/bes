@@ -39,6 +39,7 @@
 #include "BESResponseNames.h"
 
 using std::endl;
+using std::ostream;
 
 BESHelpResponseHandler::BESHelpResponseHandler( const string &name )
     : BESResponseHandler( name )

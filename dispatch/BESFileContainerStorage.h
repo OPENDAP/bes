@@ -37,11 +37,6 @@
 #include <string>
 #include <ostream>
 
-#if 0
-using std::list;
-#endif
-
-
 #include "BESContainerStorageVolatile.h"
 
 class BESCatalogUtils;

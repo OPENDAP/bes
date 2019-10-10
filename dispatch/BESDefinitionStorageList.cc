@@ -33,6 +33,8 @@
 #include <iostream>
 
 using std::endl;
+using std::string;
+using std::ostream;
 
 #include "BESDefinitionStorageList.h"
 #include "BESDefinitionStorage.h"
@@ -277,7 +279,7 @@ void BESDefinitionStorageList::show_definitions(BESInfo &info)
             info.add_break(1);
         }
         first = false;
-        map<string, string> props;
+        std::map<string, string> props;
         props["name"] = pl->_persistence_obj->get_name();
         info.begin_tag("store", &props);
         pl->_persistence_obj->show_definitions(info);

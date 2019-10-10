@@ -39,6 +39,7 @@
 #include "BESUtil.h"
 
 using std::endl;
+using std::map;
 
 BESProcIdResponseHandler::BESProcIdResponseHandler( const string &name )
     : BESResponseHandler( name )

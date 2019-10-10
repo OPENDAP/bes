@@ -35,6 +35,7 @@
 #include <vector>
 
 using std::vector;
+using std::string;
 
 #include "BESVersionResponseHandler.h"
 #include "BESVersionInfo.h"

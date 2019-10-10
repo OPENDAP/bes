@@ -49,6 +49,7 @@
 
 using std::endl;
 using std::ostream;
+using std::string;
 
 BESDelDefsResponseHandler::BESDelDefsResponseHandler(const string &name) :
     BESResponseHandler(name)
