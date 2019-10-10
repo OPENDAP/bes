@@ -5,7 +5,11 @@
 # the places it's needed and hack. If substantial changes are needed, try to copy
 # them back into this file. jhrg 12/14/15 
 
-# Before including these, use AT_INIT([ <name> ]) in the testsuite.at file. jhrg 4/25/18
+# Include this using 'm4_include([../../handler_tests_macros.m4])' or similar.
+
+# Before including these, use AT_INIT([ <name> ]) in the testsuite.at file. By including
+# the pathname to the test drectory in the AC_INIT() macro, you will make it much easier
+# to identify the tests in a large build like the CI builds. jhrg 4/25/18
 
 AT_TESTED([besstandalone])
 

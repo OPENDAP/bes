@@ -818,6 +818,16 @@ GlobalMetadataStore::is_dds_available(const string &name)
 	return get_read_lock_helper(name,"dds_r","DDS");
 }//end is_dds_available(string)
 
+/**
+ * @brief Is the DDS response for \arg name in the MDS?
+ *
+ * This is the preferred method since it checks the LMT of the underlying dataset.
+ *
+ * @param container Find the DDS response for the dataset in \arg container.
+ * @return A MDSReadLock object.
+ * @see is_dmr_available() for more information.
+ */
+
 GlobalMetadataStore::MDSReadLock
 GlobalMetadataStore::is_dds_available(const BESContainer &container)
 {
