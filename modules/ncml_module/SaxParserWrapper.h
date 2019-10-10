@@ -114,7 +114,7 @@ public:
      *
      * @param parser Must exist for the duration of the life of the wrapper.
      */
-    SaxParserWrapper(SaxParser& parser);
+    explicit SaxParserWrapper(SaxParser& parser);
     virtual ~SaxParserWrapper();
 
     /** @brief Do a SAX parse of the ncmlFilename
@@ -167,8 +167,13 @@ public:
 
 private:
 
-    /** Prepare the parser to load the given filename, setting up the handler and context */
-    void setupParser(const string& filename);
+    /**
+     * Prepare the parser by setting the handler callback functions.
+     * @todo We could move this to a static initializer or constructor
+     * This function used to build a parser context 'object', bound to a filename. For each
+     * different file parsed, a new context was made. Once we swithced back to the
+     * xmlSAXUserParseFile() function, the context was not needed. jhrg 10/8/19 */
+    void setupParser();
 
 #if 0
     // Leak fix. jhrg 6/21/19

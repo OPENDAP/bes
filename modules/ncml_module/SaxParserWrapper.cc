@@ -33,7 +33,7 @@
 #include <iostream>
 #include <libxml/parser.h>
 #include <libxml/xmlstring.h>
-#include <stdio.h> // for vsnprintf
+#include <cstdio> // for vsnprintf
 #include <string>
 
 #include "BESDebug.h"
@@ -153,19 +153,16 @@ static void ncmlStartDocument(void* userData)
 
     parser.onStartDocument();
 
-    END_SAFE_PARSER_BLOCK;
+    END_SAFE_PARSER_BLOCK
 }
 
 static void ncmlEndDocument(void* userData)
 {
     BEGIN_SAFE_PARSER_BLOCK(userData)
-;    // BESDEBUG("ncml", "SaxParserWrapper::ncmlEndDocument() -  BEGIN"<< endl);
 
     parser.onEndDocument();
 
-    // BESDEBUG("ncml", "SaxParserWrapper::ncmlEndDocument() -  END"<< endl);
-
-    END_SAFE_PARSER_BLOCK;
+    END_SAFE_PARSER_BLOCK
 }
 
 #if !NCML_PARSER_USE_SAX2_NAMESPACES
@@ -175,7 +172,7 @@ static void ncmlStartElement(void * userData,
     const xmlChar ** attrs)
 {
     // BESDEBUG("ncml", "ncmlStartElement called for:<" << name << ">" << endl);
-    BEGIN_SAFE_PARSER_BLOCK(userData);
+    BEGIN_SAFE_PARSER_BLOCK(1)
 
     string nameS = XMLUtil::xmlCharToString(name);
     XMLAttributeMap map;
@@ -184,18 +181,18 @@ static void ncmlStartElement(void * userData,
     // These args will be valid for the scope of the call.
     parser.onStartElement(nameS, map);
 
-    END_SAFE_PARSER_BLOCK;
+    END_SAFE_PARSER_BLOCK
 }
 
 static void ncmlEndElement(void * userData,
     const xmlChar * name)
 {
-    BEGIN_SAFE_PARSER_BLOCK(userData);
+    BEGIN_SAFE_PARSER_BLOCK(1)
 
     string nameS = XMLUtil::xmlCharToString(name);
     parser.onEndElement(nameS);
 
-    END_SAFE_PARSER_BLOCK;
+    END_SAFE_PARSER_BLOCK
 }
 #endif //  !NCML_PARSER_USE_SAX2_NAMESPACES
 
@@ -206,7 +203,8 @@ void ncmlSax2StartElementNs(void *userData, const xmlChar *localname, const xmlC
     const xmlChar **attributes)
 {
     // BESDEBUG("ncml", "ncmlStartElement called for:<" << name << ">" << endl);
-    BEGIN_SAFE_PARSER_BLOCK(userData);
+    BEGIN_SAFE_PARSER_BLOCK(userData)
+    
     BESDEBUG("ncml", "SaxParserWrapper::ncmlSax2StartElementNs() - localname:" << localname << endl);
 
     XMLAttributeMap attrMap;
@@ -227,26 +225,26 @@ void ncmlSax2StartElementNs(void *userData, const xmlChar *localname, const xmlC
         attrMap,
         nsMap);
 
-    END_SAFE_PARSER_BLOCK;
+    END_SAFE_PARSER_BLOCK
 }
 
 static
 void ncmlSax2EndElementNs(void *userData, const xmlChar *localname, const xmlChar *prefix, const xmlChar *URI)
 {
-    BEGIN_SAFE_PARSER_BLOCK(userData);
+    BEGIN_SAFE_PARSER_BLOCK(userData)
 
     string localnameString = XMLUtil::xmlCharToString(localname);
     string prefixString = XMLUtil::xmlCharToString(prefix);
     string uriString = XMLUtil::xmlCharToString(URI);
     parser.onEndElementWithNamespace(localnameString, prefixString, uriString);
 
-    END_SAFE_PARSER_BLOCK;
+    END_SAFE_PARSER_BLOCK
 }
 #endif // NCML_PARSER_USE_SAX2_NAMESPACES
 
 static void ncmlCharacters(void* userData, const xmlChar* content, int len)
 {
-    BEGIN_SAFE_PARSER_BLOCK(userData);
+    BEGIN_SAFE_PARSER_BLOCK(userData)
 
     // len is since the content string might not be null terminated,
     // so we have to build out own and pass it up special....
@@ -261,12 +259,12 @@ static void ncmlCharacters(void* userData, const xmlChar* content, int len)
 
     parser.onCharacters(characters);
 
-    END_SAFE_PARSER_BLOCK;
+    END_SAFE_PARSER_BLOCK
 }
 
 static void ncmlWarning(void* userData, const char* msg, ...)
 {
-    BEGIN_SAFE_PARSER_BLOCK(userData);
+    BEGIN_SAFE_PARSER_BLOCK(userData)
 
     BESDEBUG("ncml", "SaxParserWrapper::ncmlWarning() - msg:" << msg << endl);
 
@@ -277,12 +275,13 @@ static void ncmlWarning(void* userData, const char* msg, ...)
     vsnprintf(buffer, len, msg, args);
     va_end(args);
     parser.onParseWarning(string(buffer));
-    END_SAFE_PARSER_BLOCK;
+
+    END_SAFE_PARSER_BLOCK
 }
 
 static void ncmlFatalError(void* userData, const char* msg, ...)
 {
-    BEGIN_SAFE_PARSER_BLOCK(userData);
+    BEGIN_SAFE_PARSER_BLOCK(userData)
 
     BESDEBUG("ncml", "SaxParserWrapper::ncmlFatalError() - msg:" << msg << endl);
 
@@ -294,15 +293,14 @@ static void ncmlFatalError(void* userData, const char* msg, ...)
     va_end(args);
     parser.onParseError(string(buffer));
 
-    END_SAFE_PARSER_BLOCK;
+    END_SAFE_PARSER_BLOCK
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // class SaxParserWrapper impl
 
 SaxParserWrapper::SaxParserWrapper(SaxParser& parser) :
-    _parser(parser), _handler(), // inits to all nulls.
-    /*_context(0),*/ _state(NOT_PARSING), _errorMsg(""), _errorType(0), _errorFile(""), _errorLine(-1)
+    _parser(parser), _handler(), _state(NOT_PARSING), _errorMsg(""), _errorType(0), _errorFile(""), _errorLine(-1)
 {
 }
 
@@ -319,8 +317,6 @@ SaxParserWrapper::~SaxParserWrapper()
 
 bool SaxParserWrapper::parse(const string& ncmlFilename)
 {
-    bool success = true;
-
     // It's illegal to call this until it's done.
     if (_state == PARSING) {
         throw BESInternalError("Parse called again while already in parse.", __FILE__, __LINE__);
@@ -330,9 +326,9 @@ bool SaxParserWrapper::parse(const string& ncmlFilename)
     _state = PARSING;
 
 
-    setupParser(ncmlFilename);
+    setupParser();
 
-    success = xmlSAXUserParseFile(&_handler, this, ncmlFilename.c_str());
+    bool success = xmlSAXUserParseFile(&_handler, this, ncmlFilename.c_str());
 
 #if 0
     // Old way where we have no context.
@@ -378,27 +374,21 @@ void SaxParserWrapper::rethrowException()
     switch (_errorType) {
     case BES_INTERNAL_ERROR:
         throw BESInternalError(_errorMsg, _errorFile, _errorLine);
-        break;
 
     case BES_INTERNAL_FATAL_ERROR:
         throw BESInternalFatalError(_errorMsg, _errorFile, _errorLine);
-        break;
 
     case BES_SYNTAX_USER_ERROR:
         throw BESSyntaxUserError(_errorMsg, _errorFile, _errorLine);
-        break;
 
     case BES_FORBIDDEN_ERROR:
         throw BESForbiddenError(_errorMsg, _errorFile, _errorLine);
-        break;
 
     case BES_NOT_FOUND_ERROR:
         throw BESNotFoundError(_errorMsg, _errorFile, _errorLine);
-        break;
 
     default:
         throw BESInternalError("Unknown exception type.", __FILE__, __LINE__);
-        break;
     }
 }
 
@@ -453,7 +443,7 @@ static void setAllHandlerCBToNulls(xmlSAXHandler& h)
     h.serror = 0;
 }
 
-void SaxParserWrapper::setupParser(const string& filename)
+void SaxParserWrapper::setupParser()
 {
     // setup the handler for version 2,
     // which sets an internal version magic number
