@@ -993,6 +993,16 @@ BESDapResponseBuilder::intern_dap2_data(BESResponseObject *obj, BESDataHandlerIn
     set_async_accepted(dhi.data[ASYNC]);
     set_store_result(dhi.data[STORE_RESULT]);
 
+#define KENTI 1
+#if KENTI
+        {
+            BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(dhi.container->get_container_type());
+            besRH->add_attributes(dhi);
+        }
+
+#endif 
+
+
     ConstraintEvaluator &eval = bdds->get_ce();
 
     // Split constraint into two halves; stores the function and non-function parts in this instance.
