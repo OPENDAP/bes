@@ -33,7 +33,7 @@
             <Value>&quot;http://localhost/junk&quot;</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>bdbef67a</Value>
+            removed checksum
         </Attribute>
     </Int16>
     <Int16 name="v">
@@ -56,7 +56,7 @@
             <Value>VWind</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>bdbef67a</Value>
+            removed checksum
         </Attribute>
     </Int16>
     <Float32 name="lat">
@@ -65,7 +65,7 @@
             <Value>degree North</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>325a5481</Value>
+            removed checksum
         </Attribute>
     </Float32>
     <Float32 name="lon">
@@ -74,7 +74,7 @@
             <Value>degree East</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>42bb9ade</Value>
+            removed checksum
         </Attribute>
     </Float32>
     <Float32 name="time">
@@ -83,7 +83,7 @@
             <Value>hours from base_time</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>e4c6a517</Value>
+            removed checksum
         </Attribute>
     </Float32>
     <Attribute name="NC_GLOBAL" type="Container">

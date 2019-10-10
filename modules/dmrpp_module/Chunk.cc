@@ -73,6 +73,9 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
     // If this fails, the code will write beyond the buffer.
     assert(bytes_read + nbytes <= c_ptr->get_rbuf_size());
 
+    //TODO: Need to setup a unique_ptr to replace the buffer that get_rbuf() returns
+    //unique_ptr<char> new_c_ptr;
+    //new_c_ptr.reset(c_ptr->get_rbuf() + bytes_read);
     memcpy(c_ptr->get_rbuf() + bytes_read, buffer, nbytes);
 
     c_ptr->set_bytes_read(bytes_read + nbytes);

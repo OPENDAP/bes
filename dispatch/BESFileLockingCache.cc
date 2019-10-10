@@ -132,6 +132,9 @@ static inline string get_errno()
 }
 
 // Build a lock of a certain type.
+//
+// Using whence == SEEK_SET with start and len set to zero means lock the whole file.
+// jhrg 9/8/18
 static inline struct flock *lock(int type)
 {
     static struct flock lock;
@@ -340,7 +343,7 @@ bool BESFileLockingCache::m_check_ctor_params()
  * @param ref_fd Return-value parameter that holds the file descriptor that's locked.
  * @return True when the lock is acquired, false if the file already exists.
  */
-static bool createLockedFile(string file_name, int &ref_fd)
+static bool createLockedFile(const string &file_name, int &ref_fd)
 {
     BESDEBUG(LOCK, "createLockedFile() - filename: " << file_name <<endl);
 
@@ -360,7 +363,7 @@ static bool createLockedFile(string file_name, int &ref_fd)
     if (fcntl(fd, F_SETLKW, l) == -1) {
         close(fd);
         ostringstream oss;
-        oss << "cache process: " << l->l_pid << " triggered a locking error: " << get_errno();
+        oss << "cache process: " << l->l_pid << " triggered a locking error for '" << file_name << "': " << get_errno();
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
 
@@ -508,8 +511,7 @@ static bool getSharedLock(const string &file_name, int &ref_fd)
     if (fcntl(fd, F_SETLKW, l) == -1) {
         close(fd);
         ostringstream oss;
-        oss << "cache process: " << l->l_pid << " triggered a locking error: " << get_errno();
-        BESDEBUG(LOCK, "getSharedLock(): FAIL Could not get read lock for " << file_name << ": " << oss.str() << endl);
+        oss << "cache process: " << l->l_pid << " triggered a locking error for '" << file_name << "': " << get_errno();
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
 
@@ -873,7 +875,7 @@ unsigned long long BESFileLockingCache::m_collect_cache_dir_info(CacheFiles &con
  * @exception BESInternalError is thrown on any condition other than the file
  * not existing or the lock being unavailable.
  */
-static bool getExclusiveLockNB(string file_name, int &ref_fd)
+static bool getExclusiveLockNB(const string &file_name, int &ref_fd)
 {
     BESDEBUG(LOCK, "getExclusiveLock_nonblocking: " << file_name <<endl);
 
@@ -901,7 +903,7 @@ static bool getExclusiveLockNB(string file_name, int &ref_fd)
         default: {
             close(fd);
             ostringstream oss;
-            oss << "cache process: " << l->l_pid << " triggered a locking error: " << get_errno();
+            oss << "cache process: " << l->l_pid << " triggered a locking error for '" << file_name << "': " << get_errno();
             throw BESInternalError(oss.str(), __FILE__, __LINE__);
         }
         }
@@ -1028,7 +1030,7 @@ void BESFileLockingCache::update_and_purge(const string &new_file)
  * @exception BESInternalError is thrown on any condition other than the file
  * not existing
  */
-static bool getExclusiveLock(string file_name, int &ref_fd)
+static bool getExclusiveLock(const string &file_name, int &ref_fd)
 {
     BESDEBUG(LOCK, "BESFileLockingCache::getExclusiveLock() - " << file_name <<endl);
 
@@ -1048,7 +1050,7 @@ static bool getExclusiveLock(string file_name, int &ref_fd)
     if (fcntl(fd, F_SETLKW, l) == -1) {     // F_SETLKW == blocking lock
         close(fd);
         ostringstream oss;
-        oss << "cache process: " << l->l_pid << " triggered a locking error: " << get_errno();
+        oss << "cache process: " << l->l_pid << " triggered a locking error for '" << file_name << "': " << get_errno();
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
 
