@@ -876,6 +876,7 @@ AC_CONFIG_FILES([Makefile
 		 functions/tests/atlocal
 		 functions/unit-tests/Makefile
 		 functions/stare/Makefile
+		 functions/stare/unit-tests/Makefile
 		 ])
 dnl These need to be moved into the AC_CONFIG_FILES above 
 dnl when geo-functions is reenabled.

@@ -19,6 +19,9 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+#include <stdint.h>
+
+#include <BaseType.h>
 
 #include "ServerFunction.h"
 
@@ -29,9 +32,9 @@ class DDS;
 
 namespace functions {
 
-bool hasValue(BaseType *bt, vector<uint64> stareIndices);
+bool hasValue(BaseType *bt, vector<uint64_t> stareIndices);
 
-int count(BaseType *bt, vector<uint64> stareIndices);
+int count(BaseType *bt, vector<uint64_t> stareIndices);
 
 
 
