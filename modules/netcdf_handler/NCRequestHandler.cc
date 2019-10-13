@@ -394,7 +394,7 @@ bool NCRequestHandler::nc_build_dds(BESDataHandlerInterface & dhi)
         get_dmr(dhi.container->access(), dmr);
 
         // Build a DDS in the empty DDS object
-        DDS *dds = dmr->getDDS();
+        DDS *dds = dmr->getDDS(NCRequestHandler::_show_shared_dims);
         // TODO:
         bdds->set_dds(dds);
 
@@ -455,7 +455,7 @@ bool NCRequestHandler::nc_build_data(BESDataHandlerInterface & dhi)
         get_dmr(dhi.container->access(), dmr);
 
         // Build a DDS in the empty DDS object
-        DDS *dds = dmr->getDDS();
+        DDS *dds = dmr->getDDS(NCRequestHandler::_show_shared_dims);
         bdds->set_dds(dds);
 
         bdds->set_constraint(dhi);
