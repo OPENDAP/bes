@@ -44,6 +44,7 @@ public:
     static bool gdal_build_dmr(BESDataHandlerInterface &dhi);
     static bool gdal_build_help(BESDataHandlerInterface &dhi);
     static bool gdal_build_version(BESDataHandlerInterface &dhi);
+    void add_attributes(BESDataHandlerInterface &dhi);
 };
 
 #endif

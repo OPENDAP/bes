@@ -296,11 +296,13 @@ void gdal_read_dataset_attributes(DAS &das, const GDALDatasetH &hDS)
  * @param hDS
  * @param filename
  */
-void gdal_read_dataset_variables(DDS *dds, const GDALDatasetH &hDS, const string &filename)
+void gdal_read_dataset_variables(DDS *dds, const GDALDatasetH &hDS, const string &filename,bool include_attrs)
 {
     // Load in to global attributes
+    if(true == include_attrs) {
     AttrTable *global_attr = dds->get_attr_table().append_container("GLOBAL");
     build_global_attributes(hDS, global_attr);
+    }
 
     /* -------------------------------------------------------------------- */
     /*      Create the basic matrix for each band.                          */
@@ -402,9 +404,10 @@ void gdal_read_dataset_variables(DDS *dds, const GDALDatasetH &hDS, const string
         DBG(cerr << "Type of grid: " << typeid(grid).name() << endl);
 
         // Add attributes to the Grid
-
+        if(true == include_attrs) {
         AttrTable &band_attr = grid->get_attr_table();
         build_variable_attributes(hDS, &band_attr, iBand);
+        }
 
         dds->add_var_nocopy(grid);
     }
