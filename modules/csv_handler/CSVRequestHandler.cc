@@ -171,16 +171,19 @@ bool CSVRequestHandler::csv_build_data(BESDataHandlerInterface &dhi)
 	BaseTypeFactory *factory = new BaseTypeFactory;
 	dds->set_factory(factory);
 
+#define INCLUDE_DAS_in_DDS 0
 	try {
 		string accessed = dhi.container->access();
 		dds->filename(accessed);
 		csv_read_descriptors(*dds, accessed);
 		Ancillary::read_ancillary_dds(*dds, accessed);
 
+#if INCLUDE_DAS_in_DDS
 		DAS das;
 		csv_read_attributes(das, accessed);
 		Ancillary::read_ancillary_das(das, accessed);
 		dds->transfer_attributes(&das);
+#endif
 
 		bdds->set_constraint(dhi);
 		return ret;
@@ -296,5 +299,21 @@ void CSVRequestHandler::dump(ostream &strm) const
 	BESIndent::Indent();
 	BESRequestHandler::dump(strm);
 	BESIndent::UnIndent();
+}
+
+
+void CSVRequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
+
+    BESResponseObject *response = dhi.response_handler->get_response_object();
+    BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *>(response);
+    if (!bdds)
+        throw BESInternalError("cast error", __FILE__, __LINE__);
+    DDS *dds = bdds->get_dds();
+    string dataset_name = dhi.container->access();
+    DAS das;
+    csv_read_attributes(das, dataset_name);
+    Ancillary::read_ancillary_das(das, dataset_name);
+    dds->transfer_attributes(&das);
+    return;
 }
 
