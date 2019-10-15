@@ -28,6 +28,10 @@ using namespace libdap;
 using namespace std;
 using namespace functions;
 
+static bool debug = false;
+#undef DBG
+#define DBG(x) do { if (debug) (x); } while(false);
+
 class StareFunctionsTest: public TestFixture {
 private:
 	DMR *two_arrays_dmr;
@@ -92,7 +96,7 @@ public:
 
 			BaseType *checkHasValue = stare_dap4_function(&params, two_arrays_dmr);
 
-			CPPUNIT_ASSERT(dynamic_cast<Int32*> (checkHasValue).value() == 1);
+			CPPUNIT_ASSERT(dynamic_cast<Int32*> (checkHasValue)->value() == 1);
 		}
 		catch(Error &e) {
 			DBG(cerr << e.get_error_message() << endl);
@@ -110,10 +114,10 @@ int main(int argc, char*argv[]) {
 
 	while ((option_char = getopt()) != EOF) {
 		switch (option_char) {
-		case d:
+		case 'd':
 			debug = 1;
 			break;
-		case h:
+		case 'h': {
 			cerr << "StareFunctionsTest has the following tests: " << endl;
 			const std::vector<Test*> &tests = StareFunctionsTest::suite()->getTests();
 			unsigned int prefix_len = StareFunctionsTest::suite()->getName().append("::").length();
@@ -121,13 +125,14 @@ int main(int argc, char*argv[]) {
 				cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
 			}
 			break;
+		}
 		default:
 			break;
 		}
 	}
 
 	CppUnit::TextTestRunner runner;
-	runner.addTest(CppUnit::StareFunctionsTest::getRegistry().makeTest());
+	runner.addTest(StareFunctionsTest::getRegistry().makeTest());
 
 	bool wasSuccessful = true;
 	string test = "";
