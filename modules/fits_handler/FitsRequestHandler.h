@@ -50,6 +50,8 @@ public:
 
 	static bool fits_build_vers(BESDataHandlerInterface &dhi);
 	static bool fits_build_help(BESDataHandlerInterface &dhi);
+        void add_attributes(BESDataHandlerInterface &dhi);
+
 };
 
 #endif

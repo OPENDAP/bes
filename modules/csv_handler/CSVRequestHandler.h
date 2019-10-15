@@ -54,7 +54,7 @@ public:
 	static bool csv_build_vers(BESDataHandlerInterface &dhi);
 	static bool csv_build_help(BESDataHandlerInterface &dhi);
 
-    void add_attributes(BESDataHandlerInterface &dhi);
+	void add_attributes(BESDataHandlerInterface &dhi);
 };
 
 #endif // CSVRequestHandler.h

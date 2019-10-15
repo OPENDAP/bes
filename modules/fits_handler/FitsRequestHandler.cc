@@ -170,6 +170,7 @@ bool FitsRequestHandler::fits_build_data(BESDataHandlerInterface &dhi)
 	BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *>(response);
 	if (!bdds) throw BESInternalError("cast error", __FILE__, __LINE__);
 
+#define INCLUDE_DAS_in_DDS 0
 	try {
 		bdds->set_container(dhi.container->get_symbolic_name());
 		DDS *dds = bdds->get_dds();
@@ -180,6 +181,7 @@ bool FitsRequestHandler::fits_build_data(BESDataHandlerInterface &dhi)
 		}
 		Ancillary::read_ancillary_dds(*dds, accessed);
 
+#if INCLUDE_DAS_in_DDS
 		DAS *das = new DAS;
 		BESDASResponse bdas(das);
 		bdas.set_container(dhi.container->get_symbolic_name());
@@ -189,6 +191,7 @@ bool FitsRequestHandler::fits_build_data(BESDataHandlerInterface &dhi)
 		Ancillary::read_ancillary_das(*das, accessed);
 
 		dds->transfer_attributes(das);
+#endif
 
 		bdds->set_constraint(dhi);
 
@@ -327,5 +330,27 @@ void FitsRequestHandler::dump(ostream &strm) const
 	BESIndent::Indent();
 	BESRequestHandler::dump(strm);
 	BESIndent::UnIndent();
+}
+
+void FitsRequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
+
+        BESResponseObject *response = dhi.response_handler->get_response_object();
+        BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *>(response);
+        if (!bdds)
+                throw BESInternalError("cast error", __FILE__, __LINE__);
+        DDS *dds = bdds->get_dds();
+        string accessed = dhi.container->access();
+	DAS *das = new DAS;
+	BESDASResponse bdas(das);
+	bdas.set_container(dhi.container->get_symbolic_name());
+	string fits_error;
+	if (!fits_handler::fits_read_attributes(*das, accessed, fits_error)) {
+		throw BESDapError(fits_error, false, unknown_error, __FILE__, __LINE__);
+	}
+	Ancillary::read_ancillary_das(*das, accessed);
+
+	dds->transfer_attributes(das);
+
+        return;
 }
 
