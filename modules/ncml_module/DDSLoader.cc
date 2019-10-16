@@ -172,6 +172,7 @@ void DDSLoader::loadInto(const std::string& location, ResponseType type, BESDapR
 
     // Choose the proper request type...
     _dhi.action = getActionForType(type);
+cerr<<"response type is "<<type <<endl;
     _dhi.action_name = getActionNameForType(type);
 
     // Figure out which underlying type of response it is to get the DDS (or DataDDS via DDS super).
@@ -187,6 +188,15 @@ void DDSLoader::loadInto(const std::string& location, ResponseType type, BESDapR
         BESDEBUG("ncml", "Handler name: " << BESRequestHandlerList::TheList()->get_handler_names() << endl);
 
         BESRequestHandlerList::TheList()->execute_current(_dhi);
+        BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(_dhi.container->get_container_type());
+
+                cerr<<"container type is  "<<_dhi.container->get_container_type() <<endl;
+//#if 0
+        if(type == eRT_RequestDataDDS) {
+            if(_dhi.container->get_container_type() =="nc") 
+                besRH->add_attributes(_dhi);
+        }
+//#endif
 
         BESDEBUG("ncml", "After BESRequestHandlerList::TheList()->execute_current" << endl);
     }
@@ -381,10 +391,12 @@ std::auto_ptr<BESDapResponse> DDSLoader::makeResponseForType(ResponseType type)
 {
     if (type == eRT_RequestDDX) {
         // The BaseTypeFactory is leaked. jhrg 6/19/19
+        cerr<<"coming to DDSLoader::RequestDDX"<<endl;
         return auto_ptr<BESDapResponse>(new BESDDSResponse(new DDS(0 /*new BaseTypeFactory()*/, "virtual")));
     }
     else if (type == eRT_RequestDataDDS) {
         // Leak fix jhrg 6/19/19
+        cerr<<"coming to DDSLoader::RequestDataDDS"<<endl;
         return auto_ptr<BESDapResponse>(new BESDataDDSResponse(new DDS(0 /*new BaseTypeFactory()*/, "virtual")));
     }
     else {
