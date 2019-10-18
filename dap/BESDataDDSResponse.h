@@ -47,10 +47,12 @@ class BESDataDDSResponse: public BESDapResponse {
 private:
     libdap::DDS * _dds;
     libdap::ConstraintEvaluator _ce;
+    bool include_attrs;
+
 
 public:
     BESDataDDSResponse(libdap::DDS * dds) :
-        BESDapResponse(), _dds(dds)
+        BESDapResponse(), _dds(dds),include_attrs(true)
     {
     }
 
@@ -79,6 +81,9 @@ public:
     {
         return _ce;
     }
+
+    void set_ia_flag(bool ia_flag) {include_attrs = ia_flag;}
+    bool get_ia_flag() {return include_attrs;}
 };
 
 #endif // I_BESDataDDSResponse

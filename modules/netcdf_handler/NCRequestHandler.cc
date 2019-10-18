@@ -477,6 +477,8 @@ bool NCRequestHandler::nc_build_data(BESDataHandlerInterface & dhi)
 
         bdds->set_constraint(dhi);
         bdds->clear_container();
+        bdds->set_ia_flag(false);
+        BESDEBUG(NC_NAME, "Data ACCESS build_data(): set the including attribute flag to true: "<<dhi.container->access() << endl);
     }
     catch (BESError &e) {
         throw;
@@ -685,5 +687,7 @@ void NCRequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
             delete das;
         }
     }
+    BESDEBUG(NC_NAME, "Data ACCESS in add_attributes(): set the including attribute flag to true: "<<dataset_name << endl);
+    bdds->set_ia_flag(true);
 
 }

@@ -996,8 +996,12 @@ BESDapResponseBuilder::intern_dap2_data(BESResponseObject *obj, BESDataHandlerIn
 #define KENTI 1
 #if KENTI
         {
-            BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(dhi.container->get_container_type());
-            besRH->add_attributes(dhi);
+            if(bdds->get_ia_flag() == false) {
+             BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(dhi.container->get_container_type());
+             besRH->add_attributes(dhi);
+            }
+            //if(false == besRH->get_daa_flag())
+              //besRH->add_attributes(dhi);
         }
 
 #endif 
@@ -1210,10 +1214,21 @@ void BESDapResponseBuilder::send_dap2_data(BESDataHandlerInterface &dhi, DDS **d
 #if KENT
         {
             //cerr<<"run function ce "<<endl;
-        if(dhi.container->get_container_type()!="ff") {
-            BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(dhi.container->get_container_type());
-            besRH->add_attributes(dhi);
-        }
+        //if(dhi.container->get_container_type()!="ff") {
+        //    BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(dhi.container->get_container_type());
+        //    besRH->add_attributes(dhi);
+        //}
+
+            BESResponseObject *response = dhi.response_handler->get_response_object();
+            BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *> (response);
+            if (!bdds)
+                throw BESInternalError("cast error", __FILE__, __LINE__);
+
+            if(bdds->get_ia_flag() == false) {
+              BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(dhi.container->get_container_type());
+        //if(false == besRH->get_daa_flag())
+              besRH->add_attributes(dhi);
+            }
         }
 
 #endif 

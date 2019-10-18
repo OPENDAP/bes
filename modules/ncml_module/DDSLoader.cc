@@ -188,13 +188,26 @@ cerr<<"response type is "<<type <<endl;
         BESDEBUG("ncml", "Handler name: " << BESRequestHandlerList::TheList()->get_handler_names() << endl);
 
         BESRequestHandlerList::TheList()->execute_current(_dhi);
-        BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(_dhi.container->get_container_type());
 
-                cerr<<"container type is  "<<_dhi.container->get_container_type() <<endl;
 //#if 0
         if(type == eRT_RequestDataDDS) {
-            if(_dhi.container->get_container_type() =="nc") 
+
+            BESResponseObject *response = _dhi.response_handler->get_response_object();
+            BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *> (response);
+            if (!bdds)
+                throw BESInternalError("cast error", __FILE__, __LINE__);
+
+            if(bdds->get_ia_flag() == false) {
+cerr<<"DataDDS doesn't include attributes "<<endl;
+            //string container_type = _dhi.container->get_container_type();
+            //if(container_type =="nc" ) 
+            //if(false == besRH->get_daa_flag()) 
+                BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(_dhi.container->get_container_type());
                 besRH->add_attributes(_dhi);
+            }
+            else {
+                cerr<<" DataDDS include attributes "<<endl;
+            }
         }
 //#endif
 
