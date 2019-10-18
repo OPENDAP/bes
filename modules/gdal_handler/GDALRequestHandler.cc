@@ -55,7 +55,7 @@
 #include <BESInternalFatalError.h>
 #include <BESUtil.h>
 
-//#include <BESDebug.h>
+#include <BESDebug.h>
 
 #include "GDALRequestHandler.h"
 #include "gdal_utils.h"
@@ -209,6 +209,8 @@ bool GDALRequestHandler::gdal_build_data(BESDataHandlerInterface & dhi)
         hDS = 0;
 
         bdds->set_constraint(dhi);
+        BESDEBUG("gdal", "Data ACCESS build_data(): set the including attribute flag to false: "<<filename << endl);
+        bdds->set_ia_flag(false);
         bdds->clear_container();
     }
     catch (BESError &e) {
@@ -408,6 +410,8 @@ void GDALRequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
         delete das;
         GDALClose(hDS);
         hDS = 0;
+        BESDEBUG("gdal", "Data ACCESS in add_attributes(): set the including attribute flag to true: "<<filename << endl);
+        bdds->set_ia_flag(true);
 
     }
 

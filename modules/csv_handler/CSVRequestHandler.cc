@@ -184,8 +184,9 @@ bool CSVRequestHandler::csv_build_data(BESDataHandlerInterface &dhi)
 		Ancillary::read_ancillary_das(das, accessed);
 		dds->transfer_attributes(&das);
 #endif
-
 		bdds->set_constraint(dhi);
+        BESDEBUG("csv", "Data ACCESS build_data(): set the including attribute flag to false: "<<accessed << endl);
+        bdds->set_ia_flag(false);
 		return ret;
 	}
 	catch (InternalErr &e) {
@@ -197,6 +198,8 @@ bool CSVRequestHandler::csv_build_data(BESDataHandlerInterface &dhi)
 	catch (...) {
 		throw BESDapError("Caught unknown error build CSV DataDDS response", true, unknown_error, __FILE__, __LINE__);
 	}
+
+
 }
 
 /**
@@ -314,6 +317,8 @@ void CSVRequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
 	csv_read_attributes(das, dataset_name);
 	Ancillary::read_ancillary_das(das, dataset_name);
 	dds->transfer_attributes(&das);
+    BESDEBUG("csv", "Data ACCESS in add_attributes(): set the including attribute flag to true: "<<dataset_name << endl);
+    bdds->set_ia_flag(true);
 	return;
 }
 
