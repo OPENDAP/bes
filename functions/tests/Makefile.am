@@ -21,7 +21,7 @@ noinst_DATA = bes.conf
 CLEANFILES = bes.conf
 
 EXTRA_DIST = data bescmd functions $(TESTSUITE).at $(TESTSUITE) \
-$(srcdir)/package.m4 atlocal.in bes.conf.in handler_tests_macros.m4
+$(srcdir)/package.m4 atlocal.in bes.conf.in
 
 DISTCLEANFILES = atconfig generate_data_baselines.sh generate_metadata_baselines.sh
 
