@@ -3,7 +3,6 @@
 AT_INIT([bes/functions/tests testsuite])
 
 m4_include([../../modules/handler_tests_macros.m4])
-# m4_include([handler_tests_macros.m4])
 
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/tabular_0.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/tabular_1.dods.bescmd)
@@ -159,3 +158,5 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/range_test_6.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/range_test_7.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/range_test_8.dods.bescmd)
 
+AT_BESCMD_RESPONSE_TEST(bescmd/testFunction.ddx.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/testFunction.dods.bescmd)
