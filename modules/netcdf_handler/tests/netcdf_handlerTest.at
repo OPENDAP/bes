@@ -54,3 +54,12 @@ AT_BESCMD_CACHED_RESPONSE_TEST([nc/fnoc1.nc.dmr.cached.bescmd])
 # Data using cached metadata? I'm not sure how to test this using besstandalone.
 # jhrg 5/23/16
 # AT_BESCMD_BINARYDATA_CACHED_RESPONSE_TEST([nc/fnoc1.nc.dods.cached.bescmd])
+
+# make sure server functions work correctly
+
+# These tests call a function 'test(<name>)' that does not actually use variables
+# from the dataset named int he 'URL,' but does pull attributes from the dataset.
+# This tests that the DDS used as an argument to a function does contain attributes.
+# jhrg 10/22/19
+AT_BESCMD_RESPONSE_TEST([nc/fnoc1.nc.function.ddx.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([nc/fnoc1.nc.function.dods.bescmd])

@@ -10,6 +10,8 @@
 #include <DDS.h>
 #include <util.h>
 
+#include "BESInternalFatalError.h"
+
 namespace functions {
 
     class TestFunction : public libdap::ServerFunction {
@@ -39,8 +41,7 @@ namespace functions {
                     btf.NewVariable(requested_type, name));  // ... so use add_var_nocopy() to add it instead
 
             vector<int> dims(num_dim, dim_sz);
-            //dims.push_back(3); dims.push_back(3);
-            unsigned long num_elem = 1;
+            unsigned int num_elem = 1;
             auto i = dims.begin();
             while (i != dims.end()) {
                 num_elem *= *i;
@@ -56,6 +57,8 @@ namespace functions {
             dest->set_value(values, num_elem);
 
             libdap::AttrTable attr = (*dds.var_begin())->get_attr_table();
+            if (attr.get_size() == 0)
+                throw BESInternalFatalError("Expected to find an AttrTable object in DDS passed to the test function", __FILE__, __LINE__);
             dest->set_attr_table(attr);
 
             dest->set_send_p(true);
