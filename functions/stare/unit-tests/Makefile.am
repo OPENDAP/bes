@@ -8,7 +8,7 @@ AUTOMAKE_OPTIONS = foreign
 
 # Headers in 'tests' are used by the arrayT unit tests.
 
-AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/functions $(DAP_CFLAGS)
+AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/functions -I$(top_srcdir)/functions/stare $(DAP_CFLAGS)
 AM_LDADD =  $(DAP_SERVER_LIBS) $(GF_LIBS) $(top_builddir)/dispatch/libbes_dispatch.la
 
 if CPPUNIT
@@ -24,6 +24,8 @@ endif
 # debugging. Set CXXFLAGS to this in the nightly build using export ...
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
+
+BUILT_SOURCES = test_config.h
 
 # This determines what gets built by make check
 check_PROGRAMS = $(UNIT_TESTS)
@@ -81,4 +83,4 @@ endif
 # solution - and listing these as source breaks distcheck jhrg 9/24/15
 StareFunctionsTest_SOURCES = StareFunctionsTest.cc  $(TEST_SRC)
 StareFunctionsTest_OBJ = ../../StareIterateFunction.o 
-StareFunctionsTest_LDADD = $(StareFunctionsTest_OBJ) $(TEST_OBJ) $(AM_LDADD) -ltest-types $(DAP_LIBS)
+StareFunctionsTest_LDADD = $(StareFunctionsTest_OBJ) $(TEST_OBJ) $(AM_LDADD) -ltest-types $(DAP_LIBS) -lhdf5 -lSTARE

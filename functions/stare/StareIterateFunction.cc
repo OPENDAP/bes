@@ -105,7 +105,7 @@ uint64 extract_uint64_value(BaseType *arg) {
 	case dods_float64_c:
 		return (uint64) (static_cast<Float64*>(arg)->value());
 
-		// Support for DAP4 types.
+    // Support for DAP4 types.
 	case dods_uint8_c:
 		return (uint64) (static_cast<Byte*>(arg)->value());
 	case dods_int8_c:
@@ -142,16 +142,20 @@ vector<uint64> *extract_uint64_array(Array *var)
  * @param stareVal - stare values from given dataset
  * @param stareIndices - stare values being compared, retrieved from the sidecar file
  */
-bool hasValue(vector<uint64> *stareVal, BaseType *stareIndices) {
+bool hasValue(vector<uint64> *stareVal, vector<uint64> *stareIndices) {
+#if 0
+    //Originally took the stareIndices in as a BaseType.
+    //However, the stare indices can be taken from the provided h5 sidecar file and
+    // the vector containing those values can be passed in directly instead of having
+    // to be converted from BaseType to a uint64 array. -kln 10/22/19
 	vector<uint64> *stareData;
 
 	Array &stareSrc = dynamic_cast<Array&>(*stareIndices);
-
 	stareSrc.read();
-
 	stareData = extract_uint64_array(&stareSrc);
+#endif
 
-	for (vector<uint64>::iterator i = stareData->begin(), end = stareData->end(); i != end; i++) {
+	for (vector<uint64>::iterator i = stareIndices->begin(), end = stareIndices->end(); i != end; i++) {
 		for (vector<uint64>::iterator j = stareVal->begin(), e = stareVal->end(); j != e; j++)
 			if (*i == *j)
 				return true;
@@ -206,15 +210,15 @@ BaseType *stare_dap4_function(D4RValueList *args, DMR &dmr) {
 	strcpy(fullPathChar, fullPath.c_str());
 
 	//Initialize the various variables for the datasets' info
-	hsize_t dims[1];
 	hid_t file;
 	hid_t xFilespace, yFilespace, stareFilespace;
 	hid_t xMemspace, yMemspace, stareMemspace;
 	hid_t xDataset, yDataset, stareDataset;
+	hssize_t xSize, ySize, stareSize;
 
 	vector<int> xArray;
 	vector<int> yArray;
-	vector<BaseType> stareArray;
+	vector<uint64> stareArray;
 
 	//Read the file and store the datasets
 	file = H5Fopen(fullPathChar, H5F_ACC_RDONLY, H5P_DEFAULT);
@@ -222,14 +226,33 @@ BaseType *stare_dap4_function(D4RValueList *args, DMR &dmr) {
 	yDataset = H5Dopen(file, "Y", H5P_DEFAULT);
 	stareDataset = H5Dopen(file, "Stare Index", H5P_DEFAULT);
 
+	//Get the number of dimensions
+	hid_t dspace = H5Dget_space(xDataset);
+	const int ndims = H5Sget_simple_extent_ndims(dspace);
+	hsize_t dims[ndims];
+
+	//Get the size of the dimension so that we know how big to make the memory space
+	//Each of the dataspaces should be the same size, if in the future they are different
+	// sizes then the size of each dataspace will need to be calculated.
+	H5Sget_simple_extent_dims(dspace, dims, NULL);
+
 	//We need to get the filespace and memspace before reading the values from each dataset
 	xFilespace = H5Dget_space(xDataset);
 	yFilespace = H5Dget_space(yDataset);
 	stareFilespace = H5Dget_space(stareDataset);
 
-	xMemspace = H5Screate_simple(1,dims,NULL);
-	yMemspace = H5Screate_simple(1,dims,NULL);
-	stareMemspace = H5Screate_simple(1,dims,NULL);
+	xMemspace = H5Screate_simple(ndims,dims,NULL);
+	yMemspace = H5Screate_simple(ndims,dims,NULL);
+	stareMemspace = H5Screate_simple(ndims,dims,NULL);
+
+	//Get the number of elements in the dataspace and use that to appropriate the proper size of the vectors
+	xSize = H5Sget_select_npoints(xFilespace);
+	ySize = H5Sget_select_npoints(yFilespace);
+	stareSize = H5Sget_select_npoints(stareFilespace);
+
+	xArray.resize(xSize);
+	yArray.resize(ySize);
+	stareArray.resize(stareSize);
 
 	//Read the data file and store the values of each dataset into an array
 	H5Dread(xDataset, H5T_NATIVE_INT, xMemspace, xFilespace, H5P_DEFAULT, &xArray[0]);
@@ -247,15 +270,14 @@ BaseType *stare_dap4_function(D4RValueList *args, DMR &dmr) {
 	}
 */
 
-	BaseType *stareVal = args->get_rvalue(1)->value(dmr);
+	BaseType *stareVal = args->get_rvalue(0)->value(dmr);
 	Array &stareSrc = dynamic_cast<Array&>(*stareVal);
-
 	stareSrc.read();
 
 	vector<uint64> *stareData;
 	stareData = extract_uint64_array(&stareSrc);
 
-	bool status = hasValue(stareData, &stareArray[0]);
+	bool status = hasValue(stareData, &stareArray);
 
 	Int32 *result = new Int32 ("result");
 	if (status) {

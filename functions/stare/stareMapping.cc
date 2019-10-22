@@ -131,6 +131,102 @@ vector<coords> readUrl(string dataUrl, string latName, string lonName) {
 	return indexArray;
 }
 
+vector<coords> readLocal(string dataPath, string latName, string lonName) {
+	//Initialize the various variables for the datasets' info
+	//hsize_t dims[2];
+	hssize_t latSize, lonSize;
+	hid_t file;
+	hid_t latFilespace, lonFilespace;
+	hid_t latMemspace, lonMemspace;
+	hid_t latDataset, lonDataset;
+
+	//TODO: Should this be float64?
+	vector<float> latArray;
+	vector<float> lonArray;
+
+	vector<coords> indexArray;
+
+	//The H5Fopen and H5Dopen functions need to read in a char *
+	int n = dataPath.length();
+	char pathChar[n + 1];
+	strcpy(pathChar, dataPath.c_str());
+
+	int latLength = latName.length();
+	char latChar[latLength + 1];
+	strcpy(latChar, latName.c_str());
+
+	int lonLength = lonName.length();
+	char lonChar[lonLength + 1];
+	strcpy(lonChar, lonName.c_str());
+
+	try {
+		//Read the file and store the datasets
+		file = H5Fopen(pathChar, H5F_ACC_RDONLY, H5P_DEFAULT);
+		latDataset = H5Dopen(file, latChar, H5P_DEFAULT);
+		lonDataset = H5Dopen(file, lonChar, H5P_DEFAULT);
+
+		//Get the number of dimensions
+		//Should be 2, but this is future proofing just in case,
+		//that way I don't have to go back and figure it all out again kln 10/17/19
+		hid_t dspace = H5Dget_space(latDataset);
+		const int ndims = H5Sget_simple_extent_ndims(dspace);
+		hsize_t dims[ndims];
+
+		//TODO: Add a comparison similar to the readUrl function that checks to make sure lat and lon are equal size
+
+		//Get the size of the dimensions so that we know how big to make the memory space
+		H5Sget_simple_extent_dims(dspace, dims, NULL);
+
+		//We need to get the filespace and memspace before reading the values from each dataset
+		latFilespace = H5Dget_space(latDataset);
+		lonFilespace = H5Dget_space(lonDataset);
+
+		latMemspace = H5Screate_simple(ndims,dims,NULL);
+		lonMemspace = H5Screate_simple(ndims,dims,NULL);
+
+		//The filespace will tell us what the size of the vectors need to be for reading in the
+		// data from the h5 file. We could also use memspace, but they should be the same size.
+		latSize = H5Sget_select_npoints (latFilespace);
+		VERBOSE(cerr << "\n\tlat dataspace size: " << latSize);
+		lonSize = H5Sget_select_npoints (lonFilespace);
+		VERBOSE(cerr << "\n\tlon dataspace size: " << lonSize << endl);
+
+		latArray.resize(latSize);
+		lonArray.resize(lonSize);
+
+		//Read the data file and store the values of each dataset into an array
+		H5Dread(latDataset, H5T_NATIVE_FLOAT, latMemspace, latFilespace, H5P_DEFAULT, &latArray[0]);
+		H5Dread(lonDataset, H5T_NATIVE_FLOAT, lonMemspace, lonFilespace, H5P_DEFAULT, &lonArray[0]);
+
+		VERBOSE(cerr << "\tsize of lat array: " << latArray.size() << endl);
+		VERBOSE(cerr << "\tsize of lon array: " << lonArray.size() << endl);
+
+		coords indexVals = coords();
+
+		int size_x = latArray.size();
+
+		//Declare the beginning of the vectors here rather than inside the loop to save compute time
+		vector<float>::iterator j_begin = lonArray.begin();
+
+		for (vector<float>::iterator i = latArray.begin(), e = latArray.end(), j =
+				lonArray.begin(); i != e; ++i, ++j) {
+			//Use an offset since we are using a 1D array and treating it like a 2D array
+			int offset = j - j_begin;
+			indexVals.x = offset / (size_x - 1);//Get the current index for the lon
+			indexVals.y = offset % (size_x - 1);//Get the current index for the lat
+			indexVals.lat = *i;
+			indexVals.lon = *j;
+
+			indexArray.push_back(indexVals);
+		}
+
+	} catch (libdap::Error &e) {
+		cerr << "ERROR: " << e.get_error_message() << endl;
+	}
+
+	return indexArray;
+}
+
 /**
  * @brief Use the coords struct to calculate the stare index based on the lat/lon values
  * @param latlonVals
@@ -313,8 +409,11 @@ int main(int argc, char *argv[]) {
 	}*/
 
 	try {
-
-		vector<coords> coordResults = readUrl(dataUrl, latName, lonName);
+		vector<coords> coordResults;
+		if (dataUrl.find("https://") != string::npos || dataUrl.find("http://") != string::npos || dataUrl.find("www.") != string::npos)
+			coordResults = readUrl(dataUrl, latName, lonName);
+		else
+			coordResults = readLocal(dataUrl, latName, lonName);
 
 		vector<uint64> stareResults = calculateStareIndex(level, build_level, coordResults);
 #if 0

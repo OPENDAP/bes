@@ -4,22 +4,24 @@
 
 #include <GetOpt.h>
 #include <BaseType.h>
-#include <Int32.h>
-#include <Float64.h>
-#include <Str.h>
 #include <Array.h>
-#include <Grid.h>
-#include <DDS.h>
+#include <Int32.h>
+#include <UInt64.h>
+#include <D4Group.h>
+#include <D4RValue.h>
+#include <DMR.h>
 
 #include <util.h>
 #include <debug.h>
+
+#include <TheBESKeys.h>
 #include <BESDebug.h>
 
 #include "StareIterateFunction.h"
 
 #include "test_config.h"
 
-#include "test/TestTypeFactory.h"
+#include "test/D4TestTypeFactory.h"
 
 #include "debug.h"
 
@@ -50,6 +52,7 @@ public:
         DBG(cerr << "setup() - Built D4BaseTypeFactory() " << endl);
 
         two_arrays_dmr = new DMR(d4_btf);
+        two_arrays_dmr->set_name("test_dmr");
         DBG(cerr << "setup() - Built DMR(D4BaseTypeFactory *) " << endl);
 
 		string filename = "MYD09.A2019003.2040.006.2019005020913.h5";
@@ -73,9 +76,9 @@ public:
 	CPPUNIT_TEST_SUITE_END();
 
 	void serverside_compare_test() {
-		DBG(cerr << "--Test basic setup of function--" << endl);
+		DBG(cerr << "--- hasValue() test - BEGIN ---" << endl);
 
-		Array *a_var = new Array("a_var");
+		Array *a_var = new Array("a_var", new UInt64("a_var"));
 
 		two_arrays_dmr->root()->add_var_nocopy(a_var);
 
@@ -84,29 +87,30 @@ public:
 		//Lon - -98.8324, -98.8388, -98.8452, -98.8516, -98.858, -98.8644, -98.8708, -98.8772, -98.8836, -98.8899
 		//Stare - 3440016191299518474 x 10
 
-		//Array a - uint64 for stare indices
+		//Array a_var - uint64 for stare indices
 		//First two indices are actual stare values from: MYD09.A2019003.2040.006.2019005020913_sidecar.h5
 		//The final value is made up.
-		vector<dods_uint64> target_indices = {3440016191299518474, 3440018390322774026, 3440016191299518400};
+		vector<dods_uint64> target_indices = {9223372034707292159, 3440012343008821258, 3440016191299518400};
 
 		try {
 			D4RValueList params;
-
 			params.add_rvalue(new D4RValue(target_indices));
 
-			BaseType *checkHasValue = stare_dap4_function(&params, two_arrays_dmr);
+			BaseType *checkHasValue = stare_dap4_function(&params, *two_arrays_dmr);
 
 			CPPUNIT_ASSERT(dynamic_cast<Int32*> (checkHasValue)->value() == 1);
 		}
 		catch(Error &e) {
 			DBG(cerr << e.get_error_message() << endl);
-			CPPUNIT_FAIL("Compare test failed");
+			CPPUNIT_FAIL("hasValue() test failed");
 		}
+
+        DBG(cerr << "--- hasValue() test - END ---" << endl);
 	}
 
 };
 
-CPPUNIT_TEST_REGISTRATION( StareFunctionsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( StareFunctionsTest );
 
 int main(int argc, char*argv[]) {
 	GetOpt getopt(argc, argv, "dh");
@@ -132,7 +136,7 @@ int main(int argc, char*argv[]) {
 	}
 
 	CppUnit::TextTestRunner runner;
-	runner.addTest(StareFunctionsTest::getRegistry().makeTest());
+	runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
 	bool wasSuccessful = true;
 	string test = "";

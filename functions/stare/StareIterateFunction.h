@@ -21,8 +21,6 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 #include <stdint.h>
 
-#include <BaseType.h>
-
 #include "ServerFunction.h"
 
 namespace libdap {
@@ -32,13 +30,13 @@ class DDS;
 
 namespace functions {
 
-bool hasValue(BaseType *bt, vector<uint64_t> stareIndices);
+bool hasValue(libdap::BaseType *bt, std::vector<uint64_t> stareIndices);
 
-int count(BaseType *bt, vector<uint64_t> stareIndices);
+int count(libdap::BaseType *bt, std::vector<uint64_t> stareIndices);
 
 
 
-libdap::BaseType stare_dap4_function(libdap::D4RValueList *args, libdap::DMR &dmr);
+libdap::BaseType *stare_dap4_function(libdap::D4RValueList *args, libdap::DMR &dmr);
 
 class StareIterateFunction: public libdap::ServerFunction {
 public:
