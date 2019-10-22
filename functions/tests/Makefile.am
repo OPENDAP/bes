@@ -48,10 +48,10 @@ data/build_responses.conf: data/build_responses.conf.in $(top_srcdir)/configure.
 
 AUTOM4TE = autom4te
 
-TESTSUITE = $(srcdir)/functionsTest
+TESTSUITE = $(srcdir)/testsuite
 TESTSUITEFLAGS =
 
-$(TESTSUITE): $(TESTSUITE).at $(srcdir)/handler_tests_macros.m4 $(srcdir)/package.m4
+$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(srcdir)/../../modules/handler_tests_macros.m4
 
 # Note These tests do not work when run in parallel.
 check-local: atconfig atlocal $(TESTSUITE)
