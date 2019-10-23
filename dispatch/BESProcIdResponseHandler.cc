@@ -40,6 +40,8 @@
 
 using std::endl;
 using std::map;
+using std::ostream;
+using std::string;
 
 BESProcIdResponseHandler::BESProcIdResponseHandler( const string &name )
     : BESResponseHandler( name )

@@ -34,8 +34,6 @@
 
 #include <string>
 
-using std::string ;
-
 #include "BESObj.h"
 
 /** @brief Function to uncompress files with .Z extension
@@ -55,7 +53,7 @@ using std::string ;
 class BESUncompress3Z : public BESObj
 {
 public:
-    static void			uncompress( const string &src,
+    static void			uncompress( const std::string &src,
 					    int fd ) ;
 };
 

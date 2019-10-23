@@ -43,6 +43,7 @@
 #include "BESDebug.h"
 
 using std::endl;
+using std::ostream;
 
 BESXMLWWWGetCommand::BESXMLWWWGetCommand(const BESDataHandlerInterface &base_dhi) :
         BESXMLGetCommand(base_dhi)

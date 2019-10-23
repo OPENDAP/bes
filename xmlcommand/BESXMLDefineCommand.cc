@@ -46,6 +46,7 @@
 using std::endl;
 using std::string;
 using std::vector;
+using std::ostream;
 
 BESXMLDefineCommand::BESXMLDefineCommand(const BESDataHandlerInterface &base_dhi) :
     BESXMLCommand(base_dhi), _default_constraint(""), _default_dap4_constraint(""), _default_dap4_function("")

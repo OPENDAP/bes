@@ -35,11 +35,14 @@
 #include <fstream>
 #include <iostream>
 #include <cstring>
+#include <list>
 
 using std::stringstream;
 using std::ifstream;
 using std::endl;
 using std::ostream;
+using std::string;
+using std::list;
 
 #include "BESContainerStorageFile.h"
 #include "BESFileContainer.h"

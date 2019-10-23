@@ -41,6 +41,7 @@
 #include "SampleResponseNames.h"
 
 using std::endl;
+using std::ostream;
 
 SampleSayXMLCommand::SampleSayXMLCommand(const BESDataHandlerInterface &base_dhi) :
     BESXMLCommand(base_dhi)

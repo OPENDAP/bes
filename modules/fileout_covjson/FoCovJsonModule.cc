@@ -32,6 +32,7 @@
 
 using std::endl;
 using std::ostream;
+using std::string;
 
 #include "FoCovJsonModule.h"
 #include "FoDapCovJsonTransmitter.h"

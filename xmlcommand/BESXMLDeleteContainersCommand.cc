@@ -40,6 +40,7 @@
 #include "BESDebug.h"
 
 using std::endl;
+using std::ostream;
 
 BESXMLDeleteContainersCommand::BESXMLDeleteContainersCommand(const BESDataHandlerInterface &base_dhi) :
     BESXMLCommand(base_dhi)

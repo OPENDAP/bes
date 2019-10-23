@@ -38,7 +38,7 @@
 #include "CurlHandlePool.h"
 #include "DmrppRequestHandler.h"
 
-const string debug = "dmrpp";
+const std::string debug = "dmrpp";
 
 using namespace std;
 

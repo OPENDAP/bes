@@ -38,6 +38,7 @@
 
 using std::endl;
 using std::ostream;
+using std::string;
 
 BESRequestHandlerList *BESRequestHandlerList::_instance = 0;
 

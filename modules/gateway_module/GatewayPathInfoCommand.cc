@@ -7,6 +7,7 @@
 #include "BESSyntaxUserError.h"
 
 using std::endl;
+using std::ostream;
 
 GatewayPathInfoCommand::GatewayPathInfoCommand(const BESDataHandlerInterface &base_dhi) :
     BESXMLCommand(base_dhi)

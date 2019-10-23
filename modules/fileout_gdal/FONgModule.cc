@@ -28,6 +28,7 @@
 
 using std::endl;
 using std::ostream;
+using std::string;
 
 #include "FONgModule.h"
 #include "GeoTiffTransmitter.h"

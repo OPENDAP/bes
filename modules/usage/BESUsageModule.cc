@@ -33,6 +33,7 @@
 
 using std::endl ;
 using std::ostream;
+using std::string;
 
 #include "BESUsageModule.h"
 

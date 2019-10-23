@@ -8,6 +8,7 @@
 #include "BESSyntaxUserError.h"
 
 using std::endl;
+using std::ostream;
 
 #define W10N_SHOW_PATH_INFO_DHI_TAG "show.w10nPathInfo"
 

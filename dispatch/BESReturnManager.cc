@@ -34,6 +34,7 @@
 
 using std::endl;
 using std::ostream;
+using std::string;
 
 BESReturnManager *BESReturnManager::_instance = 0;
 

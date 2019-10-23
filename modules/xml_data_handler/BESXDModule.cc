@@ -30,6 +30,7 @@
 
 using std::endl;
 using std::ostream;
+using std::string;
 
 #include <BESXDModule.h>
 #include <BESDebug.h>

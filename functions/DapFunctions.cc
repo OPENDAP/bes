@@ -58,6 +58,7 @@
 
 using std::endl;
 using std::ostream;
+using std::string;
 
 namespace functions {
 

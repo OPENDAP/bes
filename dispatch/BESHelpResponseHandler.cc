@@ -40,6 +40,8 @@
 
 using std::endl;
 using std::ostream;
+using std::string;
+using std::map;
 
 BESHelpResponseHandler::BESHelpResponseHandler( const string &name )
     : BESResponseHandler( name )

@@ -31,6 +31,7 @@
 #include "BESSyntaxUserError.h"
 
 using std::endl;
+using std::ostream;
 
 #define SPI_DEBUG_KEY "show-path-info"
 

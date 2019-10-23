@@ -60,8 +60,8 @@ public:
 
     virtual void begin_response(const std::string &response_name, BESDataHandlerInterface &dhi);
 
-    virtual void add_tag(const std::string &tag_name, const std::string &tag_data, map<std::string, std::string> *attrs = 0);
-    virtual void begin_tag(const std::string &tag_name, map<std::string, std::string> *attrs = 0);
+    virtual void add_tag(const std::string &tag_name, const std::string &tag_data, std::map<std::string, std::string> *attrs = 0);
+    virtual void begin_tag(const std::string &tag_name, std::map<std::string, std::string> *attrs = 0);
     virtual void end_tag(const std::string &tag_name);
 
     virtual void add_data(const std::string &s);

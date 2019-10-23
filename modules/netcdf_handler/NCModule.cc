@@ -44,6 +44,7 @@
 
 using std::endl;
 using std::ostream;
+using std::string;
 
 #define NC_CATALOG "catalog"
 

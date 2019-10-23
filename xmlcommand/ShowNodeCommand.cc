@@ -36,6 +36,7 @@
 #include "ShowNodeCommand.h"
 
 using std::endl;
+using std::ostream;
 
 using namespace bes;
 

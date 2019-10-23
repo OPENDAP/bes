@@ -64,7 +64,7 @@
 #define FONC_CLASSIC_MODEL true
 #define FONC_CLASSIC_MODEL_KEY "FONc.ClassicModel"
 
-string FONcRequestHandler::temp_dir;
+std::string FONcRequestHandler::temp_dir;
 bool FONcRequestHandler::byte_to_short;
 bool FONcRequestHandler::use_compression;
 int FONcRequestHandler::chunk_size;

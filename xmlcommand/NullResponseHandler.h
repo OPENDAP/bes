@@ -46,7 +46,7 @@ namespace bes {
 class NullResponseHandler: public BESResponseHandler {
 public:
 
-    NullResponseHandler(const string &name): BESResponseHandler(name) { }
+    NullResponseHandler(const std::string &name): BESResponseHandler(name) { }
     virtual ~NullResponseHandler(void) { }
 
     /** @brief Minimal execution
@@ -83,7 +83,7 @@ public:
 
     // Factory method, used by the DefaultModule to add this to the list of
     // ResponseHandlers for a given 'action'
-    static BESResponseHandler *NullResponseBuilder(const string &name) {
+    static BESResponseHandler *NullResponseBuilder(const std::string &name) {
         return new NullResponseHandler(name);
     }
 };

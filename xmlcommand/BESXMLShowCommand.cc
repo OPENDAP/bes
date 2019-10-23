@@ -37,6 +37,7 @@
 #include "BESDebug.h"
 
 using std::endl;
+using std::ostream;
 
 BESXMLShowCommand::BESXMLShowCommand(const BESDataHandlerInterface &base_dhi) :
     BESXMLCommand(base_dhi)

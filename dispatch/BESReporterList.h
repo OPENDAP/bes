@@ -36,9 +36,6 @@
 #include <map>
 #include <string>
 
-using std::map ;
-using std::string ;
-
 #include "BESObj.h"
 #include "BESDataHandlerInterface.h"
 
@@ -48,19 +45,19 @@ class BESReporterList : public BESObj
 {
 private:
     static BESReporterList *	_instance ;
-    map< string, BESReporter * > _reporter_list ;
+    std::map< std::string, BESReporter * > _reporter_list ;
 protected:
 				BESReporterList(void) ;
 public:
     virtual			~BESReporterList(void) ;
 
-    typedef map< string, BESReporter * >::const_iterator Reporter_citer ;
-    typedef map< string, BESReporter * >::iterator Reporter_iter ;
+    typedef std::map< std::string, BESReporter * >::const_iterator Reporter_citer ;
+    typedef std::map< std::string, BESReporter * >::iterator Reporter_iter ;
 
-    virtual bool		add_reporter( string reporter_name,
+    virtual bool		add_reporter( std::string reporter_name,
 					      BESReporter * handler ) ;
-    virtual BESReporter *	remove_reporter( string reporter_name ) ;
-    virtual BESReporter *	find_reporter( string reporter_name ) ;
+    virtual BESReporter *	remove_reporter( std::string reporter_name ) ;
+    virtual BESReporter *	find_reporter( std::string reporter_name ) ;
 
     virtual void		report( BESDataHandlerInterface &dhi ) ;
 
@@ -70,4 +67,3 @@ public:
 };
 
 #endif // I_BESReporterList_h
-
