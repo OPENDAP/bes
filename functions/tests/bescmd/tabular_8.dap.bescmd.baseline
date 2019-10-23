@@ -6,8 +6,8 @@
             <Message>libdap error transmitting DAP4Data: 'tabular' is not a registered DAP4 server function.</Message>
             <Administrator>support@opendap.org</Administrator>
             <Location>
-                <File>BESDapTransmit.cc</File>
-                <Line>88</Line>
+                removed file
+                removed line
             </Location>
         </BESError>
     </getDAP>
