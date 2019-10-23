@@ -7,7 +7,7 @@
             <Value>degree North</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>faa9f195</Value>
+            removed checksum
         </Attribute>
     </Float32>
     <Attribute name="NC_GLOBAL" type="Container">
