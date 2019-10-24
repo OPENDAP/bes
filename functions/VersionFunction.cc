@@ -123,4 +123,4 @@ BaseType *function_dap4_version(D4RValueList *, DMR &dmr)
     return response;
 }
 
-} // namesspace functions
+} // namespace functions

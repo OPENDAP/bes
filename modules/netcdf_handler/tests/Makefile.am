@@ -17,7 +17,7 @@ CLEANFILES = bes.conf package.m4
 
 EXTRA_DIST = nc netcdf_handlerTest netcdf_handlerTest.at \
 nc4_netcdf_handler_tests nc4_netcdf_handler_tests.at \
-atlocal.in $(BES_CONF_IN) package.m4 handler_tests_macros.m4
+atlocal.in $(BES_CONF_IN) package.m4
 
 DISTCLEANFILES = atconfig
 
