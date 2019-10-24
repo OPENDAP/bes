@@ -34,6 +34,8 @@
 #include "BESInfoList.h"
 #include "BESInternalError.h"
 
+using std::endl;
+
 /** @brief constructs a basic text information response object to write version
  *         information
  *
@@ -78,7 +80,8 @@ void BESVersionInfo::add_version(const string &type, const string &name, const s
 {
     map<string, string> attrs;
     attrs["name"] = name;
-    add_tag(type, vers, &attrs);
+    attrs["version"] = vers;
+    add_tag(type, "", &attrs);
 }
 
 /** @brief dumps information about this object

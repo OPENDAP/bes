@@ -1226,6 +1226,11 @@ bool NCMLParser::isParsingOtherXML() const
 
 void NCMLParser::cleanup()
 {
+    TypeConverter* ptc = new TypeConverter();
+    TypeConverter& tc = *ptc;
+
+	tc.clear();
+
     // The only memory we own is the _response, which is in an auto_ptr so will
     // either be returned to caller in parse() and cleared, or else
     // delete'd by our dtor via auto_ptr

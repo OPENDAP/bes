@@ -47,6 +47,8 @@
 #include "BESResponseNames.h"
 #include "BESDataHandlerInterface.h"
 
+using std::endl;
+
 BESDelDefResponseHandler::BESDelDefResponseHandler(const string &name) :
     BESResponseHandler(name)
 {

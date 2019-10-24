@@ -32,6 +32,8 @@
 
 #include "Connection.h"
 
+using std::endl;
+
 /** @brief dumps information about this object
  *
  * Displays the pointer value of this instance

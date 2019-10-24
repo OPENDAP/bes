@@ -56,7 +56,7 @@ public:
 
 	virtual void dump(std::ostream &strm) const
 	{
-		strm << "BESInternalError::dump - (" << (void *) this << ")" << endl;
+		strm << "BESInternalError::dump - (" << (void *) this << ")" << std::endl;
 		BESIndent::Indent();
 		BESError::dump(strm);
 		BESIndent::UnIndent();

@@ -36,6 +36,8 @@
 #include "BESDefinitionStorageList.h"
 #include "BESResponseNames.h"
 
+using std::endl;
+
 BESShowDefsResponseHandler::BESShowDefsResponseHandler( const string &name )
     : BESResponseHandler( name )
 {

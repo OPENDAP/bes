@@ -74,7 +74,7 @@ public:
     virtual void transmit(BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/) { }
 
     virtual void dump(ostream &strm) const {
-        strm << BESIndent::LMarg << "NullResponseHandler::dump - (" << (void *) this << ")" << endl;
+        strm << BESIndent::LMarg << "NullResponseHandler::dump - (" << (void *) this << ")" << std::endl;
         BESIndent::Indent();
         BESResponseHandler::dump(strm);
         BESIndent::UnIndent();

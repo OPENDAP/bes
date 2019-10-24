@@ -77,6 +77,7 @@
 #define EXCLUDE_FILE_INFO_FROM_LOG "BES.DoNotLogSourceFilenames"
 
 using namespace std;
+using std::endl;
 
 static jmp_buf timeout_jump;
 static bool timeout_jump_valid = false;
@@ -346,7 +347,7 @@ int BESInterface::handleException(BESError &e, BESDataHandlerInterface &dhi)
     string admin_email = "";
     try {
         bes::ServerAdministrator sd;
-        admin_email = sd.get("email");
+        admin_email = sd.get_email();
     }
     catch (...) {
         admin_email = "support@opendap.org";

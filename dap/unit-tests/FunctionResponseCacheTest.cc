@@ -76,16 +76,18 @@ static const string c_cache_name = "/response_cache";
 #define DBG(x) do { if (debug) (x); } while(false);
 
 using namespace libdap;
-
+#if 0
 const Type requested_type = dods_byte_c;
 const int num_dim = 2;
 const int dim_sz = 3;
+#endif
 
 // Move this into the class when we goto C++-11
 const string d_mds_prefix = "rc"; // used when cleaning the cache, etc.
 
+#if 0
 /**
- * Server function used by the ConstraintEvalutor. This is needed because passing
+ * Server function used by the ConstraintEvaluator. This is needed because passing
  * the CE a null expression or one that names an non-existent function is an error.
  *
  * The test harness code must load up the ServerFunctionList instance - see also
@@ -126,6 +128,7 @@ void TestFunction::function_dap2_test(int argc, libdap::BaseType *argv[], libdap
     // return the array
     *btpp = dest;
 }
+#endif
 
 class FunctionResponseCacheTest: public TestFixture {
 private:

@@ -36,6 +36,8 @@
 #include "BESInfo.h"
 #include "BESIndent.h"
 
+using std::endl;
+
 /** @brief make a copy of only some data from specified object
  *
  * makes a copy of only some of the data members in a

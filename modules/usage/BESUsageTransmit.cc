@@ -44,6 +44,7 @@
 
 #include "BESDebug.h"
 
+using std::endl;
 using namespace dap_usage;
 using namespace libdap;
 

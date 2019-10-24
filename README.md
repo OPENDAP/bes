@@ -12,11 +12,43 @@
 README for the OPeNDAP BES 
 ==========================
 
-# Updated for version 3.20.4. See NEWS
+# Updated for version 3.20.5. See NEWS
 
-This version of the BES requires libdap-3.20.3  [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2566512.svg)](https://doi.org/10.5281/zenodo.2566512)
+This version of the BES requires libdap-3.20.4  [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3267984.svg)](https://doi.org/10.5281/zenodo.3267984)
 
-## Bug fixes for Hyrax 1.15
+## Bug fixes for Hyrax 1.16
+
+See the release page for a complete list of bugs fixed in this release.
+
+## Prototype support for data stored on Amazon's S3 Web Object Store
+
+Hyrax 1.16 has prototype support for subset-in-place of HDF5 and NetCDF4
+data files that are stored on AWS S3. See the preliminary documentation in
+https://github.com/OPENDAP/bes/blob/master/modules/dmrpp_module/data/README.md.
+
+The new support includes software that can configure data in S3 and on
+disk so that it can be served (and subset) in-place from S3 without reformatting
+the original data files. Support for other web object stores besides S3
+has also been demonstrated.
+
+## Support for dataset crawler/indexer systems
+
+We have added support for Datasets served by Hyrax now provide
+information Google and other search engines need to make these data
+findable. All dataset landing pages and catalog navigation
+(contents.html) pages now contain embedded json-ld which crawlers such
+as Google Dataset Search, NSF's GeoCODES, and other data sensitive web
+crawlers use for indexing datasets. In order to facilitate this,
+certain steps can be taken by the server administrator to bring the
+Hyrax service to Google (and other) crawlers attention. LINK TO
+JSON-LD README.MD. Our work on JSON-LD support was funded by NSF Grant
+#1740704.
+
+## Experimental support for STARE indexing
+
+We have added experimental support for STARE (Spatio Temporal
+Adaptive-Resolution Encoding) as part of our work on NASA ACCESS
+grant 17-ACCESS17-0039.
 
 ## Server function roi() improvments
 
@@ -76,19 +108,6 @@ For datasets that contain geo-spatial data, we now provide the option to
 get those data (and related metadata) encoded using the covjson format. 
 (See https://covjson.org/). Thanks to Corey Hemphill, Riley Rimer, and 
 Lewis McGibbney for this contribution.
-
-## Prototype support for data stored on Amazon's S3 Web Object Store
-
-Hyrax 1.15 has prototype support for subset-in-place of HDF5 and NetCDF4
-data files that are stored on AWS S3. Data files stored in S3 must be
-configured for use with this feature of Hyrax. To configure files for use
-with this feature, a special metadata file must be built and installed in
-the MDS. For this feature, the MDS should be run in 'store' mode.
-
-Contact us for details. We welcome feedback on this new feature.
-
-The software has a known problem with requests for very large numbers of 
-variables in a single URL. 
 
 ## Improved catalog support
 

@@ -73,7 +73,7 @@ public:
 
     virtual bool uncompress(const string &src, string &target, BESFileLockingCache *cache);
 
-    virtual void dump(ostream &strm) const ;
+    virtual void dump(std::ostream &strm) const ;
 
     static BESUncompressManager3 * TheManager();
 };

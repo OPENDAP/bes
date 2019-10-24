@@ -63,7 +63,7 @@ function show_usage() {
  -b: The S3 bucket name. 
      (default: ${s3_bucket_name})
  -d: The "local" filesystem root for the downloaded data. 
-     (default: ./s3_data/bucket_name})
+     (default: ./s3_data/${s3_bucket_name})
  -t: The target directory for the dmrpp files. Below this point
      the structure of the bucket objects vis-a-vis their "/" path
      separator divided names will be replicted and dmr++ placed into
@@ -203,18 +203,25 @@ function mk_file_list_from_s3() {
 	    echo "S3_ALL_FILES: ${S3_ALL_FILES}";
     fi
     time -p aws s3 ls --recursive "${s3_bucket_name}" > "${S3_ALL_FILES}";
-    
-    if test -n "$verbose"
+    status=$?
+    if [ ${status} -ne 0 ]
     then
-        echo "Locating S3_DATA_FILES: ${S3_DATA_FILES}";
-    fi
-    time -p grep -E -e "${dataset_regex_match}" "${S3_ALL_FILES}" > "${S3_DATA_FILES}";
+        echo "Encountered AWS CLI error (status: ${status}) Unable to list bucket ${s3_bucket_name}"
+        echo "Terminating now."
+        exit 1
+    else
+        if test -n "$verbose"
+        then
+            echo "Locating S3_DATA_FILES: ${S3_DATA_FILES}";
+        fi
+        time -p grep -E -e "${dataset_regex_match}" "${S3_ALL_FILES}" > "${S3_DATA_FILES}";
     
-    if test -n "$verbose"
-    then
-        dataset_count=`cat ${S3_DATA_FILES} | wc -l`;
-        echo "Found ${dataset_count} suitable data files in s3 bucket: ${s3_bucket_name}";
-    fi
+        if test -n "$verbose"
+        then
+            dataset_count=`cat ${S3_DATA_FILES} | wc -l`;
+            echo "Found ${dataset_count} suitable data files in s3 bucket: ${s3_bucket_name}";
+        fi
+    fi 
 }
 #################################################################################
 
@@ -258,14 +265,20 @@ function mk_dmrpp_from_s3_list() {
         else
             aws s3 cp --quiet "s3://${s3_bucket_name}/${relative_filename}" "${data_file}";
         fi
-           
-        mkdir -p `dirname ${target_file}`;
-        get_dmrpp ${verbose} ${very_verbose} ${just_dmr} -u "${s3_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
-     
-        if test -z "${keep_data_files}"
+        status=$?
+        if [ ${status} -ne 0 ]
         then
-            rm ${verbose} -f "${data_file}";
-        fi
+            echo "Encountered AWS CLI error (status: ${status}) Skipping ${relative_filename}"
+            echo ""
+        else 
+	        mkdir -p `dirname ${target_file}`;
+	        get_dmrpp ${verbose} ${very_verbose} ${just_dmr} -u "${s3_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
+	     
+	        if test -z "${keep_data_files}"
+	        then
+	            rm ${verbose} -f "${data_file}";
+	        fi
+	    fi
         
  done
 

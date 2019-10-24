@@ -71,7 +71,7 @@ public:
 
         TheBESKeys::ConfigFile = bes_conf;
 
-        if (bes_debug) BESDebug::SetUp(string("cerr,").append("bes"));
+        if (bes_debug) BESDebug::SetUp(string("cerr,bes"));
 
 
 
@@ -98,7 +98,7 @@ public:
         try {
             ServerAdministrator admin;
             string xml_result = admin.xdump();
-            string xml_baseline = "<ServerAdministrator city=\"Narragansett\" country=\"US\" email=\"support@opendap.org\" organization=\"OPeNDAP Inc.\" postalCode=\"02882\" region=\"RI\" street=\"165 NW Dean Knauss Dr.\" telephone=\"+1.401.575.4835\" website=\"http://www.opendap.org\"/>";
+            string xml_baseline = "<ServerAdministrator city=\"City\" country=\"USA\" email=\"admin.email.address@your.domain.name\" organization=\"Company/Insitution Name\" postalcode=\"12345\" region=\"State\" street=\"Street Address\" telephone=\"+1.800.555.1212\" website=\"http://www.your.domain.name\"/>";
             if(debug){
                 cerr << "xml_baseline: " << xml_baseline << endl;
                 cerr << "  xml_result: " << xml_result << endl;
@@ -117,7 +117,7 @@ public:
         try {
             ServerAdministrator admin;
             string json_result = admin.jdump();
-            string json_baseline = "{\"ServerAdministrator\":{\"city\":\"Narragansett\",\"country\":\"US\",\"email\":\"support@opendap.org\",\"organization\":\"OPeNDAP Inc.\",\"postalCode\":\"02882\",\"region\":\"RI\",\"street\":\"165 NW Dean Knauss Dr.\",\"telephone\":\"+1.401.575.4835\",\"website\":\"http://www.opendap.org\"}}";
+            string json_baseline = "{\"ServerAdministrator\":{\"city\":\"City\",\"country\":\"USA\",\"email\":\"admin.email.address@your.domain.name\",\"organization\":\"Company/Insitution Name\",\"postalcode\":\"12345\",\"region\":\"State\",\"street\":\"Street Address\",\"telephone\":\"+1.800.555.1212\",\"website\":\"http://www.your.domain.name\"}}";
             if(debug){
                 cerr << "json_baseline: " << json_baseline << endl;
                 cerr << "  json_result: " << json_result << endl;
@@ -136,7 +136,7 @@ public:
         try {
             ServerAdministrator admin;
             string baseline, result;
-            baseline = "Narragansett";
+            baseline = "City";
             result = admin.get("CiTy");
             if(debug){
                 cerr << "baseline: " << baseline << endl;
@@ -144,7 +144,21 @@ public:
             }
             CPPUNIT_ASSERT(result == baseline);
 
-            baseline = "support@opendap.org";
+            result = admin.get("CiTy");
+            if(debug){
+                cerr << "baseline: " << baseline << endl;
+                cerr << "  result: " << result << endl;
+            }
+            CPPUNIT_ASSERT(result == baseline);
+
+            result = admin.get("city");
+            if(debug){
+                cerr << "baseline: " << baseline << endl;
+                cerr << "  result: " << result << endl;
+            }
+            CPPUNIT_ASSERT(result == baseline);
+
+            baseline = "admin.email.address@your.domain.name";
             result = admin.get("email");
             if(debug){
                 cerr << "baseline: " << baseline << endl;
@@ -152,8 +166,22 @@ public:
             }
             CPPUNIT_ASSERT(result == baseline);
 
-            baseline = "165 NW Dean Knauss Dr.";
+            result = admin.get_email();
+            if(debug){
+                cerr << "baseline: " << baseline << endl;
+                cerr << "  result: " << result << endl;
+            }
+            CPPUNIT_ASSERT(result == baseline);
+
+            baseline = "Street Address";
             result = admin.get("STREET");
+            if(debug){
+                cerr << "baseline: " << baseline << endl;
+                cerr << "  result: " << result << endl;
+            }
+            CPPUNIT_ASSERT(result == baseline);
+
+            result = admin.get_street();
             if(debug){
                 cerr << "baseline: " << baseline << endl;
                 cerr << "  result: " << result << endl;

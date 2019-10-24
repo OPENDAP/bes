@@ -87,6 +87,9 @@ CurlHandlePool *DmrppRequestHandler::curl_handle_pool = 0;
 bool DmrppRequestHandler::d_use_parallel_transfers = true;
 int DmrppRequestHandler::d_max_parallel_transfers = 8;
 
+// Default minimum value is 2MB: 2 * (1024*1024)
+int DmrppRequestHandler::d_min_size = 2097152;
+
 static void read_key_value(const std::string &key_name, bool &key_value)
 {
     bool key_found = false;
@@ -305,6 +308,8 @@ bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi)
             // Stuff it into the response.
             bdds->set_dds(dds);
             bdds->set_constraint(dhi);
+
+            delete dmr;
 
             // Cache it, if the cache is active.
             if (dds_cache) {

@@ -5,7 +5,11 @@
 # the places it's needed and hack. If substantial changes are needed, try to copy
 # them back into this file. jhrg 12/14/15 
 
-# Before including these, use AT_INIT([ <name> ]) in the testsuite.at file. jhrg 4/25/18
+# Include this using 'm4_include([../../handler_tests_macros.m4])' or similar.
+
+# Before including these, use AT_INIT([ <name> ]) in the testsuite.at file. By including
+# the pathname to the test drectory in the AC_INIT() macro, you will make it much easier
+# to identify the tests in a large build like the CI builds. jhrg 4/25/18
 
 AT_TESTED([besstandalone])
 
@@ -112,10 +116,14 @@ m4_define([_AT_BESCMD_ERROR_TEST], [dnl
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [ignore], [stdout], [ignore])
+        REMOVE_ERROR_FILE([stdout])
+        REMOVE_ERROR_LINE([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [ignore], [stdout], [ignore])
+        REMOVE_ERROR_FILE([stdout])
+        REMOVE_ERROR_LINE([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test "$3" = "xfail"])
         ])
@@ -230,8 +238,31 @@ m4_define([REMOVE_DATE_TIME], [dnl
     mv $1.sed $1
 ])
 
+dnl Given a filename, remove the <Value> element of a DAP4 data response as
+dnl printed by getdap4 so that we don't have issues with comparing data values
+dnl on big- and little-endian machines. The value of the checksum is a function
+dnl of the bytes, so different word orders produce different checksums. jhrg 4/25/18
 
+m4_define([REMOVE_DAP4_CHECKSUM], [dnl
+    sed 's@<Value>[[0-9a-f]]\{8\}</Value>@removed checksum@g' < $1 > $1.sed
+    dnl '
+    mv $1.sed $1
+])
 
+dnl Given a filename, remove the <File> element of a response. Useful for testing errors.
+dnl jhrg 10/23/19
+
+m4_define([REMOVE_ERROR_FILE], [dnl
+    sed 's@<File>[[0-9a-zA-Z/.]]*</File>@removed file@g' < $1 > $1.sed
+    dnl '
+    mv $1.sed $1
+])
+
+m4_define([REMOVE_ERROR_LINE], [dnl
+    sed 's@<Line>[[0-9]]*</Line>@removed line@g' < $1 > $1.sed
+    dnl '
+    mv $1.sed $1
+])
 
 dnl Given a filename, remove the <Value> element of a DAP4 data response as
 dnl printed by getdap4 so that we don't have issues with comparing data values
@@ -244,7 +275,7 @@ m4_define([REMOVE_DAP4_CHECKSUM], [dnl
     mv $1.sed $1
 ])
 
-dnl This enables the besstandalone to run by itself in AT_CHECK so we can see 
+dnl This enables the besstandalone to run by itself in AT_CHECK so we can see
 dnl Error messages more easily. The conversion from a binry response to text
 dnl is done here and then the text is used with diff against a text baseline.
 dnl jhrg 8/1/18

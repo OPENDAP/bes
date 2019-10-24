@@ -201,6 +201,9 @@ static void header_to_attributes(AttrTable *at, DATA_BIN_PTR dbin)
             var = ((VARIABLE_PTR) (vlist)->data.u.var);
         }
     }
+    if (pinfo_list)
+        ff_destroy_process_info_list(pinfo_list);
+ 
 }
 
 /** Read the attributes and store their names and values in the attribute

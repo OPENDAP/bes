@@ -38,6 +38,7 @@ BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
 BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
 BES.module.h5=@abs_top_builddir@/modules/hdf5_handler/.libs/libhdf5_module.so
 
+# The value "@hdf5_root_directory@" is replaced at run time.
 BES.Catalog.catalog.RootDirectory=@hdf5_root_directory@
 BES.Data.RootDirectory=/dev/null
 
@@ -158,6 +159,7 @@ show_usage() {
  -r: Just print the DMR that will be used to build the DMR++
  -u: The binary object URL for use in the DMR++ file
  -d: Data root directory for the BES.
+ -c: The path to the bes configuration file to use.
  -o: The name of the file  to create.
 
  Limitations: 
@@ -176,7 +178,7 @@ just_dmr=
 dmrpp_url=
 bes_conf_file=
 
-while getopts "h?vVru:d:o:" opt; do
+while getopts "h?vVru:d:o:c:" opt; do
     case "$opt" in
     h|\?)
         show_usage
@@ -224,7 +226,7 @@ input_data_file="${1}";
 
 if test -z "${output_file}"
 then
-    output_file="${input_data_file}.dmrpp"
+    output_file="./get_dmrpp_result.dmrpp"
 fi
 
 if test -n "${verbose}"
@@ -237,6 +239,13 @@ fi
 if test -n "${very_verbose}"
 then
 	echo "BES_CONF_DOC: '${BES_CONF_DOC}'";
+fi
+
+if test -z "${dmrpp_url}"
+then
+	>&2 echo "ERROR! You must supply a dmrpp_url value using the -u option."
+    show_usage
+	exit 666
 fi
 
 ###############################################################################
@@ -314,6 +323,13 @@ EOF
 ###############################################################################
 function mk_dmrpp() {
     datafile="${1}";
+	full_data_path="${data_root}/${datafile}";
+	if test -n "$verbose"
+	then
+	    echo "data_root:      ${data_root}"
+	    echo "datafile:       ${datafile}"
+	    echo "full_data_path: ${full_data_path}"
+	fi
 	if test -z "${just_dmr}"
 	then
 		if test -n "$very_verbose"
@@ -321,7 +337,7 @@ function mk_dmrpp() {
 		    echo "TMP_CONF: ${TMP_CONF}"
 		    cat ${TMP_CONF}
 		fi
-	    build_dmrpp ${very_verbose} -c "${TMP_CONF}" -f "${data_root}/${datafile}" -r "${TMP_DMR_RESP}" -u "${dmrpp_url}" > "${output_file}";
+	    build_dmrpp ${very_verbose} -c "${TMP_CONF}" -f "${full_data_path}" -r "${TMP_DMR_RESP}" -u "${dmrpp_url}" > "${output_file}";
 	else
 	    echo "The just_dmr flag is set, skipping dmr++ construction."
 	fi

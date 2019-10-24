@@ -36,6 +36,8 @@
 #include "BESContainerStorageList.h"
 #include "BESResponseNames.h"
 
+using std::endl;
+
 BESShowContainersResponseHandler::BESShowContainersResponseHandler( const string &name )
     : BESResponseHandler( name )
 {

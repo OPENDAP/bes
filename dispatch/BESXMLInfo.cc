@@ -33,6 +33,7 @@
 #include <sstream>
 
 using std::ostringstream;
+using std::endl;
 
 #include "BESXMLInfo.h"
 #include "BESUtil.h"

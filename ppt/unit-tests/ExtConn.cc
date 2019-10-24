@@ -32,6 +32,8 @@
 
 #include "ExtConn.h"
 
+using std::endl;
+
 ExtConn::ExtConn( )
     : PPTConnection( 0 )
 {

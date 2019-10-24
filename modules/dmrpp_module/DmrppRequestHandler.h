@@ -61,6 +61,8 @@ public:
     static bool d_use_parallel_transfers;
     static int d_max_parallel_transfers;
 
+    static int d_min_size;
+
 	static bool dap_build_dmr(BESDataHandlerInterface &dhi);
 	static bool dap_build_dap4data(BESDataHandlerInterface &dhi);
     static bool dap_build_das(BESDataHandlerInterface &dhi);

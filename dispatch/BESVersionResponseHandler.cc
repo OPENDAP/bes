@@ -78,7 +78,7 @@ void BESVersionResponseHandler::execute(BESDataHandlerInterface &dhi)
     string admin_email = "";
     try {
         bes::ServerAdministrator sd;
-        admin_email = sd.get("email");
+        admin_email = sd.get_email();
     }
     catch (...) {
         admin_email = DEFAULT_ADMINISTRATOR;
@@ -124,7 +124,7 @@ void BESVersionResponseHandler::transmit(BESTransmitter *transmitter, BESDataHan
  */
 void BESVersionResponseHandler::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESVersionResponseHandler::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "BESVersionResponseHandler::dump - (" << (void *) this << ")" << std::endl;
     BESIndent::Indent();
     BESResponseHandler::dump(strm);
     BESIndent::UnIndent();
