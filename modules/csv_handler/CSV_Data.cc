@@ -38,6 +38,9 @@
 
 #include"CSV_Data.h"
 
+using std::string;
+using std::vector;
+
 CSV_Data::CSV_Data() : data(0), type(""), initialized(false) {
 }
 

@@ -30,8 +30,6 @@
 #include "AbstractDataset.h"
 #include "wcsUtil.h"
 
-using namespace std;
-
 namespace libdap {
 
 class Array;

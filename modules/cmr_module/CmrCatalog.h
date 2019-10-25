@@ -32,9 +32,6 @@
 #include <string>
 #include <vector>
 
-using std::list;
-using std::string;
-
 #include "BESCatalog.h"
 #include "BESInternalError.h"
 #include "CmrNames.h"
@@ -63,7 +60,7 @@ public:
     /**
      * @Deprecated
      */
-    virtual BESCatalogEntry * show_catalog(const string &container, BESCatalogEntry */*entry*/){
+    virtual BESCatalogEntry * show_catalog(const std::string &container, BESCatalogEntry */*entry*/){
         throw BESInternalError("The CMRCatalog::show_catalog() method is not supported. (container: '" + container + "')",__FILE__,__LINE__);
     }
 
