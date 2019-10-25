@@ -38,6 +38,8 @@
 
 using std::endl;
 using std::ostream;
+using std::string;
+using std::map;
 
 BESXMLShowCommand::BESXMLShowCommand(const BESDataHandlerInterface &base_dhi) :
     BESXMLCommand(base_dhi)

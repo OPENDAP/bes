@@ -40,6 +40,8 @@
 
 using std::endl;
 using std::ostream;
+using std::string;
+using std::map;
 
 BESXMLSetContextCommand::BESXMLSetContextCommand(const BESDataHandlerInterface &base_dhi) :
     BESXMLCommand(base_dhi)

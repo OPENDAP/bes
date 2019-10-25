@@ -45,8 +45,6 @@ class Array;
 class Grid;
 }
 
-using std::string;
-using std::vector;
 using libdap::Array;
 using libdap::Grid;
 

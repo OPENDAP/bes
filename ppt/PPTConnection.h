@@ -55,8 +55,8 @@ private:
 
 	virtual int readChunkHeader(char *inBuff,
 	/*unsigned*/int buff_size);
-	virtual void sendChunk(const string &buffer, map<string, string> &extensions);
-	virtual void receive(ostream &strm, const /*unsigned*/int len);
+	virtual void sendChunk(const std::string &buffer, std::map<std::string, std::string> &extensions);
+	virtual void receive(std::ostream &strm, const /*unsigned*/int len);
 
 protected:
 	PPTConnection(int timeout) : _timeout(timeout), _inBuff(0), _inBuff_len(0) //, _bytesRead(0)
@@ -66,8 +66,8 @@ protected:
 	virtual int readBuffer(char *inBuff, const unsigned int buff_size);
 	virtual int readBufferNonBlocking(char *inBuff, const /*unsigned*/int buff_size);
 
-	virtual void send(const string &buffer);
-	virtual void read_extensions(map<string, string> &extensions, const string &xstr);
+	virtual void send(const std::string &buffer);
+	virtual void read_extensions(std::map<std::string, std::string> &extensions, const std::string &xstr);
 
 public:
 	virtual ~PPTConnection();
@@ -75,20 +75,20 @@ public:
 	virtual void initConnection() = 0;
 	virtual void closeConnection() = 0;
 
-	virtual string exit()
+	virtual std::string exit()
 	{
 		return PPTProtocol::PPT_EXIT_NOW;
 	}
 
-	virtual void send(const string &buffer, map<string, string> &extensions);
-	virtual void sendExtensions(map<string, string> &extensions);
+	virtual void send(const std::string &buffer, std::map<std::string, std::string> &extensions);
+	virtual void sendExtensions(std::map<std::string, std::string> &extensions);
 	virtual void sendExit();
-	virtual bool receive(map<string, string> &extensions, ostream *strm = 0);
+	virtual bool receive(std::map<std::string, std::string> &extensions, std::ostream *strm = 0);
 
 	virtual unsigned int getRecvChunkSize();
 	virtual unsigned int getSendChunkSize();
 
-	virtual void dump(ostream &strm) const;
+	virtual void dump(std::ostream &strm) const;
 };
 
 #endif // PPTConnection_h

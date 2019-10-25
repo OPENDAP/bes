@@ -32,6 +32,8 @@
 
 using std::endl;
 using std::ostream;
+using std::string;
+using std::map;
 
 #define SPI_DEBUG_KEY "show-path-info"
 

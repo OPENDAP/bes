@@ -9,6 +9,8 @@
 
 using std::endl;
 using std::ostream;
+using std::string;
+using std::map;
 
 #define W10N_SHOW_PATH_INFO_DHI_TAG "show.w10nPathInfo"
 

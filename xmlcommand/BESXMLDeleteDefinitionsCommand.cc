@@ -41,6 +41,8 @@
 
 using std::endl;
 using std::ostream;
+using std::string;
+using std::map;
 
 BESXMLDeleteDefinitionsCommand::BESXMLDeleteDefinitionsCommand(const BESDataHandlerInterface &base_dhi) :
     BESXMLCommand(base_dhi)

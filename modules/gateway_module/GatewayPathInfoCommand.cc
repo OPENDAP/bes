@@ -8,6 +8,8 @@
 
 using std::endl;
 using std::ostream;
+using std::string;
+using std::map;
 
 GatewayPathInfoCommand::GatewayPathInfoCommand(const BESDataHandlerInterface &base_dhi) :
     BESXMLCommand(base_dhi)

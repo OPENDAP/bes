@@ -43,20 +43,20 @@ private:
     VariableAggElement& operator=(const VariableAggElement& rhs); // disallow
 
 public:
-    static const string _sTypeName;
-    static const vector<string> _sValidAttributes;
+    static const std::string _sTypeName;
+    static const std::vector<std::string> _sValidAttributes;
 
     VariableAggElement();
     VariableAggElement(const VariableAggElement& proto);
     virtual ~VariableAggElement();
-    virtual const string& getTypeName() const;
+    virtual const std::string& getTypeName() const;
     virtual VariableAggElement* clone() const; // override clone with more specific subclass
     virtual void setAttributes(const XMLAttributeMap& attrs);
     virtual void handleBegin();
     virtual void handleEnd();
-    virtual string toString() const;
+    virtual std::string toString() const;
 
-    const string& name() const
+    const std::string& name() const
     {
         return _name;
     }
@@ -67,11 +67,11 @@ public:
 private:
     // methods
 
-    static vector<string> getValidAttributes();
+    static std::vector<std::string> getValidAttributes();
 
 private:
     // data rep
-    string _name;
+    std::string _name;
 };
 
 }

@@ -47,7 +47,6 @@
 #include <NCStructure.h>
 
 using namespace libdap ;
-using namespace std ;
 
 class NCArray: public Array {
 private:
