@@ -55,26 +55,6 @@
             <Value>2</Value>
         </Attribute>
     </String>
-    <String name="c1">
-        <Attribute name="string_length" type="Int32">
-            <Value>1</Value>
-        </Attribute>
-    </String>
-    <String name="c2">
-        <Attribute name="string_length" type="Int32">
-            <Value>2</Value>
-        </Attribute>
-    </String>
-    <String name="c3">
-        <Attribute name="string_length" type="Int32">
-            <Value>3</Value>
-        </Attribute>
-    </String>
-    <String name="c4">
-        <Attribute name="string_length" type="Int32">
-            <Value>4</Value>
-        </Attribute>
-    </String>
     <Byte name="br">
         <Dim name="/Dr"/>
     </Byte>
@@ -90,6 +70,11 @@
     <Float64 name="dr">
         <Dim name="/Dr"/>
     </Float64>
+    <String name="c1">
+        <Attribute name="string_length" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+    </String>
     <Byte name="b1">
         <Dim name="/D1"/>
     </Byte>
@@ -105,6 +90,11 @@
     <Float64 name="d1">
         <Dim name="/D1"/>
     </Float64>
+    <String name="c2">
+        <Attribute name="string_length" type="Int32">
+            <Value>2</Value>
+        </Attribute>
+    </String>
     <Byte name="b2">
         <Dim name="/D2"/>
     </Byte>
@@ -120,6 +110,11 @@
     <Float64 name="d2">
         <Dim name="/D2"/>
     </Float64>
+    <String name="c3">
+        <Attribute name="string_length" type="Int32">
+            <Value>3</Value>
+        </Attribute>
+    </String>
     <Byte name="b3">
         <Dim name="/D3"/>
     </Byte>
@@ -135,6 +130,11 @@
     <Float64 name="d3">
         <Dim name="/D3"/>
     </Float64>
+    <String name="c4">
+        <Attribute name="string_length" type="Int32">
+            <Value>4</Value>
+        </Attribute>
+    </String>
     <Byte name="b4">
         <Dim name="/D4"/>
     </Byte>

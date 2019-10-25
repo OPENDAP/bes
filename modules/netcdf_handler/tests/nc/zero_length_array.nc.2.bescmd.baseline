@@ -16,6 +16,13 @@
             <value>time</value>
         </Attribute>
     </Attribute>
+    <Array name="time">
+        <Attribute name="units" type="String">
+            <value>seconds</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="time" size="0"/>
+    </Array>
     <Grid name="z">
         <Array name="z">
             <Attribute name="units" type="String">
@@ -89,12 +96,5 @@
             <dimension name="lon" size="5"/>
         </Map>
     </Grid>
-    <Array name="time">
-        <Attribute name="units" type="String">
-            <value>seconds</value>
-        </Attribute>
-        <Int32/>
-        <dimension name="time" size="0"/>
-    </Array>
     <blob href="cid:"/>
 </Dataset>

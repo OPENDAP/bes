@@ -1,4 +1,5 @@
 Dataset {
+    Int32 time[time = 0];
     Grid {
       Array:
         Float32 z[lat = 6][lon = 5];
@@ -20,5 +21,4 @@ Dataset {
         Int32 lat[lat = 6];
         Int32 lon[lon = 5];
     } pixel;
-    Int32 time[time = 0];
 } zero_length_array.nc;

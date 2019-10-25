@@ -15,6 +15,12 @@
             <Value>degrees_east</Value>
         </Attribute>
     </Int32>
+    <Int32 name="time">
+        <Dim name="/time"/>
+        <Attribute name="units" type="String">
+            <Value>seconds</Value>
+        </Attribute>
+    </Int32>
     <Float32 name="z">
         <Dim name="/lat"/>
         <Dim name="/lon"/>
@@ -43,12 +49,6 @@
         <Map name="/lat"/>
         <Map name="/lon"/>
     </Byte>
-    <Int32 name="time">
-        <Dim name="/time"/>
-        <Attribute name="units" type="String">
-            <Value>seconds</Value>
-        </Attribute>
-    </Int32>
     <Attribute name="NC_GLOBAL" type="Container">
         <Attribute name="title" type="String">
             <Value>Hyrax/netcdf handler test file for zero-length arrays</Value>
