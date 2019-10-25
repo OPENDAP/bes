@@ -123,13 +123,13 @@ uint64 extract_uint64_value(BaseType *arg) {
 
 //May need to be moved to libdap/util
 // This helper function assumes 'var' is the correct size.
-vector<uint64> *extract_uint64_array(Array *var)
+vector<dods_uint64> *extract_uint64_array(Array *var)
 {
     assert(var);
 
     int length = var->length();
 
-    vector<uint64> *newVar = new vector<uint64>;
+    vector<dods_uint64> *newVar = new vector<dods_uint64>;
     newVar->resize(length);
     var->value(&(*newVar)[0]);    // Extract the values of 'var' to 'newVar'
 
@@ -142,21 +142,21 @@ vector<uint64> *extract_uint64_array(Array *var)
  * @param stareVal - stare values from given dataset
  * @param stareIndices - stare values being compared, retrieved from the sidecar file
  */
-bool hasValue(vector<uint64> *stareVal, vector<uint64> *stareIndices) {
+bool hasValue(vector<dods_uint64> *stareVal, vector<uint64> *stareIndices) {
 #if 0
     //Originally took the stareIndices in as a BaseType.
     //However, the stare indices can be taken from the provided h5 sidecar file and
     // the vector containing those values can be passed in directly instead of having
     // to be converted from BaseType to a uint64 array. -kln 10/22/19
-	vector<uint64> *stareData;
+	vector<dods_uint64> *stareData;
 
 	Array &stareSrc = dynamic_cast<Array&>(*stareIndices);
 	stareSrc.read();
 	stareData = extract_uint64_array(&stareSrc);
 #endif
 
-	for (vector<uint64>::iterator i = stareIndices->begin(), end = stareIndices->end(); i != end; i++) {
-		for (vector<uint64>::iterator j = stareVal->begin(), e = stareVal->end(); j != e; j++)
+	for (auto i = stareIndices->begin(), end = stareIndices->end(); i != end; i++) {
+		for (auto j = stareVal->begin(), e = stareVal->end(); j != e; j++)
 			if (*i == *j)
 				return true;
 	}
@@ -169,18 +169,17 @@ bool hasValue(vector<uint64> *stareVal, vector<uint64> *stareIndices) {
  *  variable array
  *
  */
-int count(vector<uint64> *stareVal, BaseType *stareIndices) {
-	vector<uint64> *stareData;
+int count(vector<dods_uint64> *stareVal, BaseType *stareIndices) {
 
 	Array &stareSrc = dynamic_cast<Array&>(*stareIndices);
 
 	stareSrc.read();
 
-	stareData = extract_uint64_array(&stareSrc);
+	vector<dods_uint64> *stareData = extract_uint64_array(&stareSrc);
 
 	unsigned int counter = 0;
-	for (vector<uint64>::iterator i = stareData->begin(), end = stareData->end(); i != end; i++) {
-		for (vector<uint64>::iterator j = stareVal->begin(), e = stareVal->end(); j != e; j++)
+	for (auto i = stareData->begin(), end = stareData->end(); i != end; i++) {
+		for (auto j = stareVal->begin(), e = stareVal->end(); j != e; j++)
 			if (*i == *j)
 				counter++;
 	}
@@ -274,8 +273,7 @@ BaseType *stare_dap4_function(D4RValueList *args, DMR &dmr) {
 	Array &stareSrc = dynamic_cast<Array&>(*stareVal);
 	stareSrc.read();
 
-	vector<uint64> *stareData;
-	stareData = extract_uint64_array(&stareSrc);
+	vector<dods_uint64> *stareData = extract_uint64_array(&stareSrc);
 
 	bool status = hasValue(stareData, &stareArray);
 
@@ -289,4 +287,4 @@ BaseType *stare_dap4_function(D4RValueList *args, DMR &dmr) {
 	return result;
 }
 
-}
+} // namespace functions
