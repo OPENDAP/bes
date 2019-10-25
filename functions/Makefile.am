@@ -33,6 +33,7 @@ SUBDIRS = . unit-tests tests
 
 if BUILD_STARE
 SUBDIRS += stare
+LIBADD += -lSTARE
 endif
 
 if BUILD_GDAL
