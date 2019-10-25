@@ -87,7 +87,7 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
     GlobalMetadataStore::MDSReadLock lock;
 
     dhi.first_container();
-    if (mds) lock = mds->is_dmr_available(dhi.container->get_relative_name());
+    if (mds) lock = mds->is_dmr_available(*(dhi.container));
 
     if (mds && lock() && dhi.container->get_dap4_constraint().empty() && dhi.container->get_dap4_function().empty()) {    // no CE
         // send the response

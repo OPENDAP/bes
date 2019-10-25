@@ -47,6 +47,8 @@ using std::ifstream;
 #include "BESInfo.h"
 #include "BESServiceRegistry.h"
 
+using std::endl;
+
 /** @brief pull container information from the specified file
  *
  * Constructs a BESContainerStorageFile from a file specified by

@@ -50,16 +50,16 @@
 class BESVersionResponseHandler : public BESResponseHandler
 {
 public:
-				BESVersionResponseHandler( const string &name ) ;
+				BESVersionResponseHandler( const std::string &name ) ;
     virtual			~BESVersionResponseHandler( void ) ;
 
     virtual void		execute( BESDataHandlerInterface &dhi ) ;
     virtual void		transmit( BESTransmitter *transmitter,
                                           BESDataHandlerInterface &dhi ) ;
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void		dump( std::ostream &strm ) const ;
 
-    static BESResponseHandler *VersionResponseBuilder( const string &name ) ;
+    static BESResponseHandler *VersionResponseBuilder( const std::string &name ) ;
 };
 
 #endif // I_BESVersionResponseHandler_h

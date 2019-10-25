@@ -40,8 +40,8 @@ class BESContainer;
  */
 class GeoTiffTransmitter: public BESTransmitter {
 private:
-    static void return_temp_stream(const string &filename, ostream &strm);
-    static string temp_dir;
+    static void return_temp_stream(const std::string &filename, std::ostream &strm);
+    static std::string temp_dir;
 
 
 public:
@@ -52,7 +52,7 @@ public:
 
     static void send_data_as_geotiff(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 
-    static string default_gcs;
+    static std::string default_gcs;
 };
 
 #endif // A_FONgTransmitter_h

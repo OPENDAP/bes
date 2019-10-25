@@ -56,6 +56,8 @@
 #include "DapFunctions.h"
 #include "ScaleGrid.h"
 
+using std::endl;
+
 namespace functions {
 
 void DapFunctions::initialize(const string &modname)

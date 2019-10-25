@@ -40,6 +40,7 @@
 #include "ServerAdministrator.h"
 
 using std::vector;
+using std::endl;
 
 #define MODULE "bes"
 
@@ -70,7 +71,8 @@ BES.ServerAdministrator+=website:http://www.opendap.org
 #define CITY_KEY "city"
 #define CITY_DEFAULT "Narragansett"
 
-#define REGION_KEY "region"
+#define REGION_KEY     "region"
+#define STATE_KEY      "state"
 #define REGION_DEFAULT "RI"
 
 #define POSTAL_CODE_KEY "postalCode"
@@ -110,6 +112,7 @@ ServerAdministrator::ServerAdministrator(){
         int index = admin_info_entry.find(":");
         if(index>0){
             string key = admin_info_entry.substr(0,index);
+            key =  BESUtil::lowercase(key);
             string value =  admin_info_entry.substr(index+1);
             BESDEBUG(MODULE, prolog << "key: '" << key << "'  value: " << value << endl);
             d_admin_info.insert( std::pair<string,string>(key,value));
@@ -122,20 +125,79 @@ ServerAdministrator::ServerAdministrator(){
             return;
         }
     }
+    bool bad_flag = false;
+
     d_organization = get(ORGANIZATION_KEY);
+    if(d_organization.empty()){
+        BESDEBUG(MODULE,__func__ << "() -  The configuration entry for the " <<
+            SERVER_ADMINISTRATOR_KEY << "[" << ORGANIZATION_KEY << "] was missing." << endl);
+        bad_flag = true;
+    }
+
     d_street = get(STREET_KEY);
+    if(d_street.empty()){
+        BESDEBUG(MODULE,__func__ << "() -  The configuration entry for the " <<
+            SERVER_ADMINISTRATOR_KEY << "[" << STREET_KEY << "] was missing." << endl);
+        bad_flag = true;
+    }
+
     d_city = get(CITY_KEY);
+    if(d_city.empty()){
+        BESDEBUG(MODULE,__func__ << "() -  The configuration entry for the " <<
+            SERVER_ADMINISTRATOR_KEY << "[" << CITY_KEY << "] was missing." << endl);
+        bad_flag = true;
+    }
+
     d_region = get(REGION_KEY);
+    if(d_region.empty()){
+        BESDEBUG(MODULE,__func__ << "() -  The configuration entry for the " <<
+            SERVER_ADMINISTRATOR_KEY << "[" << REGION_KEY << "] was missing." <<  endl);
+        d_region = get(STATE_KEY);
+
+        if(d_region.empty()){
+            BESDEBUG(MODULE,__func__ << "() -  The configuration entry for the " <<
+                SERVER_ADMINISTRATOR_KEY << "[" << STATE_KEY << "] was missing." << endl);
+            bad_flag = true;
+        }
+    }
+
     d_postal_code = get(POSTAL_CODE_KEY);
+    if(d_postal_code.empty()){
+        BESDEBUG(MODULE,__func__ << "() -  The configuration entry for the " <<
+            SERVER_ADMINISTRATOR_KEY << "[" << POSTAL_CODE_KEY << "] was missing." << endl);
+        bad_flag = true;
+    }
+
     d_country = get(COUNTRY_KEY);
+    if(d_country.empty()){
+        BESDEBUG(MODULE,__func__ << "() -  The configuration entry for the " <<
+            SERVER_ADMINISTRATOR_KEY << "[" << COUNTRY_KEY << "] was missing." << endl);
+        bad_flag = true;
+    }
+
     d_telephone = get(TELEPHONE_KEY);
+    if(d_telephone.empty()){
+        BESDEBUG(MODULE,__func__ << "() -  The configuration entry for the " <<
+            SERVER_ADMINISTRATOR_KEY << "[" << TELEPHONE_KEY << "] was missing." << endl);
+        bad_flag = true;
+    }
+
     d_email = get(EMAIL_KEY);
+    if(d_email.empty()){
+        BESDEBUG(MODULE,__func__ << "() -  The configuration entry for the " <<
+            SERVER_ADMINISTRATOR_KEY << "[" << EMAIL_KEY << "] was missing." << endl);
+        bad_flag = true;
+    }
+
     d_website = get(WEBSITE_KEY);
+    if(d_website.empty()){
+        BESDEBUG(MODULE,__func__ << "() -  The configuration entry for the " <<
+            SERVER_ADMINISTRATOR_KEY << "[" << WEBSITE_KEY << "] was missing." << endl);
+        bad_flag = true;
+    }
 
     // %TODO This is a pretty simple (and brutal) qc in that any missing value prompts all of it to be rejected. Review. Fix?
-    if(d_organization.empty() || d_street.empty() || d_city.empty()
-        || d_region.empty() || d_postal_code.empty() || d_country.empty()
-        || d_telephone.empty() || d_email.empty() || d_website.empty() ){
+    if(bad_flag ){
         mk_default();
         BESDEBUG(MODULE,__func__ << "() -  The configuration entry for the " << SERVER_ADMINISTRATOR_KEY << " was missing crucial information.  jdump(): " << jdump(true) << endl);
     }

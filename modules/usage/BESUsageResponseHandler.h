@@ -48,14 +48,14 @@
  */
 class BESUsageResponseHandler : public BESResponseHandler {
 public:
-				BESUsageResponseHandler( const string &name ) ;
+				BESUsageResponseHandler( const std::string &name ) ;
     virtual			~BESUsageResponseHandler( void ) ;
 
     virtual void		execute( BESDataHandlerInterface &dhi ) ;
     virtual void		transmit( BESTransmitter *transmitter,
                                           BESDataHandlerInterface &dhi ) ;
 
-    static BESResponseHandler *UsageResponseBuilder( const string &name ) ;
+    static BESResponseHandler *UsageResponseBuilder( const std::string &name ) ;
 };
 
 #endif // I_BESUsageResponseHandler_h

@@ -62,7 +62,7 @@ for module in $@
 do
     echo "Entering $module"
     
-    (cd $module
+    (cd ../$module
 
      # If the sentinel file is here, do nothing.
      if test -f version_updated

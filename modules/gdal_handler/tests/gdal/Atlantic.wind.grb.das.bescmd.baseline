@@ -3,7 +3,7 @@ Attributes {
         Float64 Northernmost_Northing 48.5;
         Float64 Southernmost_Northing 9.5;
         Float64 Easternmost_Easting -39.375;
-        Float64 Westernmost_Northing -100.625;
+        Float64 Westernmost_Easting -100.625;
         String GeoTransform "-100.625 1.25 0 48.5 0 -1";
         String spatial_ref "GEOGCS[\"Coordinate System imported from GRIB file\",DATUM[\"unknown\",SPHEROID[\"Sphere\",6371200,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433]]";
     }

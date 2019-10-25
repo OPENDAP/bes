@@ -47,7 +47,7 @@ public:
     virtual void		connect() ;
     virtual void		listen() ;
     virtual void		close() ;
-    virtual void		send( const string &str, int start, int end ) ;
+    virtual void		send( const std::string &str, int start, int end ) ;
     virtual int			receive( char *inBuff, int inSize ) ;
     virtual void		sync() {}
 
@@ -59,7 +59,7 @@ public:
 
     virtual bool		allowConnection() { return true ; }
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void		dump( std::ostream &strm ) const ;
 } ;
 
 #endif // ConnSocket_h

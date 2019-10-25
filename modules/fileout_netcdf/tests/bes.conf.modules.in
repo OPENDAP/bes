@@ -7,7 +7,7 @@ BES.Group=group_name
 BES.LogName=./bes.log
 BES.LogVerbose=no
 
-BES.modules=dap,cmd,dr,fonc,h4,nc
+BES.modules=dap,cmd,dr,fonc,h4,nc,h5
 BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
 BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
 BES.module.dr=@abs_top_builddir@/dapreader/.libs/libdapreader_module.so
@@ -16,7 +16,7 @@ BES.module.fonc=@abs_top_builddir@/modules/fileout_netcdf/.libs/libfonc_module.s
 
 BES.module.nc=@abs_top_builddir@/modules/netcdf_handler/.libs/libnc_module.so
 BES.module.h4=@abs_top_builddir@/modules/hdf4_handler/.libs/libhdf4_module.so
-# BES.module.h5=@abs_top_builddir@/modules/hdf5_handler/.libs/libhdf5_module.so
+BES.module.h5=@abs_top_builddir@/modules/hdf5_handler/.libs/libhdf5_module.so
 
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/fileout_netcdf
 BES.Data.RootDirectory=/dev/null

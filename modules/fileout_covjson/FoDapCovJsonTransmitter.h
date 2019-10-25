@@ -45,7 +45,7 @@ class BESDataHandlerInterface;
  */
 class FoDapCovJsonTransmitter: public BESTransmitter {
 private:
-    static string temp_dir;
+    static std::string temp_dir;
 
 public:
     FoDapCovJsonTransmitter();

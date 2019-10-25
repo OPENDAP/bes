@@ -1,3 +1,578 @@
+2019-07-08  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed a broken test data file in dmrpp_handler and updated hdf
+	handlers
+
+	Merge pull request #267 from OPENDAP/dmrpp_doc
+	Dmrpp doc
+
+2019-07-08  Nathan Potter  <ndp@opendap.org>
+
+	Spelling etc.
+
+2019-07-08  James Gallagher  <jgallagher@opendap.org>
+
+	Update README.md
+	Added some more words at the top. Tried to connect them to the Overview.
+	Added a one-sentence paragraph to the Overview
+
+	Update README.md
+
+	Update README.md
+
+2019-07-08  Nathan Potter  <ndp@opendap.org>
+
+	Spelling etc.
+
+	Adding  first example for ingest_s3bucket. Small changes to scripts.
+
+	Added get_dmrpp example 2.
+
+2019-07-05  Nathan Potter  <ndp@opendap.org>
+
+	Added get_dmrpp example 1.
+
+	More verbosity in README.md
+
+2019-07-04  Nathan Potter  <ndp@opendap.org>
+
+	More README.md content
+
+	Now I am actually adding the modules/dmrpp_module/data//README.md
+
+	Undoing unintetional commit
+
+	Adding README.md to dmrpp/data and repiring shell scripts therein
+
+2019-07-02  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #266 from OPENDAP/hk-451
+	corrected problem with server administration information ingest.
+
+	corrected prpblem with server administration information ingest.
+
+2019-07-01  Nathan Potter  <ndp@opendap.org>
+
+	Added close to JSON parse stream
+
+2019-06-24  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #265 from OPENDAP/hk-311
+	Hk 311
+
+2019-06-24  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Merge pull request #264 from OPENDAP/StareIndexing
+	Made changes so that the stare index is 64bit instead of 32bit.
+
+2019-06-24  Nathan Potter  <ndp@opendap.org>
+
+	Added two time parsing functions for httpd
+
+2019-06-24  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Made changes so that the stare index is 64bit instead of 32bit.
+
+2019-06-24  Nathan Potter  <ndp@opendap.org>
+
+	Alterntae time format oars routine added,
+
+	Alterntae time format oars routine added,
+
+2019-06-21  James Gallagher  <jgallagher@opendap.org>
+
+	Update DDSLoader.cc
+	Removed used of nullptr for centos6 compatibility.
+
+2019-06-21  Nathan Potter  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Debug instrumentation.
+
+2019-06-21  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #263 from OPENDAP/bes-leak-fix
+	Bes leak fix
+
+	Edits to the NcML parser leak fix
+	Some leak remain from libcurl that I think is tied to libxml2
+
+	Attempt to fix the NcML xml parser memory leak.
+
+2019-06-20  James Gallagher  <jgallagher@opendap.org>
+
+	Minor edits to the DmrppParser code
+
+2019-06-20  Cloud User  <centos@ip-172-31-16-66.ec2.internal>
+
+	Fixed a leak in DmrppParserSAX2.cc
+	Setting the context->sax field to NULL was a leak. Some more work
+	remains, but this is a good find.
+
+	Merge branch 'master' into bes-leak-fix
+
+2019-06-20  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #262 from OPENDAP/dmr_chunking_parser
+	Switched DmrppParserSax2 to chunk based parsing (and not line based)
+
+2019-06-20  James Gallagher  <jgallagher@opendap.org>
+
+	Memory leak fixes in NcML
+
+2019-06-20  Nathan Potter  <ndp@opendap.org>
+
+	Switched DmrppParserSax2 to chunk based parsing (and not line
+	based) which will preserve newlines in Attribute Values. Fixed
+	baselines affacted by similar changes in libdap4
+
+	Merge pull request #260 from OPENDAP/hyrax-403
+	Hyrax 403
+
+2019-06-20  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #261 from OPENDAP/HK-23
+	HK-23
+
+	Update FONcAttributes.cc
+	[skip ci]
+
+2019-06-19  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HK-23. Corrected misspelling in extention of file.
+
+	HK-23. Removed duplicated file.
+
+	HK-23. Fixed issue with _FillValue for CHAR variable.
+
+2019-06-13  Nathan Potter  <ndp@opendap.org>
+
+	removing test patch
+
+2019-06-12  Nathan Potter  <ndp@opendap.org>
+
+	Memory leak in StandAloneApp
+
+	Memory leak patch
+
+2019-06-10  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Merge pull request #259 from OPENDAP/parserChecking
+	Parser improvements
+
+2019-06-10  James Gallagher  <jgallagher@opendap.org>
+
+	Update DmrppParserSax2.cc
+	Minor update in comment text
+
+2019-06-07  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Got rid of a lingering transfer_xml_attrs. Added some comments
+	and cleaned stuff up.
+
+	Added a modified version of the functions check_attribute and
+	check_required_attribute. Added a function, get_attribute_val,
+	that checks for an attribute and if it is found it returns a
+	string to the value in the attribute array.
+
+2019-05-31  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Added a function to check for attribute names. Needs work still.
+
+2019-05-24  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Merge pull request #258 from OPENDAP/hdf5API
+	Hdf5 api
+
+	Merge branch 'master' into hdf5API
+
+2019-05-23  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed autoconf stare.m4 macro for older autoconf versions (CentOS 6)
+
+	Merge pull request #257 from OPENDAP/stare-build-fix
+	Hacked the stare code in configure so it'll detect the STARE lib
+
+	Hacked the stare code in configure so it'll detect the STARE lib
+
+2019-05-23  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Changed how the Contiguous and Compact methods read data.
+
+2019-05-22  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into hdf5API
+
+2019-05-22  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Merge pull request #256 from OPENDAP/StareIndexing
+	Stare indexing
+
+	Took out the AM_CXXFLAGS = c++11 and tookout the -D__macosx
+
+2019-05-21  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed the dataset rank and compression code; some cleanup.
+
+2019-05-21  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Merge branch 'master' into StareIndexing
+
+	Removed the opendapTest file. It was what eventually became
+	stareMapping.cc so it is not needed anymore.
+
+2019-05-17  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Refactored code to use seperate arrays for each value
+
+2019-05-17  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into hdf5API
+
+2019-05-17  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Merge branch 'master' into StareIndexing
+
+2019-05-17  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #250 from OPENDAP/StareIndexing
+	Stare indexing
+
+2019-05-16  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #254 from OPENDAP/geojson_fixes
+	Geojson fixes
+
+2019-05-16  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	added #ifdef
+
+	Changes allow for code using 1.8 to read the h5 file.
+
+	Added <memory>
+
+	Got the program to properly generate an h5 file with the
+	calculated STARE data in it. Added some options and updated
+	the readme.
+
+2019-05-15  Corey Hemphill  <hemphilc@oregonstate.edu>
+
+	Merge pull request #2 from hemphilc/bes-covjson-issue-long_name
+	Bes covjson issue long name
+
+2019-05-15  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #253 from OPENDAP/dmrpp_match
+	Adding compressed file suffixes to dmrpp_module typematch expression.
+
+	Adding compressed file suffixes to dmrpp_module typematch expression.
+
+2019-05-12  hemphilc  <hemphilc@oregonstate.edu>
+
+	Updated bescmd baselines
+
+	More Baseline adjustments
+
+	Baselines adjusted.
+
+2019-05-11  hemphilc  <hemphilc@oregonstate.edu>
+
+	Fixed printing bug in printParametersWorker
+
+	Updated print conditioning in printParametersWorker per Jon
+	Blower's recommendations from
+	https://groups.google.com/a/opendap.org/forum/#!topic/support/clFboFlh2WM
+
+	Fixed a bug that was causing Axes not to be stored and printed
+	-- Also added explanatory comments
+
+2019-05-06  hemphilc  <hemphilc@oregonstate.edu>
+
+	Indent fix
+
+	Added indenting to printCoverageJSON function
+
+	Added function printCoverageJSON which handles all of the
+	print worker function calls rather than calling all of the
+	workers individually in the transform function
+
+	Removed CoverageCollection printing due to BES Issue #245 --
+	Will fix in different branch
+
+	Updated Readme
+
+	Added unit-tests Readme
+
+	Adding windsat test
+
+	Moving updated Transform files from local branch to forked branch
+
+2019-05-02  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Reworked how build_dmrpp calculates chunk information. Still needs refining
+
+2019-04-30  Nathan Potter  <ndp@opendap.org>
+
+	Minor edits to documentation
+
+	hdf5 up
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Minor edits to documentation
+
+2019-04-26  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	The bes should now be able to run the STARE functions and find
+	the STARE library and headers if they are installed.
+
+2019-04-25  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Temporary commit, need to work on stare. Build still fails, will fix.
+
+2019-04-23  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed util_ff.cc from HK-128
+	The range-base for loop is not supported on CentOS6 (but the auto
+	keyword is).
+
+2019-04-23  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Added conf/stare.m4. Still won't build, but needed to add stare.m4 to the pushed files
+
+	Added a call to get the layout type
+
+	Changes to configure and stare. Not ready for merger, have to
+	switch projects so putting this on hold.
+
+2019-04-23  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #251 from OPENDAP/HK-128
+	Hk 128
+
+2019-04-22  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HK-128. Edited bes.conf.in.
+
+	Merge branch 'master' into HK-128
+
+2019-04-19  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HK-128. Corrected bad output in tests.
+
+	HK-128. Added tests for regex support.
+
+2019-04-18  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Fixed the loop error, offset (or coord) needs to be null when
+	get_chunk_info() is called
+
+2019-04-17  James Gallagher  <jgallagher@opendap.org>
+
+	Hacked dap/unit-tests/TemporaryFileTest.cc so that it runs in debug mode
+	This test fails sometimes for no apparent reason. I'm working on sorting out
+	these pseudo-random errors.
+
+2019-04-17  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HK-128. Minor corrections.
+
+	HK-128. Added use of regex in FreeForm.
+
+2019-04-16  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #249 from OPENDAP/fileout_netcdf_fix
+	Added a fix from Aron.Bartle@mechdyne.com.
+
+	Added a fix from Aron.Bartle@mechdyne.com.
+	Netcdf file responses were not compressed when they should have been
+	if the dataset had Structures. Fixed by patching FONcStructure as Aron
+	suggested.
+
+2019-04-16  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Cleanup
+
+	stareMapping should be able to be compiled on other computers
+	that have hyrax-dependencies (for the stare library).
+
+2019-04-16  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	pushing a change on master to trigger a CI build
+	I modified the travis.yml to run 'git fetch --unshallow' for the scan
+	(sonar) of the BES modules to see if this fixes the issue with hdf4/5
+	missing from the scan.
+
+2019-04-15  Nathan Potter  <ndp@opendap.org>
+
+	Added new programs to bes spec files
+
+2019-04-15  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Update. Still needs work
+
+2019-04-15  Nathan Potter  <ndp@opendap.org>
+
+	Fixing production rules
+
+	Merge pull request #248 from OPENDAP/mk_dmrpp
+	Mk dmrpp
+
+	Style points.
+
+2019-04-12  Nathan Potter  <ndp@opendap.org>
+
+	Dropping bes.hdf5.cf.conf and bes.hdf5.cf.conf.in from project
+	as their content has been subsummed by get_dmrpp.in
+
+	deleted built filr get_dmrpp
+
+	Comments
+
+	sync
+
+	sync
+
+	Path reliance for shell sripts
+
+	Reworking get_dmrpp.sh to hold the BES configuration as a Here
+	document, and then to build get_dmrpp from and input file
+	(get_dmrpp.in) so that we can fiddle the library paths for the
+	local system.
+
+	Trying to install scripts
+
+2019-04-11  Nathan Potter  <ndp@opendap.org>
+
+	Usage editing
+
+2019-04-10  Nathan Potter  <ndp@opendap.org>
+
+	sync
+
+	Dropping DmrppParserSax2::intern_OLD() method.
+
+	Split the ingest variants into separate scripts.
+
+2019-04-10  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	modified the parameters passed in to
+	H5Dget_dataset_storage_info. Still needs work though...
+
+2019-04-10  Nathan Potter  <ndp@opendap.org>
+
+	Rewrote DmrppParserSex2::intern() to utilize std::string and
+	not char[] for the input buffer (ala the
+	libdap::D4ParserSax2::intern()). This makes the max line size,
+	in chars, 18446744073709551599 which must surely be enough.
+
+2019-04-09  Nathan Potter  <ndp@opendap.org>
+
+	In the DmrppParserSax2 I increased the max line length for dmrpp files to 1MB.
+
+	sync
+
+2019-04-08  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Changed function calls to match the new version of hdf5 (1.10)
+
+2019-04-08  Nathan Potter  <ndp@opendap.org>
+
+	sync
+
+	AWS cli filemlisting
+
+2019-04-05  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Updated the hashes for the hdf4 and hdf5 handlers
+
+	Merge pull request #247 from OPENDAP/c++11-support C++11
+	support - this passed all of the builds including the package
+	steps. But, it took two tries. I think there is a issue in one
+	of the ncml tests where a network i/o fail breaks test 598.
+	Not sure...
+
+2019-04-04  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed the initialization of variables using '={};'
+
+	Found and fixed an issue that showed up when using --pedantic
+
+	Updated hdf4 on the typeof-removal branch
+
+2019-04-04  Nathan Potter  <ndp@opendap.org>
+
+	sync
+
+2019-04-03  Nathan Potter  <ndp@opendap.org>
+
+	permissions
+
+	Added in get script to dmrpp code
+
+2019-04-03  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into c++11-support
+
+	Hash for the hdf4 handler changes
+
+	C++-11 fixes in netcdf_handler
+
+2019-04-02  Nathan Potter  <ndp@opendap.org>
+
+	Cleaning up some things that made using get_dmrpp.sh hard
+
+2019-03-29  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Changed the file extension in the Makefile for the stareMapping
+
+	Changed file extension and added a README
+
+2019-03-28  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #246 from OPENDAP/covjson-patch-take2
+	Covjson patch take2
+
+	Added comment about a change that breaks tests (and that I don't understand)
+
+	minor fix with strings
+
+	Modifications to FoDapCovJsonTransform.cc to protect shapeVals
+	This mirrors what was done on the covjson-patch branch, but tests
+	pass. I cannot figure out why the tests fail on the covjson branch.
+
+	Merge branch 'master' into c++11-support
+
+	Edits or C++-11 support.
+	This code builds on OSX using --std=cxx11. Make sure to get the
+	correct version of hdf4_handler (the typeof-removal) branch.
+
+2019-03-27  James Gallagher  <jgallagher@opendap.org>
+
+	Added a test for C++11 or C++0x to configure.
+	To use this, we will need to modify the Makefile.am files or the default
+	C++ flags.
+
+2019-03-26  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Cleanup
+
+	Created a new file to handle the stare indexing. Added this
+	file to the makefiles. Included getopt in the opendapTest.cpp
+	file (produces errors, needs fixing).
+
+2019-03-21  Nathan Potter  <ndp@opendap.org>
+
+	Updated DOI in REDME.md
+
+	Pull in submodules
+
+	Preparing Hyrax-1.15.4 release
 2019-03-20  James Gallagher  <jgallagher@opendap.org>
 
 	Merge pull request #241 from OPENDAP/HK-351

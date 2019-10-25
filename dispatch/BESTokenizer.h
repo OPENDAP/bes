@@ -89,7 +89,7 @@ public:
 
     void dump_tokens();
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // BESTokenizer_h_

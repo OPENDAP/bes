@@ -43,6 +43,8 @@ using std::istringstream;
 #include "BESNotFoundError.h"
 #include "BESDataHandlerInterface.h"
 
+using std::endl;
+
 BESShowErrorResponseHandler::BESShowErrorResponseHandler(const string &name) :
     BESResponseHandler(name)
 {

@@ -1476,7 +1476,8 @@ void DmrppParserSax2::cleanup_parse()
     bool wellFormed = context->wellFormed;
     bool valid = context->valid;
 
-    context->sax = NULL;
+    // context->sax = NULL;
+    // Leak. Removed the above. jhrg 6/19/19
     xmlFreeParserCtxt(context);
 
     delete d_enum_def;
@@ -1526,6 +1527,7 @@ void DmrppParserSax2::intern(istream &f, DMR *dest_dmr, bool debug)
 
     d_dmr = dest_dmr; // dump values here
 
+#if 0
     int line_num = 1;
     string line;
 
@@ -1555,6 +1557,43 @@ void DmrppParserSax2::intern(istream &f, DMR *dest_dmr, bool debug)
 
     // This call ends the parse.
     xmlParseChunk(context, line.c_str(), 0, 1/*terminate*/);
+#else
+    int line_num = 1;
+    string line;
+
+    // Get the XML prolog line (looks like: <?xml ... ?> )
+    getline(f, line);
+    if (line.length() == 0) throw Error("No input found while parsing the DMR.");
+
+    if (debug) cerr << "line: (" << line_num << "): " << endl << line << endl << endl;
+
+    context = xmlCreatePushParserCtxt(&dmrpp_sax_parser, this, line.c_str(), line.length(), "stream");
+    context->validate = true;
+    push_state(parser_start);
+
+    // Get the first chunk of the stuff
+    long chunk_count = 0;
+    long chunk_size = 0;
+
+    f.read(d_parse_buffer, D4_PARSE_BUFF_SIZE);
+    chunk_size=f.gcount();
+    d_parse_buffer[chunk_size]=0; // null terminate the string. We can do it this way because the buffer is +1 bigger than D4_PARSE_BUFF_SIZE
+    if (debug) cerr << "chunk: (" << chunk_count++ << "): " << endl << d_parse_buffer << endl << endl;
+
+    while(!f.eof()  && (get_state() != parser_end)){
+
+        xmlParseChunk(context, d_parse_buffer, chunk_size, 0);
+
+        // There is more to read. Get the next chunk
+        f.read(d_parse_buffer, D4_PARSE_BUFF_SIZE);
+        chunk_size=f.gcount();
+        d_parse_buffer[chunk_size]=0; // null terminate the string. We can do it this way because the buffer is +1 bigger than D4_PARSE_BUFF_SIZE
+        if (debug) cerr << "chunk: (" << chunk_count++ << "): " << endl << d_parse_buffer << endl << endl;
+    }
+
+    // This call ends the parse.
+    xmlParseChunk(context, d_parse_buffer, chunk_size, 1/*terminate*/);
+#endif
 
     // This checks that the state on the parser stack is parser_end and throws
     // an exception if it's not (i.e., the loop exited with gcount() == 0).
@@ -1602,8 +1641,6 @@ void DmrppParserSax2::intern(const char *buffer, int size, DMR *dest_dmr, bool d
     push_state(parser_start);
     context = xmlCreatePushParserCtxt(&dmrpp_sax_parser, this, buffer, size, "stream");
     context->validate = true;
-    //push_state(parser_start);
-    //xmlParseChunk(context, buffer, size, 0);
 
     // This call ends the parse.
     xmlParseChunk(context, buffer, 0, 1/*terminate*/);

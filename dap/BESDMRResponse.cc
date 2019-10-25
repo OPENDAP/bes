@@ -24,6 +24,8 @@
 
 #include "BESDMRResponse.h"
 
+using std::endl;
+
 /** @brief set the container in the DAP response object
  *
  * @param cn name of the current container being operated on
