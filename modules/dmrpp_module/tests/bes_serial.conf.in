@@ -38,3 +38,5 @@ DMRPP.UseParallelTransfers = false
 
 # The default for DMRPP.MaxParallelTransfers is 8
 # DMRPP.MaxParallelTransfers = 8
+
+DMRPP.ShowSharedDimensions = true

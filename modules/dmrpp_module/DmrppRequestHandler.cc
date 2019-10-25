@@ -86,6 +86,7 @@ CurlHandlePool *DmrppRequestHandler::curl_handle_pool = 0;
 
 bool DmrppRequestHandler::d_use_parallel_transfers = true;
 int DmrppRequestHandler::d_max_parallel_transfers = 8;
+bool DmrppRequestHandler::d_show_shared_dims = false;
 
 // Default minimum value is 2MB: 2 * (1024*1024)
 int DmrppRequestHandler::d_min_size = 2097152;
@@ -130,6 +131,7 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
 
     read_key_value("DMRPP.UseParallelTransfers", d_use_parallel_transfers);
     read_key_value("DMRPP.MaxParallelTransfers", d_max_parallel_transfers);
+    read_key_value("DMRPP.ShowSharedDimensions", d_show_shared_dims);
 
     if (!curl_handle_pool)
         curl_handle_pool = new CurlHandlePool();
@@ -303,7 +305,7 @@ bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi)
             // delete the current one;
             delete dds;
             // assign the new one.
-            dds = dmr->getDDS();
+            dds = dmr->getDDS(DmrppRequestHandler::d_show_shared_dims);
 
             // Stuff it into the response.
             bdds->set_dds(dds);
@@ -383,7 +385,7 @@ bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi)
             dds = 0;
 
             // assign the new one.
-            dds = dmr->getDDS();
+            dds = dmr->getDDS(DmrppRequestHandler::d_show_shared_dims);
 
             // Stuff it into the response.
             bdds->set_dds(dds);
@@ -456,7 +458,7 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi)
             build_dmr_from_file(dhi.container, dmr);
 
             // Get a DDS from the DMR
-            DDS *dds = dmr->getDDS();
+            DDS *dds = dmr->getDDS(DmrppRequestHandler::d_show_shared_dims);
 
             // Load the BESDASResponse DAS from the DDS
             dds->get_das(das);

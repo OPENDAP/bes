@@ -73,6 +73,8 @@ public:
 	static bool dap_build_help(BESDataHandlerInterface &dhi);
 
 	virtual void dump(std::ostream &strm) const;
+
+    static bool d_show_shared_dims;
 };
 
 } // namespace dmrpp
