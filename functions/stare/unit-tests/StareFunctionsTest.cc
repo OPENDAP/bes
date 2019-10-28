@@ -59,7 +59,7 @@ public:
 
 		two_arrays_dmr->set_filename(filename);
 
-		TheBESKeys::ConfigFile = "/Users/kodi/src/hyrax/bes/functions/stare/unit-tests/bes.conf";
+		TheBESKeys::ConfigFile = "bes.conf";
 	}
 
 	void tearDown() {
@@ -88,7 +88,7 @@ public:
 		//Stare - 3440016191299518474 x 10
 
 		//Array a_var - uint64 for stare indices
-		//First two indices are actual stare values from: MYD09.A2019003.2040.006.2019005020913_sidecar.h5
+		//The first index is an actual stare value from: MYD09.A2019003.2040.006.2019005020913_sidecar.h5
 		//The final value is made up.
 		vector<dods_uint64> target_indices = {9223372034707292159, 3440012343008821258, 3440016191299518400};
 
