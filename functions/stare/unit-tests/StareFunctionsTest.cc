@@ -15,6 +15,7 @@
 #include <debug.h>
 
 #include <TheBESKeys.h>
+#include <BESError.h>
 #include <BESDebug.h>
 
 #include "StareIterateFunction.h"
@@ -58,7 +59,7 @@ public:
 		string filename = "MYD09.A2019003.2040.006.2019005020913.h5";
 
 		two_arrays_dmr->set_filename(filename);
-
+		
 		TheBESKeys::ConfigFile = "bes.conf";
 	}
 
@@ -78,21 +79,21 @@ public:
 	void serverside_compare_test() {
 		DBG(cerr << "--- hasValue() test - BEGIN ---" << endl);
 
-		Array *a_var = new Array("a_var", new UInt64("a_var"));
+        try {
+            Array *a_var = new Array("a_var", new UInt64("a_var"));
 
-		two_arrays_dmr->root()->add_var_nocopy(a_var);
+            two_arrays_dmr->root()->add_var_nocopy(a_var);
 
-		//MYD09.A2019003.2040.006.2019005020913_sidecar.h5 values:
-		//Lat - 32.2739, 32.2736, 32.2733, 32.2731, 32.2728, 32.2725, 32.2723, 32.272, 32.2718, 32.2715
-		//Lon - -98.8324, -98.8388, -98.8452, -98.8516, -98.858, -98.8644, -98.8708, -98.8772, -98.8836, -98.8899
-		//Stare - 3440016191299518474 x 10
+            //MYD09.A2019003.2040.006.2019005020913_sidecar.h5 values:
+            //Lat - 32.2739, 32.2736, 32.2733, 32.2731, 32.2728, 32.2725, 32.2723, 32.272, 32.2718, 32.2715
+            //Lon - -98.8324, -98.8388, -98.8452, -98.8516, -98.858, -98.8644, -98.8708, -98.8772, -98.8836, -98.8899
+            //Stare - 3440016191299518474 x 10
 
-		//Array a_var - uint64 for stare indices
-		//The first index is an actual stare value from: MYD09.A2019003.2040.006.2019005020913_sidecar.h5
-		//The final value is made up.
-		vector<dods_uint64> target_indices = {9223372034707292159, 3440012343008821258, 3440016191299518400};
+            //Array a_var - uint64 for stare indices
+            //The first index is an actual stare value from: MYD09.A2019003.2040.006.2019005020913_sidecar.h5
+            //The final value is made up.
+            vector<dods_uint64> target_indices = {9223372034707292159, 3440012343008821258, 3440016191299518400};
 
-		try {
 			D4RValueList params;
 			params.add_rvalue(new D4RValue(target_indices));
 
@@ -104,6 +105,10 @@ public:
 			DBG(cerr << e.get_error_message() << endl);
 			CPPUNIT_FAIL("hasValue() test failed");
 		}
+        catch(BESError &e) {
+            DBG(cerr << e.get_verbose_message() << endl);
+            CPPUNIT_FAIL("hasValue() test failed");
+        }
 
         DBG(cerr << "--- hasValue() test - END ---" << endl);
 	}
