@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="" dapVersion="2.0" dmrVersion="1.0" name=""/>
-
-The data:
-
+<response reqID="[http-8080-1:27:bes_request]" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <getDAP>
+        <BESError>
+            <Type>3</Type>
+            <Message>libdap error transmitting DAP4Data: 'tabular' is not a registered DAP4 server function.</Message>
+            <Administrator>support@opendap.org</Administrator>
+            <Location>
+                removed file
+                removed line
+            </Location>
+        </BESError>
+    </getDAP>
+</response>
