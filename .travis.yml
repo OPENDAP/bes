@@ -22,7 +22,7 @@ branches:
   - travis
 
 addons:
-  ssh_known_hosts: www.opendap.org
+  # ssh_known_hosts: www.opendap.org
   apt:
     packages:
     - uuid-dev
@@ -80,14 +80,12 @@ before_script:
 # but do not run the scan.
 stages:
 - name: build
-#  if:  branch = travis-build-test
+  if:  branch = master
 - name: scan
   if:  branch = master AND NOT type = pull_request
 - name: package
-#  if:  branch = travis-build-test
+  if:  branch = master OR branch = travis
 
-# branch = master OR
--
 jobs:
   include:
   - stage: scan
@@ -272,7 +270,6 @@ after_deploy:
         cat snapshot.time;
         git commit -am "The BES has produced new snapshot files. Triggering Hyrax-Docker image builds for snapshots.";
         git status;
-        # --all: Push all branches. Not sure this is needed.
         git push https://$GIT_UID:$GIT_PSWD@github.com/opendap/hyrax-docker --all;
     elif test "$BES_BUILD" = "centos6";
     then  
