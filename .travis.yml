@@ -165,11 +165,11 @@ before_deploy:
         ssh-add /tmp/woo_deploy_rsa;
     fi
 # Source distribution prep (copies both the 'version' and 'snapshot'
-- if test "$BES_BUILD" = "srcdist" then; cp bes-*.tar.gz $TRAVIS_BUILD_DIR/package fi
+- if test "$BES_BUILD" = "srcdist"; then cp bes-*.tar.gz $TRAVIS_BUILD_DIR/package; fi
 # CentOS-7  distribution prep
-- if test "$BES_BUILD" = "centos6" then; ./travis/rpm-to-package-dir.sh "el6" fi
+- if test "$BES_BUILD" = "centos6"; then ./travis/rpm-to-package-dir.sh "el6"; fi
 # CentOS-6 distribution prep
-- if test "$BES_BUILD" = "centos7" then; ./travis/rpm-to-package-dir.sh "el7" fi
+- if test "$BES_BUILD" = "centos7"; then ./travis/rpm-to-package-dir.sh "el7"; fi
 # Check for the stuff...
 - ls -l $TRAVIS_BUILD_DIR/package
 
