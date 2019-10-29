@@ -1,6 +1,8 @@
 # Process with autom4te to create an -*- Autotest -*- test suite.
 
-m4_include([handler_tests_macros.m4])
+AT_INIT([bes/functions/tests testsuite])
+
+m4_include([../../modules/handler_tests_macros.m4])
 
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/tabular_0.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/tabular_1.dods.bescmd)
@@ -13,14 +15,24 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/tabular_7.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/tabular_8.dods.bescmd)
 
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/tabular_0.dap.bescmd)
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/tabular_1.dap.bescmd, xfail)
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/tabular_2.dap.bescmd, xfail)
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/tabular_3.dap.bescmd, xfail)
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/tabular_4.dap.bescmd, xfail)
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/tabular_5.dap.bescmd, xfail)
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/tabular_6.dap.bescmd, xfail)
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/tabular_7.dap.bescmd, xfail)
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/tabular_8.dap.bescmd, xfail)
+
+AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/tabular_1.dap.bescmd)
+AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/tabular_2.dap.bescmd)
+AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/tabular_3.dap.bescmd)
+AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/tabular_4.dap.bescmd)
+AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/tabular_5.dap.bescmd)
+AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/tabular_6.dap.bescmd)
+AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/tabular_7.dap.bescmd)
+AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/tabular_8.dap.bescmd)
+
+dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/tabular_1.dap.bescmd, xfail)
+dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/tabular_2.dap.bescmd, xfail)
+dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/tabular_3.dap.bescmd, xfail)
+dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/tabular_4.dap.bescmd, xfail)
+dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/tabular_5.dap.bescmd, xfail)
+dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/tabular_6.dap.bescmd, xfail)
+dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/tabular_7.dap.bescmd, xfail)
+dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/tabular_8.dap.bescmd, xfail)
 
 # bbox() is not really intended as a standalone function, but it 
 # returns data values using DAP variables...
@@ -146,3 +158,5 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/range_test_6.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/range_test_7.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/range_test_8.dods.bescmd)
 
+AT_BESCMD_RESPONSE_TEST(bescmd/testFunction.ddx.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/testFunction.dods.bescmd)
