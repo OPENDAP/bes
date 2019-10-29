@@ -254,7 +254,7 @@ deploy:
 
 # The after_deploy section grabs the hyrax-docker project, sets the current snapshot time 
 # and pushes the result to GitHub. This push triggers TravisCI to build the Docker containers
-# for all of the Hyrax snapshot products. 
+# for all of the Hyrax snapshot products. jhrg 10/28/19
 after_deploy:
 - echo "-- -- -- -- -- -- -- -- -- after_deploy BEGIN -- -- -- -- -- -- -- -- --"
 - echo "$BES_BUILD"
