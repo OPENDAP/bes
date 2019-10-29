@@ -198,6 +198,8 @@ exit 0
 %{_bindir}/ingest_filesystem
 %{_bindir}/ingest_s3bucket
 
+# No build_sidecar binary for CentOS 6
+
 %{_libdir}/*.so.*
 %{_libdir}/bes/
 

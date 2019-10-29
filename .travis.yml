@@ -10,7 +10,7 @@
 
 dist: trusty
 
-sudo: false
+# sudo: false
 
 language: cpp
 
@@ -22,7 +22,6 @@ branches:
   - travis
 
 addons:
-  # ssh_known_hosts: www.opendap.org
   apt:
     packages:
     - uuid-dev
@@ -157,7 +156,7 @@ jobs:
 
     
 after_script:
-- ./upload-test-results.sh
+- ./travis/upload-test-results.sh
 
 before_deploy:
 # Make sure that we have the target dir...
@@ -226,8 +225,7 @@ deploy:
   - provider: script
     skip_cleanup: true
     env: DEPLOY="NOT_S3"
-    script: 
-      - scp -v $TRAVIS_BUILD_DIR/package/*snapshot*el7* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-7.x;
+    script: scp -v $TRAVIS_BUILD_DIR/package/*snapshot*el7* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-7.x;
     on:
       branch: master
       condition: $BES_BUILD =~ ^centos7$
@@ -236,8 +234,7 @@ deploy:
   - provider: script
     skip_cleanup: true
     env: DEPLOY="NOT_S3"
-    script:
-      - scp -v $TRAVIS_BUILD_DIR/package/*snapshot*el6* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-6.x;
+    script: scp -v $TRAVIS_BUILD_DIR/package/*snapshot*el6* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-6.x;
     on:
       branch: master
       condition: $BES_BUILD =~ ^centos6$
@@ -246,8 +243,7 @@ deploy:
   - provider: script
     skip_cleanup: true
     env: DEPLOY="NOT_S3"
-    script: 
-      - scp -v $TRAVIS_BUILD_DIR/package/*snapshot.tar.gz $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src;
+    script: scp -v $TRAVIS_BUILD_DIR/package/*snapshot.tar.gz $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src;
     on:
       branch: master
       condition: $BES_BUILD =~ ^srcdist$
