@@ -19,7 +19,7 @@ compiler: gcc
 branches:
   only:
   - master
-  - travis-build-test
+  - travis
 
 addons:
   ssh_known_hosts: www.opendap.org
@@ -221,7 +221,7 @@ deploy:
     skip_cleanup: true
     local_dir: $TRAVIS_BUILD_DIR/package
     on:
-      branch: travis-build-test
+      branch: travis
       condition: $BES_BUILD =~ ^deb|centos7|centos6|srcdist$
   
   # Push CentOS-7 snapshot rpms to w.o.o
