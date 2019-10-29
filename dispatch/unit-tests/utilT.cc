@@ -39,11 +39,14 @@ using namespace CppUnit;
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
+#include <list>
 
 using std::cerr;
 using std::cout;
 using std::endl;
 using std::ifstream;
+using std::string;
+using std::list;
 
 #include "BESUtil.h"
 #include "BESError.h"
