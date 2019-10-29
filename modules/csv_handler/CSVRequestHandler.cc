@@ -129,8 +129,8 @@ bool CSVRequestHandler::csv_build_dds(BESDataHandlerInterface &dhi)
 	else
 		throw BESInternalError("cast error", __FILE__, __LINE__);
 
-	BaseTypeFactory *factory = new BaseTypeFactory;
-	dds->set_factory(factory);
+	BaseTypeFactory factory;
+	dds->set_factory(&factory);
 
 	try {
 		string accessed = dhi.container->access();
@@ -168,8 +168,8 @@ bool CSVRequestHandler::csv_build_data(BESDataHandlerInterface &dhi)
 	else
 		throw BESInternalError("cast error", __FILE__, __LINE__);
 
-	BaseTypeFactory *factory = new BaseTypeFactory;
-	dds->set_factory(factory);
+	BaseTypeFactory factory;
+	dds->set_factory(&factory);
 
 #define INCLUDE_DAS_in_DDS 0
 	try {
@@ -251,7 +251,9 @@ bool CSVRequestHandler::csv_build_dmr(BESDataHandlerInterface &dhi)
 	// Extract the DMR Response object - this holds the DMR used by the
 	// other parts of the framework.
 	DMR *dmr = bdmr.get_dmr();
-	dmr->set_factory(new D4BaseTypeFactory);
+	D4BaseTypeFactory MyD4TypeFactory;
+	dmr->set_factory(&MyD4TypeFactory);
+
 	dmr->build_using_dds(dds);
 
 	// Instead of fiddling with the internal storage of the DHI object,
