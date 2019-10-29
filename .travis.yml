@@ -117,22 +117,15 @@ jobs:
     - export BES_BUILD=distcheck
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
     - make distcheck -j7
-  
-  # Debian Target (unused)
-  # - stage: package
-  #  script: 
-  #  - export BES_BUILD=deb
-  #  - mkdir -p $prefix/debbuild
-  #  - docker run --volume $prefix/debbuild:/root --volume $TRAVIS_BUILD_DIR:/root/travis
-  #               --env OS=ubuntu14 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
-  #               opendap/ubuntu14_hyrax_build:1.4 /root/travis/build-deb.sh
 
   - stage: package
     script: 
     - export BES_BUILD=centos6
     - mkdir -p $prefix/rpmbuild
     # NB: ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} supplies the name of the PR branch for a PR,
-    # or the name of the branch for a regular push
+    # or the name of the branch for a regular push. The reason for this is not that we want special
+    # packages for branches, but we want to be able to test builds without making pushes to master
+    # and that means having the build-rpm.sh use the spec files on a branch.
     - docker run --volume $prefix/rpmbuild:/root/rpmbuild --volume $TRAVIS_BUILD_DIR:/root/travis
                  --env OS=centos6 --env DIST=el6 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
                  --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
@@ -155,7 +148,6 @@ jobs:
     - make dist -j7
     - cp bes-*.tar.gz bes-snapshot.tar.gz;
 
-    
 after_script:
 - ./travis/upload-test-results.sh
 
@@ -173,11 +165,11 @@ before_deploy:
         ssh-add /tmp/woo_deploy_rsa;
     fi
 # Source distribution prep (copies both the 'version' and 'snapshot'
-- test "$BES_BUILD" = "srcdist" && cp bes-*.tar.gz $TRAVIS_BUILD_DIR/package
+- if test "$BES_BUILD" = "srcdist" then; cp bes-*.tar.gz $TRAVIS_BUILD_DIR/package fi
 # CentOS-7  distribution prep
-- test "$BES_BUILD" = "centos6" && ./travis/rpm_to_package_dir.sh "el6"
+- if test "$BES_BUILD" = "centos6" then; ./travis/rpm-to-package-dir.sh "el6" fi
 # CentOS-6 distribution prep
-- test "$BES_BUILD" = "centos7" && ./travis/rpm_to_package_dir.sh "el7"
+- if test "$BES_BUILD" = "centos7" then; ./travis/rpm-to-package-dir.sh "el7" fi
 # Check for the stuff...
 - ls -l $TRAVIS_BUILD_DIR/package
 
