@@ -15,7 +15,7 @@ DIST=${1}
 cp ${prefix}/rpmbuild/RPMS/x86_64/* ${TRAVIS_BUILD_DIR}/package/;
 
 # Now make a second set of copies with 'snapshot' in place of the version
-ver=`basename bes-[-0-9.]*.rpm | sed -e "s|bes-||g" -e "s|.static.${DIST}.x86_64.rpm||g"`;
+ver=`basename ${prefix}/rpmbuild/RPMS/x86_64/bes-[-0-9.]*.rpm | sed -e "s|bes-||g" -e "s|.static.${DIST}.x86_64.rpm||g"`;
 for file in ${prefix}/rpmbuild/RPMS/x86_64/*; do
     echo "Updating BES ${DIST} snapshot with ${file}";
     snap=`basename ${file} | sed "s|${ver}|snapshot|g"`;

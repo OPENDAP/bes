@@ -154,7 +154,7 @@ after_script:
 before_deploy:
 # Make sure that we have the target dir...
 - export DEPLOY="S3"
-- test -d $TRAVIS_BUILD_DIR/package || mkdir $TRAVIS_BUILD_DIR/package;
+- mkdir -p $TRAVIS_BUILD_DIR/package;
 #
 # Get creds for pushing snapshots to w.o.o.
 - if  test "$BES_BUILD" = "srcdist" || test "$BES_BUILD" = "centos6" || test "$BES_BUILD" = "centos7" ; 
