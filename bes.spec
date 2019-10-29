@@ -192,7 +192,7 @@ exit 0
 %attr (-,%{besuser},%{besgroup}) %{bespiddir}
 %attr (-,%{besuser},%{besgroup}) %{bescachedir}
 
-# Make sure that the BES, once runnin g, can write to the MDS directory. jhrg 11/7/18
+# Make sure that the BES, once running, can write to the MDS directory. jhrg 11/7/18
 %attr (-,%{besuser},%{besgroup}) %{_datadir}/mds/
 
 %files devel
