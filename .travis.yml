@@ -84,8 +84,10 @@ stages:
 - name: scan
   if:  branch = master AND NOT type = pull_request
 - name: package
-  if:  branch = master OR branch = travis-build-test
+  if:  branch = travis-build-test
 
+# branch = master OR
+- 
 jobs:
   include:
   - stage: scan
