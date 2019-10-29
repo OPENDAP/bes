@@ -25,7 +25,7 @@ endif
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-BUILT_SOURCES = test_config.h
+BUILT_SOURCES = test_config.h bes.conf
 
 # This determines what gets built by make check
 check_PROGRAMS = $(UNIT_TESTS)
@@ -35,7 +35,7 @@ TESTS = $(UNIT_TESTS)
 
 noinst_HEADERS = 
 
-EXTRA_DIST = 
+EXTRA_DIST =
 
 CLEANFILES = testout .dodsrc *.gcda *.gcno
 
@@ -49,6 +49,14 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 	@my_topdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
 	sed -e "s%[@]abs_srcdir[@]%$${my_topdir}%" $< > test_config.h
 
+# Build the bes.conf used for testing so that the value substituted for
+# @abs_top_srcdir@ does not contain '../'. This happens when using
+# configure's value for the parameter when running the distcheck target.
+bes.conf: $(srcdir)/bes.conf.in Makefile
+	@my_topdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	mod_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	sed -e "s%[@]abs_top_srcdir[@]%$${mod_abs_top_srcdir}%" \
+    -e "s%[@]abs_srcdir[@]%$${my_topdir}%" $< > bes.conf
 
 ############################################################################
 # Unit Tests

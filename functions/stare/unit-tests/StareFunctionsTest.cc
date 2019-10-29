@@ -59,7 +59,7 @@ public:
 		string filename = "MYD09.A2019003.2040.006.2019005020913.h5";
 
 		two_arrays_dmr->set_filename(filename);
-		
+
 		TheBESKeys::ConfigFile = "bes.conf";
 	}
 
