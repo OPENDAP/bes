@@ -36,6 +36,9 @@
 #include "config.h"
 
 using std::endl;
+using std::ostream;
+using std::string;
+using std::map;
 
 /** @brief Constructor for FileOut NetCDF module
  *

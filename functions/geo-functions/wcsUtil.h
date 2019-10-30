@@ -42,8 +42,6 @@
 #include "wcs_error.h"
 #include "BoundingBox.h"
 
-using namespace std;
-
 #ifndef EQUAL
 #if defined(WIN32) || defined(WIN32CE)
 #  define EQUALN(a,b,n)           (strnicmp(a,b,n)==0)

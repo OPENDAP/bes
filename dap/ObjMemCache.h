@@ -36,8 +36,6 @@
 
 #include "BESIndent.h"
 
-using namespace std;
-
 namespace libdap {
     class DapObj;
 }
@@ -160,15 +158,15 @@ public:
      * @param os Dump info to this stream
      */
     virtual void dump(ostream &os) {
-        os << "ObjMemCache" << endl;
-        os << "Length of index: " << index.size() << endl;
+        os << "ObjMemCache" << std::endl;
+        os << "Length of index: " << index.size() << std::endl;
         for(index_t::const_iterator it = index.begin(); it != index.end(); ++it)  {
-            os << it->first << " --> " << it->second << endl;
+            os << it->first << " --> " << it->second << std::endl;
         }
 
-        os << "Length of cache: " << cache.size() << endl;
+        os << "Length of cache: " << cache.size() << std::endl;
         for(cache_t::const_iterator it = cache.begin(); it != cache.end(); ++it)  {
-            os << it->first << " --> " << it->second->d_name << endl;
+            os << it->first << " --> " << it->second->d_name << std::endl;
         }
     }
 };

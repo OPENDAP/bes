@@ -46,6 +46,7 @@ using namespace CppUnit;
 using std::cerr;
 using std::endl;
 using std::ifstream;
+using std::string;
 
 #include "config.h"
 #include "BESUncompressManager3.h"

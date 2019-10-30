@@ -40,6 +40,8 @@
 
 #include "BESFSFile.h"
 
+using std::string;
+
 BESFSFile::BESFSFile(const string &fullPath) :
     _dirName(""), _fileName(""), _baseName(""), _extension("")
 {

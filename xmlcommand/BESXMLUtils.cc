@@ -33,6 +33,10 @@
 #include "BESXMLUtils.h"
 #include "BESUtil.h"
 
+using std::vector;
+using std::string;
+using std::map;
+
 /** @brief error function used by libxml2 to report errors
  *
  * libxml2 has a default error function which simply displays the errors to

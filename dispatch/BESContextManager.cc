@@ -40,6 +40,8 @@
 #include "BESInfo.h"
 
 using std::endl;
+using std::string;
+using std::ostream;
 
 BESContextManager *BESContextManager::_instance = 0;
 
@@ -117,7 +119,7 @@ void BESContextManager::list_context(BESInfo &info)
 {
     string name;
     string value;
-    map<string, string> props;
+    std::map<string, string> props;
     BESContextManager::Context_citer i = _context_list.begin();
     BESContextManager::Context_citer e = _context_list.end();
     for (; i != e; i++) {

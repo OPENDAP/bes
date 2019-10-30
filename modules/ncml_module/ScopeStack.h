@@ -33,9 +33,6 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
-
 /**
  * @brief Helper class for NCMLParser to maintain the current scope of the
  * parse.
@@ -70,22 +67,22 @@ namespace ncml_module
     */
     struct Entry
     {
-      Entry(ScopeType theType, const string& theName);
+      Entry(ScopeType theType, const std::string& theName);
       Entry() : type(GLOBAL) , name("") {}
 
-      string getTypedName() const
+      std::string getTypedName() const
       {
         return name + toString(type);
       }
 
-      static const string& toString(ScopeType theType)
+      static const std::string& toString(ScopeType theType)
       {
         return sTypeStrings[theType];
       }
 
       ScopeType type;
-      string name;
-      static const string sTypeStrings[NUM_SCOPE_TYPES];
+      std::string name;
+      static const std::string sTypeStrings[NUM_SCOPE_TYPES];
     };
 
     ///////////////////////////// METHODS
@@ -95,12 +92,12 @@ namespace ncml_module
     virtual ~ScopeStack();
 
     void clear();
-    void push(const string& name, ScopeType type) { push(Entry(type, name)); }
+    void push(const std::string& name, ScopeType type) { push(Entry(type, name)); }
     void pop();
     const Entry& top() const;
 
     ScopeType topType() const { return top().type; }
-    const string& topName() const { return top().name; }
+    const std::string& topName() const { return top().name; }
 
     /** If there are no entries pushed.  If empty(), we assume
      * isCurrentScope(GLOBAL) is true.
@@ -114,13 +111,13 @@ namespace ncml_module
      */
     int size() const;
 
-    string getFullyQualifiedName() const { return getScopeString(); }
+    std::string getFullyQualifiedName() const { return getScopeString(); }
 
     /**
      * Return a fully qualifed name for the scope, such as "" for global scope or
      * "MetaData.Info.Name" for an attribute container, etc.
     */
-    string getScopeString() const;
+    std::string getScopeString() const;
 
     /**
      * Similar to getScopeString(), but appends the type of the
@@ -129,7 +126,7 @@ namespace ncml_module
      * gives more information about the context.
      * @return
      */
-    string getTypedScopeString() const;
+    std::string getTypedScopeString() const;
 
     /** Is the current scope of the given type?
      * Note that isCurrentScope(GLOBAL) == empty().
@@ -143,7 +140,7 @@ namespace ncml_module
 
     /////////////////////////// DATA REP
   private:
-    vector<Entry> _scope;
+    std::vector<Entry> _scope;
   };
 }
 

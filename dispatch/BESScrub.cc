@@ -37,6 +37,8 @@
 #include "BESScrub.h"
 #include "BESRegex.h"
 
+using std::string;
+
 /** @name Security functions */
 //@{
 

@@ -47,6 +47,7 @@
 #include "BESDebug.h"
 
 using std::endl;
+using std::string;;
 
 /** @brief uncompress a file with the .gz file extension
  *

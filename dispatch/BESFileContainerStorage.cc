@@ -48,6 +48,9 @@
 #include "BESDebug.h"
 
 using std::endl;
+using std::string;
+using std::list;
+using std::ostream;
 
 
 /** @brief create an instance of this persistent store with the given name.

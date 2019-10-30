@@ -39,6 +39,7 @@ using std::cerr ;
 using std::cout ;
 using std::endl ;
 using std::ostringstream ;
+using std::ostream;
 
 #include "PPTClient.h"
 #include "TcpSocket.h"

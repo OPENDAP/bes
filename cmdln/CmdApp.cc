@@ -49,6 +49,8 @@ using std::endl;
 using std::flush;
 using std::string;
 using std::ofstream;
+using std::ifstream;
+using std::ostream ;
 
 #include "CmdApp.h"
 #include "CmdClient.h"

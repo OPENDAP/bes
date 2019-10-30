@@ -37,6 +37,8 @@
 #include "BESResponseNames.h"
 
 using std::endl;
+using std::string;
+using std::ostream;
 
 BESShowContextResponseHandler::BESShowContextResponseHandler( const string &name )
     : BESResponseHandler( name )

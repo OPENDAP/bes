@@ -38,8 +38,6 @@
 
 #include <iostream>
 
-//using std::endl; removed 9.27.19 SBL
-
 #include "BESIndent.h"
 
 /** @brief Base object for bes objects

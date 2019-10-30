@@ -34,7 +34,7 @@
 class GDALRequestHandler: public BESRequestHandler {
 private:
 public:
-    GDALRequestHandler(const string &name);
+    GDALRequestHandler(const std::string &name);
     virtual ~GDALRequestHandler(void);
 
     static bool gdal_build_das(BESDataHandlerInterface &dhi);

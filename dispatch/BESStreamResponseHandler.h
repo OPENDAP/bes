@@ -38,7 +38,7 @@
 class BESStreamResponseHandler : public BESResponseHandler
 {
 public:
-				BESStreamResponseHandler( const string &name ) ;
+				BESStreamResponseHandler( const std::string &name ) ;
     virtual			~BESStreamResponseHandler(void) ;
 
     virtual void		execute( BESDataHandlerInterface &r ) ;
@@ -47,7 +47,7 @@ public:
 
     virtual void		dump( std::ostream &strm ) const ;
 
-    static BESResponseHandler *BESStreamResponseBuilder( const string &name ) ;
+    static BESResponseHandler *BESStreamResponseBuilder( const std::string &name ) ;
 };
 
 #endif // I_BESStreamResponseHandler_h

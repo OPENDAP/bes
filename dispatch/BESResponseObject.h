@@ -33,12 +33,6 @@
 #ifndef BESResponseObject_h_
 #define BESResponseObject_h_ 1
 
-#if 0
-#include <string>
-
-using std::string ;
-#endif
-
 #include "BESObj.h"
 
 /** @brief Abstract base class representing a specific set of information

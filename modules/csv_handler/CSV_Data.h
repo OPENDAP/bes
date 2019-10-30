@@ -39,8 +39,6 @@
 
 #include"CSV_Header.h"
 
-using namespace std;
-
 static const char STRING[]  = "String";
 static const char BYTE[]    = "Byte";
 static const char INT32[]   = "Int32";
@@ -56,11 +54,11 @@ class CSV_Data {
   void insert(CSV_Field* field, void* value);
 
   void* getData();
-  string getType();
+  std::string getType();
 
  private:
   void* data;
-  string type;
+  std::string type;
   bool initialized;
 };
 

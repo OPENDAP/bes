@@ -35,8 +35,6 @@
 #include <string>
 #include <vector>
 
-using std::string;
-
 namespace libdap {
 class Array;
 class BaseType;
@@ -51,19 +49,19 @@ private:
     ValuesElement& operator=(const ValuesElement& rhs); // disallow
 
 public:
-    static const string _sTypeName;
-    static const vector<string> _sValidAttributes;
+    static const std::string _sTypeName;
+    static const std::vector<std::string> _sValidAttributes;
 
     ValuesElement();
     ValuesElement(const ValuesElement& proto);
     virtual ~ValuesElement();
-    virtual const string& getTypeName() const;
+    virtual const std::string& getTypeName() const;
     virtual ValuesElement* clone() const; // override clone with more specific subclass
     virtual void setAttributes(const XMLAttributeMap& attrs);
     virtual void handleBegin();
-    virtual void handleContent(const string& content);
+    virtual void handleContent(const std::string& content);
     virtual void handleEnd();
-    virtual string toString() const;
+    virtual std::string toString() const;
 
 private:
     // Methods
@@ -147,7 +145,7 @@ private:
      * @param var the simple type var (scalar) of subclass type DAPType
      * @param valueAsToken the unparsed token version of the value.  Will be read using streams.
      */
-    template<class DAPType, typename ValueType> void setScalarValue(libdap::BaseType& var, const string& valueAsToken);
+    template<class DAPType, typename ValueType> void setScalarValue(libdap::BaseType& var, const std::string& valueAsToken);
 
     /** Parameterized set function to parse an array of value tokens for a given DAP type and then set the values into
      * an Array variable.
@@ -159,16 +157,16 @@ private:
      * ASSUMES: the number of tokens matches the length of the Vector super.
      * ASSUMES: pArray->dimensions() == 1!  This ONLY works for 1D arrays now!
      */
-    template<typename DAPType> void setVectorValues(libdap::Array* pArray, const std::vector<string>& valueTokens);
+    template<typename DAPType> void setVectorValues(libdap::Array* pArray, const std::vector<std::string>& valueTokens);
 
     /** Special case for parsing char's instead of bytes. */
-    void parseAndSetCharValue(libdap::BaseType& var, const string& valueAsToken);
+    void parseAndSetCharValue(libdap::BaseType& var, const std::string& valueAsToken);
 
     /** Parse the first token in tokens as if it were an array of char's
      * and store it into the pVecVar, which is assumed to be an Array<Byte>
      * @exception if these assumptions are not true
      */
-    void parseAndSetCharValueArray(NCMLParser& p, libdap::Array* pVecVar, const std::vector<string>& tokens);
+    void parseAndSetCharValueArray(NCMLParser& p, libdap::Array* pVecVar, const std::vector<std::string>& tokens);
 
     /**
      * Figure out the NcML type of <variable> element we are within by walking up the parse stack of p
@@ -187,13 +185,13 @@ private:
      */
     void dealWithEmptyStringValues();
 
-    static vector<string> getValidAttributes();
+    static std::vector<std::string> getValidAttributes();
 
 private:
     // Data Rep
-    string _start;
-    string _increment;
-    string _separator; // defaults to whitespace
+    std::string _start;
+    std::string _increment;
+    std::string _separator; // defaults to whitespace
 
     // If we got handleContent successfully!
     bool _gotContent;
@@ -201,7 +199,7 @@ private:
     //TODO add comment
     std::string _accumulated_content;
     // Temp to tokenize the content on handleContent()
-    std::vector<string> _tokens;
+    std::vector<std::string> _tokens;
 };
 
 }

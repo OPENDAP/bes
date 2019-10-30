@@ -74,7 +74,7 @@ public:
      *
      * @param strm C++ i/o stream to dump the information to
      */
-    virtual void dump( ostream &strm ) const {
+    virtual void dump( std::ostream &strm ) const {
         strm << BESIndent::LMarg << "BESUsage::dump - ("
 			 << (void *)this << ")" << std::endl ;
 
