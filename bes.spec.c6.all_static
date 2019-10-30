@@ -198,6 +198,8 @@ exit 0
 %{_bindir}/ingest_filesystem
 %{_bindir}/ingest_s3bucket
 
+# No build_sidecar binary for CentOS 6
+
 %{_libdir}/*.so.*
 %{_libdir}/bes/
 
@@ -210,7 +212,7 @@ exit 0
 %attr (-,%{besuser},%{besgroup}) %{bespiddir}
 %attr (-,%{besuser},%{besgroup}) %{bescachedir}
 
-# Make sure that the BES, once runnin g, can write to the MDS directory. jhrg 11/7/18
+# Make sure that the BES, once running, can write to the MDS directory. jhrg 11/7/18
 %attr (-,%{besuser},%{besgroup}) %{_datadir}/mds/
 
 # Not part of C6, see above. jhrg 9/25/18
