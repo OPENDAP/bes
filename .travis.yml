@@ -58,6 +58,8 @@ env:
     - secure: "jdEmVdM35qoAmIXTqTCL11IbjEMh6I+jrov/nqQ4wdoJf79O7H7tuuDVkIJ+5RSIjUXsIYgfQAG8Cn+DIJRMnv7mj7TrWGS9LT22bBGErzCcCkrHGKMDH4okbd8cCNQcnb/9woYSYZ38U8QCBsYH1Ma2r4bFU4jAY2KiMOyaY6w="    
     # WOO_UID for travis
     - secure: "YKSsiV7fjngZ+Xha9oyHUT2Xirz8Iy7bghAzlGk2TyXZwWGbZyFDMeTfE0ZGaAEykhNF9fsqsD6XMzFlwBcYIB5ocP6LfnQ1qMualHVTVbVldo/T2e8uv/9jVIAnfwwT2IbgWpVUXZ1I24kIqHCxnZWYZpbfclSEDnQnkYG9tMg="
+    # travis encrypt --org -r OPENDAP/bes WOO_PSWD=... Use with sshpass -p $WOO_PSWD scp ... 
+    - secure: "Bw3Jad8QbpJl+o3BnfTlHddaTaerIG/sgnOJsMzVeSJQoMnh9tccTZ7QaNKo1Vs8riNzTHLMZkJja3UgXV9f90HU9xujZhEcnEdR/t1RRiLUsxHZtl20IcL6AQni+LCW0y/K5V0fCqx0cE90aGzBUeP1to/q7fkoRudxHqpXTtc="
 
 before_install:
   - pip install --user awscli
