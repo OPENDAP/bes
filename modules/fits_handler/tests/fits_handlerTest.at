@@ -107,4 +107,13 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([fits/dpm.data.bescmd])
 AT_BESCMD_DMR_RESPONSE_TEST([fits/dpm.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST([fits/dpm.dap.bescmd])
 
+# make sure server functions work correctly
+# 
+# These tests call a function 'test(<name>)' that does not actually use variables
+# from the dataset named in the 'URL,' but does pull attributes from the dataset.
+# This test requires the first variable of the dataset contains attributes.
+# KY 10/29/19
+# 
+AT_BESCMD_DDX_RESPONSE_TEST([fits/cpb.function.ddx.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([fits/cpb.function.dods.bescmd])
 
