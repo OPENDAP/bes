@@ -167,7 +167,6 @@ before_deploy:
 
 # The deploy section copies the snapshot build product our S3 bucket and to www.opendap.org
 deploy:
-
   # Push all build results to our S3 bucket
   - provider: s3
     access_key_id: $AWS_ACCESS_KEY_ID
@@ -178,7 +177,6 @@ deploy:
     on:
       branch: master
       condition: $BES_BUILD =~ ^deb|centos7|centos6|srcdist$
-  
   # Push CentOS-7 snapshot rpms to w.o.o
   - provider: script
     skip_cleanup: true
@@ -187,7 +185,6 @@ deploy:
     on:
       branch: travis
       condition: $BES_BUILD =~ ^centos7$
-
   # Push CentOS-6 snapshot rpms to w.o.o
   - provider: script
     skip_cleanup: true
@@ -196,7 +193,6 @@ deploy:
     on:
       branch: travis
       condition: $BES_BUILD =~ ^centos6$
-
   # Push source snapshot rpms to w.o.o
   - provider: script
     skip_cleanup: true
