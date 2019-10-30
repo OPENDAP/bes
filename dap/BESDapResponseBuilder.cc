@@ -993,19 +993,13 @@ BESDapResponseBuilder::intern_dap2_data(BESResponseObject *obj, BESDataHandlerIn
     set_async_accepted(dhi.data[ASYNC]);
     set_store_result(dhi.data[STORE_RESULT]);
 
-#define KENTI 1
-#if KENTI
-        {
-            if(bdds->get_ia_flag() == false) {
-             BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(dhi.container->get_container_type());
-             besRH->add_attributes(dhi);
-            }
-            //if(false == besRH->get_daa_flag())
-              //besRH->add_attributes(dhi);
-        }
-
-#endif 
-
+        
+    // This function is used by all fileout modules and they need to include the attributes in data access.
+    // So obtain the attributes if necessary. KY 2019-10-30
+    if(bdds->get_ia_flag() == false) {
+        BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(dhi.container->get_container_type());
+        besRH->add_attributes(dhi);
+    }
 
     ConstraintEvaluator &eval = bdds->get_ce();
 
@@ -1190,20 +1184,6 @@ void BESDapResponseBuilder::send_dap2_data(BESDataHandlerInterface &dhi, DDS **d
     // Split constraint into two halves
     split_ce(eval);
 
-#define KENTOUT 0
-#if KENTOUT
-        {
-            BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(dhi.container->get_container_type());
-            besRH->add_attributes(dhi);
-            cerr<<"container type is  "<<dhi.container->get_container_type() <<endl;
-
-        }
-
-#endif 
-
-
-#define KENT 1
-
     // If there are functions, parse them and eval.
     // Use that DDS and parse the non-function ce
     // Serialize using the second ce and the second dds
@@ -1211,27 +1191,20 @@ void BESDapResponseBuilder::send_dap2_data(BESDataHandlerInterface &dhi, DDS **d
         BESDEBUG("dap",
             "BESDapResponseBuilder::send_dap2_data() - Found function(s) in CE: " << get_btp_func_ce() << endl);
 
-#if KENT
+        // Server-side functions need to include the attributes in data access.
+        // So obtain the attributes if necessary. KY 2019-10-30
         {
-            //cerr<<"run function ce "<<endl;
-        //if(dhi.container->get_container_type()!="ff") {
-        //    BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(dhi.container->get_container_type());
-        //    besRH->add_attributes(dhi);
-        //}
-
             BESResponseObject *response = dhi.response_handler->get_response_object();
             BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *> (response);
             if (!bdds)
                 throw BESInternalError("cast error", __FILE__, __LINE__);
 
             if(bdds->get_ia_flag() == false) {
-              BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(dhi.container->get_container_type());
-        //if(false == besRH->get_daa_flag())
-              besRH->add_attributes(dhi);
+                BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(dhi.container->get_container_type());
+                besRH->add_attributes(dhi);
             }
         }
 
-#endif 
         BESDapFunctionResponseCache *response_cache = BESDapFunctionResponseCache::get_instance();
         ConstraintEvaluator func_eval;
         DDS *fdds = 0; // nulll_ptr

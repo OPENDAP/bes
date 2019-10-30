@@ -51,6 +51,9 @@ private:
 
 
 public:
+    // Be dedault, the include_attrs flag is always true. This flag
+    // will be set to false only for those handlers that support the
+    // data access without the need to generate attributes. KY 10/30/19
     BESDataDDSResponse(libdap::DDS * dds) :
         BESDapResponse(), _dds(dds),include_attrs(true)
     {

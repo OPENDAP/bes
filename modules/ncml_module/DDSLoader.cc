@@ -172,7 +172,6 @@ void DDSLoader::loadInto(const std::string& location, ResponseType type, BESDapR
 
     // Choose the proper request type...
     _dhi.action = getActionForType(type);
-cerr<<"response type is "<<type <<endl;
     _dhi.action_name = getActionNameForType(type);
 
     // Figure out which underlying type of response it is to get the DDS (or DataDDS via DDS super).
@@ -189,7 +188,9 @@ cerr<<"response type is "<<type <<endl;
 
         BESRequestHandlerList::TheList()->execute_current(_dhi);
 
-//#if 0
+        // Some NcML operations like rename/add attributes need to have attributes in the data access.
+        // So we need to check if the attributes are added by the underneath handlers.
+        // If not, it will be added here. KY 10/30/19
         if(type == eRT_RequestDataDDS) {
 
             BESResponseObject *response = _dhi.response_handler->get_response_object();
@@ -198,18 +199,11 @@ cerr<<"response type is "<<type <<endl;
                 throw BESInternalError("cast error", __FILE__, __LINE__);
 
             if(bdds->get_ia_flag() == false) {
-cerr<<"DataDDS doesn't include attributes "<<endl;
-            //string container_type = _dhi.container->get_container_type();
-            //if(container_type =="nc" ) 
-            //if(false == besRH->get_daa_flag()) 
+                BESDEBUG("ncml", "Underneath handler "<< _dhi.container->get_container_type() << " call add_attributes() " << endl);
                 BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(_dhi.container->get_container_type());
                 besRH->add_attributes(_dhi);
             }
-            else {
-                cerr<<" DataDDS include attributes "<<endl;
-            }
         }
-//#endif
 
         BESDEBUG("ncml", "After BESRequestHandlerList::TheList()->execute_current" << endl);
     }

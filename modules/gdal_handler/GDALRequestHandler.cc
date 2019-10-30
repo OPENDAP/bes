@@ -203,6 +203,7 @@ bool GDALRequestHandler::gdal_build_data(BESDataHandlerInterface & dhi)
         if (hDS == NULL)
             throw Error(string(CPLGetLastErrorMsg()));
 
+        // The das will not be generated. KY 10/30/19
         gdal_read_dataset_variables(dds, hDS, filename,false);
 
         GDALClose(hDS);

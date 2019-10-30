@@ -373,7 +373,6 @@ void NCRequestHandler::get_dds_without_attributes(const string& dataset_name, co
 
         nc_read_dataset_variables(*dds, dataset_name);
 
-
         if (dds_cache) {
             // add a copy
             BESDEBUG(NC_NAME, "DDS added to the cache for : " << dataset_name << endl);
@@ -472,7 +471,7 @@ bool NCRequestHandler::nc_build_data(BESDataHandlerInterface & dhi)
         string container_name = bdds->get_explicit_containers() ? dhi.container->get_symbolic_name(): "";
         DDS *dds = bdds->get_dds();
 
-        // Build a DDS in the empty DDS object
+        // Build a DDS in the empty DDS object,don't include attributes here. KY 10/30/19
         get_dds_without_attributes(dhi.container->access(), container_name, dds);
 
         bdds->set_constraint(dhi);

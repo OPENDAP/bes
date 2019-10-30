@@ -252,7 +252,6 @@ bool FFRequestHandler::ff_build_dds(BESDataHandlerInterface & dhi)
     return true;
 }
 
-#define INCLUDE_ATTRS_IN_DDS 1
 bool FFRequestHandler::ff_build_data(BESDataHandlerInterface & dhi)
 {
     BufPtr = 0; // cache pointer
@@ -271,8 +270,6 @@ bool FFRequestHandler::ff_build_data(BESDataHandlerInterface & dhi)
         ff_read_descriptors(*dds, accessed);
         Ancillary::read_ancillary_dds(*dds, accessed);
 
-#if INCLUDE_ATTRS_IN_DDS
-        
         DAS *das = new DAS;
         BESDASResponse bdas(das);
         bdas.set_container(dhi.container->get_symbolic_name());
@@ -281,8 +278,6 @@ bool FFRequestHandler::ff_build_data(BESDataHandlerInterface & dhi)
 
         dds->transfer_attributes(das);
         
-#endif
-
         bdds->set_constraint(dhi);
 
         bdds->clear_container();
@@ -408,20 +403,3 @@ bool FFRequestHandler::ff_build_version(BESDataHandlerInterface & dhi)
     return true;
 }
 
-void FFRequestHandler::add_attributes(BESDataHandlerInterface & dhi) {
-//cerr<<"coming to FF handler add_attributes routine" <<endl;
-    BESResponseObject *response = dhi.response_handler->get_response_object();
-    BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *>(response);
-    if (!bdds)
-        throw BESInternalError("cast error", __FILE__, __LINE__);
-    DDS *dds = bdds->get_dds();
-    DAS *das = new DAS;
-        BESDASResponse bdas(das);
-        bdas.set_container(dhi.container->get_symbolic_name());
-        string accessed = dhi.container->access();
-        ff_get_attributes(*das, accessed);
-        Ancillary::read_ancillary_das(*das, accessed);
-
-        dds->transfer_attributes(das);
-
-}

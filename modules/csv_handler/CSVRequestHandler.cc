@@ -171,20 +171,14 @@ bool CSVRequestHandler::csv_build_data(BESDataHandlerInterface &dhi)
 	BaseTypeFactory factory;
 	dds->set_factory(&factory);
 
-#define INCLUDE_DAS_in_DDS 0
 	try {
 		string accessed = dhi.container->access();
 		dds->filename(accessed);
 		csv_read_descriptors(*dds, accessed);
 		Ancillary::read_ancillary_dds(*dds, accessed);
-
-#if INCLUDE_DAS_in_DDS
-		DAS das;
-		csv_read_attributes(das, accessed);
-		Ancillary::read_ancillary_das(das, accessed);
-		dds->transfer_attributes(&das);
-#endif
 		bdds->set_constraint(dhi);
+
+        // We don't need to build the DAS here. Set the including attribute flag to false. KY 10/30/19
         BESDEBUG("csv", "Data ACCESS build_data(): set the including attribute flag to false: "<<accessed << endl);
         bdds->set_ia_flag(false);
 		return ret;

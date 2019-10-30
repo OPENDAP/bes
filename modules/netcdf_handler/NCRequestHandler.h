@@ -88,7 +88,10 @@ public:
 	    return _cache_purge_level;
 	}
 
-        void add_attributes(BESDataHandlerInterface &dhi);
+    // This handler supports the "not including attributes" in
+    // the data access feature. Attributes are generated only
+    // if necessary. KY 10/30/19
+    void add_attributes(BESDataHandlerInterface &dhi);
 
 };
 

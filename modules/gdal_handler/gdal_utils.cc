@@ -295,13 +295,14 @@ void gdal_read_dataset_attributes(DAS &das, const GDALDatasetH &hDS)
  * @param dds A value-result parameter
  * @param hDS
  * @param filename
+ * @param include_attrs 
  */
 void gdal_read_dataset_variables(DDS *dds, const GDALDatasetH &hDS, const string &filename,bool include_attrs)
 {
     // Load in to global attributes
     if(true == include_attrs) {
-    AttrTable *global_attr = dds->get_attr_table().append_container("GLOBAL");
-    build_global_attributes(hDS, global_attr);
+        AttrTable *global_attr = dds->get_attr_table().append_container("GLOBAL");
+        build_global_attributes(hDS, global_attr);
     }
 
     /* -------------------------------------------------------------------- */
@@ -405,8 +406,8 @@ void gdal_read_dataset_variables(DDS *dds, const GDALDatasetH &hDS, const string
 
         // Add attributes to the Grid
         if(true == include_attrs) {
-        AttrTable &band_attr = grid->get_attr_table();
-        build_variable_attributes(hDS, &band_attr, iBand);
+            AttrTable &band_attr = grid->get_attr_table();
+            build_variable_attributes(hDS, &band_attr, iBand);
         }
 
         dds->add_var_nocopy(grid);

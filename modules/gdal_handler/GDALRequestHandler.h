@@ -44,6 +44,10 @@ public:
     static bool gdal_build_dmr(BESDataHandlerInterface &dhi);
     static bool gdal_build_help(BESDataHandlerInterface &dhi);
     static bool gdal_build_version(BESDataHandlerInterface &dhi);
+    
+    // This handler supports the "not including attributes" in
+    // the data access feature. Attributes are generated only
+    // if necessary. KY 10/30/19
     void add_attributes(BESDataHandlerInterface &dhi);
 };
 
