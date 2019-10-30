@@ -44,33 +44,31 @@
 #include "CSV_Header.h"
 #include "CSV_Data.h"
 
-using namespace std;
-
 class CSV_Obj : public BESObj
 {
 private:
     CSV_Reader*			_reader ;
     CSV_Header*			_header ;
-    vector<CSV_Data*>*		_data ;
+    std::vector<CSV_Data*>*		_data ;
 public:
     				CSV_Obj() ;
     virtual			~CSV_Obj() ;
 
-    bool			open( const string& filepath ) ;
+    bool			open( const std::string& filepath ) ;
 
     void			load() ;
 
-    void			getFieldList( vector<string> &list ) ;
+    void			getFieldList( std::vector<std::string> &list ) ;
 
-    string			getFieldType( const string& fieldName ) ;
+    std::string		getFieldType( const std::string& fieldName ) ;
 
     int				getRecordCount() ;
 
-    void *			getFieldData( const string& field ) ;
+    void *			getFieldData( const std::string& field ) ;
 
-    vector<string>		getRecord( const int rowCount ) ;
+    std::vector<std::string>		getRecord( const int rowCount ) ;
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void		dump( std::ostream &strm ) const ;
 } ;
 
 #endif // I_CSV_Obj_h

@@ -37,7 +37,8 @@
 #include "BESNotFoundError.h"
 
 using std::endl;
-
+using std::ostream;
+using std::string;
 
 /** @brief add a handler method to the request handler that knows how to fill
  * in a specific response object

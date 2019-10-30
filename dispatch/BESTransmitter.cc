@@ -48,6 +48,8 @@
 #include "BESTransmitter.h"
 
 using std::endl;
+using std::string;
+using std::ostream;
 
 bool BESTransmitter::add_method(string method_name, p_transmitter trans_method)
 {

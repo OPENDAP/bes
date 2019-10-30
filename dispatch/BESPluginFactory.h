@@ -41,11 +41,6 @@
 
 #include "BESPlugin.h"
 
-using std::string;
-using std::map;
-using std::pair;
-using std::unary_function;
-
 #include "BESObj.h"
 
 /** A Factory for objects whose implementations reside in shared objects
@@ -61,7 +56,7 @@ template<typename C>
 class BESPluginFactory: public BESObj
 {
 private:
-    map<string, BESPlugin<C> *> d_children;
+	std::map<std::string, BESPlugin<C> *> d_children;
 
     /** The Copy constructor is not supported. In the current implementation,
      this class uses pointers to BESPlugin<C> held in an instance of \b
@@ -87,10 +82,10 @@ private:
     }
 #endif
 
-    struct DeletePlugins: public unary_function<pair<string, BESPlugin<C> *>, void>
+    struct DeletePlugins: public std::unary_function<std::pair<std::string, BESPlugin<C> *>, void>
     {
 
-        void operator()(pair<string, BESPlugin<C> *> elem)
+        void operator()(std::pair<std::string, BESPlugin<C> *> elem)
         {
             delete elem.second;
         }
@@ -106,7 +101,7 @@ public:
      class implementation.
      @see add_mapping.
      */
-    BESPluginFactory(const string &name, const string &library_name)
+    BESPluginFactory(const std::string &name, const std::string &library_name)
     {
         add_mapping(name, library_name);
     }
@@ -127,7 +122,7 @@ public:
      @param library_name The name of the library which holds its
      implementation.
      */
-    void add_mapping(const string &name, const string &library_name)
+    void add_mapping(const std::string &name, const std::string &library_name)
     {
         BESPlugin<C> *child_class = new BESPlugin<C>(library_name);
         d_children.insert(std::make_pair(name, child_class));
@@ -148,16 +143,16 @@ public:
      @exception NoSuchLibrary thrown if the library matched to \b name
      cannot be found.
      */
-    C *get(const string &name) throw (NoSuchObject, NoSuchLibrary)
+    C *get(const std::string &name) throw (NoSuchObject, NoSuchLibrary)
     {
         BESPlugin<C> *child_implementation = d_children[name];
-        if (!child_implementation) throw NoSuchObject(string("No class is bound to ") + name, __FILE__, __LINE__);
+        if (!child_implementation) throw NoSuchObject(std::string("No class is bound to ") + name, __FILE__, __LINE__);
         return child_implementation->instantiate();
     }
 
     virtual void dump(std::ostream &strm) const
     {
-        strm << "BESPluginFactory::dump - (" << (void *) this << ")" << endl;
+        strm << "BESPluginFactory::dump - (" << (void *) this << ")" << std::endl;
         /*
          typedef map<string, BESPlugin<C> *>::const_iterator Plugin_citer ;
          BESPluginFactory::Plugin_citer i = d_children.begin() ;

@@ -49,6 +49,7 @@ using std::endl;
 using std::string;
 using std::ostringstream;
 using std::list;
+using std::map;
 
 #include "ExtConn.h"
 #include "BESError.h"

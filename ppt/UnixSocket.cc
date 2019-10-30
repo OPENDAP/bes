@@ -46,6 +46,7 @@
 
 using std::endl;
 using std::ostream;
+using std::string;
 
 void UnixSocket::connect()
 {

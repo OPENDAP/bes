@@ -33,8 +33,6 @@
 #include <string>
 #include <vector>
 
-using std::string ;
-
 #include "ServerHandler.h"
 #include "BESXMLWriter.h"
 
@@ -62,11 +60,11 @@ private:
     // of the config file (eg 'bes.conf') to the full pathname for that file.
     // Only the name of config file is shown in responses; we use the map to
     // actually find/read/write the file.
-    map<string,string> d_pathnames;
+    std::map<string,string> d_pathnames;
 
     string d_log_file_name;
 
-    void load_include_files(vector<string> &files, const string &keys_file_name);
+    void load_include_files(std::vector<string> &files, const string &keys_file_name);
     void load_include_file(const string &files, const string &keys_file_name);
 
     hai_command lookup_command(const string &command);
@@ -81,7 +79,7 @@ public:
 
     virtual void handle(Connection *c);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // DaemonCommandHandler_h

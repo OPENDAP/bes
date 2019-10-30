@@ -39,10 +39,10 @@
 class BESAsciiRequestHandler : public BESRequestHandler
 {
 public:
-			BESAsciiRequestHandler( const string &name ) ;
+			BESAsciiRequestHandler( const std::string &name ) ;
     virtual		~BESAsciiRequestHandler( void ) ;
 
-    virtual void	dump( ostream &strm ) const ;
+    virtual void	dump( std::ostream &strm ) const ;
 
     static bool		dap_build_help( BESDataHandlerInterface &dhi ) ;
     static bool		dap_build_version( BESDataHandlerInterface &dhi ) ;

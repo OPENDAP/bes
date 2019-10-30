@@ -43,6 +43,7 @@
 #include <unistd.h>
 
 using std::ostringstream;
+using std::string;
 
 #include "BESUncompress3BZ2.h"
 #include "BESInternalError.h"

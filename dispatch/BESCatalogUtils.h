@@ -127,7 +127,7 @@ public:
     static bool isData(const std::string &inQuestion, const std::string &catalog, std::list<std::string> &services);
 #endif
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 
 #if 0
     static BESCatalogUtils * Utils(const std::string &name);

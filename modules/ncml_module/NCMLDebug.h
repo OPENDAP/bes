@@ -67,7 +67,7 @@
 #define THROW_NCML_INTERNAL_ERROR(msg) { \
   std::ostringstream __NCML_PARSE_ERROR_OSS__; \
   __NCML_PARSE_ERROR_OSS__ << std::string("NCMLModule InternalError: ") << "[" << __PRETTY_FUNCTION__ << "]: " << (msg); \
-  BESDEBUG(NCML_MODULE_DBG_CHANNEL,  __NCML_PARSE_ERROR_OSS__.str() << endl); \
+  BESDEBUG(NCML_MODULE_DBG_CHANNEL,  __NCML_PARSE_ERROR_OSS__.str() << std::endl); \
                                    throw BESInternalError( __NCML_PARSE_ERROR_OSS__.str(), \
                                                           __FILE__, __LINE__); }
 
@@ -77,7 +77,7 @@
       __NCML_PARSE_ERROR_OSS__ << "NCMLModule ParseError: at *.ncml line=" << (parseLine) << ": " \
      << (msg); \
       BESDEBUG(NCML_MODULE_DBG_CHANNEL, \
-              __NCML_PARSE_ERROR_OSS__.str() << endl); \
+              __NCML_PARSE_ERROR_OSS__.str() << std::endl); \
           throw BESSyntaxUserError( __NCML_PARSE_ERROR_OSS__.str(), \
               __FILE__, \
               __LINE__); }
@@ -101,7 +101,7 @@
 #else
 // An assert that can carry a std::string msg
 #define NCML_ASSERT_MSG(cond, msg)  { if (!(cond)) { \
-  BESDEBUG(NCML_MODULE_DBG_CHANNEL, __PRETTY_FUNCTION__ << ": " << (msg) << endl); \
+  BESDEBUG(NCML_MODULE_DBG_CHANNEL, __PRETTY_FUNCTION__ << ": " << (msg) << std::endl); \
   THROW_NCML_INTERNAL_ERROR(std::string("ASSERTION FAILED: condition=( ") + std::string(#cond) + std::string(" ) ") + std::string(msg)); } }
 #endif
 

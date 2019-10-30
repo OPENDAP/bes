@@ -31,9 +31,13 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <sstream>
+#include <map>
 
 using std::ostringstream;
 using std::endl;
+using std::map;
+using std::string;
+using std::ostream;
 
 #include "BESXMLInfo.h"
 #include "BESUtil.h"

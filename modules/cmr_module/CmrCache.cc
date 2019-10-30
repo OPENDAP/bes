@@ -50,6 +50,7 @@
 #include "CmrCache.h"
 
 using std::endl;
+using std::string;
 
 #ifdef HAVE_ATEXIT
 #define AT_EXIT(x) atexit((x))

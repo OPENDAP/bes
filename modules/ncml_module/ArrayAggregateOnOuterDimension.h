@@ -33,8 +33,6 @@
 #include "ArrayAggregationBase.h" // agg_util
 #include "Dimension.h" // agg_util
 
-using std::string;
-using std::vector;
 using libdap::Array;
 
 namespace libdap {

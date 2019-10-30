@@ -47,30 +47,30 @@
  */
 class BESTextInfo: public BESInfo {
 private:
-    string _indent;
+    std::string _indent;
     bool _ishttp;
     bool _header;
 public:
     BESTextInfo(bool ishttp = false);
-    BESTextInfo(const string &key, ostream *strm, bool strm_owned, bool ishttp = false);
+    BESTextInfo(const std::string &key, std::ostream *strm, bool strm_owned, bool ishttp = false);
     virtual ~BESTextInfo();
 
-    virtual void begin_response(const string &response_name, BESDataHandlerInterface &dhi);
+    virtual void begin_response(const std::string &response_name, BESDataHandlerInterface &dhi);
 
-    virtual void add_tag(const string &tag_name, const string &tag_data, map<string, string> *attrs = 0);
-    virtual void begin_tag(const string &tag_name, map<string, string> *attrs = 0);
-    virtual void end_tag(const string &tag_name);
+    virtual void add_tag(const std::string &tag_name, const std::string &tag_data, std::map<std::string, std::string> *attrs = 0);
+    virtual void begin_tag(const std::string &tag_name, std::map<std::string, std::string> *attrs = 0);
+    virtual void end_tag(const std::string &tag_name);
 
-    virtual void add_data(const string &s);
+    virtual void add_data(const std::string &s);
     virtual void add_space(unsigned long num_spaces);
     virtual void add_break(unsigned long num_breaks);
 
-    virtual void add_data_from_file(const string &key, const string &name);
+    virtual void add_data_from_file(const std::string &key, const std::string &name);
     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 
-    static BESInfo *BuildTextInfo(const string &info_type);
+    static BESInfo *BuildTextInfo(const std::string &info_type);
 };
 
 #endif // BESTextInfo_h_

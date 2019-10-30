@@ -37,10 +37,6 @@
 #include <string>
 #include <fstream>
 
-using std::ostream ;
-using std::ifstream ;
-using std::string ;
-
 #include "BESObj.h"
 
 /**
@@ -73,13 +69,13 @@ using std::string ;
 class StandAloneClient : public BESObj
 {
 private:
-    ostream *			_strm ;
+	std::ostream *			_strm ;
     bool			_strmCreated ;
     bool			_isInteractive ;
 
-    size_t			readLine( string &str ) ;
+    size_t			readLine( std::string &str ) ;
     void			displayHelp() ;
-    void			executeCommand( const string &cmd,
+    void			executeCommand( const std::string &cmd,
 						int repeat ) ;
 public:
     				StandAloneClient( )
@@ -88,15 +84,15 @@ public:
 				      _isInteractive( false ) {}
 				~StandAloneClient() ;
 
-    void			setOutput( ostream *strm, bool created ) ;
-    void			executeClientCommand( const string &cmd ) ;
-    void			executeCommands( const string &cmd_list,
+    void			setOutput( std::ostream *strm, bool created ) ;
+    void			executeClientCommand( const std::string &cmd ) ;
+    void			executeCommands( const std::string &cmd_list,
 						 int repeat ) ;
-    void			executeCommands( ifstream &inputFile,
+    void			executeCommands( std::ifstream &inputFile,
 						 int repeat ) ;
     void			interact() ;
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void		dump( std::ostream &strm ) const ;
 } ;
 
 #endif // StandAloneClient_h

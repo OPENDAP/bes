@@ -35,13 +35,11 @@
 
 #include <string>
 
-using std::string ;
-
 #include "baseApp.h"
 
 class servicesT : public baseApp {
 private:
-    string			_keyFile ;
+	std::string			_keyFile ;
 public:
                                 servicesT(void) : baseApp() {}
     virtual                     ~servicesT(void) {}

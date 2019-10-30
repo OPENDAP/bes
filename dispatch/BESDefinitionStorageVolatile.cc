@@ -35,6 +35,8 @@
 #include "BESInfo.h"
 
 using std::endl;
+using std::string;
+using std::ostream;
 
 BESDefinitionStorageVolatile::~BESDefinitionStorageVolatile()
 {
@@ -125,9 +127,9 @@ bool BESDefinitionStorageVolatile::del_definitions()
  */
 void BESDefinitionStorageVolatile::show_definitions(BESInfo &info)
 {
-    map<string, string> dprops; // for the definition
-    map<string, string> cprops; // for the container
-    map<string, string> aprops; // for aggregation
+    std::map<string, string> dprops; // for the definition
+    std::map<string, string> cprops; // for the container
+    std::map<string, string> aprops; // for aggregation
     Define_citer di = _def_list.begin();
     Define_citer de = _def_list.end();
     for (; di != de; di++) {

@@ -38,10 +38,6 @@
 #include <vector>
 #include <map>
 
-using std::string ;
-using std::vector ;
-using std::map ;
-
 #include <DDS.h>
 #include <Array.h>
 

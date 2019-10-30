@@ -45,6 +45,9 @@
 #include <BESNotFoundError.h>
 #include <BESDebug.h>
 
+using std::auto_ptr;
+using std::endl;
+
 void csv_read_attributes(DAS &das, const string &filename)
 {
 #if 0

@@ -43,6 +43,7 @@ using namespace CppUnit;
 using std::cerr;
 using std::cout;
 using std::endl;
+using std::string;
 
 #include "BESScrub.h"
 #include "BESError.h"

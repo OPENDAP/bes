@@ -41,6 +41,7 @@ using namespace CppUnit;
 using std::cerr;
 using std::cout;
 using std::endl;
+using std::string;
 
 #include "BESReporterList.h"
 #include "TestReporter.h"

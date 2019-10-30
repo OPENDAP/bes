@@ -34,8 +34,6 @@
 #include <libxml/parserInternals.h>
 #include "BESError.h"
 
-using namespace std;
-
 namespace ncml_module {
 class SaxParser;
 }
@@ -99,9 +97,9 @@ private:
     /** If _state==EXCEPTION, these will be a copy of the
      * deferred BESError's data to rethrow after the parser cleans up
      * */
-    string _errorMsg;
+    std::string _errorMsg;
     int _errorType;
-    string _errorFile;
+    std::string _errorFile;
     int _errorLine;
 
 private:
@@ -126,7 +124,7 @@ public:
      *
      * @return successful parse
      */
-    bool parse(const string& ncmlFilename);
+    bool parse(const std::string& ncmlFilename);
 
     SaxParser& getParser() const
     {

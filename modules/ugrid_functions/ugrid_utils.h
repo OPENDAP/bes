@@ -30,7 +30,6 @@
 
 #include <gridfields/array.h>
 
-using namespace std;
 //using namespace libdap;
 
 namespace {

@@ -35,8 +35,6 @@
 
 #include <list>
 
-using std::list;
-
 #include "BESObj.h"
 #include "BESDataHandlerInterface.h"
 #include "BESInfo.h"
@@ -83,10 +81,10 @@ typedef int (*p_bes_ehm)(BESError &e, BESDataHandlerInterface &dhi);
 
 class BESExceptionManager: public BESObj {
 private:
-    typedef list<p_bes_ehm>::const_iterator ehm_citer;
-    typedef list<p_bes_ehm>::iterator ehm_iter;
+    typedef std::list<p_bes_ehm>::const_iterator ehm_citer;
+    typedef std::list<p_bes_ehm>::iterator ehm_iter;
 
-    list<p_bes_ehm> _ehm_list;
+    std::list<p_bes_ehm> _ehm_list;
 
     static BESExceptionManager *_instance;
 
@@ -98,7 +96,7 @@ public:
     virtual void add_ehm_callback(p_bes_ehm ehm);
     virtual int handle_exception(BESError &e, BESDataHandlerInterface &dhi);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 
     static BESExceptionManager *TheEHM();
 };

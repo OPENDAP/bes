@@ -35,9 +35,14 @@
 #include <fstream>
 #include <iostream>
 #include <cstring>
+#include <list>
 
 using std::stringstream;
 using std::ifstream;
+using std::endl;
+using std::ostream;
+using std::string;
+using std::list;
 
 #include "BESContainerStorageFile.h"
 #include "BESFileContainer.h"
@@ -46,8 +51,6 @@ using std::ifstream;
 #include "BESSyntaxUserError.h"
 #include "BESInfo.h"
 #include "BESServiceRegistry.h"
-
-using std::endl;
 
 /** @brief pull container information from the specified file
  *

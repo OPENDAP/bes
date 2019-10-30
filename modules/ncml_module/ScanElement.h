@@ -49,10 +49,10 @@ class ScanElement: public NCMLElement {
 public:
     // class vars
     // Name of the element
-    static const string _sTypeName;
+    static const std::string _sTypeName;
 
     // All possible attributes for this element.
-    static const vector<string> _sValidAttrs;
+    static const std::vector<std::string> _sValidAttrs;
 
 private:
     ScanElement& operator=(const ScanElement& rhs); // disallow
@@ -62,16 +62,16 @@ public:
     ScanElement(const ScanElement& proto);
     virtual ~ScanElement();
 
-    virtual const string& getTypeName() const;
+    virtual const std::string& getTypeName() const;
     virtual ScanElement* clone() const; // override clone with more specific subclass
     virtual void setAttributes(const XMLAttributeMap& attrs);
     virtual void handleBegin();
-    virtual void handleContent(const string& content);
+    virtual void handleContent(const std::string& content);
     virtual void handleEnd();
-    virtual string toString() const;
+    virtual std::string toString() const;
 
     ////// Accessors
-    const string& ncoords() const;
+    const std::string& ncoords() const;
 
     /** Get the aggregation of which I am a child */
     AggregationElement* getParent() const;
@@ -107,7 +107,7 @@ public:
      *
      * @param datasets The vector to add the datasets to.
      */
-    void getDatasetList(vector<NetcdfElement*>& datasets) const;
+    void getDatasetList(std::vector<NetcdfElement*>& datasets) const;
 
 private:
     // internal methods
@@ -133,7 +133,7 @@ private:
      */
     std::string extractTimeFromFilename(const std::string& filename) const;
 
-    static vector<string> getValidAttributes();
+    static std::vector<std::string> getValidAttributes();
 
     /** throw a parse error for non-empty attributes we don't handle yet */
     void throwOnUnhandledAttributes();
@@ -143,14 +143,14 @@ private:
 
 private:
     // data rep
-    string _location;
-    string _suffix;
-    string _regExp;
-    string _subdirs;
-    string _olderThan;
-    string _dateFormatMark;
-    string _enhance; // we're not implementing this one now.
-    string _ncoords; // OPeNDAP EXTENSION to NcML.  Inherited by all matched datasets.
+    std::string _location;
+    std::string _suffix;
+    std::string _regExp;
+    std::string _subdirs;
+    std::string _olderThan;
+    std::string _dateFormatMark;
+    std::string _enhance; // we're not implementing this one now.
+    std::string _ncoords; // OPeNDAP EXTENSION to NcML.  Inherited by all matched datasets.
 
     // Back pointer to our parent
     AggregationElement* _pParent;
