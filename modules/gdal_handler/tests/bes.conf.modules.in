@@ -7,11 +7,12 @@ BES.Group=group_name
 BES.LogName=./bes.log
 BES.LogVerbose=no
 
-BES.modules=dap,cmd,ascii,gd
+BES.modules=dap,cmd,ascii,gd,functions
 BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
 BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
 BES.module.ascii=@abs_top_builddir@/modules/asciival/.libs/libascii_module.so
 BES.module.gd=@abs_top_builddir@/modules/gdal_handler/.libs/libgdal_module.so
+BES.module.functions=@abs_top_builddir@/functions/.libs/libfunctions_module.so
 
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/gdal_handler
 BES.Data.RootDirectory=/dev/null

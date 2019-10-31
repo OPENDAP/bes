@@ -45,6 +45,7 @@ class BESInfo;
 #include "BESObj.h"
 #include "BESContainer.h"
 #include "BESInternalError.h"
+#include "BESResponseHandler.h"
 
 /** @brief Structure storing information used by the BES to handle the request
 

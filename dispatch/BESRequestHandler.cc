@@ -146,6 +146,13 @@ time_t BESRequestHandler::get_lmt(const string &name){
     return statbuf.st_mtime;
 }//end get_lmt()
 
+void BESRequestHandler::add_attributes(BESDataHandlerInterface &dhi){
+    
+    // The current implementation ensures the execution of this function in the derived class.
+    // So will throw an error if code comes here. KY 10/30/19
+    throw BESNotFoundError("Cannot find the add_attributes() in the specific handler.", __FILE__, __LINE__);
+}
+
 /** @brief dumps information about this object
  *
  * Displays the pointer value of this instance, the name of the request

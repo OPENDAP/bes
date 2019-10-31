@@ -50,6 +50,12 @@ public:
 
 	static bool fits_build_vers(BESDataHandlerInterface &dhi);
 	static bool fits_build_help(BESDataHandlerInterface &dhi);
+
+    // This handler supports the "not including attributes" in
+    // the data access feature. Attributes are generated only
+    // if necessary. KY 10/30/19
+    void add_attributes(BESDataHandlerInterface &dhi);
+
 };
 
 #endif

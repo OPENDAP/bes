@@ -47,10 +47,15 @@ class BESDataDDSResponse: public BESDapResponse {
 private:
     libdap::DDS * _dds;
     libdap::ConstraintEvaluator _ce;
+    bool include_attrs;
+
 
 public:
+    // Be dedault, the include_attrs flag is always true. This flag
+    // will be set to false only for those handlers that support the
+    // data access without the need to generate attributes. KY 10/30/19
     BESDataDDSResponse(libdap::DDS * dds) :
-        BESDapResponse(), _dds(dds)
+        BESDapResponse(), _dds(dds),include_attrs(true)
     {
     }
 
@@ -79,6 +84,9 @@ public:
     {
         return _ce;
     }
+
+    void set_ia_flag(bool ia_flag) {include_attrs = ia_flag;}
+    bool get_ia_flag() {return include_attrs;}
 };
 
 #endif // I_BESDataDDSResponse

@@ -188,6 +188,23 @@ void DDSLoader::loadInto(const std::string& location, ResponseType type, BESDapR
 
         BESRequestHandlerList::TheList()->execute_current(_dhi);
 
+        // Some NcML operations like rename/add attributes need to have attributes in the data access.
+        // So we need to check if the attributes are added by the underneath handlers.
+        // If not, it will be added here. KY 10/30/19
+        if(type == eRT_RequestDataDDS) {
+
+            BESResponseObject *response = _dhi.response_handler->get_response_object();
+            BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *> (response);
+            if (!bdds)
+                throw BESInternalError("cast error", __FILE__, __LINE__);
+
+            if(bdds->get_ia_flag() == false) {
+                BESDEBUG("ncml", "Underneath handler "<< _dhi.container->get_container_type() << " call add_attributes() " << endl);
+                BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(_dhi.container->get_container_type());
+                besRH->add_attributes(_dhi);
+            }
+        }
+
         BESDEBUG("ncml", "After BESRequestHandlerList::TheList()->execute_current" << endl);
     }
     catch (BESError &e) {
@@ -381,10 +398,12 @@ std::auto_ptr<BESDapResponse> DDSLoader::makeResponseForType(ResponseType type)
 {
     if (type == eRT_RequestDDX) {
         // The BaseTypeFactory is leaked. jhrg 6/19/19
+        cerr<<"coming to DDSLoader::RequestDDX"<<endl;
         return auto_ptr<BESDapResponse>(new BESDDSResponse(new DDS(0 /*new BaseTypeFactory()*/, "virtual")));
     }
     else if (type == eRT_RequestDataDDS) {
         // Leak fix jhrg 6/19/19
+        cerr<<"coming to DDSLoader::RequestDataDDS"<<endl;
         return auto_ptr<BESDapResponse>(new BESDataDDSResponse(new DDS(0 /*new BaseTypeFactory()*/, "virtual")));
     }
     else {

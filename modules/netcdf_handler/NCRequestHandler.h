@@ -54,6 +54,7 @@ private:
     static ObjMemCache *dmr_cache;
 
     static void get_dds_with_attributes(const std::string& dataset_name, const std::string& container_name, libdap::DDS* dds);
+    static void get_dds_without_attributes(const std::string& dataset_name, const std::string& container_name, libdap::DDS* dds);
 
 public:
 	NCRequestHandler(const std::string &name);
@@ -86,6 +87,12 @@ public:
 	{
 	    return _cache_purge_level;
 	}
+
+    // This handler supports the "not including attributes" in
+    // the data access feature. Attributes are generated only
+    // if necessary. KY 10/30/19
+    void add_attributes(BESDataHandlerInterface &dhi);
+
 };
 
 #endif
