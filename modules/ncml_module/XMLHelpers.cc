@@ -29,6 +29,8 @@
 
 #include "XMLHelpers.h"
 
+using std::string;
+
 namespace ncml_module {
 
 ///////////////////////////// XMLUtil Impl

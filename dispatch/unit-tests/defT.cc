@@ -44,6 +44,7 @@ using std::cerr;
 using std::cout;
 using std::endl;
 using std::stringstream;
+using std::string;
 
 #include "BESDefinitionStorageList.h"
 #include "BESDefinitionStorageVolatile.h"

@@ -35,8 +35,6 @@
 
 #include <list>
 
-using std::list;
-
 #include "BESContainerStorageVolatile.h"
 
 class BESCatalogUtils;

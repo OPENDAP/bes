@@ -70,7 +70,6 @@ class OtherXMLParser;
 }
 
 using namespace libdap;
-using namespace std;
 
 /**
  *  @brief NcML Parser for adding/modifying/removing metadata (attributes) to existing local datasets using NcML.
@@ -203,7 +202,7 @@ public:
      *  @return a new response object with the transformed DDS in it.  The caller assumes ownership of the returned object.
      *  It will be of type BESDDSResponse or BESDataDDSResponse depending on the request being processed.
      */
-    auto_ptr<BESDapResponse> parse(const string& ncmlFilename, agg_util::DDSLoader::ResponseType type);
+    std::auto_ptr<BESDapResponse> parse(const std::string& ncmlFilename, agg_util::DDSLoader::ResponseType type);
 
     /** @brief Same as parse, but the response object to parse into is passed down by the caller
      * rather than created.

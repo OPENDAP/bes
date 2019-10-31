@@ -44,6 +44,8 @@
 #include "GatewayResponseNames.h"
 
 using std::endl;
+using std::map;
+using std::list;
 using namespace libdap;
 using namespace gateway;
 

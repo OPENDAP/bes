@@ -54,6 +54,10 @@
 #include "BESStopWatch.h"
 
 using std::endl;
+using std::map;
+using std::string;
+using std::list;
+using std::ostream;
 
 #define PATH_INFO_RESPONSE "PathInfo"
 #define PATH "path"

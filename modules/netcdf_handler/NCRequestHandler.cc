@@ -172,7 +172,6 @@ NCRequestHandler::NCRequestHandler(const string &name) :
 
     // TODO replace with get_bool_key above 5/21/16 jhrg
 
-    // Look for the SHowSharedDims property, if it has not been set
     if (NCRequestHandler::_show_shared_dims_set == false) {
         bool key_found = false;
         string doset;
@@ -361,6 +360,31 @@ void NCRequestHandler::get_dds_with_attributes(const string& dataset_name, const
     }
 }
 
+void NCRequestHandler::get_dds_without_attributes(const string& dataset_name, const string& container_name, DDS* dds)
+{
+    // Look in memory cache if it's initialized
+    DDS* cached_dds_ptr = 0;
+    if (dds_cache && (cached_dds_ptr = static_cast<DDS*>(dds_cache->get(dataset_name)))) {
+        // copy the cached DDS into the BES response object. Assume that any cached DDS
+        // includes the DAS information.
+        BESDEBUG(NC_NAME, "DDS Cached hit for : " << dataset_name << endl);
+        *dds = *cached_dds_ptr; // Copy the referenced object
+    }
+    else {
+        if (!container_name.empty()) dds->container_name(container_name);
+        dds->filename(dataset_name);
+
+        nc_read_dataset_variables(*dds, dataset_name);
+
+        if (dds_cache) {
+            // add a copy
+            BESDEBUG(NC_NAME, "DDS added to the cache for : " << dataset_name << endl);
+            dds_cache->add(new DDS(*dds), dataset_name);
+        }
+    }
+}
+
+
 bool NCRequestHandler::nc_build_dds(BESDataHandlerInterface & dhi)
 {
 
@@ -454,11 +478,18 @@ bool NCRequestHandler::nc_build_data(BESDataHandlerInterface & dhi)
         DMR *dmr = new DMR();
         get_dmr(dhi.container->access(), dmr);
 
+<<<<<<< HEAD
         // Build a DDS in the empty DDS object
         DDS *dds = dmr->getDDS(NCRequestHandler::_show_shared_dims);
         bdds->set_dds(dds);
+=======
+        // Build a DDS in the empty DDS object,don't include attributes here. KY 10/30/19
+        get_dds_without_attributes(dhi.container->access(), container_name, dds);
+>>>>>>> master
 
         bdds->set_constraint(dhi);
+        BESDEBUG(NC_NAME, "Data ACCESS build_data(): set the including attribute flag to false: "<<dhi.container->access() << endl);
+        bdds->set_ia_flag(false);
         bdds->clear_container();
     }
     catch (BESError &e) {
@@ -580,6 +611,7 @@ bool NCRequestHandler::nc_build_version(BESDataHandlerInterface & dhi)
     return true;
 }
 
+<<<<<<< HEAD
 /**
  * @brief Using the empty DMR object, build a DMR
  * @param dataset_name
@@ -621,3 +653,44 @@ void NCRequestHandler::get_dmr(const string& dataset_name, DMR* dmr){
         }
     }
 }
+=======
+void NCRequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
+
+    BESResponseObject *response = dhi.response_handler->get_response_object();
+    BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *>(response);
+    if (!bdds)
+        throw BESInternalError("cast error", __FILE__, __LINE__);
+    DDS *dds = bdds->get_dds();
+    string container_name = bdds->get_explicit_containers() ? dhi.container->get_symbolic_name(): "";
+    string dataset_name = dhi.container->access();
+    DAS* das = 0;
+    if (das_cache && (das = static_cast<DAS*>(das_cache->get(dataset_name)))) {
+        BESDEBUG(NC_NAME, "DAS Cached hit for : " << dataset_name << endl);
+        dds->transfer_attributes(das); // no need to cop the cached DAS
+    }
+    else {
+        das = new DAS;
+        // This looks at the 'use explicit containers' prop, and if true
+        // sets the current container for the DAS.
+        if (!container_name.empty()) das->container_name(container_name);
+
+        nc_read_dataset_attributes(*das, dataset_name);
+        Ancillary::read_ancillary_das(*das, dataset_name);
+
+        dds->transfer_attributes(das);
+
+        // Only free the DAS if it's not added to the cache
+        if (das_cache) {
+            // add a copy
+            BESDEBUG(NC_NAME, "DAS added to the cache for : " << dataset_name << endl);
+            das_cache->add(das, dataset_name);
+        }
+        else {
+            delete das;
+        }
+    }
+    BESDEBUG(NC_NAME, "Data ACCESS in add_attributes(): set the including attribute flag to true: "<<dataset_name << endl);
+    bdds->set_ia_flag(true);
+    return;
+}
+>>>>>>> master

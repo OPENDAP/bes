@@ -39,6 +39,8 @@
 
 #include "SocketUtilities.h"
 
+using std::string;
+
 char *
 SocketUtilities::ltoa( long val, char *buf, int base)
 {

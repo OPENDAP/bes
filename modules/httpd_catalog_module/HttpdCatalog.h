@@ -59,7 +59,7 @@ public:
     /**
      * @Deprecated
      */
-    virtual BESCatalogEntry * show_catalog(const string &container, BESCatalogEntry */*entry*/){
+    virtual BESCatalogEntry * show_catalog(const std::string &container, BESCatalogEntry */*entry*/){
         throw BESInternalError("The HttpdCatalog::show_catalog() method is not supported. (container: '" + container + "')",__FILE__,__LINE__);
     }
 
@@ -75,7 +75,7 @@ public:
         const std::string &/*prefix*/,
         const std::string &/*node_suffix*/,
         const std::string &/*leaf_suffix*/,
-        ostream &/*out*/,
+		std::ostream &/*out*/,
         const std::string &/*path = "/"*/) const {
         BESDEBUG(MODULE, "The HttpdCatalog::get_site_map() method is not currently supported. SKIPPING. file: " << __FILE__ << " line: "  << __LINE__ << std::endl);
     }
@@ -84,7 +84,7 @@ public:
 
     virtual std::string path_to_access_url(const std::string &path) const;
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 } // namespace httpd_catalog

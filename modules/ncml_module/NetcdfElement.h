@@ -66,39 +66,39 @@ private:
     NetcdfElement& operator=(const NetcdfElement& rhs); //disallow
 
 public:
-    static const string _sTypeName;
-    static const vector<string> _sValidAttributes;
+    static const std::string _sTypeName;
+    static const std::vector<std::string> _sValidAttributes;
 
     NetcdfElement();
     NetcdfElement(const NetcdfElement& proto);
     virtual ~NetcdfElement();
-    virtual const string& getTypeName() const;
+    virtual const std::string& getTypeName() const;
     virtual NetcdfElement* clone() const; // override clone with more specific subclass
     virtual void setAttributes(const XMLAttributeMap& attrs);
     virtual void handleBegin();
-    virtual void handleContent(const string& content);
+    virtual void handleContent(const std::string& content);
     virtual void handleEnd();
-    virtual string toString() const;
+    virtual std::string toString() const;
 
     // Accessors for attributes we deal with.
     // TODO Add these as we support aggregation attributes
-    const string& location() const
+    const std::string& location() const
     {
         return _location;
     }
-    const string& id() const
+    const std::string& id() const
     {
         return _id;
     }
-    const string& title() const
+    const std::string& title() const
     {
         return _title;
     }
-    const string& coordValue() const
+    const std::string& coordValue() const
     {
         return _coordValue;
     }
-    const string& ncoords() const
+    const std::string& ncoords() const
     {
         return _ncoords;
     }
@@ -175,7 +175,7 @@ public:
      * dimension table for THIS NetcdfElement only (no traversing
      * up the tree is allowed).  If not found, NULL is returned.
      */
-    const DimensionElement* getDimensionInLocalScope(const string& name) const;
+    const DimensionElement* getDimensionInLocalScope(const std::string& name) const;
 
     /**
      * @return the first DimensionElement with name found by checking
@@ -186,7 +186,7 @@ public:
      * @Note Ultimately, shared dimensions _cannot_ be shadowed, so we will need to
      * make sure of this when we handle shared dimensions.
      */
-    const DimensionElement* getDimensionInFullScope(const string& name) const;
+    const DimensionElement* getDimensionInFullScope(const std::string& name) const;
 
     /** Add the given element to this scope.
      * We maintain a strong reference, so the caller should
@@ -195,7 +195,7 @@ public:
     void addDimension(DimensionElement* dim);
 
     /** "Print" out the dimensions to a string */
-    string printDimensions() const;
+    std::string printDimensions() const;
 
     /** Clear the dimension table, releasing all strong references */
     void clearDimensions();
@@ -239,7 +239,7 @@ public:
      * @exception will throw a parse error if the values cannot be parsed as the
      *  given type T.
      */
-    template <typename T> int getCoordValueVector(vector<T>& values) const;
+    template <typename T> int getCoordValueVector(std::vector<T>& values) const;
 #endif
 
     /**
@@ -327,17 +327,17 @@ private:
      */
     bool validateAttributeContextOrThrow() const;
 
-    static vector<string> getValidAttributes();
+    static std::vector<std::string> getValidAttributes();
 
 private:
-    string _location;
-    string _id;
-    string _title;
-    string _ncoords;
-    string _enhance;
-    string _addRecords;
-    string _coordValue;
-    string _fmrcDefinition;
+    std::string _location;
+    std::string _id;
+    std::string _title;
+    std::string _ncoords;
+    std::string _enhance;
+    std::string _addRecords;
+    std::string _coordValue;
+    std::string _fmrcDefinition;
 
     // Whether we got a metadata direction element { readMetadata | explicit } for this node yet.
     // Just used to check for more than one.
@@ -496,7 +496,7 @@ public:
 
         // We don't expect too many entries, so a simple vector is the best way to go,
         // avoid overhead of maps, etc.
-        vector<VVVEntry> _entries;
+        std::vector<VVVEntry> _entries;
         NetcdfElement* _pParent;
     }; // class VariableValueValidator
 

@@ -33,6 +33,9 @@
 #include <sstream>
 
 using std::istringstream;
+using std::endl;
+using std::string;
+using std::ostream;
 
 #include "BESShowErrorResponseHandler.h"
 #include "BESDataNames.h"
@@ -42,8 +45,6 @@ using std::istringstream;
 #include "BESForbiddenError.h"
 #include "BESNotFoundError.h"
 #include "BESDataHandlerInterface.h"
-
-using std::endl;
 
 BESShowErrorResponseHandler::BESShowErrorResponseHandler(const string &name) :
     BESResponseHandler(name)

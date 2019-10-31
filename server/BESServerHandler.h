@@ -35,8 +35,6 @@
 
 #include <string>
 
-using std::string;
-
 #include "ServerHandler.h"
 
 class Connection;
@@ -49,7 +47,7 @@ class Connection;
  */
 class BESServerHandler: public ServerHandler {
 private:
-    string _method;
+	std::string _method;
     void execute(Connection *c);
 public:
     BESServerHandler();

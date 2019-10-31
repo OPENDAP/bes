@@ -33,6 +33,7 @@
 #include "Connection.h"
 
 using std::endl;
+using std::ostream;
 
 /** @brief dumps information about this object
  *

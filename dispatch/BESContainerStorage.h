@@ -37,11 +37,6 @@
 #include <list>
 #include <ostream>
 
-#if 0
-using std::std::string;
-using std::list;
-#endif
-
 #include "BESObj.h"
 
 class BESContainer;

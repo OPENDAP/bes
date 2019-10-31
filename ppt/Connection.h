@@ -37,17 +37,13 @@
 #include <string>
 #include <map>
 
-using std::ostream;
-using std::string;
-using std::map;
-
 #include "BESObj.h"
 #include "Socket.h"
 
 class Connection: public BESObj {
 protected:
 	Socket *_mySock;
-	ostream *_out;
+	std::ostream *_out;
 	bool _brokenPipe;
 
 	Connection() :
@@ -55,8 +51,8 @@ protected:
 	{
 	}
 
-	virtual void send(const string &buffer) = 0;
-	virtual void sendChunk(const string &buffer, map<string, string> &extensions) = 0;
+	virtual void send(const std::string &buffer) = 0;
+	virtual void sendChunk(const std::string &buffer, std::map<std::string, std::string> &extensions) = 0;
 
 public:
 	virtual ~Connection()
@@ -66,12 +62,12 @@ public:
 	virtual void initConnection() = 0;
 	virtual void closeConnection() = 0;
 
-	virtual string exit() = 0;
+	virtual std::string exit() = 0;
 
-	virtual void send(const string &buffer, map<string, string> &extensions) = 0;
-	virtual void sendExtensions(map<string, string> &extensions) = 0;
+	virtual void send(const std::string &buffer, std::map<std::string, std::string> &extensions) = 0;
+	virtual void sendExtensions(std::map<std::string, std::string> &extensions) = 0;
 	virtual void sendExit() = 0;
-	virtual bool receive(map<string, string> &extensions, ostream *strm = 0) = 0;
+	virtual bool receive(std::map<std::string, std::string> &extensions, std::ostream *strm = 0) = 0;
 
 	virtual Socket * getSocket()
 	{
@@ -84,11 +80,11 @@ public:
 		return false;
 	}
 
-	virtual void setOutputStream(ostream *strm)
+	virtual void setOutputStream(std::ostream *strm)
 	{
 		_out = strm;
 	}
-	virtual ostream * getOutputStream()
+	virtual std::ostream * getOutputStream()
 	{
 		return _out;
 	}
@@ -101,7 +97,7 @@ public:
 	virtual unsigned int getRecvChunkSize() = 0;
 	virtual unsigned int getSendChunkSize() = 0;
 
-	virtual void dump(ostream &strm) const;
+	virtual void dump(std::ostream &strm) const;
 };
 
 #endif // Connection_h

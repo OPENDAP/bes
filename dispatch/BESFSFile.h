@@ -35,37 +35,35 @@
 
 #include <string>
 
-using std::string ;
-
 #include "BESFSFile.h"
 
 class BESFSFile
 {
 private:
-    string    _dirName ;
-    string    _fileName ;
-    string    _baseName ;
-    string    _extension ;
+	std::string    _dirName ;
+	std::string    _fileName ;
+	std::string    _baseName ;
+	std::string    _extension ;
 
-    void    breakApart(const string &fullPath) ;
+    void    breakApart(const std::string &fullPath) ;
     void    breakExtension() ;
 public:
-    BESFSFile(const string &fullPath) ;
-    BESFSFile(const string &dirName,
-                const string &fileName) ;
+    BESFSFile(const std::string &fullPath) ;
+    BESFSFile(const std::string &dirName,
+                const std::string &fileName) ;
     BESFSFile(const BESFSFile &copyFrom) ;
     virtual    ~BESFSFile() ;
 
-    virtual string   getDirName() ;
-    virtual string   getFileName() ;
-    virtual string   getBaseName() ;
-    virtual string   getExtension() ;
-    virtual string   getFullPath() ;
+    virtual std::string   getDirName() ;
+    virtual std::string   getFileName() ;
+    virtual std::string   getBaseName() ;
+    virtual std::string   getExtension() ;
+    virtual std::string   getFullPath() ;
 
-    virtual bool exists( string &reason ) ;
-    virtual bool isReadable( string &reason ) ;
-    virtual bool isWritable( string &reason ) ;
-    virtual bool isExecutable( string &reason ) ;
+    virtual bool exists( std::string &reason ) ;
+    virtual bool isReadable( std::string &reason ) ;
+    virtual bool isWritable( std::string &reason ) ;
+    virtual bool isExecutable( std::string &reason ) ;
     virtual bool hasDotDot() ;
 } ;
 

@@ -43,6 +43,9 @@
 #include "SampleResponseNames.h"
 
 using std::endl;
+using std::ostream;
+using std::string;
+using std::map;
 
 SampleRequestHandler::SampleRequestHandler(const string &name) :
     BESRequestHandler(name)

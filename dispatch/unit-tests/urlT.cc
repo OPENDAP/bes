@@ -44,6 +44,7 @@ using std::cerr;
 using std::cout;
 using std::endl;
 using std::ifstream;
+using std::string;
 
 #include "BESUtil.h"
 #include "BESError.h"

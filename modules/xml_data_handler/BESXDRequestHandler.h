@@ -36,10 +36,10 @@
 class BESXDRequestHandler : public BESRequestHandler
 {
 public:
-			BESXDRequestHandler( const string &name ) ;
+			BESXDRequestHandler( const std::string &name ) ;
     virtual		~BESXDRequestHandler( void ) ;
 
-    virtual void	dump( ostream &strm ) const ;
+    virtual void	dump( std::ostream &strm ) const ;
 
     static bool		dap_build_help( BESDataHandlerInterface &dhi ) ;
     static bool		dap_build_version( BESDataHandlerInterface &dhi ) ;

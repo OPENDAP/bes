@@ -44,6 +44,8 @@ using std::cerr;
 using std::cout;
 using std::endl;
 using std::ostringstream;
+using std::string;
+using std::map;
 
 #include "TheBESKeys.h"
 #include "BESTextInfo.h"

@@ -38,11 +38,15 @@ using namespace CppUnit;
 
 #include <iostream>
 #include <sstream>
+#include <list>
 
 using std::cerr;
 using std::cout;
 using std::endl;
 using std::ostringstream;
+using std::string;
+using std::map;
+using std::list;
 
 #include "BESServiceRegistry.h"
 #include "BESError.h"

@@ -63,23 +63,23 @@ private:
     CmrCache();
     CmrCache(const CmrCache &src);
 
-    static string getCacheDirFromConfig();
-    static string getCachePrefixFromConfig();
+    static std::string getCacheDirFromConfig();
+    static std::string getCachePrefixFromConfig();
     static unsigned long getCacheSizeFromConfig();
 
 protected:
-    CmrCache(const string &cache_dir, const string &prefix, unsigned long long size);
+    CmrCache(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
 
 public:
-	static const string DIR_KEY;
-	static const string PREFIX_KEY;
-	static const string SIZE_KEY;
+	static const std::string DIR_KEY;
+	static const std::string PREFIX_KEY;
+	static const std::string SIZE_KEY;
 
-    static CmrCache *get_instance(const string &cache_dir, const string &prefix, unsigned long long size);
+    static CmrCache *get_instance(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
     static CmrCache *get_instance();
 
-    virtual string get_cache_file_name(const string &src, bool mangle=true);
-    inline  string get_hash(const string &name);
+    virtual std::string get_cache_file_name(const std::string &src, bool mangle=true);
+    inline  std::string get_hash(const std::string &name);
 
 	virtual ~CmrCache() { }
 };

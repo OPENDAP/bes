@@ -48,7 +48,7 @@ private:
     void createHttpdDirectoryPageMap(std::string url, std::map<std::string, bes::CatalogItem *> &items) const;
     long get_size_val(const std::string size_str) const;
     std::string httpd_time_to_iso_8601(const std::string httpd_time) const;
-    std::string httpd_time_to_iso_8601_new(const string httpd_time) const;
+    std::string httpd_time_to_iso_8601_new(const std::string httpd_time) const;
     time_t parse_time_format_A(const std::vector<std::string> tokens) const;
     time_t parse_time_format_B(const std::vector<std::string> tokens) const;
 

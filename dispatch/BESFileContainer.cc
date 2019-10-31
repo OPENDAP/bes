@@ -43,6 +43,7 @@
 
 using std::endl;
 using std::ostream;
+using std::string;
 
 /** @brief construct a container representing a file
  *

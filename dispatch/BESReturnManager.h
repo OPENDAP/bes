@@ -36,9 +36,6 @@
 #include <map>
 #include <string>
 
-using std::map;
-using std::string;
-
 #include "BESObj.h"
 #include "BESDataHandlerInterface.h"
 #include "BESTransmitter.h"
@@ -53,20 +50,20 @@ class BESReturnManager: public BESObj {
 private:
 	static BESReturnManager * _instance;
 
-	map<string, BESTransmitter *> _transmitter_list;
+	std::map<std::string, BESTransmitter *> _transmitter_list;
 protected:
 	BESReturnManager();
 public:
 	virtual ~BESReturnManager();
 
-	typedef map<string, BESTransmitter *>::const_iterator Transmitter_citer;
-	typedef map<string, BESTransmitter *>::iterator Transmitter_iter;
+	typedef std::map<std::string, BESTransmitter *>::const_iterator Transmitter_citer;
+	typedef std::map<std::string, BESTransmitter *>::iterator Transmitter_iter;
 
-	virtual bool add_transmitter(const string &name, BESTransmitter *transmitter);
-	virtual bool del_transmitter(const string &name);
-	virtual BESTransmitter * find_transmitter(const string &name);
+	virtual bool add_transmitter(const std::string &name, BESTransmitter *transmitter);
+	virtual bool del_transmitter(const std::string &name);
+	virtual BESTransmitter * find_transmitter(const std::string &name);
 
-	virtual void dump(ostream &strm) const;
+	virtual void dump(std::ostream &strm) const;
 
 	static BESReturnManager * TheManager();
 };

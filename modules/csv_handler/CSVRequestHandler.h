@@ -39,10 +39,10 @@
 
 class CSVRequestHandler: public BESRequestHandler {
 public:
-	CSVRequestHandler(string name);
+	CSVRequestHandler(std::string name);
 	virtual ~CSVRequestHandler(void);
 
-	virtual void dump(ostream &strm) const;
+	virtual void dump(std::ostream &strm) const;
 
 	static bool csv_build_das(BESDataHandlerInterface &dhi);
 	static bool csv_build_dds(BESDataHandlerInterface &dhi);
@@ -53,6 +53,11 @@ public:
 
 	static bool csv_build_vers(BESDataHandlerInterface &dhi);
 	static bool csv_build_help(BESDataHandlerInterface &dhi);
+
+    // This handler supports the "not including attributes" in 
+    // the data access feature. Attributes are generated only
+    // if necessary. KY 10/30/19
+	void add_attributes(BESDataHandlerInterface &dhi);
 };
 
 #endif // CSVRequestHandler.h

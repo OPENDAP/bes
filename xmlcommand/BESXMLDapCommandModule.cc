@@ -46,6 +46,8 @@
 using namespace bes;
 using std::endl;
 using std::cout;
+using std::ostream;
+using std::string;
 
 /** @brief Adds the basic DAP XML command objects to the XMLCommand list of
  * possible commands

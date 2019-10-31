@@ -45,6 +45,7 @@ using std::cerr;
 using std::cout;
 using std::endl;
 using std::ostringstream;
+using std::string;
 
 #include "BESDebug.h"
 #include "BESError.h"

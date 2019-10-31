@@ -44,6 +44,8 @@
 #include "BESDataHandlerInterface.h"
 
 using std::endl;
+using std::string;
+using std::ostream;
 
 BESSetContextResponseHandler::BESSetContextResponseHandler(const string &name) :
     BESResponseHandler(name)

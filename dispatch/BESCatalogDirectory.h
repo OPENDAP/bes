@@ -46,11 +46,6 @@ namespace bes {
     class CatalogNode;
 }
 
-#if 0
-using std::list;
-using std::string;
-#endif
-
 /**
  * @brief Catalogs from a directory structure
  */

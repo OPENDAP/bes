@@ -37,6 +37,9 @@
 #include "BESXDRequestHandler.h"
 
 using std::endl;
+using std::ostream;
+using std::string;
+using std::map;
 
 BESXDRequestHandler::BESXDRequestHandler(const string &name) :
         BESRequestHandler(name)

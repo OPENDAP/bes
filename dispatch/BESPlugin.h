@@ -46,16 +46,12 @@
 
 #undef UNPLUG_HANDLERS
 
-using std::string;
-using std::cerr;
-using std::endl;
-
 /** Thrown as an exception when BESPlugin cannot find the named shareable
  library.
  */
 class NoSuchLibrary: public BESInternalFatalError {
 public:
-    NoSuchLibrary(const string &msg, const string &file, int line) :
+    NoSuchLibrary(const std::string &msg, const std::string &file, int line) :
             BESInternalFatalError(msg, file, line)
     {
     }
@@ -66,7 +62,7 @@ public:
  */
 class NoSuchObject: public BESInternalFatalError {
 public:
-    NoSuchObject(const string &msg, const string &file, int line) :
+    NoSuchObject(const std::string &msg, const std::string &file, int line) :
             BESInternalFatalError(msg, file, line)
     {
     }
@@ -95,7 +91,7 @@ public:
 template<typename M>
 class BESPlugin: public BESObj {
 private:
-    string d_filename; // Library filename
+	std::string d_filename; // Library filename
     void *d_lib; // Open library handle
 
     /** Do not allow empty instances to be created.
@@ -132,9 +128,9 @@ private:
     {
         if (!d_lib) {
             d_lib = dlopen(d_filename.c_str(), RTLD_NOW | RTLD_GLOBAL);
-            BESDEBUG( "bes", "BESPlugin: plug in handler:" << d_filename << ", " << d_lib << endl);
+            BESDEBUG( "bes", "BESPlugin: plug in handler:" << d_filename << ", " << d_lib << std::endl);
             if (d_lib == NULL) {
-                throw NoSuchLibrary(string(dlerror()), __FILE__, __LINE__);
+                throw NoSuchLibrary(std::string(dlerror()), __FILE__, __LINE__);
             }
         }
 
@@ -146,7 +142,7 @@ public:
      @param filename The name of the sharable object library that holds
      the class' implementation.
      */
-    BESPlugin(const string &filename) :
+    BESPlugin(const std::string &filename) :
             d_filename(filename), d_lib(0)
     {
     }
@@ -155,7 +151,7 @@ public:
      */
     virtual ~BESPlugin()
     {
-        BESDEBUG( "bes", "BESPlugin: unplugging handler:" << d_filename << ", " << d_lib << endl);
+        BESDEBUG( "bes", "BESPlugin: unplugging handler:" << d_filename << ", " << d_lib << std::endl);
 #ifdef UNPLUG_HANDLERS
         if (d_lib) {
             dlclose(d_lib);
@@ -174,7 +170,7 @@ public:
     {
         void *maker = dlsym(get_lib(), "maker");
         if (!maker) {
-            throw NoSuchObject(string(dlerror()), __FILE__, __LINE__);
+            throw NoSuchObject(std::string(dlerror()), __FILE__, __LINE__);
         }
 
         typedef M *(*maker_func_ptr)();
@@ -186,9 +182,9 @@ public:
 
     virtual void dump(std::ostream &strm) const
     {
-        strm << "BESPlugin::dump - (" << (void *) this << ")" << endl;
-        strm << "    plugin name: " << d_filename << endl;
-        strm << "    library handle: " << (void *) d_lib << endl;
+        strm << "BESPlugin::dump - (" << (void *) this << ")" << std::endl;
+        strm << "    plugin name: " << d_filename << std::endl;
+        strm << "    library handle: " << (void *) d_lib << std::endl;
     }
 };
 

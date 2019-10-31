@@ -40,6 +40,8 @@
 #include "TheBESKeys.h"
 
 using std::endl;
+using std::string;
+using std::ostream;
 
 // Experimental: Annotation service URL. Set this parameter to the URL
 // of an annotation service. If the value is not null, then a global
