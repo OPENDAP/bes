@@ -186,6 +186,8 @@ deploy:
       branch: master
       condition: $BES_BUILD =~ ^deb|centos7|centos6|srcdist$
 
+  # See https://opendap.atlassian.net/browse/HK-519
+  #
   # Push CentOS-7 snapshot rpms to w.o.o
   # - provider: script
   #   skip_cleanup: true
