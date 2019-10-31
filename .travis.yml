@@ -192,7 +192,7 @@ deploy:
   #   env: DEPLOY="NOT_S3"
   #   script: sshpass -p $WOO_PSWD scp -v $TRAVIS_BUILD_DIR/package/*snapshot*el7* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-7.x
   #   on:
-  #     branch: travis
+  #     branch: master
   #     condition: $BES_BUILD =~ ^centos7$
   # # Push CentOS-6 snapshot rpms to w.o.o
   # - provider: script
@@ -200,7 +200,7 @@ deploy:
   #   env: DEPLOY="NOT_S3"
   #   script: sshpass -p $WOO_PSWD scp -v $TRAVIS_BUILD_DIR/package/*snapshot*el6* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-6.x
   #   on:
-  #     branch: travis
+  #     branch: master
   #     condition: $BES_BUILD =~ ^centos6$
   # # Push source snapshot rpms to w.o.o
   # - provider: script
@@ -208,7 +208,7 @@ deploy:
   #   env: DEPLOY="NOT_S3"
   #   script: sshpass -p $WOO_PSWD scp -v $TRAVIS_BUILD_DIR/package/*snapshot.tar.gz $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src
   #   on:
-  #     branch: travis
+  #     branch: master
   #     condition: $BES_BUILD =~ ^srcdist$
 
 # The after_deploy section grabs the hyrax-docker project, sets the current snapshot time 
