@@ -57,7 +57,7 @@ private:
     static void get_dds_without_attributes(const std::string& dataset_name, const std::string& container_name, libdap::DDS* dds);
 
 public:
-	NCRequestHandler(const string &name);
+	NCRequestHandler(const std::string &name);
 	virtual ~NCRequestHandler(void);
 
 	static bool nc_build_das(BESDataHandlerInterface &dhi);

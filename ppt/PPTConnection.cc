@@ -37,6 +37,7 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
+#include <map>
 
 using std::cout;
 using std::cerr;
@@ -47,6 +48,9 @@ using std::istringstream;
 using std::hex;
 using std::setw;
 using std::setfill;
+using std::map;
+using std::ostream;
+using std::string;
 
 #include "PPTConnection.h"
 #include "PPTProtocol.h"

@@ -41,11 +41,11 @@ class BESDataHandlerInterface;
 class BESXMLGetCommand: public BESXMLCommand {
 private:
     BESXMLCommand * _sub_cmd;
-    string _definition;
-    string _space;
+    std::string _definition;
+    std::string _space;
 
 protected:
-    virtual void parse_basic_get(const string &type, map<string, string> &props);
+    virtual void parse_basic_get(const std::string &type, std::map<std::string, std::string> &props);
 
 public:
     BESXMLGetCommand(const BESDataHandlerInterface &base_dhi);
@@ -63,7 +63,7 @@ public:
 
     virtual void prep_request();
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 
     static BESXMLCommand * CommandBuilder(const BESDataHandlerInterface &base_dhi);
 };

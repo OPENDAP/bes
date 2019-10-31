@@ -35,6 +35,10 @@
 #include "BESInternalError.h"
 
 using std::endl;
+using std::ostream;
+using std::string;
+using std::map;
+using std::list;
 
 BESServiceRegistry *BESServiceRegistry::_instance = 0 ;
 

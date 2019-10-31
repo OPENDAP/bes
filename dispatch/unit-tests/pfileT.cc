@@ -42,6 +42,7 @@ using namespace CppUnit;
 using std::cerr;
 using std::cout;
 using std::endl;
+using std::string;
 
 #include "BESContainerStorageFile.h"
 #include "BESContainer.h"

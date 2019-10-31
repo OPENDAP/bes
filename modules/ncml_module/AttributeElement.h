@@ -39,7 +39,6 @@ namespace ncml_module {
 class OtherXMLParser;
 }
 
-using namespace std;
 namespace ncml_module {
 
 /**

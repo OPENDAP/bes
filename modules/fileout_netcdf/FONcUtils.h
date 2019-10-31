@@ -35,7 +35,6 @@
 #include <netcdf.h>
 
 #include <string>
-using std::string;
 
 #include <BaseType.h>
 using namespace libdap;

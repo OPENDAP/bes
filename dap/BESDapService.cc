@@ -34,6 +34,8 @@
 #include "BESServiceRegistry.h"
 #include "BESDapNames.h"
 
+using std::string;
+
 void
 BESDapService::handle_dap_service( const string &handler )
 {

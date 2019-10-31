@@ -34,6 +34,8 @@
 #include "BESReporter.h"
 
 using std::endl;
+using std::ostream;
+using std::string;
 
 BESReporterList *BESReporterList::_instance = 0 ;
 

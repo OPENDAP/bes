@@ -55,8 +55,6 @@
 #include <cpl_error.h>
 #include <string>
 
-using namespace std;
-
 #define OGC_WCS_OperationNotSupported  		300
 #define OGC_WCS_MissingParameterValue  		301
 #define OGC_WCS_InvalidParameterValue  		302

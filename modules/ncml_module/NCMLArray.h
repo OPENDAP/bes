@@ -52,9 +52,6 @@ using libdap::dods_uint32;
 using libdap::dods_float32;
 using libdap::dods_float64;
 
-using std::string;
-using std::vector;
-
 namespace ncml_module {
 class Shape;
 

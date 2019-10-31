@@ -38,6 +38,8 @@
 #include "config.h"
 
 using std::endl;
+using std::ostream;
+using std::string;
 
 BESAsciiRequestHandler::BESAsciiRequestHandler(const string &name) :
         BESRequestHandler(name)

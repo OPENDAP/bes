@@ -126,7 +126,7 @@ public:
 
     void encode_node(BESInfo *info);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 } // namespace bes

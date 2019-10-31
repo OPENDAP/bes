@@ -35,15 +35,13 @@
 
 #include <string>
 
-using std::string ;
-
 class Animal {
 private:
-    string			_name ;
+	std::string			_name ;
 public:
 				Animal( char *name ) ;
     virtual			~Animal(void) ;
-    virtual string		get_name() ;
+    virtual std::string		get_name() ;
 };
 
 #endif

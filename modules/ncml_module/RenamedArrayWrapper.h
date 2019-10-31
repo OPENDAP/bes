@@ -33,9 +33,6 @@
 #include <Array.h>
 #include <vector>
 
-using std::vector;
-using std::string;
-
 using namespace libdap;
 
 namespace libdap {

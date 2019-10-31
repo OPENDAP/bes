@@ -40,6 +40,7 @@
 using std::string;
 using std::ostringstream;
 using std::endl;
+using std::ostream;
 
 #include "PPTServer.h"
 #include "ServerExitConditions.h"

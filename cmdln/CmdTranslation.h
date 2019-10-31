@@ -40,10 +40,6 @@
 #include <map>
 #include <iostream>
 
-using std::string ;
-using std::map ;
-using std::ostream ;
-
 class BESTokenizer ;
 
 class CmdTranslation
@@ -51,7 +47,7 @@ class CmdTranslation
 private:
     typedef bool (*p_cmd_translator)( BESTokenizer &tokenizer,
 				      xmlTextWriterPtr writer ) ;
-    static map< string, p_cmd_translator > _translations ;
+    static std::map< std::string, p_cmd_translator > _translations ;
 
     static bool			_is_show ;
 
@@ -83,13 +79,13 @@ public:
     static bool			is_show() { return _is_show ; }
     static void			set_show( bool val ) { _is_show = val ; }
 
-    static void			add_translation( const string &name,
+    static void			add_translation( const std::string &name,
 						 p_cmd_translator func ) ;
-    static void			remove_translation( const string &name ) ;
+    static void			remove_translation( const std::string &name ) ;
 
-    static string		translate( const string &commands ) ;
+    static std::string		translate( const std::string &commands ) ;
 
-    static void			dump( ostream &strm ) ;
+    static void			dump( std::ostream &strm ) ;
 } ;
 
 #endif // CmdTranslation_h

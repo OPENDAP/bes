@@ -40,6 +40,9 @@
 #include "config.h"
 
 using std::endl;
+using std::ostream;
+using std::string;
+using std::map;
 
 BESUsageRequestHandler::BESUsageRequestHandler( const string &name )
     : BESRequestHandler( name )

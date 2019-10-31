@@ -36,9 +36,6 @@
 #include <string>
 #include <map>
 
-using std::string;
-using std::map;
-
 #include "BESDefinitionStorage.h"
 
 class BESDefine;
@@ -57,27 +54,27 @@ class BESInfo;
  */
 class BESDefinitionStorageVolatile: public BESDefinitionStorage {
 private:
-    map<string, BESDefine *> _def_list;
-    typedef map<string, BESDefine *>::const_iterator Define_citer;
-    typedef map<string, BESDefine *>::iterator Define_iter;
+	std::map<std::string, BESDefine *> _def_list;
+    typedef std::map<std::string, BESDefine *>::const_iterator Define_citer;
+    typedef std::map<std::string, BESDefine *>::iterator Define_iter;
 public:
     /** @brief create an instance of BESDefinitionStorageVolatile with the give
      * name.
      *
      * @param name name of this persistence store
      */
-    BESDefinitionStorageVolatile(const string &name) :
+    BESDefinitionStorageVolatile(const std::string &name) :
         BESDefinitionStorage(name)
     {
     }
 
     virtual ~BESDefinitionStorageVolatile();
 
-    virtual BESDefine * look_for(const string &def_name);
+    virtual BESDefine * look_for(const std::string &def_name);
 
-    virtual bool add_definition(const string &def_name, BESDefine *d);
+    virtual bool add_definition(const std::string &def_name, BESDefine *d);
 
-    virtual bool del_definition(const string &def_name);
+    virtual bool del_definition(const std::string &def_name);
     virtual bool del_definitions();
 
     virtual void show_definitions(BESInfo &info);

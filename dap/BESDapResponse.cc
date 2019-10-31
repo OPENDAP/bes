@@ -37,6 +37,8 @@
 #include "BESError.h"
 
 using std::endl;
+using std::string;
+using std::ostream;
 
 /** @brief Extract the dap protocol from the setConext information
 

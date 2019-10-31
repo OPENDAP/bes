@@ -32,8 +32,6 @@
 
 #include <string>
 
-using namespace std;
-
 class BESXMLWriter {
 private:
     // Various xml writer stuff
@@ -41,9 +39,9 @@ private:
     xmlBufferPtr d_doc_buf;
     bool d_started;
     bool d_ended;
-    string d_ns_uri;
+    std::string d_ns_uri;
 
-    string d_doc;
+    std::string d_doc;
 
     void m_cleanup() ;
 

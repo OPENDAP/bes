@@ -36,9 +36,6 @@
 #include <map>
 #include <string>
 
-using std::map;
-using std::string;
-
 #include "BESObj.h"
 #include "BESDataHandlerInterface.h"
 
@@ -76,11 +73,11 @@ typedef bool (*p_request_handler_method)(BESDataHandlerInterface &);
  */
 class BESRequestHandler: public BESObj {
 private:
-    map<string, p_request_handler_method> _handler_list;
-    string _name;
+	std::map<std::string, p_request_handler_method> _handler_list;
+	std::string _name;
 
 public:
-    BESRequestHandler(const string &name) :
+    BESRequestHandler(const std::string &name) :
         _name(name)
     {
     }
@@ -89,33 +86,32 @@ public:
     {
     }
 
-    typedef map<string, p_request_handler_method>::const_iterator Handler_citer;
-    typedef map<string, p_request_handler_method>::iterator Handler_iter;
+    typedef std::map<std::string, p_request_handler_method>::const_iterator Handler_citer;
+    typedef std::map<std::string, p_request_handler_method>::iterator Handler_iter;
 
-    virtual const string & get_name() const
+    virtual const std::string & get_name() const
     {
         return _name;
     }
 
-    virtual bool add_method(const string &name, p_request_handler_method method);
+    virtual bool add_method(const std::string &name, p_request_handler_method method);
 
     /// @brief Backward compatibility with the older version of this class.
     /// @deprecated
-    virtual bool add_handler(const string &name, p_request_handler_method method)
+    virtual bool add_handler(const std::string &name, p_request_handler_method method)
     {
         return add_method(name, method);
     }
 
-    virtual bool remove_method(const string &name);
-    virtual p_request_handler_method find_method(const string &name);
+    virtual bool remove_method(const std::string &name);
+    virtual p_request_handler_method find_method(const std::string &name);
 
-    virtual string get_method_names();
+    virtual std::string get_method_names();
     virtual time_t get_lmt(const std::string &name);
 
     virtual void add_attributes(BESDataHandlerInterface &dhi);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // I_BESRequestHandler_h
-

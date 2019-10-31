@@ -47,6 +47,8 @@
 #include "BESStopWatch.h"
 
 using std::endl;
+using std::ostream;
+using std::string;
 
 BESCatalogResponseHandler::BESCatalogResponseHandler(const string &name) :
     BESResponseHandler(name)

@@ -49,15 +49,15 @@
  */
 class BESDASResponseHandler: public BESResponseHandler {
 public:
-    BESDASResponseHandler(const string &name);
+    BESDASResponseHandler(const std::string &name);
     virtual ~BESDASResponseHandler();
 
     virtual void execute(BESDataHandlerInterface &dhi);
     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 
-    static BESResponseHandler *DASResponseBuilder(const string &name);
+    static BESResponseHandler *DASResponseBuilder(const std::string &name);
 };
 
 #endif // I_BESDASResponseHandler_h

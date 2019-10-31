@@ -36,42 +36,39 @@
 #include <string>
 #include <list>
 
-using std::string ;
-using std::list ;
-
 #include "BESObj.h"
 #include "BESContainer.h"
 
 class BESDefine : public BESObj
 {
 private:
-    list<BESContainer *>	_containers ;
-    string			_agg_cmd ;
-    string			_agg_handler ;
+	std::list<BESContainer *>	_containers ;
+	std::string			_agg_cmd ;
+	std::string			_agg_handler ;
 public:
     				BESDefine() {}
     virtual			~BESDefine() ;
 
-    typedef list<BESContainer *>::iterator containers_iter ;
-    typedef list<BESContainer *>::const_iterator containers_citer ;
+    typedef std::list<BESContainer *>::iterator containers_iter ;
+    typedef std::list<BESContainer *>::const_iterator containers_citer ;
 
     void			add_container( BESContainer *container ) ;
     BESDefine::containers_citer first_container() { return _containers.begin() ; }
     BESDefine::containers_citer end_container() { return _containers.end() ; }
 
-    void			set_agg_cmd( const string &cmd )
+    void			set_agg_cmd( const std::string &cmd )
 				{
 				    _agg_cmd = cmd ;
 				}
-    const string &		get_agg_cmd()
+    const std::string &		get_agg_cmd()
 				{
 				    return _agg_cmd ;
 				}
-    void			set_agg_handler( const string &handler )
+    void			set_agg_handler( const std::string &handler )
 				{
 				    _agg_handler = handler ;
 				}
-    const string &		get_agg_handler()
+    const std::string &		get_agg_handler()
 				{
 				    return _agg_handler ;
 				}

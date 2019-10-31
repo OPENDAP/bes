@@ -48,6 +48,8 @@
 #include <cstring>
 #include <cstdlib>
 #include <cerrno>
+#include <map>
+#include <vector>
 
 using std::ifstream;
 using std::ofstream;
@@ -56,6 +58,9 @@ using std::endl;
 using std::cerr;
 using std::flush;
 using std::string;
+using std::map;
+using std::ostringstream;
+using std::vector;
 
 #include "config.h"
 #include "ServerExitConditions.h"

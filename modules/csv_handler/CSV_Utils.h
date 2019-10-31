@@ -41,15 +41,13 @@
 #include <iostream>
 #include <algorithm>
 
-using namespace std ;
-
 class CSV_Utils
 {
 public:
-    static void			split( const string& str,
+    static void			split( const std::string& str,
 				       char delimiter,
-				       vector<string> &tokens ) ;
-    static void			slim( string& str ) ;
+					   std::vector<std::string> &tokens ) ;
+    static void			slim( std::string& str ) ;
 } ;
 
 #endif // I_CSV_Utils_h

@@ -47,16 +47,16 @@ public:
     ReadMetadataElement();
     ReadMetadataElement(const ReadMetadataElement& proto);
     virtual ~ReadMetadataElement();
-    virtual const string& getTypeName() const;
+    virtual const std::string& getTypeName() const;
     virtual ReadMetadataElement* clone() const; // override clone with more specific subclass
     virtual void setAttributes(const XMLAttributeMap& attrs);
     virtual void handleBegin();
-    virtual void handleContent(const string& content);
+    virtual void handleContent(const std::string& content);
     virtual void handleEnd();
-    virtual string toString() const;
+    virtual std::string toString() const;
 
-    static const string _sTypeName;
-    static const vector<string> _sValidAttributes; // will be empty
+    static const std::string _sTypeName;
+    static const std::vector<std::string> _sValidAttributes; // will be empty
 };
 
 }

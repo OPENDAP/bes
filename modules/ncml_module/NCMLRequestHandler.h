@@ -41,7 +41,7 @@ class NCMLRequestHandler: public BESRequestHandler {
 private:
     // rep
     static bool _global_attributes_container_name_set;
-    static string _global_attributes_container_name;
+    static std::string _global_attributes_container_name;
 
 private:
 #if 0
@@ -50,10 +50,10 @@ private:
     static bool ncml_build_redirect( BESDataHandlerInterface &dhi, const string& location );
 #endif
 public:
-    NCMLRequestHandler(const string &name);
+    NCMLRequestHandler(const std::string &name);
     virtual ~NCMLRequestHandler(void);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 
     static bool ncml_build_das(BESDataHandlerInterface &dhi);
     static bool ncml_build_dds(BESDataHandlerInterface &dhi);
@@ -62,7 +62,7 @@ public:
     static bool ncml_build_vers(BESDataHandlerInterface &dhi);
     static bool ncml_build_help(BESDataHandlerInterface &dhi);
 
-    static string get_global_attributes_container_name()
+    static std::string get_global_attributes_container_name()
     {
         return _global_attributes_container_name;
     }

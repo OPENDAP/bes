@@ -46,6 +46,7 @@
 #include <ctime>
 #include <cassert>
 #include <vector>
+#include <list>
 
 #include <sstream>
 #include <iostream>
@@ -56,6 +57,8 @@ using std::cout;
 using std::endl;
 using std::vector;
 using std::string;
+using std::list;
+using std::ostream;
 
 #include "TheBESKeys.h"
 #include "BESUtil.h"

@@ -36,11 +36,6 @@
 #include <list>
 #include <string>
 
-#if 0
-using std::std::list;
-using std::std::string;
-#endif
-
 #include "BESFSFile.h"
 
 class BESFSDir {

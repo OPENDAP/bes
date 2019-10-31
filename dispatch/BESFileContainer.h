@@ -36,9 +36,6 @@
 #include <list>
 #include <string>
 
-using std::list;
-using std::string;
-
 #include "BESContainer.h"
 
 /** @brief Holds real data, container type and constraint for symbolic name
@@ -59,7 +56,7 @@ using std::string;
 class BESFileContainer: public BESContainer {
 private:
     bool _cached;
-    string _target;
+    std::string _target;
 
     BESFileContainer() : BESContainer(), _cached(false), _target("")
     {
@@ -69,11 +66,11 @@ protected:
     virtual void _duplicate(BESContainer &copy_to);
 
 public:
-	static const string UNCOMPRESS_CACHE_DIR_KEY;
-	static const string UNCOMPRESS_CACHE_PREFIX_KEY;
-	static const string UNCOMPRESS_CACHE_SIZE_KEY;
+	static const std::string UNCOMPRESS_CACHE_DIR_KEY;
+	static const std::string UNCOMPRESS_CACHE_PREFIX_KEY;
+	static const std::string UNCOMPRESS_CACHE_SIZE_KEY;
 
-	BESFileContainer(const string &sym_name, const string &real_name, const string &type);
+	BESFileContainer(const std::string &sym_name, const std::string &real_name, const std::string &type);
 
     BESFileContainer(const BESFileContainer &copy_from);
 
@@ -84,7 +81,7 @@ public:
 
     virtual BESContainer * ptr_duplicate();
 
-    virtual string access();
+    virtual std::string access();
 
     virtual bool release();
 

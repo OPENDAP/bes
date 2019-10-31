@@ -33,6 +33,9 @@
 #include "BESContainerStorage.h"
 #include "BESInfo.h"
 
+using std::string;
+using std::map;
+
 /** @brief add information for a container to the informational response object
  *
  * @param sym_name symbolic name of the container to add

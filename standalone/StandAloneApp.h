@@ -32,9 +32,6 @@
 
 #include <fstream>
 
-using std::ofstream ;
-using std::ifstream ;
-
 #include "BESModuleApp.h"
 
 class StandAloneClient ;
@@ -45,7 +42,7 @@ private:
     StandAloneClient *		_client ;
     string			_cmd ;
     ofstream *			_outputStrm ;
-    ifstream *			_inputStrm ;
+    std::ifstream *			_inputStrm ;
     bool			_createdInputStrm ;
     int				_repeat ;
 

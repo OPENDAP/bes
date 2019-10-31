@@ -64,19 +64,19 @@ private:
     GatewayCache();
     GatewayCache(const GatewayCache &src);
 
-    static string getCacheDirFromConfig();
-    static string getCachePrefixFromConfig();
+    static std::string getCacheDirFromConfig();
+    static std::string getCachePrefixFromConfig();
     static unsigned long getCacheSizeFromConfig();
 
 protected:
-    GatewayCache(const string &cache_dir, const string &prefix, unsigned long long size);
+    GatewayCache(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
 
 public:
-	static const string DIR_KEY;
-	static const string PREFIX_KEY;
-	static const string SIZE_KEY;
+	static const std::string DIR_KEY;
+	static const std::string PREFIX_KEY;
+	static const std::string SIZE_KEY;
 
-    static GatewayCache *get_instance(const string &cache_dir, const string &prefix, unsigned long long size);
+    static GatewayCache *get_instance(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
     static GatewayCache *get_instance();
 
 	virtual ~GatewayCache() { }
