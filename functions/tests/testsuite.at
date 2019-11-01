@@ -107,6 +107,7 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/geogrid_3.dods.bescmd, xfail)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/linear_scale.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/linear_scale_2.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/linear_scale_3.dods.bescmd)
+AT_BESCMD_DAP_FUNCTION_RESPONSE_TEST(bescmd/linear_scale.dap.bescmd)
 
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/make_array.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/make_array_2.dods.bescmd)

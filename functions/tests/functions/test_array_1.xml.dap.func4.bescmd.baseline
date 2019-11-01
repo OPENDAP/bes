@@ -3,13 +3,13 @@
     <Float64 name="x1">
         <Dim size="5"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>eac1aa87</Value>
+            removed checksum
         </Attribute>
     </Float64>
     <Float64 name="x2">
         <Dim size="5"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>2468f761</Value>
+            removed checksum
         </Attribute>
     </Float64>
 </Dataset>

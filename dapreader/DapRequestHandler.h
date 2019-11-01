@@ -57,8 +57,10 @@ public:
 
 	static bool dap_build_vers(BESDataHandlerInterface &dhi);
 	static bool dap_build_help(BESDataHandlerInterface &dhi);
-
-	virtual void dump(std::ostream &strm) const;
+#if 0
+    void add_attributes(BESDataHandlerInterface &dhi);
+#endif
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // DapRequestHandler.h
