@@ -130,6 +130,11 @@ class HDF5RequestHandler:public BESRequestHandler {
     static string get_latlon_disk_cachefile_prefix() { return _latlon_disk_cachefile_prefix;}
     static long get_latlon_disk_cache_size() {return _latlon_disk_cache_size;}
  
+    // This handler supports the "not including attributes" in
+    // the data access feature. Attributes are generated only
+    // if necessary. KY 10/30/19
+    void add_attributes(BESDataHandlerInterface &dhi);
+
   private:
      //cache variables. 
 
@@ -192,6 +197,7 @@ class HDF5RequestHandler:public BESRequestHandler {
      static bool hdf5_build_data_with_IDs(BESDataHandlerInterface &dhi);
      static bool hdf5_build_dmr_with_IDs(BESDataHandlerInterface &dhi);
      static void get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDSResponse*data_bdds,const std::string &container_name,const std::string &filename, const std::string &dds_cache_fname, const std::string &das_cache_fname,bool dds_from_dc,bool das_from_dc, bool build_data);
+     static void get_dds_without_attributes_datadds(BESDataDDSResponse*data_bdds,const std::string &container_name,const std::string &filename);
 
      static void read_dds_from_disk_cache(BESDDSResponse* bdds, BESDataDDSResponse* data_bdds,bool build_data,const std::string & container_name,const std::string & h5_fname,
                               const std::string & dds_cache_fname,const std::string &das_cache_fname, hid_t h5_fd, bool das_from_dc);
