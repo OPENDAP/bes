@@ -546,7 +546,7 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
         
             Ancillary::read_ancillary_dds( *dds, filename ) ;
 
-            // Generate the DDS cached file if needed,currently this if is always false by default
+            // Generate the DDS cached file if needed,currently this is always false by default
             if(dds_cache_fname!="" && dds_from_dc == false) 
                 write_dds_to_disk_cache(dds_cache_fname,dds);
 

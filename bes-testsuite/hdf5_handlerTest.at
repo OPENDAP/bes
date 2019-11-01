@@ -428,6 +428,15 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST([t_int64_dap4.h5.dap.bescmd])
 #AT_BESCMD_DAP4DATA_RESPONSE_TEST([grid_1_2d.h5.dap_ce_2.bescmd])
 
 AT_BESCMD_RESPONSE_TEST([swath_unlim.h5.dmr.bescmd])
+
+# These tests call a function 'test(<name>)' that does not actually use variables
+# from the dataset named in the 'URL,' but does pull attributes from the dataset.
+# This tests that the DDS used as an argument to a function does contain attributes.
+# ky 11/1/19
+AT_BESCMD_RESPONSE_TEST([grid_1_2d.h5.function.ddx.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_2d.h5.function.dods.bescmd])
+
+
 # Test default cases.
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_compound.h5.das.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST_DEFAULT([d_compound.h5.data.bescmd])
@@ -549,5 +558,13 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_comp.h5.dmr.bescmd])
 
 #group attributes(including the root)
 AT_BESCMD_RESPONSE_TEST_DEFAULT([t_group_scalar_attrs.h5.dmr.bescmd])
+
+# These tests call a function 'test(<name>)' that does not actually use variables
+# from the dataset named in the 'URL,' but does pull attributes from the dataset.
+# This tests that the DDS used as an argument to a function does contain attributes.
+# ky 11/1/19
+AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int8.h5.function.ddx.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST_DEFAULT([d_int8.h5.function.dods.bescmd])
+
 
 
