@@ -458,6 +458,46 @@ bool DapRequestHandler::dap_build_data(BESDataHandlerInterface &dhi)
     return true;
 }
 
+#if 0
+void DapRequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
+
+    BESResponseObject *response = dhi.response_handler->get_response_object();
+    BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *>(response);
+    if (!bdds)
+        throw BESInternalError("cast error", __FILE__, __LINE__);
+
+    DDS *dds = bdds->get_dds();
+    string container_name = bdds->get_explicit_containers() ? dhi.container->get_symbolic_name(): "";
+    string dataset_name = dhi.container->access();
+    DAS* das = 0;
+    {
+        das = new DAS;
+        // This looks at the 'use explicit containers' prop, and if true
+        // sets the current container for the DAS.
+        if (!container_name.empty()) das->container_name(container_name);
+
+        nc_read_dataset_attributes(*das, dataset_name);
+        Ancillary::read_ancillary_das(*das, dataset_name);
+
+        dds->transfer_attributes(das);
+
+        // Only free the DAS if it's not added to the cache
+        if (das_cache) {
+            // add a copy
+            BESDEBUG(NC_NAME, "DAS added to the cache for : " << dataset_name << endl);
+            das_cache->add(das, dataset_name);
+        }
+        else {
+            delete das;
+        }
+    }
+
+    BESDEBUG(NC_NAME, "Data ACCESS in add_attributes(): set the including attribute flag to true: "<<dataset_name << endl);
+    bdds->set_ia_flag(true);
+    return;
+}
+#endif
+
 bool DapRequestHandler::dap_build_vers(BESDataHandlerInterface &dhi)
 {
     BESVersionInfo *info = dynamic_cast<BESVersionInfo *>(dhi.response_handler->get_response_object());
