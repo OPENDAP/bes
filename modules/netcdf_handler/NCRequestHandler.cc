@@ -412,15 +412,12 @@ bool NCRequestHandler::nc_build_dds(BESDataHandlerInterface & dhi)
                     NCRequestHandler::_show_shared_dims = true;
             }
         }
-        string container_name = bdds->get_explicit_containers() ? dhi.container->get_symbolic_name(): "";
 
-        DMR *dmr = new DMR();
-        get_dmr(dhi.container->access(), dmr);
+        string container_name = bdds->get_explicit_containers() ? dhi.container->get_symbolic_name(): "";
+        DDS *dds = bdds->get_dds();
 
         // Build a DDS in the empty DDS object
-        DDS *dds = dmr->getDDS(NCRequestHandler::_show_shared_dims);
-        // TODO:
-        bdds->set_dds(dds);
+        get_dds_with_attributes(dhi.container->access(), container_name, dds);
 
         bdds->set_constraint(dhi);
         bdds->clear_container();
@@ -478,18 +475,15 @@ bool NCRequestHandler::nc_build_data(BESDataHandlerInterface & dhi)
         DMR *dmr = new DMR();
         get_dmr(dhi.container->access(), dmr);
 
-<<<<<<< HEAD
         // Build a DDS in the empty DDS object
         DDS *dds = dmr->getDDS(NCRequestHandler::_show_shared_dims);
         bdds->set_dds(dds);
-=======
         // Build a DDS in the empty DDS object,don't include attributes here. KY 10/30/19
-        get_dds_without_attributes(dhi.container->access(), container_name, dds);
->>>>>>> master
+//        get_dds_without_attributes(dhi.container->access(), container_name, dds); <---------------- !!!!!!!!!!!!
 
         bdds->set_constraint(dhi);
         BESDEBUG(NC_NAME, "Data ACCESS build_data(): set the including attribute flag to false: "<<dhi.container->access() << endl);
-        bdds->set_ia_flag(false);
+//        bdds->set_ia_flag(false); <------------------ !!!!!!!!!!!!
         bdds->clear_container();
     }
     catch (BESError &e) {
@@ -539,7 +533,60 @@ bool NCRequestHandler::nc_build_dmr(BESDataHandlerInterface &dhi)
     DMR *dmr = bdmr.get_dmr();
 
 	try {
-        NCRequestHandler::get_dmr(dataset_name, dmr);
+        DMR* cached_dmr_ptr = 0;
+        if (dmr_cache && (cached_dmr_ptr = static_cast<DMR*>(dmr_cache->get(dataset_name)))) {
+            // copy the cached DMR into the BES response object
+            BESDEBUG(NC_NAME, "DMR Cached hit for : " << dataset_name << endl);
+            *dmr = *cached_dmr_ptr; // Copy the referenced object
+        }
+        else {
+#if 0
+            // this version builds and caches the DDS/DAS info.
+            BaseTypeFactory factory;
+            DDS dds(&factory, name_path(dataset_name), "3.2");
+
+            // This will get the DDS, either by building it or from the cache
+            get_dds_with_attributes(dataset_name, "", &dds);
+
+            dmr->set_factory(new D4BaseTypeFactory);
+            dmr->build_using_dds(dds);
+#else
+            // This version builds a DDS only to build the resulting DMR. The DDS is
+            // not cached. It does look in the DDS cache, just in case...
+            dmr->set_factory(new D4BaseTypeFactory);
+
+            DDS *dds_ptr = 0;
+            if (dds_cache && (dds_ptr = static_cast<DDS*>(dds_cache->get(dataset_name)))) {
+                // Use the cached DDS; Assume that all cached DDS objects hold DAS info too
+                BESDEBUG(NC_NAME, "DDS Cached hit (while building DMR) for : " << dataset_name << endl);
+
+                dmr->build_using_dds(*dds_ptr);
+            }
+            else {
+                // Build a throw-away DDS; don't bother to cache it. DMR's don't support
+                // containers.
+                BaseTypeFactory factory;
+                DDS dds(&factory, name_path(dataset_name), "3.2");
+
+                dds.filename(dataset_name);
+                nc_read_dataset_variables(dds, dataset_name);
+
+                DAS das;
+
+                nc_read_dataset_attributes(das, dataset_name);
+                Ancillary::read_ancillary_das(das, dataset_name);
+
+                dds.transfer_attributes(&das);
+                dmr->build_using_dds(dds);
+            }
+#endif
+
+            if (dmr_cache) {
+                // add a copy
+                BESDEBUG(NC_NAME, "DMR added to the cache for : " << dataset_name << endl);
+                dmr_cache->add(new DMR(*dmr), dataset_name);
+            }
+        }
 
         // Instead of fiddling with the internal storage of the DHI object,
         // (by setting dhi.data[DAP4_CONSTRAINT], etc., directly) use these
@@ -611,7 +658,6 @@ bool NCRequestHandler::nc_build_version(BESDataHandlerInterface & dhi)
     return true;
 }
 
-<<<<<<< HEAD
 /**
  * @brief Using the empty DMR object, build a DMR
  * @param dataset_name
@@ -653,7 +699,7 @@ void NCRequestHandler::get_dmr(const string& dataset_name, DMR* dmr){
         }
     }
 }
-=======
+
 void NCRequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
@@ -693,4 +739,3 @@ void NCRequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
     bdds->set_ia_flag(true);
     return;
 }
->>>>>>> master

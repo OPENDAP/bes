@@ -55,11 +55,8 @@ private:
     static ObjMemCache *dmr_cache;
 
     static void get_dds_with_attributes(const std::string& dataset_name, const std::string& container_name, libdap::DDS* dds);
-<<<<<<< HEAD
-    static void get_dmr(const string& dataset_name, libdap::DMR* dmr);
-=======
+    static void get_dmr(const std::string& dataset_name, libdap::DMR* dmr);
     static void get_dds_without_attributes(const std::string& dataset_name, const std::string& container_name, libdap::DDS* dds);
->>>>>>> master
 
 public:
 	NCRequestHandler(const std::string &name);

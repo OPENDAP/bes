@@ -77,6 +77,7 @@ public:
     {
         string response_string = get_request_type();
         try {
+
             send_internal(obj, dhi);
         }
         catch (InternalErr &e) {

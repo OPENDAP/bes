@@ -168,6 +168,7 @@ void VariableElement::processBegin(NCMLParser& p)
 
     // If a request to rename the variable
     if (!_orgName.empty()) {
+        if(p._pVar != NULL && p._pVar->type() != dods_structure_c) p._pVar = NULL; // <--------------------- ???????
         processRenameVariable(p);
     }
     else // Otherwise see if it's an existing or new variable _name at scope of p
