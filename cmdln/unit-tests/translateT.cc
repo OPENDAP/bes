@@ -357,7 +357,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( translateT );
 int main(int argc, char *argv[])
 {
     GetOpt getopt(argc, argv, "dh");
-    char option_char;
+    int option_char;
 
     while ((option_char = getopt()) != -1)
         switch (option_char) {
