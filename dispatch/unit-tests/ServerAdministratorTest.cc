@@ -207,7 +207,7 @@ int main(int argc, char*argv[])
 
     int start = 0;
     GetOpt getopt(argc, argv, "bdh");
-    char option_char;
+    int option_char;
     while ((option_char = getopt()) != EOF)
         switch (option_char) {
         case 'd': {

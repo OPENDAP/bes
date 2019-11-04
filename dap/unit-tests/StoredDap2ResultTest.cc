@@ -497,7 +497,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(StoredDap2ResultTest);
 int main(int argc, char*argv[])
 {
     GetOpt getopt(argc, argv, "dh");
-    char option_char;
+    int option_char;
     while ((option_char = getopt()) != EOF)
         switch (option_char) {
         case 'd':
