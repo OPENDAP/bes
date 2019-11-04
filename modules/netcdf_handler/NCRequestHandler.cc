@@ -362,9 +362,8 @@ void NCRequestHandler::get_dds_without_attributes(const string& dataset_name, co
     // Look in memory cache if it's initialized
     DDS* cached_dds_ptr = 0;
     if (dds_cache && (cached_dds_ptr = static_cast<DDS*>(dds_cache->get(dataset_name)))) {
-        // copy the cached DDS into the BES response object. Assume that any cached DDS
-        // includes the DAS information.
-        BESDEBUG(NC_NAME, "DDS Cached hit for : " << dataset_name << endl);
+        // copy the cached DDS into the BES response object. 
+        BESDEBUG(NC_NAME, "DataDDS Cached hit for : " << dataset_name << endl);
         *dds = *cached_dds_ptr; // Copy the referenced object
     }
     else {
@@ -375,7 +374,7 @@ void NCRequestHandler::get_dds_without_attributes(const string& dataset_name, co
 
         if (dds_cache) {
             // add a copy
-            BESDEBUG(NC_NAME, "DDS added to the cache for : " << dataset_name << endl);
+            BESDEBUG(NC_NAME, "DataDDS added to the cache for : " << dataset_name << endl);
             dds_cache->add(new DDS(*dds), dataset_name);
         }
     }
