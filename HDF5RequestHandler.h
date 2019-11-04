@@ -145,6 +145,7 @@ class HDF5RequestHandler:public BESRequestHandler {
 
      static ObjMemCache *das_cache;
      static ObjMemCache *dds_cache;
+     static ObjMemCache *datadds_cache;
      static ObjMemCache *dmr_cache;
      static ObjMemCache *lrdata_mem_cache;
      static ObjMemCache *srdata_mem_cache;

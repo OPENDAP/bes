@@ -130,6 +130,7 @@ float HDF5RequestHandler::_cache_purge_level = 0.2;
 // Metadata object cache at DAS,DDS and DMR.
 ObjMemCache *HDF5RequestHandler::das_cache = 0;
 ObjMemCache *HDF5RequestHandler::dds_cache = 0;
+ObjMemCache *HDF5RequestHandler::datadds_cache = 0;
 ObjMemCache *HDF5RequestHandler::dmr_cache = 0;
 
 ObjMemCache *HDF5RequestHandler::lrdata_mem_cache = 0;
@@ -214,6 +215,7 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
     if (get_mdcache_entries()) {  // else it stays at its default of null
         das_cache = new ObjMemCache(get_mdcache_entries(), get_cache_purge_level());
         dds_cache = new ObjMemCache(get_mdcache_entries(), get_cache_purge_level());
+        datadds_cache = new ObjMemCache(get_mdcache_entries(), get_cache_purge_level());
         dmr_cache = new ObjMemCache(get_mdcache_entries(), get_cache_purge_level());
     }
 
@@ -298,6 +300,7 @@ HDF5RequestHandler::~HDF5RequestHandler()
     // delete the cache.
     delete das_cache;
     delete dds_cache;
+    delete datadds_cache;
     delete dmr_cache;
     delete lrdata_mem_cache;
     delete srdata_mem_cache;
@@ -621,15 +624,15 @@ void HDF5RequestHandler::get_dds_without_attributes_datadds(BESDataDDSResponse*d
 
         // Look in memory cache to see if it's initialized
         DDS* cached_dds_ptr = 0;
-        bool use_dds_cache = false;
-        if (dds_cache) 
-            cached_dds_ptr = static_cast<DDS*>(dds_cache->get(filename));
+        bool use_datadds_cache = false;
+        if (datadds_cache) 
+            cached_dds_ptr = static_cast<DDS*>(datadds_cache->get(filename));
         if (cached_dds_ptr) 
-            use_dds_cache = true;
-        if (true == use_dds_cache) {
-            // copy the cached DDS into the BES response object. Assume that any cached DDS
-            // includes the DAS information.
-            BESDEBUG(HDF5_NAME, "DDS Metadata Cached hit for : " << filename << endl);
+            use_datadds_cache = true;
+        if (true == use_datadds_cache) {
+            // copy the cached DDS into the BES response object. 
+            // The DAS information is not included.
+            BESDEBUG(HDF5_NAME, "DataDDS Metadata Cached hit for : " << filename << endl);
             *dds = *cached_dds_ptr; // Copy the referenced object
         }
         else {
@@ -692,10 +695,10 @@ void HDF5RequestHandler::get_dds_without_attributes_datadds(BESDataDDSResponse*d
 #endif
         
             // Add memory cache if possible
-            if (dds_cache) {
+            if (datadds_cache) {
             	// add a copy
-                BESDEBUG(HDF5_NAME, "DDS added to the cache for : " << filename << endl);
-                dds_cache->add(new DDS(*dds), filename);
+                BESDEBUG(HDF5_NAME, "DataDDS added to the cache for : " << filename << endl);
+                datadds_cache->add(new DDS(*dds), filename);
             }
 
             if(cf_fileid != -1)
@@ -704,6 +707,8 @@ void HDF5RequestHandler::get_dds_without_attributes_datadds(BESDataDDSResponse*d
                 H5Fclose(fileid);
  
         }
+        BESDEBUG(HDF5_NAME, "Data ACCESS build_data(): set the including attribute flag to false: "<<filename << endl);
+        data_bdds->set_ia_flag(false);
     
     }
     catch(InternalErr & e) {
@@ -1049,13 +1054,6 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         string dds_cache_fname;
         string das_cache_fname;
 
-        // May uncomment the following code to check if the server-side function is used.
-#if 0
-        ConstraintEvaluator & eval = bdds->get_ce();
-        string t_constraint = dhi.container->get_constraint();
-
-        bool function_in_constraint = is_function_used(eval,t_constraint);
-#endif
 
         // Only DAS is read from the cache. dds_from_dc is always false.
         if(_use_disk_meta_cache == true) {
@@ -1068,7 +1066,8 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 
         }
 
-        get_dds_with_attributes(NULL,bdds, container_name,filename, dds_cache_fname,das_cache_fname,dds_from_dc,das_from_dc,build_data);
+        //get_dds_with_attributes(NULL,bdds, container_name,filename, dds_cache_fname,das_cache_fname,dds_from_dc,das_from_dc,build_data);
+        get_dds_without_attributes_datadds(bdds,container_name,filename);
 
         bdds->set_constraint( dhi ) ;
         bdds->clear_container() ;
