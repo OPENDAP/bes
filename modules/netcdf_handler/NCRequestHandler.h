@@ -51,6 +51,7 @@ private:
 
     static ObjMemCache *das_cache;
     static ObjMemCache *dds_cache;
+    static ObjMemCache *datadds_cache;
     static ObjMemCache *dmr_cache;
 
     static void get_dds_with_attributes(const std::string& dataset_name, const std::string& container_name, libdap::DDS* dds);

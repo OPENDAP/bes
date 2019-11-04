@@ -79,6 +79,7 @@ float NCRequestHandler::_cache_purge_level = 0.2;
 
 ObjMemCache *NCRequestHandler::das_cache = 0;
 ObjMemCache *NCRequestHandler::dds_cache = 0;
+ObjMemCache *NCRequestHandler::datadds_cache = 0;
 ObjMemCache *NCRequestHandler::dmr_cache = 0;
 
 extern void nc_read_dataset_attributes(DAS & das, const string & filename);
@@ -222,6 +223,7 @@ NCRequestHandler::NCRequestHandler(const string &name) :
     if (get_cache_entries()) {  // else it stays at its default of null
         das_cache = new ObjMemCache(get_cache_entries(), get_cache_purge_level());
         dds_cache = new ObjMemCache(get_cache_entries(), get_cache_purge_level());
+        datadds_cache = new ObjMemCache(get_cache_entries(), get_cache_purge_level());
         dmr_cache = new ObjMemCache(get_cache_entries(), get_cache_purge_level());
     }
 
@@ -232,6 +234,7 @@ NCRequestHandler::~NCRequestHandler()
 {
     delete das_cache;
     delete dds_cache;
+    delete datadds_cache;
     delete dmr_cache;
 }
 
@@ -360,11 +363,11 @@ void NCRequestHandler::get_dds_with_attributes(const string& dataset_name, const
 void NCRequestHandler::get_dds_without_attributes(const string& dataset_name, const string& container_name, DDS* dds)
 {
     // Look in memory cache if it's initialized
-    DDS* cached_dds_ptr = 0;
-    if (dds_cache && (cached_dds_ptr = static_cast<DDS*>(dds_cache->get(dataset_name)))) {
+    DDS* cached_datadds_ptr = 0;
+    if (datadds_cache && (cached_datadds_ptr = static_cast<DDS*>(datadds_cache->get(dataset_name)))) {
         // copy the cached DDS into the BES response object. 
         BESDEBUG(NC_NAME, "DataDDS Cached hit for : " << dataset_name << endl);
-        *dds = *cached_dds_ptr; // Copy the referenced object
+        *dds = *cached_datadds_ptr; // Copy the referenced object
     }
     else {
         if (!container_name.empty()) dds->container_name(container_name);
@@ -372,10 +375,10 @@ void NCRequestHandler::get_dds_without_attributes(const string& dataset_name, co
 
         nc_read_dataset_variables(*dds, dataset_name);
 
-        if (dds_cache) {
+        if (datadds_cache) {
             // add a copy
             BESDEBUG(NC_NAME, "DataDDS added to the cache for : " << dataset_name << endl);
-            dds_cache->add(new DDS(*dds), dataset_name);
+            datadds_cache->add(new DDS(*dds), dataset_name);
         }
     }
 }
