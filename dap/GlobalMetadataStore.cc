@@ -1267,3 +1267,28 @@ GlobalMetadataStore::get_dds_object(const string &name)
     return dds.release();
 }
 
+
+void
+GlobalMetadataStore::parse_das_from_mds(libdap::DAS* das, const std::string &name) {
+    string suffix = "das_r";
+    string item_name = get_cache_file_name(get_hash(name + suffix), false);
+    int fd; // value-result parameter;
+    if (get_read_lock(item_name, fd)) {
+        VERBOSE("Metadata store: Cache hit: read " << " response for '" << name << "'." << endl);
+        BESDEBUG(DEBUG_KEY, __FUNCTION__ << " Found " << item_name << " in the store." << endl);
+        try {
+            // Just generate the DAS by parsing from the file
+            das->parse(item_name);
+            unlock_and_close(item_name); // closes fd
+        }
+        catch (...) {
+            unlock_and_close(item_name);
+            throw;
+        }
+    }
+    else {
+        throw BESInternalError("Could not open '" + item_name + "' in the metadata store.", __FILE__, __LINE__);
+    }
+
+}
+

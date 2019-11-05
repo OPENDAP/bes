@@ -77,3 +77,12 @@ NC.CacheEntries = 100
 
 # NC.CachePurgeLevel = 0.2
 
+# Using MDS to parse attributes, currently only for the data access.
+# To use this feature, users need to change the key to true. 
+NC.UseMDS=false
+
+#Change the following four keys with the MDS directories at your own server.
+DAP.GlobalMetadataStore.path = /******/share/mds/nc-mds
+DAP.GlobalMetadataStore.prefix = mds_for_tests_
+DAP.GlobalMetadataStore.size = 0
+DAP.GlobalMetadataStore.ledger = /******/share/mds/nc-mds/mds_for_tests_ledger.txt

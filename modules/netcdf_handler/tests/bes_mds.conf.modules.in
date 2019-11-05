@@ -1,0 +1,88 @@
+BES.ServerAdministrator=admin.email.address@your.domain.name
+
+BES.User=user_name
+BES.Group=group_name
+
+BES.LogName=./bes.log
+BES.LogVerbose=no
+
+BES.modules=dap,cmd,nc,functions
+BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
+BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
+BES.module.nc=@abs_top_builddir@/modules/netcdf_handler/.libs/libnc_module.so
+BES.module.functions=@abs_top_builddir@/functions/.libs/libfunctions_module.so
+
+BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/netcdf_handler
+BES.Data.RootDirectory=/dev/null
+
+BES.Catalog.catalog.TypeMatch=nc:.*.nc(.bz2|.gz|.Z)?$;
+
+BES.Catalog.catalog.Include=;
+BES.Catalog.catalog.Exclude=^\..*;
+
+BES.FollowSymLinks=No
+BES.Catalog.catalog.FollowSymLinks=No
+
+BES.ServerPort=10002
+# BES.ServerUnixSocket=/tmp/bes.socket
+
+BES.ServerSecure=no
+BES.ServerSecurePort=10003
+BES.ServerCertFile=/full/path/to/serverside/certificate/file.pem
+BES.ServerKeyFile=/full/path/to/serverside/key/file.pem
+BES.ClientCertFile=/full/path/to/clientside/certificate/file.pem
+BES.ClientKeyFile=/full/path/to/clientside/key/file.pem
+
+#-----------------------------------------------------------------------#
+# help file locations, for text, html, and xml versions                 #
+#-----------------------------------------------------------------------#
+BES.Help.TXT=@pkgdatadir@/bes_help.txt
+BES.Help.HTML=@pkgdatadir@/bes_help.html
+BES.Help.XML=@pkgdatadir@/bes_help.txt
+
+DAP.Help.TXT=@pkgdatadir@/dap_help.txt
+DAP.Help.HTML=@pkgdatadir@/dap_help.html
+DAP.Help.XML=@pkgdatadir@/dap_help.txt
+
+#-----------------------------------------------------------------------#
+# Should informational response objects be buffered, or streamed        #
+# Should informational objects be formatted as text, html, or xml       #
+#-----------------------------------------------------------------------#
+BES.Info.Buffered=no
+BES.Info.Type=xml
+
+
+BES.UncompressCache.dir=/tmp
+BES.UncompressCache.prefix=uncompress_cache
+BES.UncompressCache.size=500
+
+BES.Container.Persistence=strict
+
+BES.Memory.GlobalArea.EmergencyPoolSize=1
+BES.Memory.GlobalArea.MaximumHeapSize=20
+BES.Memory.GlobalArea.Verbose=no
+BES.Memory.GlobalArea.ControlHeap=no
+
+BES.ProcessManagerMethod=multiple
+
+BES.DefaultResponseMethod=POST
+
+#-----------------------------------------------------------------------#
+#                                                                       #
+# Data Handler Specific key/value parameters                            #
+#                                                                       #
+#-----------------------------------------------------------------------#
+NC.ShowSharedDimensions=false
+
+NC.CacheEntries = 100
+# NC.CachePurgeLevel = 0.2
+
+NC.UseMDS=true
+
+# MDS configuration - for the tests the read the DDS and DAS from the MDS,
+# use the saved/baseline MDS in data/mds_for_tests
+
+DAP.GlobalMetadataStore.path = @abs_top_builddir@/modules/netcdf_handler/tests/mds_for_tests
+DAP.GlobalMetadataStore.prefix = mds_for_tests_
+DAP.GlobalMetadataStore.size = 0
+
