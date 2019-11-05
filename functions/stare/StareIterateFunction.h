@@ -26,28 +26,33 @@
 namespace libdap {
 class BaseType;
 class DDS;
+
+class D4RValueList;
+class DMR;
 }
 
 namespace functions {
 
 bool hasValue(libdap::BaseType *bt, std::vector<uint64_t> stareIndices);
 
-int count(libdap::BaseType *bt, std::vector<uint64_t> stareIndices);
+unsigned int count(libdap::BaseType *bt, std::vector<uint64_t> stareIndices);
 
 
 
-libdap::BaseType *stare_dap4_function(libdap::D4RValueList *args, libdap::DMR &dmr);
+libdap::BaseType *stare_intersection_dap4_function(libdap::D4RValueList *args, libdap::DMR &dmr);
+
+libdap::BaseType *stare_count_dap4_function(libdap::D4RValueList *args, libdap::DMR &dmr);
 
 class StareIterateFunction: public libdap::ServerFunction {
 public:
 	StareIterateFunction()
 	{
-		setName("stare_iterate");
-		setDescriptionString("The stare_iterate() function will iterate over a given variable and generate two vectors: one for the stare indices and one for the matching data values");
+		setName("stare_intersection");
+		setDescriptionString("The stare_intersection TODO: ");
 		//setUsageString("linear_scale(var) | linear_scale(var,scale_factor,add_offset) | linear_scale(var,scale_factor,add_offset,missing_value)");
 		//setRole("http://services.opendap.org/dap4/server-side-function/linear-scale");
 		//setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#linear_scale");
-		setFunction(stare_dap4_function);
+		setFunction(stare_intersection_dap4_function);
 		setVersion("0.1");
 	}
 	virtual ~StareIterateFunction()

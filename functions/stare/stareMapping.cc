@@ -365,7 +365,12 @@ void writeHDF5(const string &filename, vector<coords> coordVals, vector<uint64> 
 	H5Sclose(dataspace);
 	H5Fclose(file);
 
-	VERBOSE(cerr << "Data written to file: " << filename << endl);
+	VERBOSE(cerr << "\nData written to file: " << filename << endl);
+
+    //Store the sidecar files in /tmp/ so that it can easily be found for the server functions
+	string tmpStorage = "/tmp/" + filename;
+	rename(filename.c_str(), tmpStorage.c_str());
+	VERBOSE(cerr << "Data moved to: " << tmpStorage << endl);
 }
 
 

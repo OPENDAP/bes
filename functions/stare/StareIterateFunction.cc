@@ -55,6 +55,7 @@
 
 #include "BESDebug.h"
 #include "BESUtil.h"
+#include "BESInternalError.h"
 
 using namespace libdap;
 
@@ -63,12 +64,13 @@ struct coords {
 	int y;
 };
 
+//TODO: Make into Template
 struct returnVal {
-//TODO: These should probably be arrays
-	int x;
-	int y;
-	uint64 stareVal;
-	BaseType *dataVal;
+//TODO: These should probably be arrays/vectors
+	vector<int> x;
+	vector<int> y;
+	vector<uint64> stareVal;
+	vector<BaseType*> dataVal;
 };
 
 namespace functions {
@@ -157,7 +159,8 @@ bool hasValue(vector<dods_uint64> *stareVal, vector<uint64> *stareIndices) {
 
 	for (auto i = stareIndices->begin(), end = stareIndices->end(); i != end; i++) {
 		for (auto j = stareVal->begin(), e = stareVal->end(); j != e; j++)
-			if (*i == *j)
+			//TODO: Check to see if the index is within the stare index being compared
+		    if (*i == *j)
 				return true;
 	}
 
@@ -165,20 +168,22 @@ bool hasValue(vector<dods_uint64> *stareVal, vector<uint64> *stareIndices) {
 }
 
 /*
- * Count the number of times a stare index matches in the
- *  variable array
- *
+ * Count the number of times a Stare index matches in the
+ *  sidecar
+ * @param stareVal - stare values from given dataset
+ * @param stareIndices - stare values being compared, retrieved from the sidecar file
  */
-int count(vector<dods_uint64> *stareVal, BaseType *stareIndices) {
-
+unsigned int count(vector<dods_uint64> *stareVal, vector<uint64> *stareIndices) {
+#if 0
 	Array &stareSrc = dynamic_cast<Array&>(*stareIndices);
 
 	stareSrc.read();
 
 	vector<dods_uint64> *stareData = extract_uint64_array(&stareSrc);
+#endif
 
 	unsigned int counter = 0;
-	for (auto i = stareData->begin(), end = stareData->end(); i != end; i++) {
+	for (auto i = stareIndices->begin(), end = stareIndices->end(); i != end; i++) {
 		for (auto j = stareVal->begin(), e = stareVal->end(); j != e; j++)
 			if (*i == *j)
 				counter++;
@@ -187,11 +192,36 @@ int count(vector<dods_uint64> *stareVal, BaseType *stareIndices) {
 	return counter;
 }
 
-/**
- * Get pathname to file from dmr.
+/*
+ * Return data from the provided data array where the requested stare indices are found
  */
-BaseType *stare_dap4_function(D4RValueList *args, DMR &dmr) {
+returnVal stare_subset(vector<dods_uint64> *stareVal, vector<uint64> *stareIndices,
+        vector<int> *xArray, vector<int> *yArray) {
+    returnVal subset = returnVal();
+
+    auto x = xArray->begin();
+    auto y = yArray->begin();
+    for (auto i = stareIndices->begin(), end = stareIndices->end(); i != end; i++, x++, y++) {
+        for (auto j = stareVal->begin(), e = stareVal->end(); j != e; j++)
+            if (*i == *j)
+                subset.stareVal.push_back(*j);
+                subset.x.push_back(*x);
+                subset.y.push_back(*y);
+                //subset.dataVal.push_back();
+    }
+
+    return subset;
+}
+
+/**
+ * -- Intersection server function --
+ * Checks to see if there are any Stare values provided from the client that can be found in the sidecar file.
+ * If there is at least one match, the function will return a 1. Otherwise returns a 0.
+ */
+BaseType *stare_intersection_dap4_function(D4RValueList *args, DMR &dmr) {
 	string pathName = dmr.filename();
+
+//TODO: test for appropriate number of arguments
 
 	//Find the filename from the dmr
 	size_t granulePos = pathName.find_last_of("/");
@@ -199,14 +229,18 @@ BaseType *stare_dap4_function(D4RValueList *args, DMR &dmr) {
 	size_t findDot = granuleName.find_last_of(".");
 	string newPathName = granuleName.substr(0, findDot) + "_sidecar.h5";
 
-	string rootDirectory = TheBESKeys::TheKeys()->read_string_key("BES.Catalog.catalog.RootDirectory", "");
+	string stareDirectory = TheBESKeys::TheKeys()->read_string_key("FUNCTIONS.stareStoragePath", "/tmp");
+    //stareDirectory += "/data/stare/"; //FIXME
 
-	string fullPath = BESUtil::pathConcat(rootDirectory, newPathName);
+	string fullPath = BESUtil::pathConcat(stareDirectory, newPathName);
+
 
 	//The H5Fopen function needs to read in a char *
-	int n = fullPath.length();
+#if 0
+    int n = fullPath.length();
 	char fullPathChar[n + 1];
 	strcpy(fullPathChar, fullPath.c_str());
+#endif
 
 	//Initialize the various variables for the datasets' info
 	hid_t file;
@@ -220,10 +254,19 @@ BaseType *stare_dap4_function(D4RValueList *args, DMR &dmr) {
 	vector<uint64> stareArray;
 
 	//Read the file and store the datasets
-	file = H5Fopen(fullPathChar, H5F_ACC_RDONLY, H5P_DEFAULT);
+	//TODO: Test for errors with every hdf5 call
+	file = H5Fopen(fullPath.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+	if (file < 0)
+	    throw BESInternalError("Could not open file " + fullPath, __FILE__, __LINE__);
 	xDataset = H5Dopen(file, "X", H5P_DEFAULT);
+	if (xDataset < 0)
+        throw BESInternalError("Could not open X dataset " + fullPath, __FILE__, __LINE__);
 	yDataset = H5Dopen(file, "Y", H5P_DEFAULT);
+	if (yDataset < 0)
+        throw BESInternalError("Could not open Y dataset " + fullPath, __FILE__, __LINE__);
 	stareDataset = H5Dopen(file, "Stare Index", H5P_DEFAULT);
+	if (stareDataset < 0)
+        throw BESInternalError("Could not open STARE dataset " + fullPath, __FILE__, __LINE__);
 
 	//Get the number of dimensions
 	hid_t dspace = H5Dget_space(xDataset);
@@ -258,22 +301,16 @@ BaseType *stare_dap4_function(D4RValueList *args, DMR &dmr) {
 	H5Dread(yDataset, H5T_NATIVE_INT, yMemspace, yFilespace, H5P_DEFAULT, &yArray[0]);
 	H5Dread(stareDataset, H5T_NATIVE_INT, stareMemspace, stareFilespace, H5P_DEFAULT, &stareArray[0]);
 
-//TODO: Refactor to work with BaseType. May be able to put this in a separate function
-/*	std::unordered_map<uint64, struct coords> stareMap;
-
-	vector<int>::iterator xIter = xArray.begin();
-	vector<int>::iterator yIter = yArray.begin();
-	for (vector<uint64>::iterator i = stareArray.begin(), e = stareArray.end(); i != e; i++, xIter++, yIter++) {
-		stareMap[*i].x = *xIter;
-		stareMap[*i].y = *yIter;
-	}
-*/
 
 	BaseType *stareVal = args->get_rvalue(0)->value(dmr);
-	Array &stareSrc = dynamic_cast<Array&>(*stareVal);
-	stareSrc.read();
+	Array *stareSrc = dynamic_cast<Array*>(stareVal); //TODO: check for datatype (array of uint64)
+	/*
+	if (stareSrc == nullptr)
+	    throw exception
+	*/
+	stareSrc->read();
 
-	vector<dods_uint64> *stareData = extract_uint64_array(&stareSrc);
+	vector<dods_uint64> *stareData = extract_uint64_array(stareSrc);
 
 	bool status = hasValue(stareData, &stareArray);
 
@@ -285,6 +322,81 @@ BaseType *stare_dap4_function(D4RValueList *args, DMR &dmr) {
 	}
 
 	return result;
+}
+
+/**
+ * -- Count server function --
+ * Counts how many times the provided Stare values are found within the provided sidecar file.
+ * Returns the number of matches found.
+ */
+BaseType *stare_count_dap4_function(D4RValueList *args, DMR &dmr) {
+    string pathName = dmr.filename();
+
+    //Find the filename from the dmr
+    size_t granulePos = pathName.find_last_of("/");
+    string granuleName = pathName.substr(granulePos + 1);
+    size_t findDot = granuleName.find_last_of(".");
+    string newPathName = granuleName.substr(0, findDot) + "_sidecar.h5";
+
+    string rootDirectory = TheBESKeys::TheKeys()->read_string_key("BES.Catalog.catalog.RootDirectory", "");
+
+    string fullPath = BESUtil::pathConcat(rootDirectory, newPathName);
+
+    //TODO: just use fullPath.c_str()
+    //The H5Fopen function needs to read in a char *
+    int n = fullPath.length();
+    char fullPathChar[n + 1];
+    strcpy(fullPathChar, fullPath.c_str());
+
+    //Initialize the various variables for the datasets' info
+    hid_t file;
+    hid_t stareFilespace;
+    hid_t stareMemspace;
+    hid_t stareDataset;
+    hssize_t stareSize;
+
+    vector<uint64> stareArray;
+
+    //Read the file and store the datasets
+    file = H5Fopen(fullPathChar, H5F_ACC_RDONLY, H5P_DEFAULT);
+    stareDataset = H5Dopen(file, "Stare Index", H5P_DEFAULT);
+
+    //Get the number of dimensions
+    hid_t dspace = H5Dget_space(stareDataset);
+    const int ndims = H5Sget_simple_extent_ndims(dspace);
+    hsize_t dims[ndims];
+
+    //Get the size of the dimension so that we know how big to make the memory space
+    H5Sget_simple_extent_dims(dspace, dims, NULL);
+
+    //We need to get the filespace and memspace before reading the values from each dataset
+    stareFilespace = H5Dget_space(stareDataset);
+
+    stareMemspace = H5Screate_simple(ndims,dims,NULL);
+
+    //Get the number of elements in the dataspace and use that to appropriate the proper size of the vectors
+    stareSize = H5Sget_select_npoints(stareFilespace);
+    stareArray.resize(stareSize);
+
+    //Read the data file and store the values of each dataset into an array
+    H5Dread(stareDataset, H5T_NATIVE_INT, stareMemspace, stareFilespace, H5P_DEFAULT, &stareArray[0]);
+
+    BaseType *stareVal = args->get_rvalue(0)->value(dmr);
+    Array &stareSrc = dynamic_cast<Array&>(*stareVal); //TODO: change stareSrc to pointer
+    /*
+    if (stareSrc == nullptr)
+        throw exception
+    */
+    stareSrc.read();
+
+    vector<dods_uint64> *stareData = extract_uint64_array(&stareSrc);
+
+    unsigned int numMatches = count(stareData, &stareArray);
+
+    Int32 *result = new Int32 ("result");
+    result->set_value(numMatches);
+
+    return result;
 }
 
 } // namespace functions

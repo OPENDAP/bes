@@ -52,6 +52,7 @@
 #include "BBoxCombFunction.h"
 #include "ScaleGrid.h"
 #include "TestFunction.h"
+#include "stare/StareIterateFunction.h"
 
 #include "DapFunctionsRequestHandler.h"
 #include "DapFunctions.h"
@@ -96,6 +97,8 @@ void DapFunctions::initialize(const string &modname)
     libdap::ServerFunctionsList::TheList()->add_function(new Scale3DArray());
 
     libdap::ServerFunctionsList::TheList()->add_function(new TestFunction());
+
+    libdap::ServerFunctionsList::TheList()->add_function(new StareIterateFunction());
 
     GDALAllRegister();
     OGRRegisterAll();
