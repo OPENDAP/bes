@@ -60,6 +60,7 @@
 #include <Ancillary.h>
 
 #include "NCRequestHandler.h"
+#include "GlobalMetadataStore.h"
 
 #define NC_NAME "nc"
 
@@ -73,6 +74,7 @@ bool NCRequestHandler::_ignore_unknown_types_set = false;
 
 bool NCRequestHandler::_promote_byte_to_short = false;
 bool NCRequestHandler::_promote_byte_to_short_set = false;
+bool NCRequestHandler::_use_mds = false;
 
 unsigned int NCRequestHandler::_cache_entries = 100;
 float NCRequestHandler::_cache_purge_level = 0.2;
@@ -217,6 +219,7 @@ NCRequestHandler::NCRequestHandler(const string &name) :
         }
     }
 
+    NCRequestHandler::_use_mds = get_bool_key("NC.UseMDS",false);
     NCRequestHandler::_cache_entries = get_uint_key("NC.CacheEntries", 0);
     NCRequestHandler::_cache_purge_level = get_float_key("NC.CachePurgeLevel", 0.2);
 
@@ -673,7 +676,35 @@ void NCRequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
         // sets the current container for the DAS.
         if (!container_name.empty()) das->container_name(container_name);
 
-        nc_read_dataset_attributes(*das, dataset_name);
+        // Here we will check if we can generate DAS by parsing from MDS
+        if(true == get_use_mds()) {
+
+            bes::GlobalMetadataStore *mds=bes::GlobalMetadataStore::get_instance();
+            bool valid_mds = true;
+            if(NULL == mds)
+                valid_mds = false;
+            else if(false == mds->cache_enabled())
+                valid_mds = false;
+            if(true ==valid_mds) {
+                string rel_file_path = dhi.container->get_relative_name();
+                // Obtain the DAS lock in MDS
+                bes::GlobalMetadataStore::MDSReadLock mds_das_lock = mds->is_das_available(rel_file_path);
+                if(mds_das_lock()) {
+                    BESDEBUG("nc", "Using MDS to generate DAS in the data response for file " << dataset_name << endl);
+                    mds->parse_das_from_mds(das,rel_file_path);
+                }
+                else {//Don't fail, still build das from the NC APIs
+                    nc_read_dataset_attributes(*das, dataset_name);
+                }
+                mds_das_lock.clearLock();
+            }
+            else {
+                nc_read_dataset_attributes(*das, dataset_name);
+            }
+        }
+        else {//Cannot parse from MDS, still build the attributes from NC APIs.
+            nc_read_dataset_attributes(*das, dataset_name);
+        }
         Ancillary::read_ancillary_das(*das, dataset_name);
 
         dds->transfer_attributes(das);

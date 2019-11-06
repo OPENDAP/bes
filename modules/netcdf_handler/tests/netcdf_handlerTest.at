@@ -69,3 +69,6 @@ AT_BESCMD_MDS_RESPONSE_TEST([nc/fnoc1.nc.mds.ddx.bescmd])
 AT_BESCMD_MDS_RESPONSE_TEST([nc/fnoc1.nc.mds.das.bescmd])
 AT_BESCMD_MDS_RESPONSE_TEST([nc/fnoc1.nc.mds.dds.bescmd])
 AT_BESCMD_MDS_BINARYDATA_RESPONSE_TEST([nc/fnoc1.nc.mds.dods.bescmd])
+AT_BESCMD_MDS_BINARYDATA_RESPONSE_TEST([nc/fnoc1.nc.mds.function.dods.bescmd])
+
+
