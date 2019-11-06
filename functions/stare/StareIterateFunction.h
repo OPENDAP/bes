@@ -60,6 +60,8 @@ public:
 
     virtual ~StareIterateFunction() {
     }
+
+    static string get_sidecar_file_pathname(const string &pathName);
 };
 
 } // functions namespace

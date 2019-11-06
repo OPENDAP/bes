@@ -57,6 +57,7 @@
 #include "BESDebug.h"
 #include "BESUtil.h"
 #include "BESInternalError.h"
+#include "BESSyntaxUserError.h"
 
 #include "StareIterateFunction.h"
 
@@ -215,60 +216,54 @@ returnVal stare_subset(vector<dods_uint64> *stareVal, vector<uint64> *stareIndic
     return subset;
 }
 
-/**
- * -- Intersection server function --
- * Checks to see if there are any Stare values provided from the client that can be found in the sidecar file.
- * If there is at least one match, the function will return a 1. Otherwise returns a 0.
- */
-BaseType *stare_intersection_dap4_function(D4RValueList *args, DMR &dmr) {
-    string pathName = dmr.filename();
-
-//TODO: test for appropriate number of arguments
-
-    //Find the filename from the dmr
+string
+StareIterateFunction::get_sidecar_file_pathname(const string &pathName) {
     size_t granulePos = pathName.find_last_of("/");
     string granuleName = pathName.substr(granulePos + 1);
     size_t findDot = granuleName.find_last_of(".");
     string newPathName = granuleName.substr(0, findDot) + "_sidecar.h5";
 
     string stareDirectory = TheBESKeys::TheKeys()->read_string_key(STARE_STORAGE_PATH, "/tmp");
-    //stareDirectory += "/data/stare/"; //FIXME
 
     string fullPath = BESUtil::pathConcat(stareDirectory, newPathName);
+    return fullPath;
+}
 
-#if 0
-	//The H5Fopen function needs to read in a char *
-    int n = fullPath.length();
-    char fullPathChar[n + 1];
-    strcpy(fullPathChar, fullPath.c_str());
-#endif
+/**
+ * -- Intersection server function --
+ * Checks to see if there are any Stare values provided from the client that can be found in the sidecar file.
+ * If there is at least one match, the function will return a 1. Otherwise returns a 0.
+ */
+BaseType *stare_intersection_dap4_function(D4RValueList *args, DMR &dmr) {
 
-    //Initialize the various variables for the datasets' info
-    hid_t file;
-    hid_t xFilespace, yFilespace, stareFilespace;
-    hid_t xMemspace, yMemspace, stareMemspace;
-    hid_t xDataset, yDataset, stareDataset;
-    hssize_t xSize, ySize, stareSize;
+    if (args->size() != 1) {
+        ostringstream oss;
+        oss << "stare_intersection(): Expected a single argument, but got " << args->size();
+        throw BESSyntaxUserError(oss.str(), __FILE__, __LINE__);
+    }
 
-    vector<int> xArray;
-    vector<int> yArray;
-    vector<uint64> stareArray;
+    //Find the filename from the dmr
+    string pathName = dmr.filename();
+    string fullPath = StareIterateFunction::get_sidecar_file_pathname(pathName);
 
     //Read the file and store the datasets
-    //TODO: Test for errors with every hdf5 call
-    file = H5Fopen(fullPath.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+    hid_t file = H5Fopen(fullPath.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
     if (file < 0)
         throw BESInternalError("Could not open file " + fullPath, __FILE__, __LINE__);
-    xDataset = H5Dopen(file, "X", H5P_DEFAULT);
+
+    hid_t xDataset = H5Dopen(file, "X", H5P_DEFAULT);
     if (xDataset < 0)
         throw BESInternalError("Could not open X dataset " + fullPath, __FILE__, __LINE__);
-    yDataset = H5Dopen(file, "Y", H5P_DEFAULT);
+
+    hid_t yDataset = H5Dopen(file, "Y", H5P_DEFAULT);
     if (yDataset < 0)
         throw BESInternalError("Could not open Y dataset " + fullPath, __FILE__, __LINE__);
-    stareDataset = H5Dopen(file, "Stare Index", H5P_DEFAULT);
+
+    hid_t stareDataset = H5Dopen(file, "Stare Index", H5P_DEFAULT);
     if (stareDataset < 0)
         throw BESInternalError("Could not open STARE dataset " + fullPath, __FILE__, __LINE__);
 
+    // TODO Extract three functions/methods from this (one for XArray, ...)
     //Get the number of dimensions
     hid_t dspace = H5Dget_space(xDataset);
     const int ndims = H5Sget_simple_extent_ndims(dspace);
@@ -280,35 +275,36 @@ BaseType *stare_intersection_dap4_function(D4RValueList *args, DMR &dmr) {
     H5Sget_simple_extent_dims(dspace, dims, NULL);
 
     //We need to get the filespace and memspace before reading the values from each dataset
-    xFilespace = H5Dget_space(xDataset);
-    yFilespace = H5Dget_space(yDataset);
-    stareFilespace = H5Dget_space(stareDataset);
+    hid_t xFilespace = H5Dget_space(xDataset);
+    hid_t yFilespace = H5Dget_space(yDataset);
+    hid_t stareFilespace = H5Dget_space(stareDataset);
 
-    xMemspace = H5Screate_simple(ndims, dims, NULL);
-    yMemspace = H5Screate_simple(ndims, dims, NULL);
-    stareMemspace = H5Screate_simple(ndims, dims, NULL);
+    hid_t xMemspace = H5Screate_simple(ndims, dims, NULL);
+    hid_t yMemspace = H5Screate_simple(ndims, dims, NULL);
+    hid_t stareMemspace = H5Screate_simple(ndims, dims, NULL);
 
     //Get the number of elements in the dataspace and use that to appropriate the proper size of the vectors
-    xSize = H5Sget_select_npoints(xFilespace);
-    ySize = H5Sget_select_npoints(yFilespace);
-    stareSize = H5Sget_select_npoints(stareFilespace);
+    hssize_t xSize = H5Sget_select_npoints(xFilespace);
+    hssize_t ySize = H5Sget_select_npoints(yFilespace);
+    hssize_t stareSize = H5Sget_select_npoints(stareFilespace);
 
-    xArray.resize(xSize);
-    yArray.resize(ySize);
-    stareArray.resize(stareSize);
+    vector<int> xArray(xSize);
+    vector<int> yArray(ySize);
+    vector<uint64> stareArray(stareSize);
 
     //Read the data file and store the values of each dataset into an array
     H5Dread(xDataset, H5T_NATIVE_INT, xMemspace, xFilespace, H5P_DEFAULT, &xArray[0]);
     H5Dread(yDataset, H5T_NATIVE_INT, yMemspace, yFilespace, H5P_DEFAULT, &yArray[0]);
     H5Dread(stareDataset, H5T_NATIVE_INT, stareMemspace, stareFilespace, H5P_DEFAULT, &stareArray[0]);
 
-
     BaseType *stareVal = args->get_rvalue(0)->value(dmr);
-    Array *stareSrc = dynamic_cast<Array *>(stareVal); //TODO: check for datatype (array of uint64)
-    /*
+    Array *stareSrc = dynamic_cast<Array *>(stareVal);
     if (stareSrc == nullptr)
-        throw exception
-    */
+        throw BESSyntaxUserError("stare_intersection(): Expected an Array but found a " + stareVal->type_name(), __FILE__, __LINE__);
+
+    if (stareSrc->var()->type() != dods_uint64_c)
+        throw BESSyntaxUserError("Expected an Array of UInt64 values but found an Array of  " + stareSrc->var()->type_name(), __FILE__, __LINE__);
+
     stareSrc->read();
 
     vector<dods_uint64> *stareData = extract_uint64_array(stareSrc);
@@ -386,7 +382,7 @@ BaseType *stare_count_dap4_function(D4RValueList *args, DMR &dmr) {
     BaseType *stareVal = args->get_rvalue(0)->value(dmr);
     Array *stareSrc = dynamic_cast<Array *>(stareVal);
     if (stareSrc == nullptr)
-        throw BESInternalError("Expected an Array as the first argument to stare_intersection()", __FILE__,
+        throw BESSyntaxUserError("stare_intersection(): Expected an Array but found a " + stareVal->type_name(), __FILE__,
                                __LINE__);
 
     stareSrc->read();
@@ -395,7 +391,7 @@ BaseType *stare_count_dap4_function(D4RValueList *args, DMR &dmr) {
 
     unsigned int numMatches = count(stareData, &stareArray);
 
-    Int32 *result = new Int32("result");
+    auto *result = new Int32("result");
     result->set_value(numMatches);
 
     return result;

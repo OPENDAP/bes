@@ -94,9 +94,24 @@ public:
 
 	CPPUNIT_TEST_SUITE( StareFunctionsTest );
 
+	CPPUNIT_TEST(test_get_sidecar_file_pathname);
 	CPPUNIT_TEST(serverside_compare_test);
 
 	CPPUNIT_TEST_SUITE_END();
+
+	void test_get_sidecar_file_pathname() {
+        string sidecar_pathname = StareIterateFunction::get_sidecar_file_pathname("/data/sub_dir/bogus.h5");
+        string expected_pathname = string(TEST_SRC_DIR) + "/" + "bogus_sidecar.h5";
+        DBG(cerr << "expected_pathname: " << expected_pathname << endl);
+        DBG(cerr << "sidecar_pathname: " << sidecar_pathname << endl);
+        CPPUNIT_ASSERT(sidecar_pathname == expected_pathname);
+
+        sidecar_pathname = StareIterateFunction::get_sidecar_file_pathname("/data/different_extention.hdf5");
+        expected_pathname = string(TEST_SRC_DIR) + "/" + "different_extention_sidecar.hdf5";
+        DBG(cerr << "expected_pathname: " << expected_pathname << endl);
+        DBG(cerr << "sidecar_pathname: " << sidecar_pathname << endl);
+        CPPUNIT_ASSERT(sidecar_pathname == expected_pathname);
+	}
 
 	void serverside_compare_test() {
 		DBG(cerr << "--- hasValue() test - BEGIN ---" << endl);
