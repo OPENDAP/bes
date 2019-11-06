@@ -77,6 +77,7 @@ NC.ShowSharedDimensions=false
 NC.CacheEntries = 100
 # NC.CachePurgeLevel = 0.2
 
+# We will turn on the usage of MDS.
 NC.UseMDS=true
 
 # MDS configuration - for the tests the read the DDS and DAS from the MDS,

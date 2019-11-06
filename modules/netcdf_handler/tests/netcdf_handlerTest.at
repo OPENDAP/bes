@@ -63,3 +63,9 @@ AT_BESCMD_CACHED_RESPONSE_TEST([nc/fnoc1.nc.dmr.cached.bescmd])
 # jhrg 10/22/19
 AT_BESCMD_RESPONSE_TEST([nc/fnoc1.nc.function.ddx.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([nc/fnoc1.nc.function.dods.bescmd])
+
+# 
+AT_BESCMD_MDS_RESPONSE_TEST([nc/fnoc1.nc.mds.ddx.bescmd])
+AT_BESCMD_MDS_RESPONSE_TEST([nc/fnoc1.nc.mds.das.bescmd])
+AT_BESCMD_MDS_RESPONSE_TEST([nc/fnoc1.nc.mds.dds.bescmd])
+AT_BESCMD_MDS_BINARYDATA_RESPONSE_TEST([nc/fnoc1.nc.mds.dods.bescmd])
