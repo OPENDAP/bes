@@ -234,9 +234,8 @@ BaseType *stare_intersection_dap4_function(D4RValueList *args, DMR &dmr) {
 
 	string fullPath = BESUtil::pathConcat(stareDirectory, newPathName);
 
-
-	//The H5Fopen function needs to read in a char *
 #if 0
+	//The H5Fopen function needs to read in a char *
     int n = fullPath.length();
 	char fullPathChar[n + 1];
 	strcpy(fullPathChar, fullPath.c_str());

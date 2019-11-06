@@ -258,7 +258,7 @@ vector<uint64> calculateStareIndex(const float64 level, const float64 buildlevel
 /*************
  * HDF5 Stuff *
  *************/
-void writeHDF5(const string &filename, vector<coords> coordVals, vector<uint64> stareVals) {
+void writeHDF5(const string &filename, string tmpStorage, vector<coords> coordVals, vector<uint64> stareVals) {
 	hid_t file, datasetX, datasetY, datasetLat, datasetLon, datasetStare;
 	hid_t dataspace; /* handle */
 
@@ -367,8 +367,12 @@ void writeHDF5(const string &filename, vector<coords> coordVals, vector<uint64> 
 
 	VERBOSE(cerr << "\nData written to file: " << filename << endl);
 
-    //Store the sidecar files in /tmp/ so that it can easily be found for the server functions
-	string tmpStorage = "/tmp/" + filename;
+    //Store the sidecar files in /tmp/ (or the provided directory) so that it can easily be found for the
+    // server functions.
+	if (tmpStorage.empty())
+        tmpStorage = "/tmp/" + filename;
+	else
+	    tmpStorage = tmpStorage + filename;
 	rename(filename.c_str(), tmpStorage.c_str());
 	VERBOSE(cerr << "Data moved to: " << tmpStorage << endl);
 }
@@ -383,13 +387,15 @@ void writeHDF5(const string &filename, vector<coords> coordVals, vector<uint64> 
 int main(int argc, char *argv[]) {
 	int c;
 	string newName;
+	string tmpStorage;
 
-	while ((c = getopt(argc, argv, "hvo:")) != -1) {
+	while ((c = getopt(argc, argv, "hvot:")) != -1) {
 		switch (c) {
 		case 'h':
 			cerr << "\nbuild_sidecar [options] <filename> latitude-name longitude-name level buildlevel\n\n";
 			cerr << "-o output file: \tOutput the STARE data to the given output file\n\n";
-			cerr << "-v verbose\n" << endl;
+			cerr << "-v verbose\n\n";
+			cerr << "-t transfer location: \tTransfer the generated sidecar file to the given directory\n" << endl;
 			exit(1);
 			break;
 		case 'o':
@@ -398,6 +404,9 @@ int main(int argc, char *argv[]) {
 		case 'v':
 			verbose = true;
 			break;
+        case 't':
+            tmpStorage = optarg;
+            break;
 		}
 	}
 
@@ -440,7 +449,7 @@ int main(int argc, char *argv[]) {
 			newName = granuleName.substr(0, findDot) + "_sidecar.h5";
 		}
 
-		writeHDF5(newName, coordResults, stareResults);
+		writeHDF5(newName, tmpStorage, coordResults, stareResults);
 	}
 	catch(libdap::Error &e) {
 		cerr << "Error: " << e.get_error_message() << endl;
