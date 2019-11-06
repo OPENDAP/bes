@@ -81,8 +81,9 @@ NC.CacheEntries = 100
 # To use this feature, users need to change the key to true. 
 NC.UseMDS=false
 
+#To use MDS, Uncomment the following four lines starting with DAP.
 #Change the following four keys with the MDS directories at your own server.
-DAP.GlobalMetadataStore.path = /******/share/mds/nc-mds
-DAP.GlobalMetadataStore.prefix = mds_for_tests_
-DAP.GlobalMetadataStore.size = 0
-DAP.GlobalMetadataStore.ledger = /******/share/mds/nc-mds/mds_for_tests_ledger.txt
+#DAP.GlobalMetadataStore.path = /******/share/mds/nc-mds
+#DAP.GlobalMetadataStore.prefix = mds_for_tests_
+#DAP.GlobalMetadataStore.size = 0
+#DAP.GlobalMetadataStore.ledger = /******/share/mds/nc-mds/mds_for_tests_ledger.txt
