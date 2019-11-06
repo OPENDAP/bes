@@ -373,6 +373,8 @@ GlobalMetadataStore::initialize()
         d_ledger_name = default_ledger_name;
     }
 
+    ofstream of(d_ledger_name.c_str(), ios::app);
+
     // By default, use UTC in the logs.
     string local_time = "no";
     TheBESKeys::TheKeys()->get_value(LOCAL_TIME_KEY, local_time, found);
@@ -443,7 +445,7 @@ GlobalMetadataStore::write_ledger()
 {
     // TODO open just once
     // FIXME Protect this with an exclusive lock!
-    ofstream of(d_ledger_name.c_str(), ios::app);
+    // ofstream of(d_ledger_name.c_str(), ios::app);
     if (of) {
         dump_time(of, d_use_local_time);
         of << " " << d_ledger_entry << endl;
