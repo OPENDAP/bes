@@ -21,18 +21,22 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include "config.h"
-#include "STARE.h"
 
 #include <sstream>
+#include <unordered_map>
+
+#include <hdf5.h>
+#include <STARE.h>
 
 #include <BaseType.h>
 #include <Float64.h>
 #include <Str.h>
 #include <Array.h>
 #include <Grid.h>
-#include "D4RValue.h"
-#include "hdf5.h"
+#include <DDS.h>
+
 #include "DMR.h"
+#include "D4RValue.h"
 
 #include "Byte.h"
 #include "Int16.h"
@@ -44,89 +48,87 @@
 #include "UInt64.h"
 #include "Int8.h"
 
-#include <TheBESKeys.h>
-
 #include <Error.h>
-#include <DDS.h>
 
 #include <debug.h>
 #include <util.h>
-#include <unordered_map>
 
+#include "TheBESKeys.h"
 #include "BESDebug.h"
 #include "BESUtil.h"
 #include "BESInternalError.h"
 
+#include "StareIterateFunction.h"
+
 using namespace libdap;
 
+namespace functions {
+
 struct coords {
-	int x;
-	int y;
+    int x;
+    int y;
 };
 
 //TODO: Make into Template
 struct returnVal {
-//TODO: These should probably be arrays/vectors
-	vector<int> x;
-	vector<int> y;
-	vector<uint64> stareVal;
-	vector<BaseType*> dataVal;
+    //TODO: These should probably be arrays/vectors
+    vector<int> x;
+    vector<int> y;
+    vector<uint64> stareVal;
+    vector<BaseType *> dataVal;
 };
-
-namespace functions {
 
 //May need to be moved to libdap/util
 uint64 extract_uint64_value(BaseType *arg) {
-	assert(arg);
+    assert(arg);
 
-	// Simple types are Byte, ..., Float64, String and Url.
-	if (!arg->is_simple_type() || arg->type() == dods_str_c || arg->type() == dods_url_c)
-		throw Error(malformed_expr, "The function requires a numeric-type argument.");
+    // Simple types are Byte, ..., Float64, String and Url.
+    if (!arg->is_simple_type() || arg->type() == dods_str_c || arg->type() == dods_url_c)
+        throw Error(malformed_expr, "The function requires a numeric-type argument.");
 
-	if (!arg->read_p())
-		throw InternalErr(__FILE__, __LINE__,
-				"The Evaluator built an argument list where some constants held no values.");
+    if (!arg->read_p())
+        throw InternalErr(__FILE__, __LINE__,
+                          "The Evaluator built an argument list where some constants held no values.");
 
-	// The types of arguments that the CE Parser will build for numeric
-	// constants are limited to Uint32, Int32 and Float64. See ce_expr.y.
-	// Expanded to work for any numeric type so it can be used for more than
-	// just arguments.
-	switch (arg->type()) {
-	case dods_byte_c:
-		return (uint64) (static_cast<Byte*>(arg)->value());
-	case dods_uint16_c:
-		return (uint64) (static_cast<UInt16*>(arg)->value());
-	case dods_int16_c:
-		return (uint64) (static_cast<Int16*>(arg)->value());
-	case dods_uint32_c:
-		return (uint64) (static_cast<UInt32*>(arg)->value());
-	case dods_int32_c:
-		return (uint64) (static_cast<Int32*>(arg)->value());
-	case dods_float32_c:
-		return (uint64) (static_cast<Float32*>(arg)->value());
-	case dods_float64_c:
-		return (uint64) (static_cast<Float64*>(arg)->value());
+    // The types of arguments that the CE Parser will build for numeric
+    // constants are limited to Uint32, Int32 and Float64. See ce_expr.y.
+    // Expanded to work for any numeric type so it can be used for more than
+    // just arguments.
+    switch (arg->type()) {
+        case dods_byte_c:
+            return (uint64) (static_cast<Byte *>(arg)->value());
+        case dods_uint16_c:
+            return (uint64) (static_cast<UInt16 *>(arg)->value());
+        case dods_int16_c:
+            return (uint64) (static_cast<Int16 *>(arg)->value());
+        case dods_uint32_c:
+            return (uint64) (static_cast<UInt32 *>(arg)->value());
+        case dods_int32_c:
+            return (uint64) (static_cast<Int32 *>(arg)->value());
+        case dods_float32_c:
+            return (uint64) (static_cast<Float32 *>(arg)->value());
+        case dods_float64_c:
+            return (uint64) (static_cast<Float64 *>(arg)->value());
 
-    // Support for DAP4 types.
-	case dods_uint8_c:
-		return (uint64) (static_cast<Byte*>(arg)->value());
-	case dods_int8_c:
-		return (uint64) (static_cast<Int8*>(arg)->value());
-	case dods_uint64_c:
-		return static_cast<UInt64*>(arg)->value();
-	case dods_int64_c:
-		return (uint64) (static_cast<Int64*>(arg)->value());
+            // Support for DAP4 types.
+        case dods_uint8_c:
+            return (uint64) (static_cast<Byte *>(arg)->value());
+        case dods_int8_c:
+            return (uint64) (static_cast<Int8 *>(arg)->value());
+        case dods_uint64_c:
+            return static_cast<UInt64 *>(arg)->value();
+        case dods_int64_c:
+            return (uint64) (static_cast<Int64 *>(arg)->value());
 
-	default:
-		throw InternalErr(__FILE__, __LINE__,
-				"The argument list built by the parser contained an unsupported numeric type.");
-	}
+        default:
+            throw InternalErr(__FILE__, __LINE__,
+                              "The argument list built by the parser contained an unsupported numeric type.");
+    }
 }
 
-//May need to be moved to libdap/util
+// May need to be moved to libdap/util
 // This helper function assumes 'var' is the correct size.
-vector<dods_uint64> *extract_uint64_array(Array *var)
-{
+vector<dods_uint64> *extract_uint64_array(Array *var) {
     assert(var);
 
     int length = var->length();
@@ -150,21 +152,21 @@ bool hasValue(vector<dods_uint64> *stareVal, vector<uint64> *stareIndices) {
     //However, the stare indices can be taken from the provided h5 sidecar file and
     // the vector containing those values can be passed in directly instead of having
     // to be converted from BaseType to a uint64 array. -kln 10/22/19
-	vector<dods_uint64> *stareData;
+    vector<dods_uint64> *stareData;
 
-	Array &stareSrc = dynamic_cast<Array&>(*stareIndices);
-	stareSrc.read();
-	stareData = extract_uint64_array(&stareSrc);
+    Array &stareSrc = dynamic_cast<Array&>(*stareIndices);
+    stareSrc.read();
+    stareData = extract_uint64_array(&stareSrc);
 #endif
 
-	for (auto i = stareIndices->begin(), end = stareIndices->end(); i != end; i++) {
-		for (auto j = stareVal->begin(), e = stareVal->end(); j != e; j++)
-			//TODO: Check to see if the index is within the stare index being compared
-		    if (*i == *j)
-				return true;
-	}
+    for (unsigned long long &stareIndice : *stareIndices) {
+        for (unsigned long long &j : *stareVal)
+            //TODO: Check to see if the index is within the stare index being compared
+            if (stareIndice == j)
+                return true;
+    }
 
-	return false;
+    return false;
 }
 
 /*
@@ -175,39 +177,39 @@ bool hasValue(vector<dods_uint64> *stareVal, vector<uint64> *stareIndices) {
  */
 unsigned int count(vector<dods_uint64> *stareVal, vector<uint64> *stareIndices) {
 #if 0
-	Array &stareSrc = dynamic_cast<Array&>(*stareIndices);
+    Array &stareSrc = dynamic_cast<Array&>(*stareIndices);
 
-	stareSrc.read();
+    stareSrc.read();
 
-	vector<dods_uint64> *stareData = extract_uint64_array(&stareSrc);
+    vector<dods_uint64> *stareData = extract_uint64_array(&stareSrc);
 #endif
 
-	unsigned int counter = 0;
-	for (auto i = stareIndices->begin(), end = stareIndices->end(); i != end; i++) {
-		for (auto j = stareVal->begin(), e = stareVal->end(); j != e; j++)
-			if (*i == *j)
-				counter++;
-	}
+    unsigned int counter = 0;
+    for (unsigned long long &stareIndex : *stareIndices) {
+        for (unsigned long long &j : *stareVal)
+            if (stareIndex == j)
+                counter++;
+    }
 
-	return counter;
+    return counter;
 }
 
 /*
  * Return data from the provided data array where the requested stare indices are found
  */
 returnVal stare_subset(vector<dods_uint64> *stareVal, vector<uint64> *stareIndices,
-        vector<int> *xArray, vector<int> *yArray) {
+                       vector<int> *xArray, vector<int> *yArray) {
     returnVal subset = returnVal();
 
     auto x = xArray->begin();
     auto y = yArray->begin();
     for (auto i = stareIndices->begin(), end = stareIndices->end(); i != end; i++, x++, y++) {
-        for (auto j = stareVal->begin(), e = stareVal->end(); j != e; j++)
-            if (*i == *j)
-                subset.stareVal.push_back(*j);
-                subset.x.push_back(*x);
-                subset.y.push_back(*y);
-                //subset.dataVal.push_back();
+        for (unsigned long long &j : *stareVal)
+            if (*i == j)
+                subset.stareVal.push_back(j);
+        subset.x.push_back(*x);
+        subset.y.push_back(*y);
+        //subset.dataVal.push_back();
     }
 
     return subset;
@@ -219,108 +221,109 @@ returnVal stare_subset(vector<dods_uint64> *stareVal, vector<uint64> *stareIndic
  * If there is at least one match, the function will return a 1. Otherwise returns a 0.
  */
 BaseType *stare_intersection_dap4_function(D4RValueList *args, DMR &dmr) {
-	string pathName = dmr.filename();
+    string pathName = dmr.filename();
 
 //TODO: test for appropriate number of arguments
 
-	//Find the filename from the dmr
-	size_t granulePos = pathName.find_last_of("/");
-	string granuleName = pathName.substr(granulePos + 1);
-	size_t findDot = granuleName.find_last_of(".");
-	string newPathName = granuleName.substr(0, findDot) + "_sidecar.h5";
+    //Find the filename from the dmr
+    size_t granulePos = pathName.find_last_of("/");
+    string granuleName = pathName.substr(granulePos + 1);
+    size_t findDot = granuleName.find_last_of(".");
+    string newPathName = granuleName.substr(0, findDot) + "_sidecar.h5";
 
-	string stareDirectory = TheBESKeys::TheKeys()->read_string_key("FUNCTIONS.stareStoragePath", "/tmp");
+    string stareDirectory = TheBESKeys::TheKeys()->read_string_key(STARE_STORAGE_PATH, "/tmp");
     //stareDirectory += "/data/stare/"; //FIXME
 
-	string fullPath = BESUtil::pathConcat(stareDirectory, newPathName);
+    string fullPath = BESUtil::pathConcat(stareDirectory, newPathName);
 
 #if 0
 	//The H5Fopen function needs to read in a char *
     int n = fullPath.length();
-	char fullPathChar[n + 1];
-	strcpy(fullPathChar, fullPath.c_str());
+    char fullPathChar[n + 1];
+    strcpy(fullPathChar, fullPath.c_str());
 #endif
 
-	//Initialize the various variables for the datasets' info
-	hid_t file;
-	hid_t xFilespace, yFilespace, stareFilespace;
-	hid_t xMemspace, yMemspace, stareMemspace;
-	hid_t xDataset, yDataset, stareDataset;
-	hssize_t xSize, ySize, stareSize;
+    //Initialize the various variables for the datasets' info
+    hid_t file;
+    hid_t xFilespace, yFilespace, stareFilespace;
+    hid_t xMemspace, yMemspace, stareMemspace;
+    hid_t xDataset, yDataset, stareDataset;
+    hssize_t xSize, ySize, stareSize;
 
-	vector<int> xArray;
-	vector<int> yArray;
-	vector<uint64> stareArray;
+    vector<int> xArray;
+    vector<int> yArray;
+    vector<uint64> stareArray;
 
-	//Read the file and store the datasets
-	//TODO: Test for errors with every hdf5 call
-	file = H5Fopen(fullPath.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
-	if (file < 0)
-	    throw BESInternalError("Could not open file " + fullPath, __FILE__, __LINE__);
-	xDataset = H5Dopen(file, "X", H5P_DEFAULT);
-	if (xDataset < 0)
+    //Read the file and store the datasets
+    //TODO: Test for errors with every hdf5 call
+    file = H5Fopen(fullPath.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+    if (file < 0)
+        throw BESInternalError("Could not open file " + fullPath, __FILE__, __LINE__);
+    xDataset = H5Dopen(file, "X", H5P_DEFAULT);
+    if (xDataset < 0)
         throw BESInternalError("Could not open X dataset " + fullPath, __FILE__, __LINE__);
-	yDataset = H5Dopen(file, "Y", H5P_DEFAULT);
-	if (yDataset < 0)
+    yDataset = H5Dopen(file, "Y", H5P_DEFAULT);
+    if (yDataset < 0)
         throw BESInternalError("Could not open Y dataset " + fullPath, __FILE__, __LINE__);
-	stareDataset = H5Dopen(file, "Stare Index", H5P_DEFAULT);
-	if (stareDataset < 0)
+    stareDataset = H5Dopen(file, "Stare Index", H5P_DEFAULT);
+    if (stareDataset < 0)
         throw BESInternalError("Could not open STARE dataset " + fullPath, __FILE__, __LINE__);
 
-	//Get the number of dimensions
-	hid_t dspace = H5Dget_space(xDataset);
-	const int ndims = H5Sget_simple_extent_ndims(dspace);
-	hsize_t dims[ndims];
+    //Get the number of dimensions
+    hid_t dspace = H5Dget_space(xDataset);
+    const int ndims = H5Sget_simple_extent_ndims(dspace);
+    hsize_t dims[ndims];
 
-	//Get the size of the dimension so that we know how big to make the memory space
-	//Each of the dataspaces should be the same size, if in the future they are different
-	// sizes then the size of each dataspace will need to be calculated.
-	H5Sget_simple_extent_dims(dspace, dims, NULL);
+    //Get the size of the dimension so that we know how big to make the memory space
+    //Each of the dataspaces should be the same size, if in the future they are different
+    // sizes then the size of each dataspace will need to be calculated.
+    H5Sget_simple_extent_dims(dspace, dims, NULL);
 
-	//We need to get the filespace and memspace before reading the values from each dataset
-	xFilespace = H5Dget_space(xDataset);
-	yFilespace = H5Dget_space(yDataset);
-	stareFilespace = H5Dget_space(stareDataset);
+    //We need to get the filespace and memspace before reading the values from each dataset
+    xFilespace = H5Dget_space(xDataset);
+    yFilespace = H5Dget_space(yDataset);
+    stareFilespace = H5Dget_space(stareDataset);
 
-	xMemspace = H5Screate_simple(ndims,dims,NULL);
-	yMemspace = H5Screate_simple(ndims,dims,NULL);
-	stareMemspace = H5Screate_simple(ndims,dims,NULL);
+    xMemspace = H5Screate_simple(ndims, dims, NULL);
+    yMemspace = H5Screate_simple(ndims, dims, NULL);
+    stareMemspace = H5Screate_simple(ndims, dims, NULL);
 
-	//Get the number of elements in the dataspace and use that to appropriate the proper size of the vectors
-	xSize = H5Sget_select_npoints(xFilespace);
-	ySize = H5Sget_select_npoints(yFilespace);
-	stareSize = H5Sget_select_npoints(stareFilespace);
+    //Get the number of elements in the dataspace and use that to appropriate the proper size of the vectors
+    xSize = H5Sget_select_npoints(xFilespace);
+    ySize = H5Sget_select_npoints(yFilespace);
+    stareSize = H5Sget_select_npoints(stareFilespace);
 
-	xArray.resize(xSize);
-	yArray.resize(ySize);
-	stareArray.resize(stareSize);
+    xArray.resize(xSize);
+    yArray.resize(ySize);
+    stareArray.resize(stareSize);
 
-	//Read the data file and store the values of each dataset into an array
-	H5Dread(xDataset, H5T_NATIVE_INT, xMemspace, xFilespace, H5P_DEFAULT, &xArray[0]);
-	H5Dread(yDataset, H5T_NATIVE_INT, yMemspace, yFilespace, H5P_DEFAULT, &yArray[0]);
-	H5Dread(stareDataset, H5T_NATIVE_INT, stareMemspace, stareFilespace, H5P_DEFAULT, &stareArray[0]);
+    //Read the data file and store the values of each dataset into an array
+    H5Dread(xDataset, H5T_NATIVE_INT, xMemspace, xFilespace, H5P_DEFAULT, &xArray[0]);
+    H5Dread(yDataset, H5T_NATIVE_INT, yMemspace, yFilespace, H5P_DEFAULT, &yArray[0]);
+    H5Dread(stareDataset, H5T_NATIVE_INT, stareMemspace, stareFilespace, H5P_DEFAULT, &stareArray[0]);
 
 
-	BaseType *stareVal = args->get_rvalue(0)->value(dmr);
-	Array *stareSrc = dynamic_cast<Array*>(stareVal); //TODO: check for datatype (array of uint64)
-	/*
-	if (stareSrc == nullptr)
-	    throw exception
-	*/
-	stareSrc->read();
+    BaseType *stareVal = args->get_rvalue(0)->value(dmr);
+    Array *stareSrc = dynamic_cast<Array *>(stareVal); //TODO: check for datatype (array of uint64)
+    /*
+    if (stareSrc == nullptr)
+        throw exception
+    */
+    stareSrc->read();
 
-	vector<dods_uint64> *stareData = extract_uint64_array(stareSrc);
+    vector<dods_uint64> *stareData = extract_uint64_array(stareSrc);
 
-	bool status = hasValue(stareData, &stareArray);
+    bool status = hasValue(stareData, &stareArray);
 
-	Int32 *result = new Int32 ("result");
-	if (status) {
-		result->set_value(1);
-	} else {
-		result->set_value(0);
-	}
+    Int32 *result = new Int32("result");
+    if (status) {
+        result->set_value(1);
+    }
+    else {
+        result->set_value(0);
+    }
 
-	return result;
+    return result;
 }
 
 /**
@@ -337,7 +340,7 @@ BaseType *stare_count_dap4_function(D4RValueList *args, DMR &dmr) {
     size_t findDot = granuleName.find_last_of(".");
     string newPathName = granuleName.substr(0, findDot) + "_sidecar.h5";
 
-    string rootDirectory = TheBESKeys::TheKeys()->read_string_key("BES.Catalog.catalog.RootDirectory", "");
+    string rootDirectory = TheBESKeys::TheKeys()->read_string_key(STARE_STORAGE_PATH, "/tmp");
 
     string fullPath = BESUtil::pathConcat(rootDirectory, newPathName);
 
@@ -371,7 +374,7 @@ BaseType *stare_count_dap4_function(D4RValueList *args, DMR &dmr) {
     //We need to get the filespace and memspace before reading the values from each dataset
     stareFilespace = H5Dget_space(stareDataset);
 
-    stareMemspace = H5Screate_simple(ndims,dims,NULL);
+    stareMemspace = H5Screate_simple(ndims, dims, NULL);
 
     //Get the number of elements in the dataspace and use that to appropriate the proper size of the vectors
     stareSize = H5Sget_select_npoints(stareFilespace);
@@ -381,18 +384,18 @@ BaseType *stare_count_dap4_function(D4RValueList *args, DMR &dmr) {
     H5Dread(stareDataset, H5T_NATIVE_INT, stareMemspace, stareFilespace, H5P_DEFAULT, &stareArray[0]);
 
     BaseType *stareVal = args->get_rvalue(0)->value(dmr);
-    Array &stareSrc = dynamic_cast<Array&>(*stareVal); //TODO: change stareSrc to pointer
-    /*
+    Array *stareSrc = dynamic_cast<Array *>(stareVal);
     if (stareSrc == nullptr)
-        throw exception
-    */
-    stareSrc.read();
+        throw BESInternalError("Expected an Array as the first argument to stare_intersection()", __FILE__,
+                               __LINE__);
 
-    vector<dods_uint64> *stareData = extract_uint64_array(&stareSrc);
+    stareSrc->read();
+
+    vector<dods_uint64> *stareData = extract_uint64_array(stareSrc);
 
     unsigned int numMatches = count(stareData, &stareArray);
 
-    Int32 *result = new Int32 ("result");
+    Int32 *result = new Int32("result");
     result->set_value(numMatches);
 
     return result;

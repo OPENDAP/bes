@@ -19,45 +19,47 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-#include <stdint.h>
+
+#include <string>
 
 #include "ServerFunction.h"
 
 namespace libdap {
 class BaseType;
+
 class DDS;
 
 class D4RValueList;
+
 class DMR;
 }
 
 namespace functions {
 
+const std::string STARE_STORAGE_PATH = "FUNCTIONS.stareStoragePath";
+
 bool hasValue(libdap::BaseType *bt, std::vector<uint64_t> stareIndices);
 
 unsigned int count(libdap::BaseType *bt, std::vector<uint64_t> stareIndices);
-
-
 
 libdap::BaseType *stare_intersection_dap4_function(libdap::D4RValueList *args, libdap::DMR &dmr);
 
 libdap::BaseType *stare_count_dap4_function(libdap::D4RValueList *args, libdap::DMR &dmr);
 
-class StareIterateFunction: public libdap::ServerFunction {
+class StareIterateFunction : public libdap::ServerFunction {
 public:
-	StareIterateFunction()
-	{
-		setName("stare_intersection");
-		setDescriptionString("The stare_intersection TODO: ");
-		//setUsageString("linear_scale(var) | linear_scale(var,scale_factor,add_offset) | linear_scale(var,scale_factor,add_offset,missing_value)");
-		//setRole("http://services.opendap.org/dap4/server-side-function/linear-scale");
-		//setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#linear_scale");
-		setFunction(stare_intersection_dap4_function);
-		setVersion("0.1");
-	}
-	virtual ~StareIterateFunction()
-	{
-	}
+    StareIterateFunction() {
+        setName("stare_intersection");
+        setDescriptionString("The stare_intersection TODO: ");
+        //setUsageString("linear_scale(var) | linear_scale(var,scale_factor,add_offset) | linear_scale(var,scale_factor,add_offset,missing_value)");
+        //setRole("http://services.opendap.org/dap4/server-side-function/linear-scale");
+        //setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#linear_scale");
+        setFunction(stare_intersection_dap4_function);
+        setVersion("0.1");
+    }
+
+    virtual ~StareIterateFunction() {
+    }
 };
 
 } // functions namespace
