@@ -79,6 +79,9 @@ struct returnVal {
     vector<BaseType *> dataVal;
 };
 
+#if 0
+// Not used jhrg 11/7/19
+
 //May need to be moved to libdap/util
 uint64 extract_uint64_value(BaseType *arg) {
     assert(arg);
@@ -126,10 +129,12 @@ uint64 extract_uint64_value(BaseType *arg) {
                               "The argument list built by the parser contained an unsupported numeric type.");
     }
 }
+#endif
 
 // May need to be moved to libdap/util
 // This helper function assumes 'var' is the correct size.
-vector<dods_uint64> *extract_uint64_array(Array *var) {
+// Made this static to limit its scope to this file. jhrg 11/7/19
+static vector<dods_uint64> *extract_uint64_array(Array *var) {
     assert(var);
 
     int length = var->length();
@@ -147,7 +152,7 @@ vector<dods_uint64> *extract_uint64_array(Array *var) {
  * @param stareVal - stare values from given dataset
  * @param stareIndices - stare values being compared, retrieved from the sidecar file
  */
-bool hasValue(vector<dods_uint64> *stareVal, vector<dods_uint64> *stareIndices) {
+bool StareIterateFunction::hasValue(vector<dods_uint64> *stareVal, vector<dods_uint64> *stareIndices) {
 #if 0
     //Originally took the stareIndices in as a BaseType.
     //However, the stare indices can be taken from the provided h5 sidecar file and
@@ -177,7 +182,8 @@ bool hasValue(vector<dods_uint64> *stareVal, vector<dods_uint64> *stareIndices) 
  * @param stareVal - stare values from given dataset
  * @param stareIndices - stare values being compared, retrieved from the sidecar file
  */
-unsigned int count(vector<dods_uint64> *stareVal, vector<dods_uint64> *stareIndices) {
+unsigned int
+StareIterateFunction::count(vector<dods_uint64> *stareVal, vector<dods_uint64> *stareIndices) {
 #if 0
     Array &stareSrc = dynamic_cast<Array&>(*stareIndices);
 
@@ -187,15 +193,17 @@ unsigned int count(vector<dods_uint64> *stareVal, vector<dods_uint64> *stareIndi
 #endif
 
     unsigned int counter = 0;
-    for (dods_uint64 &stareIndex : *stareIndices) {
+    for (dods_uint64 &i : *stareIndices) {
         for (dods_uint64 &j : *stareVal)
-            if (stareIndex == j)
+            // TODO Add call to STARE library 'inclusion' function. jhrg 11/7/19
+            if (i == j)
                 counter++;
     }
 
     return counter;
 }
 
+#if 0
 /*
  * Return data from the provided data array where the requested stare indices are found
  */
@@ -216,7 +224,17 @@ returnVal stare_subset(vector<dods_uint64> *stareVal, vector<dods_uint64> *stare
 
     return subset;
 }
+#endif
 
+/**
+ * @brief Return the pathname to an STARE sidecar file for a given dataset.
+ *
+ * This uses the value of the BES key FUNCTIONS.stareStoragePath to find
+ * a the sidecar file that matches the given dataset. The lookup ignores
+ * any path component of the dataset; only the file name is used.
+ * @param pathName The dataset pathname
+ * @return The pathname to the matching sidecar file.
+ */
 string
 StareIterateFunction::get_sidecar_file_pathname(const string &pathName) {
     size_t granulePos = pathName.find_last_of("/");
@@ -239,7 +257,8 @@ StareIterateFunction::get_sidecar_file_pathname(const string &pathName) {
  * Checks to see if there are any Stare values provided from the client that can be found in the sidecar file.
  * If there is at least one match, the function will return a 1. Otherwise returns a 0.
  */
-BaseType *stare_intersection_dap4_function(D4RValueList *args, DMR &dmr) {
+BaseType *
+StareIterateFunction::stare_intersection_dap4_function(D4RValueList *args, DMR &dmr) {
 
     if (args->size() != 1) {
         ostringstream oss;
@@ -314,7 +333,7 @@ BaseType *stare_intersection_dap4_function(D4RValueList *args, DMR &dmr) {
 
     vector<dods_uint64> *stareData = extract_uint64_array(stareSrc);
 
-    bool status = hasValue(stareData, &stareArray);
+    bool status = StareIterateFunction::hasValue(stareData, &stareArray);
 
     Int32 *result = new Int32("result");
     if (status) {

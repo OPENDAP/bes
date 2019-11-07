@@ -11,7 +11,8 @@ AUTOMAKE_OPTIONS = foreign
 #Define __macosx for STARE
 #Remove hard code for filepath
 AM_CPPFLAGS = $(DAP_CFLAGS) -I$(STARE_INC) -I$(prefix)/deps/include
-AM_CXXFLAGS = 
+# Added  -Wno-deprecated to suppress warnings about auto_ptr<>. jhrg 11/7/19
+AM_CXXFLAGS = -Wno-deprecated
 AM_LDADD =  $(DAP_CLIENT_LIBS) -lSTARE
 
 SUBDIRS = . unit-tests
