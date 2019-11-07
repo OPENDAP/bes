@@ -147,7 +147,7 @@ vector<dods_uint64> *extract_uint64_array(Array *var) {
  * @param stareVal - stare values from given dataset
  * @param stareIndices - stare values being compared, retrieved from the sidecar file
  */
-bool hasValue(vector<dods_uint64> *stareVal, vector<uint64> *stareIndices) {
+bool hasValue(vector<dods_uint64> *stareVal, vector<dods_uint64> *stareIndices) {
 #if 0
     //Originally took the stareIndices in as a BaseType.
     //However, the stare indices can be taken from the provided h5 sidecar file and
@@ -159,11 +159,12 @@ bool hasValue(vector<dods_uint64> *stareVal, vector<uint64> *stareIndices) {
     stareSrc.read();
     stareData = extract_uint64_array(&stareSrc);
 #endif
-
-    for (unsigned long long &stareIndice : *stareIndices) {
-        for (unsigned long long &j : *stareVal)
+    // Changes to the range-for loop, fixed the type (was unsigned long long
+    // which works on OSX but not CentOS7). jhrg 11/5/19
+    for (dods_uint64 &i : *stareIndices) {
+        for (dods_uint64 &j : *stareVal)
             //TODO: Check to see if the index is within the stare index being compared
-            if (stareIndice == j)
+            if (i == j)
                 return true;
     }
 
@@ -176,7 +177,7 @@ bool hasValue(vector<dods_uint64> *stareVal, vector<uint64> *stareIndices) {
  * @param stareVal - stare values from given dataset
  * @param stareIndices - stare values being compared, retrieved from the sidecar file
  */
-unsigned int count(vector<dods_uint64> *stareVal, vector<uint64> *stareIndices) {
+unsigned int count(vector<dods_uint64> *stareVal, vector<dods_uint64> *stareIndices) {
 #if 0
     Array &stareSrc = dynamic_cast<Array&>(*stareIndices);
 
@@ -186,8 +187,8 @@ unsigned int count(vector<dods_uint64> *stareVal, vector<uint64> *stareIndices) 
 #endif
 
     unsigned int counter = 0;
-    for (unsigned long long &stareIndex : *stareIndices) {
-        for (unsigned long long &j : *stareVal)
+    for (dods_uint64 &stareIndex : *stareIndices) {
+        for (dods_uint64 &j : *stareVal)
             if (stareIndex == j)
                 counter++;
     }
@@ -198,14 +199,14 @@ unsigned int count(vector<dods_uint64> *stareVal, vector<uint64> *stareIndices) 
 /*
  * Return data from the provided data array where the requested stare indices are found
  */
-returnVal stare_subset(vector<dods_uint64> *stareVal, vector<uint64> *stareIndices,
+returnVal stare_subset(vector<dods_uint64> *stareVal, vector<dods_uint64> *stareIndices,
                        vector<int> *xArray, vector<int> *yArray) {
     returnVal subset = returnVal();
 
     auto x = xArray->begin();
     auto y = yArray->begin();
     for (auto i = stareIndices->begin(), end = stareIndices->end(); i != end; i++, x++, y++) {
-        for (unsigned long long &j : *stareVal)
+        for (dods_uint64 &j : *stareVal)
             if (*i == j)
                 subset.stareVal.push_back(j);
         subset.x.push_back(*x);
@@ -221,7 +222,11 @@ StareIterateFunction::get_sidecar_file_pathname(const string &pathName) {
     size_t granulePos = pathName.find_last_of("/");
     string granuleName = pathName.substr(granulePos + 1);
     size_t findDot = granuleName.find_last_of(".");
-    string newPathName = granuleName.substr(0, findDot) + "_sidecar.h5";
+    // Added extraction of the extension since the files won't always be *.h5
+    // also switched to .append() instead of '+' because the former is faster.
+    // jhrg 11/5/19
+    string extension = granuleName.substr(findDot); // ext includes the dot
+    string newPathName = granuleName.substr(0, findDot).append("_sidecar").append(extension);
 
     string stareDirectory = TheBESKeys::TheKeys()->read_string_key(STARE_STORAGE_PATH, "/tmp");
 
@@ -290,7 +295,7 @@ BaseType *stare_intersection_dap4_function(D4RValueList *args, DMR &dmr) {
 
     vector<int> xArray(xSize);
     vector<int> yArray(ySize);
-    vector<uint64> stareArray(stareSize);
+    vector<dods_uint64> stareArray(stareSize);
 
     //Read the data file and store the values of each dataset into an array
     H5Dread(xDataset, H5T_NATIVE_INT, xMemspace, xFilespace, H5P_DEFAULT, &xArray[0]);

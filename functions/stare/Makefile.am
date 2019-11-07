@@ -22,7 +22,7 @@ SUBDIRS = . unit-tests
 #endif
 
 if USE_VALGRIND
-TESTS_ENVIRONMENT=valgrind --quiet --trace-children=yes --error-exitcode=1 --dsymutil=yes --leak-check=yes
+TESTS_ENVIRONMENT = valgrind --quiet --trace-children=yes --error-exitcode=1 --dsymutil=yes --leak-check=yes
 endif
 
 # These are not used by automake but are often useful for certain types of
