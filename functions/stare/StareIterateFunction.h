@@ -22,6 +22,8 @@
 
 #include <string>
 
+#include <dods-datatypes.h>
+
 #include "ServerFunction.h"
 
 namespace libdap {
@@ -38,15 +40,23 @@ namespace functions {
 
 const std::string STARE_STORAGE_PATH = "FUNCTIONS.stareStoragePath";
 
-bool hasValue(libdap::BaseType *bt, std::vector<uint64_t> stareIndices);
+bool hasValue(libdap::BaseType *bt, std::vector<libdap::dods_uint64> stareIndices);
 
-unsigned int count(libdap::BaseType *bt, std::vector<uint64_t> stareIndices);
+unsigned int count(libdap::BaseType *bt, std::vector<libdap::dods_uint64> stareIndices);
 
 libdap::BaseType *stare_intersection_dap4_function(libdap::D4RValueList *args, libdap::DMR &dmr);
 
+#if 0
 libdap::BaseType *stare_count_dap4_function(libdap::D4RValueList *args, libdap::DMR &dmr);
+#endif
 
 class StareIterateFunction : public libdap::ServerFunction {
+public:
+    static string get_sidecar_file_pathname(const string &pathName);
+    static unsigned int count(libdap::BaseType *bt, std::vector<libdap::dods_uint64> stareIndices);
+
+    friend class StareFunctionsTest;
+
 public:
     StareIterateFunction() {
         setName("stare_intersection");
@@ -60,8 +70,6 @@ public:
 
     virtual ~StareIterateFunction() {
     }
-
-    static string get_sidecar_file_pathname(const string &pathName);
 };
 
 } // functions namespace
