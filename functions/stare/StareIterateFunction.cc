@@ -327,6 +327,7 @@ BaseType *stare_intersection_dap4_function(D4RValueList *args, DMR &dmr) {
     return result;
 }
 
+#if 0
 /**
  * -- Count server function --
  * Counts how many times the provided Stare values are found within the provided sidecar file.
@@ -401,5 +402,6 @@ BaseType *stare_count_dap4_function(D4RValueList *args, DMR &dmr) {
 
     return result;
 }
+#endif
 
 } // namespace functions
