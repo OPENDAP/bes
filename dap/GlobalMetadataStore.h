@@ -27,6 +27,7 @@
 
 #include <string>
 #include <functional>
+#include <fstream>
 
 #include "BESFileLockingCache.h"
 #include "BESInternalFatalError.h"
@@ -92,6 +93,8 @@ private:
 
     static bool d_enabled;
     static GlobalMetadataStore *d_instance;
+
+    std::ofstream of;
 
     // Called by atexit()
     static void delete_instance() {

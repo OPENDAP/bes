@@ -12,7 +12,7 @@ EXTRA_DIST = contiguous chunked new_types mds_tests s3 $(srcdir)/package.m4 \
 $(TESTSUITE) $(TESTSUITE).at $(TESTSUITE_MDS) $(TESTSUITE_MDS).at \
 atlocal.in bes.conf.in bes_mds_tests.conf.in  bes_serial.conf.in
 
-DISTCLEANFILES = atconfig 
+DISTCLEANFILES = atconfig mds_for_tests_ledger.txt
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
