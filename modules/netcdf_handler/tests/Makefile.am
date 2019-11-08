@@ -58,7 +58,7 @@ $(srcdir)/handler_tests_macros.m4
 clean-local:
 	test ! -f '$(TESTSUITE_3)' || $(SHELL) '$(TESTSUITE_3)' --clean
 	test ! -f '$(TESTSUITE_4)' || $(SHELL) '$(TESTSUITE_4)' --clean
-	-rm -rf $(srcdir)/package.m4 $(srcdir)/mds_for_tests
+	-rm -rf $(builddir)/mds_for_tests
 
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
