@@ -443,27 +443,25 @@ static void dump_time(ostream &os, bool use_local_time)
 void
 GlobalMetadataStore::write_ledger()
 {
-    // TODO open just once, <- done SBL 11.7.19
-    // FIXME Protect this with an exclusive lock!
-    // ofstream of(d_ledger_name.c_str(), ios::app);
-
+    // open just once, <- done SBL 11.7.19
+ 
     int fd; // value-result parameter;
     if (get_exclusive_lock(d_ledger_name, fd)) {
         BESDEBUG(DEBUG_KEY, __FUNCTION__ << " Ledger " << d_ledger_name << " write locked." << endl);
         if (of) {
-			try {
-				dump_time(of, d_use_local_time);
-				of << " " << d_ledger_entry << endl;
-				VERBOSE("MD Ledger name: '" << d_ledger_name << "', entry: '" << d_ledger_entry + "'.");
-				unlock_and_close(d_ledger_name); // closes fd
-			}
-			catch (...) {
-				unlock_and_close(d_ledger_name);
-				throw;
-			}
+	    try {
+		dump_time(of, d_use_local_time);
+		of << " " << d_ledger_entry << endl;
+		VERBOSE("MDS Ledger name: '" << d_ledger_name << "', entry: '" << d_ledger_entry + "'.");
+		unlock_and_close(d_ledger_name); // closes fd
+	    }
+	    catch (...) {
+		unlock_and_close(d_ledger_name);
+		throw;
+	    }
         }
         else {
-            LOG("Warning: Metadata store could not write to is ledger file.");
+            LOG("Warning: Metadata store could not write to its ledger file.");
             unlock_and_close(d_ledger_name);
         }
     }
