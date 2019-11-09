@@ -870,7 +870,11 @@ typedef std::map<string, string> TypeConverter;
 // in a location expecting an NcML type.
 static const bool ALLOW_DAP_TYPES_AS_NCML_TYPES = true;
 
-/* Ncml DataType:
+/*
+ * Causes a small memory leak that shows up in Valgrind but is ignored as the leak does not as grow since
+ * TypeConverter object is only allocated once per process. SBL 10.31.19
+ *
+ * Ncml DataType:
  <xsd:enumeration value="char"/>
  <xsd:enumeration value="byte"/>
  <xsd:enumeration value="short"/>

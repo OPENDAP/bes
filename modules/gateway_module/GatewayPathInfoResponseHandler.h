@@ -49,19 +49,19 @@ private:
     BESInfo *_response;
 
 public:
-    void eval_resource_path(const string &resource_path, const string &catalog_root, const bool follow_sym_links, string &validPath, bool &isFile,
-        bool &isDir, long long &size, long long &lastModifiedTime, bool &canRead, string &remainder);
+    void eval_resource_path(const std::string &resource_path, const std::string &catalog_root, const bool follow_sym_links, std::string &validPath, bool &isFile,
+        bool &isDir, long long &size, long long &lastModifiedTime, bool &canRead, std::string &remainder);
 
 public:
-    GatewayPathInfoResponseHandler(const string &name);
+    GatewayPathInfoResponseHandler(const std::string &name);
     virtual ~GatewayPathInfoResponseHandler(void);
 
     virtual void execute(BESDataHandlerInterface &dhi);
     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 
-    static BESResponseHandler *GatewayPathInfoResponseBuilder(const string &name);
+    static BESResponseHandler *GatewayPathInfoResponseBuilder(const std::string &name);
 };
 
 #endif // I_GatewayPathInfoResponseHandler_h

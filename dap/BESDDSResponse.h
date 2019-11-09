@@ -59,10 +59,10 @@ public:
 
     virtual ~BESDDSResponse();
 
-    virtual void set_container(const string &cn);
+    virtual void set_container(const std::string &cn);
     virtual void clear_container();
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 
     /**
      * Set the response object's DDS. The caller should probably

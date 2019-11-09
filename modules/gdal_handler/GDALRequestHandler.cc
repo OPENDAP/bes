@@ -55,7 +55,7 @@
 #include <BESInternalFatalError.h>
 #include <BESUtil.h>
 
-//#include <BESDebug.h>
+#include <BESDebug.h>
 
 #include "GDALRequestHandler.h"
 #include "gdal_utils.h"
@@ -152,7 +152,7 @@ bool GDALRequestHandler::gdal_build_dds(BESDataHandlerInterface & dhi)
         if (hDS == NULL)
             throw Error(string(CPLGetLastErrorMsg()));
 
-        gdal_read_dataset_variables(dds, hDS, filename);
+        gdal_read_dataset_variables(dds, hDS, filename,true);
 
         GDALClose(hDS);
         hDS = 0;
@@ -203,12 +203,15 @@ bool GDALRequestHandler::gdal_build_data(BESDataHandlerInterface & dhi)
         if (hDS == NULL)
             throw Error(string(CPLGetLastErrorMsg()));
 
-        gdal_read_dataset_variables(dds, hDS, filename);
+        // The das will not be generated. KY 10/30/19
+        gdal_read_dataset_variables(dds, hDS, filename,false);
 
         GDALClose(hDS);
         hDS = 0;
 
         bdds->set_constraint(dhi);
+        BESDEBUG("gdal", "Data ACCESS build_data(): set the including attribute flag to false: "<<filename << endl);
+        bdds->set_ia_flag(false);
         bdds->clear_container();
     }
     catch (BESError &e) {
@@ -253,7 +256,7 @@ bool GDALRequestHandler::gdal_build_dmr_using_dds(BESDataHandlerInterface &dhi)
         throw Error(string(CPLGetLastErrorMsg()));
 
 	try {
-		gdal_read_dataset_variables(&dds, hDS, filename);
+		gdal_read_dataset_variables(&dds, hDS, filename,true);
 
 		GDALClose(hDS);
 		hDS = 0;
@@ -374,4 +377,65 @@ bool GDALRequestHandler::gdal_build_version(BESDataHandlerInterface & dhi)
     info->add_module(MODULE_NAME, MODULE_VERSION);
 
     return true;
+}
+
+void GDALRequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
+
+    BESResponseObject *response = dhi.response_handler->get_response_object();
+    BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *>(response);
+    if (!bdds)
+        throw BESInternalError("cast error", __FILE__, __LINE__);
+    DDS *dds = bdds->get_dds();
+
+    string container_name = bdds->get_explicit_containers() ? dhi.container->get_symbolic_name(): "";
+    string filename = dhi.container->access();
+
+    GDALDatasetH hDS = 0;
+    DAS *das = NULL;
+
+    try {
+
+        das = new DAS;
+        // sets the current container for the DAS.
+        if (!container_name.empty()) das->container_name(container_name);
+
+        hDS = GDALOpen(filename.c_str(), GA_ReadOnly);
+        if (hDS == NULL)
+            throw Error(string(CPLGetLastErrorMsg()));
+
+        gdal_read_dataset_attributes(*das,hDS);
+        Ancillary::read_ancillary_das(*das, filename);
+
+        dds->transfer_attributes(das);
+
+        delete das;
+        GDALClose(hDS);
+        hDS = 0;
+        BESDEBUG("gdal", "Data ACCESS in add_attributes(): set the including attribute flag to true: "<<filename << endl);
+        bdds->set_ia_flag(true);
+
+    }
+
+    catch (BESError &e) {
+        if (hDS) GDALClose(hDS);
+        if (das) delete das;
+        throw;
+    }
+    catch (InternalErr & e) {
+        if (hDS) GDALClose(hDS);
+        if (das) delete das;
+        throw BESDapError(e.get_error_message(), true, e.get_error_code(), __FILE__, __LINE__);
+    }
+    catch (Error & e) {
+        if (hDS) GDALClose(hDS);
+        if (das) delete das;
+        throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
+    }
+    catch (...) {
+        if (hDS) GDALClose(hDS);
+        if (das) delete das;
+        throw BESInternalFatalError("unknown exception caught building DDS", __FILE__, __LINE__);
+    }
+
+    return;
 }

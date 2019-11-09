@@ -45,18 +45,22 @@ private:
 
 	static bool _promote_byte_to_short_set;
 	static bool _promote_byte_to_short;
+	static bool _use_mds;
+
 
 	static unsigned int _cache_entries;
 	static float _cache_purge_level;
 
     static ObjMemCache *das_cache;
     static ObjMemCache *dds_cache;
+    static ObjMemCache *datadds_cache;
     static ObjMemCache *dmr_cache;
 
     static void get_dds_with_attributes(const std::string& dataset_name, const std::string& container_name, libdap::DDS* dds);
+    static void get_dds_without_attributes(const std::string& dataset_name, const std::string& container_name, libdap::DDS* dds);
 
 public:
-	NCRequestHandler(const string &name);
+	NCRequestHandler(const std::string &name);
 	virtual ~NCRequestHandler(void);
 
 	static bool nc_build_das(BESDataHandlerInterface &dhi);
@@ -78,7 +82,11 @@ public:
 	{
 		return _promote_byte_to_short;
 	}
-	static unsigned int get_cache_entries()
+	static bool get_use_mds()
+	{
+		return _use_mds;
+	}
+    static unsigned int get_cache_entries()
 	{
 	    return _cache_entries;
 	}
@@ -86,6 +94,12 @@ public:
 	{
 	    return _cache_purge_level;
 	}
+
+    // This handler supports the "not including attributes" in
+    // the data access feature. Attributes are generated only
+    // if necessary. KY 10/30/19
+    void add_attributes(BESDataHandlerInterface &dhi);
+
 };
 
 #endif

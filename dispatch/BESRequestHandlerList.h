@@ -42,7 +42,8 @@
 #include "BESDataHandlerInterface.h"
 #endif
 
-class BESRequestHandler;
+#include "BESRequestHandler.h"
+//class BESRequestHandler;
 class BESDataHandlerInterface;
 
 /** @brief The list of registered request handlers for this server; a singleton

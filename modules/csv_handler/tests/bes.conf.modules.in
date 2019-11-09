@@ -7,10 +7,11 @@ BES.Group=group_name
 BES.LogName=./bes.log
 BES.LogVerbose=no
 
-BES.modules=dap,cmd,csv
+BES.modules=dap,cmd,csv,functions
 BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
 BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
 BES.module.csv=@abs_top_builddir@/modules/csv_handler/.libs/libcsv_module.so
+BES.module.functions=@abs_top_builddir@/functions/.libs/libfunctions_module.so
 
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/csv_handler
 BES.Data.RootDirectory=/dev/null

@@ -56,6 +56,8 @@
 #endif
 
 using std::endl;
+using std::ostream;
+using std::string;
 using namespace ncml_module;
 
 static const char* const NCML_CATALOG = "catalog";

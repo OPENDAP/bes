@@ -35,8 +35,6 @@
 
 #include <string>
 
-using std::string ;
-
 class SocketUtilities
 {
 public:
@@ -58,7 +56,7 @@ public:
       * or for creating a temporary file.
       * @return uniq name
       */
-    static string create_temp_name() ;
+    static std::string create_temp_name() ;
 } ;
 
 #endif // SocketUtilities_h

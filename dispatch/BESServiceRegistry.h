@@ -37,10 +37,6 @@
 #include <map>
 #include <list>
 
-using std::string ;
-using std::map ;
-using std::list ;
-
 #include "BESObj.h"
 
 class BESInfo ;
@@ -62,39 +58,39 @@ class BESServiceRegistry : public BESObj
 private:
     typedef struct _service_cmd
     {
-	string _description ;
-	map<string,string> _formats ;
+    	std::string _description ;
+    	std::map<std::string,std::string> _formats ;
     } service_cmd ;
     static BESServiceRegistry *		_instance ;
-    map<string,map<string,service_cmd> >_services ;
-    map<string,map<string,string> >	_handles ;
+    std::map<std::string,std::map<std::string,service_cmd> >_services ;
+    std::map<std::string,std::map<std::string,std::string> >	_handles ;
 protected:
 				BESServiceRegistry(void) ;
 public:
     virtual			~BESServiceRegistry(void) ;
 
-    virtual void		add_service( const string &name ) ;
-    virtual void		add_to_service( const string &service,
-						const string &cmd,
-						const string &cmd_descript,
-						const string &format ) ;
-    virtual void		add_format( const string &service,
-					    const string &cmd,
-					    const string &format ) ;
+    virtual void		add_service( const std::string &name ) ;
+    virtual void		add_to_service( const std::string &service,
+						const std::string &cmd,
+						const std::string &cmd_descript,
+						const std::string &format ) ;
+    virtual void		add_format( const std::string &service,
+					    const std::string &cmd,
+					    const std::string &format ) ;
 
-    virtual void		remove_service( const string &name ) ;
+    virtual void		remove_service( const std::string &name ) ;
 
-    virtual bool		service_available( const string &name,
-						   const string &cmd = "",
-						   const string &format = "" ) ;
+    virtual bool		service_available( const std::string &name,
+						   const std::string &cmd = "",
+						   const std::string &format = "" ) ;
 
-    virtual void		handles_service( const string &handler,
-						 const string &service ) ;
+    virtual void		handles_service( const std::string &handler,
+						 const std::string &service ) ;
     
-    virtual bool		does_handle_service( const string &handler,
-						     const string &service ) ;
-    virtual void		services_handled( const string &handler,
-						  list<string> &services ) ;
+    virtual bool		does_handle_service( const std::string &handler,
+						     const std::string &service ) ;
+    virtual void		services_handled( const std::string &handler,
+    					std::list<std::string> &services ) ;
 
     virtual void		show_services( BESInfo &info ) ;
 

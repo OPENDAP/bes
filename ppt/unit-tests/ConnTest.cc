@@ -34,6 +34,7 @@
 #include "ConnSocket.h"
 
 using std::endl;
+using std::ostream;
 
 ConnTest::ConnTest( )
     : PPTConnection( 0 )

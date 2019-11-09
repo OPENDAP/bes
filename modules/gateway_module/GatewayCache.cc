@@ -53,6 +53,7 @@
 #endif
 
 using std::endl;
+using std::string;
 using namespace gateway;
 
 GatewayCache *GatewayCache::d_instance = 0;

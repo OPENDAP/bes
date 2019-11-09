@@ -34,8 +34,6 @@
 #include <libxml/parserInternals.h>
 #include "BESError.h"
 
-using namespace std;
-
 namespace ncml_module {
 class SaxParser;
 }
@@ -85,7 +83,7 @@ private:
      */
     xmlSAXHandler _handler;
 
-#if 0
+#if 1
     /** the xml parser context (internals) so we can get access to line numbers
      *  in the parse and pass them along for better debug output on exception.
      */
@@ -99,9 +97,9 @@ private:
     /** If _state==EXCEPTION, these will be a copy of the
      * deferred BESError's data to rethrow after the parser cleans up
      * */
-    string _errorMsg;
+    std::string _errorMsg;
     int _errorType;
-    string _errorFile;
+    std::string _errorFile;
     int _errorLine;
 
 private:
@@ -114,7 +112,7 @@ public:
      *
      * @param parser Must exist for the duration of the life of the wrapper.
      */
-    SaxParserWrapper(SaxParser& parser);
+    explicit SaxParserWrapper(SaxParser& parser);
     virtual ~SaxParserWrapper();
 
     /** @brief Do a SAX parse of the ncmlFilename
@@ -126,7 +124,7 @@ public:
      *
      * @return successful parse
      */
-    bool parse(const string& ncmlFilename);
+    bool parse(const std::string& ncmlFilename);
 
     SaxParser& getParser() const
     {
@@ -167,10 +165,15 @@ public:
 
 private:
 
-    /** Prepare the parser to load the given filename, setting up the handler and context */
-    void setupParser(const string& filename);
+    /**
+     * Prepare the parser by setting the handler callback functions.
+     * @todo We could move this to a static initializer or constructor
+     * This function used to build a parser context 'object', bound to a filename. For each
+     * different file parsed, a new context was made. Once we swithced back to the
+     * xmlSAXUserParseFile() function, the context was not needed. jhrg 10/8/19 */
+    void setupParser();
 
-#if 0
+#if 1
     // Leak fix. jhrg 6/21/19
     /** Clean the _context and any other state */
     void cleanupParser() throw ();

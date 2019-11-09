@@ -37,11 +37,6 @@
 #include <string>
 #include <iostream>
 
-using std::map ;
-using std::string ; 
-using std::cout ;
-using std::endl ;
-
 #include "BESObj.h"
 
 class BESProcessEncodedString : public BESObj

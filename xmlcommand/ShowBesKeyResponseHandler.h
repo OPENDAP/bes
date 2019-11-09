@@ -56,7 +56,7 @@ public:
 
     static BESResponseHandler *ShowBesKeyResponseBuilder(const std::string &name);
 
-    virtual void getBesKeyValue(string key,  std::vector<string> &values);
+    virtual void getBesKeyValue(std::string key,  std::vector<std::string> &values);
 };
 
 #endif // I_ShowBesKeyResponseHandler_h

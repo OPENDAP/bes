@@ -35,9 +35,6 @@
 #include <vector>
 #include <string>
 
-using std::vector;
-using std::string;
-
 /** This class can be used to build up a simple thesaurus which maps names
     from one string to another. The thesaurus is built by calling the #add#
     mfunc with a string of the form <source>:<dest> where <source> and <dest>

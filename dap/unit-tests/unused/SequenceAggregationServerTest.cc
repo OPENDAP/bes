@@ -351,7 +351,7 @@ int main(int argc, char*argv[]) {
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     GetOpt getopt(argc, argv, "d");
-    char option_char;
+    int option_char;
     while ((option_char = getopt()) != EOF)
         switch (option_char) {
         case 'd':

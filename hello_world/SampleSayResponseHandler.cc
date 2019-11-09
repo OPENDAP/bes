@@ -39,6 +39,8 @@
 #include "SampleResponseNames.h"
 
 using std::endl;
+using std::string;
+using std::ostream;
 
 SampleSayResponseHandler::SampleSayResponseHandler(const string &name) :
     BESResponseHandler(name)

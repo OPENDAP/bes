@@ -37,8 +37,6 @@
 
 #include <string>
 
-using std::string ;
-
 #include "SSLConnection.h"
 
 class Socket ;

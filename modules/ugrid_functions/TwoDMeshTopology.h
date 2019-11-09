@@ -33,7 +33,6 @@
 #include <gridfields/grid.h>
 #include <gridfields/cellarray.h>
 
-using namespace std;
 using namespace libdap;
 
 namespace libdap {

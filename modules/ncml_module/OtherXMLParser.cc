@@ -96,7 +96,7 @@ void OtherXMLParser::onStartElementWithNamespace(const std::string& localname, c
     // disconnected from them and will lose the namespaces if not
     if (_depth == 0) {
         BESDEBUG("ncml",
-            "Got depth 0 OtherXML element while parsing OtherXML attribute..." << " Pulling all un-shadowed ancestral namespaces into the element with localname=" << localname << endl);
+            "Got depth 0 OtherXML element while parsing OtherXML attribute..." << " Pulling all un-shadowed ancestral namespaces into the element with localname=" << localname << std::endl);
 
         // initialize it with the local node namespaces, since they
         // take precedence over the stack

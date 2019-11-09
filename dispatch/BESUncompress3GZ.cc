@@ -38,6 +38,7 @@
 #include <sstream>
 
 using std::ostringstream;
+using std::string;
 
 #include "BESUncompress3GZ.h"
 #include "BESInternalError.h"

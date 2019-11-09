@@ -33,6 +33,7 @@
 #include "BESDapErrorInfo.h"
 
 using std::endl;
+using std::map;
 
 /** @brief constructs an informational object that doesn't
  *         write any output to the stream

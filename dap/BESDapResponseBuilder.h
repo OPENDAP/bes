@@ -34,12 +34,14 @@
 class BESDapFunctionResponseCache;
 class BESDataHandlerInterface;
 class BESResponseObject;
+class BRDRequestHandler;
 
 namespace libdap {
     class ConstraintEvaluator;
     class DDS;
     class DAS;
 }
+
 
 /**
  * This class is used to build responses for/by the BES. This class replaces
@@ -156,6 +158,9 @@ public:
 			bool ce_eval = true);
 	virtual void send_dap2_data(std::ostream &data_stream, libdap::DDS **dds, libdap::ConstraintEvaluator &eval,
 			bool with_mime_headers = true);
+        virtual void send_dap2_data(BESDataHandlerInterface &dhi, libdap::DDS **dds, libdap::ConstraintEvaluator &eval,
+			bool with_mime_headers = true);
+
 
 	// Added jhrg 9/1/16
 	virtual libdap::DDS *intern_dap2_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
@@ -180,5 +185,6 @@ public:
 
 	virtual bool store_dap4_result(ostream &out, libdap::DMR &dmr);
 };
+
 
 #endif // _response_builder_h

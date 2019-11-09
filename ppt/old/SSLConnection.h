@@ -37,8 +37,6 @@
 
 #include <string>
 
-using std::string ;
-
 #include "Connection.h"
 
 class Socket ;

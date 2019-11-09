@@ -35,8 +35,6 @@
 
 #include <string>
 
-using std::string;
-
 #include "BESContainer.h"
 
 /** @brief Container representing a NCML request

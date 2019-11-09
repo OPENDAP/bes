@@ -49,16 +49,16 @@ private:
     bool _inbes;
     bool _inhandler;
     BESInfo * _info;
-    void add_version(const string &type, const string &name, const string &vers);
+    void add_version(const std::string &type, const std::string &name, const std::string &vers);
 public:
     BESVersionInfo();
     virtual ~BESVersionInfo();
 
-    virtual void add_library(const string &n, const string &v);
-    virtual void add_module(const string &n, const string &v);
-    virtual void add_service(const string &n, const list<string> &vers);
+    virtual void add_library(const std::string &n, const std::string &v);
+    virtual void add_module(const std::string &n, const std::string &v);
+    virtual void add_service(const std::string &n, const std::list<std::string> &vers);
 
-    virtual void begin_response(const string &response_name, BESDataHandlerInterface &dhi)
+    virtual void begin_response(const std::string &response_name, BESDataHandlerInterface &dhi)
     {
         _info->begin_response(response_name, dhi);
     }
@@ -67,20 +67,20 @@ public:
         _info->end_response();
     }
 
-    virtual void add_tag(const string &tag_name, const string &tag_data, map<string, string> *attrs = 0)
+    virtual void add_tag(const std::string &tag_name, const std::string &tag_data, std::map<std::string, std::string> *attrs = 0)
     {
         _info->add_tag(tag_name, tag_data, attrs);
     }
-    virtual void begin_tag(const string &tag_name, map<string, string> *attrs = 0)
+    virtual void begin_tag(const std::string &tag_name, std::map<std::string, std::string> *attrs = 0)
     {
         _info->begin_tag(tag_name, attrs);
     }
-    virtual void end_tag(const string &tag_name)
+    virtual void end_tag(const std::string &tag_name)
     {
         _info->end_tag(tag_name);
     }
 
-    virtual void add_data(const string &s)
+    virtual void add_data(const std::string &s)
     {
         _info->add_data(s);
     }
@@ -92,11 +92,11 @@ public:
     {
         _info->add_break(num_breaks);
     }
-    virtual void add_data_from_file(const string &key, const string &name)
+    virtual void add_data_from_file(const std::string &key, const std::string &name)
     {
         _info->add_data_from_file(key, name);
     }
-    virtual void add_exception(BESError &e, const string &admin)
+    virtual void add_exception(BESError &e, const std::string &admin)
     {
         _info->add_exception(e, admin);
     }
@@ -104,12 +104,12 @@ public:
     {
         _info->transmit(transmitter, dhi);
     }
-    virtual void print(ostream &strm)
+    virtual void print(std::ostream &strm)
     {
         _info->print(strm);
     }
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // BESVersionInfo_h_

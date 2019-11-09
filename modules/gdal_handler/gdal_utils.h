@@ -24,7 +24,7 @@
 
 class GDALArray;
 
-void gdal_read_dataset_variables(libdap::DDS *dds, const GDALDatasetH &hDS, const string &filename);
+void gdal_read_dataset_variables(libdap::DDS *dds, const GDALDatasetH &hDS, const string &filename,bool include_attrs);
 void gdal_read_dataset_attributes(libdap::DAS &das, const GDALDatasetH &hDS);
 
 void gdal_read_dataset_variables(libdap::DMR *dmr, const GDALDatasetH &hDS, const std::string &filename);

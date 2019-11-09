@@ -27,6 +27,7 @@
 
 #include <string>
 #include <functional>
+#include <fstream>
 
 #include "BESFileLockingCache.h"
 #include "BESInternalFatalError.h"
@@ -39,6 +40,7 @@
 
 namespace libdap {
 class DapObj;
+class DAS;
 class DDS;
 class DMR;
 }
@@ -93,6 +95,8 @@ private:
     static bool d_enabled;
     static GlobalMetadataStore *d_instance;
 
+    std::ofstream of;
+
     // Called by atexit()
     static void delete_instance() {
         delete d_instance;
@@ -143,7 +147,7 @@ protected:
         StreamDDS(libdap::DDS *dds) : StreamDAP(dds) { }
         StreamDDS(libdap::DMR *dmr) : StreamDAP(dmr) { }
 
-        virtual void operator()(ostream &os);
+        virtual void operator()(std::ostream &os);
     };
 
     /// Instantiate with a DDS or DMR and use to write the DAS response.
@@ -151,7 +155,7 @@ protected:
         StreamDAS(libdap::DDS *dds) : StreamDAP(dds) { }
         StreamDAS(libdap::DMR *dmr) : StreamDAP(dmr) { }
 
-        virtual void operator()(ostream &os);
+        virtual void operator()(std::ostream &os);
     };
 
     /// Instantiate with a DDS or DMR and use to write the DMR response.
@@ -159,10 +163,10 @@ protected:
         StreamDMR(libdap::DDS *dds) : StreamDAP(dds) { }
         StreamDMR(libdap::DMR *dmr) : StreamDAP(dmr) { }
 
-        virtual void operator()(ostream &os);
+        virtual void operator()(std::ostream &os);
     };
 
-    bool store_dap_response(StreamDAP &writer, const std::string &key, const string &name, const string &response_name);
+    bool store_dap_response(StreamDAP &writer, const std::string &key, const std::string &name, const std::string &response_name);
 
     void write_response_helper(const std::string &name, std::ostream &os, const std::string &suffix,
         const std::string &object_name);
@@ -173,8 +177,8 @@ protected:
 
     bool remove_response_helper(const std::string& name, const std::string &suffix, const std::string &object_name);
 
-    static void transfer_bytes(int fd, ostream &os);
-    static void insert_xml_base(int fd, ostream &os, const string &xml_base);
+    static void transfer_bytes(int fd, std::ostream &os);
+    static void insert_xml_base(int fd, std::ostream &os, const std::string &xml_base);
 
 public:
     /**
@@ -209,7 +213,7 @@ public:
     typedef struct MDSReadLock MDSReadLock;
 
 protected:
-    MDSReadLock get_read_lock_helper(const string &name, const string &suffix, const string &object_name);
+    MDSReadLock get_read_lock_helper(const std::string &name, const std::string &suffix, const std::string &object_name);
 
     // Suppress the automatic generation of these ctors
     GlobalMetadataStore(const GlobalMetadataStore &src);
@@ -221,8 +225,8 @@ protected:
     GlobalMetadataStore(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
 
     // these are static because they are called by the static method get_instance()
-    static string get_cache_dir_from_config();
-    static string get_cache_prefix_from_config();
+    static std::string get_cache_dir_from_config();
+    static std::string get_cache_prefix_from_config();
     static unsigned long get_cache_size_from_config();
 
 public:
@@ -253,7 +257,7 @@ public:
 
     virtual bool is_available_helper(const std::string &realName, const std::string &relativeName, const std::string &fileType, const std::string &suffix);
 
-    virtual time_t get_cache_lmt(const string &fileName, const string &suffix);
+    virtual time_t get_cache_lmt(const std::string &fileName, const std::string &suffix);
 
     virtual void write_dds_response(const std::string &name, std::ostream &os);
     virtual void write_das_response(const std::string &name, std::ostream &os);
@@ -267,6 +271,8 @@ public:
 
     virtual libdap::DDS *get_dds_object(const std::string &name);
     virtual libdap::DMR *get_dmr_object(const std::string &name);
+
+    virtual void parse_das_from_mds(libdap::DAS*das, const std::string &name);
 };
 
 } // namespace bes

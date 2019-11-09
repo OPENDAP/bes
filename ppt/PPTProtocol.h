@@ -35,24 +35,22 @@
 
 #include <string>
 
-using std::string ;
-
 class PPTProtocol
 {
 public:
     // Generic socket message when the mapper fails to find the proper
     // protocol string
-    static string PPT_PROTOCOL_UNDEFINED ;
-    static string PPT_COMPLETE_DATA_TRANSMITION ;
-    static string PPT_EXIT_NOW ;
+    static std::string PPT_PROTOCOL_UNDEFINED ;
+    static std::string PPT_COMPLETE_DATA_TRANSMITION ;
+    static std::string PPT_EXIT_NOW ;
 
     // From client to server
-    static string PPTCLIENT_TESTING_CONNECTION ;
-    static string PPTCLIENT_REQUEST_AUTHPORT ;
+    static std::string PPTCLIENT_TESTING_CONNECTION ;
+    static std::string PPTCLIENT_REQUEST_AUTHPORT ;
 
     // From server to client
-    static string PPTSERVER_CONNECTION_OK ;
-    static string PPTSERVER_AUTHENTICATE ;
+    static std::string PPTSERVER_CONNECTION_OK ;
+    static std::string PPTSERVER_AUTHENTICATE ;
 } ;
 
 #endif // PPTProtocol_h_

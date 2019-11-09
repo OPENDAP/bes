@@ -52,7 +52,6 @@ using libdap::Array;
 using libdap::BaseType;
 using libdap::DDS;
 using libdap::Grid;
-using std::auto_ptr;
 
 namespace ncml_module {
 class NetcdfElement;

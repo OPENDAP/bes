@@ -38,6 +38,10 @@
 
 #include <BESUtil.h>
 
+using std::vector;
+using std::string;
+using std::list;
+
 /** @brief Splits a string into separate strings based on the delimiter
  *
  * @param str The string to break apart into different tokens

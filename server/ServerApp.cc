@@ -50,6 +50,8 @@ using std::endl;
 using std::ios;
 using std::ostringstream;
 using std::ofstream;
+using std::ostream;
+using std::string;
 
 #include "config.h"
 

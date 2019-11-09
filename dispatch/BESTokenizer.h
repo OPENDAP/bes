@@ -36,9 +36,6 @@
 #include <vector>
 #include <string>
 
-using std::vector;
-using std::string;
-
 #include "BESObj.h"
 
 /** @brief tokenizer for the BES request command string
@@ -69,9 +66,9 @@ using std::string;
  */
 class BESTokenizer: public BESObj {
 private:
-    vector<string> tokens;
-    typedef vector<string>::iterator tokens_iterator;
-    typedef vector<string>::const_iterator tokens_citerator;
+	std::vector<std::string> tokens;
+    typedef std::vector<std::string>::iterator tokens_iterator;
+    typedef std::vector<std::string>::const_iterator tokens_citerator;
     int _counter;
     unsigned int _number_tokens;
 
@@ -80,12 +77,12 @@ public:
     ~BESTokenizer();
 
     void tokenize(const char *p);
-    string & get_first_token();
-    string & get_current_token();
-    string & get_next_token();
-    void parse_error(const string &s = "");
-    string parse_container_name(const string &s, unsigned int &type);
-    string remove_quotes(const string &s);
+    std::string & get_first_token();
+    std::string & get_current_token();
+    std::string & get_next_token();
+    void parse_error(const std::string &s = "");
+    std::string parse_container_name(const std::string &s, unsigned int &type);
+    std::string remove_quotes(const std::string &s);
 
     void dump_tokens();
 

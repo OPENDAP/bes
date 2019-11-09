@@ -44,6 +44,8 @@ using std::endl;
 using std::flush;
 using std::string;
 using std::ofstream;
+using std::ostream;
+using std::ifstream;
 
 #include "StandAloneApp.h"
 #include "StandAloneClient.h"

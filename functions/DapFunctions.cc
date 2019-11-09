@@ -50,13 +50,15 @@
 #include "DilateArrayFunction.h"
 #include "RangeFunction.h"
 #include "BBoxCombFunction.h"
+#include "ScaleGrid.h"
+#include "TestFunction.h"
 
 #include "DapFunctionsRequestHandler.h"
-
 #include "DapFunctions.h"
-#include "ScaleGrid.h"
 
 using std::endl;
+using std::ostream;
+using std::string;
 
 namespace functions {
 
@@ -95,10 +97,12 @@ void DapFunctions::initialize(const string &modname)
     libdap::ServerFunctionsList::TheList()->add_function(new ScaleGrid());
     libdap::ServerFunctionsList::TheList()->add_function(new Scale3DArray());
 
+    libdap::ServerFunctionsList::TheList()->add_function(new TestFunction());
+
     GDALAllRegister();
     OGRRegisterAll();
 
-    // What to do with the orig error handler? Pitch it for now. jhrg 10/17/16
+    // What to do with the orig error handler? Pitch it. jhrg 10/17/16
     /*CPLErrorHandler orig_err_handler =*/ (void) CPLSetErrorHandler(CPLQuietErrorHandler);
 
     BESDEBUG( "dap_functions", "Done initializing DAP Functions" << endl );
@@ -109,8 +113,7 @@ void DapFunctions::terminate(const string &modname)
     BESDEBUG( "dap_functions", "Removing DAP Functions." << endl );
 
     BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler(modname);
-    if (rh) delete rh;
-
+    delete rh;
 }
 
 /** @brief dumps information about this object
@@ -131,4 +134,4 @@ BESAbstractModule *maker()
 }
 }
 
-}
+}  // namespace functions

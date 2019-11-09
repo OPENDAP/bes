@@ -36,14 +36,11 @@
 #include <map>
 #include <string>
 
-using std::map;
-using std::string;
-
 #include "BESObj.h"
 
 class BESAggregationServer;
 
-typedef BESAggregationServer * (*p_agg_handler)(const string &name);
+typedef BESAggregationServer * (*p_agg_handler)(const std::string &name);
 
 /** @brief List of all registered aggregation handlers for this server
  *
@@ -57,7 +54,7 @@ class BESAggFactory: public BESObj
 private:
     static BESAggFactory * _instance;
 
-    map<string, p_agg_handler> _handler_list;
+    std::map<std::string, p_agg_handler> _handler_list;
 protected:
     BESAggFactory(void)
     {
@@ -67,16 +64,16 @@ public:
     {
     }
 
-    typedef map<string, p_agg_handler>::const_iterator Handler_citer;
-    typedef map<string, p_agg_handler>::iterator Handler_iter;
+    typedef std::map<std::string, p_agg_handler>::const_iterator Handler_citer;
+    typedef std::map<std::string, p_agg_handler>::iterator Handler_iter;
 
-    virtual bool add_handler(const string &handler_name, p_agg_handler handler_method);
-    virtual bool remove_handler(const string &handler_name);
-    virtual BESAggregationServer *find_handler(const string &handler_name);
+    virtual bool add_handler(const std::string &handler_name, p_agg_handler handler_method);
+    virtual bool remove_handler(const std::string &handler_name);
+    virtual BESAggregationServer *find_handler(const std::string &handler_name);
 
-    virtual string get_handler_names();
+    virtual std::string get_handler_names();
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 
     static BESAggFactory * TheFactory();
 };

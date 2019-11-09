@@ -36,14 +36,11 @@
 #include <map>
 #include <string>
 
-using std::map;
-using std::string;
-
 #include "BESObj.h"
 
 class BESResponseHandler;
 
-typedef BESResponseHandler * (*p_response_handler)(const string &name);
+typedef BESResponseHandler * (*p_response_handler)(const std::string &name);
 
 /** @brief List of all registered response handlers for this server
  *
@@ -62,7 +59,7 @@ typedef BESResponseHandler * (*p_response_handler)(const string &name);
 class BESResponseHandlerList: public BESObj {
 private:
     static BESResponseHandlerList * _instance;
-    map<string, p_response_handler> _handler_list;
+    std::map<std::string, p_response_handler> _handler_list;
 
     friend class resplistT;
 
@@ -76,14 +73,14 @@ public:
     {
     }
 
-    typedef map<string, p_response_handler>::const_iterator Handler_citer;
-    typedef map<string, p_response_handler>::iterator Handler_iter;
+    typedef std::map<std::string, p_response_handler>::const_iterator Handler_citer;
+    typedef std::map<std::string, p_response_handler>::iterator Handler_iter;
 
-    virtual bool add_handler(const string &handler, p_response_handler handler_method);
-    virtual bool remove_handler(const string &handler);
-    virtual BESResponseHandler * find_handler(const string &handler);
+    virtual bool add_handler(const std::string &handler, p_response_handler handler_method);
+    virtual bool remove_handler(const std::string &handler);
+    virtual BESResponseHandler * find_handler(const std::string &handler);
 
-    virtual string get_handler_names();
+    virtual std::string get_handler_names();
 
     virtual void dump(std::ostream &strm) const;
 
