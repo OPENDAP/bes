@@ -13,11 +13,11 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 noinst_DATA = bes.conf bes_mds.conf
 
-CLEANFILES = bes.conf bes_mds.conf package.m4
+CLEANFILES = bes.conf bes_mds.conf $(srcdir)/package.m4
 
 EXTRA_DIST = nc netcdf_handlerTest netcdf_handlerTest.at \
 nc4_netcdf_handler_tests nc4_netcdf_handler_tests.at \
-atlocal.in $(BES_CONF_IN) package.m4
+atlocal.in $(BES_CONF_IN) $(BES_MDS_CONF_IN) $(srcdir)/package.m4
 
 DISTCLEANFILES = atconfig
 
