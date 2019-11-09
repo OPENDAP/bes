@@ -40,6 +40,7 @@
 
 namespace libdap {
 class DapObj;
+class DAS;
 class DDS;
 class DMR;
 }
@@ -270,6 +271,8 @@ public:
 
     virtual libdap::DDS *get_dds_object(const std::string &name);
     virtual libdap::DMR *get_dmr_object(const std::string &name);
+
+    virtual void parse_das_from_mds(libdap::DAS*das, const std::string &name);
 };
 
 } // namespace bes
