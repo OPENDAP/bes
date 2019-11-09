@@ -168,7 +168,7 @@ CmrCatalog::get_node_NEW(const string &ppath) const
 
                 switch( path_elements.size()){
 
-                case 2: // The path ends at temporal facet, so we need the years.
+                case 2: // The path ends at temporal facet, so we need the year nodes.
                 {
                     vector<string> years;
 
@@ -186,7 +186,7 @@ CmrCatalog::get_node_NEW(const string &ppath) const
                 }
                 break;
 
-                case 3:
+                case 3:  // The path ends at years facet, so we need the month nodes.
                 {
                     string year = path_elements[2];
                     string month("");
@@ -207,7 +207,7 @@ CmrCatalog::get_node_NEW(const string &ppath) const
                 }
                 break;
 
-                case 4:
+                case 4:  // The path ends at months facet, so we need the day nodes.
                 {
                     string year = path_elements[2];
                     string month = path_elements[3];
@@ -228,7 +228,7 @@ CmrCatalog::get_node_NEW(const string &ppath) const
                 }
                 break;
 
-                case 5:
+                case 5:  // The path ends at the days facet, so we need the granule nodes.
                 {
                     string year = path_elements[2];
                     string month = path_elements[3];
@@ -242,7 +242,7 @@ CmrCatalog::get_node_NEW(const string &ppath) const
                 }
                 break;
 
-                case 6:
+                case 6: // Looks like they are trying to get a particular granule...
                 {
                     string year = path_elements[2];
                     string month = path_elements[3];
