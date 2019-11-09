@@ -179,7 +179,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(RemoteAccessTest);
 int main(int argc, char*argv[])
 {
     GetOpt getopt(argc, argv, "dhb");
-    char option_char;
+    int option_char;
     while ((option_char = getopt()) != EOF)
         switch (option_char) {
         case 'd':

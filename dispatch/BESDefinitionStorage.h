@@ -35,8 +35,6 @@
 
 #include <string>
 
-using std::string ;
-
 #include "BESObj.h"
 
 class BESDefine ;
@@ -64,7 +62,7 @@ class BESInfo ;
 class BESDefinitionStorage : public BESObj
 {
 protected:
-    string		_my_name ;
+	std::string		_my_name ;
 
 public:
     /** @brief create an instance of BESDefinitionStorage with the give
@@ -72,7 +70,7 @@ public:
      *
      * @param name name of this persistence store
      */
-    				BESDefinitionStorage( const string &name )
+    				BESDefinitionStorage( const std::string &name )
 				    : _my_name( name ) {} ;
 
     virtual 			~BESDefinitionStorage() {} ;
@@ -81,7 +79,7 @@ public:
      *
      * @return name of this persistent store.
      */
-    virtual const string &	get_name() const { return _my_name ; }
+    virtual const std::string &	get_name() const { return _my_name ; }
 
     /** @brief looks for a definition in this persistent store with the
      * given name
@@ -89,7 +87,7 @@ public:
      * @param def_name name of the definition to look for
      * @return definition with the given name, NULL if not found
      */
-    virtual BESDefine * 	look_for( const string &def_name ) = 0 ;
+    virtual BESDefine * 	look_for( const std::string &def_name ) = 0 ;
 
     /** @brief adds a given definition to this storage
      *
@@ -101,7 +99,7 @@ public:
      * @param d definition to add
      * @return true if successfully added, false if already exists
      */
-    virtual bool		add_definition( const string &def_name,
+    virtual bool		add_definition( const std::string &def_name,
                                                 BESDefine *d ) = 0 ;
 
     /** @brief deletes a defintion with the given name
@@ -112,7 +110,7 @@ public:
      * @param def_name name of the defintion to delete
      * @return true if successfully deleted and false otherwise
      */
-    virtual bool		del_definition( const string &def_name ) = 0 ;
+    virtual bool		del_definition( const std::string &def_name ) = 0 ;
 
     /** @brief deletes all defintions from the definition store
      *

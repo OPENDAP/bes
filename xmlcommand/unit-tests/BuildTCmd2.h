@@ -39,8 +39,8 @@
 class BuildTCmd2 : public BESXMLCommand
 {
 private:
-    static map< string, p_xmlcmd_builder > cmd_list ;
-    typedef map< string, p_xmlcmd_builder >::iterator cmd_iter ;
+    static std::map< std::string, p_xmlcmd_builder > cmd_list ;
+    typedef std::map< std::string, p_xmlcmd_builder >::iterator cmd_iter ;
 public:
     				BuildTCmd2( const BESDataHandlerInterface &dhi )
 				    : BESXMLCommand( dhi ) {}
@@ -50,7 +50,7 @@ public:
 
     virtual bool		has_response() { return false ; }
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void		dump( std::ostream &strm ) const ;
 
     static BESXMLCommand *	Cmd2Builder( const BESDataHandlerInterface &dhi ) ;
 } ;

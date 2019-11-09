@@ -55,6 +55,7 @@
 #include <BESConstraintFuncs.h>
 #include <BESServiceRegistry.h>
 #include <BESUtil.h>
+#include <BESDebug.h>
 
 #include <fitsio.h>
 
@@ -179,19 +180,11 @@ bool FitsRequestHandler::fits_build_data(BESDataHandlerInterface &dhi)
 			throw BESDapError(fits_error, false, unknown_error, __FILE__, __LINE__);
 		}
 		Ancillary::read_ancillary_dds(*dds, accessed);
-
-		DAS *das = new DAS;
-		BESDASResponse bdas(das);
-		bdas.set_container(dhi.container->get_symbolic_name());
-		if (!fits_handler::fits_read_attributes(*das, accessed, fits_error)) {
-			throw BESDapError(fits_error, false, unknown_error, __FILE__, __LINE__);
-		}
-		Ancillary::read_ancillary_das(*das, accessed);
-
-		dds->transfer_attributes(das);
-
 		bdds->set_constraint(dhi);
 
+        // We don't need to build the DAS here. Set the including attribute flag to false. KY 10/30/19
+        BESDEBUG(FITS_NAME, "Data ACCESS build_data(): set the including attribute flag to false: "<<accessed << endl);
+        bdds->set_ia_flag(false);
 		bdds->clear_container();
 	}
 	catch( InternalErr &e ) {
@@ -327,5 +320,28 @@ void FitsRequestHandler::dump(ostream &strm) const
 	BESIndent::Indent();
 	BESRequestHandler::dump(strm);
 	BESIndent::UnIndent();
+}
+
+void FitsRequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
+
+    BESResponseObject *response = dhi.response_handler->get_response_object();
+    BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *>(response);
+    if (!bdds)
+        throw BESInternalError("cast error", __FILE__, __LINE__);
+    DDS *dds = bdds->get_dds();
+    string accessed = dhi.container->access();
+	DAS *das = new DAS;
+	BESDASResponse bdas(das);
+	bdas.set_container(dhi.container->get_symbolic_name());
+	string fits_error;
+	if (!fits_handler::fits_read_attributes(*das, accessed, fits_error)) {
+		throw BESDapError(fits_error, false, unknown_error, __FILE__, __LINE__);
+	}
+	Ancillary::read_ancillary_das(*das, accessed);
+
+	dds->transfer_attributes(das);
+    BESDEBUG(FITS_NAME, "Data ACCESS in add_attributes(): set the including attribute flag to true: "<<accessed << endl);
+    bdds->set_ia_flag(true);
+    return;
 }
 

@@ -40,12 +40,16 @@
 #include <cerrno>
 #include <sstream>
 #include <iostream>
+#include <map>
 
 using std::ostringstream;
 using std::cout;
 using std::endl;
 using std::cerr;
 using std::flush;
+using std::map;
+using std::ostream;
+using std::string;
 
 #include "BESServerHandler.h"
 #include "Connection.h"

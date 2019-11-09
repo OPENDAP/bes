@@ -45,7 +45,7 @@ public:
     virtual void		initConnection() ;
     virtual void		closeConnection() ;
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void		dump( std::ostream &strm ) const ;
 } ;
 
 #endif // ConnTest_h

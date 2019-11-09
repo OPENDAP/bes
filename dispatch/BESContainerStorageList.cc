@@ -33,6 +33,8 @@
 #include <iostream>
 
 using std::endl;
+using std::string;
+using std::ostream;
 
 #include "BESContainerStorageList.h"
 #include "BESContainerStorage.h"
@@ -340,7 +342,7 @@ void BESContainerStorageList::show_containers(BESInfo &info)
 {
     BESContainerStorageList::persistence_list *pl = _first;
     while (pl) {
-        map<string, string> props;
+        std::map<string, string> props;
         props["name"] = pl->_persistence_obj->get_name();
         info.begin_tag("store", &props);
         pl->_persistence_obj->show_containers(info);

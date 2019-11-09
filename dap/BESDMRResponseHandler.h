@@ -49,15 +49,15 @@
  */
 class BESDMRResponseHandler: public BESResponseHandler {
 public:
-	BESDMRResponseHandler(const string &name);
+	BESDMRResponseHandler(const std::string &name);
 	virtual ~BESDMRResponseHandler();
 
 	virtual void execute(BESDataHandlerInterface &dhi);
 	virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
 
-	virtual void dump(ostream &strm) const;
+	virtual void dump(std::ostream &strm) const;
 
-	static BESResponseHandler *DMRResponseBuilder(const string &name);
+	static BESResponseHandler *DMRResponseBuilder(const std::string &name);
 };
 
 #endif // I_BESDMRResponseHandler_h

@@ -36,17 +36,15 @@
 #include <time.h>
 #include <string>
 
-using std::string ;
-
 class BESStatus
 {
     static int			_counter ;
-    static string		boot_time ;
+    static std::string	boot_time ;
 public:
 				BESStatus();
 				BESStatus(const BESStatus &);
   				~BESStatus();
-    string			get_status() { return BESStatus::boot_time ; }
+  	std::string	get_status() { return BESStatus::boot_time ; }
 } ;
 
 #endif // BESStatus_h_

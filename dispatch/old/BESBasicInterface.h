@@ -35,9 +35,6 @@
 
 #include <new>
 
-using std::new_handler;
-using std::bad_alloc;
-
 #include "BESInterface.h"
 #include "BESDataHandlerInterface.h"
 #include "BESDataRequestInterface.h"
@@ -76,12 +73,12 @@ protected:
     virtual void log_status();
     virtual void clean();
 public:
-    BESBasicInterface(ostream *strm);
+    BESBasicInterface(std::ostream *strm);
     virtual ~BESBasicInterface();
 
-    virtual int execute_request(const string &from);
+    virtual int execute_request(const std::string &from);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // BESBasicInterface_h_

@@ -406,5 +406,30 @@ m4_define([AT_BESCMD_BINARY_DAP2_RESPONSE_TEST],
 m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST],
 [_AT_NEW_BESCMD_DAP4_BINARYDATA_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])])
 
+m4_define([AT_BESCMD_DAP_FUNCTION_RESPONSE_TEST], [dnl
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([functions])
+
+    input=$abs_srcdir/$1
+    baseline=$abs_srcdir/$1.baseline
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [], [stdout])
+        PRINT_DAP4_DATA_RESPONSE([stdout])
+        REMOVE_DAP4_CHECKSUM([stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [], [stdout])
+        PRINT_DAP4_DATA_RESPONSE([stdout])
+        REMOVE_DAP4_CHECKSUM([stdout])
+        AT_CHECK([diff -b -B $baseline stdout])
+        AT_XFAIL_IF([test "$2" = "xfail"])
+        ])
+
+    AT_CLEANUP])
+
+
 m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST],
 [_AT_BESCMD_NETCDF_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])])

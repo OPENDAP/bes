@@ -142,7 +142,7 @@ int main(int argc, char*argv[])
     string env_var = (string) "BES_CONF=" + TEST_SRC_DIR + "/bes.conf";
     putenv((char *) env_var.c_str());
 
-    char option_char;
+    int option_char;
     while ((option_char = getopt()) != EOF)
         switch (option_char) {
         case 'd':

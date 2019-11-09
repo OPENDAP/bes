@@ -35,24 +35,20 @@
 
 #include <fstream>
 
-using std::ofstream;
-using std::ios;
-using std::endl;
-
 #include "BESReporter.h"
 #include "BESDataHandlerInterface.h"
 
 class SayReporter: public BESReporter {
 private:
-    ofstream * _file_buffer;
-    string _log_name;
+	std::ofstream * _file_buffer;
+	std::string _log_name;
 public:
     SayReporter();
     virtual ~SayReporter();
 
     virtual void report(BESDataHandlerInterface &dhi);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // A_SayReporter_h

@@ -42,10 +42,10 @@ public:
 	virtual ~FFModule()
 	{
 	}
-	virtual void initialize(const string &modname);
-	virtual void terminate(const string &modname);
+	virtual void initialize(const std::string &modname);
+	virtual void terminate(const std::string &modname);
 
-	virtual void dump(ostream &strm) const;
+	virtual void dump(std::ostream &strm) const;
 };
 
 #endif // A_FFModule_H

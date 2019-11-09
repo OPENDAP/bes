@@ -41,6 +41,8 @@
 
 using std::vector;
 using std::endl;
+using std::string;
+using std::ostream;
 
 #define MODULE "bes"
 

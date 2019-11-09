@@ -35,6 +35,8 @@
 #include "TheBESKeys.h"
 
 using std::endl;
+using std::ostream;
+using std::string;
 
 #define BES_DEFAULT_INFO_TYPE "txt"
 

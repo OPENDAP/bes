@@ -37,9 +37,6 @@
 #include <map>
 #include <list>
 
-using std::string;
-using std::map;
-
 #include "BESContainerStorage.h"
 
 /** @brief implementation of BESContainerStorage that represents a
@@ -70,27 +67,27 @@ using std::map;
  */
 class BESContainerStorageFile: public BESContainerStorage {
 private:
-    string _file;
+	std::string _file;
     typedef struct _container {
-        string _symbolic_name;
-        string _real_name;
-        string _container_type;
+    	std::string _symbolic_name;
+    	std::string _real_name;
+    	std::string _container_type;
     } container;
-    map<string, BESContainerStorageFile::container *> _container_list;
-    typedef map<string, BESContainerStorageFile::container *>::const_iterator Container_citer;
-    typedef map<string, BESContainerStorageFile::container *>::iterator Container_iter;
+    std::map<std::string, BESContainerStorageFile::container *> _container_list;
+    typedef std::map<std::string, BESContainerStorageFile::container *>::const_iterator Container_citer;
+    typedef std::map<std::string, BESContainerStorageFile::container *>::iterator Container_iter;
 
 public:
-    BESContainerStorageFile(const string &n);
+    BESContainerStorageFile(const std::string &n);
     virtual ~BESContainerStorageFile();
 
-    virtual BESContainer * look_for(const string &sym_name);
-    virtual void add_container(const string &sym_name, const string &real_name, const string &type);
+    virtual BESContainer * look_for(const std::string &sym_name);
+    virtual void add_container(const std::string &sym_name, const std::string &real_name, const std::string &type);
     virtual void add_container(BESContainer *c);
-    virtual bool del_container(const string &s_name);
+    virtual bool del_container(const std::string &s_name);
     virtual bool del_containers();
 
-    virtual bool isData(const string &inQuestion, std::list<string> &provides);
+    virtual bool isData(const std::string &inQuestion, std::list<std::string> &provides);
 
     virtual void show_containers(BESInfo &info);
 

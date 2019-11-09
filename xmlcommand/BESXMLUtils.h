@@ -37,10 +37,6 @@
 #include <vector>
 #include <string>
 
-using std::map;
-using std::vector;
-using std::string;
-
 #include <libxml/encoding.h>
 
 class BESXMLUtils {
@@ -50,14 +46,14 @@ public:
     virtual ~BESXMLUtils();
 
     static void XMLErrorFunc(void *context, const char *msg, ...);
-    static void GetProps(xmlNode *node, map<string, string> &props);
-    static void GetNodeInfo(xmlNode *node, string &name, string &value, map<string, string> &props);
-    static xmlNode * GetFirstChild(xmlNode *node, string &child_name, string &child_value,
-        map<string, string> &child_props);
-    static xmlNode * GetNextChild(xmlNode *child_node, string &next_name, string &next_value,
-        map<string, string> &next_props);
-    static xmlNode * GetChild(xmlNode *node, const string &child_name, string &child_value,
-        map<string, string> &child_props);
+    static void GetProps(xmlNode *node, std::map<std::string, std::string> &props);
+    static void GetNodeInfo(xmlNode *node, std::string &name, std::string &value, std::map<std::string, std::string> &props);
+    static xmlNode * GetFirstChild(xmlNode *node, std::string &child_name, std::string &child_value,
+    		std::map<std::string, std::string> &child_props);
+    static xmlNode * GetNextChild(xmlNode *child_node, std::string &next_name, std::string &next_value,
+    		std::map<std::string, std::string> &next_props);
+    static xmlNode * GetChild(xmlNode *node, const std::string &child_name, std::string &child_value,
+    		std::map<std::string, std::string> &child_props);
 };
 
 #endif // BESXMLUtils_h_

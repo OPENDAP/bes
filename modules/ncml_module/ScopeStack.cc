@@ -31,6 +31,10 @@
 #include "BESDebug.h"
 #include "BESInternalError.h"
 
+using std::string;
+using std::endl;
+using std::vector;
+
 namespace ncml_module {
 /* static */
 /*  enum ScopeType { GLOBAL=0, VARIABLE_ATOMIC, VARIABLE_CONSTRUCTOR, ATTRIBUTE_ATOMIC, ATTRIBUTE_CONTAINER, NUM_SCOPE_TYPES}; */

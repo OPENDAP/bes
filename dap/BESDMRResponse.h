@@ -44,10 +44,10 @@ public:
 	BESDMRResponse(DMR *dmr) : BESDapResponse(), _dmr(dmr) { }
 	virtual ~BESDMRResponse() { delete _dmr ; }
 
-	virtual void set_container(const string &cn);
+	virtual void set_container(const std::string &cn);
 	virtual void clear_container();
 
-	virtual void dump(ostream &strm) const;
+	virtual void dump(std::ostream &strm) const;
 
 	DMR *get_dmr() { return _dmr; }
 	void set_dmr(DMR *dmr) { _dmr = dmr; }

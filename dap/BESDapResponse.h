@@ -40,10 +40,10 @@
  */
 class BESDapResponse: public BESResponseObject {
 private:
-	string d_dap_client_protocol;
+	std::string d_dap_client_protocol;
 	bool d_explicit_containers;
 
-	string d_request_xml_base;
+	std::string d_request_xml_base;
 
 protected:
 	bool is_dap2();
@@ -61,7 +61,7 @@ public:
 	}
 
 	/// Return the dap version string sent by the client (e.g., the OLFS)
-	string get_dap_client_protocol() const
+	std::string get_dap_client_protocol() const
 	{
 		return d_dap_client_protocol;
 	}
@@ -73,7 +73,7 @@ public:
 	}
 
 	/// Return the xml:base URL for this request.
-	string get_request_xml_base() const
+	std::string get_request_xml_base() const
 	{
 		return d_request_xml_base;
 	}
@@ -82,10 +82,10 @@ public:
 	virtual void set_dap4_constraint(BESDataHandlerInterface &dhi);
 	virtual void set_dap4_function(BESDataHandlerInterface &dhi);
 
-    virtual void set_container(const string &cn) = 0;
+    virtual void set_container(const std::string &cn) = 0;
     virtual void clear_container() = 0;
 
-	virtual void dump(ostream &strm) const;
+	virtual void dump(std::ostream &strm) const;
 };
 
 #endif // I_BESDapResponse

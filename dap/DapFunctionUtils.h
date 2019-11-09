@@ -27,7 +27,6 @@
 #define DapFunctionUtils_h_ 1
 
 #include <string>
-using std::string;
 
 #include <DDS.h>
 #include <ServerFunction.h>

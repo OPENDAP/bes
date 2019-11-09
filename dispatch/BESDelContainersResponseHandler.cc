@@ -48,6 +48,8 @@
 #include "BESDataHandlerInterface.h"
 
 using std::endl;
+using std::ostream;
+using std::string;
 
 BESDelContainersResponseHandler::BESDelContainersResponseHandler(const string &name) :
     BESResponseHandler(name)

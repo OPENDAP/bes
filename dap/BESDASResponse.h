@@ -39,8 +39,6 @@ namespace libdap {
 class DAS;
 }
 
-//using namespace libdap;
-
 /** @brief Represents an OPeNDAP DAS DAP2 data object within the BES
  */
 class BESDASResponse: public BESDapResponse {
@@ -53,10 +51,10 @@ public:
     }
     virtual ~BESDASResponse();
 
-    virtual void set_container(const string &cn);
+    virtual void set_container(const std::string &cn);
     virtual void clear_container();
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 
     virtual libdap::DAS * get_das()
     {

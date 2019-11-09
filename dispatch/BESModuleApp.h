@@ -36,9 +36,6 @@
 #include <list>
 #include <string>
 
-using std::list;
-using std::string;
-
 #include "BESApp.h"
 #include "BESPluginFactory.h"
 #include "BESAbstractModule.h"
@@ -60,10 +57,10 @@ class BESModuleApp: public BESApp {
 private:
 	BESPluginFactory<BESAbstractModule> _moduleFactory;
 	typedef struct _bes_module {
-		string _module_name;
-		string _module_library;
+		std::string _module_name;
+		std::string _module_library;
 	} bes_module;
-	list<bes_module> _module_list;
+	std::list<bes_module> _module_list;
 	int loadModules(void);
 public:
 	BESModuleApp(void);
@@ -75,4 +72,3 @@ public:
 };
 
 #endif
-

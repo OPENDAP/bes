@@ -37,15 +37,15 @@
 
 class SampleSayResponseHandler: public BESResponseHandler {
 public:
-    SampleSayResponseHandler(const string &name);
+    SampleSayResponseHandler(const std::string &name);
     virtual ~SampleSayResponseHandler(void);
 
     virtual void execute(BESDataHandlerInterface &dhi);
     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 
-    static BESResponseHandler *SampleSayResponseBuilder(const string &name);
+    static BESResponseHandler *SampleSayResponseBuilder(const std::string &name);
 };
 
 #endif // I_SampleSayResponseHandler_h

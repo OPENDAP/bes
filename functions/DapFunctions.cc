@@ -58,6 +58,8 @@
 #include "DapFunctions.h"
 
 using std::endl;
+using std::ostream;
+using std::string;
 
 namespace functions {
 

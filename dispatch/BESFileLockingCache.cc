@@ -916,6 +916,12 @@ static bool getExclusiveLockNB(const string &file_name, int &ref_fd)
     return true;
 }
 
+bool BESFileLockingCache::get_exclusive_lock_nb(const string &target, int &fd)
+{
+    return getExclusiveLockNB(target, fd);
+}
+
+
 /** @brief Purge files from the cache
  *
  * Purge files, oldest to newest, if the current size of the cache exceeds the
@@ -1059,6 +1065,11 @@ static bool getExclusiveLock(const string &file_name, int &ref_fd)
     // Success
     ref_fd = fd;
     return true;
+}
+
+bool BESFileLockingCache::get_exclusive_lock(const string &target, int &fd)
+{
+	return getExclusiveLock(target, fd);
 }
 
 /**

@@ -35,9 +35,6 @@
 
 #include <new>
 
-using std::new_handler ;
-using std::bad_alloc ;
-
 #include "BESCmdInterface.h"
 #include "BESDataHandlerInterface.h"
 #include "BESDataRequestInterface.h"
