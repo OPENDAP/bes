@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="nc4_nc_classic_comp.nc">
+    <Dimension name="time" size="2"/>
     <Dimension name="lat" size="6"/>
     <Dimension name="lon" size="5"/>
-    <Dimension name="time" size="2"/>
+    <Int32 name="time">
+        <Dim name="/time"/>
+        <Attribute name="units" type="String">
+            <Value>seconds</Value>
+        </Attribute>
+    </Int32>
     <Int32 name="lat">
         <Dim name="/lat"/>
         <Attribute name="units" type="String">
@@ -13,12 +19,6 @@
         <Dim name="/lon"/>
         <Attribute name="units" type="String">
             <Value>degrees_east</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="time">
-        <Dim name="/time"/>
-        <Attribute name="units" type="String">
-            <Value>seconds</Value>
         </Attribute>
     </Int32>
     <Float32 name="z">

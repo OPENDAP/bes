@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="coads_climatology.nc">
-    <Dimension name="COADSX" size="180"/>
-    <Dimension name="COADSY" size="90"/>
     <Dimension name="TIME" size="12"/>
-    <Float64 name="COADSX">
-        <Dim name="/COADSX"/>
+    <Dimension name="COADSY" size="90"/>
+    <Dimension name="COADSX" size="180"/>
+    <Float64 name="TIME">
+        <Dim name="/TIME"/>
         <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
+            <Value>hour since 0000-01-01 00:00:00</Value>
+        </Attribute>
+        <Attribute name="time_origin" type="String">
+            <Value>1-JAN-0000 00:00:00</Value>
         </Attribute>
         <Attribute name="modulo" type="String">
             <Value> </Value>
-        </Attribute>
-        <Attribute name="point_spacing" type="String">
-            <Value>even</Value>
         </Attribute>
     </Float64>
     <Float64 name="COADSY">
@@ -24,16 +24,16 @@
             <Value>even</Value>
         </Attribute>
     </Float64>
-    <Float64 name="TIME">
-        <Dim name="/TIME"/>
+    <Float64 name="COADSX">
+        <Dim name="/COADSX"/>
         <Attribute name="units" type="String">
-            <Value>hour since 0000-01-01 00:00:00</Value>
-        </Attribute>
-        <Attribute name="time_origin" type="String">
-            <Value>1-JAN-0000 00:00:00</Value>
+            <Value>degrees_east</Value>
         </Attribute>
         <Attribute name="modulo" type="String">
             <Value> </Value>
+        </Attribute>
+        <Attribute name="point_spacing" type="String">
+            <Value>even</Value>
         </Attribute>
     </Float64>
     <Float32 name="SST">
