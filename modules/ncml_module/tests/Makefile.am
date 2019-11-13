@@ -10,30 +10,37 @@ variable_new_scalars.at variable_new_structures.at variable_remove.at	\
 variable_rename.at gateway_tests.at handler_tests.at dmrpp_tests.at
 
 EXTRA_DIST = $(TESTSUITE).at $(TEST_FILES) $(srcdir)/package.m4 \
-$(TESTSUITE) atlocal.in template.bescmd.in bes.conf.modules.in \
-bes_no_nc_global.conf.modules.in baselines cache
+$(TESTSUITE) atlocal.in template.bescmd.in bes.conf.in \
+bes_no_nc_global.conf.in bes_unknown_type_aggregation_error.conf.in \
+baselines cache
 
-noinst_DATA = bes.conf bes_no_nc_global.conf
+noinst_DATA = bes.conf bes_no_nc_global.conf bes_unknown_type_aggregation_error.conf
 
-CLEANFILES = bes.conf bes_no_nc_global.conf
+CLEANFILES = bes.conf bes_no_nc_global.conf bes_unknown_type_aggregation_error.conf
 
 DISTCLEANFILES = atconfig cache/*
 
-BES_CONF_IN = bes.conf.modules.in
-BES_NO_NC_GLOBAL_CONF_IN = bes_no_nc_global.conf.modules.in
+BES_CONF_IN = bes.conf.in
+BES_NO_NC_GLOBAL_CONF_IN = bes_no_nc_global.conf.in
+BES_UNKNOWN_TYPE_AGGREGATION_ERROR_CONF_IN = bes_unknown_type_aggregation_error.conf.in
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
 # configure's value for the parameter when running the distcheck target.
-bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
+%.conf: %.conf.in $(top_srcdir)/configure.ac
 	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
-		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
+		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > $@
 
-bes_no_nc_global.conf: $(BES_NO_NC_GLOBAL_CONF_IN) $(top_srcdir)/configure.ac
-	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
-	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
-		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes_no_nc_global.conf
+# bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
+#	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+#	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
+#		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
+
+# bes_no_nc_global.conf: $(BES_NO_NC_GLOBAL_CONF_IN) $(top_srcdir)/configure.ac
+#	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+#	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
+#		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes_no_nc_global.conf
 
 check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
@@ -56,9 +63,13 @@ clean-local:
 AUTOM4TE = $(SHELL) $(top_srcdir)/conf/missing --run autom4te
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
-$(TESTSUITE): $(srcdir)/testsuite.at $(srcdir)/package.m4 $(TEST_FILES)
-	$(AUTOTEST) -I '$(srcdir)' -o ${srcdir}/$@.tmp $@.at
-	mv ${srcdir}/$@.tmp ${srcdir}/$@
+
+% : %.at $(srcdir)/package.m4 $(TEST_FILES)
+	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
+
+# $(TESTSUITE): $(srcdir)/testsuite.at $(srcdir)/package.m4 $(TEST_FILES)
+#	$(AUTOTEST) -I '$(srcdir)' -o ${srcdir}/$@.tmp $@.at
+#	mv ${srcdir}/$@.tmp ${srcdir}/$@
 
 # Resolve the ../ in the path so the BES doesn't complain about them
 # canonical_abs_top_srcdir =  `${READLINK_F} ${abs_top_srcdir}`
