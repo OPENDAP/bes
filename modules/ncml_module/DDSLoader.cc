@@ -398,12 +398,10 @@ std::auto_ptr<BESDapResponse> DDSLoader::makeResponseForType(ResponseType type)
 {
     if (type == eRT_RequestDDX) {
         // The BaseTypeFactory is leaked. jhrg 6/19/19
-        cerr<<"coming to DDSLoader::RequestDDX"<<endl;
         return auto_ptr<BESDapResponse>(new BESDDSResponse(new DDS(0 /*new BaseTypeFactory()*/, "virtual")));
     }
     else if (type == eRT_RequestDataDDS) {
         // Leak fix jhrg 6/19/19
-        cerr<<"coming to DDSLoader::RequestDataDDS"<<endl;
         return auto_ptr<BESDapResponse>(new BESDataDDSResponse(new DDS(0 /*new BaseTypeFactory()*/, "virtual")));
     }
     else {
