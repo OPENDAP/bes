@@ -60,3 +60,4 @@ tests/testsuite.dir
 tests/work_on_failing_tests
 
 tests/cache
+/tests/mds_ledger.txt
