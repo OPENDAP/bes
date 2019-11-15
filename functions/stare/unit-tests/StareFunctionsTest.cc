@@ -54,7 +54,7 @@ using namespace libdap;
 using namespace std;
 using namespace functions;
 
-static bool debug = false;
+static bool debug = true; // FIXME HACK false;
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
