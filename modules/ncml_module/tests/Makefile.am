@@ -18,7 +18,7 @@ noinst_DATA = bes.conf bes_no_nc_global.conf bes_unknown_type_aggregation_error.
 
 CLEANFILES = bes.conf bes_no_nc_global.conf bes_unknown_type_aggregation_error.conf
 
-DISTCLEANFILES = atconfig cache/*
+DISTCLEANFILES = atconfig cache/* mds_ledger.txt
 
 BES_CONF_IN = bes.conf.in
 BES_NO_NC_GLOBAL_CONF_IN = bes_no_nc_global.conf.in

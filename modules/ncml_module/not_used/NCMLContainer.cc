@@ -41,9 +41,11 @@
 #include <cstdlib>
 #include <cstring>
 
+#if 0
 using std::ofstream;
 using std::endl;
 using std::ios_base;
+#endif
 
 #include "NCMLContainer.h"
 #include "NCMLContainerStorage.h"
@@ -53,6 +55,8 @@ using std::ios_base;
 #include <BESDebug.h>
 
 #include <util.h>       // libdap; for open_temp_fstream()
+
+using namespace std;
 
 /** @brief Creates an instances of NCMLContainer with the symbolic name
  * and the xml document string.
