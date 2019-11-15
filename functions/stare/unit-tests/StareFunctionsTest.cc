@@ -32,6 +32,7 @@
 #include <D4Group.h>
 #include <D4RValue.h>
 #include <DMR.h>
+#include <test/D4TestTypeFactory.h>
 
 #include <util.h>
 #include <debug.h>
@@ -44,9 +45,9 @@
 
 #include "test_config.h"
 
-#include "test/D4TestTypeFactory.h"
+// #include "test/D4TestTypeFactory.h"
 
-#include "debug.h"
+// #include "debug.h"
 
 using namespace CppUnit;
 using namespace libdap;
@@ -78,7 +79,7 @@ public:
         two_arrays_dmr->set_name("test_dmr");
         DBG(cerr << "setup() - Built DMR(D4BaseTypeFactory *) " << endl);
 
-		string filename = "MYD09.A2019003.2040.006.2019005020913.h5";
+		string filename = string(TEST_SRC_DIR) + "/MYD09.A2019003.2040.006.2019005020913.h5";
 
 		two_arrays_dmr->set_filename(filename);
 

@@ -37,13 +37,13 @@ TESTS = $(UNIT_TESTS)
 
 noinst_HEADERS = 
 
-EXTRA_DIST =
+EXTRA_DIST = MYD09.A2019003.2040.006.2019005020913_sidecar.h5
 
 CLEANFILES = testout .dodsrc *.gcda *.gcno
 
 # I added '*.po' because there are dependencies on ../*.o files and
 # that seems to leave *.Po files here that distclean complains about.
-DISTCLEANFILES = *.strm *.file *.Po tmp.txt
+DISTCLEANFILES = *.strm *.file *.Po tmp.txt bes.conf test_config.h
 
 # TODO Check if this sed command to filter out the ../ from the value of 
 # ${abs_srcdir} is really needed for the distcheck target. jhrg 5/16/13
