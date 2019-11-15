@@ -7,7 +7,7 @@ AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = $(DAP_CFLAGS) -I$(STARE_INC) -I$(prefix)/deps/include
 # Added  -Wno-deprecated to suppress warnings about auto_ptr<>. jhrg 11/7/19
 AM_CXXFLAGS = -Wno-deprecated -Wno-vla-extension
-AM_LDADD =  $(DAP_CLIENT_LIBS) $(STARE_LDFLAGS) $(STARE_LIBS)
+AM_LDADD =  $(DAP_CLIENT_LIBS) $(H5_LDFLAGS) $(H5_LIBS) $(STARE_LDFLAGS) $(STARE_LIBS)
 
 SUBDIRS = . unit-tests
 
@@ -23,7 +23,7 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 bin_PROGRAMS = build_sidecar
 
 build_sidecar_SOURCES = build_sidecar.cc
-build_sidecar_LDADD = $(AM_LDADD) $(H5_LDFLAGS) $(H5_LIBS)
+build_sidecar_LDADD = $(AM_LDADD)
 
 EXTRA_DIST = 
 

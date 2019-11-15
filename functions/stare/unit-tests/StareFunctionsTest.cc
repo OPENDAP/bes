@@ -113,9 +113,13 @@ public:
         CPPUNIT_ASSERT(sidecar_pathname == expected_pathname);
 	}
 
-	// unsigned int
-    //StareIterateFunction::count(vector<dods_uint64> *stareVal, vector<dods_uint64> *stareIndices)
+	// unsigned int StareIterateFunction::count(vector<dods_uint64> *stareVal, vector<dods_uint64> *stareIndices)
 	void test_count() {
+
+	}
+
+	//bool StareIterateFunction::hasValue(vector<dods_uint64> *stareVal, vector<dods_uint64> *stareIndices)
+	void test_has_value() {
 
 	}
 

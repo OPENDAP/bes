@@ -252,6 +252,11 @@ StareIterateFunction::get_sidecar_file_pathname(const string &pathName) {
     return fullPath;
 }
 
+vector<int> get_x_axis_values()
+{
+
+}
+
 /**
  * -- Intersection server function --
  * Checks to see if there are any Stare values provided from the client that can be found in the sidecar file.
@@ -267,8 +272,7 @@ StareIterateFunction::stare_intersection_dap4_function(D4RValueList *args, DMR &
     }
 
     //Find the filename from the dmr
-    string pathName = dmr.filename();
-    string fullPath = StareIterateFunction::get_sidecar_file_pathname(pathName);
+    string fullPath = StareIterateFunction::get_sidecar_file_pathname(dmr.filename());
 
     //Read the file and store the datasets
     hid_t file = H5Fopen(fullPath.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
