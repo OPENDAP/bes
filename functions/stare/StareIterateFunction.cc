@@ -25,8 +25,8 @@
 #include <sstream>
 #include <unordered_map>
 
-#include <hdf5.h>
 #include <STARE.h>
+#include <hdf5.h>
 
 #include <BaseType.h>
 #include <Float64.h>

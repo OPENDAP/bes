@@ -113,6 +113,12 @@ public:
         CPPUNIT_ASSERT(sidecar_pathname == expected_pathname);
 	}
 
+	// unsigned int
+    //StareIterateFunction::count(vector<dods_uint64> *stareVal, vector<dods_uint64> *stareIndices)
+	void test_count() {
+
+	}
+
 	void serverside_compare_test() {
 		DBG(cerr << "--- hasValue() test - BEGIN ---" << endl);
 

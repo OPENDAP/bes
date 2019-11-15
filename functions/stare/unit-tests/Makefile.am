@@ -9,7 +9,7 @@ AUTOMAKE_OPTIONS = foreign
 # Headers in 'tests' are used by the arrayT unit tests.
 
 AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/functions -I$(top_srcdir)/functions/stare $(DAP_CFLAGS)
-AM_LDADD =  $(DAP_SERVER_LIBS) $(top_builddir)/dispatch/libbes_dispatch.la
+AM_LDADD =  $(DAP_SERVER_LIBS) $(top_builddir)/dispatch/libbes_dispatch.la $(STARE_LDFLAGS) $(STARE_LIBS)
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
