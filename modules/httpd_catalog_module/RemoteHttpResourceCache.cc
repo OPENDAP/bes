@@ -50,6 +50,7 @@
 #endif
 
 using std::endl;
+using std::string;
 namespace httpd_catalog {
 
 RemoteHttpResourceCache *RemoteHttpResourceCache::d_instance = 0;

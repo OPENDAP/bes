@@ -40,6 +40,13 @@
 
 #include <BESInternalError.h>
 
+using std::map;
+using std::string;
+using std::vector;
+using std::ostream;
+using std::endl;
+using std::ostringstream;
+
 CSV_Header::CSV_Header()
 {
 	_hdr = new map<string, CSV_Field*>;

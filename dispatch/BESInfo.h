@@ -38,11 +38,6 @@
 #include <stack>
 #include <map>
 
-using std::string;
-using std::ostream;
-using std::stack;
-using std::map;
-
 #include "BESResponseObject.h"
 #include "BESDataHandlerInterface.h"
 #include "BESTransmitter.h"
@@ -67,34 +62,34 @@ using std::map;
  */
 class BESInfo: public BESResponseObject {
 protected:
-    ostream *_strm;
+	std::ostream *_strm;
     bool _strm_owned;
     bool _buffered;
     bool _response_started;
 
-    stack<string> _tags;
-    string _response_name;
+    std::stack<std::string> _tags;
+    std::string _response_name;
 
 public:
     BESInfo();
-    BESInfo(const string &buffered_key, ostream *strm, bool strm_owned);
+    BESInfo(const std::string &buffered_key, std::ostream *strm, bool strm_owned);
     virtual ~BESInfo();
 
-    virtual void begin_response(const string &response_name, BESDataHandlerInterface &dhi);
-    virtual void begin_response(const string &response_name, map<string, string> *attrs, BESDataHandlerInterface &dhi);
+    virtual void begin_response(const std::string &response_name, BESDataHandlerInterface &dhi);
+    virtual void begin_response(const std::string &response_name, std::map<std::string, std::string> *attrs, BESDataHandlerInterface &dhi);
     virtual void end_response();
 
-    virtual void add_tag(const string &tag_name, const string &tag_data, map<string, string> *attrs = 0) = 0;
-    virtual void begin_tag(const string &tag_name, map<string, string> *attrs = 0);
-    virtual void end_tag(const string &tag_name);
+    virtual void add_tag(const std::string &tag_name, const std::string &tag_data, std::map<std::string, std::string> *attrs = 0) = 0;
+    virtual void begin_tag(const std::string &tag_name, std::map<std::string, std::string> *attrs = 0);
+    virtual void end_tag(const std::string &tag_name);
 
-    virtual void add_data(const string &s);
+    virtual void add_data(const std::string &s);
     virtual void add_space(unsigned long num_spaces) = 0;
     virtual void add_break(unsigned long num_breaks) = 0;
 
-    virtual void add_data_from_file(const string &key, const string &name);
+    virtual void add_data_from_file(const std::string &key, const std::string &name);
 
-    virtual void add_exception(BESError &e, const string &admin);
+    virtual void add_exception(BESError &e, const std::string &admin);
 
     /** @brief transmit the informational object
      *
@@ -107,7 +102,7 @@ public:
      */
     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) = 0;
 
-    virtual void print(ostream &strm);
+    virtual void print(std::ostream &strm);
 
     /** @brief return whether the information is to be buffered or not.
      *
@@ -122,7 +117,7 @@ public:
      *
      * @param strm output stream to use to dump the contents of this object
      */
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // BESInfo_h_

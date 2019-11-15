@@ -41,6 +41,6 @@
 
 using namespace libdap ;
 
-void csv_read_descriptors(DDS &dds, const string &filename) ;
+void csv_read_descriptors(DDS &dds, const std::string &filename) ;
 
 #endif // E_CSVDDS_h

@@ -41,12 +41,12 @@
  */
 class BuildTInterface: public BESXMLInterface {
 public:
-    BuildTInterface(const string &xml_doc);
+    BuildTInterface(const std::string &xml_doc);
     virtual ~BuildTInterface();
 
     virtual void run();
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // BuildTInterface_h_

@@ -44,6 +44,8 @@ using std::endl;
 using std::flush;
 using std::string;
 using std::ofstream;
+using std::ostream;
+using std::ifstream;
 
 #include "StandAloneApp.h"
 #include "StandAloneClient.h"
@@ -68,11 +70,6 @@ StandAloneApp::~StandAloneApp()
     }
 
     delete TheBESKeys::TheKeys();
-
-#if 0
-    BESCatalogUtils::delete_all_catalogs();
-#endif
-
 }
 
 void StandAloneApp::showVersion()

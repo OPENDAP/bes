@@ -38,7 +38,7 @@
 
 #include "BESError.h"
 
-/** @brief exception thrown if inernal error encountered
+/** @brief exception thrown if internal error encountered
  */
 class BESInternalError: public BESError {
 protected:

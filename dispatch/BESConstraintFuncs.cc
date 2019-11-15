@@ -33,6 +33,8 @@
 #include "BESConstraintFuncs.h"
 #include "BESDataNames.h"
 
+using std::string;
+
 string
 BESConstraintFuncs::pre_to_post_constraint( const string &name,
 					     const string &pre_constraint )

@@ -60,6 +60,7 @@
 #include <Ancillary.h>
 
 #include "NCRequestHandler.h"
+#include "GlobalMetadataStore.h"
 
 #define NC_NAME "nc"
 
@@ -73,12 +74,14 @@ bool NCRequestHandler::_ignore_unknown_types_set = false;
 
 bool NCRequestHandler::_promote_byte_to_short = false;
 bool NCRequestHandler::_promote_byte_to_short_set = false;
+bool NCRequestHandler::_use_mds = false;
 
 unsigned int NCRequestHandler::_cache_entries = 100;
 float NCRequestHandler::_cache_purge_level = 0.2;
 
 ObjMemCache *NCRequestHandler::das_cache = 0;
 ObjMemCache *NCRequestHandler::dds_cache = 0;
+ObjMemCache *NCRequestHandler::datadds_cache = 0;
 ObjMemCache *NCRequestHandler::dmr_cache = 0;
 
 extern void nc_read_dataset_attributes(DAS & das, const string & filename);
@@ -169,7 +172,6 @@ NCRequestHandler::NCRequestHandler(const string &name) :
 
     // TODO replace with get_bool_key above 5/21/16 jhrg
 
-    // Look for the SHowSharedDims property, if it has not been set
     if (NCRequestHandler::_show_shared_dims_set == false) {
         bool key_found = false;
         string doset;
@@ -217,12 +219,14 @@ NCRequestHandler::NCRequestHandler(const string &name) :
         }
     }
 
+    NCRequestHandler::_use_mds = get_bool_key("NC.UseMDS",false);
     NCRequestHandler::_cache_entries = get_uint_key("NC.CacheEntries", 0);
     NCRequestHandler::_cache_purge_level = get_float_key("NC.CachePurgeLevel", 0.2);
 
     if (get_cache_entries()) {  // else it stays at its default of null
         das_cache = new ObjMemCache(get_cache_entries(), get_cache_purge_level());
         dds_cache = new ObjMemCache(get_cache_entries(), get_cache_purge_level());
+        datadds_cache = new ObjMemCache(get_cache_entries(), get_cache_purge_level());
         dmr_cache = new ObjMemCache(get_cache_entries(), get_cache_purge_level());
     }
 
@@ -233,6 +237,7 @@ NCRequestHandler::~NCRequestHandler()
 {
     delete das_cache;
     delete dds_cache;
+    delete datadds_cache;
     delete dmr_cache;
 }
 
@@ -358,6 +363,30 @@ void NCRequestHandler::get_dds_with_attributes(const string& dataset_name, const
     }
 }
 
+void NCRequestHandler::get_dds_without_attributes(const string& dataset_name, const string& container_name, DDS* dds)
+{
+    // Look in memory cache if it's initialized
+    DDS* cached_datadds_ptr = 0;
+    if (datadds_cache && (cached_datadds_ptr = static_cast<DDS*>(datadds_cache->get(dataset_name)))) {
+        // copy the cached DDS into the BES response object. 
+        BESDEBUG(NC_NAME, "DataDDS Cached hit for : " << dataset_name << endl);
+        *dds = *cached_datadds_ptr; // Copy the referenced object
+    }
+    else {
+        if (!container_name.empty()) dds->container_name(container_name);
+        dds->filename(dataset_name);
+
+        nc_read_dataset_variables(*dds, dataset_name);
+
+        if (datadds_cache) {
+            // add a copy
+            BESDEBUG(NC_NAME, "DataDDS added to the cache for : " << dataset_name << endl);
+            datadds_cache->add(new DDS(*dds), dataset_name);
+        }
+    }
+}
+
+
 bool NCRequestHandler::nc_build_dds(BESDataHandlerInterface & dhi)
 {
 
@@ -447,10 +476,12 @@ bool NCRequestHandler::nc_build_data(BESDataHandlerInterface & dhi)
         string container_name = bdds->get_explicit_containers() ? dhi.container->get_symbolic_name(): "";
         DDS *dds = bdds->get_dds();
 
-        // Build a DDS in the empty DDS object
-        get_dds_with_attributes(dhi.container->access(), container_name, dds);
+        // Build a DDS in the empty DDS object,don't include attributes here. KY 10/30/19
+        get_dds_without_attributes(dhi.container->access(), container_name, dds);
 
         bdds->set_constraint(dhi);
+        BESDEBUG(NC_NAME, "Data ACCESS build_data(): set the including attribute flag to false: "<<dhi.container->access() << endl);
+        bdds->set_ia_flag(false);
         bdds->clear_container();
     }
     catch (BESError &e) {
@@ -623,4 +654,72 @@ bool NCRequestHandler::nc_build_version(BESDataHandlerInterface & dhi)
     info->add_module(MODULE_NAME, MODULE_VERSION);
 
     return true;
+}
+
+void NCRequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
+
+    BESResponseObject *response = dhi.response_handler->get_response_object();
+    BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *>(response);
+    if (!bdds)
+        throw BESInternalError("cast error", __FILE__, __LINE__);
+    DDS *dds = bdds->get_dds();
+    string container_name = bdds->get_explicit_containers() ? dhi.container->get_symbolic_name(): "";
+    string dataset_name = dhi.container->access();
+    DAS* das = 0;
+    if (das_cache && (das = static_cast<DAS*>(das_cache->get(dataset_name)))) {
+        BESDEBUG(NC_NAME, "DAS Cached hit for : " << dataset_name << endl);
+        dds->transfer_attributes(das); // no need to cop the cached DAS
+    }
+    else {
+        das = new DAS;
+        // This looks at the 'use explicit containers' prop, and if true
+        // sets the current container for the DAS.
+        if (!container_name.empty()) das->container_name(container_name);
+
+        // Here we will check if we can generate DAS by parsing from MDS
+        if(true == get_use_mds()) {
+
+            bes::GlobalMetadataStore *mds=bes::GlobalMetadataStore::get_instance();
+            bool valid_mds = true;
+            if(NULL == mds)
+                valid_mds = false;
+            else if(false == mds->cache_enabled())
+                valid_mds = false;
+            if(true ==valid_mds) {
+                string rel_file_path = dhi.container->get_relative_name();
+                // Obtain the DAS lock in MDS
+                bes::GlobalMetadataStore::MDSReadLock mds_das_lock = mds->is_das_available(rel_file_path);
+                if(mds_das_lock()) {
+                    BESDEBUG("nc", "Using MDS to generate DAS in the data response for file " << dataset_name << endl);
+                    mds->parse_das_from_mds(das,rel_file_path);
+                }
+                else {//Don't fail, still build das from the NC APIs
+                    nc_read_dataset_attributes(*das, dataset_name);
+                }
+                mds_das_lock.clearLock();
+            }
+            else {
+                nc_read_dataset_attributes(*das, dataset_name);
+            }
+        }
+        else {//Cannot parse from MDS, still build the attributes from NC APIs.
+            nc_read_dataset_attributes(*das, dataset_name);
+        }
+        Ancillary::read_ancillary_das(*das, dataset_name);
+
+        dds->transfer_attributes(das);
+
+        // Only free the DAS if it's not added to the cache
+        if (das_cache) {
+            // add a copy
+            BESDEBUG(NC_NAME, "DAS added to the cache for : " << dataset_name << endl);
+            das_cache->add(das, dataset_name);
+        }
+        else {
+            delete das;
+        }
+    }
+    BESDEBUG(NC_NAME, "Data ACCESS in add_attributes(): set the including attribute flag to true: "<<dataset_name << endl);
+    bdds->set_ia_flag(true);
+    return;
 }

@@ -47,17 +47,17 @@ namespace bes {
 class SetContextsResponseHandler: public BESResponseHandler {
 public:
 
-    SetContextsResponseHandler(const string &name): BESResponseHandler(name) { }
+    SetContextsResponseHandler(const std::string &name): BESResponseHandler(name) { }
     virtual ~SetContextsResponseHandler(void) { }
 
     virtual void execute(BESDataHandlerInterface &dhi);
     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 
     // Factory method, used by the DefaultModule to add this to the list of
     // ResponseHandlers for a given 'action'
-    static BESResponseHandler *SetContextsResponseBuilder(const string &name);
+    static BESResponseHandler *SetContextsResponseBuilder(const std::string &name);
 };
 
 }   // namespace bes

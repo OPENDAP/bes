@@ -25,6 +25,8 @@
 #include "BESDMRResponse.h"
 
 using std::endl;
+using std::string;
+using std::ostream;
 
 /** @brief set the container in the DAP response object
  *

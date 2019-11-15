@@ -36,9 +36,6 @@
 #include <string>
 #include <iostream>
 
-//using std::string;
-//using std::ostream;
-
 class BESIndent {
 private:
     static std::string _indent;

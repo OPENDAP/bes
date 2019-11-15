@@ -39,11 +39,6 @@
 #include <string>
 #include <ostream>
 
-#if 0
-using std::map;
-using std::string;
-#endif
-
 #include "BESContainerStorage.h"
 
 /** @brief implementation of BESContainerStorage that stores containers

@@ -27,8 +27,6 @@
 #include <string>
 #include <ctime>
 
-using std::string;
-
 class CmrInfo {
 public:
 

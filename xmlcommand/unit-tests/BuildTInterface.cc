@@ -37,6 +37,7 @@
 using std::cout ;
 using std::endl ;
 using std::stringstream ;
+using std::ostream;
 
 #include "BuildTInterface.h"
 #include "BESDataNames.h"

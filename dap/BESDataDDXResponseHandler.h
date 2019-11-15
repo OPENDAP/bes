@@ -52,16 +52,16 @@
 class BESDataDDXResponseHandler : public BESResponseHandler
 {
 public:
-				BESDataDDXResponseHandler( const string &name ) ;
+				BESDataDDXResponseHandler( const std::string &name ) ;
     virtual			~BESDataDDXResponseHandler(void) ;
 
     virtual void		execute( BESDataHandlerInterface &dhi ) ;
     virtual void		transmit( BESTransmitter *transmitter,
                                           BESDataHandlerInterface &dhi ) ;
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void		dump( std::ostream &strm ) const ;
 
-    static BESResponseHandler *DataDDXResponseBuilder( const string &name ) ;
+    static BESResponseHandler *DataDDXResponseBuilder( const std::string &name ) ;
 };
 
 #endif // I_BESDataDDXResponseHandler_h

@@ -35,16 +35,14 @@
 
 #include <string>
 
-using std::string ;
-
 /** @brief Functions to clean/scrub input for security reasons
  */
 class BESScrub
 {
 public:
-    static bool			command_line_arg_ok( const string &arg ) ;
+    static bool			command_line_arg_ok( const std::string &arg ) ;
     static bool			size_ok( unsigned int sz, unsigned int nelem ) ;
-    static bool			pathname_ok( const string &path, bool strict ) ;
+    static bool			pathname_ok( const std::string &path, bool strict ) ;
 } ;
 
 #endif // E_BESScrub_h

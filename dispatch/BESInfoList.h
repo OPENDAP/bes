@@ -36,29 +36,26 @@
 #include <map>
 #include <string>
 
-using std::map;
-using std::string;
-
 #include "BESObj.h"
 
 class BESInfo;
 
-typedef BESInfo * (*p_info_builder)(const string &info_type);
+typedef BESInfo * (*p_info_builder)(const std::string &info_type);
 
 class BESInfoList: public BESObj {
 private:
     static BESInfoList * _instance;
-    map<string, p_info_builder> _info_list;
+    std::map<std::string, p_info_builder> _info_list;
 
-    typedef map<string, p_info_builder>::const_iterator Info_citer;
-    typedef map<string, p_info_builder>::iterator Info_iter;
+    typedef std::map<std::string, p_info_builder>::const_iterator Info_citer;
+    typedef std::map<std::string, p_info_builder>::iterator Info_iter;
 protected:
     BESInfoList(void);
 public:
     virtual ~BESInfoList(void);
 
-    virtual bool add_info_builder(const string &info_type, p_info_builder info_builder);
-    virtual bool rem_info_builder(const string &info_type);
+    virtual bool add_info_builder(const std::string &info_type, p_info_builder info_builder);
+    virtual bool rem_info_builder(const std::string &info_type);
     virtual BESInfo * build_info();
 
     virtual void dump(std::ostream &strm) const;

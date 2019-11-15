@@ -373,6 +373,8 @@ GlobalMetadataStore::initialize()
         d_ledger_name = default_ledger_name;
     }
 
+    ofstream of(d_ledger_name.c_str(), ios::app);
+
     // By default, use UTC in the logs.
     string local_time = "no";
     TheBESKeys::TheKeys()->get_value(LOCAL_TIME_KEY, local_time, found);
@@ -441,16 +443,30 @@ static void dump_time(ostream &os, bool use_local_time)
 void
 GlobalMetadataStore::write_ledger()
 {
-    // TODO open just once
-    // FIXME Protect this with an exclusive lock!
-    ofstream of(d_ledger_name.c_str(), ios::app);
-    if (of) {
-        dump_time(of, d_use_local_time);
-        of << " " << d_ledger_entry << endl;
-        VERBOSE("MD Ledger name: '" << d_ledger_name << "', entry: '" << d_ledger_entry + "'.");
+    // open just once, <- done SBL 11.7.19
+ 
+    int fd; // value-result parameter;
+    if (get_exclusive_lock(d_ledger_name, fd)) {
+        BESDEBUG(DEBUG_KEY, __FUNCTION__ << " Ledger " << d_ledger_name << " write locked." << endl);
+        if (of) {
+	    try {
+		dump_time(of, d_use_local_time);
+		of << " " << d_ledger_entry << endl;
+		VERBOSE("MDS Ledger name: '" << d_ledger_name << "', entry: '" << d_ledger_entry + "'.");
+		unlock_and_close(d_ledger_name); // closes fd
+	    }
+	    catch (...) {
+		unlock_and_close(d_ledger_name);
+		throw;
+	    }
+        }
+        else {
+            LOG("Warning: Metadata store could not write to its ledger file.");
+            unlock_and_close(d_ledger_name);
+        }
     }
     else {
-        LOG("Warning: Metadata store could not write to is ledger file.");
+        throw BESInternalError("Could not write lock '" + d_ledger_name, __FILE__, __LINE__);
     }
 }
 
@@ -1265,5 +1281,30 @@ GlobalMetadataStore::get_dds_object(const string &name)
     dds->set_factory(0);
 
     return dds.release();
+}
+
+
+void
+GlobalMetadataStore::parse_das_from_mds(libdap::DAS* das, const std::string &name) {
+    string suffix = "das_r";
+    string item_name = get_cache_file_name(get_hash(name + suffix), false);
+    int fd; // value-result parameter;
+    if (get_read_lock(item_name, fd)) {
+        VERBOSE("Metadata store: Cache hit: read " << " response for '" << name << "'." << endl);
+        BESDEBUG(DEBUG_KEY, __FUNCTION__ << " Found " << item_name << " in the store." << endl);
+        try {
+            // Just generate the DAS by parsing from the file
+            das->parse(item_name);
+            unlock_and_close(item_name); // closes fd
+        }
+        catch (...) {
+            unlock_and_close(item_name);
+            throw;
+        }
+    }
+    else {
+        throw BESInternalError("Could not open '" + item_name + "' in the metadata store.", __FILE__, __LINE__);
+    }
+
 }
 

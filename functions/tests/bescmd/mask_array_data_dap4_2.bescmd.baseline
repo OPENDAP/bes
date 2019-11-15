@@ -6,7 +6,7 @@
         <Dim name="/dim1"/>
         <Dim name="/dim2"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>62d099c3</Value>
+            removed checksum
         </Attribute>
     </Int32>
 </Dataset>

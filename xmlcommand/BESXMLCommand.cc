@@ -39,6 +39,9 @@
 #include "BESLog.h"
 
 using std::endl;
+using std::ostream;
+using std::map;
+using std::string;
 
 map<string, p_xmlcmd_builder> BESXMLCommand::factory;
 

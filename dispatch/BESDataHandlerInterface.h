@@ -38,11 +38,6 @@
 #include <map>
 #include <iostream>
 
-using std::string;
-using std::list;
-using std::map;
-using std::ostream;
-
 class BESResponseHandler;
 class BESResponseObject;
 class BESInfo;
@@ -50,6 +45,7 @@ class BESInfo;
 #include "BESObj.h"
 #include "BESContainer.h"
 #include "BESInternalError.h"
+#include "BESResponseHandler.h"
 
 /** @brief Structure storing information used by the BES to handle the request
 
@@ -59,7 +55,7 @@ class BESInfo;
 
 class BESDataHandlerInterface: public BESObj {
 private:
-	ostream *output_stream;
+	std::ostream *output_stream;
 
 	// I tried adding a complete 'clone the dhi' method to see if that
 	// would address the problem we're seeing on OSX 10.9. It didn't but
@@ -67,12 +63,12 @@ private:
 	void clone(const BESDataHandlerInterface &copy_from);
 
 public:
-    typedef map<string, string>::const_iterator data_citer;
+    typedef std::map<std::string, std::string>::const_iterator data_citer;
 
     BESResponseHandler *response_handler;
 
-    list<BESContainer *> containers;
-    list<BESContainer *>::iterator containers_iterator;
+    std::list<BESContainer *> containers;
+    std::list<BESContainer *>::iterator containers_iterator;
 
     /** @brief pointer to current container in this interface
      */
@@ -80,18 +76,18 @@ public:
 
     /** @brief the response object requested, e.g. das, dds
      */
-    string action;
-    string action_name;
+    std::string action;
+    std::string action_name;
     bool executed;
 
     /** @brief request protocol, such as HTTP
      */
-    string transmit_protocol;   // FIXME Not used? jhrg 5/30/18
+    std::string transmit_protocol;   // FIXME Not used? jhrg 5/30/18
 
     /** @brief the map of string data that will be required for the current
      * request.
      */
-    map<string, string> data;
+    std::map<std::string, std::string> data;
 
     /** @brief error information object
      */
@@ -116,16 +112,16 @@ public:
 
 	void clean();
 
-	void set_output_stream(ostream *strm)
+	void set_output_stream(std::ostream *strm)
 	{
 		if (output_stream) {
-			string err = "output stream has already been set";
+			std::string err = "output stream has already been set";
 			throw BESInternalError(err, __FILE__, __LINE__);
 		}
 		output_stream = strm;
 	}
 
-	ostream &get_output_stream()
+	std::ostream &get_output_stream()
 	{
 		if (!output_stream)
 			throw BESInternalError("output stream has not yet been set, cannot use", __FILE__, __LINE__);
@@ -156,12 +152,12 @@ public:
 			container = NULL;
 	}
 
-	const map<string, string> &data_c() const
+	const std::map<std::string, std::string> &data_c() const
 	{
 		return data;
 	}
 
-	void dump(ostream &strm) const;
+	void dump(std::ostream &strm) const;
 };
 
 #endif //  BESDataHandlerInterface_h_

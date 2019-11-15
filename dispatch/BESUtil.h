@@ -39,15 +39,11 @@
 #include <vector>
 #include <BESCatalog.h>
 
-using std::string;
-using std::list;
-using std::ostream;
-
 class BESUtil {
 private:
-    static string rfc822_date(const time_t t);
+    static std::string rfc822_date(const time_t t);
 
-    static string entity(char c);
+    static std::string entity(char c);
 public:
     /** These functions are used to create the MIME headers for a message
      from a server to a client.
@@ -59,71 +55,67 @@ public:
      @see libdap::escaping.cc
      @see libdap::mime_util.cc
      */
-    static void set_mime_text(ostream &strm);
-    static void set_mime_html(ostream &strm);
+    static void set_mime_text(std::ostream &strm);
+    static void set_mime_html(std::ostream &strm);
 
     /** This functions are used to unescape hex characters from strings **/
-    static string www2id(const string &in, const string &escape = "%", const string &except = "");
-    static string unhexstring(string s);
+    static std::string www2id(const std::string &in, const std::string &escape = "%", const std::string &except = "");
+    static std::string unhexstring(std::string s);
 
     /** Convert a string to all lower case **/
-    static string lowercase(const string &s);
+    static std::string lowercase(const std::string &s);
 
     /** Unescape characters with backslash before them **/
-    static string unescape(const string &s);
+    static std::string unescape(const std::string &s);
 
     /** Check if the specified path is valid **/
-    static void check_path(const string &path, const string &root, bool follow_sym_links);
+    static void check_path(const std::string &path, const std::string &root, bool follow_sym_links);
 
     /** convert pid and place in provided buffer **/
     static char * fastpidconverter(char *buf, int base);
     static char * fastpidconverter(long val, char *buf, int base);
 
     /** remove leading and trailing blanks from a string **/
-    static void removeLeadingAndTrailingBlanks(string &key);
+    static void removeLeadingAndTrailingBlanks(std::string &key);
 
     /** convert characters not allowed in xml to escaped characters **/
-    static string id2xml(string in, const string &not_allowed = "><&'\"");
+    static std::string id2xml(std::string in, const std::string &not_allowed = "><&'\"");
 
     /** unescape xml escaped characters **/
-    static string xml2id(string in);
+    static std::string xml2id(std::string in);
 
     /** explode a string into an array given a delimiter **/
-    static void explode(char delim, const string &str, list<string> &values);
+    static void explode(char delim, const std::string &str, std::list<std::string> &values);
 
     /** implode a list of values into a single string delimited by delim **/
-    static string implode(const list<string> &values, char delim);
+    static std::string implode(const std::list<std::string> &values, char delim);
 
     struct url {
-        string protocol;
-        string domain;
-        string uname;
-        string psswd;
-        string port;
-        string path;
+    	std::string protocol;
+    	std::string domain;
+    	std::string uname;
+        std::string psswd;
+        std::string port;
+        std::string path;
     };
 
-    static void url_explode(const string &url_str, BESUtil::url &url_parts);
-    static string url_create(BESUtil::url &url_parts);
+    static void url_explode(const std::string &url_str, BESUtil::url &url_parts);
+    static std::string url_create(BESUtil::url &url_parts);
     // static string assemblePath(const string &firstPart, const string &secondPart, bool leadingSlash = false);
-    static string assemblePath(const string &firstPart, const string &secondPart, bool leadingSlash = false, bool trailingSlash = false);
-    static string pathConcat(const string &firstPart, const string &secondPart, char separator='/');
+    static std::string assemblePath(const std::string &firstPart, const std::string &secondPart, bool leadingSlash = false, bool trailingSlash = false);
+    static std::string pathConcat(const std::string &firstPart, const std::string &secondPart, char separator='/');
 
     static bool endsWith(std::string const &fullString, std::string const &ending);
     static void conditional_timeout_cancel();
 
     static void replace_all(std::string &s, std::string find_this, std::string replace_with_this);
-    static std::string normalize_path(const std::string &path, bool leading_separator, bool trailing_separator, const string separator = "/");
+    static std::string normalize_path(const std::string &path, bool leading_separator, bool trailing_separator, const std::string separator = "/");
     static void tokenize(const std::string& str, std::vector<std::string>& tokens, const std::string& delimiters = "/");
-    static string get_time(bool use_local_time = false);
-    static string get_time(time_t the_time, bool use_local_time = false);
-    static std::vector<std::string> split(const string &s, char delim='/', bool skip_empty=true);
+    static std::string get_time(bool use_local_time = false);
+    static std::string get_time(time_t the_time, bool use_local_time = false);
+    static std::vector<std::string> split(const std::string &s, char delim='/', bool skip_empty=true);
 
     static BESCatalog *separateCatalogFromPath(std::string &path);
 };
 
-
-
-
 #endif // E_BESUtil_h
-

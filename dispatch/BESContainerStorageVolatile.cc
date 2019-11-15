@@ -41,6 +41,9 @@
 #include "BESDebug.h"
 
 using std::endl;
+using std::string;
+using std::list;
+using std::ostream;
 
 /** @brief create an instance of this persistent store with the given name.
  *
@@ -126,8 +129,9 @@ void BESContainerStorageVolatile::add_container(const string &sym_name, const st
 {
     // The type must be specified so that we can find the request handler
     // that knows how to handle the container.
+    // Changed sym_name to real_name to make the message clearer. jhrg 11/14/19
     if (type.empty())
-        throw BESInternalError(string("Unable to add container '").append(sym_name).append("', type of data must be specified"), __FILE__, __LINE__);
+        throw BESInternalError(string("Unable to add container '").append(real_name).append("', type of data must be specified"), __FILE__, __LINE__);
 
     // if the container already exists then throw an error
     BESContainerStorageVolatile::Container_citer i = _container_list.find(sym_name);

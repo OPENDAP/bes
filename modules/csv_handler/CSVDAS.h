@@ -41,7 +41,7 @@
 
 using namespace libdap ;
 
-void csv_read_attributes(DAS &das, const string &filename) ;
+void csv_read_attributes(DAS &das, const std::string &filename) ;
 
 #endif // E_CSVDAS_h
 

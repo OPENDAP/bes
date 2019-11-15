@@ -37,10 +37,6 @@
 #include <string>
 #include <fstream>
 
-using std::ostream ;
-using std::ifstream ;
-using std::string ;
-
 #include "BESObj.h"
 
 class PPTClient ;
@@ -76,13 +72,13 @@ class CmdClient : public BESObj
 {
 private:
     PPTClient *			_client ;
-    ostream *			_strm ;
+    std::ostream *			_strm ;
     bool			_strmCreated ;
     bool			_isInteractive ;
 
-    size_t			readLine( string &str ) ;
+    size_t			readLine( std::string &str ) ;
     void			displayHelp() ;
-    bool			executeCommand( const string &cmd,
+    bool			executeCommand( const std::string &cmd,
 						int repeat ) ;
 public:
     				CmdClient( )
@@ -92,23 +88,23 @@ public:
 				      _isInteractive( false ) {}
 				~CmdClient() ;
 
-    void			startClient( const string &host,
+    void			startClient( const std::string &host,
 					     int portVal,
 					     int timeout ) ;
-    void			startClient( const string &unixSocket,
+    void			startClient( const std::string &unixSocket,
 					     int timeout ) ;
     void			shutdownClient() ;
-    void			setOutput( ostream *strm, bool created ) ;
-    bool			executeClientCommand( const string &cmd ) ;
-    bool			executeCommands( const string &cmd,
+    void			setOutput( std::ostream *strm, bool created ) ;
+    bool			executeClientCommand( const std::string &cmd ) ;
+    bool			executeCommands( const std::string &cmd,
 						 int repeat ) ;
-    bool			executeCommands( ifstream &inputFile,
+    bool			executeCommands( std::ifstream &inputFile,
 						 int repeat ) ;
     bool			interact() ;
     bool			isConnected() ;
     void			brokenPipe() ;
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void		dump( std::ostream &strm ) const ;
 } ;
 
 #endif // CmdClient_h

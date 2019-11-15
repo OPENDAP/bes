@@ -36,6 +36,13 @@
 #include "CSV_Utils.h"
 #include "BESUtil.h"
 
+using std::ostream;
+using std::fstream;
+using std::endl;
+using std::ios;
+using std::string;
+using std::vector;
+
 CSV_Reader::CSV_Reader()
 {
     _stream_in = new fstream() ;

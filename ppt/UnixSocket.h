@@ -35,8 +35,6 @@
 
 #include <string>
 
-using std::string ;
-
 #include "Socket.h"
 
 #define UNIX_SOCKET_BUFFER_SIZE 65535
@@ -44,10 +42,10 @@ using std::string ;
 class UnixSocket : public Socket
 {
 private:
-    string			_unixSocket ;
-    string			_tempSocket ;
+	std::string			_unixSocket ;
+	std::string			_tempSocket ;
 public:
-    				UnixSocket( const string &unixSocket )
+    				UnixSocket( const std::string &unixSocket )
 				    : _unixSocket( unixSocket ),
 				      _tempSocket( "" ) {}
     				UnixSocket( int socket,

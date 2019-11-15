@@ -33,6 +33,9 @@
 #include "BESSyntaxUserError.h"
 
 using std::endl;
+using std::ostream;
+using std::string;
+using std::map;
 
 ShowBesKeyCommand::ShowBesKeyCommand(const BESDataHandlerInterface &base_dhi) :
     BESXMLCommand(base_dhi)

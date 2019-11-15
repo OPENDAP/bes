@@ -37,10 +37,10 @@
 
 class SampleRequestHandler: public BESRequestHandler {
 public:
-    SampleRequestHandler(const string &name);
+    SampleRequestHandler(const std::string &name);
     virtual ~SampleRequestHandler(void);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 
     static bool sample_build_vers(BESDataHandlerInterface &dhi);
     static bool sample_build_help(BESDataHandlerInterface &dhi);

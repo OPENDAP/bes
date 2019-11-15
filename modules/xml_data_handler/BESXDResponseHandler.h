@@ -45,14 +45,14 @@
  */
 class BESXDResponseHandler : public BESResponseHandler {
 public:
-				BESXDResponseHandler( const string &name ) ;
+				BESXDResponseHandler( const std::string &name ) ;
     virtual			~BESXDResponseHandler( void ) ;
 
     virtual void		execute( BESDataHandlerInterface &dhi ) ;
     virtual void		transmit( BESTransmitter *transmitter,
                                           BESDataHandlerInterface &dhi ) ;
 
-    static BESResponseHandler *XDResponseBuilder( const string &name ) ;
+    static BESResponseHandler *XDResponseBuilder( const std::string &name ) ;
 };
 
 #endif // I_BESXDResponseHandler_h
