@@ -40,20 +40,13 @@ namespace functions {
 
 const std::string STARE_STORAGE_PATH = "FUNCTIONS.stareStoragePath";
 
-#if 0
-bool hasValue(libdap::BaseType *bt, std::vector<libdap::dods_uint64> stareIndices);
-unsigned int count(libdap::BaseType *bt, std::vector<libdap::dods_uint64> stareIndices);
-libdap::BaseType *stare_intersection_dap4_function(libdap::D4RValueList *args, libdap::DMR &dmr);
-libdap::BaseType *stare_count_dap4_function(libdap::D4RValueList *args, libdap::DMR &dmr);
-#endif
-
 class StareIterateFunction : public libdap::ServerFunction {
 public:
     // Moving these out of the functions scope to just the StareIntersectionFunction
     // class is probably worthwhile. jhrg 11/7/19
     static string get_sidecar_file_pathname(const string &pathName);
-    static bool hasValue(vector<libdap::dods_uint64> *stareVal, std::vector<libdap::dods_uint64> *stareIndices);
-    static unsigned int count(vector<libdap::dods_uint64> *stareVal, vector<libdap::dods_uint64> *stareIndices);
+    static bool has_value(const vector<libdap::dods_uint64> &stareVal, const std::vector<libdap::dods_uint64> &dataStareIndices);
+    static unsigned int count(const vector<libdap::dods_uint64> &stareVal, const vector<libdap::dods_uint64> &stareIndices);
 
     static libdap::BaseType *stare_intersection_dap4_function(libdap::D4RValueList *args, libdap::DMR &dmr);
 

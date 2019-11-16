@@ -45,16 +45,12 @@
 
 #include "test_config.h"
 
-// #include "test/D4TestTypeFactory.h"
-
-// #include "debug.h"
-
 using namespace CppUnit;
 using namespace libdap;
 using namespace std;
 using namespace functions;
 
-static bool debug = true; // FIXME HACK false;
+static bool debug = false;
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
@@ -96,7 +92,13 @@ public:
 	CPPUNIT_TEST_SUITE( StareFunctionsTest );
 
 	CPPUNIT_TEST(test_get_sidecar_file_pathname);
-	CPPUNIT_TEST(serverside_compare_test);
+    CPPUNIT_TEST(test_has_value);
+    CPPUNIT_TEST(test_has_value_2);
+    CPPUNIT_TEST(test_has_value_3);
+    CPPUNIT_TEST(test_count_1);
+    CPPUNIT_TEST(test_count_2);
+    CPPUNIT_TEST(test_count_3);
+    CPPUNIT_TEST(serverside_compare_test);
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -114,18 +116,59 @@ public:
         CPPUNIT_ASSERT(sidecar_pathname == expected_pathname);
 	}
 
-	// unsigned int StareIterateFunction::count(vector<dods_uint64> *stareVal, vector<dods_uint64> *stareIndices)
-	void test_count() {
+	// The one and only target index is in the 'dataset'
+	void test_count_1() {
+        vector<dods_uint64> target_indices = {3440016191299518474};
+        vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
+
+        CPPUNIT_ASSERT(StareIterateFunction::count(target_indices, data_indices) == 1);
 
 	}
 
-	//bool StareIterateFunction::hasValue(vector<dods_uint64> *stareVal, vector<dods_uint64> *stareIndices)
-	void test_has_value() {
+	// Of the four target_indices, two are in the 'dataset' and two are not
+    void test_count_2() {
+        vector<dods_uint64> target_indices = {3440016191299518474, 9223372034707292159, 3440016191299518400, 3440016191299518401};
+        vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
-	}
+        CPPUNIT_ASSERT(StareIterateFunction::count(target_indices, data_indices) == 2);
 
-	void serverside_compare_test() {
-		DBG(cerr << "--- hasValue() test - BEGIN ---" << endl);
+    }
+
+    // Of the two target_indices, none are in the 'dataset.'
+    void test_count_3() {
+        vector<dods_uint64> target_indices = {3440016191299518400, 3440016191299518401};
+        vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
+
+        CPPUNIT_ASSERT(StareIterateFunction::count(target_indices, data_indices) == 0);
+
+    }
+
+    // target in the 'dataset.'
+    void test_has_value() {
+        vector<dods_uint64> target_indices = {3440016191299518474};
+        vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
+
+        CPPUNIT_ASSERT(StareIterateFunction::has_value(target_indices, data_indices));
+    }
+
+    // target not in the 'dataset.'
+    void test_has_value_2() {
+        vector<dods_uint64> target_indices = {3440016191299518500};
+        vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
+
+        CPPUNIT_ASSERT(StareIterateFunction::has_value(target_indices, data_indices) == false);
+    }
+
+    // Second target in the 'dataset.'
+    void test_has_value_3() {
+        vector<dods_uint64> target_indices = {3440016191299518500, 3440016191299518474};
+        vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
+
+        CPPUNIT_ASSERT(StareIterateFunction::has_value(target_indices, data_indices));
+    }
+
+    void serverside_compare_test() {
+		DBG(cerr << "--- has_value() test - BEGIN ---" << endl);
 
         try {
             Array *a_var = new Array("a_var", new UInt64("a_var"));
@@ -140,7 +183,7 @@ public:
             //Array a_var - uint64 for stare indices
             //The first index is an actual stare value from: MYD09.A2019003.2040.006.2019005020913_sidecar.h5
             //The final value is made up.
-            vector<dods_uint64> target_indices = {9223372034707292159, 3440012343008821258, 3440016191299518400};
+            vector<dods_uint64> target_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
 			D4RValueList params;
 			params.add_rvalue(new D4RValue(target_indices));
@@ -151,14 +194,14 @@ public:
 		}
 		catch(Error &e) {
 			DBG(cerr << e.get_error_message() << endl);
-			CPPUNIT_FAIL("hasValue() test failed");
+			CPPUNIT_FAIL("has_value() test failed");
 		}
         catch(BESError &e) {
             DBG(cerr << e.get_verbose_message() << endl);
-            CPPUNIT_FAIL("hasValue() test failed");
+            CPPUNIT_FAIL("has_value() test failed");
         }
 
-        DBG(cerr << "--- hasValue() test - END ---" << endl);
+        DBG(cerr << "--- has_value() test - END ---" << endl);
 	}
 
 };

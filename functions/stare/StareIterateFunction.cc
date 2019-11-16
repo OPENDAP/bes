@@ -35,18 +35,18 @@
 #include <Grid.h>
 #include <DDS.h>
 
-#include "DMR.h"
-#include "D4RValue.h"
+#include <DMR.h>
+#include <D4RValue.h>
 
-#include "Byte.h"
-#include "Int16.h"
-#include "Int32.h"
-#include "UInt16.h"
-#include "UInt32.h"
-#include "Float32.h"
-#include "Int64.h"
-#include "UInt64.h"
-#include "Int8.h"
+#include <Byte.h>
+#include <Int16.h>
+#include <Int32.h>
+#include <UInt16.h>
+#include <UInt32.h>
+#include <Float32.h>
+#include <Int64.h>
+#include <UInt64.h>
+#include <Int8.h>
 
 #include <Error.h>
 
@@ -146,28 +146,18 @@ static vector<dods_uint64> *extract_uint64_array(Array *var) {
     return newVar;
 }
 
-/*
- * Use the passed in Stare Index to see if the sidecar file contains
- *  the provided Stare Index.
- * @param stareVal - stare values from given dataset
- * @param stareIndices - stare values being compared, retrieved from the sidecar file
+/**
+ * @brief Are any of the stareVal STARE indices in the list of the dataset's STARE indices?
+ * @param stareVal - stare values from a constraint expression
+ * @param dataStareIndices - stare values being compared, retrieved from the sidecar file. These
+ * are the index values from the dataset.
  */
-bool StareIterateFunction::hasValue(vector<dods_uint64> *stareVal, vector<dods_uint64> *stareIndices) {
-#if 0
-    //Originally took the stareIndices in as a BaseType.
-    //However, the stare indices can be taken from the provided h5 sidecar file and
-    // the vector containing those values can be passed in directly instead of having
-    // to be converted from BaseType to a uint64 array. -kln 10/22/19
-    vector<dods_uint64> *stareData;
-
-    Array &stareSrc = dynamic_cast<Array&>(*stareIndices);
-    stareSrc.read();
-    stareData = extract_uint64_array(&stareSrc);
-#endif
+bool
+StareIterateFunction::has_value(const vector<dods_uint64> &stareVal, const vector<dods_uint64> &dataStareIndices) {
     // Changes to the range-for loop, fixed the type (was unsigned long long
     // which works on OSX but not CentOS7). jhrg 11/5/19
-    for (dods_uint64 &i : *stareIndices) {
-        for (dods_uint64 &j : *stareVal)
+    for (const dods_uint64 &i : dataStareIndices) {
+        for (const dods_uint64 &j : stareVal)
             //TODO: Check to see if the index is within the stare index being compared
             if (i == j)
                 return true;
@@ -176,28 +166,26 @@ bool StareIterateFunction::hasValue(vector<dods_uint64> *stareVal, vector<dods_u
     return false;
 }
 
-/*
- * Count the number of times a Stare index matches in the
- *  sidecar
- * @param stareVal - stare values from given dataset
- * @param stareIndices - stare values being compared, retrieved from the sidecar file
+/**
+ * @brief How many of the stareVal STARE indices are in the list of the dataset's STARE indices?
+ *
+ * This method should return the number of indices passed to the server that appear in the
+ * dataset. That is, the number of stareVal items that appear in dataStareIndices.
+ *
+ * @param stareVal - stare values from a constraint expression
+ * @param dataStareIndices - stare values being compared, retrieved from the sidecar file. These
+ * are the index values from the dataset.
  */
 unsigned int
-StareIterateFunction::count(vector<dods_uint64> *stareVal, vector<dods_uint64> *stareIndices) {
-#if 0
-    Array &stareSrc = dynamic_cast<Array&>(*stareIndices);
-
-    stareSrc.read();
-
-    vector<dods_uint64> *stareData = extract_uint64_array(&stareSrc);
-#endif
-
+StareIterateFunction::count(const vector<dods_uint64> &stareVal, const vector<dods_uint64> &dataStareIndices) {
     unsigned int counter = 0;
-    for (dods_uint64 &i : *stareIndices) {
-        for (dods_uint64 &j : *stareVal)
+    for (const dods_uint64 &i : stareVal) {
+        for (const dods_uint64 &j : dataStareIndices)
             // TODO Add call to STARE library 'inclusion' function. jhrg 11/7/19
-            if (i == j)
+            if (i == j) {
                 counter++;
+                break;  // exit the inner loop
+            }
     }
 
     return counter;
@@ -253,22 +241,19 @@ StareIterateFunction::get_sidecar_file_pathname(const string &pathName) {
 }
 
 /**
- * @brief Read the X Array data
+ * @brief Read the 32-bit integer array data
  * @param file The HDF5 Id of an open file
- * @param xArray Value-result parameter
+ * @param values Value-result parameter
  */
-void get_x_axis_values(hid_t file, const string &variable, vector<int> &xArray)
+void get_int32_values(hid_t file, const string &variable, vector<int> &values)
 {
-    hid_t xDataset = H5Dopen(file, variable.c_str(), H5P_DEFAULT);
-    if (xDataset < 0)
-        throw BESInternalError("Could not open X dataset.", __FILE__, __LINE__);
+    hid_t dataset = H5Dopen(file, variable.c_str(), H5P_DEFAULT);
+    if (dataset < 0)
+        throw BESInternalError(string("Could not open dataset: ").append(variable), __FILE__, __LINE__);
 
-    hid_t dspace = H5Dget_space(xDataset);
+    hid_t dspace = H5Dget_space(dataset);
     const int ndims = H5Sget_simple_extent_ndims(dspace);
-#if 0
-    hsize_t dims[ndims];
-#endif
-    vector<hsize_t> dims(dims);
+    vector<hsize_t> dims(ndims);
 
     //Get the size of the dimension so that we know how big to make the memory space
     //Each of the dataspaces should be the same size, if in the future they are different
@@ -276,16 +261,47 @@ void get_x_axis_values(hid_t file, const string &variable, vector<int> &xArray)
     H5Sget_simple_extent_dims(dspace, &dims[0], NULL);
 
     //We need to get the filespace and memspace before reading the values from each dataset
-    hid_t xFilespace = H5Dget_space(xDataset);
+    hid_t filespace = H5Dget_space(dataset);
 
-    hid_t xMemspace = H5Screate_simple(ndims, &dims[0], NULL);
+    hid_t memspace = H5Screate_simple(ndims, &dims[0], NULL);
 
     //Get the number of elements in the dataspace and use that to appropriate the proper size of the vectors
-    hssize_t xSize = H5Sget_select_npoints(xFilespace);
-    xArray.resize(xSize);
+    values.resize(H5Sget_select_npoints(filespace));
 
     //Read the data file and store the values of each dataset into an array
-    H5Dread(xDataset, H5T_NATIVE_INT, xMemspace, xFilespace, H5P_DEFAULT, &xArray[0]);
+    H5Dread(dataset, H5T_NATIVE_INT, memspace, filespace, H5P_DEFAULT, &values[0]);
+}
+
+/**
+ * @brief Read the unsigned 64-bit integer array data
+ * @param file The HDF5 Id of an open file
+ * @param values Value-result parameter
+ */
+void get_uint64_values(hid_t file, const string &variable, vector<dods_uint64> &values)
+{
+    hid_t dataset = H5Dopen(file, variable.c_str(), H5P_DEFAULT);
+    if (dataset < 0)
+        throw BESInternalError(string("Could not open dataset: ").append(variable), __FILE__, __LINE__);
+
+    hid_t dspace = H5Dget_space(dataset);
+    const int ndims = H5Sget_simple_extent_ndims(dspace);
+    vector<hsize_t> dims(ndims);
+
+    //Get the size of the dimension so that we know how big to make the memory space
+    //Each of the dataspaces should be the same size, if in the future they are different
+    // sizes then the size of each dataspace will need to be calculated.
+    H5Sget_simple_extent_dims(dspace, &dims[0], NULL);
+
+    //We need to get the filespace and memspace before reading the values from each dataset
+    hid_t filespace = H5Dget_space(dataset);
+
+    hid_t memspace = H5Screate_simple(ndims, &dims[0], NULL);
+
+    //Get the number of elements in the dataspace and use that to appropriate the proper size of the vectors
+    values.resize(H5Sget_select_npoints(filespace));
+
+    //Read the data file and store the values of each dataset into an array
+    H5Dread(dataset, H5T_NATIVE_ULLONG, memspace, filespace, H5P_DEFAULT, &values[0]);
 }
 
 /**
@@ -311,61 +327,17 @@ StareIterateFunction::stare_intersection_dap4_function(D4RValueList *args, DMR &
         throw BESInternalError("Could not open file " + fullPath, __FILE__, __LINE__);
 
 #if 0
-    hid_t xDataset = H5Dopen(file, "X", H5P_DEFAULT);
-    if (xDataset < 0)
-        throw BESInternalError("Could not open X dataset " + fullPath, __FILE__, __LINE__);
-#endif
-
-    hid_t yDataset = H5Dopen(file, "Y", H5P_DEFAULT);
-    if (yDataset < 0)
-        throw BESInternalError("Could not open Y dataset " + fullPath, __FILE__, __LINE__);
-
-    hid_t stareDataset = H5Dopen(file, "Stare Index", H5P_DEFAULT);
-    if (stareDataset < 0)
-        throw BESInternalError("Could not open STARE dataset " + fullPath, __FILE__, __LINE__);
-
-    // TODO Extract three functions/methods from this (one for XArray, ...)
-    //Get the number of dimensions
-    hid_t dspace = H5Dget_space(yDataset);
-    const int ndims = H5Sget_simple_extent_ndims(dspace);
-    hsize_t dims[ndims];
-
-    //Get the size of the dimension so that we know how big to make the memory space
-    //Each of the dataspaces should be the same size, if in the future they are different
-    // sizes then the size of each dataspace will need to be calculated.
-    H5Sget_simple_extent_dims(dspace, dims, NULL);
-
-    //We need to get the filespace and memspace before reading the values from each dataset
-#if 0
-    hid_t xFilespace = H5Dget_space(xDataset);
-#endif
-    hid_t yFilespace = H5Dget_space(yDataset);
-    hid_t stareFilespace = H5Dget_space(stareDataset);
-
-#if 0
-    hid_t xMemspace = H5Screate_simple(ndims, dims, NULL);
-#endif
-    hid_t yMemspace = H5Screate_simple(ndims, dims, NULL);
-    hid_t stareMemspace = H5Screate_simple(ndims, dims, NULL);
-
-    //Get the number of elements in the dataspace and use that to appropriate the proper size of the vectors
-#if 0
-    hssize_t xSize = H5Sget_select_npoints(xFilespace);
-#endif
-    hssize_t ySize = H5Sget_select_npoints(yFilespace);
-    hssize_t stareSize = H5Sget_select_npoints(stareFilespace);
-
     vector<int> xArray;
-    vector<int> yArray(ySize);
-    vector<dods_uint64> stareArray(stareSize);
+    vector<int> yArray;
+#endif
+    vector<dods_uint64> stareArray;
 
     //Read the data file and store the values of each dataset into an array
-#if 0
-    H5Dread(xDataset, H5T_NATIVE_INT, xMemspace, xFilespace, H5P_DEFAULT, &xArray[0]);
+#if 0 
+    get_int32_values(file, "X", xArray);
+    get_int32_values(file, "Y", yArray);
 #endif
-    get_x_axis_values(file, "X", xArray);
-    H5Dread(yDataset, H5T_NATIVE_INT, yMemspace, yFilespace, H5P_DEFAULT, &yArray[0]);
-    H5Dread(stareDataset, H5T_NATIVE_INT, stareMemspace, stareFilespace, H5P_DEFAULT, &stareArray[0]);
+    get_uint64_values(file, "Stare Index", stareArray);
 
     BaseType *stareVal = args->get_rvalue(0)->value(dmr);
     Array *stareSrc = dynamic_cast<Array *>(stareVal);
@@ -379,7 +351,7 @@ StareIterateFunction::stare_intersection_dap4_function(D4RValueList *args, DMR &
 
     vector<dods_uint64> *stareData = extract_uint64_array(stareSrc);
 
-    bool status = StareIterateFunction::hasValue(stareData, &stareArray);
+    bool status = StareIterateFunction::has_value(*stareData, stareArray);
 
     Int32 *result = new Int32("result");
     if (status) {
