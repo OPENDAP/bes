@@ -37,7 +37,7 @@ TESTS = $(UNIT_TESTS)
 
 noinst_HEADERS = 
 
-EXTRA_DIST = MYD09.A2019003.2040.006.2019005020913_sidecar.h5 test_config.h.in
+EXTRA_DIST = MYD09.A2019003.2040.006.2019005020913_sidecar.h5 test_config.h.in bes.conf.in
 
 CLEANFILES = testout .dodsrc *.gcda *.gcno
 
