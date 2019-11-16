@@ -1,11 +1,11 @@
 /*********************************************************************
- * stareMapping.cc													*
+ * build_sidecar.cc													*
  *																	*
  *  Created on: Mar 7, 2019											*
- *  														        *
- *  		Purpose: Index the STARE value that corresponds to a given	*
- *  				 iterator from an array, as well as its lat/lon *
- *  				 value.											*
+ *  																*
+ *  	Purpose: Index the STARE value that corresponds to a given	*
+ *  		 iterator from an array, as well as its lat/lon value.	*
+ *  			 												    *
  *      Author: Kodi Neumiller, kneumiller@opendap.org				*
  *      															*
  ********************************************************************/
@@ -22,7 +22,7 @@
 #include <unordered_map>
 #include <array>
 #include <memory>
-#include "hdf5.h"
+#include <hdf5.h>
 
 using namespace std;
 

@@ -26,6 +26,7 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 /////////////////////////////////////////////////////////////////////////////
+
 #include "config.h"
 
 #include <sstream>
@@ -92,7 +93,7 @@ DDSLoader::operator=(const DDSLoader& rhs)
     }
 
     // First cleanup any state
-#if 1
+
     // Old comment, written in the midst of fixing bug #2176...
     // I removed this call because ensureClean() will call restoreDHI()
     // and then we will call the BESDataHandlerInterface::clone() method
@@ -108,9 +109,6 @@ DDSLoader::operator=(const DDSLoader& rhs)
     // might make use of the saved state.
     // jhrg 4/18/14
     ensureClean();
-#else
-    removeContainerFromStorage();
-#endif
 
     // Now copy the dhi only, since
     // we assume we'll be using this fresh.
@@ -161,28 +159,61 @@ void DDSLoader::loadInto(const std::string& location, ResponseType type, BESDapR
     // Remember current state of dhi before we touch it -- _hijacked is now true!!
     snapshotDHI();
 
-    // Add a new symbol to the storage list and return container for it.
-    // We will remove this new container on the way out.
-    BESContainer* container = addNewContainerToStorage();
+#if 0
+    BESContainer *container = nullptr;
 
-    // Take over the dhi
-    // Container is allocated using ptr_duplicate. Must free existing container. See RestoreDHI. jhrg 6/19/19
-    _dhi.container = container;
-    _dhi.response_handler->set_response_object(pResponse);
-
-    // Choose the proper request type...
-    _dhi.action = getActionForType(type);
-    _dhi.action_name = getActionNameForType(type);
-
-    // Figure out which underlying type of response it is to get the DDS (or DataDDS via DDS super).
-    DDS* pDDS = ncml_module::NCMLUtil::getDDSFromEitherResponse(pResponse);
-    if (!pDDS) {
-        THROW_NCML_INTERNAL_ERROR("DDSLoader::load expected BESDDSResponse or BESDataDDSResponse but got neither!");
-    }
-    pDDS->set_request_xml_base(pResponse->get_request_xml_base());
-
-    // DO IT!
     try {
+        // Add a new symbol to the storage list and return container for it.
+        // We will remove this new container on the way out.
+        //
+        // HK-474: If there is no handler configured to read the dataset (based on the values
+        // of the various TypeMatch parameters), code nested inside this call with throw a
+        // BESInternalError and the 'unwinding' of the containers will fail with some odd
+        // ramifications, including segfaults and no message to the user/client. jhrg 11/13/19
+        container = addNewContainerToStorage();
+    }
+    catch (BESError &e) {
+        *(BESLog::TheLog()) << "WARNING - " << string(__PRETTY_FUNCTION__) << ": " << e.get_file() << ":" << e.get_line() << ": "
+                            << e.get_message() << " (the exception was re-thrown)."<< endl;
+
+        // Get rid of the container we added.
+        removeContainerFromStorage();
+
+        // Put back the dhi state we hijacked
+        restoreDHI();
+
+        throw e;
+    }
+#endif
+
+    try {
+        // Add a new symbol to the storage list and return container for it.
+        // We will remove this new container on the way out.
+        //
+        // HK-474: If there is no handler configured to read the dataset (based on the values
+        // of the various TypeMatch parameters), code nested inside this call with throw a
+        // BESInternalError and the 'unwinding' of the containers will fail with some odd
+        // ramifications, including segfaults and no message to the user/client. jhrg 11/13/19
+        BESContainer *container = addNewContainerToStorage();
+
+        // Take over the dhi
+        // Container is allocated using ptr_duplicate. Must free existing container. See RestoreDHI. jhrg 6/19/19
+        _dhi.container = container;
+        _dhi.response_handler->set_response_object(pResponse);
+
+        // Choose the proper request type...
+        _dhi.action = getActionForType(type);
+        _dhi.action_name = getActionNameForType(type);
+
+        // Figure out which underlying type of response it is to get the DDS (or DataDDS via DDS super).
+        DDS* pDDS = ncml_module::NCMLUtil::getDDSFromEitherResponse(pResponse);
+        if (!pDDS) {
+            THROW_NCML_INTERNAL_ERROR("DDSLoader::load expected BESDDSResponse or BESDataDDSResponse but got neither!");
+        }
+        pDDS->set_request_xml_base(pResponse->get_request_xml_base());
+
+        // DO IT!
+
         BESDEBUG("ncml", "Before BESRequestHandlerList::TheList()->execute_current" << endl);
         BESDEBUG("ncml", "Handler name: " << BESRequestHandlerList::TheList()->get_handler_names() << endl);
 
@@ -206,23 +237,20 @@ void DDSLoader::loadInto(const std::string& location, ResponseType type, BESDapR
         }
 
         BESDEBUG("ncml", "After BESRequestHandlerList::TheList()->execute_current" << endl);
+
+        _filename = "";
+
+        ensureClean();
     }
     catch (BESError &e) {
         *(BESLog::TheLog()) << "WARNING - " << string(__PRETTY_FUNCTION__) << ": " << e.get_file() << ":" << e.get_line() << ": "
-            << e.get_message() << " (the exception was re-thrown)."<< endl;
+                            << e.get_message() << " (the exception was re-thrown)."<< endl;
+
+        // We should be clean here too.
+        ensureClean();
+
         throw e;
     }
-
-    // Put back the dhi state we hijacked
-    restoreDHI();
-
-    // Get rid of the container we added.
-    removeContainerFromStorage();
-
-    _filename = "";
-
-    // We should be clean here too.
-    ensureClean();
 }
 
 void DDSLoader::cleanup()
@@ -246,8 +274,6 @@ bool is_url(std::string location){
     result = result || http.compare(tip)==0;
 
     return result;
-
-
 }
 
 BESContainer*
@@ -278,6 +304,8 @@ DDSLoader::addNewContainerToStorage()
     // this will throw an exception if the location isn't found in the
     // catalog. Might want to catch this. Wish the add returned the
     // container object created. Might want to change it.
+    //
+    // HK-474 This is the crux of the problem.
     store->add_container(newSymbol, _filename, "");
 
     // If we were successful, note the store location and symbol we added  for removal later.
@@ -321,6 +349,7 @@ void DDSLoader::snapshotDHI()
 
         // Store off the container for the original ncml file call and replace with the new one
     _origContainer = _dhi.container;
+    _dhi.container = 0; // Mark the container so that we do not call release() more than once. jhrg 11/14/19
     _origAction = _dhi.action;
     _origActionName = _dhi.action_name;
 
@@ -347,7 +376,11 @@ void DDSLoader::restoreDHI()
     // because this is the call that closes the cached uncompressed
     // file and frees the lock. This was the bug associated with
     // ticket HR-64. jhrg 10/16/15
-    _dhi.container->release();
+    // Only release the container if it is not null. This was happening
+    // because DDSLoader:loadInto() was failing in mid-process and the
+    // DHI had been hijacked but the new container was not set. See HK-474.
+    // jhrg 11/14/19
+    if (_dhi.container) _dhi.container->release();
     // Leak. Allocated locally by addNewContainerToStorage() in loadInto(). jhrg 6/19/19
     delete _dhi.container;
 
@@ -372,6 +405,9 @@ void DDSLoader::restoreDHI()
     _hijacked = false;
 }
 
+/**
+ * @brief Use this to restore the hijacked DHI object.
+ */
 void DDSLoader::ensureClean()
 {
     // If we're still hijacked here, there was an exception in load, so clean
@@ -398,12 +434,10 @@ std::auto_ptr<BESDapResponse> DDSLoader::makeResponseForType(ResponseType type)
 {
     if (type == eRT_RequestDDX) {
         // The BaseTypeFactory is leaked. jhrg 6/19/19
-        cerr<<"coming to DDSLoader::RequestDDX"<<endl;
         return auto_ptr<BESDapResponse>(new BESDDSResponse(new DDS(0 /*new BaseTypeFactory()*/, "virtual")));
     }
     else if (type == eRT_RequestDataDDS) {
         // Leak fix jhrg 6/19/19
-        cerr<<"coming to DDSLoader::RequestDataDDS"<<endl;
         return auto_ptr<BESDapResponse>(new BESDataDDSResponse(new DDS(0 /*new BaseTypeFactory()*/, "virtual")));
     }
     else {

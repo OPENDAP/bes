@@ -25,8 +25,8 @@
 #include <sstream>
 #include <unordered_map>
 
-#include <hdf5.h>
 #include <STARE.h>
+#include <hdf5.h>
 
 #include <BaseType.h>
 #include <Float64.h>
@@ -253,6 +253,42 @@ StareIterateFunction::get_sidecar_file_pathname(const string &pathName) {
 }
 
 /**
+ * @brief Read the X Array data
+ * @param file The HDF5 Id of an open file
+ * @param xArray Value-result parameter
+ */
+void get_x_axis_values(hid_t file, const string &variable, vector<int> &xArray)
+{
+    hid_t xDataset = H5Dopen(file, variable.c_str(), H5P_DEFAULT);
+    if (xDataset < 0)
+        throw BESInternalError("Could not open X dataset.", __FILE__, __LINE__);
+
+    hid_t dspace = H5Dget_space(xDataset);
+    const int ndims = H5Sget_simple_extent_ndims(dspace);
+#if 0
+    hsize_t dims[ndims];
+#endif
+    vector<hsize_t> dims(dims);
+
+    //Get the size of the dimension so that we know how big to make the memory space
+    //Each of the dataspaces should be the same size, if in the future they are different
+    // sizes then the size of each dataspace will need to be calculated.
+    H5Sget_simple_extent_dims(dspace, &dims[0], NULL);
+
+    //We need to get the filespace and memspace before reading the values from each dataset
+    hid_t xFilespace = H5Dget_space(xDataset);
+
+    hid_t xMemspace = H5Screate_simple(ndims, &dims[0], NULL);
+
+    //Get the number of elements in the dataspace and use that to appropriate the proper size of the vectors
+    hssize_t xSize = H5Sget_select_npoints(xFilespace);
+    xArray.resize(xSize);
+
+    //Read the data file and store the values of each dataset into an array
+    H5Dread(xDataset, H5T_NATIVE_INT, xMemspace, xFilespace, H5P_DEFAULT, &xArray[0]);
+}
+
+/**
  * -- Intersection server function --
  * Checks to see if there are any Stare values provided from the client that can be found in the sidecar file.
  * If there is at least one match, the function will return a 1. Otherwise returns a 0.
@@ -267,17 +303,18 @@ StareIterateFunction::stare_intersection_dap4_function(D4RValueList *args, DMR &
     }
 
     //Find the filename from the dmr
-    string pathName = dmr.filename();
-    string fullPath = StareIterateFunction::get_sidecar_file_pathname(pathName);
+    string fullPath = StareIterateFunction::get_sidecar_file_pathname(dmr.filename());
 
     //Read the file and store the datasets
     hid_t file = H5Fopen(fullPath.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
     if (file < 0)
         throw BESInternalError("Could not open file " + fullPath, __FILE__, __LINE__);
 
+#if 0
     hid_t xDataset = H5Dopen(file, "X", H5P_DEFAULT);
     if (xDataset < 0)
         throw BESInternalError("Could not open X dataset " + fullPath, __FILE__, __LINE__);
+#endif
 
     hid_t yDataset = H5Dopen(file, "Y", H5P_DEFAULT);
     if (yDataset < 0)
@@ -289,7 +326,7 @@ StareIterateFunction::stare_intersection_dap4_function(D4RValueList *args, DMR &
 
     // TODO Extract three functions/methods from this (one for XArray, ...)
     //Get the number of dimensions
-    hid_t dspace = H5Dget_space(xDataset);
+    hid_t dspace = H5Dget_space(yDataset);
     const int ndims = H5Sget_simple_extent_ndims(dspace);
     hsize_t dims[ndims];
 
@@ -299,25 +336,34 @@ StareIterateFunction::stare_intersection_dap4_function(D4RValueList *args, DMR &
     H5Sget_simple_extent_dims(dspace, dims, NULL);
 
     //We need to get the filespace and memspace before reading the values from each dataset
+#if 0
     hid_t xFilespace = H5Dget_space(xDataset);
+#endif
     hid_t yFilespace = H5Dget_space(yDataset);
     hid_t stareFilespace = H5Dget_space(stareDataset);
 
+#if 0
     hid_t xMemspace = H5Screate_simple(ndims, dims, NULL);
+#endif
     hid_t yMemspace = H5Screate_simple(ndims, dims, NULL);
     hid_t stareMemspace = H5Screate_simple(ndims, dims, NULL);
 
     //Get the number of elements in the dataspace and use that to appropriate the proper size of the vectors
+#if 0
     hssize_t xSize = H5Sget_select_npoints(xFilespace);
+#endif
     hssize_t ySize = H5Sget_select_npoints(yFilespace);
     hssize_t stareSize = H5Sget_select_npoints(stareFilespace);
 
-    vector<int> xArray(xSize);
+    vector<int> xArray;
     vector<int> yArray(ySize);
     vector<dods_uint64> stareArray(stareSize);
 
     //Read the data file and store the values of each dataset into an array
+#if 0
     H5Dread(xDataset, H5T_NATIVE_INT, xMemspace, xFilespace, H5P_DEFAULT, &xArray[0]);
+#endif
+    get_x_axis_values(file, "X", xArray);
     H5Dread(yDataset, H5T_NATIVE_INT, yMemspace, yFilespace, H5P_DEFAULT, &yArray[0]);
     H5Dread(stareDataset, H5T_NATIVE_INT, stareMemspace, stareFilespace, H5P_DEFAULT, &stareArray[0]);
 

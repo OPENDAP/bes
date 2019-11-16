@@ -32,6 +32,7 @@
 #include <D4Group.h>
 #include <D4RValue.h>
 #include <DMR.h>
+#include <test/D4TestTypeFactory.h>
 
 #include <util.h>
 #include <debug.h>
@@ -44,16 +45,16 @@
 
 #include "test_config.h"
 
-#include "test/D4TestTypeFactory.h"
+// #include "test/D4TestTypeFactory.h"
 
-#include "debug.h"
+// #include "debug.h"
 
 using namespace CppUnit;
 using namespace libdap;
 using namespace std;
 using namespace functions;
 
-static bool debug = false;
+static bool debug = true; // FIXME HACK false;
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
@@ -78,7 +79,7 @@ public:
         two_arrays_dmr->set_name("test_dmr");
         DBG(cerr << "setup() - Built DMR(D4BaseTypeFactory *) " << endl);
 
-		string filename = "MYD09.A2019003.2040.006.2019005020913.h5";
+		string filename = string(TEST_SRC_DIR) + "/MYD09.A2019003.2040.006.2019005020913.h5";
 
 		two_arrays_dmr->set_filename(filename);
 
@@ -111,6 +112,16 @@ public:
         DBG(cerr << "expected_pathname: " << expected_pathname << endl);
         DBG(cerr << "sidecar_pathname: " << sidecar_pathname << endl);
         CPPUNIT_ASSERT(sidecar_pathname == expected_pathname);
+	}
+
+	// unsigned int StareIterateFunction::count(vector<dods_uint64> *stareVal, vector<dods_uint64> *stareIndices)
+	void test_count() {
+
+	}
+
+	//bool StareIterateFunction::hasValue(vector<dods_uint64> *stareVal, vector<dods_uint64> *stareIndices)
+	void test_has_value() {
+
 	}
 
 	void serverside_compare_test() {
