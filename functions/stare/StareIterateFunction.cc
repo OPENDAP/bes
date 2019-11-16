@@ -333,7 +333,7 @@ StareIterateFunction::stare_intersection_dap4_function(D4RValueList *args, DMR &
     vector<dods_uint64> stareArray;
 
     //Read the data file and store the values of each dataset into an array
-#if 0 
+#if 0
     get_int32_values(file, "X", xArray);
     get_int32_values(file, "Y", yArray);
 #endif
