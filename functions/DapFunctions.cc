@@ -52,7 +52,10 @@
 #include "BBoxCombFunction.h"
 #include "ScaleGrid.h"
 #include "TestFunction.h"
+
+#if HAVE_STARE
 #include "stare/StareIterateFunction.h"
+#endif
 
 #include "DapFunctionsRequestHandler.h"
 #include "DapFunctions.h"
