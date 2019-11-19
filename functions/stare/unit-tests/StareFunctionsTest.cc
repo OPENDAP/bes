@@ -98,18 +98,20 @@ public:
     CPPUNIT_TEST(test_count_1);
     CPPUNIT_TEST(test_count_2);
     CPPUNIT_TEST(test_count_3);
-    CPPUNIT_TEST(serverside_compare_test);
+
+    CPPUNIT_TEST(intersection_function_test);
+    CPPUNIT_TEST(count_function_test);
 
 	CPPUNIT_TEST_SUITE_END();
 
 	void test_get_sidecar_file_pathname() {
-        string sidecar_pathname = StareIterateFunction::get_sidecar_file_pathname("/data/sub_dir/bogus.h5");
+        string sidecar_pathname = get_sidecar_file_pathname("/data/sub_dir/bogus.h5");
         string expected_pathname = string(TEST_SRC_DIR) + "/" + "bogus_sidecar.h5";
         DBG(cerr << "expected_pathname: " << expected_pathname << endl);
         DBG(cerr << "sidecar_pathname: " << sidecar_pathname << endl);
         CPPUNIT_ASSERT(sidecar_pathname == expected_pathname);
 
-        sidecar_pathname = StareIterateFunction::get_sidecar_file_pathname("/data/different_extention.hdf5");
+        sidecar_pathname = get_sidecar_file_pathname("/data/different_extention.hdf5");
         expected_pathname = string(TEST_SRC_DIR) + "/" + "different_extention_sidecar.hdf5";
         DBG(cerr << "expected_pathname: " << expected_pathname << endl);
         DBG(cerr << "sidecar_pathname: " << sidecar_pathname << endl);
@@ -121,7 +123,7 @@ public:
         vector<dods_uint64> target_indices = {3440016191299518474};
         vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
-        CPPUNIT_ASSERT(StareIterateFunction::count(target_indices, data_indices) == 1);
+        CPPUNIT_ASSERT(count(target_indices, data_indices) == 1);
 
 	}
 
@@ -130,7 +132,7 @@ public:
         vector<dods_uint64> target_indices = {3440016191299518474, 9223372034707292159, 3440016191299518400, 3440016191299518401};
         vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
-        CPPUNIT_ASSERT(StareIterateFunction::count(target_indices, data_indices) == 2);
+        CPPUNIT_ASSERT(count(target_indices, data_indices) == 2);
 
     }
 
@@ -139,7 +141,7 @@ public:
         vector<dods_uint64> target_indices = {3440016191299518400, 3440016191299518401};
         vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
-        CPPUNIT_ASSERT(StareIterateFunction::count(target_indices, data_indices) == 0);
+        CPPUNIT_ASSERT(count(target_indices, data_indices) == 0);
 
     }
 
@@ -148,7 +150,7 @@ public:
         vector<dods_uint64> target_indices = {3440016191299518474};
         vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
-        CPPUNIT_ASSERT(StareIterateFunction::has_value(target_indices, data_indices));
+        CPPUNIT_ASSERT(has_value(target_indices, data_indices));
     }
 
     // target not in the 'dataset.'
@@ -156,7 +158,7 @@ public:
         vector<dods_uint64> target_indices = {3440016191299518500};
         vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
-        CPPUNIT_ASSERT(StareIterateFunction::has_value(target_indices, data_indices) == false);
+        CPPUNIT_ASSERT(has_value(target_indices, data_indices) == false);
     }
 
     // Second target in the 'dataset.'
@@ -164,10 +166,10 @@ public:
         vector<dods_uint64> target_indices = {3440016191299518500, 3440016191299518474};
         vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
-        CPPUNIT_ASSERT(StareIterateFunction::has_value(target_indices, data_indices));
+        CPPUNIT_ASSERT(has_value(target_indices, data_indices));
     }
 
-    void serverside_compare_test() {
+    void intersection_function_test() {
 		DBG(cerr << "--- has_value() test - BEGIN ---" << endl);
 
         try {
@@ -203,6 +205,43 @@ public:
 
         DBG(cerr << "--- has_value() test - END ---" << endl);
 	}
+
+    void count_function_test() {
+        DBG(cerr << "--- has_value() test - BEGIN ---" << endl);
+
+        try {
+            Array *a_var = new Array("a_var", new UInt64("a_var"));
+
+            two_arrays_dmr->root()->add_var_nocopy(a_var);
+
+            //MYD09.A2019003.2040.006.2019005020913_sidecar.h5 values:
+            //Lat - 32.2739, 32.2736, 32.2733, 32.2731, 32.2728, 32.2725, 32.2723, 32.272, 32.2718, 32.2715
+            //Lon - -98.8324, -98.8388, -98.8452, -98.8516, -98.858, -98.8644, -98.8708, -98.8772, -98.8836, -98.8899
+            //Stare - 3440016191299518474 x 10
+
+            //Array a_var - uint64 for stare indices
+            //The first index is an actual stare value from: MYD09.A2019003.2040.006.2019005020913_sidecar.h5
+            //The final value is made up.
+            vector<dods_uint64> target_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
+
+            D4RValueList params;
+            params.add_rvalue(new D4RValue(target_indices));
+
+            BaseType *checkHasValue = StareCountFunction::stare_count_dap4_function(&params, *two_arrays_dmr);
+
+            CPPUNIT_ASSERT(dynamic_cast<Int32*> (checkHasValue)->value() == 1);
+        }
+        catch(Error &e) {
+            DBG(cerr << e.get_error_message() << endl);
+            CPPUNIT_FAIL("has_value() test failed");
+        }
+        catch(BESError &e) {
+            DBG(cerr << e.get_verbose_message() << endl);
+            CPPUNIT_FAIL("has_value() test failed");
+        }
+
+        DBG(cerr << "--- has_value() test - END ---" << endl);
+    }
 
 };
 

@@ -24,6 +24,9 @@
 
 #include <dods-datatypes.h>
 
+#include <STARE.h>
+#include <hdf5.h>
+
 #include "ServerFunction.h"
 
 namespace libdap {
@@ -38,16 +41,25 @@ class DMR;
 
 namespace functions {
 
+std::string get_sidecar_file_pathname(const std::string &pathName);
+void get_int32_values(hid_t file, const std::string &variable, std::vector<int> &values);
+void get_uint64_values(hid_t file, const std::string &variable, std::vector<libdap::dods_uint64> &values);
+
+bool has_value(const std::vector<libdap::dods_uint64> &stareVal, const std::vector<libdap::dods_uint64> &dataStareIndices);
+unsigned int count(const std::vector<libdap::dods_uint64> &stareVal, const std:: vector<libdap::dods_uint64> &stareIndices);
+
 const std::string STARE_STORAGE_PATH = "FUNCTIONS.stareStoragePath";
 
 class StareIterateFunction : public libdap::ServerFunction {
 public:
-    // Moving these out of the functions scope to just the StareIntersectionFunction
-    // class is probably worthwhile. jhrg 11/7/19
-    static string get_sidecar_file_pathname(const string &pathName);
-    static bool has_value(const vector<libdap::dods_uint64> &stareVal, const std::vector<libdap::dods_uint64> &dataStareIndices);
-    static unsigned int count(const vector<libdap::dods_uint64> &stareVal, const vector<libdap::dods_uint64> &stareIndices);
+#if 0
+    static std::string get_sidecar_file_pathname(const std::string &pathName);
+    static void get_int32_values(hid_t file, const std::string &variable, std::vector<int> &values);
+    static void get_uint64_values(hid_t file, const std::string &variable, std::vector<libdap::dods_uint64> &values);
 
+    static bool has_value(const std::vector<libdap::dods_uint64> &stareVal, const std::vector<libdap::dods_uint64> &dataStareIndices);
+    static unsigned int count(const std::vector<libdap::dods_uint64> &stareVal, const std:: vector<libdap::dods_uint64> &stareIndices);
+#endif
     static libdap::BaseType *stare_intersection_dap4_function(libdap::D4RValueList *args, libdap::DMR &dmr);
 
     friend class StareFunctionsTest;
@@ -55,15 +67,44 @@ public:
 public:
     StareIterateFunction() {
         setName("stare_intersection");
-        setDescriptionString("The stare_intersection TODO: ");
-        //setUsageString("linear_scale(var) | linear_scale(var,scale_factor,add_offset) | linear_scale(var,scale_factor,add_offset,missing_value)");
-        //setRole("http://services.opendap.org/dap4/server-side-function/linear-scale");
-        //setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#linear_scale");
+        setDescriptionString("The stare_intersection: Returns 1 if the coverage of the current dataset includes any of the given STARE indices.");
+        setUsageString("stare_intersection(STARE index [, STARE index ...]) | linear_scale($UInt64(<size hint>:STARE index [, STARE index ...]))");
+        setRole("http://services.opendap.org/dap4/server-side-function/stare_intersection");
+        setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#stare_intersection");
         setFunction(stare_intersection_dap4_function);
         setVersion("0.1");
     }
 
     virtual ~StareIterateFunction() {
+    }
+};
+
+class StareCountFunction : public libdap::ServerFunction {
+public:
+#if 0
+    static std::string get_sidecar_file_pathname(const std::string &pathName);
+    static void get_int32_values(hid_t file, const std::string &variable, std::vector<int> &values);
+    static void get_uint64_values(hid_t file, const std::string &variable, std::vector<libdap::dods_uint64> &values);
+
+    static bool has_value(const std::vector<libdap::dods_uint64> &stareVal, const std::vector<libdap::dods_uint64> &dataStareIndices);
+    static unsigned int count(const std::vector<libdap::dods_uint64> &stareVal, const std:: vector<libdap::dods_uint64> &stareIndices);
+#endif
+    static libdap::BaseType *stare_count_dap4_function(libdap::D4RValueList *args, libdap::DMR &dmr);
+
+    friend class StareFunctionsTest;
+
+public:
+    StareCountFunction() {
+        setName("stare_count");
+        setDescriptionString("The stare_count: Returns the number of the STARE indices that are included in this dataset.");
+        setUsageString("stare_count(STARE index [, STARE index ...]) | linear_scale($UInt64(<size hint>:STARE index [, STARE index ...]))");
+        setRole("http://services.opendap.org/dap4/server-side-function/stare_count");
+        setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#stare_count");
+        setFunction(stare_count_dap4_function);
+        setVersion("0.1");
+    }
+
+    virtual ~StareCountFunction() {
     }
 };
 

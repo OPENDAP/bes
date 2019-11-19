@@ -153,7 +153,7 @@ static vector<dods_uint64> *extract_uint64_array(Array *var) {
  * are the index values from the dataset.
  */
 bool
-StareIterateFunction::has_value(const vector<dods_uint64> &stareVal, const vector<dods_uint64> &dataStareIndices) {
+has_value(const vector<dods_uint64> &stareVal, const vector<dods_uint64> &dataStareIndices) {
     // Changes to the range-for loop, fixed the type (was unsigned long long
     // which works on OSX but not CentOS7). jhrg 11/5/19
     for (const dods_uint64 &i : dataStareIndices) {
@@ -177,7 +177,7 @@ StareIterateFunction::has_value(const vector<dods_uint64> &stareVal, const vecto
  * are the index values from the dataset.
  */
 unsigned int
-StareIterateFunction::count(const vector<dods_uint64> &stareVal, const vector<dods_uint64> &dataStareIndices) {
+count(const vector<dods_uint64> &stareVal, const vector<dods_uint64> &dataStareIndices) {
     unsigned int counter = 0;
     for (const dods_uint64 &i : stareVal) {
         for (const dods_uint64 &j : dataStareIndices)
@@ -224,7 +224,7 @@ returnVal stare_subset(vector<dods_uint64> *stareVal, vector<dods_uint64> *stare
  * @return The pathname to the matching sidecar file.
  */
 string
-StareIterateFunction::get_sidecar_file_pathname(const string &pathName) {
+get_sidecar_file_pathname(const string &pathName) {
     size_t granulePos = pathName.find_last_of("/");
     string granuleName = pathName.substr(granulePos + 1);
     size_t findDot = granuleName.find_last_of(".");
@@ -245,7 +245,8 @@ StareIterateFunction::get_sidecar_file_pathname(const string &pathName) {
  * @param file The HDF5 Id of an open file
  * @param values Value-result parameter
  */
-void get_int32_values(hid_t file, const string &variable, vector<int> &values)
+void
+get_int32_values(hid_t file, const string &variable, vector<int> &values)
 {
     hid_t dataset = H5Dopen(file, variable.c_str(), H5P_DEFAULT);
     if (dataset < 0)
@@ -277,7 +278,8 @@ void get_int32_values(hid_t file, const string &variable, vector<int> &values)
  * @param file The HDF5 Id of an open file
  * @param values Value-result parameter
  */
-void get_uint64_values(hid_t file, const string &variable, vector<dods_uint64> &values)
+void
+get_uint64_values(hid_t file, const string &variable, vector<dods_uint64> &values)
 {
     hid_t dataset = H5Dopen(file, variable.c_str(), H5P_DEFAULT);
     if (dataset < 0)
@@ -310,8 +312,8 @@ void get_uint64_values(hid_t file, const string &variable, vector<dods_uint64> &
  * If there is at least one match, the function will return a 1. Otherwise returns a 0.
  */
 BaseType *
-StareIterateFunction::stare_intersection_dap4_function(D4RValueList *args, DMR &dmr) {
-
+StareIterateFunction::stare_intersection_dap4_function(D4RValueList *args, DMR &dmr)
+{
     if (args->size() != 1) {
         ostringstream oss;
         oss << "stare_intersection(): Expected a single argument, but got " << args->size();
@@ -319,24 +321,15 @@ StareIterateFunction::stare_intersection_dap4_function(D4RValueList *args, DMR &
     }
 
     //Find the filename from the dmr
-    string fullPath = StareIterateFunction::get_sidecar_file_pathname(dmr.filename());
+    string fullPath = get_sidecar_file_pathname(dmr.filename());
 
     //Read the file and store the datasets
     hid_t file = H5Fopen(fullPath.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
     if (file < 0)
         throw BESInternalError("Could not open file " + fullPath, __FILE__, __LINE__);
 
-#if 0
-    vector<int> xArray;
-    vector<int> yArray;
-#endif
-    vector<dods_uint64> stareArray;
-
     //Read the data file and store the values of each dataset into an array
-#if 0
-    get_int32_values(file, "X", xArray);
-    get_int32_values(file, "Y", yArray);
-#endif
+    vector<dods_uint64> stareArray;
     get_uint64_values(file, "Stare Index", stareArray);
 
     BaseType *stareVal = args->get_rvalue(0)->value(dmr);
@@ -351,7 +344,7 @@ StareIterateFunction::stare_intersection_dap4_function(D4RValueList *args, DMR &
 
     vector<dods_uint64> *stareData = extract_uint64_array(stareSrc);
 
-    bool status = StareIterateFunction::has_value(*stareData, stareArray);
+    bool status = has_value(*stareData, stareArray);
 
     Int32 *result = new Int32("result");
     if (status) {
@@ -360,6 +353,55 @@ StareIterateFunction::stare_intersection_dap4_function(D4RValueList *args, DMR &
     else {
         result->set_value(0);
     }
+
+    return result;
+}
+
+BaseType *
+StareCountFunction::stare_count_dap4_function(D4RValueList *args, DMR &dmr)
+{
+    if (args->size() != 1) {
+        ostringstream oss;
+        oss << "stare_intersection(): Expected a single argument, but got " << args->size();
+        throw BESSyntaxUserError(oss.str(), __FILE__, __LINE__);
+    }
+
+    //Find the filename from the dmr
+    string fullPath = get_sidecar_file_pathname(dmr.filename());
+
+    //Read the file and store the datasets
+    hid_t file = H5Fopen(fullPath.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+    if (file < 0)
+        throw BESInternalError("Could not open file " + fullPath, __FILE__, __LINE__);
+
+    vector<dods_uint64> stareArray;
+    get_uint64_values(file, "Stare Index", stareArray);
+
+#if 0
+    // I wanted to see the values read from the MYD09.A2019003.2040.006.2019005020913_sidecar.h5
+    // file. They are all '3440016191299518474' and there are about 100 indices. jhrg 11/18/19
+    cerr << "Values: ";
+    ostream_iterator<dods_uint64> it(cerr, ", ");
+    std::copy(stareArray.begin(), stareArray.end(), it);
+    cerr << endl;
+#endif
+
+    BaseType *stareVal = args->get_rvalue(0)->value(dmr);
+    Array *stareSrc = dynamic_cast<Array *>(stareVal);
+    if (stareSrc == nullptr)
+        throw BESSyntaxUserError("stare_intersection(): Expected an Array but found a " + stareVal->type_name(), __FILE__, __LINE__);
+
+    if (stareSrc->var()->type() != dods_uint64_c)
+        throw BESSyntaxUserError("Expected an Array of UInt64 values but found an Array of  " + stareSrc->var()->type_name(), __FILE__, __LINE__);
+
+    stareSrc->read();
+
+    vector<dods_uint64> *stareData = extract_uint64_array(stareSrc);
+
+    int num = count(*stareData, stareArray);
+
+    Int32 *result = new Int32("result");
+    result->set_value(num);
 
     return result;
 }
