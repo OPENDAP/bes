@@ -103,8 +103,10 @@ void DapFunctions::initialize(const string &modname)
 
     libdap::ServerFunctionsList::TheList()->add_function(new TestFunction());
 
+#if HAVE_STARE
     libdap::ServerFunctionsList::TheList()->add_function(new StareIterateFunction());
-
+#endif
+    
     GDALAllRegister();
     OGRRegisterAll();
 
