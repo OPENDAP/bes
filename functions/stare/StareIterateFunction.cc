@@ -65,19 +65,29 @@ using namespace libdap;
 
 namespace functions {
 
-struct coords {
+/// X and Y coordinates of a point
+struct point {
     int x;
     int y;
+    point(int x, int y): x(x), y(y) {}
 };
 
+/// one STARE index and the corresponding point for this dataset
+struct stare_match {
+    point coord;      /// The X and Y indices that match the...
+    dods_uint64 stare_index; /// STARE index in this dataset
+    stare_match(const point &p, dods_uint64 si): coord(p), stare_index(si) {}
+    stare_match(int x, int y, dods_uint64 si): coord(x, y), stare_index(si) {}
+};
+
+#if 0
 //TODO: Make into Template
 struct returnVal {
-    //TODO: These should probably be arrays/vectors
     vector<int> x;
     vector<int> y;
-    vector<uint64> stareVal;
-    vector<BaseType *> dataVal;
+    vector<dods_uint64> stareVal;
 };
+#endif
 
 #if 0
 // Not used jhrg 11/7/19
@@ -191,27 +201,37 @@ count(const vector<dods_uint64> &stareVal, const vector<dods_uint64> &dataStareI
     return counter;
 }
 
-#if 0
-/*
- * Return data from the provided data array where the requested stare indices are found
+#if 1
+/**
+ * @brief Return the STARE indices and their x,y coordinates contained in the dataset
+ * @param stareVal Target STARE indices
+ * @param stareIndices STARE indices of this dataset
+ * @param xArray Matching X indices for the corresponding STARE index
+ * @param yArray Matching Y indices for the corresponding STARE index
+ * @return A pointer to a vector if stare_match objects that combine a STARE index with
+ * an x,y point.
  */
-returnVal stare_subset(vector<dods_uint64> *stareVal, vector<dods_uint64> *stareIndices,
-                       vector<int> *xArray, vector<int> *yArray) {
-    returnVal subset = returnVal();
 
-    auto x = xArray->begin();
-    auto y = yArray->begin();
-    for (auto i = stareIndices->begin(), end = stareIndices->end(); i != end; i++, x++, y++) {
-        for (dods_uint64 &j : *stareVal)
-            if (*i == j)
-                subset.stareVal.push_back(j);
-        subset.x.push_back(*x);
-        subset.y.push_back(*y);
-        //subset.dataVal.push_back();
+static vector<stare_match> *
+stare_subset(const vector<dods_uint64> &stareVal, const vector<dods_uint64> &stareIndices,
+             const vector<int> &xArray, const vector<int> &yArray) {
+
+    auto subset = new vector<stare_match>;
+
+    auto x = xArray.begin();
+    auto y = yArray.begin();
+
+    for (const dods_uint64 &j : stareVal) {
+        for (auto i = stareIndices.begin(), end = stareIndices.end(); i != end; ++i, ++x, ++y) {
+            if (*i == j) {
+                subset->push_back(stare_match(*x, *y, j));
+            }
+        }
     }
 
     return subset;
 }
+
 #endif
 
 /**
