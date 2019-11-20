@@ -50,7 +50,7 @@ unsigned int count(const std::vector<libdap::dods_uint64> &stareVal, const std::
 
 const std::string STARE_STORAGE_PATH = "FUNCTIONS.stareStoragePath";
 
-class StareIterateFunction : public libdap::ServerFunction {
+class StareIntersectionFunction : public libdap::ServerFunction {
 public:
 #if 0
     static std::string get_sidecar_file_pathname(const std::string &pathName);
@@ -65,7 +65,7 @@ public:
     friend class StareFunctionsTest;
 
 public:
-    StareIterateFunction() {
+    StareIntersectionFunction() {
         setName("stare_intersection");
         setDescriptionString("The stare_intersection: Returns 1 if the coverage of the current dataset includes any of the given STARE indices.");
         setUsageString("stare_intersection(STARE index [, STARE index ...]) | linear_scale($UInt64(<size hint>:STARE index [, STARE index ...]))");
@@ -75,7 +75,7 @@ public:
         setVersion("0.1");
     }
 
-    virtual ~StareIterateFunction() {
+    virtual ~StareIntersectionFunction() {
     }
 };
 

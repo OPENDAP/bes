@@ -92,5 +92,5 @@ endif
 # Listing the objects here keeps from having to link with the module - not a portable
 # solution - and listing these as source breaks distcheck jhrg 9/24/15
 StareFunctionsTest_SOURCES = StareFunctionsTest.cc  $(TEST_SRC)
-StareFunctionsTest_OBJ = ../StareIterateFunction.o
+StareFunctionsTest_OBJ = ../StareFunctions.o
 StareFunctionsTest_LDADD = $(StareFunctionsTest_OBJ) $(TEST_OBJ) $(AM_LDADD)

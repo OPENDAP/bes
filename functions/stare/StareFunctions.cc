@@ -59,7 +59,7 @@
 #include "BESInternalError.h"
 #include "BESSyntaxUserError.h"
 
-#include "StareIterateFunction.h"
+#include "StareFunctions.h"
 
 using namespace libdap;
 
@@ -201,7 +201,6 @@ count(const vector<dods_uint64> &stareVal, const vector<dods_uint64> &dataStareI
     return counter;
 }
 
-#if 1
 /**
  * @brief Return the STARE indices and their x,y coordinates contained in the dataset
  * @param stareVal Target STARE indices
@@ -231,8 +230,6 @@ stare_subset(const vector<dods_uint64> &stareVal, const vector<dods_uint64> &sta
 
     return subset;
 }
-
-#endif
 
 /**
  * @brief Return the pathname to an STARE sidecar file for a given dataset.
@@ -332,7 +329,7 @@ get_uint64_values(hid_t file, const string &variable, vector<dods_uint64> &value
  * If there is at least one match, the function will return a 1. Otherwise returns a 0.
  */
 BaseType *
-StareIterateFunction::stare_intersection_dap4_function(D4RValueList *args, DMR &dmr)
+StareIntersectionFunction::stare_intersection_dap4_function(D4RValueList *args, DMR &dmr)
 {
     if (args->size() != 1) {
         ostringstream oss;

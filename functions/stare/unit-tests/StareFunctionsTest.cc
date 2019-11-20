@@ -41,7 +41,7 @@
 #include <BESError.h>
 #include <BESDebug.h>
 
-#include "StareIterateFunction.h"
+#include "StareFunctions.h"
 
 #include "test_config.h"
 
@@ -190,7 +190,7 @@ public:
 			D4RValueList params;
 			params.add_rvalue(new D4RValue(target_indices));
 
-			BaseType *checkHasValue = StareIterateFunction::stare_intersection_dap4_function(&params, *two_arrays_dmr);
+			BaseType *checkHasValue = StareIntersectionFunction::stare_intersection_dap4_function(&params, *two_arrays_dmr);
 
 			CPPUNIT_ASSERT(dynamic_cast<Int32*> (checkHasValue)->value() == 1);
 		}

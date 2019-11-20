@@ -54,7 +54,7 @@
 #include "TestFunction.h"
 
 #if HAVE_STARE
-#include "stare/StareIterateFunction.h"
+#include "stare/StareFunctions.h"
 #endif
 
 #include "DapFunctionsRequestHandler.h"
@@ -104,7 +104,7 @@ void DapFunctions::initialize(const string &modname)
     libdap::ServerFunctionsList::TheList()->add_function(new TestFunction());
 
 #if HAVE_STARE
-    libdap::ServerFunctionsList::TheList()->add_function(new StareIterateFunction());
+    libdap::ServerFunctionsList::TheList()->add_function(new StareIntersectionFunction());
 #endif
 
     GDALAllRegister();

@@ -71,8 +71,8 @@ RangeFunction.h functions_util.h DapFunctionsRequestHandler.h		\
 ScaleGrid.h BBoxCombFunction.h TestFunction.h
 
 if BUILD_STARE
-SRCS += stare/StareIterateFunction.cc
-HDRS += stare/StareIterateFunction.h
+SRCS += stare/StareFunctions.cc
+HDRS += stare/StareFunctions.h
 endif
 
 libfunctions_module_la_SOURCES = $(SRCS) $(HDRS)
