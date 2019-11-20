@@ -131,6 +131,7 @@ functions/unit-tests/GridGeoConstraintTest
 functions/unit-tests/TabularFunctionTest
 functions/unit-tests/test_config.h
 /functions/stare/build_sidecar
+/functions/stare/unit-tests/StareFunctionsTest
 
 ppt/unit-tests/connT
 ppt/unit-tests/extT
@@ -155,4 +156,3 @@ timing/*/*.dtps
 /.externalToolBuilders/
 /.scannerwork/
 /bw-output/
-

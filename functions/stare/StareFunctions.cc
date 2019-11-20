@@ -65,6 +65,7 @@ using namespace libdap;
 
 namespace functions {
 
+#if 0
 /// X and Y coordinates of a point
 struct point {
     int x;
@@ -79,6 +80,7 @@ struct stare_match {
     stare_match(const point &p, dods_uint64 si): coord(p), stare_index(si) {}
     stare_match(int x, int y, dods_uint64 si): coord(x, y), stare_index(si) {}
 };
+#endif
 
 #if 0
 //TODO: Make into Template
@@ -211,7 +213,7 @@ count(const vector<dods_uint64> &stareVal, const vector<dods_uint64> &dataStareI
  * an x,y point.
  */
 
-static vector<stare_match> *
+vector<stare_match> *
 stare_subset(const vector<dods_uint64> &stareVal, const vector<dods_uint64> &stareIndices,
              const vector<int> &xArray, const vector<int> &yArray) {
 
@@ -221,6 +223,8 @@ stare_subset(const vector<dods_uint64> &stareVal, const vector<dods_uint64> &sta
     auto y = yArray.begin();
 
     for (const dods_uint64 &j : stareVal) {
+        assert(stareIndices.size() == xArray.size());
+        assert(stareIndices.size() == yArray.size());
         for (auto i = stareIndices.begin(), end = stareIndices.end(); i != end; ++i, ++x, ++y) {
             if (*i == j) {
                 subset->push_back(stare_match(*x, *y, j));

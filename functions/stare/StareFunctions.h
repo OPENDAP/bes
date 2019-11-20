@@ -31,15 +31,27 @@
 
 namespace libdap {
 class BaseType;
-
 class DDS;
-
 class D4RValueList;
-
 class DMR;
 }
 
 namespace functions {
+
+/// X and Y coordinates of a point
+struct point {
+    int x;
+    int y;
+    point(int x, int y): x(x), y(y) {}
+};
+
+/// one STARE index and the corresponding point for this dataset
+struct stare_match {
+    point coord;      /// The X and Y indices that match the...
+    libdap::dods_uint64 stare_index; /// STARE index in this dataset
+    stare_match(const point &p, libdap::dods_uint64 si): coord(p), stare_index(si) {}
+    stare_match(int x, int y, libdap::dods_uint64 si): coord(x, y), stare_index(si) {}
+};
 
 std::string get_sidecar_file_pathname(const std::string &pathName);
 void get_int32_values(hid_t file, const std::string &variable, std::vector<int> &values);
@@ -47,6 +59,8 @@ void get_uint64_values(hid_t file, const std::string &variable, std::vector<libd
 
 bool has_value(const std::vector<libdap::dods_uint64> &stareVal, const std::vector<libdap::dods_uint64> &dataStareIndices);
 unsigned int count(const std::vector<libdap::dods_uint64> &stareVal, const std:: vector<libdap::dods_uint64> &stareIndices);
+vector<stare_match> *stare_subset(const vector<libdap::dods_uint64> &stareVal, const vector<libdap::dods_uint64> &stareIndices,
+        const vector<int> &xArray, const vector<int> &yArray);
 
 const std::string STARE_STORAGE_PATH = "FUNCTIONS.stareStoragePath";
 

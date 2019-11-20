@@ -98,6 +98,7 @@ public:
     CPPUNIT_TEST(test_count_1);
     CPPUNIT_TEST(test_count_2);
     CPPUNIT_TEST(test_count_3);
+    CPPUNIT_TEST(test_stare_subset);
 
     CPPUNIT_TEST(intersection_function_test);
     CPPUNIT_TEST(count_function_test);
@@ -118,7 +119,20 @@ public:
         CPPUNIT_ASSERT(sidecar_pathname == expected_pathname);
 	}
 
-	// The one and only target index is in the 'dataset'
+    void test_stare_subset() {
+        vector<dods_uint64> target_indices = {3440016191299518474, 9223372034707292159, 3440016191299518400, 3440016191299518401};
+        vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
+        vector<int> x_indices = {0, 1, 2};
+        vector<int> y_indices = {0, 1, 2};
+
+        vector<stare_match> *result = stare_subset(target_indices, data_indices, x_indices, y_indices);
+
+        CPPUNIT_ASSERT(result->size() == 2);
+
+        delete result;
+    }
+
+    // The one and only target index is in the 'dataset'
 	void test_count_1() {
         vector<dods_uint64> target_indices = {3440016191299518474};
         vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
