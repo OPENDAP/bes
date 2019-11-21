@@ -43,6 +43,7 @@ struct point {
     int x;
     int y;
     point(int x, int y): x(x), y(y) {}
+    friend ostream & operator << (ostream &out, const point &c);
 };
 
 /// one STARE index and the corresponding point for this dataset
@@ -51,6 +52,7 @@ struct stare_match {
     libdap::dods_uint64 stare_index; /// STARE index in this dataset
     stare_match(const point &p, libdap::dods_uint64 si): coord(p), stare_index(si) {}
     stare_match(int x, int y, libdap::dods_uint64 si): coord(x, y), stare_index(si) {}
+    friend ostream & operator << (ostream &out, const stare_match &m);
 };
 
 std::string get_sidecar_file_pathname(const std::string &pathName);
@@ -59,21 +61,13 @@ void get_uint64_values(hid_t file, const std::string &variable, std::vector<libd
 
 bool has_value(const std::vector<libdap::dods_uint64> &stareVal, const std::vector<libdap::dods_uint64> &dataStareIndices);
 unsigned int count(const std::vector<libdap::dods_uint64> &stareVal, const std:: vector<libdap::dods_uint64> &stareIndices);
-vector<stare_match> *stare_subset(const vector<libdap::dods_uint64> &stareVal, const vector<libdap::dods_uint64> &stareIndices,
-        const vector<int> &xArray, const vector<int> &yArray);
+vector<stare_match> *stare_subset(const vector<libdap::dods_uint64> &targetIndices, const vector<libdap::dods_uint64> &datasetStareIndices,
+                                  const vector<int> &xArray, const vector<int> &yArray);
 
 const std::string STARE_STORAGE_PATH = "FUNCTIONS.stareStoragePath";
 
 class StareIntersectionFunction : public libdap::ServerFunction {
 public:
-#if 0
-    static std::string get_sidecar_file_pathname(const std::string &pathName);
-    static void get_int32_values(hid_t file, const std::string &variable, std::vector<int> &values);
-    static void get_uint64_values(hid_t file, const std::string &variable, std::vector<libdap::dods_uint64> &values);
-
-    static bool has_value(const std::vector<libdap::dods_uint64> &stareVal, const std::vector<libdap::dods_uint64> &dataStareIndices);
-    static unsigned int count(const std::vector<libdap::dods_uint64> &stareVal, const std:: vector<libdap::dods_uint64> &stareIndices);
-#endif
     static libdap::BaseType *stare_intersection_dap4_function(libdap::D4RValueList *args, libdap::DMR &dmr);
 
     friend class StareFunctionsTest;
@@ -95,14 +89,6 @@ public:
 
 class StareCountFunction : public libdap::ServerFunction {
 public:
-#if 0
-    static std::string get_sidecar_file_pathname(const std::string &pathName);
-    static void get_int32_values(hid_t file, const std::string &variable, std::vector<int> &values);
-    static void get_uint64_values(hid_t file, const std::string &variable, std::vector<libdap::dods_uint64> &values);
-
-    static bool has_value(const std::vector<libdap::dods_uint64> &stareVal, const std::vector<libdap::dods_uint64> &dataStareIndices);
-    static unsigned int count(const std::vector<libdap::dods_uint64> &stareVal, const std:: vector<libdap::dods_uint64> &stareIndices);
-#endif
     static libdap::BaseType *stare_count_dap4_function(libdap::D4RValueList *args, libdap::DMR &dmr);
 
     friend class StareFunctionsTest;
@@ -111,7 +97,7 @@ public:
     StareCountFunction() {
         setName("stare_count");
         setDescriptionString("The stare_count: Returns the number of the STARE indices that are included in this dataset.");
-        setUsageString("stare_count(STARE index [, STARE index ...]) | linear_scale($UInt64(<size hint>:STARE index [, STARE index ...]))");
+        setUsageString("stare_count(STARE index [, STARE index ...]) | stare_count($UInt64(<size hint>:STARE index [, STARE index ...]))");
         setRole("http://services.opendap.org/dap4/server-side-function/stare_count");
         setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#stare_count");
         setFunction(stare_count_dap4_function);
@@ -119,6 +105,27 @@ public:
     }
 
     virtual ~StareCountFunction() {
+    }
+};
+
+class StareSubsetFunction : public libdap::ServerFunction {
+public:
+    static libdap::BaseType *stare_subset_dap4_function(libdap::D4RValueList *args, libdap::DMR &dmr);
+
+    friend class StareFunctionsTest;
+
+public:
+    StareSubsetFunction() {
+        setName("stare_subset");
+        setDescriptionString("The stare_subset: Returns the number of the STARE indices that are included in this dataset.");
+        setUsageString("stare_subset(STARE index [, STARE index ...]) | stare_subset($UInt64(<size hint>:STARE index [, STARE index ...]))");
+        setRole("http://services.opendap.org/dap4/server-side-function/stare_subset");
+        setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#stare_subset");
+        setFunction(stare_subset_dap4_function);
+        setVersion("0.1");
+    }
+
+    virtual ~StareSubsetFunction() {
     }
 };
 

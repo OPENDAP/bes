@@ -69,11 +69,9 @@ public:
 
 	void setUp() {
         d4_btf = new D4BaseTypeFactory();
-        DBG(cerr << "setup() - Built D4BaseTypeFactory() " << endl);
 
         two_arrays_dmr = new DMR(d4_btf);
         two_arrays_dmr->set_name("test_dmr");
-        DBG(cerr << "setup() - Built DMR(D4BaseTypeFactory *) " << endl);
 
 		string filename = string(TEST_SRC_DIR) + "/MYD09.A2019003.2040.006.2019005020913.h5";
 
@@ -106,6 +104,8 @@ public:
 	CPPUNIT_TEST_SUITE_END();
 
 	void test_get_sidecar_file_pathname() {
+        DBG(cerr << "--- test_get_sidecar_file_pathname() test - BEGIN ---" << endl);
+
         string sidecar_pathname = get_sidecar_file_pathname("/data/sub_dir/bogus.h5");
         string expected_pathname = string(TEST_SRC_DIR) + "/" + "bogus_sidecar.h5";
         DBG(cerr << "expected_pathname: " << expected_pathname << endl);
@@ -120,6 +120,8 @@ public:
 	}
 
     void test_stare_subset() {
+        DBG(cerr << "--- test_stare_subset() test - BEGIN ---" << endl);
+
         vector<dods_uint64> target_indices = {3440016191299518474, 9223372034707292159, 3440016191299518400, 3440016191299518401};
         vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
         vector<int> x_indices = {0, 1, 2};
@@ -129,11 +131,23 @@ public:
 
         CPPUNIT_ASSERT(result->size() == 2);
 
+        DBG(cerr << result->at(0) << endl);
+        CPPUNIT_ASSERT(result->at(0).stare_index == 3440016191299518474);
+        CPPUNIT_ASSERT(result->at(0).coord.x == 2);
+        CPPUNIT_ASSERT(result->at(0).coord.y == 2);
+
+        DBG(cerr << result->at(1) << endl);
+        CPPUNIT_ASSERT(result->at(1).stare_index == 9223372034707292159);
+        CPPUNIT_ASSERT(result->at(1).coord.x == 0);
+        CPPUNIT_ASSERT(result->at(1).coord.y == 0);
+
         delete result;
     }
 
     // The one and only target index is in the 'dataset'
 	void test_count_1() {
+        DBG(cerr << "--- test_count_1() test - BEGIN ---" << endl);
+
         vector<dods_uint64> target_indices = {3440016191299518474};
         vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
@@ -143,6 +157,8 @@ public:
 
 	// Of the four target_indices, two are in the 'dataset' and two are not
     void test_count_2() {
+        DBG(cerr << "--- test_count_2() test - BEGIN ---" << endl);
+
         vector<dods_uint64> target_indices = {3440016191299518474, 9223372034707292159, 3440016191299518400, 3440016191299518401};
         vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
@@ -152,6 +168,8 @@ public:
 
     // Of the two target_indices, none are in the 'dataset.'
     void test_count_3() {
+        DBG(cerr << "--- test_count_3() test - BEGIN ---" << endl);
+
         vector<dods_uint64> target_indices = {3440016191299518400, 3440016191299518401};
         vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
@@ -161,6 +179,8 @@ public:
 
     // target in the 'dataset.'
     void test_has_value() {
+        DBG(cerr << "--- test_has_value() test - BEGIN ---" << endl);
+
         vector<dods_uint64> target_indices = {3440016191299518474};
         vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
@@ -169,6 +189,8 @@ public:
 
     // target not in the 'dataset.'
     void test_has_value_2() {
+        DBG(cerr << "--- test_has_value_2() test - BEGIN ---" << endl);
+
         vector<dods_uint64> target_indices = {3440016191299518500};
         vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
@@ -177,6 +199,8 @@ public:
 
     // Second target in the 'dataset.'
     void test_has_value_3() {
+        DBG(cerr << "--- test_has_value_3() test - BEGIN ---" << endl);
+
         vector<dods_uint64> target_indices = {3440016191299518500, 3440016191299518474};
         vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
@@ -184,7 +208,7 @@ public:
     }
 
     void intersection_function_test() {
-		DBG(cerr << "--- has_value() test - BEGIN ---" << endl);
+		DBG(cerr << "--- intersection_function_test() test - BEGIN ---" << endl);
 
         try {
             Array *a_var = new Array("a_var", new UInt64("a_var"));
@@ -210,18 +234,16 @@ public:
 		}
 		catch(Error &e) {
 			DBG(cerr << e.get_error_message() << endl);
-			CPPUNIT_FAIL("has_value() test failed");
+			CPPUNIT_FAIL("intersection_function_test() test failed");
 		}
         catch(BESError &e) {
             DBG(cerr << e.get_verbose_message() << endl);
-            CPPUNIT_FAIL("has_value() test failed");
+            CPPUNIT_FAIL("intersection_function_test() test failed");
         }
-
-        DBG(cerr << "--- has_value() test - END ---" << endl);
 	}
 
     void count_function_test() {
-        DBG(cerr << "--- has_value() test - BEGIN ---" << endl);
+        DBG(cerr << "--- count_function_test() test - BEGIN ---" << endl);
 
         try {
             Array *a_var = new Array("a_var", new UInt64("a_var"));
@@ -247,14 +269,12 @@ public:
         }
         catch(Error &e) {
             DBG(cerr << e.get_error_message() << endl);
-            CPPUNIT_FAIL("has_value() test failed");
+            CPPUNIT_FAIL("count_function_test() test failed");
         }
         catch(BESError &e) {
             DBG(cerr << e.get_verbose_message() << endl);
-            CPPUNIT_FAIL("has_value() test failed");
+            CPPUNIT_FAIL("count_function_test() test failed");
         }
-
-        DBG(cerr << "--- has_value() test - END ---" << endl);
     }
 
 };

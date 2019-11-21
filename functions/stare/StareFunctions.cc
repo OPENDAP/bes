@@ -33,6 +33,7 @@
 #include <Str.h>
 #include <Array.h>
 #include <Grid.h>
+#include <Structure.h>
 #include <DDS.h>
 
 #include <DMR.h>
@@ -65,83 +66,19 @@ using namespace libdap;
 
 namespace functions {
 
-#if 0
-/// X and Y coordinates of a point
-struct point {
-    int x;
-    int y;
-    point(int x, int y): x(x), y(y) {}
-};
-
-/// one STARE index and the corresponding point for this dataset
-struct stare_match {
-    point coord;      /// The X and Y indices that match the...
-    dods_uint64 stare_index; /// STARE index in this dataset
-    stare_match(const point &p, dods_uint64 si): coord(p), stare_index(si) {}
-    stare_match(int x, int y, dods_uint64 si): coord(x, y), stare_index(si) {}
-};
-#endif
-
-#if 0
-//TODO: Make into Template
-struct returnVal {
-    vector<int> x;
-    vector<int> y;
-    vector<dods_uint64> stareVal;
-};
-#endif
-
-#if 0
-// Not used jhrg 11/7/19
-
-//May need to be moved to libdap/util
-uint64 extract_uint64_value(BaseType *arg) {
-    assert(arg);
-
-    // Simple types are Byte, ..., Float64, String and Url.
-    if (!arg->is_simple_type() || arg->type() == dods_str_c || arg->type() == dods_url_c)
-        throw Error(malformed_expr, "The function requires a numeric-type argument.");
-
-    if (!arg->read_p())
-        throw InternalErr(__FILE__, __LINE__,
-                          "The Evaluator built an argument list where some constants held no values.");
-
-    // The types of arguments that the CE Parser will build for numeric
-    // constants are limited to Uint32, Int32 and Float64. See ce_expr.y.
-    // Expanded to work for any numeric type so it can be used for more than
-    // just arguments.
-    switch (arg->type()) {
-        case dods_byte_c:
-            return (uint64) (static_cast<Byte *>(arg)->value());
-        case dods_uint16_c:
-            return (uint64) (static_cast<UInt16 *>(arg)->value());
-        case dods_int16_c:
-            return (uint64) (static_cast<Int16 *>(arg)->value());
-        case dods_uint32_c:
-            return (uint64) (static_cast<UInt32 *>(arg)->value());
-        case dods_int32_c:
-            return (uint64) (static_cast<Int32 *>(arg)->value());
-        case dods_float32_c:
-            return (uint64) (static_cast<Float32 *>(arg)->value());
-        case dods_float64_c:
-            return (uint64) (static_cast<Float64 *>(arg)->value());
-
-            // Support for DAP4 types.
-        case dods_uint8_c:
-            return (uint64) (static_cast<Byte *>(arg)->value());
-        case dods_int8_c:
-            return (uint64) (static_cast<Int8 *>(arg)->value());
-        case dods_uint64_c:
-            return static_cast<UInt64 *>(arg)->value();
-        case dods_int64_c:
-            return (uint64) (static_cast<Int64 *>(arg)->value());
-
-        default:
-            throw InternalErr(__FILE__, __LINE__,
-                              "The argument list built by the parser contained an unsupported numeric type.");
-    }
+ostream & operator << (ostream &out, const point &p)
+{
+    out << "x: " << p.x;
+    out << ", y: " << p.y;
+    return out;
 }
-#endif
+
+ostream & operator << (ostream &out, const stare_match &m)
+{
+    out << "SIndex: " << m.stare_index;
+    out << ", coord: " << m.coord;
+    return out;
+}
 
 // May need to be moved to libdap/util
 // This helper function assumes 'var' is the correct size.
@@ -205,8 +142,8 @@ count(const vector<dods_uint64> &stareVal, const vector<dods_uint64> &dataStareI
 
 /**
  * @brief Return the STARE indices and their x,y coordinates contained in the dataset
- * @param stareVal Target STARE indices
- * @param stareIndices STARE indices of this dataset
+ * @param targetIndices Target STARE indices
+ * @param datasetStareIndices STARE indices of this dataset
  * @param xArray Matching X indices for the corresponding STARE index
  * @param yArray Matching Y indices for the corresponding STARE index
  * @return A pointer to a vector if stare_match objects that combine a STARE index with
@@ -214,18 +151,17 @@ count(const vector<dods_uint64> &stareVal, const vector<dods_uint64> &dataStareI
  */
 
 vector<stare_match> *
-stare_subset(const vector<dods_uint64> &stareVal, const vector<dods_uint64> &stareIndices,
+stare_subset(const vector<dods_uint64> &targetIndices, const vector<dods_uint64> &datasetStareIndices,
              const vector<int> &xArray, const vector<int> &yArray) {
 
     auto subset = new vector<stare_match>;
 
-    auto x = xArray.begin();
-    auto y = yArray.begin();
-
-    for (const dods_uint64 &j : stareVal) {
-        assert(stareIndices.size() == xArray.size());
-        assert(stareIndices.size() == yArray.size());
-        for (auto i = stareIndices.begin(), end = stareIndices.end(); i != end; ++i, ++x, ++y) {
+    for (const dods_uint64 &j : targetIndices) {
+        assert(datasetStareIndices.size() == xArray.size());
+        assert(datasetStareIndices.size() == yArray.size());
+        auto x = xArray.begin();
+        auto y = yArray.begin();
+        for (auto i = datasetStareIndices.begin(), end = datasetStareIndices.end(); i != end; ++i, ++x, ++y) {
             if (*i == j) {
                 subset->push_back(stare_match(*x, *y, j));
             }
@@ -350,22 +286,24 @@ StareIntersectionFunction::stare_intersection_dap4_function(D4RValueList *args, 
         throw BESInternalError("Could not open file " + fullPath, __FILE__, __LINE__);
 
     //Read the data file and store the values of each dataset into an array
-    vector<dods_uint64> stareArray;
-    get_uint64_values(file, "Stare Index", stareArray);
+    vector<dods_uint64> dataStareIndices;
+    get_uint64_values(file, "Stare Index", dataStareIndices);
 
-    BaseType *stareVal = args->get_rvalue(0)->value(dmr);
-    Array *stareSrc = dynamic_cast<Array *>(stareVal);
+    BaseType *pBaseType = args->get_rvalue(0)->value(dmr);
+    Array *stareSrc = dynamic_cast<Array *>(pBaseType);
     if (stareSrc == nullptr)
-        throw BESSyntaxUserError("stare_intersection(): Expected an Array but found a " + stareVal->type_name(), __FILE__, __LINE__);
+        throw BESSyntaxUserError("stare_intersection(): Expected an Array but found a " + pBaseType->type_name(), __FILE__, __LINE__);
 
     if (stareSrc->var()->type() != dods_uint64_c)
         throw BESSyntaxUserError("Expected an Array of UInt64 values but found an Array of  " + stareSrc->var()->type_name(), __FILE__, __LINE__);
 
     stareSrc->read();
 
-    vector<dods_uint64> *stareData = extract_uint64_array(stareSrc);
+    vector<dods_uint64> *targetIndices = extract_uint64_array(stareSrc);
 
-    bool status = has_value(*stareData, stareArray);
+    bool status = has_value(*targetIndices, dataStareIndices);
+
+    delete targetIndices;
 
     Int32 *result = new Int32("result");
     if (status) {
@@ -378,6 +316,12 @@ StareIntersectionFunction::stare_intersection_dap4_function(D4RValueList *args, 
     return result;
 }
 
+/**
+ * @brief Count the number of STARE indices that are contained by this dataset
+ * @param args
+ * @param dmr
+ * @return The number, as a DAP Int32 value
+ */
 BaseType *
 StareCountFunction::stare_count_dap4_function(D4RValueList *args, DMR &dmr)
 {
@@ -395,31 +339,33 @@ StareCountFunction::stare_count_dap4_function(D4RValueList *args, DMR &dmr)
     if (file < 0)
         throw BESInternalError("Could not open file " + fullPath, __FILE__, __LINE__);
 
-    vector<dods_uint64> stareArray;
-    get_uint64_values(file, "Stare Index", stareArray);
+    vector<dods_uint64> datasetStareIndices;
+    get_uint64_values(file, "Stare Index", datasetStareIndices);
 
 #if 0
     // I wanted to see the values read from the MYD09.A2019003.2040.006.2019005020913_sidecar.h5
     // file. They are all '3440016191299518474' and there are about 100 indices. jhrg 11/18/19
     cerr << "Values: ";
     ostream_iterator<dods_uint64> it(cerr, ", ");
-    std::copy(stareArray.begin(), stareArray.end(), it);
+    std::copy(datasetStareIndices.begin(), datasetStareIndices.end(), it);
     cerr << endl;
 #endif
 
-    BaseType *stareVal = args->get_rvalue(0)->value(dmr);
-    Array *stareSrc = dynamic_cast<Array *>(stareVal);
+    BaseType *pBaseType = args->get_rvalue(0)->value(dmr);
+    Array *stareSrc = dynamic_cast<Array *>(pBaseType);
     if (stareSrc == nullptr)
-        throw BESSyntaxUserError("stare_intersection(): Expected an Array but found a " + stareVal->type_name(), __FILE__, __LINE__);
+        throw BESSyntaxUserError("stare_intersection(): Expected an Array but found a " + pBaseType->type_name(), __FILE__, __LINE__);
 
     if (stareSrc->var()->type() != dods_uint64_c)
         throw BESSyntaxUserError("Expected an Array of UInt64 values but found an Array of  " + stareSrc->var()->type_name(), __FILE__, __LINE__);
 
     stareSrc->read();
 
-    vector<dods_uint64> *stareData = extract_uint64_array(stareSrc);
+    vector<dods_uint64> *targetIndices = extract_uint64_array(stareSrc);
 
-    int num = count(*stareData, stareArray);
+    int num = count(*targetIndices, datasetStareIndices);
+
+    delete targetIndices;
 
     Int32 *result = new Int32("result");
     result->set_value(num);
@@ -427,6 +373,87 @@ StareCountFunction::stare_count_dap4_function(D4RValueList *args, DMR &dmr)
     return result;
 }
 
+/**
+ * @brief Return the X, Y, and STARE indices that are contained by this dataset
+ * @param args
+ * @param dmr
+ * @return Three arrays holding the three values. The Nth elements of each array
+ * are one set of matched values
+ */
+BaseType *
+StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
+{
+    if (args->size() != 1) {
+        ostringstream oss;
+        oss << "stare_intersection(): Expected a single argument, but got " << args->size();
+        throw BESSyntaxUserError(oss.str(), __FILE__, __LINE__);
+    }
+
+    //Find the filename from the dmr
+    string fullPath = get_sidecar_file_pathname(dmr.filename());
+
+    //Read the file and store the datasets
+    hid_t file = H5Fopen(fullPath.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+    if (file < 0)
+        throw BESInternalError("Could not open file " + fullPath, __FILE__, __LINE__);
+
+    vector<dods_uint64> datasetStareIndices;
+    get_uint64_values(file, "Stare Index", datasetStareIndices);
+    vector<int> xArray;
+    get_int32_values(file, "X", xArray);
+    vector<int> yArray;
+    get_int32_values(file, "Y", yArray);
+
+#if 0
+    // I wanted to see the values read from the MYD09.A2019003.2040.006.2019005020913_sidecar.h5
+    // file. They are all '3440016191299518474' and there are about 100 indices. jhrg 11/18/19
+    cerr << "Values: ";
+    ostream_iterator<dods_uint64> it(cerr, ", ");
+    std::copy(datasetStareIndices.begin(), datasetStareIndices.end(), it);
+    cerr << endl;
+#endif
+
+    BaseType *pBaseType = args->get_rvalue(0)->value(dmr);
+    Array *stareSrc = dynamic_cast<Array *>(pBaseType);
+    if (stareSrc == nullptr)
+        throw BESSyntaxUserError("stare_intersection(): Expected an Array but found a " + pBaseType->type_name(), __FILE__, __LINE__);
+
+    if (stareSrc->var()->type() != dods_uint64_c)
+        throw BESSyntaxUserError("Expected an Array of UInt64 values but found an Array of  " + stareSrc->var()->type_name(), __FILE__, __LINE__);
+
+    stareSrc->read();
+
+    vector<dods_uint64> *targetIndices = extract_uint64_array(stareSrc);
+
+    vector<stare_match> *subset = stare_subset(*targetIndices, datasetStareIndices, xArray, yArray);
+
+    // Transfer values to a Structure
+    auto result = new Structure("result");
+
+    Array *stare = new Array("stare", new UInt64("stare"));
+    result->add_var_nocopy(stare);
+
+    auto x = new Array("x", new Int32("x"));
+    result->add_var_nocopy(x);
+
+    auto y = new Array("y", new Int32("y"));
+    result->add_var_nocopy(y);
+
+    // FIXME Change this code so the stare_subet() function returns vectors that can be 'shared.' jhrg 11/20/19
+#if 0
+    for (const stare_match &m : *subset) {
+        stare-> m.stare_index
+    }
+#endif
+
+#if 0
+    stare->set_value(subset)
+#endif
+
+    delete subset;
+
+    return nullptr;
+}
 #if 0
 /**
  * -- Count server function --
