@@ -63,6 +63,7 @@
 #include "StareFunctions.h"
 
 using namespace libdap;
+using namespace std;
 
 namespace functions {
 
@@ -77,6 +78,22 @@ ostream & operator << (ostream &out, const stare_match &m)
 {
     out << "SIndex: " << m.stare_index;
     out << ", coord: " << m.coord;
+    return out;
+}
+
+ostream & operator << (ostream &out, const stare_matches &m)
+{
+    assert(m.stare_indices.size() == m.x_indices.size()
+        && m.x_indices.size() == m.y_indices.size());
+
+    auto si = m.stare_indices.begin();
+    auto xi = m.x_indices.begin();
+    auto yi = m.y_indices.rbegin();
+
+    while (si != m.stare_indices.end()) {
+        out << "SIndex: " << *si << ", coord: " << *xi << ", " << *yi << endl;
+    }
+
     return out;
 }
 
@@ -151,19 +168,42 @@ count(const vector<dods_uint64> &stareVal, const vector<dods_uint64> &dataStareI
  */
 
 vector<stare_match> *
-stare_subset(const vector<dods_uint64> &targetIndices, const vector<dods_uint64> &datasetStareIndices,
-             const vector<int> &xArray, const vector<int> &yArray) {
+stare_subset_helper(const vector<dods_uint64> &targetIndices, const vector<dods_uint64> &datasetStareIndices,
+                    const vector<int> &xArray, const vector<int> &yArray)
+{
+    assert(datasetStareIndices.size() == xArray.size());
+    assert(datasetStareIndices.size() == yArray.size());
 
     auto subset = new vector<stare_match>;
 
     for (const dods_uint64 &j : targetIndices) {
-        assert(datasetStareIndices.size() == xArray.size());
-        assert(datasetStareIndices.size() == yArray.size());
         auto x = xArray.begin();
         auto y = yArray.begin();
         for (auto i = datasetStareIndices.begin(), end = datasetStareIndices.end(); i != end; ++i, ++x, ++y) {
             if (*i == j) {
                 subset->push_back(stare_match(*x, *y, j));
+            }
+        }
+    }
+
+    return subset;
+}
+
+stare_matches *
+stare_subset_helper2(const vector<dods_uint64> &targetIndices, const vector<dods_uint64> &datasetStareIndices,
+             const vector<int> &xArray, const vector<int> &yArray)
+{
+    assert(datasetStareIndices.size() == xArray.size());
+    assert(datasetStareIndices.size() == yArray.size());
+
+    auto subset = new stare_matches;
+
+    for (const dods_uint64 &j : targetIndices) {
+        auto x = xArray.begin();
+        auto y = yArray.begin();
+        for (auto i = datasetStareIndices.begin(), end = datasetStareIndices.end(); i != end; ++i, ++x, ++y) {
+            if (*i == j) {
+                subset->add(*x, *y, j);
             }
         }
     }
@@ -425,7 +465,7 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
 
     vector<dods_uint64> *targetIndices = extract_uint64_array(stareSrc);
 
-    vector<stare_match> *subset = stare_subset(*targetIndices, datasetStareIndices, xArray, yArray);
+    vector<stare_match> *subset = stare_subset_helper(*targetIndices, datasetStareIndices, xArray, yArray);
 
     // Transfer values to a Structure
     auto result = new Structure("result");

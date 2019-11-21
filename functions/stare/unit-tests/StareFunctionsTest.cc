@@ -127,7 +127,7 @@ public:
         vector<int> x_indices = {0, 1, 2};
         vector<int> y_indices = {0, 1, 2};
 
-        vector<stare_match> *result = stare_subset(target_indices, data_indices, x_indices, y_indices);
+        vector<stare_match> *result = stare_subset_helper(target_indices, data_indices, x_indices, y_indices);
 
         CPPUNIT_ASSERT(result->size() == 2);
 

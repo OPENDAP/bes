@@ -21,6 +21,7 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include <string>
+#include <utility>
 
 #include <dods-datatypes.h>
 
@@ -43,7 +44,7 @@ struct point {
     int x;
     int y;
     point(int x, int y): x(x), y(y) {}
-    friend ostream & operator << (ostream &out, const point &c);
+    friend std::ostream & operator << (std::ostream &out, const point &c);
 };
 
 /// one STARE index and the corresponding point for this dataset
@@ -52,7 +53,29 @@ struct stare_match {
     libdap::dods_uint64 stare_index; /// STARE index in this dataset
     stare_match(const point &p, libdap::dods_uint64 si): coord(p), stare_index(si) {}
     stare_match(int x, int y, libdap::dods_uint64 si): coord(x, y), stare_index(si) {}
-    friend ostream & operator << (ostream &out, const stare_match &m);
+    friend std::ostream & operator << (std::ostream &out, const stare_match &m);
+};
+
+/// Hold the result from the subset helper function as a collection of vectors
+struct stare_matches {
+    std::vector<int> x_indices;
+    std::vector<int> y_indices;
+
+    std::vector<libdap::dods_uint64> stare_indices;
+
+    // Pass by value and use move
+    stare_matches(std::vector<int> x, const std::vector<int> y, const std::vector<libdap::dods_uint64> si)
+        : x_indices(std::move(x)), y_indices(std::move(y)), stare_indices(std::move(si)) {}
+
+    stare_matches() {}
+
+    void add(int x, int y, libdap::dods_uint64 si) {
+        x_indices.push_back(x);
+        y_indices.push_back(y);
+        stare_indices.push_back(si);
+    }
+
+    friend std::ostream & operator << (std::ostream &out, const stare_matches &m);
 };
 
 std::string get_sidecar_file_pathname(const std::string &pathName);
@@ -61,8 +84,14 @@ void get_uint64_values(hid_t file, const std::string &variable, std::vector<libd
 
 bool has_value(const std::vector<libdap::dods_uint64> &stareVal, const std::vector<libdap::dods_uint64> &dataStareIndices);
 unsigned int count(const std::vector<libdap::dods_uint64> &stareVal, const std:: vector<libdap::dods_uint64> &stareIndices);
-vector<stare_match> *stare_subset(const vector<libdap::dods_uint64> &targetIndices, const vector<libdap::dods_uint64> &datasetStareIndices,
-                                  const vector<int> &xArray, const vector<int> &yArray);
+
+vector<stare_match> *stare_subset_helper(const vector<libdap::dods_uint64> &targetIndices,
+                                         const vector<libdap::dods_uint64> &datasetStareIndices,
+                                         const vector<int> &xArray, const vector<int> &yArray);
+
+stare_matches *stare_subset_helper2(const vector<libdap::dods_uint64> &targetIndices,
+                                    const vector<libdap::dods_uint64> &datasetStareIndices,
+                                    const vector<int> &xArray, const vector<int> &yArray);
 
 const std::string STARE_STORAGE_PATH = "FUNCTIONS.stareStoragePath";
 
@@ -116,11 +145,11 @@ public:
 
 public:
     StareSubsetFunction() {
-        setName("stare_subset");
-        setDescriptionString("The stare_subset: Returns the number of the STARE indices that are included in this dataset.");
-        setUsageString("stare_subset(STARE index [, STARE index ...]) | stare_subset($UInt64(<size hint>:STARE index [, STARE index ...]))");
-        setRole("http://services.opendap.org/dap4/server-side-function/stare_subset");
-        setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#stare_subset");
+        setName("stare_subset_helper");
+        setDescriptionString("The stare_subset_helper: Returns the number of the STARE indices that are included in this dataset.");
+        setUsageString("stare_subset(STARE index [, STARE index ...]) | stare_subset_helper($UInt64(<size hint>:STARE index [, STARE index ...]))");
+        setRole("http://services.opendap.org/dap4/server-side-function/stare_subset_helper");
+        setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#stare_subset_helper");
         setFunction(stare_subset_dap4_function);
         setVersion("0.1");
     }
