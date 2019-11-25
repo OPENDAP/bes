@@ -46,6 +46,7 @@
 
 #include "DmrppRequestHandler.h"
 #include "DmrppCommon.h"
+#include "awsv4.h"
 #include "CurlHandlePool.h"
 #include "Chunk.h"
 
