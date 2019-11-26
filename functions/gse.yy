@@ -53,6 +53,7 @@ using namespace functions;
 
 // Assume bison 1.25
 //#define YYPARSE_PARAM arg
+#define YYERROR_VERBOSE 0
 
 } // code requires
 
