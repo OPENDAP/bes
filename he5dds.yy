@@ -29,6 +29,8 @@
 
 #define YYSTYPE char *
 #define YYDEBUG 1
+#define YYERROR_VERBOSE 0
+
 // Uncomment the following line for debugging.
 // #define VERBOSE 
 //#define YYPARSE_PARAM he5parser

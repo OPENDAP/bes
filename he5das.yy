@@ -31,6 +31,8 @@
 %code requires {
 #define YYSTYPE char *
 #define YYDEBUG 1
+#define YYERROR_VERBOSE 0
+
 // #define YYPARSE_PARAM arg
 /* 
  These macros are used to access the `arguments' passed to the parser. A
