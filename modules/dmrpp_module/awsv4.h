@@ -1,4 +1,5 @@
 
+
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of the Hyrax data server.
@@ -31,24 +32,11 @@
 #define AWSV4_HPP
 
 #include <cstdio>
-#include <cstring>
-
-#include <stdexcept>
-#include <algorithm>
 #include <map>
 #include <ctime>
 #include <iostream>
-#include <sstream>
 
-#if 0
-
-#include "Poco/URI.h"
-#include "Poco/StringTokenizer.h"
-
-#endif
-
-#include "openssl/sha.h"
-#include "openssl/hmac.h"
+#include <openssl/sha.h>
 
 namespace AWSV4 {
     const std::string ENDL{"\n"};
@@ -60,13 +48,9 @@ namespace AWSV4 {
     
     void sha256(const std::string str, unsigned char outputBuffer[SHA256_DIGEST_LENGTH]) noexcept;
     
-    const std::string sha256_base16(const std::string) noexcept;
+    std::string sha256_base16(const std::string) noexcept;
 
-    const std::string canonicalize_uri(const Poco::URI& uri) noexcept;
-    
-    const std::string canonicalize_query(const Poco::URI& uri) noexcept;
-    
-    const std::map<std::string,std::string> canonicalize_headers(const std::vector<std::string>& headers) noexcept;
+    std::map<std::string,std::string> canonicalize_headers(const std::vector<std::string>& headers) noexcept;
     
     const std::string map_headers_string(const std::map<std::string,std::string>& header_key2val) noexcept;
     
