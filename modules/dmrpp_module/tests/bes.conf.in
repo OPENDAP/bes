@@ -30,6 +30,7 @@ BES.UncompressCache.prefix=ux_
 BES.UncompressCache.size=500
 
 Gateway.Whitelist = *
+Gateway.Whitelist += https://s3.amazonaws.com/cloudyopendap/
 Gateway.Whitelist += https://s3.amazonaws.com/cloudydap/
 Gateway.Whitelist += http://s3.amazonaws.com/cloudydap/
 # This is needed even if the tests are local because the whitelist check

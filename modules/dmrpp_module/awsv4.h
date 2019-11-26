@@ -81,12 +81,13 @@ namespace AWSV4 {
                                           const std::string region,
                                           const std::string service,
                                           const std::string string_to_sign,
-                                          const bool verbose) noexcept;
+                                          const bool verbose = false) noexcept;
 
     // The whole enchilada. Added jhrg 11/25/19
     const std::string compute_awsv4_signature(const std::string uri_str, const std::time_t request_date,
                                               const std::string public_key, const std::string secret_key,
-                                              const std::string region, const std::string service, const bool verbose);
+                                              const std::string region, const std::string service = "s3",
+                                              const bool verbose = false);
 }
 
 #endif

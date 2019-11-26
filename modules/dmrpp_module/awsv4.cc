@@ -218,7 +218,7 @@ namespace AWSV4 {
                                           const std::string region,
                                           const std::string service,
                                           const std::string string_to_sign,
-                                          const bool verbose = false) noexcept {
+                                          const bool verbose) noexcept {
 
         const std::string k1{AWS4 + secret};
         char *c_k1 = new char [k1.length()+1];
@@ -285,8 +285,8 @@ namespace AWSV4 {
 
     const std::string compute_awsv4_signature(const std::string uri_str, const std::time_t request_date,
                                               const std::string public_key, const std::string secret_key,
-                                              const std::string region = "us-west-2", const std::string service = "s3",
-                                              const bool verbose = false) {
+                                              const std::string region, const std::string service,
+                                              const bool verbose) {
 
         url_parser uri(uri_str);
 

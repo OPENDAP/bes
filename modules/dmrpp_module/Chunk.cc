@@ -44,6 +44,9 @@ using namespace std;
 
 namespace dmrpp {
 
+// This is used to track access to 'cloudydap' accesses in the S3 logs
+// by adding a query string that will show up in those logs. This is
+// activated by using a special BES context with the name 'cloudydap.'
 const std::string Chunk::tracking_context = "cloudydap";
 
 /**
@@ -69,6 +72,15 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
 
     unsigned long long bytes_read = c_ptr->get_bytes_read();
     size_t nbytes = size * nmemb;
+
+    // We might be expecting a small response but get an error document instead.
+    // These error responses are generally small (< 1k), so if nbytes is bigger
+    // than the read buffer for this chunk but < 1k, make it larger and move on.
+    // This will aid in error diagnosis. jhrg 11/26/19
+    if (nbytes <= 1024 && nbytes > c_ptr->get_rbuf_size()) {
+        // set_rbuf() deletes the previous storage; Chunk manages the new memory block
+        c_ptr->set_rbuf(new char[nbytes+2], nbytes+2);
+    }
 
     // If this fails, the code will write beyond the buffer.
     assert(bytes_read + nbytes <= c_ptr->get_rbuf_size());

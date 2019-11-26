@@ -29,6 +29,7 @@
 
 #include <cstring>
 #include <unistd.h>
+#include <ctime>
 
 #include <curl/curl.h>
 
@@ -52,7 +53,7 @@
 
 #define KEEP_ALIVE 1   // Reuse libcurl easy handles (1) or not (0).
 
-#define CURL_VERBOSE 0
+#define CURL_VERBOSE 1
 
 static const int MAX_WAIT_MSECS = 30*1000; // Wait max. 30 seconds
 static const unsigned int retry_limit = 10; // Amazon's suggestion
@@ -519,6 +520,39 @@ CurlHandlePool::CurlHandlePool() : d_multi_handle(0)
 }
 
 /**
+ * @brief Add the given header & value to the curl slist.
+ *
+ * The call must free the slist after the curl_easy_perform() is called, not after
+ * the headers are added to the curl handle.
+ *
+ * @param slist The list; initially pass nullptr to create a new list
+ * @param header The header
+ * @param value The value
+ * @return The slist pointer or nullptr if an error occurred.
+ */
+static struct curl_slist *
+append_http_header(curl_slist *slist, const string &header, const string &value)
+{
+    struct curl_slist *temp = nullptr;
+
+    slist = curl_slist_append(slist, header.c_str());
+
+    if (slist == nullptr)
+        return nullptr;
+
+    temp = curl_slist_append(slist, value.c_str());
+
+    if (temp == nullptr) {
+        curl_slist_free_all(slist);
+        return nullptr;
+    }
+
+    slist = temp;
+
+    return slist;   // Need to save this to free after use
+}
+
+/**
  * Get a CURL easy handle to transfer data from \arg url into the given \arg chunk.
  *
  * @note This method and release_handle() use the same lock to prevent the handle's
@@ -535,12 +569,21 @@ CurlHandlePool::CurlHandlePool() : d_multi_handle(0)
 dmrpp_easy_handle *
 CurlHandlePool::get_easy_handle(Chunk *chunk)
 {
+    // Here we check to make sure that the we are only going to
+    // access an approved location with this easy_handle
+    if(!WhiteList::get_white_list()->is_white_listed(chunk->get_data_url())){
+        string msg = "ERROR!! The chunk url " + chunk->get_data_url() + " does not match any white-list rule. ";
+        throw BESForbiddenError(msg ,__FILE__,__LINE__);
+    }
+
     Lock lock(d_get_easy_handle_mutex); // RAII
 
     dmrpp_easy_handle *handle = 0;
     for (vector<dmrpp_easy_handle *>::iterator i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
-        if (!(*i)->d_in_use)
+        if (!(*i)->d_in_use) {
             handle = *i;
+            break;
+        }
     }
 
     if (handle) {
@@ -548,12 +591,14 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
         handle->d_in_use = true;
         handle->d_url = chunk->get_data_url();
 
+#if 0
         // Here we check to make sure that the we are only going to
         // access an approved location with this easy_handle
         if(!WhiteList::get_white_list()->is_white_listed(handle->d_url)){
             string msg = "ERROR!! The chunk url " + handle->d_url + " does not match any white-list rule. ";
             throw BESForbiddenError(msg ,__FILE__,__LINE__);
         }
+#endif
 
         handle->d_chunk = chunk;
 
@@ -574,6 +619,40 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
         if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_PRIVATE, reinterpret_cast<void*>(handle))))
             throw BESInternalError(string("CURL Error setting easy_handle as private data: ").append(curl_error_msg(res, handle->d_errbuf)), __FILE__,
             __LINE__);
+
+        // we support file:, http: and https: URIs. Never build an Authorization header for
+        // file: URIs
+        if (handle->d_url.find("file:") != 0) {
+            const std::time_t request_time = std::time(nullptr);
+
+            // FIXME These three things need to vary by URL. jhrg 11/26/19
+            const string public_key = "AKIA24JBYMSH64NYGEIE";
+            const string secret_key = "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";
+            const string region = "us-east-1";
+
+            const std::string auth_header = AWSV4::compute_awsv4_signature(handle->d_url, request_time,
+                                                                           public_key, secret_key, region);
+            // passing nullptr for the first call allocates the curl_slist
+            struct curl_slist *headers = append_http_header(nullptr, "Authorization", auth_header);
+            if (!headers)
+                throw BESInternalError(
+                        string("CURL Error setting Authorization header: ").append(
+                                curl_error_msg(res, handle->d_errbuf)),
+                        __FILE__, __LINE__);
+            headers = append_http_header(headers, "x-amz-date", AWSV4::ISO8601_date(request_time));
+            if (!headers)
+                throw BESInternalError(
+                        string("CURL Error setting x-amz-date header: ").append(curl_error_msg(res, handle->d_errbuf)),
+                        __FILE__, __LINE__);
+
+            // FIXME LEAK! jhrg 11/26/19
+#if 0
+            handle->d_auth_headers = headers;   // Free using curl_slist_free after calling curl_easy_perform
+#endif
+            if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, headers)))
+                throw BESInternalError(string("CURL Error setting HTTP headers for S3 authentication: ").append(
+                        curl_error_msg(res, handle->d_errbuf)), __FILE__, __LINE__);
+        }
     }
 
     return handle;
