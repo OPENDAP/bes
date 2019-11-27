@@ -53,12 +53,12 @@
 
 #define KEEP_ALIVE 1   // Reuse libcurl easy handles (1) or not (0).
 
-#define CURL_VERBOSE 1
+#define CURL_VERBOSE 0  // Logs curl info to the bes.log
 
 static const int MAX_WAIT_MSECS = 30*1000; // Wait max. 30 seconds
 static const unsigned int retry_limit = 10; // Amazon's suggestion
 static const unsigned int initial_retry_time = 1000; // one milli-second
-static const string dmrpp_3 = "dmrpp:3";
+static const std::string dmrpp_3 = "dmrpp:3";
 
 using namespace dmrpp;
 using namespace std;
@@ -152,28 +152,56 @@ string dump(const char *text, unsigned char *ptr, size_t size)
 static
 int curl_trace(CURL */*handle*/, curl_infotype type, char *data, size_t /*size*/, void */*userp*/)
 {
+    string text = "";
     switch (type) {
-    // print info
-    case CURLINFO_TEXT: {
-        string text = data;
-        size_t pos;
-        while((pos = text.find('\n')) != string::npos)
-            text = text.substr(0, pos);
-        LOG("libcurl == Info: " << text << endl);
+        // print info
+        case CURLINFO_TEXT:
+        case CURLINFO_HEADER_OUT:
+        case CURLINFO_HEADER_IN: {
+            text = data;
+            size_t pos;
+            while ((pos = text.find('\n')) != string::npos)
+                text = text.substr(0, pos);
+            break;
+        }
+
+        // Do not build up 'text' for the data transfers
+        case CURLINFO_DATA_OUT:
+        case CURLINFO_SSL_DATA_OUT:
+        case CURLINFO_DATA_IN:
+        case CURLINFO_SSL_DATA_IN:
+        default: /* in case a new one is introduced to shock us */
+            return 0;
     }
 
-    // print nothing for these
-    case CURLINFO_DATA_IN:
-    case CURLINFO_SSL_DATA_IN:
+    switch (type) {
+        // print info
+        case CURLINFO_TEXT:
+            LOG("libcurl == Info: " << text << endl);
+            break;
 
-    case CURLINFO_DATA_OUT:
-    case CURLINFO_SSL_DATA_OUT:
-
-    case CURLINFO_HEADER_IN:
-    case CURLINFO_HEADER_OUT:
-    default: /* in case a new one is introduced to shock us */
-	return 0;
-    }
+        case CURLINFO_HEADER_OUT:
+            LOG("libcurl == Send header: " << text << endl);
+            break;
+        case CURLINFO_HEADER_IN:
+            LOG("libcurl == Recv header: " << text << endl);
+            break;
+#if 0
+        // Only print these if we're desperate and the above code has been hacked to match
+        case CURLINFO_DATA_OUT:
+            LOG("libcurl == Send data" << text << endl);
+            break;
+        case CURLINFO_SSL_DATA_OUT:
+            LOG("libcurl == Send SSL data" << text << endl);
+            break;
+        case CURLINFO_DATA_IN:
+            LOG("libcurl == Recv data" << text << endl);
+            break;
+        case CURLINFO_SSL_DATA_IN:
+            LOG("libcurl == Recv SSL data" << text << endl);
+            break;
+#endif
+     }
 }
 #endif
 
@@ -528,28 +556,16 @@ CurlHandlePool::CurlHandlePool() : d_multi_handle(0)
  * @param slist The list; initially pass nullptr to create a new list
  * @param header The header
  * @param value The value
- * @return The slist pointer or nullptr if an error occurred.
+ * @return The modified slist pointer or nullptr if an error occurred.
  */
 static struct curl_slist *
 append_http_header(curl_slist *slist, const string &header, const string &value)
 {
-    struct curl_slist *temp = nullptr;
+    string full_header = header;
+    full_header.append(" ").append(value);
 
-    slist = curl_slist_append(slist, header.c_str());
-
-    if (slist == nullptr)
-        return nullptr;
-
-    temp = curl_slist_append(slist, value.c_str());
-
-    if (temp == nullptr) {
-        curl_slist_free_all(slist);
-        return nullptr;
-    }
-
-    slist = temp;
-
-    return slist;   // Need to save this to free after use
+    struct curl_slist *temp = curl_slist_append(slist, full_header.c_str());
+    return temp;
 }
 
 /**
@@ -621,8 +637,10 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
             __LINE__);
 
         // we support file:, http: and https: URIs. Never build an Authorization header for
-        // file: URIs
-        if (handle->d_url.find("file:") != 0) {
+        // file: URIs.
+        // FIXME: Only compute this stuff for buckets that are configured with keys and a region. jhrg 11/26/19
+#if 1
+        if (handle->d_url.find("http://") == 0 || handle->d_url.find("https://") == 0) {
             const std::time_t request_time = std::time(nullptr);
 
             // FIXME These three things need to vary by URL. jhrg 11/26/19
@@ -633,16 +651,23 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
             const std::string auth_header = AWSV4::compute_awsv4_signature(handle->d_url, request_time,
                                                                            public_key, secret_key, region);
             // passing nullptr for the first call allocates the curl_slist
-            struct curl_slist *headers = append_http_header(nullptr, "Authorization", auth_header);
+            struct curl_slist *headers = append_http_header(nullptr, "Authorization:", auth_header);
             if (!headers)
                 throw BESInternalError(
                         string("CURL Error setting Authorization header: ").append(
                                 curl_error_msg(res, handle->d_errbuf)),
                         __FILE__, __LINE__);
-            headers = append_http_header(headers, "x-amz-date", AWSV4::ISO8601_date(request_time));
+            headers = append_http_header(headers, "x-amz-date:", AWSV4::ISO8601_date(request_time));
             if (!headers)
                 throw BESInternalError(
                         string("CURL Error setting x-amz-date header: ").append(curl_error_msg(res, handle->d_errbuf)),
+                        __FILE__, __LINE__);
+
+            // We pre-compute the sha256 hash of a null message body
+            headers = append_http_header(headers, "x-amz-content-sha256:", "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
+            if (!headers)
+                throw BESInternalError(
+                        string("CURL Error setting x-amz-content-sha256: ").append(curl_error_msg(res, handle->d_errbuf)),
                         __FILE__, __LINE__);
 
             // FIXME LEAK! jhrg 11/26/19
@@ -653,6 +678,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
                 throw BESInternalError(string("CURL Error setting HTTP headers for S3 authentication: ").append(
                         curl_error_msg(res, handle->d_errbuf)), __FILE__, __LINE__);
         }
+#endif
     }
 
     return handle;
