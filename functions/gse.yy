@@ -53,6 +53,7 @@ using namespace functions;
 
 // Assume bison 1.25
 //#define YYPARSE_PARAM arg
+// added to suppress error messages leaking to std out SBL 11.26.19
 #define YYERROR_VERBOSE 0
 
 } // code requires
