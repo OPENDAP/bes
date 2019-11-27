@@ -171,7 +171,7 @@ int curl_trace(CURL */*handle*/, curl_infotype type, char *data, size_t /*size*/
         case CURLINFO_DATA_IN:
         case CURLINFO_SSL_DATA_IN:
         default: /* in case a new one is introduced to shock us */
-            return 0;
+            break;
     }
 
     switch (type) {
@@ -201,11 +201,15 @@ int curl_trace(CURL */*handle*/, curl_infotype type, char *data, size_t /*size*/
             LOG("libcurl == Recv SSL data" << text << endl);
             break;
 #endif
+        default:
+            break;
      }
+
+     return 0;
 }
 #endif
 
-dmrpp_easy_handle::dmrpp_easy_handle()
+dmrpp_easy_handle::dmrpp_easy_handle(): d_headers(nullptr)
 {
     d_handle = curl_easy_init();
     if (!d_handle) throw BESInternalError("Could not allocate CURL handle", __FILE__, __LINE__);
@@ -216,8 +220,6 @@ dmrpp_easy_handle::dmrpp_easy_handle()
         throw BESInternalError(string("CURL Error: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
 
 #if CURL_VERBOSE
-    // Information is output only when the log is in verbose mode and the code is
-    // built using --enable-developer
     if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_DEBUGFUNCTION, curl_trace)))
         throw BESInternalError(string("CURL Error: ").append(curl_error_msg(res, d_errbuf)), __FILE__, __LINE__);
     // Many tests fail with this option, but it's still useful to see how connections
@@ -255,7 +257,8 @@ dmrpp_easy_handle::dmrpp_easy_handle()
 
 dmrpp_easy_handle::~dmrpp_easy_handle()
 {
-    curl_easy_cleanup(d_handle);
+    if (d_handle) curl_easy_cleanup(d_handle);
+    if (d_headers) curl_slist_free_all(d_headers);
 }
 
 /**
@@ -333,6 +336,9 @@ void dmrpp_easy_handle::read_data()
                     retry_time *= 2;
                 }
             }
+
+            curl_slist_free_all(d_headers);
+            d_headers = nullptr;
         } while (!success);
     }
     else {
@@ -568,6 +574,45 @@ append_http_header(curl_slist *slist, const string &header, const string &value)
     return temp;
 }
 
+// TODO Make this real! jhrg 11/26/19
+static bool
+url_has_credentials(const string &url)
+{
+    return (url.find("cloudyopendap") != string::npos);
+}
+
+static bool
+url_must_be_signed(const string &url)
+{
+    return (url.find("http://") == 0 || url.find("https://") == 0) && url_has_credentials(url);
+}
+
+// FIXME The most low-budget credential DB on the planet. jhrg 11/26/19
+struct aws_credentials {
+    string public_key;    // = "AKIA24JBYMSH64NYGEIE";
+    string secret_key;    // = "*************WaaQ7";
+    string region;    // = "us-east-1";
+
+    aws_credentials(const string &p_key, const string &s_key, const string &r)
+            : public_key(p_key), secret_key(s_key), region(r) {}
+
+    aws_credentials(const aws_credentials &rhs)
+            : public_key(rhs.public_key), secret_key(rhs.secret_key), region(rhs.region) {}
+};
+
+static unique_ptr<aws_credentials>
+get_aws_credentials(const string &url)
+{
+    // FIXME Lookup the credentials in some db (BES Keys?). jhrg 11/26/19
+    if (url.find("cloudyopendap") != string::npos) {
+        unique_ptr<aws_credentials> creds(new aws_credentials("AKIA24JBYMSH64NYGEIE", "*************WaaQ7", "us-east-1"));
+        return creds;
+    } else {
+        unique_ptr<aws_credentials> creds(new aws_credentials("", "", ""));
+        return creds;
+    }
+}
+
 /**
  * Get a CURL easy handle to transfer data from \arg url into the given \arg chunk.
  *
@@ -607,15 +652,6 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
         handle->d_in_use = true;
         handle->d_url = chunk->get_data_url();
 
-#if 0
-        // Here we check to make sure that the we are only going to
-        // access an approved location with this easy_handle
-        if(!WhiteList::get_white_list()->is_white_listed(handle->d_url)){
-            string msg = "ERROR!! The chunk url " + handle->d_url + " does not match any white-list rule. ";
-            throw BESForbiddenError(msg ,__FILE__,__LINE__);
-        }
-#endif
-
         handle->d_chunk = chunk;
 
         CURLcode res = curl_easy_setopt(handle->d_handle, CURLOPT_URL, chunk->get_data_url().c_str());
@@ -638,47 +674,46 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
 
         // we support file:, http: and https: URIs. Never build an Authorization header for
         // file: URIs.
-        // FIXME: Only compute this stuff for buckets that are configured with keys and a region. jhrg 11/26/19
-#if 1
-        if (handle->d_url.find("http://") == 0 || handle->d_url.find("https://") == 0) {
+        if (url_must_be_signed(handle->d_url)) {
             const std::time_t request_time = std::time(nullptr);
 
-            // FIXME These three things need to vary by URL. jhrg 11/26/19
-            const string public_key = "AKIA24JBYMSH64NYGEIE";
-            const string secret_key = "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";
-            const string region = "us-east-1";
+            unique_ptr<aws_credentials> creds = get_aws_credentials(handle->d_url);
+            if (creds->public_key == "") {
+                throw BESInternalError(string("URL requires authorization, but credentials could not be found."), __FILE__, __LINE__);
+            }
 
             const std::string auth_header = AWSV4::compute_awsv4_signature(handle->d_url, request_time,
-                                                                           public_key, secret_key, region);
+                                                                           creds->public_key, creds->secret_key,
+                                                                           creds->region);
+
             // passing nullptr for the first call allocates the curl_slist
-            struct curl_slist *headers = append_http_header(nullptr, "Authorization:", auth_header);
-            if (!headers)
+            // The following code builds the slist that holds the headers. This slist is freed
+            // once the URL is dereferenced in dmrpp_easy_handle::read_data(). jhrg 11/26/19
+            handle->d_headers = append_http_header(nullptr, "Authorization:", auth_header);
+            if (!handle->d_headers)
                 throw BESInternalError(
                         string("CURL Error setting Authorization header: ").append(
-                                curl_error_msg(res, handle->d_errbuf)),
-                        __FILE__, __LINE__);
-            headers = append_http_header(headers, "x-amz-date:", AWSV4::ISO8601_date(request_time));
-            if (!headers)
+                                curl_error_msg(res, handle->d_errbuf)), __FILE__, __LINE__);
+
+            curl_slist *temp = append_http_header(handle->d_headers, "x-amz-date:", AWSV4::ISO8601_date(request_time));
+            if (!temp)
                 throw BESInternalError(
                         string("CURL Error setting x-amz-date header: ").append(curl_error_msg(res, handle->d_errbuf)),
                         __FILE__, __LINE__);
+            handle->d_headers = temp;
 
             // We pre-compute the sha256 hash of a null message body
-            headers = append_http_header(headers, "x-amz-content-sha256:", "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
-            if (!headers)
+            temp = append_http_header(handle->d_headers, "x-amz-content-sha256:", "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
+            if (!temp)
                 throw BESInternalError(
                         string("CURL Error setting x-amz-content-sha256: ").append(curl_error_msg(res, handle->d_errbuf)),
                         __FILE__, __LINE__);
+            handle->d_headers = temp;
 
-            // FIXME LEAK! jhrg 11/26/19
-#if 0
-            handle->d_auth_headers = headers;   // Free using curl_slist_free after calling curl_easy_perform
-#endif
-            if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, headers)))
+            if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_headers)))
                 throw BESInternalError(string("CURL Error setting HTTP headers for S3 authentication: ").append(
                         curl_error_msg(res, handle->d_errbuf)), __FILE__, __LINE__);
         }
-#endif
     }
 
     return handle;
