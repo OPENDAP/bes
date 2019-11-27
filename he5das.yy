@@ -30,7 +30,7 @@
 
 %code requires {
 #define YYSTYPE char *
-#define YYDEBUG 1
+#define YYDEBUG 0
 #define YYERROR_VERBOSE 0
 
 // #define YYPARSE_PARAM arg
