@@ -441,7 +441,7 @@ static void get_chunks_for_all_variables(hid_t file, D4Group *group)
                 FQN = attr->value(0);
             else
                 FQN = (*v)->FQN();
-            VERBOSE(cerr << "Working on: " << FQN << endl);
+            BESDEBUG("dmrpp","Working on: " <<FQN<<endl);
             dataset = H5Dopen2(file, FQN.c_str(), H5P_DEFAULT);
             if(dataset <0) 
                  throw BESInternalError("HDF5 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
@@ -452,7 +452,7 @@ static void get_chunks_for_all_variables(hid_t file, D4Group *group)
             // So go ahead to open the dataset. Continue even if the dataset cannot be open. KY 2019-12-02
             H5Eset_auto2(H5E_DEFAULT,NULL,NULL);
             FQN = (*v)->FQN();
-            VERBOSE(cerr << "Working on: " << FQN << endl);
+            BESDEBUG("dmrpp","Working on: " <<FQN<<endl);
             dataset = H5Dopen2(file, FQN.c_str(), H5P_DEFAULT);
             if(dataset <0)
                 continue;
