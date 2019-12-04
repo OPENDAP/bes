@@ -593,19 +593,35 @@ struct aws_credentials {
     string secret_key;    // = "*************WaaQ7";
     string region;    // = "us-east-1";
 
+    aws_credentials(): public_key(""), secret_key(""), region("") {}
+
     aws_credentials(const string &p_key, const string &s_key, const string &r)
             : public_key(p_key), secret_key(s_key), region(r) {}
 
     aws_credentials(const aws_credentials &rhs)
             : public_key(rhs.public_key), secret_key(rhs.secret_key), region(rhs.region) {}
+
+    unique_ptr<aws_credentials> get(const string &url);
 };
 
-static unique_ptr<aws_credentials>
-get_aws_credentials(const string &url)
+unique_ptr<aws_credentials>
+aws_credentials::get(const string &url)
 {
     // FIXME Lookup the credentials in some db (BES Keys?). jhrg 11/26/19
     if (url.find("cloudyopendap") != string::npos) {
-        unique_ptr<aws_credentials> creds(new aws_credentials("AKIA24JBYMSH64NYGEIE", "*************WaaQ7", "us-east-1"));
+#ifndef NDEBUG
+        const char *aws_s_key = getenv("AWS_SECRET_ACCESS_KEY");
+        if (!aws_s_key) aws_s_key = "";
+        const char *aws_p_key = getenv("AWS_ACCESS_KEY_ID");
+        if (!aws_p_key) aws_p_key = "";
+        const char *aws_region = getenv("AWS_REGION");
+        if (!aws_region) aws_region = "";
+#else
+        const char *aws_s_key = "";
+        const char *aws_p_key = "";
+        const char *aws_region = "";
+#endif
+        unique_ptr<aws_credentials> creds(new aws_credentials(aws_p_key, aws_s_key, aws_region));
         return creds;
     } else {
         unique_ptr<aws_credentials> creds(new aws_credentials("", "", ""));
@@ -677,9 +693,10 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
         if (url_must_be_signed(handle->d_url)) {
             const std::time_t request_time = std::time(nullptr);
 
-            unique_ptr<aws_credentials> creds = get_aws_credentials(handle->d_url);
+            aws_credentials aws_creds;
+            unique_ptr<aws_credentials> creds = aws_creds.get(handle->d_url);
             if (creds->public_key == "") {
-                throw BESInternalError(string("URL requires authorization, but credentials could not be found."), __FILE__, __LINE__);
+                throw BESInternalError(string("URL requires authorization, but credentials could not be found").append(" (").append(handle->d_url).append(")."), __FILE__, __LINE__);
             }
 
             const std::string auth_header = AWSV4::compute_awsv4_signature(handle->d_url, request_time,
