@@ -428,6 +428,38 @@ static void get_chunks_for_all_variables(hid_t file, D4Group *group)
         // relies on the varaible's position in the DAP dataset hierarchy.
         D4Attribute *attr = d4_attrs->get("fullnamepath");
         string FQN;
+        // I believe the logic is more clear in this way: 
+        // If fullnamepath exists and the H5Dopen2 fails to open, it should throw an error.
+        // If fullnamepath doesn't exist, we should ignore the error as the reason described below:
+        // (However, we should supress the HDF5 dataset open error message.)  KY 2019-12-02
+        // It's not an error if a DAP variable in a DMR from the hdf5 handler
+        // doesn't exist in the file _if_ there's no 'fullnamepath' because
+        // that variable was synthesized (likely for CF compliance)
+        hid_t dataset = -1;
+        if(attr) {
+            if(attr->num_values() == 1) 
+                FQN = attr->value(0);
+            else
+                FQN = (*v)->FQN();
+            BESDEBUG("dmrpp","Working on: " <<FQN<<endl);
+            dataset = H5Dopen2(file, FQN.c_str(), H5P_DEFAULT);
+            if(dataset <0) 
+                 throw BESInternalError("HDF5 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
+
+        }
+        else {
+            // The current design seems to still prefer to open the dataset when the fullnamepath doesn't exist
+            // So go ahead to open the dataset. Continue even if the dataset cannot be open. KY 2019-12-02
+            H5Eset_auto2(H5E_DEFAULT,NULL,NULL);
+            FQN = (*v)->FQN();
+            BESDEBUG("dmrpp","Working on: " <<FQN<<endl);
+            dataset = H5Dopen2(file, FQN.c_str(), H5P_DEFAULT);
+            if(dataset <0)
+                continue;
+        }
+
+ 
+#if 0
         if (attr && attr->num_values() == 1)
             FQN = attr->value(0);
         else
@@ -438,11 +470,13 @@ static void get_chunks_for_all_variables(hid_t file, D4Group *group)
         // It's not an error if a DAP variable in a DMR from the hdf5 handler
         // doesn't exist in the file _if_ there's no 'fullnamepath' because
         // that variable was synthesized (likely for CF compliance)
-        if (dataset < 0 && attr == 0)
+        if (dataset < 0 && attr == 0) {
+            cerr<<"Unable to open dataset name "<<FQN <<endl;
             continue;
+        }
         else if (dataset < 0)
             throw BESInternalError("HDF5 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
-
+#endif
         get_variable_chunk_info(dataset, dynamic_cast<DmrppCommon*>(*v));
      }
 
