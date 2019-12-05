@@ -1,7 +1,7 @@
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
 // Access Protocol.
 
-// Copyright (c) 2013 OPeNDAP, Inc.
+// Copyright (c) 2019 OPeNDAP, Inc.
 // Authors: Kodi Neumiller <kneumiller@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
@@ -43,6 +43,7 @@ namespace functions {
 struct point {
     int x;
     int y;
+
     point(int x, int y): x(x), y(y) {}
     friend std::ostream & operator << (std::ostream &out, const point &c);
 };
@@ -51,6 +52,7 @@ struct point {
 struct stare_match {
     point coord;      /// The X and Y indices that match the...
     libdap::dods_uint64 stare_index; /// STARE index in this dataset
+
     stare_match(const point &p, libdap::dods_uint64 si): coord(p), stare_index(si) {}
     stare_match(int x, int y, libdap::dods_uint64 si): coord(x, y), stare_index(si) {}
     friend std::ostream & operator << (std::ostream &out, const stare_match &m);

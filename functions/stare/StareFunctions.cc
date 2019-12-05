@@ -1,7 +1,7 @@
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
 // Access Protocol.
 
-// Copyright (c) 2013 OPeNDAP, Inc.
+// Copyright (c) 2019 OPeNDAP, Inc.
 // Authors: Kodi Neumiller <kneumiller@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
@@ -88,10 +88,10 @@ ostream & operator << (ostream &out, const stare_matches &m)
 
     auto si = m.stare_indices.begin();
     auto xi = m.x_indices.begin();
-    auto yi = m.y_indices.rbegin();
+    auto yi = m.y_indices.begin();
 
     while (si != m.stare_indices.end()) {
-        out << "SIndex: " << *si << ", coord: " << *xi << ", " << *yi << endl;
+        out << "SIndex: " << *si++ << ", coord: x: " << *xi++ << ", y: " << *yi++ << endl;
     }
 
     return out;
@@ -105,7 +105,7 @@ static vector<dods_uint64> *extract_uint64_array(Array *var) {
 
     int length = var->length();
 
-    vector<dods_uint64> *newVar = new vector<dods_uint64>;
+    auto *newVar = new vector<dods_uint64>;
     newVar->resize(length);
     var->value(&(*newVar)[0]);    // Extract the values of 'var' to 'newVar'
 
@@ -198,13 +198,15 @@ stare_subset_helper2(const vector<dods_uint64> &targetIndices, const vector<dods
 
     auto subset = new stare_matches;
 
-    for (const dods_uint64 &j : targetIndices) {
+    for (dods_uint64 targetIndex : targetIndices) {
         auto x = xArray.begin();
         auto y = yArray.begin();
-        for (auto i = datasetStareIndices.begin(), end = datasetStareIndices.end(); i != end; ++i, ++x, ++y) {
-            if (*i == j) {
-                subset->add(*x, *y, j);
+        for (dods_uint64 datasetStareIndice : datasetStareIndices) {
+            if (datasetStareIndice == targetIndex) {
+                subset->add(*x, *y, targetIndex);
             }
+            ++x;
+            ++y;
         }
     }
 
@@ -465,34 +467,29 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
 
     vector<dods_uint64> *targetIndices = extract_uint64_array(stareSrc);
 
-    vector<stare_match> *subset = stare_subset_helper(*targetIndices, datasetStareIndices, xArray, yArray);
+    stare_matches *subset = stare_subset_helper2(*targetIndices, datasetStareIndices, xArray, yArray);
+
+    delete targetIndices;
 
     // Transfer values to a Structure
     auto result = new Structure("result");
 
     Array *stare = new Array("stare", new UInt64("stare"));
+    stare->set_value(&(subset->stare_indices[0]), subset->stare_indices.size());
     result->add_var_nocopy(stare);
 
     auto x = new Array("x", new Int32("x"));
+    x->set_value(&(subset->x_indices[0]), subset->x_indices.size());
     result->add_var_nocopy(x);
 
     auto y = new Array("y", new Int32("y"));
+    y->set_value(&(subset->y_indices[0]), subset->y_indices.size());
     result->add_var_nocopy(y);
 
     // FIXME Change this code so the stare_subet() function returns vectors that can be 'shared.' jhrg 11/20/19
-#if 0
-    for (const stare_match &m : *subset) {
-        stare-> m.stare_index
-    }
-#endif
-
-#if 0
-    stare->set_value(subset)
-#endif
-
     delete subset;
 
-    return nullptr;
+    return result;
 }
 #if 0
 /**

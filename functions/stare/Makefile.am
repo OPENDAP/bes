@@ -4,10 +4,10 @@ AUTOMAKE_OPTIONS = foreign
 
 # Headers in 'tests' are used by the arrayT unit tests.
 
-AM_CPPFLAGS = $(DAP_CFLAGS) -I$(STARE_INC) -I$(prefix)/deps/include
+AM_CPPFLAGS = $(DAP_CFLAGS) -I$(top_srcdir)/dispatch -I$(STARE_INC) -I$(prefix)/deps/include
 # Added  -Wno-deprecated to suppress warnings about auto_ptr<>. jhrg 11/7/19
 AM_CXXFLAGS = -Wno-deprecated -Wno-vla-extension
-AM_LDADD =  $(DAP_CLIENT_LIBS) $(H5_LDFLAGS) $(H5_LIBS) $(STARE_LDFLAGS) $(STARE_LIBS)
+AM_LDADD =  $(DAP_CLIENT_LIBS) -L$(abs_top_srcdir)/dispatch -lbes_dispatch $(H5_LDFLAGS) $(H5_LIBS) $(STARE_LDFLAGS) $(STARE_LIBS)
 
 SUBDIRS = . unit-tests
 

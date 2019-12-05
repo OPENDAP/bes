@@ -1,7 +1,7 @@
 // This file is part of libdap, A C++ implementation of the OPeNDAP Data
 // Access Protocol.
 
-// Copyright (c) 2013 OPeNDAP, Inc.
+// Copyright (c) 2019 OPeNDAP, Inc.
 // Authors: Kodi Neumiller <kneumiller@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
@@ -29,6 +29,7 @@
 #include <Array.h>
 #include <Int32.h>
 #include <UInt64.h>
+#include <Structure.h>
 #include <D4Group.h>
 #include <D4RValue.h>
 #include <DMR.h>
@@ -97,9 +98,11 @@ public:
     CPPUNIT_TEST(test_count_2);
     CPPUNIT_TEST(test_count_3);
     CPPUNIT_TEST(test_stare_subset);
+    CPPUNIT_TEST(test_stare_subset2);
 
     CPPUNIT_TEST(intersection_function_test);
     CPPUNIT_TEST(count_function_test);
+    CPPUNIT_TEST(subset_function_test);
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -144,6 +147,33 @@ public:
         delete result;
     }
 
+    void test_stare_subset2() {
+        DBG(cerr << "--- test_stare_subset2() test - BEGIN ---" << endl);
+
+        vector<dods_uint64> target_indices = {3440016191299518474, 9223372034707292159, 3440016191299518400, 3440016191299518401};
+        vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
+        vector<int> x_indices = {0, 1, 2};
+        vector<int> y_indices = {0, 1, 2};
+
+        stare_matches *result = stare_subset_helper2(target_indices, data_indices, x_indices, y_indices);
+
+        CPPUNIT_ASSERT(result->x_indices.size() == 2);
+        CPPUNIT_ASSERT(result->y_indices.size() == 2);
+        CPPUNIT_ASSERT(result->stare_indices.size() == 2);
+
+        DBG(cerr << *result << endl);
+
+        CPPUNIT_ASSERT(result->stare_indices.at(0) == 3440016191299518474);
+        CPPUNIT_ASSERT(result->x_indices.at(0) == 2);
+        CPPUNIT_ASSERT(result->y_indices.at(0) == 2);
+
+        CPPUNIT_ASSERT(result->stare_indices.at(1) == 9223372034707292159);
+        CPPUNIT_ASSERT(result->x_indices.at(1) == 0);
+        CPPUNIT_ASSERT(result->y_indices.at(1) == 0);
+
+        delete result;
+    }
+
     // The one and only target index is in the 'dataset'
 	void test_count_1() {
         DBG(cerr << "--- test_count_1() test - BEGIN ---" << endl);
@@ -152,7 +182,6 @@ public:
         vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
         CPPUNIT_ASSERT(count(target_indices, data_indices) == 1);
-
 	}
 
 	// Of the four target_indices, two are in the 'dataset' and two are not
@@ -163,7 +192,6 @@ public:
         vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
         CPPUNIT_ASSERT(count(target_indices, data_indices) == 2);
-
     }
 
     // Of the two target_indices, none are in the 'dataset.'
@@ -174,7 +202,6 @@ public:
         vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
         CPPUNIT_ASSERT(count(target_indices, data_indices) == 0);
-
     }
 
     // target in the 'dataset.'
@@ -194,7 +221,7 @@ public:
         vector<dods_uint64> target_indices = {3440016191299518500};
         vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
-        CPPUNIT_ASSERT(has_value(target_indices, data_indices) == false);
+        CPPUNIT_ASSERT(!has_value(target_indices, data_indices));
     }
 
     // Second target in the 'dataset.'
@@ -266,6 +293,50 @@ public:
             BaseType *checkHasValue = StareCountFunction::stare_count_dap4_function(&params, *two_arrays_dmr);
 
             CPPUNIT_ASSERT(dynamic_cast<Int32*> (checkHasValue)->value() == 1);
+        }
+        catch(Error &e) {
+            DBG(cerr << e.get_error_message() << endl);
+            CPPUNIT_FAIL("count_function_test() test failed");
+        }
+        catch(BESError &e) {
+            DBG(cerr << e.get_verbose_message() << endl);
+            CPPUNIT_FAIL("count_function_test() test failed");
+        }
+    }
+
+    void subset_function_test() {
+        DBG(cerr << "--- subset_function_test() test - BEGIN ---" << endl);
+
+        try {
+            Array *a_var = new Array("a_var", new UInt64("a_var"));
+
+            two_arrays_dmr->root()->add_var_nocopy(a_var);
+
+            //MYD09.A2019003.2040.006.2019005020913_sidecar.h5 values:
+            //Lat - 32.2739, 32.2736, 32.2733, 32.2731, 32.2728, 32.2725, 32.2723, 32.272, 32.2718, 32.2715
+            //Lon - -98.8324, -98.8388, -98.8452, -98.8516, -98.858, -98.8644, -98.8708, -98.8772, -98.8836, -98.8899
+            //Stare - 3440016191299518474 x 10
+
+            //Array a_var - uint64 for stare indices
+            //The first index is an actual stare value from: MYD09.A2019003.2040.006.2019005020913_sidecar.h5
+            //The final value is made up.
+            vector<dods_uint64> target_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
+
+            D4RValueList params;
+            params.add_rvalue(new D4RValue(target_indices));
+
+            BaseType *result = StareSubsetFunction::stare_subset_dap4_function(&params, *two_arrays_dmr);
+
+            CPPUNIT_ASSERT(dynamic_cast<Structure*>(result) != nullptr);
+
+            Structure *subset_result = dynamic_cast<Structure*>(result);
+            Array *stare = dynamic_cast<Array*>(subset_result->var("stare"));
+
+            CPPUNIT_ASSERT(stare != nullptr);
+            vector<dods_uint64> result_s_indices;
+            stare->value(&result_s_indices[0]);
+
+            DBG(cerr << "S Indices length: " << result_s_indices.size() << endl);
         }
         catch(Error &e) {
             DBG(cerr << e.get_error_message() << endl);
