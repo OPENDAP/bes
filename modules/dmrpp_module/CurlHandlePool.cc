@@ -43,6 +43,7 @@
 #include "BESDebug.h"
 #include "BESInternalError.h"
 #include "BESForbiddenError.h"
+#include <TheBESKeys.h>
 #include "WhiteList.h"
 
 #include "DmrppRequestHandler.h"
@@ -592,14 +593,15 @@ struct aws_credentials {
     string public_key;    // = "AKIA24JBYMSH64NYGEIE";
     string secret_key;    // = "*************WaaQ7";
     string region;    // = "us-east-1";
+    string bucket_name;    // = "us-east-1";
 
-    aws_credentials(): public_key(""), secret_key(""), region("") {}
+    aws_credentials(): public_key(""), secret_key(""), region(""), bucket_name("") {}
 
-    aws_credentials(const string &p_key, const string &s_key, const string &r)
-            : public_key(p_key), secret_key(s_key), region(r) {}
+    aws_credentials(const string &p_key, const string &s_key, const string &r, const string &b)
+            : public_key(p_key), secret_key(s_key), region(r), bucket_name(b) {}
 
     aws_credentials(const aws_credentials &rhs)
-            : public_key(rhs.public_key), secret_key(rhs.secret_key), region(rhs.region) {}
+            : public_key(rhs.public_key), secret_key(rhs.secret_key), region(rhs.region), bucket_name(rhs.bucket_name) {}
 
     unique_ptr<aws_credentials> get(const string &url);
 };
@@ -610,21 +612,87 @@ aws_credentials::get(const string &url)
     // FIXME Lookup the credentials in some db (BES Keys?). jhrg 11/26/19
     if (url.find("cloudyopendap") != string::npos) {
 #ifndef NDEBUG
-        const char *aws_s_key = getenv("AWS_SECRET_ACCESS_KEY");
-        if (!aws_s_key) aws_s_key = "";
-        const char *aws_p_key = getenv("AWS_ACCESS_KEY_ID");
-        if (!aws_p_key) aws_p_key = "";
-        const char *aws_region = getenv("AWS_REGION");
-        if (!aws_region) aws_region = "";
+
+        bool key_found = false;
+
+        const char *aws_sak;
+        string ask;
+        TheBESKeys::TheKeys()->get_value("DMRPP.AWS_SECRET_ACCESS_KEY", ask, key_found);
+        if (key_found) {
+            aws_sak = ask.c_str();
+            BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using DMRPP.AWS_SECRET_ACCESS_KEY from TheBESKeys" << endl);
+        }
+        else {
+            aws_sak = getenv("AWS_SECRET_ACCESS_KEY");
+            BESDEBUG("dmrpp:creds",__FILE__ << " " << __LINE__ << " Using AWS_SECRET_ACCESS_KEY from environment" << endl);
+        }
+        if (!aws_sak) {
+            aws_sak = "";
+        }
+
+        const char *aws_akid;
+        string apk;
+        TheBESKeys::TheKeys()->get_value("DMRPP.AWS_ACCESS_KEY_ID", apk, key_found);
+        if (key_found) {
+            aws_akid = apk.c_str();
+            BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using DMRPP.AWS_ACCESS_KEY_ID from TheBESKeys" << endl);
+        }
+        else {
+            aws_akid = getenv("AWS_ACCESS_KEY_ID");
+            BESDEBUG("dmrpp:creds",__FILE__ << " " << __LINE__ << " Using AWS_ACCESS_KEY_ID from environment" << endl);
+        }
+        if (!aws_akid) {
+            aws_akid = "";
+        }
+
+        const char *aws_region;
+        string ar;
+        TheBESKeys::TheKeys()->get_value("DMRPP.AWS_REGION", ar, key_found);
+        if (key_found) {
+            aws_region = ar.c_str();
+            BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using DMRPP.AWS_REGION from TheBESKeys" << endl);
+        }
+        else {
+            aws_region = getenv("AWS_REGION");
+            BESDEBUG("dmrpp:creds",__FILE__ << " " << __LINE__ << " Using AWS_REGION from environment" << endl);
+        }
+        if (!aws_region) {
+            aws_region = "";
+        }
+
+        const char *aws_s3_bucket;
+        string asb;
+        TheBESKeys::TheKeys()->get_value("DMRPP.AWS_S3_BUCKET", asb, key_found);
+        if (key_found) {
+            aws_s3_bucket = asb.c_str();
+            BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using DMRPP.AWS_S3_BUCKET from TheBESKeys" << endl);
+        }
+        else {
+            aws_s3_bucket = getenv("AWS_S3_BUCKET");
+            BESDEBUG("dmrpp:creds",__FILE__ << " " << __LINE__ << " Using AWS_S3_BUCKET from environment" << endl);
+        }
+        if (!aws_s3_bucket) {
+            aws_s3_bucket = "";
+        }
+
 #else
-        const char *aws_s_key = "";
-        const char *aws_p_key = "";
+        const char *aws_sak = "";
+        const char *aws_akid = "";
         const char *aws_region = "";
+        const char *aws_s3_bucket = "";
 #endif
-        unique_ptr<aws_credentials> creds(new aws_credentials(aws_p_key, aws_s_key, aws_region));
+
+        BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__
+            << " aws_akid: " << aws_akid
+            << " aws_sak: " << aws_sak
+            << " aws_region: " << aws_region
+            << " aws_s3_bucket: " << aws_s3_bucket
+            << endl);
+
+        unique_ptr<aws_credentials> creds(new aws_credentials(aws_akid, aws_sak, aws_region, aws_s3_bucket));
         return creds;
     } else {
-        unique_ptr<aws_credentials> creds(new aws_credentials("", "", ""));
+        unique_ptr<aws_credentials> creds(new aws_credentials( "", "", "", ""));
         return creds;
     }
 }
