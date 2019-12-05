@@ -74,7 +74,8 @@ public:
         two_arrays_dmr = new DMR(d4_btf);
         two_arrays_dmr->set_name("test_dmr");
 
-		string filename = string(TEST_SRC_DIR) + "/MYD09.A2019003.2040.006.2019005020913.h5";
+		string filename = string(TEST_SRC_DIR) + "/MYD09.A2019003_hacked.h5";
+		// Old file name: "/MYD09.A2019003.2040.006.2019005020913.h5";
 
 		two_arrays_dmr->set_filename(filename);
 
@@ -250,7 +251,7 @@ public:
             //Array a_var - uint64 for stare indices
             //The first index is an actual stare value from: MYD09.A2019003.2040.006.2019005020913_sidecar.h5
             //The final value is made up.
-            vector<dods_uint64> target_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
+            vector<dods_uint64> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
 
 			D4RValueList params;
 			params.add_rvalue(new D4RValue(target_indices));
@@ -285,14 +286,14 @@ public:
             //Array a_var - uint64 for stare indices
             //The first index is an actual stare value from: MYD09.A2019003.2040.006.2019005020913_sidecar.h5
             //The final value is made up.
-            vector<dods_uint64> target_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
+            vector<dods_uint64> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
 
             D4RValueList params;
             params.add_rvalue(new D4RValue(target_indices));
 
             BaseType *checkHasValue = StareCountFunction::stare_count_dap4_function(&params, *two_arrays_dmr);
 
-            CPPUNIT_ASSERT(dynamic_cast<Int32*> (checkHasValue)->value() == 1);
+            CPPUNIT_ASSERT(dynamic_cast<Int32*> (checkHasValue)->value() == 2);
         }
         catch(Error &e) {
             DBG(cerr << e.get_error_message() << endl);
@@ -320,7 +321,7 @@ public:
             //Array a_var - uint64 for stare indices
             //The first index is an actual stare value from: MYD09.A2019003.2040.006.2019005020913_sidecar.h5
             //The final value is made up.
-            vector<dods_uint64> target_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
+            vector<dods_uint64> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
 
             D4RValueList params;
             params.add_rvalue(new D4RValue(target_indices));

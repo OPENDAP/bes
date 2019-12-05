@@ -91,11 +91,8 @@ vector<coords> readUrl(string dataUrl, string latName, string lonName) {
         int size_x = urlLatArray->dimension_size(urlLatArray->dim_begin() + 1);
 
         if (size_y != urlLonArray->dimension_size(urlLonArray->dim_begin())
-            || size_x
-               != urlLonArray->dimension_size(
-                urlLonArray->dim_begin() + 1)) {
-            throw libdap::Error(
-                    "The size of the latitude and longitude arrays are not the same");
+            || size_x != urlLonArray->dimension_size(urlLonArray->dim_begin() + 1)) {
+            throw libdap::Error("The size of the latitude and longitude arrays are not the same");
         }
 
         //Initialize the arrays with the correct length for lat and lon
@@ -225,7 +222,7 @@ unique_ptr< vector<coords> > readLocal(const string &dataPath, const string &lat
         indexVals.lat = *lat++;
         indexVals.lon = *lon++;
 
-        indexArray->push_back(indexVals);
+        (*indexArray)[n] = indexVals;
     }
 
     return indexArray;
@@ -244,14 +241,13 @@ unique_ptr< vector<uint64> > calculateStareIndex(const float64 level, const floa
     STARE index(level, buildlevel);
 
     unique_ptr< vector<uint64> > stareVals(new vector<uint64>(latlonVals->size()));
-    uint64 stareIndex;
-
-    for (vector<coords>::iterator i = latlonVals->begin(); i != latlonVals->end(); ++i) {
-        stareIndex = index.ValueFromLatLonDegrees(i->lat, i->lon, level);
+    auto i = latlonVals->begin();
+    for (unsigned int n = 0; n < latlonVals->size(); ++n, ++i) {
+        uint64 stareIndex = index.ValueFromLatLonDegrees(i->lat, i->lon, level);
 
         VERBOSE(cerr << "Coord: " << i->lat << ", " << i->lon << " -> " << stareIndex << endl);
 
-        stareVals->push_back(stareIndex);
+        (*stareVals)[n] = stareIndex;
     }
 
     return stareVals;
@@ -384,32 +380,32 @@ void writeHDF5(const string &filename, string tmpStorage, unique_ptr< vector<coo
 
 static void usage()
 {
-    cerr << "\nbuild_sidecar [options] <filename> latitude-name longitude-name level buildlevel\n\n";
+    cerr << "\nbuild_sidecar [options] <filename> latitude-name longitude-name level\n\n";
     cerr << "-o output file: \tOutput the STARE data to the given output file\n\n";
     cerr << "-v verbose\n\n";
     cerr << "-t transfer location: \tTransfer the generated sidecar file to the given directory\n" << endl;
+    cerr << "-b STARE Build Level: \tHigher levels -> longer initialization time. (default is 5)\n" << endl;
+
 }
 
 /** -h	help
  *  -o	output file
  *	-v	verbose
+ *	-b  STARE library build level
  *
- *  build_sidecar [options] [file|DAP_URL] latitude_var_name longitude_var_name level buildlevel
+ *  build_sidecar [options] [file|DAP_URL] latitude_var_name longitude_var_name level
  */
 int main(int argc, char *argv[]) {
     int c;
     extern char *optarg;
     extern int optind;
 
-    string newName;
-    string tmpStorage;
+    string newName = "";
+    string tmpStorage = "./"; // Default is the CWD.
+    float build_level = 5.0;  // The default build level, fast start time, longer index lookup.
 
-    while ((c = getopt(argc, argv, "hvo:t:")) != -1) {
+    while ((c = getopt(argc, argv, "hvo:t:b:")) != -1) {
         switch (c) {
-            case 'h':
-                usage();
-                exit(EXIT_SUCCESS);
-                break;
             case 'o':
                 newName = optarg;
                 break;
@@ -419,6 +415,14 @@ int main(int argc, char *argv[]) {
             case 't':
                 tmpStorage = optarg;
                 break;
+            case 'b':
+                build_level = atof(optarg);
+                break;
+            case 'h':
+            default:
+                usage();
+                exit(EXIT_SUCCESS);
+                break;
         }
     }
 
@@ -426,18 +430,17 @@ int main(int argc, char *argv[]) {
     argc -= optind;
     argv += optind;
 
-    if (argc != 5) {
-        cerr << "Expected 5 required arguments" << endl;
+    if (argc != 4) {
+        cerr << "Expected 4 required arguments" << endl;
         usage();
         exit(EXIT_FAILURE);
     }
 
     //Required argument values
-    string dataUrl = argv[argc - 5];
-    string latName = argv[argc - 4];
-    string lonName = argv[argc - 3];
-    float level = atof(argv[argc - 2]);
-    float build_level = atof(argv[argc - 1]);
+    string dataUrl = argv[0];
+    string latName = argv[1];
+    string lonName = argv[2];
+    float level = atof(argv[3]);
 
     try {
         unique_ptr< vector<coords> > coordResults;
