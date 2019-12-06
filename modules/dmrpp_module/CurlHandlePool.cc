@@ -630,14 +630,6 @@ void get_from_config(const string &key, string &value){
 
 void get_creds_from_local(string &aws_akid, string &aws_sak, string &aws_region, string &aws_s3_bucket ){
 
-    BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__
-        << " BEGIN aws_akid: '" << aws_akid << "' "
-        << "aws_sak: '" << aws_sak << "' "
-        << "aws_region: '" << aws_region << "' "
-        << "aws_s3_bucket: '" << aws_s3_bucket << "' "
-        << endl);
-
-
     const string KEYS_CONFIG_PREFIX("DMRPP");
 
     const string ENV_AKID_KEY("AWS_ACCESS_KEY_ID");
@@ -663,15 +655,13 @@ void get_creds_from_local(string &aws_akid, string &aws_sak, string &aws_region,
     get_from_env(ENV_S3_BUCKET_KEY,aws_s3_bucket);
 
     BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__
-        << " MID aws_akid: '" << aws_akid << "' "
+        << " From ENV aws_akid: '" << aws_akid << "' "
         << "aws_sak: '" << aws_sak << "' "
         << "aws_region: '" << aws_region << "' "
         << "aws_s3_bucket: '" << aws_s3_bucket << "' "
         << endl);
 
-
 #endif
-
 
     // In production mode this is the single point of ingest for credentials.
     // Developer mode enables the piece above which allows the environment to
@@ -740,116 +730,6 @@ aws_credentials::get(const string &url)
         return creds;
     }
 }
-#if 0
-unique_ptr<aws_credentials>
-aws_credentials::get(const string &url)
-{
-    // FIXME Lookup the credentials in some db (BES Keys?). jhrg 11/26/19
-
-    bool key_found = false;
-
-    const string KEYS_CONFIG_PREFIX("DMRPP");
-
-    const string ENV_SAK_KEY("AWS_SECRET_ACCESS_KEY");
-    const string CONFIG_SAK_KEY(KEYS_CONFIG_PREFIX+"."+ENV_SAK_KEY);
-    const char *aws_sak = NULL;
-    string sak;
-
-    const string ENV_AKID_KEY("AWS_ACCESS_KEY_ID");
-    const string CONFIG_AKID_KEY(KEYS_CONFIG_PREFIX+"."+ENV_AKID_KEY);
-    const char *aws_akid = NULL;
-    string akid;
-
-    const string ENV_REGION_KEY("AWS_REGION");
-    const string CONFIG_REGION_KEY(KEYS_CONFIG_PREFIX+"."+ENV_REGION_KEY);
-    const char *aws_region = NULL;
-    string ar;
-
-    const string ENV_S3_BUCKET_KEY("AWS_S3_BUCKET");
-    const string CONFIG_S3_BUCKET_KEY(KEYS_CONFIG_PREFIX+"."+ENV_S3_BUCKET_KEY);
-    const char *aws_s3_bucket = NULL;
-    string asb;
-
-    if (url.find("cloudyopendap") != string::npos) {
-
-#ifndef NDEBUG
-        // If we are in developer mode then we compile this section which
-        // allows us to inject credentials via the system environment
-
-        aws_sak = getenv(ENV_SAK_KEY.c_str());
-        aws_akid= getenv(ENV_AKID_KEY.c_str());
-        aws_region = getenv(ENV_REGION_KEY.c_str());
-        aws_s3_bucket = getenv(ENV_S3_BUCKET_KEY.c_str());
-
-#endif
-        // In production mode this is the single point of ingest for credentials.
-        // Developer mode enables the piece above which allows the environment to
-        // overrule the configuration
-
-        if(!aws_sak){
-            TheBESKeys::TheKeys()->get_value(CONFIG_SAK_KEY, sak, key_found);
-            if (key_found) {
-                aws_sak = sak.c_str();
-                BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using " << CONFIG_SAK_KEY << " from TheBESKeys" << endl);
-            }
-            else {
-                aws_sak = "";
-            }
-        }
-
-        if(!aws_akid){
-            TheBESKeys::TheKeys()->get_value(CONFIG_AKID_KEY, akid, key_found);
-            if (key_found) {
-                aws_akid = akid.c_str();
-                BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using " << CONFIG_AKID_KEY << " from TheBESKeys" << endl);
-            }
-            else {
-                aws_akid = "";
-            }
-        }
-
-        if(!aws_region){
-            TheBESKeys::TheKeys()->get_value(CONFIG_REGION_KEY, ar, key_found);
-            if (key_found) {
-                aws_region = ar.c_str();
-                BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using " << CONFIG_REGION_KEY << " from TheBESKeys" << endl);
-            }
-            else {
-                aws_region = "";
-            }
-        }
-
-
-        if(!aws_s3_bucket){
-            TheBESKeys::TheKeys()->get_value(CONFIG_S3_BUCKET_KEY, asb, key_found);
-            if (key_found) {
-                aws_s3_bucket = asb.c_str();
-                BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using " << CONFIG_S3_BUCKET_KEY << " from TheBESKeys" << endl);
-            }
-            else {
-                aws_s3_bucket = "";
-            }
-        }
-
-        BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__
-            << " aws_akid: " << aws_akid
-            << " aws_sak: " << aws_sak
-            << " aws_region: " << aws_region
-            << " aws_s3_bucket: " << aws_s3_bucket
-            << endl);
-
-
-        get_creds_from_local(akid, sak, ar, asb);
-
-
-        unique_ptr<aws_credentials> creds(new aws_credentials(aws_akid, aws_sak, aws_region, aws_s3_bucket));
-        return creds;
-    } else {
-        unique_ptr<aws_credentials> creds(new aws_credentials( "", "", "", ""));
-        return creds;
-    }
-}
-#endif
 
 /**
  * Get a CURL easy handle to transfer data from \arg url into the given \arg chunk.
