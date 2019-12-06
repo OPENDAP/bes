@@ -632,6 +632,7 @@ void get_creds_from_local(string &akid, string &sak, string &ar, string &asb ){
     // If we are in developer mode then we compile this section which
     // allows us to inject credentials via the system environment
 
+    string foo = getenv(ENV_SAK_KEY.c_str());
     aws_sak = getenv(ENV_SAK_KEY.c_str());
     aws_akid= getenv(ENV_AKID_KEY.c_str());
     aws_region = getenv(ENV_REGION_KEY.c_str());
