@@ -49,7 +49,7 @@ struct coords {
  * @param url
  * @return coords
  */
-vector<coords> readUrl(string dataUrl, string latName, string lonName) {
+vector<coords> readUrl(const string &dataUrl, const string &latName, const string &lonName) {
     auto_ptr<libdap::Connect> url(new libdap::Connect(dataUrl));
 
     string latlonName = latName + "," + lonName;
