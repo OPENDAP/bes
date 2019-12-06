@@ -606,37 +606,69 @@ struct aws_credentials {
     unique_ptr<aws_credentials> get(const string &url);
 };
 
-void get_creds_from_local(string &akid, string &sak, string &ar, string &asb ){
-    bool key_found = false;
+void get_from_env(const string &key, string &value){
+    const char *cstr = getenv(key.c_str());
+    if(cstr){
+        value.assign(cstr);
+        BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " From system environment - " << key << ": " << value << endl);
+    }
+    else {
+        value.clear();
+    }
+}
+
+void get_from_config(const string &key, string &value){
+    bool key_found=false;
+    TheBESKeys::TheKeys()->get_value(key, value, key_found);
+    if (key_found) {
+        BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using " << key << " from TheBESKeys" << endl);
+    }
+    else {
+        value.clear();
+    }
+}
+
+void get_creds_from_local(string &aws_akid, string &aws_sak, string &aws_region, string &aws_s3_bucket ){
+
+    BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__
+        << " BEGIN aws_akid: '" << aws_akid << "' "
+        << "aws_sak: '" << aws_sak << "' "
+        << "aws_region: '" << aws_region << "' "
+        << "aws_s3_bucket: '" << aws_s3_bucket << "' "
+        << endl);
+
 
     const string KEYS_CONFIG_PREFIX("DMRPP");
 
-    const string ENV_SAK_KEY("AWS_SECRET_ACCESS_KEY");
-    const string CONFIG_SAK_KEY(KEYS_CONFIG_PREFIX+"."+ENV_SAK_KEY);
-    const char *aws_sak = NULL;
-
     const string ENV_AKID_KEY("AWS_ACCESS_KEY_ID");
     const string CONFIG_AKID_KEY(KEYS_CONFIG_PREFIX+"."+ENV_AKID_KEY);
-    const char *aws_akid = NULL;
+
+    const string ENV_SAK_KEY("AWS_SECRET_ACCESS_KEY");
+    const string CONFIG_SAK_KEY(KEYS_CONFIG_PREFIX+"."+ENV_SAK_KEY);
 
     const string ENV_REGION_KEY("AWS_REGION");
     const string CONFIG_REGION_KEY(KEYS_CONFIG_PREFIX+"."+ENV_REGION_KEY);
-    const char *aws_region = NULL;
 
     const string ENV_S3_BUCKET_KEY("AWS_S3_BUCKET");
     const string CONFIG_S3_BUCKET_KEY(KEYS_CONFIG_PREFIX+"."+ENV_S3_BUCKET_KEY);
-    const char *aws_s3_bucket = NULL;
 
 #ifndef NDEBUG
 
     // If we are in developer mode then we compile this section which
     // allows us to inject credentials via the system environment
 
-    string foo = getenv(ENV_SAK_KEY.c_str());
-    aws_sak = getenv(ENV_SAK_KEY.c_str());
-    aws_akid= getenv(ENV_AKID_KEY.c_str());
-    aws_region = getenv(ENV_REGION_KEY.c_str());
-    aws_s3_bucket = getenv(ENV_S3_BUCKET_KEY.c_str());
+    get_from_env(ENV_AKID_KEY,aws_akid);
+    get_from_env(ENV_SAK_KEY,aws_sak);
+    get_from_env(ENV_REGION_KEY,aws_region);
+    get_from_env(ENV_S3_BUCKET_KEY,aws_s3_bucket);
+
+    BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__
+        << " MID aws_akid: '" << aws_akid << "' "
+        << "aws_sak: '" << aws_sak << "' "
+        << "aws_region: '" << aws_region << "' "
+        << "aws_s3_bucket: '" << aws_s3_bucket << "' "
+        << endl);
+
 
 #endif
 
@@ -645,75 +677,40 @@ void get_creds_from_local(string &akid, string &sak, string &ar, string &asb ){
     // Developer mode enables the piece above which allows the environment to
     // overrule the configuration
 
-    if(aws_sak){
+    if(aws_akid.length()){
+        BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using " << ENV_AKID_KEY << " from the environment." << endl);
+    }
+    else {
+        get_from_config(CONFIG_AKID_KEY,aws_akid);
+    }
+
+    if(aws_sak.length()){
         BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using " << ENV_SAK_KEY << " from the environment." << endl);
     }
     else {
-        TheBESKeys::TheKeys()->get_value(CONFIG_SAK_KEY, sak, key_found);
-        if (key_found) {
-            aws_sak = sak.c_str();
-            BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using " << CONFIG_SAK_KEY << " from TheBESKeys" << endl);
-        }
-        else {
-            aws_sak = "";
-        }
+        get_from_config(CONFIG_SAK_KEY,aws_sak);
     }
 
-    if(aws_akid){
-        BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using " << ENV_AKID_KEY << " from the environment." << endl);
-    }
-    if(!aws_akid){
-        TheBESKeys::TheKeys()->get_value(CONFIG_AKID_KEY, akid, key_found);
-        if (key_found) {
-            aws_akid = akid.c_str();
-            BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using " << CONFIG_AKID_KEY << " from TheBESKeys" << endl);
-        }
-        else {
-            aws_akid = "";
-        }
-    }
-
-    if(aws_region){
+    if(aws_region.length()){
         BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using " << ENV_REGION_KEY << " from the environment." << endl);
     }
     else {
-        TheBESKeys::TheKeys()->get_value(CONFIG_REGION_KEY, ar, key_found);
-        if (key_found) {
-            aws_region = ar.c_str();
-            BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using " << CONFIG_REGION_KEY << " from TheBESKeys" << endl);
-        }
-        else {
-            aws_region = "";
-        }
+        get_from_config(CONFIG_REGION_KEY,aws_region);
     }
 
-
-    if(aws_s3_bucket){
+    if(aws_s3_bucket.length()){
         BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using " << ENV_S3_BUCKET_KEY << " from the environment." << endl);
     }
     else {
-        TheBESKeys::TheKeys()->get_value(CONFIG_S3_BUCKET_KEY, asb, key_found);
-        if (key_found) {
-            aws_s3_bucket = asb.c_str();
-            BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using " << CONFIG_S3_BUCKET_KEY << " from TheBESKeys" << endl);
-        }
-        else {
-            aws_s3_bucket = "";
-        }
+        get_from_config(CONFIG_S3_BUCKET_KEY,aws_s3_bucket);
     }
 
     BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__
-        << " aws_akid: " << aws_akid
-        << " aws_sak: " << aws_sak
-        << " aws_region: " << aws_region
-        << " aws_s3_bucket: " << aws_s3_bucket
+        << " END aws_akid: '" << aws_akid << "' "
+        << "aws_sak: '" << aws_sak << "' "
+        << "aws_region: '" << aws_region << "' "
+        << "aws_s3_bucket: '" << aws_s3_bucket << "' "
         << endl);
-
-    akid.assign(aws_akid);
-    sak.assign(aws_sak);
-    ar.assign(aws_region);
-    asb.assign(aws_s3_bucket);
-
 }
 
 unique_ptr<aws_credentials>
