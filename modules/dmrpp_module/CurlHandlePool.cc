@@ -610,77 +610,91 @@ unique_ptr<aws_credentials>
 aws_credentials::get(const string &url)
 {
     // FIXME Lookup the credentials in some db (BES Keys?). jhrg 11/26/19
-    if (url.find("cloudyopendap") != string::npos) {
-#ifndef NDEBUG
 
         bool key_found = false;
 
-        const char *aws_sak;
+        const string KEYS_CONFIG_PREFIX("DMRPP");
+
+        const string ENV_SAK_KEY("AWS_SECRET_ACCESS_KEY");
+        const string CONFIG_SAK_KEY(KEYS_CONFIG_PREFIX+"."+ENV_SAK_KEY);
+        const char *aws_sak = NULL;
         string ask;
-        TheBESKeys::TheKeys()->get_value("DMRPP.AWS_SECRET_ACCESS_KEY", ask, key_found);
-        if (key_found) {
-            aws_sak = ask.c_str();
-            BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using DMRPP.AWS_SECRET_ACCESS_KEY from TheBESKeys" << endl);
-        }
-        else {
-            aws_sak = getenv("AWS_SECRET_ACCESS_KEY");
-            BESDEBUG("dmrpp:creds",__FILE__ << " " << __LINE__ << " Using AWS_SECRET_ACCESS_KEY from environment" << endl);
-        }
-        if (!aws_sak) {
-            aws_sak = "";
-        }
 
-        const char *aws_akid;
+        const string ENV_AKID_KEY("AWS_ACCESS_KEY_ID");
+        const string CONFIG_AKID_KEY(KEYS_CONFIG_PREFIX+"."+ENV_AKID_KEY);
+        const char *aws_akid = NULL;
         string apk;
-        TheBESKeys::TheKeys()->get_value("DMRPP.AWS_ACCESS_KEY_ID", apk, key_found);
-        if (key_found) {
-            aws_akid = apk.c_str();
-            BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using DMRPP.AWS_ACCESS_KEY_ID from TheBESKeys" << endl);
-        }
-        else {
-            aws_akid = getenv("AWS_ACCESS_KEY_ID");
-            BESDEBUG("dmrpp:creds",__FILE__ << " " << __LINE__ << " Using AWS_ACCESS_KEY_ID from environment" << endl);
-        }
-        if (!aws_akid) {
-            aws_akid = "";
-        }
 
-        const char *aws_region;
+        const string ENV_REGION_KEY("AWS_REGION");
+        const string CONFIG_REGION_KEY(KEYS_CONFIG_PREFIX+"."+ENV_REGION_KEY);
+        const char *aws_region = NULL;
         string ar;
-        TheBESKeys::TheKeys()->get_value("DMRPP.AWS_REGION", ar, key_found);
-        if (key_found) {
-            aws_region = ar.c_str();
-            BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using DMRPP.AWS_REGION from TheBESKeys" << endl);
-        }
-        else {
-            aws_region = getenv("AWS_REGION");
-            BESDEBUG("dmrpp:creds",__FILE__ << " " << __LINE__ << " Using AWS_REGION from environment" << endl);
-        }
-        if (!aws_region) {
-            aws_region = "";
-        }
 
-        const char *aws_s3_bucket;
+        const string ENV_S3_BUCKET_KEY("AWS_S3_BUCKET");
+        const string CONFIG_S3_BUCKET_KEY(KEYS_CONFIG_PREFIX+"."+ENV_S3_BUCKET_KEY);
+        const char *aws_s3_bucket = NULL;
         string asb;
-        TheBESKeys::TheKeys()->get_value("DMRPP.AWS_S3_BUCKET", asb, key_found);
-        if (key_found) {
-            aws_s3_bucket = asb.c_str();
-            BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using DMRPP.AWS_S3_BUCKET from TheBESKeys" << endl);
-        }
-        else {
-            aws_s3_bucket = getenv("AWS_S3_BUCKET");
-            BESDEBUG("dmrpp:creds",__FILE__ << " " << __LINE__ << " Using AWS_S3_BUCKET from environment" << endl);
-        }
-        if (!aws_s3_bucket) {
-            aws_s3_bucket = "";
+
+        if (url.find("cloudyopendap") != string::npos) {
+
+#ifndef NDEBUG
+        // If we are in developer mode then we compile this section which
+        // allows us to inject credentials via the system environment
+
+        aws_sak = getenv(ENV_SAK_KEY.c_str());
+        aws_akid= getenv(ENV_AKID_KEY.c_str());
+        aws_region = getenv(ENV_REGION_KEY.c_str());
+        aws_s3_bucket = getenv(ENV_S3_BUCKET_KEY.c_str());
+
+#endif
+        // In production mode this is the single point of ingest for credentials.
+        // Developer mode enables the piece above which allows the environment to
+        // overrule the configuration
+
+        if(!aws_sak){
+            TheBESKeys::TheKeys()->get_value(CONFIG_SAK_KEY, ask, key_found);
+            if (key_found) {
+                aws_sak = ask.c_str();
+                BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using " << CONFIG_SAK_KEY << " from TheBESKeys" << endl);
+            }
+            else {
+                aws_sak = "";
+            }
         }
 
-#else
-        const char *aws_sak = "";
-        const char *aws_akid = "";
-        const char *aws_region = "";
-        const char *aws_s3_bucket = "";
-#endif
+        if(!aws_akid){
+            TheBESKeys::TheKeys()->get_value(CONFIG_AKID_KEY, apk, key_found);
+            if (key_found) {
+                aws_akid = apk.c_str();
+                BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using " << CONFIG_AKID_KEY << " from TheBESKeys" << endl);
+            }
+            else {
+                aws_akid = "";
+            }
+        }
+
+        if(!aws_region){
+            TheBESKeys::TheKeys()->get_value(CONFIG_REGION_KEY, ar, key_found);
+            if (key_found) {
+                aws_region = ar.c_str();
+                BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using " << CONFIG_REGION_KEY << " from TheBESKeys" << endl);
+            }
+            else {
+                aws_region = "";
+            }
+        }
+
+
+        if(!aws_s3_bucket){
+            TheBESKeys::TheKeys()->get_value(CONFIG_S3_BUCKET_KEY, asb, key_found);
+            if (key_found) {
+                aws_s3_bucket = asb.c_str();
+                BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using " << CONFIG_S3_BUCKET_KEY << " from TheBESKeys" << endl);
+            }
+            else {
+                aws_s3_bucket = "";
+            }
+        }
 
         BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__
             << " aws_akid: " << aws_akid
