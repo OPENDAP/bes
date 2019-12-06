@@ -3,6 +3,20 @@
 # a replacement for the autotols build. But it does provide information that
 # CLion needs to navigate the Hyrax code. jhrg 12/5/19
 
+# Included because we want the IDE to know about the library sources, not
+# the installed headers. This might make for some consistency issues if the
+# libdap code is editied and not installed. jhrg 12/5/19
+include_directories(../libdap4)
+
+# These should not be referenced outside of libdap. jhrg 12/5/19
+# include_directories(../libdap4/d4_ce)
+# include_directories(../libdap4/d4_function)
+# include_directories(../libdap4/geo)
+# include_directories(../libdap4/gl)
+# include_directories(../libdap4/gl/glthread)
+# include_directories(../libdap4/gl/sys)
+# include_directories(../libdap4/GNU)
+
 include_directories(cmdln)
 include_directories(cmdln/unit-tests)
 include_directories(dap)
