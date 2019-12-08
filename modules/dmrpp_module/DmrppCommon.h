@@ -87,8 +87,8 @@ protected:
 
 public:
     static bool d_print_chunks;     ///< if true, print_dap4() prints chunk elements
-    static string d_dmrpp_ns;       ///< The DMR++ XML namespace
-    static string d_ns_prefix;      ///< The XML namespace prefix to use
+    static std::string d_dmrpp_ns;       ///< The DMR++ XML namespace
+    static std::string d_ns_prefix;      ///< The XML namespace prefix to use
 
     DmrppCommon() : d_deflate(false), d_shuffle(false)
     {

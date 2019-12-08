@@ -65,6 +65,8 @@ using namespace dmrpp;
 using namespace std;
 using namespace bes;
 
+#define MODULE "dmrpp:creds"
+
 Lock::Lock(pthread_mutex_t &lock) : m_mutex(lock)
  {
      int status = pthread_mutex_lock(&m_mutex);
@@ -610,7 +612,7 @@ void get_from_env(const string &key, string &value){
     const char *cstr = getenv(key.c_str());
     if(cstr){
         value.assign(cstr);
-        BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " From system environment - " << key << ": " << value << endl);
+        BESDEBUG(MODULE, __FILE__ << " " << __LINE__ << " From system environment - " << key << ": " << value << endl);
     }
     else {
         value.clear();
@@ -621,7 +623,7 @@ void get_from_config(const string &key, string &value){
     bool key_found=false;
     TheBESKeys::TheKeys()->get_value(key, value, key_found);
     if (key_found) {
-        BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using " << key << " from TheBESKeys" << endl);
+        BESDEBUG(MODULE, __FILE__ << " " << __LINE__ << " Using " << key << " from TheBESKeys" << endl);
     }
     else {
         value.clear();
@@ -654,7 +656,7 @@ void get_creds_from_local(string &aws_akid, string &aws_sak, string &aws_region,
     get_from_env(ENV_REGION_KEY,aws_region);
     get_from_env(ENV_S3_BUCKET_KEY,aws_s3_bucket);
 
-    BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__
+    BESDEBUG(MODULE, __FILE__ << " " << __LINE__
         << " From ENV aws_akid: '" << aws_akid << "' "
         << "aws_sak: '" << aws_sak << "' "
         << "aws_region: '" << aws_region << "' "
@@ -668,34 +670,34 @@ void get_creds_from_local(string &aws_akid, string &aws_sak, string &aws_region,
     // overrule the configuration
 
     if(aws_akid.length()){
-        BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using " << ENV_AKID_KEY << " from the environment." << endl);
+        BESDEBUG(MODULE, __FILE__ << " " << __LINE__ << " Using " << ENV_AKID_KEY << " from the environment." << endl);
     }
     else {
         get_from_config(CONFIG_AKID_KEY,aws_akid);
     }
 
     if(aws_sak.length()){
-        BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using " << ENV_SAK_KEY << " from the environment." << endl);
+        BESDEBUG(MODULE, __FILE__ << " " << __LINE__ << " Using " << ENV_SAK_KEY << " from the environment." << endl);
     }
     else {
         get_from_config(CONFIG_SAK_KEY,aws_sak);
     }
 
     if(aws_region.length()){
-        BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using " << ENV_REGION_KEY << " from the environment." << endl);
+        BESDEBUG(MODULE, __FILE__ << " " << __LINE__ << " Using " << ENV_REGION_KEY << " from the environment." << endl);
     }
     else {
         get_from_config(CONFIG_REGION_KEY,aws_region);
     }
 
     if(aws_s3_bucket.length()){
-        BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__ << " Using " << ENV_S3_BUCKET_KEY << " from the environment." << endl);
+        BESDEBUG(MODULE, __FILE__ << " " << __LINE__ << " Using " << ENV_S3_BUCKET_KEY << " from the environment." << endl);
     }
     else {
         get_from_config(CONFIG_S3_BUCKET_KEY,aws_s3_bucket);
     }
 
-    BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__
+    BESDEBUG(MODULE, __FILE__ << " " << __LINE__
         << " END aws_akid: '" << aws_akid << "' "
         << "aws_sak: '" << aws_sak << "' "
         << "aws_region: '" << aws_region << "' "
@@ -716,7 +718,7 @@ aws_credentials::get(const string &url)
     if (url.find("cloudyopendap") != string::npos) {
 
         get_creds_from_local(aws_akid, aws_sak, aws_region, aws_s3_bucket);
-        BESDEBUG("dmrpp:creds", __FILE__ << " " << __LINE__
+        BESDEBUG(MODULE, __FILE__ << " " << __LINE__
             << " aws_akid: " << aws_akid
             << " aws_sak: " << aws_sak
             << " aws_region: " << aws_region
