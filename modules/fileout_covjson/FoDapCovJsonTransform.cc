@@ -176,7 +176,7 @@ unsigned int FoDapCovJsonTransform::covjsonSimpleTypeArrayWorker(ostream *strm, 
     // *strm << "\"currentDim\": \"" << currentDim << "\"" << endl;
     // *strm << "\"currentDimSize\": \"" << currentDimSize << "\"" << endl;
 
-    *strm << "[";
+    // *strm << "[";
     for(unsigned int i = 0; i < currentDimSize; i++) {
         if(currentDim < shape->size() - 1) {
             BESDEBUG(FoDapCovJsonTransform_debug_key,
@@ -200,7 +200,7 @@ unsigned int FoDapCovJsonTransform::covjsonSimpleTypeArrayWorker(ostream *strm, 
             }
         }
     }
-    *strm << "]";
+    // *strm << "]";
 
     return indx;
 }
@@ -238,7 +238,7 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
 
         if (currAxis->name.compare("t") != 0) {
             if (sendData) {
-                currAxis->values += "\"values\": ";
+                currAxis->values += "\"values\": [";
                 unsigned int indx = 0;
                 vector<T> src(length);
                 a->value(&src[0]);
@@ -246,6 +246,8 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
                 ostringstream astrm;
                 indx = covjsonSimpleTypeArrayWorker(&astrm, &src[0], 0, &shape, 0);
                 currAxis->values += astrm.str();
+
+                currAxis->values += "]";
 
                 if (length != indx) {
                     BESDEBUG(FoDapCovJsonTransform_debug_key,
@@ -300,7 +302,7 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
         currParameter->shape += "],";
 
         if (sendData) {
-            currParameter->values += "\"values\": ";
+            currParameter->values += "\"values\": [";
             unsigned int indx = 0;
             vector<T> src(length);
             a->value(&src[0]);
@@ -308,6 +310,8 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
             ostringstream pstrm;
             indx = covjsonSimpleTypeArrayWorker(&pstrm, &src[0], 0, &shape, 0);
             currParameter->values += pstrm.str();
+
+            currParameter->values += "]";
 
             if (length != indx) {
                 BESDEBUG(FoDapCovJsonTransform_debug_key,
