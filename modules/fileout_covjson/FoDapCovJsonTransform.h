@@ -108,12 +108,12 @@ private:
     void transformNodeWorker(std::ostream *strm, vector<libdap::BaseType *> leaves, vector<libdap::BaseType *> nodes,
         string indent, bool sendData);
 
-    void printCoverageHeaderWorker(std::ostream *strm, std::string indent, bool isCoverageCollection);
-    void printAxesWorker(std::ostream *strm, std::string indent);
-    void printReferenceWorker(std::ostream *strm, std::string indent);
-    void printParametersWorker(std::ostream *strm, std::string indent);
-    void printRangesWorker(std::ostream *strm, std::string indent);
-    void printCoverageFooterWorker(std::ostream *strm, std::string indent);
+    void printCoverage(std::ostream *strm, std::string indent);
+    void printDomain(std::ostream *strm, std::string indent);
+    void printAxes(std::ostream *strm, std::string indent);
+    void printReference(std::ostream *strm, std::string indent);
+    void printParameters(std::ostream *strm, std::string indent);
+    void printRanges(std::ostream *strm, std::string indent);
     void printCoverageJSON(std::ostream *strm, string indent, bool testOverride);
 
     template<typename T>
@@ -199,28 +199,28 @@ public:
         setDomainType(domainType);
     }
 
-    virtual void printCoverageHeaderWorker(std::ostream &ostrm, std::string indent, bool isCoverageCollection) {
-        printCoverageHeaderWorker(&ostrm, indent, isCoverageCollection);
+    virtual void printCoverage(std::ostream &ostrm, std::string indent) {
+        printCoverage(&ostrm, indent);
     }
 
-    virtual void printAxesWorker(std::ostream &ostrm, std::string indent) {
-        printAxesWorker(&ostrm, indent);
+    virtual void printDomain(std::ostream &ostrm, std::string indent) {
+        printDomain(&ostrm, indent);
     }
 
-    virtual void printReferenceWorker(std::ostream &ostrm, std::string indent) {
-        printReferenceWorker(&ostrm, indent);
+    virtual void printAxes(std::ostream &ostrm, std::string indent) {
+        printAxes(&ostrm, indent);
     }
 
-    virtual void printParametersWorker(std::ostream &ostrm, std::string indent) {
-        printParametersWorker(&ostrm, indent);
+    virtual void printReference(std::ostream &ostrm, std::string indent) {
+        printReference(&ostrm, indent);
     }
 
-    virtual void printRangesWorker(std::ostream &ostrm, std::string indent) {
-        printRangesWorker(&ostrm, indent);
+    virtual void printParameters(std::ostream &ostrm, std::string indent) {
+        printParameters(&ostrm, indent);
     }
 
-    virtual void printCoverageFooterWorker(std::ostream &ostrm, std::string indent) {
-        printCoverageFooterWorker(&ostrm, indent);
+    virtual void printRanges(std::ostream &ostrm, std::string indent) {
+        printRanges(&ostrm, indent);
     }
     // ---------------------------------------------------------------------------------------------------------
 };

@@ -595,6 +595,9 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
         libdap::AttrTable::Attr_iter end = attr_table.attr_end();
 
         for(libdap::AttrTable::Attr_iter at_iter = begin; at_iter != end; at_iter++) {
+            // cout << "Printing Attribute Table: " << endl; 
+            // attr_table.print(*strm);
+
             switch (attr_table.get_attr_type(at_iter)) {
             case libdap::Attr_container: {
                 libdap::AttrTable *atbl = attr_table.get_attr_table(at_iter);
@@ -896,109 +899,176 @@ void FoDapCovJsonTransform::transformNodeWorker(ostream *strm, vector<libdap::Ba
 
 
 /**
- * @brief Worker method prints the CoverageJSON file header, which
- *   includes domainType, to stream
+ * @brief Prints the CoverageJSON file to stream via the print Coverage
+ *    worker functions
  *
  * @param strm Write to this output stream
  * @param indent Indent the output so humans can make sense of it
- * @param isCoverageCollection true if CoverageCollection format needed, false if normal Coverage
+ * @param testOverride true: print to stream regardless of whether the file can
+ *    be converted to CoverageJSON (for testing purposes) false: run canConvert
+ *    function to determine if the source DDS can be converted to CovJSON
  */
-void FoDapCovJsonTransform::printCoverageHeaderWorker(ostream *strm, string indent, bool isCoverageCollection)
+void FoDapCovJsonTransform::printCoverageJSON(ostream *strm, string indent, bool testOverride)
 {
-    string child_indent1 = indent + _indent_increment;
-    string child_indent2 = child_indent1 + _indent_increment;
-
-    BESDEBUG(FoDapCovJsonTransform_debug_key, "Printing COVERAGE HEADER" << endl);
-
-    // A lot of conditional printing based on whether we have a single
-    // Coverage or a Coverage Collection. Nothing fancy here.
-    *strm << indent << "{" << endl;
-    *strm << child_indent1 << "\"type\": \"Coverage\"," << endl;
-    *strm << child_indent1 << "\"domain\": {" << endl;
-    *strm << child_indent2 << "\"type\" : \"Domain\"," << endl;
-
-    if(domainType == Grid) {
-        *strm << child_indent2 << "\"domainType\": \"Grid\"," << endl;
-    }
-    else if(domainType == VerticalProfile) {
-        *strm << child_indent2 << "\"domainType\": \"Vertical Profile\"," << endl;
-    }
-    else if(domainType == PointSeries) {
-        *strm << child_indent2 << "\"domainType\": \"Point Series\"," << endl;
-    }
-    else if(domainType == Point) {
-        *strm << child_indent2 << "\"domainType\": \"Point\"," << endl;
+    // Determine if the attribute values we read can be converted to CovJSON.
+    // Test override forces printing output to stream regardless of whether
+    // or not the file can be converted into CoverageJSON format.
+    if(testOverride) {
+        canConvertToCovJson = true;
     }
     else {
-        *strm << child_indent2 << "\"domainType\": \"Unknown\"," << endl;
+        canConvertToCovJson = canConvert();
     }
 
-    // @TODO NEEDS REFACTORING FOR BES ISSUE #245
-    // https://github.com/OPENDAP/bes/issues/245
-
-    // if(parameterCount > 1 && isCoverageCollection) {
-    //     *strm << indent << "{" << endl;
-    //     *strm << child_indent1 << "\"type\": \"CoverageCollection\"," << endl;
-    // }
-    // else if(parameterCount > 1 && !isCoverageCollection) {
-    //     *strm << indent << "\"coverages\": [{" << endl;
-    //     *strm << child_indent1 << "\"type\": \"Coverage\"," << endl;
-    //     *strm << child_indent1 << "\"domain\": {" << endl;
-    // }
-    // else {
-    //     *strm << indent << "{" << endl;
-    //     *strm << child_indent1 << "\"type\": \"Coverage\"," << endl;
-    //     *strm << child_indent1 << "\"domain\": {" << endl;
-    // }
-    //
-    // if(parameterCount > 1 && !isCoverageCollection) {
-    //     *strm << child_indent2 << "\"type\" : \"Domain\"," << endl;
-    // }
-    //
-    // if(parameterCount == 1 && !isCoverageCollection) {
-    //     if(domainType == Grid) {
-    //         *strm << child_indent2 << "\"domainType\": \"Grid\"," << endl;
-    //     }
-    //     else if(domainType == VerticalProfile) {
-    //         *strm << child_indent2 << "\"domainType\": \"Vertical Profile\"," << endl;
-    //     }
-    //     else if(domainType == PointSeries) {
-    //         *strm << child_indent2 << "\"domainType\": \"Point Series\"," << endl;
-    //     }
-    //     else if(domainType == Point) {
-    //         *strm << child_indent2 << "\"domainType\": \"Point\"," << endl;
-    //     }
-    //     else {
-    //         *strm << child_indent2 << "\"domainType\": \"Unknown\"," << endl;
-    //     }
-    // }
-    // else if(parameterCount > 1 && isCoverageCollection) {
-    //     if(domainType == Grid) {
-    //         *strm << child_indent1 << "\"domainType\": \"Grid\"," << endl;
-    //     }
-    //     else if(domainType == VerticalProfile) {
-    //         *strm << child_indent1 << "\"domainType\": \"Vertical Profile\"," << endl;
-    //     }
-    //     else if(domainType == PointSeries) {
-    //         *strm << child_indent1 << "\"domainType\": \"Point Series\"," << endl;
-    //     }
-    //     else if(domainType == Point) {
-    //         *strm << child_indent1 << "\"domainType\": \"Point\"," << endl;
-    //     }
-    //     else {
-    //         *strm << child_indent1 << "\"domainType\": \"Unknown\"," << endl;
-    //     }
-    // }
+    // Only print if this file can be converted to CovJSON
+    if(canConvertToCovJson) {
+        // Prints the entire Coverage to stream
+        printCoverage(strm, indent);
+    }
+    else {
+        // If this file can't be converted, then its failing spatial/temporal requirements
+        throw BESInternalError("File cannot be converted to CovJSON format due to missing or incompatible spatial dimensions", __FILE__, __LINE__);
+    }
 }
 
 
 /**
- * @brief Worker method prints the CoverageJSON file Axes to stream
+ * @brief Worker method prints the Coverage to stream, which
+ *   includes domain, axes, and references, parameters, and ranges
  *
  * @param strm Write to this output stream
  * @param indent Indent the output so humans can make sense of it
  */
-void FoDapCovJsonTransform::printAxesWorker(ostream *strm, string indent)
+void FoDapCovJsonTransform::printCoverage(ostream *strm, string indent)
+{
+    string child_indent1 = indent + _indent_increment;
+    string child_indent2 = child_indent1 + _indent_increment;
+
+    BESDEBUG(FoDapCovJsonTransform_debug_key, "Printing COVERAGE" << endl);
+
+    *strm << indent << "{" << endl;
+    *strm << child_indent1 << "\"type\": \"Coverage\"," << endl;
+
+    // Prints the Domain to stream
+    // "domain" : {
+    //   "type" : "Domain",
+    //   "domainType" : "Grid",
+    //   "axes": {
+    //     "x" : { "values": [-10,-5,0] },
+    //     "y" : { "values": [40,50] },
+    //     "z" : { "values": [ 5] },
+    //     "t" : { "values": ["2010-01-01T00:12:20Z"] }
+    //   },
+    //   "referencing": [{
+    //     "coordinates": ["y","x","z"],
+    //     "system": {
+    //       "type": "GeographicCRS",
+    //       "id": "http://www.opengis.net/def/crs/EPSG/0/4979"
+    //     }
+    //   }, 
+    //   {
+    //     "coordinates": ["t"],
+    //     "system": {
+    //       "type": "TemporalRS",
+    //       "calendar": "Gregorian"
+    //     }
+    //   }]
+    // },
+    printDomain(strm, child_indent1);
+
+    // Prints the Parameters to stream
+    // "parameters" : {
+    //   "ICEC": {
+    //     "type" : "Parameter",
+    //     "description": {
+    //       "en": "Sea Ice concentration (ice=1;no ice=0)"
+    //     },
+    //     "unit" : {
+    //       "label": {
+    //         "en": "Ratio"
+    //       },
+    //       "symbol": {
+    //         "value": "1",
+    //         "type": "http://www.opengis.net/def/uom/UCUM/"
+    //       }
+    //     },
+    //     "observedProperty" : {
+    //       "id" : "http://vocab.nerc.ac.uk/standard_name/sea_ice_area_fraction/",
+    //       "label" : {
+    //         "en": "Sea Ice Concentration"
+    //       }
+    //     }
+    //   }
+    // },
+    printParameters(strm, child_indent1);
+
+    // Prints the Ranges values to stream
+    // "ranges" : {
+    //   "ICEC" : {
+    //     "type" : "NdArray",
+    //     "dataType": "float",
+    //     "axisNames": ["t","z","y","x"],
+    //     "shape": [1, 1, 2, 3],
+    //     "values" : [ 
+    //       0.5, 0.6, 0.4, 0.6, 0.2, null
+    //     ]
+    //   }
+    // }
+    printRanges(strm, child_indent1);
+
+    *strm << indent << "}" << endl;
+}
+
+
+/**
+ * @brief Worker method prints the Domain to stream, which
+ *   includes domainType, axes, and references
+ *
+ * @param strm Write to this output stream
+ * @param indent Indent the output so humans can make sense of it
+ */
+void FoDapCovJsonTransform::printDomain(ostream *strm, string indent)
+{
+    string child_indent1 = indent + _indent_increment;
+
+    BESDEBUG(FoDapCovJsonTransform_debug_key, "Printing DOMAIN" << endl);
+
+    *strm << indent << "\"domain\": {" << endl;
+    *strm << child_indent1 << "\"type\" : \"Domain\"," << endl;
+
+    if(domainType == Grid) {
+        *strm << child_indent1 << "\"domainType\": \"Grid\"," << endl;
+    }
+    else if(domainType == VerticalProfile) {
+        *strm << child_indent1 << "\"domainType\": \"Vertical Profile\"," << endl;
+    }
+    else if(domainType == PointSeries) {
+        *strm << child_indent1 << "\"domainType\": \"Point Series\"," << endl;
+    }
+    else if(domainType == Point) {
+        *strm << child_indent1 << "\"domainType\": \"Point\"," << endl;
+    }
+    else {
+        *strm << child_indent1 << "\"domainType\": \"Unknown\"," << endl;
+    }
+
+    // Prints the axes metadata and range values
+    printAxes(strm, child_indent1);
+
+    // Prints the references for the given Axes
+    printReference(strm, child_indent1);
+
+    *strm << indent << "}," << endl;
+}
+
+
+/**
+ * @brief Worker method prints the Coverage Axes to stream
+ *
+ * @param strm Write to this output stream
+ * @param indent Indent the output so humans can make sense of it
+ */
+void FoDapCovJsonTransform::printAxes(ostream *strm, string indent)
 {
     string child_indent1 = indent + _indent_increment;
     string child_indent2 = child_indent1 + _indent_increment;
@@ -1067,22 +1137,17 @@ void FoDapCovJsonTransform::printAxesWorker(ostream *strm, string indent)
             *strm << child_indent1 << "}," << endl;
         }
     }
-    if(parameterCount == 1) {
-        *strm << indent << "}," << endl;
-    }
-    else {
-        *strm << indent << "}" << endl;
-    }
+    *strm << indent << "}," << endl;
 }
 
 
 /**
- * @brief Worker method prints the CoverageJSON file Axes reference to stream
+ * @brief Worker method prints the Coverage domain reference to stream
  *
  * @param strm Write to this output stream
  * @param indent Indent the output so humans can make sense of it
  */
-void FoDapCovJsonTransform::printReferenceWorker(ostream *strm, string indent)
+void FoDapCovJsonTransform::printReference(ostream *strm, string indent)
 {
     string child_indent1 = indent + _indent_increment;
     string child_indent2 = child_indent1 + _indent_increment;
@@ -1138,27 +1203,17 @@ void FoDapCovJsonTransform::printReferenceWorker(ostream *strm, string indent)
     *strm << child_indent2 << "\"type\": \"GeographicCRS\"," << endl;
     *strm << child_indent2 << "\"id\": \"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"" << endl;
     *strm << child_indent1 << "}" << endl;
-
-    if(parameterCount > 1) {
-        *strm << indent << "}]," << endl;
-    }
-    else {
-        *strm << indent << "}]" << endl;
-    }
-
-    if(parameterCount == 1) {
-        *strm << _indent_increment << "}," << endl;
-    }
+    *strm << indent << "}]" << endl;
 }
 
 
 /**
- * @brief Worker method prints the CoverageJSON file Parameters to stream
+ * @brief Worker method prints the Coverage Parameters to stream
  *
  * @param strm Write to this output stream
  * @param indent Indent the output so humans can make sense of it
  */
-void FoDapCovJsonTransform::printParametersWorker(ostream *strm, string indent)
+void FoDapCovJsonTransform::printParameters(ostream *strm, string indent)
 {
     string child_indent1 = indent + _indent_increment;
     string child_indent2 = child_indent1 + _indent_increment;
@@ -1177,7 +1232,7 @@ void FoDapCovJsonTransform::printParametersWorker(ostream *strm, string indent)
         *strm << child_indent2 << "\"description\": {" << endl;
 
         if(parameters[i]->longName.compare("") != 0) {
-            *strm << child_indent3 << "\"en\": \"" << parameters[i]->longName << "\"," << endl;
+            *strm << child_indent3 << "\"en\": \"" << parameters[i]->longName << "\"" << endl;
         }
         else if(parameters[i]->standardName.compare("") != 0) {
             *strm << child_indent3 << "\"en\": \"" << parameters[i]->standardName << "\"" << endl;
@@ -1190,11 +1245,11 @@ void FoDapCovJsonTransform::printParametersWorker(ostream *strm, string indent)
         *strm << child_indent2 << "\"unit\": {" << endl;
         *strm << child_indent3 << "\"label\": {" << endl;
         *strm << child_indent4 << "\"en\": \"" << parameters[i]->unit << "\"" << endl;
+        *strm << child_indent3 << "}," << endl;
+        *strm << child_indent3 << "\"symbol\": {" << endl;
+        *strm << child_indent4 << "\"value\": \"" << parameters[i]->unit << "\"," << endl;
+        *strm << child_indent4 << "\"type\": \"http://www.opengis.net/def/uom/UCUM/\"" << endl;
         *strm << child_indent3 << "}" << endl;
-        *strm << child_indent2 << "}," << endl;
-        *strm << child_indent2 << "\"symbol\": {" << endl;
-        *strm << child_indent3 << "\"value\": \"" << parameters[i]->unit << "\"," << endl;
-        *strm << child_indent3 << "\"type\": \"http://www.opengis.net/def/uom/UCUM/\"" << endl;
         *strm << child_indent2 << "}," << endl;
         *strm << child_indent2 << "\"observedProperty\": {" << endl;
 
@@ -1233,9 +1288,8 @@ void FoDapCovJsonTransform::printParametersWorker(ostream *strm, string indent)
             *strm << child_indent1 << "}," << endl;
         }
     }
-    if(parameterCount > 1) {
-        *strm << indent << "}," << endl;
-    }
+
+    *strm << indent << "}," << endl;
 }
 
 
@@ -1248,7 +1302,7 @@ void FoDapCovJsonTransform::printParametersWorker(ostream *strm, string indent)
  * @param strm Write to this output stream
  * @param indent Indent the output so humans can make sense of it
  */
-void FoDapCovJsonTransform::printRangesWorker(ostream *strm, string indent)
+void FoDapCovJsonTransform::printRanges(ostream *strm, string indent)
 {
     string child_indent1 = indent + _indent_increment;
     string child_indent2 = child_indent1 + _indent_increment;
@@ -1283,7 +1337,6 @@ void FoDapCovJsonTransform::printRangesWorker(ostream *strm, string indent)
     }
 
     // Axis name (x, y, or z)
-    *strm << indent << "}," << endl;
     *strm << indent << "\"ranges\": {" << endl;
     for(unsigned int i = 0; i < parameterCount; i++) {
         string dataType;
@@ -1318,113 +1371,8 @@ void FoDapCovJsonTransform::printRangesWorker(ostream *strm, string indent)
             *strm << child_indent1 << "}," << endl;
         }
     }
-    if(parameterCount == 1) {
-        *strm << indent << "}" << endl;
-    }
-}
-
-
-/**
- * @brief Worker method prints the CoverageJSON file footer to stream
- *
- * @param strm Write to this output stream
- * @param indent Indent the output so humans can make sense of it
- */
-void FoDapCovJsonTransform::printCoverageFooterWorker(ostream *strm, string indent)
-{
-    string child_indent1 = indent + _indent_increment;
-    string child_indent2 = child_indent1 + _indent_increment;
-
-    BESDEBUG(FoDapCovJsonTransform_debug_key, "Printing COVERAGE FOOTER" << endl);
-
-    if(parameterCount > 1) {
-        *strm << child_indent2 << "}" << endl;
-        *strm << child_indent1 << "}]" << endl;
-    }
 
     *strm << indent << "}" << endl;
-}
-
-
-/**
- * @brief Prints the CoverageJSON file to stream via the print Coverage
- *    worker functions
- *
- * @param strm Write to this output stream
- * @param indent Indent the output so humans can make sense of it
- * @param testOverride true: print to stream regardless of whether the file can
- *    be converted to CoverageJSON (for testing purposes) false: run canConvert
- *    function to determine if the source DDS can be converted to CovJSON
- */
-void FoDapCovJsonTransform::printCoverageJSON(ostream *strm, string indent, bool testOverride)
-{
-    string child_indent1 = indent + _indent_increment;
-    string child_indent2 = child_indent1 + _indent_increment;
-    string child_indent3 = child_indent2 + _indent_increment;
-
-    // Determine if the attribute values we read can be converted to CovJSON.
-    // Test override forces printing output to stream regardless of whether
-    // or not the file can be converted into CoverageJSON format.
-    if(testOverride) {
-        canConvertToCovJson = true;
-    }
-    else {
-        canConvertToCovJson = canConvert();
-    }
-
-    // Only print if this file can be converted to CovJSON
-    if(canConvertToCovJson) {
-        // If we have more than one parameter, we are dealing with a
-        // Coverage Collection, so we must print accordingly
-        // if(parameterCount > 1) {
-        //     // Prints header and domain type
-        //     printCoverageHeaderWorker(strm, indent, true);
-        //
-        //     // Prints parameter metadata
-        //     printParametersWorker(strm, child_indent1);
-        //
-        //     // Prints the references for the given Axes
-        //     printReferenceWorker(strm, child_indent1);
-        //
-        //     // Prints header and domain type
-        //     printCoverageHeaderWorker(strm, child_indent1, false);
-        //
-        //     // Prints the axes metadata and range values
-        //     printAxesWorker(strm, child_indent3);
-        //
-        //     // Prints the parameter range values
-        //     printRangesWorker(strm, child_indent2);
-        //
-        //     // Prints footer
-        //     printCoverageFooterWorker(strm, indent);
-        // }
-        // // If we have a single parameter, or even no parameters,
-        // // we will print as a "normal" coverage
-        // else {
-
-        // Prints header and domain type
-        printCoverageHeaderWorker(strm, indent, false);
-
-        // Prints the axes metadata and range values
-        printAxesWorker(strm, child_indent2);
-
-        // Prints the references for the given Axes
-        printReferenceWorker(strm, child_indent2);
-
-        // Prints parameter metadata
-        printParametersWorker(strm, child_indent2);
-
-        // Prints the parameter range values
-        printRangesWorker(strm, child_indent1);
-
-        // Prints footer
-        printCoverageFooterWorker(strm, indent);
-        // }
-    }
-    else {
-        // If this file can't be converted, then its failing spatial/temporal requirements
-        throw BESInternalError("File cannot be converted to COVJSON format due to missing or incompatible spatial dimensions", __FILE__, __LINE__);
-    }
 }
 
 
