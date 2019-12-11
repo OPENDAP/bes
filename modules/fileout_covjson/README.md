@@ -10,4 +10,4 @@ See https://covjson.org/spec/ for the full CovJSON specification.
 
 ## Contributors
 
-This module was originally developed by Corey Hemphill, River Hendriksen, Riley Rimer as an Oregon State University senior capstone project in 2018.
+This module was originally developed by Corey Hemphill, River Hendriksen, and Riley Rimer as an Oregon State University senior capstone project in 2018.
