@@ -88,7 +88,7 @@ bool DmrppRequestHandler::d_use_parallel_transfers = true;
 unsigned int DmrppRequestHandler::d_max_parallel_transfers = 8;
 
 // Default minimum value is 2MB: 2 * (1024*1024)
-int DmrppRequestHandler::d_min_size = 2097152;
+unsigned int DmrppRequestHandler::d_min_size = 2097152;
 
 static void read_key_value(const std::string &key_name, bool &key_value)
 {
