@@ -176,7 +176,6 @@ unsigned int FoDapCovJsonTransform::covjsonSimpleTypeArrayWorker(ostream *strm, 
     // *strm << "\"currentDim\": \"" << currentDim << "\"" << endl;
     // *strm << "\"currentDimSize\": \"" << currentDimSize << "\"" << endl;
 
-    // *strm << "[";
     for(unsigned int i = 0; i < currentDimSize; i++) {
         if(currentDim < shape->size() - 1) {
             BESDEBUG(FoDapCovJsonTransform_debug_key,
@@ -200,7 +199,6 @@ unsigned int FoDapCovJsonTransform::covjsonSimpleTypeArrayWorker(ostream *strm, 
             }
         }
     }
-    // *strm << "]";
 
     return indx;
 }
@@ -437,6 +435,36 @@ void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, 
     }
 }
 
+void FoDapCovJsonTransform::addAxis(string name, string values) 
+{
+    struct Axis *newAxis = new Axis;
+
+    newAxis->name = name;
+    newAxis->values = values;
+
+    this->axes.push_back(newAxis);
+    this->axisCount++;
+}
+
+void FoDapCovJsonTransform::addParameter(string id, string name, string type, string dataType, string unit,
+    string longName, string standardName, string shape, string values) 
+{
+    struct Parameter *newParameter = new Parameter;
+
+    newParameter->id = id;
+    newParameter->name = name;
+    newParameter->type = type;
+    newParameter->dataType = dataType;
+    newParameter->unit = unit;
+    newParameter->longName = longName;
+    newParameter->standardName = standardName;
+    newParameter->shape = shape;
+    newParameter->values = values;
+
+    this->parameters.push_back(newParameter);
+    this->parameterCount++;
+}
+
 void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr_table, string name,
     bool *axisRetrieved, bool *parameterRetrieved)
 {
@@ -448,6 +476,9 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
 
     isAxis = false;
     isParam = false;
+
+    *axisRetrieved = false;
+    *parameterRetrieved = false;
 
     // FOR TESTING AND DEBUGGING PURPOSES
     // *strm << "\"attr_tableName\": \"" << name << "\"" << endl;
@@ -515,7 +546,7 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
         libdap::AttrTable::Attr_iter end = attr_table.attr_end();
 
         for(libdap::AttrTable::Attr_iter at_iter = begin; at_iter != end; at_iter++) {
-            // cout << "Printing Attribute Table: " << endl; 
+            // FOR TESTING AND DEBUGGING PURPOSES 
             // attr_table.print(*strm);
 
             switch (attr_table.get_attr_type(at_iter)) {
@@ -576,10 +607,6 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
     }
 
     if(isAxis) {
-        // Push a new axis
-        struct Axis *newAxis = new Axis;
-        newAxis->name = currAxisName;
-
         // If we're dealing with the time axis, capture the time
         // origin timestamp value with the appropriate formatting
         // for printing.
@@ -601,37 +628,18 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
             // then a client SHOULD interpret those dates in
             // that reduced precision.
 
-            // string item;
-            // vector<string> tokens;
-            // char *dup = strdup(currAxisTimeOrigin.c_str());
-            // char *token = strtok(dup, " ");
-            // while(token != NULL){
-            //     tokens.push_back(string(token));
-            //     token = strtok(NULL, " ");
-            // }
-
-            // free(token);
-            // free(dup);
-            // free(token);
-
-            // For testing purposes
-            // for(unsigned int i = 0; i < tokens.size(); i++) {
-            //     *strm << tokens[i] << endl;
-            // }
-
             // @TODO Need to figure out a way to dynamically parse
             // origin timestamps and convert them to an appropriate
             // format for CoverageJSON
 
-            newAxis->values += "\"values\": [ \"";
-            newAxis->values += currAxisTimeOrigin;
-            // newAxis->values += "2018-01-01T00:12:20Z";
-            newAxis->values += "\" ]";
+            // ex: "2018-01-01T00:12:20Z"
+            addAxis(currAxisName, "\"values\": [\"" + currAxisTimeOrigin + "\"]");
         }
-        axes.push_back(newAxis);
-        axisCount++;
+        else {
+            addAxis(currAxisName, "");
+        }
+
         *axisRetrieved = true;
-        *parameterRetrieved = false;
     }
     else if(isParam) {
         // Kent says: Use LongName to select the new Parameter is too strict.
@@ -649,19 +657,12 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
         //    - If not, the CF standard_name, perhaps with underscores removed
         //    - If the standard_name doesn’t exist, use the variable ID
         //
-        // This constraint is now evaluated in the printParametersWorker
+        // This constraint is now evaluated in the printParameters worker
         // rather than within this function where the parameter is retrieved.
         // -CH 5/11/2019
 
-        // Push a new parameter
-        struct Parameter *newParameter = new Parameter;
-        newParameter->name = name;
-        newParameter->dataType = currDataType;
-        newParameter->unit = currUnit;
-        newParameter->longName = currLongName;
-        parameters.push_back(newParameter);
-        parameterCount++;
-        *axisRetrieved = false;
+        addParameter("", name, "", currDataType, currUnit, currLongName, currStandardName, "", "");
+
         *parameterRetrieved = true;
     }
     else {

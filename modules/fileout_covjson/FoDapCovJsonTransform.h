@@ -430,35 +430,35 @@ private:
     unsigned int covjsonSimpleTypeArrayWorker(std::ostream *strm, T *values, unsigned int indx,
         std::vector<unsigned int> *shape, unsigned int currentDim);
 
-    // FOR TESTING PURPOSES ------------------------------------------------------------------------------------
-    void addAxis(std::string name, std::string values) {
-        struct Axis *newAxis = new Axis;
+    /**
+     * @brief Adds a new Axis
+     *
+     * @param name the new Axis name
+     * @param values a string of values we want to write to stream
+     *
+     * @returns a new Axis in the axes vector
+     */
+    void addAxis(std::string name, std::string values);
 
-        newAxis->name = name;
-        newAxis->values = values;
-
-        this->axes.push_back(newAxis);
-        this->axisCount++;
-    }
-
+    /**
+     * @brief Adds a new Parameter
+     *
+     * @param id the new Parameter id
+     * @param name the new Parameter name
+     * @param type the new Parameter type
+     * @param dataType the new Parameter dataType
+     * @param unit the new Parameter unit
+     * @param longName the new Parameter longName
+     * @param standardName the new Parameter standardName
+     * @param shape the new Parameter shape
+     * @param values the new Parameter values
+     *
+     * @returns a new Parameter in the parameters vector
+     */
     void addParameter(std::string id, std::string name, std::string type, std::string dataType, std::string unit,
-            std::string longName, std::string standardName, std::string shape, std::string values) {
-        struct Parameter *newParameter = new Parameter;
+        std::string longName, std::string standardName, std::string shape, std::string values);
 
-        newParameter->id = id;
-        newParameter->name = name;
-        newParameter->type = type;
-        newParameter->dataType = dataType;
-        newParameter->unit = unit;
-        newParameter->longName = longName;
-        newParameter->standardName = standardName;
-        newParameter->shape = shape;
-        newParameter->values = values;
-
-        this->parameters.push_back(newParameter);
-        this->parameterCount++;
-    }
-
+    // FOR TESTING PURPOSES ------------------------------------------------------------------------------------
     void setAxesExistence(bool x, bool y, bool z, bool t) {
         this->xExists = x;
         this->yExists = y;
