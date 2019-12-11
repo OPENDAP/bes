@@ -607,32 +607,10 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
     }
 
     if(isAxis) {
-        // If we're dealing with the time axis, capture the time
-        // origin timestamp value with the appropriate formatting
-        // for printing.
+        // If we're dealing with the time axis, capture the time origin 
+        // timestamp value with the appropriate formatting for printing.
         // @TODO See https://covjson.org/spec/#temporal-reference-systems
         if(currAxisName.compare("t") == 0) {
-            // If the calendar is based on years, months, days,
-            // then the referenced values SHOULD use one of the
-            // following ISO8601-based lexical representations:
-
-            //  YYYY
-            //  ±XYYYY (where X stands for extra year digits)
-            //  YYYY-MM
-            //  YYYY-MM-DD
-            //  YYYY-MM-DDTHH:MM:SS[.F]Z where Z is either “Z”
-            //      or a time scale offset + -HH:MM
-
-            // If calendar dates with reduced precision are
-            // used in a lexical representation (e.g. "2016"),
-            // then a client SHOULD interpret those dates in
-            // that reduced precision.
-
-            // @TODO Need to figure out a way to dynamically parse
-            // origin timestamps and convert them to an appropriate
-            // format for CoverageJSON
-
-            // ex: "2018-01-01T00:12:20Z"
             addAxis(currAxisName, "\"values\": [\"" + sanitizeTimeOriginString(currAxisTimeOrigin) + "\"]");
         }
         else {
@@ -669,7 +647,39 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
     }
 }
 
+// template<typename T>
+// void FoDapCovJsonTransform::removeSubstring(basic_string<T>& s, const basic_string<T>& p) {
+//    basic_string<T>::size_type n = p.length();
+
+//    for (basic_string<T>::size_type i = s.find(p);
+//         i != basic_string<T>::npos;
+//         i = s.find(p))
+//       s.erase(i, n);
+// }
+
 string FoDapCovJsonTransform::sanitizeTimeOriginString(string timeOrigin) {
+    // If the calendar is based on years, months, days,
+    // then the referenced values SHOULD use one of the
+    // following ISO8601-based lexical representations:
+
+    //  YYYY
+    //  ±XYYYY (where X stands for extra year digits)
+    //  YYYY-MM
+    //  YYYY-MM-DD
+    //  YYYY-MM-DDTHH:MM:SS[.F]Z where Z is either “Z”
+    //      or a time scale offset + -HH:MM
+
+    // If calendar dates with reduced precision are
+    // used in a lexical representation (e.g. "2016"),
+    // then a client SHOULD interpret those dates in
+    // that reduced precision.
+
+    // @TODO Dynamic parsing of origin timestamps and 
+    // convert them to an appropriate format if it is
+    // both necessary and possible
+
+    // ex: "2018-01-01T00:12:20Z"
+
     string cleanTimeOrigin = timeOrigin;
 
     return cleanTimeOrigin;
