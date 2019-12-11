@@ -24,6 +24,7 @@
 #include "config.h"
 
 #include <string>
+#include <locale>
 #include <sstream>
 #include <iomanip>
 
@@ -36,6 +37,8 @@
 #if HAVE_CURL_MULTI_H
 #include <curl/multi.h>
 #endif
+
+#include <time.h>
 
 #include "util.h"   // long_to_string()
 
@@ -51,6 +54,7 @@
 #include "awsv4.h"
 #include "CurlHandlePool.h"
 #include "Chunk.h"
+#include "CredentialsManager.h"
 
 #define KEEP_ALIVE 1   // Reuse libcurl easy handles (1) or not (0).
 
@@ -59,13 +63,12 @@
 static const int MAX_WAIT_MSECS = 30*1000; // Wait max. 30 seconds
 static const unsigned int retry_limit = 10; // Amazon's suggestion
 static const unsigned int initial_retry_time = 1000; // one milli-second
-static const std::string dmrpp_3 = "dmrpp:3";
 
 using namespace dmrpp;
 using namespace std;
 using namespace bes;
 
-#define MODULE "dmrpp:creds"
+#define MODULE "dmrpp:curl_handle_pool"
 
 Lock::Lock(pthread_mutex_t &lock) : m_mutex(lock)
  {
@@ -587,15 +590,26 @@ url_has_credentials(const string &url)
 static bool
 url_must_be_signed(const string &url)
 {
-    return (url.find("http://") == 0 || url.find("https://") == 0) && url_has_credentials(url);
+
+    if(url.find("http://") == 0 || url.find("https://") == 0){
+        access_credentials *ac = CredentialsManager::theCM()->get(url);
+        if(ac)
+            return ac->isS3Cred();
+    }
+    return false;
+    // return (url.find("http://") == 0 || url.find("https://") == 0) && url_has_credentials(url);
 }
 
+#if 0
 // FIXME The most low-budget credential DB on the planet. jhrg 11/26/19
 struct aws_credentials {
     string public_key;    // = "AKIA24JBYMSH64NYGEIE";
     string secret_key;    // = "*************WaaQ7";
     string region;    // = "us-east-1";
-    string bucket_name;    // = "us-east-1";
+    string bucket_name;    // = "muhbucket";
+
+    map<string,map<string,string>> credentials;
+
 
     aws_credentials(): public_key(""), secret_key(""), region(""), bucket_name("") {}
 
@@ -732,6 +746,7 @@ aws_credentials::get(const string &url)
         return creds;
     }
 }
+#endif
 
 /**
  * Get a CURL easy handle to transfer data from \arg url into the given \arg chunk.
@@ -792,20 +807,21 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
             throw BESInternalError(string("CURL Error setting easy_handle as private data: ").append(curl_error_msg(res, handle->d_errbuf)), __FILE__,
             __LINE__);
 
-        // we support file:, http: and https: URIs. Never build an Authorization header for
-        // file: URIs.
-        if (url_must_be_signed(handle->d_url)) {
+        access_credentials *credentials = CredentialsManager::theCM()->get(handle->d_url);
+        if ( credentials && credentials->isS3Cred()) {
             const std::time_t request_time = std::time(nullptr);
 
-            aws_credentials aws_creds;
-            unique_ptr<aws_credentials> creds = aws_creds.get(handle->d_url);
-            if (creds->public_key == "") {
-                throw BESInternalError(string("URL requires authorization, but credentials could not be found").append(" (").append(handle->d_url).append(")."), __FILE__, __LINE__);
-            }
+            //if (credentials->get(access_credentials::KEY) == "") {
+            //    throw BESInternalError(string("URL requires authorization, but credentials could not be found").append(" (").append(handle->d_url).append(")."), __FILE__, __LINE__);
+            //}
 
-            const std::string auth_header = AWSV4::compute_awsv4_signature(handle->d_url, request_time,
-                                                                           creds->public_key, creds->secret_key,
-                                                                           creds->region);
+            const std::string auth_header =
+                    AWSV4::compute_awsv4_signature(
+                            handle->d_url,
+                            request_time,
+                            credentials->get(access_credentials::ID),
+                            credentials->get(access_credentials::KEY),
+                            credentials->get(access_credentials::REGION));
 
             // passing nullptr for the first call allocates the curl_slist
             // The following code builds the slist that holds the headers. This slist is freed

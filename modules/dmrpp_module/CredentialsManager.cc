@@ -1,4 +1,25 @@
+// -*- mode: c++; c-basic-offset:4 -*-
+
+// This file is part of the BES
+
+// Copyright (c) 2019 OPeNDAP, Inc.
+// Author: Nathan Potter<ndp@opendap.org>
 //
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+//
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 // Created by ndp on 12/11/19.
 //
 
@@ -12,24 +33,36 @@
 #include <locale>
 #include <string>
 
-#include "DmrppCommon.h"
 #include "WhiteList.h"
 #include <TheBESKeys.h>
 #include "BESForbiddenError.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"
 #include "BESLog.h"
-#include "util.h"   // long_to_string()
+#include "util.h"   // libdap::long_to_string()
+
 #include "config.h"
 #include "Chunk.h"
 #include "CurlHandlePool.h"
 #include "awsv4.h"
+#include "DmrppCommon.h"
 
 #include "CredentialsManager.h"
 
 #define MODULE "dmrpp:creds"
 
+CredentialsManager *CredentialsManager::theMngr=0;
 
+const string access_credentials::ID="id";
+const string access_credentials::KEY="key";
+const string access_credentials::REGION="region";
+const string access_credentials::BUCKET="bucket";
+
+/**
+ *
+ * @param key
+ * @return
+ */
 std::string get_env_value(const string &key){
     string value;
     const char *cstr = getenv(key.c_str());
@@ -43,6 +76,11 @@ std::string get_env_value(const string &key){
     return value;
 }
 
+/**
+ *
+ * @param key
+ * @return
+ */
 std::string get_config_value(const string &key){
     string value;
     bool key_found=false;
@@ -56,111 +94,63 @@ std::string get_config_value(const string &key){
     return value;
 }
 
-
-struct access_credentials{
-    std::string id;    // = "AKIA24JBYMSH64NYGEIE";
-    std::string key;    // = "*************WaaQ7";
-    std::map<std::string, std::string> kvp;
-
-    access_credentials(): id(""), key(""){}
-    access_credentials(const std::string &vid, const std::string &vkey): id(vid), key(vkey){
-        add("id",id);
-        add("key",key);
-    }
-    access_credentials(const access_credentials &ac):id(ac.id),key(ac.key),kvp(ac.kvp){}
-
-    std::string get_id(){return get("id");}
-    std::string get_key(){return get("key");}
-
-    std::string get(const std::string &vkey){
-        std::map<std::string, std::string>::iterator it;
-        std::string value("");
-        it = kvp.find(vkey);
-        if (it != kvp.end())
-          value = it->second;
-        return value;
-    }
-
-    void add(const std::string &key, const std::string &value){
-        kvp.insert(std::pair<std::string, std::string>(key, value));
-    }
-};
-
-struct s3_access_credentials: public access_credentials {
-    std::string region;    // = "us-east-1";
-    std::string bucket_name;    // = "muhbucket";
-
-    s3_access_credentials(): access_credentials(), region(""), bucket_name(""){}
-    s3_access_credentials(const std::string &vid, const std::string &vkey, const std::string &vregion, const std::string &vbucket)
-            : access_credentials(vid, vkey), region(vregion), bucket_name(vbucket) {
-        add("region",region);
-        add("bucket_name",bucket_name);
-    }
-    s3_access_credentials(const s3_access_credentials &sac): access_credentials(sac), region(), bucket_name(sac.bucket_name){}
-
-    std::string get_region(){ return get("region");}
-    std::string get_bucket_name(){ return get("bucket_name");}
-};
-
-class CrdMngr {
-private:
-    CrdMngr();
-    static CrdMngr *theMngr;
-    std::map<std::string, access_credentials* > creds;
-
-public:
-    ~CrdMngr();
-
-    static CrdMngr *theCM(){
-        if(!theMngr){
-            theMngr= new CrdMngr();
-        }
-        return theMngr;
-    }
-
-    void add(const std::string &url, access_credentials *ac);
-
-    access_credentials* get(const std::string &url);
-
-    void load_credentials();
-
-};
-CrdMngr::~CrdMngr() {
+/**
+ *
+ */
+CredentialsManager::~CredentialsManager() {
     for (std::map<std::string,access_credentials*>::iterator it=creds.begin(); it != creds.end(); ++it){
         delete it->second;
     }
     creds.clear();
 }
 
-CrdMngr::CrdMngr(){
+/**
+ *
+ */
+CredentialsManager::CredentialsManager(){
     load_credentials();
 }
 
-
+/**
+ *
+ * @param key
+ * @param ac
+ */
 void
-CrdMngr::add(const std::string &key, access_credentials *ac){
+CredentialsManager::add(const std::string &key, access_credentials *ac){
     creds.insert(std::pair<std::string,access_credentials *>(key, ac));
 }
 
+/**
+ *
+ * @param url
+ * @return
+ */
 access_credentials*
-CrdMngr::get(const std::string &url){
+CredentialsManager::get(const std::string &url){
     access_credentials *best_match = NULL;
     std::string best_key("");
 
-    for (std::map<std::string,access_credentials*>::iterator it=creds.begin(); it != creds.end(); ++it){
-        std::string key = it->first;
-        if (url.rfind(key, 0) == 0) {
-            // url starts with key
-            if(key.length() > best_key.length()){
-                best_key = key;
-                best_match = it->second;
+    if(url.find("http://") == 0 || url.find("https://") == 0) {
+        for (std::map<std::string, access_credentials *>::iterator it = creds.begin(); it != creds.end(); ++it) {
+            std::string key = it->first;
+            if (url.rfind(key, 0) == 0) {
+                // url starts with key
+                if (key.length() > best_key.length()) {
+                    best_key = key;
+                    best_match = it->second;
+                }
             }
         }
     }
+
     return best_match;
 }
 
-void CrdMngr::load_credentials( ){
+/**
+ *
+ */
+void CredentialsManager::load_credentials( ){
     string aws_akid, aws_sak, aws_region, aws_s3_bucket;
 
     const string KEYS_CONFIG_PREFIX("DMRPP");
@@ -227,7 +217,6 @@ void CrdMngr::load_credentials( ){
     else {
         aws_s3_bucket.assign(get_config_value(CONFIG_S3_BUCKET_KEY));
     }
-
     BESDEBUG(MODULE, __FILE__ << " " << __LINE__
                               << " END aws_akid: '" << aws_akid << "' "
                               << "aws_sak: '" << aws_sak << "' "
@@ -236,9 +225,76 @@ void CrdMngr::load_credentials( ){
                               << endl);
 
     //best_creds = unique_ptr<access_credentials> creds(access_credentials);
+    add("https://", new access_credentials(aws_akid,aws_sak,aws_region,aws_s3_bucket));
+}
 
+/**
+ *
+ * @param id
+ * @param key
+ */
+access_credentials::access_credentials(
+        const std::string &id,
+        const std::string &key) : s3_tested(false), is_s3(false){
+    add(ID,id);
+    add(KEY,key);
+}
 
-    add("https://", new s3_access_credentials(aws_akid,aws_sak,aws_region,aws_s3_bucket));
+/**
+ *
+ * @param id
+ * @param key
+ * @param region
+ * @param bucket
+ */
+access_credentials::access_credentials(
+        const std::string &id,
+        const std::string &key,
+        const std::string &region,
+        const std::string &bucket)
+        : access_credentials(id, key) {
+    add(REGION,region);
+    add(BUCKET,bucket);
+}
 
+/**
+ *
+ * @param vkey
+ * @return
+ */
+std::string
+access_credentials::get(const std::string &vkey){
+    std::map<std::string, std::string>::iterator it;
+    std::string value("");
+    it = kvp.find(vkey);
+    if (it != kvp.end())
+        value = it->second;
+    return value;
+}
 
+/**
+ *
+ * @param key
+ * @param value
+ */
+void
+access_credentials::add(
+        const std::string &key,
+        const std::string &value){
+    kvp.insert(std::pair<std::string, std::string>(key, value));
+}
+
+/**
+ *
+ * @return
+ */
+bool access_credentials::isS3Cred(){
+    if(!s3_tested){
+        is_s3 = get(ID).length()>0 &&
+                get(KEY).length()>0 &&
+                get(REGION).length()>0 &&
+                get(BUCKET).length()>0;
+        s3_tested = true;
+    }
+    return is_s3;
 }
