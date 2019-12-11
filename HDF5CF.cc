@@ -2183,6 +2183,8 @@ void File::remove_netCDF_internal_attributes(bool include_attr) {
     if(true == include_attr) {
         for (vector<Var *>::iterator irv = this->vars.begin();
              irv != this->vars.end(); ++irv) {
+            bool var_has_dimscale = false;
+            
             for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
                 ira != (*irv)->attrs.end();) {
                 if((*ira)->name == "CLASS") {
@@ -2193,6 +2195,8 @@ void File::remove_netCDF_internal_attributes(bool include_attr) {
                     if (0 == class_value.compare(0,15,"DIMENSION_SCALE")) {
                         delete(*ira);
                         ira = (*irv)->attrs.erase(ira);
+                        var_has_dimscale = true;
+                        
                     }
 #if 0
                         else if(1) {// Add a BES key,also delete
@@ -2203,6 +2207,7 @@ void File::remove_netCDF_internal_attributes(bool include_attr) {
                         ++ira;
                     }
                 }
+#if 0
                 else if((*ira)->name == "NAME") {// Add a BES Key 
                     string name_value = Retrieve_Str_Attr_Value(*ira,(*irv)->fullpath);
                     if( 0 == name_value.compare(0,(*irv)->name.size(),(*irv)->name)) {
@@ -2221,6 +2226,7 @@ void File::remove_netCDF_internal_attributes(bool include_attr) {
                     }
 
                 }
+#endif
                 else if((*ira)->name == "_Netcdf4Dimid") {
                         delete(*ira);
                         ira =(*irv)->attrs.erase(ira);
@@ -2233,6 +2239,17 @@ void File::remove_netCDF_internal_attributes(bool include_attr) {
 #endif
                 else {
                     ++ira;
+                }
+            }
+
+            if(true == var_has_dimscale) {
+                for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+                    ira != (*irv)->attrs.end();++ira) {
+                    if((*ira)->name == "NAME") {// Add a BES Key 
+                        delete(*ira);
+                        ira =(*irv)->attrs.erase(ira);
+                        break;
+                    }
                 }
             }
         }

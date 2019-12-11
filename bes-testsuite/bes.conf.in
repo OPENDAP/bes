@@ -64,11 +64,14 @@ BES.LogVerbose=no
 # BES.module.h4=@modulesdir@/libhdf4_module.so
 # BES.module.ff=@modulesdir@/libff_module.so
 
-BES.modules=dap,cmd,h5,functions
+BES.modules=dap,cmd,h5,functions,fonc,nc
 BES.module.dap=@modulesdir@/libdap_module.so
 BES.module.cmd=@modulesdir@/libdap_xml_module.so
 BES.module.h5=@abs_top_builddir@/.libs/libhdf5_module.so
 BES.module.functions=@modulesdir@/libfunctions_module.so
+BES.module.fonc=@modulesdir@/libfonc_module.so
+BES.module.nc=@modulesdir@/libnc_module.so
+
 
 #-----------------------------------------------------------------------#
 # Setting the data location

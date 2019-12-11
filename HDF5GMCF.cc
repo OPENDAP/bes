@@ -724,6 +724,11 @@ void GMFile:: Handle_Unsupported_Others(bool include_attr)  {
                         }
                     }
                     else if((*ira)->name == "NAME") {// Add a BES Key later
+                        delete(*ira);
+                        ira =(*irv)->attrs.erase(ira);
+                        //"NAME" attribute causes the file netCDF-4 failed.
+#if 0
+
                         string name_value = Retrieve_Str_Attr_Value(*ira,(*irv)->fullpath);
                         if( 0 == name_value.compare(0,(*irv)->name.size(),(*irv)->name)) {
                             delete(*ira);
@@ -739,6 +744,7 @@ void GMFile:: Handle_Unsupported_Others(bool include_attr)  {
                                 ++ira;
                             }
                         }
+#endif
                     }
                     else if((*ira)->name == "_Netcdf4Dimid") {
                         delete(*ira);
@@ -3176,7 +3182,6 @@ void GMFile::Handle_CVar_Dimscale_General_Product()  {
 
             // This is the dimension scale dataset; it should be changed to a coordinate variable.
             if ((*irs)== (*irv)->fullpath) {
-
                 if((*irv)->dims.size()!=1) 
                     throw3("COARDS coordinate variable",(*irv)->name, "is not 1D");
 
@@ -3395,6 +3400,10 @@ cerr<<(*i)->fullpath <<endl;
         release_standalone_var_vector(tempcvar_2dlat);
         release_standalone_var_vector(tempcvar_2dlon);
     }// if(false == Check_1DGeolocation_Dimscale())
+#if 0
+for (vector<GMCVar *>:: iterator i= this->cvars.begin(); i!=this->cvars.end(); ++i) 
+cerr<<(*i)->fullpath <<endl;
+#endif
 
 }
     
