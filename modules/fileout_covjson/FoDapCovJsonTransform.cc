@@ -623,10 +623,10 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
             // origin timestamps and convert them to an appropriate
             // format for CoverageJSON
 
-            newAxis->values += "\"values\": [\"";
-            // newAxis->values += currAxisTimeOrigin;
-            newAxis->values += "2018-01-01T00:12:20Z";
-            newAxis->values += "\"]";
+            newAxis->values += "\"values\": [ \"";
+            newAxis->values += currAxisTimeOrigin;
+            // newAxis->values += "2018-01-01T00:12:20Z";
+            newAxis->values += "\" ]";
         }
         axes.push_back(newAxis);
         axisCount++;
@@ -672,7 +672,7 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
 FoDapCovJsonTransform::FoDapCovJsonTransform(libdap::DDS *dds) :
     _dds(dds), _returnAs(""), _indent_increment("  "), atomicVals(""), currDataType(""), domainType(0),
     xExists(false), yExists(false), zExists(false), tExists(false), isParam(false), isAxis(false),
-    canConvertToCovJson(false), axisCount(0), parameterCount(0) // not used , shapeValsCount(0)
+    canConvertToCovJson(false), axisCount(0), parameterCount(0)
 {
     if (!_dds) throw BESInternalError("File out COVJSON, null DDS passed to constructor", __FILE__, __LINE__);
 }

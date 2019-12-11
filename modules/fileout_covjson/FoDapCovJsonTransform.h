@@ -85,11 +85,6 @@ private:
     std::vector<Axis *> axes;
     unsigned int parameterCount;
     std::vector<Parameter *> parameters;
-#if 0
-    // not used
-    unsigned int shapeValsCount;
-#endif
-
     std::vector<int> shapeVals;
 
     /**
@@ -277,10 +272,10 @@ private:
      *
      * @output:
      *   "axes": {
-     *     "x" : { "values": [-10,-5,0] },
-     *     "y" : { "values": [40,50] },
-     *     "z" : { "values": [ 5] },
-     *     "t" : { "values": ["2010-01-01T00:12:20Z"] }
+     *     "x" : { "values": [ -10,-5,0 ] },
+     *     "y" : { "values": [ 40, 50 ] },
+     *     "z" : { "values": [ 5 ] },
+     *     "t" : { "values": [ "2010-01-01T00:12:20Z" ] }
      *   },
      */
     void printAxes(std::ostream *strm, std::string indent);
@@ -293,7 +288,7 @@ private:
      * 
      * @output:
      *  "referencing": [{
-     *    "coordinates": ["y","x","z"],
+     *    "coordinates": [ "y", "x", "z" ],
      *    "system": {
      *      "type": "GeographicCRS",
      *      "id": "http://www.opengis.net/def/crs/EPSG/0/4979"

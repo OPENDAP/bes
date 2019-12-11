@@ -1,17 +1,13 @@
-# CoverageJSON-Response-Handler-for-OPeNDAP
+# Fileout CoverageJSON Response Handler Module
 
-## Problem
+## About
 
-OPeNDAP is a data transport protocol that supplies its users a way to provide and request data across the web. One of the main functions
-of the protocol is the ability to pull data in multiple different formats including ASCII, netCDF3, netCDF4, binary (DAP2), and several
-other object serializations. OPeNDAP does not currently have a response handler in place to serve data in the CoverageJSON data format,
-which is a JavaScript Object Notation (JSON) data format for describing coverages. CoverageJSON would be a useful format to have
-available from OPeNDAP due to it encoding data values based upon a spatial temporal domain similar to how satellite data is collected
-from NASA's satellites. The integration of the CoverageJSON format into OPeNDAP would help support the creation of coverage data driven
-web applications by NASA JPL(Jet Propulsion Lab) and any other users of OPeNDAP.
+CoverageJSON is a format for encoding coverage data like grids, time series, and vertical profiles, distinguished by the geometry of their spatiotemporal domain. A CoverageJSON object represents a domain, a range, a coverage, or a collection of coverages. A range in CoverageJSON represents coverage values. A coverage in CoverageJSON is the combination of a domain, parameters, ranges, and additional metadata. A coverage collection represents a list of coverages.
 
-## Solution
+A complete CoverageJSON data structure is always an object (in JSON terms). In CoverageJSON, an object consists of a collection of name/value pairs – also called members. For each member, the name is always a string. Member values are either a string, number, object, array or one of the literals: true, false, and null. An array consists of elements where each element is a value as described above.
 
-This module contains the code for the implementation of a CoverageJSON response handler which is integrated into the flow of Hyrax and OPeNDAP.
-Users and developers can either used the module via the OLFS or the BES standalone on the backend.
-This project was completed in early 2018.
+See https://covjson.org/spec/ for the full CovJSON specification.
+
+## Contributors
+
+This module was originally developed by Corey Hemphill, River Hendriksen, Riley Rimer as an Oregon State University senior capstone project in 2018.
