@@ -168,7 +168,7 @@ public:
     virtual unsigned long add_chunk(const std::string &data_url, unsigned long long size, unsigned long long offset,
         std::string position_in_array = "");
 
-    virtual unsigned long add_chunk(const string &data_url, unsigned long long size, unsigned long long offset,
+    virtual unsigned long add_chunk(const std::string &data_url, unsigned long long size, unsigned long long offset,
         const std::vector<unsigned int> &position_in_array);
 
     virtual void dump(std::ostream & strm) const;
