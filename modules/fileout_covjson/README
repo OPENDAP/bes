@@ -1,0 +1,5 @@
+For just compiling: make
+
+For compile and unit tests: make check
+
+For compile and install: make install
