@@ -59,7 +59,7 @@ public:
     static CurlHandlePool *curl_handle_pool;
 
     static bool d_use_parallel_transfers;
-    static int d_max_parallel_transfers;
+    static unsigned int d_max_parallel_transfers;
 
     static int d_min_size;
 
