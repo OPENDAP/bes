@@ -130,6 +130,16 @@ private:
         bool *axisRetrieved, bool *parameterRetrieved);
 
     /**
+     * @brief Attemps to sanitize the time origin string by reformatting and removing
+     *    unnecessary words when appropriate
+     *
+     * @param timeOrigin the original, unclean, time origin value from the source DDS
+     * 
+     * @returns a sanitized version of the time origin timestamp string
+     */
+    string sanitizeTimeOriginString(std::string timeOrigin);
+
+    /**
      * @brief Writes a CovJSON representation of the DDS to the passed stream. Data
      *   is sent if the sendData flag is true. Otherwise, only metadata is sent.
      *

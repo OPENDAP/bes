@@ -633,7 +633,7 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
             // format for CoverageJSON
 
             // ex: "2018-01-01T00:12:20Z"
-            addAxis(currAxisName, "\"values\": [\"" + currAxisTimeOrigin + "\"]");
+            addAxis(currAxisName, "\"values\": [\"" + sanitizeTimeOriginString(currAxisTimeOrigin) + "\"]");
         }
         else {
             addAxis(currAxisName, "");
@@ -660,7 +660,6 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
         // This constraint is now evaluated in the printParameters worker
         // rather than within this function where the parameter is retrieved.
         // -CH 5/11/2019
-
         addParameter("", name, "", currDataType, currUnit, currLongName, currStandardName, "", "");
 
         *parameterRetrieved = true;
@@ -668,6 +667,12 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
     else {
         // Do nothing
     }
+}
+
+string FoDapCovJsonTransform::sanitizeTimeOriginString(string timeOrigin) {
+    string cleanTimeOrigin = timeOrigin;
+
+    return cleanTimeOrigin;
 }
 
 FoDapCovJsonTransform::FoDapCovJsonTransform(libdap::DDS *dds) :
