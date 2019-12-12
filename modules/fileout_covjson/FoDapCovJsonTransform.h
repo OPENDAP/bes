@@ -140,6 +140,16 @@ private:
     string sanitizeTimeOriginString(std::string timeOrigin);
 
     /**
+     * @brief Removes a substring from a given string
+     *
+     * @param str string to remove a substring from
+     * @param subStr sub-string to be removed from a given string
+     * 
+     * @returns modifies str by reference with the specified substring removed
+     */
+    void removeSubstring(std::string& str, const std::string subStr);
+
+    /**
      * @brief Writes a CovJSON representation of the DDS to the passed stream. Data
      *   is sent if the sendData flag is true. Otherwise, only metadata is sent.
      *

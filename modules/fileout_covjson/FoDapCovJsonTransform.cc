@@ -647,15 +647,12 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
     }
 }
 
-// template<typename T>
-// void FoDapCovJsonTransform::removeSubstring(basic_string<T>& s, const basic_string<T>& p) {
-//    basic_string<T>::size_type n = p.length();
+void FoDapCovJsonTransform::removeSubstring(std::string& str, const std::string subStr) {
+   int n = subStr.length();
 
-//    for (basic_string<T>::size_type i = s.find(p);
-//         i != basic_string<T>::npos;
-//         i = s.find(p))
-//       s.erase(i, n);
-// }
+   for (unsigned int i = str.find(subStr); i < str.length(); i = str.find(subStr))
+      str.erase(i, n);
+}
 
 string FoDapCovJsonTransform::sanitizeTimeOriginString(string timeOrigin) {
     // If the calendar is based on years, months, days,
@@ -668,6 +665,7 @@ string FoDapCovJsonTransform::sanitizeTimeOriginString(string timeOrigin) {
     //  YYYY-MM-DD
     //  YYYY-MM-DDTHH:MM:SS[.F]Z where Z is either “Z”
     //      or a time scale offset + -HH:MM
+    //      ex: "2018-01-01T00:12:20Z"
 
     // If calendar dates with reduced precision are
     // used in a lexical representation (e.g. "2016"),
@@ -678,9 +676,18 @@ string FoDapCovJsonTransform::sanitizeTimeOriginString(string timeOrigin) {
     // convert them to an appropriate format if it is
     // both necessary and possible
 
-    // ex: "2018-01-01T00:12:20Z"
-
     string cleanTimeOrigin = timeOrigin;
+
+    // Remove any commonly found words from the
+    // time origin timestamp...
+    removeSubstring(cleanTimeOrigin, "hour");
+    removeSubstring(cleanTimeOrigin, "hours");
+    removeSubstring(cleanTimeOrigin, "minute");
+    removeSubstring(cleanTimeOrigin, "minutes");
+    removeSubstring(cleanTimeOrigin, "second");
+    removeSubstring(cleanTimeOrigin, "seconds");
+    removeSubstring(cleanTimeOrigin, "since");
+    removeSubstring(cleanTimeOrigin, "  ");
 
     return cleanTimeOrigin;
 }
