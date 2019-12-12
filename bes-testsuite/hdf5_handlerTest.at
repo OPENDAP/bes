@@ -169,6 +169,9 @@ AT_BESCMD_RESPONSE_TEST([dim_scale.h5.das.bescmd])
 # Emulate the new Trop-OMI product 
 AT_BESCMD_RESPONSE_TEST([dim_scale2.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([dim_scale2.h5.das.bescmd])
+# Check the handling of NAME attributes. "NAME" is removed for coordinate variables 
+# and dim. scale variables(they are not always overlapped.)
+AT_BESCMD_RESPONSE_TEST([dim_scale2_name.h5.das.bescmd])
 
 #generic cf 1d,2d latlon tests, only include das and dds.
 AT_BESCMD_RESPONSE_TEST([t_cf_1dll.h5.dds.bescmd])
