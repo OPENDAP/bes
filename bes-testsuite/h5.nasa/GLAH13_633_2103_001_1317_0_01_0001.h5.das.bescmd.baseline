@@ -3114,7 +3114,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1";
         String fullnamepath "/Data_1HZ/DS_UTCTime_1";
     }
     Data_1HZ_Time_d_UTCTime_1 {
-        String NAME "DS_UTCTime_1";
         String units "seconds since 2000-01-01 12:00:00 UTC";
         String hertz "1";
         String long_name "Transmit Time of First Shot in frame in J2000";
@@ -3151,7 +3150,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1";
         String standard_name "time";
         String description "The transmit time of each shot in the 1 second frame measured as UTC seconds elapsed since Jan 1 2000 12:00:00 UTC. This time has been derived from the GPS time accounting for leap seconds.";
         String source "Rel 33 GLAS Binary Data";
-        String NAME "DS_UTCTime_40";
         String origname "d_UTCTime_40";
         String fullnamepath "/Data_40HZ/Time/d_UTCTime_40";
     }

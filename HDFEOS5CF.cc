@@ -431,6 +431,10 @@ void EOS5File::Handle_Unsupported_Others(bool include_attr)
                     }
                 }
                 else if((*ira)->name == "NAME") {// Add a BES Key later
+                    delete(*ira);
+                    ira=(*irv)->attrs.erase(ira);
+                    //"NAME" attribute causes the file netCDF-4 failed.
+#if 0
                     string name_value = Retrieve_Str_Attr_Value(*ira,(*irv)->fullpath);
                     if( 0 == name_value.compare(0,(*irv)->name.size(),(*irv)->name)) {
                         delete(*ira);
@@ -446,6 +450,7 @@ void EOS5File::Handle_Unsupported_Others(bool include_attr)
                             ++ira;
                         }
                     }
+#endif
                 }
                 else if((*ira)->name == "_Netcdf4Dimid") {
                     delete(*ira);

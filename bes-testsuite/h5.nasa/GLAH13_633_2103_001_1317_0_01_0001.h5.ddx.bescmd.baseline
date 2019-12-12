@@ -8741,9 +8741,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <dimension name="Data_1HZ_DS_UTCTime_1" size="11242"/>
     </Array>
     <Array name="Data_1HZ_Time_d_UTCTime_1">
-        <Attribute name="NAME" type="String">
-            <value>DS_UTCTime_1</value>
-        </Attribute>
         <Attribute name="units" type="String">
             <value>seconds since 2000-01-01 12:00:00 UTC</value>
         </Attribute>
@@ -8853,9 +8850,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="origname" type="String">
             <value>d_UTCTime_40</value>
