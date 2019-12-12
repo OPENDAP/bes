@@ -29,22 +29,25 @@
 #include <string>
 #include <vector>
 
-//class access_credentials;
+// These are the names of the bes keys used to configure the handler.
+#define CATALOG_MANAGER_CREDENTIALS "CM.credentials"
 
-class access_credentials {
+class AccessCredentials {
 public:
     static const std::string ID;
     static const std::string KEY;
     static const std::string REGION;
     static const std::string BUCKET;
+    static const std::string URL;
 private:
     std::map<std::string, std::string> kvp;
     bool s3_tested, is_s3;
+    std::string conf_name;
 public:
-    access_credentials()= default;
-    access_credentials(const access_credentials &ac) = default;
-    access_credentials(const std::string &id, const std::string &key);
-    access_credentials(
+    AccessCredentials()= default;
+    AccessCredentials(const AccessCredentials &ac) = default;
+    AccessCredentials(const std::string &id, const std::string &key);
+    AccessCredentials(
         const std::string &id,
         const std::string &key,
         const std::string &region,
@@ -59,8 +62,10 @@ public:
 
 class CredentialsManager {
 private:
+    std::map<std::string, AccessCredentials* > creds;
     CredentialsManager();
-    std::map<std::string, access_credentials* > creds;
+    static void initialize_instance();
+    static void delete_instance();
 
 public:
     static CredentialsManager *theMngr;
@@ -68,17 +73,16 @@ public:
     ~CredentialsManager();
 
     static CredentialsManager *theCM(){
-        if(!theMngr){
-            theMngr= new CredentialsManager();
-        }
+        if (theMngr == 0) initialize_instance();
         return theMngr;
     }
 
-    void add(const std::string &url, access_credentials *ac);
+    void add(const std::string &url, AccessCredentials *ac);
 
-    access_credentials *get(const std::string &url);
+    AccessCredentials *get(const std::string &url);
 
-    void load_credentials();
+    static void load_credentials();
+    static void load_credentials_OLD();
 
 };
 

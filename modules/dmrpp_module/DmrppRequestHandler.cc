@@ -67,6 +67,7 @@
 #include "DmrppRequestHandler.h"
 #include "CurlHandlePool.h"
 #include "DmrppMetadataStore.h"
+#include "CredentialsManager.h"
 
 using namespace bes;
 using namespace libdap;
@@ -130,6 +131,8 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
 
     read_key_value("DMRPP.UseParallelTransfers", d_use_parallel_transfers);
     read_key_value("DMRPP.MaxParallelTransfers", d_max_parallel_transfers);
+
+    CredentialsManager::load_credentials();
 
     if (!curl_handle_pool)
         curl_handle_pool = new CurlHandlePool();

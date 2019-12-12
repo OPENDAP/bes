@@ -580,6 +580,7 @@ append_http_header(curl_slist *slist, const string &header, const string &value)
     return temp;
 }
 
+#if 0
 // TODO Make this real! jhrg 11/26/19
 static bool
 url_has_credentials(const string &url)
@@ -592,15 +593,19 @@ url_must_be_signed(const string &url)
 {
 
     if(url.find("http://") == 0 || url.find("https://") == 0){
-        access_credentials *ac = CredentialsManager::theCM()->get(url);
+        AccessCredentials *ac = CredentialsManager::theCM()->get(url);
         if(ac)
             return ac->isS3Cred();
     }
     return false;
     // return (url.find("http://") == 0 || url.find("https://") == 0) && url_has_credentials(url);
 }
+#endif
+
 
 #if 0
+//I think this is closer to working now and that we don't need these functions - ndp 12/12/19'
+
 // FIXME The most low-budget credential DB on the planet. jhrg 11/26/19
 struct aws_credentials {
     string public_key;    // = "AKIA24JBYMSH64NYGEIE";
@@ -807,21 +812,19 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
             throw BESInternalError(string("CURL Error setting easy_handle as private data: ").append(curl_error_msg(res, handle->d_errbuf)), __FILE__,
             __LINE__);
 
-        access_credentials *credentials = CredentialsManager::theCM()->get(handle->d_url);
+        AccessCredentials *credentials = CredentialsManager::theCM()->get(handle->d_url);
         if ( credentials && credentials->isS3Cred()) {
+            // If there are available credentials, and they are S3 credentials then we need to sign
+            // the request
             const std::time_t request_time = std::time(nullptr);
-
-            //if (credentials->get(access_credentials::KEY) == "") {
-            //    throw BESInternalError(string("URL requires authorization, but credentials could not be found").append(" (").append(handle->d_url).append(")."), __FILE__, __LINE__);
-            //}
 
             const std::string auth_header =
                     AWSV4::compute_awsv4_signature(
                             handle->d_url,
                             request_time,
-                            credentials->get(access_credentials::ID),
-                            credentials->get(access_credentials::KEY),
-                            credentials->get(access_credentials::REGION));
+                            credentials->get(AccessCredentials::ID),
+                            credentials->get(AccessCredentials::KEY),
+                            credentials->get(AccessCredentials::REGION));
 
             // passing nullptr for the first call allocates the curl_slist
             // The following code builds the slist that holds the headers. This slist is freed

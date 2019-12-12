@@ -32,6 +32,7 @@
 #include <sstream>
 #include <locale>
 #include <string>
+#include <sstream>
 
 #include "WhiteList.h"
 #include <TheBESKeys.h>
@@ -53,11 +54,13 @@
 
 CredentialsManager *CredentialsManager::theMngr=0;
 
-const string access_credentials::ID="id";
-const string access_credentials::KEY="key";
-const string access_credentials::REGION="region";
-const string access_credentials::BUCKET="bucket";
+const string AccessCredentials::ID="id";
+const string AccessCredentials::KEY="key";
+const string AccessCredentials::REGION="region";
+const string AccessCredentials::BUCKET="bucket";
+const string AccessCredentials::URL="url";
 
+const string CM_CREDENTIALS="CM.credentials";
 /**
  *
  * @param key
@@ -98,41 +101,61 @@ std::string get_config_value(const string &key){
  *
  */
 CredentialsManager::~CredentialsManager() {
-    for (std::map<std::string,access_credentials*>::iterator it=creds.begin(); it != creds.end(); ++it){
+    for (std::map<std::string,AccessCredentials*>::iterator it=creds.begin(); it != creds.end(); ++it){
         delete it->second;
     }
     creds.clear();
 }
 
 /**
- *
+ * Really it's the default constructor for now.
  */
-CredentialsManager::CredentialsManager(){
-    load_credentials();
+CredentialsManager::CredentialsManager(){}
+
+/**
+ */
+void CredentialsManager::initialize_instance()
+{
+    theMngr = new CredentialsManager;
+#ifdef HAVE_ATEXIT
+    atexit(delete_instance);
+#endif
+
 }
 
 /**
- *
- * @param key
- * @param ac
+ * Private static function can only be called by friends and pThreads code.
+ */
+void CredentialsManager::delete_instance()
+{
+    delete theMngr;
+    theMngr = 0;
+}
+
+
+/**
+ * Add the passed set of AccessCredentials to the collection, filed under key.
+ * @param key The key (URL) to associated with these credentials
+ * @param ac The credentials to use for access.
  */
 void
-CredentialsManager::add(const std::string &key, access_credentials *ac){
-    creds.insert(std::pair<std::string,access_credentials *>(key, ac));
+CredentialsManager::add(const std::string &key, AccessCredentials *ac){
+    creds.insert(std::pair<std::string,AccessCredentials *>(key, ac));
 }
 
 /**
- *
- * @param url
- * @return
+ * Retrieve the AccessCredentials, if any, associated with the passed url (key).
+ * @param url The URL for which AccessCredentials are desired
+ * @return If there are AccessCredentials associated with the URL/key then a point to
+ * them will be returned. Otherwise, NULL.
  */
-access_credentials*
+AccessCredentials*
 CredentialsManager::get(const std::string &url){
-    access_credentials *best_match = NULL;
+    AccessCredentials *best_match = NULL;
     std::string best_key("");
 
     if(url.find("http://") == 0 || url.find("https://") == 0) {
-        for (std::map<std::string, access_credentials *>::iterator it = creds.begin(); it != creds.end(); ++it) {
+        for (std::map<std::string, AccessCredentials *>::iterator it = creds.begin(); it != creds.end(); ++it) {
             std::string key = it->first;
             if (url.rfind(key, 0) == 0) {
                 // url starts with key
@@ -147,10 +170,97 @@ CredentialsManager::get(const std::string &url){
     return best_match;
 }
 
-/**
- *
- */
 void CredentialsManager::load_credentials( ){
+    bool found = false;
+
+    map<string,AccessCredentials *> credential_sets;
+    AccessCredentials *accessCredentials;
+
+    vector<string> credentials_entries;
+
+    TheBESKeys::TheKeys()->get_values(CM_CREDENTIALS, credentials_entries,  found);
+    if (found) {
+        vector<string>::iterator it;
+         for (it = credentials_entries.begin(); it != credentials_entries.end(); it++) {
+            string credentials_entry = *it;
+            accessCredentials = NULL;
+            int index = credentials_entry.find(":");
+            if (index > 0) {
+                string config_name = credentials_entry.substr(0, index);
+                string remainder = credentials_entry.substr(index + 1);
+                BESDEBUG(MODULE,
+                         "config_name: '" << config_name << "'  remainder: " << remainder << endl);
+
+                map<string,AccessCredentials *>::iterator mit;
+
+                mit = credential_sets.find(config_name);
+                if (mit != credential_sets.end()) {  // New?
+                    accessCredentials = mit->second;
+                }
+                else { // Nope.
+                    accessCredentials = new AccessCredentials();
+                    credential_sets.insert(pair<string, AccessCredentials *>(config_name,accessCredentials));
+                }
+                index = remainder.find(":");
+
+                if (index > 0) {
+                    string key = remainder.substr(0, index);
+                    string value = remainder.substr(index + 1);
+                    accessCredentials->add(key,value);
+                } else {
+                    throw BESInternalError(
+                            string("The configuration entry for the ")
+                            + CM_CREDENTIALS
+                            + " was incorrectly formatted. entry: "
+                            + credentials_entry, __FILE__, __LINE__);
+                }
+
+
+
+//                d_httpd_catalogs.insert(pair<string, string>(name, url));
+//                add("https://", new AccessCredentials(aws_akid,aws_sak,aws_region,aws_s3_bucket));
+            } else {
+                throw BESInternalError(
+                        string("The configuration entry for the ")
+                        + CM_CREDENTIALS
+                        + " was incorrectly formatted. entry: "
+                        + credentials_entry, __FILE__, __LINE__);
+            }
+        }
+        vector<string> pitch;
+        map<string,AccessCredentials *>::iterator acit;
+
+        for (acit = credential_sets.begin(); acit != credential_sets.end(); acit++) {
+            accessCredentials = acit->second;
+            string url = accessCredentials->get(AccessCredentials::URL);
+            if(url.length()){
+                theCM()->add(url,accessCredentials);
+            }
+            else {
+                pitch.push_back(acit->first);
+            }
+        }
+        if(pitch.size()){
+            stringstream ss;
+            vector<string>::iterator pt;
+
+            ss << "Encountered " << pitch.size() <<  CM_CREDENTIALS
+               << " definitions missing an associated URL. offenders: ";
+
+            for (pt = credentials_entries.begin(); pt != credentials_entries.end(); pt++)
+                ss << *pt << "  ";
+
+            throw BESInternalError( ss.str(), __FILE__, __LINE__);
+
+        }
+    }
+
+}
+
+/**
+ * Load the AccessCredentials.
+ */
+void CredentialsManager::load_credentials_OLD() {
     string aws_akid, aws_sak, aws_region, aws_s3_bucket;
 
     const string KEYS_CONFIG_PREFIX("DMRPP");
@@ -224,16 +334,21 @@ void CredentialsManager::load_credentials( ){
                               << "aws_s3_bucket: '" << aws_s3_bucket << "' "
                               << endl);
 
-    //best_creds = unique_ptr<access_credentials> creds(access_credentials);
-    add("https://", new access_credentials(aws_akid,aws_sak,aws_region,aws_s3_bucket));
+    theCM()->add("https://", new AccessCredentials(aws_akid,aws_sak,aws_region,aws_s3_bucket));
 }
+
+/*****************************************************************************************************/
+/*****************************************************************************************************/
+/*****************************************************************************************************/
+/*****************************************************************************************************/
+// AccessCredentials methods follow.
 
 /**
  *
  * @param id
  * @param key
  */
-access_credentials::access_credentials(
+AccessCredentials::AccessCredentials(
         const std::string &id,
         const std::string &key) : s3_tested(false), is_s3(false){
     add(ID,id);
@@ -247,12 +362,12 @@ access_credentials::access_credentials(
  * @param region
  * @param bucket
  */
-access_credentials::access_credentials(
+AccessCredentials::AccessCredentials(
         const std::string &id,
         const std::string &key,
         const std::string &region,
         const std::string &bucket)
-        : access_credentials(id, key) {
+        : AccessCredentials(id, key) {
     add(REGION,region);
     add(BUCKET,bucket);
 }
@@ -263,7 +378,7 @@ access_credentials::access_credentials(
  * @return
  */
 std::string
-access_credentials::get(const std::string &vkey){
+AccessCredentials::get(const std::string &vkey){
     std::map<std::string, std::string>::iterator it;
     std::string value("");
     it = kvp.find(vkey);
@@ -278,7 +393,7 @@ access_credentials::get(const std::string &vkey){
  * @param value
  */
 void
-access_credentials::add(
+AccessCredentials::add(
         const std::string &key,
         const std::string &value){
     kvp.insert(std::pair<std::string, std::string>(key, value));
@@ -288,7 +403,7 @@ access_credentials::add(
  *
  * @return
  */
-bool access_credentials::isS3Cred(){
+bool AccessCredentials::isS3Cred(){
     if(!s3_tested){
         is_s3 = get(ID).length()>0 &&
                 get(KEY).length()>0 &&
