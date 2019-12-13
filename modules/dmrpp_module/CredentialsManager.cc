@@ -33,9 +33,11 @@
 #include <locale>
 #include <string>
 #include <sstream>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include "WhiteList.h"
-#include <TheBESKeys.h>
+#include "TheBESKeys.h"
 #include "BESForbiddenError.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"
@@ -48,19 +50,27 @@
 #include "awsv4.h"
 #include "DmrppCommon.h"
 
+#include "kvp_utils.h"
 #include "CredentialsManager.h"
+
+using namespace std;
 
 #define MODULE "dmrpp:creds"
 
 CredentialsManager *CredentialsManager::theMngr=0;
 
+// Scope: public members of AccessCredentials
 const string AccessCredentials::ID="id";
 const string AccessCredentials::KEY="key";
 const string AccessCredentials::REGION="region";
 const string AccessCredentials::BUCKET="bucket";
 const string AccessCredentials::URL="url";
 
+// Scope: This file...
 const string CM_CREDENTIALS="CM.credentials";
+const string CM_CONFIG="CredentialsManager.config";
+
+
 /**
  *
  * @param key
@@ -170,13 +180,74 @@ CredentialsManager::get(const std::string &url){
     return best_match;
 }
 
+/**
+ *
+ *      modeval[0] = (perm & S_IRUSR) ? 'r' : '-';
+        modeval[1] = (perm & S_IWUSR) ? 'w' : '-';
+        modeval[2] = (perm & S_IXUSR) ? 'x' : '-';
+        modeval[3] = (perm & S_IRGRP) ? 'r' : '-';
+        modeval[4] = (perm & S_IWGRP) ? 'w' : '-';
+        modeval[5] = (perm & S_IXGRP) ? 'x' : '-';
+        modeval[6] = (perm & S_IROTH) ? 'r' : '-';
+        modeval[7] = (perm & S_IWOTH) ? 'w' : '-';
+        modeval[8] = (perm & S_IXOTH) ? 'x' : '-';
+        modeval[9] = '\0';
+
+ * @param filename
+ * @return
+ */
+bool file_is_secured(const string &filename) {
+    struct stat st;
+    if (stat(filename.c_str(), &st) != 0) {
+        string err;
+        err.append("file_is_locked() Unable to access file ");
+        err.append(filename).append("  strerror: ").append(strerror(errno));
+        throw BESInternalError(err, __FILE__, __LINE__);
+    }
+
+    mode_t perm = st.st_mode;
+    bool status;
+    status = (perm & S_IRUSR) && (perm & S_IWUSR) && !(
+            (perm & S_IXUSR) ||
+            (perm & S_IRGRP) ||
+            (perm & S_IWGRP) ||
+            (perm & S_IXGRP) ||
+            (perm & S_IROTH) ||
+            (perm & S_IWOTH) ||
+            (perm & S_IXOTH));
+    BESDEBUG(MODULE, "file_is_locked() " << filename << " locked: " << (status ? "true" : "false") << endl);
+    return status;
+}
+
+
+
 void CredentialsManager::load_credentials( ){
-    bool found = false;
+    bool found = true;
 
     map<string,AccessCredentials *> credential_sets;
     AccessCredentials *accessCredentials;
 
     vector<string> credentials_entries;
+
+    string config_file;
+    TheBESKeys::TheKeys()->get_value(CM_CONFIG, config_file,  found);
+    if (found) {
+        if(file_is_secured(config_file)){
+            BESDEBUG(MODULE, "CredentialsManager config file '" << config_file << "' is secured." << endl);
+
+            std::map<std::string, std::vector<std::string> > keystore;
+            load_keys(config_file, keystore);
+
+        }
+        else {
+            string err;
+            err.append("CredentialsManager config file ");
+            err.append(config_file);
+            err.append(" is not secured! ");
+            err.append("Set the access permissions to -rw------- (600) and try again.");
+            throw BESInternalError(err, __FILE__, __LINE__);
+        }
+    }
 
     TheBESKeys::TheKeys()->get_values(CM_CREDENTIALS, credentials_entries,  found);
     if (found) {
@@ -214,11 +285,6 @@ void CredentialsManager::load_credentials( ){
                             + " was incorrectly formatted. entry: "
                             + credentials_entry, __FILE__, __LINE__);
                 }
-
-
-
-//                d_httpd_catalogs.insert(pair<string, string>(name, url));
-//                add("https://", new AccessCredentials(aws_akid,aws_sak,aws_region,aws_s3_bucket));
             } else {
                 throw BESInternalError(
                         string("The configuration entry for the ")
@@ -257,6 +323,7 @@ void CredentialsManager::load_credentials( ){
 
 }
 
+#if 0
 /**
  * Load the AccessCredentials.
  */
@@ -336,6 +403,7 @@ void CredentialsManager::load_credentials_OLD() {
 
     theCM()->add("https://", new AccessCredentials(aws_akid,aws_sak,aws_region,aws_s3_bucket));
 }
+#endif
 
 /*****************************************************************************************************/
 /*****************************************************************************************************/
