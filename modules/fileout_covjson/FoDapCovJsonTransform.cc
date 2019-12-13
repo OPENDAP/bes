@@ -977,7 +977,7 @@ void FoDapCovJsonTransform::printParameters(ostream *strm, string indent)
         // mapped to a URI like this: http://vocab.nerc.ac.uk/standard_name/<standard_name>.
         // If the standard_name is not present, omit the id.
         if(parameters[i]->standardName.compare("") != 0) {
-            *strm << child_indent3 << "\"id\": \"http://vocab.nerc.ac.uk/standard_name/" << parameters[i]->standardName << "/\"" << endl;
+            *strm << child_indent3 << "\"id\": \"http://vocab.nerc.ac.uk/standard_name/" << parameters[i]->standardName << "/\"," << endl;
         }
 
         // Per Jon Blower:
