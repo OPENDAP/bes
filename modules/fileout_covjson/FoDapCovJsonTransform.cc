@@ -647,13 +647,6 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
     }
 }
 
-void FoDapCovJsonTransform::removeSubstring(std::string& str, const std::string subStr) {
-   int n = subStr.length();
-
-   for (unsigned int i = str.find(subStr); i < str.length(); i = str.find(subStr))
-      str.erase(i, n);
-}
-
 string FoDapCovJsonTransform::sanitizeTimeOriginString(string timeOrigin) {
     // If the calendar is based on years, months, days,
     // then the referenced values SHOULD use one of the
@@ -672,22 +665,14 @@ string FoDapCovJsonTransform::sanitizeTimeOriginString(string timeOrigin) {
     // then a client SHOULD interpret those dates in
     // that reduced precision.
 
-    // @TODO Dynamic parsing of origin timestamps and 
-    // convert them to an appropriate format if it is
-    // both necessary and possible
+    // Remove any commonly found words from the origin timestamp
+    vector<string> subStrs = { "hours", "hour", "minutes", "minute", 
+                        "seconds", "second", "since", "  " };
 
     string cleanTimeOrigin = timeOrigin;
 
-    // Remove any commonly found words from the
-    // time origin timestamp...
-    removeSubstring(cleanTimeOrigin, "hour");
-    removeSubstring(cleanTimeOrigin, "hours");
-    removeSubstring(cleanTimeOrigin, "minute");
-    removeSubstring(cleanTimeOrigin, "minutes");
-    removeSubstring(cleanTimeOrigin, "second");
-    removeSubstring(cleanTimeOrigin, "seconds");
-    removeSubstring(cleanTimeOrigin, "since");
-    removeSubstring(cleanTimeOrigin, "  ");
+    for(unsigned int i = 0; i < subStrs.size(); i++)
+        focovjson::removeSubstring(cleanTimeOrigin, subStrs[i]);
 
     return cleanTimeOrigin;
 }

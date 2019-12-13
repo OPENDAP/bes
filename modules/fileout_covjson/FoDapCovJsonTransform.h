@@ -140,16 +140,6 @@ private:
     string sanitizeTimeOriginString(std::string timeOrigin);
 
     /**
-     * @brief Removes a substring from a given string
-     *
-     * @param str string to remove a substring from
-     * @param subStr sub-string to be removed from a given string
-     * 
-     * @returns modifies str by reference with the specified substring removed
-     */
-    void removeSubstring(std::string& str, const std::string subStr);
-
-    /**
      * @brief Writes a CovJSON representation of the DDS to the passed stream. Data
      *   is sent if the sendData flag is true. Otherwise, only metadata is sent.
      *
@@ -205,7 +195,7 @@ private:
      *   is true then include the data.
      *
      * @param strm Write to this output stream
-     * @param a Pointer to an Array containing atomic type variables
+     * @param cnstrctr a pointer to an Array containing atomic type variables
      * @param indent Indent the output so humans can make sense of it
      * @param sendData true: send data; false: send metadata
      */
@@ -216,12 +206,9 @@ private:
      *   which had better be one of the atomic DAP types. If the parameter sendData
      *   is true then include the data.
      *
-     * @note writeLeafMetadata() no longer exists, thus it is commented out. It
-     *   should be replaced with a different metadata writing function.
-     *
      * @note @TODO need to handle these types appropriately - make proper printing
      *
-     * @param b Pointer to a BaseType vector containing atomic type variables
+     * @param a pointer to a BaseType vector containing atomic type variables
      * @param indent Indent the output so humans can make sense of it
      * @param sendData true: send data; false: send metadata
      */
@@ -521,7 +508,8 @@ public:
      *   result is undefined.
      *
      * @param dds DDS object
-     * @throws BESInternalError if the DDS* is null or if localfile is empty.
+     * 
+     * @throw BESInternalError if the DDS* is null or if localfile is empty.
      */
     FoDapCovJsonTransform(libdap::DDS *dds);
 
@@ -542,7 +530,7 @@ public:
      *   purposes
      *
      * Displays the pointer value of this instance plus instance data,
-     * including all of the FoJson objects converted from DAP objects that are
+     * including all of the FoCovJson objects converted from DAP objects that are
      * to be sent to the netcdf file.
      *
      * @param strm C++ i/o stream to dump the information to
