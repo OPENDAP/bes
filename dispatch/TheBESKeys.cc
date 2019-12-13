@@ -417,7 +417,7 @@ void TheBESKeys::set_key(const string &pair)
  * @throws BESSyntaxUserError if multiple values are available for the
  * specified key
  */
-void TheBESKeys::get_value(const string& s, string &val, bool &found)
+void TheBESKeys::get_value(const string &s, string &val, bool &found)
 {
     found = false;
     map<string, vector<string> >::iterator i;
