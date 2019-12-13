@@ -941,8 +941,6 @@ void FoDapCovJsonTransform::printParameters(ostream *strm, string indent)
 
     BESDEBUG(FoDapCovJsonTransform_debug_key, "Printing PARAMETERS" << endl);
 
-    // @TODO NEEDS REFACTORING FOR BES ISSUE #244
-    // https://github.com/OPENDAP/bes/issues/244
     // Write down the parameter metadata
     *strm << indent << "\"parameters\": {" << endl;
     for(unsigned int i = 0; i < parameterCount; i++) {
