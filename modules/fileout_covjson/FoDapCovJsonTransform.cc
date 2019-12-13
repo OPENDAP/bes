@@ -590,6 +590,11 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
                             currUnit = currValue;
                         }
                     }
+                    // Per Jon Blower:
+                    // observedProperty->label comes from:
+                    //    - The CF long_name, if it exists
+                    //    - If not, the CF standard_name, perhaps with underscores removed
+                    //    - If the standard_name doesn’t exist, use the variable ID
                     // See http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html#long-name
                     else if(currName.compare("long_name") == 0) {
                         currLongName = currValue;
@@ -620,26 +625,7 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
         *axisRetrieved = true;
     }
     else if(isParam) {
-        // Kent says: Use LongName to select the new Parameter is too strict.
-        // but when the test 'currLongName.compare("") != 0' is removed,
-        // all of the tests fail and do so by generating output that looks clearly
-        // wrong. I'm going to hold off on this part of the patch for now. jhrg 3/28/19
-
-        // Removed the 'currLongName.compare("") != 0' test statement. The removed
-        // statement was a constraint to ensure that any parameter retrieved would
-        // have a descriptive long_name attribute for printing observedProperty->label.
-        //
-        // Per Jon Blower:
-        // observedProperty->label comes from:
-        //    - The CF long_name, if it exists
-        //    - If not, the CF standard_name, perhaps with underscores removed
-        //    - If the standard_name doesn’t exist, use the variable ID
-        //
-        // This constraint is now evaluated in the printParameters worker
-        // rather than within this function where the parameter is retrieved.
-        // -CH 5/11/2019
         addParameter("", name, "", currDataType, currUnit, currLongName, currStandardName, "", "");
-
         *parameterRetrieved = true;
     }
     else {
