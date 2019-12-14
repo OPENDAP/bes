@@ -94,7 +94,7 @@ OBJS = ../DMRpp.o ../DmrppCommon.o ../Chunk.o ../CurlHandlePool.o	\
 ../DmrppStructure.o ../DmrppUrl.o ../DmrppD4Enum.o ../DmrppD4Group.o	\
 ../DmrppD4Opaque.o ../DmrppD4Sequence.o ../DmrppTypeFactory.o		\
 ../DmrppParserSax2.o ../DmrppMetadataStore.o ../DmrppRequestHandler.o \
-../awsv4.o ../url_parser.o
+../CredentialsManager.o ../awsv4.o ../url_parser.o
 
 
 ChunkTest_SOURCES = ChunkTest.cc

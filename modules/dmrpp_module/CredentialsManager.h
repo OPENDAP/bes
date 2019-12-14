@@ -45,17 +45,24 @@ private:
     std::string conf_name;
 public:
     AccessCredentials()= default;
+    AccessCredentials(std::string config_name){ conf_name = config_name;}
     AccessCredentials(const AccessCredentials &ac) = default;
-    AccessCredentials(const std::string &id, const std::string &key);
     AccessCredentials(
-        const std::string &id,
-        const std::string &key,
-        const std::string &region,
-        const std::string &bucket);
+            std::string config_name,
+            const std::string &id,
+            const std::string &key);
+
+    AccessCredentials(
+            std::string config_name,
+            const std::string &id,
+            const std::string &key,
+            const std::string &region,
+            const std::string &bucket);
 
     std::string get(const std::string &key);
     void add(const std::string &key, const std::string &value);
     bool isS3Cred();
+    std::string toString();
 };
 
 

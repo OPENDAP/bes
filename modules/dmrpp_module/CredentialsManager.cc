@@ -220,7 +220,9 @@ bool file_is_secured(const string &filename) {
 }
 
 
-
+/**
+ *
+ */
 void CredentialsManager::load_credentials( ){
     bool found = true;
 
@@ -270,7 +272,7 @@ void CredentialsManager::load_credentials( ){
                     accessCredentials = mit->second;
                 }
                 else { // Nope.
-                    accessCredentials = new AccessCredentials();
+                    accessCredentials = new AccessCredentials(config_name);
                     credential_sets.insert(pair<string, AccessCredentials *>(config_name,accessCredentials));
                 }
                 index = remainder.find(":");
@@ -324,7 +326,7 @@ void CredentialsManager::load_credentials( ){
 #endif
 }
 
-#if 0
+#if 1
 /**
  * Load the AccessCredentials.
  */
@@ -402,7 +404,7 @@ void CredentialsManager::load_credentials_OLD() {
                               << "aws_s3_bucket: '" << aws_s3_bucket << "' "
                               << endl);
 
-    theCM()->add("https://", new AccessCredentials(aws_akid,aws_sak,aws_region,aws_s3_bucket));
+    theCM()->add("https://", new AccessCredentials("singleton", aws_akid,aws_sak,aws_region,aws_s3_bucket));
 }
 #endif
 
@@ -418,8 +420,9 @@ void CredentialsManager::load_credentials_OLD() {
  * @param key
  */
 AccessCredentials::AccessCredentials(
+        const std::string config_name,
         const std::string &id,
-        const std::string &key) : s3_tested(false), is_s3(false){
+        const std::string &key) : AccessCredentials(config_name){
     add(ID,id);
     add(KEY,key);
 }
@@ -432,11 +435,12 @@ AccessCredentials::AccessCredentials(
  * @param bucket
  */
 AccessCredentials::AccessCredentials(
+        const std::string config_name,
         const std::string &id,
         const std::string &key,
         const std::string &region,
         const std::string &bucket)
-        : AccessCredentials(id, key) {
+        : AccessCredentials(config_name, id, key) {
     add(REGION,region);
     add(BUCKET,bucket);
 }
@@ -481,4 +485,17 @@ bool AccessCredentials::isS3Cred(){
         s3_tested = true;
     }
     return is_s3;
+}
+
+string AccessCredentials::toString(){
+    stringstream ss;
+    ss << "name: " << conf_name << " {" << endl;
+    for (std::map<string, string>::iterator it = kvp.begin(); it != kvp.end(); ++it) {
+        std::string key = it->first;
+        std::string value = it->second;
+        ss << "    key: " << it->first << " value: " << it->second<< endl;
+    }
+    ss << "}" << endl;
+    return ss.str();
+
 }
