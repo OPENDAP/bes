@@ -263,11 +263,10 @@ bool file_is_secured(const string &filename) {
 void CredentialsManager::load_credentials_NEW( ) {
     bool found = true;
 
-    map<string, AccessCredentials *> credential_sets;
-    AccessCredentials *accessCredentials;
+    //map<string, AccessCredentials *> credential_sets;
+    //AccessCredentials *accessCredentials;
 
     vector < string > credentials_entries;
-
     string config_file;
     TheBESKeys::TheKeys()->get_value(CM_CONFIG, config_file, found);
     if (found) {
