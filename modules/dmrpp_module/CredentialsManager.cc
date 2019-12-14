@@ -229,6 +229,7 @@ void CredentialsManager::load_credentials( ){
 
     vector<string> credentials_entries;
 
+#if 0
     string config_file;
     TheBESKeys::TheKeys()->get_value(CM_CONFIG, config_file,  found);
     if (found) {
@@ -248,7 +249,7 @@ void CredentialsManager::load_credentials( ){
             throw BESInternalError(err, __FILE__, __LINE__);
         }
     }
-
+#else
     TheBESKeys::TheKeys()->get_values(CM_CREDENTIALS, credentials_entries,  found);
     if (found) {
         vector<string>::iterator it;
@@ -320,7 +321,7 @@ void CredentialsManager::load_credentials( ){
 
         }
     }
-
+#endif
 }
 
 #if 0

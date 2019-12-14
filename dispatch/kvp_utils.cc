@@ -2,7 +2,8 @@
 // Created by ndp on 12/13/19.
 //
 
-#include "kvp_utils.h"
+#include "config.h"
+
 #include <cerrno>
 #include <cstring>
 
@@ -19,6 +20,9 @@
 #include "BESFSFile.h"
 #include "BESInternalFatalError.h"
 #include "BESSyntaxUserError.h"
+
+#include "kvp_utils.h"
+
 
 #define BES_INCLUDE_KEY "BES.Include"
 
@@ -157,8 +161,8 @@ void set_key(
         std::map<std::string, std::vector<std::string> > &keystore)
 {
     map<string, vector<string> >::iterator i;
-    i = keystore->find(key);
-    if (i == keystore->end()) {
+    i = keystore.find(key);
+    if (i == keystore.end()) {
         vector<string> vals;
         keystore[key] = vals;
     }
