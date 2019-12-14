@@ -473,8 +473,9 @@ void CredentialsManager::load_credentials_OLD() {
 
 /**
  *
- * @param id
- * @param key
+ * @param name The human-readable name associated these this AccessCredentials
+ * @param id The user id of the credentials
+ * @param key The password/secret_key what have you
  */
 AccessCredentials::AccessCredentials(
         const std::string config_name,
@@ -486,10 +487,11 @@ AccessCredentials::AccessCredentials(
 
 /**
  *
- * @param id
- * @param key
- * @param region
- * @param bucket
+ * @param name The human-readable name associated these this AccessCredentials
+ * @param id The user id of the credentials
+ * @param key The password/secret_key what have you
+ * @param region The AWS region to be logging into.
+ * @param bucket The S3 bucket name that these credentials can access.
  */
 AccessCredentials::AccessCredentials(
         const std::string config_name,
@@ -503,15 +505,15 @@ AccessCredentials::AccessCredentials(
 }
 
 /**
- *
- * @param vkey
- * @return
+ * Retrieves the value of key
+ * @param key The key value to retrieve
+ * @return The value of the key, empty string if the key does not exist.
  */
 std::string
-AccessCredentials::get(const std::string &vkey){
+AccessCredentials::get(const std::string &key){
     std::map<std::string, std::string>::iterator it;
     std::string value("");
-    it = kvp.find(vkey);
+    it = kvp.find(key);
     if (it != kvp.end())
         value = it->second;
     return value;
