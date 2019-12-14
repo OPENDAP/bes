@@ -53,7 +53,7 @@ BUILD_DMRPP = DmrppRequestHandler.cc DmrppRequestHandler.h
 
 libdmrpp_module_la_SOURCES = $(BES_HDRS) $(BES_SRCS) $(DMRPP_MODULE)
 libdmrpp_module_la_LDFLAGS = -avoid-version -module
-libdmrpp_module_la_LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(H5_LDFLAGS) $(H5_LIBS) \
+libdmrpp_module_la_LIBADD = $(BES_DISPATCH_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(H5_LDFLAGS) $(H5_LIBS) \
 $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -ltest-types
 
 bin_PROGRAMS = build_dmrpp
