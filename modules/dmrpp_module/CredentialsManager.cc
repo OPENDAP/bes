@@ -57,6 +57,9 @@ using namespace std;
 
 #define MODULE "dmrpp:creds"
 
+/**
+ * Our singleton instance
+ */
 CredentialsManager *CredentialsManager::theMngr=0;
 
 // Scope: public members of AccessCredentials
@@ -70,11 +73,31 @@ const string AccessCredentials::URL="url";
 const string CM_CREDENTIALS="CM.credentials";
 const string CM_CONFIG="CredentialsManager.config";
 
+#if 0
+// These are all from the "OLD" method where there was one set of credentials
+// for everything.
+const string ENV_AKID_KEY("AWS_ACCESS_KEY_ID");
+const string CONFIG_AKID_KEY("DMRPP.AWS_ACCESS_KEY_ID");
+
+const string ENV_SAK_KEY("AWS_SECRET_ACCESS_KEY");
+const string CONFIG_SAK_KEY("DMRPP.AWS_SECRET_ACCESS_KEY");
+
+const string ENV_REGION_KEY("AWS_REGION");
+const string CONFIG_REGION_KEY("DMRPP.AWS_REGION");
+
+const string ENV_S3_BUCKET_KEY("AWS_S3_BUCKET");
+const string CONFIG_S3_BUCKET_KEY("DMRPP.AWS_S3_BUCKET");
+#endif
+
+
 
 /**
- *
- * @param key
- * @return
+ *  Get get the specified environment value. This function
+ *  returns an empty string if the environment variable is
+ *  not found, AND if the environment value is set but empty.
+ * @param key The environment value to retrieve
+ * @return The value of the environment variable,
+ * or the empty string is not found.
  */
 std::string get_env_value(const string &key){
     string value;
@@ -90,9 +113,12 @@ std::string get_env_value(const string &key){
 }
 
 /**
- *
- * @param key
- * @return
+ *  Get get the specified bes.conf configuration value. This function
+ *  returns an empty string if the configuration variable is
+ *  not found, AND if the environment value is set but empty.
+ * @param key The configuration value to retrieve
+ * @return The value of the configuration variable,
+ * or the empty string is not found.
  */
 std::string get_config_value(const string &key){
     string value;
@@ -108,13 +134,14 @@ std::string get_config_value(const string &key){
 }
 
 /**
- *
+ * Destructo
  */
 CredentialsManager::~CredentialsManager() {
     for (std::map<std::string,AccessCredentials*>::iterator it=creds.begin(); it != creds.end(); ++it){
         delete it->second;
     }
     creds.clear();
+    delete_instance();
 }
 
 /**
@@ -123,6 +150,7 @@ CredentialsManager::~CredentialsManager() {
 CredentialsManager::CredentialsManager(){}
 
 /**
+ *
  */
 void CredentialsManager::initialize_instance()
 {
@@ -151,6 +179,7 @@ void CredentialsManager::delete_instance()
 void
 CredentialsManager::add(const std::string &key, AccessCredentials *ac){
     creds.insert(std::pair<std::string,AccessCredentials *>(key, ac));
+    BESDEBUG(MODULE, "Added AccessCredentials to CredentialsManager. credentials: " << endl <<  ac->to_json() << endl);
 }
 
 /**
@@ -181,6 +210,9 @@ CredentialsManager::get(const std::string &url){
 }
 
 /**
+ * Uses stat() to check that the passed file has the
+ * permissions 600 (rw-------). An exception is thrown
+ * if the file does not exist.
  *
  *      modeval[0] = (perm & S_IRUSR) ? 'r' : '-';
         modeval[1] = (perm & S_IWUSR) ? 'w' : '-';
@@ -194,7 +226,8 @@ CredentialsManager::get(const std::string &url){
         modeval[9] = '\0';
 
  * @param filename
- * @return
+ * @return True if the passed file exists and has the permissions 600
+ * (rw-------)
  */
 bool file_is_secured(const string &filename) {
     struct stat st;
@@ -219,9 +252,67 @@ bool file_is_secured(const string &filename) {
     return status;
 }
 
+/**
+ * This method loads credentials from a special file identified in the bes.conf chain
+ * by the key "CredentialsManager.config". If the key is missing from the bes.conf chain
+ * the method will return and no credentials will be loaded.
+ *
+ * @throws BESInternalError if the file specified by the "CredentialsManager.config"
+ * key is missing.
+ */
+void CredentialsManager::load_credentials_NEW( ) {
+    bool found = true;
+
+    map<string, AccessCredentials *> credential_sets;
+    AccessCredentials *accessCredentials;
+
+    vector < string > credentials_entries;
+
+    string config_file;
+    TheBESKeys::TheKeys()->get_value(CM_CONFIG, config_file, found);
+    if (found) {
+        if (file_is_secured(config_file)) {
+            BESDEBUG(MODULE, "CredentialsManager config file '" << config_file << "' is secured." << endl);
+
+            std::map <std::string, std::vector<std::string>> keystore;
+            load_keys(config_file, keystore);
+
+        } else {
+            string err;
+            err.append("CredentialsManager config file ");
+            err.append(config_file);
+            err.append(" is not secured! ");
+            err.append("Set the access permissions to -rw------- (600) and try again.");
+            throw BESInternalError(err, __FILE__, __LINE__);
+        }
+    }
+}
 
 /**
+ * This method loads access credentials from the bes.conf chain.
+ * The credentials are stored as a list of lists under the key
+ * "CM.credentials". The list of lists is accomplished by the
+ * following formatting:
+ *   CM.credentials+=cloudydap:url:https://s3.amazonaws.com/cloudydap/
+ *   CM.credentials+=cloudydap:id:---------------------------
+ *   CM.credentials+=cloudydap:key:**************************
+ *   CM.credentials+=cloudydap:region:us-east-1
+ *   CM.credentials+=cloudydap:bucket:cloudydap
  *
+ *   CM.credentials+=cloudyopendap:url:https://s3.amazonaws.com/cloudyopendap/
+ *   CM.credentials+=cloudyopendap:id:---------------------------
+ *   CM.credentials+=cloudyopendap:key:**************************
+ *   CM.credentials+=cloudyopendap:region:us-east-1
+ *   CM.credentials+=cloudyopendap:bucket:cloudyopendap
+ *
+ *   CM.credentials+=cname_02:url:https://ssotherone.org/login
+ *   CM.credentials+=cname_02:id:---------------------------
+ *   CM.credentials+=cname_02:key:**************************
+ *   CM.credentials+=cname_02:region:us-east-1
+ *   CM.credentials+=cname_02:bucket:cloudyotherdap
+ *
+ *   The sub keys shown here (url,id,key,bucket) are all public const strings in the
+ *   AccessCredentials class, however any sub key may be used.
  */
 void CredentialsManager::load_credentials( ){
     bool found = true;
@@ -231,27 +322,6 @@ void CredentialsManager::load_credentials( ){
 
     vector<string> credentials_entries;
 
-#if 0
-    string config_file;
-    TheBESKeys::TheKeys()->get_value(CM_CONFIG, config_file,  found);
-    if (found) {
-        if(file_is_secured(config_file)){
-            BESDEBUG(MODULE, "CredentialsManager config file '" << config_file << "' is secured." << endl);
-
-            std::map<std::string, std::vector<std::string> > keystore;
-            load_keys(config_file, keystore);
-
-        }
-        else {
-            string err;
-            err.append("CredentialsManager config file ");
-            err.append(config_file);
-            err.append(" is not secured! ");
-            err.append("Set the access permissions to -rw------- (600) and try again.");
-            throw BESInternalError(err, __FILE__, __LINE__);
-        }
-    }
-#else
     TheBESKeys::TheKeys()->get_values(CM_CREDENTIALS, credentials_entries,  found);
     if (found) {
         vector<string>::iterator it;
@@ -323,29 +393,16 @@ void CredentialsManager::load_credentials( ){
 
         }
     }
-#endif
+
 }
 
-#if 1
+#if 0 // DISABLED OLD way
 /**
  * Load the AccessCredentials.
  */
 void CredentialsManager::load_credentials_OLD() {
     string aws_akid, aws_sak, aws_region, aws_s3_bucket;
 
-    const string KEYS_CONFIG_PREFIX("DMRPP");
-
-    const string ENV_AKID_KEY("AWS_ACCESS_KEY_ID");
-    const string CONFIG_AKID_KEY(KEYS_CONFIG_PREFIX+"."+ENV_AKID_KEY);
-
-    const string ENV_SAK_KEY("AWS_SECRET_ACCESS_KEY");
-    const string CONFIG_SAK_KEY(KEYS_CONFIG_PREFIX+"."+ENV_SAK_KEY);
-
-    const string ENV_REGION_KEY("AWS_REGION");
-    const string CONFIG_REGION_KEY(KEYS_CONFIG_PREFIX+"."+ENV_REGION_KEY);
-
-    const string ENV_S3_BUCKET_KEY("AWS_S3_BUCKET");
-    const string CONFIG_S3_BUCKET_KEY(KEYS_CONFIG_PREFIX+"."+ENV_S3_BUCKET_KEY);
 
 #ifndef NDEBUG
 
@@ -403,8 +460,8 @@ void CredentialsManager::load_credentials_OLD() {
                               << "aws_region: '" << aws_region << "' "
                               << "aws_s3_bucket: '" << aws_s3_bucket << "' "
                               << endl);
-
-    theCM()->add("https://", new AccessCredentials("singleton", aws_akid,aws_sak,aws_region,aws_s3_bucket));
+    AccessCredentials *ac = new AccessCredentials("single_user", aws_akid,aws_sak,aws_region,aws_s3_bucket);
+    theCM()->add("https://", ac);
 }
 #endif
 
@@ -487,15 +544,20 @@ bool AccessCredentials::isS3Cred(){
     return is_s3;
 }
 
-string AccessCredentials::toString(){
+string AccessCredentials::to_json(){
     stringstream ss;
-    ss << "name: " << conf_name << " {" << endl;
+    ss << "{" << endl << "  \"AccessCredentials\": { " << endl;
+    ss << "    \"name\": \"" << conf_name << "\"," << endl;
     for (std::map<string, string>::iterator it = kvp.begin(); it != kvp.end(); ++it) {
         std::string key = it->first;
         std::string value = it->second;
-        ss << "    key: " << it->first << " value: " << it->second<< endl;
+
+        if(it!=kvp.begin())
+            ss << ", " << endl ;
+
+        ss << "    \"" << it->first << "\": \"" << it->second << "\"";
     }
-    ss << "}" << endl;
+    ss << endl << "  }" << endl << "}" << endl;
     return ss.str();
 
 }

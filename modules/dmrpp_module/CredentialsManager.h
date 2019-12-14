@@ -62,7 +62,7 @@ public:
     std::string get(const std::string &key);
     void add(const std::string &key, const std::string &value);
     bool isS3Cred();
-    std::string toString();
+    std::string to_json();
 };
 
 
