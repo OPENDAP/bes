@@ -265,7 +265,7 @@ void CredentialsManager::load_credentials_NEW( ) {
     //map<string, AccessCredentials *> credential_sets;
     //AccessCredentials *accessCredentials;
 
-    vector < string > credentials_entries;
+    vector <string> credentials_entries;
     string config_file;
     TheBESKeys::TheKeys()->get_value(CM_CONFIG, config_file, found);
     if (found) {
