@@ -1,0 +1,30 @@
+{
+  "type": "Coverage",
+  "domain": {
+    "type" : "Domain",
+    "domainType": "Grid",
+{
+  "type": "Coverage",
+  "domain": {
+    "type" : "Domain",
+    "domainType": "Grid",
+{
+  "type": "Coverage",
+  "domain": {
+    "type" : "Domain",
+    "domainType": "Grid",
+{
+  "type": "Coverage",
+  "domain": {
+    "type" : "Domain",
+    "domainType": "Vertical Profile",
+{
+  "type": "Coverage",
+  "domain": {
+    "type" : "Domain",
+    "domainType": "Point Series",
+{
+  "type": "Coverage",
+  "domain": {
+    "type" : "Domain",
+    "domainType": "Point",
