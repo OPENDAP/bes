@@ -11,9 +11,9 @@
         "values": []
       },
       "t": {
-        "values": ["2018-01-01T00:12:20Z"]
+        "values": ["0000-01-01 00:00:00"]
       }
-    }
+    },
     "referencing": [{
       "coordinates": ["t"],
       "system": {
@@ -27,89 +27,89 @@
         "type": "GeographicCRS",
         "id": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
       }
-    }],
-    "parameters": {
-      "SST": {
-        "type": "Parameter",
-        "description": {
-          "en": "SEA SURFACE TEMPERATURE",
-        },
-        "unit": {
-          "label": {
-            "en": "Deg C"
-          }
+    }]
+  },
+  "parameters": {
+    "SST": {
+      "type": "Parameter",
+      "description": {
+        "en": "SEA SURFACE TEMPERATURE"
+      },
+      "unit": {
+        "label": {
+          "en": "Deg C"
         },
         "symbol": {
           "value": "Deg C",
           "type": "http://www.opengis.net/def/uom/UCUM/"
-        },
-        "observedProperty": {
-          "label": {
-            "en": "SEA SURFACE TEMPERATURE"
-          }
         }
       },
-      "AIRT": {
-        "type": "Parameter",
-        "description": {
-          "en": "AIR TEMPERATURE",
-        },
-        "unit": {
-          "label": {
-            "en": "DEG C"
-          }
+      "observedProperty": {
+        "label": {
+          "en": "SEA SURFACE TEMPERATURE"
+        }
+      }
+    },
+    "AIRT": {
+      "type": "Parameter",
+      "description": {
+        "en": "AIR TEMPERATURE"
+      },
+      "unit": {
+        "label": {
+          "en": "DEG C"
         },
         "symbol": {
           "value": "DEG C",
           "type": "http://www.opengis.net/def/uom/UCUM/"
-        },
-        "observedProperty": {
-          "label": {
-            "en": "AIR TEMPERATURE"
-          }
         }
       },
-      "UWND": {
-        "type": "Parameter",
-        "description": {
-          "en": "ZONAL WIND",
-        },
-        "unit": {
-          "label": {
-            "en": "M/S"
-          }
-        },
-        "symbol": {
-          "value": "M/S",
-          "type": "http://www.opengis.net/def/uom/UCUM/"
-        },
-        "observedProperty": {
-          "label": {
-            "en": "ZONAL WIND"
-          }
-        }
-      },
-      "VWND": {
-        "type": "Parameter",
-        "description": {
-          "en": "MERIDIONAL WIND",
-        },
-        "unit": {
-          "label": {
-            "en": "M/S"
-          }
-        },
-        "symbol": {
-          "value": "M/S",
-          "type": "http://www.opengis.net/def/uom/UCUM/"
-        },
-        "observedProperty": {
-          "label": {
-            "en": "MERIDIONAL WIND"
-          }
+      "observedProperty": {
+        "label": {
+          "en": "AIR TEMPERATURE"
         }
       }
     },
+    "UWND": {
+      "type": "Parameter",
+      "description": {
+        "en": "ZONAL WIND"
+      },
+      "unit": {
+        "label": {
+          "en": "M/S"
+        },
+        "symbol": {
+          "value": "M/S",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "ZONAL WIND"
+        }
+      }
+    },
+    "VWND": {
+      "type": "Parameter",
+      "description": {
+        "en": "MERIDIONAL WIND"
+      },
+      "unit": {
+        "label": {
+          "en": "M/S"
+        },
+        "symbol": {
+          "value": "M/S",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "MERIDIONAL WIND"
+        }
+      }
+    }
   },
   "ranges": {
     "SST": {
@@ -140,6 +140,5 @@
       "shape": [1, 90, 180],
       "values": []
     }
-    }
-  }]
+  }
 }
