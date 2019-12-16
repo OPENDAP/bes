@@ -373,7 +373,11 @@ void FONcAttributes::add_attributes_worker(int ncid, int varid, const string &va
                 string new_name_fillvalue = "Orig_FillValue";
                 BESDEBUG("fonc",
                          "FONcAttributes::add_attributes_worker - New attribute value is original value: " << val.c_str() << endl);
+                // This line causes the segmentation fault since attrs is changed and the original iterator of attrs doesn't exist anymore.
+                // So it causes the segmentation fault when next attribute is fetched in the for loop of the add_attributes(). KY 2019-12-13
+#if 0
                 attrs.append_attr(new_name_fillvalue,"String", val);
+#endif
                 stax = nc_put_att_text(ncid, varid, new_name_fillvalue.c_str(), val.length(), val.c_str());
             }
         }
