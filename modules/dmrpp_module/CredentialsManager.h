@@ -89,7 +89,7 @@ public:
     AccessCredentials *get(const std::string &url);
 
     static void load_credentials();
-    static void load_credentials_OLD();
+    // static void load_credentials_OLD();
     static void load_credentials_NEW();
 
 };
