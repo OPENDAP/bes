@@ -33,6 +33,7 @@
 
 #include <cstdio>
 #include <map>
+#include <vector>
 #include <ctime>
 #include <iostream>
 
