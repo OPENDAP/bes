@@ -137,11 +137,10 @@ std::string get_config_value(const string &key){
  * Destructo
  */
 CredentialsManager::~CredentialsManager() {
-    for (std::map<std::string,AccessCredentials*>::iterator it=creds.begin(); it != creds.end(); ++it){
+    for (std::map<std::string, AccessCredentials *>::iterator it = creds.begin(); it != creds.end(); ++it) {
         delete it->second;
     }
     creds.clear();
-    delete_instance();
 }
 
 /**
