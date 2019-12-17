@@ -50,7 +50,8 @@ TESTSUITE_S3 = $(srcdir)/testsuite_s3_tests
 
 if BES_DEVELOPER
 s3-tests: $(TESTSUITE_S3) bes.conf bes_serial.conf
-	$(SHELL) '$(TESTSUITE_S3)' $(TESTSUITEFLAGS)
+	true
+#	$(SHELL) '$(TESTSUITE_S3)' $(TESTSUITEFLAGS)
 else
 s3-tests:
 	true
