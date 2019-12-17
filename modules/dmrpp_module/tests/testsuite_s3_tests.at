@@ -5,4 +5,4 @@ AT_INIT([DMR++ MDS])
 m4_include([../../handler_tests_macros.m4])
 
 dnl This needs the cloudyopendap credentials to work. jhrg 12/3/19
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([s3/http_d_int_auth_test.h5.dap])
+# AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([s3/http_d_int_auth_test.h5.dap])

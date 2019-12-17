@@ -126,9 +126,9 @@ public:
         }
 
     }
-    void load_good_keys() {
+    void load_good_keys(const string &filename) {
         keystore.clear();
-        string keys_file = string(TEST_SRC_DIR).append("/keys_test.ini");
+        string keys_file = string(TEST_SRC_DIR).append(filename);
 
         if(debug) cout << "*****************************************" << endl;
         if(debug) cout << "load_good_keys() - Loading Keys File: " << keys_file << endl;
@@ -145,7 +145,7 @@ public:
     }
 
     void get_key_value() {
-        load_good_keys();
+        load_good_keys("/keys_test.ini");
         map<string, vector<string>>::iterator it;
         if(debug) cout << "*****************************************" << endl;
         if(debug) cout << "get_key_value() - Keystore has "<< keystore.size() <<  " keys" << endl ;
@@ -171,7 +171,7 @@ public:
     }
 
     void get_multi_valued_key() {
-        load_good_keys();
+        load_good_keys("/keys_test.ini");
         map<string, vector<string>>::iterator it;
         if(debug) cout << "*****************************************" << endl;
         if(debug) cout << "get_multi_valued_key() - Check for a multi value key" << endl;

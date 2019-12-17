@@ -241,8 +241,6 @@ void load_keys(
         std::map<std::string, std::vector<std::string> > &keystore
 ){
     set<string> kvp_files;
-
-    load_keys(kvp_files,keys_file_name,keystore);
-
+    load_keys(kvp_files, keys_file_name, keystore);
 }
 
