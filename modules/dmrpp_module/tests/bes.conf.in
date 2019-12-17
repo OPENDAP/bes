@@ -43,3 +43,5 @@ Gateway.Whitelist += http://test.opendap.org
 
 # The default for DMRPP.MaxParallelTransfers is 8
 # DMRPP.MaxParallelTransfers = 8
+
+# BES.Include = credentials.conf
