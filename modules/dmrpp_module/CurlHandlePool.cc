@@ -810,8 +810,8 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
             __LINE__);
 
         AccessCredentials *credentials = CredentialsManager::theCM()->get(handle->d_url);
-        BESDEBUG(MODULE, "Got AccessCredentials instance: "<< endl << credentials->to_json() << endl );
         if ( credentials && credentials->isS3Cred()) {
+            BESDEBUG(MODULE, "Got AccessCredentials instance: "<< endl << credentials->to_json() << endl );
             // If there are available credentials, and they are S3 credentials then we need to sign
             // the request
             const std::time_t request_time = std::time(nullptr);
