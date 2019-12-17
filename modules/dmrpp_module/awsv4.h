@@ -36,7 +36,6 @@
 #include <vector>
 #include <ctime>
 #include <iostream>
-#include <regex>
 
 #include <openssl/sha.h>
 

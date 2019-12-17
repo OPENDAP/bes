@@ -77,7 +77,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
     // These error responses are generally small (< 1k), so if nbytes is bigger
     // than the read buffer for this chunk but < 1k, make it larger and move on.
     // This will aid in error diagnosis. jhrg 11/26/19
-    if (nbytes <= 1024 && nbytes > c_ptr->get_rbuf_size()) {
+    if (nbytes <= 4096 && nbytes > c_ptr->get_rbuf_size()) {
         // set_rbuf() deletes the previous storage; Chunk manages the new memory block
         c_ptr->set_rbuf(new char[nbytes+2], nbytes+2);
     }

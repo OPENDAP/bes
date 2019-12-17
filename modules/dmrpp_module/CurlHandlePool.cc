@@ -600,10 +600,7 @@ url_must_be_signed(const string &url)
     return false;
     // return (url.find("http://") == 0 || url.find("https://") == 0) && url_has_credentials(url);
 }
-#endif
 
-
-#if 0
 //I think this is closer to working now and that we don't need these functions - ndp 12/12/19'
 
 // FIXME The most low-budget credential DB on the planet. jhrg 11/26/19

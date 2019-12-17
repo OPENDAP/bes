@@ -8,6 +8,8 @@
 # libdap code is editied and not installed. jhrg 12/5/19
 include_directories(../libdap4)
 
+include_directories(/usr/local/Cellar/openssl/1.0.2r/include/)
+
 # These should not be referenced outside of libdap. jhrg 12/5/19
 # include_directories(../libdap4/d4_ce)
 # include_directories(../libdap4/d4_function)
@@ -113,7 +115,6 @@ include_directories(modules/xml_data_handler)
 include_directories(modules/xml_data_handler/unit-tests)
 
 include_directories(ppt)
-# 1
 include_directories(ppt/unit-tests)
 include_directories(server)
 include_directories(server/test)
@@ -220,35 +221,6 @@ add_executable(bes
     dapreader/DapModule.h
     dapreader/DapRequestHandler.cc
     dapreader/DapRequestHandler.h
-# 1
-# 1
-# 1
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     dispatch/PicoSHA2/example/hasher.cpp
     dispatch/PicoSHA2/example/interactive_hasher.cpp
@@ -739,6 +711,9 @@ add_executable(bes
     modules/dmrpp_module/unit-tests/DmrppParserTest.cc
     modules/dmrpp_module/unit-tests/test_config.h
     modules/dmrpp_module/build_dmrpp.cc
+
+	modules/dmrpp_module/awsv4.cc
+	modules/dmrpp_module/awsv4.h
 
     modules/dmrpp_module/Chunk.cc
     modules/dmrpp_module/Chunk.h

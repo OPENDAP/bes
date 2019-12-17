@@ -30,7 +30,6 @@
 
 #include "awsv4.h"
 
-#include <regex>
 #include <cstring>
 
 #include <stdexcept>
@@ -39,6 +38,10 @@
 #include <ctime>
 #include <iostream>
 #include <sstream>
+
+#if 0
+#include <regex>
+#endif
 
 #include <openssl/sha.h>
 #include <openssl/hmac.h>
@@ -107,6 +110,7 @@ namespace AWSV4 {
     std::map<std::string,std::string> canonicalize_headers(const std::vector<std::string>& headers) noexcept {
         std::map<std::string,std::string> header_key2val;
         for (const auto &h: headers) {
+#if 0
             std::regex reg("\\:");
             std::sregex_token_iterator iter(h.begin(), h.end(), reg, -1);
             std::sregex_token_iterator end;
@@ -116,8 +120,17 @@ namespace AWSV4 {
                 return header_key2val;
             }
 
-            std::string key{trim(pair[0])};
-            const std::string val{trim(pair[1])};
+#endif
+            // h is a header <key> : <val>
+
+            auto i = h.find(':');
+            if (i == std::string::npos) {
+                header_key2val.clear();
+                return header_key2val;
+            }
+
+            std::string key{trim(h.substr(0, i))};
+            const std::string val{trim(h.substr(i+1))};
             if (key.empty() || val.empty()) {
                 header_key2val.clear();
                 return header_key2val;
