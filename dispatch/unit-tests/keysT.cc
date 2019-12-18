@@ -111,9 +111,8 @@ CPPUNIT_TEST_SUITE( keysT );
         }
 #endif
         cout << "*****************************************" << endl;
-        cout << "bad keys - not enough equal signs" << endl;
+        cout << "bad keys, not enough equal signs" << endl;
         string bes_conf = (string) TEST_SRC_DIR + "/bad_keys1.ini";
-        cout << "bad keys - bes_conf: "<< bes_conf << endl;
         TheBESKeys::ConfigFile = bes_conf;
         try {
             TheBESKeys::TheKeys();
@@ -125,9 +124,8 @@ CPPUNIT_TEST_SUITE( keysT );
         }
 
         cout << "*****************************************" << endl;
-        cout << "good keys - Correct keys file, should load" << endl;
+        cout << "good keys file, should load" << endl;
         bes_conf = (string) TEST_SRC_DIR + "/keys_test.ini";
-        cout << "good keys - bes_conf: "<< bes_conf << endl;
         TheBESKeys::ConfigFile = bes_conf;
 
         cerr << "TheBESKeys::ConfigFile: " << TheBESKeys::ConfigFile << endl;
@@ -161,9 +159,8 @@ CPPUNIT_TEST_SUITE( keysT );
         cout << "*****************************************" << endl;
         cout << "use get_values to get a single value key" << endl;
         found = false;
-        string key("BES.KEY1");
         vector<string> vals;
-        TheBESKeys::TheKeys()->get_values(key, vals, found);
+        TheBESKeys::TheKeys()->get_values("BES.KEY1", vals, found);
         CPPUNIT_ASSERT(found);
         CPPUNIT_ASSERT(vals.size() == 1);
         CPPUNIT_ASSERT(vals[0] == "val1");
@@ -171,16 +168,14 @@ CPPUNIT_TEST_SUITE( keysT );
         cout << "*****************************************" << endl;
         cout << "use get_values to get a multi value key" << endl;
         found = false;
-        key.assign("BES.KEY.MULTI");
         vals.clear();
-        cout << "key: " << key << " vals.size(): " << vals.size() << endl;
-        TheBESKeys::TheKeys()->get_values(key, vals, found);
+        TheBESKeys::TheKeys()->get_values("BES.KEY.MULTI", vals, found);
         CPPUNIT_ASSERT(found);
         CPPUNIT_ASSERT(vals.size() == 5);
         for (int i = 0; i < 5; i++) {
             char val[32];
             sprintf(val, "val_multi_%d", i);
-            cout << "expected value " << val << " retrieved value: " << vals[i] << endl;
+            cout << "looking for value " << val << endl;
             CPPUNIT_ASSERT(vals[i] == val);
         }
 
