@@ -128,7 +128,7 @@ public:
 
     ~CurlHandlePool()
     {
-        for (auto & d_easy_handle : d_easy_handles) {
+        for (auto d_easy_handle : d_easy_handles) {
             delete d_easy_handle;
         }
 
