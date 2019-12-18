@@ -47,42 +47,42 @@ namespace AWSV4 {
     const std::string AWS4{"AWS4"};
     const std::string AWS4_REQUEST{"aws4_request"};
     
-    void sha256(const std::string str, unsigned char outputBuffer[SHA256_DIGEST_LENGTH]) noexcept;
+    void sha256(const std::string str, unsigned char outputBuffer[SHA256_DIGEST_LENGTH]);
     
-    std::string sha256_base16(const std::string) noexcept;
+    std::string sha256_base16(const std::string);
 
-    std::map<std::string,std::string> canonicalize_headers(const std::vector<std::string>& headers) noexcept;
+    std::map<std::string,std::string> canonicalize_headers(const std::vector<std::string>& headers);
     
-    const std::string map_headers_string(const std::map<std::string,std::string>& header_key2val) noexcept;
+    const std::string map_headers_string(const std::map<std::string,std::string>& header_key2val);
     
-    const std::string map_signed_headers(const std::map<std::string,std::string>& header_key2val) noexcept;
+    const std::string map_signed_headers(const std::map<std::string,std::string>& header_key2val);
     
     const std::string canonicalize_request(const std::string& http_request_method,
                                            const std::string& canonical_uri,
                                            const std::string& canonical_query_string,
                                            const std::string& canonical_headers,
                                            const std::string& signed_headers,
-                                           const std::string& payload) noexcept;
+                                           const std::string& payload);
 
     const std::string string_to_sign(const std::string& algorithm,
                                      const std::time_t& request_date,
                                      const std::string& credential_scope,
-                                     const std::string& hashed_canonical_request) noexcept;
+                                     const std::string& hashed_canonical_request);
     
-    const std::string ISO8601_date(const std::time_t& t) noexcept;
+    const std::string ISO8601_date(const std::time_t& t);
     
-    const std::string utc_yyyymmdd(const std::time_t& t) noexcept;
+    const std::string utc_yyyymmdd(const std::time_t& t);
 
     const std::string credential_scope(const std::time_t& t, 
                                        const std::string region,
-                                       const std::string service) noexcept;
+                                       const std::string service);
 
     const std::string calculate_signature(const std::time_t& request_date, 
                                           const std::string secret,
                                           const std::string region,
                                           const std::string service,
                                           const std::string string_to_sign,
-                                          const bool verbose = false) noexcept;
+                                          const bool verbose = false);
 
     // The whole enchilada. Added jhrg 11/25/19
     const std::string compute_awsv4_signature(const std::string uri_str, const std::time_t request_date,

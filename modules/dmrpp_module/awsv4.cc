@@ -50,7 +50,7 @@
 
 namespace AWSV4 {
 
-    std::string join(const std::vector<std::string>& ss,const std::string delim) noexcept {
+    std::string join(const std::vector<std::string>& ss,const std::string delim) {
         std::stringstream sstream;
         const auto l = ss.size() - 1;
         std::vector<int>::size_type i;
@@ -62,7 +62,7 @@ namespace AWSV4 {
     }
 
     // http://stackoverflow.com/questions/2262386/generate-sha256-with-openssl-and-c
-    void sha256(const std::string str, unsigned char outputBuffer[SHA256_DIGEST_LENGTH]) noexcept {
+    void sha256(const std::string str, unsigned char outputBuffer[SHA256_DIGEST_LENGTH]) {
         char *c_string = new char [str.length()+1];
         std::strcpy(c_string, str.c_str());
         unsigned char hash[SHA256_DIGEST_LENGTH];
@@ -75,7 +75,7 @@ namespace AWSV4 {
         }
     }
 
-    std::string sha256_base16(const std::string str) noexcept {
+    std::string sha256_base16(const std::string str) {
         unsigned char hashOut[SHA256_DIGEST_LENGTH];
         AWSV4::sha256(str,hashOut);
         char outputBuffer[65];
@@ -107,7 +107,7 @@ namespace AWSV4 {
     // will return empty map on malformed input.
     //
     // headers A vector where each element is a header name and value, separated by a colon. No spaces.
-    std::map<std::string,std::string> canonicalize_headers(const std::vector<std::string>& headers) noexcept {
+    std::map<std::string,std::string> canonicalize_headers(const std::vector<std::string>& headers) {
         std::map<std::string,std::string> header_key2val;
         for (const auto &h: headers) {
 #if 0
@@ -143,7 +143,7 @@ namespace AWSV4 {
     }
 
     // get a string representation of header:value lines
-    const std::string map_headers_string(const std::map<std::string,std::string>& header_key2val) noexcept {
+    const std::string map_headers_string(const std::map<std::string,std::string>& header_key2val) {
         const std::string pair_delim{":"};
         std::string h;
         for (const auto& kv:header_key2val) {
@@ -153,7 +153,7 @@ namespace AWSV4 {
     }
 
     // get a string representation of the header names
-    const std::string map_signed_headers(const std::map<std::string,std::string>& header_key2val) noexcept {
+    const std::string map_signed_headers(const std::map<std::string,std::string>& header_key2val) {
         const std::string signed_headers_delim{";"};
         std::vector<std::string> ks;
         for (const auto& kv:header_key2val) {
@@ -167,7 +167,7 @@ namespace AWSV4 {
                                            const std::string& canonical_query_string,
                                            const std::string& canonical_headers,
                                            const std::string& signed_headers,
-                                           const std::string& shar256_of_payload) noexcept {
+                                           const std::string& shar256_of_payload) {
         return http_request_method + ENDL +
             canonical_uri + ENDL +
             canonical_query_string + ENDL +
@@ -183,7 +183,7 @@ namespace AWSV4 {
     const std::string string_to_sign(const std::string& algorithm,
                                      const std::time_t& request_date,
                                      const std::string& credential_scope,
-                                     const std::string& hashed_canonical_request) noexcept {
+                                     const std::string& hashed_canonical_request) {
         return algorithm + ENDL +
             ISO8601_date(request_date) + ENDL +
             credential_scope + ENDL +
@@ -192,27 +192,27 @@ namespace AWSV4 {
 
     const std::string credential_scope(const std::time_t& request_date,
                                        const std::string region,
-                                       const std::string service) noexcept {
+                                       const std::string service) {
         const std::string s{"/"};
         return utc_yyyymmdd(request_date) + s + region + s + service + s + AWS4_REQUEST;
     }
 
     // time_t -> 20131222T043039Z
-    const std::string ISO8601_date(const std::time_t& t) noexcept {
+    const std::string ISO8601_date(const std::time_t& t) {
         char buf[sizeof "20111008T070709Z"];
         std::strftime(buf, sizeof buf, "%Y%m%dT%H%M%SZ", std::gmtime(&t));
         return std::string{buf};
     }
 
     // time_t -> 20131222
-    const std::string utc_yyyymmdd(const std::time_t& t) noexcept {
+    const std::string utc_yyyymmdd(const std::time_t& t) {
         char buf[sizeof "20111008"];
         std::strftime(buf, sizeof buf, "%Y%m%d", std::gmtime(&t));
         return std::string{buf};
     }
 
     // HMAC --> string. jhrg 11/25/19
-    const std::string hmac_to_string(const unsigned char *hmac) noexcept {
+    const std::string hmac_to_string(const unsigned char *hmac) {
         // Added to print the kSigning value to check against AWS example. jhrg 11/24/19
         char buf[65];
         for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
@@ -231,7 +231,7 @@ namespace AWSV4 {
                                           const std::string region,
                                           const std::string service,
                                           const std::string string_to_sign,
-                                          const bool verbose) noexcept {
+                                          const bool verbose) {
 
         const std::string k1{AWS4 + secret};
         char *c_k1 = new char [k1.length()+1];

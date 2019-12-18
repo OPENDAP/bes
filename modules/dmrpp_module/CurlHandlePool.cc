@@ -215,7 +215,7 @@ int curl_trace(CURL */*handle*/, curl_infotype type, char *data, size_t /*size*/
 }
 #endif
 
-dmrpp_easy_handle::dmrpp_easy_handle(): d_headers(nullptr)
+dmrpp_easy_handle::dmrpp_easy_handle(): d_headers(0)
 {
     d_handle = curl_easy_init();
     if (!d_handle) throw BESInternalError("Could not allocate CURL handle", __FILE__, __LINE__);
@@ -344,7 +344,7 @@ void dmrpp_easy_handle::read_data()
             }
 
             curl_slist_free_all(d_headers);
-            d_headers = nullptr;
+            d_headers = 0;
         } while (!success);
     }
     else {
@@ -415,7 +415,7 @@ static void *easy_handle_read_data(void *handle)
 
     try {
         eh->read_data();
-        pthread_exit(NULL);
+        pthread_exit(0);
     }
     catch (BESError &e) {
         string *error = new string(e.get_verbose_message());
@@ -814,7 +814,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
             BESDEBUG(MODULE, "Got AccessCredentials instance: "<< endl << credentials->to_json() << endl );
             // If there are available credentials, and they are S3 credentials then we need to sign
             // the request
-            const std::time_t request_time = std::time(nullptr);
+            const std::time_t request_time = std::time(0);
 
             const std::string auth_header =
                     AWSV4::compute_awsv4_signature(
@@ -827,7 +827,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
             // passing nullptr for the first call allocates the curl_slist
             // The following code builds the slist that holds the headers. This slist is freed
             // once the URL is dereferenced in dmrpp_easy_handle::read_data(). jhrg 11/26/19
-            handle->d_headers = append_http_header(nullptr, "Authorization:", auth_header);
+            handle->d_headers = append_http_header(0, "Authorization:", auth_header);
             if (!handle->d_headers)
                 throw BESInternalError(
                         string("CURL Error setting Authorization header: ").append(

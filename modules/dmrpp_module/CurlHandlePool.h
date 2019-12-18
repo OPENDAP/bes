@@ -128,11 +128,16 @@ public:
 
     ~CurlHandlePool()
     {
+#if 1
         for (std::vector<dmrpp_easy_handle *>::iterator i = d_easy_handles.begin(), e = d_easy_handles.end();
              i != e; ++i) {
             delete *i;
         }
-
+#else
+        for (auto &d_easy_handle: d_easy_handles) {
+            delete d_easy_handle;
+        }
+#endif
         delete d_multi_handle;
     }
 
