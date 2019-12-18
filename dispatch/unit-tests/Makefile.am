@@ -116,7 +116,7 @@ containerT_SOURCES = containerT.cc
 defT_SOURCES = defT.cc
 
 keysT_SOURCES = keysT.cc
-keysT_LDADD = ../TheBESKeys.o $(LDADD)
+# keysT_LDADD = ../TheBESKeys.o $(LDADD)
 
 pfileT_SOURCES = pfileT.cc
 
