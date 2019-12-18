@@ -109,7 +109,9 @@ namespace AWSV4 {
     // headers A vector where each element is a header name and value, separated by a colon. No spaces.
     std::map<std::string,std::string> canonicalize_headers(const std::vector<std::string>& headers) {
         std::map<std::string,std::string> header_key2val;
-        for (const auto &h: headers) {
+        for( auto h = headers.begin(), end = headers.end(); h != end; ++h ) {
+	  // CentOS6 does not support the range-based for loop.
+	  // for (const auto & h: headers) {
 #if 0
             std::regex reg("\\:");
             std::sregex_token_iterator iter(h.begin(), h.end(), reg, -1);
@@ -123,14 +125,14 @@ namespace AWSV4 {
 #endif
             // h is a header <key> : <val>
 
-            auto i = h.find(':');
+            auto i = h->find(':');
             if (i == std::string::npos) {
                 header_key2val.clear();
                 return header_key2val;
             }
 
-            std::string key{trim(h.substr(0, i))};
-            const std::string val{trim(h.substr(i+1))};
+            std::string key = trim(h->substr(0, i));
+            const std::string val = trim(h->substr(i+1));
             if (key.empty() || val.empty()) {
                 header_key2val.clear();
                 return header_key2val;
@@ -146,8 +148,8 @@ namespace AWSV4 {
     const std::string map_headers_string(const std::map<std::string,std::string>& header_key2val) {
         const std::string pair_delim{":"};
         std::string h;
-        for (const auto& kv:header_key2val) {
-            h.append(kv.first + pair_delim + kv.second + ENDL);
+        for (auto kv = header_key2val.begin(), end = header_key2val.end(); kv != end; ++kv) {
+            h.append(kv->first + pair_delim + kv->second + ENDL);
         }
         return h;
     }
@@ -156,8 +158,9 @@ namespace AWSV4 {
     const std::string map_signed_headers(const std::map<std::string,std::string>& header_key2val) {
         const std::string signed_headers_delim{";"};
         std::vector<std::string> ks;
-        for (const auto& kv:header_key2val) {
-            ks.push_back(kv.first);
+        for (auto kv = header_key2val.begin(), end = header_key2val.end(); kv != end; ++kv) {
+	  // CentOS6 compat hack for (const auto& kv:header_key2val) {
+            ks.push_back(kv->first);
         }
         return join(ks,signed_headers_delim);
     }
@@ -233,7 +236,7 @@ namespace AWSV4 {
                                           const std::string string_to_sign,
                                           const bool verbose) {
 
-        const std::string k1{AWS4 + secret};
+        const std::string k1 = AWS4 + secret;
         char *c_k1 = new char [k1.length()+1];
         std::strcpy(c_k1, k1.c_str());
 
