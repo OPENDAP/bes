@@ -478,7 +478,8 @@ void CredentialsManager::load_credentials_OLD() {
 AccessCredentials::AccessCredentials(
         const std::string config_name,
         const std::string &id,
-        const std::string &key) : AccessCredentials(config_name){
+        const std::string &key){
+    d_config_name = config_name;
     add(ID,id);
     add(KEY,key);
 }
@@ -496,8 +497,10 @@ AccessCredentials::AccessCredentials(
         const std::string &id,
         const std::string &key,
         const std::string &region,
-        const std::string &bucket)
-        : AccessCredentials(config_name, id, key) {
+        const std::string &bucket) {
+    d_config_name = config_name;
+    add(ID,id);
+    add(KEY,key);
     add(REGION,region);
     add(BUCKET,bucket);
 }
@@ -547,7 +550,7 @@ bool AccessCredentials::isS3Cred(){
 string AccessCredentials::to_json(){
     stringstream ss;
     ss << "{" << endl << "  \"AccessCredentials\": { " << endl;
-    ss << "    \"name\": \"" << conf_name << "\"," << endl;
+    ss << "    \"name\": \"" << d_config_name << "\"," << endl;
     for (std::map<string, string>::iterator it = kvp.begin(); it != kvp.end(); ++it) {
         std::string key = it->first;
         std::string value = it->second;
@@ -559,5 +562,4 @@ string AccessCredentials::to_json(){
     }
     ss << endl << "  }" << endl << "}" << endl;
     return ss.str();
-
 }

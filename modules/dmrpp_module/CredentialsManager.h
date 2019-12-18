@@ -42,10 +42,10 @@ public:
 private:
     std::map<std::string, std::string> kvp;
     bool s3_tested, is_s3;
-    std::string conf_name;
+    std::string d_config_name;
 public:
     AccessCredentials()= default;
-    AccessCredentials(std::string config_name){ conf_name = config_name;}
+    AccessCredentials(std::string config_name){ d_config_name = config_name;}
     AccessCredentials(const AccessCredentials &ac) = default;
     AccessCredentials(
             std::string config_name,
