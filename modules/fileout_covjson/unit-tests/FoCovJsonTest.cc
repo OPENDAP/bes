@@ -436,24 +436,24 @@ public:
 
             ft.addTestParameter("testId1", "testParam1", "Parameter", "float", "Celsius", "THIS IS A LONG NAME", "THIS IS A STANDARD NAME", "[3, 3, 3]", "[32765.2, 25222.7, 1431516.9, 3289741.2, 328974268.3]");
 
-            ft.printCoverageHeaderWorker(output, "", true);
+            ft.printDomain(output, "");
 
             ft.addTestParameter("testId2", "testParam2", "Parameter", "integer", "Fahrenheit", "THIS IS A LONGER NAME", "THIS IS A MORE STANDARD NAME", "[1, 2, 3]", "[372, 142, 1142, 12, 45233]");
 
-            ft.testPrintDomain(output, "", true);
+            ft.printDomain(output, "");
 
             // Test domain type printing
             ft.setTestDomainType(0); // Grid
-            ft.testPrintDomain(output, "", true);
+            ft.printDomain(output, "");
 
             ft.setTestDomainType(1); // Vertical Profile
-            ft.testPrintDomain(output, "", true);
+            ft.printDomain(output, "");
 
             ft.setTestDomainType(2); // Point Series
-            ft.testPrintDomain(output, "", true);
+            ft.printDomain(output, "");
 
             ft.setTestDomainType(3); // Point
-            ft.testPrintDomain(output, "", true);
+            ft.printDomain(output, "");
 
             // Compare the result with the baseline file.
             string baseline = fileToString((string)TEST_SRC_DIR + "/baselines/print_domain_test.covjson.baseline");

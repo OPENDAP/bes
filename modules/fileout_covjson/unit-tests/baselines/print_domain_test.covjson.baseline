@@ -1,30 +1,174 @@
-{
-  "type": "Coverage",
-  "domain": {
-    "type" : "Domain",
-    "domainType": "Grid",
-{
-  "type": "Coverage",
-  "domain": {
-    "type" : "Domain",
-    "domainType": "Grid",
-{
-  "type": "Coverage",
-  "domain": {
-    "type" : "Domain",
-    "domainType": "Grid",
-{
-  "type": "Coverage",
-  "domain": {
-    "type" : "Domain",
-    "domainType": "Vertical Profile",
-{
-  "type": "Coverage",
-  "domain": {
-    "type" : "Domain",
-    "domainType": "Point Series",
-{
-  "type": "Coverage",
-  "domain": {
-    "type" : "Domain",
-    "domainType": "Point",
+"domain": {
+  "type" : "Domain",
+  "domainType": "Grid",
+  "axes": {
+    "x": {
+      [12.2, 13.5, 15.8]
+    },
+    "y": {
+      [33.2, 22.7, 16.9]
+    },
+    "t": {
+      [1.0, 2.0, 3.0]
+    }
+  },
+  "referencing": [{
+    "coordinates": ["t"],
+    "system": {
+      "type": "TemporalRS",
+      "calendar": "Gregorian"
+    }
+  },
+  {
+    "coordinates": ["x", "y"],
+    "system": {
+      "type": "GeographicCRS",
+      "id": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+    }
+  }]
+},
+"domain": {
+  "type" : "Domain",
+  "domainType": "Grid",
+  "axes": {
+    "x": {
+      [12.2, 13.5, 15.8]
+    },
+    "y": {
+      [33.2, 22.7, 16.9]
+    },
+    "t": {
+      [1.0, 2.0, 3.0]
+    }
+  },
+  "referencing": [{
+    "coordinates": ["t"],
+    "system": {
+      "type": "TemporalRS",
+      "calendar": "Gregorian"
+    }
+  },
+  {
+    "coordinates": ["x", "y"],
+    "system": {
+      "type": "GeographicCRS",
+      "id": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+    }
+  }]
+},
+"domain": {
+  "type" : "Domain",
+  "domainType": "Grid",
+  "axes": {
+    "x": {
+      [12.2, 13.5, 15.8]
+    },
+    "y": {
+      [33.2, 22.7, 16.9]
+    },
+    "t": {
+      [1.0, 2.0, 3.0]
+    }
+  },
+  "referencing": [{
+    "coordinates": ["t"],
+    "system": {
+      "type": "TemporalRS",
+      "calendar": "Gregorian"
+    }
+  },
+  {
+    "coordinates": ["x", "y"],
+    "system": {
+      "type": "GeographicCRS",
+      "id": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+    }
+  }]
+},
+"domain": {
+  "type" : "Domain",
+  "domainType": "Vertical Profile",
+  "axes": {
+    "x": {
+      [12.2, 13.5, 15.8]
+    },
+    "y": {
+      [33.2, 22.7, 16.9]
+    },
+    "t": {
+      [1.0, 2.0, 3.0]
+    }
+  },
+  "referencing": [{
+    "coordinates": ["t"],
+    "system": {
+      "type": "TemporalRS",
+      "calendar": "Gregorian"
+    }
+  },
+  {
+    "coordinates": ["x", "y"],
+    "system": {
+      "type": "GeographicCRS",
+      "id": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+    }
+  }]
+},
+"domain": {
+  "type" : "Domain",
+  "domainType": "Point Series",
+  "axes": {
+    "x": {
+      [12.2, 13.5, 15.8]
+    },
+    "y": {
+      [33.2, 22.7, 16.9]
+    },
+    "t": {
+      [1.0, 2.0, 3.0]
+    }
+  },
+  "referencing": [{
+    "coordinates": ["t"],
+    "system": {
+      "type": "TemporalRS",
+      "calendar": "Gregorian"
+    }
+  },
+  {
+    "coordinates": ["x", "y"],
+    "system": {
+      "type": "GeographicCRS",
+      "id": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+    }
+  }]
+},
+"domain": {
+  "type" : "Domain",
+  "domainType": "Point",
+  "axes": {
+    "x": {
+      [12.2, 13.5, 15.8]
+    },
+    "y": {
+      [33.2, 22.7, 16.9]
+    },
+    "t": {
+      [1.0, 2.0, 3.0]
+    }
+  },
+  "referencing": [{
+    "coordinates": ["t"],
+    "system": {
+      "type": "TemporalRS",
+      "calendar": "Gregorian"
+    }
+  },
+  {
+    "coordinates": ["x", "y"],
+    "system": {
+      "type": "GeographicCRS",
+      "id": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+    }
+  }]
+},

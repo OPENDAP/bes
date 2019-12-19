@@ -1,0 +1,64 @@
+{
+  "type": "Coverage",
+  "domain": {
+    "type" : "Domain",
+    "domainType": "Grid",
+    "axes": {
+      "x": {
+        [12.2, 13.5, 15.8]
+      },
+      "y": {
+        [33.2, 22.7, 16.9]
+      },
+      "t": {
+        [1.0, 2.0, 3.0]
+      }
+    },
+    "referencing": [{
+      "coordinates": ["t"],
+      "system": {
+        "type": "TemporalRS",
+        "calendar": "Gregorian"
+      }
+    },
+    {
+      "coordinates": ["x", "y"],
+      "system": {
+        "type": "GeographicCRS",
+        "id": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+      }
+    }]
+  },
+  "parameters": {
+    "testParam1": {
+      "type": "Parameter",
+      "description": {
+        "en": "THIS IS A LONG NAME"
+      },
+      "unit": {
+        "label": {
+          "en": "Celsius"
+        },
+        "symbol": {
+          "value": "Celsius",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/THIS IS A STANDARD NAME/",
+        "label": {
+          "en": "THIS IS A LONG NAME"
+        }
+      }
+    }
+  },
+  "ranges": {
+    "testParam1": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      [3, 3, 3]
+      [32765.2, 25222.7, 1431516.9, 3289741.2, 328974268.3]
+    }
+  }
+}
