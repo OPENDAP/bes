@@ -51,6 +51,7 @@ bes/bes.conf: bes/bes.conf.in ../config.status
 
 SRCS = BESInterface.cc \
 	BESLog.cc TheBESKeys.cc BESStatus.cc			\
+	kvp_utils.cc \
 	BESContainer.cc BESFileContainer.cc				\
 	BESContainerStorage.cc BESContainerStorageFile.cc		\
 	BESContainerStorageList.cc BESContainerStorageVolatile.cc	\
@@ -101,6 +102,7 @@ SRCS = BESInterface.cc \
 
 HDRS = BESInterface.h BESLog.h 			\
 	TheBESKeys.h BESStatus.h 				\
+	kvp_utils.h \
 	BESNames.h \
 	BESContainer.h BESFileContainer.h BESContainerStorage.h 	\
 	BESContainerStorageFile.h BESContainerStorageList.h 		\

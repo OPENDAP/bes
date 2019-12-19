@@ -46,10 +46,20 @@ TESTSUITE = $(srcdir)/testsuite
 
 TESTSUITE_MDS = $(srcdir)/testsuite_mds_tests
 
-check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_MDS) bes.conf bes_serial.conf bes_mds_tests.conf mds_for_tests
+#TESTSUITE_S3 = $(srcdir)/testsuite_s3_tests
+
+#if BES_DEVELOPER
+#s3-tests: $(TESTSUITE_S3) bes.conf bes_serial.conf
+#	$(SHELL) '$(TESTSUITE_S3)' $(TESTSUITEFLAGS)
+#else
+#s3-tests:
+#	true
+#endif
+
+check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_MDS) bes.conf bes_serial.conf bes_mds_tests.conf mds_for_tests # s3-tests
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) --conf=bes_serial.conf
-	$(SHELL) '$(TESTSUITE_MDS)' $(TESTSUITEFLAGS) --conf=bes_mds_tests.conf 
+	$(SHELL) '$(TESTSUITE_MDS)' $(TESTSUITEFLAGS) --conf=bes_mds_tests.conf
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
@@ -59,9 +69,11 @@ clean-local:
 %: %.at 
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
-$(TESTSUITE): $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
+$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
 
-$(TESTSUITE_MDS): $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
+$(TESTSUITE_MDS): $(TESTSUITE_MDS).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
+
+#$(TESTSUITE_S3): $(TESTSUITE_S3).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
 
 # The `:;' works around a Bash 3.2 bug when the output is not writeable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac
