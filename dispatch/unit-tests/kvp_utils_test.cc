@@ -120,7 +120,7 @@ public:
         if(debug) cout << "load_bad_keys() - Loading Keys File: " << keys_file << endl;
 
         try {
-            load_keys(keys_file,keystore);
+            kvp::load_keys(keys_file,keystore);
             CPPUNIT_FAIL("load_bad_keys() The load_keys() call should have failed but it did not.");
         }
         catch (BESError &e) {
@@ -135,7 +135,7 @@ public:
         if(debug) cout << "load_good_keys() - Loading Keys File: " << keys_file << endl;
 
         try {
-            load_keys(keys_file, keystore);
+            kvp::load_keys(keys_file, keystore);
             if(debug) cout << "load_good_keys() - Read " << keystore.size() << " keys from " << keys_file << endl ;
         }
         catch (BESError &e) {
