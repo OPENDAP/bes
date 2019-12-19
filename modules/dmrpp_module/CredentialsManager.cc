@@ -23,6 +23,8 @@
 // Created by ndp on 12/11/19.
 //
 
+#include "config.h"
+
 #include <curl/multi.h>
 #include <curl/curl.h>
 #include <ctime>
@@ -36,21 +38,20 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#include "WhiteList.h"
-#include "TheBESKeys.h"
-#include "BESForbiddenError.h"
-#include "BESInternalError.h"
-#include "BESDebug.h"
-#include "BESLog.h"
-#include "util.h"   // libdap::long_to_string()
+#include <WhiteList.h>
+#include <TheBESKeys.h>
+#include <kvp_utils.h>
+#include <BESForbiddenError.h>
+#include <BESInternalError.h>
+#include <BESDebug.h>
+#include <BESLog.h>
+#include <util.h>   // libdap::long_to_string()
 
-#include "config.h"
 #include "Chunk.h"
 #include "CurlHandlePool.h"
 #include "awsv4.h"
 #include "DmrppCommon.h"
 
-#include "kvp_utils.h"
 #include "CredentialsManager.h"
 
 using namespace std;
@@ -204,7 +205,6 @@ CredentialsManager::get(const std::string &url){
             }
         }
     }
-
     return best_match;
 }
 
@@ -232,14 +232,15 @@ bool file_is_secured(const string &filename) {
     struct stat st;
     if (stat(filename.c_str(), &st) != 0) {
         string err;
-        err.append("file_is_locked() Unable to access file ");
+        err.append("file_is_secured() Unable to access file ");
         err.append(filename).append("  strerror: ").append(strerror(errno));
         throw BESInternalError(err, __FILE__, __LINE__);
     }
 
     mode_t perm = st.st_mode;
     bool status;
-    status = (perm & S_IRUSR) && (perm & S_IWUSR) && !(
+    status = (perm & S_IRUSR) && !(
+            // (perm & S_IWUSR) || // We don't need to enforce user no write
             (perm & S_IXUSR) ||
             (perm & S_IRGRP) ||
             (perm & S_IWGRP) ||
@@ -247,7 +248,7 @@ bool file_is_secured(const string &filename) {
             (perm & S_IROTH) ||
             (perm & S_IWOTH) ||
             (perm & S_IXOTH));
-    BESDEBUG(MODULE, "file_is_locked() " << filename << " locked: " << (status ? "true" : "false") << endl);
+    BESDEBUG(MODULE, "file_is_secured() " << filename << " secured: " << (status ? "true" : "false") << endl);
     return status;
 }
 
@@ -256,26 +257,40 @@ bool file_is_secured(const string &filename) {
  * by the key "CredentialsManager.config". If the key is missing from the bes.conf chain
  * the method will return and no credentials will be loaded.
  *
+ * The credentials are stored as a map of maps  where the key is the human readable name
+ * of the credentials.
+ * The map of maps is accomplished by the following formatting:
+ *
+ * cloudydap=url:https://s3.amazonaws.com/cloudydap/
+ * cloudydap+=id:---------------------------
+ * cloudydap+=key:**************************
+ * cloudydap+=region:us-east-1
+ * cloudydap+=bucket:cloudydap
+ *
+ * cloudyopendap=url:https://s3.amazonaws.com/cloudyopendap/
+ * cloudyopendap+=id:---------------------------
+ * cloudyopendap+=key:**************************
+ * cloudyopendap+=region:us-east-1
+ * cloudyopendap+=bucket:cloudyopendap
+ *
+ * cname_02=url:https://ssotherone.org/login
+ * cname_02+=id:---------------------------
+ * cname_02+=key:**************************
+ * cname_02+=region:us-east-1
+ * cname_02+=bucket:cloudyotherdap
+
  * @throws BESInternalError if the file specified by the "CredentialsManager.config"
  * key is missing.
  */
 void CredentialsManager::load_credentials_NEW( ) {
     bool found = true;
+    AccessCredentials *accessCredentials;
+    map<string, AccessCredentials *> credential_sets;
 
-    //map<string, AccessCredentials *> credential_sets;
-    //AccessCredentials *accessCredentials;
-
-    vector <string> credentials_entries;
     string config_file;
     TheBESKeys::TheKeys()->get_value(CM_CONFIG, config_file, found);
     if (found) {
-        if (file_is_secured(config_file)) {
-            BESDEBUG(MODULE, "CredentialsManager config file '" << config_file << "' is secured." << endl);
-
-            std::map <std::string, std::vector<std::string>> keystore;
-            load_keys(config_file, keystore);
-
-        } else {
+        if (!file_is_secured(config_file)) {
             string err;
             err.append("CredentialsManager config file ");
             err.append(config_file);
@@ -283,6 +298,35 @@ void CredentialsManager::load_credentials_NEW( ) {
             err.append("Set the access permissions to -rw------- (600) and try again.");
             throw BESInternalError(err, __FILE__, __LINE__);
         }
+
+        BESDEBUG(MODULE, "CredentialsManager config file '" << config_file << "' is secured." << endl);
+
+        map <string, vector<string>> keystore;
+        kvp::load_keys(config_file, keystore);
+
+        for(map <string, vector<string>>::iterator it=keystore.begin(); it!=keystore.end(); it++) {
+            string creds_name = it->first;
+            vector<string> &credentials_entries = it->second;
+            map<string, AccessCredentials *>::iterator mit;
+            mit = credential_sets.find(creds_name);
+            if (mit != credential_sets.end()) {  // New?
+                accessCredentials = mit->second;
+            } else { // Nope.
+                accessCredentials = new AccessCredentials(creds_name);
+                credential_sets.insert(pair<string, AccessCredentials *>(creds_name, accessCredentials));
+            }
+            for (vector<string>::iterator jt = credentials_entries.begin(); jt != credentials_entries.end(); jt++) {
+                string credentials_entry = *jt;
+                int index = credentials_entry.find(":");
+                if (index > 0) {
+                    string key_name = credentials_entry.substr(0, index);
+                    string value = credentials_entry.substr(index + 1);
+                    BESDEBUG(MODULE,  creds_name << ":" << key_name << "=" << value << endl);
+                    accessCredentials->add(key_name, value);
+                }
+            }
+        }
+
     }
 }
 
