@@ -602,7 +602,7 @@ public:
             ft.printRanges(output, "");
 
             // Compare the result with the baseline file.
-            string baseline = fileToString((string)TEST_SRC_DIR + "/baselines/print_ranges_worker_test.covjson.baseline");
+            string baseline = fileToString((string)TEST_SRC_DIR + "/baselines/print_ranges_test.covjson.baseline");
             string result = fileToString(tmpFile);
 
             DBG(cerr << "FoCovJsonTest::testPrintRanges() - baseline: " << endl << endl << baseline << endl);
