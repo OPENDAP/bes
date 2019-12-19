@@ -10,7 +10,7 @@
 
 
 
-void load_bes_keys(   std::ifstream *keys_file, std::map<std::string, std::vector<std::string> > &keystore);
+void load_keys(   std::ifstream *keys_file, std::map<std::string, std::vector<std::string> > &keystore);
 void load_keys(const std::string &keys_file_name, std::map<std::string, std::vector<std::string> > &keystore);
 
 

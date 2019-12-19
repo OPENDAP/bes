@@ -28,6 +28,12 @@
 
 using namespace std;
 
+// Forward declaration, implementation at end of file..
+void load_keys(
+        set<string> &loaded_kvp_files,
+        const std::string &keys_file_name,
+        std::map<std::string, std::vector<std::string> > &keystore);
+
 bool only_blanks(const char *line)
 {
     string my_line = line;
@@ -99,29 +105,59 @@ inline bool break_pair(const char* b, string& key, string &value, bool &addto)
 }
 
 
+/** Load key/value pairs from one include file
+ *
+ * Helper function to load key/value pairs from a BES configuration file
+ *
+ * @param file name of the configuration file to load
+ */
+void load_include_file(
+        set<string> &loaded_kvp_files,
+        const string &file,
+        std::map<std::string, std::vector<std::string> > &keystore
+        ){
+    // make sure the file exists and is readable
+    // throws exception if unable to read
+    // not loaded if has already be started to be loaded
+    set<string>::iterator it = loaded_kvp_files.find(file);
+
+    if (it == loaded_kvp_files.end()) {
+        // Didn't find it, better load it...
+        loaded_kvp_files.insert(file);
+        load_keys(loaded_kvp_files, file, keystore);
+    }
+}
+
+
 /** Load key/value pairs from other files
  *
  * Given a file, or a regular expression matching multiple files, where
  * the location is relative to the location of the current keys file,
  * load the keys from that file into this key list
  *
- * @param files string representing a file or a regular expression
+ * @param kvp_files The set of files that have been read.
+ * @param file_expr A string representing a file or a regular expression
  * patter for 1 or more files
- */
-void load_include_file(set<string> &kvp_files, const string &filename, std::map<std::string, std::vector<std::string> > &keystore)
-{
+ * @param keystore The map into which the key value pairs will be placed.
+*/
+void load_include_files(
+        set<string> &loaded_kvp_files,
+        const string &file_expr,
+        std::map<std::string, std::vector<std::string> > &keystore,
+        const string &current_keys_file_name
+        ){
     string newdir;
-    BESFSFile allfiles(filename);
+    BESFSFile allfiles(file_expr);
 
     // If the files specified begin with a /, then use that directory
     // instead of the current keys file directory.
-    if (!filename.empty() && filename[0] == '/') {
+    if (!file_expr.empty() && file_expr[0] == '/') {
         newdir = allfiles.getDirName();
     }
     else {
         // determine the directory of the current keys file. All included
         // files will be relative to this file.
-        BESFSFile currfile(filename);
+        BESFSFile currfile(current_keys_file_name);
         string currdir = currfile.getDirName();
 
         string alldir = allfiles.getDirName();
@@ -145,12 +181,8 @@ void load_include_file(set<string> &kvp_files, const string &filename, std::map<
     BESFSDir::fileIterator i = fsd.beginOfFileList();
     BESFSDir::fileIterator e = fsd.endOfFileList();
     for (; i != e; i++) {
-        set<string>::iterator it;
-        it = kvp_files.find(filename);
-        if(it == kvp_files.end()){
-            kvp_files.insert(filename);
-            load_keys(filename, keystore);
-        }
+        string include_file =  (*i).getFullPath();
+        load_include_file(loaded_kvp_files, include_file, keystore);
     }
 }
 
@@ -172,8 +204,11 @@ void set_key(
     }
 }
 
-
-void load_keys(set<string> &kvp_files, std::ifstream *keys_file, std::map<std::string, std::vector<std::string> > &keystore){
+void load_keys(
+        set<string> &loaded_kvp_files,
+        std::ifstream *keys_file,
+        std::map<std::string, std::vector<std::string> > &keystore,
+        const string &current_keys_file_name ){
 
     string key, value, line;
     while (!keys_file->eof()) {
@@ -185,7 +220,8 @@ void load_keys(set<string> &kvp_files, std::ifstream *keys_file, std::map<std::s
                 // be true because we need access to the child configuration
                 // files and their values for the admin interface.
                 set_key(key, value, true, keystore);
-                load_include_file(kvp_files, value, keystore);
+                //load_include_files(kvp_files, value, keystore);
+                load_include_files(loaded_kvp_files, value, keystore, current_keys_file_name);
             }
             else {
                 set_key(key, value, addto, keystore);
@@ -195,7 +231,7 @@ void load_keys(set<string> &kvp_files, std::ifstream *keys_file, std::map<std::s
 }
 
 void load_keys(
-        set<string> &kvp_files,
+        set<string> &loaded_kvp_files,
         const std::string &keys_file_name,
         std::map<std::string, std::vector<std::string> > &keystore
 ){
@@ -216,8 +252,8 @@ void load_keys(
     }
 
     try {
-        kvp_files.insert(keys_file_name);
-        load_keys(kvp_files, keys_file, keystore);
+        loaded_kvp_files.insert(keys_file_name);
+        load_keys(loaded_kvp_files, keys_file, keystore, keys_file_name);
     }
     catch (BESError &e) {
         // be sure we're throwing a fatal error, since the BES can't run
@@ -240,7 +276,7 @@ void load_keys(
         const std::string &keys_file_name,
         std::map<std::string, std::vector<std::string> > &keystore
 ){
-    set<string> kvp_files;
-    load_keys(kvp_files, keys_file_name, keystore);
+    set<string> loaded_kvp_files;
+    load_keys(loaded_kvp_files, keys_file_name, keystore);
 }
 

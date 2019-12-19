@@ -61,7 +61,6 @@ const string catalog_root_dir = BESUtil::assemblePath(TEST_SRC_DIR,"catalog_test
 
 class KeyValuePairTest: public TestFixture {
 private:
-    string kvp_file;
     map<string, vector<string> > keystore;
 
     void show_file(string filename)
@@ -100,19 +99,23 @@ public:
 
     CPPUNIT_TEST_SUITE( KeyValuePairTest );
 
-    CPPUNIT_TEST(load_bad_keys);
-    //CPPUNIT_TEST(load_good_keys);
-    CPPUNIT_TEST(get_key_value);
-    CPPUNIT_TEST(get_multi_valued_key);
+        CPPUNIT_TEST(load_bad_keys);
+        CPPUNIT_TEST(get_key_value);
+        CPPUNIT_TEST(get_multi_valued_key);
+        CPPUNIT_TEST(get_single_val_from_multi_val_key);
+        CPPUNIT_TEST(check_for_missing_key);
+        CPPUNIT_TEST(get_key_with_empty_value);
+        CPPUNIT_TEST(check_empty_value_from_include);
+        CPPUNIT_TEST(get_keys_from_regexp_include);
+        CPPUNIT_TEST(get_those_keys);
 
     CPPUNIT_TEST_SUITE_END();
 
     void load_bad_keys()
     {
+        if(debug) cout << endl << "******  load_bad_keys() ******"  << endl;
         keystore.clear();
         string keys_file = string(TEST_SRC_DIR).append("/bad_keys1.ini");
-
-        if(debug) cout << "*****************************************" << endl;
         if(debug) cout << "load_bad_keys() - Bad file, not enough equal signs" << endl;
         if(debug) cout << "load_bad_keys() - Loading Keys File: " << keys_file << endl;
 
@@ -121,7 +124,7 @@ public:
             CPPUNIT_FAIL("load_bad_keys() The load_keys() call should have failed but it did not.");
         }
         catch (BESError &e) {
-            if(debug) cout << "load_bad_keys() - Unable to create BESKeys, expected. Message: ";
+            if(debug) cout << "load_bad_keys() - Unable to load keys, this is expected. Message: ";
             if(debug) cout << e.get_message() << endl;
         }
 
@@ -129,8 +132,6 @@ public:
     void load_good_keys(const string &filename) {
         keystore.clear();
         string keys_file = string(TEST_SRC_DIR).append(filename);
-
-        if(debug) cout << "*****************************************" << endl;
         if(debug) cout << "load_good_keys() - Loading Keys File: " << keys_file << endl;
 
         try {
@@ -145,9 +146,9 @@ public:
     }
 
     void get_key_value() {
+        if(debug) cout << endl << "******  get_key_value() ******"  << endl;
         load_good_keys("/keys_test.ini");
         map<string, vector<string>>::iterator it;
-        if(debug) cout << "*****************************************" << endl;
         if(debug) cout << "get_key_value() - Keystore has "<< keystore.size() <<  " keys" << endl ;
         string ret = "";
         for (int i = 1; i < 5; i++) {
@@ -168,12 +169,13 @@ public:
                 CPPUNIT_FAIL(string("get_key_value() - Key '")+key+"' not found");
             }
         }
+        if(debug) cout << "get_key_value() - Alright. Alright. Aright..." << endl;
     }
 
     void get_multi_valued_key() {
+        if(debug) cout << endl << "******  get_multi_valued_key() ******"  << endl;
         load_good_keys("/keys_test.ini");
         map<string, vector<string>>::iterator it;
-        if(debug) cout << "*****************************************" << endl;
         if(debug) cout << "get_multi_valued_key() - Check for a multi value key" << endl;
 
         string key = "BES.KEY.MULTI";
@@ -193,7 +195,160 @@ public:
         else {
             CPPUNIT_FAIL(string("get_multi_valued_key() - Key '")+key+"' not found");
         }
+        if(debug) cout << "get_multi_valued_key() - Alright. Alright. Aright..." << endl;
     }
+
+    void get_single_val_from_multi_val_key(){
+        if(debug) cout << endl << "******  get_single_val_from_multi_val_key() ******"  << endl;
+        load_good_keys("/keys_test.ini");
+        map<string, vector<string>>::iterator it;
+        if(debug) cout << "get_single_val_from_multi_val_key() - Get single value from a multi-value key" << endl;
+
+        string key = "BES.KEY.MULTI";
+        it=keystore.find(key);
+        if(it!=keystore.end()){
+            vector<string> &ret_vals = it->second;
+            if(debug) cout << "get_multi_valued_key() - Found " << ret_vals.size() << " values for key: '" << key << "'" << endl;
+            CPPUNIT_ASSERT(ret_vals.size() == 5);
+
+            string expected_value = "val_multi_0";
+            CPPUNIT_ASSERT(ret_vals[0] == expected_value);
+        }
+        else {
+            CPPUNIT_FAIL(string("get_single_val_from_multi_val_key() - Expected key '")+key+"' not found");
+        }
+        if(debug) cout << "get_single_val_from_multi_val_key() - Alright. Alright. Aright..." << endl;
+    }
+
+    void check_for_missing_key(){
+        if(debug) cout << endl << "******  check_for_missing_key() ******"  << endl;
+        load_good_keys("/keys_test.ini");
+        map<string, vector<string>>::iterator it;
+        if(debug) cout << "check_for_missing_key() - Looking for non existant key" << endl;
+
+        string key = "BES.NOTFOUND";
+        it=keystore.find(key);
+        if(it!=keystore.end()){
+            CPPUNIT_FAIL(string("check_for_missing_key() - OOPS! Key '")+key+"' was found! ");
+        }
+        if(debug) cout << "check_for_missing_key() - Alright. Alright. Aright..." << endl;
+
+    }
+
+    void get_key_with_empty_value (){
+        if(debug) cout << endl << "******  get_key_with_empty_value() ******"  << endl;
+        load_good_keys("/keys_test.ini");
+        map<string, vector<string>>::iterator it;
+        if(debug) cout << "get_key_with_empty_value() - Looking for key with empty value" << endl;
+
+        string key = "BES.KEY5";
+        it=keystore.find(key);
+        if(it!=keystore.end()){
+            CPPUNIT_ASSERT(it->second.empty());
+        }
+        else {
+            CPPUNIT_FAIL(string("get_key_with_empty_value() - Expected key '")+key+"' not found");
+        }
+        if(debug) cout << "get_key_with_empty_value() - Alright. Alright. Aright..." << endl;
+    }
+
+    void check_empty_value_from_include (){
+        if(debug) cout << endl << "******  get_key_with_empty_value() ******"  << endl;
+        load_good_keys("/keys_test.ini");
+        map<string, vector<string>>::iterator it;
+        if(debug) cout << "check_empty_value_from_include() - Looking for key with empty value in included file" << endl;
+
+        string key = "BES.KEY6";
+        it=keystore.find(key);
+        if(it!=keystore.end()){
+            CPPUNIT_ASSERT(it->second.empty());
+        }
+        else {
+            CPPUNIT_FAIL(string("check_empty_value_from_include() - Expected key '")+key+"' not found");
+        }
+        if(debug) cout << "check_empty_value_from_include() - Alright. Alright. Aright..." << endl;
+
+    }
+
+    void get_keys_from_regexp_include (){
+        if(debug) cout << endl << "******  get_keys_from_regexp_include() ******"  << endl;
+        load_good_keys("/keys_test.ini");
+        map<string, vector<string>>::iterator it;
+        if(debug) cout << "get_keys_from_regexp_include() - Getting keys from reg exp included file" << endl;
+
+        string key = "BES.KEY.MI";
+        it=keystore.find(key);
+        if(it!=keystore.end()){
+            vector<string> values = it->second;
+
+            CPPUNIT_ASSERT(values.size() == 3);
+            CPPUNIT_ASSERT(values[0] == "val_multi_2");
+            CPPUNIT_ASSERT(values[1] == "val_multi_1");
+            CPPUNIT_ASSERT(values[2] == "val_multi_3");
+        }
+        else {
+            CPPUNIT_FAIL(string("get_key_with_empty_value() - Expected key '")+key+"' not found");
+        }
+
+        if(debug) cout << "get_keys_from_regexp_include() - Alright. Alright. Aright..." << endl;
+
+    }
+
+
+    void get_those_keys (){
+        if(debug) cout << endl << "******  get_those_keys() ******"  << endl;
+        load_good_keys("/keys_test.ini");
+        map<string, vector<string>>::iterator it;
+        if(debug) cout << "get_those_keys() - Looking many single valued keys" << endl;
+
+        for (int i = 1; i < 7; i++) {
+            stringstream ss;
+            string key;
+            ss << "BES.KEY" << i;
+            key = ss.str();
+            string val;
+            if (i == 5 || i == 6) {
+                val = "";
+            }
+            else {
+                ss.str(std::string());
+                ss << "val" << i;
+                val = ss.str();
+            }
+            if(debug) cout << "get_those_keys() - Looking for " << key << " with value " << val << endl;
+            it=keystore.find(key);
+            if(it!=keystore.end()){
+                vector<string> values = it->second;
+                if(val.length()==0){
+                    CPPUNIT_ASSERT(values.size() == 0);
+                }
+                else {
+                    CPPUNIT_ASSERT(values[0] == val);
+                }
+            }
+            else {
+                CPPUNIT_FAIL(string("get_those_keys() - Expected key '")+key+"' not found");
+            }
+        }
+        if(debug) cout << "get_those_keys() - Alright. Alright. Aright..." << endl;
+    }
+
+#if 0
+
+   void template (){
+        if(debug) cout << endl << "******  template() ******"  << endl;
+        load_good_keys("/keys_test.ini");
+        map<string, vector<string>>::iterator it;
+        if(debug) cout << "template() - Looking for key with empty value" << endl;
+
+
+        if(debug) cout << "template() - Alright. Alright. Aright..." << endl;
+
+    }
+
+
+#endif
+
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(KeyValuePairTest);
