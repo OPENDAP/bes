@@ -326,7 +326,6 @@ void CredentialsManager::load_credentials_NEW( ) {
                 }
             }
         }
-
     }
 }
 
