@@ -74,6 +74,7 @@ private:
     static void initialize_instance();
     static void delete_instance();
 
+
 public:
     static CredentialsManager *theMngr;
 
@@ -90,7 +91,11 @@ public:
 
     static void load_credentials();
     // static void load_credentials_OLD();
-    static void load_credentials_NEW();
+    // static void load_credentials_VERY_OLD();
+
+    unsigned int size(){
+        return creds.size();
+    }
 
 };
 

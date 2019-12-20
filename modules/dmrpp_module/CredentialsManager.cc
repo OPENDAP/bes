@@ -71,7 +71,7 @@ const string AccessCredentials::BUCKET="bucket";
 const string AccessCredentials::URL="url";
 
 // Scope: This file...
-const string CM_CREDENTIALS="CM.credentials";
+// const string CM_CREDENTIALS="CM.credentials";
 const string CM_CONFIG="CredentialsManager.config";
 
 #if 0
@@ -208,6 +208,13 @@ CredentialsManager::get(const std::string &url){
     return best_match;
 }
 
+bool file_exists(const string &filename) {
+    struct stat buffer;
+    return (stat (filename.c_str(), &buffer) == 0);
+}
+
+
+
 /**
  * Uses stat() to check that the passed file has the
  * permissions 600 (rw-------). An exception is thrown
@@ -282,53 +289,93 @@ bool file_is_secured(const string &filename) {
  * @throws BESInternalError if the file specified by the "CredentialsManager.config"
  * key is missing.
  */
-void CredentialsManager::load_credentials_NEW( ) {
-    bool found = true;
+void CredentialsManager::load_credentials( ) {
+    bool found_key = true;
     AccessCredentials *accessCredentials;
     map<string, AccessCredentials *> credential_sets;
 
     string config_file;
-    TheBESKeys::TheKeys()->get_value(CM_CONFIG, config_file, found);
-    if (found) {
-        if (!file_is_secured(config_file)) {
-            string err;
-            err.append("CredentialsManager config file ");
-            err.append(config_file);
-            err.append(" is not secured! ");
-            err.append("Set the access permissions to -rw------- (600) and try again.");
-            throw BESInternalError(err, __FILE__, __LINE__);
+    TheBESKeys::TheKeys()->get_value(CM_CONFIG, config_file, found_key);
+    if(!found_key){
+        BESDEBUG(MODULE, "The BES key " << CM_CONFIG
+        << " was not found in the BES configuration tree. No AccessCredentials were loaded" << endl);
+        return;
+    }
+
+    if(!file_exists(config_file)){
+        BESDEBUG(MODULE, "The file specified by the BES key " << CM_CONFIG
+        << " does not exist. No Access Credentials were loaded." << endl);
+        return;
+    }
+
+    if (!file_is_secured(config_file)) {
+        string err;
+        err.append("CredentialsManager config file ");
+        err.append(config_file);
+        err.append(" is not secured! ");
+        err.append("Set the access permissions to -rw------- (600) and try again.");
+        throw BESInternalError(err, __FILE__, __LINE__);
+    }
+    BESDEBUG(MODULE, "CredentialsManager config file '" << config_file << "' is secured." << endl);
+
+    map <string, vector<string>> keystore;
+
+    kvp::load_keys(config_file, keystore);
+
+    for(map <string, vector<string>>::iterator it=keystore.begin(); it!=keystore.end(); it++) {
+        string creds_name = it->first;
+        vector<string> &credentials_entries = it->second;
+        map<string, AccessCredentials *>::iterator mit;
+        mit = credential_sets.find(creds_name);
+        if (mit != credential_sets.end()) {  // New?
+            accessCredentials = mit->second;
+        } else { // Nope.
+            accessCredentials = new AccessCredentials(creds_name);
+            credential_sets.insert(pair<string, AccessCredentials *>(creds_name, accessCredentials));
         }
-
-        BESDEBUG(MODULE, "CredentialsManager config file '" << config_file << "' is secured." << endl);
-
-        map <string, vector<string>> keystore;
-        kvp::load_keys(config_file, keystore);
-
-        for(map <string, vector<string>>::iterator it=keystore.begin(); it!=keystore.end(); it++) {
-            string creds_name = it->first;
-            vector<string> &credentials_entries = it->second;
-            map<string, AccessCredentials *>::iterator mit;
-            mit = credential_sets.find(creds_name);
-            if (mit != credential_sets.end()) {  // New?
-                accessCredentials = mit->second;
-            } else { // Nope.
-                accessCredentials = new AccessCredentials(creds_name);
-                credential_sets.insert(pair<string, AccessCredentials *>(creds_name, accessCredentials));
-            }
-            for (vector<string>::iterator jt = credentials_entries.begin(); jt != credentials_entries.end(); jt++) {
-                string credentials_entry = *jt;
-                int index = credentials_entry.find(":");
-                if (index > 0) {
-                    string key_name = credentials_entry.substr(0, index);
-                    string value = credentials_entry.substr(index + 1);
-                    BESDEBUG(MODULE,  creds_name << ":" << key_name << "=" << value << endl);
-                    accessCredentials->add(key_name, value);
-                }
+        for (vector<string>::iterator jt = credentials_entries.begin(); jt != credentials_entries.end(); jt++) {
+            string credentials_entry = *jt;
+            int index = credentials_entry.find(":");
+            if (index > 0) {
+                string key_name = credentials_entry.substr(0, index);
+                string value = credentials_entry.substr(index + 1);
+                BESDEBUG(MODULE, creds_name << ":" << key_name << "=" << value << endl);
+                accessCredentials->add(key_name, value);
             }
         }
     }
+    BESDEBUG(MODULE, "CredentialsManager loaded " << credential_sets.size()  << " AccessCredentials" << endl);
+    vector<string> pitch;
+    map<string,AccessCredentials *>::iterator acit;
+
+    for (acit = credential_sets.begin(); acit != credential_sets.end(); acit++) {
+        accessCredentials = acit->second;
+        string url = accessCredentials->get(AccessCredentials::URL);
+        if(url.length()){
+            theCM()->add(url,accessCredentials);
+        }
+        else {
+            pitch.push_back(acit->first);
+        }
+    }
+    if(pitch.size()){
+        stringstream ss;
+        vector<string>::iterator pt;
+
+        ss << "Encountered " << pitch.size() <<  " AccessCredentials "
+           << " definitions missing an associated URL. offenders: ";
+
+        for (pt = pitch.begin(); pt != pitch.end(); pt++)
+            ss << *pt << "  ";
+
+        throw BESInternalError( ss.str(), __FILE__, __LINE__);
+    }
+    BESDEBUG(MODULE, "CredentialsManager has successfully ingested " << theCM()->size()  << " AccessCredentials" << endl);
+
 }
 
+
+#if 0 // OLD WAY (intermediate)
 /**
  * This method loads access credentials from the bes.conf chain.
  * The credentials are stored as a list of lists under the key
@@ -437,11 +484,13 @@ void CredentialsManager::load_credentials( ){
 
 }
 
-#if 0 // DISABLED OLD way
+#endif
+
+#if 0 // DISABLED VERY OLD way
 /**
  * Load the AccessCredentials.
  */
-void CredentialsManager::load_credentials_OLD() {
+void CredentialsManager::load_credentials_VERY_OLD() {
     string aws_akid, aws_sak, aws_region, aws_s3_bucket;
 
 
