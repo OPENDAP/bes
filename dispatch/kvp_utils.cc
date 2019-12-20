@@ -52,7 +52,7 @@ namespace kvp {
 //
 // It used to be that we would validate the key=value line. Instead,
 // anything after the equal sign is considered the value of the key.
-    inline bool break_pair(const char *b, string &key, string &value, bool &addto) {
+    bool break_pair(const char *b, string &key, string &value, bool &addto) {
         addto = false;
         // Ignore comments and lines with only spaces
         if (b && (b[0] != '#') && (!only_blanks(b))) {
