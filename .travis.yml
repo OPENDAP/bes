@@ -27,12 +27,12 @@ addons:
     - libcurl4-openssl-dev
     - libcppunit-dev
     - libicu-dev
-    # - debhelper
+    # - debhelper These packages were used only for debian builds
     # - devscripts
     # - lintian
     # - fakeroot
     # - build-essential
-    # - sshpass
+    # - sshpass Only used for ssh access to www.o.o (also not done anymore)
 
 env:
   global:
@@ -79,10 +79,10 @@ before_script:
 # Build all the stages for 'master'. For a PR, run the 'build' and 'package' stages,
 # but do not run the scan.
 stages:
-  # - name: build
-  #  if:  branch = master
-  #- name: scan
-  #  if:  branch = master AND NOT type = pull_request
+  - name: build
+    if:  branch = master
+  - name: scan
+    if:  branch = master AND NOT type = pull_request
   - name: package
     if:  branch = master OR branch = travis
 
