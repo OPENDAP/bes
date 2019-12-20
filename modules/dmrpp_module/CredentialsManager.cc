@@ -25,32 +25,18 @@
 
 #include "config.h"
 
-#include <curl/multi.h>
-#include <curl/curl.h>
-#include <ctime>
-#include <unistd.h>
 #include <cstring>
 #include <iomanip>
 #include <sstream>
 #include <locale>
 #include <string>
-#include <sstream>
-#include <sys/types.h>
 #include <sys/stat.h>
 
 #include <WhiteList.h>
 #include <TheBESKeys.h>
 #include <kvp_utils.h>
-#include <BESForbiddenError.h>
 #include <BESInternalError.h>
 #include <BESDebug.h>
-#include <BESLog.h>
-#include <util.h>   // libdap::long_to_string()
-
-#include "Chunk.h"
-#include "CurlHandlePool.h"
-#include "awsv4.h"
-#include "DmrppCommon.h"
 
 #include "CredentialsManager.h"
 
@@ -73,21 +59,13 @@ const string AccessCredentials::URL="url";
 // Scope: This file...
 const string CM_CONFIG="CredentialsManager.config";
 
-#if 0
-// These are all from the "OLD" method where there was one set of credentials
-// for everything.
-const string ENV_AKID_KEY("AWS_ACCESS_KEY_ID");
-const string CONFIG_AKID_KEY("DMRPP.AWS_ACCESS_KEY_ID");
 
-const string ENV_SAK_KEY("AWS_SECRET_ACCESS_KEY");
-const string CONFIG_SAK_KEY("DMRPP.AWS_SECRET_ACCESS_KEY");
-
-const string ENV_REGION_KEY("AWS_REGION");
-const string CONFIG_REGION_KEY("DMRPP.AWS_REGION");
-
-const string ENV_S3_BUCKET_KEY("AWS_S3_BUCKET");
-const string CONFIG_S3_BUCKET_KEY("DMRPP.AWS_S3_BUCKET");
-#endif
+const string ENV_CREDENTIALS_KEY("ENVIRONMENT");
+const string ENV_ID_KEY("CMAC.ID");
+const string ENV_ACCESS_KEY("CMAC.ACCESS_KEY");
+const string ENV_REGION_KEY("CMAC.REGION");
+const string ENV_BUCKET_KEY("CMAC.BUCKET");
+const string ENV_URL_KEY("CMAC.URL");
 
 
 
@@ -292,9 +270,19 @@ bool file_is_secured(const string &filename) {
  * key is missing.
  */
 void CredentialsManager::load_credentials( ) {
+
     bool found_key = true;
     AccessCredentials *accessCredentials;
     map<string, AccessCredentials *> credential_sets;
+
+    // Environment injected credentials override all configuration credentials
+    accessCredentials = load_credentials_from_env();
+    if(accessCredentials){
+        // So if we have them, we add them to theCM() and then return without processing the configuration.
+        string url = accessCredentials->get(AccessCredentials::URL);
+        theCM()->add(url,accessCredentials);
+        return;
+    }
 
     string config_file;
     TheBESKeys::TheKeys()->get_value(CM_CONFIG, config_file, found_key);
@@ -375,7 +363,35 @@ void CredentialsManager::load_credentials( ) {
     BESDEBUG(MODULE, "CredentialsManager has successfully ingested " << theCM()->size()  << " AccessCredentials" << endl);
 
 }
+AccessCredentials *CredentialsManager::load_credentials_from_env( ) {
 
+    AccessCredentials *ac = NULL;
+
+    string env_url, env_id, env_access_key, env_region, env_bucket;
+
+    // If we are in developer mode then we compile this section which
+    // allows us to inject credentials via the system environment
+
+    env_id.assign(        get_env_value(ENV_ID_KEY));
+    env_access_key.assign(get_env_value(ENV_ACCESS_KEY));
+    env_region.assign(    get_env_value(ENV_REGION_KEY));
+    env_bucket.assign(    get_env_value(ENV_BUCKET_KEY));
+    env_url.assign(       get_env_value(ENV_URL_KEY));
+
+    if(env_url.length() &&
+        env_id.length() &&
+        env_access_key.length() &&
+        env_region.length() &&
+        env_bucket.length()){
+        ac = new AccessCredentials();
+        ac->add(AccessCredentials::URL, env_url);
+        ac->add(AccessCredentials::ID, env_id);
+        ac->add(AccessCredentials::KEY, env_access_key);
+        ac->add(AccessCredentials::REGION, env_region);
+        ac->add(AccessCredentials::BUCKET, env_bucket);
+    }
+    return ac;
+}
 
 #if 0 // OLD WAY (intermediate)
 /**
@@ -563,41 +579,7 @@ void CredentialsManager::load_credentials_VERY_OLD() {
 /*****************************************************************************************************/
 // AccessCredentials methods follow.
 
-/**
- *
- * @param name The human-readable name associated these this AccessCredentials
- * @param id The user id of the credentials
- * @param key The password/secret_key what have you
- */
-AccessCredentials::AccessCredentials(
-        const std::string config_name,
-        const std::string &id,
-        const std::string &key){
-    d_config_name = config_name;
-    add(ID,id);
-    add(KEY,key);
-}
 
-/**
- *
- * @param name The human-readable name associated these this AccessCredentials
- * @param id The user id of the credentials
- * @param key The password/secret_key what have you
- * @param region The AWS region to be logging into.
- * @param bucket The S3 bucket name that these credentials can access.
- */
-AccessCredentials::AccessCredentials(
-        const std::string config_name,
-        const std::string &id,
-        const std::string &key,
-        const std::string &region,
-        const std::string &bucket) {
-    d_config_name = config_name;
-    add(ID,id);
-    add(KEY,key);
-    add(REGION,region);
-    add(BUCKET,bucket);
-}
 
 /**
  * Retrieves the value of key
@@ -632,7 +614,8 @@ AccessCredentials::add(
  */
 bool AccessCredentials::isS3Cred(){
     if(!s3_tested){
-        is_s3 = get(ID).length()>0 &&
+        is_s3 = get(URL).length()>0 &&
+                get(ID).length()>0 &&
                 get(KEY).length()>0 &&
                 get(REGION).length()>0 &&
                 get(BUCKET).length()>0;

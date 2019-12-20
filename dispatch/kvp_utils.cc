@@ -19,7 +19,6 @@
 #include "BESFSDir.h"
 #include "BESFSFile.h"
 #include "BESInternalFatalError.h"
-#include "BESSyntaxUserError.h"
 
 #include "kvp_utils.h"
 

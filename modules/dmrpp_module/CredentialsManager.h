@@ -47,17 +47,6 @@ public:
     AccessCredentials()= default;
     AccessCredentials(std::string config_name){ d_config_name = config_name;}
     AccessCredentials(const AccessCredentials &ac) = default;
-    AccessCredentials(
-            std::string config_name,
-            const std::string &id,
-            const std::string &key);
-
-    AccessCredentials(
-            std::string config_name,
-            const std::string &id,
-            const std::string &key,
-            const std::string &region,
-            const std::string &bucket);
 
     std::string get(const std::string &key);
     void add(const std::string &key, const std::string &value);
@@ -74,6 +63,7 @@ private:
     static void initialize_instance();
     static void delete_instance();
 
+    static AccessCredentials *load_credentials_from_env( );
 
 public:
     static CredentialsManager *theMngr;
