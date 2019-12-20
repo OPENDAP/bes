@@ -56,11 +56,11 @@ namespace kvp {
         addto = false;
         // Ignore comments and lines with only spaces
         if (b && (b[0] != '#') && (!only_blanks(b))) {
-            register size_t l = strlen(b);
+            size_t l = strlen(b);
             if (l > 1) {
                 int pos = 0;
                 bool done = false;
-                for (register size_t j = 0; j < l && !done; j++) {
+                for (size_t j = 0; j < l && !done; j++) {
                     if (b[j] == '=') {
                         if (!addto)
                             pos = j;
