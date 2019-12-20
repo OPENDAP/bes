@@ -38,6 +38,7 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
 
 FileLockingCacheTest_SOURCES = FileLockingCacheTest.cc
+FileLockingCacheTest_LDADD = ../kvp_utils.o $(LDADD)
 
 ############## Autotest follows #####################
 
