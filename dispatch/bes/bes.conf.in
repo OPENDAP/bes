@@ -101,10 +101,6 @@ BES.AnnotationServiceURL =
 # BES.AnnotationServiceURL = http://localhost:8083/Feedback/form
 
 
-
-CredentialsManager.config=/etc/bes/credentials.conf
-
-
 #########################################################################
 #                                                                       #
 # NOTE: It is unlikely that you will need to change anything below      #

@@ -35,3 +35,5 @@ BES.Catalog.catalog.TypeMatch+=dmrpp:.*\.(dmrpp)(\.bz2|\.gz|\.Z)?$;
 # reduces throughput
 
 # DMRPP.MaxParallelTransfers=8
+
+CredentialsManager.config=/etc/bes/credentials.conf

@@ -71,7 +71,6 @@ const string AccessCredentials::BUCKET="bucket";
 const string AccessCredentials::URL="url";
 
 // Scope: This file...
-// const string CM_CREDENTIALS="CM.credentials";
 const string CM_CONFIG="CredentialsManager.config";
 
 #if 0
@@ -208,12 +207,15 @@ CredentialsManager::get(const std::string &url){
     return best_match;
 }
 
+/**
+ * Check fr file existence
+ * @param filename Name of file to check
+ * @return true if file exists, false otherwise.
+ */
 bool file_exists(const string &filename) {
     struct stat buffer;
     return (stat (filename.c_str(), &buffer) == 0);
 }
-
-
 
 /**
  * Uses stat() to check that the passed file has the
