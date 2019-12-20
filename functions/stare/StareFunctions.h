@@ -84,7 +84,7 @@ std::string get_sidecar_file_pathname(const std::string &pathName);
 void get_int32_values(hid_t file, const std::string &variable, std::vector<int> &values);
 void get_uint64_values(hid_t file, const std::string &variable, std::vector<libdap::dods_uint64> &values);
 
-bool has_value(const std::vector<libdap::dods_uint64> &stareVal, const std::vector<libdap::dods_uint64> &dataStareIndices);
+bool target_in_dataset(const vector<libdap::dods_uint64> &targetIndices, const vector<libdap::dods_uint64> &dataStareIndices);
 unsigned int count(const std::vector<libdap::dods_uint64> &stareVal, const std:: vector<libdap::dods_uint64> &stareIndices);
 
 vector<stare_match> *stare_subset_helper(const vector<libdap::dods_uint64> &targetIndices,

@@ -113,20 +113,36 @@ static vector<dods_uint64> *extract_uint64_array(Array *var) {
 }
 
 /**
- * @brief Are any of the stareVal STARE indices in the list of the dataset's STARE indices?
- * @param stareVal - stare values from a constraint expression
+ * Compare two spatial array index values a, b.
+ *
+ * Suffers some overhead, but should handle the overlap. For other
+ * kinds of intersection we need to handle intervals or move to a range.
+ *
+ * Returns
+ *   1 if b is in a
+ *  -1 if a is in b
+ *   0 otherwise.
+ *
+ */
+//int cmpSpatial(STARE_ArrayIndexSpatialValue a_, STARE_ArrayIndexSpatialValue b_) {
+
+/**
+ * @brief Are any of the targetIndices STARE indices in the list of the dataset's STARE indices?
+ * @param targetIndices - stare values from a constraint expression
  * @param dataStareIndices - stare values being compared, retrieved from the sidecar file. These
  * are the index values from the dataset.
  */
 bool
-has_value(const vector<dods_uint64> &stareVal, const vector<dods_uint64> &dataStareIndices) {
+target_in_dataset(const vector<dods_uint64> &targetIndices, const vector<dods_uint64> &dataStareIndices) {
     // Changes to the range-for loop, fixed the type (was unsigned long long
     // which works on OSX but not CentOS7). jhrg 11/5/19
-    for (const dods_uint64 &i : dataStareIndices) {
-        for (const dods_uint64 &j : stareVal)
-            //TODO: Check to see if the index is within the stare index being compared
-            if (i == j)
+    for (const dods_uint64 &i : targetIndices) {
+        for (const dods_uint64 &j :dataStareIndices ) {
+            // Check to see if the index is within the stare index being compared
+            int result = cmpSpatial(i, j);
+            if (result != 0)
                 return true;
+        }
     }
 
     return false;
@@ -147,11 +163,16 @@ count(const vector<dods_uint64> &stareVal, const vector<dods_uint64> &dataStareI
     unsigned int counter = 0;
     for (const dods_uint64 &i : stareVal) {
         for (const dods_uint64 &j : dataStareIndices)
-            // TODO Add call to STARE library 'inclusion' function. jhrg 11/7/19
-            if (i == j) {
+            if (cmpSpatial(i, j) != 0) {
                 counter++;
                 break;  // exit the inner loop
             }
+#if 0
+        if (i == j) {
+                counter++;
+                break;  // exit the inner loop
+            }
+#endif
     }
 
     return counter;
@@ -343,7 +364,7 @@ StareIntersectionFunction::stare_intersection_dap4_function(D4RValueList *args, 
 
     vector<dods_uint64> *targetIndices = extract_uint64_array(stareSrc);
 
-    bool status = has_value(*targetIndices, dataStareIndices);
+    bool status = target_in_dataset(*targetIndices, dataStareIndices);
 
     delete targetIndices;
 

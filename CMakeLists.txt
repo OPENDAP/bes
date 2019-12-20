@@ -11,6 +11,9 @@ include_directories(../libdap4)
 include_directories(/usr/local/Cellar/openssl/1.0.2r/include/)
 include_directories(/usr/local/include/)
 
+# Where the hyrax project puts the dependencies' headers
+include_directories(../build/deps/include)
+
 # These should not be referenced outside of libdap. jhrg 12/5/19
 # include_directories(../libdap4/d4_ce)
 # include_directories(../libdap4/d4_function)
@@ -557,7 +560,13 @@ add_executable(bes
     functions/TabularSequence.h
     functions/VersionFunction.cc
     functions/VersionFunction.h
-    hello_world/not_used/SampleSayCommand.cc
+
+	functions/stare/StareFunctions.cc
+	functions/stare/StareFunctions.h
+	functions/stare/build_sidecar.cc
+	functions/stare/unit-tests/StareFunctionsTest.cc
+
+	hello_world/not_used/SampleSayCommand.cc
     hello_world/not_used/SampleSayCommand.h
     hello_world/not_used/SayReporter.cc
     hello_world/not_used/SayReporter.h

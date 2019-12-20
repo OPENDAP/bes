@@ -212,17 +212,17 @@ public:
         vector<dods_uint64> target_indices = {3440016191299518474};
         vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
-        CPPUNIT_ASSERT(has_value(target_indices, data_indices));
+        CPPUNIT_ASSERT(target_in_dataset(target_indices, data_indices));
     }
 
     // target not in the 'dataset.'
     void test_has_value_2() {
         DBG(cerr << "--- test_has_value_2() test - BEGIN ---" << endl);
 
-        vector<dods_uint64> target_indices = {3440016191299518500};
+        vector<dods_uint64> target_indices = {5440016191299518475};// {3440016191299518500};
         vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
-        CPPUNIT_ASSERT(!has_value(target_indices, data_indices));
+        CPPUNIT_ASSERT(!target_in_dataset(target_indices, data_indices));
     }
 
     // Second target in the 'dataset.'
@@ -232,7 +232,7 @@ public:
         vector<dods_uint64> target_indices = {3440016191299518500, 3440016191299518474};
         vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
-        CPPUNIT_ASSERT(has_value(target_indices, data_indices));
+        CPPUNIT_ASSERT(target_in_dataset(target_indices, data_indices));
     }
 
     void intersection_function_test() {
