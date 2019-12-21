@@ -117,7 +117,7 @@ public:
         }
         catch (BESError &e) {
             CPPUNIT_FAIL("bad_file_permissions() The load_credentials() "
-                         "has failed unexpectedly. message"+ e.get_message());
+                         "has failed unexpectedly. Message: "+ e.get_message());
         }
 
     }
