@@ -117,8 +117,7 @@ public:
         }
         catch (BESError &e) {
             CPPUNIT_FAIL("bad_file_permissions() The load_credentials() "
-                         "has failed unexpectedly. message");
-            if(debug) cout << e.get_message() << endl;
+                         "has failed unexpectedly. message"+ e.get_message());
         }
 
     }
