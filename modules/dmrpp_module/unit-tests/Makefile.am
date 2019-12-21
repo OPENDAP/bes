@@ -71,7 +71,7 @@ bes.conf: $(srcdir)/$(BES_CONF_IN) $(top_srcdir)/configure.ac
 #
 
 if CPPUNIT
-UNIT_TESTS = ChunkTest DmrppParserTest DmrppCommonTest DmrppMetadataStoreTest
+UNIT_TESTS = ChunkTest DmrppParserTest DmrppCommonTest DmrppMetadataStoreTest CredentialsManagerTest
 else
 UNIT_TESTS =
 
@@ -99,6 +99,9 @@ OBJS = ../DMRpp.o ../DmrppCommon.o ../Chunk.o ../CurlHandlePool.o	\
 
 ChunkTest_SOURCES = ChunkTest.cc
 ChunkTest_LDADD = $(OBJS) $(LIBADD)
+
+CredentialsManagerTest_SOURCES = CredentialsManagerTest.cc
+CredentialsManagerTest_LDADD = $(OBJS) $(LIBADD)
 
 DmrppParserTest_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/modules/hdf5_handler
 DmrppParserTest_SOURCES = DmrppParserTest.cc

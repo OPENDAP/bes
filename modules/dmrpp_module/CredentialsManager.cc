@@ -56,10 +56,6 @@ const string AccessCredentials::REGION="region";
 const string AccessCredentials::BUCKET="bucket";
 const string AccessCredentials::URL="url";
 
-// Scope: This file...
-const string CM_CONFIG="CredentialsManager.config";
-
-
 const string ENV_CREDENTIALS_KEY("ENVIRONMENT");
 const string ENV_ID_KEY("CMAC.ID");
 const string ENV_ACCESS_KEY("CMAC.ACCESS_KEY");
@@ -285,15 +281,15 @@ void CredentialsManager::load_credentials( ) {
     }
 
     string config_file;
-    TheBESKeys::TheKeys()->get_value(CM_CONFIG, config_file, found_key);
+    TheBESKeys::TheKeys()->get_value(CATALOG_MANAGER_CREDENTIALS, config_file, found_key);
     if(!found_key){
-        BESDEBUG(MODULE, "The BES key " << CM_CONFIG
+        BESDEBUG(MODULE, "The BES key " << CATALOG_MANAGER_CREDENTIALS
         << " was not found in the BES configuration tree. No AccessCredentials were loaded" << endl);
         return;
     }
 
     if(!file_exists(config_file)){
-        BESDEBUG(MODULE, "The file specified by the BES key " << CM_CONFIG
+        BESDEBUG(MODULE, "The file specified by the BES key " << CATALOG_MANAGER_CREDENTIALS
         << " does not exist. No Access Credentials were loaded." << endl);
         return;
     }

@@ -3,4 +3,5 @@
 /DmrppHttpReadTest
 /DmrppChunkedReadTest
 /DmrppUtilTest
+/CredentialsManagerTest
 /mds_ledger.txt

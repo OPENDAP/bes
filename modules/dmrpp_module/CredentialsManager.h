@@ -30,7 +30,7 @@
 #include <vector>
 
 // These are the names of the bes keys used to configure the handler.
-#define CATALOG_MANAGER_CREDENTIALS "CM.credentials"
+#define CATALOG_MANAGER_CREDENTIALS "CredentialsManager.config"
 
 class AccessCredentials {
 public:
