@@ -113,13 +113,13 @@ jobs:
     script: 
     - export BES_BUILD=main
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-    - make -j7 && make install && besctl start && chmod 600 modules/dmrpp_module/unit-tests/input-files && make check -j7 && besctl stop
+    - make -j7 && make install && besctl start && make check -j7 && besctl stop
 
   - stage: build
     script:
     - export BES_BUILD=distcheck
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
-    - chmod 600 modules/dmrpp_module/unit-tests/input-files && make distcheck -j7
+    - make distcheck -j7
 
   - stage: package
     script: 

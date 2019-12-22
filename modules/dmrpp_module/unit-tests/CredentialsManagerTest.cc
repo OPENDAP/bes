@@ -116,8 +116,7 @@ public:
             CredentialsManager::load_credentials();
         }
         catch (BESError &e) {
-            CPPUNIT_FAIL("bad_file_permissions() The load_credentials() "
-                         "has failed unexpectedly. Message: "+ e.get_message());
+            CPPUNIT_FAIL("load_credentials() has failed unexpectedly. Message: "+ e.get_message());
         }
 
     }
@@ -181,7 +180,7 @@ public:
 
         }
         catch (BESError &e) {
-            CPPUNIT_FAIL("bad_file_permissions() The load_credentials() "
+            CPPUNIT_FAIL("bad_file_permissions() The load_credentials() method "
                          "has failed unexpectedly. message");
             if(debug) cout << e.get_message() << endl;
         }
