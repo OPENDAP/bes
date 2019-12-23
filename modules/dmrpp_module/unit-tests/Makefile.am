@@ -36,9 +36,12 @@ check_PROGRAMS = $(UNIT_TESTS)
 # This determines what gets run by 'make check.'
 TESTS = $(UNIT_TESTS)
 
+CREDS_CONF = input-files/credentials.conf
+CREDS_CONF_IN = $(CREDS_CONF).in
+
 noinst_HEADERS = test_config.h
 
-noinst_DATA = bes.conf
+noinst_DATA = bes.conf $(CREDS_CONF)
 
 EXTRA_DIST = bes.conf.in test_config.h.in baselines input-files
 
@@ -65,6 +68,10 @@ bes.conf: $(srcdir)/$(BES_CONF_IN) $(top_srcdir)/configure.ac
 	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 	    -e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
+
+$(CREDS_CONF):
+	cp $(srcdir)/$(CREDS_CONF_IN) $(CREDS_CONF)
+	chmod 600 $(CREDS_CONF)
 
 ############################################################################
 # Unit Tests
