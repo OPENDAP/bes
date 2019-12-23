@@ -114,6 +114,7 @@ jobs:
     - export BES_BUILD=main
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
     - ls -l modules/dmrpp_module/unit-tests/input-files
+    - chown $USER modules/dmrpp_module/unit-tests/input-files/credentials.conf
     - chmod 600 modules/dmrpp_module/unit-tests/input-files/credentials.conf
     - ls -l modules/dmrpp_module/unit-tests/input-files
     - make -j7 && make install && besctl start && make check -j7 && besctl stop
@@ -123,6 +124,7 @@ jobs:
     - export BES_BUILD=distcheck
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
     - ls -l modules/dmrpp_module/unit-tests/input-files
+    - chown $USER modules/dmrpp_module/unit-tests/input-files/credentials.conf
     - chmod 600 modules/dmrpp_module/unit-tests/input-files/credentials.conf
     - ls -l modules/dmrpp_module/unit-tests/input-files
     - make distcheck -j7
