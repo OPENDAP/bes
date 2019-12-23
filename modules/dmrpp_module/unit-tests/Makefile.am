@@ -47,7 +47,7 @@ EXTRA_DIST = bes.conf.in test_config.h.in baselines input-files
 
 CLEANFILES = *.gcda *.gcno *.strm *.file test_config.h tmp.txt
 
-DISTCLEANFILES = bes.conf bes.log
+DISTCLEANFILES = bes.conf bes.log $(CREDS_CONF)
 
 BUILT_SOURCES = test_config.h
 
