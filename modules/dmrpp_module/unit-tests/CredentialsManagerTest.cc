@@ -74,8 +74,8 @@ public:
         if (bes_debug) BESDebug::SetUp("cerr,dmrpp");
 
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
-        cm_config = string(TEST_BUILD_DIR).append("/input-files/credentials.conf");
-        weak_config = string(TEST_BUILD_DIR).append("/input-files/weak.conf");
+        cm_config = string(TEST_SRC_DIR).append("/input-files/credentials.conf");
+        weak_config = string(TEST_SRC_DIR).append("/input-files/weak.conf");
 
     }
 

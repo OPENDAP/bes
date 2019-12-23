@@ -41,13 +41,13 @@ CREDS_CONF_IN = $(CREDS_CONF).in
 
 noinst_HEADERS = test_config.h
 
-noinst_DATA = bes.conf $(CREDS_CONF)
+noinst_DATA = bes.conf $(CREDS_CONF) input-files/weak.conf
 
 EXTRA_DIST = bes.conf.in test_config.h.in baselines input-files
 
 CLEANFILES = *.gcda *.gcno *.strm *.file test_config.h tmp.txt
 
-DISTCLEANFILES = bes.conf bes.log $(CREDS_CONF)
+DISTCLEANFILES = bes.conf bes.log $(CREDS_CONF) input-files/weak.conf
 
 BUILT_SOURCES = test_config.h
 
