@@ -109,7 +109,7 @@ BES.Data.RootDirectory=/dev/null
 
 # BES.Catalog.catalog.TypeMatch=nc:.*\.(nc|NC)(\.gz|\.bz2|\.Z)?$;h4.*\.(hdf|HDF|eos)(\.gz|\.bz2|\.Z)?$;
 
-BES.Catalog.catalog.TypeMatch=h5:.*\.(h5|he5)(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.catalog.TypeMatch=h5:.*\.(h5|he5|HDF5)(\.bz2|\.gz|\.Z)?$;
 
 # Normally, when a client asks for a data catalog, all files and directories
 # are shown. Use the following two parameters to customize this behavior.

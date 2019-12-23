@@ -130,11 +130,11 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
         }
         else {
 
-	    // Handle unsupported datatypes
-	    f->Handle_Unsupported_Dtype(include_attr);
+            // Handle unsupported datatypes
+            f->Handle_Unsupported_Dtype(include_attr);
 
-	    // Handle unsupported dataspaces
-	    f->Handle_Unsupported_Dspace(include_attr);
+            // Handle unsupported dataspaces
+            f->Handle_Unsupported_Dspace(include_attr);
 
         }
 
@@ -247,7 +247,8 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
         if(General_Product == product_type ||
            true == HDF5RequestHandler::get_check_name_clashing()) 
             f->Handle_Obj_NameClashing(include_attr);
-
+        if(f->HaveUnlimitedDim() == true) 
+            f->Adjust_Dim_Name();
         // Handle the "coordinate" attributes.
         f->Handle_Coor_Attr();
 
@@ -508,6 +509,7 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
                         else {
                             if(unlimited_names.rfind((*ird)->getNewName()) == string::npos) {
                                 unlimited_names = unlimited_names+" "+(*ird)->getNewName();
+                                cerr<<"Else unlimited_names "<<unlimited_names <<endl;
                                 if(at !=NULL) 
                                     at->append_attr("Unlimited_Dimension","String",(*ird)->getNewName());
                             }
