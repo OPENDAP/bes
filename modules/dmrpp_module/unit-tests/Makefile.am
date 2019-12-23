@@ -70,6 +70,7 @@ bes.conf: $(srcdir)/$(BES_CONF_IN) $(top_srcdir)/configure.ac
 	    -e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
 $(CREDS_CONF):
+	mkdir -p input_files
 	cp $(srcdir)/$(CREDS_CONF_IN) $(CREDS_CONF)
 	chmod 600 $(CREDS_CONF)
 
