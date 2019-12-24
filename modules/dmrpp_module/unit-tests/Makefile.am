@@ -36,8 +36,8 @@ check_PROGRAMS = $(UNIT_TESTS)
 # This determines what gets run by 'make check.'
 TESTS = $(UNIT_TESTS)
 
-CREDS_CONF = input-files/credentials.conf
-CREDS_CONF_IN = $(CREDS_CONF).in
+CREDS_CONF = $(builddir)/credentials.conf
+CREDS_CONF_IN = $(srcdir)/input-files/credentials.conf.in
 
 noinst_HEADERS = test_config.h
 
@@ -47,7 +47,7 @@ EXTRA_DIST = bes.conf.in test_config.h.in baselines input-files
 
 CLEANFILES = *.gcda *.gcno *.strm *.file test_config.h tmp.txt
 
-DISTCLEANFILES = bes.conf bes.log $(CREDS_CONF) input-files/weak.conf
+DISTCLEANFILES = bes.conf bes.log $(CREDS_CONF)
 
 BUILT_SOURCES = test_config.h
 
@@ -70,8 +70,7 @@ bes.conf: $(srcdir)/$(BES_CONF_IN) $(top_srcdir)/configure.ac
 	    -e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
 $(CREDS_CONF):
-	mkdir -p input_files
-	cp $(srcdir)/$(CREDS_CONF_IN) $(CREDS_CONF)
+	cp $(CREDS_CONF_IN) $(CREDS_CONF)
 	chmod 600 $(CREDS_CONF)
 
 ############################################################################

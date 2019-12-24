@@ -24,6 +24,7 @@
 
 #include <memory>
 
+#include <stdlib.h>
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -74,7 +75,7 @@ public:
         if (bes_debug) BESDebug::SetUp("cerr,dmrpp");
 
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
-        cm_config = string(TEST_SRC_DIR).append("/input-files/credentials.conf");
+        cm_config = string(TEST_BUILD_DIR).append("/credentials.conf");
         weak_config = string(TEST_SRC_DIR).append("/input-files/weak.conf");
 
     }
@@ -111,6 +112,7 @@ public:
     }
 
     void load_credentials() {
+        if(debug) cout << "load_credentials() - Loading AccessCredentials." << endl;
         try {
             TheBESKeys::TheKeys()->set_key(CATALOG_MANAGER_CREDENTIALS, cm_config);
             CredentialsManager::load_credentials();
@@ -118,12 +120,13 @@ public:
         catch (BESError &e) {
             CPPUNIT_FAIL("load_credentials() has failed unexpectedly. Message: "+ e.get_message());
         }
+        if(debug) cout << "load_credentials() - AccessCredentials loaded." << endl;
 
     }
 
     void check_credentials() {
         try {
-            if(debug) cout << "load_credentials() - Read " << CredentialsManager::theCM()->size() << " AccessCredentials." << endl;
+            if(debug) cout << "check_credentials() - Found " << CredentialsManager::theCM()->size() << " AccessCredentials." << endl;
             CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 3);
 
             string cloudydap_dataset_url = "https://s3.amazonaws.com/cloudydap/samples/d_int.h5";
@@ -180,21 +183,58 @@ public:
 
         }
         catch (BESError &e) {
-            CPPUNIT_FAIL("bad_file_permissions() The load_credentials() method "
-                         "has failed unexpectedly. message");
+            CPPUNIT_FAIL("check_credentials() has failed unexpectedly. message");
             if(debug) cout << e.get_message() << endl;
         }
+        if(debug) cout << "check_credentials() - Credentials matched expected." << endl;
 
     }
 
-CPPUNIT_TEST_SUITE( CredentialsManagerTest );
+    void check_env_credentials() {
+        if(debug) cout << "check_env_credentials() - Found " << CredentialsManager::theCM()->size() << " existing AccessCredentials." << endl;
+        CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 3);
+        CredentialsManager::clear();
+        if(debug) cout << "check_env_credentials() - CredentialsManager has been cleared, contains " << CredentialsManager::theCM()->size() << " AccessCredentials." << endl;
+        CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 0);
+
+        string id("Frank Morgan");
+        string key("Ihadasecretthingforthewickedwitchofthewest");
+        string region("oz-east-1");
+        string bucket("emerald_city");
+        string url("https://s3.amazonaws.com/emerald_city");
+        string some_dataset_url(url+"data/fnoc1.nc");
+
+        setenv(CredentialsManager::ENV_ID_KEY.c_str(), id.c_str(), true);
+        setenv(CredentialsManager::ENV_ACCESS_KEY.c_str(), key.c_str(), true);
+        setenv(CredentialsManager::ENV_REGION_KEY.c_str(), region.c_str(), true);
+        setenv(CredentialsManager::ENV_BUCKET_KEY.c_str(), bucket.c_str(),true);
+        setenv(CredentialsManager::ENV_URL_KEY.c_str(), url.c_str(), true);
+
+        CredentialsManager::load_credentials();
+
+        if(debug) cout << "check_env_credentials() - Read from ENV, found " << CredentialsManager::theCM()->size() << " AccessCredentials." << endl;
+        CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 1);
+
+        AccessCredentials *ac = CredentialsManager::theCM()->get(some_dataset_url);
+
+        CPPUNIT_ASSERT( ac->get(AccessCredentials::URL) == url);
+        CPPUNIT_ASSERT( ac->get(AccessCredentials::ID) == id);
+        CPPUNIT_ASSERT( ac->get(AccessCredentials::KEY) == key);
+        CPPUNIT_ASSERT( ac->get(AccessCredentials::REGION) == region);
+        CPPUNIT_ASSERT( ac->get(AccessCredentials::BUCKET) == bucket);
+
+        if(debug) cout << "check_env_credentials() - Credentials matched expected." << endl;
+    }
+
+    CPPUNIT_TEST_SUITE( CredentialsManagerTest );
 
         CPPUNIT_TEST(check_keys);
         CPPUNIT_TEST(bad_config_file_permissions);
         CPPUNIT_TEST(load_credentials);
         CPPUNIT_TEST(check_credentials);
+        CPPUNIT_TEST(check_env_credentials);
 
-   CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE_END();
 
 };
 

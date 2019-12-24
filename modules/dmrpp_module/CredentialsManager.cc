@@ -56,11 +56,11 @@ const string AccessCredentials::REGION="region";
 const string AccessCredentials::BUCKET="bucket";
 const string AccessCredentials::URL="url";
 
-const string ENV_ID_KEY("CMAC.ID");
-const string ENV_ACCESS_KEY("CMAC.ACCESS_KEY");
-const string ENV_REGION_KEY("CMAC.REGION");
-const string ENV_BUCKET_KEY("CMAC.BUCKET");
-const string ENV_URL_KEY("CMAC.URL");
+const string CredentialsManager::ENV_ID_KEY="CMAC.ID";
+const string CredentialsManager::ENV_ACCESS_KEY="CMAC.ACCESS_KEY";
+const string CredentialsManager::ENV_REGION_KEY="CMAC.REGION";
+const string CredentialsManager::ENV_BUCKET_KEY="CMAC.BUCKET";
+const string CredentialsManager::ENV_URL_KEY="CMAC.URL";
 
 
 

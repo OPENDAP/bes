@@ -57,6 +57,13 @@ public:
 
 
 class CredentialsManager {
+public:
+    static const std::string ENV_ID_KEY;
+    static const std::string ENV_ACCESS_KEY;
+    static const std::string ENV_REGION_KEY;
+    static const std::string ENV_BUCKET_KEY;
+    static const std::string ENV_URL_KEY;
+
 private:
     std::map<std::string, AccessCredentials* > creds;
     CredentialsManager();
@@ -76,14 +83,16 @@ public:
     }
 
     void add(const std::string &url, AccessCredentials *ac);
+    static void load_credentials();
+    static void clear(){ delete_instance(); }
 
     AccessCredentials *get(const std::string &url);
 
-    static void load_credentials();
 
     unsigned int size(){
         return creds.size();
     }
+
 };
 
 
