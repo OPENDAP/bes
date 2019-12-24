@@ -3,13 +3,18 @@
 
 AUTOMAKE_OPTIONS = foreign
 
+# TODO set these with configure. jhrg 11/26/19
+OPENSSL_LIBS=-lcrypto
+OPENSSL_INC=-I/usr/local/opt/openssl/include
+OPENSSL_LDFLAGS=-L/usr/local/opt/openssl/lib
+
 AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)/modules -I$(top_srcdir)/modules/dmrpp_module \
 -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 
 # Added -lz for ubuntu
 LIBADD = $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_EXTRA_LIBS) \
-$(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(XML2_LIBS) -lz
-
+$(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
+$(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) -lz
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS) 
@@ -88,7 +93,8 @@ OBJS = ../DMRpp.o ../DmrppCommon.o ../Chunk.o ../CurlHandlePool.o	\
 ../DmrppUInt16.o ../DmrppUInt32.o ../DmrppUInt64.o ../DmrppStr.o	\
 ../DmrppStructure.o ../DmrppUrl.o ../DmrppD4Enum.o ../DmrppD4Group.o	\
 ../DmrppD4Opaque.o ../DmrppD4Sequence.o ../DmrppTypeFactory.o		\
-../DmrppParserSax2.o ../DmrppMetadataStore.o ../DmrppRequestHandler.o
+../DmrppParserSax2.o ../DmrppMetadataStore.o ../DmrppRequestHandler.o \
+../CredentialsManager.o ../awsv4.o ../url_parser.o
 
 
 ChunkTest_SOURCES = ChunkTest.cc

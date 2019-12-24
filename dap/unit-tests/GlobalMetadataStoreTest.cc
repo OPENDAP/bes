@@ -96,6 +96,8 @@ private:
     // BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(type);
     BESRequestHandler d_handler;
 
+    string tmp;
+
     /**
      * This is like SetUp() but is run selectively by tests. It won't work
      * for all of the tests (like test_ctor_1, where get_instance() should not
@@ -168,8 +170,6 @@ private:
         }
     }
 
-    string tmp = string(TEST_BUILD_DIR) + "/tmp";
-
 #if 0
     void init_dmrpp_and_mds()
     {
@@ -207,7 +207,7 @@ private:
 public:
     GlobalMetadataStoreTest() :
         d_test_dds(0), d_test_dmr(0), d_mds_dir(string(TEST_BUILD_DIR).append(c_mds_name)), d_mds(0),
-		d_handler("test_handler")
+	d_handler("test_handler"), tmp(string(TEST_BUILD_DIR) + "/tmp")
     {
     	BESRequestHandlerList::TheList()->add_handler("test_handler", &d_handler);
     	mkdir(tmp.c_str(),0755);
