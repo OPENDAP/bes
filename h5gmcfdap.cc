@@ -509,7 +509,6 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
                         else {
                             if(unlimited_names.rfind((*ird)->getNewName()) == string::npos) {
                                 unlimited_names = unlimited_names+" "+(*ird)->getNewName();
-                                cerr<<"Else unlimited_names "<<unlimited_names <<endl;
                                 if(at !=NULL) 
                                     at->append_attr("Unlimited_Dimension","String",(*ird)->getNewName());
                             }
