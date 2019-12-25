@@ -190,6 +190,16 @@ public:
 
     }
 
+    /**
+     * Clears the environment variable used by the CredentialsManager for credentials injection.
+     */
+    void clear_cm_env(){
+        unsetenv(CredentialsManager::ENV_ID_KEY.c_str());
+        unsetenv(CredentialsManager::ENV_ACCESS_KEY.c_str());
+        unsetenv(CredentialsManager::ENV_REGION_KEY.c_str());
+        unsetenv(CredentialsManager::ENV_BUCKET_KEY.c_str());
+        unsetenv(CredentialsManager::ENV_URL_KEY.c_str());
+    }
     void check_incomplete_env_credentials() {
         if(debug) cout << "check_incomplete_env_credentials() - Found " << CredentialsManager::theCM()->size() << " existing AccessCredentials." << endl;
         CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 3);
@@ -217,6 +227,8 @@ public:
         CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 3);
 
         if(debug) cout << "check_incomplete_env_credentials() - Incomplete ENV credentials ignored as expected." << endl;
+
+        clear_cm_env();
     }
 
 
@@ -238,7 +250,6 @@ public:
         setenv(CredentialsManager::ENV_ACCESS_KEY.c_str(), key.c_str(), true);
         setenv(CredentialsManager::ENV_REGION_KEY.c_str(), region.c_str(), true);
         setenv(CredentialsManager::ENV_BUCKET_KEY.c_str(), bucket.c_str(),true);
-
         setenv(CredentialsManager::ENV_URL_KEY.c_str(), url.c_str(), true);
 
         CredentialsManager::load_credentials();
@@ -255,6 +266,8 @@ public:
         CPPUNIT_ASSERT( ac->get(AccessCredentials::BUCKET) == bucket);
 
         if(debug) cout << "check_env_credentials() - Credentials matched expected." << endl;
+
+        clear_cm_env();
     }
 
 
