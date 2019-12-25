@@ -92,12 +92,13 @@ private:
 
     void clean();
     void initialize_keys();
+#if 0
     //void load_keys();
     //bool break_pair(const char* b, std::string& key, std::string &value, bool &addto);
     //bool only_blanks(const char *line);
     //void load_include_files(const std::string &files);
     //void load_include_file(const std::string &file);
-
+#endif
     TheBESKeys() :
         _keys_file(0), _keys_file_name(""), _the_keys(0), _own_keys(false)
     {
