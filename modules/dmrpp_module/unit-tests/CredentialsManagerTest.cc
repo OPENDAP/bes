@@ -208,7 +208,7 @@ public:
         CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 0);
 
         if(debug) cout << "check_incomplete_env_credentials() - Setting incomplete env injected credentials. "
-                          "They sould be ignored."<< endl;
+                          "They should be ignored."<< endl;
 
         string id("Frank Morgan");
         string region("oz-east-1");
