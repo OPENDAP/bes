@@ -190,6 +190,36 @@ public:
 
     }
 
+    void check_incomplete_env_credentials() {
+        if(debug) cout << "check_incomplete_env_credentials() - Found " << CredentialsManager::theCM()->size() << " existing AccessCredentials." << endl;
+        CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 3);
+        CredentialsManager::clear();
+        if(debug) cout << "check_incomplete_env_credentials() - CredentialsManager has been cleared, contains " << CredentialsManager::theCM()->size() << " AccessCredentials." << endl;
+        CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 0);
+
+        if(debug) cout << "check_incomplete_env_credentials() - Setting incomplete env injected credentials. "
+                          "They sould be ignored."<< endl;
+
+        string id("Frank Morgan");
+        string region("oz-east-1");
+        string bucket("emerald_city");
+        string url("https://s3.amazonaws.com/emerald_city");
+        string some_dataset_url(url+"data/fnoc1.nc");
+
+        setenv(CredentialsManager::ENV_ID_KEY.c_str(), id.c_str(), true);
+        setenv(CredentialsManager::ENV_REGION_KEY.c_str(), region.c_str(), true);
+        setenv(CredentialsManager::ENV_BUCKET_KEY.c_str(), bucket.c_str(),true);
+        setenv(CredentialsManager::ENV_URL_KEY.c_str(), url.c_str(), true);
+
+        CredentialsManager::load_credentials();
+
+        if(debug) cout << "check_incomplete_env_credentials() - Read from ENV, found " << CredentialsManager::theCM()->size() << " AccessCredentials." << endl;
+        CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 3);
+
+        if(debug) cout << "check_incomplete_env_credentials() - Incomplete ENV credentials ignored as expected." << endl;
+    }
+
+
     void check_env_credentials() {
         if(debug) cout << "check_env_credentials() - Found " << CredentialsManager::theCM()->size() << " existing AccessCredentials." << endl;
         CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 3);
@@ -208,6 +238,7 @@ public:
         setenv(CredentialsManager::ENV_ACCESS_KEY.c_str(), key.c_str(), true);
         setenv(CredentialsManager::ENV_REGION_KEY.c_str(), region.c_str(), true);
         setenv(CredentialsManager::ENV_BUCKET_KEY.c_str(), bucket.c_str(),true);
+
         setenv(CredentialsManager::ENV_URL_KEY.c_str(), url.c_str(), true);
 
         CredentialsManager::load_credentials();
@@ -226,12 +257,14 @@ public:
         if(debug) cout << "check_env_credentials() - Credentials matched expected." << endl;
     }
 
-    CPPUNIT_TEST_SUITE( CredentialsManagerTest );
+
+CPPUNIT_TEST_SUITE( CredentialsManagerTest );
 
         CPPUNIT_TEST(check_keys);
         CPPUNIT_TEST(bad_config_file_permissions);
         CPPUNIT_TEST(load_credentials);
         CPPUNIT_TEST(check_credentials);
+        CPPUNIT_TEST(check_incomplete_env_credentials);
         CPPUNIT_TEST(check_env_credentials);
 
     CPPUNIT_TEST_SUITE_END();
