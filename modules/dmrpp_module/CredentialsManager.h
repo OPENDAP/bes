@@ -29,6 +29,8 @@
 #include <string>
 #include <vector>
 
+#define ENV_CREDS true
+
 // These are the names of the bes keys used to configure the handler.
 #define CATALOG_MANAGER_CREDENTIALS "CredentialsManager.config"
 

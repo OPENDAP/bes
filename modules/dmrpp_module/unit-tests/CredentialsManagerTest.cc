@@ -200,6 +200,7 @@ public:
         unsetenv(CredentialsManager::ENV_BUCKET_KEY.c_str());
         unsetenv(CredentialsManager::ENV_URL_KEY.c_str());
     }
+
     void check_incomplete_env_credentials() {
         if(debug) cout << "check_incomplete_env_credentials() - Found " << CredentialsManager::theCM()->size() << " existing AccessCredentials." << endl;
         CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 3);
@@ -246,15 +247,16 @@ public:
         string url("https://s3.amazonaws.com/emerald_city");
         string some_dataset_url(url+"data/fnoc1.nc");
 
-        setenv(CredentialsManager::ENV_ID_KEY.c_str(), id.c_str(), true);
+        setenv(CredentialsManager::ENV_ID_KEY.c_str(),     id.c_str(), true);
         setenv(CredentialsManager::ENV_ACCESS_KEY.c_str(), key.c_str(), true);
         setenv(CredentialsManager::ENV_REGION_KEY.c_str(), region.c_str(), true);
         setenv(CredentialsManager::ENV_BUCKET_KEY.c_str(), bucket.c_str(),true);
-        setenv(CredentialsManager::ENV_URL_KEY.c_str(), url.c_str(), true);
-
+        setenv(CredentialsManager::ENV_URL_KEY.c_str(),    url.c_str(), true);
+        if(debug) cout << "check_env_credentials() - Environment conditioned, calling CredentialsManager::load_credentials()" << endl;
         CredentialsManager::load_credentials();
-
         if(debug) cout << "check_env_credentials() - Read from ENV, found " << CredentialsManager::theCM()->size() << " AccessCredentials." << endl;
+
+#ifdef ENV_CREDS
         CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 1);
 
         AccessCredentials *ac = CredentialsManager::theCM()->get(some_dataset_url);
@@ -266,8 +268,25 @@ public:
         CPPUNIT_ASSERT( ac->get(AccessCredentials::BUCKET) == bucket);
 
         if(debug) cout << "check_env_credentials() - Credentials matched expected." << endl;
-
+#else
+        CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 3);
+        if(debug) cout << "check_env_credentials() - ENV credentials ignored as expected." << endl;
+#endif
         clear_cm_env();
+    }
+
+    void check_no_credentials() {
+        clear_cm_env();
+        CredentialsManager::clear();
+        TheBESKeys::TheKeys()->set_key(CATALOG_MANAGER_CREDENTIALS, "");
+        if(debug) cout << "check_no_credentials() - CredentialsManager has been cleared, contains " << CredentialsManager::theCM()->size() << " AccessCredentials." << endl;
+        CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 0);
+
+        CredentialsManager::load_credentials();
+        if(debug)
+            cout << "check_no_credentials() - Called CredentialsManager::load_credentials(), found "
+            << CredentialsManager::theCM()->size() << " AccessCredentials." << endl;
+        CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 0);
     }
 
 
@@ -279,6 +298,7 @@ CPPUNIT_TEST_SUITE( CredentialsManagerTest );
         CPPUNIT_TEST(check_credentials);
         CPPUNIT_TEST(check_incomplete_env_credentials);
         CPPUNIT_TEST(check_env_credentials);
+        CPPUNIT_TEST(check_no_credentials);
 
     CPPUNIT_TEST_SUITE_END();
 

@@ -362,6 +362,7 @@ AccessCredentials *CredentialsManager::load_credentials_from_env( ) {
 
     AccessCredentials *ac = NULL;
 
+#ifdef ENV_CREDS
     string env_url, env_id, env_access_key, env_region, env_bucket;
 
     // If we are in developer mode then we compile this section which
@@ -385,6 +386,8 @@ AccessCredentials *CredentialsManager::load_credentials_from_env( ) {
         ac->add(AccessCredentials::REGION, env_region);
         ac->add(AccessCredentials::BUCKET, env_bucket);
     }
+#endif
+
     return ac;
 }
 
