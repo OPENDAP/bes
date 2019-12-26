@@ -35,6 +35,7 @@
 
 #include <fstream>
 #include <map>
+#include <set>
 #include <vector>
 #include <string>
 
@@ -86,17 +87,18 @@ private:
     std::map<std::string, std::vector<std::string> > *_the_keys;
     bool _own_keys;
 
-    static std::vector<std::string> KeyList;
+    static std::set<std::string> KeyList;
     static bool LoadedKeys(const std::string &key_file);
 
     void clean();
     void initialize_keys();
-    void load_keys();
-    bool break_pair(const char* b, std::string& key, std::string &value, bool &addto);
-    bool only_blanks(const char *line);
-    void load_include_files(const std::string &files);
-    void load_include_file(const std::string &file);
-
+#if 0
+    //void load_keys();
+    //bool break_pair(const char* b, std::string& key, std::string &value, bool &addto);
+    //bool only_blanks(const char *line);
+    //void load_include_files(const std::string &files);
+    //void load_include_file(const std::string &file);
+#endif
     TheBESKeys() :
         _keys_file(0), _keys_file_name(""), _the_keys(0), _own_keys(false)
     {

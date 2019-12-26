@@ -36,15 +36,18 @@ check_PROGRAMS = $(UNIT_TESTS)
 # This determines what gets run by 'make check.'
 TESTS = $(UNIT_TESTS)
 
+CREDS_CONF = $(builddir)/credentials.conf
+CREDS_CONF_IN = $(srcdir)/input-files/credentials.conf.in
+
 noinst_HEADERS = test_config.h
 
-noinst_DATA = bes.conf
+noinst_DATA = bes.conf $(CREDS_CONF) input-files/weak.conf
 
 EXTRA_DIST = bes.conf.in test_config.h.in baselines input-files
 
 CLEANFILES = *.gcda *.gcno *.strm *.file test_config.h tmp.txt
 
-DISTCLEANFILES = bes.conf bes.log
+DISTCLEANFILES = bes.conf bes.log $(CREDS_CONF)
 
 BUILT_SOURCES = test_config.h
 
@@ -66,12 +69,16 @@ bes.conf: $(srcdir)/$(BES_CONF_IN) $(top_srcdir)/configure.ac
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 	    -e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
+$(CREDS_CONF):
+	cp $(CREDS_CONF_IN) $(CREDS_CONF)
+	chmod 600 $(CREDS_CONF)
+
 ############################################################################
 # Unit Tests
 #
 
 if CPPUNIT
-UNIT_TESTS = ChunkTest DmrppParserTest DmrppCommonTest DmrppMetadataStoreTest
+UNIT_TESTS = ChunkTest DmrppParserTest DmrppCommonTest DmrppMetadataStoreTest CredentialsManagerTest
 else
 UNIT_TESTS =
 
@@ -99,6 +106,9 @@ OBJS = ../DMRpp.o ../DmrppCommon.o ../Chunk.o ../CurlHandlePool.o	\
 
 ChunkTest_SOURCES = ChunkTest.cc
 ChunkTest_LDADD = $(OBJS) $(LIBADD)
+
+CredentialsManagerTest_SOURCES = CredentialsManagerTest.cc
+CredentialsManagerTest_LDADD = $(OBJS) $(LIBADD)
 
 DmrppParserTest_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/modules/hdf5_handler
 DmrppParserTest_SOURCES = DmrppParserTest.cc

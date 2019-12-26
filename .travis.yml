@@ -27,12 +27,12 @@ addons:
     - libcurl4-openssl-dev
     - libcppunit-dev
     - libicu-dev
-    - debhelper
-    - devscripts
-    - lintian
-    - fakeroot
-    - build-essential
-    - sshpass
+    # - debhelper These packages were used only for debian builds
+    # - devscripts
+    # - lintian
+    # - fakeroot
+    # - build-essential
+    # - sshpass Only used for ssh access to www.o.o (also not done anymore)
 
 env:
   global:
@@ -118,7 +118,7 @@ jobs:
   - stage: build
     script:
     - export BES_BUILD=distcheck
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
+    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
     - make distcheck -j7
 
   - stage: package
