@@ -8,6 +8,9 @@
 # libdap code is editied and not installed. jhrg 12/5/19
 include_directories(../libdap4)
 
+include_directories(/usr/local/Cellar/openssl/1.0.2r/include/)
+include_directories(/usr/local/include/)
+
 # These should not be referenced outside of libdap. jhrg 12/5/19
 # include_directories(../libdap4/d4_ce)
 # include_directories(../libdap4/d4_function)
@@ -89,17 +92,17 @@ include_directories(modules/ncml_module/not_used)
 include_directories(modules/netcdf_handler)
 include_directories(modules/netcdf_handler/ugrid_project)
 include_directories(modules/netcdf_handler/win32)
-include_directories(modules/sql_handler)
-include_directories(modules/sql_handler/action)
-include_directories(modules/sql_handler/connector)
-include_directories(modules/sql_handler/container)
-include_directories(modules/sql_handler/DEM)
-include_directories(modules/sql_handler/DTM)
-include_directories(modules/sql_handler/handler)
-include_directories(modules/sql_handler/handler/connector)
-include_directories(modules/sql_handler/templates)
-include_directories(modules/sql_handler/unixODBC)
-include_directories(modules/sql_handler/utils)
+#include_directories(modules/sql_handler)
+#include_directories(modules/sql_handler/action)
+#include_directories(modules/sql_handler/connector)
+#include_directories(modules/sql_handler/container)
+#include_directories(modules/sql_handler/DEM)
+#include_directories(modules/sql_handler/DTM)
+#include_directories(modules/sql_handler/handler)
+#include_directories(modules/sql_handler/handler/connector)
+#include_directories(modules/sql_handler/templates)
+#include_directories(modules/sql_handler/unixODBC)
+#include_directories(modules/sql_handler/utils)
 include_directories(modules/ugrid_functions)
 
 include_directories(modules/ugrid_functions/unit-tests)
@@ -113,7 +116,6 @@ include_directories(modules/xml_data_handler)
 include_directories(modules/xml_data_handler/unit-tests)
 
 include_directories(ppt)
-# 1
 include_directories(ppt/unit-tests)
 include_directories(server)
 include_directories(server/test)
@@ -220,35 +222,6 @@ add_executable(bes
     dapreader/DapModule.h
     dapreader/DapRequestHandler.cc
     dapreader/DapRequestHandler.h
-# 1
-# 1
-# 1
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     dispatch/PicoSHA2/example/hasher.cpp
     dispatch/PicoSHA2/example/interactive_hasher.cpp
@@ -272,6 +245,7 @@ add_executable(bes
     dispatch/unit-tests/fsT.cc
     dispatch/unit-tests/infoT.cc
     dispatch/unit-tests/keysT.cc
+    dispatch/unit-tests/kvp_utils_test.cc
     dispatch/unit-tests/pfileT.cc
     dispatch/unit-tests/plistT.cc
     dispatch/unit-tests/pvolT.cc
@@ -474,6 +448,8 @@ add_executable(bes
     dispatch/CatalogItem.h
     dispatch/CatalogNode.cc
     dispatch/CatalogNode.h
+    dispatch/kvp_utils.cc
+    dispatch/kvp_utils.h
     dispatch/ServerAdministrator.cc
     dispatch/ServerAdministrator.h
     dispatch/ShowNodeResponseHandler.cc
@@ -482,6 +458,7 @@ add_executable(bes
     dispatch/TheBESKeys.h
     dispatch/WhiteList.cc
     dispatch/WhiteList.h
+
     functions/geo-functions/unused/NC_GOES_Dataset.cpp
     functions/geo-functions/unused/NC_GOES_Dataset.h
     functions/geo-functions/AbstractDataset.cpp
@@ -740,10 +717,15 @@ add_executable(bes
     modules/dmrpp_module/unit-tests/test_config.h
     modules/dmrpp_module/build_dmrpp.cc
 
+	modules/dmrpp_module/awsv4.cc
+	modules/dmrpp_module/awsv4.h
+
     modules/dmrpp_module/Chunk.cc
     modules/dmrpp_module/Chunk.h
     modules/dmrpp_module/CurlHandlePool.cc
     modules/dmrpp_module/CurlHandlePool.h
+    modules/dmrpp_module/CredentialsManager.h
+    modules/dmrpp_module/CredentialsManager.cc
     modules/dmrpp_module/DMRpp.cc
     modules/dmrpp_module/DMRpp.h
     modules/dmrpp_module/DmrppArray.cc
@@ -1687,108 +1669,108 @@ add_executable(bes
     modules/netcdf_handler/NCUInt32.h
     modules/netcdf_handler/NCUrl.cc
     modules/netcdf_handler/NCUrl.h
-    modules/sql_handler/action/SQLAction.h
-    modules/sql_handler/action/SQLActionFactory.h
-    modules/sql_handler/action/SQLActionList.h
-    modules/sql_handler/action/SQLActionManager.h
-    modules/sql_handler/action/SQLDynamicActionFactory.h
-    modules/sql_handler/action/SQLDynamicActionList.h
-    modules/sql_handler/action/SQLObjectAction.h
-    modules/sql_handler/action/SQLObjectActionFactory.h
-    modules/sql_handler/action/SQLObjectActionList.h
-    modules/sql_handler/action/SQLStaticAction.h
-    modules/sql_handler/action/SQLStaticActionList.h
-    modules/sql_handler/connector/SQLConnector.h
-    modules/sql_handler/connector/SQLErrorConnector.h
-    modules/sql_handler/connector/SQLHandleConnector.h
-    modules/sql_handler/connector/SQLSimpleConnector.h
-    modules/sql_handler/connector/SQLTypeConnector.h
-    modules/sql_handler/container/SQLAttribute.h
-    modules/sql_handler/container/SQLConstraint.h
-    modules/sql_handler/container/SQLContainer.cc
-    modules/sql_handler/container/SQLContainer.h
-    modules/sql_handler/container/SQLContainerDefinitions.h
-    modules/sql_handler/container/SQLContainerFactory.cc
-    modules/sql_handler/container/SQLContainerFactory.h
-    modules/sql_handler/container/SQLContainerStorage.h
-    modules/sql_handler/container/SQLContainerStorageVolatile.cc
-    modules/sql_handler/container/SQLContainerStorageVolatile.h
-    modules/sql_handler/container/SQLDataHandlerInterface.h
-    modules/sql_handler/container/SQLQuery.cc
-    modules/sql_handler/container/SQLQuery.h
-    modules/sql_handler/container/SQLQueryDefinitions.h
-    modules/sql_handler/container/SQLTextContainer.cc
-    modules/sql_handler/container/SQLTextContainer.h
-    modules/sql_handler/container/SQLTextDefinitions.h
-    modules/sql_handler/DEM/SQLCheckPoint.cc
-    modules/sql_handler/DEM/SQLCheckPoint.h
-    modules/sql_handler/DEM/SQLDefaultErrorAction.h
-    modules/sql_handler/DEM/SQLErrorFactory.h
-    modules/sql_handler/DEM/SQLErrorManager.h
-    modules/sql_handler/DEM/SQLInternalError.h
-    modules/sql_handler/DEM/SQLInternalFatalError.h
-    modules/sql_handler/DTM/SQLBaseType.h
-    modules/sql_handler/DTM/SQLCastAction.h
-    modules/sql_handler/DTM/SQLComplexType.h
-    modules/sql_handler/DTM/SQLDummySimpleType.h
-    modules/sql_handler/DTM/SQLDynamicTypeFactory.h
-    modules/sql_handler/DTM/SQLObjectTypeFactory.h
-    modules/sql_handler/DTM/SQLSequence.h
-    modules/sql_handler/DTM/SQLSimpleType.h
-    modules/sql_handler/DTM/SQLTypeFactoryComponent.h
-    modules/sql_handler/DTM/SQLTypeManager.h
-    modules/sql_handler/handler/connector/SQLCloseAction.h
-    modules/sql_handler/handler/connector/SQLConnectAction.h
-    modules/sql_handler/handler/connector/SQLNextTypeAction.h
-    modules/sql_handler/handler/connector/SQLQueryAction.h
-    modules/sql_handler/handler/SQLBuildDAS.h
-    modules/sql_handler/handler/SQLBuildDATA.h
-    modules/sql_handler/handler/SQLBuildDDS.h
-    modules/sql_handler/templates/Connector.cc
-    modules/sql_handler/templates/Connector.h
-    modules/sql_handler/templates/ErrorFactoryComponent.cc
-    modules/sql_handler/templates/ErrorFactoryComponent.h
-    modules/sql_handler/templates/Module.cc
-    modules/sql_handler/templates/Module.h
-    modules/sql_handler/templates/Plugin.cc
-    modules/sql_handler/templates/Plugin.h
-    modules/sql_handler/templates/PluginLoader.cc
-    modules/sql_handler/templates/PluginLoader.h
-    modules/sql_handler/templates/ResponseNames.h
-    modules/sql_handler/templates/TypeFactoryComponent.cc
-    modules/sql_handler/templates/TypeFactoryComponent.h
-    modules/sql_handler/templates/Types.h
-    modules/sql_handler/unixODBC/ODBCConnector.cc
-    modules/sql_handler/unixODBC/ODBCConnector.h
-    modules/sql_handler/unixODBC/ODBCErrorFactoryComponent.cc
-    modules/sql_handler/unixODBC/ODBCErrorFactoryComponent.h
-    modules/sql_handler/unixODBC/ODBCPlugin.cc
-    modules/sql_handler/unixODBC/ODBCPlugin.h
-    modules/sql_handler/unixODBC/ODBCPluginLoader.cc
-    modules/sql_handler/unixODBC/ODBCPluginLoader.h
-    modules/sql_handler/unixODBC/ODBCTypeFactoryComponent.cc
-    modules/sql_handler/unixODBC/ODBCTypeFactoryComponent.h
-    modules/sql_handler/unixODBC/ODBCTypes.h
-    modules/sql_handler/utils/Clone.h
-    modules/sql_handler/utils/Delete.h
-    modules/sql_handler/utils/SmartCast.h
-    modules/sql_handler/utils/SmartCheck.h
-    modules/sql_handler/utils/SmartList.h
-    modules/sql_handler/utils/SmartMap.h
-    modules/sql_handler/utils/StringMatch.cc
-    modules/sql_handler/utils/StringMatch.h
-    modules/sql_handler/config.h
-    modules/sql_handler/sql_config.h
-    modules/sql_handler/SQLDefinitions.h
-    modules/sql_handler/SQLLinker.h
-    modules/sql_handler/SQLModule.cc
-    modules/sql_handler/SQLModule.h
-    modules/sql_handler/SQLPlugin.cc
-    modules/sql_handler/SQLPlugin.h
-    modules/sql_handler/SQLPluginList.h
-    modules/sql_handler/SQLRequestHandler.cc
-    modules/sql_handler/SQLRequestHandler.h
-    modules/sql_handler/SQLResponseNames.h
+    #modules/sql_handler/action/SQLAction.h
+    #modules/sql_handler/action/SQLActionFactory.h
+    #modules/sql_handler/action/SQLActionList.h
+    #modules/sql_handler/action/SQLActionManager.h
+    #modules/sql_handler/action/SQLDynamicActionFactory.h
+    #modules/sql_handler/action/SQLDynamicActionList.h
+    #modules/sql_handler/action/SQLObjectAction.h
+    #modules/sql_handler/action/SQLObjectActionFactory.h
+    #modules/sql_handler/action/SQLObjectActionList.h
+    #modules/sql_handler/action/SQLStaticAction.h
+    #modules/sql_handler/action/SQLStaticActionList.h
+    #modules/sql_handler/connector/SQLConnector.h
+    #modules/sql_handler/connector/SQLErrorConnector.h
+    #modules/sql_handler/connector/SQLHandleConnector.h
+    #modules/sql_handler/connector/SQLSimpleConnector.h
+    #modules/sql_handler/connector/SQLTypeConnector.h
+    #modules/sql_handler/container/SQLAttribute.h
+    #modules/sql_handler/container/SQLConstraint.h
+    #modules/sql_handler/container/SQLContainer.cc
+    #modules/sql_handler/container/SQLContainer.h
+    #modules/sql_handler/container/SQLContainerDefinitions.h
+    #modules/sql_handler/container/SQLContainerFactory.cc
+    #modules/sql_handler/container/SQLContainerFactory.h
+    #modules/sql_handler/container/SQLContainerStorage.h
+    #modules/sql_handler/container/SQLContainerStorageVolatile.cc
+    #modules/sql_handler/container/SQLContainerStorageVolatile.h
+    #modules/sql_handler/container/SQLDataHandlerInterface.h
+    #modules/sql_handler/container/SQLQuery.cc
+    #modules/sql_handler/container/SQLQuery.h
+    #modules/sql_handler/container/SQLQueryDefinitions.h
+    #modules/sql_handler/container/SQLTextContainer.cc
+    #modules/sql_handler/container/SQLTextContainer.h
+    #modules/sql_handler/container/SQLTextDefinitions.h
+    #modules/sql_handler/DEM/SQLCheckPoint.cc
+    #modules/sql_handler/DEM/SQLCheckPoint.h
+    #modules/sql_handler/DEM/SQLDefaultErrorAction.h
+    #modules/sql_handler/DEM/SQLErrorFactory.h
+    #modules/sql_handler/DEM/SQLErrorManager.h
+    #modules/sql_handler/DEM/SQLInternalError.h
+    #modules/sql_handler/DEM/SQLInternalFatalError.h
+    #modules/sql_handler/DTM/SQLBaseType.h
+    #modules/sql_handler/DTM/SQLCastAction.h
+    #modules/sql_handler/DTM/SQLComplexType.h
+    #modules/sql_handler/DTM/SQLDummySimpleType.h
+    #modules/sql_handler/DTM/SQLDynamicTypeFactory.h
+    #modules/sql_handler/DTM/SQLObjectTypeFactory.h
+    #modules/sql_handler/DTM/SQLSequence.h
+    #modules/sql_handler/DTM/SQLSimpleType.h
+    #modules/sql_handler/DTM/SQLTypeFactoryComponent.h
+    #modules/sql_handler/DTM/SQLTypeManager.h
+    #modules/sql_handler/handler/connector/SQLCloseAction.h
+    #modules/sql_handler/handler/connector/SQLConnectAction.h
+    #modules/sql_handler/handler/connector/SQLNextTypeAction.h
+    #modules/sql_handler/handler/connector/SQLQueryAction.h
+    #modules/sql_handler/handler/SQLBuildDAS.h
+    #modules/sql_handler/handler/SQLBuildDATA.h
+    #modules/sql_handler/handler/SQLBuildDDS.h
+    #modules/sql_handler/templates/Connector.cc
+    #modules/sql_handler/templates/Connector.h
+    #modules/sql_handler/templates/ErrorFactoryComponent.cc
+    #modules/sql_handler/templates/ErrorFactoryComponent.h
+    #modules/sql_handler/templates/Module.cc
+    #modules/sql_handler/templates/Module.h
+    #modules/sql_handler/templates/Plugin.cc
+    #modules/sql_handler/templates/Plugin.h
+    #modules/sql_handler/templates/PluginLoader.cc
+    #modules/sql_handler/templates/PluginLoader.h
+    #modules/sql_handler/templates/ResponseNames.h
+    #modules/sql_handler/templates/TypeFactoryComponent.cc
+    #modules/sql_handler/templates/TypeFactoryComponent.h
+    #modules/sql_handler/templates/Types.h
+    #modules/sql_handler/unixODBC/ODBCConnector.cc
+    #modules/sql_handler/unixODBC/ODBCConnector.h
+    #modules/sql_handler/unixODBC/ODBCErrorFactoryComponent.cc
+    #modules/sql_handler/unixODBC/ODBCErrorFactoryComponent.h
+    #modules/sql_handler/unixODBC/ODBCPlugin.cc
+    #modules/sql_handler/unixODBC/ODBCPlugin.h
+    #modules/sql_handler/unixODBC/ODBCPluginLoader.cc
+    #modules/sql_handler/unixODBC/ODBCPluginLoader.h
+    #modules/sql_handler/unixODBC/ODBCTypeFactoryComponent.cc
+    #modules/sql_handler/unixODBC/ODBCTypeFactoryComponent.h
+    #modules/sql_handler/unixODBC/ODBCTypes.h
+    #modules/sql_handler/utils/Clone.h
+    #modules/sql_handler/utils/Delete.h
+    #modules/sql_handler/utils/SmartCast.h
+    #modules/sql_handler/utils/SmartCheck.h
+    #modules/sql_handler/utils/SmartList.h
+    #modules/sql_handler/utils/SmartMap.h
+    #modules/sql_handler/utils/StringMatch.cc
+    #modules/sql_handler/utils/StringMatch.h
+    #modules/sql_handler/config.h
+    #modules/sql_handler/sql_config.h
+    #modules/sql_handler/SQLDefinitions.h
+    #modules/sql_handler/SQLLinker.h
+    #modules/sql_handler/SQLModule.cc
+    #modules/sql_handler/SQLModule.h
+    #modules/sql_handler/SQLPlugin.cc
+    #modules/sql_handler/SQLPlugin.h
+    #modules/sql_handler/SQLPluginList.h
+    #modules/sql_handler/SQLRequestHandler.cc
+    #modules/sql_handler/SQLRequestHandler.h
+    #modules/sql_handler/SQLResponseNames.h
     modules/ugrid_functions/unit-tests/BindTest.cc
     modules/ugrid_functions/unit-tests/GFTests.cc
     modules/ugrid_functions/unit-tests/NDimArrayTest.cc

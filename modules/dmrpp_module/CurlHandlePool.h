@@ -64,6 +64,7 @@ class dmrpp_easy_handle {
     Chunk *d_chunk;     ///< This easy_handle reads the data for \arg chunk.
     char d_errbuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
     CURL *d_handle;     ///< The libcurl handle object.
+    struct curl_slist *d_headers; ///< Holds the list of authorization headers, if needed.
 
     friend class CurlHandlePool;
     friend class dmrpp_multi_handle;
@@ -127,10 +128,16 @@ public:
 
     ~CurlHandlePool()
     {
-        for (std::vector<dmrpp_easy_handle *>::iterator i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
+#if 1
+        for (std::vector<dmrpp_easy_handle *>::iterator i = d_easy_handles.begin(), e = d_easy_handles.end();
+             i != e; ++i) {
             delete *i;
         }
-
+#else
+        for (auto &d_easy_handle: d_easy_handles) {
+            delete d_easy_handle;
+        }
+#endif
         delete d_multi_handle;
     }
 
