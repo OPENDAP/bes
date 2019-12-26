@@ -926,8 +926,17 @@ void FoDapCovJsonTransform::printReference(ostream *strm, string indent)
     }
     *strm << child_indent1 << "\"coordinates\": [" << coordVars << "]," << endl;
     *strm << child_indent1 << "\"system\": {" << endl;
-    *strm << child_indent2 << "\"type\": \"GeographicCRS\"," << endl;
-    *strm << child_indent2 << "\"id\": \"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"" << endl;
+
+    if(xExists && yExists && !zExists) {
+        *strm << child_indent2 << "\"type\": \"GeographicCRS\"," << endl;
+        *strm << child_indent2 << "\"id\": \"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"" << endl;
+    }
+    else if(xExists && yExists && zExists) {
+        *strm << child_indent2 << "\"type\": \"GeographicCRS\"," << endl;
+        *strm << child_indent2 << "\"id\": \"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"" << endl;
+    }
+    
+    
     *strm << child_indent1 << "}" << endl;
     *strm << indent << "}]" << endl;
 }
