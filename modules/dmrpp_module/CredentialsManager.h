@@ -29,8 +29,10 @@
 #include <string>
 #include <vector>
 
+#define ENV_CREDS true
+
 // These are the names of the bes keys used to configure the handler.
-#define CATALOG_MANAGER_CREDENTIALS "CM.credentials"
+#define CATALOG_MANAGER_CREDENTIALS "CredentialsManager.config"
 
 class AccessCredentials {
 public:
@@ -47,17 +49,6 @@ public:
     AccessCredentials()= default;
     AccessCredentials(std::string config_name){ d_config_name = config_name;}
     AccessCredentials(const AccessCredentials &ac) = default;
-    AccessCredentials(
-            std::string config_name,
-            const std::string &id,
-            const std::string &key);
-
-    AccessCredentials(
-            std::string config_name,
-            const std::string &id,
-            const std::string &key,
-            const std::string &region,
-            const std::string &bucket);
 
     std::string get(const std::string &key);
     void add(const std::string &key, const std::string &value);
@@ -68,11 +59,20 @@ public:
 
 
 class CredentialsManager {
+public:
+    static const std::string ENV_ID_KEY;
+    static const std::string ENV_ACCESS_KEY;
+    static const std::string ENV_REGION_KEY;
+    static const std::string ENV_BUCKET_KEY;
+    static const std::string ENV_URL_KEY;
+
 private:
     std::map<std::string, AccessCredentials* > creds;
     CredentialsManager();
     static void initialize_instance();
     static void delete_instance();
+
+    static AccessCredentials *load_credentials_from_env( );
 
 public:
     static CredentialsManager *theMngr;
@@ -85,12 +85,15 @@ public:
     }
 
     void add(const std::string &url, AccessCredentials *ac);
+    static void load_credentials();
+    static void clear(){ delete_instance(); }
 
     AccessCredentials *get(const std::string &url);
 
-    static void load_credentials();
-    // static void load_credentials_OLD();
-    static void load_credentials_NEW();
+
+    unsigned int size(){
+        return creds.size();
+    }
 
 };
 
