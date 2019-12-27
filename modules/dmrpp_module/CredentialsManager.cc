@@ -56,11 +56,13 @@ const string AccessCredentials::REGION="region";
 const string AccessCredentials::BUCKET="bucket";
 const string AccessCredentials::URL="url";
 
+// Scope: public members of CredentialsManager
 const string CredentialsManager::ENV_ID_KEY="CMAC.ID";
 const string CredentialsManager::ENV_ACCESS_KEY="CMAC.ACCESS_KEY";
 const string CredentialsManager::ENV_REGION_KEY="CMAC.REGION";
 const string CredentialsManager::ENV_BUCKET_KEY="CMAC.BUCKET";
 const string CredentialsManager::ENV_URL_KEY="CMAC.URL";
+const string CredentialsManager::ENV_CREDS_KEY_VALUE="ENV_CREDS";
 
 
 
@@ -270,6 +272,7 @@ void CredentialsManager::load_credentials( ) {
     AccessCredentials *accessCredentials;
     map<string, AccessCredentials *> credential_sets;
 
+#if 0
     // Environment injected credentials override all configuration credentials
     accessCredentials = load_credentials_from_env();
     if(accessCredentials){
@@ -278,12 +281,29 @@ void CredentialsManager::load_credentials( ) {
         theCM()->add(url,accessCredentials);
         return;
     }
+#endif
 
     string config_file;
     TheBESKeys::TheKeys()->get_value(CATALOG_MANAGER_CREDENTIALS, config_file, found_key);
     if(!found_key){
         BESDEBUG(MODULE, "The BES key " << CATALOG_MANAGER_CREDENTIALS
         << " was not found in the BES configuration tree. No AccessCredentials were loaded" << endl);
+        return;
+    }
+
+    // Does the configuration indicate that credentials will be submitted via the runtime environment?
+    if(config_file == ENV_CREDS_KEY_VALUE){
+        // Apparently so...
+        accessCredentials = load_credentials_from_env();
+        if(accessCredentials){
+            // So if we have them, we add them to theCM() and then return without processing the configuration.
+            string url = accessCredentials->get(AccessCredentials::URL);
+            theCM()->add(url,accessCredentials);
+        }
+        // Environment injected credentials override all other configuration credentials.
+        // Since the value of CATALOG_MANAGER_CREDENTIALS is  ENV_CREDS_VALUE there is no
+        // Configuration file identified, so wether or not valid credentials information was
+        // found in the ENV we simply return.
         return;
     }
 
@@ -313,8 +333,10 @@ void CredentialsManager::load_credentials( ) {
         map<string, AccessCredentials *>::iterator mit;
         mit = credential_sets.find(creds_name);
         if (mit != credential_sets.end()) {  // New?
+            // Nope.
             accessCredentials = mit->second;
-        } else { // Nope.
+        } else {
+            // Make new one
             accessCredentials = new AccessCredentials(creds_name);
             credential_sets.insert(pair<string, AccessCredentials *>(creds_name, accessCredentials));
         }
@@ -330,7 +352,7 @@ void CredentialsManager::load_credentials( ) {
         }
     }
     BESDEBUG(MODULE, "CredentialsManager loaded " << credential_sets.size()  << " AccessCredentials" << endl);
-    vector<string> pitch;
+    vector<AccessCredentials *> bad_creds;
     map<string,AccessCredentials *>::iterator acit;
 
     for (acit = credential_sets.begin(); acit != credential_sets.end(); acit++) {
@@ -340,19 +362,21 @@ void CredentialsManager::load_credentials( ) {
             theCM()->add(url,accessCredentials);
         }
         else {
-            pitch.push_back(acit->first);
+            bad_creds.push_back(acit->second);
         }
     }
-    if(pitch.size()){
+    if(bad_creds.size()){
         stringstream ss;
-        vector<string>::iterator pt;
+        vector<AccessCredentials * >::iterator bc;
 
-        ss << "Encountered " << pitch.size() <<  " AccessCredentials "
+        ss << "Encountered " << bad_creds.size() <<  " AccessCredentials "
            << " definitions missing an associated URL. offenders: ";
 
-        for (pt = pitch.begin(); pt != pitch.end(); pt++)
-            ss << *pt << "  ";
-
+        for (bc = bad_creds.begin(); bc != bad_creds.end(); bc++) {
+            ss << (*bc)->name() << "  ";
+            credential_sets.erase((*bc)->name());
+            delete *bc;
+        }
         throw BESInternalError( ss.str(), __FILE__, __LINE__);
     }
     BESDEBUG(MODULE, "CredentialsManager has successfully ingested " << theCM()->size()  << " AccessCredentials" << endl);
@@ -361,8 +385,6 @@ void CredentialsManager::load_credentials( ) {
 AccessCredentials *CredentialsManager::load_credentials_from_env( ) {
 
     AccessCredentials *ac = NULL;
-
-#ifdef ENV_CREDS
     string env_url, env_id, env_access_key, env_region, env_bucket;
 
     // If we are in developer mode then we compile this section which
@@ -386,8 +408,6 @@ AccessCredentials *CredentialsManager::load_credentials_from_env( ) {
         ac->add(AccessCredentials::REGION, env_region);
         ac->add(AccessCredentials::BUCKET, env_bucket);
     }
-#endif
-
     return ac;
 }
 
