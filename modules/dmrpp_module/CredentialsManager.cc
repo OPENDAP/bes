@@ -57,11 +57,11 @@ const string AccessCredentials::BUCKET="bucket";
 const string AccessCredentials::URL="url";
 
 // Scope: public members of CredentialsManager
-const string CredentialsManager::ENV_ID_KEY="CMAC.ID";
-const string CredentialsManager::ENV_ACCESS_KEY="CMAC.ACCESS_KEY";
-const string CredentialsManager::ENV_REGION_KEY="CMAC.REGION";
-const string CredentialsManager::ENV_BUCKET_KEY="CMAC.BUCKET";
-const string CredentialsManager::ENV_URL_KEY="CMAC.URL";
+const string CredentialsManager::ENV_ID_KEY="CMAC_ID";
+const string CredentialsManager::ENV_ACCESS_KEY="CMAC_ACCESS_KEY";
+const string CredentialsManager::ENV_REGION_KEY="CMAC_REGION";
+const string CredentialsManager::ENV_BUCKET_KEY="CMAC_BUCKET";
+const string CredentialsManager::ENV_URL_KEY="CMAC_URL";
 const string CredentialsManager::ENV_CREDS_KEY_VALUE="ENV_CREDS";
 
 
