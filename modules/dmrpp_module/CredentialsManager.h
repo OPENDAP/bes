@@ -29,7 +29,6 @@
 #include <string>
 #include <vector>
 
-#define ENV_CREDS true
 
 // These are the names of the bes keys used to configure the handler.
 #define CATALOG_MANAGER_CREDENTIALS "CredentialsManager.config"
@@ -54,6 +53,7 @@ public:
     void add(const std::string &key, const std::string &value);
     bool isS3Cred();
     std::string to_json();
+    std::string name(){ return d_config_name; }
 };
 
 
@@ -65,6 +65,7 @@ public:
     static const std::string ENV_REGION_KEY;
     static const std::string ENV_BUCKET_KEY;
     static const std::string ENV_URL_KEY;
+    static const std::string ENV_CREDS_KEY_VALUE;
 
 private:
     std::map<std::string, AccessCredentials* > creds;
