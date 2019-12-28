@@ -211,6 +211,7 @@ public:
         if(debug) cout << "check_incomplete_env_credentials() - CredentialsManager has been cleared, contains " << CredentialsManager::theCM()->size() << " AccessCredentials." << endl;
         CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 0);
 
+        clear_cm_env();
         TheBESKeys::TheKeys()->set_key(CATALOG_MANAGER_CREDENTIALS, CredentialsManager::ENV_CREDS_KEY_VALUE);
 
         if(debug) cout << "check_incomplete_env_credentials() - Setting incomplete env injected credentials. "
@@ -234,7 +235,6 @@ public:
 
         if(debug) cout << "check_incomplete_env_credentials() - Incomplete ENV credentials ignored as expected." << endl;
 
-        clear_cm_env();
     }
 
 
@@ -243,6 +243,7 @@ public:
         if(debug) cout << "check_env_credentials() - CredentialsManager has been cleared, contains " << CredentialsManager::theCM()->size() << " AccessCredentials." << endl;
         CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 0);
 
+        clear_cm_env();
         TheBESKeys::TheKeys()->set_key(CATALOG_MANAGER_CREDENTIALS, CredentialsManager::ENV_CREDS_KEY_VALUE, false);
 
         string id("Frank Morgan");
@@ -272,7 +273,6 @@ public:
         CPPUNIT_ASSERT( ac->get(AccessCredentials::BUCKET) == bucket);
 
         if(debug) cout << "check_env_credentials() - Credentials matched expected." << endl;
-        clear_cm_env();
     }
 
     void check_no_credentials() {
