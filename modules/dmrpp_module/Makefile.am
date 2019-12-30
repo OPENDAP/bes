@@ -14,7 +14,7 @@ AM_CPPFLAGS += $(OPENSSL_INC)
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=dmrpp_module
-M_VER=1.0.2
+M_VER=1.1.0
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
@@ -27,6 +27,7 @@ CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 SUBDIRS = . unit-tests tests data
+DISTSUBDIRS = unit-tests tests data xml2json
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libdmrpp_module.la

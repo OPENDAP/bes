@@ -24,22 +24,27 @@
 #include "config.h"
 
 #include <sstream>
-#include <cstdlib>
+// #include <cstdlib>
 #include <cstring>
 #include <cassert>
 
 #include <zlib.h>
 
 #include <BESDebug.h>
+#include <BESLog.h>
 #include <BESInternalError.h>
 #include <BESSyntaxUserError.h>
 #include <BESContextManager.h>
 
+#include "xml2json/include/xml2json.hpp"
+
+#include "xml2json/include/rapidjson/document.h"
+#include "xml2json/include/rapidjson/writer.h"
+//#include "xml2json/include/rapidjson/stringbuffer.h"
+
 #include "Chunk.h"
 #include "CurlHandlePool.h"
 #include "DmrppRequestHandler.h"
-
-const std::string debug = "dmrpp";
 
 using namespace std;
 
@@ -68,13 +73,39 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
     size_t nbytes = size * nmemb;
 
     // TODO Peek into the bytes read and look for an error from the object store. jhrg 12.17.19
-    // Error messages alwys start off with '<?xml' so only check for one if we have more than
+    // Error messages always start off with '<?xml' so only check for one if we have more than
     // four characters in 'buffer.' jhrg 12/17/19
     if (nbytes > 4) {
         string peek(reinterpret_cast<const char *>(buffer), 5);
         if (peek == "<?xml") {
-            string msg(reinterpret_cast<const char *>(buffer), nbytes);
-            throw BESSyntaxUserError(string("Error accessing object store data: ").append(msg), __FILE__, __LINE__);
+            // At this point we no longer care about great performance - error msg readability
+            // is more important. jhrg 12/30/19
+            string xml_message = reinterpret_cast<const char *>(buffer);
+            xml_message.erase(xml_message.find_last_not_of("\t\n\v\f\r 0") + 1);
+            // Decode the AWS XML error message. In some cases this will fail because pub keys,
+            // which maybe in this error text, may have < or > chars in them. the XML parser
+            // will be sad if that happens. jhrg 12/30/19
+            try {
+                string json_message = xml2json(xml_message.c_str());
+                BESDEBUG("dmrpp", "AWS S3 Access Error:" << json_message << endl);
+                VERBOSE("AWS S3 Access Error:" << json_message << endl);
+
+                rapidjson::Document d;
+                d.Parse(json_message.c_str());
+                rapidjson::Value& s = d["Error"]["Message"];
+
+                throw BESSyntaxUserError(string("Error accessing object store data: ").append(s.GetString()), __FILE__, __LINE__);
+            }
+            catch (BESSyntaxUserError) {
+                // re-throw BESSyntaxUserError - added for the future if we make BESError a child
+                // of std::exception as it should be. jhrg 12/30/19
+                throw;
+            }
+            catch(std::exception &e) {
+                BESDEBUG("dmrpp", "AWS S3 Access Error:" << xml_message << endl);
+                VERBOSE("AWS S3 Access Error:" << xml_message << endl);
+                throw BESSyntaxUserError(string("Error accessing object store data: Unrecognized error, likely an authentication failure."), __FILE__, __LINE__);
+            }
         }
     }
 
