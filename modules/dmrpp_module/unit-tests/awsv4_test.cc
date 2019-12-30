@@ -280,19 +280,20 @@ namespace dmrpp {
     CPPUNIT_TEST_SUITE( awsv4_test );
 
             CPPUNIT_TEST(get_unreserved);
+
             // CPPUNIT_TEST(get_utf8); // UTF characters are not correctly escaped in canonical request
+
             CPPUNIT_TEST(get_vanilla);
             CPPUNIT_TEST(get_vanilla_empty_query_key);
             CPPUNIT_TEST(get_vanilla_query);
-            // CPPUNIT_TEST(get_vanilla_query_order_key); // Order of our parameters is not modifed based on key
+
+            // CPPUNIT_TEST(get_vanilla_query_order_key); // Order of our parameters is not modifed based on key string
             // CPPUNIT_TEST(get_vanilla_query_order_key_case); // Order of our parameters is not modifed based on key case
+            // CPPUNIT_TEST(get_vanilla_query_order_value); // Order of our parameters is not modifed based on key value
 
-            // CPPUNIT_TEST(get_vanilla_query_order_value); // Order of our parameters is not modifed based on value
             CPPUNIT_TEST(get_vanilla_query_unreserved);
+            
             // CPPUNIT_TEST(get_vanilla_utf8_query); // UTF characters are not correctly escaped in canonical request
-
-
-            // Not working
 
     CPPUNIT_TEST_SUITE_END();
 
