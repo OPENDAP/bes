@@ -155,19 +155,14 @@ namespace dmrpp {
 
 
             //define REQUEST_DATE "2015 08 30 T 12 36 00Z"
-
+            setenv("TZ", "GMT0", true);
             struct tm t_info;
             t_info.tm_year   = 115; // Years since 1900
             t_info.tm_mon    = 7;   // August
             t_info.tm_mday   = 30;
-            t_info.tm_hour   = 5;   // 1200 GMT
+            t_info.tm_hour   = 12;   // 1200 GMT
             t_info.tm_min    = 36;
             t_info.tm_sec    = 0;
-            t_info.tm_gmtoff = 0;
-            t_info.tm_wday   = 0;
-            t_info.tm_yday   = 0;
-
-
             const std::time_t request_time = mktime(&t_info);
 
 
