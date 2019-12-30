@@ -51,8 +51,7 @@ static bool bes_debug = false;
 #define DBG(x) do { if (debug) x; } while(false)
 
 #define SECRET_KEY "wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY"
-#define CREDENTIAL_SCOPE "AKIDEXAMPLE"
-#define REQUEST_DATE "20150830T123600Z"
+#define KEY_ID "AKIDEXAMPLE"
 
 
 namespace dmrpp {
@@ -116,9 +115,9 @@ namespace dmrpp {
 
 
         void show_baseline(string name, string value){
-            cerr << "-------------------------------------------------" << endl;
-            cerr << name << ": " << endl << value << endl;
-            cerr << "-------------------------------------------------" << endl;
+            cerr << "# BEGIN " << name << " -------------------------------------------------" << endl;
+            cerr << value << endl;
+            cerr << "# END " << name << " -------------------------------------------------" << endl << endl;
         }
 
 
@@ -154,8 +153,13 @@ namespace dmrpp {
             if(debug) show_baseline("auth_header_baseline", auth_header_baseline);
 
 
-            //define REQUEST_DATE "2015 08 30 T 12 36 00Z"
+            // AWSv4 examples are based on a request dat/time of:
+            // define REQUEST_DATE "2015 08 30 T 12 36 00Z"
+            //
+            // Set timezone to GMT0
             setenv("TZ", "GMT0", true);
+
+            // Populate time struct
             struct tm t_info;
             t_info.tm_year   = 115; // Years since 1900
             t_info.tm_mon    = 7;   // August
@@ -163,26 +167,29 @@ namespace dmrpp {
             t_info.tm_hour   = 12;   // 1200 GMT
             t_info.tm_min    = 36;
             t_info.tm_sec    = 0;
+
+            // Get the time value
             const std::time_t request_time = mktime(&t_info);
+            if(debug) cerr << "request_time: " << request_time << endl;
 
 
             std::string auth_header =
                     AWSV4::compute_awsv4_signature(
                             "https://example.amazonaws.com/",
                             request_time,
-                            CREDENTIAL_SCOPE,
+                            KEY_ID,
                             SECRET_KEY,
                             "us-east-1",
                             "service",
-                            true);
+                            debug);
 
             if(debug) show_baseline("auth_header", auth_header);
 
-
+            CPPUNIT_ASSERT(auth_header == auth_header_baseline);
 
         }
 
-        void check_keys() {
+        void get_vanilla_query() {
             run_test("get-vanilla-query");
         }
 
@@ -191,9 +198,9 @@ namespace dmrpp {
 
     CPPUNIT_TEST_SUITE( awsv4_test );
 
-            CPPUNIT_TEST(check_keys);
+            CPPUNIT_TEST(get_vanilla_query);
 
-        CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE_END();
 
     };
 

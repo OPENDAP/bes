@@ -299,10 +299,14 @@ namespace AWSV4 {
     * @return The AWS V4 Signature string.
     */
 
-    const std::string compute_awsv4_signature(const std::string uri_str, const std::time_t request_date,
-                                              const std::string public_key, const std::string secret_key,
-                                              const std::string region, const std::string service,
-                                              const bool verbose) {
+    const std::string compute_awsv4_signature(
+            const std::string &uri_str,
+            const std::time_t &request_date,
+            const std::string &public_key,
+            const std::string &secret_key,
+            const std::string &region,
+            const std::string &service,
+            const bool &verbose) {
 
         url_parser uri(uri_str);
 
@@ -315,11 +319,17 @@ namespace AWSV4 {
         // is the case for a GET request. jhrg 11/25/19
         const std::string sha256_empty_payload = {"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"};
         // All AWS V4 signature require x-amz-content-sha256. jhrg 11/24/19
-        std::vector<std::string> headers{"host: ", "x-amz-date: ", "x-amz-content-sha256: "};
+
+        std::vector<std::string> headers{"host: ", "x-amz-date: "};
         headers[0].append(uri.host()); // headers[0].append(uri.getHost());
         headers[1].append(ISO8601_date(request_date));
-        headers[2].append(sha256_empty_payload);
 
+#if 0
+        // TODO - Why do we not need this? Why? Why was it built this way?
+        if(service == "s3"){
+            headers.push_back(std::string("x-amz-content-sha256: ").append(sha256_empty_payload));
+        }
+#endif
         const auto canonical_headers_map = canonicalize_headers(headers);
         if (canonical_headers_map.empty()) {
             throw std::runtime_error("Empty header list while building AWS V4 request signature");
@@ -352,6 +362,8 @@ namespace AWSV4 {
                                                     service,
                                                     string_to_sign,
                                                     verbose);
+        if (verbose)
+            std::cerr << "-- signature\n" << signature << "\n----\n" << std::endl;
 
         const std::string authorization_header = STRING_TO_SIGN_ALGO + " Credential=" + public_key + "/"
                 + credential_scope + ", SignedHeaders=" + signed_headers + ", Signature=" + signature;
