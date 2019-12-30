@@ -9,12 +9,13 @@ OPENSSL_INC=-I/usr/local/opt/openssl/include
 OPENSSL_LDFLAGS=-L/usr/local/opt/openssl/lib
 
 AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)/modules -I$(top_srcdir)/modules/dmrpp_module \
--I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+-I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS) $(OPENSSL_INC)
 
 # Added -lz for ubuntu
 LIBADD = $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_EXTRA_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
 $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) -lz
+
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS) 
@@ -78,7 +79,7 @@ $(CREDS_CONF):
 #
 
 if CPPUNIT
-UNIT_TESTS = ChunkTest DmrppParserTest DmrppCommonTest DmrppMetadataStoreTest CredentialsManagerTest
+UNIT_TESTS = ChunkTest DmrppParserTest DmrppCommonTest DmrppMetadataStoreTest CredentialsManagerTest awsv4_test
 else
 UNIT_TESTS =
 
@@ -109,6 +110,9 @@ ChunkTest_LDADD = $(OBJS) $(LIBADD)
 
 CredentialsManagerTest_SOURCES = CredentialsManagerTest.cc
 CredentialsManagerTest_LDADD = $(OBJS) $(LIBADD)
+
+awsv4_test_SOURCES = awsv4_test.cc
+awsv4_test_LDADD = $(OBJS) $(LIBADD)
 
 DmrppParserTest_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/modules/hdf5_handler
 DmrppParserTest_SOURCES = DmrppParserTest.cc
