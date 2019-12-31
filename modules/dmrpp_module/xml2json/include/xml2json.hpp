@@ -23,6 +23,11 @@
 #include "rapidjson/filewritestream.h"
 #include "rapidjson/error/en.h"
 
+// TODO Remove this once we no longer have to support CentOS6 builds using
+// the default compiler. jhrg 12/31/19
+
+#define nullptr 0
+
 /* [Start] This part is configurable */
 static const char xml2json_text_additional_name[] = "#text";
 static const char xml2json_attribute_name_prefix[] = "@";
