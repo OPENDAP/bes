@@ -44,7 +44,7 @@ noinst_HEADERS = test_config.h
 
 noinst_DATA = bes.conf $(CREDS_CONF) input-files/weak.conf
 
-EXTRA_DIST = bes.conf.in test_config.h.in baselines input-files
+EXTRA_DIST = bes.conf.in test_config.h.in baselines input-files awsv4
 
 CLEANFILES = *.gcda *.gcno *.strm *.file test_config.h tmp.txt
 
