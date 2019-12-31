@@ -292,7 +292,7 @@ namespace dmrpp {
             // CPPUNIT_TEST(get_vanilla_query_order_value); // Order of our parameters is not modifed based on key value
 
             CPPUNIT_TEST(get_vanilla_query_unreserved);
-            
+
             // CPPUNIT_TEST(get_vanilla_utf8_query); // UTF characters are not correctly escaped in canonical request
 
     CPPUNIT_TEST_SUITE_END();
