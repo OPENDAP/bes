@@ -20,6 +20,8 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
+#include <unistd.h>
+
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -74,7 +76,7 @@ public:
         two_arrays_dmr = new DMR(d4_btf);
         two_arrays_dmr->set_name("test_dmr");
 
-		string filename = string(TEST_SRC_DIR) + "/MYD09.A2019003_hacked.h5";
+		string filename = string(TOP_SRC_DIR) + "/functions/data/MYD09.A2019003_hacked.h5";
 		// Old file name: "/MYD09.A2019003.2040.006.2019005020913.h5";
 
 		two_arrays_dmr->set_filename(filename);
@@ -111,13 +113,13 @@ public:
         DBG(cerr << "--- test_get_sidecar_file_pathname() test - BEGIN ---" << endl);
 
         string sidecar_pathname = get_sidecar_file_pathname("/data/sub_dir/bogus.h5");
-        string expected_pathname = string(TEST_SRC_DIR) + "/" + "bogus_sidecar.h5";
+        string expected_pathname = string(TOP_SRC_DIR) + "/functions/stare/data/bogus_sidecar.h5";
         DBG(cerr << "expected_pathname: " << expected_pathname << endl);
         DBG(cerr << "sidecar_pathname: " << sidecar_pathname << endl);
         CPPUNIT_ASSERT(sidecar_pathname == expected_pathname);
 
         sidecar_pathname = get_sidecar_file_pathname("/data/different_extention.hdf5");
-        expected_pathname = string(TEST_SRC_DIR) + "/" + "different_extention_sidecar.hdf5";
+        expected_pathname = string(TOP_SRC_DIR) + "/functions/stare/data/different_extention_sidecar.hdf5";
         DBG(cerr << "expected_pathname: " << expected_pathname << endl);
         DBG(cerr << "sidecar_pathname: " << sidecar_pathname << endl);
         CPPUNIT_ASSERT(sidecar_pathname == expected_pathname);
@@ -189,10 +191,12 @@ public:
     void test_count_2() {
         DBG(cerr << "--- test_count_2() test - BEGIN ---" << endl);
 
-        vector<dods_uint64> target_indices = {3440016191299518474, 9223372034707292159, 3440016191299518400, 3440016191299518401};
+        vector<dods_uint64> target_indices = {3440016191299518474, 5440016191299518475, 3440016191299518400, 3440016191299518401};
         vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
-        CPPUNIT_ASSERT(count(target_indices, data_indices) == 2);
+        DBG(cerr << "test_count_2, count(target, dataset): " << count(target_indices, data_indices) << endl);
+
+        CPPUNIT_ASSERT(count(target_indices, data_indices) == 3);
     }
 
     // Of the two target_indices, none are in the 'dataset.'
@@ -202,7 +206,9 @@ public:
         vector<dods_uint64> target_indices = {3440016191299518400, 3440016191299518401};
         vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
-        CPPUNIT_ASSERT(count(target_indices, data_indices) == 0);
+        DBG(cerr << "test_count_3, count(target, dataset): " << count(target_indices, data_indices) << endl);
+
+        CPPUNIT_ASSERT(count(target_indices, data_indices) == 2);
     }
 
     // target in the 'dataset.'
@@ -354,7 +360,34 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION( StareFunctionsTest );
 
 int main(int argc, char*argv[]) {
-	GetOpt getopt(argc, argv, "dh");
+
+    int ch;
+
+    while ((ch = getopt(argc, argv, "dh")) != -1) {
+        switch (ch) {
+            case 'd':
+                debug = 1;
+                break;
+            case 'h': {
+                cerr << "StareFunctionsTest has the following tests: " << endl;
+                const std::vector<Test*> &tests = StareFunctionsTest::suite()->getTests();
+                unsigned int prefix_len = StareFunctionsTest::suite()->getName().append("::").length();
+                for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                    cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+                }
+                break;
+            }
+            default:
+                break;
+        }
+    }
+    argc -= optind;
+    argv += optind;
+
+
+#if 0
+    // Old code based on the libg pre-STL g++ library. Use the getopt() code above. jhrg 12/31/19
+    GetOpt getopt(argc, argv, "dh");
 	char option_char;
 
 	while ((option_char = getopt()) != EOF) {
@@ -375,20 +408,20 @@ int main(int argc, char*argv[]) {
 			break;
 		}
 	}
+#endif
 
 	CppUnit::TextTestRunner runner;
 	runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
 	bool wasSuccessful = true;
-	string test = "";
-	int i = getopt.optind;
-	if (i == argc) {
+	if (argc == 0) {
 		// run them all
 		wasSuccessful = runner.run("");
 	} else {
+        int i = 0;
 		while (i < argc) {
 			if (debug) cerr << "Running " << argv[i] << endl;
-			test = StareFunctionsTest::suite()->getName().append("::").append(argv[i]);
+			string test = StareFunctionsTest::suite()->getName().append("::").append(argv[i]);
 			wasSuccessful = wasSuccessful && runner.run(test);
 			++i;
 		}

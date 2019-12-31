@@ -9,7 +9,7 @@ AM_CPPFLAGS = $(DAP_CFLAGS) -I$(top_srcdir)/dispatch -I$(STARE_INC) -I$(prefix)/
 AM_CXXFLAGS = -Wno-deprecated -Wno-vla-extension
 AM_LDADD =  $(DAP_CLIENT_LIBS) -L$(abs_top_srcdir)/dispatch -lbes_dispatch $(H5_LDFLAGS) $(H5_LIBS) $(STARE_LDFLAGS) $(STARE_LIBS)
 
-SUBDIRS = . unit-tests
+SUBDIRS = . unit-tests tests
 
 if USE_VALGRIND
 TESTS_ENVIRONMENT = valgrind --quiet --trace-children=yes --error-exitcode=1 --dsymutil=yes --leak-check=yes

@@ -70,6 +70,7 @@ libtool
 **/bes.conf
 **/testsuite
 **/testsuite.dir
+**/package.m4
 
 abi_checker.xml
 bes-config

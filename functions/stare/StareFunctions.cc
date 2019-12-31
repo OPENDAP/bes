@@ -127,10 +127,10 @@ static vector<dods_uint64> *extract_uint64_array(Array *var) {
 //int cmpSpatial(STARE_ArrayIndexSpatialValue a_, STARE_ArrayIndexSpatialValue b_) {
 
 /**
- * @brief Are any of the targetIndices STARE indices in the list of the dataset's STARE indices?
+ * @brief Do any of the targetIndices STARE indices overlap the dataset's STARE indices?
  * @param targetIndices - stare values from a constraint expression
  * @param dataStareIndices - stare values being compared, retrieved from the sidecar file. These
- * are the index values from the dataset.
+ * are the index values that describe the coverage of the dataset.
  */
 bool
 target_in_dataset(const vector<dods_uint64> &targetIndices, const vector<dods_uint64> &dataStareIndices) {
@@ -138,7 +138,9 @@ target_in_dataset(const vector<dods_uint64> &targetIndices, const vector<dods_ui
     // which works on OSX but not CentOS7). jhrg 11/5/19
     for (const dods_uint64 &i : targetIndices) {
         for (const dods_uint64 &j :dataStareIndices ) {
-            // Check to see if the index is within the stare index being compared
+            // Check to see if the index 'i' overlaps the index 'j'. The cmpSpatial()
+            // function returns -1, 0, 1 depending on i in j, no overlap of j in i.
+            // testing for !0 covers the general overlap case.
             int result = cmpSpatial(i, j);
             if (result != 0)
                 return true;
@@ -149,30 +151,26 @@ target_in_dataset(const vector<dods_uint64> &targetIndices, const vector<dods_ui
 }
 
 /**
- * @brief How many of the stareVal STARE indices are in the list of the dataset's STARE indices?
+ * @brief How many of the target STARE indices overlap the dataset's STARE indices?
  *
- * This method should return the number of indices passed to the server that appear in the
- * dataset. That is, the number of stareVal items that appear in dataStareIndices.
+ * This method should return the number of indices passed to the server that overlap the
+ * spatial coverage of the dataset as defined by its set of STARE indices.
  *
  * @param stareVal - stare values from a constraint expression
  * @param dataStareIndices - stare values being compared, retrieved from the sidecar file. These
- * are the index values from the dataset.
+ * are the index values that describe the coverage of the dataset.
  */
 unsigned int
 count(const vector<dods_uint64> &stareVal, const vector<dods_uint64> &dataStareIndices) {
     unsigned int counter = 0;
     for (const dods_uint64 &i : stareVal) {
         for (const dods_uint64 &j : dataStareIndices)
+            // Here we are counting the number of traget indices that overlap the
+            // dataset indices.
             if (cmpSpatial(i, j) != 0) {
                 counter++;
                 break;  // exit the inner loop
             }
-#if 0
-        if (i == j) {
-                counter++;
-                break;  // exit the inner loop
-            }
-#endif
     }
 
     return counter;
@@ -187,7 +185,6 @@ count(const vector<dods_uint64> &stareVal, const vector<dods_uint64> &dataStareI
  * @return A pointer to a vector if stare_match objects that combine a STARE index with
  * an x,y point.
  */
-
 vector<stare_match> *
 stare_subset_helper(const vector<dods_uint64> &targetIndices, const vector<dods_uint64> &datasetStareIndices,
                     const vector<int> &xArray, const vector<int> &yArray)

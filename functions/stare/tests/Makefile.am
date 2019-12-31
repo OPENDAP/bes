@@ -44,40 +44,21 @@ data/build_responses.conf: data/build_responses.conf.in $(top_srcdir)/configure.
 #	sed -e "s%[@]srcdir[@]%${srcdir}%" $< > cleanup.sh
 #	chmod +x cleanup.sh
 
-if BUILD_STARE
-RUN_STARE_TESTS = yes
-else
-RUN_STARE_TESTS = no
-endif
-
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te
 
 TESTSUITE = $(srcdir)/testsuite
 
-$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(srcdir)/../../modules/handler_tests_macros.m4
+$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
 
+# Note These tests do not work when run in parallel.
 check-local: atconfig atlocal $(TESTSUITE)
+	@echo "Run tests with an empty cache"
 	-rm -rf dap_cache/*
 	test `ls -1 dap_cache/ | wc -l` -eq 0
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 	@echo "Cached responses: `ls -1 dap_cache/ | wc -l`"
-
-# TODO Fix the broken (?) function response caching. jhrg 12/31/19
-
-# check-local: atconfig atlocal $(TESTSUITE)
-# 	@echo "Run tests with an empty cache"
-# 	-rm -rf dap_cache/*
-# 	test `ls -1 dap_cache/ | wc -l` -eq 0
-# 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
-# 	-test `ls -1 dap_cache/ | wc -l` -eq 52
-# 	@echo "Cached responses: `ls -1 dap_cache/ | wc -l`"
-# 	@echo "These tests will mysteriously fail if function caching is turned off"
-# 	@echo "Run tests with a full cache"
-# 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
-# 	-test `ls -1 dap_cache/ | wc -l` -eq 52
-# 	@echo "Cached responses: `ls -1 dap_cache/ | wc -l`"
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
@@ -98,4 +79,5 @@ $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	echo 'm4_define([AT_PACKAGE_VERSION],   [@PACKAGE_VERSION@])' && \
 	echo 'm4_define([AT_PACKAGE_STRING],    [@PACKAGE_STRING@])' && \
 	echo 'm4_define([AT_PACKAGE_BUGREPORT], [@PACKAGE_BUGREPORT@])'; \
+	echo 'm4_define([AT_TOP_SRCDIR], 		[@top_srcdir@])'; \
 	} >'$(srcdir)/package.m4'

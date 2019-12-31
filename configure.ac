@@ -877,6 +877,8 @@ AC_CONFIG_FILES([Makefile
 		 functions/unit-tests/Makefile
 		 functions/stare/Makefile
 		 functions/stare/unit-tests/Makefile
+		 functions/stare/tests/Makefile
+		 functions/stare/tests/atlocal
 		 ])
 dnl These need to be moved into the AC_CONFIG_FILES above 
 dnl when geo-functions is reenabled.
@@ -898,6 +900,7 @@ AC_CONFIG_TESTDIR(hello_world/tests, [standalone])
 AC_CONFIG_TESTDIR(dapreader/tests, [standalone])
 AC_CONFIG_TESTDIR(dap/tests, [standalone])
 AC_CONFIG_TESTDIR(functions/tests, [standalone])
+AC_CONFIG_TESTDIR(functions/stare/tests, [standalone])
 AC_CONFIG_TESTDIR(dispatch/tests, [dispatch/tests])
 AC_CONFIG_TESTDIR(xmlcommand/tests, [standalone])
 
