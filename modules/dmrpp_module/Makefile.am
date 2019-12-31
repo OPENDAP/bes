@@ -27,7 +27,6 @@ CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 SUBDIRS = . unit-tests tests data
-DISTSUBDIRS = unit-tests tests data xml2json
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libdmrpp_module.la
@@ -68,7 +67,11 @@ $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS
 
 EXTRA_PROGRAMS = 
 
-EXTRA_DIST = dmrpp.conf.in
+# Adding the xml2json dir here is all we need to get it in the dist tar ball.
+# If it was added to DIST_SUBDIRS, some targets would be run, within the directory,
+# by automake and that would break since the dir does not have automake files.
+# jhrg 12/30/19
+EXTRA_DIST = dmrpp.conf.in xml2json
 
 # removed from EXTRA_DIST: libdmrpp_module.la
 
