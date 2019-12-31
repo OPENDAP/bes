@@ -841,7 +841,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
                         string("CURL Error setting x-amz-date header: ").append(curl_error_msg(res, handle->d_errbuf)),
                         __FILE__, __LINE__);
             handle->d_headers = temp;
-            
+
             // We pre-compute the sha256 hash of a null message body
             temp = append_http_header(handle->d_headers, "x-amz-content-sha256:", "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
             if (!temp)
