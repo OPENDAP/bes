@@ -72,7 +72,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
 {
     size_t nbytes = size * nmemb;
 
-    // TODO Peek into the bytes read and look for an error from the object store. jhrg 12.17.19
+    // Peek into the bytes read and look for an error from the object store.
     // Error messages always start off with '<?xml' so only check for one if we have more than
     // four characters in 'buffer.' jhrg 12/17/19
     if (nbytes > 4) {
@@ -93,6 +93,9 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
                 rapidjson::Document d;
                 d.Parse(json_message.c_str());
                 rapidjson::Value& s = d["Error"]["Message"];
+                // We might want to get the "Code" from the "Error" if these text messages
+                // are not good enough. But the "Code" is not really suitable for normal humans...
+                // jhrg 12/31/19
 
                 throw BESSyntaxUserError(string("Error accessing object store data: ").append(s.GetString()), __FILE__, __LINE__);
             }
