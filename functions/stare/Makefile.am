@@ -25,7 +25,7 @@ bin_PROGRAMS = build_sidecar
 build_sidecar_SOURCES = build_sidecar.cc
 build_sidecar_LDADD = $(AM_LDADD)
 
-EXTRA_DIST = 
+EXTRA_DIST =  data
 
 CLEANFILES = 
 
