@@ -320,16 +320,24 @@ namespace AWSV4 {
         const std::string sha256_empty_payload = {"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"};
         // All AWS V4 signature require x-amz-content-sha256. jhrg 11/24/19
 
+#if 1
+        // We used to do it like the code in the other half of this #if
+        // But it seems we don't need the x-amz-content-sha256 header for empty payload
+        // so here it is without.
         std::vector<std::string> headers{"host: ", "x-amz-date: "};
         headers[0].append(uri.host()); // headers[0].append(uri.getHost());
         headers[1].append(ISO8601_date(request_date));
 
-#if 0
-        // TODO - Why do we not need this? Why? Why was it built this way?
-        if(service == "s3"){
-            headers.push_back(std::string("x-amz-content-sha256: ").append(sha256_empty_payload));
-        }
-#endif
+#else
+        // This works as well, but it doesn't appear that we need the
+        // x-amz-content-sha256 header for empty payload s this is disabled in favor
+        // of the simpler version above.
+        std::vector<std::string> headers{"host: ", "x-amz-content-sha256: ", "x-amz-date: "};
+        headers[0].append(uri.host());
+        headers[1].append(sha256_empty_payload);
+        headers[2].append(ISO8601_date(request_date));
+ #endif
+
         const auto canonical_headers_map = canonicalize_headers(headers);
         if (canonical_headers_map.empty()) {
             throw std::runtime_error("Empty header list while building AWS V4 request signature");

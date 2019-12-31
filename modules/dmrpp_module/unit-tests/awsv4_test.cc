@@ -111,8 +111,8 @@ namespace dmrpp {
 
             // Populate time struct
             struct tm t_info;
-            t_info.tm_year   = 115; // Years since 1900
-            t_info.tm_mon    = 7;   // August
+            t_info.tm_year   = 115;  // Years since 1900
+            t_info.tm_mon    = 7;    // August
             t_info.tm_mday   = 30;
             t_info.tm_hour   = 12;   // 1200 GMT
             t_info.tm_min    = 36;
