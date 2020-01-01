@@ -50,8 +50,8 @@ TESTSUITE_MDS = $(srcdir)/testsuite_mds_tests
 TESTSUITE_S3 = $(srcdir)/testsuite_s3_tests
 
 s3-tests: $(TESTSUITE_S3) bes.conf bes_serial.conf
-	echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
-	if [ -n "$${CMAC_ID}" ] \
+	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
+	@if [ -n "$${CMAC_ID}" ] \
 		&& [ -n "$${CMAC_ACCESS_KEY}" ] \
 		&& [ -n "$${CMAC_REGION}" ]  \
 		&& [ -n "$${CMAC_BUCKET}" ]   \
@@ -62,12 +62,25 @@ s3-tests: $(TESTSUITE_S3) bes.conf bes_serial.conf
 		echo "No access credentials available, skipping S3 authentication tests"; \
 		true;\
 	fi
-	echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
+	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
 
-check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_MDS) bes.conf bes_serial.conf bes_mds_tests.conf mds_for_tests  s3-tests
+check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_MDS) $(TESTSUITE_S3) bes.conf bes_serial.conf bes_mds_tests.conf mds_for_tests
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) --conf=bes_serial.conf
 	$(SHELL) '$(TESTSUITE_MDS)' $(TESTSUITEFLAGS) --conf=bes_mds_tests.conf
+	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
+	@if [ -n "$${CMAC_ID}" ] \
+		&& [ -n "$${CMAC_ACCESS_KEY}" ] \
+		&& [ -n "$${CMAC_REGION}" ]  \
+		&& [ -n "$${CMAC_BUCKET}" ]   \
+		&& [ -n "$${CMAC_URL}" ] ; then \
+		echo "--- S3 Auth Tests ---"; \
+		$(SHELL) '$(TESTSUITE_S3)' $(TESTSUITEFLAGS); \
+	else \
+		echo "No access credentials available, skipping S3 authentication tests"; \
+		true;\
+	fi
+	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
