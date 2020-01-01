@@ -72,6 +72,7 @@ check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_MDS) bes.conf bes_serial.
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
 	test ! -f '$(TESTSUITE_MDS)' || $(SHELL) '$(TESTSUITE_MDS)' --clean
+	test ! -f '$(TESTSUITE_S3)' || $(SHELL) '$(TESTSUITE_S3)' --clean
 	test ! -d $(builddir)/mds_for_tests || rm -rf $(builddir)/mds_for_tests
 
 %: %.at 
