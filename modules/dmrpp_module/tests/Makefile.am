@@ -74,11 +74,11 @@ check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_MDS) $(TESTSUITE_S3) bes.
 		&& [ -n "$${CMAC_REGION}" ]  \
 		&& [ -n "$${CMAC_BUCKET}" ]   \
 		&& [ -n "$${CMAC_URL}" ] ; then \
-		echo "--- S3 Auth Tests ---"; \
-		echo "        CMAC_ID: ${CMAC_ID}; \
+		echo "--------- S3 Auth Tests ---------"; \
+		echo "        CMAC_ID: ${CMAC_ID}"; \
 		echo "CMAC_ACCESS_KEY: ${CMAC_ACCESS_KEY}"; \
-		echo "    CMAC_REGION: ${CMAC_REGION}; \
-		echo "    CMAC_BUCKET: ${CMAC_BUCKET}; \
+		echo "    CMAC_REGION: ${CMAC_REGION}"; \
+		echo "    CMAC_BUCKET: ${CMAC_BUCKET}"; \
 		echo "       CMAC_URL: ${CMAC_URL}"; \
 		$(SHELL) '$(TESTSUITE_S3)' $(TESTSUITEFLAGS); \
 	else \
