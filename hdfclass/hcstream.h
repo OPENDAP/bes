@@ -284,7 +284,11 @@ class hdfistream_vdata:public hdfistream_obj {
     hdfistream_vdata & operator>>(vector < hdf_vdata > &hsv);   // read all Vdata's
     hdfistream_vdata & operator>>(hdf_attr & ha);       // read an attribute
     hdfistream_vdata & operator>>(vector < hdf_attr > &hav);    // read all attributes
+    
+    // This function causes memory leakings. Use other ways to carry out its role.
+#if 0
     virtual bool isInternalVdata(int ref) const;        // check reference against internal type
+#endif 
   protected:
     void _init(void);
     void _del(void) {
