@@ -47,7 +47,7 @@ void roi_bbox_get_slice_data(libdap::Array *bbox, unsigned int i, int &start, in
 
 libdap::Structure *roi_bbox_build_slice(unsigned int start_value, unsigned int stop_value, const string &dim_name);
 
-auto_ptr<libdap::Array> roi_bbox_build_empty_bbox(unsigned int num_dim, const string &bbox_name = "bbox");
+unique_ptr<libdap::Array> roi_bbox_build_empty_bbox(unsigned int num_dim, const string &bbox_name = "bbox");
 
 }
 

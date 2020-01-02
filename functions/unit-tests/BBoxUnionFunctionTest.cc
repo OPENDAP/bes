@@ -129,10 +129,10 @@ public:
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
-            auto_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(1, "bbox_1");
+            unique_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(1, "bbox_1");
             bbox_1->set_vec_nocopy(0, roi_bbox_build_slice(3, 10, "a_values"));
 
-            auto_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(1, "bbox_1");
+            unique_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(1, "bbox_1");
             bbox_2->set_vec_nocopy(0, roi_bbox_build_slice(8, 18, "a_values"));
 
             Str oper("oper");
@@ -170,10 +170,10 @@ public:
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
-            auto_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(1, "bbox_1");
+            unique_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(1, "bbox_1");
             bbox_1->set_vec_nocopy(0, roi_bbox_build_slice(3, 10, "a_values"));
 
-            auto_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(1, "bbox_1");
+            unique_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(1, "bbox_1");
             bbox_2->set_vec_nocopy(0, roi_bbox_build_slice(2, 18, "a_values"));
 
             Str oper("oper");
@@ -211,10 +211,10 @@ public:
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
-            auto_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(1, "bbox_1");
+            unique_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(1, "bbox_1");
             bbox_1->set_vec_nocopy(0, roi_bbox_build_slice(3, 5, "a_values"));
 
-            auto_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(1, "bbox_1");
+            unique_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(1, "bbox_1");
             bbox_2->set_vec_nocopy(0, roi_bbox_build_slice(7, 10, "a_values"));
 
             Str oper("oper");
@@ -252,10 +252,10 @@ public:
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
-            auto_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(1, "bbox_1");
+            unique_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(1, "bbox_1");
             bbox_1->set_vec_nocopy(0, roi_bbox_build_slice(3, 10, "a_values"));
 
-            auto_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(1, "bbox_1");
+            unique_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(1, "bbox_1");
             bbox_2->set_vec_nocopy(0, roi_bbox_build_slice(7, 11, "a_values"));
 
             Str oper("oper");
@@ -294,10 +294,10 @@ public:
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
-            auto_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(1, "bbox_1");
+            unique_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(1, "bbox_1");
             bbox_1->set_vec_nocopy(0, roi_bbox_build_slice(5, 7, "a_values"));
 
-            auto_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(1, "bbox_1");
+            unique_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(1, "bbox_1");
             bbox_2->set_vec_nocopy(0, roi_bbox_build_slice(4, 11, "a_values"));
 
             Str oper("oper");
@@ -336,10 +336,10 @@ public:
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
-            auto_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(1, "bbox_1");
+            unique_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(1, "bbox_1");
             bbox_1->set_vec_nocopy(0, roi_bbox_build_slice(5, 7, "a_values"));
 
-            auto_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(1, "bbox_1");
+            unique_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(1, "bbox_1");
             bbox_2->set_vec_nocopy(0, roi_bbox_build_slice(8, 11, "a_values"));
 
             Str oper("oper");
@@ -363,11 +363,11 @@ public:
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
-            auto_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(2, "bbox_1");
+            unique_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(2, "bbox_1");
             bbox_1->set_vec_nocopy(0, roi_bbox_build_slice(3, 5, "a_values"));
             bbox_1->set_vec_nocopy(1, roi_bbox_build_slice(3, 5, "a_values"));
 
-            auto_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(2, "bbox_2");
+            unique_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(2, "bbox_2");
             bbox_2->set_vec_nocopy(0, roi_bbox_build_slice(7, 10, "a_values"));
             bbox_2->set_vec_nocopy(1, roi_bbox_build_slice(7, 10, "a_values"));
 
@@ -406,11 +406,11 @@ public:
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
-            auto_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(2, "bbox_1");
+            unique_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(2, "bbox_1");
             bbox_1->set_vec_nocopy(0, roi_bbox_build_slice(3, 5, "a_values"));
             bbox_1->set_vec_nocopy(1, roi_bbox_build_slice(3, 5, "a_values"));
 
-            auto_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(2, "bbox_2");
+            unique_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(2, "bbox_2");
             bbox_2->set_vec_nocopy(0, roi_bbox_build_slice(4, 7, "a_values"));
             bbox_2->set_vec_nocopy(1, roi_bbox_build_slice(4, 7, "a_values"));
 
@@ -449,11 +449,11 @@ public:
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
-            auto_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(2, "bbox_1");
+            unique_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(2, "bbox_1");
             bbox_1->set_vec_nocopy(0, roi_bbox_build_slice(3, 6, "a_values"));
             bbox_1->set_vec_nocopy(1, roi_bbox_build_slice(3, 6, "a_values"));
 
-            auto_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(2, "bbox_2");
+            unique_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(2, "bbox_2");
             bbox_2->set_vec_nocopy(0, roi_bbox_build_slice(4, 5, "a_values"));
             bbox_2->set_vec_nocopy(1, roi_bbox_build_slice(4, 5, "a_values"));
 
@@ -492,11 +492,11 @@ public:
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
-            auto_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(2, "bbox_1");
+            unique_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(2, "bbox_1");
             bbox_1->set_vec_nocopy(0, roi_bbox_build_slice(3, 6, "a_values"));
             bbox_1->set_vec_nocopy(1, roi_bbox_build_slice(3, 6, "a_values"));
 
-            auto_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(2, "bbox_2");
+            unique_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(2, "bbox_2");
             bbox_2->set_vec_nocopy(0, roi_bbox_build_slice(4, 5, "a_values"));
             bbox_2->set_vec_nocopy(1, roi_bbox_build_slice(4, 5, "a_values"));
 
@@ -536,11 +536,11 @@ public:
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
-            auto_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(2, "bbox_1");
+            unique_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(2, "bbox_1");
             bbox_1->set_vec_nocopy(0, roi_bbox_build_slice(3, 7, "a_values"));
             bbox_1->set_vec_nocopy(1, roi_bbox_build_slice(3, 7, "a_values"));
 
-            auto_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(2, "bbox_2");
+            unique_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(2, "bbox_2");
             bbox_2->set_vec_nocopy(0, roi_bbox_build_slice(4, 9, "a_values"));
             bbox_2->set_vec_nocopy(1, roi_bbox_build_slice(4, 9, "a_values"));
 
@@ -580,11 +580,11 @@ public:
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
-            auto_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(2, "bbox_1");
+            unique_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(2, "bbox_1");
             bbox_1->set_vec_nocopy(0, roi_bbox_build_slice(3, 5, "a_values"));
             bbox_1->set_vec_nocopy(1, roi_bbox_build_slice(3, 5, "a_values"));
 
-            auto_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(2, "bbox_2");
+            unique_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(2, "bbox_2");
             bbox_2->set_vec_nocopy(0, roi_bbox_build_slice(7, 9, "a_values"));
             bbox_2->set_vec_nocopy(1, roi_bbox_build_slice(7, 9, "a_values"));
 
