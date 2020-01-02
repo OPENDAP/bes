@@ -10,4 +10,4 @@ AT_CHECK_ALL_DAP_RESPONSES([dmrpp/http_dmrpp_join_new.ncml])
 dnl This test depends on http and the chunk_twoD.h5 file
 dnl in the Raytheon s3 bucket.
 
-dnl AT_CHECK_ALL_DAP_RESPONSES([dmrpp/s3_dmrpp_join_new.ncml])
+AT_CHECK_ALL_DAP_RESPONSES([dmrpp/s3_dmrpp_join_new.ncml])
