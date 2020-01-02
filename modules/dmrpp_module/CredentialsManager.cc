@@ -2,7 +2,7 @@
 
 // This file is part of the BES
 
-// Copyright (c) 2019 OPeNDAP, Inc.
+// Copyright (c) 2020 OPeNDAP, Inc.
 // Author: Nathan Potter<ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
