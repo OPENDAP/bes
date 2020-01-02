@@ -5,7 +5,8 @@ AM_CXXFLAGS =
 # I put DAP_LIBS here because the AM docs say that LDADD should not have linker flags
 # and DAP_LIBS has both libs and flags :-(
 AM_LDFLAGS = $(DAP_LIBS) -L$(top_builddir)/dispatch
-LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(DAP_LIBS) 
+# LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(DAP_LIBS)
+LDADD = -lbes_dispatch $(DAP_LIBS)
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
@@ -38,6 +39,7 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
 
 FileLockingCacheTest_SOURCES = FileLockingCacheTest.cc
+FileLockingCacheTest_LDADD = $(LDADD)
 
 ############## Autotest follows #####################
 

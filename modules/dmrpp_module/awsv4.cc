@@ -356,6 +356,8 @@ namespace AWSV4 {
         const std::string authorization_header = STRING_TO_SIGN_ALGO + " Credential=" + public_key + "/"
                 + credential_scope + ", SignedHeaders=" + signed_headers + ", Signature=" + signature;
 
+        if (verbose)
+            std::cerr << "-- authorization_header\n" << authorization_header << "\n----\n" << std::endl;
         return authorization_header;
     }
 }

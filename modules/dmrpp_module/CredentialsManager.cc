@@ -23,34 +23,21 @@
 // Created by ndp on 12/11/19.
 //
 
-#include <curl/multi.h>
-#include <curl/curl.h>
-#include <ctime>
-#include <unistd.h>
+#include "config.h"
+
 #include <cstring>
 #include <iomanip>
 #include <sstream>
 #include <locale>
 #include <string>
-#include <sstream>
-#include <sys/types.h>
 #include <sys/stat.h>
 
-#include "WhiteList.h"
-#include "TheBESKeys.h"
-#include "BESForbiddenError.h"
-#include "BESInternalError.h"
-#include "BESDebug.h"
-#include "BESLog.h"
-#include "util.h"   // libdap::long_to_string()
+#include <WhiteList.h>
+#include <TheBESKeys.h>
+#include <kvp_utils.h>
+#include <BESInternalError.h>
+#include <BESDebug.h>
 
-#include "config.h"
-#include "Chunk.h"
-#include "CurlHandlePool.h"
-#include "awsv4.h"
-#include "DmrppCommon.h"
-
-#include "kvp_utils.h"
 #include "CredentialsManager.h"
 
 using namespace std;
@@ -69,25 +56,13 @@ const string AccessCredentials::REGION="region";
 const string AccessCredentials::BUCKET="bucket";
 const string AccessCredentials::URL="url";
 
-// Scope: This file...
-const string CM_CREDENTIALS="CM.credentials";
-const string CM_CONFIG="CredentialsManager.config";
-
-#if 0
-// These are all from the "OLD" method where there was one set of credentials
-// for everything.
-const string ENV_AKID_KEY("AWS_ACCESS_KEY_ID");
-const string CONFIG_AKID_KEY("DMRPP.AWS_ACCESS_KEY_ID");
-
-const string ENV_SAK_KEY("AWS_SECRET_ACCESS_KEY");
-const string CONFIG_SAK_KEY("DMRPP.AWS_SECRET_ACCESS_KEY");
-
-const string ENV_REGION_KEY("AWS_REGION");
-const string CONFIG_REGION_KEY("DMRPP.AWS_REGION");
-
-const string ENV_S3_BUCKET_KEY("AWS_S3_BUCKET");
-const string CONFIG_S3_BUCKET_KEY("DMRPP.AWS_S3_BUCKET");
-#endif
+// Scope: public members of CredentialsManager
+const string CredentialsManager::ENV_ID_KEY="CMAC_ID";
+const string CredentialsManager::ENV_ACCESS_KEY="CMAC_ACCESS_KEY";
+const string CredentialsManager::ENV_REGION_KEY="CMAC_REGION";
+const string CredentialsManager::ENV_BUCKET_KEY="CMAC_BUCKET";
+const string CredentialsManager::ENV_URL_KEY="CMAC_URL";
+const string CredentialsManager::ENV_CREDS_KEY_VALUE="ENV_CREDS";
 
 
 
@@ -204,8 +179,17 @@ CredentialsManager::get(const std::string &url){
             }
         }
     }
-
     return best_match;
+}
+
+/**
+ * Check fr file existence
+ * @param filename Name of file to check
+ * @return true if file exists, false otherwise.
+ */
+bool file_exists(const string &filename) {
+    struct stat buffer;
+    return (stat (filename.c_str(), &buffer) == 0);
 }
 
 /**
@@ -232,14 +216,15 @@ bool file_is_secured(const string &filename) {
     struct stat st;
     if (stat(filename.c_str(), &st) != 0) {
         string err;
-        err.append("file_is_locked() Unable to access file ");
+        err.append("file_is_secured() Unable to access file ");
         err.append(filename).append("  strerror: ").append(strerror(errno));
         throw BESInternalError(err, __FILE__, __LINE__);
     }
 
     mode_t perm = st.st_mode;
     bool status;
-    status = (perm & S_IRUSR) && (perm & S_IWUSR) && !(
+    status = (perm & S_IRUSR) && !(
+            // (perm & S_IWUSR) || // We don't need to enforce user no write
             (perm & S_IXUSR) ||
             (perm & S_IRGRP) ||
             (perm & S_IWGRP) ||
@@ -247,7 +232,7 @@ bool file_is_secured(const string &filename) {
             (perm & S_IROTH) ||
             (perm & S_IWOTH) ||
             (perm & S_IXOTH));
-    BESDEBUG(MODULE, "file_is_locked() " << filename << " locked: " << (status ? "true" : "false") << endl);
+    BESDEBUG(MODULE, "file_is_secured() " << filename << " secured: " << (status ? "true" : "false") << endl);
     return status;
 }
 
@@ -256,254 +241,173 @@ bool file_is_secured(const string &filename) {
  * by the key "CredentialsManager.config". If the key is missing from the bes.conf chain
  * the method will return and no credentials will be loaded.
  *
+ * The credentials are stored as a map of maps  where the key is the human readable name
+ * of the credentials.
+ * The map of maps is accomplished by the following formatting:
+ *
+ * cloudydap=url:https://s3.amazonaws.com/cloudydap/
+ * cloudydap+=id:---------------------------
+ * cloudydap+=key:**************************
+ * cloudydap+=region:us-east-1
+ * cloudydap+=bucket:cloudydap
+ *
+ * cloudyopendap=url:https://s3.amazonaws.com/cloudyopendap/
+ * cloudyopendap+=id:---------------------------
+ * cloudyopendap+=key:**************************
+ * cloudyopendap+=region:us-east-1
+ * cloudyopendap+=bucket:cloudyopendap
+ *
+ * cname_02=url:https://ssotherone.org/login
+ * cname_02+=id:---------------------------
+ * cname_02+=key:**************************
+ * cname_02+=region:us-east-1
+ * cname_02+=bucket:cloudyotherdap
+
  * @throws BESInternalError if the file specified by the "CredentialsManager.config"
  * key is missing.
  */
-void CredentialsManager::load_credentials_NEW( ) {
-    bool found = true;
+void CredentialsManager::load_credentials( ) {
 
-    //map<string, AccessCredentials *> credential_sets;
-    //AccessCredentials *accessCredentials;
-
-    vector <string> credentials_entries;
-    string config_file;
-    TheBESKeys::TheKeys()->get_value(CM_CONFIG, config_file, found);
-    if (found) {
-        if (file_is_secured(config_file)) {
-            BESDEBUG(MODULE, "CredentialsManager config file '" << config_file << "' is secured." << endl);
-
-            std::map <std::string, std::vector<std::string>> keystore;
-            load_keys(config_file, keystore);
-
-        } else {
-            string err;
-            err.append("CredentialsManager config file ");
-            err.append(config_file);
-            err.append(" is not secured! ");
-            err.append("Set the access permissions to -rw------- (600) and try again.");
-            throw BESInternalError(err, __FILE__, __LINE__);
-        }
-    }
-}
-
-/**
- * This method loads access credentials from the bes.conf chain.
- * The credentials are stored as a list of lists under the key
- * "CM.credentials". The list of lists is accomplished by the
- * following formatting:
- *   CM.credentials+=cloudydap:url:https://s3.amazonaws.com/cloudydap/
- *   CM.credentials+=cloudydap:id:---------------------------
- *   CM.credentials+=cloudydap:key:**************************
- *   CM.credentials+=cloudydap:region:us-east-1
- *   CM.credentials+=cloudydap:bucket:cloudydap
- *
- *   CM.credentials+=cloudyopendap:url:https://s3.amazonaws.com/cloudyopendap/
- *   CM.credentials+=cloudyopendap:id:---------------------------
- *   CM.credentials+=cloudyopendap:key:**************************
- *   CM.credentials+=cloudyopendap:region:us-east-1
- *   CM.credentials+=cloudyopendap:bucket:cloudyopendap
- *
- *   CM.credentials+=cname_02:url:https://ssotherone.org/login
- *   CM.credentials+=cname_02:id:---------------------------
- *   CM.credentials+=cname_02:key:**************************
- *   CM.credentials+=cname_02:region:us-east-1
- *   CM.credentials+=cname_02:bucket:cloudyotherdap
- *
- *   The sub keys shown here (url,id,key,bucket) are all public const strings in the
- *   AccessCredentials class, however any sub key may be used.
- */
-void CredentialsManager::load_credentials( ){
-    bool found = true;
-
-    map<string,AccessCredentials *> credential_sets;
+    bool found_key = true;
     AccessCredentials *accessCredentials;
+    map<string, AccessCredentials *> credential_sets;
 
-    vector<string> credentials_entries;
+    string config_file;
+    TheBESKeys::TheKeys()->get_value(CATALOG_MANAGER_CREDENTIALS, config_file, found_key);
+    if(!found_key){
+        BESDEBUG(MODULE, "The BES key " << CATALOG_MANAGER_CREDENTIALS
+        << " was not found in the BES configuration tree. No AccessCredentials were loaded" << endl);
+        return;
+    }
 
-    TheBESKeys::TheKeys()->get_values(CM_CREDENTIALS, credentials_entries,  found);
-    if (found) {
-        vector<string>::iterator it;
-         for (it = credentials_entries.begin(); it != credentials_entries.end(); it++) {
-            string credentials_entry = *it;
-            accessCredentials = NULL;
+    // Does the configuration indicate that credentials will be submitted via the runtime environment?
+    if(config_file == ENV_CREDS_KEY_VALUE){
+        // Apparently so...
+        accessCredentials = load_credentials_from_env();
+        if(accessCredentials){
+            // So if we have them, we add them to theCM() and then return without processing the configuration.
+            string url = accessCredentials->get(AccessCredentials::URL);
+            theCM()->add(url,accessCredentials);
+        }
+        // Environment injected credentials override all other configuration credentials.
+        // Since the value of CATALOG_MANAGER_CREDENTIALS is  ENV_CREDS_VALUE there is no
+        // Configuration file identified, so wether or not valid credentials information was
+        // found in the ENV we simply return.
+        return;
+    }
+
+    if(!file_exists(config_file)){
+        BESDEBUG(MODULE, "The file specified by the BES key " << CATALOG_MANAGER_CREDENTIALS
+        << " does not exist. No Access Credentials were loaded." << endl);
+        return;
+    }
+
+    if (!file_is_secured(config_file)) {
+        string err;
+        err.append("CredentialsManager config file ");
+        err.append(config_file);
+        err.append(" is not secured! ");
+        err.append("Set the access permissions to -rw------- (600) and try again.");
+        throw BESInternalError(err, __FILE__, __LINE__);
+    }
+    BESDEBUG(MODULE, "CredentialsManager config file '" << config_file << "' is secured." << endl);
+
+    map <string, vector<string>> keystore;
+
+    kvp::load_keys(config_file, keystore);
+
+    for(map <string, vector<string>>::iterator it=keystore.begin(); it!=keystore.end(); it++) {
+        string creds_name = it->first;
+        vector<string> &credentials_entries = it->second;
+        map<string, AccessCredentials *>::iterator mit;
+        mit = credential_sets.find(creds_name);
+        if (mit != credential_sets.end()) {  // New?
+            // Nope.
+            accessCredentials = mit->second;
+        } else {
+            // Make new one
+            accessCredentials = new AccessCredentials(creds_name);
+            credential_sets.insert(pair<string, AccessCredentials *>(creds_name, accessCredentials));
+        }
+        for (vector<string>::iterator jt = credentials_entries.begin(); jt != credentials_entries.end(); jt++) {
+            string credentials_entry = *jt;
             int index = credentials_entry.find(":");
             if (index > 0) {
-                string config_name = credentials_entry.substr(0, index);
-                string remainder = credentials_entry.substr(index + 1);
-                BESDEBUG(MODULE,
-                         "config_name: '" << config_name << "'  remainder: " << remainder << endl);
-
-                map<string,AccessCredentials *>::iterator mit;
-
-                mit = credential_sets.find(config_name);
-                if (mit != credential_sets.end()) {  // New?
-                    accessCredentials = mit->second;
-                }
-                else { // Nope.
-                    accessCredentials = new AccessCredentials(config_name);
-                    credential_sets.insert(pair<string, AccessCredentials *>(config_name,accessCredentials));
-                }
-                index = remainder.find(":");
-
-                if (index > 0) {
-                    string key = remainder.substr(0, index);
-                    string value = remainder.substr(index + 1);
-                    accessCredentials->add(key,value);
-                } else {
-                    throw BESInternalError(
-                            string("The configuration entry for the ")
-                            + CM_CREDENTIALS
-                            + " was incorrectly formatted. entry: "
-                            + credentials_entry, __FILE__, __LINE__);
-                }
-            } else {
-                throw BESInternalError(
-                        string("The configuration entry for the ")
-                        + CM_CREDENTIALS
-                        + " was incorrectly formatted. entry: "
-                        + credentials_entry, __FILE__, __LINE__);
+                string key_name = credentials_entry.substr(0, index);
+                string value = credentials_entry.substr(index + 1);
+                BESDEBUG(MODULE, creds_name << ":" << key_name << "=" << value << endl);
+                accessCredentials->add(key_name, value);
             }
-        }
-        vector<string> pitch;
-        map<string,AccessCredentials *>::iterator acit;
-
-        for (acit = credential_sets.begin(); acit != credential_sets.end(); acit++) {
-            accessCredentials = acit->second;
-            string url = accessCredentials->get(AccessCredentials::URL);
-            if(url.length()){
-                theCM()->add(url,accessCredentials);
-            }
-            else {
-                pitch.push_back(acit->first);
-            }
-        }
-        if(pitch.size()){
-            stringstream ss;
-            vector<string>::iterator pt;
-
-            ss << "Encountered " << pitch.size() <<  CM_CREDENTIALS
-               << " definitions missing an associated URL. offenders: ";
-
-            for (pt = credentials_entries.begin(); pt != credentials_entries.end(); pt++)
-                ss << *pt << "  ";
-
-            throw BESInternalError( ss.str(), __FILE__, __LINE__);
-
         }
     }
+    BESDEBUG(MODULE, "CredentialsManager loaded " << credential_sets.size()  << " AccessCredentials" << endl);
+    vector<AccessCredentials *> bad_creds;
+    map<string,AccessCredentials *>::iterator acit;
+
+    for (acit = credential_sets.begin(); acit != credential_sets.end(); acit++) {
+        accessCredentials = acit->second;
+        string url = accessCredentials->get(AccessCredentials::URL);
+        if(url.length()){
+            theCM()->add(url,accessCredentials);
+        }
+        else {
+            bad_creds.push_back(acit->second);
+        }
+    }
+    if(bad_creds.size()){
+        stringstream ss;
+        vector<AccessCredentials * >::iterator bc;
+
+        ss << "Encountered " << bad_creds.size() <<  " AccessCredentials "
+           << " definitions missing an associated URL. offenders: ";
+
+        for (bc = bad_creds.begin(); bc != bad_creds.end(); bc++) {
+            ss << (*bc)->name() << "  ";
+            credential_sets.erase((*bc)->name());
+            delete *bc;
+        }
+        throw BESInternalError( ss.str(), __FILE__, __LINE__);
+    }
+    BESDEBUG(MODULE, "CredentialsManager has successfully ingested " << theCM()->size()  << " AccessCredentials" << endl);
 
 }
+AccessCredentials *CredentialsManager::load_credentials_from_env( ) {
 
-#if 0 // DISABLED OLD way
-/**
- * Load the AccessCredentials.
- */
-void CredentialsManager::load_credentials_OLD() {
-    string aws_akid, aws_sak, aws_region, aws_s3_bucket;
-
-
-#ifndef NDEBUG
+    AccessCredentials *ac = NULL;
+    string env_url, env_id, env_access_key, env_region, env_bucket;
 
     // If we are in developer mode then we compile this section which
     // allows us to inject credentials via the system environment
 
-    aws_akid.assign(     get_env_value(ENV_AKID_KEY));
-    aws_sak.assign(      get_env_value(ENV_SAK_KEY));
-    aws_region.assign(   get_env_value(ENV_REGION_KEY));
-    aws_s3_bucket.assign(get_env_value(ENV_S3_BUCKET_KEY));
+    env_id.assign(        get_env_value(ENV_ID_KEY));
+    env_access_key.assign(get_env_value(ENV_ACCESS_KEY));
+    env_region.assign(    get_env_value(ENV_REGION_KEY));
+    env_bucket.assign(    get_env_value(ENV_BUCKET_KEY));
+    env_url.assign(       get_env_value(ENV_URL_KEY));
 
-    BESDEBUG(MODULE, __FILE__ << " " << __LINE__
-                              << " From ENV aws_akid: '" << aws_akid << "' "
-                              << "aws_sak: '" << aws_sak << "' "
-                              << "aws_region: '" << aws_region << "' "
-                              << "aws_s3_bucket: '" << aws_s3_bucket << "' "
-                              << endl);
-
-#endif
-
-    // In production mode this is the single point of ingest for credentials.
-    // Developer mode enables the piece above which allows the environment to
-    // overrule the configuration
-
-    if(aws_akid.length()){
-        BESDEBUG(MODULE, __FILE__ << " " << __LINE__ << " Using " << ENV_AKID_KEY << " from the environment." << endl);
+    if(env_url.length() &&
+        env_id.length() &&
+        env_access_key.length() &&
+        env_region.length() &&
+        env_bucket.length()){
+        ac = new AccessCredentials();
+        ac->add(AccessCredentials::URL, env_url);
+        ac->add(AccessCredentials::ID, env_id);
+        ac->add(AccessCredentials::KEY, env_access_key);
+        ac->add(AccessCredentials::REGION, env_region);
+        ac->add(AccessCredentials::BUCKET, env_bucket);
     }
-    else {
-        aws_akid.assign(get_config_value(CONFIG_AKID_KEY));
-    }
-
-    if(aws_sak.length()){
-        BESDEBUG(MODULE, __FILE__ << " " << __LINE__ << " Using " << ENV_SAK_KEY << " from the environment." << endl);
-    }
-    else {
-        aws_sak.assign(get_config_value(CONFIG_SAK_KEY));
-    }
-
-    if(aws_region.length()){
-        BESDEBUG(MODULE, __FILE__ << " " << __LINE__ << " Using " << ENV_REGION_KEY << " from the environment." << endl);
-    }
-    else {
-        aws_region.assign(get_config_value(CONFIG_REGION_KEY));
-    }
-
-    if(aws_s3_bucket.length()){
-        BESDEBUG(MODULE, __FILE__ << " " << __LINE__ << " Using " << ENV_S3_BUCKET_KEY << " from the environment." << endl);
-    }
-    else {
-        aws_s3_bucket.assign(get_config_value(CONFIG_S3_BUCKET_KEY));
-    }
-    BESDEBUG(MODULE, __FILE__ << " " << __LINE__
-                              << " END aws_akid: '" << aws_akid << "' "
-                              << "aws_sak: '" << aws_sak << "' "
-                              << "aws_region: '" << aws_region << "' "
-                              << "aws_s3_bucket: '" << aws_s3_bucket << "' "
-                              << endl);
-    AccessCredentials *ac = new AccessCredentials("single_user", aws_akid,aws_sak,aws_region,aws_s3_bucket);
-    theCM()->add("https://", ac);
+    return ac;
 }
-#endif
 
 /*****************************************************************************************************/
 /*****************************************************************************************************/
+/**************************************** AccessCredentials ******************************************/
 /*****************************************************************************************************/
 /*****************************************************************************************************/
 // AccessCredentials methods follow.
 
-/**
- *
- * @param name The human-readable name associated these this AccessCredentials
- * @param id The user id of the credentials
- * @param key The password/secret_key what have you
- */
-AccessCredentials::AccessCredentials(
-        const std::string config_name,
-        const std::string &id,
-        const std::string &key){
-    d_config_name = config_name;
-    add(ID,id);
-    add(KEY,key);
-}
 
-/**
- *
- * @param name The human-readable name associated these this AccessCredentials
- * @param id The user id of the credentials
- * @param key The password/secret_key what have you
- * @param region The AWS region to be logging into.
- * @param bucket The S3 bucket name that these credentials can access.
- */
-AccessCredentials::AccessCredentials(
-        const std::string config_name,
-        const std::string &id,
-        const std::string &key,
-        const std::string &region,
-        const std::string &bucket) {
-    d_config_name = config_name;
-    add(ID,id);
-    add(KEY,key);
-    add(REGION,region);
-    add(BUCKET,bucket);
-}
 
 /**
  * Retrieves the value of key
@@ -538,7 +442,8 @@ AccessCredentials::add(
  */
 bool AccessCredentials::isS3Cred(){
     if(!s3_tested){
-        is_s3 = get(ID).length()>0 &&
+        is_s3 = get(URL).length()>0 &&
+                get(ID).length()>0 &&
                 get(KEY).length()>0 &&
                 get(REGION).length()>0 &&
                 get(BUCKET).length()>0;
