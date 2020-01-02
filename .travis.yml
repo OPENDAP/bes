@@ -62,7 +62,7 @@ env:
     # - secure: "Bw3Jad8QbpJl+o3BnfTlHddaTaerIG/sgnOJsMzVeSJQoMnh9tccTZ7QaNKo1Vs8riNzTHLMZkJja3UgXV9f90HU9xujZhEcnEdR/t1RRiLUsxHZtl20IcL6AQni+LCW0y/K5V0fCqx0cE90aGzBUeP1to/q7fkoRudxHqpXTtc="
     - CMAC_ID="${AWS_ACCESS_KEY_ID}"
     - CMAC_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
-    - CMAC_URL="https://s3.amazonaws.com/cloudyopendap/"
+    - CMAC_URL="https://s3.amazonaws.com/cloudy"
     - CMAC_REGION="us-east-1"
     - CMAC_BUCKET="cloudyopendap"
 
