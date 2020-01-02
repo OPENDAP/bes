@@ -49,7 +49,8 @@
 using namespace std;
 
 namespace kvp {
-// Forward declaration, implementation at end of file..
+
+    // Forward declaration, implementation at end of file..
     void load_keys(
             set<string> &loaded_kvp_files,
             const std::string &keys_file_name,
@@ -113,13 +114,10 @@ namespace kvp {
                 else
                     value = s.substr(pos + 1, s.size());
                 BESUtil::removeLeadingAndTrailingBlanks(value);
-
                 return true;
             }
-
             return false;
         }
-
         return false;
     }
 
@@ -156,7 +154,7 @@ namespace kvp {
  *
  * @param kvp_files The set of files that have been read.
  * @param file_expr A string representing a file or a regular expression
- * patter for 1 or more files
+ * pattern for 1 or more files
  * @param keystore The map into which the key value pairs will be placed.
 */
     void load_include_files(
@@ -165,7 +163,7 @@ namespace kvp {
             std::map<std::string, std::vector<std::string> > &keystore,
             const string &current_keys_file_name
     ) {
-        string newdir;
+        string newdir = "";
         BESFSFile allfiles(file_expr);
 
         // If the files specified begin with a /, then use that directory
@@ -221,14 +219,14 @@ namespace kvp {
 
     void load_keys(
             set<string> &loaded_kvp_files,
-            std::ifstream *keys_file,
+            std::ifstream &keys_file,
             std::map<std::string, std::vector<std::string> > &keystore,
             const string &current_keys_file_name) {
 
         string key, value, line;
-        while (!keys_file->eof()) {
+        while (!keys_file.eof()) {
             bool addto = false;
-            getline(*keys_file, line);
+            getline(keys_file, line);
             if (break_pair(line.c_str(), key, value, addto)) {
                 if (key == BES_INCLUDE_KEY) {
                     // We make this call to set_key() and force 'addto' to
@@ -267,7 +265,7 @@ namespace kvp {
 
         try {
             loaded_kvp_files.insert(keys_file_name);
-            load_keys(loaded_kvp_files, &keys_file, keystore, keys_file_name);
+            load_keys(loaded_kvp_files, keys_file, keystore, keys_file_name);
         }
         catch (BESError &e) {
             // be sure we're throwing a fatal error, since the BES can't run

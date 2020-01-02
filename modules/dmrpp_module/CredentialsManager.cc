@@ -50,11 +50,11 @@ using namespace std;
 CredentialsManager *CredentialsManager::theMngr=0;
 
 // Scope: public members of AccessCredentials
-const string AccessCredentials::ID="id";
-const string AccessCredentials::KEY="key";
-const string AccessCredentials::REGION="region";
-const string AccessCredentials::BUCKET="bucket";
-const string AccessCredentials::URL="url";
+const string AccessCredentials::ID_KEY="id";
+const string AccessCredentials::KEY_KEY="key";
+const string AccessCredentials::REGION_KEY="region";
+const string AccessCredentials::BUCKET_KEY="bucket";
+const string AccessCredentials::URL_KEY="url";
 
 // Scope: public members of CredentialsManager
 const string CredentialsManager::ENV_ID_KEY="CMAC_ID";
@@ -286,7 +286,7 @@ void CredentialsManager::load_credentials( ) {
         accessCredentials = load_credentials_from_env();
         if(accessCredentials){
             // So if we have them, we add them to theCM() and then return without processing the configuration.
-            string url = accessCredentials->get(AccessCredentials::URL);
+            string url = accessCredentials->get(AccessCredentials::URL_KEY);
             theCM()->add(url,accessCredentials);
         }
         // Environment injected credentials override all other configuration credentials.
@@ -346,7 +346,7 @@ void CredentialsManager::load_credentials( ) {
 
     for (acit = credential_sets.begin(); acit != credential_sets.end(); acit++) {
         accessCredentials = acit->second;
-        string url = accessCredentials->get(AccessCredentials::URL);
+        string url = accessCredentials->get(AccessCredentials::URL_KEY);
         if(url.length()){
             theCM()->add(url,accessCredentials);
         }
@@ -391,11 +391,11 @@ AccessCredentials *CredentialsManager::load_credentials_from_env( ) {
         env_region.length() &&
         env_bucket.length()){
         ac = new AccessCredentials();
-        ac->add(AccessCredentials::URL, env_url);
-        ac->add(AccessCredentials::ID, env_id);
-        ac->add(AccessCredentials::KEY, env_access_key);
-        ac->add(AccessCredentials::REGION, env_region);
-        ac->add(AccessCredentials::BUCKET, env_bucket);
+        ac->add(AccessCredentials::URL_KEY, env_url);
+        ac->add(AccessCredentials::ID_KEY, env_id);
+        ac->add(AccessCredentials::KEY_KEY, env_access_key);
+        ac->add(AccessCredentials::REGION_KEY, env_region);
+        ac->add(AccessCredentials::BUCKET_KEY, env_bucket);
     }
     return ac;
 }
@@ -442,11 +442,11 @@ AccessCredentials::add(
  */
 bool AccessCredentials::isS3Cred(){
     if(!s3_tested){
-        is_s3 = get(URL).length()>0 &&
-                get(ID).length()>0 &&
-                get(KEY).length()>0 &&
-                get(REGION).length()>0 &&
-                get(BUCKET).length()>0;
+        is_s3 = get(URL_KEY).length()>0 &&
+                get(ID_KEY).length()>0 &&
+                get(KEY_KEY).length()>0 &&
+                get(REGION_KEY).length()>0 &&
+                get(BUCKET_KEY).length()>0;
         s3_tested = true;
     }
     return is_s3;

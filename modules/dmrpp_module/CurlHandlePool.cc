@@ -820,9 +820,9 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
                     AWSV4::compute_awsv4_signature(
                             handle->d_url,
                             request_time,
-                            credentials->get(AccessCredentials::ID),
-                            credentials->get(AccessCredentials::KEY),
-                            credentials->get(AccessCredentials::REGION),
+                            credentials->get(AccessCredentials::ID_KEY),
+                            credentials->get(AccessCredentials::KEY_KEY),
+                            credentials->get(AccessCredentials::REGION_KEY),
                             "s3",
                             BESDebug::IsSet(MODULE));
 
