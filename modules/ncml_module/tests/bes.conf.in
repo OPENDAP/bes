@@ -99,5 +99,3 @@ NCML.DimensionCache.size=2000
 # Maximum number of dimension allowed in any particular dataset. 
 # If not set in this configuration the value defaults to 100.
 # NCML.DimensionCache.maxDimensions=100
-
-CredentialsManager.config=ENV_CREDS
