@@ -149,11 +149,11 @@ public:
 
             ac = CredentialsManager::theCM()->get(cloudydap_dataset_url);
             CPPUNIT_ASSERT( ac);
-            CPPUNIT_ASSERT( ac->get(AccessCredentials::URL) == "https://s3.amazonaws.com/cloudydap/");
-            CPPUNIT_ASSERT( ac->get(AccessCredentials::ID) == "foo");
-            CPPUNIT_ASSERT( ac->get(AccessCredentials::KEY) == "qwecqwedqwed");
-            CPPUNIT_ASSERT( ac->get(AccessCredentials::REGION) == "us-east-1");
-            CPPUNIT_ASSERT( ac->get(AccessCredentials::BUCKET) == "cloudydap");
+            CPPUNIT_ASSERT( ac->get(AccessCredentials::URL_KEY) == "https://s3.amazonaws.com/cloudydap/");
+            CPPUNIT_ASSERT( ac->get(AccessCredentials::ID_KEY) == "foo");
+            CPPUNIT_ASSERT( ac->get(AccessCredentials::KEY_KEY) == "qwecqwedqwed");
+            CPPUNIT_ASSERT( ac->get(AccessCredentials::REGION_KEY) == "us-east-1");
+            CPPUNIT_ASSERT( ac->get(AccessCredentials::BUCKET_KEY) == "cloudydap");
 
             /*
             cloudyopendap+=url:https://s3.amazonaws.com/cloudyopendap/
@@ -164,11 +164,11 @@ public:
             */
             ac = CredentialsManager::theCM()->get(cloudyopendap_dataset_url);
             CPPUNIT_ASSERT( ac);
-            CPPUNIT_ASSERT( ac->get(AccessCredentials::URL) == "https://s3.amazonaws.com/cloudyopendap/");
-            CPPUNIT_ASSERT( ac->get(AccessCredentials::ID) == "bar");
-            CPPUNIT_ASSERT( ac->get(AccessCredentials::KEY) == "qwedjhgvewqwedqwed");
-            CPPUNIT_ASSERT( ac->get(AccessCredentials::REGION) == "nirvana-west-0");
-            CPPUNIT_ASSERT( ac->get(AccessCredentials::BUCKET) == "cloudyopendap");
+            CPPUNIT_ASSERT( ac->get(AccessCredentials::URL_KEY) == "https://s3.amazonaws.com/cloudyopendap/");
+            CPPUNIT_ASSERT( ac->get(AccessCredentials::ID_KEY) == "bar");
+            CPPUNIT_ASSERT( ac->get(AccessCredentials::KEY_KEY) == "qwedjhgvewqwedqwed");
+            CPPUNIT_ASSERT( ac->get(AccessCredentials::REGION_KEY) == "nirvana-west-0");
+            CPPUNIT_ASSERT( ac->get(AccessCredentials::BUCKET_KEY) == "cloudyopendap");
 
             /*
             cname_02+=url:https://ssotherone.org/opendap/
@@ -179,11 +179,11 @@ public:
             */
             ac = CredentialsManager::theCM()->get(someother_dataset_url);
             CPPUNIT_ASSERT( ac);
-            CPPUNIT_ASSERT( ac->get(AccessCredentials::URL) == "https://ssotherone.org/opendap/");
-            CPPUNIT_ASSERT( ac->get(AccessCredentials::ID) == "some_other_id_string");
-            CPPUNIT_ASSERT( ac->get(AccessCredentials::KEY) == "some_other_key_string");
-            CPPUNIT_ASSERT( ac->get(AccessCredentials::REGION) == "oz-7");
-            CPPUNIT_ASSERT( ac->get(AccessCredentials::BUCKET) == "cloudyotherdap");
+            CPPUNIT_ASSERT( ac->get(AccessCredentials::URL_KEY) == "https://ssotherone.org/opendap/");
+            CPPUNIT_ASSERT( ac->get(AccessCredentials::ID_KEY) == "some_other_id_string");
+            CPPUNIT_ASSERT( ac->get(AccessCredentials::KEY_KEY) == "some_other_key_string");
+            CPPUNIT_ASSERT( ac->get(AccessCredentials::REGION_KEY) == "oz-7");
+            CPPUNIT_ASSERT( ac->get(AccessCredentials::BUCKET_KEY) == "cloudyotherdap");
 
         }
         catch (BESError &e) {
@@ -266,11 +266,11 @@ public:
 
         AccessCredentials *ac = CredentialsManager::theCM()->get(some_dataset_url);
 
-        CPPUNIT_ASSERT( ac->get(AccessCredentials::URL) == url);
-        CPPUNIT_ASSERT( ac->get(AccessCredentials::ID) == id);
-        CPPUNIT_ASSERT( ac->get(AccessCredentials::KEY) == key);
-        CPPUNIT_ASSERT( ac->get(AccessCredentials::REGION) == region);
-        CPPUNIT_ASSERT( ac->get(AccessCredentials::BUCKET) == bucket);
+        CPPUNIT_ASSERT( ac->get(AccessCredentials::URL_KEY) == url);
+        CPPUNIT_ASSERT( ac->get(AccessCredentials::ID_KEY) == id);
+        CPPUNIT_ASSERT( ac->get(AccessCredentials::KEY_KEY) == key);
+        CPPUNIT_ASSERT( ac->get(AccessCredentials::REGION_KEY) == region);
+        CPPUNIT_ASSERT( ac->get(AccessCredentials::BUCKET_KEY) == bucket);
 
         if(debug) cout << "check_env_credentials() - Credentials matched expected." << endl;
     }
