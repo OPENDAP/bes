@@ -46,16 +46,12 @@ env:
     - secure: "TmoFcgeIyAEjFyrlqB6rhdUhDqPJfxVZmT5fewgVHj0xm767VZ6DU21mM6ZHgNGyk99TzX0Gx/dwSqbsUj18hSSAvEa7fJQSKJ5IBJvTeMKhXn1DPPG9VpuZ4ti5afRDiNr6EJKbVxwBTkz+3798S8LajPuXGupYupir8IJQCt8="
     # SONAR_MODULES_LOGIN, using "travis encrypt --org -r OPENDAP/bes SONAR_MODULES_LOGIN=42ba..."
     - secure: "V3fMZgzMRRB0xFQMTvXf2fFPHIdwvg2y6bNFKqSGI5HP2sZEtc7XqSC4hjboR9RjnyZY/H1L/EuYQCS45gmJMsmtzo4g1Cn0oTfuPRJzDSi00jRlB1wUl5p1pU0Fdv2ffrGF4m6/SRfYFT0KkR/Tp8hdIoYx5/8R4MajysABMT4="
-    # COVERITY_SCAN_TOKEN
-    - secure: "KNE6gkK7+WEQkNLiW/oap/3E/YSq6nzH6icXWpgA3MZj2KX0i6IzQgteeEGFUC1vDTzkCpqSidvGxdd22V33s0sHDuLRI5e17VFMjI5WyWjRQaXMhWmyO5/ofx7AArvaCWq6w6zfn1T/LiIuHXc14Rg8uuWEgDGWM0USiSbMepc="
-    # AWS_ACCESS_KEY_ID
-    - secure: "DCZOMIh05CNJNJ1Px0IYGcs1l9ZtThVWyIYuOpi63uThhAgnRILLZOS50LSJnhqYZ/8zqF7VyxpHfCjfAKhNze5uYyE505kKtKzq0IWBd/uLg3UraotF5Uo4vghD4g1C4KjBGxAdamUqEawC3NpolMHW/GM8WjACMJkv+S7lsgw="
-    # old - secure: "Blkk1wdHvqZueRf8lkcZxuIo5H++Xz3NdkEjqecTTWNluvklx+kjErQApPUz75r+l/TEI5EAO+xb53jQn1gu3F23k2fh6jw+GEVTE3wWZrg0QWH3wzut6QbJp1TMK9XCjCSUn82L/He2TNXFZX8gMS1L8I1sbSOeONTH+rGScUg="
-    # old - secure: "NNcSfmrBN9ctc8LoRVeLcYPzf2wYCSLUNCdNuVEsBdOMa5JLTdFMBEhfrgkLmiUSf1K+V97tw3rJuRcdwAXbwBMuJ0o8+gDG4c63clDDWYDXa08gdpKhy0FFqlUohVeMNpfCawvTm46/p6P0SlKg245by5OcVZ4HfjIGUasJHEw="
+    # AWS_ACCESS_KEY_ID (travis encrypt --org -r OPENDAP/bes AWS_...)
+    - secure: "d08f1EDCbGa5pwboPWxnelavcL/zJbxzTpBagK9h55upn/7SJCGjYgodkefpdV3BCgZhs1qrMX7SVIKnVyOVE/I+1Kxq067zyTC/zKF04yizjV/xyeFJO18T/1DmxbvEeRSSE3lkD4ssjt87dV9bB9keLu/nvLUcdq3HEb3iKtU="
+    # travis - secure: "DCZOMIh05CNJNJ1Px0IYGcs1l9ZtThVWyIYuOpi63uThhAgnRILLZOS50LSJnhqYZ/8zqF7VyxpHfCjfAKhNze5uYyE505kKtKzq0IWBd/uLg3UraotF5Uo4vghD4g1C4KjBGxAdamUqEawC3NpolMHW/GM8WjACMJkv+S7lsgw="
     # AWS_SECRET_ACCESS_KEY
-    - secure: "BmlAgngVIDgjoH1g+hVJ4RTSZ+rWMQE7Fmc9c2takE3UPPL7gKlSve8LTra1Gp+gFuf4z8LjSukdkM3e11GPxEWnsIQC/3G3pqLY7acyw0lxvHV3npYugbGt4NE2gnf0octw9/SY9KUT+OpAO2scY9Q9x2SKXI1WZoo7jqm5na0="
-    # old - secure: "VguZKshW3hUwqb0S8hFjVFD52wN9n+pDEPoHuR/KMj4xdNLKP418fKU09iAVG74PiMv8pQc0/xTK6rgYJ9Ty37uMg+LqnEwJHK2DqktFOQCjVgBgmtWx4LI0F8dy+uqEOb6Qegm5484OKHQDk/V0/TvKOyMk6wF/wjheb3Fl6yk="
-    # old - secure: "BVETDaGI/cwfUHdvsGPkV1o7jd6OnqyvtFCPk0WsmCWh6PdpwXQ8D4yFdk4jejWxa0YFdRiCgK3ThHqqzv+6pDxrMnpYOx2O+ZjK//ErECjDa+OCJr2ObCwlqOPE6+4aVmPDz5ecjd2inVR5CfL5/Kt3Zgn4U9fNBUz9OMYpRF4="
+    - secure: "X49YxIyg84hokb03BaiTp0NXZSN93gOIQMzek7STo98fFqsKMgp2wXJkhaLCBCeomRR7etfETUEWXYm1y4QVLwyUZb0Gvyj+rhErPtTgaYEGJbTcZ3H8g6rsL0F5fTowm3EXZdO1o1SzCS4XaHGhccCUNQk08bqHhZE+EPL0/H8="
+    # travis - secure: "BmlAgngVIDgjoH1g+hVJ4RTSZ+rWMQE7Fmc9c2takE3UPPL7gKlSve8LTra1Gp+gFuf4z8LjSukdkM3e11GPxEWnsIQC/3G3pqLY7acyw0lxvHV3npYugbGt4NE2gnf0octw9/SY9KUT+OpAO2scY9Q9x2SKXI1WZoo7jqm5na0="
     # GIT_UID travis-ci-opendap
     - secure: "eUL/RY4kJD9sb3q98Xbfbcdhs6eyFWkfWNb0tvRzksBi/+tYiuojsek0qoBFZnRnO0wwyDAaDrZgu2yoLQTBxGSTqCsYaoDiFtw2m8aW3r+FdjpfmyVR52U9vMoZtpiPGYYM9utlyQ6YRNhzq+XzDJ4juygoIlzbp7qXTALqIL8="
     # GIT_PSWD for travis-ci-opendap
