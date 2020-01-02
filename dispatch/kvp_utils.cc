@@ -247,6 +247,7 @@ namespace kvp {
         try {
             loaded_kvp_files.insert(keys_file_name);
             load_keys(loaded_kvp_files, keys_file, keystore, keys_file_name);
+            delete keys_file;
         }
         catch (BESError &e) {
             // be sure we're throwing a fatal error, since the BES can't run
