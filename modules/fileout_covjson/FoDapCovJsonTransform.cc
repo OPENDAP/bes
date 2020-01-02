@@ -633,7 +633,8 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
     }
 }
 
-string FoDapCovJsonTransform::sanitizeTimeOriginString(string timeOrigin) {
+string FoDapCovJsonTransform::sanitizeTimeOriginString(string timeOrigin) 
+{
     // If the calendar is based on years, months, days,
     // then the referenced values SHOULD use one of the
     // following ISO8601-based lexical representations:
