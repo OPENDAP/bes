@@ -4,5 +4,38 @@ AT_INIT([DMR++ MDS])
 
 m4_include([../../handler_tests_macros.m4])
 
+
+dnl Using http://... URLs (data are in S3 bucket 'cloudydap')
+AT_BESCMD_RESPONSE_TEST([contiguous/http_t_int_scalar.h5.dmr])
+AT_BESCMD_RESPONSE_TEST([contiguous/http_t_int_scalar.h5.das])
+AT_BESCMD_RESPONSE_TEST([contiguous/http_t_int_scalar.h5.dds])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/http_t_int_scalar.h5.dap])
+AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([contiguous/http_t_int_scalar.h5.dods])
+
+AT_BESCMD_RESPONSE_TEST([contiguous/http_d_int.h5.dmr])
+AT_BESCMD_RESPONSE_TEST([contiguous/http_d_int.h5.das])
+AT_BESCMD_RESPONSE_TEST([contiguous/http_d_int.h5.dds])
+
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/http_d_int.h5.dap])
+AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([contiguous/http_d_int.h5.dods])
+
+
+
+dnl Test using AIRS data in s3 bucket 'cloudydap'
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([s3/airs_1_local.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([s3/airs_1.dap])
+
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([s3/airs_2_local.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([s3/airs_2.dap])
+
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([s3/airs_3_local.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([s3/airs_3.dap])
+
+dnl Getting the whole file is tedious...
+dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([s3/airs_3_local.dap])
+dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([s3/airs_3.dap])
+
+
 dnl This needs the cloudyopendap credentials to work. jhrg 12/3/19
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([s3/http_d_int_auth_test.h5.dap])
+
