@@ -2,7 +2,7 @@
 
 // This file is part of the BES
 
-// Copyright (c) 2019 OPeNDAP, Inc.
+// Copyright (c) 2020 OPeNDAP, Inc.
 // Author: Nathan Potter<ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
@@ -35,11 +35,13 @@
 
 class AccessCredentials {
 public:
-    static const std::string ID;
-    static const std::string KEY;
-    static const std::string REGION;
-    static const std::string BUCKET;
-    static const std::string URL;
+    // These are the string keys used to express the normative key names
+    // for the credentials components.
+    static const std::string ID_KEY;
+    static const std::string KEY_KEY;
+    static const std::string REGION_KEY;
+    static const std::string BUCKET_KEY;
+    static const std::string URL_KEY;
 private:
     std::map<std::string, std::string> kvp;
     bool s3_tested, is_s3;
