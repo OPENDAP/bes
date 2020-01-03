@@ -5,7 +5,7 @@
     dapVersion="4.0" 
     dmrVersion="1.0" 
     name="d_int.h5"
-    dmrpp:href="https://s3.amazonaws.com/cloudyopendap/samples/d_int.h5">
+    dmrpp:href="https://s3.amazonaws.com/cloudydap/samples/d_int.h5">
   <Int16 name="d16_1">
     <Dim size="2"/>
     <Attribute name="minimum" type="Int16">
