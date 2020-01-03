@@ -1,5 +1,26 @@
+// -*- mode: c++; c-basic-offset:4 -*-
+
+// This file is part of the BES
+
+// Copyright (c) 2020 OPeNDAP, Inc.
+// Author: Nathan Potter<ndp@opendap.org>
 //
-// Created by ndp on 12/13/19.
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+//
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+// Created by ndp on 12/11/19.
 //
 
 #include "config.h"
@@ -28,7 +49,8 @@
 using namespace std;
 
 namespace kvp {
-// Forward declaration, implementation at end of file..
+
+    // Forward declaration, implementation at end of file..
     void load_keys(
             set<string> &loaded_kvp_files,
             const std::string &keys_file_name,
@@ -92,13 +114,10 @@ namespace kvp {
                 else
                     value = s.substr(pos + 1, s.size());
                 BESUtil::removeLeadingAndTrailingBlanks(value);
-
                 return true;
             }
-
             return false;
         }
-
         return false;
     }
 
@@ -135,7 +154,7 @@ namespace kvp {
  *
  * @param kvp_files The set of files that have been read.
  * @param file_expr A string representing a file or a regular expression
- * patter for 1 or more files
+ * pattern for 1 or more files
  * @param keystore The map into which the key value pairs will be placed.
 */
     void load_include_files(
@@ -144,7 +163,7 @@ namespace kvp {
             std::map<std::string, std::vector<std::string> > &keystore,
             const string &current_keys_file_name
     ) {
-        string newdir;
+        string newdir = "";
         BESFSFile allfiles(file_expr);
 
         // If the files specified begin with a /, then use that directory
@@ -200,14 +219,14 @@ namespace kvp {
 
     void load_keys(
             set<string> &loaded_kvp_files,
-            std::ifstream *keys_file,
+            std::ifstream &keys_file,
             std::map<std::string, std::vector<std::string> > &keystore,
             const string &current_keys_file_name) {
 
         string key, value, line;
-        while (!keys_file->eof()) {
+        while (!keys_file.eof()) {
             bool addto = false;
-            getline(*keys_file, line);
+            getline(keys_file, line);
             if (break_pair(line.c_str(), key, value, addto)) {
                 if (key == BES_INCLUDE_KEY) {
                     // We make this call to set_key() and force 'addto' to
@@ -228,9 +247,9 @@ namespace kvp {
             const std::string &keys_file_name,
             std::map<std::string, std::vector<std::string> > &keystore
     ) {
-        std::ifstream *keys_file = new ifstream(keys_file_name.c_str());
+        std::ifstream keys_file(keys_file_name.c_str());
 
-        if (!(*keys_file)) {
+        if (!keys_file) {
             char path[500];
             getcwd(path, sizeof(path));
             string s = string("Cannot open configuration file '") + keys_file_name + "': ";
@@ -255,10 +274,10 @@ namespace kvp {
             //clean();
             throw BESInternalFatalError(e.get_message(), e.get_file(), e.get_line());
         }
-        catch (...) {
+        catch (std::exception &e) {
             //clean();
-            string s = (string) "Undefined exception while trying to load keys from the BES configuration file '"
-                       + keys_file_name + "'";
+            string s = (string) "Caught exception load keys from the BES configuration file '"
+                       + keys_file_name + "' message:" + e.what();
             throw BESInternalFatalError(s, __FILE__, __LINE__);
         }
     }
