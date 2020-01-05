@@ -436,12 +436,11 @@ void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, 
     }
 }
 
-void FoDapCovJsonTransform::addAxis(string name, string units, string values) 
+void FoDapCovJsonTransform::addAxis(string name, string values) 
 {
     struct Axis *newAxis = new Axis;
 
     newAxis->name = name;
-    newAxis->units = units;
     newAxis->values = values;
 
     this->axes.push_back(newAxis);
@@ -618,10 +617,16 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
         // timestamp value with the appropriate formatting for printing.
         // @TODO See https://covjson.org/spec/#temporal-reference-systems
         if(currAxisName.compare("t") == 0) {
-            addAxis(currAxisName, currUnit, "\"values\": [\"" + sanitizeTimeOriginString(currAxisTimeOrigin) + "\"]");
+            addAxis(currAxisName, "\"values\": [\"" + sanitizeTimeOriginString(currAxisTimeOrigin) + "\"]");
         }
         else {
-            addAxis(currAxisName, currUnit, "");
+            addAxis(currAxisName, "");
+        }
+
+        // See https://covjson.org/spec/#projected-coordinate-reference-systems
+        if((currUnit.find("east") != string::npos) || (currUnit.find("East") != string::npos) || 
+            (currUnit.find("north") != string::npos) || (currUnit.find("North") != string::npos)) {
+            coordRefType = "ProjectedCRS";
         }
 
         *axisRetrieved = true;
@@ -660,16 +665,22 @@ string FoDapCovJsonTransform::sanitizeTimeOriginString(string timeOrigin)
 
     string cleanTimeOrigin = timeOrigin;
 
-    for(unsigned int i = 0; i < subStrs.size(); i++)
-        focovjson::removeSubstring(cleanTimeOrigin, subStrs[i]);
+    // If base time, use an arbitrary base time string
+    if(timeOrigin.find("base_time") != string::npos) {
+        cleanTimeOrigin = "2020-01-01T12:00:00Z";
+    }
+    else {
+        for(unsigned int i = 0; i < subStrs.size(); i++)
+            focovjson::removeSubstring(cleanTimeOrigin, subStrs[i]);
+    }
 
     return cleanTimeOrigin;
 }
 
 FoDapCovJsonTransform::FoDapCovJsonTransform(libdap::DDS *dds) :
     _dds(dds), _returnAs(""), _indent_increment("  "), atomicVals(""), currDataType(""), domainType("Unknown"),
-    xExists(false), yExists(false), zExists(false), tExists(false), isParam(false), isAxis(false),
-    canConvertToCovJson(false), axisCount(0), parameterCount(0)
+    coordRefType("GeographicCRS"), xExists(false), yExists(false), zExists(false), tExists(false), isParam(false),
+    isAxis(false), canConvertToCovJson(false), axisCount(0), parameterCount(0)
 {
     if (!_dds) throw BESInternalError("File out COVJSON, null DDS passed to constructor", __FILE__, __LINE__);
 }
@@ -918,15 +929,25 @@ void FoDapCovJsonTransform::printReference(ostream *strm, string indent)
     // See https://covjson.org/spec/#geospatial-coordinate-reference-systems
     *strm << child_indent1 << "\"coordinates\": [" << coordVars << "]," << endl;
     *strm << child_indent1 << "\"system\": {" << endl;
+    *strm << child_indent2 << "\"type\": \"" + coordRefType + "\"," << endl;
 
-    if(xExists && yExists && !zExists) {
-        *strm << child_indent2 << "\"type\": \"GeographicCRS\"" << endl;
+    // Most of the datasets I've seen do not contain a link to a coordinate
+    // reference system, so I've set some defaults here - CRH 1/2020
+    if(coordRefType.compare("ProjectedCRS") == 0) {
+        // Projected Coordinate Reference System (north/east): http://www.opengis.net/def/crs/EPSG/0/27700
+        *strm << child_indent2 << "\"id\": \"http://www.opengis.net/def/crs/EPSG/0/27700\"" << endl;
     }
-    else if(xExists && yExists && zExists) {
-        *strm << child_indent2 << "\"type\": \"GeographicCRS\"" << endl;
+    else {
+        if(xExists && yExists && zExists) {
+            // 3-Dimensional Geographic Coordinate Reference System (lat/lon/height): http://www.opengis.net/def/crs/EPSG/0/4979
+            *strm << child_indent2 << "\"id\": \"http://www.opengis.net/def/crs/EPSG/0/4979\"" << endl;
+        }
+        else {
+            // 2-Dimensional Geographic Coordinate Reference System (lat/lon): http://www.opengis.net/def/crs/OGC/1.3/CRS84
+            *strm << child_indent2 << "\"id\": \"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"" << endl;
+        }
     }
-    
-    
+
     *strm << child_indent1 << "}" << endl;
     *strm << indent << "}]" << endl;
 }

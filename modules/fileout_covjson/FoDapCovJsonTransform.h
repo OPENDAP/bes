@@ -67,7 +67,6 @@ private:
 
     struct Axis {
         std::string name;
-        std::string units;
         std::string values;
     };
 
@@ -438,12 +437,11 @@ private:
      * @brief Adds a new Axis
      *
      * @param name the new Axis name
-     * @param units the new Axis units
      * @param values a string of values we want to write to stream
      *
      * @returns a new Axis in the axes vector
      */
-    void addAxis(std::string name, std::string units, std::string values);
+    void addAxis(std::string name, std::string values);
 
     /**
      * @brief Adds a new Parameter
@@ -536,8 +534,8 @@ public:
     virtual void dump(std::ostream &strm) const;
 
     // FOR TESTING PURPOSES ------------------------------------------------------------------------------------
-    virtual void addTestAxis(std::string name, std::string units, std::string values) {
-        addAxis(name, units, values);
+    virtual void addTestAxis(std::string name, std::string values) {
+        addAxis(name, values);
     }
 
     virtual void addTestParameter(std::string id, std::string name, std::string type, std::string dataType, std::string unit,
