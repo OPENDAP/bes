@@ -78,14 +78,14 @@ bool FoDapCovJsonTransform::canConvert()
         // A domain with Grid domain type MUST have the axes "x" and "y"
         // and MAY have the axes "z" and "t".
         if((shapeVals[0] > 1) && (shapeVals[1] > 1) && (shapeVals[2] >= 1) && (shapeVals[3] >= 0)) {
-            domainType = Grid;
+            domainType = "Grid";
             return true;
         }
 
         // A domain with VerticalProfile domain type MUST have the axes "x",
         // "y", and "z", where "x" and "y" MUST have a single coordinate only.
         else if((shapeVals[0] == 1) && (shapeVals[1] == 1) && (shapeVals[2] >= 1) && ((shapeVals[3] <= 1) && (shapeVals[3] >= 0))) {
-            domainType = VerticalProfile;
+            domainType = "Vertical Profile";
             return true;
         }
 
@@ -94,14 +94,14 @@ bool FoDapCovJsonTransform::canConvert()
         // domain with PointSeries domain type MAY have the axis "z" which
         // MUST have a single coordinate only.
         else if((shapeVals[0] == 1) && (shapeVals[1] == 1) && (shapeVals[2] == 1) && (shapeVals[3] >= 0)) {
-            domainType = PointSeries;
+            domainType = "Point Series";
             return true;
         }
 
         // A domain with Point domain type MUST have the axes "x" and "y" and MAY
         // have the axes "z" and "t" where all MUST have a single coordinate only.
         else if((shapeVals[0] == 1) && (shapeVals[1] == 1) && (shapeVals[2] == 1) && (shapeVals[3] == 1)) {
-            domainType = Point;
+            domainType = "Point";
             return true;
         }
     }
@@ -119,7 +119,7 @@ bool FoDapCovJsonTransform::canConvert()
         // A domain with Grid domain type MUST have the axes "x" and "y"
         // and MAY have the axes "z" and "t".
         if((shapeVals[0] > 1) && (shapeVals[1] > 1) && (shapeVals[2] >= 0)) {
-            domainType = Grid;
+            domainType = "Grid";
             return true;
         }
 
@@ -128,14 +128,14 @@ bool FoDapCovJsonTransform::canConvert()
         // domain with PointSeries domain type MAY have the axis "z" which
         // MUST have a single coordinate only.
         else if((shapeVals[0] == 1) && (shapeVals[1] == 1) && (shapeVals[2] >= 0)) {
-            domainType = PointSeries;
+            domainType = "Point Series";
             return true;
         }
 
         // A domain with Point domain type MUST have the axes "x" and "y" and MAY
         // have the axes "z" and "t" where all MUST have a single coordinate only.
         else if((shapeVals[0] == 1) && (shapeVals[1] == 1) && (shapeVals[2] == 1)) {
-            domainType = Point;
+            domainType = "Point";
             return true;
         }
     }
@@ -152,17 +152,18 @@ bool FoDapCovJsonTransform::canConvert()
         // A domain with Grid domain type MUST have the axes "x" and "y"
         // and MAY have the axes "z" and "t".
         if((shapeVals[0] > 1) && (shapeVals[1] > 1)) {
-            domainType = Grid;
+            domainType = "Grid";
             return true;
         }
 
         // A domain with Point domain type MUST have the axes "x" and "y" and MAY
         // have the axes "z" and "t" where all MUST have a single coordinate only.
         else if((shapeVals[0] == 1) && (shapeVals[1] == 1)) {
-            domainType = Point;
+            domainType = "Point";
             return true;
         }
     }
+
     return false; // This source DDS is not valid as CovJSON
 }
 
@@ -435,11 +436,12 @@ void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, 
     }
 }
 
-void FoDapCovJsonTransform::addAxis(string name, string values) 
+void FoDapCovJsonTransform::addAxis(string name, string units, string values) 
 {
     struct Axis *newAxis = new Axis;
 
     newAxis->name = name;
+    newAxis->units = units;
     newAxis->values = values;
 
     this->axes.push_back(newAxis);
@@ -481,7 +483,7 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
     *parameterRetrieved = false;
 
     // FOR TESTING AND DEBUGGING PURPOSES
-    // *strm << "\"attr_tableName\": \"" << name << "\"" << endl;
+    //*strm << "\"attr_tableName\": \"" << name << "\"" << endl;
 
     // Using CF-1.6 naming conventions -- Also checks for Coads Climatology conventions
     // http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html
@@ -564,7 +566,7 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
                     string currValue = (*values)[i];
 
                     // FOR TESTING AND DEBUGGING PURPOSES
-                    // *strm << "\"currName\": \"" << currName << "\", \"currValue\": \"" << currValue << "\"" << endl;
+                    //*strm << "\"currName\": \"" << currName << "\", \"currValue\": \"" << currValue << "\"" << endl;
 
                     // From Climate and Forecast (CF) Conventions:
                     // http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html#_description_of_the_data
@@ -581,15 +583,15 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
 
                     // See http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html#units
                     if(currName.compare("units") == 0) {
+                        currUnit = currValue;
+
                         if(isAxis) {
                             if(currAxisName.compare("t") == 0) {
                                 currAxisTimeOrigin = currValue;
                             }
                         }
-                        else if(isParam) {
-                            currUnit = currValue;
-                        }
                     }
+
                     // Per Jon Blower:
                     // observedProperty->label comes from:
                     //    - The CF long_name, if it exists
@@ -616,10 +618,10 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
         // timestamp value with the appropriate formatting for printing.
         // @TODO See https://covjson.org/spec/#temporal-reference-systems
         if(currAxisName.compare("t") == 0) {
-            addAxis(currAxisName, "\"values\": [\"" + sanitizeTimeOriginString(currAxisTimeOrigin) + "\"]");
+            addAxis(currAxisName, currUnit, "\"values\": [\"" + sanitizeTimeOriginString(currAxisTimeOrigin) + "\"]");
         }
         else {
-            addAxis(currAxisName, "");
+            addAxis(currAxisName, currUnit, "");
         }
 
         *axisRetrieved = true;
@@ -665,7 +667,7 @@ string FoDapCovJsonTransform::sanitizeTimeOriginString(string timeOrigin)
 }
 
 FoDapCovJsonTransform::FoDapCovJsonTransform(libdap::DDS *dds) :
-    _dds(dds), _returnAs(""), _indent_increment("  "), atomicVals(""), currDataType(""), domainType(0),
+    _dds(dds), _returnAs(""), _indent_increment("  "), atomicVals(""), currDataType(""), domainType("Unknown"),
     xExists(false), yExists(false), zExists(false), tExists(false), isParam(false), isAxis(false),
     canConvertToCovJson(false), axisCount(0), parameterCount(0)
 {
@@ -791,22 +793,7 @@ void FoDapCovJsonTransform::printDomain(ostream *strm, string indent)
 
     *strm << indent << "\"domain\": {" << endl;
     *strm << child_indent1 << "\"type\" : \"Domain\"," << endl;
-
-    if(domainType == Grid) {
-        *strm << child_indent1 << "\"domainType\": \"Grid\"," << endl;
-    }
-    else if(domainType == VerticalProfile) {
-        *strm << child_indent1 << "\"domainType\": \"Vertical Profile\"," << endl;
-    }
-    else if(domainType == PointSeries) {
-        *strm << child_indent1 << "\"domainType\": \"Point Series\"," << endl;
-    }
-    else if(domainType == Point) {
-        *strm << child_indent1 << "\"domainType\": \"Point\"," << endl;
-    }
-    else {
-        *strm << child_indent1 << "\"domainType\": \"Unknown\"," << endl;
-    }
+    *strm << child_indent1 << "\"domainType\": \"" + domainType + "\"," << endl;
 
     // Prints the axes metadata and range values
     printAxes(strm, child_indent1);
@@ -916,6 +903,8 @@ void FoDapCovJsonTransform::printReference(ostream *strm, string indent)
     }
 
     *strm << indent << "\"referencing\": [{" << endl;
+
+    // See https://covjson.org/spec/#temporal-reference-systems
     if(tExists) {
         *strm << child_indent1 << "\"coordinates\": [\"t\"]," << endl;
         *strm << child_indent1 << "\"system\": {" << endl;
@@ -925,16 +914,16 @@ void FoDapCovJsonTransform::printReference(ostream *strm, string indent)
         *strm << indent << "}," << endl;
         *strm << indent << "{" << endl;
     }
+
+    // See https://covjson.org/spec/#geospatial-coordinate-reference-systems
     *strm << child_indent1 << "\"coordinates\": [" << coordVars << "]," << endl;
     *strm << child_indent1 << "\"system\": {" << endl;
 
     if(xExists && yExists && !zExists) {
-        *strm << child_indent2 << "\"type\": \"GeographicCRS\"," << endl;
-        *strm << child_indent2 << "\"id\": \"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"" << endl;
+        *strm << child_indent2 << "\"type\": \"GeographicCRS\"" << endl;
     }
     else if(xExists && yExists && zExists) {
-        *strm << child_indent2 << "\"type\": \"GeographicCRS\"," << endl;
-        *strm << child_indent2 << "\"id\": \"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"" << endl;
+        *strm << child_indent2 << "\"type\": \"GeographicCRS\"" << endl;
     }
     
     

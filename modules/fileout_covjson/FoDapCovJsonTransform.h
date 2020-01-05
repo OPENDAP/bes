@@ -55,7 +55,8 @@ private:
     std::string _indent_increment;
     std::string atomicVals;
     std::string currDataType;
-    int domainType;
+    std::string coordRefType;
+    std::string domainType;
     bool xExists;
     bool yExists;
     bool zExists;
@@ -66,6 +67,7 @@ private:
 
     struct Axis {
         std::string name;
+        std::string units;
         std::string values;
     };
 
@@ -86,11 +88,6 @@ private:
     unsigned int parameterCount;
     std::vector<Parameter *> parameters;
     std::vector<int> shapeVals;
-
-    /**
-     * Enumerated Domain types
-     */
-    enum domains { Grid = 0, VerticalProfile = 1, PointSeries = 2, Point = 3, CoverageCollection = 4 };
 
     /**
      * @brief Checks the spacial/temporal dimensions that we've obtained, if we've
@@ -441,11 +438,12 @@ private:
      * @brief Adds a new Axis
      *
      * @param name the new Axis name
+     * @param units the new Axis units
      * @param values a string of values we want to write to stream
      *
      * @returns a new Axis in the axes vector
      */
-    void addAxis(std::string name, std::string values);
+    void addAxis(std::string name, std::string units, std::string values);
 
     /**
      * @brief Adds a new Parameter
@@ -518,7 +516,7 @@ public:
      */
     virtual ~FoDapCovJsonTransform()
     {
-        for (std::vector<Axis*>::const_iterator i = axes.begin(); i != axes.end(); ++i)
+        for (std::vector<Axis *>::const_iterator i = axes.begin(); i != axes.end(); ++i)
             delete (*i);
 
         for (std::vector<Parameter *>::const_iterator i = parameters.begin(); i != parameters.end(); ++i)
@@ -538,8 +536,8 @@ public:
     virtual void dump(std::ostream &strm) const;
 
     // FOR TESTING PURPOSES ------------------------------------------------------------------------------------
-    virtual void addTestAxis(std::string name, std::string values) {
-        addAxis(name, values);
+    virtual void addTestAxis(std::string name, std::string units, std::string values) {
+        addAxis(name, units, values);
     }
 
     virtual void addTestParameter(std::string id, std::string name, std::string type, std::string dataType, std::string unit,
