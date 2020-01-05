@@ -49,11 +49,11 @@ env:
     # AWS_ACCESS_KEY_ID (travis encrypt --org -r OPENDAP/bes AWS_...)
     # user == j*** - secure: "d08f1EDCbGa5pwboPWxnelavcL/zJbxzTpBagK9h55upn/7SJCGjYgodkefpdV3BCgZhs1qrMX7SVIKnVyOVE/I+1Kxq067zyTC/zKF04yizjV/xyeFJO18T/1DmxbvEeRSSE3lkD4ssjt87dV9bB9keLu/nvLUcdq3HEb3iKtU="
     # user == travis
-    - secure: "PeXcRRQEYNwizX21MpjObBoo5VuFj3zVa9XzTN/ZrvnTxEmtsmI33AEtNhtbA4afxxRYVLxe60R84gb/RP8usQLtxSpD/dOgpZsccYGuvsPeMToOiYjepBsp+9Z05+5JgtuhOb60k/tMe+FJH5mEwsNZqschdDxpwbrIyCC7hxk="
+    - secure: "NZkS8PvzMn5r58Ze/t8YTOCf+GbENzIgWpvx+b2cIG8o1s9MPjc0iiS30N3X54FuRpxHbvV0dA/YJDK/8WR1tisXmqY7LK7csWjsUPl28J9B4e6Jzqhjz0S3pBIX2IsThEypnWvbHiaoAf/ZlTv6vKAu9n4LV3QsnOvABUkbrno="
     # AWS_SECRET_ACCESS_KEY
     # user == j*** - secure: "X49YxIyg84hokb03BaiTp0NXZSN93gOIQMzek7STo98fFqsKMgp2wXJkhaLCBCeomRR7etfETUEWXYm1y4QVLwyUZb0Gvyj+rhErPtTgaYEGJbTcZ3H8g6rsL0F5fTowm3EXZdO1o1SzCS4XaHGhccCUNQk08bqHhZE+EPL0/H8="
     # user == travis
-    - secure: "Q7nrAm3sC2pf45gbt5K6/RYi9tuYsvIBwBSO/hFjbznfKwa8DmcbSDswkD3zXfxM3ehD/VwotHPodKbseKB6gv2hIdN72qxtaAHb8j9PyusDvZPbxpnyl8KG9Tp4nGQwGXqEa0/XWAWDbbOeZZi2pRMwdp+X5XHZM+R3WFovXJc="
+    - secure: "fShEoqGNilKXWVye1eNHk3O0ESKN6MvOqPlu2M2gJZi3jeA2ITIhD94k1kIlP3VdxUsms/p8uZErr0YOP398bxJUZtfpRry3Bd3OeRip3BDem3E0anlyQMNNqucFe5t27nCF1YSi53NRg9sXqhKFTISPQGh6j+UIcQZ6VIvY/h0="
     # GIT_UID travis-ci-opendap
     - secure: "eUL/RY4kJD9sb3q98Xbfbcdhs6eyFWkfWNb0tvRzksBi/+tYiuojsek0qoBFZnRnO0wwyDAaDrZgu2yoLQTBxGSTqCsYaoDiFtw2m8aW3r+FdjpfmyVR52U9vMoZtpiPGYYM9utlyQ6YRNhzq+XzDJ4juygoIlzbp7qXTALqIL8="
     # GIT_PSWD for travis-ci-opendap

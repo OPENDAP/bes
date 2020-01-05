@@ -835,20 +835,21 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
                         string("CURL Error setting Authorization header: ").append(
                                 curl_error_msg(res, handle->d_errbuf)), __FILE__, __LINE__);
 
-            curl_slist *temp = append_http_header(handle->d_headers, "x-amz-date:", AWSV4::ISO8601_date(request_time));
+            // We pre-compute the sha256 hash of a null message body
+            curl_slist *temp = append_http_header(handle->d_headers, "x-amz-content-sha256:", "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
+            if (!temp)
+                throw BESInternalError(
+                        string("CURL Error setting x-amz-content-sha256: ").append(curl_error_msg(res, handle->d_errbuf)),
+                        __FILE__, __LINE__);
+            handle->d_headers = temp;
+
+            temp = append_http_header(handle->d_headers, "x-amz-date:", AWSV4::ISO8601_date(request_time));
             if (!temp)
                 throw BESInternalError(
                         string("CURL Error setting x-amz-date header: ").append(curl_error_msg(res, handle->d_errbuf)),
                         __FILE__, __LINE__);
             handle->d_headers = temp;
 
-            // We pre-compute the sha256 hash of a null message body
-            temp = append_http_header(handle->d_headers, "x-amz-content-sha256:", "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
-            if (!temp)
-                throw BESInternalError(
-                        string("CURL Error setting x-amz-content-sha256: ").append(curl_error_msg(res, handle->d_errbuf)),
-                        __FILE__, __LINE__);
-            handle->d_headers = temp;
 
             if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_headers)))
                 throw BESInternalError(string("CURL Error setting HTTP headers for S3 authentication: ").append(
