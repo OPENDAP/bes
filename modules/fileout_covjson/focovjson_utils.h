@@ -36,10 +36,33 @@
 
 namespace focovjson {
 
-std::string escape_for_covjson(const std::string &source);
+/**
+ * @brief Removes a substring from a given string
+ *
+ * @param str string to remove a substring from
+ * @param subStr sub-string to be removed from a given string
+ * 
+ * @returns modifies str by reference with the specified substring removed
+ */
+void removeSubstring(string& str, const string subStr);
 
+/**
+ * @brief Compute the constrained shape of the Array and return it in a vector.
+ * Also return the total number of elements in the constrained array.
+ *
+ * @param a The Array to examine
+ * @param shape The shape of the Array, taking into account the constraint
+ * 
+ * @return The total number of elements in the constrained Array.
+ */
 long computeConstrainedShape(libdap::Array *a, std::vector<unsigned int> *shape);
 
+std::string escape_for_covjson(const std::string &source);
+
+/**
+ * Replace every occurrence of 'char_to_escape' with the same preceded
+ * by the backslash '\' character.
+ */
 #if 0
 std::string backslash_escape(std::string source, char char_to_escape);
 #endif
