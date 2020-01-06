@@ -248,7 +248,7 @@ DmrppMetadataStore::get_dmr_object(const string &name)
     write_dmr_response(name, oss);    // throws BESInternalError if not found
 
     DmrppTypeFactory dmrpp_btf;
-    auto_ptr<DMRpp> dmrpp(new DMRpp(&dmrpp_btf, "mds"));
+    unique_ptr<DMRpp> dmrpp(new DMRpp(&dmrpp_btf, "mds"));
 
     DmrppParserSax2 parser;
     parser.intern(oss.str(), dmrpp.get());
@@ -277,7 +277,7 @@ DmrppMetadataStore::get_dmrpp_object(const string &name)
     write_dmrpp_response(name, oss);    // throws BESInternalError if not found
 
     DmrppTypeFactory dmrpp_btf;
-    auto_ptr<DMRpp> dmrpp(new DMRpp(&dmrpp_btf, "mds"));
+    unique_ptr<DMRpp> dmrpp(new DMRpp(&dmrpp_btf, "mds"));
 
     DmrppParserSax2 parser;
     parser.intern(oss.str(), dmrpp.get());

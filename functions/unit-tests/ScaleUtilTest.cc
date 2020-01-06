@@ -295,7 +295,7 @@ public:
             if (!driver) throw Error(string("Could not get the Memory driver for GDAL: ") + CPLGetLastErrorMsg());
 
             // The MEM driver takes no creation options (I think) jhrg 10/6/16
-            auto_ptr<GDALDataset> ds(driver->Create("result", x_size, y_size, 1 /* nBands*/, gdal_type,
+            unique_ptr<GDALDataset> ds(driver->Create("result", x_size, y_size, 1 /* nBands*/, gdal_type,
             NULL /* driver_options */));
 
             // The MEM format is one of the few that supports the AddBand() method. The AddBand()
@@ -351,7 +351,7 @@ public:
             if (!driver) throw Error(string("Could not get the Memory driver for GDAL: ") + CPLGetLastErrorMsg());
 
             // The MEM driver takes no creation options (I think) jhrg 10/6/16
-            auto_ptr<GDALDataset> ds(driver->Create("result", x_size, y_size, 0 /* nBands*/, gdal_type,
+            unique_ptr<GDALDataset> ds(driver->Create("result", x_size, y_size, 0 /* nBands*/, gdal_type,
             NULL /* driver_options */));
 
             // The MEM format is one of the few that supports the AddBand() method. The AddBand()
@@ -402,7 +402,7 @@ public:
             Array *lon = dynamic_cast<Array*>(small_dds->var("lon"));
             Array *lat = dynamic_cast<Array*>(small_dds->var("lat"));
 
-            auto_ptr<GDALDataset> ds = build_src_dataset(data, lon, lat);
+            unique_ptr<GDALDataset> ds = build_src_dataset(data, lon, lat);
 
             GDALRasterBand *band = ds->GetRasterBand(1);
             if (!band)
@@ -450,11 +450,11 @@ public:
             Array *lon = dynamic_cast<Array*>(small_dds->var("lon"));
             Array *lat = dynamic_cast<Array*>(small_dds->var("lat"));
 
-            auto_ptr<GDALDataset> src = build_src_dataset(data, lon, lat);
+            unique_ptr<GDALDataset> src = build_src_dataset(data, lon, lat);
 
             const int dst_size = 22;
             SizeBox size(dst_size, dst_size);
-            auto_ptr<GDALDataset> dst = scale_dataset(src, size);
+            unique_ptr<GDALDataset> dst = scale_dataset(src, size);
 
             CPPUNIT_ASSERT(dst->GetRasterCount() == 1);
 
@@ -534,9 +534,9 @@ public:
             DBG(data->print_val(cerr));
             DBG(cerr << endl);
 
-            auto_ptr<GDALDataset> src = build_src_dataset(data, lon, lat);
+            unique_ptr<GDALDataset> src = build_src_dataset(data, lon, lat);
 
-            auto_ptr<Array> result(build_array_from_gdal_dataset(src.get(), data));
+            unique_ptr<Array> result(build_array_from_gdal_dataset(src.get(), data));
 
             DBG(cerr << "new data: ");
             DBG(data->print_val(cerr));
@@ -572,10 +572,10 @@ public:
         Array *lon = dynamic_cast<Array*>(small_dds->var("lon"));
         Array *lat = dynamic_cast<Array*>(small_dds->var("lat"));
 
-        auto_ptr<GDALDataset> src = build_src_dataset(data, lon, lat);
+        unique_ptr<GDALDataset> src = build_src_dataset(data, lon, lat);
 
-        auto_ptr<Array> built_lon(new Array("built_lon", new Float32("built_lon")));
-        auto_ptr<Array> built_lat(new Array("built_lat", new Float32("built_lat")));
+        unique_ptr<Array> built_lon(new Array("built_lon", new Float32("built_lon")));
+        unique_ptr<Array> built_lat(new Array("built_lat", new Float32("built_lat")));
 
         build_maps_from_gdal_dataset(src.get(), built_lon.get(), built_lat.get());
 
