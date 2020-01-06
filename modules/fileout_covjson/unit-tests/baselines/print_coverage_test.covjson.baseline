@@ -2,7 +2,7 @@
   "type": "Coverage",
   "domain": {
     "type" : "Domain",
-    "domainType": "Grid",
+    "domainType": "Unknown",
     "axes": {
       "x": {
         [12.2, 13.5, 15.8]
