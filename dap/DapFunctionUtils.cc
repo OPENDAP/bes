@@ -163,6 +163,7 @@ void promote_function_output_structures(libdap::DDS *fdds)
         libdap::BaseType *bt = *it;
         BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - Adding Promoted Variable '" << bt->name() << "' to DDS. ptr: " << bt << endl);
         fdds->add_var(bt);
+        delete bt;
     }
 
     BESDEBUG(DEBUG_KEY, "DFU::promote_function_output_structures() - END" << endl);
