@@ -191,7 +191,7 @@ Structure *roi_bbox_build_slice(unsigned int start_value, unsigned int stop_valu
  * this to the name of the associated dataset variable can make for more intelligible
  * error messages.
  */
-auto_ptr<Array> roi_bbox_build_empty_bbox(unsigned int num_dim, const string &bbox_name)
+unique_ptr<Array> roi_bbox_build_empty_bbox(unsigned int num_dim, const string &bbox_name)
 {
     // Build the Structure and load it with the needed fields. The
     // Array instances will have the same fields, but each instance
@@ -201,7 +201,8 @@ auto_ptr<Array> roi_bbox_build_empty_bbox(unsigned int num_dim, const string &bb
     proto->add_var_nocopy(new Int32("stop"));
     proto->add_var_nocopy(new Str("name"));
     // Using auto_ptr and not unique_ptr because of OS/X 10.7. jhrg 2/24/15
-    auto_ptr<Array> response(new Array(bbox_name, proto));
+    // using unique_ptr because auto_ptr deprecated. sbl 1.2.20
+    unique_ptr<Array> response(new Array(bbox_name, proto));
 
     response->append_dim(num_dim, bbox_name);
 

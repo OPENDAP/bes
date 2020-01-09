@@ -157,8 +157,8 @@ bool fits_handler::fits_read_descriptors(DDS &dds, const string &filename, strin
 template<class T, class U>
 static int read_hdu_image_data(int fits_type, fitsfile *fptr, const string &varname, const string &datasetname, int number_axes, const vector<long> &naxes, Structure *container)
 {
-	auto_ptr<T> in(new T(varname, datasetname));
-	auto_ptr<Array> arr(new Array(varname, datasetname, in.get()));
+	unique_ptr<T> in(new T(varname, datasetname));
+	unique_ptr<Array> arr(new Array(varname, datasetname, in.get()));
 	long npixels = 1;
 	for (register int w = 0; w < number_axes; w++) {
 		ostringstream oss;
@@ -183,7 +183,7 @@ int fits_handler::process_hdu_image(fitsfile *fptr, DDS &dds, const string &hdu,
 {
     string datasetname = dds.get_dataset_name();
 
-    auto_ptr<Structure> container(new Structure(hdu, datasetname));
+    unique_ptr<Structure> container(new Structure(hdu, datasetname));
 
     int status = 0;
     int nkeys, keypos;
@@ -198,17 +198,17 @@ int fits_handler::process_hdu_image(fitsfile *fptr, DDS &dds, const string &hdu,
 
 		ostringstream keya;
 		keya << "key_" << jj;
-		auto_ptr<Structure> st(new Structure(keya.str(), datasetname));
+		unique_ptr<Structure> st(new Structure(keya.str(), datasetname));
 
-		auto_ptr<Str> s1(new Str("name", datasetname));
+		unique_ptr<Str> s1(new Str("name", datasetname));
 		string ppp = name;
 		s1->set_value(ppp);
 
-		auto_ptr<Str> s2(new Str("value", datasetname));
+		unique_ptr<Str> s2(new Str("value", datasetname));
 		ppp = value;
 		s2->set_value(ppp);
 
-		auto_ptr<Str> s3(new Str("comment", datasetname));
+		unique_ptr<Str> s3(new Str("comment", datasetname));
 		ppp = comment;
 		s3->set_value(ppp);
 
@@ -286,7 +286,7 @@ int fits_handler::process_hdu_image(fitsfile *fptr, DDS &dds, const string &hdu,
 int fits_handler::process_hdu_ascii_table(fitsfile *fptr, DDS &dds, const string &hdu, const string &str)
 {
     string datasetname = dds.get_dataset_name();
-    auto_ptr<Structure> container(new Structure(hdu, datasetname));
+    unique_ptr<Structure> container(new Structure(hdu, datasetname));
     int status = 0;
     int nfound, anynull;
     int ncols;
@@ -305,14 +305,14 @@ int fits_handler::process_hdu_ascii_table(fitsfile *fptr, DDS &dds, const string
             return status;
     	ostringstream oss;
     	oss << "key_" << jj;
-        auto_ptr<Structure> st(new Structure(oss.str(), datasetname));
-        auto_ptr<Str> s1(new Str("name", datasetname));
+        unique_ptr<Structure> st(new Structure(oss.str(), datasetname));
+        unique_ptr<Str> s1(new Str("name", datasetname));
         string ppp = name;
         s1->set_value(ppp);
-        auto_ptr<Str> s2(new Str("value", datasetname));
+        unique_ptr<Str> s2(new Str("value", datasetname));
         ppp = value;
         s2->set_value(ppp);
-        auto_ptr<Str> s3(new Str("comment", datasetname));
+        unique_ptr<Str> s3(new Str("comment", datasetname));
         ppp = comment;
         s3->set_value(ppp);
         st->add_var(s1.get());
@@ -362,7 +362,7 @@ int fits_handler::process_hdu_ascii_table(fitsfile *fptr, DDS &dds, const string
     // wasn't that fun ? :)
 
 
-    auto_ptr<Structure> table(new Structure(str, datasetname));
+    unique_ptr<Structure> table(new Structure(str, datasetname));
 
     for (int h = 0; h < ncols; h++) {
         int typecode;
@@ -372,8 +372,8 @@ int fits_handler::process_hdu_ascii_table(fitsfile *fptr, DDS &dds, const string
         switch (typecode) {
         case TSTRING: {
             int p;
-            auto_ptr<Str> in(new Str(ttype[h], datasetname));
-            auto_ptr<Array> arr(new Array(ttype[h], datasetname, in.get()));
+            unique_ptr<Str> in(new Str(ttype[h], datasetname));
+            unique_ptr<Array> arr(new Array(ttype[h], datasetname, in.get()));
             arr->append_dim(nrows);
             char strnull[10] = "";
             char **name = new char*[nrows];

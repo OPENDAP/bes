@@ -124,10 +124,16 @@ void DapRequestHandler::load_dds_from_data_file(const string &accessed, DDS &dds
 {
     BESDEBUG("dapreader", "In DapRequestHandler::load_dds_from_data_file; accessed: " << accessed << endl);
 
+    TestTypeFactory t_factory;
+    BaseTypeFactory b_factory;
     if (d_use_test_types)
-        dds.set_factory(new TestTypeFactory);   // DDS deletes the factory
+        dds.set_factory(&t_factory);   
+        //valgrind shows the leaking caused by the following line. KY 2019-12-12
+        //dds.set_factory(new TestTypeFactory);   // DDS deletes the factory
     else
-        dds.set_factory(new BaseTypeFactory);
+        dds.set_factory(&b_factory);
+        //valgrind shows the leaking caused by the following line. KY 2019-12-12
+        //dds.set_factory(new BaseTypeFactory);
 
     auto_ptr<Connect> url(new Connect(accessed));
     Response r(fopen(accessed.c_str(), "r"), 0);
