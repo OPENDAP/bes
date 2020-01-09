@@ -542,7 +542,7 @@ int main(int argc, char*argv[])
         // given HDF5 dataset
         if (!dmr_name.empty()) {
             // Get dmr:
-            auto_ptr<DMRpp> dmrpp(new DMRpp);
+            unique_ptr<DMRpp> dmrpp(new DMRpp);
             DmrppTypeFactory dtf;
             dmrpp->set_factory(&dtf);
 
@@ -597,7 +597,7 @@ int main(int argc, char*argv[])
             bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_path, h5_file_name, "h5");
             if (lock()) {
                 // parse the DMR into a DMRpp (that uses the DmrppTypes)
-                auto_ptr<DMRpp> dmrpp(dynamic_cast<DMRpp*>(mds->get_dmr_object(h5_file_name /*h5_file_path*/)));
+                unique_ptr<DMRpp> dmrpp(dynamic_cast<DMRpp*>(mds->get_dmr_object(h5_file_name /*h5_file_path*/)));
                 if (!dmrpp.get()) {
                     cerr << "Expected a DMR++ object from the DmrppMetadataStore." << endl;
                     return 1;

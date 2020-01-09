@@ -148,7 +148,7 @@ function_dap2_bbox_union(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     }
 
     // Build the response; name the result after the operation
-    auto_ptr<Array> response = roi_bbox_build_empty_bbox(rank, operation);
+    unique_ptr<Array> response = roi_bbox_build_empty_bbox(rank, operation);
     for (unsigned int i = 0; i < rank; ++i) {
     	Structure *slice = roi_bbox_build_slice(result.at(i).start, result.at(i).stop, result.at(i).name);
     	response->set_vec_nocopy(i, slice);
