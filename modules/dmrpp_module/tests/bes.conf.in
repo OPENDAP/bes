@@ -30,6 +30,7 @@ BES.UncompressCache.prefix=ux_
 BES.UncompressCache.size=500
 
 Gateway.Whitelist = *
+Gateway.Whitelist += https://s3.amazonaws.com/cloudyopendap/
 Gateway.Whitelist += https://s3.amazonaws.com/cloudydap/
 Gateway.Whitelist += http://s3.amazonaws.com/cloudydap/
 # This is needed even if the tests are local because the whitelist check
@@ -43,5 +44,8 @@ Gateway.Whitelist += http://test.opendap.org
 # The default for DMRPP.MaxParallelTransfers is 8
 # DMRPP.MaxParallelTransfers = 8
 
+# Default value for DMRPP.ShowSharedDimensions is false
+# DMRPP.ShowSharedDimensions=false
 DMRPP.ShowSharedDimensions = true
 
+CredentialsManager.config=ENV_CREDS

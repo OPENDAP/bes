@@ -308,11 +308,9 @@ SaxParserWrapper::~SaxParserWrapper()
 {
     // Really not much to do...  everything cleans itself up.
     _state = NOT_PARSING;
-#if 1
+
     // Leak fix. jhrg 6/21/19
     cleanupParser();
-#endif
-
 }
 
 bool SaxParserWrapper::parse(const string& ncmlFilename)
@@ -325,25 +323,9 @@ bool SaxParserWrapper::parse(const string& ncmlFilename)
     // OK, now we're parsing
     _state = PARSING;
 
-
     setupParser();
 
     bool success = xmlSAXUserParseFile(&_handler, this, ncmlFilename.c_str());
-
-#if 0
-    // Old way where we have no context.
-    //  int errNo = xmlSAXUserParseFile(&_handler, this, ncmlFilename.c_str());
-    //  success = (errNo == 0);
-
-    // Any BESError thrown in SaxParser callbacks will be deferred by the safe handler blocks
-    // So that we safely pass this line.
-    // Even if not, _context is cleared in dtor just in case.
-    xmlParseDocument(_context);
-
-    success = (_context->errNo == 0);
-
-    cleanupParser();
-#endif
 
     // If we deferred an exception during the libxml parse call, now's the time to rethrow it.
     if (isExceptionState()) {
@@ -475,40 +457,9 @@ void SaxParserWrapper::setupParser()
     _handler.startElementNs = 0;
     _handler.endElementNs = 0;
 #endif // NCML_PARSER_USE_SAX2_NAMESPACES
-
-    // Create the non-validating parser context for the file
-    // using this as the userData for making exception-safe
-    // C++ calls.
-
-#if 0
-    // Leak fix. jhrg 6/21/19
-    _context = xmlCreateFileParserCtxt(filename.c_str());
-    if (!_context) {
-        THROW_NCML_PARSE_ERROR(-1, "Cannot parse: Unable to create a libxml parse context for " + filename);
-    }
-    _context->sax = &_handler;
-    _context->userData = this;
-    _context->validate = false;
-#endif
 }
 
-#if 1
 // Leak fix. jhrg 6/21/19
 void SaxParserWrapper::cleanupParser() throw ()
 {
-#if 0
-    // Leak fix. jhrg 6/21/19
-    //if (_context) {
-        // Remove our handler from it.
-        //_context->sax = NULL;
-
-        // Free it up.
-	xmlFreeParserCtxt(_context);
-	_context = 0;
-
-    //}
-#endif
 }
-#endif
-
-

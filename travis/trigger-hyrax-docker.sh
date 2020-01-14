@@ -16,7 +16,7 @@ git config --global user.name "The-Robot-Travis"
 git config --global user.email "npotter@opendap.org"
 
 cd hyrax-docker/hyrax-snapshot
-date +%s | tee -a snapshot.time
+date | tee -a snapshot.time
 
 cat snapshot.time;
 

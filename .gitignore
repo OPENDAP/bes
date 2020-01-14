@@ -22,6 +22,7 @@ lex.*.cc
 *.log
 *.trs
 *.Po
+set_ec.sh
 
 ## OS-X Finder spoo
 *.DS_Store

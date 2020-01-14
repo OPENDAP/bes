@@ -259,7 +259,7 @@ public:
             DBG(y->print_val(cerr))
             DBG(cerr << endl);
 
-            auto_ptr<GDALDataset> ds = build_src_dataset_3D(data, t, x, y);
+            unique_ptr<GDALDataset> ds = build_src_dataset_3D(data, t, x, y);
             DBG(cerr << "RasterCount = " << ds.get()->GetRasterCount() << endl);
 
 #if 0
@@ -275,7 +275,7 @@ public:
             DBG(cerr << "nBands = " << nBands << endl);
             int nBytes = data->prototype()->width();
 
-            auto_ptr<GDALDataset> ds(
+            unique_ptr<GDALDataset> ds(
                 driver->Create("result", array_size.x_size, array_size.y_size, nBands, get_array_type(data),
                     NULL /* driver_options */));
 
@@ -389,7 +389,7 @@ public:
                 DBG(cerr << endl);
 
                 // Array to gdal
-                auto_ptr<GDALDataset> src = build_src_dataset_3D(data, t, x, y);
+                unique_ptr<GDALDataset> src = build_src_dataset_3D(data, t, x, y);
 
                 //Get GDAL data
                 int nBand = src.get()->GetRasterCount();
@@ -419,7 +419,7 @@ public:
                 }
 
                 // gdal to array
-                auto_ptr<Array> result(build_array_from_gdal_dataset_3D(src.get(), data));
+                unique_ptr<Array> result(build_array_from_gdal_dataset_3D(src.get(), data));
 
                 cerr << endl;
                 DBG(cerr << "new data: ");
@@ -482,14 +482,14 @@ public:
                 DBG(arr->print_val(cerr));
                 DBG(cerr << endl);
 
-                auto_ptr<GDALDataset> src = build_src_dataset(arr, lon, lat);
+                unique_ptr<GDALDataset> src = build_src_dataset(arr, lon, lat);
 
                 const int dst_size_x = 22;
                 const int dst_size_y = 15;
                 SizeBox size(dst_size_x, dst_size_y);
 
                 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                auto_ptr<GDALDataset> dst = scale_dataset(src, size);
+                unique_ptr<GDALDataset> dst = scale_dataset(src, size);
 
                 CPPUNIT_ASSERT(dst->GetRasterCount() == 1);
 
@@ -587,11 +587,11 @@ public:
         DBG(lon->print_val(cerr))
         DBG(cerr << endl);
 
-        auto_ptr<GDALDataset> src = build_src_dataset_3D(data, t, lon, lat);
+        unique_ptr<GDALDataset> src = build_src_dataset_3D(data, t, lon, lat);
 
-        auto_ptr<Array> built_time(new Array("built_time", new Float32("built_time")));
-        auto_ptr<Array> built_lon(new Array("built_lon", new Float32("built_lon")));
-        auto_ptr<Array> built_lat(new Array("built_lat", new Float32("built_lat")));
+        unique_ptr<Array> built_time(new Array("built_time", new Float32("built_time")));
+        unique_ptr<Array> built_lon(new Array("built_lon", new Float32("built_lon")));
+        unique_ptr<Array> built_lat(new Array("built_lat", new Float32("built_lat")));
 
         DBG(cerr << "built_time before: ");
         DBG(built_time->print_val(cerr))
@@ -644,7 +644,7 @@ public:
             DBG(cerr << endl);
 
             // build GDAL dataset
-            auto_ptr<GDALDataset> src = build_src_dataset_3D(data, t, lon, lat);
+            unique_ptr<GDALDataset> src = build_src_dataset_3D(data, t, lon, lat);
             DBG(cerr << "src nBands = " << src->GetRasterCount() << endl);
 
             // result box

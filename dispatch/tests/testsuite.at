@@ -50,7 +50,7 @@ m4_define([AT_TEST_BLOCKING], [dnl
     AS_IF([test -z $at_verbose], 
         [echo "read_lock_elapsed:  $read_lock_elapsed, delta_time: $delta_time"], [])
     
-    AT_CHECK([test $delta_time -le 1 ], [0], [ignore], [ignore])
+    AT_CHECK([test $delta_time -le 2], [0], [ignore], [ignore], [echo "Time delta: $delta"])
     
     AT_CLEANUP
 ])
@@ -122,7 +122,7 @@ m4_define([AT_TEST_TWO_FILE_CREATE_AND_LOCK], [dnl
     
     AS_IF([test -z $at_verbose], [echo "delta: $delta"])
     
-    AT_CHECK([test $delta -le 1], [0], [ignore], [ignore])
+    AT_CHECK([test $delta -le 2], [0], [ignore], [ignore], [echo "Time delta: $delta"])
         
     AT_CLEANUP
 ])
@@ -168,7 +168,7 @@ m4_define([AT_TEST_TWO_FILE_CREATE_AND_LOCK_VERSION_2], [dnl
     delta=`echo "($end_time - $start_time) - ($hold_time * 2)" | bc`
     AS_IF([test -z $at_verbose], [echo "delta time: $delta"])
     
-    AT_CHECK([test $delta -le 1], [0], [ignore], [ignore])
+    AT_CHECK([test $delta -le 2], [0], [ignore], [ignore], [echo "Time delta: $delta"])
         
     AT_CLEANUP
 ])

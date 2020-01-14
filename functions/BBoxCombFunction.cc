@@ -117,7 +117,7 @@ function_dap2_bbox_comb(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     }
 
     // Build the response; name the result after the operation
-    auto_ptr<Array> response = roi_bbox_build_empty_bbox(rank);
+    unique_ptr<Array> response = roi_bbox_build_empty_bbox(rank);
     for (unsigned int k = 0; k < rank; ++k) {
         Structure *slice = roi_bbox_build_slice(combo.at(k).start, combo.at(k).stop, combo.at(k).name);
         response->set_vec_nocopy(k, slice);

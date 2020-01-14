@@ -32,11 +32,11 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include<vector>
-#include<iostream>
-#include<cstdlib>
+#include <vector>
+#include <iostream>
+#include <cstdlib>
 
-#include"CSV_Data.h"
+#include "CSV_Data.h"
 
 using std::string;
 using std::vector;

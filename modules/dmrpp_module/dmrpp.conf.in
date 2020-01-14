@@ -36,7 +36,7 @@ BES.Catalog.catalog.TypeMatch+=dmrpp:.*\.(dmrpp)(\.bz2|\.gz|\.Z)?$;
 
 # DMRPP.MaxParallelTransfers=8
 
-# Default value
+# Default value for DMRPP.ShowSharedDimensions is false
 # DMRPP.ShowSharedDimensions=false
 
-
+CredentialsManager.config=/etc/bes/credentials.conf

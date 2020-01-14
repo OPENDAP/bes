@@ -24,11 +24,13 @@
 #include "config.h"
 
 #include <string>
+#include <locale>
 #include <sstream>
 #include <iomanip>
 
 #include <cstring>
 #include <unistd.h>
+#include <ctime>
 
 #include <curl/curl.h>
 
@@ -36,31 +38,37 @@
 #include <curl/multi.h>
 #endif
 
+#include <time.h>
+
 #include "util.h"   // long_to_string()
 
 #include "BESLog.h"
 #include "BESDebug.h"
 #include "BESInternalError.h"
 #include "BESForbiddenError.h"
+#include <TheBESKeys.h>
 #include "WhiteList.h"
 
 #include "DmrppRequestHandler.h"
 #include "DmrppCommon.h"
+#include "awsv4.h"
 #include "CurlHandlePool.h"
 #include "Chunk.h"
+#include "CredentialsManager.h"
 
 #define KEEP_ALIVE 1   // Reuse libcurl easy handles (1) or not (0).
 
-#define CURL_VERBOSE 0
+#define CURL_VERBOSE 0  // Logs curl info to the bes.log
 
 static const int MAX_WAIT_MSECS = 30*1000; // Wait max. 30 seconds
 static const unsigned int retry_limit = 10; // Amazon's suggestion
 static const unsigned int initial_retry_time = 1000; // one milli-second
-static const string dmrpp_3 = "dmrpp:3";
 
 using namespace dmrpp;
 using namespace std;
 using namespace bes;
+
+#define MODULE "dmrpp:curl_handle_pool"
 
 Lock::Lock(pthread_mutex_t &lock) : m_mutex(lock)
  {
@@ -150,32 +158,64 @@ string dump(const char *text, unsigned char *ptr, size_t size)
 static
 int curl_trace(CURL */*handle*/, curl_infotype type, char *data, size_t /*size*/, void */*userp*/)
 {
+    string text = "";
     switch (type) {
-    // print info
-    case CURLINFO_TEXT: {
-        string text = data;
-        size_t pos;
-        while((pos = text.find('\n')) != string::npos)
-            text = text.substr(0, pos);
-        LOG("libcurl == Info: " << text << endl);
+        // print info
+        case CURLINFO_TEXT:
+        case CURLINFO_HEADER_OUT:
+        case CURLINFO_HEADER_IN: {
+            text = data;
+            size_t pos;
+            while ((pos = text.find('\n')) != string::npos)
+                text = text.substr(0, pos);
+            break;
+        }
+
+        // Do not build up 'text' for the data transfers
+        case CURLINFO_DATA_OUT:
+        case CURLINFO_SSL_DATA_OUT:
+        case CURLINFO_DATA_IN:
+        case CURLINFO_SSL_DATA_IN:
+        default: /* in case a new one is introduced to shock us */
+            break;
     }
 
-    // print nothing for these
-    case CURLINFO_DATA_IN:
-    case CURLINFO_SSL_DATA_IN:
+    switch (type) {
+        // print info
+        case CURLINFO_TEXT:
+            LOG("libcurl == Info: " << text << endl);
+            break;
 
-    case CURLINFO_DATA_OUT:
-    case CURLINFO_SSL_DATA_OUT:
+        case CURLINFO_HEADER_OUT:
+            LOG("libcurl == Send header: " << text << endl);
+            break;
+        case CURLINFO_HEADER_IN:
+            LOG("libcurl == Recv header: " << text << endl);
+            break;
+#if 0
+        // Only print these if we're desperate and the above code has been hacked to match
+        case CURLINFO_DATA_OUT:
+            LOG("libcurl == Send data" << text << endl);
+            break;
+        case CURLINFO_SSL_DATA_OUT:
+            LOG("libcurl == Send SSL data" << text << endl);
+            break;
+        case CURLINFO_DATA_IN:
+            LOG("libcurl == Recv data" << text << endl);
+            break;
+        case CURLINFO_SSL_DATA_IN:
+            LOG("libcurl == Recv SSL data" << text << endl);
+            break;
+#endif
+        default:
+            break;
+     }
 
-    case CURLINFO_HEADER_IN:
-    case CURLINFO_HEADER_OUT:
-    default: /* in case a new one is introduced to shock us */
-	return 0;
-    }
+     return 0;
 }
 #endif
 
-dmrpp_easy_handle::dmrpp_easy_handle()
+dmrpp_easy_handle::dmrpp_easy_handle(): d_headers(0)
 {
     d_handle = curl_easy_init();
     if (!d_handle) throw BESInternalError("Could not allocate CURL handle", __FILE__, __LINE__);
@@ -186,8 +226,6 @@ dmrpp_easy_handle::dmrpp_easy_handle()
         throw BESInternalError(string("CURL Error: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
 
 #if CURL_VERBOSE
-    // Information is output only when the log is in verbose mode and the code is
-    // built using --enable-developer
     if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_DEBUGFUNCTION, curl_trace)))
         throw BESInternalError(string("CURL Error: ").append(curl_error_msg(res, d_errbuf)), __FILE__, __LINE__);
     // Many tests fail with this option, but it's still useful to see how connections
@@ -225,7 +263,8 @@ dmrpp_easy_handle::dmrpp_easy_handle()
 
 dmrpp_easy_handle::~dmrpp_easy_handle()
 {
-    curl_easy_cleanup(d_handle);
+    if (d_handle) curl_easy_cleanup(d_handle);
+    if (d_headers) curl_slist_free_all(d_headers);
 }
 
 /**
@@ -303,6 +342,9 @@ void dmrpp_easy_handle::read_data()
                     retry_time *= 2;
                 }
             }
+
+            curl_slist_free_all(d_headers);
+            d_headers = 0;
         } while (!success);
     }
     else {
@@ -373,7 +415,7 @@ static void *easy_handle_read_data(void *handle)
 
     try {
         eh->read_data();
-        pthread_exit(NULL);
+        pthread_exit(0);
     }
     catch (BESError &e) {
         string *error = new string(e.get_verbose_message());
@@ -518,6 +560,197 @@ CurlHandlePool::CurlHandlePool() : d_multi_handle(0)
 }
 
 /**
+ * @brief Add the given header & value to the curl slist.
+ *
+ * The call must free the slist after the curl_easy_perform() is called, not after
+ * the headers are added to the curl handle.
+ *
+ * @param slist The list; initially pass nullptr to create a new list
+ * @param header The header
+ * @param value The value
+ * @return The modified slist pointer or nullptr if an error occurred.
+ */
+static struct curl_slist *
+append_http_header(curl_slist *slist, const string &header, const string &value)
+{
+    string full_header = header;
+    full_header.append(" ").append(value);
+
+    struct curl_slist *temp = curl_slist_append(slist, full_header.c_str());
+    return temp;
+}
+
+#if 0
+// TODO Make this real! jhrg 11/26/19
+static bool
+url_has_credentials(const string &url)
+{
+    return (url.find("cloudyopendap") != string::npos);
+}
+
+static bool
+url_must_be_signed(const string &url)
+{
+
+    if(url.find("http://") == 0 || url.find("https://") == 0){
+        AccessCredentials *ac = CredentialsManager::theCM()->get(url);
+        if(ac)
+            return ac->isS3Cred();
+    }
+    return false;
+    // return (url.find("http://") == 0 || url.find("https://") == 0) && url_has_credentials(url);
+}
+
+//I think this is closer to working now and that we don't need these functions - ndp 12/12/19'
+
+// FIXME The most low-budget credential DB on the planet. jhrg 11/26/19
+struct aws_credentials {
+    string public_key;    // = "AKIA24JBYMSH64NYGEIE";
+    string secret_key;    // = "*************WaaQ7";
+    string region;    // = "us-east-1";
+    string bucket_name;    // = "muhbucket";
+
+    map<string,map<string,string>> credentials;
+
+
+    aws_credentials(): public_key(""), secret_key(""), region(""), bucket_name("") {}
+
+    aws_credentials(const string &p_key, const string &s_key, const string &r, const string &b)
+            : public_key(p_key), secret_key(s_key), region(r), bucket_name(b) {}
+
+    aws_credentials(const aws_credentials &rhs)
+            : public_key(rhs.public_key), secret_key(rhs.secret_key), region(rhs.region), bucket_name(rhs.bucket_name) {}
+
+    unique_ptr<aws_credentials> get(const string &url);
+};
+
+void get_from_env(const string &key, string &value){
+    const char *cstr = getenv(key.c_str());
+    if(cstr){
+        value.assign(cstr);
+        BESDEBUG(MODULE, __FILE__ << " " << __LINE__ << " From system environment - " << key << ": " << value << endl);
+    }
+    else {
+        value.clear();
+    }
+}
+
+void get_from_config(const string &key, string &value){
+    bool key_found=false;
+    TheBESKeys::TheKeys()->get_value(key, value, key_found);
+    if (key_found) {
+        BESDEBUG(MODULE, __FILE__ << " " << __LINE__ << " Using " << key << " from TheBESKeys" << endl);
+    }
+    else {
+        value.clear();
+    }
+}
+
+void get_creds_from_local(string &aws_akid, string &aws_sak, string &aws_region, string &aws_s3_bucket ){
+
+    const string KEYS_CONFIG_PREFIX("DMRPP");
+
+    const string ENV_AKID_KEY("AWS_ACCESS_KEY_ID");
+    const string CONFIG_AKID_KEY(KEYS_CONFIG_PREFIX+"."+ENV_AKID_KEY);
+
+    const string ENV_SAK_KEY("AWS_SECRET_ACCESS_KEY");
+    const string CONFIG_SAK_KEY(KEYS_CONFIG_PREFIX+"."+ENV_SAK_KEY);
+
+    const string ENV_REGION_KEY("AWS_REGION");
+    const string CONFIG_REGION_KEY(KEYS_CONFIG_PREFIX+"."+ENV_REGION_KEY);
+
+    const string ENV_S3_BUCKET_KEY("AWS_S3_BUCKET");
+    const string CONFIG_S3_BUCKET_KEY(KEYS_CONFIG_PREFIX+"."+ENV_S3_BUCKET_KEY);
+
+#ifndef NDEBUG
+
+    // If we are in developer mode then we compile this section which
+    // allows us to inject credentials via the system environment
+
+    get_from_env(ENV_AKID_KEY,aws_akid);
+    get_from_env(ENV_SAK_KEY,aws_sak);
+    get_from_env(ENV_REGION_KEY,aws_region);
+    get_from_env(ENV_S3_BUCKET_KEY,aws_s3_bucket);
+
+    BESDEBUG(MODULE, __FILE__ << " " << __LINE__
+        << " From ENV aws_akid: '" << aws_akid << "' "
+        << "aws_sak: '" << aws_sak << "' "
+        << "aws_region: '" << aws_region << "' "
+        << "aws_s3_bucket: '" << aws_s3_bucket << "' "
+        << endl);
+
+#endif
+
+    // In production mode this is the single point of ingest for credentials.
+    // Developer mode enables the piece above which allows the environment to
+    // overrule the configuration
+
+    if(aws_akid.length()){
+        BESDEBUG(MODULE, __FILE__ << " " << __LINE__ << " Using " << ENV_AKID_KEY << " from the environment." << endl);
+    }
+    else {
+        get_from_config(CONFIG_AKID_KEY,aws_akid);
+    }
+
+    if(aws_sak.length()){
+        BESDEBUG(MODULE, __FILE__ << " " << __LINE__ << " Using " << ENV_SAK_KEY << " from the environment." << endl);
+    }
+    else {
+        get_from_config(CONFIG_SAK_KEY,aws_sak);
+    }
+
+    if(aws_region.length()){
+        BESDEBUG(MODULE, __FILE__ << " " << __LINE__ << " Using " << ENV_REGION_KEY << " from the environment." << endl);
+    }
+    else {
+        get_from_config(CONFIG_REGION_KEY,aws_region);
+    }
+
+    if(aws_s3_bucket.length()){
+        BESDEBUG(MODULE, __FILE__ << " " << __LINE__ << " Using " << ENV_S3_BUCKET_KEY << " from the environment." << endl);
+    }
+    else {
+        get_from_config(CONFIG_S3_BUCKET_KEY,aws_s3_bucket);
+    }
+
+    BESDEBUG(MODULE, __FILE__ << " " << __LINE__
+        << " END aws_akid: '" << aws_akid << "' "
+        << "aws_sak: '" << aws_sak << "' "
+        << "aws_region: '" << aws_region << "' "
+        << "aws_s3_bucket: '" << aws_s3_bucket << "' "
+        << endl);
+}
+
+unique_ptr<aws_credentials>
+aws_credentials::get(const string &url)
+{
+    // FIXME Lookup the credentials in some db (BES Keys?). jhrg 11/26/19
+
+    string aws_akid;
+    string aws_sak;
+    string aws_region;
+    string aws_s3_bucket;
+
+    if (url.find("cloudyopendap") != string::npos) {
+
+        get_creds_from_local(aws_akid, aws_sak, aws_region, aws_s3_bucket);
+        BESDEBUG(MODULE, __FILE__ << " " << __LINE__
+            << " aws_akid: " << aws_akid
+            << " aws_sak: " << aws_sak
+            << " aws_region: " << aws_region
+            << " aws_s3_bucket: " << aws_s3_bucket
+            << endl);
+
+        unique_ptr<aws_credentials> creds(new aws_credentials(aws_akid, aws_sak, aws_region, aws_s3_bucket));
+        return creds;
+    } else {
+        unique_ptr<aws_credentials> creds(new aws_credentials( "", "", "", ""));
+        return creds;
+    }
+}
+#endif
+
+/**
  * Get a CURL easy handle to transfer data from \arg url into the given \arg chunk.
  *
  * @note This method and release_handle() use the same lock to prevent the handle's
@@ -534,25 +767,27 @@ CurlHandlePool::CurlHandlePool() : d_multi_handle(0)
 dmrpp_easy_handle *
 CurlHandlePool::get_easy_handle(Chunk *chunk)
 {
+    // Here we check to make sure that the we are only going to
+    // access an approved location with this easy_handle
+    if(!WhiteList::get_white_list()->is_white_listed(chunk->get_data_url())){
+        string msg = "ERROR!! The chunk url " + chunk->get_data_url() + " does not match any white-list rule. ";
+        throw BESForbiddenError(msg ,__FILE__,__LINE__);
+    }
+
     Lock lock(d_get_easy_handle_mutex); // RAII
 
     dmrpp_easy_handle *handle = 0;
     for (vector<dmrpp_easy_handle *>::iterator i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
-        if (!(*i)->d_in_use)
+        if (!(*i)->d_in_use) {
             handle = *i;
+            break;
+        }
     }
 
     if (handle) {
         // Once here, d_easy_handle holds a CURL* we can use.
         handle->d_in_use = true;
         handle->d_url = chunk->get_data_url();
-
-        // Here we check to make sure that the we are only going to
-        // access an approved location with this easy_handle
-        if(!WhiteList::get_white_list()->is_white_listed(handle->d_url)){
-            string msg = "ERROR!! The chunk url " + handle->d_url + " does not match any white-list rule. ";
-            throw BESForbiddenError(msg ,__FILE__,__LINE__);
-        }
 
         handle->d_chunk = chunk;
 
@@ -573,6 +808,53 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
         if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_PRIVATE, reinterpret_cast<void*>(handle))))
             throw BESInternalError(string("CURL Error setting easy_handle as private data: ").append(curl_error_msg(res, handle->d_errbuf)), __FILE__,
             __LINE__);
+
+        AccessCredentials *credentials = CredentialsManager::theCM()->get(handle->d_url);
+        if ( credentials && credentials->isS3Cred()) {
+            BESDEBUG(MODULE, "Got AccessCredentials instance: "<< endl << credentials->to_json() << endl );
+            // If there are available credentials, and they are S3 credentials then we need to sign
+            // the request
+            const std::time_t request_time = std::time(0);
+
+            const std::string auth_header =
+                    AWSV4::compute_awsv4_signature(
+                            handle->d_url,
+                            request_time,
+                            credentials->get(AccessCredentials::ID_KEY),
+                            credentials->get(AccessCredentials::KEY_KEY),
+                            credentials->get(AccessCredentials::REGION_KEY),
+                            "s3",
+                            BESDebug::IsSet(MODULE));
+
+            // passing nullptr for the first call allocates the curl_slist
+            // The following code builds the slist that holds the headers. This slist is freed
+            // once the URL is dereferenced in dmrpp_easy_handle::read_data(). jhrg 11/26/19
+            handle->d_headers = append_http_header(0, "Authorization:", auth_header);
+            if (!handle->d_headers)
+                throw BESInternalError(
+                        string("CURL Error setting Authorization header: ").append(
+                                curl_error_msg(res, handle->d_errbuf)), __FILE__, __LINE__);
+
+            // We pre-compute the sha256 hash of a null message body
+            curl_slist *temp = append_http_header(handle->d_headers, "x-amz-content-sha256:", "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
+            if (!temp)
+                throw BESInternalError(
+                        string("CURL Error setting x-amz-content-sha256: ").append(curl_error_msg(res, handle->d_errbuf)),
+                        __FILE__, __LINE__);
+            handle->d_headers = temp;
+
+            temp = append_http_header(handle->d_headers, "x-amz-date:", AWSV4::ISO8601_date(request_time));
+            if (!temp)
+                throw BESInternalError(
+                        string("CURL Error setting x-amz-date header: ").append(curl_error_msg(res, handle->d_errbuf)),
+                        __FILE__, __LINE__);
+            handle->d_headers = temp;
+
+
+            if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_headers)))
+                throw BESInternalError(string("CURL Error setting HTTP headers for S3 authentication: ").append(
+                        curl_error_msg(res, handle->d_errbuf)), __FILE__, __LINE__);
+        }
     }
 
     return handle;

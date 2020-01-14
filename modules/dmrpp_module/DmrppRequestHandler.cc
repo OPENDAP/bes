@@ -67,6 +67,7 @@
 #include "DmrppRequestHandler.h"
 #include "CurlHandlePool.h"
 #include "DmrppMetadataStore.h"
+#include "CredentialsManager.h"
 
 using namespace bes;
 using namespace libdap;
@@ -85,11 +86,11 @@ ObjMemCache *DmrppRequestHandler::dmr_cache = 0;
 CurlHandlePool *DmrppRequestHandler::curl_handle_pool = 0;
 
 bool DmrppRequestHandler::d_use_parallel_transfers = true;
-int DmrppRequestHandler::d_max_parallel_transfers = 8;
+unsigned int DmrppRequestHandler::d_max_parallel_transfers = 8;
 bool DmrppRequestHandler::d_show_shared_dims = false;
 
 // Default minimum value is 2MB: 2 * (1024*1024)
-int DmrppRequestHandler::d_min_size = 2097152;
+unsigned int DmrppRequestHandler::d_min_size = 2097152;
 
 static void read_key_value(const std::string &key_name, bool &key_value)
 {
@@ -102,7 +103,7 @@ static void read_key_value(const std::string &key_name, bool &key_value)
     }
 }
 
-static void read_key_value(const std::string &key_name, int &key_value)
+static void read_key_value(const std::string &key_name, unsigned int &key_value)
 {
     bool key_found = false;
     string value;
@@ -132,6 +133,8 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     read_key_value("DMRPP.UseParallelTransfers", d_use_parallel_transfers);
     read_key_value("DMRPP.MaxParallelTransfers", d_max_parallel_transfers);
     read_key_value("DMRPP.ShowSharedDimensions", d_show_shared_dims);
+
+    CredentialsManager::load_credentials();
 
     if (!curl_handle_pool)
         curl_handle_pool = new CurlHandlePool();
