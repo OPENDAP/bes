@@ -46,6 +46,8 @@
 #include <openssl/sha.h>
 #include <openssl/hmac.h>
 
+#include "BESInternalError.h"
+
 #include "url_parser.h"
 
 namespace AWSV4 {
@@ -121,7 +123,6 @@ namespace AWSV4 {
                 header_key2val.clear();
                 return header_key2val;
             }
-
 #endif
             // h is a header <key> : <val>
 
@@ -158,8 +159,8 @@ namespace AWSV4 {
     const std::string map_signed_headers(const std::map<std::string,std::string>& header_key2val) {
         const std::string signed_headers_delim{";"};
         std::vector<std::string> ks;
+        // CentOS6 compat hack "for (const auto& kv:header_key2val) {"
         for (auto kv = header_key2val.begin(), end = header_key2val.end(); kv != end; ++kv) {
-	  // CentOS6 compat hack for (const auto& kv:header_key2val) {
             ks.push_back(kv->first);
         }
         return join(ks,signed_headers_delim);
@@ -176,7 +177,7 @@ namespace AWSV4 {
             canonical_query_string + ENDL +
             canonical_headers + ENDL +
             signed_headers + ENDL +
-                shar256_of_payload;
+            shar256_of_payload;
     }
 
     // -----------------------------------------------------------------------------------
@@ -217,11 +218,13 @@ namespace AWSV4 {
     // HMAC --> string. jhrg 11/25/19
     const std::string hmac_to_string(const unsigned char *hmac) {
         // Added to print the kSigning value to check against AWS example. jhrg 11/24/19
-        char buf[65];
+        const int SHA256_DIGEST_STRING_LENGTH = (SHA256_DIGEST_LENGTH * 2);
+        char buf[SHA256_DIGEST_STRING_LENGTH + 1];
         for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
-            sprintf(buf + (i * 2), "%02x", hmac[i]);
+            // size is 3 for each call (2 chars plus null). jhrg 1/3/20
+            snprintf(buf + (i * 2), 3, "%02x", hmac[i]);
         }
-        buf[64] = 0;
+        buf[SHA256_DIGEST_STRING_LENGTH] = 0;
         return std::string{buf};
     }
 
@@ -229,7 +232,7 @@ namespace AWSV4 {
     // TASK 3
     // http://docs.aws.amazon.com/general/latest/gr/sigv4-calculate-signature.html
 
-    const std::string calculate_signature(const std::time_t& request_date,
+    const std::string calculate_signature_old(const std::time_t& request_date,
                                           const std::string secret,
                                           const std::string region,
                                           const std::string service,
@@ -287,7 +290,141 @@ namespace AWSV4 {
         return sig;
     }
 
-    /**
+    /*
+     * unsigned char *HMAC(const EVP_MD *evp_md,
+     *          const void *key, int key_len,
+     *          const unsigned char *d, int n,
+     *          unsigned char *md, unsigned int *md_len);
+     *          where md must be EVP_MAX_MD_SIZE in size
+     */
+
+    const std::string calculate_signature(const std::time_t& request_date,
+                                          const std::string secret,
+                                          const std::string region,
+                                          const std::string service,
+                                          const std::string string_to_sign,
+                                          const bool verbose) {
+
+#if 1
+        // These are used/re-used for the various signatures. jhrg 1/3/20
+        unsigned char md[EVP_MAX_MD_SIZE+1];
+        unsigned int md_len;
+
+        const std::string k1 = AWS4 + secret;
+        const std::string yyyymmdd = utc_yyyymmdd(request_date);
+        unsigned char* kDate = HMAC(EVP_sha256(), (const void *)k1.c_str(), k1.length(),
+                (const unsigned char *)yyyymmdd.c_str(), yyyymmdd.length(), md, &md_len);
+        if (!kDate)
+            throw BESInternalError("Could not compute AWS V4 requst signature." ,__FILE__, __LINE__);
+
+#else
+        const std::string k1 = AWS4 + secret;
+        char *c_k1 = new char [k1.length()+1];
+        std::strcpy(c_k1, k1.c_str());
+
+        auto yyyymmdd = utc_yyyymmdd(request_date);
+        char *c_yyyymmdd = new char [yyyymmdd.length()+1];
+        std::strcpy(c_yyyymmdd, yyyymmdd.c_str());
+
+        unsigned char md[EVP_MAX_MD_SIZE+1];
+        unsigned int md_len;
+
+        unsigned char* kDate;
+        kDate = HMAC(EVP_sha256(), c_k1, strlen(c_k1),
+                     (unsigned char*)c_yyyymmdd, strlen(c_yyyymmdd), md, &md_len);
+
+#endif
+        if (verbose) {
+            std::cerr << "kDate: " << hmac_to_string(kDate) << std::endl;
+            std::cerr << "md_len: " << md_len << std::endl;
+            md[md_len] = '\0';
+            std::cerr << "md: " << hmac_to_string(md) << std::endl;
+        }
+
+#if 1
+        unsigned char *kRegion = HMAC(EVP_sha256(), md, (size_t)md_len,
+                                      (const unsigned char*)region.c_str(), region.length(), md, &md_len);
+        if (!kRegion)
+            throw BESInternalError("Could not compute AWS V4 requst signature." ,__FILE__, __LINE__);
+#else
+        char *c_region = new char [region.length()+1];
+        std::strcpy(c_region, region.c_str());
+
+        unsigned char *kRegion;
+        kRegion = HMAC(EVP_sha256(), kDate, strlen((char *)kDate),
+                     (unsigned char*)c_region, strlen(c_region), NULL, NULL);
+#endif
+
+        if (verbose) {
+            std::cerr << "kRegion: " << hmac_to_string(kRegion) << std::endl;
+            std::cerr << "md_len: " << md_len << std::endl;
+            md[md_len] = '\0';
+            std::cerr << "md: " << hmac_to_string(md) << std::endl;
+        }
+
+#if 1
+        unsigned char *kService = HMAC(EVP_sha256(), md, (size_t)md_len,
+                        (const unsigned char*)service.c_str(), service.length(), md, &md_len);
+        if (!kService)
+            throw BESInternalError("Could not compute AWS V4 requst signature." ,__FILE__, __LINE__);
+
+#else
+        char *c_service = new char [service.length()+1];
+        std::strcpy(c_service, service.c_str());
+        unsigned char *kService;
+        kService = HMAC(EVP_sha256(), kRegion, strlen((char *)kRegion),
+                        (unsigned char*)c_service, strlen(c_service), NULL, NULL);
+#endif
+
+        if (verbose) {
+            std::cerr << "kService: " << hmac_to_string(kService) << std::endl;
+            std::cerr << "md_len: " << md_len << std::endl;
+            md[md_len] = '\0';
+            std::cerr << "md: " << hmac_to_string(md) << std::endl;
+        }
+
+#if 1
+        unsigned char *kSigning = HMAC(EVP_sha256(), md, (size_t)md_len,
+                        (const unsigned char*)AWS4_REQUEST.c_str(), AWS4_REQUEST.length(), md, &md_len);
+        if (!kSigning)
+            throw BESInternalError("Could not compute AWS V4 requst signature." ,__FILE__, __LINE__);
+
+#else
+        char *c_aws4_request = new char [AWS4_REQUEST.length()+1];
+        std::strcpy(c_aws4_request, AWS4_REQUEST.c_str());
+        unsigned char *kSigning;
+        kSigning = HMAC(EVP_sha256(), kService, strlen((char *)kService),
+                        (unsigned char*)c_aws4_request, strlen(c_aws4_request), NULL, NULL);
+#endif
+
+        if (verbose) {
+            std::cerr << "kSigning " << hmac_to_string(kSigning) << std::endl;
+            std::cerr << "md_len: " << md_len << std::endl;
+            md[md_len] = '\0';
+            std::cerr << "md: " << hmac_to_string(md) << std::endl;
+        }
+
+#if 1
+        unsigned char *kSig = HMAC(EVP_sha256(), md, (size_t)md_len,
+                    (const unsigned char*)string_to_sign.c_str(), string_to_sign.length(), md, &md_len);
+        if (!kSig)
+            throw BESInternalError("Could not compute AWS V4 requst signature." ,__FILE__, __LINE__);
+
+#else
+        char *c_string_to_sign = new char [string_to_sign.length()+1];
+        std::strcpy(c_string_to_sign, string_to_sign.c_str());
+        unsigned char *kSig;
+        kSig = HMAC(EVP_sha256(), kSigning, strlen((char *)kSigning),
+                    (unsigned char*)c_string_to_sign, strlen(c_string_to_sign), NULL, NULL);
+#endif
+
+        md[md_len] = '\0';
+        auto sig = hmac_to_string(md);
+        return sig;
+    }
+
+
+/**
     * @brief Return the AWS V4 signature for a given GET request
     *
     * @param uri_str The URI to fetch
@@ -299,10 +436,14 @@ namespace AWSV4 {
     * @return The AWS V4 Signature string.
     */
 
-    const std::string compute_awsv4_signature(const std::string uri_str, const std::time_t request_date,
-                                              const std::string public_key, const std::string secret_key,
-                                              const std::string region, const std::string service,
-                                              const bool verbose) {
+    const std::string compute_awsv4_signature(
+            const std::string &uri_str,
+            const std::time_t &request_date,
+            const std::string &public_key,
+            const std::string &secret_key,
+            const std::string &region,
+            const std::string &service,
+            const bool &verbose) {
 
         url_parser uri(uri_str);
 
@@ -315,10 +456,25 @@ namespace AWSV4 {
         // is the case for a GET request. jhrg 11/25/19
         const std::string sha256_empty_payload = {"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"};
         // All AWS V4 signature require x-amz-content-sha256. jhrg 11/24/19
-        std::vector<std::string> headers{"host: ", "x-amz-date: ", "x-amz-content-sha256: "};
+
+#if 1
+        // We used to do it like the code in the other half of this #if
+        // But it seems we don't need the x-amz-content-sha256 header for empty payload
+        // so here it is without.
+        //
+        // NOTE: Changing this will break the awsv4_test using tests. jhrg 1/3/20
+        std::vector<std::string> headers{"host: ", "x-amz-date: "};
         headers[0].append(uri.host()); // headers[0].append(uri.getHost());
         headers[1].append(ISO8601_date(request_date));
-        headers[2].append(sha256_empty_payload);
+#else
+        // This works as well, but it doesn't appear that we need the
+        // x-amz-content-sha256 header for empty payload s this is disabled in favor
+        // of the simpler version above.
+        std::vector<std::string> headers{"host: ", "x-amz-content-sha256: ", "x-amz-date: "};
+        headers[0].append(uri.host());
+        headers[1].append(sha256_empty_payload);
+        headers[2].append(ISO8601_date(request_date));
+#endif
 
         const auto canonical_headers_map = canonicalize_headers(headers);
         if (canonical_headers_map.empty()) {
@@ -352,9 +508,14 @@ namespace AWSV4 {
                                                     service,
                                                     string_to_sign,
                                                     verbose);
+        if (verbose)
+            std::cerr << "-- signature\n" << signature << "\n----\n" << std::endl;
 
         const std::string authorization_header = STRING_TO_SIGN_ALGO + " Credential=" + public_key + "/"
                 + credential_scope + ", SignedHeaders=" + signed_headers + ", Signature=" + signature;
+
+        if (verbose)
+            std::cerr << "-- authorization_header\n" << authorization_header << "\n----\n" << std::endl;
 
         return authorization_header;
     }

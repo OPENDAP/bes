@@ -8,6 +8,7 @@
 # libdap code is editied and not installed. jhrg 12/5/19
 include_directories(../libdap4)
 
+include_directories(/usr/local/Cellar/openssl/1.0.2q/include/)
 include_directories(/usr/local/Cellar/openssl/1.0.2r/include/)
 include_directories(/usr/local/include/)
 
@@ -720,6 +721,7 @@ add_executable(bes
     modules/dmrpp_module/unit-tests/unused/DmrppTypeReadTest.cc
     modules/dmrpp_module/unit-tests/unused/DmrppUtilTest.cc
     modules/dmrpp_module/unit-tests/ChunkTest.cc
+    modules/dmrpp_module/unit-tests/CredentialsManagerTest.cc
     modules/dmrpp_module/unit-tests/DmrppCommonTest.cc
     modules/dmrpp_module/unit-tests/DmrppMetadataStoreTest.cc
     modules/dmrpp_module/unit-tests/DmrppParserTest.cc
@@ -2069,4 +2071,5 @@ add_executable(bes
     xmlcommand/XMLSetContextsCommand.cc
     xmlcommand/XMLSetContextsCommand.h
     config.h
-)
+	modules/dmrpp_module/unit-tests/awsv4_test.cc
+    )

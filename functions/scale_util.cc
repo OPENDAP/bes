@@ -811,7 +811,7 @@ void add_band_data(const Array *src, GDALDataset* ds)
  * uses lat, lon axis order.
  * @return An auto_ptr<GDALDataset>
  */
-auto_ptr<GDALDataset> build_src_dataset(Array *data, Array *x, Array *y, const string &srs)
+unique_ptr<GDALDataset> build_src_dataset(Array *data, Array *x, Array *y, const string &srs)
 {
     GDALDriver *driver = GetGDALDriverManager()->GetDriverByName("MEM");
     if(!driver){
@@ -823,7 +823,7 @@ auto_ptr<GDALDataset> build_src_dataset(Array *data, Array *x, Array *y, const s
     SizeBox array_size = get_size_box(x, y);
 
     // The MEM driver takes no creation options jhrg 10/6/16
-    auto_ptr<GDALDataset> ds(driver->Create("result", array_size.x_size, array_size.y_size,
+    unique_ptr<GDALDataset> ds(driver->Create("result", array_size.x_size, array_size.y_size,
     		1 /* nBands*/, get_array_type(data), NULL /* driver_options */));
 
 #if ADD_BAND
@@ -877,7 +877,7 @@ auto_ptr<GDALDataset> build_src_dataset(Array *data, Array *x, Array *y, const s
  * @param crs The CRS to use for the result (default is to use the CRS of 'src')
  * @return An auto_ptr to the result (a new GDALDataset instance)
  */
-auto_ptr<GDALDataset> scale_dataset(auto_ptr<GDALDataset> src, const SizeBox &size, const string &crs /*""*/,
+unique_ptr<GDALDataset> scale_dataset(unique_ptr<GDALDataset>& src, const SizeBox &size, const string &crs /*""*/,
     const string &interp /*nearest*/)
 {
     char **argv = NULL;
@@ -929,7 +929,7 @@ auto_ptr<GDALDataset> scale_dataset(auto_ptr<GDALDataset> src, const SizeBox &si
         throw BESError(msg, BES_INTERNAL_ERROR, __FILE__, __LINE__);
     }
 
-    auto_ptr<GDALDataset> dst(static_cast<GDALDataset*>(dst_handle));
+    unique_ptr<GDALDataset> dst(static_cast<GDALDataset*>(dst_handle));
 
     GDALTranslateOptionsFree(options);
 
@@ -937,7 +937,7 @@ auto_ptr<GDALDataset> scale_dataset(auto_ptr<GDALDataset> src, const SizeBox &si
 }
 
 
-auto_ptr<GDALDataset> scale_dataset_3D(auto_ptr<GDALDataset> src, const SizeBox &size, const string &crs /*""*/,
+unique_ptr<GDALDataset> scale_dataset_3D(unique_ptr<GDALDataset>& src, const SizeBox &size, const string &crs /*""*/,
     const string &interp /*nearest*/)
 {
     char **argv = NULL;
@@ -994,7 +994,7 @@ auto_ptr<GDALDataset> scale_dataset_3D(auto_ptr<GDALDataset> src, const SizeBox 
         throw BESError(msg, BES_INTERNAL_ERROR, __FILE__, __LINE__);
     }
 
-    auto_ptr<GDALDataset> dst(static_cast<GDALDataset*>(dst_handle));
+    unique_ptr<GDALDataset> dst(static_cast<GDALDataset*>(dst_handle));
 
     GDALTranslateOptionsFree(options);
 
@@ -1020,20 +1020,20 @@ Grid *scale_dap_array(const Array *data, const Array *x, const Array *y, const S
     // Build GDALDataset for Grid g with lon and lat maps as given
     Array *d = const_cast<Array*>(data);
 
-    auto_ptr<GDALDataset> src = build_src_dataset(d, const_cast<Array*>(x), const_cast<Array*>(y));
+    unique_ptr<GDALDataset> src = build_src_dataset(d, const_cast<Array*>(x), const_cast<Array*>(y));
 
     // scale to the new size, using optional CRS and interpolation params
-    auto_ptr<GDALDataset> dst = scale_dataset(src, size, crs, interp);
+    unique_ptr<GDALDataset> dst = scale_dataset(src, size, crs, interp);
 
     // Build a result Grid: extract the data, build the maps and assemble
-    auto_ptr<Array> built_data(build_array_from_gdal_dataset(dst.get(), d));
+    unique_ptr<Array> built_data(build_array_from_gdal_dataset(dst.get(), d));
 
-    auto_ptr<Array> built_lat(new Array(y->name(), new Float32(y->name())));
-    auto_ptr<Array> built_lon(new Array(x->name(), new Float32(x->name())));
+    unique_ptr<Array> built_lat(new Array(y->name(), new Float32(y->name())));
+    unique_ptr<Array> built_lon(new Array(x->name(), new Float32(x->name())));
 
     build_maps_from_gdal_dataset(dst.get(), built_lon.get(), built_lat.get());
 
-    auto_ptr<Grid> result(new Grid(d->name()));
+    unique_ptr<Grid> result(new Grid(d->name()));
     result->set_array(built_data.release());
     result->add_map(built_lat.release(), false);
     result->add_map(built_lon.release(), false);
@@ -1096,7 +1096,7 @@ Grid *scale_dap_grid(const Grid *g, const SizeBox &size, const string &crs, cons
  * uses lat, lon axis order.
  * @return An auto_ptr<GDALDataset> with number of bands equal to size of time array
  */
-auto_ptr<GDALDataset> build_src_dataset_3D(Array *data, Array *t, Array *x, Array *y, const string &srs)
+unique_ptr<GDALDataset> build_src_dataset_3D(Array *data, Array *t, Array *x, Array *y, const string &srs)
 {
     Array *d = dynamic_cast<Array*>(data);
 
@@ -1114,7 +1114,7 @@ auto_ptr<GDALDataset> build_src_dataset_3D(Array *data, Array *t, Array *x, Arra
     const int data_size = x->length() * y->length();
     unsigned int dsize = data_size * nBytes;
 
-    auto_ptr<GDALDataset> ds(driver->Create("result", array_size.x_size, array_size.y_size, nBands, get_array_type(d),
+    unique_ptr<GDALDataset> ds(driver->Create("result", array_size.x_size, array_size.y_size, nBands, get_array_type(d),
             NULL /* driver_options */));
     data->read();
     // start band loop
@@ -1180,22 +1180,22 @@ Grid *scale_dap_array_3D(const Array *data, const Array *time, const Array *lon,
     Array *y = const_cast<Array*>(lat);
 
     // get GDALDataset with bands
-    auto_ptr<GDALDataset> src = build_src_dataset_3D(d, const_cast<Array*>(t), const_cast<Array*>(x), const_cast<Array*>(y));
+    unique_ptr<GDALDataset> src = build_src_dataset_3D(d, const_cast<Array*>(t), const_cast<Array*>(x), const_cast<Array*>(y));
 
     // scale all bands to the new size, using optional CRS and interpolation params
-    auto_ptr<GDALDataset> dst = scale_dataset_3D(src, size, crs, interp);
+    unique_ptr<GDALDataset> dst = scale_dataset_3D(src, size, crs, interp);
 
     // Build a result Grid: extract the data, build the maps and assemble
-    auto_ptr<Array> built_data(build_array_from_gdal_dataset_3D(dst.get(), d));
-    auto_ptr<Array> built_time(new Array(t->name(), new Float32(t->name())));
-    auto_ptr<Array> built_lat(new Array(y->name(), new Float32(y->name())));
-    auto_ptr<Array> built_lon(new Array(x->name(), new Float32(x->name())));
+    unique_ptr<Array> built_data(build_array_from_gdal_dataset_3D(dst.get(), d));
+    unique_ptr<Array> built_time(new Array(t->name(), new Float32(t->name())));
+    unique_ptr<Array> built_lat(new Array(y->name(), new Float32(y->name())));
+    unique_ptr<Array> built_lon(new Array(x->name(), new Float32(x->name())));
 
     // Build maps for grid
     build_maps_from_gdal_dataset_3D(dst.get(), t, built_time.get(), built_lon.get(), built_lat.get());
 
     // get result Grid
-    auto_ptr<Grid> result(new Grid(d->name()));
+    unique_ptr<Grid> result(new Grid(d->name()));
     result->set_array(built_data.release());
     result->add_map(built_time.release(), false);
     result->add_map(built_lat.release(), false);

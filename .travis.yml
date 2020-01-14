@@ -27,12 +27,12 @@ addons:
     - libcurl4-openssl-dev
     - libcppunit-dev
     - libicu-dev
-    - debhelper
-    - devscripts
-    - lintian
-    - fakeroot
-    - build-essential
-    - sshpass
+    # - debhelper These packages were used only for debian builds
+    # - devscripts
+    # - lintian
+    # - fakeroot
+    # - build-essential
+    # - sshpass Only used for ssh access to www.o.o (also not done anymore)
 
 env:
   global:
@@ -46,22 +46,25 @@ env:
     - secure: "TmoFcgeIyAEjFyrlqB6rhdUhDqPJfxVZmT5fewgVHj0xm767VZ6DU21mM6ZHgNGyk99TzX0Gx/dwSqbsUj18hSSAvEa7fJQSKJ5IBJvTeMKhXn1DPPG9VpuZ4ti5afRDiNr6EJKbVxwBTkz+3798S8LajPuXGupYupir8IJQCt8="
     # SONAR_MODULES_LOGIN, using "travis encrypt --org -r OPENDAP/bes SONAR_MODULES_LOGIN=42ba..."
     - secure: "V3fMZgzMRRB0xFQMTvXf2fFPHIdwvg2y6bNFKqSGI5HP2sZEtc7XqSC4hjboR9RjnyZY/H1L/EuYQCS45gmJMsmtzo4g1Cn0oTfuPRJzDSi00jRlB1wUl5p1pU0Fdv2ffrGF4m6/SRfYFT0KkR/Tp8hdIoYx5/8R4MajysABMT4="
-    # COVERITY_SCAN_TOKEN
-    - secure: "KNE6gkK7+WEQkNLiW/oap/3E/YSq6nzH6icXWpgA3MZj2KX0i6IzQgteeEGFUC1vDTzkCpqSidvGxdd22V33s0sHDuLRI5e17VFMjI5WyWjRQaXMhWmyO5/ofx7AArvaCWq6w6zfn1T/LiIuHXc14Rg8uuWEgDGWM0USiSbMepc="
     # AWS_ACCESS_KEY_ID
-    - secure: "Blkk1wdHvqZueRf8lkcZxuIo5H++Xz3NdkEjqecTTWNluvklx+kjErQApPUz75r+l/TEI5EAO+xb53jQn1gu3F23k2fh6jw+GEVTE3wWZrg0QWH3wzut6QbJp1TMK9XCjCSUn82L/He2TNXFZX8gMS1L8I1sbSOeONTH+rGScUg="
-    # old - secure: "NNcSfmrBN9ctc8LoRVeLcYPzf2wYCSLUNCdNuVEsBdOMa5JLTdFMBEhfrgkLmiUSf1K+V97tw3rJuRcdwAXbwBMuJ0o8+gDG4c63clDDWYDXa08gdpKhy0FFqlUohVeMNpfCawvTm46/p6P0SlKg245by5OcVZ4HfjIGUasJHEw="
+    # user == travis-bes
+    - secure: "ZfL1IPX5zab1HWkJTlNPHroyUOp2lhAlcCH6UXDEL/yXpKoRCNkSo/CILM20DsjBckGys/7chom6uIoOilLu9Tp/6nPwkYlOe5DjgDt/qqKutclk9QBfrwU7WHRUOiEOESZl3Knd6B+GzuBZe8nrJzJhZWT54VFiOlEAGeIiFwo="
     # AWS_SECRET_ACCESS_KEY
-    - secure: "VguZKshW3hUwqb0S8hFjVFD52wN9n+pDEPoHuR/KMj4xdNLKP418fKU09iAVG74PiMv8pQc0/xTK6rgYJ9Ty37uMg+LqnEwJHK2DqktFOQCjVgBgmtWx4LI0F8dy+uqEOb6Qegm5484OKHQDk/V0/TvKOyMk6wF/wjheb3Fl6yk="
-    # old - secure: "BVETDaGI/cwfUHdvsGPkV1o7jd6OnqyvtFCPk0WsmCWh6PdpwXQ8D4yFdk4jejWxa0YFdRiCgK3ThHqqzv+6pDxrMnpYOx2O+ZjK//ErECjDa+OCJr2ObCwlqOPE6+4aVmPDz5ecjd2inVR5CfL5/Kt3Zgn4U9fNBUz9OMYpRF4="
+    # user == travis-bes
+    - secure: "UpZB8cf3sOq11Yet8Cktnw4LiWZf24NJ0ugh8drVhShctLhZDiXKb/kMY3VA+pg7Q08ktmKsVYm1WM/+IpQJfOv/gYcGPwSlGuUUW87awtn7WdNPOZBIpG6dZ8dwcWh5XXKHVDyuRpxqc4vmjrIuB5ZUqdT5yVItnp3UhtJjaig="
     # GIT_UID travis-ci-opendap
     - secure: "eUL/RY4kJD9sb3q98Xbfbcdhs6eyFWkfWNb0tvRzksBi/+tYiuojsek0qoBFZnRnO0wwyDAaDrZgu2yoLQTBxGSTqCsYaoDiFtw2m8aW3r+FdjpfmyVR52U9vMoZtpiPGYYM9utlyQ6YRNhzq+XzDJ4juygoIlzbp7qXTALqIL8="
     # GIT_PSWD for travis-ci-opendap
     - secure: "jdEmVdM35qoAmIXTqTCL11IbjEMh6I+jrov/nqQ4wdoJf79O7H7tuuDVkIJ+5RSIjUXsIYgfQAG8Cn+DIJRMnv7mj7TrWGS9LT22bBGErzCcCkrHGKMDH4okbd8cCNQcnb/9woYSYZ38U8QCBsYH1Ma2r4bFU4jAY2KiMOyaY6w="    
     # WOO_UID for travis
-    - secure: "YKSsiV7fjngZ+Xha9oyHUT2Xirz8Iy7bghAzlGk2TyXZwWGbZyFDMeTfE0ZGaAEykhNF9fsqsD6XMzFlwBcYIB5ocP6LfnQ1qMualHVTVbVldo/T2e8uv/9jVIAnfwwT2IbgWpVUXZ1I24kIqHCxnZWYZpbfclSEDnQnkYG9tMg="
+    # - secure: "YKSsiV7fjngZ+Xha9oyHUT2Xirz8Iy7bghAzlGk2TyXZwWGbZyFDMeTfE0ZGaAEykhNF9fsqsD6XMzFlwBcYIB5ocP6LfnQ1qMualHVTVbVldo/T2e8uv/9jVIAnfwwT2IbgWpVUXZ1I24kIqHCxnZWYZpbfclSEDnQnkYG9tMg="
     # travis encrypt --org -r OPENDAP/bes WOO_PSWD=... Use with sshpass -p $WOO_PSWD scp ...
-    - secure: "Bw3Jad8QbpJl+o3BnfTlHddaTaerIG/sgnOJsMzVeSJQoMnh9tccTZ7QaNKo1Vs8riNzTHLMZkJja3UgXV9f90HU9xujZhEcnEdR/t1RRiLUsxHZtl20IcL6AQni+LCW0y/K5V0fCqx0cE90aGzBUeP1to/q7fkoRudxHqpXTtc="
+    # - secure: "Bw3Jad8QbpJl+o3BnfTlHddaTaerIG/sgnOJsMzVeSJQoMnh9tccTZ7QaNKo1Vs8riNzTHLMZkJja3UgXV9f90HU9xujZhEcnEdR/t1RRiLUsxHZtl20IcL6AQni+LCW0y/K5V0fCqx0cE90aGzBUeP1to/q7fkoRudxHqpXTtc="
+    - CMAC_ID="${AWS_ACCESS_KEY_ID}"
+    - CMAC_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
+    - CMAC_URL="https://s3.amazonaws.com/cloudydap/"
+    - CMAC_REGION="us-east-1"
+    - CMAC_BUCKET="cloudydap"
 
 before_install:
   - pip install --user awscli
@@ -118,7 +121,7 @@ jobs:
   - stage: build
     script:
     - export BES_BUILD=distcheck
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
+    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
     - make distcheck -j7
 
   - stage: package
