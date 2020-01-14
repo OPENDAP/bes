@@ -425,10 +425,22 @@ StareIntersectionFunction::stare_intersection_dap4_function(D4RValueList *args, 
 }
 
 /**
- * @brief Count the number of STARE indices that are contained by this dataset
- * @param args
- * @param dmr
- * @return The number, as a DAP Int32 value
+ * @brief Count the number of STARE indices in the arg that overlap the indices of this dataset.
+ *
+ * This function counts the number of 'target' indices (those that are passed into
+ * the function) that are contained (oe which contain) the SARE indices of the
+ * dataset.
+ *
+ * In a URL, this will look like: stare_count($UInt64(4 : 3440016633681149966, ...))
+ *
+ * @note Hyrax also supports POST for data access requests so that very long lists
+ * of function arguments may be passed into function like this one. Also note that
+ * the notation '$UInt64(<n>:<value 0>,<value 1>,...<value n-1>)' can be written
+ * '$UInt64(0:<value 0>,<value 1>,...<value n-1>)' with only minor performance cost.
+ *
+ * @param args A single vector of Unsigned 64-bit integer STARE Indices.
+ * @param dmr The DMR for the given dataset. The dataset name is read from this object.
+ * @return The number of indices given that also appear in the dataset, as a DAP Int32 value
  */
 BaseType *
 StareCountFunction::stare_count_dap4_function(D4RValueList *args, DMR &dmr)
@@ -482,9 +494,14 @@ StareCountFunction::stare_count_dap4_function(D4RValueList *args, DMR &dmr)
 }
 
 /**
- * @brief Return the X, Y, and STARE indices that are contained by this dataset
- * @param args
- * @param dmr
+ * @brief For the given target STARE indices, return the overlapping dataset X, Y, and STARE indices
+ *
+ * This function will subset the dataset using the given vector of STARE indices. The result
+ * of the subset operation, are three vectors. The first two contain the X and Y indices of
+ * the Latitude and Longitude arrays. The 
+ *
+ * @param args A single vector of Unsigned 64-bit integer STARE Indices.
+ * @param dmr The DMR for the given dataset. The dataset name is read from this object.
  * @return Three arrays holding the three values. The Nth elements of each array
  * are one set of matched values
  */
