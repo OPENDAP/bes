@@ -101,7 +101,6 @@ public:
     CPPUNIT_TEST(test_count_2);
     CPPUNIT_TEST(test_count_3);
     CPPUNIT_TEST(test_stare_subset);
-    CPPUNIT_TEST(test_stare_subset2);
 
     CPPUNIT_TEST(intersection_function_test);
     CPPUNIT_TEST(count_function_test);
@@ -135,55 +134,34 @@ public:
 	}
 
     void test_stare_subset() {
-        DBG(cerr << "--- test_stare_subset() test - BEGIN ---" << endl);
-
-        vector<dods_uint64> target_indices = {3440016191299518474, 9223372034707292159, 3440016191299518400, 3440016191299518401};
-        vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
-        vector<int> x_indices = {0, 1, 2};
-        vector<int> y_indices = {0, 1, 2};
-
-        vector<stare_match> *result = stare_subset_helper(target_indices, data_indices, x_indices, y_indices);
-
-        CPPUNIT_ASSERT(result->size() == 2);
-
-        DBG(cerr << result->at(0) << endl);
-        CPPUNIT_ASSERT(result->at(0).stare_index == 3440016191299518474);
-        CPPUNIT_ASSERT(result->at(0).coord.x == 2);
-        CPPUNIT_ASSERT(result->at(0).coord.y == 2);
-
-        DBG(cerr << result->at(1) << endl);
-        CPPUNIT_ASSERT(result->at(1).stare_index == 9223372034707292159);
-        CPPUNIT_ASSERT(result->at(1).coord.x == 0);
-        CPPUNIT_ASSERT(result->at(1).coord.y == 0);
-
-        delete result;
-    }
-
-    void test_stare_subset2() {
         DBG(cerr << "--- test_stare_subset2() test - BEGIN ---" << endl);
 
-        vector<dods_uint64> target_indices = {3440016191299518474, 9223372034707292159, 3440016191299518400, 3440016191299518401};
+        vector<dods_uint64> target_indices = {3440016191299518474, 3440016191299518400, 3440016191299518401};
+        // In these data indices, 3440012343008821258 overlaps 3440016191299518400, 3440016191299518401
+        // and 3440016191299518474 overlaps 3440016191299518474, 3440016191299518400, 3440016191299518401
+        // I think this is kind of a degenerate example since the three target indices seem to be at different
+        // levels. jhrg 1.14.20
         vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
         vector<int> x_indices = {0, 1, 2};
         vector<int> y_indices = {0, 1, 2};
 
-        stare_matches *result = stare_subset_helper2(target_indices, data_indices, x_indices, y_indices);
+        unique_ptr<stare_matches> result = stare_subset_helper(target_indices, data_indices, x_indices, y_indices);
 
-        CPPUNIT_ASSERT(result->x_indices.size() == 2);
-        CPPUNIT_ASSERT(result->y_indices.size() == 2);
-        CPPUNIT_ASSERT(result->stare_indices.size() == 2);
+        DBG(cerr << "result->x_indices.size(): " << result->x_indices.size() << endl);
+
+        CPPUNIT_ASSERT(result->x_indices.size() == 5);
+        CPPUNIT_ASSERT(result->y_indices.size() == 5);
+        CPPUNIT_ASSERT(result->stare_indices.size() == 5);
 
         DBG(cerr << *result << endl);
 
-        CPPUNIT_ASSERT(result->stare_indices.at(0) == 3440016191299518474);
-        CPPUNIT_ASSERT(result->x_indices.at(0) == 2);
-        CPPUNIT_ASSERT(result->y_indices.at(0) == 2);
+        CPPUNIT_ASSERT(result->stare_indices.at(0) == 3440016191299518400);
+        CPPUNIT_ASSERT(result->x_indices.at(0) == 1);
+        CPPUNIT_ASSERT(result->y_indices.at(0) == 1);
 
-        CPPUNIT_ASSERT(result->stare_indices.at(1) == 9223372034707292159);
-        CPPUNIT_ASSERT(result->x_indices.at(1) == 0);
-        CPPUNIT_ASSERT(result->y_indices.at(1) == 0);
-
-        delete result;
+        CPPUNIT_ASSERT(result->stare_indices.at(1) == 3440016191299518401);
+        CPPUNIT_ASSERT(result->x_indices.at(1) == 1);
+        CPPUNIT_ASSERT(result->y_indices.at(1) == 1);
     }
 
     // The one and only target index is in the 'dataset'
