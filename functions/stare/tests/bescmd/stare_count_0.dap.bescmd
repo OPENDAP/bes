@@ -8,7 +8,7 @@
   
   <bes:define name="d1" space="default">
     <bes:container name="c">
-      <bes:dap4function>stare_intersection($UInt64(3:9223372034707292159, 3440012343008821258, 3440016191299518400))</bes:dap4function>
+      <bes:dap4function>stare_count($UInt64(0:9223372034707292159,3440012343008821258,3440016191299518400,3440016633681149966))</bes:dap4function>
     </bes:container>
   </bes:define>
   

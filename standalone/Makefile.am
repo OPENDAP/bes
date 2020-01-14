@@ -22,13 +22,8 @@ bin_PROGRAMS = besstandalone
 besstandalone_SOURCES = StandAloneApp.cc StandAloneClient.cc \
 StandAloneApp.h StandAloneClient.h
 
-# 			../cmdln/CmdTranslation.cc \
-#			../cmdln/CmdTranslation.h \
-# 			../xmlcommand/BESXMLUtils.cc \
-#			../xmlcommand/BESXMLUtils.h
-
 besstandalone_CPPFLAGS = $(XML2_CFLAGS) $(AM_CPPFLAGS)
-# Added libbes_dap.la jhrg 12/24/12 so besstandalone can call BESCatalogUtils::delete_all_catalogs()
+
 besstandalone_LDADD = $(top_builddir)/dispatch/libbes_dispatch.la  \
 $(top_builddir)/xmlcommand/libbes_xml_command.la $(top_builddir)/cmdln/CmdTranslation.o \
 $(READLINE_LIBS) $(XML2_LIBS)
