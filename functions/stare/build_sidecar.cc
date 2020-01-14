@@ -50,7 +50,7 @@ struct coords {
  * @return coords
  */
 vector<coords> readUrl(const string &dataUrl, const string &latName, const string &lonName) {
-    auto_ptr<libdap::Connect> url(new libdap::Connect(dataUrl));
+    unique_ptr<libdap::Connect> url(new libdap::Connect(dataUrl));
 
     string latlonName = latName + "," + lonName;
 
@@ -461,9 +461,9 @@ int main(int argc, char *argv[]) {
             //Locate the granule name inside the provided url.
             // Once the granule is found, add ".h5" to the granule name
             // Rename the new H5 file to be <granulename.h5>
-            size_t granulePos = dataUrl.find_last_of("/");
+            size_t granulePos = dataUrl.find_last_of('/');
             string granuleName = dataUrl.substr(granulePos + 1);
-            size_t findDot = granuleName.find_last_of(".");
+            size_t findDot = granuleName.find_last_of('.');
             newName = granuleName.substr(0, findDot) + "_sidecar.h5";
         }
 

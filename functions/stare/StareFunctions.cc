@@ -24,6 +24,7 @@
 
 #include <sstream>
 #include <unordered_map>
+#include <memory>
 
 #include <STARE.h>
 #include <hdf5.h>
@@ -67,6 +68,13 @@ using namespace std;
 
 namespace functions {
 
+/**
+ *
+ * @brief Write a functions::point to an ostream.
+ * @param out The ostream
+ * @param p The point
+ * @return A reference to the ostream
+ */
 ostream & operator << (ostream &out, const point &p)
 {
     out << "x: " << p.x;
@@ -74,6 +82,12 @@ ostream & operator << (ostream &out, const point &p)
     return out;
 }
 
+/**
+ * @brief Write a STARE match object to an ostream
+ * @param out The ostream
+ * @param m The STARE Match
+ * @return A reference to the ostream
+ */
 ostream & operator << (ostream &out, const stare_match &m)
 {
     out << "SIndex: " << m.stare_index;
@@ -81,6 +95,17 @@ ostream & operator << (ostream &out, const stare_match &m)
     return out;
 }
 
+/**
+ * @brief Write a collection of STARE Matches to an ostream
+ *
+ * STARE matches is not a vector of stare_match objects. It's a self-contained
+ * commection of vectors that holds a collection of STARE matches in a way that
+ * can be dumped into libdap::Array instances easily and efficiently.
+ *
+ * @param out The ostream
+ * @param m The STARE Matches
+ * @return A reference to the ostream
+ */
 ostream & operator << (ostream &out, const stare_matches &m)
 {
     assert(m.stare_indices.size() == m.x_indices.size()
@@ -100,6 +125,13 @@ ostream & operator << (ostream &out, const stare_matches &m)
 // May need to be moved to libdap/util
 // This helper function assumes 'var' is the correct size.
 // Made this static to limit its scope to this file. jhrg 11/7/19
+
+/**
+ * @brief extract values form a libdap::Array and return them in an unsigned 64-bit int vector
+ * @param var The array
+ * @return An unsigned 64-bit integer vector.
+ * @throw libdap::Error if the array does not hold values that can be stored in a 64-bit unsigned integer vector
+ */
 static vector<dods_uint64> *extract_uint64_array(Array *var) {
     assert(var);
 
@@ -177,13 +209,16 @@ count(const vector<dods_uint64> &stareVal, const vector<dods_uint64> &dataStareI
 }
 
 /**
- * @brief Return the STARE indices and their x,y coordinates contained in the dataset
+ * @brief Deprecated Return the STARE indices and their x,y coordinates contained in the dataset
  * @param targetIndices Target STARE indices
  * @param datasetStareIndices STARE indices of this dataset
  * @param xArray Matching X indices for the corresponding STARE index
  * @param yArray Matching Y indices for the corresponding STARE index
  * @return A pointer to a vector if stare_match objects that combine a STARE index with
  * an x,y point.
+ *
+ * @deprecated
+ *
  */
 vector<stare_match> *
 stare_subset_helper(const vector<dods_uint64> &targetIndices, const vector<dods_uint64> &datasetStareIndices,
@@ -197,25 +232,37 @@ stare_subset_helper(const vector<dods_uint64> &targetIndices, const vector<dods_
     for (const dods_uint64 &j : targetIndices) {
         auto x = xArray.begin();
         auto y = yArray.begin();
-        for (auto i = datasetStareIndices.begin(), end = datasetStareIndices.end(); i != end; ++i, ++x, ++y) {
-            if (*i == j) {
+        for (const dods_uint64 &i : datasetStareIndices) {
+            // for (auto i = datasetStareIndices.begin(), end = datasetStareIndices.end(); i != end; ++i) {
+            if (cmpSpatial(i, j) != 0) { //(*i == j) {
                 subset->push_back(stare_match(*x, *y, j));
             }
+            ++x; ++y;
         }
     }
 
     return subset;
 }
 
-stare_matches *
+/**
+ * @brief Return a collection of STARE Matches
+ * @param targetIndices Target STARE indices (passed in by a client)
+ * @param datasetStareIndices STARE indices of this dataset
+ * @param xArray Matching X indices for the corresponding STARE index
+ * @param yArray Matching Y indices for the corresponding STARE index
+ * @return A STARE Matches collection.
+ * @see stare_matches
+ */
+
+unique_ptr<stare_matches>
 stare_subset_helper2(const vector<dods_uint64> &targetIndices, const vector<dods_uint64> &datasetStareIndices,
              const vector<int> &xArray, const vector<int> &yArray)
 {
     assert(datasetStareIndices.size() == xArray.size());
     assert(datasetStareIndices.size() == yArray.size());
 
-    auto subset = new stare_matches;
-
+    //auto subset = new stare_matches;
+    unique_ptr<stare_matches> subset(new stare_matches());
     for (dods_uint64 targetIndex : targetIndices) {
         auto x = xArray.begin();
         auto y = yArray.begin();
@@ -241,10 +288,11 @@ stare_subset_helper2(const vector<dods_uint64> &targetIndices, const vector<dods
  * @return The pathname to the matching sidecar file.
  */
 string
-get_sidecar_file_pathname(const string &pathName) {
-    size_t granulePos = pathName.find_last_of("/");
+get_sidecar_file_pathname(const string &pathName)
+{
+    size_t granulePos = pathName.find_last_of('/');
     string granuleName = pathName.substr(granulePos + 1);
-    size_t findDot = granuleName.find_last_of(".");
+    size_t findDot = granuleName.find_last_of('.');
     // Added extraction of the extension since the files won't always be *.h5
     // also switched to .append() instead of '+' because the former is faster.
     // jhrg 11/5/19
@@ -485,7 +533,7 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
 
     vector<dods_uint64> *targetIndices = extract_uint64_array(stareSrc);
 
-    stare_matches *subset = stare_subset_helper2(*targetIndices, datasetStareIndices, xArray, yArray);
+    unique_ptr <stare_matches> subset = stare_subset_helper2(*targetIndices, datasetStareIndices, xArray, yArray);
 
     delete targetIndices;
 
@@ -504,86 +552,7 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
     y->set_value(&(subset->y_indices[0]), subset->y_indices.size());
     result->add_var_nocopy(y);
 
-    // FIXME Change this code so the stare_subet() function returns vectors that can be 'shared.' jhrg 11/20/19
-    delete subset;
-
     return result;
 }
-#if 0
-/**
- * -- Count server function --
- * Counts how many times the provided Stare values are found within the provided sidecar file.
- * Returns the number of matches found.
- */
-BaseType *stare_count_dap4_function(D4RValueList *args, DMR &dmr) {
-    string pathName = dmr.filename();
-
-    //Find the filename from the dmr
-    size_t granulePos = pathName.find_last_of("/");
-    string granuleName = pathName.substr(granulePos + 1);
-    size_t findDot = granuleName.find_last_of(".");
-    string newPathName = granuleName.substr(0, findDot) + "_sidecar.h5";
-
-    string rootDirectory = TheBESKeys::TheKeys()->read_string_key(STARE_STORAGE_PATH, "/tmp");
-
-    string fullPath = BESUtil::pathConcat(rootDirectory, newPathName);
-
-    //TODO: just use fullPath.c_str()
-    //The H5Fopen function needs to read in a char *
-    int n = fullPath.length();
-    char fullPathChar[n + 1];
-    strcpy(fullPathChar, fullPath.c_str());
-
-    //Initialize the various variables for the datasets' info
-    hid_t file;
-    hid_t stareFilespace;
-    hid_t stareMemspace;
-    hid_t stareDataset;
-    hssize_t stareSize;
-
-    vector<uint64> stareArray;
-
-    //Read the file and store the datasets
-    file = H5Fopen(fullPathChar, H5F_ACC_RDONLY, H5P_DEFAULT);
-    stareDataset = H5Dopen(file, "Stare Index", H5P_DEFAULT);
-
-    //Get the number of dimensions
-    hid_t dspace = H5Dget_space(stareDataset);
-    const int ndims = H5Sget_simple_extent_ndims(dspace);
-    hsize_t dims[ndims];
-
-    //Get the size of the dimension so that we know how big to make the memory space
-    H5Sget_simple_extent_dims(dspace, dims, NULL);
-
-    //We need to get the filespace and memspace before reading the values from each dataset
-    stareFilespace = H5Dget_space(stareDataset);
-
-    stareMemspace = H5Screate_simple(ndims, dims, NULL);
-
-    //Get the number of elements in the dataspace and use that to appropriate the proper size of the vectors
-    stareSize = H5Sget_select_npoints(stareFilespace);
-    stareArray.resize(stareSize);
-
-    //Read the data file and store the values of each dataset into an array
-    H5Dread(stareDataset, H5T_NATIVE_INT, stareMemspace, stareFilespace, H5P_DEFAULT, &stareArray[0]);
-
-    BaseType *stareVal = args->get_rvalue(0)->value(dmr);
-    Array *stareSrc = dynamic_cast<Array *>(stareVal);
-    if (stareSrc == nullptr)
-        throw BESSyntaxUserError("stare_intersection(): Expected an Array but found a " + stareVal->type_name(), __FILE__,
-                               __LINE__);
-
-    stareSrc->read();
-
-    vector<dods_uint64> *stareData = extract_uint64_array(stareSrc);
-
-    unsigned int numMatches = count(stareData, &stareArray);
-
-    auto *result = new Int32("result");
-    result->set_value(numMatches);
-
-    return result;
-}
-#endif
 
 } // namespace functions

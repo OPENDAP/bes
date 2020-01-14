@@ -91,7 +91,7 @@ vector<stare_match> *stare_subset_helper(const vector<libdap::dods_uint64> &targ
                                          const vector<libdap::dods_uint64> &datasetStareIndices,
                                          const vector<int> &xArray, const vector<int> &yArray);
 
-stare_matches *stare_subset_helper2(const vector<libdap::dods_uint64> &targetIndices,
+unique_ptr<stare_matches> stare_subset_helper2(const vector<libdap::dods_uint64> &targetIndices,
                                     const vector<libdap::dods_uint64> &datasetStareIndices,
                                     const vector<int> &xArray, const vector<int> &yArray);
 
