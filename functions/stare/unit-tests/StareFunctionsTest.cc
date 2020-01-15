@@ -93,7 +93,8 @@ public:
 
 	CPPUNIT_TEST_SUITE( StareFunctionsTest );
 
-	CPPUNIT_TEST(test_get_sidecar_file_pathname);
+	// Deprecated test - breaks distcheck CPPUNIT_TEST(test_get_sidecar_file_pathname);
+	// jhrg 1.14.20
     CPPUNIT_TEST(test_has_value);
     CPPUNIT_TEST(test_has_value_2);
     CPPUNIT_TEST(test_has_value_3);
@@ -108,6 +109,7 @@ public:
 
 	CPPUNIT_TEST_SUITE_END();
 
+	// Deprecated
 	void test_get_sidecar_file_pathname() {
         DBG(cerr << "--- test_get_sidecar_file_pathname() test - BEGIN ---" << endl);
 
@@ -118,10 +120,8 @@ public:
         DBG(cerr << "sidecar_pathname: " << sidecar_pathname << endl);
 
         // These tests fail with distcheck because autoconf/make borks the paths.
-        // I check for that and assume an error will be caught by 'make check'.
         // jhrg 12/31/19
-        CPPUNIT_ASSERT(sidecar_pathname == expected_pathname
-        || sidecar_pathname.find("_build/..") != string::npos);
+        CPPUNIT_ASSERT(sidecar_pathname == expected_pathname);
 
         sidecar_pathname = get_sidecar_file_pathname("/data/different_extention.hdf5");
         expected_pathname = string(TOP_SRC_DIR) + "/functions/stare/data/different_extention_sidecar.hdf5";
@@ -353,7 +353,7 @@ int main(int argc, char*argv[]) {
     while ((ch = getopt(argc, argv, "dh")) != -1) {
         switch (ch) {
             case 'd':
-                debug = 1;
+                debug = true;
                 break;
             case 'h': {
                 cerr << "StareFunctionsTest has the following tests: " << endl;
