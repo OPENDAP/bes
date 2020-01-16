@@ -475,7 +475,7 @@ bool NCRequestHandler::nc_build_data(BESDataHandlerInterface & dhi)
                     NCRequestHandler::_show_shared_dims = true;
             }
         }
-
+#if 0
         string container_name = bdds->get_explicit_containers() ? dhi.container->get_symbolic_name(): "";
         DMR *dmr = new DMR();
         get_dmr(dhi.container->access(), dmr);
@@ -489,7 +489,19 @@ bool NCRequestHandler::nc_build_data(BESDataHandlerInterface & dhi)
         bdds->set_constraint(dhi);
         BESDEBUG(NC_NAME, "Data ACCESS build_data(): set the including attribute flag to false: "<<dhi.container->access() << endl);
 //        bdds->set_ia_flag(false); <------------------ !!!!!!!!!!!!
+#else
+        string container_name = bdds->get_explicit_containers() ? dhi.container->get_symbolic_name(): "";
+        DDS *dds = bdds->get_dds();
+
+        // Build a DDS in the empty DDS object,don't include attributes here. KY 10/30/19
+        get_dds_without_attributes(dhi.container->access(), container_name, dds);
+
+        bdds->set_constraint(dhi);
+        BESDEBUG(NC_NAME, "Data ACCESS build_data(): set the including attribute flag to false: "<<dhi.container->access() << endl);
+        bdds->set_ia_flag(false);
+#endif
         bdds->clear_container();
+
     }
     catch (BESError &e) {
         throw;
@@ -555,6 +567,7 @@ bool NCRequestHandler::nc_build_dmr(BESDataHandlerInterface &dhi)
 
             dmr->set_factory(new D4BaseTypeFactory);
             dmr->build_using_dds(dds);
+            BESDEBUG(NC_NAME, "DMR Built from DDS!" << endl);
 #else
             // This version builds a DDS only to build the resulting DMR. The DDS is
             // not cached. It does look in the DDS cache, just in case...
@@ -584,6 +597,7 @@ bool NCRequestHandler::nc_build_dmr(BESDataHandlerInterface &dhi)
                 dds.transfer_attributes(&das);
                 dmr->build_using_dds(dds);
             }
+
 #endif
 
             if (dmr_cache) {
