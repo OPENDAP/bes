@@ -66,11 +66,11 @@ public:
 	{
 	}
 
-	~StareFunctionsTest()
+	virtual ~StareFunctionsTest()
 	{
 	}
 
-	void setUp() {
+	virtual void setUp() {
         d4_btf = new D4BaseTypeFactory();
 
         two_arrays_dmr = new DMR(d4_btf);
@@ -84,7 +84,7 @@ public:
 		TheBESKeys::ConfigFile = "bes.conf";
 	}
 
-	void tearDown() {
+	virtual void tearDown() {
 		delete two_arrays_dmr;
 		two_arrays_dmr = 0;
 		delete d4_btf;

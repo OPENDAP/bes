@@ -5,8 +5,11 @@
 
 # Included because we want the IDE to know about the library sources, not
 # the installed headers. This might make for some consistency issues if the
-# libdap code is editied and not installed. jhrg 12/5/19
+# libdap code is edited and not installed. jhrg 12/5/19
 include_directories(../libdap4)
+
+# Does including this _and_ the above bork CLion? jhrg 1.15.20
+include_directories(../build/include/libdap)
 
 include_directories(/usr/local/Cellar/openssl/1.0.2q/include/)
 include_directories(/usr/local/Cellar/openssl/1.0.2r/include/)

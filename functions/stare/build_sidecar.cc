@@ -456,7 +456,9 @@ int main(int argc, char *argv[]) {
 
         unique_ptr< vector<uint64> > stareResults = calculateStareIndex(level, build_level, coordResults);
 
-        // FIXME The data file's extension might not be 'h5'. jhrg 12/5/19
+        // Assume the granule is called .../path/file.ext where both the
+        // slashes and dots might actually not be there. Assume also that
+        // the data are in an HDF5 file. jhrg 1/15/20
         if (newName.empty()) {
             //Locate the granule name inside the provided url.
             // Once the granule is found, add ".h5" to the granule name
