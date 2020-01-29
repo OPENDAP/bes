@@ -7,6 +7,7 @@
 # the installed headers. This might make for some consistency issues if the
 # libdap code is editied and not installed. jhrg 12/5/19
 include_directories(../libdap4)
+include_directories(../build/deps/include)
 
 include_directories(/usr/local/Cellar/openssl/1.0.2q/include/)
 include_directories(/usr/local/Cellar/openssl/1.0.2r/include/)
@@ -1645,6 +1646,7 @@ add_executable(bes
     modules/netcdf_handler/NCByte.h
     modules/netcdf_handler/ncdas.cc
     modules/netcdf_handler/ncdds.cc
+	modules/netcdf_handler/ncdmr.cc
     modules/netcdf_handler/NCFloat32.cc
     modules/netcdf_handler/NCFloat32.h
     modules/netcdf_handler/NCFloat64.cc
