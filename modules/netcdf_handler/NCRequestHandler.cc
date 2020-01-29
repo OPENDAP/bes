@@ -86,9 +86,14 @@ ObjMemCache *NCRequestHandler::dds_cache = 0;
 ObjMemCache *NCRequestHandler::datadds_cache = 0;
 ObjMemCache *NCRequestHandler::dmr_cache = 0;
 
+// nc_read_dataset_attributes() is in ncdas.cc
 extern void nc_read_dataset_attributes(DAS & das, const string & filename);
-extern void read_group(DMR &dmr, const string &filename, int ncid, D4Group group, string path, string full_path);
+
+// nc_read_dataset_variables() is in ncdds.cc
 extern void nc_read_dataset_variables(DDS & dds, const string & filename);
+
+// read_group() is in ncdmr.cc
+extern void read_group(DMR &dmr, const string &filename, int ncid, D4Group group, string path, string full_path);
 
 /** Is the version number string greater than or equal to the value.
  * @note Works only for versions with zero or one dot. If the conversion of
