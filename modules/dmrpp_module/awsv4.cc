@@ -52,7 +52,10 @@
 
 namespace AWSV4 {
 
-    std::string join(const std::vector<std::string>& ss,const std::string delim) {
+    // used in sha256_base16() and hmac_to_string(). jhrg 1/5/20
+    const int SHA256_DIGEST_STRING_LENGTH = (SHA256_DIGEST_LENGTH << 1);
+
+    std::string join(const std::vector<std::string>& ss, const std::string delim) {
         std::stringstream sstream;
         const auto l = ss.size() - 1;
         std::vector<int>::size_type i;
@@ -63,28 +66,41 @@ namespace AWSV4 {
         return sstream.str();
     }
 
+#if 0
     // http://stackoverflow.com/questions/2262386/generate-sha256-with-openssl-and-c
     void sha256(const std::string str, unsigned char outputBuffer[SHA256_DIGEST_LENGTH]) {
         char *c_string = new char [str.length()+1];
         std::strcpy(c_string, str.c_str());
-        unsigned char hash[SHA256_DIGEST_LENGTH];
+
         SHA256_CTX sha256;
         SHA256_Init(&sha256);
         SHA256_Update(&sha256, c_string, strlen(c_string));
+        unsigned char hash[SHA256_DIGEST_LENGTH];
         SHA256_Final(hash, &sha256);
+
         for (int i=0;i<SHA256_DIGEST_LENGTH;i++) {
             outputBuffer[i] = hash[i];
         }
     }
+#endif
 
     std::string sha256_base16(const std::string str) {
+
         unsigned char hashOut[SHA256_DIGEST_LENGTH];
+#if 1
+        SHA256_CTX sha256;
+        SHA256_Init(&sha256);
+        SHA256_Update(&sha256, (const unsigned char *)str.c_str(), str.length());
+        SHA256_Final(hashOut, &sha256);
+#else
         AWSV4::sha256(str,hashOut);
-        char outputBuffer[65];
+#endif
+
+        char outputBuffer[SHA256_DIGEST_STRING_LENGTH + 1];
         for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
-            sprintf(outputBuffer + (i * 2), "%02x", hashOut[i]);
+            snprintf(outputBuffer + (i * 2), 3, "%02x", hashOut[i]);
         }
-        outputBuffer[64] = 0;
+        outputBuffer[SHA256_DIGEST_STRING_LENGTH] = 0;
         return std::string{outputBuffer};
     }
 
@@ -112,19 +128,10 @@ namespace AWSV4 {
     std::map<std::string,std::string> canonicalize_headers(const std::vector<std::string>& headers) {
         std::map<std::string,std::string> header_key2val;
         for( auto h = headers.begin(), end = headers.end(); h != end; ++h ) {
-	  // CentOS6 does not support the range-based for loop.
-	  // for (const auto & h: headers) {
-#if 0
-            std::regex reg("\\:");
-            std::sregex_token_iterator iter(h.begin(), h.end(), reg, -1);
-            std::sregex_token_iterator end;
-            std::vector<std::string> pair(iter, end);
-            if (pair.size() != 2) {
-                header_key2val.clear();
-                return header_key2val;
-            }
-#endif
-            // h is a header <key> : <val>
+	        // CentOS6 does not appear to support auth and the range-based for loop together.
+	        // jhrg 1/5/20
+	        // for (const auto & h: headers) {
+	        // h is a header <key> : <val>
 
             auto i = h->find(':');
             if (i == std::string::npos) {
@@ -218,7 +225,6 @@ namespace AWSV4 {
     // HMAC --> string. jhrg 11/25/19
     const std::string hmac_to_string(const unsigned char *hmac) {
         // Added to print the kSigning value to check against AWS example. jhrg 11/24/19
-        const int SHA256_DIGEST_STRING_LENGTH = (SHA256_DIGEST_LENGTH * 2);
         char buf[SHA256_DIGEST_STRING_LENGTH + 1];
         for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
             // size is 3 for each call (2 chars plus null). jhrg 1/3/20
@@ -231,64 +237,6 @@ namespace AWSV4 {
     // -----------------------------------------------------------------------------------
     // TASK 3
     // http://docs.aws.amazon.com/general/latest/gr/sigv4-calculate-signature.html
-
-    const std::string calculate_signature_old(const std::time_t& request_date,
-                                          const std::string secret,
-                                          const std::string region,
-                                          const std::string service,
-                                          const std::string string_to_sign,
-                                          const bool verbose) {
-
-        const std::string k1 = AWS4 + secret;
-        char *c_k1 = new char [k1.length()+1];
-        std::strcpy(c_k1, k1.c_str());
-
-        auto yyyymmdd = utc_yyyymmdd(request_date);
-        char *c_yyyymmdd = new char [yyyymmdd.length()+1];
-        std::strcpy(c_yyyymmdd, yyyymmdd.c_str());
-
-        unsigned char* kDate;
-        kDate = HMAC(EVP_sha256(), c_k1, strlen(c_k1),
-                     (unsigned char*)c_yyyymmdd, strlen(c_yyyymmdd), NULL, NULL);
-        if (verbose)
-            std::cerr << "kDate: " << hmac_to_string(kDate) << std::endl;
-
-        char *c_region = new char [region.length()+1];
-        std::strcpy(c_region, region.c_str());
-        unsigned char *kRegion;
-        kRegion = HMAC(EVP_sha256(), kDate, strlen((char *)kDate),
-                     (unsigned char*)c_region, strlen(c_region), NULL, NULL);
-
-        if (verbose)
-            std::cerr << "kRegion: " << hmac_to_string(kRegion) << std::endl;
-
-        char *c_service = new char [service.length()+1];
-        std::strcpy(c_service, service.c_str());
-        unsigned char *kService;
-        kService = HMAC(EVP_sha256(), kRegion, strlen((char *)kRegion),
-                     (unsigned char*)c_service, strlen(c_service), NULL, NULL);
-
-        if (verbose)
-            std::cerr << "kService: " << hmac_to_string(kService) << std::endl;
-
-        char *c_aws4_request = new char [AWS4_REQUEST.length()+1];
-        std::strcpy(c_aws4_request, AWS4_REQUEST.c_str());
-        unsigned char *kSigning;
-        kSigning = HMAC(EVP_sha256(), kService, strlen((char *)kService),
-                     (unsigned char*)c_aws4_request, strlen(c_aws4_request), NULL, NULL);
-
-        if (verbose)
-            std::cerr << "kSigning " << hmac_to_string(kSigning) << std::endl;
-
-        char *c_string_to_sign = new char [string_to_sign.length()+1];
-        std::strcpy(c_string_to_sign, string_to_sign.c_str());
-        unsigned char *kSig;
-        kSig = HMAC(EVP_sha256(), kSigning, strlen((char *)kSigning),
-                     (unsigned char*)c_string_to_sign, strlen(c_string_to_sign), NULL, NULL);
-
-        auto sig = hmac_to_string(kSig);
-        return sig;
-    }
 
     /*
      * unsigned char *HMAC(const EVP_MD *evp_md,
@@ -305,7 +253,6 @@ namespace AWSV4 {
                                           const std::string string_to_sign,
                                           const bool verbose) {
 
-#if 1
         // These are used/re-used for the various signatures. jhrg 1/3/20
         unsigned char md[EVP_MAX_MD_SIZE+1];
         unsigned int md_len;
@@ -317,23 +264,6 @@ namespace AWSV4 {
         if (!kDate)
             throw BESInternalError("Could not compute AWS V4 requst signature." ,__FILE__, __LINE__);
 
-#else
-        const std::string k1 = AWS4 + secret;
-        char *c_k1 = new char [k1.length()+1];
-        std::strcpy(c_k1, k1.c_str());
-
-        auto yyyymmdd = utc_yyyymmdd(request_date);
-        char *c_yyyymmdd = new char [yyyymmdd.length()+1];
-        std::strcpy(c_yyyymmdd, yyyymmdd.c_str());
-
-        unsigned char md[EVP_MAX_MD_SIZE+1];
-        unsigned int md_len;
-
-        unsigned char* kDate;
-        kDate = HMAC(EVP_sha256(), c_k1, strlen(c_k1),
-                     (unsigned char*)c_yyyymmdd, strlen(c_yyyymmdd), md, &md_len);
-
-#endif
         if (verbose) {
             std::cerr << "kDate: " << hmac_to_string(kDate) << std::endl;
             std::cerr << "md_len: " << md_len << std::endl;
@@ -341,19 +271,10 @@ namespace AWSV4 {
             std::cerr << "md: " << hmac_to_string(md) << std::endl;
         }
 
-#if 1
         unsigned char *kRegion = HMAC(EVP_sha256(), md, (size_t)md_len,
                                       (const unsigned char*)region.c_str(), region.length(), md, &md_len);
         if (!kRegion)
             throw BESInternalError("Could not compute AWS V4 requst signature." ,__FILE__, __LINE__);
-#else
-        char *c_region = new char [region.length()+1];
-        std::strcpy(c_region, region.c_str());
-
-        unsigned char *kRegion;
-        kRegion = HMAC(EVP_sha256(), kDate, strlen((char *)kDate),
-                     (unsigned char*)c_region, strlen(c_region), NULL, NULL);
-#endif
 
         if (verbose) {
             std::cerr << "kRegion: " << hmac_to_string(kRegion) << std::endl;
@@ -362,19 +283,10 @@ namespace AWSV4 {
             std::cerr << "md: " << hmac_to_string(md) << std::endl;
         }
 
-#if 1
         unsigned char *kService = HMAC(EVP_sha256(), md, (size_t)md_len,
                         (const unsigned char*)service.c_str(), service.length(), md, &md_len);
         if (!kService)
             throw BESInternalError("Could not compute AWS V4 requst signature." ,__FILE__, __LINE__);
-
-#else
-        char *c_service = new char [service.length()+1];
-        std::strcpy(c_service, service.c_str());
-        unsigned char *kService;
-        kService = HMAC(EVP_sha256(), kRegion, strlen((char *)kRegion),
-                        (unsigned char*)c_service, strlen(c_service), NULL, NULL);
-#endif
 
         if (verbose) {
             std::cerr << "kService: " << hmac_to_string(kService) << std::endl;
@@ -383,19 +295,10 @@ namespace AWSV4 {
             std::cerr << "md: " << hmac_to_string(md) << std::endl;
         }
 
-#if 1
         unsigned char *kSigning = HMAC(EVP_sha256(), md, (size_t)md_len,
                         (const unsigned char*)AWS4_REQUEST.c_str(), AWS4_REQUEST.length(), md, &md_len);
         if (!kSigning)
             throw BESInternalError("Could not compute AWS V4 requst signature." ,__FILE__, __LINE__);
-
-#else
-        char *c_aws4_request = new char [AWS4_REQUEST.length()+1];
-        std::strcpy(c_aws4_request, AWS4_REQUEST.c_str());
-        unsigned char *kSigning;
-        kSigning = HMAC(EVP_sha256(), kService, strlen((char *)kService),
-                        (unsigned char*)c_aws4_request, strlen(c_aws4_request), NULL, NULL);
-#endif
 
         if (verbose) {
             std::cerr << "kSigning " << hmac_to_string(kSigning) << std::endl;
@@ -404,19 +307,10 @@ namespace AWSV4 {
             std::cerr << "md: " << hmac_to_string(md) << std::endl;
         }
 
-#if 1
         unsigned char *kSig = HMAC(EVP_sha256(), md, (size_t)md_len,
                     (const unsigned char*)string_to_sign.c_str(), string_to_sign.length(), md, &md_len);
         if (!kSig)
             throw BESInternalError("Could not compute AWS V4 requst signature." ,__FILE__, __LINE__);
-
-#else
-        char *c_string_to_sign = new char [string_to_sign.length()+1];
-        std::strcpy(c_string_to_sign, string_to_sign.c_str());
-        unsigned char *kSig;
-        kSig = HMAC(EVP_sha256(), kSigning, strlen((char *)kSigning),
-                    (unsigned char*)c_string_to_sign, strlen(c_string_to_sign), NULL, NULL);
-#endif
 
         md[md_len] = '\0';
         auto sig = hmac_to_string(md);
@@ -457,7 +351,6 @@ namespace AWSV4 {
         const std::string sha256_empty_payload = {"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"};
         // All AWS V4 signature require x-amz-content-sha256. jhrg 11/24/19
 
-#if 1
         // We used to do it like the code in the other half of this #if
         // But it seems we don't need the x-amz-content-sha256 header for empty payload
         // so here it is without.
@@ -466,15 +359,6 @@ namespace AWSV4 {
         std::vector<std::string> headers{"host: ", "x-amz-date: "};
         headers[0].append(uri.host()); // headers[0].append(uri.getHost());
         headers[1].append(ISO8601_date(request_date));
-#else
-        // This works as well, but it doesn't appear that we need the
-        // x-amz-content-sha256 header for empty payload s this is disabled in favor
-        // of the simpler version above.
-        std::vector<std::string> headers{"host: ", "x-amz-content-sha256: ", "x-amz-date: "};
-        headers[0].append(uri.host());
-        headers[1].append(sha256_empty_payload);
-        headers[2].append(ISO8601_date(request_date));
-#endif
 
         const auto canonical_headers_map = canonicalize_headers(headers);
         if (canonical_headers_map.empty()) {
