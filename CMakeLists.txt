@@ -8,6 +8,8 @@
 # libdap code is editied and not installed. jhrg 12/5/19
 include_directories(../libdap4)
 
+include_directories(../build/deps/include)
+
 include_directories(/usr/local/Cellar/openssl/1.0.2q/include/)
 include_directories(/usr/local/Cellar/openssl/1.0.2r/include/)
 include_directories(/usr/local/include/)
@@ -46,6 +48,19 @@ include_directories(functions/unused_ArrayGeoConstraint_code)
 
 include_directories(hello_world)
 include_directories(hello_world/not_used)
+
+include_directories(ppt)
+include_directories(ppt/unit-tests)
+include_directories(server)
+include_directories(server/test)
+include_directories(standalone)
+include_directories(templates)
+include_directories(xmlcommand)
+include_directories(xmlcommand/not_used)
+include_directories(xmlcommand/tests)
+include_directories(xmlcommand/unit-tests)
+include_directories(xmlcommand/unused)
+
 include_directories(modules)
 include_directories(modules/asciival)
 
@@ -115,18 +130,6 @@ include_directories(modules/www-interface)
 
 include_directories(modules/xml_data_handler)
 include_directories(modules/xml_data_handler/unit-tests)
-
-include_directories(ppt)
-include_directories(ppt/unit-tests)
-include_directories(server)
-include_directories(server/test)
-include_directories(standalone)
-include_directories(templates)
-include_directories(xmlcommand)
-include_directories(xmlcommand/not_used)
-include_directories(xmlcommand/tests)
-include_directories(xmlcommand/unit-tests)
-include_directories(xmlcommand/unused)
 
 add_executable(bes
     cmdln/unit-tests/test_config.h.in

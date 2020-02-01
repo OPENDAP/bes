@@ -64,7 +64,7 @@ namespace AWSV4 {
     }
 
     // http://stackoverflow.com/questions/2262386/generate-sha256-with-openssl-and-c
-    void sha256(const std::string str, unsigned char outputBuffer[SHA256_DIGEST_LENGTH]) {
+    void sha256(const std::string &str, unsigned char outputBuffer[SHA256_DIGEST_LENGTH]) {
         char *c_string = new char [str.length()+1];
         std::strcpy(c_string, str.c_str());
         unsigned char hash[SHA256_DIGEST_LENGTH];
@@ -75,9 +75,10 @@ namespace AWSV4 {
         for (int i=0;i<SHA256_DIGEST_LENGTH;i++) {
             outputBuffer[i] = hash[i];
         }
+        delete[] c_string;
     }
 
-    std::string sha256_base16(const std::string str) {
+    std::string sha256_base16(const std::string &str) {
         unsigned char hashOut[SHA256_DIGEST_LENGTH];
         AWSV4::sha256(str,hashOut);
         char outputBuffer[65];
@@ -228,10 +229,7 @@ namespace AWSV4 {
         return std::string{buf};
     }
 
-    // -----------------------------------------------------------------------------------
-    // TASK 3
-    // http://docs.aws.amazon.com/general/latest/gr/sigv4-calculate-signature.html
-
+#if 0
     const std::string calculate_signature_old(const std::time_t& request_date,
                                           const std::string secret,
                                           const std::string region,
@@ -289,6 +287,11 @@ namespace AWSV4 {
         auto sig = hmac_to_string(kSig);
         return sig;
     }
+#endif
+
+// -----------------------------------------------------------------------------------
+// TASK 3
+// http://docs.aws.amazon.com/general/latest/gr/sigv4-calculate-signature.html
 
     /*
      * unsigned char *HMAC(const EVP_MD *evp_md,
