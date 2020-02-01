@@ -209,70 +209,35 @@ count(const vector<dods_uint64> &stareVal, const vector<dods_uint64> &dataStareI
 }
 
 /**
- * @brief Deprecated Return the STARE indices and their x,y coordinates contained in the dataset
- * @param targetIndices Target STARE indices
+ * @brief Return a collection of STARE Matches
+ * @param targetIndices Target STARE indices (passed in by a client)
  * @param datasetStareIndices STARE indices of this dataset
  * @param xArray Matching X indices for the corresponding STARE index
  * @param yArray Matching Y indices for the corresponding STARE index
- * @return A pointer to a vector if stare_match objects that combine a STARE index with
- * an x,y point.
- *
- * @deprecated
- *
+ * @return A STARE Matches collection. Contains the X, Y, and 'matching' target indices.
+ * @see stare_matches
  */
-vector<stare_match> *
+unique_ptr<stare_matches>
 stare_subset_helper(const vector<dods_uint64> &targetIndices, const vector<dods_uint64> &datasetStareIndices,
                     const vector<int> &xArray, const vector<int> &yArray)
 {
     assert(datasetStareIndices.size() == xArray.size());
     assert(datasetStareIndices.size() == yArray.size());
 
-    auto subset = new vector<stare_match>;
-
-    for (const dods_uint64 &j : targetIndices) {
-        auto x = xArray.begin();
-        auto y = yArray.begin();
-        for (const dods_uint64 &i : datasetStareIndices) {
-            // for (auto i = datasetStareIndices.begin(), end = datasetStareIndices.end(); i != end; ++i) {
-            if (cmpSpatial(i, j) != 0) { //(*i == j) {
-                subset->push_back(stare_match(*x, *y, j));
-            }
-            ++x; ++y;
-        }
-    }
-
-    return subset;
-}
-
-/**
- * @brief Return a collection of STARE Matches
- * @param targetIndices Target STARE indices (passed in by a client)
- * @param datasetStareIndices STARE indices of this dataset
- * @param xArray Matching X indices for the corresponding STARE index
- * @param yArray Matching Y indices for the corresponding STARE index
- * @return A STARE Matches collection.
- * @see stare_matches
- */
-
-unique_ptr<stare_matches>
-stare_subset_helper2(const vector<dods_uint64> &targetIndices, const vector<dods_uint64> &datasetStareIndices,
-             const vector<int> &xArray, const vector<int> &yArray)
-{
-    assert(datasetStareIndices.size() == xArray.size());
-    assert(datasetStareIndices.size() == yArray.size());
-
     //auto subset = new stare_matches;
     unique_ptr<stare_matches> subset(new stare_matches());
-    for (dods_uint64 targetIndex : targetIndices) {
-        auto x = xArray.begin();
-        auto y = yArray.begin();
-        for (dods_uint64 datasetStareIndice : datasetStareIndices) {
-            if (datasetStareIndice == targetIndex) {
+
+    auto x = xArray.begin();
+    auto y = yArray.begin();
+
+    for (dods_uint64 datasetStareIndex : datasetStareIndices) {
+        for (dods_uint64 targetIndex : targetIndices) {
+            if (cmpSpatial(datasetStareIndex, targetIndex) != 0) { // (datasetStareIndex == targetIndex) {
                 subset->add(*x, *y, targetIndex);
             }
-            ++x;
-            ++y;
         }
+        ++x;
+        ++y;
     }
 
     return subset;
@@ -308,10 +273,10 @@ get_sidecar_file_pathname(const string &pathName)
 /**
  * @brief Read the 32-bit integer array data
  * @param file The HDF5 Id of an open file
- * @param values Value-result parameter
+ * @param values Value-result parameter, a vector that can hold dods_int32 values
  */
 void
-get_int32_values(hid_t file, const string &variable, vector<int> &values)
+get_sidecar_int32_values(hid_t file, const string &variable, vector<dods_int32> &values)
 {
     hid_t dataset = H5Dopen(file, variable.c_str(), H5P_DEFAULT);
     if (dataset < 0)
@@ -341,10 +306,10 @@ get_int32_values(hid_t file, const string &variable, vector<int> &values)
 /**
  * @brief Read the unsigned 64-bit integer array data
  * @param file The HDF5 Id of an open file
- * @param values Value-result parameter
+ * @param values Value-result parameter, a vector that can hold dods_uint64 values
  */
 void
-get_uint64_values(hid_t file, const string &variable, vector<dods_uint64> &values)
+get_sidecar_uint64_values(hid_t file, const string &variable, vector<dods_uint64> &values)
 {
     hid_t dataset = H5Dopen(file, variable.c_str(), H5P_DEFAULT);
     if (dataset < 0)
@@ -395,7 +360,7 @@ StareIntersectionFunction::stare_intersection_dap4_function(D4RValueList *args, 
 
     //Read the data file and store the values of each dataset into an array
     vector<dods_uint64> dataStareIndices;
-    get_uint64_values(file, "Stare Index", dataStareIndices);
+    get_sidecar_uint64_values(file, "Stare Index", dataStareIndices);
 
     BaseType *pBaseType = args->get_rvalue(0)->value(dmr);
     Array *stareSrc = dynamic_cast<Array *>(pBaseType);
@@ -460,7 +425,7 @@ StareCountFunction::stare_count_dap4_function(D4RValueList *args, DMR &dmr)
         throw BESInternalError("Could not open file " + fullPath, __FILE__, __LINE__);
 
     vector<dods_uint64> datasetStareIndices;
-    get_uint64_values(file, "Stare Index", datasetStareIndices);
+    get_sidecar_uint64_values(file, "Stare Index", datasetStareIndices);
 
 #if 0
     // I wanted to see the values read from the MYD09.A2019003.2040.006.2019005020913_sidecar.h5
@@ -497,15 +462,15 @@ StareCountFunction::stare_count_dap4_function(D4RValueList *args, DMR &dmr)
  * @brief For the given target STARE indices, return the overlapping
  * dataset X, Y, and STARE indices
  *
- * This function will subset the dataset using the given vector of
- * STARE indices. The result of the subset operation is three
- * vectors. The first two contain the X and Y indices of the Latitude
- * and Longitude arrays. The third holds the STARE indices.
+ * This function will subset the dataset using the given vector of STARE indices. The result
+ * of the subset operation is three vectors. The first two contain the X and Y indices of
+ * the Latitude and Longitude arrays. The third vector contains the subset of the target
+ * indices that overlap the dataset's STARE indices.
  *
  * @param args A single vector of Unsigned 64-bit integer STARE Indices.
  * @param dmr The DMR for the given dataset. The dataset name is read from this object.
  * @return Three arrays holding the three values. The Nth elements of each array
- * are one set of matched values
+ * are one set of matched values.
  */
 BaseType *
 StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
@@ -524,12 +489,13 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
     if (file < 0)
         throw BESInternalError("Could not open file " + fullPath, __FILE__, __LINE__);
 
+    // Read values from the sidecar file - stare data about a given dataset
     vector<dods_uint64> datasetStareIndices;
-    get_uint64_values(file, "Stare Index", datasetStareIndices);
-    vector<int> xArray;
-    get_int32_values(file, "X", xArray);
-    vector<int> yArray;
-    get_int32_values(file, "Y", yArray);
+    get_sidecar_uint64_values(file, "Stare Index", datasetStareIndices);
+    vector<dods_int32> xArray;
+    get_sidecar_int32_values(file, "X", xArray);
+    vector<dods_int32> yArray;
+    get_sidecar_int32_values(file, "Y", yArray);
 
 #if 0
     // I wanted to see the values read from the MYD09.A2019003.2040.006.2019005020913_sidecar.h5
@@ -552,7 +518,7 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
 
     vector<dods_uint64> *targetIndices = extract_uint64_array(stareSrc);
 
-    unique_ptr <stare_matches> subset = stare_subset_helper2(*targetIndices, datasetStareIndices, xArray, yArray);
+    unique_ptr <stare_matches> subset = stare_subset_helper(*targetIndices, datasetStareIndices, xArray, yArray);
 
     delete targetIndices;
 
@@ -561,14 +527,17 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
 
     Array *stare = new Array("stare", new UInt64("stare"));
     stare->set_value(&(subset->stare_indices[0]), subset->stare_indices.size());
+    stare->append_dim(subset->stare_indices.size());
     result->add_var_nocopy(stare);
 
     auto x = new Array("x", new Int32("x"));
-    x->set_value(&(subset->x_indices[0]), subset->x_indices.size());
+    x->set_value(subset->x_indices, subset->x_indices.size());
+    x->append_dim(subset->x_indices.size());
     result->add_var_nocopy(x);
 
     auto y = new Array("y", new Int32("y"));
-    y->set_value(&(subset->y_indices[0]), subset->y_indices.size());
+    y->set_value(subset->y_indices, subset->y_indices.size());
+    y->append_dim(subset->y_indices.size());
     result->add_var_nocopy(y);
 
     return result;

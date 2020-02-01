@@ -105,6 +105,8 @@ void DapFunctions::initialize(const string &modname)
 
 #if HAVE_STARE
     libdap::ServerFunctionsList::TheList()->add_function(new StareIntersectionFunction());
+    libdap::ServerFunctionsList::TheList()->add_function(new StareCountFunction());
+    libdap::ServerFunctionsList::TheList()->add_function(new StareSubsetFunction());
 #endif
 
     GDALAllRegister();
