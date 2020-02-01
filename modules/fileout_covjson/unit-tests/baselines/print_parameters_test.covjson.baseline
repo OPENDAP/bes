@@ -1,0 +1,132 @@
+"parameters": {
+  "testParam1": {
+    "type": "Parameter",
+    "description": {
+      "en": "THIS IS A LONG NAME"
+    },
+    "unit": {
+      "label": {
+        "en": "Celsius"
+      },
+      "symbol": {
+        "value": "Celsius",
+        "type": "http://www.opengis.net/def/uom/UCUM/"
+      }
+    },
+    "observedProperty": {
+      "id": "http://vocab.nerc.ac.uk/standard_name/THIS IS A STANDARD NAME/",
+      "label": {
+        "en": "THIS IS A LONG NAME"
+      }
+    }
+  }
+},
+"parameters": {
+  "testParam1": {
+    "type": "Parameter",
+    "description": {
+      "en": "THIS IS A LONG NAME"
+    },
+    "unit": {
+      "label": {
+        "en": "Celsius"
+      },
+      "symbol": {
+        "value": "Celsius",
+        "type": "http://www.opengis.net/def/uom/UCUM/"
+      }
+    },
+    "observedProperty": {
+      "id": "http://vocab.nerc.ac.uk/standard_name/THIS IS A STANDARD NAME/",
+      "label": {
+        "en": "THIS IS A LONG NAME"
+      }
+    }
+  },
+  "testParam2": {
+    "type": "Parameter",
+    "description": {
+      "en": "THIS IS A LONGER NAME"
+    },
+    "unit": {
+      "label": {
+        "en": "Fahrenheit"
+      },
+      "symbol": {
+        "value": "Fahrenheit",
+        "type": "http://www.opengis.net/def/uom/UCUM/"
+      }
+    },
+    "observedProperty": {
+      "id": "http://vocab.nerc.ac.uk/standard_name/THIS IS A MORE STANDARD NAME/",
+      "label": {
+        "en": "THIS IS A LONGER NAME"
+      }
+    }
+  }
+},
+"parameters": {
+  "testParam1": {
+    "type": "Parameter",
+    "description": {
+      "en": "THIS IS A LONG NAME"
+    },
+    "unit": {
+      "label": {
+        "en": "Celsius"
+      },
+      "symbol": {
+        "value": "Celsius",
+        "type": "http://www.opengis.net/def/uom/UCUM/"
+      }
+    },
+    "observedProperty": {
+      "id": "http://vocab.nerc.ac.uk/standard_name/THIS IS A STANDARD NAME/",
+      "label": {
+        "en": "THIS IS A LONG NAME"
+      }
+    }
+  },
+  "testParam2": {
+    "type": "Parameter",
+    "description": {
+      "en": "THIS IS A LONGER NAME"
+    },
+    "unit": {
+      "label": {
+        "en": "Fahrenheit"
+      },
+      "symbol": {
+        "value": "Fahrenheit",
+        "type": "http://www.opengis.net/def/uom/UCUM/"
+      }
+    },
+    "observedProperty": {
+      "id": "http://vocab.nerc.ac.uk/standard_name/THIS IS A MORE STANDARD NAME/",
+      "label": {
+        "en": "THIS IS A LONGER NAME"
+      }
+    }
+  },
+  "testParam3": {
+    "type": "Parameter",
+    "description": {
+      "en": "THIS IS THE LONGEST NAME"
+    },
+    "unit": {
+      "label": {
+        "en": "Kelvin"
+      },
+      "symbol": {
+        "value": "Kelvin",
+        "type": "http://www.opengis.net/def/uom/UCUM/"
+      }
+    },
+    "observedProperty": {
+      "id": "http://vocab.nerc.ac.uk/standard_name/THIS IS AN EVEN MORE STANDARD NAME/",
+      "label": {
+        "en": "THIS IS THE LONGEST NAME"
+      }
+    }
+  }
+},
