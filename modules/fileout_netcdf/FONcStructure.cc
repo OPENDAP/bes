@@ -107,6 +107,8 @@ void FONcStructure::convert(vector<string> embed)
             BESDEBUG("fonc", "FONcStructure::convert - converting " << bt->name() << endl);
             FONcBaseType *fbt = FONcUtils::convert(bt);
             fbt->setVersion(this->_ncVersion);
+            if(true == isNetCDF4())
+                fbt->setNC4DataModel(this->_nc4_datamodel);
             _vars.push_back(fbt);
             fbt->convert(embed);
         }

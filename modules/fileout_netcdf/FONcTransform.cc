@@ -143,6 +143,12 @@ void FONcTransform::transform()
             // This is a factory class call, and 'fg' is specialized for 'v'
             FONcBaseType *fb = FONcUtils::convert(v);
             fb->setVersion( FONcTransform::_returnAs );
+            if ( FONcTransform::_returnAs == RETURNAS_NETCDF4 ) {
+                if (FONcRequestHandler::classic_model)
+                    fb->setNC4DataModel("NC4_CLASSIC_MODEL");
+                else 
+                    fb->setNC4DataModel("NC4_ENHANCED");
+            }
             _fonc_vars.push_back(fb);
 
             vector<string> embed;

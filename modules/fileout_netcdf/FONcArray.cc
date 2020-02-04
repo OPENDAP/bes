@@ -111,7 +111,7 @@ void FONcArray::convert(vector<string> embed)
 
     BESDEBUG("fonc", "FONcArray::convert() - converting array " << _varname << endl);
 
-    d_array_type = FONcUtils::get_nc_type(d_a->var());
+    d_array_type = FONcUtils::get_nc_type(d_a->var(),isNetCDF4_ENHANCED());
     d_ndims = d_a->dimensions();
     d_actual_ndims = d_ndims; //replace this with _a->dimensions(); below TODO
     if (d_array_type == NC_CHAR) {

@@ -99,13 +99,17 @@ string FONcUtils::id2netcdf(string in)
  * @param element The OPeNDAP element to translate
  * @return the netcdf data type
  */
-nc_type FONcUtils::get_nc_type(BaseType *element)
+nc_type FONcUtils::get_nc_type(BaseType *element,bool IsNC4_ENHANCED)
 {
     nc_type x_type = NC_NAT; // the constant ncdf uses to define simple type
 
     string var_type = element->type_name();
-    if (var_type == "Byte")        	// check this for dods type
-        x_type = NC_SHORT;
+    if (var_type == "Byte") {       	// check this for dods type
+        if(IsNC4_ENHANCED) 
+            x_type = NC_UBYTE;
+        else 
+            x_type = NC_SHORT;
+    }
     else if (var_type == "String")
         x_type = NC_CHAR;
     else if (var_type == "Int16")
@@ -115,12 +119,20 @@ nc_type FONcUtils::get_nc_type(BaseType *element)
     // the inconsistent datatype between fillvalue and the variable. KY 2012-10-25
     //else if( var_type == "UInt16" )
     //  x_type = NC_SHORT ;
-    else if (var_type == "UInt16")
-        x_type = NC_INT;
+    else if (var_type == "UInt16"){
+        if(IsNC4_ENHANCED) 
+            x_type = NC_USHORT;
+        else 
+            x_type = NC_INT;
+    }
     else if (var_type == "Int32")
         x_type = NC_INT;
-    else if (var_type == "UInt32")
-        x_type = NC_INT;
+    else if (var_type == "UInt32"){
+        if(IsNC4_ENHANCED) 
+            x_type = NC_UINT;
+        else 
+            x_type = NC_INT;
+    }
     else if (var_type == "Float32")
         x_type = NC_FLOAT;
     else if (var_type == "Float64")
