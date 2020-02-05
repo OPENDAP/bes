@@ -1,0 +1,9 @@
+"ranges": {
+  "testParam1": {
+    "type": "NdArray",
+    "dataType": "float", 
+    "axisNames": ["t", "y", "x"],
+    [3, 3, 3]
+    [32765.2, 25222.7, 1431516.9, 3289741.2, 328974268.3]
+  }
+}
