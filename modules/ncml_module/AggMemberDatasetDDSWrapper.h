@@ -76,7 +76,7 @@ private:
 // class AggMemberDatasetDDSWrapper
 
 }
-;
+
 // namespace agg_util
 
 #endif /* __AGG_UTIL__AGG_MEMBER_DATASET_DDS_WRAPPER_H__ */

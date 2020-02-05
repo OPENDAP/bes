@@ -146,7 +146,8 @@ time_t BESRequestHandler::get_lmt(const string &name){
     return statbuf.st_mtime;
 }//end get_lmt()
 
-void BESRequestHandler::add_attributes(BESDataHandlerInterface){
+//void BESRequestHandler::add_attributes(BESDataHandlerInterface &bdhi){
+void BESRequestHandler::add_attributes(BESDataHandlerInterface &){
 
     // The current implementation ensures the execution of this function in the derived class.
     // So will throw an error if code comes here. KY 10/30/19

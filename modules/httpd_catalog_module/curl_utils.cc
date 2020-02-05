@@ -473,8 +473,12 @@ CURL *init(char *error_buffer)
  @exception Error Thrown if libcurl encounters a problem; the libcurl
  error message is stuffed into the Error object.
  */
-long read_url(CURL *curl, const string &url, int fd, vector<string> *resp_hdrs, const vector<string> *request_headers, char error_buffer[])
+long read_url(CURL *curl, const string &url, int fd, vector<string> *resp_hdrs, const vector<string> *request_headers, char [])
 {
+	//old signature, replaced due to unused parameter,
+	//left char array in case external fct still calls this fct with a char array - SBL 1.28.2020
+	// long read_url(CURL *curl, const string &url, int fd, vector<string> *resp_hdrs, const vector<string> *request_headers, char error_buffer[])
+
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     BESDEBUG(MODULE, prolog << "url: " << url << endl);
 

@@ -1572,5 +1572,5 @@ vector<string> AggregationElement::getValidAttributes()
 
 
 }
-;
+
 // namespace ncml_module

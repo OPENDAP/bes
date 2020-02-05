@@ -903,8 +903,12 @@ void FoDapCovJsonTransform::transformNodeWorker(ostream *strm, vector<libdap::Ba
  * @param indent Indent the output so humans can make sense of it
  * @param isCoverageCollection true if CoverageCollection format needed, false if normal Coverage
  */
-void FoDapCovJsonTransform::printCoverageHeaderWorker(ostream *strm, string indent, bool isCoverageCollection)
+void FoDapCovJsonTransform::printCoverageHeaderWorker(ostream *strm, string indent, bool)
 {
+	//old signature, replaced due to unused parameter,
+	//left bool in case external fct still calls this fct with a bool - SBL 1.28.2020
+	//void FoDapCovJsonTransform::printCoverageHeaderWorker(ostream *strm, string indent, bool isCoverageCollection)
+
     string child_indent1 = indent + _indent_increment;
     string child_indent2 = child_indent1 + _indent_increment;
 
