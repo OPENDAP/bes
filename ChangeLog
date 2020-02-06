@@ -1,3 +1,106 @@
+
+2019-12-24  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-316, remove one debugging line.
+
+2019-12-23  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-316,correct the unlimited dimension path for GPM level 3-like case.
+
+2019-12-13  Muqun Yang  <myang6@hdfgroup.org>
+
+	Add besstandalone debugging commands for modules used to access the HDF5 files.
+
+2019-12-12  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-315, forgot adding the fake HDF5 files that tests the new NAME handling.
+	HFVHANDLER-315, add new bescmd and baseline files and update .at files for the new NAME handling feature.
+	HFVHANDLER-315, update the eos5 module and NASA GLAH baselines with the new NAME attribute handling. 
+	                All the tested files with the NAME attribute can successfully generate netCDF-4 files via fileout netcdf.
+
+2019-12-11  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-315, remove the NAME attribute for dimennsion scale and coordinate variables. This makes the netCDF-4 happy. Need to update GLAH
+
+2019-11-27  slloyd <slloyd@localhost>
+
+	HK-459 - suppressed debug messages in .yy files
+
+2019-11-26  slloyd <slloyd@localhost>
+
+	HK-459 - suppressing error msgs in .yy files
+
+2019-11-04  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-508, add memory cache for dds in the data access(datadds). This is necessary since DDS in the data access may not include attributes.
+
+2019-11-01  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-508, check in code skeleton for the data access without attribute feature. Not tested yet.
+	HK-508, forgot checking the baseline and bescmd files.
+	HK-508, adding the server-side function tests for the feature of the data access without attributes.
+
+2019-10-04  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-309, add code to remove group path of the CF conventions attribute. Subject to change per comments on this topic.
+
+2019-10-03  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-309, add code to remove the path of important CF global attributes.
+
+2019-10-02  slloyd <slloyd@localhost>
+	HK-72 - Header file fixes
+	removed 'using' statement from BESIndent.h causing errors
+	resolved errors in header files in HDF5
+
+2019-09-25  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-307, add a script to fill in the testing files at the server
+	HFVHANDLER-307, add shell scripts to test the access of HDF5 files on Mac via nccopy.
+	HFVHANDLER-307, add nccopy to access HDF5 file tests for default and NASA files.
+
+2019-09-24  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-307, Add scripts to compare the nccopy results.
+	HFVHANDLER-307, check in the skeleton of nccopy testing scripts.
+
+2019-09-13  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-257, add README.
+	HFVHANDLER-257, update the nccopy shell script. Will handle this in another ticket.
+
+2019-09-12  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-257, check in the shell script for Mac. need special string and sed handling.
+	HFVHANDLER-257, remove old bescmd files.
+	HFVHANDLER-257, add default and NASA file tests for filenetCDF 3 and 4 modules. ncdump from Hyrax's dependency distribution is used to check the output.
+	HFVHANDLER-257, add testing scripts for nccopy and fileout netcdf.
+
+2019-09-11  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-257, adding the skeleton of test.sh and two bescmd for fileout netcdf.
+
+2019-08-20  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-304, add commented code to prepare for the attribute-turning off in the data access. Will add the implementation after discussing with the team if function_check routines can be moved to BES layer.
+
+2019-08-09  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-288, revise the BES key description.
+
+2019-08-08  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-288, continue editing the HDF5 BES key configuration file.
+	HFVHANDLER-288, continue editing the configuration file.
+
+2019-08-06  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-288, revising the BES key description in the configuration file
+
+2019-08-05  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-288, update the BES key information at h5.conf.in.
+
 2019-05-17  Muqun Yang  <myang6@hdfgroup.org>
 
 	ESDIS-560, remove unused catch block.

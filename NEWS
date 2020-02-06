@@ -1,3 +1,10 @@
+News for version 1.16.1
+
+Updates since 2019-07-09, 
+mainly performance improvement not to include DAS in the data access
+and minor enhancement to support the access of NASA files for the CF option.
+See the ChangeLog for details.
+
 Updated for Hyrax 1.15.3
 
 Coverity Scan for libdap4, BES, and OLFS.
