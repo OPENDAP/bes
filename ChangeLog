@@ -1,3 +1,36 @@
+2020-01-02 Muqun Yang  <myang6@hdfgroup.org>
+
+	HFRHANDLER-329, 
+	fix the memory leaking by carrying out the internal vdata
+	checks at vgroup.cc.
+
+2019-11-27 slloyd <slloyd@localhost>
+
+	HK-459 - suppressed debug messages in .yy files
+
+2019-11-26 slloyd <slloyd@localhost>
+
+	HK-459 - Suppressing error msgs in .yy files
+
+2019-11-14 James Gallagher <jgallagher@opendap.org>
+	
+	More fixes for HK-474. Mostly comments, error text, unused code removal.
+
+2019-10-23 slloyd <slloyd@localhost>
+
+	HK-498 - clean up of 'using' in headers
+
+2019-10-02 slloyd <slloyd@localhost>
+
+	HK-72 - header file fixes
+
+	removed 'using' statements from BESIndent.h causing error
+	fixed the errors in header files in HDF4
+
+2019-07-09 James Gallagher <jgallagher@opendap.org>
+
+	Updates for Hyrax 1.16.0
+
 2019-07-08  Muqun Yang  <myang6@hdfgroup.org>
 
 	ESDIS-560, try to define each variable in one line.
