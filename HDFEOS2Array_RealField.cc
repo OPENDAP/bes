@@ -1385,16 +1385,16 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
 #endif
     
 #if 0
-    // We need to loop through all datatpes to allocate the memory buffer for the data.
+// We need to loop through all datatpes to allocate the memory buffer for the data.
 // It is hard to add comments to the macro. We may need to change them to general routines in the future.
 // Some MODIS products use both valid_range(valid_min, valid_max) and fillvalues for data fields. When do recalculating,
 // I check fillvalue first, then check valid_min and valid_max if they are available. 
 // The middle check is_special_value addresses the MODIS L1B special value. 
 // ////////////////////////////////////////////////////////////////////////////////////
-//    if((float)tmptr[l] != fillvalue ) \
+/*    if((float)tmptr[l] != fillvalue ) \
 //                    { \
 //                        if(false == HDFCFUtil::is_special_value(field_dtype,fillvalue,tmptr[l]))\
- //                       { \
+//                        { \
 //                            if (orig_valid_min<tmpval[l] && orig_valid_max>tmpval[l] \
 //                            if(sotype==MODIS_MUL_SCALE) \
 //                                tmpval[l] = (tmptr[l]-field_offset)*scale; \
@@ -1403,7 +1403,7 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
 //                            else if(sotype==MODIS_DIV_SCALE) \
 //                                tmpval[l] = (tmptr[l]-field_offset)/scale; \
 //                        } \
-////
+*/
 #define RECALCULATE(CAST, DODS_CAST, VAL) \
 { \
     bool change_data_value = false; \
@@ -1509,11 +1509,11 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
 // This restriction is in theory not necessary, but for more MODIS data products,
 // this restriction may be valid since valid_range pairs with scale/offset to identify
 // the valid data values. KY 2014-02-19
-////
-//    if((float)tmptr[l] != fillvalue ) \
+//
+/*    if((float)tmptr[l] != fillvalue ) \
 //                    { \
 //          f(false == HDFCFUtil::is_special_value(field_dtype,fillvalue,tmptr[l]))\
- //                       { \
+//                       { \
 //                            if (orig_valid_min<tmpval[l] && orig_valid_max>tmpval[l] \
 //                            if(sotype==MODIS_MUL_SCALE) \
 //                                tmpval[l] = (tmptr[l]-field_offset)*scale; \
@@ -1522,7 +1522,7 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
 //                            else if(sotype==MODIS_DIV_SCALE) \
 //                                tmpval[l] = (tmptr[l]-field_offset)/scale; \
 //                        } \
-////
+*/
 #define RECALCULATE(CAST, DODS_CAST, VAL) \
 { \
     bool change_data_value = false; \

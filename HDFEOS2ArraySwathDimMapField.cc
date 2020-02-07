@@ -511,7 +511,7 @@ bool HDFEOS2ArraySwathDimMapField::Field1DSubset (T * outlatlon,
 // from the DAP expression constraint
 template < class T >
 bool HDFEOS2ArraySwathDimMapField::Field2DSubset (T * outlatlon,
-                                                  const int majordim,
+                                                  const int /*majordim //unused SBL 2/7/20 */,
                                                   const int minordim,
                                                   T * latlon,
                                                   int32 * offset,
@@ -1062,13 +1062,13 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
 
 ////
 // RECALCULATE formula
-//                            if(sotype==MODIS_MUL_SCALE) \
+/*                            if(sotype==MODIS_MUL_SCALE) \
 //                                tmpval[l] = (tmptr[l]-field_offset)*scale; \
 //                            else if(sotype==MODIS_EQ_SCALE) \
 //                                tmpval[l] = tmptr[l]*scale + field_offset; \
 //                            else if(sotype==MODIS_DIV_SCALE) \
 //                                tmpval[l] = (tmptr[l]-field_offset)/scale; \
-////
+*/
 
 
 #define RECALCULATE(CAST, DODS_CAST, VAL) \

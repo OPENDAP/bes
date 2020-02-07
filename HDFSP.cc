@@ -830,7 +830,9 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                 }
 
                 //Ignore the handling of SDS objects. They are handled elsewhere. 
-                else;
+                else{
+
+                }
             }
 // STOP: add error handling
 cleanFail:            
@@ -1543,7 +1545,9 @@ cerr<<"CSH products "<<endl;
             else if ((attrvalue.find_first_of ('C', 0) == 0)
                     && (attrvalue.find (".L3m", 0) != std::string::npos))
                 czcsl3mflag++;
-            else;
+            else{
+
+            }
         }
         if ((*i)->getName () == "Sensor Name") {
 
@@ -1569,7 +1573,9 @@ cerr<<"CSH products "<<endl;
                 czcsl2flag++;
                 czcsl3mflag++;
             }
-            else;
+            else{
+
+            }
         }
 
         if ((modisal2flag == 2) || (modisal3mflag == 2)
@@ -2226,7 +2232,9 @@ throw (Exception)
 
                 }
                 // Do nothing for other objects
-                else;
+                else{
+
+                }
             }
             //if(full_path != NULL)
                 free (full_path);
@@ -3062,7 +3070,9 @@ throw (Exception)
                                 " is not found");
                     }
                 }
-                else;
+                else{
+
+                }
             }
             //if(full_path != NULL)
             free (full_path);
@@ -3275,7 +3285,9 @@ throw (Exception)
                 goto cleanFail;
             }
         }
-        else;
+        else{
+
+        }
     }
     vdata_id = -1;
 cleanFail:
@@ -3395,7 +3407,9 @@ throw (Exception)
                (temp_str.find("Geolocation Fields") != std::string::npos))
                 sds_ref_list.remove(obj_ref);
             }
-            else;
+            else{
+
+            }
         }
 cleanFail:
     free (cfull_path);
@@ -3616,7 +3630,9 @@ throw (Exception)
                 }
             }
         }
-        else;
+        else{
+
+        }
     }
 
 cleanFail:

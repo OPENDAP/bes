@@ -586,7 +586,7 @@ void LoadStructureFromField(HDFStructure * stru, hdf_field & f, int row)
 
 // Load an HDFStructure with the contents of a vgroup.
 void LoadStructureFromVgroup(HDFStructure * str, const hdf_vgroup & vg,
-                             const string & hdf_file)
+                             const string & /*hdf_file //unused SBL 2/7/20 */)
 {
     int i = 0;
     int err = 0;

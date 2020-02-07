@@ -1733,7 +1733,7 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int g_fieldtype,
 
 // Map the subset of the lat/lon buffer to the corresponding 2D array.
 template<class T> void
-HDFEOS2ArrayGridGeoField::LatLon2DSubset (T * outlatlon, int majordim,
+HDFEOS2ArrayGridGeoField::LatLon2DSubset (T * outlatlon, int /*majordim //unused SBL 2/7/20 */,
                                           int minordim, T * latlon,
                                           int32 * offset, int32 * count,
                                           int32 * step)

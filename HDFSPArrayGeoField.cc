@@ -1822,7 +1822,7 @@ HDFSPArrayGeoField::format_constraint (int *offset, int *step, int *count)
 // Subset of latitude and longitude to follow the parameters from the DAP expression constraint
 template < typename T >
 void HDFSPArrayGeoField::LatLon2DSubset (T * outlatlon,
-                                         int majordim,
+                                         int /*majordim //unused SBL 2/7/20*/,
                                          int minordim,
                                          T * latlon,
                                          int32 * offset,

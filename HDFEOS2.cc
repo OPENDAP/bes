@@ -3221,7 +3221,7 @@ void Dataset::ReadFields(int32 (*entries)(int32, int32, int32 *),
                          int32 (*inq)(int32, char *, int32 *, int32 *),
                          intn (*fldinfo)
                          (int32, char *, int32 *, int32 *, int32 *, char *),
-                         intn (*readfld)
+                         intn (*readfld) //unused SBL 2/7/20
                          (int32, char *, int32 *, int32 *, int32 *, VOIDP),
                          intn (*getfill)(int32, char *, VOIDP),
                          bool geofield,
