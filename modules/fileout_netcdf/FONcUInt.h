@@ -1,4 +1,4 @@
-// FONcInt.h
+// FONcUInt.h
 
 // This file is part of BES Netcdf File Out Module
 
@@ -19,18 +19,13 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
-// You can contact University Corporation for Atmospheric Research at
-// 3080 Center Green Drive, Boulder, CO 80301
-
-// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
-// Please read the full copyright statement in the file COPYRIGHT_UCAR.
-//
 // Authors:
-//      pwest       Patrick West <pwest@ucar.edu>
-//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+//      kyang     Kent Yang  <myang6@hdfgroup.org>
+// Note: The code follows FONcInt.h.
 
-#ifndef FONcInt_h_
-#define FONcInt_h_ 1
+
+#ifndef FONcUInt_h_
+#define FONcUInt_h_ 1
 
 #include <BaseType.h>
 
@@ -38,19 +33,19 @@ using namespace libdap ;
 
 #include "FONcBaseType.h"
 
-/** @brief A DAP Int32 and UInt32 with file out netcdf information included
+/** @brief A DAP UInt32 with file out netcdf information included
  *
- * This class represents a DAP Int32 and UInt32 with additional information
+ * This class represents a DAP UInt32 with additional information
  * needed to write it out to a netcdf file. Includes a reference to the
- * actual DAP Int32 or UInt32 being converted
+ * actual DAP UInt32 being converted
  */
-class FONcInt : public FONcBaseType
+class FONcUInt : public FONcBaseType
 {
 private:
     BaseType *			_bt ;
 public:
-    				FONcInt( BaseType *b ) ;
-    virtual			~FONcInt() ;
+    				FONcUInt( BaseType *b ) ;
+    virtual			~FONcUInt() ;
 
     virtual void		define( int ncid ) ;
     virtual void		write( int ncid ) ;
@@ -61,5 +56,5 @@ public:
     virtual void		dump( ostream &strm ) const ;
 } ;
 
-#endif // FONcInt_h_
+#endif // FONcUInt_h_
 

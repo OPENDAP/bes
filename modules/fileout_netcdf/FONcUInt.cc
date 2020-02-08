@@ -1,4 +1,4 @@
-// FONcInt.cc
+// FONcUInt.cc
 
 // This file is part of BES Netcdf File Out Module
 
@@ -26,49 +26,48 @@
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
 // Authors:
-//      pwest       Patrick West <pwest@ucar.edu>
-//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+//      kyang     Kent Yang  <myang6@hdfgroup.org>
+// Note: The code follows FONcUInt.cc.
+
 
 #include <BESInternalError.h>
 #include <BESDebug.h>
-#include <Int32.h>
 #include <UInt32.h>
 
-#include "FONcInt.h"
+#include "FONcUInt.h"
 #include "FONcUtils.h"
 #include "FONcAttributes.h"
 
-/** @brief Constructor for FOncInt that takes a DAP Int32 or UInt32
+/** @brief Constructor for FOncUInt that takes a DAP UInt32
  *
  * This constructor takes a DAP BaseType and makes sure that it is a DAP
- * Int32 or UInt32 instance. If not, it throws an exception
+ * UInt32 instance. If not, it throws an exception
  *
- * @param b A DAP BaseType that should be an int32 or uint32
- * @throws BESInternalError if the BaseType is not an Int32 or UInt32
+ * @param b A DAP BaseType that should be an uint32
+ * @throws BESInternalError if the BaseType is not an UInt32
  */
-FONcInt::FONcInt( BaseType *b )
+FONcUInt::FONcUInt( BaseType *b )
     : FONcBaseType(), _bt( b )
 {
-    Int32 *i32 = dynamic_cast<Int32 *>(b) ;
     UInt32 *u32 = dynamic_cast<UInt32 *>(b) ;
-    if( !i32 && !u32 )
+    if( !u32 )
     {
-	string s = (string)"File out netcdf, FONcInt was passed a "
-		   + "variable that is not a DAP Int32 or UInt32" ;
+	string s = (string)"File out netcdf, FONcUInt was passed a "
+		   + "variable that is not a DAP UInt32" ;
 	throw BESInternalError( s, __FILE__, __LINE__ ) ;
     }
 }
 
 /** @brief Destructor that cleans up the instance
  *
- * The DAP Int32 or UInt32 instance does not belong to the FONcByte
+ * The DAP UInt32 instance does not belong to the FONcByte
  * instance, so it is not deleted.
  */
-FONcInt::~FONcInt()
+FONcUInt::~FONcUInt()
 {
 }
 
-/** @brief define the DAP Int32 or UInt32 in the netcdf file
+/** @brief define the DAP UInt32 in the netcdf file
  *
  * The definition actually takes place in FONcBaseType. This function
  * adds the attributes for the instance as well as an attribute if
@@ -76,10 +75,10 @@ FONcInt::~FONcInt()
  *
  * @param ncid The id of the NetCDF file
  * @throws BESInternalError if there is a problem defining the
- * Int32 or UInt32
+ * UInt32
  */
 void
-FONcInt::define( int ncid )
+FONcUInt::define( int ncid )
 {
     FONcBaseType::define( ncid ) ;
 
@@ -93,50 +92,50 @@ FONcInt::define( int ncid )
     }
 }
 
-/** @brief Write the int out to the netcdf file
+/** @brief Write the unsigned int out to the netcdf file
  *
- * Once the int is defined, the value of the int can be written out
+ * Once the unsigned int is defined, the value of the unsigned int can be written out
  *
  * @param ncid The id of the netcdf file
  * @throws BESInternalError if there is a problem writing the value
  */
 void
-FONcInt::write( int ncid )
+FONcUInt::write( int ncid )
 {
-    BESDEBUG( "fonc", "FONcInt::write for var " << _varname << endl ) ;
+    BESDEBUG( "fonc", "FONcUInt::write for var " << _varname << endl ) ;
     size_t var_index[] = {0} ;
-    int *data = new int ;
+    unsigned int *data = new unsigned int ;
     _bt->buf2val( (void**)&data ) ;
-    int stax = nc_put_var1_int( ncid, _varid, var_index, data ) ;
+    int stax = nc_put_var1_uint( ncid, _varid, var_index, data ) ;
     if( stax != NC_NOERR )
     {
 	string err = (string)"fileout.netcdf - "
-		     + "Failed to write int data for "
+		     + "Failed to write unsigned int data for "
 		     + _varname ;
 	FONcUtils::handle_error( stax, err, __FILE__, __LINE__ ) ;
     }
     delete data ;
-    BESDEBUG( "fonc", "FONcInt::done write for var " << _varname << endl ) ;
+    BESDEBUG( "fonc", "FONcUInt::done write for var " << _varname << endl ) ;
 }
 
-/** @brief returns the name of the DAP Int32 or UInt32
+/** @brief returns the name of the DAP UInt32
  *
- * @returns The name of the DAP Int32 or UInt32
+ * @returns The name of the DAP UInt32
  */
 string
-FONcInt::name()
+FONcUInt::name()
 {
     return _bt->name() ;
 }
 
 /** @brief returns the netcdf type of the DAP object
  *
- * @returns The nc_type of NC_INT
+ * @returns The nc_type of NC_UINT
  */
 nc_type
-FONcInt::type()
+FONcUInt::type()
 {
-    return NC_INT ;
+    return NC_UINT ;
 }
 
 /** @brief dumps information about this object for debugging purposes
@@ -146,9 +145,9 @@ FONcInt::type()
  * @param strm C++ i/o stream to dump the information to
  */
 void
-FONcInt::dump( ostream &strm ) const
+FONcUInt::dump( ostream &strm ) const
 {
-    strm << BESIndent::LMarg << "FONcInt::dump - ("
+    strm << BESIndent::LMarg << "FONcUInt::dump - ("
 			     << (void *)this << ")" << endl ;
     BESIndent::Indent() ;
     strm << BESIndent::LMarg << "name = " << _bt->name()  << endl ;

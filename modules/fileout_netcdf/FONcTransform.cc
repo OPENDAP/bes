@@ -141,7 +141,8 @@ void FONcTransform::transform()
             BESDEBUG("fonc", "FONcTransform::transform() - Converting variable '" << v->name() << "'" << endl);
 
             // This is a factory class call, and 'fg' is specialized for 'v'
-            FONcBaseType *fb = FONcUtils::convert(v);
+            FONcBaseType *fb = FONcUtils::convert(v,FONcTransform::_returnAs,FONcRequestHandler::classic_model);
+#if 0
             fb->setVersion( FONcTransform::_returnAs );
             if ( FONcTransform::_returnAs == RETURNAS_NETCDF4 ) {
                 if (FONcRequestHandler::classic_model)
@@ -149,6 +150,7 @@ void FONcTransform::transform()
                 else 
                     fb->setNC4DataModel("NC4_ENHANCED");
             }
+#endif
             _fonc_vars.push_back(fb);
 
             vector<string> embed;

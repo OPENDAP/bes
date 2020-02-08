@@ -1,4 +1,4 @@
-// FONcShort.cc
+// FONcUShort.cc
 
 // This file is part of BES Netcdf File Out Module
 
@@ -26,35 +26,34 @@
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
 // Authors:
-//      pwest       Patrick West <pwest@ucar.edu>
-//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+//      kyang     Kent Yang  <myang6@hdfgroup.org>
+// Note: The code follows FONcUShort.cc.
+
 
 #include <BESInternalError.h>
 #include <BESDebug.h>
-#include <Int16.h>
 #include <UInt16.h>
 
-#include "FONcShort.h"
+#include "FONcUShort.h"
 #include "FONcUtils.h"
 #include "FONcAttributes.h"
 
-/** @brief Constructor for FOncShort that takes a DAP Int16 or UInt16
+/** @brief Constructor for FOncShort that takes a DAP  UInt16
  *
  * This constructor takes a DAP BaseType and makes sure that it is a DAP
- * Int16 or UInt16 instance. If not, it throws an exception
+ * UInt16 instance. If not, it throws an exception
  *
  * @param b A DAP BaseType that should be a byte
- * @throws BESInternalError if the BaseType is not a Int16 or UInt16
+ * @throws BESInternalError if the BaseType is not a UInt16
  */
-FONcShort::FONcShort( BaseType *b )
+FONcUShort::FONcUShort( BaseType *b )
     : FONcBaseType(), _bt( b )
 {
-    Int16 *i16 = dynamic_cast<Int16 *>(b) ;
     UInt16 *u16 = dynamic_cast<UInt16 *>(b) ;
-    if( !i16 && !u16 )
+    if(  !u16 )
     {
-	string s = (string)"File out netcdf, FONcShort was passed a "
-		   + "variable that is not a DAP Int16 or UInt16" ;
+	string s = (string)"File out netcdf, FONcUShort was passed a "
+		   + "variable that is not a DAP  UInt16" ;
 	throw BESInternalError( s, __FILE__, __LINE__ ) ;
     }
 }
@@ -64,7 +63,7 @@ FONcShort::FONcShort( BaseType *b )
  * The DAP Int16 or UInt16 instance does not belong to the FONcByte
  * instance, so it is not deleted.
  */
-FONcShort::~FONcShort()
+FONcUShort::~FONcUShort()
 {
 }
 
@@ -79,7 +78,7 @@ FONcShort::~FONcShort()
  * Byte
  */
 void
-FONcShort::define( int ncid )
+FONcUShort::define( int ncid )
 {
     FONcBaseType::define( ncid ) ;
 
@@ -93,23 +92,23 @@ FONcShort::define( int ncid )
     }
 }
 
-/** @brief Write the short out to the netcdf file
+/** @brief Write the ushort out to the netcdf file
  *
- * Once the short is defined, the value of the short can be written out
- * as well using nc_put_var1_short
+ * Once the ushort is defined, the value of the ushort can be written out
+ * as well using nc_put_var1_ushort
  *
  * @param ncid The id of the netcdf file
  * @throws BESInternalError if there is a problem writing the value out
  * to the netcdf file
  */
 void
-FONcShort::write( int ncid )
+FONcUShort::write( int ncid )
 {
-    BESDEBUG( "fonc", "FONcShort::write for var " << _varname << endl ) ;
+    BESDEBUG( "fonc", "FONcUShort::write for var " << _varname << endl ) ;
     size_t var_index[] = {0} ;
-    short *data = new short ;
+    unsigned short *data = new unsigned short ;
     _bt->buf2val( (void**)&data ) ;
-    int stax = nc_put_var1_short( ncid, _varid, var_index, data ) ;
+    int stax = nc_put_var1_ushort( ncid, _varid, var_index, data ) ;
     if( stax != NC_NOERR )
     {
 	string err = (string)"fileout.netcdf - "
@@ -118,7 +117,7 @@ FONcShort::write( int ncid )
 	FONcUtils::handle_error( stax, err, __FILE__, __LINE__ ) ;
     }
     delete data ;
-    BESDEBUG( "fonc", "FONcShort::done write for var " << _varname << endl ) ;
+    BESDEBUG( "fonc", "FONcUShort::done write for var " << _varname << endl ) ;
 }
 
 /** @brief returns the name of the DAP Int16 or UInt16
@@ -126,7 +125,7 @@ FONcShort::write( int ncid )
  * @returns The name of the DAP Int16 or UInt16
  */
 string
-FONcShort::name()
+FONcUShort::name()
 {
     return _bt->name() ;
 }
@@ -136,9 +135,9 @@ FONcShort::name()
  * @returns The nc_type of NC_SHORT
  */
 nc_type
-FONcShort::type()
+FONcUShort::type()
 {
-    return NC_SHORT ;
+    return NC_USHORT ;
 }
 
 /** @brief dumps information about this object for debugging purposes
@@ -148,9 +147,9 @@ FONcShort::type()
  * @param strm C++ i/o stream to dump the information to
  */
 void
-FONcShort::dump( ostream &strm ) const
+FONcUShort::dump( ostream &strm ) const
 {
-    strm << BESIndent::LMarg << "FONcShort::dump - ("
+    strm << BESIndent::LMarg << "FONcUShort::dump - ("
 			     << (void *)this << ")" << endl ;
     BESIndent::Indent() ;
     strm << BESIndent::LMarg << "name = " << _bt->name()  << endl ;

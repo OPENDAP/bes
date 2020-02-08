@@ -38,7 +38,9 @@
 #include "FONcByte.h"
 #include "FONcStr.h"
 #include "FONcShort.h"
+#include "FONcUShort.h"
 #include "FONcInt.h"
+#include "FONcUInt.h"
 #include "FONcFloat.h"
 #include "FONcDouble.h"
 #include "FONcStructure.h"
@@ -191,9 +193,12 @@ string FONcUtils::gen_name(const vector<string> &embed, const string &name, stri
  * @throws BESInternalError if the DAP object is not an expected type
  */
 FONcBaseType *
-FONcUtils::convert(BaseType *v)
+FONcUtils::convert(BaseType *v,const string &ncdf_version, bool is_classic_model)
 {
     FONcBaseType *b = 0;
+    bool is_netcdf4_enhanced = false;
+    if(ncdf_version == RETURNAS_NETCDF4 && is_classic_model == false)
+        is_netcdf4_enhanced = true;
     switch (v->type()) {
     case dods_str_c:
     case dods_url_c:
@@ -202,12 +207,24 @@ FONcUtils::convert(BaseType *v)
     case dods_byte_c:
         b = new FONcByte(v);
         break;
+    case dods_uint16_c: {
+        if(true == is_netcdf4_enhanced)
+            b = new FONcUShort(v); 
+        else 
+            b = new FONcShort(v);
+        break;
+    }
     case dods_int16_c:
-    case dods_uint16_c:
         b = new FONcShort(v);
         break;
+    case dods_uint32_c: {
+        if(true == is_netcdf4_enhanced)
+            b = new FONcUInt(v); 
+        else 
+            b = new FONcInt(v);
+        break;
+    }
     case dods_int32_c:
-    case dods_uint32_c:
         b = new FONcInt(v);
         break;
     case dods_float32_c:
@@ -232,6 +249,13 @@ FONcUtils::convert(BaseType *v)
         string err = (string) "file out netcdf, unable to " + "write unknown variable type";
         throw BESInternalError(err, __FILE__, __LINE__);
 
+    }
+    b->setVersion(ncdf_version);
+    if(ncdf_version == RETURNAS_NETCDF4) {
+        if(is_classic_model)
+            b->setNC4DataModel("NC4_CLASSIC_MODEL");
+        else
+            b->setNC4DataModel("NC4_ENHANCED");
     }
     return b;
 }

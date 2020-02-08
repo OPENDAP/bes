@@ -376,6 +376,10 @@ void FONcArray::write(int ncid)
     int stax = NC_NOERR;
 
     if (d_array_type != NC_CHAR) {
+
+      if(isNetCDF4_ENHANCED()) 
+            write_for_nc4_types(ncid);
+      else {
         string var_type = d_a->var()->type_name();
 
         // create array to hold data hyperslab
@@ -475,11 +479,8 @@ void FONcArray::write(int ncid)
             }
             break;
         }
-
-        default:
-            string err = (string) "Failed to transform array of unknown type in file out netcdf";
-            throw BESInternalError(err, __FILE__, __LINE__);
-        }
+      }
+    }
     }
     else {
         // special case for string data. Could have put this in the
@@ -568,4 +569,112 @@ void FONcArray::dump(ostream &strm) const
         strm << BESIndent::LMarg << "dimensions: none" << endl;
     }
     BESIndent::UnIndent();
+}
+
+void FONcArray::write_for_nc4_types(int ncid) {
+
+    int stax = NC_NOERR;
+    string var_type = d_a->var()->type_name();
+
+    // create array to hold data hyperslab
+    switch (d_array_type) {
+    case NC_BYTE: {
+        unsigned char *data = new unsigned char[d_nelements];
+        d_a->buf2val((void**) &data);
+        stax = nc_put_var_uchar(ncid, _varid, data);
+        delete[] data;
+
+        if (stax != NC_NOERR) {
+            string err = "fileout.netcdf - Failed to create array of bytes for " + _varname;
+            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+        }
+        break;
+    }
+
+    case NC_SHORT: {
+
+        short *data = new short[d_nelements];
+        d_a->buf2val((void**) &data);
+        int stax = nc_put_var_short(ncid, _varid, data);
+        delete[] data;
+
+        if (stax != NC_NOERR) {
+            string err = (string) "fileout.netcdf - Failed to create array of shorts for " + _varname;
+            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+        }
+        break;
+    }
+
+    case NC_INT: {
+
+        int *data = new int[d_nelements];
+        d_a->buf2val((void**) &data);
+
+        int stax = nc_put_var_int(ncid, _varid, data);
+        delete[] data;
+
+        if (stax != NC_NOERR) {
+            string err = (string) "fileout.netcdf - Failed to create array of ints for " + _varname;
+            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+        }
+        break;
+    }
+
+    case NC_FLOAT: {
+        float *data = new float[d_nelements];
+        d_a->buf2val((void**) &data);
+        int stax = nc_put_var_float(ncid, _varid, data);
+        delete[] data;
+
+        if (stax != NC_NOERR) {
+            string err = (string) "fileout.netcdf - Failed to create array of floats for " + _varname;
+            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+        }
+        break;
+    }
+
+    case NC_DOUBLE: {
+        double *data = new double[d_nelements];
+        d_a->buf2val((void**) &data);
+        int stax = nc_put_var_double(ncid, _varid, data);
+        delete[] data;
+
+        if (stax != NC_NOERR) {
+            string err = (string) "fileout.netcdf - Failed to create array of doubles for " + _varname;
+            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+        }
+        break;
+    }
+
+    case NC_USHORT: {
+        unsigned short *data = new unsigned short[d_nelements];
+        d_a->buf2val((void**) &data);
+        int stax = nc_put_var_ushort(ncid, _varid, data);
+        delete[] data;
+
+        if (stax != NC_NOERR) {
+            string err = (string) "fileout.netcdf - Failed to create array of unsigned short for " + _varname;
+            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+        }
+        break;
+    }
+
+    case NC_UINT: {
+        unsigned int *data = new unsigned int[d_nelements];
+        d_a->buf2val((void**) &data);
+        int stax = nc_put_var_uint(ncid, _varid, data);
+        delete[] data;
+
+        if (stax != NC_NOERR) {
+            string err = (string) "fileout.netcdf - Failed to create array of unsigned int for " + _varname;
+            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+        }
+        break;
+    }
+
+    default:
+        string err = (string) "Failed to transform array of unknown type in file out netcdf";
+        throw BESInternalError(err, __FILE__, __LINE__);
+    }
+
 }
