@@ -203,7 +203,7 @@ bool HDFCFStr::read()
         }
 
 
-        int32 r = -1;
+        //int32 r = -1; //unused variable. SBL 2/7/20
 
         // Seek the position of the starting point
         if (VSseek (vdata_id, 0) == -1) {
