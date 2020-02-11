@@ -1,3 +1,52 @@
+News for 3.20.6
+
+Notable Bugs Fixed:
+- Memory leak fixed and unneeded copy removed in awsv4 code
+- CovJson patch.
+- ncml_handler: When an NCML aggregation named a dataset that the server could 
+  not read... crsh. Fixed..
+- Server cache stabliszation
+
+Features:
+- Added (alpha) support support for server authentication credentials:
+- - Environment injection support for besstandalone and besd
+- - A credentials configuration file for multiple sets, in which credentials 
+    are asscoaied with URL prefixs and multiple creds can be defined in a 
+    bes.conf environment.   
+- Combined Logs: The server can now be configured to add the OLFS request log 
+  content to the BES log.
+
+Performance Improvements
+ - No DAS construction for data response.
+
+Tickets closed during this release
+https://opendap.atlassian.net/browse/HK-272 - MDS bug - LMT of data not used
+https://opendap.atlassian.net/browse/HK-361 - More performant handling of contiguous data for the DMR++ handler
+https://opendap.atlassian.net/browse/HK-376 - Have Travis add the source distribution tar balls to the S3 bucket.
+https://opendap.atlassian.net/browse/HK-411 - Fix the --baselines feature of the libdap DMRTest
+https://opendap.atlassian.net/browse/HK-413 - Persistent leaks in the libxml2-based NCML parser.
+https://opendap.atlassian.net/browse/HK-404 - Address operational and efficiency issues in the MDS
+https://opendap.atlassian.net/browse/HK-426 - Form interface bug - Structures do not work correctly - two issues
+https://opendap.atlassian.net/browse/HK-439 - bes source release
+https://opendap.atlassian.net/browse/HK-444 - Build initial version of &#39;ncdmr.cc&#39; that can read the &#39;fnoc1.nc&#39; and build a DMR.
+https://opendap.atlassian.net/browse/HK-445 - Modify the simple ncdmr.cc code so that it includes the attributes.
+https://opendap.atlassian.net/browse/HK-446 - Modify the ncdmr.cc code so that it correctly recognizes shared dimensions in &#39;fnoc1.nc&#39; and &#39;coads_climatology.nc&#39;
+https://opendap.atlassian.net/browse/HK-447 - Modify the ncdmr.cc code so that it can work with netCDF4 files that use groups.
+https://opendap.atlassian.net/browse/HK-448 - Modify the ncdmr.cc code so that it can work with netCDF4 files that contain structures.
+https://opendap.atlassian.net/browse/HK-449 - Integrate the ncdmr.cc code into the netCDF handler so that it is used for the DMR response.
+https://opendap.atlassian.net/browse/HK-454 - the dmrpp_module is unable to build a dmr++ for the test file data/dmrpp/grid_1_2d.h5
+https://opendap.atlassian.net/browse/HK-456 - Install the BES RPM package built from a PR and start the BES from that install. Check for failure.
+https://opendap.atlassian.net/browse/HK-457 - The class BESRegex is utilized in a way that is incompatible with the underlying implementation. FIX
+https://opendap.atlassian.net/browse/HK-458 - Web interface bug for Structures and Sequences
+https://opendap.atlassian.net/browse/HK-459 - When Hyrax 1.16 runs, we see some error messages &#39;leaking out of stderr&#39;
+https://opendap.atlassian.net/browse/HK-472 - BESInternalError Exception thrown by the NcML handler not handled properly
+https://opendap.atlassian.net/browse/HK-473 - Implement combined olfs/bes log.
+https://opendap.atlassian.net/browse/HK-474 - BES 3.20.5 memory errors
+https://opendap.atlassian.net/browse/HK-485 - Modify the CI/CD process to make the docker image
+https://opendap.atlassian.net/browse/HK-492 - Review the Travis activities for olfs, bes, and libdap
+https://opendap.atlassian.net/browse/HK-537 - Reported problem in fileout_netcdf associated with _FillValue in Ocean Color dataset
+https://opendap.atlassian.net/browse/HK-574 - Memory leak in AWSV4
+
 News for 3.20.5
 
 Improved and fixed bugs in the the CovJSON response format

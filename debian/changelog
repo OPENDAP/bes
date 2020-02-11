@@ -1,3 +1,25 @@
+bes (3.20.6-1) trusty; urgency=medium
+
+Notable Bugs Fixed:
+- Memory leak fixed and unneeded copy removed in awsv4 code
+- CovJson patch.
+- ncml_handler: When an NCML aggregation named a dataset that 
+  the server could not read... crsh. Fixed..
+- Server cache stabliszation
+
+Features:
+- Added (alpha) support support for server authentication 
+  credentials:
+- - Environment injection support for besstandalone and besd
+- - A credentials configuration file for multiple sets, in 
+    which credentials are asscoaied with URL prefixs and multiple 
+    creds can be defined in a bes.conf environment.   
+- Combined Logs: The server can now be configured to add the OLFS 
+  request log content to the BES log.
+
+Performance Improvements
+ - No DAS construction for data response.
+
 bes (3.20.5-1) trusty; urgency=medium
 
   * Bug fixes, S3 support, Dataset search systems support, STARE indexing

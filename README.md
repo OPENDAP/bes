@@ -12,7 +12,7 @@
 README for the OPeNDAP BES 
 ==========================
 
-# Updated for version 3.20.5. See NEWS
+# Updated for version 3.20.6. See NEWS
 
 This version of the BES requires libdap-3.20.4  [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3267984.svg)](https://doi.org/10.5281/zenodo.3267984)
 

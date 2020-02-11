@@ -1,4 +1,4 @@
-# CoverageJSON-Response-Handler-for-OPeNDAP
+# Fileout CoverageJSON Response Handler Module
 
 ## Unit Tests
 

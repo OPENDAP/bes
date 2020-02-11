@@ -47,8 +47,10 @@ namespace AWSV4 {
     const std::string AWS4{"AWS4"};
     const std::string AWS4_REQUEST{"aws4_request"};
     
+#if 0
     void sha256(const std::string str, unsigned char outputBuffer[SHA256_DIGEST_LENGTH]);
-    
+#endif
+
     std::string sha256_base16(const std::string);
 
     std::map<std::string,std::string> canonicalize_headers(const std::vector<std::string>& headers);

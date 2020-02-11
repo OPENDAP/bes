@@ -34,30 +34,17 @@
 #include <sstream>
 #include <iomanip>
 
-#define utils_debug_key "focovjson" // Dont know what this does -Riley
+#define utils_debug_key "focovjson"
 
 namespace focovjson {
 
-std::string escape_for_covjson(const std::string &input) {
-    std::stringstream ss;
-    for (size_t i = 0; i < input.length(); ++i) {
-        if (unsigned(input[i]) < '\x20' || input[i] == '\\' || input[i] == '"') {
-            ss << "\\u" << std::setfill('0') << std::setw(4) << std::hex << unsigned(input[i]);
-        } else {
-            ss << input[i];
-        }
-    }
-    return ss.str();
+void removeSubstring(std::string& str, const std::string subStr) {
+   int n = subStr.length();
+
+   for (unsigned int i = str.find(subStr); i < str.length(); i = str.find(subStr))
+      str.erase(i, n);
 }
 
-/**
- * Compute the constrained shape of the Array and return it in a vector.
- * Also return the total number of elements in the constrained array.
- *
- * @param a The Array to examine
- * @param shape The shape of the Array, taking into account the constraint
- * @return The total number of elements in the constrained Array.
- */
 long computeConstrainedShape(libdap::Array *a, std::vector<unsigned int> *shape ) {
     BESDEBUG(utils_debug_key, "focovjson::computeConstrainedShape() - BEGIN. Array name: "<< a->name() << endl);
 
@@ -91,11 +78,19 @@ long computeConstrainedShape(libdap::Array *a, std::vector<unsigned int> *shape 
     return totalSize;
 }
 
+string escape_for_covjson(const std::string &input) {
+    std::stringstream ss;
+    for (size_t i = 0; i < input.length(); ++i) {
+        if (unsigned(input[i]) < '\x20' || input[i] == '\\' || input[i] == '"') {
+            ss << "\\u" << std::setfill('0') << std::setw(4) << std::hex << unsigned(input[i]);
+        } else {
+            ss << input[i];
+        }
+    }
+    return ss.str();
+}
+
 #if 0
-/**
- * Replace every occurrence of 'char_to_escape' with the same preceded
- * by the backslash '\' character.
- */
 std::string backslash_escape(std::string source, char char_to_escape) {
 	std::string escaped_result = source;
 	if(source.find(char_to_escape) != string::npos ){
