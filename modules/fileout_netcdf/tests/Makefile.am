@@ -11,16 +11,17 @@ AM_CXXFLAGS =
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-noinst_DATA = bes.conf
+noinst_DATA = bes.conf bes.nc4_enhanced.conf
 
-CLEANFILES = bes.conf
+CLEANFILES = bes.conf bes.nc4_enhanced.conf
 
 EXTRA_DIST = bescmd $(TESTSUITE).at $(TESTSUITE) atlocal.in \
-$(BES_CONF_IN) package.m4 handler_tests_macros.m4
+$(BES_CONF_IN) $(BES_NC4EN_CONF_IN) package.m4 handler_tests_macros.m4
 
 DISTCLEANFILES = atconfig
 
 BES_CONF_IN = bes.conf.modules.in
+BES_NC4EN_CONF_IN = bes.nc4_enhanced.conf.modules.in
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
@@ -29,6 +30,11 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
+
+bes.nc4_enhanced.conf: $(BES_NC4EN_CONF_IN) $(top_srcdir)/configure.ac
+	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
+		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.nc4_enhanced.conf
 
 ############## Autotest follows #####################
 
