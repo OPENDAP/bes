@@ -38,10 +38,7 @@
 #include "BESDebug.h"
 #include "TheBESKeys.h"
 
-#include "CredentialsManager.h"
-
 #include "test_config.h"
-#include "AccessCredentials.h"
 
 using namespace libdap;
 
