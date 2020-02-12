@@ -79,7 +79,7 @@ $(CREDS_CONF):
 #
 
 if CPPUNIT
-UNIT_TESTS = ChunkTest DmrppParserTest DmrppCommonTest DmrppMetadataStoreTest CredentialsManagerTest awsv4_test
+UNIT_TESTS = NgapCredentialsTest ChunkTest DmrppParserTest DmrppCommonTest DmrppMetadataStoreTest CredentialsManagerTest awsv4_test
 else
 UNIT_TESTS =
 
@@ -110,6 +110,9 @@ ChunkTest_LDADD = $(OBJS) $(LIBADD)
 
 CredentialsManagerTest_SOURCES = CredentialsManagerTest.cc
 CredentialsManagerTest_LDADD = $(OBJS) $(LIBADD)
+
+NgapCredentialsTest_SOURCES = NgapCredentialsTest.cc
+NgapCredentialsTest_LDDAD = $(OBJS) $(LIBADD)
 
 awsv4_test_SOURCES = awsv4_test.cc
 awsv4_test_LDADD = $(OBJS) $(LIBADD)
