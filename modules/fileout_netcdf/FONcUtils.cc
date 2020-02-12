@@ -106,8 +106,6 @@ nc_type FONcUtils::get_nc_type(BaseType *element,bool IsNC4_ENHANCED)
 {
     nc_type x_type = NC_NAT; // the constant ncdf uses to define simple type
 
- if(IsNC4_ENHANCED == true)
-cerr<<"enhanced model "<<endl;
     string var_type = element->type_name();
     if (var_type == "Byte") {       	// check this for dods type
         if(IsNC4_ENHANCED) 
