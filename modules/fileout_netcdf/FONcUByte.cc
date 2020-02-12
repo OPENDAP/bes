@@ -100,7 +100,6 @@ void
 FONcUByte::write( int ncid )
 {
     BESDEBUG( "fonc", "FOncUByte::write for var " << _varname << endl ) ;
-cerr<<"coming to write \n"<<endl;
     size_t var_index[] = {0} ;
     unsigned char *data = new unsigned char ;
     _b->buf2val( (void**)&data ) ;

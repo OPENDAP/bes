@@ -114,3 +114,11 @@ AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/gridNwm.bescmd)
 
 dnl Test added for the fix for HK-23.
 AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/testFillValue.bescmd)
+
+dnl NC4 test
+#AT_BESCMD_RESPONSE_TEST_NC4_ENHANCED([bescmd/simpleT00.0.bescmd])
+#AT_BESCMD_BINARYDATA_RESPONSE_TEST_NC4_ENHANCED([bescmd/simpleT00.1.bescmd])
+#AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/simpleT00.2.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/simpleT00.8.bescmd)
+
+
