@@ -1,4 +1,4 @@
-// FONcFloat.cc
+// FONcUByte.cc
 
 // This file is part of BES Netcdf File Out Module
 
@@ -19,71 +19,67 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
-// You can contact University Corporation for Atmospheric Research at
-// 3080 Center Green Drive, Boulder, CO 80301
-
-// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
-// Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
 // Authors:
-//      pwest       Patrick West <pwest@ucar.edu>
-//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+//      kyang     Kent Yang  <myang6@hdfgroup.org>
+// Note: The code follows FONcUByte.cc.
+
+
 
 #include <BESInternalError.h>
 #include <BESDebug.h>
-#include <Float32.h>
 
-#include "FONcFloat.h"
+#include "FONcUByte.h"
 #include "FONcUtils.h"
 #include "FONcAttributes.h"
 
-/** @brief Constructor for FONcFloat that takes a DAP Float32
+/** @brief Constructor for FONcUByte that takes a DAP Byte
  *
  * This constructor takes a DAP BaseType and makes sure that it is a DAP
- * Float32 instance. If not, it throws an exception
+ * Byte instance. If not, it throws an exception
  *
- * @param b A DAP BaseType that should be a float32
- * @throws BESInternalError if the BaseType is not a Float32
+ * @param b A DAP BaseType that should be a byte
+ * @throws BESInternalError if the BaseType is not a Byte
  */
-FONcFloat::FONcFloat( BaseType *b )
-    : FONcBaseType(), _f( 0 )
+FONcUByte::FONcUByte( BaseType *b )
+    : FONcBaseType(), _b( 0 )
 {
-    _f = dynamic_cast<Float32 *>(b) ;
-    if( !_f )
+    _b = dynamic_cast<Byte *>(b) ;
+    if( !_b )
     {
-	string s = (string)"File out netcdf, FONcFloat was passed a "
-		   + "variable that is not a DAP Float32" ;
+	string s = (string)"File out netcdf, FONcUByte was passed a "
+		   + "variable that is not a DAP Byte" ;
 	throw BESInternalError( s, __FILE__, __LINE__ ) ;
     }
 }
 
-/** @brief Destructor that cleans up this instance
+/** @brief Destructor that cleans up the byte
  *
- * The DAP Float32 instance does not belong to the FONcFloat instance, so it
- * is not deleted up.
+ * The DAP Byte instance does not belong to the FONcUByte instance, so it
+ * is not deleted.
  */
-FONcFloat::~FONcFloat()
+FONcUByte::~FONcUByte()
 {
 }
 
-/** @brief define the DAP Float32 in the netcdf file
+/** @brief define the DAP Byte in the netcdf file
  *
  * The definition actually takes place in FONcBaseType. This function
- * adds the attributes for the Float32 instance as well as an attribute if
- * the name of the Float32 had to be modified.
+ * adds the attributes for the Byte instance as well as an attribute if
+ * the name of the Byte had to be modified.
  *
  * @param ncid The id of the NetCDF file
  * @throws BESInternalError if there is a problem defining the
- * Float32
+ * Byte
  */
 void
-FONcFloat::define( int ncid )
+FONcUByte::define( int ncid )
 {
     FONcBaseType::define( ncid ) ;
 
     if( !_defined )
     {
-	FONcAttributes::add_variable_attributes( ncid, _varid, _f,isNetCDF4_ENHANCED() ) ;
+	FONcAttributes::add_variable_attributes( ncid, _varid, _b,isNetCDF4_ENHANCED() ) ;
 	FONcAttributes::add_original_name( ncid, _varid,
 					   _varname, _orig_varname ) ;
 
@@ -91,9 +87,9 @@ FONcFloat::define( int ncid )
     }
 }
 
-/** @brief Write the float out to the netcdf file
+/** @brief Write the byte out to the netcdf file
  *
- * Once the float is defined, the value of the float can be written out
+ * Once the byte is defined, the value of the byte can be written out
  * as well.
  *
  * @param ncid The id of the netcdf file
@@ -101,43 +97,42 @@ FONcFloat::define( int ncid )
  * to the netcdf file
  */
 void
-FONcFloat::write( int ncid )
+FONcUByte::write( int ncid )
 {
-    BESDEBUG( "fonc", "FONcFloat::write for var " << _varname << endl ) ;
+    BESDEBUG( "fonc", "FOncUByte::write for var " << _varname << endl ) ;
+cerr<<"coming to write \n"<<endl;
     size_t var_index[] = {0} ;
-    float *data = new float ;
-    _f->buf2val( (void**)&data ) ;
-    int stax = nc_put_var1_float( ncid, _varid, var_index, data ) ;
-    ncopts = NC_VERBOSE ;
+    unsigned char *data = new unsigned char ;
+    _b->buf2val( (void**)&data ) ;
+    int stax = nc_put_var1_uchar(ncid, _varid, var_index, data ) ;
     if( stax != NC_NOERR )
     {
 	string err = (string)"fileout.netcdf - "
-		     + "Failed to write float data for "
+		     + "Failed to write byte data for "
 		     + _varname ;
 	FONcUtils::handle_error( stax, err, __FILE__, __LINE__ ) ;
     }
     delete data ;
-    BESDEBUG( "fonc", "FONcFloat::done write for var " << _varname << endl ) ;
 }
 
-/** @brief returns the name of the DAP Float32
+/** @brief returns the name of the DAP Byte
  *
- * @returns The name of the DAP Float32
+ * @returns The name of the DAP Byte
  */
 string
-FONcFloat::name()
+FONcUByte::name()
 {
-    return _f->name() ;
+    return _b->name() ;
 }
 
-/** @brief returns the netcdf type of the DAP Float32
+/** @brief returns the netcdf type of the DAP Byte
  *
- * @returns The nc_type of NC_FLOAT
+ * @returns The nc_type of NC_BYTE
  */
 nc_type
-FONcFloat::type()
+FONcUByte::type()
 {
-    return NC_FLOAT ;
+    return NC_UBYTE ;
 }
 
 /** @brief dumps information about this object for debugging purposes
@@ -147,12 +142,12 @@ FONcFloat::type()
  * @param strm C++ i/o stream to dump the information to
  */
 void
-FONcFloat::dump( ostream &strm ) const
+FONcUByte::dump( ostream &strm ) const
 {
-    strm << BESIndent::LMarg << "FONcFloat::dump - ("
+    strm << BESIndent::LMarg << "FONcUByte::dump - ("
 			     << (void *)this << ")" << endl ;
     BESIndent::Indent() ;
-    strm << BESIndent::LMarg << "name = " << _f->name()  << endl ;
+    strm << BESIndent::LMarg << "name = " << _b->name()  << endl ;
     BESIndent::UnIndent() ;
 }
 

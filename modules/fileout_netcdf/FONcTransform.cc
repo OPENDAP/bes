@@ -198,7 +198,10 @@ void FONcTransform::transform()
         // Add any global attributes to the netcdf file
         AttrTable &globals = _dds->get_attr_table();
         BESDEBUG("fonc", "FONcTransform::transform() - Adding Global Attributes" << endl << globals << endl);
-        FONcAttributes::add_attributes(_ncid, NC_GLOBAL, globals, "", "");
+        bool is_netCDF_enhanced = false;
+        if(FONcTransform::_returnAs == RETURNAS_NETCDF4 && FONcRequestHandler::classic_model==false)
+            is_netCDF_enhanced = true;
+        FONcAttributes::add_attributes(_ncid, NC_GLOBAL, globals, "", "",is_netCDF_enhanced);
 
         // We are done defining the variables, dimensions, and
         // attributes of the netcdf file. End the define mode.

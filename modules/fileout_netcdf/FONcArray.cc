@@ -337,7 +337,7 @@ void FONcArray::define(int ncid)
         }
 
         BESDEBUG("fonc", "FONcArray::define() - Adding attributes " << endl);
-        FONcAttributes::add_variable_attributes(ncid, _varid, d_a);
+        FONcAttributes::add_variable_attributes(ncid, _varid, d_a,isNetCDF4_ENHANCED());
         FONcAttributes::add_original_name(ncid, _varid, _varname, _orig_varname);
 
         _defined = true;
@@ -578,7 +578,7 @@ void FONcArray::write_for_nc4_types(int ncid) {
 
     // create array to hold data hyperslab
     switch (d_array_type) {
-    case NC_BYTE: {
+    case NC_UBYTE: {
         unsigned char *data = new unsigned char[d_nelements];
         d_a->buf2val((void**) &data);
         stax = nc_put_var_uchar(ncid, _varid, data);

@@ -85,7 +85,7 @@ FONcInt::define( int ncid )
 
     if( !_defined )
     {
-	FONcAttributes::add_variable_attributes( ncid, _varid, _bt ) ;
+	FONcAttributes::add_variable_attributes( ncid, _varid, _bt ,isNetCDF4_ENHANCED()) ;
 	FONcAttributes::add_original_name( ncid, _varid,
 					   _varname, _orig_varname ) ;
 

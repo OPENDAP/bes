@@ -19,15 +19,10 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
-// You can contact University Corporation for Atmospheric Research at
-// 3080 Center Green Drive, Boulder, CO 80301
-
-// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
-// Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
 // Authors:
 //      kyang     Kent Yang  <myang6@hdfgroup.org>
-// Note: The code follows FONcUShort.cc.
+// Note: The code follows FONcShort.cc.
 
 
 #include <BESInternalError.h>
@@ -84,7 +79,7 @@ FONcUShort::define( int ncid )
 
     if( !_defined )
     {
-	FONcAttributes::add_variable_attributes( ncid, _varid, _bt ) ;
+	FONcAttributes::add_variable_attributes( ncid, _varid, _bt,isNetCDF4_ENHANCED() ) ;
 	FONcAttributes::add_original_name( ncid, _varid,
 					   _varname, _orig_varname ) ;
 

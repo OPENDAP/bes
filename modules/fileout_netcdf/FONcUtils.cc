@@ -36,6 +36,7 @@
 #include "FONcUtils.h"
 #include "FONcDim.h"
 #include "FONcByte.h"
+#include "FONcUByte.h"
 #include "FONcStr.h"
 #include "FONcShort.h"
 #include "FONcUShort.h"
@@ -105,6 +106,8 @@ nc_type FONcUtils::get_nc_type(BaseType *element,bool IsNC4_ENHANCED)
 {
     nc_type x_type = NC_NAT; // the constant ncdf uses to define simple type
 
+ if(IsNC4_ENHANCED == true)
+cerr<<"enhanced model "<<endl;
     string var_type = element->type_name();
     if (var_type == "Byte") {       	// check this for dods type
         if(IsNC4_ENHANCED) 
@@ -204,9 +207,13 @@ FONcUtils::convert(BaseType *v,const string &ncdf_version, bool is_classic_model
     case dods_url_c:
         b = new FONcStr(v);
         break;
-    case dods_byte_c:
-        b = new FONcByte(v);
+    case dods_byte_c: {
+        if(true == is_netcdf4_enhanced)
+            b = new FONcUByte(v);
+        else 
+            b = new FONcByte(v);
         break;
+    }
     case dods_uint16_c: {
         if(true == is_netcdf4_enhanced)
             b = new FONcUShort(v); 
