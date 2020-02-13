@@ -308,7 +308,7 @@ bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi)
             // delete the current one;
             delete dds;
             // assign the new one.
-            dds = dmr->getDDS(DmrppRequestHandler::d_show_shared_dims);
+            dds = dmr->getDDS(d_show_shared_dims);
 
             // Stuff it into the response.
             bdds->set_dds(dds);
@@ -388,7 +388,8 @@ bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi)
             dds = 0;
 
             // assign the new one.
-            dds = dmr->getDDS(DmrppRequestHandler::d_show_shared_dims);
+            //dds = dmr->getDDS();
+            dds = dmr->getDDS(d_show_shared_dims);
 
             // Stuff it into the response.
             bdds->set_dds(dds);
@@ -461,7 +462,7 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi)
             build_dmr_from_file(dhi.container, dmr);
 
             // Get a DDS from the DMR
-            DDS *dds = dmr->getDDS(DmrppRequestHandler::d_show_shared_dims);
+            DDS *dds = dmr->getDDS(d_show_shared_dims);
 
             // Load the BESDASResponse DAS from the DDS
             dds->get_das(das);

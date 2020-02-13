@@ -275,5 +275,5 @@ std::vector<BaseType *> *
 NCStructure::transform_to_dap2(AttrTable *at, bool show_shared_dims)
 {
     Structure *dest = new NCStructure(name(), dataset());
-     return Constructor::transform_to_dap2(at , show_shared_dims);
+     return Constructor::transform_to_dap2(at);
 }
