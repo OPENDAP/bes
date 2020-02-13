@@ -55,6 +55,7 @@
 #include "CurlHandlePool.h"
 #include "Chunk.h"
 #include "CredentialsManager.h"
+#include "AccessCredentials.h"
 
 #define KEEP_ALIVE 1   // Reuse libcurl easy handles (1) or not (0).
 
@@ -605,7 +606,7 @@ url_must_be_signed(const string &url)
 
 // FIXME The most low-budget credential DB on the planet. jhrg 11/26/19
 struct aws_credentials {
-    string public_key;    // = "AKIA24JBYMSH64NYGEIE";
+    string public_key;    // = "AKIA*********GEIE";
     string secret_key;    // = "*************WaaQ7";
     string region;    // = "us-east-1";
     string bucket_name;    // = "muhbucket";

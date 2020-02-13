@@ -49,13 +49,6 @@ using namespace std;
  */
 CredentialsManager *CredentialsManager::theMngr=0;
 
-// Scope: public members of AccessCredentials
-const string AccessCredentials::ID_KEY="id";
-const string AccessCredentials::KEY_KEY="key";
-const string AccessCredentials::REGION_KEY="region";
-const string AccessCredentials::BUCKET_KEY="bucket";
-const string AccessCredentials::URL_KEY="url";
-
 // Scope: public members of CredentialsManager
 const string CredentialsManager::ENV_ID_KEY="CMAC_ID";
 const string CredentialsManager::ENV_ACCESS_KEY="CMAC_ACCESS_KEY";
@@ -409,62 +402,3 @@ AccessCredentials *CredentialsManager::load_credentials_from_env( ) {
 
 
 
-/**
- * Retrieves the value of key
- * @param key The key value to retrieve
- * @return The value of the key, empty string if the key does not exist.
- */
-std::string
-AccessCredentials::get(const std::string &key){
-    std::map<std::string, std::string>::iterator it;
-    std::string value("");
-    it = kvp.find(key);
-    if (it != kvp.end())
-        value = it->second;
-    return value;
-}
-
-/**
- *
- * @param key
- * @param value
- */
-void
-AccessCredentials::add(
-        const std::string &key,
-        const std::string &value){
-    kvp.insert(std::pair<std::string, std::string>(key, value));
-}
-
-/**
- *
- * @return
- */
-bool AccessCredentials::isS3Cred(){
-    if(!s3_tested){
-        is_s3 = get(URL_KEY).length()>0 &&
-                get(ID_KEY).length()>0 &&
-                get(KEY_KEY).length()>0 &&
-                get(REGION_KEY).length()>0 &&
-                get(BUCKET_KEY).length()>0;
-        s3_tested = true;
-    }
-    return is_s3;
-}
-
-string AccessCredentials::to_json(){
-    stringstream ss;
-    ss << "{" << endl << "  \"AccessCredentials\": { " << endl;
-    ss << "    \"name\": \"" << d_config_name << "\"," << endl;
-    for (std::map<string, string>::iterator it = kvp.begin(); it != kvp.end(); ++it) {
-        std::string key = it->first;
-        std::string value = it->second;
-
-        if(it!=kvp.begin())
-            ss << ", " << endl ;
-
-        ss << "    \"" << it->first << "\": \"" << it->second << "\"";
-    }
-    ss << endl << "  }" << endl << "}" << endl;
-    return ss.str();
-}

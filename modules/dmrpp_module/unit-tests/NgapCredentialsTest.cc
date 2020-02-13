@@ -55,7 +55,7 @@ namespace dmrpp {
         string weak_config;
 
     public:
-        static string cm_config;
+        string cm_config;
 
         // Called once before everything gets tested
         NgapCredentialsTest()
@@ -111,12 +111,13 @@ int main(int argc, char*argv[])
 {
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+    string cm_cnf="";
     GetOpt getopt(argc, argv, "c:dD");
     int option_char;
     while ((option_char = getopt()) != -1)
         switch (option_char) {
             case 'c':
-                dmrpp::NgapCredentialsTest::cm_config = getopt.optarg;
+                cm_cnf = getopt.optarg;
                 break;
             case 'd':
                 debug = true;  // debug is a static global
