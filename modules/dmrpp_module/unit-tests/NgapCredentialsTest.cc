@@ -118,241 +118,242 @@ namespace dmrpp {
             }
         }
     }
-        class NgapCredentialsTest : public CppUnit::TestFixture {
-        private:
-            string weak_config;
-            char d_errbuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
+
+    class NgapCredentialsTest : public CppUnit::TestFixture {
+    private:
+        string weak_config;
+        char d_errbuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
 
 
-            string curl_error_msg(CURLcode res, char *errbuf) {
-                ostringstream oss;
-                size_t len = strlen(errbuf);
-                if (len) {
-                    oss << errbuf;
-                    oss << " (code: " << (int) res << ")";
-                } else {
-                    oss << curl_easy_strerror(res) << "(result: " << res << ")";
-                }
-
-                return oss.str();
+        string curl_error_msg(CURLcode res, char *errbuf) {
+            ostringstream oss;
+            size_t len = strlen(errbuf);
+            if (len) {
+                oss << errbuf;
+                oss << " (code: " << (int) res << ")";
+            } else {
+                oss << curl_easy_strerror(res) << "(result: " << res << ")";
             }
 
-        public:
-            string cm_config;
+            return oss.str();
+        }
 
-            // Called once before everything gets tested
-            NgapCredentialsTest() {
-            }
+    public:
+        string cm_config;
 
-            // Called at the end of the test
-            ~NgapCredentialsTest() {
-            }
+        // Called once before everything gets tested
+        NgapCredentialsTest() {
+        }
 
-            // Called before each test
-            void setUp() {
-                if (debug) cout << endl;
-                if (bes_debug) BESDebug::SetUp("cerr,dmrpp");
+        // Called at the end of the test
+        ~NgapCredentialsTest() {
+        }
 
-                TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
-                cm_config = string(TEST_BUILD_DIR).append("/credentials.conf");
-                weak_config = string(TEST_SRC_DIR).append("/input-files/weak.conf");
+        // Called before each test
+        void setUp() {
+            if (debug) cout << endl;
+            if (bes_debug) BESDebug::SetUp("cerr,dmrpp");
 
-            }
+            TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
+            cm_config = string(TEST_BUILD_DIR).append("/credentials.conf");
+            weak_config = string(TEST_SRC_DIR).append("/input-files/weak.conf");
 
-            // Called after each test
-            void tearDown() {
-            }
+        }
+
+        // Called after each test
+        void tearDown() {
+        }
 
 
-            /**
-             *
-             * @param target_url
-             * @return
-             */
-            CURL *set_up_curl_handle(string target_url, char *response_buff) {
-                CURL *d_handle;     ///< The libcurl handle object.
-                d_handle = curl_easy_init();
-                CPPUNIT_ASSERT(d_handle);
+        /**
+         *
+         * @param target_url
+         * @return
+         */
+        CURL *set_up_curl_handle(string target_url, char *response_buff) {
+            CURL *d_handle;     ///< The libcurl handle object.
+            d_handle = curl_easy_init();
+            CPPUNIT_ASSERT(d_handle);
 
-                CURLcode res;
+            CURLcode res;
 
-                if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_ERRORBUFFER, d_errbuf)))
-                    throw BESInternalError(string("CURL Error: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
+            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_ERRORBUFFER, d_errbuf)))
+                throw BESInternalError(string("CURL Error: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
 
-                // Pass all data to the 'write_data' function
-                if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_WRITEFUNCTION, dmrpp::ngap_write_data)))
-                    throw BESInternalError(string("CURL Error: ").append(curl_error_msg(res, d_errbuf)), __FILE__,
-                                           __LINE__);
+            // Pass all data to the 'write_data' function
+            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_WRITEFUNCTION, dmrpp::ngap_write_data)))
+                throw BESInternalError(string("CURL Error: ").append(curl_error_msg(res, d_errbuf)), __FILE__,
+                                       __LINE__);
 
-                if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_URL, target_url.c_str())))
-                    throw BESInternalError(string("HTTP Error setting URL: ").append(curl_error_msg(res, d_errbuf)),
-                                           __FILE__, __LINE__);
+            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_URL, target_url.c_str())))
+                throw BESInternalError(string("HTTP Error setting URL: ").append(curl_error_msg(res, d_errbuf)),
+                                       __FILE__, __LINE__);
 
 #if 0
-                // get the offset to offset + size bytes
-                if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_RANGE, chunk->get_curl_range_arg_string().c_str())))
-                    throw BESInternalError(string("HTTP Error setting Range: ").append(curl_error_msg(res, handle->d_errbuf)), __FILE__,
-                                           __LINE__);
+            // get the offset to offset + size bytes
+            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_RANGE, chunk->get_curl_range_arg_string().c_str())))
+                throw BESInternalError(string("HTTP Error setting Range: ").append(curl_error_msg(res, handle->d_errbuf)), __FILE__,
+                                       __LINE__);
 #endif
-                // Pass this to write_data as the fourth argument
-                if (CURLE_OK !=
-                    (res = curl_easy_setopt(d_handle, CURLOPT_WRITEDATA, reinterpret_cast<void *>(response_buff))))
-                    throw BESInternalError(
-                            string("CURL Error setting chunk as data buffer: ").append(curl_error_msg(res, d_errbuf)),
-                            __FILE__, __LINE__);
+            // Pass this to write_data as the fourth argument
+            if (CURLE_OK !=
+                (res = curl_easy_setopt(d_handle, CURLOPT_WRITEDATA, reinterpret_cast<void *>(response_buff))))
+                throw BESInternalError(
+                        string("CURL Error setting chunk as data buffer: ").append(curl_error_msg(res, d_errbuf)),
+                        __FILE__, __LINE__);
 #if 0
-                // store the easy_handle so that we can call release_handle in multi_handle::read_data()
-                if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_PRIVATE, reinterpret_cast<void*>(handle))))
-                    throw BESInternalError(string("CURL Error setting easy_handle as private data: ").append(curl_error_msg(res, handle->d_errbuf)), __FILE__,
-                                           __LINE__);
+            // store the easy_handle so that we can call release_handle in multi_handle::read_data()
+            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_PRIVATE, reinterpret_cast<void*>(handle))))
+                throw BESInternalError(string("CURL Error setting easy_handle as private data: ").append(curl_error_msg(res, handle->d_errbuf)), __FILE__,
+                                       __LINE__);
 #endif
 
+        }
+
+        bool evaluate_curl_response(CURL *eh) {
+            long http_code = 0;
+            CURLcode res = curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_code);
+            if (CURLE_OK != res) {
+                throw BESInternalError(
+                        string("Error getting HTTP response code: ").append(curl_error_msg(res, (char *) "")),
+                        __FILE__, __LINE__);
             }
 
-            bool evaluate_curl_response(CURL *eh) {
-                long http_code = 0;
-                CURLcode res = curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_code);
-                if (CURLE_OK != res) {
-                    throw BESInternalError(
-                            string("Error getting HTTP response code: ").append(curl_error_msg(res, (char *) "")),
-                            __FILE__, __LINE__);
+            // Newer Apache servers return 206 for range requests. jhrg 8/8/18
+            switch (http_code) {
+                case 200: // OK
+                case 206: // Partial content - this is to be expected since we use range gets
+                    // cases 201-205 are things we should probably reject, unless we add more
+                    // comprehensive HTTP/S processing here. jhrg 8/8/18
+                    return true;
+
+                case 500: // Internal server error
+                case 503: // Service Unavailable
+                case 504: // Gateway Timeout
+                    return false;
+
+                default: {
+                    ostringstream oss;
+                    oss << "HTTP status error: Expected an OK status, but got: ";
+                    oss << http_code;
+                    throw BESInternalError(oss.str(), __FILE__, __LINE__);
                 }
-
-                // Newer Apache servers return 206 for range requests. jhrg 8/8/18
-                switch (http_code) {
-                    case 200: // OK
-                    case 206: // Partial content - this is to be expected since we use range gets
-                        // cases 201-205 are things we should probably reject, unless we add more
-                        // comprehensive HTTP/S processing here. jhrg 8/8/18
-                        return true;
-
-                    case 500: // Internal server error
-                    case 503: // Service Unavailable
-                    case 504: // Gateway Timeout
-                        return false;
-
-                    default: {
-                        ostringstream oss;
-                        oss << "HTTP status error: Expected an OK status, but got: ";
-                        oss << http_code;
-                        throw BESInternalError(oss.str(), __FILE__, __LINE__);
-                    }
-                }
-            }
-
-            void get_s3_creds() {
-                string distribution_api_endpoint = "https://d33imu0z1ajyhj.cloudfront.net/s3credentials";
-                string fnoc1_dds = "http://test.opendap.org/opendap/data/nc/fnoc1.nc.dds";
-
-                string target_url = fnoc1_dds;
-
-                char response_buf[1024 * 1024];
-                try {
-                    CURL *c_handle = set_up_curl_handle(target_url, response_buf);
-                    read_data(c_handle, target_url);
-                    string response(response_buf);
-                    cout << response << endl;
-                }
-                catch (BESError e) {
-                    cerr << "Caught BESError. Message: " << e.get_message() << "  ";
-                    cerr << "[" << e.get_file() << ":" << e.get_line() <<  "]" << endl;
-                    CPPUNIT_ASSERT(false);
-                }
-
-
-                }
-
-            void read_data(CURL *c_handle, string url) {
-
-                unsigned int tries = 0;
-                unsigned int retry_limit = 3;
-                useconds_t retry_time = 1000;
-                bool success;
-
-                do {
-                    d_errbuf[0] = NULL;
-                    CURLcode curl_code = curl_easy_perform(c_handle);
-                    ++tries;
-
-                    if (CURLE_OK != curl_code) {
-                        throw BESInternalError(
-                                string("read_data() - ERROR! Message: ").append(curl_error_msg(curl_code, d_errbuf)),
-                                __FILE__, __LINE__);
-                    }
-
-                    success = evaluate_curl_response(c_handle);
-
-                    if (!success) {
-                        if (tries == retry_limit) {
-                            throw BESInternalError(
-                                    string("Data transfer error: Number of re-tries to S3 exceeded: ").append(
-                                            curl_error_msg(curl_code, d_errbuf)), __FILE__, __LINE__);
-                        } else {
-                            BESDEBUG("dmrpp",
-                                     "HTTP transfer 500 error, will retry (trial " << tries << " for: " << url << ").");
-                            usleep(retry_time);
-                            retry_time *= 2;
-                        }
-                    }
-#if 0
-                    curl_slist_free_all(d_headers);
-                    d_headers = 0;
-#endif
-                } while (!success);
-            }
-
-
-        CPPUNIT_TEST_SUITE(NgapCredentialsTest);
-                static string cm_config;
-
-                ;
-
-                CPPUNIT_TEST(get_s3_creds);
-
-            CPPUNIT_TEST_SUITE_END();
-
-        };
-
-        CPPUNIT_TEST_SUITE_REGISTRATION(NgapCredentialsTest);
-
-
-    } // namespace dmrpp
-
-    int main(int argc, char *argv[]) {
-        CppUnit::TextTestRunner runner;
-        runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
-        string cm_cnf = "";
-        GetOpt getopt(argc, argv, "c:db");
-        int option_char;
-        while ((option_char = getopt()) != -1)
-            switch (option_char) {
-                case 'c':
-                    cm_cnf = getopt.optarg;
-                    break;
-                case 'd':
-                    debug = true;  // debug is a static global
-                    break;
-                case 'b':
-                    debug = true;  // debug is a static global
-                    bes_debug = true;  // debug is a static global
-                    break;
-                default:
-                    break;
-            }
-
-        bool wasSuccessful = true;
-        int i = getopt.optind;
-        if (i == argc) {
-            // run them all
-            wasSuccessful = runner.run("");
-        } else {
-            while (i < argc) {
-                if (debug) cerr << "Running " << argv[i] << endl;
-                string test = dmrpp::NgapCredentialsTest::suite()->getName().append("::").append(argv[i]);
-                wasSuccessful = wasSuccessful && runner.run(test);
-                ++i;
             }
         }
 
-        return wasSuccessful ? 0 : 1;
+        void get_s3_creds() {
+            string distribution_api_endpoint = "https://d33imu0z1ajyhj.cloudfront.net/s3credentials";
+            string fnoc1_dds = "http://test.opendap.org/opendap/data/nc/fnoc1.nc.dds";
+
+            string target_url = fnoc1_dds;
+
+            char response_buf[1024 * 1024];
+            try {
+                CURL *c_handle = set_up_curl_handle(target_url, response_buf);
+                read_data(c_handle, target_url);
+                string response(response_buf);
+                cout << response << endl;
+            }
+            catch (BESError e) {
+                cerr << "Caught BESError. Message: " << e.get_message() << "  ";
+                cerr << "[" << e.get_file() << ":" << e.get_line() << "]" << endl;
+                CPPUNIT_ASSERT(false);
+            }
+
+
+        }
+
+        void read_data(CURL *c_handle, string url) {
+
+            unsigned int tries = 0;
+            unsigned int retry_limit = 3;
+            useconds_t retry_time = 1000;
+            bool success;
+
+            do {
+                d_errbuf[0] = NULL;
+                CURLcode curl_code = curl_easy_perform(c_handle);
+                ++tries;
+
+                if (CURLE_OK != curl_code) {
+                    throw BESInternalError(
+                            string("read_data() - ERROR! Message: ").append(curl_error_msg(curl_code, d_errbuf)),
+                            __FILE__, __LINE__);
+                }
+
+                success = evaluate_curl_response(c_handle);
+
+                if (!success) {
+                    if (tries == retry_limit) {
+                        throw BESInternalError(
+                                string("Data transfer error: Number of re-tries to S3 exceeded: ").append(
+                                        curl_error_msg(curl_code, d_errbuf)), __FILE__, __LINE__);
+                    } else {
+                        BESDEBUG("dmrpp",
+                                 "HTTP transfer 500 error, will retry (trial " << tries << " for: " << url << ").");
+                        usleep(retry_time);
+                        retry_time *= 2;
+                    }
+                }
+#if 0
+                curl_slist_free_all(d_headers);
+                d_headers = 0;
+#endif
+            } while (!success);
+        }
+
+
+    CPPUNIT_TEST_SUITE(NgapCredentialsTest);
+            static string cm_config;
+
+            ;
+
+            CPPUNIT_TEST(get_s3_creds);
+
+        CPPUNIT_TEST_SUITE_END();
+
+    };
+
+    CPPUNIT_TEST_SUITE_REGISTRATION(NgapCredentialsTest);
+
+
+} // namespace dmrpp
+
+int main(int argc, char *argv[]) {
+    CppUnit::TextTestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+    string cm_cnf = "";
+    GetOpt getopt(argc, argv, "c:db");
+    int option_char;
+    while ((option_char = getopt()) != -1)
+        switch (option_char) {
+            case 'c':
+                cm_cnf = getopt.optarg;
+                break;
+            case 'd':
+                debug = true;  // debug is a static global
+                break;
+            case 'b':
+                debug = true;  // debug is a static global
+                bes_debug = true;  // debug is a static global
+                break;
+            default:
+                break;
+        }
+
+    bool wasSuccessful = true;
+    int i = getopt.optind;
+    if (i == argc) {
+        // run them all
+        wasSuccessful = runner.run("");
+    } else {
+        while (i < argc) {
+            if (debug) cerr << "Running " << argv[i] << endl;
+            string test = dmrpp::NgapCredentialsTest::suite()->getName().append("::").append(argv[i]);
+            wasSuccessful = wasSuccessful && runner.run(test);
+            ++i;
+        }
     }
+
+    return wasSuccessful ? 0 : 1;
+}
