@@ -112,7 +112,7 @@ CredentialsManagerTest_SOURCES = CredentialsManagerTest.cc
 CredentialsManagerTest_LDADD = $(OBJS) $(LIBADD)
 
 NgapCredentialsTest_SOURCES = NgapCredentialsTest.cc
-NgapCredentialsTest_LDADD = $(OBJS) $(LIBADD)
+NgapCredentialsTest_LDADD =  $(LIBADD)
 
 awsv4_test_SOURCES = awsv4_test.cc
 awsv4_test_LDADD = $(OBJS) $(LIBADD)
