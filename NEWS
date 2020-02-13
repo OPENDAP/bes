@@ -4,14 +4,14 @@ Notable Bugs Fixed:
 - Memory leak fixed and unneeded copy removed in awsv4 code
 - CovJson patch.
 - ncml_handler: When an NCML aggregation named a dataset that the server could 
-  not read... crsh. Fixed..
-- Server cache stabliszation
+  not read... crash. Fixed.
+- Server cache stabilization
 
 Features:
 - Added (alpha) support support for server authentication credentials:
 - - Environment injection support for besstandalone and besd
 - - A credentials configuration file for multiple sets, in which credentials 
-    are asscoaied with URL prefixs and multiple creds can be defined in a 
+    are associated with URL prefix's and multiple creds can be defined in a
     bes.conf environment.   
 - Combined Logs: The server can now be configured to add the OLFS request log 
   content to the BES log.
@@ -70,7 +70,7 @@ Netcdf file responses were not compressed when they should have been
 if the dataset had Structures. Fixed by patching FONcStructure as Aron
 suggested.
 
-We have added experimentatl support for STARE (Spatio Temporal
+We have added experimental support for STARE (Spatio Temporal
 Adaptive-Resolution Encoding) as part of our work on NASA ACCESS
 grant 17-ACCESS17-0039.
 
