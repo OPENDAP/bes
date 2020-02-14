@@ -295,6 +295,85 @@ namespace dmrpp {
             asString(ss, c_handle,CURLINFO_SCHEME);
             return ss.str();
         }
+        bool evaluate_curl_response(CURL *eh) {
+            long http_code = 0;
+            CURLcode res = curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_code);
+            if (CURLE_OK != res) {
+                throw BESInternalError(
+                        string("Error getting HTTP response code: ").append(curl_error_msg(res, (char *) "")),
+                        __FILE__, __LINE__);
+            }
+
+            // Newer Apache servers return 206 for range requests. jhrg 8/8/18
+            switch (http_code) {
+                case 200: // OK
+                case 206: // Partial content - this is to be expected since we use range gets
+                    // cases 201-205 are things we should probably reject, unless we add more
+                    // comprehensive HTTP/S processing here. jhrg 8/8/18
+                    return true;
+
+                case 500: // Internal server error
+                case 503: // Service Unavailable
+                case 504: // Gateway Timeout
+                    return false;
+
+                default: {
+                    ostringstream oss;
+                    oss << "HTTP status error: Expected an OK status, but got: ";
+                    oss << http_code;
+                    throw BESInternalError(oss.str(), __FILE__, __LINE__);
+                }
+            }
+        }
+        void read_data(CURL *c_handle) {
+
+            unsigned int tries = 0;
+            unsigned int retry_limit = 3;
+            useconds_t retry_time = 1000;
+            bool success;
+            CURLcode curl_code;
+
+            string url = "URL assignment failed.";
+            char *urlp = NULL;
+            curl_easy_getinfo(c_handle, CURLINFO_EFFECTIVE_URL, &urlp);
+            if(!urlp)
+                throw BESInternalError(url,__FILE__,__LINE__);
+
+            url = urlp;
+
+
+            do {
+                d_errbuf[0] = NULL;
+                curl_code = curl_easy_perform(c_handle);
+                ++tries;
+
+                if (CURLE_OK != curl_code) {
+                    throw BESInternalError(
+                            string("read_data() - ERROR! Message: ").append(curl_error_msg(curl_code, d_errbuf)),
+                            __FILE__, __LINE__);
+                }
+
+                success = evaluate_curl_response(c_handle);
+                if(debug) cout << probe_curl_handle(c_handle) << endl;
+
+                if (!success) {
+                    if (tries == retry_limit) {
+                        throw BESInternalError(
+                                string("Data transfer error: Number of re-tries to S3 exceeded: ").append(
+                                        curl_error_msg(curl_code, d_errbuf)), __FILE__, __LINE__);
+                    } else {
+                        BESDEBUG("dmrpp",
+                                 "HTTP transfer 500 error, will retry (trial " << tries << " for: " << url << ").");
+                        usleep(retry_time);
+                        retry_time *= 2;
+                    }
+                }
+#if 0
+                curl_slist_free_all(d_headers);
+                d_headers = 0;
+#endif
+            } while (!success);
+        }
 
     public:
         string cm_config;
@@ -376,36 +455,6 @@ namespace dmrpp {
             return d_handle;
         }
 
-        bool evaluate_curl_response(CURL *eh) {
-            long http_code = 0;
-            CURLcode res = curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_code);
-            if (CURLE_OK != res) {
-                throw BESInternalError(
-                        string("Error getting HTTP response code: ").append(curl_error_msg(res, (char *) "")),
-                        __FILE__, __LINE__);
-            }
-
-            // Newer Apache servers return 206 for range requests. jhrg 8/8/18
-            switch (http_code) {
-                case 200: // OK
-                case 206: // Partial content - this is to be expected since we use range gets
-                    // cases 201-205 are things we should probably reject, unless we add more
-                    // comprehensive HTTP/S processing here. jhrg 8/8/18
-                    return true;
-
-                case 500: // Internal server error
-                case 503: // Service Unavailable
-                case 504: // Gateway Timeout
-                    return false;
-
-                default: {
-                    ostringstream oss;
-                    oss << "HTTP status error: Expected an OK status, but got: ";
-                    oss << http_code;
-                    throw BESInternalError(oss.str(), __FILE__, __LINE__);
-                }
-            }
-        }
 
         void get_s3_creds() {
             if(debug) cout << endl;
@@ -432,55 +481,6 @@ namespace dmrpp {
 
         }
 
-        void read_data(CURL *c_handle) {
-
-            unsigned int tries = 0;
-            unsigned int retry_limit = 3;
-            useconds_t retry_time = 1000;
-            bool success;
-            CURLcode curl_code;
-
-            string url = "URL assignment failed.";
-            char *urlp = NULL;
-            curl_easy_getinfo(c_handle, CURLINFO_EFFECTIVE_URL, &urlp);
-            if(!urlp)
-                throw BESInternalError(url,__FILE__,__LINE__);
-
-            url = urlp;
-
-
-            do {
-                d_errbuf[0] = NULL;
-                curl_code = curl_easy_perform(c_handle);
-                ++tries;
-
-                if (CURLE_OK != curl_code) {
-                    throw BESInternalError(
-                            string("read_data() - ERROR! Message: ").append(curl_error_msg(curl_code, d_errbuf)),
-                            __FILE__, __LINE__);
-                }
-
-                success = evaluate_curl_response(c_handle);
-                if(debug) cout << probe_curl_handle(c_handle) << endl;
-
-                if (!success) {
-                    if (tries == retry_limit) {
-                        throw BESInternalError(
-                                string("Data transfer error: Number of re-tries to S3 exceeded: ").append(
-                                        curl_error_msg(curl_code, d_errbuf)), __FILE__, __LINE__);
-                    } else {
-                        BESDEBUG("dmrpp",
-                                 "HTTP transfer 500 error, will retry (trial " << tries << " for: " << url << ").");
-                        usleep(retry_time);
-                        retry_time *= 2;
-                    }
-                }
-#if 0
-                curl_slist_free_all(d_headers);
-                d_headers = 0;
-#endif
-            } while (!success);
-        }
 
 
     CPPUNIT_TEST_SUITE(NgapCredentialsTest);
