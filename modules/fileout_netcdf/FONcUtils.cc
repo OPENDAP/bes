@@ -100,6 +100,7 @@ string FONcUtils::id2netcdf(string in)
 /** @brief translate the OPeNDAP data type to a netcdf data type
  *
  * @param element The OPeNDAP element to translate
+ * @param IsNC4_ENHANCED the flag to indicate the output is in netCDF enhanced model
  * @return the netcdf data type
  */
 nc_type FONcUtils::get_nc_type(BaseType *element,bool IsNC4_ENHANCED)
@@ -190,11 +191,13 @@ string FONcUtils::gen_name(const vector<string> &embed, const string &name, stri
  * FONcBaseType's specializations).
  *
  * @param v The DAP object to convert
+ * @param ncdf_version The string that indicates if this is netCDF 3 or netCDF 4
+ * @param is_classic_model The flag that indicates if the output is in classic model or not
  * @returns The FONc object created via the DAP object
  * @throws BESInternalError if the DAP object is not an expected type
  */
 FONcBaseType *
-FONcUtils::convert(BaseType *v,const string &ncdf_version, bool is_classic_model)
+FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic_model)
 {
     FONcBaseType *b = 0;
     bool is_netcdf4_enhanced = false;

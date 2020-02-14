@@ -377,110 +377,112 @@ void FONcArray::write(int ncid)
 
     if (d_array_type != NC_CHAR) {
 
-      if(isNetCDF4_ENHANCED()) 
+        // If we support the netCDF-4 enhanced model, the unsigned integer 
+        // can be directly mapped to the netcdf-4 unsigned integer.
+        if(isNetCDF4_ENHANCED()) 
             write_for_nc4_types(ncid);
-      else {
-        string var_type = d_a->var()->type_name();
+        else {
+            string var_type = d_a->var()->type_name();
 
-        // create array to hold data hyperslab
-        switch (d_array_type) {
-        case NC_BYTE: {
-            unsigned char *data = new unsigned char[d_nelements];
-            d_a->buf2val((void**) &data);
-            stax = nc_put_var_uchar(ncid, _varid, data);
-            delete[] data;
-
-            if (stax != NC_NOERR) {
-                string err = "fileout.netcdf - Failed to create array of bytes for " + _varname;
-                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-            }
-            break;
-        }
-
-        case NC_SHORT: {
-            short *data = new short[d_nelements];
-
-            // Given Byte/UInt8 will always be unsigned they must map
-            // to a NetCDF type that will support unsigned bytes.  This
-            // detects the original variable was of type Byte and typecasts
-            // each data value to a short.
-            if (var_type == "Byte") {
-
-                unsigned char *orig_data = new unsigned char[d_nelements];
-                d_a->buf2val((void**) &orig_data);
-
-                for (int d_i = 0; d_i < d_nelements; d_i++)
-                    data[d_i] = orig_data[d_i];
-
-                delete[] orig_data;
-            }
-            else {
+            // create array to hold data hyperslab
+            switch (d_array_type) {
+            case NC_BYTE: {
+                unsigned char *data = new unsigned char[d_nelements];
                 d_a->buf2val((void**) &data);
+                stax = nc_put_var_uchar(ncid, _varid, data);
+                delete[] data;
+
+                if (stax != NC_NOERR) {
+                    string err = "fileout.netcdf - Failed to create array of bytes for " + _varname;
+                    FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+                }
+                break;
             }
-            int stax = nc_put_var_short(ncid, _varid, data);
-            delete[] data;
 
-            if (stax != NC_NOERR) {
-                string err = (string) "fileout.netcdf - Failed to create array of shorts for " + _varname;
-                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+            case NC_SHORT: {
+                short *data = new short[d_nelements];
+
+                // Given Byte/UInt8 will always be unsigned they must map
+                // to a NetCDF type that will support unsigned bytes.  This
+                // detects the original variable was of type Byte and typecasts
+                // each data value to a short.
+                if (var_type == "Byte") {
+
+                    unsigned char *orig_data = new unsigned char[d_nelements];
+                    d_a->buf2val((void**) &orig_data);
+
+                    for (int d_i = 0; d_i < d_nelements; d_i++)
+                        data[d_i] = orig_data[d_i];
+
+                    delete[] orig_data;
+                }
+                else {
+                    d_a->buf2val((void**) &data);
+                }
+                int stax = nc_put_var_short(ncid, _varid, data);
+                delete[] data;
+
+                if (stax != NC_NOERR) {
+                    string err = (string) "fileout.netcdf - Failed to create array of shorts for " + _varname;
+                    FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+                }
+                break;
             }
-            break;
-        }
 
-        case NC_INT: {
-            int *data = new int[d_nelements];
-            // Since UInt16 also maps to NC_INT, we need to obtain the data correctly
-            // KY 2012-10-25
-            if (var_type == "UInt16") {
-                unsigned short *orig_data = new unsigned short[d_nelements];
-                d_a->buf2val((void**) &orig_data);
+            case NC_INT: {
+                int *data = new int[d_nelements];
+                // Since UInt16 also maps to NC_INT, we need to obtain the data correctly
+                // KY 2012-10-25
+                if (var_type == "UInt16") {
+                    unsigned short *orig_data = new unsigned short[d_nelements];
+                    d_a->buf2val((void**) &orig_data);
 
-                for (int d_i = 0; d_i < d_nelements; d_i++)
-                    data[d_i] = orig_data[d_i];
+                    for (int d_i = 0; d_i < d_nelements; d_i++)
+                        data[d_i] = orig_data[d_i];
 
-                delete[] orig_data;
+                    delete[] orig_data;
+                }
+                else {
+                    d_a->buf2val((void**) &data);
+                }
+
+                int stax = nc_put_var_int(ncid, _varid, data);
+                delete[] data;
+
+                if (stax != NC_NOERR) {
+                    string err = (string) "fileout.netcdf - Failed to create array of ints for " + _varname;
+                    FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+                }
+                break;
             }
-            else {
+
+            case NC_FLOAT: {
+                float *data = new float[d_nelements];
                 d_a->buf2val((void**) &data);
+                int stax = nc_put_var_float(ncid, _varid, data);
+                delete[] data;
+
+                if (stax != NC_NOERR) {
+                    string err = (string) "fileout.netcdf - Failed to create array of floats for " + _varname;
+                    FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+                }
+                break;
             }
 
-            int stax = nc_put_var_int(ncid, _varid, data);
-            delete[] data;
+            case NC_DOUBLE: {
+                double *data = new double[d_nelements];
+                d_a->buf2val((void**) &data);
+                int stax = nc_put_var_double(ncid, _varid, data);
+                delete[] data;
 
-            if (stax != NC_NOERR) {
-                string err = (string) "fileout.netcdf - Failed to create array of ints for " + _varname;
-                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+                if (stax != NC_NOERR) {
+                    string err = (string) "fileout.netcdf - Failed to create array of doubles for " + _varname;
+                    FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+                }
+                break;
             }
-            break;
+            }
         }
-
-        case NC_FLOAT: {
-            float *data = new float[d_nelements];
-            d_a->buf2val((void**) &data);
-            int stax = nc_put_var_float(ncid, _varid, data);
-            delete[] data;
-
-            if (stax != NC_NOERR) {
-                string err = (string) "fileout.netcdf - Failed to create array of floats for " + _varname;
-                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-            }
-            break;
-        }
-
-        case NC_DOUBLE: {
-            double *data = new double[d_nelements];
-            d_a->buf2val((void**) &data);
-            int stax = nc_put_var_double(ncid, _varid, data);
-            delete[] data;
-
-            if (stax != NC_NOERR) {
-                string err = (string) "fileout.netcdf - Failed to create array of doubles for " + _varname;
-                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-            }
-            break;
-        }
-      }
-    }
     }
     else {
         // special case for string data. Could have put this in the
@@ -571,10 +573,19 @@ void FONcArray::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
+/** @brief write the data to netCDF-4 datatype
+ *
+ * The netCDF-4 supports unsigned 8-bit,16-bit and 32-bit integer
+ * datatypes also provided by DAP2. So makes the exact mapping
+ * when users specify the netCDF-4 enhanced output.
+ * 
+ *
+ * @param ncid netCDF file ID 
+ */
+
 void FONcArray::write_for_nc4_types(int ncid) {
 
     int stax = NC_NOERR;
-    string var_type = d_a->var()->type_name();
 
     // create array to hold data hyperslab
     switch (d_array_type) {
