@@ -361,8 +361,8 @@ namespace dmrpp {
                 throw BESInternalError(string("Error setting CURLOPT_PASSWORD: ").append(curl_error_msg(res, d_errbuf)),
                                        __FILE__, __LINE__);
 
-            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_HTTPAUTH, CURLAUTH_BASIC)))
-                throw BESInternalError(string("Error setting CURLOPT_HTTPAUTH to CURLAUTH_BASIC msg: ").append(curl_error_msg(res, d_errbuf)),
+            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_HTTPAUTH, CURLAUTH_ANY)))
+                throw BESInternalError(string("Error setting CURLOPT_HTTPAUTH to CURLAUTH_ANY msg: ").append(curl_error_msg(res, d_errbuf)),
                                        __FILE__, __LINE__);
 
 
