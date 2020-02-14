@@ -2063,4 +2063,13 @@ add_executable(bes
     xmlcommand/XMLSetContextsCommand.h
     config.h
 	modules/dmrpp_module/unit-tests/awsv4_test.cc
-        modules/dmrpp_module/NgapCredentials.cc modules/dmrpp_module/NgapCredentials.h modules/dmrpp_module/S3Credentials.cc modules/dmrpp_module/S3Credentials.h modules/dmrpp_module/unit-tests/NgapCredentialsTest.cc modules/dmrpp_module/unit-tests/NgapCredentialsTest.h)
+
+     #   modules/dmrpp_module/NgapCredentials.cc
+     #   modules/dmrpp_module/NgapCredentials.h
+     #   modules/dmrpp_module/S3Credentials.cc
+     #   modules/dmrpp_module/S3Credentials.h
+
+     modules/dmrpp_module/unit-tests/NgapCredentialsTest.cc
+     modules/dmrpp_module/unit-tests/NgapCredentialsTest.h
+
+    )
