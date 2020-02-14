@@ -78,46 +78,12 @@ namespace dmrpp {
     */
     size_t ngap_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
         size_t nbytes = size * nmemb;
-
-        // Peek into the bytes read and look for an error from the object store.
-        // Error messages always start off with '<?xml' so only check for one if we have more than
-        // four characters in 'buffer.' jhrg 12/17/19
-        if (nbytes > 4) {
-            string peek(reinterpret_cast<const char *>(buffer), 5);
-            if (peek == "<?xml") {
-                // At this point we no longer care about great performance - error msg readability
-                // is more important. jhrg 12/30/19
-                string xml_message = reinterpret_cast<const char *>(buffer);
-                xml_message.erase(xml_message.find_last_not_of("\t\n\v\f\r 0") + 1);
-                // Decode the AWS XML error message. In some cases this will fail because pub keys,
-                // which maybe in this error text, may have < or > chars in them. the XML parser
-                // will be sad if that happens. jhrg 12/30/19
-                try {
-                    string json_message = xml2json(xml_message.c_str());
-                    BESDEBUG("dmrpp", "AWS S3 Access Error:" << json_message << endl);
-
-                    rapidjson::Document d;
-                    d.Parse(json_message.c_str());
-                    rapidjson::Value &s = d["Error"]["Message"];
-                    // We might want to get the "Code" from the "Error" if these text messages
-                    // are not good enough. But the "Code" is not really suitable for normal humans...
-                    // jhrg 12/31/19
-
-                    throw BESInternalError(string("Error accessing remote. Message: ").append(s.GetString()), __FILE__,
-                                           __LINE__);
-                }
-                catch (BESInternalError) {
-                    // re-throw BESSyntaxUserError - added for the future if we make BESError a child
-                    // of std::exception as it should be. jhrg 12/30/19
-                    throw;
-                }
-                catch (std::exception &e) {
-                    BESDEBUG("dmrpp", " Access Error:" << xml_message << endl);
-                    throw BESInternalError(string("Error accessing remote. Message."), __FILE__, __LINE__);
-                }
-            }
-        }
+        //cerr << "ngap_write_data() bytes: " << nbytes << "  size: " << size << "  nmemb: " << nmemb << " buffer: " << buffer << "  data: " << data << endl;
+        memcpy(data,buffer,nbytes);
+        return nbytes;
     }
+    string uid;
+    string pw;
 
     class NgapCredentialsTest : public CppUnit::TestFixture {
     private:
@@ -134,8 +100,200 @@ namespace dmrpp {
             } else {
                 oss << curl_easy_strerror(res) << "(result: " << res << ")";
             }
-
             return oss.str();
+        }
+
+        std::map<CURLINFO, std::vector<std::string>> curl_info={
+            {CURLINFO_EFFECTIVE_URL, {"CURLINFO_EFFECTIVE_URL","Last used URL. See CURLINFO_EFFECTIVE_URL"}},
+            {CURLINFO_RESPONSE_CODE, {"CURLINFO_RESPONSE_CODE","Last received response code. See CURLINFO_RESPONSE_CODE"}},
+            {CURLINFO_HTTP_CONNECTCODE, {"CURLINFO_HTTP_CONNECTCODE","Last proxy CONNECT response code. See CURLINFO_HTTP_CONNECTCODE"}},
+            {CURLINFO_HTTP_VERSION, {"CURLINFO_HTTP_VERSION","The http version used in the connection. See CURLINFO_HTTP_VERSION"}},
+            {CURLINFO_FILETIME, {"CURLINFO_FILETIME","Remote time of the retrieved document. See CURLINFO_FILETIME"}},
+            //{CURLINFO_FILETIME_T, {"CURLINFO_FILETIME_T","Remote time of the retrieved document. See CURLINFO_FILETIME_T"}},
+            {CURLINFO_TOTAL_TIME, {"CURLINFO_TOTAL_TIME","Total time of previous transfer. See CURLINFO_TOTAL_TIME"}},
+            //{CURLINFO_TOTAL_TIME_T, {"CURLINFO_TOTAL_TIME_T","Total time of previous transfer. See CURLINFO_TOTAL_TIME_T"}},
+            {CURLINFO_NAMELOOKUP_TIME, {"CURLINFO_NAMELOOKUP_TIME","Time from start until name resolving completed. See CURLINFO_NAMELOOKUP_TIME"}},
+            //{CURLINFO_NAMELOOKUP_TIME_T, {"CURLINFO_NAMELOOKUP_TIME_T","Time from start until name resolving completed. See CURLINFO_NAMELOOKUP_TIME_T"}},
+            {CURLINFO_CONNECT_TIME, {"CURLINFO_CONNECT_TIME","Time from start until remote host or proxy completed. See CURLINFO_CONNECT_TIME"}},
+            //{CURLINFO_CONNECT_TIME_T, {"CURLINFO_CONNECT_TIME_T","Time from start until remote host or proxy completed. See CURLINFO_CONNECT_TIME_T"}},
+            {CURLINFO_APPCONNECT_TIME, {"CURLINFO_APPCONNECT_TIME","Time from start until SSL/SSH handshake completed. See CURLINFO_APPCONNECT_TIME"}},
+            //{CURLINFO_APPCONNECT_TIME_T, {"CURLINFO_APPCONNECT_TIME_T","Time from start until SSL/SSH handshake completed. See CURLINFO_APPCONNECT_TIME_T"}},
+            {CURLINFO_PRETRANSFER_TIME, {"CURLINFO_PRETRANSFER_TIME","Time from start until just before the transfer begins. See CURLINFO_PRETRANSFER_TIME"}},
+            //{CURLINFO_PRETRANSFER_TIME_T, {"CURLINFO_PRETRANSFER_TIME_T","Time from start until just before the transfer begins. See CURLINFO_PRETRANSFER_TIME_T"}},
+            {CURLINFO_STARTTRANSFER_TIME, {"CURLINFO_STARTTRANSFER_TIME","Time from start until just when the first byte is received. See CURLINFO_STARTTRANSFER_TIME"}},
+            //{CURLINFO_STARTTRANSFER_TIME_T, {"CURLINFO_STARTTRANSFER_TIME_T","Time from start until just when the first byte is received. See CURLINFO_STARTTRANSFER_TIME_T"}},
+            {CURLINFO_REDIRECT_TIME, {"CURLINFO_REDIRECT_TIME","Time taken for all redirect steps before the final transfer. See CURLINFO_REDIRECT_TIME"}},
+            //{CURLINFO_REDIRECT_TIME_T, {"CURLINFO_REDIRECT_TIME_T","Time taken for all redirect steps before the final transfer. See CURLINFO_REDIRECT_TIME_T"}},
+            {CURLINFO_REDIRECT_COUNT, {"CURLINFO_REDIRECT_COUNT","Total number of redirects that were followed. See CURLINFO_REDIRECT_COUNT"}},
+            {CURLINFO_REDIRECT_URL, {"CURLINFO_REDIRECT_URL","URL a redirect would take you to, had you enabled redirects. See CURLINFO_REDIRECT_URL"}},
+            {CURLINFO_SIZE_UPLOAD, {"CURLINFO_SIZE_UPLOAD","(Deprecated) Number of bytes uploaded. See CURLINFO_SIZE_UPLOAD"}},
+            //{CURLINFO_SIZE_UPLOAD_T, {"CURLINFO_SIZE_UPLOAD_T","Number of bytes uploaded. See CURLINFO_SIZE_UPLOAD_T"}},
+            {CURLINFO_SIZE_DOWNLOAD, {"CURLINFO_SIZE_DOWNLOAD","(Deprecated) Number of bytes downloaded. See CURLINFO_SIZE_DOWNLOAD"}},
+            //{CURLINFO_SIZE_DOWNLOAD_T, {"CURLINFO_SIZE_DOWNLOAD_T","Number of bytes downloaded. See CURLINFO_SIZE_DOWNLOAD_T"}},
+            {CURLINFO_SPEED_DOWNLOAD, {"CURLINFO_SPEED_DOWNLOAD","(Deprecated) Average download speed. See CURLINFO_SPEED_DOWNLOAD"}},
+            //{CURLINFO_SPEED_DOWNLOAD_T, {"CURLINFO_SPEED_DOWNLOAD_T","Average download speed. See CURLINFO_SPEED_DOWNLOAD_T"}},
+            {CURLINFO_SPEED_UPLOAD, {"CURLINFO_SPEED_UPLOAD","(Deprecated) Average upload speed. See CURLINFO_SPEED_UPLOAD"}},
+            //{CURLINFO_SPEED_UPLOAD_T, {"CURLINFO_SPEED_UPLOAD_T","Average upload speed. See CURLINFO_SPEED_UPLOAD_T"}},
+            {CURLINFO_HEADER_SIZE, {"CURLINFO_HEADER_SIZE","Number of bytes of all headers received. See CURLINFO_HEADER_SIZE"}},
+            {CURLINFO_REQUEST_SIZE, {"CURLINFO_REQUEST_SIZE","Number of bytes sent in the issued HTTP requests. See CURLINFO_REQUEST_SIZE"}},
+            {CURLINFO_SSL_VERIFYRESULT, {"CURLINFO_SSL_VERIFYRESULT","Certificate verification result. See CURLINFO_SSL_VERIFYRESULT"}},
+            {CURLINFO_PROXY_SSL_VERIFYRESULT, {"CURLINFO_PROXY_SSL_VERIFYRESULT","Proxy certificate verification result. See CURLINFO_PROXY_SSL_VERIFYRESULT"}},
+            {CURLINFO_SSL_ENGINES, {"CURLINFO_SSL_ENGINES","A list of OpenSSL crypto engines. See CURLINFO_SSL_ENGINES"}},
+            {CURLINFO_CONTENT_LENGTH_DOWNLOAD, {"CURLINFO_CONTENT_LENGTH_DOWNLOAD","(Deprecated) Content length from the Content-Length header. See CURLINFO_CONTENT_LENGTH_DOWNLOAD"}},
+            //{CURLINFO_CONTENT_LENGTH_DOWNLOAD_T, {"CURLINFO_CONTENT_LENGTH_DOWNLOAD_T","Content length from the Content-Length header. See CURLINFO_CONTENT_LENGTH_DOWNLOAD_T"}},
+            {CURLINFO_CONTENT_LENGTH_UPLOAD, {"CURLINFO_CONTENT_LENGTH_UPLOAD","(Deprecated) Upload size. See CURLINFO_CONTENT_LENGTH_UPLOAD"}},
+            //{CURLINFO_CONTENT_LENGTH_UPLOAD_T, {"CURLINFO_CONTENT_LENGTH_UPLOAD_T","Upload size. See CURLINFO_CONTENT_LENGTH_UPLOAD_T"}},
+            {CURLINFO_CONTENT_TYPE, {"CURLINFO_CONTENT_TYPE","Content type from the Content-Type header. See CURLINFO_CONTENT_TYPE"}},
+            //{CURLINFO_RETRY_AFTER, {"CURLINFO_RETRY_AFTER","The value from the from the Retry-After header. See CURLINFO_RETRY_AFTER"}},
+            {CURLINFO_PRIVATE, {"CURLINFO_PRIVATE","User's private data pointer. See CURLINFO_PRIVATE"}},
+            {CURLINFO_HTTPAUTH_AVAIL, {"CURLINFO_HTTPAUTH_AVAIL","Available HTTP authentication methods. See CURLINFO_HTTPAUTH_AVAIL"}},
+            {CURLINFO_PROXYAUTH_AVAIL, {"CURLINFO_PROXYAUTH_AVAIL","Available HTTP proxy authentication methods. See CURLINFO_PROXYAUTH_AVAIL"}},
+            {CURLINFO_OS_ERRNO, {"CURLINFO_OS_ERRNO","The errno from the last failure to connect. See CURLINFO_OS_ERRNO"}},
+            {CURLINFO_NUM_CONNECTS, {"CURLINFO_NUM_CONNECTS","Number of new successful connections used for previous transfer. See CURLINFO_NUM_CONNECTS"}},
+            {CURLINFO_PRIMARY_IP, {"CURLINFO_PRIMARY_IP","IP address of the last connection. See CURLINFO_PRIMARY_IP"}},
+            {CURLINFO_PRIMARY_PORT, {"CURLINFO_PRIMARY_PORT","Port of the last connection. See CURLINFO_PRIMARY_PORT"}},
+            {CURLINFO_LOCAL_IP, {"CURLINFO_LOCAL_IP","Local-end IP address of last connection. See CURLINFO_LOCAL_IP"}},
+            {CURLINFO_LOCAL_PORT, {"CURLINFO_LOCAL_PORT","Local-end port of last connection. See CURLINFO_LOCAL_PORT"}},
+            {CURLINFO_COOKIELIST, {"CURLINFO_COOKIELIST","List of all known cookies. See CURLINFO_COOKIELIST"}},
+            {CURLINFO_LASTSOCKET, {"CURLINFO_LASTSOCKET","Last socket used. See CURLINFO_LASTSOCKET"}},
+            {CURLINFO_ACTIVESOCKET, {"CURLINFO_ACTIVESOCKET","The session's active socket. See CURLINFO_ACTIVESOCKET"}},
+            {CURLINFO_FTP_ENTRY_PATH, {"CURLINFO_FTP_ENTRY_PATH","The entry path after logging in to an FTP server. See CURLINFO_FTP_ENTRY_PATH"}},
+            {CURLINFO_CERTINFO, {"CURLINFO_CERTINFO","Certificate chain. See CURLINFO_CERTINFO"}},
+            {CURLINFO_TLS_SSL_PTR, {"CURLINFO_TLS_SSL_PTR","TLS session info that can be used for further processing. See CURLINFO_TLS_SSL_PTR"}},
+            {CURLINFO_TLS_SESSION, {"CURLINFO_TLS_SESSION","TLS session info that can be used for further processing. See CURLINFO_TLS_SESSION. Deprecated option, use CURLINFO_TLS_SSL_PTR instead!"}},
+            {CURLINFO_CONDITION_UNMET, {"CURLINFO_CONDITION_UNMET","Whether or not a time conditional was met. See CURLINFO_CONDITION_UNMET"}},
+            {CURLINFO_RTSP_SESSION_ID, {"CURLINFO_RTSP_SESSION_ID","RTSP session ID. See CURLINFO_RTSP_SESSION_ID"}},
+            {CURLINFO_RTSP_CLIENT_CSEQ, {"CURLINFO_RTSP_CLIENT_CSEQ","RTSP CSeq that will next be used. See CURLINFO_RTSP_CLIENT_CSEQ"}},
+            {CURLINFO_RTSP_SERVER_CSEQ, {"CURLINFO_RTSP_SERVER_CSEQ","RTSP CSeq that will next be expected. See CURLINFO_RTSP_SERVER_CSEQ"}},
+            {CURLINFO_RTSP_CSEQ_RECV, {"CURLINFO_RTSP_CSEQ_RECV","RTSP CSeq last received. See CURLINFO_RTSP_CSEQ_RECV"}},
+            {CURLINFO_PROTOCOL, {"CURLINFO_PROTOCOL","The protocol used for the connection. (Added in 7.52.0) See CURLINFO_PROTOCOL"}},
+            {CURLINFO_SCHEME, {"CURLINFO_SCHEME","The scheme used for the connection. (Added in 7.52.0) See CURLINFO_SCHEME"}},
+        };
+
+        void asString(stringstream &ss, CURL *c_handle, CURLINFO kurl){
+            char *strValue = NULL;
+            curl_easy_getinfo(c_handle, kurl, &strValue);
+            if(strValue)
+                ss << curl_info.find(kurl)->second[0] << ": " << strValue << "  (" << curl_info.find(kurl)->second[1] << ")" << endl;
+            else
+                ss << curl_info.find(kurl)->second[0] << ": **MISSING** (" << curl_info.find(kurl)->second[1] << ")" << endl;
+        }
+
+        void asLong(stringstream &ss, CURL *c_handle, CURLINFO kurl){
+            long lintValue;
+            curl_easy_getinfo(c_handle, kurl, &lintValue);
+            ss << curl_info.find(kurl)->second[0] << ": "<< lintValue << "  (" << curl_info.find(kurl)->second[1] << ")" << endl;
+        }
+
+        void asDouble(stringstream &ss, CURL *c_handle, CURLINFO kurl){
+            double dValue;
+            curl_easy_getinfo(c_handle, kurl, &dValue);
+            ss << curl_info.find(kurl)->second[0] << ": "<< dValue << "  (" << curl_info.find(kurl)->second[1] << ")" << endl;
+        }
+
+        void asCurlOffT(stringstream &ss, CURL *c_handle, CURLINFO kurl){
+            curl_off_t coft_value;
+            curl_easy_getinfo(c_handle, kurl, &coft_value);
+            ss << curl_info.find(kurl)->second[0] << ": "<< coft_value << "  (" << curl_info.find(kurl)->second[1] << ")" << endl;
+        }
+
+        void asCurlSList(stringstream &ss, CURL *c_handle, CURLINFO kurl){
+            struct curl_slist *engine_list;
+            curl_easy_getinfo(c_handle, kurl, &engine_list);
+            ss << curl_info.find(kurl)->second[0] << ": "<< engine_list << "  (" << curl_info.find(kurl)->second[1] << ")" << endl;
+
+            curl_slist_free_all(engine_list);
+        }
+
+        void asCurlSocket(stringstream &ss, CURL *c_handle, CURLINFO kurl){
+            curl_socket_t *c_sock;
+            curl_easy_getinfo(c_handle, kurl, &c_sock);
+            ss << curl_info.find(kurl)->second[0] << ": "<< c_sock << "  (" << curl_info.find(kurl)->second[1] << ")" << endl;
+        }
+
+        void asCurlCertInfo(stringstream &ss, CURL *c_handle, CURLINFO kurl){
+            struct curl_certinfo *chainp;
+            curl_easy_getinfo(c_handle, kurl, &chainp);
+            ss << curl_info.find(kurl)->second[0] << ": "<< chainp << "  (" << curl_info.find(kurl)->second[1] << ")" << endl;
+
+        }
+
+        void asCurlTlsSessionInfo(stringstream &ss, CURL *c_handle, CURLINFO kurl){
+            struct curl_tlssessioninfo *session;
+            curl_easy_getinfo(c_handle, kurl, &session);
+            ss << curl_info.find(kurl)->second[0] << ": "<< session << "  (" << curl_info.find(kurl)->second[1] << ")" << endl;
+
+        }
+
+        string probe_curl_handle(CURL *c_handle){
+            stringstream ss;
+
+            asString(ss, c_handle,CURLINFO_EFFECTIVE_URL);
+            asLong(ss, c_handle,CURLINFO_RESPONSE_CODE);
+
+            asLong(ss, c_handle,CURLINFO_HTTP_CONNECTCODE);
+            asLong(ss, c_handle,CURLINFO_HTTP_VERSION);
+            asLong(ss, c_handle,CURLINFO_FILETIME);
+            //asCurlOffT(ss, c_handle,CURLINFO_FILETIME_T);
+            asLong(ss, c_handle,CURLINFO_TOTAL_TIME);
+            //asCurlOffT(ss, c_handle,CURLINFO_TOTAL_TIME_T);
+            asDouble(ss, c_handle,CURLINFO_NAMELOOKUP_TIME);
+            //asCurlOffT(ss, c_handle,CURLINFO_NAMELOOKUP_TIME_T);
+            asDouble(ss, c_handle,CURLINFO_CONNECT_TIME);
+            //asCurlOffT(ss, c_handle,CURLINFO_CONNECT_TIME_T);
+            asDouble(ss, c_handle,CURLINFO_APPCONNECT_TIME);
+            //asCurlOffT(ss, c_handle,CURLINFO_APPCONNECT_TIME_T);
+            asDouble(ss, c_handle,CURLINFO_PRETRANSFER_TIME);
+            //asCurlOffT(ss, c_handle,CURLINFO_PRETRANSFER_TIME_T);
+            asDouble(ss, c_handle,CURLINFO_STARTTRANSFER_TIME);
+            //asCurlOffT(ss, c_handle,CURLINFO_STARTTRANSFER_TIME_T);
+            asDouble(ss, c_handle,CURLINFO_REDIRECT_TIME);
+            //asCurlOffT(ss, c_handle,CURLINFO_REDIRECT_TIME_T);
+            asLong(ss, c_handle,CURLINFO_REDIRECT_COUNT);
+            asString(ss, c_handle,CURLINFO_REDIRECT_URL);
+            asDouble(ss, c_handle,CURLINFO_SIZE_UPLOAD);
+            //asCurlOffT(ss, c_handle,CURLINFO_SIZE_UPLOAD_T);
+            asDouble(ss, c_handle,CURLINFO_SIZE_DOWNLOAD);
+            // asCurlOffT(ss, c_handle,CURLINFO_SIZE_DOWNLOAD_T);
+            asDouble(ss, c_handle,CURLINFO_SPEED_DOWNLOAD);
+            // asCurlOffT(ss, c_handle,CURLINFO_SPEED_DOWNLOAD_T);
+            asDouble(ss, c_handle,CURLINFO_SPEED_UPLOAD);
+            // asCurlOffT(ss, c_handle,CURLINFO_SPEED_UPLOAD_T);
+            asLong(ss, c_handle,CURLINFO_HEADER_SIZE);
+            asLong(ss, c_handle,CURLINFO_REQUEST_SIZE);
+            asLong(ss, c_handle,CURLINFO_SSL_VERIFYRESULT);
+            asLong(ss, c_handle,CURLINFO_PROXY_SSL_VERIFYRESULT);
+            asCurlSList(ss, c_handle,CURLINFO_SSL_ENGINES);
+            asDouble(ss, c_handle,CURLINFO_CONTENT_LENGTH_DOWNLOAD);
+            // asCurlOffT(ss, c_handle,CURLINFO_CONTENT_LENGTH_DOWNLOAD_T);
+            asDouble(ss, c_handle,CURLINFO_CONTENT_LENGTH_UPLOAD);
+            // asCurlOffT(ss, c_handle,CURLINFO_CONTENT_LENGTH_UPLOAD_T);
+            asString(ss, c_handle,CURLINFO_CONTENT_TYPE);
+            // asCurlOffT(ss, c_handle,CURLINFO_RETRY_AFTER);
+            asString(ss, c_handle,CURLINFO_PRIVATE);
+            asLong(ss, c_handle,CURLINFO_HTTPAUTH_AVAIL);
+            asLong(ss, c_handle,CURLINFO_PROXYAUTH_AVAIL);
+            asLong(ss, c_handle,CURLINFO_OS_ERRNO);
+            asLong(ss, c_handle,CURLINFO_NUM_CONNECTS);
+            asString(ss, c_handle,CURLINFO_PRIMARY_IP);
+            asLong(ss, c_handle,CURLINFO_PRIMARY_PORT);
+            asString(ss, c_handle,CURLINFO_LOCAL_IP);
+            asLong(ss, c_handle,CURLINFO_LOCAL_PORT);
+            asCurlSList(ss, c_handle,CURLINFO_COOKIELIST);
+            asLong(ss, c_handle,CURLINFO_LASTSOCKET);
+            asCurlSocket(ss, c_handle,CURLINFO_ACTIVESOCKET);
+            asString(ss, c_handle,CURLINFO_FTP_ENTRY_PATH);
+            asCurlCertInfo(ss,c_handle,CURLINFO_CERTINFO);
+            asCurlTlsSessionInfo(ss,c_handle,CURLINFO_TLS_SSL_PTR);
+            asCurlTlsSessionInfo(ss,c_handle,CURLINFO_TLS_SESSION);
+            asLong(ss, c_handle,CURLINFO_CONDITION_UNMET);
+            asString(ss, c_handle,CURLINFO_RTSP_SESSION_ID);
+            asLong(ss, c_handle,CURLINFO_RTSP_CLIENT_CSEQ);
+            asLong(ss, c_handle,CURLINFO_RTSP_SERVER_CSEQ);
+            asLong(ss, c_handle,CURLINFO_RTSP_CSEQ_RECV);
+            asLong(ss, c_handle,CURLINFO_PROTOCOL);
+            asString(ss, c_handle,CURLINFO_SCHEME);
+            return ss.str();
         }
 
     public:
@@ -189,25 +347,33 @@ namespace dmrpp {
                 throw BESInternalError(string("HTTP Error setting URL: ").append(curl_error_msg(res, d_errbuf)),
                                        __FILE__, __LINE__);
 
-#if 0
-            // get the offset to offset + size bytes
-            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_RANGE, chunk->get_curl_range_arg_string().c_str())))
-                throw BESInternalError(string("HTTP Error setting Range: ").append(curl_error_msg(res, handle->d_errbuf)), __FILE__,
-                                       __LINE__);
-#endif
+            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_FOLLOWLOCATION, 1L)))
+                throw BESInternalError(string("Error setting CURLOPT_FOLLOWLOCATION: ").append(curl_error_msg(res, d_errbuf)),
+                                       __FILE__, __LINE__);
+
+            if(debug) cout << "uid: " << uid << endl;
+            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_USERNAME, uid.c_str())))
+                throw BESInternalError(string("Error setting CURLOPT_USERNAME: ").append(curl_error_msg(res, d_errbuf)),
+                                       __FILE__, __LINE__);
+
+            if(debug) cout << "pw: " << pw << endl;
+            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_PASSWORD, pw.c_str())))
+                throw BESInternalError(string("Error setting CURLOPT_PASSWORD: ").append(curl_error_msg(res, d_errbuf)),
+                                       __FILE__, __LINE__);
+
+            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_HTTPAUTH, CURLAUTH_BASIC)))
+                throw BESInternalError(string("Error setting CURLOPT_HTTPAUTH to CURLAUTH_BASIC msg: ").append(curl_error_msg(res, d_errbuf)),
+                                       __FILE__, __LINE__);
+
+
             // Pass this to write_data as the fourth argument
             if (CURLE_OK !=
                 (res = curl_easy_setopt(d_handle, CURLOPT_WRITEDATA, reinterpret_cast<void *>(response_buff))))
                 throw BESInternalError(
                         string("CURL Error setting chunk as data buffer: ").append(curl_error_msg(res, d_errbuf)),
                         __FILE__, __LINE__);
-#if 0
-            // store the easy_handle so that we can call release_handle in multi_handle::read_data()
-            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_PRIVATE, reinterpret_cast<void*>(handle))))
-                throw BESInternalError(string("CURL Error setting easy_handle as private data: ").append(curl_error_msg(res, handle->d_errbuf)), __FILE__,
-                                       __LINE__);
-#endif
 
+            return d_handle;
         }
 
         bool evaluate_curl_response(CURL *eh) {
@@ -242,15 +408,18 @@ namespace dmrpp {
         }
 
         void get_s3_creds() {
+            if(debug) cout << endl;
             string distribution_api_endpoint = "https://d33imu0z1ajyhj.cloudfront.net/s3credentials";
             string fnoc1_dds = "http://test.opendap.org/opendap/data/nc/fnoc1.nc.dds";
 
-            string target_url = fnoc1_dds;
+            string target_url = distribution_api_endpoint;
+
+            if(debug) cout << "Target URL: " << target_url<< endl;
 
             char response_buf[1024 * 1024];
             try {
                 CURL *c_handle = set_up_curl_handle(target_url, response_buf);
-                read_data(c_handle, target_url);
+                read_data(c_handle);
                 string response(response_buf);
                 cout << response << endl;
             }
@@ -263,16 +432,26 @@ namespace dmrpp {
 
         }
 
-        void read_data(CURL *c_handle, string url) {
+        void read_data(CURL *c_handle) {
 
             unsigned int tries = 0;
             unsigned int retry_limit = 3;
             useconds_t retry_time = 1000;
             bool success;
+            CURLcode curl_code;
+
+            string url = "URL assignment failed.";
+            char *urlp = NULL;
+            curl_easy_getinfo(c_handle, CURLINFO_EFFECTIVE_URL, &urlp);
+            if(!urlp)
+                throw BESInternalError(url,__FILE__,__LINE__);
+
+            url = urlp;
+
 
             do {
                 d_errbuf[0] = NULL;
-                CURLcode curl_code = curl_easy_perform(c_handle);
+                curl_code = curl_easy_perform(c_handle);
                 ++tries;
 
                 if (CURLE_OK != curl_code) {
@@ -282,6 +461,7 @@ namespace dmrpp {
                 }
 
                 success = evaluate_curl_response(c_handle);
+                if(debug) cout << probe_curl_handle(c_handle) << endl;
 
                 if (!success) {
                     if (tries == retry_limit) {
@@ -304,9 +484,6 @@ namespace dmrpp {
 
 
     CPPUNIT_TEST_SUITE(NgapCredentialsTest);
-            static string cm_config;
-
-            ;
 
             CPPUNIT_TEST(get_s3_creds);
 
@@ -316,6 +493,7 @@ namespace dmrpp {
 
     CPPUNIT_TEST_SUITE_REGISTRATION(NgapCredentialsTest);
 
+    static string cm_config;
 
 } // namespace dmrpp
 
@@ -323,12 +501,21 @@ int main(int argc, char *argv[]) {
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
     string cm_cnf = "";
-    GetOpt getopt(argc, argv, "c:db");
+    dmrpp::uid = "";
+    dmrpp::pw = "";
+
+    GetOpt getopt(argc, argv, "c:dbu:p:");
     int option_char;
     while ((option_char = getopt()) != -1)
         switch (option_char) {
             case 'c':
                 cm_cnf = getopt.optarg;
+                break;
+            case 'u':
+                dmrpp::uid = getopt.optarg;
+                break;
+            case 'p':
+                dmrpp::pw = getopt.optarg;
                 break;
             case 'd':
                 debug = true;  // debug is a static global
@@ -343,6 +530,10 @@ int main(int argc, char *argv[]) {
 
     bool wasSuccessful = true;
     int i = getopt.optind;
+
+
+
+
     if (i == argc) {
         // run them all
         wasSuccessful = runner.run("");
