@@ -455,9 +455,9 @@ void FONcAttributes::write_attrs_for_nc4_types(int ncid,int varid, const string 
         for (attri = 0; attri < num_vals; attri++) {
             string val = attrs.get_attr(attr, attri);
             istringstream is(val);
-            unsigned char uival = 0;
+            unsigned int uival = 0;
             is >> uival;
-            vals[attri] = uival;
+            vals[attri] = (unsigned char)uival;
         }
         stax = nc_put_att_uchar(ncid, varid, var_attr_name.c_str(), NC_UBYTE,
                 num_vals, &vals[0]);

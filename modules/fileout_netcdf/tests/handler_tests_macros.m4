@@ -277,8 +277,8 @@ m4_define([_AT_BESCMD_NETCDF_TEST_NC4_ENHANCED],  [dnl
     input=$1
     baseline=$2
 
-    dnl AS_IF([test -n "$baselines" -a x$baselines = xyes],
-         dnl [
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+          [
         AT_CHECK([besstandalone -c $abs_builddir/bes.nc4_enhanced.conf -i $input > test.nc])
         
         dnl first get the version number, then the header, then the data
@@ -287,8 +287,8 @@ m4_define([_AT_BESCMD_NETCDF_TEST_NC4_ENHANCED],  [dnl
         REMOVE_DATE_TIME([$baseline.header.tmp])
         AT_CHECK([ncdump test.nc > $baseline.data.tmp])
         REMOVE_DATE_TIME([$baseline.data.tmp])
-        dnl ],
-        dnl [
+         ],
+         [
         AT_CHECK([besstandalone -c $abs_builddir/bes.nc4_enhanced.conf -i $input > test.nc])
         
         AT_CHECK([ncdump -k test.nc > tmp])
@@ -303,7 +303,7 @@ m4_define([_AT_BESCMD_NETCDF_TEST_NC4_ENHANCED],  [dnl
         AT_CHECK([diff -b -B $baseline.data tmp])
         
         AT_XFAIL_IF([test "$3" = "xfail"])
-        dnl])
+        ])
 
     AT_CLEANUP
 ])
