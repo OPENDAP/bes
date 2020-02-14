@@ -169,62 +169,6 @@ namespace dmrpp {
             {CURLINFO_PROTOCOL, {"CURLINFO_PROTOCOL","The protocol used for the connection. (Added in 7.52.0) See CURLINFO_PROTOCOL"}},
             {CURLINFO_SCHEME, {"CURLINFO_SCHEME","The scheme used for the connection. (Added in 7.52.0) See CURLINFO_SCHEME"}},
         };
-
-        void asString(stringstream &ss, CURL *c_handle, CURLINFO kurl){
-            char *strValue = NULL;
-            curl_easy_getinfo(c_handle, kurl, &strValue);
-            if(strValue)
-                ss << curl_info.find(kurl)->second[0] << ": " << strValue << "  (" << curl_info.find(kurl)->second[1] << ")" << endl;
-            else
-                ss << curl_info.find(kurl)->second[0] << ": **MISSING** (" << curl_info.find(kurl)->second[1] << ")" << endl;
-        }
-
-        void asLong(stringstream &ss, CURL *c_handle, CURLINFO kurl){
-            long lintValue;
-            curl_easy_getinfo(c_handle, kurl, &lintValue);
-            ss << curl_info.find(kurl)->second[0] << ": "<< lintValue << "  (" << curl_info.find(kurl)->second[1] << ")" << endl;
-        }
-
-        void asDouble(stringstream &ss, CURL *c_handle, CURLINFO kurl){
-            double dValue;
-            curl_easy_getinfo(c_handle, kurl, &dValue);
-            ss << curl_info.find(kurl)->second[0] << ": "<< dValue << "  (" << curl_info.find(kurl)->second[1] << ")" << endl;
-        }
-
-        void asCurlOffT(stringstream &ss, CURL *c_handle, CURLINFO kurl){
-            curl_off_t coft_value;
-            curl_easy_getinfo(c_handle, kurl, &coft_value);
-            ss << curl_info.find(kurl)->second[0] << ": "<< coft_value << "  (" << curl_info.find(kurl)->second[1] << ")" << endl;
-        }
-
-        void asCurlSList(stringstream &ss, CURL *c_handle, CURLINFO kurl){
-            struct curl_slist *engine_list;
-            curl_easy_getinfo(c_handle, kurl, &engine_list);
-            ss << curl_info.find(kurl)->second[0] << ": "<< engine_list << "  (" << curl_info.find(kurl)->second[1] << ")" << endl;
-
-            curl_slist_free_all(engine_list);
-        }
-
-        void asCurlSocket(stringstream &ss, CURL *c_handle, CURLINFO kurl){
-            curl_socket_t *c_sock;
-            curl_easy_getinfo(c_handle, kurl, &c_sock);
-            ss << curl_info.find(kurl)->second[0] << ": "<< c_sock << "  (" << curl_info.find(kurl)->second[1] << ")" << endl;
-        }
-
-        void asCurlCertInfo(stringstream &ss, CURL *c_handle, CURLINFO kurl){
-            struct curl_certinfo *chainp;
-            curl_easy_getinfo(c_handle, kurl, &chainp);
-            ss << curl_info.find(kurl)->second[0] << ": "<< chainp << "  (" << curl_info.find(kurl)->second[1] << ")" << endl;
-
-        }
-
-        void asCurlTlsSessionInfo(stringstream &ss, CURL *c_handle, CURLINFO kurl){
-            struct curl_tlssessioninfo *session;
-            curl_easy_getinfo(c_handle, kurl, &session);
-            ss << curl_info.find(kurl)->second[0] << ": "<< session << "  (" << curl_info.find(kurl)->second[1] << ")" << endl;
-
-        }
-
         string probe_curl_handle(CURL *c_handle){
             stringstream ss;
 
@@ -295,6 +239,62 @@ namespace dmrpp {
             asString(ss, c_handle,CURLINFO_SCHEME);
             return ss.str();
         }
+
+        void asString(stringstream &ss, CURL *c_handle, CURLINFO kurl){
+            char *strValue = NULL;
+            curl_easy_getinfo(c_handle, kurl, &strValue);
+            if(strValue)
+                ss << curl_info.find(kurl)->second[0] << ": " << strValue << "  (" << curl_info.find(kurl)->second[1] << ")" << endl;
+            else
+                ss << curl_info.find(kurl)->second[0] << ": **MISSING** (" << curl_info.find(kurl)->second[1] << ")" << endl;
+        }
+
+        void asLong(stringstream &ss, CURL *c_handle, CURLINFO kurl){
+            long lintValue;
+            curl_easy_getinfo(c_handle, kurl, &lintValue);
+            ss << curl_info.find(kurl)->second[0] << ": "<< lintValue << "  (" << curl_info.find(kurl)->second[1] << ")" << endl;
+        }
+
+        void asDouble(stringstream &ss, CURL *c_handle, CURLINFO kurl){
+            double dValue;
+            curl_easy_getinfo(c_handle, kurl, &dValue);
+            ss << curl_info.find(kurl)->second[0] << ": "<< dValue << "  (" << curl_info.find(kurl)->second[1] << ")" << endl;
+        }
+
+        void asCurlOffT(stringstream &ss, CURL *c_handle, CURLINFO kurl){
+            curl_off_t coft_value;
+            curl_easy_getinfo(c_handle, kurl, &coft_value);
+            ss << curl_info.find(kurl)->second[0] << ": "<< coft_value << "  (" << curl_info.find(kurl)->second[1] << ")" << endl;
+        }
+
+        void asCurlSList(stringstream &ss, CURL *c_handle, CURLINFO kurl){
+            struct curl_slist *engine_list;
+            curl_easy_getinfo(c_handle, kurl, &engine_list);
+            ss << curl_info.find(kurl)->second[0] << ": "<< engine_list << "  (" << curl_info.find(kurl)->second[1] << ")" << endl;
+
+            curl_slist_free_all(engine_list);
+        }
+
+        void asCurlSocket(stringstream &ss, CURL *c_handle, CURLINFO kurl){
+            curl_socket_t *c_sock;
+            curl_easy_getinfo(c_handle, kurl, &c_sock);
+            ss << curl_info.find(kurl)->second[0] << ": "<< c_sock << "  (" << curl_info.find(kurl)->second[1] << ")" << endl;
+        }
+
+        void asCurlCertInfo(stringstream &ss, CURL *c_handle, CURLINFO kurl){
+            struct curl_certinfo *chainp;
+            curl_easy_getinfo(c_handle, kurl, &chainp);
+            ss << curl_info.find(kurl)->second[0] << ": "<< chainp << "  (" << curl_info.find(kurl)->second[1] << ")" << endl;
+
+        }
+
+        void asCurlTlsSessionInfo(stringstream &ss, CURL *c_handle, CURLINFO kurl){
+            struct curl_tlssessioninfo *session;
+            curl_easy_getinfo(c_handle, kurl, &session);
+            ss << curl_info.find(kurl)->second[0] << ": "<< session << "  (" << curl_info.find(kurl)->second[1] << ")" << endl;
+
+        }
+
         bool evaluate_curl_response(CURL *eh) {
             long http_code = 0;
             CURLcode res = curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_code);
@@ -325,6 +325,8 @@ namespace dmrpp {
                 }
             }
         }
+
+
         void read_data(CURL *c_handle) {
 
             unsigned int tries = 0;
@@ -395,10 +397,13 @@ namespace dmrpp {
             cm_config = string(TEST_BUILD_DIR).append("/credentials.conf");
             weak_config = string(TEST_SRC_DIR).append("/input-files/weak.conf");
 
+            curl_global_init(CURL_GLOBAL_ALL);
+
         }
 
         // Called after each test
         void tearDown() {
+            curl_global_cleanup();
         }
 
 
@@ -413,21 +418,30 @@ namespace dmrpp {
             CPPUNIT_ASSERT(d_handle);
 
             CURLcode res;
-
-            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_ERRORBUFFER, d_errbuf)))
-                throw BESInternalError(string("CURL Error: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
-
-            // Pass all data to the 'write_data' function
-            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_WRITEFUNCTION, dmrpp::ngap_write_data)))
-                throw BESInternalError(string("CURL Error: ").append(curl_error_msg(res, d_errbuf)), __FILE__,
-                                       __LINE__);
-
+            // Target URL ----------------------------------------------------------------------------------------------
             if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_URL, target_url.c_str())))
                 throw BESInternalError(string("HTTP Error setting URL: ").append(curl_error_msg(res, d_errbuf)),
                                        __FILE__, __LINE__);
 
+            // Pass all data to the 'write_data' function --------------------------------------------------------------
+            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_WRITEFUNCTION, dmrpp::ngap_write_data)))
+                throw BESInternalError(string("CURL Error: ").append(curl_error_msg(res, d_errbuf)),
+                        __FILE__, __LINE__);
+
+            // Pass this to write_data as the fourth argument ----------------------------------------------------------
+            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_WRITEDATA, reinterpret_cast<void *>(response_buff))))
+                throw BESInternalError(
+                        string("CURL Error setting chunk as data buffer: ").append(curl_error_msg(res, d_errbuf)),
+                        __FILE__, __LINE__);
+
+            // Follow redirects ----------------------------------------------------------------------------------------
             if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_FOLLOWLOCATION, 1L)))
                 throw BESInternalError(string("Error setting CURLOPT_FOLLOWLOCATION: ").append(curl_error_msg(res, d_errbuf)),
+                                       __FILE__, __LINE__);
+
+            // Auth ----------------------------------------------------------------------------------------------------
+            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_HTTPAUTH, (long)CURLAUTH_ANY)))
+                throw BESInternalError(string("Error setting CURLOPT_HTTPAUTH to CURLAUTH_ANY msg: ").append(curl_error_msg(res, d_errbuf)),
                                        __FILE__, __LINE__);
 
             if(debug) cout << "uid: " << uid << endl;
@@ -440,18 +454,11 @@ namespace dmrpp {
                 throw BESInternalError(string("Error setting CURLOPT_PASSWORD: ").append(curl_error_msg(res, d_errbuf)),
                                        __FILE__, __LINE__);
 
-            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_HTTPAUTH, CURLAUTH_ANY)))
-                throw BESInternalError(string("Error setting CURLOPT_HTTPAUTH to CURLAUTH_ANY msg: ").append(curl_error_msg(res, d_errbuf)),
-                                       __FILE__, __LINE__);
+            // Error Buffer --------------------------------------------------------------------------------------------
+            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_ERRORBUFFER, d_errbuf)))
+                throw BESInternalError(string("CURL Error: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
 
-
-            // Pass this to write_data as the fourth argument
-            if (CURLE_OK !=
-                (res = curl_easy_setopt(d_handle, CURLOPT_WRITEDATA, reinterpret_cast<void *>(response_buff))))
-                throw BESInternalError(
-                        string("CURL Error setting chunk as data buffer: ").append(curl_error_msg(res, d_errbuf)),
-                        __FILE__, __LINE__);
-
+            
             return d_handle;
         }
 
@@ -461,16 +468,20 @@ namespace dmrpp {
             string distribution_api_endpoint = "https://d33imu0z1ajyhj.cloudfront.net/s3credentials";
             string fnoc1_dds = "http://test.opendap.org/opendap/data/nc/fnoc1.nc.dds";
 
-            string target_url = distribution_api_endpoint;
+            string local_fnoc1="http://localhost:8080/opendap/data/nc/fnoc1.nc.dds";
+
+            string target_url = local_fnoc1;
 
             if(debug) cout << "Target URL: " << target_url<< endl;
 
+            CURL *c_handle = NULL;
             char response_buf[1024 * 1024];
             try {
-                CURL *c_handle = set_up_curl_handle(target_url, response_buf);
+                c_handle = set_up_curl_handle(target_url, response_buf);
                 read_data(c_handle);
                 string response(response_buf);
                 cout << response << endl;
+                curl_easy_cleanup(c_handle);
             }
             catch (BESError e) {
                 cerr << "Caught BESError. Message: " << e.get_message() << "  ";
