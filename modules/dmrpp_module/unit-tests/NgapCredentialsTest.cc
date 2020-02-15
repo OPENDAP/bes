@@ -412,7 +412,7 @@ namespace dmrpp {
          * @param target_url
          * @return
          */
-        CURL *set_up_curl_handle(string target_url, char *response_buff) {
+        CURL *set_up_curl_handle(const string &target_url, const string &cookies_file, char *response_buff) {
             CURL *d_handle;     ///< The libcurl handle object.
             d_handle = curl_easy_init();
             CPPUNIT_ASSERT(d_handle);
@@ -439,6 +439,18 @@ namespace dmrpp {
                 throw BESInternalError(string("Error setting CURLOPT_FOLLOWLOCATION: ").append(curl_error_msg(res, d_errbuf)),
                                        __FILE__, __LINE__);
 
+
+            // Use cookies ----------------------------------------------------------------------------------------
+            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_COOKIEFILE, cookies_file.c_str())))
+                throw BESInternalError(string("Error setting CURLOPT_COOKIEFILE to '").append(cookies_file).append("' msg: ").append(curl_error_msg(res, d_errbuf)),
+                                       __FILE__, __LINE__);
+
+            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_COOKIEJAR, cookies_file.c_str())))
+                throw BESInternalError(string("Error setting CURLOPT_FOLLOWLOCATION: ").append(curl_error_msg(res, d_errbuf)),
+                                       __FILE__, __LINE__);
+
+
+
             // Auth ----------------------------------------------------------------------------------------------------
             if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_HTTPAUTH, (long)CURLAUTH_ANY)))
                 throw BESInternalError(string("Error setting CURLOPT_HTTPAUTH to CURLAUTH_ANY msg: ").append(curl_error_msg(res, d_errbuf)),
@@ -462,22 +474,21 @@ namespace dmrpp {
             return d_handle;
         }
 
-
         void get_s3_creds() {
             if(debug) cout << endl;
             string distribution_api_endpoint = "https://d33imu0z1ajyhj.cloudfront.net/s3credentials";
             string fnoc1_dds = "http://test.opendap.org/opendap/data/nc/fnoc1.nc.dds";
 
             string local_fnoc1="http://localhost:8080/opendap/data/nc/fnoc1.nc.dds";
+            string cookies = "/Users/ndp/OPeNDAP/hyrax/bes/modules/dmrpp_module/unit-tests/ursCookies";
 
             string target_url = local_fnoc1;
-
             if(debug) cout << "Target URL: " << target_url<< endl;
 
             CURL *c_handle = NULL;
             char response_buf[1024 * 1024];
             try {
-                c_handle = set_up_curl_handle(target_url, response_buf);
+                c_handle = set_up_curl_handle(target_url, cookies, response_buf);
                 read_data(c_handle);
                 string response(response_buf);
                 cout << response << endl;
