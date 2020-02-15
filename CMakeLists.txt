@@ -2070,6 +2070,4 @@ add_executable(bes
      #   modules/dmrpp_module/S3Credentials.h
 
      modules/dmrpp_module/unit-tests/NgapCredentialsTest.cc
-     modules/dmrpp_module/unit-tests/NgapCredentialsTest.h
-
     )
