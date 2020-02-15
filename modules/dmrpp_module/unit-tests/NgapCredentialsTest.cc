@@ -449,6 +449,11 @@ namespace dmrpp {
                 throw BESInternalError(string("Error setting CURLOPT_FOLLOWLOCATION: ").append(curl_error_msg(res, d_errbuf)),
                                        __FILE__, __LINE__);
 
+            // turn on .netrc ------------------------------------------------------------------------------------------
+            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_NETRC, CURL_NETRC_OPTIONAL)))
+                throw BESInternalError(string("Error setting CURLOPT_NETRC to CURL_NETRC_OPTIONAL: ").append(curl_error_msg(res, d_errbuf)),
+                                       __FILE__, __LINE__);
+
 
 
             // Auth ----------------------------------------------------------------------------------------------------
@@ -456,6 +461,7 @@ namespace dmrpp {
                 throw BESInternalError(string("Error setting CURLOPT_HTTPAUTH to CURLAUTH_ANY msg: ").append(curl_error_msg(res, d_errbuf)),
                                        __FILE__, __LINE__);
 
+#if 0
             if(debug) cout << "uid: " << uid << endl;
             if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_USERNAME, uid.c_str())))
                 throw BESInternalError(string("Error setting CURLOPT_USERNAME: ").append(curl_error_msg(res, d_errbuf)),
@@ -465,6 +471,7 @@ namespace dmrpp {
             if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_PASSWORD, pw.c_str())))
                 throw BESInternalError(string("Error setting CURLOPT_PASSWORD: ").append(curl_error_msg(res, d_errbuf)),
                                        __FILE__, __LINE__);
+#endif
 
             // Error Buffer --------------------------------------------------------------------------------------------
             if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_ERRORBUFFER, d_errbuf)))
