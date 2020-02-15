@@ -458,7 +458,7 @@ namespace dmrpp {
             if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_ERRORBUFFER, d_errbuf)))
                 throw BESInternalError(string("CURL Error: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
 
-            
+
             return d_handle;
         }
 
