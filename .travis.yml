@@ -93,7 +93,7 @@ jobs:
   include:
   - stage: scan
     addons: 
-      sonarcloud: 
+      sonarcloud:  true
     script:
     - export BES_BUILD=sonar-bes-framework
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
