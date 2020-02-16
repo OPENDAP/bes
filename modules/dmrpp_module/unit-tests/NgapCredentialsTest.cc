@@ -63,6 +63,8 @@ static bool bes_debug = false;
 
 namespace dmrpp {
 
+    string uid;
+    string pw;
 
     /*
     * @brief Callback passed to libcurl to handle reading a single byte.
@@ -77,14 +79,14 @@ namespace dmrpp {
     * @param data Pointer to this
     * @return The number of bytes read
     */
+    /*
     size_t ngap_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
         size_t nbytes = size * nmemb;
         //cerr << "ngap_write_data() bytes: " << nbytes << "  size: " << size << "  nmemb: " << nmemb << " buffer: " << buffer << "  data: " << data << endl;
         memcpy(data,buffer,nbytes);
         return nbytes;
     }
-    string uid;
-    string pw;
+    */
 
     class NgapCredentialsTest : public CppUnit::TestFixture {
     private:
@@ -125,7 +127,6 @@ namespace dmrpp {
                 }
             }
         }
-
 
         void read_data(CURL *c_handle) {
 
@@ -206,12 +207,13 @@ namespace dmrpp {
             curl_global_cleanup();
         }
 
-
+#if 0
         /**
          *
          * @param target_url
          * @return
          */
+
         CURL *set_up_curl_handle(const string &target_url, const string &cookies_file, char *response_buff) {
             CURL *d_handle;     ///< The libcurl handle object.
             d_handle = curl_easy_init();
@@ -287,6 +289,7 @@ namespace dmrpp {
 
             return d_handle;
         }
+#endif
 
         void get_s3_creds() {
             if(debug) cout << endl;
@@ -302,7 +305,7 @@ namespace dmrpp {
             CURL *c_handle = NULL;
             char response_buf[1024 * 1024];
             try {
-                c_handle = set_up_curl_handle(target_url, cookies, response_buf);
+                c_handle = curl::set_up_easy_handle(target_url, cookies, response_buf);
                 read_data(c_handle);
                 string response(response_buf);
                 cout << response << endl;

@@ -13,7 +13,8 @@ namespace curl {
     std::string error_message(const CURLcode response_code, char *error_buf);
 
     std::string probe_easy_handle(CURL *c_handle);
-\
+
+    CURL *set_up_easy_handle(const std::string &target_url, const std::string &cookies_file, char *response_buff);
 }
 
 

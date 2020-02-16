@@ -6,6 +6,7 @@
 #include <sstream>
 #include <map>
 #include <vector>
+#include <BESInternalError.h>
 
 using std::endl, std::string, std::map, std::vector, std::stringstream, std::ostringstream;
 
@@ -223,11 +224,164 @@ namespace curl {
 
 
 
+    /*
+    * @brief Callback passed to libcurl to handle reading a single byte.
+    *
+    * This callback assumes that the size of the data is small enough
+    * that all of the bytes will be either read at once or that a local
+            * temporary buffer can be used to build up the values.
+    *
+    * @param buffer Data from libcurl
+    * @param size Number of bytes
+    * @param nmemb Total size of data in this call is 'size * nmemb'
+    * @param data Pointer to this
+    * @return The number of bytes read
+    */
+    size_t c_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
+        size_t nbytes = size * nmemb;
+        //cerr << "ngap_write_data() bytes: " << nbytes << "  size: " << size << "  nmemb: " << nmemb << " buffer: " << buffer << "  data: " << data << endl;
+        memcpy(data,buffer,nbytes);
+        return nbytes;
+    }
 
 
+    /**
+     *
+     * @param target_url
+     * @return
+     */
+    CURL *set_up_easy_handle(const string &target_url, const string &cookies_file, char *response_buff) {
+        char d_errbuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
+        CURL *d_handle;     ///< The libcurl handle object.
+        d_handle = curl_easy_init();
+        if(!d_handle)
+            throw BESInternalError(string("ERROR! Failed to acquire cURL Easy Handle! "),__FILE__, __LINE__);
+
+        CURLcode res;
+        // Target URL ----------------------------------------------------------------------------------------------
+        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_URL, target_url.c_str())))
+            throw BESInternalError(string("HTTP Error setting URL: ").append(curl::error_message(res, d_errbuf)),
+                                   __FILE__, __LINE__);
+
+        // Pass all data to the 'write_data' function --------------------------------------------------------------
+        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_WRITEFUNCTION, c_write_data)))
+            throw BESInternalError(string("CURL Error: ").append(curl::error_message(res, d_errbuf)),
+                                   __FILE__, __LINE__);
+
+        // Pass this to write_data as the fourth argument ----------------------------------------------------------
+        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_WRITEDATA, reinterpret_cast<void *>(response_buff))))
+            throw BESInternalError(
+                    string("CURL Error setting chunk as data buffer: ").append(curl::error_message(res, d_errbuf)),
+                    __FILE__, __LINE__);
+
+        // Follow redirects ----------------------------------------------------------------------------------------
+        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_FOLLOWLOCATION, 1L)))
+            throw BESInternalError(string("Error setting CURLOPT_FOLLOWLOCATION: ").append(
+                    curl::error_message(res, d_errbuf)),
+                                   __FILE__, __LINE__);
 
 
+        // Use cookies ----------------------------------------------------------------------------------------
+        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_COOKIEFILE, cookies_file.c_str())))
+            throw BESInternalError(string("Error setting CURLOPT_COOKIEFILE to '").append(cookies_file).append("' msg: ").append(
+                    curl::error_message(res, d_errbuf)),
+                                   __FILE__, __LINE__);
 
+        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_COOKIEJAR, cookies_file.c_str())))
+            throw BESInternalError(string("Error setting CURLOPT_COOKIEJAR: ").append(
+                    curl::error_message(res, d_errbuf)),
+                                   __FILE__, __LINE__);
+
+
+        // Auth ----------------------------------------------------------------------------------------------------
+        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_HTTPAUTH, (long)CURLAUTH_ANY)))
+            throw BESInternalError(string("Error setting CURLOPT_HTTPAUTH to CURLAUTH_ANY msg: ").append(
+                    curl::error_message(res, d_errbuf)),
+                                   __FILE__, __LINE__);
+
+#if 0
+        if(debug) cout << "uid: " << uid << endl;
+            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_USERNAME, uid.c_str())))
+                throw BESInternalError(string("Error setting CURLOPT_USERNAME: ").append(curl::error_message(res, d_errbuf)),
+                                       __FILE__, __LINE__);
+
+            if(debug) cout << "pw: " << pw << endl;
+            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_PASSWORD, pw.c_str())))
+                throw BESInternalError(string("Error setting CURLOPT_PASSWORD: ").append(curl::error_message(res, d_errbuf)),
+                                       __FILE__, __LINE__);
+
+#else
+        // turn on .netrc ------------------------------------------------------------------------------------------
+        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_NETRC, CURL_NETRC_OPTIONAL)))
+            throw BESInternalError(string("Error setting CURLOPT_NETRC to CURL_NETRC_OPTIONAL: ").append(
+                    curl::error_message(res, d_errbuf)),
+                                   __FILE__, __LINE__);
+
+
+#endif
+
+        // Error Buffer --------------------------------------------------------------------------------------------
+        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_ERRORBUFFER, d_errbuf)))
+            throw BESInternalError(string("CURL Error: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
+
+
+        return d_handle;
+    }
+/*
+
+    void read_data(CURL *c_handle) {
+        char d_errbuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
+
+        unsigned int tries = 0;
+        unsigned int retry_limit = 3;
+        useconds_t retry_time = 1000;
+        bool success;
+        CURLcode curl_code;
+
+        string url = "URL assignment failed.";
+        char *urlp = NULL;
+        curl_easy_getinfo(c_handle, CURLINFO_EFFECTIVE_URL, &urlp);
+        if(!urlp)
+            throw BESInternalError(url,__FILE__,__LINE__);
+
+        url = urlp;
+
+
+        do {
+            d_errbuf[0] = NULL;
+            curl_code = curl_easy_perform(c_handle);
+            ++tries;
+
+            if (CURLE_OK != curl_code) {
+                throw BESInternalError(
+                        string("read_data() - ERROR! Message: ").append(curl::error_message(curl_code, d_errbuf)),
+                        __FILE__, __LINE__);
+            }
+
+            success = evaluate_curl_response(c_handle);
+            if(debug) cout << curl::probe_easy_handle(c_handle) << endl;
+
+            if (!success) {
+                if (tries == retry_limit) {
+                    throw BESInternalError(
+                            string("Data transfer error: Number of re-tries to S3 exceeded: ").append(
+                                    curl::error_message(curl_code, d_errbuf)), __FILE__, __LINE__);
+                } else {
+                    BESDEBUG("dmrpp",
+                             "HTTP transfer 500 error, will retry (trial " << tries << " for: " << url << ").");
+                    usleep(retry_time);
+                    retry_time *= 2;
+                }
+            }
+#if 0
+            curl_slist_free_all(d_headers);
+                d_headers = 0;
+#endif
+        } while (!success);
+    }
+
+
+*/
 
 
 
