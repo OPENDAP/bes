@@ -252,11 +252,6 @@ namespace dmrpp {
                         curl::error_message(res, d_errbuf)),
                                        __FILE__, __LINE__);
 
-            // turn on .netrc ------------------------------------------------------------------------------------------
-            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_NETRC, CURL_NETRC_OPTIONAL)))
-                throw BESInternalError(string("Error setting CURLOPT_NETRC to CURL_NETRC_OPTIONAL: ").append(
-                        curl::error_message(res, d_errbuf)),
-                                       __FILE__, __LINE__);
 
             // Auth ----------------------------------------------------------------------------------------------------
             if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_HTTPAUTH, (long)CURLAUTH_ANY)))
@@ -274,6 +269,15 @@ namespace dmrpp {
             if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_PASSWORD, pw.c_str())))
                 throw BESInternalError(string("Error setting CURLOPT_PASSWORD: ").append(curl_error_msg(res, d_errbuf)),
                                        __FILE__, __LINE__);
+
+#else
+            // turn on .netrc ------------------------------------------------------------------------------------------
+            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_NETRC, CURL_NETRC_OPTIONAL)))
+                throw BESInternalError(string("Error setting CURLOPT_NETRC to CURL_NETRC_OPTIONAL: ").append(
+                        curl::error_message(res, d_errbuf)),
+                                       __FILE__, __LINE__);
+
+
 #endif
 
             // Error Buffer --------------------------------------------------------------------------------------------
