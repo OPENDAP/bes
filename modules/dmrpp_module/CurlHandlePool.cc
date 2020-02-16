@@ -237,7 +237,7 @@ dmrpp_easy_handle::dmrpp_easy_handle(): d_headers(0)
 
     // Pass all data to the 'write_data' function
     if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_WRITEFUNCTION, chunk_write_data)))
-        throw BESInternalError(string("CURL Error: ").append(curl_error_msg(res, d_errbuf)), __FILE__, __LINE__);
+        throw BESInternalError(string("CURL Error: ").append(error_message(res, d_errbuf)), __FILE__, __LINE__);
 
 #ifdef CURLOPT_TCP_KEEPALIVE
     /* enable TCP keep-alive for this transfer */
@@ -281,7 +281,7 @@ static bool evaluate_curl_response(CURL* eh)
     long http_code = 0;
     CURLcode res = curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_code);
     if (CURLE_OK != res) {
-        throw BESInternalError(string("Error getting HTTP response code: ").append(curl_error_msg(res, (char*)"")), __FILE__, __LINE__);
+        throw BESInternalError(string("Error getting HTTP response code: ").append(error_message(res, (char *) "")), __FILE__, __LINE__);
     }
 
     // Newer Apache servers return 206 for range requests. jhrg 8/8/18
@@ -325,7 +325,7 @@ void dmrpp_easy_handle::read_data()
             ++tries;
 
             if (CURLE_OK != curl_code) {
-                throw BESInternalError(string("Data transfer error: ").append(curl_error_msg(curl_code, d_errbuf)),
+                throw BESInternalError(string("Data transfer error: ").append(error_message(curl_code, d_errbuf)),
                     __FILE__, __LINE__);
             }
 
@@ -334,8 +334,8 @@ void dmrpp_easy_handle::read_data()
             if (!success) {
                 if (tries == retry_limit) {
                     throw BESInternalError(
-                        string("Data transfer error: Number of re-tries to S3 exceeded: ").append(
-                            curl_error_msg(curl_code, d_errbuf)), __FILE__, __LINE__);
+                            string("Data transfer error: Number of re-tries to S3 exceeded: ").append(
+                                    error_message(curl_code, d_errbuf)), __FILE__, __LINE__);
                 }
                 else {
                     LOG("HTTP transfer 500 error, will retry (trial " << tries << " for: " << d_url << ").");
@@ -351,7 +351,7 @@ void dmrpp_easy_handle::read_data()
     else {
         CURLcode curl_code = curl_easy_perform(d_handle);
         if (CURLE_OK != curl_code) {
-            throw BESInternalError(string("Data transfer error: ").append(curl_error_msg(curl_code, d_errbuf)),
+            throw BESInternalError(string("Data transfer error: ").append(error_message(curl_code, d_errbuf)),
                 __FILE__, __LINE__);
         }
     }
@@ -793,22 +793,25 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
         handle->d_chunk = chunk;
 
         CURLcode res = curl_easy_setopt(handle->d_handle, CURLOPT_URL, chunk->get_data_url().c_str());
-        if (res != CURLE_OK) throw BESInternalError(string("HTTP Error setting URL: ").append(curl_error_msg(res, handle->d_errbuf)), __FILE__, __LINE__);
+        if (res != CURLE_OK) throw BESInternalError(string("HTTP Error setting URL: ").append(
+                    error_message(res, handle->d_errbuf)), __FILE__, __LINE__);
 
         // get the offset to offset + size bytes
         if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_RANGE, chunk->get_curl_range_arg_string().c_str())))
-            throw BESInternalError(string("HTTP Error setting Range: ").append(curl_error_msg(res, handle->d_errbuf)), __FILE__,
-            __LINE__);
+            throw BESInternalError(string("HTTP Error setting Range: ").append(error_message(res, handle->d_errbuf)), __FILE__,
+                                   __LINE__);
 
         // Pass this to write_data as the fourth argument
         if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_WRITEDATA, reinterpret_cast<void*>(chunk))))
-            throw BESInternalError(string("CURL Error setting chunk as data buffer: ").append(curl_error_msg(res, handle->d_errbuf)),
+            throw BESInternalError(string("CURL Error setting chunk as data buffer: ").append(
+                    error_message(res, handle->d_errbuf)),
             __FILE__, __LINE__);
 
         // store the easy_handle so that we can call release_handle in multi_handle::read_data()
         if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_PRIVATE, reinterpret_cast<void*>(handle))))
-            throw BESInternalError(string("CURL Error setting easy_handle as private data: ").append(curl_error_msg(res, handle->d_errbuf)), __FILE__,
-            __LINE__);
+            throw BESInternalError(string("CURL Error setting easy_handle as private data: ").append(
+                    error_message(res, handle->d_errbuf)), __FILE__,
+                                   __LINE__);
 
         AccessCredentials *credentials = CredentialsManager::theCM()->get(handle->d_url);
         if ( credentials && credentials->isS3Cred()) {
@@ -834,27 +837,27 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
             if (!handle->d_headers)
                 throw BESInternalError(
                         string("CURL Error setting Authorization header: ").append(
-                                curl_error_msg(res, handle->d_errbuf)), __FILE__, __LINE__);
+                                error_message(res, handle->d_errbuf)), __FILE__, __LINE__);
 
             // We pre-compute the sha256 hash of a null message body
             curl_slist *temp = append_http_header(handle->d_headers, "x-amz-content-sha256:", "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
             if (!temp)
                 throw BESInternalError(
-                        string("CURL Error setting x-amz-content-sha256: ").append(curl_error_msg(res, handle->d_errbuf)),
+                        string("CURL Error setting x-amz-content-sha256: ").append(error_message(res, handle->d_errbuf)),
                         __FILE__, __LINE__);
             handle->d_headers = temp;
 
             temp = append_http_header(handle->d_headers, "x-amz-date:", AWSV4::ISO8601_date(request_time));
             if (!temp)
                 throw BESInternalError(
-                        string("CURL Error setting x-amz-date header: ").append(curl_error_msg(res, handle->d_errbuf)),
+                        string("CURL Error setting x-amz-date header: ").append(error_message(res, handle->d_errbuf)),
                         __FILE__, __LINE__);
             handle->d_headers = temp;
 
 
             if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_headers)))
                 throw BESInternalError(string("CURL Error setting HTTP headers for S3 authentication: ").append(
-                        curl_error_msg(res, handle->d_errbuf)), __FILE__, __LINE__);
+                        error_message(res, handle->d_errbuf)), __FILE__, __LINE__);
         }
     }
 
