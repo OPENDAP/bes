@@ -299,7 +299,7 @@ namespace dmrpp {
             string local_fnoc1="http://localhost:8080/opendap/data/nc/fnoc1.nc.dds";
             string cookies = "/Users/ndp/OPeNDAP/hyrax/bes/modules/dmrpp_module/unit-tests/ursCookies";
 
-            string target_url = local_fnoc1;
+            string target_url = distribution_api_endpoint;
             if(debug) cout << "Target URL: " << target_url<< endl;
 
             CURL *c_handle = NULL;
