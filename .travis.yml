@@ -102,7 +102,7 @@ jobs:
 
   - stage: scan
     addons: 
-      sonarcloud: 
+      sonarcloud: true
     script:
     - export BES_BUILD=sonar-bes-modules
     # Adding this 'fetch --unshallow' since I think sonar is excluding the hdf handlers
