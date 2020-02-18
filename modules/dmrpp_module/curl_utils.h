@@ -10,6 +10,9 @@
 
 namespace curl {
 
+    void http_get(const std::string &url, char *response_buf);
+    std::string http_get_as_string(const std::string &url);
+
     std::string error_message(const CURLcode response_code, char *error_buf);
 
     std::string probe_easy_handle(CURL *c_handle);
