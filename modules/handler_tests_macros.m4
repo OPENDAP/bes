@@ -233,7 +233,7 @@ m4_define([REMOVE_DATE_TIME], [dnl
     sed -e 's@[[0-9]]\{4\}-[[0-9]]\{2\}-[[0-9]]\{2\}T[[0-9]]\{2\}:[[0-9]]\{2\}:[[0-9]]\{2\}@_DATE_TIME_SUB_@g' \
     -e 's@[[0-9]]\{4\}-[[0-9]]\{2\}-[[0-9]]\{2\} [[0-9]]\{2\}:[[0-9]]\{2\}:[[0-9]]\{2\}@_DATE_TIME_SUB_@g' \
     -e 's@_DATE_TIME_SUB_.[[0-9]]\{3\}@_DATE_TIME_SUB_@g' \
-    -e 's@_DATE_TIME_SUB_[[a-zA-Z]]\{1,3\}@removed date-time@g' \
+    -e 's@_DATE_TIME_SUB_[[a-zA-Z]]\{1,4\}@removed date-time@g' \
     < $1 > $1.sed
     mv $1.sed $1
 ])
