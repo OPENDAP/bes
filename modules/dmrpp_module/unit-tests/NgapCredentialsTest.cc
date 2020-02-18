@@ -136,19 +136,29 @@ namespace dmrpp {
 
                 rapidjson::Value& val = d[AWS_ACCESS_KEY_ID_KEY];
                 accessKeyId = val.GetString();
-                if(debug) cout << "    " << AWS_ACCESS_KEY_ID_KEY << ":     "  << accessKeyId << endl;
+                if(debug) cout << "    " << AWS_ACCESS_KEY_ID_KEY << ":        "  << accessKeyId << endl;
 
                 val = d[AWS_SECRET_ACCESS_KEY_KEY];
                 secretAccessKey = val.GetString();
-                if(debug) cout << "    "  << AWS_SECRET_ACCESS_KEY_KEY << ": "  << secretAccessKey << endl;
+                if(debug) cout << "    "  << AWS_SECRET_ACCESS_KEY_KEY << ":    "  << secretAccessKey << endl;
 
                 val = d[AWS_SESSION_TOKEN_KEY];
                 sessionToken = val.GetString();
-                if(debug) cout << "    "  << AWS_SESSION_TOKEN_KEY << ":    " << sessionToken  << endl;
+                if(debug) cout << "    "  << AWS_SESSION_TOKEN_KEY << ":       " << sessionToken  << endl;
 
                 val = d[AWS_EXPIRATION_KEY];
                 expiration = val.GetString();
-                if(debug) cout << "    "  << AWS_EXPIRATION_KEY << ":      "  << expiration << endl;
+                if(debug) cout << "    "  << AWS_EXPIRATION_KEY << ":         "  << expiration << endl;
+
+
+                // parse the time string into a something useful -------------------------------------------------------
+                struct tm tm;
+                // 2020-02-18 13:49:30+00:00
+                strptime(expiration.c_str(), "%Y-%m-%d %H:%M:%S%z", &tm);
+                time_t t = mktime(&tm);  // t is now your desired time_t
+                if(debug) cout << "    expiration(time_t): "  << t << endl;
+
+
 
             }
             catch (BESError e) {
