@@ -350,6 +350,10 @@ hdfistream_vdata & hdfistream_vdata::operator>>(hdf_vdata & hv) {
 	return *this;
 }
 
+// The following code causes memory leaking when called in vgroup.cc. 
+// Since it is only used in vgroup.cc, we move the code to vgroup.cc.
+// The memory leaking is gone.
+#if 0
 bool hdfistream_vdata::isInternalVdata(int ref) const {
 	set<string, less<string> > reserved_names;
 	reserved_names.insert("RIATTR0.0N");
@@ -389,6 +393,7 @@ bool hdfistream_vdata::isInternalVdata(int ref) const {
 
 	return false;
 }
+#endif
 
 static void LoadField(int32 vid, int index, int32 begin, int32 end,
 		hdf_field & f) {

@@ -1,5 +1,11 @@
 Installing the HDF4 handler for the OPeNDAP server.
 
+Hyrax 1.13.2 to 1.16.1
+
+Since the hyrax 1.13.2, HDF5 handler is just treated as a BES module. A standalone
+RPM and library is not necessary. Please check the INSTALL under the BES on how
+to install the BES including the HDF4 and HDF5 handlers.
+
 Updated for 3.11.6
 
 ---------------------------------------------------------------------------

@@ -1,3 +1,8 @@
+News for version 1.16.1
+Note: since the hyrax 1.13.2, HDF4 handler has been just treated as a BES module.
+      The hyrax release version has been used.
+Updates since 2019-07-09, mainly fix a memory leaking in the default option.
+
 News for version 3.13.1
 
 Updates since 2017-05-17, see the ChangeLog

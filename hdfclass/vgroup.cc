@@ -67,6 +67,7 @@ using std::less;
 using std::endl;    // Added when I removed 'using' from BESDebug.h
 
 static bool IsInternalVgroup(int32 fid, int32 ref);
+static bool IsInternalVdata(int32 fid,int32 ref);
 
 //
 // hdfistream_vgroup -- protected member functions
@@ -287,7 +288,9 @@ hdfistream_vgroup & hdfistream_vgroup::operator>>(hdf_vgroup & hv)
 
     // retrieve entry tags and refs
     int32 npairs = Vntagrefs(_vgroup_id);
+#if 0
     hdfistream_vdata vdin(_filename);
+#endif 
 
     for (int i = 0; i < npairs; ++i) {
         int32 tag, ref;
@@ -296,10 +299,12 @@ hdfistream_vgroup & hdfistream_vgroup::operator>>(hdf_vgroup & hv)
             THROW(hcerr_vgroupread);
         switch (tag) {
         case DFTAG_VH:
-            // Somehow isInternalVdata causes memory leaking because
-            // of VSattach.
-            // However, after some checking, the  VSdetach is called.
+            // Somehow isInternalVdata causes memory leaking with the 
+            // check in the vdata class. Need to check them in this group.
+#if 0
             if (!vdin.isInternalVdata(ref)) {
+#endif
+            if (!IsInternalVdata(_file_id,ref)) {
                 hv.tags.push_back(tag);
                 hv.refs.push_back(ref);
                 hv.vnames.push_back(memberName(ref));
@@ -311,7 +316,9 @@ hdfistream_vgroup & hdfistream_vgroup::operator>>(hdf_vgroup & hv)
             hv.vnames.push_back(memberName(ref));
         }
     }
+#if 0
     vdin.close();
+#endif
     _seek_next();
     return *this;
 }
@@ -382,6 +389,47 @@ bool IsInternalVgroup(int32 fid, int32 ref)
 
     return false;
 }
+
+bool IsInternalVdata(int32 fid, int32 ref)  {
+	set<string, less<string> > reserved_names;
+	reserved_names.insert("RIATTR0.0N");
+
+	set<string, less<string> > reserved_classes;
+	reserved_classes.insert("Attr0.0");
+	reserved_classes.insert("RIATTR0.0C");
+	reserved_classes.insert("DimVal0.0");
+	reserved_classes.insert("DimVal0.1");
+	reserved_classes.insert("_HDF_CHK_TBL_0");
+
+	// get name, class of vdata
+	int vid;
+	if ((vid = VSattach(fid, ref, "r")) < 0) {
+		THROW(hcerr_vdataopen);
+	}
+	char name[hdfclass::MAXSTR];
+	char vclass[hdfclass::MAXSTR];
+	if (VSgetname(vid, name) < 0) {
+		VSdetach(vid);
+		THROW(hcerr_vdatainfo);
+	}
+	if (reserved_names.find(string(name)) != reserved_names.end()) {
+		VSdetach(vid);
+		return true;
+	}
+
+	if (VSgetclass(vid, vclass) < 0) {
+		VSdetach(vid);
+		THROW(hcerr_vdatainfo);
+	}
+
+	VSdetach(vid);
+
+	if (reserved_classes.find(string(vclass)) != reserved_classes.end())
+		return true;
+
+	return false;
+}
+
 
 // check to see if stream is positioned past the last attribute in the
 // currently open Vgroup
