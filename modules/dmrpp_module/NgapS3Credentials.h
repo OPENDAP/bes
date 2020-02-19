@@ -9,9 +9,13 @@
 #include "AccessCredentials.h"
 #include <string>
 
-class S3Credentials: public AccessCredentials{
+class NgapS3Credentials: public AccessCredentials {
+private:
+    time_t d_expiration_time;
 
 public:
+
+    void get_temporary_credentials(const std::string &distribution_api_endpoint);
 
     std::string get_aws_access_key_id(){
         return get(AccessCredentials::ID_KEY);

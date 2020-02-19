@@ -6,13 +6,22 @@
 #include <sstream>
 #include <map>
 #include <vector>
-#include <BESInternalError.h>
 #include <unistd.h>
+
+#include "rapidjson/document.h"
+
+
+#include <BESInternalError.h>
 #include <BESDebug.h>
 
 #define MODULE "curl"
 
-using std::endl, std::string, std::map, std::vector, std::stringstream, std::ostringstream;
+using std::endl;
+using std::string;
+using std::map;
+using std::vector;
+using std::stringstream;
+using std::ostringstream;
 
 namespace curl {
 
@@ -464,7 +473,7 @@ namespace curl {
 
         // Try until retry_limit or success...
         do {
-            curlErrorBuf[0] = NULL; // clear the error buffer with a null termination at index 0.
+            curlErrorBuf[0] = 0; // clear the error buffer with a null termination at index 0.
             curl_code = curl_easy_perform(c_handle); // Do the thing...
             ++tries;
 
@@ -528,5 +537,21 @@ namespace curl {
         return response;
     }
 
+    /**
+     * @brief http_get_as_json() This function de-references the target_url and parses the response into a JSON document.
+     *
+     * @param target_url The URL to dereference.
+     * @return JSON document parsed from the response document returned by target_url
+     */ // @TODO @FIXME Move this to ../curl_utils.cc (Requires moving the rapidjson lib too)
+    rapidjson::Document http_get_as_json(const std::string &target_url){
+
+        // @TODO @FIXME Make the size of this buffer a configuration setting, or pass it in, something....
+        char response_buf[1024 * 1024];
+
+        curl::http_get(target_url, response_buf);
+        rapidjson::Document d;
+        d.Parse(response_buf);
+        return d;
+    }
 
 }

@@ -7,11 +7,13 @@
 
 #include <curl/curl.h>
 #include <string>
+#include "xml2json/include/rapidjson/document.h"
 
 namespace curl {
 
     void http_get(const std::string &url, char *response_buf);
     std::string http_get_as_string(const std::string &url);
+    rapidjson::Document http_get_as_json(const std::string &target_url);
 
     std::string error_message(const CURLcode response_code, char *error_buf);
 

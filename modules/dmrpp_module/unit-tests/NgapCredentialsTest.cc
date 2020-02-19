@@ -36,10 +36,10 @@
 #include <debug.h>
 
 #include <curl/curl.h>
-#include "xml2json/include/xml2json.hpp"
 
-#include "xml2json/include/rapidjson/document.h"
-#include "xml2json/include/rapidjson/writer.h"
+#include "../rapidjson/document.h"
+#include "../rapidjson/writer.h"
+#include "../rapidjson/stringbuffer.h"
 
 #if HAVE_CURL_MULTI_H
 #include <curl/multi.h>
@@ -52,12 +52,11 @@
 #include "TheBESKeys.h"
 
 #include "test_config.h"
+
 #include "../curl_utils.h"
+#include "../NgapS3Credentials.h"
 
 
-#include "rapidjson/document.h"
-#include "rapidjson/writer.h"
-#include "rapidjson/stringbuffer.h"
 
 using namespace libdap;
 
@@ -69,26 +68,11 @@ static bool bes_debug = false;
 
 namespace dmrpp {
 
-    /**
-     * @brief http_get_as_json() This function de-references the target_url and parses the response into a JSON document.
-     *
-     * @param target_url The URL to dereference.
-     * @return JSON document parsed from the response document returned by target_url
-     */ // @TODO @FIXME Move this to ../curl_utils.cc (Requires moving the rapidjson lib too)
-    rapidjson::Document http_get_as_json(const std::string &target_url){
-
-        // @TODO @FIXME Make the size of this buffer a configuration setting, or pass it in, something....
-        char response_buf[1024 * 1024];
-
-        curl::http_get(target_url, response_buf);
-        rapidjson::Document d;
-        d.Parse(response_buf);
-        return d;
-    }
 
     class NgapCredentialsTest : public CppUnit::TestFixture {
 
     private:
+        string distribution_api_endpoint = "https://d33imu0z1ajyhj.cloudfront.net/s3credentials";
 
     public:
 
@@ -101,7 +85,7 @@ namespace dmrpp {
         // Called before each test
         void setUp() override {
             if (debug) cout << endl;
-            if (bes_debug) BESDebug::SetUp("cerr,dmrpp");
+            if (bes_debug) BESDebug::SetUp("cerr,dmrpp,ngap,curl");
 
             TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
 
@@ -122,7 +106,6 @@ namespace dmrpp {
 
         void get_s3_creds() {
             if(debug) cout << endl;
-            string distribution_api_endpoint = "https://d33imu0z1ajyhj.cloudfront.net/s3credentials";
             string fnoc1_dds = "http://test.opendap.org/opendap/data/nc/fnoc1.nc.dds";
             string local_fnoc1="http://localhost:8080/opendap/data/nc/fnoc1.nc.dds";
             string target_url = distribution_api_endpoint;
@@ -131,7 +114,7 @@ namespace dmrpp {
 
             if(debug) cout << "Target URL: " << target_url<< endl;
             try {
-                rapidjson::Document d = http_get_as_json(target_url);
+                rapidjson::Document d = curl::http_get_as_json(target_url);
                 if(debug) cout << "S3 Credentials:"  << endl;
 
                 rapidjson::Value& val = d[AWS_ACCESS_KEY_ID_KEY];
@@ -158,8 +141,6 @@ namespace dmrpp {
                 time_t t = mktime(&tm);  // t is now your desired time_t
                 if(debug) cout << "    expiration(time_t): "  << t << endl;
 
-
-
             }
             catch (BESError e) {
                 cerr << "Caught BESError. Message: " << e.get_message() << "  ";
@@ -168,9 +149,16 @@ namespace dmrpp {
             }
         }
 
+        void test_ngap_creds_object(){
+            NgapS3Credentials nsc;
+            nsc.get_temporary_credentials(distribution_api_endpoint);
+            nsc.get(AccessCredentials::ID_KEY);
+        }
+
 
         CPPUNIT_TEST_SUITE(NgapCredentialsTest);
-        CPPUNIT_TEST(get_s3_creds);
+            // CPPUNIT_TEST(get_s3_creds);
+            CPPUNIT_TEST(test_ngap_creds_object);
         CPPUNIT_TEST_SUITE_END();
 
     };
