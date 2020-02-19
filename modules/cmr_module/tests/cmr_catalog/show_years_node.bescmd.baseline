@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <response reqID="[thread:http-nio-8080-exec-4-42][bes_client:/-2]" xmlns="http://xml.opendap.org/ns/bes/1.0#">
     <showNode>
-        <node count="40" lastModified="removed date-time" name="/CMR/C1276812863-GES_DISC/temporal">
+        <node count="41" lastModified="removed date-time" name="/CMR/C1276812863-GES_DISC/temporal">
             <item lastModified="removed date-time" name="1980" type="node"/>
             <item lastModified="removed date-time" name="1981" type="node"/>
             <item lastModified="removed date-time" name="1982" type="node"/>
@@ -42,6 +42,7 @@
             <item lastModified="removed date-time" name="2017" type="node"/>
             <item lastModified="removed date-time" name="2018" type="node"/>
             <item lastModified="removed date-time" name="2019" type="node"/>
+            <item lastModified="removed date-time" name="2020" type="node"/>
         </node>
     </showNode>
 </response>
