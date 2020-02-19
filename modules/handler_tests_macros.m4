@@ -79,7 +79,7 @@ m4_define([_AT_BESCMD_SCRUB_DATES_TEST], [dnl
     
 ])
 
-dnl This PATTREN test reads a set of patterns from a file and if any
+dnl This PATTERN test reads a set of patterns from a file and if any
 dnl of those patterns match, the test passes. In many ways it's just
 dnl a better version of _AT_BESCMD_ERROR_TEST below
 
