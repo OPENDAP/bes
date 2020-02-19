@@ -272,13 +272,8 @@ void BESUncompress3Z::uncompress(const string &src, int fd)
             /* Special case for KwKwK string.*/
             if (code >= free_ent) {
                 if (code > free_ent) {
-                    unsigned char *p;
-                    posbits -= n_bits;
-                    p = &inbuf[posbits >> 3];
-
-                    string err = "uncompress: corrupt input";
                     close(srcFile);
-                    throw BESInternalError(err, __FILE__, __LINE__);
+                    throw BESInternalError("uncompress: corrupt input", __FILE__, __LINE__);
                 }
 
                 *--stackp = (unsigned char) finchar;
