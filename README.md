@@ -1,291 +1,66 @@
 <a href="https://travis-ci.org/OPENDAP/bes">
   <img alt="TravisCI" src="https://travis-ci.org/OPENDAP/bes.svg?branch=master"/>
-</a>
+</a> 
 
-<a href="https://scan.coverity.com/projects/opendap-bes">
-  <img alt="Coverity" src="https://scan.coverity.com/projects/5060/badge.svg"/>
-</a>
-
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2602168.svg)](https://doi.org/10.5281/zenodo.2602168)
-
+[![DOI](https://zenodo.org/badge/26338366.svg)](https://zenodo.org/badge/latestdoi/26338366)
 
 README for the OPeNDAP BES 
 ==========================
 
-# Updated for version 3.20.6. See NEWS
-
-This version of the BES requires libdap-3.20.4  [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3267984.svg)](https://doi.org/10.5281/zenodo.3267984)
-
-## Bug fixes for Hyrax 1.16
-
-See the release page for a complete list of bugs fixed in this release.
-
-## Prototype support for data stored on Amazon's S3 Web Object Store
-
-Hyrax 1.16 has prototype support for subset-in-place of HDF5 and NetCDF4
-data files that are stored on AWS S3. See the preliminary documentation in
-https://github.com/OPENDAP/bes/blob/master/modules/dmrpp_module/data/README.md.
-
-The new support includes software that can configure data in S3 and on
-disk so that it can be served (and subset) in-place from S3 without reformatting
-the original data files. Support for other web object stores besides S3
-has also been demonstrated.
-
-## Support for dataset crawler/indexer systems
-
-We have added support for Datasets served by Hyrax now provide
-information Google and other search engines need to make these data
-findable. All dataset landing pages and catalog navigation
-(contents.html) pages now contain embedded json-ld which crawlers such
-as Google Dataset Search, NSF's GeoCODES, and other data sensitive web
-crawlers use for indexing datasets. In order to facilitate this,
-certain steps can be taken by the server administrator to bring the
-Hyrax service to Google (and other) crawlers attention. LINK TO
-JSON-LD README.MD. Our work on JSON-LD support was funded by NSF Grant
-#1740704.
-
-## Experimental support for STARE indexing
-
-We have added experimental support for STARE (Spatio Temporal
-Adaptive-Resolution Encoding) as part of our work on NASA ACCESS
-grant 17-ACCESS17-0039.
-
-## Server function roi() improvments
-
-## Site-specific configuration
-
-The BES uses a number of configuration files, and until now, a site has to
-customize these for their server. Each server installation would overwrite
-those files. No more. Now you can put all your configuration values in 
-
-> /etc/bes/site.conf
-
-And be configent that they will never be overwritten by a new install. The
-`site.conf` file is always read last, so parameters set there override values
-set elsewhere.
-
-## The MDS
-
-A new cache has been added to the BES for Metadata Responses (aka, the MDS
-or Metadata Store). This cache is unlike the other BES caches in that it is
-intended to be operated as either a 'cache' or a 'store.' In the latter case,
-items added will never be removed - it is an open-ended place where metadata
-response objects will be kept indefinitely. The MDS contents (as a cache or 
-a store) will survive Hyrax restarts.
-
-The MDS was initially built to speed responses when data are stored on high-
-latency devices like Amazon's S3 storage system. We have special features in
-Hyrax to handle data kept on those kinds of data stores and the MDS can provide
-clients with fast access to the metadata for those data very quickly. After
-our initial tests of the MDS, we decided to make it a general feature of the
-server, available to data served from data stored on spinning disk in addition
-to S3.
-
-Note: The MDS is not used for requests that using server-side function processing.
-
-The MDS configuration can be found in the dap.conf configuration file. Here 
-are the default settings:
-
-* Setting the 'path' to null disables uses of the MDS. 
-
-> DAP.GlobalMetadataStore.path = @datadir@/mds
-> DAP.GlobalMetadataStore.prefix = mds
-
-* Setting 'size' to zero makes the MDS hold objects forever; setting a positive 
-non-zero size makes the MDS behave like a cache, purging responses when the 
-size is exceeded. The number is the size of the cache volume in megabytes.
-
-> DAP.GlobalMetadataStore.size = 200
-
-* The MDS writes a ledger of additions and removals. By default the ledger is
-kept in 'mds_ledger.txt' in the directory used to start the BES.
-
-> DAP.GlobalMetadataStore.ledger = @datadir@/mds_ledger.txt
-
-## COVJSON Response
-
-For datasets that contain geo-spatial data, we now provide the option to
-get those data (and related metadata) encoded using the covjson format. 
-(See https://covjson.org/). Thanks to Corey Hemphill, Riley Rimer, and 
-Lewis McGibbney for this contribution.
-
-## Improved catalog support
-
-It has long been possible to define 'catalogs' for data that reside on other
-kinds of data stores (e.g., relational data base systems). The datasets defined
-by these catalogs appear(ed) in the directory listings as if they are 
-directories of data files, just like datasets that actually are files on a
-spinning disk. 
-
-We have generalized this system so that it is much easier to use. As an example
-of new Catalog sub-system's ease of use, we have implemented a new module that
-reads information about datasets from NASA's Common Metadata Repository (CMR)
-and uses that to display a Virtual Directory for NASA data, where the hierarchical
-relationships between data files is derived entirely from data read a CMR-support
-web API.
-
-This software is currently available in source form only - contact us if you
-would like to extend the BES Catalog system for your own data collections. 
-To build Hyrax with this feature enabled, build either in developer mode 
-(./configure ... --enable-developer) or using the spepcial configuration option
---enable-cmr.
-
-## For the HDF4 handler
-
-* CF option: Enhance the support of handling the scale_factor and add_offset to follow the CF. The scale_factor and
-add_offset rule for the MOD16A3 product is different than other MODIS products. We make an exception for 
-this product only to ensure the scale_factor and add_offset follow the CF conventions.
+# Version 3.20.6.
+This version of the BES is part of Hyrax 1.16.1, a data server that supports the
+OPeNDAP data access protocols. See 
+[opendap.org/software/hyrax/1.16](https://www.opendap.org/software/hyrax/1.16)
+for information about Hyrax.
  
- 
-## For the HDF5 handler
- 
-CF option:
-1. Add the support of the HDF-EOS5 Polar Stereographic(PS) and Lambert Azimuthal Equal Area(LAMAZ) grid projection files. 
-   Both projection files can be found in NASA LANCE products.
-2. Add the HDF-EOS5 grid latitude and longitude cache support. This is the same as what we did for the HDF-EOS2 grid. 
-3. Add the support for TROP-OMI, new OMI level 2 and OMPS-NPP product.
-4. Removed the internal reserved netCDF-4 attributes for DAP output.
-5. Make the behavior of the drop long string BES key consistent with the current limitation of netCDF Java.
- 
-## Bug fixes
+For specific information about the BES, see the file _NEWS_ for a summary of new 
+features and important updates. See _ChangeLog_ for a complete listing of changes/fixes 
+since the previous release. 
 
-* HYRAX-10 The fileout netCDF-4 doesn't generate the correct dimensions for aggregated files
-* HYRAX-247 <Dimension> elements in a constrained DMR sometimes have 'random' order
-* HYRAX-248 fileout_gdal seems to build broken JP2k files
-* HYRAX-362 Make the GeoTiff (GDAL) handler work with NCML aggregations
-* HYRAX-554 BES now includes DMR++; hack the configure script WRT libcurl
-* HYRAX-561 The fileout_netcdf, and/or the ncml_handler code does not clean up the 
-          temporary netCDF result file if the requesting client is killed during the transaction.
-* HYRAX-588 Gateway HTML Form Rendering Failure
-* HYRAX-591 Tests that create files fail 'make distcheck' (e.g., the tests for HYRAX-561)
-* HYRAX-595 The "SHOW HELP" button in the DAP2 Data Request Form points to a broken link
-* HYRAX-598 NULL pointer dereference in D4ParserSax2
-* HYRAX-599 Symbolic links to data not showing up in Hyrax 1.14.0 RPMs on CentOS 7
-* HYRAX-600 Unable to startup Hyrax installed from RPM on boot on Centos OS 7
-* HYRAX-603 The OLFS authentication code is no longer compatible with the current deployment "bootstrap".
-* HYRAX-612 Renaming the result of an aggregation (only join new?) fails.
-* HYRAX-613 OLFS installation bootstrap is broken on CentOS-7
-* HYRAX-621 Replace logo.gif with a transparent logo.png in Hyrax
-* HYRAX-623 Fix the CI build
-* HYRAX-630 The Keywords feature of libdap is hosed
-* HYRAX-645 Build issue causes make -j check to fail
-* HYRAX-646 Target collect-coverage-data doesn't work
-* HYRAX-647 The DDS print_das() method does not produce the same DAS as the DAS::print() method for Grids sometimes
-* HYRAX-648 MDS tests 61 and 62 fail on the first run of ./testsuite --conf=bes.mds.conf
-* HYRAX-670 Reading values from olfs.xml file is fragile
-* HYRAX-692 cppunit-config is no longer present in cppunit
-* HYRAX-721 The implementation of Sequence in the XSLT based Data Request Form (IFH) is broken
-* HYRAX-723 The DMR++ parser doesn't see a newline (cr?) as whitepspace.
-* HYRAX-745 Broker service needs to make correct links for data access.
-* HYRAX-755 The build_dmrpp code seems to fail on DMRs/Files with several variables.
-* HYRAX-756 get_dmrpp fails on datasets where variables are not in the root group
-* HYRAX-764 Fileout_netcdf returns empty response for dataset when no query is provided.
-* HYRAX-767 Change the Data Request Form code (all 3 versions) so that it URL encodes the query before using it.
-* HYRAX-775 The DMR response from the MDS has the xml:base attribute in a random place.
-* HYRAX-790 geogrid is failing in OLFS regression tests
-* HYRAX-791 w10n syntax collides with URI encoding rules enforced by recent Tomcat
-* HYRAX-794 Some tests regarding the enum type in the netcdf handler  fail randomly
-* HYRAX-801 ASAN Reveals 104 issues in the BES
-* HYRAX-802 Issues remain in the Aggregation rename bug
-* HYRAX-803 NcML Memory errors
-* HYRAX-804 Error in ResponseBuilderTest - a unit test
-* HYRAX-805 fileout_netcdf memory errors
-* HYRAX-818 showNode removes catalog name from the path name of the node - stop it.
-* HYRAX-833 Update baselines for BES cmdlm tests
-* HYRAX-837 libdap seems to return DAP2 and DAP3.2 DDX responses in kind of random way.
-* HYRAX-844 THREDDS catalog produced by Hyrax no longer work with Unidata code because of time zone issues
-* HYRAX-845 BESUtil::get_time() has a pointer problem
-* HYRAX-851 Memory leak in BESCatalog
+This version of the BES requires libdap-3.20.5 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3641778.svg)](https://doi.org/10.5281/zenodo.3641778)
 
-# Updated for version 3.19.1
+# Introduction
+The Back-end Server (BES) for Hyrax is a unix daemon that builds DAP2 and DAP4 response
+for various kinds of data. Since the daemon runs on Unix hosts, it often works with data
+that are stored in files or collections of files found on file systems. However, the BES
+can also use data stored in database systems, web object stores (e.g., S3), other kinds
+of web APIs and remote data accessed using plain HTTP.
 
-BESInterface/XMLInterface improved
+In addition to the DAP2/4 protocols, the BES can package responses to queries for data in
+a number of well-known binary file types, including NetCDF3/4, GeoTIFF and JPEG2000.
 
-Testing/Logging Improvements
+All of the functionality specific to DAP or particular types of data is implemented using
+a group of 'plugin modules.' These modules isolate the operations for specific kinds of
+daa from the BES software itself. Each kind of data that can be read is accessed using 
+a different module and each response other than the DAP2/4 responses is returned its own
+module.
 
-# Updated for version 3.19.0
+The BES does not contain (much) software that implements the DAP2/4 protocols. Instead it
+uses the libdap4 library for that. See [github.com/opendap/libdap4](github.com/opendap/libdap4).
 
-New Server function: range() This function returns the min and max
-values of a variable and, for a vector, a boolean indicating that it
-is monotonic.
+The BES does not implement the WEB API for DAP2/4, instead the OLFS (OPeNDAP Lightweight Front-end Server)
+is used to do that. See [github.com/opendap/olfs](github.com/opendap/olfs).
 
-GeoTiff file can now be aggregated.
+The BES framework is designed to be extensible and can be used to combine reading various
+kinds of data with building different kinds of responses. The framework is designed to
+support lazy data read operations, only reading those data that are needed and only when 
+they are needed. Note that some kinds of well-known binary responses must be built in full
+before they are returned, but this is not a requirement of the framework but the responses,
+or their APIs.
 
-See NEWS for more information.
+Information about the Hyrax data server can be found here in the
+<a href="https://opendap.github.io/hyrax_guide/Master_Hyrax_Guide.html"> 
+latest and most comprehensive Hyrax documentation.</a>
+<br /> <br/>
+<a href="https://opendap.github.io/bes/html/">The BES API Documentation is here</a>
 
-# Updated for version 3.18.0
-
-New features:
-
-- hdf5_handler adds support for sinusodial projections.
-
-- ncml_handler adds support for the aggregation and metadata 
-  manipulation of remotely located datasets. This new capanbility
-  utilizes the exisiting gateway_handler and allows the ncml_handler
-  to aggregate anything the gateway_handler can read.
-
-This release fixes a number of bugs:
-
-- Improved error logging (as in errors now get logged)
-    https://opendap.atlassian.net/browse/HYRAX-302
-    
-- Improved server side function response assembly repaired:
-    https://opendap.atlassian.net/browse/HYRAX-352
-    https://opendap.atlassian.net/browse/HYRAX-342
-
-- Stopped prepending "nc_" to netCDF file out responses whose
-  download filename begins with a digit:
-    https://opendap.atlassian.net/browse/HYRAX-341
-
-- Repaired various BES timeout issues.
-    https://opendap.atlassian.net/browse/HYRAX-341
-
-# Updated for version 3.17.4
-
-Added support for cached metadata objects.
-
-Server functions can now return multiple values using specially-named
-Structure variables. 
-
-The code now builds using gcc-6.
-
-See NEWS for other details.
-
-See the INSTALL file for build instructions, including special
-instructions for building from a (git) cloned repo. This code can
-build one of two distinct ways and that requires a tiny bit setup.
-
-For more information on Hyrax and the BES, please visit our documentation
-wiki at docs.opendap.org. This will include the latest install and build
-instructions, the latest configuration information, tutorials, how to
-develop new modules for the BES, and more.
-
-This version has significant performance improvements for aggregations,
-particularly those that use the JoinNew directive.
-
-Contents
-* DAP2 versus DAP4 support
+## Contents
 * What's here: What files are in the distribution
-* About the BES: What exactly is this
 * Configuration: How to configure the BES
 * Testing: Once built and configured, how do you know it works?
+* Various features the BES supports
 
-# DAP2 versus DAP4
-
-The code on the master branch now supports both DAP2 and DAP4
-responses, and the data format handlers do as well. Because of that,
-it must be linked with libdap 3.14, not libdap older versions of
-libdap (libdap 3.14 contains support for both DAP2 and DAP4, while the
-older 'libdap' supports only DAP2). If you need to get the DAP2-only
-version of the software, use the branch named 'dap2'. Please commit
-only fixes there.
-
-Each of the handlers, which can be built as submodules within this
-code, also has DAP2 and DAP4 support on their master branch and a
-'dap2' branch for the DAP2-only code.
-
-# What's here:
-
+# What's here
 Here there's a bes-config script which will be installing in $prefix/bin that
 can be used to determine where the libraries and their header files have been
 installed. This directory also contains some documentation files.
@@ -317,18 +92,13 @@ _conf_: Where the automake and autoconf configuration files live
 
 _docs_: Where some bes documentation resides
 
-# About the BES
- 
-<a href="https://opendap.github.io/hyrax_guide/Master_Hyrax_Guide.html"> 
-The latest and most comprehensive Hyrax documentation is here.</a>
-<br /> <br/>
-<a href="https://opendap.github.io/bes/html/">The BES API Documentation is here</a>
+# Configuration
+The BES configuration is controlled by a set of configuration files. While the complete
+configuration could be held in one file, it is easier to store information
+specific to each module in a different file. The main configuration file then
+reads all of the module configuration files, following a common Unix pattern.
 
-
-## Configuration
-
-### Basic Configuration
-
+## Basic Configuration
 Once the BES software has been installed, you will need to make a few
 changes to the BES configuration file, which is the bes.conf located in
 _prefix_`/etc/bes/bes.conf`. Module and handler configuration files will
@@ -358,8 +128,7 @@ With this configuration you will be able to start the BES. No handlers
 or modules have been installed yet, so you won't be able to serve data,
 but the BES should run.
 
-### Configuration for Hyrax
-
+## Configuration for Hyrax
 For the BES to run with Hyrax, additional changes will need to be made
 to the dap.conf and dap-server.conf files, which are located in the
 modules directory _prefix_`/etc/bes/modules`. The dap module should be
@@ -415,7 +184,6 @@ Include and Exclude parameters, use the supplied besregtest program.
 Simply run besregtest to discover its usage.
 
 ### Installing a custom handler/module
-
 By default, The BES for Hyrax comes with a suite of handlers that read
 a number of data formats. However, you can install custom handlers that 
 are not distributed by default. I'll use the SQL handler as an example.
@@ -429,7 +197,6 @@ having problems compiling or linking the handler, try using not only
 --prefix=... but also --with-bes=... when you configure the handler. 
 
 #### Install the newly-built handler.
-
 Once built, install the handler using 'make install'. This will install
 the BES module and a configuration file to use for that module. Each
 module will have its own configuration file. In this case it is nc.conf
@@ -438,7 +205,6 @@ the BES is run, this configuration file will be read and the netcdf
 module loaded. No modifications are necessary.
 
 ## Testing
-
 To test the server, open a new terminal window and start the bes by using
 the bes control script besctl, which is installed in _prefix_`/bin`.
 using the -c switch to name the configuration file. If the server standalone
@@ -542,7 +308,147 @@ so:
 If there is a list of containers instead of just one, then there can be a
 list of <container>.constraint="" clauses.
 
-## COPYRIGHT INFORMATION
+# Various features the BES supports
+Here we highlight some important features of the BES software.
+This list is far from comprehensive and it is not intended to be 
+a 'new features' list. Most of these features are supported by the
+BES because they are important to the Hyrax data server. However,
+all of these are accessible when the BES is used by itself or in
+conjunction with other software.
+
+## DAP2 versus DAP4
+The code on the master branch now supports both DAP2 and DAP4
+responses, and the data format handlers do as well. Because of that,
+it must be linked with libdap 3.14, not libdap older versions of
+libdap (libdap 3.14 contains support for both DAP2 and DAP4, while the
+older 'libdap' supports only DAP2). If you need to get the DAP2-only
+version of the software, use the branch named 'dap2'. Please commit
+only fixes there.
+
+Each of the handlers, which can be built as submodules within this
+code, also has DAP2 and DAP4 support on their master branch and a
+'dap2' branch for the DAP2-only code.
+
+## Support for data stored on Amazon's S3 Web Object Store
+Hyrax 1.16 has prototype support for subset-in-place of HDF5 and NetCDF4
+data files that are stored on AWS S3. See the preliminary documentation in
+https://github.com/OPENDAP/bes/blob/master/modules/dmrpp_module/data/README.md.
+
+The new support includes software that can configure data in S3 and on
+disk so that it can be served (and subset) in-place from S3 without reformatting
+the original data files. Support for other web object stores besides S3
+has also been demonstrated.
+
+## Support for dataset crawler/indexer systems
+We have added support for Datasets served by Hyrax now provide
+information Google and other search engines need to make these data
+findable. All dataset landing pages and catalog navigation
+(contents.html) pages now contain embedded json-ld which crawlers such
+as Google Dataset Search, NSF's GeoCODES, and other data sensitive web
+crawlers use for indexing datasets. In order to facilitate this,
+certain steps can be taken by the server administrator to bring the
+Hyrax service to Google (and other) crawlers attention. LINK TO
+JSON-LD README.MD. Our work on JSON-LD support was funded by NSF Grant
+number 1740704.
+
+## Experimental support for STARE indexing
+We have added experimental support for STARE (Spatio Temporal
+Adaptive-Resolution Encoding) as part of our work on NASA ACCESS
+grant 17-ACCESS17-0039.
+
+## Server function roi() improvements
+
+## Site-specific configuration
+The BES uses a number of configuration files, and until now, a site has to
+customize these for their server. Each server installation would overwrite
+those files. No more. Now you can put all your configuration values in 
+
+> /etc/bes/site.conf
+
+And be configent that they will never be overwritten by a new install. The
+`site.conf` file is always read last, so parameters set there override values
+set elsewhere.
+
+## The Metadata Store (MDS)
+A new cache has been added to the BES for Metadata Responses (aka, the MDS
+or Metadata Store). This cache is unlike the other BES caches in that it is
+intended to be operated as either a 'cache' or a 'store.' In the latter case,
+items added will never be removed - it is an open-ended place where metadata
+response objects will be kept indefinitely. The MDS contents (as a cache or 
+a store) will survive Hyrax restarts.
+
+The MDS was initially built to speed responses when data are stored on high-
+latency devices like Amazon's S3 storage system. We have special features in
+Hyrax to handle data kept on those kinds of data stores and the MDS can provide
+clients with fast access to the metadata for those data very quickly. After
+our initial tests of the MDS, we decided to make it a general feature of the
+server, available to data served from data stored on spinning disk in addition
+to S3.
+
+Note: The MDS is not used for requests that using server-side function processing.
+
+The MDS configuration can be found in the dap.conf configuration file. Here 
+are the default settings:
+
+* Setting the 'path' to null disables uses of the MDS. 
+
+> DAP.GlobalMetadataStore.path = @datadir@/mds
+> DAP.GlobalMetadataStore.prefix = mds
+
+* Setting 'size' to zero makes the MDS hold objects forever; setting a positive 
+non-zero size makes the MDS behave like a cache, purging responses when the 
+size is exceeded. The number is the size of the cache volume in megabytes.
+
+> DAP.GlobalMetadataStore.size = 200
+
+* The MDS writes a ledger of additions and removals. By default the ledger is
+kept in 'mds_ledger.txt' in the directory used to start the BES.
+
+> DAP.GlobalMetadataStore.ledger = @datadir@/mds_ledger.txt
+
+## COVJSON Responses
+For datasets that contain geo-spatial data, we now provide the option to
+get those data (and related metadata) encoded using the covjson format. 
+(See https://covjson.org/). Thanks to Corey Hemphill, Riley Rimer, and 
+Lewis McGibbney for this contribution.
+
+## Improved catalog support
+It has long been possible to define 'catalogs' for data that reside on other
+kinds of data stores (e.g., relational data base systems). The datasets defined
+by these catalogs appear(ed) in the directory listings as if they are 
+directories of data files, just like datasets that actually are files on a
+spinning disk. 
+
+We have generalized this system so that it is much easier to use. As an example
+of new Catalog sub-system's ease of use, we have implemented a new module that
+reads information about datasets from NASA's Common Metadata Repository (CMR)
+and uses that to display a Virtual Directory for NASA data, where the hierarchical
+relationships between data files is derived entirely from data read a CMR-support
+web API.
+
+This software is currently available in source form only - contact us if you
+would like to extend the BES Catalog system for your own data collections. 
+To build Hyrax with this feature enabled, build either in developer mode 
+(./configure ... --enable-developer) or using the spepcial configuration option
+--enable-cmr.
+
+## For HDF4 data
+* CF option: Enhance the support of handling the scale_factor and add_offset to follow the CF. The scale_factor and
+add_offset rule for the MOD16A3 product is different than other MODIS products. We make an exception for 
+this product only to ensure the scale_factor and add_offset follow the CF conventions.
+ 
+ 
+## For HDF5 data
+
+CF option:
+1. Add the support of the HDF-EOS5 Polar Stereographic(PS) and Lambert Azimuthal Equal Area(LAMAZ) grid projection files. 
+   Both projection files can be found in NASA LANCE products.
+2. Add the HDF-EOS5 grid latitude and longitude cache support. This is the same as what we did for the HDF-EOS2 grid. 
+3. Add the support for TROP-OMI, new OMI level 2 and OMPS-NPP product.
+4. Removed the internal reserved netCDF-4 attributes for DAP output.
+5. Make the behavior of the drop long string BES key consistent with the current limitation of netCDF Java.
+
+# COPYRIGHT INFORMATION
 
     The OPeNDAP BES code is copyrighted using the GNU Lesser GPL. See the
     file COPYING or contact the Free Software Foundation, Inc., at 59 Temple
@@ -564,4 +470,3 @@ list of <container>.constraint="" clauses.
 
     The above copyright notice and this permission notice shall be included in
     all copies or substantial portions of the Software.
-    
