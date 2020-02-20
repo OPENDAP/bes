@@ -252,7 +252,7 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
 
 // read_dds for one grid or swath
 void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Dataset *dataset, int grid_or_swath,bool ownll, SOType sotype,
-                                 int32 sdfd, int32 fileid, int32 gridfd,int32 swathfd)
+                                 int32 sdfd, int32 /*fileid //unused SBL 2/7/20 */, int32 gridfd,int32 swathfd)
 {
 
     BESDEBUG("h4","Coming to read_dds_hdfeos2_grid_swath "<<endl);
@@ -1329,13 +1329,15 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
     bool tempstrflag = false;
 
     // Product name(AMSR_E) that needs to change attribute from "SCALE FACTOR" to scale_factor etc. to follow the CF conventions
-    bool filename_change_scale = false;
+    //bool filename_change_scale = false; //unused variable. SBL 2/7/20
     if (f->getSwaths().size() > 0) {
         string temp_fname = basename(filename);
         string temp_prod_prefix = "AMSR_E";
         if ((temp_fname.size() > temp_prod_prefix.size()) && 
-            (0 == (temp_fname.compare(0,temp_prod_prefix.size(),temp_prod_prefix)))) 
-            filename_change_scale = true;
+            (0 == (temp_fname.compare(0,temp_prod_prefix.size(),temp_prod_prefix)))) {
+        	//filename_change_scale = true; //don't see accessed again in code
+        }
+
     }
 
     // Obtain information to identify MEaSURES VIP. This product needs to be handled properly.
@@ -3406,7 +3408,7 @@ void read_dds_spvdfields(DDS &dds,const string & filename, const int fileid,int3
 
 // This routine will check if this is a special EOS2 file that we can improve the performance
 // Currently AIRS level 2 and 3 version 6 and MOD08_M3-like products are what we can serve. KY 2014-01-29
-int check_special_eosfile(const string & filename, string& grid_name,int32 sdfd,int32 fileid ) {
+int check_special_eosfile(const string & filename, string& grid_name,int32 sdfd,int32 /*fileid //unused SBL 2/7/20 */ ) {
 
     int32 sds_id     = 0;
     int32 n_sds      = 0;

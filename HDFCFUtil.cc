@@ -3120,7 +3120,7 @@ cleanFail:
 
 void HDFCFUtil::map_eos2_one_object_attrs_wrapper(libdap:: DAS &das,int32 file_id,int32 vgroup_id, const string& vgroup_name,bool is_grid) {
 
-    char attr_name[H4_MAX_NC_NAME];
+    //char attr_name[H4_MAX_NC_NAME]; //unused variable. SBL 2/7/20
 
     int32 num_gobjects = Vntagrefs (vgroup_id);
     if(num_gobjects < 0) 

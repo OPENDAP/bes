@@ -91,7 +91,7 @@ bool HDFStructure::read() {
 // eliminate the boolean 'foundvgroup' Consider moving the
 // LoadStructureFromVgroup() from hc2dap.cc here since this is the only
 // place it's used.
-bool HDFStructure::read_tagref(int32 tag, int32 ref, int &err) {
+bool HDFStructure::read_tagref(int32 /*tag //unused SBL 2/7/20*/, int32 ref, int &err) {
 	if (read_p())
 		return true;
 

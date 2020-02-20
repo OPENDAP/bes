@@ -566,8 +566,10 @@ void File::handle_one_grid_zdim(GridDataset* gdset) {
                 // the information is different than a normal field.
                 //int missingdatarank =1;
                 //int missingdatatypesize = 4;
-                int missingdimsize[1];
-                missingdimsize[0]= (*j)->getSize();
+
+                //int missingdimsize[1]; //unused variable. SBL 2/7/20
+                //missingdimsize[0]= (*j)->getSize(); //no purpose
+
                 if(0 == (*j)->getSize()) {
                     missingfield_unlim_flag = true;
                     missingfield_unlim = missingfield;
@@ -2348,8 +2350,8 @@ void File:: create_swath_nonll_dim_cvar_map() throw(Exception)
 
                 // Provide information for the missing data, since we need to calculate the data, so
                 // the information is different than a normal field.
-                int missingdimsize[1];
-                missingdimsize[0]= (*j)->getSize();
+                // int missingdimsize[1]; //unused variable. SBL 2/7/20
+                // missingdimsize[0]= (*j)->getSize();
                 
                 if(0 == (*j)->getSize()) {
                     missingfield_unlim_flag = true;
@@ -3221,7 +3223,7 @@ void Dataset::ReadFields(int32 (*entries)(int32, int32, int32 *),
                          int32 (*inq)(int32, char *, int32 *, int32 *),
                          intn (*fldinfo)
                          (int32, char *, int32 *, int32 *, int32 *, char *),
-                         intn (*readfld)
+                         intn (*readfld) //unused SBL 2/7/20
                          (int32, char *, int32 *, int32 *, int32 *, VOIDP),
                          intn (*getfill)(int32, char *, VOIDP),
                          bool geofield,
