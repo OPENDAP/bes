@@ -1,0 +1,24 @@
+netcdf test {
+dimensions:
+	lat = 4 ;
+	lon = 8 ;
+	StructMetadata_0_len = 663 ;
+variables:
+	float temperature(lat, lon) ;
+		temperature:units = "K" ;
+		temperature:origname = "temperature" ;
+		temperature:fullnamepath = "/HDFEOS/GRIDS/GeoGrid/Data Fields/temperature" ;
+		temperature:orig_dimname_list = "YDim XDim" ;
+	char StructMetadata_0(StructMetadata_0_len) ;
+		StructMetadata_0:origname = "StructMetadata.0" ;
+		StructMetadata_0:fullnamepath = "/HDFEOS INFORMATION/StructMetadata.0" ;
+	float lon(lon) ;
+		lon:units = "degrees_east" ;
+	float lat(lat) ;
+		lat:units = "degrees_north" ;
+
+// global attributes:
+		:HDFEOS_INFORMATION.HDFEOSVersion = "HDFEOS_5.1.13" ;
+		:HDFEOS_INFORMATION.fullnamepath = "/HDFEOS INFORMATION" ;
+		:history = "removed date-time Hyrax grid_1_2d.h5?" ;
+}

@@ -1,0 +1,7 @@
+netcdf test {
+variables:
+	ubyte byte ;
+
+// global attributes:
+		:history = "removed date-time Hyrax simpleT00.dods?byte" ;
+}

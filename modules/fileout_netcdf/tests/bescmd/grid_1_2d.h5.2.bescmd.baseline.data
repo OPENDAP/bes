@@ -1,0 +1,66 @@
+netcdf test {
+dimensions:
+	lat = 4 ;
+	lon = 8 ;
+	StructMetadata_0_len = 663 ;
+variables:
+	float temperature(lat, lon) ;
+		temperature:units = "K" ;
+		temperature:origname = "temperature" ;
+		temperature:fullnamepath = "/HDFEOS/GRIDS/GeoGrid/Data Fields/temperature" ;
+		temperature:orig_dimname_list = "YDim XDim" ;
+	char StructMetadata_0(StructMetadata_0_len) ;
+		StructMetadata_0:origname = "StructMetadata.0" ;
+		StructMetadata_0:fullnamepath = "/HDFEOS INFORMATION/StructMetadata.0" ;
+	float lon(lon) ;
+		lon:units = "degrees_east" ;
+	float lat(lat) ;
+		lat:units = "degrees_north" ;
+
+// global attributes:
+		:HDFEOS_INFORMATION.HDFEOSVersion = "HDFEOS_5.1.13" ;
+		:HDFEOS_INFORMATION.fullnamepath = "/HDFEOS INFORMATION" ;
+		:history = "removed date-time Hyrax grid_1_2d.h5?" ;
+data:
+
+ temperature =
+  10, 10, 10, 10, 10, 10, 10, 10,
+  11, 11, 11, 11, 11, 11, 11, 11,
+  12, 12, 12, 12, 12, 12, 12, 12,
+  13, 13, 13, 13, 13, 13, 13, 13 ;
+
+ StructMetadata_0 = "GROUP=SwathStructure\n",
+    "END_GROUP=SwathStructure\n",
+    "GROUP=GridStructure\n",
+    "\tGROUP=GRID_1\n",
+    "\t\tGridName=\"GeoGrid\"\n",
+    "\t\tXDim=8\n",
+    "\t\tYDim=4\n",
+    "\t\tUpperLeftPointMtrs=(0.000000,4000000.000000)\n",
+    "\t\tLowerRightMtrs=(8000000.000000,0.000000)\n",
+    "\t\tProjection=HE5_GCTP_GEO\n",
+    "\t\tGROUP=Dimension\n",
+    "\t\tEND_GROUP=Dimension\n",
+    "\t\tGROUP=DataField\n",
+    "\t\t\tOBJECT=DataField_1\n",
+    "\t\t\t\tDataFieldName=\"temperature\"\n",
+    "\t\t\t\tDataType=H5T_NATIVE_FLOAT\n",
+    "\t\t\t\tDimList=(\"YDim\",\"XDim\")\n",
+    "\t\t\t\tMaxdimList=(\"YDim\",\"XDim\")\n",
+    "\t\t\tEND_OBJECT=DataField_1\n",
+    "\t\tEND_GROUP=DataField\n",
+    "\t\tGROUP=MergedFields\n",
+    "\t\tEND_GROUP=MergedFields\n",
+    "\tEND_GROUP=GRID_1\n",
+    "END_GROUP=GridStructure\n",
+    "GROUP=PointStructure\n",
+    "END_GROUP=PointStructure\n",
+    "GROUP=ZaStructure\n",
+    "END_GROUP=ZaStructure\n",
+    "END\n",
+    "" ;
+
+ lon = 0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5 ;
+
+ lat = 3.5, 2.5, 1.5, 0.5 ;
+}

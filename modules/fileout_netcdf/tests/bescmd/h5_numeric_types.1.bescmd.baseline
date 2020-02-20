@@ -1,0 +1,18 @@
+The data:
+Float32 a_float32[2] = {1.1, 1.1};
+Float64 a_float64[2] = {-2.2, -2.2};
+Int16 a_int16[2] = {-32767, -32767};
+Int32 a_int32[2] = {-2147483647, -2147483647};
+Int16 a_int8[2] = {-127, -127};
+UInt16 a_uint16[2] = {65535, 65535};
+UInt32 a_uint32[2] = {4294967295, 4294967295};
+Byte a_uint8[2] = {255, 255};
+Float32 s_float32 = 1.1;
+Float64 s_float64 = -2.2;
+Int16 s_int16 = -32767;
+Int32 s_int32 = -2147483647;
+Int16 s_int8 = -127;
+UInt16 s_uint16 = 65535;
+UInt32 s_uint32 = 4294967295;
+Byte s_uint8 = 255;
+

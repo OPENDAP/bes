@@ -83,7 +83,7 @@ FONcFloat::define( int ncid )
 
     if( !_defined )
     {
-	FONcAttributes::add_variable_attributes( ncid, _varid, _f ) ;
+	FONcAttributes::add_variable_attributes( ncid, _varid, _f,isNetCDF4_ENHANCED() ) ;
 	FONcAttributes::add_original_name( ncid, _varid,
 					   _varname, _orig_varname ) ;
 
