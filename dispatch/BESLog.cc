@@ -148,7 +148,7 @@ void BESLog::dump_time()
     time_t now;
     time(&now);
     char buf[sizeof "YYYY-MM-DDTHH:MM:SSzone"];
-    int status = 0;
+    //int status = 0;
 
     // From StackOverflow:
     // This will work too, if your compiler doesn't support %F or %T:
@@ -156,10 +156,17 @@ void BESLog::dump_time()
     //
     // Apologies for the twisted logic - UTC is the default. Override to
     // local time using BES.LogTimeLocal=yes in bes.conf. jhrg 11/15/17
-    if (!d_use_local_time)
-        status = strftime(buf, sizeof buf, "%FT%T%Z", gmtime(&now));
-    else
-        status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&now));
+    //
+    // status removed due to it never being used in the code. sbl 1/7/20
+    //
+    if (!d_use_local_time){
+        strftime(buf, sizeof buf, "%FT%T%Z", gmtime(&now));
+    	//status = strftime(buf, sizeof buf, "%FT%T%Z", gmtime(&now));
+    }
+    else{
+        strftime(buf, sizeof buf, "%FT%T%Z", localtime(&now));
+    	//status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&now));
+    }
 
     (*d_file_buffer) << buf;
 
