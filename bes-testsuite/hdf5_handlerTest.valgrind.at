@@ -405,6 +405,7 @@ AT_BESCMD_RESPONSE_TEST([swath_2_3d_2x2yz_ef.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([za_1_2d_yz_ef.h5.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([za_1_2d_yz_ef.h5.dds.bescmd])
 
+
 #HDF-EOS5 CF "Conventions" attribute group path removed
 AT_BESCMD_RESPONSE_TEST([grid_1_2d_convention.h5.das.bescmd])
 
@@ -415,6 +416,10 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([t_big_str.h5.data.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_big_str.h5.dds.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([t_big_str_dset.h5.data.bescmd])
 
+# netcdf4 that only has the dimensional scale.
+AT_BESCMD_RESPONSE_TEST([nc4_dscale_only.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_dscale_only.h5.das.bescmd])
+ 
 # Test subsetting.
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_3d.h5.data.subset.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_3d.h5.data.subset_0.bescmd])

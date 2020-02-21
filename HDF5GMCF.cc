@@ -1541,9 +1541,57 @@ bool GMFile::Check_Dimscale_General_Product_Pattern()  {
         
     }
 
-    if (true == has_dimlist && true == has_dimscalelist) {
-        this->gproduct_pattern = GENERAL_DIMSCALE;
-        ret_value = true;
+    if (true == has_dimscalelist) {
+        if (true == has_dimlist ) {
+            this->gproduct_pattern = GENERAL_DIMSCALE;
+            ret_value = true;
+        }
+        else {
+            //May fall into the single dimension scale case. 
+            //This is really, really rare,but we do have to check.
+            // Check if NAME and _Netcdf4Dimid exists for this variable.
+            
+            bool is_general_dimscale = false;
+
+            for (vector<Var *>::iterator irv = this->vars.begin();
+                irv != this->vars.end(); ++irv) {
+                 
+                bool has_class_dscale = false;
+                bool has_name = false;
+                bool has_netcdf4_id = false;
+
+                for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+                    ira != (*irv)->attrs.end();ira++) {
+                    if ("CLASS" == (*ira)->name) {
+
+                        Retrieve_H5_Attr_Value(*ira,(*irv)->fullpath);
+                        string class_value;
+                        class_value.resize((*ira)->value.size());
+                        copy((*ira)->value.begin(),(*ira)->value.end(),class_value.begin());
+
+                        // Compare the attribute "CLASS" value with "DIMENSION_SCALE". We only compare the string with the size of
+                        // "DIMENSION_SCALE", which is 15.
+                        if (0 == class_value.compare(0,15,"DIMENSION_SCALE")) 
+                            has_class_dscale= true;
+                    }
+                    else if ("NAME" == (*ira)->name)
+                        has_name = true;
+                    else if ("_Netcdf4Dimid" == (*ira)->name)
+                        has_netcdf4_id = true;
+                    if(true == has_class_dscale && true == has_name && true == has_netcdf4_id)
+                        is_general_dimscale = true;
+                }
+
+                if(true == is_general_dimscale)
+                    break;
+
+            }
+
+            if (true == is_general_dimscale) {
+                this->gproduct_pattern = GENERAL_DIMSCALE;
+                ret_value = true;
+            }
+        }
     }
 
     return ret_value;

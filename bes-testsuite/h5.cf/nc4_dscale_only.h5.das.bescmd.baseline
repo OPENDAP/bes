@@ -1,0 +1,10 @@
+Attributes {
+    sca {
+        String origname "sca";
+        String fullnamepath "/sca";
+    }
+    dim {
+        String origname "dim";
+        String fullnamepath "/dim";
+    }
+}
