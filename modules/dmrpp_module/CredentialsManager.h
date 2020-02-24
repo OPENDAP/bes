@@ -39,7 +39,7 @@ public:
     static const std::string ENV_ID_KEY;
     static const std::string ENV_ACCESS_KEY;
     static const std::string ENV_REGION_KEY;
-    static const std::string ENV_BUCKET_KEY;
+    //static const std::string ENV_BUCKET_KEY;
     static const std::string ENV_URL_KEY;
     static const std::string ENV_CREDS_KEY_VALUE;
 
@@ -49,7 +49,8 @@ private:
     static void initialize_instance();
     static void delete_instance();
 
-    static AccessCredentials *load_credentials_from_env( );
+    AccessCredentials *load_credentials_from_env( );
+    void load_ngap_s3_credentials( );
 
 public:
     static CredentialsManager *theMngr;
@@ -62,11 +63,10 @@ public:
     }
 
     void add(const std::string &url, AccessCredentials *ac);
-    static void load_credentials();
-    static void clear(){ delete_instance(); }
+    void load_credentials();
+    void clear(){ delete_instance(); }
 
     AccessCredentials *get(const std::string &url);
-
 
     unsigned int size(){
         return creds.size();

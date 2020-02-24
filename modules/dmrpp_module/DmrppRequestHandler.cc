@@ -132,7 +132,7 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     read_key_value("DMRPP.UseParallelTransfers", d_use_parallel_transfers);
     read_key_value("DMRPP.MaxParallelTransfers", d_max_parallel_transfers);
 
-    CredentialsManager::load_credentials();
+    CredentialsManager::theCM()->load_credentials();
 
     if (!curl_handle_pool)
         curl_handle_pool = new CurlHandlePool();

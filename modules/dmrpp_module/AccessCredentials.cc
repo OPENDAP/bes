@@ -24,7 +24,7 @@ using std::string;
 const string AccessCredentials::ID_KEY="id";
 const string AccessCredentials::KEY_KEY="key";
 const string AccessCredentials::REGION_KEY="region";
-const string AccessCredentials::BUCKET_KEY="bucket";
+//const string AccessCredentials::BUCKET_KEY="bucket";
 const string AccessCredentials::URL_KEY="url";
 
 /**
@@ -63,8 +63,8 @@ bool AccessCredentials::isS3Cred(){
         is_s3 = get(URL_KEY).length()>0 &&
                 get(ID_KEY).length()>0 &&
                 get(KEY_KEY).length()>0 &&
-                get(REGION_KEY).length()>0 &&
-                get(BUCKET_KEY).length()>0;
+                get(REGION_KEY).length()>0; //&&
+                //get(BUCKET_KEY).length()>0;
         s3_tested = true;
     }
     return is_s3;

@@ -30,6 +30,7 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <cstdio>
+#include <time.h>
 
 #include <GetOpt.h>
 #include <util.h>
@@ -98,66 +99,37 @@ namespace dmrpp {
             curl_global_cleanup();
         }
 
-
-#define AWS_ACCESS_KEY_ID_KEY "accessKeyId"
-#define AWS_SECRET_ACCESS_KEY_KEY "secretAccessKey"
-#define AWS_SESSION_TOKEN_KEY "sessionToken"
-#define AWS_EXPIRATION_KEY "expiration"
-
-        void get_s3_creds() {
-            if(debug) cout << endl;
-            string fnoc1_dds = "http://test.opendap.org/opendap/data/nc/fnoc1.nc.dds";
-            string local_fnoc1="http://localhost:8080/opendap/data/nc/fnoc1.nc.dds";
-            string target_url = distribution_api_endpoint;
-
-            string accessKeyId, secretAccessKey, sessionToken, expiration;
-
-            if(debug) cout << "Target URL: " << target_url<< endl;
+        void test_ngap_creds_object(){
             try {
-                rapidjson::Document d = curl::http_get_as_json(target_url);
-                if(debug) cout << "S3 Credentials:"  << endl;
-
-                rapidjson::Value& val = d[AWS_ACCESS_KEY_ID_KEY];
-                accessKeyId = val.GetString();
-                if(debug) cout << "    " << AWS_ACCESS_KEY_ID_KEY << ":        "  << accessKeyId << endl;
-
-                val = d[AWS_SECRET_ACCESS_KEY_KEY];
-                secretAccessKey = val.GetString();
-                if(debug) cout << "    "  << AWS_SECRET_ACCESS_KEY_KEY << ":    "  << secretAccessKey << endl;
-
-                val = d[AWS_SESSION_TOKEN_KEY];
-                sessionToken = val.GetString();
-                if(debug) cout << "    "  << AWS_SESSION_TOKEN_KEY << ":       " << sessionToken  << endl;
-
-                val = d[AWS_EXPIRATION_KEY];
-                expiration = val.GetString();
-                if(debug) cout << "    "  << AWS_EXPIRATION_KEY << ":         "  << expiration << endl;
+                NgapS3Credentials nsc(distribution_api_endpoint,600);
+                //nsc.get_temporary_credentials();
 
 
-                // parse the time string into a something useful -------------------------------------------------------
-                struct tm tm;
-                // 2020-02-18 13:49:30+00:00
-                strptime(expiration.c_str(), "%Y-%m-%d %H:%M:%S%z", &tm);
-                time_t t = mktime(&tm);  // t is now your desired time_t
-                if(debug) cout << "    expiration(time_t): "  << t << endl;
+
+                if(debug) cout << "                  NgapS3Credentials::ID: " << nsc.get(NgapS3Credentials::ID_KEY) << endl;
+                if(debug) cout << "                 NgapS3Credentials::KEY: " << nsc.get(NgapS3Credentials::KEY_KEY) << endl;
+                //if(debug) cout << "            NgapS3Credentials::BUCKET: " << nsc.get(NgapS3Credentials::BUCKET_KEY) << endl;
+                if(debug) cout << "   NgapS3Credentials::AWS_SESSION_TOKEN: " << nsc.get(NgapS3Credentials::AWS_SESSION_TOKEN) << endl;
+                if(debug) cout << "NgapS3Credentials::AWS_TOKEN_EXPIRATION: " << nsc.get(NgapS3Credentials::AWS_TOKEN_EXPIRATION) << endl;
+
+                time_t now = std::time(0);
+                if(debug) cout << "         now: " << now <<  endl;
+                if(debug) cout << "     expires: " << nsc.expires() <<  endl;
+                if(debug) cout << "needsRefresh: " << (nsc.needsRefresh()?"true":"false") <<  endl;
+
+                time_t diff = nsc.expires() - now;
+                if(debug) cout << "AWS credentials expire in " << diff << " seconds. (" << diff/60.0 << " minutes, " << diff/60.0/60.0 << " hours)" << endl;
 
             }
-            catch (BESError e) {
+            catch (BESError e){
                 cerr << "Caught BESError. Message: " << e.get_message() << "  ";
                 cerr << "[" << e.get_file() << ":" << e.get_line() << "]" << endl;
                 CPPUNIT_ASSERT(false);
             }
         }
 
-        void test_ngap_creds_object(){
-            NgapS3Credentials nsc;
-            nsc.get_temporary_credentials(distribution_api_endpoint);
-            nsc.get(AccessCredentials::ID_KEY);
-        }
-
 
         CPPUNIT_TEST_SUITE(NgapCredentialsTest);
-            // CPPUNIT_TEST(get_s3_creds);
             CPPUNIT_TEST(test_ngap_creds_object);
         CPPUNIT_TEST_SUITE_END();
 

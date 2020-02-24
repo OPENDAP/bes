@@ -23,7 +23,21 @@ using std::endl;
 
 #define MODULE "ngap"
 
-void NgapS3Credentials::get_temporary_credentials(const string &distribution_api_endpoint) {
+// Scope: public members of AccessCredentials
+const string NgapS3Credentials::AWS_SESSION_TOKEN="aws_session_token";
+const string NgapS3Credentials::AWS_TOKEN_EXPIRATION="aws_token_expiration";
+const string NgapS3Credentials::BES_CONF_S3_ENDPOINT_KEY="NGAP.S3.distribution.endpoint.url";
+const string NgapS3Credentials::BES_CONF_REFRESH_KEY="NGAP.S3.refresh.margin";
+const string NgapS3Credentials::BES_CONF_URL_BASE="NGAP.s3.url.base";
+
+
+/**
+ * This code assumes that the credentials needed to authenticate the retrieval of the S3
+ * credentials will be handled by the curl call via the ~/.netrc file of the BES user.
+ *
+ * @param distribution_api_endpoint The URL of the cumulus distribution api s3credentials endpoint
+ */
+void NgapS3Credentials::get_temporary_credentials() {
 
     string accessKeyId, secretAccessKey, sessionToken, expiration;
 
@@ -34,24 +48,23 @@ void NgapS3Credentials::get_temporary_credentials(const string &distribution_api
 
     rapidjson::Value& val = d[AWS_ACCESS_KEY_ID_KEY];
     accessKeyId = val.GetString();
-    add(AccessCredentials::ID_KEY,accessKeyId);
+    add(ID_KEY,accessKeyId);
     BESDEBUG(MODULE, AWS_ACCESS_KEY_ID_KEY << ":        "  << accessKeyId  << endl);
 
     val = d[AWS_SECRET_ACCESS_KEY_KEY];
     secretAccessKey = val.GetString();
-    add(AccessCredentials::KEY_KEY,secretAccessKey);
+    add(KEY_KEY,secretAccessKey);
     BESDEBUG(MODULE, AWS_SECRET_ACCESS_KEY_KEY << ":    "  << secretAccessKey << endl);
 
     val = d[AWS_SESSION_TOKEN_KEY];
     sessionToken = val.GetString();
-    add("AWS_SESSION_TOKEN",sessionToken);
+    add(AWS_SESSION_TOKEN,sessionToken);
     BESDEBUG(MODULE, AWS_SESSION_TOKEN_KEY << ":       " << sessionToken  << endl);
 
     val = d[AWS_EXPIRATION_KEY];
     expiration = val.GetString();
-    add("AWS_TOKEN_EXPIRATION",expiration);
+    add(AWS_TOKEN_EXPIRATION,expiration);
     BESDEBUG(MODULE, AWS_EXPIRATION_KEY << ":         "  << expiration  << endl);
-
 
     // parse the time string into a something useful -------------------------------------------------------
     struct tm tm;

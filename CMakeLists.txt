@@ -2064,7 +2064,9 @@ add_executable(bes
     config.h
 	modules/dmrpp_module/unit-tests/awsv4_test.cc
 
-    modules/dmrpp_module/NgapS3Credentials.cc
+        modules/dmrpp_module/AccessCredentials.cc
+        modules/dmrpp_module/AccessCredentials.h
+        modules/dmrpp_module/NgapS3Credentials.cc
     modules/dmrpp_module/NgapS3Credentials.h
 
     modules/dmrpp_module/curl_utils.cc
