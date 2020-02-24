@@ -117,7 +117,7 @@ CredentialsManager::~CredentialsManager() {
 /**
  * Really it's the default constructor for now.
  */
-CredentialsManager::CredentialsManager(){}
+CredentialsManager::CredentialsManager(): ngaps3CredentialsLoaded(false){}
 
 /**
  *
@@ -294,8 +294,6 @@ void CredentialsManager::load_credentials( ) {
 
     theCM()->load_ngap_s3_credentials();
 
-
-
     if(!file_exists(config_file)){
         BESDEBUG(MODULE, "The file specified by the BES key " << CATALOG_MANAGER_CREDENTIALS
         << " does not exist. No Access Credentials were loaded." << endl);
@@ -392,10 +390,10 @@ AccessCredentials *CredentialsManager::load_credentials_from_env( ) {
     env_url.assign(       get_env_value(ENV_URL_KEY));
 
     if(env_url.length() &&
-        env_id.length() &&
-        env_access_key.length() &&
-        env_region.length() &&
-        env_bucket.length()){
+            env_id.length() &&
+            env_access_key.length() &&
+            // env_bucket.length() &&
+            env_region.length() ){
         ac = new AccessCredentials();
         ac->add(AccessCredentials::URL_KEY, env_url);
         ac->add(AccessCredentials::ID_KEY, env_id);
@@ -407,6 +405,7 @@ AccessCredentials *CredentialsManager::load_credentials_from_env( ) {
 }
 
 
+std::string NGAP_S3_BASE_DEFAULT="https://";
 /**
  * Read the BESKeys (from bes.conf chain) and if NgapS3Credentials::BES_CONF_S3_ENDPOINT_KEY is present builds
  * and adds to the CredentialsManager an instance of NgapS3Credentials based on the values found in the bes.conf chain.
@@ -424,7 +423,7 @@ void  CredentialsManager::load_ngap_s3_credentials( ){
             refresh_margin = strtol(value.c_str(), 0, 10);
         }
 
-        string s3_base_url = "https://";
+        string s3_base_url = NGAP_S3_BASE_DEFAULT;
         TheBESKeys::TheKeys()->get_value(NgapS3Credentials::BES_CONF_URL_BASE, value, found);
         if (found) {
             s3_base_url = value;
@@ -435,6 +434,8 @@ void  CredentialsManager::load_ngap_s3_credentials( ){
         nsc->name("NgapS3Credentials");
 
         CredentialsManager::theCM()->add(s3_base_url,nsc);
+        CredentialsManager::theCM()->ngaps3CredentialsLoaded = true;
+
     }
     else {
         BESDEBUG(MODULE,

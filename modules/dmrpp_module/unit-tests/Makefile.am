@@ -42,17 +42,18 @@ CREDS_CONF_IN = $(srcdir)/input-files/credentials.conf.in
 
 noinst_HEADERS = test_config.h
 
-noinst_DATA = bes.conf $(CREDS_CONF) input-files/weak.conf
+noinst_DATA = bes.conf bes_ngap_s3_creds.conf $(CREDS_CONF) input-files/weak.conf
 
-EXTRA_DIST = bes.conf.in test_config.h.in baselines input-files awsv4
+EXTRA_DIST = bes.conf.in bes_ngap_s3_creds.conf.in test_config.h.in baselines input-files awsv4
 
 CLEANFILES = *.gcda *.gcno *.strm *.file test_config.h tmp.txt
 
-DISTCLEANFILES = bes.conf bes.log $(CREDS_CONF)
+DISTCLEANFILES = bes.conf bes_ngap_s3_creds.conf bes.log $(CREDS_CONF)
 
 BUILT_SOURCES = test_config.h
 
 BES_CONF_IN = bes.conf.in
+BES_NGAP_CREDS_CONF_IN = bes_ngap_s3_creds.conf.in
 
 test_config.h: $(srcdir)/test_config.h.in Makefile
 	@mod_abs_srcdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
@@ -69,6 +70,11 @@ bes.conf: $(srcdir)/$(BES_CONF_IN) $(top_srcdir)/configure.ac
 	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 	    -e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
+
+bes_ngap_s3_creds.conf: $(srcdir)/$(BES_NGAP_CREDS_CONF_IN) $(top_srcdir)/configure.ac
+	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
+	    -e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes_ngap_s3_creds.conf
 
 $(CREDS_CONF):
 	cp $(CREDS_CONF_IN) $(CREDS_CONF)

@@ -46,7 +46,7 @@ using namespace libdap;
 
 static bool debug = false;
 static bool bes_debug = false;
-static bool test_ngap_creds = false;
+static string bes_conf_file = "/bes.conf";
 
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
@@ -75,7 +75,7 @@ public:
         if(debug) cout << endl ;
         if (bes_debug) BESDebug::SetUp("cerr,dmrpp,curl,ngap");
 
-        TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
+        TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append(bes_conf_file);
         cm_config = string(TEST_BUILD_DIR).append("/credentials.conf");
         weak_config = string(TEST_SRC_DIR).append("/input-files/weak.conf");
 
@@ -131,8 +131,13 @@ public:
 
     void check_credentials() {
         try {
-            if(debug) cout << "check_credentials() - Found " << CredentialsManager::theCM()->size() << " AccessCredentials." << endl;
-            CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 4);
+
+
+            unsigned int expected = CredentialsManager::theCM()->hasNgapS3Credentials()?4:3;
+            if(debug)
+                cout << "check_credentials() - Found " << CredentialsManager::theCM()->size() <<
+                " AccessCredentials. Expected: "<< expected << endl;
+            CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == expected);
 
             string cloudydap_dataset_url = "https://s3.amazonaws.com/cloudydap/samples/d_int.h5";
             string cloudyopendap_dataset_url = "https://s3.amazonaws.com/cloudyopendap/samples/d_int.h5";
@@ -206,8 +211,12 @@ public:
     }
 
     void check_incomplete_env_credentials() {
-        if(debug) cout << "check_incomplete_env_credentials() - Found " << CredentialsManager::theCM()->size() << " existing AccessCredentials." << endl;
-        CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 4);
+        unsigned int expected = CredentialsManager::theCM()->hasNgapS3Credentials()?4:3;
+        if(debug)
+            cout << "check_incomplete_env_credentials() - Found " << CredentialsManager::theCM()->size() <<
+            " existing AccessCredentials. Expected: "<< expected << endl;
+        CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == expected);
+
         CredentialsManager::theCM()->clear();
         if(debug) cout << "check_incomplete_env_credentials() - CredentialsManager has been cleared, contains " << CredentialsManager::theCM()->size() << " AccessCredentials." << endl;
         CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 0);
@@ -261,9 +270,13 @@ public:
         setenv(CredentialsManager::ENV_URL_KEY.c_str(),    url.c_str(), true);
         if(debug) cout << "check_env_credentials() - Environment conditioned, calling CredentialsManager::load_credentials()" << endl;
         CredentialsManager::theCM()->load_credentials();
-        if(debug) cout << "check_env_credentials() - Read from ENV, found " << CredentialsManager::theCM()->size() << " AccessCredentials." << endl;
 
-        CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 1);
+        unsigned int expected = 1;
+        if(debug)
+            cout << "check_env_credentials() - Read from ENV, found " << CredentialsManager::theCM()->size() <<
+            " AccessCredentials. Expected: " << expected << endl;
+        CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == expected);
+
 
         AccessCredentials *ac = CredentialsManager::theCM()->get(some_dataset_url);
         CPPUNIT_ASSERT( ac );
@@ -277,7 +290,9 @@ public:
         if(debug) cout << "check_env_credentials() - Credentials matched expected." << endl;
     }
 
-    void check_no_credentials() {
+    void check_ngap_s3_credentials() {
+
+
         clear_cm_env();
         CredentialsManager::theCM()->clear();
         TheBESKeys::TheKeys()->set_key(CATALOG_MANAGER_CREDENTIALS, "");
@@ -285,30 +300,37 @@ public:
         CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 0);
 
         CredentialsManager::theCM()->load_credentials();
-        if(debug)
-            cout << "check_no_credentials() - Called CredentialsManager::load_credentials(), found "
-            << CredentialsManager::theCM()->size() << " AccessCredentials." << endl;
-        CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 1);
 
-        AccessCredentials *ac = CredentialsManager::theCM()->get("https://s3.us-west-2.amazonaws.com");
-        CPPUNIT_ASSERT( ac );
+        if(CredentialsManager::theCM()->hasNgapS3Credentials()){
+            unsigned int expected = 1;
+            if(debug)
+                cout << "check_no_credentials() - Called CredentialsManager::load_credentials(), found "
+                     << CredentialsManager::theCM()->size() << " AccessCredentials. Expected:" << expected << endl;
+            CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == expected);
 
-        if(debug){
-            try {
-                cout << "                   ac->name(): " << ac->name() << endl;
-                cout << "   AccessCredentials::URL_KEY: " << ac->get(AccessCredentials::URL_KEY) << endl;
-                cout << "    AccessCredentials::ID_KEY: " << ac->get(AccessCredentials::ID_KEY) << endl;
-                cout << "   AccessCredentials::KEY_KEY: " << ac->get(AccessCredentials::KEY_KEY) << endl;
-                cout << "AccessCredentials::REGION_KEY: " << ac->get(AccessCredentials::REGION_KEY) << endl;
-                //cout << "AccessCredentials::BUCKET_KEY: " << ac->get(AccessCredentials::BUCKET_KEY) << endl;
-            }
-            catch (BESError besError){
-                cerr << endl << endl;
-                cerr << "Caught BESError. Message: " << besError.get_message() << "  ";
-                cerr << "[" << besError.get_file() << ":" << besError.get_line() << "]" << endl << endl;
-                CPPUNIT_ASSERT(false);
+
+            AccessCredentials *ac = CredentialsManager::theCM()->get("https://s3.us-west-2.amazonaws.com");
+            CPPUNIT_ASSERT( ac );
+
+            if(debug){
+                try {
+                    cout << "                   ac->name(): " << ac->name() << endl;
+                    cout << "   AccessCredentials::URL_KEY: " << ac->get(AccessCredentials::URL_KEY) << endl;
+                    cout << "    AccessCredentials::ID_KEY: " << ac->get(AccessCredentials::ID_KEY) << endl;
+                    cout << "   AccessCredentials::KEY_KEY: " << ac->get(AccessCredentials::KEY_KEY) << endl;
+                    cout << "AccessCredentials::REGION_KEY: " << ac->get(AccessCredentials::REGION_KEY) << endl;
+                    //cout << "AccessCredentials::BUCKET_KEY: " << ac->get(AccessCredentials::BUCKET_KEY) << endl;
+                }
+                catch (BESError besError){
+                    cerr << endl << endl;
+                    cerr << "Caught BESError. Message: " << besError.get_message() << "  ";
+                    cerr << "[" << besError.get_file() << ":" << besError.get_line() << "]" << endl << endl;
+                    CPPUNIT_ASSERT(false);
+                }
             }
         }
+
+
 
     }
 
@@ -321,7 +343,7 @@ CPPUNIT_TEST_SUITE( CredentialsManagerTest );
         CPPUNIT_TEST(check_credentials);
         CPPUNIT_TEST(check_incomplete_env_credentials);
         CPPUNIT_TEST(check_env_credentials);
-        CPPUNIT_TEST(check_no_credentials);
+        CPPUNIT_TEST(check_ngap_s3_credentials);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -336,7 +358,7 @@ int main(int argc, char*argv[])
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "dbn:");
+    GetOpt getopt(argc, argv, "dbc:");
     int option_char;
     while ((option_char = getopt()) != -1)
         switch (option_char) {
@@ -347,12 +369,10 @@ int main(int argc, char*argv[])
             debug = true;  // debug is a static global
             bes_debug = true;  // bes_debug is a static global
             break;
-        case 'n':
+        case 'c':
         {
-            test_ngap_creds = true;  // test_ngap_creds is a static global
-            string ngap_s3_distribution_endpoint = getopt.optarg;
+            bes_conf_file = getopt.optarg;  // bes_conf_file is a static global
             break;
-
         }
 
             default:
