@@ -919,8 +919,9 @@ void map_cfh5_attrs_to_dap4(const HDF5CF::Var *var,BaseType* d4_var) {
                     string tempstring((*it_ra)->getValue().begin() + temp_start_pos,
                                       (*it_ra)->getValue().begin() + temp_start_pos + strsize[loc]);
                     temp_start_pos += strsize[loc];
-                    if (((*it_ra)->getNewName() != "origname") && ((*it_ra)->getNewName() != "fullnamepath")) 
-                        tempstring = HDF5CFDAPUtil::escattr(tempstring);
+                    //The below if is not necessary since the "origname" and "fullnamepath" are not added.KY 2020-02-24
+                    //if (((*it_ra)->getNewName() != "origname") && ((*it_ra)->getNewName() != "fullnamepath")) 
+                    tempstring = HDF5CFDAPUtil::escattr(tempstring);
                     d4_attr->add_value(tempstring);
                 }
             }
@@ -933,7 +934,13 @@ void map_cfh5_attrs_to_dap4(const HDF5CF::Var *var,BaseType* d4_var) {
         }
         d4_var->attributes()->add_attribute_nocopy(d4_attr);
     }
-
+    // Here we add the "origname" and "fullnamepath" attributes since they are crucial to DMRPP generation.
+    D4Attribute *d4_attr = new D4Attribute("origname",attr_str_c);
+    d4_attr->add_value(var->getName());
+    d4_var->attributes()->add_attribute_nocopy(d4_attr);
+    d4_attr = new D4Attribute("fullnamepath",attr_str_c);
+    d4_attr->add_value(var->getFullPath());
+    d4_var->attributes()->add_attribute_nocopy(d4_attr);
 }
 
 void check_update_int64_attr(const string & obj_name, const HDF5CF::Attribute * attr) {

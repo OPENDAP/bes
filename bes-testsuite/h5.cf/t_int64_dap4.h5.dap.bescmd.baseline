@@ -12,6 +12,12 @@
         <Attribute name="attr_vstr" type="String">
             <Value>Parting is such sweet sorrow.</Value>
         </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>d64</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/d64</Value>
+        </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
             <Value>f0384500</Value>
         </Attribute>
@@ -19,6 +25,12 @@
     <Int64 name="d64s">
         <Attribute name="attr_uint64s" type="UInt64">
             <Value>18446744073709551615</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>d64s</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/d64s</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
             <Value>ccfc5c3c</Value>
@@ -38,6 +50,12 @@
             <Value>is so</Value>
             <Value>swe</Value>
         </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>du64</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/du64</Value>
+        </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
             <Value>f319c684</Value>
         </Attribute>
@@ -46,6 +64,12 @@
         <Attribute name="attr_int64s" type="Int64">
             <Value>9223372036854775807</Value>
             <Value>-9223372036854775808</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>du64s</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/du64s</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
             <Value>2144df1c</Value>

@@ -12,10 +12,22 @@
         <Attribute name="attr_vstr" type="String">
             <Value>Parting is such sweet sorrow.</Value>
         </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>d64</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/d64</Value>
+        </Attribute>
     </Int64>
     <Int64 name="d64s">
         <Attribute name="attr_uint64s" type="UInt64">
             <Value>18446744073709551615</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>d64s</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/d64s</Value>
         </Attribute>
     </Int64>
     <UInt64 name="du64">
@@ -32,11 +44,23 @@
             <Value>is so</Value>
             <Value>swe</Value>
         </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>du64</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/du64</Value>
+        </Attribute>
     </UInt64>
     <UInt64 name="du64s">
         <Attribute name="attr_int64s" type="Int64">
             <Value>9223372036854775807</Value>
             <Value>-9223372036854775808</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>du64s</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/du64s</Value>
         </Attribute>
     </UInt64>
     <Attribute name="HDF5_GLOBAL_integer_64" type="Container">
