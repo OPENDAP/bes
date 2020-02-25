@@ -166,6 +166,14 @@ H5.ForceFlattenNDCoorAttr=true
 
 H5.RmConventionAttrPath=true
 
+# Support 64-bit integer mapping in the DAP4 DMR output.
+# The key below is set to false to make the DMR consistent
+# with the DDS and DAS. Turning the key to true will enable
+# the 64-bit integer support in the DMR output.
+
+H5.EnableDMR64bitInt=false
+
+
 # CACHING 
 # C1. Caching DAP metadata response in memory. 
 #

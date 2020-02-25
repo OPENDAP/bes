@@ -80,6 +80,9 @@ H5.DisableStructMetaAttr=true
 H5.EnableFillValueCheck=true
 H5.ForceFlattenNDCoorAttr=true
 H5.RmConventionAttrPath=true
+#In h5.conf.in, The key below is false for typical use cases. KY 2020-02-25
+H5.EnableDMR64bitInt=true
+
 
 H5.CheckIgnoreObj=false
 H5.MetaDataMemCacheEntries=300

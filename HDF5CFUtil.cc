@@ -186,6 +186,12 @@ bool HDF5CFUtil::cf_strict_support_type(H5DataType dtype) {
         // Try to suport 64-bit integer for DAP4 CF, check the starting code at get_dmr_64bit_int()
         //"|| (H5INT64 == dtype)    ||(H5UINT64 == dtype))"
         return false;
+    else if ((H5INT64 == dtype) || (H5UINT64 == dtype)) {
+            if (HDF5RequestHandler::get_dmr_long_int()==false)
+                return false;
+            else
+                return true;
+         }
     else 
         return true;
 }
