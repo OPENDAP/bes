@@ -5156,45 +5156,47 @@ GMFile:: Add_Supplement_Attrs(bool add_path)  {
     if (General_Product == product_type || true == add_path) {
         File::Add_Supplement_Attrs(add_path);   
 
-         // Adding variable original name(origname) and full path(fullpath)
-        for (vector<GMCVar *>::iterator irv = this->cvars.begin();
+       if(true == add_path) {
+            // Adding variable original name(origname) and full path(fullpath)
+            for (vector<GMCVar *>::iterator irv = this->cvars.begin();
                 irv != this->cvars.end(); ++irv) {
-            if (((*irv)->cvartype == CV_EXIST) || ((*irv)->cvartype == CV_MODIFY)) {
+                if (((*irv)->cvartype == CV_EXIST) || ((*irv)->cvartype == CV_MODIFY)) {
+                    Attribute * attr = new Attribute();
+                    const string varname = (*irv)->name;
+                    const string attrname = "origname";
+                    Add_Str_Attr(attr,attrname,varname);
+                    (*irv)->attrs.push_back(attr);
+                }
+            }
+
+            for (vector<GMCVar *>::iterator irv = this->cvars.begin();
+                    irv != this->cvars.end(); ++irv) {
+                if (((*irv)->cvartype == CV_EXIST) || ((*irv)->cvartype == CV_MODIFY)) {
+                    Attribute * attr = new Attribute();
+                    const string varname = (*irv)->fullpath;
+                    const string attrname = "fullnamepath";
+                    Add_Str_Attr(attr,attrname,varname);
+                    (*irv)->attrs.push_back(attr);
+                }
+            }
+
+            for (vector<GMSPVar *>::iterator irv = this->spvars.begin();
+                    irv != this->spvars.end(); ++irv) {
                 Attribute * attr = new Attribute();
                 const string varname = (*irv)->name;
                 const string attrname = "origname";
                 Add_Str_Attr(attr,attrname,varname);
                 (*irv)->attrs.push_back(attr);
             }
-        }
 
-        for (vector<GMCVar *>::iterator irv = this->cvars.begin();
-                irv != this->cvars.end(); ++irv) {
-            if (((*irv)->cvartype == CV_EXIST) || ((*irv)->cvartype == CV_MODIFY)) {
+            for (vector<GMSPVar *>::iterator irv = this->spvars.begin();
+                irv != this->spvars.end(); ++irv) {
                 Attribute * attr = new Attribute();
                 const string varname = (*irv)->fullpath;
                 const string attrname = "fullnamepath";
                 Add_Str_Attr(attr,attrname,varname);
                 (*irv)->attrs.push_back(attr);
             }
-        }
-
-        for (vector<GMSPVar *>::iterator irv = this->spvars.begin();
-                irv != this->spvars.end(); ++irv) {
-            Attribute * attr = new Attribute();
-            const string varname = (*irv)->name;
-            const string attrname = "origname";
-            Add_Str_Attr(attr,attrname,varname);
-            (*irv)->attrs.push_back(attr);
-        }
-
-        for (vector<GMSPVar *>::iterator irv = this->spvars.begin();
-                irv != this->spvars.end(); ++irv) {
-            Attribute * attr = new Attribute();
-            const string varname = (*irv)->fullpath;
-            const string attrname = "fullnamepath";
-            Add_Str_Attr(attr,attrname,varname);
-            (*irv)->attrs.push_back(attr);
         }
     } // if (General_Product == product_type || true == add_path)
 
