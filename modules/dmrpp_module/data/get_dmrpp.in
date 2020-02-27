@@ -288,7 +288,7 @@ EOF
   echo "${BESCmd}" > ${TEMP_FILE}
   echo "${TEMP_FILE}"
 
-  if test -n "$verbose"
+  if test -n "$very_verbose"
 	then
     echo "${dap}_request: ${TEMP_FILE} data_path: ${source_data_path}" >&2
     # echo " " >&2
@@ -352,7 +352,7 @@ function getDap() {
   besstandalone -c ${BES_CONF} -i ${DAP_CMD} > ${DAP_RESPONSE}
   echo "${DAP_RESPONSE}"
 
-  if test -n "$verbose"
+  if test -n "$very_verbose"
 	then
     echo "${dap}_response: ${DAP_RESPONSE} data_path: ${data_path}" >&2
   fi
@@ -369,6 +369,7 @@ function getDap() {
 
 ########################################################################################################################
 # mk_dmrpp()
+# Uses build_dmrpp application to build the requested dmr++ file.
 #
 function mk_dmrpp() {
     datafile="${1}";
@@ -483,7 +484,7 @@ function compare_files(){
   second_file=${3};
   success="${4}";
   failure="${5}";
-  if test -n "$verbose"
+  if test -n "$very_verbose"
   then
     echo "compare_files() check_function: ${check_function}" >&2
     echo "compare_files()     first_file: ${first_file}" >&2
@@ -491,7 +492,7 @@ function compare_files(){
   fi
 
   first_result=$(mktemp -t dmr_XXXX)
-  if test -n "$verbose"
+  if test -n "$very_verbose"
   then
     echo "compare_files()   first_result: ${first_result}" >&2
   fi
@@ -499,7 +500,7 @@ function compare_files(){
   echo "${f_stuff}" > ${first_result}
 
   second_result=$(mktemp -t dmr_XXXX)
-  if test -n "$verbose"
+  if test -n "$very_verbose"
   then
     echo "compare_files()  second_result: ${second_result}" >&2
   fi
@@ -510,7 +511,10 @@ function compare_files(){
   diff --ignore-space-change --brief ${first_result} ${second_result}
   if [ $? -eq 0 ]
   then
-    echo "${success}" >&2
+    if test -n "${verbose}"
+    then
+      echo "${success}" >&2
+    fi
   else
     echo "${failure}" >&2
     retval=1
@@ -524,9 +528,12 @@ function compare_files(){
 # dmrpp_inventory_test()
 #
 function dmrpp_inventory_test(){
-  echo "       BES_CONF: '${BES_CONF}'" >&2
-  echo "SOURCE_DATAFILE: ${input_data_file}" >&2
-  echo "TARGET_DATAFILE: ${output_file}" >&2
+  if test -n "${verbose}"
+  then
+    echo "       BES_CONF: '${BES_CONF}'" >&2
+    echo "SOURCE_DATAFILE: ${input_data_file}" >&2
+    echo "TARGET_DATAFILE: ${output_file}" >&2
+  fi
 
   SOURCE_DDX=`getDap ddx "${input_data_file}"`
   TARGET_DDX=`getDap ddx "${output_file}"`
@@ -550,9 +557,13 @@ function dmrpp_inventory_test(){
 BES_CONF=`make_bes_conf "${bes_conf_file}"`
 TMP_DMR_RESP=`getDap dmr "${input_data_file}"`;
 mk_dmrpp "${input_data_file}";
+retval=$?
 
 if test -n "${run_tests}"
 then
     dmrpp_inventory_test
+    retval=$?
 fi
+exit $retval
+
 # rm -f ${SOURCE_DMR} ${SOURCE_DDX} ${TARGET_DDX} ${TARGET_DMR} ${DDX_CMD} ${DMR_CMD} ${BES_CONF}
