@@ -56,9 +56,10 @@
 #include "DmrppParserSax2.h"
 #include "DmrppCommon.h"
 
-#define FIVE_12K  524288;
-#define ONE_MB   1048576;
-#define MAX_INPUT_LINE_LENGTH ONE_MB;
+// Commented out these unused defines ndp-2/27/20
+// #define FIVE_12K  524288;
+// #define ONE_MB   1048576;
+// #define MAX_INPUT_LINE_LENGTH ONE_MB;
 
 
 static const string module = "dmrpp:2";
