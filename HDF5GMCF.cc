@@ -1666,6 +1666,17 @@ bool GMFile::Check_LatLon2D_General_Product_Pattern_Name_Size(const string & lat
         }
     }
 
+    // We are loose here since this is just to support some NASA products in a customized way.
+    // If the first two cases don't exist, we allow to check another group"GeolocationData" and
+    // see if Latitude and Longitude are present. (4 years ? from the first implementation, we got this case.)
+    // KY 2020-02-27
+    if(false == ll_flag) {
+
+        const string designed_group3 = "/GeolocationData/";
+        if(is_var_under_group(latname,designed_group3,2,lat_size) && 
+           is_var_under_group(lonname,designed_group3,2,lon_size))
+           ll_flag = true;
+    }
    
 #if 0
     
@@ -5940,8 +5951,11 @@ void GMFile:: Handle_Coor_Attr() {
 
             //Note: When the 2nd parameter is true in the function Is_geolatlon, it checks the lat/latitude/Latitude 
             //      When the 2nd parameter is false in the function Is_geolatlon, it checks the lon/longitude/Longitude
-
             // The following code makes sure that the replacement only happens with the general 2-D lat/lon case.
+            // The following code is commented out since we find an OMPS-NPP case that has the no-CF unit for
+            // "Latitude". So just to check the latitude and longitude and if the units are not CF-compliant, 
+            // change them. KY 2020-02-27
+#if 0
             if(gp_latname == (*ircv)->name) { 
                 // Only if gp_latname is not lat/latitude/Latitude, change the units
                 if(false == Is_geolatlon(gp_latname,true)) 
@@ -5952,11 +5966,13 @@ void GMFile:: Handle_Coor_Attr() {
                 if(false == Is_geolatlon(gp_lonname,false))
                     Replace_Var_Str_Attr((*ircv),unit_attrname,lon_unit_attrvalue);
             }
+#endif
 
             // We meet several products that miss the 2-D latitude and longitude CF units although they
             // have the CV names like latitude/longitude, we should double check this case,
             // and add the correct CF units if possible. We will watch if this is the right way.
-            else if(true == Is_geolatlon((*ircv)->name,true))
+            //else if(true == Is_geolatlon((*ircv)->name,true))
+            if(true == Is_geolatlon((*ircv)->name,true))
                 Replace_Var_Str_Attr((*ircv),unit_attrname,lat_unit_attrvalue);
 
             else if(true == Is_geolatlon((*ircv)->name,false))
