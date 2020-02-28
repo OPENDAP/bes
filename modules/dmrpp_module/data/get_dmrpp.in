@@ -239,19 +239,20 @@ fi
 
 if test -n "${verbose}"
 then
-	echo "OUTPUT_FILE: '${output_file}'";
-	echo "just_dmr: '${just_dmr}'";
-	echo "dmrpp_url: '${dmrpp_url}'";
-fi
-
-if test -n "${very_verbose}"
-then
-	echo "BES_CONF_DOC: '${BES_CONF_DOC}'";
+	echo "    OUTPUT_FILE: ${output_file}";
+	echo -n "       just_dmr: ";
+	if test -n "$just_dmr";
+	then
+	  echo "true";
+  else
+    echo "false";
+  fi
+	echo "      dmrpp_url: ${dmrpp_url}";
 fi
 
 if test -z "${dmrpp_url}"
 then
-	>&2 echo "ERROR! You must supply a dmrpp_url value using the -u option."
+	echo "ERROR! You must supply a dmrpp_url value using the -u option." >&2
     show_usage
 	exit 666
 fi
@@ -376,9 +377,9 @@ function mk_dmrpp() {
 	full_data_path="${data_root}/${datafile}";
 	if test -n "$verbose"
 	then
-	    echo "data_root:      ${data_root}"
-	    echo "datafile:       ${datafile}"
-	    echo "full_data_path: ${full_data_path}"
+	    echo "      data_root: ${data_root}"
+	    echo "       datafile: ${datafile}"
+	    echo " full_data_path: ${full_data_path}"
 	fi
 	if test -z "${just_dmr}"
 	then
@@ -530,7 +531,7 @@ function compare_files(){
 function dmrpp_inventory_test(){
   if test -n "${verbose}"
   then
-    echo "       BES_CONF: '${BES_CONF}'" >&2
+    echo "       BES_CONF: ${BES_CONF}" >&2
     echo "SOURCE_DATAFILE: ${input_data_file}" >&2
     echo "TARGET_DATAFILE: ${output_file}" >&2
   fi
