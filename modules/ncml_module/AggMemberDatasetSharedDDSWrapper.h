@@ -86,6 +86,6 @@ namespace agg_util
 
   }; // class AggMemberDatasetSharedDDSWrapper
 
-}; // namespace agg_util
+} // namespace agg_util
 
 #endif /* __AGG_UTIL__AGG_MEMBER_DATASET_SHARED_DDS_WRAPPER_H__ */

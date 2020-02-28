@@ -36,9 +36,12 @@
 #include "FONcUtils.h"
 #include "FONcDim.h"
 #include "FONcByte.h"
+#include "FONcUByte.h"
 #include "FONcStr.h"
 #include "FONcShort.h"
+#include "FONcUShort.h"
 #include "FONcInt.h"
+#include "FONcUInt.h"
 #include "FONcFloat.h"
 #include "FONcDouble.h"
 #include "FONcStructure.h"
@@ -97,15 +100,20 @@ string FONcUtils::id2netcdf(string in)
 /** @brief translate the OPeNDAP data type to a netcdf data type
  *
  * @param element The OPeNDAP element to translate
+ * @param IsNC4_ENHANCED the flag to indicate the output is in netCDF enhanced model
  * @return the netcdf data type
  */
-nc_type FONcUtils::get_nc_type(BaseType *element)
+nc_type FONcUtils::get_nc_type(BaseType *element,bool IsNC4_ENHANCED)
 {
     nc_type x_type = NC_NAT; // the constant ncdf uses to define simple type
 
     string var_type = element->type_name();
-    if (var_type == "Byte")        	// check this for dods type
-        x_type = NC_SHORT;
+    if (var_type == "Byte") {       	// check this for dods type
+        if(IsNC4_ENHANCED) 
+            x_type = NC_UBYTE;
+        else 
+            x_type = NC_SHORT;
+    }
     else if (var_type == "String")
         x_type = NC_CHAR;
     else if (var_type == "Int16")
@@ -115,12 +123,20 @@ nc_type FONcUtils::get_nc_type(BaseType *element)
     // the inconsistent datatype between fillvalue and the variable. KY 2012-10-25
     //else if( var_type == "UInt16" )
     //  x_type = NC_SHORT ;
-    else if (var_type == "UInt16")
-        x_type = NC_INT;
+    else if (var_type == "UInt16"){
+        if(IsNC4_ENHANCED) 
+            x_type = NC_USHORT;
+        else 
+            x_type = NC_INT;
+    }
     else if (var_type == "Int32")
         x_type = NC_INT;
-    else if (var_type == "UInt32")
-        x_type = NC_INT;
+    else if (var_type == "UInt32"){
+        if(IsNC4_ENHANCED) 
+            x_type = NC_UINT;
+        else 
+            x_type = NC_INT;
+    }
     else if (var_type == "Float32")
         x_type = NC_FLOAT;
     else if (var_type == "Float64")
@@ -175,27 +191,48 @@ string FONcUtils::gen_name(const vector<string> &embed, const string &name, stri
  * FONcBaseType's specializations).
  *
  * @param v The DAP object to convert
+ * @param ncdf_version The string that indicates if this is netCDF 3 or netCDF 4
+ * @param is_classic_model The flag that indicates if the output is in classic model or not
  * @returns The FONc object created via the DAP object
  * @throws BESInternalError if the DAP object is not an expected type
  */
 FONcBaseType *
-FONcUtils::convert(BaseType *v)
+FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic_model)
 {
     FONcBaseType *b = 0;
+    bool is_netcdf4_enhanced = false;
+    if(ncdf_version == RETURNAS_NETCDF4 && is_classic_model == false)
+        is_netcdf4_enhanced = true;
     switch (v->type()) {
     case dods_str_c:
     case dods_url_c:
         b = new FONcStr(v);
         break;
-    case dods_byte_c:
-        b = new FONcByte(v);
+    case dods_byte_c: {
+        if(true == is_netcdf4_enhanced)
+            b = new FONcUByte(v);
+        else 
+            b = new FONcByte(v);
         break;
+    }
+    case dods_uint16_c: {
+        if(true == is_netcdf4_enhanced)
+            b = new FONcUShort(v); 
+        else 
+            b = new FONcShort(v);
+        break;
+    }
     case dods_int16_c:
-    case dods_uint16_c:
         b = new FONcShort(v);
         break;
+    case dods_uint32_c: {
+        if(true == is_netcdf4_enhanced)
+            b = new FONcUInt(v); 
+        else 
+            b = new FONcInt(v);
+        break;
+    }
     case dods_int32_c:
-    case dods_uint32_c:
         b = new FONcInt(v);
         break;
     case dods_float32_c:
@@ -220,6 +257,13 @@ FONcUtils::convert(BaseType *v)
         string err = (string) "file out netcdf, unable to " + "write unknown variable type";
         throw BESInternalError(err, __FILE__, __LINE__);
 
+    }
+    b->setVersion(ncdf_version);
+    if(ncdf_version == RETURNAS_NETCDF4) {
+        if(is_classic_model)
+            b->setNC4DataModel("NC4_CLASSIC_MODEL");
+        else
+            b->setNC4DataModel("NC4_ENHANCED");
     }
     return b;
 }

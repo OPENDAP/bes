@@ -573,16 +573,16 @@ void RenamedArrayWrapper::value_worker(vector<unsigned int> *indices, T *b) cons
 	return _pArray->value(indices,b);
 }
 
-void RenamedArrayWrapper::value(vector<unsigned int> *indices, dods_byte *b) const      { value_worker(indices,b); };
-void RenamedArrayWrapper::value(vector<unsigned int> *indices, dods_int8 *b) const      { value_worker(indices,b); };
-void RenamedArrayWrapper::value(vector<unsigned int> *indices, dods_int16 *b) const     { value_worker(indices,b); };
-void RenamedArrayWrapper::value(vector<unsigned int> *indices, dods_uint16 *b) const    { value_worker(indices,b); };
-void RenamedArrayWrapper::value(vector<unsigned int> *indices, dods_int32 *b) const     { value_worker(indices,b); };
-void RenamedArrayWrapper::value(vector<unsigned int> *indices, dods_uint32 *b) const    { value_worker(indices,b); };
-void RenamedArrayWrapper::value(vector<unsigned int> *indices, dods_int64 *b) const     { value_worker(indices,b); };
-void RenamedArrayWrapper::value(vector<unsigned int> *indices, dods_uint64 *b) const    { value_worker(indices,b); };
-void RenamedArrayWrapper::value(vector<unsigned int> *indices, dods_float32 *b) const   { value_worker(indices,b); };
-void RenamedArrayWrapper::value(vector<unsigned int> *indices, dods_float64 *b) const   { value_worker(indices,b); };
+void RenamedArrayWrapper::value(vector<unsigned int> *indices, dods_byte *b) const      { value_worker(indices,b); }
+void RenamedArrayWrapper::value(vector<unsigned int> *indices, dods_int8 *b) const      { value_worker(indices,b); }
+void RenamedArrayWrapper::value(vector<unsigned int> *indices, dods_int16 *b) const     { value_worker(indices,b); }
+void RenamedArrayWrapper::value(vector<unsigned int> *indices, dods_uint16 *b) const    { value_worker(indices,b); }
+void RenamedArrayWrapper::value(vector<unsigned int> *indices, dods_int32 *b) const     { value_worker(indices,b); }
+void RenamedArrayWrapper::value(vector<unsigned int> *indices, dods_uint32 *b) const    { value_worker(indices,b); }
+void RenamedArrayWrapper::value(vector<unsigned int> *indices, dods_int64 *b) const     { value_worker(indices,b); }
+void RenamedArrayWrapper::value(vector<unsigned int> *indices, dods_uint64 *b) const    { value_worker(indices,b); }
+void RenamedArrayWrapper::value(vector<unsigned int> *indices, dods_float32 *b) const   { value_worker(indices,b); }
+void RenamedArrayWrapper::value(vector<unsigned int> *indices, dods_float64 *b) const   { value_worker(indices,b); }
 void RenamedArrayWrapper::value(vector<unsigned int> *indices, vector<string> &b) const { return _pArray->value(indices,b); }
 
 

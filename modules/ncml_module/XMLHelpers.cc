@@ -484,5 +484,4 @@ void XMLNamespaceStack::addMissingNamespaces(XMLNamespaceMap& intoMap, const XML
     }
 }
 }
-;
 // namespace ncml_module

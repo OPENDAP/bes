@@ -39,7 +39,6 @@ namespace libdap {
 class Regex;
 // GNU regular expression lib wrapper
 }
-;
 
 namespace agg_util {
 /** Class to hold info on files as we get them. */

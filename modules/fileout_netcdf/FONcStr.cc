@@ -103,7 +103,7 @@ void FONcStr::define(int ncid)
 
         _defined = true;
 
-        FONcAttributes::add_variable_attributes(ncid, _varid, _str);
+        FONcAttributes::add_variable_attributes(ncid, _varid, _str,isNetCDF4_ENHANCED());
         FONcAttributes::add_original_name(ncid, _varid, _varname, _orig_varname);
 
         BESDEBUG("fonc", "FONcStr::define - done defining " << _varname << endl);

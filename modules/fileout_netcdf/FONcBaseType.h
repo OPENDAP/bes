@@ -42,6 +42,9 @@
 
 #define RETURNAS_NETCDF "netcdf"
 #define RETURNAS_NETCDF4 "netcdf-4"
+#define NC4_CLASSIC_MODEL "NC4_CLASSIC_MODEL"
+#define NC4_ENHANCED "NC4_ENHANCED"
+// May add netCDF-3 CDF-5 in the future.
 
 namespace libdap {
 class BaseType;
@@ -63,6 +66,7 @@ protected:
     std::vector<std::string> _embed;
     bool _defined;
     std::string _ncVersion;
+    std::string _nc4_datamodel;
 
     FONcBaseType() : _varid(0), _defined(false) { }
 
@@ -81,7 +85,9 @@ public:
     virtual void dump(std::ostream &strm) const = 0;
 
     virtual void setVersion(std::string version);
+    virtual void setNC4DataModel(std::string nc4_datamodel);
     virtual bool isNetCDF4();
+    virtual bool isNetCDF4_ENHANCED();
 
 };
 
