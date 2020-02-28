@@ -338,10 +338,16 @@ void RemoteHttpResource::ingest_http_headers_and_type()
     const string colon_space = ": ";
     for (size_t i = 0; i < this->d_response_headers->size(); i++) {
         size_t colon_index = (*d_response_headers)[i].find(colon_space);
-        string key = BESUtil::lowercase((*d_response_headers)[i].substr(0, colon_index));
-        string value = (*d_response_headers)[i].substr(colon_index + colon_space.length());
-        BESDEBUG(MODULE, prolog << "key: " << key << " value: " << value << endl);
-        (*d_http_response_headers)[key] = value;
+        if((*d_response_headers)[i].length() && colon_index!=string::npos){ // no blank lines, no missing colons
+            string key = BESUtil::lowercase((*d_response_headers)[i].substr(0, colon_index));
+            string value = (*d_response_headers)[i].substr(colon_index + colon_space.length());
+            BESDEBUG(MODULE, prolog << "key: " << key << " value: " << value << endl);
+            (*d_http_response_headers)[key] = value;
+
+        }
+        else {
+            BESDEBUG(MODULE, prolog << "SKIPPING Bad Header: '" <<  (*d_response_headers)[i] << "'" << endl);
+        }
     }
 
     // Try and figure out the file type first from the
