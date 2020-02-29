@@ -122,7 +122,7 @@ namespace dmrpp {
             request_time = mktime(&t_info);
             if(debug) cerr << "request_time: " << request_time << endl;
             aws_key_id = "AKIDEXAMPLE";
-            aws_secret_key = "wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY";
+            aws_secret_key = "EXAMPLEKEY_IS_AN_EXAMPLEKEYEXAMPLEKEY_IS";
 
             region = "us-east-1";
             serviceName = "service";
