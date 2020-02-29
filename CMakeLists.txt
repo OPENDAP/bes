@@ -2077,4 +2077,28 @@ add_executable(bes
     modules/dmrpp_module/curl_utils.cc modules/dmrpp_module/curl_utils.h
 
 
+    modules/ngap_module/Granule.cc
+        modules/ngap_module/Granule.h
+        modules/ngap_module/NgapApi.cc
+        modules/ngap_module/NgapApi.h
+        modules/ngap_module/NgapCache.cc
+        modules/ngap_module/NgapCache.h
+        modules/ngap_module/NgapContainer.cc
+        modules/ngap_module/NgapContainer.h
+        modules/ngap_module/NgapError.h
+        modules/ngap_module/NgapModule.cc
+        modules/ngap_module/NgapModule.h
+        modules/ngap_module/NgapNames.h
+        modules/ngap_module/NgapPathInfoCommand.cc
+        modules/ngap_module/NgapPathInfoCommand.h
+        modules/ngap_module/NgapPathInfoResponseHandler.cc
+        modules/ngap_module/NgapRequestHandler.cc
+        modules/ngap_module/NgapRequestHandler.h
+        modules/ngap_module/NgapResponseNames.h
+        modules/ngap_module/NgapUtils.cc
+        modules/ngap_module/NgapUtils.h
+        modules/ngap_module/RemoteHttpResource.cc
+        modules/ngap_module/RemoteHttpResource.h
+
+
 )

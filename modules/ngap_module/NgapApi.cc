@@ -546,7 +546,7 @@ namespace ngap {
 /**
  * Returns all of the Granules in the collection matching the date.
  */
-    Ngap::Granule* NgapApi::get_granule(string collection_name, string r_year, string r_month, string r_day, string granule_id)
+    Granule* NgapApi::get_granule(string collection_name, string r_year, string r_month, string r_day, string granule_id)
     {
         vector<Granule *> granules;
         Granule *result = 0;
