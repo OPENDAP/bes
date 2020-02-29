@@ -43,8 +43,8 @@
 #include "NgapResponseNames.h"
 //#include "NgapContainerStorage.h"
 #include "NgapUtils.h"
-//#include "NgapPathInfoResponseHandler.h"
-//#include "NgapPathInfoCommand.h"
+#include "NgapPathInfoResponseHandler.h"
+#include "NgapPathInfoCommand.h"
 
 using namespace std;
 using namespace ngap;

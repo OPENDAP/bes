@@ -92,7 +92,7 @@ void NgapUtils::Initialize()
 
     // MimeTypes - translate from a mime type to a module name
     bool found = false;
-    std::string key = Ngap_MIMELIST;
+    std::string key = NGAP_MIMELIST;
     std::vector<string> vals;
     TheBESKeys::TheKeys()->get_values(key, vals, found);
     if (found && vals.size()) {
@@ -101,7 +101,7 @@ void NgapUtils::Initialize()
         for (; i != e; i++) {
             size_t colon = (*i).find(":");
             if (colon == string::npos) {
-                string err = (string) "Malformed " + Ngap_MIMELIST + " " + (*i)
+                string err = (string) "Malformed " + NGAP_MIMELIST + " " + (*i)
                              + " specified in the ngap configuration";
                 throw BESSyntaxUserError(err, __FILE__, __LINE__);
             }
@@ -112,13 +112,13 @@ void NgapUtils::Initialize()
     }
 
     found = false;
-    key = Ngap_PROXYHOST;
+    key = NGAP_PROXYHOST;
     TheBESKeys::TheKeys()->get_value(key, NgapUtils::ProxyHost, found);
     if (found && !NgapUtils::ProxyHost.empty()) {
         // if the proxy host is set, then check to see if the port is
         // set. Does not need to be.
         found = false;
-        key = Ngap_PROXYPORT;
+        key = NGAP_PROXYPORT;
         string port;
         TheBESKeys::TheKeys()->get_value(key, port, found);
         if (found && !port.empty()) {
@@ -133,7 +133,7 @@ void NgapUtils::Initialize()
         // find the protocol to use for the proxy server. If none set,
         // default to http
         found = false;
-        key = Ngap_PROXYPROTOCOL;
+        key = NGAP_PROXYPROTOCOL;
         TheBESKeys::TheKeys()->get_value(key, NgapUtils::ProxyProtocol, found);
         if (!found || NgapUtils::ProxyProtocol.empty()) {
             NgapUtils::ProxyProtocol = "http";
@@ -142,7 +142,7 @@ void NgapUtils::Initialize()
         // find the user to use for authenticating with the proxy server. If none set,
         // default to ""
         found = false;
-        key = Ngap_PROXYUSER;
+        key = NGAP_PROXYUSER;
         TheBESKeys::TheKeys()->get_value(key, NgapUtils::ProxyUser, found);
         if (!found) {
             NgapUtils::ProxyUser = "";
@@ -151,7 +151,7 @@ void NgapUtils::Initialize()
         // find the password to use for authenticating with the proxy server. If none set,
         // default to ""
         found = false;
-        key = Ngap_PROXYPASSWORD;
+        key = NGAP_PROXYPASSWORD;
         TheBESKeys::TheKeys()->get_value(key, NgapUtils::ProxyPassword, found);
         if (!found) {
             NgapUtils::ProxyPassword = "";
@@ -160,7 +160,7 @@ void NgapUtils::Initialize()
         // find the user:password string to use for authenticating with the proxy server. If none set,
         // default to ""
         found = false;
-        key = Ngap_PROXYUSERPW;
+        key = NGAP_PROXYUSERPW;
         TheBESKeys::TheKeys()->get_value(key, NgapUtils::ProxyUserPW, found);
         if (!found) {
             NgapUtils::ProxyUserPW = "";
@@ -169,7 +169,7 @@ void NgapUtils::Initialize()
         // find the authentication mechanism to use with the proxy server. If none set,
         // default to BASIC authentication.
         found = false;
-        key = Ngap_PROXYAUTHTYPE;
+        key = NGAP_PROXYAUTHTYPE;
         string authType;
         TheBESKeys::TheKeys()->get_value(key, authType, found);
         if (found) {
@@ -201,7 +201,7 @@ void NgapUtils::Initialize()
     }
 
     found = false;
-    key = Ngap_USE_INTERNAL_CACHE;
+    key = NGAP_USE_INTERNAL_CACHE;
     string use_cache;
     TheBESKeys::TheKeys()->get_value(key, use_cache, found);
     if (found) {

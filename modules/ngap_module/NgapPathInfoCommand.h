@@ -6,8 +6,8 @@
 #include "BESDataHandlerInterface.h"
 
 #define SPI_DEBUG_KEY "ngap-path-info"
-#define SHOW_Ngap_PATH_INFO_RESPONSE "show.ngapPathInfo"
-#define SHOW_Ngap_PATH_INFO_RESPONSE_STR "showNgapPathInfo"
+#define SHOW_NGAP_PATH_INFO_RESPONSE "show.ngapPathInfo"
+#define SHOW_NGAP_PATH_INFO_RESPONSE_STR "showNgapPathInfo"
 
 class NgapPathInfoCommand: public BESXMLCommand {
 public:

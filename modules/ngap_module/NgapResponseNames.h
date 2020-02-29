@@ -24,22 +24,22 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-#ifndef E_NgapResponseNames_H
-#define E_NgapResponseNames_H 1
+#ifndef E_NGAPResponseNames_H
+#define E_NGAPResponseNames_H 1
 
-#define Ngap_NAME "ngap"
+#define NGAP_NAME "ngap"
 
 // These are the names of the be keys used to configure the handler.
 
-#define Ngap_WHITELIST "Ngap.Whitelist"
-#define Ngap_MIMELIST "Ngap.MimeTypes"
-#define Ngap_PROXYPROTOCOL "Ngap.ProxyProtocol"
-#define Ngap_PROXYHOST "Ngap.ProxyHost"
-#define Ngap_PROXYPORT "Ngap.ProxyPort"
-#define Ngap_PROXYAUTHTYPE "Ngap.ProxyAuthType"
-#define Ngap_PROXYUSER "Ngap.ProxyUser"
-#define Ngap_PROXYPASSWORD "Ngap.ProxyPassword"
-#define Ngap_PROXYUSERPW "Ngap.ProxyUserPW"
-#define Ngap_USE_INTERNAL_CACHE "Ngap.UseInternalCache"
+#define NGAP_WHITELIST "Ngap.Whitelist"
+#define NGAP_MIMELIST "Ngap.MimeTypes"
+#define NGAP_PROXYPROTOCOL "Ngap.ProxyProtocol"
+#define NGAP_PROXYHOST "Ngap.ProxyHost"
+#define NGAP_PROXYPORT "Ngap.ProxyPort"
+#define NGAP_PROXYAUTHTYPE "Ngap.ProxyAuthType"
+#define NGAP_PROXYUSER "Ngap.ProxyUser"
+#define NGAP_PROXYPASSWORD "Ngap.ProxyPassword"
+#define NGAP_PROXYUSERPW "Ngap.ProxyUserPW"
+#define NGAP_USE_INTERNAL_CACHE "Ngap.UseInternalCache"
 
-#endif // E_NgapResponseNames_H
+#endif // E_NGAPResponseNames_H
