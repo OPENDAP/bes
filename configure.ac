@@ -58,7 +58,7 @@ AC_ARG_WITH([cmr], [AS_HELP_STRING([--with-cmr], [Build and include the CMR Modu
 
 AC_ARG_WITH([ngap], [AS_HELP_STRING([--with-ngap], [Build and include the NGAP Module (built by default in developer mode)])], 
     [AM_CONDITIONAL([WITH_NGAP], [true])],
-    [AM_CONDITIONAL([WITH_NGAP], [AM_COND_IF([BES_DEVELOPER], [true], [flase])])])
+    [AM_CONDITIONAL([WITH_NGAP], [AM_COND_IF([BES_DEVELOPER], [true], [false])])])
 
 AS_IF([test "$CC" = "gcc"], [AM_CONDITIONAL([COMPILER_IS_GCC],[true])],
     [AM_CONDITIONAL([COMPILER_IS_GCC],[false])])
