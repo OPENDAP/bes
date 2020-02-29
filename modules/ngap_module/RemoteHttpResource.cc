@@ -38,13 +38,12 @@
 #include "BESUtil.h"
 
 #include "NgapNames.h"
-//#include "CmrCache.h"
+#include "NgapCache.h"
 #include "NgapUtils.h"
-//#include "curl_utils.h"
+#include "curl_utils.h"
 #include "RemoteHttpResource.h"
 
 using namespace std;
-using namespace cmr;
 using namespace ngap;
 
 #define prolog std::string("RemoteHttpResource::").append(__func__).append("() - ")
@@ -80,9 +79,9 @@ RemoteHttpResource::RemoteHttpResource(const string &url) {
     // CURL *pvparam = 0;               // passed value parameter
     // result = www_lib_init(&pvparam); // the call to the method
 
-    d_curl = cmr::init(d_error_buffer);  // This may throw either Error or InternalErr
+    d_curl = init(d_error_buffer);  // This may throw either Error or InternalErr
 
-    cmr::configureProxy(d_curl, d_remoteResourceUrl); // Configure the a proxy for this url (if appropriate).
+    configureProxy(d_curl, d_remoteResourceUrl); // Configure the a proxy for this url (if appropriate).
 
     BESDEBUG(MODULE,  prolog << "d_curl: " << d_curl << endl);
 }
@@ -137,7 +136,6 @@ void RemoteHttpResource::retrieveResource()
         BESDEBUG(MODULE,  prolog << "END  Already initialized." << endl);
         return;
     }
-/*
     // Get a pointer to the singleton cache instance for this process.
     NgapCache *cache = NgapCache::get_instance();
     if (!cache) {
@@ -153,7 +151,6 @@ void RemoteHttpResource::retrieveResource()
     // or it makes it).
     d_resourceCacheFileName = cache->get_cache_file_name(d_remoteResourceUrl);
     BESDEBUG(MODULE, prolog << "d_resourceCacheFileName: " << d_resourceCacheFileName << endl);
-*/
 
     // @TODO MAKE THIS RETRIEVE THE CACHED DATA TYPE IF THE CACHED RESPONSE IF FOUND
     // We need to know the type of the resource. HTTP headers are the preferred  way to determine the type.
