@@ -2077,7 +2077,9 @@ add_executable(bes
     modules/dmrpp_module/curl_utils.cc modules/dmrpp_module/curl_utils.h
 
 
-    modules/ngap_module/Granule.cc
+        modules/ngap_module/curl_utils.cc
+        modules/ngap_module/curl_utils.h
+        modules/ngap_module/Granule.cc
         modules/ngap_module/Granule.h
         modules/ngap_module/NgapApi.cc
         modules/ngap_module/NgapApi.h

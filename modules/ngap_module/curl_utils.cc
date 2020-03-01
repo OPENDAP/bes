@@ -24,12 +24,17 @@
 
 #include <unistd.h>
 #include <algorithm>    // std::for_each
+#include <sstream>
 
 #include <GNURegex.h>
+
+#include "rapidjson/document.h"
 
 #include "util.h"
 #include "BESDebug.h"
 #include "BESSyntaxUserError.h"
+#include "BESError.h"
+#include "BESInternalError.h"
 #include "NgapUtils.h"
 #include "WhiteList.h"
 
@@ -601,4 +606,290 @@ long read_url(CURL *curl,
 
 
 
-} /* namespace ngap */
+
+
+
+
+
+
+
+
+    /**
+     * Returns a cURL error message string based on the conents of the error_buf or, if the error_buf is empty, the
+     * CURLcode code.
+     * @param response_code
+     * @param error_buf
+     * @return
+     */
+    string error_message(const CURLcode response_code, char *error_buf) {
+        ostringstream oss;
+        size_t len = strlen(error_buf);
+        if (len) {
+            oss << error_buf;
+            oss << " (code: " << (int) response_code << ")";
+        } else {
+            oss << curl_easy_strerror(response_code) << "(result: " << response_code << ")";
+        }
+        return oss.str();
+    }
+
+
+    /*
+    * @brief Callback passed to libcurl to handle reading a single byte.
+    *
+    * This callback assumes that the size of the data is small enough
+    * that all of the bytes will be either read at once or that a local
+            * temporary buffer can be used to build up the values.
+    *
+    * @param buffer Data from libcurl
+    * @param size Number of bytes
+    * @param nmemb Total size of data in this call is 'size * nmemb'
+    * @param data Pointer to this
+    * @return The number of bytes read
+    */
+    size_t c_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
+        size_t nbytes = size * nmemb;
+        //cerr << "ngap_write_data() bytes: " << nbytes << "  size: " << size << "  nmemb: " << nmemb << " buffer: " << buffer << "  data: " << data << endl;
+        memcpy(data, buffer, nbytes);
+        return nbytes;
+    }
+
+
+    /**
+ * Check the response for errors and such.
+ * @param eh
+ * @return
+ */
+    bool eval_get_response(CURL *eh) {
+        long http_code = 0;
+        CURLcode res = curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_code);
+        if (CURLE_OK != res) {
+            throw BESInternalError(
+                    string("Error getting HTTP response code: ").append(ngap_curl::error_message(res, (char *) "")),
+                    __FILE__, __LINE__);
+        }
+
+        // @TODO @FIXME Expand the list of handled status to at least include the 4** stuff for authentication so that something sensible can be done.
+        // Newer Apache servers return 206 for range requests. jhrg 8/8/18
+        switch (http_code) {
+            case 200: // OK
+            case 206: // Partial content - this is to be expected since we use range gets
+                // cases 201-205 are things we should probably reject, unless we add more
+                // comprehensive HTTP/S processing here. jhrg 8/8/18
+                return true;
+
+            case 500: // Internal server error
+            case 503: // Service Unavailable
+            case 504: // Gateway Timeout
+                return false;
+
+            default: {
+                ostringstream oss;
+                oss << "HTTP status error: Expected an OK status, but got: ";
+                oss << http_code;
+                throw BESInternalError(oss.str(), __FILE__, __LINE__);
+            }
+        }
+    }
+
+    /**
+     * Execute the HTTP VERB from the passed cURL handle "c_handle" and retrieve the response.
+     * @param c_handle The cURL easy handle to execute and read.
+     */
+    void read_data(CURL *c_handle) {
+
+        unsigned int tries = 0;
+        unsigned int retry_limit = 3;
+        useconds_t retry_time = 1000;
+        bool success;
+        CURLcode curl_code;
+        char curlErrorBuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
+        char *urlp = NULL;
+
+        curl_easy_getinfo(c_handle, CURLINFO_EFFECTIVE_URL, &urlp);
+        // Checking the curl_easy_getinfo return value in this case is pointless. If it's CURL_OK then we
+        // still have to check the value of urlp to see if the URL was correctly set in the
+        // cURL handle. If it fails then it fails, and urlp is not set. If we just focus on the value of urlp then
+        // we can just check the one thing.
+        if (!urlp)
+            throw BESInternalError("URL acquisition failed.", __FILE__, __LINE__);
+
+        // Try until retry_limit or success...
+        do {
+            curlErrorBuf[0] = 0; // clear the error buffer with a null termination at index 0.
+            curl_code = curl_easy_perform(c_handle); // Do the thing...
+            ++tries;
+
+            if (CURLE_OK != curl_code) { // Failure here is not an HTTP error, but a cURL error.
+                throw BESInternalError(
+                        string("read_data() - ERROR! Message: ").append(ngap_curl::error_message(curl_code, curlErrorBuf)),
+                        __FILE__, __LINE__);
+            }
+
+            success = eval_get_response(c_handle);
+            // if(debug) cout << ngap_curl::probe_easy_handle(c_handle) << endl;
+            if (!success) {
+                if (tries == retry_limit) {
+                    throw BESInternalError(
+                            string("Data transfer error: Number of re-tries to S3 exceeded: ").append(
+                                    ngap_curl::error_message(curl_code, curlErrorBuf)), __FILE__, __LINE__);
+                } else {
+                    if (BESDebug::IsSet(MODULE)) {
+                        stringstream ss;
+                        ss << "HTTP transfer 500 error, will retry (trial " << tries << " for: " << urlp << ").";
+                        BESDEBUG(MODULE, ss.str());
+                    }
+                    usleep(retry_time);
+                    retry_time *= 2;
+
+
+                }
+            }
+
+        } while (!success);
+    }
+
+
+
+
+
+
+
+
+
+
+
+/**
+     *
+     * @param target_url
+     * @param cookies_file
+     * @param response_buff
+     * @return
+     */
+    CURL *set_up_easy_handle(const string &target_url, const string &cookies_file, char *response_buff) {
+        char d_errbuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
+        CURL *d_handle;     ///< The libcurl handle object.
+        d_handle = curl_easy_init();
+        if (!d_handle)
+            throw BESInternalError(string("ERROR! Failed to acquire cURL Easy Handle! "), __FILE__, __LINE__);
+
+        CURLcode res;
+        // Target URL --------------------------------------------------------------------------------------------------
+        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_URL, target_url.c_str())))
+            throw BESInternalError(string("HTTP Error setting URL: ").append(ngap_curl::error_message(res, d_errbuf)),
+                                   __FILE__, __LINE__);
+
+        // Pass all data to the 'write_data' function ------------------------------------------------------------------
+        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_WRITEFUNCTION, c_write_data)))
+            throw BESInternalError(string("CURL Error: ").append(ngap_curl::error_message(res, d_errbuf)),
+                                   __FILE__, __LINE__);
+
+        // Pass this to write_data as the fourth argument --------------------------------------------------------------
+        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_WRITEDATA, reinterpret_cast<void *>(response_buff))))
+            throw BESInternalError(
+                    string("CURL Error setting chunk as data buffer: ").append(ngap_curl::error_message(res, d_errbuf)),
+                    __FILE__, __LINE__);
+
+        // Follow redirects --------------------------------------------------------------------------------------------
+        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_FOLLOWLOCATION, 1L)))
+            throw BESInternalError(string("Error setting CURLOPT_FOLLOWLOCATION: ").append(
+                    ngap_curl::error_message(res, d_errbuf)),
+                                   __FILE__, __LINE__);
+
+
+        // Use cookies -------------------------------------------------------------------------------------------------
+        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_COOKIEFILE, cookies_file.c_str())))
+            throw BESInternalError(
+                    string("Error setting CURLOPT_COOKIEFILE to '").append(cookies_file).append("' msg: ").append(
+                            ngap_curl::error_message(res, d_errbuf)),
+                    __FILE__, __LINE__);
+
+        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_COOKIEJAR, cookies_file.c_str())))
+            throw BESInternalError(string("Error setting CURLOPT_COOKIEJAR: ").append(
+                    ngap_curl::error_message(res, d_errbuf)),
+                                   __FILE__, __LINE__);
+
+
+        // Authenticate using best available ---------------------------------------------------------------------------
+        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_HTTPAUTH, (long) CURLAUTH_ANY)))
+            throw BESInternalError(string("Error setting CURLOPT_HTTPAUTH to CURLAUTH_ANY msg: ").append(
+                    ngap_curl::error_message(res, d_errbuf)),
+                                   __FILE__, __LINE__);
+
+#if 0
+        if(debug) cout << "uid: " << uid << endl;
+            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_USERNAME, uid.c_str())))
+                throw BESInternalError(string("Error setting CURLOPT_USERNAME: ").append(ngap_curl::error_message(res, d_errbuf)),
+                                       __FILE__, __LINE__);
+
+            if(debug) cout << "pw: " << pw << endl;
+            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_PASSWORD, pw.c_str())))
+                throw BESInternalError(string("Error setting CURLOPT_PASSWORD: ").append(ngap_curl::error_message(res, d_errbuf)),
+                                       __FILE__, __LINE__);
+#else
+        // Use .netrc for credentials ----------------------------------------------------------------------------------
+        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_NETRC, CURL_NETRC_OPTIONAL)))
+            throw BESInternalError(string("Error setting CURLOPT_NETRC to CURL_NETRC_OPTIONAL: ").append(
+                    ngap_curl::error_message(res, d_errbuf)),
+                                   __FILE__, __LINE__);
+#endif
+
+        // Error Buffer ------------------------------------------------------------------------------------------------
+        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_ERRORBUFFER, d_errbuf)))
+            throw BESInternalError(string("CURL Error: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
+
+
+        return d_handle;
+    }
+
+
+    /**
+     * Derefernce the target URL and put the response in response_buf
+     * @param target_url The URL to dereference.
+     * @param response_buf The buffer into which to put the response.
+     */
+    void http_get(const std::string &target_url, char *response_buf){
+
+        // @TODO @FIXME Drop the use of this deprecated function and figure out a better way: configuration setting?
+        string cookies = std::tmpnam(nullptr);
+
+        CURL *c_handle = set_up_easy_handle(target_url, cookies, response_buf);
+        read_data(c_handle);
+        curl_easy_cleanup(c_handle);
+    }
+
+    /**
+     * @brief http_get_as_string() This function de-references the target_url and returns the response document as a std:string.
+     *
+     * @param target_url The URL to dereference.
+     * @return JSON document parsed from the response document returned by target_url
+    */ // @TODO @FIXME Move this to ../curl_utils.cc (Requires moving the rapidjson lib too)
+    std::string http_get_as_string(const std::string &target_url){
+
+        // @TODO @FIXME Make the size of this buffer a configuration setting, or pass it in, something....
+        char response_buf[1024 * 1024];
+
+        ngap_curl::http_get(target_url, response_buf);
+        string response(response_buf);
+        return response;
+    }
+
+    /**
+     * @brief http_get_as_json() This function de-references the target_url and parses the response into a JSON document.
+     *
+     * @param target_url The URL to dereference.
+     * @return JSON document parsed from the response document returned by target_url
+     */ // @TODO @FIXME Move this to ../curl_utils.cc (Requires moving the rapidjson lib too)
+    rapidjson::Document http_get_as_json(const std::string &target_url){
+
+        // @TODO @FIXME Make the size of this buffer a configuration setting, or pass it in, something....
+        char response_buf[1024 * 1024];
+
+        ngap_curl::http_get(target_url, response_buf);
+        rapidjson::Document d;
+        d.Parse(response_buf);
+        return d;
+    }
+
+
+} /* namespace ngap_curl */

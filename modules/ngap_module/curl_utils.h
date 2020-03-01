@@ -31,11 +31,13 @@
 #ifndef NGAP_CURL_UTILS_H_
 #define NGAP_CURL_UTILS_H_
 
+#include <string>
+#include <vector>
+
 #include <curl/curl.h>
 #include <curl/easy.h>
 
-#include <string>
-#include <vector>
+#include "rapidjson/document.h"
 
 namespace ngap_curl {
 
@@ -46,7 +48,10 @@ bool configureProxy(CURL *curl, const std::string &url);
 long read_url(CURL *curl, const std::string &url, int fd, std::vector<std::string> *resp_hdrs,
     const std::vector<std::string> *headers, char error_buffer[]);
 
-std::string http_status_to_string(int status);
+    std::string http_status_to_string(int status);
+
+    std::string http_get_as_string(const std::string &target_url);
+    rapidjson::Document http_get_as_json(const std::string &target_url);
 
 } // namespace ngap
 

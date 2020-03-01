@@ -43,6 +43,7 @@
 #include "NgapNames.h"
 #include "NgapResponseNames.h"
 #include "RemoteHttpResource.h"
+#include "curl_utils.h"
 
 #define prolog std::string("NgapContainer::").append(__func__).append("() - ")
 
@@ -51,22 +52,73 @@ using namespace bes;
 
 namespace ngap {
 
+    string NGAP_PROVIDER_KEY("provider");
+    string NGAP_DATASETS_KEY("datasets");
+    string NGAP_GRANULES_KEY("granules");
+    string CMR_REQUEST_BASE("https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4");
 
-    void decompose_cmr_resty_path(string real_name, vector<pair<string,string>> kvp){
+    string CMR_PROVIDER("provider");
+    string CMR_ENTRY_TITLE("entry_title");
+    string CMR_NATIVE_ID("native_id");
 
 
+    /**
+     * We know that the for the NGAP container the path will follow the template:
+     * provider/daac_name/datasets/collection_name/granules/granule_name(s?)
+     * Where "provider", "datasets", and "granules" are NGAP keys and
+     * "ddac_name", "collection_name", and granule_name the their respective values.
+     * provider/GHRC_CLOUD/datasets/ACES_CONTINUOUS_DATA_V1/granules/aces1cont.nc
+
+https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4?
+https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4?
+     provider=GHRC_CLOUD&entry_title=ACES_CONTINUOUS_DATA_V1&native_id=aces1cont.nc
+
+    provider=GHRC_CLOUD&entry_title=ACES CONTINUOUS DATA V1&native_id=aces1cont_2002.191_v2.50.tar
+
+
+
+     * @param real_name The name to decompose.
+     * @param kvp The resulting key value pairs.
+     */
+    string convert_ngap_resty_path_to_cmr_request_url(string real_name){
+        vector<string> tokens;
+        BESUtil::tokenize(real_name,tokens);
+        if( tokens[0]!= NGAP_PROVIDER_KEY || tokens[2]!=NGAP_DATASETS_KEY || tokens[4]!=NGAP_GRANULES_KEY){
+            string err = (string) "The specified path " + real_name
+                         + " does not conform to the NGAP request interface API.";
+            throw BESSyntaxUserError(err, __FILE__, __LINE__);
+        }
+
+        string cmr_url = CMR_REQUEST_BASE + "?";
+        cmr_url += CMR_PROVIDER + "=" + tokens[1] + "&";
+        cmr_url += CMR_ENTRY_TITLE + "=" + tokens[3] + "&";
+        cmr_url += CMR_NATIVE_ID + "=" + tokens[5] ;
+        BESDEBUG( MODULE, prolog << "CMR Request URL: "<< cmr_url << endl );
+        rapidjson::Document cmr_response = ngap_curl::http_get_as_json(cmr_url);
+
+        rapidjson::Value& val = cmr_response["hits"];
+        int hits = val.GetInt();
+        if(hits < 1){
+            string err = (string) "The specified path " + real_name
+                         + " does not identify a thing we know about....";
+            throw BESNotFoundError(err, __FILE__, __LINE__);
+
+        }
+
+        return "";
     }
 
+
     /** @brief Creates an instances of NgapContainer with symbolic name and real
- * name, which is the remote request.
- *
- * The real_name is the remote request URL.
- *
- * @param sym_name symbolic name representing this remote container
- * @param real_name the remote request URL
- * @throws BESSyntaxUserError if the url does not validate
- * @see NgapUtils
- */
+     * name, which is the remote request.
+     *
+     * The real_name is the remote request URL.
+     *
+     * @param sym_name symbolic name representing this remote container
+     * @param real_name the remote request URL
+     * @throws BESSyntaxUserError if the url does not validate
+     * @see NgapUtils
+     */
     NgapContainer::NgapContainer(const string &sym_name,
                                  const string &real_name, const string &type) :
             BESContainer(sym_name, real_name, type), d_remoteResource(0) {
@@ -74,25 +126,7 @@ namespace ngap {
         if (type.empty())
             set_container_type("ngap");
 
-        BESUtil::url url_parts;
-        BESUtil::url_explode(real_name, url_parts);
-
-
-
-
-
-
-
-        url_parts.uname = "";
-        url_parts.psswd = "";
-        string use_real_name = BESUtil::url_create(url_parts);
-
-        if (!WhiteList::get_white_list()->is_white_listed(use_real_name)) {
-            string err = (string) "The specified URL " + real_name
-                         + " does not match any of the accessible services in"
-                         + " the white list.";
-            throw BESSyntaxUserError(err, __FILE__, __LINE__);
-        }
+        string cmr_request_url = convert_ngap_resty_path_to_cmr_request_url(real_name);
 
         // Because we know the name is really a URL, then we know the "relative_name" is meaningless
         // So we set it to be the same as "name"
@@ -143,12 +177,12 @@ namespace ngap {
  */
     string NgapContainer::access() {
 
-        BESDEBUG( MODULE, "NgapContainer::access() - BEGIN" << endl);
+        BESDEBUG( MODULE, prolog << "BEGIN" << endl);
 
         // Since this the ngap we know that the real_name is a URL.
         string url  = get_real_name();
 
-        BESDEBUG( MODULE, "NgapContainer::access() - Accessing " << url << endl);
+        BESDEBUG( MODULE, prolog << "Accessing " << url << endl);
 
         get_granule_path(url);
 
@@ -157,24 +191,24 @@ namespace ngap {
             type = "";
 
         if(!d_remoteResource) {
-            BESDEBUG( MODULE, "NgapContainer::access() - Building new RemoteResource." << endl );
+            BESDEBUG( MODULE, prolog << "Building new RemoteResource." << endl );
             d_remoteResource = new ngap::RemoteHttpResource(url);
             d_remoteResource->retrieveResource();
         }
-        BESDEBUG( MODULE, "NgapContainer::access() - Located remote resource." << endl );
+        BESDEBUG( MODULE, prolog << "Located remote resource." << endl );
 
 
         string cachedResource = d_remoteResource->getCacheFileName();
-        BESDEBUG( MODULE, "NgapContainer::access() - Using local cache file: " << cachedResource << endl );
+        BESDEBUG( MODULE, prolog << "Using local cache file: " << cachedResource << endl );
 
         type = d_remoteResource->getType();
         set_container_type(type);
-        BESDEBUG( MODULE, "NgapContainer::access() - Type: " << type << endl );
+        BESDEBUG( MODULE, prolog << "Type: " << type << endl );
 
 
-        BESDEBUG( MODULE, "NgapContainer::access() - Done accessing " << get_real_name() << " returning cached file " << cachedResource << endl);
-        BESDEBUG( MODULE, "NgapContainer::access() - Done accessing " << *this << endl);
-        BESDEBUG( MODULE, "NgapContainer::access() - END" << endl);
+        BESDEBUG( MODULE, prolog << "Done accessing " << get_real_name() << " returning cached file " << cachedResource << endl);
+        BESDEBUG( MODULE, prolog << "Done accessing " << *this << endl);
+        BESDEBUG( MODULE, prolog << "END" << endl);
 
         return cachedResource;    // this should return the file name from the NgapCache
     }
@@ -189,12 +223,12 @@ namespace ngap {
  */
     bool NgapContainer::release() {
         if (d_remoteResource) {
-            BESDEBUG( MODULE, "NgapContainer::release() - Releasing RemoteResource" << endl);
+            BESDEBUG( MODULE, prolog << "Releasing RemoteResource" << endl);
             delete d_remoteResource;
             d_remoteResource = 0;
         }
 
-        BESDEBUG( MODULE, "done releasing Ngap response" << endl);
+        BESDEBUG( MODULE, prolog << "Done releasing Ngap response" << endl);
         return true;
     }
 
