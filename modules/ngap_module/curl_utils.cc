@@ -39,7 +39,7 @@
 
 using namespace std;
 
-namespace ngap {
+namespace ngap_curl {
 
 // Set this to 1 to turn on libcurl's verbose mode (for debugging).
 int curl_trace = 0;
@@ -338,11 +338,11 @@ bool configureProxy(CURL *curl, const string &url) {
         // regex set in the gateway.conf file.
 
         // Don't create the regex if the string is empty
-        if (!NgapUtils::NoProxyRegex.empty()) {
+        if (!ngap::NgapUtils::NoProxyRegex.empty()) {
             BESDEBUG( MODULE, "curl_utils::configureProxy() - Found NoProxyRegex." << endl);
-            libdap::Regex r(NgapUtils::NoProxyRegex.c_str());
+            libdap::Regex r(ngap::NgapUtils::NoProxyRegex.c_str());
             if (r.match(url.c_str(), url.length()) != -1) {
-                BESDEBUG( MODULE, "curl_utils::configureProxy() - Found NoProxy match. Regex: " << NgapUtils::NoProxyRegex << "; Url: " << url << endl);
+                BESDEBUG( MODULE, "curl_utils::configureProxy() - Found NoProxy match. Regex: " << ngap::NgapUtils::NoProxyRegex << "; Url: " << url << endl);
                 using_proxy = false;
             }
         }

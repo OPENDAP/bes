@@ -47,10 +47,17 @@
 #define prolog std::string("NgapContainer::").append(__func__).append("() - ")
 
 using namespace std;
-using namespace ngap;
 using namespace bes;
 
-/** @brief Creates an instances of NgapContainer with symbolic name and real
+namespace ngap {
+
+
+    void decompose_cmr_resty_path(string real_name, vector<pair<string,string>> kvp){
+
+
+    }
+
+    /** @brief Creates an instances of NgapContainer with symbolic name and real
  * name, which is the remote request.
  *
  * The real_name is the remote request URL.
@@ -60,110 +67,117 @@ using namespace bes;
  * @throws BESSyntaxUserError if the url does not validate
  * @see NgapUtils
  */
-NgapContainer::NgapContainer(const string &sym_name,
-                                   const string &real_name, const string &type) :
-        BESContainer(sym_name, real_name, type), d_remoteResource(0) {
+    NgapContainer::NgapContainer(const string &sym_name,
+                                 const string &real_name, const string &type) :
+            BESContainer(sym_name, real_name, type), d_remoteResource(0) {
 
-    if (type.empty())
-        set_container_type("ngap");
+        if (type.empty())
+            set_container_type("ngap");
 
-    BESUtil::url url_parts;
-    BESUtil::url_explode(real_name, url_parts);
-    url_parts.uname = "";
-    url_parts.psswd = "";
-    string use_real_name = BESUtil::url_create(url_parts);
+        BESUtil::url url_parts;
+        BESUtil::url_explode(real_name, url_parts);
 
-    if (!WhiteList::get_white_list()->is_white_listed(use_real_name)) {
-        string err = (string) "The specified URL " + real_name
-                     + " does not match any of the accessible services in"
-                     + " the white list.";
-        throw BESSyntaxUserError(err, __FILE__, __LINE__);
+
+
+
+
+
+
+        url_parts.uname = "";
+        url_parts.psswd = "";
+        string use_real_name = BESUtil::url_create(url_parts);
+
+        if (!WhiteList::get_white_list()->is_white_listed(use_real_name)) {
+            string err = (string) "The specified URL " + real_name
+                         + " does not match any of the accessible services in"
+                         + " the white list.";
+            throw BESSyntaxUserError(err, __FILE__, __LINE__);
+        }
+
+        // Because we know the name is really a URL, then we know the "relative_name" is meaningless
+        // So we set it to be the same as "name"
+        set_relative_name(real_name);
     }
-
-    // Because we know the name is really a URL, then we know the "relative_name" is meaningless
-    // So we set it to be the same as "name"
-    set_relative_name(real_name);
-}
 
 /**
  * TODO: I think this implementation of the copy constructor is incomplete/inadequate. Review and fix as needed.
  */
-NgapContainer::NgapContainer(const NgapContainer &copy_from) :
-        BESContainer(copy_from), d_remoteResource(copy_from.d_remoteResource) {
-    // we can not make a copy of this container once the request has
-    // been made
-    if (d_remoteResource) {
-        string err = (string) "The Container has already been accessed, "
-                     + "can not create a copy of this container.";
-        throw BESInternalError(err, __FILE__, __LINE__);
+    NgapContainer::NgapContainer(const NgapContainer &copy_from) :
+            BESContainer(copy_from), d_remoteResource(copy_from.d_remoteResource) {
+        // we can not make a copy of this container once the request has
+        // been made
+        if (d_remoteResource) {
+            string err = (string) "The Container has already been accessed, "
+                         + "can not create a copy of this container.";
+            throw BESInternalError(err, __FILE__, __LINE__);
+        }
     }
-}
 
-void NgapContainer::_duplicate(NgapContainer &copy_to) {
-    if (copy_to.d_remoteResource) {
-        string err = (string) "The Container has already been accessed, "
-                     + "can not duplicate this resource.";
-        throw BESInternalError(err, __FILE__, __LINE__);
+    void NgapContainer::_duplicate(NgapContainer &copy_to) {
+        if (copy_to.d_remoteResource) {
+            string err = (string) "The Container has already been accessed, "
+                         + "can not duplicate this resource.";
+            throw BESInternalError(err, __FILE__, __LINE__);
+        }
+        copy_to.d_remoteResource = d_remoteResource;
+        BESContainer::_duplicate(copy_to);
     }
-    copy_to.d_remoteResource = d_remoteResource;
-    BESContainer::_duplicate(copy_to);
-}
 
-BESContainer *
-NgapContainer::ptr_duplicate() {
-    NgapContainer *container = new NgapContainer;
-    _duplicate(*container);
-    return container;
-}
-
-NgapContainer::~NgapContainer() {
-    if (d_remoteResource) {
-        release();
+    BESContainer *
+    NgapContainer::ptr_duplicate() {
+        NgapContainer *container = new NgapContainer;
+        _duplicate(*container);
+        return container;
     }
-}
+
+    NgapContainer::~NgapContainer() {
+        if (d_remoteResource) {
+            release();
+        }
+    }
 
 /** @brief access the remote target response by making the remote request
  *
  * @return full path to the remote request response data file
  * @throws BESError if there is a problem making the remote request
  */
-string NgapContainer::access() {
+    string NgapContainer::access() {
 
-    BESDEBUG( "ngap", "NgapContainer::access() - BEGIN" << endl);
+        BESDEBUG( MODULE, "NgapContainer::access() - BEGIN" << endl);
 
-    // Since this the ngap we know that the real_name is a URL.
-    string url  = get_real_name();
+        // Since this the ngap we know that the real_name is a URL.
+        string url  = get_real_name();
 
-    BESDEBUG( "ngap", "NgapContainer::access() - Accessing " << url << endl);
+        BESDEBUG( MODULE, "NgapContainer::access() - Accessing " << url << endl);
 
-    get_granule_path(url);
-    
-    string type = get_container_type();
-    if (type == "ngap")
-        type = "";
+        get_granule_path(url);
 
-    if(!d_remoteResource) {
-        BESDEBUG( "ngap", "NgapContainer::access() - Building new RemoteResource." << endl );
-        d_remoteResource = new ngap::RemoteHttpResource(url);
-        d_remoteResource->retrieveResource();
+        string type = get_container_type();
+        if (type == "ngap")
+            type = "";
+
+        if(!d_remoteResource) {
+            BESDEBUG( MODULE, "NgapContainer::access() - Building new RemoteResource." << endl );
+            d_remoteResource = new ngap::RemoteHttpResource(url);
+            d_remoteResource->retrieveResource();
+        }
+        BESDEBUG( MODULE, "NgapContainer::access() - Located remote resource." << endl );
+
+
+        string cachedResource = d_remoteResource->getCacheFileName();
+        BESDEBUG( MODULE, "NgapContainer::access() - Using local cache file: " << cachedResource << endl );
+
+        type = d_remoteResource->getType();
+        set_container_type(type);
+        BESDEBUG( MODULE, "NgapContainer::access() - Type: " << type << endl );
+
+
+        BESDEBUG( MODULE, "NgapContainer::access() - Done accessing " << get_real_name() << " returning cached file " << cachedResource << endl);
+        BESDEBUG( MODULE, "NgapContainer::access() - Done accessing " << *this << endl);
+        BESDEBUG( MODULE, "NgapContainer::access() - END" << endl);
+
+        return cachedResource;    // this should return the file name from the NgapCache
     }
-    BESDEBUG( "ngap", "NgapContainer::access() - Located remote resource." << endl );
-
-
-    string cachedResource = d_remoteResource->getCacheFileName();
-    BESDEBUG( "ngap", "NgapContainer::access() - Using local cache file: " << cachedResource << endl );
-
-    type = d_remoteResource->getType();
-    set_container_type(type);
-    BESDEBUG( "ngap", "NgapContainer::access() - Type: " << type << endl );
-
-
-    BESDEBUG( "ngap", "NgapContainer::access() - Done accessing " << get_real_name() << " returning cached file " << cachedResource << endl);
-    BESDEBUG( "ngap", "NgapContainer::access() - Done accessing " << *this << endl);
-    BESDEBUG( "ngap", "NgapContainer::access() - END" << endl);
-
-    return cachedResource;    // this should return the file name from the NgapCache
-}
 
 
 
@@ -173,16 +187,16 @@ string NgapContainer::access() {
  *
  * @return true if the resource is released successfully and false otherwise
  */
-bool NgapContainer::release() {
-    if (d_remoteResource) {
-        BESDEBUG( "ngap", "NgapContainer::release() - Releasing RemoteResource" << endl);
-        delete d_remoteResource;
-        d_remoteResource = 0;
-    }
+    bool NgapContainer::release() {
+        if (d_remoteResource) {
+            BESDEBUG( MODULE, "NgapContainer::release() - Releasing RemoteResource" << endl);
+            delete d_remoteResource;
+            d_remoteResource = 0;
+        }
 
-    BESDEBUG( "ngap", "done releasing Ngap response" << endl);
-    return true;
-}
+        BESDEBUG( MODULE, "done releasing Ngap response" << endl);
+        return true;
+    }
 
 /** @brief dumps information about this object
  *
@@ -191,121 +205,121 @@ bool NgapContainer::release() {
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void NgapContainer::dump(ostream &strm) const {
-    strm << BESIndent::LMarg << "NgapContainer::dump - (" << (void *) this
-         << ")" << endl;
-    BESIndent::Indent();
-    BESContainer::dump(strm);
-    if (d_remoteResource) {
-        strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_remoteResource->getCacheFileName()
-             << endl;
-        strm << BESIndent::LMarg << "response headers: ";
-        vector<string> *hdrs = d_remoteResource->getResponseHeaders();
-        if (hdrs) {
-            strm << endl;
-            BESIndent::Indent();
-            vector<string>::const_iterator i = hdrs->begin();
-            vector<string>::const_iterator e = hdrs->end();
-            for (; i != e; i++) {
-                string hdr_line = (*i);
-                strm << BESIndent::LMarg << hdr_line << endl;
-            }
-            BESIndent::UnIndent();
-        } else {
-            strm << "none" << endl;
-        }
-    } else {
-        strm << BESIndent::LMarg << "response not yet obtained" << endl;
-    }
-    BESIndent::UnIndent();
-}
-
-
-void NgapContainer::get_granule_path(const string &ppath) const {
-    /*enum RestifiedPathValues { cmrProvider, cmrDatasets, cmrGranuleUR };
-    static std::map<std::string, RestifiedPathValues> mapRestifiedPathValues;*/
-
-    string path = BESUtil::normalize_path(ppath, true, false);
-    vector<string> path_elements = BESUtil::split(path);
-    BESDEBUG(MODULE, prolog << "path: '" << path << "'   path_elements.size(): " << path_elements.size() << endl);
-
-    string epoch_time = BESUtil::get_time(0, false);
-
-    NgapApi ngapApi;
-    //bes::CatalogNode *node;
-
-    if (path_elements.empty()) {
-        /*node = new CatalogNode("/");
-        node->set_lmt(epoch_time);
-        node->set_catalog_name(CMR_CATALOG_NAME);
-        for(size_t i=0; i<d_collections.size() ; i++){
-            CatalogItem *collection = new CatalogItem();
-            collection->set_name(d_collections[i]);
-            collection->set_type(CatalogItem::node);
-            node->add_node(collection);
-        }*/
-    } else {
-        for (size_t i = 0; i < path_elements.size(); i++) {
-            if (path_elements[i] == "-")
-                path_elements[i] = "";
-        }
-
-        bool valid_provider = false;
-        bool valid_dataset = false;
-        bool valid_granule = false;
-        string provider = "";
-        string dataset = "";
-        string granuleUrl = "";
-        string facet;
-
-        for (size_t i = 0; i < path_elements.size(); i++) {
-            BESDEBUG(MODULE, prolog << "Checking facet: " << path_elements[i] << endl);
-
-            facet = BESUtil::lowercase(path_elements[i]);
-            if (facet == "provider") {
-                valid_provider = true;
-                provider = path_elements[++i];
-            } else if (facet == "datasets") {
-                valid_dataset = true;
-                dataset = path_elements[++i];
-            } else if (facet == "granule_ur") {
-                valid_granule = true;
-                granuleUrl = path_elements[++i];
+    void NgapContainer::dump(ostream &strm) const {
+        strm << BESIndent::LMarg << "NgapContainer::dump - (" << (void *) this
+             << ")" << endl;
+        BESIndent::Indent();
+        BESContainer::dump(strm);
+        if (d_remoteResource) {
+            strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_remoteResource->getCacheFileName()
+                 << endl;
+            strm << BESIndent::LMarg << "response headers: ";
+            vector<string> *hdrs = d_remoteResource->getResponseHeaders();
+            if (hdrs) {
+                strm << endl;
+                BESIndent::Indent();
+                vector<string>::const_iterator i = hdrs->begin();
+                vector<string>::const_iterator e = hdrs->end();
+                for (; i != e; i++) {
+                    string hdr_line = (*i);
+                    strm << BESIndent::LMarg << hdr_line << endl;
+                }
+                BESIndent::UnIndent();
             } else {
-                throw BESNotFoundError("No such resource: " + path, __FILE__, __LINE__);
+                strm << "none" << endl;
             }
+        } else {
+            strm << BESIndent::LMarg << "response not yet obtained" << endl;
         }
+        BESIndent::UnIndent();
+    }
 
-        /*for (size_t i = 0; i < path_elements.size(); i + 2) {
 
-            BESDEBUG(MODULE, prolog << "Checking facet: " << path_elements[i] << endl);
-            facet = BESUtil::lowercase(path_elements[i]);
+    void NgapContainer::get_granule_path(const string &ppath) const {
+        /*enum RestifiedPathValues { cmrProvider, cmrDatasets, cmrGranuleUR };
+        static std::map<std::string, RestifiedPathValues> mapRestifiedPathValues;*/
 
-            switch (mapRestifiedPathValues(facet)) {
-                case cmrProvider:
-                    valid_provider = true;
-                    provider = path_elements[i + 1];
-                    break;
-                case cmrDatasets:
-                    valid_dataset = true;
-                    dataset = path_elements[i + 1];
-                    break;
-                case cmrGranuleUR:
-                    valid_granule = true;
-                    granuleUrl = path_elements[i + 1];
-                    break;
-                default:
-                    throw BESNotFoundError("No such CMR facet: " + facet, __FILE__, __LINE__);
+        string path = BESUtil::normalize_path(ppath, true, false);
+        vector<string> path_elements = BESUtil::split(path);
+        BESDEBUG(MODULE, prolog << "path: '" << path << "'   path_elements.size(): " << path_elements.size() << endl);
+
+        string epoch_time = BESUtil::get_time(0, false);
+
+        NgapApi ngapApi;
+        //bes::CatalogNode *node;
+
+        if (path_elements.empty()) {
+            /*node = new CatalogNode("/");
+            node->set_lmt(epoch_time);
+            node->set_catalog_name(CMR_CATALOG_NAME);
+            for(size_t i=0; i<d_collections.size() ; i++){
+                CatalogItem *collection = new CatalogItem();
+                collection->set_name(d_collections[i]);
+                collection->set_type(CatalogItem::node);
+                node->add_node(collection);
+            }*/
+        } else {
+            for (size_t i = 0; i < path_elements.size(); i++) {
+                if (path_elements[i] == "-")
+                    path_elements[i] = "";
             }
-        }*/
 
-        if (valid_provider && valid_dataset && valid_granule) {
+            bool valid_provider = false;
+            bool valid_dataset = false;
+            bool valid_granule = false;
+            string provider = "";
+            string dataset = "";
+            string granuleUrl = "";
+            string facet;
 
-            BESDEBUG(MODULE, prolog << "Request resolved to leaf provider:" << provider << " datasets:" << dataset
-                                    << " granule:" << granuleUrl << endl);
-            /*Granule *granule = NgapApi.get_granule(collection,year,month,day,granule_id);
-            if(granule){
-                *//*CatalogItem *granuleItem = new CatalogItem();
+            for (size_t i = 0; i < path_elements.size(); i++) {
+                BESDEBUG(MODULE, prolog << "Checking facet: " << path_elements[i] << endl);
+
+                facet = BESUtil::lowercase(path_elements[i]);
+                if (facet == "provider") {
+                    valid_provider = true;
+                    provider = path_elements[++i];
+                } else if (facet == "datasets") {
+                    valid_dataset = true;
+                    dataset = path_elements[++i];
+                } else if (facet == "granule_ur") {
+                    valid_granule = true;
+                    granuleUrl = path_elements[++i];
+                } else {
+                    throw BESNotFoundError("No such resource: " + path, __FILE__, __LINE__);
+                }
+            }
+
+            /*for (size_t i = 0; i < path_elements.size(); i + 2) {
+
+                BESDEBUG(MODULE, prolog << "Checking facet: " << path_elements[i] << endl);
+                facet = BESUtil::lowercase(path_elements[i]);
+
+                switch (mapRestifiedPathValues(facet)) {
+                    case cmrProvider:
+                        valid_provider = true;
+                        provider = path_elements[i + 1];
+                        break;
+                    case cmrDatasets:
+                        valid_dataset = true;
+                        dataset = path_elements[i + 1];
+                        break;
+                    case cmrGranuleUR:
+                        valid_granule = true;
+                        granuleUrl = path_elements[i + 1];
+                        break;
+                    default:
+                        throw BESNotFoundError("No such CMR facet: " + facet, __FILE__, __LINE__);
+                }
+            }*/
+
+            if (valid_provider && valid_dataset && valid_granule) {
+
+                BESDEBUG(MODULE, prolog << "Request resolved to leaf provider:" << provider << " datasets:" << dataset
+                                        << " granule:" << granuleUrl << endl);
+                /*Granule *granule = NgapApi.get_granule(collection,year,month,day,granule_id);
+                if(granule){
+                    *//*CatalogItem *granuleItem = new CatalogItem();
                 granuleItem->set_type(CatalogItem::leaf);
                 granuleItem->set_name(granule->getName());
                 granuleItem->set_is_data(true);
@@ -317,6 +331,7 @@ void NgapContainer::get_granule_path(const string &ppath) const {
                 throw BESNotFoundError("No such resource: "+path,__FILE__,__LINE__);
             }*/
 
+            }
         }
     }
 }

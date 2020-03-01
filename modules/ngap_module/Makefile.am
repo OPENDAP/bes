@@ -25,13 +25,18 @@ libngap_module_la_SOURCES = $(NGAP_SRC) $(NGAP_HDR)
 libngap_module_la_LDFLAGS = -avoid-version -module 
 libngap_module_la_LIBADD = $(LIBADD)
 
-NGAP_SRC = NgapApi.cc Granule.cc \
+NGAP_SRC = curl_utils.cc \
+	NgapApi.cc Granule.cc \
+	NgapRequestHandler.cc \
 	NgapCache.cc rjson_utils.cc RemoteHttpResource.cc \
-	NgapModule.cc NgapUtils.cc NgapContainer.cc 
+	NgapModule.cc NgapUtils.cc NgapContainer.cc NgapContainerStorage.cc
 
-NGAP_HDR = NgapApi.h NgapError.h Granule.h \
+NGAP_HDR = curl_utils.h \
+	NgapApi.h NgapError.h Granule.h \
+	NgapRequestHandler.h \
 	NgapCache.h rjson_utils.h RemoteHttpResource.h \
-	NgapModule.h NgapUtils.h NgapContainer.h NgapNames.h
+	NgapModule.h NgapUtils.h NgapContainer.h NgapContainerStorage.h \
+	NgapNames.h
 
 EXTRA_DIST = rapidjson ngap.conf.in data
 

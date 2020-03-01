@@ -28,8 +28,8 @@
 // Authors:
 //      ndp       Nathan Potter <ndp@opendap.org>
 
-#ifndef CURL_UTILS_H_
-#define CURL_UTILS_H_
+#ifndef NGAP_CURL_UTILS_H_
+#define NGAP_CURL_UTILS_H_
 
 #include <curl/curl.h>
 #include <curl/easy.h>
@@ -37,7 +37,7 @@
 #include <string>
 #include <vector>
 
-namespace ngap {
+namespace ngap_curl {
 
 CURL *init(char *error_buffer);
 
@@ -50,4 +50,4 @@ std::string http_status_to_string(int status);
 
 } // namespace ngap
 
-#endif /* CURL_UTILS_H_ */
+#endif /* NGAP_CURL_UTILS_H_ */

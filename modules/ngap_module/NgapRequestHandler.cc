@@ -42,12 +42,12 @@
 
 #include "NgapRequestHandler.h"
 #include "NgapResponseNames.h"
+#include "NgapNames.h"
 
 using std::endl;
 using std::map;
 using std::list;
 using namespace libdap;
-using namespace cmr;
 using namespace ngap;
 
 NgapRequestHandler::NgapRequestHandler(const string &name) :
@@ -89,7 +89,7 @@ bool NgapRequestHandler::ngap_build_help(BESDataHandlerInterface &dhi)
     attrs["version"] = PACKAGE_VERSION;
 #endif
     list<string> services;
-    BESServiceRegistry::TheRegistry()->services_handled(Ngap_NAME, services);
+    BESServiceRegistry::TheRegistry()->services_handled(NGAP_NAME, services);
     if (services.size() > 0) {
         string handles = BESUtil::implode(services, ',');
         attrs["handles"] = handles;

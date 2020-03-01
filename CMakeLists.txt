@@ -2083,6 +2083,8 @@ add_executable(bes
         modules/ngap_module/NgapApi.h
         modules/ngap_module/NgapCache.cc
         modules/ngap_module/NgapCache.h
+        modules/ngap_module/NgapContainerStorage.cc
+        modules/ngap_module/NgapContainerStorage.h
         modules/ngap_module/NgapContainer.cc
         modules/ngap_module/NgapContainer.h
         modules/ngap_module/NgapError.h
