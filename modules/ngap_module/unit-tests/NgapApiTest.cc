@@ -61,7 +61,7 @@ static bool bes_debug = false;
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
 
-namespace cmr {
+namespace ngap {
 
 class NgapApiTest: public CppUnit::TestFixture {
 private:
@@ -633,7 +633,7 @@ int main(int argc, char*argv[])
     else {
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            test = cmr::NgapApiTest::suite()->getName().append("::").append(argv[i]);
+            test = ngap::NgapApiTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
             ++i;
         }
