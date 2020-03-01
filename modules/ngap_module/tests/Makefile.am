@@ -1,18 +1,28 @@
 
-AUTOMAKE_OPTIONS = foreign
+AUTOMAKE_OPTIONS = foreign 
 
-noinst_DATA = bes.conf cache
+AM_CPPFLAGS = -I$(top_srcdir)
 
-CLEANFILES = bes.conf cache
+# AM_CPPFLAGS =
+AM_CXXFLAGS =
 
-#EXTRA_DIST = cmr_catalog $(TESTSUITE).at $(TESTSUITE) atlocal.in
+# These are not used by automake but are often useful for certain types of
+# debugging. The best way to use these is to run configure as:
+#     export CXXFLAGS='...'; ./configure --disable-shared
+# the --disable-shared is not required, but it seems to help with debuggers.
+CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
+TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) atlocal.in \
-$(BES_CONF_IN) package.m4
+noinst_DATA = bes.conf
 
-DISTCLEANFILES = atconfig
+CLEANFILES = bes.conf
 
-BES_CONF_IN = bes.conf.in
+EXTRA_DIST = ngap $(TESTSUITE).at $(TESTSUITE) atlocal.in \
+$(srcdir)/package.m4 $(BES_CONF_IN) $(srcdir)/handler_tests_macros.m4
+
+DISTCLEANFILES =  atconfig
+
+BES_CONF_IN = bes.conf.modules.in
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
@@ -22,31 +32,24 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
-cache:
-	mkdir -p $(builddir)/cache
-
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te
 
 TESTSUITE = $(srcdir)/testsuite
 
-check-local: $(TESTSUITE) atconfig atlocal bes.conf cache
-	-rm $(builddir)/cache/*
+check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
-installcheck-local: $(TESTSUITE) atconfig atlocal cache
-	$(SHELL) '$(TESTSUITE)' AUTOTEST_PATH='$(bindir)' $(TESTSUITEFLAGS)
-
-clean-local: 
+clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
 	-rm -f $(TESTSUITE) $(srcdir)/package.m4 
-	-rm -fr $(builddir)/cache 
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
-$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 
-	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
+$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
+	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
+	mv $@.tmp $@
 
 # The `:;' works around a Bash 3.2 bug when the output is not writeable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac
