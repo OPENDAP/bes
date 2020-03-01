@@ -60,16 +60,16 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
-##$(abs_builddir)/static-cache:
-##	@echo "# abs_top_srcdir: $(abs_top_srcdir)" 
-##	@echo "# top_srcdir: $(top_srcdir)" 
-##	@echo "# srcdir: $(srcdir)" 
-##	@echo "# abs_top_builddir: $(abs_top_builddir)" 
-##	@echo "# abs_builddir: $(abs_builddir)" 
-##	@echo "# builddir: $(builddir)" 
-##	@echo "# Coping preloaded CMR cache from: '$(top_srcdir)/modules/ngap_module/data/ngap_cache_for_tests' to '$(builddir)/static-cache'" 
-##	cp -r $(top_srcdir)/modules/ngap_module/data/ngap_cache_for_tests $(builddir)/static-cache
-##	chmod -R ug+w $(builddir)/static-cache
+$(abs_builddir)/static-cache:
+	@echo "# abs_top_srcdir: $(abs_top_srcdir)"
+	@echo "# top_srcdir: $(top_srcdir)"
+	@echo "# srcdir: $(srcdir)"
+	@echo "# abs_top_builddir: $(abs_top_builddir)"
+	@echo "# abs_builddir: $(abs_builddir)"
+	@echo "# builddir: $(builddir)"
+	@echo "# Coping preloaded CMR cache from: '$(top_srcdir)/modules/ngap_module/data/ngap_cache_for_tests' to '$(builddir)/static-cache'"
+	cp -r $(top_srcdir)/modules/ngap_module/data/ngap_cache_for_tests $(builddir)/static-cache
+	chmod -R ug+w $(builddir)/static-cache
 
 ############################################################################
 # Unit Tests
