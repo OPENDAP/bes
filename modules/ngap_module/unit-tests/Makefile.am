@@ -67,7 +67,7 @@ $(abs_builddir)/static-cache:
 	@echo "# abs_top_builddir: $(abs_top_builddir)"
 	@echo "# abs_builddir: $(abs_builddir)"
 	@echo "# builddir: $(builddir)"
-	@echo "# Coping preloaded CMR cache from: '$(top_srcdir)/modules/ngap_module/data/ngap_cache_for_tests' to '$(builddir)/static-cache'"
+	@echo "# Coping preloaded NGAP cache from: '$(top_srcdir)/modules/ngap_module/data/ngap_cache_for_tests' to '$(builddir)/static-cache'"
 	cp -r $(top_srcdir)/modules/ngap_module/data/ngap_cache_for_tests $(builddir)/static-cache
 	chmod -R ug+w $(builddir)/static-cache
 
@@ -76,7 +76,7 @@ $(abs_builddir)/static-cache:
 #
 
 if CPPUNIT
-UNIT_TESTS = NgapApiTest GranuleTest
+UNIT_TESTS = NgapApiTest
 else
 UNIT_TESTS =
 
@@ -103,5 +103,5 @@ OBJS = ../RemoteHttpResource.o \
 NgapApiTest_SOURCES = NgapApiTest.cc
 NgapApiTest_LDADD = $(OBJS) $(LIBADD)
 
-GranuleTest_SOURCES = GranuleTest.cc
-GranuleTest_LDADD = $(OBJS) $(LIBADD)
+##GranuleTest_SOURCES = GranuleTest.cc
+##GranuleTest_LDADD = $(OBJS) $(LIBADD)
