@@ -384,9 +384,6 @@ bool configureProxy(CURL *curl, const string &url) {
 
             BESDEBUG(MODULE, "curl_utils::configureProxy() - Using CURLOPT_PROXYAUTH = " << getCurlAuthTypeName(proxyAuthType) << endl);
             curl_easy_setopt(curl, CURLOPT_PROXYAUTH, proxyAuthType);
-// #endif
-
-
 
             if (!proxyUser.empty()){
                 curl_easy_setopt(curl, CURLOPT_PROXYUSERNAME, proxyUser.data());
@@ -409,13 +406,6 @@ bool configureProxy(CURL *curl, const string &url) {
 
     return using_proxy;
 }
-
-
-
-
-
-
-
 
 
 
