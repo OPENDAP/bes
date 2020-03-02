@@ -8,6 +8,7 @@ m4_include([handler_tests_macros.m4])
 
 # Utilizing GHRC_CLOUD/ACES_CONTINUOUS_DATA_V1 to get netcdf files
 AT_BESCMD_RESPONSE_TEST([ngap/aces1cont.nc.nc.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([ngap/olslit77.nov_analog.hdf.dds.bescmd])
 ##AT_BESCMD_RESPONSE_TEST([ngap/aces1cont.nc.nc.das.bescmd])
 ##AT_BESCMD_BINARYDATA_RESPONSE_TEST([ngap/aces1cont.nc.nc.dods.bescmd])
 ##AT_BESCMD_RESPONSE_TEST([ngap/aces1cont.nc.nc.dmr.bescmd])
