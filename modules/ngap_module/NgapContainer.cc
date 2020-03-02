@@ -42,7 +42,6 @@
 #include "NgapApi.h"
 #include "NgapUtils.h"
 #include "NgapNames.h"
-#include "NgapResponseNames.h"
 #include "RemoteHttpResource.h"
 #include "curl_utils.h"
 
@@ -52,123 +51,6 @@ using namespace std;
 using namespace bes;
 
 namespace ngap {
-
-    string NGAP_PROVIDER_KEY("provider");
-    string NGAP_DATASETS_KEY("datasets");
-    string NGAP_GRANULES_KEY("granules");
-    string CMR_REQUEST_BASE("https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4");
-
-    string CMR_PROVIDER("provider");
-    string CMR_ENTRY_TITLE("entry_title");
-    string CMR_NATIVE_ID("native_id");
-    string CMR_URL_TYPE_GET_DATA("GET DATA");
-
-
-
-    string rjtypes[] = {"kNullType",
-                        "kFalseType",
-            "kTrueType",
-            "kObjectType",
-            "kArrayType",
-            "kStringType",
-            "kNumberType"
-    };
-
-
-    /**
-     * We know that the for the NGAP container the path will follow the template:
-     * provider/daac_name/datasets/collection_name/granules/granule_name(s?)
-     * Where "provider", "datasets", and "granules" are NGAP keys and
-     * "ddac_name", "collection_name", and granule_name the their respective values.
-     * provider/GHRC_CLOUD/datasets/ACES_CONTINUOUS_DATA_V1/granules/aces1cont.nc
-
-https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4?
-https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4?
-     provider=GHRC_CLOUD&entry_title=ACES_CONTINUOUS_DATA_V1&native_id=aces1cont.nc
-
-    provider=GHRC_CLOUD&entry_title=ACES CONTINUOUS DATA V1&native_id=aces1cont_2002.191_v2.50.tar
-
-
-https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4?
-     provider=GHRC_CLOUD&native_id=olslit77.nov_analog.hdf&pretty=true"
-
-
-
-     * @param real_name The name to decompose.
-     * @param kvp The resulting key value pairs.
-     */
-    string convert_ngap_resty_path_to_data_access_url(string real_name){
-        string data_access_url("");
-
-        vector<string> tokens;
-        BESUtil::tokenize(real_name,tokens);
-        if( tokens[0]!= NGAP_PROVIDER_KEY || tokens[2]!=NGAP_DATASETS_KEY || tokens[4]!=NGAP_GRANULES_KEY){
-            string err = (string) "The specified path " + real_name
-                         + " does not conform to the NGAP request interface API.";
-            throw BESSyntaxUserError(err, __FILE__, __LINE__);
-        }
-
-        string cmr_url = CMR_REQUEST_BASE + "?";
-        cmr_url += CMR_PROVIDER + "=" + tokens[1] + "&";\
-        //if(tokens[3] != "skip")
-        //    cmr_url += CMR_ENTRY_TITLE + "=" + tokens[3] + "&";
-        cmr_url += CMR_NATIVE_ID + "=" + tokens[5] ;
-        BESDEBUG( MODULE, prolog << "CMR Request URL: "<< cmr_url << endl );
-        rapidjson::Document cmr_response = ngap_curl::http_get_as_json(cmr_url);
-
-        rapidjson::Value& val = cmr_response["hits"];
-        int hits = val.GetInt();
-        if(hits < 1){
-            string err = (string) "The specified path " + real_name
-                         + " does not identify a thing we know about....";
-            throw BESNotFoundError(err, __FILE__, __LINE__);
-        }
-
-        rapidjson::Value& items = cmr_response["items"];
-        if(items.IsArray()){
-            stringstream ss;
-            for (rapidjson::SizeType i = 0; i < items.Size(); i++) // Uses SizeType instead of size_t
-                ss << "items[" << i << "]: " << rjtypes[items[i].GetType()] << endl;
-            BESDEBUG(MODULE,prolog << "items size: " << items.Size() << endl << ss.str() << endl);
-
-            rapidjson::Value& items_obj = items[0];
-            rapidjson::GenericMemberIterator<false, rapidjson::UTF8<char>, rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator>> mitr = items_obj.FindMember("umm");
-
-            rapidjson::Value& umm = mitr->value;
-            mitr  = umm.FindMember("RelatedUrls");
-            rapidjson::Value& related_urls = mitr->value;
-
-            if(!related_urls.IsArray()){
-                string err = (string) "Error! The RelatedUrls object in the CMR response is not an array!";
-                throw BESNotFoundError(err, __FILE__, __LINE__);
-            }
-
-            BESDEBUG(MODULE,prolog << " Found RelatedUrls array in CMR response." << endl);
-
-
-            for (rapidjson::SizeType i = 0; i < related_urls.Size() && data_access_url.empty(); i++)  {
-                rapidjson::Value& obj = related_urls[i];
-                mitr = obj.FindMember("URL");
-                rapidjson::Value& r_url = mitr->value;
-                mitr = obj.FindMember("Type");
-                rapidjson::Value& r_type = mitr->value;
-                mitr = obj.FindMember("Description");
-                rapidjson::Value& r_desc = mitr->value;
-                BESDEBUG(MODULE,prolog << "RelatedUrl Object:" <<
-                        " URL: '" << r_url.GetString() << "'" <<
-                        " Type: '" << r_type.GetString() << "'" <<
-                        " Description: '" << r_desc.GetString() <<  "'" << endl);
-
-                if(r_type.GetString() == CMR_URL_TYPE_GET_DATA){
-                    data_access_url = r_url.GetString();
-                }
-            }
-
-        }
-
-        return data_access_url + ".dmrpp";
-    }
-
 
     /** @brief Creates an instances of NgapContainer with symbolic name and real
      * name, which is the remote request.
@@ -184,10 +66,11 @@ https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4?
                                  const string &real_name, const string &type) :
             BESContainer(sym_name, real_name, type), d_remoteResource(0) {
 
+        NgapApi ngap_api;
         if (type.empty())
             set_container_type("ngap");
 
-        string data_access_url = convert_ngap_resty_path_to_data_access_url(real_name);
+        string data_access_url = ngap_api.convert_ngap_resty_path_to_data_access_url(real_name);
 
         set_real_name(data_access_url);
         // Because we know the name is really a URL, then we know the "relative_name" is meaningless

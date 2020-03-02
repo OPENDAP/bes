@@ -1,6 +1,6 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of ngap_module, A C++ MODULE that can be loaded in to
+// This file is part of cmr_module, A C++ MODULE that can be loaded in to
 // the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
 
 // Copyright (c) 2015 OPeNDAP, Inc.
@@ -58,8 +58,8 @@ using std::string;
 #define AT_EXIT(x)
 #endif
 
+namespace ngap {
 
-using namespace ngap;
 
 NgapCache *NgapCache::d_instance = 0;
 bool NgapCache::d_enabled = true;
@@ -128,7 +128,7 @@ NgapCache::NgapCache()
     unsigned long cacheSizeMbytes = getCacheSizeFromConfig();
 
     BESDEBUG(MODULE,
-             "NgapCache() - Cache configuration params: " << cacheDir << ", " << cachePrefix << ", " << cacheSizeMbytes << endl);
+        "NgapCache() - Cache configuration params: " << cacheDir << ", " << cachePrefix << ", " << cacheSizeMbytes << endl);
 
     initialize(cacheDir, cachePrefix, cacheSizeMbytes);
 
@@ -190,7 +190,7 @@ NgapCache::get_instance()
         }
         catch (BESInternalError &bie) {
             BESDEBUG(MODULE,
-                     "[ERROR] NgapCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
+                "[ERROR] NgapCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
         }
     }
 
@@ -215,4 +215,6 @@ NgapCache::get_hash(const string &name)
 string NgapCache::get_cache_file_name(const string &src, bool /*mangle*/){
     return  BESUtil::assemblePath(this->get_cache_directory(),get_cache_file_prefix() + get_hash(src));
 }
+
+} // namespace ngap
 

@@ -29,22 +29,22 @@
 
 #define NGAP_NAME "ngap"
 
-#define NGAP_CATALOG_NAME "NGAP"
+// #define NGAP_CATALOG_NAME "NGAP"
 
 // These are the names of the be keys used to configure the handler.
-#define NGAP_COLLECTIONS "Ngap.Collections"
-#define NGAP_FACETS "Ngap.Facets"
+// #define NGAP_COLLECTIONS "NGAP.Collections"
+// #define NGAP_FACETS "NGAP.Facets"
 
-#define NGAP_WHITELIST "Ngap.Whitelist"
-#define NGAP_MIMELIST "Ngap.MimeTypes"
-#define NGAP_PROXYPROTOCOL "Ngap.ProxyProtocol"
-#define NGAP_PROXYHOST "Ngap.ProxyHost"
-#define NGAP_PROXYPORT "Ngap.ProxyPort"
-#define NGAP_PROXYAUTHTYPE "Ngap.ProxyAuthType"
-#define NGAP_PROXYUSER "Ngap.ProxyUser"
-#define NGAP_PROXYPASSWORD "Ngap.ProxyPassword"
-#define NGAP_PROXYUSERPW "Ngap.ProxyUserPW"
-#define NGAP_USE_INTERNAL_CACHE "Ngap.UseInternalCache"
+#define NGAP_WHITELIST "NGAP.Whitelist"
+#define NGAP_MIMELIST "NGAP.MimeTypes"
+#define NGAP_PROXYPROTOCOL "NGAP.ProxyProtocol"
+#define NGAP_PROXYHOST "NGAP.ProxyHost"
+#define NGAP_PROXYPORT "NGAP.ProxyPort"
+#define NGAP_PROXYAUTHTYPE "NGAP.ProxyAuthType"
+#define NGAP_PROXYUSER "NGAP.ProxyUser"
+#define NGAP_PROXYPASSWORD "NGAP.ProxyPassword"
+#define NGAP_PROXYUSERPW "NGAP.ProxyUserPW"
+#define NGAP_USE_INTERNAL_CACHE "NGAP.UseInternalCache"
 
 #define MODULE NGAP_NAME
 

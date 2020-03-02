@@ -41,7 +41,6 @@
 #include <BESUtil.h>
 
 #include "NgapRequestHandler.h"
-#include "NgapResponseNames.h"
 #include "NgapNames.h"
 
 using std::endl;

@@ -22,7 +22,7 @@ $(srcdir)/package.m4 $(BES_CONF_IN) $(srcdir)/handler_tests_macros.m4
 
 DISTCLEANFILES =  atconfig
 
-BES_CONF_IN = bes.conf.modules.in
+BES_CONF_IN = bes.conf.in
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
@@ -38,7 +38,7 @@ AUTOM4TE = autom4te
 
 TESTSUITE = $(srcdir)/testsuite
 
-check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE)
+check-local: atconfig atlocal $(srcdir)/package.m4 mds_ledger.txt $(TESTSUITE)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
 clean-local:

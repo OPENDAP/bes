@@ -76,7 +76,7 @@ $(abs_builddir)/static-cache:
 #
 
 if CPPUNIT
-UNIT_TESTS = NgapApiTest
+UNIT_TESTS = # NgapApiTest
 else
 UNIT_TESTS =
 
@@ -100,8 +100,8 @@ OBJS = ../RemoteHttpResource.o \
 ../NgapApi.o \
 ../Granule.o 
 
-NgapApiTest_SOURCES = NgapApiTest.cc
-NgapApiTest_LDADD = $(OBJS) $(LIBADD)
+##NgapApiTest_SOURCES = NgapApiTest.cc
+##NgapApiTest_LDADD = $(OBJS) $(LIBADD)
 
 ##GranuleTest_SOURCES = GranuleTest.cc
 ##GranuleTest_LDADD = $(OBJS) $(LIBADD)

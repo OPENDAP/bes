@@ -32,19 +32,12 @@
 
 #include <BESRequestHandlerList.h>
 #include <BESDebug.h>
-#include <BESResponseHandlerList.h>
-#include <BESResponseNames.h>
 #include <BESContainerStorageList.h>
-#include <TheBESKeys.h>
-#include <BESSyntaxUserError.h>
 
 #include "NgapModule.h"
 #include "NgapRequestHandler.h"
-#include "NgapResponseNames.h"
 #include "NgapContainerStorage.h"
 #include "NgapUtils.h"
-#include "NgapPathInfoResponseHandler.h"
-#include "NgapPathInfoCommand.h"
 
 using namespace std;
 using namespace ngap;
