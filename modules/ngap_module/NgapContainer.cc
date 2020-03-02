@@ -164,25 +164,7 @@ https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4?
                 }
             }
 
-#if 0
-            rapidjson::Value& umm = items["umm"];
-            if(umm.IsArray()){
-                rapidjson::Value& related_urls = umm["RelatedUrls"];
-                if(related_urls.IsArray()){
-                    for (rapidjson::SizeType i = 0; i < related_urls.Size(); i++) // Uses SizeType instead of size_t
-                        cerr << "related_urls[" << i << "]: " << related_urls[i].GetString() << endl;
-                }
-
-            }
-#endif
         }
-
-        //rapidjson::Value& umm = items.GetArray();
-        //rapidjson::Value& related_urls = items["RelatedUrls"];
-
-
-
-
 
         return data_access_url + ".dmrpp";
     }
@@ -263,8 +245,6 @@ https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4?
         string url  = get_real_name();
 
         BESDEBUG( MODULE, prolog << "Accessing " << url << endl);
-
-        get_granule_path(url);
 
         string type = get_container_type();
         if (type == "ngap")
@@ -348,104 +328,4 @@ https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4?
         BESIndent::UnIndent();
     }
 
-
-    void NgapContainer::get_granule_path(const string &ppath) const {
-        /*enum RestifiedPathValues { cmrProvider, cmrDatasets, cmrGranuleUR };
-        static std::map<std::string, RestifiedPathValues> mapRestifiedPathValues;*/
-
-        string path = BESUtil::normalize_path(ppath, true, false);
-        vector<string> path_elements = BESUtil::split(path);
-        BESDEBUG(MODULE, prolog << "path: '" << path << "'   path_elements.size(): " << path_elements.size() << endl);
-
-        string epoch_time = BESUtil::get_time(0, false);
-
-        NgapApi ngapApi;
-        //bes::CatalogNode *node;
-
-        if (path_elements.empty()) {
-            /*node = new CatalogNode("/");
-            node->set_lmt(epoch_time);
-            node->set_catalog_name(CMR_CATALOG_NAME);
-            for(size_t i=0; i<d_collections.size() ; i++){
-                CatalogItem *collection = new CatalogItem();
-                collection->set_name(d_collections[i]);
-                collection->set_type(CatalogItem::node);
-                node->add_node(collection);
-            }*/
-        } else {
-            for (size_t i = 0; i < path_elements.size(); i++) {
-                if (path_elements[i] == "-")
-                    path_elements[i] = "";
-            }
-
-            bool valid_provider = false;
-            bool valid_dataset = false;
-            bool valid_granule = false;
-            string provider = "";
-            string dataset = "";
-            string granuleUrl = "";
-            string facet;
-
-            for (size_t i = 0; i < path_elements.size(); i++) {
-                BESDEBUG(MODULE, prolog << "Checking facet: " << path_elements[i] << endl);
-
-                facet = BESUtil::lowercase(path_elements[i]);
-                if (facet == "provider") {
-                    valid_provider = true;
-                    provider = path_elements[++i];
-                } else if (facet == "datasets") {
-                    valid_dataset = true;
-                    dataset = path_elements[++i];
-                } else if (facet == "granule_ur") {
-                    valid_granule = true;
-                    granuleUrl = path_elements[++i];
-                } else {
-                    throw BESNotFoundError("No such resource: " + path, __FILE__, __LINE__);
-                }
-            }
-
-            /*for (size_t i = 0; i < path_elements.size(); i + 2) {
-
-                BESDEBUG(MODULE, prolog << "Checking facet: " << path_elements[i] << endl);
-                facet = BESUtil::lowercase(path_elements[i]);
-
-                switch (mapRestifiedPathValues(facet)) {
-                    case cmrProvider:
-                        valid_provider = true;
-                        provider = path_elements[i + 1];
-                        break;
-                    case cmrDatasets:
-                        valid_dataset = true;
-                        dataset = path_elements[i + 1];
-                        break;
-                    case cmrGranuleUR:
-                        valid_granule = true;
-                        granuleUrl = path_elements[i + 1];
-                        break;
-                    default:
-                        throw BESNotFoundError("No such CMR facet: " + facet, __FILE__, __LINE__);
-                }
-            }*/
-
-            if (valid_provider && valid_dataset && valid_granule) {
-
-                BESDEBUG(MODULE, prolog << "Request resolved to leaf provider:" << provider << " datasets:" << dataset
-                                        << " granule:" << granuleUrl << endl);
-                /*Granule *granule = NgapApi.get_granule(collection,year,month,day,granule_id);
-                if(granule){
-                    *//*CatalogItem *granuleItem = new CatalogItem();
-                granuleItem->set_type(CatalogItem::leaf);
-                granuleItem->set_name(granule->getName());
-                granuleItem->set_is_data(true);
-                granuleItem->set_lmt(granule->getLastModifiedStr());
-                granuleItem->set_size(granule->getSize());
-                node->set_leaf(granuleItem);*//*
-            }
-            else {
-                throw BESNotFoundError("No such resource: "+path,__FILE__,__LINE__);
-            }*/
-
-            }
-        }
-    }
 }
