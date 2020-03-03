@@ -526,7 +526,7 @@ namespace curl {
      *
      * @param target_url The URL to dereference.
      * @return JSON document parsed from the response document returned by target_url
-    */ 
+    */
     std::string http_get_as_string(const std::string &target_url){
 
         // @TODO @FIXME Make the size of this buffer a configuration setting, or pass it in, something....
