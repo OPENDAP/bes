@@ -640,9 +640,8 @@ int main(int argc, char*argv[])
 
     ////////////
     //besstandalone command
-    //system("besstandalone -c "+TMP_CONF+" -i "+TMP_CMD+" > "+TMP_DMR_RESP);
-    StandAloneClient::executeCommand(TMP_CMD);
-    //create and use besStandAlone
+
+    //StandAloneClient::executeCommand(TMP_CMD); // <<-- doesn't work yet
 
     if(verbose || just_dmr){
     	cout << "DMR: " << TMP_DMR_RESP;
