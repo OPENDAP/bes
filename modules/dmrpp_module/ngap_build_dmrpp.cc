@@ -580,7 +580,7 @@ int main(int argc, char*argv[])
 
     ////////////
     //create xml file
-    std:string cmdDoc = "<?xml version='1.0' encoding='UTF-8'?> \
+    std::string cmdDoc = "<?xml version='1.0' encoding='UTF-8'?> \
     <bes:request xmlns:bes='http://xml.opendap.org/ns/bes/1.0#' reqID='get_dmrpp.sh'> \
       <bes:setContext name='dap_explicit_containers'>no</bes:setContext> \
       <bes:setContext name='errors'>xml</bes:setContext> \
@@ -622,13 +622,13 @@ int main(int argc, char*argv[])
     //sed command
     string root_dir_key = "@hdf5_root_directory@";
     int startIndex = -1;
-    cout << "hey hey, look here !!! -> " << root_dir_key.length();
     while ((startIndex = bes_conf_file.find(root_dir_key)) != 0){
     	bes_conf_file.erase(startIndex, root_dir_key.length());
     	bes_conf_file.insert(startIndex, data_root);
     }
     //use BES_CONF_DOC and sed to populate TMP_CONF
     //system(BES_CONF_DOC + " | sed -e \"s%[@]hdf5_root_directory[@]%"+data_root+"%\" > "+ TMP_CONF);
+    fputs(bes_conf_file.c_str(),TMP_CONF);
 
     if(verbose){
     	cout << "TMP_CONF: " << TMP_CONF;
@@ -641,6 +641,7 @@ int main(int argc, char*argv[])
     ////////////
     //besstandalone command
     //system("besstandalone -c "+TMP_CONF+" -i "+TMP_CMD+" > "+TMP_DMR_RESP);
+    StandAloneClient::executeCommand(TMP_CMD);
     //create and use besStandAlone
 
     if(verbose || just_dmr){
