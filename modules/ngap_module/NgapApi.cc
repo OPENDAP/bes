@@ -69,7 +69,8 @@ namespace ngap {
     //string CMR_REQUEST_BASE("https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4");
 
     string CMR_PROVIDER("provider");
-    string CMR_NATIVE_ID("native_id");
+    string CMR_ENTRY_TITLE("entry_title");
+    string CMR_GRANULE_UR("granule_ur");
     string CMR_URL_TYPE_GET_DATA("GET DATA");
 
     string rjtype_names[] = {
@@ -116,10 +117,9 @@ namespace ngap {
         }
 
         string cmr_url = cmr_granule_search_endpoint_url + "?";
-        cmr_url += CMR_PROVIDER + "=" + tokens[1] + "&";\
-        //if(tokens[3] != "skip")
-        //    cmr_url += CMR_ENTRY_TITLE + "=" + tokens[3] + "&";
-        cmr_url += CMR_NATIVE_ID + "=" + tokens[5] ;
+        cmr_url += CMR_PROVIDER + "=" + tokens[1] + "&";
+        cmr_url += CMR_ENTRY_TITLE + "=" + tokens[3] + "&";
+        cmr_url += CMR_GRANULE_UR + "=" + tokens[5] ;
         BESDEBUG( MODULE, prolog << "CMR Request URL: "<< cmr_url << endl );
         rapidjson::Document cmr_response = ngap_curl::http_get_as_json(cmr_url);
 
@@ -152,6 +152,7 @@ namespace ngap {
 
             BESDEBUG(MODULE,prolog << " Found RelatedUrls array in CMR response." << endl);
 
+            bool noSubtype;
 
             for (rapidjson::SizeType i = 0; i < related_urls.Size() && data_access_url.empty(); i++)  {
                 rapidjson::Value& obj = related_urls[i];
@@ -159,14 +160,16 @@ namespace ngap {
                 rapidjson::Value& r_url = mitr->value;
                 mitr = obj.FindMember("Type");
                 rapidjson::Value& r_type = mitr->value;
+                noSubtype = ((mitr = obj.FindMember("Subtype")) == obj.MemberEnd()) ? true : false;
                 mitr = obj.FindMember("Description");
                 rapidjson::Value& r_desc = mitr->value;
                 BESDEBUG(MODULE,prolog << "RelatedUrl Object:" <<
                                        " URL: '" << r_url.GetString() << "'" <<
                                        " Type: '" << r_type.GetString() << "'" <<
+                                       //" Subtype: '" << r_subtype.GetString() << "'" <<
                                        " Description: '" << r_desc.GetString() <<  "'" << endl);
 
-                if(r_type.GetString() == CMR_URL_TYPE_GET_DATA){
+                if( (r_type.GetString() == CMR_URL_TYPE_GET_DATA) && noSubtype ){
                     data_access_url = r_url.GetString();
                 }
             }
