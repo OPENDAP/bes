@@ -778,6 +778,7 @@ add_executable(bes
     modules/dmrpp_module/DmrppUInt64.h
     modules/dmrpp_module/DmrppUrl.cc
     modules/dmrpp_module/DmrppUrl.h
+    modules/dmrpp_module/ngap_build_dmrpp.cc
     modules/fileout_covjson/unit-tests/FoCovJsonTest.cc
     modules/fileout_covjson/unit-tests/test_config.h
     modules/fileout_covjson/focovjson_utils.cc
