@@ -29,6 +29,7 @@
 #include <algorithm>
 
 #include <cstdlib>
+#include <unistd.h>
 
 //#define H5D_FRIEND		// Workaround, needed to use H5D_chunk_rec_t
 //#include <H5Dpkg.h>
@@ -498,7 +499,7 @@ int main(int argc, char*argv[])
     string dmr_name = "";
     string url_name = "";
     string output_file = "";
-    string data_root = get_current_dir_name();
+    string data_root = get_current_dir_name(); //#FIXME change
     string bes_conf_file = "";
     bool just_dmr = false;
     int status=0;
