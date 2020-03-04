@@ -131,6 +131,10 @@ H5.DiskCacheComp=true
 H5.DiskCacheFloatOnlyComp=true
 H5.DiskCacheCompThreshold=2.0
 H5.DiskCacheCompVarSize=10000
+
+Gateway.Whitelist+=http://
+Gateway.Whitelist+=https://
+
 EOF
 )
 ###############################################################################
@@ -273,18 +277,21 @@ noConstraintContainerElement="<bes:container name=\"c\" />"
 function mkDAP2BesCmd() {
     source_data_path="${1}"
     dap=${2}
-    dap4_ce="${3}"
-    if test -n "${dap4_ce}"; then
-        container_element=$(
-            cat <<EOF
-<bes:container name="c">
-      <bes:constraint>${dap4_ce}</bes:constraint>
+    dap2_ce="${3}"
+    if test -n "${dap2_ce}"; then
+        echo "Applying DAP2 CE: '${dap2_ce}'" >&2
+
+container_element=$(cat <<EOF
+    <bes:container name="c">
+        <bes:constraint>${dap2_ce}</bes:constraint>
     </bes:container>
 EOF
-        )
+)
     else
         container_element="${noConstraintContainerElement}"
     fi
+    echo "Container Element: " >&2
+    echo "${container_element}" >&2
 
     d4BESCmd=$(
         cat <<EOF
@@ -297,8 +304,7 @@ EOF
   <bes:setContainer name="c">${source_data_path}</bes:setContainer>
 
   <bes:define name="d" space="default">
-    <bes:container name="c">
-    </bes:container>
+${container_element}
   </bes:define>
 
   <bes:get type="${dap}" definition="d" />
@@ -313,7 +319,7 @@ EOF
 
     if test -n "$verbose"; then
         echo "      data_path: ${source_data_path}" >&2
-        echo "        dap4_ce: '${dap4_ce}'" >&2
+        echo "        dap2_ce: '${dap2_ce}'" >&2
         echo "    ${dap}_request: ${TEMP_FILE} " >&2
         #echo " " >&2
     fi
@@ -730,14 +736,15 @@ retval=$?
 
 if test -n "${run_tests}"; then
     dmrpp_inventory_test
-    retval=$?
+    dit_retval=$?
+    dmrpp_value_test
+    dvt_retval=$?
 fi
 retval=$(echo "${dit_retval} + ${dvt_retval}" | bc)
 exit $retval
 
 # rm -f ${SOURCE_DMR} ${SOURCE_DDX} ${TARGET_DDX} ${TARGET_DMR} ${DDX_CMD} ${DMR_CMD} ${BES_CONF}
 
-#./get_dmrpp -u "http://test.opendap.org/data/dmrpp/AIRS.2015.01.01.L3.RetStd_IR001.v6.0.11.0.G15013155825.nc.h5" \
-# -o airs.h5.dmrpp -T -v  airs.h5
+#./get_dmrpp -u "http://test.opendap.org/data/dmrpp/AIRS.2015.01.01.L3.RetStd_IR001.v6.0.11.0.G15013155825.nc.h5" -o airs.h5.dmrpp -T -v  airs.h5
 #./get_dmrpp -u "http://test.opendap.org/data/dmrpp/SMAP_L3_SM_P_20150406_R14010_001.h5" -o smap.h5.dmrpp -T -v  smap.h5
 
