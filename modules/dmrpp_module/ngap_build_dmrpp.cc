@@ -66,6 +66,7 @@ typedef struct H5D_chunk_rec_t {
 #include <GetOpt.h>
 
 #include <TheBESKeys.h>
+#include <standalone/StandAloneApp.h>
 #include <BESUtil.h>
 #include <BESDebug.h>
 
@@ -637,16 +638,31 @@ int main(int argc, char*argv[])
 
     ////////////
     //create temp dmr respository
-    std::FILE* TMP_DMR_RESP = std::tmpfile();
+
+    //std::FILE* TMP_DMR_RESP = std::tmpfile();
 
     ////////////
     //besstandalone command
+    string a = "-c";
+    string b = "-i";
+    string c = "-o";
 
-    //StandAloneClient::executeCommand(TMP_CMD); // <<-- doesn't work yet
+    int nargc = 6;
+    char * nargv[6];
+    nargv[0] = const_cast<char*>(a.c_str());
+    nargv[1] = const_cast<char*>(bes_conf_file.c_str());
+    nargv[2] = const_cast<char*>(b.c_str());
+    nargv[3] = const_cast<char*>(cmdDoc.c_str());
+    nargv[4] = const_cast<char*>(c.c_str());
+    nargv[5] = const_cast<char*>(output_file.c_str());
+    StandAloneApp app;
+    app.main(nargc, nargv);
 
+    /*
     if(verbose || just_dmr){
     	cout << "DMR: " << TMP_DMR_RESP;
     }
+    */
 
     ////////////////////////////////////////////////////
 	// MAKE_DMRPP CODE
