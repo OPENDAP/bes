@@ -1,6 +1,4 @@
-string BES_CONF_DOC=" \
- \
-BES.ServerAdministrator=admin.email.address@your.domain.name \
+string BES_CONF_DOC="BES.ServerAdministrator=admin.email.address@your.domain.name \
  \
 BES.User=user_name \
 BES.Group=group_name \
@@ -81,5 +79,4 @@ H5.DiskCacheSize=10000 \
 H5.DiskCacheComp=true \
 H5.DiskCacheFloatOnlyComp=true \
 H5.DiskCacheCompThreshold=2.0 \
-H5.DiskCacheCompVarSize=10000 \
-"
+H5.DiskCacheCompVarSize=10000";

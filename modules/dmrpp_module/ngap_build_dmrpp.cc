@@ -618,7 +618,8 @@ int main(int argc, char*argv[])
     //create temp config file
     std::FILE* TMP_CONF = std::tmpfile();
     if (bes_conf_file.empty()){
-    	bes_conf_file = TheBESKeys::ConfigFile;
+    	//bes_conf_file = TheBESKeys::ConfigFile;
+    	bes_conf_file = BES_CONF_DOC;
     	if(verbose){
     		cout << bes_conf_file << endl;
     	}
@@ -627,9 +628,9 @@ int main(int argc, char*argv[])
     ////////////
     //sed command
     string root_dir_key = "@hdf5_root_directory@";
-    int startIndex = -1;
+    int startIndex = 0;
     cout << "before loop cur index: " << startIndex << endl;
-    while ((startIndex = bes_conf_file.find(root_dir_key)) != 0){
+    while ((startIndex = bes_conf_file.find(root_dir_key)) != -1){
     	cout << "while loop cur index: " << startIndex << endl;
     	bes_conf_file.erase(startIndex, root_dir_key.length());
     	bes_conf_file.insert(startIndex, data_root);
@@ -651,7 +652,7 @@ int main(int argc, char*argv[])
     //besstandalone command
     string a = "-c";
     string b = "-i";
-    string c = "-o";
+    string c = "-f";
 
     int nargc = 6;
     char * nargv[6];
