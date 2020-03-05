@@ -59,7 +59,7 @@ libdmrpp_module_la_LIBADD = $(BES_DISPATCH_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_
 $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -ltest-types
 
 # build_dmrpp config
-bin_PROGRAMS = build_dmrpp
+bin_PROGRAMS = build_dmrpp ngap_build_dmrpp
 
 build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS)
 
@@ -69,13 +69,13 @@ build_dmrpp_LDADD = $(BES_DISPATCH_LIB) $(DAP_MODULE_OBJS) $(BES_EXTRA_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) -lz
 
 # ngap_build_dmrpp config
-bin_PROGRAMS = ngap_build_dmrpp
+#bin_PROGRAMS = ngap_build_dmrpp 
 
 ngap_build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS)
 
 ngap_build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) ngap_build_dmrpp.cc
 
-ngap_build_dmrpp_LDADD =  $(BES_STANDALONE_LIB)  $(BES_DISPATCH_LIB) $(DAP_MODULE_OBJS) $(BES_EXTRA_LIBS) \
+ngap_build_dmrpp_LDADD =  $(top_builddir)/cmdln/CmdTranslation.o $(BES_STANDALONE_LIB)  $(BES_DISPATCH_LIB) $(DAP_MODULE_OBJS) $(BES_EXTRA_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) -lz
 
 EXTRA_PROGRAMS = 
