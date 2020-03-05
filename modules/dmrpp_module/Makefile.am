@@ -5,6 +5,8 @@ ACLOCAL_AMFLAGS = -I conf
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 AM_CXXFLAGS =
 
+BES_STANDALONE_LIB = -L$(top_builddir)/standalone -lbes_standalone
+
 # FIXME Remove this hack. Set these with configure. jhrg 11/25/19
 OPENSSL_LIBS=-lcrypto
 OPENSSL_INC=-I/usr/local/opt/openssl/include
@@ -73,7 +75,7 @@ ngap_build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS)
 
 ngap_build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) ngap_build_dmrpp.cc
 
-ngap_build_dmrpp_LDADD = $(BES_DISPATCH_LIB) $(DAP_MODULE_OBJS) $(BES_EXTRA_LIBS) \
+ngap_build_dmrpp_LDADD =  $(BES_STANDALONE_LIB)  $(BES_DISPATCH_LIB) $(DAP_MODULE_OBJS) $(BES_EXTRA_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) -lz
 
 EXTRA_PROGRAMS = 

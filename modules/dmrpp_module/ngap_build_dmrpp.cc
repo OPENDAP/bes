@@ -40,6 +40,7 @@
 #include <H5Epublic.h>
 #include <H5Zpublic.h>  // Constants for compression filters
 #include <H5Spublic.h>
+#include <../standalone/StandAloneApp.h>
 
 /*
  * "Generic" chunk record.  Each chunk is keyed by the minimum logical
@@ -500,7 +501,7 @@ int main(int argc, char*argv[])
     string dmr_name = "";
     string url_name = "";
     string output_file = "";
-    string data_root = get_current_dir_name(); //#FIXME change
+    string data_root = "."; // get_current_dir_name(); //#FIXME change
     string bes_conf_file = "";
     bool just_dmr = false;
     int status=0;
