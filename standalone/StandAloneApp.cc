@@ -335,6 +335,7 @@ void StandAloneApp::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
+#if 0
 int main(int argc, char **argv)
 {
     try {
@@ -354,4 +355,4 @@ int main(int argc, char **argv)
         return 3;
     }
 }
-
+#endif
