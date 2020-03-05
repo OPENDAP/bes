@@ -80,6 +80,7 @@ typedef struct H5D_chunk_rec_t {
 #include "DmrppD4Group.h"
 #include "DmrppMetadataStore.h"
 #include "BESDapNames.h"
+#include "bes_default_conf.h"
 
 using namespace std;
 using namespace libdap;
@@ -552,7 +553,9 @@ int main(int argc, char*argv[])
         	data_root = getopt.optarg;
         	break;
         case 'h':
-            cerr << "build_dmrpp [-v] -c <bes.conf> -f <data file>  [-u <href url>] | build_dmrpp -f <data file> -r <dmr file> | build_dmrpp -h" << endl;
+            cerr << "ngap_build_dmrpp [-v] -c <bes.conf> -f <data file>  [-u <href url>] \
+            		| ngap_build_dmrpp -f <data file> -r <dmr file> \
+            		| ngap_build_dmrpp -h" << endl;
             exit(1);
         default:
             break;
@@ -605,27 +608,29 @@ int main(int argc, char*argv[])
     //create temp command file
     std::FILE * TMP_CMD = std::tmpfile();
     fputs(cmdDoc.c_str(),TMP_CMD);
-    cout << TMP_CMD;
+    //cout << TMP_CMD;
 
     if(verbose){
-    	cout << "TMP_CMD: " << TMP_CMD;
+    	cout << "TMP_CMD: " << TMP_CMD << endl;
     }
 
     ////////////
     //create temp config file
     std::FILE* TMP_CONF = std::tmpfile();
     if (bes_conf_file.empty()){
-    	if(verbose){
-    		cout << bes_conf_file;
-    	}
     	bes_conf_file = TheBESKeys::ConfigFile;
+    	if(verbose){
+    		cout << bes_conf_file << endl;
+    	}
     }
 
     ////////////
     //sed command
     string root_dir_key = "@hdf5_root_directory@";
     int startIndex = -1;
+    cout << "before loop cur index: " << startIndex << endl;
     while ((startIndex = bes_conf_file.find(root_dir_key)) != 0){
+    	cout << "while loop cur index: " << startIndex << endl;
     	bes_conf_file.erase(startIndex, root_dir_key.length());
     	bes_conf_file.insert(startIndex, data_root);
     }
@@ -634,7 +639,7 @@ int main(int argc, char*argv[])
     fputs(bes_conf_file.c_str(),TMP_CONF);
 
     if(verbose){
-    	cout << "TMP_CONF: " << TMP_CONF;
+    	cout << "TMP_CONF: " << TMP_CONF << endl;
     }
 
     ////////////
