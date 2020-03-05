@@ -40,8 +40,8 @@ class StandAloneApp : public BESModuleApp
 {
 private:
     StandAloneClient *		_client ;
-    string			_cmd ;
-    ofstream *			_outputStrm ;
+    std::string			_cmd ;
+    std::ofstream *			_outputStrm ;
     std::ifstream *			_inputStrm ;
     bool			_createdInputStrm ;
     int				_repeat ;
