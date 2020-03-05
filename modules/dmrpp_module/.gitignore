@@ -6,3 +6,4 @@
 
 *.trace
 /build_dmrpp
+/ngap_build_dmrpp
