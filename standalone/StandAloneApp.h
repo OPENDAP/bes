@@ -29,6 +29,9 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+#ifndef I_StandAloneClient_H
+#define I_StandAloneClient_H 1
+
 
 #include <fstream>
 
@@ -60,3 +63,4 @@ public:
     StandAloneClient *		client() { return _client ; }
 } ;
 
+#endif // I_StandAloneClient_H
