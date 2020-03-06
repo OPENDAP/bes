@@ -503,16 +503,17 @@ int main(int argc, char*argv[])
     string h5_dset_path = "";
     string dmr_name = "";
     string url_name = "";
-    string output_file = "";
+    string dmr_file_name = "";
     string data_root = "."; // get_current_dir_name(); //#FIXME change
     string bes_conf_file = "";
     bool just_dmr = false;
     int status=0;
+    string input_data_file = "";
 
     /* t = data_root
      * c = config file
      * f = file name
-     * r = dmr_name
+     * r = dmr_file_name
      * u = url_name
      * d = debug
      * h = help
@@ -538,10 +539,10 @@ int main(int argc, char*argv[])
                 BESDebug::SetUp(string("cerr,").append(DEBUG_KEY));
                 break;
             case 'f':
-                h5_file_name = getopt.optarg; // == data_root/datafile == 'pwd'/input_data_file (get_dmrpp script)
+                input_data_file = getopt.optarg; // == data_root/datafile == 'pwd'/input_data_file (get_dmrpp script)
                 break;
             case 'r':
-                dmr_name = getopt.optarg; // == TMP_DMR_RESP
+                dmr_file_name = getopt.optarg; // == TMP_DMR_RESP
                 break;
             case 'u':
                 url_name = getopt.optarg; // == dmrpp_url
@@ -550,7 +551,7 @@ int main(int argc, char*argv[])
                 TheBESKeys::ConfigFile = getopt.optarg; // == TMP_CONF
                 break;
             case 'o':
-                output_file = getopt.optarg;
+                dmr_file_name = getopt.optarg;
                 break;
             case 'm':
                 just_dmr = true;
@@ -572,19 +573,14 @@ int main(int argc, char*argv[])
     // GET_OPTS CODE
     /////////////////////////////
 
-    string input_data_file = "";
-    if(argc >= 2){
-		try{
-			input_data_file = argv[1];
-		}
-		catch(...){
-			cerr << "Error - input_data_file must be given." << endl;
-		}
+    if(input_data_file.empty()){
+        cerr << "Error - input_data_file must be given." << endl;
+        exit(1);
     }
     if(verbose) cerr << "Using input_data_file: " << input_data_file << endl;
 
-    if (output_file.empty()){
-    	output_file = "./ngap_build_dmrpp.log";
+    if (dmr_file_name.empty()){
+        dmr_file_name = "./ngap_build_dmrpp.log";
     }
 
     ////////////////////////////////////////////////////
@@ -688,7 +684,7 @@ int main(int argc, char*argv[])
     nargv[2] = const_cast<char*>("-i");
     nargv[3] = const_cast<char*>(bes_cmd_filename.str().c_str());
     nargv[4] = const_cast<char*>("-f");
-    nargv[5] = const_cast<char*>(output_file.c_str());
+    nargv[5] = const_cast<char*>(dmr_file_name.c_str());
 
 
     cerr << endl << "besstandalone "; for(unsigned i=0; i<6 ; i++){ cerr << nargv[i] << " "; } cerr << endl <<  endl;
@@ -697,11 +693,10 @@ int main(int argc, char*argv[])
     StandAloneApp app;
     app.main(nargc, nargv);
 
-    /*
     if(verbose || just_dmr){
-    	cout << "DMR: " << TMP_DMR_RESP;
+    	cout << "DMR: " << dmr_file_name.c_str() << endl;
     }
-    */
+
 
     ////////////////////////////////////////////////////
 	// MAKE_DMRPP CODE
@@ -709,7 +704,7 @@ int main(int argc, char*argv[])
 
     //TODO make_dmrpp code
 
-    if (h5_file_name.empty()) {
+    if (input_data_file.empty()) {
         cerr << "HDF5 file name must be given (-f <input>)." << endl;
         return 1;
     }
@@ -722,20 +717,20 @@ int main(int argc, char*argv[])
 
         // For a given HDF5, get info for all the HDF5 datasets in a DMR or for a
         // given HDF5 dataset
-        if (!dmr_name.empty()) {
+        if (!dmr_file_name.empty()) {
             // Get dmr:
             unique_ptr<DMRpp> dmrpp(new DMRpp);
             DmrppTypeFactory dtf;
             dmrpp->set_factory(&dtf);
 
-            ifstream in(dmr_name.c_str());
+            ifstream in(dmr_file_name.c_str());
             D4ParserSax2 parser;
             parser.intern(in, dmrpp.get(), false);
 
             // Open the hdf5 file
-            file = H5Fopen(h5_file_name.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+            file = H5Fopen(input_data_file.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
             if (file < 0) {
-                cerr << "Error: HDF5 file '" + h5_file_name + "' cannot be opened." << endl;
+                cerr << "Error: HDF5 file '" + input_data_file + "' cannot be opened." << endl;
                 return 1;
             }
 
@@ -773,13 +768,13 @@ int main(int argc, char*argv[])
             // path relative to the BES Data Root) with the MDS.
             // Changed this to utilze assmeblePath() because simply concatenating the strings
             // is fragile. - ndp 6/6/18
-            string h5_file_path = BESUtil::assemblePath(bes_data_root,h5_file_name);
+            string h5_file_path = BESUtil::assemblePath(bes_data_root,input_data_file);
 
-            //bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_name /*h5_file_path*/);
-            bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_path, h5_file_name, "h5");
+            //bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(input_data_file /*h5_file_path*/);
+            bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_path, input_data_file, "h5");
             if (lock()) {
                 // parse the DMR into a DMRpp (that uses the DmrppTypes)
-                unique_ptr<DMRpp> dmrpp(dynamic_cast<DMRpp*>(mds->get_dmr_object(h5_file_name /*h5_file_path*/)));
+                unique_ptr<DMRpp> dmrpp(dynamic_cast<DMRpp*>(mds->get_dmr_object(input_data_file /*h5_file_path*/)));
                 if (!dmrpp.get()) {
                     cerr << "Expected a DMR++ object from the DmrppMetadataStore." << endl;
                     return 1;
@@ -796,7 +791,7 @@ int main(int argc, char*argv[])
 
                 dmrpp->set_href(url_name);
 
-                mds->add_dmrpp_response(dmrpp.get(), h5_file_name /*h5_file_path*/);
+                mds->add_dmrpp_response(dmrpp.get(), input_data_file /*h5_file_path*/);
 
                 XMLWriter writer;
                 dmrpp->set_print_chunks(true);
