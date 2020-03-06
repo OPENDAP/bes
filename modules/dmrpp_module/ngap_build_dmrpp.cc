@@ -693,12 +693,11 @@ int main(int argc, char*argv[])
 
     cerr << endl << "besstandalone "; for(unsigned i=0; i<6 ; i++){ cerr << nargv[i] << " "; } cerr << endl <<  endl;
 
-
     StandAloneApp app;
     app.main(nargc, nargv);
 
     if(verbose || just_dmr){
-    	cout << "DMR: " << dmr_file_name.c_str() << endl;
+    	cerr << "DMR: " << dmr_file_name.c_str() << endl;
     }
 
 
