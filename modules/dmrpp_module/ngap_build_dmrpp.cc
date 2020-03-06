@@ -88,6 +88,7 @@ using namespace libdap;
 using namespace dmrpp;
 
 static bool verbose = false;
+static bool very_verbose = false;
 #define VERBOSE(x) do { if (verbose) x; } while(false)
 
 #define DEBUG_KEY "metadata_store,dmrpp_store,dmrpp"
@@ -521,46 +522,50 @@ int main(int argc, char*argv[])
      * t = data_root (aka 'pwd')
     */
 
-    GetOpt getopt(argc, argv, "t:c:f:r:u:dhvo:m");
+    GetOpt getopt(argc, argv, "t:c:f:r:u:dhvVo:m");
     //GetOpt getopt(argc, argv, "c:f:r:u:dhv");
     int option_char;
     while ((option_char = getopt()) != -1) {
         switch (option_char) {
-        case 'v':
-            verbose = true; // verbose hdf5 errors
-            break;
-        case 'd':
-            BESDebug::SetUp(string("cerr,").append(DEBUG_KEY));
-            break;
-        case 'f':
-            h5_file_name = getopt.optarg; // == data_root/datafile == 'pwd'/input_data_file (get_dmrpp script)
-            break;
-        case 'r':
-            dmr_name = getopt.optarg; // == TMP_DMR_RESP
-            break;
-        case 'u':
-            url_name = getopt.optarg; // == dmrpp_url
-            break;
-        case 'c':
-            TheBESKeys::ConfigFile = getopt.optarg; // == TMP_CONF
-            break;
-        case 'o':
-        	output_file = getopt.optarg;
-        	break;
-        case 'm':
-        	just_dmr = true;
-        	break;
-        case 't':
-        	data_root = getopt.optarg;
-        	break;
-        case 'h':
-            cerr << "ngap_build_dmrpp [-v] -c <bes.conf> -f <data file>  [-u <href url>] \
-            		| ngap_build_dmrpp -f <data file> -r <dmr file> \
-            		| ngap_build_dmrpp -h" << endl;
-            exit(1);
-        default:
-            break;
-        }
+            case 'v':
+                verbose = true;
+                break;
+            case 'V':
+                verbose = true;
+                very_verbose = true;
+                break;
+            case 'd':
+                BESDebug::SetUp(string("cerr,").append(DEBUG_KEY));
+                break;
+            case 'f':
+                h5_file_name = getopt.optarg; // == data_root/datafile == 'pwd'/input_data_file (get_dmrpp script)
+                break;
+            case 'r':
+                dmr_name = getopt.optarg; // == TMP_DMR_RESP
+                break;
+            case 'u':
+                url_name = getopt.optarg; // == dmrpp_url
+                break;
+            case 'c':
+                TheBESKeys::ConfigFile = getopt.optarg; // == TMP_CONF
+                break;
+            case 'o':
+                output_file = getopt.optarg;
+                break;
+            case 'm':
+                just_dmr = true;
+                break;
+            case 't':
+                data_root = getopt.optarg;
+                break;
+            case 'h':
+                cerr << "ngap_build_dmrpp [-v] -c <bes.conf> -f <data file>  [-u <href url>] \
+                        | ngap_build_dmrpp -f <data file> -r <dmr file> \
+                        | ngap_build_dmrpp -h" << endl;
+                exit(1);
+            default:
+                break;
+            }
     }
 
     ////////////////////////////////////////////////////
@@ -576,9 +581,10 @@ int main(int argc, char*argv[])
 			cerr << "Error - input_data_file must be given." << endl;
 		}
     }
+    if(verbose) cerr << "Using input_data_file: " << input_data_file << endl;
 
     if (output_file.empty()){
-    	output_file = "./ngap_dmrpp_build_result.log";
+    	output_file = "./ngap_build_dmrpp.log";
     }
 
     ////////////////////////////////////////////////////
@@ -587,63 +593,83 @@ int main(int argc, char*argv[])
 
     ////////////
     //create xml file
-    std::string cmdDoc = "<?xml version='1.0' encoding='UTF-8'?> \
-    <bes:request xmlns:bes='http://xml.opendap.org/ns/bes/1.0#' reqID='get_dmrpp.sh'> \
-      <bes:setContext name='dap_explicit_containers'>no</bes:setContext> \
-      <bes:setContext name='errors'>xml</bes:setContext> \
-      <bes:setContext name='max_response_size'>0</bes:setContext> \
-      \
-      <bes:setContainer name='c'>$DATAFILE</bes:setContainer> \
-      \
-      <bes:define name='d' space='default'> \
-        <bes:container name='c'> \
-        </bes:container> \
-      </bes:define> \
-      \
-      <bes:get type='dmr' definition='d' /> \
-      \
-    </bes:request> \
-    ";
+    std::string cmdDoc =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
+        "<bes:request xmlns:bes=\"http://xml.opendap.org/ns/bes/1.0#\" reqID=\"get_dmrpp.sh\">\n"
+        "    <bes:setContext name=\"dap_explicit_containers\">no</bes:setContext>\n"
+        "    <bes:setContext name=\"errors\">xml</bes:setContext>\n"
+        "    <bes:setContext name=\"max_response_size\">0</bes:setContext>\n"
+        ""
+        "    <bes:setContainer name=\"c\">DATAFILE_NAME</bes:setContainer>\n"
+        ""
+        "    <bes:define name=\"d\" space=\"default\">\n"
+        "        <bes:container name=\"c\"/>\n"
+        "    </bes:define>\n"
+        ""
+        "    <bes:get type=\"dmr\" definition=\"d\"/>\n"
+        "</bes:request>\n"
+        ;
+
+
+    pid_t pid =  getpid();
+    std::FILE *tmp;
+    stringstream bes_cmd_filename;
+    stringstream bes_conf_filename;
 
     ////////////
     //create temp command file
-    std::FILE * TMP_CMD = std::tmpfile();
-    fputs(cmdDoc.c_str(),TMP_CMD);
-    //cout << TMP_CMD;
+    {
+        string key = "DATAFILE_NAME";
+        int index = 0;
+        if( (index=cmdDoc.find(key)) != -1){
+            cmdDoc.erase(index, key.length());
+            cmdDoc.insert(index, input_data_file);
+        }
 
-    if(verbose){
-    	cout << "TMP_CMD: " << TMP_CMD << endl;
+        bes_cmd_filename << "/tmp/nbd_" << pid << "_bes.cmd";
+        tmp = fopen(bes_cmd_filename.str().c_str(), "w");
+        fputs(cmdDoc.c_str(), tmp);
+        fclose(tmp);
+        if(very_verbose){
+            cerr << "bes_cmd: " << endl << cmdDoc << endl;
+        }
+        if(very_verbose){
+            cerr << "bes_cmd_filename: " << bes_cmd_filename.str() << endl;
+        }
     }
 
     ////////////
     //create temp config file
-    std::FILE* TMP_CONF = std::tmpfile();
-    if (bes_conf_file.empty()){
-    	//bes_conf_file = TheBESKeys::ConfigFile;
-    	bes_conf_file = BES_CONF_DOC;
-    }
-    if(verbose){
-        cout << bes_conf_file << endl;
-    }
+    {
+        if (bes_conf_file.empty()) {
+            //bes_conf_file = TheBESKeys::ConfigFile;
+            bes_conf_file = BES_CONF_DOC;
+        }
+        if (very_verbose) {
+            cerr << "bes_conf: " << endl << bes_conf_file << endl;
+        }
 
-    ////////////
-    //sed command
-    string root_dir_key = "@hdf5_root_directory@";
-    int startIndex = 0;
-    cout << "before loop cur index: " << startIndex << endl;
-    while ((startIndex = bes_conf_file.find(root_dir_key)) != -1){
-    	cout << "while loop cur index: " << startIndex << endl;
-    	bes_conf_file.erase(startIndex, root_dir_key.length());
-    	bes_conf_file.insert(startIndex, data_root);
-    }
-    //use BES_CONF_DOC and sed to populate TMP_CONF
-    //system(BES_CONF_DOC + " | sed -e \"s%[@]hdf5_root_directory[@]%"+data_root+"%\" > "+ TMP_CONF);
-    fputs(bes_conf_file.c_str(),TMP_CONF);
+        ////////////
+        //sed command
+        string root_dir_key = "@hdf5_root_directory@";
+        int startIndex = 0;
+        if(very_verbose) cerr << "Before loop cur index: " << startIndex << endl;
+        while ((startIndex = bes_conf_file.find(root_dir_key)) != -1){
+            if(very_verbose)  cerr << "While loop cur index: " << startIndex << endl;
+            bes_conf_file.erase(startIndex, root_dir_key.length());
+            bes_conf_file.insert(startIndex, data_root);
+        }
 
-    if(verbose){
-    	cout << "TMP_CONF: " << TMP_CONF << endl;
-    }
+        bes_conf_filename << "/tmp/nbd_" << pid << "_bes.conf";
+        tmp = fopen(bes_conf_filename.str().c_str(), "w");
+        fputs(bes_conf_file.c_str(), tmp);
+        fclose(tmp);
 
+        if(verbose){
+            cerr << "bes_conf_filename: " << bes_conf_filename.str() << endl;
+        }
+
+    }
     ////////////
     //create temp dmr respository
 
@@ -651,18 +677,23 @@ int main(int argc, char*argv[])
 
     ////////////
     //besstandalone command
-    string a = "-c";
+    string a = "-c"; // this is excess object the string literal is a char* already
     string b = "-i";
     string c = "-f";
 
     int nargc = 6;
     char * nargv[6];
-    nargv[0] = const_cast<char*>(a.c_str());
-    nargv[1] = const_cast<char*>(bes_conf_file.c_str());
-    nargv[2] = const_cast<char*>(b.c_str());
-    nargv[3] = const_cast<char*>(cmdDoc.c_str());
-    nargv[4] = const_cast<char*>(c.c_str());
+    nargv[0] = const_cast<char*>("-c");
+    nargv[1] = const_cast<char*>(bes_conf_filename.str().c_str());
+    nargv[2] = const_cast<char*>("-i");
+    nargv[3] = const_cast<char*>(bes_cmd_filename.str().c_str());
+    nargv[4] = const_cast<char*>("-f");
     nargv[5] = const_cast<char*>(output_file.c_str());
+
+
+    cerr << endl << "besstandalone "; for(unsigned i=0; i<6 ; i++){ cerr << nargv[i] << " "; } cerr << endl <<  endl;
+
+
     StandAloneApp app;
     app.main(nargc, nargv);
 
