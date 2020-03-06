@@ -2103,6 +2103,7 @@ add_executable(bes
         modules/ngap_module/NgapUtils.h
         modules/ngap_module/RemoteHttpResource.cc
         modules/ngap_module/RemoteHttpResource.h
+        modules/ngap_module/unit-tests/NgapApiTest.cc
 
 
 )
