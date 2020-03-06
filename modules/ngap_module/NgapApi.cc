@@ -187,9 +187,15 @@ namespace ngap {
 
         vector<string> tokens;
         BESUtil::tokenize(real_name,tokens);
+        if(tokens.empty()){
+            string err = (string) "The specified path '" + real_name
+                         + "' does not conform to the NGAP request interface API.";
+            throw BESSyntaxUserError(err, __FILE__, __LINE__);
+        }
+
         if( tokens[0]!= NGAP_PROVIDER_KEY || tokens[2]!=NGAP_DATASETS_KEY || tokens[4]!=NGAP_GRANULES_KEY){
-            string err = (string) "The specified path " + real_name
-                         + " does not conform to the NGAP request interface API.";
+            string err = (string) "The specified path '" + real_name
+                         + "' does not conform to the NGAP request interface API.";
             throw BESSyntaxUserError(err, __FILE__, __LINE__);
         }
 
