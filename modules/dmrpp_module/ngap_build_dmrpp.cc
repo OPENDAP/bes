@@ -503,7 +503,6 @@ int main(int argc, char*argv[])
     string h5_dset_path = "";
     string dmr_name = "";
     string url_name = "";
-    string dmr_file_name = "";
     string data_root = "."; // get_current_dir_name(); //#FIXME change
     string bes_conf_file = "";
     bool just_dmr = false;
@@ -523,7 +522,7 @@ int main(int argc, char*argv[])
      * t = data_root (aka 'pwd')
     */
 
-    GetOpt getopt(argc, argv, "t:c:f:r:u:dhvVo:m");
+    GetOpt getopt(argc, argv, "t:c:f:u:dhvV:m");
     //GetOpt getopt(argc, argv, "c:f:r:u:dhv");
     int option_char;
     while ((option_char = getopt()) != -1) {
@@ -541,17 +540,11 @@ int main(int argc, char*argv[])
             case 'f':
                 input_data_file = getopt.optarg; // == data_root/datafile == 'pwd'/input_data_file (get_dmrpp script)
                 break;
-            case 'r':
-                dmr_file_name = getopt.optarg; // == TMP_DMR_RESP
-                break;
             case 'u':
                 url_name = getopt.optarg; // == dmrpp_url
                 break;
             case 'c':
                 bes_conf_file = getopt.optarg; // == TMP_CONF
-                break;
-            case 'o':
-                dmr_file_name = getopt.optarg;
                 break;
             case 'm':
                 just_dmr = true;
@@ -579,9 +572,6 @@ int main(int argc, char*argv[])
     }
     if(verbose) cerr << "Using input_data_file: " << input_data_file << endl;
 
-    if (dmr_file_name.empty()){
-        dmr_file_name = "./ngap_build_dmrpp.log";
-    }
 
     ////////////////////////////////////////////////////
 	// GET_DMRPP CODE
@@ -611,6 +601,16 @@ int main(int argc, char*argv[])
     std::FILE *tmp;
     stringstream bes_cmd_filename;
     stringstream bes_conf_filename;
+    stringstream dmr_filename;
+
+    ////////////
+    //create temp DMR filename
+    {
+        dmr_filename << "/tmp/nbd_" << pid << ".dmr";
+        if(very_verbose){
+            cerr << "dmr_filename: " << dmr_filename.str() << endl;
+        }
+    }
 
     ////////////
     //create temp command file
@@ -677,10 +677,6 @@ int main(int argc, char*argv[])
 
     ////////////
     //besstandalone command
-    string a = "-c"; // this is excess object the string literal is a char* already
-    string b = "-i";
-    string c = "-f";
-
     int nargc = 6;
     char * nargv[6];
     nargv[0] = const_cast<char*>("-c");
@@ -688,7 +684,7 @@ int main(int argc, char*argv[])
     nargv[2] = const_cast<char*>("-i");
     nargv[3] = const_cast<char*>(bes_cmd_filename.str().c_str());
     nargv[4] = const_cast<char*>("-f");
-    nargv[5] = const_cast<char*>(dmr_file_name.c_str());
+    nargv[5] = const_cast<char*>(dmr_filename.str().c_str());
 
 
     cerr << endl << "besstandalone "; for(unsigned i=0; i<6 ; i++){ cerr << nargv[i] << " "; } cerr << endl <<  endl;
@@ -697,7 +693,7 @@ int main(int argc, char*argv[])
     app.main(nargc, nargv);
 
     if(verbose || just_dmr){
-    	cerr << "DMR: " << dmr_file_name.c_str() << endl;
+    	cerr << "DMR: " << dmr_filename.str().c_str() << endl;
     }
 
 
@@ -720,13 +716,13 @@ int main(int argc, char*argv[])
 
         // For a given HDF5, get info for all the HDF5 datasets in a DMR or for a
         // given HDF5 dataset
-        if (!dmr_file_name.empty()) {
+        if (!dmr_filename.str().empty()) {
             // Get dmr:
             unique_ptr<DMRpp> dmrpp(new DMRpp);
             DmrppTypeFactory dtf;
             dmrpp->set_factory(&dtf);
 
-            ifstream in(dmr_file_name.c_str());
+            ifstream in(dmr_filename.str().c_str());
             D4ParserSax2 parser;
             parser.intern(in, dmrpp.get(), false);
 
