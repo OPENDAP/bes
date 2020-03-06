@@ -63,7 +63,7 @@ using namespace std;
 
 namespace ngap {
 
-    string NGAP_PROVIDER_KEY("provider");
+    string NGAP_PROVIDER_KEY("providers");
     string NGAP_DATASETS_KEY("datasets");
     string NGAP_GRANULES_KEY("granules");
     //string CMR_REQUEST_BASE("https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4");
