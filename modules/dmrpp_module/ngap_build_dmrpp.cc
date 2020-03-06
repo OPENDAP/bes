@@ -523,7 +523,7 @@ int main(int argc, char*argv[])
      * t = data_root (aka 'pwd')
     */
 
-    GetOpt getopt(argc, argv, "t:c:f:u:dhvV:m");
+    GetOpt getopt(argc, argv, "t:c:f:u:dhvVm");
     //GetOpt getopt(argc, argv, "c:f:r:u:dhv");
     int option_char;
     while ((option_char = getopt()) != -1) {
