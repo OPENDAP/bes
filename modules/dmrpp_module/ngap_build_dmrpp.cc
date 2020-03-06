@@ -607,8 +607,8 @@ int main(int argc, char*argv[])
     //create temp DMR filename
     {
         dmr_filename << "/tmp/nbd_" << pid << ".dmr";
-        if(very_verbose){
-            cerr << "dmr_filename: " << dmr_filename.str() << endl;
+        if(verbose){
+            cerr << "              dmr_filename: " << dmr_filename.str() << endl;
         }
     }
 
@@ -638,8 +638,6 @@ int main(int argc, char*argv[])
     //create temp config file
     {
         if (bes_conf_file.empty()) {
-            // bes_conf_file = TheBESKeys::ConfigFile;
-            // bes_conf_file = BES_CONF_DOC;
 
             ////////////
             //sed command
@@ -670,22 +668,27 @@ int main(int argc, char*argv[])
         }
 
     }
-    ////////////
-    //create temp dmr respository
 
-    //std::FILE* TMP_DMR_RESP = std::tmpfile();
+    ////////////////////////////////////////////////////
+	// MAKE_DMRPP CODE
+	/////////////////////////////
+
+    string conf = bes_conf_filename.str();
+    string cmd = bes_cmd_filename.str();
+    string dmr = dmr_filename.str();
 
     ////////////
     //besstandalone command
     int nargc = 6;
-    char * nargv[6];
-    nargv[0] = const_cast<char*>("-c");
-    nargv[1] = const_cast<char*>(bes_conf_filename.str().c_str());
-    nargv[2] = const_cast<char*>("-i");
-    nargv[3] = const_cast<char*>(bes_cmd_filename.str().c_str());
-    nargv[4] = const_cast<char*>("-f");
-    nargv[5] = const_cast<char*>(dmr_filename.str().c_str());
+    char **nargv;
+    nargv = new char*[6];
 
+    nargv[0] = const_cast<char*>("-c");
+    nargv[1] = const_cast<char*>(conf.c_str());
+    nargv[2] = const_cast<char*>("-i");
+    nargv[3] = const_cast<char*>(cmd.c_str());
+    nargv[4] = const_cast<char*>("-f");
+    nargv[5] = const_cast<char*>(dmr.c_str());
 
     cerr << "Command line for DMR production: " << \
         "besstandalone "; for(unsigned i=0; i<6 ; i++){ cerr << nargv[i] << " "; } cerr << endl ;
@@ -697,12 +700,9 @@ int main(int argc, char*argv[])
         cerr << "                       DMR file: " << dmr_filename.str().c_str() << endl;
     }
 
-
     ////////////////////////////////////////////////////
-	// MAKE_DMRPP CODE
+	// RETURN TO DMRPP BUILDER
 	/////////////////////////////
-
-    //TODO make_dmrpp code
 
     if (input_data_file.empty()) {
         cerr << "HDF5 file name must be given (-f <input>)." << endl;
