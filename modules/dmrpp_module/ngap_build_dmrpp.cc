@@ -548,7 +548,7 @@ int main(int argc, char*argv[])
                 url_name = getopt.optarg; // == dmrpp_url
                 break;
             case 'c':
-                TheBESKeys::ConfigFile = getopt.optarg; // == TMP_CONF
+                bes_conf_file = getopt.optarg; // == TMP_CONF
                 break;
             case 'o':
                 dmr_file_name = getopt.optarg;
@@ -638,29 +638,33 @@ int main(int argc, char*argv[])
     //create temp config file
     {
         if (bes_conf_file.empty()) {
-            //bes_conf_file = TheBESKeys::ConfigFile;
-            bes_conf_file = BES_CONF_DOC;
-        }
-        if (very_verbose) {
-            cerr << "bes_conf: " << endl << bes_conf_file << endl;
-        }
+            // bes_conf_file = TheBESKeys::ConfigFile;
+            // bes_conf_file = BES_CONF_DOC;
 
-        ////////////
-        //sed command
-        string root_dir_key = "@hdf5_root_directory@";
-        int startIndex = 0;
-        if(very_verbose) cerr << "Before loop cur index: " << startIndex << endl;
-        while ((startIndex = bes_conf_file.find(root_dir_key)) != -1){
-            if(very_verbose)  cerr << "While loop cur index: " << startIndex << endl;
-            bes_conf_file.erase(startIndex, root_dir_key.length());
-            bes_conf_file.insert(startIndex, data_root);
+            ////////////
+            //sed command
+            string root_dir_key = "@hdf5_root_directory@";
+            int startIndex = 0;
+            if(very_verbose) cerr << "Before loop cur index: " << startIndex << endl;
+            while ((startIndex = BES_CONF_DOC.find(root_dir_key)) != -1){
+                if(very_verbose)  cerr << "While loop cur index: " << startIndex << endl;
+                BES_CONF_DOC.erase(startIndex, root_dir_key.length());
+                BES_CONF_DOC.insert(startIndex, data_root);
+            }
+            bes_conf_filename << "/tmp/nbd_" << pid << "_bes.conf";
+            tmp = fopen(bes_conf_filename.str().c_str(), "w");
+            fputs(BES_CONF_DOC.c_str(), tmp);
+            fclose(tmp);
+
+            if (very_verbose) {
+                cerr << "bes_conf: " << endl << BES_CONF_DOC << endl;
+            }
+
         }
-
-        bes_conf_filename << "/tmp/nbd_" << pid << "_bes.conf";
-        tmp = fopen(bes_conf_filename.str().c_str(), "w");
-        fputs(bes_conf_file.c_str(), tmp);
-        fclose(tmp);
-
+        else {
+            bes_conf_filename << bes_conf_file;
+        }
+        TheBESKeys::ConfigFile = bes_conf_filename.str();
         if(verbose){
             cerr << "bes_conf_filename: " << bes_conf_filename.str() << endl;
         }
