@@ -27,6 +27,7 @@
 #include <memory>
 #include <iterator>
 #include <algorithm>
+#include <stdio.h>
 
 #include <cstdlib>
 #include <unistd.h>
@@ -520,7 +521,7 @@ int main(int argc, char*argv[])
      * t = data_root (aka 'pwd')
     */
 
-    GetOpt getopt(argc, argv, "t:c:f:r:u:dhv:o:m");
+    GetOpt getopt(argc, argv, "t:c:f:r:u:dhvo:m");
     //GetOpt getopt(argc, argv, "c:f:r:u:dhv");
     int option_char;
     while ((option_char = getopt()) != -1) {
@@ -620,9 +621,9 @@ int main(int argc, char*argv[])
     if (bes_conf_file.empty()){
     	//bes_conf_file = TheBESKeys::ConfigFile;
     	bes_conf_file = BES_CONF_DOC;
-    	if(verbose){
-    		cout << bes_conf_file << endl;
-    	}
+    }
+    if(verbose){
+        cout << bes_conf_file << endl;
     }
 
     ////////////
