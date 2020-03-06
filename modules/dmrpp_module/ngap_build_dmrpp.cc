@@ -90,6 +90,7 @@ using namespace dmrpp;
 static bool verbose = false;
 static bool very_verbose = false;
 #define VERBOSE(x) do { if (verbose) x; } while(false)
+#define VERY_VERBOSE(x) do { if (very_verbose) x; } while(false)
 
 #define DEBUG_KEY "metadata_store,dmrpp_store,dmrpp"
 #define ROOT_DIRECTORY "BES.Catalog.catalog.RootDirectory"
@@ -250,21 +251,21 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc)
 
     try {
         int numfilt = H5Pget_nfilters(plist_id);
-        VERBOSE(cerr << "Number of filters associated with dataset: " << numfilt << endl);
+        VERY_VERBOSE(cerr << "Number of filters associated with dataset: " << numfilt << endl);
 
         for (int filter = 0; filter < numfilt; filter++) {
             size_t nelmts = 0;
             unsigned int flags, filter_info;
             H5Z_filter_t filter_type = H5Pget_filter2(plist_id, filter, &flags, &nelmts, NULL, 0, NULL, &filter_info);
-            VERBOSE(cerr << "Filter Type: ");
+            VERY_VERBOSE(cerr << "Filter Type: ");
 
             switch (filter_type) {
             case H5Z_FILTER_DEFLATE:
-                VERBOSE(cerr << "H5Z_FILTER_DEFLATE" << endl);
+                VERY_VERBOSE(cerr << "H5Z_FILTER_DEFLATE" << endl);
                 dc->set_deflate(true);
                 break;
             case H5Z_FILTER_SHUFFLE:
-                VERBOSE(cerr << "H5Z_FILTER_SHUFFLE" << endl);
+                VERY_VERBOSE(cerr << "H5Z_FILTER_SHUFFLE" << endl);
                 dc->set_shuffle(true);
                 break;
             default: {
@@ -338,8 +339,8 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
                 __FILE__, __LINE__);
             }
 
-            VERBOSE(cerr << "storage: chunked." << endl);
-            VERBOSE(cerr << "Number of chunks is " << num_chunks << endl);
+            VERY_VERBOSE(cerr << "storage: chunked." << endl);
+            VERY_VERBOSE(cerr << "Number of chunks is " << num_chunks << endl);
 
             if (dc)
             	set_filter_information(dataset, dc);
@@ -367,7 +368,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
                     throw BESInternalError("Cannot get HDF5 dataset storage info.", __FILE__, __LINE__);
                 }
 
-                VERBOSE(cerr << "chk_idk: " << i  << ", addr: " << addr << ", size: " << size << endl);
+                VERY_VERBOSE(cerr << "chk_idk: " << i  << ", addr: " << addr << ", size: " << size << endl);
 
                 //The coords need to be of type 'unsigned int' when passed into add_chunk()
                 // This loop simply copies the values from the temp_coords to chunk_coords - kln 5/1/19
@@ -570,8 +571,7 @@ int main(int argc, char*argv[])
         cerr << "Error - input_data_file must be given." << endl;
         exit(1);
     }
-    if(verbose) cerr << "Using input_data_file: " << input_data_file << endl;
-
+    if(verbose) cerr << "          Using input_data_file: " << input_data_file << endl;
 
     ////////////////////////////////////////////////////
 	// GET_DMRPP CODE
@@ -666,7 +666,7 @@ int main(int argc, char*argv[])
         }
         TheBESKeys::ConfigFile = bes_conf_filename.str();
         if(verbose){
-            cerr << "bes_conf_filename: " << bes_conf_filename.str() << endl;
+            cerr << "              bes_conf_filename: " << bes_conf_filename.str() << endl;
         }
 
     }
@@ -687,13 +687,14 @@ int main(int argc, char*argv[])
     nargv[5] = const_cast<char*>(dmr_filename.str().c_str());
 
 
-    cerr << endl << "besstandalone "; for(unsigned i=0; i<6 ; i++){ cerr << nargv[i] << " "; } cerr << endl <<  endl;
+    cerr << "Command line for DMR production: " << \
+        "besstandalone "; for(unsigned i=0; i<6 ; i++){ cerr << nargv[i] << " "; } cerr << endl ;
 
     StandAloneApp app;
     app.main(nargc, nargv);
 
     if(verbose || just_dmr){
-    	cerr << "DMR: " << dmr_filename.str().c_str() << endl;
+        cerr << "                       DMR file: " << dmr_filename.str().c_str() << endl;
     }
 
 
