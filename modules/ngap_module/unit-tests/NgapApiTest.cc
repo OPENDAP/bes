@@ -103,7 +103,7 @@ public:
 
         TheBESKeys::ConfigFile = bes_conf;
 
-        if (bes_debug) BESDebug::SetUp("cerr,cmr");
+        if (bes_debug) BESDebug::SetUp("cerr,ngap");
 
         if (bes_debug) show_file(bes_conf);
         if(Debug) cerr << "setUp() - END" << endl;
@@ -119,14 +119,29 @@ public:
         NgapApi ngapi;
         string data_access_url;
 
-        string resty_path="";
-        if(debug) cerr << prolog << "resty_path: " << resty_path << endl;
+        if ( debug  ) {
+            cout << endl;
+        }
+
+        string resty_path = "providers/GHRC_CLOUD/datasets/ADVANCED%20MICROWAVE%20SOUNDING%20UNIT-A%20(AMSU-A)%20SWATH%20FROM%20NOAA-15%20V1/granules/amsua15_2020.028_12915_1139_1324_WI.nc";
+        if (debug) cerr << prolog << "RestifiedPath: " << resty_path << endl;
 
         data_access_url = ngapi.convert_ngap_resty_path_to_data_access_url(resty_path);
         stringstream msg;
-        if(debug) cerr << prolog << "data_access_url: " << data_access_url << endl;
-        data_access_url="";
-        CPPUNIT_ASSERT(data_access_url.compare("") );
+        if (debug) cerr << prolog << "DataAccessURL: " << data_access_url << endl;
+
+        string expected("https://d1lpqa6z94hycl.cloudfront.net/ghrc-app-protected/amsua15sp__1/2020-01-28/amsua15_2020.028_12915_1139_1324_WI.nc.dmrpp");
+
+        /*if (debug) {
+            cerr << prolog << data_access_url << endl;
+            cerr << prolog << expected << endl;
+        }*/
+
+        if (expected == data_access_url) {
+            CPPUNIT_ASSERT(true);
+        } else {
+            CPPUNIT_ASSERT(false);
+        }
     }
 
 
@@ -162,6 +177,10 @@ int main(int argc, char*argv[])
         default:
             break;
         }
+
+    /*cerr << "    debug: " << (debug?"enabled":"disabled") << endl;
+    cerr << "    Debug: " << (Debug?"enabled":"disabled") << endl;
+    cerr << "bes_debug: " << (bes_debug?"enabled":"disabled") << endl;*/
 
     bool wasSuccessful = true;
     string test = "";
