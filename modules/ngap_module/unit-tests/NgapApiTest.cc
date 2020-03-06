@@ -118,12 +118,13 @@ public:
         string prolog = string(__func__) + "() - ";
         NgapApi ngapi;
         string data_access_url;
-        
+
         string resty_path="";
+        if(debug) cerr << prolog << "resty_path: " << resty_path << endl;
 
         data_access_url = ngapi.convert_ngap_resty_path_to_data_access_url(resty_path);
         stringstream msg;
-        if(debug) cerr << prolog << "data_access_url: " << data_access_url;
+        if(debug) cerr << prolog << "data_access_url: " << data_access_url << endl;
         data_access_url="";
         CPPUNIT_ASSERT(data_access_url.compare("") );
     }
