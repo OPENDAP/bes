@@ -18,7 +18,7 @@ public:
     //static const std::string BUCKET_KEY;
     static const std::string URL_KEY;
 private:
-    std::__1::map<std::string, std::string> kvp;
+    std::map<std::string, std::string> kvp;
     bool s3_tested, is_s3;
     std::string d_config_name;
 public:

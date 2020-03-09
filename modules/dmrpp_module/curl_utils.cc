@@ -2,6 +2,7 @@
 // Created by ndp on 2/15/20.
 //
 
+#include <curl/curl.h>
 #include "curl_utils.h"
 #include <sstream>
 #include <map>
@@ -526,7 +527,7 @@ namespace curl {
      *
      * @param target_url The URL to dereference.
      * @return JSON document parsed from the response document returned by target_url
-    */ // @TODO @FIXME Move this to ../curl_utils.cc (Requires moving the rapidjson lib too)
+    */ 
     std::string http_get_as_string(const std::string &target_url){
 
         // @TODO @FIXME Make the size of this buffer a configuration setting, or pass it in, something....
@@ -542,7 +543,7 @@ namespace curl {
      *
      * @param target_url The URL to dereference.
      * @return JSON document parsed from the response document returned by target_url
-     */ // @TODO @FIXME Move this to ../curl_utils.cc (Requires moving the rapidjson lib too)
+     */ 
     rapidjson::Document http_get_as_json(const std::string &target_url){
 
         // @TODO @FIXME Make the size of this buffer a configuration setting, or pass it in, something....

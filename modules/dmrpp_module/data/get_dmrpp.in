@@ -466,7 +466,11 @@ function dap2_vars() {
 # The leading and trailing whitespace is trimmed from each line, and the result is sorted.
 #
 function dap2_attributes() {
+<<<<<<< HEAD
+  grep -e "<Attribute name=" -e "<value>" "${1}" |  sed 's/ *$//g' | sort
+=======
     grep -e "<Attribute name=" -e "<Value>" "${1}" | sed 's/ *$//g' | sort
+>>>>>>> master
 }
 ########################################################################################################################
 
