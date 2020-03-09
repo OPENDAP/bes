@@ -23,7 +23,6 @@ using std::pair;
 using std::stringstream;
 using std::endl;
 
-
 // Scope: public members of AccessCredentials
 const string AccessCredentials::ID_KEY="id";
 const string AccessCredentials::KEY_KEY="key";
