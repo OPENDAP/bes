@@ -504,7 +504,7 @@ int main(int argc, char*argv[])
     string h5_dset_path = "";
     string dmr_name = "";
     string url_name = "";
-    string data_root = "."; // get_current_dir_name(); //#FIXME change
+    string data_root = ".";
     string bes_conf_file = "";
     bool just_dmr = false;
     int status=0;
@@ -518,9 +518,8 @@ int main(int argc, char*argv[])
      * d = debug
      * h = help
      * v = verbose, V = very verbose
-     * o = output file
+     * o = output file // <<-- FIXME
      * m = just_dmr
-     * t = data_root (aka 'pwd')
     */
 
     GetOpt getopt(argc, argv, "t:c:f:u:dhvVm");
@@ -539,13 +538,13 @@ int main(int argc, char*argv[])
                 BESDebug::SetUp(string("cerr,").append(DEBUG_KEY));
                 break;
             case 'f':
-                input_data_file = getopt.optarg; // == data_root/datafile == 'pwd'/input_data_file (get_dmrpp script)
+                input_data_file = getopt.optarg;
                 break;
             case 'u':
-                url_name = getopt.optarg; // == dmrpp_url
+                url_name = getopt.optarg;
                 break;
             case 'c':
-                bes_conf_file = getopt.optarg; // == TMP_CONF
+                bes_conf_file = getopt.optarg;
                 break;
             case 'm':
                 just_dmr = true;
