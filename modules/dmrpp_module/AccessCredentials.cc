@@ -18,6 +18,10 @@
 #include "AccessCredentials.h"
 
 using std::string;
+using std::map;
+using std::pair;
+using std::stringstream;
+using std::endl;
 
 
 // Scope: public members of AccessCredentials
@@ -32,10 +36,10 @@ const string AccessCredentials::URL_KEY="url";
  * @param key The key value to retrieve
  * @return The value of the key, empty string if the key does not exist.
  */
-std::string
-AccessCredentials::get(const std::string &key){
-    std::__1::map<std::string, std::string>::iterator it;
-    std::string value("");
+string
+AccessCredentials::get(const string &key){
+    map<string, string>::iterator it;
+    string value("");
     it = kvp.find(key);
     if (it != kvp.end())
         value = it->second;
@@ -49,9 +53,9 @@ AccessCredentials::get(const std::string &key){
  */
 void
 AccessCredentials::add(
-        const std::string &key,
-        const std::string &value){
-    kvp.insert(std::__1::pair<std::string, std::string>(key, value));
+        const string &key,
+        const string &value){
+    kvp.insert(pair<string, string>(key, value));
 }
 
 /**
@@ -70,19 +74,19 @@ bool AccessCredentials::isS3Cred(){
     return is_s3;
 }
 
-std::__1::string AccessCredentials::to_json(){
-    std::__1::stringstream ss;
-    ss << "{" << std::__1::endl << "  \"AccessCredentials\": { " << std::__1::endl;
-    ss << "    \"name\": \"" << d_config_name << "\"," << std::__1::endl;
-    for (std::__1::map<std::__1::string, std::__1::string>::iterator it = kvp.begin(); it != kvp.end(); ++it) {
-        std::string key = it->first;
-        std::string value = it->second;
+string AccessCredentials::to_json(){
+    stringstream ss;
+    ss << "{" << endl << "  \"AccessCredentials\": { " << endl;
+    ss << "    \"name\": \"" << d_config_name << "\"," << endl;
+    for (map<string, string>::iterator it = kvp.begin(); it != kvp.end(); ++it) {
+        string key = it->first;
+        string value = it->second;
 
         if(it!=kvp.begin())
-            ss << ", " << std::__1::endl ;
+            ss << ", " << endl ;
 
         ss << "    \"" << it->first << "\": \"" << it->second << "\"";
     }
-    ss << std::__1::endl << "  }" << std::__1::endl << "}" << std::__1::endl;
+    ss << endl << "  }" << endl << "}" << endl;
     return ss.str();
 }
