@@ -2,6 +2,7 @@
 // Created by ndp on 2/15/20.
 //
 
+#include <curl/curl.h>
 #include "curl_utils.h"
 #include <sstream>
 #include <map>
