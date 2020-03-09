@@ -29,6 +29,9 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+#ifndef I_StandAloneClient_H
+#define I_StandAloneClient_H 1
+
 
 #include <fstream>
 
@@ -40,8 +43,8 @@ class StandAloneApp : public BESModuleApp
 {
 private:
     StandAloneClient *		_client ;
-    string			_cmd ;
-    ofstream *			_outputStrm ;
+    std::string			_cmd ;
+    std::ofstream *			_outputStrm ;
     std::ifstream *			_inputStrm ;
     bool			_createdInputStrm ;
     int				_repeat ;
@@ -60,3 +63,4 @@ public:
     StandAloneClient *		client() { return _client ; }
 } ;
 
+#endif // I_StandAloneClient_H

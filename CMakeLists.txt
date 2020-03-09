@@ -2077,4 +2077,5 @@ add_executable(bes
     modules/dmrpp_module/curl_utils.cc modules/dmrpp_module/curl_utils.h
 
 
+    standalone/besstandalone.cc
 )
