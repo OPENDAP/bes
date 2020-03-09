@@ -53,7 +53,7 @@ namespace curl {
             {CURLINFO_EFFECTIVE_URL,           {"CURLINFO_EFFECTIVE_URL",           "Last used URL. See CURLINFO_EFFECTIVE_URL"}},
             {CURLINFO_RESPONSE_CODE,           {"CURLINFO_RESPONSE_CODE",           "Last received response code. See CURLINFO_RESPONSE_CODE"}},
             {CURLINFO_HTTP_CONNECTCODE,        {"CURLINFO_HTTP_CONNECTCODE",        "Last proxy CONNECT response code. See CURLINFO_HTTP_CONNECTCODE"}},
-            {CURLINFO_HTTP_VERSION,            {"CURLINFO_HTTP_VERSION",            "The http version used in the connection. See CURLINFO_HTTP_VERSION"}},
+            // {CURLINFO_HTTP_VERSION,            {"CURLINFO_HTTP_VERSION",            "The http version used in the connection. See CURLINFO_HTTP_VERSION"}}, // cURL 7.64
             {CURLINFO_FILETIME,                {"CURLINFO_FILETIME",                "Remote time of the retrieved document. See CURLINFO_FILETIME"}},
             //{CURLINFO_FILETIME_T, {"CURLINFO_FILETIME_T","Remote time of the retrieved document. See CURLINFO_FILETIME_T"}},
             {CURLINFO_TOTAL_TIME,              {"CURLINFO_TOTAL_TIME",              "Total time of previous transfer. See CURLINFO_TOTAL_TIME"}},
@@ -83,7 +83,7 @@ namespace curl {
             {CURLINFO_HEADER_SIZE,             {"CURLINFO_HEADER_SIZE",             "Number of bytes of all headers received. See CURLINFO_HEADER_SIZE"}},
             {CURLINFO_REQUEST_SIZE,            {"CURLINFO_REQUEST_SIZE",            "Number of bytes sent in the issued HTTP requests. See CURLINFO_REQUEST_SIZE"}},
             {CURLINFO_SSL_VERIFYRESULT,        {"CURLINFO_SSL_VERIFYRESULT",        "Certificate verification result. See CURLINFO_SSL_VERIFYRESULT"}},
-            {CURLINFO_PROXY_SSL_VERIFYRESULT,  {"CURLINFO_PROXY_SSL_VERIFYRESULT",  "Proxy certificate verification result. See CURLINFO_PROXY_SSL_VERIFYRESULT"}},
+            // {CURLINFO_PROXY_SSL_VERIFYRESULT,  {"CURLINFO_PROXY_SSL_VERIFYRESULT",  "Proxy certificate verification result. See CURLINFO_PROXY_SSL_VERIFYRESULT"}}, // cURL 7.64
             {CURLINFO_SSL_ENGINES,             {"CURLINFO_SSL_ENGINES",             "A list of OpenSSL crypto engines. See CURLINFO_SSL_ENGINES"}},
             {CURLINFO_CONTENT_LENGTH_DOWNLOAD, {"CURLINFO_CONTENT_LENGTH_DOWNLOAD", "(Deprecated) Content length from the Content-Length header. See CURLINFO_CONTENT_LENGTH_DOWNLOAD"}},
             //{CURLINFO_CONTENT_LENGTH_DOWNLOAD_T, {"CURLINFO_CONTENT_LENGTH_DOWNLOAD_T","Content length from the Content-Length header. See CURLINFO_CONTENT_LENGTH_DOWNLOAD_T"}},
@@ -102,18 +102,18 @@ namespace curl {
             {CURLINFO_LOCAL_PORT,              {"CURLINFO_LOCAL_PORT",              "Local-end port of last connection. See CURLINFO_LOCAL_PORT"}},
             {CURLINFO_COOKIELIST,              {"CURLINFO_COOKIELIST",              "List of all known cookies. See CURLINFO_COOKIELIST"}},
             {CURLINFO_LASTSOCKET,              {"CURLINFO_LASTSOCKET",              "Last socket used. See CURLINFO_LASTSOCKET"}},
-            {CURLINFO_ACTIVESOCKET,            {"CURLINFO_ACTIVESOCKET",            "The session's active socket. See CURLINFO_ACTIVESOCKET"}},
+            // {CURLINFO_ACTIVESOCKET,            {"CURLINFO_ACTIVESOCKET",            "The session's active socket. See CURLINFO_ACTIVESOCKET"}}, // cURL 7.64
             {CURLINFO_FTP_ENTRY_PATH,          {"CURLINFO_FTP_ENTRY_PATH",          "The entry path after logging in to an FTP server. See CURLINFO_FTP_ENTRY_PATH"}},
             {CURLINFO_CERTINFO,                {"CURLINFO_CERTINFO",                "Certificate chain. See CURLINFO_CERTINFO"}},
-            {CURLINFO_TLS_SSL_PTR,             {"CURLINFO_TLS_SSL_PTR",             "TLS session info that can be used for further processing. See CURLINFO_TLS_SSL_PTR"}},
+            // {CURLINFO_TLS_SSL_PTR,             {"CURLINFO_TLS_SSL_PTR",             "TLS session info that can be used for further processing. See CURLINFO_TLS_SSL_PTR"}}, // cURL 7.64
             {CURLINFO_TLS_SESSION,             {"CURLINFO_TLS_SESSION",             "TLS session info that can be used for further processing. See CURLINFO_TLS_SESSION. Deprecated option, use CURLINFO_TLS_SSL_PTR instead!"}},
             {CURLINFO_CONDITION_UNMET,         {"CURLINFO_CONDITION_UNMET",         "Whether or not a time conditional was met. See CURLINFO_CONDITION_UNMET"}},
             {CURLINFO_RTSP_SESSION_ID,         {"CURLINFO_RTSP_SESSION_ID",         "RTSP session ID. See CURLINFO_RTSP_SESSION_ID"}},
             {CURLINFO_RTSP_CLIENT_CSEQ,        {"CURLINFO_RTSP_CLIENT_CSEQ",        "RTSP CSeq that will next be used. See CURLINFO_RTSP_CLIENT_CSEQ"}},
             {CURLINFO_RTSP_SERVER_CSEQ,        {"CURLINFO_RTSP_SERVER_CSEQ",        "RTSP CSeq that will next be expected. See CURLINFO_RTSP_SERVER_CSEQ"}},
             {CURLINFO_RTSP_CSEQ_RECV,          {"CURLINFO_RTSP_CSEQ_RECV",          "RTSP CSeq last received. See CURLINFO_RTSP_CSEQ_RECV"}},
-            {CURLINFO_PROTOCOL,                {"CURLINFO_PROTOCOL",                "The protocol used for the connection. (Added in 7.52.0) See CURLINFO_PROTOCOL"}},
-            {CURLINFO_SCHEME,                  {"CURLINFO_SCHEME",                  "The scheme used for the connection. (Added in 7.52.0) See CURLINFO_SCHEME"}},
+            // {CURLINFO_PROTOCOL,                {"CURLINFO_PROTOCOL",                "The protocol used for the connection. (Added in 7.52.0) See CURLINFO_PROTOCOL"}}, // cURL 7.64
+            // {CURLINFO_SCHEME,                  {"CURLINFO_SCHEME",                  "The scheme used for the connection. (Added in 7.52.0) See CURLINFO_SCHEME"}}, // cURL 7.64
     };
 
 
@@ -242,7 +242,7 @@ namespace curl {
         curlValueAsLong(ss, c_handle, CURLINFO_RESPONSE_CODE);
 
         curlValueAsLong(ss, c_handle, CURLINFO_HTTP_CONNECTCODE);
-        curlValueAsLong(ss, c_handle, CURLINFO_HTTP_VERSION);
+        // curlValueAsLong(ss, c_handle, CURLINFO_HTTP_VERSION); // cURL 7.64
         curlValueAsLong(ss, c_handle, CURLINFO_FILETIME);
         //curlValueAsCurlOffT(ss, c_handle,CURLINFO_FILETIME_T);
         curlValueAsLong(ss, c_handle, CURLINFO_TOTAL_TIME);
@@ -272,7 +272,7 @@ namespace curl {
         curlValueAsLong(ss, c_handle, CURLINFO_HEADER_SIZE);
         curlValueAsLong(ss, c_handle, CURLINFO_REQUEST_SIZE);
         curlValueAsLong(ss, c_handle, CURLINFO_SSL_VERIFYRESULT);
-        curlValueAsLong(ss, c_handle, CURLINFO_PROXY_SSL_VERIFYRESULT);
+        // curlValueAsLong(ss, c_handle, CURLINFO_PROXY_SSL_VERIFYRESULT); // cURL 7.64
         curlValueAsCurlSList(ss, c_handle, CURLINFO_SSL_ENGINES);
         curlValueAsDouble(ss, c_handle, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
         // curlValueAsCurlOffT(ss, c_handle,CURLINFO_CONTENT_LENGTH_DOWNLOAD_T);
@@ -291,18 +291,18 @@ namespace curl {
         curlValueAsLong(ss, c_handle, CURLINFO_LOCAL_PORT);
         curlValueAsCurlSList(ss, c_handle, CURLINFO_COOKIELIST);
         curlValueAsLong(ss, c_handle, CURLINFO_LASTSOCKET);
-        curlValueAsCurlSocket(ss, c_handle, CURLINFO_ACTIVESOCKET);
+        // curlValueAsCurlSocket(ss, c_handle, CURLINFO_ACTIVESOCKET); // cURL 7.64
         curlValueAsString(ss, c_handle, CURLINFO_FTP_ENTRY_PATH);
         curlValueAsCurlCertInfo(ss, c_handle, CURLINFO_CERTINFO);
-        curlValueAsCurlTlsSessionInfo(ss, c_handle, CURLINFO_TLS_SSL_PTR);
+        // curlValueAsCurlTlsSessionInfo(ss, c_handle, CURLINFO_TLS_SSL_PTR); // cURL 7.64
         curlValueAsCurlTlsSessionInfo(ss, c_handle, CURLINFO_TLS_SESSION);
         curlValueAsLong(ss, c_handle, CURLINFO_CONDITION_UNMET);
         curlValueAsString(ss, c_handle, CURLINFO_RTSP_SESSION_ID);
         curlValueAsLong(ss, c_handle, CURLINFO_RTSP_CLIENT_CSEQ);
         curlValueAsLong(ss, c_handle, CURLINFO_RTSP_SERVER_CSEQ);
         curlValueAsLong(ss, c_handle, CURLINFO_RTSP_CSEQ_RECV);
-        curlValueAsLong(ss, c_handle, CURLINFO_PROTOCOL);
-        curlValueAsString(ss, c_handle, CURLINFO_SCHEME);
+        // curlValueAsLong(ss, c_handle, CURLINFO_PROTOCOL);  // cURL 7.64
+        // curlValueAsString(ss, c_handle, CURLINFO_SCHEME);
         return ss.str();
     }
 
