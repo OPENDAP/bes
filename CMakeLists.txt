@@ -2063,7 +2063,6 @@ add_executable(bes
     xmlcommand/XMLSetContextsCommand.h
     config.h
 	modules/dmrpp_module/unit-tests/awsv4_test.cc
-
         modules/dmrpp_module/AccessCredentials.cc
         modules/dmrpp_module/AccessCredentials.h
         modules/dmrpp_module/NgapS3Credentials.cc
@@ -2105,5 +2104,5 @@ add_executable(bes
         modules/ngap_module/RemoteHttpResource.h
         modules/ngap_module/unit-tests/NgapApiTest.cc
 
-
+    standalone/besstandalone.cc
 )
