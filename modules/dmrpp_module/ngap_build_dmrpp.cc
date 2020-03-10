@@ -500,9 +500,6 @@ static void get_chunks_for_all_variables(hid_t file, D4Group *group)
 
 int main(int argc, char*argv[])
 {
-    string h5_file_name = "";
-    string h5_dset_path = "";
-    string dmr_name = "";
     string url_name = "";
     string data_root = ".";
     string bes_conf_file = "";
@@ -510,7 +507,8 @@ int main(int argc, char*argv[])
     int status=0;
     string input_data_file = "";
 
-    /* t = data_root
+    /* Quick Reference guide for the flags and what they stand for
+     * t = data_root
      * c = config file
      * f = file name
      * r = dmr_file_name
@@ -519,11 +517,10 @@ int main(int argc, char*argv[])
      * h = help
      * v = verbose, V = very verbose
      * o = output file // <<-- FIXME
-     * m = just_dmr
+     * m = just_dmr // <<-- FIXME
     */
 
     GetOpt getopt(argc, argv, "t:c:f:u:dhvVm");
-    //GetOpt getopt(argc, argv, "c:f:r:u:dhv");
     int option_char;
     while ((option_char = getopt()) != -1) {
         switch (option_char) {
@@ -687,8 +684,8 @@ int main(int argc, char*argv[])
 	// MAKE_DMRPP CODE
 	/////////////////////////////
 
-    //translate the filenames
-    //needs to be here or breaks on linux
+    //translate the filenames into strings
+    //required or code breaks on linux machines (centos 7)
     string conf = bes_conf_filename.str();
     string cmd = bes_cmd_filename.str();
     string dmr = dmr_filename.str();
