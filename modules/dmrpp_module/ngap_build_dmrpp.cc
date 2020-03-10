@@ -596,6 +596,7 @@ int main(int argc, char*argv[])
         ;
 
 
+    // variables for use below
     pid_t pid =  getpid();
     std::FILE *tmp;
     stringstream bes_cmd_filename;
@@ -614,17 +615,24 @@ int main(int argc, char*argv[])
     ////////////
     //create temp command file
     {
+        //the key to look for in the cmdDoc
         string key = "DATAFILE_NAME";
         int index = 0;
+        //while we are finding the key in the cmdDoc file
         if( (index=cmdDoc.find(key)) != -1){
+            //erase the key and replace with the correct path
             cmdDoc.erase(index, key.length());
             cmdDoc.insert(index, input_data_file);
         }
 
+        //create the unique file name for the conf file
         bes_cmd_filename << "/tmp/nbd_" << pid << "_bes.cmd";
+
+        //create the temp file and write the command document to it
         tmp = fopen(bes_cmd_filename.str().c_str(), "w");
         fputs(cmdDoc.c_str(), tmp);
         fclose(tmp);
+
         if(very_verbose){
             cerr << "bes_cmd: " << endl << cmdDoc << endl;
         }
@@ -636,19 +644,26 @@ int main(int argc, char*argv[])
     ////////////
     //create temp config file
     {
+        //check if the conf file wasn't supplied
         if (bes_conf_file.empty()) {
 
-            ////////////
-            //sed command
+            //the key to look for in the config file
             string root_dir_key = "@hdf5_root_directory@";
             int startIndex = 0;
             if(very_verbose) cerr << "Before loop cur index: " << startIndex << endl;
+
+            //while we are finding the key in the config file
             while ((startIndex = BES_CONF_DOC.find(root_dir_key)) != -1){
                 if(very_verbose)  cerr << "While loop cur index: " << startIndex << endl;
+                //erase the key and replace with the correct path
                 BES_CONF_DOC.erase(startIndex, root_dir_key.length());
                 BES_CONF_DOC.insert(startIndex, data_root);
             }
+
+            //create the unique file name for the conf file
             bes_conf_filename << "/tmp/nbd_" << pid << "_bes.conf";
+
+            //create the temp file and write the configuration to it
             tmp = fopen(bes_conf_filename.str().c_str(), "w");
             fputs(BES_CONF_DOC.c_str(), tmp);
             fclose(tmp);
@@ -658,7 +673,7 @@ int main(int argc, char*argv[])
             }
 
         }
-        else {
+        else { //if conf file is supplied
             bes_conf_filename << bes_conf_file;
         }
         TheBESKeys::ConfigFile = bes_conf_filename.str();
@@ -672,12 +687,16 @@ int main(int argc, char*argv[])
 	// MAKE_DMRPP CODE
 	/////////////////////////////
 
+    //translate the filenames
+    //needs to be here or breaks on linux
     string conf = bes_conf_filename.str();
     string cmd = bes_cmd_filename.str();
     string dmr = dmr_filename.str();
 
     ////////////
     //besstandalone command
+
+    //set up for besstandalone call
     int nargc = 6;
     char **nargv;
     nargv = new char*[6];
@@ -689,14 +708,16 @@ int main(int argc, char*argv[])
     nargv[4] = const_cast<char*>("-f");
     nargv[5] = const_cast<char*>(dmr.c_str());
 
+    //echo the besstandalone call to the terminal
     cerr << "Command line for DMR production: " << \
         "besstandalone "; for(unsigned i=0; i<6 ; i++){ cerr << nargv[i] << " "; } cerr << endl ;
 
+    //call the besstandalone
     StandAloneApp app;
     app.main(nargc, nargv);
 
     if(verbose || just_dmr){
-        cerr << "                       DMR file: " << dmr_filename.str().c_str() << endl;
+        cerr << "              DMR file: " << dmr_filename.str().c_str() << endl;
     }
 
     ////////////////////////////////////////////////////
