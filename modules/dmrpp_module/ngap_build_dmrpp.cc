@@ -626,23 +626,24 @@ void build_dmr_with_StandAloneApp(const string &bes_conf_filename, const string 
     TheBESKeys::ConfigFile = bes_conf_filename;
 
     // besstandalone command
-    int nargc = 6;
+    unsigned int nargc = 7;
     char **nargv;
-    nargv = new char *[6];
+    nargv = new char *[nargc];
 
-    nargv[0] = const_cast<char *>("-c");
-    nargv[1] = const_cast<char *>(bes_conf_filename.c_str());
-    nargv[2] = const_cast<char *>("-i");
-    nargv[3] = const_cast<char *>(bes_cmd.c_str());
-    nargv[4] = const_cast<char *>("-f");
-    nargv[5] = const_cast<char *>(output_file.c_str());
+    nargv[0] = const_cast<char *>("ngap_build_dmrpp");
+    nargv[1] = const_cast<char *>("-c");
+    nargv[2] = const_cast<char *>(bes_conf_filename.c_str());
+    nargv[3] = const_cast<char *>("-i");
+    nargv[4] = const_cast<char *>(bes_cmd.c_str());
+    nargv[5] = const_cast<char *>("-f");
+    nargv[6] = const_cast<char *>(output_file.c_str());
 
     cerr << "        Command line equivalent: " << "besstandalone ";
-    for (unsigned i = 0; i < 6; i++) { cerr << nargv[i] << " "; }
+    for (unsigned i = 0; i < nargc; i++) { cerr << nargv[i] << " "; }
     cerr << endl;
 
     StandAloneApp app;
-    app.main(6, nargv);
+    app.main(nargc, nargv);
 
     if (verbose) {
         cerr << "        besstandalone output to: " << output_file << endl;
