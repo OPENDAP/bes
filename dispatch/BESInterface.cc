@@ -547,6 +547,7 @@ int BESInterface::execute_request(const string &from)
     catch (libdap::Error &e) {
         timeout_jump_valid = false;
         string msg = string(__PRETTY_FUNCTION__)+  "() - BES caught a libdap exception: " + e.get_error_message();
+        BESDEBUG("bes", msg << endl );
         BESInternalFatalError ex(msg, __FILE__, __LINE__);
         status = handleException(ex, *d_dhi_ptr);
     }
