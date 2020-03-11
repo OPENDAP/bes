@@ -557,16 +557,18 @@ int BESInterface::execute_request(const string &from)
     }
     catch (bad_alloc &e) {
         timeout_jump_valid = false;
-        string msg =  string(__PRETTY_FUNCTION__) +  "() - BES out of memory. msg: "<< e.what();
-        BESDEBUG("bes", msg << endl );
-        BESInternalFatalError ex(msg, __FILE__, __LINE__);
+        stringstream msg;
+        msg << __PRETTY_FUNCTION__ <<  "() - BES out of memory. msg: " << e.what() << endl;
+        BESDEBUG("bes", msg.str() << endl );
+        BESInternalFatalError ex(msg.str(), __FILE__, __LINE__);
         status = handleException(ex, *d_dhi_ptr);
     }
     catch (exception &e) {
         timeout_jump_valid = false;
-        string msg =  string(__PRETTY_FUNCTION__) +  "() - Caught C++ Exception. msg: "<< e.what();
-        BESDEBUG("bes", msg << endl );
-        BESInternalFatalError ex(msg, __FILE__, __LINE__);
+        stringstream msg;
+        msg << __PRETTY_FUNCTION__ << "() - Caught C++ Exception. msg: " << e.what() << endl;
+        BESDEBUG("bes", msg.str() << endl );
+        BESInternalFatalError ex(msg.str(), __FILE__, __LINE__);
         status = handleException(ex, *d_dhi_ptr);
     }
     catch (...) {
