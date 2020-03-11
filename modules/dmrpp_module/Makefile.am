@@ -88,8 +88,15 @@ ngap_build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS)
 
 ngap_build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) bes_default_conf.h ngap_build_dmrpp.cc 
 
-ngap_build_dmrpp_LDADD =  $(top_builddir)/cmdln/CmdTranslation.o $(top_builddir)/xmlcommand/libbes_xml_command.la $(BES_STANDALONE_LIB)  $(BES_DISPATCH_LIB) $(DAP_MODULE_OBJS) $(BES_EXTRA_LIBS) \
-$(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) $(READLINE_LIBS) -lz
+ngap_build_dmrpp_LDADD =  \
+    $(HDF5_MODULE_OBJS) \
+    $(abs_top_builddir)/cmdln/CmdTranslation.o \
+    $(abs_top_builddir)/xmlcommand/libbes_xml_command.la \
+    $(BES_STANDALONE_LIB)  $(BES_DISPATCH_LIB) \
+    $(DAP_MODULE_OBJS) $(BES_EXTRA_LIBS) \
+    $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) \
+    $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) \
+    $(XML2_LIBS) $(READLINE_LIBS) -lz
 
 EXTRA_PROGRAMS = 
 
@@ -145,3 +152,144 @@ $(top_builddir)/dap/CacheUnMarshaller.o \
 $(top_builddir)/dap/ObjMemCache.o \
 $(top_builddir)/dap/ShowPathInfoResponseHandler.o \
 $(top_builddir)/dap/GlobalMetadataStore.o
+
+HDF5_MODULE_OBJS = \
+$(top_builddir)/modules/hdf5_handler/gctp/src/bceafor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/equiinv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/isinusinv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/psinv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/eqconinv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/sininv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/inv_init.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/alberinv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/merinv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/vandginv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/somfor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/molwinv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/wviiinv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/stplnfor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/azimfor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/polyfor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/imolwinv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/sterfor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/untfz.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/alconfor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/utmfor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/wivinv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/orthfor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/goodinv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/obleqfor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/tminv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/millfor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/hamfor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/gnominv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/sphdz.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/robfor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/lamazfor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/lamccfor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/gvnspfor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/ceainv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/omerinv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/tmfor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/orthinv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/wivfor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/obleqinv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/goodfor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/utminv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/haminv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/for_init.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/millinv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/report.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/robinv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/gnomfor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/omerfor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/ceafor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/br_gctp.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/gvnspinv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/lamccinv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/lamazinv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/cproj.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/paksz.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/alberfor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/psfor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/isinusfor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/sinfor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/eqconfor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/equifor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/bceainv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/gctp.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/sominv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/molwfor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/vandgfor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/merfor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/stplninv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/aziminv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/polyinv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/wviifor.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/alconinv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/sterinv.o \
+$(top_builddir)/modules/hdf5_handler/gctp/src/imolwfor.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5DiskCache.o \
+$(top_builddir)/modules/hdf5_handler/.libs/he5dds.tab.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5GMCFFillIndexArray.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5CFStr.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5CFInt32.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5RequestHandler.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5CFUInt32.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5CFGeoCF1D.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5_DataMemCache.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDFEOS5CF.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5CFArray.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5GMCFSpecialCVArray.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5CF.o \
+$(top_builddir)/modules/hdf5_handler/.libs/lex.he5das.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5GMSPCFArray.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5Array.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5BaseArray.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5GCFProduct.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5Int32.o \
+$(top_builddir)/modules/hdf5_handler/.libs/lex.he5dds.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5CFFloat32.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5Float32.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5GMCF.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5CFGeoCFProj.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HE5Parser.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5UInt32.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5Url.o \
+$(top_builddir)/modules/hdf5_handler/.libs/h5das.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5Sequence.o \
+$(top_builddir)/modules/hdf5_handler/.libs/h5gmcfdap.o \
+$(top_builddir)/modules/hdf5_handler/.libs/h5common.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5GMCFMissLLArray.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5CFUInt64.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5CFInt64.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5Int16.o \
+$(top_builddir)/modules/hdf5_handler/.libs/h5dds.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HE5Checker.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5UInt16.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5Structure.o \
+$(top_builddir)/modules/hdf5_handler/.libs/h5cfdap.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5CFModule.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5CFUtil.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDFEOS5CFSpecialCVArray.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDFEOS5CFMissNonLLCVArray.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDFEOS5CFMissLLArray.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5CFFloat64.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5Float64.o \
+$(top_builddir)/modules/hdf5_handler/.libs/heos5cfdap.o \
+$(top_builddir)/modules/hdf5_handler/.libs/h5cfdaputil.o \
+$(top_builddir)/modules/hdf5_handler/.libs/h5dmr.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5UInt64.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5Int64.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5PathFinder.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5Str.o \
+$(top_builddir)/modules/hdf5_handler/.libs/h5get.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5CFInt16.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5CFUInt16.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5CFByte.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5Byte.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5Module.o \
+$(top_builddir)/modules/hdf5_handler/.libs/h5commoncfdap.o \
+$(top_builddir)/modules/hdf5_handler/.libs/he5das.tab.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5Int8.o \
+$(top_builddir)/modules/hdf5_handler/.libs/HDF5GMCFMissNonLLCVArray.o

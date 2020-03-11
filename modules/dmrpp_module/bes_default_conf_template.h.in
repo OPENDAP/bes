@@ -49,7 +49,7 @@ string BES_CONF_DOC="BES.ServerAdministrator=admin.email.address@your.domain.nam
 "DAP.GlobalMetadataStore.prefix = mds\n"
 "DAP.GlobalMetadataStore.size = 0\n"
 "\n"
-"DAP.GlobalMetadataStore.ledger = @abs_top_builddir@/modules/dmrpp_module/data/mds_ledger.txt\n"
+"DAP.GlobalMetadataStore.ledger = @abs_top_builddir@/modules/dmrpp_module/data/mds/mds_ledger.txt\n"
 "\n"
 "H5.EnableCF=true\n"
 "H5.KeepVarLeadingUnderscore=false\n"
