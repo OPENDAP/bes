@@ -639,7 +639,7 @@ void build_dmr_with_StandAloneApp(const string &bes_conf_filename, const string 
     nargv[6] = const_cast<char *>(output_file.c_str());
 
     cerr << "        Command line equivalent: " << "besstandalone ";
-    for (unsigned i = 0; i < nargc; i++) { cerr << nargv[i] << " "; }
+    for (unsigned i = 1; i < nargc; i++) { cerr << nargv[i] << " "; }
     cerr << endl;
 
     StandAloneApp app;
