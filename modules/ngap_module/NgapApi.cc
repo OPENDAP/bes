@@ -22,23 +22,18 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-/*
- * NgapApi.cc
- *
- *  Created on: July, 13 2018
- *      Author: ndp
- */
+
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+#include <sstream>
 #include <memory>
+
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/prettywriter.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/filereadstream.h"
-#include <cstdio>
-#include <cstring>
-#include <iostream>
-#include <sstream>
-
 
 #include <util.h>
 #include <debug.h>
@@ -55,7 +50,6 @@
 #include "RemoteHttpResource.h"
 #include "NgapError.h"
 #include "curl_utils.h"
-#include "rjson_utils.h"
 
 using namespace std;
 
@@ -199,7 +193,7 @@ string NgapApi::convert_ngap_resty_path_to_data_access_url(string real_name) {
     rapidjson::Value &val = cmr_response["hits"];
     int hits = val.GetInt();
     if (hits < 1) {
-        throw BESNotFoundError(string("The specified path ") + real_name + " does not identify a thing we know about....", __FILE__, __LINE__);
+        throw BESNotFoundError(string("The specified path '").append(real_name).append("' does not identify a granule in CMR."), __FILE__, __LINE__);
     }
 
     rapidjson::Value &items = cmr_response["items"];

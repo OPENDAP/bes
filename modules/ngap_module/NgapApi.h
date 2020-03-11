@@ -37,7 +37,9 @@
 #include "rapidjson/document.h"
 #include "BESCatalogUtils.h"
 
+#if 0
 #include "Granule.h"
+#endif
 
 namespace ngap {
 
