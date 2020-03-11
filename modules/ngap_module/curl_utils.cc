@@ -782,15 +782,10 @@ CURL *set_up_easy_handle(const string &target_url, const string &cookies_file, c
  * @param response_buf The buffer into which to put the response.
  */
 void http_get(const std::string &target_url, char *response_buf) {
-#if 0
-    // FIXME Drop the use of this deprecated function and figure out a better way: configuration setting?
-    string cookies = std::tmpnam(nullptr);
-#else
     char name[] = "/tmp/ngap_cookiesXXXXXX";
     string cookies = mktemp(name);
     if (cookies.empty())
         throw BESInternalError(string("Failed to make temporary file for HTTP cookies in module 'ngap' (").append(strerror(errno)).append(")"), __FILE__, __LINE__);
-#endif
 
     try {
         CURL *c_handle = set_up_easy_handle(target_url, cookies, response_buf);
