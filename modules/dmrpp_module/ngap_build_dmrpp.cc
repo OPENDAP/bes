@@ -514,6 +514,7 @@ static void get_chunks_for_all_variables(hid_t file, D4Group *group)
         get_chunks_for_all_variables(file, *g++);
 }
 
+
 /**
  *
  * @param bes_conf_file USer supplied bes conf filename (is any)
@@ -552,6 +553,8 @@ string mktemp_bes_conf(const string &bes_conf_file, const string &data_root, con
         return bes_conf_file;
     }
 }
+
+
 
 /**
  *
@@ -605,6 +608,9 @@ string mktemp_get_dmr_bes_cmd(const string &input_data_file, const pid_t &pid) {
     return bes_cmd_filename.str();
 
 }
+
+
+
 /**
  * Build DMR using besstandalone (aka StandAloneApp)
  *
@@ -640,6 +646,7 @@ void build_dmr_with_StandAloneApp(const string &bes_conf_filename, const string 
         cerr << "       besstandalone output to: " << output_file << endl;
     }
 }
+
 
 /**
  * Returns a DMR instance built by the HDF5RequestHandler from the input data file.
@@ -682,7 +689,13 @@ DMR *build_hdf5_dmr(const string &input_data_file, const string &url){
 
 
 
-
+/**
+ *
+ * @param input_data_file
+ * @param dmr_istrm
+ * @param url_name
+ * @return
+ */
 int generate_dmrpp(const string &input_data_file, istream *dmr_istrm, const string &url_name){
 
     if (input_data_file.empty()) {
@@ -805,6 +818,14 @@ int generate_dmrpp(const string &input_data_file, istream *dmr_istrm, const stri
 
 }
 
+
+/**
+ *
+ * @param input_data_file
+ * @param dmr_filename
+ * @param url_name
+ * @return
+ */
 int generate_dmrpp(const string &input_data_file, const string &dmr_filename, const string &url_name) {
 
     ifstream *dmr_istrm=0;
@@ -817,7 +838,12 @@ int generate_dmrpp(const string &input_data_file, const string &dmr_filename, co
 }
 
 
-
+/**
+ *
+ * @param argc
+ * @param argv
+ * @return
+ */
 int main(int argc, char*argv[])
 {
     string h5_file_name = "";
