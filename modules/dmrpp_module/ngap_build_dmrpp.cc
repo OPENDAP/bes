@@ -84,7 +84,7 @@ static bool very_verbose = false;
 #define VERY_VERBOSE(x) do { if (very_verbose) x; } while(false)
 
 // #define DEBUG_KEY "metadata_store,dmrpp_store,dmrpp"
-#define DEBUG_KEY "timing"
+#define DEBUG_KEY "all"
 #define ROOT_DIRECTORY "BES.Catalog.catalog.RootDirectory"
 
 //#define H5D_FRIEND		// Workaround, needed to use H5D_chunk_rec_t
@@ -623,6 +623,8 @@ void build_dmr_with_StandAloneApp(const string &bes_conf_filename, const string 
     BESStopWatch sw;
     sw.start("build_dmrpp - DMR from StandAloneApp");
 
+    TheBESKeys::ConfigFile = bes_conf_filename;
+
     // besstandalone command
     int nargc = 6;
     char **nargv;
@@ -640,10 +642,10 @@ void build_dmr_with_StandAloneApp(const string &bes_conf_filename, const string 
     cerr << endl;
 
     StandAloneApp app;
-    app.main(nargc, nargv);
+    app.main(6, nargv);
 
     if (verbose) {
-        cerr << "       besstandalone output to: " << output_file << endl;
+        cerr << "        besstandalone output to: " << output_file << endl;
     }
 }
 
@@ -655,10 +657,12 @@ void build_dmr_with_StandAloneApp(const string &bes_conf_filename, const string 
  * Sataset element of the generated DMR.
  * @return The DMR instance built from input_data_file.
  */
-DMR *build_hdf5_dmr(const string &input_data_file, const string &url){
+DMR *build_hdf5_dmr(const string &bes_conf_filename, const string &input_data_file, const string &url){
 
     BESStopWatch sw;
     sw.start("build_dmrpp::build_hdf5_dmr()");
+
+    TheBESKeys::ConfigFile = bes_conf_filename;
 
     HDF5RequestHandler *h5rh = new HDF5RequestHandler("h5_handler");
     BESDataHandlerInterface dhi;
@@ -834,7 +838,6 @@ int generate_dmrpp(const string &input_data_file, const string &dmr_filename, co
         dmr_istrm = new ifstream (dmr_filename.c_str());
     }
     return generate_dmrpp(input_data_file, dmr_istrm, url_name);
-
 }
 
 
@@ -942,9 +945,8 @@ int main(int argc, char*argv[])
     // Build DMR using direct calls into the BES stack
     //
 
-    TheBESKeys::ConfigFile = bes_conf_filename;
 
-    DMR *h5_dmr =  build_hdf5_dmr(input_data_file, url_name);
+    DMR *h5_dmr =  build_hdf5_dmr(bes_conf_filename,input_data_file, url_name);
     XMLWriter xmlWriter("  ");
     h5_dmr->print_dap4(xmlWriter);
     delete h5_dmr;
