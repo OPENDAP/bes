@@ -5,9 +5,7 @@ AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = -I$(top_srcdir)/modules -I$(top_srcdir)/modules/ngap_module \
 -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 
-# Added -lz for ubuntu
-LIBADD = -L../../../dispatch/.libs -lbes_dispatch $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_EXTRA_LIBS) \
-$(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
+LIBADD = $(BES_DISPATCH_LIB)
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
@@ -29,7 +27,9 @@ check_PROGRAMS = $(UNIT_TESTS)
 
 TESTS = $(UNIT_TESTS)
 
-noinst_DATA = bes.conf $(abs_builddir)/static-cache 
+noinst_DATA = bes.conf
+# See target below. jhrg
+# $(abs_builddir)/static-cache
 
 BUILT_SOURCES = test_config.h
 
@@ -50,16 +50,12 @@ BES_CONF_IN = bes.conf.in
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
 # configure's value for the parameter when running the distcheck target.
 bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
-	@echo "# abs_top_srcdir: $(abs_top_srcdir)" 
-	@echo "# top_srcdir: $(top_srcdir)" 
-	@echo "# srcdir: $(srcdir)" 
-	@echo "# abs_top_builddir: $(abs_top_builddir)" 
-	@echo "# abs_builddir: $(abs_builddir)" 
-	@echo "# builddir: $(builddir)" 
 	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
+# This may be useful at some point, but the NGAP module does not use
+# it currently. jhrg 3/11/20
 $(abs_builddir)/static-cache:
 	@echo "# abs_top_srcdir: $(abs_top_srcdir)"
 	@echo "# top_srcdir: $(top_srcdir)"
@@ -92,16 +88,5 @@ endif
 clean-local:
 	test ! -d $(builddir)/static-cache || rm -rf $(builddir)/static-cache
 
-OBJS = ../RemoteHttpResource.o \
-../curl_utils.o \
-../rjson_utils.o \
-../NgapCache.o \
-../NgapUtils.o \
-../NgapApi.o \
-../Granule.o 
-
 NgapApiTest_SOURCES = NgapApiTest.cc
-NgapApiTest_LDADD = $(OBJS) $(LIBADD)
-
-##GranuleTest_SOURCES = GranuleTest.cc
-##GranuleTest_LDADD = $(OBJS) $(LIBADD)
+NgapApiTest_LDADD = ../.libs/libngap_module.a $(LIBADD)

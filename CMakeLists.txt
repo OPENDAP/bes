@@ -93,6 +93,9 @@ include_directories(modules/ncml_module/not_used)
 include_directories(modules/netcdf_handler)
 include_directories(modules/netcdf_handler/ugrid_project)
 include_directories(modules/netcdf_handler/win32)
+
+include_directories(modules/ngap_module)
+
 #include_directories(modules/sql_handler)
 #include_directories(modules/sql_handler/action)
 #include_directories(modules/sql_handler/connector)
@@ -1672,7 +1675,30 @@ add_executable(bes
     modules/netcdf_handler/NCUInt32.h
     modules/netcdf_handler/NCUrl.cc
     modules/netcdf_handler/NCUrl.h
-    #modules/sql_handler/action/SQLAction.h
+
+	modules/ngap_module/curl_utils.cc
+	modules/ngap_module/curl_utils.h
+	modules/ngap_module/NgapApi.cc
+	modules/ngap_module/NgapApi.h
+	modules/ngap_module/NgapCache.cc
+	modules/ngap_module/NgapCache.h
+	modules/ngap_module/NgapContainerStorage.cc
+	modules/ngap_module/NgapContainerStorage.h
+	modules/ngap_module/NgapContainer.cc
+	modules/ngap_module/NgapContainer.h
+	modules/ngap_module/NgapError.h
+	modules/ngap_module/NgapModule.cc
+	modules/ngap_module/NgapModule.h
+	modules/ngap_module/NgapNames.h
+	modules/ngap_module/NgapRequestHandler.cc
+	modules/ngap_module/NgapRequestHandler.h
+	modules/ngap_module/NgapUtils.cc
+	modules/ngap_module/NgapUtils.h
+	modules/ngap_module/RemoteHttpResource.cc
+	modules/ngap_module/RemoteHttpResource.h
+	modules/ngap_module/unit-tests/NgapApiTest.cc
+
+	#modules/sql_handler/action/SQLAction.h
     #modules/sql_handler/action/SQLActionFactory.h
     #modules/sql_handler/action/SQLActionList.h
     #modules/sql_handler/action/SQLActionManager.h
@@ -2073,37 +2099,6 @@ add_executable(bes
     modules/dmrpp_module/curl_utils.h
 
     modules/dmrpp_module/unit-tests/NgapCredentialsTest.cc
-
-    modules/dmrpp_module/curl_utils.cc modules/dmrpp_module/curl_utils.h
-
-
-        modules/ngap_module/curl_utils.cc
-        modules/ngap_module/curl_utils.h
-        modules/ngap_module/Granule.cc
-        modules/ngap_module/Granule.h
-        modules/ngap_module/NgapApi.cc
-        modules/ngap_module/NgapApi.h
-        modules/ngap_module/NgapCache.cc
-        modules/ngap_module/NgapCache.h
-        modules/ngap_module/NgapContainerStorage.cc
-        modules/ngap_module/NgapContainerStorage.h
-        modules/ngap_module/NgapContainer.cc
-        modules/ngap_module/NgapContainer.h
-        modules/ngap_module/NgapError.h
-        modules/ngap_module/NgapModule.cc
-        modules/ngap_module/NgapModule.h
-        modules/ngap_module/NgapNames.h
-        modules/ngap_module/NgapPathInfoCommand.cc
-        modules/ngap_module/NgapPathInfoCommand.h
-        modules/ngap_module/NgapPathInfoResponseHandler.cc
-        modules/ngap_module/NgapRequestHandler.cc
-        modules/ngap_module/NgapRequestHandler.h
-        modules/ngap_module/NgapResponseNames.h
-        modules/ngap_module/NgapUtils.cc
-        modules/ngap_module/NgapUtils.h
-        modules/ngap_module/RemoteHttpResource.cc
-        modules/ngap_module/RemoteHttpResource.h
-        modules/ngap_module/unit-tests/NgapApiTest.cc
 
     standalone/besstandalone.cc
 )

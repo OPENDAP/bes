@@ -53,23 +53,23 @@ namespace ngap {
  * @param doc The document that will hopd the parsed result.
  *
  */
-    void
-    rjson_utils::getJsonDoc(const string &url, rapidjson::Document &doc){
-        BESDEBUG(MODULE,prolog << "Trying url: " << url << endl);
-        ngap::RemoteHttpResource rhr(url);
-        rhr.retrieveResource();
-        if(BESDebug::IsSet(MODULE)){
-            string ngap_hits = rhr.get_http_response_header("ngap-hits");
-            stringstream msg(prolog);
-            msg << "NGAP-Hits: "<< ngap_hits << endl;
-            *(BESDebug::GetStrm()) << msg.str();
-        }
-        FILE* fp = fopen(rhr.getCacheFileName().c_str(), "r"); // non-Windows use "r"
-        char readBuffer[65536];
-        rapidjson::FileReadStream frs(fp, readBuffer, sizeof(readBuffer));
-        doc.ParseStream(frs);
-        fclose(fp);
+void
+rjson_utils::getJsonDoc(const string &url, rapidjson::Document &doc) {
+    BESDEBUG(MODULE, prolog << "Trying url: " << url << endl);
+    ngap::RemoteHttpResource rhr(url);
+    rhr.retrieveResource();
+    if (BESDebug::IsSet(MODULE)) {
+        string ngap_hits = rhr.get_http_response_header("ngap-hits");
+        stringstream msg(prolog);
+        msg << "NGAP-Hits: " << ngap_hits << endl;
+        *(BESDebug::GetStrm()) << msg.str();
     }
+    FILE *fp = fopen(rhr.getCacheFileName().c_str(), "r"); // non-Windows use "r"
+    char readBuffer[65536];
+    rapidjson::FileReadStream frs(fp, readBuffer, sizeof(readBuffer));
+    doc.ParseStream(frs);
+    fclose(fp);
+}
 
 
 /**
@@ -80,24 +80,26 @@ namespace ngap {
  * @param name The name of the child object to convert to a string
  * @return The value of the named chalid as a string;
  */
-    std::string
-    rjson_utils::getStringValue(const rapidjson::Value& object, const string &name){
+std::string
+rjson_utils::getStringValue(const rapidjson::Value &object, const string &name) {
 
-        rapidjson::Value::ConstMemberIterator itr = object.FindMember(name.c_str());
-        bool result  = itr != object.MemberEnd();
+    rapidjson::Value::ConstMemberIterator itr = object.FindMember(name.c_str());
+    bool result = itr != object.MemberEnd();
 
-        BESDEBUG(MODULE, prolog + (result?"Located":"FAILED to locate") + " the value '"+name+"' in object." << endl);
-        if(!result){
-            return "";
-        }
-        const rapidjson::Value& myValue = itr->value;
-        result = myValue.IsString();
-        BESDEBUG(MODULE, prolog + "The value of '"+ name +"' is " + (result?myValue.GetString():" NOT a String type.") << endl);
-        if(!result){
-            return "";
-        }
-        return myValue.GetString();
+    BESDEBUG(MODULE,
+             prolog + (result ? "Located" : "FAILED to locate") + " the value '" + name + "' in object." << endl);
+    if (!result) {
+        return "";
     }
+    const rapidjson::Value &myValue = itr->value;
+    result = myValue.IsString();
+    BESDEBUG(MODULE, prolog + "The value of '" + name + "' is " + (result ? myValue.GetString() : " NOT a String type.")
+            << endl);
+    if (!result) {
+        return "";
+    }
+    return myValue.GetString();
+}
 
 
 /**
@@ -106,13 +108,13 @@ namespace ngap {
  * @param d A reference to the document to convert.
  * @return The string manifestation of the JSON document.
  */
-    std::string
-    rjson_utils::jsonDocToString(rapidjson::Document &d){
-        rapidjson::StringBuffer buffer;
-        rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
-        d.Accept(writer);
-        return buffer.GetString();
-    }
+std::string
+rjson_utils::jsonDocToString(rapidjson::Document &d) {
+    rapidjson::StringBuffer buffer;
+    rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
+    d.Accept(writer);
+    return buffer.GetString();
+}
 
 
 }  // namespace ngap

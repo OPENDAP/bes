@@ -51,89 +51,89 @@ int curl_trace = 0;
 
 #define CLIENT_ERR_MIN 400
 #define CLIENT_ERR_MAX 417
-const char *http_client_errors[CLIENT_ERR_MAX - CLIENT_ERR_MIN +1] =
-    {
-        "Bad Request:",
-        "Unauthorized: Contact the server administrator.",
-        "Payment Required.",
-        "Forbidden: Contact the server administrator.",
-        "Not Found: The data source or server could not be found.\n"
-        "Often this means that the OPeNDAP server is missing or needs attention.\n"
-        "Please contact the server administrator.",
-        "Method Not Allowed.",
-        "Not Acceptable.",
-        "Proxy Authentication Required.",
-        "Request Time-out.",
-        "Conflict.",
-        "Gone:.",
-        "Length Required.",
-        "Precondition Failed.",
-        "Request Entity Too Large.",
-        "Request URI Too Large.",
-        "Unsupported Media Type.",
-        "Requested Range Not Satisfiable.",
-        "Expectation Failed."
-    };
+const char *http_client_errors[CLIENT_ERR_MAX - CLIENT_ERR_MIN + 1] =
+        {
+                "Bad Request:",
+                "Unauthorized: Contact the server administrator.",
+                "Payment Required.",
+                "Forbidden: Contact the server administrator.",
+                "Not Found: The data source or server could not be found.\n"
+                "Often this means that the OPeNDAP server is missing or needs attention.\n"
+                "Please contact the server administrator.",
+                "Method Not Allowed.",
+                "Not Acceptable.",
+                "Proxy Authentication Required.",
+                "Request Time-out.",
+                "Conflict.",
+                "Gone:.",
+                "Length Required.",
+                "Precondition Failed.",
+                "Request Entity Too Large.",
+                "Request URI Too Large.",
+                "Unsupported Media Type.",
+                "Requested Range Not Satisfiable.",
+                "Expectation Failed."
+        };
 
 #define SERVER_ERR_MIN 500
 #define SERVER_ERR_MAX 505
 const char *http_server_errors[SERVER_ERR_MAX - SERVER_ERR_MIN + 1] =
-    {
-        "Internal Server Error.",
-        "Not Implemented.",
-        "Bad Gateway.",
-        "Service Unavailable.",
-        "Gateway Time-out.",
-        "HTTP Version Not Supported."
-    };
+        {
+                "Internal Server Error.",
+                "Not Implemented.",
+                "Bad Gateway.",
+                "Service Unavailable.",
+                "Gateway Time-out.",
+                "HTTP Version Not Supported."
+        };
 
 
 /** This function translates an HTTP status code into an error messages. It
     works for those code greater than or equal to 400. */
-string http_status_to_string(int status)
-{
+string http_status_to_string(int status) {
     if (status >= CLIENT_ERR_MIN && status <= CLIENT_ERR_MAX)
         return string(http_client_errors[status - CLIENT_ERR_MIN]);
     else if (status >= SERVER_ERR_MIN && status <= SERVER_ERR_MAX)
         return string(http_server_errors[status - SERVER_ERR_MIN]);
     else
-        return string("Unknown Error: This indicates a problem with libdap++.\nPlease report this to support@opendap.org.");
+        return string(
+                "Unknown Error: This indicates a problem with libdap++.\nPlease report this to support@opendap.org.");
 }
 
-static string getCurlAuthTypeName(const int authType){
+static string getCurlAuthTypeName(const int authType) {
 
     string authTypeString;
     int match;
 
     match = authType & CURLAUTH_BASIC;
-    if(match){
+    if (match) {
         authTypeString += "CURLAUTH_BASIC";
     }
 
     match = authType & CURLAUTH_DIGEST;
-    if(match){
-        if(!authTypeString.empty())
+    if (match) {
+        if (!authTypeString.empty())
             authTypeString += " ";
         authTypeString += "CURLAUTH_DIGEST";
     }
 
     match = authType & CURLAUTH_DIGEST_IE;
-    if(match){
-        if(!authTypeString.empty())
+    if (match) {
+        if (!authTypeString.empty())
             authTypeString += " ";
         authTypeString += "CURLAUTH_DIGEST_IE";
     }
 
     match = authType & CURLAUTH_GSSNEGOTIATE;
-    if(match){
-        if(!authTypeString.empty())
+    if (match) {
+        if (!authTypeString.empty())
             authTypeString += " ";
         authTypeString += "CURLAUTH_GSSNEGOTIATE";
     }
 
     match = authType & CURLAUTH_NTLM;
-    if(match){
-        if(!authTypeString.empty())
+    if (match) {
+        if (!authTypeString.empty())
             authTypeString += " ";
         authTypeString += "CURLAUTH_NTLM";
     }
@@ -166,22 +166,22 @@ static string getCurlAuthTypeName(const int authType){
     return authTypeString;
 }
 
-
 /**
  * libcurl call back function that is used to write data to a passed open file descriptor (that would
  * be instead of the default open FILE *)
  */
-static size_t writeToOpenfileDescriptor( char *data, size_t /* size */, size_t nmemb, void *userdata){
+static size_t writeToOpenfileDescriptor(char *data, size_t /* size */, size_t nmemb, void *userdata) {
 
     int *fd = (int *) userdata;
 
-    BESDEBUG(MODULE, "curl_utils::writeToOpenfileDescriptor() - Bytes received " << libdap::long_to_string(nmemb) << endl);
+    BESDEBUG(MODULE,
+             "curl_utils::writeToOpenfileDescriptor() - Bytes received " << libdap::long_to_string(nmemb) << endl);
     int wrote = write(*fd, data, nmemb);
-    BESDEBUG(MODULE, "curl_utils::writeToOpenfileDescriptor() - Bytes written " << libdap::long_to_string(wrote) << endl);
+    BESDEBUG(MODULE,
+             "curl_utils::writeToOpenfileDescriptor() - Bytes written " << libdap::long_to_string(wrote) << endl);
 
     return wrote;
 }
-
 
 /** A libcurl callback function used to read response headers. Read headers,
     line by line, from ptr. The fourth param is really supposed to be a FILE
@@ -206,96 +206,81 @@ static size_t writeToOpenfileDescriptor( char *data, size_t /* size */, size_t n
     @return The number of bytes processed. Must be equal to size * nmemb or
     libcurl will report an error. */
 
-static size_t save_raw_http_headers(void *ptr, size_t size, size_t nmemb, void *resp_hdrs)
-{
-    BESDEBUG(MODULE,  "curl_utils::save_raw_http_headers() - Inside the header parser." << endl);
+static size_t save_raw_http_headers(void *ptr, size_t size, size_t nmemb, void *resp_hdrs) {
+    BESDEBUG(MODULE, "curl_utils::save_raw_http_headers() - Inside the header parser." << endl);
     vector<string> *hdrs = static_cast<vector<string> * >(resp_hdrs);
 
     // Grab the header, minus the trailing newline. Or \r\n pair.
     string complete_line;
-    if (nmemb > 1 && *(static_cast<char*>(ptr) + size * (nmemb - 2)) == '\r')
+    if (nmemb > 1 && *(static_cast<char *>(ptr) + size * (nmemb - 2)) == '\r')
         complete_line.assign(static_cast<char *>(ptr), size * (nmemb - 2));
     else
         complete_line.assign(static_cast<char *>(ptr), size * (nmemb - 1));
 
     // Store all non-empty headers that are not HTTP status codes
     if (complete_line != "" && complete_line.find("HTTP") == string::npos) {
-        BESDEBUG(MODULE,  "curl_utils::save_raw_http_headers() - Header line: " << complete_line << endl);
+        BESDEBUG(MODULE, "curl_utils::save_raw_http_headers() - Header line: " << complete_line << endl);
         hdrs->push_back(complete_line);
     }
 
     return size * nmemb;
 }
 
-
-
-
-
 /** A libcurl callback for debugging protocol issues. */
-static int curl_debug(CURL *, curl_infotype info, char *msg, size_t size, void  *)
-{
+static int curl_debug(CURL *, curl_infotype info, char *msg, size_t size, void *) {
     string message(msg, size);
 
     switch (info) {
-    case CURLINFO_TEXT:
-        BESDEBUG(MODULE, "curl_utils::curl_debug() - Text: " << message << endl ); break;
-    case CURLINFO_HEADER_IN:
-        BESDEBUG(MODULE, "curl_utils::curl_debug() - Header in: " << message << endl ); break;
-    case CURLINFO_HEADER_OUT:
-        BESDEBUG(MODULE, "curl_utils::curl_debug() - Header out: " << endl << message << endl ); break;
-    case CURLINFO_DATA_IN:
-        BESDEBUG(MODULE, "curl_utils::curl_debug() - Data in: " << message << endl ); break;
-    case CURLINFO_DATA_OUT:
-        BESDEBUG(MODULE, "curl_utils::curl_debug() - Data out: " << message << endl ); break;
-    case CURLINFO_END:
-        BESDEBUG(MODULE, "curl_utils::curl_debug() - End: " << message << endl ); break;
+        case CURLINFO_TEXT:
+            BESDEBUG(MODULE, "curl_utils::curl_debug() - Text: " << message << endl);
+            break;
+        case CURLINFO_HEADER_IN:
+            BESDEBUG(MODULE, "curl_utils::curl_debug() - Header in: " << message << endl);
+            break;
+        case CURLINFO_HEADER_OUT:
+            BESDEBUG(MODULE, "curl_utils::curl_debug() - Header out: " << endl << message << endl);
+            break;
+        case CURLINFO_DATA_IN:
+            BESDEBUG(MODULE, "curl_utils::curl_debug() - Data in: " << message << endl);
+            break;
+        case CURLINFO_DATA_OUT:
+            BESDEBUG(MODULE, "curl_utils::curl_debug() - Data out: " << message << endl);
+            break;
+        case CURLINFO_END:
+            BESDEBUG(MODULE, "curl_utils::curl_debug() - End: " << message << endl);
+            break;
 #ifdef CURLINFO_SSL_DATA_IN
-    case CURLINFO_SSL_DATA_IN:
-        BESDEBUG(MODULE, "curl_utils::curl_debug() - SSL Data in: " << message << endl ); break;
+        case CURLINFO_SSL_DATA_IN:
+            BESDEBUG(MODULE, "curl_utils::curl_debug() - SSL Data in: " << message << endl ); break;
 #endif
 #ifdef CURLINFO_SSL_DATA_OUT
-    case CURLINFO_SSL_DATA_OUT:
-        BESDEBUG(MODULE, "curl_utils::curl_debug() - SSL Data out: " << message << endl ); break;
+        case CURLINFO_SSL_DATA_OUT:
+            BESDEBUG(MODULE, "curl_utils::curl_debug() - SSL Data out: " << message << endl ); break;
 #endif
-    default:
-        BESDEBUG(MODULE, "curl_utils::curl_debug() - Curl info: " << message << endl ); break;
+        default:
+            BESDEBUG(MODULE, "curl_utils::curl_debug() - Curl info: " << message << endl);
+            break;
     }
     return 0;
 }
 
-
-
-
-
-
-
 /** Functor to add a single string to a curl_slist. This is used to transfer
     a list of headers from a vector<string> object to a curl_slist. */
-class BuildHeaders : public std::unary_function<const string &, void>
-{
+class BuildHeaders : public std::unary_function<const string &, void> {
     struct curl_slist *d_cl;
 
 public:
-    BuildHeaders() : d_cl(0)
-    {}
+    BuildHeaders() : d_cl(0) {}
 
-    void operator()(const string &header)
-    {
+    void operator()(const string &header) {
         BESDEBUG(MODULE, "BuildHeaders::operator() - Adding '" << header.c_str() << "' to the header list." << endl);
         d_cl = curl_slist_append(d_cl, header.c_str());
     }
 
-    struct curl_slist *get_headers()
-    {
+    struct curl_slist *get_headers() {
         return d_cl;
     }
 };
-
-
-
-
-
-
 
 /**
  * Configure the proxy options for the passed curl object. The passed URL is the target URL. If the target URL
@@ -311,7 +296,7 @@ public:
  *
  */
 bool configureProxy(CURL *curl, const string &url) {
-    BESDEBUG( MODULE, "curl_utils::configureProxy() - BEGIN." << endl);
+    BESDEBUG(MODULE, "curl_utils::configureProxy() - BEGIN." << endl);
 
     bool using_proxy = false;
 
@@ -319,35 +304,37 @@ bool configureProxy(CURL *curl, const string &url) {
     // to the curl state in HTTPConnect
     //string proxyProtocol = GatewayUtils::ProxyProtocol;
 
-    string proxyHost     = ngap::NgapUtils::ProxyHost;
-    int proxyPort        = ngap::NgapUtils::ProxyPort;
+    string proxyHost = ngap::NgapUtils::ProxyHost;
+    int proxyPort = ngap::NgapUtils::ProxyPort;
     string proxyPassword = ngap::NgapUtils::ProxyPassword;
-    string proxyUser     = ngap::NgapUtils::ProxyUser;
-    string proxyUserPW   = ngap::NgapUtils::ProxyUserPW;
-    int proxyAuthType    = ngap::NgapUtils::ProxyAuthType;
+    string proxyUser = ngap::NgapUtils::ProxyUser;
+    string proxyUserPW = ngap::NgapUtils::ProxyUserPW;
+    int proxyAuthType = ngap::NgapUtils::ProxyAuthType;
 
     if (!proxyHost.empty()) {
         using_proxy = true;
-        if(proxyPort==0)
+        if (proxyPort == 0)
             proxyPort = 8080;
 
         // Apparently we don't need this...
         //if(proxyProtocol.empty())
-           // proxyProtocol = "http";
+        // proxyProtocol = "http";
 
     }
     if (using_proxy) {
-        BESDEBUG( MODULE, "curl_utils::configureProxy() - Found proxy configuration." << endl);
+        BESDEBUG(MODULE, "curl_utils::configureProxy() - Found proxy configuration." << endl);
 
         // Don't set up the proxy server for URLs that match the 'NoProxy'
         // regex set in the gateway.conf file.
 
         // Don't create the regex if the string is empty
         if (!ngap::NgapUtils::NoProxyRegex.empty()) {
-            BESDEBUG( MODULE, "curl_utils::configureProxy() - Found NoProxyRegex." << endl);
+            BESDEBUG(MODULE, "curl_utils::configureProxy() - Found NoProxyRegex." << endl);
             libdap::Regex r(ngap::NgapUtils::NoProxyRegex.c_str());
             if (r.match(url.c_str(), url.length()) != -1) {
-                BESDEBUG( MODULE, "curl_utils::configureProxy() - Found NoProxy match. Regex: " << ngap::NgapUtils::NoProxyRegex << "; Url: " << url << endl);
+                BESDEBUG(MODULE,
+                         "curl_utils::configureProxy() - Found NoProxy match. Regex: " << ngap::NgapUtils::NoProxyRegex
+                                                                                       << "; Url: " << url << endl);
                 using_proxy = false;
             }
         }
@@ -360,8 +347,6 @@ bool configureProxy(CURL *curl, const string &url) {
 
             curl_easy_setopt(curl, CURLOPT_PROXY, proxyHost.data());
             curl_easy_setopt(curl, CURLOPT_PROXYPORT, proxyPort);
-
-// #ifdef CURLOPT_PROXYAUTH
 
             // oddly "#ifdef CURLOPT_PROXYAUTH" doesn't work - even though CURLOPT_PROXYAUTH is defined and valued at 111 it
             // fails the test. Eclipse hover over the CURLOPT_PROXYAUTH symbol shows: "CINIT(PROXYAUTH, LONG, 111)",
@@ -382,36 +367,32 @@ bool configureProxy(CURL *curl, const string &url) {
             BESDEBUG(MODULE, "curl_utils::configureProxy() - Using CURLOPT_PROXYAUTH = " << proxyAuthType << endl);
 #endif
 
-            BESDEBUG(MODULE, "curl_utils::configureProxy() - Using CURLOPT_PROXYAUTH = " << getCurlAuthTypeName(proxyAuthType) << endl);
+            BESDEBUG(MODULE,
+                     "curl_utils::configureProxy() - Using CURLOPT_PROXYAUTH = " << getCurlAuthTypeName(proxyAuthType)
+                                                                                 << endl);
             curl_easy_setopt(curl, CURLOPT_PROXYAUTH, proxyAuthType);
 
-            if (!proxyUser.empty()){
+            if (!proxyUser.empty()) {
                 curl_easy_setopt(curl, CURLOPT_PROXYUSERNAME, proxyUser.data());
                 BESDEBUG(MODULE, "curl_utils::configureProxy() - CURLOPT_PROXYUSER : " << proxyUser << endl);
 
-                if (!proxyPassword.empty()){
+                if (!proxyPassword.empty()) {
                     curl_easy_setopt(curl, CURLOPT_PROXYPASSWORD, proxyPassword.data());
                     BESDEBUG(MODULE, "curl_utils::configureProxy() - CURLOPT_PROXYPASSWORD: " << proxyPassword << endl);
                 }
             }
-            else if (!proxyUserPW.empty()){
+            else if (!proxyUserPW.empty()) {
                 BESDEBUG(MODULE,
-                        "curl_utils::configureProxy() - CURLOPT_PROXYUSERPWD : " << proxyUserPW << endl);
+                         "curl_utils::configureProxy() - CURLOPT_PROXYUSERPWD : " << proxyUserPW << endl);
                 curl_easy_setopt(curl, CURLOPT_PROXYUSERPWD, proxyUserPW.data());
             }
 
         }
     }
-    BESDEBUG( MODULE, "curl_utils::configureProxy() - END." << endl);
+    BESDEBUG(MODULE, "curl_utils::configureProxy() - END." << endl);
 
     return using_proxy;
 }
-
-
-
-
-
-
 
 /**
  * Get's a new instance of CURL* and performs basic configuration of that instance.
@@ -422,23 +403,22 @@ bool configureProxy(CURL *curl, const string &url) {
  *
  *  @param url The url used to configure the proy.
  */
-CURL *init(char *error_buffer)
-{
+CURL *init(char *error_buffer) {
 
     CURL *curl = curl_easy_init();
     if (!curl)
         throw libdap::InternalErr(__FILE__, __LINE__, "Could not initialize libcurl.");
 
-    // Load in the default headers to send with a request. The empty Pragma
-    // headers overrides libcurl's default Pragma: no-cache header (which
-    // will disable caching by Squid, etc.).
+        // Load in the default headers to send with a request. The empty Pragma
+        // headers overrides libcurl's default Pragma: no-cache header (which
+        // will disable caching by Squid, etc.).
 
-    // the empty Pragma never appears in the outgoing headers when this isn't present
-    // d_request_headers->push_back(string("Pragma: no-cache"));
+        // the empty Pragma never appears in the outgoing headers when this isn't present
+        // d_request_headers->push_back(string("Pragma: no-cache"));
 
-    // d_request_headers->push_back(string("Cache-Control: no-cache"));
+        // d_request_headers->push_back(string("Cache-Control: no-cache"));
 
-    // Allow compressed responses. Sending an empty string enables all supported compression types.
+        // Allow compressed responses. Sending an empty string enables all supported compression types.
 #ifndef CURLOPT_ACCEPT_ENCODING
     curl_easy_setopt(curl, CURLOPT_ENCODING, "");
 #else
@@ -453,7 +433,7 @@ CURL *init(char *error_buffer)
     // This means libcurl will use Basic, Digest, GSS Negotiate, or NTLM,
     // choosing the the 'safest' one supported by the server.
     // This requires curl 7.10.6 which is still in pre-release. 07/25/03 jhrg
-    curl_easy_setopt(curl, CURLOPT_HTTPAUTH, (long)CURLAUTH_ANY);
+    curl_easy_setopt(curl, CURLOPT_HTTPAUTH, (long) CURLAUTH_ANY);
 
     // I added these next three to support Hyrax accessing data held behind URS auth. ndp - 8/20/18
     curl_easy_setopt(curl, CURLOPT_NETRC, 1);
@@ -472,12 +452,8 @@ CURL *init(char *error_buffer)
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
     curl_easy_setopt(curl, CURLOPT_MAXREDIRS, 5);
 
-
-
-
     // Set the user agent to curls version response because, well, that's what command line curl does :)
     curl_easy_setopt(curl, CURLOPT_USERAGENT, curl_version());
-
 
 #if 0
     // If the user turns off SSL validation...
@@ -497,25 +473,18 @@ CURL *init(char *error_buffer)
     }
 #endif
 
-
     if (curl_trace) {
         BESDEBUG(MODULE, "curl_utils::www_lib_init() - Curl version: " << curl_version() << endl);
         curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
-        BESDEBUG(MODULE, "curl_utils::www_lib_init() - Curl in verbose mode."<< endl);
+        BESDEBUG(MODULE, "curl_utils::www_lib_init() - Curl in verbose mode." << endl);
         curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, curl_debug);
-        BESDEBUG(MODULE, "curl_utils::www_lib_init() - Curl debugging function installed."<< endl);
+        BESDEBUG(MODULE, "curl_utils::www_lib_init() - Curl debugging function installed." << endl);
     }
-
 
     BESDEBUG(MODULE, "curl_utils::www_lib_init() - curl: " << curl << endl);
 
     return curl;
-
-
 }
-
-
-
 
 /** Use libcurl to dereference a URL. Read the information referenced by \c
     url into the file pointed to by the open file descriptor \c fd.
@@ -537,8 +506,7 @@ long read_url(CURL *curl,
               int fd,
               vector<string> *resp_hdrs,
               const vector<string> *request_headers,
-              char error_buffer[])
-{
+              char error_buffer[]) {
     string prolog = string("curl_utils.cc ") + __func__ + "() - ";
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
@@ -546,8 +514,8 @@ long read_url(CURL *curl,
     // Before we do anything, make sure that the URL is OK to pursue.
     if (!bes::WhiteList::get_white_list()->is_white_listed(url)) {
         string err = (string) "The specified URL " + url
-                + " does not match any of the accessible services in"
-                + " the white list.";
+                     + " does not match any of the accessible services in"
+                     + " the white list.";
         BESDEBUG(MODULE, prolog << err << endl);
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
@@ -579,7 +547,7 @@ long read_url(CURL *curl,
     curl_slist_free_all(req_hdrs.get_headers());
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, 0);
 
-    if (res != 0){
+    if (res != 0) {
         BESDEBUG(MODULE, prolog << "OUCH! CURL returned an error! curl msg:  " << curl_easy_strerror(res) << endl);
         BESDEBUG(MODULE, prolog << "OUCH! CURL returned an error! error_buffer:  " << error_buffer << endl);
         throw libdap::Error(error_buffer);
@@ -594,292 +562,281 @@ long read_url(CURL *curl,
     return status;
 }
 
-
-
-
-
-
-
-
-
-
-
-    /**
-     * Returns a cURL error message string based on the conents of the error_buf or, if the error_buf is empty, the
-     * CURLcode code.
-     * @param response_code
-     * @param error_buf
-     * @return
-     */
-    string error_message(const CURLcode response_code, char *error_buf) {
-        ostringstream oss;
-        size_t len = strlen(error_buf);
-        if (len) {
-            oss << error_buf;
-            oss << " (code: " << (int) response_code << ")";
-        } else {
-            oss << curl_easy_strerror(response_code) << "(result: " << response_code << ")";
-        }
-        return oss.str();
-    }
-
-
-    /*
-    * @brief Callback passed to libcurl to handle reading a single byte.
-    *
-    * This callback assumes that the size of the data is small enough
-    * that all of the bytes will be either read at once or that a local
-            * temporary buffer can be used to build up the values.
-    *
-    * @param buffer Data from libcurl
-    * @param size Number of bytes
-    * @param nmemb Total size of data in this call is 'size * nmemb'
-    * @param data Pointer to this
-    * @return The number of bytes read
-    */
-    size_t c_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
-        size_t nbytes = size * nmemb;
-        //cerr << "ngap_write_data() bytes: " << nbytes << "  size: " << size << "  nmemb: " << nmemb << " buffer: " << buffer << "  data: " << data << endl;
-        memcpy(data, buffer, nbytes);
-        return nbytes;
-    }
-
-
-    /**
- * Check the response for errors and such.
- * @param eh
+/**
+ * Returns a cURL error message string based on the conents of the error_buf or, if the error_buf is empty, the
+ * CURLcode code.
+ * @param response_code
+ * @param error_buf
  * @return
  */
-    bool eval_get_response(CURL *eh) {
-        long http_code = 0;
-        CURLcode res = curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_code);
-        if (CURLE_OK != res) {
-            throw BESInternalError(
-                    string("Error getting HTTP response code: ").append(ngap_curl::error_message(res, (char *) "")),
-                    __FILE__, __LINE__);
-        }
-
-        // @TODO @FIXME Expand the list of handled status to at least include the 4** stuff for authentication so that something sensible can be done.
-        // Newer Apache servers return 206 for range requests. jhrg 8/8/18
-        switch (http_code) {
-            case 200: // OK
-            case 206: // Partial content - this is to be expected since we use range gets
-                // cases 201-205 are things we should probably reject, unless we add more
-                // comprehensive HTTP/S processing here. jhrg 8/8/18
-                return true;
-
-            case 500: // Internal server error
-            case 503: // Service Unavailable
-            case 504: // Gateway Timeout
-                return false;
-
-            default: {
-                ostringstream oss;
-                oss << "HTTP status error: Expected an OK status, but got: ";
-                oss << http_code;
-                throw BESInternalError(oss.str(), __FILE__, __LINE__);
-            }
-        }
+string error_message(const CURLcode response_code, char *error_buf) {
+    ostringstream oss;
+    size_t len = strlen(error_buf);
+    if (len) {
+        oss << error_buf;
+        oss << " (code: " << (int) response_code << ")";
     }
-
-    /**
-     * Execute the HTTP VERB from the passed cURL handle "c_handle" and retrieve the response.
-     * @param c_handle The cURL easy handle to execute and read.
-     */
-    void read_data(CURL *c_handle) {
-
-        unsigned int tries = 0;
-        unsigned int retry_limit = 3;
-        useconds_t retry_time = 1000;
-        bool success;
-        CURLcode curl_code;
-        char curlErrorBuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
-        char *urlp = NULL;
-
-        curl_easy_getinfo(c_handle, CURLINFO_EFFECTIVE_URL, &urlp);
-        // Checking the curl_easy_getinfo return value in this case is pointless. If it's CURL_OK then we
-        // still have to check the value of urlp to see if the URL was correctly set in the
-        // cURL handle. If it fails then it fails, and urlp is not set. If we just focus on the value of urlp then
-        // we can just check the one thing.
-        if (!urlp)
-            throw BESInternalError("URL acquisition failed.", __FILE__, __LINE__);
-
-        // Try until retry_limit or success...
-        do {
-            curlErrorBuf[0] = 0; // clear the error buffer with a null termination at index 0.
-            curl_code = curl_easy_perform(c_handle); // Do the thing...
-            ++tries;
-
-            if (CURLE_OK != curl_code) { // Failure here is not an HTTP error, but a cURL error.
-                throw BESInternalError(
-                        string("read_data() - ERROR! Message: ").append(ngap_curl::error_message(curl_code, curlErrorBuf)),
-                        __FILE__, __LINE__);
-            }
-
-            success = eval_get_response(c_handle);
-            // if(debug) cout << ngap_curl::probe_easy_handle(c_handle) << endl;
-            if (!success) {
-                if (tries == retry_limit) {
-                    throw BESInternalError(
-                            string("Data transfer error: Number of re-tries to S3 exceeded: ").append(
-                                    ngap_curl::error_message(curl_code, curlErrorBuf)), __FILE__, __LINE__);
-                } else {
-                    if (BESDebug::IsSet(MODULE)) {
-                        stringstream ss;
-                        ss << "HTTP transfer 500 error, will retry (trial " << tries << " for: " << urlp << ").";
-                        BESDEBUG(MODULE, ss.str());
-                    }
-                    usleep(retry_time);
-                    retry_time *= 2;
-
-
-                }
-            }
-
-        } while (!success);
+    else {
+        oss << curl_easy_strerror(response_code) << "(result: " << response_code << ")";
     }
+    return oss.str();
+}
 
-
-
-
-
-
-
-
-
-
+/*
+* @brief Callback passed to libcurl to handle reading a single byte.
+*
+* This callback assumes that the size of the data is small enough
+* that all of the bytes will be either read at once or that a local
+* temporary buffer can be used to build up the values.
+*
+* @param buffer Data from libcurl
+* @param size Number of bytes
+* @param nmemb Total size of data in this call is 'size * nmemb'
+* @param data Pointer to this
+* @return The number of bytes read
+*/
+size_t c_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
+    size_t nbytes = size * nmemb;
+    //cerr << "ngap_write_data() bytes: " << nbytes << "  size: " << size << "  nmemb: " << nmemb << " buffer: " << buffer << "  data: " << data << endl;
+    memcpy(data, buffer, nbytes);
+    return nbytes;
+}
 
 /**
-     *
-     * @param target_url
-     * @param cookies_file
-     * @param response_buff
-     * @return
-     */
-    CURL *set_up_easy_handle(const string &target_url, const string &cookies_file, char *response_buff) {
-        char d_errbuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
-        CURL *d_handle;     ///< The libcurl handle object.
-        d_handle = curl_easy_init();
-        if (!d_handle)
-            throw BESInternalError(string("ERROR! Failed to acquire cURL Easy Handle! "), __FILE__, __LINE__);
-
-        CURLcode res;
-        // Target URL --------------------------------------------------------------------------------------------------
-        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_URL, target_url.c_str())))
-            throw BESInternalError(string("HTTP Error setting URL: ").append(ngap_curl::error_message(res, d_errbuf)),
-                                   __FILE__, __LINE__);
-
-        // Pass all data to the 'write_data' function ------------------------------------------------------------------
-        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_WRITEFUNCTION, c_write_data)))
-            throw BESInternalError(string("CURL Error: ").append(ngap_curl::error_message(res, d_errbuf)),
-                                   __FILE__, __LINE__);
-
-        // Pass this to write_data as the fourth argument --------------------------------------------------------------
-        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_WRITEDATA, reinterpret_cast<void *>(response_buff))))
-            throw BESInternalError(
-                    string("CURL Error setting chunk as data buffer: ").append(ngap_curl::error_message(res, d_errbuf)),
-                    __FILE__, __LINE__);
-
-        // Follow redirects --------------------------------------------------------------------------------------------
-        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_FOLLOWLOCATION, 1L)))
-            throw BESInternalError(string("Error setting CURLOPT_FOLLOWLOCATION: ").append(
-                    ngap_curl::error_message(res, d_errbuf)),
-                                   __FILE__, __LINE__);
-
-
-        // Use cookies -------------------------------------------------------------------------------------------------
-        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_COOKIEFILE, cookies_file.c_str())))
-            throw BESInternalError(
-                    string("Error setting CURLOPT_COOKIEFILE to '").append(cookies_file).append("' msg: ").append(
-                            ngap_curl::error_message(res, d_errbuf)),
-                    __FILE__, __LINE__);
-
-        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_COOKIEJAR, cookies_file.c_str())))
-            throw BESInternalError(string("Error setting CURLOPT_COOKIEJAR: ").append(
-                    ngap_curl::error_message(res, d_errbuf)),
-                                   __FILE__, __LINE__);
-
-
-        // Authenticate using best available ---------------------------------------------------------------------------
-        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_HTTPAUTH, (long) CURLAUTH_ANY)))
-            throw BESInternalError(string("Error setting CURLOPT_HTTPAUTH to CURLAUTH_ANY msg: ").append(
-                    ngap_curl::error_message(res, d_errbuf)),
-                                   __FILE__, __LINE__);
-
-#if 0
-        if(debug) cout << "uid: " << uid << endl;
-            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_USERNAME, uid.c_str())))
-                throw BESInternalError(string("Error setting CURLOPT_USERNAME: ").append(ngap_curl::error_message(res, d_errbuf)),
-                                       __FILE__, __LINE__);
-
-            if(debug) cout << "pw: " << pw << endl;
-            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_PASSWORD, pw.c_str())))
-                throw BESInternalError(string("Error setting CURLOPT_PASSWORD: ").append(ngap_curl::error_message(res, d_errbuf)),
-                                       __FILE__, __LINE__);
-#else
-        // Use .netrc for credentials ----------------------------------------------------------------------------------
-        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_NETRC, CURL_NETRC_OPTIONAL)))
-            throw BESInternalError(string("Error setting CURLOPT_NETRC to CURL_NETRC_OPTIONAL: ").append(
-                    ngap_curl::error_message(res, d_errbuf)),
-                                   __FILE__, __LINE__);
-#endif
-
-        // Error Buffer ------------------------------------------------------------------------------------------------
-        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_ERRORBUFFER, d_errbuf)))
-            throw BESInternalError(string("CURL Error: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
-
-
-        return d_handle;
+* Check the response for errors and such.
+* @param eh
+* @return
+*/
+bool eval_get_response(CURL *eh) {
+    long http_code = 0;
+    CURLcode res = curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_code);
+    if (CURLE_OK != res) {
+        throw BESInternalError(
+                string("Error getting HTTP response code: ").append(ngap_curl::error_message(res, (char *) "")),
+                __FILE__, __LINE__);
     }
 
+    // FIXME Expand the list of handled status to at least include the 4** stuff for authentication so that something sensible can be done.
+    // Newer Apache servers return 206 for range requests. jhrg 8/8/18
+    switch (http_code) {
+        case 200: // OK
+        case 206: // Partial content - this is to be expected since we use range gets
+            // cases 201-205 are things we should probably reject, unless we add more
+            // comprehensive HTTP/S processing here. jhrg 8/8/18
+            return true;
 
-    /**
-     * Derefernce the target URL and put the response in response_buf
-     * @param target_url The URL to dereference.
-     * @param response_buf The buffer into which to put the response.
-     */
-    void http_get(const std::string &target_url, char *response_buf){
+        case 500: // Internal server error
+        case 503: // Service Unavailable
+        case 504: // Gateway Timeout
+            return false;
 
-        // @TODO @FIXME Drop the use of this deprecated function and figure out a better way: configuration setting?
-        string cookies = std::tmpnam(nullptr);
+        default: {
+            ostringstream oss;
+            oss << "HTTP status error: Expected an OK status, but got: ";
+            oss << http_code;
+            throw BESInternalError(oss.str(), __FILE__, __LINE__);
+        }
+    }
+}
 
+/**
+ * Execute the HTTP VERB from the passed cURL handle "c_handle" and retrieve the response.
+ * @param c_handle The cURL easy handle to execute and read.
+ */
+void read_data(CURL *c_handle) {
+
+    unsigned int tries = 0;
+    unsigned int retry_limit = 3;
+    useconds_t retry_time = 1000;
+    bool success;
+    CURLcode curl_code;
+    char curlErrorBuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
+    char *urlp = NULL;
+
+    curl_easy_getinfo(c_handle, CURLINFO_EFFECTIVE_URL, &urlp);
+    // Checking the curl_easy_getinfo return value in this case is pointless. If it's CURL_OK then we
+    // still have to check the value of urlp to see if the URL was correctly set in the
+    // cURL handle. If it fails then it fails, and urlp is not set. If we just focus on the value of urlp then
+    // we can just check the one thing.
+    if (!urlp)
+        throw BESInternalError("URL acquisition failed.", __FILE__, __LINE__);
+
+    // Try until retry_limit or success...
+    do {
+        curlErrorBuf[0] = 0; // clear the error buffer with a null termination at index 0.
+        curl_code = curl_easy_perform(c_handle); // Do the thing...
+        ++tries;
+
+        if (CURLE_OK != curl_code) { // Failure here is not an HTTP error, but a cURL error.
+            throw BESInternalError(
+                    string("read_data() - ERROR! Message: ").append(ngap_curl::error_message(curl_code, curlErrorBuf)),
+                    __FILE__, __LINE__);
+        }
+
+        success = eval_get_response(c_handle);
+        // if(debug) cout << ngap_curl::probe_easy_handle(c_handle) << endl;
+        if (!success) {
+            if (tries == retry_limit) {
+                throw BESInternalError(
+                        string("Data transfer error: Number of re-tries to S3 exceeded: ").append(
+                                ngap_curl::error_message(curl_code, curlErrorBuf)), __FILE__, __LINE__);
+            }
+            else {
+                if (BESDebug::IsSet(MODULE)) {
+                    stringstream ss;
+                    ss << "HTTP transfer 500 error, will retry (trial " << tries << " for: " << urlp << ").";
+                    BESDEBUG(MODULE, ss.str());
+                }
+                usleep(retry_time);
+                retry_time *= 2;
+            }
+        }
+
+    } while (!success);
+}
+
+/**
+  *
+  * @param target_url
+  * @param cookies_file
+  * @param response_buff
+  * @return
+  */
+CURL *set_up_easy_handle(const string &target_url, const string &cookies_file, char *response_buff) {
+    char d_errbuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
+    CURL *d_handle;     ///< The libcurl handle object.
+    d_handle = curl_easy_init();
+    if (!d_handle)
+        throw BESInternalError(string("ERROR! Failed to acquire cURL Easy Handle! "), __FILE__, __LINE__);
+
+    CURLcode res;
+    // Target URL --------------------------------------------------------------------------------------------------
+    if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_URL, target_url.c_str())))
+        throw BESInternalError(string("HTTP Error setting URL: ").append(ngap_curl::error_message(res, d_errbuf)),
+                               __FILE__, __LINE__);
+
+    // Pass all data to the 'write_data' function ------------------------------------------------------------------
+    if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_WRITEFUNCTION, c_write_data)))
+        throw BESInternalError(string("CURL Error: ").append(ngap_curl::error_message(res, d_errbuf)),
+                               __FILE__, __LINE__);
+
+    // Pass this to write_data as the fourth argument --------------------------------------------------------------
+    if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_WRITEDATA, reinterpret_cast<void *>(response_buff))))
+        throw BESInternalError(
+                string("CURL Error setting chunk as data buffer: ").append(ngap_curl::error_message(res, d_errbuf)),
+                __FILE__, __LINE__);
+
+    // Follow redirects --------------------------------------------------------------------------------------------
+    if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_FOLLOWLOCATION, 1L)))
+        throw BESInternalError(string("Error setting CURLOPT_FOLLOWLOCATION: ").append(
+                ngap_curl::error_message(res, d_errbuf)),
+                               __FILE__, __LINE__);
+
+
+    // Use cookies -------------------------------------------------------------------------------------------------
+    if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_COOKIEFILE, cookies_file.c_str())))
+        throw BESInternalError(
+                string("Error setting CURLOPT_COOKIEFILE to '").append(cookies_file).append("' msg: ").append(
+                        ngap_curl::error_message(res, d_errbuf)),
+                __FILE__, __LINE__);
+
+    if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_COOKIEJAR, cookies_file.c_str())))
+        throw BESInternalError(string("Error setting CURLOPT_COOKIEJAR: ").append(
+                ngap_curl::error_message(res, d_errbuf)),
+                               __FILE__, __LINE__);
+
+    // Authenticate using best available ---------------------------------------------------------------------------
+    if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_HTTPAUTH, (long) CURLAUTH_ANY)))
+        throw BESInternalError(string("Error setting CURLOPT_HTTPAUTH to CURLAUTH_ANY msg: ").append(
+                ngap_curl::error_message(res, d_errbuf)),
+                               __FILE__, __LINE__);
+
+#if 0
+    if(debug) cout << "uid: " << uid << endl;
+        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_USERNAME, uid.c_str())))
+            throw BESInternalError(string("Error setting CURLOPT_USERNAME: ").append(ngap_curl::error_message(res, d_errbuf)),
+                                   __FILE__, __LINE__);
+
+        if(debug) cout << "pw: " << pw << endl;
+        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_PASSWORD, pw.c_str())))
+            throw BESInternalError(string("Error setting CURLOPT_PASSWORD: ").append(ngap_curl::error_message(res, d_errbuf)),
+                                   __FILE__, __LINE__);
+#else
+    // Use .netrc for credentials ----------------------------------------------------------------------------------
+    if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_NETRC, CURL_NETRC_OPTIONAL)))
+        throw BESInternalError(string("Error setting CURLOPT_NETRC to CURL_NETRC_OPTIONAL: ").append(
+                ngap_curl::error_message(res, d_errbuf)),
+                               __FILE__, __LINE__);
+#endif
+
+    // Error Buffer ------------------------------------------------------------------------------------------------
+    if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_ERRORBUFFER, d_errbuf)))
+        throw BESInternalError(string("CURL Error: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
+
+    return d_handle;
+}
+
+/**
+ * Derefernce the target URL and put the response in response_buf
+ * @param target_url The URL to dereference.
+ * @param response_buf The buffer into which to put the response.
+ */
+void http_get(const std::string &target_url, char *response_buf) {
+#if 0
+    // FIXME Drop the use of this deprecated function and figure out a better way: configuration setting?
+    string cookies = std::tmpnam(nullptr);
+#else
+    char name[] = "/tmp/ngap_cookiesXXXXXX";
+    string cookies = mktemp(name);
+    if (cookies.empty())
+        throw BESInternalError(string("Failed to make temporary file for HTTP cookies in module 'ngap' (").append(strerror(errno)).append(")"), __FILE__, __LINE__);
+#endif
+
+    try {
         CURL *c_handle = set_up_easy_handle(target_url, cookies, response_buf);
         read_data(c_handle);
         curl_easy_cleanup(c_handle);
+        unlink(cookies.c_str());
     }
-
-    /**
-     * @brief http_get_as_string() This function de-references the target_url and returns the response document as a std:string.
-     *
-     * @param target_url The URL to dereference.
-     * @return JSON document parsed from the response document returned by target_url
-    */ // @TODO @FIXME Move this to ../curl_utils.cc (Requires moving the rapidjson lib too)
-    std::string http_get_as_string(const std::string &target_url){
-
-        // @TODO @FIXME Make the size of this buffer a configuration setting, or pass it in, something....
-        char response_buf[1024 * 1024];
-
-        ngap_curl::http_get(target_url, response_buf);
-        string response(response_buf);
-        return response;
+    catch(...) {
+        unlink(cookies.c_str());
+        throw;
     }
+}
 
-    /**
-     * @brief http_get_as_json() This function de-references the target_url and parses the response into a JSON document.
-     *
-     * @param target_url The URL to dereference.
-     * @return JSON document parsed from the response document returned by target_url
-     */ // @TODO @FIXME Move this to ../curl_utils.cc (Requires moving the rapidjson lib too)
-    rapidjson::Document http_get_as_json(const std::string &target_url){
+/**
+ * @brief http_get_as_string() This function de-references the target_url and returns the response document as a std:string.
+ *
+ * @param target_url The URL to dereference.
+ * @TODO Move this to ../curl_utils.cc (Requires moving the rapidjson lib too)
+ * @return JSON document parsed from the response document returned by target_url
+*/
+std::string http_get_as_string(const std::string &target_url) {
 
-        // @TODO @FIXME Make the size of this buffer a configuration setting, or pass it in, something....
-        char response_buf[1024 * 1024];
+    // FIXME Make the size of this buffer a configuration setting, or pass it in, something....
+    char response_buf[1024 * 1024];
 
-        ngap_curl::http_get(target_url, response_buf);
-        rapidjson::Document d;
-        d.Parse(response_buf);
-        return d;
-    }
+    ngap_curl::http_get(target_url, response_buf);
+    string response(response_buf);
+    return response;
+}
 
+/**
+ * @brief http_get_as_json() This function de-references the target_url and parses the response into a JSON document.
+ *
+ * @param target_url The URL to dereference.
+ * @TODO Move this to ../curl_utils.cc (Requires moving the rapidjson lib too)
+ * @return JSON document parsed from the response document returned by target_url
+ */
+rapidjson::Document http_get_as_json(const std::string &target_url) {
+
+    // FIXME Make the size of this buffer a configuration setting, or pass it in, something....
+    char response_buf[1024 * 1024];
+
+    ngap_curl::http_get(target_url, response_buf);
+    rapidjson::Document d;
+    d.Parse(response_buf);
+    return d;
+}
 
 } /* namespace ngap_curl */

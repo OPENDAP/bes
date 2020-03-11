@@ -4,7 +4,7 @@
   <bes:setContext name="dap_explicit_containers">no</bes:setContext>
   <bes:setContext name="errors">xml</bes:setContext>
   <bes:setContext name="max_response_size">0</bes:setContext>
-  <bes:setContainer name="ngapContainer" space="ngap">provider/GHRC_CLOUD/datasets/ACES_CONTINUOUS_DATA_V1/granules/aces1cont_2002.191_v2.50.tar</bes:setContainer>
+  <bes:setContainer name="ngapContainer" space="ngap">providers/GHRC_CLOUD/datasets/ACES_CONTINUOUS_DATA_V1/granules/aces1cont_2002.191_v2.50.tar</bes:setContainer>
   <bes:define name="d1" space="default">
     <bes:container name="ngapContainer" />
   </bes:define>

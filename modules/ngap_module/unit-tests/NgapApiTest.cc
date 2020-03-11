@@ -47,9 +47,9 @@
 
 #include "RemoteHttpResource.h"
 #include "NgapApi.h"
-#include "NgapNames.h"
-#include "NgapError.h"
-#include "rjson_utils.h"
+// #include "NgapNames.h"
+// #include "NgapError.h"
+// #include "rjson_utils.h"
 
 using namespace std;
 using namespace rapidjson;
@@ -132,18 +132,12 @@ public:
 
         string expected("https://d1lpqa6z94hycl.cloudfront.net/ghrc-app-protected/amsua15sp__1/2020-01-28/amsua15_2020.028_12915_1139_1324_WI.nc.dmrpp");
 
-        /*if (debug) {
-            cerr << prolog << data_access_url << endl;
-            cerr << prolog << expected << endl;
-        }*/
-
         if (expected == data_access_url) {
             CPPUNIT_ASSERT(true);
         } else {
             CPPUNIT_ASSERT(false);
         }
     }
-
 
     CPPUNIT_TEST_SUITE( NgapApiTest );
 
