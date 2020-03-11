@@ -625,6 +625,7 @@ void build_dmr_with_StandAloneApp(const string &bes_conf_filename, const string 
 
     TheBESKeys::ConfigFile = bes_conf_filename;
 
+#if 0
     // besstandalone command
     unsigned int nargc = 7;
     char **nargv;
@@ -643,7 +644,40 @@ void build_dmr_with_StandAloneApp(const string &bes_conf_filename, const string 
     cerr << endl;
 
     StandAloneApp app;
-    app.main(nargc, nargv);
+    app.main(nargc, argv.nargv());
+#endif
+
+#if 0
+    std::vector<char*> argv;
+    for(const auto& arg : arguments)
+        argv.push_back((char*)&arg[0]);
+    argv.push_back(nullptr);
+    f.bar(argv.size() - 1, argv.data());
+#endif
+    std::vector<std::string> arguments;
+    arguments.push_back("ngap_build_dmrpp");
+    arguments.push_back("-c");
+    arguments.push_back(bes_conf_filename.c_str());
+    arguments.push_back("-i");
+    arguments.push_back(bes_cmd.c_str());
+    arguments.push_back("-f");
+    arguments.push_back(output_file.c_str());
+
+
+    std::vector<char*> argv;
+    for(unsigned i=0; i<arguments.size() ; i++){
+        const string &arg = arguments[i];
+        argv.push_back((char*)&arg[0]);
+    }
+    argv.push_back(nullptr);
+    for (unsigned i = 0; i < argv.size()-1; i++) { cerr << "argv[" << i << "]: " << argv[i] << endl; }
+
+    cerr << "        Command line equivalent: " << "besstandalone ";
+    for (unsigned i = 1; i < argv.size()-1; i++) { cerr << argv[i] << " "; }
+    cerr << endl;
+
+    StandAloneApp app;
+    app.main(argv.size()-1, argv.data());
 
     if (verbose) {
         cerr << "        besstandalone output to: " << output_file << endl;
@@ -925,7 +959,7 @@ int main(int argc, char*argv[])
     string bes_conf_filename = mktemp_bes_conf(bes_conf_file, data_root, pid);
     if(verbose){ cerr << "              bes_conf_filename: " << bes_conf_filename << endl; }
 
-#if 1
+#if 0
 
     string bes_cmd_filename  =  mktemp_get_dmr_bes_cmd(input_data_file, pid);
     if(verbose){ cerr << "               bes_cmd_filename: " << bes_cmd_filename << endl; }
