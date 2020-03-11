@@ -106,7 +106,7 @@ namespace curl {
             {CURLINFO_FTP_ENTRY_PATH,          {"CURLINFO_FTP_ENTRY_PATH",          "The entry path after logging in to an FTP server. See CURLINFO_FTP_ENTRY_PATH"}},
             {CURLINFO_CERTINFO,                {"CURLINFO_CERTINFO",                "Certificate chain. See CURLINFO_CERTINFO"}},
             // {CURLINFO_TLS_SSL_PTR,             {"CURLINFO_TLS_SSL_PTR",             "TLS session info that can be used for further processing. See CURLINFO_TLS_SSL_PTR"}}, // cURL 7.64
-            {CURLINFO_TLS_SESSION,             {"CURLINFO_TLS_SESSION",             "TLS session info that can be used for further processing. See CURLINFO_TLS_SESSION. Deprecated option, use CURLINFO_TLS_SSL_PTR instead!"}},
+            //{CURLINFO_TLS_SESSION,             {"CURLINFO_TLS_SESSION",             "TLS session info that can be used for further processing. See CURLINFO_TLS_SESSION. Deprecated option, use CURLINFO_TLS_SSL_PTR instead!"}}, //breaks on centos 7. sbl 3/11/20
             {CURLINFO_CONDITION_UNMET,         {"CURLINFO_CONDITION_UNMET",         "Whether or not a time conditional was met. See CURLINFO_CONDITION_UNMET"}},
             {CURLINFO_RTSP_SESSION_ID,         {"CURLINFO_RTSP_SESSION_ID",         "RTSP session ID. See CURLINFO_RTSP_SESSION_ID"}},
             {CURLINFO_RTSP_CLIENT_CSEQ,        {"CURLINFO_RTSP_CLIENT_CSEQ",        "RTSP CSeq that will next be used. See CURLINFO_RTSP_CLIENT_CSEQ"}},
@@ -295,7 +295,7 @@ namespace curl {
         curlValueAsString(ss, c_handle, CURLINFO_FTP_ENTRY_PATH);
         curlValueAsCurlCertInfo(ss, c_handle, CURLINFO_CERTINFO);
         // curlValueAsCurlTlsSessionInfo(ss, c_handle, CURLINFO_TLS_SSL_PTR); // cURL 7.64
-        curlValueAsCurlTlsSessionInfo(ss, c_handle, CURLINFO_TLS_SESSION);
+        //curlValueAsCurlTlsSessionInfo(ss, c_handle, CURLINFO_TLS_SESSION); //breaks on centos 7. sbl 3/11/20
         curlValueAsLong(ss, c_handle, CURLINFO_CONDITION_UNMET);
         curlValueAsString(ss, c_handle, CURLINFO_RTSP_SESSION_ID);
         curlValueAsLong(ss, c_handle, CURLINFO_RTSP_CLIENT_CSEQ);

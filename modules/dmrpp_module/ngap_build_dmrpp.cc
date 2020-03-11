@@ -84,7 +84,7 @@ static bool very_verbose = false;
 #define VERY_VERBOSE(x) do { if (very_verbose) x; } while(false)
 
 // #define DEBUG_KEY "metadata_store,dmrpp_store,dmrpp"
-#define DEBUG_KEY "timing"
+#define DEBUG_KEY "metadata_store,dmrpp_store,dmrpp,bes"
 #define ROOT_DIRECTORY "BES.Catalog.catalog.RootDirectory"
 
 //#define H5D_FRIEND		// Workaround, needed to use H5D_chunk_rec_t
@@ -516,17 +516,17 @@ static void get_chunks_for_all_variables(hid_t file, D4Group *group)
 
 
 /**
+ * @brief Creates a temporary bes configuration file
  *
- * @param bes_conf_file USer supplied bes conf filename (is any)
+ * @param bes_conf_filename User supplied bes conf filename (is any)
  * @param data_root The data root for this bes invocation
  * @param pid Process id
  * @return The name of the bes conf file to utilize.
  */
-string mktemp_bes_conf(const string &bes_conf_file, const string &data_root, const pid_t &pid){
+string mktemp_bes_conf(const string &bes_conf_filename, const string &data_root, const pid_t &pid){
     stringstream tmp_conf_filename;
 
-    if (bes_conf_file.empty()) {
-        std::FILE *tmp;
+    if (bes_conf_filename.empty()) {
 
         ////////////
         //sed command
@@ -539,6 +539,7 @@ string mktemp_bes_conf(const string &bes_conf_file, const string &data_root, con
             BES_CONF_DOC.insert(startIndex, data_root);
         }
         tmp_conf_filename << "/tmp/nbd_" << pid << "_bes.conf";
+        std::FILE *tmp;
         tmp = fopen(tmp_conf_filename.str().c_str(), "w");
         fputs(BES_CONF_DOC.c_str(), tmp);
         fclose(tmp);
@@ -550,18 +551,17 @@ string mktemp_bes_conf(const string &bes_conf_file, const string &data_root, con
 
     }
     else {
-        return bes_conf_file;
+        return bes_conf_filename;
     }
 }
 
 
-
 /**
+ * @brief Creates a temporary dmr bes command file
  *
- * @param input_data_file
- * @param data_root
- * @param pid
- * @return
+ * @param input_data_file User supplied data file
+ * @param pid Process id
+ * @return The name of the bes cmd file to utilize
  */
 string mktemp_get_dmr_bes_cmd(const string &input_data_file, const pid_t &pid) {
 
@@ -610,18 +610,20 @@ string mktemp_get_dmr_bes_cmd(const string &input_data_file, const pid_t &pid) {
 }
 
 
-
 /**
+ * @brief Builds a dmr using the besstandalone viva the StandAloneApp
  * Build DMR using besstandalone (aka StandAloneApp)
  *
- * @param conf
- * @param cmd
- * @param dmr
+ * @param bes_conf_filename The name of the bes configuration file to use
+ * @param bes_cmd The bes command to execute
+ * @param output_file The file to write the output to
  */
 void build_dmr_with_StandAloneApp(const string &bes_conf_filename, const string &bes_cmd, const string &output_file) {
 
     BESStopWatch sw;
-    sw.start("build_dmrpp - DMR from StandAloneApp");
+    sw.start("build_dmrpp::build_dmr_with_StandAloneApp()");
+
+    TheBESKeys::ConfigFile = bes_conf_filename;
 
     // besstandalone command
     int nargc = 6;
@@ -640,25 +642,29 @@ void build_dmr_with_StandAloneApp(const string &bes_conf_filename, const string 
     cerr << endl;
 
     StandAloneApp app;
-    app.main(nargc, nargv);
+    app.main(6, nargv);
 
     if (verbose) {
-        cerr << "       besstandalone output to: " << output_file << endl;
+        cerr << "        besstandalone output to: " << output_file << endl;
     }
 }
 
 
 /**
- * Returns a DMR instance built by the HDF5RequestHandler from the input data file.
+ * @brief Returns a DMR instance built by the HDF5RequestHandler from the input data file.
+ *
+ * @param bes_conf_filename The name of the bes configuration file to use
  * @param input_data_file
  * @param url If url is not empty then make the vaolue of the dmrpp:href attribute in the
  * Sataset element of the generated DMR.
  * @return The DMR instance built from input_data_file.
  */
-DMR *build_hdf5_dmr(const string &input_data_file, const string &url){
+DMR *build_hdf5_dmr(const string &bes_conf_filename, const string &input_data_file, const string &url){
 
     BESStopWatch sw;
     sw.start("build_dmrpp::build_hdf5_dmr()");
+
+    TheBESKeys::ConfigFile = bes_conf_filename;
 
     HDF5RequestHandler *h5rh = new HDF5RequestHandler("h5_handler");
     BESDataHandlerInterface dhi;
@@ -687,13 +693,12 @@ DMR *build_hdf5_dmr(const string &input_data_file, const string &url){
 }
 
 
-
-
 /**
+ * @brief Generates a dmrpp file using an input stream
  *
- * @param input_data_file
- * @param dmr_istrm
- * @param url_name
+ * @param input_data_file The name of the data file to use
+ * @param dmr_istrm The input stream containing the dmr file
+ * @param url_name The path to the file
  * @return
  */
 int generate_dmrpp(const string &input_data_file, istream *dmr_istrm, const string &url_name){
@@ -820,10 +825,11 @@ int generate_dmrpp(const string &input_data_file, istream *dmr_istrm, const stri
 
 
 /**
+ * @brief Generates a dmrpp file
  *
- * @param input_data_file
- * @param dmr_filename
- * @param url_name
+ * @param input_data_file The name of the data file to use
+ * @param dmr_filename The string of the dmr file
+ * @param url_name The path to the file
  * @return
  */
 int generate_dmrpp(const string &input_data_file, const string &dmr_filename, const string &url_name) {
@@ -834,7 +840,6 @@ int generate_dmrpp(const string &input_data_file, const string &dmr_filename, co
         dmr_istrm = new ifstream (dmr_filename.c_str());
     }
     return generate_dmrpp(input_data_file, dmr_istrm, url_name);
-
 }
 
 
@@ -861,7 +866,7 @@ int main(int argc, char*argv[])
      * f = file name
      * r = dmr_file_name
      * u = url_name
-     * d = debug
+     * b = debug
      * h = help
      * v = verbose, V = very verbose
      * o = output file // <<-- FIXME
@@ -907,10 +912,6 @@ int main(int argc, char*argv[])
         }
     }
 
-    ////////////////////////////////////////////////////
-    // GET_OPTS CODE
-    /////////////////////////////
-
     if(input_data_file.empty()){
         cerr << "Error - input_data_file must be given." << endl;
         exit(1);
@@ -942,9 +943,7 @@ int main(int argc, char*argv[])
     // Build DMR using direct calls into the BES stack
     //
 
-    TheBESKeys::ConfigFile = bes_conf_filename;
-
-    DMR *h5_dmr =  build_hdf5_dmr(input_data_file, url_name);
+    DMR *h5_dmr =  build_hdf5_dmr(bes_conf_filename,input_data_file, url_name);
     XMLWriter xmlWriter("  ");
     h5_dmr->print_dap4(xmlWriter);
     delete h5_dmr;
@@ -954,14 +953,6 @@ int main(int argc, char*argv[])
     status = generate_dmrpp(input_data_file, &dmr_istrm, url_name);
 
 #endif
-
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////
-	// RETURN TO DMRPP BUILDER
-	/////////////////////////////
-
-
 
     return status;
 }
