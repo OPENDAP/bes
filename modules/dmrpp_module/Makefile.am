@@ -30,7 +30,7 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 SUBDIRS = . unit-tests tests data
 
-noinst_DATA = bes_default_conf.h
+BUILT_SOURCES = bes_default_conf.h
 
 # Build the bes_default_conf script so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
@@ -108,7 +108,7 @@ EXTRA_DIST = dmrpp.conf.in xml2json
 
 # removed from EXTRA_DIST: libdmrpp_module.la
 
-CLEANFILES = *~ dmrpp.conf
+CLEANFILES = *~ bes_default_conf.h dmrpp.conf
 
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = dmrpp.conf
