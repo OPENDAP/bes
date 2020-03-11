@@ -84,7 +84,7 @@ static bool very_verbose = false;
 #define VERY_VERBOSE(x) do { if (very_verbose) x; } while(false)
 
 // #define DEBUG_KEY "metadata_store,dmrpp_store,dmrpp"
-#define DEBUG_KEY "all"
+#define DEBUG_KEY "metadata_store,dmrpp_store,dmrpp"
 #define ROOT_DIRECTORY "BES.Catalog.catalog.RootDirectory"
 
 //#define H5D_FRIEND		// Workaround, needed to use H5D_chunk_rec_t
@@ -517,16 +517,15 @@ static void get_chunks_for_all_variables(hid_t file, D4Group *group)
 
 /**
  *
- * @param bes_conf_file USer supplied bes conf filename (is any)
+ * @param bes_conf_filename USer supplied bes conf filename (is any)
  * @param data_root The data root for this bes invocation
  * @param pid Process id
  * @return The name of the bes conf file to utilize.
  */
-string mktemp_bes_conf(const string &bes_conf_file, const string &data_root, const pid_t &pid){
+string mktemp_bes_conf(const string &bes_conf_filename, const string &data_root, const pid_t &pid){
     stringstream tmp_conf_filename;
 
-    if (bes_conf_file.empty()) {
-        std::FILE *tmp;
+    if (bes_conf_filename.empty()) {
 
         ////////////
         //sed command
@@ -539,6 +538,7 @@ string mktemp_bes_conf(const string &bes_conf_file, const string &data_root, con
             BES_CONF_DOC.insert(startIndex, data_root);
         }
         tmp_conf_filename << "/tmp/nbd_" << pid << "_bes.conf";
+        std::FILE *tmp;
         tmp = fopen(tmp_conf_filename.str().c_str(), "w");
         fputs(BES_CONF_DOC.c_str(), tmp);
         fclose(tmp);
@@ -550,7 +550,7 @@ string mktemp_bes_conf(const string &bes_conf_file, const string &data_root, con
 
     }
     else {
-        return bes_conf_file;
+        return bes_conf_filename;
     }
 }
 
@@ -621,7 +621,7 @@ string mktemp_get_dmr_bes_cmd(const string &input_data_file, const pid_t &pid) {
 void build_dmr_with_StandAloneApp(const string &bes_conf_filename, const string &bes_cmd, const string &output_file) {
 
     BESStopWatch sw;
-    sw.start("build_dmrpp - DMR from StandAloneApp");
+    sw.start("build_dmrpp::build_dmr_with_StandAloneApp()");
 
     TheBESKeys::ConfigFile = bes_conf_filename;
 
