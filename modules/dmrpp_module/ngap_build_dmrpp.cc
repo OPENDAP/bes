@@ -522,7 +522,7 @@ static void get_chunks_for_all_variables(hid_t file, D4Group *group)
  * @return The name of the bes conf file to utilize.
  */
 string mktemp_bes_conf(const string &bes_conf_file, const string &data_root, const pid_t &pid){
-    stringstream bes_conf_filename;
+    stringstream tmp_conf_filename;
 
     if (bes_conf_file.empty()) {
         std::FILE *tmp;
@@ -537,20 +537,20 @@ string mktemp_bes_conf(const string &bes_conf_file, const string &data_root, con
             BES_CONF_DOC.erase(startIndex, root_dir_key.length());
             BES_CONF_DOC.insert(startIndex, data_root);
         }
-        bes_conf_filename << "/tmp/nbd_" << pid << "_bes.conf";
-        tmp = fopen(bes_conf_filename.str().c_str(), "w");
+        tmp_conf_filename << "/tmp/nbd_" << pid << "_bes.conf";
+        tmp = fopen(tmp_conf_filename.str().c_str(), "w");
         fputs(BES_CONF_DOC.c_str(), tmp);
         fclose(tmp);
 
         if (very_verbose) {
             cerr << "bes_conf: " << endl << BES_CONF_DOC << endl;
         }
+        return tmp_conf_filename.str();
 
     }
     else {
-        bes_conf_filename << bes_conf_file;
+        return bes_conf_file;
     }
-    return bes_conf_filename.str();
 }
 
 /**
@@ -629,7 +629,7 @@ void build_dmr_with_StandAloneApp(const string &bes_conf_filename, const string 
     nargv[4] = const_cast<char *>("-f");
     nargv[5] = const_cast<char *>(output_file.c_str());
 
-        cerr << "        Command line equivalent: " << "besstandalone ";
+    cerr << "        Command line equivalent: " << "besstandalone ";
     for (unsigned i = 0; i < 6; i++) { cerr << nargv[i] << " "; }
     cerr << endl;
 
