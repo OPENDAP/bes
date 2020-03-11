@@ -521,7 +521,7 @@ static void get_chunks_for_all_variables(hid_t file, D4Group *group)
  * @param pid Process id
  * @return The name of the bes conf file to utilize.
  */
-string mktemp_bes_conf(string bes_conf_file, string data_root, pid_t pid){
+string mktemp_bes_conf(const string &bes_conf_file, const string &data_root, const pid_t &pid){
     stringstream bes_conf_filename;
 
     if (bes_conf_file.empty()) {
@@ -612,7 +612,7 @@ string mktemp_get_dmr_bes_cmd(const string &input_data_file, const pid_t &pid) {
  * @param cmd
  * @param dmr
  */
-void build_dmr_with_StandAloneApp(string bes_conf_filename, string bes_cmd, string output_file) {
+void build_dmr_with_StandAloneApp(const string &bes_conf_filename, const string &bes_cmd, const string &output_file) {
 
     BESStopWatch sw;
     sw.start("build_dmrpp - DMR from StandAloneApp");
@@ -683,7 +683,7 @@ DMR *build_hdf5_dmr(const string &input_data_file, const string &url){
 
 
 
-int generate_dmrpp(const string input_data_file, istream *dmr_istrm, const string url_name){
+int generate_dmrpp(const string &input_data_file, istream *dmr_istrm, const string &url_name){
 
     if (input_data_file.empty()) {
         cerr << "HDF5 file name must be given (-f <input>)." << endl;
@@ -842,7 +842,7 @@ int main(int argc, char*argv[])
      * m = just_dmr
     */
 
-    GetOpt getopt(argc, argv, "t:c:f:u:dbhvVm");
+    GetOpt getopt(argc, argv, "t:c:f:u:bhvVm");
     int option_char;
     while ((option_char = getopt()) != -1) {
         switch (option_char) {
@@ -853,7 +853,6 @@ int main(int argc, char*argv[])
                 verbose = true;
                 very_verbose = true;
                 break;
-            case 'd':
             case 'b':
                 BESDebug::SetUp(string("cerr,").append(DEBUG_KEY));
                 break;
@@ -898,7 +897,7 @@ int main(int argc, char*argv[])
     string bes_conf_filename = mktemp_bes_conf(bes_conf_file, data_root, pid);
     if(verbose){ cerr << "              bes_conf_filename: " << bes_conf_filename << endl; }
 
-#if 0
+#if 1
 
     string bes_cmd_filename  =  mktemp_get_dmr_bes_cmd(input_data_file, pid);
     if(verbose){ cerr << "               bes_cmd_filename: " << bes_cmd_filename << endl; }
@@ -923,6 +922,7 @@ int main(int argc, char*argv[])
     XMLWriter xmlWriter("  ");
     h5_dmr->print_dap4(xmlWriter);
     delete h5_dmr;
+
     istringstream dmr_istrm(xmlWriter.get_doc());
     if(very_verbose){ cerr << endl << xmlWriter.get_doc() << endl; }
     status = generate_dmrpp(input_data_file, &dmr_istrm, url_name);
