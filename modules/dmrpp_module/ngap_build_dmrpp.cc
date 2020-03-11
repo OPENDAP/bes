@@ -516,8 +516,9 @@ static void get_chunks_for_all_variables(hid_t file, D4Group *group)
 
 
 /**
+ * @brief Creates a temporary bes configuration file
  *
- * @param bes_conf_filename USer supplied bes conf filename (is any)
+ * @param bes_conf_filename User supplied bes conf filename (is any)
  * @param data_root The data root for this bes invocation
  * @param pid Process id
  * @return The name of the bes conf file to utilize.
@@ -555,13 +556,12 @@ string mktemp_bes_conf(const string &bes_conf_filename, const string &data_root,
 }
 
 
-
 /**
+ * @brief Creates a temporary dmr bes command file
  *
- * @param input_data_file
- * @param data_root
- * @param pid
- * @return
+ * @param input_data_file User supplied data file
+ * @param pid Process id
+ * @return The name of the bes cmd file to utilize
  */
 string mktemp_get_dmr_bes_cmd(const string &input_data_file, const pid_t &pid) {
 
@@ -610,13 +610,13 @@ string mktemp_get_dmr_bes_cmd(const string &input_data_file, const pid_t &pid) {
 }
 
 
-
 /**
+ * @brief Builds a dmr using the besstandalone viva the StandAloneApp
  * Build DMR using besstandalone (aka StandAloneApp)
  *
- * @param conf
- * @param cmd
- * @param dmr
+ * @param bes_conf_filename The name of the bes configuration file to use
+ * @param bes_cmd The bes command to execute
+ * @param output_file The file to write the output to
  */
 void build_dmr_with_StandAloneApp(const string &bes_conf_filename, const string &bes_cmd, const string &output_file) {
 
@@ -651,7 +651,9 @@ void build_dmr_with_StandAloneApp(const string &bes_conf_filename, const string 
 
 
 /**
- * Returns a DMR instance built by the HDF5RequestHandler from the input data file.
+ * @brief Returns a DMR instance built by the HDF5RequestHandler from the input data file.
+ *
+ * @param bes_conf_filename The name of the bes configuration file to use
  * @param input_data_file
  * @param url If url is not empty then make the vaolue of the dmrpp:href attribute in the
  * Sataset element of the generated DMR.
@@ -691,13 +693,12 @@ DMR *build_hdf5_dmr(const string &bes_conf_filename, const string &input_data_fi
 }
 
 
-
-
 /**
+ * @brief Generates a dmrpp file using an input stream
  *
- * @param input_data_file
- * @param dmr_istrm
- * @param url_name
+ * @param input_data_file The name of the data file to use
+ * @param dmr_istrm The input stream containing the dmr file
+ * @param url_name The path to the file
  * @return
  */
 int generate_dmrpp(const string &input_data_file, istream *dmr_istrm, const string &url_name){
@@ -824,10 +825,11 @@ int generate_dmrpp(const string &input_data_file, istream *dmr_istrm, const stri
 
 
 /**
+ * @brief Generates a dmrpp file
  *
- * @param input_data_file
- * @param dmr_filename
- * @param url_name
+ * @param input_data_file The name of the data file to use
+ * @param dmr_filename The string of the dmr file
+ * @param url_name The path to the file
  * @return
  */
 int generate_dmrpp(const string &input_data_file, const string &dmr_filename, const string &url_name) {
@@ -864,7 +866,7 @@ int main(int argc, char*argv[])
      * f = file name
      * r = dmr_file_name
      * u = url_name
-     * d = debug
+     * b = debug
      * h = help
      * v = verbose, V = very verbose
      * o = output file // <<-- FIXME
@@ -910,10 +912,6 @@ int main(int argc, char*argv[])
         }
     }
 
-    ////////////////////////////////////////////////////
-    // GET_OPTS CODE
-    /////////////////////////////
-
     if(input_data_file.empty()){
         cerr << "Error - input_data_file must be given." << endl;
         exit(1);
@@ -945,7 +943,6 @@ int main(int argc, char*argv[])
     // Build DMR using direct calls into the BES stack
     //
 
-
     DMR *h5_dmr =  build_hdf5_dmr(bes_conf_filename,input_data_file, url_name);
     XMLWriter xmlWriter("  ");
     h5_dmr->print_dap4(xmlWriter);
@@ -956,14 +953,6 @@ int main(int argc, char*argv[])
     status = generate_dmrpp(input_data_file, &dmr_istrm, url_name);
 
 #endif
-
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////
-	// RETURN TO DMRPP BUILDER
-	/////////////////////////////
-
-
 
     return status;
 }
