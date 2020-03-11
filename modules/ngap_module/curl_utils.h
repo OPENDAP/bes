@@ -22,12 +22,6 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-// (c) COPYRIGHT URI/MIT 1994-1999
-// Please read the full copyright statement in the file COPYRIGHT_URI.
-//
-// Authors:
-//      ndp       Nathan Potter <ndp@opendap.org>
-
 #ifndef NGAP_CURL_UTILS_H_
 #define NGAP_CURL_UTILS_H_
 
@@ -46,12 +40,13 @@ CURL *init(char *error_buffer);
 bool configureProxy(CURL *curl, const std::string &url);
 
 long read_url(CURL *curl, const std::string &url, int fd, std::vector<std::string> *resp_hdrs,
-    const std::vector<std::string> *headers, char error_buffer[]);
+              const std::vector<std::string> *headers, char error_buffer[]);
 
-    std::string http_status_to_string(int status);
+std::string http_status_to_string(int status);
 
-    std::string http_get_as_string(const std::string &target_url);
-    rapidjson::Document http_get_as_json(const std::string &target_url);
+std::string http_get_as_string(const std::string &target_url);
+
+rapidjson::Document http_get_as_json(const std::string &target_url);
 
 } // namespace ngap
 

@@ -63,231 +63,216 @@ using namespace std;
 
 namespace ngap {
 
-    string NGAP_PROVIDER_KEY("providers");
-    string NGAP_DATASETS_KEY("datasets");
-    string NGAP_GRANULES_KEY("granules");
-    //string CMR_REQUEST_BASE("https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4");
+string NGAP_PROVIDER_KEY("providers");
+string NGAP_DATASETS_KEY("datasets");
+string NGAP_GRANULES_KEY("granules");
+//string CMR_REQUEST_BASE("https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4");
 
-    string CMR_PROVIDER("provider");
-    string CMR_ENTRY_TITLE("entry_title");
-    string CMR_GRANULE_UR("granule_ur");
-    string CMR_URL_TYPE_GET_DATA("GET DATA");
+string CMR_PROVIDER("provider");
+string CMR_ENTRY_TITLE("entry_title");
+string CMR_GRANULE_UR("granule_ur");
+string CMR_URL_TYPE_GET_DATA("GET DATA");
 
-    string rjtype_names[] = {
-            "kNullType",
-            "kFalseType",
-            "kTrueType",
-            "kObjectType",
-            "kArrayType",
-            "kStringType",
-            "kNumberType"
-    };
+string rjtype_names[] = {
+        "kNullType",
+        "kFalseType",
+        "kTrueType",
+        "kObjectType",
+        "kArrayType",
+        "kStringType",
+        "kNumberType"
+};
 
-    /**
-     * We know that the for the NGAP container the path will follow the template:
-     * provider/daac_name/datasets/collection_name/granules/granule_name(s?)
-     * Where "provider", "datasets", and "granules" are NGAP keys and
-     * "ddac_name", "collection_name", and granule_name the their respective values.
-     * provider/GHRC_CLOUD/datasets/ACES_CONTINUOUS_DATA_V1/granules/aces1cont.nc
-
-    https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4?
-    https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4?
-     provider=GHRC_CLOUD&entry_title=ACES_CONTINUOUS_DATA_V1&native_id=aces1cont.nc
-
-    provider=GHRC_CLOUD&entry_title=ACES CONTINUOUS DATA V1&native_id=aces1cont_2002.191_v2.50.tar
-
-
-    https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4?
-     provider=GHRC_CLOUD&native_id=olslit77.nov_analog.hdf&pretty=true"
-
-
-
-     * @param real_name The name to decompose.
-     * @param kvp The resulting key value pairs.
-     */
+/**
+ * We know that the for the NGAP container the path will follow the template:
+ * provider/daac_name/datasets/collection_name/granules/granule_name(s?)
+ * Where "provider", "datasets", and "granules" are NGAP keys and
+ * "ddac_name", "collection_name", and granule_name the their respective values.
+ * For example, "provider/GHRC_CLOUD/datasets/ACES_CONTINUOUS_DATA_V1/granules/aces1cont.nc"
+ *
+ * https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4?
+ *   provider=GHRC_CLOUD &entry_title=ACES_CONTINUOUS_DATA_V1 &native_id=aces1cont.nc
+ *   provider=GHRC_CLOUD &entry_title=ACES CONTINUOUS DATA V1 &native_id=aces1cont_2002.191_v2.50.tar
+ *   provider=GHRC_CLOUD &native_id=olslit77.nov_analog.hdf &pretty=true
+ *
+ * @param real_name The name to decompose.
+ * @param kvp The resulting key value pairs.
+ */
 
 #if 0
-    string NgapApi::convert_ngap_resty_path_to_data_access_url(string real_name){
-        string data_access_url("");
+string NgapApi::convert_ngap_resty_path_to_data_access_url(string real_name){
+    string data_access_url("");
 
-        vector<string> tokens;
-        BESUtil::tokenize(real_name,tokens);
-        if( tokens[0]!= NGAP_PROVIDER_KEY || tokens[2]!=NGAP_DATASETS_KEY || tokens[4]!=NGAP_GRANULES_KEY){
-            string err = (string) "The specified path " + real_name
-                         + " does not conform to the NGAP request interface API.";
-            throw BESSyntaxUserError(err, __FILE__, __LINE__);
-        }
+    vector<string> tokens;
+    BESUtil::tokenize(real_name,tokens);
+    if( tokens[0]!= NGAP_PROVIDER_KEY || tokens[2]!=NGAP_DATASETS_KEY || tokens[4]!=NGAP_GRANULES_KEY){
+        string err = (string) "The specified path " + real_name
+                     + " does not conform to the NGAP request interface API.";
+        throw BESSyntaxUserError(err, __FILE__, __LINE__);
+    }
 
-        string cmr_url = cmr_granule_search_endpoint_url + "?";
-        cmr_url += CMR_PROVIDER + "=" + tokens[1] + "&";
-        cmr_url += CMR_ENTRY_TITLE + "=" + tokens[3] + "&";
-        cmr_url += CMR_GRANULE_UR + "=" + tokens[5] ;
-        BESDEBUG( MODULE, prolog << "CMR Request URL: "<< cmr_url << endl );
-        rapidjson::Document cmr_response = ngap_curl::http_get_as_json(cmr_url);
+    string cmr_url = cmr_granule_search_endpoint_url + "?";
+    cmr_url += CMR_PROVIDER + "=" + tokens[1] + "&";
+    cmr_url += CMR_ENTRY_TITLE + "=" + tokens[3] + "&";
+    cmr_url += CMR_GRANULE_UR + "=" + tokens[5] ;
+    BESDEBUG( MODULE, prolog << "CMR Request URL: "<< cmr_url << endl );
+    rapidjson::Document cmr_response = ngap_curl::http_get_as_json(cmr_url);
 
-        rapidjson::Value& val = cmr_response["hits"];
-        int hits = val.GetInt();
-        if(hits < 1){
-            string err = (string) "The specified path " + real_name
-                         + " does not identify a thing we know about....";
+    rapidjson::Value& val = cmr_response["hits"];
+    int hits = val.GetInt();
+    if(hits < 1){
+        string err = (string) "The specified path " + real_name
+                     + " does not identify a thing we know about....";
+        throw BESNotFoundError(err, __FILE__, __LINE__);
+    }
+
+    rapidjson::Value& items = cmr_response["items"];
+    if(items.IsArray()){
+        stringstream ss;
+        for (rapidjson::SizeType i = 0; i < items.Size(); i++) // Uses SizeType instead of size_t
+            ss << "items[" << i << "]: " << rjtype_names[items[i].GetType()] << endl;
+        BESDEBUG(MODULE,prolog << "items size: " << items.Size() << endl << ss.str() << endl);
+
+        rapidjson::Value& items_obj = items[0];
+        rapidjson::GenericMemberIterator<false, rapidjson::UTF8<char>, rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator>> mitr = items_obj.FindMember("umm");
+
+        rapidjson::Value& umm = mitr->value;
+        mitr  = umm.FindMember("RelatedUrls");
+        rapidjson::Value& related_urls = mitr->value;
+
+        if(!related_urls.IsArray()){
+            string err = (string) "Error! The RelatedUrls object in the CMR response is not an array!";
             throw BESNotFoundError(err, __FILE__, __LINE__);
         }
 
-        rapidjson::Value& items = cmr_response["items"];
-        if(items.IsArray()){
-            stringstream ss;
-            for (rapidjson::SizeType i = 0; i < items.Size(); i++) // Uses SizeType instead of size_t
-                ss << "items[" << i << "]: " << rjtype_names[items[i].GetType()] << endl;
-            BESDEBUG(MODULE,prolog << "items size: " << items.Size() << endl << ss.str() << endl);
+        BESDEBUG(MODULE,prolog << " Found RelatedUrls array in CMR response." << endl);
 
-            rapidjson::Value& items_obj = items[0];
-            rapidjson::GenericMemberIterator<false, rapidjson::UTF8<char>, rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator>> mitr = items_obj.FindMember("umm");
+        bool noSubtype;
 
-            rapidjson::Value& umm = mitr->value;
-            mitr  = umm.FindMember("RelatedUrls");
-            rapidjson::Value& related_urls = mitr->value;
+        for (rapidjson::SizeType i = 0; i < related_urls.Size() && data_access_url.empty(); i++)  {
+            rapidjson::Value& obj = related_urls[i];
+            mitr = obj.FindMember("URL");
+            rapidjson::Value& r_url = mitr->value;
+            mitr = obj.FindMember("Type");
+            rapidjson::Value& r_type = mitr->value;
+            noSubtype = ((mitr = obj.FindMember("Subtype")) == obj.MemberEnd()) ? true : false;
+            mitr = obj.FindMember("Description");
+            rapidjson::Value& r_desc = mitr->value;
+            BESDEBUG(MODULE,prolog << "RelatedUrl Object:" <<
+                                   " URL: '" << r_url.GetString() << "'" <<
+                                   " Type: '" << r_type.GetString() << "'" <<
+                                   //" Subtype: '" << r_subtype.GetString() << "'" <<
+                                   " Description: '" << r_desc.GetString() <<  "'" << endl);
 
-            if(!related_urls.IsArray()){
-                string err = (string) "Error! The RelatedUrls object in the CMR response is not an array!";
-                throw BESNotFoundError(err, __FILE__, __LINE__);
+            if( (r_type.GetString() == CMR_URL_TYPE_GET_DATA) && noSubtype ){
+                data_access_url = r_url.GetString();
             }
-
-            BESDEBUG(MODULE,prolog << " Found RelatedUrls array in CMR response." << endl);
-
-            bool noSubtype;
-
-            for (rapidjson::SizeType i = 0; i < related_urls.Size() && data_access_url.empty(); i++)  {
-                rapidjson::Value& obj = related_urls[i];
-                mitr = obj.FindMember("URL");
-                rapidjson::Value& r_url = mitr->value;
-                mitr = obj.FindMember("Type");
-                rapidjson::Value& r_type = mitr->value;
-                noSubtype = ((mitr = obj.FindMember("Subtype")) == obj.MemberEnd()) ? true : false;
-                mitr = obj.FindMember("Description");
-                rapidjson::Value& r_desc = mitr->value;
-                BESDEBUG(MODULE,prolog << "RelatedUrl Object:" <<
-                                       " URL: '" << r_url.GetString() << "'" <<
-                                       " Type: '" << r_type.GetString() << "'" <<
-                                       //" Subtype: '" << r_subtype.GetString() << "'" <<
-                                       " Description: '" << r_desc.GetString() <<  "'" << endl);
-
-                if( (r_type.GetString() == CMR_URL_TYPE_GET_DATA) && noSubtype ){
-                    data_access_url = r_url.GetString();
-                }
-            }
-
         }
 
-        return data_access_url + ".dmrpp";
     }
+
+    return data_access_url + ".dmrpp";
+}
 #endif
 
-    string NgapApi::convert_ngap_resty_path_to_data_access_url(string real_name){
-        string data_access_url("");
+string NgapApi::convert_ngap_resty_path_to_data_access_url(string real_name) {
+    string data_access_url("");
 
-        vector<string> tokens;
-        BESUtil::tokenize(real_name,tokens);
-        if(tokens.empty()){
-            string err = (string) "The specified path '" + real_name
-                         + "' does not conform to the NGAP request interface API.";
-            throw BESSyntaxUserError(err, __FILE__, __LINE__);
+    vector<string> tokens;
+    BESUtil::tokenize(real_name, tokens);
+    if (tokens.empty()) {
+        throw BESSyntaxUserError(string("The specified path '") + real_name + "' does not conform to the NGAP request interface API.", __FILE__, __LINE__);
+    }
+
+    if (tokens[0] != NGAP_PROVIDER_KEY || tokens[2] != NGAP_DATASETS_KEY || tokens[4] != NGAP_GRANULES_KEY) {
+        throw BESSyntaxUserError(string("The specified path '") + real_name + "' does not conform to the NGAP request interface API.", __FILE__, __LINE__);
+    }
+
+    string cmr_url = cmr_granule_search_endpoint_url + "?";
+    cmr_url += CMR_PROVIDER + "=" + tokens[1] + "&";
+    cmr_url += CMR_ENTRY_TITLE + "=" + tokens[3] + "&";
+    cmr_url += CMR_GRANULE_UR + "=" + tokens[5];
+
+    BESDEBUG(MODULE, prolog << "CMR Request URL: " << cmr_url << endl);
+    rapidjson::Document cmr_response = ngap_curl::http_get_as_json(cmr_url);
+
+    rapidjson::Value &val = cmr_response["hits"];
+    int hits = val.GetInt();
+    if (hits < 1) {
+        throw BESNotFoundError(string("The specified path ") + real_name + " does not identify a thing we know about....", __FILE__, __LINE__);
+    }
+
+    rapidjson::Value &items = cmr_response["items"];
+    if (items.IsArray()) {
+        stringstream ss;
+        for (rapidjson::SizeType i = 0; i < items.Size(); i++) // Uses SizeType instead of size_t
+            ss << "items[" << i << "]: " << rjtype_names[items[i].GetType()] << endl;
+
+        BESDEBUG(MODULE, prolog << "items size: " << items.Size() << endl << ss.str() << endl);
+
+        rapidjson::Value &items_obj = items[0];
+        rapidjson::GenericMemberIterator<false, rapidjson::UTF8<char>, rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator>> mitr = items_obj.FindMember(
+                "umm");
+
+        rapidjson::Value &umm = mitr->value;
+        mitr = umm.FindMember("RelatedUrls");
+        if (mitr == umm.MemberEnd()) {
+            throw BESInternalError("Error! The umm/RelatedUrls object was not located!", __FILE__, __LINE__);
+        }
+        rapidjson::Value &related_urls = mitr->value;
+
+        if (!related_urls.IsArray()) {
+            throw BESNotFoundError("Error! The RelatedUrls object in the CMR response is not an array!", __FILE__, __LINE__);
         }
 
-        if( tokens[0]!= NGAP_PROVIDER_KEY || tokens[2]!=NGAP_DATASETS_KEY || tokens[4]!=NGAP_GRANULES_KEY){
-            string err = (string) "The specified path '" + real_name
-                         + "' does not conform to the NGAP request interface API.";
-            throw BESSyntaxUserError(err, __FILE__, __LINE__);
-        }
+        BESDEBUG(MODULE, prolog << " Found RelatedUrls array in CMR response." << endl);
 
-        string cmr_url = cmr_granule_search_endpoint_url + "?";
-        cmr_url += CMR_PROVIDER + "=" + tokens[1] + "&";\
-        cmr_url += CMR_ENTRY_TITLE + "=" + tokens[3] + "&";
-        cmr_url += CMR_GRANULE_UR + "=" + tokens[5] ;
-        BESDEBUG( MODULE, prolog << "CMR Request URL: "<< cmr_url << endl );
-        rapidjson::Document cmr_response = ngap_curl::http_get_as_json(cmr_url);
-
-        rapidjson::Value& val = cmr_response["hits"];
-        int hits = val.GetInt();
-        if(hits < 1){
-            string err = (string) "The specified path " + real_name
-                         + " does not identify a thing we know about....";
-            throw BESNotFoundError(err, __FILE__, __LINE__);
-        }
-
-        rapidjson::Value& items = cmr_response["items"];
-        if(items.IsArray()){
-            stringstream ss;
-            for (rapidjson::SizeType i = 0; i < items.Size(); i++) // Uses SizeType instead of size_t
-                ss << "items[" << i << "]: " << rjtype_names[items[i].GetType()] << endl;
-            BESDEBUG(MODULE,prolog << "items size: " << items.Size() << endl << ss.str() << endl);
-
-            rapidjson::Value& items_obj = items[0];
-            rapidjson::GenericMemberIterator<false, rapidjson::UTF8<char>, rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator>> mitr = items_obj.FindMember("umm");
-
-            rapidjson::Value& umm = mitr->value;
-            mitr  = umm.FindMember("RelatedUrls");
-            if(mitr == umm.MemberEnd()){
-                string err = (string) "Error! The umm/RelatedUrls object was not located!";
-                throw BESInternalError(err, __FILE__, __LINE__);
+        bool noSubtype;
+        for (rapidjson::SizeType i = 0; i < related_urls.Size() && data_access_url.empty(); i++) {
+            rapidjson::Value &obj = related_urls[i];
+            mitr = obj.FindMember("URL");
+            if (mitr == obj.MemberEnd()) {
+                stringstream err;
+                err << "Error! The umm/RelatedUrls[" << i << "] does not contain the URL object";
+                throw BESInternalError(err.str(), __FILE__, __LINE__);
             }
-            rapidjson::Value& related_urls = mitr->value;
+            rapidjson::Value &r_url = mitr->value;
 
-            if(!related_urls.IsArray()){
-                string err = (string) "Error! The RelatedUrls object in the CMR response is not an array!";
-                throw BESNotFoundError(err, __FILE__, __LINE__);
+            mitr = obj.FindMember("Type");
+            if (mitr == obj.MemberEnd()) {
+                stringstream err;
+                err << "Error! The umm/RelatedUrls[" << i << "] does not contain the Type object";
+                throw BESInternalError(err.str(), __FILE__, __LINE__);
             }
+            rapidjson::Value &r_type = mitr->value;
 
-            BESDEBUG(MODULE,prolog << " Found RelatedUrls array in CMR response." << endl);
-
-            bool noSubtype;
-            for (rapidjson::SizeType i = 0; i < related_urls.Size() && data_access_url.empty(); i++)  {
-                rapidjson::Value& obj = related_urls[i];
-                mitr = obj.FindMember("URL");
-                if(mitr == obj.MemberEnd()){
-                    stringstream  err;
-                    err << "Error! The umm/RelatedUrls[" << i << "] does not contain the URL object";
-                    throw BESInternalError(err.str(), __FILE__, __LINE__);
-                }
-                rapidjson::Value& r_url = mitr->value;
-
-                mitr = obj.FindMember("Type");
-                if(mitr == obj.MemberEnd()){
-                    stringstream  err;
-                    err << "Error! The umm/RelatedUrls[" << i << "] does not contain the Type object";
-                    throw BESInternalError(err.str(), __FILE__, __LINE__);
-                }
-                rapidjson::Value& r_type = mitr->value;
-
-                noSubtype = obj.FindMember("Subtype") == obj.MemberEnd();
+            noSubtype = obj.FindMember("Subtype") == obj.MemberEnd();
 #if 0
-                mitr = obj.FindMember("Description");
-                if(mitr == obj.MemberEnd()){
-                    stringstream  err;
-                    err << "Error! The umm/RelatedUrls[" << i << "] does not contain the Description object";
-                    throw BESInternalError(err.str(), __FILE__, __LINE__);
-                }
-                rapidjson::Value& r_desc = mitr->value;
+            mitr = obj.FindMember("Description");
+            if(mitr == obj.MemberEnd()){
+                stringstream  err;
+                err << "Error! The umm/RelatedUrls[" << i << "] does not contain the Description object";
+                throw BESInternalError(err.str(), __FILE__, __LINE__);
+            }
+            rapidjson::Value& r_desc = mitr->value;
 #endif
+            BESDEBUG(MODULE, prolog << "RelatedUrl Object:" <<
+                                    " URL: '" << r_url.GetString() << "'" <<
+                                    " Type: '" << r_type.GetString() << "'" <<
+                                    " SubType: '" << (noSubtype ? "Absent" : "Present") << "'" << endl);
 
-                BESDEBUG(MODULE,prolog << "RelatedUrl Object:" <<
-                                       " URL: '" << r_url.GetString() << "'" <<
-                                       " Type: '" << r_type.GetString() << "'" <<
-                                       " SubType: '" << (noSubtype?"Absent":"Present") <<  "'" << endl);
-
-                if( (r_type.GetString() == CMR_URL_TYPE_GET_DATA) && noSubtype ){
-                    data_access_url = r_url.GetString();
-                }
+            if ((r_type.GetString() == CMR_URL_TYPE_GET_DATA) && noSubtype) {
+                data_access_url = r_url.GetString();
             }
         }
-
-        if(data_access_url.empty()){
-            stringstream  err;
-            err << "ERROR! Failed to locate a data access URL for the path: "+real_name;
-            throw BESInternalError(err.str(), __FILE__, __LINE__);
-        }
-
-        return data_access_url + ".dmrpp";
     }
+
+    if (data_access_url.empty()) {
+        throw BESInternalError(string("ERROR! Failed to locate a data access URL for the path: ") + real_name, __FILE__, __LINE__);
+    }
+
+    return data_access_url.append(".dmrpp");
+}
 
 #if 0
 /**
@@ -793,9 +778,6 @@ namespace ngap {
         return result;
     }
 #endif
-
-
-
 
 } // namespace ngap
 

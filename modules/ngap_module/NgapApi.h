@@ -41,41 +41,41 @@
 
 namespace ngap {
 
-    class NgapApi {
-    private:
-        std::string cmr_granule_search_endpoint_url;
+class NgapApi {
+private:
+    std::string cmr_granule_search_endpoint_url;
 #if 0
-        const rapidjson::Value& get_temporal_group(const rapidjson::Document &ngap_doc);
-        const rapidjson::Value& get_year_group(const rapidjson::Document &ngap_doc);
-        const rapidjson::Value& get_month_group(const std::string year, const rapidjson::Document &ngap_doc);
-        const rapidjson::Value& get_month(const std::string r_month, const std::string r_year, const rapidjson::Document &ngap_doc);
-        const rapidjson::Value& get_day_group(const std::string r_month, const std::string year, const rapidjson::Document &ngap_doc);
-        const rapidjson::Value& get_children(const rapidjson::Value& obj);
-        const rapidjson::Value& get_feed(const rapidjson::Document &ngap_doc);
-        const rapidjson::Value& get_entries(const rapidjson::Document &ngap_doc);
-        void  granule_search(std::string collection_name, std::string r_year, std::string r_month, std::string r_day,rapidjson::Document &result_doc);
+    const rapidjson::Value& get_temporal_group(const rapidjson::Document &ngap_doc);
+    const rapidjson::Value& get_year_group(const rapidjson::Document &ngap_doc);
+    const rapidjson::Value& get_month_group(const std::string year, const rapidjson::Document &ngap_doc);
+    const rapidjson::Value& get_month(const std::string r_month, const std::string r_year, const rapidjson::Document &ngap_doc);
+    const rapidjson::Value& get_day_group(const std::string r_month, const std::string year, const rapidjson::Document &ngap_doc);
+    const rapidjson::Value& get_children(const rapidjson::Value& obj);
+    const rapidjson::Value& get_feed(const rapidjson::Document &ngap_doc);
+    const rapidjson::Value& get_entries(const rapidjson::Document &ngap_doc);
+    void  granule_search(std::string collection_name, std::string r_year, std::string r_month, std::string r_day,rapidjson::Document &result_doc);
 #endif
 
-    public:
+public:
 
-        NgapApi() : cmr_granule_search_endpoint_url("https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4") {}
+    NgapApi() : cmr_granule_search_endpoint_url("https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4") {}
 
-        std::string convert_ngap_resty_path_to_data_access_url(std::string real_name);
+    std::string convert_ngap_resty_path_to_data_access_url(std::string real_name);
 
 #if 0
-        void get_years(std::string collection_name, std::vector<std::string> &years_result);
-        void get_months(std::string collection_name, std::string year, std::vector<std::string> &months_result);
-        void get_days(std::string collection_name, std::string r_year, std::string r_month, std::vector<std::string> &days_result);
-        void get_granule_ids(std::string collection_name, std::string r_year, std::string r_month, std::string r_day, std::vector<std::string> &granules_result);
-        void get_granule_ids(std::string collection_name, std::string r_year, std::string r_month, std::vector<std::string> &granules_result);
-        void get_granules(std::string collection_name, std::string r_year, std::string r_month, std::string r_day, std::vector<ngap::Granule *> &granules);
-        void get_collection_ids(std::vector<std::string> &collection_ids);
-        unsigned long granule_count(std::string collection_name,std:: string r_year, std::string r_month, std::string r_day);
-        ngap::Granule *get_granule(const std::string path);
-        ngap::Granule *get_granule(std::string collection_name, std::string r_year, std::string r_month, std::string r_day, std::string granule_id);
-    };
+    void get_years(std::string collection_name, std::vector<std::string> &years_result);
+    void get_months(std::string collection_name, std::string year, std::vector<std::string> &months_result);
+    void get_days(std::string collection_name, std::string r_year, std::string r_month, std::vector<std::string> &days_result);
+    void get_granule_ids(std::string collection_name, std::string r_year, std::string r_month, std::string r_day, std::vector<std::string> &granules_result);
+    void get_granule_ids(std::string collection_name, std::string r_year, std::string r_month, std::vector<std::string> &granules_result);
+    void get_granules(std::string collection_name, std::string r_year, std::string r_month, std::string r_day, std::vector<ngap::Granule *> &granules);
+    void get_collection_ids(std::vector<std::string> &collection_ids);
+    unsigned long granule_count(std::string collection_name,std:: string r_year, std::string r_month, std::string r_day);
+    ngap::Granule *get_granule(const std::string path);
+    ngap::Granule *get_granule(std::string collection_name, std::string r_year, std::string r_month, std::string r_day, std::string granule_id);
+};
 #endif
-    };
+};
 
 } // namespace ngap
 
