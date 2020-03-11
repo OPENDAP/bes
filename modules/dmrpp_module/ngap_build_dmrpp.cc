@@ -84,7 +84,7 @@ static bool very_verbose = false;
 #define VERY_VERBOSE(x) do { if (very_verbose) x; } while(false)
 
 // #define DEBUG_KEY "metadata_store,dmrpp_store,dmrpp"
-#define DEBUG_KEY "metadata_store,dmrpp_store,dmrpp"
+#define DEBUG_KEY "metadata_store,dmrpp_store,dmrpp,bes"
 #define ROOT_DIRECTORY "BES.Catalog.catalog.RootDirectory"
 
 //#define H5D_FRIEND		// Workaround, needed to use H5D_chunk_rec_t
