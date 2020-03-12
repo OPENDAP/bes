@@ -28,7 +28,7 @@
 #include <memory>
 #include <iterator>
 #include <algorithm>
-#include <stdio.h>
+#include <cstdio>
 
 #include <cstdlib>
 #include <unistd.h>
