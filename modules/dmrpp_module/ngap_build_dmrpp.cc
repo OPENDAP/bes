@@ -679,7 +679,7 @@ void build_dmr_with_StandAloneApp(
         argv.push_back((char*)&arg[0]);
     }
     argv.push_back(nullptr);
-    
+
     for (unsigned i = 0; i < argv.size()-1; i++) {
         cerr << "                        argv[" << i << "]: " << argv[i] << endl;
     }
@@ -732,10 +732,10 @@ DMR *build_hdf5_dmr(const string &bes_conf_filename, const string &input_data_fi
 
     h5rh->hdf5_build_dmr(dhi);
 
-   // delete dmrh;
+   delete bfc;
+//   delete dmrh;
    // delete response_object;
-   // delete bfc;
-   // delete h5rh;
+   delete h5rh;
 
     if(verbose){ cerr << "                            END: build_hdf5_dmr()" << endl; }
     return h5_dmr;
