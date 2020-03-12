@@ -157,9 +157,20 @@ namespace ngap {
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+        // This will work if you change 't(cachedResource)' to 't(cachedResource.c_str())'
+        // And it may be that in C++11 strings work as parameters to the ifstream ctor (it
+        // was a planned feature IIRC)
+        //
         //std::ifstream t(cachedResource);
         //std::string dmrpp((std::istreambuf_iterator<char>(t)),
         //                std::istreambuf_iterator<char>());
+        // This is from the same stackoverflow page:
+        // std::ifstream t("file.txt");
+        // std::stringstream buffer;
+        // buffer << t.rdbuf();
+        //
+        // It's better to not use FILE
+
         FILE *crFile;
         string dmrpp;
         stringstream df;
@@ -187,11 +198,9 @@ namespace ngap {
         crFile = fopen(cachedResource.c_str(), "w");
         fputs(dmrpp.c_str(), crFile);
         fclose(crFile);
-
-
+        
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 
         BESDEBUG( MODULE, prolog << "Done accessing " << get_real_name() << " returning cached file " << cachedResource << endl);
         BESDEBUG( MODULE, prolog << "Done accessing " << *this << endl);
