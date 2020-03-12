@@ -512,14 +512,22 @@ namespace curl {
      * @param target_url The URL to dereference.
      * @param response_buf The buffer into which to put the response.
      */
-    void http_get(const std::string &target_url, char *response_buf){
+    void http_get(const std::string &target_url, char *response_buf) {
+        char name[] = "/tmp/ngap_cookiesXXXXXX";
+        string cookies = mktemp(name);
+        if (cookies.empty())
+            throw BESInternalError(string("Failed to make temporary file for HTTP cookies in module 'ngap' (").append(strerror(errno)).append(")"), __FILE__, __LINE__);
 
-        // @TODO @FIXME Drop the use of this deprecated function and figure out a better way: configuration setting?
-        string cookies = std::tmpnam(nullptr);
-
-        CURL *c_handle = set_up_easy_handle(target_url, cookies, response_buf);
-        read_data(c_handle);
-        curl_easy_cleanup(c_handle);
+        try {
+            CURL *c_handle = set_up_easy_handle(target_url, cookies, response_buf);
+            read_data(c_handle);
+            curl_easy_cleanup(c_handle);
+            unlink(cookies.c_str());
+        }
+        catch(...) {
+            unlink(cookies.c_str());
+            throw;
+        }
     }
 
     /**
