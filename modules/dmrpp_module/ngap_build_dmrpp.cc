@@ -723,9 +723,9 @@ DMR *build_hdf5_dmr(const string &bes_conf_filename, const string &input_data_fi
     if (url.empty()) h5_dmr->set_request_xml_base(url.c_str());
     BESDMRResponse *response_object = new BESDMRResponse(h5_dmr);
 
-    BESDMRResponseHandler *dmrh = new BESDMRResponseHandler("lulu the dmr response handler.");
-    dmrh->set_response_object(response_object);
-    dhi.response_handler = dmrh;
+    BESDMRResponseHandler dmrh("lulu the dmr response handler.");
+    dmrh.set_response_object(response_object);
+    dhi.response_handler = &dmrh;
 
     dhi.container->set_dap4_constraint("");
     dhi.container->set_dap4_function("");
@@ -970,7 +970,6 @@ int main(int argc, char*argv[]) {
     if (verbose) cerr << "          Using input_data_file: " << input_data_file << endl;
 
     pid_t pid = getpid();
-    std::FILE *tmp;
 
     string bes_conf_filename = mktemp_bes_conf(bes_conf_file, data_root, pid);
     if (verbose) { cerr << "              bes_conf_filename: " << bes_conf_filename << endl; }
