@@ -623,6 +623,8 @@ void build_dmr_with_StandAloneApp(
         const string &bes_cmd_filename,
         const string &output_filename) {
 
+    if(verbose){ cerr << "                          BEGIN: build_dmr_with_StandAloneApp()" << endl; }
+
     BESStopWatch sw;
     sw.start("build_dmrpp::build_dmr_with_StandAloneApp()");
 
@@ -677,7 +679,10 @@ void build_dmr_with_StandAloneApp(
         argv.push_back((char*)&arg[0]);
     }
     argv.push_back(nullptr);
-    for (unsigned i = 0; i < argv.size()-1; i++) { cerr << "argv[" << i << "]: " << argv[i] << endl; }
+    
+    for (unsigned i = 0; i < argv.size()-1; i++) {
+        cerr << "                        argv[" << i << "]: " << argv[i] << endl;
+    }
 
     cerr << "        Command line equivalent: " << "besstandalone ";
     for (unsigned i = 1; i < argv.size()-1; i++) { cerr << argv[i] << " "; }
@@ -688,6 +693,7 @@ void build_dmr_with_StandAloneApp(
     if (verbose) {
         cerr << "        besstandalone output to: " << output_filename << endl;
     }
+    if(verbose){ cerr << "                            END: build_dmr_with_StandAloneApp()" << endl; }
 }
 
 
@@ -701,6 +707,7 @@ void build_dmr_with_StandAloneApp(
  * @return The DMR instance built from input_data_file.
  */
 DMR *build_hdf5_dmr(const string &bes_conf_filename, const string &input_data_file, const string &url){
+    if(verbose){ cerr << "                          BEGIN: build_hdf5_dmr()" << endl; }
 
     BESStopWatch sw;
     sw.start("build_dmrpp::build_hdf5_dmr()");
@@ -730,6 +737,7 @@ DMR *build_hdf5_dmr(const string &bes_conf_filename, const string &input_data_fi
    // delete bfc;
    // delete h5rh;
 
+    if(verbose){ cerr << "                            END: build_hdf5_dmr()" << endl; }
     return h5_dmr;
 }
 
@@ -890,8 +898,7 @@ int generate_dmrpp(const string &input_data_file, const string &dmr_filename, co
  * @param argv
  * @return
  */
-int main(int argc, char*argv[])
-{
+int main(int argc, char*argv[]) {
     string h5_file_name = "";
     string h5_dset_path = "";
     string dmr_name = "";
@@ -899,9 +906,9 @@ int main(int argc, char*argv[])
     string data_root = ".";
     string bes_conf_file = "";
     bool just_dmr = false;
-    int status=0;
+    int status = 0;
     string input_data_file = "";
-
+    string run_alternate = "";
     /* t = data_root
      * c = config file
      * f = file name
@@ -914,7 +921,7 @@ int main(int argc, char*argv[])
      * m = just_dmr
     */
 
-    GetOpt getopt(argc, argv, "t:c:f:u:bhvVm");
+    GetOpt getopt(argc, argv, "t:c:f:u:bhvVmX");
     int option_char;
     while ((option_char = getopt()) != -1) {
         switch (option_char) {
@@ -943,6 +950,9 @@ int main(int argc, char*argv[])
             case 't':
                 data_root = getopt.optarg;
                 break;
+            case 'X':
+                run_alternate = getopt.optarg;
+                break;
             case 'h':
                 cerr << "ngap_build_dmrpp [-v] -c <bes.conf> -f <data file>  [-u <href url>] \
                         | ngap_build_dmrpp -f <data file> -r <dmr file> \
@@ -953,53 +963,52 @@ int main(int argc, char*argv[])
         }
     }
 
-    if(input_data_file.empty()){
+    if (input_data_file.empty()) {
         cerr << "Error - input_data_file must be given." << endl;
         exit(1);
     }
-    if(verbose) cerr << "          Using input_data_file: " << input_data_file << endl;
+    if (verbose) cerr << "          Using input_data_file: " << input_data_file << endl;
 
-    pid_t pid =  getpid();
+    pid_t pid = getpid();
     std::FILE *tmp;
 
     string bes_conf_filename = mktemp_bes_conf(bes_conf_file, data_root, pid);
-    if(verbose){ cerr << "              bes_conf_filename: " << bes_conf_filename << endl; }
+    if (verbose) { cerr << "              bes_conf_filename: " << bes_conf_filename << endl; }
 
-#if 1
+    if (run_alternate.empty()) {
 
-    string bes_cmd_filename  =  mktemp_get_dmr_bes_cmd(input_data_file, pid);
-    if(verbose){ cerr << "               bes_cmd_filename: " << bes_cmd_filename << endl; }
 
-    stringstream dmrfn;
-    dmrfn << "/tmp/nbd_" << pid << ".dmr";
-    string dmr_filename = dmrfn.str();
-    if(verbose){ cerr << "                   dmr_filename: " << dmr_filename << endl;  }
+        string bes_cmd_filename = mktemp_get_dmr_bes_cmd(input_data_file, pid);
+        if (verbose) { cerr << "               bes_cmd_filename: " << bes_cmd_filename << endl; }
 
-    build_dmr_with_StandAloneApp(bes_conf_filename, bes_cmd_filename, dmr_filename);
+        stringstream dmrfn;
+        dmrfn << "/tmp/nbd_" << pid << ".dmr";
+        string dmr_filename = dmrfn.str();
+        if (verbose) { cerr << "                   dmr_filename: " << dmr_filename << endl; }
 
-	status = generate_dmrpp(input_data_file,dmr_filename,url_name);
+        build_dmr_with_StandAloneApp(bes_conf_filename, bes_cmd_filename, dmr_filename);
 
-#else
-    /////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Build DMR using direct calls into the BES stack
-    //
-    XMLWriter xmlWriter("  ");
+        status = generate_dmrpp(input_data_file, dmr_filename, url_name);
+    }
+    else {
+        /////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Build DMR using direct calls into the BES stack
+        //
+        XMLWriter xmlWriter("  ");
 
-    // Build a dmr by making calls to the hdf5_module code.
-    DMR *h5_dmr =  build_hdf5_dmr(bes_conf_filename,input_data_file, url_name);
+        // Build a dmr by making calls to the hdf5_module code.
+        DMR *h5_dmr = build_hdf5_dmr(bes_conf_filename, input_data_file, url_name);
 
-    // Write that dmr as an XML doc
-    h5_dmr->print_dap4(xmlWriter);
-    delete h5_dmr;
+        // Write that dmr as an XML doc
+        h5_dmr->print_dap4(xmlWriter);
+        delete h5_dmr;
 
-    // Turn the XML doc into an input stream using  istringstream
-    istringstream dmr_istrm(xmlWriter.get_doc());
-    if(very_verbose){ cerr << endl << xmlWriter.get_doc() << endl; }
+        // Turn the XML doc into an input stream using  istringstream
+        istringstream dmr_istrm(xmlWriter.get_doc());
+        if (very_verbose) { cerr << endl << xmlWriter.get_doc() << endl; }
 
-    // Pass that stream to generate_dmrpp.
-    status = generate_dmrpp(input_data_file, &dmr_istrm, url_name);
-
-#endif
-
+        // Pass that stream to generate_dmrpp.
+        status = generate_dmrpp(input_data_file, &dmr_istrm, url_name);
+    }
     return status;
 }
