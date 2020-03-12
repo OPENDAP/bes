@@ -130,7 +130,7 @@ public:
         stringstream msg;
         if (debug) cerr << prolog << "DataAccessURL: " << data_access_url << endl;
 
-        string expected("https://d1lpqa6z94hycl.cloudfront.net/ghrc-app-protected/amsua15sp__1/2020-01-28/amsua15_2020.028_12915_1139_1324_WI.nc.dmrpp");
+        string expected("https://d1lpqa6z94hycl.cloudfront.net/ghrc-app-protected/amsua15sp__1/2020-01-28/amsua15_2020.028_12915_1139_1324_WI.nc");
 
         if (expected == data_access_url) {
             CPPUNIT_ASSERT(true);

@@ -27,8 +27,12 @@
 // Authors:
 //      pcw       Patrick West <pwest@ucar.edu>
 
+#include <cstdio>
 #include <map>
 #include <sstream>
+#include <string>
+#include <fstream>
+#include <streambuf>
 
 #include <BESSyntaxUserError.h>
 #include "BESNotFoundError.h"
@@ -64,7 +68,7 @@ namespace ngap {
      */
     NgapContainer::NgapContainer(const string &sym_name,
                                  const string &real_name, const string &type) :
-            BESContainer(sym_name, real_name, type), d_remoteResource(0) {
+            BESContainer(sym_name, real_name, type), d_dmrpp_resource(0) {
 
         NgapApi ngap_api;
         if (type.empty())
@@ -82,10 +86,10 @@ namespace ngap {
  * TODO: I think this implementation of the copy constructor is incomplete/inadequate. Review and fix as needed.
  */
     NgapContainer::NgapContainer(const NgapContainer &copy_from) :
-            BESContainer(copy_from), d_remoteResource(copy_from.d_remoteResource) {
+            BESContainer(copy_from), d_dmrpp_resource(copy_from.d_dmrpp_resource) {
         // we can not make a copy of this container once the request has
         // been made
-        if (d_remoteResource) {
+        if (d_dmrpp_resource) {
             string err = (string) "The Container has already been accessed, "
                          + "can not create a copy of this container.";
             throw BESInternalError(err, __FILE__, __LINE__);
@@ -93,12 +97,12 @@ namespace ngap {
     }
 
     void NgapContainer::_duplicate(NgapContainer &copy_to) {
-        if (copy_to.d_remoteResource) {
+        if (copy_to.d_dmrpp_resource) {
             string err = (string) "The Container has already been accessed, "
                          + "can not duplicate this resource.";
             throw BESInternalError(err, __FILE__, __LINE__);
         }
-        copy_to.d_remoteResource = d_remoteResource;
+        copy_to.d_dmrpp_resource = d_dmrpp_resource;
         BESContainer::_duplicate(copy_to);
     }
 
@@ -110,7 +114,7 @@ namespace ngap {
     }
 
     NgapContainer::~NgapContainer() {
-        if (d_remoteResource) {
+        if (d_dmrpp_resource) {
             release();
         }
     }
@@ -125,28 +129,68 @@ namespace ngap {
         BESDEBUG( MODULE, prolog << "BEGIN" << endl);
 
         // Since this the ngap we know that the real_name is a URL.
-        string url  = get_real_name();
+        string data_access_url  = get_real_name();
+        string dmrpp_url  = data_access_url + ".dmrpp";
 
-        BESDEBUG( MODULE, prolog << "Accessing " << url << endl);
+        BESDEBUG( MODULE, prolog << "data_access_url: " << data_access_url << endl);
+        BESDEBUG( MODULE, prolog << "dmrpp_url: " << dmrpp_url << endl);
 
         string type = get_container_type();
         if (type == "ngap")
             type = "";
 
-        if(!d_remoteResource) {
+        if(!d_dmrpp_resource) {
             BESDEBUG( MODULE, prolog << "Building new RemoteResource." << endl );
-            d_remoteResource = new ngap::RemoteHttpResource(url);
-            d_remoteResource->retrieveResource();
+            d_dmrpp_resource = new ngap::RemoteHttpResource(dmrpp_url);
+            d_dmrpp_resource->retrieveResource();
         }
         BESDEBUG( MODULE, prolog << "Located remote resource." << endl );
 
-
-        string cachedResource = d_remoteResource->getCacheFileName();
+        string cachedResource = d_dmrpp_resource->getCacheFileName();
         BESDEBUG( MODULE, prolog << "Using local cache file: " << cachedResource << endl );
 
-        type = d_remoteResource->getType();
+        type = d_dmrpp_resource->getType();
         set_container_type(type);
         BESDEBUG( MODULE, prolog << "Type: " << type << endl );
+
+
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+        //std::ifstream t(cachedResource);
+        //std::string dmrpp((std::istreambuf_iterator<char>(t)),
+        //                std::istreambuf_iterator<char>());
+        FILE *crFile;
+        string dmrpp;
+        stringstream df;
+
+        unsigned buf_size=10000;
+        char buf[buf_size];
+
+        crFile = fopen(cachedResource.c_str() , "r");
+        if (crFile == NULL){
+            string msg = "Cannot open cached resource: " + cachedResource  ;
+            BESDEBUG(MODULE, prolog << msg << endl);
+            throw BESInternalError(msg, __FILE__, __LINE__);
+        }
+        while (fgets (buf , buf_size , crFile) != NULL ) { df << buf; }
+        fclose (crFile);
+        dmrpp = df.str();
+
+        int startIndex=0;
+        string dmrpp_href_key("DATA_ACCESS_URL");
+        while ((startIndex = dmrpp.find(dmrpp_href_key)) != -1){
+            dmrpp.erase(startIndex, dmrpp_href_key.length());
+            dmrpp.insert(startIndex, data_access_url);
+        }
+
+        crFile = fopen(cachedResource.c_str(), "w");
+        fputs(dmrpp.c_str(), crFile);
+        fclose(crFile);
+
+
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
         BESDEBUG( MODULE, prolog << "Done accessing " << get_real_name() << " returning cached file " << cachedResource << endl);
@@ -165,10 +209,10 @@ namespace ngap {
  * @return true if the resource is released successfully and false otherwise
  */
     bool NgapContainer::release() {
-        if (d_remoteResource) {
+        if (d_dmrpp_resource) {
             BESDEBUG( MODULE, prolog << "Releasing RemoteResource" << endl);
-            delete d_remoteResource;
-            d_remoteResource = 0;
+            delete d_dmrpp_resource;
+            d_dmrpp_resource = 0;
         }
 
         BESDEBUG( MODULE, prolog << "Done releasing Ngap response" << endl);
@@ -187,11 +231,11 @@ namespace ngap {
              << ")" << endl;
         BESIndent::Indent();
         BESContainer::dump(strm);
-        if (d_remoteResource) {
-            strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_remoteResource->getCacheFileName()
+        if (d_dmrpp_resource) {
+            strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_dmrpp_resource->getCacheFileName()
                  << endl;
             strm << BESIndent::LMarg << "response headers: ";
-            vector<string> *hdrs = d_remoteResource->getResponseHeaders();
+            vector<string> *hdrs = d_dmrpp_resource->getResponseHeaders();
             if (hdrs) {
                 strm << endl;
                 BESIndent::Indent();

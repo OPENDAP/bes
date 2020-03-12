@@ -265,7 +265,7 @@ string NgapApi::convert_ngap_resty_path_to_data_access_url(string real_name) {
         throw BESInternalError(string("ERROR! Failed to locate a data access URL for the path: ") + real_name, __FILE__, __LINE__);
     }
 
-    return data_access_url.append(".dmrpp");
+    return data_access_url;
 }
 
 #if 0

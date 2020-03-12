@@ -51,14 +51,15 @@ namespace ngap {
     enum RestifiedPathValues { cmrProvider, cmrDatasets, cmrGranuleUR };
 
     class NgapContainer: public BESContainer {
+
     private:
-        RemoteHttpResource *d_remoteResource;
+        RemoteHttpResource *d_dmrpp_resource;
 
         // std::vector<std::string> d_collections;
         // std::vector<std::string> d_facets;
 
         NgapContainer() :
-                BESContainer(), d_remoteResource(0)
+                BESContainer(), d_dmrpp_resource(0)
         {
         }
 
