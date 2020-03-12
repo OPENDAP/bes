@@ -733,7 +733,7 @@ DMR *build_hdf5_dmr(const string &bes_conf_filename, const string &input_data_fi
     h5rh->hdf5_build_dmr(dhi);
 
    delete bfc;
-//   delete dmrh;
+   // delete dmrh;
    // delete response_object;
    delete h5rh;
 
@@ -884,11 +884,22 @@ int generate_dmrpp(const string &input_data_file, istream *dmr_istrm, const stri
 int generate_dmrpp(const string &input_data_file, const string &dmr_filename, const string &url_name) {
 
     ifstream *dmr_istrm=0;
+    int status;
 
     if (!dmr_filename.empty()) {
         dmr_istrm = new ifstream (dmr_filename.c_str());
     }
-    return generate_dmrpp(input_data_file, dmr_istrm, url_name);
+    try {
+        status = generate_dmrpp(input_data_file, dmr_istrm, url_name);
+    }
+    catch(...){
+        if(dmr_istrm)
+            delete dmr_istrm;
+        throw;
+    }
+    if(dmr_istrm)
+        delete dmr_istrm;
+
 }
 
 
