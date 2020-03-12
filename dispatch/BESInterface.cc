@@ -546,34 +546,35 @@ int BESInterface::execute_request(const string &from)
     }
     catch (libdap::Error &e) {
         timeout_jump_valid = false;
-        string msg = string(__PRETTY_FUNCTION__)+  "() - BES caught a libdap exception: " + e.get_error_message();
+        string msg = string(__PRETTY_FUNCTION__)+  " - BES caught a libdap exception: " + e.get_error_message();
+        BESDEBUG("bes", msg << endl );
         BESInternalFatalError ex(msg, __FILE__, __LINE__);
         status = handleException(ex, *d_dhi_ptr);
     }
     catch (BESError &e) {
         timeout_jump_valid = false;
-        BESDEBUG("bes",  string(__PRETTY_FUNCTION__) +  "() - Caught BESError. msg: "<< e.get_message() << endl );
+        BESDEBUG("bes",  string(__PRETTY_FUNCTION__) +  " - Caught BESError. msg: "<< e.get_message() << endl );
         status = handleException(e, *d_dhi_ptr);
     }
     catch (bad_alloc &e) {
         timeout_jump_valid = false;
-        stringstream  msg;
-        msg <<   __PRETTY_FUNCTION__ << "() - BES out of memory. msg: " << e.what();
+        stringstream msg;
+        msg << __PRETTY_FUNCTION__ <<  " - BES out of memory. msg: " << e.what() << endl;
         BESDEBUG("bes", msg.str() << endl );
         BESInternalFatalError ex(msg.str(), __FILE__, __LINE__);
         status = handleException(ex, *d_dhi_ptr);
     }
     catch (exception &e) {
         timeout_jump_valid = false;
-        stringstream  msg;
-        msg << __PRETTY_FUNCTION__ << "() - Caught C++ Exception. msg: " << e.what();
+        stringstream msg;
+        msg << __PRETTY_FUNCTION__ << " - Caught C++ Exception. msg: " << e.what() << endl;
         BESDEBUG("bes", msg.str() << endl );
         BESInternalFatalError ex(msg.str(), __FILE__, __LINE__);
         status = handleException(ex, *d_dhi_ptr);
     }
     catch (...) {
         timeout_jump_valid = false;
-        string msg =  string(__PRETTY_FUNCTION__) +  "() - An unidentified exception has been thrown.";
+        string msg =  string(__PRETTY_FUNCTION__) +  " - An unidentified exception has been thrown.";
         BESDEBUG("bes", msg << endl );
         BESInternalError ex(msg, __FILE__, __LINE__);
         status = handleException(ex, *d_dhi_ptr);
