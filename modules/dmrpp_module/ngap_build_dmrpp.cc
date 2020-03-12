@@ -654,16 +654,20 @@ void build_dmr_with_StandAloneApp(const string &bes_conf_filename, const string 
     argv.push_back(nullptr);
     f.bar(argv.size() - 1, argv.data());
 #endif
+    string name("ngap_build_dmrpp");
+    string conf_param("-c");
+    string cmd_param("-i");
+    string output_file_param("-f");
+
     std::vector<std::string> arguments;
-    arguments.push_back("ngap_build_dmrpp");
-    arguments.push_back("-c");
-    arguments.push_back(bes_conf_filename.c_str());
-    arguments.push_back("-i");
-    arguments.push_back(bes_cmd.c_str());
-    arguments.push_back("-f");
-    arguments.push_back(output_file.c_str());
-
-
+    arguments.push_back(name);
+    arguments.push_back(conf_param);
+    arguments.push_back(bes_conf_filename);
+    arguments.push_back(cmd_param);
+    arguments.push_back(bes_cmd);
+    arguments.push_back(output_file_param);
+    arguments.push_back(output_file);
+    
     std::vector<char*> argv;
     for(unsigned i=0; i<arguments.size() ; i++){
         const string &arg = arguments[i];
@@ -959,7 +963,7 @@ int main(int argc, char*argv[])
     string bes_conf_filename = mktemp_bes_conf(bes_conf_file, data_root, pid);
     if(verbose){ cerr << "              bes_conf_filename: " << bes_conf_filename << endl; }
 
-#if 0
+#if 1
 
     string bes_cmd_filename  =  mktemp_get_dmr_bes_cmd(input_data_file, pid);
     if(verbose){ cerr << "               bes_cmd_filename: " << bes_cmd_filename << endl; }
@@ -977,14 +981,20 @@ int main(int argc, char*argv[])
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // Build DMR using direct calls into the BES stack
     //
-
-    DMR *h5_dmr =  build_hdf5_dmr(bes_conf_filename,input_data_file, url_name);
     XMLWriter xmlWriter("  ");
+
+    // Build a dmr by making calls to the hdf5_module code.
+    DMR *h5_dmr =  build_hdf5_dmr(bes_conf_filename,input_data_file, url_name);
+
+    // Write that dmr as an XML doc
     h5_dmr->print_dap4(xmlWriter);
     delete h5_dmr;
 
+    // Turn the XML doc into an input stream using  istringstream
     istringstream dmr_istrm(xmlWriter.get_doc());
     if(very_verbose){ cerr << endl << xmlWriter.get_doc() << endl; }
+
+    // Pass that stream to generate_dmrpp.
     status = generate_dmrpp(input_data_file, &dmr_istrm, url_name);
 
 #endif
