@@ -733,10 +733,10 @@ DMR *build_hdf5_dmr(const string &bes_conf_filename, const string &input_data_fi
 
     h5rh->hdf5_build_dmr(dhi);
 
-   delete bfc;
+   // delete bfc;
    // delete dmrh;
    // delete response_object;
-   delete h5rh;
+   // delete h5rh;
 
     if(verbose){ cerr << "                            END: build_hdf5_dmr()" << endl; }
     return h5_dmr;
@@ -987,7 +987,6 @@ int main(int argc, char*argv[]) {
     if (verbose) { cerr << "              bes_conf_filename: " << bes_conf_filename << endl; }
 
     if (run_alternate.empty()) {
-
 
         string bes_cmd_filename = mktemp_get_dmr_bes_cmd(input_data_file, pid);
         if (verbose) { cerr << "               bes_cmd_filename: " << bes_cmd_filename << endl; }
