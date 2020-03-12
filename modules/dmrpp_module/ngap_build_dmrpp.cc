@@ -615,15 +615,18 @@ string mktemp_get_dmr_bes_cmd(const string &input_data_file, const pid_t &pid) {
  * Build DMR using besstandalone (aka StandAloneApp)
  *
  * @param bes_conf_filename The name of the bes configuration file to use
- * @param bes_cmd The bes command to execute
- * @param output_file The file to write the output to
+ * @param bes_cmd_filename The bes command to execute
+ * @param output_filename The file to write the output to
  */
-void build_dmr_with_StandAloneApp(const string &bes_conf_filename, const string &bes_cmd, const string &output_file) {
+void build_dmr_with_StandAloneApp(
+        const string &bes_conf_filename,
+        const string &bes_cmd_filename,
+        const string &output_filename) {
 
     BESStopWatch sw;
     sw.start("build_dmrpp::build_dmr_with_StandAloneApp()");
 
-    TheBESKeys::ConfigFile = bes_conf_filename;
+    // TheBESKeys::ConfigFile = bes_conf_filename;
 
 #if 0
     // besstandalone command
@@ -635,9 +638,9 @@ void build_dmr_with_StandAloneApp(const string &bes_conf_filename, const string 
     nargv[1] = const_cast<char *>("-c");
     nargv[2] = const_cast<char *>(bes_conf_filename.c_str());
     nargv[3] = const_cast<char *>("-i");
-    nargv[4] = const_cast<char *>(bes_cmd.c_str());
+    nargv[4] = const_cast<char *>(bes_cmd_filename.c_str());
     nargv[5] = const_cast<char *>("-f");
-    nargv[6] = const_cast<char *>(output_file.c_str());
+    nargv[6] = const_cast<char *>(output_filename.c_str());
 
     cerr << "        Command line equivalent: " << "besstandalone ";
     for (unsigned i = 1; i < nargc; i++) { cerr << nargv[i] << " "; }
@@ -664,10 +667,10 @@ void build_dmr_with_StandAloneApp(const string &bes_conf_filename, const string 
     arguments.push_back(conf_param);
     arguments.push_back(bes_conf_filename);
     arguments.push_back(cmd_param);
-    arguments.push_back(bes_cmd);
+    arguments.push_back(bes_cmd_filename);
     arguments.push_back(output_file_param);
-    arguments.push_back(output_file);
-    
+    arguments.push_back(output_filename);
+
     std::vector<char*> argv;
     for(unsigned i=0; i<arguments.size() ; i++){
         const string &arg = arguments[i];
@@ -682,9 +685,8 @@ void build_dmr_with_StandAloneApp(const string &bes_conf_filename, const string 
 
     StandAloneApp app;
     app.main(argv.size()-1, argv.data());
-
     if (verbose) {
-        cerr << "        besstandalone output to: " << output_file << endl;
+        cerr << "        besstandalone output to: " << output_filename << endl;
     }
 }
 
