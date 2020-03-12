@@ -89,4 +89,4 @@ clean-local:
 	test ! -d $(builddir)/static-cache || rm -rf $(builddir)/static-cache
 
 NgapApiTest_SOURCES = NgapApiTest.cc
-NgapApiTest_LDADD = ../.libs/libngap_module.a $(LIBADD)
+NgapApiTest_LDADD = $(top_builddir)/modules/ngap_module/.libs/libngap_module.a $(LIBADD)
