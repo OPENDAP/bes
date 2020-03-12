@@ -720,6 +720,7 @@ DMR *build_hdf5_dmr(const string &bes_conf_filename, const string &input_data_fi
     dhi.container = bfc;
 
     DMR *h5_dmr = new DMR();
+    h5_dmr->set_dap_version("4.0");
     if (url.empty()) h5_dmr->set_request_xml_base(url.c_str());
     BESDMRResponse *response_object = new BESDMRResponse(h5_dmr);
 
@@ -1008,6 +1009,7 @@ int main(int argc, char*argv[]) {
 
         // Build a dmr by making calls to the hdf5_module code.
         DMR *h5_dmr = build_hdf5_dmr(bes_conf_filename, input_data_file, url_name);
+
 
         // Write that dmr as an XML doc
         h5_dmr->print_dap4(xmlWriter);
