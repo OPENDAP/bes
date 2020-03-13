@@ -756,7 +756,7 @@ DMR *build_hdf5_dmr(const string &bes_conf_filename, const string &input_data_fi
  * @return
  */
 int generate_dmrpp(const string &input_data_file, istream *dmr_istrm, const string &url_name, const string &output_filename){
-//FIXME implement output file
+
     if (input_data_file.empty()) {
         cerr << "HDF5 file name must be given (-f <input>)." << endl;
         return 1;
@@ -956,7 +956,7 @@ int main(int argc, char*argv[]) {
      * b = debug
      * h = help
      * v = verbose, V = very verbose
-     * o = output file // <<-- FIXME
+     * o = output file
      * m = just_dmr
     */
 
