@@ -779,13 +779,14 @@ int generate_dmrpp(const string &input_data_file, istream *dmr_istrm, const stri
         return 1;
     }
 
-    // Default to stdout.
+    // Default output goes to stdout.
     std::ostream *output = &cout;
-    // if the output_filename is empty, or not located it will not open.
+    // If the output_filename is not valid, ithe stream will not open. Empty is not valid.
     std::ofstream ofs(output_filename, std::ofstream::out);
     if(ofs.is_open()){
-        // Writing to the output file.
+        // We'll be writing the output to the file.
         output = &ofs;
+        if(verbose){ cerr << "         Writing output to file: " << output_filename << endl;}
     }
 
     int status=0;
