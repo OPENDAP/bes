@@ -543,10 +543,19 @@ string mktemp_bes_conf(const string &bes_conf_filename, const string &data_root,
             BES_CONF_DOC.insert(startIndex, data_root);
         }
         tmp_conf_filename << "/tmp/nbd_" << pid << "_bes.conf";
-        std::FILE *tmp;
-        tmp = fopen(tmp_conf_filename.str().c_str(), "w");
-        fputs(BES_CONF_DOC.c_str(), tmp);
-        fclose(tmp);
+
+        std::ofstream ofs(tmp_conf_filename.str(), std::ofstream::out);
+        if(!ofs.is_open()){
+            string msg = "Failed to open temporary file: " + tmp_conf_filename.str();
+            BESDEBUG(MODULE, prolog << msg << endl);
+            throw BESInternalError(msg,__FILE__,__LINE__);
+        }
+        try {
+            ofs << BES_CONF_DOC ;
+        }
+        catch (...){
+            ofs.close();
+        }
 
         if (very_verbose) {
             cerr << "bes_conf: " << endl << BES_CONF_DOC << endl;
@@ -599,10 +608,19 @@ string mktemp_get_dmr_bes_cmd(const string &input_data_file, const pid_t &pid) {
     }
 
     bes_cmd_filename << "/tmp/nbd_" << pid << "_bes.cmd";
+    std::ofstream ofs(bes_cmd_filename.str(), std::ofstream::out);
+    if(!ofs.is_open()){
+        string msg = "Failed to open temporary file: " + bes_cmd_filename.str();
+        BESDEBUG(MODULE, prolog << msg << endl);
+        throw BESInternalError(msg,__FILE__,__LINE__);
+    }
+    try {
+        ofs << get_dmr_bes_cmd ;
+    }
+    catch (...){
+        ofs.close();
+    }
 
-    std::FILE *tmp = fopen(bes_cmd_filename.str().c_str(), "w");
-    fputs(get_dmr_bes_cmd.c_str(), tmp);
-    fclose(tmp);
     if(very_verbose){
         cerr << "bes_cmd: " << endl << get_dmr_bes_cmd << endl;
     }
@@ -756,7 +774,7 @@ DMR *build_hdf5_dmr(const string &bes_conf_filename, const string &input_data_fi
  * @return
  */
 int generate_dmrpp(const string &input_data_file, istream *dmr_istrm, const string &url_name, const string &output_filename){
-
+//FIXME implement output file
     if (input_data_file.empty()) {
         cerr << "HDF5 file name must be given (-f <input>)." << endl;
         return 1;
@@ -876,7 +894,7 @@ int generate_dmrpp(const string &input_data_file, istream *dmr_istrm, const stri
     }
     catch (BESError &e) {
         if(output_fstrm) { output_fstrm->close(); delete output_fstrm; }
-        cerr << "BESError: " << e.get_message() << endl;
+            cerr << "BESError: " << e.get_message() << endl;
         status = 1;
     }
     catch (std::exception &e) {
@@ -956,7 +974,7 @@ int main(int argc, char*argv[]) {
      * b = debug
      * h = help
      * v = verbose, V = very verbose
-     * o = output file
+     * o = output file // <<-- FIXME
      * m = just_dmr
     */
 
