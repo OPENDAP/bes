@@ -779,15 +779,14 @@ int generate_dmrpp(const string &input_data_file, istream *dmr_istrm, const stri
         cerr << "HDF5 file name must be given (-f <input>)." << endl;
         return 1;
     }
-
-    std::ofstream *output_fstrm = 0;
-    if (!output_filename.empty()){
-        output_fstrm  = new std::ofstream(output_filename, std::ofstream::out);
-        if(!output_fstrm->is_open()){
-            string msg = "Failed to open output file: " + output_filename;
-            BESDEBUG(MODULE, prolog << msg << endl);
-            throw BESSyntaxUserError(msg,__FILE__,__LINE__);
-        }
+    
+    // Default to stdout.
+    std::ostream *output = &cout;
+    // if the output_filename is empty, or not located it will not open.
+    std::ofstream ofs(output_filename, std::ofstream::out);
+    if(ofs.is_open()){
+        // Writing to the output file.
+        output = &ofs;
     }
 
     int status=0;
@@ -820,10 +819,8 @@ int generate_dmrpp(const string &input_data_file, istream *dmr_istrm, const stri
 
             XMLWriter writer;
             dmrpp->print_dmrpp(writer, url_name);
-            if(output_fstrm)
-                *output_fstrm << writer.get_doc();
-            else
-                cout << writer.get_doc();
+
+            *output << writer.get_doc();
 
         }
         else {
@@ -881,10 +878,7 @@ int generate_dmrpp(const string &input_data_file, istream *dmr_istrm, const stri
                 dmrpp->set_print_chunks(true);
                 dmrpp->print_dap4(writer);
 
-                if(output_fstrm)
-                    *output_fstrm << writer.get_doc();
-                else
-                    cout << writer.get_doc();
+                *output << writer.get_doc();
             }
             else {
                 cerr << "Error: Could not get a lock on the DMR for '" + h5_file_path + "'." << endl;
@@ -893,17 +887,14 @@ int generate_dmrpp(const string &input_data_file, istream *dmr_istrm, const stri
         }
     }
     catch (BESError &e) {
-        if(output_fstrm) { output_fstrm->close(); delete output_fstrm; }
             cerr << "BESError: " << e.get_message() << endl;
         status = 1;
     }
     catch (std::exception &e) {
-        if(output_fstrm) { output_fstrm->close(); delete output_fstrm; }
         cerr << "std::exception: " << e.what() << endl;
         status = 1;
     }
     catch (...) {
-        if(output_fstrm) { output_fstrm->close(); delete output_fstrm; }
         cerr << "Unknown error." << endl;
         status = 1;
     }
@@ -1033,6 +1024,7 @@ int main(int argc, char*argv[]) {
 
     string bes_conf_filename = mktemp_bes_conf(bes_conf_file, data_root, pid);
     if (verbose) { cerr << "              bes_conf_filename: " << bes_conf_filename << endl; }
+
 
     if (run_alternate.empty()) {
 
