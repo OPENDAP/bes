@@ -459,10 +459,11 @@ StareCountFunction::stare_count_dap4_function(D4RValueList *args, DMR &dmr)
 }
 
 /**
- * @brief For the given target STARE indices, return the overlapping dataset X, Y, and STARE indices
+ * @brief For the given target STARE indices, return the overlapping
+ * dataset X, Y, and STARE indices
  *
  * This function will subset the dataset using the given vector of STARE indices. The result
- * of the subset operation, are three vectors. The first two contain the X and Y indices of
+ * of the subset operation is three vectors. The first two contain the X and Y indices of
  * the Latitude and Longitude arrays. The third vector contains the subset of the target
  * indices that overlap the dataset's STARE indices.
  *
