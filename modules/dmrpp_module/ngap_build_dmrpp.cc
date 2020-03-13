@@ -876,7 +876,7 @@ int generate_dmrpp(const string &input_data_file, istream *dmr_istrm, const stri
     }
     catch (BESError &e) {
         if(output_fstrm) { output_fstrm->close(); delete output_fstrm; }
-            cerr << "BESError: " << e.get_message() << endl;
+        cerr << "BESError: " << e.get_message() << endl;
         status = 1;
     }
     catch (std::exception &e) {
