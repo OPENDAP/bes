@@ -171,17 +171,16 @@ namespace ngap {
         //    So maybe it's good, or maybe there's a bigger issue around access and locking?
         //
 
-        d_dmrpp_resource->getCacheFileName()
-
         string dmrpp;
 
+        //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+        // Slurp up the dmr++ file into a string object
         std::ifstream cr_istrm(cachedResource);
         if(!cr_istrm.is_open()){
             string msg = "Could not open '" + cachedResource + "' to read cached response.";
             BESDEBUG(MODULE, prolog << msg << endl);
             throw BESInternalError(msg, __FILE__, __LINE__);
         }
-
         try {
             std::stringstream buffer;
             buffer << cr_istrm.rdbuf();
@@ -192,7 +191,8 @@ namespace ngap {
             cr_istrm.close();
         }
 
-
+        //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+        // Replace all occurances of the dmr++ href attr key.
         int startIndex=0;
         string dmrpp_href_key("DATA_ACCESS_URL");
         while ((startIndex = dmrpp.find(dmrpp_href_key)) != -1){
@@ -200,6 +200,8 @@ namespace ngap {
             dmrpp.insert(startIndex, data_access_url);
         }
 
+        //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+        // Replace the contents of the cached dmr++ file with the modified string.
         std::ofstream cr_ostrm(cachedResource);
         if(!cr_ostrm.is_open()){
             string msg = "Could not open '" + cachedResource + "' to write modified cached response.";
