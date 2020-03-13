@@ -156,23 +156,67 @@ namespace ngap {
 
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#if 1
+        // James: I have the questions.
+        //
+        // 1) In the try catch blocks that read and write I need to call close in the try, but also in the catch(...)?
+        //    Or is JUST in the catch(...) good enuff.
+        //
+        // 2) In reality this is accessing a file under the control of a file locking cache do it should be rewritten
+        //    to utilize file locking? It's hard to know because in this modulke (and others) the cache file name is.\
+        //    passed directly into the bes dispatch machinery at the end of this method:
+        //
+        //    return cachedResource;
+        //
+        //    So maybe it's good, or maybe there's a bigger issue around access and locking?
+        //
 
-        // This will work if you change 't(cachedResource)' to 't(cachedResource.c_str())'
-        // And it may be that in C++11 strings work as parameters to the ifstream ctor (it
-        // was a planned feature IIRC)
-        //
-        //std::ifstream t(cachedResource);
-        //std::string dmrpp((std::istreambuf_iterator<char>(t)),
-        //                std::istreambuf_iterator<char>());
-        // This is from the same stackoverflow page:
-        // std::ifstream t("file.txt");
-        // std::stringstream buffer;
-        // buffer << t.rdbuf();
-        //
-        // It's better to not use FILE
+        d_dmrpp_resource->getCacheFileName()
+
+        string dmrpp;
+
+        std::ifstream cr_istrm(cachedResource);
+        if(!cr_istrm.is_open()){
+            string msg = "Could not open '" + cachedResource + "' to read cached response.";
+            BESDEBUG(MODULE, prolog << msg << endl);
+            throw BESInternalError(msg, __FILE__, __LINE__);
+        }
+
+        try {
+            std::stringstream buffer;
+            buffer << cr_istrm.rdbuf();
+            dmrpp = buffer.str();
+            cr_istrm.close();
+        }
+        catch(...){
+            cr_istrm.close();
+        }
+
+
+        int startIndex=0;
+        string dmrpp_href_key("DATA_ACCESS_URL");
+        while ((startIndex = dmrpp.find(dmrpp_href_key)) != -1){
+            dmrpp.erase(startIndex, dmrpp_href_key.length());
+            dmrpp.insert(startIndex, data_access_url);
+        }
+
+        std::ofstream cr_ostrm(cachedResource);
+        if(!cr_ostrm.is_open()){
+            string msg = "Could not open '" + cachedResource + "' to write modified cached response.";
+            BESDEBUG(MODULE, prolog << msg << endl);
+            throw BESInternalError(msg, __FILE__, __LINE__);
+        }
+        try {
+            cr_ostrm << dmrpp;
+            cr_ostrm.close();
+        }
+        catch(...){
+            cr_ostrm.close();
+        }
+#else
+
 
         FILE *crFile;
-        string dmrpp;
         stringstream df;
 
         unsigned buf_size=10000;
@@ -198,7 +242,10 @@ namespace ngap {
         crFile = fopen(cachedResource.c_str(), "w");
         fputs(dmrpp.c_str(), crFile);
         fclose(crFile);
-        
+
+#endif
+
+
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
