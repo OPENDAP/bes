@@ -779,7 +779,7 @@ int generate_dmrpp(const string &input_data_file, istream *dmr_istrm, const stri
         cerr << "HDF5 file name must be given (-f <input>)." << endl;
         return 1;
     }
-    
+
     // Default to stdout.
     std::ostream *output = &cout;
     // if the output_filename is empty, or not located it will not open.
