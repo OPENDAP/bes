@@ -11,7 +11,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=fileout_netcdf
-M_VER=1.4.8
+M_VER=1.4.9
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(NC_CPPFLAGS) $(DAP_CFLAGS)
 LIBADD = $(NC_LDFLAGS) $(NC_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -34,13 +34,15 @@ FONC_SRC = FONcTransform.cc FONcTransmitter.cc FONcRequestHandler.cc	\
 	FONcModule.cc FONcUtils.cc FONcStr.cc FONcShort.cc FONcInt.cc	\
 	FONcFloat.cc FONcDouble.cc FONcStructure.cc FONcArray.cc	\
 	FONcGrid.cc FONcSequence.cc FONcByte.cc FONcBaseType.cc		\
-	FONcDim.cc FONcMap.cc FONcAttributes.cc
+	FONcDim.cc FONcMap.cc FONcAttributes.cc FONcUShort.cc FONcUInt.cc	\
+	FONcUByte.cc
 
 FONC_HDR = FONcTransform.h FONcTransmitter.h FONcRequestHandler.h	\
 	FONcModule.h FONcUtils.h FONcStr.h FONcShort.h FONcInt.h	\
 	FONcFloat.h FONcDouble.h FONcStructure.h FONcArray.h		\
 	FONcGrid.h FONcSequence.h FONcByte.h FONcBaseType.h		\
-	FONcDim.h FONcMap.h FONcAttributes.h
+	FONcDim.h FONcMap.h FONcAttributes.h FONcUShort.h FONcUInt.h	\
+	FONcUByte.h
 
 EXTRA_DIST = data fonc.conf.in
 

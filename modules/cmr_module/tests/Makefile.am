@@ -29,10 +29,11 @@ AUTOM4TE = autom4te
 
 TESTSUITE = $(srcdir)/testsuite
 
-check-local: $(TESTSUITE) atconfig atlocal bes.conf
+check-local: $(TESTSUITE) atconfig atlocal bes.conf cache
+	-rm $(builddir)/cache/*
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
-installcheck-local: $(TESTSUITE) atconfig atlocal 
+installcheck-local: $(TESTSUITE) atconfig atlocal cache
 	$(SHELL) '$(TESTSUITE)' AUTOTEST_PATH='$(bindir)' $(TESTSUITEFLAGS)
 
 clean-local: 

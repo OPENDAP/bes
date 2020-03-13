@@ -2075,4 +2075,5 @@ add_executable(bes
     xmlcommand/XMLSetContextsCommand.h
     config.h
 	modules/dmrpp_module/unit-tests/awsv4_test.cc
-    )
+    standalone/besstandalone.cc
+)

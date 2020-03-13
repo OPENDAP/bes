@@ -61,17 +61,7 @@ using std::istringstream;
 
 #define FoDapCovJsonTransform_debug_key "focovjson"
 
-/**
- * @brief Checks the spacial/temporal dimensions that we've obtained, if we've
- *    obtained any at all, can be used to convert to a CovJSON file. If x, y,
- *    and t exist, then we determine domainType based on the shape values and we
- *    return true. If x, y, and/or t don't exist, we simply return false
- *
- * @note see CovJSON domain type spec: https://covjson.org/domain-types/ for
- *    further details on determining domain type
- *
- * @returns true if can convert to CovJSON, false if cannot convert
- */
+
 bool FoDapCovJsonTransform::canConvert()
 {
     // If x, y, z, and t all exist
@@ -88,14 +78,14 @@ bool FoDapCovJsonTransform::canConvert()
         // A domain with Grid domain type MUST have the axes "x" and "y"
         // and MAY have the axes "z" and "t".
         if((shapeVals[0] > 1) && (shapeVals[1] > 1) && (shapeVals[2] >= 1) && (shapeVals[3] >= 0)) {
-            domainType = Grid;
+            domainType = "Grid";
             return true;
         }
 
         // A domain with VerticalProfile domain type MUST have the axes "x",
         // "y", and "z", where "x" and "y" MUST have a single coordinate only.
         else if((shapeVals[0] == 1) && (shapeVals[1] == 1) && (shapeVals[2] >= 1) && ((shapeVals[3] <= 1) && (shapeVals[3] >= 0))) {
-            domainType = VerticalProfile;
+            domainType = "Vertical Profile";
             return true;
         }
 
@@ -104,14 +94,14 @@ bool FoDapCovJsonTransform::canConvert()
         // domain with PointSeries domain type MAY have the axis "z" which
         // MUST have a single coordinate only.
         else if((shapeVals[0] == 1) && (shapeVals[1] == 1) && (shapeVals[2] == 1) && (shapeVals[3] >= 0)) {
-            domainType = PointSeries;
+            domainType = "Point Series";
             return true;
         }
 
         // A domain with Point domain type MUST have the axes "x" and "y" and MAY
         // have the axes "z" and "t" where all MUST have a single coordinate only.
         else if((shapeVals[0] == 1) && (shapeVals[1] == 1) && (shapeVals[2] == 1) && (shapeVals[3] == 1)) {
-            domainType = Point;
+            domainType = "Point";
             return true;
         }
     }
@@ -129,7 +119,7 @@ bool FoDapCovJsonTransform::canConvert()
         // A domain with Grid domain type MUST have the axes "x" and "y"
         // and MAY have the axes "z" and "t".
         if((shapeVals[0] > 1) && (shapeVals[1] > 1) && (shapeVals[2] >= 0)) {
-            domainType = Grid;
+            domainType = "Grid";
             return true;
         }
 
@@ -138,14 +128,14 @@ bool FoDapCovJsonTransform::canConvert()
         // domain with PointSeries domain type MAY have the axis "z" which
         // MUST have a single coordinate only.
         else if((shapeVals[0] == 1) && (shapeVals[1] == 1) && (shapeVals[2] >= 0)) {
-            domainType = PointSeries;
+            domainType = "Point Series";
             return true;
         }
 
         // A domain with Point domain type MUST have the axes "x" and "y" and MAY
         // have the axes "z" and "t" where all MUST have a single coordinate only.
         else if((shapeVals[0] == 1) && (shapeVals[1] == 1) && (shapeVals[2] == 1)) {
-            domainType = Point;
+            domainType = "Point";
             return true;
         }
     }
@@ -162,33 +152,21 @@ bool FoDapCovJsonTransform::canConvert()
         // A domain with Grid domain type MUST have the axes "x" and "y"
         // and MAY have the axes "z" and "t".
         if((shapeVals[0] > 1) && (shapeVals[1] > 1)) {
-            domainType = Grid;
+            domainType = "Grid";
             return true;
         }
 
         // A domain with Point domain type MUST have the axes "x" and "y" and MAY
         // have the axes "z" and "t" where all MUST have a single coordinate only.
         else if((shapeVals[0] == 1) && (shapeVals[1] == 1)) {
-            domainType = Point;
+            domainType = "Point";
             return true;
         }
     }
+
     return false; // This source DDS is not valid as CovJSON
 }
 
-
-/**
- * @brief Writes each of the variables in a given container to the CovJSON stream.
- *    For each variable in the DDS, write out that variable as CovJSON.
- *
- * @param ostrm Write the CovJSON to this output stream
- * @param values Source array of type T which we want to write to stream
- * @param indx variable for storing the current indexed value
- * @param shape a vector storing the shape's dimensional values
- * @param currentDim the current dimension we are printing values from
- *
- * @returns the most recently completed index
- */
 template<typename T>
 unsigned int FoDapCovJsonTransform::covjsonSimpleTypeArrayWorker(ostream *strm, T *values, unsigned int indx,
     vector<unsigned int> *shape, unsigned int currentDim)
@@ -199,7 +177,6 @@ unsigned int FoDapCovJsonTransform::covjsonSimpleTypeArrayWorker(ostream *strm, 
     // *strm << "\"currentDim\": \"" << currentDim << "\"" << endl;
     // *strm << "\"currentDimSize\": \"" << currentDimSize << "\"" << endl;
 
-    *strm << "[";
     for(unsigned int i = 0; i < currentDimSize; i++) {
         if(currentDim < shape->size() - 1) {
             BESDEBUG(FoDapCovJsonTransform_debug_key,
@@ -223,29 +200,10 @@ unsigned int FoDapCovJsonTransform::covjsonSimpleTypeArrayWorker(ostream *strm, 
             }
         }
     }
-    *strm << "]";
 
     return indx;
 }
 
-
-/**
- * @brief Writes the CovJSON representation of the passed DAP Array of simple types.
- *   If the parameter "sendData" evaluates to true then data will also be sent.
- *
- * For each variable in the DDS, write out that variable and its
- * attributes as CovJSON. Each OPeNDAP data type translates into a
- * particular CovJSON type. Also write out any global attributes stored at the
- * top level of the DataDDS.
- *
- * @note If sendData is true but the DDS does not contain data, the result
- * is undefined.
- *
- * @param ostrm Write the CovJSON to this stream (for debugging purposes)
- * @param a Source data array - write out data or metadata from or about this array
- * @param indent Indent the output so humans can make sense of it
- * @param sendData true: send data; false: send metadata
- */
 template<typename T>
 void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array *a, string indent, bool sendData)
 {
@@ -279,7 +237,7 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
 
         if (currAxis->name.compare("t") != 0) {
             if (sendData) {
-                currAxis->values += "\"values\": ";
+                currAxis->values += "\"values\": [";
                 unsigned int indx = 0;
                 vector<T> src(length);
                 a->value(&src[0]);
@@ -287,6 +245,8 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
                 ostringstream astrm;
                 indx = covjsonSimpleTypeArrayWorker(&astrm, &src[0], 0, &shape, 0);
                 currAxis->values += astrm.str();
+
+                currAxis->values += "]";
 
                 if (length != indx) {
                     BESDEBUG(FoDapCovJsonTransform_debug_key,
@@ -341,7 +301,7 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
         currParameter->shape += "],";
 
         if (sendData) {
-            currParameter->values += "\"values\": ";
+            currParameter->values += "\"values\": [";
             unsigned int indx = 0;
             vector<T> src(length);
             a->value(&src[0]);
@@ -349,6 +309,8 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
             ostringstream pstrm;
             indx = covjsonSimpleTypeArrayWorker(&pstrm, &src[0], 0, &shape, 0);
             currParameter->values += pstrm.str();
+
+            currParameter->values += "]";
 
             if (length != indx) {
                 BESDEBUG(FoDapCovJsonTransform_debug_key,
@@ -362,27 +324,6 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
     }
 }
 
-
-/**
- * @brief Writes the CovJSON representation of the passed DAP Array of string types.
- *   If the parameter "sendData" evaluates to true, then data will also be sent.
- *
- * For each variable in the DDS, write out that variable and its
- * attributes as CovJSON. Each OPeNDAP data type translates into a
- * particular CovJSON type. Also write out any global attributes stored at the
- * top level of the DataDDS.
- *
- * @note This version exists because of the differing type signatures of the
- *   libdap::Vector::value() methods for numeric and c++ string types.
- *
- * @note If sendData is true but the DDS does not contain data, the result
- *   is undefined.
- *
- * @param strm Write to this output stream
- * @param a Source data array - write out data or metadata from or about this array
- * @param indent Indent the output so humans can make sense of it
- * @param sendData true: send data; false: send metadata
- */
 void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, string indent, bool sendData)
 {
     string childindent = indent + _indent_increment;
@@ -495,28 +436,36 @@ void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, 
     }
 }
 
+void FoDapCovJsonTransform::addAxis(string name, string values) 
+{
+    struct Axis *newAxis = new Axis;
 
-/**
- * @brief Gets a leaf's attribute metadata and stores them to private
- *   class variables to make them accessible for printing.
- *
- * Gets the current attribute values and stores the metadata the data in
- * the corresponding private class variables. Will logically search
- * for value names (ie "longitude") and store them as required.
- *
- * @note strm is included here for debugging purposes. Otherwise, there is no
- *   absolute need to require it as an argument. May remove strm as an arg if
- *   necessary.
- *
- * @note CoverageJSON specification for Temporal Reference Systems
- *   https://covjson.org/spec/#temporal-reference-systems
- *
- * @param ostrm Write the CovJSON to this stream (TEST/DEBUGGING)
- * @param attr_table Reference to an AttrTable containing Axis attribute values
- * @param name Name of a given parameter
- * @param axisRetrieved true if axis is retrieved, false if not
- * @param parameterRetrieved true if parameter is retrieved, false if not
- */
+    newAxis->name = name;
+    newAxis->values = values;
+
+    this->axes.push_back(newAxis);
+    this->axisCount++;
+}
+
+void FoDapCovJsonTransform::addParameter(string id, string name, string type, string dataType, string unit,
+    string longName, string standardName, string shape, string values) 
+{
+    struct Parameter *newParameter = new Parameter;
+
+    newParameter->id = id;
+    newParameter->name = name;
+    newParameter->type = type;
+    newParameter->dataType = dataType;
+    newParameter->unit = unit;
+    newParameter->longName = longName;
+    newParameter->standardName = standardName;
+    newParameter->shape = shape;
+    newParameter->values = values;
+
+    this->parameters.push_back(newParameter);
+    this->parameterCount++;
+}
+
 void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr_table, string name,
     bool *axisRetrieved, bool *parameterRetrieved)
 {
@@ -529,8 +478,11 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
     isAxis = false;
     isParam = false;
 
+    *axisRetrieved = false;
+    *parameterRetrieved = false;
+
     // FOR TESTING AND DEBUGGING PURPOSES
-    // *strm << "\"attr_tableName\": \"" << name << "\"" << endl;
+    //*strm << "\"attr_tableName\": \"" << name << "\"" << endl;
 
     // Using CF-1.6 naming conventions -- Also checks for Coads Climatology conventions
     // http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html
@@ -595,6 +547,9 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
         libdap::AttrTable::Attr_iter end = attr_table.attr_end();
 
         for(libdap::AttrTable::Attr_iter at_iter = begin; at_iter != end; at_iter++) {
+            // FOR TESTING AND DEBUGGING PURPOSES 
+            // attr_table.print(*strm);
+
             switch (attr_table.get_attr_type(at_iter)) {
             case libdap::Attr_container: {
                 libdap::AttrTable *atbl = attr_table.get_attr_table(at_iter);
@@ -610,7 +565,7 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
                     string currValue = (*values)[i];
 
                     // FOR TESTING AND DEBUGGING PURPOSES
-                    // *strm << "\"currName\": \"" << currName << "\", \"currValue\": \"" << currValue << "\"" << endl;
+                    //*strm << "\"currName\": \"" << currName << "\", \"currValue\": \"" << currValue << "\"" << endl;
 
                     // From Climate and Forecast (CF) Conventions:
                     // http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html#_description_of_the_data
@@ -627,15 +582,20 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
 
                     // See http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html#units
                     if(currName.compare("units") == 0) {
+                        currUnit = currValue;
+
                         if(isAxis) {
                             if(currAxisName.compare("t") == 0) {
                                 currAxisTimeOrigin = currValue;
                             }
                         }
-                        else if(isParam) {
-                            currUnit = currValue;
-                        }
                     }
+
+                    // Per Jon Blower:
+                    // observedProperty->label comes from:
+                    //    - The CF long_name, if it exists
+                    //    - If not, the CF standard_name, perhaps with underscores removed
+                    //    - If the standard_name doesn’t exist, use the variable ID
                     // See http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html#long-name
                     else if(currName.compare("long_name") == 0) {
                         currLongName = currValue;
@@ -653,92 +613,26 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
     }
 
     if(isAxis) {
-        // Push a new axis
-        struct Axis *newAxis = new Axis;
-        newAxis->name = currAxisName;
-
-        // If we're dealing with the time axis, capture the time
-        // origin timestamp value with the appropriate formatting
-        // for printing.
+        // If we're dealing with the time axis, capture the time origin 
+        // timestamp value with the appropriate formatting for printing.
         // @TODO See https://covjson.org/spec/#temporal-reference-systems
         if(currAxisName.compare("t") == 0) {
-            // If the calendar is based on years, months, days,
-            // then the referenced values SHOULD use one of the
-            // following ISO8601-based lexical representations:
-
-            //  YYYY
-            //  ±XYYYY (where X stands for extra year digits)
-            //  YYYY-MM
-            //  YYYY-MM-DD
-            //  YYYY-MM-DDTHH:MM:SS[.F]Z where Z is either “Z”
-            //      or a time scale offset + -HH:MM
-
-            // If calendar dates with reduced precision are
-            // used in a lexical representation (e.g. "2016"),
-            // then a client SHOULD interpret those dates in
-            // that reduced precision.
-
-            // string item;
-            // vector<string> tokens;
-            // char *dup = strdup(currAxisTimeOrigin.c_str());
-            // char *token = strtok(dup, " ");
-            // while(token != NULL){
-            //     tokens.push_back(string(token));
-            //     token = strtok(NULL, " ");
-            // }
-
-            // free(token);
-            // free(dup);
-            // free(token);
-
-            // For testing purposes
-            // for(unsigned int i = 0; i < tokens.size(); i++) {
-            //     *strm << tokens[i] << endl;
-            // }
-
-            // @TODO Need to figure out a way to dynamically parse
-            // origin timestamps and convert them to an appropriate
-            // format for CoverageJSON
-
-            newAxis->values += "\"values\": [\"";
-            // newAxis->values += currAxisTimeOrigin;
-            newAxis->values += "2018-01-01T00:12:20Z";
-            newAxis->values += "\"]";
+            addAxis(currAxisName, "\"values\": [\"" + sanitizeTimeOriginString(currAxisTimeOrigin) + "\"]");
         }
-        axes.push_back(newAxis);
-        axisCount++;
+        else {
+            addAxis(currAxisName, "");
+        }
+
+        // See https://covjson.org/spec/#projected-coordinate-reference-systems
+        if((currUnit.find("east") != string::npos) || (currUnit.find("East") != string::npos) || 
+            (currUnit.find("north") != string::npos) || (currUnit.find("North") != string::npos)) {
+            coordRefType = "ProjectedCRS";
+        }
+
         *axisRetrieved = true;
-        *parameterRetrieved = false;
     }
     else if(isParam) {
-        // Kent says: Use LongName to select the new Parameter is too strict.
-        // but when the test 'currLongName.compare("") != 0' is removed,
-        // all of the tests fail and do so by generating output that looks clearly
-        // wrong. I'm going to hold off on this part of the patch for now. jhrg 3/28/19
-
-        // Removed the 'currLongName.compare("") != 0' test statement. The removed
-        // statement was a constraint to ensure that any parameter retrieved would
-        // have a descriptive long_name attribute for printing observedProperty->label.
-        //
-        // Per Jon Blower:
-        // observedProperty->label comes from:
-        //    - The CF long_name, if it exists
-        //    - If not, the CF standard_name, perhaps with underscores removed
-        //    - If the standard_name doesn’t exist, use the variable ID
-        //
-        // This constraint is now evaluated in the printParametersWorker
-        // rather than within this function where the parameter is retrieved.
-        // -CH 5/11/2019
-
-        // Push a new parameter
-        struct Parameter *newParameter = new Parameter;
-        newParameter->name = name;
-        newParameter->dataType = currDataType;
-        newParameter->unit = currUnit;
-        newParameter->longName = currLongName;
-        parameters.push_back(newParameter);
-        parameterCount++;
-        *axisRetrieved = false;
+        addParameter("", name, "", currDataType, currUnit, currLongName, currStandardName, "", "");
         *parameterRetrieved = true;
     }
     else {
@@ -746,42 +640,51 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
     }
 }
 
+string FoDapCovJsonTransform::sanitizeTimeOriginString(string timeOrigin) 
+{
+    // If the calendar is based on years, months, days,
+    // then the referenced values SHOULD use one of the
+    // following ISO8601-based lexical representations:
 
-/**
- * @brief Get the CovJSON encoding for a DDS
- *
- * Set up the CovJSON output transform object. This constructor builds
- * an object that will build a CovJSON encoding for a DDS. This class can
- * return both the entire DDS, including data, and a metadata-only
- * response.
- *
- * @note The 'transform' method is used to build the response and a
- *   bool flag is passed to it to select data or metadata. However, if
- *   that flag is true and the DDS does not already contain data, the
- *   result is undefined.
- *
- * @param dds DDS object
- * @throws BESInternalError if the DDS* is null or if localfile is empty.
- */
+    //  YYYY
+    //  ±XYYYY (where X stands for extra year digits)
+    //  YYYY-MM
+    //  YYYY-MM-DD
+    //  YYYY-MM-DDTHH:MM:SS[.F]Z where Z is either “Z”
+    //      or a time scale offset + -HH:MM
+    //      ex: "2018-01-01T00:12:20Z"
+
+    // If calendar dates with reduced precision are
+    // used in a lexical representation (e.g. "2016"),
+    // then a client SHOULD interpret those dates in
+    // that reduced precision.
+
+    // Remove any commonly found words from the origin timestamp
+    vector<string> subStrs = { "hours", "hour", "minutes", "minute", 
+                        "seconds", "second", "since", "  " };
+
+    string cleanTimeOrigin = timeOrigin;
+
+    // If base time, use an arbitrary base time string
+    if(timeOrigin.find("base_time") != string::npos) {
+        cleanTimeOrigin = "2020-01-01T12:00:00Z";
+    }
+    else {
+        for(unsigned int i = 0; i < subStrs.size(); i++)
+            focovjson::removeSubstring(cleanTimeOrigin, subStrs[i]);
+    }
+
+    return cleanTimeOrigin;
+}
+
 FoDapCovJsonTransform::FoDapCovJsonTransform(libdap::DDS *dds) :
-    _dds(dds), _returnAs(""), _indent_increment("  "), atomicVals(""), currDataType(""), domainType(0),
-    xExists(false), yExists(false), zExists(false), tExists(false), isParam(false), isAxis(false),
-    canConvertToCovJson(false), axisCount(0), parameterCount(0) // not used , shapeValsCount(0)
+    _dds(dds), _returnAs(""), _indent_increment("  "), atomicVals(""), currDataType(""), domainType("Unknown"),
+    coordRefType("GeographicCRS"), xExists(false), yExists(false), zExists(false), tExists(false), isParam(false),
+    isAxis(false), canConvertToCovJson(false), axisCount(0), parameterCount(0)
 {
     if (!_dds) throw BESInternalError("File out COVJSON, null DDS passed to constructor", __FILE__, __LINE__);
 }
 
-
-/**
- * @brief Dumps information about this transformation object for debugging
- *   purposes
- *
- * Displays the pointer value of this instance plus instance data,
- * including all of the FoJson objects converted from DAP objects that are
- * to be sent to the netcdf file.
- *
- * @param strm C++ i/o stream to dump the information to
- */
 void FoDapCovJsonTransform::dump(ostream &strm) const
 {
     strm << BESIndent::LMarg << "FoDapCovJsonTransform::dump - (" << (void *) this << ")" << endl;
@@ -792,43 +695,11 @@ void FoDapCovJsonTransform::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
-
-/**
- * @brief Transforms each of the marked variables of the DDS to CovJSON
- *
- * For each variable in the DDS, write out that variable and its
- * attributes as CovJSON. Each OPeNDAP data type translates into a
- * particular CovJSON type. Also write out any global attributes stored at the
- * top level of the DataDDS.
- *
- * @param ostrm Write the CovJSON to this stream
- * @param sendData True if data should be sent, False to send only metadata.
- * @param testOverride true: print to stream regardless of whether the file can
- *    be converted to CoverageJSON (for testing purposes) false: run normally
- */
 void FoDapCovJsonTransform::transform(ostream &ostrm, bool sendData, bool testOverride)
 {
     transform(&ostrm, _dds, "", sendData, testOverride);
 }
 
-
-/**
- * @brief Contructs a new set of leaves and nodes derived from a previous set of nodes.
- *
- * Contructs a new set of leaves and nodes derived from a previous set of nodes, then
- * runs the transformRangesWorker() on the new set of leaves so that the range values
- * can be printed to the CovJSON output stream.
- *
- * @note The new derived nodes vector is not used for anything at this time.
- *
- * @note DAP Constructor types are semantically equivalent to a w10n node type so they
- *   must be represented as a collection of child nodes and leaves.
- *
- * @param strm Write to this output stream
- * @param cnstrctr a new collection of child nodes and leaves
- * @param indent Indent the output so humans can make sense of it
- * @param sendData true: send data; false: send metadata
- */
 void FoDapCovJsonTransform::transform(ostream *strm, libdap::Constructor *cnstrctr, string indent, bool sendData)
 {
     vector<libdap::BaseType *> leaves;
@@ -857,17 +728,6 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::Constructor *cnstrc
     transformNodeWorker(strm, leaves, nodes, indent, sendData);
 }
 
-
-/**
- * @brief Worker method allows us to recursively traverse an Node's variable
- *   contents and any child nodes will be traversed as well.
- *
- * @param strm Write to this output stream
- * @param leaves Pointer to a vector of BaseTypes, which represent w10n leaves
- * @param nodes Pointer to a vector of BaseTypes, which represent w10n nodes
- * @param indent Indent the output so humans can make sense of it
- * @param sendData true: send data; false: send metadata
- */
 void FoDapCovJsonTransform::transformNodeWorker(ostream *strm, vector<libdap::BaseType *> leaves,
     vector<libdap::BaseType *> nodes, string indent, bool sendData)
 {
@@ -894,111 +754,68 @@ void FoDapCovJsonTransform::transformNodeWorker(ostream *strm, vector<libdap::Ba
     }
 }
 
+void FoDapCovJsonTransform::printCoverageJSON(ostream *strm, string indent, bool testOverride)
+{
+    // Determine if the attribute values we read can be converted to CovJSON.
+    // Test override forces printing output to stream regardless of whether
+    // or not the file can be converted into CoverageJSON format.
+    if(testOverride) {
+        canConvertToCovJson = true;
+    }
+    else {
+        canConvertToCovJson = canConvert();
+    }
 
-/**
- * @brief Worker method prints the CoverageJSON file header, which
- *   includes domainType, to stream
- *
- * @param strm Write to this output stream
- * @param indent Indent the output so humans can make sense of it
- * @param isCoverageCollection true if CoverageCollection format needed, false if normal Coverage
- */
-void FoDapCovJsonTransform::printCoverageHeaderWorker(ostream *strm, string indent, bool isCoverageCollection)
+    // Only print if this file can be converted to CovJSON
+    if(canConvertToCovJson) {
+        // Prints the entire Coverage to stream
+        printCoverage(strm, indent);
+    }
+    else {
+        // If this file can't be converted, then its failing spatial/temporal requirements
+        throw BESInternalError("File cannot be converted to CovJSON format due to missing or incompatible spatial dimensions", __FILE__, __LINE__);
+    }
+}
+
+void FoDapCovJsonTransform::printCoverage(ostream *strm, string indent)
 {
     string child_indent1 = indent + _indent_increment;
     string child_indent2 = child_indent1 + _indent_increment;
 
-    BESDEBUG(FoDapCovJsonTransform_debug_key, "Printing COVERAGE HEADER" << endl);
+    BESDEBUG(FoDapCovJsonTransform_debug_key, "Printing COVERAGE" << endl);
 
-    // A lot of conditional printing based on whether we have a single
-    // Coverage or a Coverage Collection. Nothing fancy here.
     *strm << indent << "{" << endl;
     *strm << child_indent1 << "\"type\": \"Coverage\"," << endl;
-    *strm << child_indent1 << "\"domain\": {" << endl;
-    *strm << child_indent2 << "\"type\" : \"Domain\"," << endl;
 
-    if(domainType == Grid) {
-        *strm << child_indent2 << "\"domainType\": \"Grid\"," << endl;
-    }
-    else if(domainType == VerticalProfile) {
-        *strm << child_indent2 << "\"domainType\": \"Vertical Profile\"," << endl;
-    }
-    else if(domainType == PointSeries) {
-        *strm << child_indent2 << "\"domainType\": \"Point Series\"," << endl;
-    }
-    else if(domainType == Point) {
-        *strm << child_indent2 << "\"domainType\": \"Point\"," << endl;
-    }
-    else {
-        *strm << child_indent2 << "\"domainType\": \"Unknown\"," << endl;
-    }
+    printDomain(strm, child_indent1);
 
-    // @TODO NEEDS REFACTORING FOR BES ISSUE #245
-    // https://github.com/OPENDAP/bes/issues/245
+    printParameters(strm, child_indent1);
 
-    // if(parameterCount > 1 && isCoverageCollection) {
-    //     *strm << indent << "{" << endl;
-    //     *strm << child_indent1 << "\"type\": \"CoverageCollection\"," << endl;
-    // }
-    // else if(parameterCount > 1 && !isCoverageCollection) {
-    //     *strm << indent << "\"coverages\": [{" << endl;
-    //     *strm << child_indent1 << "\"type\": \"Coverage\"," << endl;
-    //     *strm << child_indent1 << "\"domain\": {" << endl;
-    // }
-    // else {
-    //     *strm << indent << "{" << endl;
-    //     *strm << child_indent1 << "\"type\": \"Coverage\"," << endl;
-    //     *strm << child_indent1 << "\"domain\": {" << endl;
-    // }
-    //
-    // if(parameterCount > 1 && !isCoverageCollection) {
-    //     *strm << child_indent2 << "\"type\" : \"Domain\"," << endl;
-    // }
-    //
-    // if(parameterCount == 1 && !isCoverageCollection) {
-    //     if(domainType == Grid) {
-    //         *strm << child_indent2 << "\"domainType\": \"Grid\"," << endl;
-    //     }
-    //     else if(domainType == VerticalProfile) {
-    //         *strm << child_indent2 << "\"domainType\": \"Vertical Profile\"," << endl;
-    //     }
-    //     else if(domainType == PointSeries) {
-    //         *strm << child_indent2 << "\"domainType\": \"Point Series\"," << endl;
-    //     }
-    //     else if(domainType == Point) {
-    //         *strm << child_indent2 << "\"domainType\": \"Point\"," << endl;
-    //     }
-    //     else {
-    //         *strm << child_indent2 << "\"domainType\": \"Unknown\"," << endl;
-    //     }
-    // }
-    // else if(parameterCount > 1 && isCoverageCollection) {
-    //     if(domainType == Grid) {
-    //         *strm << child_indent1 << "\"domainType\": \"Grid\"," << endl;
-    //     }
-    //     else if(domainType == VerticalProfile) {
-    //         *strm << child_indent1 << "\"domainType\": \"Vertical Profile\"," << endl;
-    //     }
-    //     else if(domainType == PointSeries) {
-    //         *strm << child_indent1 << "\"domainType\": \"Point Series\"," << endl;
-    //     }
-    //     else if(domainType == Point) {
-    //         *strm << child_indent1 << "\"domainType\": \"Point\"," << endl;
-    //     }
-    //     else {
-    //         *strm << child_indent1 << "\"domainType\": \"Unknown\"," << endl;
-    //     }
-    // }
+    printRanges(strm, child_indent1);
+
+    *strm << indent << "}" << endl;
 }
 
+void FoDapCovJsonTransform::printDomain(ostream *strm, string indent)
+{
+    string child_indent1 = indent + _indent_increment;
 
-/**
- * @brief Worker method prints the CoverageJSON file Axes to stream
- *
- * @param strm Write to this output stream
- * @param indent Indent the output so humans can make sense of it
- */
-void FoDapCovJsonTransform::printAxesWorker(ostream *strm, string indent)
+    BESDEBUG(FoDapCovJsonTransform_debug_key, "Printing DOMAIN" << endl);
+
+    *strm << indent << "\"domain\": {" << endl;
+    *strm << child_indent1 << "\"type\" : \"Domain\"," << endl;
+    *strm << child_indent1 << "\"domainType\": \"" + domainType + "\"," << endl;
+
+    // Prints the axes metadata and range values
+    printAxes(strm, child_indent1);
+
+    // Prints the references for the given Axes
+    printReference(strm, child_indent1);
+
+    *strm << indent << "}," << endl;
+}
+
+void FoDapCovJsonTransform::printAxes(ostream *strm, string indent)
 {
     string child_indent1 = indent + _indent_increment;
     string child_indent2 = child_indent1 + _indent_increment;
@@ -1067,22 +884,10 @@ void FoDapCovJsonTransform::printAxesWorker(ostream *strm, string indent)
             *strm << child_indent1 << "}," << endl;
         }
     }
-    if(parameterCount == 1) {
-        *strm << indent << "}," << endl;
-    }
-    else {
-        *strm << indent << "}" << endl;
-    }
+    *strm << indent << "}," << endl;
 }
 
-
-/**
- * @brief Worker method prints the CoverageJSON file Axes reference to stream
- *
- * @param strm Write to this output stream
- * @param indent Indent the output so humans can make sense of it
- */
-void FoDapCovJsonTransform::printReferenceWorker(ostream *strm, string indent)
+void FoDapCovJsonTransform::printReference(ostream *strm, string indent)
 {
     string child_indent1 = indent + _indent_increment;
     string child_indent2 = child_indent1 + _indent_increment;
@@ -1108,22 +913,9 @@ void FoDapCovJsonTransform::printReferenceWorker(ostream *strm, string indent)
         coordVars += "\"z\"";
     }
 
-    // "referencing": [{
-    //   "coordinates": ["t"],
-    //   "system": {
-    //     "type": "TemporalRS",
-    //     "calendar": "Gregorian"
-    //   }
-    // },
-    // {
-    //   "coordinates": ["x", "y", "z"],
-    //   "system": {
-    //     "type": "GeographicCRS",
-    //     "id": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
-    //   }
-    // }]
-
     *strm << indent << "\"referencing\": [{" << endl;
+
+    // See https://covjson.org/spec/#temporal-reference-systems
     if(tExists) {
         *strm << child_indent1 << "\"coordinates\": [\"t\"]," << endl;
         *strm << child_indent1 << "\"system\": {" << endl;
@@ -1133,32 +925,34 @@ void FoDapCovJsonTransform::printReferenceWorker(ostream *strm, string indent)
         *strm << indent << "}," << endl;
         *strm << indent << "{" << endl;
     }
+
+    // See https://covjson.org/spec/#geospatial-coordinate-reference-systems
     *strm << child_indent1 << "\"coordinates\": [" << coordVars << "]," << endl;
     *strm << child_indent1 << "\"system\": {" << endl;
-    *strm << child_indent2 << "\"type\": \"GeographicCRS\"," << endl;
-    *strm << child_indent2 << "\"id\": \"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"" << endl;
-    *strm << child_indent1 << "}" << endl;
+    *strm << child_indent2 << "\"type\": \"" + coordRefType + "\"," << endl;
 
-    if(parameterCount > 1) {
-        *strm << indent << "}]," << endl;
+    // Most of the datasets I've seen do not contain a link to a coordinate
+    // reference system, so I've set some defaults here - CRH 1/2020
+    if(coordRefType.compare("ProjectedCRS") == 0) {
+        // Projected Coordinate Reference System (north/east): http://www.opengis.net/def/crs/EPSG/0/27700
+        *strm << child_indent2 << "\"id\": \"http://www.opengis.net/def/crs/EPSG/0/27700\"" << endl;
     }
     else {
-        *strm << indent << "}]" << endl;
+        if(xExists && yExists && zExists) {
+            // 3-Dimensional Geographic Coordinate Reference System (lat/lon/height): http://www.opengis.net/def/crs/EPSG/0/4979
+            *strm << child_indent2 << "\"id\": \"http://www.opengis.net/def/crs/EPSG/0/4979\"" << endl;
+        }
+        else {
+            // 2-Dimensional Geographic Coordinate Reference System (lat/lon): http://www.opengis.net/def/crs/OGC/1.3/CRS84
+            *strm << child_indent2 << "\"id\": \"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"" << endl;
+        }
     }
 
-    if(parameterCount == 1) {
-        *strm << _indent_increment << "}," << endl;
-    }
+    *strm << child_indent1 << "}" << endl;
+    *strm << indent << "}]" << endl;
 }
 
-
-/**
- * @brief Worker method prints the CoverageJSON file Parameters to stream
- *
- * @param strm Write to this output stream
- * @param indent Indent the output so humans can make sense of it
- */
-void FoDapCovJsonTransform::printParametersWorker(ostream *strm, string indent)
+void FoDapCovJsonTransform::printParameters(ostream *strm, string indent)
 {
     string child_indent1 = indent + _indent_increment;
     string child_indent2 = child_indent1 + _indent_increment;
@@ -1167,8 +961,6 @@ void FoDapCovJsonTransform::printParametersWorker(ostream *strm, string indent)
 
     BESDEBUG(FoDapCovJsonTransform_debug_key, "Printing PARAMETERS" << endl);
 
-    // @TODO NEEDS REFACTORING FOR BES ISSUE #244
-    // https://github.com/OPENDAP/bes/issues/244
     // Write down the parameter metadata
     *strm << indent << "\"parameters\": {" << endl;
     for(unsigned int i = 0; i < parameterCount; i++) {
@@ -1177,7 +969,7 @@ void FoDapCovJsonTransform::printParametersWorker(ostream *strm, string indent)
         *strm << child_indent2 << "\"description\": {" << endl;
 
         if(parameters[i]->longName.compare("") != 0) {
-            *strm << child_indent3 << "\"en\": \"" << parameters[i]->longName << "\"," << endl;
+            *strm << child_indent3 << "\"en\": \"" << parameters[i]->longName << "\"" << endl;
         }
         else if(parameters[i]->standardName.compare("") != 0) {
             *strm << child_indent3 << "\"en\": \"" << parameters[i]->standardName << "\"" << endl;
@@ -1190,11 +982,11 @@ void FoDapCovJsonTransform::printParametersWorker(ostream *strm, string indent)
         *strm << child_indent2 << "\"unit\": {" << endl;
         *strm << child_indent3 << "\"label\": {" << endl;
         *strm << child_indent4 << "\"en\": \"" << parameters[i]->unit << "\"" << endl;
+        *strm << child_indent3 << "}," << endl;
+        *strm << child_indent3 << "\"symbol\": {" << endl;
+        *strm << child_indent4 << "\"value\": \"" << parameters[i]->unit << "\"," << endl;
+        *strm << child_indent4 << "\"type\": \"http://www.opengis.net/def/uom/UCUM/\"" << endl;
         *strm << child_indent3 << "}" << endl;
-        *strm << child_indent2 << "}," << endl;
-        *strm << child_indent2 << "\"symbol\": {" << endl;
-        *strm << child_indent3 << "\"value\": \"" << parameters[i]->unit << "\"," << endl;
-        *strm << child_indent3 << "\"type\": \"http://www.opengis.net/def/uom/UCUM/\"" << endl;
         *strm << child_indent2 << "}," << endl;
         *strm << child_indent2 << "\"observedProperty\": {" << endl;
 
@@ -1203,7 +995,7 @@ void FoDapCovJsonTransform::printParametersWorker(ostream *strm, string indent)
         // mapped to a URI like this: http://vocab.nerc.ac.uk/standard_name/<standard_name>.
         // If the standard_name is not present, omit the id.
         if(parameters[i]->standardName.compare("") != 0) {
-            *strm << child_indent3 << "\"id\": \"http://vocab.nerc.ac.uk/standard_name/" << parameters[i]->standardName << "/\"" << endl;
+            *strm << child_indent3 << "\"id\": \"http://vocab.nerc.ac.uk/standard_name/" << parameters[i]->standardName << "/\"," << endl;
         }
 
         // Per Jon Blower:
@@ -1233,22 +1025,11 @@ void FoDapCovJsonTransform::printParametersWorker(ostream *strm, string indent)
             *strm << child_indent1 << "}," << endl;
         }
     }
-    if(parameterCount > 1) {
-        *strm << indent << "}," << endl;
-    }
+
+    *strm << indent << "}," << endl;
 }
 
-
-/**
- * @brief Worker method prints the CoverageJSON file Parameter's ranges to stream
- *
- * @note CoverageJSON specification for N-dimensional Array Objects (NdArray)
- *    https://covjson.org/spec/#ndarray-objects
- *
- * @param strm Write to this output stream
- * @param indent Indent the output so humans can make sense of it
- */
-void FoDapCovJsonTransform::printRangesWorker(ostream *strm, string indent)
+void FoDapCovJsonTransform::printRanges(ostream *strm, string indent)
 {
     string child_indent1 = indent + _indent_increment;
     string child_indent2 = child_indent1 + _indent_increment;
@@ -1283,7 +1064,6 @@ void FoDapCovJsonTransform::printRangesWorker(ostream *strm, string indent)
     }
 
     // Axis name (x, y, or z)
-    *strm << indent << "}," << endl;
     *strm << indent << "\"ranges\": {" << endl;
     for(unsigned int i = 0; i < parameterCount; i++) {
         string dataType;
@@ -1318,131 +1098,10 @@ void FoDapCovJsonTransform::printRangesWorker(ostream *strm, string indent)
             *strm << child_indent1 << "}," << endl;
         }
     }
-    if(parameterCount == 1) {
-        *strm << indent << "}" << endl;
-    }
-}
-
-
-/**
- * @brief Worker method prints the CoverageJSON file footer to stream
- *
- * @param strm Write to this output stream
- * @param indent Indent the output so humans can make sense of it
- */
-void FoDapCovJsonTransform::printCoverageFooterWorker(ostream *strm, string indent)
-{
-    string child_indent1 = indent + _indent_increment;
-    string child_indent2 = child_indent1 + _indent_increment;
-
-    BESDEBUG(FoDapCovJsonTransform_debug_key, "Printing COVERAGE FOOTER" << endl);
-
-    if(parameterCount > 1) {
-        *strm << child_indent2 << "}" << endl;
-        *strm << child_indent1 << "}]" << endl;
-    }
 
     *strm << indent << "}" << endl;
 }
 
-
-/**
- * @brief Prints the CoverageJSON file to stream via the print Coverage
- *    worker functions
- *
- * @param strm Write to this output stream
- * @param indent Indent the output so humans can make sense of it
- * @param testOverride true: print to stream regardless of whether the file can
- *    be converted to CoverageJSON (for testing purposes) false: run canConvert
- *    function to determine if the source DDS can be converted to CovJSON
- */
-void FoDapCovJsonTransform::printCoverageJSON(ostream *strm, string indent, bool testOverride)
-{
-    string child_indent1 = indent + _indent_increment;
-    string child_indent2 = child_indent1 + _indent_increment;
-    string child_indent3 = child_indent2 + _indent_increment;
-
-    // Determine if the attribute values we read can be converted to CovJSON.
-    // Test override forces printing output to stream regardless of whether
-    // or not the file can be converted into CoverageJSON format.
-    if(testOverride) {
-        canConvertToCovJson = true;
-    }
-    else {
-        canConvertToCovJson = canConvert();
-    }
-
-    // Only print if this file can be converted to CovJSON
-    if(canConvertToCovJson) {
-        // If we have more than one parameter, we are dealing with a
-        // Coverage Collection, so we must print accordingly
-        // if(parameterCount > 1) {
-        //     // Prints header and domain type
-        //     printCoverageHeaderWorker(strm, indent, true);
-        //
-        //     // Prints parameter metadata
-        //     printParametersWorker(strm, child_indent1);
-        //
-        //     // Prints the references for the given Axes
-        //     printReferenceWorker(strm, child_indent1);
-        //
-        //     // Prints header and domain type
-        //     printCoverageHeaderWorker(strm, child_indent1, false);
-        //
-        //     // Prints the axes metadata and range values
-        //     printAxesWorker(strm, child_indent3);
-        //
-        //     // Prints the parameter range values
-        //     printRangesWorker(strm, child_indent2);
-        //
-        //     // Prints footer
-        //     printCoverageFooterWorker(strm, indent);
-        // }
-        // // If we have a single parameter, or even no parameters,
-        // // we will print as a "normal" coverage
-        // else {
-
-        // Prints header and domain type
-        printCoverageHeaderWorker(strm, indent, false);
-
-        // Prints the axes metadata and range values
-        printAxesWorker(strm, child_indent2);
-
-        // Prints the references for the given Axes
-        printReferenceWorker(strm, child_indent2);
-
-        // Prints parameter metadata
-        printParametersWorker(strm, child_indent2);
-
-        // Prints the parameter range values
-        printRangesWorker(strm, child_indent1);
-
-        // Prints footer
-        printCoverageFooterWorker(strm, indent);
-        // }
-    }
-    else {
-        // If this file can't be converted, then its failing spatial/temporal requirements
-        throw BESInternalError("File cannot be converted to COVJSON format due to missing or incompatible spatial dimensions", __FILE__, __LINE__);
-    }
-}
-
-
-/**
- * @brief Writes a CovJSON representation of the DDS to the passed stream. Data
- *   is sent if the sendData flag is true. Otherwise, only metadata is sent.
- *
- * @note w10 sees the world in terms of leaves and nodes. Leaves have data, nodes
- *   have other nodes and leaves.
- *
- * @param strm Write to this output stream
- * @param dds Pointer to a DDS vector, which contains both w10n leaves and nodes
- * @param indent Indent the output so humans can make sense of it
- * @param sendData true: send data; false: send metadata
- * @param testOverride true: print to stream regardless of whether the file can
- *    be converted to CoverageJSON (for testing purposes) false: run canConvert
- *    function to determine if the source DDS can be converted to CovJSON
- */
 void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string indent, bool sendData, bool testOverride)
 {
     // Sort the variables into two sets
@@ -1475,19 +1134,6 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
     printCoverageJSON(strm, indent, testOverride);
 }
 
-
-/**
- * @brief  Write the CovJSON representation of the passed BaseType instance. If the
- *   parameter sendData is true then include the data. Otherwise, only metadata is
- *   sent.
- *
- * @note Structure, Grid, and Sequence cases are not implemented at this time.
- *
- * @param strm Write to this output stream
- * @param bt Pointer to a BaseType vector containing values and/or attributes
- * @param indent Indent the output so humans can make sense of it
- * @param sendData true: send data; false: send metadata
- */
 void FoDapCovJsonTransform::transform(ostream *strm, libdap::BaseType *bt, string indent, bool sendData)
 {
     switch(bt->type()) {
@@ -1539,21 +1185,6 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::BaseType *bt, strin
     }
 }
 
-
-/**
- * @brief  Write the CovJSON representation of the passed BaseType instance,
- *   which had better be one of the atomic DAP types. If the parameter sendData
- *   is true then include the data.
- *
- * @note writeLeafMetadata() no longer exists, thus it is commented out. It
- *   should be replaced with a different metadata writing function.
- *
- * @note @TODO need to handle these types appropriately - make proper printing
- *
- * @param b Pointer to a BaseType vector containing atomic type variables
- * @param indent Indent the output so humans can make sense of it
- * @param sendData true: send data; false: send metadata
- */
 void FoDapCovJsonTransform::transformAtomic(libdap::BaseType *b, string indent, bool sendData)
 {
     string childindent = indent + _indent_increment;
@@ -1588,17 +1219,6 @@ void FoDapCovJsonTransform::transformAtomic(libdap::BaseType *b, string indent, 
     axisCount++;
 }
 
-
-/**
- * @brief  Write the CovJSON representation of the passed DAP Array instance,
- *   which had better be one of the atomic DAP types. If the parameter sendData
- *   is true then include the data.
- *
- * @param strm Write to this output stream
- * @param a Pointer to an Array containing atomic type variables
- * @param indent Indent the output so humans can make sense of it
- * @param sendData true: send data; false: send metadata
- */
 void FoDapCovJsonTransform::transform(ostream *strm, libdap::Array *a, string indent, bool sendData)
 {
     BESDEBUG(FoDapCovJsonTransform_debug_key,

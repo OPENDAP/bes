@@ -92,6 +92,8 @@ private:
 
     FONcDim * find_dim(std::vector<std::string> &embed, const std::string &name, int size, bool ignore_size = false);
 
+    void write_for_nc4_types(int ncid);
+
 public:
     FONcArray(libdap::BaseType *b);
     virtual ~FONcArray();

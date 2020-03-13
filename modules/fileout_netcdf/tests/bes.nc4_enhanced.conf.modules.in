@@ -1,0 +1,116 @@
+
+BES.ServerAdministrator=admin.email.address@your.domain.name
+
+BES.User=user_name
+BES.Group=group_name
+
+BES.LogName=./bes.log
+BES.LogVerbose=no
+
+BES.modules=dap,cmd,dr,fonc,h4,nc,h5
+BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
+BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
+BES.module.dr=@abs_top_builddir@/dapreader/.libs/libdapreader_module.so
+
+BES.module.fonc=@abs_top_builddir@/modules/fileout_netcdf/.libs/libfonc_module.so
+
+BES.module.nc=@abs_top_builddir@/modules/netcdf_handler/.libs/libnc_module.so
+BES.module.h4=@abs_top_builddir@/modules/hdf4_handler/.libs/libhdf4_module.so
+BES.module.h5=@abs_top_builddir@/modules/hdf5_handler/.libs/libhdf5_module.so
+
+BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/fileout_netcdf
+BES.Data.RootDirectory=/dev/null
+
+BES.Catalog.catalog.TypeMatch=dr:.*\.dods$;
+BES.Catalog.catalog.TypeMatch+=nc:.*\.nc(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.catalog.TypeMatch+=h4:.*\.(hdf|HDF)(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.catalog.TypeMatch+=h5:.*\.h5(\.bz2|\.gz|\.Z)?$;
+
+BES.Catalog.catalog.Include=;
+BES.Catalog.catalog.Exclude=^\..*;
+
+BES.FollowSymLinks=No
+BES.Catalog.catalog.FollowSymLinks=No
+
+BES.ServerPort=10002
+
+BES.ServerSecure=no
+
+BES.Info.Buffered=no
+BES.Info.Type=xml
+
+BES.UncompressCache.dir=/tmp
+BES.UncompressCache.prefix=uncompress_cache
+BES.UncompressCache.size=500
+
+BES.Container.Persistence=strict
+
+BES.Memory.GlobalArea.EmergencyPoolSize=1
+BES.Memory.GlobalArea.MaximumHeapSize=20
+BES.Memory.GlobalArea.Verbose=no
+BES.Memory.GlobalArea.ControlHeap=no
+
+BES.ProcessManagerMethod=multiple
+
+BES.DefaultResponseMethod=POST
+
+#-----------------------------------------------------------------------#
+#                                                                       #
+# Data Handler Specific key/value parameters                            #
+#                                                                       #
+#-----------------------------------------------------------------------#
+
+FONc.Tempdir=@abs_top_builddir@/modules/fileout_netcdf/tests/
+
+# The default values for these keys
+FONc.UseCompression=true
+FONc.ChunkSize=4096
+FONc.ClassicModel=false
+
+# For HDF5
+# Note enabling the CF option changes the behavior of testFillValue test.
+# One can make H5.EnableCF=false to emulate the testFillValue test in bes.conf.
+
+H5.EnableCF=true
+H5.KeepVarLeadingUnderscore=false
+H5.EnableCheckNameClashing=true
+H5.EnableAddPathAttrs=true
+H5.EnableDropLongString=true
+H5.DisableStructMetaAttr=true
+H5.EnableFillValueCheck=true
+H5.CheckIgnoreObj=false
+H5.ForceFlattenNDCoorAttr=true
+H5.RmConventionAttrPath=true
+
+H5.MetaDataMemCacheEntries=300
+H5.LargeDataMemCacheEntries=0
+H5.SmallDataMemCacheEntries=0
+#H5.CachePurgeLevel=0.2
+
+H5.EnableDiskMetaDataCache=false
+H5.EnableDiskDDSCache=false
+H5.DiskMetaDataCachePath=/tmp
+
+H5.EnableEOSGeoCacheFile=false
+H5.Cache.latlon.path=/tmp/latlon
+H5.Cache.latlon.prefix=l
+H5.Cache.latlon.size=20000
+
+H5.EnableDiskDataCache=false
+H5.DiskCacheDataPath=/tmp
+H5.DiskCacheFilePrefix=c
+H5.DiskCacheSize=10000
+H5.DiskCacheComp=true
+H5.DiskCacheFloatOnlyComp=true
+H5.DiskCacheCompThreshold=2.0
+H5.DiskCacheCompVarSize=10000
+
+
+# For HDF4
+
+# Note that changing H4.EnableCF will change the output of the HDF4 tests.
+# If CF is enabled, the HDF4 handler will turn Sequecnes into arrays.
+
+# H4.EnableCF=true
+# H4.DisableStructMetaAttr=true
+# H4.EnableVdata_to_Attr=true

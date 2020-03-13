@@ -103,3 +103,31 @@ valgrind besstandalone -c tests/bes.conf -i tests/bescmd/gridNwm.bescmd >test.nc
 
 #dnl Test added for the fix for HK-23.
 valgrind besstandalone -c tests/bes.conf -i tests/bescmd/testFillValue.bescmd >test.nc
+
+#dnl NC4 test
+valgrind besstandalone -c tests/bes.conf -i tests/bescmd/simpleT00.8.bescmd >test.nc
+valgrind besstandalone -c tests/bes.conf -i tests/bescmd/simpleT00.9.bescmd >test.nc
+valgrind besstandalone -c tests/bes.conf -i tests/bescmd/simpleT00.10.bescmd >test.nc
+valgrind besstandalone -c tests/bes.conf -i tests/bescmd/arrayT.4.bescmd >test.nc
+valgrind besstandalone -c tests/bes.conf -i tests/bescmd/arrayT01.4.bescmd >test.nc
+valgrind besstandalone -c tests/bes.conf -i tests/bescmd/cedar.4.bescmd >test.nc
+valgrind besstandalone -c tests/bes.conf -i tests/bescmd/fits.4.bescmd >test.nc
+valgrind besstandalone -c tests/bes.conf -i tests/bescmd/gridT.12.bescmd >test.nc
+valgrind besstandalone -c tests/bes.conf -i tests/bescmd/namesT.4.bescmd >test.nc
+valgrind besstandalone -c tests/bes.conf -i tests/bescmd/structT00.4.bescmd >test.nc
+valgrind besstandalone -c tests/bes.conf -i tests/bescmd/structT01.4.bescmd >test.nc
+valgrind besstandalone -c tests/bes.conf -i tests/bescmd/structT02.4.bescmd >test.nc
+valgrind besstandalone -c tests/bes.conf -i tests/bescmd/t_string.3.bescmd >test.nc
+valgrind besstandalone -c tests/bes.conf -i tests/bescmd/hdf4.4.bescmd >test.nc
+valgrind besstandalone -c tests/bes.conf -i tests/bescmd/hdf4_constraint.4.bescmd >test.nc
+valgrind besstandalone -c tests/bes.conf -i tests/bescmd/testFillValue_nc4.bescmd >test.nc
+
+#dnl Add HDF5 CF response 
+valgrind besstandalone -c tests/bes.conf -i tests/bescmd/h5_numeric_types.0.bescmd 
+valgrind besstandalone -c tests/bes.conf -i tests/bescmd/h5_numeric_types.1.bescmd | getdap -M -
+valgrind besstandalone -c tests/bes.conf -i tests/bescmd/h5_numeric_types.2.bescmd >test.nc
+valgrind besstandalone -c tests/bes.conf -i tests/bescmd/grid_1_2d.h5.0.bescmd 
+valgrind besstandalone -c tests/bes.conf -i tests/bescmd/grid_1_2d.h5.1.bescmd | getdap -M -
+valgrind besstandalone -c tests/bes.conf -i tests/bescmd/grid_1_2d.h5.2.bescmd >test.nc
+
+rm -rf test.nc

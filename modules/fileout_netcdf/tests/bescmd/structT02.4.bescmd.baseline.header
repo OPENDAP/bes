@@ -1,0 +1,16 @@
+netcdf test {
+dimensions:
+	s1.s2.str_len = 23 ;
+variables:
+	ubyte s1.byte ;
+	ushort s1.ui16 ;
+	double s1.f64 ;
+	short s1.s2.i16 ;
+	uint s1.s2.ui32 ;
+	char s1.s2.str(s1.s2.str_len) ;
+	int s1.s2.s3.i32 ;
+	float s1.s2.s3.f32 ;
+
+// global attributes:
+		:history = "removed date-time Hyrax structT02.dods?" ;
+}
