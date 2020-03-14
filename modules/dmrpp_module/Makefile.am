@@ -89,7 +89,6 @@ ngap_build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS)
 ngap_build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) bes_default_conf.h ngap_build_dmrpp.cc 
 
 ngap_build_dmrpp_LDADD =  \
-    $(HDF5_MODULE_OBJS) \
     $(abs_top_builddir)/cmdln/CmdTranslation.o \
     $(abs_top_builddir)/xmlcommand/libbes_xml_command.la \
     $(BES_STANDALONE_LIB)  $(BES_DISPATCH_LIB) \
@@ -97,6 +96,8 @@ ngap_build_dmrpp_LDADD =  \
     $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) \
     $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) \
     $(XML2_LIBS) $(READLINE_LIBS) -lz
+#    $(HDF5_MODULE_OBJS) 
+
 
 EXTRA_PROGRAMS = 
 
