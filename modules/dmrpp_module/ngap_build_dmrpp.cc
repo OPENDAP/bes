@@ -999,7 +999,7 @@ static const std::string usage =
         "  -o: The name of the file to which to write the output, (default: stdout).\n"
         "  -u: The binary object URL Url (http(s):// or file://) where the input \n"
         "      hdf5_data_ file can be located. (This is injected into dmr++ file).\n"
-        "  -r: Output the DMR, don't build DMR++\n"
+        // "  -r: Output only the DMR, don't build DMR++\n"
         "  -t: Data root directory for the BES. (Defaults to the CWD)\n"
         "  -X: Run the alternate DMR produce using hdf5_handler components.\n"
 
@@ -1027,10 +1027,10 @@ int main(int argc, char*argv[]) {
     int status = 0;
     string input_data_file = "";
     string output_data_file = "";
-    string run_alternate = "";
+    bool run_alternate = false;
     string dmr_filename = "";
 
-    GetOpt getopt(argc, argv, "d:t:c:f:u:o:bhvVrX");
+    GetOpt getopt(argc, argv, "d:t:c:f:u:o:bhvVX");
     int option_char;
     while ((option_char = getopt()) != -1) {
         switch (option_char) {
@@ -1059,14 +1059,14 @@ int main(int argc, char*argv[]) {
             case 'c':
                 bes_conf_file = getopt.optarg;
                 break;
-            case 'r':
-                just_dmr = true;
-                break;
+            //case 'r':
+            //    just_dmr = true;
+            //    break;
             case 't':
                 data_root = getopt.optarg;
                 break;
             case 'X':
-                run_alternate = getopt.optarg;
+                run_alternate = true;
                 break;
             case 'h':
                 cerr << usage << endl;
@@ -1088,7 +1088,7 @@ int main(int argc, char*argv[]) {
     if (verbose) { cerr << "              bes_conf_filename: " << bes_conf_filename << endl; }
 
 
-    if (run_alternate.empty()) {
+    if (!run_alternate) {
 
         if(dmr_filename.empty()){
             string bes_cmd_filename = mktemp_get_dmr_bes_cmd(input_data_file, pid);
@@ -1098,8 +1098,9 @@ int main(int argc, char*argv[]) {
             dmrfn << "/tmp/nbd_" << pid << ".dmr";
             dmr_filename = dmrfn.str();
             if (verbose) { cerr << "                   dmr_filename: " << dmr_filename << endl; }
-
             build_dmr_with_StandAloneApp(bes_conf_filename, bes_cmd_filename, dmr_filename);
+            if(just_dmr)
+                return 0;
         }
 
         status = generate_dmrpp(input_data_file, dmr_filename, url_name, output_data_file);
@@ -1114,7 +1115,6 @@ int main(int argc, char*argv[]) {
         DMR *h5_dmr = build_hdf5_dmr(bes_conf_filename, input_data_file, url_name);
         if(!h5_dmr)
             return 1;
-
 
         // Write that dmr as an XML doc
         h5_dmr->print_dap4(xmlWriter);
