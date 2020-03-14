@@ -550,12 +550,7 @@ string mktemp_bes_conf(const string &bes_conf_filename, const string &data_root,
             BESDEBUG(MODULE, prolog << msg << endl);
             throw BESInternalError(msg,__FILE__,__LINE__);
         }
-        try {
-            ofs << BES_CONF_DOC ;
-        }
-        catch (...){
-            ofs.close();
-        }
+        ofs << BES_CONF_DOC ;
 
         if (very_verbose) {
             cerr << "bes_conf: " << endl << BES_CONF_DOC << endl;
@@ -614,12 +609,7 @@ string mktemp_get_dmr_bes_cmd(const string &input_data_file, const pid_t &pid) {
         BESDEBUG(MODULE, prolog << msg << endl);
         throw BESInternalError(msg,__FILE__,__LINE__);
     }
-    try {
-        ofs << get_dmr_bes_cmd ;
-    }
-    catch (...){
-        ofs.close();
-    }
+    ofs << get_dmr_bes_cmd ;
 
     if(very_verbose){
         cerr << "bes_cmd: " << endl << get_dmr_bes_cmd << endl;
