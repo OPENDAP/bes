@@ -773,7 +773,7 @@ DMR *build_hdf5_dmr(const string &bes_conf_filename, const string &input_data_fi
  * @param url_name The url that points to the file (http, https, file, etc)
  * @return Returns 0 on success non-zero otherwise.
  */
-int generate_dmrpp_from_file_dmr(const string &input_data_file, istream &dmr_istrm, const string &url_name, ostream  *dmrpp_ostrm){
+int generate_dmrpp_from_stream_dmr(const string &input_data_file, istream &dmr_istrm, const string &url_name, ostream  *dmrpp_ostrm){
 
 
     int status=0;
@@ -966,7 +966,7 @@ int generate_dmrpp(const string &input_data_file, const string &dmr_filename, co
     if(dmr_istream.is_open()){
         // If it's open we've got a valid filename.
         if(verbose){ cerr << "                 Using dmr file: " << dmr_filename << endl;}
-        status = generate_dmrpp_from_file_dmr(input_data_file, dmr_istream, url_name, dmrpp_ostrm);
+        status = generate_dmrpp_from_stream_dmr(input_data_file, dmr_istream, url_name, dmrpp_ostrm);
     }
     else {
         // Didn't open the file, try the mds.
@@ -1111,7 +1111,7 @@ int main(int argc, char*argv[]) {
         if(verbose){ cerr << debug_msg << endl;}
 
         // Pass that stream to generate_dmrpp.
-        status = generate_dmrpp_from_file_dmr(input_data_file, dmr_istrm, url_name, dmrpp_ostrm);
+        status = generate_dmrpp_from_stream_dmr(input_data_file, dmr_istrm, url_name, dmrpp_ostrm);
     }
     return status;
 }
