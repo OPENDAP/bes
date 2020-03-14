@@ -766,28 +766,15 @@ DMR *build_hdf5_dmr(const string &bes_conf_filename, const string &input_data_fi
 
 
 /**
- * @brief Generates a dmrpp file using an input stream
+ * @brief Generates a dmrpp file using an input stream DMR
  *
- * @param input_data_file The name of the data file to use
- * @param dmr_istrm The input stream containing the dmr file
- * @param url_name The path to the file
- * @return
+ * @param input_data_file The name of the hdf5/netcdf-4 file to ingest
+ * @param dmr_istrm The input stream containing the dmr of the same file
+ * @param url_name The url that points to the file (http, https, file, etc)
+ * @return Returns 0 on success non-zero otherwise.
  */
-int generate_dmrpp(const string &input_data_file, istream *dmr_istrm, const string &url_name, const string &output_filename){
-    if (input_data_file.empty()) {
-        cerr << "HDF5 file name must be given (-f <input>)." << endl;
-        return 1;
-    }
+int generate_dmrpp_from_file_dmr(const string &input_data_file, istream &dmr_istrm, const string &url_name, ostream  *dmrpp_ostrm){
 
-    // Default output goes to stdout.
-    std::ostream *output = &cout;
-    // If the output_filename is not valid, ithe stream will not open. Empty is not valid.
-    std::ofstream ofs(output_filename, std::ofstream::out);
-    if(ofs.is_open()){
-        // We'll be writing the output to the file.
-        output = &ofs;
-        if(verbose){ cerr << "         Writing output to file: " << output_filename << endl;}
-    }
 
     int status=0;
     hid_t file = 0;
@@ -798,104 +785,137 @@ int generate_dmrpp(const string &input_data_file, istream *dmr_istrm, const stri
 
         // For a given HDF5, get info for all the HDF5 datasets in a DMR or for a
         // given HDF5 dataset
-        if (dmr_istrm) {
-            // Get dmr:
-            unique_ptr<DMRpp> dmrpp(new DMRpp);
-            DmrppTypeFactory dtf;
-            dmrpp->set_factory(&dtf);
+        // Get dmr:
+        unique_ptr<DMRpp> dmrpp(new DMRpp);
+        DmrppTypeFactory dtf;
+        dmrpp->set_factory(&dtf);
 
-            D4ParserSax2 parser;
-            parser.intern(*dmr_istrm, dmrpp.get(), false);
+        D4ParserSax2 parser;
+        parser.intern(dmr_istrm, dmrpp.get(), false);
 
-            // Open the hdf5 file
-            file = H5Fopen(input_data_file.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
-            if (file < 0) {
-                cerr << "Error: HDF5 file '" + input_data_file + "' cannot be opened." << endl;
-                return 1;
-            }
-
-            // iterate over all the variables in the DMR
-            get_chunks_for_all_variables(file, dmrpp->root());
-
-            XMLWriter writer;
-            dmrpp->print_dmrpp(writer, url_name);
-
-            *output << writer.get_doc();
-
+        // Open the hdf5 file
+        file = H5Fopen(input_data_file.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+        if (file < 0) {
+            cerr << prolog  << "Error: HDF5 file '" + input_data_file + "' cannot be opened." << endl;
+            return 1;
         }
-        else {
-            bool found;
-            string bes_data_root;
-            try {
-                TheBESKeys::TheKeys()->get_value(ROOT_DIRECTORY, bes_data_root, found);
-                if (!found) {
-                    cerr << "Error: Could not find the BES root directory key." << endl;
-                    return 1;
-                }
-            }
-            catch (BESError &e) {
-                cerr << "BESError: " << e.get_message() << endl;
-                return 1;
-            }
 
-            // Use the values from the bes.conf file... jhrg 5/21/18
-            bes::DmrppMetadataStore *mds = bes::DmrppMetadataStore::get_instance();
-            if (!mds) {
-                cerr << "The Metadata Store (MDS) must be configured for this command to work." << endl;
-                return 1;
-            }
+        // iterate over all the variables in the DMR
+        get_chunks_for_all_variables(file, dmrpp->root());
 
-            // Use the full path to open the file, but use the 'name' (which is the
-            // path relative to the BES Data Root) with the MDS.
-            // Changed this to utilze assmeblePath() because simply concatenating the strings
-            // is fragile. - ndp 6/6/18
-            string h5_file_path = BESUtil::assemblePath(bes_data_root,input_data_file);
+        XMLWriter writer;
+        dmrpp->print_dmrpp(writer, url_name);
 
-            //bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(input_data_file /*h5_file_path*/);
-            bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_path, input_data_file, "h5");
-            if (lock()) {
-                // parse the DMR into a DMRpp (that uses the DmrppTypes)
-                unique_ptr<DMRpp> dmrpp(dynamic_cast<DMRpp*>(mds->get_dmr_object(input_data_file /*h5_file_path*/)));
-                if (!dmrpp.get()) {
-                    cerr << "Expected a DMR++ object from the DmrppMetadataStore." << endl;
-                    return 1;
-                }
-
-                // Open the hdf5 file
-                file = H5Fopen(h5_file_path.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
-                if (file < 0) {
-                    cerr << "Error: HDF5 file '" + h5_file_path + "' cannot be opened." << endl;
-                    return 1;
-                }
-
-                get_chunks_for_all_variables(file, dmrpp->root());
-
-                dmrpp->set_href(url_name);
-
-                mds->add_dmrpp_response(dmrpp.get(), input_data_file /*h5_file_path*/);
-
-                XMLWriter writer;
-                dmrpp->set_print_chunks(true);
-                dmrpp->print_dap4(writer);
-
-                *output << writer.get_doc();
-            }
-            else {
-                cerr << "Error: Could not get a lock on the DMR for '" + h5_file_path + "'." << endl;
-                return 1;
-            }
-        }
+        *dmrpp_ostrm << writer.get_doc();
     }
     catch (BESError &e) {
-            cerr << "BESError: " << e.get_message() << endl;
+            cerr << prolog  << "BESError: " << e.get_message() << endl;
         status = 1;
     }
     catch (std::exception &e) {
-        cerr << "std::exception: " << e.what() << endl;
+        cerr << prolog  << "std::exception: " << e.what() << endl;
         status = 1;
     }
     catch (...) {
-        cerr << "Unknown error." << endl;
+        cerr << prolog  << "Unknown error." << endl;
+        status = 1;
+    }
+
+    H5Fclose(file);
+
+    return status;
+
+}
+
+/**
+ * @brief Generates a dmrpp file using an input stream DMR
+ *
+ * @param input_data_file The name of the hdf5/netcdf-4 file to ingest
+ * @param dmr_istrm The input stream containing the dmr of the same file
+ * @param url_name The url that points to the file (http, https, file, etc)
+ * @return Returns 0 on success non-zero otherwise.
+ */
+int generate_dmrpp_from_mds_dmr(const string &input_data_file, const string &url_name, ostream  *dmrpp_ostrm){
+
+    int status=0;
+    hid_t file = 0;
+    try {
+        // Turn off automatic hdf5 error printing.
+        // See: https://support.hdfgroup.org/HDF5/doc1.8/RM/RM_H5E.html#Error-SetAuto2
+        //if (!verbose) H5Eset_auto2(H5E_DEFAULT, NULL, NULL);
+
+        bool found;
+        string bes_data_root;
+        try {
+            TheBESKeys::TheKeys()->get_value(ROOT_DIRECTORY, bes_data_root, found);
+            if (!found) {
+                cerr << prolog << "Error: Could not find the BES root directory key." << endl;
+                return 1;
+            }
+        }
+        catch (BESError &e) {
+            cerr << prolog  << "BESError: " << e.get_message() << endl;
+            return 1;
+        }
+
+        // Use the values from the bes.conf file... jhrg 5/21/18
+        bes::DmrppMetadataStore *mds = bes::DmrppMetadataStore::get_instance();
+        if (!mds) {
+            cerr << prolog  << "The Metadata Store (MDS) must be configured for this command to work." << endl;
+            return 1;
+        }
+
+        // Use the full path to open the file, but use the 'name' (which is the
+        // path relative to the BES Data Root) with the MDS.
+        // Changed this to utilze assmeblePath() because simply concatenating the strings
+        // is fragile. - ndp 6/6/18
+        string h5_file_path = BESUtil::assemblePath(bes_data_root,input_data_file);
+
+        //bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(input_data_file /*h5_file_path*/);
+        bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_path, input_data_file, "h5");
+        if (lock()) {
+            // parse the DMR into a DMRpp (that uses the DmrppTypes)
+            unique_ptr<DMRpp> dmrpp(dynamic_cast<DMRpp*>(mds->get_dmr_object(input_data_file /*h5_file_path*/)));
+            if (!dmrpp.get()) {
+                cerr << prolog  << "Expected a DMR++ object from the DmrppMetadataStore." << endl;
+                return 1;
+            }
+
+            // Open the hdf5 file
+            file = H5Fopen(h5_file_path.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+            if (file < 0) {
+                cerr << prolog  << "Error: HDF5 file '" + h5_file_path + "' cannot be opened." << endl;
+                return 1;
+            }
+
+            get_chunks_for_all_variables(file, dmrpp->root());
+
+            dmrpp->set_href(url_name);
+
+            mds->add_dmrpp_response(dmrpp.get(), input_data_file /*h5_file_path*/);
+
+            XMLWriter writer;
+            dmrpp->set_print_chunks(true);
+            dmrpp->print_dap4(writer);
+
+            *dmrpp_ostrm << writer.get_doc();
+        }
+        else {
+            cerr  << prolog << "Error: Could not get a lock on the DMR for '" + h5_file_path + "'." << endl;
+            return 1;
+        }
+
+    }
+    catch (BESError &e) {
+        cerr << prolog  << "BESError: " << e.get_message() << endl;
+        status = 1;
+    }
+    catch (std::exception &e) {
+        cerr << prolog  << "std::exception: " << e.what() << endl;
+        status = 1;
+    }
+    catch (...) {
+        cerr << prolog  << "Unknown error." << endl;
         status = 1;
     }
 
@@ -917,24 +937,43 @@ int generate_dmrpp(const string &input_data_file, istream *dmr_istrm, const stri
  */
 int generate_dmrpp(const string &input_data_file, const string &dmr_filename, const string &url_name, const string &output_filename) {
 
-    ifstream *dmr_istrm=0;
-    int status;
-
-    if (!dmr_filename.empty()) {
-        dmr_istrm = new ifstream (dmr_filename.c_str());
+    int status = 0;
+    if (input_data_file.empty()) {
+        // TODO make this call usage() (which needs to be written)
+        cerr << "generate_dmrpp() - ERROR. HDF5 file name must be provided (-f <input>)." << endl;
+        return 1;
     }
 
-    try {
-        status = generate_dmrpp(input_data_file, dmr_istrm, url_name, output_filename);
+    //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+    // Set up output stream, default output goes to stdout.
+    std::ostream *dmrpp_ostrm = &cout;
+    string debug_msg="              Writing output to: stdout";
+    // If the output_filename is not valid, if the stream will not open. Empty is not valid.
+    std::ofstream ofs(output_filename, std::ofstream::out);
+    if(ofs.is_open()){
+        // We'll be writing the output to the file.
+        dmrpp_ostrm = &ofs;
+        debug_msg = "           Writing output to:  " + output_filename;
     }
-    catch(...){
-        if(dmr_istrm)
-            delete dmr_istrm;
-        throw;
-    }
-    if(dmr_istrm)
-        delete dmr_istrm;
+    if(verbose){ cerr << debug_msg << endl;}
 
+    //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+    // Set up dmr input stream.
+    // If no valid dmr input file is provided the code tries to find a dmr in the mds.
+    std::ifstream dmr_istream(dmr_filename, std::ofstream::out);
+
+    // If the dmr_filename is not valid, the stream will not open. Empty is not valid.
+    if(dmr_istream.is_open()){
+        // If it's open we've got a valid filename.
+        if(verbose){ cerr << "                 Using dmr file: " << dmr_filename << endl;}
+        status = generate_dmrpp_from_file_dmr(input_data_file, dmr_istream, url_name, dmrpp_ostrm);
+    }
+    else {
+        // Didn't open the file, try the mds.
+        if(verbose){ cerr << "           No DMR file provided. Checking MDS for dmr++: " << output_filename << endl;}
+        status =  generate_dmrpp_from_mds_dmr(input_data_file, url_name, dmrpp_ostrm);
+
+    }
     return status;
 }
 
@@ -1058,8 +1097,21 @@ int main(int argc, char*argv[]) {
         istringstream dmr_istrm(xmlWriter.get_doc());
         if (very_verbose) { cerr << endl << xmlWriter.get_doc() << endl; }
 
+        //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+        // Set up output stream, default output goes to stdout.
+        std::ostream *dmrpp_ostrm = &cout;
+        string debug_msg="              Writing output to: stdout";
+        // If the output_filename is not valid, if the stream will not open. Empty is not valid.
+        std::ofstream ofs(output_data_file, std::ofstream::out);
+        if(ofs.is_open()){
+            // We'll be writing the output to the file.
+            dmrpp_ostrm = &ofs;
+            debug_msg = "           Writing output to:  " + output_data_file;
+        }
+        if(verbose){ cerr << debug_msg << endl;}
+
         // Pass that stream to generate_dmrpp.
-        status = generate_dmrpp(input_data_file, &dmr_istrm, url_name, output_data_file);
+        status = generate_dmrpp_from_file_dmr(input_data_file, dmr_istrm, url_name, dmrpp_ostrm);
     }
     return status;
 }
