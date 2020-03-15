@@ -623,12 +623,12 @@ string mktemp_get_dmr_bes_cmd(const string &input_data_file, const pid_t &pid) {
 
 
 /**
- * @brief Builds a dmr using the besstandalone viva the StandAloneApp
+ * @brief Builds a dmr using the besstandalone via the StandAloneApp
  * Build DMR using besstandalone (aka StandAloneApp)
  *
  * @param bes_conf_filename The name of the bes configuration file to use
- * @param bes_cmd_filename The bes command to execute
- * @param output_filename The file to write the output to
+ * @param bes_cmd_filename The filename chat contains the bes command(s) to execute
+ * @param output_filename The output filename. If the string is empty, stdout will be used.
  */
 void build_dmr_with_StandAloneApp(
         const string &bes_conf_filename,
@@ -692,10 +692,11 @@ void build_dmr_with_StandAloneApp(
     }
     argv.push_back(nullptr);
 
-    for (unsigned i = 0; i < argv.size()-1; i++) {
-        cerr << "                        argv[" << i << "]: " << argv[i] << endl;
+    if(verbose) {
+        for (unsigned i = 0; i < argv.size()-1; i++) {
+            cerr << "                        argv[" << i << "]: " << argv[i] << endl;
+        }
     }
-
     cerr << "        Command line equivalent: " << "besstandalone ";
     for (unsigned i = 1; i < argv.size()-1; i++) { cerr << argv[i] << " "; }
     cerr << endl;
@@ -753,7 +754,7 @@ DMR *build_hdf5_dmr(const string &bes_conf_filename, const string &input_data_fi
    // delete response_object;
    // delete h5rh;
 #else
-    if(verbose){ cerr << "   hd5_handler is not supported: Skipping" << endl; }
+                 cerr << "     dmr++ prod via/hd5_handler: DISABLED. SKIPPING" << endl;
 #endif
 
     if(verbose){ cerr << "                            END: build_hdf5_dmr()" << endl; }
@@ -935,8 +936,7 @@ int generate_dmrpp(const string &input_data_file, const string &dmr_filename, co
 
     int status = 0;
     if (input_data_file.empty()) {
-        // TODO make this call usage() (which needs to be written)
-        cerr << "generate_dmrpp() - ERROR. HDF5 file name must be provided (-f <input>)." << endl;
+        cerr << endl << "ERROR. Input HDF5 file name must be provided . Run again with -h to see usage document.." << endl;
         return 1;
     }
 
@@ -974,6 +974,7 @@ int generate_dmrpp(const string &input_data_file, const string &dmr_filename, co
 }
 
 
+
 static const std::string usage =
         "\n"
         "Usage: ngap_build_dmrpp [options] <input_hdf5_file>\n"
@@ -986,10 +987,11 @@ static const std::string usage =
         "  -V: Very Verbose: print the DMR, the command and the configuration\n"
         "     file used to build the DMR\n"
         "  -b: Turn on bes debug with these switches,.\n"
+        "\n"
         "  -c: The path to the bes configuration file to use. Optional\n"
         "  -d: Use the DMR in this file, don't make one.\n"
-        "  -f: The input hdf5 data filename relative to data root. (See -t)\n"
-        "  -o: The name of the file to which to write the output, (default: stdout).\n"
+        "  -i: The input hdf5 data filename relative to data root. (See -t)\n"
+        "  -o: The output data file name. (default: stdout).\n"
         "  -u: The binary object URL Url (http(s):// or file://) where the input \n"
         "      hdf5_data_ file can be located. (This is injected into dmr++ file).\n"
         // "  -r: Output only the DMR, don't build DMR++\n"
@@ -1028,7 +1030,7 @@ int main(int argc, char*argv[]) {
     bool run_alternate = false;
     string dmr_filename = "";
 
-    GetOpt getopt(argc, argv, "d:t:c:f:u:o:bhvVX");
+    GetOpt getopt(argc, argv, "d:t:c:i:u:o:bhvVX");
     int option_char;
     while ((option_char = getopt()) != -1) {
         switch (option_char) {
@@ -1045,7 +1047,7 @@ int main(int argc, char*argv[]) {
             case 'd':
                 dmr_filename = getopt.optarg;
                 break;
-            case 'f':
+            case 'i':
                 input_data_file = getopt.optarg;
                 break;
             case 'o':
@@ -1075,7 +1077,8 @@ int main(int argc, char*argv[]) {
     }
 
     if (input_data_file.empty()) {
-        cerr << "Error - input_data_file must be given." << endl;
+        cerr << endl << "ERROR - An input HDF5 filename must be provided." << endl << endl;
+        cerr << usage << endl;
         exit(1);
     }
     if (verbose) cerr << "          Using input_data_file: " << input_data_file << endl;
