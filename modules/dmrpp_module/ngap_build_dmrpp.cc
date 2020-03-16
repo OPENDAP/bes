@@ -529,7 +529,7 @@ static void get_chunks_for_all_variables(hid_t file, D4Group *group)
 string mktemp_bes_conf(const string &bes_conf_filename, const string &data_root, const pid_t &pid){
     stringstream tmp_conf_filename;
 
-    // If the file name is valid then good enough.
+    // If the file name is valid then good enough. (empty string is not valid)
     std::ifstream istrm(bes_conf_filename);
     if (istrm.is_open()) {
         return bes_conf_filename;
@@ -538,8 +538,7 @@ string mktemp_bes_conf(const string &bes_conf_filename, const string &data_root,
         cerr << "WARNING: Failed to access the supplied bes configuration file: " << bes_conf_filename << endl;
         cerr << "WARNING: Continuing with default configuration file." << endl;
     }
-
-
+    
     // Otherwise use the default config and modify it for this invocation.
     string root_dir_key = "@hdf5_root_directory@";
     int index = 0;
