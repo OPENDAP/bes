@@ -530,8 +530,8 @@ string mktemp_bes_conf(const string &bes_conf_filename, const string &data_root,
     stringstream tmp_conf_filename;
 
     // If the file name is valid then good enough.
-    std::ifstream cr_istrm(bes_conf_filename);
-    if (cr_istrm.is_open()) {
+    std::ifstream istrm(bes_conf_filename);
+    if (istrm.is_open()) {
         return bes_conf_filename;
     }
     if(!bes_conf_filename.empty()){
@@ -1089,7 +1089,7 @@ int main(int argc, char*argv[]) {
 
     bes_conf_filename = mktemp_bes_conf(bes_conf_filename, data_root, pid);
     if (verbose) { cerr << "              bes_conf_filename: " << bes_conf_filename << endl; }
-    
+
     if (!run_alternate) {
 
         if(dmr_filename.empty()){
