@@ -189,6 +189,7 @@ dmrpp_url=
 bes_conf_file=
 run_inventory_tests=
 run_value_tests=
+output_file="${0}_result.dmrpp"
 
 while getopts "h?vVru:d:o:c:TIF" opt; do
     case "$opt" in
@@ -244,10 +245,6 @@ if test -n "$very_verbose"; then
 fi
 
 input_data_file="${1}"
-
-if test -z "${output_file}"; then
-    output_file="./get_dmrpp_result.dmrpp"
-fi
 
 if test -n "${verbose}"; then
     echo "    OUTPUT_FILE: ${output_file}"
