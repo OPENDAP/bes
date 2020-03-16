@@ -36,6 +36,7 @@
 
 #include "BESDebug.h"
 #include "BESUtil.h"
+#include "TheBESKeys.h"
 
 #include "NgapNames.h"
 #include "NgapCache.h"
@@ -122,13 +123,14 @@ namespace ngap {
         d_remoteResourceUrl.clear();
     }
 
-/**
- * This method will check the cache for the resource. If it's not there then it will lock the cache and retrieve
- * the remote resource content using HTTP GET.
- *
- * When this method returns the RemoteHttpResource object is fully initialized and the cache file name for the resource
- * is available along with an open file descriptor for the (now read-locked) cache file.
- */
+
+    /**
+     * This method will check the cache for the resource. If it's not there then it will lock the cache and retrieve
+     * the remote resource content using HTTP GET.
+     *
+     * When this method returns the RemoteHttpResource object is fully initialized and the cache file name for the resource
+     * is available along with an open file descriptor for the (now read-locked) cache file.
+     */
     void RemoteHttpResource::retrieveResource() {
         BESDEBUG(MODULE, prolog << "BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
 
@@ -202,6 +204,19 @@ namespace ngap {
                     unlink(d_resourceCacheFileName.c_str());
                     throw;
                 }
+
+                bool found;
+                string inject_data_url;
+                TheBESKeys::TheKeys()->get_value(NGAP_INJECT_DATA_URL_KEY,inject_data_url, found);
+                if(found && inject_data_url=="true") {
+                    unsigned int count = filter_retrieved_resource(DATA_ACCESS_URL_KEY,d_remoteResourceUrl);
+                    BESDEBUG(MODULE, prolog << "Replaced  " << count << " instance(s) of NGAP_DATA_ACCESS_URL template(" <<
+                                            DATA_ACCESS_URL_KEY << ") in cached RemoteResource" << endl);
+                }
+
+
+
+
 
                 // #########################################################################################################
                 // I think right here is where I would be able to cache the data type/response headers. While I have
@@ -406,89 +421,48 @@ namespace ngap {
 
 
     /**
-     * @brief Replaces all occurances of template_str with update_str in the retrieved resource.
+     * Filter the cache and replaces all occurances of template_str with update_str.
      *
-     * @param template_str The string to replace
-     * @param update_str The replacement string
-     * @return The number of occurances replaced.
+     * WARNING: Does not lock cache. This method assumes that the process has already
+     * acquired an exclusive lock on the cache file.
+     *
+     * @param template_str
+     * @param update_str
+     * @return
      */
-    unsigned int RemoteHttpResource::filter_retrieved_resource(std::string template_str, std::string update_str){
-
-        if(!d_initialized){
-            string msg = "ERROR. Call to RemoteHttpResource::filter_retrieved_resource() is invalid, "
-                         "the RemoteResource has not been retrieved!";
-            BESDEBUG(MODULE,prolog << msg << endl);
-            throw BESInternalError(msg,__FILE__,__LINE__);
-
-        }
-
-        // Get a pointer to the singleton cache instance for this process.
-        NgapCache *cache = NgapCache::get_instance();
-        if (!cache) {
-            ostringstream oss;
-            oss << prolog << "FAILED to get local cache."
-                               " Unable to proceed with request for " << this->d_remoteResourceUrl
-                << " The ngap_module MUST have a valid cache configuration to operate." << endl;
-            BESDEBUG(MODULE, oss.str());
-            throw BESInternalError(oss.str(), __FILE__, __LINE__);
-        }
-
+    unsigned int RemoteHttpResource::filter_retrieved_resource(const std::string &template_str, const std::string &update_str){
         unsigned int replace_count = 0;
 
-        try {
-            // Lock the cache file for writing (exclusive lock)
-            if (cache->get_exclusive_lock(d_resourceCacheFileName, d_fd)) {
-                BESDEBUG(MODULE,
-                         prolog << "Acquired exclusive lock on cache. cache_file_name: " << d_resourceCacheFileName
-                                << endl);
-
-                //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-                // Read the dmr++ file into a string object
-                std::ifstream cr_istrm(d_resourceCacheFileName);
-                if (!cr_istrm.is_open()) {
-                    string msg = "Could not open '" + d_resourceCacheFileName + "' to read cached response.";
-                    BESDEBUG(MODULE, prolog << msg << endl);
-                    throw BESInternalError(msg, __FILE__, __LINE__);
-                }
-                std::stringstream buffer;
-                buffer << cr_istrm.rdbuf();
-                string dmrpp(buffer.str());
-
-                //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-                // Replace all occurrences of the dmr++ href attr key.
-                int startIndex = 0;
-                string dmrpp_href_key(template_str);
-                while ((startIndex = dmrpp.find(dmrpp_href_key)) != -1) {
-                    dmrpp.erase(startIndex, dmrpp_href_key.length());
-                    dmrpp.insert(startIndex, update_str);
-                    replace_count++;
-                }
-
-                //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-                // Replace the contents of the cached dmr++ file with the modified string.
-                std::ofstream cr_ostrm(d_resourceCacheFileName);
-                if (!cr_ostrm.is_open()) {
-                    string msg = "Could not open '" + d_resourceCacheFileName + "' to write modified cached response.";
-                    BESDEBUG(MODULE, prolog << msg << endl);
-                    throw BESInternalError(msg, __FILE__, __LINE__);
-                }
-                cr_ostrm << dmrpp;
-            }
-            else {
-                // No lock? So sad...
-                string msg = "ERROR. Failed to acquire exclusive lock for '" + d_resourceCacheFileName + "' to read cached response.";
-                BESDEBUG(MODULE, prolog << msg << endl);
-                throw BESInternalError(msg, __FILE__, __LINE__);
-            }
-
+        //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+        // Read the dmr++ file into a string object
+        std::ifstream cr_istrm(d_resourceCacheFileName);
+        if (!cr_istrm.is_open()) {
+            string msg = "Could not open '" + d_resourceCacheFileName + "' to read cached response.";
+            BESDEBUG(MODULE, prolog << msg << endl);
+            throw BESInternalError(msg, __FILE__, __LINE__);
         }
-        catch (...) {
-            BESDEBUG(MODULE,
-                     "RemoteHttpResource::retrieveResource() - Caught exception, unlocking cache and re-throw."
-                             << endl);
-            cache->unlock_cache();
-            throw;
+        std::stringstream buffer;
+        buffer << cr_istrm.rdbuf();
+        string resource_content(buffer.str());
+
+        //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+        // Replace all occurrences of the dmr++ href attr key.
+        int startIndex = 0;
+        while ((startIndex = resource_content.find(template_str)) != -1) {
+            resource_content.erase(startIndex, template_str.length());
+            resource_content.insert(startIndex, update_str);
+            replace_count++;
         }
+
+        //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+        // Replace the contents of the cached dmr++ file with the modified string.
+        std::ofstream cr_ostrm(d_resourceCacheFileName);
+        if (!cr_ostrm.is_open()) {
+            string msg = "Could not open '" + d_resourceCacheFileName + "' to write modified cached response.";
+            BESDEBUG(MODULE, prolog << msg << endl);
+            throw BESInternalError(msg, __FILE__, __LINE__);
+        }
+        cr_ostrm << resource_content;
 
         return replace_count;
     }

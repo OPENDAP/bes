@@ -92,6 +92,18 @@ namespace ngap {
          */
         void ingest_http_headers_and_type();
 
+        /**
+         * Filter the cache and replaces all occurances of template_str with update_str.
+         *
+         * WARNING: Does not lock cache. This method assumes that the process has already
+         * acquired an exclusive lock on the cache file.
+         *
+         * @param template_str
+         * @param update_str
+         * @return
+         */
+        unsigned int filter_retrieved_resource(const std::string &template_str, const std::string &update_str);
+
     protected:
         RemoteHttpResource() :
                 d_fd(0), d_initialized(false), d_curl(0), d_resourceCacheFileName(""), d_request_headers(0), d_response_headers(
@@ -141,7 +153,6 @@ namespace ngap {
         }
 
 
-        unsigned int filter_retrieved_resource(std::string template_str, std::string update_str);
 
 
     };

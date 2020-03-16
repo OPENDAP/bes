@@ -46,7 +46,7 @@
 #define NGAP_PROXYUSERPW "NGAP.ProxyUserPW"
 #define NGAP_USE_INTERNAL_CACHE "NGAP.UseInternalCache"
 #define DATA_ACCESS_URL_KEY "OPeNDAP_DMRpp_DATA_ACCESS_URL"
-
+#define NGAP_INJECT_DATA_URL_KEY "NGAP.inject_data_urls"
 #define MODULE NGAP_NAME
 
 #endif // E_NgapNames_H
