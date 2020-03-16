@@ -63,12 +63,6 @@ namespace ngap {
         {
         }
 
-        void inject_data_access_url(
-                std::string cached_resource_filename,
-                std::string template_string,
-                std::string data_access_url
-        );
-
     protected:
         void _duplicate(NgapContainer &copy_to);
 

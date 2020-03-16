@@ -141,6 +141,9 @@ namespace ngap {
         }
 
 
+        unsigned int filter_retrieved_resource(std::string template_str, std::string update_str);
+
+
     };
 
 } /* namespace ngap */

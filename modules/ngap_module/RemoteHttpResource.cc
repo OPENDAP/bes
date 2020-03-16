@@ -404,6 +404,72 @@ namespace ngap {
         return value;
     }
 
+    unsigned int RemoteHttpResource::filter_retrieved_resource(std::string template_str, std::string update_str){
+        unsigned int replace_count = 0;
+
+
+        if(!d_initialized){
+            string msg = "ERROR. Call to RemoteHttpResource::filter_retrieved_resource() is invalid, "
+                         "the RemoteResource has not been retrieved!";
+            BESDEBUG(MODULE,prolog << msg << endl);
+            throw BESInternalError(msg,__FILE__,__LINE__);
+
+        }
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // James: I have the question:
+        //
+        // 1) In reality this is writing to a file under the control of a file locking cache should it be rewritten
+        //    to utilize file locking? It's hard to know because in this module (and others) the cache file name is.
+        //    passed directly into the bes dispatch machinery at the end of this method:
+        //
+        //    return cachedResource;
+        //
+        //    So maybe it's good, or maybe there's a bigger issue around access and locking?
+        //
+        //    In thinking about this more I think that:
+        //
+        //    TODO The following code that does the URL must be modified to utilize the NgapCache cache locking.
+        //    FIXME The following code that does the URL must be modified to utilize the NgapCache cache locking.
+        //
+        //
+
+        //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+        // Read the dmr++ file into a string object
+        std::ifstream cr_istrm(d_resourceCacheFileName);
+        if(!cr_istrm.is_open()){
+            string msg = "Could not open '" + d_resourceCacheFileName + "' to read cached response.";
+            BESDEBUG(MODULE, prolog << msg << endl);
+            throw BESInternalError(msg, __FILE__, __LINE__);
+        }
+        std::stringstream buffer;
+        buffer << cr_istrm.rdbuf();
+        string dmrpp(buffer.str());
+
+        //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+        // Replace all occurrences of the dmr++ href attr key.
+        int startIndex=0;
+        string dmrpp_href_key(template_str);
+        while ((startIndex = dmrpp.find(dmrpp_href_key)) != -1){
+            dmrpp.erase(startIndex, dmrpp_href_key.length());
+            dmrpp.insert(startIndex, update_str);
+            replace_count++;
+        }
+
+        //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+        // Replace the contents of the cached dmr++ file with the modified string.
+        std::ofstream cr_ostrm(d_resourceCacheFileName);
+        if(!cr_ostrm.is_open()){
+            string msg = "Could not open '" + d_resourceCacheFileName + "' to write modified cached response.";
+            BESDEBUG(MODULE, prolog << msg << endl);
+            throw BESInternalError(msg, __FILE__, __LINE__);
+        }
+        cr_ostrm << dmrpp;
+
+
+
+        return replace_count;
+    }
 
 }
 

@@ -121,13 +121,6 @@ namespace ngap {
 
 
 
-
-
-
-
-
-
-
     /** @brief access the remote target response by making the remote request
      *
      * @return full path to the remote request response data file
@@ -162,8 +155,9 @@ namespace ngap {
         set_container_type(type);
         BESDEBUG( MODULE, prolog << "Type: " << type << endl );
 
-        inject_data_access_url( d_dmrpp_rresource->getCacheFileName(), NGAP_DATA_ACCESS_URL, data_access_url);
-
+        unsigned int count = d_dmrpp_rresource->filter_retrieved_resource(NGAP_DATA_ACCESS_URL, data_access_url);
+        BESDEBUG( MODULE, prolog << "Replaced  " << count << " instance(s) of NGAP_DATA_ACCESS_URL template(" <<
+                   NGAP_DATA_ACCESS_URL  << ") in cached RemoteResource" << endl);
 
         BESDEBUG( MODULE, prolog << "Done accessing " << get_real_name() << " returning cached file " << cachedResource << endl);
         BESDEBUG( MODULE, prolog << "Done accessing " << *this << endl);
@@ -225,73 +219,6 @@ namespace ngap {
             strm << BESIndent::LMarg << "response not yet obtained" << endl;
         }
         BESIndent::UnIndent();
-    }
-
-
-
-    /**
-     *
-     * @param cached_resource_filename - The name of the file to modify.
-     * @param template_string  The template string tht will be globally replaced.
-     * @param data_access_url The string which will supplant the template string.
-     */
-    void NgapContainer::inject_data_access_url(
-            std::string cached_resource_filename,
-            std::string template_string,
-            std::string data_access_url
-            ){
-
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        // James: I have the question:
-        //
-        // 1) In reality this is writing to a file under the control of a file locking cache should it be rewritten
-        //    to utilize file locking? It's hard to know because in this module (and others) the cache file name is.
-        //    passed directly into the bes dispatch machinery at the end of this method:
-        //
-        //    return cachedResource;
-        //
-        //    So maybe it's good, or maybe there's a bigger issue around access and locking?
-        //
-        //    In thinking about this more I think that:
-        //
-        //    TODO The following code that does the URL must be modified to utilize the NgapCache cache locking.
-        //    FIXME The following code that does the URL must be modified to utilize the NgapCache cache locking.
-        //
-        //
-
-        //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-        // Read the dmr++ file into a string object
-        std::ifstream cr_istrm(cached_resource_filename);
-        if(!cr_istrm.is_open()){
-            string msg = "Could not open '" + cached_resource_filename + "' to read cached response.";
-            BESDEBUG(MODULE, prolog << msg << endl);
-            throw BESInternalError(msg, __FILE__, __LINE__);
-        }
-        std::stringstream buffer;
-        buffer << cr_istrm.rdbuf();
-        string dmrpp(buffer.str());
-
-        //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-        // Replace all occurrences of the dmr++ href attr key.
-        int startIndex=0;
-        string dmrpp_href_key(template_string);
-        while ((startIndex = dmrpp.find(dmrpp_href_key)) != -1){
-            dmrpp.erase(startIndex, dmrpp_href_key.length());
-            dmrpp.insert(startIndex, data_access_url);
-        }
-
-        //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-        // Replace the contents of the cached dmr++ file with the modified string.
-        std::ofstream cr_ostrm(cached_resource_filename);
-        if(!cr_ostrm.is_open()){
-            string msg = "Could not open '" + cached_resource_filename + "' to write modified cached response.";
-            BESDEBUG(MODULE, prolog << msg << endl);
-            throw BESInternalError(msg, __FILE__, __LINE__);
-        }
-        cr_ostrm << dmrpp;
-
-
     }
 
 }
