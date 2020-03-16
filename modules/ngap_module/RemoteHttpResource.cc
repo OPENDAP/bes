@@ -131,7 +131,7 @@ namespace ngap {
      * When this method returns the RemoteHttpResource object is fully initialized and the cache file name for the resource
      * is available along with an open file descriptor for the (now read-locked) cache file.
      */
-    void RemoteHttpResource::retrieveResource() {
+    void RemoteHttpResource::retrieveResource(string inject_url) {
         BESDEBUG(MODULE, prolog << "BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
 
         if (d_initialized) {
