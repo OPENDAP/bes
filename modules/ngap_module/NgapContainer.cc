@@ -68,7 +68,7 @@ namespace ngap {
      */
     NgapContainer::NgapContainer(const string &sym_name,
                                  const string &real_name, const string &type) :
-            BESContainer(sym_name, real_name, type), d_dmrpp_resource(0) {
+            BESContainer(sym_name, real_name, type), d_dmrpp_rresource(0) {
 
         NgapApi ngap_api;
         if (type.empty())
@@ -82,14 +82,14 @@ namespace ngap {
         set_relative_name(data_access_url);
     }
 
-/**
- * TODO: I think this implementation of the copy constructor is incomplete/inadequate. Review and fix as needed.
- */
+    /**
+     * TODO: I think this implementation of the copy constructor is incomplete/inadequate. Review and fix as needed.
+     */
     NgapContainer::NgapContainer(const NgapContainer &copy_from) :
-            BESContainer(copy_from), d_dmrpp_resource(copy_from.d_dmrpp_resource) {
+            BESContainer(copy_from), d_dmrpp_rresource(copy_from.d_dmrpp_rresource) {
         // we can not make a copy of this container once the request has
         // been made
-        if (d_dmrpp_resource) {
+        if (d_dmrpp_rresource) {
             string err = (string) "The Container has already been accessed, "
                          + "can not create a copy of this container.";
             throw BESInternalError(err, __FILE__, __LINE__);
@@ -97,12 +97,12 @@ namespace ngap {
     }
 
     void NgapContainer::_duplicate(NgapContainer &copy_to) {
-        if (copy_to.d_dmrpp_resource) {
+        if (copy_to.d_dmrpp_rresource) {
             string err = (string) "The Container has already been accessed, "
                          + "can not duplicate this resource.";
             throw BESInternalError(err, __FILE__, __LINE__);
         }
-        copy_to.d_dmrpp_resource = d_dmrpp_resource;
+        copy_to.d_dmrpp_rresource = d_dmrpp_rresource;
         BESContainer::_duplicate(copy_to);
     }
 
@@ -114,16 +114,25 @@ namespace ngap {
     }
 
     NgapContainer::~NgapContainer() {
-        if (d_dmrpp_resource) {
+        if (d_dmrpp_rresource) {
             release();
         }
     }
 
-/** @brief access the remote target response by making the remote request
- *
- * @return full path to the remote request response data file
- * @throws BESError if there is a problem making the remote request
- */
+
+
+
+
+
+
+
+
+
+    /** @brief access the remote target response by making the remote request
+     *
+     * @return full path to the remote request response data file
+     * @throws BESError if there is a problem making the remote request
+     */
     string NgapContainer::access() {
 
         BESDEBUG( MODULE, prolog << "BEGIN" << endl);
@@ -139,75 +148,22 @@ namespace ngap {
         if (type == "ngap")
             type = "";
 
-        if(!d_dmrpp_resource) {
+        if(!d_dmrpp_rresource) {
             BESDEBUG( MODULE, prolog << "Building new RemoteResource." << endl );
-            d_dmrpp_resource = new ngap::RemoteHttpResource(dmrpp_url);
-            d_dmrpp_resource->retrieveResource();
+            d_dmrpp_rresource = new ngap::RemoteHttpResource(dmrpp_url);
+            d_dmrpp_rresource->retrieveResource();
         }
         BESDEBUG( MODULE, prolog << "Located remote resource." << endl );
 
-        string cachedResource = d_dmrpp_resource->getCacheFileName();
+        string cachedResource = d_dmrpp_rresource->getCacheFileName();
         BESDEBUG( MODULE, prolog << "Using local cache file: " << cachedResource << endl );
 
-        type = d_dmrpp_resource->getType();
+        type = d_dmrpp_rresource->getType();
         set_container_type(type);
         BESDEBUG( MODULE, prolog << "Type: " << type << endl );
 
+        inject_data_access_url( d_dmrpp_rresource->getCacheFileName(), NGAP_DATA_ACCESS_URL, data_access_url);
 
-
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-        // James: I have the question:
-        //
-        // 1) In reality this is accessing a file under the control of a file locking cache do it should be rewritten
-        //    to utilize file locking? It's hard to know because in this module (and others) the cache file name is.\
-        //    passed directly into the bes dispatch machinery at the end of this method:
-        //
-        //    return cachedResource;
-        //
-        //    So maybe it's good, or maybe there's a bigger issue around access and locking?
-        //
-        //    In thinking about this more I think that:
-        //
-        //    TODO The following code that does the URL must be modified to utilize the NgapCache cache locking.
-        //    FIXME The following code that does the URL must be modified to utilize the NgapCache cache locking.
-        //
-        //
-
-        //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-        // Read the dmr++ file into a string object
-        std::ifstream cr_istrm(cachedResource);
-        if(!cr_istrm.is_open()){
-            string msg = "Could not open '" + cachedResource + "' to read cached response.";
-            BESDEBUG(MODULE, prolog << msg << endl);
-            throw BESInternalError(msg, __FILE__, __LINE__);
-        }
-        std::stringstream buffer;
-        buffer << cr_istrm.rdbuf();
-        string dmrpp(buffer.str());
-
-        //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-        // Replace all occurrences of the dmr++ href attr key.
-        int startIndex=0;
-        string dmrpp_href_key(NGAP_DATA_ACCESS_URL);
-        while ((startIndex = dmrpp.find(dmrpp_href_key)) != -1){
-            dmrpp.erase(startIndex, dmrpp_href_key.length());
-            dmrpp.insert(startIndex, data_access_url);
-        }
-
-        //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-        // Replace the contents of the cached dmr++ file with the modified string.
-        std::ofstream cr_ostrm(cachedResource);
-        if(!cr_ostrm.is_open()){
-            string msg = "Could not open '" + cachedResource + "' to write modified cached response.";
-            BESDEBUG(MODULE, prolog << msg << endl);
-            throw BESInternalError(msg, __FILE__, __LINE__);
-        }
-        cr_ostrm << dmrpp;
-
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
         BESDEBUG( MODULE, prolog << "Done accessing " << get_real_name() << " returning cached file " << cachedResource << endl);
         BESDEBUG( MODULE, prolog << "Done accessing " << *this << endl);
@@ -218,40 +174,40 @@ namespace ngap {
 
 
 
-/** @brief release the resources
- *
- * Release the resource
- *
- * @return true if the resource is released successfully and false otherwise
- */
+    /** @brief release the resources
+     *
+     * Release the resource
+     *
+     * @return true if the resource is released successfully and false otherwise
+     */
     bool NgapContainer::release() {
-        if (d_dmrpp_resource) {
+        if (d_dmrpp_rresource) {
             BESDEBUG( MODULE, prolog << "Releasing RemoteResource" << endl);
-            delete d_dmrpp_resource;
-            d_dmrpp_resource = 0;
+            delete d_dmrpp_rresource;
+            d_dmrpp_rresource = 0;
         }
 
         BESDEBUG( MODULE, prolog << "Done releasing Ngap response" << endl);
         return true;
     }
 
-/** @brief dumps information about this object
- *
- * Displays the pointer value of this instance along with information about
- * this container.
- *
- * @param strm C++ i/o stream to dump the information to
- */
+    /** @brief dumps information about this object
+     *
+     * Displays the pointer value of this instance along with information about
+     * this container.
+     *
+     * @param strm C++ i/o stream to dump the information to
+     */
     void NgapContainer::dump(ostream &strm) const {
         strm << BESIndent::LMarg << "NgapContainer::dump - (" << (void *) this
              << ")" << endl;
         BESIndent::Indent();
         BESContainer::dump(strm);
-        if (d_dmrpp_resource) {
-            strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_dmrpp_resource->getCacheFileName()
+        if (d_dmrpp_rresource) {
+            strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_dmrpp_rresource->getCacheFileName()
                  << endl;
             strm << BESIndent::LMarg << "response headers: ";
-            vector<string> *hdrs = d_dmrpp_resource->getResponseHeaders();
+            vector<string> *hdrs = d_dmrpp_rresource->getResponseHeaders();
             if (hdrs) {
                 strm << endl;
                 BESIndent::Indent();
@@ -269,6 +225,73 @@ namespace ngap {
             strm << BESIndent::LMarg << "response not yet obtained" << endl;
         }
         BESIndent::UnIndent();
+    }
+
+
+
+    /**
+     *
+     * @param cached_resource_filename - The name of the file to modify.
+     * @param template_string  The template string tht will be globally replaced.
+     * @param data_access_url The string which will supplant the template string.
+     */
+    void NgapContainer::inject_data_access_url(
+            std::string cached_resource_filename,
+            std::string template_string,
+            std::string data_access_url
+            ){
+
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // James: I have the question:
+        //
+        // 1) In reality this is writing to a file under the control of a file locking cache should it be rewritten
+        //    to utilize file locking? It's hard to know because in this module (and others) the cache file name is.
+        //    passed directly into the bes dispatch machinery at the end of this method:
+        //
+        //    return cachedResource;
+        //
+        //    So maybe it's good, or maybe there's a bigger issue around access and locking?
+        //
+        //    In thinking about this more I think that:
+        //
+        //    TODO The following code that does the URL must be modified to utilize the NgapCache cache locking.
+        //    FIXME The following code that does the URL must be modified to utilize the NgapCache cache locking.
+        //
+        //
+
+        //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+        // Read the dmr++ file into a string object
+        std::ifstream cr_istrm(cached_resource_filename);
+        if(!cr_istrm.is_open()){
+            string msg = "Could not open '" + cached_resource_filename + "' to read cached response.";
+            BESDEBUG(MODULE, prolog << msg << endl);
+            throw BESInternalError(msg, __FILE__, __LINE__);
+        }
+        std::stringstream buffer;
+        buffer << cr_istrm.rdbuf();
+        string dmrpp(buffer.str());
+
+        //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+        // Replace all occurrences of the dmr++ href attr key.
+        int startIndex=0;
+        string dmrpp_href_key(template_string);
+        while ((startIndex = dmrpp.find(dmrpp_href_key)) != -1){
+            dmrpp.erase(startIndex, dmrpp_href_key.length());
+            dmrpp.insert(startIndex, data_access_url);
+        }
+
+        //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+        // Replace the contents of the cached dmr++ file with the modified string.
+        std::ofstream cr_ostrm(cached_resource_filename);
+        if(!cr_ostrm.is_open()){
+            string msg = "Could not open '" + cached_resource_filename + "' to write modified cached response.";
+            BESDEBUG(MODULE, prolog << msg << endl);
+            throw BESInternalError(msg, __FILE__, __LINE__);
+        }
+        cr_ostrm << dmrpp;
+
+
     }
 
 }

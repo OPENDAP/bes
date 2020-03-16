@@ -53,15 +53,21 @@ namespace ngap {
     class NgapContainer: public BESContainer {
 
     private:
-        RemoteHttpResource *d_dmrpp_resource;
+        RemoteHttpResource *d_dmrpp_rresource;
 
         // std::vector<std::string> d_collections;
         // std::vector<std::string> d_facets;
 
         NgapContainer() :
-                BESContainer(), d_dmrpp_resource(0)
+                BESContainer(), d_dmrpp_rresource(0)
         {
         }
+
+        void inject_data_access_url(
+                std::string cached_resource_filename,
+                std::string template_string,
+                std::string data_access_url
+        );
 
     protected:
         void _duplicate(NgapContainer &copy_to);
@@ -71,7 +77,8 @@ namespace ngap {
 
         NgapContainer(const NgapContainer &copy_from);
 
-        void get_granule_path(const std::string &path) const ;
+        // void get_granule_path(const std::string &path) const ;
+
 
         virtual ~NgapContainer();
 
