@@ -529,37 +529,40 @@ static void get_chunks_for_all_variables(hid_t file, D4Group *group)
 string mktemp_bes_conf(const string &bes_conf_filename, const string &data_root, const pid_t &pid){
     stringstream tmp_conf_filename;
 
-    if (bes_conf_filename.empty()) {
-
-        ////////////
-        //sed command
-        string root_dir_key = "@hdf5_root_directory@";
-        int startIndex = 0;
-        if(very_verbose) cerr << "Before loop cur index: " << startIndex << endl;
-        while ((startIndex = BES_CONF_DOC.find(root_dir_key)) != -1){
-            if(very_verbose)  cerr << "While loop cur index: " << startIndex << endl;
-            BES_CONF_DOC.erase(startIndex, root_dir_key.length());
-            BES_CONF_DOC.insert(startIndex, data_root);
-        }
-        tmp_conf_filename << "/tmp/nbd_" << pid << "_bes.conf";
-
-        std::ofstream ofs(tmp_conf_filename.str(), std::ofstream::out);
-        if(!ofs.is_open()){
-            string msg = "Failed to open temporary file: " + tmp_conf_filename.str();
-            BESDEBUG(MODULE, prolog << msg << endl);
-            throw BESInternalError(msg,__FILE__,__LINE__);
-        }
-        ofs << BES_CONF_DOC ;
-
-        if (very_verbose) {
-            cerr << "bes_conf: " << endl << BES_CONF_DOC << endl;
-        }
-        return tmp_conf_filename.str();
-
-    }
-    else {
+    // If the file name is valid then good enough.
+    std::ifstream cr_istrm(bes_conf_filename);
+    if (cr_istrm.is_open()) {
         return bes_conf_filename;
     }
+    if(!bes_conf_filename.empty()){
+        cerr << "WARNING: Failed to access the supplied bes configuration file: " << bes_conf_filename << endl;
+        cerr << "WARNING: Continuing with default configuration file." << endl;
+    }
+
+
+    // Otherwise use the default config and modify it for this invocation.
+    string root_dir_key = "@hdf5_root_directory@";
+    int index = 0;
+    if(very_verbose) cerr << "start: current index: " << index << endl;
+    while ((index = BES_CONF_DOC.find(root_dir_key)) != -1){
+        if(very_verbose)  cerr << "current index: " << index << endl;
+        BES_CONF_DOC.erase(index, root_dir_key.length());
+        BES_CONF_DOC.insert(index, data_root);
+    }
+    tmp_conf_filename << "/tmp/nbd_" << pid << "_bes.conf";
+
+    std::ofstream ofs(tmp_conf_filename.str(), std::ofstream::out);
+    if(!ofs.is_open()){
+        string msg = "Failed to open temporary file: " + tmp_conf_filename.str();
+        BESDEBUG(MODULE, prolog << msg << endl);
+        throw BESInternalError(msg,__FILE__,__LINE__);
+    }
+    ofs << BES_CONF_DOC ;
+
+    if (very_verbose) {
+        cerr << "bes_conf: " << endl << BES_CONF_DOC << endl;
+    }
+    return tmp_conf_filename.str();
 }
 
 
@@ -691,7 +694,7 @@ void build_dmr_with_StandAloneApp(
     }
     argv.push_back(nullptr);
 
-    if(verbose) {
+    if(very_verbose) {
         for (unsigned i = 0; i < argv.size()-1; i++) {
             cerr << "                        argv[" << i << "]: " << argv[i] << endl;
         }
@@ -1021,7 +1024,7 @@ int main(int argc, char*argv[]) {
     string dmr_name = "";
     string url_name = "";
     string data_root = ".";
-    string bes_conf_file = "";
+    string bes_conf_filename = "";
     bool just_dmr = false;
     int status = 0;
     string input_data_file = "";
@@ -1056,7 +1059,7 @@ int main(int argc, char*argv[]) {
                 url_name = getopt.optarg;
                 break;
             case 'c':
-                bes_conf_file = getopt.optarg;
+                bes_conf_filename = getopt.optarg;
                 break;
             //case 'r':
             //    just_dmr = true;
@@ -1084,10 +1087,9 @@ int main(int argc, char*argv[]) {
 
     pid_t pid = getpid();
 
-    string bes_conf_filename = mktemp_bes_conf(bes_conf_file, data_root, pid);
+    bes_conf_filename = mktemp_bes_conf(bes_conf_filename, data_root, pid);
     if (verbose) { cerr << "              bes_conf_filename: " << bes_conf_filename << endl; }
-
-
+    
     if (!run_alternate) {
 
         if(dmr_filename.empty()){
@@ -1105,10 +1107,8 @@ int main(int argc, char*argv[]) {
 
         status = generate_dmrpp(input_data_file, dmr_filename, url_name, output_data_file);
     }
-    else {
-        /////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Build DMR using direct calls into the BES stack
-        //
+    else { // Build DMR using direct calls into the BES stack
+
         XMLWriter xmlWriter("  ");
 
         // Build a dmr by making calls to the hdf5_module code.
