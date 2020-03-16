@@ -74,6 +74,7 @@ BESLog::BESLog() :
 {
     d_suspended = 0;
     bool found = false;
+    stdout = false;
     try {
         TheBESKeys::TheKeys()->get_value("BES.LogName", d_file_name, found);
     }
@@ -109,7 +110,13 @@ BESLog::BESLog() :
         throw BESInternalFatalError(err, __FILE__, __LINE__);
     }
 
-    d_file_buffer = new ofstream(d_file_name.c_str(), ios::out | ios::app);
+    if (d_file_name == "stdout"){
+        stdout = true;
+    }
+    else{
+        d_file_buffer = new ofstream(d_file_name.c_str(), ios::out | ios::app);
+    }
+
     if (!(*d_file_buffer)) {
         string err = "BES Fatal; cannot open log file " + d_file_name + ".";
         cerr << err << endl;
@@ -168,7 +175,13 @@ void BESLog::dump_time()
     	//status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&now));
     }
 
-    (*d_file_buffer) << buf;
+    if (stdout){
+        cout << buf;
+    }
+    else{
+        (*d_file_buffer) << buf;
+    }
+
 
 #else
     const time_t sctime = time(NULL);
@@ -197,7 +210,12 @@ BESLog& BESLog::operator<<(string &s)
 {
     if (!d_suspended) {
         if (d_flushed) dump_time();
-        (*d_file_buffer) << s;
+        if (stdout){
+            cout << s;
+        }
+        else{
+            (*d_file_buffer) << s;
+        }
     }
     return *this;
 }
@@ -210,7 +228,12 @@ BESLog& BESLog::operator<<(const string &s)
 {
     if (!d_suspended) {
         if (d_flushed) dump_time();
-        (*d_file_buffer) << s;
+        if (stdout){
+            cout << s;
+        }
+        else{
+            (*d_file_buffer) << s;
+        }
     }
     return *this;
 }
@@ -223,10 +246,22 @@ BESLog& BESLog::operator<<(char *val)
 {
     if (!d_suspended) {
         if (d_flushed) dump_time();
-        if (val)
-            (*d_file_buffer) << val;
-        else
-            (*d_file_buffer) << "NULL";
+        if (val){
+            if (stdout){
+                cout << val;
+            }
+            else{
+                (*d_file_buffer) << val;
+            }
+        }
+        else{
+            if (stdout){
+                cout << "NULL";
+            }
+            else{
+                (*d_file_buffer) << "NULL";
+            }
+        }
     }
     return *this;
 }
@@ -241,10 +276,22 @@ BESLog& BESLog::operator<<(const char *val)
         if (d_flushed) {
             dump_time();
         }
-        if (val)
-            (*d_file_buffer) << val;
-        else
-            (*d_file_buffer) << "NULL";
+        if (val){
+            if (stdout){
+                cout << val;
+            }
+            else{
+                (*d_file_buffer) << val;
+            }
+        }
+        else{
+            if (stdout){
+                cout << "NULL";
+            }
+            else{
+                (*d_file_buffer) << "NULL";
+            }
+        }
     }
     return *this;
 }
@@ -257,7 +304,12 @@ BESLog& BESLog::operator<<(int val)
 {
     if (!d_suspended) {
         if (d_flushed) dump_time();
-        (*d_file_buffer) << val;
+        if (stdout){
+            cout << val;
+        }
+        else{
+            (*d_file_buffer) << val;
+        }
     }
     return *this;
 }
@@ -266,7 +318,12 @@ BESLog& BESLog::operator<<(unsigned int val)
 {
     if (!d_suspended) {
         if (d_flushed) dump_time();
-        (*d_file_buffer) << val;
+        if (stdout){
+            cout << val;
+        }
+        else{
+            (*d_file_buffer) << val;
+        }
     }
     return *this;
 }
@@ -280,7 +337,12 @@ BESLog& BESLog::operator<<(char val)
 {
     if (!d_suspended) {
         if (d_flushed) dump_time();
-        (*d_file_buffer) << val;
+        if (stdout){
+            cout << val;
+        }
+        else{
+            (*d_file_buffer) << val;
+        }
     }
     return *this;
 }
@@ -293,7 +355,12 @@ BESLog& BESLog::operator<<(long val)
 {
     if (!d_suspended) {
         if (d_flushed) dump_time();
-        (*d_file_buffer) << val;
+        if (stdout){
+            cout << val;
+        }
+        else{
+            (*d_file_buffer) << val;
+        }
     }
     return *this;
 }
@@ -306,7 +373,12 @@ BESLog& BESLog::operator<<(unsigned long val)
 {
     if (!d_suspended) {
         if (d_flushed) dump_time();
-        (*d_file_buffer) << val;
+        if (stdout){
+            cout << val;
+        }
+        else{
+            (*d_file_buffer) << val;
+        }
     }
     return *this;
 }
@@ -319,7 +391,12 @@ BESLog& BESLog::operator<<(double val)
 {
     if (!d_suspended) {
         if (d_flushed) dump_time();
-        (*d_file_buffer) << val;
+        if (stdout){
+            cout << val;
+        }
+        else{
+            (*d_file_buffer) << val;
+        }
     }
     return *this;
 }
@@ -334,14 +411,24 @@ BESLog& BESLog::operator<<(double val)
 BESLog& BESLog::operator<<(p_ostream_manipulator val)
 {
     if (!d_suspended) {
-        (*d_file_buffer) << val;
+        if (stdout){
+            cout << val;
+        }
+        else{
+            (*d_file_buffer) << val;
+        }
         if ((val == (p_ostream_manipulator) endl) || (val == (p_ostream_manipulator) flush)) d_flushed = 1;
     }
     return *this;
 }
 
 void BESLog::flush_me(){
-    (*d_file_buffer) << flush;
+    if (stdout){
+        cout << flush;
+    }
+    else{
+        (*d_file_buffer) << flush;
+    }
     d_flushed = 1;
 }
 
@@ -353,7 +440,14 @@ void BESLog::flush_me(){
  */
 BESLog& BESLog::operator<<(p_ios_manipulator val)
 {
-    if (!d_suspended) (*d_file_buffer) << val;
+    if (!d_suspended){
+        if (stdout){
+            cout << val;
+        }
+        else{
+            (*d_file_buffer) << val;
+        }
+    }
     return *this;
 }
 

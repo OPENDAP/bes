@@ -116,6 +116,8 @@ private:
 
     bool d_use_local_time; ///< Use UTC by default
 
+    bool stdout;
+
 protected:
     BESLog();
 
