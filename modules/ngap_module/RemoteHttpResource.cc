@@ -436,6 +436,7 @@ namespace ngap {
         unsigned int replace_count = 0;
 
         try {
+            // Lock the cache file for writing (exclusive lock)
             if (cache->get_exclusive_lock(d_resourceCacheFileName, d_fd)) {
                 BESDEBUG(MODULE,
                          prolog << "Acquired exclusive lock on cache. cache_file_name: " << d_resourceCacheFileName
@@ -474,6 +475,7 @@ namespace ngap {
                 cr_ostrm << dmrpp;
             }
             else {
+                // No lock? So sad...
                 string msg = "ERROR. Failed to acquire exclusive lock for '" + d_resourceCacheFileName + "' to read cached response.";
                 BESDEBUG(MODULE, prolog << msg << endl);
                 throw BESInternalError(msg, __FILE__, __LINE__);
