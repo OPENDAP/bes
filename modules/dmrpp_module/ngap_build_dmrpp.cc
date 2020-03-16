@@ -28,7 +28,7 @@
 #include <memory>
 #include <iterator>
 #include <algorithm>
-#include <stdio.h>
+#include <cstdio>
 
 #include <cstdlib>
 #include <unistd.h>
@@ -40,21 +40,20 @@
 #include <D4ParserSax2.h>
 
 // bes includes
-#include <TheBESKeys.h>
-#include <standalone/StandAloneApp.h>
-#include <../standalone/StandAloneApp.h>
-#include <BESUtil.h>
-#include <BESDebug.h>
-#include <BESFileContainer.h>
-#include <BESDMRResponse.h>
-#include <BESDMRResponseHandler.h>
-#include <BESStopWatch.h>
+#include "TheBESKeys.h"
+#include "StandAloneApp.h"
+#include "BESUtil.h"
+#include "BESDebug.h"
+#include "BESFileContainer.h"
+#include "BESDMRResponse.h"
+#include "BESDMRResponseHandler.h"
+#include "BESStopWatch.h"
 
-#include <BESError.h>
-#include <BESNotFoundError.h>
-#include <BESInternalError.h>
-#include <BESDataHandlerInterface.h>
-#include <BESSyntaxUserError.h>
+#include "BESError.h"
+#include "BESNotFoundError.h"
+#include "BESInternalError.h"
+#include "BESDataHandlerInterface.h"
+#include "BESSyntaxUserError.h"
 #include "BESRequestHandler.h"
 
 
@@ -977,7 +976,7 @@ int generate_dmrpp(const string &input_data_file, const string &dmr_filename, co
 
 static const std::string usage =
         "\n"
-        "Usage: ngap_build_dmrpp [options] <input_hdf5_file>\n"
+        "Usage: ngap_build_dmrpp [options] -i <input_hdf5_file>\n"
         "\n"
         " Create the DMR++ for the <input_hdf5_file>\n"
         "\n"
@@ -993,10 +992,10 @@ static const std::string usage =
         "  -i: The input hdf5 data filename relative to data root. (See -t)\n"
         "  -o: The output data file name. (default: stdout).\n"
         "  -u: The binary object URL Url (http(s):// or file://) where the input \n"
-        "      hdf5_data_ file can be located. (This is injected into dmr++ file).\n"
+        "      hdf5 data file can be located. (This is injected into dmr++ file).\n"
         // "  -r: Output only the DMR, don't build DMR++\n"
         "  -t: Data root directory for the BES. (Defaults to the CWD)\n"
-        "  -X: Run the alternate DMR produce using hdf5_handler components.\n"
+        "  -X: Run the alternate DMR production using hdf5_handler components.\n"
         "\n"
         "Please take note: \n"
         " * By default the BES Data Root directory is set to the CWD.\n"
