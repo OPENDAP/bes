@@ -258,7 +258,7 @@ if test -n "${verbose}"; then
 fi
 
 if test -z "${dmrpp_url}"; then
-    dmrpp_url="OPeNDAP_DMR++_DATA_ACCESS_URL";
+    dmrpp_url="OPeNDAP_DMRpp_DATA_ACCESS_URL";
     echo "Using Template Data Access URL String: '${dmrpp_url}'" >&2
 fi
 
