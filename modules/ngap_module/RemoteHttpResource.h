@@ -115,7 +115,7 @@ namespace ngap {
         RemoteHttpResource(const std::string &url);
         virtual ~RemoteHttpResource();
 
-        void retrieveResource();
+        void retrieveResource(const std::string &inject_url="");
 
         /**
          * Returns the DAP type std::string of the RemoteHttpResource

@@ -131,7 +131,7 @@ namespace ngap {
      * When this method returns the RemoteHttpResource object is fully initialized and the cache file name for the resource
      * is available along with an open file descriptor for the (now read-locked) cache file.
      */
-    void RemoteHttpResource::retrieveResource(string inject_url) {
+    void RemoteHttpResource::retrieveResource(const std::string &inject_url){
         BESDEBUG(MODULE, prolog << "BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
 
         if (d_initialized) {
@@ -205,18 +205,24 @@ namespace ngap {
                     throw;
                 }
 
+                //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
                 // If we are injecting the data URL, as per the BES configuration, we do that here.
                 // The file is locked and we have the information required to make the substitution.
-                bool found;
-                string inject_data_url;
-                TheBESKeys::TheKeys()->get_value(NGAP_INJECT_DATA_URL_KEY,inject_data_url, found);
-                if(found && inject_data_url=="true") {
-                    unsigned int count = filter_retrieved_resource(DATA_ACCESS_URL_KEY,d_remoteResourceUrl);
-                    BESDEBUG(MODULE, prolog << "Replaced  " << count << " instance(s) of NGAP_DATA_ACCESS_URL template(" <<
-                                            DATA_ACCESS_URL_KEY << ") in cached RemoteResource" << endl);
+                // This is controlled by:
+                //  - The value of the BES key NGAP_INJECT_DATA_URL_KEY (if present)
+                //  - The inject_url string must not be empty.
+                if(!inject_url.empty()){
+                    bool found;
+                    string key_value;
+                    TheBESKeys::TheKeys()->get_value(NGAP_INJECT_DATA_URL_KEY,key_value, found);
+                    if(found && key_value=="true") {
+                        unsigned int count = filter_retrieved_resource(DATA_ACCESS_URL_KEY,inject_url);
+                        BESDEBUG(MODULE, prolog << "Replaced  " << count << " instance(s) of NGAP_DATA_ACCESS_URL template(" <<
+                                                DATA_ACCESS_URL_KEY << ") in cached RemoteResource" << endl);
+                    }
                 }
 
-                // #########################################################################################################
+                //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
                 // I think right here is where I would be able to cache the data type/response headers. While I have
                 // the exclusive lock I could open another cache file for metadata and write to it.
                 {

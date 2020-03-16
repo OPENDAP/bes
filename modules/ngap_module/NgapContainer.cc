@@ -144,7 +144,7 @@ namespace ngap {
         if(!d_dmrpp_rresource) {
             BESDEBUG( MODULE, prolog << "Building new RemoteResource." << endl );
             d_dmrpp_rresource = new ngap::RemoteHttpResource(dmrpp_url);
-            d_dmrpp_rresource->retrieveResource();
+            d_dmrpp_rresource->retrieveResource(data_access_url);
         }
         BESDEBUG( MODULE, prolog << "Located remote resource." << endl );
 
