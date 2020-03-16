@@ -81,7 +81,8 @@ build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) build_dmrpp.cc
 build_dmrpp_LDADD = $(abs_top_builddir)/dap/.libs/libdap_module.a $(BES_DISPATCH_LIB) $(BES_EXTRA_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) -lz
 
-ngap_build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS)
+
+ngap_build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS)  -I$(top_srcdir)/standalone
 
 ngap_build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) bes_default_conf.h ngap_build_dmrpp.cc 
 
@@ -95,6 +96,8 @@ ngap_build_dmrpp_LDADD =  \
     $(BES_EXTRA_LIBS) $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) \
     $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) \
     $(XML2_LIBS) $(READLINE_LIBS) -lz
+#    $(HDF5_MODULE_OBJS)
+
 
 # Cruft
 # $(HDF5_MODULE_OBJS)
