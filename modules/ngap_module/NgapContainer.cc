@@ -154,24 +154,26 @@ namespace ngap {
         BESDEBUG( MODULE, prolog << "Type: " << type << endl );
 
 
+
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-#if 1
-        // James: I have the questions.
+
+        // James: I have the question:
         //
-        // 1) In the try catch blocks that read and write I need to call close in the try, but also in the catch(...)?
-        //    Or is JUST in the catch(...) good enuff.
-        //
-        // 2) In reality this is accessing a file under the control of a file locking cache do it should be rewritten
-        //    to utilize file locking? It's hard to know because in this modulke (and others) the cache file name is.\
+        // 1) In reality this is accessing a file under the control of a file locking cache do it should be rewritten
+        //    to utilize file locking? It's hard to know because in this module (and others) the cache file name is.\
         //    passed directly into the bes dispatch machinery at the end of this method:
         //
         //    return cachedResource;
         //
         //    So maybe it's good, or maybe there's a bigger issue around access and locking?
         //
-
-        string dmrpp;
+        //    In thinking about this more I think that:
+        //
+        //    TODO The following code that does the URL must be modified to utilize the NgapCache cache locking.
+        //    FIXME The following code that does the URL must be modified to utilize the NgapCache cache locking.
+        //
+        //
 
         //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
         // Read the dmr++ file into a string object
@@ -181,20 +183,14 @@ namespace ngap {
             BESDEBUG(MODULE, prolog << msg << endl);
             throw BESInternalError(msg, __FILE__, __LINE__);
         }
-        try {
-            std::stringstream buffer;
-            buffer << cr_istrm.rdbuf();
-            dmrpp = buffer.str();
-            cr_istrm.close();
-        }
-        catch(...){
-            cr_istrm.close();
-        }
+        std::stringstream buffer;
+        buffer << cr_istrm.rdbuf();
+        string dmrpp(buffer.str());
 
         //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
         // Replace all occurrences of the dmr++ href attr key.
         int startIndex=0;
-        string dmrpp_href_key("DATA_ACCESS_URL");
+        string dmrpp_href_key(NGAP_DATA_ACCESS_URL);
         while ((startIndex = dmrpp.find(dmrpp_href_key)) != -1){
             dmrpp.erase(startIndex, dmrpp_href_key.length());
             dmrpp.insert(startIndex, data_access_url);
@@ -208,45 +204,7 @@ namespace ngap {
             BESDEBUG(MODULE, prolog << msg << endl);
             throw BESInternalError(msg, __FILE__, __LINE__);
         }
-        try {
-            cr_ostrm << dmrpp;
-            cr_ostrm.close();
-        }
-        catch(...){
-            cr_ostrm.close();
-        }
-#else
-
-
-        FILE *crFile;
-        stringstream df;
-
-        unsigned buf_size=10000;
-        char buf[buf_size];
-
-        crFile = fopen(cachedResource.c_str() , "r");
-        if (crFile == NULL){
-            string msg = "Cannot open cached resource: " + cachedResource  ;
-            BESDEBUG(MODULE, prolog << msg << endl);
-            throw BESInternalError(msg, __FILE__, __LINE__);
-        }
-        while (fgets (buf , buf_size , crFile) != NULL ) { df << buf; }
-        fclose (crFile);
-        dmrpp = df.str();
-
-        int startIndex=0;
-        string dmrpp_href_key("DATA_ACCESS_URL");
-        while ((startIndex = dmrpp.find(dmrpp_href_key)) != -1){
-            dmrpp.erase(startIndex, dmrpp_href_key.length());
-            dmrpp.insert(startIndex, data_access_url);
-        }
-
-        crFile = fopen(cachedResource.c_str(), "w");
-        fputs(dmrpp.c_str(), crFile);
-        fclose(crFile);
-
-#endif
-
+        cr_ostrm << dmrpp;
 
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
