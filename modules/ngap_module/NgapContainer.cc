@@ -155,11 +155,12 @@ namespace ngap {
         set_container_type(type);
         BESDEBUG( MODULE, prolog << "Type: " << type << endl );
 
-        unsigned int count = d_dmrpp_rresource->filter_retrieved_resource(NGAP_DATA_ACCESS_URL, data_access_url);
+        unsigned int count = d_dmrpp_rresource->filter_retrieved_resource(DATA_ACCESS_URL_KEY, data_access_url);
         BESDEBUG( MODULE, prolog << "Replaced  " << count << " instance(s) of NGAP_DATA_ACCESS_URL template(" <<
-                   NGAP_DATA_ACCESS_URL  << ") in cached RemoteResource" << endl);
+                  DATA_ACCESS_URL_KEY  << ") in cached RemoteResource" << endl);
 
-        BESDEBUG( MODULE, prolog << "Done accessing " << get_real_name() << " returning cached file " << cachedResource << endl);
+        BESDEBUG( MODULE, prolog << "Done accessing " << get_real_name() << " returning cached file " <<
+                  cachedResource << endl);
         BESDEBUG( MODULE, prolog << "Done accessing " << *this << endl);
         BESDEBUG( MODULE, prolog << "END" << endl);
 
