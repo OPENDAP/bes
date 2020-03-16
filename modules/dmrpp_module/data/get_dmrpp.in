@@ -258,9 +258,8 @@ if test -n "${verbose}"; then
 fi
 
 if test -z "${dmrpp_url}"; then
-    echo "ERROR! You must supply a dmrpp_url value using the -u option." >&2
-    show_usage
-    exit 666
+    dmrpp_url="OPeNDAP_DMRpp_DATA_ACCESS_URL";
+    echo "Using Template Data Access URL String: '${dmrpp_url}'" >&2
 fi
 
 dap4ConstraintContainerElement=$(
