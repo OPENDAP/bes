@@ -205,6 +205,8 @@ namespace ngap {
                     throw;
                 }
 
+                // If we are injecting the data URL, as per the BES configuration, we do that here.
+                // The file is locked and we have the information required to make the substitution.
                 bool found;
                 string inject_data_url;
                 TheBESKeys::TheKeys()->get_value(NGAP_INJECT_DATA_URL_KEY,inject_data_url, found);
@@ -213,10 +215,6 @@ namespace ngap {
                     BESDEBUG(MODULE, prolog << "Replaced  " << count << " instance(s) of NGAP_DATA_ACCESS_URL template(" <<
                                             DATA_ACCESS_URL_KEY << ") in cached RemoteResource" << endl);
                 }
-
-
-
-
 
                 // #########################################################################################################
                 // I think right here is where I would be able to cache the data type/response headers. While I have
