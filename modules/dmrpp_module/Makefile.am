@@ -110,7 +110,7 @@ EXTRA_PROGRAMS =
 # If it was added to DIST_SUBDIRS, some targets would be run, within the directory,
 # by automake and that would break since the dir does not have automake files.
 # jhrg 12/30/19
-EXTRA_DIST = dmrpp.conf.in xml2json rapidjson
+EXTRA_DIST = dmrpp.conf.in xml2json rapidjson bes_default_conf_template.h.in
 
 # removed from EXTRA_DIST: libdmrpp_module.la
 
