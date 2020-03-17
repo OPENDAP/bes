@@ -68,7 +68,7 @@ BESModuleApp::~BESModuleApp(void)
  */
 int BESModuleApp::initialize(int , char **)
 {
-    int retVal = BESApp::initialize(0, nullptr);
+    int retVal = BESApp::initialize(0, (char **)0);
     if (!retVal) {
         try {
             retVal = loadModules();
