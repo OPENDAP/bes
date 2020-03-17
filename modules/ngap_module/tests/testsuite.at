@@ -6,7 +6,7 @@ m4_include([../../handler_tests_macros.m4])
 
 # Test setting the NGAP Container - these tests don't include a <get> directive.
 # Only the container is set. jhrg 3/11/20
-AT_BESCMD_RESPONSE_TEST([ngap/amsua15_2020.028_12915_1139_1324_WI.nc.container.bescmd])
+AT_BESCMD_RESPONSE_TEST([ngap/amsua15_2020.028_12915_1139_1324_WI.nc.dds.bescmd])
 
 # Utilizing GHRC_CLOUD/ACES_CONTINUOUS_DATA_V1 to get netcdf files
 ##AT_BESCMD_RESPONSE_TEST([ngap/amsua15_2020.028_12915_1139_1324_WI.nc.dds.bescmd])
