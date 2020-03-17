@@ -24,7 +24,6 @@
 
 #include <memory>
 
-#include <stdlib.h>
 #include <unistd.h>
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
@@ -112,7 +111,7 @@ namespace dmrpp {
                 if(debug) cout << "   NgapS3Credentials::AWS_SESSION_TOKEN: " << nsc.get(NgapS3Credentials::AWS_SESSION_TOKEN) << endl;
                 if(debug) cout << "NgapS3Credentials::AWS_TOKEN_EXPIRATION: " << nsc.get(NgapS3Credentials::AWS_TOKEN_EXPIRATION) << endl;
 
-                time_t now = std::time(0);
+                time_t now = time(0);
                 if(debug) cout << "         now: " << now <<  endl;
                 if(debug) cout << "     expires: " << nsc.expires() <<  endl;
                 if(debug) cout << "needsRefresh: " << (nsc.needsRefresh()?"true":"false") <<  endl;
