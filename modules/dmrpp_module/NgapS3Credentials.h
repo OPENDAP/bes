@@ -58,9 +58,9 @@ public:
         return (d_expiration_time - time(0)) < refresh_margin;
     }
 
-    bool isS3Cred() override;
+    bool isS3Cred();
 
-    std::string get(const std::string &key) override;
+    std::string get(const std::string &key);
 
 };
 
