@@ -91,7 +91,6 @@ ngap_build_dmrpp_LDADD =  \
     $(abs_top_builddir)/xmlcommand/libbes_xml_command.la \
     $(abs_top_builddir)/dap/.libs/libdap_module.a \
     $(BES_STANDALONE_LIB)  $(BES_DISPATCH_LIB) \
-    $(HDF5_MODULE_OBJS) \
     $(abs_top_builddir)/modules/hdf5_handler/gctp/src/libGctp.a \
     $(BES_EXTRA_LIBS) $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) \
     $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) \
