@@ -110,7 +110,7 @@ BESLog::BESLog() :
         throw BESInternalFatalError(err, __FILE__, __LINE__);
     }
 
-//      FOR REFERENCE PURPOSES
+//          FOR REFERENCE PURPOSES FROM STACKOVERFLOW
 //    std::ofstream realOutFile;
 //
 //    if(outFileRequested)
@@ -185,8 +185,6 @@ void BESLog::dump_time()
     }
 
     (*d_file_buffer) << buf;
-
-
 
 #else
     const time_t sctime = time(NULL);
