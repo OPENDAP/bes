@@ -52,6 +52,12 @@ const string NgapS3Credentials::BES_CONF_URL_BASE="NGAP.s3.url.base";
 
 bool NgapS3Credentials::isS3Cred() {return true;}
 
+string NgapS3Credentials::get(const std::string &key) {
+    if(needsRefresh()){
+        this->get_temporary_credentials();
+    }
+    return AccessCredentials::get(key);
+}
 
 
 /**
