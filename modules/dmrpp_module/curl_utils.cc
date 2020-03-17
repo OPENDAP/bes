@@ -46,6 +46,18 @@ namespace curl {
     }
 
 
+
+    /*
+curl_utils.cc:289: error: 'CURLINFO_PRIMARY_PORT' was not declared in this scope
+curl_utils.cc:290: error: 'CURLINFO_LOCAL_IP' was not declared in this scope
+curl_utils.cc:291: error: 'CURLINFO_LOCAL_PORT' was not declared in this scope
+curl_utils.cc:300: error: 'CURLINFO_RTSP_SESSION_ID' was not declared in this scope
+curl_utils.cc:301: error: 'CURLINFO_RTSP_CLIENT_CSEQ' was not declared in this scope
+curl_utils.cc:302: error: 'CURLINFO_RTSP_SERVER_CSEQ' was not declared in this scope
+curl_utils.cc:303: error: 'CURLINFO_RTSP_CSEQ_RECV' was not declared in this scope
+
+     */
+
     /**
      * This map connects CURLINFO types with the string names and descriptions.
      */
@@ -97,9 +109,9 @@ namespace curl {
             {CURLINFO_OS_ERRNO,                {"CURLINFO_OS_ERRNO",                "The errno from the last failure to connect. See CURLINFO_OS_ERRNO"}},
             {CURLINFO_NUM_CONNECTS,            {"CURLINFO_NUM_CONNECTS",            "Number of new successful connections used for previous transfer. See CURLINFO_NUM_CONNECTS"}},
             {CURLINFO_PRIMARY_IP,              {"CURLINFO_PRIMARY_IP",              "IP address of the last connection. See CURLINFO_PRIMARY_IP"}},
-            {CURLINFO_PRIMARY_PORT,            {"CURLINFO_PRIMARY_PORT",            "Port of the last connection. See CURLINFO_PRIMARY_PORT"}},
-            {CURLINFO_LOCAL_IP,                {"CURLINFO_LOCAL_IP",                "Local-end IP address of last connection. See CURLINFO_LOCAL_IP"}},
-            {CURLINFO_LOCAL_PORT,              {"CURLINFO_LOCAL_PORT",              "Local-end port of last connection. See CURLINFO_LOCAL_PORT"}},
+            // {CURLINFO_PRIMARY_PORT,            {"CURLINFO_PRIMARY_PORT",            "Port of the last connection. See CURLINFO_PRIMARY_PORT"}},  // cURL 7.64
+            // {CURLINFO_LOCAL_IP,                {"CURLINFO_LOCAL_IP",                "Local-end IP address of last connection. See CURLINFO_LOCAL_IP"}},  // cURL 7.64
+            // {CURLINFO_LOCAL_PORT,              {"CURLINFO_LOCAL_PORT",              "Local-end port of last connection. See CURLINFO_LOCAL_PORT"}},  // cURL 7.64
             {CURLINFO_COOKIELIST,              {"CURLINFO_COOKIELIST",              "List of all known cookies. See CURLINFO_COOKIELIST"}},
             {CURLINFO_LASTSOCKET,              {"CURLINFO_LASTSOCKET",              "Last socket used. See CURLINFO_LASTSOCKET"}},
             // {CURLINFO_ACTIVESOCKET,            {"CURLINFO_ACTIVESOCKET",            "The session's active socket. See CURLINFO_ACTIVESOCKET"}}, // cURL 7.64
@@ -108,10 +120,10 @@ namespace curl {
             // {CURLINFO_TLS_SSL_PTR,             {"CURLINFO_TLS_SSL_PTR",             "TLS session info that can be used for further processing. See CURLINFO_TLS_SSL_PTR"}}, // cURL 7.64
             //{CURLINFO_TLS_SESSION,             {"CURLINFO_TLS_SESSION",             "TLS session info that can be used for further processing. See CURLINFO_TLS_SESSION. Deprecated option, use CURLINFO_TLS_SSL_PTR instead!"}}, //breaks on centos 7. sbl 3/11/20
             {CURLINFO_CONDITION_UNMET,         {"CURLINFO_CONDITION_UNMET",         "Whether or not a time conditional was met. See CURLINFO_CONDITION_UNMET"}},
-            {CURLINFO_RTSP_SESSION_ID,         {"CURLINFO_RTSP_SESSION_ID",         "RTSP session ID. See CURLINFO_RTSP_SESSION_ID"}},
-            {CURLINFO_RTSP_CLIENT_CSEQ,        {"CURLINFO_RTSP_CLIENT_CSEQ",        "RTSP CSeq that will next be used. See CURLINFO_RTSP_CLIENT_CSEQ"}},
-            {CURLINFO_RTSP_SERVER_CSEQ,        {"CURLINFO_RTSP_SERVER_CSEQ",        "RTSP CSeq that will next be expected. See CURLINFO_RTSP_SERVER_CSEQ"}},
-            {CURLINFO_RTSP_CSEQ_RECV,          {"CURLINFO_RTSP_CSEQ_RECV",          "RTSP CSeq last received. See CURLINFO_RTSP_CSEQ_RECV"}},
+            // {CURLINFO_RTSP_SESSION_ID,         {"CURLINFO_RTSP_SESSION_ID",         "RTSP session ID. See CURLINFO_RTSP_SESSION_ID"}}, // Not on CentOS-6
+            // {CURLINFO_RTSP_CLIENT_CSEQ,        {"CURLINFO_RTSP_CLIENT_CSEQ",        "RTSP CSeq that will next be used. See CURLINFO_RTSP_CLIENT_CSEQ"}},  // cURL 7.64
+            // {CURLINFO_RTSP_SERVER_CSEQ,        {"CURLINFO_RTSP_SERVER_CSEQ",        "RTSP CSeq that will next be expected. See CURLINFO_RTSP_SERVER_CSEQ"}},  // cURL 7.64
+            // {CURLINFO_RTSP_CSEQ_RECV,          {"CURLINFO_RTSP_CSEQ_RECV",          "RTSP CSeq last received. See CURLINFO_RTSP_CSEQ_RECV"}},  // cURL 7.64
             // {CURLINFO_PROTOCOL,                {"CURLINFO_PROTOCOL",                "The protocol used for the connection. (Added in 7.52.0) See CURLINFO_PROTOCOL"}}, // cURL 7.64
             // {CURLINFO_SCHEME,                  {"CURLINFO_SCHEME",                  "The scheme used for the connection. (Added in 7.52.0) See CURLINFO_SCHEME"}}, // cURL 7.64
     };
@@ -286,8 +298,8 @@ namespace curl {
         curlValueAsLong(ss, c_handle, CURLINFO_OS_ERRNO);
         curlValueAsLong(ss, c_handle, CURLINFO_NUM_CONNECTS);
         curlValueAsString(ss, c_handle, CURLINFO_PRIMARY_IP);
-        curlValueAsLong(ss, c_handle, CURLINFO_PRIMARY_PORT);
-        curlValueAsString(ss, c_handle, CURLINFO_LOCAL_IP);
+        // curlValueAsLong(ss, c_handle, CURLINFO_PRIMARY_PORT);  // cURL 7.64
+        // curlValueAsString(ss, c_handle, CURLINFO_LOCAL_IP); // cURL 7.64
         curlValueAsLong(ss, c_handle, CURLINFO_LOCAL_PORT);
         curlValueAsCurlSList(ss, c_handle, CURLINFO_COOKIELIST);
         curlValueAsLong(ss, c_handle, CURLINFO_LASTSOCKET);
@@ -295,12 +307,12 @@ namespace curl {
         curlValueAsString(ss, c_handle, CURLINFO_FTP_ENTRY_PATH);
         curlValueAsCurlCertInfo(ss, c_handle, CURLINFO_CERTINFO);
         // curlValueAsCurlTlsSessionInfo(ss, c_handle, CURLINFO_TLS_SSL_PTR); // cURL 7.64
-        //curlValueAsCurlTlsSessionInfo(ss, c_handle, CURLINFO_TLS_SESSION); //breaks on centos 7. sbl 3/11/20
+        //curlValueAsCurlTlsSessionInfo(ss, c_handle, CURLINFO_TLS_SESSION);  // cURL 7.64
         curlValueAsLong(ss, c_handle, CURLINFO_CONDITION_UNMET);
-        curlValueAsString(ss, c_handle, CURLINFO_RTSP_SESSION_ID);
-        curlValueAsLong(ss, c_handle, CURLINFO_RTSP_CLIENT_CSEQ);
-        curlValueAsLong(ss, c_handle, CURLINFO_RTSP_SERVER_CSEQ);
-        curlValueAsLong(ss, c_handle, CURLINFO_RTSP_CSEQ_RECV);
+        // curlValueAsString(ss, c_handle, CURLINFO_RTSP_SESSION_ID); // cURL 7.64
+        // curlValueAsLong(ss, c_handle, CURLINFO_RTSP_CLIENT_CSEQ); // cURL 7.64
+        // curlValueAsLong(ss, c_handle, CURLINFO_RTSP_SERVER_CSEQ); // cURL 7.64
+        // curlValueAsLong(ss, c_handle, CURLINFO_RTSP_CSEQ_RECV); // cURL 7.64
         // curlValueAsLong(ss, c_handle, CURLINFO_PROTOCOL);  // cURL 7.64
         // curlValueAsString(ss, c_handle, CURLINFO_SCHEME);
         return ss.str();
