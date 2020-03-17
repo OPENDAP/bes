@@ -50,6 +50,10 @@ const string NgapS3Credentials::BES_CONF_REFRESH_KEY="NGAP.S3.refresh.margin";
 const string NgapS3Credentials::BES_CONF_URL_BASE="NGAP.s3.url.base";
 
 
+bool NgapS3Credentials::isS3Cred() {return true;}
+
+
+
 /**
  * This code assumes that the credentials needed to authenticate the retrieval of the S3
  * credentials will be handled by the curl call via the ~/.netrc file of the BES user.
