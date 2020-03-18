@@ -46,11 +46,17 @@ namespace curl {
     }
 
 
+#if 0
 
+    // TODO: Decide if probe_easy_handle(CURL *c_handle) and its many attendents beginning with
+    //       the CURL_MESSAGE_INFO business below are one of the following:
+    //         a) Worth implementing in CentOS-6. (Because this code does not work there.)
+    //         b) Worth krufting until CentOS-7. (Works here, I think...)
+    //         c) Time to pitch it.
     /**
      * This map connects CURLINFO types with the string names and descriptions.
      */
-    map<CURLINFO, vector<char*>> CURL_MESSAGE_INFO = {
+    map<CURLINFO, vector<string>> CURL_MESSAGE_INFO = {
             {CURLINFO_EFFECTIVE_URL,           {"CURLINFO_EFFECTIVE_URL",           "Last used URL. See CURLINFO_EFFECTIVE_URL"}},
             {CURLINFO_RESPONSE_CODE,           {"CURLINFO_RESPONSE_CODE",           "Last received response code. See CURLINFO_RESPONSE_CODE"}},
             {CURLINFO_HTTP_CONNECTCODE,        {"CURLINFO_HTTP_CONNECTCODE",        "Last proxy CONNECT response code. See CURLINFO_HTTP_CONNECTCODE"}},
@@ -306,6 +312,7 @@ namespace curl {
         // curlValueAsString(ss, c_handle, CURLINFO_SCHEME);
         return ss.str();
     }
+#endif
 
 
     /*
@@ -539,7 +546,11 @@ namespace curl {
     */ 
     std::string http_get_as_string(const std::string &target_url){
 
-        // @TODO @FIXME Make the size of this buffer a configuration setting, or pass it in, something....
+        // @TODO @FIXME Make the size of this buffer one of:
+        //              a) A configuration setting.
+        //              b) A new parameter to the function. (unsigned long)
+        //              c) Do a HEAD on the URL, check for the Content-Length header and plan accordingly.
+        //
         char response_buf[1024 * 1024];
 
         http_get(target_url, response_buf);
@@ -555,7 +566,12 @@ namespace curl {
      */ 
     rapidjson::Document http_get_as_json(const std::string &target_url){
 
-        // @TODO @FIXME Make the size of this buffer a configuration setting, or pass it in, something....
+        // @TODO @FIXME Make the size of this buffer one of:
+        //              a) A configuration setting.
+        //              b) A new parameter to the function. (unsigned long)
+        //              c) Do a HEAD on the URL, check for the Content-Length header and plan accordingly.
+        //
+
         char response_buf[1024 * 1024];
 
         curl::http_get(target_url, response_buf);

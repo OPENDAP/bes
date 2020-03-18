@@ -395,7 +395,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
                     chunk_coords[j] = temp_coords[j];
                 }
 
-                // FIXME Modify add_chunk so that it takes a vector<unsigned long long> or <unsined long>
+                // FIXME Modify add_chunk so that it takes a vector<unsigned long long> or <unsigned long>
                 // (depending on the machine/OS/compiler). Limiting the offset to 32-bits won't work
                 // for large files. jhrg 5/21/19
                 if (dc) dc->add_chunk("", size, addr, chunk_coords);
