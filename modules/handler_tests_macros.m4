@@ -20,8 +20,8 @@ AT_ARG_OPTION_ARG([baselines],
 
 AT_ARG_OPTION_ARG([conf],
     [--conf=<file>   Use <file> for the bes.conf file],
-    [echo "baselines set to $at_arg_baselines";
-     bes_conf=$at_arg_conf],[bes_conf=bes.conf])
+    [echo "bes_conf set to $at_arg_conf"; bes_conf=$at_arg_conf],
+    [bes_conf=bes.conf])
 
 # Usage: _AT_TEST_*(<bescmd source>, <baseline file>, <xpass/xfail> [default is xpass] <repeat|cached> [default is no])
 
