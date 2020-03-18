@@ -642,7 +642,7 @@ void build_dmr_with_StandAloneApp(
     sw.start("build_dmrpp::build_dmr_with_StandAloneApp()");
 
     // TheBESKeys::ConfigFile = bes_conf_filename;
-    
+
     string name("ngap_build_dmrpp");
     string conf_param("-c");
     string cmd_param("-i");
