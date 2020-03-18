@@ -62,7 +62,7 @@ public:
 
     NgapApi() : cmr_granule_search_endpoint_url("https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4") {}
 
-    std::string convert_ngap_resty_path_to_data_access_url(std::string real_name);
+    std::string convert_ngap_resty_path_to_data_access_url(std::string restified_path);
 
 #if 0
     void get_years(std::string collection_name, std::vector<std::string> &years_result);

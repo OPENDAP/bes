@@ -34,13 +34,14 @@
 #include <fstream>
 #include <streambuf>
 
-#include <BESSyntaxUserError.h>
+#include "BESSyntaxUserError.h"
 #include "BESNotFoundError.h"
-#include <BESInternalError.h>
-#include <BESDebug.h>
-#include <BESUtil.h>
-#include <TheBESKeys.h>
-#include <WhiteList.h>
+#include "BESInternalError.h"
+#include "BESDebug.h"
+#include "BESUtil.h"
+#include "TheBESKeys.h"
+#include "WhiteList.h"
+#include "BESContextManager.h"
 
 #include "NgapContainer.h"
 #include "NgapApi.h"
@@ -53,6 +54,9 @@
 
 using namespace std;
 using namespace bes;
+
+#define UID_CONTEXT "uid"
+#define ACCESS_TOKEN_CONTEXT "access_token"
 
 namespace ngap {
 
@@ -73,6 +77,14 @@ namespace ngap {
         NgapApi ngap_api;
         if (type.empty())
             set_container_type("ngap");
+
+        bool found;
+        string uid = BESContextManager::TheManager()->get_context(UID_CONTEXT, found);
+        string access_token = BESContextManager::TheManager()->get_context(ACCESS_TOKEN_CONTEXT, found);
+
+        BESDEBUG(MODULE, prolog << "UID_CONTEXT(" << UID_CONTEXT << "): " << uid << endl);
+        BESDEBUG(MODULE, prolog << "ACCESS_TOKEN_CONTEXT(" << ACCESS_TOKEN_CONTEXT << "): "<< access_token << endl);
+
 
         string data_access_url = ngap_api.convert_ngap_resty_path_to_data_access_url(real_name);
 
