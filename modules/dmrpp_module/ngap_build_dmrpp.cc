@@ -642,36 +642,7 @@ void build_dmr_with_StandAloneApp(
     sw.start("build_dmrpp::build_dmr_with_StandAloneApp()");
 
     // TheBESKeys::ConfigFile = bes_conf_filename;
-
-#if 0
-    // besstandalone command
-    unsigned int nargc = 7;
-    char **nargv;
-    nargv = new char *[nargc];
-
-    nargv[0] = const_cast<char *>("ngap_build_dmrpp");
-    nargv[1] = const_cast<char *>("-c");
-    nargv[2] = const_cast<char *>(bes_conf_filename.c_str());
-    nargv[3] = const_cast<char *>("-i");
-    nargv[4] = const_cast<char *>(bes_cmd_filename.c_str());
-    nargv[5] = const_cast<char *>("-f");
-    nargv[6] = const_cast<char *>(output_filename.c_str());
-
-    cerr << "        Command line equivalent: " << "besstandalone ";
-    for (unsigned i = 1; i < nargc; i++) { cerr << nargv[i] << " "; }
-    cerr << endl;
-
-    StandAloneApp app;
-    app.main(nargc, argv.nargv());
-#endif
-
-#if 0
-    std::vector<char*> argv;
-    for(const auto& arg : arguments)
-        argv.push_back((char*)&arg[0]);
-    argv.push_back(nullptr);
-    f.bar(argv.size() - 1, argv.data());
-#endif
+    
     string name("ngap_build_dmrpp");
     string conf_param("-c");
     string cmd_param("-i");
@@ -691,7 +662,7 @@ void build_dmr_with_StandAloneApp(
         const string &arg = arguments[i];
         argv.push_back((char*)&arg[0]);
     }
-    argv.push_back(nullptr);
+    argv.push_back(0);
 
     if(very_verbose) {
         for (unsigned i = 0; i < argv.size()-1; i++) {
