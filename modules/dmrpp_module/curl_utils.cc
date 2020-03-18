@@ -45,18 +45,7 @@ namespace curl {
         return oss.str();
     }
 
-
-
-    /*
-curl_utils.cc:289: error: 'CURLINFO_PRIMARY_PORT' was not declared in this scope
-curl_utils.cc:290: error: 'CURLINFO_LOCAL_IP' was not declared in this scope
-curl_utils.cc:291: error: 'CURLINFO_LOCAL_PORT' was not declared in this scope
-curl_utils.cc:300: error: 'CURLINFO_RTSP_SESSION_ID' was not declared in this scope
-curl_utils.cc:301: error: 'CURLINFO_RTSP_CLIENT_CSEQ' was not declared in this scope
-curl_utils.cc:302: error: 'CURLINFO_RTSP_SERVER_CSEQ' was not declared in this scope
-curl_utils.cc:303: error: 'CURLINFO_RTSP_CSEQ_RECV' was not declared in this scope
-
-     */
+    
 
     /**
      * This map connects CURLINFO types with the string names and descriptions.
@@ -300,7 +289,7 @@ curl_utils.cc:303: error: 'CURLINFO_RTSP_CSEQ_RECV' was not declared in this sco
         curlValueAsString(ss, c_handle, CURLINFO_PRIMARY_IP);
         // curlValueAsLong(ss, c_handle, CURLINFO_PRIMARY_PORT);  // cURL 7.64
         // curlValueAsString(ss, c_handle, CURLINFO_LOCAL_IP); // cURL 7.64
-        curlValueAsLong(ss, c_handle, CURLINFO_LOCAL_PORT);
+        // curlValueAsLong(ss, c_handle, CURLINFO_LOCAL_PORT); // cURL 7.64
         curlValueAsCurlSList(ss, c_handle, CURLINFO_COOKIELIST);
         curlValueAsLong(ss, c_handle, CURLINFO_LASTSOCKET);
         // curlValueAsCurlSocket(ss, c_handle, CURLINFO_ACTIVESOCKET); // cURL 7.64
