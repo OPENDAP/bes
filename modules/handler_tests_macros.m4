@@ -221,19 +221,21 @@ dnl    sed 's@[[0-9]]\{4\}-[[0-9]]\{2\}-[[0-9]]\{2\} [[0-9]]\{2\}:[[0-9]]\{2\}:[
 dnl    dnl '
 dnl    mv $1.sed $1
 dnl])
-
-
 dnl Here is a correct (and lenient) regex for ISO-8601 date-time:
 dnl [0-9]{4}-[0-9]{2}-[0-9]{2}(T| )[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]{3})?([a-zA-Z])?([a-zA-Z])?([a-zA-Z])?([a-zA-Z])?([a-zA-Z])?
 dnl
 dnl Unfortunately sed won't run that so I have had to dissemble the regex into a shoddy spectre of its full
 dnl glory.
 dnl
+dnl Modified to include time zones, then modified to include four character time zones.
+dnl Most recently modified to include no time zone (this is all in the last of the
+dnl four expressions). jhrg 3/18/2020
+
 m4_define([REMOVE_DATE_TIME], [dnl
     sed -e 's@[[0-9]]\{4\}-[[0-9]]\{2\}-[[0-9]]\{2\}T[[0-9]]\{2\}:[[0-9]]\{2\}:[[0-9]]\{2\}@_DATE_TIME_SUB_@g' \
     -e 's@[[0-9]]\{4\}-[[0-9]]\{2\}-[[0-9]]\{2\} [[0-9]]\{2\}:[[0-9]]\{2\}:[[0-9]]\{2\}@_DATE_TIME_SUB_@g' \
-    -e 's@_DATE_TIME_SUB_.[[0-9]]\{3\}@_DATE_TIME_SUB_@g' \
-    -e 's@_DATE_TIME_SUB_[[a-zA-Z]]\{1,4\}@removed date-time@g' \
+    -e 's@_DATE_TIME_SUB_.[[0-9]]\{3,6\}@_DATE_TIME_SUB_@g' \
+    -e 's@_DATE_TIME_SUB_[[a-zA-Z]]\{0,4\}@removed date-time@g' \
     < $1 > $1.sed
     mv $1.sed $1
 ])
@@ -373,14 +375,9 @@ m4_define([OLD_AT_BESCMD_NETCDF_TEST_OLD],  [dnl
 
 dnl END OLD. jhrg 9/21/16
     
-m4_define([AT_BESCMD_RESPONSE_TEST],
-[_AT_BESCMD_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])
-])
-
 m4_define([AT_BESCMD_RESPONSE_SCRUB_DATES_TEST],
 [_AT_BESCMD_SCRUB_DATES_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])
 ])
-
 
 m4_define([AT_BESCMD_REPEAT_RESPONSE_TEST],
 [_AT_BESCMD_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2], [$3])
