@@ -19,8 +19,8 @@ AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 SUBDIRS = . unit-tests tests
 
 lib_besdir=$(libdir)/bes
-lib_bes_LTLIBRARIES = libngap_module.la
 
+lib_bes_LTLIBRARIES = libngap_module.la
 libngap_module_la_SOURCES = $(NGAP_SRC) $(NGAP_HDR)
 libngap_module_la_LDFLAGS = -avoid-version -module 
 libngap_module_la_LIBADD = $(LIBADD)
