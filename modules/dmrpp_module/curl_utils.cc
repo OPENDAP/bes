@@ -45,7 +45,7 @@ namespace curl {
         return oss.str();
     }
 
-    
+
 
     /**
      * This map connects CURLINFO types with the string names and descriptions.
@@ -108,7 +108,7 @@ namespace curl {
             {CURLINFO_CERTINFO,                {"CURLINFO_CERTINFO",                "Certificate chain. See CURLINFO_CERTINFO"}},
             // {CURLINFO_TLS_SSL_PTR,             {"CURLINFO_TLS_SSL_PTR",             "TLS session info that can be used for further processing. See CURLINFO_TLS_SSL_PTR"}}, // cURL 7.64
             //{CURLINFO_TLS_SESSION,             {"CURLINFO_TLS_SESSION",             "TLS session info that can be used for further processing. See CURLINFO_TLS_SESSION. Deprecated option, use CURLINFO_TLS_SSL_PTR instead!"}}, //breaks on centos 7. sbl 3/11/20
-            {CURLINFO_CONDITION_UNMET,         {"CURLINFO_CONDITION_UNMET",         "Whether or not a time conditional was met. See CURLINFO_CONDITION_UNMET"}},
+            {CURLINFO_CONDITION_UNMET,         {"CURLINFO_CONDITION_UNMET",         "Whether or not a time conditional was met. See CURLINFO_CONDITION_UNMET"}}
             // {CURLINFO_RTSP_SESSION_ID,         {"CURLINFO_RTSP_SESSION_ID",         "RTSP session ID. See CURLINFO_RTSP_SESSION_ID"}}, // Not on CentOS-6
             // {CURLINFO_RTSP_CLIENT_CSEQ,        {"CURLINFO_RTSP_CLIENT_CSEQ",        "RTSP CSeq that will next be used. See CURLINFO_RTSP_CLIENT_CSEQ"}},  // cURL 7.64
             // {CURLINFO_RTSP_SERVER_CSEQ,        {"CURLINFO_RTSP_SERVER_CSEQ",        "RTSP CSeq that will next be expected. See CURLINFO_RTSP_SERVER_CSEQ"}},  // cURL 7.64
