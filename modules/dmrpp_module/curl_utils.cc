@@ -50,7 +50,7 @@ namespace curl {
     /**
      * This map connects CURLINFO types with the string names and descriptions.
      */
-    map<CURLINFO, vector<string>> CURL_MESSAGE_INFO = {
+    map<CURLINFO, vector<char*>> CURL_MESSAGE_INFO = {
             {CURLINFO_EFFECTIVE_URL,           {"CURLINFO_EFFECTIVE_URL",           "Last used URL. See CURLINFO_EFFECTIVE_URL"}},
             {CURLINFO_RESPONSE_CODE,           {"CURLINFO_RESPONSE_CODE",           "Last received response code. See CURLINFO_RESPONSE_CODE"}},
             {CURLINFO_HTTP_CONNECTCODE,        {"CURLINFO_HTTP_CONNECTCODE",        "Last proxy CONNECT response code. See CURLINFO_HTTP_CONNECTCODE"}},
