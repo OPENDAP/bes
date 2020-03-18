@@ -78,7 +78,7 @@ build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS)
 
 build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) build_dmrpp.cc
 
-build_dmrpp_LDADD = $(abs_top_builddir)/dap/.libs/libdap_module.a $(BES_DISPATCH_LIB) $(BES_EXTRA_LIBS) \
+build_dmrpp_LDADD =   $(BES_DAP_LIB) $(BES_DISPATCH_LIB) $(BES_EXTRA_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) -lz
 
 
@@ -89,13 +89,13 @@ ngap_build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) bes_default_co
 ngap_build_dmrpp_LDADD =  \
     $(abs_top_builddir)/cmdln/CmdTranslation.o \
     $(abs_top_builddir)/xmlcommand/libbes_xml_command.la \
-    $(abs_top_builddir)/dap/.libs/libdap_module.a \
+    $(BES_DAP_LIB) \
     $(BES_STANDALONE_LIB)  $(BES_DISPATCH_LIB) \
     $(BES_XML_CMD_LIB) \
-    $(abs_top_builddir)/modules/hdf5_handler/gctp/src/libGctp.a \
     $(BES_EXTRA_LIBS) $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) \
     $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) \
     $(XML2_LIBS) $(READLINE_LIBS) -lz
+#    $(abs_top_builddir)/modules/hdf5_handler/gctp/src/libGctp.a
 #    $(HDF5_MODULE_OBJS)
 
 
