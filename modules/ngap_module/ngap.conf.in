@@ -4,10 +4,9 @@ BES.Include=dap.conf
 BES.modules+=ngap
 BES.module.ngap=@bes_modules_dir@/libngap_module.so
 
-
-
 NGAP.Cache.dir=/tmp
 NGAP.Cache.prefix=ngap_
 NGAP.Cache.size=500
 
 NGAP.inject_data_urls=true
+
