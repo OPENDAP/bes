@@ -15,8 +15,8 @@ noinst_DATA = bes.conf bes.nc4.conf
 
 CLEANFILES = bes.conf bes.nc4.conf
 
-EXTRA_DIST = bescmd $(TESTSUITE).at $(TESTSUITE) atlocal.in \
-$(BES_CONF_IN) $(BES_NC4EN_CONF_IN) package.m4
+EXTRA_DIST = bescmd $(TESTSUITE).at $(TESTSUITE) $(TESTSUITE_NC4).at $(TESTSUITE_NC4) \
+atlocal.in $(BES_CONF_IN) $(BES_NC4_CONF_IN) package.m4
 
 DISTCLEANFILES = atconfig
 
