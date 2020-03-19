@@ -56,7 +56,7 @@ using namespace std;
 using namespace bes;
 
 #define UID_CONTEXT "uid"
-#define ACCESS_TOKEN_CONTEXT "access_token"
+#define AUTH_TOKEN_CONTEXT "edl_auth_token"
 
 namespace ngap {
 
@@ -71,19 +71,28 @@ namespace ngap {
      * @see NgapUtils
      */
     NgapContainer::NgapContainer(const string &sym_name,
-                                 const string &real_name, const string &type) :
-            BESContainer(sym_name, real_name, type), d_dmrpp_rresource(0) {
+                                 const string &real_name,
+                                 const string &type) :
+            BESContainer(sym_name, real_name, type),
+            d_dmrpp_rresource(0),
+            d_replace_data_access_url_template(false)  {
 
         NgapApi ngap_api;
         if (type.empty())
             set_container_type("ngap");
 
         bool found;
+        string key_value;
+        TheBESKeys::TheKeys()->get_value(NGAP_INJECT_DATA_URL_KEY,key_value, found);
+        if(found && key_value=="true") {
+            d_replace_data_access_url_template = true;
+        }
+
         string uid = BESContextManager::TheManager()->get_context(UID_CONTEXT, found);
-        string access_token = BESContextManager::TheManager()->get_context(ACCESS_TOKEN_CONTEXT, found);
+        string access_token = BESContextManager::TheManager()->get_context(AUTH_TOKEN_CONTEXT, found);
 
         BESDEBUG(MODULE, prolog << "UID_CONTEXT(" << UID_CONTEXT << "): " << uid << endl);
-        BESDEBUG(MODULE, prolog << "ACCESS_TOKEN_CONTEXT(" << ACCESS_TOKEN_CONTEXT << "): "<< access_token << endl);
+        BESDEBUG(MODULE, prolog << "AUTH_TOKEN_CONTEXT(" << AUTH_TOKEN_CONTEXT << "): "<< access_token << endl);
 
         string data_access_url = ngap_api.convert_ngap_resty_path_to_data_access_url(real_name, uid, access_token );
 
@@ -97,7 +106,9 @@ namespace ngap {
      * TODO: I think this implementation of the copy constructor is incomplete/inadequate. Review and fix as needed.
      */
     NgapContainer::NgapContainer(const NgapContainer &copy_from) :
-            BESContainer(copy_from), d_dmrpp_rresource(copy_from.d_dmrpp_rresource) {
+            BESContainer(copy_from),
+            d_dmrpp_rresource(copy_from.d_dmrpp_rresource),
+            d_replace_data_access_url_template(copy_from.d_replace_data_access_url_template) {
         // we can not make a copy of this container once the request has
         // been made
         if (d_dmrpp_rresource) {
@@ -152,10 +163,17 @@ namespace ngap {
         if (type == "ngap")
             type = "";
 
+
         if(!d_dmrpp_rresource) {
             BESDEBUG( MODULE, prolog << "Building new RemoteResource (dmr++)." << endl );
+            string replace_template;
+            string replace_value;
+            if(d_replace_data_access_url_template) {
+                replace_template = DATA_ACCESS_URL_KEY;
+                replace_value = data_access_url;
+            }
             d_dmrpp_rresource = new ngap::RemoteHttpResource(dmrpp_url);
-            d_dmrpp_rresource->retrieveResource(data_access_url);
+            d_dmrpp_rresource->retrieveResource(replace_template,replace_value);
         }
         BESDEBUG( MODULE, prolog << "Located remote resource." << endl );
 

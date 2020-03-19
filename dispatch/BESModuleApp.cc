@@ -66,9 +66,9 @@ BESModuleApp::~BESModuleApp(void)
  * @param argC argc value passed to the main function
  * @param argV argv value passed to the main function
  */
-int BESModuleApp::initialize(int , char **)
+int BESModuleApp::initialize(int argC, char **argV)
 {
-    int retVal = BESApp::initialize(0, (char **)0);
+    int retVal = BESApp::initialize(argC, argV);
     if (!retVal) {
         try {
             retVal = loadModules();

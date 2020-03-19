@@ -54,6 +54,7 @@ namespace ngap {
 
     private:
         RemoteHttpResource *d_dmrpp_rresource;
+        bool d_replace_data_access_url_template;
 
         // std::vector<std::string> d_collections;
         // std::vector<std::string> d_facets;

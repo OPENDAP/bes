@@ -28,6 +28,7 @@
 #include <iostream>
 #include <sstream>
 #include <memory>
+#include <curl/curl.h>
 
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
@@ -113,20 +114,36 @@ string NgapApi::convert_ngap_resty_path_to_data_access_url(
         throw BESSyntaxUserError(string("The specified path '") + restified_path + "' does not conform to the NGAP request interface API.", __FILE__, __LINE__);
     }
 
+    // Check to make sure all required tokens are present.
     if (tokens[0] != NGAP_PROVIDER_KEY || tokens[2] != NGAP_DATASETS_KEY || tokens[4] != NGAP_GRANULES_KEY) {
         throw BESSyntaxUserError(string("The specified path '") + restified_path + "' does not conform to the NGAP request interface API.", __FILE__, __LINE__);
     }
-
+    // Pick up the values of said tokens.
     string cmr_url = cmr_granule_search_endpoint_url + "?";
-    cmr_url += CMR_PROVIDER + "=" + tokens[1] + "&";
-    cmr_url += CMR_ENTRY_TITLE + "=" + tokens[3] + "&";
-    cmr_url += CMR_GRANULE_UR + "=" + tokens[5];
+
+    char error_buffer[CURL_ERROR_SIZE];
+    CURL *curl = ngap_curl::init(error_buffer);  // This may throw either Error or InternalErr
+    char *esc_url_content;
+
+    esc_url_content = curl_easy_escape( curl, tokens[1].c_str() , tokens[1].size() );
+    cmr_url += CMR_PROVIDER + "=" + esc_url_content + "&";
+    curl_free(esc_url_content);
+
+    esc_url_content = curl_easy_escape( curl, tokens[3].c_str() , tokens[3].size() );
+    cmr_url += CMR_ENTRY_TITLE + "=" + esc_url_content + "&";
+    curl_free(esc_url_content);
+
+    esc_url_content = curl_easy_escape( curl, tokens[5].c_str() , tokens[5].size() );
+    cmr_url += CMR_GRANULE_UR + "=" + esc_url_content;
+    curl_free(esc_url_content);
+    curl_easy_cleanup(curl);
+
 
     BESDEBUG(MODULE, prolog << "CMR Request URL: " << cmr_url << endl);
 #if 1
         BESDEBUG( MODULE, prolog << "Building new RemoteResource." << endl );
         RemoteHttpResource cmr_query(cmr_url, uid, access_token);
-        cmr_query.retrieveResource(data_access_url);
+        cmr_query.retrieveResource();
         rapidjson::Document cmr_response = cmr_query.get_as_json();
 #else
         rapidjson::Document cmr_response = ngap_curl::http_get_as_json(cmr_url);

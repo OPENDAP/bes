@@ -75,11 +75,12 @@ public:
 	static const std::string PREFIX_KEY;
 	static const std::string SIZE_KEY;
 
-    static NgapCache *get_instance(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
+    // static NgapCache *get_instance(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
     static NgapCache *get_instance();
 
+    virtual std::string get_cache_file_name(const std::string &uid, const std::string &src, bool mangle=true);
     virtual std::string get_cache_file_name(const std::string &src, bool mangle=true);
-    inline  std::string get_hash(const std::string &name);
+    inline  std::string get_hash(const std::string &s);
 
 	virtual ~NgapCache() { }
 };

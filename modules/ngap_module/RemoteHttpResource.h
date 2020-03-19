@@ -59,6 +59,12 @@ namespace ngap {
         /// Protect the state of the object, not allowing some method calls before the resource is retrieved.
         bool d_initialized;
 
+        /// User id associated with this request
+        std::string d_uid;
+
+        /// Access/Authentication token for the requesting user.
+        std::string d_echo_token;
+
         /// An pointer to a CURL object to use for any HTTP transactions.
         CURL *d_curl;
 
@@ -109,11 +115,10 @@ namespace ngap {
         }
 
     public:
-        RemoteHttpResource(const std::string &url, const std::string &uid="", const std::string &access_token="");
+        RemoteHttpResource(const std::string &url, const std::string &uid="", const std::string &echo_token="");
         virtual ~RemoteHttpResource();
 
-        void retrieveResource(const std::string &inject_url="");
-
+        void retrieveResource(const string &template_key="", const string &replace_value="");
         /**
          * Returns the DAP type std::string of the RemoteHttpResource
          * @return Returns the DAP type std::string used by the BES Containers.

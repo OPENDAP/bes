@@ -38,6 +38,7 @@
 #include <sstream>
 
 #include <cstdlib>
+#include <BESInternalFatalError.h>
 
 #include "PicoSHA2/picosha2.h"
 
@@ -51,12 +52,16 @@
 
 using std::endl;
 using std::string;
+using std::stringstream;
 
 #ifdef HAVE_ATEXIT
 #define AT_EXIT(x) atexit((x))
 #else
 #define AT_EXIT(x)
 #endif
+
+#define prolog string("NgapCache::").append(__func__).append("() - ")
+
 
 namespace ngap {
 
@@ -80,9 +85,10 @@ unsigned long NgapCache::getCacheSizeFromConfig()
         iss >> size_in_megabytes;
     }
     else {
-        string msg = "NgapCache - The BES Key " + SIZE_KEY + " is not set.";
-        BESDEBUG(MODULE, msg << endl);
-        throw BESInternalError(msg, __FILE__, __LINE__);
+        stringstream msg;
+        msg <<  prolog <<  "The BES Key " << SIZE_KEY << " is not set.";
+        BESDEBUG(MODULE,  msg.str() << endl);
+        throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
     return size_in_megabytes;
 }
@@ -94,9 +100,10 @@ string NgapCache::getCacheDirFromConfig()
     TheBESKeys::TheKeys()->get_value(DIR_KEY, subdir, found);
 
     if (!found) {
-        string msg = "NgapCache - The BES Key " + DIR_KEY + " is not set.";
-        BESDEBUG(MODULE, msg << endl);
-        throw BESInternalError(msg, __FILE__, __LINE__);
+        stringstream msg;
+        msg <<  prolog <<  "The BES Key " + DIR_KEY + " is not set.";
+        BESDEBUG(MODULE,msg.str() << endl);
+        throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
 
     return subdir;
@@ -111,9 +118,10 @@ string NgapCache::getCachePrefixFromConfig()
         prefix = BESUtil::lowercase(prefix);
     }
     else {
-        string msg = "NgapCache - The BES Key " + PREFIX_KEY + " is not set.";
-        BESDEBUG(MODULE, msg << endl);
-        throw BESInternalError(msg, __FILE__, __LINE__);
+        stringstream msg;
+        msg <<  prolog <<  "The BES Key " + PREFIX_KEY + " is not set.";
+        BESDEBUG(MODULE,  msg.str() << endl);
+        throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
 
     return prefix;
@@ -127,23 +135,24 @@ NgapCache::NgapCache()
     string cachePrefix = getCachePrefixFromConfig();
     unsigned long cacheSizeMbytes = getCacheSizeFromConfig();
 
-    BESDEBUG(MODULE,
-        "NgapCache() - Cache configuration params: " << cacheDir << ", " << cachePrefix << ", " << cacheSizeMbytes << endl);
+    BESDEBUG(MODULE,prolog << "NgapCache() - Cache configuration params: " << cacheDir <<
+    ", " << cachePrefix << ", " << cacheSizeMbytes << endl);
 
     initialize(cacheDir, cachePrefix, cacheSizeMbytes);
 
-    BESDEBUG(MODULE, "NgapCache::NgapCache() -  END" << endl);
+    BESDEBUG(MODULE, prolog << "NgapCache::NgapCache() -  END" << endl);
 }
 
 NgapCache::NgapCache(const string &cache_dir, const string &prefix, unsigned long long size)
 {
-    BESDEBUG(MODULE, "NgapCache::NgapCache() -  BEGIN" << endl);
+    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
     initialize(cache_dir, prefix, size);
 
-    BESDEBUG(MODULE, "NgapCache::NgapCache() -  END" << endl);
+    BESDEBUG(MODULE, prolog << "END" << endl);
 }
 
+#if 0
 NgapCache *
 NgapCache::get_instance(const string &cache_dir, const string &cache_file_prefix, unsigned long long max_cache_size)
 {
@@ -166,6 +175,7 @@ NgapCache::get_instance(const string &cache_dir, const string &cache_file_prefix
 
     return d_instance;
 }
+#endif
 
 /** Get the default instance of the NgapCache object. This will read "TheBESKeys" looking for the values
  * of SUBDIR_KEY, PREFIX_KEY, an SIZE_KEY to initialize the cache.
@@ -180,17 +190,17 @@ NgapCache::get_instance()
             if (!d_enabled) {
                 delete d_instance;
                 d_instance = 0;
-                BESDEBUG(MODULE, "NgapCache::"<<__func__ << "() - " << "Cache is DISABLED"<< endl);
+                BESDEBUG(MODULE, prolog << "Cache is DISABLED"<< endl);
             }
             else {
                 AT_EXIT(delete_instance);
 
-                BESDEBUG(MODULE, "NgapCache::" << __func__ << "() - " << "Cache is ENABLED"<< endl);
+                BESDEBUG(MODULE, prolog << "Cache is ENABLED"<< endl);
             }
         }
         catch (BESInternalError &bie) {
-            BESDEBUG(MODULE,
-                "[ERROR] NgapCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message() << endl);
+            BESDEBUG(MODULE,prolog << "[ERROR] NgapCache::get_instance(): "
+                                      "Failed to obtain cache! msg: " << bie.get_message() << endl);
         }
     }
 
@@ -199,22 +209,41 @@ NgapCache::get_instance()
 
 
 /**
- * Compute the SHA256 hash for the item name
+ * Compute the SHA256 hash for the string s
  *
- * @param name The name to hash
- * @return The SHA256 hash of the name.
+ * @param s The string to hash
+ * @return The SHA256 hash of the string s.
  */
 inline string
-NgapCache::get_hash(const string &name)
+NgapCache::get_hash(const string &s)
 {
-    if (name.empty())
-        throw BESInternalError("Empty name passed to the Metadata Store.", __FILE__, __LINE__);
-    return picosha2::hash256_hex_string(name[0] == '/' ? name : "/" + name);
+    if (s.empty()){
+        string msg = ".";
+        BESDEBUG(MODULE, prolog << msg<< endl);
+        throw BESInternalError(msg, __FILE__, __LINE__);
+    }
+    return picosha2::hash256_hex_string(s[0] == '/' ? s : "/" + s);
 }
 
-string NgapCache::get_cache_file_name(const string &src, bool /*mangle*/){
-    return  BESUtil::assemblePath(this->get_cache_directory(),get_cache_file_prefix() + get_hash(src));
-}
+    string NgapCache::get_cache_file_name(const string &uid, const string &src,  bool /*mangle*/){
+
+        string uid_part;
+        if(!uid.empty())
+            uid_part = uid + "_";
+
+        return  BESUtil::assemblePath(this->get_cache_directory(),
+                                      get_cache_file_prefix() + uid_part + get_hash(src));
+    }
+
+
+    string NgapCache::get_cache_file_name( const string &src,  bool /*mangle*/){
+
+        string msg = prolog+ "ERROR! THIS METHOD IS NOT TO BE USED IN NGAP.";
+        BESDEBUG(MODULE,  msg<< endl);
+        throw BESInternalFatalError(msg, __FILE__, __LINE__);
+
+        // return  get_cache_file_name("",src);
+    }
 
 } // namespace ngap
 
