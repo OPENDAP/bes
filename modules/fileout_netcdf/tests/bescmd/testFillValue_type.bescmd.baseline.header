@@ -1,0 +1,48 @@
+netcdf test {
+dimensions:
+	dim1 = 1643 ;
+	dim2 = 60 ;
+	dim3 = 1643 ;
+	dim4 = 60 ;
+	dim5 = 1643 ;
+	dim6 = 60 ;
+variables:
+	float _UVB_Geolocation_Fields_Latitude(dim1, dim2) ;
+		_UVB_Geolocation_Fields_Latitude:HDF5_OBJ_FULLPATH = "/UVB/Geolocation Fields/Latitude" ;
+		_UVB_Geolocation_Fields_Latitude:FillValue = -1.267651e+30f ;
+		_UVB_Geolocation_Fields_Latitude:MissingValue = -1.267651e+30f ;
+		_UVB_Geolocation_Fields_Latitude:ScaleFactor = 1. ;
+		_UVB_Geolocation_Fields_Latitude:Offset = 0. ;
+		_UVB_Geolocation_Fields_Latitude:Title = "Latitude" ;
+		_UVB_Geolocation_Fields_Latitude:Units = "degree" ;
+		_UVB_Geolocation_Fields_Latitude:UniqueFieldDefinition = "Aura-Shared" ;
+		_UVB_Geolocation_Fields_Latitude:fonc_original_name = "/UVB/Geolocation Fields/Latitude" ;
+	float _UVB_Geolocation_Fields_Longitude(dim3, dim4) ;
+		_UVB_Geolocation_Fields_Longitude:HDF5_OBJ_FULLPATH = "/UVB/Geolocation Fields/Longitude" ;
+		_UVB_Geolocation_Fields_Longitude:FillValue = -1.267651e+30f ;
+		_UVB_Geolocation_Fields_Longitude:MissingValue = -1.267651e+30f ;
+		_UVB_Geolocation_Fields_Longitude:ScaleFactor = 1. ;
+		_UVB_Geolocation_Fields_Longitude:Offset = 0. ;
+		_UVB_Geolocation_Fields_Longitude:Title = "Longitude" ;
+		_UVB_Geolocation_Fields_Longitude:Units = "degree" ;
+		_UVB_Geolocation_Fields_Longitude:UniqueFieldDefinition = "Aura-Shared" ;
+		_UVB_Geolocation_Fields_Longitude:fonc_original_name = "/UVB/Geolocation Fields/Longitude" ;
+	int _UVB_Geolocation_Fields_TerrainHeight(dim5, dim6) ;
+		_UVB_Geolocation_Fields_TerrainHeight:HDF5_OBJ_FULLPATH = "/UVB/Geolocation Fields/TerrainHeight" ;
+		_UVB_Geolocation_Fields_TerrainHeight:FillValue = 1 ;
+		_UVB_Geolocation_Fields_TerrainHeight:MissingValue = 1s ;
+		_UVB_Geolocation_Fields_TerrainHeight:ScaleFactor = 1. ;
+		_UVB_Geolocation_Fields_TerrainHeight:Offset = 0. ;
+		_UVB_Geolocation_Fields_TerrainHeight:Title = "Terrain Height for Center Co-ordinate of Ground Pixel" ;
+		_UVB_Geolocation_Fields_TerrainHeight:Units = "m" ;
+		_UVB_Geolocation_Fields_TerrainHeight:UniqueFieldDefinition = "OMI-Specific" ;
+		_UVB_Geolocation_Fields_TerrainHeight:fonc_original_name = "/UVB/Geolocation Fields/TerrainHeight" ;
+
+// global attributes:
+		:HDF5_ROOT_GROUP.UVB.Geolocation_Fields.Dataset = "Latitude\n",
+			"Longitude\n",
+			"TerrainHeight" ;
+		:_UVB_.HDF5_OBJ_FULLPATH = "/UVB/" ;
+		:_UVB_Geolocation_Fields_.HDF5_OBJ_FULLPATH = "/UVB/Geolocation Fields/" ;
+		:history = "removed date-time Hyrax OMI-Aura_L2-OMUVB.h5?" ;
+}
