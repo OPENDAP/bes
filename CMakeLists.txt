@@ -12,6 +12,8 @@ include_directories(/usr/local/Cellar/openssl/1.0.2q/include/)
 include_directories(/usr/local/Cellar/openssl/1.0.2r/include/)
 include_directories(/usr/local/include/)
 
+include_directories(../build/deps/include)
+
 # These should not be referenced outside of libdap. jhrg 12/5/19
 # include_directories(../libdap4/d4_ce)
 # include_directories(../libdap4/d4_function)
