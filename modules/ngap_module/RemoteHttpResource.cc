@@ -206,7 +206,7 @@ namespace ngap {
 
                 // #########################################################################################################
                 // I think in this if() is where we need to load the headers from the cache if we have them.
-                string hdr_filename = cache->get_cache_file_name(d_remoteResourceUrl) + ".hdrs";
+                string hdr_filename = cache->get_cache_file_name(d_uid,d_remoteResourceUrl) + ".hdrs";
                 std::ifstream hdr_ifs(hdr_filename.c_str());
                 try {
                     BESDEBUG(MODULE, prolog << "Reading response headers from: " << hdr_filename << endl);
