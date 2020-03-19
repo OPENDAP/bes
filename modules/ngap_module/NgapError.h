@@ -1,10 +1,9 @@
 // -*- mode: c++; c-basic-offset:4 -*-
-//
-// NgapError.h
-//
-// This file is part of BES ngap_module
-//
-// Copyright (c) 2018 OPeNDAP, Inc.
+
+// This file is part of ngap_module, A C++ module that can be loaded in to
+// the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
+
+// Copyright (c) 2020 OPeNDAP, Inc.
 // Author: Nathan Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
@@ -22,8 +21,7 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// Please read the full copyright statement in the file COPYRIGHT_URI.
-//
+
 #include <BESInternalError.h>
 
 #ifndef MODULES_NGAP_MODULE_NGAPERROR_H_
