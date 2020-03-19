@@ -32,7 +32,10 @@
 #include <string>
 #include <iostream>
 
+#include "rapidjson/document.h"
+
 #include "BESInternalError.h"
+#include "BESForbiddenError.h"
 
 #include "BESDebug.h"
 #include "BESUtil.h"
@@ -56,9 +59,14 @@ namespace ngap {
 *
 * @param url Is a URL string that identifies the remote resource.
 */
-    RemoteHttpResource::RemoteHttpResource(const string &url) {
-        d_initialized = false;
+    RemoteHttpResource::RemoteHttpResource(const std::string &url, const std::string &uid, const std::string &echo_token){
+
         d_fd = 0;
+        d_initialized = false;
+
+        d_uid = uid;
+        d_echo_token = echo_token;
+
         d_curl = 0;
         d_resourceCacheFileName.clear();
         d_response_headers = new vector<string>();
@@ -71,8 +79,19 @@ namespace ngap {
         }
 
         d_remoteResourceUrl = url;
-
         BESDEBUG(MODULE, prolog << "URL: " << d_remoteResourceUrl << endl);
+
+
+        if(!d_uid.empty()){
+            string client_id_hdr = "User-Id: " + d_uid;
+            BESDEBUG(MODULE, prolog << client_id_hdr << endl);
+            d_request_headers->push_back(client_id_hdr);
+        }
+        if(!d_echo_token.empty()){
+            string echo_token_hdr = "Echo-Token: " + d_echo_token;
+            BESDEBUG(MODULE, prolog << echo_token_hdr << endl);
+            d_request_headers->push_back(echo_token_hdr);
+        }
 
         // EXAMPLE: returned value parameter for CURL *
         //
@@ -123,6 +142,18 @@ namespace ngap {
         d_remoteResourceUrl.clear();
     }
 
+    std::string RemoteHttpResource::getCacheFileName() {
+        if (!d_initialized) {
+            throw BESInternalError(prolog + "STATE ERROR: Remote Resource " + d_remoteResourceUrl +
+                                   " has Not Been Retrieved.", __FILE__, __LINE__);
+        }
+
+
+
+
+        return d_resourceCacheFileName;
+    }
+
 
     /**
      * This method will check the cache for the resource. If it's not there then it will lock the cache and retrieve
@@ -130,8 +161,12 @@ namespace ngap {
      *
      * When this method returns the RemoteHttpResource object is fully initialized and the cache file name for the resource
      * is available along with an open file descriptor for the (now read-locked) cache file.
+     *
+     * @param uid
+     * @param access_token
+     * @param inject_url
      */
-    void RemoteHttpResource::retrieveResource(const std::string &inject_url){
+    void RemoteHttpResource::retrieveResource(const string &template_key, const string &replace_value) {
         BESDEBUG(MODULE, prolog << "BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
 
         if (d_initialized) {
@@ -151,7 +186,7 @@ namespace ngap {
 
         // Get the name of the file in the cache (either the code finds this file or
         // or it makes it).
-        d_resourceCacheFileName = cache->get_cache_file_name(d_remoteResourceUrl);
+        d_resourceCacheFileName = cache->get_cache_file_name(d_uid,d_remoteResourceUrl);
         BESDEBUG(MODULE, prolog << "d_resourceCacheFileName: " << d_resourceCacheFileName << endl);
 
         // @TODO MAKE THIS RETRIEVE THE CACHED DATA TYPE IF THE CACHED RESPONSE IF FOUND
@@ -206,27 +241,22 @@ namespace ngap {
                 }
 
                 //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-                // If we are injecting the data URL, as per the BES configuration, we do that here.
+                // If we are filtering the response (for example to inject data URL into a dmr++ file),
                 // The file is locked and we have the information required to make the substitution.
                 // This is controlled by:
-                //  - The value of the BES key NGAP_INJECT_DATA_URL_KEY (if present)
-                //  - The inject_url string must not be empty.
-                if(!inject_url.empty()){
-                    bool found;
-                    string key_value;
-                    TheBESKeys::TheKeys()->get_value(NGAP_INJECT_DATA_URL_KEY,key_value, found);
-                    if(found && key_value=="true") {
-                        unsigned int count = filter_retrieved_resource(DATA_ACCESS_URL_KEY,inject_url);
-                        BESDEBUG(MODULE, prolog << "Replaced  " << count << " instance(s) of NGAP_DATA_ACCESS_URL template(" <<
-                                                DATA_ACCESS_URL_KEY << ") in cached RemoteResource" << endl);
-                    }
+                //  - The template_key string must not be empty.
+                if(!template_key.empty()){
+                        unsigned int count = filter_retrieved_resource(template_key,replace_value);
+                        BESDEBUG(MODULE, prolog << "Replaced  " << count <<
+                        " instance(s) of template(" <<
+                        template_key << ") with "<< replace_value << " in cached RemoteResource" << endl);
                 }
 
                 //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
                 // I think right here is where I would be able to cache the data type/response headers. While I have
                 // the exclusive lock I could open another cache file for metadata and write to it.
                 {
-                    string hdr_filename = cache->get_cache_file_name(d_remoteResourceUrl) + ".hdrs";
+                    string hdr_filename = cache->get_cache_file_name(d_uid,d_remoteResourceUrl) + ".hdrs";
                     std::ofstream hdr_out(hdr_filename.c_str());
                     try {
                         for (size_t i = 0; i < this->d_response_headers->size(); i++) {
@@ -274,7 +304,7 @@ namespace ngap {
 
             string msg = prolog + "Failed to acquire cache read lock for remote resource: '";
             msg += d_remoteResourceUrl + "\n";
-            throw libdap::Error(msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
 
         }
         catch (...) {
@@ -302,20 +332,22 @@ namespace ngap {
         try {
             BESDEBUG(MODULE,
                      "RemoteHttpResource::writeResourceToFile() - Saving resource " << d_remoteResourceUrl
-                                                                                    << " to cache file "
-                                                                                    << d_resourceCacheFileName << endl);
-
+                         << " to cache file " << d_resourceCacheFileName << endl);
             status = ngap_curl::read_url(d_curl, d_remoteResourceUrl, fd, d_response_headers, d_request_headers,
                                          d_error_buffer); // Throws Error.
 
             if (status >= 400) {
-                BESDEBUG(MODULE, prolog << "HTTP returned an error status: " << status << endl);
+                BESDEBUG(MODULE, prolog << "ERROR: HTTP request returned status: " << status << endl);
                 // delete resp_hdrs; resp_hdrs = 0;
-                string msg = "Error while reading the URL: '";
-                msg += d_remoteResourceUrl;
-                msg += "'The HTTP request returned a status of " + libdap::long_to_string(status) + " which means '";
-                msg += ngap_curl::http_status_to_string(status) + "' \n";
-                throw libdap::Error(msg);
+                stringstream msg;
+                msg << prolog << "Error while reading the URL: \"" <<  d_remoteResourceUrl << "\", ";;
+                for(unsigned int i=0; i<d_request_headers->size() ;i++){
+                    msg << "reqhdr[" << i << "]: \"" << (*d_request_headers)[i] << "\", ";
+                }
+                msg <<    "The HTTP request returned a status of " << status << " which means '" <<
+                    ngap_curl::http_status_to_string(status) << "'" << endl;
+                BESDEBUG(MODULE, prolog << "ERROR: HTTP request returned status: " << status << endl);
+                throw BESForbiddenError(msg.str(),__FILE__,__LINE__);
             }
             BESDEBUG(MODULE,
                      prolog << "Resource " << d_remoteResourceUrl << " saved to cache file " << d_resourceCacheFileName
@@ -332,7 +364,7 @@ namespace ngap {
 
             ingest_http_headers_and_type();
         }
-        catch (libdap::Error &e) {
+        catch (BESError &e) {
             throw;
         }
         BESDEBUG(MODULE, prolog << "END" << endl);
@@ -470,6 +502,58 @@ namespace ngap {
 
         return replace_count;
     }
+
+
+    /**
+     * Returns cache file content in a string..
+     */
+    std::string RemoteHttpResource::get_response_as_string(){
+
+        if(!d_initialized){
+            stringstream msg;
+            msg << "ERROR. Internal state error. " << __PRETTY_FUNCTION__ << " was called prior to retrieving resource.";
+            BESDEBUG(MODULE, prolog << msg.str() << endl);
+            throw BESInternalError(msg.str(),__FILE__,__LINE__);
+        }
+        string cache_file = getCacheFileName();
+        //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+        // Set up dmr input stream.
+        // If no valid dmr input file is provided the code tries to find a dmr in the mds.
+        std::ifstream dmr_istream(cache_file, std::ofstream::in);
+
+        // If the dmr_filename is not valid, the stream will not open. Empty is not valid.
+        if(dmr_istream.is_open()){
+            // If it's open we've got a valid filename.
+            BESDEBUG(MODULE, prolog << "Using cached file: " << cache_file << endl);
+            std::ifstream t(cache_file);
+            std::stringstream buffer;
+            buffer << t.rdbuf();
+            return buffer.str();
+        }
+        else {
+            stringstream msg;
+            msg << "ERROR. Failed to open cache file " << cache_file << " for reading.";
+            BESDEBUG(MODULE, prolog << msg.str() << endl);
+            throw BESInternalError(msg.str(),__FILE__,__LINE__);
+        }
+
+    }
+
+    /**
+     * @brief get_as_json() This function returns the cached resource parsed into a JSON document.
+     *
+     * @param target_url The URL to dereference.
+     * @TODO Move this to ../curl_utils.cc (Requires moving the rapidjson lib too)
+     * @return JSON document parsed from the response document returned by target_url
+     */
+    rapidjson::Document RemoteHttpResource::get_as_json() {
+        string response = get_response_as_string();
+        rapidjson::Document d;
+        d.Parse(response.c_str());
+        return d;
+    }
+
+
 
 }
 

@@ -35,12 +35,12 @@
 #include "BESSyntaxUserError.h"
 #include "BESError.h"
 #include "BESInternalError.h"
+#include "NgapNames.h"
 #include "NgapUtils.h"
 #include "WhiteList.h"
 
 #include "curl_utils.h"
 
-#define MODULE "ngap"
 
 using namespace std;
 
@@ -57,8 +57,8 @@ const char *http_client_errors[CLIENT_ERR_MAX - CLIENT_ERR_MIN + 1] =
                 "Unauthorized: Contact the server administrator.",
                 "Payment Required.",
                 "Forbidden: Contact the server administrator.",
-                "Not Found: The data source or server could not be found.\n"
-                "Often this means that the OPeNDAP server is missing or needs attention.\n"
+                "Not Found: The data source or server could not be found."
+                "Often this means that the OPeNDAP server is missing or needs attention."
                 "Please contact the server administrator.",
                 "Method Not Allowed.",
                 "Not Acceptable.",

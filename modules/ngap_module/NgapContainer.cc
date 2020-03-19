@@ -5,8 +5,8 @@
 // This file is part of ngap_module, A C++ module that can be loaded in to
 // the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
 
-// Copyright (c) 2002,2003 OPeNDAP, Inc.
-// Author: Patrick West <pwest@ucar.edu>
+// Copyright (c) 2020 OPeNDAP, Inc.
+// Author: Nathan Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -23,9 +23,8 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-
 // Authors:
-//      pcw       Patrick West <pwest@ucar.edu>
+//      ndp       Nathan Potter <ndp@opendap.org>
 
 #include <cstdio>
 #include <map>
@@ -34,13 +33,14 @@
 #include <fstream>
 #include <streambuf>
 
-#include <BESSyntaxUserError.h>
+#include "BESSyntaxUserError.h"
 #include "BESNotFoundError.h"
-#include <BESInternalError.h>
-#include <BESDebug.h>
-#include <BESUtil.h>
-#include <TheBESKeys.h>
-#include <WhiteList.h>
+#include "BESInternalError.h"
+#include "BESDebug.h"
+#include "BESUtil.h"
+#include "TheBESKeys.h"
+#include "WhiteList.h"
+#include "BESContextManager.h"
 
 #include "NgapContainer.h"
 #include "NgapApi.h"
@@ -54,6 +54,9 @@
 using namespace std;
 using namespace bes;
 
+#define UID_CONTEXT "uid"
+#define AUTH_TOKEN_CONTEXT "edl_auth_token"
+
 namespace ngap {
 
     /** @brief Creates an instances of NgapContainer with symbolic name and real
@@ -62,19 +65,35 @@ namespace ngap {
      * The real_name is the remote request URL.
      *
      * @param sym_name symbolic name representing this remote container
-     * @param real_name the remote request URL
+     * @param real_name The NGAP restified path.
      * @throws BESSyntaxUserError if the url does not validate
      * @see NgapUtils
      */
     NgapContainer::NgapContainer(const string &sym_name,
-                                 const string &real_name, const string &type) :
-            BESContainer(sym_name, real_name, type), d_dmrpp_rresource(0) {
+                                 const string &real_name,
+                                 const string &type) :
+            BESContainer(sym_name, real_name, type),
+            d_dmrpp_rresource(0),
+            d_replace_data_access_url_template(false) {
 
         NgapApi ngap_api;
         if (type.empty())
             set_container_type("ngap");
 
-        string data_access_url = ngap_api.convert_ngap_resty_path_to_data_access_url(real_name);
+        bool found;
+        string key_value;
+        TheBESKeys::TheKeys()->get_value(NGAP_INJECT_DATA_URL_KEY, key_value, found);
+        if (found && key_value == "true") {
+            d_replace_data_access_url_template = true;
+        }
+
+        string uid = BESContextManager::TheManager()->get_context(UID_CONTEXT, found);
+        string access_token = BESContextManager::TheManager()->get_context(AUTH_TOKEN_CONTEXT, found);
+
+        BESDEBUG(MODULE, prolog << "UID_CONTEXT(" << UID_CONTEXT << "): " << uid << endl);
+        BESDEBUG(MODULE, prolog << "AUTH_TOKEN_CONTEXT(" << AUTH_TOKEN_CONTEXT << "): " << access_token << endl);
+
+        string data_access_url = ngap_api.convert_ngap_resty_path_to_data_access_url(real_name, uid, access_token);
 
         set_real_name(data_access_url);
         // Because we know the name is really a URL, then we know the "relative_name" is meaningless
@@ -86,7 +105,9 @@ namespace ngap {
      * TODO: I think this implementation of the copy constructor is incomplete/inadequate. Review and fix as needed.
      */
     NgapContainer::NgapContainer(const NgapContainer &copy_from) :
-            BESContainer(copy_from), d_dmrpp_rresource(copy_from.d_dmrpp_rresource) {
+            BESContainer(copy_from),
+            d_dmrpp_rresource(copy_from.d_dmrpp_rresource),
+            d_replace_data_access_url_template(copy_from.d_replace_data_access_url_template) {
         // we can not make a copy of this container once the request has
         // been made
         if (d_dmrpp_rresource) {
@@ -120,7 +141,6 @@ namespace ngap {
     }
 
 
-
     /** @brief access the remote target response by making the remote request
      *
      * @return full path to the remote request response data file
@@ -128,40 +148,46 @@ namespace ngap {
      */
     string NgapContainer::access() {
 
-        BESDEBUG( MODULE, prolog << "BEGIN" << endl);
+        BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
         // Since this the ngap we know that the real_name is a URL.
-        string data_access_url  = get_real_name();
-        string dmrpp_url  = data_access_url + ".dmrpp";
+        string data_access_url = get_real_name();
+        string dmrpp_url = data_access_url + ".dmrpp";
 
-        BESDEBUG( MODULE, prolog << "data_access_url: " << data_access_url << endl);
-        BESDEBUG( MODULE, prolog << "dmrpp_url: " << dmrpp_url << endl);
+        BESDEBUG(MODULE, prolog << "data_access_url: " << data_access_url << endl);
+        BESDEBUG(MODULE, prolog << "dmrpp_url: " << dmrpp_url << endl);
 
         string type = get_container_type();
         if (type == "ngap")
             type = "";
 
-        if(!d_dmrpp_rresource) {
-            BESDEBUG( MODULE, prolog << "Building new RemoteResource." << endl );
+
+        if (!d_dmrpp_rresource) {
+            BESDEBUG(MODULE, prolog << "Building new RemoteResource (dmr++)." << endl);
+            string replace_template;
+            string replace_value;
+            if (d_replace_data_access_url_template) {
+                replace_template = DATA_ACCESS_URL_KEY;
+                replace_value = data_access_url;
+            }
             d_dmrpp_rresource = new ngap::RemoteHttpResource(dmrpp_url);
-            d_dmrpp_rresource->retrieveResource(data_access_url);
+            d_dmrpp_rresource->retrieveResource(replace_template, replace_value);
         }
-        BESDEBUG( MODULE, prolog << "Located remote resource." << endl );
+        BESDEBUG(MODULE, prolog << "Located remote resource." << endl);
 
         string cachedResource = d_dmrpp_rresource->getCacheFileName();
-        BESDEBUG( MODULE, prolog << "Using local cache file: " << cachedResource << endl );
+        BESDEBUG(MODULE, prolog << "Using local cache file: " << cachedResource << endl);
 
         type = d_dmrpp_rresource->getType();
         set_container_type(type);
-        BESDEBUG( MODULE, prolog << "Type: " << type << endl );
-        BESDEBUG( MODULE, prolog << "Done accessing " << get_real_name() << " returning cached file " <<
-                  cachedResource << endl);
-        BESDEBUG( MODULE, prolog << "Done accessing " << *this << endl);
-        BESDEBUG( MODULE, prolog << "END" << endl);
+        BESDEBUG(MODULE, prolog << "Type: " << type << endl);
+        BESDEBUG(MODULE, prolog << "Done accessing " << get_real_name() << " returning cached file " <<
+                                cachedResource << endl);
+        BESDEBUG(MODULE, prolog << "Done accessing " << *this << endl);
+        BESDEBUG(MODULE, prolog << "END" << endl);
 
         return cachedResource;    // this should return the file name from the NgapCache
     }
-
 
 
     /** @brief release the resources
@@ -172,12 +198,12 @@ namespace ngap {
      */
     bool NgapContainer::release() {
         if (d_dmrpp_rresource) {
-            BESDEBUG( MODULE, prolog << "Releasing RemoteResource" << endl);
+            BESDEBUG(MODULE, prolog << "Releasing RemoteResource" << endl);
             delete d_dmrpp_rresource;
             d_dmrpp_rresource = 0;
         }
 
-        BESDEBUG( MODULE, prolog << "Done releasing Ngap response" << endl);
+        BESDEBUG(MODULE, prolog << "Done releasing Ngap response" << endl);
         return true;
     }
 

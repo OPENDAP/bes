@@ -59,6 +59,12 @@ namespace ngap {
         /// Protect the state of the object, not allowing some method calls before the resource is retrieved.
         bool d_initialized;
 
+        /// User id associated with this request
+        std::string d_uid;
+
+        /// Access/Authentication token for the requesting user.
+        std::string d_echo_token;
+
         /// An pointer to a CURL object to use for any HTTP transactions.
         CURL *d_curl;
 
@@ -80,10 +86,7 @@ namespace ngap {
         /// The HTTP response headers returned by the request for the remote resource.
         std::map<std::string,std::string> *d_http_response_headers; // Response headers
 
-        /**
-         * Makes the curl call to write the resource to a file, determines DAP type of the content, and rewinds
-         * the file descriptor.
-         */
+
         void writeResourceToFile(int fd);
 
         /**
@@ -112,11 +115,10 @@ namespace ngap {
         }
 
     public:
-        RemoteHttpResource(const std::string &url);
+        RemoteHttpResource(const std::string &url, const std::string &uid="", const std::string &echo_token="");
         virtual ~RemoteHttpResource();
 
-        void retrieveResource(const std::string &inject_url="");
-
+        void retrieveResource(const string &template_key="", const string &replace_value="");
         /**
          * Returns the DAP type std::string of the RemoteHttpResource
          * @return Returns the DAP type std::string used by the BES Containers.
@@ -130,16 +132,15 @@ namespace ngap {
          * Returns the (read-locked) cache file name on the local system in which the content of the remote
          * resource is stored. Deleting of the instance of this class will release the read-lock.
          */
-        std::string getCacheFileName()
-        {
-            if (!d_initialized)
-                throw libdap::Error(
-                        "RemoteHttpResource::getCacheFileName() - STATE ERROR: Remote Resource Has Not Been Retrieved.");
-            return d_resourceCacheFileName;
-        }
+        std::string getCacheFileName();
 
         std::string get_http_response_header(const std::string header_name);
 
+        /**
+         * Returns cache file content in a string..
+         */
+        std::string get_response_as_string();
+        rapidjson::Document get_as_json() ;
 
         /**
          * Returns a std::vector of HTTP headers received along with the response from the request for the remote resource..
