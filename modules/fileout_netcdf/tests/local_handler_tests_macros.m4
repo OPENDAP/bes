@@ -6,7 +6,7 @@ dnl Add NC4 enhanced macros, mainly I have to use another BES conf for these tes
 dnl There may be a better approach. Handle them in the future if necessary. KY 2020-02-12
 m4_define([AT_BESCMD_RESPONSE_TEST_NC4_ENHANCED], [dnl
 
-    AT_SETUP([besstandalone -c bes.nc4_enhanced.conf -i $1])
+    AT_SETUP([besstandalone -c bes.nc4.conf -i $1])
     AT_KEYWORDS([nc4 enhanced])
 
     input=$abs_srcdir/$1
@@ -18,11 +18,11 @@ m4_define([AT_BESCMD_RESPONSE_TEST_NC4_ENHANCED], [dnl
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
-        AT_CHECK([besstandalone $repeat -c $abs_builddir/bes.nc4_enhanced.conf -i $input], [], [stdout])
+        AT_CHECK([besstandalone $repeat -c $abs_builddir/bes.nc4.conf -i $input], [], [stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
-        AT_CHECK([besstandalone $repeat -c $abs_builddir/bes.nc4_enhanced.conf -i $input], [], [stdout])
+        AT_CHECK([besstandalone $repeat -c $abs_builddir/bes.nc4.conf -i $input], [], [stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test z$pass = zxfail])
         ])
@@ -32,7 +32,7 @@ m4_define([AT_BESCMD_RESPONSE_TEST_NC4_ENHANCED], [dnl
 
 m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST_NC4_ENHANCED],  [dnl
 
-    AT_SETUP([besstandalone -c bes.nc4_enhanced.conf -i $1])
+    AT_SETUP([besstandalone -c bes.nc4.conf -i $1])
     AT_KEYWORDS([nc4 enhanced binary])
     
     input=$abs_srcdir/$1
@@ -41,11 +41,11 @@ m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST_NC4_ENHANCED],  [dnl
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/bes.nc4_enhanced.conf -i $input | getdap -Ms -], [0], [stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/bes.nc4.conf -i $input | getdap -Ms -], [0], [stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/bes.nc4_enhanced.conf -i $input | getdap -Ms -], [0], [stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/bes.nc4.conf -i $input | getdap -Ms -], [0], [stdout])
         AT_CHECK([diff -b -B $baseline stdout], [0], [ignore])
         AT_XFAIL_IF([test z$pass = zxfail])
         ])
@@ -55,7 +55,7 @@ m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST_NC4_ENHANCED],  [dnl
 
 m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST_NC4_ENHANCED],  [dnl
 
-    AT_SETUP([besstandalone -c bes.nc4_enhanced.conf -i $1])
+    AT_SETUP([besstandalone -c bes.nc4.conf -i $1])
     AT_KEYWORDS([nc4 enhanced binary DAP4])
 
     input=$abs_srcdir/$1
@@ -64,11 +64,11 @@ m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST_NC4_ENHANCED],  [dnl
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/bes.nc4_enhanced.conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/bes.nc4.conf -i $input | getdap4 -D -M -s -], [], [stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/bes.nc4_enhanced.conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/bes.nc4.conf -i $input | getdap4 -D -M -s -], [], [stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test z$pass = zxfail])
         ])
@@ -83,7 +83,7 @@ dnl requires ncdump be accessible.
 
 m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED],  [dnl
 
-    AT_SETUP([besstandalone -c bes.nc4_enhanced.conf -i $1 > test.nc])
+    AT_SETUP([besstandalone -c bes.nc4.conf -i $1 > test.nc])
     AT_KEYWORDS([nc4 enhanced binary ncdump])
 
     input=$abs_srcdir/$1
@@ -92,7 +92,7 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED],  [dnl
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
          [
-         AT_CHECK([besstandalone -c $abs_builddir/bes.nc4_enhanced.conf -i $input > test.nc])
+         AT_CHECK([besstandalone -c $abs_builddir/bes.nc4.conf -i $input > test.nc])
 
          dnl first get the version number, then the header, then the data
          AT_CHECK([ncdump -k test.nc > $baseline.ver.tmp])
@@ -102,7 +102,7 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED],  [dnl
          REMOVE_DATE_TIME([$baseline.data.tmp])
          ],
          [
-         AT_CHECK([besstandalone -c $abs_builddir/bes.nc4_enhanced.conf -i $input > test.nc])
+         AT_CHECK([besstandalone -c $abs_builddir/bes.nc4.conf -i $input > test.nc])
         
          AT_CHECK([ncdump -k test.nc > tmp])
          AT_CHECK([diff -b -B $baseline.ver tmp])

@@ -5,6 +5,7 @@ AT_INIT([modules/fileout_netcdf/tests testsuite])
 T_TESTED([besstandalone])
 
 m4_include([../../handler_tests_macros.m4])
+m4_include([local_handler_tests_macros.m4])
 
 dnl These DDS and Data responses are here as a sanity check so that when/if a test 
 dnl fails, it is easy to see what kinds of variables are being sent to the
@@ -116,3 +117,29 @@ AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/gridNwm.bescmd)
 
 dnl Test added for the fix for HK-23.
 AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/testFillValue.bescmd)
+
+dnl NC4 test
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_NC4_ENHANCED(bescmd/simpleT00.8.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_NC4_ENHANCED(bescmd/simpleT00.9.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/simpleT00.10.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/arrayT.4.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/arrayT01.4.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/cedar.4.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/fits.4.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/gridT.12.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/namesT.4.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/structT00.4.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/structT01.4.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/structT02.4.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/t_string.3.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/hdf4.4.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/hdf4_constraint.4.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/testFillValue_nc4.bescmd)
+
+dnl Add HDF5 CF response 
+AT_BESCMD_RESPONSE_TEST_NC4_ENHANCED(bescmd/h5_numeric_types.0.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST_NC4_ENHANCED(bescmd/h5_numeric_types.1.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/h5_numeric_types.2.bescmd)
+AT_BESCMD_RESPONSE_TEST_NC4_ENHANCED(bescmd/grid_1_2d.h5.0.bescmd)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST_NC4_ENHANCED(bescmd/grid_1_2d.h5.1.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/grid_1_2d.h5.2.bescmd)
