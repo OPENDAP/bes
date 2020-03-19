@@ -928,7 +928,7 @@ int generate_dmrpp(const string &input_data_file, const string &dmr_filename, co
     //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
     // Set up dmr input stream.
     // If no valid dmr input file is provided the code tries to find a dmr in the mds.
-    std::ifstream dmr_istream(dmr_filename, std::ofstream::out);
+    std::ifstream dmr_istream(dmr_filename, std::ifstream::in);
 
     // If the dmr_filename is not valid, the stream will not open. Empty is not valid.
     if(dmr_istream.is_open()){

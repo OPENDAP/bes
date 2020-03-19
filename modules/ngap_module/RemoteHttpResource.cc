@@ -32,6 +32,8 @@
 #include <string>
 #include <iostream>
 
+#include "rapidjson/document.h"
+
 #include "BESInternalError.h"
 
 #include "BESDebug.h"
@@ -56,7 +58,7 @@ namespace ngap {
 *
 * @param url Is a URL string that identifies the remote resource.
 */
-    RemoteHttpResource::RemoteHttpResource(const string &url) {
+    RemoteHttpResource::RemoteHttpResource(const std::string &url, const std::string &uid, const std::string &access_token){
         d_initialized = false;
         d_fd = 0;
         d_curl = 0;
@@ -71,8 +73,18 @@ namespace ngap {
         }
 
         d_remoteResourceUrl = url;
-
         BESDEBUG(MODULE, prolog << "URL: " << d_remoteResourceUrl << endl);
+
+        if(!uid.empty()){
+            string client_id_hdr = "Client-Id: " + uid;
+            BESDEBUG(MODULE, prolog << client_id_hdr << endl);
+            d_request_headers->push_back(client_id_hdr);
+        }
+        if(!access_token.empty()){
+            string echo_token_hdr = "Echo-Token: " + access_token;
+            BESDEBUG(MODULE, prolog << echo_token_hdr << endl);
+            d_request_headers->push_back(echo_token_hdr);
+        }
 
         // EXAMPLE: returned value parameter for CURL *
         //
@@ -123,6 +135,14 @@ namespace ngap {
         d_remoteResourceUrl.clear();
     }
 
+    std::string RemoteHttpResource::getCacheFileName() {
+        if (!d_initialized) {
+            throw BESInternalError(prolog + "STATE ERROR: Remote Resource " + d_remoteResourceUrl +
+                                   " has Not Been Retrieved.", __FILE__, __LINE__);
+        }
+        return d_resourceCacheFileName;
+    }
+
 
     /**
      * This method will check the cache for the resource. If it's not there then it will lock the cache and retrieve
@@ -130,8 +150,12 @@ namespace ngap {
      *
      * When this method returns the RemoteHttpResource object is fully initialized and the cache file name for the resource
      * is available along with an open file descriptor for the (now read-locked) cache file.
+     *
+     * @param uid
+     * @param access_token
+     * @param inject_url
      */
-    void RemoteHttpResource::retrieveResource(const std::string &inject_url){
+    void RemoteHttpResource::retrieveResource(const string &inject_url) {
         BESDEBUG(MODULE, prolog << "BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
 
         if (d_initialized) {
@@ -470,6 +494,58 @@ namespace ngap {
 
         return replace_count;
     }
+
+
+    /**
+     * Returns cache file content in a string..
+     */
+    std::string RemoteHttpResource::get_response_as_string(){
+
+        if(!d_initialized){
+            stringstream msg;
+            msg << "ERROR. Internal state error. " << __PRETTY_FUNCTION__ << " was called prior to retrieving resource.";
+            BESDEBUG(MODULE, prolog << msg.str() << endl);
+            throw BESInternalError(msg.str(),__FILE__,__LINE__);
+        }
+        string cache_file = getCacheFileName();
+        //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+        // Set up dmr input stream.
+        // If no valid dmr input file is provided the code tries to find a dmr in the mds.
+        std::ifstream dmr_istream(cache_file, std::ofstream::in);
+
+        // If the dmr_filename is not valid, the stream will not open. Empty is not valid.
+        if(dmr_istream.is_open()){
+            // If it's open we've got a valid filename.
+            BESDEBUG(MODULE, prolog << "Using cached file: " << cache_file << endl);
+            std::ifstream t(cache_file);
+            std::stringstream buffer;
+            buffer << t.rdbuf();
+            return buffer.str();
+        }
+        else {
+            stringstream msg;
+            msg << "ERROR. Failed to open cache file " << cache_file << " for reading.";
+            BESDEBUG(MODULE, prolog << msg.str() << endl);
+            throw BESInternalError(msg.str(),__FILE__,__LINE__);
+        }
+
+    }
+
+    /**
+     * @brief get_as_json() This function returns the cached resource parsed into a JSON document.
+     *
+     * @param target_url The URL to dereference.
+     * @TODO Move this to ../curl_utils.cc (Requires moving the rapidjson lib too)
+     * @return JSON document parsed from the response document returned by target_url
+     */
+    rapidjson::Document RemoteHttpResource::get_as_json() {
+        string response = get_response_as_string();
+        rapidjson::Document d;
+        d.Parse(response.c_str());
+        return d;
+    }
+
+
 
 }
 

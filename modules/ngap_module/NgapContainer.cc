@@ -66,7 +66,7 @@ namespace ngap {
      * The real_name is the remote request URL.
      *
      * @param sym_name symbolic name representing this remote container
-     * @param real_name the remote request URL
+     * @param real_name The NGAP restified path.
      * @throws BESSyntaxUserError if the url does not validate
      * @see NgapUtils
      */
@@ -85,8 +85,7 @@ namespace ngap {
         BESDEBUG(MODULE, prolog << "UID_CONTEXT(" << UID_CONTEXT << "): " << uid << endl);
         BESDEBUG(MODULE, prolog << "ACCESS_TOKEN_CONTEXT(" << ACCESS_TOKEN_CONTEXT << "): "<< access_token << endl);
 
-
-        string data_access_url = ngap_api.convert_ngap_resty_path_to_data_access_url(real_name);
+        string data_access_url = ngap_api.convert_ngap_resty_path_to_data_access_url(real_name, uid, access_token );
 
         set_real_name(data_access_url);
         // Because we know the name is really a URL, then we know the "relative_name" is meaningless
@@ -154,7 +153,7 @@ namespace ngap {
             type = "";
 
         if(!d_dmrpp_rresource) {
-            BESDEBUG( MODULE, prolog << "Building new RemoteResource." << endl );
+            BESDEBUG( MODULE, prolog << "Building new RemoteResource (dmr++)." << endl );
             d_dmrpp_rresource = new ngap::RemoteHttpResource(dmrpp_url);
             d_dmrpp_rresource->retrieveResource(data_access_url);
         }

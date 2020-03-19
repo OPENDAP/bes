@@ -99,7 +99,12 @@ string rjtype_names[] = {
  *
  * @param restified_path The name to decompose.
  */
-string NgapApi::convert_ngap_resty_path_to_data_access_url(string restified_path) {
+string NgapApi::convert_ngap_resty_path_to_data_access_url(
+        const std::string &restified_path,
+        const std::string &uid,
+        const std::string &access_token
+    ) {
+
     string data_access_url("");
 
     vector<string> tokens;
@@ -118,7 +123,14 @@ string NgapApi::convert_ngap_resty_path_to_data_access_url(string restified_path
     cmr_url += CMR_GRANULE_UR + "=" + tokens[5];
 
     BESDEBUG(MODULE, prolog << "CMR Request URL: " << cmr_url << endl);
-    rapidjson::Document cmr_response = ngap_curl::http_get_as_json(cmr_url);
+#if 1
+        BESDEBUG( MODULE, prolog << "Building new RemoteResource." << endl );
+        RemoteHttpResource cmr_query(cmr_url, uid, access_token);
+        cmr_query.retrieveResource(data_access_url);
+        rapidjson::Document cmr_response = cmr_query.get_as_json();
+#else
+        rapidjson::Document cmr_response = ngap_curl::http_get_as_json(cmr_url);
+#endif
 
     rapidjson::Value &val = cmr_response["hits"];
     int hits = val.GetInt();
