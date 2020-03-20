@@ -66,6 +66,8 @@ FONc.Tempdir=@abs_top_builddir@/modules/fileout_netcdf/tests/
 FONc.UseCompression=true
 FONc.ChunkSize=4096
 FONc.ClassicModel=false
+#Uncomment the following line if not wanting to have the output of global attributes.
+#FONc.NoGlobalAttrs=true
 
 # For HDF5
 # Note enabling the CF option changes the behavior of testFillValue test.

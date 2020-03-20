@@ -66,6 +66,9 @@ FONc.Tempdir=@abs_top_builddir@/modules/fileout_netcdf/tests/
 FONc.UseCompression=true
 FONc.ChunkSize=4096
 FONc.ClassicModel=true
+#Uncomment the following line if not wanting to have the output of global attributes.
+#FONc.NoGlobalAttrs=true
+
 
 # For HDF4
 
