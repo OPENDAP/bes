@@ -259,7 +259,7 @@ private:
 class Var {
 public:
     Var() :
-        dtype(H5UNSUPTYPE), rank(-1), comp_ratio(1), total_elems(0), unsupported_attr_dtype(false),
+        dtype(H5UNSUPTYPE), rank(-1), comp_ratio(1), total_elems(0), zero_storage_size(false),unsupported_attr_dtype(false),
         unsupported_attr_dspace(false), unsupported_dspace(false), dimnameflag(false)
     {
     }
@@ -289,6 +289,11 @@ public:
     {
         return this->total_elems;
 
+    }
+
+    const bool getZeroStorageSize() const
+    {
+        return this->zero_storage_size;
     }
 
     /// Get the dimension rank of this variable
@@ -329,6 +334,7 @@ private:
     int rank;
     int comp_ratio;
     size_t total_elems;
+    bool zero_storage_size;
     bool unsupported_attr_dtype;
     bool unsupported_attr_dspace;
     bool unsupported_dspace;

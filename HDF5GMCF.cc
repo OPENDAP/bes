@@ -53,6 +53,7 @@ GMCVar::GMCVar(Var*var) {
     fullpath = var->fullpath;
     rank  = var->rank;
     total_elems = var->total_elems;
+    zero_storage_size = var->zero_storage_size;
     dtype = var->dtype;
     unsupported_attr_dtype = var->unsupported_attr_dtype;
     unsupported_dspace = var->unsupported_dspace;
@@ -130,6 +131,7 @@ GMSPVar::GMSPVar(Var*var) {
     fullpath = var->fullpath;
     rank  = var->rank;
     total_elems = var->total_elems;
+    zero_storage_size = var->zero_storage_size;
     unsupported_attr_dtype = var->unsupported_attr_dtype;
     unsupported_dspace = var->unsupported_dspace;
 
