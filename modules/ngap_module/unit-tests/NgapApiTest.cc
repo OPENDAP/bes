@@ -123,7 +123,7 @@ public:
             cout << endl;
         }
 
-        string resty_path = "providers/GHRC_CLOUD/datasets/ADVANCED%20MICROWAVE%20SOUNDING%20UNIT-A%20(AMSU-A)%20SWATH%20FROM%20NOAA-15%20V1/granules/amsua15_2020.028_12915_1139_1324_WI.nc";
+        string resty_path = "providers/GHRC_CLOUD/datasets/ADVANCED MICROWAVE SOUNDING UNIT-A (AMSU-A) SWATH FROM NOAA-15 V1/granules/amsua15_2020.028_12915_1139_1324_WI.nc";
         if (debug) cerr << prolog << "RestifiedPath: " << resty_path << endl;
 
         try {
