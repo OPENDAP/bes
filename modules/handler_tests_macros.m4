@@ -33,7 +33,7 @@ AT_ARG_OPTION_ARG([conf],
 
 m4_define([AT_BESCMD_RESPONSE_TEST], [dnl
 
-    AT_SETUP([besstandalone $1])
+    AT_SETUP([besstandalone -c bes.conf -i $1])
     AT_KEYWORDS([bescmd])
 
     input=$abs_srcdir/$1
@@ -51,7 +51,7 @@ m4_define([AT_BESCMD_RESPONSE_TEST], [dnl
         [
         AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
         AT_CHECK([diff -b -B $baseline stdout])
-        AT_XFAIL_IF([test z$pass = zxfail])
+        AT_XFAIL_IF([test z$2 = zxfail])
         ])
 
     AT_CLEANUP
@@ -67,7 +67,7 @@ m4_define([AT_BESCMD_REPEAT_RESPONSE_TEST],
 
 m4_define([AT_BESCMD_RESPONSE_SCRUB_DATES_TEST], [dnl
 
-    AT_SETUP([besstandalone $1])
+    AT_SETUP([besstandalone -c bes.conf -i $1])
     AT_KEYWORDS([bescmd])
 
     input=$abs_srcdir/$1
@@ -87,7 +87,7 @@ m4_define([AT_BESCMD_RESPONSE_SCRUB_DATES_TEST], [dnl
         AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
         REMOVE_DATE_TIME([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
-        AT_XFAIL_IF([test z$pass = zxfail])
+        AT_XFAIL_IF([test z$2 = zxfail])
         ])
         
     AT_CLEANUP
@@ -100,7 +100,7 @@ dnl In many ways it's just a better version of _AT_BESCMD_ERROR_TEST below
 
 m4_define([AT_BESCMD_RESPONSE_PATTERN_TEST], [dnl
 
-    AT_SETUP([besstandalone $1])
+    AT_SETUP([besstandalone -c bes.conf -i $1])
     AT_KEYWORDS([bescmd pattern])
 
     input=$abs_srcdir/$1
@@ -115,7 +115,7 @@ m4_define([AT_BESCMD_RESPONSE_PATTERN_TEST], [dnl
         [
         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [0], [stdout])
         AT_CHECK([grep -f $baseline stdout], [0], [ignore])
-        AT_XFAIL_IF([test z$pass = zxfail])
+        AT_XFAIL_IF([test z$2 = zxfail])
         ])
 
     AT_CLEANUP
@@ -123,7 +123,7 @@ m4_define([AT_BESCMD_RESPONSE_PATTERN_TEST], [dnl
 
 m4_define([AT_BESCMD_ERROR_RESPONSE_TEST], [dnl
 
-    AT_SETUP([besstandalone $1])
+    AT_SETUP([besstandalone -c bes.conf -i $1])
     AT_KEYWORDS([bescmd error])
 
     input=$abs_srcdir/$1
@@ -142,7 +142,7 @@ m4_define([AT_BESCMD_ERROR_RESPONSE_TEST], [dnl
         REMOVE_ERROR_FILE([stdout])
         REMOVE_ERROR_LINE([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
-        AT_XFAIL_IF([test z$pass = zxfail])
+        AT_XFAIL_IF([test z$2 = zxfail])
         ])
 
     AT_CLEANUP
@@ -150,7 +150,7 @@ m4_define([AT_BESCMD_ERROR_RESPONSE_TEST], [dnl
 
 m4_define([AT_BESCMD_BINARY_DAP2_RESPONSE_TEST],  [dnl
 
-    AT_SETUP([besstandalone $1])
+    AT_SETUP([besstandalone -c bes.conf -i $1])
     AT_KEYWORDS([bescmd data dap2 DAP2])
 
     input=$abs_srcdir/$1
@@ -165,7 +165,7 @@ m4_define([AT_BESCMD_BINARY_DAP2_RESPONSE_TEST],  [dnl
         [
         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap -Ms -], [0], [stdout])
         AT_CHECK([diff -b -B $baseline stdout], [0], [ignore])
-        AT_XFAIL_IF([test z$pass = zxfail])
+        AT_XFAIL_IF([test z$2 = zxfail])
         ])
 
     AT_CLEANUP
@@ -178,7 +178,7 @@ m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
 
 m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST],  [dnl
 
-    AT_SETUP([besstandalone $1])
+    AT_SETUP([besstandalone -c bes.conf -i $1])
     AT_KEYWORDS([bescmd data dap4 DAP4])
 
     input=$abs_srcdir/$1
@@ -197,7 +197,7 @@ m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST],  [dnl
         PRINT_DAP4_DATA_RESPONSE([stdout])
         REMOVE_DAP4_CHECKSUM([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
-        AT_XFAIL_IF([test z$pass = zxfail])
+        AT_XFAIL_IF([test z$2 = zxfail])
         ])
 
     AT_CLEANUP
@@ -210,7 +210,7 @@ dnl requires ncdump be accessible.
 
 m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST],  [dnl
 
-    AT_SETUP([besstandalone $1])
+    AT_SETUP([besstandalone -c bes.conf -i $1])
     AT_KEYWORDS([bescmd data netcdf])
 
     input=$abs_srcdir/$1
@@ -242,7 +242,7 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST],  [dnl
         REMOVE_DATE_TIME([tmp])
         AT_CHECK([diff -b -B $baseline.data tmp])
 
-        AT_XFAIL_IF([test z$pass = zxfail])
+        AT_XFAIL_IF([test z$2 = zxfail])
         ])
 
     AT_CLEANUP
@@ -250,7 +250,7 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST],  [dnl
 
 m4_define([AT_BESCMD_DAP_FUNCTION_RESPONSE_TEST], [dnl
 
-    AT_SETUP([besstandalone $1])
+    AT_SETUP([besstandalone -c bes.conf -i $1])
     AT_KEYWORDS([functions])
 
     input=$abs_srcdir/$1
@@ -268,7 +268,7 @@ m4_define([AT_BESCMD_DAP_FUNCTION_RESPONSE_TEST], [dnl
         PRINT_DAP4_DATA_RESPONSE([stdout])
         REMOVE_DAP4_CHECKSUM([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
-        AT_XFAIL_IF([test z$pass = zxfail])
+        AT_XFAIL_IF([test z$2 = zxfail])
         ])
 
     AT_CLEANUP])
