@@ -175,6 +175,7 @@ namespace ngap {
         }
         BESDEBUG(MODULE, prolog << "Located remote resource." << endl);
 
+        // TODO This file should be read locked before leaving this method.
         string cachedResource = d_dmrpp_rresource->getCacheFileName();
         BESDEBUG(MODULE, prolog << "Using local cache file: " << cachedResource << endl);
 
@@ -197,6 +198,7 @@ namespace ngap {
      * @return true if the resource is released successfully and false otherwise
      */
     bool NgapContainer::release() {
+        // TODO The cache file (that will be) read locked in the access() method must be unlocked here.
         if (d_dmrpp_rresource) {
             BESDEBUG(MODULE, prolog << "Releasing RemoteResource" << endl);
             delete d_dmrpp_rresource;
