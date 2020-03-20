@@ -174,7 +174,7 @@ m4_define([AT_BESCMD_BINARY_DAP2_RESPONSE_TEST],  [dnl
 dnl Old name for the above macro
 
 m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
-[AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([$1], [$abs_srcdir/$1.baseline], [$2])])
+[AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([$1], [$2])])
 
 m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST],  [dnl
 
@@ -337,7 +337,7 @@ m4_define([REMOVE_ERROR_LINE], [dnl
 ])
 
 dnl This enables the besstandalone to run by itself in AT_CHECK so we can see
-dnl Error messages more easily. The conversion from a binry response to text
+dnl Error messages more easily. The conversion from a binary response to text
 dnl is done here and then the text is used with diff against a text baseline.
 dnl jhrg 8/1/18
  

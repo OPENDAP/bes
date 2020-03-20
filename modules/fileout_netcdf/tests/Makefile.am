@@ -11,30 +11,32 @@ AM_CXXFLAGS =
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-noinst_DATA = bes.conf bes.nc4_enhanced.conf
+noinst_DATA = bes.conf bes.nc4.conf
 
-CLEANFILES = bes.conf bes.nc4_enhanced.conf
+CLEANFILES = bes.conf bes.nc4.conf
 
-EXTRA_DIST = bescmd $(TESTSUITE).at $(TESTSUITE) atlocal.in \
-$(BES_CONF_IN) $(BES_NC4EN_CONF_IN) package.m4 handler_tests_macros.m4
+EXTRA_DIST = bescmd $(TESTSUITE).at $(TESTSUITE)  \
+atlocal.in bes.conf.in bes.nc4.conf.in package.m4
+
+# I moved the tests back to one file and dropped the 'pass the alternate
+# conf file in using --conf=...' because that was not working with ncdump
+# for an unknown reason. jhrg 3/19/20
+
+# $(TESTSUITE_NC4).at $(TESTSUITE_NC4)
 
 DISTCLEANFILES = atconfig
 
-BES_CONF_IN = bes.conf.modules.in
-BES_NC4EN_CONF_IN = bes.nc4_enhanced.conf.modules.in
-
 # Build the bes.conf used for testing so that the value substituted for
-# @abs_top_srcdir@ does not contain '../'. This happens when using 
+# @abs_top_srcdir@ does not contain '../'. This happens when using
 # configure's value for the parameter when running the distcheck target.
-bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
+%.conf : %.conf.in
 	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
-		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
+		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > $@
 
-bes.nc4_enhanced.conf: $(BES_NC4EN_CONF_IN) $(top_srcdir)/configure.ac
-	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
-	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
-		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.nc4_enhanced.conf
+bes.conf: $(srcdir)/bes.conf.in $(top_srcdir)/configure.ac
+
+bes.nc4.conf: $(srcdir)/bes.nc4.conf.in $(top_srcdir)/configure.ac
 
 ############## Autotest follows #####################
 
@@ -44,21 +46,33 @@ AUTOM4TE = autom4te
 # is put in the source directory along with the *.at file used to
 # build it, which is important since these scripts are distributed
 # in the tar.gz distribution.
-TESTSUITE = $(srcdir)/fonc_handler_test
+TESTSUITE = $(srcdir)/testsuite
+# TESTSUITE_NC4 = $(srcdir)/testsuite_nc4
 
-check-local: $(TESTSUITE) atconfig atlocal 
+check-local: $(TESTSUITE) $(TESTSUITE_NC4) atconfig atlocal
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+
+#	$(SHELL) '$(TESTSUITE_NC4)  --conf=bes.nc4.conf' $(TESTSUITEFLAGS)
 
 installcheck-local: $(TESTSUITE) atconfig atlocal 
 	$(SHELL) '$(TESTSUITE)' AUTOTEST_PATH='$(bindir)' $(TESTSUITEFLAGS)
+
+#	$(SHELL) '$(TESTSUITE_NC4)' AUTOTEST_PATH='$(bindir)' $(TESTSUITEFLAGS)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
 	-rm -f $(TESTSUITE)
 
+#	test ! -f '$(TESTSUITE_NC4)' || $(SHELL) '$(TESTSUITE_NC4)' --clean
+#	-rm -f $(TESTSUITE_NC4)
+
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
-$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
+$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4 $(srcdir)/local_handler_tests_macros.m4
+
+# $(TESTSUITE_NC4): $(TESTSUITE_NC4).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
+
+%: %.at
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
 # The `:;' works around a Bash 3.2 bug when the output is not writeable.

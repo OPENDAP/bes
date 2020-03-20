@@ -55,9 +55,9 @@ variables:
 		_GeolocationData_UTC_CCSDA_A:coverage_content_type = "referenceInformation" ;
 		_GeolocationData_UTC_CCSDA_A:units = "" ;
 		_GeolocationData_UTC_CCSDA_A:_FillValue = "0" ;
-		_GeolocationData_UTC_CCSDA_A:Orig_FillValue = "0000-00-00T00:00:00.000000Z" ;
-		_GeolocationData_UTC_CCSDA_A:valid_range = "2012-01-01T00:00:00.000000Z\n",
-			"2099-12-31T00:00:00.000000Z" ;
+		_GeolocationData_UTC_CCSDA_A:Orig_FillValue = "removed date-time" ;
+		_GeolocationData_UTC_CCSDA_A:valid_range = "removed date-time\n",
+			"removed date-time" ;
 		_GeolocationData_UTC_CCSDA_A:DIMENSION_LABELS = "DimAlongTrack" ;
 		_GeolocationData_UTC_CCSDA_A:fonc_original_name = "/GeolocationData/UTC_CCSDA_A" ;
 
@@ -85,7 +85,7 @@ variables:
 		:creator_institution = "University of Maryland, College Park" ;
 		:creator_name = "Kai Yang" ;
 		:creator_type = "person" ;
-		:history = "2017-03-09T22:00:44.000Z: Original file created by Ozone SIPS\n",
+		:history = "removed date-time: Original file created by Ozone SIPS\n",
 			"removed date-time Hyrax OMPS-NPP_NMNO2-L2_2017m0101t000532_o26838_2017m0309t171152.h5?" ;
 		:id = "OMPS_NPP_NMNO2_L2" ;
 		:institution = "NASA Goddard Space Flight Center and University of Maryland" ;
@@ -107,12 +107,12 @@ variables:
 		:PGEVersion = "1.0.3" ;
 		:LocalGranuleID = "OMPS-NPP_NMNO2-L2_2017m0101t000532_o26838_2017m0309t171152.h5" ;
 		:OrbitNumber = 26838 ;
-		:ProductionDateTime = "2017-03-09T17:11:52.670Z" ;
-		:RangeBeginningDateTime = "2017-01-01T00:05:32.802689Z" ;
-		:RangeEndingDateTime = "2017-01-01T00:55:20.633975Z" ;
-		:date_created = "2017-03-09T17:11:52.670Z" ;
-		:time_coverage_end = "2017-01-01T00:55:20.633975Z" ;
-		:time_coverage_start = "2017-01-01T00:05:32.802689Z" ;
+		:ProductionDateTime = "removed date-time" ;
+		:RangeBeginningDateTime = "removed date-time" ;
+		:RangeEndingDateTime = "removed date-time" ;
+		:date_created = "removed date-time" ;
+		:time_coverage_end = "removed date-time" ;
+		:time_coverage_start = "removed date-time" ;
 		:TAI93At0zOfGranule = 757382410. ;
 		:_GeolocationData_.HDF5_OBJ_FULLPATH = "/GeolocationData/" ;
 		:_GeolocationData_.SunEarthDistance = 147105223823.723 ;
