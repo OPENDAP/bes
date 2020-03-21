@@ -33,15 +33,20 @@ AT_ARG_OPTION_ARG([conf],
 
 m4_define([AT_BESCMD_RESPONSE_TEST], [dnl
 
-    AT_SETUP([besstandalone -c bes.conf -i $1])
+    AT_SETUP([$1])
     AT_KEYWORDS([bescmd])
 
     input=$abs_srcdir/$1
     baseline=$abs_srcdir/$1.baseline
+    # Oddly, setting 'pass' to $2 and then using $pass in AT_XFAIL_IF() does not work,
+    # but using $2 does. This might be a function of when the AT_XFAIL_IF() macro is
+    # expanded. jhrg 3.20.20
     pass=$2
     repeat=$3
 
     AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
@@ -67,16 +72,17 @@ m4_define([AT_BESCMD_REPEAT_RESPONSE_TEST],
 
 m4_define([AT_BESCMD_RESPONSE_SCRUB_DATES_TEST], [dnl
 
-    AT_SETUP([besstandalone -c bes.conf -i $1])
+    AT_SETUP([$1])
     AT_KEYWORDS([bescmd])
 
     input=$abs_srcdir/$1
     baseline=$abs_srcdir/$1.baseline
-    pass=$2
-    
-    dnl I'm not sure about this. jhrg 1/3/19
-    AS_IF([test -z "$at_verbose"],[echo "COMMAND: besstandalone $repeat -c $abs_builddir/$bes_conf -i $input"])
-    
+    repeat=$3
+
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -z "$at_verbose"],[echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
+
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
         AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
@@ -91,7 +97,6 @@ m4_define([AT_BESCMD_RESPONSE_SCRUB_DATES_TEST], [dnl
         ])
         
     AT_CLEANUP
-    
 ])
 
 dnl Simple pattern test. The baseline file holds a set of patterns, one per line,
@@ -100,12 +105,16 @@ dnl In many ways it's just a better version of _AT_BESCMD_ERROR_TEST below
 
 m4_define([AT_BESCMD_RESPONSE_PATTERN_TEST], [dnl
 
-    AT_SETUP([besstandalone -c bes.conf -i $1])
+    AT_SETUP([$1])
     AT_KEYWORDS([bescmd pattern])
 
     input=$abs_srcdir/$1
     baseline=$abs_srcdir/$1.baseline
-    pass=$2
+    repeat=$3
+
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
@@ -123,12 +132,16 @@ m4_define([AT_BESCMD_RESPONSE_PATTERN_TEST], [dnl
 
 m4_define([AT_BESCMD_ERROR_RESPONSE_TEST], [dnl
 
-    AT_SETUP([besstandalone -c bes.conf -i $1])
+    AT_SETUP([$1])
     AT_KEYWORDS([bescmd error])
 
     input=$abs_srcdir/$1
     baseline=$abs_srcdir/$1.baseline
-    pass=$2
+    repeat=$3
+
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
@@ -150,12 +163,16 @@ m4_define([AT_BESCMD_ERROR_RESPONSE_TEST], [dnl
 
 m4_define([AT_BESCMD_BINARY_DAP2_RESPONSE_TEST],  [dnl
 
-    AT_SETUP([besstandalone -c bes.conf -i $1])
+    AT_SETUP([$1])
     AT_KEYWORDS([bescmd data dap2 DAP2])
 
     input=$abs_srcdir/$1
     baseline=$abs_srcdir/$1.baseline
-    pass=$2
+    repeat=$3
+
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
@@ -178,12 +195,16 @@ m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
 
 m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST],  [dnl
 
-    AT_SETUP([besstandalone -c bes.conf -i $1])
+    AT_SETUP([$1])
     AT_KEYWORDS([bescmd data dap4 DAP4])
 
     input=$abs_srcdir/$1
     baseline=$abs_srcdir/$1.baseline
-    pass=$2
+    repeat=$3
+
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
@@ -210,12 +231,16 @@ dnl requires ncdump be accessible.
 
 m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST],  [dnl
 
-    AT_SETUP([besstandalone -c bes.conf -i $1])
+    AT_SETUP([$1])
     AT_KEYWORDS([bescmd data netcdf])
 
     input=$abs_srcdir/$1
     baseline=$abs_srcdir/$1.baseline
-    pass=$2
+    repeat=$3
+
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
@@ -250,11 +275,16 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST],  [dnl
 
 m4_define([AT_BESCMD_DAP_FUNCTION_RESPONSE_TEST], [dnl
 
-    AT_SETUP([besstandalone -c bes.conf -i $1])
+    AT_SETUP([$1])
     AT_KEYWORDS([functions])
 
     input=$abs_srcdir/$1
     baseline=$abs_srcdir/$1.baseline
+    repeat=$3
+
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
@@ -345,71 +375,3 @@ m4_define([PRINT_DAP4_DATA_RESPONSE], [dnl
     getdap4 -D -M -s $1 > $1.txt
     mv $1.txt $1
 ])
-
-
-dnl OLD jhrg 9/21/16
-
-dnl This is similar to the "binary data" macro above, but instead assumes the
-dnl output of besstandalone is a netcdf3 file. The binary stream is read using
-dnl ncdump and the output of that is compared to a baseline. Of course, this
-dnl requires ncdump be accessible.
-
-m4_define([OLD_AT_BESCMD_NETCDF_TEST_OLD],  [dnl
-
-    AT_SETUP([BESCMD $1])
-    AT_KEYWORDS([netcdf])
-    
-    input=$1
-    baseline=$2
-
-    AS_IF([test -n "$baselines" -a x$baselines = xyes],
-        [
-        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
-        
-        dnl first get the version number, then the header, then the data
-        AT_CHECK([ncdump -k test.nc > $baseline.ver.tmp])
-        AT_CHECK([ncdump -h test.nc > $baseline.header.tmp])
-        AT_CHECK([ncdump test.nc > $baseline.data.tmp])
-        ],
-        [
-        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
-        
-        AT_CHECK([ncdump -k test.nc > tmp])
-        AT_CHECK([diff -b -B $baseline.ver tmp])
-        
-        AT_CHECK([ncdump -h test.nc > tmp])
-        AT_CHECK([diff -b -B $baseline.header tmp])
-        
-        AT_CHECK([ncdump test.nc > tmp])
-        AT_CHECK([diff -b -B $baseline.data tmp])
-        
-        AT_XFAIL_IF([test "$3" = "xfail"])
-        ])
-
-    AT_CLEANUP
-])
-
-dnl OLD - Do not use this. See the macro below. jhrg 8/1/18
-m4_define([_AT_BESCMD_DAP4_BINARYDATA_TEST],  [dnl
-
-    AT_SETUP([BESCMD $1])
-    AT_KEYWORDS([binary])
-
-    input=$1
-    baseline=$2
-
-    AS_IF([test -n "$baselines" -a x$baselines = xyes],
-        [
-        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap4 -D -M -s -], [], [stdout])
-        AT_CHECK([mv stdout $baseline.tmp])
-        ],
-        [
-        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap4 -D -M -s -], [], [stdout])
-        AT_CHECK([diff -b -B $baseline stdout])
-        AT_XFAIL_IF([test "$3" = "xfail"])
-        ])
-
-    AT_CLEANUP
-])
-
-dnl END OLD. jhrg 9/21/16
