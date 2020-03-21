@@ -54,6 +54,7 @@ public:
     static bool use_compression;
     static int chunk_size;
     static bool classic_model;
+    static bool no_global_attrs;
 
     static bool build_help(BESDataHandlerInterface &dhi);
     static bool build_version(BESDataHandlerInterface &dhi);
