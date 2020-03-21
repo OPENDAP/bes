@@ -594,8 +594,8 @@ void FONcArray::write_for_nc4_types(int ncid) {
 
     // create array to hold data hyperslab
     // DAP2 only supports unsigned BYTE. So here
-    // we don't inlcude NC_BYTE(the signed BYTE, the same
-    // as 64-bit integer. KY 2020-03-20 
+    // we don't inlcude NC_BYTE (the signed BYTE, the same
+    // as 64-bit integer). KY 2020-03-20 
     switch (d_array_type) {
     case NC_UBYTE: {
         unsigned char *data = new unsigned char[d_nelements];
