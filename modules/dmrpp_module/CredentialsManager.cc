@@ -25,6 +25,7 @@
 
 #include "config.h"
 
+#include <cstdlib>
 #include <cstring>
 #include <iomanip>
 #include <sstream>
@@ -39,6 +40,7 @@
 #include <BESDebug.h>
 
 #include "CredentialsManager.h"
+#include "NgapS3Credentials.h"
 
 using namespace std;
 
@@ -49,22 +51,16 @@ using namespace std;
  */
 CredentialsManager *CredentialsManager::theMngr=0;
 
-// Scope: public members of AccessCredentials
-const string AccessCredentials::ID_KEY="id";
-const string AccessCredentials::KEY_KEY="key";
-const string AccessCredentials::REGION_KEY="region";
-const string AccessCredentials::BUCKET_KEY="bucket";
-const string AccessCredentials::URL_KEY="url";
-
 // Scope: public members of CredentialsManager
 const string CredentialsManager::ENV_ID_KEY="CMAC_ID";
 const string CredentialsManager::ENV_ACCESS_KEY="CMAC_ACCESS_KEY";
 const string CredentialsManager::ENV_REGION_KEY="CMAC_REGION";
-const string CredentialsManager::ENV_BUCKET_KEY="CMAC_BUCKET";
+//const string CredentialsManager::ENV_BUCKET_KEY="CMAC_BUCKET";
 const string CredentialsManager::ENV_URL_KEY="CMAC_URL";
 const string CredentialsManager::ENV_CREDS_KEY_VALUE="ENV_CREDS";
 
 
+#define NGAP_DIST_ENDPT_KEY "NGAP.distribution.endpoint.url"
 
 /**
  *  Get get the specified environment value. This function
@@ -121,7 +117,7 @@ CredentialsManager::~CredentialsManager() {
 /**
  * Really it's the default constructor for now.
  */
-CredentialsManager::CredentialsManager(){}
+CredentialsManager::CredentialsManager(): ngaps3CredentialsLoaded(false){}
 
 /**
  *
@@ -283,7 +279,7 @@ void CredentialsManager::load_credentials( ) {
     // Does the configuration indicate that credentials will be submitted via the runtime environment?
     if(config_file == ENV_CREDS_KEY_VALUE){
         // Apparently so...
-        accessCredentials = load_credentials_from_env();
+        accessCredentials = theCM()->load_credentials_from_env();
         if(accessCredentials){
             // So if we have them, we add them to theCM() and then return without processing the configuration.
             string url = accessCredentials->get(AccessCredentials::URL_KEY);
@@ -295,6 +291,8 @@ void CredentialsManager::load_credentials( ) {
         // found in the ENV we simply return.
         return;
     }
+
+    theCM()->load_ngap_s3_credentials();
 
     if(!file_exists(config_file)){
         BESDEBUG(MODULE, "The file specified by the BES key " << CATALOG_MANAGER_CREDENTIALS
@@ -371,6 +369,12 @@ void CredentialsManager::load_credentials( ) {
     BESDEBUG(MODULE, "CredentialsManager has successfully ingested " << theCM()->size()  << " AccessCredentials" << endl);
 
 }
+
+
+/**
+ *
+ * @return
+ */
 AccessCredentials *CredentialsManager::load_credentials_from_env( ) {
 
     AccessCredentials *ac = NULL;
@@ -382,89 +386,62 @@ AccessCredentials *CredentialsManager::load_credentials_from_env( ) {
     env_id.assign(        get_env_value(ENV_ID_KEY));
     env_access_key.assign(get_env_value(ENV_ACCESS_KEY));
     env_region.assign(    get_env_value(ENV_REGION_KEY));
-    env_bucket.assign(    get_env_value(ENV_BUCKET_KEY));
+    //env_bucket.assign(    get_env_value(ENV_BUCKET_KEY));
     env_url.assign(       get_env_value(ENV_URL_KEY));
 
     if(env_url.length() &&
-        env_id.length() &&
-        env_access_key.length() &&
-        env_region.length() &&
-        env_bucket.length()){
+            env_id.length() &&
+            env_access_key.length() &&
+            // env_bucket.length() &&
+            env_region.length() ){
         ac = new AccessCredentials();
         ac->add(AccessCredentials::URL_KEY, env_url);
         ac->add(AccessCredentials::ID_KEY, env_id);
         ac->add(AccessCredentials::KEY_KEY, env_access_key);
         ac->add(AccessCredentials::REGION_KEY, env_region);
-        ac->add(AccessCredentials::BUCKET_KEY, env_bucket);
+       // ac->add(AccessCredentials::BUCKET_KEY, env_bucket);
     }
     return ac;
 }
 
-/*****************************************************************************************************/
-/*****************************************************************************************************/
-/**************************************** AccessCredentials ******************************************/
-/*****************************************************************************************************/
-/*****************************************************************************************************/
-// AccessCredentials methods follow.
 
-
-
+std::string NGAP_S3_BASE_DEFAULT="https://";
 /**
- * Retrieves the value of key
- * @param key The key value to retrieve
- * @return The value of the key, empty string if the key does not exist.
+ * Read the BESKeys (from bes.conf chain) and if NgapS3Credentials::BES_CONF_S3_ENDPOINT_KEY is present builds
+ * and adds to the CredentialsManager an instance of NgapS3Credentials based on the values found in the bes.conf chain.
  */
-std::string
-AccessCredentials::get(const std::string &key){
-    std::map<std::string, std::string>::iterator it;
-    std::string value("");
-    it = kvp.find(key);
-    if (it != kvp.end())
-        value = it->second;
-    return value;
-}
+void  CredentialsManager::load_ngap_s3_credentials( ){
+    string s3_distribution_endpoint_url;
+    bool found;
+    TheBESKeys::TheKeys()->get_value(NgapS3Credentials::BES_CONF_S3_ENDPOINT_KEY,s3_distribution_endpoint_url,found);
+    if(found) {
+        string value;
 
-/**
- *
- * @param key
- * @param value
- */
-void
-AccessCredentials::add(
-        const std::string &key,
-        const std::string &value){
-    kvp.insert(std::pair<std::string, std::string>(key, value));
-}
+        long refresh_margin = 600;
+        TheBESKeys::TheKeys()->get_value(NgapS3Credentials::BES_CONF_REFRESH_KEY, value, found);
+        if (found) {
+            refresh_margin = strtol(value.c_str(), 0, 10);
+        }
 
-/**
- *
- * @return
- */
-bool AccessCredentials::isS3Cred(){
-    if(!s3_tested){
-        is_s3 = get(URL_KEY).length()>0 &&
-                get(ID_KEY).length()>0 &&
-                get(KEY_KEY).length()>0 &&
-                get(REGION_KEY).length()>0 &&
-                get(BUCKET_KEY).length()>0;
-        s3_tested = true;
+        string s3_base_url = NGAP_S3_BASE_DEFAULT;
+        TheBESKeys::TheKeys()->get_value(NgapS3Credentials::BES_CONF_URL_BASE, value, found);
+        if (found) {
+            s3_base_url = value;
+        }
+
+        NgapS3Credentials *nsc = new NgapS3Credentials(s3_distribution_endpoint_url, refresh_margin);
+        nsc->add(NgapS3Credentials::URL_KEY, s3_base_url);
+        nsc->name("NgapS3Credentials");
+
+        CredentialsManager::theCM()->add(s3_base_url,nsc);
+        CredentialsManager::theCM()->ngaps3CredentialsLoaded = true;
+
     }
-    return is_s3;
-}
-
-string AccessCredentials::to_json(){
-    stringstream ss;
-    ss << "{" << endl << "  \"AccessCredentials\": { " << endl;
-    ss << "    \"name\": \"" << d_config_name << "\"," << endl;
-    for (std::map<string, string>::iterator it = kvp.begin(); it != kvp.end(); ++it) {
-        std::string key = it->first;
-        std::string value = it->second;
-
-        if(it!=kvp.begin())
-            ss << ", " << endl ;
-
-        ss << "    \"" << it->first << "\": \"" << it->second << "\"";
+    else {
+        BESDEBUG(MODULE,
+                "WARNING: The BES configuration did not contain an instance of " <<
+                NgapS3Credentials::BES_CONF_S3_ENDPOINT_KEY <<
+                " NGAP S3 Credentials NOT loaded." << endl);
     }
-    ss << endl << "  }" << endl << "}" << endl;
-    return ss.str();
 }
+

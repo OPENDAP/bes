@@ -189,6 +189,7 @@ dmrpp_url=
 bes_conf_file=
 run_inventory_tests=
 run_value_tests=
+output_file="${0}_result.dmrpp"
 
 while getopts "h?vVru:d:o:c:TIF" opt; do
     case "$opt" in
@@ -245,10 +246,6 @@ fi
 
 input_data_file="${1}"
 
-if test -z "${output_file}"; then
-    output_file="./get_dmrpp_result.dmrpp"
-fi
-
 if test -n "${verbose}"; then
     echo "    OUTPUT_FILE: ${output_file}"
     echo -n "       just_dmr: "
@@ -261,9 +258,8 @@ if test -n "${verbose}"; then
 fi
 
 if test -z "${dmrpp_url}"; then
-    echo "ERROR! You must supply a dmrpp_url value using the -u option." >&2
-    show_usage
-    exit 666
+    dmrpp_url="OPeNDAP_DMRpp_DATA_ACCESS_URL";
+    echo "Using Template Data Access URL String: '${dmrpp_url}'" >&2
 fi
 
 dap4ConstraintContainerElement=$(

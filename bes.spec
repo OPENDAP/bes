@@ -172,6 +172,7 @@ exit 0
 %{_bindir}/hyraxctl
 %{_bindir}/bescmdln
 %{_bindir}/build_dmrpp
+%{_bindir}/ngap_build_dmrpp
 %{_bindir}/localBesGetDap
 %{_bindir}/populateMDS
 %{_bindir}/get_dmrpp
@@ -211,6 +212,9 @@ exit 0
 # %doc __distribution_docs/api-html/
 
 %changelog
+* Wed Mar 18 2020 Nathan Potter <ndp@opendap.org> -3.20.6-1
+- Added ngap_build_dmrpp to bin
+
 * Thu Aug 30 2018 James Gallagher <jgallagher@opendap.org> - 3.19.1-1
 - Added build_dmrpp, localBesGetDap, and populateMDS to bin
 

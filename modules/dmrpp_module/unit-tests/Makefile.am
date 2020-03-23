@@ -42,17 +42,18 @@ CREDS_CONF_IN = $(srcdir)/input-files/credentials.conf.in
 
 noinst_HEADERS = test_config.h
 
-noinst_DATA = bes.conf $(CREDS_CONF) input-files/weak.conf
+noinst_DATA = bes.conf bes_ngap_s3_creds.conf $(CREDS_CONF) input-files/weak.conf
 
-EXTRA_DIST = bes.conf.in test_config.h.in baselines input-files awsv4
+EXTRA_DIST = bes.conf.in bes_ngap_s3_creds.conf.in test_config.h.in baselines input-files awsv4
 
 CLEANFILES = *.gcda *.gcno *.strm *.file test_config.h tmp.txt
 
-DISTCLEANFILES = bes.conf bes.log $(CREDS_CONF)
+DISTCLEANFILES = bes.conf bes_ngap_s3_creds.conf bes.log $(CREDS_CONF)
 
 BUILT_SOURCES = test_config.h
 
 BES_CONF_IN = bes.conf.in
+BES_NGAP_CREDS_CONF_IN = bes_ngap_s3_creds.conf.in
 
 test_config.h: $(srcdir)/test_config.h.in Makefile
 	@mod_abs_srcdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
@@ -70,6 +71,11 @@ bes.conf: $(srcdir)/$(BES_CONF_IN) $(top_srcdir)/configure.ac
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 	    -e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
+bes_ngap_s3_creds.conf: $(srcdir)/$(BES_NGAP_CREDS_CONF_IN) $(top_srcdir)/configure.ac
+	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
+	    -e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes_ngap_s3_creds.conf
+
 $(CREDS_CONF):
 	cp $(CREDS_CONF_IN) $(CREDS_CONF)
 	chmod 600 $(CREDS_CONF)
@@ -79,7 +85,7 @@ $(CREDS_CONF):
 #
 
 if CPPUNIT
-UNIT_TESTS = ChunkTest DmrppParserTest DmrppCommonTest DmrppMetadataStoreTest CredentialsManagerTest awsv4_test
+UNIT_TESTS = NgapCredentialsTest ChunkTest DmrppParserTest DmrppCommonTest DmrppMetadataStoreTest CredentialsManagerTest awsv4_test
 else
 UNIT_TESTS =
 
@@ -102,7 +108,9 @@ OBJS = ../DMRpp.o ../DmrppCommon.o ../Chunk.o ../CurlHandlePool.o	\
 ../DmrppStructure.o ../DmrppUrl.o ../DmrppD4Enum.o ../DmrppD4Group.o	\
 ../DmrppD4Opaque.o ../DmrppD4Sequence.o ../DmrppTypeFactory.o		\
 ../DmrppParserSax2.o ../DmrppMetadataStore.o ../DmrppRequestHandler.o \
-../CredentialsManager.o ../awsv4.o ../url_parser.o
+../CredentialsManager.o ../AccessCredentials.o ../NgapS3Credentials.o \
+../awsv4.o ../url_parser.o \
+../curl_utils.o
 
 
 ChunkTest_SOURCES = ChunkTest.cc
@@ -110,6 +118,9 @@ ChunkTest_LDADD = $(OBJS) $(LIBADD)
 
 CredentialsManagerTest_SOURCES = CredentialsManagerTest.cc
 CredentialsManagerTest_LDADD = $(OBJS) $(LIBADD)
+
+NgapCredentialsTest_SOURCES = NgapCredentialsTest.cc
+NgapCredentialsTest_LDADD = ../AccessCredentials.o ../NgapS3Credentials.o ../curl_utils.o $(LIBADD)
 
 awsv4_test_SOURCES = awsv4_test.cc
 awsv4_test_LDADD = $(OBJS) $(LIBADD)

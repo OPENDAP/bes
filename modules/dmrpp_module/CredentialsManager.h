@@ -28,54 +28,31 @@
 
 #include <string>
 #include <vector>
+#include "AccessCredentials.h"
 
 
 // These are the names of the bes keys used to configure the handler.
 #define CATALOG_MANAGER_CREDENTIALS "CredentialsManager.config"
-
-class AccessCredentials {
-public:
-    // These are the string keys used to express the normative key names
-    // for the credentials components.
-    static const std::string ID_KEY;
-    static const std::string KEY_KEY;
-    static const std::string REGION_KEY;
-    static const std::string BUCKET_KEY;
-    static const std::string URL_KEY;
-private:
-    std::map<std::string, std::string> kvp;
-    bool s3_tested, is_s3;
-    std::string d_config_name;
-public:
-    AccessCredentials()= default;
-    AccessCredentials(std::string config_name){ d_config_name = config_name;}
-    AccessCredentials(const AccessCredentials &ac) = default;
-
-    std::string get(const std::string &key);
-    void add(const std::string &key, const std::string &value);
-    bool isS3Cred();
-    std::string to_json();
-    std::string name(){ return d_config_name; }
-};
-
-
 
 class CredentialsManager {
 public:
     static const std::string ENV_ID_KEY;
     static const std::string ENV_ACCESS_KEY;
     static const std::string ENV_REGION_KEY;
-    static const std::string ENV_BUCKET_KEY;
+    //static const std::string ENV_BUCKET_KEY;
     static const std::string ENV_URL_KEY;
     static const std::string ENV_CREDS_KEY_VALUE;
 
 private:
-    std::map<std::string, AccessCredentials* > creds;
     CredentialsManager();
+
+    std::map<std::string, AccessCredentials* > creds;
     static void initialize_instance();
     static void delete_instance();
+    bool ngaps3CredentialsLoaded;
 
-    static AccessCredentials *load_credentials_from_env( );
+    AccessCredentials *load_credentials_from_env( );
+    void load_ngap_s3_credentials( );
 
 public:
     static CredentialsManager *theMngr;
@@ -88,14 +65,17 @@ public:
     }
 
     void add(const std::string &url, AccessCredentials *ac);
-    static void load_credentials();
-    static void clear(){ delete_instance(); }
+    void load_credentials();
+    void clear(){ delete_instance(); }
 
     AccessCredentials *get(const std::string &url);
 
-
     unsigned int size(){
         return creds.size();
+    }
+
+    bool hasNgapS3Credentials(){
+        return ngaps3CredentialsLoaded;
     }
 
 };

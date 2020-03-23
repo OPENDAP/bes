@@ -56,6 +56,10 @@ AC_ARG_WITH([cmr], [AS_HELP_STRING([--with-cmr], [Build and include the CMR Modu
     [AM_CONDITIONAL([WITH_CMR], [true])],
     [AM_CONDITIONAL([WITH_CMR], [AM_COND_IF([BES_DEVELOPER], [true], [flase])])])
 
+AC_ARG_WITH([ngap], [AS_HELP_STRING([--with-ngap], [Build and include the NGAP Module (built by default in developer mode)])], 
+    [AM_CONDITIONAL([WITH_NGAP], [true])],
+    [AM_CONDITIONAL([WITH_NGAP], [AM_COND_IF([BES_DEVELOPER], [true], [false])])])
+
 AS_IF([test "$CC" = "gcc"], [AM_CONDITIONAL([COMPILER_IS_GCC],[true])],
     [AM_CONDITIONAL([COMPILER_IS_GCC],[false])])
 
@@ -920,6 +924,11 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/cmr_module/tests/Makefile
     modules/cmr_module/tests/atlocal
     modules/cmr_module/unit-tests/Makefile
+
+    modules/ngap_module/Makefile
+    modules/ngap_module/tests/Makefile
+    modules/ngap_module/tests/atlocal
+    modules/ngap_module/unit-tests/Makefile
     
     modules/httpd_catalog_module/Makefile
     modules/httpd_catalog_module/unit-tests/Makefile
@@ -1033,6 +1042,7 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     AC_CONFIG_TESTDIR(modules/httpd_catalog_module/tests, [standalone])
 
     AC_CONFIG_TESTDIR(modules/cmr_module/tests, [standalone])
+    AC_CONFIG_TESTDIR(modules/ngap_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_json/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_covjson/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/debug_functions/tests, [standalone])
