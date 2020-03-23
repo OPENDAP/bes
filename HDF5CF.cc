@@ -356,7 +356,7 @@ void File::Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr)
 
                 cdset = H5Dopen(grp_id, full_path_name.c_str(), H5P_DEFAULT);
                 if (cdset < 0)
-                throw2("Error opening the HDF5 dataset ", full_path_name);
+                    throw2("Error opening the HDF5 dataset ", full_path_name);
 
                 // Retrieve the HDF5 dataset datatype, return the flag for unsupported types.
                 bool temp_unsup_var_dtype = false;
@@ -372,6 +372,10 @@ void File::Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr)
                 // Update the unsupported data space flag
                 if (!this->unsupported_var_dspace && temp_unsup_var_dspace) this->unsupported_var_dspace = true;
 
+                hsize_t d_storage_size = H5Dget_storage_size(cdset);
+                if(d_storage_size < 0)
+                    throw2("Error obtaining the HDF5 dataset storage size ",full_path_name);
+                var->zero_storage_size =(d_storage_size ==0);
                 var->comp_ratio = Retrieve_H5_VarCompRatio(var, cdset);
 
                 // Retrieve the attribute info. if asked
@@ -1961,11 +1965,17 @@ void File::Add_Supplement_Attrs(bool add_path)
     }
 
     for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-        Attribute * attr = new Attribute();
-        const string varname = (*irv)->fullpath;
-        const string attrname = "fullnamepath";
-        Add_Str_Attr(attr, attrname, varname);
-        (*irv)->attrs.push_back(attr);
+        // Turn off the fullnamepath attribute when zero_storage_size is 0.
+        // Use the BES key since quite a few testing cases will be affected.
+        // KY 2020-03-23
+        if((*irv)->zero_storage_size==false 
+           || HDF5RequestHandler::get_no_zero_size_fullnameattr() == false) {
+            Attribute * attr = new Attribute();
+            const string varname = (*irv)->fullpath;
+            const string attrname = "fullnamepath";
+            Add_Str_Attr(attr, attrname, varname);
+            (*irv)->attrs.push_back(attr);
+        }
     }
 
     // Adding group path

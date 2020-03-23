@@ -151,6 +151,7 @@ bool HDF5RequestHandler::_flatten_coor_attr           = false;
 bool HDF5RequestHandler::_default_handle_dimension    = false;
 bool HDF5RequestHandler::_eos5_rm_convention_attr_path = true;
 bool HDF5RequestHandler::_dmr_long_int                = false;
+bool HDF5RequestHandler::_no_zero_size_fullnameattr   = false;
 
 bool HDF5RequestHandler::_common_cache_dirs            = false;
 
@@ -237,6 +238,7 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
     _default_handle_dimension   = check_beskeys("H5.DefaultHandleDimension");
     _eos5_rm_convention_attr_path= check_beskeys("H5.RmConventionAttrPath");
     _dmr_long_int                = check_beskeys("H5.EnableDMR64bitInt");
+    _no_zero_size_fullnameattr   = check_beskeys("H5.NoZeroSizeFullnameAttr");
 
     _use_disk_cache              = check_beskeys("H5.EnableDiskDataCache");
     _disk_cache_dir              = get_beskeys("H5.DiskCacheDataPath");

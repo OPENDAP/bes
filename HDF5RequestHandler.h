@@ -78,6 +78,7 @@ class HDF5RequestHandler:public BESRequestHandler {
     static bool get_force_flatten_coor_attr() { return _flatten_coor_attr;}
     static bool get_eos5_rm_convention_attr_path() { return _eos5_rm_convention_attr_path;}
     static bool get_dmr_long_int() { return _dmr_long_int;}
+    static bool get_no_zero_size_fullnameattr() { return _no_zero_size_fullnameattr;}
 
 
     // Default Handle dimension key, only valid when the default option is on.
@@ -165,6 +166,7 @@ class HDF5RequestHandler:public BESRequestHandler {
      static bool _flatten_coor_attr;
      static bool _eos5_rm_convention_attr_path;
      static bool _dmr_long_int;
+     static bool _no_zero_size_fullnameattr;
 
      // For the default option
      static bool _default_handle_dimension;

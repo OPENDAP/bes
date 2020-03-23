@@ -173,6 +173,10 @@ H5.RmConventionAttrPath=true
 
 H5.EnableDMR64bitInt=false
 
+# Whey this key is turned on, the fullnamepath attribute will
+# NOT be added if the HDF5 data storage size is 0. This is
+# necessary to generate correct HDF5 DMRRPP files.
+H5.NoZeroSizeFullnameAttr=false
 
 # CACHING 
 # C1. Caching DAP metadata response in memory. 

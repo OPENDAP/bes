@@ -3685,11 +3685,17 @@ void EOS5File::Add_Supplement_Attrs(bool add_path)
 
         for (vector<EOS5CVar *>::iterator irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
             if (((*irv)->cvartype == CV_EXIST) || ((*irv)->cvartype == CV_MODIFY)) {
-                Attribute * attr = new Attribute();
-                const string varname = (*irv)->fullpath;
-                const string attrname = "fullnamepath";
-                Add_Str_Attr(attr, attrname, varname);
-                (*irv)->attrs.push_back(attr);
+                // Turn off the fullnamepath attribute when zero_storage_size is 0.
+                // Use the BES key since quite a few testing cases will be affected.
+                // KY 2020-03-23
+                if((*irv)->zero_storage_size==false 
+                    || HDF5RequestHandler::get_no_zero_size_fullnameattr() == false) {
+                    Attribute * attr = new Attribute();
+                    const string varname = (*irv)->fullpath;
+                    const string attrname = "fullnamepath";
+                    Add_Str_Attr(attr, attrname, varname);
+                    (*irv)->attrs.push_back(attr);
+                }
             }
         }
     } // if(true == add_path)
