@@ -47,6 +47,7 @@ NGAP.Cache.size=500
 Gateway.Whitelist=http://localhost:8080/
 Gateway.Whitelist+=http://test.opendap.org
 Gateway.Whitelist+=https://d1lpqa6z94hycl.cloudfront.net
+Gateway.Whitelist+= https://cmr.earthdata.nasa.gov/search
 
 NGAP.MimeTypes=nc:application/x-netcdf
 NGAP.MimeTypes+=h4:application/x-hdf
