@@ -79,6 +79,18 @@ namespace ngap {
             "kNumberType"
     };
 
+
+    NgapApi::NgapApi() : d_cmr_endpoint_url("https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4") {
+
+        bool found;
+        string key_value;
+        TheBESKeys::TheKeys()->get_value(NGAP_CMR_ENDPOINT_URL, key_value, found);
+        if (found) {
+            d_cmr_endpoint_url = key_value;
+        }
+    }
+
+
     /**
      * @brief Converts an NGAP restified granule path into a CMR metadata query for the granule.
      *

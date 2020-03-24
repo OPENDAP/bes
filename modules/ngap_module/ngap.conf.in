@@ -8,5 +8,9 @@ NGAP.Cache.dir=/tmp
 NGAP.Cache.prefix=ngap_
 NGAP.Cache.size=500
 
+# Inject Data URLs into the dmr++  documents.
 NGAP.inject_data_urls=true
+
+# Use this CMR endpopint URL for CMR queries.
+NGAP.cmr_endpoint_url=https://cmr.uat.earthdata.nasa.gov/search/granules.umm_json_v1_4
 

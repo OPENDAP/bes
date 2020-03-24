@@ -46,7 +46,7 @@ namespace ngap {
 
 class NgapApi {
 private:
-    std::string cmr_granule_search_endpoint_url;
+    std::string d_cmr_endpoint_url;
 #if 0
     const rapidjson::Value& get_temporal_group(const rapidjson::Document &ngap_doc);
     const rapidjson::Value& get_year_group(const rapidjson::Document &ngap_doc);
@@ -61,7 +61,7 @@ private:
 
 public:
 
-    NgapApi() : cmr_granule_search_endpoint_url("https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4") {}
+    NgapApi();
 
     std::string convert_ngap_resty_path_to_data_access_url(
             const std::string &restified_path,
