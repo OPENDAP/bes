@@ -237,7 +237,7 @@ NgapCache::get_hash(const string &s)
     }
 
 
-    string NgapCache::get_cache_file_name( const string &src,  bool /*mangle*/){
+    string NgapCache::get_cache_file_name( const string &,  bool /*mangle*/){
 
         string msg = prolog+ "ERROR! THIS METHOD IS NOT TO BE USED IN NGAP.";
         BESDEBUG(MODULE,  msg<< endl);

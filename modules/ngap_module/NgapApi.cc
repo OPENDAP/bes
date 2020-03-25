@@ -62,7 +62,7 @@ namespace ngap {
     string NGAP_PROVIDER_KEY("providers");
     string NGAP_DATASETS_KEY("datasets");
     string NGAP_GRANULES_KEY("granules");
-//string CMR_REQUEST_BASE("https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4");
+    string DEFAULT_CMR_ENDPOINT_URL("https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4");
 
     string CMR_PROVIDER("provider");
     string CMR_ENTRY_TITLE("entry_title");
@@ -78,6 +78,17 @@ namespace ngap {
             "kStringType",
             "kNumberType"
     };
+
+
+    NgapApi::NgapApi() : d_cmr_endpoint_url(DEFAULT_CMR_ENDPOINT_URL) {
+        bool found;
+        string key_value;
+        TheBESKeys::TheKeys()->get_value(NGAP_CMR_ENDPOINT_URL, key_value, found);
+        if (found) {
+            d_cmr_endpoint_url = key_value;
+        }
+    }
+
 
     /**
      * @brief Converts an NGAP restified granule path into a CMR metadata query for the granule.
@@ -122,7 +133,7 @@ namespace ngap {
                                      "' does not conform to the NGAP request interface API.", __FILE__, __LINE__);
         }
         // Pick up the values of said tokens.
-        string cmr_url = cmr_granule_search_endpoint_url + "?";
+        string cmr_url = d_cmr_endpoint_url + "?";
 
         char error_buffer[CURL_ERROR_SIZE];
         CURL *curl = ngap_curl::init(error_buffer);  // This may throw either Error or InternalErr
