@@ -28,17 +28,11 @@ BES.LogVerbose=no
 
 BES.modules=dap,cmd,h5,dmrpp
 
-# Despite the comment at the top, use the development modules for now. jhrg 5/11/18
-
 BES.module.dap=@bes_modules_dir@/libdap_module.so
 BES.module.cmd=@bes_modules_dir@/libdap_xml_module.so
 BES.module.h5=@bes_modules_dir@/libhdf5_module.so
 BES.module.dmrpp=@bes_modules_dir@/libdmrpp_module.so
 
-#BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
-#BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
-#BES.module.h5=@abs_top_builddir@/modules/hdf5_handler/.libs/libhdf5_module.so
-#BES.module.dmrpp=@abs_top_builddir@/modules/dmrpp_module/.libs/libdmrpp_module.so
 
 # The value "@hdf5_root_directory@" is replaced at run time.
 BES.Catalog.catalog.RootDirectory=@hdf5_root_directory@
