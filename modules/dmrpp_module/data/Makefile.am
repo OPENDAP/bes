@@ -4,6 +4,8 @@ AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = $(DAP_CFLAGS) $(BES_CPPFLAGS) -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch
 AM_CXXFLAGS = 
 
+lib_besdir=$(libdir)/bes
+
 # noinst_PROGRAMS = endian_convert multiball keepalive2
 
 # endian_convert_SOURCES = endian_convert.cc
@@ -35,7 +37,8 @@ get_dmrpp: $(srcdir)/get_dmrpp.in $(top_srcdir)/configure.ac
 	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
 	cat $(srcdir)/get_dmrpp.in | sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
-		-e "s%[@]modulesdir[@]%${modulesdir}%" > get_dmrpp
+		-e "s%[@]bes_modules_dir[@]%${lib_besdir}%" > get_dmrpp
+
 
 EXTRA_PROGRAMS = 
 
