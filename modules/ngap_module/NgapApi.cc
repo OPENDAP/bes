@@ -133,7 +133,7 @@ namespace ngap {
                                      "' does not conform to the NGAP request interface API.", __FILE__, __LINE__);
         }
         // Pick up the values of said tokens.
-        string cmr_url = cmr_granule_search_endpoint_url + "?";
+        string cmr_url = d_cmr_endpoint_url + "?";
 
         char error_buffer[CURL_ERROR_SIZE];
         CURL *curl = ngap_curl::init(error_buffer);  // This may throw either Error or InternalErr
