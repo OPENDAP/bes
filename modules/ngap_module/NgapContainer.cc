@@ -86,6 +86,8 @@ namespace ngap {
         if (found && key_value == "true") {
             d_replace_data_access_url_template = true;
         }
+        BESDEBUG(MODULE, prolog << "NGAP_INJECT_DATA_URL_KEY(" << NGAP_INJECT_DATA_URL_KEY << "): " <<
+        d_replace_data_access_url_template << endl);
 
         string uid = BESContextManager::TheManager()->get_context(UID_CONTEXT, found);
         string access_token = BESContextManager::TheManager()->get_context(AUTH_TOKEN_CONTEXT, found);

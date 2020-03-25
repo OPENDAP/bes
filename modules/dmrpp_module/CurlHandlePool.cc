@@ -70,6 +70,7 @@ using namespace std;
 using namespace bes;
 
 #define MODULE "dmrpp:curl_handle_pool"
+#define prolog std::string("CurlHandlePool::").append(__func__).append("() - ")
 
 Lock::Lock(pthread_mutex_t &lock) : m_mutex(lock)
  {
@@ -264,26 +265,41 @@ static bool evaluate_curl_response(CURL* eh)
     if (CURLE_OK != res) {
         throw BESInternalError(string("Error getting HTTP response code: ").append(curl::error_message(res, (char *) "")), __FILE__, __LINE__);
     }
+    if(BESDebug::IsSet(MODULE)){
+        char *last_url = 0;
+        curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &last_url);
+        BESDEBUG(MODULE, prolog << "CURLINFO_EFFECTIVE_URL: " << last_url << endl );
+
+        long redirects;
+        curl_easy_getinfo(eh, CURLINFO_REDIRECT_COUNT, &redirects);
+        BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_COUNT: " << redirects << endl );
+
+        char *redirect_url = 0;
+        curl_easy_getinfo(eh, CURLINFO_REDIRECT_URL, &redirect_url);
+        BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_URL: " << redirect_url << endl );
+    }
 
     // Newer Apache servers return 206 for range requests. jhrg 8/8/18
     switch (http_code) {
-    case 200: // OK
-    case 206: // Partial content - this is to be expected since we use range gets
-        // cases 201-205 are things we should probably reject, unless we add more
-        // comprehensive HTTP/S processing here. jhrg 8/8/18
-        return true;
+        case 200: // OK
+        case 206: // Partial content - this is to be expected since we use range gets
+            // cases 201-205 are things we should probably reject, unless we add more
+            // comprehensive HTTP/S processing here. jhrg 8/8/18
+            return true;
 
-    case 500: // Internal server error
-    case 503: // Service Unavailable
-    case 504: // Gateway Timeout
-        return false;
+        case 500: // Internal server error
+        case 503: // Service Unavailable
+        case 504: // Gateway Timeout
+            return false;
 
-    default: {
-        ostringstream oss;
-        oss << "HTTP status error: Expected an OK status, but got: ";
-        oss << http_code;
-        throw BESInternalError(oss.str(), __FILE__, __LINE__);
-    }
+        default: {
+            ostringstream oss;
+            char *effective_url = 0;
+            curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &last_url);
+            oss << prolog << "HTTP status error: Expected an OK status, but got: ";
+            oss << http_code << " from: " << effective_url;
+            throw BESInternalError(oss.str(), __FILE__, __LINE__);
+        }
     }
 }
 

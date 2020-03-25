@@ -48,6 +48,9 @@
 
 using namespace std;
 
+#define MODULE "dmrpp"
+#define prolog std::string("Chunk::").append(__func__).append("() - ")
+
 namespace dmrpp {
 
 // This is used to track access to 'cloudydap' accesses in the S3 logs
@@ -87,7 +90,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
             // will be sad if that happens. jhrg 12/30/19
             try {
                 string json_message = xml2json(xml_message.c_str());
-                BESDEBUG("dmrpp", "AWS S3 Access Error:" << json_message << endl);
+                BESDEBUG(MODULE, prolog << "AWS S3 Access Error:" << json_message << endl);
                 VERBOSE("AWS S3 Access Error:" << json_message << endl);
 
                 rapidjson::Document d;
@@ -105,8 +108,8 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
                 throw;
             }
             catch(std::exception &e) {
-                BESDEBUG("dmrpp", "AWS S3 Access Error:" << xml_message << endl);
-                VERBOSE("AWS S3 Access Error:" << xml_message << endl);
+                BESDEBUG(MODULE, prolog << "AWS S3 Access Error:" << xml_message << endl);
+                VERBOSE(prolog << "AWS S3 Access Error:" << xml_message << endl);
                 throw BESSyntaxUserError(string("Error accessing object store data: Unrecognized error, likely an authentication failure."), __FILE__, __LINE__);
             }
         }
@@ -130,6 +133,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
         c_ptr->set_rbuf(new char[nbytes+2], nbytes+2);
     }
 
+    BESDEBUG(MODULE, prolog << "bytes_read: " << bytes_read << " nbytes: " << nbytes << " rbuf_size: " << c_ptr->get_rbuf_size() << endl);
     // If this fails, the code will write beyond the buffer.
     assert(bytes_read + nbytes <= c_ptr->get_rbuf_size());
 
