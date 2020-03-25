@@ -60,3 +60,4 @@ Gateway.Whitelist+= https://d1lpqa6z94hycl.cloudfront.net
 Gateway.Whitelist+= https://cmr.earthdata.nasa.gov/search
 Gateway.Whitelist+= https://cmr.uat.earthdata.nasa.gov/search
 Gateway.Whitelist+= https://d1jecqxxv88lkr.cloudfront.net
+
