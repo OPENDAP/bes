@@ -60,7 +60,7 @@ using namespace std;
 namespace ngap {
 
     string NGAP_PROVIDER_KEY("providers");
-    string NGAP_DATASETS_KEY("datasets");
+    string NGAP_COLLECTIONS_KEY("collections");
     string NGAP_GRANULES_KEY("granules");
     string DEFAULT_CMR_ENDPOINT_URL("https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4");
 
@@ -128,7 +128,7 @@ namespace ngap {
         }
 
         // Check to make sure all required tokens are present.
-        if (tokens[0] != NGAP_PROVIDER_KEY || tokens[2] != NGAP_DATASETS_KEY || tokens[4] != NGAP_GRANULES_KEY) {
+        if (tokens[0] != NGAP_PROVIDER_KEY || tokens[2] != NGAP_COLLECTIONS_KEY || tokens[4] != NGAP_GRANULES_KEY) {
             throw BESSyntaxUserError(string("The specified path '") + restified_path +
                                      "' does not conform to the NGAP request interface API.", __FILE__, __LINE__);
         }
