@@ -454,7 +454,7 @@ namespace curl {
             default: {
                 ostringstream oss;
                 oss << "curl_utils - HTTP status error: Expected an OK status, but got: " << http_code;
-                if(BESDebug::IsSet(MODULE) oss << " from (CURLINFO_EFFECTIVE_URL): " << last_url;
+                if(BESDebug::IsSet(MODULE)) oss << " from (CURLINFO_EFFECTIVE_URL): " << last_url;
                 throw BESInternalError(oss.str(), __FILE__, __LINE__);
             }
         }
