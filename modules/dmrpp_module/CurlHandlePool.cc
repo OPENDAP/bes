@@ -268,7 +268,7 @@ static bool evaluate_curl_response(CURL* eh)
     if(BESDebug::IsSet(MODULE)){
         char *last_url = 0;
         curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &last_url);
-        BESDEBUG(MODULE, prolog << ";Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << last_url << endl );
+        BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << last_url << endl );
 
         long redirects;
         curl_easy_getinfo(eh, CURLINFO_REDIRECT_COUNT, &redirects);

@@ -2,7 +2,6 @@
 <bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[http-nio-8080-exec-1:36:ngap_request]">
   <bes:setContext name="dap_explicit_containers">no</bes:setContext>
   <bes:setContext name="errors">xml</bes:setContext>
-  <bes:setContext name="olfsLog">0:0:0:0:0:0:0:1|&amp;|curl/7.64.1|&amp;|960C6EFF896C75D4631BA7764823B925|&amp;|ndp_opendap|&amp;|1585156311277|&amp;|8|&amp;|HTTP-GET|&amp;|/opendap/hyrax/ngap/providers/GHRC_CLOUD/datasets/Lightning Imaging Sensor (LIS) on TRMM Backgrounds V4/granules/TRMM_LIS_BG.04.3_2015.098.99100.nc.ascii|&amp;|bg_data_summary_address</bes:setContext>
   <bes:setContext name="max_response_size">0</bes:setContext>
   <bes:setContainer name="ngapContainer" space="ngap">providers/GHRC_CLOUD/collections/Lightning Imaging Sensor (LIS) on TRMM Backgrounds V4/granules/TRMM_LIS_BG.04.3_2015.098.99100.nc</bes:setContainer>
   <bes:define name="d1" space="default">

@@ -565,7 +565,7 @@ long read_url(CURL *curl,
     }
     if(status>400){
         stringstream msg;
-        msg << prolog << "The HTTP request for target URL:  " << url << " returned a status of:" << status;
+        msg << prolog << "The HTTP request for target URL:  " << url << " returned a status of: " << status;
         char *last_url = 0;
         curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &last_url);
         msg << " Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << last_url << endl;
