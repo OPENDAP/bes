@@ -12,5 +12,5 @@ NGAP.Cache.size=500
 NGAP.inject_data_urls=true
 
 # Use this CMR endpopint URL for CMR queries.
-NGAP.cmr_endpoint_url=https://cmr.uat.earthdata.nasa.gov/search/granules.umm_json_v1_4
-
+# NGAP.cmr_hostname=https://cmr.uat.earthdata.nasa.gov
+# NGAP.cmr_search_endpoint_path=/search/granules.umm_json_v1_4

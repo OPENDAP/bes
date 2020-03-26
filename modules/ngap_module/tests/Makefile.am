@@ -6,6 +6,8 @@ AM_CPPFLAGS = -I$(top_srcdir)
 # AM_CPPFLAGS =
 AM_CXXFLAGS =
 
+BES_CONF_IN = bes.conf.in
+
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
 #     export CXXFLAGS='...'; ./configure --disable-shared
@@ -21,8 +23,6 @@ EXTRA_DIST = ngap $(TESTSUITE).at $(TESTSUITE) atlocal.in \
 $(srcdir)/package.m4 $(BES_CONF_IN) $(srcdir)/handler_tests_macros.m4
 
 DISTCLEANFILES =  atconfig
-
-BES_CONF_IN = bes.conf.in
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 

@@ -46,19 +46,10 @@ namespace ngap {
 
 class NgapApi {
 private:
-    std::string d_cmr_endpoint_url;
-#if 0
-    const rapidjson::Value& get_temporal_group(const rapidjson::Document &ngap_doc);
-    const rapidjson::Value& get_year_group(const rapidjson::Document &ngap_doc);
-    const rapidjson::Value& get_month_group(const std::string year, const rapidjson::Document &ngap_doc);
-    const rapidjson::Value& get_month(const std::string r_month, const std::string r_year, const rapidjson::Document &ngap_doc);
-    const rapidjson::Value& get_day_group(const std::string r_month, const std::string year, const rapidjson::Document &ngap_doc);
-    const rapidjson::Value& get_children(const rapidjson::Value& obj);
-    const rapidjson::Value& get_feed(const rapidjson::Document &ngap_doc);
-    const rapidjson::Value& get_entries(const rapidjson::Document &ngap_doc);
-    void  granule_search(std::string collection_name, std::string r_year, std::string r_month, std::string r_day,rapidjson::Document &result_doc);
-#endif
+    std::string d_cmr_hostname;
+    std::string d_cmr_search_endpoint_path;
 
+    std::string get_cmr_search_endpoint_url();
 public:
 
     NgapApi();

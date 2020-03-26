@@ -62,7 +62,8 @@ namespace ngap {
     string NGAP_PROVIDER_KEY("providers");
     string NGAP_COLLECTIONS_KEY("collections");
     string NGAP_GRANULES_KEY("granules");
-    string DEFAULT_CMR_ENDPOINT_URL("https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4");
+    string DEFAULT_CMR_ENDPOINT_URL("https://cmr.earthdata.nasa.gov");
+    string DEFAULT_CMR_SEARCH_ENDPOINT_PATH("/search/granules.umm_json_v1_4");
 
     string CMR_PROVIDER("provider");
     string CMR_ENTRY_TITLE("entry_title");
@@ -80,15 +81,26 @@ namespace ngap {
     };
 
 
-    NgapApi::NgapApi() : d_cmr_endpoint_url(DEFAULT_CMR_ENDPOINT_URL) {
+    NgapApi::NgapApi() : d_cmr_hostname(DEFAULT_CMR_ENDPOINT_URL), d_cmr_search_endpoint_path(DEFAULT_CMR_SEARCH_ENDPOINT_PATH) {
         bool found;
-        string key_value;
-        TheBESKeys::TheKeys()->get_value(NGAP_CMR_ENDPOINT_URL, key_value, found);
+        string cmr_hostnamer;
+        TheBESKeys::TheKeys()->get_value(NGAP_CMR_HOSTNAME_KEY, cmr_hostnamer, found);
         if (found) {
-            d_cmr_endpoint_url = key_value;
+            d_cmr_hostname = cmr_hostnamer;
         }
+
+        string cmr_search_endpoint_path;
+        TheBESKeys::TheKeys()->get_value(NGAP_CMR_SEARCH_ENDPOINT_PATH_KEY, cmr_search_endpoint_path, found);
+        if (found) {
+            d_cmr_search_endpoint_path = cmr_search_endpoint_path;
+        }
+
+
     }
 
+    std::string NgapApi::get_cmr_search_endpoint_url(){
+        return BESUtil::assemblePath(d_cmr_hostname , d_cmr_search_endpoint_path);
+    }
 
     /**
      * @brief Converts an NGAP restified granule path into a CMR metadata query for the granule.
@@ -133,7 +145,7 @@ namespace ngap {
                                      "' does not conform to the NGAP request interface API.", __FILE__, __LINE__);
         }
         // Pick up the values of said tokens.
-        string cmr_url = d_cmr_endpoint_url + "?";
+        string cmr_url = get_cmr_search_endpoint_url() + "?";
 
         char error_buffer[CURL_ERROR_SIZE];
         CURL *curl = ngap_curl::init(error_buffer);  // This may throw either Error or InternalErr
