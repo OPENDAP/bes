@@ -568,7 +568,7 @@ long read_url(CURL *curl,
         msg << prolog << "The HTTP request for target URL:  " << url << " returned a status of: " << status << endl;
         char *last_url = 0;
         curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &last_url);
-        msg << " Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << last_url << endl;
+        if(BESDebug::IsSet(MODULE) msg << " Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << last_url << endl;
         BESDEBUG(MODULE, msg.str());
     }
 
