@@ -15,7 +15,7 @@
 #include <BESInternalError.h>
 #include <BESDebug.h>
 
-#define MODULE "curl"
+#define MODULE "dmrpp:curl"
 
 using std::endl;
 using std::string;

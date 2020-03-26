@@ -69,7 +69,7 @@ using namespace dmrpp;
 using namespace std;
 using namespace bes;
 
-#define MODULE "dmrpp:curl_handle_pool"
+#define MODULE "dmrpp:curl"
 #define prolog std::string("CurlHandlePool::").append(__func__).append("() - ")
 
 Lock::Lock(pthread_mutex_t &lock) : m_mutex(lock)
@@ -276,7 +276,8 @@ static bool evaluate_curl_response(CURL* eh)
 
         char *redirect_url = 0;
         curl_easy_getinfo(eh, CURLINFO_REDIRECT_URL, &redirect_url);
-        BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_URL: " << redirect_url << endl );
+        if(redirect_url)
+            BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_URL: " << redirect_url << endl );
     }
 
     // Newer Apache servers return 206 for range requests. jhrg 8/8/18
