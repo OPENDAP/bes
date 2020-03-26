@@ -825,7 +825,8 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
         curl_easy_setopt(handle->d_handle, CURLOPT_MAXREDIRS,20);
 
         // Set the user agent to curls version response because, well, that's what command line curl does :)
-        curl_easy_setopt(handle->d_handle, CURLOPT_USERAGENT, "User_agent Filtering Is A BAD idea."/* curl_version()*/);
+        curl_easy_setopt(handle->d_handle, CURLOPT_USERAGENT, "Hyrax"/* curl_version()*/);
+
         // This means libcurl will use Basic, Digest, GSS Negotiate, or NTLM,
         // choosing the the 'safest' one supported by the server.
         // This requires curl 7.10.6 which is still in pre-release. 07/25/03 jhrg
