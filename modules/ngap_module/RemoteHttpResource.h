@@ -118,7 +118,8 @@ namespace ngap {
         RemoteHttpResource(const std::string &url, const std::string &uid="", const std::string &echo_token="");
         virtual ~RemoteHttpResource();
 
-        void retrieveResource(const string &template_key="", const string &replace_value="");
+        void retrieveResource();
+        void retrieveResource(const string &template_key, const string &replace_value);
         /**
          * Returns the DAP type std::string of the RemoteHttpResource
          * @return Returns the DAP type std::string used by the BES Containers.

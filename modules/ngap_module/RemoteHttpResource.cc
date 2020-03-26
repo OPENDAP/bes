@@ -147,13 +147,15 @@ namespace ngap {
             throw BESInternalError(prolog + "STATE ERROR: Remote Resource " + d_remoteResourceUrl +
                                    " has Not Been Retrieved.", __FILE__, __LINE__);
         }
-
-
-
-
         return d_resourceCacheFileName;
     }
 
+
+    void RemoteHttpResource::retrieveResource() {
+        string template_key;
+        string replace_value;
+        retrieveResource(template_key,replace_value);
+    }
 
     /**
      * This method will check the cache for the resource. If it's not there then it will lock the cache and retrieve
@@ -163,8 +165,8 @@ namespace ngap {
      * is available along with an open file descriptor for the (now read-locked) cache file.
      *
      * @param uid
-     * @param access_token
-     * @param inject_url
+     * @param template_key
+     * @param replace_value
      */
     void RemoteHttpResource::retrieveResource(const string &template_key, const string &replace_value) {
         BESDEBUG(MODULE, prolog << "BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
@@ -334,7 +336,7 @@ namespace ngap {
                      "RemoteHttpResource::writeResourceToFile() - Saving resource " << d_remoteResourceUrl
                          << " to cache file " << d_resourceCacheFileName << endl);
             status = ngap_curl::read_url(d_curl, d_remoteResourceUrl, fd, d_response_headers, d_request_headers,
-                                         d_error_buffer); // Throws Error.
+                                         d_error_buffer); // Throws BESInternalError if there is a curl error.
 
             if (status >= 400) {
                 BESDEBUG(MODULE, prolog << "ERROR: HTTP request returned status: " << status << endl);

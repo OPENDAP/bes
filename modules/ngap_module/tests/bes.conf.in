@@ -40,15 +40,24 @@ BES.UncompressCache.size=500
 # Data Handler Specific key/value parameters                            #
 #                                                                       #
 #-----------------------------------------------------------------------#
+NGAP.MimeTypes=nc:application/x-netcdf
+NGAP.MimeTypes+=h4:application/x-hdf
+NGAP.MimeTypes+=h5:application/x-hdf5
+
 NGAP.Cache.dir=/tmp
 NGAP.Cache.prefix=ngap_
 NGAP.Cache.size=500
 
-Gateway.Whitelist=http://localhost:8080/
-Gateway.Whitelist+=http://test.opendap.org
-Gateway.Whitelist+=https://d1lpqa6z94hycl.cloudfront.net
-Gateway.Whitelist+= https://cmr.earthdata.nasa.gov/search
+# Inject Data URLs into the dmr++  documents.
+NGAP.inject_data_urls=true
 
-NGAP.MimeTypes=nc:application/x-netcdf
-NGAP.MimeTypes+=h4:application/x-hdf
-NGAP.MimeTypes+=h5:application/x-hdf5
+# Use this CMR endpopint URL for CMR queries.
+NGAP.cmr_endpoint_url=https://cmr.uat.earthdata.nasa.gov/search/granules.umm_json_v1_4
+
+Gateway.Whitelist = http://localhost:8080/
+Gateway.Whitelist+= http://test.opendap.org
+Gateway.Whitelist+= https://d1lpqa6z94hycl.cloudfront.net
+Gateway.Whitelist+= https://cmr.earthdata.nasa.gov/search
+Gateway.Whitelist+= https://cmr.uat.earthdata.nasa.gov/search
+Gateway.Whitelist+= https://d1jecqxxv88lkr.cloudfront.net
+

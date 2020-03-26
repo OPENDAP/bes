@@ -15,7 +15,7 @@
 #include <BESInternalError.h>
 #include <BESDebug.h>
 
-#define MODULE "curl"
+#define MODULE "dmrpp:curl"
 
 using std::endl;
 using std::string;
@@ -434,7 +434,9 @@ namespace curl {
                     string("Error getting HTTP response code: ").append(curl::error_message(res, (char *) "")),
                     __FILE__, __LINE__);
         }
-
+        char *last_url = 0;
+        curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &last_url);
+        BESDEBUG(MODULE, "cURL - CURLINFO_EFFECTIVE_URL: "<< last_url << endl );
         // @TODO @FIXME Expand the list of handled status to at least include the 4** stuff for authentication so that something sensible can be done.
         // Newer Apache servers return 206 for range requests. jhrg 8/8/18
         switch (http_code) {
@@ -451,8 +453,8 @@ namespace curl {
 
             default: {
                 ostringstream oss;
-                oss << "HTTP status error: Expected an OK status, but got: ";
-                oss << http_code;
+                oss << "curl_utils - HTTP status error: Expected an OK status, but got: " << http_code;
+                if(BESDebug::IsSet(MODULE)) oss << " from (CURLINFO_EFFECTIVE_URL): " << last_url;
                 throw BESInternalError(oss.str(), __FILE__, __LINE__);
             }
         }

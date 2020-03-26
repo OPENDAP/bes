@@ -69,7 +69,8 @@ using namespace dmrpp;
 using namespace std;
 using namespace bes;
 
-#define MODULE "dmrpp:curl_handle_pool"
+#define MODULE "dmrpp:curl"
+#define prolog std::string("CurlHandlePool::").append(__func__).append("() - ")
 
 Lock::Lock(pthread_mutex_t &lock) : m_mutex(lock)
  {
@@ -264,26 +265,42 @@ static bool evaluate_curl_response(CURL* eh)
     if (CURLE_OK != res) {
         throw BESInternalError(string("Error getting HTTP response code: ").append(curl::error_message(res, (char *) "")), __FILE__, __LINE__);
     }
+    if(BESDebug::IsSet(MODULE)){
+        char *last_url = 0;
+        curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &last_url);
+        BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << last_url << endl );
+
+        long redirects;
+        curl_easy_getinfo(eh, CURLINFO_REDIRECT_COUNT, &redirects);
+        BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_COUNT: " << redirects << endl );
+
+        char *redirect_url = 0;
+        curl_easy_getinfo(eh, CURLINFO_REDIRECT_URL, &redirect_url);
+        if(redirect_url)
+            BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_URL: " << redirect_url << endl );
+    }
 
     // Newer Apache servers return 206 for range requests. jhrg 8/8/18
     switch (http_code) {
-    case 200: // OK
-    case 206: // Partial content - this is to be expected since we use range gets
-        // cases 201-205 are things we should probably reject, unless we add more
-        // comprehensive HTTP/S processing here. jhrg 8/8/18
-        return true;
+        case 200: // OK
+        case 206: // Partial content - this is to be expected since we use range gets
+            // cases 201-205 are things we should probably reject, unless we add more
+            // comprehensive HTTP/S processing here. jhrg 8/8/18
+            return true;
 
-    case 500: // Internal server error
-    case 503: // Service Unavailable
-    case 504: // Gateway Timeout
-        return false;
+        case 500: // Internal server error
+        case 503: // Service Unavailable
+        case 504: // Gateway Timeout
+            return false;
 
-    default: {
-        ostringstream oss;
-        oss << "HTTP status error: Expected an OK status, but got: ";
-        oss << http_code;
-        throw BESInternalError(oss.str(), __FILE__, __LINE__);
-    }
+        default: {
+            ostringstream oss;
+            char *effective_url = 0;
+            curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &effective_url);
+            oss << prolog << "HTTP status error: Expected an OK status, but got: " << http_code ;
+            if(BESDebug::IsSet(MODULE))  oss << " from (CURLINFO_EFFECTIVE_URL): " << effective_url;
+            throw BESInternalError(oss.str(), __FILE__, __LINE__);
+        }
     }
 }
 
@@ -306,8 +323,13 @@ void dmrpp_easy_handle::read_data()
             ++tries;
 
             if (CURLE_OK != curl_code) {
-                throw BESInternalError(string("Data transfer error: ").append(curl::error_message(curl_code, d_errbuf)),
-                    __FILE__, __LINE__);
+                stringstream msg;
+                msg << "Data transfer error: " << curl::error_message(curl_code, d_errbuf);
+                char *effective_url = 0;
+                curl_easy_getinfo(d_handle, CURLINFO_EFFECTIVE_URL, &effective_url);
+                msg << " last_url: " << effective_url ;
+                BESDEBUG(MODULE, prolog << msg.str() << endl );
+                throw BESInternalError(msg.str(), __FILE__, __LINE__);
             }
 
             success = evaluate_curl_response(d_handle);
@@ -793,6 +815,26 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
             throw BESInternalError(string("CURL Error setting easy_handle as private data: ").append(
                     curl::error_message(res, handle->d_errbuf)), __FILE__,
                                    __LINE__);
+
+        // Enabled cookies
+        // #TODO #FIXME Make these file names configuration based.
+        curl_easy_setopt(handle->d_handle, CURLOPT_COOKIEFILE, "/tmp/.hyrax_cookies");
+        curl_easy_setopt(handle->d_handle, CURLOPT_COOKIEJAR, "/tmp/.hyrax_cookies");
+
+        // Follow 302 (redirect) responses
+        curl_easy_setopt(handle->d_handle, CURLOPT_FOLLOWLOCATION, 1);
+        curl_easy_setopt(handle->d_handle, CURLOPT_MAXREDIRS,20);
+
+        // Set the user agent something otherwise TEA will never redirect to URS.
+        curl_easy_setopt(handle->d_handle, CURLOPT_USERAGENT, "Hyrax"/* curl_version()*/);
+
+        // This means libcurl will use Basic, Digest, GSS Negotiate, or NTLM,
+        // choosing the the 'safest' one supported by the server.
+        // This requires curl 7.10.6 which is still in pre-release. 07/25/03 jhrg
+        curl_easy_setopt(handle->d_handle, CURLOPT_HTTPAUTH, (long) CURLAUTH_ANY);
+
+        // I added these next three to support Hyrax accessing data held behind URS auth. ndp - 8/20/18
+        curl_easy_setopt(handle->d_handle, CURLOPT_NETRC, 1);
 
         AccessCredentials *credentials = CredentialsManager::theCM()->get(handle->d_url);
         if ( credentials && credentials->isS3Cred()) {
