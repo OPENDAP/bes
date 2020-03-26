@@ -334,7 +334,7 @@ namespace ngap {
                      "RemoteHttpResource::writeResourceToFile() - Saving resource " << d_remoteResourceUrl
                          << " to cache file " << d_resourceCacheFileName << endl);
             status = ngap_curl::read_url(d_curl, d_remoteResourceUrl, fd, d_response_headers, d_request_headers,
-                                         d_error_buffer); // Throws Error.
+                                         d_error_buffer); // Throws BESInternalError if there is a curl error.
 
             if (status >= 400) {
                 BESDEBUG(MODULE, prolog << "ERROR: HTTP request returned status: " << status << endl);

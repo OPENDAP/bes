@@ -548,15 +548,30 @@ long read_url(CURL *curl,
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, 0);
 
     if (res != 0) {
-        BESDEBUG(MODULE, prolog << "OUCH! CURL returned an error! curl msg:  " << curl_easy_strerror(res) << endl);
-        BESDEBUG(MODULE, prolog << "OUCH! CURL returned an error! error_buffer:  " << error_buffer << endl);
-        throw libdap::Error(error_buffer);
+        stringstream msg;
+        msg << prolog << "OUCH! CURL returned an error! curl msg:  " << curl_easy_strerror(res);
+        msg << " error_buffer:  " << error_buffer << endl;
+        BESDEBUG(MODULE, msg.str());
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
     }
     long status;
     res = curl_easy_getinfo(curl, CURLINFO_HTTP_CODE, &status);
     BESDEBUG(MODULE, prolog << "HTTP Status " << status << endl);
-    if (res != CURLE_OK)
-        throw libdap::Error(error_buffer);
+    if (res != CURLE_OK){
+        stringstream msg;
+        msg << prolog << "OUCH! CURL returned an error! curl msg:  " << curl_easy_strerror(res);
+        msg << " error_buffer:  " << error_buffer << endl;
+        BESDEBUG(MODULE, msg.str());
+    }
+    if(status>400){
+        stringstream msg;
+        msg << prolog << "The HTTP request for target URL:  " << url << " returned a status of:" << status;
+        char *last_url = 0;
+        curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &last_url);
+        msg << " Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << last_url << endl;
+        BESDEBUG(MODULE, msg.str());
+    }
+
     BESDEBUG(MODULE, prolog << "END" << endl);
 
     return status;
