@@ -454,7 +454,7 @@ namespace curl {
             default: {
                 ostringstream oss;
                 oss << "curl_utils - HTTP status error: Expected an OK status, but got: ";
-                oss << http_code << " from: " << last_url;
+                oss << http_code << " from (CURLINFO_EFFECTIVE_URL): " << last_url;
                 throw BESInternalError(oss.str(), __FILE__, __LINE__);
             }
         }

@@ -297,7 +297,7 @@ static bool evaluate_curl_response(CURL* eh)
             char *effective_url = 0;
             curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &effective_url);
             oss << prolog << "HTTP status error: Expected an OK status, but got: " << http_code ;
-            oss << " from: " << effective_url;
+            oss << " from (CURLINFO_EFFECTIVE_URL): " << effective_url;
             throw BESInternalError(oss.str(), __FILE__, __LINE__);
         }
     }

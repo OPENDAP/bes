@@ -245,8 +245,7 @@ namespace ngap {
         if (found && key_value == "true") {
             result = true;
         }
-        BESDEBUG(MODULE, prolog << "NGAP_INJECT_DATA_URL_KEY(" << NGAP_INJECT_DATA_URL_KEY << "): " <<
-                                d_replace_data_access_url_template << endl);
+        BESDEBUG(MODULE, prolog << "NGAP_INJECT_DATA_URL_KEY(" << NGAP_INJECT_DATA_URL_KEY << "): " << result << endl);
         return result;
     }
 }
