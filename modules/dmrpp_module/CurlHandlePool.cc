@@ -323,8 +323,13 @@ void dmrpp_easy_handle::read_data()
             ++tries;
 
             if (CURLE_OK != curl_code) {
-                throw BESInternalError(string("Data transfer error: ").append(curl::error_message(curl_code, d_errbuf)),
-                    __FILE__, __LINE__);
+                stringstream msg;
+                msg << "Data transfer error: " << curl::error_message(curl_code, d_errbuf);
+                char *effective_url = 0;
+                curl_easy_getinfo(d_handle, CURLINFO_EFFECTIVE_URL, &effective_url);
+                msg << " last_url: " << effective_url ;
+                BESDEBUG(MODULE, prolog << msg.str() << endl );
+                throw BESInternalError(msg.str(), __FILE__, __LINE__);
             }
 
             success = evaluate_curl_response(d_handle);
@@ -810,6 +815,24 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
             throw BESInternalError(string("CURL Error setting easy_handle as private data: ").append(
                     curl::error_message(res, handle->d_errbuf)), __FILE__,
                                    __LINE__);
+
+        // #TODO #FIXME Make these file names configuration based.
+        curl_easy_setopt(handle->d_handle, CURLOPT_COOKIEFILE, "/tmp/.hyrax_cookies");
+        curl_easy_setopt(handle->d_handle, CURLOPT_COOKIEJAR, "/tmp/.hyrax_cookies");
+
+        // Follow 302 (redirect) responses
+        curl_easy_setopt(handle->d_handle, CURLOPT_FOLLOWLOCATION, 1);
+        curl_easy_setopt(handle->d_handle, CURLOPT_MAXREDIRS,20);
+
+        // Set the user agent to curls version response because, well, that's what command line curl does :)
+        curl_easy_setopt(handle->d_handle, CURLOPT_USERAGENT, "User_agent Filtering Is A BAD idea."/* curl_version()*/);
+        // This means libcurl will use Basic, Digest, GSS Negotiate, or NTLM,
+        // choosing the the 'safest' one supported by the server.
+        // This requires curl 7.10.6 which is still in pre-release. 07/25/03 jhrg
+        curl_easy_setopt(handle->d_handle, CURLOPT_HTTPAUTH, (long) CURLAUTH_ANY);
+
+        // I added these next three to support Hyrax accessing data held behind URS auth. ndp - 8/20/18
+        curl_easy_setopt(handle->d_handle, CURLOPT_NETRC, 1);
 
         AccessCredentials *credentials = CredentialsManager::theCM()->get(handle->d_url);
         if ( credentials && credentials->isS3Cred()) {
