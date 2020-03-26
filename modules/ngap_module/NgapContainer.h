@@ -59,6 +59,7 @@ namespace ngap {
                 BESContainer(), d_dmrpp_rresource(0)
         {
         }
+        bool inject_data_url();
 
     protected:
         void _duplicate(NgapContainer &copy_to);

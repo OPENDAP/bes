@@ -73,21 +73,13 @@ namespace ngap {
                                  const string &real_name,
                                  const string &type) :
             BESContainer(sym_name, real_name, type),
-            d_dmrpp_rresource(0),
-            d_replace_data_access_url_template(false) {
+            d_dmrpp_rresource(0) {
+
+        bool found;
 
         NgapApi ngap_api;
         if (type.empty())
             set_container_type("ngap");
-
-        bool found;
-        string key_value;
-        TheBESKeys::TheKeys()->get_value(NGAP_INJECT_DATA_URL_KEY, key_value, found);
-        if (found && key_value == "true") {
-            d_replace_data_access_url_template = true;
-        }
-        BESDEBUG(MODULE, prolog << "NGAP_INJECT_DATA_URL_KEY(" << NGAP_INJECT_DATA_URL_KEY << "): " <<
-        d_replace_data_access_url_template << endl);
 
         string uid = BESContextManager::TheManager()->get_context(UID_CONTEXT, found);
         string access_token = BESContextManager::TheManager()->get_context(AUTH_TOKEN_CONTEXT, found);
@@ -108,8 +100,7 @@ namespace ngap {
      */
     NgapContainer::NgapContainer(const NgapContainer &copy_from) :
             BESContainer(copy_from),
-            d_dmrpp_rresource(copy_from.d_dmrpp_rresource),
-            d_replace_data_access_url_template(copy_from.d_replace_data_access_url_template) {
+            d_dmrpp_rresource(copy_from.d_dmrpp_rresource) {
         // we can not make a copy of this container once the request has
         // been made
         if (d_dmrpp_rresource) {
@@ -154,6 +145,8 @@ namespace ngap {
 
         // Since this the ngap we know that the real_name is a URL.
         string data_access_url = get_real_name();
+
+        // And we know that the dmr++ file should "right next to it" (side-car)
         string dmrpp_url = data_access_url + ".dmrpp";
 
         BESDEBUG(MODULE, prolog << "data_access_url: " << data_access_url << endl);
@@ -163,19 +156,18 @@ namespace ngap {
         if (type == "ngap")
             type = "";
 
-
         if (!d_dmrpp_rresource) {
             BESDEBUG(MODULE, prolog << "Building new RemoteResource (dmr++)." << endl);
             string replace_template;
             string replace_value;
-            if (d_replace_data_access_url_template) {
+            if (inject_data_url()) {
                 replace_template = DATA_ACCESS_URL_KEY;
                 replace_value = data_access_url;
             }
             d_dmrpp_rresource = new ngap::RemoteHttpResource(dmrpp_url);
             d_dmrpp_rresource->retrieveResource(replace_template, replace_value);
         }
-        BESDEBUG(MODULE, prolog << "Located remote resource." << endl);
+        BESDEBUG(MODULE, prolog << "Retrieved remote resource: " << dmrpp_url << endl);
 
         // TODO This file should be read locked before leaving this method.
         string cachedResource = d_dmrpp_rresource->getCacheFileName();
@@ -184,12 +176,10 @@ namespace ngap {
         type = d_dmrpp_rresource->getType();
         set_container_type(type);
         BESDEBUG(MODULE, prolog << "Type: " << type << endl);
-        BESDEBUG(MODULE, prolog << "Done accessing " << get_real_name() << " returning cached file " <<
-                                cachedResource << endl);
-        BESDEBUG(MODULE, prolog << "Done accessing " << *this << endl);
+        BESDEBUG(MODULE, prolog << "Done retrieving:  " << dmrpp_url << " returning cached file " << cachedResource << endl);
         BESDEBUG(MODULE, prolog << "END" << endl);
 
-        return cachedResource;    // this should return the file name from the NgapCache
+        return cachedResource;    // this should return the dmr++ file name from the NgapCache
     }
 
 
@@ -247,4 +237,16 @@ namespace ngap {
         BESIndent::UnIndent();
     }
 
+    bool NgapContainer::inject_data_url(){
+        bool result = false;
+        bool found;
+        string key_value;
+        TheBESKeys::TheKeys()->get_value(NGAP_INJECT_DATA_URL_KEY, key_value, found);
+        if (found && key_value == "true") {
+            result = true;
+        }
+        BESDEBUG(MODULE, prolog << "NGAP_INJECT_DATA_URL_KEY(" << NGAP_INJECT_DATA_URL_KEY << "): " <<
+                                d_replace_data_access_url_template << endl);
+        return result;
+    }
 }
