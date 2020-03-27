@@ -123,23 +123,16 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
 
     unsigned long long bytes_read = c_ptr->get_bytes_read();
 
-    // We might be expecting a small response but get an error document instead.
-    // These error responses are generally small (< 4k), so if nbytes is bigger
-    // than the read buffer for this chunk but < 4k, make it larger and move on.
-    // This will aid in error diagnosis. jhrg 11/26/19
-    // TODO Remove this once the above error trapping code works. jhrg 12/17/19
-    if (nbytes <= 4096 && nbytes > c_ptr->get_rbuf_size()) {
-        // set_rbuf() deletes the previous storage; Chunk manages the new memory block
-        c_ptr->set_rbuf(new char[nbytes+2], nbytes+2);
-    }
-
-    BESDEBUG(MODULE, prolog << "bytes_read: " << bytes_read << " nbytes: " << nbytes << " rbuf_size: " << c_ptr->get_rbuf_size() << endl);
     // If this fails, the code will write beyond the buffer.
     assert(bytes_read + nbytes <= c_ptr->get_rbuf_size());
+    if(bytes_read + nbytes > c_ptr->get_rbuf_size()){
+        stringstream msg;
+        msg << prolog << "ERROR! The number of bytes_read: " << bytes_read << " plus the number of bytes to read: " <<
+               nbytes << " is larger than the target buffer size: " << c_ptr->get_rbuf_size();
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
 
-    //TODO: Need to setup a unique_ptr to replace the buffer that get_rbuf() returns
-    //unique_ptr<char> new_c_ptr;
-    //new_c_ptr.reset(c_ptr->get_rbuf() + bytes_read);
     memcpy(c_ptr->get_rbuf() + bytes_read, buffer, nbytes);
 
     c_ptr->set_bytes_read(bytes_read + nbytes);
