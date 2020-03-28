@@ -124,7 +124,6 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
     unsigned long long bytes_read = c_ptr->get_bytes_read();
 
     // If this fails, the code will write beyond the buffer.
-    assert(bytes_read + nbytes <= c_ptr->get_rbuf_size());
     if(bytes_read + nbytes > c_ptr->get_rbuf_size()){
         stringstream msg;
         msg << prolog << "ERROR! The number of bytes_read: " << bytes_read << " plus the number of bytes to read: " <<
