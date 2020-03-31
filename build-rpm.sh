@@ -66,6 +66,9 @@ cd bes
 git submodule update --init --recursive
 
 # build (autoreconf; configure, make)
+
+echo "autoconf: `autoconf --version`"
+
 autoreconf -fiv
 
 ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps
