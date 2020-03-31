@@ -34,7 +34,6 @@
 #include <string>
 #include <vector>
 
-//#include "util.h"
 #include "InternalErr.h"
 #include "RCReader.h"
 
@@ -114,8 +113,7 @@ private:
 protected:
     BESRemoteHttpResource() :
             d_fd(0), d_initialized(false), d_curl(0), d_resourceCacheFileName(""), d_request_headers(0),
-            d_response_headers(
-                    0), d_http_response_headers(0) {
+            d_response_headers(0), d_http_response_headers(0) {
     }
 
 public:

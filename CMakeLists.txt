@@ -14,15 +14,6 @@ include_directories(/usr/local/include/)
 
 include_directories(../build/deps/include)
 
-# These should not be referenced outside of libdap. jhrg 12/5/19
-# include_directories(../libdap4/d4_ce)
-# include_directories(../libdap4/d4_function)
-# include_directories(../libdap4/geo)
-# include_directories(../libdap4/gl)
-# include_directories(../libdap4/gl/glthread)
-# include_directories(../libdap4/gl/sys)
-# include_directories(../libdap4/GNU)
-
 include_directories(cmdln)
 include_directories(cmdln/unit-tests)
 include_directories(dap)
@@ -48,6 +39,10 @@ include_directories(functions/unused_ArrayGeoConstraint_code)
 
 include_directories(hello_world)
 include_directories(hello_world/not_used)
+
+include_directories(http)
+include_directories(http/rapidjson)
+
 include_directories(modules)
 include_directories(modules/asciival)
 
@@ -563,6 +558,7 @@ add_executable(bes
     functions/TabularSequence.h
     functions/VersionFunction.cc
     functions/VersionFunction.h
+
     hello_world/not_used/SampleSayCommand.cc
     hello_world/not_used/SampleSayCommand.h
     hello_world/not_used/SayReporter.cc
@@ -576,6 +572,56 @@ add_executable(bes
     hello_world/SampleSayResponseHandler.h
     hello_world/SampleSayXMLCommand.cc
     hello_world/SampleSayXMLCommand.h
+
+    http/BESRemoteHttpResource.h
+    http/BESProxyNames.h
+    http/BESRemoteCache.cc
+    http/BESRemoteHttpResource.cc
+    http/BESCurlUtils.cc
+    http/BESRemoteUtils.cc
+    http/BESRemoteCache.h
+    http/BESCurlUtils.h
+    http/BESRemoteUtils.h
+
+    http/rapidjson/fwd.h
+    http/rapidjson/memorystream.h
+    http/rapidjson/reader.h
+    http/rapidjson/prettywriter.h
+    http/rapidjson/ostreamwrapper.h
+    http/rapidjson/encodedstream.h
+    http/rapidjson/filereadstream.h
+    http/rapidjson/istreamwrapper.h
+    http/rapidjson/stringbuffer.h
+    http/rapidjson/internal
+    http/rapidjson/internal/ieee754.h
+    http/rapidjson/internal/strtod.h
+    http/rapidjson/internal/swap.h
+    http/rapidjson/internal/regex.h
+    http/rapidjson/internal/diyfp.h
+    http/rapidjson/internal/biginteger.h
+    http/rapidjson/internal/strfunc.h
+    http/rapidjson/internal/itoa.h
+    http/rapidjson/internal/stack.h
+    http/rapidjson/internal/dtoa.h
+    http/rapidjson/internal/meta.h
+    http/rapidjson/internal/pow10.h
+    http/rapidjson/encodings.h
+    http/rapidjson/schema.h
+    http/rapidjson/stream.h
+    http/rapidjson/filewritestream.h
+    http/rapidjson/rapidjson.h
+    http/rapidjson/document.h
+    http/rapidjson/allocators.h
+    http/rapidjson/writer.h
+    http/rapidjson/error
+    http/rapidjson/error/error.h
+    http/rapidjson/error/en.h
+    http/rapidjson/memorybuffer.h
+    http/rapidjson/pointer.h
+    http/rapidjson/msinttypes
+    http/rapidjson/msinttypes/inttypes.h
+    http/rapidjson/msinttypes/stdint.h
+
     modules/asciival/unit-tests/AsciiArrayTest.cc
     modules/asciival/unit-tests/AsciiOutputTest.cc
     modules/asciival/unit-tests/test_config.h

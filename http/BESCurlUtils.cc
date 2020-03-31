@@ -25,7 +25,7 @@
 #include <unistd.h>
 #include <algorithm>    // std::for_each
 
-#include <GNURegex.h>
+#include <BESRegex.h>
 
 #include "util.h"
 #include "BESDebug.h"
@@ -46,29 +46,28 @@ int curl_trace = 0;
 
 #define CLIENT_ERR_MIN 400
 #define CLIENT_ERR_MAX 417
-const char *http_client_errors[CLIENT_ERR_MAX - CLIENT_ERR_MIN + 1] =
-        {
-                "Bad Request:",
-                "Unauthorized: Contact the server administrator.",
-                "Payment Required.",
-                "Forbidden: Contact the server administrator.",
-                "Not Found: The data source or server could not be found.\n"
-                "Often this means that the OPeNDAP server is missing or needs attention.\n"
-                "Please contact the server administrator.",
-                "Method Not Allowed.",
-                "Not Acceptable.",
-                "Proxy Authentication Required.",
-                "Request Time-out.",
-                "Conflict.",
-                "Gone:.",
-                "Length Required.",
-                "Precondition Failed.",
-                "Request Entity Too Large.",
-                "Request URI Too Large.",
-                "Unsupported Media Type.",
-                "Requested Range Not Satisfiable.",
-                "Expectation Failed."
-        };
+const char *http_client_errors[CLIENT_ERR_MAX - CLIENT_ERR_MIN + 1] = {
+        "Bad Request:",
+        "Unauthorized: Contact the server administrator.",
+        "Payment Required.",
+        "Forbidden: Contact the server administrator.",
+        "Not Found: The data source or server could not be found.\n"
+        "Often this means that the OPeNDAP server is missing or needs attention.\n"
+        "Please contact the server administrator.",
+        "Method Not Allowed.",
+        "Not Acceptable.",
+        "Proxy Authentication Required.",
+        "Request Time-out.",
+        "Conflict.",
+        "Gone:.",
+        "Length Required.",
+        "Precondition Failed.",
+        "Request Entity Too Large.",
+        "Request URI Too Large.",
+        "Unsupported Media Type.",
+        "Requested Range Not Satisfiable.",
+        "Expectation Failed."
+};
 
 #define SERVER_ERR_MIN 500
 #define SERVER_ERR_MAX 505
@@ -83,7 +82,7 @@ const char *http_server_errors[SERVER_ERR_MAX - SERVER_ERR_MIN + 1] =
         };
 
 
-/** This function translates an HTTP status code into an error messages. It
+/** This function translates an HTTP status code into an error message. It
     works for those code greater than or equal to 400. */
 string http_status_to_string(int status) {
     if (status >= CLIENT_ERR_MIN && status <= CLIENT_ERR_MAX)
@@ -330,7 +329,7 @@ bool configureProxy(CURL *curl, const string &url) {
         // Don't create the regex if the string is empty
         if (!BESRemoteUtils::NoProxyRegex.empty()) {
             BESDEBUG(MODULE, "BESCurlUtils::configureProxy() - Found NoProxyRegex." << endl);
-            libdap::Regex r(BESRemoteUtils::NoProxyRegex.c_str());
+            BESRegex r(BESRemoteUtils::NoProxyRegex.c_str());
             if (r.match(url.c_str(), url.length()) != -1) {
                 BESDEBUG(MODULE,
                          "BESCurlUtils::configureProxy() - Found NoProxy match. Regex: " << BESRemoteUtils::NoProxyRegex

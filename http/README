@@ -1,0 +1,15 @@
+
+These files make up a library of common functions that simplify working with
+libcurl. The modules that currently (or could currently) use these are:
+
+* modules/httpd_catalog_module
+* modules/cmr_module
+* modules/dmrpp_module
+* modules/ngap_module
+* modules/gateway_module
+
+2020-03-19 15:59:29 -0700 modules/ngap_module/curl_utils.h
+2020-02-18 17:11:39 -0800 modules/dmrpp_module/curl_utils.h
+2018-10-26 14:52:29 -0700 modules/httpd_catalog_module/curl_utils.h
+2018-07-12 15:24:31 -0700 modules/cmr_module/curl_utils.h
+2018-03-02 15:11:02 -0700 modules/gateway_module/curl_utils.h

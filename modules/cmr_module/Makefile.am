@@ -12,8 +12,8 @@ ACLOCAL_AMFLAGS = -I conf
 M_NAME=cmr_module
 M_VER=1.0.3
 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
-LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/http $(DAP_CFLAGS)
+LIBADD = -L$(top_builddir)/http -lbes_http $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
@@ -27,12 +27,16 @@ libcmr_module_la_LDFLAGS = -avoid-version -module
 libcmr_module_la_LIBADD = $(LIBADD)
 
 CMR_SRC = CmrApi.cc CmrCatalog.cc Granule.cc \
-	CmrCache.cc curl_utils.cc rjson_utils.cc RemoteHttpResource.cc \
+	CmrCache.cc  rjson_utils.cc RemoteHttpResource.cc \
 	CmrModule.cc CmrUtils.cc CmrContainer.cc CmrContainerStorage.cc
 
+# curl_utils.cc
+
 CMR_HDR = CmrApi.h CmrError.h CmrCatalog.h Granule.h \
-	CmrCache.h curl_utils.h rjson_utils.h RemoteHttpResource.h \
+	CmrCache.h rjson_utils.h RemoteHttpResource.h \
 	CmrModule.h CmrUtils.h CmrContainer.h CmrContainerStorage.h CmrNames.h
+
+# curl_utils.h
 
 EXTRA_DIST = rapidjson cmr.conf.in data
 

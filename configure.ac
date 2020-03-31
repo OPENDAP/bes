@@ -842,7 +842,9 @@ AC_CONFIG_FILES([Makefile
 		 hello_world/Makefile
 		 hello_world/tests/Makefile
 		 hello_world/tests/atlocal
-		  
+
+		 http/Makefile
+
 		 docs/Makefile
 		 
 		 xmlcommand/Makefile
