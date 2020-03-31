@@ -68,6 +68,7 @@ git submodule update --init --recursive
 # build (autoreconf; configure, make)
 
 echo "autoconf: `autoconf --version`"
+echo "automake: `automake --version`"
 
 autoreconf -fiv
 
