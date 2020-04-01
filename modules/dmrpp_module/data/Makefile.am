@@ -33,12 +33,14 @@ dist_bin_SCRIPTS = get_dmrpp ingest_filesystem ingest_s3bucket
 # Build the get_dmrpp script so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
 # configure's value for the parameter when running the distcheck target.
-get_dmrpp: $(srcdir)/get_dmrpp.in $(top_srcdir)/configure.ac
-	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
-	cat $(srcdir)/get_dmrpp.in | sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
-		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
-		-e "s%[@]bes_modules_dir[@]%${lib_besdir}%" > get_dmrpp
-
+get_dmrpp: get_dmrpp.in $(top_builddir)/config.status
+	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
+                -e "s%[@]sysconfdir[@]%${sysconfdir}%" \
+                -e "s%[@]pkglibdir[@]%${pkglibdir}%" \
+                -e "s%[@]datarootdir[@]%${datarootdir}%" \
+                -e "s%[@]datadir[@]%${datadir}%" \
+                -e "s%[@]bindir[@]%${bindir}%" \
+                -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > get_dmrpp
 
 EXTRA_PROGRAMS = 
 
