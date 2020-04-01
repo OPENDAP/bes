@@ -64,7 +64,7 @@ dnl Build NGAP support by default or if the user provides --with-ngap. Do not bu
 dnl module if the user supplies --without-ngap or --with-ngap=no. jhrg 3/31/20
 
 AC_ARG_WITH([ngap], [AS_HELP_STRING([--without-ngap], [disable support for the NGAP module])],
-    [AM_CONDITIONAL([WITH_NGAP], [AS_IF([test "x$with_ngap" == xyes], [true], [false])])],
+    [AM_CONDITIONAL([WITH_NGAP], [test "x$with_ngap" == xyes])],
     [AM_CONDITIONAL([WITH_NGAP], [true])])
 
 AM_COND_IF([WITH_NGAP],
