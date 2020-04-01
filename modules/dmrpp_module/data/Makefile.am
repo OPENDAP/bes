@@ -6,24 +6,13 @@ AM_CXXFLAGS =
 
 lib_besdir=$(libdir)/bes
 
-# noinst_PROGRAMS = endian_convert multiball keepalive2
-
-# endian_convert_SOURCES = endian_convert.cc
-# endian_convert_LDADD = $(DAP_SERVER_LIBS)
-
-# multiball_SOURCES = multiball.cc 
-# multiball_LDADD = $(DAP_SERVER_LIBS) $(CURL_LIBS)
-
-# keepalive2_SOURCES = keepalive2.cc 
-# keepalive2_LDADD = $(DAP_SERVER_LIBS) $(CURL_LIBS) $(PTHREAD_LIBS)
-
-# noinst_SCRIPTS = keepalive_stats.sh mtest.sh shreddit.sh test_reuse.sh
-
 dist_bin_SCRIPTS = get_dmrpp ingest_filesystem ingest_s3bucket
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
 # configure's value for the parameter when running the distcheck target.
+#
+# Not used. jhrg  4/1/20
 %.conf : %.conf.in
 	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
@@ -46,9 +35,13 @@ EXTRA_PROGRAMS =
 
 noinst_DATA = mds_for_tests
 
-EXTRA_DIST = get_dmrpp.in ingest_filesystem ingest_s3bucket README dmrpp mds_for_tests s3 s3_data
+EXTRA_DIST = get_dmrpp.in README dmrpp mds_for_tests s3 s3_data
+# Removed from the above since they are listed in 'dist_bin_SCRIPTS: ingest_filesystem ingest_s3bucket
+# jhrg 4/1/20
 
 CLEANFILES = *~
+
+DISTCLEANFILES = get_dmrpp ingest_filesystem ingest_s3bucket
 
 # These are defined in the top-level Makefile.am
 sample_datadir = $(datadir)/hyrax/data/dmrpp
