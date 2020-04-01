@@ -41,7 +41,7 @@ EXTRA_DIST = get_dmrpp.in README dmrpp mds_for_tests s3 s3_data
 
 CLEANFILES = *~
 
-DISTCLEANFILES = get_dmrpp ingest_filesystem ingest_s3bucket
+DISTCLEANFILES = get_dmrpp
 
 # These are defined in the top-level Makefile.am
 sample_datadir = $(datadir)/hyrax/data/dmrpp
