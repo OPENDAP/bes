@@ -367,9 +367,9 @@ function mkDapRequest() {
         echo "";
         echo "!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!";
         echo "ERROR! The besstandalone program failed to build a ${dap} file!.";
-        echo "BES configuration is here: ${BES_CONF}";
-        echo "BES command is here: ${DAP_CMD}";
-        echo "Output is here: ${DAP_RESPONSE}";
+        echo "       The configuration is here: ${BES_CONF}";
+        echo "             The command is here: ${DAP_CMD}";
+        echo "The besstandalone output is here: ${DAP_RESPONSE}";
         exit 2;
     fi
 
