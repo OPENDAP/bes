@@ -363,11 +363,16 @@ function mkDapRequest() {
     besstandalone -c ${BES_CONF} -i ${DAP_CMD} >${DAP_RESPONSE}
     status=$?
     if [ ${status} -ne 0 ]; then
-        echo "ERROR! Failed to build ${dap} file!.";
+        echo "";
+        echo "";
+        echo "!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!";
+        echo "ERROR! The besstandalone program failed to build a ${dap} file!.";
+        echo "BES configuration is here: ${BES_CONF}";
+        echo "BES command is here: ${DAP_CMD}";
         echo "Output is here: ${DAP_RESPONSE}";
         exit 2;
     fi
-    
+
     if test -n "$very_verbose"; then
         echo "${dap}_response: ${DAP_RESPONSE} data_path: ${data_path}" >&2
     fi
