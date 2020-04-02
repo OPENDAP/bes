@@ -373,6 +373,8 @@ function mkDapRequest() {
         exit 2;
     fi
 
+
+
     if test -n "$very_verbose"; then
         echo "${dap}_response: ${DAP_RESPONSE} data_path: ${data_path}" >&2
     fi
@@ -381,6 +383,8 @@ function mkDapRequest() {
         echo "DAP_RESPONSE: " >&2
         cat ${DAP_RESPONSE} >&2
     fi
+    # This is the return value of the funtion!
+    echo "${DAP_RESPONSE}"
 }
 ########################################################################################################################
 
