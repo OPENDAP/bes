@@ -7,6 +7,8 @@ set -e
 #
 # Default BES Configuration.
 #
+BES_DATA_ROOT="/tmp"
+
 BES_CONF_DOC=$(
     cat <<EOF
 # produce DMR documents for use with build_dmrpp. The DAP, XML Command
@@ -31,7 +33,7 @@ BES.module.dmrpp=@bes_modules_dir@/libdmrpp_module.so
 
 # The value "@hdf5_root_directory@" is replaced at run time.
 #BES.Catalog.catalog.RootDirectory=@hdf5_root_directory@
-BES.Catalog.catalog.RootDirectory=/
+BES.Catalog.catalog.RootDirectory=${BES_DATA_ROOT}
 BES.Data.RootDirectory=/dev/null
 
 BES.Catalog.catalog.TypeMatch=h5:.*\.(h5|he5|nc4)(\.bz2|\.gz|\.Z)?$;
@@ -394,8 +396,11 @@ function mkDapRequest() {
 #
 function mk_dmrpp() {
     datafile="${1}"
+    full_data_path="${BES_DATA_ROOT}/${datafile}"
     if test -n "$verbose"; then
+        echo "  BES_DATA_ROOT: ${BES_DATA_ROOT}"
         echo "       datafile: ${datafile}"
+        echo " full_data_path: ${full_data_path}"
         echo "       bes.conf: ${BES_CONF}"
         echo "       dmr_file: ${SOURCE_DMR}"
         echo "      dmrpp_url: ${dmrpp_url}"
@@ -403,7 +408,7 @@ function mk_dmrpp() {
     if test -z "${just_dmr}"; then
         prms="${very_verbose}"
         prms="${prms} -c ${BES_CONF} "
-        prms="${prms} -f ${datafile} "
+        prms="${prms} -f ${full_data_path} "
         prms="${prms} -r ${SOURCE_DMR} "
         prms="${prms} -u ${dmrpp_url} "
         if test -n "$verbose"; then echo "   build_params: ${prms}" >&2; fi
