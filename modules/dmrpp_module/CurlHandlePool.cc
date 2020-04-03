@@ -46,7 +46,7 @@
 #include "BESDebug.h"
 #include "BESInternalError.h"
 #include "BESForbiddenError.h"
-#include <TheBESKeys.h>
+#include "TheBESKeys.h"
 #include "WhiteList.h"
 
 #include "DmrppRequestHandler.h"
@@ -833,8 +833,14 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
         // This requires curl 7.10.6 which is still in pre-release. 07/25/03 jhrg
         curl_easy_setopt(handle->d_handle, CURLOPT_HTTPAUTH, (long) CURLAUTH_ANY);
 
-        // I added these next three to support Hyrax accessing data held behind URS auth. ndp - 8/20/18
+        // Enable using the .netrc credentials file.
         curl_easy_setopt(handle->d_handle, CURLOPT_NETRC, 1);
+
+        // If the configuration specifies a particular .netrc credentials file, use it.
+        string netrc_file = CredentialsManager::theCM()->get_netrc_filename();
+        if(!netrc_file.empty()){
+            curl_easy_setopt(handle->d_handle, CURLOPT_NETRC_FILE, netrc_file.c_str());
+        }
 
         AccessCredentials *credentials = CredentialsManager::theCM()->get(handle->d_url);
         if ( credentials && credentials->isS3Cred()) {
