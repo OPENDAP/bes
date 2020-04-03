@@ -60,7 +60,7 @@ const string CredentialsManager::ENV_REGION_KEY="CMAC_REGION";
 //const string CredentialsManager::ENV_BUCKET_KEY="CMAC_BUCKET";
 const string CredentialsManager::ENV_URL_KEY="CMAC_URL";
 const string CredentialsManager::ENV_CREDS_KEY_VALUE="ENV_CREDS";
-const string CredentialsManager::NETRC_FILE_KEY="BES.netrc.credentials";
+const string CredentialsManager::NETRC_FILE_KEY="BES.netrc.file";
 
 
 /**
