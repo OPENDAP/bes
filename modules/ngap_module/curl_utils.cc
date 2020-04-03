@@ -450,10 +450,10 @@ CURL *init(char *error_buffer) {
 
     // Follow 302 (redirect) responses
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
-    curl_easy_setopt(curl, CURLOPT_MAXREDIRS, 5);
+    curl_easy_setopt(curl, CURLOPT_MAXREDIRS, 20);
 
     // Set the user agent to curls version response because, well, that's what command line curl does :)
-    curl_easy_setopt(curl, CURLOPT_USERAGENT, curl_version());
+    curl_easy_setopt(curl, CURLOPT_USERAGENT, "Hyrax" /*curl_version()*/ );
 
 #if 0
     // If the user turns off SSL validation...

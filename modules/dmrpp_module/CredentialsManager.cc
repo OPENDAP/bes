@@ -46,6 +46,8 @@ using namespace std;
 
 #define MODULE "dmrpp:creds"
 
+#define prolog std::string("CredentialsManager::").append(__func__).append("() - ")
+
 /**
  * Our singleton instance
  */
@@ -58,9 +60,8 @@ const string CredentialsManager::ENV_REGION_KEY="CMAC_REGION";
 //const string CredentialsManager::ENV_BUCKET_KEY="CMAC_BUCKET";
 const string CredentialsManager::ENV_URL_KEY="CMAC_URL";
 const string CredentialsManager::ENV_CREDS_KEY_VALUE="ENV_CREDS";
+const string CredentialsManager::NETRC_FILE_KEY="BES.netrc.credentials";
 
-
-#define NGAP_DIST_ENDPT_KEY "NGAP.distribution.endpoint.url"
 
 /**
  *  Get get the specified environment value. This function
@@ -117,7 +118,17 @@ CredentialsManager::~CredentialsManager() {
 /**
  * Really it's the default constructor for now.
  */
-CredentialsManager::CredentialsManager(): ngaps3CredentialsLoaded(false){}
+CredentialsManager::CredentialsManager(): ngaps3CredentialsLoaded(false){
+    bool found;
+    d_netrc_filename="";
+    TheBESKeys::TheKeys()->get_value(NETRC_FILE_KEY,d_netrc_filename,found);
+    if(found){
+        BESDEBUG(MODULE, prolog << "Using netrc file: " << d_netrc_filename << endl);
+    }
+    else {
+        BESDEBUG(MODULE, prolog << "Using ~/.netrc file." << endl);
+    }
+}
 
 /**
  *
