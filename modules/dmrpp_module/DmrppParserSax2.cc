@@ -706,7 +706,7 @@ void DmrppParserSax2::dmr_end_document(void * p)
         DmrppParserSax2::dmr_error(parser,
             "The document did not contain a valid root Group or contained unbalanced tags.");
 
-    if (parser->debug()) parser->top_group()->dump(cerr);
+    // if (parser->debug()) parser->top_group()->dump(cerr);
 
     parser->pop_group();     // leave the stack 'clean'
     parser->pop_attributes();
@@ -1592,7 +1592,7 @@ void DmrppParserSax2::intern(istream &f, DMR *dest_dmr, bool debug)
     }
 
     // This call ends the parse.
-    xmlParseChunk(context, d_parse_buffer, chunk_size, 1/*terminate*/);
+    xmlParseChunk(context, d_parse_buffer, chunk_size, 1/*terminate*/); // libxml2 call
 #endif
 
     // This checks that the state on the parser stack is parser_end and throws

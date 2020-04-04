@@ -4,6 +4,7 @@ BES.User=user_name
 BES.Group=group_name
 
 BES.LogName=./bes.log
+#BES.LogName=stdout
 BES.LogVerbose=no
 
 BES.modules=dap,cmd,nc,functions

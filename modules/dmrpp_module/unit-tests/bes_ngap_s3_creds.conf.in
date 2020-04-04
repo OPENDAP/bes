@@ -1,0 +1,13 @@
+# 
+# This bes.conf file sets the Bes Log file so we can deal with errors
+
+BES.LogName=./bes.log
+BES.LogVerbose=yes
+
+BES.Catalog.Default=default
+BES.Catalog.default.RootDirectory=@abs_top_srcdir@
+BES.Catalog.default.TypeMatch=null:*;
+
+NGAP.S3.distribution.endpoint.url=https://d33imu0z1ajyhj.cloudfront.net/s3credentials
+NGAP.S3.refresh.margin=600
+NGAP.s3.url.base=https://s3.us-west-2.amazonaws.com

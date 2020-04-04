@@ -48,6 +48,9 @@
 
 using namespace std;
 
+#define MODULE "dmrpp"
+#define prolog std::string("Chunk::").append(__func__).append("() - ")
+
 namespace dmrpp {
 
 // This is used to track access to 'cloudydap' accesses in the S3 logs
@@ -87,7 +90,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
             // will be sad if that happens. jhrg 12/30/19
             try {
                 string json_message = xml2json(xml_message.c_str());
-                BESDEBUG("dmrpp", "AWS S3 Access Error:" << json_message << endl);
+                BESDEBUG(MODULE, prolog << "AWS S3 Access Error:" << json_message << endl);
                 VERBOSE("AWS S3 Access Error:" << json_message << endl);
 
                 rapidjson::Document d;
@@ -105,8 +108,8 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
                 throw;
             }
             catch(std::exception &e) {
-                BESDEBUG("dmrpp", "AWS S3 Access Error:" << xml_message << endl);
-                VERBOSE("AWS S3 Access Error:" << xml_message << endl);
+                BESDEBUG(MODULE, prolog << "AWS S3 Access Error:" << xml_message << endl);
+                VERBOSE(prolog << "AWS S3 Access Error:" << xml_message << endl);
                 throw BESSyntaxUserError(string("Error accessing object store data: Unrecognized error, likely an authentication failure."), __FILE__, __LINE__);
             }
         }
@@ -120,22 +123,15 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
 
     unsigned long long bytes_read = c_ptr->get_bytes_read();
 
-    // We might be expecting a small response but get an error document instead.
-    // These error responses are generally small (< 4k), so if nbytes is bigger
-    // than the read buffer for this chunk but < 4k, make it larger and move on.
-    // This will aid in error diagnosis. jhrg 11/26/19
-    // TODO Remove this once the above error trapping code works. jhrg 12/17/19
-    if (nbytes <= 4096 && nbytes > c_ptr->get_rbuf_size()) {
-        // set_rbuf() deletes the previous storage; Chunk manages the new memory block
-        c_ptr->set_rbuf(new char[nbytes+2], nbytes+2);
+    // If this fails, the code will write beyond the buffer.
+    if(bytes_read + nbytes > c_ptr->get_rbuf_size()){
+        stringstream msg;
+        msg << prolog << "ERROR! The number of bytes_read: " << bytes_read << " plus the number of bytes to read: " <<
+               nbytes << " is larger than the target buffer size: " << c_ptr->get_rbuf_size();
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
     }
 
-    // If this fails, the code will write beyond the buffer.
-    assert(bytes_read + nbytes <= c_ptr->get_rbuf_size());
-
-    //TODO: Need to setup a unique_ptr to replace the buffer that get_rbuf() returns
-    //unique_ptr<char> new_c_ptr;
-    //new_c_ptr.reset(c_ptr->get_rbuf() + bytes_read);
     memcpy(c_ptr->get_rbuf() + bytes_read, buffer, nbytes);
 
     c_ptr->set_bytes_read(bytes_read + nbytes);

@@ -330,10 +330,15 @@ void FONcArray::define(int ncid)
         // Question: Are there other cases where an unsigned type is 'promoted' and thus
         // the type of the fill value attribute should be too? jhrg 10/12/15
         AttrTable &attrs = d_a->get_attr_table();
-        if (d_array_type == NC_SHORT && attrs.get_size()) {
-            for (AttrTable::Attr_iter iter = attrs.attr_begin(); iter != attrs.attr_end(); iter++)
-                if (attrs.get_name(iter) == "_FillValue" && attrs.get_attr_type(iter) == Attr_byte)
-                    (*iter)->type = Attr_int16;
+        if (attrs.get_size()) {
+            for (AttrTable::Attr_iter iter = attrs.attr_begin(); iter != attrs.attr_end(); iter++) {
+                if (attrs.get_name(iter) == _FillValue || attrs.get_name(iter) == "FillValue"){
+                    if(FONcArray::getAttrType(d_array_type) != attrs.get_attr_type(iter)) {
+                        (*iter)->type = FONcArray::getAttrType(d_array_type);
+                    }
+                    break;
+                }
+            }
         }
 
         BESDEBUG("fonc", "FONcArray::define() - Adding attributes " << endl);
@@ -588,6 +593,9 @@ void FONcArray::write_for_nc4_types(int ncid) {
     int stax = NC_NOERR;
 
     // create array to hold data hyperslab
+    // DAP2 only supports unsigned BYTE. So here
+    // we don't inlcude NC_BYTE (the signed BYTE, the same
+    // as 64-bit integer). KY 2020-03-20 
     switch (d_array_type) {
     case NC_UBYTE: {
         unsigned char *data = new unsigned char[d_nelements];
@@ -688,4 +696,18 @@ void FONcArray::write_for_nc4_types(int ncid) {
         throw BESInternalError(err, __FILE__, __LINE__);
     }
 
+}
+
+libdap::AttrType FONcArray::getAttrType(nc_type nct) {
+    switch (nct)
+    {
+        case NC_BYTE: return Attr_byte;
+        case NC_SHORT: return Attr_int16;
+        case NC_LONG: return Attr_int32;
+        case NC_FLOAT: return Attr_float32;
+        case NC_DOUBLE: return Attr_float64;
+        case NC_CHAR:
+        case NC_STRING: return Attr_string;
+        default:      return Attr_unknown;
+    }
 }

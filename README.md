@@ -19,6 +19,7 @@ since the previous release.
 
 This version of the BES requires libdap-3.20.5 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3641778.svg)](https://doi.org/10.5281/zenodo.3641778)
 
+
 # Introduction
 The Back-end Server (BES) for Hyrax is a unix daemon that builds DAP2 and DAP4 response
 for various kinds of data. Since the daemon runs on Unix hosts, it often works with data

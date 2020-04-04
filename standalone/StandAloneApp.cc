@@ -145,11 +145,11 @@ int StandAloneApp::initialize(int argc, char **argv)
 
     if (outputStr != "") {
         if (_cmd == "" && inputStr == "") {
-            cerr << "When specifying an output file you must either " << "specify a command or an input file" << endl;
+            cerr << "When specifying an output file you must either specify a command or an input file" << endl;
             badUsage = true;
         }
         else if (_cmd != "" && inputStr != "") {
-            cerr << "You must specify either a command or an input file on " << "the command line, not both" << endl;
+            cerr << "You must specify either a command or an input file on the command line, not both" << endl;
             badUsage = true;
         }
     }
