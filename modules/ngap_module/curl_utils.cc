@@ -398,16 +398,9 @@ bool configureProxy(CURL *curl, const string &url) {
 
 const string NETRC_FILE_KEY="BES.netrc.file";
 string get_netrc_filename(){
-    string prolog="ngap_module/curl_utils::get_netrc_filename() - ";
     bool found;
-    string name ="";
+    string name;
     TheBESKeys::TheKeys()->get_value(NETRC_FILE_KEY,name,found);
-    if(found){
-        BESDEBUG(MODULE, prolog << "Using netrc file: " << name << endl);
-    }
-    else {
-        BESDEBUG(MODULE, prolog << "Using ~/.netrc file." << endl);
-    }
     return name;
 }
 
@@ -460,7 +453,7 @@ CURL *init(char *error_buffer) {
     if(!netrc_file.empty()){
         curl_easy_setopt(curl, CURLOPT_NETRC_FILE, netrc_file.c_str());
     }
-    LOG("The ngap_module/curl_utils::init() is using the netrc file '" << ((!netrc_file.empty())?netrc_file:"~/.netrc")<< "'" );
+    VERBOSE(__FILE__ << "::init() is using the netrc file '" << ((!netrc_file.empty())?netrc_file:"~/.netrc")<< "'" << endl );
 
     // #TODO #FIXME Make these file names configuration based.
     curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "/tmp/.hyrax_cookies");

@@ -52,7 +52,7 @@ NGAP.Cache.size=500
 NGAP.inject_data_urls=true
 
 # Use this CMR endpopint URL for CMR queries.
-NGAP.cmr_hostname=https://cmr.uat.earthdata.nasa.gov
+NGAP.cmr_host_url=https://cmr.uat.earthdata.nasa.gov
 
 Gateway.Whitelist = http://localhost:8080/
 Gateway.Whitelist+= http://test.opendap.org
