@@ -33,15 +33,16 @@
 #include <BESError.h>
 #include <BESDebug.h>
 #include <BESUtil.h>
-#include "RemoteHttpResource.h"
+#include "http/BESRemoteHttpResource.h"
 
-#include "CmrNames.h"
+#include "http/BESProxyNames.h"
 
 #include "rjson_utils.h"
 
 using namespace std;
 
 #define prolog std::string("rjson_utils::").append(__func__).append("() - ")
+#define MODULE CMR_NAME
 
 namespace cmr {
 /**
@@ -56,7 +57,7 @@ namespace cmr {
 void
 rjson_utils::getJsonDoc(const string &url, rapidjson::Document &doc){
     BESDEBUG(MODULE,prolog << "Trying url: " << url << endl);
-    cmr::RemoteHttpResource rhr(url);
+    BESRemoteHttpResource rhr(url);
     rhr.retrieveResource();
     if(BESDebug::IsSet(MODULE)){
         string cmr_hits = rhr.get_http_response_header("cmr-hits");

@@ -48,7 +48,6 @@
 #include <BESRegex.h>
 #include <TheBESKeys.h>
 #include <BESInternalError.h>
-#include <BESDapError.h>
 #include <BESNotFoundError.h>
 #include <BESSyntaxUserError.h>
 #include <BESDebug.h>

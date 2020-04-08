@@ -50,14 +50,15 @@
 #include <TheBESKeys.h>
 
 #include "CmrApi.h"
-#include "CmrNames.h"
-#include "RemoteHttpResource.h"
+#include "http/BESProxyNames.h"
+
 #include "CmrError.h"
 #include "rjson_utils.h"
 
 using namespace std;
 
 #define prolog string("CmrApi::").append(__func__).append("() - ")
+#define MODULE CMR_NAME
 
 namespace cmr {
 

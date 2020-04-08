@@ -52,12 +52,13 @@ using std::string;
 #include <BESDebug.h>
 
 // #include "CmrRequestHandler.h"
-#include "CmrNames.h"
+#include "http/BESProxyNames.h"
 #include "CmrModule.h"
 #include "CmrCatalog.h"
 #include "CmrContainerStorage.h"
 
 #define prolog std::string("CmrModule::").append(__func__).append("() - ")
+#define MODULE CMR_NAME
 
 void CmrModule::initialize(const string &modname)
 {

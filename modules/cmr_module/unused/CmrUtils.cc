@@ -50,7 +50,7 @@
 
 #include "CmrNames.h"
 #include "CmrUtils.h"
-#include "CmrApi.h"
+#include "../CmrApi.h"
 
 #include <GNURegex.h>
 #include <util.h>

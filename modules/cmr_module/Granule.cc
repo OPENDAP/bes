@@ -33,7 +33,7 @@
 #include "rjson_utils.h"
 #include "BESDebug.h"
 
-#include "CmrNames.h"
+#include "http/BESProxyNames.h"
 #include "CmrError.h"
 #include "Granule.h"
 
@@ -41,7 +41,7 @@
 using namespace std;
 
 #define prolog std::string("Granule::").append(__func__).append("() - ")
-
+#define MODULE CMR_NAME
 
 namespace cmr {
 string granule_LINKS_REL_DATA_ACCES = "http://esipfed.org/ns/fedsearch/1.1/data#";

@@ -1,4 +1,7 @@
+cmake_minimum_required(VERSION 3.15)
+project(bes)
 
+set(CMAKE_CXX_STANDARD 11)
 # bes CMakeLists.txt file for use with CLion. This is not intended to be
 # a replacement for the autotols build. But it does provide information that
 # CLion needs to navigate the Hyrax code. jhrg 12/5/19
@@ -54,7 +57,7 @@ include_directories(modules/cmr_module/rapidjson/error)
 include_directories(modules/cmr_module/rapidjson/internal)
 include_directories(modules/cmr_module/rapidjson/msinttypes)
 include_directories(modules/cmr_module/unit-tests)
-include_directories(modules/cmr_module/unused)
+
 include_directories(modules/csv_handler)
 include_directories(modules/debug_functions)
 
@@ -711,8 +714,8 @@ add_executable(bes
     modules/cmr_module/unused/CmrInfoCmd.h
     modules/cmr_module/CmrApi.cc
     modules/cmr_module/CmrApi.h
-    modules/cmr_module/CmrCache.cc
-    modules/cmr_module/CmrCache.h
+        modules/cmr_module/unused/CmrCache.cc
+        modules/cmr_module/unused/CmrCache.h
     modules/cmr_module/CmrCatalog.cc
     modules/cmr_module/CmrCatalog.h
     modules/cmr_module/CmrContainer.cc
@@ -722,15 +725,15 @@ add_executable(bes
     modules/cmr_module/CmrError.h
     modules/cmr_module/CmrModule.cc
     modules/cmr_module/CmrModule.h
-    modules/cmr_module/CmrNames.h
-    modules/cmr_module/CmrUtils.cc
-    modules/cmr_module/CmrUtils.h
-    modules/cmr_module/curl_utils.cc
-    modules/cmr_module/curl_utils.h
+        modules/cmr_module/unused/CmrNames.h
+        modules/cmr_module/unused/CmrUtils.cc
+        modules/cmr_module/unused/CmrUtils.h
+        modules/cmr_module/unused/curl_utils.cc
+        modules/cmr_module/unused/curl_utils.h
     modules/cmr_module/Granule.cc
     modules/cmr_module/Granule.h
-    modules/cmr_module/RemoteHttpResource.cc
-    modules/cmr_module/RemoteHttpResource.h
+        modules/cmr_module/unused/RemoteHttpResource.cc
+        modules/cmr_module/unused/RemoteHttpResource.h
     modules/cmr_module/rjson_utils.cc
     modules/cmr_module/rjson_utils.h
     modules/csv_handler/CSV_Data.cc

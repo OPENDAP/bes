@@ -36,16 +36,18 @@
 #include <WhiteList.h>
 
 #include "CmrContainer.h"
-#include "CmrUtils.h"
-#include "CmrNames.h"
-#include "RemoteHttpResource.h"
+#include "http/BESProxyNames.h"
+#include "http/BESRemoteHttpResource.h"
+#include "CmrApi.h"
 
 using namespace std;
 using namespace bes;
 
+#define MODULE CMR_NAME
+
 #define prolog std::string("CmrContainer::").append(__func__).append("() - ")
 
-namespace cmr {
+//namespace cmr {
 
 /** @brief Creates an instances of CmrContainer with symbolic name and real
  * name, which is the remote request.
@@ -61,13 +63,13 @@ CmrContainer::CmrContainer(const string &sym_name,
         const string &real_name, const string &type) :
         BESContainer(sym_name, real_name, type), d_remoteResource(0) {
 
-    BESDEBUG( MODULE, prolog << "BEGIN sym_name: " << sym_name
-        << " real_name: " << real_name << " type: " << type << endl);
+        BESDEBUG(MODULE, prolog << "BEGIN sym_name: " << sym_name
+                                << " real_name: " << real_name << " type: " << type << endl);
 
 
-    string path = BESUtil::normalize_path(real_name,true, false);
-    vector<string> path_elements = BESUtil::split(path);
-    BESDEBUG(MODULE, prolog << "path: '" << path << "'  path_elements.size(): " << path_elements.size() << endl);
+        string path = BESUtil::normalize_path(real_name, true, false);
+        vector<string> path_elements = BESUtil::split(path);
+        BESDEBUG(MODULE, prolog << "path: '" << path << "'  path_elements.size(): " << path_elements.size() << endl);
 
 
     set_relative_name(path);
@@ -156,13 +158,13 @@ string CmrContainer::access() {
     string path  = get_real_name();
     BESDEBUG( MODULE, prolog << "path: " << path << endl);
 
-    Granule *granule = CmrUtils::getTemporalFacetGranule(path);
-    if(!granule){
-        throw BESNotFoundError("Failed locate a granule associated with the path "+path,__FILE__,__LINE__);
-    }
-    string url  = granule->getDataAccessUrl();
-    delete granule;
-    granule = 0;
+        cmr::Granule *granule = getTemporalFacetGranule(path);
+        if (!granule) {
+            throw BESNotFoundError("Failed locate a granule associated with the path " + path, __FILE__, __LINE__);
+        }
+        string url = granule->getDataAccessUrl();
+        delete granule;
+        granule = 0;
 
     string type = get_container_type();
     if (type == MODULE)
@@ -170,7 +172,7 @@ string CmrContainer::access() {
 
     if(!d_remoteResource) {
         BESDEBUG( MODULE, prolog << "Building new RemoteResource." << endl );
-        d_remoteResource = new cmr::RemoteHttpResource(url);
+        d_remoteResource = new BESRemoteHttpResource(url);
         d_remoteResource->retrieveResource();
     }
     BESDEBUG( MODULE, prolog << "Located remote resource." << endl );
@@ -247,4 +249,48 @@ void CmrContainer::dump(ostream &strm) const {
     BESIndent::UnIndent();
 }
 
-} // namespace cmr
+    cmr::Granule * getTemporalFacetGranule(const std::string granule_path)
+    {
+
+        BESDEBUG(MODULE, prolog << "BEGIN  (granule_path: '" << granule_path  << ")" << endl);
+
+        string collection;
+        string facet = "temporal";
+        string year = "-";
+        string month = "-";
+        string day = "-";
+        string granule_id = "-";
+
+        string path = BESUtil::normalize_path(granule_path,false, false);
+        vector<string> path_elements = BESUtil::split(path);
+        BESDEBUG(MODULE, prolog << "path: '" << path << "'   path_elements.size(): " << path_elements.size() << endl);
+
+        switch(path_elements.size()){
+            case 6:
+            {
+                collection = path_elements[0];
+                BESDEBUG(MODULE, prolog << "collection: '" << collection << endl);
+                facet = path_elements[1];
+                BESDEBUG(MODULE, prolog << "facet: '" << facet << endl);
+                year = path_elements[2];
+                BESDEBUG(MODULE, prolog << "year: '" << year << endl);
+                month = path_elements[3];
+                BESDEBUG(MODULE, prolog << "month: '" << month << endl);
+                day = path_elements[4];
+                BESDEBUG(MODULE, prolog << "day: '" << day << endl);
+                granule_id = path_elements[5];
+                BESDEBUG(MODULE, prolog << "granule_id: '" << granule_id << endl);
+            }
+                break;
+            default:
+            {
+                throw BESNotFoundError("Can't find it man...",__FILE__,__LINE__);
+            }
+                break;
+        }
+        cmr::CmrApi cmrApi;
+
+        return cmrApi.get_granule( collection, year, month, day, granule_id);
+    }
+
+//} // namespace cmr

@@ -45,9 +45,9 @@
 #include <TheBESKeys.h>
 #include "test_config.h"
 
-#include "RemoteHttpResource.h"
+#include "http/BESRemoteHttpResource.h"
 #include "CmrApi.h"
-#include "CmrNames.h"
+#include "http/BESProxyNames.h"
 #include "CmrCatalog.h"
 #include "CmrError.h"
 #include "rjson_utils.h"
@@ -58,6 +58,8 @@ using namespace rapidjson;
 static bool debug = false;
 static bool Debug = false;
 static bool bes_debug = false;
+
+#define MODULE CMR_NAME
 
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)

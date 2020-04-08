@@ -27,14 +27,14 @@ libcmr_module_la_LDFLAGS = -avoid-version -module
 libcmr_module_la_LIBADD = $(LIBADD)
 
 CMR_SRC = CmrApi.cc CmrCatalog.cc Granule.cc \
-	CmrCache.cc  rjson_utils.cc RemoteHttpResource.cc \
-	CmrModule.cc CmrUtils.cc CmrContainer.cc CmrContainerStorage.cc
+	rjson_utils.cc \
+	CmrModule.cc CmrContainer.cc CmrContainerStorage.cc
 
 # curl_utils.cc
 
 CMR_HDR = CmrApi.h CmrError.h CmrCatalog.h Granule.h \
-	CmrCache.h rjson_utils.h RemoteHttpResource.h \
-	CmrModule.h CmrUtils.h CmrContainer.h CmrContainerStorage.h CmrNames.h
+	rjson_utils.h \
+	CmrModule.h CmrContainer.h CmrContainerStorage.h
 
 # curl_utils.h
 

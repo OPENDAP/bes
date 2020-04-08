@@ -36,11 +36,11 @@
 #include "BESUtil.h"
 
 #include "BESRemoteCache.h"
-#include "BESRemoteUtils.cc"
+#include "BESRemoteUtils.h"
 #include "BESCurlUtils.h"
-#include "RemoteHttpResource.h"
 #include "BESProxyNames.h"
 #include "BESRemoteHttpResource.h"
+#include "TheBESKeys.h"
 
 using namespace std;
 using namespace BESCurlUtils;
@@ -128,10 +128,10 @@ BESRemoteHttpResource::~BESRemoteHttpResource() {
  */
 void BESRemoteHttpResource::retrieveResource(const string &inject_url) {
     BESDEBUG(MODULE,
-             "BESBESRemoteHttpResource::retrieveResource() - BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
+             "BESRemoteHttpResource::retrieveResource() - BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
 
     if (d_initialized) {
-        BESDEBUG(MODULE, "BESBESRemoteHttpResource::retrieveResource() - END  Already initialized." << endl);
+        BESDEBUG(MODULE, "BESRemoteHttpResource::retrieveResource() - END  Already initialized." << endl);
         return;
     }
 

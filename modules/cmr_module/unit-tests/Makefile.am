@@ -3,10 +3,10 @@
 AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir)/modules -I$(top_srcdir)/modules/cmr_module \
--I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+-I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS) -I$(top_srcdir)/http
 
 # Added -lz for ubuntu
-LIBADD = -L$(top_builddir)/dispatch/.libs -lbes_dispatch $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_EXTRA_LIBS) \
+LIBADD = -L$(top_builddir)/dispatch/.libs -L$(top_builddir)/http/.libs -lbes_dispatch $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_EXTRA_LIBS) \
 $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
 
 if CPPUNIT
@@ -92,11 +92,7 @@ endif
 clean-local:
 	test ! -d $(builddir)/static-cache || rm -rf $(builddir)/static-cache
 
-OBJS = ../RemoteHttpResource.o \
-../curl_utils.o \
-../rjson_utils.o \
-../CmrCache.o \
-../CmrUtils.o \
+OBJS = ../rjson_utils.o \
 ../CmrApi.o \
 ../Granule.o \
 ../CmrCatalog.o 

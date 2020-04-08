@@ -61,13 +61,14 @@
 #include "BESDebug.h"
 
 #include "CmrApi.h"
-#include "CmrNames.h"
+#include "http/BESProxyNames.h"
 #include "CmrCatalog.h"
 
 using namespace bes;
 using namespace std;
 
 #define prolog std::string("CmrCatalog::").append(__func__).append("() - ")
+#define MODULE CMR_NAME
 
 namespace cmr {
 

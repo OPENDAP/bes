@@ -47,8 +47,8 @@
 #include <BESCatalogList.h>
 #include <CatalogNode.h>
 
-#include "RemoteHttpResource.h"
-#include "CmrNames.h"
+#include "http/BESRemoteHttpResource.h"
+#include "http/BESProxyNames.h"
 #include "CmrApi.h"
 #include "CmrCatalog.h"
 #include "CmrError.h"
