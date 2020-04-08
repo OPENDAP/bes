@@ -50,7 +50,7 @@ int main (int argc,char**argv)
         cout<<"Please provide four arguments: "<< endl;
         cout<<"  The first is the dmrpp file that contains the missing variable value information. "<<endl;
         cout<<"  The second is the original dmrpp file. "<<endl;
-        cout<<"  The third one is the absolute path of the missing HDF5 file. "<<endl;
+        cout<<"  The third one is the path of the missing HDF5 file. "<<endl;
         cout<<"  The fourth one is the text file that includes the missing variable information. "<<endl;
         return 0;
     }
