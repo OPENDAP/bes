@@ -35,11 +35,11 @@
 
 #include "BESCurlUtils.h"
 
-#define MODULE "cmr"
+#define MODULE "BESCurlUtils"
 
 using namespace std;
 
-namespace cmr {
+//namespace BESCurlUtils {
 
 // Set this to 1 to turn on libcurl's verbose mode (for debugging).
 int curl_trace = 0;
@@ -577,4 +577,4 @@ long read_url(CURL *curl,
 }
 
 
-} /* namespace cmr */
+//} /* namespace cmr */

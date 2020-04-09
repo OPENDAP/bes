@@ -43,7 +43,7 @@
 #include "TheBESKeys.h"
 
 using namespace std;
-using namespace BESCurlUtils;
+//using namespace BESCurlUtils;
 
 #define prolog std::string("BESRemoteHttpResource::").append(__func__).append("() - ")
 #define MODULE "remote_resource"

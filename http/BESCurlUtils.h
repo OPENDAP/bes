@@ -33,7 +33,7 @@
 
 #include "rapidjson/document.h"
 
-namespace BESCurlUtils {
+//namespace BESCurlUtils {
 
 CURL *init(char *error_buffer);
 
@@ -48,6 +48,6 @@ std::string http_get_as_string(const std::string &target_url);
 
 rapidjson::Document http_get_as_json(const std::string &target_url);
 
-} // namespace bes_curl
+//} // namespace bes_curl
 
 #endif /* NGAP_CURL_UTILS_H_ */
