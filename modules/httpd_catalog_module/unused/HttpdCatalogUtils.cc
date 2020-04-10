@@ -40,7 +40,7 @@
 #include <util.h>
 
 #include <BESUtil.h>
-#include <BESCatalogUtils.h>
+#include <BESRemoteUtils.h>
 #include <BESCatalogList.h>
 #include <BESCatalog.h>
 #include <BESRegex.h>
@@ -51,8 +51,10 @@
 #include <BESSyntaxUserError.h>
 #include <BESDebug.h>
 
-#include "HttpdCatalogNames.h"
+#include "BESProxyNames.h"
 #include "HttpdCatalogUtils.h"
+
+#define MODULE HTTP_
 
 using namespace libdap;
 using namespace std;

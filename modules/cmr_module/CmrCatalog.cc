@@ -61,7 +61,7 @@
 #include "BESDebug.h"
 
 #include "CmrApi.h"
-#include "http/BESProxyNames.h"
+#include "BESProxyNames.h"
 #include "CmrCatalog.h"
 
 using namespace bes;
@@ -70,7 +70,7 @@ using namespace std;
 #define prolog std::string("CmrCatalog::").append(__func__).append("() - ")
 #define MODULE CMR_NAME
 
-namespace cmr {
+//namespace cmr {
 
 /**
  * @brief A catalog based on NASA's CMR system
@@ -589,4 +589,4 @@ void CmrCatalog::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
-} // namespace cmr
+//} // namespace cmr

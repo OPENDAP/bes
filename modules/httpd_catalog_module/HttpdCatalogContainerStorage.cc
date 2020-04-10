@@ -29,13 +29,13 @@
 
 #include "HttpdCatalogContainerStorage.h"
 #include "HttpdCatalogContainer.h"
-#include "HttpdCatalogNames.h"
+#include "BESProxyNames.h"
 
 using namespace std;
 
 #define prolog std::string("HttpdCatalogContainerStorage::").append(__func__).append("() - ")
 
-namespace httpd_catalog {
+//namespace httpd_catalog {
 /** @brief create an instance of this persistent store with the given name.
  *
  * Creates an instances of GatewayContainerStorage with the given name.
@@ -80,4 +80,4 @@ void HttpdCatalogContainerStorage::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
-} // namespace httpd_catalog
+//} // namespace httpd_catalog

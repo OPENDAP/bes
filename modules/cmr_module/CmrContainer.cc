@@ -36,8 +36,8 @@
 #include <WhiteList.h>
 
 #include "CmrContainer.h"
-#include "http/BESProxyNames.h"
-#include "http/BESRemoteHttpResource.h"
+#include "BESProxyNames.h"
+#include "BESRemoteHttpResource.h"
 #include "CmrApi.h"
 
 using namespace std;
@@ -158,7 +158,7 @@ string CmrContainer::access() {
     string path  = get_real_name();
     BESDEBUG( MODULE, prolog << "path: " << path << endl);
 
-        cmr::Granule *granule = getTemporalFacetGranule(path);
+        Granule *granule = getTemporalFacetGranule(path);
         if (!granule) {
             throw BESNotFoundError("Failed locate a granule associated with the path " + path, __FILE__, __LINE__);
         }
@@ -249,7 +249,7 @@ void CmrContainer::dump(ostream &strm) const {
     BESIndent::UnIndent();
 }
 
-    cmr::Granule * getTemporalFacetGranule(const std::string granule_path)
+    Granule * CmrContainer::getTemporalFacetGranule(const std::string granule_path)
     {
 
         BESDEBUG(MODULE, prolog << "BEGIN  (granule_path: '" << granule_path  << ")" << endl);
@@ -288,7 +288,7 @@ void CmrContainer::dump(ostream &strm) const {
             }
                 break;
         }
-        cmr::CmrApi cmrApi;
+        CmrApi cmrApi;
 
         return cmrApi.get_granule( collection, year, month, day, granule_id);
     }

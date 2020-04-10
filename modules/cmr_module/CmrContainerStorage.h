@@ -34,7 +34,7 @@
 
 class BESCatalogUtils;
 
-namespace cmr {
+//namespace cmr {
 
 /** @brief implementation of BESContainerStorageVolatile that represents a
  * list of remote requests
@@ -56,6 +56,6 @@ public:
     virtual void dump(std::ostream &strm) const;
 };
 
-} // namespace gateway
+//} // namespace gateway
 
 #endif // CmrContainerStorage_h_

@@ -38,7 +38,7 @@
 #include <BESLog.h>
 #include <BESDebug.h>
 
-#include "HttpdCatalogNames.h"
+#include "BESProxyNames.h"
 #include "HttpdCatalogModule.h"
 #include "HttpdCatalogContainerStorage.h"
 #include "HttpdCatalog.h"
@@ -47,7 +47,7 @@ using namespace std;
 
 #define prolog string("HttpdCatalogModule::").append(__func__).append("() - ")
 
-namespace httpd_catalog {
+//namespace httpd_catalog {
 
 void HttpdCatalogModule::initialize(const string &modname)
 {
@@ -89,4 +89,4 @@ void HttpdCatalogModule::dump(ostream &strm) const
     strm << BESIndent::LMarg << prolog<< "(" << (void *) this << ")" << endl;
 }
 
-} // namespace httpd_catalog
+//} // namespace httpd_catalog

@@ -52,7 +52,7 @@ using std::string;
 #include <BESDebug.h>
 
 // #include "CmrRequestHandler.h"
-#include "http/BESProxyNames.h"
+#include "BESProxyNames.h"
 #include "CmrModule.h"
 #include "CmrCatalog.h"
 #include "CmrContainerStorage.h"
@@ -65,11 +65,11 @@ void CmrModule::initialize(const string &modname)
     BESDebug::Register(MODULE);
     BESDEBUG(MODULE, prolog << "Initializing CMR Module: " << modname << endl);
 	if (!BESCatalogList::TheCatalogList()->ref_catalog(CMR_CATALOG_NAME)) {
-		BESCatalogList::TheCatalogList()->add_catalog(new cmr::CmrCatalog(CMR_CATALOG_NAME));
+		BESCatalogList::TheCatalogList()->add_catalog(new CmrCatalog(CMR_CATALOG_NAME));
 	}
 
 	if (!BESContainerStorageList::TheList()->ref_persistence(CMR_CATALOG_NAME)) {
-		BESContainerStorageList::TheList()->add_persistence(new cmr::CmrContainerStorage(CMR_CATALOG_NAME));
+		BESContainerStorageList::TheList()->add_persistence(new CmrContainerStorage(CMR_CATALOG_NAME));
 	}
 
 

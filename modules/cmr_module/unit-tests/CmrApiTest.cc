@@ -45,9 +45,9 @@
 #include <TheBESKeys.h>
 #include "test_config.h"
 
-#include "http/BESRemoteHttpResource.h"
+#include "BESRemoteHttpResource.h"
 #include "CmrApi.h"
-#include "http/BESProxyNames.h"
+#include "BESProxyNames.h"
 #include "CmrCatalog.h"
 #include "CmrError.h"
 #include "rjson_utils.h"
@@ -107,7 +107,7 @@ public:
         TheBESKeys::ConfigFile = bes_conf;
 
         if(Debug) cerr << "setUp() - Adding catalog '"<< CMR_CATALOG_NAME << "'" << endl;
-        BESCatalogList::TheCatalogList()->add_catalog(new cmr::CmrCatalog(CMR_CATALOG_NAME));
+        BESCatalogList::TheCatalogList()->add_catalog(new CmrCatalog(CMR_CATALOG_NAME));
 
         if (bes_debug) BESDebug::SetUp("cerr,cmr");
 

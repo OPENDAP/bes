@@ -28,7 +28,7 @@
 
 #include "BESAbstractModule.h"
 
-namespace httpd_catalog {
+//namespace httpd_catalog {
 
 class HttpdCatalogModule: public BESAbstractModule {
 public:
@@ -46,6 +46,6 @@ public:
 	virtual void dump(std::ostream &strm) const;
 };
 
-} // namespace httpd_catalog
+//} // namespace httpd_catalog
 
 #endif // I_HttpdCatalogModule_H

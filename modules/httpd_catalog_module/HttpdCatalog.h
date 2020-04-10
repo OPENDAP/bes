@@ -33,7 +33,9 @@
 
 #include "BESCatalog.h"
 #include "BESInternalError.h"
-#include "HttpdCatalogNames.h"
+#include "BESProxyNames.h"
+
+#define MODULE HTTPD_CATALOG_NAME
 
 class BESCatalogEntry;
 class BESCatalogUtils;
@@ -42,7 +44,7 @@ namespace bes {
     class CatalogNode;
 }
 
-namespace httpd_catalog {
+//namespace httpd_catalog {
 
 /**
  * @brief builds catalogs from a directory structure exposed by Apache httpd
@@ -87,7 +89,7 @@ public:
     virtual void dump(std::ostream &strm) const;
 };
 
-} // namespace httpd_catalog
+//} // namespace httpd_catalog
 
 #endif // _HttpdCatalog_h_
 

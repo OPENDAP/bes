@@ -49,7 +49,7 @@
 #define AT_EXIT(x)
 #endif
 
-#define MODULE "dispatch"
+#define MODULE "http"
 
 using std::endl;
 using std::string;
@@ -112,26 +112,26 @@ string BESRemoteCache::getCachePrefixFromConfig() {
 }
 
 BESRemoteCache::BESRemoteCache() {
-    BESDEBUG(MODULE, "HttpdCatalogCache::HttpdCatalogCache() -  BEGIN" << endl);
+    BESDEBUG(MODULE, "BESRemoteCache::BESRemoteCache() -  BEGIN" << endl);
 
     string cacheDir = getCacheDirFromConfig();
     string cachePrefix = getCachePrefixFromConfig();
     unsigned long cacheSizeMbytes = getCacheSizeFromConfig();
 
-    BESDEBUG(MODULE, "HttpdCatalogCache() - Cache configuration params: " << cacheDir << ", " << cachePrefix << ", "
+    BESDEBUG(MODULE, "BESRemoteCache() - Cache configuration params: " << cacheDir << ", " << cachePrefix << ", "
                                                                           << cacheSizeMbytes << endl);
 
     initialize(cacheDir, cachePrefix, cacheSizeMbytes);
 
-    BESDEBUG(MODULE, "HttpdCatalogCache::HttpdCatalogCache() -  END" << endl);
+    BESDEBUG(MODULE, "BESRemoteCache::HttpdCatalogCache() -  END" << endl);
 }
 
 BESRemoteCache::BESRemoteCache(const string &cache_dir, const string &prefix, unsigned long long size) {
-    BESDEBUG(MODULE, "HttpdCatalogCache::HttpdCatalogCache() -  BEGIN" << endl);
+    BESDEBUG(MODULE, "BESRemoteCache::BESRemoteCache() -  BEGIN" << endl);
 
     initialize(cache_dir, prefix, size);
 
-    BESDEBUG(MODULE, "HttpdCatalogCache::HttpdCatalogCache() -  END" << endl);
+    BESDEBUG(MODULE, "BESRemoteCache::BESRemoteCache() -  END" << endl);
 }
 
 /** Get the default instance of the HttpdCatalogCache object. This will read "TheBESKeys" looking for the values
@@ -146,16 +146,16 @@ BESRemoteCache::get_instance() {
             if (!d_enabled) {
                 delete d_instance;
                 d_instance = 0;
-                BESDEBUG(MODULE, "HttpdCatalogCache::" << __func__ << "() - " << "Cache is DISABLED" << endl);
+                BESDEBUG(MODULE, "BESRemoteCache::" << __func__ << "() - " << "Cache is DISABLED" << endl);
             } else {
                 AT_EXIT(delete_instance);
 
-                BESDEBUG(MODULE, "HttpdCatalogCache::" << __func__ << "() - " << "Cache is ENABLED" << endl);
+                BESDEBUG(MODULE, "BESRemoteCache::" << __func__ << "() - " << "Cache is ENABLED" << endl);
             }
         }
         catch (BESInternalError &bie) {
             BESDEBUG(MODULE,
-                     "[ERROR] HttpdCatalogCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message()
+                     "[ERROR] BESRemoteCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message()
                                                                                                 << endl);
         }
     }

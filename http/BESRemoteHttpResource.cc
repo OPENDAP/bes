@@ -46,7 +46,7 @@ using namespace std;
 //using namespace BESCurlUtils;
 
 #define prolog std::string("BESRemoteHttpResource::").append(__func__).append("() - ")
-#define MODULE "remote_resource"
+#define MODULE "http"
 
 /**
  * Builds a RemoteHttpResource object associated with the passed \c url parameter.

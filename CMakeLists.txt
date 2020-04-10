@@ -1086,8 +1086,8 @@ add_executable(bes
     modules/gateway_module/unused/GatewayRequest.h
     modules/gateway_module/curl_utils.cc
     modules/gateway_module/curl_utils.h
-    modules/gateway_module/GatewayCache.cc
-    modules/gateway_module/GatewayCache.h
+        modules/gateway_module/GatewayCache.cc
+        modules/gateway_module/GatewayCache.h
     modules/gateway_module/GatewayContainer.cc
     modules/gateway_module/GatewayContainer.h
     modules/gateway_module/GatewayContainerStorage.cc
@@ -1557,8 +1557,8 @@ add_executable(bes
     modules/httpd_catalog_module/unit-tests/HttpdDirScraperTest.cc
     modules/httpd_catalog_module/unit-tests/RemoteHttpResourceTest.cc
     modules/httpd_catalog_module/unit-tests/test_config.h
-    modules/httpd_catalog_module/curl_utils.cc
-    modules/httpd_catalog_module/curl_utils.h
+        modules/httpd_catalog_module/unused/curl_utils.cc
+        modules/httpd_catalog_module/unused/curl_utils.h
     modules/httpd_catalog_module/HttpdCatalog.cc
     modules/httpd_catalog_module/HttpdCatalog.h
     modules/httpd_catalog_module/HttpdCatalogContainer.cc
@@ -1568,15 +1568,15 @@ add_executable(bes
     modules/httpd_catalog_module/HttpdCatalogError.h
     modules/httpd_catalog_module/HttpdCatalogModule.cc
     modules/httpd_catalog_module/HttpdCatalogModule.h
-    modules/httpd_catalog_module/HttpdCatalogNames.h
-    modules/httpd_catalog_module/HttpdCatalogUtils.cc
-    modules/httpd_catalog_module/HttpdCatalogUtils.h
+        modules/httpd_catalog_module/unused/HttpdCatalogNames.h
+        modules/httpd_catalog_module/unused/HttpdCatalogUtils.cc
+        modules/httpd_catalog_module/unused/HttpdCatalogUtils.h
     modules/httpd_catalog_module/HttpdDirScraper.cc
     modules/httpd_catalog_module/HttpdDirScraper.h
-    modules/httpd_catalog_module/RemoteHttpResource.cc
-    modules/httpd_catalog_module/RemoteHttpResource.h
-    modules/httpd_catalog_module/RemoteHttpResourceCache.cc
-    modules/httpd_catalog_module/RemoteHttpResourceCache.h
+        modules/httpd_catalog_module/unused/RemoteHttpResource.cc
+        modules/httpd_catalog_module/unused/RemoteHttpResource.h
+        modules/httpd_catalog_module/unused/RemoteHttpResourceCache.cc
+        modules/httpd_catalog_module/unused/RemoteHttpResourceCache.h
     modules/ncml_module/not_used/JoinExistingDimensionCacheManager.cc
     modules/ncml_module/not_used/JoinExistingDimensionCacheManager.h
     modules/ncml_module/not_used/NCMLCacheAggXMLCommand.cc

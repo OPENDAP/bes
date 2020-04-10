@@ -25,7 +25,7 @@ lib_bes_LTLIBRARIES = libgateway_module.la
 
 GATEWAY_SRCS = GatewayModule.cc GatewayRequestHandler.cc	\
 		GatewayContainer.cc GatewayContainerStorage.cc	\
-		GatewayError.cc GatewayUtils.cc GatewayCache.cc	\
+		GatewayError.cc GatewayUtils.cc \
 		RemoteHttpResource.cc curl_utils.cc \
 		GatewayPathInfoCommand.cc \
 		GatewayPathInfoResponseHandler.cc
@@ -33,7 +33,7 @@ GATEWAY_SRCS = GatewayModule.cc GatewayRequestHandler.cc	\
 GATEWAY_HDRS = GatewayModule.h GatewayRequestHandler.h			\
 		GatewayResponseNames.h GatewayContainer.h		\
 		GatewayContainerStorage.h GatewayError.h		\
-		GatewayUtils.h GatewayCache.h RemoteHttpResource.h	\
+		GatewayUtils.h RemoteHttpResource.h	\
 		curl_utils.h GatewayPathInfoCommand.h			\
 		GatewayPathInfoResponseHandler.h
 

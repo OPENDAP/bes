@@ -12,8 +12,8 @@ ACLOCAL_AMFLAGS = -I conf
 M_NAME=httpd_catalog_module
 M_VER=0.9.2
 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
-LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/http -I$(top_srcdir)/dap $(DAP_CFLAGS)
+LIBADD = -L$(top_builddir)/http -lbes_http $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
@@ -26,15 +26,13 @@ libhttpd_catalog_module_la_SOURCES = $(HTTP_CAT_SRC) $(HTTP_CAT_HDR)
 libhttpd_catalog_module_la_LDFLAGS = -avoid-version -module 
 libhttpd_catalog_module_la_LIBADD = $(LIBADD)
 
-HTTP_CAT_SRC = HttpdCatalogModule.cc HttpdCatalogUtils.cc HttpdCatalog.cc \
+HTTP_CAT_SRC = HttpdCatalogModule.cc HttpdCatalog.cc \
 	HttpdCatalogContainer.cc HttpdCatalogContainerStorage.cc \
-	curl_utils.cc RemoteHttpResourceCache.cc RemoteHttpResource.cc \
 	HttpdDirScraper.cc
 	
-HTTP_CAT_HDR = HttpdCatalog.h  HttpdCatalogNames.h \
-	HttpdCatalogModule.h HttpdCatalogUtils.h HttpdCatalogNames.h \
+HTTP_CAT_HDR = HttpdCatalog.h \
+	HttpdCatalogModule.h \
 	HttpdCatalogContainer.h HttpdCatalogContainerStorage.h \
-	curl_utils.h RemoteHttpResourceCache.h RemoteHttpResource.h \
 	HttpdDirScraper.h 
 
 # HttpdCatalogError.h  

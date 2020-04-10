@@ -38,7 +38,7 @@
 #include "BESCatalogUtils.h"
 
 
-namespace cmr {
+//namespace cmr {
 
 class Granule {
 private:
@@ -72,7 +72,7 @@ public:
     bes::CatalogItem *getCatalogItem(BESCatalogUtils *d_catalog_utils);
 };
 
-} // namespace cmr
+//} // namespace cmr
 
 #endif /* MODULES_CMR_MODULE_GRANULE_H_ */
 

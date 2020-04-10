@@ -33,9 +33,9 @@
 #include <BESError.h>
 #include <BESDebug.h>
 #include <BESUtil.h>
-#include "http/BESRemoteHttpResource.h"
+#include "BESRemoteHttpResource.h"
 
-#include "http/BESProxyNames.h"
+#include "BESProxyNames.h"
 
 #include "rjson_utils.h"
 
@@ -44,7 +44,7 @@ using namespace std;
 #define prolog std::string("rjson_utils::").append(__func__).append("() - ")
 #define MODULE CMR_NAME
 
-namespace cmr {
+//namespace cmr {
 /**
  * Utilizes the RemoteHttpResource machinery to retrieve the document
  * referenced by the parameter 'url'. Once retrieved the document is fed to the RapidJSON
@@ -116,4 +116,4 @@ rjson_utils::jsonDocToString(rapidjson::Document &d){
 }
 
 
-}  // namespace cmr
+//}  // namespace cmr

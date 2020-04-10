@@ -43,3 +43,9 @@ BES.Catalog.CMR.RootDirectory=UNUSED
 # BES.Catalog.CMR.Exclude=
 # BES.Catalog.CMR.Include=
 BES.Catalog.CMR.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$;
+
+HttpResourceCache.dir = /tmp/cache
+HttpResourceCache.prefix = cmr_
+HttpResourceCache.size = 500
+
+Gateway.Whitelist += https://cmr.earthdata.nasa.gov

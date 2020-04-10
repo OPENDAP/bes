@@ -45,7 +45,7 @@ namespace bes {
 }
 
 
-namespace cmr {
+//namespace cmr {
 /** @brief builds catalogs from a directory structure
  */
 class CmrCatalog: public BESCatalog {
@@ -88,7 +88,7 @@ public:
     virtual void dump(std::ostream &strm) const;
 
 };
-} // namespace cmr
+//} // namespace cmr
 
 #endif // I_CmrCatalog_h
 

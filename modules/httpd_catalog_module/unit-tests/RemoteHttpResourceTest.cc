@@ -40,10 +40,10 @@
 #include <TheBESKeys.h>
 #include "test_config.h"
 
-#include "../RemoteHttpResource.h"
-#include "../RemoteHttpResourceCache.h"
+#include "BESRemoteHttpResource.h"
+#include "BESRemoteCache.h"
 #include "../HttpdDirScraper.h"
-#include "../HttpdCatalogNames.h"
+#include "BESProxyNames.h"
 
 
 using namespace std;
@@ -149,9 +149,9 @@ public:
             if(Debug) cerr << "Purging cache!" << endl;
             string cache_dir;
             bool found;
-            TheBESKeys::TheKeys()->get_value(RemoteHttpResourceCache::DIR_KEY,cache_dir,found);
+            TheBESKeys::TheKeys()->get_value(BESRemoteCache::DIR_KEY,cache_dir,found);
             if(found){
-                if(Debug) cerr << RemoteHttpResourceCache::DIR_KEY << ": " <<  cache_dir << endl;
+                if(Debug) cerr << BESRemoteCache::DIR_KEY << ": " <<  cache_dir << endl;
                 if(Debug) cerr << "Purging " << cache_dir << endl;
                 string cmd = "exec rm -r "+ BESUtil::assemblePath(cache_dir,"/*");
                 system(cmd.c_str());
@@ -176,11 +176,11 @@ public:
 
         string url = "http://test.opendap.org/data/httpd_catalog/READTHIS";
         if(debug) cerr << __func__ << "() - url: " << url << endl;
-        RemoteHttpResource rhr(url);
+        BESRemoteHttpResource rhr(url);
         try {
             rhr.retrieveResource();
             vector<string> hdrs;
-            rhr.getResponseHeaders(hdrs);
+            rhr.getResponseHeaders();
 
             for(size_t i=0; i<hdrs.size() && debug ; i++){
                 cerr << __func__ << "() - hdr["<< i << "]: " << hdrs[i] << endl;
@@ -210,14 +210,13 @@ public:
         if(debug) cerr << endl;
 
         string data_file_url = get_data_file_url("test_file");
-        RemoteHttpResource rhr(data_file_url);
+        BESRemoteHttpResource rhr(data_file_url);
         try {
             rhr.retrieveResource();
-            vector<string> hdrs;
-            rhr.getResponseHeaders(hdrs);
+            vector<string> *hdrs = rhr.getResponseHeaders();
 
-            for(size_t i=0; i<hdrs.size() && debug ; i++){
-                cerr <<  __func__ << "() - hdr["<< i << "]: " << hdrs[i] << endl;
+            for(size_t i=0; i<hdrs->size() && debug ; i++){
+                cerr <<  __func__ << "() - hdr["<< i << "]: " << &hdrs[i] << endl;
             }
             string cache_filename = rhr.getCacheFileName();
             if(debug) cerr <<  __func__ << "() - cache_filename: " << cache_filename << endl;

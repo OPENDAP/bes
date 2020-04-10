@@ -39,7 +39,7 @@ using namespace std;
 #define MODULE CMR_NAME
 #define prolog std::string("CmrContainerStorage::").append(__func__).append("() - ")
 
-namespace cmr {
+//namespace cmr {
 /** @brief create an instance of this persistent store with the given name.
  *
  * Creates an instances of GatewayContainerStorage with the given name.
@@ -84,4 +84,4 @@ void CmrContainerStorage::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
-}// namespace cmr
+//}// namespace cmr

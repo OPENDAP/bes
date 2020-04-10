@@ -76,7 +76,7 @@ public:
 
     virtual void dump(std::ostream &strm) const;
 
-    static cmr::Granule *getTemporalFacetGranule(const std::string granule_path);
+    static Granule *getTemporalFacetGranule(const std::string granule_path);
 };
 
 //} // namespace cmr

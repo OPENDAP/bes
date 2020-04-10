@@ -35,7 +35,7 @@
 
 #include "BESCurlUtils.h"
 
-#define MODULE "BESCurlUtils"
+#define MODULE "http"
 
 using namespace std;
 

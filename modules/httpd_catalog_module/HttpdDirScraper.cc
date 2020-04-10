@@ -36,8 +36,8 @@
 #include <BESCatalogUtils.h>
 #include <CatalogItem.h>
 
-#include "RemoteHttpResource.h"
-#include "HttpdCatalogNames.h"
+#include "BESRemoteHttpResource.h"
+#include "BESProxyNames.h"
 
 #include "HttpdDirScraper.h"
 
@@ -46,7 +46,7 @@ using bes::CatalogItem;
 
 #define prolog std::string("HttpdDirScraper::").append(__func__).append("() - ")
 
-namespace httpd_catalog {
+//namespace httpd_catalog {
 
 HttpdDirScraper::HttpdDirScraper()
 {
@@ -276,7 +276,7 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std:
     const BESCatalogUtils *cat_utils = BESCatalogList::TheCatalogList()->find_catalog(BES_DEFAULT_CATALOG)->get_catalog_utils();
 
     // Go get the text from the remote resource
-    RemoteHttpResource rhr(url);
+    BESRemoteHttpResource rhr(url);
     rhr.retrieveResource();
     ifstream t(rhr.getCacheFileName().c_str());
     stringstream buffer;
@@ -559,6 +559,6 @@ bes::CatalogNode *HttpdDirScraper::get_node(const string &url, const string &pat
 }
 #endif
 
-}
+//}
  // namespace httpd_catalog
 
