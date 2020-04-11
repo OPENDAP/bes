@@ -9,6 +9,18 @@
 
 <tr><td align=right valign=top><b>text</b>:</td>
 <td align=left>Time    Dep     Temp    Sal     DO%     pH      Turb    AirT    WndSpd  WndDir  Baro    Solar<br></td></tr>
+
+<tr><td align=right valign=top><b>location</b>:</td>
+<td align=left>University of Rhode Island/Oceanography School dock<br></td></tr>
+
+<tr><td align=right valign=top><b>latitude</b>:</td>
+<td align=left>41.4926<br></td></tr>
+
+<tr><td align=right valign=top><b>longitude</b>:</td>
+<td align=left>-71.4201<br></td></tr>
+
+<tr><td align=right valign=top><b>start_date</b>:</td>
+<td align=left>19 June 1996<br></td></tr>
 </table>
 </center><p>
 
@@ -19,29 +31,42 @@
 <tr><td align=right valign=top><b>URI_GSO-Dock</b>:</td>
 <td align=left valign=top>Sequence<br><table>
 <tr><td align=right valign=top><b>Time</b>:</td>
-<td align=left valign=top>64 bit Real<br></td>
+<td align=left valign=top>64 bit Real<br>units: Days since 1/1/1900<br>
+min: 35234.0<br>
+max: 35235.0<br>
+</td>
 </tr><tr><td align=right valign=top><b>Depth</b>:</td>
-<td align=left valign=top>32 bit Real<br></td>
+<td align=left valign=top>32 bit Real<br>units: m<br>
+</td>
 </tr><tr><td align=right valign=top><b>Sea_Temp</b>:</td>
-<td align=left valign=top>32 bit Real<br></td>
+<td align=left valign=top>32 bit Real<br>units: degC<br>
+</td>
 </tr><tr><td align=right valign=top><b>Salinity</b>:</td>
-<td align=left valign=top>32 bit Real<br></td>
+<td align=left valign=top>32 bit Real<br>units: psu<br>
+</td>
 </tr><tr><td align=right valign=top><b>DO_percent</b>:</td>
 <td align=left valign=top>32 bit Real<br></td>
 </tr><tr><td align=right valign=top><b>pH</b>:</td>
-<td align=left valign=top>32 bit Real<br></td>
+<td align=left valign=top>32 bit Real<br>units: pct<br>
+</td>
 </tr><tr><td align=right valign=top><b>Turbidity</b>:</td>
-<td align=left valign=top>32 bit Real<br></td>
+<td align=left valign=top>32 bit Real<br>units: FTU<br>
+</td>
 </tr><tr><td align=right valign=top><b>Air_Temp</b>:</td>
-<td align=left valign=top>32 bit Real<br></td>
+<td align=left valign=top>32 bit Real<br>units: degC<br>
+</td>
 </tr><tr><td align=right valign=top><b>Wind_Speed</b>:</td>
-<td align=left valign=top>32 bit Real<br></td>
+<td align=left valign=top>32 bit Real<br>units: m/s<br>
+</td>
 </tr><tr><td align=right valign=top><b>Wind_Direction</b>:</td>
-<td align=left valign=top>32 bit Real<br></td>
+<td align=left valign=top>32 bit Real<br>units: deg<br>
+</td>
 </tr><tr><td align=right valign=top><b>Barometric_Pres</b>:</td>
-<td align=left valign=top>32 bit Real<br></td>
+<td align=left valign=top>32 bit Real<br>units: mbar<br>
+</td>
 </tr><tr><td align=right valign=top><b>Solar_Radiation</b>:</td>
-<td align=left valign=top>32 bit Real<br></td>
+<td align=left valign=top>32 bit Real<br>units: W/m^2<br>
+</td>
 </tr></table>
 </tr></table>
 </center><p>
