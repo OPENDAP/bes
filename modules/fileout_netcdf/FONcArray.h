@@ -34,6 +34,7 @@
 
 #include <vector>
 #include <string>
+#include "AttrTable.h"
 
 #include "FONcBaseType.h"
 
@@ -92,6 +93,8 @@ private:
 
     FONcDim * find_dim(std::vector<std::string> &embed, const std::string &name, int size, bool ignore_size = false);
 
+    void write_for_nc4_types(int ncid);
+
 public:
     FONcArray(libdap::BaseType *b);
     virtual ~FONcArray();
@@ -109,6 +112,7 @@ public:
     virtual void dump(std::ostream &strm) const;
 
     static std::vector<FONcDim *> Dimensions;
+    static libdap::AttrType getAttrType(nc_type t);
 };
 
 #endif // FONcArray_h_

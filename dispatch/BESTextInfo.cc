@@ -32,9 +32,13 @@
 
 #include <sstream>
 #include <iostream>
+#include <map>
 
 using std::ostringstream;
 using std::endl;
+using std::map;
+using std::string;
+using std::ostream;
 
 #include "BESTextInfo.h"
 #include "BESUtil.h"

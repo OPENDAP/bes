@@ -4,7 +4,7 @@
     <Float64 name="a">
         <Dim name="/dim1"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>9f192cf9</Value>
+            removed checksum
         </Attribute>
     </Float64>
 </Dataset>

@@ -31,6 +31,7 @@
 #include "TheBESKeys.h"
 
 using std::endl;
+using std::string;
 
 BESUncompressCache *BESUncompressCache::d_instance = 0;
 bool BESUncompressCache::d_enabled = true;

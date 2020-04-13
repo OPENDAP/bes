@@ -35,8 +35,6 @@
 
 #include <string>
 
-using std::string ;
-
 /** @brief static helper functions to register a handler to handle dap
  * services and add commands to the dap service
  *
@@ -57,7 +55,7 @@ public:
      * @param handler the name of the handler, such as nc for netcdf_handler
      * @see BESServiceRegistry
      */
-    static void	handle_dap_service( const string &handler ) ;
+    static void	handle_dap_service( const std::string &handler ) ;
 
     /** @brief static function to add commands to the dap service
      *
@@ -69,7 +67,7 @@ public:
      * @param desc a description of the command being added
      * @see BESServiceRegistry
      */
-    static void add_to_dap_service( const string &cmd, const string &desc ) ;
+    static void add_to_dap_service( const std::string &cmd, const std::string &desc ) ;
 } ;
 
 #endif // I_BESDapService_h

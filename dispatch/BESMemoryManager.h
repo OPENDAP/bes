@@ -35,9 +35,6 @@
 
 #include <new>
 
-using std::new_handler ;
-using std::bad_alloc ;
-
 class BESMemoryGlobalArea ;
 
 class BESMemoryManager
@@ -45,11 +42,11 @@ class BESMemoryManager
 private:
     static BESMemoryGlobalArea *_memory ;
     static bool			_storage_used ;
-    static new_handler		_global_handler ;
+    static std::new_handler		_global_handler ;
 public:
     static BESMemoryGlobalArea* initialize_memory_pool() ;
     static void			swap_memory() ;
-    static void			release_global_pool()throw (bad_alloc) ;
+    static void			release_global_pool()throw (std::bad_alloc) ;
     static void			register_global_pool() ;
     static bool			unregister_global_pool() ;
     static bool			check_memory_pool() ;

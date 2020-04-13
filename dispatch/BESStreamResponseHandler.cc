@@ -42,6 +42,7 @@ using std::ifstream;
 using std::ios;
 using std::endl;
 using std::string;
+using std::ostream;
 
 #include "BESStreamResponseHandler.h"
 #include "BESRequestHandlerList.h"

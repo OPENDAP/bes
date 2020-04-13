@@ -30,14 +30,11 @@
 #include <map>
 #include <string>
 
-using std::map;
-using std::string;
-
 #include "BESObj.h"
 
 class BESFileLockingCache;
 
-typedef void (*p_bes_uncompress)(const string &src, int fd);
+typedef void (*p_bes_uncompress)(const std::string &src, int fd);
 
 /** @brief List of all registered decompression methods
  *
@@ -58,8 +55,8 @@ typedef void (*p_bes_uncompress)(const string &src, int fd);
 class BESUncompressManager3: public BESObj {
 private:
     static BESUncompressManager3 * _instance;
-    map<string, p_bes_uncompress> _uncompress_list;
-    typedef map<string, p_bes_uncompress>::const_iterator UCIter;
+    std::map<std::string, p_bes_uncompress> _uncompress_list;
+    typedef std::map<std::string, p_bes_uncompress>::const_iterator UCIter;
 
     BESUncompressManager3(void);
 
@@ -68,10 +65,10 @@ public:
     {
     }
 
-    virtual bool add_method(const string &name, p_bes_uncompress method);
-    virtual p_bes_uncompress find_method(const string &name);
+    virtual bool add_method(const std::string &name, p_bes_uncompress method);
+    virtual p_bes_uncompress find_method(const std::string &name);
 
-    virtual bool uncompress(const string &src, string &target, BESFileLockingCache *cache);
+    virtual bool uncompress(const std::string &src, std::string &target, BESFileLockingCache *cache);
 
     virtual void dump(std::ostream &strm) const ;
 

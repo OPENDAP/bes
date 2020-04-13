@@ -15,7 +15,7 @@
 %define hyraxsharedir %{_datadir}/hyrax
 
 Name:           bes
-Version:        3.20.5
+Version:        3.20.6
 Release:        1.static%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
@@ -26,7 +26,7 @@ Source0:        http://www.opendap.org/pub/source/bes-%{version}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:       libdap >= 3.20.3
+Requires:       libdap >= 3.20.4
 Requires:       readline bzip2 zlib
 Requires:	    libicu >= 3.6 
 Requires:       libxml2 >= 2.7.0
@@ -43,7 +43,7 @@ Requires:       openssl
 
 Requires(pre):  shadow-utils
 
-BuildRequires:  libdap-devel >= 3.20.3
+BuildRequires:  libdap-devel >= 3.20.4
 BuildRequires:  readline-devel
 BuildRequires:  bzip2-devel zlib-devel
 BuildRequires:  libxml2-devel >= 2.7.0
@@ -192,11 +192,14 @@ exit 0
 %{_bindir}/hyraxctl
 %{_bindir}/bescmdln
 %{_bindir}/build_dmrpp
+%{_bindir}/ngap_build_dmrpp
 %{_bindir}/localBesGetDap
 %{_bindir}/populateMDS
 %{_bindir}/get_dmrpp
 %{_bindir}/ingest_filesystem
 %{_bindir}/ingest_s3bucket
+
+# No build_sidecar binary for CentOS 6
 
 %{_libdir}/*.so.*
 %{_libdir}/bes/
@@ -210,7 +213,7 @@ exit 0
 %attr (-,%{besuser},%{besgroup}) %{bespiddir}
 %attr (-,%{besuser},%{besgroup}) %{bescachedir}
 
-# Make sure that the BES, once runnin g, can write to the MDS directory. jhrg 11/7/18
+# Make sure that the BES, once running, can write to the MDS directory. jhrg 11/7/18
 %attr (-,%{besuser},%{besgroup}) %{_datadir}/mds/
 
 # Not part of C6, see above. jhrg 9/25/18
@@ -232,6 +235,9 @@ exit 0
 # %doc __distribution_docs/api-html/
 
 %changelog
+* Wed Mar 18 2020 Nathan Potter <ndp@opendap.org> -3.20.6-1
+- Added ngap_build_dmrpp to bin
+
 * Thu Aug 30 2018 James Gallagher <jgallagher@opendap.org> - 3.19.1-1.static
 - Added build_dmrpp, localBesGetDap, and populateMDS to bin
 

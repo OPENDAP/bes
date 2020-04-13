@@ -172,11 +172,14 @@ exit 0
 %{_bindir}/hyraxctl
 %{_bindir}/bescmdln
 %{_bindir}/build_dmrpp
+%{_bindir}/ngap_build_dmrpp
 %{_bindir}/localBesGetDap
 %{_bindir}/populateMDS
 %{_bindir}/get_dmrpp
 %{_bindir}/ingest_filesystem
 %{_bindir}/ingest_s3bucket
+# TODO Change build_sidecar to a better name, like build_stare_sidecar. jhrg 10/29/19
+%{_bindir}/build_sidecar
 
 %{_libdir}/*.so.*
 %{_libdir}/bes/
@@ -190,7 +193,7 @@ exit 0
 %attr (-,%{besuser},%{besgroup}) %{bespiddir}
 %attr (-,%{besuser},%{besgroup}) %{bescachedir}
 
-# Make sure that the BES, once runnin g, can write to the MDS directory. jhrg 11/7/18
+# Make sure that the BES, once running, can write to the MDS directory. jhrg 11/7/18
 %attr (-,%{besuser},%{besgroup}) %{_datadir}/mds/
 
 %files devel
@@ -209,6 +212,9 @@ exit 0
 # %doc __distribution_docs/api-html/
 
 %changelog
+* Wed Mar 18 2020 Nathan Potter <ndp@opendap.org> -3.20.6-1
+- Added ngap_build_dmrpp to bin
+
 * Thu Aug 30 2018 James Gallagher <jgallagher@opendap.org> - 3.19.1-1
 - Added build_dmrpp, localBesGetDap, and populateMDS to bin
 

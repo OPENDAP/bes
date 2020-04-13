@@ -24,26 +24,38 @@
 #include "config.h"
 
 #include <sstream>
-#include <cstdlib>
+// #include <cstdlib>
 #include <cstring>
 #include <cassert>
 
 #include <zlib.h>
 
 #include <BESDebug.h>
+#include <BESLog.h>
 #include <BESInternalError.h>
+#include <BESSyntaxUserError.h>
 #include <BESContextManager.h>
+
+#include "xml2json/include/xml2json.hpp"
+
+#include "xml2json/include/rapidjson/document.h"
+#include "xml2json/include/rapidjson/writer.h"
+//#include "xml2json/include/rapidjson/stringbuffer.h"
 
 #include "Chunk.h"
 #include "CurlHandlePool.h"
 #include "DmrppRequestHandler.h"
 
-const string debug = "dmrpp";
-
 using namespace std;
+
+#define MODULE "dmrpp"
+#define prolog std::string("Chunk::").append(__func__).append("() - ")
 
 namespace dmrpp {
 
+// This is used to track access to 'cloudydap' accesses in the S3 logs
+// by adding a query string that will show up in those logs. This is
+// activated by using a special BES context with the name 'cloudydap.'
 const std::string Chunk::tracking_context = "cloudydap";
 
 /**
@@ -61,6 +73,48 @@ const std::string Chunk::tracking_context = "cloudydap";
  */
 size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
 {
+    size_t nbytes = size * nmemb;
+
+    // Peek into the bytes read and look for an error from the object store.
+    // Error messages always start off with '<?xml' so only check for one if we have more than
+    // four characters in 'buffer.' jhrg 12/17/19
+    if (nbytes > 4) {
+        string peek(reinterpret_cast<const char *>(buffer), 5);
+        if (peek == "<?xml") {
+            // At this point we no longer care about great performance - error msg readability
+            // is more important. jhrg 12/30/19
+            string xml_message = reinterpret_cast<const char *>(buffer);
+            xml_message.erase(xml_message.find_last_not_of("\t\n\v\f\r 0") + 1);
+            // Decode the AWS XML error message. In some cases this will fail because pub keys,
+            // which maybe in this error text, may have < or > chars in them. the XML parser
+            // will be sad if that happens. jhrg 12/30/19
+            try {
+                string json_message = xml2json(xml_message.c_str());
+                BESDEBUG(MODULE, prolog << "AWS S3 Access Error:" << json_message << endl);
+                VERBOSE("AWS S3 Access Error:" << json_message << endl);
+
+                rapidjson::Document d;
+                d.Parse(json_message.c_str());
+                rapidjson::Value& s = d["Error"]["Message"];
+                // We might want to get the "Code" from the "Error" if these text messages
+                // are not good enough. But the "Code" is not really suitable for normal humans...
+                // jhrg 12/31/19
+
+                throw BESSyntaxUserError(string("Error accessing object store data: ").append(s.GetString()), __FILE__, __LINE__);
+            }
+            catch (BESSyntaxUserError) {
+                // re-throw BESSyntaxUserError - added for the future if we make BESError a child
+                // of std::exception as it should be. jhrg 12/30/19
+                throw;
+            }
+            catch(std::exception &e) {
+                BESDEBUG(MODULE, prolog << "AWS S3 Access Error:" << xml_message << endl);
+                VERBOSE(prolog << "AWS S3 Access Error:" << xml_message << endl);
+                throw BESSyntaxUserError(string("Error accessing object store data: Unrecognized error, likely an authentication failure."), __FILE__, __LINE__);
+            }
+        }
+    }
+
     Chunk *c_ptr = reinterpret_cast<Chunk*>(data);
 
     // rbuf: |******++++++++++----------------------|
@@ -68,14 +122,16 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
     //              | bytes_read
 
     unsigned long long bytes_read = c_ptr->get_bytes_read();
-    size_t nbytes = size * nmemb;
 
     // If this fails, the code will write beyond the buffer.
-    assert(bytes_read + nbytes <= c_ptr->get_rbuf_size());
+    if(bytes_read + nbytes > c_ptr->get_rbuf_size()){
+        stringstream msg;
+        msg << prolog << "ERROR! The number of bytes_read: " << bytes_read << " plus the number of bytes to read: " <<
+               nbytes << " is larger than the target buffer size: " << c_ptr->get_rbuf_size();
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
 
-    //TODO: Need to setup a unique_ptr to replace the buffer that get_rbuf() returns
-    //unique_ptr<char> new_c_ptr;
-    //new_c_ptr.reset(c_ptr->get_rbuf() + bytes_read);
     memcpy(c_ptr->get_rbuf() + bytes_read, buffer, nbytes);
 
     c_ptr->set_bytes_read(bytes_read + nbytes);

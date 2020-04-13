@@ -1,143 +1,90 @@
 {
-  "type": "CoverageCollection",
-  "domainType": "Grid",
+  "type": "Coverage",
+  "domain": {
+    "type" : "Domain",
+    "domainType": "Grid",
+    "axes": {
+      "x": {
+        "values": []
+      },
+      "y": {
+        "values": []
+      },
+      "t": {
+        "values": ["2020-01-01T12:00:00Z"]
+      }
+    },
+    "referencing": [{
+      "coordinates": ["t"],
+      "system": {
+        "type": "TemporalRS",
+        "calendar": "Gregorian"
+      }
+    },
+    {
+      "coordinates": ["x", "y"],
+      "system": {
+        "type": "ProjectedCRS",
+        "id": "http://www.opengis.net/def/crs/EPSG/0/27700"
+      }
+    }]
+  },
   "parameters": {
-    "SST": {
+    "u": {
       "type": "Parameter",
-      "description": "SST",
+      "description": {
+        "en": "Vector wind eastward component"
+      },
       "unit": {
         "label": {
-          "en": "Deg C"
+          "en": "meter per second"
+        },
+        "symbol": {
+          "value": "meter per second",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
         }
       },
-      "symbol": {
-        "value": "Deg C",
-        "type": ""
-      },
       "observedProperty": {
-        "id": null,
         "label": {
-          "en": "SEA SURFACE TEMPERATURE"
+          "en": "Vector wind eastward component"
         }
       }
     },
-    "AIRT": {
+    "v": {
       "type": "Parameter",
-      "description": "AIRT",
+      "description": {
+        "en": "Vector wind northward component"
+      },
       "unit": {
         "label": {
-          "en": "DEG C"
+          "en": "meter per second"
+        },
+        "symbol": {
+          "value": "meter per second",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
         }
-      },
-      "symbol": {
-        "value": "DEG C",
-        "type": ""
       },
       "observedProperty": {
-        "id": null,
         "label": {
-          "en": "AIR TEMPERATURE"
-        }
-      }
-    },
-    "UWND": {
-      "type": "Parameter",
-      "description": "UWND",
-      "unit": {
-        "label": {
-          "en": "M/S"
-        }
-      },
-      "symbol": {
-        "value": "M/S",
-        "type": ""
-      },
-      "observedProperty": {
-        "id": null,
-        "label": {
-          "en": "ZONAL WIND"
-        }
-      }
-    },
-    "VWND": {
-      "type": "Parameter",
-      "description": "VWND",
-      "unit": {
-        "label": {
-          "en": "M/S"
-        }
-      },
-      "symbol": {
-        "value": "M/S",
-        "type": ""
-      },
-      "observedProperty": {
-        "id": null,
-        "label": {
-          "en": "MERIDIONAL WIND"
+          "en": "Vector wind northward component"
         }
       }
     }
   },
-  "referencing": [{
-    "coordinates": ["t"],
-    "system": {
-      "type": "TemporalRS",
-      "calendar": "Gregorian"
-    }
-  },
-  {
-    "coordinates": ["x", "y"],
-    "system": {
-      "type": "GeographicCRS",
-      "id": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
-    }
-  }],
-  "coverages": [{
-    "type": "Coverage",
-    "domain": {
-      "type" : "Domain",
-      "axes": {
-        "x": {
-          "values": []
-        },
-        "y": {
-          "values": []
-        },
-        "t": {
-          "values": ["2018-01-01T00:12:20Z"]
-        }
-      }
+  "ranges": {
+    "u": {
+      "type": "NdArray",
+      "dataType": "integer", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [16, 17, 21],
+      "values": []
     },
-    "ranges": {
-      "SST": {
-        "type": "NdArray",
-        "dataType": "float", 
-        "axisNames": ["t", "y", "x"],
-        "shape": [1, 90, 180],
-        "values": []
-      },
-      "AIRT": {
-        "type": "NdArray",
-        "dataType": "float", 
-        "axisNames": ["t", "y", "x"],
-        "shape": [1, 90, 180],
-        "values": []
-      },
-      "UWND": {
-        "type": "NdArray",
-        "dataType": "float", 
-        "axisNames": ["t", "y", "x"],
-        "shape": [1, 90, 180],
-        "values": []
-      },
-      "VWND": {
-        "type": "NdArray",
-        "dataType": "float", 
-        "axisNames": ["t", "y", "x"],
-        "shape": [1, 90, 180],
-        "values": []
-      }
+    "v": {
+      "type": "NdArray",
+      "dataType": "integer", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [16, 17, 21],
+      "values": []
     }
-  }]
+  }
 }

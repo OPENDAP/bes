@@ -3,12 +3,18 @@
 
 AUTOMAKE_OPTIONS = foreign
 
+# TODO set these with configure. jhrg 11/26/19
+OPENSSL_LIBS=-lcrypto
+OPENSSL_INC=-I/usr/local/opt/openssl/include
+OPENSSL_LDFLAGS=-L/usr/local/opt/openssl/lib
+
 AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)/modules -I$(top_srcdir)/modules/dmrpp_module \
--I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+-I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS) $(OPENSSL_INC)
 
 # Added -lz for ubuntu
 LIBADD = $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_EXTRA_LIBS) \
-$(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(XML2_LIBS) -lz
+$(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
+$(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) -lz
 
 
 if CPPUNIT
@@ -31,19 +37,23 @@ check_PROGRAMS = $(UNIT_TESTS)
 # This determines what gets run by 'make check.'
 TESTS = $(UNIT_TESTS)
 
+CREDS_CONF = $(builddir)/credentials.conf
+CREDS_CONF_IN = $(srcdir)/input-files/credentials.conf.in
+
 noinst_HEADERS = test_config.h
 
-noinst_DATA = bes.conf
+noinst_DATA = bes.conf bes_ngap_s3_creds.conf $(CREDS_CONF) input-files/weak.conf
 
-EXTRA_DIST = bes.conf.in test_config.h.in baselines input-files
+EXTRA_DIST = bes.conf.in bes_ngap_s3_creds.conf.in test_config.h.in baselines input-files awsv4
 
 CLEANFILES = *.gcda *.gcno *.strm *.file test_config.h tmp.txt
 
-DISTCLEANFILES = bes.conf bes.log
+DISTCLEANFILES = bes.conf bes_ngap_s3_creds.conf bes.log $(CREDS_CONF)
 
 BUILT_SOURCES = test_config.h
 
 BES_CONF_IN = bes.conf.in
+BES_NGAP_CREDS_CONF_IN = bes_ngap_s3_creds.conf.in
 
 test_config.h: $(srcdir)/test_config.h.in Makefile
 	@mod_abs_srcdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
@@ -61,12 +71,21 @@ bes.conf: $(srcdir)/$(BES_CONF_IN) $(top_srcdir)/configure.ac
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 	    -e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
+bes_ngap_s3_creds.conf: $(srcdir)/$(BES_NGAP_CREDS_CONF_IN) $(top_srcdir)/configure.ac
+	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
+	    -e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes_ngap_s3_creds.conf
+
+$(CREDS_CONF):
+	cp $(CREDS_CONF_IN) $(CREDS_CONF)
+	chmod 600 $(CREDS_CONF)
+
 ############################################################################
 # Unit Tests
 #
 
 if CPPUNIT
-UNIT_TESTS = ChunkTest DmrppParserTest DmrppCommonTest DmrppMetadataStoreTest
+UNIT_TESTS = NgapCredentialsTest ChunkTest DmrppParserTest DmrppCommonTest DmrppMetadataStoreTest CredentialsManagerTest awsv4_test
 else
 UNIT_TESTS =
 
@@ -88,11 +107,23 @@ OBJS = ../DMRpp.o ../DmrppCommon.o ../Chunk.o ../CurlHandlePool.o	\
 ../DmrppUInt16.o ../DmrppUInt32.o ../DmrppUInt64.o ../DmrppStr.o	\
 ../DmrppStructure.o ../DmrppUrl.o ../DmrppD4Enum.o ../DmrppD4Group.o	\
 ../DmrppD4Opaque.o ../DmrppD4Sequence.o ../DmrppTypeFactory.o		\
-../DmrppParserSax2.o ../DmrppMetadataStore.o ../DmrppRequestHandler.o
+../DmrppParserSax2.o ../DmrppMetadataStore.o ../DmrppRequestHandler.o \
+../CredentialsManager.o ../AccessCredentials.o ../NgapS3Credentials.o \
+../awsv4.o ../url_parser.o \
+../curl_utils.o
 
 
 ChunkTest_SOURCES = ChunkTest.cc
 ChunkTest_LDADD = $(OBJS) $(LIBADD)
+
+CredentialsManagerTest_SOURCES = CredentialsManagerTest.cc
+CredentialsManagerTest_LDADD = $(OBJS) $(LIBADD)
+
+NgapCredentialsTest_SOURCES = NgapCredentialsTest.cc
+NgapCredentialsTest_LDADD = ../AccessCredentials.o ../NgapS3Credentials.o ../curl_utils.o $(LIBADD)
+
+awsv4_test_SOURCES = awsv4_test.cc
+awsv4_test_LDADD = $(OBJS) $(LIBADD)
 
 DmrppParserTest_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/modules/hdf5_handler
 DmrppParserTest_SOURCES = DmrppParserTest.cc

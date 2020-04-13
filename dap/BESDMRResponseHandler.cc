@@ -127,7 +127,7 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
 #if ANNOTATION_SYSTEM
             // Support for the experimental Dataset Annotation system. jhrg 12/19/18
             if (!d_annotation_service_url.empty()) {
-                auto_ptr<D4Attribute> annotation_url(new D4Attribute(DODS_EXTRA_ANNOTATION_ATTR, attr_str_c));
+                unique_ptr<D4Attribute> annotation_url(new D4Attribute(DODS_EXTRA_ANNOTATION_ATTR, attr_str_c));
                 annotation_url->add_value(d_annotation_service_url);
 
                 // If there is already a DODS_EXTRA container, use it
@@ -136,12 +136,12 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
                 }
                 else {
                     // Make DODS_EXTRA and load the attribute into it.
-                    auto_ptr<D4Attribute> dods_extra(new D4Attribute(DODS_EXTRA_ATTR_TABLE, attr_container_c));
+                    unique_ptr<D4Attribute> dods_extra(new D4Attribute(DODS_EXTRA_ATTR_TABLE, attr_container_c));
                     dods_extra->attributes()->add_attribute_nocopy(annotation_url.release());
 
                     // If the root group is null, set the factory (this is an edge case!)
                     if (!dmr->root()) {
-                        auto_ptr<D4BaseTypeFactory> factory(new D4BaseTypeFactory);
+                        unique_ptr<D4BaseTypeFactory> factory(new D4BaseTypeFactory);
                         dmr->set_factory(factory.get());
                         dmr->root()->attributes()->add_attribute_nocopy(dods_extra.release());
                         dmr->set_factory(0);

@@ -64,11 +64,15 @@
 #define FONC_CLASSIC_MODEL true
 #define FONC_CLASSIC_MODEL_KEY "FONc.ClassicModel"
 
-string FONcRequestHandler::temp_dir;
+#define FONC_NO_GLOBAL_ATTRS false
+#define FONC_NO_GLOBAL_ATTRS_KEY "FONc.NoGlobalAttrs"
+
+std::string FONcRequestHandler::temp_dir;
 bool FONcRequestHandler::byte_to_short;
 bool FONcRequestHandler::use_compression;
 int FONcRequestHandler::chunk_size;
 bool FONcRequestHandler::classic_model;
+bool FONcRequestHandler::no_global_attrs;
 
 using namespace std;
 
@@ -153,11 +157,14 @@ FONcRequestHandler::FONcRequestHandler( const string &name )
 
     read_key_value(FONC_CLASSIC_MODEL_KEY, FONcRequestHandler::classic_model, FONC_CLASSIC_MODEL);
 
+    read_key_value(FONC_NO_GLOBAL_ATTRS_KEY, FONcRequestHandler::no_global_attrs, FONC_NO_GLOBAL_ATTRS);
+
     BESDEBUG("fonc", "FONcRequestHandler::temp_dir: " << FONcRequestHandler::temp_dir << endl);
     BESDEBUG("fonc", "FONcRequestHandler::byte_to_short: " << FONcRequestHandler::byte_to_short << endl);
     BESDEBUG("fonc", "FONcRequestHandler::use_compression: " << FONcRequestHandler::use_compression << endl);
     BESDEBUG("fonc", "FONcRequestHandler::chunk_size: " << FONcRequestHandler::chunk_size << endl);
     BESDEBUG("fonc", "FONcRequestHandler::classic_model: " << FONcRequestHandler::classic_model << endl);
+    BESDEBUG("fonc", "FONcRequestHandler::turn_off_global_attrs: " << FONcRequestHandler::no_global_attrs << endl);
 }
 
 /** @brief Any cleanup that needs to take place

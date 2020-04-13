@@ -155,7 +155,7 @@ private:
 typedef std::vector<RCPtr<AggMemberDataset> > AMDList;
 
 }
-;
+
 // namespace agg_util
 
 #endif /* __AGG_UTIL__AGG_MEMBER_DATASET_H__ */

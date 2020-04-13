@@ -55,9 +55,9 @@ extern BESStopWatch *elapsedTimeToTransmitStart;
 class BESStopWatch : public BESObj
 {
  private:
-    string _timer_name;
-    string _req_id;
-    string _log_name;
+	std::string _timer_name;
+	std::string _req_id;
+	std::string _log_name;
     bool _started ;
     bool _stopped ;
 
@@ -85,7 +85,7 @@ class BESStopWatch : public BESObj
      *
      * @param logName The name of the log to use in the logging output.
      */
-    BESStopWatch(string logName)  : _timer_name(MISSING_LOG_PARAM),
+    BESStopWatch(std::string logName)  : _timer_name(MISSING_LOG_PARAM),
 	_req_id(MISSING_LOG_PARAM),
 	_log_name(logName),
 	_started(false),
@@ -108,7 +108,7 @@ class BESStopWatch : public BESObj
      * information to the BESDebug::GetStrm() stream.
      * @param name The name of the timer.
      */
-    virtual bool		start(string name) ;
+    virtual bool		start(std::string name) ;
 
     /**
      * Starts the timer. NB: This method will attempt to write logging
@@ -118,7 +118,7 @@ class BESStopWatch : public BESObj
      * @param reqID The client's request ID associated with this
      * activity. Available from the DataHandlerInterfact object.
      */
-    virtual bool		start(string name, string reqID) ;
+    virtual bool		start(std::string name, std::string reqID) ;
 
     virtual void		dump( std::ostream &strm ) const ;
 } ;

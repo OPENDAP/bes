@@ -33,6 +33,9 @@
 #include "ExtConn.h"
 
 using std::endl;
+using std::map;
+using std::string;
+using std::ostream;
 
 ExtConn::ExtConn( )
     : PPTConnection( 0 )

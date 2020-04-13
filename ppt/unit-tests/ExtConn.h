@@ -44,10 +44,10 @@ public:
     				~ExtConn() ;
     virtual void		initConnection() ;
     virtual void		closeConnection() ;
-    virtual void		read_extensions( map<string,string> &extensions,
-                                                 const string &xstr ) ;
+    virtual void		read_extensions( std::map<std::string,std::string> &extensions,
+                                                 const std::string &xstr ) ;
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void		dump( std::ostream &strm ) const ;
 } ;
 
 #endif // ExtConn_h

@@ -158,6 +158,10 @@ public:
     virtual unsigned long long update_cache_info(const std::string &target);
     virtual bool cache_too_big(unsigned long long current_size) const;
     virtual unsigned long long get_cache_size();
+
+    virtual bool get_exclusive_lock_nb(const std::string &target, int &fd);
+    virtual bool get_exclusive_lock(const std::string &target, int &fd);
+
     virtual void update_and_purge(const std::string &new_file);
     virtual void purge_file(const std::string &file);
 

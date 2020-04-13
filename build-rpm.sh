@@ -16,6 +16,8 @@
 # u: treat unset env vars in substitutions as an error
 set -eux
 
+git_branch=$1
+
 # This script will start with /root as the CWD since that's how the 
 # centos6/7 hyrax build containers are configured. The PATH will be 
 # set to include $prefix/bin and $prefix/deps/bin; $prefix will be
@@ -33,7 +35,7 @@ then
     exit 1
 fi
 
-if ! which aws && test -x /root/.local/bin/aws
+if ! command -v aws && test -x /root/.local/bin/aws
 then
     export PATH=$PATH:/root/.local/bin
 fi
@@ -54,7 +56,7 @@ aws s3 cp s3://opendap.travis.build/libdap-devel-$LIBDAP_RPM_VERSION.$DIST.x86_6
 yum install -y /tmp/*.rpm
 
 # Get a fresh copy of the sources and any submodules
-git clone https://github.com/opendap/bes
+git clone --branch $git_branch https://github.com/opendap/bes
 
 cd bes
 
@@ -64,6 +66,10 @@ cd bes
 git submodule update --init --recursive
 
 # build (autoreconf; configure, make)
+
+echo "autoconf: `autoconf --version`"
+echo "automake: `automake --version`"
+
 autoreconf -fiv
 
 ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps

@@ -150,10 +150,10 @@ public:
         BaseType *result = 0;
         try {
             // Must set up the arrays as per the CE parser
-            auto_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(1, "bbox_1");
+            unique_ptr<Array> bbox_1 = roi_bbox_build_empty_bbox(1, "bbox_1");
             bbox_1->set_vec_nocopy(0, roi_bbox_build_slice(3, 10, "cols"));
 
-            auto_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(1, "bbox_2");
+            unique_ptr<Array> bbox_2 = roi_bbox_build_empty_bbox(1, "bbox_2");
             bbox_2->set_vec_nocopy(0, roi_bbox_build_slice(5, 9, "x"));
 
             BaseType *argv[] = { bbox_1.get(), bbox_2.get() };

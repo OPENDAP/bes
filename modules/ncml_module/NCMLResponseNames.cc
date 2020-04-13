@@ -41,6 +41,5 @@ const std::string ModuleConstants::CACHE_AGG_LOCATION_DATA_KEY = "cacheAgg_locat
 const std::string ModuleConstants::CACHE_AGG_LOCATION_XML_ATTR = "location";
 
 }
-;
 // namespace ncml_module
 

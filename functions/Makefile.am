@@ -9,14 +9,16 @@ AM_CXXFLAGS =
 AUTOMAKE_OPTIONS = foreign subdir-objects
 
 AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS) $(GDAL_CFLAGS)
-LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(GDAL_LDFLAGS)
+LIBADD = $(DAP_LIBS) $(GDAL_LDFLAGS)
 
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
 # ./configure --disable-shared CXXFLAGS=...
 # or ./configure --enable-developer --disable-shared
 # the --disable-shared is not required, but it seems to help with debuggers.
-CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align 
+#
+# Added -Wno-deprecated to quite warings about auto_ptr<>. jhrg 11/6/19
+CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Wno-deprecated
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 if BES_DEVELOPER
@@ -30,10 +32,11 @@ M_VER=1.1.0
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
 SUBDIRS = . unit-tests tests
+DISTDIRS = unit-tests tests stare
 
 if BUILD_STARE
 SUBDIRS += stare
-LIBADD += -lSTARE
+LIBADD += $(H5_LDFLAGS) $(H5_LIBS) $(STARE_LDFLAGS) $(STARE_LIBS)
 endif
 
 if BUILD_GDAL
@@ -55,8 +58,7 @@ DilateArrayFunction.cc BindNameFunction.cc BindShapeFunction.cc		\
 TabularFunction.cc TabularSequence.cc BBoxFunction.cc RoiFunction.cc	\
 roi_util.cc BBoxUnionFunction.cc Odometer.cc MaskArrayFunction.cc	\
 RangeFunction.cc functions_util.cc scale_util.cc ScaleGrid.cc		\
-DapFunctionsRequestHandler.cc BBoxCombFunction.cc			\
-stare/StareIterateFunction.cc
+DapFunctionsRequestHandler.cc BBoxCombFunction.cc
 
 HDRS = grid_utils.h DapFunctions.h GeoConstraint.h			\
 GridGeoConstraint.h gse.tab.hh gse_parser.h GSEClause.h			\
@@ -66,7 +68,12 @@ DilateArrayFunction.h BindNameFunction.h BindShapeFunction.h		\
 TabularFunction.h TabularSequence.h BBoxFunction.h RoiFunction.h	\
 roi_util.h BBoxUnionFunction.h Odometer.h MaskArrayFunction.h		\
 RangeFunction.h functions_util.h DapFunctionsRequestHandler.h		\
-ScaleGrid.h BBoxCombFunction.h TestFunction.h stare/StareIterateFunction.h
+ScaleGrid.h BBoxCombFunction.h TestFunction.h
+
+if BUILD_STARE
+SRCS += stare/StareFunctions.cc
+HDRS += stare/StareFunctions.h
+endif
 
 libfunctions_module_la_SOURCES = $(SRCS) $(HDRS)
 # libfunctions_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)

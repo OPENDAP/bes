@@ -1,1 +1,3 @@
-BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/functions/stare
+
+# Where to find stare sidecar files
+FUNCTIONS.stareStoragePath=@abs_top_srcdir@/functions/stare/data

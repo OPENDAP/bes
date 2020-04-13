@@ -39,10 +39,10 @@
 class BESWWWRequestHandler : public BESRequestHandler
 {
 public:
-			BESWWWRequestHandler( const string &name ) ;
+			BESWWWRequestHandler( const std::string &name ) ;
     virtual		~BESWWWRequestHandler( void ) ;
 
-    virtual void	dump( ostream &strm ) const ;
+    virtual void	dump( std::ostream &strm ) const ;
 
     static bool		dap_build_help( BESDataHandlerInterface &dhi ) ;
     static bool		dap_build_version( BESDataHandlerInterface &dhi ) ;

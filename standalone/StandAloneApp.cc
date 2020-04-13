@@ -44,6 +44,8 @@ using std::endl;
 using std::flush;
 using std::string;
 using std::ofstream;
+using std::ostream;
+using std::ifstream;
 
 #include "StandAloneApp.h"
 #include "StandAloneClient.h"
@@ -68,11 +70,6 @@ StandAloneApp::~StandAloneApp()
     }
 
     delete TheBESKeys::TheKeys();
-
-#if 0
-    BESCatalogUtils::delete_all_catalogs();
-#endif
-
 }
 
 void StandAloneApp::showVersion()
@@ -148,11 +145,11 @@ int StandAloneApp::initialize(int argc, char **argv)
 
     if (outputStr != "") {
         if (_cmd == "" && inputStr == "") {
-            cerr << "When specifying an output file you must either " << "specify a command or an input file" << endl;
+            cerr << "When specifying an output file you must either specify a command or an input file" << endl;
             badUsage = true;
         }
         else if (_cmd != "" && inputStr != "") {
-            cerr << "You must specify either a command or an input file on " << "the command line, not both" << endl;
+            cerr << "You must specify either a command or an input file on the command line, not both" << endl;
             badUsage = true;
         }
     }
@@ -338,6 +335,7 @@ void StandAloneApp::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
+#if 0
 int main(int argc, char **argv)
 {
     try {
@@ -357,4 +355,4 @@ int main(int argc, char **argv)
         return 3;
     }
 }
-
+#endif

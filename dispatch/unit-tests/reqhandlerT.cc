@@ -64,11 +64,11 @@ static bool debug = false;
 
 class reqhandlerT: public TestFixture {
 private:
-	BESRequestHandler d_handler;
-	string tmp = string(TEST_BUILD_DIR) + "/tmp";
+    BESRequestHandler d_handler;
+    string tmp;
 
 public:
-    reqhandlerT() : d_handler("test_handler")
+  reqhandlerT() : d_handler("test_handler"), tmp(string(TEST_BUILD_DIR) + "/tmp")
     {
     	BESRequestHandlerList::TheList()->add_handler("test_handler", &d_handler);
     	mkdir(tmp.c_str(),0755);
@@ -209,7 +209,7 @@ int main(int argc, char*argv[])
 {
 
     GetOpt getopt(argc, argv, "dh");
-    char option_char;
+    int option_char;
     while ((option_char = getopt()) != EOF)
         switch (option_char) {
         case 'd':

@@ -44,16 +44,17 @@
  */
 class FONcRequestHandler: public BESRequestHandler {
 public:
-    FONcRequestHandler(const string &name);
+    FONcRequestHandler(const std::string &name);
     virtual ~FONcRequestHandler(void);
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 
-    static string temp_dir;
+    static std::string temp_dir;
     static bool byte_to_short;
     static bool use_compression;
     static int chunk_size;
     static bool classic_model;
+    static bool no_global_attrs;
 
     static bool build_help(BESDataHandlerInterface &dhi);
     static bool build_version(BESDataHandlerInterface &dhi);

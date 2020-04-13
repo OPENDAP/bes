@@ -42,6 +42,8 @@
 #include "BESRegex.h"
 #include "BESInternalError.h"
 
+using std::string;
+
 BESFSDir::BESFSDir(const string &dirName) :
     _dirName(dirName), _fileExpr(""), _dirLoaded(false)
 {

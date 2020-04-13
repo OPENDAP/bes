@@ -32,9 +32,6 @@
 #include <string>
 #include <vector>
 
-using std::list;
-using std::string;
-
 #include "BESCatalog.h"
 #include "BESInternalError.h"
 #include "CmrNames.h"
@@ -63,7 +60,7 @@ public:
     /**
      * @Deprecated
      */
-    virtual BESCatalogEntry * show_catalog(const string &container, BESCatalogEntry */*entry*/){
+    virtual BESCatalogEntry * show_catalog(const std::string &container, BESCatalogEntry */*entry*/){
         throw BESInternalError("The CMRCatalog::show_catalog() method is not supported. (container: '" + container + "')",__FILE__,__LINE__);
     }
 
@@ -75,7 +72,7 @@ public:
     /**
      * Maybe someday...
      */
-    virtual void get_site_map(const std::string &/*prefix*/, const std::string &/*node_suffix*/, const std::string &/*leaf_suffix*/, ostream &/*out*/,
+    virtual void get_site_map(const std::string &/*prefix*/, const std::string &/*node_suffix*/, const std::string &/*leaf_suffix*/, std::ostream &/*out*/,
         const std::string &/*path = "/"*/) const {
         BESDEBUG(MODULE, "The CMRCatalog::get_site_map() method is not currently supported. SKIPPING. file: " << __FILE__ << " line: "  << __LINE__ << std::endl);
         // throw BESInternalError("The CMRCatalog::get_site_map() method is not currently supported.",__FILE__,__LINE__);
@@ -87,7 +84,7 @@ public:
     virtual bes::CatalogNode *get_node_NEW(const std::string &path) const;
 
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 
 };
 } // namespace cmr

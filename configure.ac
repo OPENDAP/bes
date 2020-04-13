@@ -4,7 +4,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.63)
 
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
-AC_INIT(bes, 3.20.5, support@opendap.org)
+AC_INIT(bes, 3.20.6, support@opendap.org)
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 
@@ -52,18 +52,31 @@ AC_ARG_ENABLE([asan], [AS_HELP_STRING([--enable-asan], [Use the address sanitize
      cxx_debug_flags="$cxx_debug_flags -fsanitize=address -fno-omit-frame-pointer -fno-common"], 
     [AM_CONDITIONAL([USE_ASAN], [false])])
 
-AC_ARG_WITH([cmr], [AS_HELP_STRING([--with-cmr], [Build and include the CMR Module (built by default in developer mode)])], 
+AC_ARG_WITH([cmr], [AS_HELP_STRING([--with-cmr], [Build the CMR Module (built by default in developer mode)])],
     [AM_CONDITIONAL([WITH_CMR], [true])],
-    [AM_CONDITIONAL([WITH_CMR], [AM_COND_IF([BES_DEVELOPER], [true], [flase])])])
+    [AM_CONDITIONAL([WITH_CMR], [AM_COND_IF([BES_DEVELOPER], [true], [false])])])
+
+AM_COND_IF([WITH_CMR],
+    [AC_MSG_NOTICE([Building support for the CMR Module])],
+    [AC_MSG_NOTICE([Disabled support for the CMR Module])])
+
+dnl Build NGAP support by default or if the user provides --with-ngap. Do not build the
+dnl module if the user supplies --without-ngap or --with-ngap=no. jhrg 3/31/20
+
+AC_ARG_WITH([ngap], [AS_HELP_STRING([--without-ngap], [disable support for the NGAP module])],
+    [AM_CONDITIONAL([WITH_NGAP], [test "x$with_ngap" == xyes])],
+    [AM_CONDITIONAL([WITH_NGAP], [true])])
+
+AM_COND_IF([WITH_NGAP],
+    [AC_MSG_NOTICE([Building support for the NGAP Module])],
+    [AC_MSG_NOTICE([Disabled support for the NGAP Module])])
 
 AS_IF([test "$CC" = "gcc"], [AM_CONDITIONAL([COMPILER_IS_GCC],[true])],
     [AM_CONDITIONAL([COMPILER_IS_GCC],[false])])
 
 dnl Only set CXXFLAGS if the caller didn't supply a value
-dnl AS_IF([test -z "${CXXFLAGS+set}"], [CXXFLAGS="$cxx_debug_flags"])
-AS_IF([test -z "${CXXFLAGS+set}"], [CXXFLAGS=])
 
-dnl : ${CXXFLAGS=""}
+AS_IF([test -z "${CXXFLAGS+set}"], [CXXFLAGS=])
 
 dnl library visioning: Update these when the interface changes.
 dnl
@@ -144,8 +157,8 @@ dnl Makefile will call bison -y which does not know how to make the parsers
 dnl we require. jhrg 6/15/05
 AC_CHECK_PROG(YACC,[bison],[bison])
 
-dnl Use libtool instead?
-dnl AC_PROG_RANLIB
+dnl Use libtool instead
+
 AM_PROG_LIBTOOL
 
 AC_SEARCH_LIBS([uuid_generate], [uuid],
@@ -193,7 +206,7 @@ AC_CHECK_FUNCS(strdup strftime strtol strcasecmp strcspn strerror strncasecmp)
 AC_CHECK_FUNCS(strpbrk strchr strrchr strspn strtoul)
 AC_CHECK_FUNCS(timegm mktime atexit floor isascii memmove memset pow sqrt)
 
-# Make sure we have the cctype library
+dnl Make sure we have the cctype library
 AC_SEARCH_LIBS([isdigit], [cctype])
 
 AC_SYS_LARGEFILE
@@ -877,6 +890,8 @@ AC_CONFIG_FILES([Makefile
 		 functions/unit-tests/Makefile
 		 functions/stare/Makefile
 		 functions/stare/unit-tests/Makefile
+		 functions/stare/tests/Makefile
+		 functions/stare/tests/atlocal
 		 ])
 dnl These need to be moved into the AC_CONFIG_FILES above 
 dnl when geo-functions is reenabled.
@@ -898,6 +913,7 @@ AC_CONFIG_TESTDIR(hello_world/tests, [standalone])
 AC_CONFIG_TESTDIR(dapreader/tests, [standalone])
 AC_CONFIG_TESTDIR(dap/tests, [standalone])
 AC_CONFIG_TESTDIR(functions/tests, [standalone])
+AC_CONFIG_TESTDIR(functions/stare/tests, [standalone])
 AC_CONFIG_TESTDIR(dispatch/tests, [dispatch/tests])
 AC_CONFIG_TESTDIR(xmlcommand/tests, [standalone])
 
@@ -921,6 +937,11 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/cmr_module/tests/Makefile
     modules/cmr_module/tests/atlocal
     modules/cmr_module/unit-tests/Makefile
+
+    modules/ngap_module/Makefile
+    modules/ngap_module/tests/Makefile
+    modules/ngap_module/tests/atlocal
+    modules/ngap_module/unit-tests/Makefile
     
     modules/httpd_catalog_module/Makefile
     modules/httpd_catalog_module/unit-tests/Makefile
@@ -1034,6 +1055,7 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     AC_CONFIG_TESTDIR(modules/httpd_catalog_module/tests, [standalone])
 
     AC_CONFIG_TESTDIR(modules/cmr_module/tests, [standalone])
+    AC_CONFIG_TESTDIR(modules/ngap_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_json/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_covjson/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/debug_functions/tests, [standalone])

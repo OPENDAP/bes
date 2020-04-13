@@ -8,8 +8,10 @@ AUTOMAKE_OPTIONS = foreign
 
 # Headers in 'tests' are used by the arrayT unit tests.
 
-AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/functions -I$(top_srcdir)/functions/stare $(DAP_CFLAGS)
-AM_LDADD =  $(DAP_SERVER_LIBS) $(GF_LIBS) $(top_builddir)/dispatch/libbes_dispatch.la
+AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
+	-I$(top_srcdir)/functions -I$(top_srcdir)/functions/stare $(DAP_CFLAGS)
+AM_LDADD =  $(DAP_LIBS) $(top_builddir)/dispatch/libbes_dispatch.la  \
+	-ltest-types $(H5_LDFLAGS) $(H5_LIBS) $(STARE_LDFLAGS) $(STARE_LIBS)
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
@@ -35,19 +37,18 @@ TESTS = $(UNIT_TESTS)
 
 noinst_HEADERS = 
 
-EXTRA_DIST =
+EXTRA_DIST = test_config.h.in bes.conf.in
 
 CLEANFILES = testout .dodsrc *.gcda *.gcno
 
 # I added '*.po' because there are dependencies on ../*.o files and
 # that seems to leave *.Po files here that distclean complains about.
-DISTCLEANFILES = *.strm *.file *.Po tmp.txt
+DISTCLEANFILES = *.strm *.file *.Po tmp.txt bes.conf test_config.h
 
-# TODO Check if this sed command to filter out the ../ from the value of 
-# ${abs_srcdir} is really needed for the distcheck target. jhrg 5/16/13
 test_config.h: $(srcdir)/test_config.h.in Makefile
 	@my_topdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
-	sed -e "s%[@]abs_srcdir[@]%$${my_topdir}%" $< > test_config.h
+	sed -e "s%[@]abs_srcdir[@]%$${my_topdir}%" \
+		-e "s%[@]abs_top_srcdir[@]%${abs_top_srcdir}%" $< > test_config.h
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using
@@ -90,5 +91,5 @@ endif
 # Listing the objects here keeps from having to link with the module - not a portable
 # solution - and listing these as source breaks distcheck jhrg 9/24/15
 StareFunctionsTest_SOURCES = StareFunctionsTest.cc  $(TEST_SRC)
-StareFunctionsTest_OBJ = ../StareIterateFunction.o
-StareFunctionsTest_LDADD = $(StareFunctionsTest_OBJ) $(TEST_OBJ) $(AM_LDADD) -ltest-types $(DAP_LIBS) -lhdf5 -lSTARE
+StareFunctionsTest_OBJ = ../StareFunctions.o
+StareFunctionsTest_LDADD = $(StareFunctionsTest_OBJ) $(TEST_OBJ) $(AM_LDADD)

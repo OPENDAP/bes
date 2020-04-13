@@ -52,12 +52,17 @@
 #include "BBoxCombFunction.h"
 #include "ScaleGrid.h"
 #include "TestFunction.h"
-#include "stare/StareIterateFunction.h"
+
+#if HAVE_STARE
+#include "stare/StareFunctions.h"
+#endif
 
 #include "DapFunctionsRequestHandler.h"
 #include "DapFunctions.h"
 
 using std::endl;
+using std::ostream;
+using std::string;
 
 namespace functions {
 
@@ -98,7 +103,11 @@ void DapFunctions::initialize(const string &modname)
 
     libdap::ServerFunctionsList::TheList()->add_function(new TestFunction());
 
-    libdap::ServerFunctionsList::TheList()->add_function(new StareIterateFunction());
+#if HAVE_STARE
+    libdap::ServerFunctionsList::TheList()->add_function(new StareIntersectionFunction());
+    libdap::ServerFunctionsList::TheList()->add_function(new StareCountFunction());
+    libdap::ServerFunctionsList::TheList()->add_function(new StareSubsetFunction());
+#endif
 
     GDALAllRegister();
     OGRRegisterAll();

@@ -521,6 +521,9 @@ int BESInterface::execute_request(const string &from)
                 alarm(bes_timeout);
             }
 
+            // HK-474. The exception caused by the errant config file in the ticket is
+            // thrown from inside SaxParserWrapper::rethrowException(). It will be caught
+            // below. jhrg 11/12//19
             execute_data_request_plan();
 
             // Only clear the timeout if it has been set.
@@ -535,6 +538,7 @@ int BESInterface::execute_request(const string &from)
         else {
             ostringstream oss;
             oss << "BES listener timeout after " << bes_timeout << " seconds." << ends;
+            BESDEBUG("bes", oss.str() << endl );
             throw BESTimeoutError(oss.str(), __FILE__, __LINE__);
         }
 
@@ -542,50 +546,39 @@ int BESInterface::execute_request(const string &from)
     }
     catch (libdap::Error &e) {
         timeout_jump_valid = false;
-        BESInternalFatalError ex(string("BES caught a libdap exception: ") + e.get_error_message(), __FILE__, __LINE__);
+        string msg = string(__PRETTY_FUNCTION__)+  " - BES caught a libdap exception: " + e.get_error_message();
+        BESDEBUG("bes", msg << endl );
+        BESInternalFatalError ex(msg, __FILE__, __LINE__);
         status = handleException(ex, *d_dhi_ptr);
     }
     catch (BESError &e) {
         timeout_jump_valid = false;
+        BESDEBUG("bes",  string(__PRETTY_FUNCTION__) +  " - Caught BESError. msg: "<< e.get_message() << endl );
         status = handleException(e, *d_dhi_ptr);
-
-#if 0
-        /*We switched between one or the other. 		kln 05/31/18
-        Leaving both in just in case someone comes back to this.
-        The top one used a singleton to try and find a handler that could handle the exception before
-        	moving on to the handleException function.We tried to get it so that the singleton wasn't
-        	needed and all 4 catch blocks only called handleException.
-        */
-        status = BESDapError::TheDapHandler()->handleBESError(ex, *d_dhi_ptr);
-
-        status = BESDapError::handleException(ex, *d_dhi_ptr);
-#endif
-
     }
     catch (bad_alloc &e) {
         timeout_jump_valid = false;
-        BESInternalFatalError ex(string("BES out of memory: ") + e.what(), __FILE__, __LINE__);
+        stringstream msg;
+        msg << __PRETTY_FUNCTION__ <<  " - BES out of memory. msg: " << e.what() << endl;
+        BESDEBUG("bes", msg.str() << endl );
+        BESInternalFatalError ex(msg.str(), __FILE__, __LINE__);
         status = handleException(ex, *d_dhi_ptr);
     }
     catch (exception &e) {
         timeout_jump_valid = false;
-        BESInternalFatalError ex(string("C++ Exception: ") + e.what(), __FILE__, __LINE__);
+        stringstream msg;
+        msg << __PRETTY_FUNCTION__ << " - Caught C++ Exception. msg: " << e.what() << endl;
+        BESDEBUG("bes", msg.str() << endl );
+        BESInternalFatalError ex(msg.str(), __FILE__, __LINE__);
         status = handleException(ex, *d_dhi_ptr);
     }
     catch (...) {
         timeout_jump_valid = false;
-        BESInternalError ex("An unidentified exception has been thrown", __FILE__, __LINE__);
+        string msg =  string(__PRETTY_FUNCTION__) +  " - An unidentified exception has been thrown.";
+        BESDEBUG("bes", msg << endl );
+        BESInternalError ex(msg, __FILE__, __LINE__);
         status = handleException(ex, *d_dhi_ptr);
     }
-
-#if 0
-    delete bes_timing::elapsedTimeToReadStart;
-    bes_timing::elapsedTimeToReadStart = 0;
-
-    delete bes_timing::elapsedTimeToTransmitStart;
-    bes_timing::elapsedTimeToTransmitStart = 0;
-
-#endif
 
     return status;
 }
@@ -598,14 +591,6 @@ int BESInterface::execute_request(const string &from)
  */
 int BESInterface::finish(int status)
 {
-#if 0
-    if (status != 0 && d_dhi_ptr->error_info == 0) {
-        // there wasn't an error ... so now what?
-        BESInternalError ex("Finish_with_error called with no error object", __FILE__, __LINE__);
-        status = exception_manager(ex);
-    }
-#endif
-
     if (d_dhi_ptr->error_info) {
         d_dhi_ptr->error_info->print(*d_strm /*cout*/);
         delete d_dhi_ptr->error_info;
@@ -644,25 +629,6 @@ void BESInterface::end_request()
         d_dhi_ptr->next_container();
     }
 }
-
-/** @brief Manage any exceptions thrown during the whole process
-
- Specific responses are generated given a specific Exception caught. If
- additional exceptions are thrown within derived systems then implement
- those in the derived exception_manager methods. This is a catch-all
- manager and should be called once derived methods have caught their
- exceptions.
-
- @param e BESError to be managed
- @return status after exception is handled
- @see BESError
- */
-#if 0
-int BESInterface::exception_manager(BESError &e)
-{
-    return BESExceptionManager::TheEHM()->handle_exception(e, *d_dhi_ptr);
-}
-#endif
 
 /** @brief dumps information about this object
  *

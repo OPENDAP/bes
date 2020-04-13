@@ -74,6 +74,7 @@ BESLog::BESLog() :
 {
     d_suspended = 0;
     bool found = false;
+    stdout = false;
     try {
         TheBESKeys::TheKeys()->get_value("BES.LogName", d_file_name, found);
     }
@@ -109,7 +110,22 @@ BESLog::BESLog() :
         throw BESInternalFatalError(err, __FILE__, __LINE__);
     }
 
-    d_file_buffer = new ofstream(d_file_name.c_str(), ios::out | ios::app);
+//          FOR REFERENCE PURPOSES FROM STACKOVERFLOW
+//    std::ofstream realOutFile;
+//
+//    if(outFileRequested)
+//        realOutFile.open("foo.txt", std::ios::out);
+//
+//    std::ostream & outFile = (outFileRequested ? realOutFile : std::cout);
+
+    std::ofstream * tempOutFile;
+
+    if (d_file_name != "stdout"){
+        tempOutFile = new ofstream(d_file_name.c_str(), ios::out | ios::app);
+    }
+
+    d_file_buffer = (d_file_name == "stdout" ? &std::cout : tempOutFile );
+
     if (!(*d_file_buffer)) {
         string err = "BES Fatal; cannot open log file " + d_file_name + ".";
         cerr << err << endl;
@@ -130,7 +146,7 @@ BESLog::BESLog() :
  */
 BESLog::~BESLog()
 {
-    d_file_buffer->close();
+    //d_file_buffer->close();
     delete d_file_buffer;
     d_file_buffer = 0;
 }
@@ -148,7 +164,7 @@ void BESLog::dump_time()
     time_t now;
     time(&now);
     char buf[sizeof "YYYY-MM-DDTHH:MM:SSzone"];
-    int status = 0;
+    //int status = 0;
 
     // From StackOverflow:
     // This will work too, if your compiler doesn't support %F or %T:
@@ -156,10 +172,17 @@ void BESLog::dump_time()
     //
     // Apologies for the twisted logic - UTC is the default. Override to
     // local time using BES.LogTimeLocal=yes in bes.conf. jhrg 11/15/17
-    if (!d_use_local_time)
-        status = strftime(buf, sizeof buf, "%FT%T%Z", gmtime(&now));
-    else
-        status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&now));
+    //
+    // status removed due to it never being used in the code. sbl 1/7/20
+    //
+    if (!d_use_local_time){
+        strftime(buf, sizeof buf, "%FT%T%Z", gmtime(&now));
+    	//status = strftime(buf, sizeof buf, "%FT%T%Z", gmtime(&now));
+    }
+    else{
+        strftime(buf, sizeof buf, "%FT%T%Z", localtime(&now));
+    	//status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&now));
+    }
 
     (*d_file_buffer) << buf;
 
@@ -216,10 +239,12 @@ BESLog& BESLog::operator<<(char *val)
 {
     if (!d_suspended) {
         if (d_flushed) dump_time();
-        if (val)
+        if (val){
             (*d_file_buffer) << val;
-        else
+        }
+        else{
             (*d_file_buffer) << "NULL";
+        }
     }
     return *this;
 }
@@ -234,10 +259,12 @@ BESLog& BESLog::operator<<(const char *val)
         if (d_flushed) {
             dump_time();
         }
-        if (val)
+        if (val){
             (*d_file_buffer) << val;
-        else
+        }
+        else{
             (*d_file_buffer) << "NULL";
+        }
     }
     return *this;
 }
@@ -346,7 +373,9 @@ void BESLog::flush_me(){
  */
 BESLog& BESLog::operator<<(p_ios_manipulator val)
 {
-    if (!d_suspended) (*d_file_buffer) << val;
+    if (!d_suspended){
+        (*d_file_buffer) << val;
+    }
     return *this;
 }
 

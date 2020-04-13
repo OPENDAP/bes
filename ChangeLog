@@ -1,3 +1,1824 @@
+2020-02-01  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #317 from OPENDAP/github-issue-244
+	GitHub issue 244
+
+2020-01-31  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #314 from OPENDAP/awsv4-fix-2
+	Memory leak fixed and unneeded copy removed in awsv4 code
+
+2020-01-31  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #315 from hemphilc/bes-issue-#244
+	Bes issue #244
+
+2020-01-13  ndp-opendap  <ndp@opendap.org>
+
+	Removing creds information from Make output.
+
+2020-01-09  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	updating aws keys for travis
+
+2020-01-08  hemphilc@oregonstate.edu  <TheFaceOfOrder@TheOmega.localdomain>
+
+	Merge remote-tracking branch 'upstream/master'
+
+2020-01-06  Sam Lloyd  <slloyd@opendap.org>
+
+	Merge pull request #309 from OPENDAP/HK-544.2
+	1/2/2020 - HK544.2 - (In Progress) Select auto_ptr warnings dealt with
+
+2020-01-06  Samuel Lloyd  <slloyd@localhost.localdomain>
+
+	Merge branch 'HK-544.2' of github.com:OPENDAP/bes into HK-544.2
+
+	1/6/2020 - HK-544.2 - master merge
+
+2020-01-06  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #310 from OPENDAP/hk-550
+	Hk 550
+
+2020-01-05  Corey Hemphill  <hemphilc@oregonstate.edu>
+
+	Merge pull request #3 from hemphilc/bes-issue-#244
+	Bes issue #244
+
+2020-01-05  hemphilc@oregonstate.edu  <TheFaceOfOrder@TheOmega.localdomain>
+
+	Fixed all test/unit-test baselines
+
+	Merge branch 'master' into bes-issue-#244
+
+	Reference printing fixes and time sanitization
+
+2020-01-05  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into hk-550
+
+	Merge branch 'master' into HK-544.2
+
+	Memory leak fixed and unneeded copy removed in awsv4 code
+
+	Merge pull request #311 from OPENDAP/awsv4-fix
+	Awsv4 fix
+
+	touch .travis.yml
+
+2020-01-05  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'master' into awsv4-fix
+
+	New creds for travis
+
+2020-01-04  hemphilc@oregonstate.edu  <TheFaceOfOrder@TheOmega.localdomain>
+
+	Updating CRS printing to spec
+
+2020-01-03  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed memory leak and possible memory violation in compute_awsv4_signature()
+
+2020-01-03  slloyd  <slloyd@localhost>
+
+	1/3/2020 - HK-544.2 - Travis restart
+
+	1/3/2020 - HK-544.2 - Travis Restart
+
+2020-01-03  Kent Yang  <myang6@hdfgroup.org>
+
+	HK-550, memory leaking caused by allocating key_files was fixed by latest check-in in master. No need to "delete the key_files".
+
+	Merge branch 'master' into hk-550 Master was updated.
+
+2020-01-03  Samuel Lloyd  <slloyd@localhost.localdomain>
+
+	1/3/2020 - HK-544.2 - master merge
+
+2020-01-02  hemphilc@oregonstate.edu  <TheFaceOfOrder@TheOmega.localdomain>
+
+	Merge branch 'master' into bes-issue-#244
+
+2020-01-02  ndp-opendap  <ndp@opendap.org>
+
+	Fixing cmc url
+
+2020-01-02  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #308 from OPENDAP/aws-error-parsing
+	Aws error parsing
+
+	Merge pull request #307 from OPENDAP/awsv4_unit_tests
+	Awsv4 unit tests
+
+2020-01-02  ndp-opendap  <ndp@opendap.org>
+
+	Disabling s3 access in ncml_handler
+
+2020-01-02  Kent Yang  <myang6@hdfgroup.org>
+
+	hk-573, fix a memory leak caused by not releasing allocated memory.
+
+2020-01-02  ndp-opendap  <ndp@opendap.org>
+
+	Trying to enable s3 checking in ncml_handler
+
+	Dropping Ncml agg tests that needs authentication
+
+2020-01-02  slloyd  <slloyd@localhost>
+
+	1/2/2020 - HK544.2 - (In Progress) Select auto_ptr warnings dealt with
+
+2020-01-02  James Gallagher  <jgallagher@opendap.org>
+
+	New creds for S3 encooded in travis.yml
+
+2020-01-02  Kent Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hk-550 Need to update the branch with the master branch.
+
+2020-01-02  ndp-opendap  <ndp@opendap.org>
+
+	Switched auth test to clodydap bucket
+
+	Changed protocol to https
+
+	Set up travis to send signed requests to cloudydap bucket
+
+	Regorged dmrpp_module/tests so that all the http tests that utilize S3 resources are now run from testsuite_s3_tests.at
+
+	Comments, key name clarification
+
+	Comments, key name clarification
+
+	Copyright and leak pluggin
+
+	Updates to hdf*
+
+2020-01-01  hemphilc@oregonstate.edu  <root@TheOmega.localdomain>
+
+	Merge branch 'master' into bes-issue-#244
+
+	Latest
+
+2020-01-01  James Gallagher  <jgallagher@opendap.org>
+
+	Added new creds to travis.yml
+
+	Updated AWS credentials for the user 'travis'
+
+2020-01-01  ndp-opendap  <ndp@opendap.org>
+
+	Trying to get travis to talk to s3
+
+	Trying to get travis to talk to s3
+
+	Trying to get travis to talk to s3
+
+	Trying to get travis to talk to s3
+
+2019-12-31  James Gallagher  <jgallagher@opendap.org>
+
+	Edit to the drmpp_module/tests/Makefile.am
+
+2019-12-31  ndp-opendap  <ndp@opendap.org>
+
+	More distcheck goodness
+
+	Fixing distcheck issues.
+
+	Hooking up s3 tests to auth code.
+
+2019-12-31  James Gallagher  <jgallagher@opendap.org>
+
+	Comments...
+	[skip ci]
+
+	Added #define for nullptr in xml2json so it will build on CentOS6
+
+2019-12-31  ndp-opendap  <ndp@opendap.org>
+
+	Added test inputs dir awsv4 to EXTRA_DIST
+
+	forgot tosave a change
+
+2019-12-30  ndp-opendap  <ndp@opendap.org>
+
+	hdf* update
+
+	Added the empty payload header beack into the request, but still not signing it.
+
+	Merge branch 'awsv4_unit_tests' of https://github.com/opendap/bes into awsv4_unit_tests
+
+	Refining signature cide.
+
+2019-12-30  James Gallagher  <jgallagher@opendap.org>
+
+	Removed unused code from CurlHandlePool.cc [skip ci]
+
+2019-12-30  ndp-opendap  <ndp@opendap.org>
+
+	baselines for aws tests
+
+2019-12-30  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed an error in the dmrpp_module/Makefile.am regarding xml2json.
+
+2019-12-30  ndp-opendap  <ndp@opendap.org>
+
+	Imported 10 of the AWS v4 testsuite tests. 5 tests work, 5 are disabled because our cod efails to handle unicode characters (2 tests) and because our code is not permutating the header formating/content in the canonical request based on the key strings, the values, and the cases.
+
+	Imported 10 of the AWS v4 testsuite tests. 5 tests work, 5 are disabled because our cod efails to handle unicode characters (2 tests) and because our code is not permutating the header formating/content in the canonical request based on the key strings, the values, and the cases.
+
+2019-12-30  James Gallagher  <jgallagher@opendap.org>
+
+	Added xml2json and reasonable error message parsing when AWS/S3 barfs.
+
+2019-12-30  ndp-opendap  <ndp@opendap.org>
+
+	Fixed signing algo.
+
+	Tuning timezone for date generation in canonical request
+
+	Adding baselines for awsvr tests
+
+	 Adding tests for awsv4
+
+2019-12-28  ndp-opendap  <ndp@opendap.org>
+
+	Fixed unit-tests to ignore user env
+
+	Made the CurlHandlePool pas it's debugging state into the functions in awsv4.cc
+
+2019-12-27  ndp-opendap  <ndp@opendap.org>
+
+	Change CMAC env var names for bash compatibility
+
+2019-12-27  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #306 from OPENDAP/env_creds
+	Env creds
+
+2019-12-27  ndp-opendap  <ndp@opendap.org>
+
+	Dropping old code
+
+2019-12-27  The-Robot-Travis  <npotter@opendap.org>
+
+	Dropping unused #define
+
+	Adding key value for allowing env injected creds.
+
+2019-12-26  hemphilc@oregonstate.edu  <root@TheOmega.localdomain>
+
+	Merge branch 'master' into bes-issue-#244
+
+2019-12-26  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #304 from OPENDAP/kvp_utils
+	Remove the remote access credentials from the bes.conf foodchain
+
+2019-12-26  hemphilc@oregonstate.edu  <root@TheOmega.localdomain>
+
+	Merge branch 'master' into bes-issue-#244
+
+	Fixing reference printing
+
+2019-12-26  The-Robot-Travis  <npotter@opendap.org>
+
+	Feature control for env creds
+
+2019-12-25  The-Robot-Travis  <npotter@opendap.org>
+
+	Added aditional test for partial creds in env.
+
+	Added aditional test for partial creds in env.
+
+	Added aditional test for partial creds in env.
+
+2019-12-24  James Gallagher  <jgallagher@opendap.org>
+
+	Update TheBESKeys.h
+	#if 0 ... #endif So we can find the removed code faster after a few more commits have elapsed.
+	[skip ci]
+
+	Update .gitignore
+	[skip ci]
+
+2019-12-24  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-550, fix another memory leaking issue - the basetype(bt) was not freed after the call of add_var(bt).
+
+2019-12-24  The-Robot-Travis  <npotter@opendap.org>
+
+	Finally got things sorted for a clean distcheck. Also added test for using env vars to inject credemtials.
+
+2019-12-24  Muqun Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hk-550 update with the master branch.
+
+2019-12-23  The-Robot-Travis  <npotter@opendap.org>
+
+	Still faffing about with distcheck rules.[skip ci]
+
+	Working tests for distcheck
+
+	Working on test file permissions issue
+
+	Working tests for distcheck
+
+	debuggin TravisCI stuff
+
+	debuggin TravisCI stuff
+
+	debuggin TravisCI stuff
+
+2019-12-22  The-Robot-Travis  <npotter@opendap.org>
+
+	Rollong back ineffectual changes to Travis build. Cleaning up output messages
+
+2019-12-21  The-Robot-Travis  <npotter@opendap.org>
+
+	Trynig a travis hack to fix failing file permission test
+
+	Trynig a travis hack to fix failing file permission test
+
+	Fixing broken error reporting in CredentialsManagerTest
+
+	First cut at CredentialsManagerTest
+
+2019-12-20  The-Robot-Travis  <npotter@opendap.org>
+
+	Added env injected credentials to CredentialsManager, code clean up
+
+	Merge branch 'kvp_utils' of https://github.com/opendap/bes into kvp_utils
+
+	Added CredentialsManager.config key to dmrpp.conf.in
+
+	Fixed problem with credentials mapping.
+
+2019-12-20  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'kvp_utils' of https://github.com/opendap/bes into kvp_utils [skip ci]
+
+	Edit travis.yml; reset for the general case. [skip ci]
+
+2019-12-20  The-Robot-Travis  <npotter@opendap.org>
+
+	Merge branch 'kvp_utils' of https://github.com/opendap/bes into kvp_utils
+
+	dropping the use of the 'register' keyword
+
+2019-12-20  James Gallagher  <jgallagher@opendap.org>
+
+	Removed keyword 'inline' from kvp::break_pair. Modified .travis
+	The .travis.yml was streamlined to make testing the problem
+	with this PR easier. Edit it back to the original form before
+	merging.
+
+	Attempt to fix the FileLockCacheTest link issue in C7
+
+2019-12-20  The-Robot-Travis  <npotter@opendap.org>
+
+	Adding kvp_utils.o to FileLockingCacheTest LDADD
+
+2019-12-19  The-Robot-Travis  <npotter@opendap.org>
+
+	Implmented creds file securinty and ingest using kvp_utils
+
+	Migrated TheBESKeys to the kvp_utils code.
+
+	kvp_utils passing tests. Ready migrate TheBESKeys to use them.
+
+	submodules
+
+2019-12-19  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #303 from OPENDAP/signed-s3-urls
+	Signed s3 urls
+
+2019-12-18  hemphilc@oregonstate.edu  <root@TheOmega.localdomain>
+
+	Fixed baseline file name for testPrintRanges
+
+2019-12-18  hemphilc@oregonstate.edu  <TheFaceOfOrder@TheOmega.localdomain>
+
+	Merge branch 'master' into bes-issue-#244
+
+2019-12-18  hemphilc@oregonstate.edu  <root@TheOmega.localdomain>
+
+	Fixing unit-test baseline files
+
+2019-12-18  James Gallagher  <centos@ip-172-31-19-255.ec2.internal>
+
+	Patches for CentOS 4
+
+2019-12-18  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'signed-s3-urls' of https://github.com/opendap/bes into signed-s3-urls [skip ci]
+
+	Updates to CMakeLists.txt [skip ci]
+
+2019-12-18  The-Robot-Travis  <npotter@opendap.org>
+
+	Dropping keysT_LDADD from Makefile.am
+
+	Reverted keysT back to master branch code
+
+	Merge branch 'signed-s3-urls' of https://github.com/opendap/bes into signed-s3-urls
+
+	Adding lLDDADD for keysT
+
+	Trying to quell complaints about constructors from CentOS-6
+
+2019-12-18  James Gallagher  <jgallagher@opendap.org>
+
+	removed noexcept and nullptr for Centos6
+
+2019-12-17  James Gallagher  <jgallagher@opendap.org>
+
+	Replaced range-for loop with plain loop. Test if this works with CentOS 6
+	It may be that some forms of the range-for don't work on C6
+
+	Replace 'auto & <var>' with 'auto <var>' in range-for.
+	This fixes an issue with the gcc on C6.
+
+2019-12-17  The-Robot-Travis  <npotter@opendap.org>
+
+	Still trying to supress s3 auth tests
+
+	Still trying to supress s3 auth tests
+
+	More changes, git woes
+
+	Supressin S3 auth test.
+
+2019-12-17  James Gallagher  <jgallagher@opendap.org>
+
+	Added redimentary support extracting error messages from AWS
+	Probably needs work.
+
+2019-12-16  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed an errant BESDEBUG call which dereferenced a pointer that could be null
+
+	Patched broken c++-11 regex code - this is not portable yet.
+	Even though decent regex support has been on Unix since the 1970s...
+
+2019-12-16  The-Robot-Travis  <npotter@opendap.org>
+
+	Adding regex include in effort to fix Travis build.
+
+	Updating hdf4 and hdf5 submodules
+
+	Merge branch 'master' into signed-s3-urls
+
+	something
+
+2019-12-16  James Gallagher  <jgallagher@opendap.org>
+
+	Added #include <vector> to awsv4.h
+
+2019-12-16  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #302 from OPENDAP/hk-551
+	HK-551, the attrs->append_attr() call changes the attrs in a for loop…
+
+2019-12-16  The-Robot-Travis  <npotter@opendap.org>
+
+	Fixed lifecycle problem in CredentialsManager
+
+	Fixed lifecycle problem in CredentialsManager
+
+2019-12-15  hemphilc@oregonstate.edu  <root@TheOmega.localdomain>
+
+	Updating test baselines
+
+	Updating unit FoCovJson tests
+
+2019-12-14  The-Robot-Travis  <npotter@opendap.org>
+
+	Cleaning up code for improved understanding, Comments
+
+	Cleaning up code for improved understanding, Comments
+
+	Cleaning up code for improved understanding, Comments
+
+	Working the old way but something is failing with auth I think... don't real;l;y get it...
+
+2019-12-13  The-Robot-Travis  <npotter@opendap.org>
+
+	Fixes to kvp_utls. Conditional compile for new kes in CredsManager
+
+	adding dispatch to Makefile libs
+
+	Working on making kvp_utils from the conf reading code in TheBESKeys
+
+	Fixed readability type.
+
+2019-12-13  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-551, add comments and #if 0 #endif block as James suggested.
+
+2019-12-12  hemphilc@oregonstate.edu  <root@TheOmega.localdomain>
+
+	Some more comment cleanup
+
+	Fixed printParameters bug observedProperty->id
+
+	Some comment cleanup
+
+	Moved removeSubstring function to focovutils
+
+2019-12-12  Kent Yang  <myang6@hdfgroup.org>
+
+	HK-550, fix the memory leaking detected by valgrind
+
+	HK-551, the attrs->append_attr() call changes the attrs in a for loop of attrs iterator. This causes the segmentation fault of when checking the next iterator of the original attrs, which doesn't exist any more. Since the next line of this call writes the attribute to the netCDF file, appending this attribute to attrs is not necessary. So just comment out this line. After fixing this, the program runs and exits normally.
+
+2019-12-12  The-Robot-Travis  <npotter@opendap.org>
+
+	Rewrote credentials ingest. Now credentials are asscoaied with URL prefixs and multiple creds can be defined in a bes.conf environment.
+
+2019-12-11  hemphilc@oregonstate.edu  <root@TheOmega.localdomain>
+
+	Added removeSubstring function
+
+2019-12-11  The-Robot-Travis  <npotter@opendap.org>
+
+	First pass at a credentials manager.
+
+	Added std namespace to method declaration
+
+	Added std namespace to method declaration
+
+	Making size vars unsigned
+
+	Changed number of concurrent requests to unsigned int
+
+2019-12-10  hemphilc@oregonstate.edu  <TheFaceOfOrder@TheOmega.localdomain>
+
+	Ongoing time origin work
+
+	Added new sanitizeTimeOriginString function
+
+	More cleanup
+
+2019-12-10  Corey Hemphill  <hemphilc@oregonstate.edu>
+
+	Update README.md
+
+	Update README
+
+2019-12-10  hemphilc@oregonstate.edu  <TheFaceOfOrder@TheOmega.localdomain>
+
+	Tweaks plus README.md changes
+
+2019-12-09  hemphilc@oregonstate.edu  <root@TheOmega.localdomain>
+
+	Fixed NdArray printing too many dimensions
+
+	Moved all function headers to the .h file
+
+2019-12-09  hemphilc@oregonstate.edu  <TheFaceOfOrder@TheOmega.localdomain>
+
+	Some print worker refactors and print restructure
+
+2019-12-08  The-Robot-Travis  <npotter@opendap.org>
+
+	Fixed conditional compile and seg fault issues.
+
+2019-12-06  The-Robot-Travis  <npotter@opendap.org>
+
+	Fixed conditional compile and seg fault issues.
+
+	Fixed conditional compile and seg fault issues.
+
+	Moved creds acquistion to function. Sorting out conditional compilation
+
+	Moved creds acquistion to function. Sorting out conditional compilation
+
+	Changed prioritization of the creds info sources to match source ticket.
+
+2019-12-05  James Gallagher  <jgallagher@opendap.org>
+
+	CMakeLists update - can find libdap classes now
+
+	Formatting and submodule hash updates
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Added local CMakeLists.txt to streamline work with CLion.
+	[skip ci]
+
+2019-12-05  The-Robot-Travis  <npotter@opendap.org>
+
+	Reading AWS info from config or from env
+
+	Merge branch 'master' into signed-s3-urls
+
+	Updating hdf4/hdf5
+
+2019-12-04  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #301 from OPENDAP/hk-530
+	HK-530, make the logic clear and turn off the expected HDF5 dataset open error message
+
+	Merge branch 'master' into signed-s3-urls
+
+2019-12-03  James Gallagher  <jgallagher@opendap.org>
+
+	Added test and baseline
+
+	Added a test for S3 access with signed requests
+
+	Added basic AWS creds pulled from env vars (only with --enable-developer)
+	When the BES is built with --enable-developer, it will use the credentials
+	bound to the env vars AWS_SECRET_ACCESS_KEY and AWS_ACCESS_KEY_ID and the
+	region AWS_REGION. When the code is built without that option, the calls
+	to getenv are not included.
+
+2019-12-03  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-530, change VERBOSE to BESDEBUG in the modified code section.
+
+2019-12-02  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #300 from OPENDAP/HK-459
+	Hk 459
+
+	Merge branch 'master' into HK-459
+
+2019-12-02  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-530, make the logic clear and turn off the HDF5 error message for the expected HDF5 dataset open failure.
+
+2019-11-27  James Gallagher  <jgallagher@opendap.org>
+
+	AWS Key Update
+
+	New AWS Keys
+
+2019-11-27  slloyd  <slloyd@localhost>
+
+	11/27/19 - HK-459 - Restarting Travis build
+
+2019-11-27  Samuel Lloyd  <slloyd@localhost.localdomain>
+
+	11/27/19 - HK-459 - suppressing debug messages in .yy files
+
+2019-11-26  James Gallagher  <jgallagher@opendap.org>
+
+	AWSV4 Signatures working better - added stubs for credential lookup
+
+	AWS V4 Signatures work with S3 requests.
+
+	Hacking on the AWS V4 Signature task. Does not work yet
+
+2019-11-26  slloyd  <slloyd@localhost>
+
+	11/26/19 - HK-459 - (Awaiting Review) suppressed .yy error messages
+	added "#define YYERROR_VERBOSE 0" to .yy file to suppress error messages
+	to standard out.
+
+2019-11-26  Samuel Lloyd  <slloyd@localhost.localdomain>
+
+	11/26/19 - HK-459 - hdf4/hdf5 refresh
+
+2019-11-26  James Gallagher  <jgallagher@opendap.org>
+
+	Added code to sign URLs with a public/private key
+	Not hooked up, but compiled and linked. Uses openssl
+
+2019-11-25  James Gallagher  <jgallagher@opendap.org>
+
+	Added code to sign URLs. Not working yet.
+
+2019-11-14  James Gallagher  <jgallagher@opendap.org>
+
+	More fixes for HK-474. Mostly comments, error text, unused code removal.
+	[skip ci]
+
+	Merge pull request #299 from OPENDAP/HK-474
+	When an NCML aggregation names a dataset the server cannot read... FAIL
+
+2019-11-14  Muqun Yang  <myang6@hdfgroup.org>
+
+	Remove two "cerr" debugging lines left in the development. Too trivial, no need to create a ticket.
+
+2019-11-14  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'HK-474' of https://github.com/opendap/bes into HK-474
+
+	When an NCML aggregation names a dataset the server cannot read... FAIL
+	The end result was that a container object's release method was called
+	twice. This lead to a hard crash. I fixed this in DDSLoader by modifying
+	the code to implement a poor-man's move semantics when the handler
+	'hijacks' the DHI, including the container object it uses.
+	[skip ci]
+
+	When an NCML aggregation names a dataset the server can read... FAIL
+	The end result was that a container object's release method was called
+	twice. This lead to a hard crash. I fixed this in DDSLoader by modifying
+	the code to implement a poor-man's move semantics when the handler
+	'hijacks' the DHI, including the container object it uses.
+
+2019-11-12  James Gallagher  <jgallagher@opendap.org>
+
+	Added test files for HK-474.
+	I added these to master because we may want to put this test
+	into the suite.
+	[skip ci]
+
+2019-11-10  The-Robot-Travis  <npotter@opendap.org>
+
+	Updating hdf4 and hdf5 handler commits
+
+2019-11-09  The-Robot-Travis  <npotter@opendap.org>
+
+	Switching to human readable snapshot time
+
+	Merged origin/master to local
+
+	.travis.yml
+
+2019-11-08  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #297 from OPENDAP/hk-522
+	Hk 522 - generate DAS by parsing from MDS cached files in the data access
+
+	Added bes_mds.conf.modules.in to EXTRA_DIST
+	Without this, rpm builds fail
+
+	Fixed the distcheck error in modules/netcdf_handler/tests
+
+2019-11-07  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #298 from OPENDAP/HK-404
+	Hk 404
+
+	Update GlobalMetadataStore.cc
+	Removed TODO and FIXME comments
+	[skip ci]
+
+2019-11-07  slloyd  <slloyd@localhost>
+
+	11/7/19 - HK-404 -(Awaiting Review) added exclusive lock to write_ledger
+	added public access methods for getExclusiveLock and getExclusiveLockNB
+	to BESFileLockingCache.cc and ~.h
+	used get_exclusive_lock() in write_ledger() for writing lock in
+	GlobalMetadataStore.cc
+	Passed make, check, and distcheck runs on local
+
+2019-11-06  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-522, comment out the MDS Keys to avoid them being checked by default.
+
+2019-11-06  slloyd  <slloyd@localhost>
+
+	11/6/19 - HK-404 - (In Progress) ledger opened once
+
+2019-11-06  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-522, Update the handler code and test to use MDS to parse the attributes in the data access.
+
+	HK-522, add the test with the server-side function to ensure the attributes built from MDS in the data access when necessary. Notice the DAS file in the cached file has been generated by the previous tests of fnoc1.nc.mds.ddx.bescmd.
+
+2019-11-05  Kent Yang  <myang6@hdfgroup.org>
+
+	HK-522, update Makefile.am etc. files to test the retrieval of DDS,DAS and Data from MDS.
+
+	HK-522, add bescmd and baseline files to test the retrieval of DDS and DAS from MDS.
+
+2019-11-05  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-522, add the parse_das_from_dds functions and add a few parameters to the configuaration option.
+
+2019-11-04  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #296 from OPENDAP/hk-523
+	Hk 523
+
+2019-11-04  Muqun Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hk-523 Need to make the new change up to date with the master.
+
+	HK-523, add memory cache for dds in the data access(datadds). This is necessary since unlike metadata DDS access, DDS in the data access may not include attributes.
+
+2019-11-04  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #295 from OPENDAP/getopt-fix
+	Getopt fix
+
+2019-11-04  Kent Yang  <myang6@hdfgroup.org>
+
+	Just fix the comment typo.
+
+2019-11-04  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #288 from opoplawski/getopt
+	Repeat after me: "getopt() returns an int"
+
+2019-10-31  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #294 from OPENDAP/dap4_function_tests
+	Added/updated/fixed dap4 function tests in bes/functions
+
+	Added linear_scale.dap.bescmd.baseline
+
+	Added/updated/fixed dap4 function tests in bes/functions
+
+	Spelling fixes in bes/functions/stare/README
+	[skip ci]
+
+	Merge pull request #293 from OPENDAP/HK-413
+	Hk 413
+
+	Merge pull request #292 from OPENDAP/data-access-no-das
+	Data access no das
+
+2019-10-31  Samuel Lloyd  <slloyd@localhost.localdomain>
+
+	10/31/19 - HK-413 - master merge
+
+2019-10-31  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into data-access-no-das
+	Conflicts: dispatch/BESDataHandlerInterface.h
+	dispatch/BESRequestHandler.h
+
+2019-10-31  slloyd  <slloyd@localhost>
+
+	10/31/19 - HK-413 - (Awaiting Review) leak identified
+
+2019-10-31  James Gallagher  <jgallagher@opendap.org>
+
+	Added a comment about travis and ssh issues to travis.yml
+	[skip ci]
+
+2019-10-30  James Gallagher  <jgallagher@opendap.org>
+
+	Updated travis.yml: removed the www.opendap.org deploy operations
+	Not really sure why this stopped working, but maybe the www.o.o certs
+	changed because the build is failing when it can no longer verify the
+	www.o.o host. We might use an S3 event to trigger the copy of these to
+	the host, thus moving it out of travis' realm.
+
+	Removed script deploys as something seems to have changed on www.o.o
+
+	Added key gen back into travis.yml
+
+	Try again with travis
+
+	Try a new way of moving the packages to www.opendap.org
+
+	Merge branch 'master' of https://github.com/opendap/bes
+	[skip ci]
+
+	Added a comment to the travis.yml file
+	[skip ci]
+
+	Merge pull request #290 from OPENDAP/HK-498
+	Hk 498
+
+2019-10-30  Samuel Lloyd  <slloyd@localhost.localdomain>
+
+	10/30/19 - HK-498 - (Under Review) master merge
+
+2019-10-30  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'travis'
+
+	Reset to build/deploy on the master branch
+	[skip ci]
+
+2019-10-30  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-500, clean up the debugging lines, add comments. Tested at CentOS 7.
+
+	HK-500, remove the debugging file.
+
+2019-10-29  Kent Yang  <myang6@hdfgroup.org>
+
+	HK-515, Fits handler, gdal handler: add the server-side function tests for the new data access feature. When the server-side function gets involved, the attributes are needed.
+
+2019-10-29  Orion Poplawski  <orion@nwra.com>
+
+	Repeat after me: "getopt() returns an int"
+
+2019-10-29  James Gallagher  <jgallagher@opendap.org>
+
+	Extracted the code to trigger the hyrax-docker build to a script.
+
+2019-10-29  Samuel Lloyd  <slloyd@localhost.localdomain>
+
+	10/29/19 - HK-498 - master merge
+
+2019-10-29  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed syntax in rpm-to-package-dir.sh
+
+2019-10-29  slloyd  <slloyd@localhost>
+
+	10/29/19 - HK-498 - (Awaiting Review) Tests fixed and distcheck passed
+	resolved all errors in the unit-tests caused by the removal of using
+	statement in header files.
+	distcheck ran and passed, awaiting review and Travis check before
+	merging
+
+2019-10-29  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-515, CSV handler: add the server-side function tests for the new data access feature. When the server-side function gets involved, the attributes are needed.
+
+	Merge branch 'master' into data-access-no-das
+
+2019-10-29  Kent Yang  <myang6@hdfgroup.org>
+
+	HK-517, fix the memory leak at dmr,dds and data responses. Tested at CentOS7 with valgrind. The issue is trivial. No need to fork a branch.
+
+2019-10-29  James Gallagher  <jgallagher@opendap.org>
+
+	More shell syntax fixes
+
+	Fixed shelp syntax goof
+
+	Added a convenience script for the defore_deploy stage.
+
+	More testing hackery. This includes a potentail fix for packaging branches
+
+	Spelling error in RPM spec files
+
+	Fix for broken RPM build on Centos 7 WRT build_sidecar
+
+	Syntax fix, I think
+
+2019-10-29  Muqun Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into data-access-no-das Make sure this branch is up to date with the master.
+
+2019-10-29  James Gallagher  <jgallagher@opendap.org>
+
+	The travis.yml file is not parsing. Maybe I broke the after_deploy scipting...
+
+	try the name 'travis'
+
+	Another try...
+
+	Another try to trigger a build on a branch push w/o a PR
+
+2019-10-28  James Gallagher  <jgallagher@opendap.org>
+
+	Trying to get travis to build it...
+
+	Minor chage - trying to trigger a Travis build
+
+	Testing a modified version of the travisl.yml
+	Maybe fixes the issue with the after deploy section. Possible
+	syntax error in the if test ... expression; '&&' used when '-a'
+	should have been used.
+
+2019-10-25  slloyd  <slloyd@localhost>
+
+	10/25/19 - HK-498 - (In Progress) header files clean, tests remaining
+	All header files cleaned of using statements
+	resolved all errors resulting from removals
+	left to do:
+	fix any errors in the tests resulting from removals
+	dist check
+
+	10/25/19 - HK-498 - (In Progress) more usings removed
+	finished removing usings from dispatch directory
+	finished removing usings from functions directory
+	moved into modules directory
+	finished removing usings from modules/asciival directory
+	finished removing usings from modules/cmr_module directory
+	finished removing usings from modules/csv_handler directory
+	finished removing usings from modules/fileout_netcdf directory
+	resolved all errors resulting from removals
+
+2019-10-24  jgallagher59701  <jgallagher@opendap.org>
+
+	Revert "Added call to make really-clean in the dependencies build of hyrax_build.sh"
+	This reverts commit cd0cfa3d3baad42d301c8df5823058ebb3dce668.
+	I meant to commit in the 'hyrax' repo that contains a clone of
+	this bes repo.
+
+2019-10-24  Cloud User  <centos@ip-172-31-7-253.ec2.internal>
+
+	Added call to make really-clean in the dependencies build of hyrax_build.sh
+
+2019-10-23  James Gallagher  <jgallagher@opendap.org>
+
+	Removed the build_sidecard executable from git
+	[skip ci]
+
+2019-10-23  Samuel Lloyd  <slloyd@localhost.localdomain>
+
+	10/23/19 - HK-498 - hdf4 update
+
+2019-10-23  slloyd  <slloyd@localhost>
+
+	10/23/19 - HK-498 - more 'using' removed
+	more 'using' statements removed in dispatch directory
+	resolved errors resulting from removals
+
+2019-10-23  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #287 from OPENDAP/HK-500-function-tests
+	Hk 500 function tests
+
+	Fixed error tests so they don't include file and line numbers
+	These make the test fragile, esp. distcheck builds
+
+2019-10-23  Samuel Lloyd  <slloyd@localhost.localdomain>
+
+	10/23/19 - HK-498 - master merge
+
+2019-10-22  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed broken Makefile.am files
+	I switched two test suites to the common handler_tests_macros.m4
+	file and the dist build was hosed.
+
+	Merge pull request #285 from OPENDAP/HK-413
+	Hk 413
+
+	Added test() server function test to the netcdf handler.
+
+	Added a use of the new test() function to bes/functions/tests
+
+	Made a function handlers can use for testing.
+	Specifically, for testing that the functions get DDS
+	objects with attributes included. I also tweaked the
+	bes/functions tests to make them use the bes/modules/
+	handler_tests_macros.m4 file.
+
+2019-10-18  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-500, set the DataDDS include_attr flags for fits,netcdf,gdal and csv handlers.
+
+2019-10-17  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-510, add code to make the NcML module add attributes if necessary. Tackled the netCDF handler. Needed to handle GDAL,FITS,CSV handlers.
+
+2019-10-16  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-510, add code to handle the NcML for the data access without using attributes. Need more work.
+
+2019-10-15  Kent Yang  <myang6@hdfgroup.org>
+
+	HK-509, 1) Make data access not use attributes for the fits handler. 2) Add add_attributes().
+
+2019-10-15  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-504, add the function to make no das in the data access request.
+
+2019-10-14  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-506, add code to turn off attributes for the GDAL handler. Tested at CentOS 7.
+
+2019-10-10  Kent Yang  <myang6@hdfgroup.org>
+
+	HK-505, make fileout modules build attributes
+
+2019-10-10  slloyd  <slloyd@localhost>
+
+	10/10/19 - HK-498 - (In Progress) more usings removed from header files
+	several more using statements removed from header files
+	resolved most errors resulting from removal of using statements
+
+	10/10/19 - HK-413 - (In Progress) need to finish freeing memory
+	need to finish freeing the TypeConverter map object in NCMLParser.cc in
+	the NCMLParser::cleanup() function.
+
+2019-10-10  Muqun Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into data-access-no-das Need to make my branch up to date with the master
+
+2019-10-09  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed the segfault bug. The code was calling the context cleanup still.
+	We removed the SAX parser context and started using the xmlSAXUserParseFile()
+	function instead.
+
+	Merge branch 'HK-413' of https://github.com/opendap/bes into HK-413
+
+	Removed a warning and removed unneeded semicolons.
+
+2019-10-09  Kent Yang  <myang6@hdfgroup.org>
+
+	HK-480, add_attribute for the netCDF handler.
+
+2019-10-09  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-500, add the add_attributes() for the freeform handler.
+
+2019-10-08  Kent Yang  <myang6@hdfgroup.org>
+
+	HK-500, check in skeleton code. Just see if the add_attribute routine is run at the freeform handler.
+
+2019-10-08  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-500, add skeleton of the feature for the data access without using DAS.
+
+2019-10-08  slloyd  <slloyd@localhost>
+
+	10/8/19 - HK-498 - (In Progress) first round of removing 'usings'
+
+2019-10-08  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #284 from OPENDAP/file-locking-fix
+	File locking fix
+
+2019-10-07  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into file-locking-fix
+
+	Merge pull request #283 from OPENDAP/dapreader_version_test_fix
+	Fixed an errant test in bes/dapreader
+
+	Merge branch 'master' into file-locking-fix
+
+	Removed handler_tests_macros from EXTRA_DIST in the dapreader tests Makefile
+
+2019-10-07  The-Robot-Travis  <npotter@opendap.org>
+
+	Renabling full CI suite
+
+2019-10-07  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed the Makefile.am given I've removed the local test macros
+
+	Fixed an errant test in bes/dapreader
+	At the same time, I switched the code to use the global test macros
+	in bes/modules/handler_tests_macros.m4.
+
+2019-10-04  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #282 from OPENDAP/pthreadImprovements
+	Pthread improvements
+
+2019-10-04  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Merge branch 'master' into pthreadImprovements
+
+	Commented out unique_ptr call for now. Needs to be modified to work with the get_rbuf().
+
+2019-10-03  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #280 from OPENDAP/doi_version
+	Doi version
+
+2019-10-03  The-Robot-Travis  <npotter@opendap.org>
+
+	Merge branch 'master' into doi_version
+
+2019-10-03  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #279 from OPENDAP/combined_log
+	Combined log
+
+2019-10-03  The-Robot-Travis  <npotter@opendap.org>
+
+	Merge branch 'master' into doi_version
+
+	Merge branch 'master' into combined_log
+
+	Starting work on new version response with DOIs included
+
+	Formatting in .travis.yml
+
+2019-10-02  The-Robot-Travis  <npotter@opendap.org>
+
+	Combined logging stpep 2, the format
+
+2019-10-02  Sam Lloyd  <slloyd@opendap.org>
+
+	Merge pull request #278 from OPENDAP/HK-72
+	Hk 72
+
+2019-10-02  James Gallagher  <jgallagher@opendap.org>
+
+	Update BESDelContainerResponseHandler.cc
+
+2019-10-02  Samuel Lloyd  <slloyd@localhost.localdomain>
+
+	Merge branch 'master' into HK-72
+
+2019-10-02  slloyd  <slloyd@localhost>
+
+	10/02/19 - HK-72 - (Awaiting Review) HDF# and unit-test fixes
+	made fixes to HDF4 and HDF5 master branches
+	also made fixes to unit-tests so all checks work
+	branch ready for a pull-request
+
+2019-10-02  Samuel Lloyd  <slloyd@localhost.localdomain>
+
+	updating hdf5 commit hash
+
+	updating hdf4 commit hash
+
+2019-10-02  The-Robot-Travis  <npotter@opendap.org>
+
+	Merge branch 'master' into combined_log
+
+	hdf5_handler updates
+
+	First pass at integrating OLFS log info into BES log.
+
+2019-10-02  slloyd  <slloyd@localhost>
+
+	10/2/19 - HK-72 - (In Progress) last 'using' removed from BESIndent.h
+	Removed 'using std::ostream' from BESIndent.h
+	fixed all errors resulting from above
+	HDF4 and HDF5 error have not been fixed as of yet
+
+2019-10-02  The-Robot-Travis  <npotter@opendap.org>
+
+	Another stab at hk-497
+
+	Another stab at hk-497
+
+	Another stab at hk-497
+
+2019-10-01  The-Robot-Travis  <npotter@opendap.org>
+
+	3rd crack at hk-497, in which we make sure the TravisCI build for bes only triggers the hyrax-docker build once.
+
+	3rd crack at hk-497, in which we make sure the TravisCI build for bes only triggers the hyrax-docker build once.
+
+	3rd crack at hk-497, in which we make sure the TravisCI build for bes only triggers the hyrax-docker build once.
+
+	3rd crack at hk-497, in which we make sure the TravisCI build for bes only triggers the hyrax-docker build once.
+
+	3rd crack at hk-497, in which we make sure the TravisCI build for bes only triggers the hyrax-docker build once.
+
+	3rd crack at hk-497, in which we make sure the TravisCI build for bes only triggers the hyrax-docker build once.
+
+2019-10-01  slloyd  <slloyd@localhost>
+
+	10/01/19 - HK-413 - (In progress)removed 'using string' from BESIndent.h
+	Removed 'using string' from BESIndent.h
+	fixed errors resulting from above
+	errors in HDF4 and HDF5 not fixed yet
+
+2019-10-01  The-Robot-Travis  <npotter@opendap.org>
+
+	2nd crack at hk-497, in which we make sure the TravisCI build for bes only triggers the hyrax-docker build once.
+
+	2nd crack at hk-497, in which we make sure the TravisCI build for bes only triggers the hyrax-docker build once.
+
+	2nd crack at hk-497, in which we make sure the TravisCI build for bes only triggers the hyrax-docker build once.
+
+	2nd crack at hk-497, in which we make sure the TravisCI build for bes only triggers the hyrax-docker build once.
+
+2019-09-30  The-Robot-Travis  <npotter@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	First crack at hk-497, in which we make sure the TrvaisCI build for bes only triggers the hyrax-docker build once.
+
+2019-09-30  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Use the unique_ptr for the buffer, rather than the memcpy itself. Trying to use the unique_ptr to keep track of the memory may be too dificult for the function inside Chunk.cc, but we may be able to swap out memcpy with unique_ptr in DmrppArray
+
+2019-09-27  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #277 from OPENDAP/gdal_attribute_fix
+	gdal handler: Westernmost_Northing --> Westernmost_Easting
+
+2019-09-27  slloyd  <slloyd@localhost>
+
+	9/27/19 - HK-72 - (In Progress) BESObj.h fixed
+	removed "using" statement from BESObj.h
+	fixed all errors that resulted from line above
+
+2019-09-27  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed errant ncml baselines given the gdal_handler fix
+
+2019-09-27  slloyd  <slloyd@localhost>
+
+	9/27/19 - HK-72 - (Awaiting review) includes and usings cleaned up
+
+	9/27/19 - HK-413 - (In Progress) re-added parse clean up
+
+2019-09-26  James Gallagher  <jgallagher@opendap.org>
+
+	gdal handler: Westernmost_Northing --> Westernmost_Easting
+	The gdal handler used the wrong name for the the attribute
+	Westernmost_Easting. Thanks to Gareth Williams for noticing
+	this.
+
+2019-09-26  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Merge pull request #276 from OPENDAP/pthreadImprovements
+	Set a threshold for the minimum size that we should parallelize the contiguous chunk. If the chunk is parallelized the number of child chunks generated now scale with the size of the data
+
+2019-09-25  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Added requested changes: math.h -> cmath and using a #define for the MB value
+
+2019-09-25  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #273 from OPENDAP/whitelist_file_patch
+	Whitelist file patch
+
+	Merged master.
+
+2019-09-25  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Added a configuration parameter for the minimum value a chunk should be read at
+
+2019-09-24  The Robot Travis  <npotter@opendap.org>
+
+	Added airs_4.dap
+	[skip ci]
+
+2019-09-23  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Parallizing the contiguous chunk should now split up the master chunk into child chunks based on the master chunk's size. The code will also NOT parallize the process if the master chunk's size is less than 2MB.
+
+2019-09-23  The Robot Travis  <npotter@opendap.org>
+
+	Merge branch 'pthreads'
+	[skip ci]
+
+	Added code used for rudamentary timing tests
+
+2019-09-23  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Merge pull request #275 from OPENDAP/pthreads
+	Added parallelization to the contiguous read.
+
+2019-09-23  James Gallagher  <jgallagher@opendap.org>
+
+	More commentary...
+	[skip ci]
+
+	Added a comment explaining the chunk offset computation.
+	[skip ci]
+
+2019-09-21  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into pthreads
+
+	Fixed issue with last tests for contiguous data reads in parallel.
+	It was the 'buffer not divisable by four' bug.
+
+	Partial fix for the contiguous chunk parallel read code.
+	Two test still fail. The error was that we used the whole value for the
+	child chunk offset when determining where to put a child chunk's data
+	into the master chunk. This resulted in writing data far past the end
+	of the master chunk's buffer. The correction is to subtract the master
+	chunk offset from the child chunk offset. At least, that fixes most of
+	the tests.
+
+2019-09-20  James Gallagher  <jgallagher@opendap.org>
+
+	Checkpoint; debugging contiguous reads
+
+	Checkpoint. New code written; not passing tests
+
+	Added notes. See lines 355 and 356.
+
+2019-09-20  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Changed the name of variables for consistency.
+
+2019-09-20  The-Robot-Travis  <npotter@opendap.org>
+
+	cleaning up - builds are working and prdocts are being pushed.
+
+	cleaning up - builds are working and prdocts are being pushed.
+
+2019-09-20  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Fixed the for loop when breaking up the chunk into little chunks. Also formatting.
+
+2019-09-20  The-Robot-Travis  <npotter@opendap.org>
+
+	more and more with the encoding dancing
+
+	more and more with the encoding dancing
+
+	more and more with the encoding dancing
+
+	more and more with the encoding dancing
+
+	more and more with the encoding dancing
+
+	more and more with the encoding dancing
+
+	more and more with the encoding dancing
+
+2019-09-19  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Modified the read_contiguous method to split up the chunk it recieves to try and speed up the read process. --Needs testing--
+
+2019-09-19  The-Robot-Travis  <npotter@opendap.org>
+
+	more and more with the encoding dancing
+
+	more and more with the encoding dancing
+
+	more and more with the encoding dancing
+
+	more and more with the encoding dancing
+
+	more and more with the encoding dancing
+
+	more and more with the encoding dancing
+
+	more and more with the encoding dancing
+
+	more and more with the encoding dancing
+
+	more and more with the encoding dancing
+
+	more and more with the encoding dancing
+
+	more and more with the encoding dancing
+
+	more and more with the encoding dancing
+
+	dropping content
+
+	Again with the scp/rsync/madness
+
+	Again with the scp/rsync/madness
+
+	Again with the scp/rsync/madness
+
+2019-09-18  The-Robot-Travis  <npotter@opendap.org>
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+2019-09-17  The-Robot-Travis  <npotter@opendap.org>
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+	First pass pushing snapshots to www.o.o
+
+2019-09-12  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #274 from ptype/patch-1
+	Typo in README.md
+
+2019-09-11  The-Robot-Travis  <npotter@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Drop snapshot branch form docker construction
+
+2019-09-10  ptype  <ptype@users.noreply.github.com>
+
+	Typo in README.md
+
+2019-09-10  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Added the timing test file.
+
+2019-09-06  The-Robot-Travis  <npotter@opendap.org>
+
+	Tr=urning on all stages. Might be done?
+
+	Tr=urning on all stages. Might be done?
+
+	Endlessly I tweak the conditional in after_deploy
+
+	Endlessly I tweak the conditional in after_deploy
+
+	Endlessly I tweak the conditional in after_deploy
+
+	Endlessly I tweak the conditional in after_deploy
+
+	Endlessly I tweak the conditional in after_deploy
+
+	Endlessly I tweak the conditional in after_deploy
+
+	Hooking up Docker container build trigger
+
+	Hooking up Docker container build trigger
+
+	Hooking up Docker container build trigger
+
+	Hooking up Docker container build trigger
+
+	Hooking up Docker container build trigger
+
+2019-09-05  The-Robot-Travis  <npotter@opendap.org>
+
+	Hooking up Docker container build trigger
+
+	Hooking up Docker container build trigger
+
+2019-09-05  Nathan Potter  <ndp@opendap.org>
+
+	Hooking up Docker container build trigger
+
+	Hooking up Docker container build trigger
+
+	Hooking up Docker container build trigger
+
+	Hooking up Docker container build trigger
+
+	Hooking up Docker container build trigger
+
+	Hooking up Docker container build trigger
+
+	Hooking up Docker container build trigger
+
+	Hooking up Docker container build trigger
+
+	Hooking up Docker container build trigger
+
+	Hooking up Docker container build trigger
+
+	Hooking up Docker container build trigger
+
+2019-08-27  Nathan Potter  <ndp@opendap.org>
+
+	More tweaking of ye ole snapshot builder
+
+	hdf5 handler
+
+	Adding snap shot RPM gen to Travis build.
+
+2019-08-16  Nathan Potter  <ndp@opendap.org>
+
+	This commit is a candidate patch for the file URL whitelist issue.
+
+2019-08-15  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #272 from OPENDAP/ugr_function_links
+	updating ugr functions baked in links to external documentation
+
+2019-08-15  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Merge pull request #270 from OPENDAP/StareIndexing
+	Stare indexing:
+	Refactored how the stare mapping is handled. Also added the STARE patch from Mike.
+
+	Merge branch 'master' into StareIndexing
+
+2019-08-15  Nathan Potter  <ndp@opendap.org>
+
+	updating ugr functions baked in links to external documentation
+
+	debugging step
+
+2019-08-12  Nathan Potter  <ndp@opendap.org>
+
+	This patch crrects a logic problem inside of WhiteList::is_white_listed() which was causing file checking to when resources were correctly whitelisted.
+
+2019-08-08  Sam Lloyd  <slloyd@opendap.org>
+
+	Merge pull request #271 from OPENDAP/HK-457
+	HK-457
+
+2019-08-07  slloyd  <slloyd@localhost>
+
+	7/7/19 - HK-457- (Under Review) 403 Forbidden fix
+
+2019-08-05  Kent Yang  <myang6@hdfgroup.org>
+
+	HK-475, fix the memory leaking issue in the free form handler.
+
+2019-08-05  Samuel Lloyd  <slloyd@localhost.localdomain>
+
+	Merge branch 'master' into HK-457
+
+2019-08-05  slloyd  <slloyd@localhost>
+
+	8/5/19 - HK-457 - (In Progress) reverting changes
+	reverted all changes to return value of ".match(*)" fuction from 0 to -1
+
+2019-08-01  Kodi Neumiller  <kneumiller@mtech.edu>
+
+	Merge branch 'master' into StareIndexing
+
+	Added the patch from Mike. Using a STARE object instead of SpatialIndex.
+
+2019-07-30  Sam Lloyd  <slloyd@opendap.org>
+
+	Merge pull request #268 from OPENDAP/HK-272
+	Hk 272
+
+2019-07-30  slloyd  <slloyd@localhost>
+
+	7/30/19 - HK-272 - (Under Review) distcheck fixes
+	distcheck passes
+
+2019-07-29  slloyd  <slloyd@localhost>
+
+	7/29/19 - HK-272 - (Under Review) fixes to reqhandlerT.cc
+
+2019-07-24  slloyd  <slloyd@localhost>
+
+	7/24/19 - HK-272 - (Under Review) small comment changes
+
+2019-07-23  slloyd  <slloyd@localhost>
+
+	7/23/19 - HK-457 - (In Progress) regex changes
+
+2019-07-23  Nathan Potter  <ndp@opendap.org>
+
+	Fixing get_dmrpp -c option [skip ci]
+
+	Fixing get_dmrpp -c option [skip ci]
+
+	Fixing get_dmrpp -c option [skip ci]
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Fixing get_dmrpp -c option
+
+2019-07-22  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed the bes mds conf file for 'testsuite_for_mds'
+
+2019-07-22  slloyd  <slloyd@localhost>
+
+	7/22/19 - HK-272 - (Under Review) Travis fixes
+
+	7/22/19 - HK-272 - (Under Review) Travis fixes
+
+2019-07-22  Samuel Lloyd  <slloyd@localhost.localdomain>
+
+	Merge branch 'master' into HK-272
+
+	7/22/19 - HK-272 - (Under Review) hdf4 and hdf5 congflict changes
+
+2019-07-22  slloyd  <slloyd@localhost>
+
+	7/22/19 - HK-272 - (Under Review) conflict fixes
+	Merge branch 'master' into HK-272
+	Conflicts:
+		modules/dmrpp_module/build_dmrpp.cc
+
+	7/22/19 - HK-272 - (Under Review) added fixes
+	moved @Deprecated notation so it shows up in the java doc comments
+	removed two 'includes' that were not needed in code
+
+2019-07-12  Nathan Potter  <ndp@opendap.org>
+
+	Protecting inputs to get_dmrpp [skip ci]
+
+2019-07-11  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #269 from OPENDAP/ff_regex
+	I am merging this because all the tests are passing and we need RPM files to test.
+
+	Formatting changes for readability
+
+	Cleaning up c old code and making the match test more effective,
+
+2019-07-10  Nathan Potter  <ndp@opendap.org>
+
+	Working regex patch
+
+	Working regex patch
+
+	another minor ineffectove change
+
+	partial fix - somethings not correct
+
+	REverting the (non)fix
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Trying to fix c++11 issues.
+
+2019-07-09  Nathan Potter  <ndp@opendap.org>
+
+	Update README.md
+
+	Updating dmr++ content.
+
+	merged origin:master
+
+	Updating dmr++ README.md. [skip ci]
+
+2019-07-09  James Gallagher  <jgallagher@opendap.org>
+
+	Updated hdf4 and hdf5 handlers for Hyrax 1.16.0
+
+	Updated module versions for Hyrax 1.16.0
+	[skip ci]
+
+	Updates to version number for the BES framework for Hyrxa 1.16.0
+	[skip ci]
+
+2019-07-08  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed a broken test data file in dmrpp_handler and updated hdf handlers
+
+	Merge pull request #267 from OPENDAP/dmrpp_doc
+	Dmrpp doc
+
+2019-07-08  Nathan Potter  <ndp@opendap.org>
+
+	Spelling etc.
+
+2019-07-08  James Gallagher  <jgallagher@opendap.org>
+
+	Update README.md
+	Added some more words at the top. Tried to connect them to the Overview.
+	Added a one-sentence paragraph to the Overview
+
+	Update README.md
+
+	Update README.md
+
+2019-07-08  Nathan Potter  <ndp@opendap.org>
+
+	Spelling etc.
+
+	Adding  first example for ingest_s3bucket. Small changes to scripts.
+
+	Adding  first example for ingest_s3bucket. Small changes to scripts.
+
+	Adding  first example for ingest_s3bucket. Small changes to scripts.
+
+	Adding  first example for ingest_s3bucket. Small changes to scripts.
+
+	Adding  first example for ingest_s3bucket. Small changes to scripts.
+
+	Adding  first example for ingest_s3bucket. Small changes to scripts.
+
+	Adding  first example for ingest_s3bucket. Small changes to scripts.
+
+	Added get_dmrpp example 2.
+
+	Added get_dmrpp example 2.
+
 2019-07-08  James Gallagher  <jgallagher@opendap.org>
 
 	Fixed a broken test data file in dmrpp_handler and updated hdf

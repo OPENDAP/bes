@@ -33,7 +33,7 @@ TESTS = constraintT defT keysT pfileT plistT pvolT replistT		\
 reqhandlerT reqlistT resplistT infoT debugT utilT regexT scrubT		\
 checkT servicesT fsT urlT containerT uncompressT cacheT			\
 BESCatalogListTest WhiteListTest CatalogNodeTest CatalogItemTest \
-ServerAdministratorTest
+ServerAdministratorTest kvp_utils_test
 
 # This is tool to look at CatalogEntry objects. jhrg 3.5.18
 # complete_catalog_lister agglistT 
@@ -106,6 +106,9 @@ clean-local:
 
 ############################################################################
 
+kvp_utils_test_SOURCES = kvp_utils_test.cc
+kvp_utils_test_LDADD = ../kvp_utils.o $(LDADD)
+
 constraintT_SOURCES = constraintT.cc
 
 containerT_SOURCES = containerT.cc
@@ -113,6 +116,7 @@ containerT_SOURCES = containerT.cc
 defT_SOURCES = defT.cc
 
 keysT_SOURCES = keysT.cc
+# keysT_LDADD = ../TheBESKeys.o $(LDADD)
 
 pfileT_SOURCES = pfileT.cc
 

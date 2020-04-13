@@ -129,7 +129,7 @@ public:
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
-            auto_ptr<Array> slices = roi_bbox_build_empty_bbox(1, "slices");
+            unique_ptr<Array> slices = roi_bbox_build_empty_bbox(1, "slices");
             slices->set_vec_nocopy(0, roi_bbox_build_slice(9, 18, "a_values"));
 
             BaseType *argv[] = { a, slices.get() };
@@ -194,7 +194,7 @@ public:
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
-            auto_ptr<Array> slices = roi_bbox_build_empty_bbox(2, "slices");
+            unique_ptr<Array> slices = roi_bbox_build_empty_bbox(2, "slices");
             slices->set_vec_nocopy(0, roi_bbox_build_slice(9, 18, "rows"));
             slices->set_vec_nocopy(1, roi_bbox_build_slice(9, 18, "cols"));
 
@@ -261,7 +261,7 @@ public:
         BaseType *result = 0;
         try {
             // Must set up the args as per the CE parser
-            auto_ptr<Array> slices = roi_bbox_build_empty_bbox(1, "slices");
+            unique_ptr<Array> slices = roi_bbox_build_empty_bbox(1, "slices");
             slices->set_vec_nocopy(0, roi_bbox_build_slice(9, 18, "values"));
 
             BaseType *argv[] = { a, b, slices.get() };
@@ -343,7 +343,7 @@ int main(int argc, char*argv[])
 {
 
     GetOpt getopt(argc, argv, "dDh");
-    char option_char;
+    int option_char;
     while ((option_char = getopt()) != EOF)
         switch (option_char) {
         case 'd':

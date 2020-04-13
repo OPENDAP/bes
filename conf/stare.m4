@@ -45,9 +45,10 @@ AC_DEFUN([AC_CHECK_STARE],
     
     AC_CHECK_HEADER($ac_check_stare_header_checked, 
         [ac_stare_include_ok='yes'
-         STARE_INC=-I$STARE_PATH/include], 
-        [ac_stare_include_ok='no'], [])
-    
+         STARE_INC=-I$STARE_PATH/include
+         AC_DEFINE([HAVE_STARE], [1], [The STARE Library is present])],
+        [ac_stare_include_ok='no'])
+
     AC_LANG_POP([C++])
     
     # echo "ac_stare_lib_ok: $ac_stare_lib_ok"

@@ -71,7 +71,7 @@ void function_scale_grid(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     "</function>\n";
 
     if (argc == 0) {
-        auto_ptr<Str> response(new Str("info"));
+        unique_ptr<Str> response(new Str("info"));
         response->set_value(info);
         *btpp = response.release();
         return;
@@ -136,7 +136,7 @@ void function_scale_array(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     "</function>\n";
 
     if (argc == 0) {
-        auto_ptr<Str> response(new Str("info"));
+        unique_ptr<Str> response(new Str("info"));
         response->set_value(info);
         *btpp = response.release();
         return;
@@ -201,7 +201,7 @@ void function_scale_array_3D(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     BESDEBUG(DEBUG_KEY,"function_scale_array_3D() - argc = " << argc << endl);
 
     if (argc == 0) {
-        auto_ptr<Str> response(new Str("info"));
+        unique_ptr<Str> response(new Str("info"));
         response->set_value(info);
         *btpp = response.release();
         return;

@@ -35,8 +35,6 @@
 #include <string>
 #include <vector>
 
-using std::string;
-using std::vector;
 using agg_util::RCPtr;
 using agg_util::RCObject;
 using agg_util::RCObjectPool;
@@ -147,8 +145,8 @@ public:
      * If throwOnError is set, we throw a parse error instead of returning.
      * @return whether all attributes are in the valid set if not throw
      */
-    virtual bool validateAttributes(const XMLAttributeMap& attrs, const vector<string>& validAttrs,
-        vector<string>* pInvalidAttrs = 0, bool printInvalid = true, bool throwOnError = true);
+    virtual bool validateAttributes(const XMLAttributeMap& attrs, const std::vector<std::string>& validAttrs,
+    		std::vector<std::string>* pInvalidAttrs = 0, bool printInvalid = true, bool throwOnError = true);
 
     /** Handle a begin on this element.
      * Called after creation and it is assumed the
@@ -176,13 +174,13 @@ public:
     static std::string printAttributeIfNotEmpty(const std::string& attrName, const std::string& attrValue);
 
     /** @return whether the given attr is in the array validAttrs or not...  Helper for subclasses */
-    static bool isValidAttribute(const std::vector<string>& validAttrs, const string& attr);
+    static bool isValidAttribute(const std::vector<std::string>& validAttrs, const std::string& attr);
 
     /** @return whether all the attributes in attrMap are in validAttrs.
      * If pInvalidAttributes, fill it in with all the illegal attributes.
      */
-    static bool areAllAttributesValid(const XMLAttributeMap& attrMap, const std::vector<string>& validAttrs,
-        std::vector<string>* pInvalidAttributes = 0);
+    static bool areAllAttributesValid(const XMLAttributeMap& attrMap, const std::vector<std::string>& validAttrs,
+        std::vector<std::string>* pInvalidAttributes = 0);
 
 protected:
     // data rep

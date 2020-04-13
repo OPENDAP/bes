@@ -92,9 +92,21 @@ void FONcBaseType::setVersion(string version)
     BESDEBUG("fonc", "FONcBaseType::setVersion() - version: '" << _ncVersion << "'" << endl);
 }
 
+/** @brief Identifies the netCDF4 data model (CLASSIC or ENHANCED)
+ */
+void FONcBaseType::setNC4DataModel(string nc4_datamodel)
+{
+    _nc4_datamodel= nc4_datamodel;
+
+    BESDEBUG("fonc", "FONcBaseType::setNC4DataModel() - data model: '" << _nc4_datamodel << "'" << endl);
+}
 /** @brief Returns true if NetCDF4 features will be required
  */
 bool FONcBaseType::isNetCDF4()
 {
     return FONcBaseType::_ncVersion == RETURNAS_NETCDF4;
+}
+bool FONcBaseType::isNetCDF4_ENHANCED()
+{
+    return FONcBaseType::_nc4_datamodel == NC4_ENHANCED;
 }

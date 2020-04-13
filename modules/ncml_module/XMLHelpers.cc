@@ -29,6 +29,8 @@
 
 #include "XMLHelpers.h"
 
+using std::string;
+
 namespace ncml_module {
 
 ///////////////////////////// XMLUtil Impl
@@ -482,5 +484,4 @@ void XMLNamespaceStack::addMissingNamespaces(XMLNamespaceMap& intoMap, const XML
     }
 }
 }
-;
 // namespace ncml_module

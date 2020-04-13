@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="function_result_20060308.172859.mk4.cpb.fts" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xml.opendap.org/ns/DAP/3.2# http://xml.opendap.org/dap/dap3.2.xsd" xmlns:grddl="http://www.w3.org/2003/g/data-view#" grddl:transformation="http://xml.opendap.org/transforms/ddxToRdfTriples.xsl" xmlns="http://xml.opendap.org/ns/DAP/3.2#" xmlns:dap="http://xml.opendap.org/ns/DAP/3.2#" dapVersion="3.2">
+    <Array name="fits_test">
+        <Attribute name="SIMPLE" type="String">
+            <value>&quot;T / FITS file: MLSO Mark-4 K-coronameter&quot;</value>
+        </Attribute>
+        <Attribute name="BITPIX" type="String">
+            <value>&quot;16 / 2-byte signed integers&quot;</value>
+        </Attribute>
+        <Attribute name="NAXIS" type="String">
+            <value>&quot;2 / number of dimensions&quot;</value>
+        </Attribute>
+        <Attribute name="NAXIS1" type="String">
+            <value>&quot;720 / size of Position Angle dimension&quot;</value>
+        </Attribute>
+        <Attribute name="NAXIS2" type="String">
+            <value>&quot;384 / size of Radius dimension&quot;</value>
+        </Attribute>
+        <Attribute name="EXTEND" type="String">
+            <value>&quot;T / extension(s) possible&quot;</value>
+        </Attribute>
+        <Attribute name="ORIGIN" type="String">
+            <value>&quot;'HAO' / High Altitude Observatory (HAO)&quot;</value>
+        </Attribute>
+        <Attribute name="TELESCOP" type="String">
+            <value>&quot;'Mk4' / Mark-4 K-Coronameter (Mk4)&quot;</value>
+        </Attribute>
+        <Attribute name="INSTRUME" type="String">
+            <value>&quot;'Dalsa' / rotating 2048-element Dalsa linear array&quot;</value>
+        </Attribute>
+        <Attribute name="DATE-OBS" type="String">
+            <value>&quot;'2006-03-08' / observation date: CCYY-MM-DD [2006 DOY 067]&quot;</value>
+        </Attribute>
+        <Attribute name="TIME-OBS" type="String">
+            <value>&quot;'17:28:59' / observation time: HH:MM:SS&quot;</value>
+        </Attribute>
+        <Attribute name="OBJECT" type="String">
+            <value>&quot;'corona' / white light [700-1080 nanometers]&quot;</value>
+        </Attribute>
+        <Attribute name="TYPE-OBS" type="String">
+            <value>&quot;'pB' / polarization Brightness&quot;</value>
+        </Attribute>
+        <Attribute name="VIGNET" type="String">
+            <value>&quot;'N' / image vignetted: [Y or N]&quot;</value>
+        </Attribute>
+        <Attribute name="NIMAVG" type="String">
+            <value>&quot;1 / number of images averaged&quot;</value>
+        </Attribute>
+        <Attribute name="DATAFORM" type="String">
+            <value>&quot;'Polar' / Mk4 data form&quot;</value>
+        </Attribute>
+        <Attribute name="COORDNAM" type="String">
+            <value>&quot;'Heliocentric' / coordinate system&quot;</value>
+        </Attribute>
+        <Attribute name="CTYPE1" type="String">
+            <value>&quot;'Position Angle' / axis 1 type: Position Angle [CCW]&quot;</value>
+        </Attribute>
+        <Attribute name="CRPIX1" type="String">
+            <value>&quot;0.00 / Position Angle Solar North [pixel]&quot;</value>
+        </Attribute>
+        <Attribute name="CRVAL1" type="String">
+            <value>&quot;0.00 / Position Angle Solar North [degrees]&quot;</value>
+        </Attribute>
+        <Attribute name="CDELT1" type="String">
+            <value>&quot;0.5 / Position Angle coord increment [degrees/pixel]&quot;</value>
+        </Attribute>
+        <Attribute name="CROTA1" type="String">
+            <value>&quot;0.00 / Position Angle rotation [deg.] from reference&quot;</value>
+        </Attribute>
+        <Attribute name="CTYPE2" type="String">
+            <value>&quot;'Radius' / axis 2 type  Radius&quot;</value>
+        </Attribute>
+        <Attribute name="CRPIX2" type="String">
+            <value>&quot;-178.28 / Radius Sun Center [PIXEL]&quot;</value>
+        </Attribute>
+        <Attribute name="CRVAL2" type="String">
+            <value>&quot;0.00 / Radius Sun Center [arcsec]&quot;</value>
+        </Attribute>
+        <Attribute name="CDELT2" type="String">
+            <value>&quot;5.05416 / Radius coord increment [arcsec/pixel]&quot;</value>
+        </Attribute>
+        <Attribute name="CROTA2" type="String">
+            <value>&quot;0.00 / Radius rotation [deg.] from reference&quot;</value>
+        </Attribute>
+        <Attribute name="ROLLADJ" type="String">
+            <value>&quot;0.00 / image rotated  0.00 deg CCW&quot;</value>
+        </Attribute>
+        <Attribute name="CRRADIUS" type="String">
+            <value>&quot;191.29 / solar radius [pixels]&quot;</value>
+        </Attribute>
+        <Attribute name="RSUN" type="String">
+            <value>&quot;966.82 / solar radius [arcsec]&quot;</value>
+        </Attribute>
+        <Attribute name="SOLAR_P0" type="String">
+            <value>&quot;-23.25 / solar P-angle [degrees]&quot;</value>
+        </Attribute>
+        <Attribute name="SOLAR_B0" type="String">
+            <value>&quot;-7.24 / solar B-angle [degrees]&quot;</value>
+        </Attribute>
+        <Attribute name="SOLAR_L0" type="String">
+            <value>&quot;77.83 / Solar L-angle [degrees]: Carr. Longitude&quot;</value>
+        </Attribute>
+        <Attribute name="CARR_ROT" type="String">
+            <value>&quot;2040 / Carrington Rotation number&quot;</value>
+        </Attribute>
+        <Attribute name="BUNIT" type="String">
+            <value>&quot;'Bsun' / magnitude units&quot;</value>
+        </Attribute>
+        <Attribute name="BSCALE" type="String">
+            <value>&quot;1.000000e-10 / physical = data * BSCALE + BZERO&quot;</value>
+        </Attribute>
+        <Attribute name="BZERO" type="String">
+            <value>&quot;-1.000000e-07 / &quot;</value>
+        </Attribute>
+        <Attribute name="DATAMIN" type="String">
+            <value>&quot;-3.377e-06 / minimum data value (-3.277e+04)&quot;</value>
+        </Attribute>
+        <Attribute name="DATAMAX" type="String">
+            <value>&quot;3.177e-06 / maximum data value ( 3.277e+04)&quot;</value>
+        </Attribute>
+        <Attribute name="DISPMIN" type="String">
+            <value>&quot;-5.000e-08 / min. display value (       500)&quot;</value>
+        </Attribute>
+        <Attribute name="DISPMAX" type="String">
+            <value>&quot;5.000e-07 / max. display value (      6000)&quot;</value>
+        </Attribute>
+        <Attribute name="DIRAXIS1" type="String">
+            <value>&quot;'RIGHT' / display direction for axis 1 [X]&quot;</value>
+        </Attribute>
+        <Attribute name="DIRAXIS2" type="String">
+            <value>&quot;'UP' / display direction for axis 2 [Y]&quot;</value>
+        </Attribute>
+        <Attribute name="TMIN" type="String">
+            <value>&quot;0.00 / START BARREL ANGLE [DEGREES]&quot;</value>
+        </Attribute>
+        <Attribute name="TMAX" type="String">
+            <value>&quot;359.50 / STOP  BARREL ANGLE [DEGREES]&quot;</value>
+        </Attribute>
+        <Attribute name="RMIN" type="String">
+            <value>&quot;1.10 / inner field-of-view limit [Rsun]&quot;</value>
+        </Attribute>
+        <Attribute name="RMAX" type="String">
+            <value>&quot;2.85 / outer field-of-view limit [Rsun]&quot;</value>
+        </Attribute>
+        <Attribute name="TSCPFILE" type="String">
+            <value>&quot;'06d067.18_22.mk4.tscpinv' / TSCP file&quot;</value>
+        </Attribute>
+        <Attribute name="REFFILE" type="String">
+            <value>&quot;'06d067.18_16.mk4.q' / reference file&quot;</value>
+        </Attribute>
+        <Attribute name="CVERSION" type="String">
+            <value>&quot;'Version 2.1' / calibration version&quot;</value>
+        </Attribute>
+        <Attribute name="DATE-CAL" type="String">
+            <value>&quot;'2006-03-09' / Mk4 calibration date :       CCYY-MM-DD&quot;</value>
+        </Attribute>
+        <Attribute name="DATE" type="String">
+            <value>&quot;'2006-03-09' / date of FITS file creation : CCYY-MM-DD&quot;</value>
+        </Attribute>
+        <Attribute name="VERSION" type="String">
+            <value>&quot;'Mk4 v2.12' / mk4fits software version&quot;</value>
+        </Attribute>
+        <Attribute name="key_54" type="String">
+            <value>&quot; /   ----------------------------------------------------------------------&quot;</value>
+        </Attribute>
+        <Attribute name="COMMENT" type="String">
+            <value>&quot; /   For images, pixels are displayed with the origin at the lower left&quot;</value>
+            <value>&quot; /   corner ; i.e., horizontal scans (left to right), with the first scan&quot;</value>
+            <value>&quot; /   at the bottom of the image, &amp; the last scan at the top.&quot;</value>
+            <value>&quot; /   Axis 1 is the azimuthal axis and axis 2 is the radial axis.&quot;</value>
+            <value>&quot; /   TMIN &amp; TMAX indicate the start/stop angles for the azimuthal axis.&quot;</value>
+            <value>&quot; /   Calibrated brightness measurements in the Mark-4 data are specified&quot;</value>
+            <value>&quot; /   in units of Bsun, which is a ratio of brightness of the corona to the&quot;</value>
+            <value>&quot; /   mean brightness of the solar disk.  To convert integer pixel values&quot;</value>
+            <value>&quot; /   to Bsun units, multiply each pixel value by BSCALE &amp; add BZERO.&quot;</value>
+            <value>&quot; /   Intensity data is *QUANTITATIVELY* useful only when BUNIT='Bsun'.&quot;</value>
+            <value>&quot; /   The Mark-4 K-coronameter (Mk4) observes the lower corona [700-950 nm]&quot;</value>
+            <value>&quot; /   from ~1.10 to ~2.85 solar radii [Rsun], using a 2048-element linear&quot;</value>
+            <value>&quot; /   Dalsa array (sampled to 384 pixels) aligned along a radial direction&quot;</value>
+            <value>&quot; /   outward from the center of the sun.  The detector is rotated over a&quot;</value>
+            <value>&quot; /   3-minute period to accumulate a set of radial rays, which may be&quot;</value>
+            <value>&quot; /   converted from polar to Cartesian (i.e., rectangular) coordinates.&quot;</value>
+            <value>&quot; /   The Mauna Loa Solar Observatory (MLSO) is located on the island of&quot;</value>
+            <value>&quot; /   Hawaii, and is operated by the High Altitude Observatory (HAO),&quot;</value>
+            <value>&quot; /   a division of the National Center for Atmospheric Research (NCAR),&quot;</value>
+            <value>&quot; /   under sponsorship of the National Science Foundataion(NSF).&quot;</value>
+        </Attribute>
+        <Attribute name="key_60" type="String">
+            <value>&quot; /   ----------------------------------------------------------------------&quot;</value>
+        </Attribute>
+        <Attribute name="key_66" type="String">
+            <value>&quot; /   ----------------------------------------------------------------------&quot;</value>
+        </Attribute>
+        <Byte/>
+        <dimension size="3"/>
+        <dimension size="3"/>
+    </Array>
+    <blob href="cid:"/>
+</Dataset>

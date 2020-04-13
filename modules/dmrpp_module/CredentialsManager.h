@@ -1,0 +1,91 @@
+// -*- mode: c++; c-basic-offset:4 -*-
+
+// This file is part of the BES
+
+// Copyright (c) 2020 OPeNDAP, Inc.
+// Author: Nathan Potter<ndp@opendap.org>
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+//
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+// Created by ndp on 12/11/19.
+//
+
+#ifndef HYRAX_CREDENTIALSMANAGER_H
+#define HYRAX_CREDENTIALSMANAGER_H
+
+#include <string>
+#include <vector>
+#include "AccessCredentials.h"
+
+
+// These are the names of the bes keys used to configure the handler.
+#define CATALOG_MANAGER_CREDENTIALS "CredentialsManager.config"
+
+class CredentialsManager {
+public:
+    static const std::string ENV_ID_KEY;
+    static const std::string ENV_ACCESS_KEY;
+    static const std::string ENV_REGION_KEY;
+    //static const std::string ENV_BUCKET_KEY;
+    static const std::string ENV_URL_KEY;
+    static const std::string ENV_CREDS_KEY_VALUE;
+    static const std::string NETRC_FILE_KEY;
+
+private:
+    CredentialsManager();
+
+    std::map<std::string, AccessCredentials* > creds;
+    static void initialize_instance();
+    static void delete_instance();
+    bool ngaps3CredentialsLoaded;
+
+    AccessCredentials *load_credentials_from_env( );
+    void load_ngap_s3_credentials( );
+
+    std::string d_netrc_filename;
+
+public:
+    static CredentialsManager *theMngr;
+
+    ~CredentialsManager();
+
+    static CredentialsManager *theCM(){
+        if (theMngr == 0) initialize_instance();
+        return theMngr;
+    }
+
+    void add(const std::string &url, AccessCredentials *ac);
+    void load_credentials();
+    void clear(){ delete_instance(); }
+
+    AccessCredentials *get(const std::string &url);
+
+    unsigned int size(){
+        return creds.size();
+    }
+
+    bool hasNgapS3Credentials(){
+        return ngaps3CredentialsLoaded;
+    }
+
+    std::string get_netrc_filename(){ return d_netrc_filename; }
+};
+
+
+
+
+
+#endif //HYRAX_CREDENTIALSMANAGER_H

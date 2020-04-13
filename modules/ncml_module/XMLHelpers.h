@@ -49,18 +49,15 @@
 
 namespace ncml_module {
 
-using std::string;
-using std::vector;
-
 struct XMLUtil {
-    static string xmlCharToString(const xmlChar* pChars);
-    static void xmlCharToString(string& stringToFill, const xmlChar* pChars);
-    static string xmlCharToStringFromIterators(const xmlChar* startPtr, const xmlChar* endPtr);
+    static std::string xmlCharToString(const xmlChar* pChars);
+    static void xmlCharToString(std::string& stringToFill, const xmlChar* pChars);
+    static std::string xmlCharToStringFromIterators(const xmlChar* startPtr, const xmlChar* endPtr);
 };
 
 struct XMLAttribute {
-    XMLAttribute(const string& localName = "", const string& value = "", const string& prefix = "",
-        const string& nsURI = "");
+    XMLAttribute(const std::string& localName = "", const std::string& value = "", const std::string& prefix = "",
+        const std::string& nsURI = "");
 
     /** Use the SAX2 namespace attribute point list to make this
      * using fromSAX2NamespaceAttributes(chunkOfFivePointers),
@@ -76,21 +73,21 @@ struct XMLAttribute {
     void fromSAX2NamespaceAttributes(const xmlChar** chunkOfFivePointers);
 
     /** get the name with the prefix:localname if prefix not empty else localname */
-    string getQName() const;
+    std::string getQName() const;
 
     /**
      * Get the standard string version as found in an element: prefix:localname="value"
      *  localname="value" if no prefix
      */
-    string getAsXMLString() const;
+    std::string getAsXMLString() const;
 
     /** Return he QName for the given prefix and localname */
-    static string getQName(const string& prefix, const string& localname);
+    static std::string getQName(const std::string& prefix, const std::string& localname);
 
-    string localname;
-    string prefix;
-    string nsURI;
-    string value;
+    std::string localname;
+    std::string prefix;
+    std::string nsURI;
+    std::string value;
 };
 
 class XMLAttributeMap {
@@ -98,8 +95,8 @@ public:
     XMLAttributeMap();
     ~XMLAttributeMap();
 
-    typedef vector<XMLAttribute>::const_iterator const_iterator;
-    typedef vector<XMLAttribute>::iterator iterator;
+    typedef std::vector<XMLAttribute>::const_iterator const_iterator;
+    typedef std::vector<XMLAttribute>::iterator iterator;
 
     XMLAttributeMap::const_iterator begin() const;
     XMLAttributeMap::const_iterator end() const;
@@ -113,30 +110,30 @@ public:
     void addAttribute(const XMLAttribute& attribute);
 
     /** If there is an attribute with localname, return its value, else return default. */
-    const string/*& jhrg 4/16/14*/getValueForLocalNameOrDefault(const string& localname,
-        const string& defVal = "") const;
+    const std::string/*& jhrg 4/16/14*/getValueForLocalNameOrDefault(const std::string& localname,
+        const std::string& defVal = "") const;
 
     /** These return null if the attribute was not found */
-    const XMLAttribute* getAttributeByLocalName(const string& localname) const;
-    const XMLAttribute* getAttributeByQName(const string& qname) const;
-    const XMLAttribute* getAttributeByQName(const string& prefix, const string& localname) const;
+    const XMLAttribute* getAttributeByLocalName(const std::string& localname) const;
+    const XMLAttribute* getAttributeByQName(const std::string& qname) const;
+    const XMLAttribute* getAttributeByQName(const std::string& prefix, const std::string& localname) const;
 
     /** The classic {prefix:}foo="value" whitespace separated */
-    string getAllAttributesAsString() const;
+    std::string getAllAttributesAsString() const;
 
 private:
     // helpers
 
-    XMLAttributeMap::iterator findByQName(const string& qname);
+    XMLAttributeMap::iterator findByQName(const std::string& qname);
 
 private:
     // data rep
     // We don't expect many, vector is fast to search and contiguous in memory for few items.
-    vector<XMLAttribute> _attributes;
+    std::vector<XMLAttribute> _attributes;
 };
 
 struct XMLNamespace {
-    XMLNamespace(const string& prefix = "", const string& uri = "");
+    XMLNamespace(const std::string& prefix = "", const std::string& uri = "");
     XMLNamespace(const XMLNamespace& proto);
     XMLNamespace& operator=(const XMLNamespace& rhs);
 
@@ -144,10 +141,10 @@ struct XMLNamespace {
     void fromSAX2Namespace(const xmlChar** namespaces);
 
     /** Get the namespace as attribute string, ie  "xmlns:prefix=\"uri\"" for serializing */
-    string getAsAttributeString() const;
+    std::string getAsAttributeString() const;
 
-    string prefix;
-    string uri;
+    std::string prefix;
+    std::string uri;
 };
 
 class XMLNamespaceMap {
@@ -163,17 +160,17 @@ public:
     /** Get a big string full of xmlns:prefix="uri" attributes,
      * separated by spaces.
      */
-    string getAllNamespacesAsAttributeString() const;
+    std::string getAllNamespacesAsAttributeString() const;
 
-    typedef vector<XMLNamespace>::const_iterator const_iterator;
+    typedef std::vector<XMLNamespace>::const_iterator const_iterator;
 
     XMLNamespaceMap::const_iterator begin() const;
     XMLNamespaceMap::const_iterator end() const;
 
     /** Return the iterator to the element or end() if not found. */
-    XMLNamespaceMap::const_iterator find(const string& prefix) const;
+    XMLNamespaceMap::const_iterator find(const std::string& prefix) const;
 
-    bool isInMap(const string& prefix) const;
+    bool isInMap(const std::string& prefix) const;
 
     /** If the given prefix is already in the map, ns REPLACES it */
     void addNamespace(const XMLNamespace& ns);
@@ -184,12 +181,12 @@ public:
 private:
     // helpers
 
-    typedef vector<XMLNamespace>::iterator iterator;
+    typedef std::vector<XMLNamespace>::iterator iterator;
 
-    XMLNamespaceMap::iterator findNonConst(const string& prefix);
+    XMLNamespaceMap::iterator findNonConst(const std::string& prefix);
 
 private:
-    vector<XMLNamespace> _namespaces;
+    std::vector<XMLNamespace> _namespaces;
 };
 
 class XMLNamespaceStack {
@@ -207,7 +204,7 @@ public:
     void clear();
 
     // Change the direction since we use the vector as a stack.
-    typedef vector<XMLNamespaceMap>::const_reverse_iterator const_iterator;
+    typedef std::vector<XMLNamespaceMap>::const_reverse_iterator const_iterator;
 
     /** Starts from the top (most recently pushed) and iterates to the bottom (first pushed). */
     XMLNamespaceStack::const_iterator begin() const;
@@ -236,7 +233,7 @@ private:
 private:
     // data rep
     // Vector for easy scanning.
-    vector<XMLNamespaceMap> _stack;
+    std::vector<XMLNamespaceMap> _stack;
 };
 
 } // namespace ncml_module

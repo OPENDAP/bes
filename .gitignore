@@ -22,6 +22,7 @@ lex.*.cc
 *.log
 *.trs
 *.Po
+set_ec.sh
 
 ## OS-X Finder spoo
 *.DS_Store
@@ -70,6 +71,7 @@ libtool
 **/bes.conf
 **/testsuite
 **/testsuite.dir
+**/package.m4
 
 abi_checker.xml
 bes-config
@@ -130,6 +132,8 @@ functions/unit-tests/CEFunctionsTest
 functions/unit-tests/GridGeoConstraintTest
 functions/unit-tests/TabularFunctionTest
 functions/unit-tests/test_config.h
+/functions/stare/build_sidecar
+/functions/stare/unit-tests/StareFunctionsTest
 
 ppt/unit-tests/connT
 ppt/unit-tests/extT
@@ -154,4 +158,3 @@ timing/*/*.dtps
 /.externalToolBuilders/
 /.scannerwork/
 /bw-output/
-/1

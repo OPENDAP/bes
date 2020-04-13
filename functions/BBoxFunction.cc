@@ -58,7 +58,7 @@ using namespace libdap;
 
 namespace functions {
 
-auto_ptr<Array> bbox_helper(double min_value, double max_value, Array* the_array)
+unique_ptr<Array> bbox_helper(double min_value, double max_value, Array* the_array)
 {
     // Get the values as doubles
     vector<double> the_values;
@@ -66,7 +66,7 @@ auto_ptr<Array> bbox_helper(double min_value, double max_value, Array* the_array
 
     // Build the response
     unsigned int rank = the_array->dimensions();
-    auto_ptr<Array> response = roi_bbox_build_empty_bbox(rank, the_array->name());
+    unique_ptr<Array> response = roi_bbox_build_empty_bbox(rank, the_array->name());
 
     switch (rank) {
     case 1: {
@@ -257,7 +257,7 @@ function_dap2_bbox(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     double max_value = extract_double_value(argv[2]);
 
     // Get the values as doubles
-    auto_ptr<Array> response = bbox_helper(min_value, max_value, the_array);
+    unique_ptr<Array> response = bbox_helper(min_value, max_value, the_array);
 
     *btpp = response.release();
     return;

@@ -151,7 +151,6 @@ void abort_ssf(int argc, libdap::BaseType * argv[], libdap::DDS &, libdap::BaseT
     response->set_value(msg.str());
     return;
 }
-;
 
 /*****************************************************************************************
  * 
@@ -214,7 +213,6 @@ void sleep_ssf(int argc, libdap::BaseType * argv[], libdap::DDS &, libdap::BaseT
 
     return;
 }
-;
 
 /*****************************************************************************************
  * 

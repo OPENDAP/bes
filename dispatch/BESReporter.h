@@ -45,7 +45,7 @@ public:
 
     virtual void	report( BESDataHandlerInterface &dhi ) = 0 ;
 
-    virtual void	dump( ostream &strm ) const = 0 ;
+    virtual void	dump( std::ostream &strm ) const = 0 ;
 } ;
 
 #endif // A_BESReporter_h

@@ -57,20 +57,20 @@ private:
     DimensionElement& operator=(const DimensionElement& rhs); // disallow
 
 public:
-    static const string _sTypeName;
-    static const vector<string> _sValidAttributes;
+    static const std::string _sTypeName;
+    static const std::vector<std::string> _sValidAttributes;
 
     DimensionElement();
     DimensionElement(const DimensionElement& proto);
     DimensionElement(const agg_util::Dimension& dim);
     virtual ~DimensionElement();
-    virtual const string& getTypeName() const;
+    virtual const std::string& getTypeName() const;
     virtual DimensionElement* clone() const; // override clone with more specific subclass
     virtual void setAttributes(const XMLAttributeMap& attrs);
     virtual void handleBegin();
-    virtual void handleContent(const string& content);
+    virtual void handleContent(const std::string& content);
     virtual void handleEnd();
-    virtual string toString() const;
+    virtual std::string toString() const;
 
     /**
      * @return whether name() and getSize() are the same.
@@ -78,8 +78,8 @@ public:
      */
     bool checkDimensionsMatch(const DimensionElement& rhs) const;
 
-    const string& name() const;
-    const string& length() const
+    const std::string& name() const;
+    const std::string& length() const
     {
         return _length;
     }
@@ -117,17 +117,17 @@ private:
     /** @return the list of valid attributes as a new vector
      * Used to set the static.
      */
-    static vector<string> getValidAttributes();
+    static std::vector<std::string> getValidAttributes();
 
     void processRenameDimension(NCMLParser& p);
 
 private:
     // string _name; // within _dim
-    string _length; // unparsed size
-    string _orgName; // unparsed original name
-    string _isUnlimited; // unused
-    string _isShared; // unused
-    string _isVariableLength; // unused
+    std::string _length; // unparsed size
+    std::string _orgName; // unparsed original name
+    std::string _isUnlimited; // unused
+    std::string _isShared; // unused
+    std::string _isVariableLength; // unused
 
     // the actual parsed values from above...
     agg_util::Dimension _dim;

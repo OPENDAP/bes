@@ -132,7 +132,7 @@ public:
     /// @brief Iterator to the last catalog
     virtual catalog_citer end_catalog() const { return d_catalogs.end();  }
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // BESCatalogList_h_

@@ -38,15 +38,15 @@
 class TestReporter : public BESReporter
 {
 private:
-    string		_name ;
+	std::string		_name ;
 public:
-			TestReporter( string name ) ;
+			TestReporter( std::string name ) ;
     virtual		~TestReporter() ;
 
     virtual void	report( BESDataHandlerInterface &dhi ) ;
-    virtual string	get_name() { return _name ; }
+    virtual std::string	get_name() { return _name ; }
 
-    virtual void	dump( ostream &strm ) const { }
+    virtual void	dump( std::ostream &strm ) const { }
 } ;
 
 #endif // A_TestReporter_h

@@ -1,0 +1,18 @@
+Dataset {
+    Float32 a_float32[2];
+    Float64 a_float64[2];
+    Int16 a_int16[2];
+    Int32 a_int32[2];
+    Int16 a_int8[2];
+    UInt16 a_uint16[2];
+    UInt32 a_uint32[2];
+    Byte a_uint8[2];
+    Float32 s_float32;
+    Float64 s_float64;
+    Int16 s_int16;
+    Int32 s_int32;
+    Int16 s_int8;
+    UInt16 s_uint16;
+    UInt32 s_uint32;
+    Byte s_uint8;
+} tdset_types.h5;

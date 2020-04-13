@@ -32,6 +32,8 @@
 
 #include "PPTProtocol.h"
 
+using std::string;
+
 string PPTProtocol::PPT_PROTOCOL_UNDEFINED = "PPT_PROTOCOL_UNDEFINED" ;
 string PPTProtocol::PPT_COMPLETE_DATA_TRANSMITION = "PPT_COMPLETE_DATA_TRANSMITION" ;
 string PPTProtocol::PPT_EXIT_NOW = "PPT_EXIT_NOW" ;

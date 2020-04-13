@@ -42,6 +42,12 @@
 #include <BESInternalError.h>
 #include <BESNotFoundError.h>
 
+using std::string;
+using std::ostream;
+using std::endl;
+using std::vector;
+using std::ostringstream;
+
 CSV_Obj::CSV_Obj()
 {
 	_reader = new CSV_Reader();

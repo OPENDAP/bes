@@ -32,6 +32,8 @@
 
 #include "BESStatus.h" 
 
+using std::string;
+
 string BESStatus::boot_time ;
 int BESStatus::_counter ;
 

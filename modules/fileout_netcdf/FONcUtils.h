@@ -35,7 +35,6 @@
 #include <netcdf.h>
 
 #include <string>
-using std::string;
 
 #include <BaseType.h>
 using namespace libdap;
@@ -57,9 +56,9 @@ public:
     static string name_prefix;
     static void reset();
     static string id2netcdf(string in);
-    static nc_type get_nc_type(BaseType *element);
+    static nc_type get_nc_type(BaseType *element,bool isNC4_ENHANCED);
     static string gen_name(const vector<string> &embed, const string &name, string &original);
-    static FONcBaseType * convert(BaseType *v);
+    static FONcBaseType * convert(BaseType *v,const string & version, const bool classic_model);
     static void handle_error(int stax, const string &err, const string &file, int line);
 };
 

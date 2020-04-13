@@ -35,8 +35,6 @@
 
 #include <string>
 
-using std::string ;
-
 #include "BESObj.h"
 
 /** @brief Function to uncompress files with .bz2 extension
@@ -56,7 +54,7 @@ using std::string ;
 class BESUncompress3BZ2 : public BESObj
 {
 public:
-    static void	uncompress( const string &src, int fd ) ;
+    static void	uncompress( const std::string &src, int fd ) ;
 };
 
 #endif // BESUncompress3BZ2.h_h_
