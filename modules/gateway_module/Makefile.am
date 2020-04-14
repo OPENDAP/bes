@@ -28,14 +28,14 @@ GATEWAY_SRCS = GatewayModule.cc GatewayRequestHandler.cc	\
 		GatewayError.cc GatewayUtils.cc \
 		RemoteHttpResource.cc curl_utils.cc \
 		GatewayPathInfoCommand.cc \
-		GatewayPathInfoResponseHandler.cc
+		GatewayPathInfoResponseHandler.cc GatewayCache.cc
 
 GATEWAY_HDRS = GatewayModule.h GatewayRequestHandler.h			\
 		GatewayResponseNames.h GatewayContainer.h		\
 		GatewayContainerStorage.h GatewayError.h		\
 		GatewayUtils.h RemoteHttpResource.h	\
 		curl_utils.h GatewayPathInfoCommand.h			\
-		GatewayPathInfoResponseHandler.h
+		GatewayPathInfoResponseHandler.h GatewayCache.h
 
 libgateway_module_la_SOURCES = $(GATEWAY_SRCS) $(GATEWAY_HDRS)
 libgateway_module_la_LDFLAGS = -avoid-version -module 
