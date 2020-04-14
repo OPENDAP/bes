@@ -30,16 +30,18 @@
 #include "util.h"
 #include "BESDebug.h"
 #include "BESSyntaxUserError.h"
+
 #include "BESRemoteUtils.h"
 #include "WhiteList.h"
 
 #include "BESCurlUtils.h"
 
-#define MODULE "cmr"
+#define MODULE "http"
 
 using namespace std;
+using namespace remote_utils;
 
-namespace cmr {
+namespace curl_utils {
 
 // Set this to 1 to turn on libcurl's verbose mode (for debugging).
 int curl_trace = 0;
@@ -309,6 +311,7 @@ bool configureProxy(CURL *curl, const string &url) {
     string proxyUser = BESRemoteUtils::ProxyUser;
     string proxyUserPW = BESRemoteUtils::ProxyUserPW;
     int proxyAuthType = BESRemoteUtils::ProxyAuthType;
+//TODO: Get proxy map
 
     if (!proxyHost.empty()) {
         using_proxy = true;
@@ -577,4 +580,4 @@ long read_url(CURL *curl,
 }
 
 
-} /* namespace cmr */
+} /* namespace curl_utils */

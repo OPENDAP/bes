@@ -33,16 +33,15 @@
 #include <BESRequestHandlerList.h>
 #include <BESDebug.h>
 #include <BESResponseHandlerList.h>
-#include <BESResponseNames.h>
 #include <BESContainerStorageList.h>
 #include <TheBESKeys.h>
 #include <BESSyntaxUserError.h>
 
 #include "GatewayModule.h"
 #include "GatewayRequestHandler.h"
-#include "GatewayResponseNames.h"
+#include "BESProxyNames.h"
 #include "GatewayContainerStorage.h"
-#include "GatewayUtils.h"
+#include "BESRemoteUtils.h"
 #include "GatewayPathInfoResponseHandler.h"
 #include "GatewayPathInfoCommand.h"
 
@@ -60,7 +59,7 @@ void GatewayModule::initialize(const string &modname)
     BESContainerStorageList::TheList()->add_persistence(new GatewayContainerStorage(modname));
 
     BESDEBUG(modname, "    initialize the gateway utilities and params" << endl);
-    GatewayUtils::Initialize();
+    remote_utils::BESRemoteUtils::Initialize();
 
     BESDEBUG(modname, "    adding Gateway debug context" << endl);
     BESDebug::Register(modname);

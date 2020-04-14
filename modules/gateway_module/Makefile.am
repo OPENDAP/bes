@@ -13,8 +13,8 @@ ACLOCAL_AMFLAGS = -I conf
 M_NAME=gateway_module
 M_VER=1.2.5
 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand $(DAP_CFLAGS)
-LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/http -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand $(DAP_CFLAGS)
+LIBADD = -L$(top_builddir)/http -lbes_http $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
@@ -25,16 +25,14 @@ lib_bes_LTLIBRARIES = libgateway_module.la
 
 GATEWAY_SRCS = GatewayModule.cc GatewayRequestHandler.cc	\
 		GatewayContainer.cc GatewayContainerStorage.cc	\
-		GatewayError.cc GatewayUtils.cc GatewayCache.cc	\
-		RemoteHttpResource.cc curl_utils.cc \
+		GatewayError.cc \
 		GatewayPathInfoCommand.cc \
 		GatewayPathInfoResponseHandler.cc
 
 GATEWAY_HDRS = GatewayModule.h GatewayRequestHandler.h			\
-		GatewayResponseNames.h GatewayContainer.h		\
+		GatewayContainer.h		\
 		GatewayContainerStorage.h GatewayError.h		\
-		GatewayUtils.h GatewayCache.h RemoteHttpResource.h	\
-		curl_utils.h GatewayPathInfoCommand.h			\
+		GatewayPathInfoCommand.h			\
 		GatewayPathInfoResponseHandler.h
 
 libgateway_module_la_SOURCES = $(GATEWAY_SRCS) $(GATEWAY_HDRS)

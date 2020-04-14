@@ -578,10 +578,10 @@ add_executable(bes
     http/BESRemoteCache.cc
     http/BESRemoteHttpResource.cc
     http/BESCurlUtils.cc
-    http/BESRemoteUtils.cc
+        http/BESRemoteUtils.cc
     http/BESRemoteCache.h
     http/BESCurlUtils.h
-    http/BESRemoteUtils.h
+        http/BESRemoteUtils.h
 
     http/rapidjson/fwd.h
     http/rapidjson/memorystream.h
@@ -1079,12 +1079,12 @@ add_executable(bes
     modules/freeform_handler/read_ff.h
     modules/freeform_handler/util_ff.cc
     modules/freeform_handler/util_ff.h
-    modules/gateway_module/unused/GatewayRequest.cc
-    modules/gateway_module/unused/GatewayRequest.h
-    modules/gateway_module/curl_utils.cc
-    modules/gateway_module/curl_utils.h
-    modules/gateway_module/GatewayCache.cc
-    modules/gateway_module/GatewayCache.h
+        modules/gateway_module/GatewayRequest.cc
+        modules/gateway_module/GatewayRequest.h
+        modules/gateway_module/unused/curl_utils.cc
+        modules/gateway_module/unused/curl_utils.h
+        modules/gateway_module/unused/GatewayCache.cc
+        modules/gateway_module/unused/GatewayCache.h
     modules/gateway_module/GatewayContainer.cc
     modules/gateway_module/GatewayContainer.h
     modules/gateway_module/GatewayContainerStorage.cc
@@ -1099,11 +1099,11 @@ add_executable(bes
     modules/gateway_module/GatewayPathInfoResponseHandler.h
     modules/gateway_module/GatewayRequestHandler.cc
     modules/gateway_module/GatewayRequestHandler.h
-    modules/gateway_module/GatewayResponseNames.h
-    modules/gateway_module/GatewayUtils.cc
-    modules/gateway_module/GatewayUtils.h
-    modules/gateway_module/RemoteHttpResource.cc
-    modules/gateway_module/RemoteHttpResource.h
+        modules/gateway_module/unused/GatewayResponseNames.h
+        modules/gateway_module/unused/GatewayUtils.cc
+        modules/gateway_module/unused/GatewayUtils.h
+        modules/gateway_module/unused/RemoteHttpResource.cc
+        modules/gateway_module/unused/RemoteHttpResource.h
     modules/gdal_handler/gdal_utils.cc
     modules/gdal_handler/gdal_utils.h
     modules/gdal_handler/GDALArray.cc

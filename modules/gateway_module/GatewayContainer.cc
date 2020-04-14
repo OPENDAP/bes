@@ -35,9 +35,9 @@
 #include <WhiteList.h>
 
 #include "GatewayContainer.h"
-#include "GatewayUtils.h"
-#include "GatewayResponseNames.h"
-#include "RemoteHttpResource.h"
+#include "BESRemoteUtils.h"
+#include "BESProxyNames.h"
+#include "BESRemoteHttpResource.h"
 
 using namespace std;
 using namespace gateway;
@@ -135,8 +135,8 @@ string GatewayContainer::access() {
 
     if(!d_remoteResource) {
         BESDEBUG( "gateway", "GatewayContainer::access() - Building new RemoteResource." << endl );
-        d_remoteResource = new gateway::RemoteHttpResource(url);
-        d_remoteResource->retrieveResource();
+        d_remoteResource = new remote_http_resource::BESRemoteHttpResource(url);
+        d_remoteResource->retrieveResource(url);
     }
     BESDEBUG( "gateway", "GatewayContainer::access() - Located remote resource." << endl );
 

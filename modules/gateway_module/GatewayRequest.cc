@@ -43,8 +43,10 @@ using namespace libdap;
 
 #include "GatewayRequest.h"
 #include "GatewayError.h"
-#include "GatewayUtils.h"
+#include "BESRemoteUtils.h"
 #include "config.h"
+
+using namespace remote_utils;
 
 /** @brief make the remote request against the given information
  *
@@ -75,25 +77,25 @@ GatewayRequest::make_request(const string &url, string &type)
     // regex set in the gateway.conf file.
     bool configure_proxy = true;
     // Don't create the regex if the string is empty
-    if (!GatewayUtils::NoProxyRegex.empty()) {
-        Regex r(GatewayUtils::NoProxyRegex.c_str());
+    if (!BESRemoteUtils::NoProxyRegex.empty()) {
+        Regex r(BESRemoteUtils::NoProxyRegex.c_str());
         if (r.match(url.c_str(), url.length()) != -1) {
             BESDEBUG("gateway",
-                "Gateway found NoProxy match. Regex: " << GatewayUtils::NoProxyRegex << "; Url: " << url << endl);
+                "Gateway found NoProxy match. Regex: " << BESRemoteUtils::NoProxyRegex << "; Url: " << url << endl);
             configure_proxy = false;
         }
     }
 
     if (configure_proxy) {
-        rcr->set_proxy_server_protocol(GatewayUtils::ProxyProtocol);
-        rcr->set_proxy_server_host(GatewayUtils::ProxyHost);
-        rcr->set_proxy_server_port(GatewayUtils::ProxyPort);
+        rcr->set_proxy_server_protocol(BESRemoteUtils::ProxyProtocol);
+        rcr->set_proxy_server_host(BESRemoteUtils::ProxyHost);
+        rcr->set_proxy_server_port(BESRemoteUtils::ProxyPort);
     }
 
-    // GatewayUtils::useInternalCache defaults to false; use squid...
-    rcr->set_use_cache(GatewayUtils::useInternalCache);
+    // BESRemoteUtils::useInternalCache defaults to false; use squid...
+    rcr->set_use_cache(BESRemoteUtils::useInternalCache);
     HTTPConnect connect(rcr);
-    connect.set_cache_enabled(GatewayUtils::useInternalCache);
+    connect.set_cache_enabled(BESRemoteUtils::useInternalCache);
 
     HTTPResponse *response = 0;
     try {
@@ -127,7 +129,7 @@ GatewayRequest::make_request(const string &url, string &type)
         string err;
         try {
             BESDEBUG("gateway", " reading text error from response file " << response->get_file() << endl);
-            GatewayError::read_error(response->get_file(), err, url);
+            gateway::GatewayError::read_error(response->get_file(), err, url);
         }
         catch (...) {
             err += "Unable to load the error text";
@@ -168,7 +170,7 @@ GatewayRequest::make_request(const string &url, string &type)
         if (!disp.empty()) {
             // Content disposition exists, grab the filename
             // attribute
-            GatewayUtils::Get_type_from_disposition(disp, type);
+            BESRemoteUtils::get_type_from_disposition(disp, type);
             BESDEBUG( "gateway", "Looked at disposition " << disp
                 << " for type, returned \"" << type
                 << "\"" << endl );
@@ -179,7 +181,7 @@ GatewayRequest::make_request(const string &url, string &type)
             // that even though Content-disposition was available, we could
             // not determine the type of the file.
         if (type.empty() && !ctype.empty()) {
-            GatewayUtils::Get_type_from_content_type(ctype, type);
+            BESRemoteUtils::get_type_from_content_type(ctype, type);
             BESDEBUG( "gateway", "Looked at content type " << ctype
                 << " for type, returned \"" << type
                 << "\"" << endl );
@@ -188,7 +190,7 @@ GatewayRequest::make_request(const string &url, string &type)
             // still haven't figured out the type. Now check the actual URL
             // and see if we can't match the URL to a module name
         if (type.empty()) {
-            GatewayUtils::Get_type_from_url(url, type);
+            BESRemoteUtils::get_type_from_url(url, type);
             BESDEBUG( "gateway", "Looked at url " << url
                 << " for type, returned \"" << type
                 << "\"" << endl );

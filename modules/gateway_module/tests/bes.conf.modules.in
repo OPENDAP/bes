@@ -48,3 +48,7 @@ Gateway.Whitelist+=http://test.opendap.org
 Gateway.MimeTypes=nc:application/x-netcdf
 Gateway.MimeTypes+=h4:application/x-hdf
 Gateway.MimeTypes+=h5:application/x-hdf5
+
+HttpResourceCache.dir = /tmp/cache
+HttpResourceCache.prefix = gateway_
+HttpResourceCache.size = 500
