@@ -156,9 +156,9 @@ public:
             if(Debug) cerr << prolog << "Purging cache!" << endl;
             string cache_dir;
             bool found;
-            TheBESKeys::TheKeys()->get_value(BESRemoteCache::DIR_KEY,cache_dir,found);
+            TheBESKeys::TheKeys()->get_value(remote_cache::BESRemoteCache::DIR_KEY,cache_dir,found);
             if(found){
-                if(Debug) cerr << prolog << BESRemoteCache::DIR_KEY << ": " <<  cache_dir << endl;
+                if(Debug) cerr << prolog << remote_cache::BESRemoteCache::DIR_KEY << ": " <<  cache_dir << endl;
                 if(Debug) cerr << prolog << "Purging " << cache_dir << endl;
                 string cmd = "exec rm -r "+ BESUtil::assemblePath(cache_dir,"/*");
                 system(cmd.c_str());
@@ -183,7 +183,7 @@ public:
         // note: the following path must end with "/" in order for the scraper to think
         // it's a catalog/directory link and not an item or file
         string url = "http://test.opendap.org/data/httpd_catalog/";
-        HttpdDirScraper hds;
+        httpd_catalog::HttpdDirScraper hds;
         bes::CatalogNode *node = 0;
         try {
             if(debug) cerr << prolog << "Scraping '" << url << "'" << endl;
@@ -230,7 +230,7 @@ public:
         // it's a catalog/directory link and not an item or file (even though it is a file...)
         string url = get_data_file_url("too.data.http_catalog/");
 
-        HttpdDirScraper hds;
+        httpd_catalog::HttpdDirScraper hds;
         bes::CatalogNode *node = 0;
         try {
             if(debug) cerr << prolog << "Scraping '" << url << "'" << endl;

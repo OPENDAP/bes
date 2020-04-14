@@ -32,7 +32,7 @@
 #include <CatalogNode.h>
 #include "HttpdCatalog.h"
 
-//namespace httpd_catalog {
+namespace httpd_catalog {
 
 /**
  * @brief This class builds a BES CatalogNode response from an httpd-generated directory page.
@@ -57,6 +57,6 @@ public:
     ~HttpdDirScraper() { }
     virtual bes::CatalogNode *get_node(const std::string &url, const std::string &path) const;
 };
-//} // namespace httpd_catalog
+} // namespace httpd_catalog
 
 #endif /* MODULES_CMR_MODULE_HTTPDDIRSCRAPER_H_ */

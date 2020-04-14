@@ -32,13 +32,16 @@
 
 #include <string>
 #include <ostream>
+#include <BESRemoteHttpResource.h>
 
 #include "BESContainer.h"
 #include "Granule.h"
 
-//namespace cmr {
+using namespace remote_http_resource;
 
-class BESRemoteHttpResource;
+namespace cmr {
+
+//class BESRemoteHttpResource;
 
 /** @brief Container representing a remote request
  *
@@ -51,7 +54,7 @@ class BESRemoteHttpResource;
  */
 class CmrContainer: public BESContainer {
 private:
-    BESRemoteHttpResource *d_remoteResource;
+    remote_http_resource::BESRemoteHttpResource *d_remoteResource;
 
     CmrContainer() :
         BESContainer(), d_remoteResource(0)
@@ -79,6 +82,6 @@ public:
     static Granule *getTemporalFacetGranule(const std::string granule_path);
 };
 
-//} // namespace cmr
+} // namespace cmr
 
 #endif // CmrContainer_h_

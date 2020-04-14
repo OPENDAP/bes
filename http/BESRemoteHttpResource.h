@@ -36,8 +36,9 @@
 
 #include "InternalErr.h"
 #include "RCReader.h"
+#include "BESRemoteHttpResource.h"
 
-//namespace gateway {
+namespace remote_http_resource {
 
 /**
  * This class encapsulates a remote resource available via HTTP GET. It will
@@ -138,7 +139,7 @@ public:
     std::string getCacheFileName() {
         if (!d_initialized)
             throw libdap::Error(
-                    "RemoteHttpResource::getCacheFileName() - STATE ERROR: Remote Resource Has Not Been Retrieved.");
+                    "BESRemoteHttpResource::getCacheFileName() - STATE ERROR: Remote Resource Has Not Been Retrieved.");
         return d_resourceCacheFileName;
     }
 
@@ -151,12 +152,12 @@ public:
     std::vector<std::string> *getResponseHeaders() {
         if (!d_initialized)
             throw libdap::Error(
-                    "RemoteHttpResource::getCacheFileName() - STATE ERROR: Remote Resource Has Not Been Retrieved.");
+                    "BESRemoteHttpResource::getCacheFileName() - STATE ERROR: Remote Resource Has Not Been Retrieved.");
         return d_response_headers;
     }
 
 };
 
-//} /* namespace gateway */
+} /* namespace remote_http_resource */
 
 #endif /* REMOTERESOURCE_H_ */

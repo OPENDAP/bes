@@ -54,7 +54,7 @@
 using std::endl;
 using std::string;
 
-//namespace httpd_catalog {
+namespace remote_cache {
 
 BESRemoteCache *BESRemoteCache::d_instance = 0;
 bool BESRemoteCache::d_enabled = true;
@@ -73,7 +73,7 @@ unsigned long BESRemoteCache::getCacheSizeFromConfig() {
         std::istringstream iss(size);
         iss >> size_in_megabytes;
     } else {
-        string msg = "HttpdCatalogCache - The BES Key " + SIZE_KEY + " is not set.";
+        string msg = "BESRemoteCache - The BES Key " + SIZE_KEY + " is not set.";
         BESDEBUG(MODULE, msg << endl);
         throw BESInternalError(msg, __FILE__, __LINE__);
     }
@@ -87,7 +87,7 @@ string BESRemoteCache::getCacheDirFromConfig() {
     TheBESKeys::TheKeys()->get_value(DIR_KEY, subdir, found);
 
     if (!found) {
-        string msg = "HttpdCatalogCache - The BES Key " + DIR_KEY + " is not set.";
+        string msg = "BESRemoteCache - The BES Key " + DIR_KEY + " is not set.";
         BESDEBUG(MODULE, msg << endl);
         throw BESInternalError(msg, __FILE__, __LINE__);
     }
@@ -103,7 +103,7 @@ string BESRemoteCache::getCachePrefixFromConfig() {
     if (found) {
         prefix = BESUtil::lowercase(prefix);
     } else {
-        string msg = "HttpdCatalogCache - The BES Key " + PREFIX_KEY + " is not set.";
+        string msg = "BESRemoteCache - The BES Key " + PREFIX_KEY + " is not set.";
         BESDEBUG(MODULE, msg << endl);
         throw BESInternalError(msg, __FILE__, __LINE__);
     }
@@ -123,7 +123,7 @@ BESRemoteCache::BESRemoteCache() {
 
     initialize(cacheDir, cachePrefix, cacheSizeMbytes);
 
-    BESDEBUG(MODULE, "BESRemoteCache::HttpdCatalogCache() -  END" << endl);
+    BESDEBUG(MODULE, "BESRemoteCache::BESRemoteCache() -  END" << endl);
 }
 
 BESRemoteCache::BESRemoteCache(const string &cache_dir, const string &prefix, unsigned long long size) {
@@ -132,6 +132,28 @@ BESRemoteCache::BESRemoteCache(const string &cache_dir, const string &prefix, un
     initialize(cache_dir, prefix, size);
 
     BESDEBUG(MODULE, "BESRemoteCache::BESRemoteCache() -  END" << endl);
+}
+
+BESRemoteCache *
+BESRemoteCache::get_instance(const string &cache_dir, const string &cache_file_prefix,
+                             unsigned long long max_cache_size) {
+    if (d_enabled && d_instance == 0) {
+        if (dir_exists(cache_dir)) {
+            d_instance = new BESRemoteCache(cache_dir, cache_file_prefix, max_cache_size);
+            d_enabled = d_instance->cache_enabled();
+            if (!d_enabled) {
+                delete d_instance;
+                d_instance = 0;
+                BESDEBUG(MODULE, "BESRemoteCache::" << __func__ << "() - " << "Cache is DISABLED" << endl);
+            } else {
+                AT_EXIT(delete_instance);
+
+                BESDEBUG(MODULE, "BESRemoteCache::" << __func__ << "() - " << "Cache is ENABLED" << endl);
+            }
+        }
+    }
+
+    return d_instance;
 }
 
 /** Get the default instance of the HttpdCatalogCache object. This will read "TheBESKeys" looking for the values
@@ -179,4 +201,4 @@ string BESRemoteCache::get_cache_file_name(const string &src, bool /*mangle*/) {
 }
 
 
-//} // namespqce httpd_catalog
+} // namespqce remote_cache

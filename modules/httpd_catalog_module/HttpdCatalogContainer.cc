@@ -41,7 +41,7 @@ using namespace bes;
 
 #define prolog std::string("HttpdCatalogContainer::").append(__func__).append("() - ")
 
-//namespace httpd_catalog {
+namespace httpd_catalog {
 
 /** @brief Creates an instances of CmrContainer with symbolic name and real
  * name, which is the remote request.
@@ -134,7 +134,7 @@ string HttpdCatalogContainer::access()
 
     if (!d_remoteResource) {
         BESDEBUG(MODULE, prolog << "Building new RemoteResource." << endl);
-        d_remoteResource = new BESRemoteHttpResource(access_url);
+        d_remoteResource = new remote_http_resource::BESRemoteHttpResource(access_url);
         d_remoteResource->retrieveResource();
     }
 
@@ -214,4 +214,4 @@ void HttpdCatalogContainer::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
-//} // namespace http_catalog
+} // namespace http_catalog

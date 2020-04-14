@@ -60,6 +60,8 @@ using std::string;
 #define prolog std::string("CmrModule::").append(__func__).append("() - ")
 #define MODULE CMR_NAME
 
+using namespace cmr;
+
 void CmrModule::initialize(const string &modname)
 {
     BESDebug::Register(MODULE);

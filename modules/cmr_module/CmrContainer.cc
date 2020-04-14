@@ -42,12 +42,13 @@
 
 using namespace std;
 using namespace bes;
+using namespace remote_http_resource;
 
 #define MODULE CMR_NAME
 
 #define prolog std::string("CmrContainer::").append(__func__).append("() - ")
 
-//namespace cmr {
+namespace cmr {
 
 /** @brief Creates an instances of CmrContainer with symbolic name and real
  * name, which is the remote request.
@@ -293,4 +294,4 @@ void CmrContainer::dump(ostream &strm) const {
         return cmrApi.get_granule( collection, year, month, day, granule_id);
     }
 
-//} // namespace cmr
+} // namespace cmr

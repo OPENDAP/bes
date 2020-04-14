@@ -71,7 +71,7 @@ using namespace std;
 
 #define prolog std::string("HttpdCatalog::").append(__func__).append("() - ")
 
-//namespace httpd_catalog {
+namespace httpd_catalog {
 
 /**
  * @brief A catalog based on scraping the directory pages produced by httpd .
@@ -270,4 +270,4 @@ void HttpdCatalog::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
-//} // namespace httpd_catalog
+} // namespace httpd_catalog

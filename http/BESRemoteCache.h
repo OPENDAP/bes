@@ -28,7 +28,7 @@
 
 #include "BESFileLockingCache.h"
 
-//namespace httpd_catalog {
+namespace remote_cache {
 
 /**
  * @brief A cache for content accessed via HTTP.
@@ -88,6 +88,6 @@ public:
 };
 
 
-//} /* namespace httpd_catalog */
+} /* namespace remote_cache */
 
 #endif /* _HttpCatalogCache_H_ */

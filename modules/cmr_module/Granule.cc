@@ -43,7 +43,7 @@ using namespace std;
 #define prolog std::string("Granule::").append(__func__).append("() - ")
 #define MODULE CMR_NAME
 
-//namespace cmr {
+namespace cmr {
 string granule_LINKS_REL_DATA_ACCES = "http://esipfed.org/ns/fedsearch/1.1/data#";
 string granule_LINKS_REL_METADATA_ACCESS = "http://esipfed.org/ns/fedsearch/1.1/data#";
 string granule_LINKS = "links";
@@ -157,4 +157,4 @@ bes::CatalogItem *Granule::getCatalogItem(BESCatalogUtils *d_catalog_utils){
 
 
 
-//} //namespace cmr
+} //namespace cmr

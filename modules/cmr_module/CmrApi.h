@@ -34,12 +34,12 @@
 
 #include <string>
 #include <vector>
-#include "rapidjson/document.h"
+#include <rapidjson/document.h>
 #include "BESCatalogUtils.h"
 
 #include "Granule.h"
 
-//namespace cmr {
+namespace cmr {
 
 
 class CmrApi {
@@ -74,6 +74,6 @@ public:
 
 
 
-//} // namespace cmr
+} // namespace cmr
 
 #endif /* MODULES_CMR_MODULE_CMRAPI_H_ */

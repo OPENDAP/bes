@@ -34,9 +34,9 @@
 
 #include <string>
 #include <vector>
-#include "rapidjson/document.h"
+#include <rapidjson/document.h>
 
-//namespace cmr {
+namespace cmr {
 
 
 class rjson_utils {
@@ -49,6 +49,6 @@ public:
 
 
 
-//} // namespace cmr
+} // namespace cmr
 
 #endif /* MODULES_CMR_MODULE_RJSONUTILS_H_ */

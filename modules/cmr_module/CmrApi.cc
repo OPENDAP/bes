@@ -29,11 +29,11 @@
  *      Author: ndp
  */
 #include <memory>
-#include "rapidjson/document.h"
-#include "rapidjson/writer.h"
-#include "rapidjson/prettywriter.h"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/filereadstream.h"
+#include <rapidjson/document.h>
+#include <rapidjson/writer.h>
+#include <rapidjson/prettywriter.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/filereadstream.h>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
@@ -60,7 +60,7 @@ using namespace std;
 #define prolog string("CmrApi::").append(__func__).append("() - ")
 #define MODULE CMR_NAME
 
-//namespace cmr {
+namespace cmr {
 
 /**
  *
@@ -576,5 +576,5 @@ Granule *CmrApi::get_granule(const std::string path) {
 
 
 
-//} // namespace cmr
+} // namespace cmr
 

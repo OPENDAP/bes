@@ -33,7 +33,7 @@
 
 class BESCatalogUtils;
 
-//namespace httpd_catalog {
+namespace httpd_catalog {
 
 /** @brief implementation of BESContainerStorageVolatile that represents a
  * list of remote requests
@@ -55,6 +55,6 @@ public:
     virtual void dump(std::ostream &strm) const;
 };
 
-//} // namespace httpd_catalog
+} // namespace httpd_catalog
 
 #endif // I_HttpdCatalogContainerStorage_H_

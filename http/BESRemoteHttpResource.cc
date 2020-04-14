@@ -43,10 +43,13 @@
 #include "TheBESKeys.h"
 
 using namespace std;
-//using namespace BESCurlUtils;
+using namespace curl_utils;
+using namespace remote_utils;
 
 #define prolog std::string("BESRemoteHttpResource::").append(__func__).append("() - ")
 #define MODULE "http"
+
+namespace remote_http_resource {
 
 /**
  * Builds a RemoteHttpResource object associated with the passed \c url parameter.
@@ -101,7 +104,7 @@ BESRemoteHttpResource::~BESRemoteHttpResource() {
     BESDEBUG(MODULE, "~BESRemoteHttpResource() - Deleted d_request_headers." << endl);
 
     if (!d_resourceCacheFileName.empty()) {
-        BESRemoteCache *cache = BESRemoteCache::get_instance();
+        remote_cache::BESRemoteCache *cache = remote_cache::BESRemoteCache::get_instance();
         if (cache) {
             cache->unlock_and_close(d_resourceCacheFileName);
             BESDEBUG(MODULE, "~BESRemoteHttpResource() - Closed and unlocked " << d_resourceCacheFileName << endl);
@@ -136,7 +139,7 @@ void BESRemoteHttpResource::retrieveResource(const string &inject_url) {
     }
 
     // Get a pointer to the singleton cache instance for this process.
-    BESRemoteCache *cache = BESRemoteCache::get_instance();
+    remote_cache::BESRemoteCache *cache = remote_cache::BESRemoteCache::get_instance();
     if (!cache) {
         ostringstream oss;
         oss << __func__ << "() - FAILED to get local cache."
@@ -159,7 +162,7 @@ void BESRemoteHttpResource::retrieveResource(const string &inject_url) {
     // to subsequent accesses of the cached object. Since we have to have a type, for now we just set the type
     // from the url. If down below we DO an HTTP GET then the headers will be evaluated and the type set by setType()
     // But really - we gotta fix this.
-    BESRemoteUtils::get_type_from_url(d_remoteResourceUrl, d_type);
+    BESRemoteUtils::Get_type_from_url(d_remoteResourceUrl, d_type);
     BESDEBUG(MODULE, "BESRemoteHttpResource::retrieveResource() - d_type: " << d_type << endl);
 
     try {
@@ -373,7 +376,7 @@ void BESRemoteHttpResource::setType(const vector<string> *resp_hdrs) {
     if (!disp.empty()) {
         // Content disposition exists, grab the filename
         // attribute
-        BESRemoteUtils::get_type_from_disposition(disp, type);
+        BESRemoteUtils::Get_type_from_disposition(disp, type);
         BESDEBUG(MODULE,
                  "BESRemoteHttpResource::setType() - Evaluated content-disposition '" << disp << "' matched type: \""
                                                                                       << type << "\"" << endl);
@@ -384,7 +387,7 @@ void BESRemoteHttpResource::setType(const vector<string> *resp_hdrs) {
     // that even though Content-disposition was available, we could
     // not determine the type of the file.
     if (type.empty() && !ctype.empty()) {
-        BESRemoteUtils::get_type_from_content_type(ctype, type);
+        BESRemoteUtils::Get_type_from_content_type(ctype, type);
         BESDEBUG(MODULE,
                  "BESRemoteHttpResource::setType() - Evaluated content-type '" << ctype << "' matched type \"" << type
                                                                                << "\"" << endl);
@@ -393,7 +396,7 @@ void BESRemoteHttpResource::setType(const vector<string> *resp_hdrs) {
     // still haven't figured out the type. Now check the actual URL
     // and see if we can't match the URL to a MODULE name
     if (type.empty()) {
-        BESRemoteUtils::get_type_from_url(d_remoteResourceUrl, type);
+        BESRemoteUtils::Get_type_from_url(d_remoteResourceUrl, type);
         BESDEBUG(MODULE,
                  "BESRemoteHttpResource::setType() - Evaluated url '" << d_remoteResourceUrl << "' matched type: \""
                                                                       << type << "\"" << endl);
@@ -510,7 +513,7 @@ void BESRemoteHttpResource::ingest_http_headers_and_type() {
     if (!cdisp_hdr.empty()) {
         // Content disposition exists, grab the filename
         // attribute
-        BESRemoteUtils::get_type_from_disposition(cdisp_hdr, type);
+        BESRemoteUtils::Get_type_from_disposition(cdisp_hdr, type);
         BESDEBUG(MODULE,
                  prolog << "Evaluated content-disposition '" << cdisp_hdr << "' matched type: \"" << type << "\""
                         << endl);
@@ -521,7 +524,7 @@ void BESRemoteHttpResource::ingest_http_headers_and_type() {
     // that even though Content-disposition was available, we could
     // not determine the type of the file.
     if (type.empty() && !ctype_hdr.empty()) {
-        BESRemoteUtils::get_type_from_content_type(ctype_hdr, type);
+        BESRemoteUtils::Get_type_from_content_type(ctype_hdr, type);
         BESDEBUG(MODULE,
                  prolog << "Evaluated content-type '" << ctype_hdr << "' matched type \"" << type << "\"" << endl);
     }
@@ -529,7 +532,7 @@ void BESRemoteHttpResource::ingest_http_headers_and_type() {
     // still haven't figured out the type. Now check the actual URL
     // and see if we can't match the URL to a MODULE name
     if (type.empty()) {
-        BESRemoteUtils::get_type_from_url(d_remoteResourceUrl, type);
+        BESRemoteUtils::Get_type_from_url(d_remoteResourceUrl, type);
         BESDEBUG(MODULE,
                  prolog << "Evaluated url '" << d_remoteResourceUrl << "' matched type: \"" << type << "\""
                         << endl);
@@ -547,5 +550,5 @@ void BESRemoteHttpResource::ingest_http_headers_and_type() {
     BESDEBUG(MODULE, prolog << "END (dataset type: " << d_type << ")" << endl);
 }
 
-
+} //  namespace remote_http_resource
 

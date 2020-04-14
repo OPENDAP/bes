@@ -38,8 +38,9 @@
 #define MODULE "http"
 
 using namespace std;
+using namespace remote_utils;
 
-//namespace BESCurlUtils {
+namespace curl_utils {
 
 // Set this to 1 to turn on libcurl's verbose mode (for debugging).
 int curl_trace = 0;
@@ -577,4 +578,4 @@ long read_url(CURL *curl,
 }
 
 
-//} /* namespace cmr */
+} /* namespace curl_utils */

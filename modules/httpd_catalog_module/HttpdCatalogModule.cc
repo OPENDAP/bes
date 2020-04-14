@@ -47,7 +47,7 @@ using namespace std;
 
 #define prolog string("HttpdCatalogModule::").append(__func__).append("() - ")
 
-//namespace httpd_catalog {
+namespace httpd_catalog {
 
 void HttpdCatalogModule::initialize(const string &modname)
 {
@@ -89,4 +89,4 @@ void HttpdCatalogModule::dump(ostream &strm) const
     strm << BESIndent::LMarg << prolog<< "(" << (void *) this << ")" << endl;
 }
 
-//} // namespace httpd_catalog
+} // namespace httpd_catalog
