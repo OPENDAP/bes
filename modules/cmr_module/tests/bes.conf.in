@@ -107,5 +107,8 @@ CMR.Collections+=C1276812863-GES_DISC
 CMR.Facets=temporal
 CMR.Facets+=dental_floss
 
+HttpResourceCache.dir = /tmp/cache
+HttpResourceCache.prefix = cmr_
+HttpResourceCache.size = 500
 
-
+Gateway.Whitelist += https://cmr.earthdata.nasa.gov
