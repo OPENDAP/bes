@@ -350,8 +350,8 @@ CatalogItem *BESCatalogDirectory::make_item(string path_prefix, string item) con
         msg << "Unable to create CatalogItem for '" << item_path << "' from the catalog '" <<
         get_catalog_name() << ",' SKIPPING." << endl;
     }
-    BESDEBUG(MODULE, PROLOG << msg);
-    VERBOSE(msg);
+    BESDEBUG(MODULE, PROLOG << msg.str());
+    VERBOSE(msg.str());
 
     return 0;
 }
