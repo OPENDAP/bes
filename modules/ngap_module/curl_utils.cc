@@ -34,7 +34,9 @@
 #include "BESDebug.h"
 #include "BESSyntaxUserError.h"
 #include "BESError.h"
+#include "BESLog.h"
 #include "BESInternalError.h"
+#include "TheBESKeys.h"
 #include "NgapNames.h"
 #include "NgapUtils.h"
 #include "WhiteList.h"
@@ -394,6 +396,14 @@ bool configureProxy(CURL *curl, const string &url) {
     return using_proxy;
 }
 
+const string NETRC_FILE_KEY="BES.netrc.file";
+string get_netrc_filename(){
+    bool found;
+    string name;
+    TheBESKeys::TheKeys()->get_value(NETRC_FILE_KEY,name,found);
+    return name;
+}
+
 /**
  * Get's a new instance of CURL* and performs basic configuration of that instance.
  *  - Accept compressed responses
@@ -438,6 +448,13 @@ CURL *init(char *error_buffer) {
     // I added these next three to support Hyrax accessing data held behind URS auth. ndp - 8/20/18
     curl_easy_setopt(curl, CURLOPT_NETRC, 1);
 
+    // If the configuration specifies a particular .netrc credentials file, use it.
+    string netrc_file = get_netrc_filename();
+    if(!netrc_file.empty()){
+        curl_easy_setopt(curl, CURLOPT_NETRC_FILE, netrc_file.c_str());
+    }
+    VERBOSE(__FILE__ << "::init() is using the netrc file '" << ((!netrc_file.empty())?netrc_file:"~/.netrc")<< "'" << endl );
+
     // #TODO #FIXME Make these file names configuration based.
     curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "/tmp/.hyrax_cookies");
     curl_easy_setopt(curl, CURLOPT_COOKIEJAR, "/tmp/.hyrax_cookies");
@@ -450,10 +467,10 @@ CURL *init(char *error_buffer) {
 
     // Follow 302 (redirect) responses
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
-    curl_easy_setopt(curl, CURLOPT_MAXREDIRS, 5);
+    curl_easy_setopt(curl, CURLOPT_MAXREDIRS, 20);
 
     // Set the user agent to curls version response because, well, that's what command line curl does :)
-    curl_easy_setopt(curl, CURLOPT_USERAGENT, curl_version());
+    curl_easy_setopt(curl, CURLOPT_USERAGENT, "Hyrax" /*curl_version()*/ );
 
 #if 0
     // If the user turns off SSL validation...
