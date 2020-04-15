@@ -341,17 +341,15 @@ CatalogItem *BESCatalogDirectory::make_item(string path_prefix, string item) con
 
     // This is the error case; it only is run when the item_path is neither a
     // directory nor a regular file.
-    stringstream msg;
+    string msg;
     if(exclude_item || !include_item){
-        msg << "Excluded the item '" << item_path << "' from the catalog '" <<
-        get_catalog_name() << "' node listing." << endl;
+        msg = string("Excluded the item '").append(item_path).append("' from the catalog '").append(get_catalog_name()).append("' node listing.");
     }
     else {
-        msg << "Unable to create CatalogItem for '" << item_path << "' from the catalog '" <<
-        get_catalog_name() << ",' SKIPPING." << endl;
+        string msg = string("Unable to create CatalogItem for '").append("' from the catalog '").append(get_catalog_name()).append(",' SKIPPING.");
     }
-    BESDEBUG(MODULE, PROLOG << msg.str());
-    VERBOSE(msg.str());
+    BESDEBUG(MODULE, PROLOG << msg << endl);
+    VERBOSE(msg);
 
     return 0;
 }

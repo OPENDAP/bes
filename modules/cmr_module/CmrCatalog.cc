@@ -548,7 +548,7 @@ CmrCatalog::get_node(const string &path) const
                     d_utils->is_data(item), CatalogItem::leaf));
             }
             else {
-                VERBOSE("Excluded the item '" << item_path << "' from the catalog '" << get_catalog_name() << "' node listing." << endl);
+                VERBOSE("Excluded the item '" << item_path << "' from the catalog '" << get_catalog_name() << "' node listing.");
             }
         } // end of the while loop
 
