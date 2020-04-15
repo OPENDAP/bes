@@ -65,7 +65,7 @@ EXTRA_DIST = data ff.conf.in
 CLEANFILES = ff.conf
 
 sample_datadir = $(datadir)/hyrax/data/ff
-sample_data_DATA = data/1998-6-avhrr.dat data/avhrr.dat data/gsodock.dat \
+sample_data_DATA = data/1998-6-avhrr.dat data/avhrr.dat data/gsodock.dat data/gsodock.dat.das \
 	data/1998-6-avhrr.fmt data/avhrr.fmt data/gsodock.fmt \
 	data/1998-6-avhrr.dat.das data/avhrr.dat.das
 
