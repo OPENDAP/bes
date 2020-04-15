@@ -48,7 +48,6 @@
 #include <BESRegex.h>
 #include <TheBESKeys.h>
 #include <BESInternalError.h>
-#include <BESDapError.h>
 #include <BESNotFoundError.h>
 #include <BESSyntaxUserError.h>
 #include <BESDebug.h>
@@ -57,7 +56,7 @@
 #include "BESRemoteUtils.h"
 
 using namespace libdap;
-using namespace std;
+using namespace remote_utils;
 
 //namespace httpd_catalog {
 
@@ -79,8 +78,9 @@ string BESRemoteUtils::NoProxyRegex;
 
 // Initialization routine for the httpd_catalog_HTTPD_CATALOG for certain parameters
 // and keys, like the white list, the MimeTypes translation.
-void BESRemoteUtils::initialize() {
-    // MimeTypes - translate from a mime type to a HTTPD_CATALOG name
+void BESRemoteUtils::Initialize()
+{
+    // MimeTypes - translate from a mime type to a module name
     bool found = false;
     string key = HTTPD_CATALOG_MIMELIST;
     vector<string> vals;
@@ -203,7 +203,28 @@ void BESRemoteUtils::initialize() {
     TheBESKeys::TheKeys()->get_value("Gateway.NoProxy", BESRemoteUtils::NoProxyRegex, found);
 }
 
-void BESRemoteUtils::get_type_from_disposition(const string &disp, string &type) {
+// Not used. There's a better version of this that returns a string in libdap.
+// jhrg 3/24/11
+
+/**
+ * Look for the type of handler that can read the filename found in the \arg disp.
+ * The string \arg disp (probably from a HTTP Content-Dispoition header) has the
+ * format:
+ *
+ * ~~~xml
+ * filename[#|=]<value>[ <attribute name>[#|=]<value>]
+ * ~~~
+ *
+ * @param disp The disposition string
+ * @param type The type of the handler that can read this file or the empty
+ * string if the BES Catalog Utils cannot find a handler to read it.
+ */
+void BESRemoteUtils::Get_type_from_disposition(const string &disp, string &type)
+{
+    // If this function extracts a filename from disp and it matches a handler's
+    // regex using the Catalog Utils, this will be set to a non-empty value.
+    type = "";
+
     size_t fnpos = disp.find("filename");
     if (fnpos != string::npos) {
         // Got the filename attribute, now get the
@@ -242,9 +263,9 @@ void BESRemoteUtils::get_type_from_disposition(const string &disp, string &type)
     }
 }
 
-void BESRemoteUtils::get_type_from_content_type(const string &ctype, string &type) {
-    BESDEBUG(HTTPD_CATALOG, prolog << "BEGIN" << endl);
-
+void BESRemoteUtils::Get_type_from_content_type(const string &ctype, string &type)
+{
+    BESDEBUG("gateway", "BESRemoteUtils::Get_type_from_content_type() - BEGIN" << endl);
     map<string, string>::iterator i = MimeList.begin();
     map<string, string>::iterator e = MimeList.end();
     bool done = false;
@@ -266,11 +287,12 @@ void BESRemoteUtils::get_type_from_content_type(const string &ctype, string &typ
     BESDEBUG(HTTPD_CATALOG, prolog << "END" << endl);
 }
 
-void BESRemoteUtils::get_type_from_url(const string &url, string &type) {
+void BESRemoteUtils::Get_type_from_url(const string &url, string &type) {
     const BESCatalogUtils *utils = BESCatalogList::TheCatalogList()->find_catalog("catalog")->get_catalog_utils();
 
     type = utils->get_handler_name(url);
 }
 
-//} // namespace httpd_catalog
+
+
 

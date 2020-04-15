@@ -28,7 +28,7 @@
 
 #include "BESFileLockingCache.h"
 
-//namespace httpd_catalog {
+namespace remote_cache {
 
 /**
  * @brief A cache for content accessed via HTTP.
@@ -87,11 +87,7 @@ public:
     virtual ~BESRemoteCache() {}
 };
 
-BESRemoteCache *
-BESRemoteCache::get_instance(const std::string &cache_dir, const std::string &prefix, unsigned long long size) {
-    return nullptr;
-}
 
-//} /* namespace httpd_catalog */
+} /* namespace remote_cache */
 
 #endif /* _HttpCatalogCache_H_ */

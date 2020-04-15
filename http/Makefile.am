@@ -35,9 +35,22 @@ EXTRA_DIST =
 
 DISTCLEANFILES =
 
-SRCS = BESCurlUtils.cc
+##############################################################################
+#
+# Sources and Headers
 
-HDRS = BESCurlUtils.h
+SRCS = BESCurlUtils.cc \
+    BESRemoteCache.cc \
+    BESRemoteHttpResource.cc \
+    BESRemoteUtils.cc
+
+HDRS = BESCurlUtils.h \
+    BESRemoteCache.h \
+    BESRemoteHttpResource.h \
+    BESRemoteUtils.h \
+    BESProxyNames.h
+
+
 
 C4_DB=$(C4_DIR)/http.db
 C4_HTML=$(C4_dir)/http.html

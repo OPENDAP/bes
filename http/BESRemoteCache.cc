@@ -49,12 +49,12 @@
 #define AT_EXIT(x)
 #endif
 
-#define MODULE "dispatch"
+#define MODULE "http"
 
 using std::endl;
 using std::string;
 
-//namespace httpd_catalog {
+namespace remote_cache {
 
 BESRemoteCache *BESRemoteCache::d_instance = 0;
 bool BESRemoteCache::d_enabled = true;
@@ -201,4 +201,4 @@ string BESRemoteCache::get_cache_file_name(const string &src, bool /*mangle*/) {
 }
 
 
-//} // namespqce httpd_catalog
+} // namespqce remote_cache
