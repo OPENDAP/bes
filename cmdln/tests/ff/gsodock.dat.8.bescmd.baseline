@@ -7,10 +7,35 @@
         <Attribute name="text" type="String">
             <value>Time    Dep     Temp    Sal     DO%     pH      Turb    AirT    WndSpd  WndDir  Baro    Solar</value>
         </Attribute>
+        <Attribute name="location" type="String">
+            <value>University of Rhode Island/Oceanography School dock</value>
+        </Attribute>
+        <Attribute name="latitude" type="Float32">
+            <value>41.4926</value>
+        </Attribute>
+        <Attribute name="longitude" type="Float32">
+            <value>-71.4201</value>
+        </Attribute>
+        <Attribute name="start_date" type="String">
+            <value>19 June 1996</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DO " type="Container">
+        <Attribute name="units" type="String">
+            <value>pct</value>
+        </Attribute>
     </Attribute>
     <Sequence name="URI_GSO-Dock">
-        <Float32 name="Depth"/>
-        <Float32 name="Air_Temp"/>
+        <Float32 name="Depth">
+            <Attribute name="units" type="String">
+                <value>m</value>
+            </Attribute>
+        </Float32>
+        <Float32 name="Air_Temp">
+            <Attribute name="units" type="String">
+                <value>degC</value>
+            </Attribute>
+        </Float32>
     </Sequence>
     <blob href="cid:"/>
 </Dataset>
