@@ -41,10 +41,10 @@
 #include "BESUtil.h"
 #include "TheBESKeys.h"
 
-#include "NgapNames.h"
-#include "NgapCache.h"
-#include "NgapUtils.h"
-#include "curl_utils.h"
+#include "ngap_module/unused/NgapNames.h"
+#include "ngap_module/unused/NgapCache.h"
+#include "ngap_module/unused/NgapUtils.h"
+#include "ngap_module/unused/curl_utils.h"
 #include "RemoteHttpResource.h"
 
 using namespace std;

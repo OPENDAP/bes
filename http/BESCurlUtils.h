@@ -22,8 +22,8 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-#ifndef NGAP_CURL_UTILS_H_
-#define NGAP_CURL_UTILS_H_
+#ifndef _CURL_UTILS_H_
+#define _CURL_UTILS_H_ 1
 
 #include <string>
 #include <vector>
@@ -35,19 +35,19 @@
 
 namespace curl_utils {
 
-CURL *init(char *error_buffer);
+    CURL *init(char *error_buffer);
 
-bool configureProxy(CURL *curl, const std::string &url);
+    bool configureProxy(CURL *curl, const std::string &url);
 
-long read_url(CURL *curl, const std::string &url, int fd, std::vector<std::string> *resp_hdrs,
-              const std::vector<std::string> *headers, char error_buffer[]);
+    long read_url(CURL *curl, const std::string &url, int fd, std::vector<std::string> *resp_hdrs,
+                  const std::vector<std::string> *headers, char error_buffer[]);
 
-std::string http_status_to_string(int status);
+    std::string http_status_to_string(int status);
 
-std::string http_get_as_string(const std::string &target_url);
+    std::string http_get_as_string(const std::string &target_url);
 
-rapidjson::Document http_get_as_json(const std::string &target_url);
+    rapidjson::Document http_get_as_json(const std::string &target_url);
 
 } // namespace curl_utils
 
-#endif /* NGAP_CURL_UTILS_H_ */
+#endif /* _CURL_UTILS_H_ */
