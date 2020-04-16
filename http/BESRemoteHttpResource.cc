@@ -36,6 +36,9 @@
 
 #include "BESInternalError.h"
 #include "BESForbiddenError.h"
+#include "BESSyntaxUserError.h"
+#include "BESNotFoundError.h"
+#include "BESTimeoutError.h"
 
 #include "BESDebug.h"
 #include "BESUtil.h"
@@ -271,11 +274,33 @@ namespace remote_http_resource {
                          "BESRemoteHttpResource::writeResourceToFile() - HTTP returned an error status: " << status
                                                                                                           << endl);
                 // delete resp_hdrs; resp_hdrs = 0;
-                string msg = "Error while reading the URL: '";
-                msg += d_remoteResourceUrl;
-                msg += "'The HTTP request returned a status of " + libdap::long_to_string(status) + " which means '";
-                msg += http_status_to_string(status) + "' \n";
-                throw libdap::Error(msg);
+                stringstream msg;
+                msg << prolog << "Error while reading the URL: \"" <<  d_remoteResourceUrl << "\", ";;
+                for(unsigned int i=0; i<d_request_headers->size() ;i++){
+                    msg << "reqhdr[" << i << "]: \"" << (*d_request_headers)[i] << "\", ";
+                }
+                msg <<    "The HTTP request returned a status of " << status << " which means '" <<
+                    http_status_to_string(status) << "'" << endl;
+                BESDEBUG(MODULE, prolog << "ERROR: HTTP request returned status: " << status << endl);
+                switch(status) {
+                    case 400:
+                        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+                        break;
+                    case 404:
+                        throw BESNotFoundError(msg.str(), __FILE__, __LINE__);
+                        break;
+                    case 408:
+                        throw BESTimeoutError(msg.str(), __FILE__, __LINE__);
+                        break;
+                    case 401:
+                    case 402:
+                    case 403:
+                        throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
+                        break;
+                    default:
+                        throw BESInternalError(msg.str(), __FILE__, __LINE__);
+                        break;
+                }
             }
             BESDEBUG(MODULE,
                      "BESRemoteHttpResource::writeResourceToFile() - Resource " << d_remoteResourceUrl
