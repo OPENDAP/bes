@@ -11,11 +11,11 @@
  ********************************************************************/
 
 #include <unistd.h>
-//#include <unordered_map>
 #include <string>
 #include <memory>
 #include <algorithm>
 #include <cassert>
+#include <chrono>
 
 #include <hdf5.h>
 
@@ -33,6 +33,8 @@ using namespace std;
 
 static bool verbose = false;
 #define VERBOSE(x) do { if (verbose) x; } while(false)
+static bool very_verbose = false;
+#define VERY_VERBOSE(x) do { if (very_verbose) x; } while(false)
 
 /**
  * @brief Store the lon,lat values that match a specific STARE index
@@ -417,7 +419,7 @@ unique_ptr< vector<coord> > build_coords(STARE &stare, const vector<hsize_t> &di
 
             (*coords)[n].s_index = stare.ValueFromLatLonDegrees(*lat, *lon);
 
-            VERBOSE(cerr << "Coord: " << *lat << ", " << *lon << " -> " << hex << (*coords)[n].s_index << dec << endl);
+            VERY_VERBOSE(cerr << "Coord: " << *lat << ", " << *lon << " -> " << hex << (*coords)[n].s_index << dec << endl);
 
             ++n;
             ++lat;
@@ -452,7 +454,7 @@ build_coordinates(STARE &stare, const vector<hsize_t> &dims,
 
             c->s_index[n] = stare.ValueFromLatLonDegrees(c->lat[n], c->lon[n]);
 
-            VERBOSE(cerr << "Coord: " << c->lat[n] << ", " << c->lon[n] << " -> " << hex << c->s_index[n] << dec << endl);
+            VERY_VERBOSE(cerr << "Coord: " << c->lat[n] << ", " << c->lon[n] << " -> " << hex << c->s_index[n] << dec << endl);
 
             ++n;
         }
@@ -481,7 +483,7 @@ compute_coordinates(STARE &stare, coordinates *c) {
 
             c->s_index[n] = stare.ValueFromLatLonDegrees(c->lat[n], c->lon[n]);
 
-            VERBOSE(cerr << "Coord: " << c->lat[n] << ", " << c->lon[n] << " -> " << hex << c->s_index[n] << dec << endl);
+            VERY_VERBOSE(cerr << "Coord: " << c->lat[n] << ", " << c->lon[n] << " -> " << hex << c->s_index[n] << dec << endl);
 
             ++n;
         }
@@ -724,22 +726,38 @@ void writeHDF5(const string &filename, string tmpStorage, coordinates *c) {
     VERBOSE(cerr << "Data moved to: " << tmpStorage << endl);
 }
 
-static void usage()
-{
+static void usage() {
     cerr << "build_sidecar [options] <filename> <latitude-name> <longitude-name>" << endl;
     cerr << "-o output file: \tOutput the STARE data to the given output file" << endl;
-    cerr << "-v verbose" << endl;
+    cerr << "-v|V verbose/very verbose" << endl;
     cerr << "-t transfer location: \tTransfer the generated sidecar file to the given directory" << endl;
     cerr << "-b STARE Build Level: \tHigher levels -> longer initialization time. (default is 5)" << endl;
     cerr << "-s STARE default Level: \tHigher levels -> finer resolution. (default is 27)" << endl;
+    cerr << "-a Algotithm: \t1, 2 or 3 (default is 3)" << endl;
+}
+
+static string
+get_sidecar_filename(const string &dataUrl, const string &suffix = "_sidecar.h5") {
+    // Assume the granule is called .../path/file.ext where both the
+    // slashes and dots might actually not be there. Assume also that
+    // the data are in an HDF5 file. jhrg 1/15/20
+
+    // Locate the granule name inside the provided url.
+    // Once the granule is found, add ".h5" to the granule name
+    // Rename the new H5 file to be <granulename.h5>
+    size_t granulePos = dataUrl.find_last_of('/');
+    string granuleName = dataUrl.substr(granulePos + 1);
+    size_t findDot = granuleName.find_last_of('.');
+    return granuleName.substr(0, findDot).append(suffix);
 }
 
 /**
- * -h	help
- *  -o	output file
- *	-v	verbose
- *	-b  STARE library build level (default is 5, very fast library initialization time)
- *	-s  STARE index max level (default is 27, the highest possible)
+ * -h help
+ * -o <output file>
+ * -v verbose
+ * -b <int> STARE library build level (default is 5, very fast library initialization time)
+ * -s <int> STARE index max level (default is 27, the highest possible)
+ * -a <int>
  *
  *  build_sidecar [options] [file|DAP_URL] latitude_var_name longitude_var_name level
  */
@@ -752,14 +770,19 @@ int main(int argc, char *argv[]) {
     string tmpStorage = "./"; // Default is the CWD.
     float build_level = 5.0;  // The default build level, fast start time, longer index lookup.
     float level = 27.0;
+    int alg = 3;
 
-    while ((c = getopt(argc, argv, "hvo:t:b:s:")) != -1) {
+    while ((c = getopt(argc, argv, "hvVo:t:b:s:a:")) != -1) {
         switch (c) {
             case 'o':
                 newName = optarg;
                 break;
             case 'v':
                 verbose = true;
+                break;
+            case 'V':
+                verbose = true;
+                very_verbose = true;
                 break;
             case 't':
                 tmpStorage = optarg;
@@ -769,6 +792,9 @@ int main(int argc, char *argv[]) {
                 break;
             case 's':
                 level = atof(optarg);
+                break;
+            case 'a':
+                alg = atoi(optarg);
                 break;
             case 'h':
             default:
@@ -793,6 +819,9 @@ int main(int argc, char *argv[]) {
     string latName = argv[1];
     string lonName = argv[2];
 
+    if (newName.empty())
+        newName = get_sidecar_filename(dataUrl);
+
     try {
         STARE stare(level, build_level);
         vector<float64> lat;
@@ -804,88 +833,42 @@ int main(int argc, char *argv[]) {
             || dataUrl.find("http://") != string::npos
             || dataUrl.find("www.") != string::npos) {
             // FIXME Match logic of the local file function
-            cerr << "URL support disabled." << endl;
-#if 0
             coords = readUrl(dataUrl, latName, lonName);
-#endif
         }
         else {
              dims = read_lat_lon(dataUrl, latName, lonName, lat, lon);
         }
 #endif
-
-        dims = read_lat_lon(dataUrl, latName, lonName, lat, lon);
-
         using namespace std::chrono;
-        // milliseconds ms = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
+        auto start = high_resolution_clock::now();
 
-        time_t start = time(NULL);
+        switch (alg) {
+            case 1: {
+                dims = read_lat_lon(dataUrl, latName, lonName, lat, lon);
+                unique_ptr<vector<coord> > coords = build_coords(stare, dims, lat, lon);
+                writeHDF5(newName, tmpStorage, coords.get());
+                break;
+            }
 
-        unique_ptr< vector<coord> > coords = build_coords(stare, dims, lat, lon);
+            case 2: {
+                dims = read_lat_lon(dataUrl, latName, lonName, lat, lon);
+                unique_ptr<coordinates> c = build_coordinates(stare, dims, lat, lon);
+                writeHDF5(newName, tmpStorage, c.get());
+                break;
+            }
 
-        // Assume the granule is called .../path/file.ext where both the
-        // slashes and dots might actually not be there. Assume also that
-        // the data are in an HDF5 file. jhrg 1/15/20
-        if (newName.empty()) {
-            // Locate the granule name inside the provided url.
-            // Once the granule is found, add ".h5" to the granule name
-            // Rename the new H5 file to be <granulename.h5>
-            size_t granulePos = dataUrl.find_last_of('/');
-            string granuleName = dataUrl.substr(granulePos + 1);
-            size_t findDot = granuleName.find_last_of('.');
-            newName = granuleName.substr(0, findDot) + "_sidecar.h5";
+            default:
+            case 3: {
+                unique_ptr<coordinates> c(new coordinates());
+                read_lat_lon(dataUrl, latName, lonName, c.get());
+                compute_coordinates(stare, c.get());
+                writeHDF5(newName, tmpStorage, c.get());
+                break;
+            }
         }
 
-        writeHDF5(newName, tmpStorage, coords.get());
-
-        time_t total = time(NULL) - start;
-        VERBOSE(cerr << "Time for the first way: " << total << "s." << endl);
-
-        start = time(NULL);
-
-        unique_ptr<coordinates> c = build_coordinates(stare, dims, lat, lon);
-
-        // Assume the granule is called .../path/file.ext where both the
-        // slashes and dots might actually not be there. Assume also that
-        // the data are in an HDF5 file. jhrg 1/15/20
-        string new_name_2;
-        if (new_name_2.empty()) {
-            // Locate the granule name inside the provided url.
-            // Once the granule is found, add ".h5" to the granule name
-            // Rename the new H5 file to be <granulename.h5>
-            size_t granulePos = dataUrl.find_last_of('/');
-            string granuleName = dataUrl.substr(granulePos + 1);
-            size_t findDot = granuleName.find_last_of('.');
-            new_name_2 = granuleName.substr(0, findDot) + "_sidecar_2.h5";
-        }
-
-        writeHDF5(new_name_2, tmpStorage, c.get());
-
-        total = time(NULL) - start;
-        VERBOSE(cerr << "Time for the second way: " << total << "s." << endl);
-
-        unique_ptr<coordinates> c2(new coordinates());
-        read_lat_lon(dataUrl, latName, lonName, c2.get());
-
-        start = time(NULL);
-        compute_coordinates(stare, c2.get());
-
-        string new_name_3;
-        if (new_name_3.empty()) {
-            // Locate the granule name inside the provided url.
-            // Once the granule is found, add ".h5" to the granule name
-            // Rename the new H5 file to be <granulename.h5>
-            size_t granulePos = dataUrl.find_last_of('/');
-            string granuleName = dataUrl.substr(granulePos + 1);
-            size_t findDot = granuleName.find_last_of('.');
-            new_name_3 = granuleName.substr(0, findDot) + "_sidecar_3.h5";
-        }
-
-        writeHDF5(new_name_3, tmpStorage, c.get());
-
-        total = time(NULL) - start;
-        VERBOSE(cerr << "Time for the third way: " << total << "s." << endl);
-
+        auto total = duration_cast<milliseconds>(high_resolution_clock::now()-start).count();
+        VERBOSE(cerr << "Time for the algorithm " << alg << ": " << total << "ms." << endl);
     }
     catch (libdap::Error &e) {
         cerr << "Error: " << e.get_error_message() << endl;
