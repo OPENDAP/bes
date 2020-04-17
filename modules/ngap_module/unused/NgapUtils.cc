@@ -36,7 +36,7 @@
 #include <curl/curl.h>
 
 #include "NgapUtils.h"
-#include "NgapNames.h"
+#include "ngap_module/unused/NgapNames.h"
 
 #include <BESUtil.h>
 #include <BESCatalogUtils.h>

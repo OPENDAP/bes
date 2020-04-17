@@ -11,8 +11,8 @@ ACLOCAL_AMFLAGS = -I conf
 M_NAME=ngap_module
 M_VER=1.0.3
 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand $(DAP_CFLAGS)
-LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/http -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand $(DAP_CFLAGS)
+LIBADD = -L$(top_builddir)/http -lbes_http $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
@@ -26,10 +26,10 @@ libngap_module_la_LDFLAGS = -avoid-version -module
 libngap_module_la_LIBADD = $(LIBADD)
 
 NGAP_SRC = NgapRequestHandler.cc NgapModule.cc NgapContainer.cc NgapContainerStorage.cc \
-	NgapApi.cc NgapCache.cc NgapUtils.cc RemoteHttpResource.cc curl_utils.cc
+	NgapApi.cc
 
 NGAP_HDR = NgapNames.h NgapRequestHandler.h NgapModule.h NgapContainer.h NgapContainerStorage.h \
-           	NgapApi.h NgapCache.h NgapUtils.h NgapError.h RemoteHttpResource.h curl_utils.h
+           	NgapApi.h NgapError.h
 
 EXTRA_DIST = rapidjson ngap.conf.in data
 

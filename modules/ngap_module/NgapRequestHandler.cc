@@ -41,9 +41,10 @@
 #include <BESConstraintFuncs.h>
 #include <BESServiceRegistry.h>
 #include <BESUtil.h>
+#include <BESProxyNames.h>
 
 #include "NgapRequestHandler.h"
-#include "NgapNames.h"
+#include "BESRemoteUtils.h"
 
 using std::endl;
 using std::map;
@@ -52,18 +53,15 @@ using namespace libdap;
 using namespace ngap;
 
 NgapRequestHandler::NgapRequestHandler(const string &name) :
-        BESRequestHandler(name)
-{
+        BESRequestHandler(name) {
     add_method(VERS_RESPONSE, NgapRequestHandler::ngap_build_vers);
     add_method(HELP_RESPONSE, NgapRequestHandler::ngap_build_help);
 }
 
-NgapRequestHandler::~NgapRequestHandler()
-{
+NgapRequestHandler::~NgapRequestHandler() {
 }
 
-bool NgapRequestHandler::ngap_build_vers(BESDataHandlerInterface &dhi)
-{
+bool NgapRequestHandler::ngap_build_vers(BESDataHandlerInterface &dhi) {
     bool ret = true;
     BESVersionInfo *info = dynamic_cast<BESVersionInfo *>(dhi.response_handler->get_response_object());
     if (!info) throw InternalErr(__FILE__, __LINE__, "Expected a BESVersionInfo instance");
@@ -74,8 +72,7 @@ bool NgapRequestHandler::ngap_build_vers(BESDataHandlerInterface &dhi)
     return ret;
 }
 
-bool NgapRequestHandler::ngap_build_help(BESDataHandlerInterface &dhi)
-{
+bool NgapRequestHandler::ngap_build_help(BESDataHandlerInterface &dhi) {
     bool ret = true;
     BESInfo *info = dynamic_cast<BESInfo *>(dhi.response_handler->get_response_object());
     if (!info) throw InternalErr(__FILE__, __LINE__, "Expected a BESInfo instance");
@@ -102,8 +99,7 @@ bool NgapRequestHandler::ngap_build_help(BESDataHandlerInterface &dhi)
     return ret;
 }
 
-void NgapRequestHandler::dump(ostream &strm) const
-{
+void NgapRequestHandler::dump(ostream &strm) const {
     strm << BESIndent::LMarg << "NgapRequestHandler::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     BESRequestHandler::dump(strm);

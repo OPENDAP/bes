@@ -11,6 +11,9 @@
  * the various static fields based on the values of the BES configuration
  * file(s).
  */
+#ifndef _REMOTE_UTILS_H_
+#define _REMOTE_UTILS_H_ 1
+
 #include <string>
 #include <map>
 #include <vector>
@@ -32,15 +35,18 @@ namespace remote_utils {
         static int ProxyAuthType;
         static bool useInternalCache;
 
-    static std::string NoProxyRegex;
+        static std::string NoProxyRegex;
 
         static void Initialize();
+
         static void Get_type_from_disposition(const std::string &disp, std::string &type);
+
         static void Get_type_from_content_type(const std::string &ctype, std::string &type);
+
         static void Get_type_from_url(const std::string &url, std::string &type);
     };
 
 } // namespace remote_utils
 
-//#endif // I_GatewayUtils_H
+#endif // _REMOTE_UTILS_H_
 
