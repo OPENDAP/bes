@@ -139,6 +139,7 @@ include_directories(xmlcommand/unit-tests)
 include_directories(xmlcommand/unused)
 
 add_executable(bes
+    config.h
     cmdln/unit-tests/test_config.h.in
     cmdln/unit-tests/translateT.cc
     cmdln/CmdApp.cc
@@ -2101,7 +2102,7 @@ add_executable(bes
     xmlcommand/SiteMapResponseHandler.h
     xmlcommand/XMLSetContextsCommand.cc
     xmlcommand/XMLSetContextsCommand.h
-    config.h
+
 	modules/dmrpp_module/unit-tests/awsv4_test.cc
     modules/dmrpp_module/AccessCredentials.cc
     modules/dmrpp_module/AccessCredentials.h
