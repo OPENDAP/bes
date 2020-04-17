@@ -48,7 +48,7 @@
 
 using namespace std;
 
-static bool debug = true;
+static bool debug = false;
 static bool Debug = false;
 static bool bes_debug = false;
 static bool purge_cache = false;
