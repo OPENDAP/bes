@@ -14,7 +14,7 @@ BES.Catalog.catalog.RootDirectory=@abs_top_builddir@/modules/ngap_module
 
 BES.LogName=/dev/null
 
-Http.Whitelist= https://cmr.earthdata.nasa.gov/search
+Gateway.Whitelist= https://cmr.earthdata.nasa.gov/search
 
 #-----------------------------------------------------------------------#
 Http.Cache.dir=/tmp

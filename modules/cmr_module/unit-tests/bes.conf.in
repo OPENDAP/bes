@@ -13,7 +13,7 @@
 #
 
 
-Gateway.Whitelist=http://localhost
+Http.Whitelist=http://localhost
 #Gateway.Whitelist+=https://cmr.earthdata.nasa.gov
 
 
@@ -23,14 +23,14 @@ BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@
 # it can be anything that matches the form of '<thing>:<regex>;' jhrg 7/6/18
 BES.Catalog.catalog.TypeMatch=something:regex;
 
-CMR.Cache.dir=@abs_top_builddir@/modules/cmr_module/unit-tests/static-cache
+Http.Cache.dir=@abs_top_builddir@/modules/cmr_module/unit-tests/static-cache
 #CMR.Cache.dir=/tmp/cache
-CMR.Cache.prefix=cmr_
-CMR.Cache.size=500
+Http.Cache.prefix=cmr_
+Http.Cache.size=500
 
-CMR.MimeTypes=nc:application/x-netcdf
-CMR.MimeTypes+=h4:application/x-hdf
-CMR.MimeTypes+=h5:application/x-hdf5
+Http.MimeTypes=nc:application/x-netcdf
+Http.MimeTypes+=h4:application/x-hdf
+Http.MimeTypes+=h5:application/x-hdf5
 
 CMR.Collections=C179003030-ORNL_DAAC
 CMR.Collections+=C1276812863-GES_DISC
@@ -44,8 +44,4 @@ BES.Catalog.CMR.RootDirectory=UNUSED
 # BES.Catalog.CMR.Include=
 BES.Catalog.CMR.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$;
 
-HttpResourceCache.dir = /tmp/cache
-HttpResourceCache.prefix = cmr_
-HttpResourceCache.size = 500
-
-Gateway.Whitelist += https://cmr.earthdata.nasa.gov
+Http.Whitelist += https://cmr.earthdata.nasa.gov

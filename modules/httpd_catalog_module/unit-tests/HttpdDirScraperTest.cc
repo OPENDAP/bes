@@ -156,9 +156,9 @@ public:
             if(Debug) cerr << prolog << "Purging cache!" << endl;
             string cache_dir;
             bool found;
-            TheBESKeys::TheKeys()->get_value(remote_cache::BESRemoteCache::DIR_KEY,cache_dir,found);
+            TheBESKeys::TheKeys()->get_value("HttpResourceCache.dir",cache_dir,found);
             if(found){
-                if(Debug) cerr << prolog << remote_cache::BESRemoteCache::DIR_KEY << ": " <<  cache_dir << endl;
+                if(Debug) cerr << prolog << "HttpResourceCache.dir" << ": " <<  cache_dir << endl;
                 if(Debug) cerr << prolog << "Purging " << cache_dir << endl;
                 string cmd = "exec rm -r "+ BESUtil::assemblePath(cache_dir,"/*");
                 system(cmd.c_str());
