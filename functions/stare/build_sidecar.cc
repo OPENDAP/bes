@@ -23,7 +23,6 @@
 
 #include <D4Connect.h>
 #include <Connect.h>
-#include <Response.h>
 #include <Array.h>
 #include <Error.h>
 
@@ -199,6 +198,7 @@ void read_lat_lon_url(const string &data_url, const string &lat_name, const stri
  * @param lon Value-result parameter for the longtitude data
  * @return A vector<hsize_t> that holds the size of the y and x dimensions
  * of the lat and lon value-result parameters
+ * @deprecated Use the version that reads into the coordinates instance
  */
 vector<hsize_t> read_lat_lon(const string &filename, const string &lat_name, const string &lon_name,
         vector<float64> &lat, vector<float64> &lon) {
@@ -382,6 +382,7 @@ void read_lat_lon(const string &filename, const string &lat_name, const string &
  * @param latitude
  * @param longitude
  * @return The STARE index information
+ * @deprecated Use compute_coordinates()
  */
 unique_ptr< vector<coord> > build_coords(STARE &stare, const vector<hsize_t> &dims,
                                          const vector<float64> &latitude, const vector<float64> &longitude) {
@@ -420,6 +421,7 @@ unique_ptr< vector<coord> > build_coords(STARE &stare, const vector<hsize_t> &di
  * @param latitude
  * @param longitude
  * @return The STARE index information
+ * @deprecated Use compute_coordinates()
  */
 unique_ptr<coordinates>
 build_coordinates(STARE &stare, const vector<hsize_t> &dims,
@@ -478,6 +480,7 @@ compute_coordinates(STARE &stare, coordinates *c) {
  * @param filename
  * @param tmpStorage
  * @param coords
+ * @deprecated Use the version that uses the coordinates instance
  */
 void writeHDF5(const string &filename, string tmpStorage, vector<coord> *coords) {
     //Allows us to use hdf5 1.10 generated files with hdf5 1.8
@@ -602,10 +605,11 @@ void writeHDF5(const string &filename, string tmpStorage, vector<coord> *coords)
  *
  * @todo Add error checking to this function's HDF5 API calls.
  * @param filename
- * @param tmpStorage
- * @param coords
+ * @param tmp_storage   Put the sidecar file in this directory (./) by default.
+ * If empty, this function will use /tmp
+ * @param c Write the data in this coordinates instance.
  */
-void writeHDF5(const string &filename, string tmpStorage, coordinates *c) {
+void writeHDF5(const string &filename, string tmp_storage, coordinates *c) {
     //Allows us to use hdf5 1.10 generated files with hdf5 1.8
     // !---Must be removed if a feature from 1.10 is required to use---!
     // -kln 5/16/19
@@ -699,12 +703,13 @@ void writeHDF5(const string &filename, string tmpStorage, coordinates *c) {
 
     //Store the sidecar files in /tmp/ (or the provided directory) so that it can easily be found for the
     // server functions.
-    if (tmpStorage.empty())
-        tmpStorage = "/tmp/" + filename;
+    if (tmp_storage.empty())
+        tmp_storage = "/tmp/" + filename;
     else
-        tmpStorage = tmpStorage + filename;
-    rename(filename.c_str(), tmpStorage.c_str());
-    VERBOSE(cerr << "Data moved to: " << tmpStorage << endl);
+        tmp_storage = tmp_storage + filename;
+
+    rename(filename.c_str(), tmp_storage.c_str());
+    VERBOSE(cerr << "Data moved to: " << tmp_storage << endl);
 }
 
 static void usage() {
@@ -804,42 +809,34 @@ int main(int argc, char *argv[]) {
 
     //Required argument values
     string dataset = argv[0];
-    string latName = argv[1];
-    string lonName = argv[2];
+    string lat_name = argv[1];
+    string lon_name = argv[2];
 
     if (newName.empty())
         newName = get_sidecar_filename(dataset);
 
     try {
         STARE stare(level, build_level);
-        vector<float64> lat;
-        vector<float64> lon;
-        vector<hsize_t> dims;
-
-#if 0
-        if (data_url.find("https://") != string::npos
-            || data_url.find("http://") != string::npos
-            || data_url.find("www.") != string::npos) {
-            // FIXME Match logic of the local file function
-            coords = readUrl(data_url, latName, lonName);
-        }
-        else {
-             dims = read_lat_lon(data_url, latName, lonName, lat, lon);
-        }
-#endif
         using namespace std::chrono;
         auto start = high_resolution_clock::now();
 
+        // Algorithms 1 and 2 are deprecated
         switch (alg) {
             case 1: {
-                dims = read_lat_lon(dataset, latName, lonName, lat, lon);
+                vector<float64> lat;
+                vector<float64> lon;
+
+                vector<hsize_t> dims = read_lat_lon(dataset, lat_name, lon_name, lat, lon);
                 unique_ptr<vector<coord> > coords = build_coords(stare, dims, lat, lon);
                 writeHDF5(newName, tmpStorage, coords.get());
                 break;
             }
 
             case 2: {
-                dims = read_lat_lon(dataset, latName, lonName, lat, lon);
+                vector<float64> lat;
+                vector<float64> lon;
+
+                vector<hsize_t> dims = read_lat_lon(dataset, lat_name, lon_name, lat, lon);
                 unique_ptr<coordinates> c = build_coordinates(stare, dims, lat, lon);
                 writeHDF5(newName, tmpStorage, c.get());
                 break;
@@ -850,9 +847,9 @@ int main(int argc, char *argv[]) {
             case 3: {
                 unique_ptr<coordinates> c(new coordinates());
                 if (is_url(dataset))
-                    read_lat_lon_url(dataset, latName, lonName, c.get());
+                    read_lat_lon_url(dataset, lat_name, lon_name, c.get());
                 else
-                    read_lat_lon(dataset, latName, lonName, c.get());
+                    read_lat_lon(dataset, lat_name, lon_name, c.get());
                 compute_coordinates(stare, c.get());
                 writeHDF5(newName, tmpStorage, c.get());
                 break;
