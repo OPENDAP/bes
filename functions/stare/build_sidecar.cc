@@ -119,17 +119,17 @@ struct coordinates {
 };
 
 /**
- * @brief Returns a an array of coords where each entry holds the x and y values
- *  that correlate to the lat and lon values generated from the url
- * @param url
- * @return coords
- * @todo refactor - break apart the code that reads the lat/lon and the code that
- * computes the s-index
+ * @brief Read the latitude and longitude vectors from a level 1B/2 HDF5 file
+ * @param filename Read from this file
+ * @param lat_name The name of the 2D array that holds latitude values
+ * @param lon_name The name of the 2D array that holds longitude values
+ * @param c Put the Latitude, Longitude and dims in this value-result parameter
  */
-vector<coord> readUrl(const string &dataUrl, const string &latName, const string &lonName) {
-    unique_ptr<libdap::Connect> url(new libdap::Connect(dataUrl));
+void read_lat_lon_url(const string &data_url, const string &lat_name, const string &lon_name, coordinates *c) {
 
-    string latlonName = latName + "," + lonName;
+    unique_ptr<libdap::Connect> url(new libdap::Connect(data_url));
+
+    string latlon_ce = lat_name + "," + lon_name;
 
     std::vector<float> lat;
     std::vector<float> lon;
@@ -140,71 +140,54 @@ vector<coord> readUrl(const string &dataUrl, const string &latName, const string
         libdap::BaseTypeFactory factory;
         libdap::DataDDS dds(&factory);
 
-        VERBOSE(cerr << "\n\n\tRequesting data from " << dataUrl << endl);
+        VERBOSE(cerr << "\n\n\tRequesting data from " << data_url << endl);
 
         //Makes sure only the Latitude and Longitude variables are requested
-        url->request_data(dds, latlonName);
+        url->request_data(dds, latlon_ce);
 
         //Create separate libdap arrays to store the lat and lon arrays individually
-        libdap::Array *urlLatArray = dynamic_cast<libdap::Array *>(dds.var(latName));
-        libdap::Array *urlLonArray = dynamic_cast<libdap::Array *>(dds.var(lonName));
+        libdap::Array *url_lat = dynamic_cast<libdap::Array *>(dds.var(lat_name));
+        libdap::Array *url_lon = dynamic_cast<libdap::Array *>(dds.var(lon_name));
 
         // ----Error checking---- //
-        if (urlLatArray == 0 || urlLonArray == 0) {
+        if (url_lat == 0 || url_lon == 0) {
             throw libdap::Error("Expected both lat and lon arrays");
         }
 
-        unsigned int dims = urlLatArray->dimensions();
-
-        if (dims != 2) {
+        if (url_lat->dimensions() != 2) {
             throw libdap::Error("Incorrect latitude dimensions");
         }
 
-        if (dims != urlLonArray->dimensions()) {
+        if (url_lon->dimensions() != 2) {
             throw libdap::Error("Incorrect longitude dimensions");
         }
 
-        int size_y = urlLatArray->dimension_size(urlLatArray->dim_begin());
-        int size_x = urlLatArray->dimension_size(urlLatArray->dim_begin() + 1);
+        int size_y = url_lat->dimension_size(url_lat->dim_begin());
+        int size_x = url_lat->dimension_size(url_lat->dim_begin() + 1);
 
-        if (size_y != urlLonArray->dimension_size(urlLonArray->dim_begin())
-            || size_x != urlLonArray->dimension_size(urlLonArray->dim_begin() + 1)) {
+        if (size_y != url_lon->dimension_size(url_lon->dim_begin())
+            || size_x != url_lon->dimension_size(url_lon->dim_begin() + 1)) {
             throw libdap::Error("The size of the latitude and longitude arrays are not the same");
         }
 
-        //Initialize the arrays with the correct length for lat and lon
-        lat.resize(urlLatArray->length());
-        urlLatArray->value(&lat[0]);
-        lon.resize(urlLonArray->length());
-        urlLonArray->value(&lon[0]);
+        // Set the dimension sizes
+        c->dims.resize(2);
+        c->dims[0] = size_y;
+        c->dims[1] = size_x;
 
-        VERBOSE(cerr << "\tsize of lat array: " << lat.size() << endl);
-        VERBOSE(cerr << "\tsize of lon array: " << lon.size() << endl);
-
-        coord indexVals = coord();
-
-        //Declare the beginning of the vectors here rather than inside the loop to save compute time
-        //vector<float>::iterator i_begin = lat.begin();		FIXME: Probably not needed since we just use a single dimension array
-        vector<float>::iterator j_begin = lon.begin();
-
-        for (vector<float>::iterator i = lat.begin(), e = lat.end(), j =
-                lon.begin(); i != e; ++i, ++j) {
-            //Use an offset since we are using a 1D array and treating it like a 2D array
-            int offset = j - j_begin;
-            indexVals.x = offset / (size_x - 1);//Get the current index for the lon
-            indexVals.y = offset % (size_x - 1);//Get the current index for the lat
-            indexVals.lat = *i;
-            indexVals.lon = *j;
-
-            indexArray.push_back(indexVals);
-        }
-
+        // Set the sizes and transfer the values from the 'url_lat/lon' to the
+        // lat/lon vectors in 'c'
+        c->set_size(url_lat->length()); // This sets the sizes for all the vectors
+        url_lat->value(c->get_lat());
+        url_lon->value(c->get_lon());
     }
     catch (libdap::Error &e) {
         cerr << "ERROR: " << e.get_error_message() << endl;
+        exit(EXIT_FAILURE);
     }
 
-    return indexArray;
+    VERBOSE(cerr << "\tsize of lat array: " << c->lat.size() << endl);
+    VERBOSE(cerr << "\tsize of lon array: " << c->lon.size() << endl);
 }
 
 /**
@@ -466,9 +449,7 @@ build_coordinates(STARE &stare, const vector<hsize_t> &dims,
 /**
  * @brief Build the STARE indices given coordinates that include latitude and longitude data
  * @param stare
- * @param dims
- * @param latitude
- * @param longitude
+ * @param c A coordinates structure with the vector sizes set
  * @return The STARE index information
  */
 void
@@ -751,6 +732,13 @@ get_sidecar_filename(const string &dataUrl, const string &suffix = "_sidecar.h5"
     return granuleName.substr(0, findDot).append(suffix);
 }
 
+static bool
+is_url(const string &name) {
+    return (name.find("https://") != string::npos
+        || name.find("http://") != string::npos);
+
+}
+
 /**
  * -h help
  * -o <output file>
@@ -815,12 +803,12 @@ int main(int argc, char *argv[]) {
     }
 
     //Required argument values
-    string dataUrl = argv[0];
+    string dataset = argv[0];
     string latName = argv[1];
     string lonName = argv[2];
 
     if (newName.empty())
-        newName = get_sidecar_filename(dataUrl);
+        newName = get_sidecar_filename(dataset);
 
     try {
         STARE stare(level, build_level);
@@ -829,14 +817,14 @@ int main(int argc, char *argv[]) {
         vector<hsize_t> dims;
 
 #if 0
-        if (dataUrl.find("https://") != string::npos
-            || dataUrl.find("http://") != string::npos
-            || dataUrl.find("www.") != string::npos) {
+        if (data_url.find("https://") != string::npos
+            || data_url.find("http://") != string::npos
+            || data_url.find("www.") != string::npos) {
             // FIXME Match logic of the local file function
-            coords = readUrl(dataUrl, latName, lonName);
+            coords = readUrl(data_url, latName, lonName);
         }
         else {
-             dims = read_lat_lon(dataUrl, latName, lonName, lat, lon);
+             dims = read_lat_lon(data_url, latName, lonName, lat, lon);
         }
 #endif
         using namespace std::chrono;
@@ -844,23 +832,27 @@ int main(int argc, char *argv[]) {
 
         switch (alg) {
             case 1: {
-                dims = read_lat_lon(dataUrl, latName, lonName, lat, lon);
+                dims = read_lat_lon(dataset, latName, lonName, lat, lon);
                 unique_ptr<vector<coord> > coords = build_coords(stare, dims, lat, lon);
                 writeHDF5(newName, tmpStorage, coords.get());
                 break;
             }
 
             case 2: {
-                dims = read_lat_lon(dataUrl, latName, lonName, lat, lon);
+                dims = read_lat_lon(dataset, latName, lonName, lat, lon);
                 unique_ptr<coordinates> c = build_coordinates(stare, dims, lat, lon);
                 writeHDF5(newName, tmpStorage, c.get());
                 break;
             }
 
+            // This case handles reading from URLs in addition to HDF5 files.
             default:
             case 3: {
                 unique_ptr<coordinates> c(new coordinates());
-                read_lat_lon(dataUrl, latName, lonName, c.get());
+                if (is_url(dataset))
+                    read_lat_lon_url(dataset, latName, lonName, c.get());
+                else
+                    read_lat_lon(dataset, latName, lonName, c.get());
                 compute_coordinates(stare, c.get());
                 writeHDF5(newName, tmpStorage, c.get());
                 break;
