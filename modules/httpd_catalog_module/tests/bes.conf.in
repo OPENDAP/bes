@@ -52,9 +52,9 @@ Gateway.Whitelist=http://localhost
 Gateway.Whitelist+=http://test.opendap.org
 
 # Configure data cache
-HttpResourceCache.dir=@abs_top_builddir@/modules/httpd_catalog_module/tests/cache
-HttpResourceCache.prefix=httpd_cat_
-HttpResourceCache.size=500
+Http.Cache.dir=@abs_top_builddir@/modules/httpd_catalog_module/tests/cache
+Http.Cache.prefix=httpd_cat_
+Http.Cache.size=500
 
 # These are here because they must be defined for a 'catalog' regardless
 # of the kind of catalog - it's probably a bug. The name 'RemoteResources'

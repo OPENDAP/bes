@@ -46,8 +46,8 @@
 #include "BESUtil.h"
 #include "TheBESKeys.h"
 
-#include "CmrNames.h"
-#include "CmrCache.h"
+#include "http/BESProxyNames.h"
+#include "http/BESRemoteCache.h"
 
 using std::endl;
 using std::string;
@@ -58,6 +58,7 @@ using std::string;
 #define AT_EXIT(x)
 #endif
 
+#define MODULE CMR_NAME
 
 using namespace cmr;
 
@@ -135,7 +136,7 @@ CmrCache::CmrCache()
     BESDEBUG(MODULE, "CmrCache::CmrCache() -  END" << endl);
 }
 
-CmrCache::CmrCache(const string &cache_dir, const string &prefix, unsigned long long size)
+BESRemoteCache::BESRemoteCache(const string &cache_dir, const string &prefix, unsigned long long size)
 {
     BESDEBUG(MODULE, "CmrCache::CmrCache() -  BEGIN" << endl);
 

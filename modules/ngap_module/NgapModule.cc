@@ -36,13 +36,12 @@
 #include "NgapModule.h"
 #include "NgapRequestHandler.h"
 #include "NgapContainerStorage.h"
-#include "NgapUtils.h"
+#include "BESRemoteUtils.h"
 
 using namespace std;
 using namespace ngap;
 
-void NgapModule::initialize(const string &modname)
-{
+void NgapModule::initialize(const string &modname) {
     BESDEBUG(modname, "Initializing NGAP Module " << modname << endl);
 
     BESDEBUG(modname, "    adding " << modname << " request handler" << endl);
@@ -52,7 +51,7 @@ void NgapModule::initialize(const string &modname)
     BESContainerStorageList::TheList()->add_persistence(new NgapContainerStorage(modname));
 
     BESDEBUG(modname, "    initialize the NGAP utilities and params" << endl);
-    NgapUtils::Initialize();
+    remote_utils::BESRemoteUtils::Initialize();
 
     BESDEBUG(modname, "    adding NGAP debug context" << endl);
     BESDebug::Register(modname);
@@ -66,8 +65,7 @@ void NgapModule::initialize(const string &modname)
     BESDEBUG(modname, "Done Initializing NGAP Module " << modname << endl);
 }
 
-void NgapModule::terminate(const string &modname)
-{
+void NgapModule::terminate(const string &modname) {
     BESDEBUG(modname, "Cleaning NGAP module " << modname << endl);
 /*
     BESResponseHandlerList::TheList()->remove_handler( SHOW_NGAP_PATH_INFO_RESPONSE) ;
@@ -85,14 +83,12 @@ void NgapModule::terminate(const string &modname)
     BESDEBUG(modname, "Done Cleaning NGAP module " << modname << endl);
 }
 
-void NgapModule::dump(ostream &strm) const
-{
+void NgapModule::dump(ostream &strm) const {
     strm << BESIndent::LMarg << "NgapModule::dump - (" << (void *) this << ")" << endl;
 }
 
 extern "C"
-BESAbstractModule *maker()
-{
+BESAbstractModule *maker() {
     return new NgapModule;
 }
 

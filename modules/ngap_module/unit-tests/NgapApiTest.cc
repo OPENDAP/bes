@@ -45,7 +45,7 @@
 #include <TheBESKeys.h>
 #include "test_config.h"
 
-#include "RemoteHttpResource.h"
+#include "BESRemoteHttpResource.h"
 #include "NgapApi.h"
 // #include "NgapNames.h"
 // #include "NgapError.h"

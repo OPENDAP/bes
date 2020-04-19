@@ -17,9 +17,9 @@ BES.LogName=/dev/null
 Gateway.Whitelist= https://cmr.earthdata.nasa.gov/search
 
 #-----------------------------------------------------------------------#
-NGAP.Cache.dir=/tmp
-NGAP.Cache.prefix=ngap_
-NGAP.Cache.size=500
+Http.Cache.dir=/tmp
+Http.Cache.prefix=ngap_
+Http.Cache.size=500
 
 NGAP.inject_data_urls=true
 

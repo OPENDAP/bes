@@ -76,16 +76,16 @@ BES.DefaultResponseMethod=POST
 #
 
 # Need to whitelist CMR server so we can talk to it.
-Gateway.Whitelist=http://localhost
-Gateway.Whitelist+=http://cloudydap.opendap.org/opendap
-Gateway.Whitelist+=http://cloudydap.opendap.org//opendap
-Gateway.Whitelist+=http://thredds.ucar.edu/thredds
-Gateway.Whitelist+=http://thredds.ucar.edu//thredds
-Gateway.Whitelist+=http://s3.amazonaws.com/somewhereovertherainbow
-Gateway.Whitelist+=https://s3.amazonaws.com/somewhereovertherainbow
-Gateway.Whitelist+=https://s3.amazonaws.com/cloudydap
+Http.Whitelist=http://localhost
+Http.Whitelist+=http://cloudydap.opendap.org/opendap
+Http.Whitelist+=http://cloudydap.opendap.org//opendap
+Http.Whitelist+=http://thredds.ucar.edu/thredds
+Http.Whitelist+=http://thredds.ucar.edu//thredds
+Http.Whitelist+=http://s3.amazonaws.com/somewhereovertherainbow
+Http.Whitelist+=https://s3.amazonaws.com/somewhereovertherainbow
+Http.Whitelist+=https://s3.amazonaws.com/cloudydap
 
-Gateway.Whitelist += https://cmr.earthdata.nasa.gov
+Http.Whitelist += https://cmr.earthdata.nasa.gov
 
 BES.Catalog.CMR.RootDirectory=UNUSED
 # BES.Catalog.CMR.FollowSymLinks=
@@ -93,13 +93,13 @@ BES.Catalog.CMR.RootDirectory=UNUSED
 # BES.Catalog.CMR.Include=
 BES.Catalog.CMR.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$;
 
-CMR.Cache.dir=@abs_top_builddir@/modules/cmr_module/tests/cache
-CMR.Cache.prefix=cmr_
-CMR.Cache.size=500
+Http.Cache.dir=@abs_top_builddir@/modules/cmr_module/tests/cache
+Http.Cache.prefix=cmr_
+Http.Cache.size=500
 
-CMR.MimeTypes=nc:application/x-netcdf
-CMR.MimeTypes+=h4:application/x-hdf
-CMR.MimeTypes+=h5:application/x-hdf5
+Http.MimeTypes=nc:application/x-netcdf
+Http.MimeTypes+=h4:application/x-hdf
+Http.MimeTypes+=h5:application/x-hdf5
 
 CMR.Collections=C179003030-ORNL_DAAC
 CMR.Collections+=C1276812863-GES_DISC
@@ -107,8 +107,11 @@ CMR.Collections+=C1276812863-GES_DISC
 CMR.Facets=temporal
 CMR.Facets+=dental_floss
 
+<<<<<<< HEAD
 HttpResourceCache.dir = /tmp/cache
 HttpResourceCache.prefix = cmr_
 HttpResourceCache.size = 500
 
+=======
+>>>>>>> HK-624
 Gateway.Whitelist += https://cmr.earthdata.nasa.gov

@@ -34,7 +34,7 @@
 
 #include <string>
 #include <vector>
-#include "rapidjson/document.h"
+#include <rapidjson/document.h>
 
 namespace cmr {
 

@@ -34,7 +34,7 @@
 #include <map>
 #include <vector>
 
-#include "Granule.h"
+#include "../Granule.h"
 
 namespace cmr {
 

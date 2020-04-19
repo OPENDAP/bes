@@ -1,34 +1,18 @@
-// GatewayUtils.h
-
-// -*- mode: c++; c-basic-offset:4 -*-
-
-// This file is part of gateway_module, A C++ module that can be loaded in to
-// the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
-
-// Copyright (c) 2002,2003 OPeNDAP, Inc.
-// Author: Patrick West <pwest@ucar.edu>
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Lesser General Public
-// License as published by the Free Software Foundation; either
-// version 2.1 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-//
-// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-
-// Authors:
-//      pcw       Patrick West <pwest@ucar.edu>
-
-//#ifndef I_GatewayUtils_H
-//#define I_GatewayUtils_H 1
+/**
+ * @brief utility class for the HTTP catalog module
+ *
+ * This class provides utilities that extract information from a URL
+ * or the returned headers of an HTTP response. It also provides
+ * storage for a number of values read from the httpd_catalog.conf
+ * configuration file.
+ *
+ * @note This class holds only static methods and fields. It has no
+ * constructor or destructor. Use the initialize() method to configure
+ * the various static fields based on the values of the BES configuration
+ * file(s).
+ */
+#ifndef _REMOTE_UTILS_H_
+#define _REMOTE_UTILS_H_ 1
 
 #include <string>
 #include <map>
@@ -54,12 +38,15 @@ namespace remote_utils {
         static std::string NoProxyRegex;
 
         static void Initialize();
+
         static void Get_type_from_disposition(const std::string &disp, std::string &type);
+
         static void Get_type_from_content_type(const std::string &ctype, std::string &type);
+
         static void Get_type_from_url(const std::string &url, std::string &type);
     };
 
 } // namespace remote_utils
 
-//#endif // I_GatewayUtils_H
+#endif // _REMOTE_UTILS_H_
 

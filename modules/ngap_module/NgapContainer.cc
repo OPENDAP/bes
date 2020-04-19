@@ -44,18 +44,20 @@
 
 #include "NgapContainer.h"
 #include "NgapApi.h"
-#include "NgapUtils.h"
-#include "NgapNames.h"
-#include "RemoteHttpResource.h"
-#include "curl_utils.h"
+#include "BESRemoteUtils.h"
+#include "BESProxyNames.h"
+#include "BESRemoteHttpResource.h"
+#include "BESCurlUtils.h"
 
 #define prolog std::string("NgapContainer::").append(__func__).append("() - ")
 
 using namespace std;
 using namespace bes;
+using namespace remote_http_resource;
 
 #define UID_CONTEXT "uid"
 #define AUTH_TOKEN_CONTEXT "edl_auth_token"
+#define MODULE NGAP_NAME
 
 namespace ngap {
 
@@ -164,7 +166,7 @@ namespace ngap {
                 replace_template = DATA_ACCESS_URL_KEY;
                 replace_value = data_access_url;
             }
-            d_dmrpp_rresource = new ngap::RemoteHttpResource(dmrpp_url);
+            d_dmrpp_rresource = new BESRemoteHttpResource(dmrpp_url);
             d_dmrpp_rresource->retrieveResource(replace_template, replace_value);
         }
         BESDEBUG(MODULE, prolog << "Retrieved remote resource: " << dmrpp_url << endl);
@@ -176,7 +178,8 @@ namespace ngap {
         type = d_dmrpp_rresource->getType();
         set_container_type(type);
         BESDEBUG(MODULE, prolog << "Type: " << type << endl);
-        BESDEBUG(MODULE, prolog << "Done retrieving:  " << dmrpp_url << " returning cached file " << cachedResource << endl);
+        BESDEBUG(MODULE,
+                 prolog << "Done retrieving:  " << dmrpp_url << " returning cached file " << cachedResource << endl);
         BESDEBUG(MODULE, prolog << "END" << endl);
 
         return cachedResource;    // this should return the dmr++ file name from the NgapCache
@@ -214,7 +217,8 @@ namespace ngap {
         BESIndent::Indent();
         BESContainer::dump(strm);
         if (d_dmrpp_rresource) {
-            strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_dmrpp_rresource->getCacheFileName()
+            strm << BESIndent::LMarg << "BESRemoteHttpResource.getCacheFileName(): "
+                 << d_dmrpp_rresource->getCacheFileName()
                  << endl;
             strm << BESIndent::LMarg << "response headers: ";
             vector<string> *hdrs = d_dmrpp_rresource->getResponseHeaders();
@@ -237,7 +241,7 @@ namespace ngap {
         BESIndent::UnIndent();
     }
 
-    bool NgapContainer::inject_data_url(){
+    bool NgapContainer::inject_data_url() {
         bool result = false;
         bool found;
         string key_value;

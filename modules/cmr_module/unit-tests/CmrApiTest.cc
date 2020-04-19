@@ -45,9 +45,9 @@
 #include <TheBESKeys.h>
 #include "test_config.h"
 
-#include "RemoteHttpResource.h"
+#include "BESRemoteHttpResource.h"
 #include "CmrApi.h"
-#include "CmrNames.h"
+#include "BESProxyNames.h"
 #include "CmrCatalog.h"
 #include "CmrError.h"
 #include "rjson_utils.h"
@@ -58,6 +58,8 @@ using namespace rapidjson;
 static bool debug = false;
 static bool Debug = false;
 static bool bes_debug = false;
+
+#define MODULE CMR_NAME
 
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
@@ -105,7 +107,7 @@ public:
         TheBESKeys::ConfigFile = bes_conf;
 
         if(Debug) cerr << "setUp() - Adding catalog '"<< CMR_CATALOG_NAME << "'" << endl;
-        BESCatalogList::TheCatalogList()->add_catalog(new cmr::CmrCatalog(CMR_CATALOG_NAME));
+        BESCatalogList::TheCatalogList()->add_catalog(new CmrCatalog(CMR_CATALOG_NAME));
 
         if (bes_debug) BESDebug::SetUp("cerr,cmr");
 

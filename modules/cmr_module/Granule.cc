@@ -33,7 +33,7 @@
 #include "rjson_utils.h"
 #include "BESDebug.h"
 
-#include "CmrNames.h"
+#include "BESProxyNames.h"
 #include "CmrError.h"
 #include "Granule.h"
 
@@ -41,7 +41,7 @@
 using namespace std;
 
 #define prolog std::string("Granule::").append(__func__).append("() - ")
-
+#define MODULE CMR_NAME
 
 namespace cmr {
 string granule_LINKS_REL_DATA_ACCES = "http://esipfed.org/ns/fedsearch/1.1/data#";
@@ -99,11 +99,11 @@ const rapidjson::Value& Granule::get_links_array(const rapidjson::Value& go){
     string msg = prolog + (result?"Located":"FAILED to locate") + " the value '"+granule_LINKS+"' in object.";
     BESDEBUG(MODULE, msg << endl);
     if(!result){
-        throw CmrError("ERROR: Failed to located '"+granule_LINKS+"' section for CMRGranule!",__FILE__,__LINE__);
+        throw cmr::CmrError("ERROR: Failed to located '"+granule_LINKS+"' section for CMRGranule!",__FILE__,__LINE__);
     }
     const rapidjson::Value& links = itr->value;
     if(!links.IsArray())
-        throw CmrError("ERROR: The '"+granule_LINKS+"' object is NOT an array!",__FILE__,__LINE__);
+        throw cmr::CmrError("ERROR: The '"+granule_LINKS+"' object is NOT an array!",__FILE__,__LINE__);
 
     return links;
 }
@@ -123,7 +123,7 @@ void Granule::setDataAccessUrl(const rapidjson::Value& go){
             return;
         }
     }
-    throw CmrError("ERROR: Failed to locate granule data access link ("+granule_LINKS_REL_DATA_ACCES+"). :(",__FILE__,__LINE__);
+    throw cmr::CmrError("ERROR: Failed to locate granule data access link ("+granule_LINKS_REL_DATA_ACCES+"). :(",__FILE__,__LINE__);
 }
 
 /**
@@ -141,7 +141,7 @@ void Granule::setMetadataAccessUrl(const rapidjson::Value& go){
             return;
         }
     }
-    throw CmrError("ERROR: Failed to locate granule metadata access link ("+granule_LINKS_REL_METADATA_ACCESS+"). :(",__FILE__,__LINE__);
+    throw cmr::CmrError("ERROR: Failed to locate granule metadata access link ("+granule_LINKS_REL_METADATA_ACCESS+"). :(",__FILE__,__LINE__);
 }
 
 

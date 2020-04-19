@@ -61,13 +61,14 @@
 #include "BESDebug.h"
 
 #include "CmrApi.h"
-#include "CmrNames.h"
+#include "BESProxyNames.h"
 #include "CmrCatalog.h"
 
 using namespace bes;
 using namespace std;
 
 #define prolog std::string("CmrCatalog::").append(__func__).append("() - ")
+#define MODULE CMR_NAME
 
 namespace cmr {
 
@@ -548,7 +549,7 @@ CmrCatalog::get_node(const string &path) const
                     d_utils->is_data(item), CatalogItem::leaf));
             }
             else {
-                VERBOSE("Excluded the item '" << item_path << "' from the catalog '" << get_catalog_name() << "' node listing.");
+                VERBOSE("Excluded the item '" << item_path << "' from the catalog '" << get_catalog_name() << "' node listing." << endl);
             }
         } // end of the while loop
 

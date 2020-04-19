@@ -29,11 +29,11 @@
  *      Author: ndp
  */
 #include <memory>
-#include "rapidjson/document.h"
-#include "rapidjson/writer.h"
-#include "rapidjson/prettywriter.h"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/filereadstream.h"
+#include <rapidjson/document.h>
+#include <rapidjson/writer.h>
+#include <rapidjson/prettywriter.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/filereadstream.h>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
@@ -50,14 +50,15 @@
 #include <TheBESKeys.h>
 
 #include "CmrApi.h"
-#include "CmrNames.h"
-#include "RemoteHttpResource.h"
+#include "BESProxyNames.h"
+
 #include "CmrError.h"
 #include "rjson_utils.h"
 
 using namespace std;
 
 #define prolog string("CmrApi::").append(__func__).append("() - ")
+#define MODULE CMR_NAME
 
 namespace cmr {
 
@@ -73,7 +74,7 @@ CmrApi::get_children(const rapidjson::Value& obj) {
     string msg = prolog + (result?"Located":"FAILED to locate") + " the value 'children' in the object.";
     BESDEBUG(MODULE, msg << endl);
     if(!result){
-        throw CmrError(msg,__FILE__,__LINE__);
+        throw cmr::CmrError(msg,__FILE__,__LINE__);
     }
 
     const rapidjson::Value& children = itr->value;
@@ -81,7 +82,7 @@ CmrApi::get_children(const rapidjson::Value& obj) {
     msg = prolog + "The value 'children' is" + (result?"":" NOT") + " an array.";
     BESDEBUG(MODULE, msg << endl);
     if(!result){
-        throw CmrError(msg,__FILE__,__LINE__);
+        throw cmr::CmrError(msg,__FILE__,__LINE__);
     }
     return children;
 }
@@ -96,7 +97,7 @@ CmrApi::get_feed(const rapidjson::Document &cmr_doc){
     string msg = prolog + "Json document is" + (result?"":" NOT") + " an object.";
     BESDEBUG(MODULE, msg << endl);
     if(!result){
-        throw CmrError(msg,__FILE__,__LINE__);
+        throw cmr::CmrError(msg,__FILE__,__LINE__);
     }
 
     //################### feed
@@ -105,7 +106,7 @@ CmrApi::get_feed(const rapidjson::Document &cmr_doc){
     msg = prolog + (result?"Located":"FAILED to locate") + " the value 'feed'.";
     BESDEBUG(MODULE, msg << endl);
     if(!result){
-        throw CmrError(msg,__FILE__,__LINE__);
+        throw cmr::CmrError(msg,__FILE__,__LINE__);
     }
 
     const rapidjson::Value& feed = itr->value;
@@ -113,7 +114,7 @@ CmrApi::get_feed(const rapidjson::Document &cmr_doc){
     msg = prolog + "The value 'feed' is" + (result?"":" NOT") + " an object.";
     BESDEBUG(MODULE, msg << endl);
     if(!result){
-        throw CmrError(msg,__FILE__,__LINE__);
+        throw cmr::CmrError(msg,__FILE__,__LINE__);
     }
     return feed;
 }
@@ -133,7 +134,7 @@ CmrApi::get_entries(const rapidjson::Document &cmr_doc){
     msg = prolog + (result?"Located":"FAILED to locate") + " the value 'entry'.";
     BESDEBUG(MODULE, msg << endl);
     if(!result){
-        throw CmrError(msg,__FILE__,__LINE__);
+        throw cmr::CmrError(msg,__FILE__,__LINE__);
     }
 
     const rapidjson::Value& entry = itr->value;
@@ -141,7 +142,7 @@ CmrApi::get_entries(const rapidjson::Document &cmr_doc){
     msg = prolog + "The value 'entry' is" + (result?"":" NOT") + " an Array.";
     BESDEBUG(MODULE, msg << endl);
     if(!result){
-        throw CmrError(msg,__FILE__,__LINE__);
+        throw cmr::CmrError(msg,__FILE__,__LINE__);
     }
     return entry;
 }
@@ -163,7 +164,7 @@ CmrApi::get_temporal_group(const rapidjson::Document &cmr_doc){
     msg =  prolog + (result?"Located":"FAILED to locate") + " the value 'facets'." ;
     BESDEBUG(MODULE, msg << endl);
     if(!result){
-        throw CmrError(msg,__FILE__,__LINE__);
+        throw cmr::CmrError(msg,__FILE__,__LINE__);
     }
 
     const rapidjson::Value& facets_obj = itr->value;
@@ -171,7 +172,7 @@ CmrApi::get_temporal_group(const rapidjson::Document &cmr_doc){
     msg =  prolog + "The value 'facets' is" + (result?"":" NOT") + " an object.";
     BESDEBUG(MODULE, msg << endl);
     if(!result){
-        throw CmrError(msg,__FILE__,__LINE__);
+        throw cmr::CmrError(msg,__FILE__,__LINE__);
     }
 
     const rapidjson::Value& facets = get_children(facets_obj);
@@ -192,7 +193,7 @@ CmrApi::get_temporal_group(const rapidjson::Document &cmr_doc){
     }
     msg = prolog + "Failed to locate the Temporal facet.";
     BESDEBUG(MODULE, msg << endl);
-    throw CmrError(msg,__FILE__,__LINE__);
+    throw cmr::CmrError(msg,__FILE__,__LINE__);
 
 } // CmrApi::get_temporal_group()
 
@@ -223,7 +224,7 @@ CmrApi::get_year_group(const rapidjson::Document &cmr_doc){
     }
     msg = prolog + "Failed to locate the Year group.";
     BESDEBUG(MODULE, msg << endl);
-    throw CmrError(msg,__FILE__,__LINE__);
+    throw cmr::CmrError(msg,__FILE__,__LINE__);
 }
 
 /**
@@ -267,7 +268,7 @@ CmrApi::get_month_group(const string r_year, const rapidjson::Document &cmr_doc)
     }
     msg = prolog + "Failed to locate the Year group.";
     BESDEBUG(MODULE, msg << endl);
-    throw CmrError(msg,__FILE__,__LINE__);
+    throw cmr::CmrError(msg,__FILE__,__LINE__);
 }
 
 const rapidjson::Value&
@@ -295,7 +296,7 @@ CmrApi::get_month(const string r_month, const string r_year, const rapidjson::Do
     msg.str("");
     msg << prolog  << "Failed to locate request Year/Month.";
     BESDEBUG(MODULE, msg.str() << endl);
-    throw CmrError(msg.str(),__FILE__,__LINE__);
+    throw cmr::CmrError(msg.str(),__FILE__,__LINE__);
 }
 
 const rapidjson::Value&
@@ -320,7 +321,7 @@ CmrApi::get_day_group(const string r_month, const string r_year, const rapidjson
     msg.str("");
     msg << prolog  << "Failed to locate requested Day  year: " << r_year << " month: "<< r_month;
     BESDEBUG(MODULE, msg.str() << endl);
-    throw CmrError(msg.str(),__FILE__,__LINE__);
+    throw cmr::CmrError(msg.str(),__FILE__,__LINE__);
 }
 
 
@@ -379,7 +380,7 @@ CmrApi::get_months(string collection_name, string r_year, vector<string> &months
         msg.str("");
         msg << prolog  << "We expected to get back one year (" << r_year << ") but we got back " << years.Size();
         BESDEBUG(MODULE, msg.str() << endl);
-        throw CmrError(msg.str(),__FILE__,__LINE__);
+        throw cmr::CmrError(msg.str(),__FILE__,__LINE__);
     }
 
     const rapidjson::Value& year = years[0];
@@ -388,7 +389,7 @@ CmrApi::get_months(string collection_name, string r_year, vector<string> &months
         msg.str("");
         msg << prolog  << "The returned year (" << year_title << ") does not match the requested year ("<< r_year << ")";
         BESDEBUG(MODULE, msg.str() << endl);
-        throw CmrError(msg.str(),__FILE__,__LINE__);
+        throw cmr::CmrError(msg.str(),__FILE__,__LINE__);
     }
 
     const rapidjson::Value& year_children = get_children(year);
@@ -396,7 +397,7 @@ CmrApi::get_months(string collection_name, string r_year, vector<string> &months
         msg.str("");
         msg << prolog  << "We expected to get back one child for the year (" << r_year << ") but we got back " << years.Size();
         BESDEBUG(MODULE, msg.str() << endl);
-        throw CmrError(msg.str(),__FILE__,__LINE__);
+        throw cmr::CmrError(msg.str(),__FILE__,__LINE__);
     }
 
     const rapidjson::Value& month_group = year_children[0];
@@ -405,7 +406,7 @@ CmrApi::get_months(string collection_name, string r_year, vector<string> &months
         msg.str("");
         msg << prolog  << "We expected to get back a Month object, but we did not.";
         BESDEBUG(MODULE, msg.str() << endl);
-        throw CmrError(msg.str(),__FILE__,__LINE__);
+        throw cmr::CmrError(msg.str(),__FILE__,__LINE__);
     }
 
     const rapidjson::Value& months = get_children(month_group);
@@ -546,7 +547,7 @@ CmrApi::get_collection_ids(std::vector<std::string> &collection_ids){
 /**
  * Returns all of the Granules in the collection matching the date.
  */
-cmr::Granule* CmrApi::get_granule(string collection_name, string r_year, string r_month, string r_day, string granule_id)
+Granule* CmrApi::get_granule(string collection_name, string r_year, string r_month, string r_day, string granule_id)
 {
     vector<Granule *> granules;
     Granule *result = 0;
@@ -564,6 +565,10 @@ cmr::Granule* CmrApi::get_granule(string collection_name, string r_year, string 
         }
     }
     return result;
+}
+
+Granule *CmrApi::get_granule(const std::string path) {
+    return nullptr;
 }
 
 

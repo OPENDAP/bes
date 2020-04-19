@@ -36,15 +36,18 @@
 
 #include "BESInternalError.h"
 #include "BESForbiddenError.h"
+#include "BESSyntaxUserError.h"
+#include "BESNotFoundError.h"
+#include "BESTimeoutError.h"
 
 #include "BESDebug.h"
 #include "BESUtil.h"
 #include "TheBESKeys.h"
 
-#include "NgapNames.h"
-#include "NgapCache.h"
-#include "NgapUtils.h"
-#include "curl_utils.h"
+#include "ngap_module/unused/NgapNames.h"
+#include "ngap_module/unused/NgapCache.h"
+#include "ngap_module/unused/NgapUtils.h"
+#include "ngap_module/unused/curl_utils.h"
 #include "RemoteHttpResource.h"
 
 using namespace std;
@@ -349,7 +352,25 @@ namespace ngap {
                 msg <<    "The HTTP request returned a status of " << status << " which means '" <<
                     ngap_curl::http_status_to_string(status) << "'" << endl;
                 BESDEBUG(MODULE, prolog << "ERROR: HTTP request returned status: " << status << endl);
-                throw BESForbiddenError(msg.str(),__FILE__,__LINE__);
+                switch(status) {
+                    case 400:
+                        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+                        break;
+                    case 404:
+                        throw BESNotFoundError(msg.str(), __FILE__, __LINE__);
+                        break;
+                    case 408:
+                        throw BESTimeoutError(msg.str(), __FILE__, __LINE__);
+                        break;
+                    case 401:
+                    case 402:
+                    case 403:
+                        throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
+                        break;
+                    default:
+                        throw BESInternalError(msg.str(), __FILE__, __LINE__);
+                        break;
+                }
             }
             BESDEBUG(MODULE,
                      prolog << "Resource " << d_remoteResourceUrl << " saved to cache file " << d_resourceCacheFileName
