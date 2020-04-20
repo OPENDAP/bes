@@ -40,11 +40,11 @@ What's new for Hyrax 1.16.2
 CF option:
 1. Support the correct generation of DMRPP files. 
    1) Add BES keys to turn off the mapping of 64-bit integer to DMR and 
-      not to generate fullnamepath when the storage size is zero.
-   2) Ensured that the fullname and origname attributes are not generated
+      not to generate the fullnamepath attribute when the storage size is zero.
+   2) Ensure that the fullnamepath and origname attributes are not generated
       when the corresonding BES keys are turned off. 
 2. Enhance the support to make general two dimensional latitude/longitude
-   follow CF so that OMPS-NPP files are supported.
+   HDF5 files follow CF so that NASA OMPS-NPP products can be supported.
 3. Enhance the support of netCDF-4 like files. 
 
 
