@@ -1,3 +1,11 @@
+2020-02-10 slloyd  <slloyd@localhost>
+
+	HK-544,cleaned up some compiler warnings.
+
+2020-02-06 Muqun Yang  <myang6@hdfgroup.org>
+
+	ESDIS-572, updated ChangeLog etc for Hyrax 1.16.1.
+
 2020-01-02 Muqun Yang  <myang6@hdfgroup.org>
 
 	HFRHANDLER-329, 

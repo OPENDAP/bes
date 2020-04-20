@@ -1,3 +1,6 @@
+News for version 1.16.2
+Updates since 2020-02-06, mainly clean up compiler warnings.
+
 News for version 1.16.1
 Note: since the hyrax 1.13.2, HDF4 handler has been just treated as a BES module.
       The hyrax release version has been used.
