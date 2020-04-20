@@ -1,3 +1,52 @@
+2020-03-23 Muqun Yang <myang6@hdfgroup.org>
+
+	HFVHANDLER-332, add a BES key H5.NoZeroSizeFullnameAttr not to generate
+	fullnamepath for zero storage size HDF5 dataset.
+
+2020-03-20 Muqun Yang <myang6@hdfgroup.org>
+
+	HFVHANDLER-332, add the check for zero storage size variables. This is legal in HDF5 and we see some NASA files that have it.
+
+2020-03-19 Muqun Yang <myang6@hdfgroup.org>
+
+	HFVHANDLER-330, add two more test cases. One to check if the handler corrects the wrong fillvalue for the CF option. 
+	Another one is to check if the multiple FakeDim dim. scales are handled correctly.
+
+2020-03-19 Muqun Yang <myang6@hdfgroup.org>
+
+	HFVHANDLER-330, add the python script to create the HDF5 file with the different fillvalue datatype.
+
+2020-02-29 Muqun Yang <myang6@hdfgroup.org>
+
+	HFVHANDLER-327, add the tests to handle the general 2D lat/lon under specific geo-location groups.
+
+2020-02-27 Muqun Yang <myang6@hdfgroup.org>
+
+	HFVHANDLER-327, to make OMPS-NPP files follow CF,the code is enhanced with
+	treating this file as one of general 2D Lat/lon case. Also the units of Latitude and
+	Longitude are corrected to follow CF. Tested with CentOS and verified with Panoply.
+
+2020-02-26 Muqun Yang <myang6@hdfgroup.org>
+
+	HFVHANDLER-325, Don't add the fullnamepath and origname attributes for coordinate variables when Enable BES key is turned off
+
+2020-02-25 Muqun Yang <myang6@hdfgroup.org>
+
+	HFVHANDLER-322, provide a BES key so that users can turn on the
+	64-bit integer support in the DMR output for the CF option. By default,
+	this key is turned off to make it consistent with DDS and DAS output.
+
+2020-02-24 Muqun Yang <myang6@hdfgroup.org>
+
+	HFVHANDLER-323, add fullnamepath and origname attributes to 64-bit integer variables in the DMR output for the CF option. Testsuie is updated.
+
+2020-02-20 Muqun Yang <myang6@hdfgroup.org>
+
+	HFVHANDLER-320, make sure that the dimension of the HDF5 points to HDF5 dimension scale as the netCDF-4 like file. New tests are added.
+
+2020-02-06  Muqun Yang <myang6@hdfgroup.org>
+
+	ESDIS-572, update ChangeLog,INSTALL,NEWS,README and Makefile.am for the 1.16.1 release.
 
 2019-12-24  Muqun Yang  <myang6@hdfgroup.org>
 
