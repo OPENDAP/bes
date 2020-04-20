@@ -105,8 +105,7 @@ private:
     static BESLog * d_instance;
 
     int d_flushed;
-    std::ostream * d_file_buffer;
-    //std::ostream * d_file_buffer;
+    std::ofstream * d_file_buffer;
     std::string d_file_name;
 
     // Flag to indicate the object is not routing data to its associated stream
@@ -116,8 +115,6 @@ private:
     bool d_verbose;
 
     bool d_use_local_time; ///< Use UTC by default
-
-    bool stdout;
 
 protected:
     BESLog();
