@@ -1,6 +1,6 @@
 # Process with autom4te to create an -*- Autotest -*- test suite.
 
-AT_INIT([bes/functions/tests testsuite])
+AT_INIT([bes/functions/stare/tests testsuite])
 
 m4_include(AT_TOP_SRCDIR/modules/handler_tests_macros.m4)
 
@@ -9,3 +9,4 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_intersection_1.dap.bescmd, xpas
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_count_0.dap.bescmd, xpass)
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_count_1.dap.bescmd, xpass)
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_0.dap.bescmd, xpass)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_1.dap.bescmd, xpass)
