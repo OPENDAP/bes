@@ -353,7 +353,7 @@ namespace ngap {
                     ngap_curl::http_status_to_string(status) << "'" << endl;
                 BESDEBUG(MODULE, prolog << "ERROR: HTTP request returned status: " << status << endl);
                 switch(status) {
-                    
+
                     case 400:
                         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
 
