@@ -77,7 +77,7 @@ int main(int argc,char **argv ) {
 
 }
 
-// Write the sha256 to a new file.
+// Append the sha256 to a file.
 short write_sha256_file(char* m_dmrpp_fname,char* m_h5_fname,char* m_sha256_fname,const string & sha256_buf) {
 
     short sha_fname_ret = 1;
@@ -95,14 +95,22 @@ short write_sha256_file(char* m_dmrpp_fname,char* m_h5_fname,char* m_sha256_fnam
 
 }
 
-// Append the sha256 to the existing file if necessary.
+// Update the sha256 in the recording file if necessary.
 short update_sha256_file(char* m_dmrpp_fname,char* m_h5_fname,char* m_sha256_fname,char* store_h5_fname,const string & sha256_buf) {
 
-    // If the sha256 of the missing data files doesn't exist, 
-    // just write the sha256 etc information to the file.
+    // If the recording file that stores thesha256 doesn't exist, 
+    // just create this file and write the sha256 etc information to the file.
     if(access(m_sha256_fname,F_OK)==-1) 
         return write_sha256_file(m_dmrpp_fname,m_h5_fname,m_sha256_fname,sha256_buf);
 
+    // 
+    // If the recording file exists, open this file and see if the sha256 of 
+    // this missing data can be found from the recording file.
+    // If the sha256 can be found,then the missing data file exists, we don't
+    // need to create a new one, otherwise, a new one needs to be created.
+    // If the sha256 can be found, we need to create a temp. text file to store
+    // the missing data file name so that this information can be passed to
+    // the patched dmrpp program afterwards.
     short ret_value = 1;
     ifstream sha_fstream;
     sha_fstream.open(m_sha256_fname,ifstream::in);
@@ -153,6 +161,7 @@ short update_sha256_file(char* m_dmrpp_fname,char* m_h5_fname,char* m_sha256_fna
     if(false == need_add_sha256)
         ret_value = 0;
 
+    // sha256 is not found, append this sha256 and the missing data file name to the recording file.
     if(true == space_fname_ret) {
         if(true == need_add_sha256) {
             ret_value = write_sha256_file(m_dmrpp_fname,m_h5_fname,m_sha256_fname,sha256_buf);
@@ -170,6 +179,7 @@ string retrieve_data_sha256(FILE*fp,const vector<size_t> &offsets,const vector<s
     size_t fSize = 0;
     unsigned char hash[SHA256_DIGEST_LENGTH];
 
+    // This is the buffer size
     for(int i = 0; i <nbytes.size();i++) 
         fSize+=nbytes[i];
 
@@ -179,16 +189,19 @@ string retrieve_data_sha256(FILE*fp,const vector<size_t> &offsets,const vector<s
     
     size_t cur_size = 0;
     for(int i = 0; i<offsets.size();i++) {
+        // Seek according to offset
         if(fseek(fp,offsets[i],SEEK_SET)!=0)
             return ret_str;
         size_t result = fread(&buf[cur_size],1,nbytes[i],fp);
         cur_size +=nbytes[i];
     }
 
+    // Calculate the hash
     SHA256((const unsigned char*)&buf[0],fSize,hash);
 
     string output="";
 
+    // Change 256 to hex and to a string
     for(int i =0; i<SHA256_DIGEST_LENGTH;i++) 
         output+=to_hex(hash[i]);
 
@@ -239,6 +252,9 @@ bool retrieve_chunk_info(FILE*fp,vector<size_t> &offsets,vector<size_t> &nbytes)
 }
 
 // Obtain the offset and number of bytes from the dmrpp file.
+// Here we don't need to worry about the filters. We just want to
+// make sure the data values(either in compressed form or uncompressed form)
+// can be retrieved.
 bool obtain_offset_nbytes(const vector<string>& str_vec, vector<size_t>& offsets, vector<size_t>& nbytes){
 
     bool ret=true;
