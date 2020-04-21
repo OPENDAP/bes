@@ -12,7 +12,7 @@ M_NAME=ngap_module
 M_VER=1.0.3
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/http -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand $(DAP_CFLAGS)
-LIBADD = -L$(top_builddir)/http -lbes_http $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+LIBADD = $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 

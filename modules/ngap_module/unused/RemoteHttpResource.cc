@@ -353,23 +353,23 @@ namespace ngap {
                     ngap_curl::http_status_to_string(status) << "'" << endl;
                 BESDEBUG(MODULE, prolog << "ERROR: HTTP request returned status: " << status << endl);
                 switch(status) {
+                    
                     case 400:
                         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
-                        break;
+
                     case 404:
                         throw BESNotFoundError(msg.str(), __FILE__, __LINE__);
-                        break;
+
                     case 408:
                         throw BESTimeoutError(msg.str(), __FILE__, __LINE__);
-                        break;
+
                     case 401:
                     case 402:
                     case 403:
                         throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
-                        break;
+
                     default:
                         throw BESInternalError(msg.str(), __FILE__, __LINE__);
-                        break;
                 }
             }
             BESDEBUG(MODULE,

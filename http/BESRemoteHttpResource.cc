@@ -285,21 +285,16 @@ namespace remote_http_resource {
                 switch(status) {
                     case 400:
                         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
-                        break;
                     case 404:
                         throw BESNotFoundError(msg.str(), __FILE__, __LINE__);
-                        break;
                     case 408:
                         throw BESTimeoutError(msg.str(), __FILE__, __LINE__);
-                        break;
                     case 401:
                     case 402:
                     case 403:
                         throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
-                        break;
                     default:
                         throw BESInternalError(msg.str(), __FILE__, __LINE__);
-                        break;
                 }
             }
             BESDEBUG(MODULE,

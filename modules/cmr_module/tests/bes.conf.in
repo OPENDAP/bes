@@ -76,16 +76,16 @@ BES.DefaultResponseMethod=POST
 #
 
 # Need to whitelist CMR server so we can talk to it.
-Http.Whitelist=http://localhost
-Http.Whitelist+=http://cloudydap.opendap.org/opendap
-Http.Whitelist+=http://cloudydap.opendap.org//opendap
-Http.Whitelist+=http://thredds.ucar.edu/thredds
-Http.Whitelist+=http://thredds.ucar.edu//thredds
-Http.Whitelist+=http://s3.amazonaws.com/somewhereovertherainbow
-Http.Whitelist+=https://s3.amazonaws.com/somewhereovertherainbow
-Http.Whitelist+=https://s3.amazonaws.com/cloudydap
+Gateway.Whitelist=http://localhost
+Gateway.Whitelist+=http://cloudydap.opendap.org/opendap
+Gateway.Whitelist+=http://cloudydap.opendap.org//opendap
+Gateway.Whitelist+=http://thredds.ucar.edu/thredds
+Gateway.Whitelist+=http://thredds.ucar.edu//thredds
+Gateway.Whitelist+=http://s3.amazonaws.com/somewhereovertherainbow
+Gateway.Whitelist+=https://s3.amazonaws.com/somewhereovertherainbow
+Gateway.Whitelist+=https://s3.amazonaws.com/cloudydap
 
-Http.Whitelist += https://cmr.earthdata.nasa.gov
+Gateway.Whitelist += https://cmr.earthdata.nasa.gov
 
 BES.Catalog.CMR.RootDirectory=UNUSED
 # BES.Catalog.CMR.FollowSymLinks=

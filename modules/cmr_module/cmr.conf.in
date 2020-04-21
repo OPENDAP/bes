@@ -11,8 +11,9 @@ BES.Include=dap.conf
 # modules to load, includes data modules and command modules            #
 #-----------------------------------------------------------------------#
 
-# BES.modules+=cmr
 BES.module.cmr=@bes_modules_dir@/libcmr_module.so
+# Uncomment this next line to enable CMR module
+# BES.modules+=cmr
 
 # CMR module specific parameters"
 # CMR.Reference: URL to the FoJson Reference Page at docs.opendap.org"
@@ -30,13 +31,13 @@ BES.Catalog.CMR.TypeMatch+=h5:.*\.(HDF5|h5|he5)(\.bz2|\.gz|\.Z)?$;
 BES.Catalog.CMR.TypeMatch+=ncml:.*\.ncml(\.bz2|\.gz|\.Z)?$;
 
 
-CMR.Cache.dir=/tmp/hyrax_cmr
-CMR.Cache.prefix=cmr_
-CMR.Cache.size=500
+Http.Cache.dir=/tmp/hyrax_cmr
+Http.Cache.prefix=cmr_
+Http.Cache.size=500
 
-CMR.MimeTypes=nc:application/x-netcdf
-CMR.MimeTypes+=h4:application/x-hdf
-CMR.MimeTypes+=h5:application/x-hdf5
+Http.MimeTypes=nc:application/x-netcdf
+Http.MimeTypes+=h4:application/x-hdf
+Http.MimeTypes+=h5:application/x-hdf5
 
 CMR.Collections=C179003030-ORNL_DAAC
 CMR.Collections+=C1276812863-GES_DISC
