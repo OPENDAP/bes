@@ -9,10 +9,10 @@ OPENSSL_INC=-I/usr/local/opt/openssl/include
 OPENSSL_LDFLAGS=-L/usr/local/opt/openssl/lib
 
 AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)/modules -I$(top_srcdir)/modules/dmrpp_module \
--I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS) $(OPENSSL_INC)
+-I$(top_srcdir)/dispatch -I$(top_srcdir)/http -I$(top_srcdir)/dap $(DAP_CFLAGS) $(OPENSSL_INC)
 
 # Added -lz for ubuntu
-LIBADD = $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_EXTRA_LIBS) \
+LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_DAP_LIB) $(BES_EXTRA_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
 $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) -lz
 
@@ -109,8 +109,9 @@ OBJS = ../DMRpp.o ../DmrppCommon.o ../Chunk.o ../CurlHandlePool.o	\
 ../DmrppD4Opaque.o ../DmrppD4Sequence.o ../DmrppTypeFactory.o		\
 ../DmrppParserSax2.o ../DmrppMetadataStore.o ../DmrppRequestHandler.o \
 ../CredentialsManager.o ../AccessCredentials.o ../NgapS3Credentials.o \
-../awsv4.o ../url_parser.o \
-../curl_utils.o
+../awsv4.o ../url_parser.o
+
+#../curl_utils.o
 
 
 ChunkTest_SOURCES = ChunkTest.cc
@@ -120,14 +121,14 @@ CredentialsManagerTest_SOURCES = CredentialsManagerTest.cc
 CredentialsManagerTest_LDADD = $(OBJS) $(LIBADD)
 
 NgapCredentialsTest_SOURCES = NgapCredentialsTest.cc
-NgapCredentialsTest_LDADD = ../AccessCredentials.o ../NgapS3Credentials.o ../curl_utils.o $(LIBADD)
+NgapCredentialsTest_LDADD = ../AccessCredentials.o ../NgapS3Credentials.o $(BES_HTTP_LIB) $(LIBADD)
 
 awsv4_test_SOURCES = awsv4_test.cc
 awsv4_test_LDADD = $(OBJS) $(LIBADD)
 
 DmrppParserTest_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/modules/hdf5_handler
 DmrppParserTest_SOURCES = DmrppParserTest.cc
-DmrppParserTest_LDADD = $(OBJS) $(LIBADD) 
+DmrppParserTest_LDADD = $(OBJS) $(LIBADD)
 
 DmrppCommonTest_SOURCES = DmrppCommonTest.cc $(top_srcdir)/modules/read_test_baseline.cc
 DmrppCommonTest_LDADD = $(OBJS) $(LIBADD)
