@@ -28,7 +28,7 @@
 #include <BESError.h>
 #include <BESDebug.h>
 
-#include "curl_utils.h"
+#include "BESCurlUtils.h"
 
 #include "NgapS3Credentials.h"
 
@@ -72,7 +72,7 @@ void NgapS3Credentials::get_temporary_credentials() {
 
     BESDEBUG(MODULE,  " distribution_api_endpoint: " << distribution_api_endpoint << endl);
 
-    rapidjson::Document d = curl::http_get_as_json(distribution_api_endpoint);
+    rapidjson::Document d = curl_utils::http_get_as_json(distribution_api_endpoint);
     BESDEBUG(MODULE, "S3 Credentials:"  << endl);
 
     rapidjson::Value& val = d[AWS_ACCESS_KEY_ID_KEY];
