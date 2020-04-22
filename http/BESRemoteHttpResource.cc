@@ -683,7 +683,7 @@ namespace remote_http_resource {
 
         // Get the name of the file in the cache (either the code finds this file or
         // or it makes it).
-        d_resourceCacheFileName = cache->get_cache_file_name(d_uid, d_remoteResourceUrl);
+        d_resourceCacheFileName = cache->get_cache_file_name(d_remoteResourceUrl);
         BESDEBUG(MODULE, prolog << "d_resourceCacheFileName: " << d_resourceCacheFileName << endl);
 
         // @TODO MAKE THIS RETRIEVE THE CACHED DATA TYPE IF THE CACHED RESPONSE IF FOUND
@@ -703,7 +703,7 @@ namespace remote_http_resource {
 
                 // #########################################################################################################
                 // I think in this if() is where we need to load the headers from the cache if we have them.
-                string hdr_filename = cache->get_cache_file_name(d_uid, d_remoteResourceUrl) + ".hdrs";
+                string hdr_filename = cache->get_cache_file_name(d_remoteResourceUrl) + ".hdrs";
                 std::ifstream hdr_ifs(hdr_filename.c_str());
                 try {
                     BESDEBUG(MODULE, prolog << "Reading response headers from: " << hdr_filename << endl);
@@ -754,7 +754,7 @@ namespace remote_http_resource {
                 // I think right here is where I would be able to cache the data type/response headers. While I have
                 // the exclusive lock I could open another cache file for metadata and write to it.
                 {
-                    string hdr_filename = cache->get_cache_file_name(d_uid, d_remoteResourceUrl) + ".hdrs";
+                    string hdr_filename = cache->get_cache_file_name(d_remoteResourceUrl) + ".hdrs";
                     std::ofstream hdr_out(hdr_filename.c_str());
                     try {
                         for (size_t i = 0; i < this->d_response_headers->size(); i++) {

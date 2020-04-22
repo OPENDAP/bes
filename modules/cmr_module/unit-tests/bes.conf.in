@@ -13,7 +13,7 @@
 #
 
 
-Http.Whitelist=http://localhost
+Gateway.Whitelist=http://localhost
 #Gateway.Whitelist+=https://cmr.earthdata.nasa.gov
 
 
@@ -44,4 +44,4 @@ BES.Catalog.CMR.RootDirectory=UNUSED
 # BES.Catalog.CMR.Include=
 BES.Catalog.CMR.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$;
 
-Http.Whitelist += https://cmr.earthdata.nasa.gov
+Gateway.Whitelist += https://cmr.earthdata.nasa.gov

@@ -61,11 +61,9 @@ namespace remote_cache {
 
         BESRemoteCache(const BESRemoteCache &src);
 
-        static std::string getCacheDirFromConfig();
-
-        static std::string getCachePrefixFromConfig();
-
-        static unsigned long getCacheSizeFromConfig();
+    static std::string getCacheDirFromConfig();
+    static std::string getCachePrefixFromConfig();
+    static unsigned long getCacheSizeFromConfig();
 
     protected:
         BESRemoteCache(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
@@ -79,12 +77,6 @@ namespace remote_cache {
         get_instance(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
 
         static BESRemoteCache *get_instance();
-
-        virtual std::string get_cache_file_name(const std::string &src, bool mangle = true);
-
-        virtual std::string get_cache_file_name(const std::string &uid, const std::string &src, bool mangle = true);
-
-        inline std::string get_hash(const std::string &name);
 
         virtual ~BESRemoteCache() {}
     };

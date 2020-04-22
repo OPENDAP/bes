@@ -63,8 +63,8 @@ Http.Cache.size=500
 BES.Catalog.RemoteResources.RootDirectory=UNUSED
 BES.Catalog.RemoteResources.TypeMatch=unused:unused;
 
-Httpd_Catalog.MimeTypes=nc:application/x-netcdf
-Httpd_Catalog.MimeTypes+=h4:application/x-hdf
-Httpd_Catalog.MimeTypes+=h5:application/x-hdf5
+Http.MimeTypes=nc:application/x-netcdf
+Http.MimeTypes+=h4:application/x-hdf
+Http.MimeTypes+=h5:application/x-hdf5
 
 Httpd_Catalog.Collections=test:http://test.opendap.org/data/

@@ -182,30 +182,4 @@ namespace remote_cache {
         return d_instance;
     }
 
-/**
- * Compute the SHA256 hash for the item name
- *
- * @param name The name to hash
- * @return The SHA256 hash of the name.
- */
-    inline string BESRemoteCache::get_hash(const string &name) {
-        if (name.empty()) throw BESInternalError("Empty name passed to the Metadata Store.", __FILE__, __LINE__);
-        return picosha2::hash256_hex_string(name[0] == '/' ? name : "/" + name);
-    }
-
-    string BESRemoteCache::get_cache_file_name(const string &src, bool /*mangle*/) {
-        return BESUtil::assemblePath(this->get_cache_directory(), get_cache_file_prefix() + get_hash(src));
-    }
-
-    string BESRemoteCache::get_cache_file_name(const string &uid, const string &src, bool /*mangle*/) {
-
-        string uid_part;
-        if (!uid.empty())
-            uid_part = uid + "_";
-
-        return BESUtil::assemblePath(this->get_cache_directory(),
-                                     get_cache_file_prefix() + uid_part + get_hash(src));
-    }
-
-
 } // namespace remote_cache
