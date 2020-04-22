@@ -585,7 +585,6 @@ add_executable(bes
     http/BESRemoteCache.h
     http/BESCurlUtils.h
         http/BESRemoteUtils.h
-
     http/rapidjson/fwd.h
     http/rapidjson/memorystream.h
     http/rapidjson/reader.h
@@ -1082,21 +1081,12 @@ add_executable(bes
     modules/freeform_handler/read_ff.h
     modules/freeform_handler/util_ff.cc
     modules/freeform_handler/util_ff.h
-<<<<<<< HEAD
-        modules/gateway_module/GatewayRequest.cc
-        modules/gateway_module/GatewayRequest.h
-        modules/gateway_module/unused/curl_utils.cc
-        modules/gateway_module/unused/curl_utils.h
-        modules/gateway_module/unused/GatewayCache.cc
-        modules/gateway_module/unused/GatewayCache.h
-=======
     modules/gateway_module/unused/GatewayRequest.cc
     modules/gateway_module/unused/GatewayRequest.h
     modules/gateway_module/curl_utils.cc
     modules/gateway_module/curl_utils.h
         modules/gateway_module/GatewayCache.cc
         modules/gateway_module/GatewayCache.h
->>>>>>> HK-624
     modules/gateway_module/GatewayContainer.cc
     modules/gateway_module/GatewayContainer.h
     modules/gateway_module/GatewayContainerStorage.cc
