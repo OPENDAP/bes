@@ -169,7 +169,6 @@ short update_sha256_file(char* m_dmrpp_fname,char* m_h5_fname,char* m_sha256_fna
     }
 
     return ret_value;
-
 }
 
 // Obtain the sha256 from the data values.
@@ -263,6 +262,9 @@ bool obtain_offset_nbytes(const vector<string>& str_vec, vector<size_t>& offsets
     string delim2 ="nBytes=\"";
     string delim3="\"";
 
+    vector<size_t> unfiltered_offsets;
+    vector<size_t> unfiltered_nbytes;
+
     // Pick up the line that includes chunk offset and save them to a vector.
     for(int i = 0; i <str_vec.size(); i++)
         if(str_vec[i].find(delim1)!=string::npos)
@@ -277,7 +279,7 @@ bool obtain_offset_nbytes(const vector<string>& str_vec, vector<size_t>& offsets
             break;       
         }
         string temp_offset=chunk_info_str[i].substr(co_spos+delim1.size(),co_epos-co_spos-delim1.size());
-        offsets.push_back(string_to_size_t(temp_offset));
+        unfiltered_offsets.push_back(string_to_size_t(temp_offset));
 
         size_t nb_spos = chunk_info_str[i].find(delim2,co_epos);
         size_t nb_epos = chunk_info_str[i].find(delim3,nb_spos+delim2.size());
@@ -286,8 +288,19 @@ bool obtain_offset_nbytes(const vector<string>& str_vec, vector<size_t>& offsets
             break;       
         }
         string temp_nbyte=chunk_info_str[i].substr(nb_spos+delim2.size(),nb_epos-nb_spos-delim2.size());
-        nbytes.push_back(string_to_size_t(temp_nbyte));
+        unfiltered_nbytes.push_back(string_to_size_t(temp_nbyte));
 
+    }
+
+    // Remove nbyte = 0 case. This is a bug caused by build_dmrpp. Before that is fixed, we
+    // remove this case since this fortuately doesn't affect our purpose and the patch_dmrpp program.
+    if(true == ret) {
+        for(int i = 0; i<unfiltered_nbytes.size();i++) {
+            if(unfiltered_nbytes[i] != 0) {
+                offsets.push_back(unfiltered_offsets[i]);
+                nbytes.push_back(unfiltered_nbytes[i]);
+            }
+        }
     }
 
     return ret;
