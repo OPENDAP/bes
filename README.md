@@ -2,12 +2,12 @@
   <img alt="TravisCI" src="https://travis-ci.org/OPENDAP/bes.svg?branch=master"/>
 </a> 
 
-_doi badge for 3.20.7_
-
 README for the OPeNDAP BES 
 ==========================
 
-# Version 3.20.7
+# Version 3.20.7 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3762439.svg)](https://doi.org/10.5281/zenodo.3762439)
+                 
+
 This version of the BES is part of Hyrax 1.16.2, a data server that supports the
 OPeNDAP data access protocols. See 
 [opendap.org/software/hyrax/1.16](https://www.opendap.org/software/hyrax/1.16)
@@ -17,7 +17,7 @@ For specific information about the BES, see the file _NEWS_ for a summary of new
 features and important updates. See _ChangeLog_ for a complete listing of changes/fixes 
 since the previous release. 
 
-This version of the BES requires libdap-3.20.6 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3759849.svg)](https://doi.org/10.5281/zenodo.3759849)
+This version of the BES requires *libdap-3.20.6* [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3759849.svg)](https://doi.org/10.5281/zenodo.3759849)
                                                
 # Introduction
 The Back-end Server (BES) for Hyrax is a unix daemon that builds DAP2 and DAP4 response
