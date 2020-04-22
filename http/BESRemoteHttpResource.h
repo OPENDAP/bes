@@ -25,8 +25,8 @@
 // Authors:
 //      ndp       Nathan Potter <ndp@opendap.org>
 
-#ifndef REMOTERESOURCE_H_
-#define REMOTERESOURCE_H_
+#ifndef _REMOTE_HTTP_RESOURCE_H_
+#define _REMOTE_HTTP_RESOURCE_H_ 1
 
 #include <curl/curl.h>
 #include <curl/easy.h>
@@ -36,8 +36,10 @@
 
 #include "InternalErr.h"
 #include "RCReader.h"
+#include "BESRemoteHttpResource.h"
+#include "rapidjson/document.h"
 
-//namespace gateway {
+namespace remote_http_resource {
 
 /**
  * This class encapsulates a remote resource available via HTTP GET. It will
@@ -45,118 +47,133 @@
  * for rapid (subsequent) access. It can be configure to use a proxy server
  * for the outgoing requests.
  */
-class BESRemoteHttpResource {
-private:
-    /// Resource URL that an instance of this class represents
-    std::string d_remoteResourceUrl;
+    class BESRemoteHttpResource {
+    private:
+        /// Resource URL that an instance of this class represents
+        std::string d_remoteResourceUrl;
 
-    /**
-     * Open file descriptor for the resource content (Returned from the cache).
-     */
-    int d_fd;
+        /**
+         * Open file descriptor for the resource content (Returned from the cache).
+         */
+        int d_fd;
 
-    /// Protect the state of the object, not allowing some method calls before the resource is retrieved.
-    bool d_initialized;
+        /// Protect the state of the object, not allowing some method calls before the resource is retrieved.
+        bool d_initialized;
 
-    /// An pointer to a CURL object to use for any HTTP transactions.
-    CURL *d_curl;
+        /// User id associated with this request
+        std::string d_uid;
 
-    /// @TODO This variable fails to accumulate error message content when curl has problems. FIX.
-    char d_error_buffer[CURL_ERROR_SIZE]; // A human-readable message.
+        /// Access/Authentication token for the requesting user.
+        std::string d_echo_token;
 
-    /// The DAP type of the resource. See RemoteHttpResource::setType() for more.
-    std::string d_type;
+        /// An pointer to a CURL object to use for any HTTP transactions.
+        CURL *d_curl;
 
-    /// The file name in which the content of the remote resource has been cached.
-    std::string d_resourceCacheFileName;
+        /// @TODO This variable fails to accumulate error message content when curl has problems. FIX.
+        char d_error_buffer[CURL_ERROR_SIZE]; // A human-readable message.
 
-    /// HTTP request headers added the curl HTTP GET request
-    std::vector<std::string> *d_request_headers; // Request headers
+        /// The DAP type of the resource. See RemoteHttpResource::setType() for more.
+        std::string d_type;
 
-    /// The HTTP response headers returned by the request for the remote resource.
-    std::vector<std::string> *d_response_headers; // Response headers
+        /// The file name in which the content of the remote resource has been cached.
+        std::string d_resourceCacheFileName;
 
-    /// The HTTP response headers returned by the request for the remote resource.
-    std::map<std::string, std::string> *d_http_response_headers; // Response headers
+        /// HTTP request headers added the curl HTTP GET request
+        std::vector<std::string> *d_request_headers; // Request headers
 
+        /// The HTTP response headers returned by the request for the remote resource.
+        std::vector<std::string> *d_response_headers; // Response headers
 
-    /**
-     * Determines the type of the remote resource. Looks at HTTP headers, and failing that compares the
-     * basename in the resource URL to the data handlers TypeMatch.
-     */
-    void setType(const std::vector<std::string> *resp_hdrs);
-
-    /**
-     * Makes the curl call to write the resource to a file, determines DAP type of the content, and rewinds
-     * the file descriptor.
-     */
-    void writeResourceToFile(int fd);
-
-    /**
-     * Ingests the HTTP headers into a queryable map. Once completed, determines the type of the remote resource.
-     * Looks at HTTP headers, and failing that compares the basename in the resource URL to the data handlers TypeMatch.
-     */
-    void ingest_http_headers_and_type();
-
-    /**
-    * Filter the cache and replaces all occurances of template_str with update_str.
-    *
-    * WARNING: Does not lock cache. This method assumes that the process has already
-    * acquired an exclusive lock on the cache file.
-    *
-    * @param template_str
-    * @param update_str
-    * @return
-    */
-    unsigned int filter_retrieved_resource(const std::string &template_str, const std::string &update_str);
-
-protected:
-    BESRemoteHttpResource() :
-            d_fd(0), d_initialized(false), d_curl(0), d_resourceCacheFileName(""), d_request_headers(0),
-            d_response_headers(0), d_http_response_headers(0) {
-    }
-
-public:
-    BESRemoteHttpResource(const std::string &url);
-
-    virtual ~BESRemoteHttpResource();
-
-    void retrieveResource(const std::string &inject_url = "");
-
-    /**
-     * Returns the DAP type std::string of the RemoteHttpResource
-     * @return Returns the DAP type std::string used by the BES Containers.
-     */
-    std::string getType() {
-        return d_type;
-    }
-
-    /**
-     * Returns the (read-locked) cache file name on the local system in which the content of the remote
-     * resource is stored. Deleting of the instance of this class will release the read-lock.
-     */
-    std::string getCacheFileName() {
-        if (!d_initialized)
-            throw libdap::Error(
-                    "RemoteHttpResource::getCacheFileName() - STATE ERROR: Remote Resource Has Not Been Retrieved.");
-        return d_resourceCacheFileName;
-    }
-
-    std::string get_http_response_header(const std::string header_name);
+        /// The HTTP response headers returned by the request for the remote resource.
+        std::map<std::string, std::string> *d_http_response_headers; // Response headers
 
 
-    /**
-     * Returns a std::vector of HTTP headers received along with the response from the request for the remote resource..
-     */
-    std::vector<std::string> *getResponseHeaders() {
-        if (!d_initialized)
-            throw libdap::Error(
-                    "RemoteHttpResource::getCacheFileName() - STATE ERROR: Remote Resource Has Not Been Retrieved.");
-        return d_response_headers;
-    }
+        /**
+         * Determines the type of the remote resource. Looks at HTTP headers, and failing that compares the
+         * basename in the resource URL to the data handlers TypeMatch.
+         */
+        void setType(const std::vector<std::string> *resp_hdrs);
 
-};
+        /**
+         * Makes the curl call to write the resource to a file, determines DAP type of the content, and rewinds
+         * the file descriptor.
+         */
+        void writeResourceToFile(int fd);
 
-//} /* namespace gateway */
+        /**
+         * Ingests the HTTP headers into a queryable map. Once completed, determines the type of the remote resource.
+         * Looks at HTTP headers, and failing that compares the basename in the resource URL to the data handlers TypeMatch.
+         */
+        void ingest_http_headers_and_type();
 
-#endif /* REMOTERESOURCE_H_ */
+        /**
+        * Filter the cache and replaces all occurances of template_str with update_str.
+        *
+        * WARNING: Does not lock cache. This method assumes that the process has already
+        * acquired an exclusive lock on the cache file.
+        *
+        * @param template_str
+        * @param update_str
+        * @return
+        */
+        unsigned int filter_retrieved_resource(const std::string &template_str, const std::string &update_str);
+
+    protected:
+        BESRemoteHttpResource() :
+                d_fd(0), d_initialized(false), d_curl(0), d_resourceCacheFileName(""), d_request_headers(0),
+                d_response_headers(0), d_http_response_headers(0) {
+        }
+
+    public:
+        BESRemoteHttpResource(const std::string &url, const std::string &uid = "", const std::string &echo_token = "");
+
+        virtual ~BESRemoteHttpResource();
+
+        void retrieveResource(const std::string &inject_url = "");
+
+        void retrieveResource(const string &template_key, const string &replace_value);
+
+        /**
+         * Returns the DAP type std::string of the RemoteHttpResource
+         * @return Returns the DAP type std::string used by the BES Containers.
+         */
+        std::string getType() {
+            return d_type;
+        }
+
+        /**
+         * Returns the (read-locked) cache file name on the local system in which the content of the remote
+         * resource is stored. Deleting of the instance of this class will release the read-lock.
+         */
+        std::string getCacheFileName() {
+            if (!d_initialized)
+                throw libdap::Error(
+                        "BESRemoteHttpResource::getCacheFileName() - STATE ERROR: Remote Resource Has Not Been Retrieved.");
+            return d_resourceCacheFileName;
+        }
+
+        std::string get_http_response_header(const std::string header_name);
+
+
+        /**
+         * Returns a std::vector of HTTP headers received along with the response from the request for the remote resource..
+         */
+        std::vector<std::string> *getResponseHeaders() {
+            if (!d_initialized)
+                throw libdap::Error(
+                        "BESRemoteHttpResource::getCacheFileName() - STATE ERROR: Remote Resource Has Not Been Retrieved.");
+            return d_response_headers;
+        }
+
+        /**
+        * Returns cache file content in a string..
+        */
+        std::string get_response_as_string();
+
+        rapidjson::Document get_as_json();
+
+    };
+
+} /* namespace remote_http_resource */
+
+#endif /* _REMOTE_HTTP_RESOURCE_H_ */

@@ -22,6 +22,26 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
+#ifndef I_HTTP_NAME_H
+#define I_HTTP_NAME_H 1
+
+#define HTTP_WHITELIST "Http.Whitelist"
+#define HTTP_MIMELIST "Http.MimeTypes"
+#define HTTP_PROXYPROTOCOL "Http.ProxyProtocol"
+#define HTTP_PROXYHOST "Http.ProxyHost"
+#define HTTP_PROXYPORT "Http.ProxyPort"
+#define HTTP_PROXYAUTHTYPE "Http.ProxyAuthType"
+#define HTTP_PROXYUSER "Http.ProxyUser"
+#define HTTP_PROXYPASSWORD "Http.ProxyPassword"
+#define HTTP_PROXYUSERPW "Http.ProxyUserPW"
+#define HTTP_USE_INTERNAL_CACHE "Http.UseInternalCache"
+// Could be used
+#define HTTP_DIR_KEY = "Http.Cache.dir";
+#define HTTP_PREFIX_KEY = "Http.Cache.prefix";
+#define HTTP_SIZE_KEY = "Http.Cache.size";
+
+#endif // I_HTTP_NAME_H
+
 #ifndef I_HTTPD_CATALOG_NAME_H
 #define I_HTTPD_CATALOG_NAME_H 1
 
@@ -32,7 +52,7 @@
 
 // These are the names of the bes keys used to configure the handler.
 #define HTTPD_CATALOG_COLLECTIONS "Httpd_Catalog.Collections"
-
+#if 0
 #define HTTPD_CATALOG_WHITELIST "Httpd_Catalog.Whitelist"
 #define HTTPD_CATALOG_MIMELIST "Httpd_Catalog.MimeTypes"
 #define HTTPD_CATALOG_PROXYPROTOCOL "Httpd_Catalog.ProxyProtocol"
@@ -43,10 +63,11 @@
 #define HTTPD_CATALOG_PROXYPASSWORD "Httpd_Catalog.ProxyPassword"
 #define HTTPD_CATALOG_PROXYUSERPW "Httpd_Catalog.ProxyUserPW"
 #define HTTPD_CATALOG_USE_INTERNAL_CACHE "Httpd_Catalog.UseInternalCache"
-
+#endif
 //#define MODULE HTTPD_CATALOG
 
 #endif // I_HTTPD_CATALOG_NAME_H
+
 
 #ifndef E_CmrNames_H
 #define E_CmrNames_H 1
@@ -59,6 +80,7 @@
 #define CMR_COLLECTIONS "CMR.Collections"
 #define CMR_FACETS "CMR.Facets"
 
+#if 0
 #define CMR_WHITELIST "Cmr.Whitelist"
 #define CMR_MIMELIST "Cmr.MimeTypes"
 #define CMR_PROXYPROTOCOL "Cmr.ProxyProtocol"
@@ -69,7 +91,7 @@
 #define CMR_PROXYPASSWORD "Cmr.ProxyPassword"
 #define CMR_PROXYUSERPW "Cmr.ProxyUserPW"
 #define CMR_USE_INTERNAL_CACHE "Cmr.UseInternalCache"
-
+#endif
 //#define MODULE CMR_NAME
 
 #endif // E_CmrNames_H
@@ -84,7 +106,7 @@
 // These are the names of the be keys used to configure the handler.
 // #define NGAP_COLLECTIONS "NGAP.Collections"
 // #define NGAP_FACETS "NGAP.Facets"
-
+#if 0
 #define NGAP_WHITELIST "NGAP.Whitelist"
 #define NGAP_MIMELIST "NGAP.MimeTypes"
 #define NGAP_PROXYPROTOCOL "NGAP.ProxyProtocol"
@@ -95,12 +117,15 @@
 #define NGAP_PROXYPASSWORD "NGAP.ProxyPassword"
 #define NGAP_PROXYUSERPW "NGAP.ProxyUserPW"
 #define NGAP_USE_INTERNAL_CACHE "NGAP.UseInternalCache"
+#endif
 #define DATA_ACCESS_URL_KEY "OPeNDAP_DMRpp_DATA_ACCESS_URL"
 #define NGAP_INJECT_DATA_URL_KEY "NGAP.inject_data_urls"
+#define NGAP_CMR_HOSTNAME_KEY "NGAP.cmr_host_url"
+#define NGAP_CMR_SEARCH_ENDPOINT_PATH_KEY "NGAP.cmr_search_endpoint_path"
+
 //#define MODULE NGAP_NAME
 
 #endif // E_NgapNames_H
-
 
 #ifndef E_GatewayResponseNames_H
 #define E_GatewayResponseNames_H 1
@@ -108,7 +133,7 @@
 #define Gateway_NAME "gateway"
 
 // These are the names of the be keys used to configure the handler.
-
+#if 0
 #define Gateway_WHITELIST "Gateway.Whitelist"
 #define Gateway_MIMELIST "Gateway.MimeTypes"
 #define Gateway_PROXYPROTOCOL "Gateway.ProxyProtocol"
@@ -119,7 +144,7 @@
 #define Gateway_PROXYPASSWORD "Gateway.ProxyPassword"
 #define Gateway_PROXYUSERPW "Gateway.ProxyUserPW"
 #define Gateway_USE_INTERNAL_CACHE "Gateway.UseInternalCache"
-
+#endif
 //#define MODULE Gateway_NAME
 
 #endif // E_GatewayResponseNames_H

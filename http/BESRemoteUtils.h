@@ -11,33 +11,42 @@
  * the various static fields based on the values of the BES configuration
  * file(s).
  */
+#ifndef _REMOTE_UTILS_H_
+#define _REMOTE_UTILS_H_ 1
+
 #include <string>
 #include <map>
 #include <vector>
 
-class BESRemoteUtils {
-public:
-    static std::map<std::string, std::string> MimeList;
-    static std::string ProxyProtocol;
-    static std::string ProxyHost;
-    static std::string ProxyUserPW;
-    static std::string ProxyUser;
-    static std::string ProxyPassword;
-    static int ProxyPort;
-    static int ProxyAuthType;
-    static bool useInternalCache;
+namespace remote_utils {
 
-    static std::string NoProxyRegex;
+/** @brief utility class for the gateway remote request mechanism
+ *
+ */
+    class BESRemoteUtils {
+    public:
+        static std::map<std::string, std::string> MimeList;
+        static std::string ProxyProtocol;
+        static std::string ProxyHost;
+        static std::string ProxyUserPW;
+        static std::string ProxyUser;
+        static std::string ProxyPassword;
+        static int ProxyPort;
+        static int ProxyAuthType;
+        static bool useInternalCache;
 
-    static void initialize();
+        static std::string NoProxyRegex;
 
-    static void get_type_from_disposition(const std::string &disp, std::string &type);
+        static void Initialize();
 
-    static void get_type_from_content_type(const std::string &ctype, std::string &type);
+        static void Get_type_from_disposition(const std::string &disp, std::string &type);
 
-    static void get_type_from_url(const std::string &url, std::string &type);
-};
+        static void Get_type_from_content_type(const std::string &ctype, std::string &type);
 
-//} // namespace httpd_catalog
+        static void Get_type_from_url(const std::string &url, std::string &type);
+    };
 
-//#endif // I_HttpCatalogUtils_H
+} // namespace remote_utils
+
+#endif // _REMOTE_UTILS_H_
+

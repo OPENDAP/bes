@@ -6,7 +6,7 @@ AUTOMAKE_OPTIONS = foreign
 # I added a new command to and put the ResponseHandler in xmlcommand to
 # keep all of the files together. jhrg 2/8/18
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
-AM_CXXFLAGS = 
+AM_CXXFLAGS =
 
 # FIXME Remove this hack. Set these with configure. jhrg 11/25/19
 OPENSSL_LIBS=-lcrypto
@@ -35,9 +35,22 @@ EXTRA_DIST =
 
 DISTCLEANFILES =
 
-SRCS = BESCurlUtils.cc
+##############################################################################
+#
+# Sources and Headers
 
-HDRS = BESCurlUtils.h
+SRCS = BESCurlUtils.cc \
+    BESRemoteCache.cc \
+    BESRemoteHttpResource.cc \
+    BESRemoteUtils.cc
+
+HDRS = BESCurlUtils.h \
+    BESRemoteCache.h \
+    BESRemoteHttpResource.h \
+    BESRemoteUtils.h \
+    BESProxyNames.h
+
+
 
 C4_DB=$(C4_DIR)/http.db
 C4_HTML=$(C4_dir)/http.html

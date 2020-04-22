@@ -23,12 +23,12 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-#ifndef _HttpCatalogCache_H_
-#define _HttpCatalogCache_H_
+#ifndef _REMOTE_CACHE_H_
+#define _REMOTE_CACHE_H_ 1
 
 #include "BESFileLockingCache.h"
 
-//namespace httpd_catalog {
+namespace remote_cache {
 
 /**
  * @brief A cache for content accessed via HTTP.
@@ -47,51 +47,41 @@
  * and some of them are optional - this cache is not optional).
  *
  */
-class BESRemoteCache : public BESFileLockingCache {
-private:
-    static bool d_enabled;
-    static BESRemoteCache *d_instance;
+    class BESRemoteCache : public BESFileLockingCache {
+    private:
+        static bool d_enabled;
+        static BESRemoteCache *d_instance;
 
-    static void delete_instance() {
-        delete d_instance;
-        d_instance = 0;
-    }
+        static void delete_instance() {
+            delete d_instance;
+            d_instance = 0;
+        }
 
-    BESRemoteCache();
+        BESRemoteCache();
 
-    BESRemoteCache(const BESRemoteCache &src);
+        BESRemoteCache(const BESRemoteCache &src);
 
     static std::string getCacheDirFromConfig();
-
     static std::string getCachePrefixFromConfig();
-
     static unsigned long getCacheSizeFromConfig();
 
-protected:
-    BESRemoteCache(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
+    protected:
+        BESRemoteCache(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
 
-public:
-    static const std::string DIR_KEY;
-    static const std::string PREFIX_KEY;
-    static const std::string SIZE_KEY;
+    public:
+//    static const std::string DIR_KEY;
+//    static const std::string PREFIX_KEY;
+//    static const std::string SIZE_KEY;
 
-    static BESRemoteCache *
-    get_instance(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
+        static BESRemoteCache *
+        get_instance(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
 
-    static BESRemoteCache *get_instance();
+        static BESRemoteCache *get_instance();
 
-    virtual std::string get_cache_file_name(const std::string &src, bool mangle = true);
+        virtual ~BESRemoteCache() {}
+    };
 
-    inline std::string get_hash(const std::string &name);
 
-    virtual ~BESRemoteCache() {}
-};
+} /* namespace remote_cache */
 
-BESRemoteCache *
-BESRemoteCache::get_instance(const std::string &cache_dir, const std::string &prefix, unsigned long long size) {
-    return nullptr;
-}
-
-//} /* namespace httpd_catalog */
-
-#endif /* _HttpCatalogCache_H_ */
+#endif /* _REMOTE_CACHE_H */
