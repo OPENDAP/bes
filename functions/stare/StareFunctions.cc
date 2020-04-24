@@ -171,7 +171,7 @@ target_in_dataset(const vector<dods_uint64> &targetIndices, const vector<dods_ui
     for (const dods_uint64 &i : targetIndices) {
         for (const dods_uint64 &j :dataStareIndices ) {
             // Check to see if the index 'i' overlaps the index 'j'. The cmpSpatial()
-            // function returns -1, 0, 1 depending on i in j, no overlap of j in i.
+            // function returns -1, 0, 1 depending on i in j, no overlap or, j in i.
             // testing for !0 covers the general overlap case.
             int result = cmpSpatial(i, j);
             if (result != 0)
