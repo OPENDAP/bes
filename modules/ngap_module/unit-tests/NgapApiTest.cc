@@ -134,9 +134,16 @@ public:
             CPPUNIT_ASSERT(false);
         }
         stringstream msg;
-        if (debug) cerr << prolog << "DataAccessURL: " << data_access_url << endl;
+        if (debug) cerr << prolog << "The CMR response contained DataAccessURL: " << data_access_url << endl;
 
-        string expected("https://d1lpqa6z94hycl.cloudfront.net/ghrc-app-protected/amsua15sp__1/2020-01-28/amsua15_2020.028_12915_1139_1324_WI.nc");
+        string expected;
+        // OLD value.
+        // expected = "https://d1lpqa6z94hycl.cloudfront.net/ghrc-app-protected/amsua15sp__1/2020-01-28/amsua15_2020.028_12915_1139_1324_WI.nc");
+        
+        // New value as of 4/24/2020
+        expected = "https://d1sd4up8kynpk2.cloudfront.net/ghrcw-protected/amsua15sp/amsu-a/noaa-15/data/nc/2020/0128/amsua15_2020.028_12915_1139_1324_WI.nc";
+
+        if (debug) cerr << prolog << "              The expected DataAccessURL: " << expected << endl;
 
         if (expected == data_access_url) {
             CPPUNIT_ASSERT(true);
