@@ -35,10 +35,14 @@
 #include "BESConstraintFuncs.h"
 #include "BESDataNames.h"
 #include "BESError.h"
+#include "BESDebug.h"
 
 using std::endl;
 using std::string;
 using std::ostream;
+
+#define MODULE "xmlbase"
+#define prolog std::string("BESDapResponse::").append(__func__).append("() - ")
 
 /** @brief Extract the dap protocol from the setConext information
 
@@ -59,6 +63,7 @@ using std::ostream;
 void BESDapResponse::read_contexts()
 {
     bool found = false;
+    BESDEBUG(MODULE,prolog << "BEGIN" << endl);
 
     // d_explicit_containers is false by default
     string context = BESContextManager::TheManager()->get_context("dap_explicit_containers", found);
@@ -71,6 +76,7 @@ void BESDapResponse::read_contexts()
             throw BESError("dap_explicit_containers must be yes or no",
             BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
     }
+    BESDEBUG(MODULE,prolog << "dap_explicit_containers: \"" << context  << "\"" << endl);
 
     if (!found) {
         context = BESContextManager::TheManager()->get_context("dap_format", found);
@@ -81,12 +87,16 @@ void BESDapResponse::read_contexts()
                 d_explicit_containers = true;
         }
     }
+    BESDEBUG(MODULE,prolog << "dap_format: \"" << context  << "\"" << endl);
 
     context = BESContextManager::TheManager()->get_context("xdap_accept", found);
     if (found) d_dap_client_protocol = context;
+    BESDEBUG(MODULE,prolog << "xdap_accept: \"" << context  << "\"" << endl);
 
     context = BESContextManager::TheManager()->get_context("xml:base", found);
     if (found) d_request_xml_base = context;
+    BESDEBUG(MODULE,prolog << "xml:base: \"" << context  << "\"" << endl);
+    BESDEBUG(MODULE,prolog << "END" << endl);
 
 }
 

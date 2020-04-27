@@ -40,6 +40,10 @@
 using namespace std;
 using namespace bes;
 
+#define MODULE "xmlbase"
+#define prolog std::string("BESDap4ResponseHandler::").append(__func__).append("() - ")
+
+
 BESDap4ResponseHandler::BESDap4ResponseHandler(const string &name)
     : BESResponseHandler(name), d_use_dmrpp(false), d_dmrpp_name(DMRPP_DEFAULT_NAME)
 {
@@ -90,10 +94,6 @@ void BESDap4ResponseHandler::execute(BESDataHandlerInterface &dhi)
 
 	if (found)
 	    dmr->set_response_limit(response_size_limit);
-
-    string xml_base = BESContextManager::TheManager()->get_context("xml:base", found);
-	if (found && !xml_base.empty())
-		dmr->set_request_xml_base(xml_base);
 
 	d_response_object = new BESDMRResponse(dmr.release());
 
