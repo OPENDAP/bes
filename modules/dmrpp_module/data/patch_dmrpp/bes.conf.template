@@ -18,7 +18,7 @@ BES.module.nc=
 
 BES.Catalog.catalog.RootDirectory=
 BES.Data.RootDirectory=/dev/null
-BES.Catalog.catalog.TypeMatch=h5:.*\.(h5|he5|HDF5|nc|nc4)(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.catalog.TypeMatch=h5:.*\.(h5|he5|HDF5|hdf5|nc|nc4)(\.bz2|\.gz|\.Z)?$;
 
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
