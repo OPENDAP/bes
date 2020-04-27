@@ -38,12 +38,15 @@
 
 #include "BESContextManager.h"
 #include "BESInfo.h"
+#include "BESDebug.h"
 
 using std::endl;
 using std::string;
 using std::ostream;
 
 BESContextManager *BESContextManager::_instance = 0;
+
+#define MODULE "context"
 
 /** @brief set context in the BES
  *
@@ -52,6 +55,7 @@ BESContextManager *BESContextManager::_instance = 0;
  */
 void BESContextManager::set_context(const string &name, const string &value)
 {
+    BESDEBUG(MODULE, "BESContextManager::set_context(name=\"" << name << "\", value=\"" << value << "\")" << endl);
     _context_list[name] = value;
 }
 
@@ -62,6 +66,7 @@ void BESContextManager::set_context(const string &name, const string &value)
  */
 void BESContextManager::unset_context(const string &name)
 {
+    BESDEBUG(MODULE, "BESContextManager::unset_context(name=\"" << name << "\")" << endl);
     _context_list.erase(name);
 }
 
@@ -84,6 +89,7 @@ string BESContextManager::get_context(const string &name, bool &found)
         ret = (*i).second;
         found = true;
     }
+    BESDEBUG(MODULE, "BESContextManager::get_context(name=\"" << name << "\", found=\"" << found << "\"): \"" << ret << "\"" << endl);
     return ret;
 }
 
@@ -108,6 +114,7 @@ int BESContextManager::get_context_int(const string &name, bool &found)
         throw BESInternalError(string("Error reading an integer value for the context '") + name + "': " + strerror(errno),
             __FILE__, __LINE__);
     }
+    BESDEBUG(MODULE, "BESContextManager::get_context_int(name=\"" << name << "\", found=\"" << found << "\"): \"" << val << "\"" << endl);
 
     return val;
 }
