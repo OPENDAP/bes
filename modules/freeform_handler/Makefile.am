@@ -12,7 +12,7 @@ SUBDIRS = FFND . tests
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=freeform_handler
-M_VER=3.10.2
+M_VER=3.10.3
 
 # There are some defines which must be set when you build code which uses
 # FreeForm.h. Add them here. 4/17/98 jhrg
@@ -65,7 +65,7 @@ EXTRA_DIST = data ff.conf.in
 CLEANFILES = ff.conf
 
 sample_datadir = $(datadir)/hyrax/data/ff
-sample_data_DATA = data/1998-6-avhrr.dat data/avhrr.dat data/gsodock.dat \
+sample_data_DATA = data/1998-6-avhrr.dat data/avhrr.dat data/gsodock.dat data/gsodock.dat.das \
 	data/1998-6-avhrr.fmt data/avhrr.fmt data/gsodock.fmt \
 	data/1998-6-avhrr.dat.das data/avhrr.dat.das
 

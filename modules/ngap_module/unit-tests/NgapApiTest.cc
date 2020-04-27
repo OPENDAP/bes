@@ -117,13 +117,19 @@ public:
     void cmr_access_test() {
         string prolog = string(__func__) + "() - ";
         NgapApi ngapi;
+        string provider_name;
+        string collection_name;
+        string granule_name;
         string data_access_url;
 
         if ( debug  ) {
             cout << endl;
         }
+        provider_name = "GHRC_CLOUD";
+        collection_name ="ADVANCED MICROWAVE SOUNDING UNIT-A (AMSU-A) SWATH FROM NOAA-15 V1";
+        granule_name = "amsua15_2020.028_12915_1139_1324_WI.nc";
 
-        string resty_path = "providers/GHRC_CLOUD/collections/ADVANCED MICROWAVE SOUNDING UNIT-A (AMSU-A) SWATH FROM NOAA-15 V1/granules/amsua15_2020.028_12915_1139_1324_WI.nc";
+        string resty_path = "providers/"+provider_name+"/collections/"+collection_name+"/granules/"+granule_name;
         if (debug) cerr << prolog << "RestifiedPath: " << resty_path << endl;
 
         try {
@@ -134,15 +140,24 @@ public:
             CPPUNIT_ASSERT(false);
         }
         stringstream msg;
-        if (debug) cerr << prolog << "DataAccessURL: " << data_access_url << endl;
 
-        string expected("https://d1lpqa6z94hycl.cloudfront.net/ghrc-app-protected/amsua15sp__1/2020-01-28/amsua15_2020.028_12915_1139_1324_WI.nc");
+        string expected;
+        // OLD value.
+        // expected = "https://d1lpqa6z94hycl.cloudfront.net/ghrc-app-protected/amsua15sp__1/2020-01-28/amsua15_2020.028_12915_1139_1324_WI.nc";
+        // New value as of 4/24/2020
+        expected = "https://d1sd4up8kynpk2.cloudfront.net/ghrcw-protected/amsua15sp/amsu-a/noaa-15/data/nc/2020/0128/amsua15_2020.028_12915_1139_1324_WI.nc";
 
-        if (expected == data_access_url) {
-            CPPUNIT_ASSERT(true);
-        } else {
-            CPPUNIT_ASSERT(false);
-        }
+        if (debug) cerr << prolog << "TEST: Is the URL longer than the granule name? " << endl;
+        CPPUNIT_ASSERT (data_access_url.length() > granule_name.length() );
+
+        if (debug) cerr << prolog << "TEST: Does the URL end with the granule name? " << endl;
+        bool endsWithGranuleName = data_access_url.substr(data_access_url.length()-granule_name.length(), granule_name.length()).compare(granule_name) == 0;
+        CPPUNIT_ASSERT( endsWithGranuleName == true );
+
+        if (debug) cerr << prolog << "TEST: Does the returned URL match the expected URL? " << endl;
+        if (debug) cerr << prolog << "CMR returned DataAccessURL: " << data_access_url << endl;
+        if (debug) cerr << prolog << "The expected DataAccessURL: " << expected << endl;
+        CPPUNIT_ASSERT (expected == data_access_url);
     }
 
     CPPUNIT_TEST_SUITE( NgapApiTest );

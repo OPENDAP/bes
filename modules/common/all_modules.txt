@@ -14,6 +14,7 @@ gdal_handler
 hdf4_handler
 hdf5_handler
 httpd_catalog_module
+ngap_module
 ncml_module
 netcdf_handler
 ugrid_functions

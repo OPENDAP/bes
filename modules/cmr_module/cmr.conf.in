@@ -11,8 +11,9 @@ BES.Include=dap.conf
 # modules to load, includes data modules and command modules            #
 #-----------------------------------------------------------------------#
 
-# BES.modules+=cmr
 BES.module.cmr=@bes_modules_dir@/libcmr_module.so
+# Uncomment this next line to enable CMR module
+# BES.modules+=cmr
 
 # CMR module specific parameters"
 # CMR.Reference: URL to the FoJson Reference Page at docs.opendap.org"

@@ -12,6 +12,7 @@ BES.Catalog.catalog.TypeMatch+=dmrpp:.*\.dmrpp(\.bz2|\.gz|\.Z)?$;
 
 BES.Catalog.catalog.RootDirectory=@abs_top_builddir@/modules/ngap_module
 
+BES.LogName=/dev/null
 
 Gateway.Whitelist= https://cmr.earthdata.nasa.gov/search
 

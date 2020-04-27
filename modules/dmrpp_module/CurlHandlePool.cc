@@ -841,7 +841,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
         if(!netrc_file.empty()){
             curl_easy_setopt(handle->d_handle, CURLOPT_NETRC_FILE, netrc_file.c_str());
         }
-        LOG("The dmrpp_module/CurlHandlePool is using the netrc file '" << ((!netrc_file.empty())?netrc_file:"~/.netrc") << "'");
+        VERBOSE(__FILE__ << "::get_easy_handle() is using the netrc file '" << ((!netrc_file.empty())?netrc_file:"~/.netrc") << "'" << endl);
 
 
         AccessCredentials *credentials = CredentialsManager::theCM()->get(handle->d_url);

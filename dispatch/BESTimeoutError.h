@@ -43,14 +43,14 @@ class BESTimeoutError : public BESError
 protected:
     BESTimeoutError() {}
 public:
-    BESTimeoutError( const string &s,
-					  const string &file,
+    BESTimeoutError( const std::string &s,
+					  const std::string &file,
 					  unsigned int line )
 			    : BESError( s, BES_TIMEOUT_ERROR,
 			                file, line ) {}
     virtual		~BESTimeoutError() {}
 
-    virtual void	dump( ostream &strm ) const
+    virtual void	dump( std::ostream &strm ) const
 			{
 			    strm << "BESTimeoutError::dump - ("
 			         << (void *)this << ")" << std::endl ;

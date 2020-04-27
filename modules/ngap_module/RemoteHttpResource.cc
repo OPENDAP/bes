@@ -36,6 +36,9 @@
 
 #include "BESInternalError.h"
 #include "BESForbiddenError.h"
+#include "BESSyntaxUserError.h"
+#include "BESNotFoundError.h"
+#include "BESTimeoutError.h"
 
 #include "BESDebug.h"
 #include "BESUtil.h"
@@ -349,7 +352,25 @@ namespace ngap {
                 msg <<    "The HTTP request returned a status of " << status << " which means '" <<
                     ngap_curl::http_status_to_string(status) << "'" << endl;
                 BESDEBUG(MODULE, prolog << "ERROR: HTTP request returned status: " << status << endl);
-                throw BESForbiddenError(msg.str(),__FILE__,__LINE__);
+                switch(status) {
+
+                    case 400:
+                        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+
+                    case 404:
+                        throw BESNotFoundError(msg.str(), __FILE__, __LINE__);
+
+                    case 408:
+                        throw BESTimeoutError(msg.str(), __FILE__, __LINE__);
+
+                    case 401:
+                    case 402:
+                    case 403:
+                        throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
+
+                    default:
+                        throw BESInternalError(msg.str(), __FILE__, __LINE__);
+                }
             }
             BESDEBUG(MODULE,
                      prolog << "Resource " << d_remoteResourceUrl << " saved to cache file " << d_resourceCacheFileName
