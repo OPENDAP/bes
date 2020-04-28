@@ -58,7 +58,7 @@ II. Detailed version
 1. Purpose 
 Dmrpp files may miss some variable value information. The C++ programs 
 and python scripts under this directory are used to automatically patch 
-those missing variable value informtion to original dmrpp files.
+those missing variable value information to original dmrpp files.
 
 2. What's inside
 1) There are two C++ programs. check_dmrpp and merge_dmrpp. 
@@ -70,7 +70,9 @@ dmrpp file.
 that are used to automatically patch a dmrpp file or all dmrpp files under 
 this directory. 
 patch_all.py is the main program that can automatically patch all dmrpp files
-under this directory.
+under this directory. The program checks if the number of dmrpp files is
+the same as the number of HDF5 files and stops if the number doesn't match.
+
 patch_one_dmrpp.py can be used to patch one dmrpp file. 
 
 Two python scripts listed below can be used to generate the original 
@@ -104,7 +106,7 @@ under /test_data.
 d_int.h5.dmrpp doesn't have any missing variable values. 
 grid_1_2d.h5.dmrpp misses the variable value information of variable 
 lat and lon.
-The patched dmrpp file and the hdf5 file that stores the missing value are 
+The patched dmrpp file and the hdf5 file that stores the missing values are 
 also provided under /test_data.
 
 To see more output messages of the testing program, 
@@ -121,7 +123,7 @@ configuration options are set by corresponding BES keys in the file
 bes.conf.template.
 
 3.3) Two xml files template.bescmd and template-dmr.bescmd are necessary to 
-generate the HDF5 file that stores the missing variable value.  
+generate the HDF5 file that stores the missing variable values.  
 
 4) How to patch dmrpp Files
 
