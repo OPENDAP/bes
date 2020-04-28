@@ -118,6 +118,8 @@ using namespace libdap;
 const string CRLF = "\r\n";             // Change here, expr-test.cc
 const string BES_KEY_TIMEOUT_CANCEL = "BES.CancelTimeoutOnSend";
 
+#define prolog std::string("BESDapResponseBuilder::").append(__func__).append("() - ")
+
 /**
  * Look up the BES Keys (parameters in the bes.conf file) that this class
  * uses.
@@ -1359,7 +1361,7 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, bool with_mime_head
     // throw Error
     if (!d_dap4ce.empty()) {
 
-        BESDEBUG("dap", "BESDapResponseBuilder::send_dmr() - Parsing DAP4 constraint: '"<< d_dap4ce << "'"<< endl);
+        BESDEBUG("dap", prolog << "Parsing DAP4 constraint: '"<< d_dap4ce << "'"<< endl);
 
         D4ConstraintEvaluator parser(&dmr);
         bool parse_ok = parser.parse(d_dap4ce);
@@ -1376,6 +1378,7 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, bool with_mime_head
 
     conditional_timeout_cancel();
 
+    BESDEBUG("xmlbase", prolog << "DMR::request_xml_base(): \"" << dmr.request_xml_base() << "\""<< endl);
 
     XMLWriter xml;
     dmr.print_dap4(xml, /*constrained &&*/!d_dap4ce.empty() /* true == constrained */);
@@ -1446,6 +1449,8 @@ void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &
     BESDEBUG("dap", "BESDapResponseBuilder::serialize_dap4_data() - BEGIN" << endl);
 
     if (with_mime_headers) set_mime_binary(out, dap4_data, x_plain, last_modified_time(d_dataset), dmr.dap_version());
+
+    BESDEBUG("xmlbase", prolog << "DMR::request_xml_base(): \"" << dmr.request_xml_base() << "\""<< endl);
 
     // Write the DMR
     XMLWriter xml;
