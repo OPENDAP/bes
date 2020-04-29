@@ -229,6 +229,37 @@ dnl output of besstandalone is a netcdf3 file. The binary stream is read using
 dnl ncdump and the output of that is compared to a baseline. Of course, this
 dnl requires ncdump be accessible.
 
+m4_define([AT_BESCMD_BUILD_DMRPP_RESPONSE_TEST],  [dnl
+
+    AT_SETUP([$1])
+    AT_KEYWORDS([bescmd data dap4 DAP4])
+
+    input=$abs_top_srcdir/$1
+    dmr=$abs_top_srcdir/$1.dmr
+    baseline=$abs_top_srcdir/$1.dmrpp.baseline
+    repeat=$3
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: build_dmrpp -f $input -r $dmr"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+    [
+        AT_CHECK([build_dmrpp -f $input -r $dmr], [], [stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([build_dmrpp -f $input -r $dmr], [], [stdout])
+        AT_CHECK([diff -b -B $baseline stdout])
+        AT_XFAIL_IF([test z$2 = zxfail])
+        ])
+
+    AT_CLEANUP
+])
+
+dnl This is similar to the "binary data" macro above, but instead assumes the
+dnl output of besstandalone is a netcdf3 file. The binary stream is read using
+dnl ncdump and the output of that is compared to a baseline. Of course, this
+dnl requires ncdump be accessible.
+
 m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST],  [dnl
 
     AT_SETUP([$1])
