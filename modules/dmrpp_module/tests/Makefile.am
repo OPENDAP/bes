@@ -11,7 +11,7 @@ bes_mds_tests.conf bes_serial.conf $(TESTSUITE_MDS) $(TESTSUITE_S3) $(TESTSUITE_
 EXTRA_DIST = contiguous chunked new_types mds_tests s3 $(srcdir)/package.m4 \
 $(TESTSUITE) $(TESTSUITE).at $(TESTSUITE_MDS) $(TESTSUITE_MDS).at \
 $(TESTSUITE_S3)  $(TESTSUITE_S3).at \
-$(TESTSUITE_DMRPP) $(TESTSUITE_DMRPP).at bes_dmrpp_tests.conf.in \
+$(TESTSUITE_DMRPP) $(TESTSUITE_DMRPP).at \
 atlocal.in bes.conf.in bes_mds_tests.conf.in  bes_serial.conf.in
 
 DISTCLEANFILES = atconfig mds_for_tests_ledger.txt
