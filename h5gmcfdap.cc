@@ -298,6 +298,29 @@ void gen_gmh5_cfdds( DDS & dds, HDF5CF:: GMFile *f) {
     vector<HDF5CF::GMCVar *>::const_iterator   it_cv;
     vector<HDF5CF::GMSPVar *>::const_iterator it_spv;
 
+    // Since we need to use dds to add das for 64-bit dmr,we need to check if
+    // this case includes 64-bit integer variables and this is for dmr response.
+    bool dmr_64bit_support = false;
+    if(HDF5RequestHandler::get_dmr_long_int()==true &&
+        HDF5RequestHandler::get_dmr_64bit_int()!=NULL) {
+        for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
+            if (H5INT64 == (*it_v)->getType() || H5UINT64 == (*it_v)->getType()){
+                dmr_64bit_support = true;
+                break;
+            }
+        }
+    }
+
+    // We need to remove the unsupported attributes.
+    if(true == dmr_64bit_support) {
+        //STOP: add non-support stuff
+        f->Handle_Unsupported_Dtype(true);
+
+        // Remove unsupported dataspace 
+        f->Handle_Unsupported_Dspace(true);
+
+    }
+
     for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
         BESDEBUG("h5","variable full path= "<< (*it_v)->getFullPath() <<endl);
         // Handle 64-integer DAP4 CF mapping
