@@ -474,6 +474,63 @@ compute_coordinates(STARE &stare, coordinates *c) {
 }
 
 /**
+ * Compute the resolution level based on the two indices
+ * @param stare Library object
+ * @param target The target s-index
+ * @param adjacent The adjacent s-index
+ * @return return The new s-index with the resolution bits set
+ */
+STARE_ArrayIndexSpatialValue
+set_s_index_resolution(STARE &stare, STARE_ArrayIndexSpatialValue target, STARE_ArrayIndexSpatialValue adjacent) {
+    static EmbeddedLevelNameEncoding lj;       // Use this to get the mask
+    int lvl = stare.cmpSpatialResolutionEstimateI(target, adjacent);
+    return (target & ~lj.levelMaskSciDB) | lvl;
+}
+
+/**
+ * @brief Given the s-indices, modify them to include the data resolution
+ *
+ * Since we know the level 27 s-index for the center of each pixel, use that
+ * to compute the resolution of the data. Since this code is heavily biased
+ * toward level 2 data, use only the left and/or right pixels from the swath's
+ * scan line.
+ *
+ * @todo Add a new function to the STARE library that will take a vector of
+ * s-indices and treat the first index as special, computing its resolution
+ * using the its distance from each of the other s-indices in the list. Or
+ * take an index and a list? Regardless, the first index should be modified,
+ * but not the others.
+ *
+ * @todo Are there more efficient ways to do this?
+ *
+ * @param stare
+ * @param c Modify the s-indices here to include resolution information
+ */
+void
+compute_coordinates_resolution(STARE &stare, coordinates *c) {
+    EmbeddedLevelNameEncoding lj;       // Use this to get the mask
+    //Assume data are stored in row-major order; dims[0] is the row, dims[1] is the column
+    unsigned long n = 0;
+    unsigned long max_row = c->dims[0];
+    for (unsigned long row = 0; row < max_row; ++row) {
+        // This code uses the pixel to the left and/or right of the target.
+        unsigned long max_col = c->dims[1];
+        unsigned long mid_col = max_col / 2;
+        for (unsigned long col = 0; col < mid_col; ++col) {
+            // Compute resolution using the point to the right (n + 1)
+            c->s_index[n] = set_s_index_resolution(stare, c->s_index[n], c->s_index[n+1]);
+            ++n;
+        }
+        for (unsigned long col = mid_col; col < max_col; ++col) {
+            // Compute resolution using the point to the left (n - 1)
+            c->s_index[n] = set_s_index_resolution(stare, c->s_index[n], c->s_index[n-1]);
+            ++n;
+        }
+
+    }
+}
+
+/**
  * @brief Write the STARE index information to an HDF5 file.
  *
  * @todo Add error checking to this function's HDF5 API calls.
@@ -720,6 +777,7 @@ static void usage() {
     cerr << "-b STARE Build Level: \tHigher levels -> longer initialization time. (default is 5)" << endl;
     cerr << "-s STARE default Level: \tHigher levels -> finer resolution. (default is 27)" << endl;
     cerr << "-a Algotithm: \t1, 2 or 3 (default is 3)" << endl;
+    cerr << "-r Include resolution inforamtion in the indices. Works for algorithm 2 and 3 only" << endl;
 }
 
 static string
@@ -750,7 +808,8 @@ is_url(const string &name) {
  * -v verbose
  * -b <int> STARE library build level (default is 5, very fast library initialization time)
  * -s <int> STARE index max level (default is 27, the highest possible)
- * -a <int>
+ * -a <int> Choose how the s-indices are built
+ * -r If supplied, include a second pass to include the resolution level  in the indices
  *
  *  build_sidecar [options] [file|DAP_URL] latitude_var_name longitude_var_name level
  */
@@ -764,8 +823,9 @@ int main(int argc, char *argv[]) {
     float build_level = 5.0;  // The default build level, fast start time, longer index lookup.
     float level = 27.0;
     int alg = 3;
+    bool compute_resolution = false;
 
-    while ((c = getopt(argc, argv, "hvVo:t:b:s:a:")) != -1) {
+    while ((c = getopt(argc, argv, "hvVro:t:b:s:a:")) != -1) {
         switch (c) {
             case 'o':
                 newName = optarg;
@@ -788,6 +848,9 @@ int main(int argc, char *argv[]) {
                 break;
             case 'a':
                 alg = atoi(optarg);
+                break;
+            case 'r':
+                compute_resolution = true;
                 break;
             case 'h':
             default:
@@ -828,6 +891,10 @@ int main(int argc, char *argv[]) {
 
                 vector<hsize_t> dims = read_lat_lon(dataset, lat_name, lon_name, lat, lon);
                 unique_ptr<vector<coord> > coords = build_coords(stare, dims, lat, lon);
+
+                if (compute_resolution)
+                    VERBOSE("STARE index resolution is not available for algorithm one.");
+
                 writeHDF5(newName, tmpStorage, coords.get());
                 break;
             }
@@ -838,6 +905,10 @@ int main(int argc, char *argv[]) {
 
                 vector<hsize_t> dims = read_lat_lon(dataset, lat_name, lon_name, lat, lon);
                 unique_ptr<coordinates> c = build_coordinates(stare, dims, lat, lon);
+
+                if (compute_resolution)
+                    compute_coordinates_resolution(stare, c.get());
+
                 writeHDF5(newName, tmpStorage, c.get());
                 break;
             }
@@ -850,7 +921,12 @@ int main(int argc, char *argv[]) {
                     read_lat_lon_url(dataset, lat_name, lon_name, c.get());
                 else
                     read_lat_lon(dataset, lat_name, lon_name, c.get());
+
                 compute_coordinates(stare, c.get());
+
+                if (compute_resolution)
+                    compute_coordinates_resolution(stare, c.get());
+
                 writeHDF5(newName, tmpStorage, c.get());
                 break;
             }
