@@ -104,7 +104,7 @@ if(args.verbosity is not None):
 files=[f for f in os.listdir('.') if os.path.isfile(f)]
 # Sanity check.
 for f in files:
-    if f.endswith(".h5") or f.endswith(".he5") or f.endswith(".hdf5") or f.endswith(".nc") or f.endswith(".nc4"):
+    if f.endswith(".h5") or f.endswith(".he5") or f.endswith(".hdf5") or f.endswith(".HDF5") or f.endswith(".nc") or f.endswith(".nc4"):
         f1= f+".dmrpp"
         if(f1 not in files):
             print("No dmrpp files for all HDF5 files, stop. ")
@@ -114,7 +114,7 @@ for f in files:
     if f.endswith(".dmrpp"):
         select_dmrpp_fnames.append(f)
         f1= f.rsplit(".dmrpp")[0]
-        has_hdf5 = f1.endswith(".h5")|f1.endswith(".he5")|f1.endswith(".hdf5")|f1.endswith(".nc")|f1.endswith(".nc4")
+        has_hdf5 = f1.endswith(".h5")|f1.endswith(".he5")|f1.endswith(".hdf5")|f1.endswith(".HDF5")|f1.endswith(".nc")|f1.endswith(".nc4")
         if(False == has_hdf5):
             print("No HDF5 files for all dmrpp files, stop. ")
             sys.exit(1)

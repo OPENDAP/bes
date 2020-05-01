@@ -27,7 +27,7 @@ if ret.returncode!=0:
 files=[f for f in os.listdir('.') if os.path.isfile(f)]
 #sanity check.
 for f in files:
-    if f.endswith(".h5") or f.endswith(".he5") or f.endswith(".hdf5") or f.endswith(".nc") or f.endswith(".nc4"):
+    if f.endswith(".h5") or f.endswith(".he5") or f.endswith(".hdf5") or f.endswith(".HDF5") or f.endswith(".nc") or f.endswith(".nc4"):
         subprocess.run(["python","gen_dmr_bescmd.py","-i",f])
         f_bescmd_file=f+".bescmd"
         f_dmr_file=f+".dmr"
