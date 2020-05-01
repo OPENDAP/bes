@@ -250,7 +250,7 @@ int StandAloneApp::run()
             sac.executeCommands(_cmd, _repeat);
         }
         else if (!_command_file_names.empty()) {
-            cerr << prolog << "Found " << _command_file_names.size() << " command files." << endl;
+            BESDEBUG(MODULE, prolog << "Found " << _command_file_names.size() << " command files." << endl);
             for(unsigned index=0; index<_command_file_names.size(); index++){
                 string command_filename = _command_file_names[index];
                 BESDEBUG(MODULE, prolog << "Processing BES command file: " << command_filename<< endl);
@@ -275,8 +275,7 @@ int StandAloneApp::run()
         }
     }
     catch (BESError &e) {
-        cerr << "error processing commands" << endl;
-        cerr << e.get_message() << endl;
+        cerr << prolog << "Error processing commands. Message: " << e.get_message() << endl;
     }
 
     return 0;
