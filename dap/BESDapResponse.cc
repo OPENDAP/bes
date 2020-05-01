@@ -66,16 +66,17 @@ void BESDapResponse::read_contexts()
 {
     bool found = false;
     string context_key;
+    string context_value;
     BESDEBUG(MODULE,prolog << "BEGIN" << endl);
 
     // d_explicit_containers is false by default
     context_key = "dap_explicit_containers";
-    string context = BESContextManager::TheManager()->get_context(context_key, found);
-    BESDEBUG(MODULE,prolog << context_key << ": \"" << context  << "\" found: " << found << endl);
+    context_value = BESContextManager::TheManager()->get_context(context_key, found);
+    BESDEBUG(MODULE,prolog << context_key << ": \"" << context_value  << "\" found: " << found << endl);
     if (found) {
-        if (context == "yes")
+        if (context_value == "yes")
             d_explicit_containers = true;
-        else if (context == "no")
+        else if (context_value == "no")
             d_explicit_containers = false;
         else
             throw BESError("dap_explicit_containers must be yes or no",
@@ -83,10 +84,10 @@ void BESDapResponse::read_contexts()
     }
     else {
         context_key = "dap_format";
-        context = BESContextManager::TheManager()->get_context(context_key, found);
-        BESDEBUG(MODULE,prolog << context_key << ": \"" << context  << "\" found: " << found << endl);
+        context_value = BESContextManager::TheManager()->get_context(context_key, found);
+        BESDEBUG(MODULE,prolog << context_key << ": \"" << context_value  << "\" found: " << found << endl);
         if (found) {
-            if (context == "dap2")
+            if (context_value == "dap2")
                 d_explicit_containers = false;
             else
                 d_explicit_containers = true;
@@ -94,13 +95,15 @@ void BESDapResponse::read_contexts()
     }
     BESDEBUG(MODULE,prolog << "d_explicit_containers: " <<  (d_explicit_containers?"true":"false") << endl);
 
-    context = BESContextManager::TheManager()->get_context("xdap_accept", found);
-    if (found) d_dap_client_protocol = context;
-    BESDEBUG(MODULE,prolog << "xdap_accept: \"" << context  << "\" found: " << found << endl);
+    context_key = "xdap_accept";
+    context_value = BESContextManager::TheManager()->get_context(context_key, found);
+    BESDEBUG(MODULE,prolog << context_key << ": \"" << context_value  << "\" found: " << found << endl);
+    if (found) d_dap_client_protocol = context_value;
 
-    context = BESContextManager::TheManager()->get_context("xml:base", found);
-    if (found) d_request_xml_base = context;
-    BESDEBUG(MODULE,prolog << "xml:base: \"" << context  << "\" found: " << found << endl);
+    context_key = "xml:base";
+    context_value = BESContextManager::TheManager()->get_context(context_key, found);
+    BESDEBUG(MODULE,prolog << context_key << ": \"" << context_value  << "\" found: " << found << endl);
+    if (found) d_request_xml_base = context_value;
 
     BESDEBUG(MODULE,prolog << "END" << endl);
 }
