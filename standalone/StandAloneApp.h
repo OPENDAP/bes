@@ -34,6 +34,7 @@
 
 
 #include <fstream>
+#include <vector>
 
 #include "BESModuleApp.h"
 
@@ -42,11 +43,9 @@ class StandAloneClient ;
 class StandAloneApp : public BESModuleApp
 {
 private:
-    StandAloneClient *		_client ;
-    std::string			_cmd ;
+    std::vector<std::string> _command_file_names;
+    std::string			    _cmd ;
     std::ofstream *			_outputStrm ;
-    std::ifstream *			_inputStrm ;
-    bool			_createdInputStrm ;
     int				_repeat ;
 
     void			showVersion() ;
@@ -60,7 +59,7 @@ public:
 
     virtual void		dump( std::ostream &strm ) const ;
 
-    StandAloneClient *		client() { return _client ; }
+//    StandAloneClient *		client() { return _client ; }
 } ;
 
 #endif // I_StandAloneClient_H
