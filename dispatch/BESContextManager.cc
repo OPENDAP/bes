@@ -81,15 +81,24 @@ void BESContextManager::unset_context(const string &name)
  */
 string BESContextManager::get_context(const string &name, bool &found)
 {
+#if 1
     string ret = "";
     found = false;
     BESContextManager::Context_iter i;
+    string s = _context_list[name];
     i = _context_list.find(name);
     if (i != _context_list.end()) {
         ret = (*i).second;
         found = true;
     }
     BESDEBUG(MODULE, "BESContextManager::get_context(name=\"" << name << "\", found=\"" << found << "\"): \"" << ret << "\"" << endl);
+#else
+
+    string ret = _context_list[name];
+    BESDEBUG(MODULE, "BESContextManager::get_context(name=\"" << name << "): \"" << ret << "\"" << endl);
+
+#endif
+
     return ret;
 }
 
