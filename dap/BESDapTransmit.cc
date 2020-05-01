@@ -59,6 +59,9 @@
 using namespace libdap;
 using namespace std;
 
+#define MODULE "xmlbase"
+#define prolog std::string("DapTransmit::").append(__func__).append("() - ")
+
 ///////////////////////////////////////////////////////////////////////////////
 // Local Helpers
 
@@ -257,6 +260,10 @@ private:
 
         DMR *dmr = bdmr->get_dmr();
 
+        BESDEBUG(MODULE, prolog << "SendDMR bdmr: "<< (void *)  bdmr << endl);
+        BESDEBUG(MODULE, prolog << "SendDMR  dmr: "<< (void *)  dmr << endl);
+        BESDEBUG(MODULE, prolog << "SendDMR dmr->request_xml_base(): '"<< dmr->request_xml_base() << endl);
+
         dhi.first_container();
 
         BESDapResponseBuilder rb;
@@ -288,6 +295,10 @@ private:
         if (!bdmr) throw BESInternalError("cast error", __FILE__, __LINE__);
 
         DMR *dmr = bdmr->get_dmr();
+
+        BESDEBUG(MODULE, prolog << "SendDap4Data bdmr: "<< (void *)  bdmr << endl);
+        BESDEBUG(MODULE, prolog << "SendDap4Data  dmr: "<< (void *)  dmr << endl);
+        BESDEBUG(MODULE, prolog << "SendDap4Data dmr->request_xml_base(): '"<< dmr->request_xml_base() << endl);
 
         dhi.first_container();
 

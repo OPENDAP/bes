@@ -44,7 +44,9 @@ using std::ostream;
 #define MODULE "xmlbase"
 #define prolog std::string("BESDapResponse::").append(__func__).append("() - ")
 
-/** @brief Extract the dap protocol from the setConext information
+
+
+/** @brief Extract the dap protocol from the setContext information
 
  This method checks three contexts: dap_explicit_containers, dap_format and
  xdap_accept.
@@ -63,10 +65,13 @@ using std::ostream;
 void BESDapResponse::read_contexts()
 {
     bool found = false;
+    string context_key;
     BESDEBUG(MODULE,prolog << "BEGIN" << endl);
 
     // d_explicit_containers is false by default
-    string context = BESContextManager::TheManager()->get_context("dap_explicit_containers", found);
+    context_key = "dap_explicit_containers";
+    string context = BESContextManager::TheManager()->get_context(context_key, found);
+    BESDEBUG(MODULE,prolog << context_key << ": \"" << context  << "\" found: " << found << endl);
     if (found) {
         if (context == "yes")
             d_explicit_containers = true;
@@ -76,10 +81,10 @@ void BESDapResponse::read_contexts()
             throw BESError("dap_explicit_containers must be yes or no",
             BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
     }
-    BESDEBUG(MODULE,prolog << "dap_explicit_containers: \"" << context  << "\"" << endl);
-
-    if (!found) {
-        context = BESContextManager::TheManager()->get_context("dap_format", found);
+    else {
+        context_key = "dap_format";
+        context = BESContextManager::TheManager()->get_context(context_key, found);
+        BESDEBUG(MODULE,prolog << context_key << ": \"" << context  << "\" found: " << found << endl);
         if (found) {
             if (context == "dap2")
                 d_explicit_containers = false;
@@ -87,17 +92,17 @@ void BESDapResponse::read_contexts()
                 d_explicit_containers = true;
         }
     }
-    BESDEBUG(MODULE,prolog << "dap_format: \"" << context  << "\"" << endl);
+    BESDEBUG(MODULE,prolog << "d_explicit_containers: " <<  (d_explicit_containers?"true":"false") << endl);
 
     context = BESContextManager::TheManager()->get_context("xdap_accept", found);
     if (found) d_dap_client_protocol = context;
-    BESDEBUG(MODULE,prolog << "xdap_accept: \"" << context  << "\"" << endl);
+    BESDEBUG(MODULE,prolog << "xdap_accept: \"" << context  << "\" found: " << found << endl);
 
     context = BESContextManager::TheManager()->get_context("xml:base", found);
     if (found) d_request_xml_base = context;
-    BESDEBUG(MODULE,prolog << "xml:base: \"" << context  << "\"" << endl);
-    BESDEBUG(MODULE,prolog << "END" << endl);
+    BESDEBUG(MODULE,prolog << "xml:base: \"" << context  << "\" found: " << found << endl);
 
+    BESDEBUG(MODULE,prolog << "END" << endl);
 }
 
 /** @brief See get_explicit_containers()

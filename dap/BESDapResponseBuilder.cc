@@ -1378,6 +1378,7 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, bool with_mime_head
 
 
     XMLWriter xml;
+    BESDEBUG("xmlbase", "BESDapResponseBuilder::send_dmr() - dmr.request_xml_base(): '"<< dmr.request_xml_base() << "' (dmr: " << (void *) &dmr << ")" << endl);
     dmr.print_dap4(xml, /*constrained &&*/!d_dap4ce.empty() /* true == constrained */);
     out << xml.get_doc() << flush;
 }

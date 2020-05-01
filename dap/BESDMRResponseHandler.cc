@@ -103,6 +103,9 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
             dmr = mds->get_dmr_object(dhi.container->get_relative_name());
 
             BESDMRResponse *bdmr = new BESDMRResponse(dmr);
+            BESDEBUG(MODULE, prolog << "dmr->request_xml_base(): '"<< dmr->request_xml_base() << "'"<< endl);
+            BESDEBUG(MODULE, prolog << "bdmr->get_dmr()->request_xml_base(): '"<< bdmr->get_dmr()->request_xml_base() << "'"<< endl);
+            BESDEBUG(MODULE, prolog << " dmr: "<< (void *)  dmr << endl);
 
             // This method sets the constraint for the current container. It does nothing
             // if there is no 'current container.'
@@ -110,15 +113,24 @@ void BESDMRResponseHandler::execute(BESDataHandlerInterface &dhi)
             bdmr->clear_container();
 
             d_response_object = bdmr;
+            BESDEBUG(MODULE, prolog << "d_response_object: "<< (void *) d_response_object << endl);
         }
         else {
             dmr = new DMR();
 
             // if (xml_base_found && !xml_base.empty()) dmr->set_request_xml_base(xml_base);
-            d_response_object = new BESDMRResponse(dmr);
+            BESDMRResponse *bdmr = new BESDMRResponse(dmr);
+            BESDEBUG(MODULE, prolog << "dmr->request_xml_base(): '"<< dmr->request_xml_base() << "'"<< endl);
+            BESDEBUG(MODULE, prolog << "bdmr->get_dmr()->request_xml_base(): '"<< bdmr->get_dmr()->request_xml_base() << "'"<< endl);
+            BESDEBUG(MODULE, prolog << " dmr: "<< (void *)  dmr << endl);
+
+            d_response_object = bdmr;
+
+            BESDEBUG(MODULE, prolog << "d_response_object: "<< (void *) d_response_object << endl);
 
             // The RequestHandlers set the constraint and reset the container(s)
             BESRequestHandlerList::TheList()->execute_each(dhi);
+
 
             dhi.first_container();  // must reset container; execute_each() iterates over all of them
 

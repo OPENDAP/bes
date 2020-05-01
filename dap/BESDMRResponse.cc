@@ -36,6 +36,9 @@ BESDMRResponse::BESDMRResponse(DMR *dmr) : BESDapResponse(), _dmr(dmr) {
     string xml_base = get_request_xml_base();
     _dmr->set_request_xml_base(xml_base);
     BESDEBUG(MODULE, prolog << "Using BESDapResponse::get_request_xml_base(): \"" << xml_base << "\""<< endl);
+    BESDEBUG(MODULE, prolog << "                    _dmr->request_xml_base(): \"" << _dmr->request_xml_base() << "\" (" << (void *) _dmr << ")" << endl);
+    BESDEBUG(MODULE, prolog << " _dmr: "<< (void *)  _dmr << endl);
+    BESDEBUG(MODULE, prolog << " this: "<< (void *)  this << endl);
 }
 
 BESDMRResponse::~BESDMRResponse() {
