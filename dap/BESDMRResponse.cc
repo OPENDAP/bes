@@ -45,9 +45,6 @@ BESDMRResponse::~BESDMRResponse() {
     delete _dmr ;
 }
 
-
-
-
 /** @brief set the container in the DAP response object
  *
  * @param cn name of the current container being operated on
