@@ -30,7 +30,6 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include "StandAloneApp.h"
 
 #include <unistd.h>
 #include <getopt.h>
@@ -51,6 +50,7 @@ using std::ofstream;
 using std::ostream;
 using std::ifstream;
 
+#include "StandAloneApp.h"
 #include "StandAloneClient.h"
 #include "BESError.h"
 #include "BESDebug.h"
