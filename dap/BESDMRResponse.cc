@@ -23,10 +23,25 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include "BESDMRResponse.h"
+#include "BESDebug.h"
 
 using std::endl;
 using std::string;
 using std::ostream;
+
+#define MODULE "dap"
+#define prolog std::string("BESDMRResponse::").append(__func__).append("() - ")
+
+BESDMRResponse::BESDMRResponse(DMR *dmr) : BESDapResponse(), _dmr(dmr) {
+    string xml_base = get_request_xml_base();
+    _dmr->set_request_xml_base(xml_base);
+    BESDEBUG(MODULE, prolog << "_dmr->request_xml_base(): \"" << _dmr->request_xml_base()
+        << "\" (dmr: " << (void *) _dmr << ")" << endl);
+}
+
+BESDMRResponse::~BESDMRResponse() {
+    delete _dmr ;
+}
 
 /** @brief set the container in the DAP response object
  *
