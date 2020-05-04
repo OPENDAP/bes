@@ -39,7 +39,7 @@ using namespace libdap;
 class BESDMRResponse: public BESDapResponse {
 private:
 	DMR * _dmr;
-	//ConstraintEvaluator _ce; //FIXME Use Dap4 CE stuff
+	ConstraintEvaluator _ce; //FIXME Use Dap4 CE stuff
 public:
 	BESDMRResponse(DMR *dmr) : BESDapResponse(), _dmr(dmr) { }
 	virtual ~BESDMRResponse() { delete _dmr ; }
@@ -52,7 +52,7 @@ public:
 	DMR *get_dmr() { return _dmr; }
 	void set_dmr(DMR *dmr) { _dmr = dmr; }
 
-    //onstraintEvaluator &get_ce() { return _ce; } // FIXME too...
+    ConstraintEvaluator &get_ce() { return _ce; } // FIXME too...
 };
 
 #endif // I_BESDMRResponse
