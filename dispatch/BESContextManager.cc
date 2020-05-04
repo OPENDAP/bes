@@ -47,6 +47,7 @@ using std::ostream;
 BESContextManager *BESContextManager::_instance = 0;
 
 #define MODULE "context"
+#define prolog std::string("BESContextManager::").append(__func__).append("() - ")
 
 /** @brief set context in the BES
  *
@@ -55,7 +56,7 @@ BESContextManager *BESContextManager::_instance = 0;
  */
 void BESContextManager::set_context(const string &name, const string &value)
 {
-    BESDEBUG(MODULE, "BESContextManager::set_context(name=\"" << name << "\", value=\"" << value << "\")" << endl);
+    BESDEBUG(MODULE, prolog << "name=\"" << name << "\", value=\"" << value << "\"" << endl);
     _context_list[name] = value;
 }
 
@@ -66,7 +67,7 @@ void BESContextManager::set_context(const string &name, const string &value)
  */
 void BESContextManager::unset_context(const string &name)
 {
-    BESDEBUG(MODULE, "BESContextManager::unset_context(name=\"" << name << "\")" << endl);
+    BESDEBUG(MODULE, prolog << "name=\"" << name << "\"" << endl);
     _context_list.erase(name);
 }
 
@@ -85,17 +86,16 @@ string BESContextManager::get_context(const string &name, bool &found)
     string ret = "";
     found = false;
     BESContextManager::Context_iter i;
-    string s = _context_list[name];
     i = _context_list.find(name);
     if (i != _context_list.end()) {
         ret = (*i).second;
         found = true;
     }
-    BESDEBUG(MODULE, "BESContextManager::get_context(name=\"" << name << "\", found=\"" << found << "\"): \"" << ret << "\"" << endl);
+    BESDEBUG(MODULE, prolog << "name=\"" << name << "\", found=\"" << found << "\" value:\"" << ret << "\"" << endl);
 #else
 
     string ret = _context_list[name];
-    BESDEBUG(MODULE, "BESContextManager::get_context(name=\"" << name << "): \"" << ret << "\"" << endl);
+    BESDEBUG(MODULE, prolog << "name=\"" << name << "\"  value: \"" << ret << "\"" << endl);
 
 #endif
 
@@ -123,7 +123,7 @@ int BESContextManager::get_context_int(const string &name, bool &found)
         throw BESInternalError(string("Error reading an integer value for the context '") + name + "': " + strerror(errno),
             __FILE__, __LINE__);
     }
-    BESDEBUG(MODULE, "BESContextManager::get_context_int(name=\"" << name << "\", found=\"" << found << "\"): \"" << val << "\"" << endl);
+    BESDEBUG(MODULE, prolog << "name=\"" << name << "\", found=\"" << found << "\" value: \"" << val << "\"" << endl);
 
     return val;
 }
@@ -156,7 +156,7 @@ void BESContextManager::list_context(BESInfo &info)
  */
 void BESContextManager::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESContextManager::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << prolog << "(this: " << (void *) this << ")" << endl;
     BESIndent::Indent();
     if (_context_list.size()) {
         strm << BESIndent::LMarg << "current context:" << endl;
