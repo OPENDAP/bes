@@ -1183,11 +1183,11 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
     // Extract the DMR Response object - this holds the DMR used by the
     // other parts of the framework.
     BESResponseObject *response = dhi.response_handler->get_response_object();
-    BESDMRResponse &bes_dmr = dynamic_cast<BESDMRResponse &>(*response);
+    BESDMRResponse &bes_dmr_response = dynamic_cast<BESDMRResponse &>(*response);
 
     string filename = dhi.container->access();
 
-    DMR *dmr = bes_dmr.get_dmr();
+    DMR *dmr = bes_dmr_response.get_dmr();
 
     // For the time being, separate CF file ID from the default file ID(mainly for debugging)
     hid_t fileid = -1;
@@ -1205,6 +1205,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
             // copy the cached DMR into the BES response object
             BESDEBUG(HDF5_NAME, "DMR Cached hit for : " << filename << endl);
             *dmr = *cached_dmr_ptr; // Copy the referenced object
+            dmr->set_request_xml_base(bes_dmr_response.get_request_xml_base());
         }
         else {// No cache
 
@@ -1335,8 +1336,8 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
     // methods to set the constraints. But, why? Ans: from Patrick is that
     // in the 'container' mode of BES each container can have a different
     // CE.
-    bes_dmr.set_dap4_constraint(dhi);
-    bes_dmr.set_dap4_function(dhi);
+    bes_dmr_response.set_dap4_constraint(dhi);
+    bes_dmr_response.set_dap4_function(dhi);
     dmr->set_factory(0);
 
     return true;
