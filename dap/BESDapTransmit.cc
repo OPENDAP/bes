@@ -59,7 +59,7 @@
 using namespace libdap;
 using namespace std;
 
-#define MODULE "xmlbase"
+#define MODULE "dap"
 #define prolog std::string("DapTransmit::").append(__func__).append("() - ")
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -175,7 +175,7 @@ private:
         BESDapResponseBuilder rb;
         rb.set_dataset_name(dhi.container->get_real_name());
         rb.set_ce(dhi.data[POST_CONSTRAINT]);
-        BESDEBUG("dap", "dhi.data[POST_CONSTRAINT]: " << dhi.data[POST_CONSTRAINT] << endl);
+        BESDEBUG(MODULE, prolog << "dhi.data[POST_CONSTRAINT]: " << dhi.data[POST_CONSTRAINT] << endl);
         rb.send_dds(dhi.get_output_stream(), &dds, ce, true, print_mime);
         bdds->set_dds(dds);
     }
@@ -208,7 +208,7 @@ private:
         rb.set_async_accepted(dhi.data[ASYNC]);
         rb.set_store_result(dhi.data[STORE_RESULT]);
 
-        BESDEBUG("dap", "dhi.data[POST_CONSTRAINT]: " << dhi.data[POST_CONSTRAINT] << endl);
+        BESDEBUG(MODULE, prolog << "dhi.data[POST_CONSTRAINT]: " << dhi.data[POST_CONSTRAINT] << endl);
         //rb.send_dap2_data(dhi.get_output_stream(), &dds, ce, print_mime);
         rb.send_dap2_data(dhi, &dds, ce, print_mime);
         bdds->set_dds(dds);
@@ -253,16 +253,14 @@ private:
 
     virtual void send_internal(BESResponseObject * obj, BESDataHandlerInterface & dhi)
     {
-        BESDEBUG("dap", "Entering SendDMR::send_internal ..." << endl);
+        BESDEBUG(MODULE, prolog << "SendDMR::send_internal() - BEGIN" << endl);
 
         BESDMRResponse *bdmr = dynamic_cast<BESDMRResponse *>(obj);
         if (!bdmr) throw BESInternalError("cast error", __FILE__, __LINE__);
 
         DMR *dmr = bdmr->get_dmr();
 
-        BESDEBUG(MODULE, prolog << "SendDMR bdmr: "<< (void *)  bdmr << endl);
-        BESDEBUG(MODULE, prolog << "SendDMR  dmr: "<< (void *)  dmr << endl);
-        BESDEBUG(MODULE, prolog << "SendDMR dmr->request_xml_base(): '"<< dmr->request_xml_base() << endl);
+        BESDEBUG(MODULE, prolog << "SendDMR::send_internal() - dmr->request_xml_base(): '"<< dmr->request_xml_base() << endl);
 
         dhi.first_container();
 
@@ -276,6 +274,7 @@ private:
         rb.set_store_result(dhi.data[STORE_RESULT]);
 
         rb.send_dmr(dhi.get_output_stream(), *dmr, get_print_mime());
+        BESDEBUG(MODULE, prolog << "SendDMR::send_internal() - END" << endl);
     }
 };
 
@@ -288,6 +287,7 @@ private:
     }
     virtual void send_internal(BESResponseObject * obj, BESDataHandlerInterface & dhi)
     {
+        BESDEBUG(MODULE, prolog << "SendDap4Data::send_internal() - BEGIN" << endl);
         // In DAP2 we made a special object for data - a child of DDS. That turned to make
         // some code harder to write, so this time I'll just use the DMR to hold data. jhrg
         // 10/31/13
@@ -296,9 +296,7 @@ private:
 
         DMR *dmr = bdmr->get_dmr();
 
-        BESDEBUG(MODULE, prolog << "SendDap4Data bdmr: "<< (void *)  bdmr << endl);
-        BESDEBUG(MODULE, prolog << "SendDap4Data  dmr: "<< (void *)  dmr << endl);
-        BESDEBUG(MODULE, prolog << "SendDap4Data dmr->request_xml_base(): '"<< dmr->request_xml_base() << endl);
+        BESDEBUG(MODULE, prolog << "SendDap4Data::send_internal() -  dmr->request_xml_base(): '"<< dmr->request_xml_base() << endl);
 
         dhi.first_container();
 
@@ -312,6 +310,7 @@ private:
         rb.set_store_result(dhi.data[STORE_RESULT]);
 
         rb.send_dap4_data(dhi.get_output_stream(), *dmr, get_print_mime());
+        BESDEBUG(MODULE, prolog << "SendDap4Data::send_internal() - END" << endl);
     }
 };
 

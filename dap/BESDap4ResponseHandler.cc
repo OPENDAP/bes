@@ -40,10 +40,6 @@
 using namespace std;
 using namespace bes;
 
-#define MODULE "xmlbase"
-#define prolog std::string("BESDap4ResponseHandler::").append(__func__).append("() - ")
-
-
 BESDap4ResponseHandler::BESDap4ResponseHandler(const string &name)
     : BESResponseHandler(name), d_use_dmrpp(false), d_dmrpp_name(DMRPP_DEFAULT_NAME)
 {

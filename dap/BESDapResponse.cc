@@ -41,27 +41,24 @@ using std::endl;
 using std::string;
 using std::ostream;
 
-#define MODULE "xmlbase"
+#define MODULE "dap"
 #define prolog std::string("BESDapResponse::").append(__func__).append("() - ")
 
-
-
-/** @brief Extract the dap protocol from the setContext information
-
- This method checks three contexts: dap_explicit_containers, dap_format and
- xdap_accept.
-
- If given, the boolean value of dap_explicit_containers is used. If that's
- not given then look for dap_format and if that's not given default to
- true. The OLFS should always send this to make Hyrax work the way DAP
- clients expect.
-
- xdap_accept is the value of the DAP that clients can grok. It defaults to
- "2.0"
-
- @note This value will be passed on to the DDS so that it can correctly
- build versions of the DDX which are specified by DAP 3.x and 4.x
- */
+ /** @brief Extract the dap protocol from the setContext information
+  * This method checks four contexts: dap_explicit_containers, dap_format and
+  * xdap_accept, and xml:base
+  *
+  * If given, the boolean value of dap_explicit_containers is used. If that's
+  * not given then look for dap_format and if that's not given default to
+  * true. The OLFS should always send this to make Hyrax work the way DAP
+  * clients expect.
+  *
+  * xdap_accept is the value of the DAP that clients can grok. It defaults to
+  * "2.0"
+  *
+  * @note This value will be passed on to the DDS so that it can correctly
+  * build versions of the DDX which are specified by DAP 3.x and 4.x
+  */
 void BESDapResponse::read_contexts()
 {
     bool found = false;
@@ -72,7 +69,7 @@ void BESDapResponse::read_contexts()
     // d_explicit_containers is false by default
     context_key = "dap_explicit_containers";
     context_value = BESContextManager::TheManager()->get_context(context_key, found);
-    BESDEBUG(MODULE,prolog << context_key << ": \"" << context_value  << "\" found: " << found << endl);
+    //BESDEBUG(MODULE,prolog << context_key << ": \"" << context_value  << "\" found: " << found << endl);
     if (found) {
         if (context_value == "yes")
             d_explicit_containers = true;
@@ -85,7 +82,7 @@ void BESDapResponse::read_contexts()
     else {
         context_key = "dap_format";
         context_value = BESContextManager::TheManager()->get_context(context_key, found);
-        BESDEBUG(MODULE,prolog << context_key << ": \"" << context_value  << "\" found: " << found << endl);
+        //BESDEBUG(MODULE,prolog << context_key << ": \"" << context_value  << "\" found: " << found << endl);
         if (found) {
             if (context_value == "dap2")
                 d_explicit_containers = false;
@@ -97,13 +94,15 @@ void BESDapResponse::read_contexts()
 
     context_key = "xdap_accept";
     context_value = BESContextManager::TheManager()->get_context(context_key, found);
-    BESDEBUG(MODULE,prolog << context_key << ": \"" << context_value  << "\" found: " << found << endl);
+    //BESDEBUG(MODULE,prolog << context_key << ": \"" << context_value  << "\" found: " << found << endl);
     if (found) d_dap_client_protocol = context_value;
+    BESDEBUG(MODULE,prolog << "d_dap_client_protocol: " <<  d_dap_client_protocol << endl);
 
     context_key = "xml:base";
     context_value = BESContextManager::TheManager()->get_context(context_key, found);
-    BESDEBUG(MODULE,prolog << context_key << ": \"" << context_value  << "\" found: " << found << endl);
+    //BESDEBUG(MODULE,prolog << context_key << ": \"" << context_value  << "\" found: " << found << endl);
     if (found) d_request_xml_base = context_value;
+    BESDEBUG(MODULE,prolog << "d_request_xml_base: " <<  d_request_xml_base << endl);
 
     BESDEBUG(MODULE,prolog << "END" << endl);
 }

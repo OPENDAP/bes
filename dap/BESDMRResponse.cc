@@ -29,16 +29,14 @@ using std::endl;
 using std::string;
 using std::ostream;
 
-#define MODULE "xmlbase"
+#define MODULE "dap"
 #define prolog std::string("BESDMRResponse::").append(__func__).append("() - ")
 
 BESDMRResponse::BESDMRResponse(DMR *dmr) : BESDapResponse(), _dmr(dmr) {
     string xml_base = get_request_xml_base();
     _dmr->set_request_xml_base(xml_base);
-    BESDEBUG(MODULE, prolog << "Using BESDapResponse::get_request_xml_base(): \"" << xml_base << "\""<< endl);
-    BESDEBUG(MODULE, prolog << "                    _dmr->request_xml_base(): \"" << _dmr->request_xml_base() << "\" (" << (void *) _dmr << ")" << endl);
-    BESDEBUG(MODULE, prolog << " _dmr: "<< (void *)  _dmr << endl);
-    BESDEBUG(MODULE, prolog << " this: "<< (void *)  this << endl);
+    BESDEBUG(MODULE, prolog << "_dmr->request_xml_base(): \"" << _dmr->request_xml_base()
+        << "\" (dmr: " << (void *) _dmr << ")" << endl);
 }
 
 BESDMRResponse::~BESDMRResponse() {
