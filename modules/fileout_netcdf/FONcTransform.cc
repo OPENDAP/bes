@@ -44,6 +44,8 @@ using std::istringstream;
 #include "FONcAttributes.h"
 
 #include <DDS.h>
+#include <DMR.h>
+#include <D4Group.h>
 #include <Structure.h>
 #include <Array.h>
 #include <Grid.h>
@@ -93,6 +95,47 @@ FONcTransform::FONcTransform(DDS *dds, BESDataHandlerInterface &dhi, const strin
         FONcUtils::name_prefix = "nc_";
     }
 }
+/** @brief Constructor that creates transformation object from the specified
+ * DataDDS object to the specified file
+ *
+ * @param dds DataDDS object that contains the data structure, attributes
+ * and data
+ * @param dhi The data interface containing information about the current
+ * request
+ * @param localfile netcdf to create and write the information to
+ * @throws BESInternalError if dds provided is empty or not read, if the
+ * file is not specified or failed to create the netcdf file
+ */
+FONcTransform::FONcTransform(DMR *dmr, BESDataHandlerInterface &dhi, const string &localfile, const string &ncVersion) :
+        _ncid(0), _dmr(0)
+{
+    if (!dmr) {
+        string s = (string) "File out netcdf, " + "null DDS passed to constructor";
+        throw BESInternalError(s, __FILE__, __LINE__);
+    }
+    if (localfile.empty()) {
+        string s = (string) "File out netcdf, " + "empty local file name passed to constructor";
+        throw BESInternalError(s, __FILE__, __LINE__);
+    }
+    _localfile = localfile;
+    _dmr = dmr;
+    _returnAs = ncVersion;
+
+    // if there is a variable, attribute, dimension name that is not
+    // compliant with netcdf naming conventions then we will create
+    // a new name. If the new name does not begin with an alpha
+    // character then we will prefix it with name_prefix. We will
+    // get this prefix from the type of data that we are reading in,
+    // such as nc, h4, h5, ff, jg, etc...
+    dhi.first_container();
+    if (dhi.container) {
+        FONcUtils::name_prefix = dhi.container->get_container_type() + "_";
+    }
+    else {
+        FONcUtils::name_prefix = "nc_";
+    }
+}
+
 
 /** @brief Destructor
  *
@@ -234,6 +277,139 @@ void FONcTransform::transform()
     }
 }
 
+/** @brief Transforms each of the variables of the DataDDS to the NetCDF
+ * file
+ *
+ * For each variable in the DataDDS write out that variable and its
+ * attributes to the netcdf file. Each OPeNDAP data type translates into a
+ * particular netcdf type. Also write out any global variables stored at the
+ * top level of the DataDDS.
+ */
+void FONcTransform::transform_dap4()
+{
+    FONcUtils::reset();
+
+    // Convert the DDS into an internal format to keep track of
+    // variables, arrays, shared dimensions, grids, common maps,
+    // embedded structures. It only grabs the variables that are to be
+    // sent.
+    
+    D4Group* root_grp = _dmr->root();
+    Constructor::Vars_iter vi = root_grp->var_begin();
+    Constructor::Vars_iter ve = root_grp->var_end();
+#if 1
+    for (D4Group::Vars_iter i = root_grp->var_begin(), e = root_grp->var_end(); i != e; ++i) {
+        BESDEBUG("fonc", "BESDapResponseBuilder::send_dap4_data() - "<< (*i)->name() <<endl);
+        if ((*i)->send_p()) {
+            BESDEBUG("fonc", "BESDapResponseBuilder::send_dap4_data() inside send_p - "<< (*i)->name() <<endl);
+            //(*i)->intern_data();
+        }
+    }
+#endif
+
+#if 0
+    DDS::Vars_iter vi = _dds->var_begin();
+    DDS::Vars_iter ve = _dds->var_end();
+#endif
+    for (; vi != ve; vi++) {
+        if ((*vi)->send_p()) {
+            BaseType *v = *vi;
+
+            BESDEBUG("fonc", "FONcTransform::transform_dap4() - Converting variable '" << v->name() << "'" << endl);
+
+            // This is a factory class call, and 'fg' is specialized for 'v'
+            FONcBaseType *fb = FONcUtils::convert(v,FONcTransform::_returnAs,FONcRequestHandler::classic_model);
+#if 0
+            fb->setVersion( FONcTransform::_returnAs );
+            if ( FONcTransform::_returnAs == RETURNAS_NETCDF4 ) {
+                if (FONcRequestHandler::classic_model)
+                    fb->setNC4DataModel("NC4_CLASSIC_MODEL");
+                else 
+                    fb->setNC4DataModel("NC4_ENHANCED");
+            }
+#endif
+            _fonc_vars.push_back(fb);
+
+            vector<string> embed;
+            fb->convert(embed);
+        }
+    }
+
+    // Open the file for writing
+    int stax;
+    if ( FONcTransform::_returnAs == RETURNAS_NETCDF4 ) {
+        if (FONcRequestHandler::classic_model){
+            BESDEBUG("fonc", "FONcTransform::transform_dap4() - Opening NetCDF-4 cache file in classic mode. fileName:  " << _localfile << endl);
+            stax = nc_create(_localfile.c_str(), NC_CLOBBER|NC_NETCDF4|NC_CLASSIC_MODEL, &_ncid);
+        }
+        else {
+            BESDEBUG("fonc", "FONcTransform::transform_dap4() - Opening NetCDF-4 cache file. fileName:  " << _localfile << endl);
+            stax = nc_create(_localfile.c_str(), NC_CLOBBER|NC_NETCDF4, &_ncid);
+        }
+    }
+    else {
+        BESDEBUG("fonc", "FONcTransform::transform_dap4() - Opening NetCDF-3 cache file. fileName:  " << _localfile << endl);
+    	stax = nc_create(_localfile.c_str(), NC_CLOBBER, &_ncid);
+    }
+
+    if (stax != NC_NOERR) {
+        FONcUtils::handle_error(stax, "File out netcdf, unable to open: " + _localfile, __FILE__, __LINE__);
+    }
+
+    try {
+        // Here we will be defining the variables of the netcdf and
+        // adding attributes. To do this we must be in define mode.
+        nc_redef(_ncid);
+
+        // For each converted FONc object, call define on it to define
+        // that object to the netcdf file. This also adds the attributes
+        // for the variables to the netcdf file
+        vector<FONcBaseType *>::iterator i = _fonc_vars.begin();
+        vector<FONcBaseType *>::iterator e = _fonc_vars.end();
+        for (; i != e; i++) {
+            FONcBaseType *fbt = *i;
+            BESDEBUG("fonc", "FONcTransform::transform() - Defining variable:  " << fbt->name() << endl);
+            fbt->define(_ncid);
+        }
+
+        if(FONcRequestHandler::no_global_attrs == false) {
+            // Add any global attributes to the netcdf file
+            AttrTable &globals = _dds->get_attr_table();
+            BESDEBUG("fonc", "FONcTransform::transform() - Adding Global Attributes" << endl << globals << endl);
+            bool is_netCDF_enhanced = false;
+            if(FONcTransform::_returnAs == RETURNAS_NETCDF4 && FONcRequestHandler::classic_model==false)
+                is_netCDF_enhanced = true;
+            FONcAttributes::add_attributes(_ncid, NC_GLOBAL, globals, "", "",is_netCDF_enhanced);
+        }
+
+        // We are done defining the variables, dimensions, and
+        // attributes of the netcdf file. End the define mode.
+        int stax = nc_enddef(_ncid);
+
+        // Check error for nc_enddef. Handling of HDF failures
+        // can be detected here rather than later.  KY 2012-10-25
+        if (stax != NC_NOERR) {
+            FONcUtils::handle_error(stax, "File out netcdf, unable to end the define mode: " + _localfile, __FILE__, __LINE__);
+        }
+
+        // Write everything out
+        i = _fonc_vars.begin();
+        e = _fonc_vars.end();
+        for (; i != e; i++) {
+            FONcBaseType *fbt = *i;
+            BESDEBUG("fonc", "FONcTransform::transform() - Writing data for variable:  " << fbt->name() << endl);
+            fbt->write(_ncid);
+        }
+
+        stax = nc_close(_ncid);
+        if (stax != NC_NOERR)
+            FONcUtils::handle_error(stax, "File out netcdf, unable to close: " + _localfile, __FILE__, __LINE__);
+    }
+    catch (BESError &e) {
+        (void) nc_close(_ncid); // ignore the error at this point
+        throw;
+    }
+}
 /** @brief dumps information about this transformation object for debugging
  * purposes
  *

@@ -639,6 +639,21 @@ void FONcArray::write_for_nc4_types(int ncid) {
         break;
     }
 
+    case NC_INT64: {
+
+        int64_t *data = new int64_t[d_nelements];
+        d_a->buf2val((void**) &data);
+
+        int stax = nc_put_var_longlong(ncid, _varid, (const long long*)data);
+        delete[] data;
+
+        if (stax != NC_NOERR) {
+            string err = (string) "fileout.netcdf - Failed to create array of ints for " + _varname;
+            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+        }
+        break;
+    }
+
     case NC_FLOAT: {
         float *data = new float[d_nelements];
         d_a->buf2val((void**) &data);
@@ -682,6 +697,19 @@ void FONcArray::write_for_nc4_types(int ncid) {
         unsigned int *data = new unsigned int[d_nelements];
         d_a->buf2val((void**) &data);
         int stax = nc_put_var_uint(ncid, _varid, data);
+        delete[] data;
+
+        if (stax != NC_NOERR) {
+            string err = (string) "fileout.netcdf - Failed to create array of unsigned int for " + _varname;
+            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+        }
+        break;
+    }
+
+    case NC_UINT64: {
+        uint64_t *data = new uint64_t[d_nelements];
+        d_a->buf2val((void**) &data);
+        int stax = nc_put_var_ulonglong(ncid, _varid, (const unsigned long long*)data);
         delete[] data;
 
         if (stax != NC_NOERR) {

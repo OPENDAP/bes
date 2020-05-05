@@ -61,6 +61,7 @@ public:
 	virtual ~FONcTransmitter() {}
 
 	static void send_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
+	static void send_dap4_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 };
 
 #endif // A_FONcTransmitter_h

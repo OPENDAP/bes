@@ -96,9 +96,11 @@
 #include "BESDapFunctionResponseCache.h"
 #include "BESStoredDapResultCache.h"
 
+
 #include "BESResponseObject.h"
 #include "BESDDSResponse.h"
 #include "BESDataDDSResponse.h"
+#include "BESDMRResponse.h"
 #include "BESDataHandlerInterface.h"
 #include "BESInternalFatalError.h"
 #include "BESDataNames.h"
@@ -1605,14 +1607,17 @@ BESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerIn
     BESDMRResponse *bdmr = dynamic_cast<BESDMRResponse *>(obj);
     if (!bdmr) throw BESInternalFatalError("Expected a BESDMRResponse instance", __FILE__, __LINE__);
 
-    DDS *dmr = bdmr->get_dmr();
+    DMR *dmr = bdmr->get_dmr();
+    
+    BESDEBUG("dap", "BESDapResponseBuilder::dmr filename - END"<< dmr->filename() <<endl);
 
     set_dataset_name(dmr->filename());
-    set_ce(dhi.data[POST_CONSTRAINT]);
+    set_dap4ce(dhi.data[POST_CONSTRAINT]);
     set_async_accepted(dhi.data[ASYNC]);
     set_store_result(dhi.data[STORE_RESULT]);
 
-
+    // Handle constraint later.
+#if 0
     ConstraintEvaluator &eval = bdmr->get_ce();
 
 
@@ -1645,7 +1650,7 @@ BESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerIn
     else {
         //send_dap4_data_using_ce(out, dmr, with_mime_headers);
     }
-
+#endif
 #if 0
     // If there are functions, parse them and eval.
     // Use that DDS and parse the non-function ce
@@ -1710,14 +1715,20 @@ BESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerIn
 
     // Iterate through the variables in the DataDDS and read
     // in the data if the variable has the send flag set.
-    for (DDS::Vars_iter i = dds->var_begin(), e = dds->var_end(); i != e; ++i) {
+    D4Group* root_grp = dmr->root();
+    root_grp->set_send_p(true);
+    //Constructor::Vars_iter v = root_grp->var_begin();
+    for (D4Group::Vars_iter i = root_grp->var_begin(), e = root_grp->var_end(); i != e; ++i) {
+        BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() - "<< (*i)->name() <<endl);
         if ((*i)->send_p()) {
-            (*i)->intern_data(eval, *dds);
+            BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() Obtain data- "<< (*i)->name() <<endl);
+
+            (*i)->intern_data();
         }
     }
 
-    BESDEBUG("dap", "BESDapResponseBuilder::intern_dap2_data() - END"<< endl);
+    BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() - END"<< endl);
 
-    return dds;
+    return dmr;
 }
 

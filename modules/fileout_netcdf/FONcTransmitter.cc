@@ -75,7 +75,7 @@
 #include "FONcTransmitter.h"
 #include "FONcTransform.h"
 
-using namespace ::libdap;
+using namespace libdap;
 using namespace std;
 
 // size of the buffer used to read from the temporary file built on disk and
@@ -97,6 +97,7 @@ FONcTransmitter::FONcTransmitter() :
     BESTransmitter()
 {
     add_method(DATA_SERVICE, FONcTransmitter::send_data);
+    add_method(DAP4DATA_SERVICE, FONcTransmitter::send_dap4_data);
 }
 
 /**
@@ -308,6 +309,115 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
 
     BESDEBUG("fonc", "FONcTransmitter::send_data - done transmitting to netcdf" << endl);
 }
+
+/**
+ * @brief The static method registered to transmit OPeNDAP data objects as
+ * a netcdf file.
+ *
+ * This function takes the OPeNDAP DataDDS object, reads in the data (can be
+ * used with any data handler), transforms the data into a netcdf file, and
+ * streams back that netcdf file back to the requester using the stream
+ * specified in the BESDataHandlerInterface.
+ *
+ * @param obj The BESResponseObject containing the OPeNDAP DataDDS object
+ * @param dhi BESDataHandlerInterface containing information about the
+ * request and response
+ * @throws BESInternalError if the response is not an OPeNDAP DataDDS or if
+ * there are any problems reading the data, writing to a netcdf file, or
+ * streaming the netcdf file
+ */
+void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
+{
+    BESDEBUG("fonc", "FONcTransmitter::send_dap4_data() - BEGIN" << endl);
+
+    try { // Expanded try block so all DAP errors are caught. ndp 12/23/2015
+        BESDapResponseBuilder responseBuilder;
+        // Use the DDS from the ResponseObject along with the parameters
+        // from the DataHandlerInterface to load the DDS with values.
+        // Note that the BESResponseObject will manage the loaded_dds object's
+        // memory. Make this a shared_ptr<>. jhrg 9/6/16
+
+        // Now that we are ready to start reading the response data we
+        // cancel any pending timeout alarm according to the configuration.
+        BESUtil::conditional_timeout_cancel();
+
+        BESDEBUG("fonc", "FONcTransmitter::send_dap4_data() - Reading data into DataDDS" << endl);
+        //DDS *loaded_dds = responseBuilder.intern_dap2_data(obj, dhi);
+        DMR *loaded_dmr = responseBuilder.intern_dap4_data(obj, dhi);
+
+#if 0
+
+         // Iterate through the variables in the DataDDS and read
+    // in the data if the variable has the send flag set.
+    D4Group* root_grp = loaded_dmr->root();
+    Constructor::Vars_iter v = root_grp->var_begin();
+    for (D4Group::Vars_iter i = root_grp->var_begin(), e = root_grp->var_end(); i != e; ++i) {
+        BESDEBUG("fonc", "BESDapResponseBuilder::send_dap4_data() - "<< (*i)->name() <<endl);
+        if ((*i)->send_p()) {
+            (*i)->intern_data();
+        }
+    }
+#endif
+
+        // ResponseBuilder splits the CE, so use the DHI or make two calls and
+        // glue the result together: responseBuilder.get_btp_func_ce() + " " + responseBuilder.get_ce()
+        // jhrg 9/6/16
+        //updateHistoryAttribute(loaded_dds, dhi.data[POST_CONSTRAINT]);
+
+#if 0
+        // TODO Make this code and the two struct classes that wrap the name a fd part of
+        // a utility class or file. jhrg 9/7/16
+
+        string temp_file_name = FONcRequestHandler::temp_dir + "/ncXXXXXX";
+        vector<char> temp_file(temp_file_name.length() + 1);
+        string::size_type len = temp_file_name.copy(&temp_file[0], temp_file_name.length());
+        temp_file[len] = '\0';
+        // cover the case where older versions of mkstemp() create the file using
+        // a mode of 666.
+        mode_t original_mode = umask(077);
+        int fd = mkstemp(&temp_file[0]);
+        umask(original_mode);
+
+        // Hack: Wrap the name and file descriptors so that the descriptor is closed
+        // and temp file in unlinked no matter how we exit. jhrg 9/7/16
+        // Except if there is a hard crash.. jhrg 3/30/17
+        wrap_temp_name w_temp_file(temp_file);
+        wrap_temp_descriptor w_fd(fd);
+
+        if (fd == -1) throw BESInternalError("Failed to open the temporary file.", __FILE__, __LINE__);
+#endif
+        // This object closes the file when it goes out of scope.
+        bes::TempFile temp_file(FONcRequestHandler::temp_dir + "/ncXXXXXX");
+
+        BESDEBUG("fonc", "FONcTransmitter::send_dap4_data - Building response file " << temp_file.get_name() << endl);
+        // Note that 'RETURN_CMD' is the same as the string that determines the file type:
+        // netcdf 3 or netcdf 4. Hack. jhrg 9/7/16
+        FONcTransform ft(loaded_dmr, dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
+        ft.transform_dap4();
+
+        ostream &strm = dhi.get_output_stream();
+        if (!strm) throw BESInternalError("Output stream is not set, can not return as", __FILE__, __LINE__);
+
+        BESDEBUG("fonc", "FONcTransmitter::send_dap4_data - Transmitting temp file " << temp_file.get_name() << endl);
+
+        FONcTransmitter::write_temp_file_to_stream(temp_file.get_fd(), strm); //, loaded_dds->filename(), ncVersion);
+    }
+    catch (Error &e) {
+        throw BESDapError("Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
+    }
+    catch (BESError &e) {
+        throw;
+    }
+    catch (std::exception &e) {
+        throw BESInternalError("Failed to read data: STL Error: " + string(e.what()), __FILE__, __LINE__);
+    }
+    catch (...) {
+        throw BESInternalError("Failed to get read data: Unknown exception caught", __FILE__, __LINE__);
+    }
+
+    BESDEBUG("fonc", "FONcTransmitter::send_dap4_data - done transmitting to netcdf" << endl);
+}
+
 
 /** @brief stream the temporary netcdf file back to the requester
  *
