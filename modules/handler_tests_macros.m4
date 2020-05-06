@@ -11,7 +11,7 @@
 # the pathname to the test drectory in the AC_INIT() macro, you will make it much easier
 # to identify the tests in a large build like the CI builds. jhrg 4/25/18
 
-AT_TESTED([besstandalone],[build_dmrpp])
+AT_TESTED([besstandalone])
 
 AT_ARG_OPTION_ARG([baselines],
     [--baselines=yes|no   Build the baseline file for parser test 'arg'],
