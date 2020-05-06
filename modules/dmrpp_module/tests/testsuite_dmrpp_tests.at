@@ -1,6 +1,7 @@
 chunked_threeD_asymmetric.h5]chunked_threeD.h5# Process with autom4te to create an -*- Autotest -*- test suite.
 
 AT_INIT([bes/modules/modules/dmrpp_module/tests testsuite_dmrpp_tests])
+AT_TESTED([build_dmrpp])
 
 m4_include([../../handler_tests_macros.m4])
 
