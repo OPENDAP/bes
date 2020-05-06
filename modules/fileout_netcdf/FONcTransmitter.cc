@@ -341,7 +341,7 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
         // cancel any pending timeout alarm according to the configuration.
         BESUtil::conditional_timeout_cancel();
 
-        BESDEBUG("fonc", "FONcTransmitter::send_dap4_data() - Reading data into DataDDS" << endl);
+        BESDEBUG("fonc", "FONcTransmitter::send_dap4_data() - Reading data into DMR" << endl);
         //DDS *loaded_dds = responseBuilder.intern_dap2_data(obj, dhi);
         DMR *loaded_dmr = responseBuilder.intern_dap4_data(obj, dhi);
 

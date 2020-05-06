@@ -68,6 +68,7 @@
 
 #include <DMR.h>
 #include <D4Group.h>
+#include <D4Attributes.h>
 #include <XMLWriter.h>
 #include <D4AsyncUtil.h>
 #include <D4StreamMarshaller.h>
@@ -1722,6 +1723,14 @@ BESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerIn
         BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() - "<< (*i)->name() <<endl);
         if ((*i)->send_p()) {
             BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() Obtain data- "<< (*i)->name() <<endl);
+            BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() Obtain data- "<< (*i)->name() <<endl);
+            D4Attributes*d4_attrs = (*i)->attributes();
+            BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() number of attributes "<< d4_attrs <<endl);
+            for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
+                         string name = (*ii)->name();
+                         BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() attribute name is "<<name <<endl);
+             }
+
 
             (*i)->intern_data();
         }

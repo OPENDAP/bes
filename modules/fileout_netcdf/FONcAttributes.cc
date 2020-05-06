@@ -82,6 +82,8 @@ void FONcAttributes::add_variable_attributes(int ncid, int varid, BaseType *b, b
         FONcAttributes::add_variable_attributes_worker(ncid, varid, parent, emb_name, is_nc_enhanced);
     }
     // addattrs_workerA(ncid, varid, b, "");
+    // Add DAP4 attribute support by using attributes().
+
     add_attributes(ncid, varid, b->get_attr_table(), b->name(), "", is_nc_enhanced);
 
 }

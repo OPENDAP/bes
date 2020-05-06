@@ -299,9 +299,9 @@ void FONcTransform::transform_dap4()
     Constructor::Vars_iter ve = root_grp->var_end();
 #if 1
     for (D4Group::Vars_iter i = root_grp->var_begin(), e = root_grp->var_end(); i != e; ++i) {
-        BESDEBUG("fonc", "BESDapResponseBuilder::send_dap4_data() - "<< (*i)->name() <<endl);
+        BESDEBUG("fonc", "transform_dap4() - "<< (*i)->name() <<endl);
         if ((*i)->send_p()) {
-            BESDEBUG("fonc", "BESDapResponseBuilder::send_dap4_data() inside send_p - "<< (*i)->name() <<endl);
+            BESDEBUG("fonc", "transform_dap4() inside send_p - "<< (*i)->name() <<endl);
             //(*i)->intern_data();
         }
     }
@@ -374,7 +374,9 @@ void FONcTransform::transform_dap4()
 
         if(FONcRequestHandler::no_global_attrs == false) {
             // Add any global attributes to the netcdf file
-            AttrTable &globals = _dds->get_attr_table();
+            D4Group* root_grp=_dmr->root();
+            // TO DO: Need to use attributes() for DAP4. 
+            AttrTable &globals = root_grp->get_attr_table();
             BESDEBUG("fonc", "FONcTransform::transform() - Adding Global Attributes" << endl << globals << endl);
             bool is_netCDF_enhanced = false;
             if(FONcTransform::_returnAs == RETURNAS_NETCDF4 && FONcRequestHandler::classic_model==false)
