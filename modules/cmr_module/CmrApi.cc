@@ -58,7 +58,7 @@
 using std::string;
 
 #define CMR_HOST_URL_KEY "CMR.host.url"
-#define DEFAULT_CMR_HOST_URL "https://cmr.earthdata.nasa.gov/search"
+#define DEFAULT_CMR_HOST_URL "https://cmr.earthdata.nasa.gov/"
 #define CMR_SEARCH_SERVICE "/search"
 #define prolog string("CmrApi::").append(__func__).append("() - ")
 
