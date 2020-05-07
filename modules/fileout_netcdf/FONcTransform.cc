@@ -46,6 +46,7 @@ using std::istringstream;
 #include <DDS.h>
 #include <DMR.h>
 #include <D4Group.h>
+#include <D4Attributes.h>
 #include <Structure.h>
 #include <Array.h>
 #include <Grid.h>
@@ -375,7 +376,12 @@ void FONcTransform::transform_dap4()
         if(FONcRequestHandler::no_global_attrs == false) {
             // Add any global attributes to the netcdf file
             D4Group* root_grp=_dmr->root();
-            // TO DO: Need to use attributes() for DAP4. 
+            D4Attributes*d4_attrs = root_grp->attributes();
+            BESDEBUG("fonc", "FONcTransform::transform() handle DAP4 attributes "<< d4_attrs <<endl);
+            for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
+                string name = (*ii)->name();
+                BESDEBUG("fonc", "FONcTransform::transform() attribute name is "<<name <<endl);
+                                                                                                       }
             AttrTable &globals = root_grp->get_attr_table();
             BESDEBUG("fonc", "FONcTransform::transform() - Adding Global Attributes" << endl << globals << endl);
             bool is_netCDF_enhanced = false;
