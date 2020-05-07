@@ -735,7 +735,7 @@ void writeHDF5(const string &filename, string tmp_storage, coordinates *c) {
     VERBOSE(cerr << "Creating dataset: " << datasetName << " -> ");
     hid_t datasetLon = H5Dcreate2(file, datasetName, H5T_NATIVE_DOUBLE, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 
-    datasetName = "Stare Index";
+    datasetName = "Stare_Index";
     VERBOSE(cerr << "Creating dataset: " << datasetName << " -> ");
     hid_t datasetStare = H5Dcreate2(file, datasetName, H5T_NATIVE_INT64, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 
