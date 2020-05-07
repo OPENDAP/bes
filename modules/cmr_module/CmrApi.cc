@@ -58,7 +58,7 @@
 using std::string;
 
 #define CMR_HOST_URL_KEY "CMR.host.url"
-#define DEFAULT_CMR_HOST_URL "https://cmr.uat.earthdata.nasa.gov/search"
+#define DEFAULT_CMR_HOST_URL "https://cmr.earthdata.nasa.gov/search"
 #define CMR_SEARCH_SERVICE "/search"
 #define prolog string("CmrApi::").append(__func__).append("() - ")
 
@@ -80,7 +80,7 @@ namespace cmr {
         BESDEBUG(MODULE, prolog << "Using CMR search endpoint: " << d_cmr_search_endpoint_url  << endl);
     }
 
-    /**
+/**
  *
  */
 const rapidjson::Value&
@@ -355,7 +355,9 @@ CmrApi::get_years(string collection_name, vector<string> &years_result){
     // bool result;
     string msg;
 
-    string url = BESUtil::assemblePath(d_cmr_search_endpoint_url, "granules.json") + "?concept_id=" + collection_name + "&include_facets=v2";
+    string url = BESUtil::assemblePath(d_cmr_search_endpoint_url, "granules.json") +
+            "?concept_id=" + collection_name + "&include_facets=v2";
+
     rapidjson::Document doc;
     rju.getJsonDoc(url,doc);
 
