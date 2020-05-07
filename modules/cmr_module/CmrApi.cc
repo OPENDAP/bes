@@ -55,13 +55,32 @@
 #include "CmrError.h"
 #include "rjson_utils.h"
 
-using namespace std;
+using std::string;
 
+#define CMR_HOST_URL_KEY "CMR.host.url"
+#define DEFAULT_CMR_HOST_URL "https://cmr.uat.earthdata.nasa.gov/search"
+#define CMR_SEARCH_SERVICE "/search"
 #define prolog string("CmrApi::").append(__func__).append("() - ")
 
 namespace cmr {
 
-/**
+    CmrApi::CmrApi() : d_cmr_search_endpoint_url(DEFAULT_CMR_HOST_URL){
+        bool found;
+        string cmr_search_endpoint_url;
+        TheBESKeys::TheKeys()->get_value(CMR_HOST_URL_KEY, cmr_search_endpoint_url,found);
+        if(found){
+            d_cmr_search_endpoint_url = cmr_search_endpoint_url;
+        }
+        string search(CMR_SEARCH_SERVICE);
+        if (d_cmr_search_endpoint_url.length() >= search.length()) {
+            if (0 != d_cmr_search_endpoint_url.compare (d_cmr_search_endpoint_url.length() - search.length(), search.length(), search)){
+                d_cmr_search_endpoint_url = BESUtil::pathConcat(d_cmr_search_endpoint_url,search);
+            }
+        }
+        BESDEBUG(MODULE, prolog << "Using CMR search endpoint: " << d_cmr_search_endpoint_url  << endl);
+    }
+
+    /**
  *
  */
 const rapidjson::Value&
@@ -336,7 +355,7 @@ CmrApi::get_years(string collection_name, vector<string> &years_result){
     // bool result;
     string msg;
 
-    string url = BESUtil::assemblePath(cmr_search_endpoint_url,"granules.json") + "?concept_id="+collection_name +"&include_facets=v2";
+    string url = BESUtil::assemblePath(d_cmr_search_endpoint_url, "granules.json") + "?concept_id=" + collection_name + "&include_facets=v2";
     rapidjson::Document doc;
     rju.getJsonDoc(url,doc);
 
@@ -364,7 +383,7 @@ CmrApi::get_months(string collection_name, string r_year, vector<string> &months
 
     stringstream msg;
 
-    string url = BESUtil::assemblePath(cmr_search_endpoint_url,"granules.json")
+    string url = BESUtil::assemblePath(d_cmr_search_endpoint_url, "granules.json")
         + "?concept_id="+collection_name
         +"&include_facets=v2"
         +"&temporal_facet[0][year]="+r_year;
@@ -426,7 +445,7 @@ CmrApi::get_days(string collection_name, string r_year, string r_month, vector<s
     rjson_utils rju;
     stringstream msg;
 
-    string url = BESUtil::assemblePath(cmr_search_endpoint_url,"granules.json")
+    string url = BESUtil::assemblePath(d_cmr_search_endpoint_url, "granules.json")
         + "?concept_id="+collection_name
         +"&include_facets=v2"
         +"&temporal_facet[0][year]="+r_year
@@ -488,7 +507,7 @@ void
 CmrApi::granule_search(string collection_name, string r_year, string r_month, string r_day, rapidjson::Document &result_doc){
     rjson_utils rju;
 
-    string url = BESUtil::assemblePath(cmr_search_endpoint_url,"granules.json")
+    string url = BESUtil::assemblePath(d_cmr_search_endpoint_url, "granules.json")
         + "?concept_id="+collection_name
         + "&include_facets=v2"
         + "&page_size=2000";

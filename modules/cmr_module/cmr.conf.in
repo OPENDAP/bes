@@ -44,6 +44,11 @@ CMR.Collections+=C1276812863-GES_DISC
 
 CMR.Facets=temporal
 
+# This is an optional configuration parameter.
+# The value of CMR.Search.Endpoint.Url defaults to https://cmr.earthdata.nasa.gov
+# If you make it different be sure to add the value to Gateway.Whitelist
+# CMR.Search.Endpoint.Url=https://cmr.uat.earthdata.nasa.gov
+
 # The CMR service needs to be on the whitelist
 Gateway.Whitelist+=https://cmr.earthdata.nasa.gov/search
 
