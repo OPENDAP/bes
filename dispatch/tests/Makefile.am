@@ -33,8 +33,8 @@ noinst_HEADERS = test_config.h
 BUILT_SOURCES = test_config.h
 
 test_config.h: $(srcdir)/test_config.h.in Makefile
-	@mod_abs_srcdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
-	mod_abs_builddir=`echo ${abs_builddir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	mod_abs_srcdir=`python -c "import os; print os.path.abspath('${abs_srcdir}')"`; \
+	mod_abs_builddir=`python -c "import os; print os.path.abspath('${abs_builddir}')"`; \
 	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
 	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
 

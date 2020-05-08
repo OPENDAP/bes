@@ -54,7 +54,7 @@ DISTCLEANFILES = xml_data_handler.conf
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = xml_data_handler.conf
 
-xml_data_handler.conf: xml_data_handler.conf.in $(top_srcdir)/config.status
+xml_data_handler.conf: xml_data_handler.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > xml_data_handler.conf
 
 C4_DIR=./cccc

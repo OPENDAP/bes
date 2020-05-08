@@ -50,7 +50,7 @@ CLEANFILES = *~ gateway.conf
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = gateway.conf
 
-gateway.conf: gateway.conf.in $(top_srcdir)/config.status
+gateway.conf: gateway.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > gateway.conf
 
 C4_DIR=./cccc

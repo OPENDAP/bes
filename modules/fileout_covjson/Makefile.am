@@ -39,7 +39,7 @@ CLEANFILES = *~ focovjson.conf
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = focovjson.conf
 
-focovjson.conf: focovjson.conf.in $(top_srcdir)/config.status
+focovjson.conf: focovjson.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > focovjson.conf
 
 C4_DIR=./cccc

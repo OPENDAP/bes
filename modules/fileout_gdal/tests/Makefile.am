@@ -5,7 +5,8 @@ TESTSUITE_TIF = $(srcdir)/testsuite_tif
 TESTSUITE_JP2 = $(srcdir)/testsuite_jp2
 
 EXTRA_DIST = $(TESTSUITE_TIF).at $(TESTSUITE_TIF) $(srcdir)/package.m4 \
-atlocal.in handler_tests_macros.m4 $(BES_CONF_IN) gdal
+$(TESTSUITE_JP2).at $(TESTSUITE_JP2)  atlocal.in \
+handler_tests_macros.m4 $(BES_CONF_IN) gdal
 
 # if OPENJPEG_FOUND
 # EXTRA_DIST += $(TESTSUITE_JP2).at $(TESTSUITE_JP2)
@@ -19,7 +20,7 @@ DISTCLEANFILES = atconfig
 
 check-local: atconfig atlocal $(TESTSUITE_TIF) $(TESTSUITE_JP2)
 	$(SHELL) '$(TESTSUITE_TIF)' $(TESTSUITE_TIFFLAGS)
-	test ! -f '$(TESTSUITE_JP2)' || $(SHELL) '$(TESTSUITE_JP2)' $(TESTSUITE_TIFFLAGS)
+	test ! -f '$(TESTSUITE_JP2)' || $(SHELL) '$(TESTSUITE_JP2)' $(TESTSUITE_JP2FLAGS)
 
 clean-local:
 	test ! -f '$(TESTSUITE_TIF)' || $(SHELL) '$(TESTSUITE_TIF)' --clean
@@ -32,7 +33,7 @@ BES_CONF_IN = bes.conf.modules.in
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
 # configure's value for the parameter when running the distcheck target.
 bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
-	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	@clean_abs_top_srcdir=`python -c "import os; print os.path.abspath('${abs_top_srcdir}')"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
@@ -41,13 +42,15 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 AUTOM4TE = $(SHELL) $(top_srcdir)/conf/missing --run autom4te
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
-$(TESTSUITE_TIF): $(TESTSUITE_TIF).at bes.conf $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4 
-	$(AUTOTEST) -I '$(srcdir)' -o ${srcdir}/$@.tmp $@.at
-	mv ${srcdir}/$@.tmp ${srcdir}/$@
+$(TESTSUITE_TIF): $(TESTSUITE_TIF).at bes.conf $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
+	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
+
+# mv ${srcdir}/$@.tmp ${srcdir}/$@
 
 $(TESTSUITE_JP2): $(TESTSUITE_JP2).at bes.conf $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
-	$(AUTOTEST) -I '$(srcdir)' -o ${srcdir}/$@.tmp $@.at
-	mv ${srcdir}/$@.tmp ${srcdir}/$@
+	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
+
+#mv ${srcdir}/$@.tmp ${srcdir}/$@
 
 # The `:;' works around a Bash 3.2 bug when the output is not writeable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac

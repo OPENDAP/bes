@@ -17,7 +17,8 @@ CLEANFILES = bes.conf bes_mds.conf $(srcdir)/package.m4
 
 EXTRA_DIST = nc netcdf_handlerTest netcdf_handlerTest.at \
 nc4_netcdf_handler_tests nc4_netcdf_handler_tests.at \
-atlocal.in $(BES_CONF_IN) $(BES_MDS_CONF_IN) $(srcdir)/package.m4
+atlocal.in $(BES_CONF_IN) $(BES_MDS_CONF_IN) $(srcdir)/package.m4 \
+handler_tests_macros.m4
 
 DISTCLEANFILES = atconfig
 
@@ -28,12 +29,12 @@ BES_MDS_CONF_IN = bes_mds.conf.modules.in
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
 # configure's value for the parameter when running the distcheck target.
 bes.conf: $(srcdir)/$(BES_CONF_IN) $(top_srcdir)/configure.ac
-	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	@clean_abs_top_srcdir=`python -c "import os; print os.path.abspath('${abs_top_srcdir}')"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
 bes_mds.conf: $(srcdir)/$(BES_MDS_CONF_IN) $(top_srcdir)/configure.ac
-	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	@clean_abs_top_srcdir=`python -c "import os; print os.path.abspath('${abs_top_srcdir}')"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes_mds.conf
 ############## Autotest follows #####################

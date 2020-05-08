@@ -14,7 +14,7 @@ dist_bin_SCRIPTS = get_dmrpp ingest_filesystem ingest_s3bucket
 #
 # Not used. jhrg  4/1/20
 %.conf : %.conf.in
-	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	@clean_abs_top_srcdir=`python -c "import os; print os.path.abspath('${abs_top_srcdir}')"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
 		-e "s%[@]modulesdir[@]%${modulesdir}%" $< > $@
