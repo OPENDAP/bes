@@ -37,6 +37,7 @@
 #include <string>
 
 #include <BaseType.h>
+#include <D4Attributes.h>
 using namespace libdap ;
 
 class FONcBaseType ;
@@ -54,12 +55,17 @@ class FONcAttributes
 {
 private:
     static void	add_variable_attributes_worker( int ncid, int varid, BaseType *b, string &emb_name,bool is_netCDF_enhanced ) ;
+    //static void	add_variable_attributes_worker( int ncid, int varid, BaseType *b, string &emb_name,bool is_netCDF_enhanced,bool is_dap4 ) ;
     static void	add_attributes_worker( int ncid, int varid, const string &var_name, AttrTable &attrs, AttrTable::Attr_iter &attr, const string &prepend_attri,bool is_netCDF_enhanced ) ;
+    static void	add_dap4_attributes_worker( int ncid, int varid, const string &var_name, D4Attributes *d4_attrs, D4Attributes::D4AttributesIter &attr, const string &prepend_attri,bool is_netCDF_enhanced ) ;
 public:
     static void add_attributes( int ncid, int varid, AttrTable &attrs, const string &var_name, const string &prepend_attr , bool is_netCDF_enhanced) ;
+    static void add_dap4_attributes( int ncid, int varid, D4Attributes *d4_attrs, const string &var_name, const string &prepend_attr , bool is_netCDF_enhanced) ;
     static void add_variable_attributes( int ncid, int varid, BaseType *b ,bool is_netCDF_enhanced) ;
+    //static void add_variable_attributes( int ncid, int varid, BaseType *b ,bool is_netCDF_enhanced,bool is_dap4) ;
     static void add_original_name( int ncid, int varid, const string &var_name, const string &orig ) ;
     static void write_attrs_for_nc4_types(int ncid,int varid, const string &var_name, const string&global_attr_name,const string & var_attr_name,AttrTable attrs, AttrTable::Attr_iter &attr,bool is_nc_enhanced);
+    static void write_dap4_attrs_for_nc4_types(int ncid,int varid, const string &var_name, const string&global_attr_name,const string & var_attr_name,D4Attributes *d4_attrs, D4Attributes::D4AttributesIter &attr,bool is_nc_enhanced);
 } ;
 
 #endif // FONcAttributes

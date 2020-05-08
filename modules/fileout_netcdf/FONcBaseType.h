@@ -67,8 +67,9 @@ protected:
     bool _defined;
     std::string _ncVersion;
     std::string _nc4_datamodel;
+    bool is_dap4;
 
-    FONcBaseType() : _varid(0), _defined(false) { }
+    FONcBaseType() : _varid(0), _defined(false),is_dap4(false){ }
 
 public:
     virtual ~FONcBaseType() { }
