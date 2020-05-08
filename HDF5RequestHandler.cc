@@ -1275,6 +1275,9 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
                 dmr->set_name(name_path(filename));
                 dmr->set_filename(name_path(filename));
 
+                // The breadth_first() function builds the variables and attributes and
+                // loads them into the root group (building child groups as needed).
+                // jhrg 4/30/20
                 D4Group* root_grp = dmr->root();
                 breadth_first(fileid,(char*)"/",root_grp,filename.c_str(),use_dimscale);
 

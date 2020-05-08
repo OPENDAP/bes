@@ -93,7 +93,7 @@ sample_data_DATA = data/grid_1_2d.h5
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = h5.conf
 
-h5.conf: h5.conf.in $(top_srcdir)/config.status
+h5.conf: h5.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > h5.conf
 
 C4_DIR=./cccc
