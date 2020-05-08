@@ -122,7 +122,7 @@ sample_data_DATA = data/S2000415.HDF.gz data/foo2.hdf.gz data/grid_1_2d.hdf
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = h4.conf
 
-h4.conf: h4.conf.in $(top_srcdir)/config.status
+h4.conf: h4.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > h4.conf
 
 .PHONY: grammarfiles
