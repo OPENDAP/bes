@@ -6,7 +6,8 @@ noinst_DATA = bes.conf
 CLEANFILES = bes.conf
 
 EXTRA_DIST = $(TESTSUITE_TIF).at $(TESTSUITE_TIF) atlocal.in \
-$(TESTSUITE_JP2).at $(TESTSUITE_JP2) $(BES_CONF_IN) package.m4 gdal
+$(TESTSUITE_JP2).at $(TESTSUITE_JP2) $(BES_CONF_IN) package.m4 gdal \
+handler_tests_macros.m4
 
 DISTCLEANFILES = atconfig
 
