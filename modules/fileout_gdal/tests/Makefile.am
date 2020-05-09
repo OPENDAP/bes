@@ -36,7 +36,7 @@ clean-local:
 	test ! -f '$(TESTSUITE_JP2)' || $(SHELL) '$(TESTSUITE_JP2)' --clean
 	-rm -f $(TESTSUITE_TIF) $(TESTSUITE_JP2) $(srcdir)/package.m4
 
-installcheck-local: $(TESTSUITE_TIF) $(TESTSUITE_JP2) atconfig atlocal cache
+installcheck-local: $(TESTSUITE_TIF) $(TESTSUITE_JP2) atconfig atlocal
 	$(SHELL) '$(TESTSUITE_TIF)' AUTOTEST_PATH='$(bindir)' $(TESTSUITE_TIFFFLAGS)
 	$(SHELL) '$(TESTSUITE_JP2)' AUTOTEST_PATH='$(bindir)' $(TESTSUITE_JP2FLAGS)
 
