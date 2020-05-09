@@ -48,7 +48,7 @@ $(TESTSUITE_JP2): $(TESTSUITE_JP2).at $(srcdir)/package.m4 $(srcdir)/handler_tes
 %: %.at
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
-# The `:;' works around a Bash 3.2 bug when the output is not writeable.
+# The `:;' works around a Bash 3.2 bug when the output is not writable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	:;{ \
 	echo '# Signature of the current package.' && \

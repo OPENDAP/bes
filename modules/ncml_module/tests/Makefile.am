@@ -75,7 +75,7 @@ AUTOTEST = $(AUTOM4TE) --language=autotest
 # canonical_abs_top_srcdir =  `${READLINK_F} ${abs_top_srcdir}`
 
 # Generate the m4 defines from top level configure.ac
-# The `:;' works around a Bash 3.2 bug when the output is not writeable.
+# The `:;' works around a Bash 3.2 bug when the output is not writable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	:;{ \
 	echo '# Signature of the current package.' && \
