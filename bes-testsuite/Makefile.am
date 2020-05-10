@@ -69,7 +69,7 @@ AUTOTEST = $(AUTOM4TE) --language=autotest
 % : %.at  $(srcdir)/package.m4
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
-# The `:;' works around a Bash 3.2 bug when the output is not writeable.
+# The `:;' works around a Bash 3.2 bug when the output is not writable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	:;{ \
 	echo '# Signature of the current package.' && \
