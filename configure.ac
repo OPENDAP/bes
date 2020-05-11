@@ -41,35 +41,84 @@ dnl I moved this up to here from the tail end of the file
 dnl because it needs to run before the AC_PROG_CXX macro
 dnl which will also set CXXFLAGS
 dnl jhrg 3/4/15
-AC_ARG_ENABLE([developer], [AS_HELP_STRING([--enable-developer], [Developer mode; won't override CXXFLAGS on the command line])],
-  [AM_CONDITIONAL([BES_DEVELOPER], [true])
-   cxx_debug_flags="-g3 -O0  -Wall -W -Wcast-align"],   
-  [AM_CONDITIONAL([BES_DEVELOPER], [false])
-   AC_DEFINE([NDEBUG], [1], [Define this to suppress assert() statements.])])
+dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+dnl AC_ARG_ENABLE([developer], [AS_HELP_STRING([--enable-developer], [Developer mode; won't override CXXFLAGS on the command line])],
+dnl   [AM_CONDITIONAL([BES_DEVELOPER], [true])  cxx_debug_flags="-g3 -O0  -Wall -W -Wcast-align"],
+dnl   [AM_CONDITIONAL([BES_DEVELOPER], [false]) AC_DEFINE([NDEBUG], [1], [Define this to suppress assert() statements.])])
 
-AC_ARG_ENABLE([asan], [AS_HELP_STRING([--enable-asan], [Use the address sanitizer; won't override CXXFLAGS on the command line])], 
-    [AM_CONDITIONAL([USE_ASAN], [true])
-     cxx_debug_flags="$cxx_debug_flags -fsanitize=address -fno-omit-frame-pointer -fno-common"], 
-    [AM_CONDITIONAL([USE_ASAN], [false])])
+AC_ARG_ENABLE([developer],
+    [AS_HELP_STRING([--enable-developer], [Developer mode: Won't override CXXFLAGS on the command line])]
+)
+AS_IF([test "x$enable_developer" = "xyes"],
+     [AM_CONDITIONAL([BES_DEVELOPER], [true]) cxx_debug_flags="-g3 -O0  -Wall -W -Wcast-align"],
+     [AM_CONDITIONAL([BES_DEVELOPER], [false]) AC_DEFINE([NDEBUG], [1], [Define this to suppress assert() statements.])]
+)
 
-AC_ARG_WITH([cmr], [AS_HELP_STRING([--with-cmr], [Build the CMR Module (built by default in developer mode)])],
-    [AM_CONDITIONAL([WITH_CMR], [true])],
-    [AM_CONDITIONAL([WITH_CMR], [AM_COND_IF([BES_DEVELOPER], [true], [false])])])
+AM_COND_IF([BES_DEVELOPER],
+    [AC_MSG_NOTICE([Developer Mode is enabled.]) ],
+    [AC_MSG_NOTICE([Developer Mode is disabled.])]
+)
 
+dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+dnl AC_ARG_ENABLE([asan], [AS_HELP_STRING([--enable-asan], [Use the address sanitizer; won't override CXXFLAGS on the command line])],
+dnl     [AM_CONDITIONAL([USE_ASAN], [true])
+dnl      cxx_debug_flags="$cxx_debug_flags -fsanitize=address -fno-omit-frame-pointer -fno-common"],
+dnl     [AM_CONDITIONAL([USE_ASAN], [false])])
+
+AC_ARG_ENABLE([asan],
+    [AS_HELP_STRING([--enable-asan],
+    [Use the address sanitizer. Won't override CXXFLAGS on the command line])]
+)
+AS_IF([test "x$enable_asan" = "xyes"],
+    [AM_CONDITIONAL([USE_ASAN], [true]) cxx_debug_flags="$cxx_debug_flags -fsanitize=address -fno-omit-frame-pointer -fno-common"],
+    [AM_CONDITIONAL([USE_ASAN], [false])]
+)
+AM_COND_IF([USE_ASAN],
+    [AC_MSG_NOTICE([Address Sanitizer (ASAN) is enabled.])],
+    [AC_MSG_NOTICE([Address Sanitizer (ASAN) is disabled.])]
+)
+
+dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+dnl AC_ARG_WITH([cmr], [AS_HELP_STRING([--with-cmr], [Build the CMR Module (built by default in developer mode)])],
+dnl    [AM_CONDITIONAL([WITH_CMR], [true])],
+dnl    [AM_CONDITIONAL([WITH_CMR], [AM_COND_IF([BES_DEVELOPER], [true], [false])])])
+
+AC_ARG_WITH([cmr],
+    [AS_HELP_STRING([--with-cmr],
+    [Build with the CMR Module (built by default in developer mode)])]
+)
+
+AS_IF([test "x$with_cmr" = "xyes"],
+    [AM_CONDITIONAL([WITH_CMR], [true]) ],
+    [AM_CONDITIONAL([WITH_CMR], [
+        AM_COND_IF([BES_DEVELOPER], [true], [false])])
+    ]
+)
 AM_COND_IF([WITH_CMR],
     [AC_MSG_NOTICE([Building support for the CMR Module])],
-    [AC_MSG_NOTICE([Disabled support for the CMR Module])])
+    [AC_MSG_NOTICE([Disabled support for the CMR Module])]
+)
 
+dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 dnl Build NGAP support by default or if the user provides --with-ngap. Do not build the
 dnl module if the user supplies --without-ngap or --with-ngap=no. jhrg 3/31/20
+dnl AC_ARG_WITH([ngap], [AS_HELP_STRING([--without-ngap], [disable support for the NGAP module])],
+dnl     [AM_CONDITIONAL([WITH_NGAP], [test "x$with_ngap" == xyes])],
+dnl     [AM_CONDITIONAL([WITH_NGAP], [true])])
 
-AC_ARG_WITH([ngap], [AS_HELP_STRING([--without-ngap], [disable support for the NGAP module])],
-    [AM_CONDITIONAL([WITH_NGAP], [test "x$with_ngap" == xyes])],
-    [AM_CONDITIONAL([WITH_NGAP], [true])])
-
+AC_ARG_WITH([ngap],
+    AS_HELP_STRING([--without-ngap],
+    [Disable Support For The NGAP service, no ngap_module. (Built by default in developer mode)])
+)
+AS_IF([test "x$with_ngap" = "xno"],
+    [AM_CONDITIONAL([WITH_NGAP], [false])],
+    [AM_CONDITIONAL([WITH_NGAP], [true])]
+)
 AM_COND_IF([WITH_NGAP],
     [AC_MSG_NOTICE([Building support for the NGAP Module])],
     [AC_MSG_NOTICE([Disabled support for the NGAP Module])])
+
+dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
 AS_IF([test "$CC" = "gcc"], [AM_CONDITIONAL([COMPILER_IS_GCC],[true])],
     [AM_CONDITIONAL([COMPILER_IS_GCC],[false])])
