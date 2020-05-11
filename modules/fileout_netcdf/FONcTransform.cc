@@ -298,7 +298,7 @@ void FONcTransform::transform_dap4()
     D4Group* root_grp = _dmr->root();
     Constructor::Vars_iter vi = root_grp->var_begin();
     Constructor::Vars_iter ve = root_grp->var_end();
-#if 1
+#if 0
     for (D4Group::Vars_iter i = root_grp->var_begin(), e = root_grp->var_end(); i != e; ++i) {
         BESDEBUG("fonc", "transform_dap4() - "<< (*i)->name() <<endl);
         if ((*i)->send_p()) {
@@ -381,8 +381,8 @@ void FONcTransform::transform_dap4()
             for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
                 string name = (*ii)->name();
                 BESDEBUG("fonc", "FONcTransform::transform() attribute name is "<<name <<endl);
-                                                                                                       }
-            AttrTable &globals = root_grp->get_attr_table();
+            }
+            //    AttrTable &globals = root_grp->get_attr_table();
             BESDEBUG("fonc", "FONcTransform::transform() - Adding Global Attributes" << endl << globals << endl);
             bool is_netCDF_enhanced = false;
             if(FONcTransform::_returnAs == RETURNAS_NETCDF4 && FONcRequestHandler::classic_model==false)

@@ -218,6 +218,103 @@ void updateHistoryAttribute(DDS *dds, const string ce)
 }
 
 /**
+ * Process the "history" attribute.
+ * We add:
+ *  - Sub-setting information if any
+ *  - SSFunction invocations
+ *  - ResourceID? URL?
+ *
+ * @param dds The DDS to modify
+ * @param ce The constraint expression that produced this new netCDF file.
+ */
+void update_Dap4_HistoryAttribute(DMR *dmr, const string ce)
+{
+    bool foundIt = false;
+    string cf_history_entry = BESContextManager::TheManager()->get_context("cf_history_entry", foundIt);
+    if (!foundIt) {
+        // This code will be used only when the 'cf_histroy_context' is not set,
+        // which should be never in an operating server. However, when we are
+        // testing, often only the besstandalone code is running and the existing
+        // baselines don't set the context, so we have this. It must do something
+        // so the tests are not hopelessly obscure and filter out junk that varies
+        // by host (e.g., the names of cached files that have been decompressed).
+        // jhrg 6/3/16
+
+        string request_url = dds->filename();
+        // remove path info
+        request_url = request_url.substr(request_url.find_last_of('/')+1);
+        // remove 'uncompress' cache mangling
+        request_url = request_url.substr(request_url.find_last_of('#')+1);
+        request_url += "?" + ce;
+
+        std::stringstream ss;
+
+        time_t raw_now;
+        struct tm * timeinfo;
+        time(&raw_now); /* get current time; same as: timer = time(NULL)  */
+        timeinfo = localtime(&raw_now);
+
+        char time_str[100];
+        // 2000-6-1 6:00:00
+        strftime(time_str, 100, "%Y-%m-%d %H:%M:%S", timeinfo);
+
+        ss << time_str << " " << "Hyrax" << " " << request_url;
+        cf_history_entry = ss.str();
+    }
+
+    BESDEBUG("fonc",
+        "FONcTransmitter::update_Dap4_HistoryAttribute() - Adding cf_history_entry context. '" << cf_history_entry << "'" << endl);
+
+    vector<string> hist_entry_vec;
+    hist_entry_vec.push_back(cf_history_entry);
+    BESDEBUG("fonc",
+        "FONcTransmitter::update_Dap4_HistoryAttribute() - hist_entry_vec.size(): " << hist_entry_vec.size() << endl);
+
+    // Add the new entry to the "history" attribute
+    // Get the top level Attribute table.
+    //AttrTable &globals = dds->get_attr_table();
+    D4Group* root_grp = dmr->root();
+    //D4Attributes*d4_attrs = root_grp->attributes();
+
+    // Since many files support "CF" conventions the history tag may already exist in the source data
+    // and we should add an entry to it if possible.
+    bool done = false; // Used to indicate that we located a toplevel ATtrTable whose name ends in "_GLOBAL" and that has an existing "history" attribute.
+    unsigned int num_attrs = globals.get_size();
+    if (num_attrs) {
+        // Here we look for a top level AttrTable whose name ends with "_GLOBAL" which is where, by convention,
+        // data ingest handlers place global level attributes found in the source dataset.
+        AttrTable::Attr_iter i = globals.attr_begin();
+        AttrTable::Attr_iter e = globals.attr_end();
+        for (; i != e && !done; i++) {
+            AttrType attrType = globals.get_attr_type(i);
+            string attr_name = globals.get_name(i);
+            // Test the entry...
+            if (attrType == Attr_container && BESUtil::endsWith(attr_name, "_GLOBAL")) {
+                // Look promising, but does it have an existing "history" Attribute?
+                AttrTable *source_file_globals = globals.get_attr_table(i);
+                AttrTable::Attr_iter history_attrItr = source_file_globals->simple_find("history");
+                if (history_attrItr != source_file_globals->attr_end()) {
+                    // Yup! Add our entry...
+                    BESDEBUG("fonc",
+                        "FONcTransmitter::updateHistoryAttribute() - Adding history entry to " << attr_name << endl);
+                    source_file_globals->append_attr("history", "string", &hist_entry_vec);
+                    done = true;
+                }
+            }
+        }
+    }
+
+    if (!done) {
+        // We never found an existing location to place the "history" entry, so we'll just stuff it into the top level AttrTable.
+        BESDEBUG("fonc",
+            "FONcTransmitter::updateHistoryAttribute() - Adding history entry to top level AttrTable" << endl);
+        globals.append_attr("history", "string", &hist_entry_vec);
+
+    }
+}
+
+
+/**
  * @brief The static method registered to transmit OPeNDAP data objects as
  * a netcdf file.
  *
@@ -362,7 +459,7 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
         // ResponseBuilder splits the CE, so use the DHI or make two calls and
         // glue the result together: responseBuilder.get_btp_func_ce() + " " + responseBuilder.get_ce()
         // jhrg 9/6/16
-        //updateHistoryAttribute(loaded_dds, dhi.data[POST_CONSTRAINT]);
+        //update_Dap4_HistoryAttribute(dmr, dhi.data[POST_CONSTRAINT]);
 
 #if 0
         // TODO Make this code and the two struct classes that wrap the name a fd part of
