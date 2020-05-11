@@ -47,16 +47,15 @@ dnl   [AM_CONDITIONAL([BES_DEVELOPER], [true])  cxx_debug_flags="-g3 -O0  -Wall 
 dnl   [AM_CONDITIONAL([BES_DEVELOPER], [false]) AC_DEFINE([NDEBUG], [1], [Define this to suppress assert() statements.])])
 
 AC_ARG_ENABLE([developer],
-    [AS_HELP_STRING([--enable-developer], [Developer mode: Won't override CXXFLAGS on the command line])]
+    [AS_HELP_STRING([--enable-developer],
+    [Developer mode: Won't override CXXFLAGS on the command line])]
 )
-AS_IF([test "x$enable_developer" = "xyes"],
-     [AM_CONDITIONAL([BES_DEVELOPER], [true]) cxx_debug_flags="-g3 -O0  -Wall -W -Wcast-align"],
-     [AM_CONDITIONAL([BES_DEVELOPER], [false]) AC_DEFINE([NDEBUG], [1], [Define this to suppress assert() statements.])]
-)
-
+AM_CONDITIONAL([BES_DEVELOPER], [test "x$enable_developer" = "xyes"])
 AM_COND_IF([BES_DEVELOPER],
-    [AC_MSG_NOTICE([Developer Mode is enabled.]) ],
-    [AC_MSG_NOTICE([Developer Mode is disabled.])]
+    [cxx_debug_flags="-g3 -O0  -Wall -W -Wcast-align"
+      AC_MSG_NOTICE([Developer Mode is enabled.]) ],
+    [AC_DEFINE([NDEBUG], [1], [Define this to suppress assert() statements.])
+      AC_MSG_NOTICE([Developer Mode is disabled.])]
 )
 
 dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
@@ -69,14 +68,13 @@ AC_ARG_ENABLE([asan],
     [AS_HELP_STRING([--enable-asan],
     [Use the address sanitizer. Won't override CXXFLAGS on the command line])]
 )
-AS_IF([test "x$enable_asan" = "xyes"],
-    [AM_CONDITIONAL([USE_ASAN], [true]) cxx_debug_flags="$cxx_debug_flags -fsanitize=address -fno-omit-frame-pointer -fno-common"],
-    [AM_CONDITIONAL([USE_ASAN], [false])]
-)
+AM_CONDITIONAL([USE_ASAN], [test "x$enable_asan" = "xyes"])
 AM_COND_IF([USE_ASAN],
-    [AC_MSG_NOTICE([Address Sanitizer (ASAN) is enabled.])],
+    [cxx_debug_flags="$cxx_debug_flags -fsanitize=address -fno-omit-frame-pointer -fno-common"
+        AC_MSG_NOTICE([Address Sanitizer (ASAN) is enabled.])],
     [AC_MSG_NOTICE([Address Sanitizer (ASAN) is disabled.])]
 )
+
 
 dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 dnl AC_ARG_WITH([cmr], [AS_HELP_STRING([--with-cmr], [Build the CMR Module (built by default in developer mode)])],
@@ -87,13 +85,7 @@ AC_ARG_WITH([cmr],
     [AS_HELP_STRING([--with-cmr],
     [Build with the CMR Module (built by default in developer mode)])]
 )
-
-AS_IF([test "x$with_cmr" = "xyes"],
-    [AM_CONDITIONAL([WITH_CMR], [true]) ],
-    [AM_CONDITIONAL([WITH_CMR], [
-        AM_COND_IF([BES_DEVELOPER], [true], [false])])
-    ]
-)
+AM_CONDITIONAL([WITH_CMR], [test "x$with_cmr" = "xyes"  -o "x$enable_developer" = "xyes"])
 AM_COND_IF([WITH_CMR],
     [AC_MSG_NOTICE([Building support for the CMR Module])],
     [AC_MSG_NOTICE([Disabled support for the CMR Module])]
@@ -110,10 +102,7 @@ AC_ARG_WITH([ngap],
     AS_HELP_STRING([--without-ngap],
     [Disable Support For The NGAP service, no ngap_module. (Built by default in developer mode)])
 )
-AS_IF([test "x$with_ngap" = "xno"],
-    [AM_CONDITIONAL([WITH_NGAP], [false])],
-    [AM_CONDITIONAL([WITH_NGAP], [true])]
-)
+AM_CONDITIONAL([WITH_NGAP], [test "x$with_ngap" != "xno"])
 AM_COND_IF([WITH_NGAP],
     [AC_MSG_NOTICE([Building support for the NGAP Module])],
     [AC_MSG_NOTICE([Disabled support for the NGAP Module])])
