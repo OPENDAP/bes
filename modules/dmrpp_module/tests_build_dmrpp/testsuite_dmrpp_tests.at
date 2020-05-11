@@ -2,7 +2,7 @@ chunked_threeD_asymmetric.h5]chunked_threeD.h5# Process with autom4te to create 
 
 AT_INIT([bes/modules/modules/dmrpp_module/tests_build_dmrpp testsuite_dmrpp_tests])
 
-m4_include([../../handler_tests_macros.m4])
+m4_include([handler_tests_macros.m4])
 
 #AT_BESCMD_BUILD_DMRPP_RESPONSE_TEST([modules/dmrpp_module/data/dmrpp/chunked_compound.h5])
 AT_BESCMD_BUILD_DMRPP_RESPONSE_TEST([modules/dmrpp_module/data/dmrpp/chunked_enum.h5])
