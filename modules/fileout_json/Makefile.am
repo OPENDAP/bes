@@ -39,7 +39,7 @@ CLEANFILES = *~ fojson.conf
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = fojson.conf
 
-fojson.conf: fojson.conf.in $(top_srcdir)/config.status
+fojson.conf: fojson.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > fojson.conf
 
 C4_DIR=./cccc

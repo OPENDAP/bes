@@ -84,17 +84,17 @@ CLEANFILES = *.log *.sum real* test_config.h bes.conf
 #
 # Changed test_config.h.in tp $(srcdir)/test_config.h.in. jhrg 1/21/18
 test_config.h: $(srcdir)/test_config.h.in Makefile
-	@mod_abs_srcdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
-	mod_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
-	mod_abs_builddir=`echo ${abs_builddir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	@mod_abs_srcdir=`python -c "import os; print os.path.abspath('${abs_srcdir}')"`; \
+	mod_abs_top_srcdir=`python -c "import os; print os.path.abspath('${abs_top_srcdir}')"`; \
+	mod_abs_builddir=`python -c "import os; print os.path.abspath('${abs_builddir}')"`; \
 	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
 		-e "s%[@]abs_top_srcdir[@]%$${mod_abs_top_srcdir}%" \
 		-e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
 
 bes.conf: $(srcdir)/bes.conf.in Makefile
-	@mod_abs_srcdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
-	mod_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
-	mod_abs_builddir=`echo ${abs_builddir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	@mod_abs_srcdir=`python -c "import os; print os.path.abspath('${abs_srcdir}')"`; \
+	mod_abs_top_srcdir=`python -c "import os; print os.path.abspath('${abs_top_srcdir}')"`; \
+	mod_abs_builddir=`python -c "import os; print os.path.abspath('${abs_builddir}')"`; \
 	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
 		-e "s%[@]abs_top_srcdir[@]%$${mod_abs_top_srcdir}%" \
 		-e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > bes.conf

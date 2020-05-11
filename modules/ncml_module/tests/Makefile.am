@@ -28,17 +28,17 @@ BES_UNKNOWN_TYPE_AGGREGATION_ERROR_CONF_IN = bes_unknown_type_aggregation_error.
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
 # configure's value for the parameter when running the distcheck target.
 %.conf: %.conf.in $(top_srcdir)/configure.ac
-	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	@clean_abs_top_srcdir=`python -c "import os; print os.path.abspath('${abs_top_srcdir}')"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > $@
 
 # bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
-#	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+#	@clean_abs_top_srcdir=`python -c "import os; print os.path.abspath('${abs_top_srcdir}')"`; \
 #	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 #		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
 # bes_no_nc_global.conf: $(BES_NO_NC_GLOBAL_CONF_IN) $(top_srcdir)/configure.ac
-#	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+#	@clean_abs_top_srcdir=`python -c "import os; print os.path.abspath('${abs_top_srcdir}')"`; \
 #	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 #		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes_no_nc_global.conf
 
@@ -75,7 +75,7 @@ AUTOTEST = $(AUTOM4TE) --language=autotest
 # canonical_abs_top_srcdir =  `${READLINK_F} ${abs_top_srcdir}`
 
 # Generate the m4 defines from top level configure.ac
-# The `:;' works around a Bash 3.2 bug when the output is not writeable.
+# The `:;' works around a Bash 3.2 bug when the output is not writable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	:;{ \
 	echo '# Signature of the current package.' && \

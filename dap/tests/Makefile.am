@@ -34,7 +34,7 @@ DISTCLEANFILES = atconfig
 # configure's value for the parameter when running the distcheck target.
 
 %.conf: %.conf.in
-	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	@clean_abs_top_srcdir=`python -c "import os; print os.path.abspath('${abs_top_srcdir}')"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > $@
 
@@ -71,7 +71,7 @@ $(TESTSUITE2): $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
 %: %.at 
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
-# The `:;' works around a Bash 3.2 bug when the output is not writeable.
+# The `:;' works around a Bash 3.2 bug when the output is not writable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	:;{ \
 	echo '# Signature of the current package.' && \

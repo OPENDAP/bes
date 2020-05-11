@@ -72,7 +72,7 @@ sample_data_DATA = data/1998-6-avhrr.dat data/avhrr.dat data/gsodock.dat data/gs
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = ff.conf
 
-ff.conf: ff.conf.in $(top_srcdir)/config.status
+ff.conf: ff.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > ff.conf
 
 C4_DIR=./cccc

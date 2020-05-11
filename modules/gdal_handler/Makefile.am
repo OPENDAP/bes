@@ -71,5 +71,5 @@ sample_data_DATA = data/README \
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = gdal.conf
 
-gdal.conf: gdal.conf.in $(top_srcdir)/config.status
+gdal.conf: gdal.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > gdal.conf

@@ -38,7 +38,7 @@ CLEANFILES = *~ ngap.conf
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = ngap.conf
 
-ngap.conf: ngap.conf.in $(top_srcdir)/config.status
+ngap.conf: ngap.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > ngap.conf
 
 C4_DIR=./cccc

@@ -46,7 +46,7 @@ sample_data_DATA = data/temperature.csv
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = csv.conf
 
-csv.conf: csv.conf.in $(top_srcdir)/config.status
+csv.conf: csv.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > csv.conf
 
 C4_DIR=./cccc

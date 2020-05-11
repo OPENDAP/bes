@@ -1,10 +1,16 @@
-
 AUTOMAKE_OPTIONS = foreign
 
-TESTSUITE = $(srcdir)/testsuite
+TESTSUITE_TIF = $(srcdir)/testsuite_tif
 
-EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) $(srcdir)/package.m4		\
-atlocal.in $(BES_CONF_IN) gdal handler_tests_macros.m4
+TESTSUITE_JP2 = $(srcdir)/testsuite_jp2
+
+EXTRA_DIST = $(TESTSUITE_TIF).at $(TESTSUITE_TIF) $(srcdir)/package.m4 \
+$(TESTSUITE_JP2).at $(TESTSUITE_JP2)  atlocal.in \
+handler_tests_macros.m4 $(BES_CONF_IN) gdal
+
+# if OPENJPEG_FOUND
+# EXTRA_DIST += $(TESTSUITE_JP2).at $(TESTSUITE_JP2)
+# endif
 
 noinst_DATA = bes.conf
 
@@ -12,12 +18,14 @@ CLEANFILES = bes.conf
 
 DISTCLEANFILES = atconfig
 
-check-local: atconfig atlocal $(TESTSUITE)
-	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+check-local: atconfig atlocal $(TESTSUITE_TIF) $(TESTSUITE_JP2)
+	$(SHELL) '$(TESTSUITE_TIF)' $(TESTSUITE_TIFFLAGS)
+	test ! -f '$(TESTSUITE_JP2)' || $(SHELL) '$(TESTSUITE_JP2)' $(TESTSUITE_JP2FLAGS)
 
 clean-local:
-	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
-	-rm -f $(TESTSUITE)
+	test ! -f '$(TESTSUITE_TIF)' || $(SHELL) '$(TESTSUITE_TIF)' --clean
+	test ! -f '$(TESTSUITE_JP2)' || $(SHELL) '$(TESTSUITE_JP2)' --clean
+	-rm -f $(TESTSUITE_TIF) $(TESTSUITE_JP2) $(srcdir)/package.m4 
 
 BES_CONF_IN = bes.conf.modules.in
 
@@ -29,16 +37,22 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
+
 # Use the missing script for better error checking on autom4te run.
 AUTOM4TE = $(SHELL) $(top_srcdir)/conf/missing --run autom4te
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
-$(TESTSUITE): $(srcdir)/package.m4 $(TESTSUITE).at $(srcdir)/handler_tests_macros.m4
+$(TESTSUITE_TIF): $(TESTSUITE_TIF).at $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
 # mv ${srcdir}/$@.tmp ${srcdir}/$@
 
-# The `:;' works around a Bash 3.2 bug when the output is not writable.
+$(TESTSUITE_JP2): $(TESTSUITE_JP2).at $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
+	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
+
+#mv ${srcdir}/$@.tmp ${srcdir}/$@
+
+# The `:;' works around a Bash 3.2 bug when the output is not writeable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	:;{ \
 	echo '# Signature of the current package.' && \
@@ -48,3 +62,4 @@ $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	echo 'm4_define([AT_PACKAGE_STRING],    [@PACKAGE_STRING@])' && \
 	echo 'm4_define([AT_PACKAGE_BUGREPORT], [@PACKAGE_BUGREPORT@])'; \
 	} >'$(srcdir)/package.m4'
+

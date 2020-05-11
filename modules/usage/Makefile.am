@@ -42,7 +42,7 @@ DISTCLEANFILES = usage.conf
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = usage.conf
 
-usage.conf: usage.conf.in $(top_srcdir)/config.status
+usage.conf: usage.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > usage.conf
 
 C4_DIR=./cccc
