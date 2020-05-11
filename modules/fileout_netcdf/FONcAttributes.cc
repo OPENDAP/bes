@@ -1525,7 +1525,10 @@ FONcAttributes::write_dap4_attrs_for_nc4_types(int ncid, int varid, const string
         }
             break;
 
-        case attr_null_c: {
+        case attr_null_c: 
+        case attr_enum_c: 
+        case attr_opaque_c: 
+            {
             string err = (string) "File out netcdf, "
                              + "failed to write unknown type of attribute " + var_attr_name;
             FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
