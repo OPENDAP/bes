@@ -178,7 +178,7 @@ sample_data_dmrpp_DATA = 	data/ncml/dmrpp/chunked_twoD.h5
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = ncml.conf
 
-ncml.conf: ncml.conf.in $(top_srcdir)/config.status
+ncml.conf: ncml.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > ncml.conf
 
 .PHONY: docs

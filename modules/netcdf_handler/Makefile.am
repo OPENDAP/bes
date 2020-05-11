@@ -52,7 +52,7 @@ data/fnoc1.nc data/fnoc1.das data/fnoc1.nc.html data/zero_length_array.nc
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = nc.conf
 
-nc.conf: nc.conf.in $(top_srcdir)/config.status
+nc.conf: nc.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > nc.conf
 
 C4_DIR=./cccc

@@ -40,7 +40,7 @@ CLEANFILES = *~ fong.conf
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = fong.conf
 
-fong.conf: fong.conf.in $(top_srcdir)/config.status
+fong.conf: fong.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > fong.conf
 
 C4_DIR=./cccc

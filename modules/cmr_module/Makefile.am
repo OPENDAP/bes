@@ -41,7 +41,7 @@ CLEANFILES = *~ cmr.conf
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = cmr.conf
 
-cmr.conf: cmr.conf.in $(top_srcdir)/config.status
+cmr.conf: cmr.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > cmr.conf
 
 C4_DIR=./cccc
