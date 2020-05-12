@@ -28,7 +28,7 @@ AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align 
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-SUBDIRS = . unit-tests tests data
+SUBDIRS = . unit-tests tests tests_build_dmrpp data
 
 BUILT_SOURCES = bes_default_conf.h
 
