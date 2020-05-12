@@ -36,7 +36,7 @@ BES.module.dmrpp=@bes_modules_dir@/libdmrpp_module.so
 BES.Catalog.catalog.RootDirectory=${BES_DATA_ROOT}
 BES.Data.RootDirectory=/dev/null
 
-BES.Catalog.catalog.TypeMatch=h5:.*\.(h5|he5|nc4)(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.catalog.TypeMatch=h5:.*(\.bz2|\.gz|\.Z)?$;
 BES.Catalog.catalog.TypeMatch+=dmrpp:.*\.(dmrpp)$;
 
 BES.Catalog.catalog.Include=;
