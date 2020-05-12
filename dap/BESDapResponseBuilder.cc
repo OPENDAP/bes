@@ -1413,6 +1413,30 @@ void BESDapResponseBuilder::send_dap4_data_using_ce(ostream &out, DMR &dmr, bool
     }
 }
 
+void BESDapResponseBuilder::intern_dap4_data_using_ce(DMR &dmr)
+{
+    if (!d_dap4ce.empty()) {
+        D4ConstraintEvaluator parser(&dmr);
+        bool parse_ok = parser.parse(d_dap4ce);
+        if (!parse_ok) throw Error(malformed_expr, "Constraint Expression (" + d_dap4ce + ") failed to parse.");
+    }
+    // with an empty CE, send everything. Even though print_dap4() and serialize()
+    // don't need this, other code may depend on send_p being set. This may change
+    // if DAP4 has a separate function evaluation phase. jhrg 11/25/13
+    else {
+        dmr.root()->set_send_p(true);
+    }
+
+    if (dmr.response_limit() != 0 && (dmr.request_size(true) > dmr.response_limit())) {
+        string msg = "The Request for " + long_to_string(dmr.request_size(true))
+            + "KB is too large; requests for this server are limited to " + long_to_string(dmr.response_limit())
+            + "KB.";
+        throw Error(msg);
+    }
+
+}
+
+
 void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, bool with_mime_headers)
 {
     // If a function was passed in with this request, evaluate it and use that DMR
@@ -1613,6 +1637,7 @@ BESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerIn
 
     DMR *dmr = bdmr->get_dmr();
     
+    D4Group* root_grp=NULL;
     BESDEBUG("dap", "BESDapResponseBuilder::dmr filename - END"<< dmr->filename() <<endl);
 
     set_dataset_name(dmr->filename());
@@ -1717,9 +1742,41 @@ BESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerIn
     }
 #endif
 
+    // If a function was passed in with this request, evaluate it and use that DMR
+    // for the remainder of this request.
+    // TODO Add caching for these function invocations
+    if (!d_dap4function.empty()) {
+        D4BaseTypeFactory d4_factory;
+        DMR function_result(&d4_factory, "function_results");
+
+        // Function modules load their functions onto this list. The list is
+        // part of libdap, not the BES.
+        if (!ServerFunctionsList::TheList())
+            throw Error(
+                "The function expression could not be evaluated because there are no server functions defined on this server");
+
+        D4FunctionEvaluator parser(dmr, ServerFunctionsList::TheList());
+        bool parse_ok = parser.parse(d_dap4function);
+        if (!parse_ok) throw Error("Function Expression (" + d_dap4function + ") failed to parse.");
+
+        parser.eval(&function_result);
+
+        // Now use the results of running the functions for the remainder of the
+        // send_data operation.
+        intern_dap4_data_using_ce(function_result);
+        root_grp = function_result.root();
+    }
+    else {
+        intern_dap4_data_using_ce(*dmr);
+        root_grp = dmr->root();
+    }
+
+
     // Iterate through the variables in the DataDDS and read
     // in the data if the variable has the send flag set.
-    D4Group* root_grp = dmr->root();
+    //D4Group* root_grp = dmr->root();
+    //TODO: check if the following line is necessary for the expression constraint.
+    //It is set in intern_dap4_data_using_ce when no expression constraint occurs.
     root_grp->set_send_p(true);
     //Constructor::Vars_iter v = root_grp->var_begin();
     for (D4Group::Vars_iter i = root_grp->var_begin(), e = root_grp->var_end(); i != e; ++i) {
