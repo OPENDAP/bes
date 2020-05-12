@@ -3,7 +3,7 @@ I. Introduction
 Since the missing data values in dmrpp of some granules may share the same values,
 the dmrpp of these granules may point to the same missing data file. 
 We provide a C++ program that can reduce the number of missing data files.
-A patch python program that uses the above C++ program to patch all dmrpp files 
+A patch python program that uses the above C++ program will patch all dmrpp files 
 under this directory with the same missing data file if possible.
 A recording file that stores the missing data file names and the corresponding
 sha256 of the data values is necessary.

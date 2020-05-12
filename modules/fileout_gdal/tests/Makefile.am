@@ -1,30 +1,15 @@
+
 AUTOMAKE_OPTIONS = foreign
-
-TESTSUITE_TIF = $(srcdir)/testsuite_tif
-
-TESTSUITE_JP2 = $(srcdir)/testsuite_jp2
-
-EXTRA_DIST = $(TESTSUITE_TIF).at $(TESTSUITE_TIF) $(srcdir)/package.m4 \
-atlocal.in handler_tests_macros.m4 $(BES_CONF_IN) gdal
-
-# if OPENJPEG_FOUND
-# EXTRA_DIST += $(TESTSUITE_JP2).at $(TESTSUITE_JP2)
-# endif
 
 noinst_DATA = bes.conf
 
 CLEANFILES = bes.conf
 
+EXTRA_DIST = $(TESTSUITE_TIF).at $(TESTSUITE_TIF) atlocal.in \
+$(TESTSUITE_JP2).at $(TESTSUITE_JP2) $(BES_CONF_IN) package.m4 gdal \
+handler_tests_macros.m4
+
 DISTCLEANFILES = atconfig
-
-check-local: atconfig atlocal $(TESTSUITE_TIF) $(TESTSUITE_JP2)
-	$(SHELL) '$(TESTSUITE_TIF)' $(TESTSUITE_TIFFLAGS)
-	test ! -f '$(TESTSUITE_JP2)' || $(SHELL) '$(TESTSUITE_JP2)' $(TESTSUITE_TIFFLAGS)
-
-clean-local:
-	test ! -f '$(TESTSUITE_TIF)' || $(SHELL) '$(TESTSUITE_TIF)' --clean
-	test ! -f '$(TESTSUITE_JP2)' || $(SHELL) '$(TESTSUITE_JP2)' --clean
-	-rm -f $(TESTSUITE_TIF) $(TESTSUITE_JP2) $(srcdir)/package.m4 
 
 BES_CONF_IN = bes.conf.modules.in
 
@@ -32,24 +17,39 @@ BES_CONF_IN = bes.conf.modules.in
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
 # configure's value for the parameter when running the distcheck target.
 bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
-	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	@clean_abs_top_srcdir=`python -c "import os; print os.path.abspath('${abs_top_srcdir}')"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
+############## Autotest follows #####################
 
-# Use the missing script for better error checking on autom4te run.
-AUTOM4TE = $(SHELL) $(top_srcdir)/conf/missing --run autom4te
+AUTOM4TE = autom4te
+
+TESTSUITE_TIF = $(srcdir)/testsuite_tif
+TESTSUITE_JP2 = $(srcdir)/testsuite_jp2
+
+check-local: atconfig atlocal bes.conf $(TESTSUITE_TIF) $(TESTSUITE_JP2)
+	$(SHELL) '$(TESTSUITE_TIF)' $(TESTSUITE_TIFFLAGS)
+	test ! -f '$(TESTSUITE_JP2)' || $(SHELL) '$(TESTSUITE_JP2)' $(TESTSUITE_JP2FLAGS)
+
+clean-local:
+	test ! -f '$(TESTSUITE_TIF)' || $(SHELL) '$(TESTSUITE_TIF)' --clean
+	test ! -f '$(TESTSUITE_JP2)' || $(SHELL) '$(TESTSUITE_JP2)' --clean
+	-rm -f $(TESTSUITE_TIF) $(TESTSUITE_JP2) $(srcdir)/package.m4
+
+installcheck-local: $(TESTSUITE_TIF) $(TESTSUITE_JP2) atconfig atlocal
+	$(SHELL) '$(TESTSUITE_TIF)' AUTOTEST_PATH='$(bindir)' $(TESTSUITE_TIFFFLAGS)
+	$(SHELL) '$(TESTSUITE_JP2)' AUTOTEST_PATH='$(bindir)' $(TESTSUITE_JP2FLAGS)
+
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
-$(TESTSUITE_TIF): $(TESTSUITE_TIF).at bes.conf $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4 
-	$(AUTOTEST) -I '$(srcdir)' -o ${srcdir}/$@.tmp $@.at
-	mv ${srcdir}/$@.tmp ${srcdir}/$@
+$(TESTSUITE_TIF): $(TESTSUITE_TIF).at $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
+$(TESTSUITE_JP2): $(TESTSUITE_JP2).at $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
 
-$(TESTSUITE_JP2): $(TESTSUITE_JP2).at bes.conf $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
-	$(AUTOTEST) -I '$(srcdir)' -o ${srcdir}/$@.tmp $@.at
-	mv ${srcdir}/$@.tmp ${srcdir}/$@
+%: %.at
+	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
-# The `:;' works around a Bash 3.2 bug when the output is not writeable.
+# The `:;' works around a Bash 3.2 bug when the output is not writable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	:;{ \
 	echo '# Signature of the current package.' && \

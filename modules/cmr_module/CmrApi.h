@@ -44,7 +44,7 @@ namespace cmr {
 
 class CmrApi {
 private:
-    std::string cmr_search_endpoint_url;
+    std::string d_cmr_search_endpoint_url;
 
     const rapidjson::Value& get_temporal_group(const rapidjson::Document &cmr_doc);
     const rapidjson::Value& get_year_group(const rapidjson::Document &cmr_doc);
@@ -58,7 +58,7 @@ private:
 
 
 public:
-    CmrApi() : cmr_search_endpoint_url("https://cmr.earthdata.nasa.gov/search") {}
+    CmrApi();
 
     void get_years(std::string collection_name, std::vector<std::string> &years_result);
     void get_months(std::string collection_name, std::string year, std::vector<std::string> &months_result);

@@ -536,6 +536,7 @@ bool NCRequestHandler::nc_build_dmr(BESDataHandlerInterface &dhi)
             // copy the cached DMR into the BES response object
             BESDEBUG(NC_NAME, "DMR Cached hit for : " << dataset_name << endl);
             *dmr = *cached_dmr_ptr; // Copy the referenced object
+            dmr->set_request_xml_base(bdmr.get_request_xml_base());
         }
         else {
 #if 0

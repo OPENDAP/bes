@@ -41,8 +41,9 @@ private:
 	DMR * _dmr;
 	//ConstraintEvaluator _ce; //FIXME Use Dap4 CE stuff
 public:
-	BESDMRResponse(DMR *dmr) : BESDapResponse(), _dmr(dmr) { }
-	virtual ~BESDMRResponse() { delete _dmr ; }
+	BESDMRResponse(DMR *dmr);
+
+	virtual ~BESDMRResponse();
 
 	virtual void set_container(const std::string &cn);
 	virtual void clear_container();

@@ -91,10 +91,6 @@ void BESDap4ResponseHandler::execute(BESDataHandlerInterface &dhi)
 	if (found)
 	    dmr->set_response_limit(response_size_limit);
 
-    string xml_base = BESContextManager::TheManager()->get_context("xml:base", found);
-	if (found && !xml_base.empty())
-		dmr->set_request_xml_base(xml_base);
-
 	d_response_object = new BESDMRResponse(dmr.release());
 
 	BESRequestHandlerList::TheList()->execute_each(dhi);

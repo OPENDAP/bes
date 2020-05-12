@@ -46,7 +46,7 @@ CLEANFILES = *~ httpd_catalog.conf
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = httpd_catalog.conf
 
-httpd_catalog.conf: httpd_catalog.conf.in $(top_srcdir)/config.status
+httpd_catalog.conf: httpd_catalog.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > $@
 
 C4_DIR=./cccc

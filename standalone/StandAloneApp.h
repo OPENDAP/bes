@@ -33,6 +33,7 @@
 #define I_StandAloneClient_H 1
 
 #include <fstream>
+#include <vector>
 
 #include "BESModuleApp.h"
 
@@ -40,7 +41,9 @@ class StandAloneClient;
 
 class StandAloneApp : public BESModuleApp {
 private:
+
     StandAloneClient *_client;
+    std::vector<std::string> _command_file_names;
     std::string _cmd;
     std::ofstream *_outputStrm;
     std::ifstream *_inputStrm;

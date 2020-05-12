@@ -427,15 +427,6 @@ StareCountFunction::stare_count_dap4_function(D4RValueList *args, DMR &dmr)
     vector<dods_uint64> datasetStareIndices;
     get_sidecar_uint64_values(file, "Stare Index", datasetStareIndices);
 
-#if 0
-    // I wanted to see the values read from the MYD09.A2019003.2040.006.2019005020913_sidecar.h5
-    // file. They are all '3440016191299518474' and there are about 100 indices. jhrg 11/18/19
-    cerr << "Values: ";
-    ostream_iterator<dods_uint64> it(cerr, ", ");
-    std::copy(datasetStareIndices.begin(), datasetStareIndices.end(), it);
-    cerr << endl;
-#endif
-
     BaseType *pBaseType = args->get_rvalue(0)->value(dmr);
     Array *stareSrc = dynamic_cast<Array *>(pBaseType);
     if (stareSrc == nullptr)
@@ -496,15 +487,6 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
     get_sidecar_int32_values(file, "X", xArray);
     vector<dods_int32> yArray;
     get_sidecar_int32_values(file, "Y", yArray);
-
-#if 0
-    // I wanted to see the values read from the MYD09.A2019003.2040.006.2019005020913_sidecar.h5
-    // file. They are all '3440016191299518474' and there are about 100 indices. jhrg 11/18/19
-    cerr << "Values: ";
-    ostream_iterator<dods_uint64> it(cerr, ", ");
-    std::copy(datasetStareIndices.begin(), datasetStareIndices.end(), it);
-    cerr << endl;
-#endif
 
     BaseType *pBaseType = args->get_rvalue(0)->value(dmr);
     Array *stareSrc = dynamic_cast<Array *>(pBaseType);
