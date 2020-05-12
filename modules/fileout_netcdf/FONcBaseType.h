@@ -89,6 +89,7 @@ public:
     virtual void setNC4DataModel(std::string nc4_datamodel);
     virtual bool isNetCDF4();
     virtual bool isNetCDF4_ENHANCED();
+    virtual void set_is_dap4(bool set_dap4) {is_dap4 = set_dap4;}
 
 };
 

@@ -342,7 +342,7 @@ void FONcArray::define(int ncid)
         }
 
         BESDEBUG("fonc", "FONcArray::define() - Adding attributes " << endl);
-        FONcAttributes::add_variable_attributes(ncid, _varid, d_a,isNetCDF4_ENHANCED());
+        FONcAttributes::add_variable_attributes(ncid, _varid, d_a,isNetCDF4_ENHANCED(),is_dap4);
         FONcAttributes::add_original_name(ncid, _varid, _varname, _orig_varname);
 
         _defined = true;

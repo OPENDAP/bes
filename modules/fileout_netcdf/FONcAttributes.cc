@@ -75,16 +75,19 @@ using std::istringstream;
  * @throws BESInternalError if there is a problem writing the attributes for
  * the variable.
  */
-void FONcAttributes::add_variable_attributes(int ncid, int varid, BaseType *b, bool is_nc_enhanced) {
+void FONcAttributes::add_variable_attributes(int ncid, int varid, BaseType *b, bool is_nc_enhanced,bool is_dap4) {
     string emb_name;
     BaseType *parent = b->get_parent();
     if (parent) {
-        FONcAttributes::add_variable_attributes_worker(ncid, varid, parent, emb_name, is_nc_enhanced);
+        FONcAttributes::add_variable_attributes_worker(ncid, varid, parent, emb_name, is_nc_enhanced,is_dap4);
     }
     // addattrs_workerA(ncid, varid, b, "");
     // Add DAP4 attribute support by using attributes().
 
-    add_attributes(ncid, varid, b->get_attr_table(), b->name(), "", is_nc_enhanced);
+    if(is_dap4) 
+        add_dap4_attributes(ncid, varid, b->attributes(), b->name(), "", is_nc_enhanced);
+    else 
+        add_attributes(ncid, varid, b->get_attr_table(), b->name(), "", is_nc_enhanced);
 
 }
 
@@ -103,18 +106,21 @@ void FONcAttributes::add_variable_attributes(int ncid, int varid, BaseType *b, b
  * the variable.
  */
 void FONcAttributes::add_variable_attributes_worker(int ncid, int varid, BaseType *b, string &emb_name,
-                                                    bool is_nc_enhanced) {
+                                                    bool is_nc_enhanced,bool is_dap4) {
 
     BaseType *parent = b->get_parent();
     if (parent) {
-        FONcAttributes::add_variable_attributes_worker(ncid, varid, parent, emb_name, is_nc_enhanced);
+        FONcAttributes::add_variable_attributes_worker(ncid, varid, parent, emb_name, is_nc_enhanced,is_dap4);
     }
     if (!emb_name.empty()) {
         emb_name += FONC_EMBEDDED_SEPARATOR;
     }
     emb_name += b->name();
     // addattrs_workerA(ncid, varid, b, emb_name);
-    add_attributes(ncid, varid, b->get_attr_table(), b->name(), emb_name, is_nc_enhanced);
+    if(is_dap4) 
+        add_dap4_attributes(ncid, varid, b->attributes(), b->name(), emb_name, is_nc_enhanced);
+    else 
+        add_attributes(ncid, varid, b->get_attr_table(), b->name(), emb_name, is_nc_enhanced);
 }
 
 
@@ -183,10 +189,12 @@ void FONcAttributes::add_dap4_attributes(int ncid, int varid, D4Attributes *d4_a
     BESDEBUG("dap", "FONcAttributes::add_dap4_attributes() number of attributes "<< d4_attrs <<endl);
     for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
         string name = (*ii)->name();
-        BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() attribute name is "<<name <<endl);
+        BESDEBUG("dap", "FONcAttributes:: attribute name is "<<name <<endl);
         unsigned int num_vals = (*ii)->num_values();
-        if (num_vals) 
-            add_dap4_attributes_worker(ncid, varid, var_name, d4_attrs, *ii, prepend_attr, is_nc_enhanced);
+        BESDEBUG("dap", "FONcAttributes:: num_vals is "<<num_vals <<endl);
+        // d4_attrs includes all the global containers' attributes, which is not right. 
+        if (num_vals || varid == NC_GLOBAL) 
+            add_dap4_attributes_worker(ncid, varid, var_name, *ii, prepend_attr, is_nc_enhanced);
     }
 }
 
@@ -470,7 +478,7 @@ void FONcAttributes::add_attributes_worker(int ncid, int varid, const string &va
 void FONcAttributes::add_dap4_attributes_worker(int ncid, int varid, const string &var_name,
                                            //AttrTable &attrs, AttrTable::Attr_iter &attr,
                                            //D4Attributes *d4_attrs, D4Attributes::D4AttributesIter &attr,
-                                           D4Attributes *d4_attrs, D4Attribute* attr,
+                                           D4Attribute* attr,
                                            const string &prepend_attr, bool is_nc_enhanced) {
 //#if 0
     //AttrType attrType = attrs.get_attr_type(attr);
@@ -485,7 +493,8 @@ void FONcAttributes::add_dap4_attributes_worker(int ncid, int varid, const strin
         // If we're doing global attributes AND it's an attr table, and its name is "special"
         // (ends with "_GLOBAL"), then we suppress the use of the attrTable name in
         // the NetCDF Attributes name.
-        if (varid == NC_GLOBAL && d4_attr_type == attr_container_c && BESUtil::endsWith(d4_attr_name, "_GLOBAL")) {
+        if (varid == NC_GLOBAL && d4_attr_type == attr_container_c && (BESUtil::endsWith(d4_attr_name, "_GLOBAL") || 
+                     BESUtil::endsWith(d4_attr_name, "HDF5_GLOBAL_integer_64"))) {
             BESDEBUG("fonc",
                      "Suppressing global AttributeTable name '" << d4_attr_name
                                                                 << "' from inclusion in NetCDF attributes namespace chain."
@@ -765,6 +774,7 @@ void FONcAttributes::add_dap4_attributes_worker(int ncid, int varid, const strin
 
                 D4Attribute::D4AttributeIter vi,ve;
                 vi = attr->value_begin();
+                ve = attr->value_end();
 
                 string val = (*vi);
 
@@ -1469,6 +1479,7 @@ FONcAttributes::write_dap4_attrs_for_nc4_types(int ncid, int varid, const string
 
             D4Attribute::D4AttributeIter vi,ve;
             vi = attr->value_begin();
+            ve = attr->value_end();
 
             string val = (*vi);
 

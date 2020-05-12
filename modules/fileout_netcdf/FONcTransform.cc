@@ -369,7 +369,8 @@ void FONcTransform::transform_dap4()
         vector<FONcBaseType *>::iterator e = _fonc_vars.end();
         for (; i != e; i++) {
             FONcBaseType *fbt = *i;
-            BESDEBUG("fonc", "FONcTransform::transform() - Defining variable:  " << fbt->name() << endl);
+            BESDEBUG("fonc", "FONcTransform::transform_dap4() - Defining variable:  " << fbt->name() << endl);
+            fbt->set_is_dap4(true);
             fbt->define(_ncid);
         }
 
@@ -377,13 +378,13 @@ void FONcTransform::transform_dap4()
             // Add any global attributes to the netcdf file
             D4Group* root_grp=_dmr->root();
             D4Attributes*d4_attrs = root_grp->attributes();
-            BESDEBUG("fonc", "FONcTransform::transform() handle DAP4 attributes "<< d4_attrs <<endl);
+            BESDEBUG("fonc", "FONcTransform::transform_dap4() handle GLOBAL DAP4 attributes "<< d4_attrs <<endl);
             for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
                 string name = (*ii)->name();
-                BESDEBUG("fonc", "FONcTransform::transform() attribute name is "<<name <<endl);
+                BESDEBUG("fonc", "FONcTransform::transform_dap4() GLOBAL attribute name is "<<name <<endl);
             }
             //    AttrTable &globals = root_grp->get_attr_table();
-            BESDEBUG("fonc", "FONcTransform::transform() - Adding Global Attributes" << endl << globals << endl);
+            BESDEBUG("fonc", "FONcTransform::transform_dap4() - Adding Global Attributes" << endl) ;
             bool is_netCDF_enhanced = false;
             if(FONcTransform::_returnAs == RETURNAS_NETCDF4 && FONcRequestHandler::classic_model==false)
                 is_netCDF_enhanced = true;

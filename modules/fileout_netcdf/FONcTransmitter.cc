@@ -217,6 +217,7 @@ void updateHistoryAttribute(DDS *dds, const string ce)
     }
 }
 
+#if 0
 /**
  * Process the "history" attribute.
  * We add:
@@ -313,6 +314,7 @@ void update_Dap4_HistoryAttribute(DMR *dmr, const string ce)
     }
 }
 
+#endif
 
 /**
  * @brief The static method registered to transmit OPeNDAP data objects as

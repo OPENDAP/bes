@@ -84,7 +84,7 @@ FONcUInt64::define( int ncid )
 
     if( !_defined )
     {
-	FONcAttributes::add_variable_attributes( ncid, _varid, _bt ,isNetCDF4_ENHANCED()) ;
+	FONcAttributes::add_variable_attributes( ncid, _varid, _bt ,isNetCDF4_ENHANCED(),is_dap4) ;
 	FONcAttributes::add_original_name( ncid, _varid,
 					   _varname, _orig_varname ) ;
 
