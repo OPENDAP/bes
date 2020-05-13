@@ -76,7 +76,7 @@ public:
         two_arrays_dmr = new DMR(d4_btf);
         two_arrays_dmr->set_name("test_dmr");
 
-		string filename = string(TOP_SRC_DIR) + "/functions/data/MYD09.A2019003_hacked.h5";
+		string filename = string(TOP_SRC_DIR) + "/functions/stare/data/MYD09.A2019003_hacked.h5";
 		// Old file name: "/MYD09.A2019003.2040.006.2019005020913.h5";
 
 		two_arrays_dmr->set_filename(filename);
