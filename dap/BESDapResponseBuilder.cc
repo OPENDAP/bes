@@ -1390,6 +1390,7 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, bool with_mime_head
 void BESDapResponseBuilder::send_dap4_data_using_ce(ostream &out, DMR &dmr, bool with_mime_headers)
 {
     if (!d_dap4ce.empty()) {
+        BESDEBUG("dap", "BESDapResponseBuilder::send_dap4_data_using_ce() - expression constraint is not empty. " <<endl);
         D4ConstraintEvaluator parser(&dmr);
         bool parse_ok = parser.parse(d_dap4ce);
         if (!parse_ok) throw Error(malformed_expr, "Constraint Expression (" + d_dap4ce + ") failed to parse.");
@@ -1407,6 +1408,21 @@ void BESDapResponseBuilder::send_dap4_data_using_ce(ostream &out, DMR &dmr, bool
             + "KB.";
         throw Error(msg);
     }
+    for (D4Group::Vars_iter i = dmr.root()->var_begin(), e = dmr.root()->var_end(); i != e; ++i) {
+        BESDEBUG("dap", "BESDapResponseBuilder::send_dap4_data_ce() - "<< (*i)->name() <<endl);
+        if ((*i)->send_p()) {
+            BESDEBUG("dap", "BESDapResponseBuilder::send_dap4_data() Obtain data- "<< (*i)->name() <<endl);
+            D4Attributes*d4_attrs = (*i)->attributes();
+            BESDEBUG("dap", "BESDapResponseBuilder::send_dap4_data() number of attributes "<< d4_attrs <<endl);
+            for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
+                         string name = (*ii)->name();
+                         BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() attribute name is "<<name <<endl);
+             }
+
+
+        }
+    }
+
 
     if (!store_dap4_result(out, dmr)) {
         serialize_dap4_data(out, dmr, with_mime_headers);
@@ -1416,6 +1432,7 @@ void BESDapResponseBuilder::send_dap4_data_using_ce(ostream &out, DMR &dmr, bool
 void BESDapResponseBuilder::intern_dap4_data_using_ce(DMR &dmr)
 {
     if (!d_dap4ce.empty()) {
+        BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data_using_ce() - expression constraint is not empty. " <<endl);
         D4ConstraintEvaluator parser(&dmr);
         bool parse_ok = parser.parse(d_dap4ce);
         if (!parse_ok) throw Error(malformed_expr, "Constraint Expression (" + d_dap4ce + ") failed to parse.");
@@ -1641,7 +1658,8 @@ BESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerIn
     BESDEBUG("dap", "BESDapResponseBuilder::dmr filename - END"<< dmr->filename() <<endl);
 
     set_dataset_name(dmr->filename());
-    set_dap4ce(dhi.data[POST_CONSTRAINT]);
+    set_dap4ce(dhi.data[DAP4_CONSTRAINT]);
+    set_dap4function(dhi.data[DAP4_FUNCTION]);
     set_async_accepted(dhi.data[ASYNC]);
     set_store_result(dhi.data[STORE_RESULT]);
 
@@ -1767,6 +1785,7 @@ BESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerIn
         root_grp = function_result.root();
     }
     else {
+        BESDEBUG("dap", "BESDapResponseBuilder:: going to the expression constraint. " <<endl);
         intern_dap4_data_using_ce(*dmr);
         root_grp = dmr->root();
     }
@@ -1777,12 +1796,11 @@ BESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerIn
     //D4Group* root_grp = dmr->root();
     //TODO: check if the following line is necessary for the expression constraint.
     //It is set in intern_dap4_data_using_ce when no expression constraint occurs.
-    root_grp->set_send_p(true);
+    //root_grp->set_send_p(true);
     //Constructor::Vars_iter v = root_grp->var_begin();
     for (D4Group::Vars_iter i = root_grp->var_begin(), e = root_grp->var_end(); i != e; ++i) {
         BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() - "<< (*i)->name() <<endl);
         if ((*i)->send_p()) {
-            BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() Obtain data- "<< (*i)->name() <<endl);
             BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() Obtain data- "<< (*i)->name() <<endl);
             D4Attributes*d4_attrs = (*i)->attributes();
             BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() number of attributes "<< d4_attrs <<endl);
