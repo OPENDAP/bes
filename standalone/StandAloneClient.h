@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -66,34 +66,35 @@
  * @author Patrick West <A * HREF="mailto:pwest@hao.ucar.edu">pwest@hao.ucar.edu</A>
 */
 
-class StandAloneClient : public BESObj
-{
+class StandAloneClient : public BESObj {
 private:
-	std::ostream *			_strm ;
-    bool			_strmCreated ;
-    bool			_isInteractive ;
+    std::ostream *_strm;
+    bool _strmCreated;
+    bool _isInteractive;
 
-    size_t			readLine( std::string &str ) ;
-    void			displayHelp() ;
-    void			executeCommand( const std::string &cmd,
-						int repeat ) ;
+    size_t readLine(std::string &str);
+
+    void displayHelp();
+
+    void executeCommand(const std::string &cmd, int repeat);
+
 public:
-    				StandAloneClient( )
-				    : _strm( 0 ),
-				      _strmCreated( false ),
-				      _isInteractive( false ) {}
-				~StandAloneClient() ;
+    StandAloneClient() : _strm(0), _strmCreated(false), _isInteractive(false) {}
 
-    void			setOutput( std::ostream *strm, bool created ) ;
-    void			executeClientCommand( const std::string &cmd ) ;
-    void			executeCommands( const std::string &cmd_list,
-						 int repeat ) ;
-    void			executeCommands( std::ifstream &inputFile,
-						 int repeat ) ;
-    void			interact() ;
+    ~StandAloneClient();
 
-    virtual void		dump( std::ostream &strm ) const ;
-} ;
+    void setOutput(std::ostream *strm, bool created);
+
+    void executeClientCommand(const std::string &cmd);
+
+    void executeCommands(const std::string &cmd_list, int repeat);
+
+    void executeCommands(std::ifstream &inputFile, int repeat);
+
+    void interact();
+
+    virtual void dump(std::ostream &strm) const;
+};
 
 #endif // StandAloneClient_h
 
