@@ -58,21 +58,21 @@ namespace cmr {
  * @see CmrUtils
  */
 CmrContainer::CmrContainer(const string &sym_name,
-        const string &real_name, const string &type) :
+                           const string &real_name, const string &type) :
         BESContainer(sym_name, real_name, type), d_remoteResource(0) {
 
-    BESDEBUG( MODULE, prolog << "BEGIN sym_name: " << sym_name
-        << " real_name: " << real_name << " type: " << type << endl);
+    BESDEBUG(MODULE, prolog << "BEGIN sym_name: " << sym_name
+                            << " real_name: " << real_name << " type: " << type << endl);
 
 
-    string path = BESUtil::normalize_path(real_name,true, false);
+    string path = BESUtil::normalize_path(real_name, true, false);
     vector<string> path_elements = BESUtil::split(path);
     BESDEBUG(MODULE, prolog << "path: '" << path << "'  path_elements.size(): " << path_elements.size() << endl);
 
 
     set_relative_name(path);
 
-    if(type==""){
+    if (type == "") {
         // @TODO FIX Dynamically determine the type from the Granule information (type-match to name, mime-type, etc)
         this->set_container_type("nc");
     }
@@ -102,7 +102,7 @@ CmrContainer::CmrContainer(const string &sym_name,
     set_relative_name(real_name);
     */
 
-    BESDEBUG( MODULE, prolog << "END" << endl);
+    BESDEBUG(MODULE, prolog << "END" << endl);
 
 }
 
@@ -115,7 +115,7 @@ CmrContainer::CmrContainer(const CmrContainer &copy_from) :
     // been made
     if (d_remoteResource) {
         string err = (string) "The Container has already been accessed, "
-                + "can not create a copy of this container.";
+                     + "can not create a copy of this container.";
         throw BESInternalError(err, __FILE__, __LINE__);
     }
 }
@@ -123,7 +123,7 @@ CmrContainer::CmrContainer(const CmrContainer &copy_from) :
 void CmrContainer::_duplicate(CmrContainer &copy_to) {
     if (copy_to.d_remoteResource) {
         string err = (string) "The Container has already been accessed, "
-                + "can not duplicate this resource.";
+                     + "can not duplicate this resource.";
         throw BESInternalError(err, __FILE__, __LINE__);
     }
     copy_to.d_remoteResource = d_remoteResource;
@@ -150,17 +150,17 @@ CmrContainer::~CmrContainer() {
  */
 string CmrContainer::access() {
 
-    BESDEBUG( MODULE, prolog << "BEGIN" << endl);
+    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
     // Since this the CMR thang we know that the real_name is a path of facets and such.
-    string path  = get_real_name();
-    BESDEBUG( MODULE, prolog << "path: " << path << endl);
+    string path = get_real_name();
+    BESDEBUG(MODULE, prolog << "path: " << path << endl);
 
     Granule *granule = CmrUtils::getTemporalFacetGranule(path);
-    if(!granule){
-        throw BESNotFoundError("Failed locate a granule associated with the path "+path,__FILE__,__LINE__);
+    if (!granule) {
+        throw BESNotFoundError("Failed locate a granule associated with the path " + path, __FILE__, __LINE__);
     }
-    string url  = granule->getDataAccessUrl();
+    string url = granule->getDataAccessUrl();
     delete granule;
     granule = 0;
 
@@ -168,29 +168,29 @@ string CmrContainer::access() {
     if (type == MODULE)
         type = "";
 
-    if(!d_remoteResource) {
-        BESDEBUG( MODULE, prolog << "Building new RemoteResource." << endl );
+    if (!d_remoteResource) {
+        BESDEBUG(MODULE, prolog << "Building new RemoteResource." << endl);
         d_remoteResource = new cmr::RemoteHttpResource(url);
         d_remoteResource->retrieveResource();
     }
-    BESDEBUG( MODULE, prolog << "Located remote resource." << endl );
+    BESDEBUG(MODULE, prolog << "Located remote resource." << endl);
 
 
     string cachedResource = d_remoteResource->getCacheFileName();
-    BESDEBUG( MODULE, prolog << "Using local cache file: " << cachedResource << endl );
+    BESDEBUG(MODULE, prolog << "Using local cache file: " << cachedResource << endl);
 
     type = d_remoteResource->getType();
     set_container_type(type);
-    BESDEBUG( MODULE, prolog << "Type: " << type << endl );
+    BESDEBUG(MODULE, prolog << "Type: " << type << endl);
 
 
-    BESDEBUG( MODULE, prolog << "Done accessing " << get_real_name() << " returning cached file " << cachedResource << endl);
-    BESDEBUG( MODULE, prolog << "Done accessing " << *this << endl);
-    BESDEBUG( MODULE, prolog << "END" << endl);
+    BESDEBUG(MODULE,
+             prolog << "Done accessing " << get_real_name() << " returning cached file " << cachedResource << endl);
+    BESDEBUG(MODULE, prolog << "Done accessing " << *this << endl);
+    BESDEBUG(MODULE, prolog << "END" << endl);
 
     return cachedResource;    // this should return the file name from the CmrCache
 }
-
 
 
 /** @brief release the resources
@@ -200,13 +200,13 @@ string CmrContainer::access() {
  * @return true if the resource is released successfully and false otherwise
  */
 bool CmrContainer::release() {
-    BESDEBUG( MODULE, prolog << "BEGIN" << endl);
+    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     if (d_remoteResource) {
-        BESDEBUG( MODULE, prolog << "Releasing RemoteResource" << endl);
+        BESDEBUG(MODULE, prolog << "Releasing RemoteResource" << endl);
         delete d_remoteResource;
         d_remoteResource = 0;
     }
-    BESDEBUG( MODULE, prolog << "END" << endl);
+    BESDEBUG(MODULE, prolog << "END" << endl);
     return true;
 }
 
@@ -219,12 +219,12 @@ bool CmrContainer::release() {
  */
 void CmrContainer::dump(ostream &strm) const {
     strm << BESIndent::LMarg << prolog << "(" << (void *) this
-            << ")" << endl;
+         << ")" << endl;
     BESIndent::Indent();
     BESContainer::dump(strm);
     if (d_remoteResource) {
         strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_remoteResource->getCacheFileName()
-                << endl;
+             << endl;
         strm << BESIndent::LMarg << "response headers: ";
 
         vector<string> *hdrs = d_remoteResource->getResponseHeaders();
@@ -238,10 +238,12 @@ void CmrContainer::dump(ostream &strm) const {
                 strm << BESIndent::LMarg << hdr_line << endl;
             }
             BESIndent::UnIndent();
-        } else {
+        }
+        else {
             strm << "none" << endl;
         }
-    } else {
+    }
+    else {
         strm << BESIndent::LMarg << "response not yet obtained" << endl;
     }
     BESIndent::UnIndent();

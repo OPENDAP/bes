@@ -630,7 +630,6 @@ void writeHDF5(const string &filename, string tmpStorage, vector<coord> *coords)
         s_indices.push_back(i->s_index);
     }
 
-
     VERBOSE(cerr << "Writing data to dataset" << endl);
     H5Dwrite(datasetX, H5T_NATIVE_ULONG, H5S_ALL, H5S_ALL, H5P_DEFAULT, &xArray[0]);
     H5Dwrite(datasetY, H5T_NATIVE_ULONG, H5S_ALL, H5S_ALL, H5P_DEFAULT, &yArray[0]);
