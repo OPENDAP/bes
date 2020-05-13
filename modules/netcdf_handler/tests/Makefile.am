@@ -29,12 +29,12 @@ BES_MDS_CONF_IN = bes_mds.conf.modules.in
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
 # configure's value for the parameter when running the distcheck target.
 bes.conf: $(srcdir)/$(BES_CONF_IN) $(top_srcdir)/configure.ac
-	@clean_abs_top_srcdir=`python -c "import os; print os.path.abspath('${abs_top_srcdir}')"`; \
+	@clean_abs_top_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
 bes_mds.conf: $(srcdir)/$(BES_MDS_CONF_IN) $(top_srcdir)/configure.ac
-	@clean_abs_top_srcdir=`python -c "import os; print os.path.abspath('${abs_top_srcdir}')"`; \
+	@clean_abs_top_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes_mds.conf
 ############## Autotest follows #####################

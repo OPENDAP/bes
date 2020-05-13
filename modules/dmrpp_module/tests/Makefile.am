@@ -19,7 +19,7 @@ DISTCLEANFILES = atconfig mds_for_tests_ledger.txt
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
 # configure's value for the parameter when running the distcheck target.
 %.conf : %.conf.in
-	@clean_abs_top_srcdir=`python -c "import os; print os.path.abspath('${abs_top_srcdir}')"`; \
+	@clean_abs_top_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > $@
 
@@ -33,7 +33,7 @@ $(builddir)/mds_for_tests:
 	cp -r $(top_srcdir)/modules/dmrpp_module/data/mds_for_tests $(builddir)/mds_for_tests
 	chmod -R a+w $(builddir)/mds_for_tests
 	(cd $(builddir)/mds_for_tests && \
-	 clean_abs_top_srcdir=`python -c "import os; print os.path.abspath('${abs_top_srcdir}')"`; \
+	 clean_abs_top_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	 for d in *.in; \
 		do sed -e "s%[@]abs_top_srcdir[@]%$${clean_abs_top_srcdir}%" $$d > `basename $$d .in`; \
 	 done)

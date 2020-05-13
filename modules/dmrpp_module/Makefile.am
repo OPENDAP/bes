@@ -36,7 +36,7 @@ BUILT_SOURCES = bes_default_conf.h
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
 # configure's value for the parameter when running the distcheck target.
 bes_default_conf.h: $(srcdir)/bes_default_conf_template.h.in $(top_srcdir)/configure.ac
-	@clean_abs_top_srcdir=`python -c "import os; print os.path.abspath('${abs_top_srcdir}')"`; \
+	@clean_abs_top_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	cat $(srcdir)/bes_default_conf_template.h.in | sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
 		-e "s%[@]modulesdir[@]%${modulesdir}%" > bes_default_conf.h

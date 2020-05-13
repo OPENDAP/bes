@@ -34,8 +34,8 @@ DISTCLEANFILES = *.Po
 BUILT_SOURCES = test_config.h
 
 test_config.h: $(srcdir)/test_config.h.in Makefile
-	@mod_abs_srcdir=`python -c "import os; print os.path.abspath('${abs_srcdir}')"`; \
-	mod_abs_builddir=`python -c "import os; print os.path.abspath('${abs_builddir}')"`; \
+	@mod_abs_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
+	mod_abs_builddir=`python -c "import os.path; print(os.path.abspath('${abs_builddir}'))"`; \
 	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
 	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
 
