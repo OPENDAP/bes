@@ -43,3 +43,5 @@ BES.Catalog.CMR.RootDirectory=UNUSED
 # BES.Catalog.CMR.Exclude=
 # BES.Catalog.CMR.Include=
 BES.Catalog.CMR.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$;
+
+BES.LogName=/dev/null
