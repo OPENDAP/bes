@@ -28,7 +28,7 @@ AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align 
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-SUBDIRS = . unit-tests tests data
+SUBDIRS = . unit-tests tests tests_build_dmrpp data
 
 BUILT_SOURCES = bes_default_conf.h
 
@@ -36,7 +36,7 @@ BUILT_SOURCES = bes_default_conf.h
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
 # configure's value for the parameter when running the distcheck target.
 bes_default_conf.h: $(srcdir)/bes_default_conf_template.h.in $(top_srcdir)/configure.ac
-	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	@clean_abs_top_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	cat $(srcdir)/bes_default_conf_template.h.in | sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
 		-e "s%[@]modulesdir[@]%${modulesdir}%" > bes_default_conf.h

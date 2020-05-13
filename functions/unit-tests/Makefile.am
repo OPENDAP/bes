@@ -44,7 +44,7 @@ DISTCLEANFILES = test_config.h *.strm *.file *.Po tmp.txt
 # TODO Check if this sed command to filter out the ../ from the value of 
 # ${abs_srcdir} is really needed for the distcheck target. jhrg 5/16/13
 test_config.h: test_config.h.in Makefile
-	@my_topdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	@my_topdir=`python -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
 	sed -e "s%[@]abs_srcdir[@]%$${my_topdir}%" $< > test_config.h
 
 

@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -32,34 +32,42 @@
 #ifndef I_StandAloneClient_H
 #define I_StandAloneClient_H 1
 
-
 #include <fstream>
 #include <vector>
 
 #include "BESModuleApp.h"
 
-class StandAloneClient ;
+class StandAloneClient;
 
-class StandAloneApp : public BESModuleApp
-{
+class StandAloneApp : public BESModuleApp {
 private:
+
+    StandAloneClient *_client;
     std::vector<std::string> _command_file_names;
-    std::string			    _cmd ;
-    std::ofstream *			_outputStrm ;
-    int				_repeat ;
+    std::string _cmd;
+    std::ofstream *_outputStrm;
+    std::ifstream *_inputStrm;
+    bool _createdInputStrm;
+    int _repeat;
 
-    void			showVersion() ;
-    void			showUsage() ;
+    void showVersion();
+
+    void showUsage();
+
 public:
-    				StandAloneApp() ;
-    virtual			~StandAloneApp() ;
-    virtual int			initialize( int argC, char **argV ) ;
-    virtual int			run() ;
-    virtual int			terminate( int sig = 0 ) ;
+    StandAloneApp();
 
-    virtual void		dump( std::ostream &strm ) const ;
+    virtual            ~StandAloneApp();
 
-//    StandAloneClient *		client() { return _client ; }
-} ;
+    virtual int initialize(int argC, char **argV);
+
+    virtual int run();
+
+    virtual int terminate(int sig = 0);
+
+    virtual void dump(std::ostream &strm) const;
+
+    StandAloneClient *client() { return _client; }
+};
 
 #endif // I_StandAloneClient_H

@@ -37,39 +37,74 @@ dnl This is the default. If the caller uses --enable-developer, that option
 dnl will override these values
 cxx_debug_flags="-g -O2"
 
+dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 dnl I moved this up to here from the tail end of the file
 dnl because it needs to run before the AC_PROG_CXX macro
 dnl which will also set CXXFLAGS
 dnl jhrg 3/4/15
-AC_ARG_ENABLE([developer], [AS_HELP_STRING([--enable-developer], [Developer mode; won't override CXXFLAGS on the command line])],
-  [AM_CONDITIONAL([BES_DEVELOPER], [true])
-   cxx_debug_flags="-g3 -O0  -Wall -W -Wcast-align"],   
-  [AM_CONDITIONAL([BES_DEVELOPER], [false])
-   AC_DEFINE([NDEBUG], [1], [Define this to suppress assert() statements.])])
+dnl AC_ARG_ENABLE([developer], [AS_HELP_STRING([--enable-developer], [Developer mode; won't override CXXFLAGS on the command line])],
+dnl   [AM_CONDITIONAL([BES_DEVELOPER], [true])  cxx_debug_flags="-g3 -O0  -Wall -W -Wcast-align"],
+dnl   [AM_CONDITIONAL([BES_DEVELOPER], [false]) AC_DEFINE([NDEBUG], [1], [Define this to suppress assert() statements.])])
 
-AC_ARG_ENABLE([asan], [AS_HELP_STRING([--enable-asan], [Use the address sanitizer; won't override CXXFLAGS on the command line])], 
-    [AM_CONDITIONAL([USE_ASAN], [true])
-     cxx_debug_flags="$cxx_debug_flags -fsanitize=address -fno-omit-frame-pointer -fno-common"], 
-    [AM_CONDITIONAL([USE_ASAN], [false])])
+AC_ARG_ENABLE([developer],
+    [AS_HELP_STRING([--enable-developer],
+    [Developer mode: Won't override CXXFLAGS on the command line])]
+)
+AM_CONDITIONAL([BES_DEVELOPER], [test "x$enable_developer" = "xyes"])
+AM_COND_IF([BES_DEVELOPER],
+    [cxx_debug_flags="-g3 -O0  -Wall -W -Wcast-align"
+      AC_MSG_NOTICE([Developer Mode is enabled.]) ],
+    [AC_DEFINE([NDEBUG], [1], [Define this to suppress assert() statements.])
+      AC_MSG_NOTICE([Developer Mode is disabled.])]
+)
+dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+dnl AC_ARG_ENABLE([asan], [AS_HELP_STRING([--enable-asan], [Use the address sanitizer; won't override CXXFLAGS on the command line])],
+dnl     [AM_CONDITIONAL([USE_ASAN], [true])
+dnl      cxx_debug_flags="$cxx_debug_flags -fsanitize=address -fno-omit-frame-pointer -fno-common"],
+dnl     [AM_CONDITIONAL([USE_ASAN], [false])])
 
-AC_ARG_WITH([cmr], [AS_HELP_STRING([--with-cmr], [Build the CMR Module (built by default in developer mode)])],
-    [AM_CONDITIONAL([WITH_CMR], [true])],
-    [AM_CONDITIONAL([WITH_CMR], [AM_COND_IF([BES_DEVELOPER], [true], [false])])])
+AC_ARG_ENABLE([asan],
+    [AS_HELP_STRING([--enable-asan],
+    [Use the address sanitizer. Won't override CXXFLAGS on the command line])]
+)
+AM_CONDITIONAL([USE_ASAN], [test "x$enable_asan" = "xyes"])
+AM_COND_IF([USE_ASAN],
+    [cxx_debug_flags="$cxx_debug_flags -fsanitize=address -fno-omit-frame-pointer -fno-common"
+        AC_MSG_NOTICE([Address Sanitizer (ASAN) is enabled.])],
+    [AC_MSG_NOTICE([Address Sanitizer (ASAN) is disabled.])]
+)
+dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+dnl AC_ARG_WITH([cmr], [AS_HELP_STRING([--with-cmr], [Build the CMR Module (built by default in developer mode)])],
+dnl    [AM_CONDITIONAL([WITH_CMR], [true])],
+dnl    [AM_CONDITIONAL([WITH_CMR], [AM_COND_IF([BES_DEVELOPER], [true], [false])])])
 
+AC_ARG_WITH([cmr],
+    [AS_HELP_STRING([--without-cmr],
+    [Disable support for the CMR Module (Built by default)])]
+)
+AM_CONDITIONAL([WITH_CMR], [test "x$with_cmr" != "xno"])
 AM_COND_IF([WITH_CMR],
     [AC_MSG_NOTICE([Building support for the CMR Module])],
-    [AC_MSG_NOTICE([Disabled support for the CMR Module])])
-
+    [AC_MSG_NOTICE([Disabled support for the CMR Module])]
+)
+dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 dnl Build NGAP support by default or if the user provides --with-ngap. Do not build the
 dnl module if the user supplies --without-ngap or --with-ngap=no. jhrg 3/31/20
+dnl AC_ARG_WITH([ngap], [AS_HELP_STRING([--without-ngap], [disable support for the NGAP module])],
+dnl     [AM_CONDITIONAL([WITH_NGAP], [test "x$with_ngap" == xyes])],
+dnl     [AM_CONDITIONAL([WITH_NGAP], [true])])
 
-AC_ARG_WITH([ngap], [AS_HELP_STRING([--without-ngap], [disable support for the NGAP module])],
-    [AM_CONDITIONAL([WITH_NGAP], [test "x$with_ngap" == xyes])],
-    [AM_CONDITIONAL([WITH_NGAP], [true])])
-
+AC_ARG_WITH([ngap],
+    AS_HELP_STRING([--without-ngap],
+    [Disable support for the NGAP service, no ngap_module. (Built by default)])
+)
+AM_CONDITIONAL([WITH_NGAP], [test "x$with_ngap" != "xno"])
 AM_COND_IF([WITH_NGAP],
     [AC_MSG_NOTICE([Building support for the NGAP Module])],
     [AC_MSG_NOTICE([Disabled support for the NGAP Module])])
+dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
 AS_IF([test "$CC" = "gcc"], [AM_CONDITIONAL([COMPILER_IS_GCC],[true])],
     [AM_CONDITIONAL([COMPILER_IS_GCC],[false])])
@@ -889,6 +924,9 @@ AC_CONFIG_FILES([Makefile
 		 functions/tests/atlocal
 		 functions/unit-tests/Makefile
 		 functions/stare/Makefile
+		 functions/stare/unit-tests/Makefile
+		 functions/stare/tests/Makefile
+		 functions/stare/tests/atlocal
 		 ])
 dnl These need to be moved into the AC_CONFIG_FILES above 
 dnl when geo-functions is reenabled.
@@ -910,6 +948,7 @@ AC_CONFIG_TESTDIR(hello_world/tests, [standalone])
 AC_CONFIG_TESTDIR(dapreader/tests, [standalone])
 AC_CONFIG_TESTDIR(dap/tests, [standalone])
 AC_CONFIG_TESTDIR(functions/tests, [standalone])
+AC_CONFIG_TESTDIR(functions/stare/tests, [standalone])
 AC_CONFIG_TESTDIR(dispatch/tests, [dispatch/tests])
 AC_CONFIG_TESTDIR(xmlcommand/tests, [standalone])
 
@@ -955,6 +994,8 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/dmrpp_module/unit-tests/Makefile
     modules/dmrpp_module/tests/Makefile
     modules/dmrpp_module/tests/atlocal
+    modules/dmrpp_module/tests_build_dmrpp/Makefile
+    modules/dmrpp_module/tests_build_dmrpp/atlocal
     modules/dmrpp_module/data/Makefile
 
     modules/fileout_json/Makefile
@@ -1056,6 +1097,7 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     AC_CONFIG_TESTDIR(modules/fileout_covjson/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/debug_functions/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/dmrpp_module/tests, [standalone])
+    AC_CONFIG_TESTDIR(modules/dmrpp_module/tests_build_dmrpp, [modules/dmrpp_module])
     AC_CONFIG_TESTDIR(modules/freeform_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/xml_data_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/netcdf_handler/tests, [standalone])

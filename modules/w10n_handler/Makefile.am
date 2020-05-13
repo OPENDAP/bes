@@ -41,7 +41,7 @@ CLEANFILES = *~ w10n.conf bes.log
 moduledir = $(sysconfdir)/bes/modules
 module_DATA =  w10n.conf
 
-w10n.conf: w10n.conf.in $(top_srcdir)/config.status
+w10n.conf: w10n.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > w10n.conf
 
 # Not nearly as clean as it could be, but this removes .svn directories

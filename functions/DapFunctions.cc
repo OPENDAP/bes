@@ -53,6 +53,10 @@
 #include "ScaleGrid.h"
 #include "TestFunction.h"
 
+#if HAVE_STARE
+#include "stare/StareFunctions.h"
+#endif
+
 #include "DapFunctionsRequestHandler.h"
 #include "DapFunctions.h"
 
@@ -98,6 +102,12 @@ void DapFunctions::initialize(const string &modname)
     libdap::ServerFunctionsList::TheList()->add_function(new Scale3DArray());
 
     libdap::ServerFunctionsList::TheList()->add_function(new TestFunction());
+
+#if HAVE_STARE
+    libdap::ServerFunctionsList::TheList()->add_function(new StareIntersectionFunction());
+    libdap::ServerFunctionsList::TheList()->add_function(new StareCountFunction());
+    libdap::ServerFunctionsList::TheList()->add_function(new StareSubsetFunction());
+#endif
 
     GDALAllRegister();
     OGRRegisterAll();

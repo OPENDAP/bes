@@ -16,7 +16,8 @@ noinst_DATA = bes.conf bes.nc4.conf
 CLEANFILES = bes.conf bes.nc4.conf
 
 EXTRA_DIST = bescmd $(TESTSUITE).at $(TESTSUITE)  \
-atlocal.in bes.conf.in bes.nc4.conf.in package.m4
+atlocal.in bes.conf.in bes.nc4.conf.in package.m4 \
+local_handler_tests_macros.m4
 
 # I moved the tests back to one file and dropped the 'pass the alternate
 # conf file in using --conf=...' because that was not working with ncdump
@@ -30,7 +31,7 @@ DISTCLEANFILES = atconfig
 # @abs_top_srcdir@ does not contain '../'. This happens when using
 # configure's value for the parameter when running the distcheck target.
 %.conf : %.conf.in
-	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	@clean_abs_top_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > $@
 
@@ -68,14 +69,15 @@ clean-local:
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
-$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4 $(srcdir)/local_handler_tests_macros.m4
+$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4 \
+$(srcdir)/local_handler_tests_macros.m4
 
 # $(TESTSUITE_NC4): $(TESTSUITE_NC4).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
 
 %: %.at
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
-# The `:;' works around a Bash 3.2 bug when the output is not writeable.
+# The `:;' works around a Bash 3.2 bug when the output is not writable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	:;{ \
 	echo '# Signature of the current package.' && \
