@@ -166,8 +166,8 @@ public:
 	virtual libdap::DDS *intern_dap2_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 	virtual libdap::DDS *process_dap2_dds(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 
-	// TODO jhrg 9/6/16
-	//
+	// Add the handling of DMR objects, including the function to handle expression constrainta.
+    // May need to improve. 5/13/20
 	virtual libdap::DMR *intern_dap4_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 	virtual void intern_dap4_data_using_ce(libdap::DMR &dmr);
 

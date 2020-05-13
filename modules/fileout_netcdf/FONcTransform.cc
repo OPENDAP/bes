@@ -99,7 +99,7 @@ FONcTransform::FONcTransform(DDS *dds, BESDataHandlerInterface &dhi, const strin
 /** @brief Constructor that creates transformation object from the specified
  * DataDDS object to the specified file
  *
- * @param dds DataDDS object that contains the data structure, attributes
+ * @param dmr DMR object that contains the data structure, attributes
  * and data
  * @param dhi The data interface containing information about the current
  * request
@@ -278,19 +278,19 @@ void FONcTransform::transform()
     }
 }
 
-/** @brief Transforms each of the variables of the DataDDS to the NetCDF
+/** @brief Transforms each of the variables of the DMR to the NetCDF
  * file
  *
- * For each variable in the DataDDS write out that variable and its
+ * For each variable in the DMR write out that variable and its
  * attributes to the netcdf file. Each OPeNDAP data type translates into a
  * particular netcdf type. Also write out any global variables stored at the
- * top level of the DataDDS.
+ * top level of the DMR.
  */
 void FONcTransform::transform_dap4()
 {
     FONcUtils::reset();
 
-    // Convert the DDS into an internal format to keep track of
+    // Convert the DMR into an internal format to keep track of
     // variables, arrays, shared dimensions, grids, common maps,
     // embedded structures. It only grabs the variables that are to be
     // sent.
@@ -379,10 +379,12 @@ void FONcTransform::transform_dap4()
             D4Group* root_grp=_dmr->root();
             D4Attributes*d4_attrs = root_grp->attributes();
             BESDEBUG("fonc", "FONcTransform::transform_dap4() handle GLOBAL DAP4 attributes "<< d4_attrs <<endl);
+#if 0
             for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
                 string name = (*ii)->name();
                 BESDEBUG("fonc", "FONcTransform::transform_dap4() GLOBAL attribute name is "<<name <<endl);
             }
+#endif
             //    AttrTable &globals = root_grp->get_attr_table();
             BESDEBUG("fonc", "FONcTransform::transform_dap4() - Adding Global Attributes" << endl) ;
             bool is_netCDF_enhanced = false;

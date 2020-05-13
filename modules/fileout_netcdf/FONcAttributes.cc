@@ -154,11 +154,11 @@ void FONcAttributes::add_attributes(int ncid, int varid, AttrTable &attrs, const
     }
 }
 
-/** @brief helper function for add_attributes
+/** @brief  add_dap4_attributes
  *
  * @param ncid The id of the netcdf file being written to
  * @param varid The netcdf variable id
- * @param attrs The OPenDAP AttrTable containing the attributes
+ * @param attrs The OPenDAP DAP4 attributes
  * @param var_name any variable name to prepend to the attribute name
  * @param prepend_attr Any name to prepend to the name of the attribute.
  * As far as I know, this is no longer used; when standard attributes are prefixed
@@ -462,22 +462,19 @@ void FONcAttributes::add_attributes_worker(int ncid, int varid, const string &va
     }
 }
 
-/** @brief helper function for add_attributes that writes out a single
+/** @brief helper function for add_dap4_attributes that writes out a single
  * attribute
  *
  * @param ncid The id of the netcdf file being written to
  * @param varid The netcdf variable id
  * @param var_name the name of the variable (flattened)
- * @param attrs the AttrTable that contains the attribute to be written
- * @param attr the iterator into the AttrTable for the attribute to be written
+ * @param attr the DAP4 attribute to be written
  * @param prepend_attr any attribute name to prepend to the name of this
  * attribute. Use of this parameter is deprecated.
  * @param is_nc_enhanced The flag to indicate if we want to map datatypes to netCDF-4
  * @throws BESInternalError if there is a problem writing this attribute
  */
 void FONcAttributes::add_dap4_attributes_worker(int ncid, int varid, const string &var_name,
-                                           //AttrTable &attrs, AttrTable::Attr_iter &attr,
-                                           //D4Attributes *d4_attrs, D4Attributes::D4AttributesIter &attr,
                                            D4Attribute* attr,
                                            const string &prepend_attr, bool is_nc_enhanced) {
 //#if 0
@@ -1111,15 +1108,14 @@ FONcAttributes::write_attrs_for_nc4_types(int ncid, int varid, const string &var
     }
 
 }
-/** @brief writes out a single attribute that maps the datatype to netCDF-4
+/** @brief writes out a single attribute that maps the dap4 datatype to netCDF-4
  *
  * @param ncid The id of the netcdf file being written to
  * @param varid The netcdf variable id
  * @param var_name the name of the variable (flattened)
  * @param global_attr_name the name of the global attribute name
  * @param var_attr_name the name of the variable name
- * @param attrs the AttrTable that contains the attribute to be written
- * @param attr the iterator into the AttrTable for the attribute to be written
+ * @param attr the DAP4 attribute to be written
  * @param is_nc_enhanced The flag to indicate if we want to map datatypes to netCDF-4
  * @throws BESInternalError if there is a problem writing this attribute
  */

@@ -486,6 +486,7 @@ void FONcArray::write(int ncid)
                 }
                 break;
             }
+            // TODO: should add other DAP4 types: NC_UINT...
             }
         }
     }
@@ -596,7 +597,21 @@ void FONcArray::write_for_nc4_types(int ncid) {
     // DAP2 only supports unsigned BYTE. So here
     // we don't inlcude NC_BYTE (the signed BYTE, the same
     // as 64-bit integer). KY 2020-03-20 
+    // Actually 64-bit integer is supported.
     switch (d_array_type) {
+    case NC_BYTE: {
+        signed char *data = new signed char[d_nelements];
+        d_a->buf2val((void**) &data);
+        stax = nc_put_var_schar(ncid, _varid, data);
+        delete[] data;
+
+        if (stax != NC_NOERR) {
+            string err = "fileout.netcdf - Failed to create array of bytes for " + _varname;
+            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+        }
+        break;
+    }
+
     case NC_UBYTE: {
         unsigned char *data = new unsigned char[d_nelements];
         d_a->buf2val((void**) &data);

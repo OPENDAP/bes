@@ -410,10 +410,11 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
 }
 
 /**
+ * Follow the send_data() 
  * @brief The static method registered to transmit OPeNDAP data objects as
  * a netcdf file.
  *
- * This function takes the OPeNDAP DataDDS object, reads in the data (can be
+ * This function takes the OPeNDAP DMR object, reads in the data (can be
  * used with any data handler), transforms the data into a netcdf file, and
  * streams back that netcdf file back to the requester using the stream
  * specified in the BESDataHandlerInterface.
@@ -421,7 +422,7 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
  * @param obj The BESResponseObject containing the OPeNDAP DataDDS object
  * @param dhi BESDataHandlerInterface containing information about the
  * request and response
- * @throws BESInternalError if the response is not an OPeNDAP DataDDS or if
+ * @throws BESInternalError if the response is not an OPeNDAP DMR or if
  * there are any problems reading the data, writing to a netcdf file, or
  * streaming the netcdf file
  */
