@@ -36,8 +36,13 @@ BES.module.dmrpp=@bes_modules_dir@/libdmrpp_module.so
 BES.Catalog.catalog.RootDirectory=${BES_DATA_ROOT}
 BES.Data.RootDirectory=/dev/null
 
-BES.Catalog.catalog.TypeMatch=h5:.*(\.bz2|\.gz|\.Z)?$;
-BES.Catalog.catalog.TypeMatch+=dmrpp:.*\.(dmrpp)$;
+# The order is crucial here. The dmr++ files must be associated
+# with the dmrpp_module while everything else is being
+# gobbled up by bthe greedy regex for the hdf5_handler.
+# If the dmrpp.TypeMatch doesn't come first then the
+# hdf5_handler will claim the dmr++ files too.
+BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;
+BES.Catalog.catalog.TypeMatch+=h5:.*(\.bz2|\.gz|\.Z)?$;
 
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
@@ -255,6 +260,21 @@ if test -z "${dmrpp_url}"; then
     dmrpp_url="OPeNDAP_DMRpp_DATA_ACCESS_URL";
     echo "Using Template Data Access URL String: '${dmrpp_url}'" >&2
 fi
+
+# If we are running tests then we need to have the output filename for the dmr++ content.
+if [ -n "${run_inventory_tests}" ] || [ -n "${run_value_tests}" ]
+then
+    if [ -z "${output_file}" ]
+    then
+        echo "" >&2
+        echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >&2
+        echo "" >&2
+        echo "OUCH! In order to run the tests the dmr++ output must be written to a file using the -o option. " >&2
+        echo "" >&2
+        exit 1;
+    fi
+fi
+
 
 dap4ConstraintContainerElement=$(
     cat <<EOF
@@ -701,17 +721,29 @@ function compare_files() {
 # dmrpp_inventory_test()
 #
 function dmrpp_inventory_test() {
+
+    if [[ ${output_file} = ${BES_DATA_ROOT}* ]]
+    then
+        target_file=`echo "${output_file}" | sed -e "s+${BES_DATA_ROOT}++"`
+    else
+        test_file="${BES_DATA_ROOT}/"`basename ${output_file}`
+        if test ! -f ${testfile} ; then
+            cp ${output_file} ${BES_DATA_ROOT};
+        fi
+        target_file=`basename ${output_file}`
+    fi
+
     if test -n "${verbose}"; then
         echo "       BES_CONF: ${BES_CONF}" >&2
         echo "SOURCE_DATAFILE: ${input_data_file}" >&2
-        echo "TARGET_DATAFILE: ${output_file}" >&2
+        echo "TARGET_DATAFILE: ${target_file}" >&2
     fi
 
     SOURCE_DDX=$(mkDapRequest "${input_data_file}" ddx)
-    TARGET_DDX=$(mkDapRequest "${output_file}" ddx)
+    TARGET_DDX=$(mkDapRequest "${target_file}" ddx)
 
     # SOURCE_DMR=$(mkDapRequest "${input_data_file}" dmr) # This is done before the dmr++ file is built.
-    TARGET_DMR=$(mkDapRequest "${output_file}" dmr)
+    TARGET_DMR=$(mkDapRequest "${target_file}" dmr)
 
     retval=0
     # echo "dmrpp_inventory_test: retval: ${retval}"
