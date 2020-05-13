@@ -80,10 +80,10 @@ dnl    [AM_CONDITIONAL([WITH_CMR], [true])],
 dnl    [AM_CONDITIONAL([WITH_CMR], [AM_COND_IF([BES_DEVELOPER], [true], [false])])])
 
 AC_ARG_WITH([cmr],
-    [AS_HELP_STRING([--with-cmr],
-    [Build with the CMR Module (built by default in developer mode)])]
+    [AS_HELP_STRING([--without-cmr],
+    [Disable support for the CMR Module (Built by default)])]
 )
-AM_CONDITIONAL([WITH_CMR], [test "x$with_cmr" = "xyes"  -o "x$enable_developer" = "xyes"])
+AM_CONDITIONAL([WITH_CMR], [test "x$with_cmr" != "xno"])
 AM_COND_IF([WITH_CMR],
     [AC_MSG_NOTICE([Building support for the CMR Module])],
     [AC_MSG_NOTICE([Disabled support for the CMR Module])]
@@ -97,7 +97,7 @@ dnl     [AM_CONDITIONAL([WITH_NGAP], [true])])
 
 AC_ARG_WITH([ngap],
     AS_HELP_STRING([--without-ngap],
-    [Disable Support For The NGAP service, no ngap_module. (Built by default in developer mode)])
+    [Disable support for the NGAP service, no ngap_module. (Built by default)])
 )
 AM_CONDITIONAL([WITH_NGAP], [test "x$with_ngap" != "xno"])
 AM_COND_IF([WITH_NGAP],

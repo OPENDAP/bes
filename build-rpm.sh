@@ -72,7 +72,7 @@ echo "automake: `automake --version`"
 
 autoreconf -fiv
 
-./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-cmr
+./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps
 
 # set up the rpm tree in $HOME. We didn't need to do this for libdap because 
 # rpmbuild took care of it, but for the BES, the Makefile copies the source 
