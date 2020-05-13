@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response reqID="get_dmrpp.sh" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <BES>
+        <BESError>
+            <Type>5</Type>
+            <Message>Unable to access node /tmp/dmrpp/chunked_threeD_asymetric_uneven.h5: No such file or directory</Message>
+            <Administrator>support@opendap.org</Administrator>
+            <Location>
+                <File>BESUtil.cc</File>
+                <Line>338</Line>
+            </Location>
+        </BESError>
+    </BES>
+</response>

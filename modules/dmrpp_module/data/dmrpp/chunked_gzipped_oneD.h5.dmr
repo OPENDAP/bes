@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="chunked_gzipped_oneD.h5">
+    <Float32 name="d_4_gzipped_chunks">
+        <Dim size="40000"/>
+        <Attribute name="origname" type="String">
+            <Value>d_4_gzipped_chunks</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/d_4_gzipped_chunks</Value>
+        </Attribute>
+    </Float32>
+</Dataset>
