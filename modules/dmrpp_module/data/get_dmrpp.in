@@ -190,7 +190,7 @@ run_value_tests=
 output_file=
 BES_DATA_ROOT="/tmp"
 
-while getopts "h?vVru:d:o:c:b:TIF" opt; do
+while getopts "h?vVru:o:c:b:TIF" opt; do
     case "$opt" in
     h | \?)
         show_usage
