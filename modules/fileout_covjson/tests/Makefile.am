@@ -27,7 +27,7 @@ BES_CONF_IN = bes.conf.modules.in
 # @abs_top_srcdir@ does not contain '../'. This happens when using
 # configure's value for the parameter when running the distcheck target.
 bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
-	@clean_abs_top_srcdir=`python -c "import os; print os.path.abspath('${abs_top_srcdir}')"`; \
+	@clean_abs_top_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
