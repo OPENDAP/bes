@@ -68,6 +68,8 @@ using namespace std;
 
 namespace functions {
 
+const string s_index_name = "Stare_Index";
+
 /**
  *
  * @brief Write a functions::point to an ostream.
@@ -360,7 +362,7 @@ StareIntersectionFunction::stare_intersection_dap4_function(D4RValueList *args, 
 
     //Read the data file and store the values of each dataset into an array
     vector<dods_uint64> dataStareIndices;
-    get_sidecar_uint64_values(file, "Stare Index", dataStareIndices);
+    get_sidecar_uint64_values(file, s_index_name, dataStareIndices);
 
     BaseType *pBaseType = args->get_rvalue(0)->value(dmr);
     Array *stareSrc = dynamic_cast<Array *>(pBaseType);
@@ -425,7 +427,7 @@ StareCountFunction::stare_count_dap4_function(D4RValueList *args, DMR &dmr)
         throw BESInternalError("Could not open file " + fullPath, __FILE__, __LINE__);
 
     vector<dods_uint64> datasetStareIndices;
-    get_sidecar_uint64_values(file, "Stare Index", datasetStareIndices);
+    get_sidecar_uint64_values(file, s_index_name, datasetStareIndices);
 
     BaseType *pBaseType = args->get_rvalue(0)->value(dmr);
     Array *stareSrc = dynamic_cast<Array *>(pBaseType);
@@ -482,7 +484,7 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
 
     // Read values from the sidecar file - stare data about a given dataset
     vector<dods_uint64> datasetStareIndices;
-    get_sidecar_uint64_values(file, "Stare Index", datasetStareIndices);
+    get_sidecar_uint64_values(file, s_index_name, datasetStareIndices);
     vector<dods_int32> xArray;
     get_sidecar_int32_values(file, "X", xArray);
     vector<dods_int32> yArray;
