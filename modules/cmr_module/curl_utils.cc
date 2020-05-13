@@ -29,7 +29,9 @@
 
 #include "util.h"
 #include "BESDebug.h"
+#include "BESLog.h"
 #include "BESSyntaxUserError.h"
+#include "TheBESKeys.h"
 #include "CmrUtils.h"
 #include "WhiteList.h"
 
@@ -405,18 +407,18 @@ bool configureProxy(CURL *curl, const string &url) {
     return using_proxy;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
+/**
+ * @brief Checks the BES config (aka TheBESKeys) for the NETRC_FILE_KEY to see if a netrc file was
+ * injected.
+ * @return
+ */
+const string NETRC_FILE_KEY="BES.netrc.file";
+string get_netrc_filename(){
+    bool found;
+    string name;
+    TheBESKeys::TheKeys()->get_value(NETRC_FILE_KEY,name,found);
+    return name;
+}
 
 /**
  * Get's a new instance of CURL* and performs basic configuration of that instance.
@@ -475,13 +477,17 @@ CURL *init(char *error_buffer)
 
     // Follow 302 (redirect) responses
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
-    curl_easy_setopt(curl, CURLOPT_MAXREDIRS, 5);
+    curl_easy_setopt(curl, CURLOPT_MAXREDIRS, 20);
 
+    // If the configuration specifies a particular .netrc credentials file, use it.
+    string netrc_file = get_netrc_filename();
+    if(!netrc_file.empty()){
+        curl_easy_setopt(curl, CURLOPT_NETRC_FILE, netrc_file.c_str());
+    }
+    VERBOSE(__FILE__ << "::init() is using the netrc file '" << ((!netrc_file.empty())?netrc_file:"~/.netrc")<< "'" << endl );
 
-
-
-    // Set the user agent to curls version response because, well, that's what command line curl does :)
-    curl_easy_setopt(curl, CURLOPT_USERAGENT, curl_version());
+        // Set the user agent to curls version response because, well, that's what command line curl does :)
+    curl_easy_setopt(curl, CURLOPT_USERAGENT, "hyrax-cmr-virtual-directories");
 
 
 #if 0
