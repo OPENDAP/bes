@@ -364,6 +364,8 @@ BES_DAP_LIB="-L\$(top_builddir)/dap -ldap_module"
 AC_SUBST(BES_DAP_LIB)
 BES_EXTRA_LIBS="$LIBS $openssl_libs"
 AC_SUBST(BES_EXTRA_LIBS)
+BES_HTTP_LIB="-L\$(top_builddir)/http -lbes_http"
+AC_SUBST(BES_HTTP_LIB)
 
 dnl These tests are for the dependecies of specific handlers. Added jhrg 11/17/13
 

@@ -42,10 +42,10 @@
 #include <CatalogItem.h>
 #include "test_config.h"
 
-#include "../RemoteHttpResource.h"
-#include "../RemoteHttpResourceCache.h"
+#include "BESRemoteHttpResource.h"
+#include "BESRemoteCache.h"
 #include "../HttpdDirScraper.h"
-#include "../HttpdCatalogNames.h"
+#include "BESProxyNames.h"
 
 
 using namespace std;
@@ -61,7 +61,7 @@ static bool purge_cache = false;
 #define prolog std::string("HttpdDirScraperTest::").append(__func__).append("() - ")
 
 
-namespace httpd_catalog {
+//namespace httpd_catalog {
 
 class HttpdDirScraperTest: public CppUnit::TestFixture {
 private:
@@ -156,9 +156,9 @@ public:
             if(Debug) cerr << prolog << "Purging cache!" << endl;
             string cache_dir;
             bool found;
-            TheBESKeys::TheKeys()->get_value(RemoteHttpResourceCache::DIR_KEY,cache_dir,found);
+            TheBESKeys::TheKeys()->get_value("HttpResourceCache.dir",cache_dir,found);
             if(found){
-                if(Debug) cerr << prolog << RemoteHttpResourceCache::DIR_KEY << ": " <<  cache_dir << endl;
+                if(Debug) cerr << prolog << "HttpResourceCache.dir" << ": " <<  cache_dir << endl;
                 if(Debug) cerr << prolog << "Purging " << cache_dir << endl;
                 string cmd = "exec rm -r "+ BESUtil::assemblePath(cache_dir,"/*");
                 system(cmd.c_str());
@@ -183,7 +183,7 @@ public:
         // note: the following path must end with "/" in order for the scraper to think
         // it's a catalog/directory link and not an item or file
         string url = "http://test.opendap.org/data/httpd_catalog/";
-        HttpdDirScraper hds;
+        httpd_catalog::HttpdDirScraper hds;
         bes::CatalogNode *node = 0;
         try {
             if(debug) cerr << prolog << "Scraping '" << url << "'" << endl;
@@ -230,7 +230,7 @@ public:
         // it's a catalog/directory link and not an item or file (even though it is a file...)
         string url = get_data_file_url("too.data.http_catalog/");
 
-        HttpdDirScraper hds;
+        httpd_catalog::HttpdDirScraper hds;
         bes::CatalogNode *node = 0;
         try {
             if(debug) cerr << prolog << "Scraping '" << url << "'" << endl;
@@ -284,7 +284,7 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(HttpdDirScraperTest);
 
-} // namespace httpd_catalog
+//} // namespace httpd_catalog
 
 int main(int argc, char*argv[])
 {
@@ -325,7 +325,7 @@ int main(int argc, char*argv[])
     else {
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            test = httpd_catalog::HttpdDirScraperTest::suite()->getName().append("::").append(argv[i]);
+            test = HttpdDirScraperTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
             ++i;
         }

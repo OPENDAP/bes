@@ -53,7 +53,7 @@
 
 #include "test_config.h"
 
-#include "../curl_utils.h"
+#include "BESCurlUtils.h"
 #include "../NgapS3Credentials.h"
 
 

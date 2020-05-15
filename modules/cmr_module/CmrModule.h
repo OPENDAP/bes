@@ -37,18 +37,21 @@
 
 #include "BESAbstractModule.h"
 
-class CmrModule: public BESAbstractModule {
-public:
-    CmrModule()
-	{
-	}
-	virtual ~CmrModule()
-	{
-	}
-	virtual void initialize(const std::string &modname);
-	virtual void terminate(const std::string &modname);
+namespace cmr {
 
-	virtual void dump(std::ostream &strm) const;
-};
+    class CmrModule : public BESAbstractModule {
+    public:
+        CmrModule() {
+        }
 
+        virtual ~CmrModule() {
+        }
+
+        virtual void initialize(const std::string &modname);
+
+        virtual void terminate(const std::string &modname);
+
+        virtual void dump(std::ostream &strm) const;
+    };
+} // namespace cmr
 #endif // I_CmrModule_H

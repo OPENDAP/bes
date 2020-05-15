@@ -48,14 +48,16 @@
 #include <TheBESKeys.h>
 
 #include "NgapApi.h"
-#include "NgapNames.h"
-#include "RemoteHttpResource.h"
+#include "BESProxyNames.h"
+#include "BESRemoteHttpResource.h"
 #include "NgapError.h"
-#include "curl_utils.h"
+#include "BESCurlUtils.h"
 
 using namespace std;
+using namespace remote_http_resource;
 
 #define prolog string("NgapApi::").append(__func__).append("() - ")
+#define MODULE NGAP_NAME
 
 namespace ngap {
 
@@ -81,7 +83,8 @@ namespace ngap {
     };
 
 
-    NgapApi::NgapApi() : d_cmr_hostname(DEFAULT_CMR_ENDPOINT_URL), d_cmr_search_endpoint_path(DEFAULT_CMR_SEARCH_ENDPOINT_PATH) {
+    NgapApi::NgapApi() : d_cmr_hostname(DEFAULT_CMR_ENDPOINT_URL),
+                         d_cmr_search_endpoint_path(DEFAULT_CMR_SEARCH_ENDPOINT_PATH) {
         bool found;
         string cmr_hostnamer;
         TheBESKeys::TheKeys()->get_value(NGAP_CMR_HOSTNAME_KEY, cmr_hostnamer, found);
@@ -95,11 +98,10 @@ namespace ngap {
             d_cmr_search_endpoint_path = cmr_search_endpoint_path;
         }
 
-
     }
 
-    std::string NgapApi::get_cmr_search_endpoint_url(){
-        return BESUtil::assemblePath(d_cmr_hostname , d_cmr_search_endpoint_path);
+    std::string NgapApi::get_cmr_search_endpoint_url() {
+        return BESUtil::assemblePath(d_cmr_hostname, d_cmr_search_endpoint_path);
     }
 
     /**
@@ -148,7 +150,7 @@ namespace ngap {
         string cmr_url = get_cmr_search_endpoint_url() + "?";
 
         char error_buffer[CURL_ERROR_SIZE];
-        CURL *curl = ngap_curl::init(error_buffer);  // This may throw either Error or InternalErr
+        CURL *curl = curl_utils::init(error_buffer);  // This may throw either Error or InternalErr
         char *esc_url_content;
 
         esc_url_content = curl_easy_escape(curl, tokens[1].c_str(), tokens[1].size());
@@ -168,7 +170,7 @@ namespace ngap {
         BESDEBUG(MODULE, prolog << "CMR Request URL: " << cmr_url << endl);
 #if 1
         BESDEBUG(MODULE, prolog << "Building new RemoteResource." << endl);
-        RemoteHttpResource cmr_query(cmr_url, uid, access_token);
+        BESRemoteHttpResource cmr_query(cmr_url, uid, access_token);
         cmr_query.retrieveResource();
         rapidjson::Document cmr_response = cmr_query.get_as_json();
 #else

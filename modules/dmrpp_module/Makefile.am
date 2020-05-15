@@ -2,7 +2,7 @@
 AUTOMAKE_OPTIONS = foreign
 ACLOCAL_AMFLAGS = -I conf
 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/http -I$(top_srcdir)/dap $(DAP_CFLAGS)
 AM_CXXFLAGS =
 
 BES_STANDALONE_LIB = -L$(top_builddir)/standalone -lbes_standalone
@@ -50,8 +50,8 @@ DmrppInt8.cc DmrppUInt16.cc DmrppUInt32.cc DmrppUInt64.cc DmrppStr.cc  \
 DmrppStructure.cc DmrppUrl.cc DmrppD4Enum.cc DmrppD4Group.cc DmrppD4Opaque.cc \
 DmrppD4Sequence.cc  DmrppTypeFactory.cc DmrppParserSax2.cc DmrppMetadataStore.cc \
 CredentialsManager.cc AccessCredentials.cc NgapS3Credentials.cc \
-awsv4.cc url_parser.cc \
-curl_utils.cc
+awsv4.cc url_parser.cc
+#curl_utils.cc
 
 BES_HDRS = DMRpp.h DmrppCommon.h Chunk.h  CurlHandlePool.h DmrppByte.h \
 DmrppArray.h DmrppFloat32.h DmrppFloat64.h DmrppInt16.h DmrppInt32.h \
@@ -59,8 +59,8 @@ DmrppInt64.h DmrppInt8.h DmrppUInt16.h DmrppUInt32.h DmrppUInt64.h \
 DmrppStr.h DmrppStructure.h DmrppUrl.h DmrppD4Enum.h DmrppD4Group.h \
 DmrppD4Opaque.h DmrppD4Sequence.h DmrppTypeFactory.h DmrppParserSax2.h \
 CredentialsManager.h AccessCredentials.h NgapS3Credentials.h \
-DmrppMetadataStore.h awsv4.h url_parser.h \
-curl_utils.h
+DmrppMetadataStore.h awsv4.h url_parser.h
+#curl_utils.h
 
 DMRPP_MODULE = DmrppModule.cc DmrppRequestHandler.cc DmrppModule.h DmrppRequestHandler.h
 
@@ -68,7 +68,7 @@ BUILD_DMRPP = DmrppRequestHandler.cc DmrppRequestHandler.h
 
 libdmrpp_module_la_SOURCES = $(BES_HDRS) $(BES_SRCS) $(DMRPP_MODULE)
 libdmrpp_module_la_LDFLAGS = -avoid-version -module
-libdmrpp_module_la_LIBADD = $(BES_DISPATCH_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(H5_LDFLAGS) $(H5_LIBS) \
+libdmrpp_module_la_LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(H5_LDFLAGS) $(H5_LIBS) \
 $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -ltest-types
 
 bin_PROGRAMS = build_dmrpp ngap_build_dmrpp
@@ -78,7 +78,7 @@ build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS)
 
 build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) build_dmrpp.cc
 
-build_dmrpp_LDADD =   $(BES_DAP_LIB) $(BES_DISPATCH_LIB) $(BES_EXTRA_LIBS) \
+build_dmrpp_LDADD = $(BES_DAP_LIB) $(BES_DISPATCH_LIB) $(BES_EXTRA_LIBS) $(BES_HTTP_LIB) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) -lz
 
 
@@ -90,11 +90,12 @@ ngap_build_dmrpp_LDADD =  \
     $(abs_top_builddir)/cmdln/CmdTranslation.o \
     $(abs_top_builddir)/xmlcommand/libbes_xml_command.la \
     $(BES_DAP_LIB) \
-    $(BES_STANDALONE_LIB)  $(BES_DISPATCH_LIB) \
+    $(BES_STANDALONE_LIB) $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) \
     $(BES_XML_CMD_LIB) \
     $(BES_EXTRA_LIBS) $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) \
     $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) \
     $(XML2_LIBS) $(READLINE_LIBS) -lz
+
 #    $(abs_top_builddir)/modules/hdf5_handler/gctp/src/libGctp.a
 #    $(HDF5_MODULE_OBJS)
 

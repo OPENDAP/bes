@@ -33,7 +33,9 @@
 
 #include "BESCatalog.h"
 #include "BESInternalError.h"
-#include "HttpdCatalogNames.h"
+#include "BESProxyNames.h"
+
+#define MODULE HTTPD_CATALOG_NAME
 
 class BESCatalogEntry;
 class BESCatalogUtils;

@@ -36,14 +36,16 @@
 
 namespace ngap {
 
-    class NgapRequestHandler: public BESRequestHandler {
+    class NgapRequestHandler : public BESRequestHandler {
     public:
         NgapRequestHandler(const std::string &name);
+
         virtual ~NgapRequestHandler(void);
 
         virtual void dump(std::ostream &strm) const;
 
         static bool ngap_build_vers(BESDataHandlerInterface &dhi);
+
         static bool ngap_build_help(BESDataHandlerInterface &dhi);
     };
 

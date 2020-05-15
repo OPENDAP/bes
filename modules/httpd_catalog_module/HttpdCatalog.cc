@@ -60,9 +60,11 @@
 #include <TheBESKeys.h>
 #include <BESDebug.h>
 
-#include "HttpdCatalogNames.h"
+#include "BESProxyNames.h"
 #include "HttpdCatalog.h"
 #include "HttpdDirScraper.h"
+
+#define MODULE "httpd_catalog_module"
 
 using namespace bes;
 using namespace std;

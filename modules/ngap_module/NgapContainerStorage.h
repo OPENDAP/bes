@@ -42,15 +42,16 @@ namespace ngap {
  * @see BESContainerStorageVolatile
  * @see GatewayContainer
  */
-class NgapContainerStorage: public BESContainerStorageVolatile {
-public:
-    NgapContainerStorage(const std::string &n);
-    virtual ~NgapContainerStorage();
+    class NgapContainerStorage : public BESContainerStorageVolatile {
+    public:
+        NgapContainerStorage(const std::string &n);
 
-    virtual void add_container(const std::string &s_name, const std::string &r_name, const std::string &type);
+        virtual ~NgapContainerStorage();
 
-    virtual void dump(std::ostream &strm) const;
-};
+        virtual void add_container(const std::string &s_name, const std::string &r_name, const std::string &type);
+
+        virtual void dump(std::ostream &strm) const;
+    };
 
 } // namespace ngap
 

@@ -34,7 +34,7 @@
 
 #include <string>
 #include <vector>
-#include "rapidjson/document.h"
+#include <rapidjson/document.h>
 #include "BESCatalogUtils.h"
 
 #include "Granule.h"
@@ -65,11 +65,11 @@ public:
     void get_days(std::string collection_name, std::string r_year, std::string r_month, std::vector<std::string> &days_result);
     void get_granule_ids(std::string collection_name, std::string r_year, std::string r_month, std::string r_day, std::vector<std::string> &granules_result);
     void get_granule_ids(std::string collection_name, std::string r_year, std::string r_month, std::vector<std::string> &granules_result);
-    void get_granules(std::string collection_name, std::string r_year, std::string r_month, std::string r_day, std::vector<cmr::Granule *> &granules);
+    void get_granules(std::string collection_name, std::string r_year, std::string r_month, std::string r_day, std::vector<Granule *> &granules);
     void get_collection_ids(std::vector<std::string> &collection_ids);
     unsigned long granule_count(std::string collection_name,std:: string r_year, std::string r_month, std::string r_day);
-    cmr::Granule *get_granule(const std::string path);
-    cmr::Granule *get_granule(std::string collection_name, std::string r_year, std::string r_month, std::string r_day, std::string granule_id);
+    Granule *get_granule(const std::string path);
+    Granule *get_granule(std::string collection_name, std::string r_year, std::string r_month, std::string r_day, std::string granule_id);
 };
 
 

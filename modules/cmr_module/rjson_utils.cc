@@ -24,24 +24,25 @@
 //
 #include <sstream>
 
-#include "rapidjson/document.h"
-#include "rapidjson/writer.h"
-#include "rapidjson/prettywriter.h"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/filereadstream.h"
+#include <rapidjson/document.h>
+#include <rapidjson/writer.h>
+#include <rapidjson/prettywriter.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/filereadstream.h>
 
 #include <BESError.h>
 #include <BESDebug.h>
 #include <BESUtil.h>
-#include "RemoteHttpResource.h"
+#include "BESRemoteHttpResource.h"
 
-#include "CmrNames.h"
+#include "BESProxyNames.h"
 
 #include "rjson_utils.h"
 
 using namespace std;
 
 #define prolog std::string("rjson_utils::").append(__func__).append("() - ")
+#define MODULE CMR_NAME
 
 namespace cmr {
 /**
@@ -56,7 +57,7 @@ namespace cmr {
 void
 rjson_utils::getJsonDoc(const string &url, rapidjson::Document &doc){
     BESDEBUG(MODULE,prolog << "Trying url: " << url << endl);
-    cmr::RemoteHttpResource rhr(url);
+    remote_http_resource::BESRemoteHttpResource rhr(url);
     rhr.retrieveResource();
     if(BESDebug::IsSet(MODULE)){
         string cmr_hits = rhr.get_http_response_header("cmr-hits");

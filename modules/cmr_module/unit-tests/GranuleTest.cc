@@ -47,8 +47,8 @@
 #include <BESCatalogList.h>
 #include <CatalogNode.h>
 
-#include "RemoteHttpResource.h"
-#include "CmrNames.h"
+#include "BESRemoteHttpResource.h"
+#include "BESProxyNames.h"
 #include "CmrApi.h"
 #include "CmrCatalog.h"
 #include "CmrError.h"
@@ -102,7 +102,7 @@ public:
     {
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
         TheBESKeys::ConfigFile = bes_conf;
-        BESCatalogList::TheCatalogList()->add_catalog(new cmr::CmrCatalog(CMR_CATALOG_NAME));
+        BESCatalogList::TheCatalogList()->add_catalog(new CmrCatalog(CMR_CATALOG_NAME));
 
         if (bes_debug) BESDebug::SetUp("cerr,cmr");
 
@@ -122,7 +122,7 @@ public:
         stringstream msg;
 
         try {
-            cmr::CmrCatalog catalog;
+            CmrCatalog catalog;
             bes::CatalogNode *node = catalog.get_node("C179003030-ORNL_DAAC/temporal");
             unsigned lcount = node->get_leaf_count();
             BESDEBUG(MODULE, prolog << "Checking expected leaves (0) vs received (" << lcount << ")" << endl);
@@ -171,7 +171,7 @@ public:
         unsigned long  expected_size = 12;
         vector<string> months;
         try {
-            cmr::CmrCatalog catalog;
+            CmrCatalog catalog;
             bes::CatalogNode *node = catalog.get_node("C179003030-ORNL_DAAC/temporal/1985");
             unsigned lcount = node->get_leaf_count();
             BESDEBUG(MODULE, prolog << "Checking expected leaves (0) vs received (" << lcount << ")" << endl);
@@ -217,7 +217,7 @@ public:
         unsigned long  expected_size = 31;
         vector<string> days;
         try {
-            cmr::CmrCatalog catalog;
+            CmrCatalog catalog;
             bes::CatalogNode *node = catalog.get_node(node_path);
             unsigned lcount = node->get_leaf_count();
             BESDEBUG(MODULE, prolog << "Checking expected leaves (0) vs received (" << lcount << ")" << endl);
@@ -262,7 +262,7 @@ public:
         unsigned long  expected_size = 1;
         vector<string> days;
         try {
-            cmr::CmrCatalog catalog;
+            CmrCatalog catalog;
             bes::CatalogNode *node = catalog.get_node(node_path);
 
             unsigned lcount = node->get_leaf_count();

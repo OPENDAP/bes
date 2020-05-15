@@ -38,7 +38,7 @@
 #include <BESLog.h>
 #include <BESDebug.h>
 
-#include "HttpdCatalogNames.h"
+#include "BESProxyNames.h"
 #include "HttpdCatalogModule.h"
 #include "HttpdCatalogContainerStorage.h"
 #include "HttpdCatalog.h"

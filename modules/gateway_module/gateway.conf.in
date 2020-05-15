@@ -38,9 +38,9 @@ BES.module.gateway=@bes_modules_dir@/libgateway_module.so
 #
 # datatype:mimetype
 #
-Gateway.MimeTypes=nc:application/x-netcdf
-Gateway.MimeTypes+=h4:application/x-hdf
-Gateway.MimeTypes+=h5:application/x-hdf5
+Http.MimeTypes=nc:application/x-netcdf
+Http.MimeTypes+=h4:application/x-hdf
+Http.MimeTypes+=h5:application/x-hdf5
 
 # Gateway.ProxyProtocol, Gateway.ProxyHost and Gateway.ProxyPort -
 # provides a way to define a proxy server that must be used to make the
@@ -62,7 +62,7 @@ Gateway.MimeTypes+=h5:application/x-hdf5
 
 # Gateway.Cache.size - The maxium size of the Gateway cache, in megabytes.
 
-Gateway.Cache.dir=/tmp/hyrax_gw
-Gateway.Cache.prefix=gw_
-Gateway.Cache.size=500
+Http.Cache.dir=/tmp/hyrax_gw
+Http.Cache.prefix=gw_
+Http.Cache.size=500
 

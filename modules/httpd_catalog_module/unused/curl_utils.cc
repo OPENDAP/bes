@@ -37,8 +37,8 @@
 #include "WhiteList.h"
 
 #include "curl_utils.h"
-#include "HttpdCatalogUtils.h"
-#include "HttpdCatalogNames.h"
+#include "httpd_catalog_module/unused/HttpdCatalogUtils.h"
+#include "httpd_catalog_module/unused/HttpdCatalogNames.h"
 
 #define prolog string("curl_utils.cc: ").append(__func__).append("() - ")
 

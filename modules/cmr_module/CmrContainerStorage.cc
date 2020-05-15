@@ -36,7 +36,7 @@
 
 using namespace std;
 
-#define MODULE "cmr"
+#define MODULE CMR_NAME
 #define prolog std::string("CmrContainerStorage::").append(__func__).append("() - ")
 
 namespace cmr {

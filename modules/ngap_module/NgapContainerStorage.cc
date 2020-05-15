@@ -43,12 +43,10 @@ namespace ngap {
  * @see GatewayContainer
  */
     NgapContainerStorage::NgapContainerStorage(const string &n) :
-            BESContainerStorageVolatile(n)
-    {
+            BESContainerStorageVolatile(n) {
     }
 
-    NgapContainerStorage::~NgapContainerStorage()
-    {
+    NgapContainerStorage::~NgapContainerStorage() {
     }
 
 /** @brief adds a container with the provided information
@@ -58,8 +56,7 @@ namespace ngap {
  * @param type ignored. The type of the target response is determined by the
  * request response, or could be passed in
  */
-    void NgapContainerStorage::add_container(const string &s_name, const string &r_name, const string &type)
-    {
+    void NgapContainerStorage::add_container(const string &s_name, const string &r_name, const string &type) {
         BESContainer *c = new NgapContainer(s_name, r_name, type);
         BESContainerStorageVolatile::add_container(c);
     }
@@ -71,8 +68,7 @@ namespace ngap {
  *
  * @param strm C++ i/o stream to dump the information to
  */
-    void NgapContainerStorage::dump(ostream &strm) const
-    {
+    void NgapContainerStorage::dump(ostream &strm) const {
         strm << BESIndent::LMarg << "NgapContainerStorage::dump - (" << (void *) this << ")" << endl;
         BESIndent::Indent();
         BESContainerStorageVolatile::dump(strm);

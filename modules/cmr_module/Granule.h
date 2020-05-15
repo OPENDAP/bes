@@ -33,7 +33,7 @@
 
 #include <string>
 #include <vector>
-#include "rapidjson/document.h"
+#include <rapidjson/document.h>
 #include "CatalogItem.h"
 #include "BESCatalogUtils.h"
 

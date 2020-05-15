@@ -31,10 +31,10 @@
 #include <WhiteList.h>
 
 #include "HttpdCatalogContainer.h"
-#include "HttpdCatalogUtils.h"
-#include "HttpdCatalogNames.h"
+#include "BESRemoteUtils.h"
+#include "BESProxyNames.h"
 #include "HttpdCatalog.h"
-#include "RemoteHttpResource.h"
+#include "BESRemoteHttpResource.h"
 
 using namespace std;
 using namespace bes;
@@ -134,7 +134,7 @@ string HttpdCatalogContainer::access()
 
     if (!d_remoteResource) {
         BESDEBUG(MODULE, prolog << "Building new RemoteResource." << endl);
-        d_remoteResource = new RemoteHttpResource(access_url);
+        d_remoteResource = new remote_http_resource::BESRemoteHttpResource(access_url);
         d_remoteResource->retrieveResource();
     }
 
@@ -187,17 +187,16 @@ void HttpdCatalogContainer::dump(ostream &strm) const
     BESIndent::Indent();
     BESContainer::dump(strm);
     if (d_remoteResource) {
-        strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " <<d_remoteResource->getCacheFileName()
+        strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_remoteResource->getCacheFileName()
         << endl;
         strm << BESIndent::LMarg << "response headers: ";
 
-        vector<string> hdrs;
-        d_remoteResource->getResponseHeaders(hdrs);
-        if (!hdrs.empty()) {
+        vector<string> *hdrs = d_remoteResource->getResponseHeaders();
+        if (hdrs) {
             strm << endl;
             BESIndent::Indent();
-            vector<string>::const_iterator i = hdrs.begin();
-            vector<string>::const_iterator e = hdrs.end();
+            vector<string>::const_iterator i = hdrs->begin();
+            vector<string>::const_iterator e = hdrs->end();
             for (; i != e; i++) {
                 string hdr_line = (*i);
                 strm << BESIndent::LMarg << hdr_line << endl;

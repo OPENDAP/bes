@@ -74,8 +74,8 @@ public:
     ~dmrpp_easy_handle();
 
     void read_data();
-};
 
+};
 
 /**
  * @brief Encapsulate a libcurl multi handle.
@@ -154,6 +154,8 @@ public:
     dmrpp_easy_handle *get_easy_handle(Chunk *chunk);
 
     void release_handle(dmrpp_easy_handle *h);
+
+    CURL *set_up_easy_handle(const std::string &target_url, const std::string &cookies_file, char *response_buff);
 };
 
 } // namespace dmrpp

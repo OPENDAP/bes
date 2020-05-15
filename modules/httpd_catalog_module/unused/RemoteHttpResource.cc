@@ -38,10 +38,10 @@
 #include <BESInternalError.h>
 
 #include "curl_utils.h"
-#include "HttpdCatalogNames.h"
-#include "HttpdCatalogUtils.h"
+#include "httpd_catalog_module/unused/HttpdCatalogNames.h"
+#include "httpd_catalog_module/unused/HttpdCatalogUtils.h"
 #include "RemoteHttpResource.h"
-#include "RemoteHttpResourceCache.h"
+#include "BESRemoteCache.h"
 
 using namespace std;
 
@@ -111,7 +111,7 @@ RemoteHttpResource::RemoteHttpResource(const string &const_url)
     BESDEBUG(MODULE, prolog << "Deleted d_request_headers." << endl);
 
     if (!d_resourceCacheFileName.empty()) {
-        RemoteHttpResourceCache *cache = RemoteHttpResourceCache::get_instance();
+        BESRemoteCache *cache = BESRemoteCache::get_instance();
         if (cache) {
             cache->unlock_and_close(d_resourceCacheFileName);
             BESDEBUG(MODULE, prolog << "Closed and unlocked "<< d_resourceCacheFileName << endl);
@@ -146,7 +146,7 @@ void RemoteHttpResource::retrieveResource()
     }
 
     // Get a pointer to the singleton cache instance for this process.
-    RemoteHttpResourceCache *cache = RemoteHttpResourceCache::get_instance();
+    BESRemoteCache *cache = BESRemoteCache::get_instance();
     if (!cache) {
         ostringstream oss;
         oss << __func__ << "() - FAILED to get local cache."
