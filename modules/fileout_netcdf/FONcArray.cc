@@ -342,7 +342,7 @@ void FONcArray::define(int ncid)
         }
 
         BESDEBUG("fonc", "FONcArray::define() - Adding attributes " << endl);
-        FONcAttributes::add_variable_attributes(ncid, _varid, d_a,isNetCDF4_ENHANCED());
+        FONcAttributes::add_variable_attributes(ncid, _varid, d_a,isNetCDF4_ENHANCED(),is_dap4);
         FONcAttributes::add_original_name(ncid, _varid, _varname, _orig_varname);
 
         _defined = true;
@@ -486,6 +486,7 @@ void FONcArray::write(int ncid)
                 }
                 break;
             }
+            // TODO: should add other DAP4 types: NC_UINT...
             }
         }
     }
@@ -596,7 +597,21 @@ void FONcArray::write_for_nc4_types(int ncid) {
     // DAP2 only supports unsigned BYTE. So here
     // we don't inlcude NC_BYTE (the signed BYTE, the same
     // as 64-bit integer). KY 2020-03-20 
+    // Actually 64-bit integer is supported.
     switch (d_array_type) {
+    case NC_BYTE: {
+        signed char *data = new signed char[d_nelements];
+        d_a->buf2val((void**) &data);
+        stax = nc_put_var_schar(ncid, _varid, data);
+        delete[] data;
+
+        if (stax != NC_NOERR) {
+            string err = "fileout.netcdf - Failed to create array of bytes for " + _varname;
+            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+        }
+        break;
+    }
+
     case NC_UBYTE: {
         unsigned char *data = new unsigned char[d_nelements];
         d_a->buf2val((void**) &data);
@@ -630,6 +645,21 @@ void FONcArray::write_for_nc4_types(int ncid) {
         d_a->buf2val((void**) &data);
 
         int stax = nc_put_var_int(ncid, _varid, data);
+        delete[] data;
+
+        if (stax != NC_NOERR) {
+            string err = (string) "fileout.netcdf - Failed to create array of ints for " + _varname;
+            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+        }
+        break;
+    }
+
+    case NC_INT64: {
+
+        int64_t *data = new int64_t[d_nelements];
+        d_a->buf2val((void**) &data);
+
+        int stax = nc_put_var_longlong(ncid, _varid, (const long long*)data);
         delete[] data;
 
         if (stax != NC_NOERR) {
@@ -682,6 +712,19 @@ void FONcArray::write_for_nc4_types(int ncid) {
         unsigned int *data = new unsigned int[d_nelements];
         d_a->buf2val((void**) &data);
         int stax = nc_put_var_uint(ncid, _varid, data);
+        delete[] data;
+
+        if (stax != NC_NOERR) {
+            string err = (string) "fileout.netcdf - Failed to create array of unsigned int for " + _varname;
+            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+        }
+        break;
+    }
+
+    case NC_UINT64: {
+        uint64_t *data = new uint64_t[d_nelements];
+        d_a->buf2val((void**) &data);
+        int stax = nc_put_var_ulonglong(ncid, _varid, (const unsigned long long*)data);
         delete[] data;
 
         if (stax != NC_NOERR) {

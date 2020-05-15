@@ -67,8 +67,9 @@ protected:
     bool _defined;
     std::string _ncVersion;
     std::string _nc4_datamodel;
+    bool is_dap4;
 
-    FONcBaseType() : _varid(0), _defined(false) { }
+    FONcBaseType() : _varid(0), _defined(false),is_dap4(false){ }
 
 public:
     virtual ~FONcBaseType() { }
@@ -88,6 +89,7 @@ public:
     virtual void setNC4DataModel(std::string nc4_datamodel);
     virtual bool isNetCDF4();
     virtual bool isNetCDF4_ENHANCED();
+    virtual void set_is_dap4(bool set_dap4) {is_dap4 = set_dap4;}
 
 };
 
