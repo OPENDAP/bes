@@ -56,6 +56,7 @@ EOS5CVar::EOS5CVar(Var*var)
     dtype = var->dtype;
     unsupported_attr_dtype = var->unsupported_attr_dtype;
     unsupported_dspace = var->unsupported_dspace;
+    coord_attr_add_path = false;
 
     for (vector<Attribute*>::iterator ira = var->attrs.begin(); ira != var->attrs.end(); ++ira) {
         Attribute* attr = new Attribute();

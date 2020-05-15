@@ -259,6 +259,8 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
         f->Remove_Unused_FakeDimVars();
 
         f->Rename_NC4_NonCoordVars();
+
+        f->Add_Path_Coord_Attr();
     }
     catch (HDF5CF::Exception &e){
         if (f!= NULL)

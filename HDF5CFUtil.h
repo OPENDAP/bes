@@ -98,6 +98,9 @@ struct HDF5CFUtil {
                static std::string obtain_string_after_lastslash(const std::string s);
                static std::string obtain_string_before_lastslash(const std::string & s);
                static std::string remove_substrings(std::string str, const std::string &s);
+               static void cha_co(std::string &co,const std::string & vpath);
+               static void get_relpath_pos(const std::string& temp_str,const std::string& relpath,std::vector<size_t>&var_pos);
+
                static bool cf_strict_support_type(H5DataType dtype); 
                static bool cf_dap2_support_numeric_type(H5DataType dtype); 
 

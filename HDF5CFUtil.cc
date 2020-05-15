@@ -1233,5 +1233,60 @@ size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
     return sum;
 }
 
+void HDF5CFUtil::get_relpath_pos(const string& temp_str, const string& relpath, vector<size_t>&s_pos) {
 
+
+    //vector<size_t> positions; // holds all the positions that sub occurs within str
+
+    size_t pos = temp_str.find(relpath, 0);
+    while(pos != string::npos)
+    {
+        s_pos.push_back(pos);
+//cout<<"pos is "<<pos <<endl;
+        pos = temp_str.find(relpath,pos+1);
+    }
+//cout<<"pos.size() is "<<s_pos.size() <<endl;
+    
+
+}
+
+void HDF5CFUtil::cha_co(string &co,const string & vpath) {
+
+    string sep="/";
+    string rp_sep="../";
+    if(vpath.find(sep,1)!=string::npos) {
+        // if finding '/' in the co;
+        if(co.find(sep)!=string::npos) {
+            // if finding '../', reduce the path.
+            if(co.find(rp_sep)!=string::npos) {
+                vector<size_t>var_sep_pos;
+                get_relpath_pos(vpath,sep,var_sep_pos);
+                vector<size_t>co_rp_sep_pos;
+                get_relpath_pos(co,rp_sep,co_rp_sep_pos);
+                if(co_rp_sep_pos[0]==0) {
+                    // Obtain the '../' position at co 
+                    if(co_rp_sep_pos.size() <var_sep_pos.size()) {
+                    size_t var_prefix_pos=var_sep_pos[var_sep_pos.size()-co_rp_sep_pos.size()-1];
+//cout<<"var_prefix_pos is "<<var_prefix_pos <<endl;
+                    string var_prefix=vpath.substr(1,var_prefix_pos);
+//cout<<"var_prefix is "<<var_prefix <<endl;
+                    string co_suffix = co.substr(co_rp_sep_pos[co_rp_sep_pos.size()-1]+rp_sep.size());
+//cout<<"co_suffix is "<<co_suffix <<endl;
+                    co = var_prefix+co_suffix;
+                    }
+//cout<<"co is "<<co<<endl;;
+                }
+            }
+
+        }
+        else {// co no path, add fullpath
+            string var_prefix = obtain_string_before_lastslash(vpath).substr(1);
+            co = var_prefix +co;
+//cout<<"co full is " <<co <<endl;
+           
+
+        }
+    }
+
+}
 

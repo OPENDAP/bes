@@ -57,6 +57,7 @@ GMCVar::GMCVar(Var*var) {
     dtype = var->dtype;
     unsupported_attr_dtype = var->unsupported_attr_dtype;
     unsupported_dspace = var->unsupported_dspace;
+    coord_attr_add_path = false;
     
     for (vector<Attribute*>::iterator ira = var->attrs.begin();
         ira!=var->attrs.end(); ++ira) {
@@ -134,7 +135,7 @@ GMSPVar::GMSPVar(Var*var) {
     zero_storage_size = var->zero_storage_size;
     unsupported_attr_dtype = var->unsupported_attr_dtype;
     unsupported_dspace = var->unsupported_dspace;
-
+    coord_attr_add_path = var->coord_attr_add_path;
     // The caller of this function should change the following fields.
     // This is just to make data coverity happy.
     otype = H5UNSUPTYPE;
@@ -4140,6 +4141,7 @@ bool GMFile::Flatten_VarPath_In_Coordinates_Attr(Var *var)  {
         Attribute *attr = new Attribute();
         Add_Str_Attr(attr,co_attrname,flatten_coor_value);
         var->attrs.push_back(attr);
+        var->coord_attr_add_path = false;
     }
 
     return true;
@@ -6135,6 +6137,7 @@ void GMFile:: Handle_Coor_Attr() {
                     }
 
                     co_attrvalue.clear();
+                    (*irv)->coord_attr_add_path = false;
                 } // for (vector<Var *>::iterator irv = this->vars.begin(); ...
             }
         }
@@ -6471,6 +6474,7 @@ void GMFile::Add_VarPath_In_Coordinates_Attr(Var *var, const string &coor_value)
 
     string coor_attr_name = "coordinates";
     Replace_Var_Str_Attr(var,coor_attr_name,new_coor_value);
+    var->coord_attr_add_path = false;
 
 }
 
@@ -6708,10 +6712,11 @@ void GMFile::Handle_Hybrid_EOS5() {
                     (*ira)->fstrsize=cor_values.size();
                     (*ira)->strsize[0] = cor_values.size();
                     copy(cor_values.begin(), cor_values.end(), (*ira)->value.begin());
+                    (*irv)->coord_attr_add_path = false;
                 }
                 
                 break;
-             }
+            }
         }
  
     }
@@ -6897,6 +6902,45 @@ void GMFile::Rename_NC4_NonCoordVars() {
     }
  
 }
+
+void GMFile::Add_Path_Coord_Attr() {
+
+    BESDEBUG("h5", "GMFile::Coming to Add_Path_Coor_Attr()"<<endl);
+    string co_attrname = "coordinates";
+    for (vector<Var *>::iterator irv = this->vars.begin();
+                                irv != this->vars.end(); ++irv) {
+        if((*irv)->coord_attr_add_path == true) {
+            for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin(); ira !=(*irv)->attrs.end();++ira) {
+                // We will check if we have the coordinate attribute 
+                if((*ira)->name == co_attrname) {
+                    string coor_value = Retrieve_Str_Attr_Value(*ira,(*irv)->fullpath);
+                    char sep=' ';
+                    vector<string>cvalue_vec;
+                    HDF5CFUtil::Split_helper(cvalue_vec,coor_value,sep);
+                    string new_coor_value;
+                    for (int i = 0; i<cvalue_vec.size();i++) {
+                        HDF5CFUtil::cha_co(cvalue_vec[i],(*irv)->fullpath);
+                        cvalue_vec[i] = get_CF_string(cvalue_vec[i]);
+                        if(i == 0) 
+                            new_coor_value = cvalue_vec[i];
+                        else 
+                            new_coor_value += sep+cvalue_vec[i];
+                        
+//cout<<"co1["<<i<<"]= "<<cvalue_vec[i]<<endl;
+                    }
+//cout<<"new_coor_value is "<<new_coor_value<<endl;
+                        Replace_Var_Str_Attr((*irv),co_attrname,new_coor_value);
+                        break;
+                }
+            }
+            
+        }
+    }
+}
+
+
+
+
 // We will create some temporary coordinate variables. The resource allocoated
 // for these variables need to be released.
 void 

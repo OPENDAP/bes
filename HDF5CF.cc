@@ -61,6 +61,7 @@ Var::Var(Var *var)
     unsupported_dspace = var->unsupported_dspace;
     unsupported_attr_dspace = var->unsupported_attr_dspace;
     dimnameflag = var->dimnameflag;
+    coord_attr_add_path = var->coord_attr_add_path;
 
     for (vector<Attribute*>::iterator ira = var->attrs.begin(); ira != var->attrs.end(); ++ira) {
         Attribute* attr = new Attribute();

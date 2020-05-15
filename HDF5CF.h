@@ -260,7 +260,7 @@ class Var {
 public:
     Var() :
         dtype(H5UNSUPTYPE), rank(-1), comp_ratio(1), total_elems(0), zero_storage_size(false),unsupported_attr_dtype(false),
-        unsupported_attr_dspace(false), unsupported_dspace(false), dimnameflag(false)
+        unsupported_attr_dspace(false), unsupported_dspace(false), dimnameflag(false),coord_attr_add_path(true)
     {
     }
     explicit Var(Var*var);
@@ -339,6 +339,7 @@ private:
     bool unsupported_attr_dspace;
     bool unsupported_dspace;
     bool dimnameflag;
+    bool coord_attr_add_path;
 
     std::vector<Attribute *> attrs;
     std::vector<Dimension *> dims;
@@ -917,6 +918,9 @@ public:
 
     /// Update "product type" attributes for general HDF5 products
     void Update_Product_Type() ;
+
+    /// Update the coordinate attribute to include path and also flatten
+    void Add_Path_Coord_Attr();
 
     /// Obtain ignored info. flag
     bool Get_IgnoredInfo_Flag()
