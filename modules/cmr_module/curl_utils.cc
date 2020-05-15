@@ -487,7 +487,7 @@ CURL *init(char *error_buffer)
     VERBOSE(__FILE__ << "::init() is using the netrc file '" << ((!netrc_file.empty())?netrc_file:"~/.netrc")<< "'" << endl );
 
         // Set the user agent to curls version response because, well, that's what command line curl does :)
-    curl_easy_setopt(curl, CURLOPT_USERAGENT, "hyrax-cmr-virtual-directories");
+    curl_easy_setopt(curl, CURLOPT_USERAGENT, curl_version() );
 
 
 #if 0
@@ -591,8 +591,8 @@ long read_url(CURL *curl,
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, 0);
 
     if (res != 0){
-        BESDEBUG(MODULE, prolog << "OUCH! CURL returned an error! curl msg:  " << curl_easy_strerror(res) << endl);
-        BESDEBUG(MODULE, prolog << "OUCH! CURL returned an error! error_buffer:  " << error_buffer << endl);
+        BESDEBUG(MODULE, prolog << "OUCH! CURL returned an error! curl msg:  " << curl_easy_strerror(res) <<
+        " error_buffer:  " << error_buffer << endl);
         throw libdap::Error(error_buffer);
     }
     long status;

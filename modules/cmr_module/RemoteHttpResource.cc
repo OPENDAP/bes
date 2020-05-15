@@ -292,6 +292,11 @@ void RemoteHttpResource::writeResourceToFile(int fd) {
             throw libdap::Error(msg);
         }
         BESDEBUG(MODULE, prolog << "Resource " << d_remoteResourceUrl << " saved to cache file " << d_resourceCacheFileName << endl);
+        if(BESDebug::IsSet(MODULE)){
+            char *last_url = 0;
+            curl_easy_getinfo(d_curl, CURLINFO_EFFECTIVE_URL, &last_url);
+            BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << last_url << endl);
+        }
 
         // rewind the file
         // FIXME I think the idea here is that we have the file open and we should just keep
