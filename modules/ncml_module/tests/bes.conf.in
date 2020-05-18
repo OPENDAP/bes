@@ -70,13 +70,13 @@ BES.DefaultResponseMethod=POST
 Gateway.Whitelist+=http://test.opendap.org/opendap
 Gateway.Whitelist+=http://localhost
 
-Gateway.MimeTypes=nc:application/x-netcdf
-Gateway.MimeTypes+=h4:application/x-hdf
-Gateway.MimeTypes+=h5:application/x-hdf5
+Http.Cache.dir=@abs_top_builddir@/modules/ncml_module/tests/cache
+Http.Cache.prefix=gateway_cache
+Http.Cache.size=500
 
-Gateway.Cache.dir=@abs_top_builddir@/modules/ncml_module/tests/cache
-Gateway.Cache.prefix=gateway_cache
-Gateway.Cache.size=500
+Http.MimeTypes=nc:application/x-netcdf
+Http.MimeTypes+=h4:application/x-hdf
+Http.MimeTypes+=h5:application/x-hdf5
 
 #-----------------------------------------------------------------------#
 #                                                                       #
