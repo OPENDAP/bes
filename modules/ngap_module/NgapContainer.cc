@@ -41,13 +41,13 @@
 #include "TheBESKeys.h"
 #include "WhiteList.h"
 #include "BESContextManager.h"
-
-#include "NgapContainer.h"
-#include "NgapApi.h"
 #include "BESRemoteUtils.h"
-#include "BESProxyNames.h"
 #include "BESRemoteHttpResource.h"
 #include "BESCurlUtils.h"
+
+#include "NgapNames.h"
+#include "NgapContainer.h"
+#include "NgapApi.h"
 
 #define prolog std::string("NgapContainer::").append(__func__).append("() - ")
 

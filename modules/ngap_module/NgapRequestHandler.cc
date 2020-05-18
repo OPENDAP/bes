@@ -41,8 +41,8 @@
 #include <BESConstraintFuncs.h>
 #include <BESServiceRegistry.h>
 #include <BESUtil.h>
-#include <BESProxyNames.h>
 
+#include "NgapNames.h"
 #include "NgapRequestHandler.h"
 #include "BESRemoteUtils.h"
 

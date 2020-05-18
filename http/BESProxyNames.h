@@ -99,6 +99,7 @@
 #endif // E_CmrNames_H
 #endif
 
+#if 0
 
 #ifndef E_NgapNames_H
 #define E_NgapNames_H 1
@@ -130,6 +131,12 @@
 //#define MODULE NGAP_NAME
 
 #endif // E_NgapNames_H
+
+#endif
+
+
+
+
 
 #ifndef E_GatewayResponseNames_H
 #define E_GatewayResponseNames_H 1

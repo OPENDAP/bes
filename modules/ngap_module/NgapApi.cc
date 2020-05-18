@@ -47,8 +47,8 @@
 #include <BESUtil.h>
 #include <TheBESKeys.h>
 
+#include "NgapNames.h"
 #include "NgapApi.h"
-#include "BESProxyNames.h"
 #include "BESRemoteHttpResource.h"
 #include "NgapError.h"
 #include "BESCurlUtils.h"
