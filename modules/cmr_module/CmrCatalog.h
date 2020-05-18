@@ -34,8 +34,7 @@
 
 #include "BESCatalog.h"
 #include "BESInternalError.h"
-
-#define MODULE CMR_NAME
+#include "CmrNames.h"
 
 class BESCatalogEntry;
 class BESCatalogUtils;

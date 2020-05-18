@@ -50,7 +50,7 @@
 #include <TheBESKeys.h>
 
 #include "CmrApi.h"
-#include "BESProxyNames.h"
+#include "CmrNames.h"
 
 #include "CmrError.h"
 #include "rjson_utils.h"

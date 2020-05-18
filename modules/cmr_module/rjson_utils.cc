@@ -35,14 +35,13 @@
 #include <BESUtil.h>
 #include "BESRemoteHttpResource.h"
 
-#include "BESProxyNames.h"
+#include "CmrNames.h"
 
 #include "rjson_utils.h"
 
 using namespace std;
 
 #define prolog std::string("rjson_utils::").append(__func__).append("() - ")
-#define MODULE CMR_NAME
 
 namespace cmr {
 /**

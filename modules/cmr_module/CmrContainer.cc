@@ -36,7 +36,7 @@
 #include <WhiteList.h>
 
 #include "CmrContainer.h"
-#include "BESProxyNames.h"
+#include "CmrNames.h"
 #include "BESRemoteHttpResource.h"
 #include "CmrApi.h"
 
@@ -44,7 +44,6 @@ using namespace std;
 using namespace bes;
 using namespace remote_http_resource;
 
-#define MODULE CMR_NAME
 
 #define prolog std::string("CmrContainer::").append(__func__).append("() - ")
 

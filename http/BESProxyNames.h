@@ -70,7 +70,7 @@
 #endif // I_HTTPD_CATALOG_NAME_H
 #endif
 
-
+#if 0
 #ifndef E_CmrNames_H
 #define E_CmrNames_H 1
 
@@ -97,6 +97,8 @@
 //#define MODULE CMR_NAME
 
 #endif // E_CmrNames_H
+#endif
+
 
 #ifndef E_NgapNames_H
 #define E_NgapNames_H 1

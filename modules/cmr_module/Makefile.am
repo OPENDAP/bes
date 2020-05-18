@@ -31,7 +31,7 @@ CMR_SRC = CmrApi.cc CmrCatalog.cc Granule.cc \
 	CmrModule.cc CmrContainer.cc CmrContainerStorage.cc
 
 
-CMR_HDR = CmrApi.h CmrError.h CmrCatalog.h Granule.h \
+CMR_HDR = CmrApi.h CmrNames.h CmrError.h CmrCatalog.h Granule.h \
 	rjson_utils.h \
 	CmrModule.h CmrContainer.h CmrContainerStorage.h
 
