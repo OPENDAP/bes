@@ -49,6 +49,9 @@ using std::list;
 using namespace libdap;
 using namespace gateway;
 
+#define Gateway_NAME "gateway"
+#define MODULE Gateway_NAME
+
 GatewayRequestHandler::GatewayRequestHandler(const string &name) :
     BESRequestHandler(name)
 {

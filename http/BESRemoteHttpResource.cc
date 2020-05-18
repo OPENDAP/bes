@@ -93,161 +93,6 @@ namespace remote_http_resource {
         d_remoteResourceUrl.clear();
     }
 
-/**
- * This method will check the cache for the resource. If it's not there then it will lock the cache and retrieve
- * the remote resource content using HTTP GET.
- *
- * When this method returns the BESRemoteHttpResource object is fully initialized and the cache file name for the resource
- * is available along with an open file descriptor for the (now read-locked) cache file.
- */
-    void BESRemoteHttpResource::retrieveResource(const string &inject_url) {
-        BESDEBUG(MODULE,
-                 "BESBESRemoteHttpResource::retrieveResource() - BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
-
-        if (d_initialized) {
-            BESDEBUG(MODULE, "BESBESRemoteHttpResource::retrieveResource() - END  Already initialized." << endl);
-            return;
-        }
-
-        // Get a pointer to the singleton cache instance for this process.
-        remote_cache::BESRemoteCache *cache = remote_cache::BESRemoteCache::get_instance();
-        if (!cache) {
-            ostringstream oss;
-            oss << __func__ << "() - FAILED to get local cache."
-                               " Unable to proceed with request for " << this->d_remoteResourceUrl
-                << " The MODULE MUST have a valid cache configuration to operate." << endl;
-            BESDEBUG(MODULE, oss.str());
-            throw BESInternalError(oss.str(), __FILE__, __LINE__);
-        }
-
-        // Get the name of the file in the cache (either the code finds this file or
-        // or it makes it).
-        d_resourceCacheFileName = cache->get_cache_file_name(d_remoteResourceUrl);
-        BESDEBUG(MODULE,
-                 "BESRemoteHttpResource::retrieveResource() - d_resourceCacheFileName: " << d_resourceCacheFileName
-                                                                                         << endl);
-
-        // @FIXME MAKE THIS RETRIEVE THE CACHED DATA TYPE IF THE CACHED RESPONSE IF FOUND
-        // We need to know the type of the resource. HTTP headers are the preferred  way to determine the type.
-        // Unfortunately, the current code losses both the HTTP headers sent from the request and the derived type
-        // to subsequent accesses of the cached object. Since we have to have a type, for now we just set the type
-        // from the url. If down below we DO an HTTP GET then the headers will be evaluated and the type set by setType()
-        // But really - we gotta fix this.
-        BESRemoteUtils::Get_type_from_url(d_remoteResourceUrl, d_type);
-        BESDEBUG(MODULE, "BESRemoteHttpResource::retrieveResource() - d_type: " << d_type << endl);
-
-        try {
-
-            if (cache->get_read_lock(d_resourceCacheFileName, d_fd)) {
-                BESDEBUG(MODULE,
-                         "BESRemoteHttpResource::retrieveResource() - Remote resource is already in cache. cache_file_name: "
-                                 << d_resourceCacheFileName << endl);
-                d_initialized = true;
-                return;
-            }
-
-            // Now we actually need to reach out across the interwebs and retrieve the remote resource and put it's
-            // content into a local cache file, given that it's not in the cache.
-            // First make an empty file and get an exclusive lock on it.
-            if (cache->create_and_lock(d_resourceCacheFileName, d_fd)) {
-
-                // Write the remote resource to the cache file.
-                try {
-                    writeResourceToFile(d_fd);
-                }
-                catch (...) {
-                    // If things went south then we need to dump the file because we'll end up with an empty/bogus file clogging the cache
-                    unlink(d_resourceCacheFileName.c_str());
-                    throw;
-                }
-
-                //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-                // If we are injecting the data URL, as per the BES configuration, we do that here.
-                // The file is locked and we have the information required to make the substitution.
-                // This is controlled by:
-                //  - The value of the BES key NGAP_INJECT_DATA_URL_KEY (if present)
-                //  - The inject_url string must not be empty.
-                if (!inject_url.empty()) {
-                    bool found;
-                    string key_value;
-                    TheBESKeys::TheKeys()->get_value(NGAP_INJECT_DATA_URL_KEY, key_value, found);
-                    if (found && key_value == "true") {
-                        unsigned int count = filter_retrieved_resource(DATA_ACCESS_URL_KEY, inject_url);
-                        BESDEBUG(NGAP_NAME,
-                                 prolog << "Replaced  " << count << " instance(s) of NGAP_DATA_ACCESS_URL template(" <<
-                                        DATA_ACCESS_URL_KEY << ") in cached RemoteResource" << endl);
-                    }
-                }
-
-                //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-                // I think right here is where I would be able to cache the data type/response headers. While I have
-                // the exclusive lock I could open another cache file for metadata and write to it.
-                {
-                    string hdr_filename = cache->get_cache_file_name(d_remoteResourceUrl) + ".hdrs";
-                    std::ofstream hdr_out(hdr_filename.c_str());
-                    try {
-                        for (size_t i = 0; i < this->d_response_headers->size(); i++) {
-                            hdr_out << (*d_response_headers)[i] << endl;
-                        }
-                    }
-                    catch (...) {
-                        // If this fails for any reason we:
-                        hdr_out.close(); // Close the stream
-                        unlink(hdr_filename.c_str()); // unlink the file
-                        unlink(d_resourceCacheFileName.c_str()); // unlink the primary cache file.
-                        throw;
-                    }
-                }
-                // #########################################################################################################
-
-                // Change the exclusive lock on the new file to a shared lock. This keeps
-                // other processes from purging the new file and ensures that the reading
-                // process can use it.
-                cache->exclusive_to_shared_lock(d_fd);
-                BESDEBUG(MODULE,
-                         "BESRemoteHttpResource::retrieveResource() - Converted exclusive cache lock to shared lock."
-                                 << endl);
-
-                // Now update the total cache size info and purge if needed. The new file's
-                // name is passed into the purge method because this process cannot detect its
-                // own lock on the file.
-                unsigned long long size = cache->update_cache_info(d_resourceCacheFileName);
-                BESDEBUG(MODULE, "BESRemoteHttpResource::retrieveResource() - Updated cache info" << endl);
-
-                if (cache->cache_too_big(size)) {
-                    cache->update_and_purge(d_resourceCacheFileName);
-                    BESDEBUG(MODULE, "BESRemoteHttpResource::retrieveResource() - Updated and purged cache." << endl);
-                }
-
-                BESDEBUG(MODULE, "BESRemoteHttpResource::retrieveResource() - END" << endl);
-
-                d_initialized = true;
-
-                return;
-            } else {
-                if (cache->get_read_lock(d_resourceCacheFileName, d_fd)) {
-                    BESDEBUG(MODULE,
-                             "BESRemoteHttpResource::retrieveResource() - Remote resource is in cache. cache_file_name: "
-                                     << d_resourceCacheFileName << endl);
-                    d_initialized = true;
-                    return;
-                }
-            }
-
-            string msg = "BESRemoteHttpResource::retrieveResource() - Failed to acquire cache read lock for remote resource: '";
-            msg += d_remoteResourceUrl + "\n";
-            throw libdap::Error(msg);
-
-        }
-        catch (...) {
-            BESDEBUG(MODULE,
-                     "BESRemoteHttpResource::retrieveResource() - Caught exception, unlocking cache and re-throw."
-                             << endl);
-            cache->unlock_cache();
-            throw;
-        }
-
-    }
 
 /**
  *
@@ -645,7 +490,171 @@ namespace remote_http_resource {
         BESDEBUG(MODULE, prolog << "d_curl: " << d_curl << endl);
     }
 
-/**
+    /**
+ * This method will check the cache for the resource. If it's not there then it will lock the cache and retrieve
+ * the remote resource content using HTTP GET.
+ *
+ * When this method returns the BESRemoteHttpResource object is fully initialized and the cache file name for the resource
+ * is available along with an open file descriptor for the (now read-locked) cache file.
+ */
+    void BESRemoteHttpResource::retrieveResource() {
+        string template_str;
+        string replace_value;
+        retrieveResource(template_str,replace_value);
+    }
+
+#if 0
+    void BESRemoteHttpResource::retrieveResource(const string &inject_url) {
+        BESDEBUG(MODULE,
+                 "BESBESRemoteHttpResource::retrieveResource() - BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
+
+        if (d_initialized) {
+            BESDEBUG(MODULE, "BESBESRemoteHttpResource::retrieveResource() - END  Already initialized." << endl);
+            return;
+        }
+
+        // Get a pointer to the singleton cache instance for this process.
+        remote_cache::BESRemoteCache *cache = remote_cache::BESRemoteCache::get_instance();
+        if (!cache) {
+            ostringstream oss;
+            oss << __func__ << "() - FAILED to get local cache."
+                               " Unable to proceed with request for " << this->d_remoteResourceUrl
+                << " The MODULE MUST have a valid cache configuration to operate." << endl;
+            BESDEBUG(MODULE, oss.str());
+            throw BESInternalError(oss.str(), __FILE__, __LINE__);
+        }
+
+        // Get the name of the file in the cache (either the code finds this file or
+        // or it makes it).
+        d_resourceCacheFileName = cache->get_cache_file_name(d_remoteResourceUrl);
+        BESDEBUG(MODULE,
+                 "BESRemoteHttpResource::retrieveResource() - d_resourceCacheFileName: " << d_resourceCacheFileName
+                                                                                         << endl);
+
+        // @FIXME MAKE THIS RETRIEVE THE CACHED DATA TYPE IF THE CACHED RESPONSE IF FOUND
+        // We need to know the type of the resource. HTTP headers are the preferred  way to determine the type.
+        // Unfortunately, the current code losses both the HTTP headers sent from the request and the derived type
+        // to subsequent accesses of the cached object. Since we have to have a type, for now we just set the type
+        // from the url. If down below we DO an HTTP GET then the headers will be evaluated and the type set by setType()
+        // But really - we gotta fix this.
+        BESRemoteUtils::Get_type_from_url(d_remoteResourceUrl, d_type);
+        BESDEBUG(MODULE, "BESRemoteHttpResource::retrieveResource() - d_type: " << d_type << endl);
+
+        try {
+
+            if (cache->get_read_lock(d_resourceCacheFileName, d_fd)) {
+                BESDEBUG(MODULE,
+                         "BESRemoteHttpResource::retrieveResource() - Remote resource is already in cache. cache_file_name: "
+                                 << d_resourceCacheFileName << endl);
+                d_initialized = true;
+                return;
+            }
+
+            // Now we actually need to reach out across the interwebs and retrieve the remote resource and put it's
+            // content into a local cache file, given that it's not in the cache.
+            // First make an empty file and get an exclusive lock on it.
+            if (cache->create_and_lock(d_resourceCacheFileName, d_fd)) {
+
+                // Write the remote resource to the cache file.
+                try {
+                    writeResourceToFile(d_fd);
+                }
+                catch (...) {
+                    // If things went south then we need to dump the file because we'll end up with an empty/bogus file clogging the cache
+                    unlink(d_resourceCacheFileName.c_str());
+                    throw;
+                }
+
+                //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+                // If we are injecting the data URL, as per the BES configuration, we do that here.
+                // The file is locked and we have the information required to make the substitution.
+                // This is controlled by:
+                //  - The value of the BES key NGAP_INJECT_DATA_URL_KEY (if present)
+                //  - The inject_url string must not be empty.
+                if (!inject_url.empty()) {
+                    bool found;
+                    string key_value;
+                    TheBESKeys::TheKeys()->get_value(NGAP_INJECT_DATA_URL_KEY, key_value, found);
+                    if (found && key_value == "true") {
+                        unsigned int count = filter_retrieved_resource(DATA_ACCESS_URL_KEY, inject_url);
+                        BESDEBUG(NGAP_NAME,
+                                 prolog << "Replaced  " << count << " instance(s) of NGAP_DATA_ACCESS_URL template(" <<
+                                        DATA_ACCESS_URL_KEY << ") in cached RemoteResource" << endl);
+                    }
+                }
+
+                //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+                // I think right here is where I would be able to cache the data type/response headers. While I have
+                // the exclusive lock I could open another cache file for metadata and write to it.
+                {
+                    string hdr_filename = cache->get_cache_file_name(d_remoteResourceUrl) + ".hdrs";
+                    std::ofstream hdr_out(hdr_filename.c_str());
+                    try {
+                        for (size_t i = 0; i < this->d_response_headers->size(); i++) {
+                            hdr_out << (*d_response_headers)[i] << endl;
+                        }
+                    }
+                    catch (...) {
+                        // If this fails for any reason we:
+                        hdr_out.close(); // Close the stream
+                        unlink(hdr_filename.c_str()); // unlink the file
+                        unlink(d_resourceCacheFileName.c_str()); // unlink the primary cache file.
+                        throw;
+                    }
+                }
+                // #########################################################################################################
+
+                // Change the exclusive lock on the new file to a shared lock. This keeps
+                // other processes from purging the new file and ensures that the reading
+                // process can use it.
+                cache->exclusive_to_shared_lock(d_fd);
+                BESDEBUG(MODULE,
+                         "BESRemoteHttpResource::retrieveResource() - Converted exclusive cache lock to shared lock."
+                                 << endl);
+
+                // Now update the total cache size info and purge if needed. The new file's
+                // name is passed into the purge method because this process cannot detect its
+                // own lock on the file.
+                unsigned long long size = cache->update_cache_info(d_resourceCacheFileName);
+                BESDEBUG(MODULE, "BESRemoteHttpResource::retrieveResource() - Updated cache info" << endl);
+
+                if (cache->cache_too_big(size)) {
+                    cache->update_and_purge(d_resourceCacheFileName);
+                    BESDEBUG(MODULE, "BESRemoteHttpResource::retrieveResource() - Updated and purged cache." << endl);
+                }
+
+                BESDEBUG(MODULE, "BESRemoteHttpResource::retrieveResource() - END" << endl);
+
+                d_initialized = true;
+
+                return;
+            } else {
+                if (cache->get_read_lock(d_resourceCacheFileName, d_fd)) {
+                    BESDEBUG(MODULE,
+                             "BESRemoteHttpResource::retrieveResource() - Remote resource is in cache. cache_file_name: "
+                                     << d_resourceCacheFileName << endl);
+                    d_initialized = true;
+                    return;
+                }
+            }
+
+            string msg = "BESRemoteHttpResource::retrieveResource() - Failed to acquire cache read lock for remote resource: '";
+            msg += d_remoteResourceUrl + "\n";
+            throw libdap::Error(msg);
+
+        }
+        catch (...) {
+            BESDEBUG(MODULE,
+                     "BESRemoteHttpResource::retrieveResource() - Caught exception, unlocking cache and re-throw."
+                             << endl);
+            cache->unlock_cache();
+            throw;
+        }
+
+    }
+#endif
+
+    /**
      * This method will check the cache for the resource. If it's not there then it will lock the cache and retrieve
      * the remote resource content using HTTP GET.
      *
@@ -658,13 +667,6 @@ namespace remote_http_resource {
      */
     void BESRemoteHttpResource::retrieveResource(const string &template_key, const string &replace_value) {
         BESDEBUG(MODULE, prolog << "BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
-
-        if (template_key.empty() && replace_value.empty()) {
-            string template_key;
-            string replace_value;
-            retrieveResource(template_key, replace_value);
-            return;
-        }
 
         if (d_initialized) {
             BESDEBUG(MODULE, prolog << "END  Already initialized." << endl);

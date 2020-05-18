@@ -129,7 +129,7 @@ namespace remote_http_resource {
 
         virtual ~BESRemoteHttpResource();
 
-        void retrieveResource(const std::string &inject_url = "");
+        void retrieveResource();
 
         void retrieveResource(const string &template_key, const string &replace_value);
 
