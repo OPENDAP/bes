@@ -296,6 +296,11 @@ public:
         return this->zero_storage_size;
     }
 
+    const bool getCoorAttrAddPath() const
+    {
+        return this->coord_attr_add_path;
+    }
+
     /// Get the dimension rank of this variable
     int getRank() const
     {

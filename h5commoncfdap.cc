@@ -58,6 +58,7 @@
 #include "HDF5CFGeoCFProj.h"
 
 #include "HDF5Int64.h"
+#include "HDF5CFUtil.h"
 
 using namespace std;
 using namespace libdap;
@@ -912,19 +913,31 @@ void map_cfh5_attrs_to_dap4(const HDF5CF::Var *var,BaseType* d4_var) {
         D4AttributeType dap4_attrtype = HDF5CFDAPUtil::daptype_strrep_to_dap4_attrtype(dap2_attrtype);
         D4Attribute *d4_attr = new D4Attribute((*it_ra)->getNewName(),dap4_attrtype);
         if(dap4_attrtype == attr_str_c) {
-            const vector<size_t>& strsize = (*it_ra)->getStrSize();
-            unsigned int temp_start_pos = 0;
-            for (unsigned int loc = 0; loc < (*it_ra)->getCount(); loc++) {
-                if (strsize[loc] != 0) {
-                    string tempstring((*it_ra)->getValue().begin() + temp_start_pos,
+            if("coordinates" == (*it_ra)->getNewName()) {
+                bool chg_coor_value = false;
+                if((true == HDF5RequestHandler::get_enable_coord_attr_add_path()) 
+                   &&(true == var->getCoorAttrAddPath()))
+                    chg_coor_value = true;
+                string tempstring;
+                handle_coor_attr_for_int64_var((*it_ra),var->getFullPath(),tempstring,chg_coor_value);
+                d4_attr->add_value(tempstring);
+            }
+            else {
+                const vector<size_t>& strsize = (*it_ra)->getStrSize();
+                unsigned int temp_start_pos = 0;
+                for (unsigned int loc = 0; loc < (*it_ra)->getCount(); loc++) {
+                    if (strsize[loc] != 0) {
+                        string tempstring((*it_ra)->getValue().begin() + temp_start_pos,
                                       (*it_ra)->getValue().begin() + temp_start_pos + strsize[loc]);
-                    temp_start_pos += strsize[loc];
-                    //The below if is not necessary since the "origname" and "fullnamepath" are not added.KY 2020-02-24
-                    //if (((*it_ra)->getNewName() != "origname") && ((*it_ra)->getNewName() != "fullnamepath")) 
-                    tempstring = HDF5CFDAPUtil::escattr(tempstring);
-                    d4_attr->add_value(tempstring);
+                        temp_start_pos += strsize[loc];
+                        //The below if is not necessary since the "origname" and "fullnamepath" are not added.KY 2020-02-24
+                        //if (((*it_ra)->getNewName() != "origname") && ((*it_ra)->getNewName() != "fullnamepath")) 
+                        tempstring = HDF5CFDAPUtil::escattr(tempstring);
+                        d4_attr->add_value(tempstring);
+                    }
                 }
             }
+
         }
         else {
             for (unsigned int loc = 0; loc < (*it_ra)->getCount(); loc++) {
@@ -945,6 +958,7 @@ void map_cfh5_attrs_to_dap4(const HDF5CF::Var *var,BaseType* d4_var) {
 
 void check_update_int64_attr(const string & obj_name, const HDF5CF::Attribute * attr) {
     if(attr->getType() == H5INT64 || attr->getType() == H5UINT64) { 
+
         DMR * dmr = HDF5RequestHandler::get_dmr_64bit_int();
         if(dmr != NULL) {
             string dap2_attrtype = HDF5CFDAPUtil::print_type(attr->getType());
@@ -1008,4 +1022,50 @@ void check_update_int64_attr(const string & obj_name, const HDF5CF::Attribute * 
                 d4_hg_container->attributes()->add_attribute_nocopy(d4_attr);
         }
     }
+}
+void handle_coor_attr_for_int64_var(const HDF5CF::Attribute *attr,const string &var_path,string &tempstring,bool chg_coor_value) {
+
+    string tempstring2(attr->getValue().begin(),attr->getValue().end()); 
+    if(true == chg_coor_value) {
+        char sep=' ';
+        vector<string>cvalue_vec;
+        HDF5CFUtil::Split_helper(cvalue_vec,tempstring2,sep);
+        for (int i = 0; i<cvalue_vec.size();i++) {
+            HDF5CFUtil::cha_co(cvalue_vec[i],var_path);
+            string t_str = get_cf_string(cvalue_vec[i]);
+            if(i == 0) 
+                tempstring = t_str;
+            else 
+                tempstring += sep+t_str;
+        }
+    }
+    else 
+        tempstring = tempstring2;
+
+}
+
+// Mainly copy from HDF5CF::get_CF_string. Should be 
+// removed if we can generate DMR independently.
+string get_cf_string(string & s) {
+
+    if(s[0] !='/') 
+        return get_cf_string_helper(s);
+    else {
+        // The leading underscore should be removed 
+        s.erase(0,1);
+        return get_cf_string_helper(s);
+    }
+
+}
+string get_cf_string_helper(string & s) {
+
+    if ("" == s) return s;
+    string insertString(1, '_');
+
+    // Always start with _ if the first character is not a letter
+    if (true == isdigit(s[0])) s.insert(0, insertString);
+
+    for (unsigned int i = 0; i < s.length(); i++)
+        if ((false == isalnum(s[i])) && (s[i] != '_')) s[i] = '_';
+    return s;
 }

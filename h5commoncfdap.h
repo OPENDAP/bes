@@ -38,6 +38,7 @@
 #include <DMR.h>
 #include <DDS.h>
 #include <DAS.h>
+//#include <D4Attributes.h>
 #include "hdf5.h"
 
 #include "HDF5CF.h"
@@ -69,5 +70,8 @@ void add_ll_valid_range(libdap::AttrTable*, bool is_lat);
 void map_cfh5_attrs_to_dap4(const HDF5CF::Var*var,libdap::BaseType*new_var);
 bool need_attr_values_for_dap4(const HDF5CF::Var*var);
 void check_update_int64_attr(const std::string &, const HDF5CF::Attribute *);
+void handle_coor_attr_for_int64_var(const HDF5CF::Attribute *, const std::string &,std::string&,bool);
+std::string get_cf_string(std::string & s);
+std::string get_cf_string_helper(std::string & s);
 
 #endif
