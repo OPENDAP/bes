@@ -12,7 +12,7 @@ SUBDIRS = . tests
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=fileout_gdal
-M_VER=0.10.7
+M_VER=0.10.8
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(GDAL_CFLAGS) $(DAP_CFLAGS)
 LIBADD = $(GDAL_LDFLAGS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -40,7 +40,7 @@ CLEANFILES = *~ fong.conf
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = fong.conf
 
-fong.conf: fong.conf.in $(top_srcdir)/config.status
+fong.conf: fong.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > fong.conf
 
 C4_DIR=./cccc

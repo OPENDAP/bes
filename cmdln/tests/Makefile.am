@@ -1,12 +1,14 @@
 
-AUTOMAKE_OPTIONS = foreign
+AUTOMAKE_OPTIONS = foreign 
 
-CLEANFILES = *.log *.sum $(srcdir)/package.m4
+CLEANFILES =
 
-EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) atlocal.in ff hdf4 hdf5 nc show ssfunc \
-mds_initial_state
+# NB: Make sure to distribute both the source and generated files
+# for the test
+EXTRA_DIST = $(TESTSUITE) $(TESTSUITE).at $(srcdir)/package.m4 \
+atlocal.in ff hdf4 hdf5 nc show ssfunc mds_initial_state
 
-DISTCLEANFILES = $(TESTSUITE)
+DISTCLEANFILES = atconfig
 
 mds_cachedir = $(datadir)/mds
 mds_cache_DATA = $(srcdir)/mds_initial_state/*
@@ -17,21 +19,21 @@ AUTOM4TE = autom4te
 
 TESTSUITE = $(srcdir)/testsuite
 
-check-local: atconfig atlocal $(TESTSUITE) install-data
+clean-local:
+	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
+	-rm -f $(TESTSUITE) $(srcdir)/package.m4
+
+check-local: $(TESTSUITE) install-data
 	@if bescmdln -x "show version;"; \
 		then $(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS); \
 		else echo "no bes found, not running cmdln-based tests"; \
 	fi
 
-clean-local:
-	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
-
-distclean-local:
-	-rm atconfig
-
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
 $(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4
+
+%: %.at 
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
 # The `:;' works around a Bash 3.2 bug when the output is not writable.

@@ -166,6 +166,8 @@ void BESServerHandler::execute(Connection *c)
             BESDEBUG("beslistener",
                 "BESServerHandler::execute() - Calling exit(CHILD_SUBPROCESS_READY) which has a value of " << CHILD_SUBPROCESS_READY << endl);
 
+            LOG("Received exit command." << endl);
+
             exit(CHILD_SUBPROCESS_READY);
         }
 

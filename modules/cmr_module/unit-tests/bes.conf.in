@@ -45,3 +45,5 @@ BES.Catalog.CMR.RootDirectory=UNUSED
 BES.Catalog.CMR.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$;
 
 Gateway.Whitelist += https://cmr.earthdata.nasa.gov
+
+BES.LogName=/dev/null

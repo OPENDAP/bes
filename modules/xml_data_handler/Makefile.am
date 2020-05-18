@@ -8,7 +8,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=xml_data_handler
-M_VER=1.1.8
+M_VER=1.1.9
 
 AM_CPPFLAGS = -I$(top_srcdir)/modules/xml_data_handler -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -54,7 +54,7 @@ DISTCLEANFILES = xml_data_handler.conf
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = xml_data_handler.conf
 
-xml_data_handler.conf: xml_data_handler.conf.in $(top_srcdir)/config.status
+xml_data_handler.conf: xml_data_handler.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > xml_data_handler.conf
 
 C4_DIR=./cccc

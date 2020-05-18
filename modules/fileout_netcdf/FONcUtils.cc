@@ -42,6 +42,8 @@
 #include "FONcUShort.h"
 #include "FONcInt.h"
 #include "FONcUInt.h"
+#include "FONcInt64.h"
+#include "FONcUInt64.h"
 #include "FONcFloat.h"
 #include "FONcDouble.h"
 #include "FONcStructure.h"
@@ -134,6 +136,17 @@ nc_type FONcUtils::get_nc_type(BaseType *element,bool IsNC4_ENHANCED)
     else if (var_type == "UInt32"){
         if(IsNC4_ENHANCED) 
             x_type = NC_UINT;
+        else 
+            x_type = NC_INT;
+    }
+    else if (var_type == "Int64")
+        if(IsNC4_ENHANCED)
+            x_type = NC_INT64;
+        else 
+            x_type = NC_INT;
+    else if (var_type == "UInt64"){
+        if(IsNC4_ENHANCED) 
+            x_type = NC_UINT64;
         else 
             x_type = NC_INT;
     }
@@ -235,6 +248,20 @@ FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic
     case dods_int32_c:
         b = new FONcInt(v);
         break;
+    case dods_uint64_c: {
+        if(true == is_netcdf4_enhanced)
+            b = new FONcUInt64(v); 
+        else 
+            b = new FONcInt(v);
+        break;
+    }
+    case dods_int64_c: {
+        if(true == is_netcdf4_enhanced)
+            b = new FONcInt64(v); 
+        else 
+            b = new FONcInt(v);
+        break;
+    }
     case dods_float32_c:
         b = new FONcFloat(v);
         break;

@@ -10,7 +10,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=csv_handler
-M_VER=1.2.2
+M_VER=1.2.3
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -46,7 +46,7 @@ sample_data_DATA = data/temperature.csv
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = csv.conf
 
-csv.conf: csv.conf.in $(top_srcdir)/config.status
+csv.conf: csv.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > csv.conf
 
 C4_DIR=./cccc

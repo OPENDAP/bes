@@ -12,3 +12,8 @@ BES.modules+=functions
 
 BES.module.functions=@bes_modules_dir@/libfunctions_module.so
 
+#Because we can't get the full path name for the h5 and sidecar files we will use this config parameter to locate them.
+#If the parameter isn't changed the default path will be /tmp.
+#If the user wishes to store the h5 and sidecar files inside a directory within /tmp they will need to create such
+#directory and set the FUNCTIONS.stareStoragePath to be the new desired path.
+#FUNCTIONS.stareStoragePath=/tmp

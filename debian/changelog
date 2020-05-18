@@ -1,3 +1,40 @@
+bes (3.20.7-1) trusty; urgency=medium
+
+* Hyrax can generate signed S3 requests when processing dmr++
+  files whose data content live in S3 when the correct credentials
+  are provided (injected) into the server.
+
+* For configurations that require Hyrax to authenticate to access various
+  remote resources, Hyrax can now utilize ~/.netrc (or a netrc file may
+  be specified in site.conf) and Hyrax will use the appropriate credentials,
+  if they are present.
+
+* The get_dmrpp script for dmr++ production has been enhanced with better
+  configuration options and built in QC tests for inventory along with
+  a simple value test.
+
+* The get_dmrpp script will default to using a template string for the value
+  of the dmrpp:href URL when a URL is not provided with a -u switch. This
+  allows the URL to be injected later.
+
+* We fixed a problem with fill values by converting the FillValue type to
+  the data type of the associated variable.
+
+* Fileout NetCDF has a new configuration key, FONc.NoGlobalAttrs that can
+  be used to suppress global attributes.
+
+hdf5_handler
+
+* The CF option support is enhanced.
+
+* Added support for correctly generating dmr++ files.
+
+* Enhanced support to handle netCDF-4 like HDF5 files and general two
+  dimensional latitude and longitude files.
+
+  See the modules/hdf5_handler/ChangeLog for details.
+
+
 bes (3.20.6-1) trusty; urgency=medium
 
 Notable Bugs Fixed:

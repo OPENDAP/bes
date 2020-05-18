@@ -11,7 +11,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=fileout_netcdf
-M_VER=1.4.9
+M_VER=1.5.0
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(NC_CPPFLAGS) $(DAP_CFLAGS)
 LIBADD = $(NC_LDFLAGS) $(NC_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -35,14 +35,14 @@ FONC_SRC = FONcTransform.cc FONcTransmitter.cc FONcRequestHandler.cc	\
 	FONcFloat.cc FONcDouble.cc FONcStructure.cc FONcArray.cc	\
 	FONcGrid.cc FONcSequence.cc FONcByte.cc FONcBaseType.cc		\
 	FONcDim.cc FONcMap.cc FONcAttributes.cc FONcUShort.cc FONcUInt.cc	\
-	FONcUByte.cc
+	FONcUByte.cc FONcInt64.cc FONcUInt64.cc
 
 FONC_HDR = FONcTransform.h FONcTransmitter.h FONcRequestHandler.h	\
 	FONcModule.h FONcUtils.h FONcStr.h FONcShort.h FONcInt.h	\
 	FONcFloat.h FONcDouble.h FONcStructure.h FONcArray.h		\
 	FONcGrid.h FONcSequence.h FONcByte.h FONcBaseType.h		\
 	FONcDim.h FONcMap.h FONcAttributes.h FONcUShort.h FONcUInt.h	\
-	FONcUByte.h
+	FONcUByte.h FONcInt64.h FONcUInt64.h
 
 EXTRA_DIST = data fonc.conf.in
 
@@ -51,7 +51,7 @@ CLEANFILES = *~ fonc.conf
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = fonc.conf
 
-fonc.conf: fonc.conf.in $(top_srcdir)/config.status
+fonc.conf: fonc.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > fonc.conf
 
 C4_DIR=./cccc

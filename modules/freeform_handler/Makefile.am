@@ -12,7 +12,7 @@ SUBDIRS = FFND . tests
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=freeform_handler
-M_VER=3.10.2
+M_VER=3.10.3
 
 # There are some defines which must be set when you build code which uses
 # FreeForm.h. Add them here. 4/17/98 jhrg
@@ -72,7 +72,7 @@ sample_data_DATA = data/1998-6-avhrr.dat data/avhrr.dat data/gsodock.dat data/gs
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = ff.conf
 
-ff.conf: ff.conf.in $(top_srcdir)/config.status
+ff.conf: ff.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > ff.conf
 
 C4_DIR=./cccc

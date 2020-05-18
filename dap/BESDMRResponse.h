@@ -30,7 +30,17 @@
 
 #include "BESDapResponse.h"
 
-using namespace libdap;
+using namespace libdap; 
+#if 0
+{
+class DMR;
+class ConstraintEvaluator;
+    
+}
+#endif
+// Remove this if we can get the ConstraintEvalutor out of this code.
+#include <ConstraintEvaluator.h>
+
 
 //class DMR;
 
@@ -39,10 +49,11 @@ using namespace libdap;
 class BESDMRResponse: public BESDapResponse {
 private:
 	DMR * _dmr;
-	//ConstraintEvaluator _ce; //FIXME Use Dap4 CE stuff
+	ConstraintEvaluator _ce; //FIXME Use Dap4 CE stuff
 public:
-	BESDMRResponse(DMR *dmr) : BESDapResponse(), _dmr(dmr) { }
-	virtual ~BESDMRResponse() { delete _dmr ; }
+	BESDMRResponse(DMR *dmr);
+
+	virtual ~BESDMRResponse();
 
 	virtual void set_container(const std::string &cn);
 	virtual void clear_container();
@@ -52,7 +63,7 @@ public:
 	DMR *get_dmr() { return _dmr; }
 	void set_dmr(DMR *dmr) { _dmr = dmr; }
 
-    //onstraintEvaluator &get_ce() { return _ce; } // FIXME too...
+    ConstraintEvaluator &get_ce() { return _ce; } // FIXME too...
 };
 
 #endif // I_BESDMRResponse

@@ -11,7 +11,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=ncml_moddule
-M_VER=1.5.0
+M_VER=1.5.1
 
 AM_CPPFLAGS = $(ICU_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
 -I$(top_srcdir)/xmlcommand $(DAP_CFLAGS)
@@ -178,7 +178,7 @@ sample_data_dmrpp_DATA = 	data/ncml/dmrpp/chunked_twoD.h5
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = ncml.conf
 
-ncml.conf: ncml.conf.in $(top_srcdir)/config.status
+ncml.conf: ncml.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > ncml.conf
 
 .PHONY: docs

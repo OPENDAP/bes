@@ -8,12 +8,17 @@ set(CMAKE_CXX_STANDARD 11)
 
 # Included because we want the IDE to know about the library sources, not
 # the installed headers. This might make for some consistency issues if the
-# libdap code is editied and not installed. jhrg 12/5/19
+# libdap code is edited and not installed. jhrg 12/5/19
 include_directories(../libdap4)
+
+# Does including this _and_ the above bork CLion? jhrg 1.15.20
+include_directories(../build/include/libdap)
 
 include_directories(/usr/local/Cellar/openssl/1.0.2q/include/)
 include_directories(/usr/local/Cellar/openssl/1.0.2r/include/)
 include_directories(/usr/local/include/)
+
+# Where the hyrax project puts the dependencies' headers
 
 include_directories(../build/deps/include)
 
@@ -21,7 +26,7 @@ include_directories(cmdln)
 include_directories(cmdln/unit-tests)
 include_directories(dap)
 include_directories(dap/unit-tests)
-include_directories(dap/unused)
+#include_directories(dap/unused)
 include_directories(dapreader)
 include_directories(dispatch)
 
@@ -31,14 +36,14 @@ include_directories(dispatch/tests)
 include_directories(dispatch/unit-tests)
 include_directories(functions)
 include_directories(functions/geo-functions)
-include_directories(functions/geo-functions/unused)
+#include_directories(functions/geo-functions/unused)
 include_directories(functions/unit-tests)
 
 include_directories(functions/stare)
 include_directories(functions/stare/unit-tests)
 
 include_directories(functions/unit-tests)
-include_directories(functions/unused_ArrayGeoConstraint_code)
+#include_directories(functions/unused_ArrayGeoConstraint_code)
 
 include_directories(hello_world)
 include_directories(hello_world/not_used)
@@ -65,7 +70,7 @@ include_directories(modules/debug_functions/unit-tests)
 include_directories(modules/dmrpp_module)
 include_directories(modules/dmrpp_module/unit-tests)
 
-include_directories(modules/dmrpp_module/unused)
+#include_directories(modules/dmrpp_module/unused)
 include_directories(modules/fileout_covjson)
 include_directories(modules/fileout_covjson/unit-tests)
 include_directories(modules/fileout_gdal)
@@ -79,7 +84,7 @@ include_directories(modules/freeform_handler)
 include_directories(modules/freeform_handler/FFND)
 include_directories(modules/freeform_handler/win32)
 include_directories(modules/gateway_module)
-include_directories(modules/gateway_module/unused)
+#include_directories(modules/gateway_module/unused)
 include_directories(modules/gdal_handler)
 include_directories(modules/hdf4_handler)
 include_directories(modules/hdf4_handler/grammarfiles)
@@ -129,9 +134,10 @@ include_directories(xmlcommand)
 include_directories(xmlcommand/not_used)
 include_directories(xmlcommand/tests)
 include_directories(xmlcommand/unit-tests)
-include_directories(xmlcommand/unused)
+#include_directories(xmlcommand/unused)
 
 add_executable(bes
+    config.h
     cmdln/unit-tests/test_config.h.in
     cmdln/unit-tests/translateT.cc
     cmdln/CmdApp.cc
@@ -140,7 +146,7 @@ add_executable(bes
     cmdln/CmdClient.h
     cmdln/CmdTranslation.cc
     cmdln/CmdTranslation.h
-    dap/unit-tests/unused/SequenceAggregationServerTest.cc
+        #dap/unit-tests/unused/SequenceAggregationServerTest.cc
     dap/unit-tests/FunctionResponseCacheTest.cc
     dap/unit-tests/GlobalMetadataStoreTest.cc
     dap/unit-tests/ObjMemCacheTest.cc
@@ -153,14 +159,14 @@ add_executable(bes
     dap/unit-tests/test_utils.cc
     dap/unit-tests/test_utils.h
     dap/unit-tests/TestFunction.h
-    dap/unused/BESDapNullAggregationServer.cc
-    dap/unused/BESDapNullAggregationServer.h
-    dap/unused/BESDapResponseCache.cc
-    dap/unused/BESDapResponseCache.h
-    dap/unused/BESDapSequenceAggregationServer.cc
-    dap/unused/BESDapSequenceAggregationServer.h
-    dap/unused/BESHandlerUtil.cc
-    dap/unused/BESHandlerUtil.h
+        #dap/unused/BESDapNullAggregationServer.cc
+        #dap/unused/BESDapNullAggregationServer.h
+        #dap/unused/BESDapResponseCache.cc
+        #dap/unused/BESDapResponseCache.h
+        #dap/unused/BESDapSequenceAggregationServer.cc
+        #dap/unused/BESDapSequenceAggregationServer.h
+        #dap/unused/BESHandlerUtil.cc
+        #dap/unused/BESHandlerUtil.h
     dap/BESDap4ResponseHandler.cc
     dap/BESDap4ResponseHandler.h
     dap/BESDapError.cc
@@ -463,8 +469,8 @@ add_executable(bes
     dispatch/WhiteList.cc
     dispatch/WhiteList.h
 
-    functions/geo-functions/unused/NC_GOES_Dataset.cpp
-    functions/geo-functions/unused/NC_GOES_Dataset.h
+    #functions/geo-functions/unused/NC_GOES_Dataset.cpp
+    #functions/geo-functions/unused/NC_GOES_Dataset.h
     functions/geo-functions/AbstractDataset.cpp
     functions/geo-functions/AbstractDataset.h
     functions/geo-functions/BoundingBox.cpp
@@ -562,7 +568,12 @@ add_executable(bes
     functions/VersionFunction.cc
     functions/VersionFunction.h
 
-    hello_world/not_used/SampleSayCommand.cc
+	functions/stare/StareFunctions.cc
+	functions/stare/StareFunctions.h
+	functions/stare/build_sidecar.cc
+	functions/stare/unit-tests/StareFunctionsTest.cc
+
+	hello_world/not_used/SampleSayCommand.cc
     hello_world/not_used/SampleSayCommand.h
     hello_world/not_used/SayReporter.cc
     hello_world/not_used/SayReporter.h
@@ -709,12 +720,16 @@ add_executable(bes
     modules/cmr_module/unit-tests/CmrCatalogTest.cc
     modules/cmr_module/unit-tests/GranuleTest.cc
     modules/cmr_module/unit-tests/test_config.h
-    modules/cmr_module/unused/CmrInfoCmd.cc
-    modules/cmr_module/unused/CmrInfoCmd.h
+
+        #modules/cmr_module/unused/CmrInfoCmd.cc
+        #modules/cmr_module/unused/CmrInfoCmd.h
+
     modules/cmr_module/CmrApi.cc
     modules/cmr_module/CmrApi.h
-        modules/cmr_module/unused/CmrCache.cc
-        modules/cmr_module/unused/CmrCache.h
+
+        #modules/cmr_module/unused/CmrCache.cc
+        #modules/cmr_module/unused/CmrCache.h
+
     modules/cmr_module/CmrCatalog.cc
     modules/cmr_module/CmrCatalog.h
     modules/cmr_module/CmrContainer.cc
@@ -724,15 +739,19 @@ add_executable(bes
     modules/cmr_module/CmrError.h
     modules/cmr_module/CmrModule.cc
     modules/cmr_module/CmrModule.h
-        modules/cmr_module/unused/CmrNames.h
-        modules/cmr_module/unused/CmrUtils.cc
-        modules/cmr_module/unused/CmrUtils.h
-        modules/cmr_module/unused/curl_utils.cc
-        modules/cmr_module/unused/curl_utils.h
+
+        #modules/cmr_module/unused/CmrNames.h
+        #modules/cmr_module/unused/CmrUtils.cc
+        #modules/cmr_module/unused/CmrUtils.h
+        #modules/cmr_module/unused/curl_utils.cc
+        #modules/cmr_module/unused/curl_utils.h
+
     modules/cmr_module/Granule.cc
     modules/cmr_module/Granule.h
-        modules/cmr_module/unused/RemoteHttpResource.cc
-        modules/cmr_module/unused/RemoteHttpResource.h
+
+        #modules/cmr_module/unused/RemoteHttpResource.cc
+        #modules/cmr_module/unused/RemoteHttpResource.h
+
     modules/cmr_module/rjson_utils.cc
     modules/cmr_module/rjson_utils.h
     modules/csv_handler/CSV_Data.cc
@@ -760,10 +779,12 @@ add_executable(bes
     modules/debug_functions/unit-tests/test_config.h
     modules/debug_functions/DebugFunctions.cc
     modules/debug_functions/DebugFunctions.h
-    modules/dmrpp_module/unit-tests/unused/DmrppChunkedReadTest.cc
-    modules/dmrpp_module/unit-tests/unused/DmrppHttpReadTest.cc
-    modules/dmrpp_module/unit-tests/unused/DmrppTypeReadTest.cc
-    modules/dmrpp_module/unit-tests/unused/DmrppUtilTest.cc
+
+        #modules/dmrpp_module/unit-tests/unused/DmrppChunkedReadTest.cc
+        #modules/dmrpp_module/unit-tests/unused/DmrppHttpReadTest.cc
+        #modules/dmrpp_module/unit-tests/unused/DmrppTypeReadTest.cc
+        #modules/dmrpp_module/unit-tests/unused/DmrppUtilTest.cc
+
     modules/dmrpp_module/unit-tests/ChunkTest.cc
     modules/dmrpp_module/unit-tests/CredentialsManagerTest.cc
     modules/dmrpp_module/unit-tests/DmrppCommonTest.cc
@@ -1081,12 +1102,12 @@ add_executable(bes
     modules/freeform_handler/read_ff.h
     modules/freeform_handler/util_ff.cc
     modules/freeform_handler/util_ff.h
-    modules/gateway_module/unused/GatewayRequest.cc
-    modules/gateway_module/unused/GatewayRequest.h
-    modules/gateway_module/curl_utils.cc
-    modules/gateway_module/curl_utils.h
-        modules/gateway_module/GatewayCache.cc
-        modules/gateway_module/GatewayCache.h
+        #modules/gateway_module/unused/GatewayRequest.cc
+        #modules/gateway_module/unused/GatewayRequest.h
+        #modules/gateway_module/curl_utils.cc
+        #modules/gateway_module/curl_utils.h
+        #modules/gateway_module/GatewayCache.cc
+        #modules/gateway_module/GatewayCache.h
     modules/gateway_module/GatewayContainer.cc
     modules/gateway_module/GatewayContainer.h
     modules/gateway_module/GatewayContainerStorage.cc
@@ -1101,11 +1122,11 @@ add_executable(bes
     modules/gateway_module/GatewayPathInfoResponseHandler.h
     modules/gateway_module/GatewayRequestHandler.cc
     modules/gateway_module/GatewayRequestHandler.h
-        modules/gateway_module/unused/GatewayResponseNames.h
-        modules/gateway_module/unused/GatewayUtils.cc
-        modules/gateway_module/unused/GatewayUtils.h
-        modules/gateway_module/unused/RemoteHttpResource.cc
-        modules/gateway_module/unused/RemoteHttpResource.h
+        #modules/gateway_module/unused/GatewayResponseNames.h
+        #modules/gateway_module/unused/GatewayUtils.cc
+        #modules/gateway_module/unused/GatewayUtils.h
+        #modules/gateway_module/unused/RemoteHttpResource.cc
+        #modules/gateway_module/unused/RemoteHttpResource.h
     modules/gdal_handler/gdal_utils.cc
     modules/gdal_handler/gdal_utils.h
     modules/gdal_handler/GDALArray.cc
@@ -1556,8 +1577,8 @@ add_executable(bes
     modules/httpd_catalog_module/unit-tests/HttpdDirScraperTest.cc
     modules/httpd_catalog_module/unit-tests/RemoteHttpResourceTest.cc
     modules/httpd_catalog_module/unit-tests/test_config.h
-        modules/httpd_catalog_module/unused/curl_utils.cc
-        modules/httpd_catalog_module/unused/curl_utils.h
+        #modules/httpd_catalog_module/unused/curl_utils.cc
+        #modules/httpd_catalog_module/unused/curl_utils.h
     modules/httpd_catalog_module/HttpdCatalog.cc
     modules/httpd_catalog_module/HttpdCatalog.h
     modules/httpd_catalog_module/HttpdCatalogContainer.cc
@@ -1567,15 +1588,15 @@ add_executable(bes
     modules/httpd_catalog_module/HttpdCatalogError.h
     modules/httpd_catalog_module/HttpdCatalogModule.cc
     modules/httpd_catalog_module/HttpdCatalogModule.h
-        modules/httpd_catalog_module/unused/HttpdCatalogNames.h
-        modules/httpd_catalog_module/unused/HttpdCatalogUtils.cc
-        modules/httpd_catalog_module/unused/HttpdCatalogUtils.h
+        #modules/httpd_catalog_module/unused/HttpdCatalogNames.h
+        #modules/httpd_catalog_module/unused/HttpdCatalogUtils.cc
+        #modules/httpd_catalog_module/unused/HttpdCatalogUtils.h
     modules/httpd_catalog_module/HttpdDirScraper.cc
     modules/httpd_catalog_module/HttpdDirScraper.h
-        modules/httpd_catalog_module/unused/RemoteHttpResource.cc
-        modules/httpd_catalog_module/unused/RemoteHttpResource.h
-        modules/httpd_catalog_module/unused/RemoteHttpResourceCache.cc
-        modules/httpd_catalog_module/unused/RemoteHttpResourceCache.h
+        #modules/httpd_catalog_module/unused/RemoteHttpResource.cc
+        #modules/httpd_catalog_module/unused/RemoteHttpResource.h
+        #modules/httpd_catalog_module/unused/RemoteHttpResourceCache.cc
+        #modules/httpd_catalog_module/unused/RemoteHttpResourceCache.h
     modules/ncml_module/not_used/JoinExistingDimensionCacheManager.cc
     modules/ncml_module/not_used/JoinExistingDimensionCacheManager.h
     modules/ncml_module/not_used/NCMLCacheAggXMLCommand.cc
@@ -1726,12 +1747,12 @@ add_executable(bes
     modules/netcdf_handler/NCUrl.cc
     modules/netcdf_handler/NCUrl.h
 
-        modules/ngap_module/unused/curl_utils.cc
-        modules/ngap_module/unused/curl_utils.h
+        #modules/ngap_module/unused/curl_utils.cc
+        #modules/ngap_module/unused/curl_utils.h
 	modules/ngap_module/NgapApi.cc
 	modules/ngap_module/NgapApi.h
-        modules/ngap_module/unused/NgapCache.cc
-        modules/ngap_module/unused/NgapCache.h
+        #modules/ngap_module/unused/NgapCache.cc
+        #modules/ngap_module/unused/NgapCache.h
 	modules/ngap_module/NgapContainerStorage.cc
 	modules/ngap_module/NgapContainerStorage.h
 	modules/ngap_module/NgapContainer.cc
@@ -1739,13 +1760,13 @@ add_executable(bes
 	modules/ngap_module/NgapError.h
 	modules/ngap_module/NgapModule.cc
 	modules/ngap_module/NgapModule.h
-        modules/ngap_module/unused/NgapNames.h
+        #modules/ngap_module/unused/NgapNames.h
 	modules/ngap_module/NgapRequestHandler.cc
-        modules/ngap_module/NgapRequestHandler.h
-        modules/ngap_module/unused/NgapUtils.cc
-        modules/ngap_module/unused/NgapUtils.h
-        modules/ngap_module/unused/RemoteHttpResource.cc
-        modules/ngap_module/unused/RemoteHttpResource.h
+        #modules/ngap_module/NgapRequestHandler.h
+        #modules/ngap_module/unused/NgapUtils.cc
+        #modules/ngap_module/unused/NgapUtils.h
+        #modules/ngap_module/unused/RemoteHttpResource.cc
+        #modules/ngap_module/unused/RemoteHttpResource.h
 	modules/ngap_module/unit-tests/NgapApiTest.cc
 
 	#modules/sql_handler/action/SQLAction.h
@@ -2087,7 +2108,7 @@ add_executable(bes
     xmlcommand/unit-tests/BuildTInterface.h
     xmlcommand/unit-tests/propsT.cc
     xmlcommand/unit-tests/test_config.h
-    xmlcommand/unused/SiteMapCommandNames.h
+    #xmlcommand/unused/SiteMapCommandNames.h
     xmlcommand/BESXMLCatalogCommand.cc
     xmlcommand/BESXMLCatalogCommand.h
     xmlcommand/BESXMLCommand.cc
@@ -2138,15 +2159,15 @@ add_executable(bes
     xmlcommand/SiteMapResponseHandler.h
     xmlcommand/XMLSetContextsCommand.cc
     xmlcommand/XMLSetContextsCommand.h
-    config.h
+
 	modules/dmrpp_module/unit-tests/awsv4_test.cc
-        modules/dmrpp_module/AccessCredentials.cc
-        modules/dmrpp_module/AccessCredentials.h
-        modules/dmrpp_module/NgapS3Credentials.cc
+    modules/dmrpp_module/AccessCredentials.cc
+    modules/dmrpp_module/AccessCredentials.h
+    modules/dmrpp_module/NgapS3Credentials.cc
     modules/dmrpp_module/NgapS3Credentials.h
 
-        modules/dmrpp_module/unused/curl_utils.cc
-        modules/dmrpp_module/unused/curl_utils.h
+        #modules/dmrpp_module/unused/curl_utils.cc
+        #modules/dmrpp_module/unused/curl_utils.h
 
     modules/dmrpp_module/unit-tests/NgapCredentialsTest.cc
 

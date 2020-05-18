@@ -10,7 +10,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=fileout_covjson
-M_VER=1.0.3
+M_VER=1.0.4
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -39,7 +39,7 @@ CLEANFILES = *~ focovjson.conf
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = focovjson.conf
 
-focovjson.conf: focovjson.conf.in $(top_srcdir)/config.status
+focovjson.conf: focovjson.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > focovjson.conf
 
 C4_DIR=./cccc

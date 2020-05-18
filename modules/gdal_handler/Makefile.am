@@ -10,7 +10,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=gdal_handler
-M_VER=1.1.5
+M_VER=1.1.6
 
 AM_CPPFLAGS = $(GDAL_CFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -71,5 +71,5 @@ sample_data_DATA = data/README \
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = gdal.conf
 
-gdal.conf: gdal.conf.in $(top_srcdir)/config.status
+gdal.conf: gdal.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > gdal.conf

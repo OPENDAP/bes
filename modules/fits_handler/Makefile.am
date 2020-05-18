@@ -11,7 +11,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=fits_handler
-M_VER=1.0.24
+M_VER=1.0.25
 
 AM_CPPFLAGS = $(CFITS_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 LIBADD = $(CFITS_LDFLAGS) $(CFITS_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -47,7 +47,7 @@ sample_data_DATA = data/20060308.172859.mk4.cpb.fts data/20060308.172859.mk4.rpb
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = fits.conf
 
-fits.conf: fits.conf.in $(top_srcdir)/config.status
+fits.conf: fits.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > fits.conf
 
 

@@ -11,7 +11,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=gateway_module
-M_VER=1.2.5
+M_VER=1.2.6
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/http -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand $(DAP_CFLAGS)
 LIBADD = $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -48,7 +48,7 @@ CLEANFILES = *~ gateway.conf
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = gateway.conf
 
-gateway.conf: gateway.conf.in $(top_srcdir)/config.status
+gateway.conf: gateway.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > gateway.conf
 
 C4_DIR=./cccc

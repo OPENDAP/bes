@@ -10,7 +10,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=usage
-M_VER=4.3.0
+M_VER=4.3.1
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -42,7 +42,7 @@ DISTCLEANFILES = usage.conf
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = usage.conf
 
-usage.conf: usage.conf.in $(top_srcdir)/config.status
+usage.conf: usage.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > usage.conf
 
 C4_DIR=./cccc

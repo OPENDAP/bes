@@ -10,7 +10,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=httpd_catalog_module
-M_VER=0.9.2
+M_VER=0.9.3
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/http -I$(top_srcdir)/dap $(DAP_CFLAGS)
 LIBADD = -L$(top_builddir)/http -lbes_http $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -44,7 +44,7 @@ CLEANFILES = *~ httpd_catalog.conf
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = httpd_catalog.conf
 
-httpd_catalog.conf: httpd_catalog.conf.in $(top_srcdir)/config.status
+httpd_catalog.conf: httpd_catalog.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > $@
 
 C4_DIR=./cccc

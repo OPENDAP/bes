@@ -1,0 +1,33 @@
+netcdf test {
+dimensions:
+	dim1 = 2 ;
+	dim2 = 2 ;
+variables:
+	int64 d64(dim1) ;
+		d64:attr_int = -2147483648, 2147483647 ;
+		d64:attr_uint64 = 18446744073709551615ULL ;
+		d64:attr_vstr = "Parting is such sweet sorrow." ;
+		d64:origname = "d64" ;
+		d64:fullnamepath = "/d64" ;
+	int64 d64s ;
+		d64s:attr_uint64s = 18446744073709551615ULL ;
+		d64s:origname = "d64s" ;
+		d64s:fullnamepath = "/d64s" ;
+	uint64 du64(dim2) ;
+		du64:attr_int64 = 9223372036854775807LL, -9223372036854775808LL ;
+		du64:attr_int8 = 127s ;
+		du64:attr_fstr = "Parting\nis so\nswe" ;
+		du64:origname = "du64" ;
+		du64:fullnamepath = "/du64" ;
+	uint64 du64s ;
+		du64s:attr_int64s = 9223372036854775807LL, -9223372036854775808LL ;
+		du64s:origname = "du64s" ;
+		du64s:fullnamepath = "/du64s" ;
+
+// global attributes:
+		:root_attr_int64 = 9223372036854775807LL, -9223372036854775808LL ;
+		:root_attr_int64_scalar = 9223372036854775807LL ;
+		:grp_int64.grp_attr_int64 = 9223372036854775807LL, -9223372036854775808LL ;
+		:grp_int64.grp_attr_int64_scalar = 9223372036854775807LL ;
+		:grp_int64.fullnamepath = "/grp_int64" ;
+}

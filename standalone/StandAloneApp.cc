@@ -30,12 +30,14 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+
 #include <unistd.h>
 #include <getopt.h>
 #include <signal.h>
 
 #include <iostream>
 #include <string>
+#include <vector>
 #include <fstream>
 
 using std::cout;
@@ -43,6 +45,7 @@ using std::cerr;
 using std::endl;
 using std::flush;
 using std::string;
+using std::vector;
 using std::ofstream;
 using std::ostream;
 using std::ifstream;
@@ -57,24 +60,22 @@ using std::ifstream;
 #include "BESCatalogUtils.h"
 #include "CmdTranslation.h"
 
+#define MODULE "standalone"
+#define prolog string("StandAloneApp::").append(__func__).append("() - ")
+
 StandAloneApp::StandAloneApp() :
-    BESModuleApp(), _client(0), _outputStrm(0), _inputStrm(0), _createdInputStrm( false), _repeat(0)
+    BESModuleApp(), _cmd(""), _outputStrm(0),  _repeat(0)
 {
 }
 
 StandAloneApp::~StandAloneApp()
 {
-    if (_client) {
-        delete _client;
-        _client = 0;
-    }
-
     delete TheBESKeys::TheKeys();
 }
 
 void StandAloneApp::showVersion()
 {
-    cout << appName() << ": version 2.0" << endl;
+    cout << appName() << ": version 3.0" << endl;
 }
 
 void StandAloneApp::showUsage()
@@ -82,13 +83,18 @@ void StandAloneApp::showUsage()
     cout << endl;
     cout << appName() << ": the following options are available:" << endl;
     cout << "    -c <file>, --config=<file> - BES configuration file" << endl;
-    cout << "    -x <command>, --execute=<command> - command for the server to execute" << endl;
-    cout << "    -i <file>, --inputfile=<file> - file with a sequence of input commands" << endl;
+    cout << "    -x <command>, --execute=<command> - command for the server " << endl;
+    cout << "       to execute" << endl;
+    cout << "    -i <file>, --inputfile=<file> - file with a sequence of input " << endl;
+    cout << "       commands, may be used multiple times." << endl;
     cout << "    -f <file>, --outputfile=<file> - write output to this file" << endl;
     cout << "    -d, --debug - turn on debugging for the client session" << endl;
     cout << "    -r <num>, --repeat=<num> - repeat the command(s) <num> times" << endl;
     cout << "    -v, --version - return version information" << endl;
     cout << "    -?, --help - display help information" << endl;
+    cout << endl;
+    cout << "Note: You may provide a bes command with -x OR you may provide one " << endl;
+    cout << "      or more BES command file names. One or the other, not neither, not both." << endl;
     cout << endl;
     BESDebug::Help(cout);
 }
@@ -98,16 +104,24 @@ int StandAloneApp::initialize(int argc, char **argv)
     CmdTranslation::initialize(argc, argv);
 
     string outputStr = "";
-    string inputStr = "";
+//    string inputStr = "";
     string repeatStr = "";
 
     bool badUsage = false;
 
     int c;
 
-    static struct option longopts[] = { { "config", 1, 0, 'c' }, { "debug", 0, 0, 'd' }, { "version", 0, 0, 'v' }, {
-        "execute", 1, 0, 'x' }, { "outputfile", 1, 0, 'f' }, { "inputfile", 1, 0, 'i' }, { "repeat", 1, 0, 'r' }, {
-        "help", 0, 0, '?' }, { 0, 0, 0, 0 } };
+    static struct option longopts[] = {
+            {     "config", 1, 0, 'c' },
+            {      "debug", 0, 0, 'd' },
+            {    "version", 0, 0, 'v' },
+            {    "execute", 1, 0, 'x' },
+            { "outputfile", 1, 0, 'f' },
+            {  "inputfile", 1, 0, 'i' },
+            {     "repeat", 1, 0, 'r' },
+            {       "help", 0, 0, '?' },
+            {            0, 0, 0,  0  }
+    };
     int option_index = 0;
 
     while ((c = getopt_long(argc, argv, "?vc:d:x:f:i:r:", longopts, &option_index)) != -1) {
@@ -130,7 +144,7 @@ int StandAloneApp::initialize(int argc, char **argv)
             outputStr = optarg;
             break;
         case 'i':
-            inputStr = optarg;
+            _command_file_names.push_back(optarg);
             break;
         case 'r':
             repeatStr = optarg;
@@ -144,11 +158,11 @@ int StandAloneApp::initialize(int argc, char **argv)
     }
 
     if (outputStr != "") {
-        if (_cmd == "" && inputStr == "") {
+        if (_cmd == "" && _command_file_names.empty()) {
             cerr << "When specifying an output file you must either specify a command or an input file" << endl;
             badUsage = true;
         }
-        else if (_cmd != "" && inputStr != "") {
+        else if (_cmd != "" &&  !_command_file_names.empty()) {
             cerr << "You must specify either a command or an input file on the command line, not both" << endl;
             badUsage = true;
         }
@@ -165,15 +179,6 @@ int StandAloneApp::initialize(int argc, char **argv)
             cerr << "could not open the output file " << outputStr << endl;
             badUsage = true;
         }
-    }
-
-    if (inputStr != "") {
-        _inputStrm = new ifstream(inputStr.c_str());
-        if (!(*_inputStrm)) {
-            cerr << "could not open the input file " << inputStr << endl;
-            badUsage = true;
-        }
-        _createdInputStrm = true;
     }
 
     if (!repeatStr.empty()) {
@@ -193,90 +198,84 @@ int StandAloneApp::initialize(int argc, char **argv)
     }
 
     try {
-        BESDEBUG("standalone", "ServerApp: initializing default module ... " << endl);
+        BESDEBUG(MODULE, prolog << "Initializing default module ... " << endl);
         BESDefaultModule::initialize(argc, argv);
-        BESDEBUG("standalone", "ServerApp: done initializing default module" << endl);
+        BESDEBUG(MODULE, prolog << "Done initializing default module" << endl);
 
-        BESDEBUG("standalone", "ServerApp: initializing default commands ... " << endl);
+        BESDEBUG(MODULE, prolog << "Initializing default commands ... " << endl);
         BESXMLDefaultCommands::initialize(argc, argv);
-        BESDEBUG("standalone", "ServerApp: done initializing default commands" << endl);
+        BESDEBUG(MODULE, prolog << "Done initializing default commands" << endl);
 
-        BESDEBUG("standalone", "ServerApp: initializing loaded modules ... " << endl);
+        BESDEBUG(MODULE, prolog << "Initializing loaded modules ... " << endl);
         int retval = BESModuleApp::initialize(argc, argv);
-        BESDEBUG("standalone", "ServerApp: done initializing loaded modules" << endl);
+        BESDEBUG(MODULE, prolog << "Done initializing loaded modules" << endl);
         if (retval) return retval;
     }
     catch (BESError &e) {
-        cerr << "Failed to initialize stand alone app" << endl;
-        cerr << e.get_message() << endl;
+        cerr << prolog << "Failed to initialize stand alone app. Message : " << e.get_message() << endl;
         return 1;
     }
 
-    BESDEBUG("standalone", "StandAloneApp: initialized settings:" << endl << *this);
+    BESDEBUG(MODULE, prolog << "Initialized settings:" << endl << *this);
 
     return 0;
 }
 
+
+/**
+ *
+ */
 int StandAloneApp::run()
 {
+    StandAloneClient sac;
+    string msg;
     try {
-        _client = new StandAloneClient;
         if (_outputStrm) {
-            _client->setOutput(_outputStrm, true);
+            sac.setOutput(_outputStrm, true);
         }
         else {
-            _client->setOutput(&cout, false);
+            sac.setOutput(&cout, false);
         }
-        BESDEBUG("standalone", "OK" << endl);
+        BESDEBUG(MODULE, prolog << "StandAloneClient instance created." << endl);
     }
     catch (BESError &e) {
-        if (_client) {
-            delete _client;
-            _client = 0;
-        }
-        BESDEBUG("standalone", "FAILED" << endl);
-        cerr << "error starting the client" << endl;
-        cerr << e.get_message() << endl;
-        exit(1);
+        msg = prolog + "FAILED to start StandAloneClient instance. Message: " + e.get_message();
+        BESDEBUG(MODULE, msg << endl);
+        cerr << msg << endl;
+        return 1;
     }
 
     try {
         if (_cmd != "") {
-            _client->executeCommands(_cmd, _repeat);
+            sac.executeCommands(_cmd, _repeat);
         }
-        else if (_inputStrm) {
-            _client->executeCommands(*_inputStrm, _repeat);
+        else if (!_command_file_names.empty()) {
+            BESDEBUG(MODULE, prolog << "Found " << _command_file_names.size() << " command files." << endl);
+            for(unsigned index=0; index<_command_file_names.size(); index++){
+                string command_filename = _command_file_names[index];
+                BESDEBUG(MODULE, prolog << "Processing BES command file: " << command_filename<< endl);
+                if (!command_filename.empty()) {
+                    ifstream cmdStrm(command_filename.c_str());
+                    if (!cmdStrm.is_open()) {
+                        cerr << prolog << "FAILED to open the input file '" << command_filename << "' SKIPPING." << endl;
+                    }
+                    else {
+                        try {
+                            sac.executeCommands(cmdStrm, _repeat);
+                        }
+                        catch (BESError &e) {
+                            cerr << prolog << "Error processing commands. Message: " << e.get_message() << endl;
+                        }
+                    }
+                }
+            }
         }
         else {
-            _client->interact();
+            sac.interact();
         }
     }
     catch (BESError &e) {
-        cerr << "error processing commands" << endl;
-        cerr << e.get_message() << endl;
-    }
-
-    try {
-        BESDEBUG("standalone", "StandAloneApp: shutting down client ... " << endl);
-        if (_client) {
-            delete _client;
-            _client = 0;
-        }
-        BESDEBUG("standalone", "OK" << endl);
-
-        BESDEBUG("standalone", "StandAloneApp: closing input stream ... " << endl);
-        if (_createdInputStrm && _inputStrm) {
-            _inputStrm->close();
-            delete _inputStrm;
-            _inputStrm = 0;
-        }
-        BESDEBUG("standalone", "OK" << endl);
-    }
-    catch (BESError &e) {
-        BESDEBUG("standalone", "FAILED" << endl);
-        cerr << "error closing the client" << endl;
-        cerr << e.get_message() << endl;
-        return 1;
+        cerr << prolog << "Error processing commands. Message: " << e.get_message() << endl;
     }
 
     return 0;
@@ -289,17 +288,17 @@ int StandAloneApp::run()
  */
 int StandAloneApp::terminate(int sig)
 {
-    BESDEBUG("standalone", "ServerApp: terminating loaded modules ... " << endl);
+    BESDEBUG(MODULE, "ServerApp: terminating loaded modules ... " << endl);
     BESModuleApp::terminate(sig);
-    BESDEBUG("standalone", "ServerApp: done terminating loaded modules" << endl);
+    BESDEBUG(MODULE, "ServerApp: done terminating loaded modules" << endl);
 
-    BESDEBUG("standalone", "ServerApp: terminating default commands ...  " << endl);
+    BESDEBUG(MODULE, "ServerApp: terminating default commands ...  " << endl);
     BESXMLDefaultCommands::terminate();
-    BESDEBUG("standalone", "ServerApp: done terminating default commands" << endl);
+    BESDEBUG(MODULE, "ServerApp: done terminating default commands" << endl);
 
-    BESDEBUG("standalone", "ServerApp: terminating default module ... " << endl);
+    BESDEBUG(MODULE, "ServerApp: terminating default module ... " << endl);
     BESDefaultModule::terminate();
-    BESDEBUG("standalone", "ServerApp: done terminating default module" << endl);
+    BESDEBUG(MODULE, "ServerApp: done terminating default module" << endl);
 
     CmdTranslation::terminate();
 
@@ -318,41 +317,21 @@ void StandAloneApp::dump(ostream &strm) const
 {
     strm << BESIndent::LMarg << "StandAloneApp::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
-    if (_client) {
-        strm << BESIndent::LMarg << "client: " << endl;
-        BESIndent::Indent();
-        _client->dump(strm);
-        BESIndent::UnIndent();
-    }
-    else {
-        strm << BESIndent::LMarg << "client: null" << endl;
-    }
+
     strm << BESIndent::LMarg << "command: " << _cmd << endl;
     strm << BESIndent::LMarg << "output stream: " << (void *) _outputStrm << endl;
-    strm << BESIndent::LMarg << "input stream: " << (void *) _inputStrm << endl;
-    strm << BESIndent::LMarg << "created input stream? " << _createdInputStrm << endl;
+    if(_command_file_names.empty()){
+        strm << BESIndent::LMarg << "No command filenames were identified." << endl;
+    }
+    else {
+        strm << BESIndent::LMarg << "Found " << _command_file_names.size() << " command file names." << endl;
+        BESIndent::Indent();
+        for (unsigned index = 0; index < _command_file_names.size(); index++) {
+            strm << BESIndent::LMarg << "command_filename["<<index<<"]: "<< _command_file_names[index] << endl;
+        }
+        BESIndent::UnIndent();
+    }
     BESApp::dump(strm);
     BESIndent::UnIndent();
 }
 
-#if 0
-int main(int argc, char **argv)
-{
-    try {
-        StandAloneApp app;
-        return app.main(argc, argv);
-    }
-    catch (BESError &e) {
-        cerr << "Caught BES Error while starting the command processor: " << e.get_message() << endl;
-        return 1;
-    }
-    catch (std::exception &e) {
-        cerr << "Caught C++ error while starting the command processor: " << e.what() << endl;
-        return 2;
-    }
-    catch (...) {
-        cerr << "Caught unknown error while starting the command processor." << endl;
-        return 3;
-    }
-}
-#endif

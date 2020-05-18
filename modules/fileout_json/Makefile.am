@@ -10,7 +10,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=fileout_json
-M_VER=1.1.2
+M_VER=1.1.3
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -39,7 +39,7 @@ CLEANFILES = *~ fojson.conf
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = fojson.conf
 
-fojson.conf: fojson.conf.in $(top_srcdir)/config.status
+fojson.conf: fojson.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > fojson.conf
 
 C4_DIR=./cccc

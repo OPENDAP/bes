@@ -83,6 +83,7 @@ H5.EnableFillValueCheck=true
 H5.CheckIgnoreObj=false
 H5.ForceFlattenNDCoorAttr=true
 H5.RmConventionAttrPath=true
+H5.EnableDMR64bitInt=true
 
 H5.MetaDataMemCacheEntries=300
 H5.LargeDataMemCacheEntries=0

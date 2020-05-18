@@ -9,7 +9,7 @@ AUTOMAKE_OPTIONS = foreign
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=www-interface
-M_VER=4.1.9
+M_VER=4.2.0
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
 -I$(top_srcdir)/xmlcommand -I$(top_srcdir) $(DAP_CFLAGS)

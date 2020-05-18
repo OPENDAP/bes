@@ -32,7 +32,7 @@ noinst_HEADERS = test_config.h
 
 DIRS_EXTRA = 
 
-EXTRA_DIST = 
+EXTRA_DIST = test_config.h.in
 
 CLEANFILES = testout .dodsrc  *.gcda *.gcno test_config.h *.strm *.file tmp.txt
 
@@ -40,9 +40,17 @@ DISTCLEANFILES =
 
 BUILT_SOURCES = test_config.h
 
+# `python -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`
+
+# test_config.h: $(srcdir)/test_config.h.in Makefile
+#	@mod_abs_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
+#	mod_abs_builddir=`python -c "import os.path; print(os.path.abspath('${abs_builddir}'))"`; \
+#	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
+#	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
+
 test_config.h: $(srcdir)/test_config.h.in Makefile
-	@mod_abs_srcdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
-	mod_abs_builddir=`echo ${abs_builddir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	@mod_abs_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
+	mod_abs_builddir=`python -c "import os.path; print(os.path.abspath('${abs_builddir}'))"`; \
 	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
 	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
 

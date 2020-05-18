@@ -10,7 +10,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=cmr_module
-M_VER=1.0.3
+M_VER=1.0.4
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/http $(DAP_CFLAGS)
 LIBADD = $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -42,7 +42,7 @@ CLEANFILES = *~ cmr.conf
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = cmr.conf
 
-cmr.conf: cmr.conf.in $(top_srcdir)/config.status
+cmr.conf: cmr.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > cmr.conf
 
 C4_DIR=./cccc
