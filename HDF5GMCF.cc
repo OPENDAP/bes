@@ -6320,6 +6320,7 @@ void GMFile:: Handle_GPM_l1_Coor_Attr() {
                     Attribute * attr = new Attribute();
                     Add_Str_Attr(attr,co_attrname,co_attrvalue);
                     (*irv)->attrs.push_back(attr);
+                    (*irv)->coord_attr_add_path = false;
                 }
             }
         }

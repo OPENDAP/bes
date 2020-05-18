@@ -2409,9 +2409,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>0.0000000000000000</value>
         </Attribute>
@@ -2426,6 +2423,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Reflectivity/d_reflctUC</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Reflectivity_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -2446,9 +2446,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>0.0000000000000000</value>
         </Attribute>
@@ -2463,6 +2460,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Reflectivity/d_sDevNsOb1</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Reflectivity_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -2483,9 +2483,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>0.0000000000000000</value>
         </Attribute>
@@ -2500,6 +2497,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Reflectivity/d_satNrgCorr</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Reflectivity_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -2520,9 +2520,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>0.0000000000000000</value>
         </Attribute>
@@ -2537,6 +2534,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Reflectivity/d_RecNrgAll</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Reflectivity_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -2557,9 +2557,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>-150.00000000000000</value>
         </Attribute>
@@ -2574,6 +2571,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Elevation_Offsets/d_cntRngOff</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Elevation_Offsets_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -2594,9 +2594,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>-150.00000000000000</value>
         </Attribute>
@@ -2611,6 +2608,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Elevation_Offsets/d_SiRngFst</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Elevation_Offsets_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -2631,9 +2631,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>-150.00000000000000</value>
         </Attribute>
@@ -2648,6 +2645,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Elevation_Offsets/d_siRngOff</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Elevation_Offsets_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -2668,9 +2668,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>-150.00000000000000</value>
         </Attribute>
@@ -2685,6 +2682,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Elevation_Offsets/d_SigBegOff</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Elevation_Offsets_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -2705,9 +2705,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>-150.00000000000000</value>
         </Attribute>
@@ -2722,6 +2719,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Elevation_Offsets/d_SigEndOff</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Elevation_Offsets_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -2742,9 +2742,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>-150.00000000000000</value>
         </Attribute>
@@ -2759,6 +2756,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Elevation_Offsets/d_TrshRngOff</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Elevation_Offsets_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -2776,9 +2776,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Int32">
             <value>1</value>
         </Attribute>
@@ -2790,6 +2787,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Time/i_shot_count</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Time_DS_UTCTime_40</value>
         </Attribute>
         <Int32/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -2807,9 +2807,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Int32">
             <value>0</value>
         </Attribute>
@@ -2821,6 +2818,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Time/i_rec_ndx</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Time_DS_UTCTime_40</value>
         </Attribute>
         <Int32/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -2841,9 +2841,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>0.0000000000000000</value>
         </Attribute>
@@ -2858,6 +2855,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Atmosphere/d_FRir_cldtop</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Atmosphere_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -2878,9 +2878,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>0.0000000000000000</value>
         </Attribute>
@@ -2895,6 +2892,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Atmosphere/d_FRir_intsig</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Atmosphere_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -2911,9 +2911,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -2948,6 +2945,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Atmosphere/FRir_qa_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Atmosphere_DS_UTCTime_40</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     </Array>
@@ -2967,9 +2967,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>-10.000000000000000</value>
         </Attribute>
@@ -2984,6 +2981,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Geophysical/d_ldElv</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Geophysical_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -3007,9 +3007,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>-10.000000000000000</value>
         </Attribute>
@@ -3024,6 +3021,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Geophysical/d_ocElv</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Geophysical_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -3044,9 +3044,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>0.0000000000000000</value>
         </Attribute>
@@ -3061,6 +3058,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Geophysical/d_d2refTrk</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Geophysical_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -3084,9 +3084,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>-10.000000000000000</value>
         </Attribute>
@@ -3101,6 +3098,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Geophysical/d_poTide</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Geophysical_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -3124,9 +3124,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>-200.00000000000000</value>
         </Attribute>
@@ -3141,6 +3138,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Geophysical/d_gdHt</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Geophysical_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -3164,9 +3164,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>-10.000000000000000</value>
         </Attribute>
@@ -3181,6 +3178,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Geophysical/d_eqElv</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Geophysical_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -3201,9 +3201,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>-9.0000000000000000</value>
         </Attribute>
@@ -3218,6 +3215,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Geophysical/d_deltaEllip</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Geophysical_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -3238,9 +3238,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>-10.000000000000000</value>
         </Attribute>
@@ -3255,6 +3252,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Geophysical/d_erElv</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Geophysical_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -3275,9 +3275,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>-500.00000000000000</value>
         </Attribute>
@@ -3292,6 +3289,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Geophysical/d_DEMhiresArElv</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Geophysical_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -3309,9 +3309,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -3337,6 +3334,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Geophysical/i_DEM_hires_src_1</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Geophysical_DS_UTCTime_40</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     </Array>
@@ -3356,9 +3356,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>-500.00000000000000</value>
         </Attribute>
@@ -3373,6 +3370,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Geophysical/d_DEM_elv</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Geophysical_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -3393,9 +3393,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>0.0000000000000000</value>
         </Attribute>
@@ -3410,6 +3407,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Elevation_Angles/d_beamAzimuth</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Elevation_Angles_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -3430,9 +3430,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>0.0000000000000000</value>
         </Attribute>
@@ -3447,6 +3444,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Elevation_Angles/d_beamCoelv</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Elevation_Angles_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -3470,9 +3470,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>-2.5000000000000000</value>
         </Attribute>
@@ -3487,6 +3484,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Elevation_Corrections/d_dTrop</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Elevation_Corrections_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -3507,9 +3507,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>0.0000000000000000</value>
         </Attribute>
@@ -3524,6 +3521,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Elevation_Corrections/d_satElevCorr</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Elevation_Corrections_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -3547,9 +3547,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>-1.0000000000000000</value>
         </Attribute>
@@ -3564,6 +3561,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Elevation_Corrections/d_wTrop</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Elevation_Corrections_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -3584,9 +3584,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>0.0000000000000000</value>
         </Attribute>
@@ -3601,6 +3598,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Elevation_Corrections/d_ElevBiasCorr</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Elevation_Corrections_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -3618,9 +3618,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>-100.00000000000000</value>
         </Attribute>
@@ -3635,6 +3632,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Waveform/d_skew2</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Waveform_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -3655,9 +3655,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>-0.029999999999999999</value>
         </Attribute>
@@ -3672,6 +3669,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Waveform/d_maxRecAmp</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Waveform_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -3692,9 +3692,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>-0.029999999999999999</value>
         </Attribute>
@@ -3709,6 +3706,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Waveform/d_maxSmAmp</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Waveform_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -3729,9 +3729,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Int32">
             <value>0</value>
         </Attribute>
@@ -3743,6 +3740,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Waveform/i_numPk</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Waveform_DS_UTCTime_40</value>
         </Attribute>
         <Int32/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -3760,9 +3760,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>-10.000000000000000</value>
         </Attribute>
@@ -3777,6 +3774,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Waveform/d_kurt2</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Waveform_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -3793,9 +3793,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="valid_min" type="Int32">
             <value>0</value>
@@ -3814,6 +3811,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Waveform/i_gval_rcv</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Waveform_DS_UTCTime_40</value>
         </Attribute>
         <Int32/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -3834,9 +3834,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>0.0000000000000000</value>
         </Attribute>
@@ -3851,6 +3848,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Transmit_Energy/d_TxNrg</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Transmit_Energy_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -3874,9 +3874,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>-500.00000000000000</value>
         </Attribute>
@@ -3891,6 +3888,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Elevation_Surfaces/d_elev</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Elevation_Surfaces_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -3911,9 +3911,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>0.0000000000000000</value>
         </Attribute>
@@ -3928,6 +3925,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Elevation_Surfaces/d_BergElev</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Elevation_Surfaces_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -3948,9 +3948,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>0.0000000000000000</value>
         </Attribute>
@@ -3965,6 +3962,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Elevation_Surfaces/d_SeaIceVar</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Elevation_Surfaces_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -3988,9 +3988,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>400000.00000000000</value>
         </Attribute>
@@ -4005,6 +4002,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Elevation_Surfaces/d_refRng</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Elevation_Surfaces_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -4021,9 +4021,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -4044,6 +4041,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Elevation_Flags/elv_cnt_1_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Elevation_Flags_DS_UTCTime_40</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     </Array>
@@ -4059,9 +4059,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -4082,6 +4079,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Elevation_Flags/elv_cnt_2_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Elevation_Flags_DS_UTCTime_40</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     </Array>
@@ -4097,9 +4097,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -4120,6 +4117,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Elevation_Flags/elv_peak_1_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Elevation_Flags_DS_UTCTime_40</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     </Array>
@@ -4135,9 +4135,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -4158,6 +4155,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Elevation_Flags/elv_peak_2_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Elevation_Flags_DS_UTCTime_40</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     </Array>
@@ -4173,9 +4173,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -4196,6 +4193,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Elevation_Flags/elv_thres_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Elevation_Flags_DS_UTCTime_40</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     </Array>
@@ -4211,9 +4211,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -4234,6 +4231,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Elevation_Flags/elv_gauss_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Elevation_Flags_DS_UTCTime_40</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     </Array>
@@ -4249,9 +4249,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -4272,6 +4269,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Elevation_Flags/elv_other_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Elevation_Flags_DS_UTCTime_40</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     </Array>
@@ -4287,9 +4287,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -4310,6 +4307,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Elevation_Flags/elv_cloud_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Elevation_Flags_DS_UTCTime_40</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     </Array>
@@ -4325,9 +4325,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -4348,6 +4345,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Quality/rng_uqf_sigbeg1_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Quality_DS_UTCTime_40</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     </Array>
@@ -4363,9 +4363,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -4386,6 +4383,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Quality/rng_uqf_sigend2_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Quality_DS_UTCTime_40</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     </Array>
@@ -4401,9 +4401,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -4424,6 +4421,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Quality/elev_use_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Quality_DS_UTCTime_40</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     </Array>
@@ -4439,9 +4439,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -4462,6 +4459,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Quality/rng_uqf_thres2_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Quality_DS_UTCTime_40</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     </Array>
@@ -4477,9 +4477,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -4500,6 +4497,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Quality/att_calc_pad_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Quality_DS_UTCTime_40</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     </Array>
@@ -4515,9 +4515,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -4538,6 +4535,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Quality/rng_uqf_sigbeg2_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Quality_DS_UTCTime_40</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     </Array>
@@ -4553,9 +4553,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -4576,6 +4573,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Quality/rng_uqf_si_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Quality_DS_UTCTime_40</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     </Array>
@@ -4588,9 +4588,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -4614,6 +4611,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Quality/rng_uqf_is_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Quality_DS_UTCTime_40</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     </Array>
@@ -4629,9 +4629,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -4656,6 +4653,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Quality/sat_corr_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Quality_DS_UTCTime_40</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     </Array>
@@ -4671,9 +4671,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -4694,6 +4691,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Quality/att_pad_use_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Quality_DS_UTCTime_40</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     </Array>
@@ -4709,9 +4709,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -4732,6 +4729,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Quality/rng_uqf_thres1_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Quality_DS_UTCTime_40</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     </Array>
@@ -4747,9 +4747,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -4770,6 +4767,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Quality/rng_uqf_sigend1_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Quality_DS_UTCTime_40</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     </Array>
@@ -4785,9 +4785,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -4808,6 +4805,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Quality/rng_uqf_ld_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Quality_DS_UTCTime_40</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     </Array>
@@ -4823,9 +4823,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -4846,6 +4843,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Quality/rng_uqf_oc_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Quality_DS_UTCTime_40</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     </Array>
@@ -4865,9 +4865,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>-127.00000000000000</value>
         </Attribute>
@@ -4882,6 +4879,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Quality/d_pctSAT</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Quality_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -4898,9 +4898,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -4922,6 +4919,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Quality/att_lpa_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Quality_DS_UTCTime_40</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     </Array>
@@ -4941,9 +4941,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Int32">
             <value>0</value>
         </Attribute>
@@ -4955,6 +4952,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Quality/i_satNdx</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Quality_DS_UTCTime_40</value>
         </Attribute>
         <Int32/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -4971,9 +4971,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -4999,6 +4996,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Quality/sigma_att_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Quality_DS_UTCTime_40</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     </Array>
@@ -5014,9 +5014,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -5037,6 +5034,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Quality/rng_uqf_cent2_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Quality_DS_UTCTime_40</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     </Array>
@@ -5052,9 +5052,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -5075,6 +5072,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Quality/rng_uqf_cent1_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Quality_DS_UTCTime_40</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     </Array>
@@ -5094,9 +5094,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>-90.000000000000000</value>
         </Attribute>
@@ -5108,6 +5105,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Geolocation/d_lat</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Geolocation_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -5128,9 +5128,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_40</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>0.0000000000000000</value>
         </Attribute>
@@ -5142,6 +5139,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_40HZ/Geolocation/d_lon</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_40HZ_Geolocation_DS_UTCTime_40</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
@@ -5162,9 +5162,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>0.0000000000000000</value>
         </Attribute>
@@ -5179,6 +5176,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Reflectivity/d_localSolarTime</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Reflectivity_DS_UTCTime_1</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
@@ -5202,9 +5202,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>0.0000000000000000</value>
         </Attribute>
@@ -5219,6 +5216,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Reflectivity/d_Azimuth</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Reflectivity_DS_UTCTime_1</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
@@ -5239,9 +5239,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>-90.000000000000000</value>
         </Attribute>
@@ -5256,6 +5253,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Reflectivity/d_SolAng</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Reflectivity_DS_UTCTime_1</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
@@ -5273,9 +5273,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>9.9999999999999995e-07</value>
         </Attribute>
@@ -5290,6 +5287,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Reflectivity/d_reflCor_atm</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Reflectivity_DS_UTCTime_1</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
@@ -5310,9 +5310,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>-0.0010000000000000000</value>
         </Attribute>
@@ -5328,6 +5325,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Time/d_deltagpstmcor</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Time_DS_UTCTime_1</value>
+        </Attribute>
         <Float64/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -5340,9 +5340,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -5366,6 +5363,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Time/shot_time_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Time_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -5381,9 +5381,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -5404,6 +5401,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Time/ddelay_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Time_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -5416,9 +5416,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="valid_min" type="Int32">
             <value>1</value>
@@ -5434,6 +5431,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Time/i_shot_count</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Time_DS_UTCTime_1</value>
         </Attribute>
         <Int32/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
@@ -5454,9 +5454,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>0.0000000000000000</value>
         </Attribute>
@@ -5472,6 +5469,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Time/d_transtime</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Time_DS_UTCTime_1</value>
+        </Attribute>
         <Float64/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -5484,9 +5484,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -5510,6 +5507,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Time/peaktp_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Time_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -5522,9 +5522,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -5548,6 +5545,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Time/gps_time_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Time_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -5560,9 +5560,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -5586,6 +5583,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Time/pl_timing_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Time_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -5602,9 +5602,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
-        </Attribute>
         <Attribute name="valid_min" type="Int32">
             <value>0</value>
         </Attribute>
@@ -5616,6 +5613,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Time/i_rec_ndx</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Time_DS_UTCTime_1</value>
         </Attribute>
         <Int32/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
@@ -5632,9 +5632,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -5669,6 +5666,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Atmosphere/cld1_mswf_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Atmosphere_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -5684,9 +5684,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -5708,6 +5705,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Atmosphere/atm_char_conf_flg</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Atmosphere_DS_UTCTime_1</value>
         </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
@@ -5731,9 +5731,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>0.0000000000000000</value>
         </Attribute>
@@ -5748,6 +5745,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Atmosphere/d_Surface_pres</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Atmosphere_DS_UTCTime_1</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
@@ -5764,9 +5764,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -5787,6 +5784,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Atmosphere/atm_gla09_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Atmosphere_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -5802,9 +5802,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -5834,6 +5831,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Atmosphere/atm_char_flag</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Atmosphere_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -5849,9 +5849,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -5872,6 +5869,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Atmosphere/atm_gla11_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Atmosphere_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -5887,9 +5887,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -5924,6 +5921,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Atmosphere/MRC_af_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Atmosphere_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -5946,9 +5946,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>-100.00000000000000</value>
         </Attribute>
@@ -5963,6 +5960,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Atmosphere/d_Surface_temp</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Atmosphere_DS_UTCTime_1</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
@@ -5986,9 +5986,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>0.0000000000000000</value>
         </Attribute>
@@ -6003,6 +6000,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Atmosphere/d_Surface_relh</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Atmosphere_DS_UTCTime_1</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
@@ -6020,9 +6020,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>0.0000000000000000</value>
         </Attribute>
@@ -6037,6 +6034,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Transmit_Energy/d_tpeccentricity_avg</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Transmit_Energy_DS_UTCTime_1</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
@@ -6057,9 +6057,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>0.0000000000000000</value>
         </Attribute>
@@ -6074,6 +6071,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Transmit_Energy/d_tpazimuth_avg</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Transmit_Energy_DS_UTCTime_1</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
@@ -6094,9 +6094,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>0.0000000000000000</value>
         </Attribute>
@@ -6111,6 +6108,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Transmit_Energy/d_tpmajoraxis_avg</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Transmit_Energy_DS_UTCTime_1</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
@@ -6131,9 +6131,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>0.0000000000000000</value>
         </Attribute>
@@ -6148,6 +6145,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Transmit_Energy/d_tpintensity_avg</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Transmit_Energy_DS_UTCTime_1</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
@@ -6164,9 +6164,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -6188,6 +6185,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_CT22_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -6200,9 +6200,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -6227,6 +6224,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_ADLg_4_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -6242,9 +6242,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -6266,6 +6263,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_ADSm_3_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -6281,9 +6281,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -6305,6 +6302,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_CT20_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -6320,9 +6320,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -6344,6 +6341,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_LS25_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -6359,9 +6359,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -6383,6 +6380,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_LPA_2_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -6398,9 +6398,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -6422,6 +6419,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_ADLg_2_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -6437,9 +6437,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -6461,6 +6458,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_PRAP_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -6476,9 +6476,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -6500,6 +6497,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_LS55_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -6512,9 +6512,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -6539,6 +6536,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_ADLg_3_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -6554,9 +6554,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -6578,6 +6575,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_ASCT_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -6593,9 +6593,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -6617,6 +6614,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_CT21_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -6632,9 +6632,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -6656,6 +6653,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_ADSm_4_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -6671,9 +6671,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -6695,6 +6692,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_ADSm_1_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -6710,9 +6710,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -6734,6 +6731,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_ADSm_2_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -6749,9 +6749,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -6773,6 +6770,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_ASPC_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -6788,9 +6788,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -6812,6 +6809,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_CD1064_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -6827,9 +6827,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -6851,6 +6848,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_LPA_3_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -6866,9 +6866,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -6890,6 +6887,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_ASAD_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -6905,9 +6905,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -6929,6 +6926,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_SS24_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -6944,9 +6944,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -6968,6 +6965,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_ADLg_1_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -6983,9 +6983,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -7007,6 +7004,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_LPA_1_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -7022,9 +7022,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -7046,6 +7043,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_ASCF_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -7061,9 +7061,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -7085,6 +7082,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_ADSci_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -7100,9 +7100,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -7124,6 +7121,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_CT23_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -7139,9 +7139,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -7163,6 +7160,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_CT50_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -7175,9 +7175,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -7202,6 +7199,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_PC532_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -7217,9 +7217,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -7241,6 +7238,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_GPS_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -7256,9 +7256,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -7280,6 +7277,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Packet_data/apid_LPA_4_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Packet_data_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -7295,9 +7295,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -7320,6 +7317,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Elevation_Flags/rng_model_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Elevation_Flags_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -7335,9 +7335,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -7358,6 +7355,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Elevation_Flags/rng_ldtide_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Elevation_Flags_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -7370,9 +7370,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -7396,6 +7393,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Elevation_Flags/rng_wettrop_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Elevation_Flags_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -7411,9 +7411,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -7437,6 +7434,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Elevation_Flags/rng_atmcorr_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Elevation_Flags_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -7452,9 +7452,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -7475,6 +7472,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Elevation_Flags/surf_is_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Elevation_Flags_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -7490,9 +7490,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -7513,6 +7510,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Elevation_Flags/rng_intbias_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Elevation_Flags_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -7528,9 +7528,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -7551,6 +7548,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Elevation_Flags/surf_oc_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Elevation_Flags_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -7566,9 +7566,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -7589,6 +7586,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Elevation_Flags/rng_setide_flag</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Elevation_Flags_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -7604,9 +7604,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -7627,6 +7624,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Elevation_Flags/surf_si_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Elevation_Flags_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -7642,9 +7642,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -7665,6 +7662,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Elevation_Flags/rng_octide_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Elevation_Flags_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -7680,9 +7680,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -7703,6 +7700,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Elevation_Flags/rng_plbias_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Elevation_Flags_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -7718,9 +7718,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -7741,6 +7738,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Elevation_Flags/rng_drytrop_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Elevation_Flags_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -7756,9 +7756,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -7779,6 +7776,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Elevation_Flags/surf_ld_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Elevation_Flags_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -7794,9 +7794,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -7819,6 +7816,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Elevation_Flags/rng_oldmet_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Elevation_Flags_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -7834,9 +7834,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -7857,6 +7854,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Quality/orbit_gps_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Quality_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -7872,9 +7872,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -7895,6 +7892,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Quality/altfrm_meas_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Quality_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -7910,9 +7910,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -7935,6 +7932,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Quality/att_gyro_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Quality_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -7950,9 +7950,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -7973,6 +7970,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Quality/altfrm_corr_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Quality_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -7988,9 +7988,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -8011,6 +8008,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Quality/att_oceansw_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Quality_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -8026,9 +8026,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -8049,6 +8046,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Quality/orbit_model_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Quality_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -8064,9 +8064,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -8087,6 +8084,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Quality/orbit_array_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Quality_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -8102,9 +8102,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -8126,6 +8123,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Quality/orbit_pred_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Quality_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -8138,9 +8138,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -8164,6 +8161,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Quality/att_pointing_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Quality_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -8179,9 +8179,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -8202,6 +8199,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Quality/att_steering_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Quality_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -8217,9 +8217,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -8240,6 +8237,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Quality/orbit_man_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Quality_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -8255,9 +8255,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -8278,6 +8275,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Quality/altfrm_use_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Quality_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -8293,9 +8293,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -8316,6 +8313,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Quality/orbit_att_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Quality_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -8331,9 +8331,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -8356,6 +8353,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Quality/att_ist_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Quality_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -8371,9 +8371,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -8400,6 +8397,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Quality/att_lrs_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Quality_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -8415,9 +8415,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -8438,6 +8435,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Quality/att_offnadir_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Quality_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -8453,9 +8453,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -8476,6 +8473,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Quality/att_actual_flg</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Quality_DS_UTCTime_1</value>
+        </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     </Array>
@@ -8491,9 +8491,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
         </Attribute>
         <Attribute name="flag_values" type="Int32">
             <value>0</value>
@@ -8513,6 +8510,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Quality/altfrm_data_flg</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Quality_DS_UTCTime_1</value>
         </Attribute>
         <Int16/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
@@ -8536,9 +8536,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>-90.000000000000000</value>
         </Attribute>
@@ -8550,6 +8547,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Geolocation/d_lat</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Geolocation_DS_UTCTime_1</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
@@ -8573,9 +8573,6 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
-        </Attribute>
         <Attribute name="valid_min" type="Float64">
             <value>0.0000000000000000</value>
         </Attribute>
@@ -8587,6 +8584,9 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Geolocation/d_lon</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Geolocation_DS_UTCTime_1</value>
         </Attribute>
         <Float64/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
@@ -8604,14 +8604,14 @@ OUT_GLAH13=GLAH13_633_2103_001_1317_0_01_0001.H5 119817496 119898684 633 1</valu
         <Attribute name="source" type="String">
             <value>Rel 33 GLAS Binary Data</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>DS_UTCTime_1</value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <value>i_track</value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/Data_1HZ/Geolocation/i_track</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Data_1HZ_Geolocation_DS_UTCTime_1</value>
         </Attribute>
         <Int32/>
         <dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>

@@ -178,6 +178,12 @@ H5.EnableDMR64bitInt=false
 # necessary to generate correct HDF5 DMRRPP files.
 H5.NoZeroSizeFullnameAttr=false
 
+# Whey this key is turned on, the group path of the "coordinates" attribute values for some 
+# general HDF5 products(ICESAT-2 ATL03 etc.) will be added and flattened. This is to make
+# the coordinate variable names stored in the "coordinates" attribute consistent with 
+# the flattened variables in the DAP output.
+H5.EnableCoorattrAddPath=true
+
 # CACHING 
 # C1. Caching DAP metadata response in memory. 
 #

@@ -79,6 +79,7 @@ class HDF5RequestHandler:public BESRequestHandler {
     static bool get_eos5_rm_convention_attr_path() { return _eos5_rm_convention_attr_path;}
     static bool get_dmr_long_int() { return _dmr_long_int;}
     static bool get_no_zero_size_fullnameattr() { return _no_zero_size_fullnameattr;}
+    static bool get_enable_coord_attr_add_path() { return _enable_coord_attr_add_path;}
 
 
     // Default Handle dimension key, only valid when the default option is on.
@@ -167,6 +168,7 @@ class HDF5RequestHandler:public BESRequestHandler {
      static bool _eos5_rm_convention_attr_path;
      static bool _dmr_long_int;
      static bool _no_zero_size_fullnameattr;
+     static bool _enable_coord_attr_add_path;
 
      // For the default option
      static bool _default_handle_dimension;

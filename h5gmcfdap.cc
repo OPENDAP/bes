@@ -260,7 +260,8 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
 
         f->Rename_NC4_NonCoordVars();
 
-        f->Add_Path_Coord_Attr();
+        if(true == HDF5RequestHandler::get_enable_coord_attr_add_path())
+            f->Add_Path_Coord_Attr();
     }
     catch (HDF5CF::Exception &e){
         if (f!= NULL)
