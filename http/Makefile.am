@@ -31,7 +31,7 @@ pkginclude_HEADERS = $(HDRS)
 
 pkgdata_DATA =
 
-EXTRA_DIST =
+EXTRA_DIST = rapidjson
 
 DISTCLEANFILES =
 
