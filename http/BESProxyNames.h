@@ -42,6 +42,7 @@
 
 #endif // I_HTTP_NAME_H
 
+#if 0
 #ifndef I_HTTPD_CATALOG_NAME_H
 #define I_HTTPD_CATALOG_NAME_H 1
 
@@ -67,6 +68,7 @@
 //#define MODULE HTTPD_CATALOG
 
 #endif // I_HTTPD_CATALOG_NAME_H
+#endif
 
 
 #ifndef E_CmrNames_H

@@ -30,7 +30,7 @@ HTTP_CAT_SRC = HttpdCatalogModule.cc HttpdCatalog.cc \
 	HttpdCatalogContainer.cc HttpdCatalogContainerStorage.cc \
 	HttpdDirScraper.cc
 	
-HTTP_CAT_HDR = HttpdCatalog.h \
+HTTP_CAT_HDR = HttpdCatalog.h HttpdCatalogNames.h \
 	HttpdCatalogModule.h \
 	HttpdCatalogContainer.h HttpdCatalogContainerStorage.h \
 	HttpdDirScraper.h 
