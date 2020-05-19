@@ -43,7 +43,7 @@
 #include "BESDebug.h"
 #include "BESUtil.h"
 
-#include "BESRemoteCache.h"
+#include "HttpCache.h"
 #include "BESRemoteUtils.h"
 #include "BESCurlUtils.h"
 #include "HttpNames.h"
@@ -75,7 +75,7 @@ namespace remote_http_resource {
         BESDEBUG(MODULE, "~BESRemoteHttpResource() - Deleted d_request_headers." << endl);
 
         if (!d_resourceCacheFileName.empty()) {
-            remote_cache::BESRemoteCache *cache = remote_cache::BESRemoteCache::get_instance();
+            remote_cache::HttpCache *cache = remote_cache::HttpCache::get_instance();
             if (cache) {
                 cache->unlock_and_close(d_resourceCacheFileName);
                 BESDEBUG(MODULE, "~BESRemoteHttpResource() - Closed and unlocked " << d_resourceCacheFileName << endl);
@@ -514,7 +514,7 @@ namespace remote_http_resource {
         }
 
         // Get a pointer to the singleton cache instance for this process.
-        remote_cache::BESRemoteCache *cache = remote_cache::BESRemoteCache::get_instance();
+        remote_cache::HttpCache *cache = remote_cache::HttpCache::get_instance();
         if (!cache) {
             ostringstream oss;
             oss << __func__ << "() - FAILED to get local cache."
@@ -673,7 +673,7 @@ namespace remote_http_resource {
             return;
         }
         // Get a pointer to the singleton cache instance for this process.
-        remote_cache::BESRemoteCache *cache = remote_cache::BESRemoteCache::get_instance();
+        remote_cache::HttpCache *cache = remote_cache::HttpCache::get_instance();
         if (!cache) {
             ostringstream oss;
             oss << __func__ << "() - FAILED to get local cache."

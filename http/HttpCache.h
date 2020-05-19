@@ -47,19 +47,19 @@ namespace remote_cache {
  * and some of them are optional - this cache is not optional).
  *
  */
-    class BESRemoteCache : public BESFileLockingCache {
+    class HttpCache : public BESFileLockingCache {
     private:
         static bool d_enabled;
-        static BESRemoteCache *d_instance;
+        static HttpCache *d_instance;
 
         static void delete_instance() {
             delete d_instance;
             d_instance = 0;
         }
 
-        BESRemoteCache();
+        HttpCache();
 
-        BESRemoteCache(const BESRemoteCache &src);
+        HttpCache(const HttpCache &src);
 
         static std::string getCacheDirFromConfig();
         static std::string getCachePrefixFromConfig();
@@ -72,16 +72,16 @@ namespace remote_cache {
          * @param prefix
          * @param size
          */
-        BESRemoteCache(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
+        HttpCache(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
 
     public:
 
-        //static BESRemoteCache *
+        //static HttpCache *
         //get_instance(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
 
-        static BESRemoteCache *get_instance();
+        static HttpCache *get_instance();
 
-        virtual ~BESRemoteCache() {}
+        virtual ~HttpCache() {}
     };
 
 

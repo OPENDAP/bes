@@ -41,7 +41,7 @@
 #include "test_config.h"
 
 #include "BESRemoteHttpResource.h"
-#include "BESRemoteCache.h"
+#include "HttpCache.h"
 #include "../HttpdDirScraper.h"
 #include "../HttpNames.h"
 

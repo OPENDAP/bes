@@ -41,7 +41,7 @@
 #include "httpd_catalog_module/unused/HttpdCatalogNames.h"
 #include "httpd_catalog_module/unused/HttpdCatalogUtils.h"
 #include "RemoteHttpResource.h"
-#include "BESRemoteCache.h"
+#include "HttpCache.h"
 
 using namespace std;
 

@@ -40,7 +40,7 @@
 #include <BESUtil.h>
 #include <TheBESKeys.h>
 
-#include "BESRemoteCache.h"
+#include "HttpCache.h"
 #include "HttpNames.h"
 
 #ifdef HAVE_ATEXIT
@@ -56,10 +56,10 @@ using std::stringstream;
 
 namespace remote_cache {
 
-    BESRemoteCache *BESRemoteCache::d_instance = 0;
-    bool BESRemoteCache::d_enabled = true;
+    HttpCache *HttpCache::d_instance = 0;
+    bool HttpCache::d_enabled = true;
 
-    unsigned long BESRemoteCache::getCacheSizeFromConfig() {
+    unsigned long HttpCache::getCacheSizeFromConfig() {
         bool found = false;
         string size;
         unsigned long size_in_megabytes = 0;
@@ -70,7 +70,7 @@ namespace remote_cache {
             iss >> size_in_megabytes;
         } else {
             stringstream msg;
-            msg << "BESRemoteCache - The BES Key " << HTTP_SIZE_KEY << " is not set.";
+            msg << "HttpCache - The BES Key " << HTTP_SIZE_KEY << " is not set.";
             BESDEBUG(HTTP_MODULE, msg.str() << endl);
             throw BESInternalError(msg.str(), __FILE__, __LINE__);
         }
@@ -78,14 +78,14 @@ namespace remote_cache {
         return size_in_megabytes;
     }
 
-    string BESRemoteCache::getCacheDirFromConfig() {
+    string HttpCache::getCacheDirFromConfig() {
         bool found;
         string subdir = "";
         TheBESKeys::TheKeys()->get_value(HTTP_DIR_KEY, subdir, found);
 
         if (!found) {
             stringstream msg;
-            msg << "BESRemoteCache - The BES Key " << HTTP_DIR_KEY << " is not set.";
+            msg << "HttpCache - The BES Key " << HTTP_DIR_KEY << " is not set.";
             BESDEBUG(HTTP_MODULE, msg.str() << endl);
             throw BESInternalError(msg.str(), __FILE__, __LINE__);
         }
@@ -93,7 +93,7 @@ namespace remote_cache {
         return subdir;
     }
 
-    string BESRemoteCache::getCachePrefixFromConfig() {
+    string HttpCache::getCachePrefixFromConfig() {
         bool found;
         string prefix = "";
         TheBESKeys::TheKeys()->get_value(HTTP_PREFIX_KEY, prefix, found);
@@ -102,7 +102,7 @@ namespace remote_cache {
             prefix = BESUtil::lowercase(prefix);
         } else {
             stringstream msg;
-            msg << "BESRemoteCache - The BES Key " << HTTP_PREFIX_KEY << " is not set.";
+            msg << "HttpCache - The BES Key " << HTTP_PREFIX_KEY << " is not set.";
             BESDEBUG(HTTP_MODULE, msg.str() << endl);
             throw BESInternalError(msg.str(), __FILE__, __LINE__);
         }
@@ -110,46 +110,46 @@ namespace remote_cache {
         return prefix;
     }
 
-    BESRemoteCache::BESRemoteCache() {
-        BESDEBUG(HTTP_MODULE, "BESRemoteCache::BESRemoteCache() -  BEGIN" << endl);
+    HttpCache::HttpCache() {
+        BESDEBUG(HTTP_MODULE, "HttpCache::HttpCache() -  BEGIN" << endl);
 
         string cacheDir = getCacheDirFromConfig();
         string cachePrefix = getCachePrefixFromConfig();
         unsigned long cacheSizeMbytes = getCacheSizeFromConfig();
 
-        BESDEBUG(HTTP_MODULE, "BESRemoteCache() - Cache configuration params: " << cacheDir << ", " << cachePrefix << ", "
+        BESDEBUG(HTTP_MODULE, "HttpCache() - Cache configuration params: " << cacheDir << ", " << cachePrefix << ", "
                                                                            << cacheSizeMbytes << endl);
         initialize(cacheDir, cachePrefix, cacheSizeMbytes);
 
-        BESDEBUG(HTTP_MODULE, "BESRemoteCache::BESRemoteCache() -  END" << endl);
+        BESDEBUG(HTTP_MODULE, "HttpCache::HttpCache() -  END" << endl);
     }
 
 #if 1
-    BESRemoteCache::BESRemoteCache(const string &cache_dir, const string &prefix, unsigned long long size) {
+    HttpCache::HttpCache(const string &cache_dir, const string &prefix, unsigned long long size) {
 
-        BESDEBUG(HTTP_MODULE, "BESRemoteCache::BESRemoteCache() -  BEGIN" << endl);
+        BESDEBUG(HTTP_MODULE, "HttpCache::HttpCache() -  BEGIN" << endl);
 
         initialize(cache_dir, prefix, size);
 
-        BESDEBUG(HTTP_MODULE, "BESRemoteCache::BESRemoteCache() -  END" << endl);
+        BESDEBUG(HTTP_MODULE, "HttpCache::HttpCache() -  END" << endl);
     }
 #endif
 #if 0
-    BESRemoteCache *
-    BESRemoteCache::get_instance(const string &cache_dir, const string &cache_file_prefix,
+    HttpCache *
+    HttpCache::get_instance(const string &cache_dir, const string &cache_file_prefix,
                                  unsigned long long max_cache_size) {
         if (d_enabled && d_instance == 0) {
             if (dir_exists(cache_dir)) {
-                d_instance = new BESRemoteCache(cache_dir, cache_file_prefix, max_cache_size);
+                d_instance = new HttpCache(cache_dir, cache_file_prefix, max_cache_size);
                 d_enabled = d_instance->cache_enabled();
                 if (!d_enabled) {
                     delete d_instance;
                     d_instance = 0;
-                    BESDEBUG(HTTP_MODULE, "BESRemoteCache::" << __func__ << "() - " << "Cache is DISABLED" << endl);
+                    BESDEBUG(HTTP_MODULE, "HttpCache::" << __func__ << "() - " << "Cache is DISABLED" << endl);
                 } else {
                     AT_EXIT(delete_instance);
 
-                    BESDEBUG(HTTP_MODULE, "BESRemoteCache::" << __func__ << "() - " << "Cache is ENABLED" << endl);
+                    BESDEBUG(HTTP_MODULE, "HttpCache::" << __func__ << "() - " << "Cache is ENABLED" << endl);
                 }
             }
         }
@@ -161,25 +161,25 @@ namespace remote_cache {
 /** Get the default instance of the HttpdCatalogCache object. This will read "TheBESKeys" looking for the values
  * of SUBDIR_KEY, PREFIX_KEY, an SIZE_KEY to initialize the cache.
  */
-    BESRemoteCache *
-    BESRemoteCache::get_instance() {
+    HttpCache *
+    HttpCache::get_instance() {
         if (d_enabled && d_instance == 0) {
             try {
-                d_instance = new BESRemoteCache();
+                d_instance = new HttpCache();
                 d_enabled = d_instance->cache_enabled();
                 if (!d_enabled) {
                     delete d_instance;
                     d_instance = 0;
-                    BESDEBUG(HTTP_MODULE, "BESRemoteCache::" << __func__ << "() - " << "Cache is DISABLED" << endl);
+                    BESDEBUG(HTTP_MODULE, "HttpCache::" << __func__ << "() - " << "Cache is DISABLED" << endl);
                 } else {
                     AT_EXIT(delete_instance);
 
-                    BESDEBUG(HTTP_MODULE, "BESRemoteCache::" << __func__ << "() - " << "Cache is ENABLED" << endl);
+                    BESDEBUG(HTTP_MODULE, "HttpCache::" << __func__ << "() - " << "Cache is ENABLED" << endl);
                 }
             }
             catch (BESInternalError &bie) {
                 BESDEBUG(HTTP_MODULE,
-                         "[ERROR] BESRemoteCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message()
+                         "[ERROR] HttpCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message()
                                                                                                  << endl);
             }
         }

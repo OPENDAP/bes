@@ -40,12 +40,12 @@ DISTCLEANFILES =
 # Sources and Headers
 
 SRCS = BESCurlUtils.cc \
-    BESRemoteCache.cc \
+    HttpCache.cc \
     BESRemoteHttpResource.cc \
     BESRemoteUtils.cc
 
 HDRS = BESCurlUtils.h \
-    BESRemoteCache.h \
+    HttpCache.h \
     BESRemoteHttpResource.h \
     BESRemoteUtils.h \
     HttpNames.h

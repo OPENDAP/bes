@@ -589,11 +589,11 @@ add_executable(bes
 
     http/BESRemoteHttpResource.h
         http/HttpNames.h
-    http/BESRemoteCache.cc
+		http/HttpCache.cc
     http/BESRemoteHttpResource.cc
     http/BESCurlUtils.cc
         http/BESRemoteUtils.cc
-    http/BESRemoteCache.h
+		http/HttpCache.h
     http/BESCurlUtils.h
         http/BESRemoteUtils.h
     http/rapidjson/fwd.h
