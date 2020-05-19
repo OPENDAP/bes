@@ -40,7 +40,7 @@
 #include <TheBESKeys.h>
 #include "test_config.h"
 
-#include "BESRemoteHttpResource.h"
+#include "RemoteResource.h"
 #include "HttpCache.h"
 #include "../HttpdDirScraper.h"
 #include "../HttpNames.h"
@@ -172,7 +172,7 @@ namespace httpd_catalog {
 
             string url = "http://test.opendap.org/data/httpd_catalog/READTHIS";
             if (debug) cerr << __func__ << "() - url: " << url << endl;
-            remote_http_resource::BESRemoteHttpResource rhr(url);
+            remote_http_resource::RemoteResource rhr(url);
             try {
                 rhr.retrieveResource();
                 vector<string> hdrs;
@@ -208,7 +208,7 @@ namespace httpd_catalog {
             if (debug) cerr << endl;
 
             string data_file_url = get_data_file_url("test_file");
-            remote_http_resource::BESRemoteHttpResource rhr(data_file_url);
+            remote_http_resource::RemoteResource rhr(data_file_url);
             try {
                 rhr.retrieveResource();
                 vector<string> *hdrs = rhr.getResponseHeaders();

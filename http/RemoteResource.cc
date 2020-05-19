@@ -47,14 +47,14 @@
 #include "BESRemoteUtils.h"
 #include "BESCurlUtils.h"
 #include "HttpNames.h"
-#include "BESRemoteHttpResource.h"
+#include "RemoteResource.h"
 #include "TheBESKeys.h"
 
 using namespace std;
 using namespace curl_utils;
 using namespace remote_utils;
 
-#define prolog std::string("BESRemoteHttpResource::").append(__func__).append("() - ")
+#define prolog std::string("RemoteResource::").append(__func__).append("() - ")
 #define MODULE "http"
 
 namespace remote_http_resource {
@@ -63,33 +63,33 @@ namespace remote_http_resource {
  * Releases any memory resources and also any existing cache file locks for the cached resource.
  * ( Closes the file descriptor opened when retrieveResource() was called.)
  */
-    BESRemoteHttpResource::~BESRemoteHttpResource() {
-        BESDEBUG(MODULE, "~BESRemoteHttpResource() - BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
+    RemoteResource::~RemoteResource() {
+        BESDEBUG(MODULE, "RemoteResourceGIN   resourceURL: " << d_remoteResourceUrl << endl);
 
         delete d_response_headers;
         d_response_headers = 0;
-        BESDEBUG(MODULE, "~BESRemoteHttpResource() - Deleted d_response_headers." << endl);
+        BESDEBUG(MODULE, "RemoteResourceleted d_response_headers." << endl);
 
         delete d_request_headers;
         d_request_headers = 0;
-        BESDEBUG(MODULE, "~BESRemoteHttpResource() - Deleted d_request_headers." << endl);
+        BESDEBUG(MODULE, "RemoteResourceleted d_request_headers." << endl);
 
         if (!d_resourceCacheFileName.empty()) {
             remote_cache::HttpCache *cache = remote_cache::HttpCache::get_instance();
             if (cache) {
                 cache->unlock_and_close(d_resourceCacheFileName);
-                BESDEBUG(MODULE, "~BESRemoteHttpResource() - Closed and unlocked " << d_resourceCacheFileName << endl);
+                BESDEBUG(MODULE, "RemoteResourceosed and unlocked " << d_resourceCacheFileName << endl);
                 d_resourceCacheFileName.clear();
             }
         }
 
         if (d_curl) {
             curl_easy_cleanup(d_curl);
-            BESDEBUG(MODULE, "~BESRemoteHttpResource() - Called curl_easy_cleanup()." << endl);
+            BESDEBUG(MODULE, "RemoteResourcelled curl_easy_cleanup()." << endl);
         }
         d_curl = 0;
 
-        BESDEBUG(MODULE, "~BESRemoteHttpResource() - END   resourceURL: " << d_remoteResourceUrl << endl);
+        BESDEBUG(MODULE, "RemoteResourceD   resourceURL: " << d_remoteResourceUrl << endl);
         d_remoteResourceUrl.clear();
     }
 
@@ -102,13 +102,13 @@ namespace remote_http_resource {
  *
  * @param fd An open file descriptor the is associated with the target file.
  */
-    void BESRemoteHttpResource::writeResourceToFile(int fd) {
-        BESDEBUG(MODULE, "BESRemoteHttpResource::writeResourceToFile() - BEGIN" << endl);
+    void RemoteResource::writeResourceToFile(int fd) {
+        BESDEBUG(MODULE, "RemoteResource::writeResourceToFile() - BEGIN" << endl);
 
         int status = -1;
         try {
             BESDEBUG(MODULE,
-                     "BESRemoteHttpResource::writeResourceToFile() - Saving resource " << d_remoteResourceUrl
+                     "RemoteResource::writeResourceToFile() - Saving resource " << d_remoteResourceUrl
                                                                                        << " to cache file "
                                                                                        << d_resourceCacheFileName
                                                                                        << endl);
@@ -116,7 +116,7 @@ namespace remote_http_resource {
                               d_error_buffer); // Throws Error.
             if (status >= 400) {
                 BESDEBUG(MODULE,
-                         "BESRemoteHttpResource::writeResourceToFile() - HTTP returned an error status: " << status
+                         "RemoteResource::writeResourceToFile() - HTTP returned an error status: " << status
                                                                                                           << endl);
                 // delete resp_hdrs; resp_hdrs = 0;
                 stringstream msg;
@@ -143,7 +143,7 @@ namespace remote_http_resource {
                 }
             }
             BESDEBUG(MODULE,
-                     "BESRemoteHttpResource::writeResourceToFile() - Resource " << d_remoteResourceUrl
+                     "RemoteResource::writeResourceToFile() - Resource " << d_remoteResourceUrl
                                                                                 << " saved to cache file "
                                                                                 << d_resourceCacheFileName << endl);
 
@@ -155,7 +155,7 @@ namespace remote_http_resource {
             if (-1 == status)
                 throw BESError("Could not seek within the response.", BES_NOT_FOUND_ERROR, __FILE__, __LINE__);
 
-            BESDEBUG(MODULE, "BESRemoteHttpResource::writeResourceToFile() - Reset file descriptor." << endl);
+            BESDEBUG(MODULE, "RemoteResource::writeResourceToFile() - Reset file descriptor." << endl);
 
             // @TODO CACHE THE DATA TYPE OR THE HTTP HEADERS SO WHEN WE ARE RETRIEVING THE CACHED OBJECT WE CAN GET THE CORRECT TYPE
             setType(d_response_headers);
@@ -163,12 +163,12 @@ namespace remote_http_resource {
         catch (libdap::Error &e) {
             throw;
         }
-        BESDEBUG(MODULE, "BESRemoteHttpResource::writeResourceToFile() - END" << endl);
+        BESDEBUG(MODULE, "RemoteResource::writeResourceToFile() - END" << endl);
     }
 
-    void BESRemoteHttpResource::setType(const vector<string> *resp_hdrs) {
+    void RemoteResource::setType(const vector<string> *resp_hdrs) {
 
-        BESDEBUG(MODULE, "BESRemoteHttpResource::setType() - BEGIN" << endl);
+        BESDEBUG(MODULE, "RemoteResource::setType() - BEGIN" << endl);
 
         string type = "";
 
@@ -183,7 +183,7 @@ namespace remote_http_resource {
             for (; i != e; i++) {
                 string hdr_line = (*i);
 
-                BESDEBUG(MODULE, "BESRemoteHttpResource::setType() - Evaluating header: " << hdr_line << endl);
+                BESDEBUG(MODULE, "RemoteResource::setType() - Evaluating header: " << hdr_line << endl);
 
                 hdr_line = BESUtil::lowercase(hdr_line);
 
@@ -193,16 +193,16 @@ namespace remote_http_resource {
                 string hdr_value = hdr_line.substr(index + colon_space.length());
 
                 BESDEBUG(MODULE,
-                         "BESRemoteHttpResource::setType() - hdr_name: '" << hdr_name << "'   hdr_value: '" << hdr_value
+                         "RemoteResource::setType() - hdr_name: '" << hdr_name << "'   hdr_value: '" << hdr_value
                                                                           << "' " << endl);
 
                 if (hdr_name.find("content-disposition") != string::npos) {
                     // Content disposition exists
-                    BESDEBUG(MODULE, "BESRemoteHttpResource::setType() - Located content-disposition header." << endl);
+                    BESDEBUG(MODULE, "RemoteResource::setType() - Located content-disposition header." << endl);
                     disp = hdr_value;
                 }
                 if (hdr_name.find("content-type") != string::npos) {
-                    BESDEBUG(MODULE, "BESRemoteHttpResource::setType() - Located content-type header." << endl);
+                    BESDEBUG(MODULE, "RemoteResource::setType() - Located content-type header." << endl);
                     ctype = hdr_value;
                 }
             }
@@ -213,7 +213,7 @@ namespace remote_http_resource {
             // attribute
             BESRemoteUtils::Get_type_from_disposition(disp, type);
             BESDEBUG(MODULE,
-                     "BESRemoteHttpResource::setType() - Evaluated content-disposition '" << disp
+                     "RemoteResource::setType() - Evaluated content-disposition '" << disp
                                                                                           << "' matched type: \""
                                                                                           << type << "\"" << endl);
         }
@@ -225,7 +225,7 @@ namespace remote_http_resource {
         if (type.empty() && !ctype.empty()) {
             BESRemoteUtils::Get_type_from_content_type(ctype, type);
             BESDEBUG(MODULE,
-                     "BESRemoteHttpResource::setType() - Evaluated content-type '" << ctype << "' matched type \""
+                     "RemoteResource::setType() - Evaluated content-type '" << ctype << "' matched type \""
                                                                                    << type
                                                                                    << "\"" << endl);
         }
@@ -235,13 +235,13 @@ namespace remote_http_resource {
         if (type.empty()) {
             BESRemoteUtils::Get_type_from_url(d_remoteResourceUrl, type);
             BESDEBUG(MODULE,
-                     "BESRemoteHttpResource::setType() - Evaluated url '" << d_remoteResourceUrl << "' matched type: \""
+                     "RemoteResource::setType() - Evaluated url '" << d_remoteResourceUrl << "' matched type: \""
                                                                           << type << "\"" << endl);
         }
 
         // still couldn't figure it out, punt
         if (type.empty()) {
-            string err = (string) "BESRemoteHttpResource::setType() - Unable to determine the type of data"
+            string err = (string) "RemoteResource::setType() - Unable to determine the type of data"
                          + " returned from '" + d_remoteResourceUrl + "'  Setting type to 'unknown'";
             BESDEBUG(MODULE, err);
 
@@ -260,7 +260,7 @@ namespace remote_http_resource {
  * If the requested header_name is not found the empty string is returned.
  */
     std::string
-    BESRemoteHttpResource::get_http_response_header(const std::string header_name) {
+    RemoteResource::get_http_response_header(const std::string header_name) {
         string value("");
         std::map<string, string>::iterator it;
         it = d_http_response_headers->find(BESUtil::lowercase(header_name));
@@ -281,7 +281,7 @@ namespace remote_http_resource {
  * @return
  */
     unsigned int
-    BESRemoteHttpResource::filter_retrieved_resource(const std::string &template_str, const std::string &update_str) {
+    RemoteResource::filter_retrieved_resource(const std::string &template_str, const std::string &update_str) {
         unsigned int replace_count = 0;
 
         //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
@@ -318,7 +318,7 @@ namespace remote_http_resource {
         return replace_count;
     }
 
-    void BESRemoteHttpResource::ingest_http_headers_and_type() {
+    void RemoteResource::ingest_http_headers_and_type() {
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
         const string colon_space = ": ";
@@ -394,7 +394,7 @@ namespace remote_http_resource {
      * @TODO Move this to ../curl_utils.cc (Requires moving the rapidjson lib too)
      * @return JSON document parsed from the response document returned by target_url
      */
-    rapidjson::Document BESRemoteHttpResource::get_as_json() {
+    rapidjson::Document RemoteResource::get_as_json() {
         string response = get_response_as_string();
         rapidjson::Document d;
         d.Parse(response.c_str());
@@ -404,7 +404,7 @@ namespace remote_http_resource {
     /**
      * Returns cache file content in a string..
      */
-    std::string BESRemoteHttpResource::get_response_as_string() {
+    std::string RemoteResource::get_response_as_string() {
 
         if (!d_initialized) {
             stringstream msg;
@@ -441,8 +441,8 @@ namespace remote_http_resource {
 *
 * @param url Is a URL string that identifies the remote resource.
 */
-    BESRemoteHttpResource::BESRemoteHttpResource(const std::string &url, const std::string &uid,
-                                                 const std::string &echo_token) {
+    RemoteResource::RemoteResource(const std::string &url, const std::string &uid,
+                                   const std::string &echo_token) {
 
         d_fd = 0;
         d_initialized = false;
@@ -494,17 +494,17 @@ namespace remote_http_resource {
  * This method will check the cache for the resource. If it's not there then it will lock the cache and retrieve
  * the remote resource content using HTTP GET.
  *
- * When this method returns the BESRemoteHttpResource object is fully initialized and the cache file name for the resource
+ * When this method returns the RemoteResource object is fully initialized and the cache file name for the resource
  * is available along with an open file descriptor for the (now read-locked) cache file.
  */
-    void BESRemoteHttpResource::retrieveResource() {
+    void RemoteResource::retrieveResource() {
         string template_str;
         string replace_value;
         retrieveResource(template_str,replace_value);
     }
 
 #if 0
-    void BESRemoteHttpResource::retrieveResource(const string &inject_url) {
+    void RemoteResource::retrieveResource(const string &inject_url) {
         BESDEBUG(MODULE,
                  "BESBESRemoteHttpResource::retrieveResource() - BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
 
@@ -528,7 +528,7 @@ namespace remote_http_resource {
         // or it makes it).
         d_resourceCacheFileName = cache->get_cache_file_name(d_remoteResourceUrl);
         BESDEBUG(MODULE,
-                 "BESRemoteHttpResource::retrieveResource() - d_resourceCacheFileName: " << d_resourceCacheFileName
+                 "RemoteResource::retrieveResource() - d_resourceCacheFileName: " << d_resourceCacheFileName
                                                                                          << endl);
 
         // @FIXME MAKE THIS RETRIEVE THE CACHED DATA TYPE IF THE CACHED RESPONSE IF FOUND
@@ -538,13 +538,13 @@ namespace remote_http_resource {
         // from the url. If down below we DO an HTTP GET then the headers will be evaluated and the type set by setType()
         // But really - we gotta fix this.
         BESRemoteUtils::Get_type_from_url(d_remoteResourceUrl, d_type);
-        BESDEBUG(MODULE, "BESRemoteHttpResource::retrieveResource() - d_type: " << d_type << endl);
+        BESDEBUG(MODULE, "RemoteResource::retrieveResource() - d_type: " << d_type << endl);
 
         try {
 
             if (cache->get_read_lock(d_resourceCacheFileName, d_fd)) {
                 BESDEBUG(MODULE,
-                         "BESRemoteHttpResource::retrieveResource() - Remote resource is already in cache. cache_file_name: "
+                         "RemoteResource::retrieveResource() - Remote resource is already in cache. cache_file_name: "
                                  << d_resourceCacheFileName << endl);
                 d_initialized = true;
                 return;
@@ -609,21 +609,21 @@ namespace remote_http_resource {
                 // process can use it.
                 cache->exclusive_to_shared_lock(d_fd);
                 BESDEBUG(MODULE,
-                         "BESRemoteHttpResource::retrieveResource() - Converted exclusive cache lock to shared lock."
+                         "RemoteResource::retrieveResource() - Converted exclusive cache lock to shared lock."
                                  << endl);
 
                 // Now update the total cache size info and purge if needed. The new file's
                 // name is passed into the purge method because this process cannot detect its
                 // own lock on the file.
                 unsigned long long size = cache->update_cache_info(d_resourceCacheFileName);
-                BESDEBUG(MODULE, "BESRemoteHttpResource::retrieveResource() - Updated cache info" << endl);
+                BESDEBUG(MODULE, "RemoteResource::retrieveResource() - Updated cache info" << endl);
 
                 if (cache->cache_too_big(size)) {
                     cache->update_and_purge(d_resourceCacheFileName);
-                    BESDEBUG(MODULE, "BESRemoteHttpResource::retrieveResource() - Updated and purged cache." << endl);
+                    BESDEBUG(MODULE, "RemoteResource::retrieveResource() - Updated and purged cache." << endl);
                 }
 
-                BESDEBUG(MODULE, "BESRemoteHttpResource::retrieveResource() - END" << endl);
+                BESDEBUG(MODULE, "RemoteResource::retrieveResource() - END" << endl);
 
                 d_initialized = true;
 
@@ -631,21 +631,21 @@ namespace remote_http_resource {
             } else {
                 if (cache->get_read_lock(d_resourceCacheFileName, d_fd)) {
                     BESDEBUG(MODULE,
-                             "BESRemoteHttpResource::retrieveResource() - Remote resource is in cache. cache_file_name: "
+                             "RemoteResource::retrieveResource() - Remote resource is in cache. cache_file_name: "
                                      << d_resourceCacheFileName << endl);
                     d_initialized = true;
                     return;
                 }
             }
 
-            string msg = "BESRemoteHttpResource::retrieveResource() - Failed to acquire cache read lock for remote resource: '";
+            string msg = "RemoteResource::retrieveResource() - Failed to acquire cache read lock for remote resource: '";
             msg += d_remoteResourceUrl + "\n";
             throw libdap::Error(msg);
 
         }
         catch (...) {
             BESDEBUG(MODULE,
-                     "BESRemoteHttpResource::retrieveResource() - Caught exception, unlocking cache and re-throw."
+                     "RemoteResource::retrieveResource() - Caught exception, unlocking cache and re-throw."
                              << endl);
             cache->unlock_cache();
             throw;
@@ -665,7 +665,7 @@ namespace remote_http_resource {
      * @param template_key
      * @param replace_value
      */
-    void BESRemoteHttpResource::retrieveResource(const string &template_key, const string &replace_value) {
+    void RemoteResource::retrieveResource(const string &template_key, const string &replace_value) {
         BESDEBUG(MODULE, prolog << "BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
 
         if (d_initialized) {

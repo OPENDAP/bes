@@ -29,7 +29,7 @@
 
 #include "HttpdCatalogContainer.h"
 #include "HttpdCatalog.h"
-#include "BESRemoteHttpResource.h"
+#include "RemoteResource.h"
 
 using namespace std;
 using namespace bes;
@@ -129,7 +129,7 @@ string HttpdCatalogContainer::access()
 
     if (!d_remoteResource) {
         BESDEBUG(MODULE, prolog << "Building new RemoteResource." << endl);
-        d_remoteResource = new remote_http_resource::BESRemoteHttpResource(access_url);
+        d_remoteResource = new remote_http_resource::RemoteResource(access_url);
         d_remoteResource->retrieveResource();
     }
 

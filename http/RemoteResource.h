@@ -36,7 +36,7 @@
 
 #include "InternalErr.h"
 #include "RCReader.h"
-#include "BESRemoteHttpResource.h"
+#include "RemoteResource.h"
 #include "rapidjson/document.h"
 
 namespace remote_http_resource {
@@ -47,7 +47,7 @@ namespace remote_http_resource {
  * for rapid (subsequent) access. It can be configure to use a proxy server
  * for the outgoing requests.
  */
-    class BESRemoteHttpResource {
+    class RemoteResource {
     private:
         /// Resource URL that an instance of this class represents
         std::string d_remoteResourceUrl;
@@ -119,15 +119,15 @@ namespace remote_http_resource {
         unsigned int filter_retrieved_resource(const std::string &template_str, const std::string &update_str);
 
     protected:
-        BESRemoteHttpResource() :
+        RemoteResource() :
                 d_fd(0), d_initialized(false), d_curl(0), d_resourceCacheFileName(""), d_request_headers(0),
                 d_response_headers(0), d_http_response_headers(0) {
         }
 
     public:
-        BESRemoteHttpResource(const std::string &url, const std::string &uid = "", const std::string &echo_token = "");
+        RemoteResource(const std::string &url, const std::string &uid = "", const std::string &echo_token = "");
 
-        virtual ~BESRemoteHttpResource();
+        virtual ~RemoteResource();
 
         void retrieveResource();
 
@@ -148,7 +148,7 @@ namespace remote_http_resource {
         std::string getCacheFileName() {
             if (!d_initialized)
                 throw libdap::Error(
-                        "BESRemoteHttpResource::getCacheFileName() - STATE ERROR: Remote Resource Has Not Been Retrieved.");
+                        "RemoteResource::getCacheFileName() - STATE ERROR: Remote Resource Has Not Been Retrieved.");
             return d_resourceCacheFileName;
         }
 
@@ -161,7 +161,7 @@ namespace remote_http_resource {
         std::vector<std::string> *getResponseHeaders() {
             if (!d_initialized)
                 throw libdap::Error(
-                        "BESRemoteHttpResource::getCacheFileName() - STATE ERROR: Remote Resource Has Not Been Retrieved.");
+                        "RemoteResource::getCacheFileName() - STATE ERROR: Remote Resource Has Not Been Retrieved.");
             return d_response_headers;
         }
 

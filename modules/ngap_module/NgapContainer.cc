@@ -42,7 +42,7 @@
 #include "WhiteList.h"
 #include "BESContextManager.h"
 #include "BESRemoteUtils.h"
-#include "BESRemoteHttpResource.h"
+#include "RemoteResource.h"
 #include "BESCurlUtils.h"
 
 #include "NgapNames.h"
@@ -166,7 +166,7 @@ namespace ngap {
                 replace_template = DATA_ACCESS_URL_KEY;
                 replace_value = data_access_url;
             }
-            d_dmrpp_rresource = new BESRemoteHttpResource(dmrpp_url);
+            d_dmrpp_rresource = new RemoteResource(dmrpp_url);
             d_dmrpp_rresource->retrieveResource(replace_template, replace_value);
         }
         BESDEBUG(MODULE, prolog << "Retrieved remote resource: " << dmrpp_url << endl);
@@ -217,7 +217,7 @@ namespace ngap {
         BESIndent::Indent();
         BESContainer::dump(strm);
         if (d_dmrpp_rresource) {
-            strm << BESIndent::LMarg << "BESRemoteHttpResource.getCacheFileName(): "
+            strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): "
                  << d_dmrpp_rresource->getCacheFileName()
                  << endl;
             strm << BESIndent::LMarg << "response headers: ";

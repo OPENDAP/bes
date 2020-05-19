@@ -33,7 +33,7 @@
 #include <BESError.h>
 #include <BESDebug.h>
 #include <BESUtil.h>
-#include "BESRemoteHttpResource.h"
+#include "RemoteResource.h"
 
 #include "CmrNames.h"
 
@@ -56,7 +56,7 @@ namespace cmr {
 void
 rjson_utils::getJsonDoc(const string &url, rapidjson::Document &doc){
     BESDEBUG(MODULE,prolog << "Trying url: " << url << endl);
-    remote_http_resource::BESRemoteHttpResource rhr(url);
+    remote_http_resource::RemoteResource rhr(url);
     rhr.retrieveResource();
     if(BESDebug::IsSet(MODULE)){
         string cmr_hits = rhr.get_http_response_header("cmr-hits");

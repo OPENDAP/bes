@@ -37,7 +37,7 @@
 
 #include "CmrContainer.h"
 #include "CmrNames.h"
-#include "BESRemoteHttpResource.h"
+#include "RemoteResource.h"
 #include "CmrApi.h"
 
 using namespace std;
@@ -172,7 +172,7 @@ string CmrContainer::access() {
 
     if(!d_remoteResource) {
         BESDEBUG( MODULE, prolog << "Building new RemoteResource." << endl );
-        d_remoteResource = new BESRemoteHttpResource(url);
+        d_remoteResource = new RemoteResource(url);
         d_remoteResource->retrieveResource();
     }
     BESDEBUG( MODULE, prolog << "Located remote resource." << endl );

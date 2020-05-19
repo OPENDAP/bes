@@ -32,7 +32,7 @@
 
 #include <string>
 #include <ostream>
-#include <BESRemoteHttpResource.h>
+#include <RemoteResource.h>
 
 #include "BESContainer.h"
 
@@ -51,7 +51,7 @@ class BESRemoteHttpResource;
  */
 class GatewayContainer: public BESContainer {
 private:
-    remote_http_resource::BESRemoteHttpResource *d_remoteResource;
+    remote_http_resource::RemoteResource *d_remoteResource;
 
     GatewayContainer() :
         BESContainer(), d_remoteResource(0)

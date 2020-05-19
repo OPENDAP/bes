@@ -49,7 +49,7 @@
 
 #include "NgapNames.h"
 #include "NgapApi.h"
-#include "BESRemoteHttpResource.h"
+#include "RemoteResource.h"
 #include "NgapError.h"
 #include "BESCurlUtils.h"
 
@@ -170,7 +170,7 @@ namespace ngap {
         BESDEBUG(MODULE, prolog << "CMR Request URL: " << cmr_url << endl);
 #if 1
         BESDEBUG(MODULE, prolog << "Building new RemoteResource." << endl);
-        BESRemoteHttpResource cmr_query(cmr_url, uid, access_token);
+        RemoteResource cmr_query(cmr_url, uid, access_token);
         cmr_query.retrieveResource();
         rapidjson::Document cmr_response = cmr_query.get_as_json();
 #else

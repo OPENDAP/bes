@@ -32,7 +32,7 @@
 
 #include <string>
 #include <ostream>
-#include <BESRemoteHttpResource.h>
+#include <RemoteResource.h>
 
 #include "BESContainer.h"
 #include "Granule.h"
@@ -41,7 +41,7 @@ using namespace remote_http_resource;
 
 namespace cmr {
 
-//class BESRemoteHttpResource;
+//class RemoteResource;
 
 /** @brief Container representing a remote request
  *
@@ -54,7 +54,7 @@ namespace cmr {
  */
 class CmrContainer: public BESContainer {
 private:
-    remote_http_resource::BESRemoteHttpResource *d_remoteResource;
+    remote_http_resource::RemoteResource *d_remoteResource;
 
     CmrContainer() :
         BESContainer(), d_remoteResource(0)

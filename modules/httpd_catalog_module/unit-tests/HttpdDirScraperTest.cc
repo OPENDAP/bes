@@ -42,7 +42,7 @@
 #include <CatalogItem.h>
 #include "test_config.h"
 
-#include "BESRemoteHttpResource.h"
+#include "RemoteResource.h"
 #include "HttpCache.h"
 #include "../HttpdDirScraper.h"
 #include "../HttpdCatalogNames.h"
