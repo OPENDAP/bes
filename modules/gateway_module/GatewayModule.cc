@@ -55,7 +55,7 @@ void GatewayModule::initialize(const string &modname)
     BESContainerStorageList::TheList()->add_persistence(new GatewayContainerStorage(modname));
 
     BESDEBUG(modname, "    initialize the gateway utilities and params" << endl);
-    remote_utils::BESRemoteUtils::Initialize();
+    http::BESRemoteUtils::Initialize();
 
     BESDEBUG(modname, "    adding Gateway debug context" << endl);
     BESDebug::Register(modname);

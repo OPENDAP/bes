@@ -132,7 +132,7 @@ string GatewayContainer::access() {
 
     if(!d_remoteResource) {
         BESDEBUG( "gateway", "GatewayContainer::access() - Building new RemoteResource." << endl );
-        d_remoteResource = new remote_http_resource::RemoteResource(url);
+        d_remoteResource = new http::RemoteResource(url);
         d_remoteResource->retrieveResource();
     }
     BESDEBUG( "gateway", "GatewayContainer::access() - Located remote resource." << endl );

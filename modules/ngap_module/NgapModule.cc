@@ -51,7 +51,7 @@ void NgapModule::initialize(const string &modname) {
     BESContainerStorageList::TheList()->add_persistence(new NgapContainerStorage(modname));
 
     BESDEBUG(modname, "    initialize the NGAP utilities and params" << endl);
-    remote_utils::BESRemoteUtils::Initialize();
+    http::BESRemoteUtils::Initialize();
 
     BESDEBUG(modname, "    adding NGAP debug context" << endl);
     BESDebug::Register(modname);

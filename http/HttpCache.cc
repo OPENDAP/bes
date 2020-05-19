@@ -54,7 +54,7 @@ using std::endl;
 using std::string;
 using std::stringstream;
 
-namespace remote_cache {
+namespace http {
 
     HttpCache *HttpCache::d_instance = 0;
     bool HttpCache::d_enabled = true;
@@ -187,4 +187,4 @@ namespace remote_cache {
         return d_instance;
     }
 
-} // namespace remote_cache
+} // namespace http

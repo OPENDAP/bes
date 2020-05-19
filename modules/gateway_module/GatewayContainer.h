@@ -38,7 +38,6 @@
 
 namespace gateway {
 
-class BESRemoteHttpResource;
 
 /** @brief Container representing a remote request
  *
@@ -51,7 +50,7 @@ class BESRemoteHttpResource;
  */
 class GatewayContainer: public BESContainer {
 private:
-    remote_http_resource::RemoteResource *d_remoteResource;
+    http::RemoteResource *d_remoteResource;
 
     GatewayContainer() :
         BESContainer(), d_remoteResource(0)

@@ -52,12 +52,11 @@
 
 using namespace std;
 using namespace curl;
-using namespace remote_utils;
 
 #define prolog std::string("RemoteResource::").append(__func__).append("() - ")
 #define MODULE "http"
 
-namespace remote_http_resource {
+namespace http {
 
 /**
  * Releases any memory resources and also any existing cache file locks for the cached resource.
@@ -75,7 +74,7 @@ namespace remote_http_resource {
         BESDEBUG(MODULE, "RemoteResourceleted d_request_headers." << endl);
 
         if (!d_resourceCacheFileName.empty()) {
-            remote_cache::HttpCache *cache = remote_cache::HttpCache::get_instance();
+            HttpCache *cache = HttpCache::get_instance();
             if (cache) {
                 cache->unlock_and_close(d_resourceCacheFileName);
                 BESDEBUG(MODULE, "RemoteResourceosed and unlocked " << d_resourceCacheFileName << endl);
@@ -514,7 +513,7 @@ namespace remote_http_resource {
         }
 
         // Get a pointer to the singleton cache instance for this process.
-        remote_cache::HttpCache *cache = remote_cache::HttpCache::get_instance();
+        HttpCache *cache = HttpCache::get_instance();
         if (!cache) {
             ostringstream oss;
             oss << __func__ << "() - FAILED to get local cache."
@@ -673,7 +672,7 @@ namespace remote_http_resource {
             return;
         }
         // Get a pointer to the singleton cache instance for this process.
-        remote_cache::HttpCache *cache = remote_cache::HttpCache::get_instance();
+        HttpCache *cache = HttpCache::get_instance();
         if (!cache) {
             ostringstream oss;
             oss << __func__ << "() - FAILED to get local cache."
@@ -817,5 +816,5 @@ namespace remote_http_resource {
 
     }
 
-} //  namespace remote_http_resource
+} //  namespace http
 

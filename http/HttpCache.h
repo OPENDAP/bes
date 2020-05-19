@@ -28,7 +28,7 @@
 
 #include "BESFileLockingCache.h"
 
-namespace remote_cache {
+namespace http {
 
 /**
  * @brief A cache for content accessed via HTTP.
@@ -85,6 +85,6 @@ namespace remote_cache {
     };
 
 
-} /* namespace remote_cache */
+} /* namespace http */
 
 #endif /* _REMOTE_CACHE_H */

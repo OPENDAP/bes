@@ -49,7 +49,7 @@ namespace httpd_catalog {
 class HttpdCatalogContainer: public BESContainer {
 private:
     /// Remote resource for this container, nullptr means it has not yet been accessed
-    remote_http_resource::RemoteResource *d_remoteResource;
+    http::RemoteResource *d_remoteResource;
 
     HttpdCatalogContainer() :
         BESContainer(), d_remoteResource(0)

@@ -18,7 +18,7 @@
 #include <map>
 #include <vector>
 
-namespace remote_utils {
+namespace http {
 
 /** @brief utility class for the gateway remote request mechanism
  *
@@ -46,7 +46,7 @@ namespace remote_utils {
         static void Get_type_from_url(const std::string &url, std::string &type);
     };
 
-} // namespace remote_utils
+} // namespace http
 
 #endif // _REMOTE_UTILS_H_
 

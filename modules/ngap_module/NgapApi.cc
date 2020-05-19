@@ -54,7 +54,6 @@
 #include "CurlUtils.h"
 
 using namespace std;
-using namespace remote_http_resource;
 
 #define prolog string("NgapApi::").append(__func__).append("() - ")
 #define MODULE NGAP_NAME
@@ -170,7 +169,7 @@ namespace ngap {
         BESDEBUG(MODULE, prolog << "CMR Request URL: " << cmr_url << endl);
 #if 1
         BESDEBUG(MODULE, prolog << "Building new RemoteResource." << endl);
-        RemoteResource cmr_query(cmr_url, uid, access_token);
+        http::RemoteResource cmr_query(cmr_url, uid, access_token);
         cmr_query.retrieveResource();
         rapidjson::Document cmr_response = cmr_query.get_as_json();
 #else

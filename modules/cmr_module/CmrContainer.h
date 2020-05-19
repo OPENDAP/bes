@@ -37,7 +37,6 @@
 #include "BESContainer.h"
 #include "Granule.h"
 
-using namespace remote_http_resource;
 
 namespace cmr {
 
@@ -54,7 +53,7 @@ namespace cmr {
  */
 class CmrContainer: public BESContainer {
 private:
-    remote_http_resource::RemoteResource *d_remoteResource;
+    http::RemoteResource *d_remoteResource;
 
     CmrContainer() :
         BESContainer(), d_remoteResource(0)

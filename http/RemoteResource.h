@@ -39,7 +39,7 @@
 #include "RemoteResource.h"
 #include "rapidjson/document.h"
 
-namespace remote_http_resource {
+namespace http {
 
 /**
  * This class encapsulates a remote resource available via HTTP GET. It will
@@ -174,6 +174,6 @@ namespace remote_http_resource {
 
     };
 
-} /* namespace remote_http_resource */
+} /* namespace http */
 
 #endif /* _REMOTE_HTTP_RESOURCE_H_ */

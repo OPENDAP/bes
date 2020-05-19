@@ -58,7 +58,7 @@
 #define MODULE "http"
 
 using namespace libdap;
-using namespace remote_utils;
+using namespace http;
 
 // These are static class members
 map<string, string> BESRemoteUtils::MimeList;

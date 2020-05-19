@@ -53,7 +53,6 @@
 
 using namespace std;
 using namespace bes;
-using namespace remote_http_resource;
 
 #define UID_CONTEXT "uid"
 #define AUTH_TOKEN_CONTEXT "edl_auth_token"
@@ -166,7 +165,7 @@ namespace ngap {
                 replace_template = DATA_ACCESS_URL_KEY;
                 replace_value = data_access_url;
             }
-            d_dmrpp_rresource = new RemoteResource(dmrpp_url);
+            d_dmrpp_rresource = new http::RemoteResource(dmrpp_url);
             d_dmrpp_rresource->retrieveResource(replace_template, replace_value);
         }
         BESDEBUG(MODULE, prolog << "Retrieved remote resource: " << dmrpp_url << endl);

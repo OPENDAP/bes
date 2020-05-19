@@ -52,7 +52,7 @@ namespace ngap {
     class NgapContainer : public BESContainer {
 
     private:
-        remote_http_resource::RemoteResource *d_dmrpp_rresource;
+        http::RemoteResource *d_dmrpp_rresource;
 
         // std::vector<std::string> d_collections;
         // std::vector<std::string> d_facets;

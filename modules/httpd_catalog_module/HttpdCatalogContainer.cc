@@ -129,7 +129,7 @@ string HttpdCatalogContainer::access()
 
     if (!d_remoteResource) {
         BESDEBUG(MODULE, prolog << "Building new RemoteResource." << endl);
-        d_remoteResource = new remote_http_resource::RemoteResource(access_url);
+        d_remoteResource = new http::RemoteResource(access_url);
         d_remoteResource->retrieveResource();
     }
 

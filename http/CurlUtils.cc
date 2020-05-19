@@ -51,7 +51,7 @@ using std::map;
 using std::vector;
 using std::stringstream;
 using std::ostringstream;
-using namespace remote_utils;
+using namespace http;
 
 namespace curl {
 

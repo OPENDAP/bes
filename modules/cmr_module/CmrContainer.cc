@@ -42,7 +42,6 @@
 
 using namespace std;
 using namespace bes;
-using namespace remote_http_resource;
 
 
 #define prolog std::string("CmrContainer::").append(__func__).append("() - ")
@@ -172,7 +171,7 @@ string CmrContainer::access() {
 
     if(!d_remoteResource) {
         BESDEBUG( MODULE, prolog << "Building new RemoteResource." << endl );
-        d_remoteResource = new RemoteResource(url);
+        d_remoteResource = new http::RemoteResource(url);
         d_remoteResource->retrieveResource();
     }
     BESDEBUG( MODULE, prolog << "Located remote resource." << endl );
