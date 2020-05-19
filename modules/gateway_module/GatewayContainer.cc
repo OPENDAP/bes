@@ -31,12 +31,9 @@
 #include <BESInternalError.h>
 #include <BESDebug.h>
 #include <BESUtil.h>
-#include <TheBESKeys.h>
 #include <WhiteList.h>
 
 #include "GatewayContainer.h"
-#include "BESRemoteUtils.h"
-#include "BESProxyNames.h"
 #include "BESRemoteHttpResource.h"
 
 using namespace std;

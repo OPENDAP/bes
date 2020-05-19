@@ -51,7 +51,7 @@
 #include <BESSyntaxUserError.h>
 #include <BESDebug.h>
 
-#include "BESProxyNames.h"
+#include "HttpdCatalogNames.h"
 #include "HttpdCatalogUtils.h"
 
 #define MODULE HTTP_

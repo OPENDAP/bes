@@ -61,20 +61,23 @@ namespace remote_cache {
 
         BESRemoteCache(const BESRemoteCache &src);
 
-    static std::string getCacheDirFromConfig();
-    static std::string getCachePrefixFromConfig();
-    static unsigned long getCacheSizeFromConfig();
+        static std::string getCacheDirFromConfig();
+        static std::string getCachePrefixFromConfig();
+        static unsigned long getCacheSizeFromConfig();
 
     protected:
+        /**
+         * @brief Not in general use, keeping for as yet unwritten unit-tests.
+         * @param cache_dir
+         * @param prefix
+         * @param size
+         */
         BESRemoteCache(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
 
     public:
-//    static const std::string DIR_KEY;
-//    static const std::string PREFIX_KEY;
-//    static const std::string SIZE_KEY;
 
-        static BESRemoteCache *
-        get_instance(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
+        //static BESRemoteCache *
+        //get_instance(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
 
         static BESRemoteCache *get_instance();
 

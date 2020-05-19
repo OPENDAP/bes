@@ -35,9 +35,11 @@
 #define HTTP_PROXYPASSWORD "Http.ProxyPassword"
 #define HTTP_PROXYUSERPW "Http.ProxyUserPW"
 #define HTTP_USE_INTERNAL_CACHE "Http.UseInternalCache"
-// Could be used
-#define HTTP_DIR_KEY = "Http.Cache.dir";
-#define HTTP_PREFIX_KEY = "Http.Cache.prefix";
-#define HTTP_SIZE_KEY = "Http.Cache.size";
+
+#define HTTP_DIR_KEY "Http.Cache.dir"
+#define HTTP_PREFIX_KEY "Http.Cache.prefix"
+#define HTTP_SIZE_KEY "Http.Cache.size"
+
+#define HTTP_MODULE "http"
 
 #endif // I_HTTP_NAME_H

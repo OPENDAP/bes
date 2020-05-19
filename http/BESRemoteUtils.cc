@@ -52,7 +52,7 @@
 #include <BESSyntaxUserError.h>
 #include <BESDebug.h>
 
-#include "BESProxyNames.h"
+#include "HttpNames.h"
 #include "BESRemoteUtils.h"
 
 #define MODULE "http"

@@ -24,15 +24,10 @@
 
 #include <BESSyntaxUserError.h>
 #include <BESInternalError.h>
-#include <BESNotFoundError.h>
 #include <BESDebug.h>
-#include <BESUtil.h>
-#include <TheBESKeys.h>
 #include <WhiteList.h>
 
 #include "HttpdCatalogContainer.h"
-#include "BESRemoteUtils.h"
-#include "BESProxyNames.h"
 #include "HttpdCatalog.h"
 #include "BESRemoteHttpResource.h"
 

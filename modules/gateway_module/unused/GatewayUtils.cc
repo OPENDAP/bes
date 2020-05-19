@@ -37,7 +37,7 @@
 #include <curl/curl.h>
 
 #include "GatewayUtils.h"
-#include "BESProxyNames.h"
+#include "HttpNames.h"
 
 #include <BESUtil.h>
 #include <BESCatalogUtils.h>

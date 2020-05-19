@@ -23,13 +23,7 @@
 #include "test_config.h"
 
 #include <memory>
-#include "rapidjson/document.h"
-#include "rapidjson/writer.h"
-#include "rapidjson/prettywriter.h"
 #include "rapidjson/stringbuffer.h"
-#include "rapidjson/filereadstream.h"
-#include <cstdio>
-#include <cstring>
 #include <iostream>
 
 #include <cppunit/TextTestRunner.h>
@@ -37,22 +31,17 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <GetOpt.h>
-#include <util.h>
 
 #include <BESError.h>
-#include <BESNotFoundError.h>
 #include <BESDebug.h>
 #include <BESUtil.h>
 #include <TheBESKeys.h>
 #include <BESCatalogList.h>
 #include <CatalogNode.h>
 
-#include "BESRemoteHttpResource.h"
-#include "BESProxyNames.h"
 #include "CmrApi.h"
 #include "CmrCatalog.h"
 #include "CmrError.h"
-#include "rjson_utils.h"
 
 
 using namespace std;

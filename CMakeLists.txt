@@ -588,7 +588,7 @@ add_executable(bes
     hello_world/SampleSayXMLCommand.h
 
     http/BESRemoteHttpResource.h
-    http/BESProxyNames.h
+        http/HttpNames.h
     http/BESRemoteCache.cc
     http/BESRemoteHttpResource.cc
     http/BESCurlUtils.cc

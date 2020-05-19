@@ -43,7 +43,7 @@
 #include "BESRemoteHttpResource.h"
 #include "BESRemoteCache.h"
 #include "../HttpdDirScraper.h"
-#include "BESProxyNames.h"
+#include "../HttpNames.h"
 
 
 using namespace std;

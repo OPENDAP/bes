@@ -25,20 +25,13 @@
 #include <iostream>
 #include <string>
 
-#include <BESRequestHandlerList.h>
-#include <BESResponseHandlerList.h>
-#include <BESResponseNames.h>
 
 #include <BESContainerStorageList.h>
 #include <BESFileContainerStorage.h>
-#include <BESCatalogDirectory.h>
 #include <BESCatalogList.h>
-#include <BESDapService.h>
-
-#include <BESLog.h>
 #include <BESDebug.h>
 
-#include "BESProxyNames.h"
+#include "HttpdCatalogNames.h"
 #include "HttpdCatalogModule.h"
 #include "HttpdCatalogContainerStorage.h"
 #include "HttpdCatalog.h"

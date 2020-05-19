@@ -29,7 +29,6 @@
 
 #include "HttpdCatalogContainerStorage.h"
 #include "HttpdCatalogContainer.h"
-#include "BESProxyNames.h"
 
 using namespace std;
 

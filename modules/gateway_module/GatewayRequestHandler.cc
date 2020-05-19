@@ -41,7 +41,6 @@
 #include <BESUtil.h>
 
 #include "GatewayRequestHandler.h"
-#include "BESProxyNames.h"
 
 using std::endl;
 using std::map;

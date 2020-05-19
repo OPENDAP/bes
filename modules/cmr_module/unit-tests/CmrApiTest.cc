@@ -22,13 +22,7 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include <memory>
-#include "rapidjson/document.h"
-#include "rapidjson/writer.h"
-#include "rapidjson/prettywriter.h"
 #include "rapidjson/stringbuffer.h"
-#include "rapidjson/filereadstream.h"
-#include <cstdio>
-#include <cstring>
 #include <iostream>
 
 #include <cppunit/TextTestRunner.h>
@@ -36,7 +30,6 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <GetOpt.h>
-#include <util.h>
 
 #include <BESError.h>
 #include <BESDebug.h>
@@ -45,12 +38,9 @@
 #include <TheBESKeys.h>
 #include "test_config.h"
 
-#include "BESRemoteHttpResource.h"
 #include "CmrApi.h"
-#include "BESProxyNames.h"
 #include "CmrCatalog.h"
 #include "CmrError.h"
-#include "rjson_utils.h"
 
 using namespace std;
 using namespace rapidjson;

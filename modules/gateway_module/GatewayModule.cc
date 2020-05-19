@@ -28,18 +28,14 @@
 
 #include <iostream>
 #include <vector>
-#include <string>
 
 #include <BESRequestHandlerList.h>
 #include <BESDebug.h>
 #include <BESResponseHandlerList.h>
 #include <BESContainerStorageList.h>
-#include <TheBESKeys.h>
-#include <BESSyntaxUserError.h>
 
 #include "GatewayModule.h"
 #include "GatewayRequestHandler.h"
-#include "BESProxyNames.h"
 #include "GatewayContainerStorage.h"
 #include "BESRemoteUtils.h"
 #include "GatewayPathInfoResponseHandler.h"

@@ -37,7 +37,7 @@
 #include <CatalogItem.h>
 
 #include "BESRemoteHttpResource.h"
-#include "BESProxyNames.h"
+#include "HttpdCatalogNames.h"
 
 #include "HttpdDirScraper.h"
 

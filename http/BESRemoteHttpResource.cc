@@ -46,7 +46,7 @@
 #include "BESRemoteCache.h"
 #include "BESRemoteUtils.h"
 #include "BESCurlUtils.h"
-#include "BESProxyNames.h"
+#include "HttpNames.h"
 #include "BESRemoteHttpResource.h"
 #include "TheBESKeys.h"
 

@@ -61,7 +61,6 @@
 #include "BESDebug.h"
 
 #include "CmrApi.h"
-#include "BESProxyNames.h"
 #include "CmrCatalog.h"
 
 using namespace bes;

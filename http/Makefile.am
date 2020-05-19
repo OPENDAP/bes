@@ -48,7 +48,7 @@ HDRS = BESCurlUtils.h \
     BESRemoteCache.h \
     BESRemoteHttpResource.h \
     BESRemoteUtils.h \
-    BESProxyNames.h
+    HttpNames.h
 
 
 

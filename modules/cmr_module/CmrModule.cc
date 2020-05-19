@@ -38,21 +38,14 @@ using std::endl;
 using std::ostream;
 using std::string;
 
-#include <BESRequestHandlerList.h>
-#include <BESResponseHandlerList.h>
-#include <BESResponseNames.h>
-
 #include <BESContainerStorageList.h>
 #include <BESFileContainerStorage.h>
-#include <BESCatalogDirectory.h>
 #include <BESCatalogList.h>
 #include <BESDapService.h>
 
 #include <BESLog.h>
 #include <BESDebug.h>
 
-// #include "CmrRequestHandler.h"
-#include "BESProxyNames.h"
 #include "CmrModule.h"
 #include "CmrCatalog.h"
 #include "CmrContainerStorage.h"
