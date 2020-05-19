@@ -566,7 +566,7 @@ CmrApi::get_collection_ids(std::vector<std::string> &collection_ids){
 
 
 /**
- * Returns all of the Granules in the collection matching the date.
+ * Returns The Granule in the collection matching the date amd granule_id
  */
 Granule* CmrApi::get_granule(string collection_name, string r_year, string r_month, string r_day, string granule_id)
 {
@@ -587,15 +587,6 @@ Granule* CmrApi::get_granule(string collection_name, string r_year, string r_mon
     }
     return result;
 }
-
-Granule *CmrApi::get_granule(const std::string path) {
-    return nullptr;
-}
-
-
-
-
-
 
 } // namespace cmr
 
