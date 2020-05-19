@@ -45,13 +45,13 @@
 
 #include "HttpCache.h"
 #include "BESRemoteUtils.h"
-#include "BESCurlUtils.h"
+#include "CurlUtils.h"
 #include "HttpNames.h"
 #include "RemoteResource.h"
 #include "TheBESKeys.h"
 
 using namespace std;
-using namespace curl_utils;
+using namespace curl;
 using namespace remote_utils;
 
 #define prolog std::string("RemoteResource::").append(__func__).append("() - ")
@@ -391,7 +391,7 @@ namespace remote_http_resource {
      * @brief get_as_json() This function returns the cached resource parsed into a JSON document.
      *
      * @param target_url The URL to dereference.
-     * @TODO Move this to ../curl_utils.cc (Requires moving the rapidjson lib too)
+     * @TODO Move this to ../curl.cc (Requires moving the rapidjson lib too)
      * @return JSON document parsed from the response document returned by target_url
      */
     rapidjson::Document RemoteResource::get_as_json() {
@@ -483,9 +483,9 @@ namespace remote_http_resource {
         // CURL *pvparam = 0;               // passed value parameter
         // result = www_lib_init(&pvparam); // the call to the method
 
-        d_curl = curl_utils::init(d_error_buffer);  // This may throw either Error or InternalErr
+        d_curl = curl::init(d_error_buffer);  // This may throw either Error or InternalErr
 
-        curl_utils::configureProxy(d_curl, d_remoteResourceUrl); // Configure the a proxy for this url (if appropriate).
+        curl::configureProxy(d_curl, d_remoteResourceUrl); // Configure the a proxy for this url (if appropriate).
 
         BESDEBUG(MODULE, prolog << "d_curl: " << d_curl << endl);
     }

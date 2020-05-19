@@ -591,10 +591,10 @@ add_executable(bes
         http/HttpNames.h
 		http/HttpCache.cc
 		http/RemoteResource.cc
-    http/BESCurlUtils.cc
+		http/CurlUtils.cc
         http/BESRemoteUtils.cc
 		http/HttpCache.h
-    http/BESCurlUtils.h
+		http/CurlUtils.h
         http/BESRemoteUtils.h
     http/rapidjson/fwd.h
     http/rapidjson/memorystream.h
@@ -743,8 +743,8 @@ add_executable(bes
         #modules/cmr_module/unused/CmrNames.h
         #modules/cmr_module/unused/CmrUtils.cc
         #modules/cmr_module/unused/CmrUtils.h
-        #modules/cmr_module/unused/curl_utils.cc
-        #modules/cmr_module/unused/curl_utils.h
+        #modules/cmr_module/unused/curl.cc
+        #modules/cmr_module/unused/curl.h
 
     modules/cmr_module/Granule.cc
     modules/cmr_module/Granule.h
@@ -1104,8 +1104,8 @@ add_executable(bes
     modules/freeform_handler/util_ff.h
         #modules/gateway_module/unused/GatewayRequest.cc
         #modules/gateway_module/unused/GatewayRequest.h
-        #modules/gateway_module/curl_utils.cc
-        #modules/gateway_module/curl_utils.h
+        #modules/gateway_module/curl.cc
+        #modules/gateway_module/curl.h
         #modules/gateway_module/GatewayCache.cc
         #modules/gateway_module/GatewayCache.h
     modules/gateway_module/GatewayContainer.cc
@@ -1577,8 +1577,8 @@ add_executable(bes
     modules/httpd_catalog_module/unit-tests/HttpdDirScraperTest.cc
     modules/httpd_catalog_module/unit-tests/RemoteHttpResourceTest.cc
     modules/httpd_catalog_module/unit-tests/test_config.h
-        #modules/httpd_catalog_module/unused/curl_utils.cc
-        #modules/httpd_catalog_module/unused/curl_utils.h
+        #modules/httpd_catalog_module/unused/curl.cc
+        #modules/httpd_catalog_module/unused/curl.h
     modules/httpd_catalog_module/HttpdCatalog.cc
     modules/httpd_catalog_module/HttpdCatalog.h
     modules/httpd_catalog_module/HttpdCatalogContainer.cc
@@ -1747,8 +1747,8 @@ add_executable(bes
     modules/netcdf_handler/NCUrl.cc
     modules/netcdf_handler/NCUrl.h
 
-        #modules/ngap_module/unused/curl_utils.cc
-        #modules/ngap_module/unused/curl_utils.h
+        #modules/ngap_module/unused/curl.cc
+        #modules/ngap_module/unused/curl.h
 	modules/ngap_module/NgapApi.cc
 	modules/ngap_module/NgapApi.h
         #modules/ngap_module/unused/NgapCache.cc
@@ -2166,8 +2166,8 @@ add_executable(bes
     modules/dmrpp_module/NgapS3Credentials.cc
     modules/dmrpp_module/NgapS3Credentials.h
 
-        #modules/dmrpp_module/unused/curl_utils.cc
-        #modules/dmrpp_module/unused/curl_utils.h
+        #modules/dmrpp_module/unused/curl.cc
+        #modules/dmrpp_module/unused/curl.h
 
     modules/dmrpp_module/unit-tests/NgapCredentialsTest.cc
 

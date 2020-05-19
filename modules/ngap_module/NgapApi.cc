@@ -51,7 +51,7 @@
 #include "NgapApi.h"
 #include "RemoteResource.h"
 #include "NgapError.h"
-#include "BESCurlUtils.h"
+#include "CurlUtils.h"
 
 using namespace std;
 using namespace remote_http_resource;
@@ -150,7 +150,7 @@ namespace ngap {
         string cmr_url = get_cmr_search_endpoint_url() + "?";
 
         char error_buffer[CURL_ERROR_SIZE];
-        CURL *curl = curl_utils::init(error_buffer);  // This may throw either Error or InternalErr
+        CURL *curl = curl::init(error_buffer);  // This may throw either Error or InternalErr
         char *esc_url_content;
 
         esc_url_content = curl_easy_escape(curl, tokens[1].c_str(), tokens[1].size());

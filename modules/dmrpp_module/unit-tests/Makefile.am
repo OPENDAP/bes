@@ -111,7 +111,7 @@ OBJS = ../DMRpp.o ../DmrppCommon.o ../Chunk.o ../CurlHandlePool.o	\
 ../CredentialsManager.o ../AccessCredentials.o ../NgapS3Credentials.o \
 ../awsv4.o ../url_parser.o
 
-#../curl_utils.o
+#../curl.o
 
 
 ChunkTest_SOURCES = ChunkTest.cc

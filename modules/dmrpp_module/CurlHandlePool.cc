@@ -36,7 +36,7 @@
 #if HAVE_CURL_MULTI_H
 #include <curl/multi.h>
 #endif
-#include "BESCurlUtils.h"
+#include "CurlUtils.h"
 
 #include <time.h>
 
@@ -68,7 +68,7 @@ static const unsigned int initial_retry_time = 1000; // one milli-second
 using namespace dmrpp;
 using namespace std;
 using namespace bes;
-using namespace curl_utils;
+using namespace curl;
 
 #define MODULE "dmrpp:curl"
 #define prolog std::string("CurlHandlePool::").append(__func__).append("() - ")

@@ -43,7 +43,7 @@
 #include "BESContextManager.h"
 #include "BESRemoteUtils.h"
 #include "RemoteResource.h"
-#include "BESCurlUtils.h"
+#include "CurlUtils.h"
 
 #include "NgapNames.h"
 #include "NgapContainer.h"

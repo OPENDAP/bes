@@ -33,7 +33,7 @@
 
 #include "rapidjson/document.h"
 
-namespace curl_utils {
+namespace curl {
 
     CURL *init(char *error_buffer);
 
@@ -53,6 +53,6 @@ namespace curl_utils {
     void read_data(CURL *c_handle);
 
 
-} // namespace curl_utils
+} // namespace curl
 
 #endif /* _CURL_UTILS_H_ */

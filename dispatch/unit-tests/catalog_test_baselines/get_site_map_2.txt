@@ -1070,8 +1070,8 @@ https://machine/opendap/modules/gateway_module/GatewayContainer.cc.html
 https://machine/opendap/modules/gateway_module/GatewayUtils.cc.html
 https://machine/opendap/modules/gateway_module/GatewayError.h.html
 https://machine/opendap/modules/gateway_module/GatewayUtils.h.html
-https://machine/opendap/modules/gateway_module/curl_utils.h.html
-https://machine/opendap/modules/gateway_module/curl_utils.cc.html
+https://machine/opendap/modules/gateway_module/curl.h.html
+https://machine/opendap/modules/gateway_module/curl.cc.html
 https://machine/opendap/modules/gateway_module/GatewayPathInfoResponseHandler.cc.html
 https://machine/opendap/modules/gateway_module/GatewayCache.cc.html
 https://machine/opendap/modules/gateway_module/GatewayRequestHandler.cc.html

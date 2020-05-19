@@ -36,7 +36,7 @@
 #include "BESSyntaxUserError.h"
 #include "BESRemoteUtils.h"
 #include "WhiteList.h"
-#include "BESCurlUtils.h"
+#include "CurlUtils.h"
 
 
 #include <BESInternalError.h>
@@ -53,7 +53,7 @@ using std::stringstream;
 using std::ostringstream;
 using namespace remote_utils;
 
-namespace curl_utils {
+namespace curl {
 
 // Set this to 1 to turn on libcurl's verbose mode (for debugging).
     int curl_trace = 0;
@@ -669,7 +669,7 @@ namespace curl_utils {
 
         char response_buf[1024 * 1024];
 
-        curl_utils::http_get(target_url, response_buf);
+        curl::http_get(target_url, response_buf);
         rapidjson::Document d;
         d.Parse(response_buf);
         return d;
@@ -687,7 +687,7 @@ namespace curl_utils {
             throw BESInternalError(string("Failed to make temporary file for HTTP cookies in module 'ngap' (").append(strerror(errno)).append(")"), __FILE__, __LINE__);
 
         try {
-            CURL *c_handle = curl_utils::set_up_easy_handle(target_url, cookies, response_buf);
+            CURL *c_handle = curl::set_up_easy_handle(target_url, cookies, response_buf);
             read_data(c_handle);
             curl_easy_cleanup(c_handle);
             unlink(cookies.c_str());
@@ -874,4 +874,4 @@ namespace curl_utils {
         }
     }
 
-} /* namespace curl_utils */
+} /* namespace curl */

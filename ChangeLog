@@ -426,7 +426,7 @@
 
 2020-03-17  ndp-opendap  <ndp@opendap.org>
 
-	Su=yntax ewrror in curl_utils.cc
+	Su=yntax ewrror in curl.cc
 
 	Dropped cURL macros not available in CentOS-6
 
@@ -759,7 +759,7 @@
 
 2020-03-09  ndp-opendap  <ndp@opendap.org>
 
-	Added include ti curl_utils.cc
+	Added include ti curl.cc
 
 	Fixed bad code from an IDE in AccessCredentials
 
@@ -1059,7 +1059,7 @@
 
 2020-02-18  ndp-opendap  <ndp@opendap.org>
 
-	Adding NgapS3Credentials class, rearranging rapidjson, consolodating curl_utils
+	Adding NgapS3Credentials class, rearranging rapidjson, consolodating curl
 
 2020-02-18  James Gallagher  <jgallagher@opendap.org>
 
@@ -1100,7 +1100,7 @@
 
 2020-02-16  ndp-opendap  <ndp@opendap.org>
 
-	Added curl_utils.cc/h to reduce code redundancy. MMigrated code into it from several locations.
+	Added curl.cc/h to reduce code redundancy. MMigrated code into it from several locations.
 
 2020-02-16  James Gallagher  <jgallagher@opendap.org>
 
@@ -1115,7 +1115,7 @@
 
 	Code clenup
 
-	created dmrpp_module/curl_utils.cc which clearly nededs to be combined with httpd_catalog_module/curl_utls.cc and placed in a more central part of the project.
+	created dmrpp_module/curl.cc which clearly nededs to be combined with httpd_catalog_module/curl_utls.cc and placed in a more central part of the project.
 
 2020-02-15  James Gallagher  <jgallagher@opendap.org>
 
