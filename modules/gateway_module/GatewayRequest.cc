@@ -43,7 +43,7 @@ using namespace libdap;
 
 #include "GatewayRequest.h"
 #include "GatewayError.h"
-#include "BESRemoteUtils.h"
+#include "HttpUtils.h"
 #include "config.h"
 
 using namespace remote_utils;

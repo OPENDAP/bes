@@ -40,7 +40,7 @@
 #include <util.h>
 
 #include <BESUtil.h>
-#include <BESRemoteUtils.h>
+#include <HttpUtils.h>
 #include <BESCatalogList.h>
 #include <BESCatalog.h>
 #include <BESRegex.h>

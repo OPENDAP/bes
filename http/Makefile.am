@@ -42,12 +42,12 @@ DISTCLEANFILES =
 SRCS = CurlUtils.cc \
     HttpCache.cc \
     RemoteResource.cc \
-    BESRemoteUtils.cc
+    HttpUtils.cc
 
 HDRS = CurlUtils.h \
     HttpCache.h \
     RemoteResource.h \
-    BESRemoteUtils.h \
+    HttpUtils.h \
     HttpNames.h
 
 

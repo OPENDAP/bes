@@ -37,7 +37,7 @@
 #include "GatewayModule.h"
 #include "GatewayRequestHandler.h"
 #include "GatewayContainerStorage.h"
-#include "BESRemoteUtils.h"
+#include "HttpUtils.h"
 #include "GatewayPathInfoResponseHandler.h"
 #include "GatewayPathInfoCommand.h"
 
@@ -55,7 +55,7 @@ void GatewayModule::initialize(const string &modname)
     BESContainerStorageList::TheList()->add_persistence(new GatewayContainerStorage(modname));
 
     BESDEBUG(modname, "    initialize the gateway utilities and params" << endl);
-    http::BESRemoteUtils::Initialize();
+    http::HttpUtils::Initialize();
 
     BESDEBUG(modname, "    adding Gateway debug context" << endl);
     BESDebug::Register(modname);

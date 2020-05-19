@@ -592,10 +592,10 @@ add_executable(bes
 		http/HttpCache.cc
 		http/RemoteResource.cc
 		http/CurlUtils.cc
-        http/BESRemoteUtils.cc
+        http/HttpUtils.cc
 		http/HttpCache.h
 		http/CurlUtils.h
-        http/BESRemoteUtils.h
+        http/HttpUtils.h
     http/rapidjson/fwd.h
     http/rapidjson/memorystream.h
     http/rapidjson/reader.h

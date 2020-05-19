@@ -23,7 +23,7 @@ namespace http {
 /** @brief utility class for the gateway remote request mechanism
  *
  */
-    class BESRemoteUtils {
+    class HttpUtils {
     public:
         static std::map<std::string, std::string> MimeList;
         static std::string ProxyProtocol;

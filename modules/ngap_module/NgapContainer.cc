@@ -41,7 +41,7 @@
 #include "TheBESKeys.h"
 #include "WhiteList.h"
 #include "BESContextManager.h"
-#include "BESRemoteUtils.h"
+#include "HttpUtils.h"
 #include "RemoteResource.h"
 #include "CurlUtils.h"
 

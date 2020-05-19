@@ -53,7 +53,7 @@
 #include <BESDebug.h>
 
 #include "HttpNames.h"
-#include "BESRemoteUtils.h"
+#include "HttpUtils.h"
 
 #define MODULE "http"
 
@@ -61,24 +61,24 @@ using namespace libdap;
 using namespace http;
 
 // These are static class members
-map<string, string> BESRemoteUtils::MimeList;
-string BESRemoteUtils::ProxyProtocol;
-string BESRemoteUtils::ProxyHost;
-string BESRemoteUtils::ProxyUser;
-string BESRemoteUtils::ProxyPassword;
-string BESRemoteUtils::ProxyUserPW;
+map<string, string> HttpUtils::MimeList;
+string HttpUtils::ProxyProtocol;
+string HttpUtils::ProxyHost;
+string HttpUtils::ProxyUser;
+string HttpUtils::ProxyPassword;
+string HttpUtils::ProxyUserPW;
 
-int BESRemoteUtils::ProxyPort = 0;
-int BESRemoteUtils::ProxyAuthType = 0;
-bool BESRemoteUtils::useInternalCache = false;
+int HttpUtils::ProxyPort = 0;
+int HttpUtils::ProxyAuthType = 0;
+bool HttpUtils::useInternalCache = false;
 
-string BESRemoteUtils::NoProxyRegex;
+string HttpUtils::NoProxyRegex;
 
-#define prolog string("BESRemoteUtils::").append(__func__).append("() - ")
+#define prolog string("HttpUtils::").append(__func__).append("() - ")
 
 // Initialization routine for the httpd_catalog_HTTPD_CATALOG for certain parameters
 // and keys, like the white list, the MimeTypes translation.
-void BESRemoteUtils::Initialize()
+void HttpUtils::Initialize()
 {
     // MimeTypes - translate from a mime type to a module name
     bool found = false;
@@ -103,8 +103,8 @@ void BESRemoteUtils::Initialize()
 
     found = false;
     key = HTTP_PROXYHOST;
-    TheBESKeys::TheKeys()->get_value(key, BESRemoteUtils::ProxyHost, found);
-    if (found && !BESRemoteUtils::ProxyHost.empty()) {
+    TheBESKeys::TheKeys()->get_value(key, HttpUtils::ProxyHost, found);
+    if (found && !HttpUtils::ProxyHost.empty()) {
         // if the proxy host is set, then check to see if the port is
         // set. Does not need to be.
         found = false;
@@ -112,8 +112,8 @@ void BESRemoteUtils::Initialize()
         string port;
         TheBESKeys::TheKeys()->get_value(key, port, found);
         if (found && !port.empty()) {
-            BESRemoteUtils::ProxyPort = atoi(port.c_str());
-            if (!BESRemoteUtils::ProxyPort) {
+            HttpUtils::ProxyPort = atoi(port.c_str());
+            if (!HttpUtils::ProxyPort) {
                 string err = (string) "httpd catalog proxy host is specified, but specified port is absent";
                 throw BESSyntaxUserError(err, __FILE__, __LINE__);
             }
@@ -123,36 +123,36 @@ void BESRemoteUtils::Initialize()
         // find the protocol to use for the proxy server. If none set, default to http
         found = false;
         key = HTTP_PROXYPROTOCOL;
-        TheBESKeys::TheKeys()->get_value(key, BESRemoteUtils::ProxyProtocol, found);
-        if (!found || BESRemoteUtils::ProxyProtocol.empty()) {
-            BESRemoteUtils::ProxyProtocol = "http";
+        TheBESKeys::TheKeys()->get_value(key, HttpUtils::ProxyProtocol, found);
+        if (!found || HttpUtils::ProxyProtocol.empty()) {
+            HttpUtils::ProxyProtocol = "http";
         }
 
         // find the user to use for authenticating with the proxy server. If none set,
         // default to ""
         found = false;
         key = HTTP_PROXYUSER;
-        TheBESKeys::TheKeys()->get_value(key, BESRemoteUtils::ProxyUser, found);
+        TheBESKeys::TheKeys()->get_value(key, HttpUtils::ProxyUser, found);
         if (!found) {
-            BESRemoteUtils::ProxyUser = "";
+            HttpUtils::ProxyUser = "";
         }
 
         // find the password to use for authenticating with the proxy server. If none set,
         // default to ""
         found = false;
         key = HTTP_PROXYPASSWORD;
-        TheBESKeys::TheKeys()->get_value(key, BESRemoteUtils::ProxyPassword, found);
+        TheBESKeys::TheKeys()->get_value(key, HttpUtils::ProxyPassword, found);
         if (!found) {
-            BESRemoteUtils::ProxyPassword = "";
+            HttpUtils::ProxyPassword = "";
         }
 
         // find the user:password string to use for authenticating with the proxy server. If none set,
         // default to ""
         found = false;
         key = HTTP_PROXYUSERPW;
-        TheBESKeys::TheKeys()->get_value(key, BESRemoteUtils::ProxyUserPW, found);
+        TheBESKeys::TheKeys()->get_value(key, HttpUtils::ProxyUserPW, found);
         if (!found) {
-            BESRemoteUtils::ProxyUserPW = "";
+            HttpUtils::ProxyUserPW = "";
         }
 
         // find the authentication mechanism to use with the proxy server. If none set,
@@ -164,23 +164,23 @@ void BESRemoteUtils::Initialize()
         if (found) {
             authType = BESUtil::lowercase(authType);
             if (authType == "basic") {
-                BESRemoteUtils::ProxyAuthType = CURLAUTH_BASIC;
+                HttpUtils::ProxyAuthType = CURLAUTH_BASIC;
                 BESDEBUG(MODULE, prolog << "ProxyAuthType BASIC set." << endl);
             } else if (authType == "digest") {
-                BESRemoteUtils::ProxyAuthType = CURLAUTH_DIGEST;
+                HttpUtils::ProxyAuthType = CURLAUTH_DIGEST;
                 BESDEBUG(MODULE, prolog << "ProxyAuthType DIGEST set." << endl);
             } else if (authType == "ntlm") {
-                BESRemoteUtils::ProxyAuthType = CURLAUTH_NTLM;
+                HttpUtils::ProxyAuthType = CURLAUTH_NTLM;
                 BESDEBUG(MODULE, prolog << "ProxyAuthType NTLM set." << endl);
             } else {
-                BESRemoteUtils::ProxyAuthType = CURLAUTH_BASIC;
+                HttpUtils::ProxyAuthType = CURLAUTH_BASIC;
                 BESDEBUG(MODULE,
                          prolog << "User supplied an invalid value '" << authType
                                 << "'  for Gateway.ProxyAuthType. Falling back to BASIC authentication scheme."
                                 << endl);
             }
         } else {
-            BESRemoteUtils::ProxyAuthType = CURLAUTH_BASIC;
+            HttpUtils::ProxyAuthType = CURLAUTH_BASIC;
         }
     }
 
@@ -191,16 +191,16 @@ void BESRemoteUtils::Initialize()
     if (found) {
         if (use_cache == "true" || use_cache == "TRUE" || use_cache == "True" || use_cache == "yes" ||
             use_cache == "YES" || use_cache == "Yes")
-            BESRemoteUtils::useInternalCache = true;
+            HttpUtils::useInternalCache = true;
         else
-            BESRemoteUtils::useInternalCache = false;
+            HttpUtils::useInternalCache = false;
     } else {
         // If not set, default to false. Assume squid or ...
-        BESRemoteUtils::useInternalCache = false;
+        HttpUtils::useInternalCache = false;
     }
     // Grab the value for the NoProxy regex; empty if there is none.
     found = false; // Not used
-    TheBESKeys::TheKeys()->get_value("Http.NoProxy", BESRemoteUtils::NoProxyRegex, found);
+    TheBESKeys::TheKeys()->get_value("Http.NoProxy", HttpUtils::NoProxyRegex, found);
 }
 
 // Not used. There's a better version of this that returns a string in libdap.
@@ -219,7 +219,7 @@ void BESRemoteUtils::Initialize()
  * @param type The type of the handler that can read this file or the empty
  * string if the BES Catalog Utils cannot find a handler to read it.
  */
-void BESRemoteUtils::Get_type_from_disposition(const string &disp, string &type)
+void HttpUtils::Get_type_from_disposition(const string &disp, string &type)
 {
     // If this function extracts a filename from disp and it matches a handler's
     // regex using the Catalog Utils, this will be set to a non-empty value.
@@ -263,9 +263,9 @@ void BESRemoteUtils::Get_type_from_disposition(const string &disp, string &type)
     }
 }
 
-void BESRemoteUtils::Get_type_from_content_type(const string &ctype, string &type)
+void HttpUtils::Get_type_from_content_type(const string &ctype, string &type)
 {
-    BESDEBUG("gateway", "BESRemoteUtils::Get_type_from_content_type() - BEGIN" << endl);
+    BESDEBUG("gateway", "HttpUtils::Get_type_from_content_type() - BEGIN" << endl);
     map<string, string>::iterator i = MimeList.begin();
     map<string, string>::iterator e = MimeList.end();
     bool done = false;
@@ -287,7 +287,7 @@ void BESRemoteUtils::Get_type_from_content_type(const string &ctype, string &typ
     BESDEBUG(MODULE, prolog << "END" << endl);
 }
 
-void BESRemoteUtils::Get_type_from_url(const string &url, string &type) {
+void HttpUtils::Get_type_from_url(const string &url, string &type) {
     const BESCatalogUtils *utils = BESCatalogList::TheCatalogList()->find_catalog("catalog")->get_catalog_utils();
 
     type = utils->get_handler_name(url);

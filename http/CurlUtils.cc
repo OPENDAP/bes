@@ -34,7 +34,7 @@
 #include "util.h"
 #include "BESDebug.h"
 #include "BESSyntaxUserError.h"
-#include "BESRemoteUtils.h"
+#include "HttpUtils.h"
 #include "WhiteList.h"
 #include "CurlUtils.h"
 
@@ -319,12 +319,12 @@ namespace curl {
         // to the curl state in HTTPConnect
         //string proxyProtocol = GatewayUtils::ProxyProtocol;
 
-        string proxyHost = BESRemoteUtils::ProxyHost;
-        int proxyPort = BESRemoteUtils::ProxyPort;
-        string proxyPassword = BESRemoteUtils::ProxyPassword;
-        string proxyUser = BESRemoteUtils::ProxyUser;
-        string proxyUserPW = BESRemoteUtils::ProxyUserPW;
-        int proxyAuthType = BESRemoteUtils::ProxyAuthType;
+        string proxyHost = HttpUtils::ProxyHost;
+        int proxyPort = HttpUtils::ProxyPort;
+        string proxyPassword = HttpUtils::ProxyPassword;
+        string proxyUser = HttpUtils::ProxyUser;
+        string proxyUserPW = HttpUtils::ProxyUserPW;
+        int proxyAuthType = HttpUtils::ProxyAuthType;
 
         if (!proxyHost.empty()) {
             using_proxy = true;
@@ -343,13 +343,13 @@ namespace curl {
             // regex set in the gateway.conf file.
 
             // Don't create the regex if the string is empty
-            if (!BESRemoteUtils::NoProxyRegex.empty()) {
+            if (!HttpUtils::NoProxyRegex.empty()) {
                 BESDEBUG(MODULE, "BESCurlUtils::configureProxy() - Found NoProxyRegex." << endl);
-                BESRegex r(BESRemoteUtils::NoProxyRegex.c_str());
+                BESRegex r(HttpUtils::NoProxyRegex.c_str());
                 if (r.match(url.c_str(), url.length()) != -1) {
                     BESDEBUG(MODULE,
                              "BESCurlUtils::configureProxy() - Found NoProxy match. Regex: "
-                                     << BESRemoteUtils::NoProxyRegex
+                                     << HttpUtils::NoProxyRegex
                                      << "; Url: " << url << endl);
                     using_proxy = false;
                 }

@@ -44,7 +44,7 @@
 
 #include "NgapNames.h"
 #include "NgapRequestHandler.h"
-#include "BESRemoteUtils.h"
+#include "HttpUtils.h"
 
 using std::endl;
 using std::map;
