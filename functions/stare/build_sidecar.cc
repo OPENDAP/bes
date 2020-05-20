@@ -819,13 +819,13 @@ int main(int argc, char *argv[]) {
 
     string newName = "";
     string tmpStorage = "./"; // Default is the CWD.
-    string extension = "_sidecar.h5";
+    string extension = "_stare.h5";
     float build_level = 5.0;  // The default build level, fast start time, longer index lookup.
     float level = 27.0;
     int alg = 3;
     bool compute_resolution = false;
 
-    while ((c = getopt(argc, argv, "hvVro:t:b:s:a:")) != -1) {
+    while ((c = getopt(argc, argv, "hvVro:t:b:s:a:e:")) != -1) {
         switch (c) {
             case 'o':
                 newName = optarg;
