@@ -138,6 +138,7 @@ include_directories(xmlcommand/tests)
 include_directories(xmlcommand/unit-tests)
 include_directories(xmlcommand/unused)
 
+
 add_executable(bes
     config.h
     cmdln/unit-tests/test_config.h.in
