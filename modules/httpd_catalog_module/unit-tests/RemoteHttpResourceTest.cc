@@ -42,8 +42,8 @@
 
 #include "RemoteResource.h"
 #include "HttpCache.h"
+#include "HttpNames.h"
 #include "../HttpdDirScraper.h"
-#include "../HttpNames.h"
 
 
 using namespace std;
