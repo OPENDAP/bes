@@ -62,7 +62,9 @@ namespace http {
         HttpCache(const HttpCache &src);
 
         static std::string getCacheDirFromConfig();
+
         static std::string getCachePrefixFromConfig();
+
         static unsigned long getCacheSizeFromConfig();
 
     protected:
@@ -82,8 +84,16 @@ namespace http {
         static HttpCache *get_instance();
 
         virtual ~HttpCache() {}
-    };
 
+#if 0
+        static std::string get_hash(const std::string &s);
+
+        virtual std::string get_cache_file_name(const std::string &uid, const std::string &src, bool mangle=true);
+
+        virtual std::string get_cache_file_name(const std::string &src, bool mangle=true);
+#endif
+
+    };
 
 } /* namespace http */
 

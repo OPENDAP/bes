@@ -48,6 +48,7 @@
 #else
 #define AT_EXIT(x)
 #endif
+#define prolog string("HttpCache::").append(__func__).append("() - ")
 
 
 using std::endl;
@@ -70,7 +71,7 @@ namespace http {
             iss >> size_in_megabytes;
         } else {
             stringstream msg;
-            msg << "HttpCache - The BES Key " << HTTP_CACHE_SIZE_KEY << " is not set.";
+            msg << prolog << "The BES Key " << HTTP_CACHE_SIZE_KEY << " is not set.";
             BESDEBUG(HTTP_MODULE, msg.str() << endl);
             throw BESInternalError(msg.str(), __FILE__, __LINE__);
         }
@@ -85,7 +86,7 @@ namespace http {
 
         if (!found) {
             stringstream msg;
-            msg << "HttpCache - The BES Key " << HTTP_CACHE_DIR_KEY << " is not set.";
+            msg << prolog << "The BES Key " << HTTP_CACHE_DIR_KEY << " is not set.";
             BESDEBUG(HTTP_MODULE, msg.str() << endl);
             throw BESInternalError(msg.str(), __FILE__, __LINE__);
         }
@@ -102,7 +103,7 @@ namespace http {
             prefix = BESUtil::lowercase(prefix);
         } else {
             stringstream msg;
-            msg << "HttpCache - The BES Key " << HTTP_CACHE_PREFIX_KEY << " is not set.";
+            msg << prolog << "The BES Key " << HTTP_CACHE_PREFIX_KEY << " is not set.";
             BESDEBUG(HTTP_MODULE, msg.str() << endl);
             throw BESInternalError(msg.str(), __FILE__, __LINE__);
         }
@@ -111,27 +112,27 @@ namespace http {
     }
 
     HttpCache::HttpCache() {
-        BESDEBUG(HTTP_MODULE, "HttpCache::HttpCache() -  BEGIN" << endl);
+        BESDEBUG(HTTP_MODULE, prolog << "BEGIN" << endl);
 
         string cacheDir = getCacheDirFromConfig();
         string cachePrefix = getCachePrefixFromConfig();
         unsigned long cacheSizeMbytes = getCacheSizeFromConfig();
 
-        BESDEBUG(HTTP_MODULE, "HttpCache() - Cache configuration params: " << cacheDir << ", " << cachePrefix << ", "
+        BESDEBUG(HTTP_MODULE, prolog << "Cache configuration params: " << cacheDir << ", " << cachePrefix << ", "
                                                                            << cacheSizeMbytes << endl);
         initialize(cacheDir, cachePrefix, cacheSizeMbytes);
 
-        BESDEBUG(HTTP_MODULE, "HttpCache::HttpCache() -  END" << endl);
+        BESDEBUG(HTTP_MODULE, prolog << "END" << endl);
     }
 
 #if 1
     HttpCache::HttpCache(const string &cache_dir, const string &prefix, unsigned long long size) {
 
-        BESDEBUG(HTTP_MODULE, "HttpCache::HttpCache() -  BEGIN" << endl);
+        BESDEBUG(HTTP_MODULE, prolog << "BEGIN" << endl);
 
         initialize(cache_dir, prefix, size);
 
-        BESDEBUG(HTTP_MODULE, "HttpCache::HttpCache() -  END" << endl);
+        BESDEBUG(HTTP_MODULE, prolog << "END" << endl);
     }
 #endif
 #if 0
@@ -170,11 +171,11 @@ namespace http {
                 if (!d_enabled) {
                     delete d_instance;
                     d_instance = 0;
-                    BESDEBUG(HTTP_MODULE, "HttpCache::" << __func__ << "() - " << "Cache is DISABLED" << endl);
+                    BESDEBUG(HTTP_MODULE, prolog << "Cache is DISABLED" << endl);
                 } else {
                     AT_EXIT(delete_instance);
 
-                    BESDEBUG(HTTP_MODULE, "HttpCache::" << __func__ << "() - " << "Cache is ENABLED" << endl);
+                    BESDEBUG(HTTP_MODULE, prolog << "Cache is ENABLED" << endl);
                 }
             }
             catch (BESInternalError &bie) {
@@ -186,5 +187,38 @@ namespace http {
 
         return d_instance;
     }
+
+#if 0
+
+    string
+    HttpCache::get_hash(const string &s)
+    {
+        if (s.empty()){
+            string msg = "You cannot hash the empty string.";
+            BESDEBUG(HTTP_MODULE, prolog << msg << endl);
+            throw BESInternalError(msg, __FILE__, __LINE__);
+        }
+        return picosha2::hash256_hex_string(s[0] == '/' ? s : "/" + s);
+    }
+
+    string HttpCache::get_cache_file_name(const string &uid, const string &src,  bool mangle){
+        string cfn = src;
+        string uid_part;
+        if(!uid.empty())
+            uid_part = uid + "_";
+
+        if(mangle){
+            cfn = get_hash(src);
+        }
+        return BESUtil::assemblePath(this->get_cache_directory(),
+                                     get_cache_file_prefix() + uid_part + cfn);
+    }
+
+
+    string HttpCache::get_cache_file_name( const string &src,  bool mangle){
+        string uid;
+        return  get_cache_file_name(uid,src, mangle);
+    }
+#endif
 
 } // namespace http
