@@ -819,6 +819,7 @@ int main(int argc, char *argv[]) {
 
     string newName = "";
     string tmpStorage = "./"; // Default is the CWD.
+    string extension = "_sidecar.h5";
     float build_level = 5.0;  // The default build level, fast start time, longer index lookup.
     float level = 27.0;
     int alg = 3;
@@ -851,6 +852,9 @@ int main(int argc, char *argv[]) {
             case 'r':
                 compute_resolution = true;
                 break;
+            case 'e':
+                extension = optarg;
+                break;
             case 'h':
             default:
                 usage();
@@ -875,7 +879,7 @@ int main(int argc, char *argv[]) {
     string lon_name = argv[2];
 
     if (newName.empty())
-        newName = get_sidecar_filename(dataset);
+        newName = get_sidecar_filename(dataset, extension);
 
     try {
         STARE stare(level, build_level);
