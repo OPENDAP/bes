@@ -146,9 +146,9 @@ namespace httpd_catalog {
                 if (Debug) cerr << "Purging cache!" << endl;
                 string cache_dir;
                 bool found;
-                TheBESKeys::TheKeys()->get_value("HttpResourceCache.dir", cache_dir, found);
+                TheBESKeys::TheKeys()->get_value(HTTP_CACHE_DIR_KEY, cache_dir, found);
                 if (found) {
-                    if (Debug) cerr << "HttpResourceCache.dir: " << cache_dir << endl;
+                    if (Debug) cerr << HTTP_CACHE_DIR_KEY << ": " << cache_dir << endl;
                     if (Debug) cerr << "Purging " << cache_dir << endl;
                     string cmd = "exec rm -r " + BESUtil::assemblePath(cache_dir, "/*");
                     system(cmd.c_str());

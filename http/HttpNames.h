@@ -25,7 +25,6 @@
 #ifndef I_HTTP_NAME_H
 #define I_HTTP_NAME_H 1
 
-#define HTTP_WHITELIST "Http.Whitelist"
 #define HTTP_MIMELIST "Http.MimeTypes"
 #define HTTP_PROXYPROTOCOL "Http.ProxyProtocol"
 #define HTTP_PROXYHOST "Http.ProxyHost"
@@ -36,9 +35,9 @@
 #define HTTP_PROXYUSERPW "Http.ProxyUserPW"
 #define HTTP_USE_INTERNAL_CACHE "Http.UseInternalCache"
 
-#define HTTP_DIR_KEY "Http.Cache.dir"
-#define HTTP_PREFIX_KEY "Http.Cache.prefix"
-#define HTTP_SIZE_KEY "Http.Cache.size"
+#define HTTP_CACHE_DIR_KEY "Http.Cache.dir"
+#define HTTP_CACHE_PREFIX_KEY "Http.Cache.prefix"
+#define HTTP_CACHE_SIZE_KEY "Http.Cache.size"
 
 #define HTTP_MODULE "http"
 

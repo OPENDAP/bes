@@ -63,14 +63,14 @@ namespace http {
         bool found = false;
         string size;
         unsigned long size_in_megabytes = 0;
-        TheBESKeys::TheKeys()->get_value(HTTP_SIZE_KEY, size, found);
+        TheBESKeys::TheKeys()->get_value(HTTP_CACHE_SIZE_KEY, size, found);
 
         if (found) {
             std::istringstream iss(size);
             iss >> size_in_megabytes;
         } else {
             stringstream msg;
-            msg << "HttpCache - The BES Key " << HTTP_SIZE_KEY << " is not set.";
+            msg << "HttpCache - The BES Key " << HTTP_CACHE_SIZE_KEY << " is not set.";
             BESDEBUG(HTTP_MODULE, msg.str() << endl);
             throw BESInternalError(msg.str(), __FILE__, __LINE__);
         }
@@ -81,11 +81,11 @@ namespace http {
     string HttpCache::getCacheDirFromConfig() {
         bool found;
         string subdir = "";
-        TheBESKeys::TheKeys()->get_value(HTTP_DIR_KEY, subdir, found);
+        TheBESKeys::TheKeys()->get_value(HTTP_CACHE_DIR_KEY, subdir, found);
 
         if (!found) {
             stringstream msg;
-            msg << "HttpCache - The BES Key " << HTTP_DIR_KEY << " is not set.";
+            msg << "HttpCache - The BES Key " << HTTP_CACHE_DIR_KEY << " is not set.";
             BESDEBUG(HTTP_MODULE, msg.str() << endl);
             throw BESInternalError(msg.str(), __FILE__, __LINE__);
         }
@@ -96,13 +96,13 @@ namespace http {
     string HttpCache::getCachePrefixFromConfig() {
         bool found;
         string prefix = "";
-        TheBESKeys::TheKeys()->get_value(HTTP_PREFIX_KEY, prefix, found);
+        TheBESKeys::TheKeys()->get_value(HTTP_CACHE_PREFIX_KEY, prefix, found);
 
         if (found) {
             prefix = BESUtil::lowercase(prefix);
         } else {
             stringstream msg;
-            msg << "HttpCache - The BES Key " << HTTP_PREFIX_KEY << " is not set.";
+            msg << "HttpCache - The BES Key " << HTTP_CACHE_PREFIX_KEY << " is not set.";
             BESDEBUG(HTTP_MODULE, msg.str() << endl);
             throw BESInternalError(msg.str(), __FILE__, __LINE__);
         }

@@ -18,7 +18,6 @@ Gateway.Whitelist+=http://test.opendap.org
 
 # Configure dat cache
 Http.Cache.dir=@abs_top_builddir@/modules/httpd_catalog_module/unit-tests/static-cache
-#HttpResourceCache.dir=/tmp/cache
 Http.Cache.prefix=httpd_cat_
 Http.Cache.size=500
 

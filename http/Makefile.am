@@ -51,6 +51,11 @@ HDRS = CurlUtils.h \
     HttpNames.h
 
 
+moduledir = $(sysconfdir)/bes/modules
+module_DATA = http.conf
+
+http.conf: http.conf.in $(top_builddir)/config.status
+	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > http.conf
 
 C4_DB=$(C4_DIR)/http.db
 C4_HTML=$(C4_dir)/http.html

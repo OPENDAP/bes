@@ -33,16 +33,16 @@ BES.Catalog.RemoteResources.TypeMatch += unused:unused;
 
 # The cache used by the BES for the retrieved items.
 
-HttpResourceCache.dir = /tmp/hyrax_hc
-HttpResourceCache.prefix = hc_
-HttpResourceCache.size = 500
+#HttpResourceCache.dir = /tmp/hyrax_hc
+#HttpResourceCache.prefix = hc_
+#HttpResourceCache.size = 500
 
 # The mapping between files/responses from the remote httpd an modules that 
 # read data on the local Hyrax server.
 
-Httpd_Catalog.MimeTypes = nc:application/x-netcdf
-Httpd_Catalog.MimeTypes += h4:application/x-hdf
-Httpd_Catalog.MimeTypes += h5:application/x-hdf5
+#Httpd_Catalog.MimeTypes = nc:application/x-netcdf
+#Httpd_Catalog.MimeTypes += h4:application/x-hdf
+#Httpd_Catalog.MimeTypes += h5:application/x-hdf5
 
 
 # 'Collections' add virtual directory hierarchies under the literal 
