@@ -30,39 +30,3 @@ BES.module.gateway=@bes_modules_dir@/libgateway_module.so
 # Gateway.Whitelist=http://test.opendap.org/opendap
 # Gateway.Whitelist+=http://opendap.rpi.edu/opendap
 #
-#
-#
-# Gateway.MimeTypes - provides a list of mappings from data handler
-# module to returned mime types. These are the default types. Please do
-# not erase. One per line, as in these default values.
-#
-# datatype:mimetype
-#
-#Http.MimeTypes=nc:application/x-netcdf
-#Http.MimeTypes+=h4:application/x-hdf
-#Http.MimeTypes+=h5:application/x-hdf5
-
-# Gateway.ProxyProtocol, Gateway.ProxyHost and Gateway.ProxyPort -
-# provides a way to define a proxy server that must be used to make the
-# remote request, and the port to use.
-
-
-#Gateway.ProxyHost=warsaw.wonderproxy.com
-#Gateway.ProxyPort=8080
-#Gateway.ProxyUser=username
-#Gateway.ProxyPassword=password
-#Gateway.ProxyUserPW=username:password
-#Gateway.ProxyAuthType=basic
-
-# Gateway.Cache.dir - defines which directory to use for caching web 
-# resources retrieved by the gateway_module
-
-# Gateway.Cache.prefix - defines the prefix for cache files so that 
-# they will be easily identifiable.
-
-# Gateway.Cache.size - The maxium size of the Gateway cache, in megabytes.
-
-#Http.Cache.dir=/tmp/hyrax_gw
-#Http.Cache.prefix=gw_
-#Http.Cache.size=500
-
