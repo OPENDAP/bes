@@ -31,7 +31,7 @@ pkgdata_DATA =
 
 EXTRA_DIST = rapidjson http.conf.in
 
-DISTCLEANFILES =
+DISTCLEANFILES = http.conf
 
 ##############################################################################
 #
