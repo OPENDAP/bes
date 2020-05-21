@@ -1,10 +1,8 @@
 
-# Build libbes_dispatch and libdap_module, part of the BES code.
+# Build libbes_http, part of the BES code.
 
 AUTOMAKE_OPTIONS = foreign
 
-# I added a new command to and put the ResponseHandler in xmlcommand to
-# keep all of the files together. jhrg 2/8/18
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
 AM_CXXFLAGS =
 
@@ -31,7 +29,7 @@ pkginclude_HEADERS = $(HDRS)
 
 pkgdata_DATA =
 
-EXTRA_DIST = rapidjson
+EXTRA_DIST = rapidjson http.conf.in
 
 DISTCLEANFILES =
 
@@ -49,7 +47,6 @@ HDRS = CurlUtils.h \
     RemoteResource.h \
     HttpUtils.h \
     HttpNames.h
-
 
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = http.conf

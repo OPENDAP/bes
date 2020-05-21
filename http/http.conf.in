@@ -1,6 +1,12 @@
+
+# These BES keys configure the behavior of the software in the 'bes_http'
+# library, a library of common HTTP functionality that the BES and its
+# modules share.
 #
-#
-#
+# This conf.in file can use the build-time variable @bes_modules_dir@
+# in the definitions that follow. If more parameters are needed, they
+# can be added by editing the build rule in Makefile.am in this directory.
+
 # Http.Cache.dir - defines which directory to use for caching web
 # resources retrieved by the gateway_module
 #
