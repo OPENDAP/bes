@@ -1,5 +1,7 @@
 
 # Build libbes_http, part of the BES code.
+# NOTE: This is a convenience library - it can only be used
+# by code that is part of the BES repository.
 
 AUTOMAKE_OPTIONS = foreign
 
