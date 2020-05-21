@@ -65,4 +65,7 @@ DR.UseTestTypes=true
 DR.UseSeriesValues=true
 
 # Where to find stare sidecar files
-FUNCTIONS.stareStoragePath=@abs_top_srcdir@/functions/stare/data
+FUNCTIONS.stareStoragePath = @abs_top_srcdir@/functions/stare/data
+
+# The sidecar file suffix
+FUNCTIONS.stareSidecarSuffix = _stare

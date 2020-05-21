@@ -39,6 +39,24 @@ class DMR;
 
 namespace functions {
 
+const string s_index_name = "Stare_Index";
+
+const std::string STARE_STORAGE_PATH_KEY = "FUNCTIONS.stareStoragePath";
+const std::string STARE_SIDECAR_SUFFIX_KEY = "FUNCTIONS.stareSidecarSuffix";
+
+// These default values can be overridden using BES keys.
+// See DapFunctions.cc. jhrg 5/21/20
+extern string stare_storage_path;
+extern string stare_sidecar_suffix;
+
+std::string get_sidecar_file_pathname(const std::string &pathName, const string &token = "_sidecar");
+void get_sidecar_int32_values(hid_t file, const std::string &variable, std::vector<libdap::dods_int32> &values);
+void get_sidecar_uint64_values(hid_t file, const std::string &variable, std::vector<libdap::dods_uint64> &values);
+
+bool target_in_dataset(const std::vector<libdap::dods_uint64> &targetIndices, const std::vector<libdap::dods_uint64> &dataStareIndices);
+unsigned int count(const std::vector<libdap::dods_uint64> &stareVal, const std:: vector<libdap::dods_uint64> &stareIndices);
+
+
 /// X and Y coordinates of a point
 struct point {
     libdap::dods_int32 x;
@@ -80,18 +98,9 @@ struct stare_matches {
     friend std::ostream & operator << (std::ostream &out, const stare_matches &m);
 };
 
-std::string get_sidecar_file_pathname(const std::string &pathName);
-void get_sidecar_int32_values(hid_t file, const std::string &variable, std::vector<libdap::dods_int32> &values);
-void get_sidecar_uint64_values(hid_t file, const std::string &variable, std::vector<libdap::dods_uint64> &values);
-
-bool target_in_dataset(const std::vector<libdap::dods_uint64> &targetIndices, const std::vector<libdap::dods_uint64> &dataStareIndices);
-unsigned int count(const std::vector<libdap::dods_uint64> &stareVal, const std:: vector<libdap::dods_uint64> &stareIndices);
-
 unique_ptr<stare_matches> stare_subset_helper(const std::vector<libdap::dods_uint64> &targetIndices,
                                               const std::vector<libdap::dods_uint64> &datasetStareIndices,
                                               const std::vector<int> &xArray, const std::vector<int> &yArray);
-
-const std::string STARE_STORAGE_PATH = "FUNCTIONS.stareStoragePath";
 
 class StareIntersectionFunction : public libdap::ServerFunction {
 public:

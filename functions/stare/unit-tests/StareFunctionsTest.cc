@@ -64,7 +64,12 @@ private:
 public:
 	StareFunctionsTest() : two_arrays_dmr(0), d4_btf(0)
 	{
-	}
+        TheBESKeys::ConfigFile = "bes.conf";
+        // The key names and module variables used here are defined in StareFunctions.cc
+        // These two lines duplicate DapFunctions Module behavior. jhrg 5/21/20
+        stare_storage_path = TheBESKeys::TheKeys()->read_string_key(STARE_STORAGE_PATH_KEY, stare_storage_path);
+        stare_sidecar_suffix = TheBESKeys::TheKeys()->read_string_key(STARE_SIDECAR_SUFFIX_KEY, stare_sidecar_suffix);
+    }
 
 	virtual ~StareFunctionsTest()
 	{
@@ -80,8 +85,6 @@ public:
 		// Old file name: "/MYD09.A2019003.2040.006.2019005020913.h5";
 
 		two_arrays_dmr->set_filename(filename);
-
-		TheBESKeys::ConfigFile = "bes.conf";
 	}
 
 	virtual void tearDown() {

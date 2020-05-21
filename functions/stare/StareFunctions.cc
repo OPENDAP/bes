@@ -68,7 +68,10 @@ using namespace std;
 
 namespace functions {
 
-const string s_index_name = "Stare_Index";
+// These default values can be overridden using BES keys.
+// See StareFunctions.h jhrg 5/21/20
+string stare_storage_path = "./";
+string stare_sidecar_suffix = "_sidecar";
 
 /**
  *
@@ -252,10 +255,11 @@ stare_subset_helper(const vector<dods_uint64> &targetIndices, const vector<dods_
  * a the sidecar file that matches the given dataset. The lookup ignores
  * any path component of the dataset; only the file name is used.
  * @param pathName The dataset pathname
+ * @param token Optional extension to the main part of the file name (default '_sidecar').
  * @return The pathname to the matching sidecar file.
  */
 string
-get_sidecar_file_pathname(const string &pathName)
+get_sidecar_file_pathname(const string &pathName, const string &token)
 {
     size_t granulePos = pathName.find_last_of('/');
     string granuleName = pathName.substr(granulePos + 1);
@@ -264,11 +268,13 @@ get_sidecar_file_pathname(const string &pathName)
     // also switched to .append() instead of '+' because the former is faster.
     // jhrg 11/5/19
     string extension = granuleName.substr(findDot); // ext includes the dot
-    string newPathName = granuleName.substr(0, findDot).append("_sidecar").append(extension);
+    string newPathName = granuleName.substr(0, findDot).append(token).append(extension);
 
+#if 0
     string stareDirectory = TheBESKeys::TheKeys()->read_string_key(STARE_STORAGE_PATH, "/tmp");
+#endif
 
-    string fullPath = BESUtil::pathConcat(stareDirectory, newPathName);
+    string fullPath = BESUtil::pathConcat(stare_storage_path, newPathName);
     return fullPath;
 }
 
@@ -353,7 +359,7 @@ StareIntersectionFunction::stare_intersection_dap4_function(D4RValueList *args, 
     }
 
     //Find the filename from the dmr
-    string fullPath = get_sidecar_file_pathname(dmr.filename());
+    string fullPath = get_sidecar_file_pathname(dmr.filename(), stare_sidecar_suffix);
 
     //Read the file and store the datasets
     hid_t file = H5Fopen(fullPath.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
@@ -419,7 +425,7 @@ StareCountFunction::stare_count_dap4_function(D4RValueList *args, DMR &dmr)
     }
 
     //Find the filename from the dmr
-    string fullPath = get_sidecar_file_pathname(dmr.filename());
+    string fullPath = get_sidecar_file_pathname(dmr.filename(), stare_sidecar_suffix);
 
     //Read the file and store the datasets
     hid_t file = H5Fopen(fullPath.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
@@ -475,7 +481,7 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
     }
 
     //Find the filename from the dmr
-    string fullPath = get_sidecar_file_pathname(dmr.filename());
+    string fullPath = get_sidecar_file_pathname(dmr.filename(), stare_sidecar_suffix);
 
     //Read the file and store the datasets
     hid_t file = H5Fopen(fullPath.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
