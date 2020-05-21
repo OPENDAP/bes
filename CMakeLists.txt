@@ -491,10 +491,10 @@ add_executable(bes
     functions/geo-functions/wcsUtil.cpp
     functions/geo-functions/wcsUtil.h
 
-    # functions/stare/build_sidecar.cc
-    # functions/stare/StareFunctions.cc
-    # functions/stare/StareFunctions.h
-    # functions/stare/unit-tests/StareFunctionsTest.cc
+    functions/stare/build_sidecar.cc
+    functions/stare/StareFunctions.cc
+    functions/stare/StareFunctions.h
+    functions/stare/unit-tests/StareFunctionsTest.cc
 
     functions/tests/gse-test.cc
     functions/unit-tests/BBoxCombFunctionTest.cc

@@ -73,6 +73,9 @@ namespace functions {
 string stare_storage_path = "./";
 string stare_sidecar_suffix = "_sidecar";
 
+
+#if 0
+
 /**
  *
  * @brief Write a functions::point to an ostream.
@@ -100,6 +103,8 @@ ostream & operator << (ostream &out, const stare_match &m)
     return out;
 }
 
+#endif
+
 /**
  * @brief Write a collection of STARE Matches to an ostream
  *
@@ -116,12 +121,13 @@ ostream & operator << (ostream &out, const stare_matches &m)
     assert(m.stare_indices.size() == m.x_indices.size()
         && m.x_indices.size() == m.y_indices.size());
 
+    auto ti = m.target_indices.begin();
     auto si = m.stare_indices.begin();
     auto xi = m.x_indices.begin();
     auto yi = m.y_indices.begin();
 
     while (si != m.stare_indices.end()) {
-        out << "SIndex: " << *si++ << ", coord: x: " << *xi++ << ", y: " << *yi++ << endl;
+        out << "SIndex: " << *si++ << ", coord: x: " << *xi++ << ", y: " << *yi++ << "Target: " << *ti++ << endl;
     }
 
     return out;
@@ -196,9 +202,12 @@ target_in_dataset(const vector<dods_uint64> &targetIndices, const vector<dods_ui
  * @param target_indices - stare values from a constraint expression
  * @param dataset_indices - stare values being compared, retrieved from the sidecar file. These
  * are the index values that describe the coverage of the dataset.
+ * @param boolean_target_match If true this function counts every dataset index that
+ * matches every target. The default counts 1 for each target that matches _any_ dataset
+ * index.
  */
 unsigned int
-count(const vector<dods_uint64> &target_indices, const vector<dods_uint64> &dataset_indices) {
+count(const vector<dods_uint64> &target_indices, const vector<dods_uint64> &dataset_indices, bool boolean_target_match /*= false*/) {
     unsigned int counter = 0;
     for (const dods_uint64 &i : target_indices) {
         for (const dods_uint64 &j : dataset_indices)
@@ -206,7 +215,8 @@ count(const vector<dods_uint64> &target_indices, const vector<dods_uint64> &data
             // dataset indices.
             if (cmpSpatial(i, j) != 0) {
                 counter++;
-                //break;  // exit the inner loop
+                if (boolean_target_match)
+                    break;  // exit the inner loop
             }
     }
 
@@ -239,7 +249,7 @@ stare_subset_helper(const vector<dods_uint64> &target_indices, const vector<dods
         auto y = dataset_y_coords.begin();
         for (const dods_uint64 &j : dataset_indices) {
             if (cmpSpatial(i, j) != 0) {
-                subset->add(*x, *y, j);
+                subset->add(*x, *y, j, i);
             }
             ++x;
             ++y;
@@ -513,13 +523,25 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
 
     delete target_indices;
 
-    // Transfer values to a Structure
+    // When no subset is found (none of the target indices match those in the dataset */
+    if (subset->stare_indices.size() == 0) {
+        subset->stare_indices.push_back(0);
+        subset->target_indices.push_back(0);
+        subset->x_indices.push_back(-1);
+        subset->y_indices.push_back(-1);
+    }
+        // Transfer values to a Structure
     auto result = new Structure("result");
 
     Array *stare = new Array("stare", new UInt64("stare"));
     stare->set_value(&(subset->stare_indices[0]), subset->stare_indices.size());
     stare->append_dim(subset->stare_indices.size());
     result->add_var_nocopy(stare);
+
+    Array *target = new Array("target", new UInt64("target"));
+    target->set_value(&(subset->target_indices[0]), subset->target_indices.size());
+    target->append_dim(subset->target_indices.size());
+    result->add_var_nocopy(target);
 
     auto x = new Array("x", new Int32("x"));
     x->set_value(subset->x_indices, subset->x_indices.size());

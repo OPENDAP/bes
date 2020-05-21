@@ -1,0 +1,53 @@
+
+BES.User=user_name
+BES.Group=group_name
+
+BES.LogName=./bes.log
+BES.LogVerbose=no
+
+# FIXME hdf5 should not be here. jhrg 12/31/19
+BES.modules=dap,cmd,dapreader,functions,h5
+
+# Load BES modules from the source dirs
+BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
+BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
+BES.module.dapreader=@abs_top_builddir@/dapreader/.libs/libdapreader_module.so
+BES.module.functions=@abs_top_builddir@/functions/.libs/libfunctions_module.so
+
+BES.module.h5 = @abs_top_builddir@/modules/hdf5_handler/.libs/libhdf5_module.so
+BES.Catalog.catalog.TypeMatch += h5:.*\.h5$;
+
+BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@
+BES.Data.RootDirectory=/dev/null
+
+BES.Catalog.catalog.TypeMatch += dapreader:.*\.(das|dds|dods|data|dmr|dap)$;
+
+BES.Catalog.catalog.Include=;
+BES.Catalog.catalog.Exclude=^\..*;
+
+BES.UncompressCache.dir=/tmp/hyrax_ux
+BES.UncompressCache.prefix=ux_
+BES.UncompressCache.size=500
+
+#-----------------------------------------------------------------------#
+#                                                                       #
+# Data Handler Specific key/value parameters                            #
+#                                                                       #
+#-----------------------------------------------------------------------#
+
+DAP.FunctionResponseCache.path=@abs_top_builddir@/functions/stare/tests/dap_cache
+DAP.FunctionResponseCache.prefix=func_
+DAP.FunctionResponseCache.size=20000
+
+DR.UseTestTypes=true
+
+# Use the 'series values' feature of the test types
+DR.UseSeriesValues=true
+
+# Where to find stare sidecar files
+FUNCTIONS.stareStoragePath = @abs_top_srcdir@/functions/stare/data
+
+# THIS IS THE ONLY DIFFERENCE between nes.con and resolution.conf
+
+# The sidecar file suffix
+FUNCTIONS.stareSidecarSuffix = _stare_res

@@ -53,9 +53,13 @@ std::string get_sidecar_file_pathname(const std::string &pathName, const string 
 void get_sidecar_int32_values(hid_t file, const std::string &variable, std::vector<libdap::dods_int32> &values);
 void get_sidecar_uint64_values(hid_t file, const std::string &variable, std::vector<libdap::dods_uint64> &values);
 
-bool target_in_dataset(const std::vector<libdap::dods_uint64> &targetIndices, const std::vector<libdap::dods_uint64> &dataStareIndices);
-unsigned int count(const std::vector<libdap::dods_uint64> &target_indices, const std:: vector<libdap::dods_uint64> &dataset_indices);
+bool target_in_dataset(const std::vector<libdap::dods_uint64> &targetIndices,
+        const std::vector<libdap::dods_uint64> &dataStareIndices);
+unsigned int count(const std::vector<libdap::dods_uint64> &target_indices,
+        const std:: vector<libdap::dods_uint64> &dataset_indices, bool boolean_target_match = false);
 
+
+#if 0
 
 /// X and Y coordinates of a point
 struct point {
@@ -76,23 +80,28 @@ struct stare_match {
     friend std::ostream & operator << (std::ostream &out, const stare_match &m);
 };
 
+#endif
+
 /// Hold the result from the subset helper function as a collection of vectors
 struct stare_matches {
     std::vector<libdap::dods_int32> x_indices;
     std::vector<libdap::dods_int32> y_indices;
 
     std::vector<libdap::dods_uint64> stare_indices;
+    std::vector<libdap::dods_uint64> target_indices;
 
     // Pass by value and use move
-    stare_matches(std::vector<libdap::dods_int32> x, const std::vector<libdap::dods_int32> y, const std::vector<libdap::dods_uint64> si)
-        : x_indices(std::move(x)), y_indices(std::move(y)), stare_indices(std::move(si)) {}
+    stare_matches(std::vector<libdap::dods_int32> x, const std::vector<libdap::dods_int32> y,
+            const std::vector<libdap::dods_uint64> si, const std::vector<libdap::dods_uint64> ti)
+        : x_indices(std::move(x)), y_indices(std::move(y)), stare_indices(std::move(si)), target_indices(std::move(ti)) {}
 
     stare_matches() {}
 
-    void add(libdap::dods_int32 x, libdap::dods_int32 y, libdap::dods_uint64 si) {
+    void add(libdap::dods_int32 x, libdap::dods_int32 y, libdap::dods_uint64 si, libdap::dods_uint64 ti) {
         x_indices.push_back(x);
         y_indices.push_back(y);
         stare_indices.push_back(si);
+        target_indices.push_back(ti);
     }
 
     friend std::ostream & operator << (std::ostream &out, const stare_matches &m);
