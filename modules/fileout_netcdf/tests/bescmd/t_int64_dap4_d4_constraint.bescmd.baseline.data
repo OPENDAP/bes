@@ -1,0 +1,21 @@
+netcdf test {
+dimensions:
+	dim1 = 1 ;
+variables:
+	int64 d64(dim1) ;
+		d64:attr_int = -2147483648, 2147483647 ;
+		d64:attr_uint64 = 18446744073709551615ULL ;
+		d64:attr_vstr = "Parting is such sweet sorrow." ;
+		d64:origname = "d64" ;
+		d64:fullnamepath = "/d64" ;
+
+// global attributes:
+		:root_attr_int64 = 9223372036854775807LL, -9223372036854775808LL ;
+		:root_attr_int64_scalar = 9223372036854775807LL ;
+		:grp_int64.grp_attr_int64 = 9223372036854775807LL, -9223372036854775808LL ;
+		:grp_int64.grp_attr_int64_scalar = 9223372036854775807LL ;
+		:grp_int64.fullnamepath = "/grp_int64" ;
+data:
+
+ d64 = 9223372036854775807 ;
+}

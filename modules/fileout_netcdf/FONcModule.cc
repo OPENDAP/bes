@@ -74,6 +74,11 @@ void FONcModule::initialize(const string &modname)
 
     BESServiceRegistry::TheRegistry()->add_format( OPENDAP_SERVICE, DATA_SERVICE, RETURNAS_NETCDF4);
 
+    //BESReturnManager::TheManager()->add_transmitter( RETURNAS_NETCDF4, new FONcTransmitter());
+
+    BESServiceRegistry::TheRegistry()->add_format( OPENDAP_SERVICE, DAP4DATA_SERVICE, RETURNAS_NETCDF4);
+
+
     BESDebug::Register("fonc");
 
     BESDEBUG("fonc", "Done Initializing module " << modname << endl);

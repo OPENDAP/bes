@@ -39,6 +39,7 @@
 #include <map>
 
 #include <DDS.h>
+#include <DMR.h>
 #include <Array.h>
 
 using namespace::libdap ;
@@ -59,6 +60,7 @@ class FONcTransform: public BESObj {
 private:
 	int _ncid;
 	DDS *_dds;
+    DMR *_dmr;
 	string _localfile;
 	string _returnAs;
 	vector<FONcBaseType *> _fonc_vars;
@@ -75,8 +77,10 @@ public:
 	 * @param netcdfVersion
 	 */
 	FONcTransform(DDS *dds, BESDataHandlerInterface &dhi, const string &localfile, const string &netcdfVersion = "netcdf");
+	FONcTransform(DMR *dmr, BESDataHandlerInterface &dhi, const string &localfile, const string &netcdfVersion = "netcdf");
 	virtual ~FONcTransform();
 	virtual void transform();
+	virtual void transform_dap4();
 
 	virtual void dump(ostream &strm) const;
 
