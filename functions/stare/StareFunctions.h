@@ -54,7 +54,7 @@ void get_sidecar_int32_values(hid_t file, const std::string &variable, std::vect
 void get_sidecar_uint64_values(hid_t file, const std::string &variable, std::vector<libdap::dods_uint64> &values);
 
 bool target_in_dataset(const std::vector<libdap::dods_uint64> &targetIndices, const std::vector<libdap::dods_uint64> &dataStareIndices);
-unsigned int count(const std::vector<libdap::dods_uint64> &stareVal, const std:: vector<libdap::dods_uint64> &stareIndices);
+unsigned int count(const std::vector<libdap::dods_uint64> &target_indices, const std:: vector<libdap::dods_uint64> &dataset_indices);
 
 
 /// X and Y coordinates of a point
@@ -98,9 +98,9 @@ struct stare_matches {
     friend std::ostream & operator << (std::ostream &out, const stare_matches &m);
 };
 
-unique_ptr<stare_matches> stare_subset_helper(const std::vector<libdap::dods_uint64> &targetIndices,
-                                              const std::vector<libdap::dods_uint64> &datasetStareIndices,
-                                              const std::vector<int> &xArray, const std::vector<int> &yArray);
+unique_ptr<stare_matches> stare_subset_helper(const std::vector<libdap::dods_uint64> &target_indices,
+                                              const std::vector<libdap::dods_uint64> &dataset_indices,
+                                              const std::vector<int> &dataset_x_coords, const std::vector<int> &dataset_y_coords);
 
 class StareIntersectionFunction : public libdap::ServerFunction {
 public:

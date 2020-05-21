@@ -193,20 +193,20 @@ target_in_dataset(const vector<dods_uint64> &targetIndices, const vector<dods_ui
  * This method should return the number of indices passed to the server that overlap the
  * spatial coverage of the dataset as defined by its set of STARE indices.
  *
- * @param stareVal - stare values from a constraint expression
- * @param dataStareIndices - stare values being compared, retrieved from the sidecar file. These
+ * @param target_indices - stare values from a constraint expression
+ * @param dataset_indices - stare values being compared, retrieved from the sidecar file. These
  * are the index values that describe the coverage of the dataset.
  */
 unsigned int
-count(const vector<dods_uint64> &stareVal, const vector<dods_uint64> &dataStareIndices) {
+count(const vector<dods_uint64> &target_indices, const vector<dods_uint64> &dataset_indices) {
     unsigned int counter = 0;
-    for (const dods_uint64 &i : stareVal) {
-        for (const dods_uint64 &j : dataStareIndices)
-            // Here we are counting the number of traget indices that overlap the
+    for (const dods_uint64 &i : target_indices) {
+        for (const dods_uint64 &j : dataset_indices)
+            // Here we are counting the number of target indices that overlap the
             // dataset indices.
             if (cmpSpatial(i, j) != 0) {
                 counter++;
-                break;  // exit the inner loop
+                //break;  // exit the inner loop
             }
     }
 
@@ -215,34 +215,35 @@ count(const vector<dods_uint64> &stareVal, const vector<dods_uint64> &dataStareI
 
 /**
  * @brief Return a collection of STARE Matches
- * @param targetIndices Target STARE indices (passed in by a client)
- * @param datasetStareIndices STARE indices of this dataset
- * @param xArray Matching X indices for the corresponding STARE index
- * @param yArray Matching Y indices for the corresponding STARE index
- * @return A STARE Matches collection. Contains the X, Y, and 'matching' target indices.
+ * @param target_indices Target STARE indices (passed in by a client)
+ * @param dataset_indices STARE indices of this dataset
+ * @param dataset_x_coords Matching X indices for the corresponding dataset STARE index
+ * @param dataset_y_coords Matching Y indices for the corresponding dataset STARE index
+ * @return A STARE Matches collection. Contains the X, Y, and 'matching' dataset indices
+ * for the given set of target indices.
  * @see stare_matches
  */
 unique_ptr<stare_matches>
-stare_subset_helper(const vector<dods_uint64> &targetIndices, const vector<dods_uint64> &datasetStareIndices,
-                    const vector<int> &xArray, const vector<int> &yArray)
+stare_subset_helper(const vector<dods_uint64> &target_indices, const vector<dods_uint64> &dataset_indices,
+                    const vector<int> &dataset_x_coords, const vector<int> &dataset_y_coords)
 {
-    assert(datasetStareIndices.size() == xArray.size());
-    assert(datasetStareIndices.size() == yArray.size());
+    assert(dataset_indices.size() == dataset_x_coords.size());
+    assert(dataset_indices.size() == dataset_y_coords.size());
 
     //auto subset = new stare_matches;
     unique_ptr<stare_matches> subset(new stare_matches());
 
-    auto x = xArray.begin();
-    auto y = yArray.begin();
 
-    for (dods_uint64 datasetStareIndex : datasetStareIndices) {
-        for (dods_uint64 targetIndex : targetIndices) {
-            if (cmpSpatial(datasetStareIndex, targetIndex) != 0) { // (datasetStareIndex == targetIndex) {
-                subset->add(*x, *y, targetIndex);
+    for (const dods_uint64 &i : target_indices) {
+        auto x = dataset_x_coords.begin();
+        auto y = dataset_y_coords.begin();
+        for (const dods_uint64 &j : dataset_indices) {
+            if (cmpSpatial(i, j) != 0) {
+                subset->add(*x, *y, j);
             }
+            ++x;
+            ++y;
         }
-        ++x;
-        ++y;
     }
 
     return subset;
@@ -489,12 +490,12 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
         throw BESInternalError("Could not open file " + fullPath, __FILE__, __LINE__);
 
     // Read values from the sidecar file - stare data about a given dataset
-    vector<dods_uint64> datasetStareIndices;
-    get_sidecar_uint64_values(file, s_index_name, datasetStareIndices);
-    vector<dods_int32> xArray;
-    get_sidecar_int32_values(file, "X", xArray);
-    vector<dods_int32> yArray;
-    get_sidecar_int32_values(file, "Y", yArray);
+    vector<dods_uint64> dataset_indices;
+    get_sidecar_uint64_values(file, s_index_name, dataset_indices);
+    vector<dods_int32> dataset_x_coords;
+    get_sidecar_int32_values(file, "X", dataset_x_coords);
+    vector<dods_int32> dataset_y_coords;
+    get_sidecar_int32_values(file, "Y", dataset_y_coords);
 
     BaseType *pBaseType = args->get_rvalue(0)->value(dmr);
     Array *stareSrc = dynamic_cast<Array *>(pBaseType);
@@ -506,11 +507,11 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
 
     stareSrc->read();
 
-    vector<dods_uint64> *targetIndices = extract_uint64_array(stareSrc);
+    vector<dods_uint64> *target_indices = extract_uint64_array(stareSrc);
 
-    unique_ptr <stare_matches> subset = stare_subset_helper(*targetIndices, datasetStareIndices, xArray, yArray);
+    unique_ptr <stare_matches> subset = stare_subset_helper(*target_indices, dataset_indices, dataset_x_coords, dataset_y_coords);
 
-    delete targetIndices;
+    delete target_indices;
 
     // Transfer values to a Structure
     auto result = new Structure("result");

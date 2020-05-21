@@ -662,7 +662,7 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS **dds, ConstraintEvaluato
         // This next step utilizes a well known static method (so really it's a function;),
         // promote_function_output_structures() to look for
         // one or more top level Structures whose name indicates (by way of ending with
-        // "_uwrap") that their contents should be promoted (aka moved) to the top level.
+        // "_unwrap") that their contents should be promoted (aka moved) to the top level.
         // This is in support of a hack around the current API where server side functions
         // may only return a single DAP object and not a collection of objects. The name suffix
         // "_unwrap" is used as a signal from the function to the the various response
@@ -1478,6 +1478,7 @@ void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, bool with_mim
         if (!parse_ok) throw Error("Function Expression (" + d_dap4function + ") failed to parse.");
 
         parser.eval(&function_result);
+
 
         // Now use the results of running the functions for the remainder of the
         // send_data operation.
