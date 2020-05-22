@@ -63,6 +63,9 @@
 
 #include "StareFunctions.h"
 
+// Used with BESDEBUG
+#define STARE "stare"
+
 using namespace libdap;
 using namespace std;
 
@@ -127,7 +130,7 @@ ostream & operator << (ostream &out, const stare_matches &m)
     auto yi = m.y_indices.begin();
 
     while (si != m.stare_indices.end()) {
-        out << "SIndex: " << *si++ << ", coord: x: " << *xi++ << ", y: " << *yi++ << "Target: " << *ti++ << endl;
+        out << "Target: " << *ti++ << ", Dataset Index: " << *si++ << ", coord: x: " << *xi++ << ", y: " << *yi++ << endl;
     }
 
     return out;
@@ -194,18 +197,39 @@ target_in_dataset(const vector<dods_uint64> &targetIndices, const vector<dods_ui
 }
 
 /**
- * @brief How many of the target STARE indices overlap the dataset's STARE indices?
+ * @brief How many of the dataset's STARE indices overlap the target STARE indices?
  *
- * This method should return the number of indices passed to the server that overlap the
- * spatial coverage of the dataset as defined by its set of STARE indices.
+ * This method should return the number of indices of the dataset's spatial coverage
+ * that overlap the spatial coverage passed to the server as defined by  the target
+ * STARE indices.
  *
  * @param target_indices - stare values from a constraint expression
  * @param dataset_indices - stare values being compared, retrieved from the sidecar file. These
  * are the index values that describe the coverage of the dataset.
- * @param boolean_target_match If true this function counts every dataset index that
- * matches every target. The default counts 1 for each target that matches _any_ dataset
- * index.
+ * @param all_target_matches If true this function counts every target index that
+ * overlaps every dataset index. The default counts 1 for each datset index that matches _any_
+ * target index.
  */
+unsigned int
+count(const vector<dods_uint64> &target_indices, const vector<dods_uint64> &dataset_indices, bool all_target_matches /*= false*/) {
+    unsigned int counter = 0;
+    for (const dods_uint64 &i : dataset_indices) {
+        for (const dods_uint64 &j : target_indices)
+            // Here we are counting the number of target indices that overlap the
+            // dataset indices.
+            if (cmpSpatial(i, j) != 0) {
+                counter++;
+                BESDEBUG(STARE, "Matching (dataset, target) indices: " << i << ", " << j << endl);
+                if (!all_target_matches)
+                    break;  // exit the inner loop
+            }
+    }
+
+    return counter;
+}
+
+#if 0
+
 unsigned int
 count(const vector<dods_uint64> &target_indices, const vector<dods_uint64> &dataset_indices, bool boolean_target_match /*= false*/) {
     unsigned int counter = 0;
@@ -215,6 +239,7 @@ count(const vector<dods_uint64> &target_indices, const vector<dods_uint64> &data
             // dataset indices.
             if (cmpSpatial(i, j) != 0) {
                 counter++;
+                BESDEBUG(STARE, "Matching indices: " << i << ", " << j << endl);
                 if (boolean_target_match)
                     break;  // exit the inner loop
             }
@@ -222,6 +247,9 @@ count(const vector<dods_uint64> &target_indices, const vector<dods_uint64> &data
 
     return counter;
 }
+
+#endif
+
 
 /**
  * @brief Return a collection of STARE Matches
@@ -243,6 +271,32 @@ stare_subset_helper(const vector<dods_uint64> &target_indices, const vector<dods
     //auto subset = new stare_matches;
     unique_ptr<stare_matches> subset(new stare_matches());
 
+    auto x = dataset_x_coords.begin();
+    auto y = dataset_y_coords.begin();
+    for (const dods_uint64 &i : dataset_indices) {
+        for (const dods_uint64 &j : target_indices) {
+            if (cmpSpatial(i, j) != 0) {
+                subset->add(*x, *y, i, j);
+            }
+        }
+        ++x;
+        ++y;
+    }
+
+    return subset;
+}
+
+#if 0
+
+unique_ptr<stare_matches>
+stare_subset_helper(const vector<dods_uint64> &target_indices, const vector<dods_uint64> &dataset_indices,
+                    const vector<int> &dataset_x_coords, const vector<int> &dataset_y_coords)
+{
+    assert(dataset_indices.size() == dataset_x_coords.size());
+    assert(dataset_indices.size() == dataset_y_coords.size());
+
+    //auto subset = new stare_matches;
+    unique_ptr<stare_matches> subset(new stare_matches());
 
     for (const dods_uint64 &i : target_indices) {
         auto x = dataset_x_coords.begin();
@@ -258,6 +312,8 @@ stare_subset_helper(const vector<dods_uint64> &target_indices, const vector<dods
 
     return subset;
 }
+
+#endif
 
 /**
  * @brief Return the pathname to an STARE sidecar file for a given dataset.

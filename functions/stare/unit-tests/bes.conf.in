@@ -3,4 +3,4 @@
 FUNCTIONS.stareStoragePath = @abs_top_srcdir@/functions/stare/data
 
 # The sidecar file suffix
-FUNCTIONS.stareSidecarSuffix = _stare
+FUNCTIONS.stareSidecarSuffix = _stare_res

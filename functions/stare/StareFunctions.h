@@ -56,7 +56,7 @@ void get_sidecar_uint64_values(hid_t file, const std::string &variable, std::vec
 bool target_in_dataset(const std::vector<libdap::dods_uint64> &targetIndices,
         const std::vector<libdap::dods_uint64> &dataStareIndices);
 unsigned int count(const std::vector<libdap::dods_uint64> &target_indices,
-        const std:: vector<libdap::dods_uint64> &dataset_indices, bool boolean_target_match = false);
+        const std:: vector<libdap::dods_uint64> &dataset_indices, bool all_target_matches = false);
 
 
 #if 0
