@@ -10,4 +10,4 @@ two region overlap without any of the stare indices intersecting.
 
 Because some of the tests use the Target's s indices with res set to level 14,
 some of the tests will find subsets/intersections when using the full res
-MYD09 datasets stare indices. 
+MYD09 datasets stare indices.

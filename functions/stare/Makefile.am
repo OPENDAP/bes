@@ -25,7 +25,13 @@ bin_PROGRAMS = build_sidecar
 build_sidecar_SOURCES = build_sidecar.cc
 build_sidecar_LDADD = $(AM_LDADD)
 
-EXTRA_DIST =  data
+sample_datadir = $(datadir)/hyrax/data/stare
+
+sample_data_DATA = data/README data/MYD09.A2019003_hacked.h5 \
+data/MYD09.A2019003_hacked_stare.h5 data/MYD09.A2019003_hacked_stare_res.h5 \
+data/Target_overlap_nw.h5 data/Target_overlap_nw_stare.h5 data/Target_overlap_nw_stare_res.h5
+
+EXTRA_DIST =
 
 CLEANFILES = 
 

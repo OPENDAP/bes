@@ -38,6 +38,9 @@
 #include <D4Group.h>
 #include <DMR.h>
 #include <D4ConstraintEvaluator.h>
+#include <D4BaseTypeFactory.h>
+#include <ServerFunctionsList.h>
+#include <D4FunctionEvaluator.h>
 #include <crc.h>
 #include <InternalErr.h>
 #include <util.h>
@@ -66,6 +69,7 @@
 #include "get_ascii_dap4.h"
 
 using namespace dap_asciival;
+using namespace libdap;
 
 BESAsciiTransmit::BESAsciiTransmit() :
         BESTransmitter()
@@ -114,6 +118,37 @@ void BESAsciiTransmit::send_basic_ascii(BESResponseObject *obj, BESDataHandlerIn
 }
 
 /**
+ * Handle parsing the CE and writing the ASCII/CSV representation.
+ * This method can be called using a function result or the original
+ * DMR.
+ */
+void BESAsciiTransmit::send_dap4_csv_helper(ostream &out, DMR *dmr, const string &dap4Constraint) {
+    if (!dap4Constraint.empty()) {
+        D4ConstraintEvaluator d4ce(dmr);
+        bool parse_ok = d4ce.parse(dap4Constraint);
+        if (!parse_ok) throw Error(malformed_expr, "Constraint Expression (" + dap4Constraint + ") failed to parse.");
+    }
+    else {
+        dmr->root()->set_send_p(true);
+    }
+
+    if (dmr->response_limit() != 0 && (dmr->request_size(true) > dmr->response_limit())) {
+        string msg = "The Request for " + long_to_string(dmr->request_size(true))
+                     + "KB is too large; requests for this server are limited to " +
+                     long_to_string(dmr->response_limit())
+                     + "KB.";
+        throw Error(msg);
+    }
+
+    // Now that we are ready to start building the response data we
+    // cancel any pending timeout alarm according to the configuration.
+    BESUtil::conditional_timeout_cancel();
+
+    print_values_as_ascii(dmr, out);
+    out << flush;
+}
+
+/**
  * Transmits DAP4 Data as Comma Separated Values
  */
 void BESAsciiTransmit::send_dap4_csv(BESResponseObject *obj, BESDataHandlerInterface &dhi)
@@ -138,6 +173,32 @@ void BESAsciiTransmit::send_dap4_csv(BESResponseObject *obj, BESDataHandlerInter
         // This might be coded as "if (there's a function) do this else process the CE".
         // Or it might be coded as "if (there's a function) build the new DMR, then fall
         // through and process the CE but on the new DMR". jhrg 9/3/14
+        if (!dap4Function.empty()) {
+            D4BaseTypeFactory d4_factory;
+            DMR function_result(&d4_factory, "function_results");
+
+            // Function modules load their functions onto this list. The list is
+            // part of libdap, not the BES.
+            if (!ServerFunctionsList::TheList())
+                throw Error(
+                        "The function expression could not be evaluated because there are no server functions defined on this server");
+
+            D4FunctionEvaluator parser(dmr, ServerFunctionsList::TheList());
+            bool parse_ok = parser.parse(dap4Function);
+            if (!parse_ok) throw Error("Function Expression (" + dap4Function + ") failed to parse.");
+
+            parser.eval(&function_result);
+
+            // Now use the results of running the functions for the remainder of the
+            // send_data operation.
+            send_dap4_csv_helper(dhi.get_output_stream(), &function_result, dap4Constraint);
+        }
+        else {
+            send_dap4_csv_helper(dhi.get_output_stream(), dmr, dap4Constraint);
+        }
+
+#if 0
+        // ORIG HERE
 
         if (!dap4Constraint.empty()) {
             D4ConstraintEvaluator d4ce(dmr);
@@ -161,6 +222,7 @@ void BESAsciiTransmit::send_dap4_csv(BESResponseObject *obj, BESDataHandlerInter
 
         print_values_as_ascii(dmr, dhi.get_output_stream());
         dhi.get_output_stream() << flush;
+#endif
     }
     catch (Error &e) {
         throw BESDapError("Failed to return values as ascii: " + e.get_error_message(), false, e.get_error_code(),__FILE__, __LINE__);

@@ -1457,7 +1457,6 @@ void BESDapResponseBuilder::intern_dap4_data_using_ce(DMR &dmr)
 
 }
 
-
 void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, bool with_mime_headers)
 {
     // If a function was passed in with this request, evaluate it and use that DMR
@@ -1478,7 +1477,6 @@ void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, bool with_mim
         if (!parse_ok) throw Error("Function Expression (" + d_dap4function + ") failed to parse.");
 
         parser.eval(&function_result);
-
 
         // Now use the results of running the functions for the remainder of the
         // send_data operation.
