@@ -1,0 +1,13 @@
+
+This directory holds tests for the count(), subset() and intersection()
+STARE server functions. The tests use the MYD09 dataset at the 'base'
+with s indices computed to level 27 but with the resolution set to ~level 14
+(using the spacing between the lat/lon points as per build_sidecar's -r
+option). The 'resolution.conf' file can be used with ./testsuite to
+use the full resolution MYD09 s indices instead. Since some of the tests
+use the full res Target dataset, it's possible to see the case where the
+two region overlap without any of the stare indices intersecting.
+
+Because some of the tests use the Target's s indices with res set to level 14,
+some of the tests will find subsets/intersections when using the full res
+MYD09 datasets stare indices.

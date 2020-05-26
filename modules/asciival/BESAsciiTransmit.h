@@ -33,8 +33,14 @@
 #ifndef I_BESAsciiTransmit_h
 #define I_BESAsciiTransmit_h 1
 
+#include <ostream>
+#include <string>
+
 #include <BESTransmitter.h>
 
+namespace libdap {
+    class DMR;
+}
 class BESResponseObject;
 class BESDataHandlerInterface;
 
@@ -50,6 +56,7 @@ public:
 
 	static void send_basic_ascii(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 	static void send_dap4_csv(BESResponseObject *obj, BESDataHandlerInterface &dhi);
+    static void send_dap4_csv_helper(std::ostream &out, libdap::DMR *dmr, const std::string &dap4Constraint);
 };
 
 #endif // I_BESAsciiTransmit_h

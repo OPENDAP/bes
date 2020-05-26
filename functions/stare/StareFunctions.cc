@@ -63,12 +63,23 @@
 
 #include "StareFunctions.h"
 
+// Used with BESDEBUG
+#define STARE "stare"
+
 using namespace libdap;
 using namespace std;
 
 namespace functions {
 
-const string s_index_name = "Stare_Index";
+// These default values can be overridden using BES keys.
+// See StareFunctions.h jhrg 5/21/20
+// If stare_storage_path is empty, expect the sidecar file in the same
+// place as the data file. jhrg 5/26/20
+string stare_storage_path = "";
+string stare_sidecar_suffix = "_sidecar";
+
+
+#if 0
 
 /**
  *
@@ -97,6 +108,8 @@ ostream & operator << (ostream &out, const stare_match &m)
     return out;
 }
 
+#endif
+
 /**
  * @brief Write a collection of STARE Matches to an ostream
  *
@@ -113,12 +126,13 @@ ostream & operator << (ostream &out, const stare_matches &m)
     assert(m.stare_indices.size() == m.x_indices.size()
         && m.x_indices.size() == m.y_indices.size());
 
+    auto ti = m.target_indices.begin();
     auto si = m.stare_indices.begin();
     auto xi = m.x_indices.begin();
     auto yi = m.y_indices.begin();
 
     while (si != m.stare_indices.end()) {
-        out << "SIndex: " << *si++ << ", coord: x: " << *xi++ << ", y: " << *yi++ << endl;
+        out << "Target: " << *ti++ << ", Dataset Index: " << *si++ << ", coord: x: " << *xi++ << ", y: " << *yi++ << endl;
     }
 
     return out;
@@ -185,57 +199,86 @@ target_in_dataset(const vector<dods_uint64> &targetIndices, const vector<dods_ui
 }
 
 /**
- * @brief How many of the target STARE indices overlap the dataset's STARE indices?
+ * @brief How many of the dataset's STARE indices overlap the target STARE indices?
  *
- * This method should return the number of indices passed to the server that overlap the
- * spatial coverage of the dataset as defined by its set of STARE indices.
+ * This method should return the number of indices of the dataset's spatial coverage
+ * that overlap the spatial coverage passed to the server as defined by  the target
+ * STARE indices.
  *
- * @param stareVal - stare values from a constraint expression
- * @param dataStareIndices - stare values being compared, retrieved from the sidecar file. These
+ * @param target_indices - stare values from a constraint expression
+ * @param dataset_indices - stare values being compared, retrieved from the sidecar file. These
  * are the index values that describe the coverage of the dataset.
+ * @param all_target_matches If true this function counts every target index that
+ * overlaps every dataset index. The default counts 1 for each datset index that matches _any_
+ * target index.
  */
 unsigned int
-count(const vector<dods_uint64> &stareVal, const vector<dods_uint64> &dataStareIndices) {
+count(const vector<dods_uint64> &target_indices, const vector<dods_uint64> &dataset_indices, bool all_target_matches /*= false*/) {
     unsigned int counter = 0;
-    for (const dods_uint64 &i : stareVal) {
-        for (const dods_uint64 &j : dataStareIndices)
-            // Here we are counting the number of traget indices that overlap the
+    for (const dods_uint64 &i : dataset_indices) {
+        for (const dods_uint64 &j : target_indices)
+            // Here we are counting the number of target indices that overlap the
             // dataset indices.
             if (cmpSpatial(i, j) != 0) {
                 counter++;
-                break;  // exit the inner loop
+                BESDEBUG(STARE, "Matching (dataset, target) indices: " << i << ", " << j << endl);
+                if (!all_target_matches)
+                    break;  // exit the inner loop
             }
     }
 
     return counter;
 }
 
+#if 0
+
+unsigned int
+count(const vector<dods_uint64> &target_indices, const vector<dods_uint64> &dataset_indices, bool boolean_target_match /*= false*/) {
+    unsigned int counter = 0;
+    for (const dods_uint64 &i : target_indices) {
+        for (const dods_uint64 &j : dataset_indices)
+            // Here we are counting the number of target indices that overlap the
+            // dataset indices.
+            if (cmpSpatial(i, j) != 0) {
+                counter++;
+                BESDEBUG(STARE, "Matching indices: " << i << ", " << j << endl);
+                if (boolean_target_match)
+                    break;  // exit the inner loop
+            }
+    }
+
+    return counter;
+}
+
+#endif
+
+
 /**
  * @brief Return a collection of STARE Matches
- * @param targetIndices Target STARE indices (passed in by a client)
- * @param datasetStareIndices STARE indices of this dataset
- * @param xArray Matching X indices for the corresponding STARE index
- * @param yArray Matching Y indices for the corresponding STARE index
- * @return A STARE Matches collection. Contains the X, Y, and 'matching' target indices.
+ * @param target_indices Target STARE indices (passed in by a client)
+ * @param dataset_indices STARE indices of this dataset
+ * @param dataset_x_coords Matching X indices for the corresponding dataset STARE index
+ * @param dataset_y_coords Matching Y indices for the corresponding dataset STARE index
+ * @return A STARE Matches collection. Contains the X, Y, and 'matching' dataset indices
+ * for the given set of target indices.
  * @see stare_matches
  */
 unique_ptr<stare_matches>
-stare_subset_helper(const vector<dods_uint64> &targetIndices, const vector<dods_uint64> &datasetStareIndices,
-                    const vector<int> &xArray, const vector<int> &yArray)
+stare_subset_helper(const vector<dods_uint64> &target_indices, const vector<dods_uint64> &dataset_indices,
+                    const vector<int> &dataset_x_coords, const vector<int> &dataset_y_coords)
 {
-    assert(datasetStareIndices.size() == xArray.size());
-    assert(datasetStareIndices.size() == yArray.size());
+    assert(dataset_indices.size() == dataset_x_coords.size());
+    assert(dataset_indices.size() == dataset_y_coords.size());
 
     //auto subset = new stare_matches;
     unique_ptr<stare_matches> subset(new stare_matches());
 
-    auto x = xArray.begin();
-    auto y = yArray.begin();
-
-    for (dods_uint64 datasetStareIndex : datasetStareIndices) {
-        for (dods_uint64 targetIndex : targetIndices) {
-            if (cmpSpatial(datasetStareIndex, targetIndex) != 0) { // (datasetStareIndex == targetIndex) {
-                subset->add(*x, *y, targetIndex);
+    auto x = dataset_x_coords.begin();
+    auto y = dataset_y_coords.begin();
+    for (const dods_uint64 &i : dataset_indices) {
+        for (const dods_uint64 &j : target_indices) {
+            if (cmpSpatial(i, j) != 0) {
+                subset->add(*x, *y, i, j);
             }
         }
         ++x;
@@ -245,6 +288,35 @@ stare_subset_helper(const vector<dods_uint64> &targetIndices, const vector<dods_
     return subset;
 }
 
+#if 0
+
+unique_ptr<stare_matches>
+stare_subset_helper(const vector<dods_uint64> &target_indices, const vector<dods_uint64> &dataset_indices,
+                    const vector<int> &dataset_x_coords, const vector<int> &dataset_y_coords)
+{
+    assert(dataset_indices.size() == dataset_x_coords.size());
+    assert(dataset_indices.size() == dataset_y_coords.size());
+
+    //auto subset = new stare_matches;
+    unique_ptr<stare_matches> subset(new stare_matches());
+
+    for (const dods_uint64 &i : target_indices) {
+        auto x = dataset_x_coords.begin();
+        auto y = dataset_y_coords.begin();
+        for (const dods_uint64 &j : dataset_indices) {
+            if (cmpSpatial(i, j) != 0) {
+                subset->add(*x, *y, j, i);
+            }
+            ++x;
+            ++y;
+        }
+    }
+
+    return subset;
+}
+
+#endif
+
 /**
  * @brief Return the pathname to an STARE sidecar file for a given dataset.
  *
@@ -252,24 +324,33 @@ stare_subset_helper(const vector<dods_uint64> &targetIndices, const vector<dods_
  * a the sidecar file that matches the given dataset. The lookup ignores
  * any path component of the dataset; only the file name is used.
  * @param pathName The dataset pathname
+ * @param token Optional extension to the main part of the file name (default '_sidecar').
  * @return The pathname to the matching sidecar file.
  */
 string
-get_sidecar_file_pathname(const string &pathName)
+get_sidecar_file_pathname(const string &pathName, const string &token)
 {
-    size_t granulePos = pathName.find_last_of('/');
-    string granuleName = pathName.substr(granulePos + 1);
+    string granuleName = pathName;
+    if (!stare_storage_path.empty()) {
+        granuleName = pathName.substr(pathName.find_last_of('/') + 1);
+    }
+
     size_t findDot = granuleName.find_last_of('.');
     // Added extraction of the extension since the files won't always be *.h5
     // also switched to .append() instead of '+' because the former is faster.
     // jhrg 11/5/19
     string extension = granuleName.substr(findDot); // ext includes the dot
-    string newPathName = granuleName.substr(0, findDot).append("_sidecar").append(extension);
+    granuleName = granuleName.substr(0, findDot).append(token).append(extension);
 
-    string stareDirectory = TheBESKeys::TheKeys()->read_string_key(STARE_STORAGE_PATH, "/tmp");
+    if (!stare_storage_path.empty()) {
+        // Above the path has been removed
+        return BESUtil::pathConcat(stare_storage_path, granuleName);
+    }
+    else {
+        // stare_storage_path is empty, granuleName is the full path
+        return granuleName;
+    }
 
-    string fullPath = BESUtil::pathConcat(stareDirectory, newPathName);
-    return fullPath;
 }
 
 /**
@@ -353,7 +434,7 @@ StareIntersectionFunction::stare_intersection_dap4_function(D4RValueList *args, 
     }
 
     //Find the filename from the dmr
-    string fullPath = get_sidecar_file_pathname(dmr.filename());
+    string fullPath = get_sidecar_file_pathname(dmr.filename(), stare_sidecar_suffix);
 
     //Read the file and store the datasets
     hid_t file = H5Fopen(fullPath.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
@@ -419,7 +500,7 @@ StareCountFunction::stare_count_dap4_function(D4RValueList *args, DMR &dmr)
     }
 
     //Find the filename from the dmr
-    string fullPath = get_sidecar_file_pathname(dmr.filename());
+    string fullPath = get_sidecar_file_pathname(dmr.filename(), stare_sidecar_suffix);
 
     //Read the file and store the datasets
     hid_t file = H5Fopen(fullPath.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
@@ -475,7 +556,7 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
     }
 
     //Find the filename from the dmr
-    string fullPath = get_sidecar_file_pathname(dmr.filename());
+    string fullPath = get_sidecar_file_pathname(dmr.filename(), stare_sidecar_suffix);
 
     //Read the file and store the datasets
     hid_t file = H5Fopen(fullPath.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
@@ -483,12 +564,12 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
         throw BESInternalError("Could not open file " + fullPath, __FILE__, __LINE__);
 
     // Read values from the sidecar file - stare data about a given dataset
-    vector<dods_uint64> datasetStareIndices;
-    get_sidecar_uint64_values(file, s_index_name, datasetStareIndices);
-    vector<dods_int32> xArray;
-    get_sidecar_int32_values(file, "X", xArray);
-    vector<dods_int32> yArray;
-    get_sidecar_int32_values(file, "Y", yArray);
+    vector<dods_uint64> dataset_indices;
+    get_sidecar_uint64_values(file, s_index_name, dataset_indices);
+    vector<dods_int32> dataset_x_coords;
+    get_sidecar_int32_values(file, "X", dataset_x_coords);
+    vector<dods_int32> dataset_y_coords;
+    get_sidecar_int32_values(file, "Y", dataset_y_coords);
 
     BaseType *pBaseType = args->get_rvalue(0)->value(dmr);
     Array *stareSrc = dynamic_cast<Array *>(pBaseType);
@@ -500,19 +581,31 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
 
     stareSrc->read();
 
-    vector<dods_uint64> *targetIndices = extract_uint64_array(stareSrc);
+    vector<dods_uint64> *target_indices = extract_uint64_array(stareSrc);
 
-    unique_ptr <stare_matches> subset = stare_subset_helper(*targetIndices, datasetStareIndices, xArray, yArray);
+    unique_ptr <stare_matches> subset = stare_subset_helper(*target_indices, dataset_indices, dataset_x_coords, dataset_y_coords);
 
-    delete targetIndices;
+    delete target_indices;
 
-    // Transfer values to a Structure
+    // When no subset is found (none of the target indices match those in the dataset */
+    if (subset->stare_indices.size() == 0) {
+        subset->stare_indices.push_back(0);
+        subset->target_indices.push_back(0);
+        subset->x_indices.push_back(-1);
+        subset->y_indices.push_back(-1);
+    }
+        // Transfer values to a Structure
     auto result = new Structure("result");
 
     Array *stare = new Array("stare", new UInt64("stare"));
     stare->set_value(&(subset->stare_indices[0]), subset->stare_indices.size());
     stare->append_dim(subset->stare_indices.size());
     result->add_var_nocopy(stare);
+
+    Array *target = new Array("target", new UInt64("target"));
+    target->set_value(&(subset->target_indices[0]), subset->target_indices.size());
+    target->append_dim(subset->target_indices.size());
+    result->add_var_nocopy(target);
 
     auto x = new Array("x", new Int32("x"));
     x->set_value(subset->x_indices, subset->x_indices.size());
