@@ -73,7 +73,9 @@ namespace functions {
 
 // These default values can be overridden using BES keys.
 // See StareFunctions.h jhrg 5/21/20
-string stare_storage_path = "./";
+// If stare_storage_path is empty, expect the sidecar file in the same
+// place as the data file. jhrg 5/26/20
+string stare_storage_path = "";
 string stare_sidecar_suffix = "_sidecar";
 
 
@@ -328,21 +330,27 @@ stare_subset_helper(const vector<dods_uint64> &target_indices, const vector<dods
 string
 get_sidecar_file_pathname(const string &pathName, const string &token)
 {
-    size_t granulePos = pathName.find_last_of('/');
-    string granuleName = pathName.substr(granulePos + 1);
+    string granuleName = pathName;
+    if (!stare_storage_path.empty()) {
+        granuleName = pathName.substr(pathName.find_last_of('/') + 1);
+    }
+
     size_t findDot = granuleName.find_last_of('.');
     // Added extraction of the extension since the files won't always be *.h5
     // also switched to .append() instead of '+' because the former is faster.
     // jhrg 11/5/19
     string extension = granuleName.substr(findDot); // ext includes the dot
-    string newPathName = granuleName.substr(0, findDot).append(token).append(extension);
+    granuleName = granuleName.substr(0, findDot).append(token).append(extension);
 
-#if 0
-    string stareDirectory = TheBESKeys::TheKeys()->read_string_key(STARE_STORAGE_PATH, "/tmp");
-#endif
+    if (!stare_storage_path.empty()) {
+        // Above the path has been removed
+        return BESUtil::pathConcat(stare_storage_path, granuleName);
+    }
+    else {
+        // stare_storage_path is empty, granuleName is the full path
+        return granuleName;
+    }
 
-    string fullPath = BESUtil::pathConcat(stare_storage_path, newPathName);
-    return fullPath;
 }
 
 /**

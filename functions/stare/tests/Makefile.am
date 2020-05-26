@@ -33,7 +33,7 @@ bes.conf: bes.conf.in $(top_srcdir)/configure.ac
 resolution.conf: resolution.conf.in $(top_srcdir)/configure.ac
 
 %.conf: %.conf.in
-	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	@clean_abs_top_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > $@
 
