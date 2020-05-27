@@ -31,7 +31,7 @@ NGAP_SRC = NgapRequestHandler.cc NgapModule.cc NgapContainer.cc NgapContainerSto
 NGAP_HDR = NgapNames.h NgapRequestHandler.h NgapModule.h NgapContainer.h NgapContainerStorage.h \
            	NgapApi.h NgapCache.h NgapUtils.h NgapError.h RemoteHttpResource.h curl_utils.h
 
-EXTRA_DIST = rapidjson ngap.conf.in data
+EXTRA_DIST = ngap.conf.in data
 
 CLEANFILES = *~ ngap.conf
 
