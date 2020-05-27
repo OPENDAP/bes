@@ -39,6 +39,28 @@ class DMR;
 
 namespace functions {
 
+const string s_index_name = "Stare_Index";
+
+const std::string STARE_STORAGE_PATH_KEY = "FUNCTIONS.stareStoragePath";
+const std::string STARE_SIDECAR_SUFFIX_KEY = "FUNCTIONS.stareSidecarSuffix";
+
+// These default values can be overridden using BES keys.
+// See DapFunctions.cc. jhrg 5/21/20
+extern string stare_storage_path;
+extern string stare_sidecar_suffix;
+
+std::string get_sidecar_file_pathname(const std::string &pathName, const string &token = "_sidecar");
+void get_sidecar_int32_values(hid_t file, const std::string &variable, std::vector<libdap::dods_int32> &values);
+void get_sidecar_uint64_values(hid_t file, const std::string &variable, std::vector<libdap::dods_uint64> &values);
+
+bool target_in_dataset(const std::vector<libdap::dods_uint64> &targetIndices,
+        const std::vector<libdap::dods_uint64> &dataStareIndices);
+unsigned int count(const std::vector<libdap::dods_uint64> &target_indices,
+        const std:: vector<libdap::dods_uint64> &dataset_indices, bool all_target_matches = false);
+
+
+#if 0
+
 /// X and Y coordinates of a point
 struct point {
     libdap::dods_int32 x;
@@ -58,40 +80,36 @@ struct stare_match {
     friend std::ostream & operator << (std::ostream &out, const stare_match &m);
 };
 
+#endif
+
 /// Hold the result from the subset helper function as a collection of vectors
 struct stare_matches {
     std::vector<libdap::dods_int32> x_indices;
     std::vector<libdap::dods_int32> y_indices;
 
     std::vector<libdap::dods_uint64> stare_indices;
+    std::vector<libdap::dods_uint64> target_indices;
 
     // Pass by value and use move
-    stare_matches(std::vector<libdap::dods_int32> x, const std::vector<libdap::dods_int32> y, const std::vector<libdap::dods_uint64> si)
-        : x_indices(std::move(x)), y_indices(std::move(y)), stare_indices(std::move(si)) {}
+    stare_matches(std::vector<libdap::dods_int32> x, const std::vector<libdap::dods_int32> y,
+            const std::vector<libdap::dods_uint64> si, const std::vector<libdap::dods_uint64> ti)
+        : x_indices(std::move(x)), y_indices(std::move(y)), stare_indices(std::move(si)), target_indices(std::move(ti)) {}
 
     stare_matches() {}
 
-    void add(libdap::dods_int32 x, libdap::dods_int32 y, libdap::dods_uint64 si) {
+    void add(libdap::dods_int32 x, libdap::dods_int32 y, libdap::dods_uint64 si, libdap::dods_uint64 ti) {
         x_indices.push_back(x);
         y_indices.push_back(y);
         stare_indices.push_back(si);
+        target_indices.push_back(ti);
     }
 
     friend std::ostream & operator << (std::ostream &out, const stare_matches &m);
 };
 
-std::string get_sidecar_file_pathname(const std::string &pathName);
-void get_sidecar_int32_values(hid_t file, const std::string &variable, std::vector<libdap::dods_int32> &values);
-void get_sidecar_uint64_values(hid_t file, const std::string &variable, std::vector<libdap::dods_uint64> &values);
-
-bool target_in_dataset(const std::vector<libdap::dods_uint64> &targetIndices, const std::vector<libdap::dods_uint64> &dataStareIndices);
-unsigned int count(const std::vector<libdap::dods_uint64> &stareVal, const std:: vector<libdap::dods_uint64> &stareIndices);
-
-unique_ptr<stare_matches> stare_subset_helper(const std::vector<libdap::dods_uint64> &targetIndices,
-                                              const std::vector<libdap::dods_uint64> &datasetStareIndices,
-                                              const std::vector<int> &xArray, const std::vector<int> &yArray);
-
-const std::string STARE_STORAGE_PATH = "FUNCTIONS.stareStoragePath";
+unique_ptr<stare_matches> stare_subset_helper(const std::vector<libdap::dods_uint64> &target_indices,
+                                              const std::vector<libdap::dods_uint64> &dataset_indices,
+                                              const std::vector<int> &dataset_x_coords, const std::vector<int> &dataset_y_coords);
 
 class StareIntersectionFunction : public libdap::ServerFunction {
 public:

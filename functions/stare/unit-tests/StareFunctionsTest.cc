@@ -57,6 +57,8 @@ static bool debug = false;
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
+static bool bes_debug = false;
+
 class StareFunctionsTest: public TestFixture {
 private:
 	DMR *two_arrays_dmr;
@@ -64,7 +66,14 @@ private:
 public:
 	StareFunctionsTest() : two_arrays_dmr(0), d4_btf(0)
 	{
-	}
+        TheBESKeys::ConfigFile = "bes.conf";
+        // The key names and module variables used here are defined in StareFunctions.cc
+        // These two lines duplicate DapFunctions Module behavior. jhrg 5/21/20
+        stare_storage_path = TheBESKeys::TheKeys()->read_string_key(STARE_STORAGE_PATH_KEY, stare_storage_path);
+        stare_sidecar_suffix = TheBESKeys::TheKeys()->read_string_key(STARE_SIDECAR_SUFFIX_KEY, stare_sidecar_suffix);
+
+        if (bes_debug) BESDebug::SetUp("cerr,stare");
+    }
 
 	virtual ~StareFunctionsTest()
 	{
@@ -80,8 +89,6 @@ public:
 		// Old file name: "/MYD09.A2019003.2040.006.2019005020913.h5";
 
 		two_arrays_dmr->set_filename(filename);
-
-		TheBESKeys::ConfigFile = "bes.conf";
 	}
 
 	virtual void tearDown() {
@@ -149,19 +156,20 @@ public:
 
         DBG(cerr << "result->x_indices.size(): " << result->x_indices.size() << endl);
 
+
         CPPUNIT_ASSERT(result->x_indices.size() == 5);
         CPPUNIT_ASSERT(result->y_indices.size() == 5);
         CPPUNIT_ASSERT(result->stare_indices.size() == 5);
 
         DBG(cerr << *result << endl);
 
-        CPPUNIT_ASSERT(result->stare_indices.at(0) == 3440016191299518400);
+        CPPUNIT_ASSERT(result->stare_indices.at(0) == 3440012343008821258);
         CPPUNIT_ASSERT(result->x_indices.at(0) == 1);
         CPPUNIT_ASSERT(result->y_indices.at(0) == 1);
 
-        CPPUNIT_ASSERT(result->stare_indices.at(1) == 3440016191299518401);
-        CPPUNIT_ASSERT(result->x_indices.at(1) == 1);
-        CPPUNIT_ASSERT(result->y_indices.at(1) == 1);
+        CPPUNIT_ASSERT(result->stare_indices.at(2) == 3440016191299518474);
+        CPPUNIT_ASSERT(result->x_indices.at(2) == 2);
+        CPPUNIT_ASSERT(result->y_indices.at(2) == 2);
     }
 
     // The one and only target index is in the 'dataset'
@@ -183,7 +191,7 @@ public:
 
         DBG(cerr << "test_count_2, count(target, dataset): " << count(target_indices, data_indices) << endl);
 
-        CPPUNIT_ASSERT(count(target_indices, data_indices) == 3);
+        CPPUNIT_ASSERT(count(target_indices, data_indices) == 2);
     }
 
     // Of the two target_indices, none are in the 'dataset.'
@@ -277,7 +285,7 @@ public:
             //Stare - 3440016191299518474 x 10
 
             //Array a_var - uint64 for stare indices
-            //The first index is an actual stare value from: MYD09.A2019003.2040.006.2019005020913_sidecar.h5
+            //The first index is an actual stare value from: MYD09.A2019003.2040.006.2019005020913_stare.h5
             //The final value is made up.
             vector<dods_uint64> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
 
@@ -286,7 +294,7 @@ public:
 
             BaseType *checkHasValue = StareCountFunction::stare_count_dap4_function(&params, *two_arrays_dmr);
 
-            CPPUNIT_ASSERT(dynamic_cast<Int32*> (checkHasValue)->value() == 2);
+            CPPUNIT_ASSERT(dynamic_cast<Int32*> (checkHasValue)->value() == 3);
         }
         catch(Error &e) {
             DBG(cerr << e.get_error_message() << endl);
@@ -350,10 +358,13 @@ int main(int argc, char*argv[]) {
 
     int ch;
 
-    while ((ch = getopt(argc, argv, "dh")) != -1) {
+    while ((ch = getopt(argc, argv, "dDh")) != -1) {
         switch (ch) {
             case 'd':
                 debug = true;
+                break;
+            case 'D':
+                bes_debug = true;
                 break;
             case 'h': {
                 cerr << "StareFunctionsTest has the following tests: " << endl;
