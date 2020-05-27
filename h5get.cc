@@ -160,6 +160,19 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
         }
     }       
 
+    // Here we ignore netCDF-4 specific attributes for DAP4 to make filenetCDF-4 work
+    if (true == is_dap4) {
+        // Remove the NULLTERM etc.
+        string attr_name_str(attr_name.begin(),attr_name.end()-1);
+//cout<<"attr_name_str is "<<attr_name_str <<endl;
+        if(attr_name_str == "CLASS" || attr_name_str == "NAME" || attr_name_str == "_Netcdf4Dimid" 
+           || attr_name_str == "_nc3_strict" || attr_name_str=="_NCProperties") {
+            *ignore_attr_ptr = true;
+            H5Tclose(ty_id);
+            return attrid;
+        }
+    }
+
     hid_t aspace_id = -1;
     if ((aspace_id = H5Aget_space(attrid)) < 0) {
         string msg = "cannot get hdf5 dataspace id for the attribute ";

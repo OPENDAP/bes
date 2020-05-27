@@ -675,16 +675,33 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
             
         if(dimnames_size ==dt_inst.ndims) {
             for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
-                if(dt_inst.dimnames[dim_index] !="")
-                    ar->append_dim(dt_inst.size[dim_index],dt_inst.dimnames[dim_index]);
-                else 
+                if(dt_inst.dimnames[dim_index] !="") {
+                    // D4dimension has to have a name. If no name, no D4dimension(from comments libdap4: Array.cc) 
+                    //ar->append_dim(dt_inst.size[dim_index],dt_inst.dimnames[dim_index]);
+                    D4Dimensions *d4_grp_dims = d4_grp->dims();
+                    // TODO: Need to find all the parent dimension names.
+                    D4Dimension *d4_dim = d4_grp_dims->find_dim(dt_inst.dimnames[dim_index]);
+                    if(!d4_dim) {
+                        d4_dim= new D4Dimension(dt_inst.dimnames[dim_index],dt_inst.size[dim_index]);
+                        d4_grp->dims()->add_dim_nocopy(d4_dim);
+                    }
+                    ar->append_dim(d4_dim);
+                    
+                }
+                else  {
+                    // D4dimension has to have a name. If no name, no D4dimension(from comments libdap4: Array.cc) 
                     ar->append_dim(dt_inst.size[dim_index]);
+                    //TODO: revisit
+                }
             }
             dt_inst.dimnames.clear();
         }
         else {
+            // For DAP4, no need to add dimension if no dimension name
+//#if 0
             for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) 
                 ar->append_dim(dt_inst.size[dim_index]); 
+//#endif
         }
 
         // We need to transform dimension info. to DAP4 group
@@ -767,6 +784,7 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
                 
 
             if(dimnames_size ==dt_inst.ndims) {
+                //TODO: use D4Dimension
                 for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
                     if(dt_inst.dimnames[dim_index] !="")
                         ar->append_dim(dt_inst.size[dim_index],dt_inst.dimnames[dim_index]);
