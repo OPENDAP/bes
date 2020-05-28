@@ -107,14 +107,14 @@ bool CSVRequestHandler::csv_build_das(BESDataHandlerInterface &dhi)
 		Ancillary::read_ancillary_das(*das, accessed);
 		return ret;
 	}
-	catch (InternalErr &e) {
-		throw BESDapError(e.get_error_message(), true, e.get_error_code(), __FILE__, __LINE__);
+	catch (libdap::InternalErr &e) {
+		throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
 	}
-	catch (Error &e) {
+	catch (libdap::Error &e) {
 		throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
 	}
 	catch (...) {
-		throw BESDapError("Caught unknown error build CSV DAS response", true, unknown_error, __FILE__, __LINE__);
+		throw BESDapError("Caught unknown error build CSV DAS response", false, unknown_error, __FILE__, __LINE__);
 	}
 }
 
@@ -146,14 +146,14 @@ bool CSVRequestHandler::csv_build_dds(BESDataHandlerInterface &dhi)
 		bdds->set_constraint(dhi);
 		return ret;
 	}
-	catch (InternalErr &e) {
-		throw BESDapError(e.get_error_message(), true, e.get_error_code(), __FILE__, __LINE__);
+	catch (libdap::InternalErr &e) {
+		throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
 	}
-	catch (Error &e) {
+	catch (libdap::Error &e) {
 		throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
 	}
 	catch (...) {
-		throw BESDapError("Caught unknown error build CSV DDS response", true, unknown_error, __FILE__, __LINE__);
+		throw BESDapError("Caught unknown error build CSV DDS response", false, unknown_error, __FILE__, __LINE__);
 	}
 }
 
@@ -183,14 +183,14 @@ bool CSVRequestHandler::csv_build_data(BESDataHandlerInterface &dhi)
         bdds->set_ia_flag(false);
 		return ret;
 	}
-	catch (InternalErr &e) {
-		throw BESDapError(e.get_error_message(), true, e.get_error_code(), __FILE__, __LINE__);
+	catch (libdap::InternalErr &e) {
+		throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
 	}
-	catch (Error &e) {
+	catch (libdap::Error &e) {
 		throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
 	}
 	catch (...) {
-		throw BESDapError("Caught unknown error build CSV DataDDS response", true, unknown_error, __FILE__, __LINE__);
+		throw BESDapError("Caught unknown error build CSV DataDDS response", false, unknown_error, __FILE__, __LINE__);
 	}
 
 
@@ -225,14 +225,14 @@ bool CSVRequestHandler::csv_build_dmr(BESDataHandlerInterface &dhi)
 		Ancillary::read_ancillary_das(das, data_path);
 		dds.transfer_attributes(&das);
 	}
-	catch (InternalErr &e) {
-		throw BESDapError(e.get_error_message(), true, e.get_error_code(), __FILE__, __LINE__);
+	catch (libdap::InternalErr &e) {
+		throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
 	}
-	catch (Error &e) {
+	catch (libdap::Error &e) {
 		throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
 	}
 	catch (...) {
-		throw BESDapError("Caught unknown error build CSV DMR response", true, unknown_error, __FILE__, __LINE__);
+		throw BESDapError("Caught unknown error build CSV DMR response", false, unknown_error, __FILE__, __LINE__);
 	}
 
 	// Second step, make a DMR using the DDS
