@@ -67,7 +67,7 @@
 #include "CSVDAS.h"
 #include "CSVRequestHandler.h"
 
-using namespace libdap;
+// using namespace libdap;
 
 CSVRequestHandler::CSVRequestHandler(string name) :
 		BESRequestHandler(name)
