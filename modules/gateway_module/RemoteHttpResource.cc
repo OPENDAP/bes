@@ -224,7 +224,7 @@ void RemoteHttpResource::retrieveResource()
         }
 
         stringstream msg;
-        msg << prolog << "Failed to acquire cache read lock for remote resource: '" << d_remoteResourceUrl << "\n";
+        msg << prolog << "Failed to acquire cache read lock for remote resource: '" << d_remoteResourceUrl << endl;
         throw BESInternalError(msg.str(),__FILE__,__LINE__);
 
     }
