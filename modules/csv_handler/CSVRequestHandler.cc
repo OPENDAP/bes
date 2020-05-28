@@ -68,6 +68,8 @@
 #include "CSVRequestHandler.h"
 
 // using namespace libdap;
+#define prolog std::string("CSVRequestHandler::").append(__func__).append("() - ")
+#define MODULE "csv"
 
 CSVRequestHandler::CSVRequestHandler(string name) :
 		BESRequestHandler(name)
@@ -114,7 +116,7 @@ bool CSVRequestHandler::csv_build_das(BESDataHandlerInterface &dhi)
 		throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
 	}
 	catch (...) {
-		throw BESDapError("Caught unknown error build CSV DAS response", false, unknown_error, __FILE__, __LINE__);
+		throw BESDapError(prolog + "Caught unknown error building the DAS response", false, unknown_error, __FILE__, __LINE__);
 	}
 }
 
@@ -153,7 +155,7 @@ bool CSVRequestHandler::csv_build_dds(BESDataHandlerInterface &dhi)
 		throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
 	}
 	catch (...) {
-		throw BESDapError("Caught unknown error build CSV DDS response", false, unknown_error, __FILE__, __LINE__);
+		throw BESDapError(prolog + "Caught unknown error building the DDS response", false, unknown_error, __FILE__, __LINE__);
 	}
 }
 
@@ -179,7 +181,7 @@ bool CSVRequestHandler::csv_build_data(BESDataHandlerInterface &dhi)
 		bdds->set_constraint(dhi);
 
         // We don't need to build the DAS here. Set the including attribute flag to false. KY 10/30/19
-        BESDEBUG("csv", "Data ACCESS build_data(): set the including attribute flag to false: "<<accessed << endl);
+        BESDEBUG(MODULE, prolog << "Data ACCESS build_data(): set the including attribute flag to false: "<<accessed << endl);
         bdds->set_ia_flag(false);
 		return ret;
 	}
@@ -190,7 +192,7 @@ bool CSVRequestHandler::csv_build_data(BESDataHandlerInterface &dhi)
 		throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
 	}
 	catch (...) {
-		throw BESDapError("Caught unknown error build CSV DataDDS response", false, unknown_error, __FILE__, __LINE__);
+		throw BESDapError(prolog + "Caught unknown error building the DataDDS response", false, unknown_error, __FILE__, __LINE__);
 	}
 
 
@@ -232,7 +234,7 @@ bool CSVRequestHandler::csv_build_dmr(BESDataHandlerInterface &dhi)
 		throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
 	}
 	catch (...) {
-		throw BESDapError("Caught unknown error build CSV DMR response", false, unknown_error, __FILE__, __LINE__);
+		throw BESDapError(prolog + "Caught unknown error building the DMR response", false, unknown_error, __FILE__, __LINE__);
 	}
 
 	// Second step, make a DMR using the DDS
@@ -313,7 +315,7 @@ void CSVRequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
 	csv_read_attributes(das, dataset_name);
 	Ancillary::read_ancillary_das(das, dataset_name);
 	dds->transfer_attributes(&das);
-    BESDEBUG("csv", "Data ACCESS in add_attributes(): set the including attribute flag to true: "<<dataset_name << endl);
+    BESDEBUG(MODULE, prolog << "Data ACCESS in add_attributes(): set the including attribute flag to true: "<<dataset_name << endl);
     bdds->set_ia_flag(true);
 	return;
 }
