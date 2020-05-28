@@ -33,9 +33,13 @@
 #include <string>
 #include <iostream>
 
-#include <BESDebug.h>
-#include <BESUtil.h>
-#include <BESInternalError.h>
+#include "BESDebug.h"
+#include "BESUtil.h"
+#include "BESSyntaxUserError.h"
+#include "BESNotFoundError.h"
+#include "BESTimeoutError.h"
+#include "BESForbiddenError.h"
+#include "BESInternalError.h"
 
 #include "curl_utils.h"
 #include "HttpdCatalogNames.h"
@@ -291,19 +295,40 @@ void RemoteHttpResource::writeResourceToFile(int fd)
     try {
 #endif
 
-    BESDEBUG(MODULE,
-        "RemoteHttpResource::writeResourceToFile() - Saving resource " << d_remoteResourceUrl << " to cache file " << d_resourceCacheFileName << endl);
+    BESDEBUG(MODULE,prolog << "Saving resource " << d_remoteResourceUrl << " to cache file " << d_resourceCacheFileName << endl);
 
     status = read_url(d_curl, d_remoteResourceUrl, fd, d_response_headers, d_request_headers, d_error_buffer); // Throws Error.
 
     if (status >= 400) {
-        BESDEBUG(MODULE, prolog << "HTTP returned an error status: " << status << endl);
-        ostringstream oss;
-        oss << "Error while reading the URL: '";
-        oss << d_remoteResourceUrl;
-        oss << "' The HTTP request returned a status of " << status << " which means '";
-        oss << http_status_to_string(status) << "' \n";
-        throw BESInternalError(oss.str(), __FILE__, __LINE__);
+        BESDEBUG(MODULE, prolog << "ERROR: HTTP request returned status: " << status << endl);
+        // delete resp_hdrs; resp_hdrs = 0;
+        stringstream msg;
+        msg << prolog << "Error while reading the URL: \"" <<  d_remoteResourceUrl << "\", ";;
+        for(unsigned int i=0; i<d_request_headers->size() ;i++){
+            msg << "reqhdr[" << i << "]: \"" << (*d_request_headers)[i] << "\", ";
+        }
+        msg << "The HTTP request returned a status of " << status << " which means '" ;
+        msg << httpd_catalog::http_status_to_string(status) << "'" << endl;
+        BESDEBUG(MODULE, prolog << "ERROR: HTTP request returned status: " << status << endl);
+        switch(status) {
+
+            case 400:
+                throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+
+            case 404:
+                throw BESNotFoundError(msg.str(), __FILE__, __LINE__);
+
+            case 408:
+                throw BESTimeoutError(msg.str(), __FILE__, __LINE__);
+
+            case 401:
+            case 402:
+            case 403:
+                throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
+
+            default:
+                throw BESInternalError(msg.str(), __FILE__, __LINE__);
+        }
     }
 
     BESDEBUG(MODULE, prolog << "Resource " << d_remoteResourceUrl << " saved to cache file " << d_resourceCacheFileName << endl);
