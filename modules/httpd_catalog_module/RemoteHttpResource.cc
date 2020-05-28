@@ -266,9 +266,7 @@ void RemoteHttpResource::retrieveResource()
         string msg = prolog + "Failed to acquire cache read lock for remote resource: '";
         msg += d_remoteResourceUrl + "\n";
         throw BESInternalError(msg, __FILE__, __LINE__);
-#if 0
-        throw libdap::Error(msg);
-#endif
+
     }
     catch (...) {
         BESDEBUG(MODULE, "RemoteHttpResource::retrieveResource() - Caught exception, unlocking cache and re-throw." << endl);
