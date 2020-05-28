@@ -13,15 +13,15 @@
 #include "rapidxml/rapidxml_utils.hpp"
 #include "rapidxml/rapidxml_print.hpp"
 
-#include "rapidjson/document.h"
-#include "rapidjson/prettywriter.h"
-#include "rapidjson/encodedstream.h"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/reader.h"
-#include "rapidjson/writer.h"
-#include "rapidjson/filereadstream.h"
-#include "rapidjson/filewritestream.h"
-#include "rapidjson/error/en.h"
+#include "../../rapidjson/document.h"
+#include "../../rapidjson/prettywriter.h"
+#include "../../rapidjson/encodedstream.h"
+#include "../../rapidjson/stringbuffer.h"
+#include "../../rapidjson/reader.h"
+#include "../../rapidjson/writer.h"
+#include "../../rapidjson/filereadstream.h"
+#include "../../rapidjson/filewritestream.h"
+#include "../../rapidjson/error/en.h"
 
 // TODO Remove this once we no longer have to support CentOS6 builds using
 // the default compiler. jhrg 12/31/19

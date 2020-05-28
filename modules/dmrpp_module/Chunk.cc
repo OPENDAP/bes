@@ -38,8 +38,6 @@
 
 #include "xml2json/include/xml2json.hpp"
 
-#include "xml2json/include/rapidjson/document.h"
-#include "xml2json/include/rapidjson/writer.h"
 //#include "xml2json/include/rapidjson/stringbuffer.h"
 
 #include "Chunk.h"
