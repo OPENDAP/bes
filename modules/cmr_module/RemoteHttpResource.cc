@@ -295,8 +295,7 @@ void RemoteHttpResource::writeResourceToFile(int fd) {
                 msg << "reqhdr[" << i << "]: \"" << (*d_request_headers)[i] << "\", ";
             }
             msg <<    "The HTTP request returned a status of " << status << " which means '" <<
-                cmr::http_status_to_string(status) << "'" << endl;
-            BESDEBUG(MODULE, prolog << "ERROR: HTTP request returned status: " << status << endl);
+                cmr::http_status_to_string(status) << "'";
             switch(status) {
 
                 case 400:
