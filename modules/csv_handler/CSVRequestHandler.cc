@@ -115,6 +115,9 @@ bool CSVRequestHandler::csv_build_das(BESDataHandlerInterface &dhi)
 	catch (libdap::Error &e) {
 		throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
 	}
+    catch (BESError &e) {
+        throw e;
+    }
 	catch (...) {
 		throw BESDapError(prolog + "Caught unknown error building the DAS response", false, unknown_error, __FILE__, __LINE__);
 	}
@@ -194,6 +197,9 @@ bool CSVRequestHandler::csv_build_data(BESDataHandlerInterface &dhi)
 	catch (libdap::Error &e) {
 		throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
 	}
+    catch (BESError &e) {
+        throw e;
+    }
 	catch (...) {
 		throw BESDapError(prolog + "Caught unknown error building the DataDDS response", false, unknown_error, __FILE__, __LINE__);
 	}
@@ -236,6 +242,9 @@ bool CSVRequestHandler::csv_build_dmr(BESDataHandlerInterface &dhi)
 	catch (libdap::Error &e) {
 		throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
 	}
+    catch (BESError &e) {
+        throw e;
+    }
 	catch (...) {
 		throw BESDapError(prolog + "Caught unknown error building the DMR response", false, unknown_error, __FILE__, __LINE__);
 	}
