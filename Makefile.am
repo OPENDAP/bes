@@ -29,7 +29,12 @@ endif
 SUBDIRS = dispatch xmlcommand ppt server cmdln standalone docs bin templates hello_world
 
 if LIBDAP
-SUBDIRS += functions dap dapreader modules
+SUBDIRS += dap dapreader
+
+if DAP_BUILTIN_MODULES
+SUBDIRS += functions modules
+endif
+
 endif
 
 bin_SCRIPTS = bes-config bes-config-pkgconfig bes-tmpfiles-conf

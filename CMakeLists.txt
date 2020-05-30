@@ -4,7 +4,7 @@
 # CLion needs to navigate the Hyrax code. jhrg 12/5/19
 
 # Comment/Remove this if it's problematic. jhrg 5/13/20
-add_subdirectory(modules/sql_handler)
+#add_subdirectory(modules/sql_handler)
 
 # Included because we want the IDE to know about the library sources, not
 # the installed headers. This might make for some consistency issues if the
