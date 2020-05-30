@@ -151,9 +151,12 @@ bool CSVRequestHandler::csv_build_dds(BESDataHandlerInterface &dhi)
 	catch (libdap::InternalErr &e) {
 		throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
 	}
-	catch (libdap::Error &e) {
-		throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
-	}
+    catch (libdap::Error &e) {
+        throw BESDapError(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
+    }
+    catch (BESError &e) {
+        throw e;
+    }
 	catch (...) {
 		throw BESDapError(prolog + "Caught unknown error building the DDS response", false, unknown_error, __FILE__, __LINE__);
 	}
