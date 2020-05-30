@@ -569,7 +569,7 @@ int BESInterface::execute_request(const string &from)
         stringstream msg;
         msg << __PRETTY_FUNCTION__ << " - Caught C++ Exception. msg: " << e.what() << endl;
         BESDEBUG("bes", msg.str() << endl );
-        BESInternalError ex(msg.str(), __FILE__, __LINE__);
+        BESInternalFatalError ex(msg.str(), __FILE__, __LINE__);
         status = handleException(ex, *d_dhi_ptr);
     }
     catch (...) {
