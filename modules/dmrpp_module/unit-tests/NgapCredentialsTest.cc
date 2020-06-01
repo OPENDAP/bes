@@ -37,9 +37,9 @@
 
 #include <curl/curl.h>
 
-#include "../rapidjson/document.h"
-#include "../rapidjson/writer.h"
-#include "../rapidjson/stringbuffer.h"
+#include "rapidjson/document.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/stringbuffer.h"
 
 #if HAVE_CURL_MULTI_H
 #include <curl/multi.h>
