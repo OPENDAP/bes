@@ -23,17 +23,22 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include <unistd.h>
+#include <sstream>
 #include <algorithm>    // std::for_each
 
 #include <GNURegex.h>
 
 #include "util.h"
 #include "BESDebug.h"
+#include "BESInternalError.h"
 #include "GatewayUtils.h"
 
 #include "curl_utils.h"
 
 using namespace std;
+
+#define prolog std::string("gateway/curl_utils::").append(__func__).append("() - ")
+#define MODULE "curl"
 
 namespace gateway {
 
@@ -90,7 +95,7 @@ string http_status_to_string(int status)
     else if (status >= SERVER_ERR_MIN && status <= SERVER_ERR_MAX)
         return string(http_server_errors[status - SERVER_ERR_MIN]);
     else
-        return string("Unknown Error: This indicates a problem with libdap++.\nPlease report this to support@opendap.org.");
+        return string("Unknown Error: Please report this to support@opendap.org.");
 }
 
 static string getCurlAuthTypeName(const int authType){
@@ -168,9 +173,9 @@ static size_t writeToOpenfileDescriptor( char *data, size_t /* size */, size_t n
 
     int *fd = (int *) userdata;
 
-    BESDEBUG("curl", "curl_utils::writeToOpenfileDescriptor() - Bytes received " << libdap::long_to_string(nmemb) << endl);
+    BESDEBUG(MODULE, prolog << "Bytes received " << libdap::long_to_string(nmemb) << endl);
     int wrote = write(*fd, data, nmemb);
-    BESDEBUG("curl", "curl_utils::writeToOpenfileDescriptor() - Bytes written " << libdap::long_to_string(wrote) << endl);
+    BESDEBUG(MODULE, prolog << "Bytes written " << libdap::long_to_string(wrote) << endl);
 
     return wrote;
 }
@@ -201,7 +206,7 @@ static size_t writeToOpenfileDescriptor( char *data, size_t /* size */, size_t n
 
 static size_t save_raw_http_headers(void *ptr, size_t size, size_t nmemb, void *resp_hdrs)
 {
-    BESDEBUG("curl",  "curl_utils::save_raw_http_headers() - Inside the header parser." << endl);
+    BESDEBUG(MODULE,  prolog << "Inside the header parser." << endl);
     vector<string> *hdrs = static_cast<vector<string> * >(resp_hdrs);
 
     // Grab the header, minus the trailing newline. Or \r\n pair.
@@ -213,7 +218,7 @@ static size_t save_raw_http_headers(void *ptr, size_t size, size_t nmemb, void *
 
     // Store all non-empty headers that are not HTTP status codes
     if (complete_line != "" && complete_line.find("HTTP") == string::npos) {
-        BESDEBUG("curl",  "curl_utils::save_raw_http_headers() - Header line: " << complete_line << endl);
+        BESDEBUG(MODULE,  prolog << "Header line: " << complete_line << endl);
         hdrs->push_back(complete_line);
     }
 
@@ -231,27 +236,27 @@ static int curl_debug(CURL *, curl_infotype info, char *msg, size_t size, void  
 
     switch (info) {
     case CURLINFO_TEXT:
-        BESDEBUG("curl", "curl_utils::curl_debug() - Text: " << message << endl ); break;
+        BESDEBUG(MODULE, prolog << "Text: " << message << endl ); break;
     case CURLINFO_HEADER_IN:
-        BESDEBUG("curl", "curl_utils::curl_debug() - Header in: " << message << endl ); break;
+        BESDEBUG(MODULE, prolog << "Header in: " << message << endl ); break;
     case CURLINFO_HEADER_OUT:
-        BESDEBUG("curl", "curl_utils::curl_debug() - Header out: " << endl << message << endl ); break;
+        BESDEBUG(MODULE, prolog << "Header out: " << endl << message << endl ); break;
     case CURLINFO_DATA_IN:
-        BESDEBUG("curl", "curl_utils::curl_debug() - Data in: " << message << endl ); break;
+        BESDEBUG(MODULE, prolog << "Data in: " << message << endl ); break;
     case CURLINFO_DATA_OUT:
-        BESDEBUG("curl", "curl_utils::curl_debug() - Data out: " << message << endl ); break;
+        BESDEBUG(MODULE, prolog << "Data out: " << message << endl ); break;
     case CURLINFO_END:
-        BESDEBUG("curl", "curl_utils::curl_debug() - End: " << message << endl ); break;
+        BESDEBUG(MODULE, prolog << "End: " << message << endl ); break;
 #ifdef CURLINFO_SSL_DATA_IN
     case CURLINFO_SSL_DATA_IN:
-        BESDEBUG("curl", "curl_utils::curl_debug() - SSL Data in: " << message << endl ); break;
+        BESDEBUG(MODULE, prolog << "SSL Data in: " << message << endl ); break;
 #endif
 #ifdef CURLINFO_SSL_DATA_OUT
     case CURLINFO_SSL_DATA_OUT:
-        BESDEBUG("curl", "curl_utils::curl_debug() - SSL Data out: " << message << endl ); break;
+        BESDEBUG(MODULE, prolog << "SSL Data out: " << message << endl ); break;
 #endif
     default:
-        BESDEBUG("curl", "curl_utils::curl_debug() - Curl info: " << message << endl ); break;
+        BESDEBUG(MODULE, prolog << "Curl info: " << message << endl ); break;
     }
     return 0;
 }
@@ -274,7 +279,7 @@ public:
 
     void operator()(const string &header)
     {
-        BESDEBUG("curl", "BuildHeaders::operator() - Adding '" << header.c_str() << "' to the header list." << endl);
+        BESDEBUG(MODULE, prolog << "Adding '" << header.c_str() << "' to the header list." << endl);
         d_cl = curl_slist_append(d_cl, header.c_str());
     }
 
@@ -304,7 +309,7 @@ public:
  *
  */
 bool configureProxy(CURL *curl, const string &url) {
-    BESDEBUG( "curl", "curl_utils::configureProxy() - BEGIN." << endl);
+    BESDEBUG( MODULE, prolog << "BEGIN." << endl);
 
     bool using_proxy = false;
 
@@ -330,26 +335,26 @@ bool configureProxy(CURL *curl, const string &url) {
 
     }
     if (using_proxy) {
-        BESDEBUG( "curl", "curl_utils::configureProxy() - Found proxy configuration." << endl);
+        BESDEBUG( MODULE, prolog << "Found proxy configuration." << endl);
 
         // Don't set up the proxy server for URLs that match the 'NoProxy'
         // regex set in the gateway.conf file.
 
         // Don't create the regex if the string is empty
         if (!GatewayUtils::NoProxyRegex.empty()) {
-            BESDEBUG( "curl", "curl_utils::configureProxy() - Found NoProxyRegex." << endl);
+            BESDEBUG( MODULE, prolog << "Found NoProxyRegex." << endl);
             libdap::Regex r(GatewayUtils::NoProxyRegex.c_str());
             if (r.match(url.c_str(), url.length()) != -1) {
-                BESDEBUG( "curl", "curl_utils::configureProxy() - Found NoProxy match. Regex: " << GatewayUtils::NoProxyRegex << "; Url: " << url << endl);
+                BESDEBUG( MODULE, prolog << "Found NoProxy match. Regex: " << GatewayUtils::NoProxyRegex << "; Url: " << url << endl);
                 using_proxy = false;
             }
         }
 
         if (using_proxy) {
 
-            BESDEBUG("curl", "curl_utils::configureProxy() - Setting up a proxy server." << endl);
-            BESDEBUG("curl", "curl_utils::configureProxy() - Proxy host: " << proxyHost << endl);
-            BESDEBUG("curl", "curl_utils::configureProxy() - Proxy port: " << proxyPort << endl);
+            BESDEBUG(MODULE, prolog << "Setting up a proxy server." << endl);
+            BESDEBUG(MODULE, prolog << "Proxy host: " << proxyHost << endl);
+            BESDEBUG(MODULE, prolog << "Proxy port: " << proxyPort << endl);
 
             curl_easy_setopt(curl, CURLOPT_PROXY, proxyHost.data());
             curl_easy_setopt(curl, CURLOPT_PROXYPORT, proxyPort);
@@ -363,19 +368,19 @@ bool configureProxy(CURL *curl, const string &url) {
             // According to http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTPROXYAUTH As of 4/21/08 only NTLM, Digest and Basic work.
 
 #if 0
-            BESDEBUG("curl", "curl_utils::configureProxy() - CURLOPT_PROXYAUTH       = " << CURLOPT_PROXYAUTH << endl);
-            BESDEBUG("curl", "curl_utils::configureProxy() - CURLAUTH_BASIC          = " << CURLAUTH_BASIC << endl);
-            BESDEBUG("curl", "curl_utils::configureProxy() - CURLAUTH_DIGEST         = " << CURLAUTH_DIGEST << endl);
-            BESDEBUG("curl", "curl_utils::configureProxy() - CURLAUTH_DIGEST_IE      = " << CURLAUTH_DIGEST_IE << endl);
-            BESDEBUG("curl", "curl_utils::configureProxy() - CURLAUTH_GSSNEGOTIATE   = " << CURLAUTH_GSSNEGOTIATE << endl);
-            BESDEBUG("curl", "curl_utils::configureProxy() - CURLAUTH_NTLM           = " << CURLAUTH_NTLM << endl);
-            BESDEBUG("curl", "curl_utils::configureProxy() - CURLAUTH_ANY            = " << CURLAUTH_ANY << endl);
-            BESDEBUG("curl", "curl_utils::configureProxy() - CURLAUTH_ANYSAFE        = " << CURLAUTH_ANYSAFE << endl);
-            BESDEBUG("curl", "curl_utils::configureProxy() - CURLAUTH_ONLY           = " << CURLAUTH_ONLY << endl);
-            BESDEBUG("curl", "curl_utils::configureProxy() - Using CURLOPT_PROXYAUTH = " << proxyAuthType << endl);
+            BESDEBUG(MODULE, prolog << "CURLOPT_PROXYAUTH       = " << CURLOPT_PROXYAUTH << endl);
+            BESDEBUG(MODULE, prolog << "CURLAUTH_BASIC          = " << CURLAUTH_BASIC << endl);
+            BESDEBUG(MODULE, prolog << "CURLAUTH_DIGEST         = " << CURLAUTH_DIGEST << endl);
+            BESDEBUG(MODULE, prolog << "CURLAUTH_DIGEST_IE      = " << CURLAUTH_DIGEST_IE << endl);
+            BESDEBUG(MODULE, prolog << "CURLAUTH_GSSNEGOTIATE   = " << CURLAUTH_GSSNEGOTIATE << endl);
+            BESDEBUG(MODULE, prolog << "CURLAUTH_NTLM           = " << CURLAUTH_NTLM << endl);
+            BESDEBUG(MODULE, prolog << "CURLAUTH_ANY            = " << CURLAUTH_ANY << endl);
+            BESDEBUG(MODULE, prolog << "CURLAUTH_ANYSAFE        = " << CURLAUTH_ANYSAFE << endl);
+            BESDEBUG(MODULE, prolog << "CURLAUTH_ONLY           = " << CURLAUTH_ONLY << endl);
+            BESDEBUG(MODULE, prolog << "Using CURLOPT_PROXYAUTH = " << proxyAuthType << endl);
 #endif
 
-            BESDEBUG("curl", "curl_utils::configureProxy() - Using CURLOPT_PROXYAUTH = " << getCurlAuthTypeName(proxyAuthType) << endl);
+            BESDEBUG(MODULE, prolog << "Using CURLOPT_PROXYAUTH = " << getCurlAuthTypeName(proxyAuthType) << endl);
             curl_easy_setopt(curl, CURLOPT_PROXYAUTH, proxyAuthType);
 // #endif
 
@@ -383,22 +388,22 @@ bool configureProxy(CURL *curl, const string &url) {
 
             if (!proxyUser.empty()){
                 curl_easy_setopt(curl, CURLOPT_PROXYUSERNAME, proxyUser.data());
-                BESDEBUG("curl", "curl_utils::configureProxy() - CURLOPT_PROXYUSER : " << proxyUser << endl);
+                BESDEBUG(MODULE, prolog << "CURLOPT_PROXYUSER : " << proxyUser << endl);
 
                 if (!proxyPassword.empty()){
                     curl_easy_setopt(curl, CURLOPT_PROXYPASSWORD, proxyPassword.data());
-                    BESDEBUG("curl", "curl_utils::configureProxy() - CURLOPT_PROXYPASSWORD: " << proxyPassword << endl);
+                    BESDEBUG(MODULE, prolog << "CURLOPT_PROXYPASSWORD: " << proxyPassword << endl);
                 }
             }
             else if (!proxyUserPW.empty()){
-                BESDEBUG("curl",
-                        "curl_utils::configureProxy() - CURLOPT_PROXYUSERPWD : " << proxyUserPW << endl);
+                BESDEBUG(MODULE,
+                        prolog << "CURLOPT_PROXYUSERPWD : " << proxyUserPW << endl);
                 curl_easy_setopt(curl, CURLOPT_PROXYUSERPWD, proxyUserPW.data());
             }
 
         }
     }
-    BESDEBUG( "curl", "curl_utils::configureProxy() - END." << endl);
+    BESDEBUG( MODULE, prolog << "END." << endl);
 
     return using_proxy;
 }
@@ -493,15 +498,15 @@ CURL *init(char *error_buffer)
 
 
     if (curl_trace) {
-        BESDEBUG("curl", "curl_utils::www_lib_init() - Curl version: " << curl_version() << endl);
+        BESDEBUG(MODULE, prolog << "Curl version: " << curl_version() << endl);
         curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
-        BESDEBUG("curl", "curl_utils::www_lib_init() - Curl in verbose mode."<< endl);
+        BESDEBUG(MODULE, prolog << "Curl in verbose mode."<< endl);
         curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, curl_debug);
-        BESDEBUG("curl", "curl_utils::www_lib_init() - Curl debugging function installed."<< endl);
+        BESDEBUG(MODULE, prolog << "Curl debugging function installed."<< endl);
     }
 
 
-    BESDEBUG("curl", "curl_utils::www_lib_init() - curl: " << curl << endl);
+    BESDEBUG(MODULE, prolog << "curl: " << curl << endl);
 
     return curl;
 
@@ -534,7 +539,7 @@ long read_url(CURL *curl,
               char error_buffer[])
 {
 
-    BESDEBUG("curl", "curl_utils::read_url() - BEGIN" << endl);
+    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
 
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
@@ -559,7 +564,6 @@ long read_url(CURL *curl,
         req_hdrs = for_each(request_headers->begin(), request_headers->end(), req_hdrs);
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, req_hdrs.get_headers());
 
-
     // Pass save_raw_http_headers() a pointer to the vector<string> where the
     // response headers may be stored. Callers can use the resp_hdrs
     // value/result parameter to get the raw response header information .
@@ -572,19 +576,26 @@ long read_url(CURL *curl,
     curl_slist_free_all(req_hdrs.get_headers());
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, 0);
 
-
-    if (res != 0){
-        BESDEBUG("curl", "curl_utils::read_url() - OUCH! CURL returned an error! curl msg:  " << curl_easy_strerror(res) << endl);
-        BESDEBUG("curl", "curl_utils::read_url() - OUCH! CURL returned an error! error_buffer:  " << error_buffer << endl);
-        throw libdap::Error(error_buffer);
+    // Did cURL have a problem?
+    if (res != CURLE_OK){
+        stringstream msg;
+        msg << "The cURL library encountered an error when asked to retrieve the URL: " << url <<
+            " cURL message: " << error_buffer;
+        BESDEBUG(MODULE, prolog << "OUCH! CURL returned an error! curl msg:  " << curl_easy_strerror(res) << endl);
+        BESDEBUG(MODULE, prolog << msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
     }
 
+    // Check HTTP status of response.
     long status;
     res = curl_easy_getinfo(curl, CURLINFO_HTTP_CODE, &status);
-    BESDEBUG("curl", "curl_utils::read_url() - HTTP Status " << status << endl);
-    if (res != CURLE_OK)
-        throw libdap::Error(error_buffer);
-    BESDEBUG("curl", "curl_utils::read_url() - END" << endl);
+    BESDEBUG(MODULE, prolog << "HTTP Status " << status << endl);
+    if (res != CURLE_OK){
+        string msg = "The cURL library errored when asked for the HTTP "
+                     "status associated with the response from : " + url;
+        throw BESInternalError(msg,__FILE__,__LINE__);
+    }
+    BESDEBUG(MODULE, prolog << "END" << endl);
 
     return status;
 }
