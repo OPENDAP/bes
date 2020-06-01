@@ -11,7 +11,7 @@ ACLOCAL_AMFLAGS = -I conf
 M_NAME=ngap_module
 M_VER=1.0.4
 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand $(DAP_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand $(DAP_CFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
@@ -31,7 +31,7 @@ NGAP_SRC = NgapRequestHandler.cc NgapModule.cc NgapContainer.cc NgapContainerSto
 NGAP_HDR = NgapNames.h NgapRequestHandler.h NgapModule.h NgapContainer.h NgapContainerStorage.h \
            	NgapApi.h NgapCache.h NgapUtils.h NgapError.h RemoteHttpResource.h curl_utils.h
 
-EXTRA_DIST = rapidjson ngap.conf.in data
+EXTRA_DIST = ngap.conf.in data
 
 CLEANFILES = *~ ngap.conf
 

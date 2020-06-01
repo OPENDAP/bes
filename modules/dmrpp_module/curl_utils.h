@@ -7,7 +7,7 @@
 
 #include <curl/curl.h>
 #include <string>
-#include "xml2json/include/rapidjson/document.h"
+#include "../rapidjson/document.h"
 
 namespace curl {
 
