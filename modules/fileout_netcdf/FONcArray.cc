@@ -138,10 +138,13 @@ void FONcArray::convert(vector<string> embed)
         d_chunksizes.push_back(size <= MAX_CHUNK_SIZE ? size: MAX_CHUNK_SIZE);
 
         BESDEBUG("fonc", "FONcArray::convert() - dim num: " << dimnum << ", dim size: " << size << ", chunk size: " << d_chunksizes[dimnum] << endl);
+        BESDEBUG("fonc", "FONcArray::convert() - dim name: " << d_a->dimension_name(di) << endl);
 
         // See if this dimension has already been defined. If it has the
         // same name and same size as another dimension, then it is a
         // shared dimension. Create it only once and share the FONcDim
+        // TTTDOO: use the absolute dim name to check if the dim. name is shared.
+        // Need to use relative dim name to pass to nc_def_dim() KY
         FONcDim *use_dim = find_dim(embed, d_a->dimension_name(di), size);
         d_dims.push_back(use_dim);
         dimnum++;
