@@ -32,8 +32,8 @@
 
 #include "BESDebug.h"
 #include "BESSyntaxUserError.h"
-#include "BESInternalError.h"
 #include "BESInternalFatalError.h"
+#include "BESInternalError.h"
 #include "WhiteList.h"
 
 #include "curl_utils.h"
@@ -473,7 +473,7 @@ CURL *init(char *error_buffer)
  @exception Error Thrown if libcurl encounters a problem; the libcurl
  error message is stuffed into the Error object.
  */
-long read_url(CURL *curl, const string &url, int fd, vector<string> *resp_hdrs, const vector<string> *request_headers, char [])
+long read_url(CURL *curl, const string &url, int fd, vector<string> *resp_hdrs, const vector<string> *request_headers, char error_buffer[])
 {
 	//old signature, replaced due to unused parameter,
 	//left char array in case external fct still calls this fct with a char array - SBL 1.28.2020
@@ -516,8 +516,12 @@ long read_url(CURL *curl, const string &url, int fd, vector<string> *resp_hdrs, 
     CURLcode res = curl_easy_perform(curl);
 
     if (res != CURLE_OK) {
+        stringstream msg;
+        msg << "The cURL library encountered an error when asked to retrieve the URL: " << url <<
+            " cURL message: " << error_buffer;
         BESDEBUG(MODULE, prolog << "OUCH! CURL returned an error! curl msg:  " << curl_easy_strerror(res) << endl);
-        throw BESInternalError(string("CURL returned an error! curl msg: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
+        BESDEBUG(MODULE, prolog << msg.str() << endl);
+        throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
 
     // Free the header list and null the value in d_curl.
@@ -529,9 +533,9 @@ long read_url(CURL *curl, const string &url, int fd, vector<string> *resp_hdrs, 
     BESDEBUG(MODULE, prolog << "HTTP Status " << status << endl);
 
     if (res != CURLE_OK) {
-        ostringstream oss;
-        oss << "HTTP Status: " << status;
-        throw BESInternalError(oss.str().append("; ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
+        string msg = "The cURL library encountered an error when asked for the HTTP "
+                     "status associated with the response from : " + url;
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     BESDEBUG(MODULE, prolog << "END" << endl);

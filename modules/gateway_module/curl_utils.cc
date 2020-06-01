@@ -591,7 +591,7 @@ long read_url(CURL *curl,
     res = curl_easy_getinfo(curl, CURLINFO_HTTP_CODE, &status);
     BESDEBUG(MODULE, prolog << "HTTP Status " << status << endl);
     if (res != CURLE_OK){
-        string msg = "The cURL library errored when asked for the HTTP "
+        string msg = "The cURL library encountered an error when asked for the HTTP "
                      "status associated with the response from : " + url;
         throw BESInternalError(msg,__FILE__,__LINE__);
     }

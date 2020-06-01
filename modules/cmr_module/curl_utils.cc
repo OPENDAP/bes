@@ -23,6 +23,7 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include <unistd.h>
+#include <sstream>
 #include <algorithm>    // std::for_each
 
 #include <GNURegex.h>
@@ -32,6 +33,7 @@
 #include "BESLog.h"
 #include "BESSyntaxUserError.h"
 #include "TheBESKeys.h"
+#include "BESInternalError.h"
 #include "CmrUtils.h"
 #include "WhiteList.h"
 
@@ -590,16 +592,24 @@ long read_url(CURL *curl,
     curl_slist_free_all(req_hdrs.get_headers());
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, 0);
 
-    if (res != 0){
-        BESDEBUG(MODULE, prolog << "OUCH! CURL returned an error! curl msg:  " << curl_easy_strerror(res) <<
-        " error_buffer:  " << error_buffer << endl);
-        throw libdap::Error(error_buffer);
+    // Did cURL have a problem?
+    if (res != CURLE_OK){
+        stringstream msg;
+        msg << "The cURL library encountered an error when asked to retrieve the URL: " << url <<
+            " cURL message: " << error_buffer;
+        BESDEBUG(MODULE, prolog << "OUCH! CURL returned an error! curl msg:  " << curl_easy_strerror(res) << endl);
+        BESDEBUG(MODULE, prolog << msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
     }
+
     long status;
     res = curl_easy_getinfo(curl, CURLINFO_HTTP_CODE, &status);
     BESDEBUG(MODULE, prolog << "HTTP Status " << status << endl);
-    if (res != CURLE_OK)
-        throw libdap::Error(error_buffer);
+    if (res != CURLE_OK){
+        string msg = "The cURL library encountered an error when asked for the HTTP "
+                     "status associated with the response from : " + url;
+        throw BESInternalError(msg,__FILE__,__LINE__);
+    }
     BESDEBUG(MODULE, prolog << "END" << endl);
 
     return status;
