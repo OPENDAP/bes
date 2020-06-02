@@ -211,12 +211,14 @@ m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST],  [dnl
         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [], [stdout])
         PRINT_DAP4_DATA_RESPONSE([stdout])
         REMOVE_DAP4_CHECKSUM([stdout])
+        REMOVE_DATE_TIME([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [], [stdout])
         PRINT_DAP4_DATA_RESPONSE([stdout])
         REMOVE_DAP4_CHECKSUM([stdout])
+        REMOVE_DATE_TIME([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test z$2 = zxfail])
         ])
@@ -366,7 +368,8 @@ m4_define([REMOVE_DATE_TIME], [dnl
     sed -e 's@[[0-9]]\{4\}-[[0-9]]\{2\}-[[0-9]]\{2\}T[[0-9]]\{2\}:[[0-9]]\{2\}:[[0-9]]\{2\}@_DATE_TIME_SUB_@g' \
     -e 's@[[0-9]]\{4\}-[[0-9]]\{2\}-[[0-9]]\{2\} [[0-9]]\{2\}:[[0-9]]\{2\}:[[0-9]]\{2\}@_DATE_TIME_SUB_@g' \
     -e 's@_DATE_TIME_SUB_.[[0-9]]\{3,6\}@_DATE_TIME_SUB_@g' \
-    -e 's@_DATE_TIME_SUB_[[a-zA-Z]]\{0,4\}@removed date-time@g' \
+    -e 's@_DATE_TIME_SUB_[[ a-zA-Z]]\{0,5\}@_DATE_TIME_SUB_@g' \
+    -e 's@_DATE_TIME_SUB_\(Hyrax-[[-0-9a-zA-Z.]]*\)*@removed date-time@g' \
     < $1 > $1.sed
     mv $1.sed $1
 ])

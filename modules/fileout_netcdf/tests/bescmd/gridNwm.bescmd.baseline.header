@@ -7,7 +7,7 @@ variables:
 	int time(time) ;
 		time:long_name = "valid output time" ;
 		time:standard_name = "time" ;
-		time:units = "minutes since removed date-time UTC" ;
+		time:units = "minutes since removed date-time" ;
 	int feature_id(feature_id) ;
 		feature_id:long_name = "Reach ID" ;
 		feature_id:comment = "NHDPlusv2 ComIDs within CONUS, arbitrary Reach IDs outside of CONUS" ;
@@ -50,7 +50,7 @@ variables:
 	int reference_time(reference_time) ;
 		reference_time:long_name = "model initialization time" ;
 		reference_time:standard_name = "forecast_reference_time" ;
-		reference_time:units = "minutes since removed date-time UTC" ;
+		reference_time:units = "minutes since removed date-time" ;
 
 // global attributes:
 		:featureType = "timeSeries" ;
@@ -63,5 +63,5 @@ variables:
 		:esri_pe_string = "GEOGCS[GCS_North_American_1983,DATUM[D_North_American_1983,SPHEROID[GRS_1980,6378137.0,298.257222101]],PRIMEM[Greenwich,0.0],UNIT[Degree,0.017453292519943295]]" ;
 		:Conventions = "CF-1.6" ;
 		:DODS_EXTRA.Unlimited_Dimension = "time" ;
-		:history = "removed date-time Hyrax nwm.t00z.short_range.channel_rt.f001.conus.nc?" ;
+		:history = "removed date-timex nwm.t00z.short_range.channel_rt.f001.conus.nc?" ;
 }

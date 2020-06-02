@@ -7,7 +7,7 @@ variables:
 	char str(str_len) ;
 
 // global attributes:
-		:history = "removed date-time Hyrax simpleT00.dods?i16,f64,str" ;
+		:history = "removed date-timex simpleT00.dods?i16,f64,str" ;
 data:
 
  i16 = -2048 ;

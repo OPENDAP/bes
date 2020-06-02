@@ -6,5 +6,5 @@ variables:
 	int gstruct.shot(i, j) ;
 
 // global attributes:
-		:history = "removed date-time Hyrax gridT.dods?gstruct.shot.shot" ;
+		:history = "removed date-timex gridT.dods?gstruct.shot.shot" ;
 }

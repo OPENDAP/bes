@@ -8,7 +8,7 @@ variables:
 	int i32_array(dim1, dim2) ;
 
 // global attributes:
-		:history = "removed date-time Hyrax arrayT01.dods?" ;
+		:history = "removed date-timex arrayT01.dods?" ;
 data:
 
  byte_array =

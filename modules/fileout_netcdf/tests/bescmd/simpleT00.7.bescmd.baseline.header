@@ -3,5 +3,5 @@ variables:
 	byte byte ;
 
 // global attributes:
-		:history = "removed date-time Hyrax simpleT00.dods?byte" ;
+		:history = "removed date-timex simpleT00.dods?byte" ;
 }

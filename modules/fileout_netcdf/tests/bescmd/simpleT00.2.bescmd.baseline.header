@@ -12,5 +12,5 @@ variables:
 	char str(str_len) ;
 
 // global attributes:
-		:history = "removed date-time Hyrax simpleT00.dods?" ;
+		:history = "removed date-timex simpleT00.dods?" ;
 }

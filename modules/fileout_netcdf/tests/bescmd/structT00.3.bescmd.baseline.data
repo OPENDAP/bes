@@ -12,7 +12,7 @@ variables:
 	char mystruct.str(mystruct.str_len) ;
 
 // global attributes:
-		:history = "removed date-time Hyrax structT00.dods?" ;
+		:history = "removed date-timex structT00.dods?" ;
 data:
 
  mystruct.byte = 28 ;
