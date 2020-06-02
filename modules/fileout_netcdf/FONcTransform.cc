@@ -297,7 +297,6 @@ void FONcTransform::transform_dap4()
     
     BESDEBUG("fonc", "Coming into transform_dap4() "<< endl);
 
-
     bool support_group = check_group_support();
     if(true == support_group) {
         int stax = -1;
@@ -307,7 +306,7 @@ void FONcTransform::transform_dap4()
             FONcUtils::handle_error(stax, "File out netcdf, unable to open: " + _localfile, __FILE__, __LINE__);
         
         D4Group* root_grp = _dmr->root();
-        transform_dap4_group(root_grp,true);
+        transform_dap4_group(root_grp,true,_ncid);
         stax = nc_close(_ncid);
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to close: " + _localfile, __FILE__, __LINE__);
@@ -473,6 +472,7 @@ void FONcTransform::transform_dap4()
     }
 #endif
 }
+
 void FONcTransform::transform_dap4_no_group() {
 
     D4Group* root_grp = _dmr->root();
@@ -632,7 +632,7 @@ void FONcTransform::transform_dap4_no_group() {
 
 }
 
-void transform_dap4_group(D4Group* grp,bool is_root_grp,int par_grp_id) {
+void FONcTransform::transform_dap4_group(D4Group* grp,bool is_root_grp,int par_grp_id) {
 
     //D4Group* root_grp = _dmr->root();
     D4Dimensions *root_dims = grp->dims();
@@ -720,7 +720,7 @@ void transform_dap4_group(D4Group* grp,bool is_root_grp,int par_grp_id) {
         if(is_root_grp == true) 
             grp_id = _ncid;
         else
-            stax = nc_def_grp(par_grp_id,(*grp)->name(),&grp_id);
+            stax = nc_def_grp(par_grp_id,(*grp).name().c_str(),&grp_id);
             
         vector<FONcBaseType *>::iterator i = fonc_vars_in_grp.begin();
         vector<FONcBaseType *>::iterator e = fonc_vars_in_grp.end();
@@ -771,12 +771,13 @@ void transform_dap4_group(D4Group* grp,bool is_root_grp,int par_grp_id) {
         e = fonc_vars_in_grp.end();
         for (; i != e; i++) {
             FONcBaseType *fbt = *i;
-            BESDEBUG("fonc", "FONcTransform::transform() - Writing data for variable:  " << fbt->name() << endl);
-            fbt->write(_ncid);
+            BESDEBUG("fonc", "FONcTransform::transform() - Writing data for variable in group:  " << fbt->name() << endl);
+            //fbt->write(_ncid);
+            fbt->write(grp_id);
         }
 
    for (D4Group::groupsIter gi = grp->grp_begin(), ge = grp->grp_end(); gi != ge; ++gi) {
-       BESDEBUG("fonc", "FONcTransform::transform_dap4() - group name:  " << (*gi)->name() << endl);
+       BESDEBUG("fonc", "FONcTransform::transform_dap4() in group  - group name:  " << (*gi)->name() << endl);
        transform_dap4_group(*gi,false,grp_id);
    }
 

@@ -1704,6 +1704,7 @@ BESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerIn
     // Iterate through the variables in the DataDDS and read
     // in the data if the variable has the send flag set.
     //D4Group* root_grp = dmr->root();
+    
     for (D4Group::Vars_iter i = root_grp->var_begin(), e = root_grp->var_end(); i != e; ++i) {
         BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() - "<< (*i)->name() <<endl);
         if ((*i)->send_p()) {
@@ -1720,8 +1721,36 @@ BESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerIn
         }
     }
 
+    for (D4Group::groupsIter gi = root_grp->grp_begin(), ge = root_grp->grp_end(); gi != ge; ++gi) {
+        BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() root group- "<< (*gi)->name() <<endl);
+        intern_dap4_data_grp(*gi);
+    }
     BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() - END"<< endl);
 
     return dmr;
 }
 
+void BESDapResponseBuilder::intern_dap4_data_grp(libdap::D4Group* grp) {
+    for (D4Group::Vars_iter i = grp->var_begin(), e = grp->var_end(); i != e; ++i) {
+        BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() - "<< (*i)->name() <<endl);
+        if ((*i)->send_p()) {
+            BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() Obtain data- "<< (*i)->name() <<endl);
+#if 0
+            D4Attributes*d4_attrs = (*i)->attributes();
+            BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() number of attributes "<< d4_attrs <<endl);
+            for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
+                         string name = (*ii)->name();
+                         BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() attribute name is "<<name <<endl);
+             }
+#endif
+            (*i)->intern_data();
+        }
+    }
+
+    for (D4Group::groupsIter gi = grp->grp_begin(), ge = grp->grp_end(); gi != ge; ++gi) {
+        BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() group- "<< (*gi)->name() <<endl);
+        intern_dap4_data_grp(*gi);
+    }
+ 
+
+}

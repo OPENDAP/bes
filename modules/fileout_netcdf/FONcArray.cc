@@ -104,9 +104,9 @@ FONcArray::~FONcArray()
  * grids
  * @throws BESInternalError if there is a problem converting the Array
  */
-void FONcArray::convert(vector<string> embed)
+void FONcArray::convert(vector<string> embed,bool is_dap4_group)
 {
-    FONcBaseType::convert(embed);
+    FONcBaseType::convert(embed,is_dap4_group);
     _varname = FONcUtils::gen_name(embed, _varname, _orig_varname);
 
     BESDEBUG("fonc", "FONcArray::convert() - converting array " << _varname << endl);
