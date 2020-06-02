@@ -5,5 +5,5 @@ variables:
 	float j(j) ;
 
 // global attributes:
-		:history = "removed date-time Hyrax gridT.dods?gstruct.shot.j" ;
+		:history = "removed date-timex gridT.dods?gstruct.shot.j" ;
 }

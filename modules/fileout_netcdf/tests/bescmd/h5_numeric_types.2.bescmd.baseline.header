@@ -75,5 +75,5 @@ variables:
 		s_uint8:fullnamepath = "/s_uint8" ;
 
 // global attributes:
-		:history = "removed date-time Hyrax tdset_types.h5?" ;
+		:history = "removed date-timex tdset_types.h5?" ;
 }

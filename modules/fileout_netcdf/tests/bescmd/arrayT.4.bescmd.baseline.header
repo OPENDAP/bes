@@ -29,5 +29,5 @@ variables:
 	char str_array(str_dim1, str_dim2, str_dim3, str_array_len) ;
 
 // global attributes:
-		:history = "removed date-time Hyrax arrayT.dods?" ;
+		:history = "removed date-timex arrayT.dods?" ;
 }
