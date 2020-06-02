@@ -1190,5 +1190,5 @@ variables:
 	ubyte c.HDU_2.HDU_2_IMAGE(c.HDU_2.NAXIS0) ;
 
 // global attributes:
-		:history = "removed date-time Hyrax fits.dods?" ;
+		:history = "removed date-timex fits.dods?" ;
 }

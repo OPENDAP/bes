@@ -6,5 +6,5 @@ variables:
 	short order(i, j) ;
 
 // global attributes:
-		:history = "removed date-time Hyrax gridT.dods?order.order" ;
+		:history = "removed date-timex gridT.dods?order.order" ;
 }

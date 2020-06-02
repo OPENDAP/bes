@@ -5,5 +5,5 @@ variables:
 	char promoted_message(promoted_message_len) ;
 
 // global attributes:
-		:history = "removed date-time Hyrax ?wrapitup()" ;
+		:history = "removed date-timex ?wrapitup()" ;
 }

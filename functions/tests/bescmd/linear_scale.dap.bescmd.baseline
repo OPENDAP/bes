@@ -19,6 +19,18 @@
         <Attribute name="scale_factor" type="String">
             <Value>0.005</Value>
         </Attribute>
+        <Attribute name="DODS_Name" type="String">
+            <Value>UWind</Value>
+        </Attribute>
+        <Attribute name="b" type="Byte">
+            <Value>128</Value>
+        </Attribute>
+        <Attribute name="i" type="Int32">
+            <Value>32000</Value>
+        </Attribute>
+        <Attribute name="WOA01" type="Url">
+            <Value>&quot;http://localhost/junk&quot;</Value>
+        </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
             removed checksum
         </Attribute>

@@ -1,6 +1,8 @@
 # Process with autom4te to create an -*- Autotest -*- test suite.
 
-m4_include([handler_tests_macros.m4])
+AT_INIT([bes/modules/gateway_module/tests testsuite])
+
+m4_include(AT_TOP_SRCDIR/modules/handler_tests_macros.m4)
 
 # These tests use the server at RPI and it's often off line.
 # jhrg 12/1/14
@@ -10,10 +12,14 @@ m4_include([handler_tests_macros.m4])
 # AT_BESCMD_BINARYDATA_RESPONSE_TEST([test.02.bescmd])
 
 # Utilizing FoNC to get netcdf files
-AT_BESCMD_RESPONSE_TEST([gateway/fnoc1.nc.nc.das.bescmd])
+# Old macro - replaced with new below jhrg 6/2/20
+# AT_BESCMD_RESPONSE_TEST([gateway/fnoc1.nc.nc.das.bescmd])
+AT_BESCMD_RESPONSE_SCRUB_DATES_TEST([gateway/fnoc1.nc.nc.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([gateway/fnoc1.nc.nc.dds.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([gateway/fnoc1.nc.nc.dods.bescmd])
-AT_BESCMD_RESPONSE_TEST([gateway/fnoc1.nc.nc.dmr.bescmd])
+# Old macro - replaced with new below jhrg 6/2/20
+# AT_BESCMD_RESPONSE_TEST([gateway/fnoc1.nc.nc.dmr.bescmd])
+AT_BESCMD_RESPONSE_SCRUB_DATES_TEST([gateway/fnoc1.nc.nc.dmr.bescmd])
 # This next test fails because of the ever shifting history attribute added by FoNC.
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([gateway/fnoc1.nc.nc.dap.bescmd])
 
@@ -24,8 +30,13 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([gateway/fnoc1.nc.dods.dods.bescmd])
 
 
 # Utilizing dapreader to read returned and cached DAP4 responses.
-AT_BESCMD_RESPONSE_TEST([gateway/fnoc1.nc.dap.dmr.bescmd])
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([gateway/fnoc1.nc.dap.dap.bescmd])
+#
+# These will work once test.opendap.org is updated with the new libdap/bes
+# code that fixes the DAP4 check header issues. They may require a new
+# set of baselines. jhrg 6/2/20
+#
+AT_BESCMD_RESPONSE_TEST([gateway/fnoc1.nc.dap.dmr.bescmd], xfail)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([gateway/fnoc1.nc.dap.dap.bescmd], xfail)
 
 # Try to get DAP2 response objects from the cached DAP4 response.
 # 

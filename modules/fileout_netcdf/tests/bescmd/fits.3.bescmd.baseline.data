@@ -1190,7 +1190,7 @@ variables:
 	short c.HDU_2.HDU_2_IMAGE(c.HDU_2.NAXIS0) ;
 
 // global attributes:
-		:history = "removed date-time Hyrax fits.dods?" ;
+		:history = "removed date-timex fits.dods?" ;
 data:
 
  c.HDU_1.key_1.name = "SIMPLE" ;
