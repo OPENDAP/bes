@@ -1,5 +1,5 @@
-README
- Created on: Jul 24, 2018
-     Author: jimg
-     
-Not a data file - added for the showNode tests.
+
+Build the two *.dap 'frozen' responses using:
+besstandalone -c build_responses.conf -i nc4_zero_length_array.bescmd > zero_length_array.dap
+besstandalone -c build_responses.conf -i one_int.bescmd > one_int.dap
+

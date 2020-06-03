@@ -52,6 +52,7 @@ $(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(srcdir)/handler_tests_macro
 	mv $@.tmp $@
 
 # The `:;' works around a Bash 3.2 bug when the output is not writable.
+# I added AT_TOP_SRCDIR on 6/2/20 jhrg
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	:;{ \
 	echo '# Signature of the current package.' && \
@@ -60,5 +61,6 @@ $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	echo 'm4_define([AT_PACKAGE_VERSION],   [@PACKAGE_VERSION@])' && \
 	echo 'm4_define([AT_PACKAGE_STRING],    [@PACKAGE_STRING@])' && \
 	echo 'm4_define([AT_PACKAGE_BUGREPORT], [@PACKAGE_BUGREPORT@])'; \
-	} >'$(srcdir)/package.m4'
+	echo 'm4_define([AT_TOP_SRCDIR], 		[@top_srcdir@])'; \
+} >'$(srcdir)/package.m4'
 

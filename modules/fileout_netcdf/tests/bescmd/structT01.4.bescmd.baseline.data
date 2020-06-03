@@ -14,7 +14,7 @@ variables:
 	float s1.s2.s3.f32 ;
 
 // global attributes:
-		:history = "removed date-time Hyrax structT01.dods?" ;
+		:history = "removed date-timex structT01.dods?" ;
 data:
 
  s1.byte = 28 ;

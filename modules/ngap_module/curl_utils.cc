@@ -60,8 +60,8 @@ const char *http_client_errors[CLIENT_ERR_MAX - CLIENT_ERR_MIN + 1] =
                 "Payment Required.",
                 "Forbidden: Contact the server administrator.",
                 "Not Found: The data source or server could not be found. "
-                "Often this means that the OPeNDAP server is missing or needs attention."
-                "Please contact the server administrator.",
+                    "Often this means that the OPeNDAP server is missing or needs attention."
+                    "Please contact the server administrator.",
                 "Method Not Allowed.",
                 "Not Acceptable.",
                 "Proxy Authentication Required.",
@@ -564,21 +564,21 @@ long read_url(CURL *curl,
     curl_slist_free_all(req_hdrs.get_headers());
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, 0);
 
-    if (res != 0) {
+    if (res != CURLE_OK) {
         stringstream msg;
-        msg << prolog << "OUCH! CURL returned an error! curl msg:  " << curl_easy_strerror(res);
-        msg << " error_buffer:  " << error_buffer << endl;
-        BESDEBUG(MODULE, msg.str());
+        msg << "The cURL library encountered an error when asked to retrieve the URL: " << url <<
+            " cURL message: " << error_buffer;
+        BESDEBUG(MODULE, prolog << "OUCH! CURL returned an error! curl msg:  " << curl_easy_strerror(res) << endl);
+        BESDEBUG(MODULE, prolog << msg.str() << endl);
         throw BESInternalError(msg.str(),__FILE__,__LINE__);
     }
     long status;
     res = curl_easy_getinfo(curl, CURLINFO_HTTP_CODE, &status);
     BESDEBUG(MODULE, prolog << "HTTP Status " << status << endl);
     if (res != CURLE_OK){
-        stringstream msg;
-        msg << prolog << "OUCH! CURL returned an error! curl msg:  " << curl_easy_strerror(res);
-        msg << " error_buffer:  " << error_buffer << endl;
-        BESDEBUG(MODULE, msg.str());
+        string msg = "The cURL library encountered an error when asked for the HTTP "
+                     "status associated with the response from : " + url;
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     if(status>400){
         stringstream msg;

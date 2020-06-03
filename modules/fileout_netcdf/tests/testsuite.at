@@ -113,7 +113,9 @@ AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/gridT.9.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/gridT.10.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/gridT.11.bescmd)
 dnl Test added for the fix for Hyrax-764. sk 08/17/18
-AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/gridNwm.bescmd)
+# This file is too large for GitHub now since it's 61MB.
+# jhrg 6/2/20
+# AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/gridNwm.bescmd)
 
 dnl Test added for the fix for HK-23.
 AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/testFillValue.bescmd)
