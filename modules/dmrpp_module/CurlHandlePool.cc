@@ -217,6 +217,9 @@ dmrpp_easy_handle::dmrpp_easy_handle(): d_headers(0)
         throw BESInternalError(string("CURL Error: ").append(curl::error_message(res, d_errbuf)), __FILE__, __LINE__);
 #endif
 
+    if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_HEADERFUNCTION, chunk_header_callback)))
+        throw BESInternalError(string("CURL Error: ").append(curl::error_message(res, d_errbuf)), __FILE__, __LINE__);
+
     // Pass all data to the 'write_data' function
     if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_WRITEFUNCTION, chunk_write_data)))
         throw BESInternalError(string("CURL Error: ").append(curl::error_message(res, d_errbuf)), __FILE__, __LINE__);
@@ -804,9 +807,15 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
             throw BESInternalError(string("HTTP Error setting Range: ").append(curl::error_message(res, handle->d_errbuf)), __FILE__,
                                    __LINE__);
 
-        // Pass this to write_data as the fourth argument
+        // Pass this to chunk_header_callback as the fourth argument
+        if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_HEADERDATA, reinterpret_cast<void*>(chunk))))
+            throw BESInternalError(string("CURL Error setting chunk as header callback data: ").append(
+                    curl::error_message(res, handle->d_errbuf)),
+                                   __FILE__, __LINE__);
+
+        // Pass this to chunk_write_data as the fourth argument
         if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_WRITEDATA, reinterpret_cast<void*>(chunk))))
-            throw BESInternalError(string("CURL Error setting chunk as data buffer: ").append(
+            throw BESInternalError(string("CURL Error setting chunk as response callback data: ").append(
                     curl::error_message(res, handle->d_errbuf)),
             __FILE__, __LINE__);
 
