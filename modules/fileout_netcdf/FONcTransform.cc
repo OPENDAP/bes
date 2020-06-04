@@ -306,7 +306,8 @@ void FONcTransform::transform_dap4()
             FONcUtils::handle_error(stax, "File out netcdf, unable to open: " + _localfile, __FILE__, __LINE__);
         
         D4Group* root_grp = _dmr->root();
-        transform_dap4_group(root_grp,true,_ncid);
+        map<string,int>fdimname_to_id;
+        transform_dap4_group(root_grp,true,_ncid,fdimname_to_id);
         stax = nc_close(_ncid);
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to close: " + _localfile, __FILE__, __LINE__);
@@ -632,7 +633,7 @@ void FONcTransform::transform_dap4_no_group() {
 
 }
 
-void FONcTransform::transform_dap4_group(D4Group* grp,bool is_root_grp,int par_grp_id) {
+void FONcTransform::transform_dap4_group(D4Group* grp,bool is_root_grp,int par_grp_id,map<string,int>&fdimname_to_id ) {
 
     //D4Group* root_grp = _dmr->root();
     D4Dimensions *root_dims = grp->dims();
@@ -641,6 +642,10 @@ void FONcTransform::transform_dap4_group(D4Group* grp,bool is_root_grp,int par_g
         BESDEBUG("fonc", "transform_dap4() - dim name is: "<<(*di)->name()<<endl);
         BESDEBUG("fonc", "transform_dap4() - dim size is: "<<(*di)->size()<<endl);
         BESDEBUG("fonc", "transform_dap4() - fully_qualfied_dim name is: "<<(*di)->fully_qualified_name()<<endl);
+        int g_dimid = -1;
+        int stax = nc_def_dim(par_grp_id,(*di)->name().c_str(),(*di)->size(),&g_dimid);
+        fdimname_to_id[(*di)->fully_qualified_name()] = g_dimid; 
+        //fdimname_to_id.push_back(temp_dimname_to_id);
         //cout <<"dim size is: "<<(*di)->size()<<endl;
         //cout <<"dim fully_qualified_name is: "<<(*di)->fully_qualified_name()<<endl;
     }
@@ -670,7 +675,7 @@ void FONcTransform::transform_dap4_group(D4Group* grp,bool is_root_grp,int par_g
 
             // This is a factory class call, and 'fg' is specialized for 'v'
             //FONcBaseType *fb = FONcUtils::convert(v,FONcTransform::_returnAs,FONcRequestHandler::classic_model);
-            FONcBaseType *fb = FONcUtils::convert(v,RETURNAS_NETCDF4,false);
+            FONcBaseType *fb = FONcUtils::convert(v,RETURNAS_NETCDF4,false,fdimname_to_id);
 #if 0
             fb->setVersion( FONcTransform::_returnAs );
             if ( FONcTransform::_returnAs == RETURNAS_NETCDF4 ) {
@@ -778,7 +783,7 @@ void FONcTransform::transform_dap4_group(D4Group* grp,bool is_root_grp,int par_g
 
    for (D4Group::groupsIter gi = grp->grp_begin(), ge = grp->grp_end(); gi != ge; ++gi) {
        BESDEBUG("fonc", "FONcTransform::transform_dap4() in group  - group name:  " << (*gi)->name() << endl);
-       transform_dap4_group(*gi,false,grp_id);
+       transform_dap4_group(*gi,false,grp_id,fdimname_to_id);
    }
 
 //STOP HERE.

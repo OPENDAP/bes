@@ -86,7 +86,7 @@ public:
 	virtual void dump(ostream &strm) const;
 private:
     virtual void transform_dap4_no_group();
-    virtual void transform_dap4_group(D4Group*,bool is_root, int par_grp_id);
+    virtual void transform_dap4_group(D4Group*,bool is_root, int par_grp_id,std::map<std::string,int>&);
     virtual bool check_group_support();
 
 

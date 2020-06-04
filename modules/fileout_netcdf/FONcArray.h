@@ -97,6 +97,7 @@ private:
 
 public:
     FONcArray(libdap::BaseType *b);
+    FONcArray(libdap::BaseType *b,const std::vector<int>&dim_ids);
     virtual ~FONcArray();
 
     virtual void convert(std::vector<std::string> embed,bool is_dap4_group=false);

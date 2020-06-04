@@ -63,6 +63,20 @@ FONcArray::FONcArray(BaseType *b) :
     }
 }
 
+FONcArray::FONcArray(BaseType *b,const vector<int> &dim_ids) :
+        FONcBaseType(), d_a(0), d_array_type(NC_NAT), d_actual_ndims(0), d_nelements(1), 
+        d_dim_sizes(0), d_str_data(0), d_dont_use_it(false), d_chunksizes(0), d_grid_maps(0)
+{
+    d_a = dynamic_cast<Array *>(b);
+    if (!d_a) {
+        string s = "File out netcdf, FONcArray was passed a variable that is not a DAP Array";
+        throw BESInternalError(s, __FILE__, __LINE__);
+    }
+    if(d_a ->is_dap4()) {
+        BESDEBUG("fonc", "FONcArray() - constructor is dap4 "<< endl);
+        d_dim_ids = dim_ids;
+    }
+}
 /** @brief Destructor that cleans up the array
  *
  * The destrutor cleans up by removing the array dimensions from it's
@@ -107,6 +121,10 @@ FONcArray::~FONcArray()
 void FONcArray::convert(vector<string> embed,bool is_dap4_group)
 {
     FONcBaseType::convert(embed,is_dap4_group);
+
+    //TOODOO: don't use _d_dim_ids when has_dap4_group.
+
+    bool has_dap4_group =(d_dim_ids.size()>0);
     _varname = FONcUtils::gen_name(embed, _varname, _orig_varname);
 
     BESDEBUG("fonc", "FONcArray::convert() - converting array " << _varname << endl);
@@ -143,8 +161,7 @@ void FONcArray::convert(vector<string> embed,bool is_dap4_group)
         // See if this dimension has already been defined. If it has the
         // same name and same size as another dimension, then it is a
         // shared dimension. Create it only once and share the FONcDim
-        // TTTDOO: use the absolute dim name to check if the dim. name is shared.
-        // Need to use relative dim name to pass to nc_def_dim() KY
+        // TTTDOO: Don't use find_dim when has_dap4_group is true.
         FONcDim *use_dim = find_dim(embed, d_a->dimension_name(di), size);
         d_dims.push_back(use_dim);
         dimnum++;
