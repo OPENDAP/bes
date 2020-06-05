@@ -132,7 +132,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
 
                 throw BESForbiddenError(string("Error accessing object store data: ").append(s.GetString()), __FILE__, __LINE__);
             }
-            catch (BESSyntaxUserError) {
+            catch (BESForbiddenError) {
                 // re-throw BESSyntaxUserError - added for the future if we make BESError a child
                 // of std::exception as it should be. jhrg 12/30/19
                 throw;
