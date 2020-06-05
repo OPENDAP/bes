@@ -34,11 +34,10 @@
 #include <BESLog.h>
 #include <BESInternalError.h>
 #include <BESSyntaxUserError.h>
+#include <BESForbiddenError.h>
 #include <BESContextManager.h>
 
 #include "xml2json/include/xml2json.hpp"
-
-//#include "xml2json/include/rapidjson/stringbuffer.h"
 
 #include "Chunk.h"
 #include "CurlHandlePool.h"
@@ -81,8 +80,9 @@ size_t chunk_header_callback(char *buffer, size_t size, size_t nitems, void *dat
     string::size_type pos;
     if ((pos = header.find("Content-Type")) != string::npos) {
         // Header format 'Content-Type: <value>'
-        string header_value = header.substr(header.find_last_of(' ')+1);
-        BESDEBUG(MODULE, "Content-Type header value: " << header_value << endl);
+        Chunk *c_ptr = reinterpret_cast<Chunk*>(data);
+        c_ptr->d_response_content_type = header.substr(header.find_last_of(' ')+1);
+        BESDEBUG(MODULE, "Content-Type header value: " << c_ptr->d_response_content_type << endl);
     }
 
     return nitems * size;
@@ -130,7 +130,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
                 // are not good enough. But the "Code" is not really suitable for normal humans...
                 // jhrg 12/31/19
 
-                throw BESSyntaxUserError(string("Error accessing object store data: ").append(s.GetString()), __FILE__, __LINE__);
+                throw BESForbiddenError(string("Error accessing object store data: ").append(s.GetString()), __FILE__, __LINE__);
             }
             catch (BESSyntaxUserError) {
                 // re-throw BESSyntaxUserError - added for the future if we make BESError a child

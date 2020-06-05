@@ -58,6 +58,7 @@ private:
     unsigned long long d_read_buffer_size;
     bool d_is_read;
     bool d_is_inflated;
+    std::string d_response_content_type;
 
     static const std::string tracking_context;
 
