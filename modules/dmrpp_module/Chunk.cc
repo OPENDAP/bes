@@ -81,8 +81,8 @@ size_t chunk_header_callback(char *buffer, size_t size, size_t nitems, void *dat
     if ((pos = header.find("Content-Type")) != string::npos) {
         // Header format 'Content-Type: <value>'
         Chunk *c_ptr = reinterpret_cast<Chunk*>(data);
-        c_ptr->d_response_content_type = header.substr(header.find_last_of(' ')+1);
-        BESDEBUG(MODULE, "Content-Type header value: " << c_ptr->d_response_content_type << endl);
+        c_ptr->set_response_content_type(header.substr(header.find_last_of(' ')+1));
+        BESDEBUG(MODULE, "Content-Type header value: " << c_ptr->get_response_content_type() << endl);
     }
 
     return nitems * size;
