@@ -38,6 +38,7 @@ include_directories(dap/unit-tests)
 include_directories(dap/unused)
 include_directories(dapreader)
 include_directories(dispatch)
+include_directories(rapidjson)
 
 include_directories(dispatch/PicoSHA2)
 include_directories(dispatch/tests)
@@ -62,10 +63,6 @@ include_directories(modules/asciival)
 include_directories(modules/asciival/unit-tests)
 
 include_directories(modules/cmr_module)
-include_directories(modules/cmr_module/rapidjson)
-include_directories(modules/cmr_module/rapidjson/error)
-include_directories(modules/cmr_module/rapidjson/internal)
-include_directories(modules/cmr_module/rapidjson/msinttypes)
 include_directories(modules/cmr_module/unit-tests)
 include_directories(modules/cmr_module/unused)
 include_directories(modules/csv_handler)
@@ -638,41 +635,6 @@ add_executable(bes
     modules/asciival/get_ascii_dap4.h
     modules/asciival/name_map.cc
     modules/asciival/name_map.h
-    modules/cmr_module/rapidjson/error/en.h
-    modules/cmr_module/rapidjson/error/error.h
-    modules/cmr_module/rapidjson/internal/biginteger.h
-    modules/cmr_module/rapidjson/internal/diyfp.h
-    modules/cmr_module/rapidjson/internal/dtoa.h
-    modules/cmr_module/rapidjson/internal/ieee754.h
-    modules/cmr_module/rapidjson/internal/itoa.h
-    modules/cmr_module/rapidjson/internal/meta.h
-    modules/cmr_module/rapidjson/internal/pow10.h
-    modules/cmr_module/rapidjson/internal/regex.h
-    modules/cmr_module/rapidjson/internal/stack.h
-    modules/cmr_module/rapidjson/internal/strfunc.h
-    modules/cmr_module/rapidjson/internal/strtod.h
-    modules/cmr_module/rapidjson/internal/swap.h
-    modules/cmr_module/rapidjson/msinttypes/inttypes.h
-    modules/cmr_module/rapidjson/msinttypes/stdint.h
-    modules/cmr_module/rapidjson/allocators.h
-    modules/cmr_module/rapidjson/document.h
-    modules/cmr_module/rapidjson/encodedstream.h
-    modules/cmr_module/rapidjson/encodings.h
-    modules/cmr_module/rapidjson/filereadstream.h
-    modules/cmr_module/rapidjson/filewritestream.h
-    modules/cmr_module/rapidjson/fwd.h
-    modules/cmr_module/rapidjson/istreamwrapper.h
-    modules/cmr_module/rapidjson/memorybuffer.h
-    modules/cmr_module/rapidjson/memorystream.h
-    modules/cmr_module/rapidjson/ostreamwrapper.h
-    modules/cmr_module/rapidjson/pointer.h
-    modules/cmr_module/rapidjson/prettywriter.h
-    modules/cmr_module/rapidjson/rapidjson.h
-    modules/cmr_module/rapidjson/reader.h
-    modules/cmr_module/rapidjson/schema.h
-    modules/cmr_module/rapidjson/stream.h
-    modules/cmr_module/rapidjson/stringbuffer.h
-    modules/cmr_module/rapidjson/writer.h
     modules/cmr_module/unit-tests/CmrApiTest.cc
     modules/cmr_module/unit-tests/CmrCatalogTest.cc
     modules/cmr_module/unit-tests/GranuleTest.cc
