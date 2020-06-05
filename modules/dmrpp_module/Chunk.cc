@@ -74,9 +74,17 @@ size_t chunk_header_callback(char *buffer, size_t size, size_t nitems, void *dat
     copy(buffer, buffer+nitems, header.begin());
     std::string str(header.begin(), header.end());
 #endif
-    string header(buffer, buffer + nitems);
-
+    // -2 strips of the CRLF at the end of the header
+    string header(buffer, buffer + nitems - 2);
     BESDEBUG(MODULE, "Header: " << header << endl);
+    // Look for the content type header and store its value in the Chunk
+    string::size_type pos;
+    if ((pos = header.find("Content-Type")) != string::npos) {
+        // Header format 'Content-Type: <value>'
+        string header_value = header.substr(header.find_last_of(' ')+1);
+        BESDEBUG(MODULE, "Content-Type header value: " << header_value << endl);
+    }
+
     return nitems * size;
 }
 
