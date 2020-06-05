@@ -29,6 +29,7 @@
 #include <GetOpt.h>
 #include <BaseType.h>
 #include <Array.h>
+#include <Byte.h>
 #include <Int32.h>
 #include <UInt64.h>
 #include <Structure.h>
@@ -36,6 +37,8 @@
 #include <D4RValue.h>
 #include <DMR.h>
 #include <test/D4TestTypeFactory.h>
+#include <test/TestByte.h>
+#include <test/TestArray.h>
 
 #include <util.h>
 #include <debug.h>
@@ -52,6 +55,8 @@ using namespace CppUnit;
 using namespace libdap;
 using namespace std;
 using namespace functions;
+
+int test_variable_sleep_interval = 0;
 
 static bool debug = false;
 #undef DBG
@@ -240,7 +245,9 @@ public:
 		DBG(cerr << "--- intersection_function_test() test - BEGIN ---" << endl);
 
         try {
-            Array *a_var = new Array("a_var", new UInt64("a_var"));
+            // 'a_var' is a dependent variable in the dataset.
+            Array *a_var = new TestArray("a_var", new TestByte("a_var"));
+            a_var->append_dim(10);
 
             two_arrays_dmr->root()->add_var_nocopy(a_var);
 
@@ -249,12 +256,12 @@ public:
             //Lon - -98.8324, -98.8388, -98.8452, -98.8516, -98.858, -98.8644, -98.8708, -98.8772, -98.8836, -98.8899
             //Stare - 3440016191299518474 x 10
 
-            //Array a_var - uint64 for stare indices
             //The first index is an actual stare value from: MYD09.A2019003.2040.006.2019005020913_sidecar.h5
             //The final value is made up.
             vector<dods_uint64> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
 
 			D4RValueList params;
+            params.add_rvalue(new D4RValue(a_var));
 			params.add_rvalue(new D4RValue(target_indices));
 
 			BaseType *checkHasValue = StareIntersectionFunction::stare_intersection_dap4_function(&params, *two_arrays_dmr);
@@ -275,7 +282,8 @@ public:
         DBG(cerr << "--- count_function_test() test - BEGIN ---" << endl);
 
         try {
-            Array *a_var = new Array("a_var", new UInt64("a_var"));
+            Array *a_var = new TestArray("a_var", new TestByte("a_var"));
+             a_var->append_dim(10);
 
             two_arrays_dmr->root()->add_var_nocopy(a_var);
 
@@ -290,6 +298,7 @@ public:
             vector<dods_uint64> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
 
             D4RValueList params;
+            params.add_rvalue(new D4RValue(a_var));
             params.add_rvalue(new D4RValue(target_indices));
 
             BaseType *checkHasValue = StareCountFunction::stare_count_dap4_function(&params, *two_arrays_dmr);
@@ -310,7 +319,8 @@ public:
         DBG(cerr << "--- subset_function_test() test - BEGIN ---" << endl);
 
         try {
-            Array *a_var = new Array("a_var", new UInt64("a_var"));
+            Array *a_var = new TestArray("a_var", new TestByte("a_var"));
+            a_var->append_dim(10);
 
             two_arrays_dmr->root()->add_var_nocopy(a_var);
 
@@ -325,6 +335,7 @@ public:
             vector<dods_uint64> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
 
             D4RValueList params;
+            params.add_rvalue(new D4RValue(a_var));
             params.add_rvalue(new D4RValue(target_indices));
 
             BaseType *result = StareSubsetFunction::stare_subset_dap4_function(&params, *two_arrays_dmr);
@@ -381,32 +392,6 @@ int main(int argc, char*argv[]) {
     }
     argc -= optind;
     argv += optind;
-
-
-#if 0
-    // Old code based on the libg pre-STL g++ library. Use the getopt() code above. jhrg 12/31/19
-    GetOpt getopt(argc, argv, "dh");
-	char option_char;
-
-	while ((option_char = getopt()) != EOF) {
-		switch (option_char) {
-		case 'd':
-			debug = 1;
-			break;
-		case 'h': {
-			cerr << "StareFunctionsTest has the following tests: " << endl;
-			const std::vector<Test*> &tests = StareFunctionsTest::suite()->getTests();
-			unsigned int prefix_len = StareFunctionsTest::suite()->getName().append("::").length();
-			for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
-				cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
-			}
-			break;
-		}
-		default:
-			break;
-		}
-	}
-#endif
 
 	CppUnit::TextTestRunner runner;
 	runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());

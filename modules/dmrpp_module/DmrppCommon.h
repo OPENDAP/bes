@@ -51,7 +51,7 @@ void join_threads(pthread_t threads[], unsigned int num_threads);
  * @brief Size and offset information of data included in DMR++ files.
  *
  * A mixin class the provides common behavior for the libdap types
- * when they are used with teh DMR++ handler. This includes instances
+ * when they are used with the DMR++ handler. This includes instances
  * of the Chunk object, code to help the parser break apart the info
  * in the DMR++ XML documents, and other stuff.
  *

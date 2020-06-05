@@ -415,7 +415,7 @@ void NCMLUtil::hackGlobalAttributesForDAP2(libdap::AttrTable &global_attributes,
     // Case 2
     // Note that the assignment operator first clears the destination and
     // then performs a deep copy, so the 'new_global_attr_container' will completely
-    // replace the existing collection of attributes at teh top-level.
+    // replace the existing collection of attributes at the top-level.
     if (only_simple_attributes)
     {
         AttrTable *new_global_attr_container = new AttrTable();

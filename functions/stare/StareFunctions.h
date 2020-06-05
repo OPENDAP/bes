@@ -58,9 +58,7 @@ bool target_in_dataset(const std::vector<libdap::dods_uint64> &targetIndices,
 unsigned int count(const std::vector<libdap::dods_uint64> &target_indices,
         const std:: vector<libdap::dods_uint64> &dataset_indices, bool all_target_matches = false);
 
-
 #if 0
-
 /// X and Y coordinates of a point
 struct point {
     libdap::dods_int32 x;
@@ -79,7 +77,6 @@ struct stare_match {
     stare_match(int x, int y, libdap::dods_uint64 si): coord(x, y), stare_index(si) {}
     friend std::ostream & operator << (std::ostream &out, const stare_match &m);
 };
-
 #endif
 
 /// Hold the result from the subset helper function as a collection of vectors
@@ -125,7 +122,7 @@ public:
         setRole("http://services.opendap.org/dap4/server-side-function/stare_intersection");
         setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#stare_intersection");
         setFunction(stare_intersection_dap4_function);
-        setVersion("0.1");
+        setVersion("0.2");
     }
 
     virtual ~StareIntersectionFunction() {
@@ -146,7 +143,7 @@ public:
         setRole("http://services.opendap.org/dap4/server-side-function/stare_count");
         setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#stare_count");
         setFunction(stare_count_dap4_function);
-        setVersion("0.1");
+        setVersion("0.2");
     }
 
     virtual ~StareCountFunction() {
@@ -167,7 +164,7 @@ public:
         setRole("http://services.opendap.org/dap4/server-side-function/stare_subset");
         setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#stare_subset");
         setFunction(stare_subset_dap4_function);
-        setVersion("0.1");
+        setVersion("0.2");
     }
 
     virtual ~StareSubsetFunction() {

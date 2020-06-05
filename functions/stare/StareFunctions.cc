@@ -160,6 +160,14 @@ static vector<dods_uint64> *extract_uint64_array(Array *var) {
     return newVar;
 }
 
+void
+extract_uint64_array(Array *var, vector<dods_uint64> &values) {
+
+    values.resize(var->length());
+    var->value(&values[0]);    // Extract the values of 'var' to 'values'
+}
+
+
 /**
  * Compare two spatial array index values a, b.
  *
@@ -359,8 +367,13 @@ get_sidecar_file_pathname(const string &pathName, const string &token)
  * @param values Value-result parameter, a vector that can hold dods_int32 values
  */
 void
-get_sidecar_int32_values(hid_t file, const string &variable, vector<dods_int32> &values)
+get_sidecar_int32_values(const string &filename, const string &variable, vector<dods_int32> &values)
 {
+    //Read the file and store the datasets
+    hid_t file = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+    if (file < 0)
+        throw BESInternalError("Could not open file " + filename, __FILE__, __LINE__);
+
     hid_t dataset = H5Dopen(file, variable.c_str(), H5P_DEFAULT);
     if (dataset < 0)
         throw BESInternalError(string("Could not open dataset: ").append(variable), __FILE__, __LINE__);
@@ -389,14 +402,23 @@ get_sidecar_int32_values(hid_t file, const string &variable, vector<dods_int32> 
 /**
  * @brief Read the unsigned 64-bit integer array data
  * @param file The HDF5 Id of an open file
+ * @param variable Get the stare indices for this dependent variable
  * @param values Value-result parameter, a vector that can hold dods_uint64 values
  */
 void
-get_sidecar_uint64_values(hid_t file, const string &variable, vector<dods_uint64> &values)
+get_sidecar_uint64_values(const string &filename, BaseType */*variable*/, vector<dods_uint64> &values)
 {
-    hid_t dataset = H5Dopen(file, variable.c_str(), H5P_DEFAULT);
+    //Read the file and store the datasets
+    hid_t file = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+    if (file < 0)
+        throw BESInternalError("Could not open file " + filename, __FILE__, __LINE__);
+
+    // Here we look up the name of the stare index data for 'variable.' For now,
+    // use the name stored in 's_index_name'. jhrg 6/3/20
+
+    hid_t dataset = H5Dopen(file, s_index_name.c_str(), H5P_DEFAULT);
     if (dataset < 0)
-        throw BESInternalError(string("Could not open dataset: ").append(variable), __FILE__, __LINE__);
+        throw BESInternalError(string("Could not open dataset: ").append(s_index_name), __FILE__, __LINE__);
 
     hid_t dspace = H5Dget_space(dataset);
     const int ndims = H5Sget_simple_extent_ndims(dspace);
@@ -419,47 +441,59 @@ get_sidecar_uint64_values(hid_t file, const string &variable, vector<dods_uint64
     H5Dread(dataset, H5T_NATIVE_ULLONG, memspace, filespace, H5P_DEFAULT, &values[0]);
 }
 
-/**
- * -- Intersection server function --
- * Checks to see if there are any Stare values provided from the client that can be found in the sidecar file.
- * If there is at least one match, the function will return a 1. Otherwise returns a 0.
- */
+void
+read_stare_indices_from_function_argument(BaseType *raw_stare_indices, vector<dods_uint64>&s_indices) {
+
+    Array *stare_indices = dynamic_cast<Array *>(raw_stare_indices);
+    if (stare_indices == nullptr)
+        throw BESSyntaxUserError(
+                "stare_intersection(): Expected an Array but found a " + raw_stare_indices->type_name(), __FILE__,
+                __LINE__);
+
+    if (stare_indices->var()->type() != dods_uint64_c)
+        throw BESSyntaxUserError(
+                "Expected an Array of UInt64 values but found an Array of  " + stare_indices->var()->type_name(),
+                __FILE__, __LINE__);
+
+    stare_indices->read();
+
+    extract_uint64_array(stare_indices, s_indices);
+}
+
+ /**
+  * @brief Return true/false indicating that the given stare indices intersect the variables
+  *
+  * Checks to see if there are any Stare values provided from the client that can be found in the sidecar file.
+  * If there is at least one match, the function will return a 1. Otherwise returns a 0.
+  *
+  * @param args Two values: A variable in the dataset and a set of stare indices
+  * @param dmr The DMR object for this dataset
+  * @return True/False in a DAP Int32.
+  */
 BaseType *
 StareIntersectionFunction::stare_intersection_dap4_function(D4RValueList *args, DMR &dmr)
 {
-    if (args->size() != 1) {
+    if (args->size() != 2) {
         ostringstream oss;
-        oss << "stare_intersection(): Expected a single argument, but got " << args->size();
+        oss << "stare_intersection(): Expected two arguments, but got " << args->size();
         throw BESSyntaxUserError(oss.str(), __FILE__, __LINE__);
     }
 
     //Find the filename from the dmr
     string fullPath = get_sidecar_file_pathname(dmr.filename(), stare_sidecar_suffix);
 
-    //Read the file and store the datasets
-    hid_t file = H5Fopen(fullPath.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
-    if (file < 0)
-        throw BESInternalError("Could not open file " + fullPath, __FILE__, __LINE__);
+    BaseType *dependent_var = args->get_rvalue(0)->value(dmr);
+    BaseType *raw_stare_indices = args->get_rvalue(1)->value(dmr);
 
-    //Read the data file and store the values of each dataset into an array
-    vector<dods_uint64> dataStareIndices;
-    get_sidecar_uint64_values(file, s_index_name, dataStareIndices);
+     //Read the data file and store the values of each dataset into an array
+    vector<dods_uint64> dep_var_stare_indices;
+    get_sidecar_uint64_values(fullPath, dependent_var, dep_var_stare_indices);
 
-    BaseType *pBaseType = args->get_rvalue(0)->value(dmr);
-    Array *stareSrc = dynamic_cast<Array *>(pBaseType);
-    if (stareSrc == nullptr)
-        throw BESSyntaxUserError("stare_intersection(): Expected an Array but found a " + pBaseType->type_name(), __FILE__, __LINE__);
+    // TODO: We can dump the values in 'stare_indices' here
+    vector<dods_uint64> target_s_indices;
+    read_stare_indices_from_function_argument(raw_stare_indices, target_s_indices);
 
-    if (stareSrc->var()->type() != dods_uint64_c)
-        throw BESSyntaxUserError("Expected an Array of UInt64 values but found an Array of  " + stareSrc->var()->type_name(), __FILE__, __LINE__);
-
-    stareSrc->read();
-
-    vector<dods_uint64> *targetIndices = extract_uint64_array(stareSrc);
-
-    bool status = target_in_dataset(*targetIndices, dataStareIndices);
-
-    delete targetIndices;
+    bool status = target_in_dataset(target_s_indices, dep_var_stare_indices);
 
     Int32 *result = new Int32("result");
     if (status) {
@@ -493,12 +527,33 @@ StareIntersectionFunction::stare_intersection_dap4_function(D4RValueList *args, 
 BaseType *
 StareCountFunction::stare_count_dap4_function(D4RValueList *args, DMR &dmr)
 {
-    if (args->size() != 1) {
+    if (args->size() != 2) {
         ostringstream oss;
-        oss << "stare_intersection(): Expected a single argument, but got " << args->size();
+        oss << "stare_intersection(): Expected two arguments, but got " << args->size();
         throw BESSyntaxUserError(oss.str(), __FILE__, __LINE__);
     }
 
+    //Find the filename from the dmr
+    string fullPath = get_sidecar_file_pathname(dmr.filename(), stare_sidecar_suffix);
+
+    BaseType *dependent_var = args->get_rvalue(0)->value(dmr);
+    BaseType *raw_stare_indices = args->get_rvalue(1)->value(dmr);
+
+    //Read the data file and store the values of each dataset into an array
+    vector<dods_uint64> dep_var_stare_indices;
+    get_sidecar_uint64_values(fullPath, dependent_var, dep_var_stare_indices);
+
+    // TODO: We can dump the values in 'stare_indices' here
+    vector<dods_uint64> target_s_indices;
+    read_stare_indices_from_function_argument(raw_stare_indices, target_s_indices);
+
+    int num = count(target_s_indices, dep_var_stare_indices);
+
+    Int32 *result = new Int32("result");
+    result->set_value(num);
+    return result;
+
+#if 0
     //Find the filename from the dmr
     string fullPath = get_sidecar_file_pathname(dmr.filename(), stare_sidecar_suffix);
 
@@ -528,8 +583,8 @@ StareCountFunction::stare_count_dap4_function(D4RValueList *args, DMR &dmr)
 
     Int32 *result = new Int32("result");
     result->set_value(num);
-
     return result;
+#endif
 }
 
 /**
@@ -549,12 +604,66 @@ StareCountFunction::stare_count_dap4_function(D4RValueList *args, DMR &dmr)
 BaseType *
 StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
 {
-    if (args->size() != 1) {
+    if (args->size() != 2) {
         ostringstream oss;
-        oss << "stare_intersection(): Expected a single argument, but got " << args->size();
+        oss << "stare_intersection(): Expected two arguments, but got " << args->size();
         throw BESSyntaxUserError(oss.str(), __FILE__, __LINE__);
     }
 
+    //Find the filename from the dmr
+    string fullPath = get_sidecar_file_pathname(dmr.filename(), stare_sidecar_suffix);
+
+    BaseType *dependent_var = args->get_rvalue(0)->value(dmr);
+    BaseType *raw_stare_indices = args->get_rvalue(1)->value(dmr);
+
+    //Read the data file and store the values of each dataset into an array
+    vector<dods_uint64> dep_var_stare_indices;
+    get_sidecar_uint64_values(fullPath, dependent_var, dep_var_stare_indices);
+
+    // TODO: We can dump the values in 'stare_indices' here
+    vector<dods_uint64> target_s_indices;
+    read_stare_indices_from_function_argument(raw_stare_indices, target_s_indices);
+
+    vector<dods_int32> dataset_x_coords;
+    get_sidecar_int32_values(fullPath, "X", dataset_x_coords);
+    vector<dods_int32> dataset_y_coords;
+    get_sidecar_int32_values(fullPath, "Y", dataset_y_coords);
+
+    unique_ptr <stare_matches> subset = stare_subset_helper(target_s_indices, dep_var_stare_indices, dataset_x_coords, dataset_y_coords);
+
+    // When no subset is found (none of the target indices match those in the dataset)
+    if (subset->stare_indices.size() == 0) {
+        subset->stare_indices.push_back(0);
+        subset->target_indices.push_back(0);
+        subset->x_indices.push_back(-1);
+        subset->y_indices.push_back(-1);
+    }
+    // Transfer values to a Structure
+    auto result = new Structure("result");
+
+    Array *stare = new Array("stare", new UInt64("stare"));
+    stare->set_value(&(subset->stare_indices[0]), subset->stare_indices.size());
+    stare->append_dim(subset->stare_indices.size());
+    result->add_var_nocopy(stare);
+
+    Array *target = new Array("target", new UInt64("target"));
+    target->set_value(&(subset->target_indices[0]), subset->target_indices.size());
+    target->append_dim(subset->target_indices.size());
+    result->add_var_nocopy(target);
+
+    auto x = new Array("x", new Int32("x"));
+    x->set_value(subset->x_indices, subset->x_indices.size());
+    x->append_dim(subset->x_indices.size());
+    result->add_var_nocopy(x);
+
+    auto y = new Array("y", new Int32("y"));
+    y->set_value(subset->y_indices, subset->y_indices.size());
+    y->append_dim(subset->y_indices.size());
+    result->add_var_nocopy(y);
+
+    return result;
+
+#if 0
     //Find the filename from the dmr
     string fullPath = get_sidecar_file_pathname(dmr.filename(), stare_sidecar_suffix);
 
@@ -618,6 +727,7 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
     result->add_var_nocopy(y);
 
     return result;
+#endif
 }
 
 } // namespace functions
