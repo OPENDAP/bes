@@ -58,6 +58,7 @@ private:
     unsigned long long d_read_buffer_size;
     bool d_is_read;
     bool d_is_inflated;
+    std::string d_response_content_type;
 
     static const std::string tracking_context;
 
@@ -155,6 +156,12 @@ public:
 
         return *this;
     }
+
+    /// @brief Get the response type of the last response
+    virtual std::string get_response_content_type() { return d_response_content_type; }
+
+    /// @brief Set the response type of the last response
+    void  set_response_content_type(const std::string &ct) { d_response_content_type = ct; }
 
     /**
      * @brief Get the size of this Chunk's data block on disk
