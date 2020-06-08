@@ -635,7 +635,13 @@ void FONcTransform::transform_dap4_no_group() {
 
 void FONcTransform::transform_dap4_group(D4Group* grp,bool is_root_grp,int par_grp_id,map<string,int>&fdimname_to_id ) {
 
-    //D4Group* root_grp = _dmr->root();
+    int grp_id = -1;
+        int stax = -1;
+        if(is_root_grp == true) 
+            grp_id = _ncid;
+        else
+            stax = nc_def_grp(par_grp_id,(*grp).name().c_str(),&grp_id);
+     
     D4Dimensions *root_dims = grp->dims();
     for(D4Dimensions::D4DimensionsIter di = root_dims->dim_begin(), de = root_dims->dim_end(); di != de; ++di) {
         BESDEBUG("fonc", "transform_dap4() - check dimensions"<< endl);
@@ -643,12 +649,13 @@ void FONcTransform::transform_dap4_group(D4Group* grp,bool is_root_grp,int par_g
         BESDEBUG("fonc", "transform_dap4() - dim size is: "<<(*di)->size()<<endl);
         BESDEBUG("fonc", "transform_dap4() - fully_qualfied_dim name is: "<<(*di)->fully_qualified_name()<<endl);
         int g_dimid = -1;
-        int stax = nc_def_dim(par_grp_id,(*di)->name().c_str(),(*di)->size(),&g_dimid);
+        stax = nc_def_dim(grp_id,(*di)->name().c_str(),(*di)->size(),&g_dimid);
         fdimname_to_id[(*di)->fully_qualified_name()] = g_dimid; 
         //fdimname_to_id.push_back(temp_dimname_to_id);
         //cout <<"dim size is: "<<(*di)->size()<<endl;
         //cout <<"dim fully_qualified_name is: "<<(*di)->fully_qualified_name()<<endl;
     }
+//#endif
     Constructor::Vars_iter vi = grp->var_begin();
     Constructor::Vars_iter ve = grp->var_end();
 #if 0
@@ -720,6 +727,7 @@ void FONcTransform::transform_dap4_group(D4Group* grp,bool is_root_grp,int par_g
         // For each converted FONc object, call define on it to define
         // that object to the netcdf file. This also adds the attributes
         // for the variables to the netcdf file
+#if 0
         int grp_id = -1;
         int stax = -1;
         if(is_root_grp == true) 
@@ -727,6 +735,21 @@ void FONcTransform::transform_dap4_group(D4Group* grp,bool is_root_grp,int par_g
         else
             stax = nc_def_grp(par_grp_id,(*grp).name().c_str(),&grp_id);
             
+    D4Dimensions *root_dims = grp->dims();
+    for(D4Dimensions::D4DimensionsIter di = root_dims->dim_begin(), de = root_dims->dim_end(); di != de; ++di) {
+        BESDEBUG("fonc", "transform_dap4() - check dimensions"<< endl);
+        BESDEBUG("fonc", "transform_dap4() - dim name is: "<<(*di)->name()<<endl);
+        BESDEBUG("fonc", "transform_dap4() - dim size is: "<<(*di)->size()<<endl);
+        BESDEBUG("fonc", "transform_dap4() - fully_qualfied_dim name is: "<<(*di)->fully_qualified_name()<<endl);
+        int g_dimid = -1;
+        stax = nc_def_dim(grp_id,(*di)->name().c_str(),(*di)->size(),&g_dimid);
+        fdimname_to_id[(*di)->fully_qualified_name()] = g_dimid; 
+        //fdimname_to_id.push_back(temp_dimname_to_id);
+        //cout <<"dim size is: "<<(*di)->size()<<endl;
+        //cout <<"dim fully_qualified_name is: "<<(*di)->fully_qualified_name()<<endl;
+    }
+#endif
+ 
         vector<FONcBaseType *>::iterator i = fonc_vars_in_grp.begin();
         vector<FONcBaseType *>::iterator e = fonc_vars_in_grp.end();
         for (; i != e; i++) {

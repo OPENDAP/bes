@@ -299,7 +299,7 @@ FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic
             Array::Dim_iter de = t_a->dim_end();
             for (; di != de; di++) {
                 BESDEBUG("fonc", "FONcArray() - constructor is dap4 "<< endl);
-                D4Dimension * d4_dim = t_a->dimension_D4dim(di);BESDEBUG("fonc", "fully qualified dimension name is "<< d4_dim->fully_qualified_name() <<endl);
+                D4Dimension * d4_dim = t_a->dimension_D4dim(di);
                 BESDEBUG("fonc", "fully qualified dimension name is "<< d4_dim->fully_qualified_name() <<endl);
                 if(fdimname_to_id.find(d4_dim->fully_qualified_name())!= fdimname_to_id.end()) {
                     int dim_id = fdimname_to_id[d4_dim->fully_qualified_name()];

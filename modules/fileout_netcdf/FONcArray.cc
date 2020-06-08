@@ -53,8 +53,8 @@ const int MAX_CHUNK_SIZE = 1024;
  * @throws BESInternalError if the BaseType is not an Array
  */
 FONcArray::FONcArray(BaseType *b) :
-        FONcBaseType(), d_a(0), d_array_type(NC_NAT), d_ndims(0), d_actual_ndims(0), d_nelements(1), d_dim_ids(0),
-        d_dim_sizes(0), d_str_data(0), d_dont_use_it(false), d_chunksizes(0), d_grid_maps(0)
+        FONcBaseType(), d_a(0), d_array_type(NC_NAT), d_ndims(0), d_actual_ndims(0), d_nelements(1), d4_dim_ids(0),d_dim_ids(0),
+        d_dim_sizes(0), d_str_data(0), d_dont_use_it(false), d_chunksizes(0), d_grid_maps(0),d4_def_dim(false)
 {
     d_a = dynamic_cast<Array *>(b);
     if (!d_a) {
@@ -63,8 +63,8 @@ FONcArray::FONcArray(BaseType *b) :
     }
 }
 
-FONcArray::FONcArray(BaseType *b,const vector<int> &dim_ids) :
-        FONcBaseType(), d_a(0), d_array_type(NC_NAT), d_actual_ndims(0), d_nelements(1), 
+FONcArray::FONcArray(BaseType *b,const vector<int> &fd4_dim_ids) :
+        FONcBaseType(), d_a(0), d_array_type(NC_NAT), d_ndims(0),d_actual_ndims(0), d_nelements(1),d_dim_ids(0),
         d_dim_sizes(0), d_str_data(0), d_dont_use_it(false), d_chunksizes(0), d_grid_maps(0)
 {
     d_a = dynamic_cast<Array *>(b);
@@ -74,7 +74,8 @@ FONcArray::FONcArray(BaseType *b,const vector<int> &dim_ids) :
     }
     if(d_a ->is_dap4()) {
         BESDEBUG("fonc", "FONcArray() - constructor is dap4 "<< endl);
-        d_dim_ids = dim_ids;
+        d4_dim_ids = fd4_dim_ids;
+        d4_def_dim = true;
     }
 }
 /** @brief Destructor that cleans up the array
@@ -123,13 +124,28 @@ void FONcArray::convert(vector<string> embed,bool is_dap4_group)
     FONcBaseType::convert(embed,is_dap4_group);
 
     //TOODOO: don't use _d_dim_ids when has_dap4_group.
-
-    bool has_dap4_group =(d_dim_ids.size()>0);
     _varname = FONcUtils::gen_name(embed, _varname, _orig_varname);
 
     BESDEBUG("fonc", "FONcArray::convert() - converting array " << _varname << endl);
 
     d_array_type = FONcUtils::get_nc_type(d_a->var(),isNetCDF4_ENHANCED());
+
+#if 0
+    if(d4_dim_ids.size() >0) {
+        BESDEBUG("fonc", "FONcArray::convert() - d4_dim_ids size is " << d4_dim_ids.size() << endl);
+
+    }
+#endif
+    //bool has_dap4_group =(d4_dim_ids.size()>0);
+    //has_dap4_group = d4_def_dim;
+#if 0
+    if(true == has_dap4_group) {
+
+
+    }
+    else { 
+#endif
+
     d_ndims = d_a->dimensions();
     d_actual_ndims = d_ndims; //replace this with _a->dimensions(); below TODO
     if (d_array_type == NC_CHAR) {
@@ -158,17 +174,26 @@ void FONcArray::convert(vector<string> embed,bool is_dap4_group)
         BESDEBUG("fonc", "FONcArray::convert() - dim num: " << dimnum << ", dim size: " << size << ", chunk size: " << d_chunksizes[dimnum] << endl);
         BESDEBUG("fonc", "FONcArray::convert() - dim name: " << d_a->dimension_name(di) << endl);
 
-        // See if this dimension has already been defined. If it has the
-        // same name and same size as another dimension, then it is a
-        // shared dimension. Create it only once and share the FONcDim
-        // TTTDOO: Don't use find_dim when has_dap4_group is true.
-        FONcDim *use_dim = find_dim(embed, d_a->dimension_name(di), size);
-        d_dims.push_back(use_dim);
+        // TOODOO: move this out of the loop
+        if(true == d4_def_dim) {
+            d_dim_ids = d4_dim_ids;
+            BESDEBUG("fonc", "FONcArray::convert() - has dap4 group"  << endl);
+
+        }
+        else {
+            // See if this dimension has already been defined. If it has the
+            // same name and same size as another dimension, then it is a
+            // shared dimension. Create it only once and share the FONcDim
+            FONcDim *use_dim = find_dim(embed, d_a->dimension_name(di), size);
+            d_dims.push_back(use_dim);
+        }
+
         dimnum++;
     }
 
     // if this array is a string array, then add the length dimension
     if (d_array_type == NC_CHAR) {
+
         // get the data from the dap array
         int array_length = d_a->length();
 
@@ -213,13 +238,13 @@ void FONcArray::convert(vector<string> embed,bool is_dap4_group)
         // is it already in there?
         FONcMap *map = FONcGrid::InMaps(d_a);
         if (!map) {
-            // This memory is/was leaked. jhrg 8/28/13
-            FONcMap *new_map = new FONcMap(this);
-            d_grid_maps.push_back(new_map);		// save it here so we can free it later. jhrg 8/28/13
-            FONcGrid::Maps.push_back(new_map);
+                // This memory is/was leaked. jhrg 8/28/13
+                FONcMap *new_map = new FONcMap(this);
+                d_grid_maps.push_back(new_map);		// save it here so we can free it later. jhrg 8/28/13
+                FONcGrid::Maps.push_back(new_map);
         }
         else {
-            d_dont_use_it = true;
+                d_dont_use_it = true;
         }
     }
 
@@ -294,6 +319,23 @@ void FONcArray::define(int ncid)
     BESDEBUG("fonc", "FONcArray::define() - defining array '" << _varname << "'" << endl);
 
     if (!_defined && !d_dont_use_it) {
+
+        BESDEBUG("fonc", "FONcArray::define() - defining array ' defined already" << _varname << "'" << endl);
+        if(d4_dim_ids.size() >0) {
+           if(d_array_type == NC_CHAR) {
+               if(d_dims.size() == 1) {
+                   FONcDim *fd = *(d_dims.begin());
+                   fd->define(ncid);
+                   d_dim_ids[d_ndims-1] = fd->dimid();
+
+               }
+               else {
+
+               }
+           }
+        }
+        else {
+
         vector<FONcDim *>::iterator i = d_dims.begin();
         vector<FONcDim *>::iterator e = d_dims.end();
         int dimnum = 0;
@@ -304,6 +346,7 @@ void FONcArray::define(int ncid)
             d_dim_ids[dimnum] = fd->dimid();
             BESDEBUG("fonc", "FONcArray::define() - dim_id: " << fd->dimid() << " size:" << fd->size() << endl);
             dimnum++;
+        }
         }
 
         int stax = nc_def_var(ncid, _varname.c_str(), d_array_type, d_ndims, &d_dim_ids[0], &_varid);
