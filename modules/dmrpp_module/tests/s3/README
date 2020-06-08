@@ -11,7 +11,7 @@ The non-local tests reference the real AIRS granule
 in our/Raytheon's S3 account. There is a copy of AIRS_partial.h5 there
 as well. I have not switched the non-local tests to use it, however.
 
-One issues is that while the values are the same for the variable that
+One issue is that while the values are the same for the variable that
 are common to both files, other things about the files are different.
 Chunk sizes, however, are the same as are the names and types for each
 of the copied variables.

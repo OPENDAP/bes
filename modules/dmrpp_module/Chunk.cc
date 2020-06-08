@@ -57,6 +57,38 @@ namespace dmrpp {
 const std::string Chunk::tracking_context = "cloudydap";
 
 /**
+ * @brief read the response headers
+ * @param buffer One header line
+ * @param size Always 1
+ * @param nitems Number of bytes in this header line
+ * @param data Pointer to the user data, configured using
+ * @return
+ */
+size_t chunk_header_callback(char *buffer, size_t size, size_t nitems, void *data)
+{
+    /* received header is nitems * size long in 'buffer' NOT ZERO TERMINATED */
+    /* 'userdata' is set with CURLOPT_HEADERDATA */
+    /* 'size' is always 1 */
+#if 0
+    vector<char> header(nitems+1);
+    copy(buffer, buffer+nitems, header.begin());
+    std::string str(header.begin(), header.end());
+#endif
+    // -2 strips of the CRLF at the end of the header
+    string header(buffer, buffer + nitems - 2);
+    BESDEBUG(MODULE, "Header: " << header << endl);
+    // Look for the content type header and store its value in the Chunk
+    string::size_type pos;
+    if ((pos = header.find("Content-Type")) != string::npos) {
+        // Header format 'Content-Type: <value>'
+        string header_value = header.substr(header.find_last_of(' ')+1);
+        BESDEBUG(MODULE, "Content-Type header value: " << header_value << endl);
+    }
+
+    return nitems * size;
+}
+
+/**
  * @brief Callback passed to libcurl to handle reading a single byte.
  *
  * This callback assumes that the size of the data is small enough

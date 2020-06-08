@@ -31,7 +31,8 @@
 
 namespace dmrpp {
 
-// Callback function used by chunk readers
+// Callback functions used by chunk readers
+size_t chunk_header_callback(char *buffer, size_t size, size_t nitems, void *data);
 size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data);
 
 /**
