@@ -33,9 +33,8 @@ CLEANFILES = bes.conf
 
 # NB: Make sure to distribute both the source and generated files
 # for the test
-EXTRA_DIST = $(TESTSUITE) $(TESTSUITE).at atlocal.in \
-bes.conf.in handler_tests_macros.m4 $(srcdir)/package.m4 \
-bescmd second_catalog
+EXTRA_DIST = test_data $(TESTSUITE) $(TESTSUITE).at atlocal.in bes.conf.in \
+handler_tests_macros.m4 $(srcdir)/package.m4 bescmd second_catalog
 
 DISTCLEANFILES = atconfig
 
