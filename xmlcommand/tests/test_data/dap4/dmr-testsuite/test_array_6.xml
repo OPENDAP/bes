@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Dataset name="test_array_6" dapVersion="4.0" dmrVersion="1.0" xml:base="file:dap4/test_array_6.xml"
+  xmlns="http://xml.opendap.org/ns/DAP/4.0#"
+  xmlns:dap="http://xml.opendap.org/ns/DAP/4.0#">
+  
+  <Dimension name="row" size="3"/>
+  <Dimension name="col" size="4"/>
+  
+  <Structure name="a">
+    <Int32 name="i"/>
+    <Int32 name="j"/>
+    <Dim name="row"/>
+    <Dim name="col"/>   
+  </Structure>
+</Dataset>
