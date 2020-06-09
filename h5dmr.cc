@@ -672,10 +672,17 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
                         "number of dimensions: overflow");
         }
         dimnames_size = (int)(dt_inst.dimnames.size());
+BESDEBUG("h5", "<dimnames_size is " << dimnames_size <<endl);
             
         if(dimnames_size ==dt_inst.ndims) {
+BESDEBUG("h5", "Inside loop <dimnames_size is " << dimnames_size <<endl);
+
+
             for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
                 if(dt_inst.dimnames[dim_index] !="") {
+
+                    BESDEBUG("h5", "<coming to append array" << endl);
+#if 0
                     // D4dimension has to have a name. If no name, no D4dimension(from comments libdap4: Array.cc) 
                     //ar->append_dim(dt_inst.size[dim_index],dt_inst.dimnames[dim_index]);
                     D4Dimensions *d4_grp_dims = d4_grp->dims();
@@ -686,6 +693,8 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
                         d4_grp->dims()->add_dim_nocopy(d4_dim);
                     }
                     ar->append_dim(d4_dim);
+#endif
+                    ar->append_dim(dt_inst.size[dim_index],dt_inst.dimnames[dim_index]);
                     
                 }
                 else  {
@@ -705,8 +714,9 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
         }
 
         // We need to transform dimension info. to DAP4 group
-        BaseType* new_var = ar->h5dims_transform_to_dap4(d4_grp);
+        BaseType* new_var = ar->h5dims_transform_to_dap4(d4_grp,dt_inst.dimnames_path);
 
+        dt_inst.dimnames_path.clear();
         // Map HDF5 dataset attributes to DAP4
         map_h5_attrs_to_dap4(dset_id,NULL,new_var,NULL,1);
 
@@ -722,8 +732,8 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
         d4_grp->add_var_nocopy(new_var);
         delete ar; ar = 0;
     }
-
     BESDEBUG("h5", "<read_objects_base_type(dmr)" << endl);
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -800,7 +810,8 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
             }
 
             // We need to transform dimension info. to DAP4 group
-            BaseType* new_var = ar->h5dims_transform_to_dap4(d4_grp);
+            BaseType* new_var = ar->h5dims_transform_to_dap4(d4_grp,dt_inst.dimnames_path);
+            dt_inst.dimnames_path.clear();
 
             // Map HDF5 dataset attributes to DAP4
             map_h5_attrs_to_dap4(dset_id,NULL,new_var,NULL,1);

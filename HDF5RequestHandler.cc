@@ -1281,7 +1281,21 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
                 // loads them into the root group (building child groups as needed).
                 // jhrg 4/30/20
                 D4Group* root_grp = dmr->root();
+if(false == use_dimscale) 
+    BESDEBUG("h5", "use_dimscale is false"<< endl);
                 breadth_first(fileid,(char*)"/",root_grp,filename.c_str(),use_dimscale);
+                BESDEBUG("h5", "build_dmr - before obtain dimensions"<< endl);
+                D4Dimensions *root_dims = root_grp->dims();
+    for(D4Dimensions::D4DimensionsIter di = root_dims->dim_begin(), de = root_dims->dim_end(); di != de; ++di) {
+        BESDEBUG("fonc", "transform_dap4() - check dimensions"<< endl);
+        BESDEBUG("fonc", "transform_dap4() - dim name is: "<<(*di)->name()<<endl);
+        BESDEBUG("fonc", "transform_dap4() - dim size is: "<<(*di)->size()<<endl);
+        BESDEBUG("fonc", "transform_dap4() - fully_qualfied_dim name is: "<<(*di)->fully_qualified_name()<<endl);
+        //cout <<"dim size is: "<<(*di)->size()<<endl;
+        //cout <<"dim fully_qualified_name is: "<<(*di)->fully_qualified_name()<<endl;
+    }
+                BESDEBUG("h5", "build_dmr - after obtain dimensions"<< endl);
+
 
 #if 0
            if(true == use_dimscale) 

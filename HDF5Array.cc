@@ -1471,31 +1471,46 @@ hid_t HDF5Array::mkstr(int size, H5T_str_t pad)
 }
 
 // We don't inherit libdap Array Class's transform_to_dap4 method since CF option is still using it.
-BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp) {
+BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp,const vector<string> &dimpath) {
+
+    BESDEBUG("h5", "<h5dims_transform_to_dap4" << endl);
 
     if(grp == NULL)
         return NULL;
+    BESDEBUG("h5", "<h5dims_transform_to_dap4 again" << endl);
     Array *dest = static_cast<HDF5Array*>(ptr_duplicate());
 
     // If there is just a size, don't make
     // a D4Dimension (In DAP4 you cannot share a dimension unless it has
     // a name). jhrg 3/18/14
 
+    int k = 0;
     for (Array::Dim_iter d = dest->dim_begin(), e = dest->dim_end(); d != e; ++d) {
+    BESDEBUG("h5", "<coming to the dimension loop" << endl);
         if (false == (*d).name.empty()) {
+    BESDEBUG("h5", "<coming to the dimension loop, has name " << (*d).name<<endl);
+    BESDEBUG("h5", "<coming to the dimension loop, has dimpath " << dimpath[k] <<endl);
+    BESDEBUG("h5", "<coming to the dimension loop, has dimpath group " << dimpath[k].substr(0,dimpath[k].find_last_of("/")+1) <<endl);
 
             D4Group *temp_grp   = grp;
             D4Dimension *d4_dim = NULL;
             while(temp_grp) {
+    BESDEBUG("h5", "<coming to the group  has name " << temp_grp->name()<<endl);
+    BESDEBUG("h5", "<coming to the group  has fullpath " << temp_grp->FQN()<<endl);
 
                 D4Dimensions *temp_dims = temp_grp->dims();
 
                 // Check if the dimension is defined in this group
                 d4_dim = temp_dims->find_dim((*d).name);
-                if(d4_dim) { 
+                string d4_dim_path = dimpath[k].substr(0,dimpath[k].find_last_of("/")+1);
+                if(d4_dim && (temp_grp->FQN() == d4_dim_path)) { 
+                //if(d4_dim) { 
+BESDEBUG("h5", "<FInd dimension name " << (*d).name<<endl);
                   (*d).dim = d4_dim;
                   break;
                 }
+                else
+                    d4_dim = NULL;
 
                 if(temp_grp->get_parent()) 
                     temp_grp = static_cast<D4Group*>(temp_grp->get_parent());
@@ -1511,10 +1526,13 @@ BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp) {
             if(d4_dim_null == true) {
                 d4_dim = new D4Dimension((*d).name, (*d).size);
                 D4Dimensions * dims = grp->dims();
+
+    BESDEBUG("h5", "<Just before adding D4 dimension to group" << endl);
                 dims->add_dim_nocopy(d4_dim);
                 (*d).dim = d4_dim;
             }
         }
+        k++;
     }
 
     dest->set_is_dap4(true);

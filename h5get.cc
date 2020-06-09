@@ -166,7 +166,7 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
         string attr_name_str(attr_name.begin(),attr_name.end()-1);
 //cout<<"attr_name_str is "<<attr_name_str <<endl;
         if(attr_name_str == "CLASS" || attr_name_str == "NAME" || attr_name_str == "_Netcdf4Dimid" 
-           || attr_name_str == "_nc3_strict" || attr_name_str=="_NCProperties") {
+           || attr_name_str == "_nc3_strict" || attr_name_str=="_NCProperties" || attr_name_str=="_Netcdf4Coordinates") {
             *ignore_attr_ptr = true;
             H5Tclose(ty_id);
             return attrid;
@@ -572,6 +572,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool use_dim
 
     // For DAP4 when dimension scales are used.
     if(true == use_dimscale) {
+  BESDEBUG("h5", "<h5get.cc: get_dataset() use dim scale is true." << endl);
 
         // Some HDF5 datasets are dimension scale datasets; some are not. We need to distinguish.
         bool is_dimscale = false;
@@ -599,8 +600,12 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool use_dim
         }
  
          if(true == is_dimscale) {
+BESDEBUG("h5", "<h5get.cc: get_dataset() use dim scale is true." << endl);
             // Save the dimension names.We Only need to provide the dimension name(not the full path).
+            // We still need the dimension name fullpath for distinguishing the different dimension that
+            // has the same dimension name but in the different path
             (*dt_inst_ptr).dimnames.push_back(dname.substr(dname.find_last_of("/")+1));
+            (*dt_inst_ptr).dimnames_path.push_back(dname);
          }
          else // We need to save all dimension names in this dimension. 
             obtain_dimnames(dset,ndims,dt_inst_ptr);
@@ -1588,7 +1593,10 @@ void obtain_dimnames(hid_t dset,int ndims, DS_t *dt_inst_ptr) {
                 string trim_objname = objname_str.substr(0,objnamelen);
 
                 // Need to save the dimension names without the path
+                BESDEBUG("h5", "<h5get.cc: Obtain_dimnames() before pusing dimnames." << endl);
+ 
                 dt_inst_ptr->dimnames.push_back(trim_objname.substr(trim_objname.find_last_of("/")+1));
+                dt_inst_ptr->dimnames_path.push_back(trim_objname);
 
                 if(H5Dclose(ref_dset)<0) {
                     throw InternalErr(__FILE__,__LINE__,"Cannot close the HDF5 dataset in the function obtain_dimnames().");
