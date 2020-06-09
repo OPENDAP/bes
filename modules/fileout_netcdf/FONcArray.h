@@ -68,6 +68,7 @@ private:
     std::vector<FONcDim *> d_dims;
     // The netcdf dimension ids for this array from DAP4
     std::vector<int> d4_dim_ids;
+    std::vector<bool>use_d4_dim_ids;
     // The netcdf dimension ids for this array
     std::vector<int> d_dim_ids;
     // The netcdf dimension sizes to be written
@@ -99,7 +100,7 @@ private:
 
 public:
     FONcArray(libdap::BaseType *b);
-    FONcArray(libdap::BaseType *b,const std::vector<int>&dim_ids);
+    FONcArray(libdap::BaseType *b,const std::vector<int>&dim_ids,const std::vector<bool>&use_dim_ids);
     virtual ~FONcArray();
 
     virtual void convert(std::vector<std::string> embed,bool is_dap4_group=false);

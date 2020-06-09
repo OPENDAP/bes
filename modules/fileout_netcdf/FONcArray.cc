@@ -61,9 +61,14 @@ FONcArray::FONcArray(BaseType *b) :
         string s = "File out netcdf, FONcArray was passed a variable that is not a DAP Array";
         throw BESInternalError(s, __FILE__, __LINE__);
     }
+
+    for(unsigned int i = 0; i<d_a->dimensions();i++)
+        use_d4_dim_ids.push_back(false);
+
+
 }
 
-FONcArray::FONcArray(BaseType *b,const vector<int> &fd4_dim_ids) :
+FONcArray::FONcArray(BaseType *b,const vector<int> &fd4_dim_ids,const vector<bool> &fuse_d4_dim_ids) :
         FONcBaseType(), d_a(0), d_array_type(NC_NAT), d_ndims(0),d_actual_ndims(0), d_nelements(1),d_dim_ids(0),
         d_dim_sizes(0), d_str_data(0), d_dont_use_it(false), d_chunksizes(0), d_grid_maps(0)
 {
@@ -75,6 +80,7 @@ FONcArray::FONcArray(BaseType *b,const vector<int> &fd4_dim_ids) :
     if(d_a ->is_dap4()) {
         BESDEBUG("fonc", "FONcArray() - constructor is dap4 "<< endl);
         d4_dim_ids = fd4_dim_ids;
+        use_d4_dim_ids = fuse_d4_dim_ids;
         d4_def_dim = true;
     }
 }
@@ -174,9 +180,8 @@ void FONcArray::convert(vector<string> embed,bool is_dap4_group)
         BESDEBUG("fonc", "FONcArray::convert() - dim num: " << dimnum << ", dim size: " << size << ", chunk size: " << d_chunksizes[dimnum] << endl);
         BESDEBUG("fonc", "FONcArray::convert() - dim name: " << d_a->dimension_name(di) << endl);
 
-        // TOODOO: move this out of the loop
-        if(true == d4_def_dim) {
-            d_dim_ids = d4_dim_ids;
+        if(true == d4_def_dim && use_d4_dim_ids[dimnum]== true) {
+            d_dim_ids[dimnum] = d4_dim_ids[dimnum];
             BESDEBUG("fonc", "FONcArray::convert() - has dap4 group"  << endl);
 
         }
@@ -219,6 +224,7 @@ void FONcArray::convert(vector<string> embed,bool is_dap4_group)
 
         d_dim_sizes[d_ndims - 1] = use_dim->size();
         d_dim_ids[d_ndims - 1] = use_dim->dimid();
+        use_d4_dim_ids.push_back(false);
         d_dims.push_back(use_dim);
 
         // Adding this fixes the bug reported by GSFC where arrays of strings
@@ -321,6 +327,7 @@ void FONcArray::define(int ncid)
     if (!_defined && !d_dont_use_it) {
 
         BESDEBUG("fonc", "FONcArray::define() - defining array ' defined already" << _varname << "'" << endl);
+#if 0
         if(d4_dim_ids.size() >0) {
            if(d_array_type == NC_CHAR) {
                if(d_dims.size() == 1) {
@@ -335,7 +342,9 @@ void FONcArray::define(int ncid)
            }
         }
         else {
+#endif
 
+     if(false == d4_def_dim) {
         vector<FONcDim *>::iterator i = d_dims.begin();
         vector<FONcDim *>::iterator e = d_dims.end();
         int dimnum = 0;
@@ -347,7 +356,21 @@ void FONcArray::define(int ncid)
             BESDEBUG("fonc", "FONcArray::define() - dim_id: " << fd->dimid() << " size:" << fd->size() << endl);
             dimnum++;
         }
+     }
+     else {// This else block may be general enough to cover all cases. In case there are issues for the new features, still keep it. 
+        int j = 0;
+        for(unsigned int i = 0; i< use_d4_dim_ids.size();i++) {
+            if(use_d4_dim_ids[i] == false) {
+                FONcDim *fd = d_dims[j];
+                fd->define(ncid);
+                d_dim_ids[i] = fd->dimid();
+                j++;
+            }
         }
+
+
+     }
+        //}
 
         int stax = nc_def_var(ncid, _varname.c_str(), d_array_type, d_ndims, &d_dim_ids[0], &_varid);
         if (stax != NC_NOERR) {

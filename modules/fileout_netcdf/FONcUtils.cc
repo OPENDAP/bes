@@ -36,6 +36,7 @@
 #include "FONcUtils.h"
 #include "FONcDim.h"
 #include "FONcByte.h"
+#include "FONcInt8.h"
 #include "FONcUByte.h"
 #include "FONcStr.h"
 #include "FONcShort.h"
@@ -117,6 +118,14 @@ nc_type FONcUtils::get_nc_type(BaseType *element,bool IsNC4_ENHANCED)
             x_type = NC_UBYTE;
         else 
             x_type = NC_SHORT;
+    }
+    else if(var_type =="Int8") {
+        if(IsNC4_ENHANCED) 
+            x_type = NC_BYTE;
+    }
+    else if(var_type =="UInt8") {
+        if(IsNC4_ENHANCED) 
+            x_type = NC_UBYTE;
     }
     else if (var_type == "String")
         x_type = NC_CHAR;
@@ -241,6 +250,7 @@ FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic
     case dods_url_c:
         b = new FONcStr(v);
         break;
+    case dods_uint8_c:
     case dods_byte_c: {
         if(true == is_netcdf4_enhanced)
             b = new FONcUByte(v);
@@ -248,6 +258,14 @@ FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic
             b = new FONcByte(v);
         break;
     }
+    case dods_int8_c: {
+        if(true == is_netcdf4_enhanced)
+            b = new FONcInt8(v);
+        else 
+            b = new FONcByte(v);
+        break;
+    }
+
     case dods_uint16_c: {
         if(true == is_netcdf4_enhanced)
             b = new FONcUShort(v); 
@@ -294,24 +312,39 @@ FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic
     case dods_array_c:
         if(fdimname_to_id.size()>0) {
             vector<int> dim_ids;
+            vector<bool> use_d4_dim_ids;
             Array *t_a = dynamic_cast<Array *>(v);
             Array::Dim_iter di = t_a->dim_begin();
             Array::Dim_iter de = t_a->dim_end();
             for (; di != de; di++) {
                 BESDEBUG("fonc", "FONcArray() - constructor is dap4 "<< endl);
                 D4Dimension * d4_dim = t_a->dimension_D4dim(di);
-                BESDEBUG("fonc", "fully qualified dimension name is "<< d4_dim->fully_qualified_name() <<endl);
+                BESDEBUG("fonc", "FONcArray() - constructor is dap4 after d4_dim"<< endl);
+                //BESDEBUG("fonc", "fully qualified dimension name is "<< d4_dim->fully_qualified_name() <<endl);
+                if(d4_dim) {
+                BESDEBUG("fonc", "FONcArray() - constructor is dap4 after d4_dim name is not NULL is "<< d4_dim->name() <<endl);
                 if(fdimname_to_id.find(d4_dim->fully_qualified_name())!= fdimname_to_id.end()) {
                     int dim_id = fdimname_to_id[d4_dim->fully_qualified_name()];
                     //int dim_id = (fdimname_to_id.find(d4_dim->fully_qualified_name()))->second();
                     dim_ids.push_back(dim_id);
+                    use_d4_dim_ids.push_back(true);
                 }
                 else {
-                    string err = (string) "file out netcdf, unable to " + "find dimension name" + d4_dim->fully_qualified_name();
-                    throw BESInternalError(err, __FILE__, __LINE__);
+                    //string err = (string) "file out netcdf, unable to " + "find dimension name" + d4_dim->fully_qualified_name();
+                    //throw BESInternalError(err, __FILE__, __LINE__);
+                    // The dummy value
+                    dim_ids.push_back(0);
+                    use_d4_dim_ids.push_back(false);
+
                 }
+                }
+                else {
+                    dim_ids.push_back(0);
+                    use_d4_dim_ids.push_back(false);
+                }
+
             }
-            b = new FONcArray(v,dim_ids);
+            b = new FONcArray(v,dim_ids,use_d4_dim_ids);
 
         }
         else {
