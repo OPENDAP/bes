@@ -921,7 +921,11 @@ void DmrppArray::read_chunks()
 
                 chunk->set_rbuf_to_size();
                 dmrpp_easy_handle *handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(chunk);
-                if (!handle) throw BESInternalError("No more libcurl handles.", __FILE__, __LINE__);
+                if (!handle) {
+                    // TODO remove handles from the mhandle so we don't have old handles
+                    // lurking in the mhandle.
+                    throw BESInternalError("No more libcurl handles.", __FILE__, __LINE__);
+                }
 
                 BESDEBUG(dmrpp_3, "Queuing: " << chunk->to_string() << endl);
                 mhandle->add_easy_handle(handle);

@@ -104,6 +104,7 @@ size_t chunk_header_callback(char *buffer, size_t size, size_t nitems, void *dat
 size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
 {
     size_t nbytes = size * nmemb;
+    Chunk *chunk = reinterpret_cast<Chunk*>(data);
 
     // Peek into the bytes read and look for an error from the object store.
     // Error messages always start off with '<?xml' so only check for one if we have more than
@@ -125,46 +126,53 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
 
                 rapidjson::Document d;
                 d.Parse(json_message.c_str());
-                rapidjson::Value& s = d["Error"]["Message"];
+                rapidjson::Value &message = d["Error"]["Message"];
+#if 0
+                // TODO Use this to choose Forbidden, etc., errors. jhrg 6/9/20
+                rapidjson::Value &code = d["Error"]["Code"];
+#endif
                 // We might want to get the "Code" from the "Error" if these text messages
                 // are not good enough. But the "Code" is not really suitable for normal humans...
                 // jhrg 12/31/19
 
-                throw BESForbiddenError(string("Error accessing object store data: ").append(s.GetString()), __FILE__, __LINE__);
+                // TODO Move this to CurlHandlePool?
+                // FIXME DmrppRequestHandler::curl_handle_pool->release_all_handles();
+                throw BESForbiddenError(string("Error accessing object store data: ").append(message.GetString())
+                                        .append(" while accessing: ").append(chunk->get_data_url()), __FILE__, __LINE__);
             }
             catch (BESForbiddenError) {
-                // re-throw BESSyntaxUserError - added for the future if we make BESError a child
+                // re-throw BESForbiddenError - added for the future if we make BESError a child
                 // of std::exception as it should be. jhrg 12/30/19
                 throw;
             }
             catch(std::exception &e) {
                 BESDEBUG(MODULE, prolog << "AWS S3 Access Error:" << xml_message << endl);
                 VERBOSE(prolog << "AWS S3 Access Error:" << xml_message << endl);
+                // FIXME DmrppRequestHandler::curl_handle_pool->release_all_handles();
                 throw BESSyntaxUserError(string("Error accessing object store data: Unrecognized error, likely an authentication failure."), __FILE__, __LINE__);
             }
         }
     }
 
-    Chunk *c_ptr = reinterpret_cast<Chunk*>(data);
-
     // rbuf: |******++++++++++----------------------|
     //              ^        ^ bytes_read + nbytes
     //              | bytes_read
 
-    unsigned long long bytes_read = c_ptr->get_bytes_read();
+    unsigned long long bytes_read = chunk->get_bytes_read();
 
     // If this fails, the code will write beyond the buffer.
-    if(bytes_read + nbytes > c_ptr->get_rbuf_size()){
+    if(bytes_read + nbytes > chunk->get_rbuf_size()){
         stringstream msg;
         msg << prolog << "ERROR! The number of bytes_read: " << bytes_read << " plus the number of bytes to read: " <<
-               nbytes << " is larger than the target buffer size: " << c_ptr->get_rbuf_size();
+            nbytes << " is larger than the target buffer size: " << chunk->get_rbuf_size();
         BESDEBUG(MODULE, msg.str() << endl);
+        DmrppRequestHandler::curl_handle_pool->release_all_handles();
         throw BESInternalError(msg.str(),__FILE__,__LINE__);
     }
 
-    memcpy(c_ptr->get_rbuf() + bytes_read, buffer, nbytes);
+    memcpy(chunk->get_rbuf() + bytes_read, buffer, nbytes);
 
-    c_ptr->set_bytes_read(bytes_read + nbytes);
+    chunk->set_bytes_read(bytes_read + nbytes);
 
     return nbytes;
 }
@@ -577,7 +585,7 @@ void Chunk::read_chunk()
     if (!handle)
         throw BESInternalError("No more libcurl handles.", __FILE__, __LINE__);
 
-    handle->read_data();  // throws BESInternalError if error
+    handle->read_data();  // throws if error
 
     DmrppRequestHandler::curl_handle_pool->release_handle(handle);
 

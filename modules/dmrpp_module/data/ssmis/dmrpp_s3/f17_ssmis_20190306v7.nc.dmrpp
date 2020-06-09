@@ -1,0 +1,986 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="f17_ssmis_20190306v7.nc" dmrpp:href="https://ngap-ssmis.s3.amazonaws.com/f17_ssmis_20190306v7.nc">
+    <Dimension name="time" size="2"/>
+    <Dimension name="latitude" size="720"/>
+    <Dimension name="longitude" size="1440"/>
+    <Int16 name="sst_dtime">
+        <Dim name="/time"/>
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="units" type="String">
+            <Value>hours since 2019-03-06T00:00:00Z</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>sst_dtime</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>SST_DTime</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>24.00000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>0.1000000015</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>sst_dtime</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/sst_dtime</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="deflate">
+            <dmrpp:chunkDimensionSizes>2 90 90</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="115440" nBytes="733" chunkPositionInArray="[0,0,0]"/>
+            <dmrpp:chunk offset="116176" nBytes="592" chunkPositionInArray="[0,0,90]"/>
+            <dmrpp:chunk offset="116768" nBytes="206" chunkPositionInArray="[0,0,180]"/>
+            <dmrpp:chunk offset="116976" nBytes="528" chunkPositionInArray="[0,0,270]"/>
+            <dmrpp:chunk offset="117504" nBytes="166" chunkPositionInArray="[0,0,360]"/>
+            <dmrpp:chunk offset="117672" nBytes="166" chunkPositionInArray="[0,0,450]"/>
+            <dmrpp:chunk offset="117840" nBytes="348" chunkPositionInArray="[0,0,540]"/>
+            <dmrpp:chunk offset="118192" nBytes="2762" chunkPositionInArray="[0,0,630]"/>
+            <dmrpp:chunk offset="120960" nBytes="3033" chunkPositionInArray="[0,0,720]"/>
+            <dmrpp:chunk offset="124000" nBytes="2208" chunkPositionInArray="[0,0,810]"/>
+            <dmrpp:chunk offset="126208" nBytes="1083" chunkPositionInArray="[0,0,900]"/>
+            <dmrpp:chunk offset="127296" nBytes="1181" chunkPositionInArray="[0,0,990]"/>
+            <dmrpp:chunk offset="128480" nBytes="1779" chunkPositionInArray="[0,0,1080]"/>
+            <dmrpp:chunk offset="130264" nBytes="3492" chunkPositionInArray="[0,0,1170]"/>
+            <dmrpp:chunk offset="133760" nBytes="2476" chunkPositionInArray="[0,0,1260]"/>
+            <dmrpp:chunk offset="136240" nBytes="1186" chunkPositionInArray="[0,0,1350]"/>
+            <dmrpp:chunk offset="137432" nBytes="1051" chunkPositionInArray="[0,90,0]"/>
+            <dmrpp:chunk offset="138488" nBytes="1194" chunkPositionInArray="[0,90,90]"/>
+            <dmrpp:chunk offset="139688" nBytes="1273" chunkPositionInArray="[0,90,180]"/>
+            <dmrpp:chunk offset="140968" nBytes="1213" chunkPositionInArray="[0,90,270]"/>
+            <dmrpp:chunk offset="142184" nBytes="1032" chunkPositionInArray="[0,90,360]"/>
+            <dmrpp:chunk offset="143216" nBytes="1162" chunkPositionInArray="[0,90,450]"/>
+            <dmrpp:chunk offset="144384" nBytes="1101" chunkPositionInArray="[0,90,540]"/>
+            <dmrpp:chunk offset="145488" nBytes="1153" chunkPositionInArray="[0,90,630]"/>
+            <dmrpp:chunk offset="146648" nBytes="1046" chunkPositionInArray="[0,90,720]"/>
+            <dmrpp:chunk offset="147696" nBytes="1013" chunkPositionInArray="[0,90,810]"/>
+            <dmrpp:chunk offset="148712" nBytes="1048" chunkPositionInArray="[0,90,900]"/>
+            <dmrpp:chunk offset="149760" nBytes="816" chunkPositionInArray="[0,90,990]"/>
+            <dmrpp:chunk offset="150576" nBytes="1218" chunkPositionInArray="[0,90,1080]"/>
+            <dmrpp:chunk offset="151800" nBytes="1565" chunkPositionInArray="[0,90,1170]"/>
+            <dmrpp:chunk offset="153368" nBytes="981" chunkPositionInArray="[0,90,1260]"/>
+            <dmrpp:chunk offset="154352" nBytes="993" chunkPositionInArray="[0,90,1350]"/>
+            <dmrpp:chunk offset="155352" nBytes="1010" chunkPositionInArray="[0,180,0]"/>
+            <dmrpp:chunk offset="156368" nBytes="1124" chunkPositionInArray="[0,180,90]"/>
+            <dmrpp:chunk offset="157496" nBytes="1065" chunkPositionInArray="[0,180,180]"/>
+            <dmrpp:chunk offset="158568" nBytes="949" chunkPositionInArray="[0,180,270]"/>
+            <dmrpp:chunk offset="159520" nBytes="1042" chunkPositionInArray="[0,180,360]"/>
+            <dmrpp:chunk offset="160568" nBytes="1286" chunkPositionInArray="[0,180,450]"/>
+            <dmrpp:chunk offset="161856" nBytes="1420" chunkPositionInArray="[0,180,540]"/>
+            <dmrpp:chunk offset="163280" nBytes="1435" chunkPositionInArray="[0,180,630]"/>
+            <dmrpp:chunk offset="164720" nBytes="1003" chunkPositionInArray="[0,180,720]"/>
+            <dmrpp:chunk offset="165728" nBytes="993" chunkPositionInArray="[0,180,810]"/>
+            <dmrpp:chunk offset="166728" nBytes="979" chunkPositionInArray="[0,180,900]"/>
+            <dmrpp:chunk offset="167712" nBytes="1075" chunkPositionInArray="[0,180,990]"/>
+            <dmrpp:chunk offset="168792" nBytes="1184" chunkPositionInArray="[0,180,1080]"/>
+            <dmrpp:chunk offset="169976" nBytes="1300" chunkPositionInArray="[0,180,1170]"/>
+            <dmrpp:chunk offset="171280" nBytes="1046" chunkPositionInArray="[0,180,1260]"/>
+            <dmrpp:chunk offset="172328" nBytes="1076" chunkPositionInArray="[0,180,1350]"/>
+            <dmrpp:chunk offset="173408" nBytes="847" chunkPositionInArray="[0,270,0]"/>
+            <dmrpp:chunk offset="174256" nBytes="1199" chunkPositionInArray="[0,270,90]"/>
+            <dmrpp:chunk offset="175456" nBytes="1220" chunkPositionInArray="[0,270,180]"/>
+            <dmrpp:chunk offset="176680" nBytes="1064" chunkPositionInArray="[0,270,270]"/>
+            <dmrpp:chunk offset="177744" nBytes="1594" chunkPositionInArray="[0,270,360]"/>
+            <dmrpp:chunk offset="179344" nBytes="2304" chunkPositionInArray="[0,270,450]"/>
+            <dmrpp:chunk offset="181648" nBytes="2139" chunkPositionInArray="[0,270,540]"/>
+            <dmrpp:chunk offset="183792" nBytes="1698" chunkPositionInArray="[0,270,630]"/>
+            <dmrpp:chunk offset="185496" nBytes="1402" chunkPositionInArray="[0,270,720]"/>
+            <dmrpp:chunk offset="186904" nBytes="1400" chunkPositionInArray="[0,270,810]"/>
+            <dmrpp:chunk offset="188304" nBytes="875" chunkPositionInArray="[0,270,900]"/>
+            <dmrpp:chunk offset="189184" nBytes="1062" chunkPositionInArray="[0,270,990]"/>
+            <dmrpp:chunk offset="190248" nBytes="1110" chunkPositionInArray="[0,270,1080]"/>
+            <dmrpp:chunk offset="191360" nBytes="242" chunkPositionInArray="[0,270,1170]"/>
+            <dmrpp:chunk offset="191608" nBytes="1258" chunkPositionInArray="[0,270,1260]"/>
+            <dmrpp:chunk offset="192872" nBytes="983" chunkPositionInArray="[0,270,1350]"/>
+            <dmrpp:chunk offset="193856" nBytes="564" chunkPositionInArray="[0,360,0]"/>
+            <dmrpp:chunk offset="194424" nBytes="701" chunkPositionInArray="[0,360,90]"/>
+            <dmrpp:chunk offset="195128" nBytes="1427" chunkPositionInArray="[0,360,180]"/>
+            <dmrpp:chunk offset="196560" nBytes="1565" chunkPositionInArray="[0,360,270]"/>
+            <dmrpp:chunk offset="198128" nBytes="2243" chunkPositionInArray="[0,360,360]"/>
+            <dmrpp:chunk offset="200376" nBytes="2249" chunkPositionInArray="[0,360,450]"/>
+            <dmrpp:chunk offset="202632" nBytes="1117" chunkPositionInArray="[0,360,540]"/>
+            <dmrpp:chunk offset="203752" nBytes="1347" chunkPositionInArray="[0,360,630]"/>
+            <dmrpp:chunk offset="205104" nBytes="1423" chunkPositionInArray="[0,360,720]"/>
+            <dmrpp:chunk offset="206528" nBytes="1210" chunkPositionInArray="[0,360,810]"/>
+            <dmrpp:chunk offset="207744" nBytes="1171" chunkPositionInArray="[0,360,900]"/>
+            <dmrpp:chunk offset="208920" nBytes="1481" chunkPositionInArray="[0,360,990]"/>
+            <dmrpp:chunk offset="210408" nBytes="1996" chunkPositionInArray="[0,360,1080]"/>
+            <dmrpp:chunk offset="212408" nBytes="1111" chunkPositionInArray="[0,360,1170]"/>
+            <dmrpp:chunk offset="213520" nBytes="1064" chunkPositionInArray="[0,360,1260]"/>
+            <dmrpp:chunk offset="214584" nBytes="1137" chunkPositionInArray="[0,360,1350]"/>
+            <dmrpp:chunk offset="215728" nBytes="1477" chunkPositionInArray="[0,450,0]"/>
+            <dmrpp:chunk offset="217208" nBytes="1499" chunkPositionInArray="[0,450,90]"/>
+            <dmrpp:chunk offset="218712" nBytes="1087" chunkPositionInArray="[0,450,180]"/>
+            <dmrpp:chunk offset="219800" nBytes="227" chunkPositionInArray="[0,450,270]"/>
+            <dmrpp:chunk offset="220032" nBytes="166" chunkPositionInArray="[0,450,360]"/>
+            <dmrpp:chunk offset="220200" nBytes="1929" chunkPositionInArray="[0,450,450]"/>
+            <dmrpp:chunk offset="222136" nBytes="1440" chunkPositionInArray="[0,450,540]"/>
+            <dmrpp:chunk offset="223576" nBytes="1072" chunkPositionInArray="[0,450,630]"/>
+            <dmrpp:chunk offset="224648" nBytes="1214" chunkPositionInArray="[0,450,720]"/>
+            <dmrpp:chunk offset="225864" nBytes="1194" chunkPositionInArray="[0,450,810]"/>
+            <dmrpp:chunk offset="227064" nBytes="1455" chunkPositionInArray="[0,450,900]"/>
+            <dmrpp:chunk offset="228520" nBytes="708" chunkPositionInArray="[0,450,990]"/>
+            <dmrpp:chunk offset="229232" nBytes="1705" chunkPositionInArray="[0,450,1080]"/>
+            <dmrpp:chunk offset="230944" nBytes="724" chunkPositionInArray="[0,450,1170]"/>
+            <dmrpp:chunk offset="231672" nBytes="929" chunkPositionInArray="[0,450,1260]"/>
+            <dmrpp:chunk offset="232608" nBytes="1496" chunkPositionInArray="[0,450,1350]"/>
+            <dmrpp:chunk offset="234104" nBytes="1599" chunkPositionInArray="[0,540,0]"/>
+            <dmrpp:chunk offset="235704" nBytes="935" chunkPositionInArray="[0,540,90]"/>
+            <dmrpp:chunk offset="236640" nBytes="342" chunkPositionInArray="[0,540,180]"/>
+            <dmrpp:chunk offset="236984" nBytes="283" chunkPositionInArray="[0,540,270]"/>
+            <dmrpp:chunk offset="237272" nBytes="307" chunkPositionInArray="[0,540,360]"/>
+            <dmrpp:chunk offset="237584" nBytes="166" chunkPositionInArray="[0,540,450]"/>
+            <dmrpp:chunk offset="237752" nBytes="1563" chunkPositionInArray="[0,540,540]"/>
+            <dmrpp:chunk offset="239320" nBytes="1320" chunkPositionInArray="[0,540,630]"/>
+            <dmrpp:chunk offset="240640" nBytes="1710" chunkPositionInArray="[0,540,720]"/>
+            <dmrpp:chunk offset="242352" nBytes="929" chunkPositionInArray="[0,540,810]"/>
+            <dmrpp:chunk offset="243288" nBytes="1089" chunkPositionInArray="[0,540,900]"/>
+            <dmrpp:chunk offset="244384" nBytes="575" chunkPositionInArray="[0,540,990]"/>
+            <dmrpp:chunk offset="244960" nBytes="1809" chunkPositionInArray="[0,540,1080]"/>
+            <dmrpp:chunk offset="246776" nBytes="2005" chunkPositionInArray="[0,540,1170]"/>
+            <dmrpp:chunk offset="248784" nBytes="1129" chunkPositionInArray="[0,540,1260]"/>
+            <dmrpp:chunk offset="249920" nBytes="1710" chunkPositionInArray="[0,540,1350]"/>
+            <dmrpp:chunk offset="251632" nBytes="3482" chunkPositionInArray="[0,630,0]"/>
+            <dmrpp:chunk offset="255120" nBytes="3739" chunkPositionInArray="[0,630,90]"/>
+            <dmrpp:chunk offset="258864" nBytes="4547" chunkPositionInArray="[0,630,180]"/>
+            <dmrpp:chunk offset="263416" nBytes="4299" chunkPositionInArray="[0,630,270]"/>
+            <dmrpp:chunk offset="267720" nBytes="3295" chunkPositionInArray="[0,630,360]"/>
+            <dmrpp:chunk offset="271016" nBytes="4212" chunkPositionInArray="[0,630,450]"/>
+            <dmrpp:chunk offset="275232" nBytes="4487" chunkPositionInArray="[0,630,540]"/>
+            <dmrpp:chunk offset="279720" nBytes="4737" chunkPositionInArray="[0,630,630]"/>
+            <dmrpp:chunk offset="284464" nBytes="4967" chunkPositionInArray="[0,630,720]"/>
+            <dmrpp:chunk offset="289432" nBytes="4801" chunkPositionInArray="[0,630,810]"/>
+            <dmrpp:chunk offset="294240" nBytes="4864" chunkPositionInArray="[0,630,900]"/>
+            <dmrpp:chunk offset="299104" nBytes="5008" chunkPositionInArray="[0,630,990]"/>
+            <dmrpp:chunk offset="304112" nBytes="4000" chunkPositionInArray="[0,630,1080]"/>
+            <dmrpp:chunk offset="308112" nBytes="3399" chunkPositionInArray="[0,630,1170]"/>
+            <dmrpp:chunk offset="311512" nBytes="1941" chunkPositionInArray="[0,630,1260]"/>
+            <dmrpp:chunk offset="313456" nBytes="3990" chunkPositionInArray="[0,630,1350]"/>
+        </dmrpp:chunks>
+    </Int16>
+    <Int16 name="wind_speed">
+        <Dim name="/time"/>
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="units" type="String">
+            <Value>m/s</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>wind_speed</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>10 meter Surface Wind Speed</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>50.00000000</Value>
+        </Attribute>
+        <Attribute name="flag_values" type="Int16">
+            <Value>251</Value>
+            <Value>252</Value>
+            <Value>253</Value>
+            <Value>254</Value>
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>missing_wind_speed_due_to_rain sea_ice bad_data no_observations land_mass</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>0.2000000030</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>wind_speed</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/wind_speed</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="deflate">
+            <dmrpp:chunkDimensionSizes>2 90 90</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="317448" nBytes="893" chunkPositionInArray="[0,0,0]"/>
+            <dmrpp:chunk offset="318344" nBytes="601" chunkPositionInArray="[0,0,90]"/>
+            <dmrpp:chunk offset="318952" nBytes="193" chunkPositionInArray="[0,0,180]"/>
+            <dmrpp:chunk offset="319152" nBytes="668" chunkPositionInArray="[0,0,270]"/>
+            <dmrpp:chunk offset="319824" nBytes="166" chunkPositionInArray="[0,0,360]"/>
+            <dmrpp:chunk offset="319992" nBytes="166" chunkPositionInArray="[0,0,450]"/>
+            <dmrpp:chunk offset="320160" nBytes="314" chunkPositionInArray="[0,0,540]"/>
+            <dmrpp:chunk offset="320480" nBytes="3861" chunkPositionInArray="[0,0,630]"/>
+            <dmrpp:chunk offset="324344" nBytes="4965" chunkPositionInArray="[0,0,720]"/>
+            <dmrpp:chunk offset="329312" nBytes="3652" chunkPositionInArray="[0,0,810]"/>
+            <dmrpp:chunk offset="332968" nBytes="2213" chunkPositionInArray="[0,0,900]"/>
+            <dmrpp:chunk offset="335184" nBytes="1820" chunkPositionInArray="[0,0,990]"/>
+            <dmrpp:chunk offset="337008" nBytes="1911" chunkPositionInArray="[0,0,1080]"/>
+            <dmrpp:chunk offset="338920" nBytes="1221" chunkPositionInArray="[0,0,1170]"/>
+            <dmrpp:chunk offset="340144" nBytes="2651" chunkPositionInArray="[0,0,1260]"/>
+            <dmrpp:chunk offset="342800" nBytes="1972" chunkPositionInArray="[0,0,1350]"/>
+            <dmrpp:chunk offset="344776" nBytes="10397" chunkPositionInArray="[0,90,0]"/>
+            <dmrpp:chunk offset="355176" nBytes="10761" chunkPositionInArray="[0,90,90]"/>
+            <dmrpp:chunk offset="365944" nBytes="10281" chunkPositionInArray="[0,90,180]"/>
+            <dmrpp:chunk offset="376232" nBytes="11370" chunkPositionInArray="[0,90,270]"/>
+            <dmrpp:chunk offset="387608" nBytes="9310" chunkPositionInArray="[0,90,360]"/>
+            <dmrpp:chunk offset="396920" nBytes="10350" chunkPositionInArray="[0,90,450]"/>
+            <dmrpp:chunk offset="407272" nBytes="10200" chunkPositionInArray="[0,90,540]"/>
+            <dmrpp:chunk offset="417472" nBytes="10140" chunkPositionInArray="[0,90,630]"/>
+            <dmrpp:chunk offset="427616" nBytes="10095" chunkPositionInArray="[0,90,720]"/>
+            <dmrpp:chunk offset="437712" nBytes="11267" chunkPositionInArray="[0,90,810]"/>
+            <dmrpp:chunk offset="448984" nBytes="10424" chunkPositionInArray="[0,90,900]"/>
+            <dmrpp:chunk offset="459408" nBytes="10300" chunkPositionInArray="[0,90,990]"/>
+            <dmrpp:chunk offset="469712" nBytes="6861" chunkPositionInArray="[0,90,1080]"/>
+            <dmrpp:chunk offset="476576" nBytes="9711" chunkPositionInArray="[0,90,1170]"/>
+            <dmrpp:chunk offset="486288" nBytes="10626" chunkPositionInArray="[0,90,1260]"/>
+            <dmrpp:chunk offset="496920" nBytes="10174" chunkPositionInArray="[0,90,1350]"/>
+            <dmrpp:chunk offset="507096" nBytes="8784" chunkPositionInArray="[0,180,0]"/>
+            <dmrpp:chunk offset="515880" nBytes="8241" chunkPositionInArray="[0,180,90]"/>
+            <dmrpp:chunk offset="524128" nBytes="9303" chunkPositionInArray="[0,180,180]"/>
+            <dmrpp:chunk offset="533432" nBytes="8382" chunkPositionInArray="[0,180,270]"/>
+            <dmrpp:chunk offset="541816" nBytes="7271" chunkPositionInArray="[0,180,360]"/>
+            <dmrpp:chunk offset="549088" nBytes="5569" chunkPositionInArray="[0,180,450]"/>
+            <dmrpp:chunk offset="554664" nBytes="5510" chunkPositionInArray="[0,180,540]"/>
+            <dmrpp:chunk offset="560176" nBytes="8948" chunkPositionInArray="[0,180,630]"/>
+            <dmrpp:chunk offset="569128" nBytes="8908" chunkPositionInArray="[0,180,720]"/>
+            <dmrpp:chunk offset="578040" nBytes="9676" chunkPositionInArray="[0,180,810]"/>
+            <dmrpp:chunk offset="587720" nBytes="9295" chunkPositionInArray="[0,180,900]"/>
+            <dmrpp:chunk offset="597016" nBytes="8491" chunkPositionInArray="[0,180,990]"/>
+            <dmrpp:chunk offset="605512" nBytes="3938" chunkPositionInArray="[0,180,1080]"/>
+            <dmrpp:chunk offset="609456" nBytes="5530" chunkPositionInArray="[0,180,1170]"/>
+            <dmrpp:chunk offset="614992" nBytes="9080" chunkPositionInArray="[0,180,1260]"/>
+            <dmrpp:chunk offset="624072" nBytes="8972" chunkPositionInArray="[0,180,1350]"/>
+            <dmrpp:chunk offset="633048" nBytes="5262" chunkPositionInArray="[0,270,0]"/>
+            <dmrpp:chunk offset="638312" nBytes="2903" chunkPositionInArray="[0,270,90]"/>
+            <dmrpp:chunk offset="641216" nBytes="7688" chunkPositionInArray="[0,270,180]"/>
+            <dmrpp:chunk offset="648904" nBytes="7006" chunkPositionInArray="[0,270,270]"/>
+            <dmrpp:chunk offset="655912" nBytes="6398" chunkPositionInArray="[0,270,360]"/>
+            <dmrpp:chunk offset="662312" nBytes="5176" chunkPositionInArray="[0,270,450]"/>
+            <dmrpp:chunk offset="667488" nBytes="5354" chunkPositionInArray="[0,270,540]"/>
+            <dmrpp:chunk offset="672848" nBytes="7414" chunkPositionInArray="[0,270,630]"/>
+            <dmrpp:chunk offset="680264" nBytes="7641" chunkPositionInArray="[0,270,720]"/>
+            <dmrpp:chunk offset="687912" nBytes="7587" chunkPositionInArray="[0,270,810]"/>
+            <dmrpp:chunk offset="695504" nBytes="6623" chunkPositionInArray="[0,270,900]"/>
+            <dmrpp:chunk offset="702128" nBytes="6663" chunkPositionInArray="[0,270,990]"/>
+            <dmrpp:chunk offset="708792" nBytes="3436" chunkPositionInArray="[0,270,1080]"/>
+            <dmrpp:chunk offset="712232" nBytes="256" chunkPositionInArray="[0,270,1170]"/>
+            <dmrpp:chunk offset="712488" nBytes="4713" chunkPositionInArray="[0,270,1260]"/>
+            <dmrpp:chunk offset="717208" nBytes="6947" chunkPositionInArray="[0,270,1350]"/>
+            <dmrpp:chunk offset="724160" nBytes="1225" chunkPositionInArray="[0,360,0]"/>
+            <dmrpp:chunk offset="725392" nBytes="839" chunkPositionInArray="[0,360,90]"/>
+            <dmrpp:chunk offset="726232" nBytes="5072" chunkPositionInArray="[0,360,180]"/>
+            <dmrpp:chunk offset="731304" nBytes="6020" chunkPositionInArray="[0,360,270]"/>
+            <dmrpp:chunk offset="737328" nBytes="4992" chunkPositionInArray="[0,360,360]"/>
+            <dmrpp:chunk offset="742320" nBytes="7392" chunkPositionInArray="[0,360,450]"/>
+            <dmrpp:chunk offset="749712" nBytes="7170" chunkPositionInArray="[0,360,540]"/>
+            <dmrpp:chunk offset="756888" nBytes="6944" chunkPositionInArray="[0,360,630]"/>
+            <dmrpp:chunk offset="763832" nBytes="5702" chunkPositionInArray="[0,360,720]"/>
+            <dmrpp:chunk offset="769536" nBytes="6523" chunkPositionInArray="[0,360,810]"/>
+            <dmrpp:chunk offset="776064" nBytes="6611" chunkPositionInArray="[0,360,900]"/>
+            <dmrpp:chunk offset="782680" nBytes="6848" chunkPositionInArray="[0,360,990]"/>
+            <dmrpp:chunk offset="789528" nBytes="6221" chunkPositionInArray="[0,360,1080]"/>
+            <dmrpp:chunk offset="795752" nBytes="3547" chunkPositionInArray="[0,360,1170]"/>
+            <dmrpp:chunk offset="799304" nBytes="6599" chunkPositionInArray="[0,360,1260]"/>
+            <dmrpp:chunk offset="805904" nBytes="3885" chunkPositionInArray="[0,360,1350]"/>
+            <dmrpp:chunk offset="809792" nBytes="3560" chunkPositionInArray="[0,450,0]"/>
+            <dmrpp:chunk offset="813352" nBytes="2817" chunkPositionInArray="[0,450,90]"/>
+            <dmrpp:chunk offset="816176" nBytes="2038" chunkPositionInArray="[0,450,180]"/>
+            <dmrpp:chunk offset="818216" nBytes="244" chunkPositionInArray="[0,450,270]"/>
+            <dmrpp:chunk offset="818464" nBytes="166" chunkPositionInArray="[0,450,360]"/>
+            <dmrpp:chunk offset="818632" nBytes="5394" chunkPositionInArray="[0,450,450]"/>
+            <dmrpp:chunk offset="824032" nBytes="9388" chunkPositionInArray="[0,450,540]"/>
+            <dmrpp:chunk offset="833424" nBytes="9384" chunkPositionInArray="[0,450,630]"/>
+            <dmrpp:chunk offset="842808" nBytes="8479" chunkPositionInArray="[0,450,720]"/>
+            <dmrpp:chunk offset="851288" nBytes="8627" chunkPositionInArray="[0,450,810]"/>
+            <dmrpp:chunk offset="859920" nBytes="7005" chunkPositionInArray="[0,450,900]"/>
+            <dmrpp:chunk offset="866928" nBytes="942" chunkPositionInArray="[0,450,990]"/>
+            <dmrpp:chunk offset="867872" nBytes="3729" chunkPositionInArray="[0,450,1080]"/>
+            <dmrpp:chunk offset="871608" nBytes="5140" chunkPositionInArray="[0,450,1170]"/>
+            <dmrpp:chunk offset="876752" nBytes="7809" chunkPositionInArray="[0,450,1260]"/>
+            <dmrpp:chunk offset="884568" nBytes="4959" chunkPositionInArray="[0,450,1350]"/>
+            <dmrpp:chunk offset="889528" nBytes="4374" chunkPositionInArray="[0,540,0]"/>
+            <dmrpp:chunk offset="893904" nBytes="858" chunkPositionInArray="[0,540,90]"/>
+            <dmrpp:chunk offset="894768" nBytes="348" chunkPositionInArray="[0,540,180]"/>
+            <dmrpp:chunk offset="895120" nBytes="253" chunkPositionInArray="[0,540,270]"/>
+            <dmrpp:chunk offset="895376" nBytes="283" chunkPositionInArray="[0,540,360]"/>
+            <dmrpp:chunk offset="895664" nBytes="166" chunkPositionInArray="[0,540,450]"/>
+            <dmrpp:chunk offset="895832" nBytes="3280" chunkPositionInArray="[0,540,540]"/>
+            <dmrpp:chunk offset="899112" nBytes="8862" chunkPositionInArray="[0,540,630]"/>
+            <dmrpp:chunk offset="907976" nBytes="9951" chunkPositionInArray="[0,540,720]"/>
+            <dmrpp:chunk offset="917928" nBytes="7758" chunkPositionInArray="[0,540,810]"/>
+            <dmrpp:chunk offset="925688" nBytes="2733" chunkPositionInArray="[0,540,900]"/>
+            <dmrpp:chunk offset="928424" nBytes="573" chunkPositionInArray="[0,540,990]"/>
+            <dmrpp:chunk offset="929000" nBytes="1874" chunkPositionInArray="[0,540,1080]"/>
+            <dmrpp:chunk offset="930880" nBytes="5041" chunkPositionInArray="[0,540,1170]"/>
+            <dmrpp:chunk offset="935928" nBytes="8616" chunkPositionInArray="[0,540,1260]"/>
+            <dmrpp:chunk offset="944544" nBytes="10109" chunkPositionInArray="[0,540,1350]"/>
+            <dmrpp:chunk offset="954656" nBytes="4919" chunkPositionInArray="[0,630,0]"/>
+            <dmrpp:chunk offset="959576" nBytes="3886" chunkPositionInArray="[0,630,90]"/>
+            <dmrpp:chunk offset="963464" nBytes="2717" chunkPositionInArray="[0,630,180]"/>
+            <dmrpp:chunk offset="966184" nBytes="1366" chunkPositionInArray="[0,630,270]"/>
+            <dmrpp:chunk offset="967552" nBytes="918" chunkPositionInArray="[0,630,360]"/>
+            <dmrpp:chunk offset="968472" nBytes="671" chunkPositionInArray="[0,630,450]"/>
+            <dmrpp:chunk offset="969144" nBytes="957" chunkPositionInArray="[0,630,540]"/>
+            <dmrpp:chunk offset="970104" nBytes="588" chunkPositionInArray="[0,630,630]"/>
+            <dmrpp:chunk offset="970696" nBytes="611" chunkPositionInArray="[0,630,720]"/>
+            <dmrpp:chunk offset="971312" nBytes="441" chunkPositionInArray="[0,630,810]"/>
+            <dmrpp:chunk offset="971760" nBytes="1225" chunkPositionInArray="[0,630,900]"/>
+            <dmrpp:chunk offset="972992" nBytes="1816" chunkPositionInArray="[0,630,990]"/>
+            <dmrpp:chunk offset="974808" nBytes="1716" chunkPositionInArray="[0,630,1080]"/>
+            <dmrpp:chunk offset="976528" nBytes="1172" chunkPositionInArray="[0,630,1170]"/>
+            <dmrpp:chunk offset="977704" nBytes="696" chunkPositionInArray="[0,630,1260]"/>
+            <dmrpp:chunk offset="978400" nBytes="4042" chunkPositionInArray="[0,630,1350]"/>
+        </dmrpp:chunks>
+    </Int16>
+    <Int16 name="atmosphere_water_vapor_content">
+        <Dim name="/time"/>
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="units" type="String">
+            <Value>kg m-2</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>atmosphere_water_vapor_content</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Columnar Water Vapor</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>75.00000000</Value>
+        </Attribute>
+        <Attribute name="flag_values" type="Int16">
+            <Value>251</Value>
+            <Value>252</Value>
+            <Value>253</Value>
+            <Value>254</Value>
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>missing_wind_speed_due_to_rain sea_ice bad_data no_observations land_mass</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>0.3000000119</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>atmosphere_water_vapor_content</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/atmosphere_water_vapor_content</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="deflate">
+            <dmrpp:chunkDimensionSizes>2 90 90</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="982448" nBytes="984" chunkPositionInArray="[0,0,0]"/>
+            <dmrpp:chunk offset="983432" nBytes="694" chunkPositionInArray="[0,0,90]"/>
+            <dmrpp:chunk offset="984128" nBytes="193" chunkPositionInArray="[0,0,180]"/>
+            <dmrpp:chunk offset="984328" nBytes="639" chunkPositionInArray="[0,0,270]"/>
+            <dmrpp:chunk offset="984968" nBytes="166" chunkPositionInArray="[0,0,360]"/>
+            <dmrpp:chunk offset="985136" nBytes="166" chunkPositionInArray="[0,0,450]"/>
+            <dmrpp:chunk offset="985304" nBytes="314" chunkPositionInArray="[0,0,540]"/>
+            <dmrpp:chunk offset="985624" nBytes="2986" chunkPositionInArray="[0,0,630]"/>
+            <dmrpp:chunk offset="988616" nBytes="3695" chunkPositionInArray="[0,0,720]"/>
+            <dmrpp:chunk offset="992312" nBytes="3118" chunkPositionInArray="[0,0,810]"/>
+            <dmrpp:chunk offset="995432" nBytes="2048" chunkPositionInArray="[0,0,900]"/>
+            <dmrpp:chunk offset="997480" nBytes="1942" chunkPositionInArray="[0,0,990]"/>
+            <dmrpp:chunk offset="999424" nBytes="2005" chunkPositionInArray="[0,0,1080]"/>
+            <dmrpp:chunk offset="1001432" nBytes="1237" chunkPositionInArray="[0,0,1170]"/>
+            <dmrpp:chunk offset="1002672" nBytes="2506" chunkPositionInArray="[0,0,1260]"/>
+            <dmrpp:chunk offset="1005184" nBytes="1982" chunkPositionInArray="[0,0,1350]"/>
+            <dmrpp:chunk offset="1007168" nBytes="7924" chunkPositionInArray="[0,90,0]"/>
+            <dmrpp:chunk offset="1015096" nBytes="9414" chunkPositionInArray="[0,90,90]"/>
+            <dmrpp:chunk offset="1024512" nBytes="9143" chunkPositionInArray="[0,90,180]"/>
+            <dmrpp:chunk offset="1033656" nBytes="9081" chunkPositionInArray="[0,90,270]"/>
+            <dmrpp:chunk offset="1042744" nBytes="8382" chunkPositionInArray="[0,90,360]"/>
+            <dmrpp:chunk offset="1051128" nBytes="8758" chunkPositionInArray="[0,90,450]"/>
+            <dmrpp:chunk offset="1059888" nBytes="7959" chunkPositionInArray="[0,90,540]"/>
+            <dmrpp:chunk offset="1067848" nBytes="11448" chunkPositionInArray="[0,90,630]"/>
+            <dmrpp:chunk offset="1079296" nBytes="10129" chunkPositionInArray="[0,90,720]"/>
+            <dmrpp:chunk offset="1089432" nBytes="8792" chunkPositionInArray="[0,90,810]"/>
+            <dmrpp:chunk offset="1098224" nBytes="9901" chunkPositionInArray="[0,90,900]"/>
+            <dmrpp:chunk offset="1108128" nBytes="9585" chunkPositionInArray="[0,90,990]"/>
+            <dmrpp:chunk offset="1117720" nBytes="6080" chunkPositionInArray="[0,90,1080]"/>
+            <dmrpp:chunk offset="1123800" nBytes="8460" chunkPositionInArray="[0,90,1170]"/>
+            <dmrpp:chunk offset="1132264" nBytes="10091" chunkPositionInArray="[0,90,1260]"/>
+            <dmrpp:chunk offset="1142360" nBytes="9880" chunkPositionInArray="[0,90,1350]"/>
+            <dmrpp:chunk offset="1152240" nBytes="10734" chunkPositionInArray="[0,180,0]"/>
+            <dmrpp:chunk offset="1162976" nBytes="9310" chunkPositionInArray="[0,180,90]"/>
+            <dmrpp:chunk offset="1172288" nBytes="12991" chunkPositionInArray="[0,180,180]"/>
+            <dmrpp:chunk offset="1185280" nBytes="10332" chunkPositionInArray="[0,180,270]"/>
+            <dmrpp:chunk offset="1195616" nBytes="9531" chunkPositionInArray="[0,180,360]"/>
+            <dmrpp:chunk offset="1205152" nBytes="6864" chunkPositionInArray="[0,180,450]"/>
+            <dmrpp:chunk offset="1212016" nBytes="6199" chunkPositionInArray="[0,180,540]"/>
+            <dmrpp:chunk offset="1218216" nBytes="11507" chunkPositionInArray="[0,180,630]"/>
+            <dmrpp:chunk offset="1229728" nBytes="10549" chunkPositionInArray="[0,180,720]"/>
+            <dmrpp:chunk offset="1240280" nBytes="12045" chunkPositionInArray="[0,180,810]"/>
+            <dmrpp:chunk offset="1252328" nBytes="12192" chunkPositionInArray="[0,180,900]"/>
+            <dmrpp:chunk offset="1264520" nBytes="10510" chunkPositionInArray="[0,180,990]"/>
+            <dmrpp:chunk offset="1275032" nBytes="4738" chunkPositionInArray="[0,180,1080]"/>
+            <dmrpp:chunk offset="1279776" nBytes="6015" chunkPositionInArray="[0,180,1170]"/>
+            <dmrpp:chunk offset="1285792" nBytes="11360" chunkPositionInArray="[0,180,1260]"/>
+            <dmrpp:chunk offset="1297152" nBytes="9348" chunkPositionInArray="[0,180,1350]"/>
+            <dmrpp:chunk offset="1306504" nBytes="6798" chunkPositionInArray="[0,270,0]"/>
+            <dmrpp:chunk offset="1313304" nBytes="3462" chunkPositionInArray="[0,270,90]"/>
+            <dmrpp:chunk offset="1316768" nBytes="10833" chunkPositionInArray="[0,270,180]"/>
+            <dmrpp:chunk offset="1327608" nBytes="9906" chunkPositionInArray="[0,270,270]"/>
+            <dmrpp:chunk offset="1337520" nBytes="8152" chunkPositionInArray="[0,270,360]"/>
+            <dmrpp:chunk offset="1345672" nBytes="6588" chunkPositionInArray="[0,270,450]"/>
+            <dmrpp:chunk offset="1352264" nBytes="7001" chunkPositionInArray="[0,270,540]"/>
+            <dmrpp:chunk offset="1359272" nBytes="10217" chunkPositionInArray="[0,270,630]"/>
+            <dmrpp:chunk offset="1369496" nBytes="10734" chunkPositionInArray="[0,270,720]"/>
+            <dmrpp:chunk offset="1380232" nBytes="10146" chunkPositionInArray="[0,270,810]"/>
+            <dmrpp:chunk offset="1390384" nBytes="9993" chunkPositionInArray="[0,270,900]"/>
+            <dmrpp:chunk offset="1400384" nBytes="9840" chunkPositionInArray="[0,270,990]"/>
+            <dmrpp:chunk offset="1410224" nBytes="4233" chunkPositionInArray="[0,270,1080]"/>
+            <dmrpp:chunk offset="1414464" nBytes="284" chunkPositionInArray="[0,270,1170]"/>
+            <dmrpp:chunk offset="1414752" nBytes="6502" chunkPositionInArray="[0,270,1260]"/>
+            <dmrpp:chunk offset="1421256" nBytes="9337" chunkPositionInArray="[0,270,1350]"/>
+            <dmrpp:chunk offset="1430600" nBytes="1444" chunkPositionInArray="[0,360,0]"/>
+            <dmrpp:chunk offset="1432048" nBytes="896" chunkPositionInArray="[0,360,90]"/>
+            <dmrpp:chunk offset="1432944" nBytes="6106" chunkPositionInArray="[0,360,180]"/>
+            <dmrpp:chunk offset="1439056" nBytes="7489" chunkPositionInArray="[0,360,270]"/>
+            <dmrpp:chunk offset="1446552" nBytes="6000" chunkPositionInArray="[0,360,360]"/>
+            <dmrpp:chunk offset="1452552" nBytes="9447" chunkPositionInArray="[0,360,450]"/>
+            <dmrpp:chunk offset="1462000" nBytes="10666" chunkPositionInArray="[0,360,540]"/>
+            <dmrpp:chunk offset="1472672" nBytes="10362" chunkPositionInArray="[0,360,630]"/>
+            <dmrpp:chunk offset="1483040" nBytes="9233" chunkPositionInArray="[0,360,720]"/>
+            <dmrpp:chunk offset="1492280" nBytes="9058" chunkPositionInArray="[0,360,810]"/>
+            <dmrpp:chunk offset="1501344" nBytes="9021" chunkPositionInArray="[0,360,900]"/>
+            <dmrpp:chunk offset="1510368" nBytes="8864" chunkPositionInArray="[0,360,990]"/>
+            <dmrpp:chunk offset="1519232" nBytes="6930" chunkPositionInArray="[0,360,1080]"/>
+            <dmrpp:chunk offset="1526168" nBytes="4555" chunkPositionInArray="[0,360,1170]"/>
+            <dmrpp:chunk offset="1530728" nBytes="8923" chunkPositionInArray="[0,360,1260]"/>
+            <dmrpp:chunk offset="1539656" nBytes="4717" chunkPositionInArray="[0,360,1350]"/>
+            <dmrpp:chunk offset="1544376" nBytes="3286" chunkPositionInArray="[0,450,0]"/>
+            <dmrpp:chunk offset="1547664" nBytes="2576" chunkPositionInArray="[0,450,90]"/>
+            <dmrpp:chunk offset="1550240" nBytes="1893" chunkPositionInArray="[0,450,180]"/>
+            <dmrpp:chunk offset="1552136" nBytes="244" chunkPositionInArray="[0,450,270]"/>
+            <dmrpp:chunk offset="1552384" nBytes="166" chunkPositionInArray="[0,450,360]"/>
+            <dmrpp:chunk offset="1552552" nBytes="5997" chunkPositionInArray="[0,450,450]"/>
+            <dmrpp:chunk offset="1558552" nBytes="9776" chunkPositionInArray="[0,450,540]"/>
+            <dmrpp:chunk offset="1568328" nBytes="9505" chunkPositionInArray="[0,450,630]"/>
+            <dmrpp:chunk offset="1577840" nBytes="9564" chunkPositionInArray="[0,450,720]"/>
+            <dmrpp:chunk offset="1587408" nBytes="8015" chunkPositionInArray="[0,450,810]"/>
+            <dmrpp:chunk offset="1595424" nBytes="7181" chunkPositionInArray="[0,450,900]"/>
+            <dmrpp:chunk offset="1602608" nBytes="1095" chunkPositionInArray="[0,450,990]"/>
+            <dmrpp:chunk offset="1603704" nBytes="4140" chunkPositionInArray="[0,450,1080]"/>
+            <dmrpp:chunk offset="1607848" nBytes="6214" chunkPositionInArray="[0,450,1170]"/>
+            <dmrpp:chunk offset="1614064" nBytes="8776" chunkPositionInArray="[0,450,1260]"/>
+            <dmrpp:chunk offset="1622840" nBytes="5111" chunkPositionInArray="[0,450,1350]"/>
+            <dmrpp:chunk offset="1627952" nBytes="3596" chunkPositionInArray="[0,540,0]"/>
+            <dmrpp:chunk offset="1631552" nBytes="834" chunkPositionInArray="[0,540,90]"/>
+            <dmrpp:chunk offset="1632392" nBytes="354" chunkPositionInArray="[0,540,180]"/>
+            <dmrpp:chunk offset="1632752" nBytes="253" chunkPositionInArray="[0,540,270]"/>
+            <dmrpp:chunk offset="1633008" nBytes="283" chunkPositionInArray="[0,540,360]"/>
+            <dmrpp:chunk offset="1633296" nBytes="166" chunkPositionInArray="[0,540,450]"/>
+            <dmrpp:chunk offset="1633464" nBytes="2908" chunkPositionInArray="[0,540,540]"/>
+            <dmrpp:chunk offset="1636376" nBytes="6455" chunkPositionInArray="[0,540,630]"/>
+            <dmrpp:chunk offset="1642832" nBytes="8137" chunkPositionInArray="[0,540,720]"/>
+            <dmrpp:chunk offset="1650976" nBytes="5938" chunkPositionInArray="[0,540,810]"/>
+            <dmrpp:chunk offset="1656920" nBytes="2207" chunkPositionInArray="[0,540,900]"/>
+            <dmrpp:chunk offset="1659128" nBytes="573" chunkPositionInArray="[0,540,990]"/>
+            <dmrpp:chunk offset="1659704" nBytes="1874" chunkPositionInArray="[0,540,1080]"/>
+            <dmrpp:chunk offset="1661584" nBytes="4437" chunkPositionInArray="[0,540,1170]"/>
+            <dmrpp:chunk offset="1666024" nBytes="7203" chunkPositionInArray="[0,540,1260]"/>
+            <dmrpp:chunk offset="1673232" nBytes="8374" chunkPositionInArray="[0,540,1350]"/>
+            <dmrpp:chunk offset="1681608" nBytes="3211" chunkPositionInArray="[0,630,0]"/>
+            <dmrpp:chunk offset="1684824" nBytes="2614" chunkPositionInArray="[0,630,90]"/>
+            <dmrpp:chunk offset="1687440" nBytes="2435" chunkPositionInArray="[0,630,180]"/>
+            <dmrpp:chunk offset="1689880" nBytes="1366" chunkPositionInArray="[0,630,270]"/>
+            <dmrpp:chunk offset="1691248" nBytes="918" chunkPositionInArray="[0,630,360]"/>
+            <dmrpp:chunk offset="1692168" nBytes="671" chunkPositionInArray="[0,630,450]"/>
+            <dmrpp:chunk offset="1692840" nBytes="957" chunkPositionInArray="[0,630,540]"/>
+            <dmrpp:chunk offset="1693800" nBytes="588" chunkPositionInArray="[0,630,630]"/>
+            <dmrpp:chunk offset="1694392" nBytes="611" chunkPositionInArray="[0,630,720]"/>
+            <dmrpp:chunk offset="1695008" nBytes="441" chunkPositionInArray="[0,630,810]"/>
+            <dmrpp:chunk offset="1695456" nBytes="1225" chunkPositionInArray="[0,630,900]"/>
+            <dmrpp:chunk offset="1696688" nBytes="1816" chunkPositionInArray="[0,630,990]"/>
+            <dmrpp:chunk offset="1698504" nBytes="1716" chunkPositionInArray="[0,630,1080]"/>
+            <dmrpp:chunk offset="1700224" nBytes="1172" chunkPositionInArray="[0,630,1170]"/>
+            <dmrpp:chunk offset="1701400" nBytes="732" chunkPositionInArray="[0,630,1260]"/>
+            <dmrpp:chunk offset="1702136" nBytes="3008" chunkPositionInArray="[0,630,1350]"/>
+        </dmrpp:chunks>
+    </Int16>
+    <Int16 name="atmosphere_cloud_liquid_water_content">
+        <Dim name="/time"/>
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="units" type="String">
+            <Value>kg m-2</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>atmosphere_cloud_liquid_water_content</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Columnar Cloud Liquid Water</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-0.05000000075</Value>
+            <Value>2.450000048</Value>
+        </Attribute>
+        <Attribute name="flag_values" type="Int16">
+            <Value>251</Value>
+            <Value>252</Value>
+            <Value>253</Value>
+            <Value>254</Value>
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>missing_wind_speed_due_to_rain sea_ice bad_data no_observations land_mass</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>0.009999999776</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>-0.05000000075</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>atmosphere_cloud_liquid_water_content</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/atmosphere_cloud_liquid_water_content</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="deflate">
+            <dmrpp:chunkDimensionSizes>2 90 90</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="1705144" nBytes="956" chunkPositionInArray="[0,0,0]"/>
+            <dmrpp:chunk offset="1706104" nBytes="752" chunkPositionInArray="[0,0,90]"/>
+            <dmrpp:chunk offset="1706856" nBytes="193" chunkPositionInArray="[0,0,180]"/>
+            <dmrpp:chunk offset="1707056" nBytes="616" chunkPositionInArray="[0,0,270]"/>
+            <dmrpp:chunk offset="1707672" nBytes="166" chunkPositionInArray="[0,0,360]"/>
+            <dmrpp:chunk offset="1707840" nBytes="166" chunkPositionInArray="[0,0,450]"/>
+            <dmrpp:chunk offset="1708008" nBytes="314" chunkPositionInArray="[0,0,540]"/>
+            <dmrpp:chunk offset="1708328" nBytes="3638" chunkPositionInArray="[0,0,630]"/>
+            <dmrpp:chunk offset="1711968" nBytes="4783" chunkPositionInArray="[0,0,720]"/>
+            <dmrpp:chunk offset="1716752" nBytes="4005" chunkPositionInArray="[0,0,810]"/>
+            <dmrpp:chunk offset="1720760" nBytes="2194" chunkPositionInArray="[0,0,900]"/>
+            <dmrpp:chunk offset="1722960" nBytes="1955" chunkPositionInArray="[0,0,990]"/>
+            <dmrpp:chunk offset="1724920" nBytes="1946" chunkPositionInArray="[0,0,1080]"/>
+            <dmrpp:chunk offset="1726872" nBytes="1251" chunkPositionInArray="[0,0,1170]"/>
+            <dmrpp:chunk offset="1728128" nBytes="2754" chunkPositionInArray="[0,0,1260]"/>
+            <dmrpp:chunk offset="1730888" nBytes="2233" chunkPositionInArray="[0,0,1350]"/>
+            <dmrpp:chunk offset="1733128" nBytes="8505" chunkPositionInArray="[0,90,0]"/>
+            <dmrpp:chunk offset="1741640" nBytes="10906" chunkPositionInArray="[0,90,90]"/>
+            <dmrpp:chunk offset="1752552" nBytes="9689" chunkPositionInArray="[0,90,180]"/>
+            <dmrpp:chunk offset="1762248" nBytes="10611" chunkPositionInArray="[0,90,270]"/>
+            <dmrpp:chunk offset="1772864" nBytes="9945" chunkPositionInArray="[0,90,360]"/>
+            <dmrpp:chunk offset="1782816" nBytes="10199" chunkPositionInArray="[0,90,450]"/>
+            <dmrpp:chunk offset="1793016" nBytes="9072" chunkPositionInArray="[0,90,540]"/>
+            <dmrpp:chunk offset="1802088" nBytes="11949" chunkPositionInArray="[0,90,630]"/>
+            <dmrpp:chunk offset="1814040" nBytes="9849" chunkPositionInArray="[0,90,720]"/>
+            <dmrpp:chunk offset="1823896" nBytes="10336" chunkPositionInArray="[0,90,810]"/>
+            <dmrpp:chunk offset="1834232" nBytes="11677" chunkPositionInArray="[0,90,900]"/>
+            <dmrpp:chunk offset="1845912" nBytes="10273" chunkPositionInArray="[0,90,990]"/>
+            <dmrpp:chunk offset="1856192" nBytes="7009" chunkPositionInArray="[0,90,1080]"/>
+            <dmrpp:chunk offset="1863208" nBytes="9281" chunkPositionInArray="[0,90,1170]"/>
+            <dmrpp:chunk offset="1872496" nBytes="10544" chunkPositionInArray="[0,90,1260]"/>
+            <dmrpp:chunk offset="1883040" nBytes="10892" chunkPositionInArray="[0,90,1350]"/>
+            <dmrpp:chunk offset="1893936" nBytes="9754" chunkPositionInArray="[0,180,0]"/>
+            <dmrpp:chunk offset="1903696" nBytes="6848" chunkPositionInArray="[0,180,90]"/>
+            <dmrpp:chunk offset="1910544" nBytes="10776" chunkPositionInArray="[0,180,180]"/>
+            <dmrpp:chunk offset="1921320" nBytes="9561" chunkPositionInArray="[0,180,270]"/>
+            <dmrpp:chunk offset="1930888" nBytes="9786" chunkPositionInArray="[0,180,360]"/>
+            <dmrpp:chunk offset="1940680" nBytes="6860" chunkPositionInArray="[0,180,450]"/>
+            <dmrpp:chunk offset="1947544" nBytes="6402" chunkPositionInArray="[0,180,540]"/>
+            <dmrpp:chunk offset="1953952" nBytes="10084" chunkPositionInArray="[0,180,630]"/>
+            <dmrpp:chunk offset="1964040" nBytes="9050" chunkPositionInArray="[0,180,720]"/>
+            <dmrpp:chunk offset="1973096" nBytes="10557" chunkPositionInArray="[0,180,810]"/>
+            <dmrpp:chunk offset="1983656" nBytes="9520" chunkPositionInArray="[0,180,900]"/>
+            <dmrpp:chunk offset="1993176" nBytes="9152" chunkPositionInArray="[0,180,990]"/>
+            <dmrpp:chunk offset="2002328" nBytes="4275" chunkPositionInArray="[0,180,1080]"/>
+            <dmrpp:chunk offset="2006608" nBytes="4743" chunkPositionInArray="[0,180,1170]"/>
+            <dmrpp:chunk offset="2011352" nBytes="9489" chunkPositionInArray="[0,180,1260]"/>
+            <dmrpp:chunk offset="2020848" nBytes="10263" chunkPositionInArray="[0,180,1350]"/>
+            <dmrpp:chunk offset="2031112" nBytes="5618" chunkPositionInArray="[0,270,0]"/>
+            <dmrpp:chunk offset="2036736" nBytes="2983" chunkPositionInArray="[0,270,90]"/>
+            <dmrpp:chunk offset="2039720" nBytes="8558" chunkPositionInArray="[0,270,180]"/>
+            <dmrpp:chunk offset="2048280" nBytes="8860" chunkPositionInArray="[0,270,270]"/>
+            <dmrpp:chunk offset="2057144" nBytes="8087" chunkPositionInArray="[0,270,360]"/>
+            <dmrpp:chunk offset="2065232" nBytes="6154" chunkPositionInArray="[0,270,450]"/>
+            <dmrpp:chunk offset="2071392" nBytes="6719" chunkPositionInArray="[0,270,540]"/>
+            <dmrpp:chunk offset="2078112" nBytes="9566" chunkPositionInArray="[0,270,630]"/>
+            <dmrpp:chunk offset="2087680" nBytes="9053" chunkPositionInArray="[0,270,720]"/>
+            <dmrpp:chunk offset="2096736" nBytes="8321" chunkPositionInArray="[0,270,810]"/>
+            <dmrpp:chunk offset="2105064" nBytes="8367" chunkPositionInArray="[0,270,900]"/>
+            <dmrpp:chunk offset="2113432" nBytes="8727" chunkPositionInArray="[0,270,990]"/>
+            <dmrpp:chunk offset="2122160" nBytes="3889" chunkPositionInArray="[0,270,1080]"/>
+            <dmrpp:chunk offset="2126056" nBytes="289" chunkPositionInArray="[0,270,1170]"/>
+            <dmrpp:chunk offset="2126352" nBytes="6115" chunkPositionInArray="[0,270,1260]"/>
+            <dmrpp:chunk offset="2132472" nBytes="7802" chunkPositionInArray="[0,270,1350]"/>
+            <dmrpp:chunk offset="2140280" nBytes="1474" chunkPositionInArray="[0,360,0]"/>
+            <dmrpp:chunk offset="2141760" nBytes="821" chunkPositionInArray="[0,360,90]"/>
+            <dmrpp:chunk offset="2142584" nBytes="4118" chunkPositionInArray="[0,360,180]"/>
+            <dmrpp:chunk offset="2146704" nBytes="5140" chunkPositionInArray="[0,360,270]"/>
+            <dmrpp:chunk offset="2151848" nBytes="4376" chunkPositionInArray="[0,360,360]"/>
+            <dmrpp:chunk offset="2156224" nBytes="7457" chunkPositionInArray="[0,360,450]"/>
+            <dmrpp:chunk offset="2163688" nBytes="8824" chunkPositionInArray="[0,360,540]"/>
+            <dmrpp:chunk offset="2172512" nBytes="9275" chunkPositionInArray="[0,360,630]"/>
+            <dmrpp:chunk offset="2181792" nBytes="9597" chunkPositionInArray="[0,360,720]"/>
+            <dmrpp:chunk offset="2191392" nBytes="7770" chunkPositionInArray="[0,360,810]"/>
+            <dmrpp:chunk offset="2199168" nBytes="7146" chunkPositionInArray="[0,360,900]"/>
+            <dmrpp:chunk offset="2206320" nBytes="6304" chunkPositionInArray="[0,360,990]"/>
+            <dmrpp:chunk offset="2212624" nBytes="5580" chunkPositionInArray="[0,360,1080]"/>
+            <dmrpp:chunk offset="2218208" nBytes="3698" chunkPositionInArray="[0,360,1170]"/>
+            <dmrpp:chunk offset="2221912" nBytes="6914" chunkPositionInArray="[0,360,1260]"/>
+            <dmrpp:chunk offset="2228832" nBytes="3347" chunkPositionInArray="[0,360,1350]"/>
+            <dmrpp:chunk offset="2232184" nBytes="2420" chunkPositionInArray="[0,450,0]"/>
+            <dmrpp:chunk offset="2234608" nBytes="2535" chunkPositionInArray="[0,450,90]"/>
+            <dmrpp:chunk offset="2237144" nBytes="1621" chunkPositionInArray="[0,450,180]"/>
+            <dmrpp:chunk offset="2238768" nBytes="238" chunkPositionInArray="[0,450,270]"/>
+            <dmrpp:chunk offset="2239008" nBytes="166" chunkPositionInArray="[0,450,360]"/>
+            <dmrpp:chunk offset="2239176" nBytes="5646" chunkPositionInArray="[0,450,450]"/>
+            <dmrpp:chunk offset="2244824" nBytes="9474" chunkPositionInArray="[0,450,540]"/>
+            <dmrpp:chunk offset="2254304" nBytes="9138" chunkPositionInArray="[0,450,630]"/>
+            <dmrpp:chunk offset="2263448" nBytes="9325" chunkPositionInArray="[0,450,720]"/>
+            <dmrpp:chunk offset="2272776" nBytes="8457" chunkPositionInArray="[0,450,810]"/>
+            <dmrpp:chunk offset="2281240" nBytes="6961" chunkPositionInArray="[0,450,900]"/>
+            <dmrpp:chunk offset="2288208" nBytes="980" chunkPositionInArray="[0,450,990]"/>
+            <dmrpp:chunk offset="2289192" nBytes="3676" chunkPositionInArray="[0,450,1080]"/>
+            <dmrpp:chunk offset="2292872" nBytes="5886" chunkPositionInArray="[0,450,1170]"/>
+            <dmrpp:chunk offset="2298760" nBytes="8583" chunkPositionInArray="[0,450,1260]"/>
+            <dmrpp:chunk offset="2307344" nBytes="4962" chunkPositionInArray="[0,450,1350]"/>
+            <dmrpp:chunk offset="2312312" nBytes="4071" chunkPositionInArray="[0,540,0]"/>
+            <dmrpp:chunk offset="2316384" nBytes="832" chunkPositionInArray="[0,540,90]"/>
+            <dmrpp:chunk offset="2317216" nBytes="346" chunkPositionInArray="[0,540,180]"/>
+            <dmrpp:chunk offset="2317568" nBytes="253" chunkPositionInArray="[0,540,270]"/>
+            <dmrpp:chunk offset="2317824" nBytes="283" chunkPositionInArray="[0,540,360]"/>
+            <dmrpp:chunk offset="2318112" nBytes="166" chunkPositionInArray="[0,540,450]"/>
+            <dmrpp:chunk offset="2318280" nBytes="2863" chunkPositionInArray="[0,540,540]"/>
+            <dmrpp:chunk offset="2321144" nBytes="7154" chunkPositionInArray="[0,540,630]"/>
+            <dmrpp:chunk offset="2328304" nBytes="8142" chunkPositionInArray="[0,540,720]"/>
+            <dmrpp:chunk offset="2336448" nBytes="5965" chunkPositionInArray="[0,540,810]"/>
+            <dmrpp:chunk offset="2342416" nBytes="2151" chunkPositionInArray="[0,540,900]"/>
+            <dmrpp:chunk offset="2344568" nBytes="573" chunkPositionInArray="[0,540,990]"/>
+            <dmrpp:chunk offset="2345144" nBytes="1874" chunkPositionInArray="[0,540,1080]"/>
+            <dmrpp:chunk offset="2347024" nBytes="4897" chunkPositionInArray="[0,540,1170]"/>
+            <dmrpp:chunk offset="2351928" nBytes="7948" chunkPositionInArray="[0,540,1260]"/>
+            <dmrpp:chunk offset="2359880" nBytes="8568" chunkPositionInArray="[0,540,1350]"/>
+            <dmrpp:chunk offset="2368448" nBytes="3572" chunkPositionInArray="[0,630,0]"/>
+            <dmrpp:chunk offset="2372024" nBytes="2477" chunkPositionInArray="[0,630,90]"/>
+            <dmrpp:chunk offset="2374504" nBytes="2425" chunkPositionInArray="[0,630,180]"/>
+            <dmrpp:chunk offset="2376936" nBytes="1366" chunkPositionInArray="[0,630,270]"/>
+            <dmrpp:chunk offset="2378304" nBytes="918" chunkPositionInArray="[0,630,360]"/>
+            <dmrpp:chunk offset="2379224" nBytes="671" chunkPositionInArray="[0,630,450]"/>
+            <dmrpp:chunk offset="2379896" nBytes="957" chunkPositionInArray="[0,630,540]"/>
+            <dmrpp:chunk offset="2380856" nBytes="588" chunkPositionInArray="[0,630,630]"/>
+            <dmrpp:chunk offset="2381448" nBytes="611" chunkPositionInArray="[0,630,720]"/>
+            <dmrpp:chunk offset="2382064" nBytes="441" chunkPositionInArray="[0,630,810]"/>
+            <dmrpp:chunk offset="2382512" nBytes="1225" chunkPositionInArray="[0,630,900]"/>
+            <dmrpp:chunk offset="2383744" nBytes="1816" chunkPositionInArray="[0,630,990]"/>
+            <dmrpp:chunk offset="2385560" nBytes="1716" chunkPositionInArray="[0,630,1080]"/>
+            <dmrpp:chunk offset="2387280" nBytes="1172" chunkPositionInArray="[0,630,1170]"/>
+            <dmrpp:chunk offset="2388456" nBytes="734" chunkPositionInArray="[0,630,1260]"/>
+            <dmrpp:chunk offset="2389192" nBytes="3441" chunkPositionInArray="[0,630,1350]"/>
+        </dmrpp:chunks>
+    </Int16>
+    <Int16 name="rainfall_rate">
+        <Dim name="/time"/>
+        <Dim name="/latitude"/>
+        <Dim name="/longitude"/>
+        <Attribute name="units" type="String">
+            <Value>mm/hr</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>rainfall_rate</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Rain Rate</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>25.00000000</Value>
+        </Attribute>
+        <Attribute name="flag_values" type="Int16">
+            <Value>251</Value>
+            <Value>252</Value>
+            <Value>253</Value>
+            <Value>254</Value>
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>missing_wind_speed_due_to_rain sea_ice bad_data no_observations land_mass</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>0.1000000015</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rainfall_rate</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/rainfall_rate</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="deflate">
+            <dmrpp:chunkDimensionSizes>2 90 90</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="2392640" nBytes="587" chunkPositionInArray="[0,0,0]"/>
+            <dmrpp:chunk offset="2393232" nBytes="560" chunkPositionInArray="[0,0,90]"/>
+            <dmrpp:chunk offset="2393792" nBytes="193" chunkPositionInArray="[0,0,180]"/>
+            <dmrpp:chunk offset="2393992" nBytes="522" chunkPositionInArray="[0,0,270]"/>
+            <dmrpp:chunk offset="2394520" nBytes="166" chunkPositionInArray="[0,0,360]"/>
+            <dmrpp:chunk offset="2394688" nBytes="166" chunkPositionInArray="[0,0,450]"/>
+            <dmrpp:chunk offset="2394856" nBytes="314" chunkPositionInArray="[0,0,540]"/>
+            <dmrpp:chunk offset="2395176" nBytes="1701" chunkPositionInArray="[0,0,630]"/>
+            <dmrpp:chunk offset="2396880" nBytes="1423" chunkPositionInArray="[0,0,720]"/>
+            <dmrpp:chunk offset="2398304" nBytes="1293" chunkPositionInArray="[0,0,810]"/>
+            <dmrpp:chunk offset="2399600" nBytes="735" chunkPositionInArray="[0,0,900]"/>
+            <dmrpp:chunk offset="2400336" nBytes="1038" chunkPositionInArray="[0,0,990]"/>
+            <dmrpp:chunk offset="2401376" nBytes="1337" chunkPositionInArray="[0,0,1080]"/>
+            <dmrpp:chunk offset="2402720" nBytes="1217" chunkPositionInArray="[0,0,1170]"/>
+            <dmrpp:chunk offset="2403944" nBytes="1092" chunkPositionInArray="[0,0,1260]"/>
+            <dmrpp:chunk offset="2405040" nBytes="922" chunkPositionInArray="[0,0,1350]"/>
+            <dmrpp:chunk offset="2405968" nBytes="707" chunkPositionInArray="[0,90,0]"/>
+            <dmrpp:chunk offset="2406680" nBytes="3742" chunkPositionInArray="[0,90,90]"/>
+            <dmrpp:chunk offset="2410424" nBytes="3280" chunkPositionInArray="[0,90,180]"/>
+            <dmrpp:chunk offset="2413704" nBytes="2692" chunkPositionInArray="[0,90,270]"/>
+            <dmrpp:chunk offset="2416400" nBytes="2401" chunkPositionInArray="[0,90,360]"/>
+            <dmrpp:chunk offset="2418808" nBytes="3019" chunkPositionInArray="[0,90,450]"/>
+            <dmrpp:chunk offset="2421832" nBytes="1518" chunkPositionInArray="[0,90,540]"/>
+            <dmrpp:chunk offset="2423352" nBytes="4782" chunkPositionInArray="[0,90,630]"/>
+            <dmrpp:chunk offset="2428136" nBytes="1349" chunkPositionInArray="[0,90,720]"/>
+            <dmrpp:chunk offset="2429488" nBytes="1026" chunkPositionInArray="[0,90,810]"/>
+            <dmrpp:chunk offset="2430520" nBytes="3721" chunkPositionInArray="[0,90,900]"/>
+            <dmrpp:chunk offset="2434248" nBytes="1587" chunkPositionInArray="[0,90,990]"/>
+            <dmrpp:chunk offset="2435840" nBytes="1846" chunkPositionInArray="[0,90,1080]"/>
+            <dmrpp:chunk offset="2437688" nBytes="2977" chunkPositionInArray="[0,90,1170]"/>
+            <dmrpp:chunk offset="2440672" nBytes="2685" chunkPositionInArray="[0,90,1260]"/>
+            <dmrpp:chunk offset="2443360" nBytes="2364" chunkPositionInArray="[0,90,1350]"/>
+            <dmrpp:chunk offset="2445728" nBytes="2771" chunkPositionInArray="[0,180,0]"/>
+            <dmrpp:chunk offset="2448504" nBytes="1318" chunkPositionInArray="[0,180,90]"/>
+            <dmrpp:chunk offset="2449824" nBytes="3307" chunkPositionInArray="[0,180,180]"/>
+            <dmrpp:chunk offset="2453136" nBytes="1715" chunkPositionInArray="[0,180,270]"/>
+            <dmrpp:chunk offset="2454856" nBytes="3233" chunkPositionInArray="[0,180,360]"/>
+            <dmrpp:chunk offset="2458096" nBytes="2782" chunkPositionInArray="[0,180,450]"/>
+            <dmrpp:chunk offset="2460880" nBytes="2611" chunkPositionInArray="[0,180,540]"/>
+            <dmrpp:chunk offset="2463496" nBytes="4129" chunkPositionInArray="[0,180,630]"/>
+            <dmrpp:chunk offset="2467632" nBytes="1317" chunkPositionInArray="[0,180,720]"/>
+            <dmrpp:chunk offset="2468952" nBytes="2269" chunkPositionInArray="[0,180,810]"/>
+            <dmrpp:chunk offset="2471224" nBytes="1854" chunkPositionInArray="[0,180,900]"/>
+            <dmrpp:chunk offset="2473080" nBytes="1530" chunkPositionInArray="[0,180,990]"/>
+            <dmrpp:chunk offset="2474616" nBytes="1809" chunkPositionInArray="[0,180,1080]"/>
+            <dmrpp:chunk offset="2476432" nBytes="1477" chunkPositionInArray="[0,180,1170]"/>
+            <dmrpp:chunk offset="2477912" nBytes="2461" chunkPositionInArray="[0,180,1260]"/>
+            <dmrpp:chunk offset="2480376" nBytes="2133" chunkPositionInArray="[0,180,1350]"/>
+            <dmrpp:chunk offset="2482512" nBytes="1233" chunkPositionInArray="[0,270,0]"/>
+            <dmrpp:chunk offset="2483752" nBytes="1700" chunkPositionInArray="[0,270,90]"/>
+            <dmrpp:chunk offset="2485456" nBytes="2400" chunkPositionInArray="[0,270,180]"/>
+            <dmrpp:chunk offset="2487856" nBytes="2938" chunkPositionInArray="[0,270,270]"/>
+            <dmrpp:chunk offset="2490800" nBytes="3822" chunkPositionInArray="[0,270,360]"/>
+            <dmrpp:chunk offset="2494624" nBytes="3889" chunkPositionInArray="[0,270,450]"/>
+            <dmrpp:chunk offset="2498520" nBytes="4015" chunkPositionInArray="[0,270,540]"/>
+            <dmrpp:chunk offset="2502536" nBytes="4184" chunkPositionInArray="[0,270,630]"/>
+            <dmrpp:chunk offset="2506720" nBytes="2981" chunkPositionInArray="[0,270,720]"/>
+            <dmrpp:chunk offset="2509704" nBytes="2518" chunkPositionInArray="[0,270,810]"/>
+            <dmrpp:chunk offset="2512224" nBytes="1698" chunkPositionInArray="[0,270,900]"/>
+            <dmrpp:chunk offset="2513928" nBytes="2075" chunkPositionInArray="[0,270,990]"/>
+            <dmrpp:chunk offset="2516008" nBytes="1416" chunkPositionInArray="[0,270,1080]"/>
+            <dmrpp:chunk offset="2517424" nBytes="282" chunkPositionInArray="[0,270,1170]"/>
+            <dmrpp:chunk offset="2517712" nBytes="2405" chunkPositionInArray="[0,270,1260]"/>
+            <dmrpp:chunk offset="2520120" nBytes="1497" chunkPositionInArray="[0,270,1350]"/>
+            <dmrpp:chunk offset="2521624" nBytes="1017" chunkPositionInArray="[0,360,0]"/>
+            <dmrpp:chunk offset="2522648" nBytes="696" chunkPositionInArray="[0,360,90]"/>
+            <dmrpp:chunk offset="2523344" nBytes="1394" chunkPositionInArray="[0,360,180]"/>
+            <dmrpp:chunk offset="2524744" nBytes="1731" chunkPositionInArray="[0,360,270]"/>
+            <dmrpp:chunk offset="2526480" nBytes="2643" chunkPositionInArray="[0,360,360]"/>
+            <dmrpp:chunk offset="2529128" nBytes="3472" chunkPositionInArray="[0,360,450]"/>
+            <dmrpp:chunk offset="2532600" nBytes="3171" chunkPositionInArray="[0,360,540]"/>
+            <dmrpp:chunk offset="2535776" nBytes="3618" chunkPositionInArray="[0,360,630]"/>
+            <dmrpp:chunk offset="2539400" nBytes="3971" chunkPositionInArray="[0,360,720]"/>
+            <dmrpp:chunk offset="2543376" nBytes="1921" chunkPositionInArray="[0,360,810]"/>
+            <dmrpp:chunk offset="2545304" nBytes="1666" chunkPositionInArray="[0,360,900]"/>
+            <dmrpp:chunk offset="2546976" nBytes="1934" chunkPositionInArray="[0,360,990]"/>
+            <dmrpp:chunk offset="2548912" nBytes="2514" chunkPositionInArray="[0,360,1080]"/>
+            <dmrpp:chunk offset="2551432" nBytes="1255" chunkPositionInArray="[0,360,1170]"/>
+            <dmrpp:chunk offset="2552688" nBytes="1503" chunkPositionInArray="[0,360,1260]"/>
+            <dmrpp:chunk offset="2554192" nBytes="1265" chunkPositionInArray="[0,360,1350]"/>
+            <dmrpp:chunk offset="2555464" nBytes="1723" chunkPositionInArray="[0,450,0]"/>
+            <dmrpp:chunk offset="2557192" nBytes="1803" chunkPositionInArray="[0,450,90]"/>
+            <dmrpp:chunk offset="2559000" nBytes="1242" chunkPositionInArray="[0,450,180]"/>
+            <dmrpp:chunk offset="2560248" nBytes="224" chunkPositionInArray="[0,450,270]"/>
+            <dmrpp:chunk offset="2560472" nBytes="166" chunkPositionInArray="[0,450,360]"/>
+            <dmrpp:chunk offset="2560640" nBytes="3149" chunkPositionInArray="[0,450,450]"/>
+            <dmrpp:chunk offset="2563792" nBytes="3569" chunkPositionInArray="[0,450,540]"/>
+            <dmrpp:chunk offset="2567368" nBytes="2549" chunkPositionInArray="[0,450,630]"/>
+            <dmrpp:chunk offset="2569920" nBytes="3174" chunkPositionInArray="[0,450,720]"/>
+            <dmrpp:chunk offset="2573096" nBytes="1377" chunkPositionInArray="[0,450,810]"/>
+            <dmrpp:chunk offset="2574480" nBytes="2161" chunkPositionInArray="[0,450,900]"/>
+            <dmrpp:chunk offset="2576648" nBytes="768" chunkPositionInArray="[0,450,990]"/>
+            <dmrpp:chunk offset="2577416" nBytes="1959" chunkPositionInArray="[0,450,1080]"/>
+            <dmrpp:chunk offset="2579376" nBytes="2525" chunkPositionInArray="[0,450,1170]"/>
+            <dmrpp:chunk offset="2581904" nBytes="2128" chunkPositionInArray="[0,450,1260]"/>
+            <dmrpp:chunk offset="2584032" nBytes="1919" chunkPositionInArray="[0,450,1350]"/>
+            <dmrpp:chunk offset="2585952" nBytes="2443" chunkPositionInArray="[0,540,0]"/>
+            <dmrpp:chunk offset="2588400" nBytes="808" chunkPositionInArray="[0,540,90]"/>
+            <dmrpp:chunk offset="2589208" nBytes="339" chunkPositionInArray="[0,540,180]"/>
+            <dmrpp:chunk offset="2589552" nBytes="253" chunkPositionInArray="[0,540,270]"/>
+            <dmrpp:chunk offset="2589808" nBytes="283" chunkPositionInArray="[0,540,360]"/>
+            <dmrpp:chunk offset="2590096" nBytes="166" chunkPositionInArray="[0,540,450]"/>
+            <dmrpp:chunk offset="2590264" nBytes="2013" chunkPositionInArray="[0,540,540]"/>
+            <dmrpp:chunk offset="2592280" nBytes="2648" chunkPositionInArray="[0,540,630]"/>
+            <dmrpp:chunk offset="2594928" nBytes="3659" chunkPositionInArray="[0,540,720]"/>
+            <dmrpp:chunk offset="2598592" nBytes="1061" chunkPositionInArray="[0,540,810]"/>
+            <dmrpp:chunk offset="2599656" nBytes="1058" chunkPositionInArray="[0,540,900]"/>
+            <dmrpp:chunk offset="2600720" nBytes="573" chunkPositionInArray="[0,540,990]"/>
+            <dmrpp:chunk offset="2601296" nBytes="1874" chunkPositionInArray="[0,540,1080]"/>
+            <dmrpp:chunk offset="2603176" nBytes="3042" chunkPositionInArray="[0,540,1170]"/>
+            <dmrpp:chunk offset="2606224" nBytes="2388" chunkPositionInArray="[0,540,1260]"/>
+            <dmrpp:chunk offset="2608616" nBytes="2349" chunkPositionInArray="[0,540,1350]"/>
+            <dmrpp:chunk offset="2610968" nBytes="1214" chunkPositionInArray="[0,630,0]"/>
+            <dmrpp:chunk offset="2612184" nBytes="1115" chunkPositionInArray="[0,630,90]"/>
+            <dmrpp:chunk offset="2613304" nBytes="1735" chunkPositionInArray="[0,630,180]"/>
+            <dmrpp:chunk offset="2615040" nBytes="1366" chunkPositionInArray="[0,630,270]"/>
+            <dmrpp:chunk offset="2616408" nBytes="918" chunkPositionInArray="[0,630,360]"/>
+            <dmrpp:chunk offset="2617328" nBytes="671" chunkPositionInArray="[0,630,450]"/>
+            <dmrpp:chunk offset="2618000" nBytes="957" chunkPositionInArray="[0,630,540]"/>
+            <dmrpp:chunk offset="2618960" nBytes="588" chunkPositionInArray="[0,630,630]"/>
+            <dmrpp:chunk offset="2619552" nBytes="611" chunkPositionInArray="[0,630,720]"/>
+            <dmrpp:chunk offset="2620168" nBytes="441" chunkPositionInArray="[0,630,810]"/>
+            <dmrpp:chunk offset="2620616" nBytes="1225" chunkPositionInArray="[0,630,900]"/>
+            <dmrpp:chunk offset="2621848" nBytes="1816" chunkPositionInArray="[0,630,990]"/>
+            <dmrpp:chunk offset="2623664" nBytes="1716" chunkPositionInArray="[0,630,1080]"/>
+            <dmrpp:chunk offset="2625384" nBytes="1172" chunkPositionInArray="[0,630,1170]"/>
+            <dmrpp:chunk offset="2626560" nBytes="682" chunkPositionInArray="[0,630,1260]"/>
+            <dmrpp:chunk offset="2627248" nBytes="1396" chunkPositionInArray="[0,630,1350]"/>
+        </dmrpp:chunks>
+    </Int16>
+    <Float32 name="latitude">
+        <Dim name="/latitude"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>latitude</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>Y</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-89.87500000</Value>
+            <Value>89.87500000</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>lat</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/latitude</Value>
+        </Attribute>
+        <dmrpp:chunks>
+            <dmrpp:chunk offset="106792" nBytes="2880"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Float32 name="longitude">
+        <Dim name="/longitude"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>longitude</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>X</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.1250000000</Value>
+            <Value>359.8750000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>longitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/longitude</Value>
+        </Attribute>
+        <dmrpp:chunks>
+            <dmrpp:chunk offset="109672" nBytes="5760"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Int16 name="time">
+        <Dim name="/time"/>
+        <Attribute name="units" type="String">
+            <Value>hours since 2019-03-06T00:00:00Z</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>T</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>1.000000000</Value>
+            <Value>2.000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/time</Value>
+        </Attribute>
+        <dmrpp:chunks>
+            <dmrpp:chunk offset="115432" nBytes="4"/>
+        </dmrpp:chunks>
+    </Int16>
+    <Attribute name="HDF5_GLOBAL" type="Container">
+        <Attribute name="chunksize" type="String">
+            <Value>90</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Version-7 algorithm processing was performed during August 2011 and continues forward for active instruments.  Use data files with a date of August 2011 or newer.  The RSS SSMIS geophysical dataset consists of data derived from observations collected by SSMIS instruments carried onboard the DMSP series of polar orbiting satellites. These satellites are numbered:  F16 SSMIS Oct 2003 to present, F17 SSMIS Dec 2006 to present, F18 SSMIS Nov 2009 to present. Daily files of SSMIS geophysical parameters consist of data mapped to a regular grid complete with data gaps between orbits. Two maps exist for each parameter, one of ascending orbit segments and the other of descending orbit segments. Data on each of the maps are overwritten at both the high latitudes (where successive orbits cross) and at the 'seam' or the region where the last orbit of the day overlaps the first orbit of the day. Water vapor and cloud liquid water are given in kg/m2 (which is equivalent to 1 mm or 0.1 g/cm2).</Value>
+        </Attribute>
+        <Attribute name="Conventions" type="String">
+            <Value>CF-1.6</Value>
+        </Attribute>
+        <Attribute name="history" type="String">
+            <Value>Starting in August 2011, all SSMIS data were reprocessed from a preliminary beta version to the official Version-7.  Use data files that have a creation date of August 2011 or later.  At GHRC, RSS binary files are translated to netCDF-4 for archive, and for distribution to netCDF users.   RSS Provenance: processing location = Remote Sensing Systems, processing host = Ops1p, input files = SSMIS Level 2B data files (fSS_rRRRRR.dat, SS= sat number, RRRRR=orbital rev number), processing code name = ssmis_processor.exe, processing code version = 2011-08-08T02:55:51Z.  GHRC Provenance:  processing location = GHRC,  processing host = breeze.nsstc.nasa.gov, processing environment = ops, binary input file name = f17_20190306v7.gz (daily), processing script name = RSSbinary2netCDF.jar, processing script version = 2012-07-01T23:55:36Z, configuration file name = SSMIS_Daily.xml, configuration file version = 2012-06-29T21:06:34Z</Value>
+        </Attribute>
+        <Attribute name="institution" type="String">
+            <Value>Remote Sensing Systems, Santa Rosa, California.  Sponsored by the NASA Earth Science MEaSUREs DISCOVER Project.
+Global Hydrology Resource Center, Huntsville, Alabama, a NASA earth science data center.</Value>
+        </Attribute>
+        <Attribute name="numberofpasses" type="String">
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="passdirection" type="String">
+            <Value>1:ascending orbit segments. 2:descending orbit segments.</Value>
+        </Attribute>
+        <Attribute name="references" type="String">
+            <Value>http://www.ssmi.com/ssmi/ssmi_description.html</Value>
+        </Attribute>
+        <Attribute name="satid" type="String">
+            <Value>DMSP-F17</Value>
+        </Attribute>
+        <Attribute name="scale" type="String">
+            <Value>SSMIS data are scaled for storage and affect the resolution of the data:  time: x0.1 hrs, wind: x0.2 m/s, vapor: x0.3 kg/m2, cloud: x0.01 kg/m2, rain: x0.1 mm</Value>
+        </Attribute>
+        <Attribute name="sensorid" type="String">
+            <Value>SSMIS</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Data derived from observations collected by SSMIS instruments carried onboard the DMSP series of polar orbiting satellites(F16-F18)</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>RSS SSMIS Ocean Product Grids Daily from DMSP F17 netCDF</Value>
+        </Attribute>
+        <Attribute name="value" type="String">
+            <Value>251(1506 for time)=missing wind speed due to rain, or missing water vapor due to heavy rain.  252(1512 for time)=sea ice. 253(1518 for time)=SSMIS observations exist,but are bad. 254(1524 for time)=no SSMIS observations. 255(1530 for time)=land mass.</Value>
+        </Attribute>
+        <Attribute name="begin_time" type="String">
+            <Value>2019-03-06T00:00:00Z</Value>
+        </Attribute>
+        <Attribute name="end_time" type="String">
+            <Value>2019-03-06T23:59:59Z</Value>
+        </Attribute>
+        <Attribute name="identifier_product_DOI" type="String">
+            <Value>10.5067/MEASURES/DMSP-F17/SSMIS/DATA301</Value>
+        </Attribute>
+        <Attribute name="identifier_product_DOI_authority" type="String">
+            <Value>http://dx.doi.org</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
