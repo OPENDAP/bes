@@ -64,6 +64,8 @@ private:
 	string _localfile;
 	string _returnAs;
 	vector<FONcBaseType *> _fonc_vars;
+	vector<FONcBaseType *> _total_fonc_vars_in_grp;
+    
 
 public:
 	/**

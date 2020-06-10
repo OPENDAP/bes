@@ -240,6 +240,7 @@ void FONcArray::convert(vector<string> embed,bool is_dap4_group)
     // If this array has a single dimension, and the name of the array
     // and the name of that dimension are the same, then this array
     // might be used as a map for a grid defined elsewhere.
+    //if(is_dap4_group ==false) {
     if (!FONcGrid::InGrid && d_actual_ndims == 1 && d_a->name() == d_a->dimension_name(d_a->dim_begin())) {
         // is it already in there?
         FONcMap *map = FONcGrid::InMaps(d_a);
@@ -253,6 +254,7 @@ void FONcArray::convert(vector<string> embed,bool is_dap4_group)
                 d_dont_use_it = true;
         }
     }
+    //}
 
     BESDEBUG("fonc", "FONcArray::convert() - done converting array " << _varname << endl);
 }

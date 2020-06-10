@@ -158,6 +158,21 @@ FONcTransform::~FONcTransform()
             _fonc_vars.erase(i);
         }
     }
+    done = false;
+    while (!done) {
+        vector<FONcBaseType *>::iterator i = _total_fonc_vars_in_grp.begin();
+        vector<FONcBaseType *>::iterator e = _total_fonc_vars_in_grp.end();
+        if (i == e) {
+            done = true;
+        }
+        else {
+            // These are the FONc types, not the actual ones
+            FONcBaseType *b = (*i);
+            delete b;
+            _total_fonc_vars_in_grp.erase(i);
+        }
+    }
+
 }
 
 /** @brief Transforms each of the variables of the DataDDS to the NetCDF
@@ -694,6 +709,7 @@ void FONcTransform::transform_dap4_group(D4Group* grp,bool is_root_grp,int par_g
 #endif
             //_fonc_vars.push_back(fb);
             fonc_vars_in_grp.push_back(fb);
+            _total_fonc_vars_in_grp.push_back(fb);
 
             vector<string> embed;
             fb->convert(embed,true);
@@ -835,6 +851,24 @@ void FONcTransform::transform_dap4_group(D4Group* grp,bool is_root_grp,int par_g
    }
 
 //STOP HERE.
+   //release fonc_vars_in_grp 
+#if 0
+    bool done = false;
+    while (!done) {
+        vector<FONcBaseType *>::iterator i = fonc_vars_in_grp.begin();
+        vector<FONcBaseType *>::iterator e = fonc_vars_in_grp.end();
+        if (i == e) {
+            done = true;
+        }
+        else {
+            // These are the FONc types, not the actual ones
+            FONcBaseType *b = (*i);
+            delete b;
+            fonc_vars_in_grp.erase(i);
+        }
+    }
+#endif
+
 
 
     }
