@@ -25,6 +25,7 @@
 #include <sstream>      // std::stringstream
 #include <stdlib.h>     /* abort, NULL */
 #include <iostream>
+#include <signal.h>
 
 #include <sys/time.h>
 #include <unistd.h>
@@ -379,14 +380,21 @@ void error_ssf(int argc, libdap::BaseType * argv[], libdap::DDS &, libdap::BaseT
             }
                 break;
 
-            case BES_TIMEOUT_ERROR: {
-                msg << "A BESTimeOutError was requested.";
-                BESTimeoutError error(msg.str(), location, 0);
-                throw error;
-            }
-                break;
+                case BES_TIMEOUT_ERROR: {
+                    msg << "A BESTimeOutError was requested.";
+                    BESTimeoutError error(msg.str(), location, 0);
+                    throw error;
+                }
+                    break;
 
-            default:
+                case 666: {
+                    msg << "A Segmentation Fault has been requested.";
+                    cerr << msg.str() << endl;
+                    raise(SIGSEGV);
+                }
+                    break;
+
+                default:
                 msg << "An unrecognized error_type parameter was received. Requested error_type: " << error_type;
                 break;
             }
