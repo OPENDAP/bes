@@ -57,6 +57,9 @@
 
 using namespace std;
 
+#define MODULE "ppt"
+#define prolog string("SocketListener::").append(__func__).append("() - ")
+
 SocketListener::SocketListener() :
 		_accepting(false)
 {
@@ -89,7 +92,7 @@ void SocketListener::listen(Socket *s)
 Socket *
 SocketListener::accept()
 {
-	BESDEBUG("ppt", "SocketListener::accept() - START" << endl);
+	BESDEBUG(MODULE, prolog << "START" << endl);
 
 	fd_set read_fd;
 	FD_ZERO(&read_fd);
@@ -110,22 +113,22 @@ SocketListener::accept()
 	    // while (select(maxfd + 1, &read_fd, (fd_set*) NULL, (fd_set*) NULL, &timeout) < 0) {
 		switch (errno) {
 		case EAGAIN:	// rerun select on interrupted calls, ...
-			BESDEBUG("ppt2", "SocketListener::accept() - select encountered EAGAIN" << endl);
+			BESDEBUG(MODULE, prolog << "select() encountered EAGAIN" << endl);
 			// This case and the one below used to just 'break' so that the select call
 			// above would run again. I modified it to return null so that the caller could
 			// do other things, like process the results of signals.
 			return 0;
 
 		case EINTR:
-			BESDEBUG("ppt2", "SocketListener::accept() - select encountered EINTR" << endl);
+			BESDEBUG(MODULE, prolog << "select() encountered EINTR" << endl);
 			return 0;
 
 		default:
-			throw BESInternalError(string("select: ") + strerror(errno), __FILE__, __LINE__);
+			throw BESInternalError(string("select(): ") + strerror(errno), __FILE__, __LINE__);
 		}
 	}
 
-	BESDEBUG("ppt", "SocketListener::accept() - select() completed without error." << endl);
+	BESDEBUG(MODULE, prolog << "select() completed without error." << endl);
 
 	for (Socket_citer i = _socket_list.begin(), e = _socket_list.end(); i != e; i++) {
 		Socket *s_ptr = (*i).second;
@@ -133,7 +136,7 @@ SocketListener::accept()
 			struct sockaddr from;
 			socklen_t len_from = sizeof(from);
 
-			BESDEBUG("ppt", "SocketListener::accept() - Attempting to accept on "<< s_ptr->getIp() << ":"
+			BESDEBUG(MODULE, prolog << "Attempting to accept on "<< s_ptr->getIp() << ":"
 			    << s_ptr->getPort() << endl);
 
 			int msgsock;
@@ -146,12 +149,12 @@ SocketListener::accept()
 				}
 			}
 
-			BESDEBUG("ppt", "SocketListener::accept() - END (returning new Socket)" << endl);
+			BESDEBUG(MODULE, prolog << "END (returning new Socket)" << endl);
 			return s_ptr->newSocket(msgsock, (struct sockaddr *) &from);
 		}
 	}
 
-	BESDEBUG("ppt", "SocketListener::accept() - END (returning 0)" << endl);
+	BESDEBUG(MODULE, prolog << "END (returning 0)" << endl);
 	return 0;
 }
 
