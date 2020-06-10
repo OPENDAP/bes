@@ -5,7 +5,9 @@
 # the places it's needed and hack. If substantial changes are needed, try to copy
 # them back into this file. jhrg 12/14/15 
 
-# Include this using 'm4_include([../../handler_tests_macros.m4])' or similar.
+# Include this using 'm4_include(AT_TOP_SRCDIR/modules/handler_tests_macros.m4)'
+# or similar. Add 	"echo 'm4_define([AT_TOP_SRCDIR], 		[@top_srcdir@])'; \"
+# to the package.m4 target in Makefile.am.
 
 # Before including these, use AT_INIT([ <name> ]) in the testsuite.at file. By including
 # the pathname to the test drectory in the AC_INIT() macro, you will make it much easier
