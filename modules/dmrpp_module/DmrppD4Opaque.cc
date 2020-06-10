@@ -108,8 +108,11 @@ void DmrppD4Opaque::read_chunks_parallel()
     for (vector<Chunk>::iterator c = chunk_refs.begin(), e = chunk_refs.end(); c != e; ++c) {
         chunks_to_read.push(&*c);
     }
-
-    // FIXME Call the new resize() method using num_of_chunks * chunk_size here
+    
+#if !HAVE_CURL_MULTI_API
+    if (DmrppRequestHandler::d_use_parallel_transfers && HAVE_CURL_MULTI_API)
+        LOG("The DMR++ handler is configured to use parallel transfers, but the libcurl Multi API is not present, defaulting to serial transfers");
+#endif
 
     if (DmrppRequestHandler::d_use_parallel_transfers) {
         // This is the parallel version of the code. It reads a set of chunks in parallel
