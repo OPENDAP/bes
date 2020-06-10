@@ -33,6 +33,8 @@
 
 namespace dmrpp {
 
+extern const bool have_curl_multi_api;
+
 class Chunk;
 
 /**

@@ -64,6 +64,14 @@ static const int MAX_WAIT_MSECS = 30 * 1000; // Wait max. 30 seconds
 static const unsigned int retry_limit = 10; // Amazon's suggestion
 static const unsigned int initial_retry_time = 1000; // one second
 
+namespace dmrpp {
+#if HAVE_CURL_MULTI_API
+const bool have_curl_multi_api = true;
+#else
+const bool have_curl_multi_api = false;
+#endif
+}
+
 using namespace dmrpp;
 using namespace std;
 using namespace bes;
