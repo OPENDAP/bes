@@ -6,8 +6,8 @@
             <Message>Build site map must include the prefix and at least one of the nodeSuffix or leafSuffix attributes.</Message>
             <Administrator>support@opendap.org</Administrator>
             <Location>
-                
-                
+                removed file
+                removed line
             </Location>
         </BESError>
     </BES>

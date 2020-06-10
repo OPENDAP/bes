@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Dataset name="test_simple_8" dapVersion="4.0" dmrVersion="1.0" xml:base="file:dap4/test_simple_8.xml"
+  xmlns="http://xml.opendap.org/ns/DAP/4.0#"
+  xmlns:dap="http://xml.opendap.org/ns/DAP/4.0#">
+  
+  <Structure name="outer">
+    <Sequence name="s">
+      <Int32 name="i1"/>
+      <String name="s"/>
+    </Sequence>    
+  </Structure>
+  
+</Dataset>
