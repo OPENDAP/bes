@@ -26,11 +26,9 @@
 #include <string>
 #include <locale>
 #include <sstream>
-#include <iomanip>
 
 #include <cstring>
 #include <unistd.h>
-#include <ctime>
 
 #include <curl/curl.h>
 
@@ -60,7 +58,6 @@
 #include "AccessCredentials.h"
 
 #define KEEP_ALIVE 1   // Reuse libcurl easy handles (1) or not (0).
-
 #define CURL_VERBOSE 0  // Logs curl info to the bes.log
 
 static const int MAX_WAIT_MSECS = 30 * 1000; // Wait max. 30 seconds
@@ -264,9 +261,10 @@ static bool evaluate_curl_response(CURL *eh) {
     CURLcode res = curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_code);
     if (CURLE_OK != res) {
         throw BESInternalError(
-                string("Error getting HTTP response code: ").append(curl::error_message(res, (char *) "")), __FILE__,
-                __LINE__);
+                string("Error getting HTTP response code: ").append(curl::error_message(res, (char *) "")),
+                __FILE__, __LINE__);
     }
+
     if (BESDebug::IsSet(MODULE)) {
         char *last_url = 0;
         curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &last_url);
@@ -309,9 +307,8 @@ static bool evaluate_curl_response(CURL *eh) {
 /**
  * @brief This is the read_data() method for serial transfers.
  *
- * See below for the code used for parallel transfers.
- *
- * @todo Modify re-try so it's only done for AWS and/or if an option is set.
+ * See below for the code used for parallel transfers. Note that
+ * this code is also used for the pthreads parallel transfers.
  */
 void dmrpp_easy_handle::read_data() {
     // Treat HTTP/S requests specially; retry some kinds of failures.
@@ -340,7 +337,7 @@ void dmrpp_easy_handle::read_data() {
             if (!success) {
                 if (tries == retry_limit) {
                     throw BESInternalError(
-                            string("Data transfer error: Number of re-tries to S3 exceeded: ").append(
+                            string("Data transfer error: Number of re-tries exceeded: ").append(
                                     curl::error_message(curl_code, d_errbuf)), __FILE__, __LINE__);
                 }
                 else {
@@ -571,14 +568,21 @@ void dmrpp_multi_handle::read_data() {
                 throw e;
             }
         }
+        // Now remove the easy_handles, mimicking the behavior when using the real Multi API
+        p_impl->ehandles.clear();
     }
     catch (...) {
+        // Returning all the easy handles to the pool is handled for the 'no HAVE_CURL_MULTI_API
+        // case in Chunk's chunk_write_data() libcurl callback.
+        DmrppRequestHandler::curl_handle_pool->release_all_handles();
+
+        // Now remove the easy_handles, mimicking the behavior when using the real Multi API
+        p_impl->ehandles.clear();
+
         join_threads(threads, num_threads);
+
         throw;
     }
-
-    // Now remove the easy_handles, mimicking the behavior when using the real Multi API
-    p_impl->ehandles.clear();
 #endif
 }
 

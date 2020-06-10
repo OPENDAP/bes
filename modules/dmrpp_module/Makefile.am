@@ -3,7 +3,7 @@ AUTOMAKE_OPTIONS = foreign
 ACLOCAL_AMFLAGS = -I conf
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
-AM_CXXFLAGS =
+AM_CXXFLAGS = -Wno-vla-extension
 
 BES_STANDALONE_LIB = -L$(top_builddir)/standalone -lbes_standalone
 

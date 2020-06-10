@@ -24,7 +24,6 @@
 #include "config.h"
 
 #include <sstream>
-// #include <cstdlib>
 #include <cstring>
 #include <cassert>
 
@@ -56,40 +55,39 @@ namespace dmrpp {
 const std::string Chunk::tracking_context = "cloudydap";
 
 /**
- * @brief read the response headers
+ * @brief Read the response headers, save the Content-Type header
+ * Look at the HTTP response headers and save the value of the Content-Type
+ * header in the chunk object. This is a callback set up for the
+ * curl easy handle.
+ *
  * @param buffer One header line
  * @param size Always 1
  * @param nitems Number of bytes in this header line
  * @param data Pointer to the user data, configured using
- * @return
+ * @return The number of bytes read
  */
-size_t chunk_header_callback(char *buffer, size_t size, size_t nitems, void *data)
+size_t chunk_header_callback(char *buffer, size_t /*size*/, size_t nitems, void *data)
 {
-    /* received header is nitems * size long in 'buffer' NOT ZERO TERMINATED */
-    /* 'userdata' is set with CURLOPT_HEADERDATA */
-    /* 'size' is always 1 */
-#if 0
-    vector<char> header(nitems+1);
-    copy(buffer, buffer+nitems, header.begin());
-    std::string str(header.begin(), header.end());
-#endif
+    // received header is nitems * size long in 'buffer' NOT ZERO TERMINATED
+    // 'userdata' is set with CURLOPT_HEADERDATA
+    // 'size' is always 1
+
     // -2 strips of the CRLF at the end of the header
     string header(buffer, buffer + nitems - 2);
-    BESDEBUG(MODULE, "Header: " << header << endl);
+
     // Look for the content type header and store its value in the Chunk
     string::size_type pos;
     if ((pos = header.find("Content-Type")) != string::npos) {
         // Header format 'Content-Type: <value>'
         Chunk *c_ptr = reinterpret_cast<Chunk*>(data);
         c_ptr->set_response_content_type(header.substr(header.find_last_of(' ')+1));
-        BESDEBUG(MODULE, "Content-Type header value: " << c_ptr->get_response_content_type() << endl);
     }
 
-    return nitems * size;
+    return nitems;
 }
 
 /**
- * @brief Callback passed to libcurl to handle reading a single byte.
+ * @brief Callback passed to libcurl to handle reading bytes.
  *
  * This callback assumes that the size of the data is small enough
  * that all of the bytes will be either read at once or that a local
@@ -106,51 +104,42 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
     size_t nbytes = size * nmemb;
     Chunk *chunk = reinterpret_cast<Chunk*>(data);
 
-    // Peek into the bytes read and look for an error from the object store.
-    // Error messages always start off with '<?xml' so only check for one if we have more than
-    // four characters in 'buffer.' jhrg 12/17/19
-    if (nbytes > 4) {
-        string peek(reinterpret_cast<const char *>(buffer), 5);
-        if (peek == "<?xml") {
-            // At this point we no longer care about great performance - error msg readability
-            // is more important. jhrg 12/30/19
-            string xml_message = reinterpret_cast<const char *>(buffer);
-            xml_message.erase(xml_message.find_last_not_of("\t\n\v\f\r 0") + 1);
-            // Decode the AWS XML error message. In some cases this will fail because pub keys,
-            // which maybe in this error text, may have < or > chars in them. the XML parser
-            // will be sad if that happens. jhrg 12/30/19
-            try {
-                string json_message = xml2json(xml_message.c_str());
-                BESDEBUG(MODULE, prolog << "AWS S3 Access Error:" << json_message << endl);
-                VERBOSE("AWS S3 Access Error:" << json_message << endl);
+    // When Content-Type is 'application/xml,' that's an error. jhrg 6/9/20
+    if (chunk->get_response_content_type().find("application/xml") != string::npos) {
+        // At this point we no longer care about great performance - error msg readability
+        // is more important. jhrg 12/30/19
+        string xml_message = reinterpret_cast<const char *>(buffer);
+        xml_message.erase(xml_message.find_last_not_of("\t\n\v\f\r 0") + 1);
+        // Decode the AWS XML error message. In some cases this will fail because pub keys,
+        // which maybe in this error text, may have < or > chars in them. the XML parser
+        // will be sad if that happens. jhrg 12/30/19
+        try {
+            string json_message = xml2json(xml_message.c_str());
+            VERBOSE("AWS S3 Access Error:" << json_message << endl);
 
-                rapidjson::Document d;
-                d.Parse(json_message.c_str());
-                rapidjson::Value &message = d["Error"]["Message"];
-#if 0
-                // TODO Use this to choose Forbidden, etc., errors. jhrg 6/9/20
-                rapidjson::Value &code = d["Error"]["Code"];
-#endif
-                // We might want to get the "Code" from the "Error" if these text messages
-                // are not good enough. But the "Code" is not really suitable for normal humans...
-                // jhrg 12/31/19
+            rapidjson::Document d;
+            d.Parse(json_message.c_str());
+            rapidjson::Value &message = d["Error"]["Message"];
+            rapidjson::Value &code = d["Error"]["Code"];
 
-                // TODO Move this to CurlHandlePool?
-                // FIXME DmrppRequestHandler::curl_handle_pool->release_all_handles();
-                throw BESForbiddenError(string("Error accessing object store data: ").append(message.GetString())
-                                        .append(" while accessing: ").append(chunk->get_data_url()), __FILE__, __LINE__);
-            }
-            catch (BESForbiddenError) {
-                // re-throw BESForbiddenError - added for the future if we make BESError a child
-                // of std::exception as it should be. jhrg 12/30/19
-                throw;
-            }
-            catch(std::exception &e) {
-                BESDEBUG(MODULE, prolog << "AWS S3 Access Error:" << xml_message << endl);
-                VERBOSE(prolog << "AWS S3 Access Error:" << xml_message << endl);
-                // FIXME DmrppRequestHandler::curl_handle_pool->release_all_handles();
-                throw BESSyntaxUserError(string("Error accessing object store data: Unrecognized error, likely an authentication failure."), __FILE__, __LINE__);
-            }
+            // We might want to get the "Code" from the "Error" if these text messages
+            // are not good enough. But the "Code" is not really suitable for normal humans...
+            // jhrg 12/31/19
+            string msg;
+            msg.append("Error accessing object store data: ").append(message.GetString())
+                .append(" (while accessing: ").append(chunk->get_data_url().append(")"));
+            if (string(code.GetString()) == "AccessDenied")
+                throw BESForbiddenError(msg, __FILE__, __LINE__);
+            else
+                throw BESInternalError(msg, __FILE__, __LINE__);
+        }
+        catch (BESError) {
+            // re-throw any BESError - added for the future if we make BESError a child
+            // of std::exception as it should be. jhrg 12/30/19
+            throw;
+        }
+        catch(std::exception &e) {
+            throw BESSyntaxUserError(string("Error accessing object store data: ").append(e.what()), __FILE__, __LINE__);
         }
     }
 
@@ -161,17 +150,16 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
     unsigned long long bytes_read = chunk->get_bytes_read();
 
     // If this fails, the code will write beyond the buffer.
-    if(bytes_read + nbytes > chunk->get_rbuf_size()){
+    if (bytes_read + nbytes > chunk->get_rbuf_size()) {
         stringstream msg;
-        msg << prolog << "ERROR! The number of bytes_read: " << bytes_read << " plus the number of bytes to read: " <<
-            nbytes << " is larger than the target buffer size: " << chunk->get_rbuf_size();
+        msg << prolog << "ERROR! The number of bytes_read: " << bytes_read << " plus the number of bytes to read: "
+            << nbytes << " is larger than the target buffer size: " << chunk->get_rbuf_size();
         BESDEBUG(MODULE, msg.str() << endl);
         DmrppRequestHandler::curl_handle_pool->release_all_handles();
         throw BESInternalError(msg.str(),__FILE__,__LINE__);
     }
 
     memcpy(chunk->get_rbuf() + bytes_read, buffer, nbytes);
-
     chunk->set_bytes_read(bytes_read + nbytes);
 
     return nbytes;
@@ -383,9 +371,7 @@ void Chunk::set_position_in_array(const string &pia)
     unsigned int i;
     while (!iss.eof() ) {
         iss >> i; // read an integer
-
         d_chunk_position_in_array.push_back(i);
-
         iss >> c; // read a separator (,)
     }
 }
@@ -490,7 +476,6 @@ void *inflate_chunk(void *arg_list)
     pthread_exit(NULL);
 }
 #endif
-
 
 /**
  * @brief Decompress data in the chunk, managing the Chunk's data buffers
@@ -600,7 +585,6 @@ void Chunk::read_chunk()
 }
 
 /**
- *
  *  unsigned long long d_size;
  *  unsigned long long d_offset;
  *  std::string d_md5;

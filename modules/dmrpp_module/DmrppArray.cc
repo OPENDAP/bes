@@ -906,7 +906,12 @@ void DmrppArray::read_chunks()
     BESDEBUG(dmrpp_3, "d_use_parallel_transfers: " << DmrppRequestHandler::d_use_parallel_transfers << endl);
     BESDEBUG(dmrpp_3, "d_max_parallel_transfers: " << DmrppRequestHandler::d_max_parallel_transfers << endl);
 
-    if (DmrppRequestHandler::d_use_parallel_transfers) {
+#if !HAVE_CURL_MULTI_API
+    if (DmrppRequestHandler::d_use_parallel_transfers)
+        LOG("The DMR++ handler is configured to use parallel transfers, but the libcurl Multi API is not present, defaulting to serial transfers");
+#endif
+
+    if (DmrppRequestHandler::d_use_parallel_transfers && HAVE_CURL_MULTI_API) {
         // This is the parallel version of the code. It reads a set of chunks in parallel
         // using the multi curl API, then inserts them, then reads the next set, ... jhrg 5/1/18
         unsigned int max_handles = DmrppRequestHandler::curl_handle_pool->get_max_handles();
@@ -922,8 +927,6 @@ void DmrppArray::read_chunks()
                 chunk->set_rbuf_to_size();
                 dmrpp_easy_handle *handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(chunk);
                 if (!handle) {
-                    // TODO remove handles from the mhandle so we don't have old handles
-                    // lurking in the mhandle.
                     throw BESInternalError("No more libcurl handles.", __FILE__, __LINE__);
                 }
 

@@ -27,8 +27,6 @@
 #include <string>
 #include <vector>
 
-#define USE_PTHREADS 1
-
 namespace dmrpp {
 
 // Callback functions used by chunk readers
@@ -318,7 +316,6 @@ struct inflate_chunk_args {
 
 void *inflate_chunk(void *args);
 #endif
-
 
 } // namespace dmrpp
 
