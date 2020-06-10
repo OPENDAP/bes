@@ -410,8 +410,11 @@ bool breadth_first(hid_t pid, char *gname, D4Group* par_grp, const char *fname,b
             // Obtain the hdf5 dataset handle stored in the structure dt_inst. 
             // All the metadata information in the handler is stored in dt_inst.
             // Work on this later, redundant for dmr since dataset is opened twice. KY 2015-07-01
-            get_dataset(pid, full_path_name, &dt_inst,use_dimscale);
+            // Dimension scale is handled in this routine. So need to keep it. KY 2020-06-10
+            bool is_pure_dim = false;
+            get_dataset(pid, full_path_name, &dt_inst,use_dimscale,is_pure_dim);
                
+            if(false == is_pure_dim) {
             hid_t dset_id = -1;
             if((dset_id = H5Dopen(pid,full_path_name.c_str(),H5P_DEFAULT)) <0) {
                 string msg = "cannot open the HDF5 dataset  ";
@@ -430,6 +433,13 @@ bool breadth_first(hid_t pid, char *gname, D4Group* par_grp, const char *fname,b
                 string msg = "cannot close the HDF5 dataset  ";
                 msg += full_path_name;
                 throw InternalErr(__FILE__, __LINE__, msg);
+            }
+            }
+            else {
+                if(H5Tclose(dt_inst.type)<0) {
+                      throw InternalErr(__FILE__, __LINE__, "Cannot close the HDF5 datatype.");       
+                }
+
             }
  
         } 
@@ -672,51 +682,32 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
                         "number of dimensions: overflow");
         }
         dimnames_size = (int)(dt_inst.dimnames.size());
-BESDEBUG("h5", "<dimnames_size is " << dimnames_size <<endl);
+//cerr<<"dimnames_size is "<<dimnames_size <<endl;
+//cerr<<"ndims is "<<dt_inst.ndims <<endl;
             
         if(dimnames_size ==dt_inst.ndims) {
-BESDEBUG("h5", "Inside loop <dimnames_size is " << dimnames_size <<endl);
-
 
             for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
-                if(dt_inst.dimnames[dim_index] !="") {
-
-                    BESDEBUG("h5", "<coming to append array" << endl);
-#if 0
-                    // D4dimension has to have a name. If no name, no D4dimension(from comments libdap4: Array.cc) 
-                    //ar->append_dim(dt_inst.size[dim_index],dt_inst.dimnames[dim_index]);
-                    D4Dimensions *d4_grp_dims = d4_grp->dims();
-                    // TODO: Need to find all the parent dimension names.
-                    D4Dimension *d4_dim = d4_grp_dims->find_dim(dt_inst.dimnames[dim_index]);
-                    if(!d4_dim) {
-                        d4_dim= new D4Dimension(dt_inst.dimnames[dim_index],dt_inst.size[dim_index]);
-                        d4_grp->dims()->add_dim_nocopy(d4_dim);
-                    }
-                    ar->append_dim(d4_dim);
-#endif
+                if(dt_inst.dimnames[dim_index] !="") 
                     ar->append_dim(dt_inst.size[dim_index],dt_inst.dimnames[dim_index]);
-                    
-                }
-                else  {
-                    // D4dimension has to have a name. If no name, no D4dimension(from comments libdap4: Array.cc) 
+                else 
                     ar->append_dim(dt_inst.size[dim_index]);
-                    //TODO: revisit
-                }
+                    // D4dimension has to have a name. If no name, no D4dimension(from comments libdap4: Array.cc) 
             }
             dt_inst.dimnames.clear();
         }
         else {
             // For DAP4, no need to add dimension if no dimension name
-//#if 0
             for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) 
                 ar->append_dim(dt_inst.size[dim_index]); 
-//#endif
         }
 
         // We need to transform dimension info. to DAP4 group
         BaseType* new_var = ar->h5dims_transform_to_dap4(d4_grp,dt_inst.dimnames_path);
 
+        // clear DAP4 dimnames_path vector
         dt_inst.dimnames_path.clear();
+
         // Map HDF5 dataset attributes to DAP4
         map_h5_attrs_to_dap4(dset_id,NULL,new_var,NULL,1);
 
@@ -794,7 +785,6 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
                 
 
             if(dimnames_size ==dt_inst.ndims) {
-                //TODO: use D4Dimension
                 for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
                     if(dt_inst.dimnames[dim_index] !="")
                         ar->append_dim(dt_inst.size[dim_index],dt_inst.dimnames[dim_index]);

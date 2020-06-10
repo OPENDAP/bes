@@ -122,7 +122,7 @@ main (void)
     H5Aclose(attr_fs);
 
     attr_vs = H5Acreate2(dset_d, "attr_vstr", dtype_vs, space_s, H5P_DEFAULT, H5P_DEFAULT);
-    status  = H5Awrite(attr_fs, dtype_vs, &wdata2);
+    status  = H5Awrite(attr_vs, dtype_vs, &wdata2);
     H5Aclose(attr_vs);
 
     /* 64-bit intger group and root attributes */
@@ -132,6 +132,9 @@ main (void)
     grp_id = H5Gcreate2(file,"grp_int64",H5P_DEFAULT,H5P_DEFAULT,H5P_DEFAULT);
     status = H5LTset_attribute_long_long(file,"/grp_int64","grp_attr_int64",(const long long *)data_int64,2);
     status = H5LTset_attribute_long_long(file,"/grp_int64","grp_attr_int64_scalar",(const long long *)&data_int64_sca,1);
+    status = H5LTmake_dataset_long(grp_id,"d64",1,dimd,data_int64);
+
+
     /*
      * Close/release resources.
      */
@@ -146,6 +149,7 @@ main (void)
     H5Dclose(dset_ud);
     H5Dclose(dset_s);
     H5Dclose(dset_us);
+    H5Gclose(grp_id);
 
     H5Fclose(file);
 

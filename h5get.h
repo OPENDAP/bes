@@ -45,7 +45,8 @@ hid_t get_attr_info(hid_t dset, int index, bool, DSattr_t * attr_inst, bool*);
 
 string get_dap_type(hid_t type,bool);
 
-void get_dataset(hid_t pid, const std::string &dname, DS_t * dt_inst_ptr,bool has_dimscale);
+void get_dataset(hid_t pid, const std::string &dname, DS_t * dt_inst_ptr,bool has_dimscale, bool &is_pure_dim);
+void get_dataset(hid_t pid, const std::string &dname, DS_t * dt_inst_ptr);
 
 hid_t get_fileid(const char *filename);
 

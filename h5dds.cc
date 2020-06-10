@@ -211,7 +211,8 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
                 // Obtain the hdf5 dataset handle stored in the structure dt_inst. 
                 // All the metadata information in the handler is stored in dt_inst.
                 // Don't consider the dim. scale support for DAP2 now.
-                get_dataset(pid, full_path_name, &dt_inst,false);
+                //get_dataset(pid, full_path_name, &dt_inst,false);
+                get_dataset(pid, full_path_name, &dt_inst);
 
                 // Put the hdf5 dataset structure into DODS dds.
                 read_objects(dds, full_path_name, fname);

@@ -48,6 +48,7 @@
 #include "HDF5Float64.h"
 #include "HDF5Url.h"
 #include "HDF5Structure.h"
+#include "HDF5RequestHandler.h"
 
 #include <BESDebug.h>
 #include <math.h>
@@ -161,10 +162,9 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
     }       
 
     // Here we ignore netCDF-4 specific attributes for DAP4 to make filenetCDF-4 work
-    if (true == is_dap4) {
+    if (true == is_dap4 && HDF5RequestHandler::get_default_handle_dimension() == true) {
         // Remove the NULLTERM etc.
         string attr_name_str(attr_name.begin(),attr_name.end()-1);
-//cout<<"attr_name_str is "<<attr_name_str <<endl;
         if(attr_name_str == "CLASS" || attr_name_str == "NAME" || attr_name_str == "_Netcdf4Dimid" 
            || attr_name_str == "_nc3_strict" || attr_name_str=="_NCProperties" || attr_name_str=="_Netcdf4Coordinates") {
             *ignore_attr_ptr = true;
@@ -432,6 +432,12 @@ void close_fileid(hid_t fid)
 
 }
 
+void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
+{
+
+    bool is_pure_dim = false;
+    get_dataset(pid,dname,dt_inst_ptr,false,is_pure_dim);
+}
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
 /// obtain data information in a dataset datatype, dataspace(dimension sizes)
@@ -443,7 +449,7 @@ void close_fileid(hid_t fid)
 /// \param[in] use_dimscale whether dimscale is used. Should always be false for DDS building.
 /// \param[out] dt_inst_ptr  pointer to the attribute struct(* attr_inst_ptr)
 ///////////////////////////////////////////////////////////////////////////////
-void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool use_dimscale)
+void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool use_dimscale, bool &is_pure_dim)
 {
 
     BESDEBUG("h5", ">get_dataset()" << endl);
@@ -572,7 +578,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool use_dim
 
     // For DAP4 when dimension scales are used.
     if(true == use_dimscale) {
-  BESDEBUG("h5", "<h5get.cc: get_dataset() use dim scale is true." << endl);
+        BESDEBUG("h5", "<h5get.cc: get_dataset() use dim scale is true." << endl);
 
         // Some HDF5 datasets are dimension scale datasets; some are not. We need to distinguish.
         bool is_dimscale = false;
@@ -600,13 +606,19 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool use_dim
         }
  
          if(true == is_dimscale) {
-BESDEBUG("h5", "<h5get.cc: get_dataset() use dim scale is true." << endl);
+            BESDEBUG("h5", "<h5get.cc: get_dataset() this is  dim scale." << endl);
+            BESDEBUG("h5", "<h5get.cc: dataset storage size is: " <<H5Dget_storage_size(dset)<< endl);
+            if(H5Dget_storage_size(dset)!=0) { 
             // Save the dimension names.We Only need to provide the dimension name(not the full path).
             // We still need the dimension name fullpath for distinguishing the different dimension that
             // has the same dimension name but in the different path
             (*dt_inst_ptr).dimnames.push_back(dname.substr(dname.find_last_of("/")+1));
             (*dt_inst_ptr).dimnames_path.push_back(dname);
+           }
+           else 
+            is_pure_dim = true;
          }
+
          else // We need to save all dimension names in this dimension. 
             obtain_dimnames(dset,ndims,dt_inst_ptr);
     }
@@ -1568,7 +1580,7 @@ void obtain_dimnames(hid_t dset,int ndims, DS_t *dt_inst_ptr) {
 
                 rbuf =((hobj_ref_t*)vlbuf[i].p)[0];
 
-                // Note: H5Rget_name may be used to replace H5RDEREFERENCE and H5Iget_name in the future. KY 2016-06-28
+                // Note: TODO: H5Rget_name may be used to replace H5RDEREFERENCE and H5Iget_name in the future. KY 2016-06-28
                 if ((ref_dset = H5RDEREFERENCE(attr_id, H5R_OBJECT, &rbuf)) < 0) {
                     string msg = "Cannot dereference from the DIMENSION_LIST attribute  for the variable " + string(dt_inst_ptr->name);
                     throw InternalErr(__FILE__, __LINE__, msg);
@@ -1591,9 +1603,7 @@ void obtain_dimnames(hid_t dset,int ndims, DS_t *dt_inst_ptr) {
 
                 // Must trim the string delimter.
                 string trim_objname = objname_str.substr(0,objnamelen);
-
                 // Need to save the dimension names without the path
-                BESDEBUG("h5", "<h5get.cc: Obtain_dimnames() before pusing dimnames." << endl);
  
                 dt_inst_ptr->dimnames.push_back(trim_objname.substr(trim_objname.find_last_of("/")+1));
                 dt_inst_ptr->dimnames_path.push_back(trim_objname);
