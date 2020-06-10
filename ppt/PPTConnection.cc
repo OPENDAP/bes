@@ -58,6 +58,9 @@ using std::string;
 #include "BESDebug.h"
 #include "BESInternalError.h"
 
+#define MODULE "ppt"
+#define prolog string("PPTConnection::").append(__func__).append("() - ")
+
 PPTConnection::~PPTConnection()
 {
 	if (_inBuff) {
@@ -183,8 +186,7 @@ void PPTConnection::sendExtensions(map<string, string> &extensions)
  */
 void PPTConnection::send(const string &buffer)
 {
-	BESDEBUG("ppt", "PPTConnection::send - sending " << buffer << endl);
-
+	BESDEBUG(MODULE, prolog << "Sending " << buffer << endl);
 	_mySock->send(buffer, 0, buffer.length());
 
 #if 0
@@ -213,7 +215,7 @@ int PPTConnection::readChunkHeader(char *buffer, /*unsigned */int buffer_size)
 	bool done = false;
 	while (!done) {
 		int bytesRead = readBuffer(temp_buffer, buffer_size);
-		BESDEBUG( "ppt", "PPTConnection::readChunkHeader - read " << bytesRead << " bytes" << endl );
+		BESDEBUG( MODULE, prolog << "Read " << bytesRead << " bytes" << endl );
 		// change: this what < 0 but it can never be < 0 because Socket::receive()
 		// will throw a BESInternalError. However, 0 indicates EOF. Note that if
 		// the read(2) call in Socket::receive() returns without reading any bytes,
@@ -257,7 +259,7 @@ bool PPTConnection::receive(map<string, string> &extensions, ostream *strm)
 
 	// If the receive buffer has not yet been created, get the receive size
 	// and create the buffer.
-	BESDEBUG( "ppt", "PPTConnection::receive: buffer size = " << _inBuff_len << endl );
+	BESDEBUG( MODULE, prolog << "buffer size = " << _inBuff_len << endl );
 	if (!_inBuff) {
 		_inBuff_len = _mySock->getRecvBufferSize() + 1;
 		_inBuff = new char[_inBuff_len + 1];
@@ -267,9 +269,9 @@ bool PPTConnection::receive(map<string, string> &extensions, ostream *strm)
 	// read the first 8 bytes. The first 7 are the length and the next 1
 	// if x then extensions follow, if d then data follows.
 	int bytesRead = readChunkHeader(_inBuff, 8);
-	BESDEBUG( "ppt", "Reading header, read " << bytesRead << " bytes" << endl );
+	BESDEBUG( MODULE, prolog << "Reading header, read " << bytesRead << " bytes" << endl );
 	if (bytesRead != 8)
-		throw BESInternalError("Failed to read chunk header", __FILE__, __LINE__);
+		throw BESInternalError(prolog + "Failed to read chunk header", __FILE__, __LINE__);
 
 	char lenbuffer[8];
 	lenbuffer[0] = _inBuff[0];
@@ -283,8 +285,8 @@ bool PPTConnection::receive(map<string, string> &extensions, ostream *strm)
 	istringstream lenstrm(lenbuffer);
 	unsigned long inlen = 0;
 	lenstrm >> hex >> setw(7) >> inlen;
-	BESDEBUG( "ppt", "Reading header, chunk length = " << inlen << endl );
-	BESDEBUG( "ppt", "Reading header, chunk type = " << _inBuff[7] << endl );
+	BESDEBUG( MODULE, prolog << "Reading header, chunk length = " << inlen << endl );
+	BESDEBUG( MODULE, prolog << "Reading header, chunk type = " << _inBuff[7] << endl );
 
 	if (_inBuff[7] == 'x') {
 		ostringstream xstrm;
@@ -318,7 +320,7 @@ bool PPTConnection::receive(map<string, string> &extensions, ostream *strm)
  */
 void PPTConnection::receive(ostream &strm, const /* unsigned */int len)
 {
-	BESDEBUG( "ppt", "PPTConnect::receive - len = " << len << endl );
+	BESDEBUG( MODULE, prolog << "len = " << len << endl );
 		if( !_inBuff )
 		{
 			string err = "buffer has not been initialized";
@@ -330,7 +332,7 @@ void PPTConnection::receive(ostream &strm, const /* unsigned */int len)
 		{
 			to_read = _inBuff_len;
 		}
-		BESDEBUG( "ppt", "PPTConnect::receive - to_read = " << to_read << endl );
+		BESDEBUG( MODULE, prolog << "to_read = " << to_read << endl );
 
 		// read a buffer
 		int bytesRead = readBuffer( _inBuff, to_read );
@@ -339,8 +341,7 @@ void PPTConnection::receive(ostream &strm, const /* unsigned */int len)
 			string err = "Failed to read data from socket";
 			throw BESInternalError( err, __FILE__, __LINE__ );
 		}
-		BESDEBUG( "ppt", "PPTConnect::receive - bytesRead = "
-				<< bytesRead << endl );
+		BESDEBUG( MODULE, prolog << "bytesRead = " << bytesRead << endl );
 
 		// write the buffer read to the stream
 		_inBuff[bytesRead] = '\0';
@@ -351,8 +352,7 @@ void PPTConnection::receive(ostream &strm, const /* unsigned */int len)
 		// len bytes to be read and we read bytesRead bytes.
 		if( bytesRead < len )
 		{
-			BESDEBUG( "ppt", "PPTConnect::receive - remaining = "
-					<< (len - bytesRead) << endl );
+			BESDEBUG( MODULE, prolog << "remaining = " << (len - bytesRead) << endl );
 			receive( strm, len - bytesRead );
 		}
 	}
