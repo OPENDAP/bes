@@ -79,11 +79,15 @@ void FONcAttributes::add_variable_attributes(int ncid, int varid, BaseType *b, b
     string emb_name;
     BaseType *parent = b->get_parent();
     if (parent) {
-        FONcAttributes::add_variable_attributes_worker(ncid, varid, parent, emb_name, is_nc_enhanced,is_dap4);
+        BESDEBUG("dap", "FONcAttributes::parent name is "<< parent->name() <<endl);
+        BESDEBUG("dap", "FONcAttributes::parent type is "<< parent->type() <<endl);
+        if(true != is_dap4 || parent->type()!=dods_group_c) 
+            FONcAttributes::add_variable_attributes_worker(ncid, varid, parent, emb_name, is_nc_enhanced,is_dap4);
     }
     // addattrs_workerA(ncid, varid, b, "");
     // Add DAP4 attribute support by using attributes().
 
+    BESDEBUG("dap", "FONcAttributes::add_variable_attributes() after parent "<<endl);
     if(is_dap4) 
         add_dap4_attributes(ncid, varid, b->attributes(), b->name(), "", is_nc_enhanced);
     else 
@@ -482,9 +486,12 @@ void FONcAttributes::add_dap4_attributes_worker(int ncid, int varid, const strin
     D4AttributeType d4_attr_type = attr->type();
 
     string d4_attr_name = attr->name();
+    BESDEBUG("dap", "FONcAttributes:: D4 attribute name is "<<d4_attr_name <<endl);
     string new_attr_name("");
     if (!prepend_attr.empty()) {
         new_attr_name = prepend_attr + FONC_EMBEDDED_SEPARATOR + d4_attr_name;
+        BESDEBUG("dap", "FONcAttributes:: D4 new attribute name is "<<new_attr_name <<endl);
+
     } else {
 
         // If we're doing global attributes AND it's an attr table, and its name is "special"

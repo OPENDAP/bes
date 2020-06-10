@@ -759,11 +759,20 @@ void FONcTransform::transform_dap4_group(D4Group* grp,bool is_root_grp,int par_g
             fbt->define(grp_id);
         }
 
+        bool is_netCDF_enhanced = false;
+        if(FONcTransform::_returnAs == RETURNAS_NETCDF4 && FONcRequestHandler::classic_model==false)
+                is_netCDF_enhanced = true;
+ 
+
         // TOODOO: tackle attribute later. KY
-        if(FONcRequestHandler::no_global_attrs == false) {
+        bool add_attr = true;
+        if(FONcRequestHandler::no_global_attrs == false && is_root_grp == true) 
+            add_attr= false;
+        if(true == add_attr) {
             // Add any global attributes to the netcdf file
-            D4Group* root_grp=_dmr->root();
-            D4Attributes*d4_attrs = root_grp->attributes();
+            //D4Group* root_grp=_dmr->root();
+            //D4Attributes*d4_attrs = root_grp->attributes();
+            D4Attributes*d4_attrs = grp->attributes();
             BESDEBUG("fonc", "FONcTransform::transform_dap4() handle GLOBAL DAP4 attributes "<< d4_attrs <<endl);
 #if 0
             for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
@@ -773,12 +782,28 @@ void FONcTransform::transform_dap4_group(D4Group* grp,bool is_root_grp,int par_g
 #endif
             //    AttrTable &globals = root_grp->get_attr_table();
             BESDEBUG("fonc", "FONcTransform::transform_dap4() - Adding Global Attributes" << endl) ;
-            bool is_netCDF_enhanced = false;
-            if(FONcTransform::_returnAs == RETURNAS_NETCDF4 && FONcRequestHandler::classic_model==false)
-                is_netCDF_enhanced = true;
-            FONcAttributes::add_dap4_attributes(_ncid, NC_GLOBAL, d4_attrs, "", "",is_netCDF_enhanced);
+        //    bool is_netCDF_enhanced = false;
+        //    if(FONcTransform::_returnAs == RETURNAS_NETCDF4 && FONcRequestHandler::classic_model==false)
+        //        is_netCDF_enhanced = true;
+            FONcAttributes::add_dap4_attributes(grp_id, NC_GLOBAL, d4_attrs, "", "",is_netCDF_enhanced);
         }
+        //else {
+         //   D4Attributes*d4_attrs = grp->attributes();
+          //  BESDEBUG("fonc", "FONcTransform::transform_dap4() handle GLOBAL DAP4 attributes "<< d4_attrs <<endl);
+#if 0
+            for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
+                string name = (*ii)->name();
+                BESDEBUG("fonc", "FONcTransform::transform_dap4() GLOBAL attribute name is "<<name <<endl);
+            }
+#endif
+            //    AttrTable &globals = root_grp->get_attr_table();
+           // BESDEBUG("fonc", "FONcTransform::transform_dap4() - Adding Global Attributes" << endl) ;
+        //    bool is_netCDF_enhanced = false;
+        //    if(FONcTransform::_returnAs == RETURNAS_NETCDF4 && FONcRequestHandler::classic_model==false)
+        //        is_netCDF_enhanced = true;
+            //FONcAttributes::add_dap4_attributes(grp_id, NC_GLOBAL, d4_attrs, "", "",is_netCDF_enhanced);
 
+        //}
         // We are done defining the variables, dimensions, and
         // attributes of the netcdf file. End the define mode.
         // CHECK: no need to call the end define code for netCDF-4 .
