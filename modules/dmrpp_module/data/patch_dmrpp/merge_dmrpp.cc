@@ -372,12 +372,19 @@ bool add_faddr_chunk_info(const string &str,vector<string>& chunk_info,bool is_d
         hdf5_faddr = str.substr(hdf5_faddr_start_pos+addr_mark.size(),hdf5_faddr_end_pos-hdf5_faddr_start_pos-addr_mark.size());
     }
 
-    if(hdf5_faddr.rfind(hdf5_fname)==string::npos) {
-        //trim hdf5 file address.
-        hdf5_faddr = " href=\"" +faddr_source+hdf5_faddr+'/'+hdf5_fname+end_delim1;
+    // If explicit path for where to place missing_variable file was not provided, faddr_source will only contain '.'
+    if(faddr_source.find(".")!=string::npos) {
+        hdf5_faddr = " href=\"OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL\"";
     }
     else {
-        hdf5_faddr = " href=\"" +faddr_source+hdf5_faddr+end_delim1;
+        if (hdf5_faddr.rfind(hdf5_fname) == string::npos) {
+            //trim hdf5 file address.
+            hdf5_faddr = " href=\"" + faddr_source + '/' + hdf5_fname + end_delim1;
+            //hdf5_faddr = " href=\"" +hdf5_faddr+'/'+hdf5_fname+end_delim1;
+        } else {
+            hdf5_faddr = " href=\"" + faddr_source + end_delim1;
+            //hdf5_faddr = " href=\"" +hdf5_faddr+end_delim1;
+        }
     }
 //cout<<"hdf5_faddr is "<<hdf5_faddr <<endl;        
 
