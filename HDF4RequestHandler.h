@@ -73,6 +73,7 @@ class HDF4RequestHandler:public BESRequestHandler {
   static bool _enable_swath_grid_attr;
   static bool _enable_ceres_merra_short_name;
   static bool _enable_check_scale_offset_type;
+  static bool _disable_swath_dim_map;
 
   static bool _cache_latlon_path_exist;
   static std::string _cache_latlon_path;
@@ -124,6 +125,7 @@ class HDF4RequestHandler:public BESRequestHandler {
     static bool get_enable_swath_grid_attr() { return _enable_swath_grid_attr;}
     static bool get_enable_ceres_merra_short_name() { return _enable_ceres_merra_short_name;}
     static bool get_enable_check_scale_offset_type() { return _enable_check_scale_offset_type;}
+    static bool get_disable_swath_dim_map() { return _disable_swath_dim_map;}
 
     static bool get_cache_latlon_path_exist() { return _cache_latlon_path_exist; }
     static std::string get_cache_latlon_path() {return _cache_latlon_path; }

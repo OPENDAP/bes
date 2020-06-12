@@ -1728,6 +1728,9 @@ void File::handle_grid_cf_attrs() throw(Exception) {
                         tempcoordinates = tempcoordinates +" "+tempcorrectedfieldname;
                     tempcount++;
                 }
+
+
+
                 (*j)->setCoordinates(tempcoordinates);
             }
 
@@ -1899,11 +1902,14 @@ void File::handle_grid_SOM_projection() throw(Exception) {
 //  Obtain the number of dimension maps in this file. The input parameter is the number of swath.
 int File::obtain_dimmap_num(int numswath) throw(Exception) {
 
+    if(HDF4RequestHandler::get_disable_swath_dim_map() == true) 
+        return 0;
     // S(wath)0. Check if there are dimension maps in this case.
     int tempnumdm = 0;
     for (vector<SwathDataset *>::const_iterator i = this->swaths.begin();
         i != this->swaths.end(); ++i){
         tempnumdm += (*i)->get_num_map();
+//cerr<<"num_map is "<<tempnumdm<<endl;
         if (tempnumdm >0) 
             break;
     }
@@ -2690,6 +2696,9 @@ void File::handle_swath_cf_attrs() throw(Exception) {
                 string tempfieldname="";
                 string tempcorrectedfieldname="";
                 int tempcount = 0;
+                bool has_ll_coord = false;
+                if(HDF4RequestHandler::get_disable_swath_dim_map() == false)
+                    has_ll_coord = true;
                 for(vector<Dimension *>::const_iterator 
                     k=(*j)->getDimensions().begin();k!=(*j)->getDimensions().end();++k){
 
@@ -2712,6 +2721,11 @@ void File::handle_swath_cf_attrs() throw(Exception) {
                     else 
                         throw4("cannot find the corrected dimension field name",
                                 (*i)->getName(),(*j)->getName(),(*k)->getName());
+
+//cerr<<"tempcorrectedfieldname is "<<tempcorrectedfieldname <<endl;
+if(false == has_ll_coord) 
+has_ll_coord= check_ll_in_coords(tempcorrectedfieldname);
+
 
                     if(tempcount == 0) 
                         tempcoordinates= tempcorrectedfieldname;
@@ -2773,6 +2787,10 @@ void File::handle_swath_cf_attrs() throw(Exception) {
                 string tempfieldname="";
                 string tempcorrectedfieldname="";
                 int tempcount = 0;
+                bool has_ll_coord = false;
+                if(HDF4RequestHandler::get_disable_swath_dim_map() == false)
+                    has_ll_coord = true;
+
                 for(vector<Dimension *>::const_iterator k
                     =(*j)->getDimensions().begin();k!=(*j)->getDimensions().end();++k){
 
@@ -2796,12 +2814,17 @@ void File::handle_swath_cf_attrs() throw(Exception) {
                         throw4("cannot find the corrected dimension field name",
                                (*i)->getName(),(*j)->getName(),(*k)->getName());
 
+//cerr<<"tempcorrectedfieldname is "<<tempcorrectedfieldname <<endl;
+if(false == has_ll_coord) 
+has_ll_coord= check_ll_in_coords(tempcorrectedfieldname);
+
                     if(tempcount == 0) 
                         tempcoordinates= tempcorrectedfieldname;
                     else 
                         tempcoordinates = tempcoordinates +" "+tempcorrectedfieldname;
                     tempcount++;
                 }
+                if(true == has_ll_coord) 
                 (*j)->setCoordinates(tempcoordinates);
             }
             // Add units for Z-dimension, now it is always "level"
@@ -3016,8 +3039,42 @@ bool File::check_special_1d_grid() throw(Exception) {
 }
     
 
+bool File::check_ll_in_coords(const string& vname) throw(Exception) {
 
+    bool ret_val = false;
+    for (vector<SwathDataset *>::const_iterator i = this->swaths.begin();
+        i != this->swaths.end(); ++i){
+        for (vector<Field *>::const_iterator j =
+            (*i)->getGeoFields().begin();
+            j != (*i)->getGeoFields().end(); ++j) {
+             // Real fields: adding the coordinate attribute
+            if((*j)->fieldtype == 1 || (*j)->fieldtype == 2)  {// currently it is always true.
+                if((*j)->getNewName() == vname) {
+                    ret_val = true;
+                    break;
+                }
+            }
+        }
+        if(true == ret_val) 
+            break;
+        for (vector<Field *>::const_iterator j =
+            (*i)->getDataFields().begin();
+            j != (*i)->getDataFields().end(); ++j) {
 
+            // Real fields: adding the coordinate attribute
+            if((*j)->fieldtype == 1 || (*j)->fieldtype == 2)  {// currently it is always true.
+                if((*j)->getNewName() == vname) {
+                    ret_val = true;
+                    break;
+                }
+            }
+        }
+        if(true == ret_val) 
+            break;
+
+    }
+    return ret_val;
+}
 
 
 // Set scale and offset type

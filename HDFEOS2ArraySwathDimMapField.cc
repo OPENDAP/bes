@@ -178,11 +178,28 @@ HDFEOS2ArraySwathDimMapField::read ()
             tempdimmap.datadim = parts[1];
             tempdimmap.offset = map_offset[map_count];
             tempdimmap.inc    = increment[map_count];
-
+//cerr<<"map_count is: "<<map_count <<endl;
+//cerr<<"dimmap geodim is: "<<tempdimmap.geodim <<endl; 
+//cerr<<"dimmap datadim is: "<<tempdimmap.datadim <<endl; 
+//cerr<<"offset is: "<<tempdimmap.offset <<endl;
+//cerr<<"inc is: "<<tempdimmap.inc <<endl;
             dimmaps.push_back(tempdimmap);
             ++map_count;
         }
     }
+#if 0
+else {
+for(int i = 0; i <dimmaps.size();i++) {
+cerr<<"dimmap geodim is: "<<dimmaps[i].geodim <<endl; 
+cerr<<"dimmap datadim is: "<<dimmaps[i].datadim <<endl; 
+cerr<<"offset is: "<<dimmaps[i].offset <<endl;
+cerr<<"inc is: "<<dimmaps[i].inc <<endl;
+
+
+}
+
+}
+#endif
 
     if (sotype!=DEFAULT_CF_EQU) {
 
@@ -344,6 +361,9 @@ GetFieldValue (int32 swathid, const string & geofieldname,
 
         for (it = sw_dimmaps.begin (); it != sw_dimmaps.end (); it++) {
             if (it->geodim == dimname[i]) {
+//cerr<<"dimnames["<<i<<"]: " <<dimname[i]<<endl;
+//cerr<<"offset is "<<it->offset<<endl;
+//cerr<<"inc is "<<it->inc<<endl;
                 int32 ddimsize = SWdiminfo (swathid, (char *) it->datadim.c_str ());
                 if (ddimsize == -1)
                     return -1;

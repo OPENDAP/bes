@@ -434,4 +434,6 @@ H4.EnableVgroupAttr=true
 ## Note: swath and grid object attributes are not the same as the swath/grid field attributes. We have supported
 ## the mapping of swath and grid field attributes since the beginning of CF option support.
 H4.EnableSwathGridAttr=true
+
+H4.DisableSwathDimMap=false
 #

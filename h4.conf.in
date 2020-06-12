@@ -294,6 +294,8 @@ H4.EnableSwathGridAttr=true
 H4.EnableCERESMERRAShortName=true
 H4.EnableCheckScaleOffsetType=false
 
+# Change the key to true to turn off the dimension map. This is necessary for MYD09.A2019.. files.
+H4.DisableSwathDimMap=false
 # VI. More descriptions of keys
  
 

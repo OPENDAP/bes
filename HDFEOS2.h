@@ -1336,6 +1336,7 @@ namespace HDFEOS2
                 // The CF attributes include "coordinates", "units" for coordinate variables and "_FillValue". 
                 void handle_swath_cf_attrs() throw(Exception);
 
+bool check_ll_in_coords(const std::string& vname) throw(Exception);
              private:
 
                 // HDF-EOS2 Grid File ID. Notice this ID is not an individual grid ID but the grid file ID returned by 

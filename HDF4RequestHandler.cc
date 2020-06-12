@@ -137,6 +137,7 @@ bool HDF4RequestHandler::_enable_check_modis_geo_file      = false;
 bool HDF4RequestHandler::_enable_swath_grid_attr           = false;
 bool HDF4RequestHandler::_enable_ceres_merra_short_name    = false;
 bool HDF4RequestHandler::_enable_check_scale_offset_type   = false;
+bool HDF4RequestHandler::_disable_swath_dim_map            = false;
 
 // Cache path,prefix and size
 bool HDF4RequestHandler::_cache_latlon_path_exist          =false;
@@ -188,6 +189,8 @@ HDF4RequestHandler::HDF4RequestHandler(const string & name) :
         _enable_swath_grid_attr            = check_beskeys("H4.EnableSwathGridAttr");
         _enable_ceres_merra_short_name     = check_beskeys("H4.EnableCERESMERRAShortName");
         _enable_check_scale_offset_type    = check_beskeys("H4.EnableCheckScaleOffsetType");
+
+        _disable_swath_dim_map             = check_beskeys("H4.DisableSwathDimMap");
 
         // Cache path etc. 
         _cache_latlon_path_exist           =get_beskeys("HDF4.Cache.latlon.path",_cache_latlon_path);
