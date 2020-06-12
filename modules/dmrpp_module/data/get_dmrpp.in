@@ -971,7 +971,7 @@ if test -n "${merge_missing_vars}"; then
     BES_CONF=$(make_missing_conf "${bes_conf_file}")
 
     # insert '_missing' into input_data_file name and use for sidecar_missing_file name
-    sidecar_missing_file=$(echo ${input_data_file} | sed 's@\(.*\)\.\([\(h5\)\|(H5\)\|(he5\)\|(HE5\)\|(hdf5\)\|(HDF5\)]\)@\1_missing.\2@')
+    sidecar_missing_file=$(echo ${input_data_file} | sed 's@\(.*\)\.\([\(h\)\|(H\)\|(n\)\|(N\)]\)@\1_missing.\2@')
     if test -n "$very_verbose"; then echo "  MISSING_FILE: ${sidecar_missing_file}" >&2; fi
 
     # use besstandalone to generate sidecar_missing_file
