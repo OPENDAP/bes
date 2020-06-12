@@ -18,7 +18,8 @@ An array consisting of the same values is then used to create an hdf5 file
 Example run:
 ./build_sidecar -o testFile.h5 -v http://test.opendap.org/opendap/STARE/MYD09.A2019003.2040.006.2019005020913.hdf Latitude Longitude
 
--v		    Verbose output
+-v		            Verbose output
 -o testFile.h5	    Will save the data to the file testFile.h5
-<url>	       	    Data url to get the lat/lon data from
-Latitude Longitiud  The names of variable to use for geospatial information
+<url>	       	    Data url to get the lat/lon values from
+Latitude Longitiude  The names of variable to use for geospatial information
+
