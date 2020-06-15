@@ -79,8 +79,8 @@ void FONcAttributes::add_variable_attributes(int ncid, int varid, BaseType *b, b
     string emb_name;
     BaseType *parent = b->get_parent();
     if (parent) {
-        BESDEBUG("dap", "FONcAttributes::parent name is "<< parent->name() <<endl);
-        BESDEBUG("dap", "FONcAttributes::parent type is "<< parent->type() <<endl);
+        //BESDEBUG("dap", "FONcAttributes::parent name is "<< parent->name() <<endl);
+        //BESDEBUG("dap", "FONcAttributes::parent type is "<< parent->type() <<endl);
         if(true != is_dap4 || parent->type()!=dods_group_c) 
             FONcAttributes::add_variable_attributes_worker(ncid, varid, parent, emb_name, is_nc_enhanced,is_dap4);
     }
