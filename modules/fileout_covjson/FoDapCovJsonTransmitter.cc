@@ -48,6 +48,7 @@
 
 #include <BESUtil.h>
 #include <BESInternalError.h>
+#include <BESSyntaxUserError.h>
 #include <BESDapError.h>
 #include <TheBESKeys.h>
 #include <BESContextManager.h>
@@ -132,7 +133,17 @@ void FoDapCovJsonTransmitter::send_data(BESResponseObject *obj, BESDataHandlerIn
         // from the DataHandlerInterface to load the DDS with values.
         // Note that the BESResponseObject will manage the loaded_dds object's
         // memory. Make this a shared_ptr<>. jhrg 9/6/16
-        DDS *loaded_dds = responseBuilder.intern_dap2_data(obj, dhi);
+
+        // TODO improve this pattern by enabling reading then transforming one varaible
+        // at a time so that the whole dataset is not loaded into memory. jhrg 6/11/20
+        DDS *loaded_dds;
+        try {
+            // Added this try block to debug memory use issues in this handler. jhrg 6/11/20
+            loaded_dds = responseBuilder.intern_dap2_data(obj, dhi);
+        }
+        catch(std::exception &e) {
+            throw BESSyntaxUserError(string("Caught a C++ standard exception in responseBuilder.intern_dap2_data. The error was: ").append(e.what()), __FILE__, __LINE__);
+        }
 
         ostream &o_strm = dhi.get_output_stream();
         if (!o_strm)
