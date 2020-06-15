@@ -35,7 +35,7 @@ EXTRA_PROGRAMS =
 
 noinst_DATA = mds_for_tests
 
-EXTRA_DIST = get_dmrpp.in README dmrpp mds_for_tests s3 s3_data
+EXTRA_DIST = get_dmrpp.in README README.md dmrpp mds_for_tests s3 s3_data
 # Removed from the above since they are listed in 'dist_bin_SCRIPTS: ingest_filesystem ingest_s3bucket
 # jhrg 4/1/20
 

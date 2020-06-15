@@ -2,8 +2,8 @@
 AUTOMAKE_OPTIONS = foreign
 ACLOCAL_AMFLAGS = -I conf
 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
-AM_CXXFLAGS =
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+AM_CXXFLAGS = -Wno-vla-extension
 
 BES_STANDALONE_LIB = -L$(top_builddir)/standalone -lbes_standalone
 
@@ -110,7 +110,7 @@ EXTRA_PROGRAMS =
 # If it was added to DIST_SUBDIRS, some targets would be run, within the directory,
 # by automake and that would break since the dir does not have automake files.
 # jhrg 12/30/19
-EXTRA_DIST = dmrpp.conf.in xml2json rapidjson bes_default_conf_template.h.in
+EXTRA_DIST = dmrpp.conf.in xml2json bes_default_conf_template.h.in
 
 # removed from EXTRA_DIST: libdmrpp_module.la
 

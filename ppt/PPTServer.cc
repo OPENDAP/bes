@@ -58,6 +58,8 @@ using std::ostream;
 #if defined HAVE_OPENSSL && defined NOTTHERE
 #include "SSLServer.h"
 #endif
+#define MODULE "ppt"
+#define prolog string("PPTServer::").append(__func__).append("() - ")
 
 #define PPT_SERVER_DEFAULT_TIMEOUT 1
 
@@ -140,11 +142,11 @@ void PPTServer::initConnection()
 	if (_mySock) {
 		if (_mySock->allowConnection() == true) {
 			// welcome the client
-			BESDEBUG("ppt2", "PPTServer::initConnection() - Calling welcomeClient()" << endl);
+			BESDEBUG(MODULE, prolog << "Calling welcomeClient()" << endl);
 			if (welcomeClient() != -1) {
 
 				incr_num_children();
-				BESDEBUG("ppt2", "PPTServer; number of children: " << get_num_children() << endl);
+				BESDEBUG(MODULE, prolog << "number of children: " << get_num_children() << endl);
 
 				// now hand it off to the handler
 				_handler->handle(this);
@@ -157,7 +159,7 @@ void PPTServer::initConnection()
 			}
 		}
 		else {
-			BESDEBUG("ppt2", "PPTServer::initConnection() - allowConnection() is FALSE! Closing Socket. " << endl);
+			BESDEBUG(MODULE, prolog << "allowConnection() is FALSE! Closing Socket. " << endl);
 			_mySock->close();
 		}
 	}
@@ -188,7 +190,7 @@ int PPTServer::welcomeClient()
 
 	int bytesRead = readBuffer(inBuff, ppt_buffer_size);
 
-	BESDEBUG("ppt2", "In welcomeClient; bytesRead: " << bytesRead << endl);
+	BESDEBUG(MODULE, prolog << "bytesRead: " << bytesRead << endl);
 
 	// if the read of the initial connection fails or blocks, then return
 	if (bytesRead == -1) {
@@ -206,13 +208,13 @@ int PPTServer::welcomeClient()
 
 		string err = "PPT cannot negotiate, client started the connection with " + status;
 		send(err);
-		BESDEBUG("ppt", "Sent '" << err << "' to PPT client." << endl);
+		BESDEBUG(MODULE, prolog << "Sent '" << err << "' to PPT client." << endl);
 
 		// I think it would be better to send back a previously defined
 		// constant like this... but I don't want to break client code.
 		// jhrg 2/27/14
 		// send(PPTProtocol::PPT_PROTOCOL_UNDEFINED);
-		// BESDEBUG("ppt", "Sent " << PPTProtocol::PPT_PROTOCOL_UNDEFINED << " to PPT client." << endl);
+		// BESDEBUG(MODULE, prolog << "Sent " << PPTProtocol::PPT_PROTOCOL_UNDEFINED << " to PPT client." << endl);
 
 		_mySock->close();
 		return -1;
@@ -220,7 +222,7 @@ int PPTServer::welcomeClient()
 
 	if (!_secure) {
 		send(PPTProtocol::PPTSERVER_CONNECTION_OK);
-		BESDEBUG("ppt", "Sent " << PPTProtocol::PPTSERVER_CONNECTION_OK << " to PPT client." << endl);
+		BESDEBUG(MODULE, prolog << "Sent " << PPTProtocol::PPTSERVER_CONNECTION_OK << " to PPT client." << endl);
 	}
 	else {
 		authenticateClient();
@@ -232,7 +234,7 @@ int PPTServer::welcomeClient()
 void PPTServer::authenticateClient()
 {
 #if defined HAVE_OPENSSL && defined NOTTHERE
-	BESDEBUG( "ppt", "requiring secure connection: port = " << _securePort << endl );
+	BESDEBUG( MODULE, prolog << "Requiring secure connection: port = " << _securePort << endl );
 	// let the client know that it needs to authenticate
 	send( PPTProtocol::PPTSERVER_AUTHENTICATE );
 

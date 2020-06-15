@@ -196,7 +196,7 @@ void function_mask_dap2_array(int argc, BaseType * argv[], DDS &, BaseType **btp
 /**
  * Implementation of the mask_array() function for DAP4.
  *
- * @note I've duplicated a fair amount of code from teh DAP2 version; I could
+ * @note I've duplicated a fair amount of code from the DAP2 version; I could
  * code on in terms of the other, but I'll need to think about the type overlap
  * more before I do that. jhrg 4/30/15
  *

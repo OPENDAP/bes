@@ -29,6 +29,7 @@
 #include <string>
 #include <queue>
 
+#include <BESLog.h>
 #include <BESInternalError.h>
 #include <BESDebug.h>
 
@@ -109,9 +110,12 @@ void DmrppD4Opaque::read_chunks_parallel()
         chunks_to_read.push(&*c);
     }
 
-    // FIXME Call the new resize() method using num_of_chunks * chunk_size here
+#if !HAVE_CURL_MULTI_API
+    if (DmrppRequestHandler::d_use_parallel_transfers)
+        LOG("The DMR++ handler is configured to use parallel transfers, but the libcurl Multi API is not present, defaulting to serial transfers");
+#endif
 
-    if (DmrppRequestHandler::d_use_parallel_transfers) {
+    if (DmrppRequestHandler::d_use_parallel_transfers && have_curl_multi_api) {
         // This is the parallel version of the code. It reads a set of chunks in parallel
         // using the multi curl API, then inserts them, then reads the next set, ... jhrg 5/1/18
         unsigned int max_handles = DmrppRequestHandler::curl_handle_pool->get_max_handles();

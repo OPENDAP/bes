@@ -37,7 +37,7 @@
 #include "BESDataHandlerInterface.h"
 
 /**
- * @deprecated Use teh showNode command instead. jhrg 7/25/18
+ * @deprecated Use the showNode command instead. jhrg 7/25/18
  */
 class BESXMLCatalogCommand: public BESXMLCommand {
 public:

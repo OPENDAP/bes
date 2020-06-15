@@ -3,6 +3,9 @@
 # a replacement for the autotols build. But it does provide information that
 # CLion needs to navigate the Hyrax code. jhrg 12/5/19
 
+# Comment/Remove this if it's problematic. jhrg 5/13/20
+#add_subdirectory(modules/sql_handler)
+
 # Included because we want the IDE to know about the library sources, not
 # the installed headers. This might make for some consistency issues if the
 # libdap code is edited and not installed. jhrg 12/5/19
@@ -35,6 +38,7 @@ include_directories(dap/unit-tests)
 include_directories(dap/unused)
 include_directories(dapreader)
 include_directories(dispatch)
+include_directories(rapidjson)
 
 include_directories(dispatch/PicoSHA2)
 include_directories(dispatch/tests)
@@ -59,10 +63,6 @@ include_directories(modules/asciival)
 include_directories(modules/asciival/unit-tests)
 
 include_directories(modules/cmr_module)
-include_directories(modules/cmr_module/rapidjson)
-include_directories(modules/cmr_module/rapidjson/error)
-include_directories(modules/cmr_module/rapidjson/internal)
-include_directories(modules/cmr_module/rapidjson/msinttypes)
 include_directories(modules/cmr_module/unit-tests)
 include_directories(modules/cmr_module/unused)
 include_directories(modules/csv_handler)
@@ -137,6 +137,7 @@ include_directories(xmlcommand/not_used)
 include_directories(xmlcommand/tests)
 include_directories(xmlcommand/unit-tests)
 include_directories(xmlcommand/unused)
+
 
 add_executable(bes
     config.h
@@ -488,10 +489,10 @@ add_executable(bes
     functions/geo-functions/wcsUtil.cpp
     functions/geo-functions/wcsUtil.h
 
-    # functions/stare/build_sidecar.cc
-    # functions/stare/StareFunctions.cc
-    # functions/stare/StareFunctions.h
-    # functions/stare/unit-tests/StareFunctionsTest.cc
+    functions/stare/build_sidecar.cc
+    functions/stare/StareFunctions.cc
+    functions/stare/StareFunctions.h
+    functions/stare/unit-tests/StareFunctionsTest.cc
 
     functions/tests/gse-test.cc
     functions/unit-tests/BBoxCombFunctionTest.cc
@@ -634,41 +635,7 @@ add_executable(bes
     modules/asciival/get_ascii_dap4.h
     modules/asciival/name_map.cc
     modules/asciival/name_map.h
-    modules/cmr_module/rapidjson/error/en.h
-    modules/cmr_module/rapidjson/error/error.h
-    modules/cmr_module/rapidjson/internal/biginteger.h
-    modules/cmr_module/rapidjson/internal/diyfp.h
-    modules/cmr_module/rapidjson/internal/dtoa.h
-    modules/cmr_module/rapidjson/internal/ieee754.h
-    modules/cmr_module/rapidjson/internal/itoa.h
-    modules/cmr_module/rapidjson/internal/meta.h
-    modules/cmr_module/rapidjson/internal/pow10.h
-    modules/cmr_module/rapidjson/internal/regex.h
-    modules/cmr_module/rapidjson/internal/stack.h
-    modules/cmr_module/rapidjson/internal/strfunc.h
-    modules/cmr_module/rapidjson/internal/strtod.h
-    modules/cmr_module/rapidjson/internal/swap.h
-    modules/cmr_module/rapidjson/msinttypes/inttypes.h
-    modules/cmr_module/rapidjson/msinttypes/stdint.h
-    modules/cmr_module/rapidjson/allocators.h
-    modules/cmr_module/rapidjson/document.h
-    modules/cmr_module/rapidjson/encodedstream.h
-    modules/cmr_module/rapidjson/encodings.h
-    modules/cmr_module/rapidjson/filereadstream.h
-    modules/cmr_module/rapidjson/filewritestream.h
-    modules/cmr_module/rapidjson/fwd.h
-    modules/cmr_module/rapidjson/istreamwrapper.h
-    modules/cmr_module/rapidjson/memorybuffer.h
-    modules/cmr_module/rapidjson/memorystream.h
-    modules/cmr_module/rapidjson/ostreamwrapper.h
-    modules/cmr_module/rapidjson/pointer.h
-    modules/cmr_module/rapidjson/prettywriter.h
-    modules/cmr_module/rapidjson/rapidjson.h
-    modules/cmr_module/rapidjson/reader.h
-    modules/cmr_module/rapidjson/schema.h
-    modules/cmr_module/rapidjson/stream.h
-    modules/cmr_module/rapidjson/stringbuffer.h
-    modules/cmr_module/rapidjson/writer.h
+
     modules/cmr_module/unit-tests/CmrApiTest.cc
     modules/cmr_module/unit-tests/CmrCatalogTest.cc
     modules/cmr_module/unit-tests/GranuleTest.cc

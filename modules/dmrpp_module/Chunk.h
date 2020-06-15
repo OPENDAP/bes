@@ -27,11 +27,10 @@
 #include <string>
 #include <vector>
 
-#define USE_PTHREADS 1
-
 namespace dmrpp {
 
-// Callback function used by chunk readers
+// Callback functions used by chunk readers
+size_t chunk_header_callback(char *buffer, size_t size, size_t nitems, void *data);
 size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data);
 
 /**
@@ -57,6 +56,7 @@ private:
     unsigned long long d_read_buffer_size;
     bool d_is_read;
     bool d_is_inflated;
+    std::string d_response_content_type;
 
     static const std::string tracking_context;
 
@@ -154,6 +154,12 @@ public:
 
         return *this;
     }
+
+    /// @brief Get the response type of the last response
+    virtual std::string get_response_content_type() { return d_response_content_type; }
+
+    /// @brief Set the response type of the last response
+    void  set_response_content_type(const std::string &ct) { d_response_content_type = ct; }
 
     /**
      * @brief Get the size of this Chunk's data block on disk
@@ -310,7 +316,6 @@ struct inflate_chunk_args {
 
 void *inflate_chunk(void *args);
 #endif
-
 
 } // namespace dmrpp
 

@@ -33,6 +33,8 @@
 
 namespace dmrpp {
 
+extern const bool have_curl_multi_api;
+
 class Chunk;
 
 /**
@@ -89,12 +91,15 @@ class dmrpp_multi_handle {
 
     multi_handle *p_impl;
 
+    friend class CurlHandlePool;
+
 public:
     dmrpp_multi_handle();
 
     ~dmrpp_multi_handle();
 
     void add_easy_handle(dmrpp_easy_handle *eh);
+    void remove_easy_handle(dmrpp_easy_handle *eh);
 
     void read_data();
 };
@@ -122,6 +127,7 @@ private:
     pthread_mutex_t d_get_easy_handle_mutex;
 
     friend class Lock;
+    friend class dmrpp_multi_handle;
 
 public:
     CurlHandlePool();
@@ -154,6 +160,8 @@ public:
     dmrpp_easy_handle *get_easy_handle(Chunk *chunk);
 
     void release_handle(dmrpp_easy_handle *h);
+    void release_handle(Chunk *chunk);
+    void release_all_handles();
 };
 
 } // namespace dmrpp

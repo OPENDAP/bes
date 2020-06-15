@@ -57,7 +57,7 @@ bool
 BESWWWRequestHandler::dap_build_help( BESDataHandlerInterface & )
 {
     // the usage request handler provides help for this handler.
-    // A vestige of teh server 3 design. jhrg 1/29/17
+    // A vestige of the server 3 design. jhrg 1/29/17
 
     return true ;
 }

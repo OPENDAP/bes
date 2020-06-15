@@ -33,6 +33,8 @@
 
 class BESDataHandlerInterface;
 
+//const std::string STARE_STORAGE_PATH = "FUNCTIONS.stareStoragePath";
+//const std::string STARE_SIDECAR_SUFFIX = "FUNCTIONS.stareSidecarSuffix";
 /** @brief A Request Handler for the DAP Functions module
  *
  */

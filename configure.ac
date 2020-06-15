@@ -216,7 +216,8 @@ AC_CHECK_HEADERS([curl/curl.h])
 AC_CHECK_HEADERS([curl/multi.h])
 
 AC_SEARCH_LIBS([curl_multi_wait], [curl],
-    [AC_DEFINE([HAVE_CURL_MULTI_API],[1],[Does libcurl have the multi API])], [], [])
+    [AC_DEFINE([HAVE_CURL_MULTI_API],[1],[Does libcurl have the multi API])],
+    [AC_DEFINE([HAVE_CURL_MULTI_API],[0],[Does libcurl have the multi API])], [])
 
 dnl Checks for header files.
 AC_HEADER_STDC
@@ -848,6 +849,7 @@ AM_CONDITIONAL([HDFEOS2], [false])
 AM_CONDITIONAL([BUILD_HDF5],[false])
 AM_CONDITIONAL([BUILD_NCML],[false])
 AM_CONDITIONAL([USING_GRIDFIELDS],[false])
+AM_CONDITIONAL([BUILD_STARE],[false])
 
 AM_CONDITIONAL([WITH_DEPENDENCIES], [false])
 

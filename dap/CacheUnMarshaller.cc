@@ -85,7 +85,7 @@ void CacheUnMarshaller::get_url(string &val)
 /**
  * @brief Get bytes; assume the caller knows what they are doing
  * The get_opaque() and put_opaque() methods of UnMarshaller and
- * Marshaller are use by teh DAP2 Sequence class to write the positional
+ * Marshaller are use by the DAP2 Sequence class to write the positional
  * markers for start of sequence rows and the end of a sequence.
  * @param val
  * @param bytes

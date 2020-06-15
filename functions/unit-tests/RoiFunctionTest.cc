@@ -301,7 +301,7 @@ public:
         Array::Dim_iter first_dim = static_cast<Array*>(*i)->dim_begin();
         CPPUNIT_ASSERT(static_cast<Array*>(*i)->dimension_size(first_dim, true) == 10);
 
-        // Look at teh second var
+        // Look at the second var
         ++i;
         CPPUNIT_ASSERT(i != result_struct->var_end());  // test not empty
 

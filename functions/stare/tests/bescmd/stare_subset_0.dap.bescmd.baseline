@@ -4,6 +4,9 @@
         <UInt64 name="stare">
             <Dim size="2"/>
         </UInt64>
+        <UInt64 name="target">
+            <Dim size="2"/>
+        </UInt64>
         <Int32 name="x">
             <Dim size="2"/>
         </Int32>
@@ -19,7 +22,8 @@
 The data:
 Structure {
     UInt64 stare[2];
+    UInt64 target[2];
     Int32 x[2];
     Int32 y[2];
-} result = { {3440016633681149966, 3440016633681149966}, {0, 0}, {0, 1} };
+} result = { {3440016635821480910, 3440016633823675278}, {3440016633681149966, 3440016633681149966}, {0, 0}, {0, 1} };
 

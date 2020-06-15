@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[http-8080-1:27:bes_request]">
+    <bes:setContext name="xdap_accept">4.0</bes:setContext>
+    <bes:setContext name="dap_explicit_containers">no</bes:setContext>
+    <bes:setContext name="errors">xml</bes:setContext>
+    <bes:setContext name="max_response_size">0</bes:setContext>
+
+    <bes:setContainer name="c" space="catalog">/data/ssmis/dmrpp_s3/f17_ssmis_20190101v7.nc.dmrpp</bes:setContainer>
+
+    <bes:define name="d1" space="default">
+    <bes:container name="c">
+      <bes:dap4constraint>
+<<<<<<< HEAD
+           sst_dtime[0][100:119][100:119]
+=======
+           sst_dtime[0][][100:199]
+>>>>>>> c1ae8a3a89a1024d623e9d7674cf0884dcd30648
+      </bes:dap4constraint>
+    </bes:container>
+    </bes:define>
+    <bes:get type="dap" definition="d1" />
+</bes:request>
+

@@ -29,7 +29,12 @@ endif
 SUBDIRS = dispatch xmlcommand ppt server cmdln standalone docs bin templates hello_world
 
 if LIBDAP
-SUBDIRS += functions dap dapreader modules
+SUBDIRS += dap dapreader
+
+if DAP_BUILTIN_MODULES
+SUBDIRS += functions modules
+endif
+
 endif
 
 bin_SCRIPTS = bes-config bes-config-pkgconfig bes-tmpfiles-conf
@@ -51,7 +56,7 @@ aclocaldir=$(datadir)/aclocal
 dist_aclocal_DATA = conf/bes.m4
 
 EXTRA_DIST = doxy.conf.in bes.spec OSX_Resources bes-config-pkgconfig \
-bes-tmpfiles-conf besd.logrotate README.md
+bes-tmpfiles-conf besd.logrotate README.md rapidjson
 
 HTML_DOCS=html
 DOXYGEN_CONF=doxy.conf

@@ -33,9 +33,8 @@ CLEANFILES = bes.conf
 
 # NB: Make sure to distribute both the source and generated files
 # for the test
-EXTRA_DIST = $(TESTSUITE) $(TESTSUITE).at atlocal.in \
-bes.conf.in handler_tests_macros.m4 $(srcdir)/package.m4 \
-bescmd second_catalog
+EXTRA_DIST = test_data $(TESTSUITE) $(TESTSUITE).at atlocal.in bes.conf.in \
+handler_tests_macros.m4 $(srcdir)/package.m4 bescmd second_catalog
 
 DISTCLEANFILES = atconfig
 
@@ -44,7 +43,7 @@ BES_CONF_IN = bes.conf.in
 # The data are copied because the directory must be writable for the 
 # tests to work. 
 $(builddir)/data:
-	cp -r $(top_srcdir)/dapreader/data $(builddir)/data
+	cp -r $(srcdir)/test_data $(builddir)/data
 	chmod -R a+w $(builddir)/data
 
 # Build the bes.conf used for testing so that the value substituted for
@@ -90,4 +89,5 @@ $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	echo 'm4_define([AT_PACKAGE_VERSION],   [@PACKAGE_VERSION@])' && \
 	echo 'm4_define([AT_PACKAGE_STRING],    [@PACKAGE_STRING@])' && \
 	echo 'm4_define([AT_PACKAGE_BUGREPORT], [@PACKAGE_BUGREPORT@])'; \
+	echo 'm4_define([AT_TOP_SRCDIR], 		[@top_srcdir@])'; \
 	} >'$(srcdir)/package.m4'

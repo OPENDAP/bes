@@ -283,6 +283,13 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std:
     buffer << t.rdbuf();
     string pageStr = buffer.str();
 
+    // Does it look like an Apache httpd Index listing?
+    if(pageStr.find("<title>Index of ") == string::npos){
+        // Nope. Time to leave.
+        BESDEBUG(MODULE, prolog << "The url: " << url << " does not appear to reference an Apache httpd Index page." << endl);
+        return;
+    }
+
     string aOpenStr = "<a ";
     string aCloseStr = "</a>";
     string hrefStr = "href=\"";
@@ -404,7 +411,7 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std:
  * @param trim If true then leading and trailing whitespace will be removed from the result string. default: true
  * @return The next start index, after the td element closer.
  */
-int HttpdDirScraper::getNextElementText(const string &page_str, string element_name, int startIndex, string &resultText, bool trim) const
+int HttpdDirScraper::getNextElementText(const string &page_str, const string element_name, int startIndex, string &resultText, bool trim) const
 {
     string e_open_str = "<" + element_name + " ";
     string e_close_str = "</" + element_name + ">";
@@ -412,6 +419,11 @@ int HttpdDirScraper::getNextElementText(const string &page_str, string element_n
     // Locate the next "element_name"  element
     int start = page_str.find(e_open_str, startIndex);
     int end = page_str.find(e_close_str, start + e_open_str.length());
+    if(start<0 || end<0 || end<start){
+        resultText="";
+        return startIndex;
+    }
+
     int length = end + e_close_str.length() - start;
     string element_str = page_str.substr(start, length);
 

@@ -754,7 +754,7 @@ GF::Node *TwoDMeshTopology::getFncArrayAsGFCells(libdap::Array *fncVar)
     if (fncVar->dim_begin() == fncNodesDim) {
         // This dataset/file stores the face-node connectivity array as a
         // 3xN, but gridfields needs that information in an Nx3; twiddle
-        BESDEBUG("ugrid", "Reorganizing the data from teh DAP FNC Array for GF." << endl);
+        BESDEBUG("ugrid", "Reorganizing the data from the DAP FNC Array for GF." << endl);
 
         cells = new GF::Node[faceCount * nodesPerFace];
         GF::Node *temp_nodes = 0;

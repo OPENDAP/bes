@@ -67,6 +67,8 @@ extern "C" {
 #include "BESInternalFatalError.h"
 
 using namespace std;
+#define MODULE "ppt"
+#define prolog string("TcpSocket::").append(__func__).append("() - ")
 
 void TcpSocket::connect()
 {
@@ -285,7 +287,7 @@ void TcpSocket::listen()
         server.sin_addr.s_addr = INADDR_ANY;
     }
 
-    BESDEBUG("ppt", "Checking /etc/services for port " << _portVal << endl);
+    BESDEBUG(MODULE, prolog << "Checking /etc/services for port " << _portVal << endl);
     struct servent *sir = getservbyport(htons(_portVal), 0);
     if (sir) {
         std::ostringstream error_oss;
@@ -320,7 +322,7 @@ void TcpSocket::listen()
             throw BESInternalError(errMsg.str(), __FILE__, __LINE__);
         }
 
-        BESDEBUG("besdaemon", "About to bind to port: " << _portVal << " in process: " << getpid() << endl);
+        BESDEBUG(MODULE, prolog << "About to bind to port: " << _portVal << " in process: " << getpid() << endl);
 
         if (::bind(_socket, (struct sockaddr*) &server, sizeof server) != -1) {
             int length = sizeof(server);
@@ -424,7 +426,7 @@ void TcpSocket::setTcpRecvBufferSize()
                 throw BESInternalFatalError(err, __FILE__, __LINE__);
             }
 
-            BESDEBUG("ppt", "Tcp receive buffer size set to " << (unsigned long)sizenum << endl);
+            BESDEBUG(MODULE, prolog << "Tcp receive buffer size set to " << (unsigned long)sizenum << endl);
         }
     }
 }
@@ -490,7 +492,7 @@ void TcpSocket::setTcpSendBufferSize()
             throw BESInternalFatalError(err, __FILE__, __LINE__);
         }
 
-        BESDEBUG("ppt", "Tcp send buffer size set to " << (unsigned long)sizenum << endl);
+        BESDEBUG(MODULE, prolog << "Tcp send buffer size set to " << (unsigned long)sizenum << endl);
     }
 }
 
@@ -520,7 +522,7 @@ unsigned int TcpSocket::getRecvBufferSize()
             throw BESInternalFatalError(err, __FILE__, __LINE__);
         }
 
-        BESDEBUG("ppt", "Tcp receive buffer size is " << (unsigned long)sizenum << endl);
+        BESDEBUG(MODULE, prolog << "Tcp receive buffer size is " << (unsigned long)sizenum << endl);
 
         _haveRecvBufferSize = true;
         _recvBufferSize = sizenum;
@@ -554,7 +556,7 @@ unsigned int TcpSocket::getSendBufferSize()
             throw BESInternalFatalError(err, __FILE__, __LINE__);
         }
 
-        BESDEBUG("ppt", "Tcp send buffer size is " << (unsigned long)sizenum << endl);
+        BESDEBUG(MODULE, prolog << "Tcp send buffer size is " << (unsigned long)sizenum << endl);
 
         _haveSendBufferSize = true;
         _sendBufferSize = sizenum;

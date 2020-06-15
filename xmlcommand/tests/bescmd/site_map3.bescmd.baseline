@@ -6,8 +6,8 @@
             <Message>Build site map could not find the catalog: test</Message>
             <Administrator>support@opendap.org</Administrator>
             <Location>
-                
-                
+                removed file
+                removed line
             </Location>
         </BESError>
     </buildSiteMap>

@@ -26,16 +26,16 @@
 #include <string>
 #include <locale>
 #include <sstream>
-#include <iomanip>
 
 #include <cstring>
 #include <unistd.h>
-#include <ctime>
 
 #include <curl/curl.h>
+
 #if HAVE_CURL_MULTI_H
 #include <curl/multi.h>
 #endif
+
 #include "curl_utils.h"
 
 #include <time.h>
@@ -58,12 +58,19 @@
 #include "AccessCredentials.h"
 
 #define KEEP_ALIVE 1   // Reuse libcurl easy handles (1) or not (0).
-
 #define CURL_VERBOSE 0  // Logs curl info to the bes.log
 
-static const int MAX_WAIT_MSECS = 30*1000; // Wait max. 30 seconds
+static const int MAX_WAIT_MSECS = 30 * 1000; // Wait max. 30 seconds
 static const unsigned int retry_limit = 10; // Amazon's suggestion
-static const unsigned int initial_retry_time = 1000; // one milli-second
+static const unsigned int initial_retry_time = 1000; // one second
+
+namespace dmrpp {
+#if HAVE_CURL_MULTI_API
+const bool have_curl_multi_api = true;
+#else
+const bool have_curl_multi_api = false;
+#endif
+}
 
 using namespace dmrpp;
 using namespace std;
@@ -72,18 +79,16 @@ using namespace bes;
 #define MODULE "dmrpp:curl"
 #define prolog std::string("CurlHandlePool::").append(__func__).append("() - ")
 
-Lock::Lock(pthread_mutex_t &lock) : m_mutex(lock)
- {
-     int status = pthread_mutex_lock(&m_mutex);
-     if (status != 0) throw BESInternalError("Could not lock in CurlHandlePool", __FILE__, __LINE__);
- }
+Lock::Lock(pthread_mutex_t &lock) : m_mutex(lock) {
+    int status = pthread_mutex_lock(&m_mutex);
+    if (status != 0) throw BESInternalError("Could not lock in CurlHandlePool", __FILE__, __LINE__);
+}
 
-Lock::~Lock()
- {
-     int status = pthread_mutex_unlock(&m_mutex);
-     if (status != 0)
-         ERROR("Could not unlock in CurlHandlePool");
- }
+Lock::~Lock() {
+    int status = pthread_mutex_unlock(&m_mutex);
+    if (status != 0)
+        ERROR("Could not unlock in CurlHandlePool");
+}
 
 /**
  * @brief Build a string with hex info about stuff libcurl gets
@@ -102,30 +107,30 @@ string dump(const char *text, unsigned char *ptr, size_t size)
     oss << text << ", " << std::setw(10) << (long)size << std::setbase(16) << (long)size << endl;
 
     for(i=0; i<size; i+= width) {
-	oss << std::setw(4) << (long)i;
-	// fprintf(stream, "%4.4lx: ", (long)i);
+    oss << std::setw(4) << (long)i;
+    // fprintf(stream, "%4.4lx: ", (long)i);
 
-	/* show hex to the left */
-	for(c = 0; c < width; c++) {
-	    if(i+c < size) {
-		oss << std::setw(2) << ptr[i+c];
-		//fprintf(stream, "%02x ", ptr[i+c]);
-	    }
-	    else {
-		oss << "   ";  
-		// fputs("   ", stream);
-	    }
-	}
- 
-	/* show data on the right */
-	for(c = 0; (c < width) && (i+c < size); c++) {
-	    char x = (ptr[i+c] >= 0x20 && ptr[i+c] < 0x80) ? ptr[i+c] : '.';
-	    // fputc(x, stream);
-	    oss << std::setw(1) << x;
-	}
- 
-	// fputc('\n', stream); /* newline */
-	oss << endl;
+    /* show hex to the left */
+    for(c = 0; c < width; c++) {
+        if(i+c < size) {
+        oss << std::setw(2) << ptr[i+c];
+        //fprintf(stream, "%02x ", ptr[i+c]);
+        }
+        else {
+        oss << "   ";
+        // fputs("   ", stream);
+        }
+    }
+
+    /* show data on the right */
+    for(c = 0; (c < width) && (i+c < size); c++) {
+        char x = (ptr[i+c] >= 0x20 && ptr[i+c] < 0x80) ? ptr[i+c] : '.';
+        // fputc(x, stream);
+        oss << std::setw(1) << x;
+    }
+
+    // fputc('\n', stream); /* newline */
+    oss << endl;
     }
 
     return oss.str();
@@ -198,8 +203,7 @@ int curl_trace(CURL */*handle*/, curl_infotype type, char *data, size_t /*size*/
 }
 #endif
 
-dmrpp_easy_handle::dmrpp_easy_handle(): d_headers(0)
-{
+dmrpp_easy_handle::dmrpp_easy_handle() : d_headers(0) {
     d_handle = curl_easy_init();
     if (!d_handle) throw BESInternalError("Could not allocate CURL handle", __FILE__, __LINE__);
 
@@ -216,6 +220,9 @@ dmrpp_easy_handle::dmrpp_easy_handle(): d_headers(0)
     if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_VERBOSE, 1L)))
         throw BESInternalError(string("CURL Error: ").append(curl::error_message(res, d_errbuf)), __FILE__, __LINE__);
 #endif
+
+    if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_HEADERFUNCTION, chunk_header_callback)))
+        throw BESInternalError(string("CURL Error: ").append(curl::error_message(res, d_errbuf)), __FILE__, __LINE__);
 
     // Pass all data to the 'write_data' function
     if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_WRITEFUNCTION, chunk_write_data)))
@@ -244,8 +251,7 @@ dmrpp_easy_handle::dmrpp_easy_handle(): d_headers(0)
     d_chunk = 0;
 }
 
-dmrpp_easy_handle::~dmrpp_easy_handle()
-{
+dmrpp_easy_handle::~dmrpp_easy_handle() {
     if (d_handle) curl_easy_cleanup(d_handle);
     if (d_headers) curl_slist_free_all(d_headers);
 }
@@ -258,26 +264,28 @@ dmrpp_easy_handle::~dmrpp_easy_handle()
  * @return True indicates success, false a failure that should be re-tried.
  * @exception BESInternalError indicates an unrecoverable error
  */
-static bool evaluate_curl_response(CURL* eh)
-{
+static bool evaluate_curl_response(CURL *eh) {
     long http_code = 0;
     CURLcode res = curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_code);
     if (CURLE_OK != res) {
-        throw BESInternalError(string("Error getting HTTP response code: ").append(curl::error_message(res, (char *) "")), __FILE__, __LINE__);
+        throw BESInternalError(
+                string("Error getting HTTP response code: ").append(curl::error_message(res, (char *) "")),
+                __FILE__, __LINE__);
     }
-    if(BESDebug::IsSet(MODULE)){
+
+    if (BESDebug::IsSet(MODULE)) {
         char *last_url = 0;
         curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &last_url);
-        BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << last_url << endl );
+        BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << last_url << endl);
 
         long redirects;
         curl_easy_getinfo(eh, CURLINFO_REDIRECT_COUNT, &redirects);
-        BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_COUNT: " << redirects << endl );
+        BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_COUNT: " << redirects << endl);
 
         char *redirect_url = 0;
         curl_easy_getinfo(eh, CURLINFO_REDIRECT_URL, &redirect_url);
-        if(redirect_url)
-            BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_URL: " << redirect_url << endl );
+        if (redirect_url)
+            BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_URL: " << redirect_url << endl);
     }
 
     // Newer Apache servers return 206 for range requests. jhrg 8/8/18
@@ -297,20 +305,20 @@ static bool evaluate_curl_response(CURL* eh)
             ostringstream oss;
             char *effective_url = 0;
             curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &effective_url);
-            oss << prolog << "HTTP status error: Expected an OK status, but got: " << http_code ;
-            if(BESDebug::IsSet(MODULE))  oss << " from (CURLINFO_EFFECTIVE_URL): " << effective_url;
+            oss << prolog << "HTTP status error: Expected an OK status, but got: " << http_code;
+            if (BESDebug::IsSet(MODULE)) oss << " from (CURLINFO_EFFECTIVE_URL): " << effective_url;
             throw BESInternalError(oss.str(), __FILE__, __LINE__);
         }
     }
 }
 
 /**
- * @brief This is the read_data() method for serial transfers
+ * @brief This is the read_data() method for serial transfers.
  *
- * @todo Modify re-try so it's only done for AWS and/or if an option is set.
+ * See below for the code used for parallel transfers. Note that
+ * this code is also used for the pthreads parallel transfers.
  */
-void dmrpp_easy_handle::read_data()
-{
+void dmrpp_easy_handle::read_data() {
     // Treat HTTP/S requests specially; retry some kinds of failures.
     if (d_url.find("https://") == 0 || d_url.find("http://") == 0) {
         unsigned int tries = 0;
@@ -327,8 +335,8 @@ void dmrpp_easy_handle::read_data()
                 msg << "Data transfer error: " << curl::error_message(curl_code, d_errbuf);
                 char *effective_url = 0;
                 curl_easy_getinfo(d_handle, CURLINFO_EFFECTIVE_URL, &effective_url);
-                msg << " last_url: " << effective_url ;
-                BESDEBUG(MODULE, prolog << msg.str() << endl );
+                msg << " last_url: " << effective_url;
+                BESDEBUG(MODULE, prolog << msg.str() << endl);
                 throw BESInternalError(msg.str(), __FILE__, __LINE__);
             }
 
@@ -337,11 +345,11 @@ void dmrpp_easy_handle::read_data()
             if (!success) {
                 if (tries == retry_limit) {
                     throw BESInternalError(
-                            string("Data transfer error: Number of re-tries to S3 exceeded: ").append(
+                            string("Data transfer error: Number of re-tries exceeded: ").append(
                                     curl::error_message(curl_code, d_errbuf)), __FILE__, __LINE__);
                 }
                 else {
-                    LOG("HTTP transfer 500 error, will retry (trial " << tries << " for: " << d_url << ").");
+                    LOG("HTTP transfer 500 error, will retry (trial " << tries << " for: " << d_url << ")." << endl);
                     usleep(retry_time);
                     retry_time *= 2;
                 }
@@ -355,7 +363,7 @@ void dmrpp_easy_handle::read_data()
         CURLcode curl_code = curl_easy_perform(d_handle);
         if (CURLE_OK != curl_code) {
             throw BESInternalError(string("Data transfer error: ").append(curl::error_message(curl_code, d_errbuf)),
-                __FILE__, __LINE__);
+                                   __FILE__, __LINE__);
         }
     }
 
@@ -377,16 +385,14 @@ struct dmrpp_multi_handle::multi_handle {
 #endif
 };
 
-dmrpp_multi_handle::dmrpp_multi_handle()
-{
+dmrpp_multi_handle::dmrpp_multi_handle() {
     p_impl = new multi_handle;
 #if HAVE_CURL_MULTI_API
     p_impl->curlm = curl_multi_init();
 #endif
 }
 
-dmrpp_multi_handle::~dmrpp_multi_handle()
-{
+dmrpp_multi_handle::~dmrpp_multi_handle() {
 #if HAVE_CURL_MULTI_API
     curl_multi_cleanup(p_impl->curlm);
 #endif
@@ -401,8 +407,7 @@ dmrpp_multi_handle::~dmrpp_multi_handle()
  *
  * @param eh The CURL easy handle to add
  */
-void dmrpp_multi_handle::add_easy_handle(dmrpp_easy_handle *eh)
-{
+void dmrpp_multi_handle::add_easy_handle(dmrpp_easy_handle *eh) {
 #if HAVE_CURL_MULTI_API
     curl_multi_add_handle(p_impl->curlm, eh->d_handle);
 #else
@@ -410,12 +415,28 @@ void dmrpp_multi_handle::add_easy_handle(dmrpp_easy_handle *eh)
 #endif
 }
 
+void dmrpp_multi_handle::remove_easy_handle(dmrpp_easy_handle *eh) {
+#if HAVE_CURL_MULTI_API
+    CURLMcode mres = curl_multi_remove_handle(p_impl->curlm, eh);
+    if (mres != CURLM_OK)
+        LOG("While cleaning up CURL multihandle during a parallel data request, could not remove a CURL handle.");
+#else
+    for (vector<dmrpp_easy_handle *>::iterator i = p_impl->ehandles.begin(), e = p_impl->ehandles.end(); i != e; ++i) {
+        if (eh == *i)  {
+            p_impl->ehandles.erase(i);
+            break;
+        }
+    }
+#endif
+}
+
 // This is only used if we don't have the Multi API and have to use pthreads.
+// It is a callback used in dmrpp_multi_handle::read_data() below.
 // jhrg 8/27/18
 #if !HAVE_CURL_MULTI_API
-static void *easy_handle_read_data(void *handle)
-{
-    dmrpp_easy_handle *eh = reinterpret_cast<dmrpp_easy_handle*>(handle);
+
+static void *easy_handle_read_data(void *handle) {
+    dmrpp_easy_handle *eh = reinterpret_cast<dmrpp_easy_handle *>(handle);
 
     try {
         eh->read_data();
@@ -426,6 +447,7 @@ static void *easy_handle_read_data(void *handle)
         pthread_exit(error);
     }
 }
+
 #endif
 
 /**
@@ -440,71 +462,86 @@ static void *easy_handle_read_data(void *handle)
  * @note It's the responsibility of the caller to make sure that no more than
  * d_max_parallel_transfers are added to the 'multi' handle.
  */
-void dmrpp_multi_handle::read_data()
-{
+void dmrpp_multi_handle::read_data() {
 #if HAVE_CURL_MULTI_API
     // Use the libcurl Multi API here. Alternate version follows...
-
-    int still_running = 0;
-    CURLMcode mres = curl_multi_perform(p_impl->curlm, &still_running);
-    if (mres != CURLM_OK)
-        throw BESInternalError(string("Could not initiate data read: ").append(curl_multi_strerror(mres)), __FILE__,
-            __LINE__);
-
-    do {
-        int numfds = 0;
-        mres = curl_multi_wait(p_impl->curlm, NULL, 0, MAX_WAIT_MSECS, &numfds);
+    try {
+        int still_running = 0;
+        CURLMcode mres = curl_multi_perform(p_impl->curlm, &still_running);
         if (mres != CURLM_OK)
-            throw BESInternalError(string("Could not wait on data read: ").append(curl_multi_strerror(mres)), __FILE__,
+            throw BESInternalError(string("Could not initiate data read: ").append(curl_multi_strerror(mres)), __FILE__,
                 __LINE__);
 
-        mres = curl_multi_perform(p_impl->curlm, &still_running);
-        if (mres != CURLM_OK)
-            throw BESInternalError(string("Could not iterate data read: ").append(curl_multi_strerror(mres)), __FILE__,
-                __LINE__);
-
-    } while (still_running);
-
-    CURLMsg *msg = 0;
-    int msgs_left = 0;
-    while ((msg = curl_multi_info_read(p_impl->curlm, &msgs_left))) {
-        if (msg->msg == CURLMSG_DONE) {
-            CURL *eh = msg->easy_handle;
-
-            CURLcode res = msg->data.result;
-            if (res != CURLE_OK)
-                throw BESInternalError(string("Error HTTP: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
-
-            // Note: 'eh' is the easy handle returned by culr_multi_info_read(),
-            // but in it's private field is our dmrpp_easy_handle object. We need
-            // both to mark this data read operation as complete.
-            dmrpp_easy_handle *dmrpp_easy_handle = 0;
-            res = curl_easy_getinfo(eh, CURLINFO_PRIVATE, &dmrpp_easy_handle);
-            if (res != CURLE_OK)
-                throw BESInternalError(string("Could not access easy handle: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
-
-            // This code has to work with both http/s: and file: protocols. Here we check the
-            // HTTP status code. If the protocol is not HTTP, we assume since msg->data.result
-            // returned CURLE_OK, that the transfer worked. jhrg 5/1/18
-            if (dmrpp_easy_handle->d_url.find("http://") == 0 || dmrpp_easy_handle->d_url.find("https://") == 0) {
-                evaluate_curl_response(eh);
-            }
-
-            // If we are here, the request was successful.
-            dmrpp_easy_handle->d_chunk->set_is_read(true);  // Set the is_read() property for chunk here.
-
-            // NB: Remove the handle from the CURLM* and _then_ call release_handle()
-            // so that the KEEP_ALIVE 0 (off) works. Calling delete on the dmrpp_easy_handle
-            // will invalidate 'eh', so call that after removing 'eh'.
-            mres = curl_multi_remove_handle(p_impl->curlm, eh);
+        do {
+            int numfds = 0;
+            mres = curl_multi_wait(p_impl->curlm, NULL, 0, MAX_WAIT_MSECS, &numfds);
             if (mres != CURLM_OK)
-                throw BESInternalError(string("Could not remove libcurl handle: ").append(curl_multi_strerror(mres)),  __FILE__, __LINE__);
+                throw BESInternalError(string("Could not wait on data read: ").append(curl_multi_strerror(mres)), __FILE__,
+                    __LINE__);
 
-            DmrppRequestHandler::curl_handle_pool->release_handle(dmrpp_easy_handle);
+            mres = curl_multi_perform(p_impl->curlm, &still_running);
+            if (mres != CURLM_OK)
+                throw BESInternalError(string("Could not iterate data read: ").append(curl_multi_strerror(mres)), __FILE__,
+                    __LINE__);
+
+        } while (still_running);
+
+        CURLMsg *msg = 0;
+        int msgs_left = 0;
+        while ((msg = curl_multi_info_read(p_impl->curlm, &msgs_left))) {
+            if (msg->msg == CURLMSG_DONE) {
+                CURL *eh = msg->easy_handle;
+
+                CURLcode res = msg->data.result;
+                if (res != CURLE_OK)
+                    throw BESInternalError(string("Error HTTP: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
+
+                // Note: 'eh' is the easy handle returned by culr_multi_info_read(),
+                // but in it's private field is our dmrpp_easy_handle object. We need
+                // both to mark this data read operation as complete.
+                dmrpp_easy_handle *dmrpp_easy_handle = 0;
+                res = curl_easy_getinfo(eh, CURLINFO_PRIVATE, &dmrpp_easy_handle);
+                if (res != CURLE_OK)
+                    throw BESInternalError(string("Could not access easy handle: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
+
+                // This code has to work with both http/s: and file: protocols. Here we check the
+                // HTTP status code. If the protocol is not HTTP, we assume since msg->data.result
+                // returned CURLE_OK, that the transfer worked. jhrg 5/1/18
+                if (dmrpp_easy_handle->d_url.find("http://") == 0 || dmrpp_easy_handle->d_url.find("https://") == 0) {
+                    evaluate_curl_response(eh);
+                }
+
+                // If we are here, the request was successful.
+                dmrpp_easy_handle->d_chunk->set_is_read(true);  // Set the is_read() property for chunk here.
+
+                // NB: Remove the handle from the CURLM* and _then_ call release_handle()
+                // so that the KEEP_ALIVE 0 (off) works. Calling delete on the dmrpp_easy_handle
+                // will invalidate 'eh', so call that after removing 'eh'.
+                mres = curl_multi_remove_handle(p_impl->curlm, eh);
+                if (mres != CURLM_OK)
+                    throw BESInternalError(string("Could not remove libcurl handle: ").append(curl_multi_strerror(mres)),  __FILE__, __LINE__);
+
+                DmrppRequestHandler::curl_handle_pool->release_handle(dmrpp_easy_handle);
+            }
+            else {  // != CURLMSG_DONE
+                throw BESInternalError("Error getting HTTP or FILE responses.", __FILE__, __LINE__);
+            }
         }
-        else {  // != CURLMSG_DONE
-            throw BESInternalError("Error getting HTTP or FILE responses.", __FILE__, __LINE__);
+    }
+    catch (...) {
+        // If we throw here, remove all of the easy handles from this multihandle
+        // That will prevent old URLs part that were part of a failed request from
+        // being part of a subsequent request.
+        // With C++11 this could be for (auto &i: DmrppRequestHandler::curl_handle_pool->d_easy_handles) { ... }
+        for (std::vector<dmrpp_easy_handle *>::iterator i = DmrppRequestHandler::curl_handle_pool->d_easy_handles.begin(),
+                e = DmrppRequestHandler::curl_handle_pool->d_easy_handles.end(); i != e; ++i) {
+            CURLMcode mres = curl_multi_remove_handle(p_impl->curlm, (*i)->d_handle);
+            if (mres != CURLM_OK)
+                LOG("While cleaning up from an error during a parallel data request, could not remove a CURL handle.");
+            DmrppRequestHandler::curl_handle_pool->release_handle(*i);
         }
+
+        throw;  // re-throw the exception
     }
 #else
     // Start the processing pipelines using pthreads - there is no Multi API
@@ -513,7 +550,7 @@ void dmrpp_multi_handle::read_data()
     unsigned int num_threads = 0;
     try {
         for (unsigned int i = 0; i < p_impl->ehandles.size(); ++i) {
-            int status = pthread_create(&threads[i], NULL, easy_handle_read_data, (void*) p_impl->ehandles[i]);
+            int status = pthread_create(&threads[i], NULL, easy_handle_read_data, (void *) p_impl->ehandles[i]);
             if (status == 0) {
                 ++num_threads;
             }
@@ -527,7 +564,7 @@ void dmrpp_multi_handle::read_data()
         // Now join the child threads.
         for (unsigned int i = 0; i < num_threads; ++i) {
             string *error;
-            int status = pthread_join(threads[i], (void**) &error);
+            int status = pthread_join(threads[i], (void **) &error);
             if (status != 0) {
                 ostringstream oss("Could not join process_one_chunk_unconstrained thread for chunk ", std::ios::ate);
                 oss << i << ": " << strerror(status);
@@ -539,19 +576,25 @@ void dmrpp_multi_handle::read_data()
                 throw e;
             }
         }
+        // Now remove the easy_handles, mimicking the behavior when using the real Multi API
+        p_impl->ehandles.clear();
     }
-    catch(...) {
+    catch (...) {
+        // Returning all the easy handles to the pool is handled for the 'no HAVE_CURL_MULTI_API
+        // case in Chunk's chunk_write_data() libcurl callback.
+        DmrppRequestHandler::curl_handle_pool->release_all_handles();
+
+        // Now remove the easy_handles, mimicking the behavior when using the real Multi API
+        p_impl->ehandles.clear();
+
         join_threads(threads, num_threads);
+
         throw;
     }
-
-    // Now remove the easy_handles, mimicking the behavior when using the real Multi API
-    p_impl->ehandles.clear();
 #endif
 }
 
-CurlHandlePool::CurlHandlePool() : d_multi_handle(0)
-{
+CurlHandlePool::CurlHandlePool() : d_multi_handle(0) {
     d_max_easy_handles = DmrppRequestHandler::d_max_parallel_transfers;
     d_multi_handle = new dmrpp_multi_handle();
 
@@ -575,184 +618,13 @@ CurlHandlePool::CurlHandlePool() : d_multi_handle(0)
  * @return The modified slist pointer or nullptr if an error occurred.
  */
 static struct curl_slist *
-append_http_header(curl_slist *slist, const string &header, const string &value)
-{
+append_http_header(curl_slist *slist, const string &header, const string &value) {
     string full_header = header;
     full_header.append(" ").append(value);
 
     struct curl_slist *temp = curl_slist_append(slist, full_header.c_str());
     return temp;
 }
-
-#if 0
-// TODO Make this real! jhrg 11/26/19
-static bool
-url_has_credentials(const string &url)
-{
-    return (url.find("cloudyopendap") != string::npos);
-}
-
-static bool
-url_must_be_signed(const string &url)
-{
-
-    if(url.find("http://") == 0 || url.find("https://") == 0){
-        AccessCredentials *ac = CredentialsManager::theCM()->get(url);
-        if(ac)
-            return ac->isS3Cred();
-    }
-    return false;
-    // return (url.find("http://") == 0 || url.find("https://") == 0) && url_has_credentials(url);
-}
-
-//I think this is closer to working now and that we don't need these functions - ndp 12/12/19'
-
-// FIXME The most low-budget credential DB on the planet. jhrg 11/26/19
-struct aws_credentials {
-    string public_key;    // = "AKIA*********GEIE";
-    string secret_key;    // = "*************WaaQ7";
-    string region;    // = "us-east-1";
-    string bucket_name;    // = "muhbucket";
-
-    map<string,map<string,string>> credentials;
-
-
-    aws_credentials(): public_key(""), secret_key(""), region(""), bucket_name("") {}
-
-    aws_credentials(const string &p_key, const string &s_key, const string &r, const string &b)
-            : public_key(p_key), secret_key(s_key), region(r), bucket_name(b) {}
-
-    aws_credentials(const aws_credentials &rhs)
-            : public_key(rhs.public_key), secret_key(rhs.secret_key), region(rhs.region), bucket_name(rhs.bucket_name) {}
-
-    unique_ptr<aws_credentials> get(const string &url);
-};
-
-void get_from_env(const string &key, string &value){
-    const char *cstr = getenv(key.c_str());
-    if(cstr){
-        value.assign(cstr);
-        BESDEBUG(MODULE, __FILE__ << " " << __LINE__ << " From system environment - " << key << ": " << value << endl);
-    }
-    else {
-        value.clear();
-    }
-}
-
-void get_from_config(const string &key, string &value){
-    bool key_found=false;
-    TheBESKeys::TheKeys()->get_value(key, value, key_found);
-    if (key_found) {
-        BESDEBUG(MODULE, __FILE__ << " " << __LINE__ << " Using " << key << " from TheBESKeys" << endl);
-    }
-    else {
-        value.clear();
-    }
-}
-
-void get_creds_from_local(string &aws_akid, string &aws_sak, string &aws_region, string &aws_s3_bucket ){
-
-    const string KEYS_CONFIG_PREFIX("DMRPP");
-
-    const string ENV_AKID_KEY("AWS_ACCESS_KEY_ID");
-    const string CONFIG_AKID_KEY(KEYS_CONFIG_PREFIX+"."+ENV_AKID_KEY);
-
-    const string ENV_SAK_KEY("AWS_SECRET_ACCESS_KEY");
-    const string CONFIG_SAK_KEY(KEYS_CONFIG_PREFIX+"."+ENV_SAK_KEY);
-
-    const string ENV_REGION_KEY("AWS_REGION");
-    const string CONFIG_REGION_KEY(KEYS_CONFIG_PREFIX+"."+ENV_REGION_KEY);
-
-    const string ENV_S3_BUCKET_KEY("AWS_S3_BUCKET");
-    const string CONFIG_S3_BUCKET_KEY(KEYS_CONFIG_PREFIX+"."+ENV_S3_BUCKET_KEY);
-
-#ifndef NDEBUG
-
-    // If we are in developer mode then we compile this section which
-    // allows us to inject credentials via the system environment
-
-    get_from_env(ENV_AKID_KEY,aws_akid);
-    get_from_env(ENV_SAK_KEY,aws_sak);
-    get_from_env(ENV_REGION_KEY,aws_region);
-    get_from_env(ENV_S3_BUCKET_KEY,aws_s3_bucket);
-
-    BESDEBUG(MODULE, __FILE__ << " " << __LINE__
-        << " From ENV aws_akid: '" << aws_akid << "' "
-        << "aws_sak: '" << aws_sak << "' "
-        << "aws_region: '" << aws_region << "' "
-        << "aws_s3_bucket: '" << aws_s3_bucket << "' "
-        << endl);
-
-#endif
-
-    // In production mode this is the single point of ingest for credentials.
-    // Developer mode enables the piece above which allows the environment to
-    // overrule the configuration
-
-    if(aws_akid.length()){
-        BESDEBUG(MODULE, __FILE__ << " " << __LINE__ << " Using " << ENV_AKID_KEY << " from the environment." << endl);
-    }
-    else {
-        get_from_config(CONFIG_AKID_KEY,aws_akid);
-    }
-
-    if(aws_sak.length()){
-        BESDEBUG(MODULE, __FILE__ << " " << __LINE__ << " Using " << ENV_SAK_KEY << " from the environment." << endl);
-    }
-    else {
-        get_from_config(CONFIG_SAK_KEY,aws_sak);
-    }
-
-    if(aws_region.length()){
-        BESDEBUG(MODULE, __FILE__ << " " << __LINE__ << " Using " << ENV_REGION_KEY << " from the environment." << endl);
-    }
-    else {
-        get_from_config(CONFIG_REGION_KEY,aws_region);
-    }
-
-    if(aws_s3_bucket.length()){
-        BESDEBUG(MODULE, __FILE__ << " " << __LINE__ << " Using " << ENV_S3_BUCKET_KEY << " from the environment." << endl);
-    }
-    else {
-        get_from_config(CONFIG_S3_BUCKET_KEY,aws_s3_bucket);
-    }
-
-    BESDEBUG(MODULE, __FILE__ << " " << __LINE__
-        << " END aws_akid: '" << aws_akid << "' "
-        << "aws_sak: '" << aws_sak << "' "
-        << "aws_region: '" << aws_region << "' "
-        << "aws_s3_bucket: '" << aws_s3_bucket << "' "
-        << endl);
-}
-
-unique_ptr<aws_credentials>
-aws_credentials::get(const string &url)
-{
-    // FIXME Lookup the credentials in some db (BES Keys?). jhrg 11/26/19
-
-    string aws_akid;
-    string aws_sak;
-    string aws_region;
-    string aws_s3_bucket;
-
-    if (url.find("cloudyopendap") != string::npos) {
-
-        get_creds_from_local(aws_akid, aws_sak, aws_region, aws_s3_bucket);
-        BESDEBUG(MODULE, __FILE__ << " " << __LINE__
-            << " aws_akid: " << aws_akid
-            << " aws_sak: " << aws_sak
-            << " aws_region: " << aws_region
-            << " aws_s3_bucket: " << aws_s3_bucket
-            << endl);
-
-        unique_ptr<aws_credentials> creds(new aws_credentials(aws_akid, aws_sak, aws_region, aws_s3_bucket));
-        return creds;
-    } else {
-        unique_ptr<aws_credentials> creds(new aws_credentials( "", "", "", ""));
-        return creds;
-    }
-}
-#endif
 
 /**
  * Get a CURL easy handle to transfer data from \arg url into the given \arg chunk.
@@ -769,13 +641,12 @@ aws_credentials::get(const string &url)
  * there are no more handles in the pool.
  */
 dmrpp_easy_handle *
-CurlHandlePool::get_easy_handle(Chunk *chunk)
-{
+CurlHandlePool::get_easy_handle(Chunk *chunk) {
     // Here we check to make sure that the we are only going to
     // access an approved location with this easy_handle
-    if(!WhiteList::get_white_list()->is_white_listed(chunk->get_data_url())){
+    if (!WhiteList::get_white_list()->is_white_listed(chunk->get_data_url())) {
         string msg = "ERROR!! The chunk url " + chunk->get_data_url() + " does not match any white-list rule. ";
-        throw BESForbiddenError(msg ,__FILE__,__LINE__);
+        throw BESForbiddenError(msg, __FILE__, __LINE__);
     }
 
     Lock lock(d_get_easy_handle_mutex); // RAII
@@ -796,22 +667,31 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
         handle->d_chunk = chunk;
 
         CURLcode res = curl_easy_setopt(handle->d_handle, CURLOPT_URL, chunk->get_data_url().c_str());
-        if (res != CURLE_OK) throw BESInternalError(string("HTTP Error setting URL: ").append(
+        if (res != CURLE_OK)
+            throw BESInternalError(string("HTTP Error setting URL: ").append(
                     curl::error_message(res, handle->d_errbuf)), __FILE__, __LINE__);
 
         // get the offset to offset + size bytes
-        if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_RANGE, chunk->get_curl_range_arg_string().c_str())))
-            throw BESInternalError(string("HTTP Error setting Range: ").append(curl::error_message(res, handle->d_errbuf)), __FILE__,
-                                   __LINE__);
+        if (CURLE_OK !=
+            (res = curl_easy_setopt(handle->d_handle, CURLOPT_RANGE, chunk->get_curl_range_arg_string().c_str())))
+            throw BESInternalError(
+                    string("HTTP Error setting Range: ").append(curl::error_message(res, handle->d_errbuf)), __FILE__,
+                    __LINE__);
 
-        // Pass this to write_data as the fourth argument
-        if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_WRITEDATA, reinterpret_cast<void*>(chunk))))
-            throw BESInternalError(string("CURL Error setting chunk as data buffer: ").append(
+        // Pass this to chunk_header_callback as the fourth argument
+        if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_HEADERDATA, reinterpret_cast<void *>(chunk))))
+            throw BESInternalError(string("CURL Error setting chunk as header callback data: ").append(
                     curl::error_message(res, handle->d_errbuf)),
-            __FILE__, __LINE__);
+                                   __FILE__, __LINE__);
+
+        // Pass this to chunk_write_data as the fourth argument
+        if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_WRITEDATA, reinterpret_cast<void *>(chunk))))
+            throw BESInternalError(string("CURL Error setting chunk as response callback data: ").append(
+                    curl::error_message(res, handle->d_errbuf)),
+                                   __FILE__, __LINE__);
 
         // store the easy_handle so that we can call release_handle in multi_handle::read_data()
-        if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_PRIVATE, reinterpret_cast<void*>(handle))))
+        if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_PRIVATE, reinterpret_cast<void *>(handle))))
             throw BESInternalError(string("CURL Error setting easy_handle as private data: ").append(
                     curl::error_message(res, handle->d_errbuf)), __FILE__,
                                    __LINE__);
@@ -823,7 +703,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
 
         // Follow 302 (redirect) responses
         curl_easy_setopt(handle->d_handle, CURLOPT_FOLLOWLOCATION, 1);
-        curl_easy_setopt(handle->d_handle, CURLOPT_MAXREDIRS,20);
+        curl_easy_setopt(handle->d_handle, CURLOPT_MAXREDIRS, 20);
 
         // Set the user agent something otherwise TEA will never redirect to URS.
         curl_easy_setopt(handle->d_handle, CURLOPT_USERAGENT, "Hyrax"/* curl_version()*/);
@@ -838,15 +718,16 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
 
         // If the configuration specifies a particular .netrc credentials file, use it.
         string netrc_file = CredentialsManager::theCM()->get_netrc_filename();
-        if(!netrc_file.empty()){
+        if (!netrc_file.empty()) {
             curl_easy_setopt(handle->d_handle, CURLOPT_NETRC_FILE, netrc_file.c_str());
         }
-        VERBOSE(__FILE__ << "::get_easy_handle() is using the netrc file '" << ((!netrc_file.empty())?netrc_file:"~/.netrc") << "'" << endl);
+        VERBOSE(__FILE__ << "::get_easy_handle() is using the netrc file '"
+                         << ((!netrc_file.empty()) ? netrc_file : "~/.netrc") << "'" << endl);
 
 
         AccessCredentials *credentials = CredentialsManager::theCM()->get(handle->d_url);
-        if ( credentials && credentials->isS3Cred()) {
-            BESDEBUG(MODULE, "Got AccessCredentials instance: "<< endl << credentials->to_json() << endl );
+        if (credentials && credentials->isS3Cred()) {
+            BESDEBUG(MODULE, "Got AccessCredentials instance: " << endl << credentials->to_json() << endl);
             // If there are available credentials, and they are S3 credentials then we need to sign
             // the request
             const std::time_t request_time = std::time(0);
@@ -871,17 +752,20 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
                                 curl::error_message(res, handle->d_errbuf)), __FILE__, __LINE__);
 
             // We pre-compute the sha256 hash of a null message body
-            curl_slist *temp = append_http_header(handle->d_headers, "x-amz-content-sha256:", "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
+            curl_slist *temp = append_http_header(handle->d_headers, "x-amz-content-sha256:",
+                                                  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
             if (!temp)
                 throw BESInternalError(
-                        string("CURL Error setting x-amz-content-sha256: ").append(curl::error_message(res, handle->d_errbuf)),
+                        string("CURL Error setting x-amz-content-sha256: ").append(
+                                curl::error_message(res, handle->d_errbuf)),
                         __FILE__, __LINE__);
             handle->d_headers = temp;
 
             temp = append_http_header(handle->d_headers, "x-amz-date:", AWSV4::ISO8601_date(request_time));
             if (!temp)
                 throw BESInternalError(
-                        string("CURL Error setting x-amz-date header: ").append(curl::error_message(res, handle->d_errbuf)),
+                        string("CURL Error setting x-amz-date header: ").append(
+                                curl::error_message(res, handle->d_errbuf)),
                         __FILE__, __LINE__);
             handle->d_headers = temp;
 
@@ -901,8 +785,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk)
  *
  * @param handle
  */
-void CurlHandlePool::release_handle(dmrpp_easy_handle *handle)
-{
+void CurlHandlePool::release_handle(dmrpp_easy_handle *handle) {
     // In get_easy_handle, it's possible that d_in_use could be false and d_chunk
     // could not be set to 0 (because a separate thread could be running these
     // methods). In that case, the thread running get_easy_handle could set d_chunk,
@@ -928,4 +811,31 @@ void CurlHandlePool::release_handle(dmrpp_easy_handle *handle)
         }
     }
 #endif
+}
+
+/**
+ * @brief Release the handle associated with a given chunk
+ * This is intended for use in error clean up code.
+ * @param chunk Find the handle for this chunk and release it.
+ */
+void CurlHandlePool::release_handle(Chunk *chunk) {
+    for (std::vector<dmrpp_easy_handle *>::iterator i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
+        if ((*i)->d_chunk == chunk) {
+            release_handle(*i);
+            break;
+        }
+    }
+}
+
+/**
+ * @breif release all outstanding curl handles
+ * If one access in a multi-transfer fails because of an error such as
+ * Access Denied, end the entire process and free all curl handles. This
+ * is different from an Internal Server Error response, which should be
+ * retried without ending the other accesses.
+ */
+void CurlHandlePool::release_all_handles() {
+    for (std::vector<dmrpp_easy_handle *>::iterator i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
+        release_handle(*i);
+    }
 }

@@ -630,7 +630,6 @@ void writeHDF5(const string &filename, string tmpStorage, vector<coord> *coords)
         s_indices.push_back(i->s_index);
     }
 
-
     VERBOSE(cerr << "Writing data to dataset" << endl);
     H5Dwrite(datasetX, H5T_NATIVE_ULONG, H5S_ALL, H5S_ALL, H5P_DEFAULT, &xArray[0]);
     H5Dwrite(datasetY, H5T_NATIVE_ULONG, H5S_ALL, H5S_ALL, H5P_DEFAULT, &yArray[0]);
@@ -820,12 +819,13 @@ int main(int argc, char *argv[]) {
 
     string newName = "";
     string tmpStorage = "./"; // Default is the CWD.
+    string extension = "_stare.h5";
     float build_level = 5.0;  // The default build level, fast start time, longer index lookup.
     float level = 27.0;
     int alg = 3;
     bool compute_resolution = false;
 
-    while ((c = getopt(argc, argv, "hvVro:t:b:s:a:")) != -1) {
+    while ((c = getopt(argc, argv, "hvVro:t:b:s:a:e:")) != -1) {
         switch (c) {
             case 'o':
                 newName = optarg;
@@ -852,6 +852,9 @@ int main(int argc, char *argv[]) {
             case 'r':
                 compute_resolution = true;
                 break;
+            case 'e':
+                extension = optarg;
+                break;
             case 'h':
             default:
                 usage();
@@ -876,7 +879,7 @@ int main(int argc, char *argv[]) {
     string lon_name = argv[2];
 
     if (newName.empty())
-        newName = get_sidecar_filename(dataset);
+        newName = get_sidecar_filename(dataset, extension);
 
     try {
         STARE stare(level, build_level);

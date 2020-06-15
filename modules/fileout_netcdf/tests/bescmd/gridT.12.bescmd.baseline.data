@@ -13,7 +13,7 @@ variables:
 	int bstruct.bears(i, k) ;
 
 // global attributes:
-		:history = "removed date-time Hyrax gridT.dods?" ;
+		:history = "removed date-timex gridT.dods?" ;
 data:
 
  i = 2, 4 ;

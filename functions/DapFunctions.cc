@@ -31,7 +31,7 @@
 #include <ServerFunctionsList.h>
 
 #include <BESRequestHandlerList.h>
-
+#include <TheBESKeys.h>
 #include <BESDebug.h>
 
 #include "GeoGridFunction.h"
@@ -107,6 +107,11 @@ void DapFunctions::initialize(const string &modname)
     libdap::ServerFunctionsList::TheList()->add_function(new StareIntersectionFunction());
     libdap::ServerFunctionsList::TheList()->add_function(new StareCountFunction());
     libdap::ServerFunctionsList::TheList()->add_function(new StareSubsetFunction());
+
+    // The key names and module variables used here are defined in StareFunctions.cc
+    // jhrg 5/21/20
+    stare_storage_path = TheBESKeys::TheKeys()->read_string_key(STARE_STORAGE_PATH_KEY, stare_storage_path);
+    stare_sidecar_suffix = TheBESKeys::TheKeys()->read_string_key(STARE_SIDECAR_SUFFIX_KEY, stare_sidecar_suffix);
 #endif
 
     GDALAllRegister();

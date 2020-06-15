@@ -46,7 +46,7 @@ CLEANFILES = testout .dodsrc *.gcda *.gcno
 DISTCLEANFILES = *.strm *.file *.Po tmp.txt bes.conf test_config.h
 
 test_config.h: $(srcdir)/test_config.h.in Makefile
-	@my_topdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+	@my_topdir=`python -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
 	sed -e "s%[@]abs_srcdir[@]%$${my_topdir}%" \
 		-e "s%[@]abs_top_srcdir[@]%${abs_top_srcdir}%" $< > test_config.h
 
@@ -54,8 +54,10 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 # @abs_top_srcdir@ does not contain '../'. This happens when using
 # configure's value for the parameter when running the distcheck target.
 bes.conf: $(srcdir)/bes.conf.in Makefile
-	@my_topdir=`echo ${abs_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
-	mod_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's%\(.*\)/\(.[^/]*\)/[.][.]%\1%g'`; \
+
+%.conf: %.conf.in
+	@my_topdir=`python -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
+	mod_abs_top_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$${mod_abs_top_srcdir}%" \
     -e "s%[@]abs_srcdir[@]%$${my_topdir}%" $< > bes.conf
 
