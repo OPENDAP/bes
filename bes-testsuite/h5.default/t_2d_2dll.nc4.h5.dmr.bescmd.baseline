@@ -9,15 +9,6 @@
             <Value>degrees_east</Value>
         </Attribute>
     </Float32>
-    <Float32 name="yc">
-        <Dim name="/yc"/>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <Value>This is a netCDF dimension but not a netCDF variable.         4</Value>
-        </Attribute>
-    </Float32>
     <Float32 name="lat">
         <Dim name="/xc"/>
         <Dim name="/yc"/>
@@ -25,20 +16,8 @@
             <Value>degrees_north</Value>
         </Attribute>
     </Float32>
-    <Float32 name="xc">
-        <Dim name="/xc"/>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <Value>This is a netCDF dimension but not a netCDF variable.         4</Value>
-        </Attribute>
-    </Float32>
     <Float32 name="mydata">
         <Dim name="/xc"/>
         <Dim name="/yc"/>
     </Float32>
-    <Attribute name="_nc3_strict" type="Int32">
-        <Value>1</Value>
-    </Attribute>
 </Dataset>

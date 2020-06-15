@@ -8,12 +8,8 @@
             <Group name="GeoGrid">
                 <Dimension name="XDim" size="8"/>
                 <Dimension name="YDim" size="4"/>
-                <Dimension name="ZDim" size="2"/>
                 <Float32 name="XDim">
                     <Dim name="/HDFEOS/GRIDS/GeoGrid/XDim"/>
-                    <Attribute name="CLASS" type="String">
-                        <Value>DIMENSION_SCALE</Value>
-                    </Attribute>
                     <Attribute name="long_name" type="String">
                         <Value>longitude</Value>
                     </Attribute>
@@ -23,9 +19,6 @@
                 </Float32>
                 <Float32 name="YDim">
                     <Dim name="/HDFEOS/GRIDS/GeoGrid/YDim"/>
-                    <Attribute name="CLASS" type="String">
-                        <Value>DIMENSION_SCALE</Value>
-                    </Attribute>
                     <Attribute name="long_name" type="String">
                         <Value>latitude</Value>
                     </Attribute>
@@ -33,16 +26,9 @@
                         <Value>degrees_north</Value>
                     </Attribute>
                 </Float32>
-                <Float32 name="ZDim">
-                    <Dim name="/HDFEOS/GRIDS/GeoGrid/ZDim"/>
-                    <Attribute name="CLASS" type="String">
-                        <Value>DIMENSION_SCALE</Value>
-                    </Attribute>
-                    <Attribute name="NAME" type="String">
-                        <Value>ZDim</Value>
-                    </Attribute>
-                </Float32>
                 <Group name="Data Fields">
+                    <Dimension name="ZDim" size="2"/>
+                    <Dimension name="ZDim" size="2"/>
                     <Float32 name="Latitude">
                         <Dim name="/HDFEOS/GRIDS/GeoGrid/YDim"/>
                         <Attribute name="units" type="String">
@@ -56,13 +42,13 @@
                         </Attribute>
                     </Float32>
                     <Float32 name="Pressure">
-                        <Dim name="/HDFEOS/GRIDS/GeoGrid/ZDim"/>
+                        <Dim name="/HDFEOS/GRIDS/GeoGrid/Data Fields/ZDim"/>
                         <Attribute name="units" type="String">
                             <Value>hPa</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="Temperature">
-                        <Dim name="/HDFEOS/GRIDS/GeoGrid/ZDim"/>
+                        <Dim name="/HDFEOS/GRIDS/GeoGrid/Data Fields/ZDim"/>
                         <Dim name="/HDFEOS/GRIDS/GeoGrid/YDim"/>
                         <Dim name="/HDFEOS/GRIDS/GeoGrid/XDim"/>
                         <Attribute name="units" type="String">
