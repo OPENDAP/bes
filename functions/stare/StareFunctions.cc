@@ -46,7 +46,7 @@
 #include <Float32.h>
 #include <Int64.h>
 #include <UInt64.h>
-#
+
 #include "BESDebug.h"
 #include "BESUtil.h"
 #include "BESInternalError.h"
@@ -232,33 +232,33 @@ stare_subset_helper(const vector<dods_uint64> &target_indices, const vector<dods
     return subset;
 }
 
-unique_ptr<Array>
-stare_subset_array_helper(Array *data, const vector<dods_uint64> &target_indices, const vector<dods_uint64> &dataset_indices,
-        const vector<int> &dataset_x_coords, const vector<int> &dataset_y_coords)
+/**
+ * @brief Build the result data as masked values from src_data
+ *
+ * The result_data vector is modified.
+ *
+ * @tparam T The array element datatype (e.g., Byte, Int32, ...)
+ * @param result_data A vector<T> initialized to all mask values
+ * @param src_data  The source data. Values are transferred as apropriate to result_data.
+ * @param target_indices The STARE indices that define a region of interest.
+ * @param dataset_indices The STARE indices that describe the coverage of the data.
+ */
+template <class T>
+void stare_subset_array_helper(vector<T> &result_data, const vector<T> &src_data,
+        const vector<dods_uint64> &target_indices, const vector<dods_uint64> &dataset_indices)
 {
-    assert(dataset_indices.size() == dataset_x_coords.size());
-    assert(dataset_indices.size() == dataset_y_coords.size());
-    assert(data->type() == dods_array_c);
+    assert(dataset_indices.size() == src_data.size());
+    assert(dataset_indices.size() == result_data.size());
 
-    unique_ptr<Array> result(dynamic_cast<Array*>(data->ptr_duplicate()));
-
-    // Allocate a vector<T> for the values of result based on the element type of data
-    // Fill with the mask value
-
-    auto x = dataset_x_coords.begin();
-    auto y = dataset_y_coords.begin();
+    auto r = result_data.begin();
+    auto s = src_data.begin();
     for (const dods_uint64 &i : dataset_indices) {
         for (const dods_uint64 &j : target_indices) {
             if (cmpSpatial(i, j) != 0) {
-                // set the value of data to the vector<T> above using X, y, and the dimensions of data
+                *r = *s;
             }
         }
-        ++x;
-        ++y;
     }
-
-    // set the values of the vector<T> to result
-    return result;
 }
 
 /**
@@ -383,8 +383,7 @@ read_stare_indices_from_function_argument(BaseType *raw_stare_indices, vector<do
     Array *stare_indices = dynamic_cast<Array *>(raw_stare_indices);
     if (stare_indices == nullptr)
         throw BESSyntaxUserError(
-                "stare_intersection(): Expected an Array but found a " + raw_stare_indices->type_name(), __FILE__,
-                __LINE__);
+                "Expected an Array but found a " + raw_stare_indices->type_name(), __FILE__, __LINE__);
 
     if (stare_indices->var()->type() != dods_uint64_c)
         throw BESSyntaxUserError(
@@ -579,9 +578,15 @@ StareSubsetArrayFunction::stare_subset_array_dap4_function(D4RValueList *args, D
     //Find the filename from the dmr
     string fullPath = get_sidecar_file_pathname(dmr.filename(), stare_sidecar_suffix);
 
-    BaseType *dependent_var = args->get_rvalue(0)->value(dmr);
+    Array *dependent_var = dynamic_cast<Array*>(args->get_rvalue(0)->value(dmr));
+    if (!dependent_var)
+        throw BESSyntaxUserError("stare_subset_array() expected an Array as the first argument.", __FILE__, __LINE__);
+
     BaseType *mask_val_var = args->get_rvalue(1)->value(dmr);
-    BaseType *raw_stare_indices = args->get_rvalue(2)->value(dmr);
+
+    Array *raw_stare_indices = dynamic_cast<Array*>(args->get_rvalue(2)->value(dmr));
+    if (!raw_stare_indices)
+        throw BESSyntaxUserError("stare_subset_array() expected an Array as the third argument.", __FILE__, __LINE__);
 
     //Read the data file and store the values of each dataset into an array
     vector<dods_uint64> dep_var_stare_indices;
@@ -590,44 +595,35 @@ StareSubsetArrayFunction::stare_subset_array_dap4_function(D4RValueList *args, D
     vector<dods_uint64> target_s_indices;
     read_stare_indices_from_function_argument(raw_stare_indices, target_s_indices);
 
-    vector<dods_int32> dataset_x_coords;
-    get_sidecar_int32_values(fullPath, "X", dataset_x_coords);
-    vector<dods_int32> dataset_y_coords;
-    get_sidecar_int32_values(fullPath, "Y", dataset_y_coords);
+    // ptr_duplicate() does not copy data values
+    unique_ptr<Array> result(static_cast<Array*>(dependent_var->ptr_duplicate()));
 
-    unique_ptr <stare_matches> subset = stare_subset_helper(target_s_indices, dep_var_stare_indices, dataset_x_coords, dataset_y_coords);
+    switch(dependent_var->type()) {
+        case dods_int16_c: {
+            // The sample data we have contains an Int16 dependent variable. jhrg 6/16/20
+            // Sample data file: MYD09.A2002192.0000.006.2015149060004_hacked_1.h5
+            // Sample data variable: Int16 MODIS_SWATH_TYPE_L2_Data_Fields_1km_Surface_Reflectance_Band_2
+            // LAT,LON: Float64 MODIS_SWATH_TYPE_L2_Geolocation_Fields_Latitude,
+            // Float64 MODIS_SWATH_TYPE_L2_Geolocation_Fields_Longitude
+            //
+            // result_data is modified
 
-    // When no subset is found (none of the target indices match those in the dataset)
-    if (subset->stare_indices.size() == 0) {
-        subset->stare_indices.push_back(0);
-        subset->target_indices.push_back(0);
-        subset->x_indices.push_back(-1);
-        subset->y_indices.push_back(-1);
+            vector<dods_int16> src_data(dependent_var->length());
+            dependent_var->read();  // TODO Do we need to call read() here? jhrg 6/16/20
+            dependent_var->value(&src_data[0]);
+
+            dods_int16 mask_value = 0;  // TODO This should use the value in mask_val_var. jhrg 6/16/20
+            vector<dods_int16> result_data(dependent_var->length(), mask_value);
+
+            stare_subset_array_helper(result_data, src_data, target_s_indices, dep_var_stare_indices);
+
+            result->set_value(result_data, result_data.size());
+        }
+        default:
+            throw BESInternalError("stare_subset_array() failed: Unsupported array element type.", __FILE__, __LINE__);
     }
-    // Transfer values to a Structure
-    auto result = new Structure("result");
 
-    Array *stare = new Array("stare", new UInt64("stare"));
-    stare->set_value(&(subset->stare_indices[0]), subset->stare_indices.size());
-    stare->append_dim(subset->stare_indices.size());
-    result->add_var_nocopy(stare);
-
-    Array *target = new Array("target", new UInt64("target"));
-    target->set_value(&(subset->target_indices[0]), subset->target_indices.size());
-    target->append_dim(subset->target_indices.size());
-    result->add_var_nocopy(target);
-
-    auto x = new Array("x", new Int32("x"));
-    x->set_value(subset->x_indices, subset->x_indices.size());
-    x->append_dim(subset->x_indices.size());
-    result->add_var_nocopy(x);
-
-    auto y = new Array("y", new Int32("y"));
-    y->set_value(subset->y_indices, subset->y_indices.size());
-    y->append_dim(subset->y_indices.size());
-    result->add_var_nocopy(y);
-
-    return result;
+    return result.release();
 }
 
 
