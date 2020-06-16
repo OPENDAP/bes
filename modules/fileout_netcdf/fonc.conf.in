@@ -22,19 +22,19 @@ BES.module.fonc=@bes_modules_dir@/libfonc_module.so
 # FONc.ClassicModel: When making a netCDF4 file, use only the 'classic' netCDF 
 # data model.
 
-FONc.Tempdir=/tmp
+FONc.Tempdir = /tmp
 
-FONc.Reference=http://docs.opendap.org/index.php/BES_-_Modules_-_FileOut_Netcdf
+FONc.Reference = http://docs.opendap.org/index.php/BES_-_Modules_-_FileOut_Netcdf
 
 # The default values for these keys
 FONc.UseCompression = true
 FONc.ChunkSize = 4096
-FONc.ClassicModel = false
+FONc.ClassicModel = true
 
 # The old default value was: FONc.ClassicModel = true. This breaks Int64 support.
 # jhrg 6/15/20
 
 # Uncomment the following line to suppress the output of global attributes.
-# FONc.NoGlobalAttrs=true
+# FONc.NoGlobalAttrs = true
 
 
