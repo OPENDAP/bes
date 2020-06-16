@@ -663,8 +663,14 @@ void FONcTransform::transform_dap4_group(D4Group* grp,bool is_root_grp,int par_g
         BESDEBUG("fonc", "transform_dap4() - dim name is: "<<(*di)->name()<<endl);
         BESDEBUG("fonc", "transform_dap4() - dim size is: "<<(*di)->size()<<endl);
         BESDEBUG("fonc", "transform_dap4() - fully_qualfied_dim name is: "<<(*di)->fully_qualified_name()<<endl);
+        unsigned long dimsize = (*di)->size();
+        if((*di)->constrained()) {
+            dimsize = ((*di)->c_stop() -(*di)->c_start())/(*di)->c_stride() +1;
+
+        }
         int g_dimid = -1;
-        stax = nc_def_dim(grp_id,(*di)->name().c_str(),(*di)->size(),&g_dimid);
+        //stax = nc_def_dim(grp_id,(*di)->name().c_str(),(*di)->size(),&g_dimid);
+        stax = nc_def_dim(grp_id,(*di)->name().c_str(),dimsize,&g_dimid);
         fdimname_to_id[(*di)->fully_qualified_name()] = g_dimid; 
         //fdimname_to_id.push_back(temp_dimname_to_id);
         //cout <<"dim size is: "<<(*di)->size()<<endl;
