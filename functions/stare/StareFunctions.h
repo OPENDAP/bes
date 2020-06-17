@@ -58,6 +58,10 @@ bool target_in_dataset(const std::vector<libdap::dods_uint64> &targetIndices,
 unsigned int count(const std::vector<libdap::dods_uint64> &target_indices,
         const std:: vector<libdap::dods_uint64> &dataset_indices, bool all_target_matches = false);
 
+template <class T>
+void stare_subset_array_helper(vector<T> &result_data, const vector<T> &src_data,
+                               const vector<libdap::dods_uint64> &target_indices,
+                               const vector<libdap::dods_uint64> &dataset_indices);
 #if 0
 /// X and Y coordinates of a point
 struct point {

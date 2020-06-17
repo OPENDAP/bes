@@ -221,7 +221,7 @@ stare_subset_helper(const vector<dods_uint64> &target_indices, const vector<dods
     auto y = dataset_y_coords.begin();
     for (const dods_uint64 &i : dataset_indices) {
         for (const dods_uint64 &j : target_indices) {
-            if (cmpSpatial(i, j) != 0) {
+            if (cmpSpatial(i, j) != 0) {    // != 0 --> i is in j OR j is in i
                 subset->add(*x, *y, i, j);
             }
         }
@@ -254,7 +254,7 @@ void stare_subset_array_helper(vector<T> &result_data, const vector<T> &src_data
     auto s = src_data.begin();
     for (const dods_uint64 &i : dataset_indices) {
         for (const dods_uint64 &j : target_indices) {
-            if (cmpSpatial(i, j) != 0) {
+            if (cmpSpatial(i, j) != 0) {        // != 0 --> i is in j OR j is in i
                 *r = *s;
             }
         }
