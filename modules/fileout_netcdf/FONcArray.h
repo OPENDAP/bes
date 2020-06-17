@@ -69,6 +69,7 @@ private:
     // The netcdf dimension ids for this array from DAP4
     std::vector<int> d4_dim_ids;
     std::vector<bool>use_d4_dim_ids;
+
     // The netcdf dimension ids for this array
     std::vector<int> d_dim_ids;
     // The netcdf dimension sizes to be written
@@ -93,6 +94,7 @@ private:
     // calling the FONcMap->decref() method they are not deleted. jhrg 8/28/13
     std::vector<FONcMap*> d_grid_maps;
 
+    // if DAP4 dim. is defined
     bool d4_def_dim;
     FONcDim * find_dim(std::vector<std::string> &embed, const std::string &name, int size, bool ignore_size = false);
 

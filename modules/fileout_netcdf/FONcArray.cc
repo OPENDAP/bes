@@ -142,15 +142,6 @@ void FONcArray::convert(vector<string> embed,bool is_dap4_group)
 
     }
 #endif
-    //bool has_dap4_group =(d4_dim_ids.size()>0);
-    //has_dap4_group = d4_def_dim;
-#if 0
-    if(true == has_dap4_group) {
-
-
-    }
-    else { 
-#endif
 
     d_ndims = d_a->dimensions();
     d_actual_ndims = d_ndims; //replace this with _a->dimensions(); below TODO
@@ -180,6 +171,9 @@ void FONcArray::convert(vector<string> embed,bool is_dap4_group)
         BESDEBUG("fonc", "FONcArray::convert() - dim num: " << dimnum << ", dim size: " << size << ", chunk size: " << d_chunksizes[dimnum] << endl);
         BESDEBUG("fonc", "FONcArray::convert() - dim name: " << d_a->dimension_name(di) << endl);
 
+        //TODO: Here is the place that we need to evaluate if the dimension size is the same as the size when the local constraint is used.
+        // If the local constraint is used, the dimension name should be set to empty and the find_dim() in the else { }should be used.
+        // The real implementation may be more complicated but here is the idea. KY 2020/06/17
         if(true == d4_def_dim && use_d4_dim_ids[dimnum]== true) {
             d_dim_ids[dimnum] = d4_dim_ids[dimnum];
             BESDEBUG("fonc", "FONcArray::convert() - has dap4 group"  << endl);

@@ -23,7 +23,7 @@
 //
 // Authors:
 //      kyang     Kent Yang  <myang6@hdfgroup.org>
-// Note: The code follows FONcInt8.h.
+// Note: The code follows FONcByte.h.
 
 
 #ifndef FONcInt8_h_
@@ -35,11 +35,11 @@ using namespace libdap ;
 
 #include "FONcBaseType.h"
 
-/** @brief A class representing the DAP Byte class for file out netcdf
+/** @brief A class representing the DAP4 int8 class for file out netcdf
  *
- * This class represents a DAP Byte with additional information
+ * This class represents a DAP4 int8 with additional information
  * needed to write it out to a netcdf file. Includes a reference to the
- * actual DAP Byte being converted
+ * actual DAP4 int8 being converted
  */
 class FONcInt8 : public FONcBaseType
 {

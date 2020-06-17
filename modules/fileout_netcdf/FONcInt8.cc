@@ -22,7 +22,7 @@
 //
 // Authors:
 //      kyang     Kent Yang  <myang6@hdfgroup.org>
-// Note: The code follows FONcInt8.cc.
+// Note: The code follows FONcByte.cc.
 
 
 
@@ -33,13 +33,13 @@
 #include "FONcUtils.h"
 #include "FONcAttributes.h"
 
-/** @brief Constructor for FONcInt8 that takes a DAP Byte
+/** @brief Constructor for FONcInt8 that takes a DAP4 int8
  *
- * This constructor takes a DAP BaseType and makes sure that it is a DAP
- * Byte instance. If not, it throws an exception
+ * This constructor takes a DAP BaseType and makes sure that it is a DAP4
+ * int8 instance. If not, it throws an exception
  *
- * @param b A DAP BaseType that should be a byte
- * @throws BESInternalError if the BaseType is not a Byte
+ * @param b A DAP BaseType that should be a DAP4 int8
+ * @throws BESInternalError if the BaseType is not a DAP4 int8
  */
 FONcInt8::FONcInt8( BaseType *b )
     : FONcBaseType(), _b( 0 )
@@ -48,29 +48,29 @@ FONcInt8::FONcInt8( BaseType *b )
     if( !_b )
     {
 	string s = (string)"File out netcdf, FONcInt8 was passed a "
-		   + "variable that is not a DAP Byte" ;
+		   + "variable that is not a DAP4 int8" ;
 	throw BESInternalError( s, __FILE__, __LINE__ ) ;
     }
 }
 
-/** @brief Destructor that cleans up the byte
+/** @brief Destructor that cleans up the DAP4 int8
  *
- * The DAP Byte instance does not belong to the FONcInt8 instance, so it
+ * The DAP4 int8 instance does not belong to the FONcInt8 instance, so it
  * is not deleted.
  */
 FONcInt8::~FONcInt8()
 {
 }
 
-/** @brief define the DAP Byte in the netcdf file
+/** @brief define the DAP4 int8 in the netcdf file
  *
  * The definition actually takes place in FONcBaseType. This function
- * adds the attributes for the Byte instance as well as an attribute if
- * the name of the Byte had to be modified.
+ * adds the attributes for the int8 instance as well as an attribute if
+ * the name of the int8 had to be modified.
  *
  * @param ncid The id of the NetCDF file
  * @throws BESInternalError if there is a problem defining the
- * Byte
+ * int8
  */
 void
 FONcInt8::define( int ncid )
@@ -87,9 +87,9 @@ FONcInt8::define( int ncid )
     }
 }
 
-/** @brief Write the byte out to the netcdf file
+/** @brief Write the DAP4 int8 out to the netcdf file
  *
- * Once the byte is defined, the value of the byte can be written out
+ * Once the DAP4 int8 is defined, the value of the DAP4 int8 can be written out
  * as well.
  *
  * @param ncid The id of the netcdf file
@@ -117,9 +117,9 @@ FONcInt8::write( int ncid )
     //delete data ;
 }
 
-/** @brief returns the name of the DAP Byte
+/** @brief returns the name of the DAP4 int8
  *
- * @returns The name of the DAP Byte
+ * @returns The name of the DAP4 int8
  */
 string
 FONcInt8::name()
@@ -127,7 +127,7 @@ FONcInt8::name()
     return _b->name() ;
 }
 
-/** @brief returns the netcdf type of the DAP Byte
+/** @brief returns the netcdf type of the DAP4 int8
  *
  * @returns The nc_type of NC_BYTE
  */

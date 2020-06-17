@@ -193,9 +193,9 @@ void FONcAttributes::add_dap4_attributes(int ncid, int varid, D4Attributes *d4_a
     BESDEBUG("dap", "FONcAttributes::add_dap4_attributes() number of attributes "<< d4_attrs <<endl);
     for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
         string name = (*ii)->name();
-        BESDEBUG("dap", "FONcAttributes:: attribute name is "<<name <<endl);
+        //BESDEBUG("dap", "FONcAttributes:: attribute name is "<<name <<endl);
         unsigned int num_vals = (*ii)->num_values();
-        BESDEBUG("dap", "FONcAttributes:: num_vals is "<<num_vals <<endl);
+        //BESDEBUG("dap", "FONcAttributes:: num_vals is "<<num_vals <<endl);
         // d4_attrs includes all the global containers' attributes, which is not right. 
         if (num_vals || varid == NC_GLOBAL) 
             add_dap4_attributes_worker(ncid, varid, var_name, *ii, prepend_attr, is_nc_enhanced);
@@ -524,12 +524,13 @@ void FONcAttributes::add_dap4_attributes_worker(int ncid, int varid, const strin
 
     string new_name = FONcUtils::id2netcdf(new_attr_name);;
 
-
+#if 0
     if (varid == NC_GLOBAL) {
         BESDEBUG("fonc", "FONcAttributes::addattrs() - Adding global attributes " << d4_attr_name << endl);
     } else {
         BESDEBUG("fonc", "FONcAttributes::addattrs() - Adding attribute " << new_name << endl);
     }
+#endif
 
     // If we want to map the attributes of the datatypes to those of netCDF-4, KY 2020-02-14
     if (is_nc_enhanced == true)
@@ -898,6 +899,7 @@ void FONcAttributes::add_original_name(int ncid, int varid,
  * @param attr the iterator into the AttrTable for the attribute to be written
  * @param is_nc_enhanced The flag to indicate if we want to map datatypes to netCDF-4
  * @throws BESInternalError if there is a problem writing this attribute
+ * Note: This function only maps DAP2 attribute types to NC4.
  */
 void
 FONcAttributes::write_attrs_for_nc4_types(int ncid, int varid, const string &var_name, const string &global_attr_name,
@@ -1125,6 +1127,7 @@ FONcAttributes::write_attrs_for_nc4_types(int ncid, int varid, const string &var
  * @param attr the DAP4 attribute to be written
  * @param is_nc_enhanced The flag to indicate if we want to map datatypes to netCDF-4
  * @throws BESInternalError if there is a problem writing this attribute
+ * Note: the DAP4 attributes are mapped to NC4. Now only 64-bit integer are added.
  */
 void
 FONcAttributes::write_dap4_attrs_for_nc4_types(int ncid, int varid, const string &var_name, const string &global_attr_name,

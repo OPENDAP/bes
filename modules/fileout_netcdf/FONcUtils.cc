@@ -316,27 +316,23 @@ FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic
             Array *t_a = dynamic_cast<Array *>(v);
             Array::Dim_iter di = t_a->dim_begin();
             Array::Dim_iter de = t_a->dim_end();
+            // Here we want to check if a dimension fully_qualified name is the same as the dim. name in the dimname to dim id map.
+            // The dimname to dim id is obtained from the dimensions of the group. KY 2020/06/17
             for (; di != de; di++) {
-                BESDEBUG("fonc", "FONcArray() - constructor is dap4 "<< endl);
                 D4Dimension * d4_dim = t_a->dimension_D4dim(di);
-                BESDEBUG("fonc", "FONcArray() - constructor is dap4 after d4_dim"<< endl);
-                //BESDEBUG("fonc", "fully qualified dimension name is "<< d4_dim->fully_qualified_name() <<endl);
                 if(d4_dim) {
-                BESDEBUG("fonc", "FONcArray() - constructor is dap4 after d4_dim name is not NULL is "<< d4_dim->name() <<endl);
-                if(fdimname_to_id.find(d4_dim->fully_qualified_name())!= fdimname_to_id.end()) {
-                    int dim_id = fdimname_to_id[d4_dim->fully_qualified_name()];
-                    //int dim_id = (fdimname_to_id.find(d4_dim->fully_qualified_name()))->second();
-                    dim_ids.push_back(dim_id);
-                    use_d4_dim_ids.push_back(true);
-                }
-                else {
-                    //string err = (string) "file out netcdf, unable to " + "find dimension name" + d4_dim->fully_qualified_name();
-                    //throw BESInternalError(err, __FILE__, __LINE__);
-                    // The dummy value
-                    dim_ids.push_back(0);
-                    use_d4_dim_ids.push_back(false);
+                    BESDEBUG("fonc", "FONcArray() - constructor is dap4: dimension name is "<< d4_dim->name() <<endl);
+                    if(fdimname_to_id.find(d4_dim->fully_qualified_name())!= fdimname_to_id.end()) {
+                        int dim_id = fdimname_to_id[d4_dim->fully_qualified_name()];
+                        //int dim_id = (fdimname_to_id.find(d4_dim->fully_qualified_name()))->second();
+                        dim_ids.push_back(dim_id);
+                        use_d4_dim_ids.push_back(true);
+                    }
+                    else {
+                        dim_ids.push_back(0);
+                        use_d4_dim_ids.push_back(false);
 
-                }
+                    }
                 }
                 else {
                     dim_ids.push_back(0);
