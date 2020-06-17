@@ -318,9 +318,9 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
             }*/
             VERBOSE(cerr << "    Addr: " << cont_addr << endl);
             VERBOSE(cerr << "    Size: " << cont_size << endl);
-
-            if (dc) dc->add_chunk("", cont_size, cont_addr, "" /*pos in array*/);
-
+            if (cont_size > 0) {
+                if (dc) dc->add_chunk("", cont_size, cont_addr, "" /*pos in array*/);
+            }
             break;
         }
 

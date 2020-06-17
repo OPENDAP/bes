@@ -372,13 +372,17 @@ bool add_faddr_chunk_info(const string &str,vector<string>& chunk_info,bool is_d
         hdf5_faddr = str.substr(hdf5_faddr_start_pos+addr_mark.size(),hdf5_faddr_end_pos-hdf5_faddr_start_pos-addr_mark.size());
     }
 
-    if(hdf5_faddr.rfind(hdf5_fname)==string::npos) {
+    // The string for use in each missing_variable <chunk href:"value" >
+    hdf5_faddr = " href=\"" + faddr_source + end_delim1;
+
+    /*if (hdf5_faddr.rfind(hdf5_fname) == string::npos) {
         //trim hdf5 file address.
-        hdf5_faddr = " href=\"" +faddr_source+hdf5_faddr+'/'+hdf5_fname+end_delim1;
+        hdf5_faddr = " href=\"" +hdf5_faddr+'/'+hdf5_fname+end_delim1;
     }
     else {
-        hdf5_faddr = " href=\"" + faddr_source + hdf5_faddr + end_delim1;
-    }
+        hdf5_faddr = " href=\"" +hdf5_faddr+end_delim1;
+    }*/
+
 //cout<<"hdf5_faddr is "<<hdf5_faddr <<endl;        
 
     for (int i = 0;i<chunk_info.size();i++) {   
