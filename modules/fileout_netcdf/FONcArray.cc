@@ -29,6 +29,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <BESLog.h>
 #include <BESInternalError.h>
 #include <BESDebug.h>
 
@@ -517,6 +518,25 @@ void FONcArray::write(int ncid)
             }
 
             case NC_INT: {
+                // Added as a stop-gap measure to alert SAs and inform users of a misconfigured server.
+                // jhrg 6/15/20
+                if (var_type == "Int64" || var_type == "UInt64" ) {
+                    // We should not be here. The server configuration is wrong since the netcdf classic
+                    // model is being used (either a netCDf3 response is requested OR a netCDF4 with the
+                    // classic model. Tell the user and the SA.
+                    string msg;
+                    if (FONcRequestHandler::classic_model == false) {
+                        msg = "You asked for one or more 64-bit integer values returned using a netCDF3 file. "
+                              "Try asking for netCDF4 and/or contact the server administrator.";
+                    }
+                    else {
+                        msg = "You asked for one or more 64-bit integer values, but either returned using a netCDF3 file or "
+                              "from a server that is configured to use the 'classic' netCDF data model with netCDF4. "
+                              "Try netCDF4 and/or contact the server administrator.";
+                    }
+                    throw BESInternalError(msg, __FILE__, __LINE__);
+                }
+
                 int *data = new int[d_nelements];
                 // Since UInt16 also maps to NC_INT, we need to obtain the data correctly
                 // KY 2012-10-25

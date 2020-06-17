@@ -105,6 +105,7 @@
 #include "BESDMRResponse.h"
 #include "BESDataHandlerInterface.h"
 #include "BESInternalFatalError.h"
+#include "BESSyntaxUserError.h"
 #include "BESDataNames.h"
 
 #include "BESRequestHandler.h"
@@ -1065,7 +1066,12 @@ BESDapResponseBuilder::intern_dap2_data(BESResponseObject *obj, BESDataHandlerIn
     // in the data if the variable has the send flag set.
     for (DDS::Vars_iter i = dds->var_begin(), e = dds->var_end(); i != e; ++i) {
         if ((*i)->send_p()) {
-            (*i)->intern_data(eval, *dds);
+            try {
+                (*i)->intern_data(eval, *dds);
+            }
+            catch(std::exception &e) {
+                throw BESSyntaxUserError(string("Caught a C++ standard exception while working on '") + (*i)->name() + "' The error was: " + e.what(), __FILE__, __LINE__);
+            }
         }
     }
 

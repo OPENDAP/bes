@@ -356,6 +356,10 @@ void *one_child_chunk_thread(void *arg_list)
 /**
  * @brief Read an array that is stored using one 'chunk.'
  *
+ * @todo This code should be tested to make sure that an access that requires
+ * authentication which then fails is properly handled. All the threads will
+ * need to be stopped. Also, an auth that succeeds _may_ need to be restarted.
+ *
  * @return Always returns true, matching the libdap::Array::read() behavior.
  */
 void DmrppArray::read_contiguous()
@@ -879,6 +883,11 @@ void DmrppArray::insert_chunk(unsigned int dim, vector<unsigned int> *target_ele
 /**
  * @brief Read chunked data
  *
+ * @todo This code could be made faster if it moved handling the multiple curl
+ * easy_handles here (either using pthreads or the multi api or multi sockets
+ * api). This would enable reading and inserting chunks in parallel. Right now
+ * we just read in parallel, then insert, then read, ...
+ *
  * Read chunked data, using either parallel or serial data transfers, depending on
  * the DMR++ handler configuration parameters.
  */
@@ -906,6 +915,7 @@ void DmrppArray::read_chunks()
     BESDEBUG(dmrpp_3, "d_use_parallel_transfers: " << DmrppRequestHandler::d_use_parallel_transfers << endl);
     BESDEBUG(dmrpp_3, "d_max_parallel_transfers: " << DmrppRequestHandler::d_max_parallel_transfers << endl);
 
+    // TODO Move this to the handler startup? This is a CentOS6 issue, it goes away with C7, Ubuntu, ...
 #if !HAVE_CURL_MULTI_API
     if (DmrppRequestHandler::d_use_parallel_transfers)
         LOG("The DMR++ handler is configured to use parallel transfers, but the libcurl Multi API is not present, defaulting to serial transfers");
