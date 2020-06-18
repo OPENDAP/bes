@@ -36,6 +36,7 @@
 #include "FONcUtils.h"
 #include "FONcDim.h"
 #include "FONcByte.h"
+#include "FONcInt8.h"
 #include "FONcUByte.h"
 #include "FONcStr.h"
 #include "FONcShort.h"
@@ -52,6 +53,8 @@
 #include "FONcSequence.h"
 
 #include <BESInternalError.h>
+#include <BESDebug.h>
+#include <D4Dimensions.h>
 
 /** @brief If a variable name, dimension name, or attribute name begins
  * with a character that is not supported by netcdf, then use this
@@ -115,6 +118,14 @@ nc_type FONcUtils::get_nc_type(BaseType *element,bool IsNC4_ENHANCED)
             x_type = NC_UBYTE;
         else 
             x_type = NC_SHORT;
+    }
+    else if(var_type =="Int8") {
+        if(IsNC4_ENHANCED) 
+            x_type = NC_BYTE;
+    }
+    else if(var_type =="UInt8") {
+        if(IsNC4_ENHANCED) 
+            x_type = NC_UBYTE;
     }
     else if (var_type == "String")
         x_type = NC_CHAR;
@@ -210,7 +221,25 @@ string FONcUtils::gen_name(const vector<string> &embed, const string &name, stri
  * @throws BESInternalError if the DAP object is not an expected type
  */
 FONcBaseType *
-FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic_model)
+FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic_model) {
+    map<string,int>fdimname_to_id;
+    return convert(v,ncdf_version, is_classic_model,fdimname_to_id);
+}
+
+/** @brief Creates a FONc object for the given DAP object
+ *
+ * This is a simple factory for FONcBaseType objects that maps the
+ * DAP2 data types into netCDF3 and netCDF4 types (actually instances of
+ * FONcBaseType's specializations).
+ *
+ * @param v The DAP object to convert
+ * @param ncdf_version The string that indicates if this is netCDF 3 or netCDF 4
+ * @param is_classic_model The flag that indicates if the output is in classic model or not
+ * @returns The FONc object created via the DAP object
+ * @throws BESInternalError if the DAP object is not an expected type
+ */
+FONcBaseType *
+FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic_model, map<string,int>&fdimname_to_id)
 {
     FONcBaseType *b = 0;
     bool is_netcdf4_enhanced = false;
@@ -221,6 +250,7 @@ FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic
     case dods_url_c:
         b = new FONcStr(v);
         break;
+    case dods_uint8_c:
     case dods_byte_c: {
         if(true == is_netcdf4_enhanced)
             b = new FONcUByte(v);
@@ -228,6 +258,14 @@ FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic
             b = new FONcByte(v);
         break;
     }
+    case dods_int8_c: {
+        if(true == is_netcdf4_enhanced)
+            b = new FONcInt8(v);
+        else 
+            b = new FONcByte(v);
+        break;
+    }
+
     case dods_uint16_c: {
         if(true == is_netcdf4_enhanced)
             b = new FONcUShort(v); 
@@ -272,7 +310,42 @@ FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic
         b = new FONcGrid(v);
         break;
     case dods_array_c:
-        b = new FONcArray(v);
+        if(fdimname_to_id.size()>0) {
+            vector<int> dim_ids;
+            vector<bool> use_d4_dim_ids;
+            Array *t_a = dynamic_cast<Array *>(v);
+            Array::Dim_iter di = t_a->dim_begin();
+            Array::Dim_iter de = t_a->dim_end();
+            // Here we want to check if a dimension fully_qualified name is the same as the dim. name in the dimname to dim id map.
+            // The dimname to dim id is obtained from the dimensions of the group. KY 2020/06/17
+            for (; di != de; di++) {
+                D4Dimension * d4_dim = t_a->dimension_D4dim(di);
+                if(d4_dim) {
+                    BESDEBUG("fonc", "FONcArray() - constructor is dap4: dimension name is "<< d4_dim->name() <<endl);
+                    if(fdimname_to_id.find(d4_dim->fully_qualified_name())!= fdimname_to_id.end()) {
+                        int dim_id = fdimname_to_id[d4_dim->fully_qualified_name()];
+                        //int dim_id = (fdimname_to_id.find(d4_dim->fully_qualified_name()))->second();
+                        dim_ids.push_back(dim_id);
+                        use_d4_dim_ids.push_back(true);
+                    }
+                    else {
+                        dim_ids.push_back(0);
+                        use_d4_dim_ids.push_back(false);
+
+                    }
+                }
+                else {
+                    dim_ids.push_back(0);
+                    use_d4_dim_ids.push_back(false);
+                }
+
+            }
+            b = new FONcArray(v,dim_ids,use_d4_dim_ids);
+
+        }
+        else {
+            b = new FONcArray(v);
+        }
         break;
     case dods_structure_c:
         b = new FONcStructure(v);

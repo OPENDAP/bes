@@ -69,9 +69,9 @@ FONcSequence::~FONcSequence()
  * @throws BESInternalError if there is a problem converting the
  * Byte
  */
-void FONcSequence::convert(vector<string> embed)
+void FONcSequence::convert(vector<string> embed,bool is_dap4_group)
 {
-    FONcBaseType::convert(embed);
+    FONcBaseType::convert(embed,is_dap4_group);
     _varname = FONcUtils::gen_name(embed, _varname, _orig_varname);
 }
 

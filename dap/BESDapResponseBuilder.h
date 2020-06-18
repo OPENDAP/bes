@@ -26,6 +26,7 @@
 #define _response_builder_h
 
 #include <string>
+//#include <D4Group.h>
 
 #define DAP_PROTOCOL_VERSION "3.2"
 
@@ -86,6 +87,7 @@ protected:
 #endif
 
 	void send_dap4_data_using_ce(std::ostream &out, libdap::DMR &dmr, bool with_mime_headersr);
+    void intern_dap4_data_grp(libdap::D4Group* grp);
 
 public:
 
