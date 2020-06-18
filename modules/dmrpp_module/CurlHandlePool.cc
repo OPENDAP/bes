@@ -268,7 +268,7 @@ static bool evaluate_curl_response(CURL *eh) {
     long http_code = 0;
     CURLcode res = curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_code);
     if (res == CURLE_GOT_NOTHING) {
-        string effective_url;
+        char *effective_url = 0;
         curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &effective_url);
         LOG("Ouch. cURL returned CURLE_GOT_NOTHING, returning false.  CURLINFO_EFFECTIVE_URL: " << effective_url << endl);
         return false;
@@ -307,7 +307,7 @@ static bool evaluate_curl_response(CURL *eh) {
         case 503: // Service Unavailable
         case 504: // Gateway Timeout
         {
-            string effective_url;
+            char *effective_url = 0;
             curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &effective_url);
             LOG("HTTP transfer " << http_code << " error, returning false.  CURLINFO_EFFECTIVE_URL: " << effective_url << endl);
             return false;
