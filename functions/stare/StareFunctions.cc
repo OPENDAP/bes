@@ -656,7 +656,8 @@ StareSubsetArrayFunction::stare_subset_array_dap4_function(D4RValueList *args, D
         }
 
         default:
-            throw BESInternalError(string("stare_subset_array() failed: Unsupported array element type (") + dependent_var->var()->type_name() + ").", __FILE__, __LINE__);
+            throw BESInternalError(string("stare_subset_array() failed: Unsupported array element type (")
+                + dependent_var->var()->type_name() + ").", __FILE__, __LINE__);
     }
 
     return result.release();
