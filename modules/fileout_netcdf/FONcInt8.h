@@ -1,4 +1,5 @@
-// FONcStructure.h
+
+// FONcInt8.h
 
 // This file is part of BES Netcdf File Out Module
 
@@ -19,49 +20,43 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
-// You can contact University Corporation for Atmospheric Research at
-// 3080 Center Green Drive, Boulder, CO 80301
-
-// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
-// Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
 // Authors:
-//      pwest       Patrick West <pwest@ucar.edu>
-//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+//      kyang     Kent Yang  <myang6@hdfgroup.org>
+// Note: The code follows FONcByte.h.
 
-#ifndef FONcStructure_h_
-#define FONcStructure_h_ 1
 
-#include <Structure.h>
+#ifndef FONcInt8_h_
+#define FONcInt8_h_ 1
+
+#include <Int8.h>
 
 using namespace libdap ;
 
 #include "FONcBaseType.h"
 
-/** @brief A DAP Structure with file out netcdf information included
+/** @brief A class representing the DAP4 int8 class for file out netcdf
  *
- * This class represents a DAP Structure with additional information
+ * This class represents a DAP4 int8 with additional information
  * needed to write it out to a netcdf file. Includes a reference to the
- * actual DAP Structure being converted. Keeps the list of converted
- * BaseTypes as FONcBaseType instances.
+ * actual DAP4 int8 being converted
  */
-class FONcStructure : public FONcBaseType
+class FONcInt8 : public FONcBaseType
 {
 private:
-    Structure *			_s ;
-    vector<FONcBaseType *>	_vars ;
+    Int8 *			_b ;
 public:
-    				FONcStructure( BaseType *b ) ;
-    virtual			~FONcStructure() ;
+    				FONcInt8( BaseType *b ) ;
+    virtual			~FONcInt8() ;
 
-    virtual void		convert( vector<string> embed ,bool is_dap4_group=false) ;
     virtual void		define( int ncid ) ;
     virtual void		write( int ncid ) ;
 
     virtual string 		name() ;
+    virtual nc_type		type() ;
 
     virtual void		dump( ostream &strm ) const ;
 } ;
 
-#endif // FONcStructure_h_
+#endif // FONcInt8_h_
 

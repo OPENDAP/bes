@@ -34,7 +34,7 @@
 #include "FONcBaseType.h"
 #include "FONcUtils.h"
 
-void FONcBaseType::convert(vector<string> embed)
+void FONcBaseType::convert(vector<string> embed,bool is_dap4_group)
 {
     _embed = embed;
     _varname = name();

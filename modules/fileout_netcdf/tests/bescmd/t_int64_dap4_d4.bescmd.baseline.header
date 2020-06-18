@@ -2,6 +2,7 @@ netcdf test {
 dimensions:
 	dim1 = 2 ;
 	dim2 = 2 ;
+	dim3 = 2 ;
 variables:
 	int64 d64(dim1) ;
 		d64:attr_int = -2147483648, 2147483647 ;
@@ -23,6 +24,9 @@ variables:
 		du64s:attr_int64s = 9223372036854775807LL, -9223372036854775808LL ;
 		du64s:origname = "du64s" ;
 		du64s:fullnamepath = "/du64s" ;
+	int64 grp_int64_d64(dim3) ;
+		grp_int64_d64:origname = "d64" ;
+		grp_int64_d64:fullnamepath = "/grp_int64/d64" ;
 
 // global attributes:
 		:root_attr_int64 = 9223372036854775807LL, -9223372036854775808LL ;
