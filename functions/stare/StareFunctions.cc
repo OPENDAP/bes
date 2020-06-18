@@ -97,6 +97,7 @@ ostream & operator << (ostream &out, const stare_matches &m)
     return out;
 }
 
+#if 0
 // May need to be moved to libdap/util
 // This helper function assumes 'var' is the correct size.
 // Made this static to limit its scope to this file. jhrg 11/7/19
@@ -118,6 +119,7 @@ static vector<dods_uint64> *extract_uint64_array(Array *var) {
 
     return newVar;
 }
+#endif
 
 void
 extract_uint64_array(Array *var, vector<dods_uint64> &values) {
@@ -223,6 +225,7 @@ stare_subset_helper(const vector<dods_uint64> &target_indices, const vector<dods
         for (const dods_uint64 &j : target_indices) {
             if (cmpSpatial(i, j) != 0) {    // != 0 --> i is in j OR j is in i
                 subset->add(*x, *y, i, j);
+                // TODO Add a break call here? jhrg 6/17/20
             }
         }
         ++x;
@@ -235,7 +238,10 @@ stare_subset_helper(const vector<dods_uint64> &target_indices, const vector<dods
 /**
  * @brief Build the result data as masked values from src_data
  *
- * The result_data vector is modified.
+ * The result_data vector is modified. The result_data vector should be
+ * passed to this function filled with NaN or the equivalent. This function
+ * will transfer only the values from src_data to result_data that have
+ * STARE indices which overlap a target index.
  *
  * @tparam T The array element datatype (e.g., Byte, Int32, ...)
  * @param result_data A vector<T> initialized to all mask values
@@ -256,8 +262,10 @@ void stare_subset_array_helper(vector<T> &result_data, const vector<T> &src_data
         for (const dods_uint64 &j : target_indices) {
             if (cmpSpatial(i, j) != 0) {        // != 0 --> i is in j OR j is in i
                 *r = *s;
+                break;
             }
         }
+        ++r; ++s;
     }
 }
 
@@ -430,7 +438,10 @@ StareIntersectionFunction::stare_intersection_dap4_function(D4RValueList *args, 
 
     bool status = target_in_dataset(target_s_indices, dep_var_stare_indices);
 
-    Int32 *result = new Int32("result");
+#if 0
+     Int32 *result = new Int32("result");
+#endif
+    unique_ptr<Int32> result(new Int32("result"));
     if (status) {
         result->set_value(1);
     }
@@ -438,7 +449,7 @@ StareIntersectionFunction::stare_intersection_dap4_function(D4RValueList *args, 
         result->set_value(0);
     }
 
-    return result;
+    return result.release();
 }
 
 /**
@@ -484,9 +495,12 @@ StareCountFunction::stare_count_dap4_function(D4RValueList *args, DMR &dmr)
 
     int num = count(target_s_indices, dep_var_stare_indices);
 
+#if 0
     Int32 *result = new Int32("result");
+#endif
+    unique_ptr<Int32> result(new Int32("result"));
     result->set_value(num);
-    return result;
+    return result.release();
 }
 
 /**
@@ -541,29 +555,44 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
         subset->y_indices.push_back(-1);
     }
     // Transfer values to a Structure
-    auto result = new Structure("result");
+    unique_ptr<Structure> result(new Structure("result"));
 
-    Array *stare = new Array("stare", new UInt64("stare"));
+    unique_ptr<Array> stare(new Array("stare", new UInt64("stare")));
     stare->set_value(&(subset->stare_indices[0]), subset->stare_indices.size());
     stare->append_dim(subset->stare_indices.size());
-    result->add_var_nocopy(stare);
+    result->add_var_nocopy(stare.release());
 
-    Array *target = new Array("target", new UInt64("target"));
+    unique_ptr<Array> target(new Array("target", new UInt64("target")));
     target->set_value(&(subset->target_indices[0]), subset->target_indices.size());
     target->append_dim(subset->target_indices.size());
-    result->add_var_nocopy(target);
+    result->add_var_nocopy(target.release());
 
-    auto x = new Array("x", new Int32("x"));
+    unique_ptr<Array> x(new Array("x", new Int32("x")));
     x->set_value(subset->x_indices, subset->x_indices.size());
     x->append_dim(subset->x_indices.size());
-    result->add_var_nocopy(x);
+    result->add_var_nocopy(x.release());
 
-    auto y = new Array("y", new Int32("y"));
+    unique_ptr<Array> y(new Array("y", new Int32("y")));
     y->set_value(subset->y_indices, subset->y_indices.size());
     y->append_dim(subset->y_indices.size());
-    result->add_var_nocopy(y);
+    result->add_var_nocopy(y.release());
 
-    return result;
+    return result.release();
+}
+
+template <class T>
+void StareSubsetArrayFunction::build_masked_data(Array *dependent_var, const vector<dods_uint64> &dep_var_stare_indices,
+                                                 const vector<dods_uint64> &target_s_indices, unique_ptr<Array> &result) {
+    vector<T> src_data(dependent_var->length());
+    dependent_var->read();  // TODO Do we need to call read() here? jhrg 6/16/20
+    dependent_var->value(&src_data[0]);
+
+    T mask_value = 0;  // TODO This should use the value in mask_val_var. jhrg 6/16/20
+    vector<T> result_data(dependent_var->length(), mask_value);
+
+    stare_subset_array_helper(result_data, src_data, target_s_indices, dep_var_stare_indices);
+
+    result->set_value(result_data, result_data.size());
 }
 
 BaseType *
@@ -598,33 +627,21 @@ StareSubsetArrayFunction::stare_subset_array_dap4_function(D4RValueList *args, D
     // ptr_duplicate() does not copy data values
     unique_ptr<Array> result(static_cast<Array*>(dependent_var->ptr_duplicate()));
 
-    switch(dependent_var->type()) {
+    switch(dependent_var->var()->type()) {
         case dods_int16_c: {
-            // The sample data we have contains an Int16 dependent variable. jhrg 6/16/20
-            // Sample data file: MYD09.A2002192.0000.006.2015149060004_hacked_1.h5
-            // Sample data variable: Int16 MODIS_SWATH_TYPE_L2_Data_Fields_1km_Surface_Reflectance_Band_2
-            // LAT,LON: Float64 MODIS_SWATH_TYPE_L2_Geolocation_Fields_Latitude,
-            // Float64 MODIS_SWATH_TYPE_L2_Geolocation_Fields_Longitude
-            //
-            // result_data is modified
-
-            vector<dods_int16> src_data(dependent_var->length());
-            dependent_var->read();  // TODO Do we need to call read() here? jhrg 6/16/20
-            dependent_var->value(&src_data[0]);
-
-            dods_int16 mask_value = 0;  // TODO This should use the value in mask_val_var. jhrg 6/16/20
-            vector<dods_int16> result_data(dependent_var->length(), mask_value);
-
-            stare_subset_array_helper(result_data, src_data, target_s_indices, dep_var_stare_indices);
-
-            result->set_value(result_data, result_data.size());
+            build_masked_data<dods_int16>(dependent_var, dep_var_stare_indices, target_s_indices, result);
+            break;
         }
+        case dods_float32_c: {
+            build_masked_data<dods_float32>(dependent_var, dep_var_stare_indices, target_s_indices, result);
+            break;
+        }
+
         default:
-            throw BESInternalError("stare_subset_array() failed: Unsupported array element type.", __FILE__, __LINE__);
+            throw BESInternalError(string("stare_subset_array() failed: Unsupported array element type (") + dependent_var->var()->type_name() + ").", __FILE__, __LINE__);
     }
 
     return result.release();
 }
-
 
 } // namespace functions

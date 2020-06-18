@@ -194,6 +194,10 @@ public:
 
     virtual ~StareSubsetArrayFunction() {
     }
+
+    template <class T>
+    static void build_masked_data(libdap::Array *dependent_var, const vector<libdap::dods_uint64> &dep_var_stare_indices,
+                                const vector<libdap::dods_uint64> &target_s_indices, unique_ptr<libdap::Array> &result);
 };
 
 } // functions namespace

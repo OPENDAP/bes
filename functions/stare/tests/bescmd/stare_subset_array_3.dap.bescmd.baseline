@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="function_results">
+    <Float32 name="Latitude">
+        <Dim size="11"/>
+        <Dim size="11"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="Nadir_Data_Resolution" type="String">
+            <Value>1km</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-90.</Value>
+            <Value>90.</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </Float32>
+</Dataset>
+
+The data:
+Float32 Latitude[11][11] = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},{0, 0, 0, 0, 0, 0, 0, 0, 32.283, 0, 0},{0, 0, 0, 0, 0, 32.2861, 32.2858, 0, 32.2853, 0, 0},{0, 0, 0, 0, 0, 32.2883, 32.2881, 32.2878, 32.2875, 0, 0},{0, 0, 0, 0, 0, 32.2906, 32.2903, 32.2901, 32.2898, 32.2895, 32.2892},{0, 0, 0, 0, 0, 32.2929, 32.2926, 32.2923, 32.2921, 32.2918, 32.2915},{0, 0, 0, 0, 0, 32.2951, 32.2949, 32.2946, 32.2943, 32.294, 32.2938}};
+
