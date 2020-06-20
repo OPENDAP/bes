@@ -338,6 +338,7 @@ void dmrpp_easy_handle::read_data() {
 
         // Perform the request
         do {
+            BESDEBUG(MODULE, prolog << "Requesting URL: " << d_url << endl);
             CURLcode curl_code = curl_easy_perform(d_handle);
             ++tries;
 
