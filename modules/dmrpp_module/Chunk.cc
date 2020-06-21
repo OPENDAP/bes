@@ -104,7 +104,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
     size_t nbytes = size * nmemb;
     Chunk *chunk = reinterpret_cast<Chunk*>(data);
 
-    BESDEBUG(MODULE, prolog << "BEGIN: chunk->get_response_content_type(): " << chunk->get_response_content_type() << " url: " << chunk->get_data_url() <<  );
+    BESDEBUG(MODULE, prolog << "BEGIN: chunk->get_response_content_type(): " << chunk->get_response_content_type() << " url: " << chunk->get_data_url() << endl);
 
     // When Content-Type is 'application/xml,' that's an error. jhrg 6/9/20
     if (chunk->get_response_content_type().find("application/xml") != string::npos) {
