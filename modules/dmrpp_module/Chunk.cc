@@ -104,6 +104,8 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
     size_t nbytes = size * nmemb;
     Chunk *chunk = reinterpret_cast<Chunk*>(data);
 
+    BESDEBUG(MODULE, prolog << "BEGIN: chunk->get_response_content_type(): " << chunk->get_response_content_type() << " url: " << chunk->get_data_url() <<  );
+
     // When Content-Type is 'application/xml,' that's an error. jhrg 6/9/20
     if (chunk->get_response_content_type().find("application/xml") != string::npos) {
         // At this point we no longer care about great performance - error msg readability
@@ -161,6 +163,8 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
 
     memcpy(chunk->get_rbuf() + bytes_read, buffer, nbytes);
     chunk->set_bytes_read(bytes_read + nbytes);
+
+    BESDEBUG(MODULE, prolog << "END" << endl );
 
     return nbytes;
 }
@@ -240,6 +244,8 @@ void inflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len)
 
     /* Finish uncompressing the stream */
     (void) inflateEnd(&z_strm);
+
+
 }
 
 // #define this to enable the duff's device loop unrolling code.
