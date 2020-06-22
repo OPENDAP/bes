@@ -966,6 +966,19 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                     cerr << "There was no 'compressionType' attribute associated with the variable '" << bt->type_name()
                         << " " << bt->name() << "'" << endl;
             }
+
+            if (parser->check_attribute("byteOrder", attributes, nb_attributes)) {
+                string byte_order_string(parser->get_attribute_val("byteOrder", attributes, nb_attributes));
+                dc->ingest_byte_order(byte_order_string);
+
+                if (parser->debug())
+                    cerr << "Processed attribute 'byteOrder=\"" << byte_order_string << "\"'" << endl;
+            }
+            else {
+                if (parser->debug())
+                    cerr << "There was no 'byteOrder' attribute associated with the variable '" << bt->type_name()
+                         << " " << bt->name() << "'" << endl;
+            }
         }
         // Ingest an dmrpp:chunk element and its attributes
         else if (strcmp(localname, "chunk") == 0) {

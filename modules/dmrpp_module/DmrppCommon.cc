@@ -147,6 +147,30 @@ void DmrppCommon::ingest_compression_type(string compression_type_string)
 }
 
 /**
+ * @brief Parses the text content of the XML element h4:byteOrder.
+ *
+ * @param byte_order_string One of "LE", "BE", or ""
+ */
+    void DmrppCommon::ingest_byte_order(string byte_order_string) {
+        
+        if (byte_order_string.empty()) return;
+
+        // Clear previous state
+        d_byte_order = "";
+
+        // Process content
+        if (byte_order_string.compare("LE") != 0) {
+            d_byte_order = "LE";
+        } else {
+            if (byte_order_string.compare("BE") != 0) {
+                d_byte_order = "BE";
+            } else {
+                throw BESInternalError("Did not recognize byteOrder.", __FILE__, __LINE__);
+            }
+        }
+    }
+
+/**
  * @brief Add a new chunk as defined by an h4:byteStream element
  * @return The number of chunk refs (byteStreams) held.
  */
