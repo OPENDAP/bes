@@ -253,6 +253,8 @@ namespace ngap {
                                    __FILE__, __LINE__);
         }
 
+        BESDEBUG(MODULE, prolog << "Following data_access_url redirects..." << endl);
+
         return data_access_url;
     }
 

@@ -146,6 +146,11 @@ namespace ngap {
         // Since this the ngap we know that the real_name is a URL.
         string data_access_url = get_real_name();
 
+        string last_accessed_url;
+        ngap_curl::find_last_redirect(data_access_url,last_accessed_url);
+        BESDEBUG(MODULE, prolog << "last_accessed_url: " << last_accessed_url << endl);
+
+
         // And we know that the dmr++ file should "right next to it" (side-car)
         string dmrpp_url = data_access_url + ".dmrpp";
 
@@ -156,13 +161,15 @@ namespace ngap {
         if (type == "ngap")
             type = "";
 
+
+
         if (!d_dmrpp_rresource) {
             BESDEBUG(MODULE, prolog << "Building new RemoteResource (dmr++)." << endl);
             string replace_template;
             string replace_value;
             if (inject_data_url()) {
                 replace_template = DATA_ACCESS_URL_KEY;
-                replace_value = data_access_url;
+                replace_value = last_accessed_url;
             }
             d_dmrpp_rresource = new ngap::RemoteHttpResource(dmrpp_url);
             d_dmrpp_rresource->retrieveResource(replace_template, replace_value);
