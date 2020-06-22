@@ -174,7 +174,7 @@ public:
     {
         BESContextManager::TheManager()->set_context("cloudydap", "request_id");
 
-        auto_ptr<Chunk> l_chunk(new Chunk("http://s3.amazonaws.com/somewhereovertherainbow", 100, 10, ""));
+        auto_ptr<Chunk> l_chunk(new Chunk("http://s3.amazonaws.com/somewhereovertherainbow", "", 100, 10, ""));
 
         CPPUNIT_ASSERT(!l_chunk->d_query_marker.empty());
         DBG(cerr << "l_chunk->d_query_marker: " << l_chunk->d_query_marker << endl);
@@ -191,7 +191,7 @@ public:
     {
         // No context, S3 URL, non-default ctor
         BESContextManager::TheManager()->unset_context("cloudydap");
-        auto_ptr<Chunk> l_chunk(new Chunk("http://s3.amazonaws.com/somewhereovertherainbow", 100, 10, ""));
+        auto_ptr<Chunk> l_chunk(new Chunk("http://s3.amazonaws.com/somewhereovertherainbow", "", 100, 10, ""));
 
         CPPUNIT_ASSERT(l_chunk->d_query_marker.empty());
 

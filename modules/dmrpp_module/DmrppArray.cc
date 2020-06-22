@@ -402,6 +402,7 @@ void DmrppArray::read_contiguous()
 		// Use the original chunk's size and offset to evenly split it into smaller chunks
 		unsigned long long chunk_size = master_chunk_size / num_chunks;
 		unsigned long long chunk_offset = master_chunk.get_offset();
+		std::string chunk_byteorder = master_chunk.get_byte_order();
 
 		// If the size of the master chunk is not evenly divisible by num_chunks, capture
 		// the remainder here and increase the size of the last chunk by this number of bytes.
@@ -413,10 +414,10 @@ void DmrppArray::read_contiguous()
 		queue<Chunk *> chunks_to_read;
 
 		for (unsigned int i = 0; i < num_chunks-1; i++) {
-			chunks_to_read.push(new Chunk(chunk_url, chunk_size, (chunk_size * i) + chunk_offset));
+			chunks_to_read.push(new Chunk(chunk_url, chunk_byteorder, chunk_size, (chunk_size * i) + chunk_offset));
 		}
 		// See above for details about chunk_remainder. jhrg 9/21/19
-		chunks_to_read.push(new Chunk(chunk_url, chunk_size + chunk_remainder, (chunk_size * (num_chunks-1)) + chunk_offset));
+		chunks_to_read.push(new Chunk(chunk_url, chunk_byteorder, chunk_size + chunk_remainder, (chunk_size * (num_chunks-1)) + chunk_offset));
 
 		// Start the max number of processing pipelines
 		pthread_t threads[DmrppRequestHandler::d_max_parallel_transfers];
