@@ -14,7 +14,9 @@
     <Attribute name="maximum" type="Int16">
       <Value>32767</Value>
     </Attribute>
-    <dmrpp:chunk nBytes="4"  offset="2216" />
+    <dmrpp:chunks byteOrder="LE">
+      <dmrpp:chunk nBytes="4"  offset="2216" />
+    </dmrpp:chunks>
   </Int16>
   <Int16 name="d16_2">
     <Dim size="2"/>
@@ -35,7 +37,9 @@
       <Value>2</Value>
       <Value>32767</Value>
     </Attribute>
-    <dmrpp:chunk nBytes="8"  offset="2220" />
+    <dmrpp:chunks byteOrder="LE">
+      <dmrpp:chunk nBytes="8"  offset="2220" />
+    </dmrpp:chunks>
   </Int16>
   <Int32 name="d32_1">
     <Dim size="2"/>
@@ -47,7 +51,9 @@
     <Attribute name="maximum" type="Int32">
       <Value>2147483647</Value>
     </Attribute>
-    <dmrpp:chunk nBytes="32"  offset="2228" />
+    <dmrpp:chunks byteOrder="LE">
+      <dmrpp:chunk nBytes="32"  offset="2228" />
+    </dmrpp:chunks>
   </Int32>
   <Int32 name="d32_2">
     <Dim size="2"/>
@@ -61,6 +67,8 @@
     <Attribute name="maximum" type="Int32">
       <Value>2147483647</Value>
     </Attribute>
-    <dmrpp:chunk nBytes="128"  offset="2260" />
+    <dmrpp:chunks byteOrder="LE">
+      <dmrpp:chunk nBytes="128"  offset="2260" />
+    </dmrpp:chunks>
   </Int32>
 </Dataset>

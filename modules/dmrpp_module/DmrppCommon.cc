@@ -152,22 +152,27 @@ void DmrppCommon::ingest_compression_type(string compression_type_string)
  * @param byte_order_string One of "LE", "BE", or ""
  */
     void DmrppCommon::ingest_byte_order(string byte_order_string) {
-        
-        if (byte_order_string.empty()) return;
 
         // Clear previous state
         d_byte_order = "";
 
+        if (byte_order_string.empty()) return;
+
         // Process content
-        if (byte_order_string.compare("LE") != 0) {
+        if (byte_order_string.compare("LE") == 0) {
             d_byte_order = "LE";
         } else {
-            if (byte_order_string.compare("BE") != 0) {
+            if (byte_order_string.compare("BE") == 0) {
                 d_byte_order = "BE";
             } else {
                 throw BESInternalError("Did not recognize byteOrder.", __FILE__, __LINE__);
             }
         }
+    }
+
+    std::string DmrppCommon::get_byte_order()
+    {
+        return d_byte_order;
     }
 
 /**

@@ -167,6 +167,7 @@ public:
     virtual void ingest_compression_type(std::string compression_type_string);
 
     virtual void ingest_byte_order(std::string byte_order_string);
+    virtual std::string get_byte_order();
 
     virtual unsigned long add_chunk(const std::string &data_url, const std::string &order,
             unsigned long long size, unsigned long long offset, std::string position_in_array = "");

@@ -1039,6 +1039,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             unsigned long long offset = 0;
             unsigned long long size = 0;
             string chunk_position_in_array("");
+            std::string byte_order = dc->get_byte_order();
 
             if (parser->check_required_attribute("offset", attributes, nb_attributes)) {
                 istringstream offset_ss(parser->get_attribute_val("offset", attributes, nb_attributes));
@@ -1068,7 +1069,8 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 if (parser->debug()) cerr << "No attribute 'chunkPositionInArray' located" << endl;
             }
 
-            dc->add_chunk(data_url, "", size, offset, chunk_position_in_array);
+            dc->add_chunk(data_url, byte_order, size, offset, chunk_position_in_array);
+            //dc->add_chunk(data_url, "", size, offset, chunk_position_in_array);
         }
     }
         break;
