@@ -645,6 +645,7 @@ StareSubsetArrayFunction::stare_subset_array_dap4_function(D4RValueList *args, D
     // ptr_duplicate() does not copy data values
     unique_ptr<Array> result(static_cast<Array*>(dependent_var->ptr_duplicate()));
 
+    // TODO Add more types. jhrg 6/17/20
     switch(dependent_var->var()->type()) {
         case dods_int16_c: {
             build_masked_data<dods_int16>(dependent_var, dep_var_stare_indices, target_s_indices, result);
@@ -656,7 +657,8 @@ StareSubsetArrayFunction::stare_subset_array_dap4_function(D4RValueList *args, D
         }
 
         default:
-            throw BESInternalError(string("stare_subset_array() failed: Unsupported array element type (") + dependent_var->var()->type_name() + ").", __FILE__, __LINE__);
+            throw BESInternalError(string("stare_subset_array() failed: Unsupported array element type (")
+                + dependent_var->var()->type_name() + ").", __FILE__, __LINE__);
     }
 
     return result.release();

@@ -570,6 +570,7 @@ void Chunk::read_chunk()
     if (!handle)
         throw BESInternalError("No more libcurl handles.", __FILE__, __LINE__);
 
+    // FIXME ? Trap exceptions from this call to make sure that we release the handle. jhrg 6/19/20
     handle->read_data();  // throws if error
 
     DmrppRequestHandler::curl_handle_pool->release_handle(handle);

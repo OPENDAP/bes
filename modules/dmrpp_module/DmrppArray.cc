@@ -946,6 +946,7 @@ void DmrppArray::read_chunks()
                 chunks_to_insert.push(chunk);
             }
 
+            // FIXME ? Trap this like the issue in Chunk.cc:573. jhrg 6/19/20
             mhandle->read_data(); // read, then remove the easy_handles
 
             while (chunks_to_insert.size() > 0) {
