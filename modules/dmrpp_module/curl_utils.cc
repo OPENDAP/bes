@@ -460,6 +460,13 @@ namespace curl {
         }
     }
 
+    string get_range_arg_string(const unsigned long long &offset, const unsigned long long &size)
+    {
+        ostringstream range;   // range-get needs a string arg for the range
+        range << offset << "-" << offset + size - 1;
+        return range.str();
+    }
+
     /**
      * Execute the HTTP VERB from the passed cURL handle "c_handle" and retrieve the response.
      * @param c_handle The cURL easy handle to execute and read.

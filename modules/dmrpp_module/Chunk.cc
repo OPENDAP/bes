@@ -40,6 +40,7 @@
 #include "xml2json/include/xml2json.hpp"
 
 #include "Chunk.h"
+#include "curl_utils.h"
 #include "CurlHandlePool.h"
 #include "DmrppRequestHandler.h"
 
@@ -409,9 +410,7 @@ void Chunk::set_position_in_array(const std::vector<unsigned int> &pia)
  */
 string Chunk::get_curl_range_arg_string()
 {
-    ostringstream range;   // range-get needs a string arg for the range
-    range << d_offset << "-" << d_offset + d_size - 1;
-    return range.str();
+    return curl::get_range_arg_string(d_offset,d_size);
 }
 
 /**

@@ -173,16 +173,24 @@ static string getCurlAuthTypeName(const int authType) {
  * libcurl call back function that is used to write data to a passed open file descriptor (that would
  * be instead of the default open FILE *)
  */
-static size_t writeToOpenfileDescriptor(char *data, size_t /* size */, size_t nmemb, void *userdata) {
+    static size_t writeToOpenfileDescriptor(char *data, size_t /* size */, size_t nmemb, void *userdata) {
 
-    int *fd = (int *) userdata;
+        int *fd = (int *) userdata;
 
-    BESDEBUG(MODULE, prolog << "Bytes received " << libdap::long_to_string(nmemb) << endl);
-    int wrote = write(*fd, data, nmemb);
-    BESDEBUG(MODULE, prolog << "Bytes written " << libdap::long_to_string(wrote) << endl);
+        BESDEBUG(MODULE, prolog << "Bytes received " << libdap::long_to_string(nmemb) << endl);
+        int wrote = write(*fd, data, nmemb);
+        BESDEBUG(MODULE, prolog << "Bytes written " << libdap::long_to_string(wrote) << endl);
 
-    return wrote;
-}
+        return wrote;
+    }
+
+    /**
+ * libcurl call back function that is used to write data to a passed open file descriptor (that would
+ * be instead of the default open FILE *)
+ */
+    static size_t writeNothing(char */* data */, size_t /* size */, size_t nmemb, void * /* userdata */) {
+        return nmemb;
+    }
 
 /** A libcurl callback function used to read response headers. Read headers,
     line by line, from ptr. The fourth param is really supposed to be a FILE
@@ -420,6 +428,15 @@ string get_netrc_filename(){
         return oss.str();
     }
 
+    string getCookieFileName() {
+        bool found = false;
+        string cookie_filename;
+        TheBESKeys::TheKeys()->get_value(NGAP_COOKIES_KEY, cookie_filename, found);
+        if (!found) {
+            cookie_filename = NGAP_COOKIES_DEFAULT_FILE;
+        }
+        return cookie_filename;
+    }
 
     /**
  * Get's a new instance of CURL* and performs basic configuration of that instance.
@@ -473,8 +490,8 @@ CURL *init(char *error_buffer) {
     VERBOSE(__FILE__ << "::init() is using the netrc file '" << ((!netrc_file.empty())?netrc_file:"~/.netrc")<< "'" << endl );
 
     // #TODO #FIXME Make these file names configuration based.
-    curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "/tmp/.hyrax_cookies");
-    curl_easy_setopt(curl, CURLOPT_COOKIEJAR, "/tmp/.hyrax_cookies");
+    curl_easy_setopt(curl, CURLOPT_COOKIEFILE, getCookieFileName().c_str());
+    curl_easy_setopt(curl, CURLOPT_COOKIEJAR, getCookieFileName().c_str());
 
     curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1);
     curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
@@ -520,22 +537,45 @@ CURL *init(char *error_buffer) {
     return curl;
 }
 
+    string get_range_arg_string(const unsigned long long &offset, const unsigned long long &size)
+    {
+        ostringstream range;   // range-get needs a string arg for the range
+        range << offset << "-" << offset + size - 1;
+        return range.str();
+    }
+
     void find_last_redirect(const string &url, string &last_accessed_url) {
 
         char error_buffer[CURL_ERROR_SIZE];
         CURL *curl = init(error_buffer);
         vector<string> resp_hdrs;
-
+        string err_base = "cURL Error setting ";
         // set target URL.
-        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        CURLcode res = curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        if (res != CURLE_OK)
+            throw BESInternalError((err_base + "CURLOPT_URL: ").append(error_message(res, error_buffer)), __FILE__, __LINE__);
+
+        // get the offset to offset + size bytes
+        res = curl_easy_setopt(curl, CURLOPT_RANGE, get_range_arg_string(0,4).c_str());
+        if (res != CURLE_OK)
+            throw BESInternalError((err_base+"CURLOPT_RANGE: ").append(error_message(res, error_buffer)), __FILE__,
+                    __LINE__);
 
         // HEAD - get us the resource without a body!
-        curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
+        //curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
+
+        res = curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeNothing);
+        if (res != CURLE_OK)
+            throw BESInternalError((err_base+"CURLOPT_WRITEFUNCTION: ").append(
+                    error_message(res, error_buffer)), __FILE__, __LINE__);
 
         // Pass save_raw_http_headers() a pointer to the vector<string> where the
         // response headers may be stored. Callers can use the resp_hdrs
         // value/result parameter to get the raw response header information .
-        curl_easy_setopt(curl, CURLOPT_WRITEHEADER, &resp_hdrs);
+        res = curl_easy_setopt(curl, CURLOPT_WRITEHEADER, &resp_hdrs);
+        if (res != CURLE_OK)
+            throw BESInternalError((err_base+"CURLOPT_WRITEHEADER: ").append(
+                    error_message(res, error_buffer)), __FILE__, __LINE__);
 
         /* Perform the request */
         CURLcode curl_code;
@@ -770,6 +810,7 @@ void read_data(CURL *c_handle) {
     } while (!success);
 }
 
+#if 0
 /**
   *
   * @param target_url
@@ -908,5 +949,6 @@ rapidjson::Document http_get_as_json(const std::string &target_url) {
     d.Parse(response_buf);
     return d;
 }
+#endif
 
 } /* namespace ngap_curl */

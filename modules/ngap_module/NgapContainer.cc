@@ -192,7 +192,7 @@ namespace ngap {
             BESDEBUG(MODULE, prolog << "last_accessed_url: " << last_accessed_url << endl);
             data_access_url_info.clear();
             NgapApi::decompose_url(last_accessed_url,data_access_url_info);
-            TheBESKeys::TheKeys()->set_keys(data_access_url,data_access_url_info, true, false);
+            TheBESKeys::TheKeys()->set_keys(data_access_url,data_access_url_info, false, false);
         }
 
         // And we know that the dmr++ file should "right next to it" (side-car)
