@@ -547,6 +547,17 @@ CURL *init(char *error_buffer) {
             throw BESInternalError(msg.str(), __FILE__, __LINE__);
         }
 
+        if(BESDebug::IsSet(MODULE)){
+            stringstream msg;
+            vector<string>::iterator rhit = resp_hdrs.begin();
+            for(;rhit!=resp_hdrs.end(); rhit++){
+                msg << *rhit << endl;
+            }
+            BESDEBUG(MODULE, prolog << " Response Headers:" << endl << msg.str() << endl);
+        }
+
+
+
         char *effective_url = 0;
         curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &effective_url);
         BESDEBUG(MODULE, prolog << " last accessed url: " << effective_url << endl);
