@@ -31,6 +31,7 @@
 
 #include <BESDebug.h>
 #include <BESLog.h>
+#include <TheBESKeys.h>
 #include <BESInternalError.h>
 #include <BESSyntaxUserError.h>
 #include <BESForbiddenError.h>
@@ -622,6 +623,37 @@ string Chunk::to_string() const
     dump(oss);
     return oss.str();
 }
+
+
+std::string Chunk::get_data_url() const
+{
+    string data_url;
+
+    bool found = false;
+    bool case_insensitive = true;
+    map<string,string> data_url_info;
+    TheBESKeys::TheKeys()->get_values(d_data_url,data_url_info, case_insensitive, found);
+    BESDEBUG(MODULE, prolog << "found: " << (found?"true":"false") << " d_data_url: " << d_data_url << endl);
+    if(found){
+        map<string,string>::iterator tuit = data_url_info.find("target_url");
+        if(tuit != data_url_info.end()){
+            data_url = tuit->second;
+        }
+    }
+    else {
+        data_url = d_data_url;
+    }
+    BESDEBUG(MODULE, prolog << "using data_url: " << data_url << endl);
+
+    // A conditional call to void Chunk::add_tracking_query_param()
+    // here for the NASA cost model work THG's doing. jhrg 8/7/18
+    if (!d_query_marker.empty()) {
+        return data_url + d_query_marker;
+    }
+
+    return data_url;
+}
+
 
 } // namespace dmrpp
 

@@ -42,6 +42,7 @@
 #include <string>
 #include <sstream>
 
+#include "BESDebug.h"
 #include "TheBESKeys.h"
 #include "kvp_utils.h"
 #include "BESUtil.h"
@@ -53,6 +54,9 @@
 #define BES_INCLUDE_KEY "BES.Include"
 
 using namespace std;
+
+#define MODULE "bes"
+#define prolog std::string("TheBESKeys::").append(__func__).append("() - ")
 
 set<string> TheBESKeys::KeyList;
 
@@ -234,6 +238,91 @@ void TheBESKeys::set_key(const string &key, const string &val, bool addto)
         (*_the_keys)[key].push_back(val);
     }
 }
+
+/** @brief allows the user to set key/value pairs from within the application.
+ *
+ * This method allows users of BESKeys to set key/value pairs from within the
+ * application, such as for testing purposes, key/value pairs from the command
+ * line, etc...
+ *
+ * If addto is set to true then the value is added to the list of values for key
+ *
+ * If addto is false, and the key is already set then this value
+ * replaces all values for the key
+ *
+ * @param key name of the key/value pair to be set
+ * @param values A collection of values to to associate with the key
+ * @param addto Specifies whether to append the values to the key or set the
+ * value. Default is to set, not append to
+ */
+void TheBESKeys::set_keys(const string &key, const vector<string> &values, bool addto)
+{
+    map<string, vector<string> >::iterator i;
+    i = _the_keys->find(key);
+    if (i == _the_keys->end()) {
+        vector<string> vals;
+        (*_the_keys)[key] = vals;
+    }
+    if (!addto) (*_the_keys)[key].clear();
+
+    size_t j;
+    for(j = 0; j!=values.size(); j++){
+        if (!values[j].empty()) {
+            (*_the_keys)[key].push_back(values[j]);
+        }
+    }
+}
+
+
+/** @brief allows the user to encode a map in the Keys from within the application.
+ *
+ * This method allows users of BESKeys to set the value of a kep to be a map
+ * of key value pairs from within the
+ * application, such as for testing purposes, key/value pairs from the command
+ * line, etc...
+ *
+ * If addto is set to true then the value is added to the list of values for key
+ *
+ * If addto is false, and the key is already set then this value
+ * replaces all values for the key
+ *
+ * @param key name of the key/value pair to be set
+ * @param values A map of key value pairs to associate with the key
+ * @param addto Specifies whether to append the values to the key or set the
+ * value. Default is to set, not append to
+ */
+void TheBESKeys::set_keys(
+        const string &key,
+        const map<string,
+        string> &values,
+        const bool case_insensitive_map_keys, bool addto)
+{
+    map<string, vector<string> >::iterator i;
+    i = _the_keys->find(key);
+    if (i == _the_keys->end()) {
+        vector<string> vals;
+        (*_the_keys)[key] = vals;
+    }
+    if (!addto) (*_the_keys)[key].clear();
+
+    map<string, string>::const_iterator mit;
+    for(mit = values.begin(); mit!=values.end(); mit++){
+        string key = mit->first;
+        if(key.empty() ){
+            //throw BESInternalError(string("The configuration entry for the ") + SERVER_ADMINISTRATOR_KEY +
+            //    " was incorrectly formatted. entry: "+admin_info_entry, __FILE__,__LINE__);
+            BESDEBUG(MODULE, prolog << "The key is empty. SKIPPING." << endl);
+        }
+
+        if(case_insensitive_map_keys)
+            key = BESUtil::lowercase(key);
+
+        string record=key+":"+mit->second;
+        (*_the_keys)[key].push_back(record);
+    }
+}
+
+
 
 /** @brief allows the user to set key/value pairs from within the application.
  *
@@ -432,5 +521,49 @@ void TheBESKeys::dump(ostream &strm) const
         strm << BESIndent::LMarg << "keys: none" << endl;
     }
     BESIndent::UnIndent();
+}
+
+
+/**
+ *
+ * @param key
+ * @param map_values
+ * @param case_insensitive_map_keys
+ * @param found
+ */
+void TheBESKeys::get_values(
+        const std::string &key,
+        std::map<std::string,std::string> &map_values,
+        const bool &case_insensitive_map_keys,
+        bool &found){
+
+    vector<string> values;
+    TheBESKeys::TheKeys()->get_values(key, values, found);
+    if(!found){
+        return;
+    }
+
+    vector<string>::iterator it;
+    for(it=values.begin();  it!=values.end(); it++){
+        string map_record = *it;
+        int index = map_record.find(":");
+        if(index>0){
+            string map_key = map_record.substr(0,index);
+            if(case_insensitive_map_keys)
+                map_key =  BESUtil::lowercase(map_key);
+            string map_value =  map_record.substr(index+1);
+            BESDEBUG(MODULE, prolog << "map_key: '" << map_key << "'  map_value: " << map_value << endl);
+            map_values.insert( std::pair<string,string>(map_key,map_value));
+        }
+        else {
+            //throw BESInternalError(string("The configuration entry for the ") + SERVER_ADMINISTRATOR_KEY +
+            //    " was incorrectly formatted. entry: "+admin_info_entry, __FILE__,__LINE__);
+
+            BESDEBUG(MODULE, prolog << string("The configuration entry for the ") << key << " was not " <<
+            "formatted as a map record. The offending entry: " << map_record << " HAS BEEN SKIPPED." << endl);
+            // return;
+        }
+    }
+
 }
 

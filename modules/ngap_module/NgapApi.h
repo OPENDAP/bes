@@ -59,6 +59,8 @@ public:
             const std::string &uid="",
             const std::string &access_token="");
 
+    static void decompose_url(const std::string target_url, std::map<std::string,std::string> &data_access_url_info);
+
 #if 0
     void get_years(std::string collection_name, std::vector<std::string> &years_result);
     void get_months(std::string collection_name, std::string year, std::vector<std::string> &months_result);

@@ -32,6 +32,7 @@
 #include <string>
 #include <fstream>
 #include <streambuf>
+#include <time.h>
 
 #include "BESSyntaxUserError.h"
 #include "BESNotFoundError.h"
@@ -133,6 +134,35 @@ namespace ngap {
         }
     }
 
+    bool NgapContainer::signed_url_is_expired(std::map<std::string,std::string> ngap_url_info)
+    {
+        time_t now;
+        time(&now);  /* get current time; same as: timer = time(NULL)  */
+        BESDEBUG(MODULE, prolog << "now: " << now << endl);
+
+        time_t expires = now;
+        std::map<string,string>::iterator exp_it = ngap_url_info.find("expires");
+        std::map<string,string>::iterator aws_it = ngap_url_info.find("x-amz-expires");
+        std::map<string,string>::iterator ingest_it = ngap_url_info.find("ingest_time");
+        if(exp_it != ngap_url_info.end()){
+            expires = stoll(exp_it->second);
+        }
+        else if(aws_it != ngap_url_info.end() && ingest_it != ngap_url_info.end()){
+            time_t ingest_time = stoll(ingest_it->second);
+            expires = ingest_time + stoll(aws_it->second);
+        }
+        BESDEBUG(MODULE, prolog << "expires: " << expires << endl);
+
+        time_t remaining = expires - now;
+
+        BESDEBUG(MODULE, prolog << "remaining: " << remaining << endl);
+        if(remaining < 600)
+            return true;
+
+        return false;
+
+    }
+
 
     /** @brief access the remote target response by making the remote request
      *
@@ -140,16 +170,30 @@ namespace ngap {
      * @throws BESError if there is a problem making the remote request
      */
     string NgapContainer::access() {
-
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
         // Since this the ngap we know that the real_name is a URL.
         string data_access_url = get_real_name();
 
-        string last_accessed_url;
-        ngap_curl::find_last_redirect(data_access_url,last_accessed_url);
-        BESDEBUG(MODULE, prolog << "last_accessed_url: " << last_accessed_url << endl);
+        // See if the data_access_url has already been processed into a terminal signed URL
+        // in TheBESKeys
+        bool found;
+        std::map<std::string,std::string> data_access_url_info;
+        TheBESKeys::TheKeys()->get_values(data_access_url,data_access_url_info, false, found);
+        if(found){
+            // Is it expired?
+            found = signed_url_is_expired(data_access_url_info);
+        }
 
+        // It not found or expired, reload.
+        if(!found){
+            string last_accessed_url;
+            ngap_curl::find_last_redirect(data_access_url,last_accessed_url);
+            BESDEBUG(MODULE, prolog << "last_accessed_url: " << last_accessed_url << endl);
+            data_access_url_info.clear();
+            NgapApi::decompose_url(last_accessed_url,data_access_url_info);
+            TheBESKeys::TheKeys()->set_keys(data_access_url,data_access_url_info, true, false);
+        }
 
         // And we know that the dmr++ file should "right next to it" (side-car)
         string dmrpp_url = data_access_url + ".dmrpp";
@@ -161,15 +205,13 @@ namespace ngap {
         if (type == "ngap")
             type = "";
 
-
-
         if (!d_dmrpp_rresource) {
             BESDEBUG(MODULE, prolog << "Building new RemoteResource (dmr++)." << endl);
             string replace_template;
             string replace_value;
             if (inject_data_url()) {
                 replace_template = DATA_ACCESS_URL_KEY;
-                replace_value = last_accessed_url;
+                replace_value = data_access_url;
             }
             d_dmrpp_rresource = new ngap::RemoteHttpResource(dmrpp_url);
             d_dmrpp_rresource->retrieveResource(replace_template, replace_value);

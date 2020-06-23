@@ -60,6 +60,8 @@ namespace ngap {
         }
         bool inject_data_url();
 
+        bool signed_url_is_expired(std::map<std::string,std::string> ngap_url_info);
+
     protected:
         void _duplicate(NgapContainer &copy_to);
 
