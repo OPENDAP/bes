@@ -91,7 +91,7 @@ public:
     static std::string d_dmrpp_ns;       ///< The DMR++ XML namespace
     static std::string d_ns_prefix;      ///< The XML namespace prefix to use
 
-    DmrppCommon() : d_byte_order(""), d_deflate(false), d_shuffle(false)
+    DmrppCommon() :  d_deflate(false), d_shuffle(false), d_byte_order("")
     {
     }
 
@@ -167,7 +167,7 @@ public:
     virtual void ingest_compression_type(std::string compression_type_string);
 
     virtual void ingest_byte_order(std::string byte_order_string);
-    virtual std::string get_byte_order();
+    virtual std::string get_byte_order() const { return d_byte_order; }
 
     virtual unsigned long add_chunk(const std::string &data_url, const std::string &order,
             unsigned long long size, unsigned long long offset, std::string position_in_array = "");

@@ -170,10 +170,12 @@ void DmrppCommon::ingest_compression_type(string compression_type_string)
         }
     }
 
-    std::string DmrppCommon::get_byte_order()
+#if 0
+std::string DmrppCommon::get_byte_order()
     {
         return d_byte_order;
     }
+#endif
 
 /**
  * @brief Add a new chunk as defined by an h4:byteStream element
