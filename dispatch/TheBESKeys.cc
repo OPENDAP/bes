@@ -293,8 +293,7 @@ void TheBESKeys::set_keys(const string &key, const vector<string> &values, bool 
  */
 void TheBESKeys::set_keys(
         const string &key,
-        const map<string,
-        string> &values,
+        const map<string, string> &values,
         const bool case_insensitive_map_keys, bool addto)
 {
     map<string, vector<string> >::iterator i;
@@ -303,22 +302,21 @@ void TheBESKeys::set_keys(
         vector<string> vals;
         (*_the_keys)[key] = vals;
     }
-    if (!addto) (*_the_keys)[key].clear();
+    if (!addto) {
+        (*_the_keys)[key].clear();
+    }
 
     map<string, string>::const_iterator mit;
     for(mit = values.begin(); mit!=values.end(); mit++){
-        string key = mit->first;
-        if(key.empty() ){
-            //throw BESInternalError(string("The configuration entry for the ") + SERVER_ADMINISTRATOR_KEY +
-            //    " was incorrectly formatted. entry: "+admin_info_entry, __FILE__,__LINE__);
-            BESDEBUG(MODULE, prolog << "The key is empty. SKIPPING." << endl);
+        string map_key = mit->first;
+        if(map_key.empty() ){
+            BESDEBUG(MODULE, prolog << "The map_key is empty. SKIPPING." << endl);
         }
-
-        if(case_insensitive_map_keys)
-            key = BESUtil::lowercase(key);
-
-        string record=key+":"+mit->second;
-        (*_the_keys)[key].push_back(record);
+        if(case_insensitive_map_keys){
+            map_key = BESUtil::lowercase(map_key);
+        }
+        string map_record=map_key+":"+mit->second;
+        (*_the_keys)[key].push_back(map_record);
     }
 }
 
@@ -396,7 +394,11 @@ void TheBESKeys::get_values(const string& s, vector<string> &vals, bool &found)
     i = _the_keys->find(s);
     if (i != _the_keys->end()) {
         found = true;
-        vals = (*i).second;
+        vector<string>::iterator j;
+        for(j=(*i).second.begin(); j!=(*i).second.end(); j++){
+            vals.push_back(*j);
+        }
+        // vals = (*i).second; // BUT WHY NOT?
     }
 }
 
@@ -538,7 +540,7 @@ void TheBESKeys::get_values(
         bool &found){
 
     vector<string> values;
-    TheBESKeys::TheKeys()->get_values(key, values, found);
+    get_values(key, values, found);
     if(!found){
         return;
     }

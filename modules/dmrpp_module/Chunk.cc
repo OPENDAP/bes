@@ -627,7 +627,7 @@ string Chunk::to_string() const
 
 std::string Chunk::get_data_url() const
 {
-    string data_url;
+    string data_url = d_data_url;
 
     bool found = false;
     bool case_insensitive = true;
@@ -639,9 +639,6 @@ std::string Chunk::get_data_url() const
         if(tuit != data_url_info.end()){
             data_url = tuit->second;
         }
-    }
-    else {
-        data_url = d_data_url;
     }
     BESDEBUG(MODULE, prolog << "using data_url: " << data_url << endl);
 

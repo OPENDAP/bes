@@ -298,7 +298,7 @@ namespace ngap {
         if(!query_string.empty()){
             vector<string> records;
             string delimiters = "&";
-            BESUtil::tokenize(query_string,records,delimiters);
+            BESUtil::tokenize(query_string,records, delimiters);
             vector<string>::iterator i = records.begin();
             for(; i!=records.end(); i++){
                 size_t index = i->find('=');
