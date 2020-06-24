@@ -136,6 +136,7 @@ namespace ngap {
 
     bool NgapContainer::signed_url_is_expired(std::map<std::string,std::string> ngap_url_info)
     {
+        bool is_expired;
         time_t now;
         time(&now);  /* get current time; same as: timer = time(NULL)  */
         BESDEBUG(MODULE, prolog << "now: " << now << endl);
@@ -156,13 +157,18 @@ namespace ngap {
         time_t remaining = expires - now;
 
         BESDEBUG(MODULE, prolog << "remaining: " << remaining << endl);
-        if(remaining < 600)
-            return true;
+        is_expired = remaining < 600;
 
-        return false;
-
+        return is_expired;
     }
 
+
+    bool cache_terminal_urls(){
+        bool found;
+        string value;
+        TheBESKeys::TheKeys()->get_value(NGAP_CACHE_TERMINAL_URLS_KEY,value,found);
+        return found && BESUtil::lowercase(value)=="true";
+    }
 
     /** @brief access the remote target response by making the remote request
      *
@@ -175,24 +181,25 @@ namespace ngap {
         // Since this the ngap we know that the real_name is a URL.
         string data_access_url = get_real_name();
 
-        // See if the data_access_url has already been processed into a terminal signed URL
-        // in TheBESKeys
-        bool found;
-        std::map<std::string,std::string> data_access_url_info;
-        TheBESKeys::TheKeys()->get_values(data_access_url,data_access_url_info, false, found);
-        if(found){
-            // Is it expired?
-            found = signed_url_is_expired(data_access_url_info);
-        }
-
-        // It not found or expired, reload.
-        if(!found){
-            string last_accessed_url;
-            ngap_curl::find_last_redirect(data_access_url,last_accessed_url);
-            BESDEBUG(MODULE, prolog << "last_accessed_url: " << last_accessed_url << endl);
-            data_access_url_info.clear();
-            NgapApi::decompose_url(last_accessed_url,data_access_url_info);
-            TheBESKeys::TheKeys()->set_keys(data_access_url,data_access_url_info, false, false);
+        if(cache_terminal_urls()){
+            // See if the data_access_url has already been processed into a terminal signed URL
+            // in TheBESKeys
+            bool found;
+            std::map<std::string,std::string> data_access_url_info;
+            TheBESKeys::TheKeys()->get_values(data_access_url,data_access_url_info, false, found);
+            if(found){
+                // Is it expired?
+                found = signed_url_is_expired(data_access_url_info);
+            }
+            // It not found or expired, reload.
+            if(!found){
+                string last_accessed_url;
+                ngap_curl::find_last_redirect(data_access_url,last_accessed_url);
+                BESDEBUG(MODULE, prolog << "last_accessed_url: " << last_accessed_url << endl);
+                data_access_url_info.clear();
+                NgapApi::decompose_url(last_accessed_url,data_access_url_info);
+                TheBESKeys::TheKeys()->set_keys(data_access_url,data_access_url_info, false, false);
+            }
         }
 
         // And we know that the dmr++ file should "right next to it" (side-car)
