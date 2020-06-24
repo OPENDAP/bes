@@ -134,55 +134,6 @@ namespace ngap {
         }
     }
 
-    const string AMS_EXPIRES_HEADER_KEY = "X-Amz-Expires";
-    const string AWS_DATE_HEADER_KEY = "X-Amz-Date";
-    const string AWS_DATE_FORMAT = "%Y%m%dT%H%MS"; // 20200624T175046Z
-    const string CLOUDFRONT_EXPIRES_HEADER_KEY = "Expires";
-    const string INGEST_TIME_KEY = "ingest_time";
-    const unsigned int REFRESH_THRESHOLD = 600;
-
-    bool NgapContainer::signed_url_is_expired(std::map<std::string,std::string> ngap_url_info)
-    {
-        bool is_expired;
-        time_t now;
-        time(&now);  /* get current time; same as: timer = time(NULL)  */
-        BESDEBUG(MODULE, prolog << "now: " << now << endl);
-
-        time_t expires = now;
-        std::map<string,string>::iterator cfexpires_it = ngap_url_info.find(CLOUDFRONT_EXPIRES_HEADER_KEY);
-        std::map<string,string>::iterator awsexpires_it = ngap_url_info.find(AMS_EXPIRES_HEADER_KEY);
-        std::map<string,string>::iterator ingest_time_it = ngap_url_info.find(INGEST_TIME_KEY);
-
-        if(cfexpires_it != ngap_url_info.end()){ // CloudFront expires header?
-            expires = stoll(cfexpires_it->second);
-            BESDEBUG(MODULE, prolog << "Using "<< CLOUDFRONT_EXPIRES_HEADER_KEY << ": " << expires << endl);
-        }
-        else if(awsexpires_it != ngap_url_info.end() && ingest_time_it != ngap_url_info.end()){
-            // AWS Expires header?
-            //
-            // By default we'll use the time we read the probe response, ingest_time
-            time_t start_time = stoll(ingest_time_it->second);
-            // But if there's an AWS Date we'll parse that and compute the time
-            // @TODO move to NgapApi::decompose_url() and add the result to the map
-            std::map<string,string>::iterator awsdate_it = ngap_url_info.find(AWS_DATE_HEADER_KEY);
-            if(awsdate_it != ngap_url_info.end()){
-                string date = awsdate_it->second;
-                // @TODO How to make time_t from date string? eh? how?
-            }
-            expires = start_time + stoll(awsexpires_it->second);
-            BESDEBUG(MODULE, prolog << "Using "<< AMS_EXPIRES_HEADER_KEY << ": " << expires << endl);
-        }
-        time_t remaining = expires - now;
-        BESDEBUG(MODULE, prolog << "expires: " << expires <<
-                                    "  remaining: " << remaining <<
-                                    " threshold: " << REFRESH_THRESHOLD << endl);
-
-        is_expired = remaining < REFRESH_THRESHOLD;
-        BESDEBUG(MODULE, prolog << "is_expired: " << (is_expired?"true":"false") << endl);
-
-        return is_expired;
-    }
-
 
     bool cache_terminal_urls(){
         bool found;
@@ -210,7 +161,7 @@ namespace ngap {
             TheBESKeys::TheKeys()->get_values(data_access_url,data_access_url_info, false, found);
             if(found){
                 // Is it expired?
-                found = signed_url_is_expired(data_access_url_info);
+                found = NgapApi::signed_url_is_expired(data_access_url_info);
             }
             // It not found or expired, reload.
             if(!found){

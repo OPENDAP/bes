@@ -317,6 +317,85 @@ namespace ngap {
         url_info.insert( std::pair<string,string>("ingest_time",unix_time.str()));
     }
 
+    const string AMS_EXPIRES_HEADER_KEY = "X-Amz-Expires";
+    const string AWS_DATE_HEADER_KEY = "X-Amz-Date";
+    // const string AWS_DATE_FORMAT = "%Y%m%dT%H%MS"; // 20200624T175046Z
+    const string CLOUDFRONT_EXPIRES_HEADER_KEY = "Expires";
+    const string INGEST_TIME_KEY = "ingest_time";
+    const unsigned int REFRESH_THRESHOLD = 3600; // An hour
+
+    bool NgapApi::signed_url_is_expired(const std::map<std::string,std::string> &ngap_url_info)
+    {
+        bool is_expired;
+        time_t now;
+        time(&now);  /* get current time; same as: timer = time(NULL)  */
+        BESDEBUG(MODULE, prolog << "now: " << now << endl);
+
+        time_t expires = now;
+        std::map<string,string>::const_iterator cfexpires_it = ngap_url_info.find(CLOUDFRONT_EXPIRES_HEADER_KEY);
+        std::map<string,string>::const_iterator awsexpires_it = ngap_url_info.find(AMS_EXPIRES_HEADER_KEY);
+        std::map<string,string>::const_iterator ingest_time_it = ngap_url_info.find(INGEST_TIME_KEY);
+
+        if(cfexpires_it != ngap_url_info.end()){ // CloudFront expires header?
+            expires = stoll(cfexpires_it->second);
+            BESDEBUG(MODULE, prolog << "Using "<< CLOUDFRONT_EXPIRES_HEADER_KEY << ": " << expires << endl);
+        }
+        else if(awsexpires_it != ngap_url_info.end() && ingest_time_it != ngap_url_info.end()){
+            // AWS Expires header?
+            //
+            // By default we'll use the time we read the probe response, ingest_time
+            time_t start_time = stoll(ingest_time_it->second);
+            // But if there's an AWS Date we'll parse that and compute the time
+            // @TODO move to NgapApi::decompose_url() and add the result to the map
+            std::map<string,string>::const_iterator awsdate_it = ngap_url_info.find(AWS_DATE_HEADER_KEY);
+            if(awsdate_it != ngap_url_info.end()){
+                string date = awsdate_it->second; // 20200624T175046Z
+                string year = date.substr(0,4);
+                string month = date.substr(4,2);
+                string day = date.substr(6,2);
+                string hour = date.substr(9,2);
+                string minute = date.substr(11,2);
+                string second = date.substr(13,2);
+
+                BESDEBUG(MODULE, prolog << "date: "<< date <<
+                                        " year: " << year << " month: " << month << " day: " << day <<
+                                        " hour: " << hour << " minute: " << minute  << " second: " << second << endl);
+
+                struct tm * ti = gmtime(&now);
+                ti->tm_year = stoll(year);
+                ti->tm_mon = stoll(month) - 1;
+                ti->tm_mday = stoll(day);
+                ti->tm_hour = stoll(hour);
+                ti->tm_min = stoll(minute);
+                ti->tm_sec = stoll(second);
+
+                BESDEBUG(MODULE, prolog << "ti->tm_year: "<< ti->tm_year <<
+                                        " ti->tm_mon: " << ti->tm_mon <<
+                                        " ti->tm_mday: " << ti->tm_mday <<
+                                        " ti->tm_hour: " << ti->tm_hour <<
+                                        " ti->tm_min: " << ti->tm_min <<
+                                        " ti->tm_sec: " << ti->tm_sec << endl);
+
+
+               // start_time = mktime(&ti);
+               //  BESDEBUG(MODULE, prolog << "AWS (computed) start_time: "<< start_time << endl);
+            }
+            expires = start_time + stoll(awsexpires_it->second);
+            BESDEBUG(MODULE, prolog << "Using "<< AMS_EXPIRES_HEADER_KEY << ": " << awsexpires_it->second <<
+                                    " (expires: " << expires << ")" << endl);
+        }
+        time_t remaining = expires - now;
+        BESDEBUG(MODULE, prolog << "expires: " << expires <<
+                                "  remaining: " << remaining <<
+                                " threshold: " << REFRESH_THRESHOLD << endl);
+
+        is_expired = remaining < REFRESH_THRESHOLD;
+        BESDEBUG(MODULE, prolog << "is_expired: " << (is_expired?"true":"false") << endl);
+
+        return is_expired;
+    }
+
+
 
 #if 0
     string NgapApi::convert_ngap_resty_path_to_data_access_url(string real_name){

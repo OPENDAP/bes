@@ -43,11 +43,12 @@
 #include <BESUtil.h>
 #include <BESCatalogList.h>
 #include <TheBESKeys.h>
+#include <ngap_module/NgapContainer.h>
 #include "test_config.h"
 
 #include "RemoteHttpResource.h"
 #include "NgapApi.h"
-// #include "NgapNames.h"
+#include "NgapContainer.h"
 // #include "NgapError.h"
 // #include "rjson_utils.h"
 
@@ -266,11 +267,49 @@ public:
 
     }
 
+    void signed_url_is_expired_test(){
+        string prolog = string(__func__) + "() - ";
+
+        string url;
+        std::map<std::string,std::string> url_info;
+        bool is_expired;
+
+
+        url = "https://ghrcw-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?"
+              "A-userid=hyrax"
+              "&X-Amz-Algorithm=AWS4-HMAC-SHA256"
+              "&X-Amz-Credential=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
+              "&X-Amz-Date=20200621T161744Z"
+              "&X-Amz-Expires=86400"
+              "&X-Amz-Security-Token=FwoGZXIvYXdzENL%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaDKmu"
+              "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
+              "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
+              "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
+              "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
+              "&X-Amz-SignedHeaders=host"
+              "&X-Amz-Signature=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing";
+        if (debug) cerr << prolog << "Decomposing URL: " << url << endl;
+        NgapApi::decompose_url(url,url_info);
+
+        time_t now;
+        time(&now);
+        stringstream ingest_time;
+        time_t then = now - 82810; // 23 hours nd 10 seconds ago.
+        ingest_time << then;
+        string ingest_time_key="ingest_time";
+        url_info.erase(ingest_time_key);
+        url_info.insert(pair<string, string>(ingest_time_key,ingest_time.str()));
+        is_expired = NgapApi::signed_url_is_expired(url_info);
+        CPPUNIT_ASSERT(is_expired == true );
+
+    }
+
     CPPUNIT_TEST_SUITE( NgapApiTest );
 
         CPPUNIT_TEST(cmr_access_test);
         CPPUNIT_TEST(decompose_simple_url_test);
         CPPUNIT_TEST(decompose_aws_signed_request_url_test);
+        CPPUNIT_TEST(signed_url_is_expired_test);
 
     CPPUNIT_TEST_SUITE_END();
 };
