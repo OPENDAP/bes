@@ -134,6 +134,11 @@ namespace ngap {
         }
     }
 
+    const string AMS_EXPIRES_HEADER_KEY = "X-Amz-Expires";
+    const string CLOUDFRONT_EXPIRES_HEADER_KEY = "Expires";
+    const string INGEST_TIME_KEY = "ingest_time";
+    const unsigned int REFRESH_THRESHOLD = 600;
+
     bool NgapContainer::signed_url_is_expired(std::map<std::string,std::string> ngap_url_info)
     {
         bool is_expired;
@@ -142,22 +147,23 @@ namespace ngap {
         BESDEBUG(MODULE, prolog << "now: " << now << endl);
 
         time_t expires = now;
-        std::map<string,string>::iterator exp_it = ngap_url_info.find("expires");
-        std::map<string,string>::iterator aws_it = ngap_url_info.find("x-amz-expires");
-        std::map<string,string>::iterator ingest_it = ngap_url_info.find("ingest_time");
-        if(exp_it != ngap_url_info.end()){
-            expires = stoll(exp_it->second);
+        std::map<string,string>::iterator cfe_it = ngap_url_info.find(CLOUDFRONT_EXPIRES_HEADER_KEY);
+        std::map<string,string>::iterator aws_it = ngap_url_info.find(AMS_EXPIRES_HEADER_KEY);
+        std::map<string,string>::iterator ingest_it = ngap_url_info.find(INGEST_TIME_KEY);
+        if(cfe_it != ngap_url_info.end()){
+            expires = stoll(cfe_it->second);
+            BESDEBUG(MODULE, prolog << "Using "<< CLOUDFRONT_EXPIRES_HEADER_KEY << ": " << expires << endl);
         }
         else if(aws_it != ngap_url_info.end() && ingest_it != ngap_url_info.end()){
             time_t ingest_time = stoll(ingest_it->second);
             expires = ingest_time + stoll(aws_it->second);
+            BESDEBUG(MODULE, prolog << "Using "<< AMS_EXPIRES_HEADER_KEY << ": " << expires << endl);
         }
-        BESDEBUG(MODULE, prolog << "expires: " << expires << endl);
-
         time_t remaining = expires - now;
+        BESDEBUG(MODULE, prolog << "expires: " << expires << "  remaining: " << remaining << endl);
 
-        BESDEBUG(MODULE, prolog << "remaining: " << remaining << endl);
-        is_expired = remaining < 600;
+        is_expired = remaining < REFRESH_THRESHOLD;
+        BESDEBUG(MODULE, prolog << "is_expired: " << (is_expired?"true":"false") << endl);
 
         return is_expired;
     }
