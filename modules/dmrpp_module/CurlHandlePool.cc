@@ -62,7 +62,7 @@
 
 static const int MAX_WAIT_MSECS = 30 * 1000; // Wait max. 30 seconds
 static const unsigned int retry_limit = 10; // Amazon's suggestion
-static const unsigned int initial_retry_time = 1000; // one second
+static const useconds_t uone_second = 1000 * 1000; // one second
 
 namespace dmrpp {
 #if HAVE_CURL_MULTI_API
@@ -334,7 +334,7 @@ void dmrpp_easy_handle::read_data() {
     if (d_url.find("https://") == 0 || d_url.find("http://") == 0) {
         unsigned int tries = 0;
         bool success = true;
-        unsigned int retry_time = initial_retry_time;
+        useconds_t retry_time = uone_second/4;
 
         // Perform the request
         do {

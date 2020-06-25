@@ -50,7 +50,7 @@ using namespace std;
 namespace ngap_curl {
 
 static const unsigned int retry_limit = 10; // Amazon's suggestion
-static const unsigned int initial_retry_time = 1000; // one second
+static const useconds_t uone_second = 1000*1000; // one second in micro seconds (which is 1000
 
 // Set this to 1 to turn on libcurl's verbose mode (for debugging).
 int curl_trace = 0;
@@ -748,7 +748,7 @@ bool eval_get_response(CURL *eh) {
 
         unsigned int tries = 0;
         bool success = true;
-        unsigned int retry_time = initial_retry_time;
+        useconds_t retry_time = uone_second / 4;
 
         char error_buffer[CURL_ERROR_SIZE];
         vector<string> resp_hdrs;
@@ -788,7 +788,8 @@ bool eval_get_response(CURL *eh) {
                                             error_message(curl_code, error_buffer)), __FILE__, __LINE__);
                         }
                         else {
-                            LOG("HTTP Range-GET failed. Will retry (url: " << url << " attempt:" << tries << ")." << endl);
+                            LOG("HTTP Range-GET failed. Will retry (url: " << url <<
+                            " attempt:" << tries << ")." << endl);
                             do_retry = true;
                         }
                     }
