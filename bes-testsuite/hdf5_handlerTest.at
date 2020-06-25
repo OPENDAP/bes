@@ -552,7 +552,10 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_string_cstr.h5.dap.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([t_vl_string_cstr.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_vl_string_cstr.h5.dap.bescmd])
 
-AT_BESCMD_RESPONSE_TEST_DEFAULT([comp_complex_more.h5.dmr.bescmd])
+#COMMENT OUT the following four tests until the pure-dim case is resolved.
+#HFVHANDLER-340
+
+#AT_BESCMD_RESPONSE_TEST_DEFAULT([comp_complex_more.h5.dmr.bescmd])
 
 # Cannot generate correct DAP4 for the all data in the current DAP4 implementation. 
 # https://opendap.atlassian.net/projects/LIBDAP/issues/LIBDAP-18
@@ -567,11 +570,11 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([nest_comp_scalar.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([nest_comp_scalar.h5.dap.bescmd])
 
 #netcdf4 classic simple
-AT_BESCMD_RESPONSE_TEST_DEFAULT([t_2d_2dll.nc4.h5.dmr.bescmd])
-AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_2d_2dll.nc4.h5.dap.bescmd])
+#AT_BESCMD_RESPONSE_TEST_DEFAULT([t_2d_2dll.nc4.h5.dmr.bescmd])
+#AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_2d_2dll.nc4.h5.dap.bescmd])
 
 #HDF-EOS5 augmented
-AT_BESCMD_RESPONSE_TEST_DEFAULT([grid_1_3d_xyz_aug.h5.dmr.bescmd])
+#AT_BESCMD_RESPONSE_TEST_DEFAULT([grid_1_3d_xyz_aug.h5.dmr.bescmd])
 
 
 #netcdf4 enhanced simple

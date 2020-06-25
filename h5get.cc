@@ -608,15 +608,17 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool use_dim
          if(true == is_dimscale) {
             BESDEBUG("h5", "<h5get.cc: get_dataset() this is  dim scale." << endl);
             BESDEBUG("h5", "<h5get.cc: dataset storage size is: " <<H5Dget_storage_size(dset)<< endl);
-            if(H5Dget_storage_size(dset)!=0) { 
+            //if(H5Dget_storage_size(dset)!=0) { 
             // Save the dimension names.We Only need to provide the dimension name(not the full path).
             // We still need the dimension name fullpath for distinguishing the different dimension that
             // has the same dimension name but in the different path
+            // TODO; pure dimension doesn't work for all cases. See https://jira.hdfgroup.org/browse/HFVHANDLER-340
             (*dt_inst_ptr).dimnames.push_back(dname.substr(dname.find_last_of("/")+1));
             (*dt_inst_ptr).dimnames_path.push_back(dname);
-           }
-           else 
-            is_pure_dim = true;
+           //}
+           //else 
+            //is_pure_dim = true;
+            is_pure_dim = false;
          }
 
          else // We need to save all dimension names in this dimension. 
