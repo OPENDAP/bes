@@ -70,6 +70,7 @@ private:
 	std::string d_byte_order;
 	std::vector<unsigned int> d_chunk_dimension_sizes;
 	std::vector<Chunk> d_chunks;
+	bool d_twiddle_bytes;
 
 protected:
     void m_duplicate_common(const DmrppCommon &dc) {
@@ -91,7 +92,7 @@ public:
     static std::string d_dmrpp_ns;       ///< The DMR++ XML namespace
     static std::string d_ns_prefix;      ///< The XML namespace prefix to use
 
-    DmrppCommon() :  d_deflate(false), d_shuffle(false), d_byte_order("")
+    DmrppCommon() :  d_deflate(false), d_shuffle(false), d_byte_order(""), d_twiddle_bytes(false)
     {
     }
 
@@ -122,6 +123,16 @@ public:
     /// @brief Set the value of the shuffle property
     void set_shuffle(bool value) {
         d_shuffle = value;
+    }
+
+    /// @brief RSet the value of the twiddle_bytes property.
+    virtual void set_twiddle_bytes(bool value) {
+        d_twiddle_bytes = value;
+    }
+
+    /// @brief Returns true if this object utilizes shuffle compression.
+    virtual bool twiddle_bytes() const {
+        return d_twiddle_bytes;
     }
 
     virtual const std::vector<Chunk> &get_immutable_chunks() const {
@@ -169,10 +180,10 @@ public:
     virtual void ingest_byte_order(std::string byte_order_string);
     virtual std::string get_byte_order() const { return d_byte_order; }
 
-    virtual unsigned long add_chunk(const std::string &data_url, const std::string &order,
+    virtual unsigned long add_chunk(const std::string &data_url, const std::string &byte_order,
             unsigned long long size, unsigned long long offset, std::string position_in_array = "");
 
-    virtual unsigned long add_chunk(const std::string &data_url, const std::string &order,
+    virtual unsigned long add_chunk(const std::string &data_url, const std::string &byte_order,
             unsigned long long size, unsigned long long offset, const std::vector<unsigned int> &position_in_array);
 
     virtual void dump(std::ostream & strm) const;

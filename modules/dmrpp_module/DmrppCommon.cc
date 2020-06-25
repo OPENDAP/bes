@@ -42,6 +42,7 @@
 #include "DmrppRequestHandler.h"
 #include "DmrppCommon.h"
 #include "Chunk.h"
+#include "util.h"
 
 using namespace std;
 using namespace libdap;
@@ -147,9 +148,9 @@ void DmrppCommon::ingest_compression_type(string compression_type_string)
 }
 
 /**
- * @brief Parses the text content of the XML element h4:byteOrder.
+ * @brief Parses the text content of the XML element chunks:byteOrder.
  *
- * @param byte_order_string One of "LE", "BE", or ""
+ * @param byte_order_string One of "LE", "BE"
  */
     void DmrppCommon::ingest_byte_order(string byte_order_string) {
 
@@ -181,20 +182,20 @@ std::string DmrppCommon::get_byte_order()
  * @brief Add a new chunk as defined by an h4:byteStream element
  * @return The number of chunk refs (byteStreams) held.
  */
-    unsigned long DmrppCommon::add_chunk(const string &data_url, const string &order,
+    unsigned long DmrppCommon::add_chunk(const string &data_url, const string &byte_order,
                                          unsigned long long size, unsigned long long offset, string position_in_array)
 
     {
-        d_chunks.push_back(Chunk(data_url, order, size, offset, position_in_array));
+        d_chunks.push_back(Chunk(data_url, byte_order, size, offset, position_in_array));
 
         return d_chunks.size();
     }
 
-    unsigned long DmrppCommon::add_chunk(const string &data_url, const string &order,
+    unsigned long DmrppCommon::add_chunk(const string &data_url, const string &byte_order,
                                          unsigned long long size, unsigned long long offset,
                                          const vector<unsigned int> &position_in_array)
     {
-        d_chunks.push_back(Chunk(data_url, order, size, offset, position_in_array));
+        d_chunks.push_back(Chunk(data_url, byte_order, size, offset, position_in_array));
 
         return d_chunks.size();
     }
@@ -227,6 +228,7 @@ DmrppCommon::read_atomic(const string &name)
     Chunk &chunk = chunk_refs[0];
 
     chunk.read_chunk();
+    set_twiddle_bytes(chunk.twiddle_bytes());
 
     return chunk.get_rbuf();
 }
