@@ -49,8 +49,8 @@ using namespace std;
 
 namespace ngap_curl {
 
-    static const unsigned int retry_limit = 10; // Amazon's suggestion
-    static const unsigned int initial_retry_time = 1000; // one second
+static const unsigned int retry_limit = 10; // Amazon's suggestion
+static const unsigned int initial_retry_time = 1000; // one second
 
 // Set this to 1 to turn on libcurl's verbose mode (for debugging).
 int curl_trace = 0;
@@ -737,11 +737,14 @@ bool eval_get_response(CURL *eh) {
 
 }
 
-
+    /**
+     * @brief Performs a small (4 byte) range get on the target URL. If successfull the value of  last_accessed_url will
+     * be set to the value of the last accessed URL (CURLINFO_EFFECTIVE_URL), including the query string.
+     * are
+     * @param url The URL to follow
+     * @param last_accessed_url The last accessed URL (CURLINFO_EFFECTIVE_URL), including the query string
+     */
     void find_last_redirect(const string &url, string &last_accessed_url) {
-
-        //unsigned int retry_limit = 3;
-        //useconds_t initial_retry_time = 1000;
 
         unsigned int tries = 0;
         bool success = true;
@@ -749,16 +752,19 @@ bool eval_get_response(CURL *eh) {
 
         char error_buffer[CURL_ERROR_SIZE];
         vector<string> resp_hdrs;
-
         CURL *curl = 0;
 
         try {
             curl = init_redirect_handle( url, resp_hdrs,  error_buffer);
             do {
+                bool do_retry = false;
                 ++tries;
                 BESDEBUG(MODULE, prolog << "Requesting URL: " << url << " attempt: " << tries <<  endl);
                 CURLcode curl_code = curl_easy_perform(curl);
-                if (CURLE_OK != curl_code) {
+                if( curl_code == CURLE_SSL_CONNECT_ERROR || curl_code == CURLE_SSL_CACERT_BADFILE ){
+                    do_retry = true;
+                }
+                else if (CURLE_OK != curl_code) {
                     stringstream msg;
                     msg << "Data transfer error: " << error_message(curl_code, error_buffer);
                     char *effective_url = 0;
@@ -767,20 +773,25 @@ bool eval_get_response(CURL *eh) {
                     BESDEBUG(MODULE, prolog << msg.str() << endl);
                     throw BESInternalError(msg.str(), __FILE__, __LINE__);
                 }
+                else {
+                    success = eval_get_response(curl);
 
-                success = eval_get_response(curl);
+                    if (!success) {
+                        if (tries == retry_limit) {
+                            throw BESInternalError(
+                                    string("Data transfer error: Number of re-tries exceeded: ").append(
+                                            error_message(curl_code, error_buffer)), __FILE__, __LINE__);
+                        }
+                        else {
+                            do_retry = true;
+                        }
+                    }
+                }
 
-                if (!success) {
-                    if (tries == retry_limit) {
-                        throw BESInternalError(
-                                string("Data transfer error: Number of re-tries exceeded: ").append(
-                                        error_message(curl_code, error_buffer)), __FILE__, __LINE__);
-                    }
-                    else {
-                        LOG("HTTP Range-GET failed. Will retry (url: " << url << " attempt:" << tries << ")." << endl);
-                        usleep(retry_time);
-                        retry_time *= 2;
-                    }
+                if(do_retry){
+                    LOG("HTTP Range-GET failed. Will retry (url: " << url << " attempt:" << tries << ")." << endl);
+                    usleep(retry_time);
+                    retry_time *= 2;
                 }
 
             } while (!success);
@@ -794,7 +805,6 @@ bool eval_get_response(CURL *eh) {
                 curl_easy_cleanup(curl);
                 curl = 0;
             }
-
         }
         catch(...){
             if(curl){
@@ -803,7 +813,6 @@ bool eval_get_response(CURL *eh) {
             }
             throw;
         }
-
     }
 
 

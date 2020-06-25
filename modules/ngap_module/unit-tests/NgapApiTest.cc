@@ -294,7 +294,7 @@ public:
         time_t now;
         time(&now);
         stringstream ingest_time;
-        time_t then = now - 82810; // 23 hours nd 10 seconds ago.
+        time_t then = now - 82810; // 23 hours and 10 seconds ago.
         ingest_time << then;
         string ingest_time_key="ingest_time";
         url_info.erase(ingest_time_key);
