@@ -26,6 +26,7 @@
 
 #include <string>
 #include <vector>
+#include "util.h"
 
 namespace dmrpp {
 
@@ -168,6 +169,15 @@ public:
     /// @brief Get the chunk byte order
     virtual std::string get_byte_order() { return d_byte_order; }
 
+    /// @brief Determine if byte-swapping is required.
+    bool twiddle_bytes()
+    {
+        if (d_byte_order.empty()) {
+            return false;
+        } else {
+            return (libdap::is_host_big_endian() && (d_byte_order.compare("BE") == 0));
+        }
+    }
     /**
      * @brief Get the size of this Chunk's data block on disk
      */
