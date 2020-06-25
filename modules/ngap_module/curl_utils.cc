@@ -761,7 +761,12 @@ bool eval_get_response(CURL *eh) {
                 ++tries;
                 BESDEBUG(MODULE, prolog << "Requesting URL: " << url << " attempt: " << tries <<  endl);
                 CURLcode curl_code = curl_easy_perform(curl);
-                if( curl_code == CURLE_SSL_CONNECT_ERROR || curl_code == CURLE_SSL_CACERT_BADFILE ){
+                if( curl_code == CURLE_SSL_CONNECT_ERROR ){
+                    LOG("cURL experienced a CURLE_SSL_CONNECT_ERROR error. Will retry (url: " << url << " attempt:" << tries << ")." << endl);
+                    do_retry = true;
+                }
+                else if( curl_code == CURLE_SSL_CACERT_BADFILE ){
+                    LOG("cURL experienced a CURLE_SSL_CACERT_BADFILE error. Will retry (url: " << url << " attempt:" << tries << ")." << endl);
                     do_retry = true;
                 }
                 else if (CURLE_OK != curl_code) {
@@ -783,13 +788,13 @@ bool eval_get_response(CURL *eh) {
                                             error_message(curl_code, error_buffer)), __FILE__, __LINE__);
                         }
                         else {
+                            LOG("HTTP Range-GET failed. Will retry (url: " << url << " attempt:" << tries << ")." << endl);
                             do_retry = true;
                         }
                     }
                 }
 
                 if(do_retry){
-                    LOG("HTTP Range-GET failed. Will retry (url: " << url << " attempt:" << tries << ")." << endl);
                     usleep(retry_time);
                     retry_time *= 2;
                 }
