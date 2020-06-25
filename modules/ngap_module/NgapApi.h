@@ -35,6 +35,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include "rapidjson/document.h"
 #include "BESCatalogUtils.h"
 
@@ -58,6 +59,9 @@ public:
             const std::string &restified_path,
             const std::string &uid="",
             const std::string &access_token="");
+
+    static void decompose_url(const std::string target_url, std::map<std::string,std::string> &data_access_url_info);
+    static bool signed_url_is_expired(const std::map<std::string,std::string> &url_info);
 
 #if 0
     void get_years(std::string collection_name, std::vector<std::string> &years_result);

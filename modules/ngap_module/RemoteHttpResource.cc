@@ -124,6 +124,12 @@ namespace ngap {
         delete d_request_headers;
         d_request_headers = 0;
         BESDEBUG(MODULE, prolog << "Deleted d_request_headers." << endl);
+
+        if(d_curl){
+            curl_easy_cleanup(d_curl);
+            d_curl = 0;
+            BESDEBUG(MODULE, prolog << "Cleaned up cURL easy handle." << endl);
+        }
 /*
     if (!d_resourceCacheFileName.empty()) {
         NgapCache *cache = NgapCache::get_instance();

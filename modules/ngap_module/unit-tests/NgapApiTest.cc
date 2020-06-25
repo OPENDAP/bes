@@ -43,11 +43,12 @@
 #include <BESUtil.h>
 #include <BESCatalogList.h>
 #include <TheBESKeys.h>
+#include <ngap_module/NgapContainer.h>
 #include "test_config.h"
 
 #include "RemoteHttpResource.h"
 #include "NgapApi.h"
-// #include "NgapNames.h"
+#include "NgapContainer.h"
 // #include "NgapError.h"
 // #include "rjson_utils.h"
 
@@ -160,9 +161,155 @@ public:
         CPPUNIT_ASSERT (expected == data_access_url);
     }
 
+    bool check_kvp( string prolog, const map<string,string> &url_info, const string key, const string expected_value){
+        std::map<std::string,std::string>::const_iterator it;
+        if(debug) cerr << prolog << "Checking " << key << ": ";
+        it = url_info.find(key);
+        CPPUNIT_ASSERT(it != url_info.end() );
+        CPPUNIT_ASSERT(it->second == expected_value );
+        if(debug) cerr << it->second << endl;
+    }
+
+    void decompose_aws_signed_request_url_test(){
+        string prolog = string(__func__) + "() - ";
+        NgapApi ngapi;
+
+        std::map<std::string,std::string> url_info;
+        std::map<std::string,std::string>::iterator it;
+
+        if(debug ) cout << endl;
+
+        string url;
+        string key;
+        string expected_value;
+
+        url = "https://ghrcw-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?"
+              "A-userid=hyrax"
+              "&X-Amz-Algorithm=AWS4-HMAC-SHA256"
+              "&X-Amz-Credential=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
+              "&X-Amz-Date=20200621T161744Z"
+              "&X-Amz-Expires=86400"
+              "&X-Amz-Security-Token=FwoGZXIvYXdzENL%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaDKmu"
+              "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
+              "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
+              "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
+              "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
+              "&X-Amz-SignedHeaders=host"
+              "&X-Amz-Signature=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing";
+
+        if (debug) cerr << prolog << "Decomposing URL: " << url << endl;
+        NgapApi::decompose_url(url,url_info);
+
+        key = "A-userid";
+        expected_value = "hyrax";
+        check_kvp(prolog, url_info, key, expected_value);
+
+        key = "X-Amz-Algorithm";
+        expected_value = "AWS4-HMAC-SHA256";
+        check_kvp(prolog, url_info, key, expected_value);
+
+        key = "X-Amz-Credential";
+        expected_value = "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing";
+        check_kvp(prolog, url_info, key, expected_value);
+
+        key = "X-Amz-Date";
+        expected_value = "20200621T161744Z";
+        check_kvp(prolog, url_info, key, expected_value);
+
+        key = "X-Amz-Expires";
+        expected_value = "86400";
+        check_kvp(prolog, url_info, key, expected_value);
+
+        key = "X-Amz-Security-Token";
+        expected_value = "FwoGZXIvYXdzENL%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaDKmu"
+                         "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
+                         "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
+                         "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
+                         "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing";
+        check_kvp(prolog, url_info, key, expected_value);
+
+        key = "X-Amz-SignedHeaders";
+        expected_value = "host";
+        check_kvp(prolog, url_info, key, expected_value);
+
+        key = "X-Amz-Signature";
+        expected_value = "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing";
+        check_kvp(prolog, url_info, key, expected_value);
+
+    }
+    void decompose_simple_url_test(){
+        string prolog = string(__func__) + "() - ";
+        NgapApi ngapi;
+
+        std::map<std::string,std::string> url_info;
+        std::map<std::string,std::string>::iterator it;
+
+        if(debug ) cout << endl;
+
+        string url;
+        string key;
+        string expected_value;
+
+        url = "https://d1sd4up8kynpk2.cloudfront.net/s3-2dbad80ed80161e4b685a0385c322d93/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?"
+              "RequestId=yU6NwaRaSZBwQ0xexo5Ufv7aL0MeANMMM7oeB96NfuJzrfjVNmW9eQ=="
+              "&Expires=1592946176";
+
+        if (debug) cerr << prolog << "Decomposing URL: " << url << endl;
+        NgapApi::decompose_url(url,url_info);
+
+        key = "RequestId";
+        expected_value = "yU6NwaRaSZBwQ0xexo5Ufv7aL0MeANMMM7oeB96NfuJzrfjVNmW9eQ==";
+        check_kvp(prolog, url_info, key, expected_value);
+
+        key = "Expires";
+        expected_value = "1592946176";
+        check_kvp(prolog, url_info, key, expected_value);
+
+    }
+
+    void signed_url_is_expired_test(){
+        string prolog = string(__func__) + "() - ";
+
+        string url;
+        std::map<std::string,std::string> url_info;
+        bool is_expired;
+
+
+        url = "https://ghrcw-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?"
+              "A-userid=hyrax"
+              "&X-Amz-Algorithm=AWS4-HMAC-SHA256"
+              "&X-Amz-Credential=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
+              "&X-Amz-Date=20200621T161744Z"
+              "&X-Amz-Expires=86400"
+              "&X-Amz-Security-Token=FwoGZXIvYXdzENL%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaDKmu"
+              "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
+              "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
+              "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
+              "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
+              "&X-Amz-SignedHeaders=host"
+              "&X-Amz-Signature=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing";
+        if (debug) cerr << prolog << "Decomposing URL: " << url << endl;
+        NgapApi::decompose_url(url,url_info);
+
+        time_t now;
+        time(&now);
+        stringstream ingest_time;
+        time_t then = now - 82810; // 23 hours and 10 seconds ago.
+        ingest_time << then;
+        string ingest_time_key="ingest_time";
+        url_info.erase(ingest_time_key);
+        url_info.insert(pair<string, string>(ingest_time_key,ingest_time.str()));
+        is_expired = NgapApi::signed_url_is_expired(url_info);
+        CPPUNIT_ASSERT(is_expired == true );
+
+    }
+
     CPPUNIT_TEST_SUITE( NgapApiTest );
 
-    CPPUNIT_TEST(cmr_access_test);
+        CPPUNIT_TEST(cmr_access_test);
+        CPPUNIT_TEST(decompose_simple_url_test);
+        CPPUNIT_TEST(decompose_aws_signed_request_url_test);
+        CPPUNIT_TEST(signed_url_is_expired_test);
 
     CPPUNIT_TEST_SUITE_END();
 };
