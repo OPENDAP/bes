@@ -1070,7 +1070,6 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             }
 
             dc->add_chunk(data_url, byte_order, size, offset, chunk_position_in_array);
-            //dc->add_chunk(data_url, "", size, offset, chunk_position_in_array);
         }
     }
         break;

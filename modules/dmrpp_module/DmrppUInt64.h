@@ -26,6 +26,7 @@
 #define _dmrpp_uint64_h 1
 
 #include <string>
+#include <byteswap.h>
 
 #include <UInt64.h>
 #include "DmrppCommon.h"

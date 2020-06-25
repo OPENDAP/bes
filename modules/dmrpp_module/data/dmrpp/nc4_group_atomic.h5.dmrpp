@@ -18,11 +18,15 @@
     <Attribute name="_Netcdf4Dimid" type="Int32">
       <Value>0</Value>
     </Attribute>
-    <dmrpp:chunk nBytes="8"   offset="6192"/>
+    <dmrpp:chunks byteOrde="LE">
+      <dmrpp:chunk nBytes="8"   offset="6192"/>
+    </dmrpp:chunks>
   </Int32>
   <Float32 name="d1">
     <Dim name="/dim1"/>
-    <dmrpp:chunk nBytes="8"   offset="6200"/>
+    <dmrpp:chunks byteOrde="LE">
+      <dmrpp:chunk nBytes="8"   offset="6200"/>
+    </dmrpp:chunks>
   </Float32>
   <Group name="g1">
     <Dimension name="dim2" size="3"/>
@@ -37,12 +41,16 @@
       <Attribute name="_Netcdf4Dimid" type="Int32">
         <Value>1</Value>
       </Attribute>
-      <dmrpp:chunk nBytes="12"   offset="6208"/>
+      <dmrpp:chunks byteOrde="LE">
+	<dmrpp:chunk nBytes="12"   offset="6208"/>
+      </dmrpp:chunks>
     </Int32>
     <Float32 name="d2">
       <Dim name="/dim1"/>
       <Dim name="/g1/dim2"/>
-      <dmrpp:chunk nBytes="24"   offset="6220"/>
+      <dmrpp:chunks byteOrde="LE">
+	<dmrpp:chunk nBytes="24"   offset="6220"/>
+      </dmrpp:chunks>
     </Float32>
   </Group>
 </Dataset>

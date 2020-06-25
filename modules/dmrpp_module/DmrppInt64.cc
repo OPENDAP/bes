@@ -84,6 +84,9 @@ DmrppInt64::read()
 
     set_value(*reinterpret_cast<dods_int64*>(read_atomic(name())));
 
+    if ( this->twiddle_bytes() ) {
+        d_buf = bswap_64(d_buf);
+    }
     set_read_p(true);
 
     return true;
