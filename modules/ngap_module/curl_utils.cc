@@ -49,6 +49,9 @@ using namespace std;
 
 namespace ngap_curl {
 
+    static const unsigned int retry_limit = 10; // Amazon's suggestion
+    static const unsigned int initial_retry_time = 1000; // one second
+
 // Set this to 1 to turn on libcurl's verbose mode (for debugging).
 int curl_trace = 0;
 
@@ -544,29 +547,24 @@ CURL *init(char *error_buffer) {
         return range.str();
     }
 
-    void find_last_redirect(const string &url, string &last_accessed_url) {
-
-        char error_buffer[CURL_ERROR_SIZE];
-        CURL *curl = init(error_buffer);
-        vector<string> resp_hdrs;
-        string err_base = "cURL Error setting ";
+    CURL *init_redirect_handle(const string url, vector<string> &resp_hdrs, char error_buffer[]){
+        CURL *curl = 0;
+        curl = init(error_buffer);
+        string err_msg_base = "cURL Error setting ";
         // set target URL.
         CURLcode res = curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
         if (res != CURLE_OK)
-            throw BESInternalError((err_base + "CURLOPT_URL: ").append(error_message(res, error_buffer)), __FILE__, __LINE__);
+            throw BESInternalError((err_msg_base + "CURLOPT_URL: ").append(error_message(res, error_buffer)), __FILE__, __LINE__);
 
         // get the offset to offset + size bytes
         res = curl_easy_setopt(curl, CURLOPT_RANGE, get_range_arg_string(0,4).c_str());
         if (res != CURLE_OK)
-            throw BESInternalError((err_base+"CURLOPT_RANGE: ").append(error_message(res, error_buffer)), __FILE__,
-                    __LINE__);
-
-        // HEAD - get us the resource without a body!
-        //curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
+            throw BESInternalError((err_msg_base+"CURLOPT_RANGE: ").append(error_message(res, error_buffer)), __FILE__,
+                                   __LINE__);
 
         res = curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeNothing);
         if (res != CURLE_OK)
-            throw BESInternalError((err_base+"CURLOPT_WRITEFUNCTION: ").append(
+            throw BESInternalError((err_msg_base+"CURLOPT_WRITEFUNCTION: ").append(
                     error_message(res, error_buffer)), __FILE__, __LINE__);
 
         // Pass save_raw_http_headers() a pointer to the vector<string> where the
@@ -574,37 +572,12 @@ CURL *init(char *error_buffer) {
         // value/result parameter to get the raw response header information .
         res = curl_easy_setopt(curl, CURLOPT_WRITEHEADER, &resp_hdrs);
         if (res != CURLE_OK)
-            throw BESInternalError((err_base+"CURLOPT_WRITEHEADER: ").append(
+            throw BESInternalError((err_msg_base+"CURLOPT_WRITEHEADER: ").append(
                     error_message(res, error_buffer)), __FILE__, __LINE__);
 
-        /* Perform the request */
-        CURLcode curl_code;
-        curl_code = curl_easy_perform(curl);
-
-        if (CURLE_OK != curl_code) { // Failure here is not an HTTP error, but a cURL error.
-            stringstream msg;
-            msg << prolog << "ERROR! Message: " << error_message(curl_code, error_buffer);
-            throw BESInternalError(msg.str(), __FILE__, __LINE__);
-        }
-
-        if(BESDebug::IsSet(MODULE)){
-            stringstream msg;
-            vector<string>::iterator rhit = resp_hdrs.begin();
-            for(;rhit!=resp_hdrs.end(); rhit++){
-                msg << *rhit << endl;
-            }
-            BESDEBUG(MODULE, prolog << " Response Headers:" << endl << msg.str() << endl);
-        }
-
-
-
-        char *effective_url = 0;
-        curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &effective_url);
-        BESDEBUG(MODULE, prolog << " last accessed url: " << effective_url << endl);
-
-        last_accessed_url = effective_url;
-
+        return curl;
     }
+
 
 
 /** Use libcurl to dereference a URL. Read the information referenced by \c
@@ -741,19 +714,102 @@ bool eval_get_response(CURL *eh) {
             return true;
 
         case 500: // Internal server error
+        case 502: // Bad Gateway
         case 503: // Service Unavailable
         case 504: // Gateway Timeout
+        {
+            char *effective_url = 0;
+            curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &effective_url);
+            LOG("HTTP transfer " << http_code << " error, returning false.  CURLINFO_EFFECTIVE_URL: "
+                                 << effective_url << endl);
             return false;
+        }
 
         default: {
             ostringstream oss;
-            oss << "HTTP status error: Expected an OK status, but got: ";
-            oss << http_code;
+            char *effective_url = 0;
+            curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &effective_url);
+            oss << prolog << "HTTP status error: Expected an OK status, but got: " << http_code
+                << " from (CURLINFO_EFFECTIVE_URL): " << effective_url;
             throw BESInternalError(oss.str(), __FILE__, __LINE__);
         }
     }
+
 }
 
+
+    void find_last_redirect(const string &url, string &last_accessed_url) {
+
+        //unsigned int retry_limit = 3;
+        //useconds_t initial_retry_time = 1000;
+
+        unsigned int tries = 0;
+        bool success = true;
+        unsigned int retry_time = initial_retry_time;
+
+        char error_buffer[CURL_ERROR_SIZE];
+        vector<string> resp_hdrs;
+
+        CURL *curl = 0;
+
+        try {
+            curl = init_redirect_handle( url, resp_hdrs,  error_buffer);
+            do {
+                ++tries;
+                BESDEBUG(MODULE, prolog << "Requesting URL: " << url << " attempt: " << tries <<  endl);
+                CURLcode curl_code = curl_easy_perform(curl);
+                if (CURLE_OK != curl_code) {
+                    stringstream msg;
+                    msg << "Data transfer error: " << error_message(curl_code, error_buffer);
+                    char *effective_url = 0;
+                    curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &effective_url);
+                    msg << " last_url: " << effective_url;
+                    BESDEBUG(MODULE, prolog << msg.str() << endl);
+                    throw BESInternalError(msg.str(), __FILE__, __LINE__);
+                }
+
+                success = eval_get_response(curl);
+
+                if (!success) {
+                    if (tries == retry_limit) {
+                        throw BESInternalError(
+                                string("Data transfer error: Number of re-tries exceeded: ").append(
+                                        error_message(curl_code, error_buffer)), __FILE__, __LINE__);
+                    }
+                    else {
+                        LOG("HTTP Range-GET failed. Will retry (url: " << url << " attempt:" << tries << ")." << endl);
+                        usleep(retry_time);
+                        retry_time *= 2;
+                    }
+                }
+
+            } while (!success);
+
+            char *effective_url = 0;
+            curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &effective_url);
+            BESDEBUG(MODULE, prolog << " CURLINFO_EFFECTIVE_URL: " << effective_url << endl);
+            last_accessed_url = effective_url;
+
+            if(curl){
+                curl_easy_cleanup(curl);
+                curl = 0;
+            }
+
+        }
+        catch(...){
+            if(curl){
+                curl_easy_cleanup(curl);
+                curl = 0;
+            }
+            throw;
+        }
+
+    }
+
+
+
+
+#if 0
 /**
  * Execute the HTTP VERB from the passed cURL handle "c_handle" and retrieve the response.
  * @param c_handle The cURL easy handle to execute and read.
@@ -810,7 +866,7 @@ void read_data(CURL *c_handle) {
     } while (!success);
 }
 
-#if 0
+
 /**
   *
   * @param target_url
