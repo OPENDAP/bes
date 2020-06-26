@@ -108,6 +108,7 @@ FONc.NoGlobalAttrs=true
 # Since most centers  would like to handle HDF5 data that follows CF now,
 # I set the EnableCF to be true, KY 2011-8-4
 #
+H5.EnableDMR64bitInt=true
 H5.EnableCF=true
 H5.KeepVarLeadingUnderscore=false
 H5.EnableCheckNameClashing=true
