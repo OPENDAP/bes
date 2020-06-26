@@ -1,7 +1,7 @@
 netcdf test {
 dimensions:
-	x = 2 ;
 	y = 2 ;
+	x = 2 ;
 variables:
 	ushort data(x, y) ;
 data:
