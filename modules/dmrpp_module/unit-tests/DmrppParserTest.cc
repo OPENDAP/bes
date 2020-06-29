@@ -511,12 +511,12 @@ public:
 
     CPPUNIT_TEST_SUITE( DmrppParserTest );
 
-    CPPUNIT_TEST(test_integer_scalar);
+    //CPPUNIT_TEST(test_integer_scalar);
     CPPUNIT_TEST(test_integer_arrays);
     CPPUNIT_TEST(test_float_arrays);
 
-    CPPUNIT_TEST(test_grid_1_2d);
-    CPPUNIT_TEST(test_nc4_group_atomic);
+    //CPPUNIT_TEST(test_grid_1_2d);
+    //CPPUNIT_TEST(test_nc4_group_atomic);
 
     //CPPUNIT_TEST(test_flattened_grid_1_2d);
 #if 0

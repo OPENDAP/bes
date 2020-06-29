@@ -154,17 +154,16 @@ void DmrppCommon::ingest_compression_type(string compression_type_string)
  */
     void DmrppCommon::ingest_byte_order(string byte_order_string) {
 
-        // Clear previous state
-        d_byte_order = "";
-
         if (byte_order_string.empty()) return;
 
         // Process content
         if (byte_order_string.compare("LE") == 0) {
             d_byte_order = "LE";
+            d_twiddle_bytes = is_host_big_endian();
         } else {
             if (byte_order_string.compare("BE") == 0) {
                 d_byte_order = "BE";
+                d_twiddle_bytes = !(is_host_big_endian());
             } else {
                 throw BESInternalError("Did not recognize byteOrder.", __FILE__, __LINE__);
             }
@@ -228,7 +227,6 @@ DmrppCommon::read_atomic(const string &name)
     Chunk &chunk = chunk_refs[0];
 
     chunk.read_chunk();
-    set_twiddle_bytes(chunk.twiddle_bytes());
 
     return chunk.get_rbuf();
 }

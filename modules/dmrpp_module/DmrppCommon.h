@@ -125,15 +125,8 @@ public:
         d_shuffle = value;
     }
 
-    /// @brief RSet the value of the twiddle_bytes property.
-    virtual void set_twiddle_bytes(bool value) {
-        d_twiddle_bytes = value;
-    }
-
     /// @brief Returns true if this object utilizes shuffle compression.
-    virtual bool twiddle_bytes() const {
-        return d_twiddle_bytes;
-    }
+    virtual bool twiddle_bytes() const { return d_twiddle_bytes; }
 
     virtual const std::vector<Chunk> &get_immutable_chunks() const {
     	return d_chunks;

@@ -375,9 +375,6 @@ void DmrppArray::read_contiguous()
     // This is the original chunk for this 'contiguous' variable.
     Chunk &master_chunk = chunk_refs[0];
 
-    // Set d_twiddle_bytes based on the master chunk.
-    set_twiddle_bytes(master_chunk.twiddle_bytes());
-
     unsigned long long master_chunk_size = master_chunk.get_size();
 
     // If we want to read the chunk in parallel. Only read in parallel above some
@@ -900,10 +897,6 @@ void DmrppArray::read_chunks()
     vector<Chunk> &chunk_refs = get_chunk_vec();
     if (chunk_refs.size() == 0) throw BESInternalError(string("Expected one or more chunks for variable ") + name(), __FILE__, __LINE__);
 
-    // This is the initial chunk for this variable, set d_twiddle_bytes based on it.
-    Chunk &master_chunk = chunk_refs[0];
-    set_twiddle_bytes(master_chunk.twiddle_bytes());
-
     // Find all the chunks to read. I used a queue to preserve the chunk order, which
     // made using a debugger easier. However, order does not matter, AFAIK.
     queue<Chunk *> chunks_to_read;
@@ -1106,10 +1099,6 @@ void DmrppArray::read_chunks_unconstrained()
     vector<Chunk> &chunk_refs = get_chunk_vec();
     if (chunk_refs.size() == 0) throw BESInternalError(string("Expected one or more chunks for variable ") + name(), __FILE__, __LINE__);
 
-    // This is the initial chunk for this variable, set d_twiddle_bytes based on it.
-    Chunk &master_chunk = chunk_refs[0];
-    set_twiddle_bytes(master_chunk.twiddle_bytes());
-
     reserve_value_capacity(get_size());
 
     // The size in element of each of the array's dimensions
@@ -1271,6 +1260,9 @@ bool DmrppArray::read()
         }
     }
 
+    if (this->twiddle_bytes()) {
+        int num = this->length();
+    }
     return true;
 }
 
