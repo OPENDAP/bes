@@ -1241,28 +1241,57 @@ void DmrppArray::read_chunks_unconstrained()
  */
 bool DmrppArray::read()
 {
-    if (read_p()) return true;
+    if (!read_p())
+    {
+        // Single chunk and 'contiguous' are the same for this code.
 
-    // Single chunk and 'contiguous' are the same for this code.
-
-    if (get_immutable_chunks().size() == 1 || get_chunk_dimension_sizes().empty()) {
-        BESDEBUG(dmrpp_4, "Calling read_contiguous() for " << name() << endl);
-        read_contiguous();    // Throws on various errors
-    }
-    else {  // Handle the more complex case where the data is chunked.
-        if (!is_projected()) {
-            BESDEBUG(dmrpp_4, "Calling read_chunks_unconstrained() for " << name() << endl);
-            read_chunks_unconstrained();
+        if (get_immutable_chunks().size() == 1 || get_chunk_dimension_sizes().empty()) {
+            BESDEBUG(dmrpp_4, "Calling read_contiguous() for " << name() << endl);
+            read_contiguous();    // Throws on various errors
+        } else {  // Handle the more complex case where the data is chunked.
+            if (!is_projected()) {
+                BESDEBUG(dmrpp_4, "Calling read_chunks_unconstrained() for " << name() << endl);
+                read_chunks_unconstrained();
+            } else {
+                BESDEBUG(dmrpp_4, "Calling read_chunks() for " << name() << endl);
+                read_chunks();
+            }
         }
-        else {
-            BESDEBUG(dmrpp_4, "Calling read_chunks() for " << name() << endl);
-            read_chunks();
-        }
     }
-
     if (this->twiddle_bytes()) {
         int num = this->length();
+        Type var_type = this->var()->type();
+
+        switch (var_type) {
+            case dods_int16_c: dods_uint16_c: {
+                dods_int16 *local = reinterpret_cast<dods_int16*>(this->get_buf());
+                while (num--) {
+                    *local = bswap_16(*local);
+                    local++;
+                }
+                break;
+            }
+            case dods_int32_c: dods_uint32_c: {
+                dods_int32 *local = reinterpret_cast<dods_int32*>(this->get_buf());;
+                while (num--) {
+                    *local = bswap_32(*local);
+                    local++;
+                }
+                break;
+            }
+            case dods_int64_c: dods_uint64_c: {
+                dods_int64 *local = reinterpret_cast<dods_int64*>(this->get_buf());;
+                while (num--) {
+                    *local = bswap_64(*local);
+                    local++;
+                }
+                break;
+            }
+            default:
+                throw InternalErr(__FILE__, __LINE__, "Unrecognized word size.");
+        }
     }
+
     return true;
 }
 
