@@ -23,3 +23,7 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([csv/temperature.csv.dap_ce_2.bescmd])
 AT_BESCMD_RESPONSE_TEST([csv/temperature.csv.function.ddx.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([csv/temperature.csv.function.dods.bescmd])
 #
+
+# Test errant data files
+AT_BESCMD_RESPONSE_TEST([csv/broken.csv.3.bescmd])
+AT_BESCMD_RESPONSE_TEST([csv/broken.csv.4.bescmd])
