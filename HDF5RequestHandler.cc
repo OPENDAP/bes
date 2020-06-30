@@ -451,6 +451,12 @@ temp_table->print(cerr);
 
         bdas->clear_container() ;
     }
+    catch(BESError & e) {
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        BESDEBUG(HDF5_NAME, "Caught BESError! Message: " << e.get_message() << endl);
+        throw;
+    }
     catch(InternalErr & e) {
 
         if(cf_fileid !=-1)
@@ -1015,6 +1021,10 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         bdds->clear_container() ;
     
     }
+    catch(BESError & e) {
+        BESDEBUG(HDF5_NAME, "Caught BESError! Message: " << e.get_message() << endl);
+        throw;
+    }
     catch(InternalErr & e) {
 
         throw BESDapError(e.get_error_message(), true, e.get_error_code(),
@@ -1078,6 +1088,10 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         bdds->set_constraint( dhi ) ;
         bdds->clear_container() ;
     
+    }
+    catch(BESError & e) {
+        BESDEBUG(HDF5_NAME, "Caught BESError! Message: " << e.get_message() << endl);
+        throw;
     }
     catch(InternalErr & e) {
 
@@ -1156,6 +1170,12 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
 
     }
 
+    catch(BESError & e) {
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        BESDEBUG(HDF5_NAME, "Caught BESError! Message: " << e.get_message() << endl);
+        throw;
+    }
     catch(InternalErr & e) {
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
@@ -1318,7 +1338,14 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
             }
         }// else no cache
     }// try
-
+    catch(BESError & e) {
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        if(fileid !=-1)
+            H5Fclose(fileid);
+        BESDEBUG(HDF5_NAME, "Caught BESError! Message: " << e.get_message() << endl);
+        throw;
+    }
     catch(InternalErr & e) {
 
         if(cf_fileid !=-1)
@@ -1412,6 +1439,12 @@ bool HDF5RequestHandler::hdf5_build_dmr_with_IDs(BESDataHandlerInterface & dhi)
         //if(cf_fileid !=-1)
          //   H5Fclose(cf_fileid);
 
+    }
+    catch(BESError & e) {
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        BESDEBUG(HDF5_NAME, "Caught BESError! Message: " << e.get_message() << endl);
+        throw;
     }
     catch(InternalErr & e) {
 
