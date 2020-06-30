@@ -38,6 +38,7 @@ include_directories(dap/unit-tests)
 include_directories(dap/unused)
 include_directories(dapreader)
 include_directories(dispatch)
+include_directories(http)
 include_directories(rapidjson)
 
 include_directories(dispatch/PicoSHA2)
@@ -471,6 +472,16 @@ add_executable(bes
     dispatch/TheBESKeys.h
     dispatch/WhiteList.cc
     dispatch/WhiteList.h
+
+    http/CurlUtils.cc
+    http/CurlUtils.h
+    http/HttpCache.cc
+    http/HttpCache.h
+    http/HttpNames.h
+    http/HttpUtils.cc
+    http/HttpUtils.h
+    http/RemoteResource.cc
+    http/RemoteResource.h
 
     functions/geo-functions/unused/NC_GOES_Dataset.cpp
     functions/geo-functions/unused/NC_GOES_Dataset.h

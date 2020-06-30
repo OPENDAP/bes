@@ -656,12 +656,12 @@ long read_url(CURL *curl,
                      "status associated with the response from : " + url;
         throw BESInternalError(msg,__FILE__,__LINE__);
     }
-    if(status>400){
+    if(status>400 && BESDebug::IsSet(MODULE)){
         stringstream msg;
         msg << prolog << "The HTTP request for target URL:  " << url << " returned a status of: " << status << endl;
         char *last_url = 0;
         curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &last_url);
-        if(BESDebug::IsSet(MODULE)) msg << " Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << last_url << endl;
+        msg << " Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << last_url << endl;
         BESDEBUG(MODULE, msg.str());
     }
 
