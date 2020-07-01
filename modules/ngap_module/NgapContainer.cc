@@ -32,6 +32,7 @@
 #include <string>
 #include <fstream>
 #include <streambuf>
+#include <time.h>
 
 #include "BESSyntaxUserError.h"
 #include "BESNotFoundError.h"
@@ -134,17 +135,44 @@ namespace ngap {
     }
 
 
+    bool cache_terminal_urls(){
+        bool found;
+        string value;
+        TheBESKeys::TheKeys()->get_value(NGAP_CACHE_TERMINAL_URLS_KEY,value,found);
+        return found && BESUtil::lowercase(value)=="true";
+    }
+
     /** @brief access the remote target response by making the remote request
      *
      * @return full path to the remote request response data file
      * @throws BESError if there is a problem making the remote request
      */
     string NgapContainer::access() {
-
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
         // Since this the ngap we know that the real_name is a URL.
         string data_access_url = get_real_name();
+
+        if(cache_terminal_urls()){
+            // See if the data_access_url has already been processed into a terminal signed URL
+            // in TheBESKeys
+            bool found;
+            std::map<std::string,std::string> data_access_url_info;
+            TheBESKeys::TheKeys()->get_values(data_access_url,data_access_url_info, false, found);
+            if(found){
+                // Is it expired?
+                found = NgapApi::signed_url_is_expired(data_access_url_info);
+            }
+            // It not found or expired, reload.
+            if(!found){
+                string last_accessed_url;
+                ngap_curl::find_last_redirect(data_access_url,last_accessed_url);
+                BESDEBUG(MODULE, prolog << "last_accessed_url: " << last_accessed_url << endl);
+                data_access_url_info.clear();
+                NgapApi::decompose_url(last_accessed_url,data_access_url_info);
+                TheBESKeys::TheKeys()->set_keys(data_access_url,data_access_url_info, false, false);
+            }
+        }
 
         // And we know that the dmr++ file should "right next to it" (side-car)
         string dmrpp_url = data_access_url + ".dmrpp";

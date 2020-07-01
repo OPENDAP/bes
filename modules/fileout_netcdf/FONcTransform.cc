@@ -158,6 +158,21 @@ FONcTransform::~FONcTransform()
             _fonc_vars.erase(i);
         }
     }
+    done = false;
+    while (!done) {
+        vector<FONcBaseType *>::iterator i = _total_fonc_vars_in_grp.begin();
+        vector<FONcBaseType *>::iterator e = _total_fonc_vars_in_grp.end();
+        if (i == e) {
+            done = true;
+        }
+        else {
+            // These are the FONc types, not the actual ones
+            FONcBaseType *b = (*i);
+            delete b;
+            _total_fonc_vars_in_grp.erase(i);
+        }
+    }
+
 }
 
 /** @brief Transforms each of the variables of the DataDDS to the NetCDF
@@ -295,40 +310,57 @@ void FONcTransform::transform_dap4()
     // embedded structures. It only grabs the variables that are to be
     // sent.
     
-    D4Group* root_grp = _dmr->root();
-    Constructor::Vars_iter vi = root_grp->var_begin();
-    Constructor::Vars_iter ve = root_grp->var_end();
-#if 0
-    for (D4Group::Vars_iter i = root_grp->var_begin(), e = root_grp->var_end(); i != e; ++i) {
-        BESDEBUG("fonc", "transform_dap4() - "<< (*i)->name() <<endl);
-        if ((*i)->send_p()) {
-            BESDEBUG("fonc", "transform_dap4() inside send_p - "<< (*i)->name() <<endl);
-            //(*i)->intern_data();
-        }
+    BESDEBUG("fonc", "Coming into transform_dap4() "<< endl);
+
+    bool support_group = check_group_support();
+    if(true == support_group) {
+        int stax = -1;
+        BESDEBUG("fonc", "FONcTransform::transform_dap4() - Opening NetCDF-4 cache file. fileName:  " << _localfile << endl);
+        stax = nc_create(_localfile.c_str(), NC_CLOBBER|NC_NETCDF4, &_ncid);
+        if (stax != NC_NOERR) 
+            FONcUtils::handle_error(stax, "File out netcdf, unable to open: " + _localfile, __FILE__, __LINE__);
+        
+        D4Group* root_grp = _dmr->root();
+        map<string,int>fdimname_to_id;
+        transform_dap4_group(root_grp,true,_ncid,fdimname_to_id);
+        stax = nc_close(_ncid);
+        if (stax != NC_NOERR)
+            FONcUtils::handle_error(stax, "File out netcdf, unable to close: " + _localfile, __FILE__, __LINE__);
+
     }
-#endif
+    else 
+        transform_dap4_no_group();
+
+    return;
+
+}
+
+void FONcTransform::transform_dap4_no_group() {
+
+    D4Group* root_grp = _dmr->root();
 
 #if 0
-    DDS::Vars_iter vi = _dds->var_begin();
-    DDS::Vars_iter ve = _dds->var_end();
+    D4Dimensions *root_dims = root_grp->dims();
+    for(D4Dimensions::D4DimensionsIter di = root_dims->dim_begin(), de = root_dims->dim_end(); di != de; ++di) {
+        BESDEBUG("fonc", "transform_dap4() - check dimensions"<< endl);
+        BESDEBUG("fonc", "transform_dap4() - dim name is: "<<(*di)->name()<<endl);
+        BESDEBUG("fonc", "transform_dap4() - dim size is: "<<(*di)->size()<<endl);
+        BESDEBUG("fonc", "transform_dap4() - fully_qualfied_dim name is: "<<(*di)->fully_qualified_name()<<endl);
+        //cout <<"dim size is: "<<(*di)->size()<<endl;
+        //cout <<"dim fully_qualified_name is: "<<(*di)->fully_qualified_name()<<endl;
+    }
 #endif
+    Constructor::Vars_iter vi = root_grp->var_begin();
+    Constructor::Vars_iter ve = root_grp->var_end();
+
     for (; vi != ve; vi++) {
         if ((*vi)->send_p()) {
             BaseType *v = *vi;
 
-            BESDEBUG("fonc", "FONcTransform::transform_dap4() - Converting variable '" << v->name() << "'" << endl);
+            BESDEBUG("fonc", "FONcTransform::transform_dap4_no_group() - Converting variable '" << v->name() << "'" << endl);
 
             // This is a factory class call, and 'fg' is specialized for 'v'
             FONcBaseType *fb = FONcUtils::convert(v,FONcTransform::_returnAs,FONcRequestHandler::classic_model);
-#if 0
-            fb->setVersion( FONcTransform::_returnAs );
-            if ( FONcTransform::_returnAs == RETURNAS_NETCDF4 ) {
-                if (FONcRequestHandler::classic_model)
-                    fb->setNC4DataModel("NC4_CLASSIC_MODEL");
-                else 
-                    fb->setNC4DataModel("NC4_ENHANCED");
-            }
-#endif
             _fonc_vars.push_back(fb);
 
             vector<string> embed;
@@ -336,20 +368,29 @@ void FONcTransform::transform_dap4()
         }
     }
 
+#if 0
+    if(root_grp->grp_begin() == root_grp->grp_end()) 
+        BESDEBUG("fonc", "FONcTransform::transform_dap4() - No group  " <<  endl);
+    else 
+        BESDEBUG("fonc", "FONcTransform::transform_dap4() - has group  " <<  endl);
+   for (D4Group::groupsIter gi = root_grp->grp_begin(), ge = root_grp->grp_end(); gi != ge; ++gi) 
+       BESDEBUG("fonc", "FONcTransform::transform_dap4() - group name:  " << (*gi)->name() << endl);
+#endif
+
     // Open the file for writing
-    int stax;
+    int stax = -1;
     if ( FONcTransform::_returnAs == RETURNAS_NETCDF4 ) {
         if (FONcRequestHandler::classic_model){
-            BESDEBUG("fonc", "FONcTransform::transform_dap4() - Opening NetCDF-4 cache file in classic mode. fileName:  " << _localfile << endl);
+            BESDEBUG("fonc", "FONcTransform::transform_dap4_no_group() - Opening NetCDF-4 cache file in classic mode. fileName:  " << _localfile << endl);
             stax = nc_create(_localfile.c_str(), NC_CLOBBER|NC_NETCDF4|NC_CLASSIC_MODEL, &_ncid);
         }
         else {
-            BESDEBUG("fonc", "FONcTransform::transform_dap4() - Opening NetCDF-4 cache file. fileName:  " << _localfile << endl);
+            BESDEBUG("fonc", "FONcTransform::transform_dap4_no_group() - Opening NetCDF-4 cache file. fileName:  " << _localfile << endl);
             stax = nc_create(_localfile.c_str(), NC_CLOBBER|NC_NETCDF4, &_ncid);
         }
     }
     else {
-        BESDEBUG("fonc", "FONcTransform::transform_dap4() - Opening NetCDF-3 cache file. fileName:  " << _localfile << endl);
+        BESDEBUG("fonc", "FONcTransform::transform_dap4_no_group() - Opening NetCDF-3 cache file. fileName:  " << _localfile << endl);
     	stax = nc_create(_localfile.c_str(), NC_CLOBBER, &_ncid);
     }
 
@@ -369,16 +410,17 @@ void FONcTransform::transform_dap4()
         vector<FONcBaseType *>::iterator e = _fonc_vars.end();
         for (; i != e; i++) {
             FONcBaseType *fbt = *i;
-            BESDEBUG("fonc", "FONcTransform::transform_dap4() - Defining variable:  " << fbt->name() << endl);
+            BESDEBUG("fonc", "FONcTransform::transform_dap4_no_group() - Defining variable:  " << fbt->name() << endl);
             fbt->set_is_dap4(true);
             fbt->define(_ncid);
         }
 
         if(FONcRequestHandler::no_global_attrs == false) {
+
             // Add any global attributes to the netcdf file
             D4Group* root_grp=_dmr->root();
             D4Attributes*d4_attrs = root_grp->attributes();
-            BESDEBUG("fonc", "FONcTransform::transform_dap4() handle GLOBAL DAP4 attributes "<< d4_attrs <<endl);
+            BESDEBUG("fonc", "FONcTransform::transform_dap4_no_group() handle GLOBAL DAP4 attributes "<< d4_attrs <<endl);
 #if 0
             for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
                 string name = (*ii)->name();
@@ -386,7 +428,7 @@ void FONcTransform::transform_dap4()
             }
 #endif
             //    AttrTable &globals = root_grp->get_attr_table();
-            BESDEBUG("fonc", "FONcTransform::transform_dap4() - Adding Global Attributes" << endl) ;
+            BESDEBUG("fonc", "FONcTransform::transform_dap4_no_group() - Adding Global Attributes" << endl) ;
             bool is_netCDF_enhanced = false;
             if(FONcTransform::_returnAs == RETURNAS_NETCDF4 && FONcRequestHandler::classic_model==false)
                 is_netCDF_enhanced = true;
@@ -408,7 +450,7 @@ void FONcTransform::transform_dap4()
         e = _fonc_vars.end();
         for (; i != e; i++) {
             FONcBaseType *fbt = *i;
-            BESDEBUG("fonc", "FONcTransform::transform() - Writing data for variable:  " << fbt->name() << endl);
+            BESDEBUG("fonc", "FONcTransform::transform_dap4_no_group() - Writing data for variable:  " << fbt->name() << endl);
             fbt->write(_ncid);
         }
 
@@ -420,7 +462,136 @@ void FONcTransform::transform_dap4()
         (void) nc_close(_ncid); // ignore the error at this point
         throw;
     }
+
 }
+
+void FONcTransform::transform_dap4_group(D4Group* grp,bool is_root_grp,int par_grp_id,map<string,int>&fdimname_to_id ) {
+
+    int grp_id = -1;
+    int stax = -1;
+    if(is_root_grp == true) 
+        grp_id = _ncid;
+    else {
+        stax = nc_def_grp(par_grp_id,(*grp).name().c_str(),&grp_id);
+        if (stax != NC_NOERR)
+            FONcUtils::handle_error(stax, "File out netcdf, unable to define group: " + _localfile, __FILE__, __LINE__);
+    }
+     
+    D4Dimensions *root_dims = grp->dims();
+    for(D4Dimensions::D4DimensionsIter di = root_dims->dim_begin(), de = root_dims->dim_end(); di != de; ++di) {
+#if 0
+        BESDEBUG("fonc", "transform_dap4() - check dimensions"<< endl);
+        BESDEBUG("fonc", "transform_dap4() - dim name is: "<<(*di)->name()<<endl);
+        BESDEBUG("fonc", "transform_dap4() - dim size is: "<<(*di)->size()<<endl);
+        BESDEBUG("fonc", "transform_dap4() - fully_qualfied_dim name is: "<<(*di)->fully_qualified_name()<<endl);
+#endif
+        unsigned long dimsize = (*di)->size();
+        if((*di)->constrained()) {
+            dimsize = ((*di)->c_stop() -(*di)->c_start())/(*di)->c_stride() +1;
+
+        }
+        int g_dimid = -1;
+        stax = nc_def_dim(grp_id,(*di)->name().c_str(),dimsize,&g_dimid);
+        if (stax != NC_NOERR)
+            FONcUtils::handle_error(stax, "File out netcdf, unable to define dimension: " + _localfile, __FILE__, __LINE__);
+        fdimname_to_id[(*di)->fully_qualified_name()] = g_dimid; 
+    }
+
+    Constructor::Vars_iter vi = grp->var_begin();
+    Constructor::Vars_iter ve = grp->var_end();
+
+    vector<FONcBaseType *> fonc_vars_in_grp;
+    for (; vi != ve; vi++) {
+        if ((*vi)->send_p()) {
+            BaseType *v = *vi;
+
+            BESDEBUG("fonc", "FONcTransform::transform_dap4_group() - Converting variable '" << v->name() << "'" << endl);
+
+            // This is a factory class call, and 'fg' is specialized for 'v'
+            //FONcBaseType *fb = FONcUtils::convert(v,FONcTransform::_returnAs,FONcRequestHandler::classic_model);
+            FONcBaseType *fb = FONcUtils::convert(v,RETURNAS_NETCDF4,false,fdimname_to_id);
+
+            //_fonc_vars.push_back(fb);
+            fonc_vars_in_grp.push_back(fb);
+
+            // This is needed to avoid the memory leak.
+            _total_fonc_vars_in_grp.push_back(fb);
+
+            vector<string> embed;
+            fb->convert(embed,true);
+        }
+    }
+
+#if 0
+    if(grp->grp_begin() == grp->grp_end()) 
+        BESDEBUG("fonc", "FONcTransform::transform_dap4() - No group  " <<  endl);
+    else 
+        BESDEBUG("fonc", "FONcTransform::transform_dap4() - has group  " <<  endl);
+#endif
+
+
+    try {
+        // Here we will be defining the variables of the netcdf and
+        // adding attributes. To do this we must be in define mode.
+        // TO CHECK: for netCDF4 group, this may NOT be necessary.
+        //nc_redef(_ncid);
+
+        vector<FONcBaseType *>::iterator i = fonc_vars_in_grp.begin();
+        vector<FONcBaseType *>::iterator e = fonc_vars_in_grp.end();
+        for (; i != e; i++) {
+            FONcBaseType *fbt = *i;
+            BESDEBUG("fonc", "FONcTransform::transform_dap4_group() - Defining variable:  " << fbt->name() << endl);
+            fbt->set_is_dap4(true);
+            fbt->define(grp_id);
+        }
+
+        bool is_netCDF_enhanced = false;
+        if(FONcTransform::_returnAs == RETURNAS_NETCDF4 && FONcRequestHandler::classic_model==false)
+                is_netCDF_enhanced = true;
+ 
+
+        bool add_attr = true;
+        if(FONcRequestHandler::no_global_attrs == false && is_root_grp == true) 
+            add_attr= false;
+        if(true == add_attr) {
+            D4Attributes*d4_attrs = grp->attributes();
+            BESDEBUG("fonc", "FONcTransform::transform_dap4_group() - Adding Group Attributes" << endl) ;
+            FONcAttributes::add_dap4_attributes(grp_id, NC_GLOBAL, d4_attrs, "", "",is_netCDF_enhanced);
+        }
+
+        // Write everything out
+        i = fonc_vars_in_grp.begin();
+        e = fonc_vars_in_grp.end();
+        for (; i != e; i++) {
+            FONcBaseType *fbt = *i;
+            BESDEBUG("fonc", "FONcTransform::transform() - Writing data for variable in group:  " << fbt->name() << endl);
+            //fbt->write(_ncid);
+            fbt->write(grp_id);
+        }
+
+        for (D4Group::groupsIter gi = grp->grp_begin(), ge = grp->grp_end(); gi != ge; ++gi) {
+            BESDEBUG("fonc", "FONcTransform::transform_dap4() in group  - group name:  " << (*gi)->name() << endl);
+            transform_dap4_group(*gi,false,grp_id,fdimname_to_id);
+        }
+
+    }
+    catch (BESError &e) {
+        (void) nc_close(_ncid); // ignore the error at this point
+        throw;
+    }
+
+}
+
+// Group support is only on when netCDF-4 is in enhanced model and there are groups in the DMR.
+bool FONcTransform::check_group_support() {
+    if(RETURNAS_NETCDF4 == FONcTransform::_returnAs && false == FONcRequestHandler::classic_model && 
+       (_dmr->root()->grp_begin()!=_dmr->root()->grp_end())) 
+        return true; 
+    else 
+        return false;
+}
+
+
 /** @brief dumps information about this transformation object for debugging
  * purposes
  *

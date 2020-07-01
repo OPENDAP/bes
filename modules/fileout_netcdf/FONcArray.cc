@@ -54,7 +54,23 @@ const int MAX_CHUNK_SIZE = 1024;
  * @throws BESInternalError if the BaseType is not an Array
  */
 FONcArray::FONcArray(BaseType *b) :
-        FONcBaseType(), d_a(0), d_array_type(NC_NAT), d_ndims(0), d_actual_ndims(0), d_nelements(1), d_dim_ids(0),
+        FONcBaseType(), d_a(0), d_array_type(NC_NAT), d_ndims(0), d_actual_ndims(0), d_nelements(1), d4_dim_ids(0),d_dim_ids(0),
+        d_dim_sizes(0), d_str_data(0), d_dont_use_it(false), d_chunksizes(0), d_grid_maps(0),d4_def_dim(false)
+{
+    d_a = dynamic_cast<Array *>(b);
+    if (!d_a) {
+        string s = "File out netcdf, FONcArray was passed a variable that is not a DAP Array";
+        throw BESInternalError(s, __FILE__, __LINE__);
+    }
+
+    for(unsigned int i = 0; i<d_a->dimensions();i++)
+        use_d4_dim_ids.push_back(false);
+
+
+}
+
+FONcArray::FONcArray(BaseType *b,const vector<int> &fd4_dim_ids,const vector<bool> &fuse_d4_dim_ids) :
+        FONcBaseType(), d_a(0), d_array_type(NC_NAT), d_ndims(0),d_actual_ndims(0), d_nelements(1),d_dim_ids(0),
         d_dim_sizes(0), d_str_data(0), d_dont_use_it(false), d_chunksizes(0), d_grid_maps(0)
 {
     d_a = dynamic_cast<Array *>(b);
@@ -62,8 +78,13 @@ FONcArray::FONcArray(BaseType *b) :
         string s = "File out netcdf, FONcArray was passed a variable that is not a DAP Array";
         throw BESInternalError(s, __FILE__, __LINE__);
     }
+    if(d_a ->is_dap4()) {
+        BESDEBUG("fonc", "FONcArray() - constructor is dap4 "<< endl);
+        d4_dim_ids = fd4_dim_ids;
+        use_d4_dim_ids = fuse_d4_dim_ids;
+        d4_def_dim = true;
+    }
 }
-
 /** @brief Destructor that cleans up the array
  *
  * The destrutor cleans up by removing the array dimensions from it's
@@ -105,14 +126,24 @@ FONcArray::~FONcArray()
  * grids
  * @throws BESInternalError if there is a problem converting the Array
  */
-void FONcArray::convert(vector<string> embed)
+void FONcArray::convert(vector<string> embed,bool is_dap4_group)
 {
-    FONcBaseType::convert(embed);
+    FONcBaseType::convert(embed,is_dap4_group);
+
+    //TOODOO: don't use _d_dim_ids when has_dap4_group.
     _varname = FONcUtils::gen_name(embed, _varname, _orig_varname);
 
     BESDEBUG("fonc", "FONcArray::convert() - converting array " << _varname << endl);
 
     d_array_type = FONcUtils::get_nc_type(d_a->var(),isNetCDF4_ENHANCED());
+
+#if 0
+    if(d4_dim_ids.size() >0) {
+        BESDEBUG("fonc", "FONcArray::convert() - d4_dim_ids size is " << d4_dim_ids.size() << endl);
+
+    }
+#endif
+
     d_ndims = d_a->dimensions();
     d_actual_ndims = d_ndims; //replace this with _a->dimensions(); below TODO
     if (d_array_type == NC_CHAR) {
@@ -139,17 +170,30 @@ void FONcArray::convert(vector<string> embed)
         d_chunksizes.push_back(size <= MAX_CHUNK_SIZE ? size: MAX_CHUNK_SIZE);
 
         BESDEBUG("fonc", "FONcArray::convert() - dim num: " << dimnum << ", dim size: " << size << ", chunk size: " << d_chunksizes[dimnum] << endl);
+        BESDEBUG("fonc", "FONcArray::convert() - dim name: " << d_a->dimension_name(di) << endl);
 
-        // See if this dimension has already been defined. If it has the
-        // same name and same size as another dimension, then it is a
-        // shared dimension. Create it only once and share the FONcDim
-        FONcDim *use_dim = find_dim(embed, d_a->dimension_name(di), size);
-        d_dims.push_back(use_dim);
+        //TODO: Here is the place that we need to evaluate if the dimension size is the same as the size when the local constraint is used.
+        // If the local constraint is used, the dimension name should be set to empty and the find_dim() in the else { }should be used.
+        // The real implementation may be more complicated but here is the idea. KY 2020/06/17
+        if(true == d4_def_dim && use_d4_dim_ids[dimnum]== true) {
+            d_dim_ids[dimnum] = d4_dim_ids[dimnum];
+            BESDEBUG("fonc", "FONcArray::convert() - has dap4 group"  << endl);
+
+        }
+        else {
+            // See if this dimension has already been defined. If it has the
+            // same name and same size as another dimension, then it is a
+            // shared dimension. Create it only once and share the FONcDim
+            FONcDim *use_dim = find_dim(embed, d_a->dimension_name(di), size);
+            d_dims.push_back(use_dim);
+        }
+
         dimnum++;
     }
 
     // if this array is a string array, then add the length dimension
     if (d_array_type == NC_CHAR) {
+
         // get the data from the dap array
         int array_length = d_a->length();
 
@@ -175,6 +219,7 @@ void FONcArray::convert(vector<string> embed)
 
         d_dim_sizes[d_ndims - 1] = use_dim->size();
         d_dim_ids[d_ndims - 1] = use_dim->dimid();
+        use_d4_dim_ids.push_back(false);
         d_dims.push_back(use_dim);
 
         // Adding this fixes the bug reported by GSFC where arrays of strings
@@ -190,19 +235,21 @@ void FONcArray::convert(vector<string> embed)
     // If this array has a single dimension, and the name of the array
     // and the name of that dimension are the same, then this array
     // might be used as a map for a grid defined elsewhere.
+    //if(is_dap4_group ==false) {
     if (!FONcGrid::InGrid && d_actual_ndims == 1 && d_a->name() == d_a->dimension_name(d_a->dim_begin())) {
         // is it already in there?
         FONcMap *map = FONcGrid::InMaps(d_a);
         if (!map) {
-            // This memory is/was leaked. jhrg 8/28/13
-            FONcMap *new_map = new FONcMap(this);
-            d_grid_maps.push_back(new_map);		// save it here so we can free it later. jhrg 8/28/13
-            FONcGrid::Maps.push_back(new_map);
+                // This memory is/was leaked. jhrg 8/28/13
+                FONcMap *new_map = new FONcMap(this);
+                d_grid_maps.push_back(new_map);		// save it here so we can free it later. jhrg 8/28/13
+                FONcGrid::Maps.push_back(new_map);
         }
         else {
-            d_dont_use_it = true;
+                d_dont_use_it = true;
         }
     }
+    //}
 
     BESDEBUG("fonc", "FONcArray::convert() - done converting array " << _varname << endl);
 }
@@ -275,6 +322,26 @@ void FONcArray::define(int ncid)
     BESDEBUG("fonc", "FONcArray::define() - defining array '" << _varname << "'" << endl);
 
     if (!_defined && !d_dont_use_it) {
+
+        BESDEBUG("fonc", "FONcArray::define() - defining array ' defined already" << _varname << "'" << endl);
+#if 0
+        if(d4_dim_ids.size() >0) {
+           if(d_array_type == NC_CHAR) {
+               if(d_dims.size() == 1) {
+                   FONcDim *fd = *(d_dims.begin());
+                   fd->define(ncid);
+                   d_dim_ids[d_ndims-1] = fd->dimid();
+
+               }
+               else {
+
+               }
+           }
+        }
+        else {
+#endif
+
+     if(false == d4_def_dim) {
         vector<FONcDim *>::iterator i = d_dims.begin();
         vector<FONcDim *>::iterator e = d_dims.end();
         int dimnum = 0;
@@ -286,6 +353,21 @@ void FONcArray::define(int ncid)
             BESDEBUG("fonc", "FONcArray::define() - dim_id: " << fd->dimid() << " size:" << fd->size() << endl);
             dimnum++;
         }
+     }
+     else {// This else block may be general enough to cover all cases. In case there are issues for the new features, still keep it. 
+        int j = 0;
+        for(unsigned int i = 0; i< use_d4_dim_ids.size();i++) {
+            if(use_d4_dim_ids[i] == false) {
+                FONcDim *fd = d_dims[j];
+                fd->define(ncid);
+                d_dim_ids[i] = fd->dimid();
+                j++;
+            }
+        }
+
+
+     }
+        //}
 
         int stax = nc_def_var(ncid, _varname.c_str(), d_array_type, d_ndims, &d_dim_ids[0], &_varid);
         if (stax != NC_NOERR) {

@@ -46,6 +46,12 @@
 #define NGAP_PROXYUSER "NGAP.ProxyUser"
 #define NGAP_PROXYPASSWORD "NGAP.ProxyPassword"
 #define NGAP_PROXYUSERPW "NGAP.ProxyUserPW"
+
+#define NGAP_COOKIES_KEY "NGAP.cookies"
+#define NGAP_COOKIES_DEFAULT_FILE "/tmp/.hyrax_cookies"
+
+#define NGAP_CACHE_TERMINAL_URLS_KEY "NGAP.cache.terminal.urls"
+
 #define NGAP_USE_INTERNAL_CACHE "NGAP.UseInternalCache"
 #define DATA_ACCESS_URL_KEY "OPeNDAP_DMRpp_DATA_ACCESS_URL"
 #define NGAP_INJECT_DATA_URL_KEY "NGAP.inject_data_urls"

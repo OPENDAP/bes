@@ -1,0 +1,24 @@
+netcdf test {
+
+group: Data {
+  dimensions:
+  	dim1 = 9 ;
+  	dim2 = 18 ;
+  variables:
+  	float temp(dim1, dim2) ;
+  		temp:units = "kelvin" ;
+  } // group Data
+
+group: Geolocation {
+  dimensions:
+  	dim3 = 9 ;
+  	dim4 = 18 ;
+  	dim5 = 9 ;
+  	dim6 = 18 ;
+  variables:
+  	float lat(dim3, dim4) ;
+  		lat:units = "degrees_north" ;
+  	float lon(dim5, dim6) ;
+  		lon:units = "degrees_east" ;
+  } // group Geolocation
+}
