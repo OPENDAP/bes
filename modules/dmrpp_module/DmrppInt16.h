@@ -26,7 +26,6 @@
 #define _dmrpp_int16_h 1
 
 #include <string>
-#include <byteswap.h>
 
 #include <Int16.h>
 #include "DmrppCommon.h"

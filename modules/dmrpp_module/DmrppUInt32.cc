@@ -29,6 +29,7 @@
 #include <BESError.h>
 #include <BESDebug.h>
 
+#include "byteswap_compat.h"
 #include "DmrppUInt32.h"
 
 using namespace libdap;
