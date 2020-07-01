@@ -2,7 +2,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir)/modules -I$(top_srcdir)/modules/cmr_module \
+AM_CPPFLAGS = -I$(top_srcdir)  -I$(top_srcdir)/modules -I$(top_srcdir)/modules/cmr_module \
 -I$(top_srcdir)/dispatch -I$(top_srcdir)/http -I$(top_srcdir)/dap $(DAP_CFLAGS)
 
 # Added -lz for ubuntu

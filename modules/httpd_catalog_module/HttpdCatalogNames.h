@@ -34,17 +34,6 @@
 // These are the names of the bes keys used to configure the handler.
 #define HTTPD_CATALOG_COLLECTIONS "Httpd_Catalog.Collections"
 
-//#define HTTPD_CATALOG_WHITELIST "Httpd_Catalog.Whitelist"
-//#define HTTPD_CATALOG_MIMELIST "Httpd_Catalog.MimeTypes"
-//#define HTTPD_CATALOG_PROXYPROTOCOL "Httpd_Catalog.ProxyProtocol"
-//#define HTTPD_CATALOG_PROXYHOST "Httpd_Catalog.ProxyHost"
-//#define HTTPD_CATALOG_PROXYPORT "Httpd_Catalog.ProxyPort"
-//#define HTTPD_CATALOG_PROXYAUTHTYPE "Httpd_Catalog.ProxyAuthType"
-//#define HTTPD_CATALOG_PROXYUSER "Httpd_Catalog.ProxyUser"
-//#define HTTPD_CATALOG_PROXYPASSWORD "Httpd_Catalog.ProxyPassword"
-//#define HTTPD_CATALOG_PROXYUSERPW "Httpd_Catalog.ProxyUserPW"
-//#define HTTPD_CATALOG_USE_INTERNAL_CACHE "Httpd_Catalog.UseInternalCache"
-
 #define MODULE HTTPD_CATALOG
 
 #endif // I_HTTPD_CATALOG_NAME_H
