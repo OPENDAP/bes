@@ -13,7 +13,7 @@ OPENSSL_LIBS=-lcrypto
 OPENSSL_INC=-I/usr/local/opt/openssl/include
 OPENSSL_LDFLAGS=-L/usr/local/opt/openssl/lib
 
-AM_CPPFLAGS += $(OPENSSL_INC)
+AM_CPPFLAGS += $(OPENSSL_INC) -I$(top_srcdir)/rapidjson
 
 if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
@@ -31,7 +31,7 @@ pkginclude_HEADERS = $(HDRS)
 
 pkgdata_DATA =
 
-EXTRA_DIST = rapidjson http.conf.in
+EXTRA_DIST = http.conf.in
 
 DISTCLEANFILES = http.conf
 

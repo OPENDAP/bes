@@ -12,7 +12,7 @@ ACLOCAL_AMFLAGS = -I conf
 M_NAME=cmr_module
 M_VER=1.0.4
 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/http $(DAP_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/http -I$(top_srcdir)/rapidjson $(DAP_CFLAGS)
 LIBADD = $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
@@ -35,7 +35,7 @@ CMR_HDR = CmrApi.h CmrNames.h CmrError.h CmrCatalog.h Granule.h \
 	rjson_utils.h \
 	CmrModule.h CmrContainer.h CmrContainerStorage.h
 
-EXTRA_DIST = rapidjson cmr.conf.in data
+EXTRA_DIST = cmr.conf.in data
 
 CLEANFILES = *~ cmr.conf
 
