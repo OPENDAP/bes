@@ -13,7 +13,7 @@ OPENSSL_LIBS=-lcrypto
 OPENSSL_INC=-I/usr/local/opt/openssl/include
 OPENSSL_LDFLAGS=-L/usr/local/opt/openssl/lib
 
-AM_CPPFLAGS += $(OPENSSL_INC) -I$(top_srcdir)/rapidjson
+AM_CPPFLAGS += $(OPENSSL_INC) -I$(top_srcdir)
 
 if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
