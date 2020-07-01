@@ -35,6 +35,7 @@
 #include "BESContextManager.h"
 #include "BESError.h"
 #include "BESDebug.h"
+#include "TheBESKeys.h"
 
 #include "Chunk.h"
 
@@ -44,6 +45,7 @@ using namespace libdap;
 
 static bool debug = false;
 static bool bes_debug = false;
+static string bes_conf_file = "/bes.conf";
 
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
@@ -68,6 +70,7 @@ public:
     // Called before each test
     void setUp()
     {
+        TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append(bes_conf_file);
         if (bes_debug) BESDebug::SetUp("cerr,dmrpp");
     }
 
@@ -78,6 +81,7 @@ public:
 
     void set_position_in_array_test()
     {
+        DBG(cerr << endl << __func__ << "() BEGIN" << endl);
         d_chunk.set_position_in_array("[1,2,3,4]");
         vector<unsigned int> pia = d_chunk.get_position_in_array();
         CPPUNIT_ASSERT(pia.size() == 4);
@@ -89,6 +93,7 @@ public:
 
     void set_position_in_array_test_2()
     {
+        DBG(cerr << endl << __func__ << "() BEGIN" << endl);
         d_chunk.set_position_in_array("[5]");
         vector<unsigned int> pia = d_chunk.get_position_in_array();
         CPPUNIT_ASSERT(pia.size() == 1);
@@ -97,18 +102,21 @@ public:
 
     void set_position_in_array_test_3()
     {
+        DBG(cerr << endl << __func__ << "() BEGIN" << endl);
         d_chunk.set_position_in_array("[]");
         CPPUNIT_FAIL("set_position_in_array() should throw on missing values");
     }
 
     void set_position_in_array_test_4()
     {
+        DBG(cerr << endl << __func__ << "() BEGIN" << endl);
         d_chunk.set_position_in_array("[1,2,3,4");
         CPPUNIT_FAIL("set_position_in_array() should throw on a missing bracket");
     }
 
     void set_position_in_array_test_5()
     {
+        DBG(cerr << endl << __func__ << "() BEGIN" << endl);
         d_chunk.set_position_in_array("[1,x]");
         CPPUNIT_FAIL("set_position_in_array() should throw on bad values");
     }
@@ -116,22 +124,26 @@ public:
     // This test fails
     void set_position_in_array_test_6()
     {
+        DBG(cerr << endl << __func__ << "() BEGIN" << endl);
         d_chunk.set_position_in_array("[1,2,]");
         CPPUNIT_FAIL("set_position_in_array() should throw on bad values");
     }
 
     void add_tracking_query_param_test()
     {
+        DBG(cerr << endl << __func__ << "() BEGIN" << endl);
         CPPUNIT_ASSERT(d_chunk.d_query_marker.empty());
     }
 
     void add_tracking_query_param_test_2()
     {
+        DBG(cerr << endl << __func__ << "() BEGIN" << endl);
         CPPUNIT_ASSERT(Chunk::tracking_context == "cloudydap");
     }
 
     void add_tracking_query_param_test_3()
     {
+        DBG(cerr << endl << __func__ << "() BEGIN" << endl);
         BESContextManager::TheManager()->set_context("cloudydap", "request_id");
         // add_tracking_query_param() only works with S3 URLs. Bug? jhrg 8/9/18
         d_chunk.set_data_url("http://s3.amazonaws.com/somewhereovertherainbow");
@@ -145,6 +157,7 @@ public:
 
     void add_tracking_query_param_test_4()
     {
+        DBG(cerr << endl << __func__ << "() BEGIN" << endl);
         BESContextManager::TheManager()->set_context("cloudydap", "request_id");
 
         // add_tracking_query_param() only works with S3 URLs. Bug? jhrg 8/9/18
@@ -161,7 +174,8 @@ public:
 
     void add_tracking_query_param_test_4_1()
     {
-       // An S3 URL, but no context.
+        DBG(cerr << endl << __func__ << "() BEGIN" << endl);
+        // An S3 URL, but no context.
         BESContextManager::TheManager()->unset_context("cloudydap");   //>set_context("cloudydap", "request_id");
         d_chunk.set_data_url("http://s3.amazonaws.com/somewhereovertherainbow");
         d_chunk.add_tracking_query_param();
@@ -172,6 +186,7 @@ public:
     // Test the non-default ctor
     void add_tracking_query_param_test_5()
     {
+        DBG(cerr << endl << __func__ << "() BEGIN" << endl);
         BESContextManager::TheManager()->set_context("cloudydap", "request_id");
 
         auto_ptr<Chunk> l_chunk(new Chunk("http://s3.amazonaws.com/somewhereovertherainbow", 100, 10, ""));
@@ -189,6 +204,7 @@ public:
 
     void add_tracking_query_param_test_5_1()
     {
+        DBG(cerr << endl << __func__ << "() BEGIN" << endl);
         // No context, S3 URL, non-default ctor
         BESContextManager::TheManager()->unset_context("cloudydap");
         auto_ptr<Chunk> l_chunk(new Chunk("http://s3.amazonaws.com/somewhereovertherainbow", 100, 10, ""));

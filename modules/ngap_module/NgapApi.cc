@@ -29,6 +29,7 @@
 #include <iostream>
 #include <sstream>
 #include <memory>
+#include <time.h>
 #include <curl/curl.h>
 
 #include "rapidjson/document.h"
@@ -253,8 +254,147 @@ namespace ngap {
                                    __FILE__, __LINE__);
         }
 
+        BESDEBUG(MODULE, prolog << "Following data_access_url redirects..." << endl);
+
         return data_access_url;
     }
+
+
+    /**
+     * [UTC Sun Jun 21 16:17:47 2020 id: 14314][dmrpp:curl] CurlHandlePool::evaluate_curl_response() - Last Accessed URL(CURLINFO_EFFECTIVE_URL):
+     *     https://ghrcw-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?
+     *         A-userid=hyrax&
+     *         X-Amz-Algorithm=AWS4-HMAC-SHA256&
+     *         X-Amz-Credential=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing&
+     *         X-Amz-Date=20200621T161746Z&
+     *         X-Amz-Expires=86400&
+     *         X-Amz-Security-Token=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing&
+     *         X-Amz-SignedHeaders=host&
+     *         X-Amz-Signature=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing
+     * @param source_url
+     * @param data_access_url_info
+     */
+    void NgapApi::decompose_url(const string target_url, map<string,string> &url_info)
+    {
+
+        string url_base;
+        string query_string;
+
+        size_t query_index = target_url.find_first_of("?");
+        BESDEBUG(MODULE, prolog << "query_index: " << query_index << endl);
+        if(query_index != string::npos){
+            query_string = target_url.substr(query_index+1);
+            url_base = target_url.substr(0,query_index);
+        }
+        else {
+            url_base = target_url;
+        }
+        url_info.insert( std::pair<string,string>("target_url",target_url));
+        BESDEBUG(MODULE, prolog << "target_url: " << target_url << endl);
+        url_info.insert( std::pair<string,string>("url_base",url_base));
+        BESDEBUG(MODULE, prolog << "url_base: " << url_base << endl);
+        url_info.insert( std::pair<string,string>("query_string",query_string));
+        BESDEBUG(MODULE, prolog << "query_string: " << query_string << endl);
+        if(!query_string.empty()){
+            vector<string> records;
+            string delimiters = "&";
+            BESUtil::tokenize(query_string,records, delimiters);
+            vector<string>::iterator i = records.begin();
+            for(; i!=records.end(); i++){
+                size_t index = i->find('=');
+                if(index != string::npos) {
+                    string key = i->substr(0, index);
+                    string value = i->substr(index+1);
+                    BESDEBUG(MODULE, prolog << "key: " << key << " value: " << value << endl);
+                    url_info.insert( std::pair<string,string>(key,value));
+                }
+            }
+        }
+        time_t now;
+        time(&now);  /* get current time; same as: timer = time(NULL)  */
+        stringstream unix_time;
+        unix_time << now;
+        url_info.insert( std::pair<string,string>("ingest_time",unix_time.str()));
+    }
+
+    const string AMS_EXPIRES_HEADER_KEY = "X-Amz-Expires";
+    const string AWS_DATE_HEADER_KEY = "X-Amz-Date";
+    // const string AWS_DATE_FORMAT = "%Y%m%dT%H%MS"; // 20200624T175046Z
+    const string CLOUDFRONT_EXPIRES_HEADER_KEY = "Expires";
+    const string INGEST_TIME_KEY = "ingest_time";
+    const unsigned int REFRESH_THRESHOLD = 3600; // An hour
+
+    bool NgapApi::signed_url_is_expired(const std::map<std::string,std::string> &ngap_url_info)
+    {
+        bool is_expired;
+        time_t now;
+        time(&now);  /* get current time; same as: timer = time(NULL)  */
+        BESDEBUG(MODULE, prolog << "now: " << now << endl);
+
+        time_t expires = now;
+        std::map<string,string>::const_iterator cfexpires_it = ngap_url_info.find(CLOUDFRONT_EXPIRES_HEADER_KEY);
+        std::map<string,string>::const_iterator awsexpires_it = ngap_url_info.find(AMS_EXPIRES_HEADER_KEY);
+        std::map<string,string>::const_iterator ingest_time_it = ngap_url_info.find(INGEST_TIME_KEY);
+
+        if(cfexpires_it != ngap_url_info.end()){ // CloudFront expires header?
+            expires = stoll(cfexpires_it->second);
+            BESDEBUG(MODULE, prolog << "Using "<< CLOUDFRONT_EXPIRES_HEADER_KEY << ": " << expires << endl);
+        }
+        else if(awsexpires_it != ngap_url_info.end() && ingest_time_it != ngap_url_info.end()){
+            // AWS Expires header?
+            //
+            // By default we'll use the time we read the probe response, ingest_time
+            time_t start_time = stoll(ingest_time_it->second);
+            // But if there's an AWS Date we'll parse that and compute the time
+            // @TODO move to NgapApi::decompose_url() and add the result to the map
+            std::map<string,string>::const_iterator awsdate_it = ngap_url_info.find(AWS_DATE_HEADER_KEY);
+            if(awsdate_it != ngap_url_info.end()){
+                string date = awsdate_it->second; // 20200624T175046Z
+                string year = date.substr(0,4);
+                string month = date.substr(4,2);
+                string day = date.substr(6,2);
+                string hour = date.substr(9,2);
+                string minute = date.substr(11,2);
+                string second = date.substr(13,2);
+
+                BESDEBUG(MODULE, prolog << "date: "<< date <<
+                                        " year: " << year << " month: " << month << " day: " << day <<
+                                        " hour: " << hour << " minute: " << minute  << " second: " << second << endl);
+
+                struct tm * ti = gmtime(&now);
+                ti->tm_year = stoll(year);
+                ti->tm_mon = stoll(month) - 1;
+                ti->tm_mday = stoll(day);
+                ti->tm_hour = stoll(hour);
+                ti->tm_min = stoll(minute);
+                ti->tm_sec = stoll(second);
+
+                BESDEBUG(MODULE, prolog << "ti->tm_year: "<< ti->tm_year <<
+                                        " ti->tm_mon: " << ti->tm_mon <<
+                                        " ti->tm_mday: " << ti->tm_mday <<
+                                        " ti->tm_hour: " << ti->tm_hour <<
+                                        " ti->tm_min: " << ti->tm_min <<
+                                        " ti->tm_sec: " << ti->tm_sec << endl);
+
+
+               // start_time = mktime(&ti);
+               //  BESDEBUG(MODULE, prolog << "AWS (computed) start_time: "<< start_time << endl);
+            }
+            expires = start_time + stoll(awsexpires_it->second);
+            BESDEBUG(MODULE, prolog << "Using "<< AMS_EXPIRES_HEADER_KEY << ": " << awsexpires_it->second <<
+                                    " (expires: " << expires << ")" << endl);
+        }
+        time_t remaining = expires - now;
+        BESDEBUG(MODULE, prolog << "expires: " << expires <<
+                                "  remaining: " << remaining <<
+                                " threshold: " << REFRESH_THRESHOLD << endl);
+
+        is_expired = remaining < REFRESH_THRESHOLD;
+        BESDEBUG(MODULE, prolog << "is_expired: " << (is_expired?"true":"false") << endl);
+
+        return is_expired;
+    }
+
 
 
 #if 0

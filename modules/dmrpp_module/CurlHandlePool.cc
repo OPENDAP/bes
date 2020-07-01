@@ -62,7 +62,7 @@
 
 static const int MAX_WAIT_MSECS = 30 * 1000; // Wait max. 30 seconds
 static const unsigned int retry_limit = 10; // Amazon's suggestion
-static const unsigned int initial_retry_time = 1000; // one second
+static const useconds_t uone_second = 1000 * 1000; // one second
 
 namespace dmrpp {
 #if HAVE_CURL_MULTI_API
@@ -267,7 +267,13 @@ dmrpp_easy_handle::~dmrpp_easy_handle() {
 static bool evaluate_curl_response(CURL *eh) {
     long http_code = 0;
     CURLcode res = curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_code);
-    if (CURLE_OK != res) {
+    if (res == CURLE_GOT_NOTHING) {
+        char *effective_url = 0;
+        curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &effective_url);
+        LOG("Ouch. cURL returned CURLE_GOT_NOTHING, returning false.  CURLINFO_EFFECTIVE_URL: " << effective_url << endl);
+        return false;
+    }
+    else if(res != CURLE_OK) {
         throw BESInternalError(
                 string("Error getting HTTP response code: ").append(curl::error_message(res, (char *) "")),
                 __FILE__, __LINE__);
@@ -297,16 +303,21 @@ static bool evaluate_curl_response(CURL *eh) {
             return true;
 
         case 500: // Internal server error
+        case 502: // Bad Gateway
         case 503: // Service Unavailable
         case 504: // Gateway Timeout
+        {
+            char *effective_url = 0;
+            curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &effective_url);
+            LOG("HTTP transfer " << http_code << " error, returning false.  CURLINFO_EFFECTIVE_URL: " << effective_url << endl);
             return false;
+        }
 
         default: {
             ostringstream oss;
             char *effective_url = 0;
             curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &effective_url);
-            oss << prolog << "HTTP status error: Expected an OK status, but got: " << http_code;
-            if (BESDebug::IsSet(MODULE)) oss << " from (CURLINFO_EFFECTIVE_URL): " << effective_url;
+            oss << prolog << "HTTP status error: Expected an OK status, but got: " << http_code  << " from (CURLINFO_EFFECTIVE_URL): " << effective_url;
             throw BESInternalError(oss.str(), __FILE__, __LINE__);
         }
     }
@@ -323,10 +334,11 @@ void dmrpp_easy_handle::read_data() {
     if (d_url.find("https://") == 0 || d_url.find("http://") == 0) {
         unsigned int tries = 0;
         bool success = true;
-        unsigned int retry_time = initial_retry_time;
+        useconds_t retry_time = uone_second/4;
 
         // Perform the request
         do {
+            BESDEBUG(MODULE, prolog << "Requesting URL: " << d_url << endl);
             CURLcode curl_code = curl_easy_perform(d_handle);
             ++tries;
 
@@ -537,7 +549,7 @@ void dmrpp_multi_handle::read_data() {
                 e = DmrppRequestHandler::curl_handle_pool->d_easy_handles.end(); i != e; ++i) {
             CURLMcode mres = curl_multi_remove_handle(p_impl->curlm, (*i)->d_handle);
             if (mres != CURLM_OK)
-                LOG("While cleaning up from an error during a parallel data request, could not remove a CURL handle.");
+                LOG("While cleaning up from an error during a parallel data request, could not remove a CURL handle." << endl);
             DmrppRequestHandler::curl_handle_pool->release_handle(*i);
         }
 

@@ -64,6 +64,8 @@ private:
 	string _localfile;
 	string _returnAs;
 	vector<FONcBaseType *> _fonc_vars;
+	vector<FONcBaseType *> _total_fonc_vars_in_grp;
+    
 
 public:
 	/**
@@ -82,7 +84,13 @@ public:
 	virtual void transform();
 	virtual void transform_dap4();
 
+
 	virtual void dump(ostream &strm) const;
+private:
+    virtual void transform_dap4_no_group();
+    virtual void transform_dap4_group(D4Group*,bool is_root, int par_grp_id,std::map<std::string,int>&);
+    virtual bool check_group_support();
+
 
 };
 

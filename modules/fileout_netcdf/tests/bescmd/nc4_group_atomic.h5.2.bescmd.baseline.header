@@ -1,0 +1,15 @@
+netcdf test {
+dimensions:
+	dim1 = 2 ;
+variables:
+	int dim1(dim1) ;
+	float d1(dim1) ;
+
+group: g1 {
+  dimensions:
+  	dim2 = 3 ;
+  variables:
+  	int dim2(dim2) ;
+  	float d2(dim1, dim2) ;
+  } // group g1
+}

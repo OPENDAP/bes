@@ -98,6 +98,10 @@ namespace bes {
  */
 ServerAdministrator::ServerAdministrator(){
     bool found = false;
+
+    TheBESKeys::TheKeys()->get_values(SERVER_ADMINISTRATOR_KEY,d_admin_info, true, found);
+
+#if 0
     vector<string> admin_keys;
     TheBESKeys::TheKeys()->get_values(SERVER_ADMINISTRATOR_KEY, admin_keys, found);
     if(!found){
@@ -127,6 +131,10 @@ ServerAdministrator::ServerAdministrator(){
             return;
         }
     }
+
+#endif
+
+
     bool bad_flag = false;
 
     d_organization = get(ORGANIZATION_KEY);

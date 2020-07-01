@@ -46,11 +46,11 @@ int main (int argc,char**argv)
 
     string missing_dmrpp_str;
 
-    if(argc !=5) {
+    if(argc != 5) {
         cout<<"Please provide four arguments: "<< endl;
         cout<<"  The first is the dmrpp file that contains the missing variable value information. "<<endl;
         cout<<"  The second is the original dmrpp file. "<<endl;
-        cout<<"  The third one is the path of the missing HDF5 file. "<<endl;
+        cout<<"  An third one is the href to the missing variables HDF5 file. "<<endl;
         cout<<"  The fourth one is the text file that includes the missing variable information. "<<endl;
         return 0;
     }
@@ -377,7 +377,7 @@ bool add_faddr_chunk_info(const string &str,vector<string>& chunk_info,bool is_d
         hdf5_faddr = " href=\"" +faddr_source+hdf5_faddr+'/'+hdf5_fname+end_delim1;
     }
     else {
-        hdf5_faddr = " href=\"" +faddr_source+hdf5_faddr+end_delim1;
+        hdf5_faddr = " href=\"" + faddr_source + hdf5_faddr + end_delim1;
     }
 //cout<<"hdf5_faddr is "<<hdf5_faddr <<endl;        
 
