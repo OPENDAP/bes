@@ -7,7 +7,7 @@ AUTOMAKE_OPTIONS = foreign
 # Might move these to a child directory for testing things. jhrg 5/16/18
 EXTRA_DIST = read_test_baseline.cc read_test_baseline.h handler_tests_macros.m4
 
-SUBDIRS = csv_handler usage asciival www-interface freeform_handler
+SUBDIRS = csv_handler httpd_catalog_module usage asciival www-interface freeform_handler
 
 if WITH_CMR
 SUBDIRS += cmr_module 
@@ -37,7 +37,7 @@ endif
 # Why are these here? Because they have tests that depend on
 # netcdf.
 # FIXME Rewrite the tests to use the dapread handler. jhrg 12/12/14
-SUBDIRS += ngap_module fileout_json w10n_handler gateway_module httpd_catalog_module xml_data_handler
+SUBDIRS +=  ngap_module fileout_json w10n_handler gateway_module xml_data_handler
 
 if BUILD_GDAL
 SUBDIRS += fileout_gdal gdal_handler
