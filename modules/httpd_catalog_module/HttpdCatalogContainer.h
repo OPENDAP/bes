@@ -30,11 +30,11 @@
 #include <string>
 #include <ostream>
 
-#include <BESContainer.h>
+#include "BESContainer.h"
+#include "RemoteResource.h"
+
 
 namespace httpd_catalog {
-
-class RemoteHttpResource;
 
 /** @brief Container representing a remote request
  *
@@ -48,7 +48,7 @@ class RemoteHttpResource;
 class HttpdCatalogContainer: public BESContainer {
 private:
     /// Remote resource for this container, nullptr means it has not yet been accessed
-    RemoteHttpResource *d_remoteResource;
+    http::RemoteResource *d_remoteResource;
 
     HttpdCatalogContainer() :
         BESContainer(), d_remoteResource(0)

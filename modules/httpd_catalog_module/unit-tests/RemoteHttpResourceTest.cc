@@ -39,9 +39,9 @@
 #include <BESCatalogList.h>
 #include <TheBESKeys.h>
 #include "test_config.h"
+#include "RemoteResource.h"
+#include "HttpNames.h"
 
-#include "../RemoteHttpResource.h"
-#include "../RemoteHttpResourceCache.h"
 #include "../HttpdDirScraper.h"
 #include "../HttpdCatalogNames.h"
 
@@ -141,7 +141,7 @@ public:
 
         TheBESKeys::ConfigFile = bes_conf;
 
-        if (bes_debug) BESDebug::SetUp("cerr,httpd_catalog");
+        if (bes_debug) BESDebug::SetUp("cerr,httpd_catalog,http");
 
         if (bes_debug) show_file(bes_conf);
 
@@ -149,9 +149,9 @@ public:
             if(Debug) cerr << "Purging cache!" << endl;
             string cache_dir;
             bool found;
-            TheBESKeys::TheKeys()->get_value(RemoteHttpResourceCache::DIR_KEY,cache_dir,found);
+            TheBESKeys::TheKeys()->get_value(HTTP_CACHE_DIR_KEY,cache_dir,found);
             if(found){
-                if(Debug) cerr << RemoteHttpResourceCache::DIR_KEY << ": " <<  cache_dir << endl;
+                if(Debug) cerr << HTTP_CACHE_DIR_KEY << ": " <<  cache_dir << endl;
                 if(Debug) cerr << "Purging " << cache_dir << endl;
                 string cmd = "exec rm -r "+ BESUtil::assemblePath(cache_dir,"/*");
                 system(cmd.c_str());
@@ -176,14 +176,13 @@ public:
 
         string url = "http://test.opendap.org/data/httpd_catalog/READTHIS";
         if(debug) cerr << __func__ << "() - url: " << url << endl;
-        RemoteHttpResource rhr(url);
+        http::RemoteResource rhr(url);
         try {
             rhr.retrieveResource();
-            vector<string> hdrs;
-            rhr.getResponseHeaders(hdrs);
+            vector<string> *hdrs = rhr.getResponseHeaders();
 
-            for(size_t i=0; i<hdrs.size() && debug ; i++){
-                cerr << __func__ << "() - hdr["<< i << "]: " << hdrs[i] << endl;
+            for(size_t i=0; i<hdrs->size() && debug ; i++){
+                cerr << __func__ << "() - hdr["<< i << "]: " << (*hdrs)[i] << endl;
             }
             string cache_filename = rhr.getCacheFileName();
             if(debug) cerr <<  __func__ << "() - cache_filename: " << cache_filename << endl;
@@ -210,14 +209,13 @@ public:
         if(debug) cerr << endl;
 
         string data_file_url = get_data_file_url("test_file");
-        RemoteHttpResource rhr(data_file_url);
+        http::RemoteResource rhr(data_file_url);
         try {
             rhr.retrieveResource();
-            vector<string> hdrs;
-            rhr.getResponseHeaders(hdrs);
+            vector<string> *hdrs = rhr.getResponseHeaders();
 
-            for(size_t i=0; i<hdrs.size() && debug ; i++){
-                cerr <<  __func__ << "() - hdr["<< i << "]: " << hdrs[i] << endl;
+            for(size_t i=0; i<hdrs->size() && debug ; i++){
+                cerr <<  __func__ << "() - hdr["<< i << "]: " << (*hdrs)[i] << endl;
             }
             string cache_filename = rhr.getCacheFileName();
             if(debug) cerr <<  __func__ << "() - cache_filename: " << cache_filename << endl;
