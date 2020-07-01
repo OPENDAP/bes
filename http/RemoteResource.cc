@@ -322,11 +322,19 @@ namespace http {
 
         const string colon_space = ": ";
         for (size_t i = 0; i < this->d_response_headers->size(); i++) {
-            size_t colon_index = (*d_response_headers)[i].find(colon_space);
-            string key = BESUtil::lowercase((*d_response_headers)[i].substr(0, colon_index));
-            string value = (*d_response_headers)[i].substr(colon_index + colon_space.length());
-            BESDEBUG(MODULE, prolog << "key: " << key << " value: " << value << endl);
-            (*d_http_response_headers)[key] = value;
+            string header = (*d_response_headers)[i];
+            BESDEBUG(MODULE, prolog << "Processing header " << header << endl);
+            size_t colon_index = header.find(colon_space);
+            if(colon_index == string::npos){
+                BESDEBUG(MODULE, prolog << "Unable to locate the colon space \": \" delimiter in the header " <<
+                                           "string: '" << header << "' SKIPPING!" << endl);
+            }
+            else {
+                string key = BESUtil::lowercase(header.substr(0, colon_index));
+                string value = header.substr(colon_index + colon_space.length());
+                BESDEBUG(MODULE, prolog << "key: " << key << " value: " << value << endl);
+                (*d_http_response_headers)[key] = value;
+            }
         }
         string type;
 

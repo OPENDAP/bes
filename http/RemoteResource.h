@@ -81,10 +81,10 @@ namespace http {
         /// HTTP request headers added the curl HTTP GET request
         std::vector<std::string> *d_request_headers; // Request headers
 
-        /// The HTTP response headers returned by the request for the remote resource.
+        /// The raw HTTP response headers returned by the request for the remote resource.
         std::vector<std::string> *d_response_headers; // Response headers
 
-        /// The HTTP response headers returned by the request for the remote resource.
+        /// The HTTP response headers returned by the request for the remote resource and parsed into KVP
         std::map<std::string, std::string> *d_http_response_headers; // Response headers
 
 
