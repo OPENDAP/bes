@@ -27,3 +27,4 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([csv/temperature.csv.function.dods.bescmd])
 # Test errant data files
 AT_BESCMD_RESPONSE_TEST([csv/broken.csv.3.bescmd])
 AT_BESCMD_RESPONSE_TEST([csv/broken.csv.4.bescmd])
+AT_BESCMD_RESPONSE_TEST([csv/broken.csv.5.bescmd])
