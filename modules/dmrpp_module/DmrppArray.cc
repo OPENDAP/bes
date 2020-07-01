@@ -1259,6 +1259,7 @@ bool DmrppArray::read()
             }
         }
     }
+
     if (this->twiddle_bytes()) {
         int num = this->length();
         Type var_type = this->var()->type();
