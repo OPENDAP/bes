@@ -2082,4 +2082,4 @@ add_executable(bes
     modules/dmrpp_module/unit-tests/NgapCredentialsTest.cc
 
     standalone/besstandalone.cc
-)
+		functions/stare/unit-tests/build_test_s_indices.cc)
