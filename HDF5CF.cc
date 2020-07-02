@@ -2243,6 +2243,10 @@ void File::remove_netCDF_internal_attributes(bool include_attr) {
                         delete(*ira);
                         ira =(*irv)->attrs.erase(ira);
                 }
+                else if((*ira)->name == "_Netcdf4Coordinates") {
+                        delete(*ira);
+                        ira =(*irv)->attrs.erase(ira);
+                }
 #if 0
                 else if((*ira)->name == "_nc3_strict") {
                         delete((*ira));

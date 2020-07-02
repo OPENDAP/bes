@@ -704,6 +704,11 @@ void GMFile:: Handle_Unsupported_Others(bool include_attr)  {
                     delete(*ira);
                     ira =this->root_attrs.erase(ira);
                 }
+                else if((*ira)->name == "_Netcdf4Coordinates") {
+                        delete(*ira);
+                        ira =this->root_attrs.erase(ira);
+                }
+
                 else {
                     ++ira;
                 }
@@ -753,6 +758,11 @@ void GMFile:: Handle_Unsupported_Others(bool include_attr)  {
                         delete(*ira);
                         ira =(*irv)->attrs.erase(ira);
                     }
+                    else if((*ira)->name == "_Netcdf4Coordinates") {
+                        delete(*ira);
+                        ira =(*irv)->attrs.erase(ira);
+                    }
+
 #if 0
                     else if((*ira)->name == "_nc3_strict") {
                         delete((*ira));
