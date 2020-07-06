@@ -49,6 +49,7 @@
 #include "BESInternalError.h"
 #include "BESDebug.h"
 
+#include "byteswap_compat.h"
 #include "CurlHandlePool.h"
 #include "Chunk.h"
 #include "DmrppArray.h"
