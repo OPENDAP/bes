@@ -1043,7 +1043,7 @@ add_executable(bes
     modules/gateway_module/GatewayPathInfoResponseHandler.h
     modules/gateway_module/GatewayRequestHandler.cc
     modules/gateway_module/GatewayRequestHandler.h
-    modules/gateway_module/GatewayResponseNames.h
+        modules/gateway_module/GatewayNames.h
     modules/gateway_module/GatewayUtils.cc
     modules/gateway_module/GatewayUtils.h
     modules/gateway_module/RemoteHttpResource.cc
