@@ -30,6 +30,8 @@
 
 //#include <H5Ppublic.h>
 
+#include "dods-datatypes.h"
+#include "byteswap_compat.h"
 #include "Chunk.h"
 
 namespace libdap {
@@ -78,6 +80,8 @@ protected:
     	d_shuffle = dc.d_shuffle;
     	d_chunk_dimension_sizes = dc.d_chunk_dimension_sizes;
     	d_chunks = dc.d_chunks;
+    	d_byte_order = dc.d_byte_order;
+    	d_twiddle_bytes = dc.d_twiddle_bytes;
     }
 
     /// @brief Returns a reference to the internal Chunk vector.
