@@ -1258,37 +1258,40 @@ bool DmrppArray::read()
             }
         }
     }
+
     if (this->twiddle_bytes()) {
         int num = this->length();
         Type var_type = this->var()->type();
 
         switch (var_type) {
-            case dods_int16_c: dods_uint16_c: {
-                dods_int16 *local = reinterpret_cast<dods_int16*>(this->get_buf());
+            case dods_int16_c:
+            case dods_uint16_c: {
+                dods_uint16 *local = reinterpret_cast<dods_uint16*>(this->get_buf());
                 while (num--) {
                     *local = bswap_16(*local);
                     local++;
                 }
                 break;
             }
-            case dods_int32_c: dods_uint32_c: {
-                dods_int32 *local = reinterpret_cast<dods_int32*>(this->get_buf());;
+            case dods_int32_c:
+            case dods_uint32_c: {
+                dods_uint32 *local = reinterpret_cast<dods_uint32*>(this->get_buf());;
                 while (num--) {
                     *local = bswap_32(*local);
                     local++;
                 }
                 break;
             }
-            case dods_int64_c: dods_uint64_c: {
-                dods_int64 *local = reinterpret_cast<dods_int64*>(this->get_buf());;
+            case dods_int64_c:
+            case dods_uint64_c: {
+                dods_uint64 *local = reinterpret_cast<dods_uint64*>(this->get_buf());;
                 while (num--) {
                     *local = bswap_64(*local);
                     local++;
                 }
                 break;
             }
-            default:
-                throw InternalErr(__FILE__, __LINE__, "Unrecognized word size.");
+            default: break; // Do nothing for all other types..
         }
     }
 
