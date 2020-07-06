@@ -265,25 +265,19 @@ void HttpUtils::Get_type_from_disposition(const string &disp, string &type)
 
 void HttpUtils::Get_type_from_content_type(const string &ctype, string &type)
 {
-    BESDEBUG("gateway", "HttpUtils::Get_type_from_content_type() - BEGIN" << endl);
+    BESDEBUG(MODULE, prolog << "BEGIN content-type: " << ctype << endl);
     map<string, string>::iterator i = MimeList.begin();
     map<string, string>::iterator e = MimeList.end();
     bool done = false;
     for (; i != e && !done; i++) {
-        BESDEBUG(MODULE,
-                 prolog << "Comparing content type '" << ctype << "' against mime list element '" << (*i).second << "'"
-                        << endl);
+        BESDEBUG(MODULE, prolog << "Comparing content type '" << ctype << "' against mime list element '" << (*i).second << "'" << endl);
         BESDEBUG(MODULE, prolog << "first: " << (*i).first << "  second: " << (*i).second << endl);
-
         if ((*i).second == ctype) {
-
             BESDEBUG(MODULE, prolog << "MATCH" << endl);
-
             type = (*i).first;
             done = true;
         }
     }
-
     BESDEBUG(MODULE, prolog << "END" << endl);
 }
 

@@ -85,12 +85,12 @@ namespace ngap {
         BESDEBUG(MODULE, prolog << "URL: " << d_remoteResourceUrl << endl);
 
 
-        if (!d_uid.empty()){
+        if(!d_uid.empty()){
             string client_id_hdr = "User-Id: " + d_uid;
             BESDEBUG(MODULE, prolog << client_id_hdr << endl);
             d_request_headers->push_back(client_id_hdr);
         }
-        if (!d_echo_token.empty()){
+        if(!d_echo_token.empty()){
             string echo_token_hdr = "Echo-Token: " + d_echo_token;
             BESDEBUG(MODULE, prolog << echo_token_hdr << endl);
             d_request_headers->push_back(echo_token_hdr);
