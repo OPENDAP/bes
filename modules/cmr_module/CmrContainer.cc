@@ -58,16 +58,16 @@ namespace cmr {
  * @see CmrUtils
  */
 CmrContainer::CmrContainer(const string &sym_name,
-        const string &real_name, const string &type) :
+                           const string &real_name, const string &type) :
         BESContainer(sym_name, real_name, type), d_remoteResource(0) {
 
-        BESDEBUG(MODULE, prolog << "BEGIN sym_name: " << sym_name
-                                << " real_name: " << real_name << " type: " << type << endl);
+    BESDEBUG(MODULE, prolog << "BEGIN sym_name: " << sym_name
+                            << " real_name: " << real_name << " type: " << type << endl);
 
 
-        string path = BESUtil::normalize_path(real_name, true, false);
-        vector<string> path_elements = BESUtil::split(path);
-        BESDEBUG(MODULE, prolog << "path: '" << path << "'  path_elements.size(): " << path_elements.size() << endl);
+    string path = BESUtil::normalize_path(real_name, true, false);
+    vector<string> path_elements = BESUtil::split(path);
+    BESDEBUG(MODULE, prolog << "path: '" << path << "'  path_elements.size(): " << path_elements.size() << endl);
 
 
     set_relative_name(path);

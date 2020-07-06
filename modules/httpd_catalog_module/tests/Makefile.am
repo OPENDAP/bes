@@ -31,7 +31,6 @@ AUTOM4TE = autom4te
 TESTSUITE = $(srcdir)/testsuite
 
 check-local: $(TESTSUITE) atconfig atlocal bes.conf cache
-	-rm $(builddir)/cache/*
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 	-rm -rf $(builddir)/cache/*
 
@@ -41,7 +40,7 @@ installcheck-local: $(TESTSUITE) atconfig atlocal cache
 clean-local: 
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
 	-rm -f $(TESTSUITE) $(srcdir)/package.m4 
-	-rm -rf $(builddir)/cache
+	-rm -rf $(builddir)/cache/*
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 

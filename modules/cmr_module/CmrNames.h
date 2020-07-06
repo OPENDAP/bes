@@ -35,16 +35,6 @@
 #define CMR_COLLECTIONS "CMR.Collections"
 #define CMR_FACETS "CMR.Facets"
 
-#define CMR_WHITELIST "Cmr.Whitelist"
-//#define CMR_MIMELIST "Cmr.MimeTypes"
-//#define CMR_PROXYPROTOCOL "Cmr.ProxyProtocol"
-//#define CMR_PROXYHOST "Cmr.ProxyHost"
-//#define CMR_PROXYPORT "Cmr.ProxyPort"
-//#define CMR_PROXYAUTHTYPE "Cmr.ProxyAuthType"
-//#define CMR_PROXYUSER "Cmr.ProxyUser"
-//#define CMR_PROXYPASSWORD "Cmr.ProxyPassword"
-//#define CMR_PROXYUSERPW "Cmr.ProxyUserPW"
-//#define CMR_USE_INTERNAL_CACHE "Cmr.UseInternalCache"
 
 #define MODULE CMR_NAME
 
