@@ -13,7 +13,7 @@ ACLOCAL_AMFLAGS = -I conf
 M_NAME=gateway_module
 M_VER=1.2.6
 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/http -I$(top_srcdir)/xmlcommand $(DAP_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)  -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/http -I$(top_srcdir)/xmlcommand $(DAP_CFLAGS)
 # LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 LIBADD = $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
@@ -34,7 +34,7 @@ GATEWAY_SRCS = GatewayModule.cc \
 
 GATEWAY_HDRS = GatewayModule.h \
 		GatewayRequestHandler.h \
-		GatewayResponseNames.h \
+		GatewayNames.h \
 		GatewayContainer.h \
 		GatewayContainerStorage.h \
 		GatewayError.h \
