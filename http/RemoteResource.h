@@ -145,12 +145,7 @@ namespace http {
          * Returns the (read-locked) cache file name on the local system in which the content of the remote
          * resource is stored. Deleting of the instance of this class will release the read-lock.
          */
-        std::string getCacheFileName() {
-            if (!d_initialized)
-                throw libdap::Error(
-                        "RemoteResource::getCacheFileName() - STATE ERROR: Remote Resource Has Not Been Retrieved.");
-            return d_resourceCacheFileName;
-        }
+        std::string getCacheFileName();
 
         std::string get_http_response_header(const std::string header_name);
 
@@ -165,9 +160,10 @@ namespace http {
             return d_response_headers;
         }
 
-        /**
-        * Returns cache file content in a string..
-        */
+
+            /**
+            * Returns cache file content in a string..
+            */
         std::string get_response_as_string();
 
         rapidjson::Document get_as_json();
