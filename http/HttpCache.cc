@@ -30,6 +30,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <vector>
 
 #include <cstdlib>
 
@@ -53,6 +54,7 @@
 
 using std::endl;
 using std::string;
+using std::vector;
 using std::stringstream;
 
 namespace http {
@@ -188,7 +190,7 @@ namespace http {
         return d_instance;
     }
 
-#if 0
+#if HASH_CACHE_FILENAME
 
     string
     HttpCache::get_hash(const string &s)
@@ -202,16 +204,35 @@ namespace http {
     }
 
     string HttpCache::get_cache_file_name(const string &uid, const string &src,  bool mangle){
-        string cfn = src;
+        stringstream cache_filename;
+        string full_name;
         string uid_part;
+        string dataset_name;
+
         if(!uid.empty())
             uid_part = uid + "_";
 
         if(mangle){
-            cfn = get_hash(src);
+            full_name = get_hash(src);
         }
-        return BESUtil::assemblePath(this->get_cache_directory(),
-                                     get_cache_file_prefix() + uid_part + cfn);
+        else {
+            full_name = src;
+        }
+
+        vector<string> path_elements;
+        BESUtil::tokenize(src,path_elements);
+        if(path_elements.empty()){
+            dataset_name = src;
+        }
+        else {
+            dataset_name = path_elements.back();
+        }
+
+        cache_filename << get_cache_file_prefix() << uid_part << full_name << "#" << dataset_name;
+
+        string cf_name =  BESUtil::assemblePath(this->get_cache_directory(), cache_filename.str() );
+
+        return cf_name;
     }
 
 
@@ -219,6 +240,8 @@ namespace http {
         string uid;
         return  get_cache_file_name(uid,src, mangle);
     }
+
+
 #endif
 
 } // namespace http

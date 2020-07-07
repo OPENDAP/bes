@@ -184,6 +184,7 @@ namespace http {
      */
     void RemoteResource::retrieveResource(const string &template_key, const string &replace_value) {
         BESDEBUG(MODULE, prolog << "BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
+        bool mangle = true;
 
         if (d_initialized) {
             BESDEBUG(MODULE, prolog << "END  Already initialized." << endl);
@@ -203,7 +204,7 @@ namespace http {
         // Get the name of the file in the cache (either the code finds this file or
         // or it makes it).
         // FIXME THIS SHOULD USE THE uid,resourceURL version of the is function, and the cache name should be a hash
-        d_resourceCacheFileName = cache->get_cache_file_name(d_remoteResourceUrl);
+        d_resourceCacheFileName = cache->get_cache_file_name(d_remoteResourceUrl, mangle);
         BESDEBUG(MODULE, prolog << "d_resourceCacheFileName: " << d_resourceCacheFileName << endl);
 
         // @TODO MAKE THIS RETRIEVE THE CACHED DATA TYPE IF THE CACHED RESPONSE IF FOUND
@@ -223,7 +224,7 @@ namespace http {
 
                 // #########################################################################################################
                 // I think in this if() is where we need to load the headers from the cache if we have them.
-                string hdr_filename = cache->get_cache_file_name(d_remoteResourceUrl) + ".hdrs";
+                string hdr_filename = cache->get_cache_file_name(d_remoteResourceUrl,mangle) + ".hdrs";
                 std::ifstream hdr_ifs(hdr_filename.c_str());
                 try {
                     BESDEBUG(MODULE, prolog << "Reading response headers from: " << hdr_filename << endl);
@@ -274,7 +275,7 @@ namespace http {
                 // the exclusive lock I could open another cache file for metadata and write to it.
                 {
                     // FIXME THIS IS WHERE WE NEED TO USE NGAP HASH CACHE FILE NAMES NOT FLC NAMES.
-                    string hdr_filename = cache->get_cache_file_name(d_remoteResourceUrl) + ".hdrs";
+                    string hdr_filename = cache->get_cache_file_name(d_remoteResourceUrl, mangle) + ".hdrs";
                     std::ofstream hdr_out(hdr_filename.c_str());
                     try {
                         for (size_t i = 0; i < this->d_response_headers->size(); i++) {

@@ -31,5 +31,6 @@
 #define GATEWAY_MODULE_VERSION "0.2.0"
 
 #define MODULE GATEWAY_MODULE
+#define GATEWAY_CONTAINER_TYPE GATEWAY_MODULE
 
 #endif // E_GatewayResponseNames_H

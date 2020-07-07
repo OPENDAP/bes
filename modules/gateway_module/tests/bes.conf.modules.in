@@ -34,7 +34,7 @@ BES.UncompressCache.prefix=uncompress_cache
 BES.UncompressCache.size=500
 
 Http.Cache.dir=/tmp
-Http.Cache.prefix=gateway_cache
+Http.Cache.prefix=gateway_cache_
 Http.Cache.size=500
 
 Http.MimeTypes=nc:application/x-netcdf

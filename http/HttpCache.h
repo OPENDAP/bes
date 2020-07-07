@@ -28,6 +28,8 @@
 
 #include "BESFileLockingCache.h"
 
+#define HASH_CACHE_FILENAME 1
+
 namespace http {
 
 /**
@@ -85,7 +87,7 @@ namespace http {
 
         virtual ~HttpCache() {}
 
-#if 0
+#if HASH_CACHE_FILENAME
         static std::string get_hash(const std::string &s);
 
         virtual std::string get_cache_file_name(const std::string &uid, const std::string &src, bool mangle=true);

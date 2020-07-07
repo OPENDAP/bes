@@ -41,7 +41,8 @@ using namespace std;
 using namespace gateway;
 using namespace bes;
 
-#define prolog std::string("HttpdCatalogContainer::").append(__func__).append("() - ")
+
+#define prolog std::string("GatewayContainer::").append(__func__).append("() - ")
 
 /** @brief Creates an instances of GatewayContainer with symbolic name and real
  * name, which is the remote request.
@@ -58,7 +59,7 @@ GatewayContainer::GatewayContainer(const string &sym_name,
         BESContainer(sym_name, real_name, type), d_remoteResource(0) {
 
     if (type.empty())
-        set_container_type("gateway");
+        set_container_type(GATEWAY_CONTAINER_TYPE);
 
     BESUtil::url url_parts;
     BESUtil::url_explode(real_name, url_parts);
@@ -130,7 +131,7 @@ string GatewayContainer::access() {
     BESDEBUG( MODULE, prolog << "Accessing " << url << endl);
 
     string type = get_container_type();
-    if (type == "gateway")
+    if (type == GATEWAY_CONTAINER_TYPE)
         type = "";
 
     if(!d_remoteResource) {
@@ -148,7 +149,6 @@ string GatewayContainer::access() {
     set_container_type(type);
     BESDEBUG( MODULE, prolog << "Type: " << type << endl );
 
-
     BESDEBUG( MODULE, prolog << "Done accessing " << get_real_name() << " returning cached file " << cachedResource << endl);
     BESDEBUG( MODULE, prolog << "Done accessing " << *this << endl);
     BESDEBUG( MODULE, prolog << "END" << endl);
@@ -165,13 +165,13 @@ string GatewayContainer::access() {
  * @return true if the resource is released successfully and false otherwise
  */
 bool GatewayContainer::release() {
+    BESDEBUG( MODULE, prolog << "BEGIN" << endl);
     if (d_remoteResource) {
         BESDEBUG( MODULE, prolog << "Releasing RemoteResource" << endl);
         delete d_remoteResource;
         d_remoteResource = 0;
     }
-
-    BESDEBUG( MODULE, prolog << "Done releasing gateway response" << endl);
+    BESDEBUG( MODULE, prolog << "END" << endl);
     return true;
 }
 
