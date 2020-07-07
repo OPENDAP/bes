@@ -39,6 +39,15 @@
 #define HTTP_CACHE_PREFIX_KEY "Http.Cache.prefix"
 #define HTTP_CACHE_SIZE_KEY "Http.Cache.size"
 
+#define HTTP_COOKIES_FILE_KEY "Http.Cookies.File"
+#define HTTP_DEFAULT_COOKIES_FILE "/tmp/.hyrax_cookies"
+
+#define HTTP_TARGET_URL_KEY "target_url"
+#define HTTP_URL_BASE_KEY "url_base"
+#define HTTP_QUERY_STRING_KEY "query_string"
+#define HTTP_URL_BASE_KEY "url_base"
+#define HTTP_INGEST_TIME_KEY "ingest_time"
+
 #define HTTP_MODULE "http"
 
 #endif // I_HTTP_NAME_H

@@ -44,6 +44,8 @@ namespace http {
         static void Get_type_from_content_type(const std::string &ctype, std::string &type);
 
         static void Get_type_from_url(const std::string &url, std::string &type);
+
+        static void decompose_url(const std::string target_url, std::map<std::string,std::string> &url_info);
     };
 
 } // namespace http

@@ -188,9 +188,9 @@ static string getCurlAuthTypeName(const int authType) {
     }
 
     /**
- * libcurl call back function that is used to write data to a passed open file descriptor (that would
- * be instead of the default open FILE *)
- */
+     * libcurl call back function that is used to write data to a passed open file descriptor (that would
+     * be instead of the default open FILE *)
+     */
     static size_t writeNothing(char */* data */, size_t /* size */, size_t nmemb, void * /* userdata */) {
         return nmemb;
     }

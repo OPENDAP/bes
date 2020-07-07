@@ -51,6 +51,8 @@ namespace curl {
     CURL *set_up_easy_handle(const std::string &target_url, const std::string &cookies_file, char *response_buff);
     bool eval_get_response(CURL *eh);
     void read_data(CURL *c_handle);
+    std::string getCookieFileName();
+    void find_last_redirect(const std::string &url, std::string &last_accessed_url);
 
 
 } // namespace curl

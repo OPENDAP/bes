@@ -38,15 +38,18 @@
 #include <GetOpt.h>
 #include <util.h>
 
-#include <BESError.h>
-#include <BESDebug.h>
-#include <BESUtil.h>
-#include <BESCatalogList.h>
-#include <TheBESKeys.h>
-#include <ngap_module/NgapContainer.h>
+#include "BESError.h"
+#include "BESDebug.h"
+#include "BESUtil.h"
+#include "BESCatalogList.h"
+#include "TheBESKeys.h"
+#include "HttpCache.h"
+#include "HttpUtils.h"
+#include "RemoteResource.h"
+
 #include "test_config.h"
 
-#include "RemoteHttpResource.h"
+
 #include "NgapApi.h"
 #include "NgapContainer.h"
 // #include "NgapError.h"
@@ -104,7 +107,7 @@ public:
 
         TheBESKeys::ConfigFile = bes_conf;
 
-        if (bes_debug) BESDebug::SetUp("cerr,ngap");
+        if (bes_debug) BESDebug::SetUp("cerr,ngap,http");
 
         if (bes_debug) show_file(bes_conf);
         if(Debug) cerr << "setUp() - END" << endl;
@@ -114,6 +117,34 @@ public:
     void tearDown()
     {
     }
+
+    void show_vector(vector<string> v){
+        cerr << "show_vector(): Found " << v.size() << " elements." << endl;
+        vector<string>::iterator it = v.begin();
+        for(size_t i=0;  i < v.size(); i++){
+            cerr << "show_vector:    v["<< i << "]: " << v[i] << endl;
+        }
+    }
+    void tokenize_test() {
+        string s1 = "//foo/bar/baz.nc";
+        vector<string> tokens;
+        BESUtil::tokenize(s1,tokens);
+        if(debug){
+            show_vector(tokens);
+        }
+
+        tokens.clear();
+        string s2 = "granules.umm_json_v1_4?provider=GHRC_CLOUD&entry_title=ADVANCED%20MICROWAVE%20SOUNDING%20UNIT-A%20%28AMSU-A%29%20SWATH%20FROM%20NOAA-15%20V1&granule_ur=amsua15_2020.028_12915_1139_1324_WI.nc";
+        BESUtil::tokenize(s2,tokens);
+        if(debug){
+            show_vector(tokens);
+        }
+
+        http::HttpCache *cache = http::HttpCache::get_instance();
+
+
+    }
+
 
     void cmr_access_test() {
         string prolog = string(__func__) + "() - ";
@@ -198,7 +229,7 @@ public:
               "&X-Amz-Signature=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing";
 
         if (debug) cerr << prolog << "Decomposing URL: " << url << endl;
-        NgapApi::decompose_url(url,url_info);
+        http::HttpUtils::decompose_url(url,url_info);
 
         key = "A-userid";
         expected_value = "hyrax";
@@ -255,7 +286,7 @@ public:
               "&Expires=1592946176";
 
         if (debug) cerr << prolog << "Decomposing URL: " << url << endl;
-        NgapApi::decompose_url(url,url_info);
+        http::HttpUtils::decompose_url(url,url_info);
 
         key = "RequestId";
         expected_value = "yU6NwaRaSZBwQ0xexo5Ufv7aL0MeANMMM7oeB96NfuJzrfjVNmW9eQ==";
@@ -289,7 +320,7 @@ public:
               "&X-Amz-SignedHeaders=host"
               "&X-Amz-Signature=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing";
         if (debug) cerr << prolog << "Decomposing URL: " << url << endl;
-        NgapApi::decompose_url(url,url_info);
+        http::HttpUtils::decompose_url(url,url_info);
 
         time_t now;
         time(&now);
@@ -310,6 +341,7 @@ public:
         CPPUNIT_TEST(decompose_simple_url_test);
         CPPUNIT_TEST(decompose_aws_signed_request_url_test);
         CPPUNIT_TEST(signed_url_is_expired_test);
+        CPPUNIT_TEST(tokenize_test);
 
     CPPUNIT_TEST_SUITE_END();
 };

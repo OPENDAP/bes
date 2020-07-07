@@ -45,10 +45,10 @@
 
 #include "NgapContainer.h"
 #include "NgapApi.h"
-#include "NgapUtils.h"
+#include "HttpUtils.h"
 #include "NgapNames.h"
-#include "RemoteHttpResource.h"
-#include "curl_utils.h"
+#include "RemoteResource.h"
+#include "CurlUtils.h"
 
 #define prolog std::string("NgapContainer::").append(__func__).append("() - ")
 
@@ -166,10 +166,10 @@ namespace ngap {
             // It not found or expired, reload.
             if(!found){
                 string last_accessed_url;
-                ngap_curl::find_last_redirect(data_access_url,last_accessed_url);
+                curl::find_last_redirect(data_access_url,last_accessed_url);
                 BESDEBUG(MODULE, prolog << "last_accessed_url: " << last_accessed_url << endl);
                 data_access_url_info.clear();
-                NgapApi::decompose_url(last_accessed_url,data_access_url_info);
+                http::HttpUtils::decompose_url(last_accessed_url,data_access_url_info);
                 TheBESKeys::TheKeys()->set_keys(data_access_url,data_access_url_info, false, false);
             }
         }
@@ -192,7 +192,7 @@ namespace ngap {
                 replace_template = DATA_ACCESS_URL_KEY;
                 replace_value = data_access_url;
             }
-            d_dmrpp_rresource = new ngap::RemoteHttpResource(dmrpp_url);
+            d_dmrpp_rresource = new http::RemoteResource(dmrpp_url);
             d_dmrpp_rresource->retrieveResource(replace_template, replace_value);
         }
         BESDEBUG(MODULE, prolog << "Retrieved remote resource: " << dmrpp_url << endl);

@@ -18,6 +18,7 @@
 Http.Cache.dir=/tmp/hyrax_http
 Http.Cache.prefix=http_
 Http.Cache.size=500
+Http.Cookies.File=/tmp/.hyrax_cookies
 
 Http.MimeTypes=nc:application/x-netcdf
 Http.MimeTypes+=h4:application/x-hdf

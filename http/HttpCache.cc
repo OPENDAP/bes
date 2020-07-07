@@ -42,6 +42,7 @@
 #include <TheBESKeys.h>
 
 #include "HttpCache.h"
+#include "HttpUtils.h"
 #include "HttpNames.h"
 
 #ifdef HAVE_ATEXIT
@@ -203,32 +204,87 @@ namespace http {
         return picosha2::hash256_hex_string(s[0] == '/' ? s : "/" + s);
     }
 
-    string HttpCache::get_cache_file_name(const string &uid, const string &src,  bool mangle){
+#define HTTP "http://"
+#define HTTPS "https://"
+
+    bool is_url(const string &candidate){
+        size_t index = candidate.find(HTTP);
+        if(index){
+            index = candidate.find(HTTPS);
+            if(index){
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * This helper function looks at the passed identifier and tries to formulate
+     * a human readable summary string for use in dataset naming etc.
+     *
+     * @param identifier A string holding the identifier to summarize.
+     * @return A human readable summary string for use in dataset naming etc.
+     */
+    string get_real_name_extension(const string &identifier){
+        string real_name_extension;
+
+        string path_part;
+
+        if(is_url(identifier)) {
+            // Since it's a URL it might have a massive query string attached, and since wee
+            // have no idea what the query parameters mean, we'll just punt and look at the path part of the URL.
+            // We use decompose_url() to chop things up.
+            std::map<std::string, std::string> url_info;
+            std::map<std::string, std::string>::iterator it;
+            HttpUtils::decompose_url(identifier, url_info);
+            it = url_info.find(HTTP_URL_BASE_KEY);
+            if (it != url_info.end()) {
+                path_part = it->second;
+            }
+        }
+        else {
+            path_part = identifier;
+        }
+
+        vector<string> path_elements;
+        // Now that we a "path" (none of that query string mess) we can tokenize it.
+        BESUtil::tokenize(path_part,path_elements);
+        if(!path_elements.empty()){
+            string last = path_elements.back();
+            if(last != path_part)
+                real_name_extension = "#" + last; // This utilizes a hack in libdap
+        }
+        return real_name_extension;
+    }
+
+
+    /**
+     * Builds a cache file name that contains a hashed version of the src_id, the user id (uid) if non-empty, and a
+     * human readable name that may be utilized when naming datasets whose data are held in the cache file.
+     * @param uid The user id of the requesting user.
+     * @param src_id The source identifier of the resource to cache.
+     * @param mangle If true, the cache file names will be hashed (more or less).
+     * @return The name of the cache file based on the inputs.
+     */
+    string HttpCache::get_cache_file_name(const string &uid, const string &src_id,  bool mangle){
         stringstream cache_filename;
-        string full_name;
+        string hashed_part;
+        string real_name_extension;
         string uid_part;
-        string dataset_name;
 
         if(!uid.empty())
             uid_part = uid + "_";
 
         if(mangle){
-            full_name = get_hash(src);
+            hashed_part = get_hash(src_id);
         }
         else {
-            full_name = src;
+            hashed_part = src_id;
         }
+        real_name_extension = get_real_name_extension(src_id);
 
-        vector<string> path_elements;
-        BESUtil::tokenize(src,path_elements);
-        if(path_elements.empty()){
-            dataset_name = src;
-        }
-        else {
-            dataset_name = path_elements.back();
-        }
-
-        cache_filename << get_cache_file_prefix() << uid_part << full_name << "#" << dataset_name;
+        cache_filename << get_cache_file_prefix() << uid_part << hashed_part << real_name_extension;
 
         string cf_name =  BESUtil::assemblePath(this->get_cache_directory(), cache_filename.str() );
 

@@ -35,6 +35,8 @@
 #include <cstring>
 #include <map>
 #include <vector>
+#include <sstream>
+#include <time.h>
 
 #include <curl/curl.h>
 
@@ -287,6 +289,64 @@ void HttpUtils::Get_type_from_url(const string &url, string &type) {
     type = utils->get_handler_name(url);
 }
 
+
+/**
+ * [UTC Sun Jun 21 16:17:47 2020 id: 14314][dmrpp:curl] CurlHandlePool::evaluate_curl_response() - Last Accessed URL(CURLINFO_EFFECTIVE_URL):
+ *     https://ghrcw-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?
+ *         A-userid=hyrax&
+ *         X-Amz-Algorithm=AWS4-HMAC-SHA256&
+ *         X-Amz-Credential=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing&
+ *         X-Amz-Date=20200621T161746Z&
+ *         X-Amz-Expires=86400&
+ *         X-Amz-Security-Token=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing&
+ *         X-Amz-SignedHeaders=host&
+ *         X-Amz-Signature=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing
+ * @param source_url
+ * @param data_access_url_info
+ */
+
+
+void HttpUtils::decompose_url(const string target_url, map<string,string> &url_info)
+{
+    string url_base;
+    string query_string;
+
+    size_t query_index = target_url.find_first_of("?");
+    BESDEBUG(MODULE, prolog << "query_index: " << query_index << endl);
+    if(query_index != string::npos){
+        query_string = target_url.substr(query_index+1);
+        url_base = target_url.substr(0,query_index);
+    }
+    else {
+        url_base = target_url;
+    }
+    url_info.insert( std::pair<string,string>(HTTP_TARGET_URL_KEY,target_url));
+    BESDEBUG(MODULE, prolog << HTTP_TARGET_URL_KEY << ": " << target_url << endl);
+    url_info.insert( std::pair<string,string>(HTTP_URL_BASE_KEY,url_base));
+    BESDEBUG(MODULE, prolog << HTTP_URL_BASE_KEY <<": " << url_base << endl);
+    url_info.insert( std::pair<string,string>(HTTP_QUERY_STRING_KEY,query_string));
+    BESDEBUG(MODULE, prolog << HTTP_QUERY_STRING_KEY << ": " << query_string << endl);
+    if(!query_string.empty()){
+        vector<string> records;
+        string delimiters = "&";
+        BESUtil::tokenize(query_string,records, delimiters);
+        vector<string>::iterator i = records.begin();
+        for(; i!=records.end(); i++){
+            size_t index = i->find('=');
+            if(index != string::npos) {
+                string key = i->substr(0, index);
+                string value = i->substr(index+1);
+                BESDEBUG(MODULE, prolog << "key: " << key << " value: " << value << endl);
+                url_info.insert( std::pair<string,string>(key,value));
+            }
+        }
+    }
+    time_t now;
+    time(&now);  /* get current time; same as: timer = time(NULL)  */
+    stringstream unix_time;
+    unix_time << now;
+    url_info.insert( std::pair<string,string>(HTTP_INGEST_TIME_KEY,unix_time.str()));
+}
 
 
 
