@@ -25,15 +25,15 @@
 #ifndef I_HTTP_NAME_H
 #define I_HTTP_NAME_H 1
 
-#define HTTP_MIMELIST "Http.MimeTypes"
-#define HTTP_PROXYPROTOCOL "Http.ProxyProtocol"
-#define HTTP_PROXYHOST "Http.ProxyHost"
-#define HTTP_PROXYPORT "Http.ProxyPort"
-#define HTTP_PROXYAUTHTYPE "Http.ProxyAuthType"
-#define HTTP_PROXYUSER "Http.ProxyUser"
-#define HTTP_PROXYPASSWORD "Http.ProxyPassword"
-#define HTTP_PROXYUSERPW "Http.ProxyUserPW"
-#define HTTP_USE_INTERNAL_CACHE "Http.UseInternalCache"
+#define HTTP_MIMELIST_KEY "Http.MimeTypes"
+#define HTTP_PROXYPROTOCOL_KEY "Http.ProxyProtocol"
+#define HTTP_PROXYHOST_KEY "Http.ProxyHost"
+#define HTTP_PROXYPORT_KEY "Http.ProxyPort"
+#define HTTP_PROXYAUTHTYPE_KEY "Http.ProxyAuthType"
+#define HTTP_PROXYUSER_KEY "Http.ProxyUser"
+#define HTTP_PROXYPASSWORD_KEY "Http.ProxyPassword"
+#define HTTP_PROXYUSERPW_KEY "Http.ProxyUserPW"
+#define HTTP_USE_INTERNAL_CACHE_KEY "Http.UseInternalCache"
 
 #define HTTP_CACHE_DIR_KEY "Http.Cache.dir"
 #define HTTP_CACHE_PREFIX_KEY "Http.Cache.prefix"

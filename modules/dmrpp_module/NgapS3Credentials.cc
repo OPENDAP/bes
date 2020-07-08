@@ -28,7 +28,7 @@
 #include <BESError.h>
 #include <BESDebug.h>
 
-#include "curl_utils.h"
+#include "CurlUtils.h"
 
 #include "NgapS3Credentials.h"
 

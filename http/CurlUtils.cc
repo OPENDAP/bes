@@ -697,11 +697,12 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
     }
 
     /**
-    * @brief http_get_as_json() This function de-references the target_url and parses the response into a JSON document.
-    *
-    * @param target_url The URL to dereference.
-    * @return JSON document parsed from the response document returned by target_url
-    */
+     * @brief http_get_as_json() This function de-references the target_url and parses the response into a JSON document.
+     * No attempt to cache is performed, the HTTP request is made for each invocation of this method.
+     *
+     * @param target_url The URL to dereference.
+     * @return JSON document parsed from the response document returned by target_url
+     */
     rapidjson::Document http_get_as_json(const std::string &target_url){
 
         // @TODO @FIXME Make the size of this buffer one of:

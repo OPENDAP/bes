@@ -84,16 +84,15 @@ void HttpUtils::Initialize()
 {
     // MimeTypes - translate from a mime type to a module name
     bool found = false;
-    string key = HTTP_MIMELIST;
     vector<string> vals;
-    TheBESKeys::TheKeys()->get_values(key, vals, found);
+    TheBESKeys::TheKeys()->get_values(HTTP_MIMELIST_KEY, vals, found);
     if (found && vals.size()) {
         vector<string>::iterator i = vals.begin();
         vector<string>::iterator e = vals.end();
         for (; i != e; i++) {
             size_t colon = (*i).find(":");
             if (colon == string::npos) {
-                string err = (string) "Malformed " + HTTP_MIMELIST + " " + (*i) +
+                string err = (string) "Malformed " + HTTP_MIMELIST_KEY + " " + (*i) +
                              " specified in the gateway configuration";
                 throw BESSyntaxUserError(err, __FILE__, __LINE__);
             }
@@ -104,15 +103,13 @@ void HttpUtils::Initialize()
     }
 
     found = false;
-    key = HTTP_PROXYHOST;
-    TheBESKeys::TheKeys()->get_value(key, HttpUtils::ProxyHost, found);
+    TheBESKeys::TheKeys()->get_value(HTTP_PROXYHOST_KEY, HttpUtils::ProxyHost, found);
     if (found && !HttpUtils::ProxyHost.empty()) {
         // if the proxy host is set, then check to see if the port is
         // set. Does not need to be.
         found = false;
-        key = HTTP_PROXYPORT;
         string port;
-        TheBESKeys::TheKeys()->get_value(key, port, found);
+        TheBESKeys::TheKeys()->get_value(HTTP_PROXYPORT_KEY, port, found);
         if (found && !port.empty()) {
             HttpUtils::ProxyPort = atoi(port.c_str());
             if (!HttpUtils::ProxyPort) {
@@ -124,8 +121,7 @@ void HttpUtils::Initialize()
         // @TODO Either use this or remove it - right now this variable is never used downstream
         // find the protocol to use for the proxy server. If none set, default to http
         found = false;
-        key = HTTP_PROXYPROTOCOL;
-        TheBESKeys::TheKeys()->get_value(key, HttpUtils::ProxyProtocol, found);
+        TheBESKeys::TheKeys()->get_value(HTTP_PROXYPROTOCOL_KEY, HttpUtils::ProxyProtocol, found);
         if (!found || HttpUtils::ProxyProtocol.empty()) {
             HttpUtils::ProxyProtocol = "http";
         }
@@ -133,8 +129,7 @@ void HttpUtils::Initialize()
         // find the user to use for authenticating with the proxy server. If none set,
         // default to ""
         found = false;
-        key = HTTP_PROXYUSER;
-        TheBESKeys::TheKeys()->get_value(key, HttpUtils::ProxyUser, found);
+        TheBESKeys::TheKeys()->get_value(HTTP_PROXYUSER_KEY, HttpUtils::ProxyUser, found);
         if (!found) {
             HttpUtils::ProxyUser = "";
         }
@@ -142,8 +137,7 @@ void HttpUtils::Initialize()
         // find the password to use for authenticating with the proxy server. If none set,
         // default to ""
         found = false;
-        key = HTTP_PROXYPASSWORD;
-        TheBESKeys::TheKeys()->get_value(key, HttpUtils::ProxyPassword, found);
+        TheBESKeys::TheKeys()->get_value(HTTP_PROXYPASSWORD_KEY, HttpUtils::ProxyPassword, found);
         if (!found) {
             HttpUtils::ProxyPassword = "";
         }
@@ -151,8 +145,7 @@ void HttpUtils::Initialize()
         // find the user:password string to use for authenticating with the proxy server. If none set,
         // default to ""
         found = false;
-        key = HTTP_PROXYUSERPW;
-        TheBESKeys::TheKeys()->get_value(key, HttpUtils::ProxyUserPW, found);
+        TheBESKeys::TheKeys()->get_value(HTTP_PROXYUSERPW_KEY, HttpUtils::ProxyUserPW, found);
         if (!found) {
             HttpUtils::ProxyUserPW = "";
         }
@@ -160,9 +153,8 @@ void HttpUtils::Initialize()
         // find the authentication mechanism to use with the proxy server. If none set,
         // default to BASIC authentication.
         found = false;
-        key = HTTP_PROXYAUTHTYPE;
         string authType;
-        TheBESKeys::TheKeys()->get_value(key, authType, found);
+        TheBESKeys::TheKeys()->get_value(HTTP_PROXYAUTHTYPE_KEY, authType, found);
         if (found) {
             authType = BESUtil::lowercase(authType);
             if (authType == "basic") {
@@ -187,9 +179,8 @@ void HttpUtils::Initialize()
     }
 
     found = false;
-    key = HTTP_USE_INTERNAL_CACHE;
     string use_cache;
-    TheBESKeys::TheKeys()->get_value(key, use_cache, found);
+    TheBESKeys::TheKeys()->get_value(HTTP_USE_INTERNAL_CACHE_KEY, use_cache, found);
     if (found) {
         if (use_cache == "true" || use_cache == "TRUE" || use_cache == "True" || use_cache == "yes" ||
             use_cache == "YES" || use_cache == "Yes")

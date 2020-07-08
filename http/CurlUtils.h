@@ -53,6 +53,7 @@ namespace curl {
     void read_data(CURL *c_handle);
     std::string getCookieFileName();
     void find_last_redirect(const std::string &url, std::string &last_accessed_url);
+    std::string get_range_arg_string(const unsigned long long &offset, const unsigned long long &size);
 
 
 } // namespace curl

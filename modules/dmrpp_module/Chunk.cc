@@ -40,7 +40,7 @@
 #include "xml2json/include/xml2json.hpp"
 
 #include "Chunk.h"
-#include "curl_utils.h"
+#include "CurlUtils.h"
 #include "CurlHandlePool.h"
 #include "DmrppRequestHandler.h"
 

@@ -36,7 +36,7 @@
 #include <curl/multi.h>
 #endif
 
-#include "curl_utils.h"
+#include "CurlUtils.h"
 
 #include <time.h>
 
