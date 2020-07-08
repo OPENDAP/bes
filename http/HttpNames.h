@@ -25,6 +25,9 @@
 #ifndef I_HTTP_NAME_H
 #define I_HTTP_NAME_H 1
 
+#define HTTP_PROTOCOL "http://"
+#define HTTPS_PROTOCOL "https://"
+
 #define HTTP_MIMELIST_KEY "Http.MimeTypes"
 #define HTTP_PROXYPROTOCOL_KEY "Http.ProxyProtocol"
 #define HTTP_PROXYHOST_KEY "Http.ProxyHost"

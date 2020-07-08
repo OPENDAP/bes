@@ -44,6 +44,7 @@
 #include "HttpCache.h"
 #include "HttpUtils.h"
 #include "HttpNames.h"
+#include "url_impl.h"
 
 #ifdef HAVE_ATEXIT
 #define AT_EXIT(x) atexit((x))
@@ -204,13 +205,11 @@ namespace http {
         return picosha2::hash256_hex_string(s[0] == '/' ? s : "/" + s);
     }
 
-#define HTTP "http://"
-#define HTTPS "https://"
 
     bool is_url(const string &candidate){
-        size_t index = candidate.find(HTTP);
+        size_t index = candidate.find(HTTP_PROTOCOL);
         if(index){
-            index = candidate.find(HTTPS);
+            index = candidate.find(HTTPS_PROTOCOL);
             if(index){
                 return false;
             }
@@ -234,14 +233,9 @@ namespace http {
         if(is_url(identifier)) {
             // Since it's a URL it might have a massive query string attached, and since wee
             // have no idea what the query parameters mean, we'll just punt and look at the path part of the URL.
-            // We use decompose_url() to chop things up.
-            std::map<std::string, std::string> url_info;
-            std::map<std::string, std::string>::iterator it;
-            HttpUtils::decompose_url(identifier, url_info);
-            it = url_info.find(HTTP_URL_BASE_KEY);
-            if (it != url_info.end()) {
-                path_part = it->second;
-            }
+            // We make an instance of http::url which will carve up the URL for us.
+            http::url target_url(identifier);
+            path_part = target_url.path();
         }
         else {
             path_part = identifier;

@@ -45,6 +45,7 @@
 #include "TheBESKeys.h"
 #include "HttpCache.h"
 #include "HttpUtils.h"
+#include "url_impl.h"
 #include "RemoteResource.h"
 
 #include "test_config.h"
@@ -140,8 +141,6 @@ public:
             show_vector(tokens);
         }
 
-        http::HttpCache *cache = http::HttpCache::get_instance();
-
 
     }
 
@@ -192,14 +191,7 @@ public:
         CPPUNIT_ASSERT (expected == data_access_url);
     }
 
-    bool check_kvp( string prolog, const map<string,string> &url_info, const string key, const string expected_value){
-        std::map<std::string,std::string>::const_iterator it;
-        if(debug) cerr << prolog << "Checking " << key << ": ";
-        it = url_info.find(key);
-        CPPUNIT_ASSERT(it != url_info.end() );
-        CPPUNIT_ASSERT(it->second == expected_value );
-        if(debug) cerr << it->second << endl;
-    }
+    
 
     void decompose_aws_signed_request_url_test(){
         string prolog = string(__func__) + "() - ";
@@ -213,6 +205,7 @@ public:
         string url;
         string key;
         string expected_value;
+        string value;
 
         url = "https://ghrcw-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?"
               "A-userid=hyrax"
@@ -228,28 +221,40 @@ public:
               "&X-Amz-SignedHeaders=host"
               "&X-Amz-Signature=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing";
 
-        if (debug) cerr << prolog << "Decomposing URL: " << url << endl;
-        http::HttpUtils::decompose_url(url,url_info);
+        if (debug) cerr << prolog << "Processing URL: " << url << endl;
+        http::url target_url(url);
 
         key = "A-userid";
         expected_value = "hyrax";
-        check_kvp(prolog, url_info, key, expected_value);
+        value = target_url.query_parameter_value(key);
+        if(debug) cerr << prolog << "key: " << key << " value: " << value << " expected: " << expected_value << endl;
+        CPPUNIT_ASSERT( value == expected_value );
 
         key = "X-Amz-Algorithm";
         expected_value = "AWS4-HMAC-SHA256";
-        check_kvp(prolog, url_info, key, expected_value);
+        value = target_url.query_parameter_value(key);
+        if(debug) cerr << prolog << "key: " << key << " value: " << value << " expected: " << expected_value << endl;
+        CPPUNIT_ASSERT( value == expected_value );
 
         key = "X-Amz-Credential";
         expected_value = "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing";
-        check_kvp(prolog, url_info, key, expected_value);
+        value = target_url.query_parameter_value(key);
+        if(debug) cerr << prolog << "key: " << key << " value: " << value << " expected: " << expected_value << endl;
+        CPPUNIT_ASSERT( value == expected_value );
 
         key = "X-Amz-Date";
         expected_value = "20200621T161744Z";
-        check_kvp(prolog, url_info, key, expected_value);
+        value = target_url.query_parameter_value(key);
+        if(debug) cerr << prolog << "key: " << key << " value: " << value << " expected: " << expected_value << endl;
+        CPPUNIT_ASSERT( value == expected_value );
 
         key = "X-Amz-Expires";
         expected_value = "86400";
-        check_kvp(prolog, url_info, key, expected_value);
+        value = target_url.query_parameter_value(key);
+        if(debug) cerr << prolog << "key: " << key << " value: " << value << " expected: " << expected_value << endl;
+        CPPUNIT_ASSERT( value == expected_value );
+
+
 
         key = "X-Amz-Security-Token";
         expected_value = "FwoGZXIvYXdzENL%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaDKmu"
@@ -257,15 +262,21 @@ public:
                          "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
                          "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
                          "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing";
-        check_kvp(prolog, url_info, key, expected_value);
+        value = target_url.query_parameter_value(key);
+        if(debug) cerr << prolog << "key: " << key << " value: " << value << " expected: " << expected_value << endl;
+        CPPUNIT_ASSERT( value == expected_value );
 
         key = "X-Amz-SignedHeaders";
         expected_value = "host";
-        check_kvp(prolog, url_info, key, expected_value);
+        value = target_url.query_parameter_value(key);
+        if(debug) cerr << prolog << "key: " << key << " value: " << value << " expected: " << expected_value << endl;
+        CPPUNIT_ASSERT( value == expected_value );
 
         key = "X-Amz-Signature";
         expected_value = "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing";
-        check_kvp(prolog, url_info, key, expected_value);
+        value = target_url.query_parameter_value(key);
+        if(debug) cerr << prolog << "key: " << key << " value: " << value << " expected: " << expected_value << endl;
+        CPPUNIT_ASSERT( value == expected_value );
 
     }
     void decompose_simple_url_test(){
@@ -280,21 +291,25 @@ public:
         string url;
         string key;
         string expected_value;
+        string value;
 
         url = "https://d1sd4up8kynpk2.cloudfront.net/s3-2dbad80ed80161e4b685a0385c322d93/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?"
               "RequestId=yU6NwaRaSZBwQ0xexo5Ufv7aL0MeANMMM7oeB96NfuJzrfjVNmW9eQ=="
               "&Expires=1592946176";
 
-        if (debug) cerr << prolog << "Decomposing URL: " << url << endl;
-        http::HttpUtils::decompose_url(url,url_info);
+        http::url target_url(url);
 
         key = "RequestId";
         expected_value = "yU6NwaRaSZBwQ0xexo5Ufv7aL0MeANMMM7oeB96NfuJzrfjVNmW9eQ==";
-        check_kvp(prolog, url_info, key, expected_value);
+        value = target_url.query_parameter_value(key);
+        if(debug) cerr << prolog << "key: " << key << " value: " << value << " expected: " << expected_value << endl;
+        CPPUNIT_ASSERT( value == expected_value );
 
         key = "Expires";
         expected_value = "1592946176";
-        check_kvp(prolog, url_info, key, expected_value);
+        value = target_url.query_parameter_value(key);
+        if(debug) cerr << prolog << "key: " << key << " value: " << value << " expected: " << expected_value << endl;
+        CPPUNIT_ASSERT( value == expected_value );
 
     }
 
@@ -319,18 +334,16 @@ public:
               "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
               "&X-Amz-SignedHeaders=host"
               "&X-Amz-Signature=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing";
-        if (debug) cerr << prolog << "Decomposing URL: " << url << endl;
-        http::HttpUtils::decompose_url(url,url_info);
+
+        http::url signed_url(url);
 
         time_t now;
         time(&now);
         stringstream ingest_time;
         time_t then = now - 82810; // 23 hours and 10 seconds ago.
-        ingest_time << then;
-        string ingest_time_key="ingest_time";
-        url_info.erase(ingest_time_key);
-        url_info.insert(pair<string, string>(ingest_time_key,ingest_time.str()));
-        is_expired = NgapApi::signed_url_is_expired(url_info);
+
+        signed_url.set_ingest_time(then);
+        is_expired = NgapApi::signed_url_is_expired(signed_url);
         CPPUNIT_ASSERT(is_expired == true );
 
     }

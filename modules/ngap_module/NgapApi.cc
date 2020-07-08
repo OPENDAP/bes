@@ -48,6 +48,7 @@
 #include "BESUtil.h"
 #include "TheBESKeys.h"
 #include "CurlUtils.h"
+#include "url_impl.h"
 #include "RemoteResource.h"
 
 #include "NgapApi.h"
@@ -269,7 +270,7 @@ namespace ngap {
 
 
 
-    bool NgapApi::signed_url_is_expired(const std::map<std::string,std::string> &ngap_url_info)
+    bool NgapApi::signed_url_is_expired(const http::url &signed_url)
     {
         bool is_expired;
         time_t now;
@@ -277,24 +278,24 @@ namespace ngap {
         BESDEBUG(MODULE, prolog << "now: " << now << endl);
 
         time_t expires = now;
-        std::map<string,string>::const_iterator cfexpires_it = ngap_url_info.find(CLOUDFRONT_EXPIRES_HEADER_KEY);
-        std::map<string,string>::const_iterator awsexpires_it = ngap_url_info.find(AMS_EXPIRES_HEADER_KEY);
-        std::map<string,string>::const_iterator ingest_time_it = ngap_url_info.find(INGEST_TIME_KEY);
+        string cf_expires = signed_url.query_parameter_value(CLOUDFRONT_EXPIRES_HEADER_KEY);
+        string aws_expires = signed_url.query_parameter_value(AMS_EXPIRES_HEADER_KEY);
+        time_t ingest_time = signed_url.ingest_time();
 
-        if(cfexpires_it != ngap_url_info.end()){ // CloudFront expires header?
-            expires = stoll(cfexpires_it->second);
+        if(!cf_expires.empty()){ // CloudFront expires header?
+            expires = stoll(cf_expires);
             BESDEBUG(MODULE, prolog << "Using "<< CLOUDFRONT_EXPIRES_HEADER_KEY << ": " << expires << endl);
         }
-        else if(awsexpires_it != ngap_url_info.end() && ingest_time_it != ngap_url_info.end()){
+        else if(!aws_expires.empty()){
             // AWS Expires header?
             //
-            // By default we'll use the time we read the probe response, ingest_time
-            time_t start_time = stoll(ingest_time_it->second);
+            // By default we'll use the time we made the URL object, ingest_time
+            time_t start_time = ingest_time;
             // But if there's an AWS Date we'll parse that and compute the time
             // @TODO move to NgapApi::decompose_url() and add the result to the map
-            std::map<string,string>::const_iterator awsdate_it = ngap_url_info.find(AWS_DATE_HEADER_KEY);
-            if(awsdate_it != ngap_url_info.end()){
-                string date = awsdate_it->second; // 20200624T175046Z
+            string aws_date = signed_url.query_parameter_value(AWS_DATE_HEADER_KEY);
+            if(!aws_date.empty()){
+                string date = aws_date; // 20200624T175046Z
                 string year = date.substr(0,4);
                 string month = date.substr(4,2);
                 string day = date.substr(6,2);
@@ -325,8 +326,8 @@ namespace ngap {
                // start_time = mktime(&ti);
                //  BESDEBUG(MODULE, prolog << "AWS (computed) start_time: "<< start_time << endl);
             }
-            expires = start_time + stoll(awsexpires_it->second);
-            BESDEBUG(MODULE, prolog << "Using "<< AMS_EXPIRES_HEADER_KEY << ": " << awsexpires_it->second <<
+            expires = start_time + stoll(aws_expires);
+            BESDEBUG(MODULE, prolog << "Using "<< AMS_EXPIRES_HEADER_KEY << ": " << aws_expires <<
                                     " (expires: " << expires << ")" << endl);
         }
         time_t remaining = expires - now;

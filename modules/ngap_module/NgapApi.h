@@ -38,6 +38,7 @@
 #include <map>
 #include "rapidjson/document.h"
 #include "BESCatalogUtils.h"
+#include "url_impl.h"
 
 #if 0
 #include "Granule.h"
@@ -60,7 +61,7 @@ public:
             const std::string &uid="",
             const std::string &access_token="");
 
-    static bool signed_url_is_expired(const std::map<std::string,std::string> &url_info);
+    static bool signed_url_is_expired(const http::url &signed_url) ;
 
 #if 0
     void get_years(std::string collection_name, std::vector<std::string> &years_result);

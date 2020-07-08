@@ -42,13 +42,15 @@ DISTCLEANFILES = http.conf
 SRCS = CurlUtils.cc \
     HttpCache.cc \
     RemoteResource.cc \
-    HttpUtils.cc
+    HttpUtils.cc \
+    url_impl.cc
 
 HDRS = CurlUtils.h \
     HttpCache.h \
     RemoteResource.h \
     HttpUtils.h \
-    HttpNames.h
+    HttpNames.h \
+    url_impl.h
 
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = http.conf

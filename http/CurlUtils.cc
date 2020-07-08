@@ -1004,6 +1004,8 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             BESDEBUG(MODULE, prolog << " CURLINFO_EFFECTIVE_URL: " << effective_url << endl);
             last_accessed_url = effective_url;
 
+            LOG(prolog << "Source URL: '" << url << "' Last Accessed URL: '" << last_accessed_url << "'" << endl);
+
             if(curl){
                 curl_easy_cleanup(curl);
                 curl = 0;

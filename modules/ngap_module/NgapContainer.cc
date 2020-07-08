@@ -42,13 +42,14 @@
 #include "TheBESKeys.h"
 #include "WhiteList.h"
 #include "BESContextManager.h"
+#include "CurlUtils.h"
+#include "HttpUtils.h"
+#include "RemoteResource.h"
+#include "url_impl.h"
 
 #include "NgapContainer.h"
 #include "NgapApi.h"
-#include "HttpUtils.h"
 #include "NgapNames.h"
-#include "RemoteResource.h"
-#include "CurlUtils.h"
 
 #define prolog std::string("NgapContainer::").append(__func__).append("() - ")
 
@@ -151,33 +152,41 @@ namespace ngap {
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
         // Since this the ngap we know that the real_name is a URL.
-        string data_access_url = get_real_name();
+        string data_access_url_str = get_real_name();
 
         if(cache_terminal_urls()){
             // See if the data_access_url has already been processed into a terminal signed URL
             // in TheBESKeys
             bool found;
             std::map<std::string,std::string> data_access_url_info;
-            TheBESKeys::TheKeys()->get_values(data_access_url,data_access_url_info, false, found);
+            TheBESKeys::TheKeys()->get_values(data_access_url_str, data_access_url_info, false, found);
             if(found){
                 // Is it expired?
-                found = NgapApi::signed_url_is_expired(data_access_url_info);
+                http::url target_url(data_access_url_info);
+                found = NgapApi::signed_url_is_expired(target_url);
             }
             // It not found or expired, reload.
             if(!found){
-                string last_accessed_url;
-                curl::find_last_redirect(data_access_url,last_accessed_url);
-                BESDEBUG(MODULE, prolog << "last_accessed_url: " << last_accessed_url << endl);
+                string last_accessed_url_str;
+                curl::find_last_redirect(data_access_url_str, last_accessed_url_str);
+                BESDEBUG(MODULE, prolog << "last_accessed_url: " << last_accessed_url_str << endl);
+
+                http::url last_accessed_url(last_accessed_url_str);
+                last_accessed_url.kvp(data_access_url_info);
+                TheBESKeys::TheKeys()->set_keys(data_access_url_str, data_access_url_info, false, false);
+
+#if 0
                 data_access_url_info.clear();
-                http::HttpUtils::decompose_url(last_accessed_url,data_access_url_info);
-                TheBESKeys::TheKeys()->set_keys(data_access_url,data_access_url_info, false, false);
+                http::HttpUtils::decompose_url(last_accessed_url_str,data_access_url_info);
+                TheBESKeys::TheKeys()->set_keys(data_access_url_str,data_access_url_info, false, false);
+#endif
             }
         }
 
         // And we know that the dmr++ file should "right next to it" (side-car)
-        string dmrpp_url = data_access_url + ".dmrpp";
+        string dmrpp_url = data_access_url_str + ".dmrpp";
 
-        BESDEBUG(MODULE, prolog << "data_access_url: " << data_access_url << endl);
+        BESDEBUG(MODULE, prolog << "data_access_url: " << data_access_url_str << endl);
         BESDEBUG(MODULE, prolog << "dmrpp_url: " << dmrpp_url << endl);
 
         string type = get_container_type();
@@ -190,7 +199,7 @@ namespace ngap {
             string replace_value;
             if (inject_data_url()) {
                 replace_template = DATA_ACCESS_URL_KEY;
-                replace_value = data_access_url;
+                replace_value = data_access_url_str;
             }
             d_dmrpp_rresource = new http::RemoteResource(dmrpp_url);
             d_dmrpp_rresource->retrieveResource(replace_template, replace_value);
