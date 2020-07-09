@@ -29,7 +29,7 @@ libbes_http_la_LIBADD = $(BES_DISPATCH_LIB) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS
 
 pkginclude_HEADERS = $(HDRS) 
 
-pkgdata_DATA =
+pkgdata_DATA = data
 
 EXTRA_DIST = http.conf.in
 

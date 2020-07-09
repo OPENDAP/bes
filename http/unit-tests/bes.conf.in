@@ -10,7 +10,8 @@ Http.Cache.prefix=ngap_unit_tests_
 Http.Cache.size=500
 #-----------------------------------------------------------------------#
 
-Gateway.Whitelist = https://cmr.earthdata.nasa.gov/search
+# Allow access to src dir and test.opendap.org
+Gateway.Whitelist = file://@abs_top_srcdir@/http/
 Gateway.Whitelist += http://test.opendap.org/
 
 

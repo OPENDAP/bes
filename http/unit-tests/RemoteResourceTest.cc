@@ -137,12 +137,11 @@ public:
         if(Debug) cerr << endl << "setUp() - BEGIN" << endl;
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
         if(Debug) cerr << "setUp() - Using BES configuration: " << bes_conf << endl;
-
+        if (bes_debug) show_file(bes_conf);
         TheBESKeys::ConfigFile = bes_conf;
 
         if (bes_debug) BESDebug::SetUp("cerr,httpd_catalog,http");
 
-        if (bes_debug) show_file(bes_conf);
 
         if(purge_cache){
             if(Debug) cerr << "Purging cache!" << endl;
