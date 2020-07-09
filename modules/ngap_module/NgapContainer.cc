@@ -173,13 +173,11 @@ namespace ngap {
 
                 http::url last_accessed_url(last_accessed_url_str);
                 last_accessed_url.kvp(data_access_url_info);
-                TheBESKeys::TheKeys()->set_keys(data_access_url_str, data_access_url_info, false, false);
 
-#if 0
-                data_access_url_info.clear();
-                http::HttpUtils::decompose_url(last_accessed_url_str,data_access_url_info);
-                TheBESKeys::TheKeys()->set_keys(data_access_url_str,data_access_url_info, false, false);
-#endif
+                // Placing the last accessed URL information in TheBESKeys associated with the data_access_url as the
+                // key allows allows other modules, such as dmrpp_module to access the crucial last accessed URL
+                // information which eliminates any number of redirects during access operations.
+                TheBESKeys::TheKeys()->set_keys(data_access_url_str, data_access_url_info, false, false);
             }
         }
 

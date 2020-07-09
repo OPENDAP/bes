@@ -892,6 +892,7 @@ AC_CONFIG_FILES([Makefile
 		 hello_world/tests/atlocal
 
 		 http/Makefile
+		 http/unit-tests/Makefile
 
 		 docs/Makefile
 		 

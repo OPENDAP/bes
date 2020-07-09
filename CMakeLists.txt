@@ -2068,4 +2068,4 @@ add_executable(bes
     modules/dmrpp_module/unit-tests/NgapCredentialsTest.cc
 
     standalone/besstandalone.cc
-)
+        http/unit-tests/HttpUtilsTest.cc)

@@ -38,13 +38,10 @@
 #include <BESUtil.h>
 #include <BESCatalogList.h>
 #include <TheBESKeys.h>
-#include "test_config.h"
 #include "RemoteResource.h"
 #include "HttpNames.h"
 
-#include "../HttpdDirScraper.h"
-#include "../HttpdCatalogNames.h"
-
+#include "test_config.h"
 
 using namespace std;
 
@@ -56,9 +53,9 @@ static bool purge_cache = false;
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
 
-namespace httpd_catalog {
+namespace http {
 
-class RemoteHttpResourceTest: public CppUnit::TestFixture {
+class RemoteResourceTest: public CppUnit::TestFixture {
 private:
 
     /**
@@ -107,12 +104,13 @@ private:
      *
      */
     string get_data_file_url(string name){
+        string prolog = string(__func__) + "() - ";
         string data_file = BESUtil::assemblePath(d_data_dir,name);
-        if(debug) cerr << "data_file: " << data_file << endl;
+        if(debug) cerr << prolog << "data_file: " << data_file << endl;
         if(Debug) show_file(data_file);
 
         string data_file_url = "file://" + data_file;
-        if(debug) cerr << "data_file_url: " << data_file_url << endl;
+        if(debug) cerr << prolog << "data_file_url: " << data_file_url << endl;
         return data_file_url;
     }
 
@@ -120,15 +118,16 @@ private:
 
 public:
     string d_data_dir;
+
     // Called once before everything gets tested
-    RemoteHttpResourceTest()
+    RemoteResourceTest()
     {
         d_data_dir = TEST_DATA_DIR;;
         cerr << "data_dir: " << d_data_dir << endl;
     }
 
     // Called at the end of the test
-    ~RemoteHttpResourceTest()
+    ~RemoteResourceTest()
     {
     }
 
@@ -239,7 +238,7 @@ public:
 /*##################################################################################################*/
 
 
-    CPPUNIT_TEST_SUITE( RemoteHttpResourceTest );
+    CPPUNIT_TEST_SUITE( RemoteResourceTest );
 
     CPPUNIT_TEST(get_http_url_test);
     CPPUNIT_TEST(get_file_url_test);
@@ -247,7 +246,7 @@ public:
     CPPUNIT_TEST_SUITE_END();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(RemoteHttpResourceTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(RemoteResourceTest);
 
 } // namespace httpd_catalog
 
@@ -290,7 +289,7 @@ int main(int argc, char*argv[])
     else {
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            test = httpd_catalog::RemoteHttpResourceTest::suite()->getName().append("::").append(argv[i]);
+            test = http::RemoteResourceTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
             ++i;
         }

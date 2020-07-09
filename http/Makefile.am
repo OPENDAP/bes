@@ -19,7 +19,7 @@ if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
 endif
 
-# SUBDIRS = . unit-tests tests
+SUBDIRS = . unit-tests #tests
 
 noinst_LTLIBRARIES = libbes_http.la
 

@@ -45,6 +45,7 @@
 #include "TheBESKeys.h"
 #include "HttpCache.h"
 #include "HttpUtils.h"
+#include "HttpNames.h"
 #include "url_impl.h"
 #include "RemoteResource.h"
 
@@ -126,23 +127,6 @@ public:
             cerr << "show_vector:    v["<< i << "]: " << v[i] << endl;
         }
     }
-    void tokenize_test() {
-        string s1 = "//foo/bar/baz.nc";
-        vector<string> tokens;
-        BESUtil::tokenize(s1,tokens);
-        if(debug){
-            show_vector(tokens);
-        }
-
-        tokens.clear();
-        string s2 = "granules.umm_json_v1_4?provider=GHRC_CLOUD&entry_title=ADVANCED%20MICROWAVE%20SOUNDING%20UNIT-A%20%28AMSU-A%29%20SWATH%20FROM%20NOAA-15%20V1&granule_ur=amsua15_2020.028_12915_1139_1324_WI.nc";
-        BESUtil::tokenize(s2,tokens);
-        if(debug){
-            show_vector(tokens);
-        }
-
-
-    }
 
 
     void cmr_access_test() {
@@ -191,137 +175,17 @@ public:
         CPPUNIT_ASSERT (expected == data_access_url);
     }
 
-    
 
-    void decompose_aws_signed_request_url_test(){
-        string prolog = string(__func__) + "() - ";
-        NgapApi ngapi;
-
-        std::map<std::string,std::string> url_info;
-        std::map<std::string,std::string>::iterator it;
-
-        if(debug ) cout << endl;
-
-        string url;
-        string key;
-        string expected_value;
-        string value;
-
-        url = "https://ghrcw-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?"
-              "A-userid=hyrax"
-              "&X-Amz-Algorithm=AWS4-HMAC-SHA256"
-              "&X-Amz-Credential=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
-              "&X-Amz-Date=20200621T161744Z"
-              "&X-Amz-Expires=86400"
-              "&X-Amz-Security-Token=FwoGZXIvYXdzENL%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaDKmu"
-              "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
-              "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
-              "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
-              "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
-              "&X-Amz-SignedHeaders=host"
-              "&X-Amz-Signature=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing";
-
-        if (debug) cerr << prolog << "Processing URL: " << url << endl;
-        http::url target_url(url);
-
-        key = "A-userid";
-        expected_value = "hyrax";
-        value = target_url.query_parameter_value(key);
-        if(debug) cerr << prolog << "key: " << key << " value: " << value << " expected: " << expected_value << endl;
-        CPPUNIT_ASSERT( value == expected_value );
-
-        key = "X-Amz-Algorithm";
-        expected_value = "AWS4-HMAC-SHA256";
-        value = target_url.query_parameter_value(key);
-        if(debug) cerr << prolog << "key: " << key << " value: " << value << " expected: " << expected_value << endl;
-        CPPUNIT_ASSERT( value == expected_value );
-
-        key = "X-Amz-Credential";
-        expected_value = "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing";
-        value = target_url.query_parameter_value(key);
-        if(debug) cerr << prolog << "key: " << key << " value: " << value << " expected: " << expected_value << endl;
-        CPPUNIT_ASSERT( value == expected_value );
-
-        key = "X-Amz-Date";
-        expected_value = "20200621T161744Z";
-        value = target_url.query_parameter_value(key);
-        if(debug) cerr << prolog << "key: " << key << " value: " << value << " expected: " << expected_value << endl;
-        CPPUNIT_ASSERT( value == expected_value );
-
-        key = "X-Amz-Expires";
-        expected_value = "86400";
-        value = target_url.query_parameter_value(key);
-        if(debug) cerr << prolog << "key: " << key << " value: " << value << " expected: " << expected_value << endl;
-        CPPUNIT_ASSERT( value == expected_value );
-
-
-
-        key = "X-Amz-Security-Token";
-        expected_value = "FwoGZXIvYXdzENL%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaDKmu"
-                         "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
-                         "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
-                         "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
-                         "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing";
-        value = target_url.query_parameter_value(key);
-        if(debug) cerr << prolog << "key: " << key << " value: " << value << " expected: " << expected_value << endl;
-        CPPUNIT_ASSERT( value == expected_value );
-
-        key = "X-Amz-SignedHeaders";
-        expected_value = "host";
-        value = target_url.query_parameter_value(key);
-        if(debug) cerr << prolog << "key: " << key << " value: " << value << " expected: " << expected_value << endl;
-        CPPUNIT_ASSERT( value == expected_value );
-
-        key = "X-Amz-Signature";
-        expected_value = "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing";
-        value = target_url.query_parameter_value(key);
-        if(debug) cerr << prolog << "key: " << key << " value: " << value << " expected: " << expected_value << endl;
-        CPPUNIT_ASSERT( value == expected_value );
-
-    }
-    void decompose_simple_url_test(){
-        string prolog = string(__func__) + "() - ";
-        NgapApi ngapi;
-
-        std::map<std::string,std::string> url_info;
-        std::map<std::string,std::string>::iterator it;
-
-        if(debug ) cout << endl;
-
-        string url;
-        string key;
-        string expected_value;
-        string value;
-
-        url = "https://d1sd4up8kynpk2.cloudfront.net/s3-2dbad80ed80161e4b685a0385c322d93/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?"
-              "RequestId=yU6NwaRaSZBwQ0xexo5Ufv7aL0MeANMMM7oeB96NfuJzrfjVNmW9eQ=="
-              "&Expires=1592946176";
-
-        http::url target_url(url);
-
-        key = "RequestId";
-        expected_value = "yU6NwaRaSZBwQ0xexo5Ufv7aL0MeANMMM7oeB96NfuJzrfjVNmW9eQ==";
-        value = target_url.query_parameter_value(key);
-        if(debug) cerr << prolog << "key: " << key << " value: " << value << " expected: " << expected_value << endl;
-        CPPUNIT_ASSERT( value == expected_value );
-
-        key = "Expires";
-        expected_value = "1592946176";
-        value = target_url.query_parameter_value(key);
-        if(debug) cerr << prolog << "key: " << key << " value: " << value << " expected: " << expected_value << endl;
-        CPPUNIT_ASSERT( value == expected_value );
-
-    }
 
     void signed_url_is_expired_test(){
         string prolog = string(__func__) + "() - ";
 
-        string url;
+        string signed_url_str;
         std::map<std::string,std::string> url_info;
         bool is_expired;
 
 
-        url = "https://ghrcw-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?"
+        signed_url_str = "https://ghrcw-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?"
               "A-userid=hyrax"
               "&X-Amz-Algorithm=AWS4-HMAC-SHA256"
               "&X-Amz-Credential=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
@@ -335,7 +199,7 @@ public:
               "&X-Amz-SignedHeaders=host"
               "&X-Amz-Signature=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing";
 
-        http::url signed_url(url);
+        http::url signed_url(signed_url_str);
 
         time_t now;
         time(&now);
@@ -351,10 +215,7 @@ public:
     CPPUNIT_TEST_SUITE( NgapApiTest );
 
         CPPUNIT_TEST(cmr_access_test);
-        CPPUNIT_TEST(decompose_simple_url_test);
-        CPPUNIT_TEST(decompose_aws_signed_request_url_test);
         CPPUNIT_TEST(signed_url_is_expired_test);
-        CPPUNIT_TEST(tokenize_test);
 
     CPPUNIT_TEST_SUITE_END();
 };
