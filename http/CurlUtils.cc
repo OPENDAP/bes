@@ -58,7 +58,7 @@ using std::stringstream;
 using std::ostringstream;
 using namespace http;
 
-#define prolog std::string("CurlUtils-").append(__func__).append("() - ")
+#define prolog std::string("CurlUtils - ").append(__func__).append("() - ")
 
 
 namespace curl {

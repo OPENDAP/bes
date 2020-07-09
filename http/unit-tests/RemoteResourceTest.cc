@@ -140,7 +140,7 @@ public:
         if (bes_debug) show_file(bes_conf);
         TheBESKeys::ConfigFile = bes_conf;
 
-        if (bes_debug) BESDebug::SetUp("cerr,httpd_catalog,http");
+        if (bes_debug) BESDebug::SetUp("cerr,wl,bes,http");
 
 
         if(purge_cache){
