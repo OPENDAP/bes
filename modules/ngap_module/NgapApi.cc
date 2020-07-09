@@ -361,7 +361,7 @@ namespace ngap {
                                         " year: " << year << " month: " << month << " day: " << day <<
                                         " hour: " << hour << " minute: " << minute  << " second: " << second << endl);
 
-                struct tm * ti = gmtime(&now);
+                struct tm *ti = gmtime(&now);
                 ti->tm_year = stoll(year);
                 ti->tm_mon = stoll(month) - 1;
                 ti->tm_mday = stoll(day);

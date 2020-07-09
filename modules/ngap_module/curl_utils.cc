@@ -740,7 +740,7 @@ bool eval_get_response(CURL *eh) {
     /**
      * @brief Performs a small (4 byte) range get on the target URL. If successfull the value of  last_accessed_url will
      * be set to the value of the last accessed URL (CURLINFO_EFFECTIVE_URL), including the query string.
-     * are
+     *
      * @param url The URL to follow
      * @param last_accessed_url The last accessed URL (CURLINFO_EFFECTIVE_URL), including the query string
      */
