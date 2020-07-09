@@ -29,9 +29,9 @@ libbes_http_la_LIBADD = $(BES_DISPATCH_LIB) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS
 
 pkginclude_HEADERS = $(HDRS) 
 
-pkgdata_DATA = data
+pkgdata_DATA =
 
-EXTRA_DIST = http.conf.in
+EXTRA_DIST = http.conf.in data
 
 DISTCLEANFILES = http.conf
 
