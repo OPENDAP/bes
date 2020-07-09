@@ -7,7 +7,7 @@ AM_CPPFLAGS = -I$(top_srcdir) \
                 -I$(top_srcdir)/dispatch \
                 $(DAP_CFLAGS)
 
-LIBADD = $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB)
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
@@ -30,8 +30,6 @@ check_PROGRAMS = $(UNIT_TESTS)
 TESTS = $(UNIT_TESTS)
 
 noinst_DATA = bes.conf
-# See target below. jhrg
-# $(abs_builddir)/static-cache
 
 BUILT_SOURCES = test_config.h
 
@@ -56,7 +54,8 @@ BES_CONF_IN = bes.conf.in
 bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 	@clean_abs_top_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
-		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
+		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf; \
+	cat bes.conf; # TODO Remove this!
 
 
 ############################################################################
@@ -81,7 +80,7 @@ clean-local:
 	test ! -d $(builddir)/static-cache || rm -rf $(builddir)/static-cache
 
 HttpUtilsTest_SOURCES = HttpUtilsTest.cc
-HttpUtilsTest_LDADD = $(top_builddir)/http/.libs/libbes_http.a $(LIBADD)
+HttpUtilsTest_LDADD = $(LIBADD)
 
 RemoteResourceTest_SOURCES = RemoteResourceTest.cc
-RemoteResourceTest_LDADD = $(top_builddir)/http/.libs/libbes_http.a $(LIBADD)
+RemoteResourceTest_LDADD = $(LIBADD)
