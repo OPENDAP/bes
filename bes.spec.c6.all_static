@@ -212,7 +212,9 @@ exit 0
 %{bespkidir}/
 
 %attr (-,%{besuser},%{besgroup}) %{beslogdir}
-%attr (-,%{besuser},%{besgroup}) %{bespiddir}
+# The directory bespiddir was specific to the bes, but it became a system directory.
+# Thus, its bad form to change the owner and group to the 'bes.' jhrg 7/8/20
+# %attr (-,%{besuser},%{besgroup}) %{bespiddir}
 %attr (-,%{besuser},%{besgroup}) %{bescachedir}
 
 # Make sure that the BES, once running, can write to the MDS directory. jhrg 11/7/18
