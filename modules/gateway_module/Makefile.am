@@ -15,7 +15,7 @@ M_VER=1.2.6
 
 AM_CPPFLAGS = -I$(top_srcdir)  -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/http -I$(top_srcdir)/xmlcommand $(DAP_CFLAGS)
 # LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
-LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB)  $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
