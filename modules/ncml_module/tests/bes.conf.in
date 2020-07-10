@@ -65,7 +65,7 @@ BES.DefaultResponseMethod=POST
 #-----------------------------------------------------------------------#
 # Gateway module specific parameters
 #-----------------------------------------------------------------------#
-Gateway.Whitelist = https://s3.amazonaws.com/cloudydap/samples/
+Gateway.Whitelist=https://s3.amazonaws.com/cloudydap/samples/
 Gateway.Whitelist+=http://localhost
 Gateway.Whitelist+=http://test.opendap.org/opendap
 Gateway.Whitelist+= http://test.opendap.org/

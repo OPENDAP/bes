@@ -69,7 +69,7 @@ libdmrpp_module_la_LDFLAGS = -avoid-version -module
 libdmrpp_module_la_LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -ltest-types
 
-bin_PROGRAMS = build_dmrpp ngap_build_dmrpp check_dmrpp merge_dmrpp
+bin_PROGRAMS = build_dmrpp  check_dmrpp merge_dmrpp # ngap_build_dmrpp
 
 # build_dmrpp config
 build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS)
@@ -87,19 +87,19 @@ check_dmrpp_SOURCES = check_dmrpp.cc
 merge_dmrpp_CPPFLAGS = $(AM_CPPFLAGS)
 merge_dmrpp_SOURCES = merge_dmrpp.cc
 
-ngap_build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS)  -I$(top_srcdir)/standalone
-
-ngap_build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) bes_default_conf.h ngap_build_dmrpp.cc 
-
-ngap_build_dmrpp_LDADD =  \
-    $(abs_top_builddir)/cmdln/CmdTranslation.o \
-    $(abs_top_builddir)/xmlcommand/libbes_xml_command.la \
-    $(BES_DAP_LIB) \
-    $(BES_STANDALONE_LIB)  $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) \
-    $(BES_XML_CMD_LIB) \
-    $(BES_EXTRA_LIBS) $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) \
-    $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) \
-    $(XML2_LIBS) $(READLINE_LIBS) -lz
+#ngap_build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS)  -I$(top_srcdir)/standalone
+#
+#ngap_build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) bes_default_conf.h ngap_build_dmrpp.cc
+#
+#ngap_build_dmrpp_LDADD =  \
+#    $(abs_top_builddir)/cmdln/CmdTranslation.o \
+#    $(abs_top_builddir)/xmlcommand/libbes_xml_command.la \
+#    $(BES_DAP_LIB) \
+#    $(BES_STANDALONE_LIB)  $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) \
+#    $(BES_XML_CMD_LIB) \
+#    $(BES_EXTRA_LIBS) $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) \
+#    $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) \
+#    $(XML2_LIBS) $(READLINE_LIBS) -lz
 #    $(abs_top_builddir)/modules/hdf5_handler/gctp/src/libGctp.a
 #    $(HDF5_MODULE_OBJS)
 
