@@ -6,7 +6,8 @@ AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/modules -I$(top_srcdir)/modules/cm
 -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/http $(DAP_CFLAGS)
 
 # Added -lz for ubuntu
-LIBADD = $(BES_HTTP_LIB) -lz
+LIBADD = -L../../../dispatch/.libs -lbes_dispatch $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_EXTRA_LIBS) $(BES_HTTP_LIB)\
+$(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
