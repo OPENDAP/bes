@@ -75,7 +75,7 @@ Http.MimeTypes+=h4:application/x-hdf
 Http.MimeTypes+=h5:application/x-hdf5
 
 Http.Cache.dir=@abs_top_builddir@/modules/ncml_module/tests/cache
-Http.Cache.prefix=gateway_cache_
+Http.Cache.prefix=ncml_tests_
 Http.Cache.size=500
 
 #-----------------------------------------------------------------------#
