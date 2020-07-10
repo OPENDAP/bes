@@ -7,11 +7,14 @@
 #include <map>
 #include <time.h>
 
+
 namespace http {
 
-class  url {
+
+
+    class  url {
 private:
-    void parse(const std::string &url_s);
+    void parse(const std::string &source_url);
 
     std::string d_source_url;
     std::string d_protocol;
@@ -22,12 +25,6 @@ private:
     time_t d_ingest_time;
 
 public:
-    const static std::string PROTOCOL_KEY;
-    const static std::string HOST_KEY;
-    const static std::string PATH_KEY;
-    const static std::string QUERY_KEY;
-    const static std::string SOURCE_URL_KEY;
-    const static std::string INGEST_TIME_KEY;
 
     // omitted copy, ==, accessors, ...
     explicit url(const std::string &url_s):d_source_url(url_s) {

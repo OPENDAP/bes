@@ -17,21 +17,24 @@
 #include "url_impl.h"
 
 using namespace std;
-#define MODULE "foo"
+
+#define MODULE "http"
+#define prolog string("url::").append(__func__).append("() - ")
+
+#define PROTOCOL_KEY "url::protocol"
+#define HOST_KEY  "url::host"
+#define PATH_KEY  "url::path"
+#define QUERY_KEY "url::query"
+#define SOURCE_URL_KEY  "url::target_url"
+#define INGEST_TIME_KEY  "url::ingest_time"
 
 namespace http {
 
-const  std::string url::PROTOCOL_KEY = "url::protocol";
-const  std::string url::HOST_KEY = "url::host";
-const  std::string url::PATH_KEY = "url::path";
-const  std::string url::QUERY_KEY = "url::query";
-const  std::string url::SOURCE_URL_KEY = "url::target_url";
-const  std::string url::INGEST_TIME_KEY = "url::ingest_time";
 
-#define prolog string("url_parser::").append(__func__).append("() - ")
-
-
-
+/**
+ *
+ * @param kvp
+ */
 url::url(const map<string,string> &kvp)
 {
     map<string,string> kvp_copy = kvp;
@@ -103,29 +106,29 @@ url::~url()
 
 /**
  *
- * @param url_s
+ * @param source_url
  */
-void url::parse(const string &url_s) {
+void url::parse(const string &source_url) {
     const string prot_end("://");
-    string::const_iterator prot_i = search(url_s.begin(), url_s.end(),
+    string::const_iterator prot_i = search(source_url.begin(), source_url.end(),
                                            prot_end.begin(), prot_end.end());
-    d_protocol.reserve(distance(url_s.begin(), prot_i));
-    transform(url_s.begin(), prot_i,
+    d_protocol.reserve(distance(source_url.begin(), prot_i));
+    transform(source_url.begin(), prot_i,
               back_inserter(d_protocol),
               ptr_fun<int, int>(tolower)); // protocol is icase
-    if (prot_i == url_s.end())
+    if (prot_i == source_url.end())
         return;
     advance(prot_i, prot_end.length());
-    string::const_iterator path_i = find(prot_i, url_s.end(), '/');
+    string::const_iterator path_i = find(prot_i, source_url.end(), '/');
     d_host.reserve(distance(prot_i, path_i));
     transform(prot_i, path_i,
               back_inserter(d_host),
               ptr_fun<int, int>(tolower)); // host is icase
-    string::const_iterator query_i = find(path_i, url_s.end(), '?');
+    string::const_iterator query_i = find(path_i, source_url.end(), '?');
     d_path.assign(path_i, query_i);
-    if (query_i != url_s.end())
+    if (query_i != source_url.end())
         ++query_i;
-    d_query.assign(query_i, url_s.end());
+    d_query.assign(query_i, source_url.end());
 
 
     if(!d_query.empty()){
