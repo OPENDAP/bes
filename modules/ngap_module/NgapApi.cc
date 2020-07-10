@@ -308,7 +308,7 @@ namespace ngap {
                                         " hour: " << hour << " minute: " << minute  << " second: " << second << endl);
 
                 struct tm *ti = gmtime(&now);
-                ti->tm_year = stoll(year);
+                ti->tm_year = stoll(year) - 1900;
                 ti->tm_mon = stoll(month) - 1;
                 ti->tm_mday = stoll(day);
                 ti->tm_hour = stoll(hour);
@@ -323,8 +323,8 @@ namespace ngap {
                                         " ti->tm_sec: " << ti->tm_sec << endl);
 
 
-               // start_time = mktime(&ti);
-               //  BESDEBUG(MODULE, prolog << "AWS (computed) start_time: "<< start_time << endl);
+                start_time = mktime(ti);
+                BESDEBUG(MODULE, prolog << "AWS (computed) start_time: "<< start_time << endl);
             }
             expires = start_time + stoll(aws_expires);
             BESDEBUG(MODULE, prolog << "Using "<< AMS_EXPIRES_HEADER_KEY << ": " << aws_expires <<
