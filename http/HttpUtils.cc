@@ -280,7 +280,7 @@ void HttpUtils::Get_type_from_url(const string &url, string &type) {
     type = utils->get_handler_name(url);
 }
 
-
+#if 0
 /**
  * [UTC Sun Jun 21 16:17:47 2020 id: 14314][dmrpp:curl] CurlHandlePool::evaluate_curl_response() - Last Accessed URL(CURLINFO_EFFECTIVE_URL):
  *     https://ghrcw-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?
@@ -338,6 +338,8 @@ void HttpUtils::decompose_url(const string target_url, map<string,string> &url_i
     unix_time << now;
     url_info.insert( std::pair<string,string>(HTTP_INGEST_TIME_KEY,unix_time.str()));
 }
+
+#endif
 
 
 
