@@ -45,7 +45,6 @@
 #include <TheBESKeys.h>
 #include "test_config.h"
 
-#include "RemoteHttpResource.h"
 #include "CmrApi.h"
 #include "CmrNames.h"
 #include "CmrCatalog.h"

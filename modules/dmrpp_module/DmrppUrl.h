@@ -57,7 +57,7 @@ public:
         DmrppCommon::print_dmrpp(writer, constrained);
     }
 
-    virtual void dump(ostream & strm) const;
+    virtual void dump(std::ostream & strm) const;
 };
 
 } // namespace dmrpp

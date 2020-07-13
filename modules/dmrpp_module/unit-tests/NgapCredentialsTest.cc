@@ -53,7 +53,7 @@
 
 #include "test_config.h"
 
-#include "../curl_utils.h"
+#include "CurlUtils.h"
 #include "../NgapS3Credentials.h"
 
 
@@ -85,7 +85,7 @@ namespace dmrpp {
         // Called before each test
         void setUp() override {
             if (debug) cout << endl;
-            if (bes_debug) BESDebug::SetUp("cerr,dmrpp,ngap,curl");
+            if (bes_debug) BESDebug::SetUp("cerr,dmrpp,ngap,http,curl");
 
             TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
 

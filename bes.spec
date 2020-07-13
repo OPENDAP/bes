@@ -174,7 +174,7 @@ exit 0
 %{_bindir}/build_dmrpp
 %{_bindir}/check_dmrpp
 %{_bindir}/merge_dmrpp
-%{_bindir}/ngap_build_dmrpp
+#%{_bindir}/ngap_build_dmrpp
 %{_bindir}/localBesGetDap
 %{_bindir}/populateMDS
 %{_bindir}/get_dmrpp

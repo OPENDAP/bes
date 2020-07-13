@@ -32,27 +32,28 @@
 #include <time.h>
 #include <curl/curl.h>
 
+#include <util.h>
+#include <debug.h>
+
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/prettywriter.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/filereadstream.h"
 
-#include <util.h>
-#include <debug.h>
-
-#include <BESError.h>
-#include <BESNotFoundError.h>
-#include <BESSyntaxUserError.h>
-#include <BESDebug.h>
-#include <BESUtil.h>
-#include <TheBESKeys.h>
+#include "BESError.h"
+#include "BESNotFoundError.h"
+#include "BESSyntaxUserError.h"
+#include "BESDebug.h"
+#include "BESUtil.h"
+#include "TheBESKeys.h"
+#include "CurlUtils.h"
+#include "url_impl.h"
+#include "RemoteResource.h"
 
 #include "NgapApi.h"
 #include "NgapNames.h"
-#include "RemoteHttpResource.h"
 #include "NgapError.h"
-#include "curl_utils.h"
 
 using namespace std;
 
@@ -60,18 +61,18 @@ using namespace std;
 
 namespace ngap {
 
-    string NGAP_PROVIDER_KEY("providers");
-    string NGAP_COLLECTIONS_KEY("collections");
-    string NGAP_GRANULES_KEY("granules");
-    string DEFAULT_CMR_ENDPOINT_URL("https://cmr.earthdata.nasa.gov");
-    string DEFAULT_CMR_SEARCH_ENDPOINT_PATH("/search/granules.umm_json_v1_4");
+    const string NGAP_PROVIDER_KEY("providers");
+    const string NGAP_COLLECTIONS_KEY("collections");
+    const string NGAP_GRANULES_KEY("granules");
+    const string DEFAULT_CMR_ENDPOINT_URL("https://cmr.earthdata.nasa.gov");
+    const string DEFAULT_CMR_SEARCH_ENDPOINT_PATH("/search/granules.umm_json_v1_4");
 
-    string CMR_PROVIDER("provider");
-    string CMR_ENTRY_TITLE("entry_title");
-    string CMR_GRANULE_UR("granule_ur");
-    string CMR_URL_TYPE_GET_DATA("GET DATA");
+    const string CMR_PROVIDER("provider");
+    const string CMR_ENTRY_TITLE("entry_title");
+    const string CMR_GRANULE_UR("granule_ur");
+    const string CMR_URL_TYPE_GET_DATA("GET DATA");
 
-    string rjtype_names[] = {
+    const string RJ_TYPE_NAMES[] = {
             "kNullType",
             "kFalseType",
             "kTrueType",
@@ -80,6 +81,13 @@ namespace ngap {
             "kStringType",
             "kNumberType"
     };
+
+    const string AMS_EXPIRES_HEADER_KEY("X-Amz-Expires");
+    const string AWS_DATE_HEADER_KEY("X-Amz-Date");
+    // const string AWS_DATE_FORMAT("%Y%m%dT%H%MS"); // 20200624T175046Z
+    const string CLOUDFRONT_EXPIRES_HEADER_KEY("Expires");
+    const string INGEST_TIME_KEY("ingest_time");
+    const unsigned int REFRESH_THRESHOLD = 3600; // An hour
 
 
     NgapApi::NgapApi() : d_cmr_hostname(DEFAULT_CMR_ENDPOINT_URL), d_cmr_search_endpoint_path(DEFAULT_CMR_SEARCH_ENDPOINT_PATH) {
@@ -149,7 +157,7 @@ namespace ngap {
         string cmr_url = get_cmr_search_endpoint_url() + "?";
 
         char error_buffer[CURL_ERROR_SIZE];
-        CURL *curl = ngap_curl::init(error_buffer);  // This may throw either Error or InternalErr
+        CURL *curl = curl::init(error_buffer);  // This may throw either Error or InternalErr
         char *esc_url_content;
 
         esc_url_content = curl_easy_escape(curl, tokens[1].c_str(), tokens[1].size());
@@ -169,7 +177,7 @@ namespace ngap {
         BESDEBUG(MODULE, prolog << "CMR Request URL: " << cmr_url << endl);
 #if 1
         BESDEBUG(MODULE, prolog << "Building new RemoteResource." << endl);
-        RemoteHttpResource cmr_query(cmr_url, uid, access_token);
+        http::RemoteResource cmr_query(cmr_url, uid, access_token);
         cmr_query.retrieveResource();
         rapidjson::Document cmr_response = cmr_query.get_as_json();
 #else
@@ -187,7 +195,7 @@ namespace ngap {
         if (items.IsArray()) {
             stringstream ss;
             for (rapidjson::SizeType i = 0; i < items.Size(); i++) // Uses SizeType instead of size_t
-                ss << "items[" << i << "]: " << rjtype_names[items[i].GetType()] << endl;
+                ss << "items[" << i << "]: " << RJ_TYPE_NAMES[items[i].GetType()] << endl;
 
             BESDEBUG(MODULE, prolog << "items size: " << items.Size() << endl << ss.str() << endl);
 
@@ -260,71 +268,9 @@ namespace ngap {
     }
 
 
-    /**
-     * [UTC Sun Jun 21 16:17:47 2020 id: 14314][dmrpp:curl] CurlHandlePool::evaluate_curl_response() - Last Accessed URL(CURLINFO_EFFECTIVE_URL):
-     *     https://ghrcw-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?
-     *         A-userid=hyrax&
-     *         X-Amz-Algorithm=AWS4-HMAC-SHA256&
-     *         X-Amz-Credential=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing&
-     *         X-Amz-Date=20200621T161746Z&
-     *         X-Amz-Expires=86400&
-     *         X-Amz-Security-Token=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing&
-     *         X-Amz-SignedHeaders=host&
-     *         X-Amz-Signature=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing
-     * @param source_url
-     * @param data_access_url_info
-     */
-    void NgapApi::decompose_url(const string target_url, map<string,string> &url_info)
-    {
 
-        string url_base;
-        string query_string;
 
-        size_t query_index = target_url.find_first_of("?");
-        BESDEBUG(MODULE, prolog << "query_index: " << query_index << endl);
-        if(query_index != string::npos){
-            query_string = target_url.substr(query_index+1);
-            url_base = target_url.substr(0,query_index);
-        }
-        else {
-            url_base = target_url;
-        }
-        url_info.insert( std::pair<string,string>("target_url",target_url));
-        BESDEBUG(MODULE, prolog << "target_url: " << target_url << endl);
-        url_info.insert( std::pair<string,string>("url_base",url_base));
-        BESDEBUG(MODULE, prolog << "url_base: " << url_base << endl);
-        url_info.insert( std::pair<string,string>("query_string",query_string));
-        BESDEBUG(MODULE, prolog << "query_string: " << query_string << endl);
-        if(!query_string.empty()){
-            vector<string> records;
-            string delimiters = "&";
-            BESUtil::tokenize(query_string,records, delimiters);
-            vector<string>::iterator i = records.begin();
-            for(; i!=records.end(); i++){
-                size_t index = i->find('=');
-                if(index != string::npos) {
-                    string key = i->substr(0, index);
-                    string value = i->substr(index+1);
-                    BESDEBUG(MODULE, prolog << "key: " << key << " value: " << value << endl);
-                    url_info.insert( std::pair<string,string>(key,value));
-                }
-            }
-        }
-        time_t now;
-        time(&now);  /* get current time; same as: timer = time(NULL)  */
-        stringstream unix_time;
-        unix_time << now;
-        url_info.insert( std::pair<string,string>("ingest_time",unix_time.str()));
-    }
-
-    const string AMS_EXPIRES_HEADER_KEY = "X-Amz-Expires";
-    const string AWS_DATE_HEADER_KEY = "X-Amz-Date";
-    // const string AWS_DATE_FORMAT = "%Y%m%dT%H%MS"; // 20200624T175046Z
-    const string CLOUDFRONT_EXPIRES_HEADER_KEY = "Expires";
-    const string INGEST_TIME_KEY = "ingest_time";
-    const unsigned int REFRESH_THRESHOLD = 3600; // An hour
-
-    bool NgapApi::signed_url_is_expired(const std::map<std::string,std::string> &ngap_url_info)
+    bool NgapApi::signed_url_is_expired(const http::url &signed_url)
     {
         bool is_expired;
         time_t now;
@@ -332,24 +278,24 @@ namespace ngap {
         BESDEBUG(MODULE, prolog << "now: " << now << endl);
 
         time_t expires = now;
-        std::map<string,string>::const_iterator cfexpires_it = ngap_url_info.find(CLOUDFRONT_EXPIRES_HEADER_KEY);
-        std::map<string,string>::const_iterator awsexpires_it = ngap_url_info.find(AMS_EXPIRES_HEADER_KEY);
-        std::map<string,string>::const_iterator ingest_time_it = ngap_url_info.find(INGEST_TIME_KEY);
+        string cf_expires = signed_url.query_parameter_value(CLOUDFRONT_EXPIRES_HEADER_KEY);
+        string aws_expires = signed_url.query_parameter_value(AMS_EXPIRES_HEADER_KEY);
+        time_t ingest_time = signed_url.ingest_time();
 
-        if(cfexpires_it != ngap_url_info.end()){ // CloudFront expires header?
-            expires = stoll(cfexpires_it->second);
+        if(!cf_expires.empty()){ // CloudFront expires header?
+            expires = stoll(cf_expires);
             BESDEBUG(MODULE, prolog << "Using "<< CLOUDFRONT_EXPIRES_HEADER_KEY << ": " << expires << endl);
         }
-        else if(awsexpires_it != ngap_url_info.end() && ingest_time_it != ngap_url_info.end()){
+        else if(!aws_expires.empty()){
             // AWS Expires header?
             //
-            // By default we'll use the time we read the probe response, ingest_time
-            time_t start_time = stoll(ingest_time_it->second);
+            // By default we'll use the time we made the URL object, ingest_time
+            time_t start_time = ingest_time;
             // But if there's an AWS Date we'll parse that and compute the time
             // @TODO move to NgapApi::decompose_url() and add the result to the map
-            std::map<string,string>::const_iterator awsdate_it = ngap_url_info.find(AWS_DATE_HEADER_KEY);
-            if(awsdate_it != ngap_url_info.end()){
-                string date = awsdate_it->second; // 20200624T175046Z
+            string aws_date = signed_url.query_parameter_value(AWS_DATE_HEADER_KEY);
+            if(!aws_date.empty()){
+                string date = aws_date; // 20200624T175046Z
                 string year = date.substr(0,4);
                 string month = date.substr(4,2);
                 string day = date.substr(6,2);
@@ -380,8 +326,8 @@ namespace ngap {
                 start_time = mktime(ti);
                 BESDEBUG(MODULE, prolog << "AWS (computed) start_time: "<< start_time << endl);
             }
-            expires = start_time + stoll(awsexpires_it->second);
-            BESDEBUG(MODULE, prolog << "Using "<< AMS_EXPIRES_HEADER_KEY << ": " << awsexpires_it->second <<
+            expires = start_time + stoll(aws_expires);
+            BESDEBUG(MODULE, prolog << "Using "<< AMS_EXPIRES_HEADER_KEY << ": " << aws_expires <<
                                     " (expires: " << expires << ")" << endl);
         }
         time_t remaining = expires - now;
