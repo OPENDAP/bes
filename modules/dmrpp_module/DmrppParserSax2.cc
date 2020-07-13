@@ -55,14 +55,16 @@
 
 #include "DmrppParserSax2.h"
 #include "DmrppCommon.h"
+#include "DmrppNames.h"
 
 #define FIVE_12K  524288;
 #define ONE_MB   1048576;
 #define MAX_INPUT_LINE_LENGTH ONE_MB;
 
+#define prolog std::string("DmrppParserSax2::").append(__func__).append("() - ")
 
-static const string module = "dmrpp:2";
 static const string dmrpp_namespace = "http://xml.opendap.org/dap/dmrpp/1.0.0#";
+
 
 using namespace libdap;
 using namespace std;
@@ -168,7 +170,7 @@ void DmrppParserSax2::transfer_xml_attrs(const xmlChar **attributes, int nb_attr
             map<string, XMLAttribute>::value_type(string((const char *) attributes[index]),
                 XMLAttribute(attributes + index + 1)));
 
-        BESDEBUG(module,
+        BESDEBUG(PARSER, prolog <<
             "XML Attribute '" << (const char *)attributes[index] << "': " << xml_attrs[(const char *)attributes[index]].value << endl);
     }
 }
@@ -490,7 +492,7 @@ inline bool DmrppParserSax2::process_attribute(const char *name, const xmlChar *
     if (get_attribute_val("type", attrs, nb_attributes) == "Container") {
         push_state(inside_attribute_container);
 
-        BESDEBUG(module, "Pushing attribute container " << get_attribute_val("name", attrs, nb_attributes) << endl);
+        BESDEBUG(PARSER, prolog << "Pushing attribute container " << get_attribute_val("name", attrs, nb_attributes) << endl);
         D4Attribute *child = new D4Attribute(get_attribute_val("name", attrs, nb_attributes), attr_container_c);
 
         D4Attributes *tos = top_attributes();
@@ -684,7 +686,7 @@ void DmrppParserSax2::dmr_start_document(void * p)
 
     parser->push_attributes(parser->dmr()->root()->attributes());
 
-    if (parser->debug()) cerr << "Parser start state: " << states[parser->get_state()] << endl;
+    BESDEBUG(PARSER, prolog << "Parser start state: " << states[parser->get_state()] << endl);
 }
 
 /** Clean up after finishing a parse.
@@ -693,7 +695,7 @@ void DmrppParserSax2::dmr_end_document(void * p)
 {
     DmrppParserSax2 *parser = static_cast<DmrppParserSax2*>(p);
 
-    if (parser->debug()) cerr << "Parser end state: " << states[parser->get_state()] << endl;
+    BESDEBUG(PARSER, prolog << "Parser end state: " << states[parser->get_state()] << endl);
 
     if (parser->get_state() != parser_end)
         DmrppParserSax2::dmr_error(parser, "The document contained unbalanced tags.");
@@ -706,7 +708,12 @@ void DmrppParserSax2::dmr_end_document(void * p)
         DmrppParserSax2::dmr_error(parser,
             "The document did not contain a valid root Group or contained unbalanced tags.");
 
-    // if (parser->debug()) parser->top_group()->dump(cerr);
+    if(BESDebug::IsSet(PARSER)){
+        ostream *os = BESDebug::GetStrm();
+        *os << prolog << "parser->top_group() BEGIN " << endl;
+        parser->top_group()->dump(*os);
+        *os << endl << prolog << "parser->top_group() END " << endl;
+    }
 
     parser->pop_group();     // leave the stack 'clean'
     parser->pop_attributes();
@@ -722,30 +729,28 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
 
     if (parser->get_state() != parser_error) {
         string dap4_ns_name = DapXmlNamspaces::getDapNamespaceString(DAP_4_0);
-        if (parser->debug()) cerr << "dap4_ns_name:         " << dap4_ns_name << endl;
+        BESDEBUG(PARSER, prolog << "dap4_ns_name:         " << dap4_ns_name << endl);
 
         if (this_element_ns_name == dmrpp_namespace) {
             if (strcmp(localname, "chunkDimensionSizes") == 0) {
-                if (parser->debug()) cerr << "Found dmrpp:chunkDimensionSizes element. Pushing state." << endl;
+                BESDEBUG(PARSER, prolog << "Found dmrpp:chunkDimensionSizes element. Pushing state." << endl);
                 parser->push_state(inside_dmrpp_chunkDimensionSizes_element);
             }
             else {
-                if (parser->debug())
-                    cerr << "Start of element in dmrpp namespace: " << localname << " detected." << endl;
+                BESDEBUG(PARSER, prolog << "Start of element in dmrpp namespace: " << localname << " detected." << endl);
                 parser->push_state(inside_dmrpp_object);
                 // Ingest the dmrpp namespaced element text content
             }
 
         }
         else if (this_element_ns_name != dap4_ns_name) {
-            if (parser->debug()) cerr << "Start of non DAP4 element: " << localname << " detected." << endl;
+            BESDEBUG(PARSER, prolog << "Start of non DAP4 element: " << localname << " detected." << endl);
             parser->push_state(not_dap4_element);
         }
     }
 
-    if (parser->debug())
-        cerr << "Start element " << localname << "  prefix:  " << (prefix ? (char *) prefix : "null") << "  ns: "
-            << this_element_ns_name << " (state: " << states[parser->get_state()] << ")" << endl;
+    BESDEBUG(PARSER, prolog << "Start element " << localname << "  prefix:  " << (prefix ? (char *) prefix : "null") << "  ns: "
+            << this_element_ns_name << " (state: " << states[parser->get_state()] << ")" << endl);
 
     switch (parser->get_state()) {
     case parser_start:
@@ -770,12 +775,12 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         if (parser->check_attribute("base", attributes, nb_attributes)) {
             parser->dmr()->set_request_xml_base(parser->get_attribute_val("base", attributes, nb_attributes));
         }
-        if (parser->debug()) cerr << "Dataset xml:base is set to '" << parser->dmr()->request_xml_base() << "'" << endl;
+        BESDEBUG(PARSER, prolog << "Dataset xml:base is set to '" << parser->dmr()->request_xml_base() << "'" << endl);
 
         if (parser->check_attribute("href", attributes, nb_attributes)) {
             parser->dmrpp_dataset_href = parser->get_attribute_val("href", attributes, nb_attributes);
         }
-        if (parser->debug()) cerr << "Dataset dmrpp:href is set to '" << parser->dmrpp_dataset_href << "'" << endl;
+        BESDEBUG(PARSER, prolog << "Dataset dmrpp:href is set to '" << parser->dmrpp_dataset_href << "'" << endl);
 
         if (!parser->root_ns.empty()) parser->dmr()->set_namespace(parser->root_ns);
 
@@ -930,13 +935,12 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         break;
 
     case not_dap4_element:
-        if (parser->debug())
-            cerr << "SKIPPING unexpected element. localname: " << localname << "namespace: " << this_element_ns_name
-                << endl;
+        BESDEBUG(PARSER, prolog << "SKIPPING unexpected element. localname: " << localname << "namespace: "
+                << this_element_ns_name << endl);
         break;
 
     case inside_dmrpp_object: {
-        if (parser->debug()) cerr << "Inside dmrpp namespaced element. localname: " << localname << endl;
+        BESDEBUG(PARSER, prolog << "Inside dmrpp namespaced element. localname: " << localname << endl);
         assert(this_element_ns_name == dmrpp_namespace);
 
 #if 0
@@ -952,19 +956,18 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
 
         // Ingest the dmrpp:chunks element and it attributes
         if (strcmp(localname, "chunks") == 0) {
-            if (parser->debug()) cerr << "DMR++ chunks element. localname: " << localname << endl;
+            BESDEBUG(PARSER, prolog << "DMR++ chunks element. localname: " << localname << endl);
 
             if (parser->check_attribute("compressionType", attributes, nb_attributes)) {
                 string compression_type_string(parser->get_attribute_val("compressionType", attributes, nb_attributes));
                 dc->ingest_compression_type(compression_type_string);
 
-                if (parser->debug())
-                    cerr << "Processed attribute 'compressionType=\"" << compression_type_string << "\"'" << endl;
+                BESDEBUG(PARSER, prolog << "Processed attribute 'compressionType=\"" <<
+                    compression_type_string << "\"'" << endl);
             }
             else {
-                if (parser->debug())
-                    cerr << "There was no 'compressionType' attribute associated with the variable '" << bt->type_name()
-                        << " " << bt->name() << "'" << endl;
+                BESDEBUG(PARSER, prolog << "There was no 'compressionType' attribute associated with the variable '"
+                    << bt->type_name() << " " << bt->name() << "'" << endl);
             }
         }
         // Ingest an dmrpp:chunk element and its attributes
@@ -974,21 +977,19 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
 #if 0
                 istringstream data_url_ss(parser->xml_attrs["href"].value);
                 data_url = data_url_ss.str();
-                if (parser->debug())
-                cerr << "Processing 'href' value into data_url. href: " << data_url_ss.str() << endl;
+                BESDEBUG(PARSER, prolog << "Processing 'href' value into data_url. href: " <<
+                data_url_ss.str() << endl);
 #endif
 
                 data_url = parser->get_attribute_val("href", attributes, nb_attributes);
-                if (parser->debug())
-                    cerr << "Processing 'href' value into data_url. href: " << data_url << endl;
+                BESDEBUG(PARSER, prolog << "Processing 'href' value into data_url. href: " << data_url << endl);
             }
             else {
-                if (parser->debug()) cerr << "No attribute 'href' located. Trying Dataset/@dmrpp:href..." << endl;
+                BESDEBUG(PARSER, prolog << "No attribute 'href' located. Trying Dataset/@dmrpp:href..." << endl);
                 // This bit of magic sets the URL used to get the data and it's
                 // magic in part because it may be a file or an http URL
                 data_url = parser->dmrpp_dataset_href;
-                if (parser->debug())
-                    cerr << "Processing dmrpp:href into data_url. dmrpp:href='" << data_url << "'" << endl;
+                BESDEBUG(PARSER, prolog << "Processing dmrpp:href into data_url. dmrpp:href='" << data_url << "'" << endl);
             }
             // First we see if it's an HTTP URL, and if not we
             // make a local file url based on the Catalog Root
@@ -1001,27 +1002,26 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
 #endif
 
             if (data_url.find("http://") != 0 && data_url.find("https://") != 0 && data_url.find("file://") != 0) {
-                if (parser->debug()) cerr << "data_url does NOT start with 'http://', 'https://' or 'file://'. "
-                    "Retrieving default catalog root directory" << endl;
+                BESDEBUG(PARSER, prolog << "data_url does NOT start with 'http://', 'https://' or 'file://'. "
+                    "Retrieving default catalog root directory" << endl);
 
                 // Now we try to find the default catalog. If we can't find it we punt and leave it be.
                 BESCatalog *defcat = BESCatalogList::TheCatalogList()->default_catalog();
                 if (!defcat) {
-                    if (parser->debug()) cerr << "Not able to find the default catalog." << endl;
+                    BESDEBUG(PARSER, prolog << "Not able to find the default catalog." << endl);
                 }
                 else {
                     // Found the catalog so we get the root dir; make a file URL.
                     BESCatalogUtils *utils = BESCatalogList::TheCatalogList()->default_catalog()->get_catalog_utils();
 
-                    if (parser->debug())
-                        cerr << "Found default catalog root_dir: '" << utils->get_root_dir() << "'" << endl;
+                    BESDEBUG(PARSER, prolog << "Found default catalog root_dir: '" << utils->get_root_dir() << "'" << endl);
 
                     data_url = BESUtil::assemblePath(utils->get_root_dir(), data_url, true);
                     data_url = "file://" + data_url;
                 }
             }
 
-            if (parser->debug()) cerr << "Processed data_url: '" << data_url << "'" << endl;
+            BESDEBUG(PARSER, prolog << "Processed data_url: '" << data_url << "'" << endl);
 
             unsigned long long offset = 0;
             unsigned long long size = 0;
@@ -1030,7 +1030,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             if (parser->check_required_attribute("offset", attributes, nb_attributes)) {
                 istringstream offset_ss(parser->get_attribute_val("offset", attributes, nb_attributes));
                 offset_ss >> offset;
-                if (parser->debug()) cerr << "Processed attribute 'offset=\"" << offset << "\"'" << endl;
+                BESDEBUG(PARSER, prolog << "Processed attribute 'offset=\"" << offset << "\"'" << endl);
             }
             else {
                 dmr_error(parser, "The hdf:byteStream element is missing the required attribute 'offset'.");
@@ -1039,7 +1039,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             if (parser->check_required_attribute("nBytes", attributes, nb_attributes)) {
                 istringstream size_ss(parser->get_attribute_val("nBytes", attributes, nb_attributes));
                 size_ss >> size;
-                if (parser->debug()) cerr << "Processed attribute 'nBytes=\"" << size << "\"'" << endl;
+                BESDEBUG(PARSER, prolog << "Processed attribute 'nBytes=\"" << size << "\"'" << endl);
             }
             else {
                 dmr_error(parser, "The hdf:byteStream element is missing the required attribute 'size'.");
@@ -1048,11 +1048,10 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             if (parser->check_attribute("chunkPositionInArray", attributes, nb_attributes)) {
                 istringstream chunk_position_ss(parser->get_attribute_val("chunkPositionInArray", attributes, nb_attributes));
                 chunk_position_in_array = chunk_position_ss.str();
-                if (parser->debug())
-                    cerr << "Found attribute 'chunkPositionInArray' value: " << chunk_position_ss.str() << endl;
+                BESDEBUG(PARSER, prolog << "Found attribute 'chunkPositionInArray' value: " << chunk_position_ss.str() << endl);
             }
             else {
-                if (parser->debug()) cerr << "No attribute 'chunkPositionInArray' located" << endl;
+                BESDEBUG(PARSER, prolog << "No attribute 'chunkPositionInArray' located" << endl);
             }
 
             dc->add_chunk(data_url, size, offset, chunk_position_in_array);
@@ -1074,7 +1073,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         break;
     }
 
-    if (parser->debug()) cerr << "Start element exit state: " << states[parser->get_state()] << endl;
+    BESDEBUG(PARSER, prolog << "Start element exit state: " << states[parser->get_state()] << endl);
 }
 
 void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *prefix, const xmlChar *URI)
@@ -1082,8 +1081,7 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
     DmrppParserSax2 *parser = static_cast<DmrppParserSax2*>(p);
     const char *localname = (const char *) l;
 
-    if (parser->debug())
-        cerr << "End element " << localname << " (state " << states[parser->get_state()] << ")" << endl;
+    BESDEBUG(PARSER, prolog << "End element " << localname << " (state " << states[parser->get_state()] << ")" << endl);
 
     switch (parser->get_state()) {
     case parser_start:
@@ -1305,17 +1303,17 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
     }
 
     case not_dap4_element:
-        if (parser->debug()) cerr << "End of non DAP4 element: " << localname << endl;
+        BESDEBUG(PARSER, prolog << "End of non DAP4 element: " << localname << endl);
         parser->pop_state();
         break;
 
     case inside_dmrpp_object:
-        if (parser->debug()) cerr << "End of dmrpp namespace element: " << localname << endl;
+        BESDEBUG(PARSER, prolog << "End of dmrpp namespace element: " << localname << endl);
         parser->pop_state();
         break;
 
     case inside_dmrpp_chunkDimensionSizes_element: {
-        if (parser->debug()) cerr << "End of chunkDimensionSizes element. localname: " << localname << endl;
+        BESDEBUG(PARSER, prolog << "End of chunkDimensionSizes element. localname: " << localname << endl);
 
         if (is_not(localname, "chunkDimensionSizes"))
             DmrppParserSax2::dmr_error(parser, "Expected an end value tag; found '%s' instead.", localname);
@@ -1323,7 +1321,7 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
         if (!dc)
             throw BESInternalError("Could not cast BaseType to DmrppType in the drmpp handler.", __FILE__, __LINE__);
         string element_text(parser->char_data);
-        if (parser->debug()) cerr << "chunkDimensionSizes element_text: '" << element_text << "'" << endl;
+        BESDEBUG(PARSER, prolog << "chunkDimensionSizes element_text: '" << element_text << "'" << endl);
         dc->parse_chunk_dimension_sizes(element_text);
         parser->char_data = ""; // Null this after use.
         parser->pop_state();
@@ -1343,7 +1341,7 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
         break;
     }
 
-    if (parser->debug()) cerr << "End element exit state: " << states[parser->get_state()] << endl;
+    BESDEBUG(PARSER, prolog << "End element exit state: " << states[parser->get_state()] << endl);
 }
 
 /** Process/accumulate character data. This may be called more than once for
@@ -1357,12 +1355,12 @@ void DmrppParserSax2::dmr_get_characters(void * p, const xmlChar * ch, int len)
     case inside_attribute_value:
     case inside_dmrpp_chunkDimensionSizes_element:
         parser->char_data.append((const char *) (ch), len);
-        BESDEBUG(module, "Characters[" << parser->char_data.size() << "]" << parser->char_data << "'" << endl);
+        BESDEBUG(PARSER, prolog << "Characters[" << parser->char_data.size() << "]" << parser->char_data << "'" << endl);
         break;
 
     case inside_other_xml_attribute:
         parser->other_xml.append((const char *) (ch), len);
-        BESDEBUG(module, "Other XML Characters: '" << parser->other_xml << "'" << endl);
+        BESDEBUG(PARSER, prolog << "Other XML Characters: '" << parser->other_xml << "'" << endl);
         break;
 
     default:
@@ -1516,10 +1514,8 @@ void DmrppParserSax2::cleanup_parse()
  * @exception Error Thrown if the XML document could not be read or parsed.
  * @exception InternalErr Thrown if an internal error is found.
  */
-void DmrppParserSax2::intern(istream &f, DMR *dest_dmr, bool debug)
+void DmrppParserSax2::intern(istream &f, DMR *dest_dmr)
 {
-    d_debug = debug;
-
     // Code example from libxml2 docs re: read from a stream.
 
     if (!f.good()) throw Error("Input stream not open or read error");
@@ -1527,37 +1523,6 @@ void DmrppParserSax2::intern(istream &f, DMR *dest_dmr, bool debug)
 
     d_dmr = dest_dmr; // dump values here
 
-#if 0
-    int line_num = 1;
-    string line;
-
-    // Get the <xml ... ?> line
-    getline(f, line);
-    if (line.length() == 0) throw Error("No input found while parsing the DMR.");
-
-    if (debug) cerr << "line: (" << line_num << "): " << endl << line << endl << endl;
-
-    context = xmlCreatePushParserCtxt(&dmrpp_sax_parser, this, line.c_str(), line.length(), "stream");
-    context->validate = true;
-    push_state(parser_start);
-
-    // Get the first line of stuff
-    getline(f, line);
-    ++line_num;
-
-    if (debug) cerr << "line: (" << line_num << "): " << endl << line << endl << endl;
-
-    while (!f.eof() && (get_state() != parser_end)) {
-        xmlParseChunk(context, line.c_str(), line.length(), 0);
-        // Get the next line
-        getline(f, line);
-        ++line_num;
-        if (debug) cerr << "line: (" << line_num << "): " << endl << line << endl << endl;
-    }
-
-    // This call ends the parse.
-    xmlParseChunk(context, line.c_str(), 0, 1/*terminate*/);
-#else
     int line_num = 1;
     string line;
 
@@ -1565,7 +1530,7 @@ void DmrppParserSax2::intern(istream &f, DMR *dest_dmr, bool debug)
     getline(f, line);
     if (line.length() == 0) throw Error("No input found while parsing the DMR.");
 
-    if (debug) cerr << "line: (" << line_num << "): " << endl << line << endl << endl;
+    BESDEBUG(PARSER, prolog << "line: (" << line_num << "): " << endl << line << endl << endl);
 
     context = xmlCreatePushParserCtxt(&dmrpp_sax_parser, this, line.c_str(), line.length(), "stream");
     context->validate = true;
@@ -1578,7 +1543,8 @@ void DmrppParserSax2::intern(istream &f, DMR *dest_dmr, bool debug)
     f.read(d_parse_buffer, D4_PARSE_BUFF_SIZE);
     chunk_size=f.gcount();
     d_parse_buffer[chunk_size]=0; // null terminate the string. We can do it this way because the buffer is +1 bigger than D4_PARSE_BUFF_SIZE
-    if (debug) cerr << "chunk: (" << chunk_count++ << "): " << endl << d_parse_buffer << endl << endl;
+    BESDEBUG(PARSER, prolog << "chunk: (" << chunk_count++ << "): " << endl);
+    BESDEBUG(PARSER, prolog << "d_parse_buffer: (" << d_parse_buffer << "): " << endl);
 
     while(!f.eof()  && (get_state() != parser_end)){
 
@@ -1588,12 +1554,12 @@ void DmrppParserSax2::intern(istream &f, DMR *dest_dmr, bool debug)
         f.read(d_parse_buffer, D4_PARSE_BUFF_SIZE);
         chunk_size=f.gcount();
         d_parse_buffer[chunk_size]=0; // null terminate the string. We can do it this way because the buffer is +1 bigger than D4_PARSE_BUFF_SIZE
-        if (debug) cerr << "chunk: (" << chunk_count++ << "): " << endl << d_parse_buffer << endl << endl;
+        BESDEBUG(PARSER, prolog << "chunk: (" << chunk_count++ << "): " << endl);
+        BESDEBUG(PARSER, prolog << "d_parse_buffer: (" << d_parse_buffer << "): " << endl);
     }
 
     // This call ends the parse.
     xmlParseChunk(context, d_parse_buffer, chunk_size, 1/*terminate*/); // libxml2 call
-#endif
 
     // This checks that the state on the parser stack is parser_end and throws
     // an exception if it's not (i.e., the loop exited with gcount() == 0).
@@ -1607,14 +1573,13 @@ void DmrppParserSax2::intern(istream &f, DMR *dest_dmr, bool debug)
  * @param document Read the DMR from this string.
  * @param dest_dmr Value/result parameter; dumps the information to this DMR
  * instance.
- * @param debug If true, ouput helpful debugging messages, False by default
  *
  * @exception Error Thrown if the XML document could not be read or parsed.
  * @exception InternalErr Thrown if an internal error is found.
  */
-void DmrppParserSax2::intern(const string &document, DMR *dest_dmr, bool debug)
+void DmrppParserSax2::intern(const string &document, DMR *dest_dmr)
 {
-    intern(document.c_str(), document.length(), dest_dmr, debug);
+    intern(document.c_str(), document.length(), dest_dmr);
 }
 
 /** Parse a DMR document stored in a char *buffer.
@@ -1622,16 +1587,13 @@ void DmrppParserSax2::intern(const string &document, DMR *dest_dmr, bool debug)
  * @param document Read the DMR from this string.
  * @param dest_dmr Value/result parameter; dumps the information to this DMR
  * instance.
- * @param debug If true, output helpful debugging messages, False by default
  *
  * @exception Error Thrown if the XML document could not be read or parsed.
  * @exception InternalErr Thrown if an internal error is found.
  */
-void DmrppParserSax2::intern(const char *buffer, int size, DMR *dest_dmr, bool debug)
+void DmrppParserSax2::intern(const char *buffer, int size, DMR *dest_dmr)
 {
     if (!(size > 0)) return;
-
-    d_debug = debug;
 
     // Code example from libxml2 docs re: read from a stream.
 

@@ -773,8 +773,14 @@ add_executable(bes
     modules/dmrpp_module/DmrppUInt64.cc
     modules/dmrpp_module/DmrppUInt64.h
     modules/dmrpp_module/DmrppUrl.cc
-    modules/dmrpp_module/DmrppUrl.h
-    modules/dmrpp_module/ngap_build_dmrpp.cc
+    modules/dmrpp_module/DmrppNames.h
+    modules/dmrpp_module/unit-tests/awsv4_test.cc
+    modules/dmrpp_module/AccessCredentials.cc
+    modules/dmrpp_module/AccessCredentials.h
+    modules/dmrpp_module/NgapS3Credentials.cc
+    modules/dmrpp_module/NgapS3Credentials.h
+
+    modules/dmrpp_module/unit-tests/NgapCredentialsTest.cc
 
     modules/fileout_covjson/unit-tests/FoCovJsonTest.cc
     modules/fileout_covjson/unit-tests/test_config.h
@@ -1490,7 +1496,6 @@ add_executable(bes
     modules/hdf5_handler/heos5cfdap.h
 
     modules/httpd_catalog_module/unit-tests/HttpdDirScraperTest.cc
-    modules/httpd_catalog_module/unit-tests/RemoteHttpResourceTest.cc
     modules/httpd_catalog_module/unit-tests/test_config.h
     modules/httpd_catalog_module/HttpdCatalog.cc
     modules/httpd_catalog_module/HttpdCatalog.h
@@ -1504,6 +1509,7 @@ add_executable(bes
     modules/httpd_catalog_module/HttpdCatalogNames.h
     modules/httpd_catalog_module/HttpdDirScraper.cc
     modules/httpd_catalog_module/HttpdDirScraper.h
+
     modules/ncml_module/not_used/JoinExistingDimensionCacheManager.cc
     modules/ncml_module/not_used/JoinExistingDimensionCacheManager.h
     modules/ncml_module/not_used/NCMLCacheAggXMLCommand.cc
@@ -2058,14 +2064,6 @@ add_executable(bes
     xmlcommand/SiteMapResponseHandler.h
     xmlcommand/XMLSetContextsCommand.cc
     xmlcommand/XMLSetContextsCommand.h
-
-	modules/dmrpp_module/unit-tests/awsv4_test.cc
-    modules/dmrpp_module/AccessCredentials.cc
-    modules/dmrpp_module/AccessCredentials.h
-    modules/dmrpp_module/NgapS3Credentials.cc
-    modules/dmrpp_module/NgapS3Credentials.h
-
-    modules/dmrpp_module/unit-tests/NgapCredentialsTest.cc
 
     standalone/besstandalone.cc
         http/unit-tests/HttpUtilsTest.cc)

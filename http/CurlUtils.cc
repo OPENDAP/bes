@@ -864,7 +864,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             if (!success) {
                 if (tries == retry_limit) {
                     throw BESInternalError(
-                            string("Data transfer error: Number of re-tries to S3 exceeded: ").append(
+                            string("Data transfer error: Number of re-tries exceeded: ").append(
                                     error_message(curl_code, curlErrorBuf)), __FILE__, __LINE__);
                 }
                 else {
