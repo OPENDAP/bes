@@ -31,8 +31,10 @@
 //#include <H5Ppublic.h>
 
 #include "dods-datatypes.h"
-#include "byteswap_compat.h"
 #include "Chunk.h"
+
+#include "config.h"
+#include "byteswap_compat.h"
 
 namespace libdap {
 class DMR;
