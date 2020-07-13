@@ -708,7 +708,12 @@ void DmrppParserSax2::dmr_end_document(void * p)
         DmrppParserSax2::dmr_error(parser,
             "The document did not contain a valid root Group or contained unbalanced tags.");
 
-    // BESDEBUG(PARSER, prolog << parser->top_group()->dump(cerr) << end);
+    if(BESDebug::IsSet(PARSER)){
+        ostream *os = BESDebug::GetStrm();
+        *os << prolog << "parser->top_group() BEGIN " << endl;
+        parser->top_group()->dump(*os);
+        *os << endl << prolog << "parser->top_group() END " << endl;
+    }
 
     parser->pop_group();     // leave the stack 'clean'
     parser->pop_attributes();
@@ -1518,37 +1523,6 @@ void DmrppParserSax2::intern(istream &f, DMR *dest_dmr)
 
     d_dmr = dest_dmr; // dump values here
 
-#if 0
-    int line_num = 1;
-    string line;
-
-    // Get the <xml ... ?> line
-    getline(f, line);
-    if (line.length() == 0) throw Error("No input found while parsing the DMR.");
-
-    if (debug) cerr << "line: (" << line_num << "): " << endl << line << endl << endl;
-
-    context = xmlCreatePushParserCtxt(&dmrpp_sax_parser, this, line.c_str(), line.length(), "stream");
-    context->validate = true;
-    push_state(parser_start);
-
-    // Get the first line of stuff
-    getline(f, line);
-    ++line_num;
-
-    if (debug) cerr << "line: (" << line_num << "): " << endl << line << endl << endl;
-
-    while (!f.eof() && (get_state() != parser_end)) {
-        xmlParseChunk(context, line.c_str(), line.length(), 0);
-        // Get the next line
-        getline(f, line);
-        ++line_num;
-        if (debug) cerr << "line: (" << line_num << "): " << endl << line << endl << endl;
-    }
-
-    // This call ends the parse.
-    xmlParseChunk(context, line.c_str(), 0, 1/*terminate*/);
-#else
     int line_num = 1;
     string line;
 
@@ -1586,7 +1560,6 @@ void DmrppParserSax2::intern(istream &f, DMR *dest_dmr)
 
     // This call ends the parse.
     xmlParseChunk(context, d_parse_buffer, chunk_size, 1/*terminate*/); // libxml2 call
-#endif
 
     // This checks that the state on the parser stack is parser_end and throws
     // an exception if it's not (i.e., the loop exited with gcount() == 0).
