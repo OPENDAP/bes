@@ -97,7 +97,7 @@ public:
     // Called before each test
     void setUp()
     {
-        if (debug) BESDebug::SetUp("cerr,dmrpp");
+        if (debug) BESDebug::SetUp("cerr,dmrpp,dmrpp:parser");
         // Contains BES Log parameters but not cache names
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
     }
@@ -184,7 +184,7 @@ public:
         BESDEBUG("dmrpp", "Opening: " << int_h5 << endl);
 
         ifstream in(int_h5.c_str());
-        parser.intern(in, dmr.get(), debug);
+        parser.intern(in, dmr.get());
         BESDEBUG("dmrpp", "Parsing complete"<< endl);
 
         D4Group *root = dmr->root();
@@ -215,7 +215,7 @@ public:
        BESDEBUG("dmrpp", "Opening: " << int_h5 << endl);
 
        ifstream in(int_h5.c_str());
-       parser.intern(in, dmr.get(), debug);
+       parser.intern(in, dmr.get());
 
        D4Group *root = dmr->root();
        checkGroupsAndVars(root,"/",0,4);
@@ -270,7 +270,7 @@ public:
       BESDEBUG("dmrpp", "Opening: " << float_h5 << endl);
 
       ifstream in(float_h5.c_str());
-      parser.intern(in, dmr.get(), debug);
+      parser.intern(in, dmr.get());
 
       D4Group *root = dmr->root();
 
@@ -327,7 +327,7 @@ public:
       BESDEBUG("dmrpp", "Opening: " << grid_2d << endl);
 
       ifstream in(grid_2d.c_str());
-      parser.intern(in, dmr.get(), debug);
+      parser.intern(in, dmr.get());
 
       D4Group *root = dmr->root();
 
@@ -395,7 +395,7 @@ public:
       BESDEBUG("dmrpp", "Opening: " << nc4_group_atomic << endl);
 
       ifstream in(nc4_group_atomic.c_str());
-      parser.intern(in, dmr.get(), debug);
+      parser.intern(in, dmr.get());
 
       D4Group *root = dmr->root();
 

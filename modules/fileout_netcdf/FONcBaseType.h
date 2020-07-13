@@ -74,7 +74,7 @@ protected:
 public:
     virtual ~FONcBaseType() { }
 
-    virtual void convert(std::vector<std::string> embed);
+    virtual void convert(std::vector<std::string> embed,bool is_dap4_group=false);
     virtual void define(int ncid);
     virtual void write(int /*ncid*/) {  }
 

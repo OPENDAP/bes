@@ -139,10 +139,10 @@ void FONcGrid::define(int ncid)
  * @throws BESInternalError if there is a problem defining the
  * Byte
  */
-void FONcGrid::convert(vector<string> embed)
+void FONcGrid::convert(vector<string> embed,bool is_dap4_group)
 {
     FONcGrid::InGrid = true;
-    FONcBaseType::convert(embed);
+    FONcBaseType::convert(embed,is_dap4_group);
     _varname = FONcUtils::gen_name(embed, _varname, _orig_varname);
     BESDEBUG("fonc", "FONcGrid::convert - converting grid " << _varname << endl);
 
@@ -172,7 +172,7 @@ void FONcGrid::convert(vector<string> embed)
         // FONcMap to the FONcGrid.
         if (!map_found) {
             FONcArray *fa = new FONcArray(map);
-            fa->convert(map_embed);
+            fa->convert(map_embed,is_dap4_group);
             map_found = new FONcMap(fa, true);
             FONcGrid::Maps.push_back(map_found);
         }
@@ -193,7 +193,7 @@ void FONcGrid::convert(vector<string> embed)
     // jhrg 11/3/16
     if (_grid->get_array()->send_p()) {
         _arr = new FONcArray(_grid->get_array());
-        _arr->convert(_embed);
+        _arr->convert(_embed,is_dap4_group);
     }
 
     BESDEBUG("fonc", "FONcGrid::convert - done converting grid " << _varname << endl);

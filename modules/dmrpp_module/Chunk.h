@@ -188,20 +188,10 @@ public:
     /**
      * @brief Get the data url string for this Chunk's data block
      */
-    virtual std::string get_data_url() const
-    {
-        // A conditional call to void Chunk::add_tracking_query_param()
-        // here for the NASA cost model work THG's doing. jhrg 8/7/18
-
-        if (!d_query_marker.empty()) {
-            return d_data_url + d_query_marker;
-        }
-
-        return d_data_url;
-    }
+    virtual std::string get_data_url() const;
 
     /**
-     * @brief Get the data url string for this Chunk's data block
+     * @brief Set the data url string for this Chunk's data block
      */
     virtual void set_data_url(const std::string &data_url)
     {

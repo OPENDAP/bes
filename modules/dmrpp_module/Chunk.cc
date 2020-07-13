@@ -31,6 +31,7 @@
 
 #include <BESDebug.h>
 #include <BESLog.h>
+#include <TheBESKeys.h>
 #include <BESInternalError.h>
 #include <BESSyntaxUserError.h>
 #include <BESForbiddenError.h>
@@ -39,12 +40,13 @@
 #include "xml2json/include/xml2json.hpp"
 
 #include "Chunk.h"
+#include "CurlUtils.h"
 #include "CurlHandlePool.h"
 #include "DmrppRequestHandler.h"
+#include "DmrppNames.h"
 
 using namespace std;
 
-#define MODULE "dmrpp"
 #define prolog std::string("Chunk::").append(__func__).append("() - ")
 
 namespace dmrpp {
@@ -104,6 +106,8 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
     size_t nbytes = size * nmemb;
     Chunk *chunk = reinterpret_cast<Chunk*>(data);
 
+    BESDEBUG(MODULE, prolog << "BEGIN: chunk->get_response_content_type(): " << chunk->get_response_content_type() << " chunk->get_data_url(): " << chunk->get_data_url() << endl);
+
     // When Content-Type is 'application/xml,' that's an error. jhrg 6/9/20
     if (chunk->get_response_content_type().find("application/xml") != string::npos) {
         // At this point we no longer care about great performance - error msg readability
@@ -161,6 +165,8 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
 
     memcpy(chunk->get_rbuf() + bytes_read, buffer, nbytes);
     chunk->set_bytes_read(bytes_read + nbytes);
+
+    BESDEBUG(MODULE, prolog << "END" << endl );
 
     return nbytes;
 }
@@ -240,6 +246,8 @@ void inflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len)
 
     /* Finish uncompressing the stream */
     (void) inflateEnd(&z_strm);
+
+
 }
 
 // #define this to enable the duff's device loop unrolling code.
@@ -402,9 +410,7 @@ void Chunk::set_position_in_array(const std::vector<unsigned int> &pia)
  */
 string Chunk::get_curl_range_arg_string()
 {
-    ostringstream range;   // range-get needs a string arg for the range
-    range << d_offset << "-" << d_offset + d_size - 1;
-    return range.str();
+    return curl::get_range_arg_string(d_offset,d_size);
 }
 
 /**
@@ -616,6 +622,34 @@ string Chunk::to_string() const
     dump(oss);
     return oss.str();
 }
+
+
+std::string Chunk::get_data_url() const
+{
+    string data_url = d_data_url;
+
+    bool found = false;
+    bool case_insensitive = true;
+    map<string,string> data_url_info;
+    TheBESKeys::TheKeys()->get_values(d_data_url,data_url_info, case_insensitive, found);
+    BESDEBUG(MODULE, prolog << "found: " << (found?"true":"false") << " d_data_url: " << d_data_url << endl);
+    if(found){
+        map<string,string>::iterator tuit = data_url_info.find("target_url");
+        if(tuit != data_url_info.end()){
+            data_url = tuit->second;
+        }
+    }
+    BESDEBUG(MODULE, prolog << "using data_url: " << data_url << endl);
+
+    // A conditional call to void Chunk::add_tracking_query_param()
+    // here for the NASA cost model work THG's doing. jhrg 8/7/18
+    if (!d_query_marker.empty()) {
+        return data_url + d_query_marker;
+    }
+
+    return data_url;
+}
+
 
 } // namespace dmrpp
 

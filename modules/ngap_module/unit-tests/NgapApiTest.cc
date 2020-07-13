@@ -38,16 +38,22 @@
 #include <GetOpt.h>
 #include <util.h>
 
-#include <BESError.h>
-#include <BESDebug.h>
-#include <BESUtil.h>
-#include <BESCatalogList.h>
-#include <TheBESKeys.h>
+#include "BESError.h"
+#include "BESDebug.h"
+#include "BESUtil.h"
+#include "BESCatalogList.h"
+#include "TheBESKeys.h"
+#include "HttpCache.h"
+#include "HttpUtils.h"
+#include "HttpNames.h"
+#include "url_impl.h"
+#include "RemoteResource.h"
+
 #include "test_config.h"
 
-#include "RemoteHttpResource.h"
+
 #include "NgapApi.h"
-// #include "NgapNames.h"
+#include "NgapContainer.h"
 // #include "NgapError.h"
 // #include "rjson_utils.h"
 
@@ -103,7 +109,7 @@ public:
 
         TheBESKeys::ConfigFile = bes_conf;
 
-        if (bes_debug) BESDebug::SetUp("cerr,ngap");
+        if (bes_debug) BESDebug::SetUp("cerr,ngap,http");
 
         if (bes_debug) show_file(bes_conf);
         if(Debug) cerr << "setUp() - END" << endl;
@@ -113,6 +119,15 @@ public:
     void tearDown()
     {
     }
+
+    void show_vector(vector<string> v){
+        cerr << "show_vector(): Found " << v.size() << " elements." << endl;
+        vector<string>::iterator it = v.begin();
+        for(size_t i=0;  i < v.size(); i++){
+            cerr << "show_vector:    v["<< i << "]: " << v[i] << endl;
+        }
+    }
+
 
     void cmr_access_test() {
         string prolog = string(__func__) + "() - ";
@@ -160,9 +175,47 @@ public:
         CPPUNIT_ASSERT (expected == data_access_url);
     }
 
+
+
+    void signed_url_is_expired_test(){
+        string prolog = string(__func__) + "() - ";
+
+        string signed_url_str;
+        std::map<std::string,std::string> url_info;
+        bool is_expired;
+
+
+        signed_url_str = "https://ghrcw-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?"
+              "A-userid=hyrax"
+              "&X-Amz-Algorithm=AWS4-HMAC-SHA256"
+              "&X-Amz-Credential=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
+              "&X-Amz-Date=20200621T161744Z"
+              "&X-Amz-Expires=86400"
+              "&X-Amz-Security-Token=FwoGZXIvYXdzENL%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaDKmu"
+              "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
+              "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
+              "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
+              "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
+              "&X-Amz-SignedHeaders=host"
+              "&X-Amz-Signature=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing";
+
+        http::url signed_url(signed_url_str);
+
+        time_t now;
+        time(&now);
+        stringstream ingest_time;
+        time_t then = now - 82810; // 23 hours and 10 seconds ago.
+
+        signed_url.set_ingest_time(then);
+        is_expired = NgapApi::signed_url_is_expired(signed_url);
+        CPPUNIT_ASSERT(is_expired == true );
+
+    }
+
     CPPUNIT_TEST_SUITE( NgapApiTest );
 
-    CPPUNIT_TEST(cmr_access_test);
+        CPPUNIT_TEST(cmr_access_test);
+        CPPUNIT_TEST(signed_url_is_expired_test);
 
     CPPUNIT_TEST_SUITE_END();
 };

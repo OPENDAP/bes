@@ -29,7 +29,11 @@
 #include <iostream>
 #include <sstream>
 #include <memory>
+#include <time.h>
 #include <curl/curl.h>
+
+#include <util.h>
+#include <debug.h>
 
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
@@ -37,21 +41,19 @@
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/filereadstream.h"
 
-#include <util.h>
-#include <debug.h>
-
-#include <BESError.h>
-#include <BESNotFoundError.h>
-#include <BESSyntaxUserError.h>
-#include <BESDebug.h>
-#include <BESUtil.h>
-#include <TheBESKeys.h>
+#include "BESError.h"
+#include "BESNotFoundError.h"
+#include "BESSyntaxUserError.h"
+#include "BESDebug.h"
+#include "BESUtil.h"
+#include "TheBESKeys.h"
+#include "CurlUtils.h"
+#include "url_impl.h"
+#include "RemoteResource.h"
 
 #include "NgapApi.h"
 #include "NgapNames.h"
-#include "RemoteHttpResource.h"
 #include "NgapError.h"
-#include "curl_utils.h"
 
 using namespace std;
 
@@ -59,18 +61,18 @@ using namespace std;
 
 namespace ngap {
 
-    string NGAP_PROVIDER_KEY("providers");
-    string NGAP_COLLECTIONS_KEY("collections");
-    string NGAP_GRANULES_KEY("granules");
-    string DEFAULT_CMR_ENDPOINT_URL("https://cmr.earthdata.nasa.gov");
-    string DEFAULT_CMR_SEARCH_ENDPOINT_PATH("/search/granules.umm_json_v1_4");
+    const string NGAP_PROVIDER_KEY("providers");
+    const string NGAP_COLLECTIONS_KEY("collections");
+    const string NGAP_GRANULES_KEY("granules");
+    const string DEFAULT_CMR_ENDPOINT_URL("https://cmr.earthdata.nasa.gov");
+    const string DEFAULT_CMR_SEARCH_ENDPOINT_PATH("/search/granules.umm_json_v1_4");
 
-    string CMR_PROVIDER("provider");
-    string CMR_ENTRY_TITLE("entry_title");
-    string CMR_GRANULE_UR("granule_ur");
-    string CMR_URL_TYPE_GET_DATA("GET DATA");
+    const string CMR_PROVIDER("provider");
+    const string CMR_ENTRY_TITLE("entry_title");
+    const string CMR_GRANULE_UR("granule_ur");
+    const string CMR_URL_TYPE_GET_DATA("GET DATA");
 
-    string rjtype_names[] = {
+    const string RJ_TYPE_NAMES[] = {
             "kNullType",
             "kFalseType",
             "kTrueType",
@@ -79,6 +81,13 @@ namespace ngap {
             "kStringType",
             "kNumberType"
     };
+
+    const string AMS_EXPIRES_HEADER_KEY("X-Amz-Expires");
+    const string AWS_DATE_HEADER_KEY("X-Amz-Date");
+    // const string AWS_DATE_FORMAT("%Y%m%dT%H%MS"); // 20200624T175046Z
+    const string CLOUDFRONT_EXPIRES_HEADER_KEY("Expires");
+    const string INGEST_TIME_KEY("ingest_time");
+    const unsigned int REFRESH_THRESHOLD = 3600; // An hour
 
 
     NgapApi::NgapApi() : d_cmr_hostname(DEFAULT_CMR_ENDPOINT_URL), d_cmr_search_endpoint_path(DEFAULT_CMR_SEARCH_ENDPOINT_PATH) {
@@ -148,7 +157,7 @@ namespace ngap {
         string cmr_url = get_cmr_search_endpoint_url() + "?";
 
         char error_buffer[CURL_ERROR_SIZE];
-        CURL *curl = ngap_curl::init(error_buffer);  // This may throw either Error or InternalErr
+        CURL *curl = curl::init(error_buffer);  // This may throw either Error or InternalErr
         char *esc_url_content;
 
         esc_url_content = curl_easy_escape(curl, tokens[1].c_str(), tokens[1].size());
@@ -168,7 +177,7 @@ namespace ngap {
         BESDEBUG(MODULE, prolog << "CMR Request URL: " << cmr_url << endl);
 #if 1
         BESDEBUG(MODULE, prolog << "Building new RemoteResource." << endl);
-        RemoteHttpResource cmr_query(cmr_url, uid, access_token);
+        http::RemoteResource cmr_query(cmr_url, uid, access_token);
         cmr_query.retrieveResource();
         rapidjson::Document cmr_response = cmr_query.get_as_json();
 #else
@@ -186,7 +195,7 @@ namespace ngap {
         if (items.IsArray()) {
             stringstream ss;
             for (rapidjson::SizeType i = 0; i < items.Size(); i++) // Uses SizeType instead of size_t
-                ss << "items[" << i << "]: " << rjtype_names[items[i].GetType()] << endl;
+                ss << "items[" << i << "]: " << RJ_TYPE_NAMES[items[i].GetType()] << endl;
 
             BESDEBUG(MODULE, prolog << "items size: " << items.Size() << endl << ss.str() << endl);
 
@@ -253,8 +262,85 @@ namespace ngap {
                                    __FILE__, __LINE__);
         }
 
+        BESDEBUG(MODULE, prolog << "Following data_access_url redirects..." << endl);
+
         return data_access_url;
     }
+
+
+
+
+    bool NgapApi::signed_url_is_expired(const http::url &signed_url)
+    {
+        bool is_expired;
+        time_t now;
+        time(&now);  /* get current time; same as: timer = time(NULL)  */
+        BESDEBUG(MODULE, prolog << "now: " << now << endl);
+
+        time_t expires = now;
+        string cf_expires = signed_url.query_parameter_value(CLOUDFRONT_EXPIRES_HEADER_KEY);
+        string aws_expires = signed_url.query_parameter_value(AMS_EXPIRES_HEADER_KEY);
+        time_t ingest_time = signed_url.ingest_time();
+
+        if(!cf_expires.empty()){ // CloudFront expires header?
+            expires = stoll(cf_expires);
+            BESDEBUG(MODULE, prolog << "Using "<< CLOUDFRONT_EXPIRES_HEADER_KEY << ": " << expires << endl);
+        }
+        else if(!aws_expires.empty()){
+            // AWS Expires header?
+            //
+            // By default we'll use the time we made the URL object, ingest_time
+            time_t start_time = ingest_time;
+            // But if there's an AWS Date we'll parse that and compute the time
+            // @TODO move to NgapApi::decompose_url() and add the result to the map
+            string aws_date = signed_url.query_parameter_value(AWS_DATE_HEADER_KEY);
+            if(!aws_date.empty()){
+                string date = aws_date; // 20200624T175046Z
+                string year = date.substr(0,4);
+                string month = date.substr(4,2);
+                string day = date.substr(6,2);
+                string hour = date.substr(9,2);
+                string minute = date.substr(11,2);
+                string second = date.substr(13,2);
+
+                BESDEBUG(MODULE, prolog << "date: "<< date <<
+                                        " year: " << year << " month: " << month << " day: " << day <<
+                                        " hour: " << hour << " minute: " << minute  << " second: " << second << endl);
+
+                struct tm *ti = gmtime(&now);
+                ti->tm_year = stoll(year) - 1900;
+                ti->tm_mon = stoll(month) - 1;
+                ti->tm_mday = stoll(day);
+                ti->tm_hour = stoll(hour);
+                ti->tm_min = stoll(minute);
+                ti->tm_sec = stoll(second);
+
+                BESDEBUG(MODULE, prolog << "ti->tm_year: "<< ti->tm_year <<
+                                        " ti->tm_mon: " << ti->tm_mon <<
+                                        " ti->tm_mday: " << ti->tm_mday <<
+                                        " ti->tm_hour: " << ti->tm_hour <<
+                                        " ti->tm_min: " << ti->tm_min <<
+                                        " ti->tm_sec: " << ti->tm_sec << endl);
+
+
+                start_time = mktime(ti);
+                BESDEBUG(MODULE, prolog << "AWS (computed) start_time: "<< start_time << endl);
+            }
+            expires = start_time + stoll(aws_expires);
+            BESDEBUG(MODULE, prolog << "Using "<< AMS_EXPIRES_HEADER_KEY << ": " << aws_expires <<
+                                    " (expires: " << expires << ")" << endl);
+        }
+        time_t remaining = expires - now;
+        BESDEBUG(MODULE, prolog << "expires: " << expires <<
+                                "  remaining: " << remaining <<
+                                " threshold: " << REFRESH_THRESHOLD << endl);
+
+        is_expired = remaining < REFRESH_THRESHOLD;
+        BESDEBUG(MODULE, prolog << "is_expired: " << (is_expired?"true":"false") << endl);
+
+        return is_expired;
+    }
+
 
 
 #if 0

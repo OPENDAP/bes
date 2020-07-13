@@ -48,7 +48,7 @@
 
 #include "BESInternalError.h"
 
-#include "url_parser.h"
+#include "url_impl.h"
 
 namespace AWSV4 {
 
@@ -339,7 +339,7 @@ namespace AWSV4 {
             const std::string &service,
             const bool &verbose) {
 
-        url_parser uri(uri_str);
+        http::url uri(uri_str);
 
         // canonical_uri is the path component of the URL. Later we will need the host.
         const auto canonical_uri = uri.path(); // AWSV4::canonicalize_uri(uri);

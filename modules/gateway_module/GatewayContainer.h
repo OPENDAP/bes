@@ -34,10 +34,10 @@
 #include <ostream>
 
 #include "BESContainer.h"
+#include "RemoteResource.h"
 
 namespace gateway {
 
-class RemoteHttpResource;
 
 /** @brief Container representing a remote request
  *
@@ -50,7 +50,7 @@ class RemoteHttpResource;
  */
 class GatewayContainer: public BESContainer {
 private:
-    gateway::RemoteHttpResource *d_remoteResource;
+    http::RemoteResource *d_remoteResource;
 
     GatewayContainer() :
         BESContainer(), d_remoteResource(0)
