@@ -71,7 +71,7 @@ libdmrpp_module_la_LDFLAGS = -avoid-version -module
 libdmrpp_module_la_LIBADD = $(BES_DISPATCH_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(H5_LDFLAGS) $(H5_LIBS) \
 $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -ltest-types
 
-bin_PROGRAMS = build_dmrpp ngap_build_dmrpp check_dmrpp merge_dmrpp
+bin_PROGRAMS = build_dmrpp ngap_build_dmrpp check_dmrpp merge_dmrpp reduce_mdf
 
 # build_dmrpp config
 build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS)
@@ -88,6 +88,11 @@ check_dmrpp_SOURCES = check_dmrpp.cc
 # merge_dmrpp config
 merge_dmrpp_CPPFLAGS = $(AM_CPPFLAGS)
 merge_dmrpp_SOURCES = merge_dmrpp.cc
+
+# merge_dmrpp config
+reduce_mdf_CPPFLAGS = $(AM_CPPFLAGS)
+reduce_mdf_SOURCES = reduce_mdf.cc
+reduce_mdf_LDADD =   $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -lz
 
 ngap_build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS)  -I$(top_srcdir)/standalone
 
