@@ -51,6 +51,7 @@
 
 #include "DmrppRequestHandler.h"
 #include "DmrppCommon.h"
+#include "DmrppNames.h"
 #include "awsv4.h"
 #include "CurlHandlePool.h"
 #include "Chunk.h"
@@ -76,7 +77,6 @@ using namespace dmrpp;
 using namespace std;
 using namespace bes;
 
-#define MODULE "dmrpp:curl"
 #define prolog std::string("CurlHandlePool::").append(__func__).append("() - ")
 
 Lock::Lock(pthread_mutex_t &lock) : m_mutex(lock) {
@@ -279,19 +279,19 @@ static bool evaluate_curl_response(CURL *eh) {
                 __FILE__, __LINE__);
     }
 
-    if (BESDebug::IsSet(MODULE)) {
+    if (BESDebug::IsSet(DMRPP_CURL)) {
         char *last_url = 0;
         curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &last_url);
-        BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << last_url << endl);
+        BESDEBUG(DMRPP_CURL, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << last_url << endl);
 
         long redirects;
         curl_easy_getinfo(eh, CURLINFO_REDIRECT_COUNT, &redirects);
-        BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_COUNT: " << redirects << endl);
+        BESDEBUG(DMRPP_CURL, prolog << "CURLINFO_REDIRECT_COUNT: " << redirects << endl);
 
         char *redirect_url = 0;
         curl_easy_getinfo(eh, CURLINFO_REDIRECT_URL, &redirect_url);
         if (redirect_url)
-            BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_URL: " << redirect_url << endl);
+            BESDEBUG(DMRPP_CURL, prolog << "CURLINFO_REDIRECT_URL: " << redirect_url << endl);
     }
 
     // Newer Apache servers return 206 for range requests. jhrg 8/8/18
@@ -338,7 +338,7 @@ void dmrpp_easy_handle::read_data() {
 
         // Perform the request
         do {
-            BESDEBUG(MODULE, prolog << "Requesting URL: " << d_url << endl);
+            BESDEBUG(DMRPP_CURL, prolog << "Requesting URL: " << d_url << endl);
             CURLcode curl_code = curl_easy_perform(d_handle);
             ++tries;
 
@@ -348,7 +348,7 @@ void dmrpp_easy_handle::read_data() {
                 char *effective_url = 0;
                 curl_easy_getinfo(d_handle, CURLINFO_EFFECTIVE_URL, &effective_url);
                 msg << " last_url: " << effective_url;
-                BESDEBUG(MODULE, prolog << msg.str() << endl);
+                BESDEBUG(DMRPP_CURL, prolog << msg.str() << endl);
                 throw BESInternalError(msg.str(), __FILE__, __LINE__);
             }
 
@@ -739,7 +739,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
 
         AccessCredentials *credentials = CredentialsManager::theCM()->get(handle->d_url);
         if (credentials && credentials->isS3Cred()) {
-            BESDEBUG(MODULE, "Got AccessCredentials instance: " << endl << credentials->to_json() << endl);
+            BESDEBUG(DMRPP_CURL, prolog << "Got AccessCredentials instance: " << endl << credentials->to_json() << endl);
             // If there are available credentials, and they are S3 credentials then we need to sign
             // the request
             const std::time_t request_time = std::time(0);
@@ -752,7 +752,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
                             credentials->get(AccessCredentials::KEY_KEY),
                             credentials->get(AccessCredentials::REGION_KEY),
                             "s3",
-                            BESDebug::IsSet(MODULE));
+                            BESDebug::IsSet(DMRPP_CURL));
 
             // passing nullptr for the first call allocates the curl_slist
             // The following code builds the slist that holds the headers. This slist is freed

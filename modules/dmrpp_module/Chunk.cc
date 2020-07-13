@@ -43,10 +43,10 @@
 #include "CurlUtils.h"
 #include "CurlHandlePool.h"
 #include "DmrppRequestHandler.h"
+#include "DmrppNames.h"
 
 using namespace std;
 
-#define MODULE "dmrpp"
 #define prolog std::string("Chunk::").append(__func__).append("() - ")
 
 namespace dmrpp {

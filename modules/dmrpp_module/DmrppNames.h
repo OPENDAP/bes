@@ -26,18 +26,17 @@
 // Authors:
 //      ndp       Nathan Potter <ndp@opendap.org>
 
-#ifndef E_NgapNames_H
-#define E_NgapNames_H 1
+#ifndef E_DmrppNames_H
+#define E_DmrppNames_H 1
 
-#define NGAP_NAME "ngap"
+#define DMRPP_NAME "dmrpp"
 
-#define NGAP_CACHE_TERMINAL_URLS_KEY "NGAP.cache.terminal.urls"
+#define MODULE DMRPP_NAME
+#define PARSER "dmrpp:parser"
+#define CREDS  "dmrpp:creds"
+#define DMRPP_CURL  "dmrpp:curl"
 
-#define DATA_ACCESS_URL_KEY "OPeNDAP_DMRpp_DATA_ACCESS_URL"
-#define NGAP_INJECT_DATA_URL_KEY "NGAP.inject_data_urls"
-#define NGAP_CMR_HOSTNAME_KEY "NGAP.cmr_host_url"
-#define NGAP_CMR_SEARCH_ENDPOINT_PATH_KEY "NGAP.cmr_search_endpoint_path"
+#endif // E_DmrppNames_H
 
-#define MODULE NGAP_NAME
 
-#endif // E_NgapNames_H
+
