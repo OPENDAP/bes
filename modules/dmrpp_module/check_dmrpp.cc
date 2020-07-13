@@ -104,19 +104,19 @@ int main (int argc, char** argv)
     }
 
 #if 0
-for(int i = 0; i<var_type.size(); i++)
+for(size_t i = 0; i<var_type.size(); i++)
 cout<<"var_type["<<i<<"]= "<<var_type[i]<<endl;
-for(int i = 0; i<var_name.size(); i++) {
+for(size_t i = 0; i<var_name.size(); i++) {
 cout<<"var_name["<<i<<"]= "<<var_name[i]<<endl;
 cout<<"chunk_exist["<<i<<"]= "<<chunk_exist[i]<<endl;
 }
 #endif
 
     bool has_missing_info = false;
-    int last_missing_chunk_index = -1;
+    size_t last_missing_chunk_index = -1;
 
     // Check if there are any missing variable information.
-    for (int i =var_type.size()-1;i>=0;i--) {
+    for (size_t i =var_type.size()-1;i>=0;i--) {
         if(false == chunk_exist[i]){
             has_missing_info = true;
             last_missing_chunk_index = i;
@@ -125,8 +125,8 @@ cout<<"chunk_exist["<<i<<"]= "<<chunk_exist[i]<<endl;
     }
 
 #if 0
-    int j = 0;
-    for (int i =0;i<var_type.size();i++) {
+    size_t j = 0;
+    for (size_t i =0;i<var_type.size();i++) {
         if(false == chunk_exist[i]){
             j++;
             if(j == 1) 
@@ -143,7 +143,7 @@ cout<<"chunk_exist["<<i<<"]= "<<chunk_exist[i]<<endl;
         string fname2(argv[2]);
         dmrpp_ofstream.open(fname2.c_str(),ofstream::out);
 
-        for (int i =0;i<var_type.size();i++) {
+        for (size_t i =0;i<var_type.size();i++) {
             if(false == chunk_exist[i]) {
                 if (i!=last_missing_chunk_index)
                     dmrpp_ofstream<<var_name[i] <<",";
@@ -216,16 +216,17 @@ bool find_var(const string &str, const vector<string>var_type_list,
     }
 
     // Try to figure out the variable type.
-    int var_index = -1;
-    for (int i = 0; i<var_type_list.size();i++) {
+    size_t var_index = -1;
+    bool found = false;
+    for (size_t i = 0; i<var_type_list.size() && !found ;i++) {
         if(str.compare(non_space_char_pos+1,sep_pos-non_space_char_pos-1,var_type_list[i]) == 0) {
             var_index = i;
-            break;
+            found = true;
         }
     }
 
     // If cannot find the supported type, ignore this line.
-    if(var_index == -1) {
+    if(!found) {
         return ret;
     }
     

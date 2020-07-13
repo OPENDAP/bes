@@ -79,7 +79,7 @@ int main (int argc,char**argv)
        
 #if 0
 
-    for (int i =0; i<var_names.size();i++) {
+    for (size_t i =0; i<var_names.size();i++) {
 //cout<<"var type["<<i<<"]"<< var_types[i]<<endl;
 //cout<<"var name["<<i<<"]"<< var_names[i]<<endl;
 //cout<<"chunk_info_list["<<i<<"]"<< endl;
@@ -99,7 +99,7 @@ int main (int argc,char**argv)
     string_tokenize(missing_vname_str,delim,missing_vname_list);
 
 #if 0
-    for(int i = 0;i<missing_vname_list.size();i++)
+    for(size_t i = 0;i<missing_vname_list.size();i++)
         cout <<"missing_vname_list["<<i<<"]"<<missing_vname_list[i]<<endl;
 #endif
 
@@ -108,8 +108,8 @@ int main (int argc,char**argv)
     vector<string>new_var_names;
     vector<string>new_chunk_info_list;
 
-    for (int i =0; i<var_names.size();i++) {
-        for(int j = 0; j<missing_vname_list.size();j++) {
+    for (size_t i =0; i<var_names.size();i++) {
+        for(size_t j = 0; j<missing_vname_list.size();j++) {
             if(var_names[i] == missing_vname_list[j]) {
                 new_var_names.push_back(var_names[i]);
                 new_var_types.push_back(var_types[i]);
@@ -124,7 +124,7 @@ int main (int argc,char**argv)
     add_faddr_chunk_info(missing_dmrpp_str,new_chunk_info_list,is_chunk_mark1,fadd_source);
 
 #if 0
-for (int i =0; i<new_var_types.size();i++)  {
+for (size_t i =0; i<new_var_types.size();i++)  {
 cout<<"new chunk_info_list["<<i<<"]"<< endl;
 cout<<new_chunk_info_list[i]<<endl;
 }
@@ -183,7 +183,7 @@ bool obtain_var_info(const string & miss_dmrpp_info,vector<string> & var_types, 
     // Go through the whole missing dmrpp string
     while (str_pos <=str_last_char_pos && well_formed) {
 
-        int i = 0;
+        size_t i = 0;
         string var_sign;
         string temp_var_sign;
         size_t temp_var_type_pos_start=string::npos;
@@ -385,7 +385,7 @@ bool add_faddr_chunk_info(const string &str,vector<string>& chunk_info,bool is_d
 
 //cout<<"hdf5_faddr is "<<hdf5_faddr <<endl;        
 
-    for (int i = 0;i<chunk_info.size();i++) {   
+    for (size_t i = 0;i<chunk_info.size();i++) {
     
         //If is_dmrpp_mark1 is true, 
         //add hdf5_faddr to each chunk line(The chunk line should have offset==)
@@ -514,7 +514,7 @@ bool convert_dmrppstr_to_vec(const string &dmrpp_str,vector<string> &dmrpp_str_v
     gen_block(var_types,var_names,block_begin,block_end);
 
 #if 0
-for(int i =0; i<block_begin.size();i++)
+for(size_t i =0; i<block_begin.size();i++)
 {
 cout<<"block_begin["<<i<<"]= "<<block_begin[i]<<endl;
 cout<<"block_end["<<i<<"]= "<<block_end[i]<<endl;
@@ -531,7 +531,7 @@ cout<<"block_end["<<i<<"]= "<<block_end[i]<<endl;
 void add_missing_info_to_vec(vector<string> &dmrpp_str_vec,const vector<string> &chunk_info_list,const vector<int> &block_index) {
     string temp_str;
     char insert_mark = '>';
-    for (int i = 0; i<block_index.size();i++) {
+    for (size_t i = 0; i<block_index.size();i++) {
         //cout<<"["<<2*i+1 <<"]= "<<dmrpp_str_vec[2*i+1]<<endl;
         // The vector has to include the beginning and ending block.
         // An example: 
@@ -564,7 +564,7 @@ void add_missing_info_to_vec(vector<string> &dmrpp_str_vec,const vector<string> 
 void write_vec_to_file(const string &fname,const vector<string> &dmrpp_str_vec) {
 
     string str_to_file;
-    for (int i =0;i<dmrpp_str_vec.size();i++) 
+    for (size_t i =0;i<dmrpp_str_vec.size();i++)
         str_to_file +=dmrpp_str_vec[i];
         //str_to_file +=dmrpp_str_vec[i]+'\n';
     ofstream outFile;
@@ -577,7 +577,7 @@ void write_vec_to_file(const string &fname,const vector<string> &dmrpp_str_vec) 
 // Obtain the beginning and the ending information of the block information.
 void gen_block(const vector<string>&var_type_list,const vector<string>&var_name_list,vector<string>&block_begin,vector<string>&block_end) {
     
-    for (int i =0; i<var_type_list.size();i++) {
+    for (size_t i =0; i<var_type_list.size();i++) {
         block_begin[i] = '<' +var_type_list[i] +' '+"name=\""+var_name_list[i]+"\">";
         block_end[i] = "</" + var_type_list[i] + '>';
     }
@@ -598,7 +598,7 @@ bool split_string(const string & str, vector<string> &str_vec,const vector<strin
     // However, when we read back the string vector, we want to read from beginnng to the end.
     // So we need to remember the index of each <var block> of the supplemental dmrpp file
     // in the original dmrpp file so that the correct chunk info can be given to the var block that misses the values.
-    for(int i = 0; i<block_begin.size();i++) {
+    for(size_t i = 0; i<block_begin.size();i++) {
         block_begin_pos[i] = str.find(block_begin[i]);
         block_end_pos[i] = str.find(block_end[i],block_begin_pos[i])+(block_end[i].size());
     }
@@ -606,12 +606,12 @@ bool split_string(const string & str, vector<string> &str_vec,const vector<strin
     obtain_bindex_in_modified_string(block_begin_pos,block_index);
 
 #if 0
-for(int i = 0; i<block_index.size();i++)
+for(size_t i = 0; i<block_index.size();i++)
 cout<<"block_index["<<i<<"] is: "<<block_index[i] <<endl;
 #endif
     vector<size_t>block_pos;
     block_pos.resize(2*block_begin_pos.size());
-    for (int i = 0; i<block_begin.size();i++) {
+    for (size_t i = 0; i<block_begin.size();i++) {
         block_pos[2*i] = block_begin_pos[i];
         block_pos[2*i+1] = block_end_pos[i];
     }
@@ -631,14 +631,14 @@ cout<<"block_index["<<i<<"] is: "<<block_index[i] <<endl;
     if(true == well_formed) {
         size_t str_block_pos = 0;
         str_vec.resize(block_pos.size()+1);
-        for (int i =0; i<block_pos.size(); i++) {
+        for (size_t i =0; i<block_pos.size(); i++) {
             str_vec[i] = str.substr(str_block_pos,block_pos[i]-str_block_pos);
             str_block_pos = block_pos[i];
         }
         str_vec[block_pos.size()] = str.substr(str_block_pos);
 
 #if 0
-for(int i = 0; i <str_vec.size();i++) 
+for(size_t i = 0; i <str_vec.size();i++)
     cout<<"str_vec["<<i<<"] is: "<<str_vec[i] <<endl;
 #endif
     }
@@ -654,7 +654,7 @@ bool check_overlap_intervals(const vector<size_t> &sort_block_pos, const vector<
     // No overlapping, return true.
     set<size_t>sort_start_pos;
     set<size_t>start_pos;
-    for (int i = 0; i<block_pos_start.size();i++) {
+    for (size_t i = 0; i<block_pos_start.size();i++) {
         sort_start_pos.insert(sort_block_pos[2*i]);
         start_pos.insert(block_pos_start[i]);
     }
@@ -678,13 +678,13 @@ bool check_overlap_intervals(const vector<size_t> &sort_block_pos, const vector<
 void obtain_bindex_in_modified_string(const vector<size_t>& block_pos_start, vector<int>& block_index) {
 
     vector<pair<size_t,int> > pos_index;
-    for (int i = 0; i <block_pos_start.size();i++)
+    for (size_t i = 0; i <block_pos_start.size();i++)
         pos_index.push_back(make_pair(block_pos_start[i],i));
 
     // The pos_index will be sorted according to the first element,block_pos_start
     sort(pos_index.begin(),pos_index.end());
 
-    for (int i = 0; i <block_pos_start.size();i++)
+    for (size_t i = 0; i <block_pos_start.size();i++)
         block_index.push_back(pos_index[i].second);
     return;
 }
