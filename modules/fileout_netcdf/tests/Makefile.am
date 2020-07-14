@@ -11,12 +11,12 @@ AM_CXXFLAGS =
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-noinst_DATA = bes.conf bes.nc4.conf
+noinst_DATA = bes.conf bes.nc4.conf bes.nc4.grp.conf
 
-CLEANFILES = bes.conf bes.nc4.conf
+CLEANFILES = bes.conf bes.nc4.conf bes.nc4.grp.conf
 
 EXTRA_DIST = bescmd $(TESTSUITE).at $(TESTSUITE)  \
-atlocal.in bes.conf.in bes.nc4.conf.in package.m4 \
+atlocal.in bes.conf.in bes.nc4.conf.in bes.nc4.grp.conf.in package.m4 \
 local_handler_tests_macros.m4
 
 # I moved the tests back to one file and dropped the 'pass the alternate
@@ -38,6 +38,8 @@ DISTCLEANFILES = atconfig
 bes.conf: $(srcdir)/bes.conf.in $(top_srcdir)/configure.ac
 
 bes.nc4.conf: $(srcdir)/bes.nc4.conf.in $(top_srcdir)/configure.ac
+
+bes.nc4.grp.conf: $(srcdir)/bes.nc4.grp.conf.in $(top_srcdir)/configure.ac
 
 ############## Autotest follows #####################
 

@@ -36,7 +36,7 @@
 #include <BESCatalogUtils.h>
 #include <CatalogItem.h>
 
-#include "RemoteHttpResource.h"
+#include "RemoteResource.h"
 #include "HttpdCatalogNames.h"
 
 #include "HttpdDirScraper.h"
@@ -276,7 +276,7 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std:
     const BESCatalogUtils *cat_utils = BESCatalogList::TheCatalogList()->find_catalog(BES_DEFAULT_CATALOG)->get_catalog_utils();
 
     // Go get the text from the remote resource
-    RemoteHttpResource rhr(url);
+    http::RemoteResource rhr(url);
     rhr.retrieveResource();
     ifstream t(rhr.getCacheFileName().c_str());
     stringstream buffer;

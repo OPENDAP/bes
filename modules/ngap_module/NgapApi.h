@@ -35,8 +35,10 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include "rapidjson/document.h"
 #include "BESCatalogUtils.h"
+#include "url_impl.h"
 
 #if 0
 #include "Granule.h"
@@ -58,6 +60,8 @@ public:
             const std::string &restified_path,
             const std::string &uid="",
             const std::string &access_token="");
+
+    static bool signed_url_is_expired(const http::url &signed_url) ;
 
 #if 0
     void get_years(std::string collection_name, std::vector<std::string> &years_result);

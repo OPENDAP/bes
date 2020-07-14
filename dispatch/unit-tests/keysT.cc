@@ -82,7 +82,7 @@ public:
     {
     }
 
-CPPUNIT_TEST_SUITE( keysT );
+    CPPUNIT_TEST_SUITE( keysT );
 
     CPPUNIT_TEST(do_test);
 
@@ -313,6 +313,17 @@ CPPUNIT_TEST_SUITE( keysT );
         cout << "*****************************************" << endl;
         cout << "Returning from keysT::run" << endl;
     }
+
+    void vector_values_test() {
+
+    }
+    void map_values_test() {
+
+    }
+
+
+
+
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(keysT);

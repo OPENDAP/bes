@@ -46,7 +46,9 @@ std::string http_status_to_string(int status);
 
 std::string http_get_as_string(const std::string &target_url);
 
-rapidjson::Document http_get_as_json(const std::string &target_url);
+void find_last_redirect(const std::string &url, std::string &last_accessed_url);
+
+// rapidjson::Document http_get_as_json(const std::string &target_url);
 
 } // namespace ngap
 

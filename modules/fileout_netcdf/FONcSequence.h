@@ -52,7 +52,7 @@ public:
     				FONcSequence( BaseType *b ) ;
     virtual			~FONcSequence() ;
 
-    virtual void		convert( vector<string> embed ) ;
+    virtual void		convert( vector<string> embed ,bool is_dap4_group=false) ;
     virtual void		define( int ncid ) ;
     virtual void		write( int ncid ) ;
 

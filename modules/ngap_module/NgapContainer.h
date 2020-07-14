@@ -30,10 +30,12 @@
 #include <ostream>
 
 #include "BESContainer.h"
+#include "RemoteResource.h"
+
 
 namespace ngap {
 
-    class RemoteHttpResource;
+
 
 /** @brief Container representing a remote request
  *
@@ -49,7 +51,7 @@ namespace ngap {
     class NgapContainer: public BESContainer {
 
     private:
-        RemoteHttpResource *d_dmrpp_rresource;
+        http::RemoteResource *d_dmrpp_rresource;
 
         // std::vector<std::string> d_collections;
         // std::vector<std::string> d_facets;
@@ -59,6 +61,7 @@ namespace ngap {
         {
         }
         bool inject_data_url();
+
 
     protected:
         void _duplicate(NgapContainer &copy_to);
@@ -70,6 +73,7 @@ namespace ngap {
 
         // void get_granule_path(const std::string &path) const ;
 
+        static bool signed_url_is_expired(std::map<std::string,std::string> url_info);
 
         virtual ~NgapContainer();
 

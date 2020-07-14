@@ -38,6 +38,7 @@ include_directories(dap/unit-tests)
 include_directories(dap/unused)
 include_directories(dapreader)
 include_directories(dispatch)
+include_directories(http)
 include_directories(rapidjson)
 
 include_directories(dispatch/PicoSHA2)
@@ -149,6 +150,7 @@ add_executable(bes
     cmdln/CmdClient.h
     cmdln/CmdTranslation.cc
     cmdln/CmdTranslation.h
+
     dap/unit-tests/unused/SequenceAggregationServerTest.cc
     dap/unit-tests/FunctionResponseCacheTest.cc
     dap/unit-tests/GlobalMetadataStoreTest.cc
@@ -231,6 +233,7 @@ add_executable(bes
     dap/ShowPathInfoResponseHandler.h
     dap/TempFile.cc
     dap/TempFile.h
+
     dapreader/DapModule.cc
     dapreader/DapModule.h
     dapreader/DapRequestHandler.cc
@@ -242,7 +245,6 @@ add_executable(bes
     dispatch/PicoSHA2/picosha2.h
     dispatch/tests/FileLockingCacheTest.cc
     dispatch/tests/test_config.h
-
     dispatch/unit-tests/agglistT.cc
     dispatch/unit-tests/BESCatalogListTest.cc
     dispatch/unit-tests/cacheT.cc
@@ -472,6 +474,20 @@ add_executable(bes
     dispatch/WhiteList.cc
     dispatch/WhiteList.h
 
+    http/url_impl.cc
+    http/url_impl.h
+    http/CurlUtils.cc
+    http/CurlUtils.h
+    http/HttpCache.cc
+    http/HttpCache.h
+    http/HttpNames.h
+    http/HttpUtils.cc
+    http/HttpUtils.h
+    http/RemoteResource.cc
+    http/RemoteResource.h
+    http/unit-tests/HttpUtilsTest.cc
+    http/unit-tests/RemoteResourceTest.cc
+
     functions/geo-functions/unused/NC_GOES_Dataset.cpp
     functions/geo-functions/unused/NC_GOES_Dataset.h
     functions/geo-functions/AbstractDataset.cpp
@@ -589,6 +605,7 @@ add_executable(bes
     hello_world/SampleSayResponseHandler.h
     hello_world/SampleSayXMLCommand.cc
     hello_world/SampleSayXMLCommand.h
+
     modules/asciival/unit-tests/AsciiArrayTest.cc
     modules/asciival/unit-tests/AsciiOutputTest.cc
     modules/asciival/unit-tests/test_config.h
@@ -644,8 +661,8 @@ add_executable(bes
     modules/cmr_module/unused/CmrInfoCmd.h
     modules/cmr_module/CmrApi.cc
     modules/cmr_module/CmrApi.h
-    modules/cmr_module/CmrCache.cc
-    modules/cmr_module/CmrCache.h
+    #modules/cmr_module/CmrCache.cc
+    #modules/cmr_module/CmrCache.h
     modules/cmr_module/CmrCatalog.cc
     modules/cmr_module/CmrCatalog.h
     modules/cmr_module/CmrContainer.cc
@@ -656,14 +673,14 @@ add_executable(bes
     modules/cmr_module/CmrModule.cc
     modules/cmr_module/CmrModule.h
     modules/cmr_module/CmrNames.h
-    modules/cmr_module/CmrUtils.cc
-    modules/cmr_module/CmrUtils.h
-    modules/cmr_module/curl_utils.cc
-    modules/cmr_module/curl_utils.h
+    #modules/cmr_module/CmrUtils.cc
+    #modules/cmr_module/CmrUtils.h
+    #modules/cmr_module/curl_utils.cc
+    #modules/cmr_module/curl_utils.h
     modules/cmr_module/Granule.cc
     modules/cmr_module/Granule.h
-    modules/cmr_module/RemoteHttpResource.cc
-    modules/cmr_module/RemoteHttpResource.h
+    #modules/cmr_module/RemoteHttpResource.cc
+    #modules/cmr_module/RemoteHttpResource.h
     modules/cmr_module/rjson_utils.cc
     modules/cmr_module/rjson_utils.h
     modules/csv_handler/CSV_Data.cc
@@ -685,12 +702,14 @@ add_executable(bes
     modules/csv_handler/CSVModule.h
     modules/csv_handler/CSVRequestHandler.cc
     modules/csv_handler/CSVRequestHandler.h
+
     modules/debug_functions/unit-tests/AbortFunctionTest.cc
     modules/debug_functions/unit-tests/ErrorFunctionTest.cc
     modules/debug_functions/unit-tests/SleepFunctionTest.cc
     modules/debug_functions/unit-tests/test_config.h
     modules/debug_functions/DebugFunctions.cc
     modules/debug_functions/DebugFunctions.h
+
     modules/dmrpp_module/unit-tests/unused/DmrppChunkedReadTest.cc
     modules/dmrpp_module/unit-tests/unused/DmrppHttpReadTest.cc
     modules/dmrpp_module/unit-tests/unused/DmrppTypeReadTest.cc
@@ -702,10 +721,8 @@ add_executable(bes
     modules/dmrpp_module/unit-tests/DmrppParserTest.cc
     modules/dmrpp_module/unit-tests/test_config.h
     modules/dmrpp_module/build_dmrpp.cc
-
 	modules/dmrpp_module/awsv4.cc
 	modules/dmrpp_module/awsv4.h
-
     modules/dmrpp_module/Chunk.cc
     modules/dmrpp_module/Chunk.h
     modules/dmrpp_module/CurlHandlePool.cc
@@ -762,7 +779,17 @@ add_executable(bes
     modules/dmrpp_module/DmrppUInt64.h
     modules/dmrpp_module/DmrppUrl.cc
     modules/dmrpp_module/DmrppUrl.h
-    modules/dmrpp_module/ngap_build_dmrpp.cc
+    modules/dmrpp_module/check_dmrpp.cc
+    modules/dmrpp_module/merge_dmrpp.cc
+    modules/dmrpp_module/DmrppNames.h
+    modules/dmrpp_module/unit-tests/awsv4_test.cc
+    modules/dmrpp_module/AccessCredentials.cc
+    modules/dmrpp_module/AccessCredentials.h
+    modules/dmrpp_module/NgapS3Credentials.cc
+    modules/dmrpp_module/NgapS3Credentials.h
+    modules/dmrpp_module/unit-tests/NgapCredentialsTest.cc
+    modules/dmrpp_module/byteswap_compat.h
+
     modules/fileout_covjson/unit-tests/FoCovJsonTest.cc
     modules/fileout_covjson/unit-tests/test_config.h
     modules/fileout_covjson/focovjson_utils.cc
@@ -777,6 +804,7 @@ add_executable(bes
     modules/fileout_covjson/FoDapCovJsonTransmitter.h
     modules/fileout_covjson/StreamString.cc
     modules/fileout_covjson/StreamString.h
+
     modules/fileout_gdal/FONgGrid.cc
     modules/fileout_gdal/FONgGrid.h
     modules/fileout_gdal/FONgModule.cc
@@ -791,6 +819,7 @@ add_executable(bes
     modules/fileout_gdal/GeoTiffTransmitter.h
     modules/fileout_gdal/JPEG2000Transmitter.cc
     modules/fileout_gdal/JPEG2000Transmitter.h
+
     modules/fileout_json/unit-tests/FoJsonTest.cc
     modules/fileout_json/unit-tests/test_config.h
     modules/fileout_json/FoDapJsonTransform.cc
@@ -809,6 +838,7 @@ add_executable(bes
     modules/fileout_json/FoJsonRequestHandler.h
     modules/fileout_json/StreamString.cc
     modules/fileout_json/StreamString.h
+
     modules/fileout_netcdf/data/build_test_data/arrayT.cc
     modules/fileout_netcdf/data/build_test_data/arrayT01.cc
     modules/fileout_netcdf/data/build_test_data/attrT.cc
@@ -826,25 +856,6 @@ add_executable(bes
     modules/fileout_netcdf/data/build_test_data/structT02.cc
     modules/fileout_netcdf/data/build_test_data/test_send_data.cc
     modules/fileout_netcdf/data/build_test_data/test_send_data.h
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     modules/fileout_netcdf/FONcArray.cc
     modules/fileout_netcdf/FONcArray.h
     modules/fileout_netcdf/FONcAttributes.cc
@@ -883,6 +894,7 @@ add_executable(bes
     modules/fileout_netcdf/FONcTransmitter.h
     modules/fileout_netcdf/FONcUtils.cc
     modules/fileout_netcdf/FONcUtils.h
+
     modules/fits_handler/BESAutoPtr.h
     modules/fits_handler/fits_read_attributes.cc
     modules/fits_handler/fits_read_attributes.h
@@ -893,6 +905,7 @@ add_executable(bes
     modules/fits_handler/FitsRequestHandler.cc
     modules/fits_handler/FitsRequestHandler.h
     modules/fits_handler/version.h
+
     modules/freeform_handler/FFND/afm2bfm.c
     modules/freeform_handler/FFND/avl.h
     modules/freeform_handler/FFND/avlfree.c
@@ -1012,12 +1025,7 @@ add_executable(bes
     modules/freeform_handler/read_ff.h
     modules/freeform_handler/util_ff.cc
     modules/freeform_handler/util_ff.h
-    modules/gateway_module/unused/GatewayRequest.cc
-    modules/gateway_module/unused/GatewayRequest.h
-    modules/gateway_module/curl_utils.cc
-    modules/gateway_module/curl_utils.h
-    modules/gateway_module/GatewayCache.cc
-    modules/gateway_module/GatewayCache.h
+
     modules/gateway_module/GatewayContainer.cc
     modules/gateway_module/GatewayContainer.h
     modules/gateway_module/GatewayContainerStorage.cc
@@ -1032,11 +1040,8 @@ add_executable(bes
     modules/gateway_module/GatewayPathInfoResponseHandler.h
     modules/gateway_module/GatewayRequestHandler.cc
     modules/gateway_module/GatewayRequestHandler.h
-    modules/gateway_module/GatewayResponseNames.h
-    modules/gateway_module/GatewayUtils.cc
-    modules/gateway_module/GatewayUtils.h
-    modules/gateway_module/RemoteHttpResource.cc
-    modules/gateway_module/RemoteHttpResource.h
+    modules/gateway_module/GatewayNames.h
+
     modules/gdal_handler/gdal_utils.cc
     modules/gdal_handler/gdal_utils.h
     modules/gdal_handler/GDALArray.cc
@@ -1485,10 +1490,7 @@ add_executable(bes
     modules/hdf5_handler/heos5cfdap.h
 
     modules/httpd_catalog_module/unit-tests/HttpdDirScraperTest.cc
-    modules/httpd_catalog_module/unit-tests/RemoteHttpResourceTest.cc
     modules/httpd_catalog_module/unit-tests/test_config.h
-    modules/httpd_catalog_module/curl_utils.cc
-    modules/httpd_catalog_module/curl_utils.h
     modules/httpd_catalog_module/HttpdCatalog.cc
     modules/httpd_catalog_module/HttpdCatalog.h
     modules/httpd_catalog_module/HttpdCatalogContainer.cc
@@ -1499,14 +1501,9 @@ add_executable(bes
     modules/httpd_catalog_module/HttpdCatalogModule.cc
     modules/httpd_catalog_module/HttpdCatalogModule.h
     modules/httpd_catalog_module/HttpdCatalogNames.h
-    modules/httpd_catalog_module/HttpdCatalogUtils.cc
-    modules/httpd_catalog_module/HttpdCatalogUtils.h
     modules/httpd_catalog_module/HttpdDirScraper.cc
     modules/httpd_catalog_module/HttpdDirScraper.h
-    modules/httpd_catalog_module/RemoteHttpResource.cc
-    modules/httpd_catalog_module/RemoteHttpResource.h
-    modules/httpd_catalog_module/RemoteHttpResourceCache.cc
-    modules/httpd_catalog_module/RemoteHttpResourceCache.h
+
     modules/ncml_module/not_used/JoinExistingDimensionCacheManager.cc
     modules/ncml_module/not_used/JoinExistingDimensionCacheManager.h
     modules/ncml_module/not_used/NCMLCacheAggXMLCommand.cc
@@ -1615,6 +1612,7 @@ add_executable(bes
     modules/ncml_module/VariableElement.h
     modules/ncml_module/XMLHelpers.cc
     modules/ncml_module/XMLHelpers.h
+
     modules/netcdf_handler/data/nc4_test_files/make_nc4_strings_hacked.c
     modules/netcdf_handler/data/nc4_test_files/make_nc4_unsigned_types.c
     modules/netcdf_handler/ugrid_project/gridfields_functions.cc
@@ -1657,12 +1655,8 @@ add_executable(bes
     modules/netcdf_handler/NCUrl.cc
     modules/netcdf_handler/NCUrl.h
 
-	modules/ngap_module/curl_utils.cc
-	modules/ngap_module/curl_utils.h
 	modules/ngap_module/NgapApi.cc
 	modules/ngap_module/NgapApi.h
-	modules/ngap_module/NgapCache.cc
-	modules/ngap_module/NgapCache.h
 	modules/ngap_module/NgapContainerStorage.cc
 	modules/ngap_module/NgapContainerStorage.h
 	modules/ngap_module/NgapContainer.cc
@@ -1672,11 +1666,7 @@ add_executable(bes
 	modules/ngap_module/NgapModule.h
 	modules/ngap_module/NgapNames.h
 	modules/ngap_module/NgapRequestHandler.cc
-        modules/ngap_module/NgapRequestHandler.h
-	modules/ngap_module/NgapUtils.cc
-	modules/ngap_module/NgapUtils.h
-	modules/ngap_module/RemoteHttpResource.cc
-	modules/ngap_module/RemoteHttpResource.h
+    modules/ngap_module/NgapRequestHandler.h
 	modules/ngap_module/unit-tests/NgapApiTest.cc
 
 	#modules/sql_handler/action/SQLAction.h
@@ -2070,16 +2060,5 @@ add_executable(bes
     xmlcommand/XMLSetContextsCommand.cc
     xmlcommand/XMLSetContextsCommand.h
 
-	modules/dmrpp_module/unit-tests/awsv4_test.cc
-    modules/dmrpp_module/AccessCredentials.cc
-    modules/dmrpp_module/AccessCredentials.h
-    modules/dmrpp_module/NgapS3Credentials.cc
-    modules/dmrpp_module/NgapS3Credentials.h
-
-    modules/dmrpp_module/curl_utils.cc
-    modules/dmrpp_module/curl_utils.h
-
-    modules/dmrpp_module/unit-tests/NgapCredentialsTest.cc
-
     standalone/besstandalone.cc
-		modules/dmrpp_module/byteswap_compat.h)
+)
