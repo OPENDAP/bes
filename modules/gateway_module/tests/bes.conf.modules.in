@@ -47,6 +47,6 @@ Http.MimeTypes+=h5:application/x-hdf5
 #                                                                       #
 #-----------------------------------------------------------------------#
 
-Gateway.Whitelist=http://localhost:8080/
-Gateway.Whitelist+=http://test.opendap.org/
+AllowedHosts=http://localhost:8080/
+AllowedHosts+=http://test.opendap.org/
 
