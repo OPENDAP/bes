@@ -789,6 +789,7 @@ add_executable(bes
     modules/dmrpp_module/NgapS3Credentials.h
     modules/dmrpp_module/unit-tests/NgapCredentialsTest.cc
     modules/dmrpp_module/byteswap_compat.h
+    modules/dmrpp_module/reduce_mdf.cc
 
     modules/fileout_covjson/unit-tests/FoCovJsonTest.cc
     modules/fileout_covjson/unit-tests/test_config.h
