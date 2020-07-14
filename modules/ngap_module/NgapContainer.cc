@@ -40,7 +40,7 @@
 #include "BESDebug.h"
 #include "BESUtil.h"
 #include "TheBESKeys.h"
-#include "WhiteList.h"
+#include "AllowedHosts.h"
 #include "BESContextManager.h"
 #include "CurlUtils.h"
 #include "HttpUtils.h"

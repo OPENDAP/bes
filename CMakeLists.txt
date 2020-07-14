@@ -470,8 +470,8 @@ add_executable(bes
     dispatch/ShowNodeResponseHandler.h
     dispatch/TheBESKeys.cc
     dispatch/TheBESKeys.h
-    dispatch/WhiteList.cc
-    dispatch/WhiteList.h
+        dispatch/AllowedHosts.cc
+        dispatch/AllowedHosts.h
     http/url_impl.cc
     http/url_impl.h
     http/CurlUtils.cc

@@ -25,7 +25,7 @@
 #include <BESSyntaxUserError.h>
 #include <BESInternalError.h>
 #include <BESDebug.h>
-#include <WhiteList.h>
+#include <AllowedHosts.h>
 #include "RemoteResource.h"
 
 #include "HttpdCatalogContainer.h"

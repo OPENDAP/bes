@@ -37,7 +37,7 @@
 #include "BESSyntaxUserError.h"
 #include "HttpNames.h"
 #include "HttpUtils.h"
-#include "WhiteList.h"
+#include "AllowedHosts.h"
 #include "CurlUtils.h"
 #include "TheBESKeys.h"
 #include "BESUtil.h"
@@ -587,7 +587,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
         // Before we do anything, make sure that the URL is OK to pursue.
-        if (!bes::WhiteList::get_white_list()->is_white_listed(url)) {
+        if (!bes::AllowedHosts::get_white_list()->is_white_listed(url)) {
             string err = (string) "The specified URL " + url
                          + " does not match any of the accessible services in"
                          + " the white list.";

@@ -31,7 +31,7 @@
 #include <BESInternalError.h>
 #include <BESDebug.h>
 #include <BESUtil.h>
-#include <WhiteList.h>
+#include <AllowedHosts.h>
 
 #include "GatewayContainer.h"
 #include "GatewayNames.h"
@@ -67,7 +67,7 @@ GatewayContainer::GatewayContainer(const string &sym_name,
     url_parts.psswd = "";
     string use_real_name = BESUtil::url_create(url_parts);
 
-    if (!WhiteList::get_white_list()->is_white_listed(use_real_name)) {
+    if (!AllowedHosts::get_white_list()->is_white_listed(use_real_name)) {
         string err = (string) "The specified URL " + real_name
                 + " does not match any of the accessible services in"
                 + " the white list.";

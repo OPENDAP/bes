@@ -39,29 +39,29 @@
 #include <BESNotFoundError.h>
 #include <BESForbiddenError.h>
 
-#include "WhiteList.h"
+#include "AllowedHosts.h"
 
 using namespace std;
 using namespace bes;
 
 #define MODULE "wl"
 
-WhiteList *WhiteList::d_instance = 0;
+AllowedHosts *AllowedHosts::d_instance = 0;
 
 /**
  * @brief Static accessor for the singleton
  *
  * @return A pointer to the singleton instance
  */
-WhiteList *
-WhiteList::get_white_list()
+AllowedHosts *
+AllowedHosts::get_white_list()
 {
     if (d_instance) return d_instance;
-    d_instance = new WhiteList;
+    d_instance = new AllowedHosts;
     return d_instance;
 }
 
-WhiteList::WhiteList()
+AllowedHosts::AllowedHosts()
 {
     bool found = false;
     string key = REMOTE_ACCESS_WHITELIST;
@@ -86,7 +86,7 @@ WhiteList::WhiteList()
  * @return True if the URL may be dereferenced, given the BES's configuration,
  * false otherwise.
  */
-bool WhiteList::is_white_listed(const std::string &url)
+bool AllowedHosts::is_white_listed(const std::string &url)
 {
     bool whitelisted = false;
     const string file_url("file://");
@@ -99,20 +99,20 @@ bool WhiteList::is_white_listed(const std::string &url)
 
         // Ensure that the file path starts with the catalog root dir.
         string file_path = url.substr(file_url.size());
-        BESDEBUG(MODULE, "WhiteList::Is_Whitelisted() - file_path: "<< file_path << endl);
+        BESDEBUG(MODULE, "AllowedHosts::Is_Whitelisted() - file_path: "<< file_path << endl);
 
         BESCatalog *bcat = BESCatalogList::TheCatalogList()->find_catalog(BES_DEFAULT_CATALOG);
         if (bcat) {
-            BESDEBUG(MODULE, "WhiteList::Is_Whitelisted() - Found catalog: "<< bcat->get_catalog_name() << endl);
+            BESDEBUG(MODULE, "AllowedHosts::Is_Whitelisted() - Found catalog: "<< bcat->get_catalog_name() << endl);
         }
         else {
             string msg = "OUCH! Unable to locate default catalog!";
-            BESDEBUG(MODULE, "WhiteList::Is_Whitelisted() - " << msg << endl);
+            BESDEBUG(MODULE, "AllowedHosts::Is_Whitelisted() - " << msg << endl);
             throw BESInternalError(msg, __FILE__, __LINE__);
         }
 
         string catalog_root = bcat->get_root();
-        BESDEBUG(MODULE, "WhiteList::Is_Whitelisted() - Catalog root: "<< catalog_root << endl);
+        BESDEBUG(MODULE, "AllowedHosts::Is_Whitelisted() - Catalog root: "<< catalog_root << endl);
 
 
         // Never a relative path shall be accepted.
@@ -128,13 +128,13 @@ bool WhiteList::is_white_listed(const std::string &url)
             }
             else {
                 int ret = file_path.compare(0, catalog_root.npos, catalog_root) == 0;
-                BESDEBUG(MODULE, "WhiteList::Is_Whitelisted() - file_path.compare(): " << ret << endl);
+                BESDEBUG(MODULE, "AllowedHosts::Is_Whitelisted() - file_path.compare(): " << ret << endl);
                 whitelisted = (ret==0);
                 relative_path = file_path.substr(catalog_root.length());
             }
         }
         else {
-            BESDEBUG(MODULE, "WhiteList::Is_Whitelisted() - relative path detected");
+            BESDEBUG(MODULE, "AllowedHosts::Is_Whitelisted() - relative path detected");
             relative_path = file_path;
             whitelisted = true;
         }
@@ -158,7 +158,7 @@ bool WhiteList::is_white_listed(const std::string &url)
         }
 
 
-        BESDEBUG(MODULE, "WhiteList::Is_Whitelisted() - Is_Whitelisted: "<< (whitelisted?"true ":"false ") << endl);
+        BESDEBUG(MODULE, "AllowedHosts::Is_Whitelisted() - Is_Whitelisted: "<< (whitelisted?"true ":"false ") << endl);
     }
     else {
         // This checks HTTP and HTTPS URLs against the whitelist patterns.
@@ -177,7 +177,7 @@ bool WhiteList::is_white_listed(const std::string &url)
         }
         else {
             string msg;
-            msg = "WhiteList - ERROR! Unknown URL protocol! Only " + http_url + ", " + https_url + ", and " + file_url + " are supported.";
+            msg = "AllowedHosts - ERROR! Unknown URL protocol! Only " + http_url + ", " + https_url + ", and " + file_url + " are supported.";
             BESDEBUG(MODULE, msg << endl);
             throw BESForbiddenError(msg, __FILE__, __LINE__);
         }
