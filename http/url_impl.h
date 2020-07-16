@@ -34,7 +34,8 @@ public:
     url(const std::map<std::string,std::string> &kvp);
 
     ~url();
-
+    std::string str() { return d_source_url; }
+    
     std::string protocol() const { return d_protocol; }
 
     std::string host() const { return d_host; }

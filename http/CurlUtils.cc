@@ -1044,6 +1044,9 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             BESDEBUG(MODULE, prolog << "Cache hit for: " << data_access_url_str << endl);
             // Is it expired?
             http::url target_url(data_access_url_info);
+            BESDEBUG(MODULE, prolog << "Cached URL: " << (target_url.<< endl);
+
+
             found = !target_url.is_expired();
             BESDEBUG(MODULE, prolog << "Cached target URL is " << (found?"not ":"") << "expired." << endl);
 
