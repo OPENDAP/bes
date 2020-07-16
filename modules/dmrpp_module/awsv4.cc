@@ -39,6 +39,7 @@
 #include <iostream>
 #include <sstream>
 
+
 #if 0
 #include <regex>
 #endif
@@ -46,9 +47,12 @@
 #include <openssl/sha.h>
 #include <openssl/hmac.h>
 
-#include "BESInternalError.h"
-
 #include "url_impl.h"
+#include "BESInternalError.h"
+#include "BESDebug.h"
+#include "DmrppNames.h"
+
+#define prolog std::string("AWSV4::").append(__func__).append("() - ")
 
 namespace AWSV4 {
 
@@ -263,49 +267,61 @@ namespace AWSV4 {
                 (const unsigned char *)yyyymmdd.c_str(), yyyymmdd.length(), md, &md_len);
         if (!kDate)
             throw BESInternalError("Could not compute AWS V4 requst signature." ,__FILE__, __LINE__);
-
+#if 0
         if (verbose) {
             std::cerr << "kDate: " << hmac_to_string(kDate) << std::endl;
             std::cerr << "md_len: " << md_len << std::endl;
             md[md_len] = '\0';
             std::cerr << "md: " << hmac_to_string(md) << std::endl;
         }
+#endif
+        md[md_len] = '\0';
+        BESDEBUG(MODULE, prolog << "kDate: " << hmac_to_string(kDate)  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
 
         unsigned char *kRegion = HMAC(EVP_sha256(), md, (size_t)md_len,
                                       (const unsigned char*)region.c_str(), region.length(), md, &md_len);
         if (!kRegion)
             throw BESInternalError("Could not compute AWS V4 requst signature." ,__FILE__, __LINE__);
-
+#if 0
         if (verbose) {
             std::cerr << "kRegion: " << hmac_to_string(kRegion) << std::endl;
             std::cerr << "md_len: " << md_len << std::endl;
             md[md_len] = '\0';
             std::cerr << "md: " << hmac_to_string(md) << std::endl;
         }
+#endif
+        md[md_len] = '\0';
+        BESDEBUG(MODULE, prolog << "kRegion: " << hmac_to_string(kRegion)  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
 
         unsigned char *kService = HMAC(EVP_sha256(), md, (size_t)md_len,
                         (const unsigned char*)service.c_str(), service.length(), md, &md_len);
         if (!kService)
             throw BESInternalError("Could not compute AWS V4 requst signature." ,__FILE__, __LINE__);
-
+#if 0
         if (verbose) {
             std::cerr << "kService: " << hmac_to_string(kService) << std::endl;
             std::cerr << "md_len: " << md_len << std::endl;
             md[md_len] = '\0';
             std::cerr << "md: " << hmac_to_string(md) << std::endl;
         }
+#endif
+        md[md_len] = '\0';
+        BESDEBUG(MODULE, prolog << "kService: " << hmac_to_string(kService)  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
 
         unsigned char *kSigning = HMAC(EVP_sha256(), md, (size_t)md_len,
                         (const unsigned char*)AWS4_REQUEST.c_str(), AWS4_REQUEST.length(), md, &md_len);
         if (!kSigning)
             throw BESInternalError("Could not compute AWS V4 requst signature." ,__FILE__, __LINE__);
-
+#if 0
         if (verbose) {
             std::cerr << "kSigning " << hmac_to_string(kSigning) << std::endl;
             std::cerr << "md_len: " << md_len << std::endl;
             md[md_len] = '\0';
             std::cerr << "md: " << hmac_to_string(md) << std::endl;
         }
+#endif
+        md[md_len] = '\0';
+        BESDEBUG(MODULE, prolog << "kSigning: " << hmac_to_string(kRegion)  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
 
         unsigned char *kSig = HMAC(EVP_sha256(), md, (size_t)md_len,
                     (const unsigned char*)string_to_sign.c_str(), string_to_sign.length(), md, &md_len);
@@ -314,6 +330,7 @@ namespace AWSV4 {
 
         md[md_len] = '\0';
         auto sig = hmac_to_string(md);
+        BESDEBUG(MODULE, prolog << "kSig: " << sig  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
         return sig;
     }
 
