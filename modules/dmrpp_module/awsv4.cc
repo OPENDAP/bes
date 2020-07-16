@@ -254,8 +254,7 @@ namespace AWSV4 {
                                           const std::string secret,
                                           const std::string region,
                                           const std::string service,
-                                          const std::string string_to_sign,
-                                          const bool verbose) {
+                                          const std::string string_to_sign) {
 
         // These are used/re-used for the various signatures. jhrg 1/3/20
         unsigned char md[EVP_MAX_MD_SIZE+1];
@@ -276,7 +275,7 @@ namespace AWSV4 {
         }
 #endif
         md[md_len] = '\0';
-        BESDEBUG(MODULE, prolog << "kDate: " << hmac_to_string(kDate)  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
+        BESDEBUG(CREDS, prolog << "kDate: " << hmac_to_string(kDate)  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
 
         unsigned char *kRegion = HMAC(EVP_sha256(), md, (size_t)md_len,
                                       (const unsigned char*)region.c_str(), region.length(), md, &md_len);
@@ -291,7 +290,7 @@ namespace AWSV4 {
         }
 #endif
         md[md_len] = '\0';
-        BESDEBUG(MODULE, prolog << "kRegion: " << hmac_to_string(kRegion)  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
+        BESDEBUG(CREDS, prolog << "kRegion: " << hmac_to_string(kRegion)  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
 
         unsigned char *kService = HMAC(EVP_sha256(), md, (size_t)md_len,
                         (const unsigned char*)service.c_str(), service.length(), md, &md_len);
@@ -306,7 +305,7 @@ namespace AWSV4 {
         }
 #endif
         md[md_len] = '\0';
-        BESDEBUG(MODULE, prolog << "kService: " << hmac_to_string(kService)  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
+        BESDEBUG(CREDS, prolog << "kService: " << hmac_to_string(kService)  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
 
         unsigned char *kSigning = HMAC(EVP_sha256(), md, (size_t)md_len,
                         (const unsigned char*)AWS4_REQUEST.c_str(), AWS4_REQUEST.length(), md, &md_len);
@@ -321,7 +320,7 @@ namespace AWSV4 {
         }
 #endif
         md[md_len] = '\0';
-        BESDEBUG(MODULE, prolog << "kSigning: " << hmac_to_string(kRegion)  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
+        BESDEBUG(CREDS, prolog << "kSigning: " << hmac_to_string(kRegion)  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
 
         unsigned char *kSig = HMAC(EVP_sha256(), md, (size_t)md_len,
                     (const unsigned char*)string_to_sign.c_str(), string_to_sign.length(), md, &md_len);
@@ -330,7 +329,7 @@ namespace AWSV4 {
 
         md[md_len] = '\0';
         auto sig = hmac_to_string(md);
-        BESDEBUG(MODULE, prolog << "kSig: " << sig  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
+        BESDEBUG(CREDS, prolog << "kSig: " << sig  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
         return sig;
     }
 
@@ -343,7 +342,6 @@ namespace AWSV4 {
     * @param secret_key The Secret key for this resource (the thing referenced by the URI).
     * @param region The AWS region where the request is being made (us-west-2 by default)
     * @param service The AWS service that is the target of the request (S3 by default)
-    * @pram verbose True, be chatty to stderr. False by default
     * @return The AWS V4 Signature string.
     */
 
@@ -353,8 +351,7 @@ namespace AWSV4 {
             const std::string &public_key,
             const std::string &secret_key,
             const std::string &region,
-            const std::string &service,
-            const bool &verbose) {
+            const std::string &service) {
 
         http::url uri(uri_str);
 
@@ -394,7 +391,7 @@ namespace AWSV4 {
         if (verbose)
             std::cerr << "-- Canonical Request\n" << canonical_request << "\n--\n" << std::endl;
 #endif
-        BESDEBUG(MODULE, prolog << "Canonical Request: " << canonical_request <<  std::endl );
+        BESDEBUG(CREDS, prolog << "Canonical Request: " << canonical_request <<  std::endl );
 
         auto hashed_canonical_request = sha256_base16(canonical_request);
         auto credential_scope = AWSV4::credential_scope(request_date,region,service);
@@ -406,19 +403,18 @@ namespace AWSV4 {
         if (verbose)
             std::cerr << "-- String to Sign\n" << string_to_sign << "\n----\n" << std::endl;
 #endif
-        BESDEBUG(MODULE, prolog << "String to Sign: " << string_to_sign <<  std::endl );
+        BESDEBUG(CREDS, prolog << "String to Sign: " << string_to_sign <<  std::endl );
 
         auto signature = calculate_signature(request_date,
                                                     secret_key,
                                                     region,
                                                     service,
-                                                    string_to_sign,
-                                                    verbose);
+                                                    string_to_sign);
 #if 0
         if (verbose)
             std::cerr << "-- signature\n" << signature << "\n----\n" << std::endl;
 #endif
-        BESDEBUG(MODULE, prolog << "signature: " << signature <<  std::endl );
+        BESDEBUG(CREDS, prolog << "signature: " << signature <<  std::endl );
 
         const std::string authorization_header = STRING_TO_SIGN_ALGO + " Credential=" + public_key + "/"
                 + credential_scope + ", SignedHeaders=" + signed_headers + ", Signature=" + signature;
@@ -427,7 +423,7 @@ namespace AWSV4 {
         if (verbose)
             std::cerr << "-- authorization_header\n" << authorization_header << "\n----\n" << std::endl;
 #endif
-        BESDEBUG(MODULE, prolog << "authorization_header: " << authorization_header <<  std::endl );
+        BESDEBUG(CREDS, prolog << "authorization_header: " << authorization_header <<  std::endl );
 
         return authorization_header;
     }

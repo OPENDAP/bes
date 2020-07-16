@@ -102,6 +102,7 @@ namespace dmrpp {
         void setUp()
         {
             if(debug) cerr << endl ;
+            if (debug) BESDebug::SetUp("cerr,dmrpp,dmrpp:creds");
 
             // AWSv4 examples are based on a request dat/time of:
             // define REQUEST_DATE "2015 08 30 T 12 36 00Z"
@@ -201,8 +202,7 @@ namespace dmrpp {
                             aws_key_id,
                             aws_secret_key,
                             region,
-                            serviceName,
-                            debug);
+                            serviceName);
 
             if(debug) show_baseline("auth_header", auth_header);
 

@@ -83,14 +83,12 @@ namespace AWSV4 {
                                           const std::string secret,
                                           const std::string region,
                                           const std::string service,
-                                          const std::string string_to_sign,
-                                          const bool verbose = false);
+                                          const std::string string_to_sign);
 
     // The whole enchilada. Added jhrg 11/25/19
     const std::string compute_awsv4_signature(const std::string &uri_str, const std::time_t &request_date,
                                               const std::string &public_key, const std::string &secret_key,
-                                              const std::string &region, const std::string &service = "s3",
-                                              const bool &verbose = false);
+                                              const std::string &region, const std::string &service = "s3");
 }
 
 #endif

@@ -751,8 +751,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
                             credentials->get(AccessCredentials::ID_KEY),
                             credentials->get(AccessCredentials::KEY_KEY),
                             credentials->get(AccessCredentials::REGION_KEY),
-                            "s3",
-                            BESDebug::IsSet(DMRPP_CURL));
+                            "s3");
 
             // passing nullptr for the first call allocates the curl_slist
             // The following code builds the slist that holds the headers. This slist is freed
