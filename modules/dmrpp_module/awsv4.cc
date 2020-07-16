@@ -390,8 +390,11 @@ namespace AWSV4 {
                                                             signed_headers,
                                                             sha256_empty_payload);
 
+#if 0
         if (verbose)
             std::cerr << "-- Canonical Request\n" << canonical_request << "\n--\n" << std::endl;
+#endif
+        BESDEBUG(MODULE, prolog << "Canonical Request: " << canonical_request <<  std::endl );
 
         auto hashed_canonical_request = sha256_base16(canonical_request);
         auto credential_scope = AWSV4::credential_scope(request_date,region,service);
@@ -399,9 +402,11 @@ namespace AWSV4 {
                                                     request_date,
                                                     credential_scope,
                                                     hashed_canonical_request);
-
+#if 0
         if (verbose)
             std::cerr << "-- String to Sign\n" << string_to_sign << "\n----\n" << std::endl;
+#endif
+        BESDEBUG(MODULE, prolog << "String to Sign: " << string_to_sign <<  std::endl );
 
         auto signature = calculate_signature(request_date,
                                                     secret_key,
@@ -409,14 +414,20 @@ namespace AWSV4 {
                                                     service,
                                                     string_to_sign,
                                                     verbose);
+#if 0
         if (verbose)
             std::cerr << "-- signature\n" << signature << "\n----\n" << std::endl;
+#endif
+        BESDEBUG(MODULE, prolog << "signature: " << signature <<  std::endl );
 
         const std::string authorization_header = STRING_TO_SIGN_ALGO + " Credential=" + public_key + "/"
                 + credential_scope + ", SignedHeaders=" + signed_headers + ", Signature=" + signature;
 
+#if 0
         if (verbose)
             std::cerr << "-- authorization_header\n" << authorization_header << "\n----\n" << std::endl;
+#endif
+        BESDEBUG(MODULE, prolog << "authorization_header: " << authorization_header <<  std::endl );
 
         return authorization_header;
     }
