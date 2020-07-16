@@ -1044,7 +1044,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             BESDEBUG(MODULE, prolog << "Cache hit for: " << data_access_url_str << endl);
             // Is it expired?
             http::url target_url(data_access_url_info);
-            BESDEBUG(MODULE, prolog << "Cached URL: " << target_url.str() << endl);
+            BESDEBUG(MODULE, prolog << "Cached URL: " << target_url.to_string() << endl);
 
 
             found = !target_url.is_expired();
@@ -1053,7 +1053,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         }
         // It not found or expired, reload.
         if(!found){
-            BESDEBUG(MODULE, prolog << "Reacquiring last accessed URL for  " << data_access_url_str << endl);
+            BESDEBUG(MODULE, prolog << "Acquiring last accessed URL for  " << data_access_url_str << endl);
             string last_accessed_url_str;
             curl::find_last_redirect(data_access_url_str, last_accessed_url_str);
             BESDEBUG(MODULE, prolog << "last_accessed_url: " << last_accessed_url_str << endl);

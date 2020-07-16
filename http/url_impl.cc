@@ -297,5 +297,31 @@ bool url::is_expired()
 }
 
 
+string url::to_string(){
+    stringstream ss;
+    string indent_inc = "  ";
+    string indent = indent_inc;
+
+    ss << "http::url [" << this << "] " << endl;
+    ss << indent << "d_source_url: " << d_source_url << endl;
+    ss << indent << "d_protocol:   " << d_protocol << endl;
+    ss << indent << "d_host:       " << d_host << endl;
+    ss << indent << "d_path:       " << d_path << endl;
+    ss << indent << "d_query:      " << d_query << endl;
+
+    std::map<std::string, std::vector<std::string>* >::iterator it;
+
+    string idt = indent+indent_inc;
+    for(it=d_query_kvp.begin(); it !=d_query_kvp.end(); it++){
+        ss << indent << "d_query_kvp["<<it->first<<"]: " << endl;
+        std::vector<std::string> *values = it->second;
+        for(size_t i=0; i<values->size(); i++){
+            ss << idt << "value[" << i << "]: " << (*values)[i] << endl;
+        }
+    }
+    ss << indent << "d_ingest_time:      " << d_ingest_time << endl;
+
+}
+
 
 } // namespace http
