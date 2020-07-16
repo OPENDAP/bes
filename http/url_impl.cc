@@ -320,7 +320,7 @@ string url::to_string(){
         }
     }
     ss << indent << "d_ingest_time:      " << d_ingest_time << endl;
-
+    return ss.str();
 }
 
 
