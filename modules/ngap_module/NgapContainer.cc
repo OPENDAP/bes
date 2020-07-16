@@ -143,6 +143,35 @@ namespace ngap {
         return found && BESUtil::lowercase(value)=="true";
     }
 
+#if 0
+    void cache_final_redirect_url(string data_access_url_str) {
+        // See if the data_access_url has already been processed into a terminal signed URL
+        // in TheBESKeys
+        bool found;
+        std::map<std::string,std::string> data_access_url_info;
+        TheBESKeys::TheKeys()->get_values(data_access_url_str, data_access_url_info, false, found);
+        if(found){
+            // Is it expired?
+            http::url target_url(data_access_url_info);
+            found = NgapApi::signed_url_is_expired(target_url);
+        }
+        // It not found or expired, reload.
+        if(!found){
+            string last_accessed_url_str;
+            curl::find_last_redirect(data_access_url_str, last_accessed_url_str);
+            BESDEBUG(MODULE, prolog << "last_accessed_url: " << last_accessed_url_str << endl);
+
+            http::url last_accessed_url(last_accessed_url_str);
+            last_accessed_url.kvp(data_access_url_info);
+
+            // Placing the last accessed URL information in TheBESKeys associated with the data_access_url as the
+            // key allows allows other modules, such as dmrpp_module to access the crucial last accessed URL
+            // information which eliminates any number of redirects during access operations.
+            TheBESKeys::TheKeys()->set_keys(data_access_url_str, data_access_url_info, false, false);
+        }
+    }
+#endif
+
     /** @brief access the remote target response by making the remote request
      *
      * @return full path to the remote request response data file
@@ -155,30 +184,7 @@ namespace ngap {
         string data_access_url_str = get_real_name();
 
         if(cache_terminal_urls()){
-            // See if the data_access_url has already been processed into a terminal signed URL
-            // in TheBESKeys
-            bool found;
-            std::map<std::string,std::string> data_access_url_info;
-            TheBESKeys::TheKeys()->get_values(data_access_url_str, data_access_url_info, false, found);
-            if(found){
-                // Is it expired?
-                http::url target_url(data_access_url_info);
-                found = NgapApi::signed_url_is_expired(target_url);
-            }
-            // It not found or expired, reload.
-            if(!found){
-                string last_accessed_url_str;
-                curl::find_last_redirect(data_access_url_str, last_accessed_url_str);
-                BESDEBUG(MODULE, prolog << "last_accessed_url: " << last_accessed_url_str << endl);
-
-                http::url last_accessed_url(last_accessed_url_str);
-                last_accessed_url.kvp(data_access_url_info);
-
-                // Placing the last accessed URL information in TheBESKeys associated with the data_access_url as the
-                // key allows allows other modules, such as dmrpp_module to access the crucial last accessed URL
-                // information which eliminates any number of redirects during access operations.
-                TheBESKeys::TheKeys()->set_keys(data_access_url_str, data_access_url_info, false, false);
-            }
+            curl::cache_final_redirect_url(data_access_url_str);
         }
 
         // And we know that the dmr++ file should "right next to it" (side-car)

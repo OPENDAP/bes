@@ -28,8 +28,12 @@ using namespace std;
 #define SOURCE_URL_KEY  "url::target_url"
 #define INGEST_TIME_KEY  "url::ingest_time"
 
-namespace http {
+#define AMS_EXPIRES_HEADER_KEY "X-Amz-Expires"
+#define AWS_DATE_HEADER_KEY "X-Amz-Date"
+#define CLOUDFRONT_EXPIRES_HEADER_KEY "Expires"
+#define REFRESH_THRESHOLD 3600
 
+namespace http {
 
 /**
  *
@@ -215,6 +219,83 @@ void url::kvp(map<string,string>  &kvp){
         kvp.insert(pair<string,string>(it->first,(*it->second)[0]));
     }
 }
+
+/**
+ *
+ * @return True if the URL appears within the REFRESH_THRESHOLD of the
+ * expires time read from one of CLOUDFRONT_EXPIRES_HEADER_KEY, AMS_EXPIRES_HEADER_KEY;
+ *
+ */
+bool url::is_expired()
+{
+    bool is_expired;
+    time_t now;
+    time(&now);  /* get current time; same as: timer = time(NULL)  */
+    BESDEBUG(MODULE, prolog << "now: " << now << endl);
+
+    time_t expires = now;
+    string cf_expires = query_parameter_value(CLOUDFRONT_EXPIRES_HEADER_KEY);
+    string aws_expires = query_parameter_value(AMS_EXPIRES_HEADER_KEY);
+
+    if(!cf_expires.empty()){ // CloudFront expires header?
+        expires = stoll(cf_expires);
+        BESDEBUG(MODULE, prolog << "Using "<< CLOUDFRONT_EXPIRES_HEADER_KEY << ": " << expires << endl);
+    }
+    else if(!aws_expires.empty()){
+        // AWS Expires header?
+        //
+        // By default we'll use the time we made the URL object, ingest_time
+        time_t start_time = ingest_time();
+        // But if there's an AWS Date we'll parse that and compute the time
+        // @TODO move to NgapApi::decompose_url() and add the result to the map
+        string aws_date = query_parameter_value(AWS_DATE_HEADER_KEY);
+        if(!aws_date.empty()){
+            string date = aws_date; // 20200624T175046Z
+            string year = date.substr(0,4);
+            string month = date.substr(4,2);
+            string day = date.substr(6,2);
+            string hour = date.substr(9,2);
+            string minute = date.substr(11,2);
+            string second = date.substr(13,2);
+
+            BESDEBUG(MODULE, prolog << "date: "<< date <<
+                                    " year: " << year << " month: " << month << " day: " << day <<
+                                    " hour: " << hour << " minute: " << minute  << " second: " << second << endl);
+
+            struct tm *ti = gmtime(&now);
+            ti->tm_year = stoll(year) - 1900;
+            ti->tm_mon = stoll(month) - 1;
+            ti->tm_mday = stoll(day);
+            ti->tm_hour = stoll(hour);
+            ti->tm_min = stoll(minute);
+            ti->tm_sec = stoll(second);
+
+            BESDEBUG(MODULE, prolog << "ti->tm_year: "<< ti->tm_year <<
+                                    " ti->tm_mon: " << ti->tm_mon <<
+                                    " ti->tm_mday: " << ti->tm_mday <<
+                                    " ti->tm_hour: " << ti->tm_hour <<
+                                    " ti->tm_min: " << ti->tm_min <<
+                                    " ti->tm_sec: " << ti->tm_sec << endl);
+
+
+            start_time = mktime(ti);
+            BESDEBUG(MODULE, prolog << "AWS (computed) start_time: "<< start_time << endl);
+        }
+        expires = start_time + stoll(aws_expires);
+        BESDEBUG(MODULE, prolog << "Using "<< AMS_EXPIRES_HEADER_KEY << ": " << aws_expires <<
+                                " (expires: " << expires << ")" << endl);
+    }
+    time_t remaining = expires - now;
+    BESDEBUG(MODULE, prolog << "expires: " << expires <<
+                            "  remaining: " << remaining <<
+                            " threshold: " << REFRESH_THRESHOLD << endl);
+
+    is_expired = remaining < REFRESH_THRESHOLD;
+    BESDEBUG(MODULE, prolog << "is_expired: " << (is_expired?"true":"false") << endl);
+
+    return is_expired;
+}
+
 
 
 } // namespace http

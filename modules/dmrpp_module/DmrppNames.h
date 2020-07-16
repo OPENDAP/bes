@@ -36,6 +36,9 @@
 #define CREDS  "dmrpp:creds"
 #define DMRPP_CURL  "dmrpp:curl"
 
+
+#define DMRPP_CACHE_LAST_ACCESSED_URLS "Dmrpp.use_last_accessed_urls"
+
 #endif // E_DmrppNames_H
 
 

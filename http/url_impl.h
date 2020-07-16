@@ -54,6 +54,8 @@ public:
 
     void kvp(std::map<std::string,std::string> &kvp);
 
+    bool is_expired();
+
 };
 
 } // namespace http

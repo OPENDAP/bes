@@ -47,6 +47,7 @@
 #include <BESInternalError.h>
 #include <BESDebug.h>
 #include <BESRegex.h>
+#include "url_impl.h"
 
 #define MODULE "http"
 
@@ -1020,6 +1021,45 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         }
     }
 
+    void cache_final_redirect_url(const string &data_access_url_str) {
+        // if it's not an HTTP url there is nothing to cache.
+        if (data_access_url_str.find("http://") != 0 && data_access_url_str.find("https://") != 0) {
+            return;
+        }
 
+        // See if the data_access_url has already been processed into a terminal signed URL
+        // in TheBESKeys
+        bool found;
+        std::map<std::string,std::string> data_access_url_info;
+        TheBESKeys::TheKeys()->get_values(data_access_url_str, data_access_url_info, false, found);
+        if(found){
+            #if 0
+            // Is it expired?
+            http::url target_url(data_access_url_info);
+            found = NgapApi::signed_url_is_expired(target_url);
+            #endif
+            BESDEBUG(MODULE, prolog << "Cache hit for: " << data_access_url_str << endl);
+            // Is it expired?
+            http::url target_url(data_access_url_info);
+            found = !target_url.is_expired();
+            BESDEBUG(MODULE, prolog << "Cached target URL is " << (found?"not ":"") << "expired." << endl);
+
+        }
+        // It not found or expired, reload.
+        if(!found){
+            BESDEBUG(MODULE, prolog << "Reacquiring last accessed URL for  " << data_access_url_str << endl);
+            string last_accessed_url_str;
+            curl::find_last_redirect(data_access_url_str, last_accessed_url_str);
+            BESDEBUG(MODULE, prolog << "last_accessed_url: " << last_accessed_url_str << endl);
+
+            http::url last_accessed_url(last_accessed_url_str);
+            last_accessed_url.kvp(data_access_url_info);
+
+            // Placing the last accessed URL information in TheBESKeys associated with the data_access_url as the
+            // key allows allows other modules, such as dmrpp_module to access the crucial last accessed URL
+            // information which eliminates any number of redirects during access operations.
+            TheBESKeys::TheKeys()->set_keys(data_access_url_str, data_access_url_info, false, false);
+        }
+    }
 
 } /* namespace curl */
