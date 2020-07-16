@@ -1042,6 +1042,11 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             found = NgapApi::signed_url_is_expired(target_url);
             #endif
             BESDEBUG(MODULE, prolog << "Cache hit for: " << data_access_url_str << endl);
+            std::map<std::string,std::string>::iterator moot;
+            for(moot=data_access_url_info.begin(); moot != data_access_url_info.end(); moot++){
+                BESDEBUG(MODULE, prolog << "Cached data_access_url_info[" << moot->first << "]: " << moot->second << endl);
+            }
+
             // Is it expired?
             http::url target_url(data_access_url_info);
             BESDEBUG(MODULE, prolog << "Cached URL: " << target_url.to_string() << endl);
@@ -1070,10 +1075,6 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             for(mit=last_accessed_url_info.begin(); mit != last_accessed_url_info.end(); mit++){
                 BESDEBUG(MODULE, prolog << " last_accessed_url_info[" << mit->first << "]: " << mit->second << endl);
             }
-                
-
-
-
 
             // Placing the last accessed URL information in TheBESKeys associated with the data_access_url as the
             // key allows allows other modules, such as dmrpp_module to access the crucial last accessed URL
