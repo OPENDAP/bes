@@ -259,7 +259,7 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
         std::string byteOrder = chunk.get_byte_order();
         if (!byteOrder.empty()) {
             if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "byteOrder",
-                                            (const xmlChar *) byteOrder.c_str()))
+                                            (const xmlChar *) byteOrder.c_str()) < 0)
                 throw BESInternalError("Could not write attribute byteOrder", __FILE__, __LINE__);
         }
     }
