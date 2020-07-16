@@ -21,12 +21,12 @@ using namespace std;
 #define MODULE "http"
 #define prolog string("url::").append(__func__).append("() - ")
 
-#define PROTOCOL_KEY "url_protocol"
-#define HOST_KEY  "url_host"
-#define PATH_KEY  "url_path"
-#define QUERY_KEY "url_query"
-#define SOURCE_URL_KEY  "url_target_url"
-#define INGEST_TIME_KEY  "url_ingest_time"
+#define PROTOCOL_KEY "http_url_protocol"
+#define HOST_KEY  "http_url_host"
+#define PATH_KEY  "http_url_path"
+#define QUERY_KEY "http_url_query"
+#define SOURCE_URL_KEY  "http_url_target_url"
+#define INGEST_TIME_KEY  "http_url_ingest_time"
 
 #define AMS_EXPIRES_HEADER_KEY "X-Amz-Expires"
 #define AWS_DATE_HEADER_KEY "X-Amz-Date"
