@@ -320,7 +320,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
             haddr_t cont_addr = 0;
             hsize_t cont_size = 0;
 
-            VERBOSE(cerr << "Storage: contiguous" << endl);
+            VERBOSE(cerr << "Storage:   contiguous" << endl);
 
             cont_addr = H5Dget_offset(dataset);
             /* if statement never less than zero due to cont_addr being unsigned int. SBL 1.29.20
@@ -352,8 +352,8 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
                 __FILE__, __LINE__);
             }
 
-            VERBOSE(cerr << "storage: chunked." << endl);
-            VERBOSE(cerr << "Number of chunks is " << num_chunks << endl);
+            VERBOSE(cerr << "Storage:   chunked." << endl);
+            VERBOSE(cerr << "Number of chunks is: " << num_chunks << endl);
 
             if (dc)
             	set_filter_information(dataset, dc);
