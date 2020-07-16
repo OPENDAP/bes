@@ -49,7 +49,7 @@
 #include <BESRegex.h>
 #include "url_impl.h"
 
-#define MODULE "http"
+#define MODULE "curl"
 
 using std::endl;
 using std::string;
@@ -1022,8 +1022,11 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
     }
 
     void cache_final_redirect_url(const string &data_access_url_str) {
+        BESDEBUG(MODULE, prolog << "BEGIN url: " << data_access_url_str << endl);
+
         // if it's not an HTTP url there is nothing to cache.
         if (data_access_url_str.find("http://") != 0 && data_access_url_str.find("https://") != 0) {
+            BESDEBUG(MODULE, prolog << "END Not an HTTP request, SKIPPING." << endl);
             return;
         }
 
@@ -1060,6 +1063,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             // information which eliminates any number of redirects during access operations.
             TheBESKeys::TheKeys()->set_keys(data_access_url_str, data_access_url_info, false, false);
         }
+        BESDEBUG(MODULE, prolog << "END" << endl);
     }
 
 } /* namespace curl */
