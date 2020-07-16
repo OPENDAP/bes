@@ -110,7 +110,7 @@ bool use_last_accessed_urls(){
     bool found;
     string value;
     TheBESKeys::TheKeys()->get_value(DMRPP_CACHE_LAST_ACCESSED_URLS,value,found);
-    BESDEBUG("curl", prolog << "found:  " << (found?"true  value: "+value:"false") << endl);
+    BESDEBUG("curl", prolog << "DMRPP_CACHE_LAST_ACCESSED_URLS:  " << (found?"true  value: "+value:"false") << endl);
     return found && BESUtil::lowercase(value)=="true";
 }
 

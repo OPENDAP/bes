@@ -1055,13 +1055,19 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             curl::find_last_redirect(data_access_url_str, last_accessed_url_str);
             BESDEBUG(MODULE, prolog << "last_accessed_url: " << last_accessed_url_str << endl);
 
+            // Make the target URL object.
             http::url last_accessed_url(last_accessed_url_str);
-            last_accessed_url.kvp(data_access_url_info);
 
+            std::map<std::string,std::string> last_accessed_url_info;
+            // Convert it's representation to a simple KVP list
+            last_accessed_url.kvp(last_accessed_url_info);
+
+            BESDEBUG(MODULE, prolog << "data_access_url:   " << data_access_url_str << endl);
+            BESDEBUG(MODULE, prolog << "last_accessed_url: " << last_accessed_url_str << endl);
             // Placing the last accessed URL information in TheBESKeys associated with the data_access_url as the
             // key allows allows other modules, such as dmrpp_module to access the crucial last accessed URL
             // information which eliminates any number of redirects during access operations.
-            TheBESKeys::TheKeys()->set_keys(data_access_url_str, data_access_url_info, false, false);
+            TheBESKeys::TheKeys()->set_keys(data_access_url_str, last_accessed_url_info, false, false);
         }
         BESDEBUG(MODULE, prolog << "END" << endl);
     }
