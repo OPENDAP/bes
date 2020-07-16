@@ -294,7 +294,8 @@ void TheBESKeys::set_keys(const string &key, const vector<string> &values, bool 
 void TheBESKeys::set_keys(
         const string &key,
         const map<string, string> &values,
-        const bool case_insensitive_map_keys, bool addto)
+        const bool case_insensitive_map_keys,
+        bool addto)
 {
     map<string, vector<string> >::iterator i;
     i = _the_keys->find(key);
@@ -312,11 +313,13 @@ void TheBESKeys::set_keys(
         if(map_key.empty() ){
             BESDEBUG(MODULE, prolog << "The map_key is empty. SKIPPING." << endl);
         }
-        if(case_insensitive_map_keys){
-            map_key = BESUtil::lowercase(map_key);
+        else {
+            if(case_insensitive_map_keys){
+                map_key = BESUtil::lowercase(map_key);
+            }
+            string map_record=map_key+":"+mit->second;
+            (*_the_keys)[key].push_back(map_record);
         }
-        string map_record=map_key+":"+mit->second;
-        (*_the_keys)[key].push_back(map_record);
     }
 }
 
