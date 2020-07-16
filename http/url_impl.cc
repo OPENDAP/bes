@@ -51,30 +51,35 @@ url::url(const map<string,string> &kvp)
     if(it != kvp.end() && itc != kvp_copy.end()){
         d_protocol = it->second;
         kvp_copy.erase(it->first);
+        BESDEBUG(MODULE, prolog << "Located PROTOCOL_KEY(" << PROTOCOL_KEY << ") value: " << d_protocol << endl);
     }
     it = kvp.find(HOST_KEY);
     itc = kvp_copy.find(HOST_KEY);
     if(it != kvp.end() && itc != kvp_copy.end()){
         d_host = it->second;
         kvp_copy.erase(it->first);
+        BESDEBUG(MODULE, prolog << "Located HOST_KEY(" << HOST_KEY << ") value: " << d_host << endl);
     }
     it = kvp.find(PATH_KEY);
     itc = kvp_copy.find(PATH_KEY);
     if(it != kvp.end() && itc != kvp_copy.end()){
         d_path = it->second;
         kvp_copy.erase(it->first);
+        BESDEBUG(MODULE, prolog << "Located PATH_KEY(" << PATH_KEY << ") value: " << d_path << endl);
     }
     it = kvp.find(QUERY_KEY);
     itc = kvp_copy.find(QUERY_KEY);
     if(it != kvp.end() && itc != kvp_copy.end()){
         d_query = it->second;
         kvp_copy.erase(it->first);
+        BESDEBUG(MODULE, prolog << "Located QUERY_KEY(" << QUERY_KEY << ") value: " << d_query << endl);
     }
     it = kvp.find(SOURCE_URL_KEY);
     itc = kvp_copy.find(SOURCE_URL_KEY);
     if(it != kvp.end() && itc != kvp_copy.end()){
         d_source_url = it->second;
         kvp_copy.erase(it->first);
+        BESDEBUG(MODULE, prolog << "Located SOURCE_URL_KEY(" << SOURCE_URL_KEY << ") value: " << d_source_url << endl);
     }
 
     for(itc = kvp_copy.begin(); itc != kvp_copy.end(); itc++){
