@@ -36,6 +36,7 @@
 #include <BESSyntaxUserError.h>
 #include <BESForbiddenError.h>
 #include <BESContextManager.h>
+#include <url_impl.h>
 
 #include "xml2json/include/xml2json.hpp"
 
@@ -630,16 +631,20 @@ std::string Chunk::get_data_url() const
 
     bool found = false;
     bool case_insensitive = true;
-    map<string,string> data_url_info;
-    TheBESKeys::TheKeys()->get_values(d_data_url,data_url_info, case_insensitive, found);
-    BESDEBUG(MODULE, prolog << "found: " << (found?"true":"false") << " d_data_url: " << d_data_url << endl);
+    map<string,string> target_url_info;
+    TheBESKeys::TheKeys()->get_values(d_data_url, target_url_info, case_insensitive, found);
+    BESDEBUG(MODULE, prolog << "TheBESKeys " << (found?"":"does not ") << " contain the d_data_url: " << d_data_url << endl);
     if(found){
-        map<string,string>::iterator tuit = data_url_info.find("target_url");
-        if(tuit != data_url_info.end()){
+        http::url target_url(target_url_info);
+        data_url = target_url.str();
+#if 0
+        map<string,string>::iterator tuit = target_url_info.find("target_url");
+        if(tuit != target_url_info.end()){
             data_url = tuit->second;
         }
+#endif
     }
-    BESDEBUG(MODULE, prolog << "using data_url: " << data_url << endl);
+    BESDEBUG(MODULE, prolog << "Using data_url: " << data_url << endl);
 
     // A conditional call to void Chunk::add_tracking_query_param()
     // here for the NASA cost model work THG's doing. jhrg 8/7/18
