@@ -107,13 +107,18 @@ static bool is_not(const char *name, const char *tag)
     return strcmp(name, tag) != 0;
 }
 
-bool use_last_accessed_urls()
+bool DmrppParserSax2::load_use_last_accessed_urls()
 {
     bool found;
     string value;
     TheBESKeys::TheKeys()->get_value(DMRPP_CACHE_LAST_ACCESSED_URLS,value,found);
     BESDEBUG(MODULE, prolog << "DMRPP_CACHE_LAST_ACCESSED_URLS:  " << (found?"true  value: "+value:"false") << endl);
     return found && BESUtil::lowercase(value)=="true";
+}
+
+bool DmrppParserSax2::use_last_accessed_urls()
+{
+    return d_use_last_accessed_urls;
 }
 
 BESRegex *DmrppParserSax2::get_no_cache_redirect_urls_regex()
@@ -811,8 +816,8 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
 
         if (parser->check_attribute("href", attributes, nb_attributes)) {
             parser->dmrpp_dataset_href = parser->get_attribute_val("href", attributes, nb_attributes);
-            if(use_last_accessed_urls()){
-                curl::cache_final_redirect_url(parser->dmrpp_dataset_href,parser->get_no_cache_redirect_urls_regex());
+            if(parser->use_last_accessed_urls()){
+                curl::cache_final_redirect_url(parser->dmrpp_dataset_href, parser->get_no_cache_redirect_urls_regex());
             }
         }
         BESDEBUG(PARSER, prolog << "Dataset dmrpp:href is set to '" << parser->dmrpp_dataset_href << "'" << endl);
@@ -1020,7 +1025,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 BESDEBUG(PARSER, prolog << "Processing 'href' value into data_url. href: " << data_url << endl);
                 // We may have to cache the last accessed/redirect URL for data_url here because this URL
                 // may be unique to this chunk.
-                if(use_last_accessed_urls()){
+                if(parser->use_last_accessed_urls()){
                     curl::cache_final_redirect_url(data_url,parser->get_no_cache_redirect_urls_regex());
                 }
             }

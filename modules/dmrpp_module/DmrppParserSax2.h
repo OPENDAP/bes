@@ -254,6 +254,9 @@ private:
 
     friend class DmrppParserSax2Test;
 
+    bool d_use_last_accessed_urls;
+    bool load_use_last_accessed_urls();
+
     BESRegex *d_no_cache_regex;
     BESRegex *load_no_cache_redirect_urls_regex();
 
@@ -264,7 +267,7 @@ public:
         error_msg(""), context(0),
         dods_attr_name(""), dods_attr_type(""),
         char_data(""), root_ns(""), d_strict(true),
-        dmrpp_dataset_href(""), d_no_cache_regex(0)
+        dmrpp_dataset_href(""), d_use_last_accessed_urls(false), d_no_cache_regex(0)
     {
         //xmlSAXHandler ddx_sax_parser;
         memset(&dmrpp_sax_parser, 0, sizeof(xmlSAXHandler));
@@ -282,7 +285,10 @@ public:
         dmrpp_sax_parser.startElementNs = &DmrppParserSax2::dmr_start_element;
         dmrpp_sax_parser.endElementNs = &DmrppParserSax2::dmr_end_element;
 
-        d_no_cache_regex = load_no_cache_redirect_urls_regex();
+        d_use_last_accessed_urls = load_use_last_accessed_urls();
+        if(d_use_last_accessed_urls){
+            d_no_cache_regex = load_no_cache_redirect_urls_regex();
+        }
     }
 
     ~DmrppParserSax2(){
@@ -335,6 +341,7 @@ public:
     static void dmr_error(void *parser, const char *msg, ...);
 
     BESRegex *get_no_cache_redirect_urls_regex();
+    bool use_last_accessed_urls();
 
     };
 
