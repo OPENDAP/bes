@@ -1030,15 +1030,20 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
     {
         BESDEBUG(MODULE, prolog << "BEGIN url: " << data_access_url_str << endl);
 
+        size_t match_length=0;
+
         // if it's not an HTTP url there is nothing to cache.
         if (data_access_url_str.find("http://") != 0 && data_access_url_str.find("https://") != 0) {
             BESDEBUG(MODULE, prolog << "END Not an HTTP request, SKIPPING." << endl);
             return;
         }
 
-        if(no_redirects_regex_pattern && no_redirects_regex_pattern->match(data_access_url_str.c_str(),data_access_url_str.length()) > 0 ){
-            BESDEBUG(MODULE, prolog << "END Candidate url matches the no_redirects_regex_pattern [" << no_redirects_regex_pattern->pattern() << "], SKIPPING." << endl);
-            return;
+        if(no_redirects_regex_pattern ){
+            match_length = no_redirects_regex_pattern->match(data_access_url_str.c_str(),data_access_url_str.length());
+            if(match_length> 0 ){
+                BESDEBUG(MODULE, prolog << "END Candidate url matches the no_redirects_regex_pattern [" << no_redirects_regex_pattern->pattern() << "], SKIPPING." << endl);
+                return;
+            }
         }
         BESDEBUG(MODULE, prolog << "END Candidate url does NOT match no_redirects_regex_pattern [" << no_redirects_regex_pattern->pattern() << "]" << endl);
 
