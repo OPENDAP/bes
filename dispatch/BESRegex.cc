@@ -55,6 +55,7 @@ using namespace std;
 void
 BESRegex::init(const char *t)
 {
+    d_pattern = t;
     d_preg = static_cast<void*>(new regex_t);
     int result = regcomp(static_cast<regex_t*>(d_preg), t, REG_EXTENDED);
 

@@ -1036,8 +1036,8 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             return;
         }
 
-        if(no_redirects_regex_pattern->match(data_access_url_str.c_str(),data_access_url_str.length()) < 1 ){
-            BESDEBUG(MODULE, prolog << "END Canidate url matches the no_redirects_regex_pattern, SKIPPING." << endl);
+        if(no_redirects_regex_pattern && no_redirects_regex_pattern->match(data_access_url_str.c_str(),data_access_url_str.length()) < 1 ){
+            BESDEBUG(MODULE, prolog << "END Candidate url matches the no_redirects_regex_pattern (" << no_redirects_regex_pattern->pattern() << "), SKIPPING." << endl);
             return;
         }
 
