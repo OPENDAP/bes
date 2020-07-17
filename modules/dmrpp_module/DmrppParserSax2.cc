@@ -113,7 +113,7 @@ bool DmrppParserSax2::load_use_last_accessed_urls()
     string value;
     TheBESKeys::TheKeys()->get_value(DMRPP_CACHE_LAST_ACCESSED_URLS,value,found);
     bool use_last_url =  found && BESUtil::lowercase(value)=="true";
-    BESDEBUG(MODULE, prolog << "DMRPP_CACHE_LAST_ACCESSED_URLS:" << use_last_url);
+    BESDEBUG(MODULE, prolog << "DMRPP_CACHE_LAST_ACCESSED_URLS:" << (use_last_url?"true":"false") << endl);
     return use_last_url;
 }
 
