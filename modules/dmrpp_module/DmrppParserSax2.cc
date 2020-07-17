@@ -53,6 +53,7 @@
 #include <BESCatalogList.h>
 #include <BESUtil.h>
 #include <TheBESKeys.h>
+#include <BESRegex.h>
 
 #include "DmrppParserSax2.h"
 #include "DmrppCommon.h"
@@ -106,12 +107,33 @@ static bool is_not(const char *name, const char *tag)
     return strcmp(name, tag) != 0;
 }
 
-bool use_last_accessed_urls(){
+bool use_last_accessed_urls()
+{
     bool found;
     string value;
     TheBESKeys::TheKeys()->get_value(DMRPP_CACHE_LAST_ACCESSED_URLS,value,found);
-    BESDEBUG("curl", prolog << "DMRPP_CACHE_LAST_ACCESSED_URLS:  " << (found?"true  value: "+value:"false") << endl);
+    BESDEBUG(MODULE, prolog << "DMRPP_CACHE_LAST_ACCESSED_URLS:  " << (found?"true  value: "+value:"false") << endl);
     return found && BESUtil::lowercase(value)=="true";
+}
+
+BESRegex *DmrppParserSax2::get_no_cache_redirect_urls_regex()
+{
+    return d_no_cache_regex;
+}
+
+
+BESRegex *DmrppParserSax2::load_no_cache_redirect_urls_regex()
+{
+    BESRegex *result;
+    result = NULL;
+    bool found;
+    string value;
+    TheBESKeys::TheKeys()->get_value(DMRPP_NO_CACHE_REDIRECT_URLS_REGEX,value,found);
+    BESDEBUG(MODULE, prolog << "DMRPP_NO_CACHE_REDIRECT_URLS_REGEX:  " << (found?"true  value: "+value:"false") << endl);
+    if(found){
+        result = new BESRegex(value.c_str());
+    }
+    return result;
 }
 
 /** @brief Return the current Enumeration definition
@@ -790,7 +812,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         if (parser->check_attribute("href", attributes, nb_attributes)) {
             parser->dmrpp_dataset_href = parser->get_attribute_val("href", attributes, nb_attributes);
             if(use_last_accessed_urls()){
-                curl::cache_final_redirect_url(parser->dmrpp_dataset_href);
+                curl::cache_final_redirect_url(parser->dmrpp_dataset_href,parser->get_no_cache_redirect_urls_regex());
             }
         }
         BESDEBUG(PARSER, prolog << "Dataset dmrpp:href is set to '" << parser->dmrpp_dataset_href << "'" << endl);
@@ -999,7 +1021,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 // We may have to cache the last accessed/redirect URL for data_url here because this URL
                 // may be unique to this chunk.
                 if(use_last_accessed_urls()){
-                    curl::cache_final_redirect_url(data_url);
+                    curl::cache_final_redirect_url(data_url,parser->get_no_cache_redirect_urls_regex());
                 }
             }
             else {

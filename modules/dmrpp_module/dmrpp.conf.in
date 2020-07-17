@@ -37,3 +37,6 @@ BES.Catalog.catalog.TypeMatch+=dmrpp:.*\.(dmrpp)(\.bz2|\.gz|\.Z)?$;
 # DMRPP.MaxParallelTransfers=8
 
 CredentialsManager.config=/etc/bes/credentials.conf
+
+Dmrpp.cache.final.redirect.urls=true
+Dmrpp.no.cache.redirect.urls.regex.pattern="^https://.*s3\..*\.amazonaws\.com/.*?"

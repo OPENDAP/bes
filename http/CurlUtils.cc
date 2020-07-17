@@ -1021,12 +1021,23 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         }
     }
 
-    void cache_final_redirect_url(const string &data_access_url_str) {
+    /**
+     * Make a no-redirects-regex config and utilize.
+     *
+     * @param data_access_url_str
+     */
+    void cache_final_redirect_url(const string &data_access_url_str, BESRegex *no_redirects_regex_pattern)
+    {
         BESDEBUG(MODULE, prolog << "BEGIN url: " << data_access_url_str << endl);
 
         // if it's not an HTTP url there is nothing to cache.
         if (data_access_url_str.find("http://") != 0 && data_access_url_str.find("https://") != 0) {
             BESDEBUG(MODULE, prolog << "END Not an HTTP request, SKIPPING." << endl);
+            return;
+        }
+
+        if(no_redirects_regex_pattern->match(data_access_url_str.c_str(),data_access_url_str.length())){
+            BESDEBUG(MODULE, prolog << "END Canidate url matches the no_redirects_regex_pattern: SKIPPING." << endl);
             return;
         }
 
@@ -1038,9 +1049,11 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         if(found){
             BESDEBUG(MODULE, prolog << "Cache hit for: " << data_access_url_str << endl);
 #if 0
-            std::map<std::string,std::string>::iterator moot;
-            for(moot=data_access_url_info.begin(); moot != data_access_url_info.end(); moot++){
-                BESDEBUG(MODULE, prolog << "Cached data_access_url_info[" << moot->first << "]: " << moot->second << endl);
+            if(BESDebug::IsSet(MODULE)){
+                std::map<std::string,std::string>::iterator moot;
+                for(moot=data_access_url_info.begin(); moot != data_access_url_info.end(); moot++){
+                    BESDEBUG(MODULE, prolog << "Cached data_access_url_info[" << moot->first << "]: " << moot->second << endl);
+                }
             }
 #endif
             // Is it expired?

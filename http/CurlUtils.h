@@ -32,6 +32,7 @@
 #include <curl/easy.h>
 
 #include "rapidjson/document.h"
+#include "BESRegex.h"
 
 namespace curl {
 
@@ -54,7 +55,8 @@ namespace curl {
     std::string getCookieFileName();
     void find_last_redirect(const std::string &url, std::string &last_accessed_url);
     std::string get_range_arg_string(const unsigned long long &offset, const unsigned long long &size);
-    void cache_final_redirect_url(const std::string &data_access_url_str);
+    //void cache_final_redirect_url(const std::string &data_access_url_str);
+    void cache_final_redirect_url(const std::string &data_access_url_str, BESRegex *no_redirects_regex_pattern);
 
 
 } // namespace curl

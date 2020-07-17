@@ -184,7 +184,7 @@ namespace ngap {
         string data_access_url_str = get_real_name();
 
         if(cache_terminal_urls()){
-            curl::cache_final_redirect_url(data_access_url_str);
+            curl::cache_final_redirect_url(data_access_url_str, 0);
         }
 
         // And we know that the dmr++ file should "right next to it" (side-car)
