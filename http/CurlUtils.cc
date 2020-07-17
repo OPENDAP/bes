@@ -1030,7 +1030,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
     {
         BESDEBUG(MODULE, prolog << "BEGIN url: " << data_access_url_str << endl);
 
-        size_t match_length=0;
+        long match_length=0;
 
         // if it's not an HTTP url there is nothing to cache.
         if (data_access_url_str.find("http://") != 0 && data_access_url_str.find("https://") != 0) {
