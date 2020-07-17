@@ -1040,6 +1040,8 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             BESDEBUG(MODULE, prolog << "END Candidate url matches the no_redirects_regex_pattern [" << no_redirects_regex_pattern->pattern() << "], SKIPPING." << endl);
             return;
         }
+        BESDEBUG(MODULE, prolog << "END Candidate url does NOT match no_redirects_regex_pattern [" << no_redirects_regex_pattern->pattern() << "]" << endl);
+
 
         // See if the data_access_url has already been processed into a terminal signed URL
         // in TheBESKeys

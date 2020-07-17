@@ -39,4 +39,4 @@ BES.Catalog.catalog.TypeMatch+=dmrpp:.*\.(dmrpp)(\.bz2|\.gz|\.Z)?$;
 CredentialsManager.config=/etc/bes/credentials.conf
 
 Dmrpp.cache.final.redirect.urls=true
-Dmrpp.no.cache.redirect.urls.regex.pattern="^https://.*s3\..*\.amazonaws\.com/.*?"
+Dmrpp.no.cache.redirect.urls.regex.pattern=^https:\/\/.*s3\..*\.amazonaws\.com\/.*$
