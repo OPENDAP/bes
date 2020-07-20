@@ -906,14 +906,21 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
                 return true;
 
             case 500: // Internal server error
+            case 502: // Bad Gateway
             case 503: // Service Unavailable
             case 504: // Gateway Timeout
+            {
+                char *effective_url = 0;
+                curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &effective_url);
+                LOG("HTTP transfer " << http_code << " error, returning false.  CURLINFO_EFFECTIVE_URL: " << effective_url << endl);
                 return false;
+            }
 
             default: {
                 ostringstream oss;
-                oss << "HTTP status error: Expected an OK status, but got: ";
-                oss << http_code;
+                char *effective_url = 0;
+                curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &effective_url);
+                oss << prolog << "HTTP status error: Expected an OK status, but got: " << http_code  << " from (CURLINFO_EFFECTIVE_URL): " << effective_url;
                 throw BESInternalError(oss.str(), __FILE__, __LINE__);
             }
         }
@@ -1030,7 +1037,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
     {
         BESDEBUG(MODULE, prolog << "BEGIN url: " << data_access_url_str << endl);
 
-        long match_length=0;
+        size_t match_length=0;
 
         // if it's not an HTTP url there is nothing to cache.
         if (data_access_url_str.find("http://") != 0 && data_access_url_str.find("https://") != 0) {
