@@ -93,10 +93,11 @@ BESRegex::BESRegex(const char* t, int)
     init(t);
 }
 
-/** Does the regular expression match the string? 
- *  Warning : this function can be used to match strings of zero length
- *  	if the regex pattern accepts empty strings.
- *  Therefore this function returns -1 if the pattern does not match.
+/** @brief Does the regular expression match the string?
+
+    Warning : this function can be used to match strings of zero length
+   	if the regex pattern accepts empty strings. Therefore this function
+   	returns -1 if the pattern does not match.
 
     @param s The string
     @param len The length of string to consider
