@@ -114,7 +114,7 @@ public:
     CPPUNIT_TEST_SUITE( RemoteAccessTest );
 
     CPPUNIT_TEST(do_http_test);
-    CPPUNIT_TEST(do_file_test);
+    //CPPUNIT_TEST(do_file_test);
 
     CPPUNIT_TEST_SUITE_END();
 

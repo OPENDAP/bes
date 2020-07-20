@@ -14,7 +14,7 @@
 
 
 AllowedHosts=http://localhost
-AllowedHosts+=https://cmr.earthdata.nasa.gov/
+AllowedHosts+=^(https://)cmr.earthdata.nasa.gov/.*$
 
 
 BES.Catalog.Default=catalog

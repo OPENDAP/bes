@@ -12,6 +12,6 @@ Http.Cache.size=500
 
 # Allow access to src dir and test.opendap.org
 AllowedHosts = file://@abs_top_srcdir@/http/
-AllowedHosts += http://test.opendap.org/
+AllowedHosts = ^(http://)test.opendap.org/.*$
 
 

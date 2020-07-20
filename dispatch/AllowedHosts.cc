@@ -161,28 +161,16 @@ bool AllowedHosts::is_white_listed(const std::string &url)
         BESDEBUG(MODULE, "AllowedHosts::Is_Whitelisted() - Is_Whitelisted: "<< (whitelisted?"true ":"false ") << endl);
     }
     else {
-        // This checks HTTP and HTTPS URLs against the whitelist patterns.
-        if (url.compare(0, http_url.size(), http_url) == 0 /*equals http url */
-            || url.compare(0, https_url.size(), https_url) == 0 /*equals https url */) {
-
-            vector<string>::const_iterator i = d_white_list.begin();
-            vector<string>::const_iterator e = d_white_list.end();
-            for (; i != e && !whitelisted; i++) {
-                if ((*i).length() <= url.length()) {
-                    if (url.substr(0, (*i).length()) == (*i)) {
-                        whitelisted = true;
-                    }
-                }
+        vector<string>::const_iterator i = d_white_list.begin();
+        vector<string>::const_iterator e = d_white_list.end();
+        for (; i != e && !whitelisted; i++) {
+            string reg = *i;
+            BESRegex reg_expr(reg.c_str());
+            if (reg_expr.match(url.c_str(), url.length()) > 0 ) {
+                whitelisted = true;;
             }
         }
-        else {
-            string msg;
-            msg = "AllowedHosts - ERROR! Unknown URL protocol! Only " + http_url + ", " + https_url + ", and " + file_url + " are supported.";
-            BESDEBUG(MODULE, msg << endl);
-            throw BESForbiddenError(msg, __FILE__, __LINE__);
-        }
     }
-
     return whitelisted;
 }
 

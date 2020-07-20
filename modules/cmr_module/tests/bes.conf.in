@@ -76,14 +76,14 @@ BES.DefaultResponseMethod=POST
 #
 
 # Need to whitelist CMR server so we can talk to it.
-AllowedHosts=http://localhost
-AllowedHosts+=http://cloudydap.opendap.org/opendap
-AllowedHosts+=http://cloudydap.opendap.org//opendap
-AllowedHosts+=http://thredds.ucar.edu/thredds
-AllowedHosts+=http://thredds.ucar.edu//thredds
-AllowedHosts+=http://s3.amazonaws.com/somewhereovertherainbow
-AllowedHosts+=https://s3.amazonaws.com/somewhereovertherainbow
-AllowedHosts+=https://s3.amazonaws.com/cloudydap
+AllowedHosts=^(http://)localhost/.*$
+AllowedHosts+=^(http://)cloudydap.opendap.org/opendap/.*$
+#AllowedHosts+=http://cloudydap.opendap.org//opendap
+AllowedHosts+=^(http://)thredds.ucar.edu/thredds/.*$
+#AllowedHosts+=http://thredds.ucar.edu//thredds
+AllowedHosts+=^(https://)s3.amazonaws.com/.*$
+#AllowedHosts+=https://s3.amazonaws.com/somewhereovertherainbow
+#AllowedHosts+=https://s3.amazonaws.com/cloudydap
 
 AllowedHosts += https://cmr.earthdata.nasa.gov/
 

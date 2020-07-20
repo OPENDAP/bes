@@ -8,12 +8,12 @@
 # URL per line, as in the example below.
 #
 # example:
-# AllowedHosts=http://test.opendap.org/opendap
-# AllowedHosts+=http://opendap.rpi.edu/opendap
+# AllowedHosts=^(http://)test.opendap.org.*$
+# AllowedHosts+=^(http://)opendap.rpi.edu.*$
 #
 
 # Where we can go for stuff...
-AllowedHosts=http://localhost
+AllowedHosts=^(http://)?localhost.*$
 AllowedHosts+=http://test.opendap.org
 
 # Configure dat cache

@@ -29,10 +29,10 @@ Httpd_Catalog.Collections+=IrisProducts:https://ds.iris.edu/files/products/
 Httpd_Catalog.Collections+=too:http://test.opendap.org/data/
 
 # Where we can go for stuff...
-Gateway.Whitelist=http://localhost
-Gateway.Whitelist+=http://test.opendap.org
-Gateway.Whitelist+=https://www.opendap.org
-Gateway.Whitelist+=https://ds.iris.edu
+AllowedHost=^(http://)?localhost.*$
+AllowedHost+=^(http://)test.opendap.org(.*$)
+AllowedHost+=^(https://)www.opendap.org(.*$)
+AllowedHost+=^(https://)ds.iris.edu(.*$)
 
 
 
