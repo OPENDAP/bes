@@ -14,7 +14,7 @@
 
 # Where we can go for stuff...
 AllowedHosts=^(http://)?localhost.*$
-AllowedHosts+=http://test.opendap.org
+AllowedHosts+=^(http://)test.opendap.org.*$
 
 # Configure dat cache
 Http.Cache.dir=@abs_top_builddir@/modules/httpd_catalog_module/unit-tests/static-cache

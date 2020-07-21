@@ -60,5 +60,5 @@ DAP.Use.Dmrpp = yes
 # This is needed even if the tests are local because the whitelist check
 # if performed on local files too. Thus, the whitelist needs to be configured.
 AllowedHosts=^(http://)?localhost:8080/.*$
-AllowedHosts+=^(http://)test.opendap.org(.*$)
+AllowedHosts+=^(http://)test.opendap.org.*$
 

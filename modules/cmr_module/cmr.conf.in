@@ -44,6 +44,6 @@ CMR.Facets=temporal
 # CMR.host.url=https://cmr.sit.earthdata.nasa.gov
 
 # The CMR service needs to be on the whitelist
-AllowedHosts+=^(https://cmr.)(|uat.|sit.)earthdata.nasa.gov/.*$
+AllowedHosts+=^(https://cmr.)(|uat.|sit.)?earthdata.nasa.gov.*$
 
 

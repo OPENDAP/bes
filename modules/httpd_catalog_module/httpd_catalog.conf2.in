@@ -30,9 +30,9 @@ Httpd_Catalog.Collections+=too:http://test.opendap.org/data/
 
 # Where we can go for stuff...
 AllowedHost=^(http://)?localhost.*$
-AllowedHost+=^(http://)test.opendap.org(.*$)
-AllowedHost+=^(https://)www.opendap.org(.*$)
-AllowedHost+=^(https://)ds.iris.edu(.*$)
+AllowedHost+=^(http://)test.opendap.org.*$
+AllowedHost+=^(https://)www.opendap.org.*$
+AllowedHost+=^(https://)ds.iris.edu.*$
 
 
 

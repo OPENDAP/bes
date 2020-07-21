@@ -26,8 +26,8 @@ BES.module.gateway=@bes_modules_dir@/libgateway_module.so
 #
 # One URL per line, as in the example below.
 # example:
-# AllowedHosts=^(http://)test.opendap.org(.*$)
-# AllowedHosts+=^(http://)opendap.rpi.edu/opendap(.*$)
+# AllowedHosts=^(http://)test.opendap.org.*$
+# AllowedHosts+=^(http://)opendap.rpi.edu/opendap.*$
 #
 #
 #

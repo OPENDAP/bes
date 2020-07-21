@@ -65,7 +65,7 @@ BES.DefaultResponseMethod=POST
 #-----------------------------------------------------------------------#
 # Gateway module specific parameters
 #-----------------------------------------------------------------------#
-AllowedHosts=^(https://)s3.amazonaws.com/.*$
+AllowedHosts=^(https://)s3.amazonaws.com.*$
 AllowedHosts+=^(http://)?localhost.*$
 AllowedHosts+=^(http://)test.opendap.org.*$
 

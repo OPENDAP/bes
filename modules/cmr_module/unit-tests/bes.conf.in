@@ -13,8 +13,8 @@
 #
 
 
-AllowedHosts=http://localhost
-AllowedHosts+=^(https://)cmr.earthdata.nasa.gov/.*$
+AllowedHosts=^(http://)?localhost.*$
+AllowedHosts+=^(https://cmr.)(uat.|sit.)?earthdata.nasa.gov.*$
 
 
 BES.Catalog.Default=catalog
