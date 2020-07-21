@@ -315,7 +315,7 @@ static bool evaluate_curl_response(CURL *eh) {
         {
             char *effective_url = 0;
             curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &effective_url);
-            LOG("HTTP transfer " << http_code << " error, returning false.  CURLINFO_EFFECTIVE_URL: " << effective_url << endl);
+            LOG(prolog << "HTTP transfer " << http_code << " error, returning false.  CURLINFO_EFFECTIVE_URL: " << effective_url << endl);
             return false;
         }
 
@@ -367,7 +367,7 @@ void dmrpp_easy_handle::read_data() {
                                     curl::error_message(curl_code, d_errbuf)), __FILE__, __LINE__);
                 }
                 else {
-                    LOG("HTTP transfer 500 error, will retry (trial " << tries << " for: " << d_url << ")." << endl);
+                    LOG(prolog << "HTTP transfer 500 error, will retry (trial " << tries << " for: " << d_url << ")." << endl);
                     usleep(retry_time);
                     retry_time *= 2;
                 }
