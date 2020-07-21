@@ -526,7 +526,7 @@ void dmrpp_multi_handle::read_data() {
                 // HTTP status code. If the protocol is not HTTP, we assume since msg->data.result
                 // returned CURLE_OK, that the transfer worked. jhrg 5/1/18
                 if (dmrpp_easy_handle->d_url.find("http://") == 0 || dmrpp_easy_handle->d_url.find("https://") == 0) {
-                    evaluate_curl_response(eh);
+                    bool success = curl::eval_get_response(eh);
                 }
 
                 // If we are here, the request was successful.
