@@ -433,7 +433,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
  *  @param url The url used to configure the proy.
  */
     CURL *init(char *error_buffer) {
-
+        error_buffer[0]=0; // Null terminate this string for safety.
         CURL *curl = curl_easy_init();
         if (!curl)
             throw libdap::InternalErr(__FILE__, __LINE__, "Could not initialize libcurl.");
