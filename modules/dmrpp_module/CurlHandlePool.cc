@@ -256,8 +256,6 @@ dmrpp_easy_handle::~dmrpp_easy_handle() {
     if (d_headers) curl_slist_free_all(d_headers);
 }
 
-
-
 #if 0 // Moved this to http/CurlUtils
 /**
  * Return true if the HTTP request worked, false if it should be re-tried;
@@ -269,7 +267,6 @@ dmrpp_easy_handle::~dmrpp_easy_handle() {
  */
 static bool evaluate_curl_response(CURL *eh) {
     long http_code = 0;
-
     CURLcode res = curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_code);
     if (res == CURLE_GOT_NOTHING) {
         // First we check to see if the response was empty. This is a cURL error, not an HTTP error
