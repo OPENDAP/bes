@@ -256,6 +256,9 @@ dmrpp_easy_handle::~dmrpp_easy_handle() {
     if (d_headers) curl_slist_free_all(d_headers);
 }
 
+
+
+#if 0 // Moved this to http/CurlUtils
 /**
  * Return true if the HTTP request worked, false if it should be re-tried;
  * throw an exception on error.
@@ -266,14 +269,20 @@ dmrpp_easy_handle::~dmrpp_easy_handle() {
  */
 static bool evaluate_curl_response(CURL *eh) {
     long http_code = 0;
+
     CURLcode res = curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_code);
     if (res == CURLE_GOT_NOTHING) {
+        // First we check to see if the response was empty. This is a cURL error, not an HTTP error
+        // so we have to handle it like this. And we do that because this is one of the failure modes
+        // we see in the AWS cloud and by trapping this and returning false we are able to be resilient and retry.
+        // We maye eventually need to check other CURLCode errors
         char *effective_url = 0;
         curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &effective_url);
         LOG("Ouch. cURL returned CURLE_GOT_NOTHING, returning false.  CURLINFO_EFFECTIVE_URL: " << effective_url << endl);
         return false;
     }
     else if(res != CURLE_OK) {
+        // Not an error we are trapping so it's fail time.
         throw BESInternalError(
                 string("Error getting HTTP response code: ").append(curl::error_message(res, (char *) "")),
                 __FILE__, __LINE__);
@@ -322,7 +331,7 @@ static bool evaluate_curl_response(CURL *eh) {
         }
     }
 }
-
+#endif
 /**
  * @brief This is the read_data() method for serial transfers.
  *
@@ -352,7 +361,7 @@ void dmrpp_easy_handle::read_data() {
                 throw BESInternalError(msg.str(), __FILE__, __LINE__);
             }
 
-            success = evaluate_curl_response(d_handle);
+            success = curl::eval_get_response(d_handle);
 
             if (!success) {
                 if (tries == retry_limit) {
