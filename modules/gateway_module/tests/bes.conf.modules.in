@@ -47,6 +47,6 @@ Http.MimeTypes+=h5:application/x-hdf5
 #                                                                       #
 #-----------------------------------------------------------------------#
 
-AllowedHosts=^(http:\/\/)?localhost:8080\/.*$
-AllowedHosts+=^http:\/\/test\.opendap\.org.*$
+AllowedHosts=^https?:\/\/localhost(:8080)?\/.*$
+AllowedHosts+=^http:\/\/test\.opendap\.org\/.*$
 

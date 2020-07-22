@@ -55,9 +55,9 @@ NGAP.inject_data_urls=true
 # Use this CMR endpopint URL for CMR queries.
 NGAP.cmr_host_url=https://cmr.uat.earthdata.nasa.gov
 
-AllowedHosts = ^(http:\/\/)?localhost.*$
-AllowedHosts+= ^http:\/\/test\.opendap\.org.*$
-AllowedHosts+= ^https:\/\/d1lpqa6z94hycl.cloudfront.net.*$
+AllowedHosts = ^https?:\/\/localhost(:8080)?\/.*$
+AllowedHosts+= ^http:\/\/test\.opendap\.org\/.*$
+AllowedHosts+= ^https:\/\/d1lpqa6z94hycl\.cloudfront\.net\/.*$
 AllowedHosts+= ^https:\/\/cmr\.(uat\.|sit\.)?earthdata\.nasa\.gov.*$
-AllowedHosts+= ^https:\/\/d1jecqxxv88lkr\.cloudfront\.net.*$
+AllowedHosts+= ^https:\/\/d1jecqxxv88lkr\.cloudfront\.net\/.*$
 

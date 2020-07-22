@@ -76,11 +76,11 @@ BES.DefaultResponseMethod=POST
 #
 
 # Need to whitelist CMR server so we can talk to it.
-AllowedHosts=^(http:\/\/)?localhost.*$
-AllowedHosts+=^http:\/\/cloudydap\.opendap\.org.*$
-AllowedHosts+=^http:\/\/thredds\.ucar\.edu.*$
-AllowedHosts+=^https:\/\/s3\.amazonaws\.com.*$
-AllowedHosts +=^https:\/\/cmr\.(uat\.|sit\.)?earthdata\.nasa\.gov.*$
+AllowedHosts=^https?:\/\/localhost(:8080)?\/.*$
+AllowedHosts+=^http:\/\/cloudydap\.opendap\.org\/.*$
+AllowedHosts+=^http:\/\/thredds\.ucar\.edu\/.*$
+AllowedHosts+=^https:\/\/s3\.amazonaws\.com\/.*$
+AllowedHosts +=^https:\/\/cmr\.(uat\.|sit\.)?earthdata\.nasa\.gov\/.*$
 
 BES.Catalog.CMR.RootDirectory=UNUSED
 # BES.Catalog.CMR.FollowSymLinks=
