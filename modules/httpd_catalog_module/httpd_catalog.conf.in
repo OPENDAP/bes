@@ -43,4 +43,4 @@ Httpd_Catalog.Collections = test:http://test.opendap.org/data/
 # remote hosts this server may connect to. The AllowedHost should have hosts
 # added to is using '+=' because using '=' will remove all previous values.
 
-AllowedHost += ^(http://)test.opendap.org.*$
+AllowedHost += ^http:\/\/test\.opendap\.org.*$

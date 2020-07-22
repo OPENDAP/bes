@@ -31,7 +31,7 @@ BES.UncompressCache.size=500
 
 AllowedHosts = *
 #BESRegex error: repetition-operator operand invalid
-AllowedHosts = ^(https|http)://s3.amazonaws.com.*$
+AllowedHosts = ^(https|http):\/\/s3\.amazonaws\.com.*$
 
 # The default for DMRPP.UseParallelTransfers is true
 DMRPP.UseParallelTransfers = false

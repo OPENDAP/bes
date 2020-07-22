@@ -19,7 +19,7 @@ Http.Cache.prefix=ngap_unit_tests_
 Http.Cache.size=500
 #-----------------------------------------------------------------------#
 
-AllowedHosts=^(https://cmr.)(|uat.|sit.)?earthdata.nasa.gov.*$
+AllowedHosts=^https:\/\/cmr\.(uat\.|sit\.)?earthdata\.nasa\.gov.*$
 
 NGAP.inject_data_urls=true
 

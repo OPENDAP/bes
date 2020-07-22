@@ -113,10 +113,10 @@ BES.AnnotationServiceURL =
 # services are to be added to the whitelist do so by adding the new 
 # service URL to the site.conf file using += syntax like this:
 #
-#     ^(http://)?localhost.*$+=^(http://)test.opendap.org.*$
+#     AllowedHosts+=^(http://)test.opendap.org.*$
 # 
 #
-AllowedHosts=^(http://)?localhost.*$
+AllowedHosts=^(http:\/\/)?localhost.*$
 
 # If you intend to use the BES as a standalone server, set the value
 # of BES.Data.RootDirectory to point to your data and disregard the
