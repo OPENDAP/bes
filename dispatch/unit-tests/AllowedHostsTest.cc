@@ -114,7 +114,7 @@ public:
     CPPUNIT_TEST_SUITE( RemoteAccessTest );
 
     CPPUNIT_TEST(do_http_test);
-    //CPPUNIT_TEST(do_file_test);
+    CPPUNIT_TEST(do_file_test);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -130,12 +130,14 @@ public:
     {
         CPPUNIT_ASSERT(!can_access("http://google.com"));
         CPPUNIT_ASSERT(can_access("http://test.opendap.org/opendap/data/nc/fnoc1.nc"));
+        CPPUNIT_ASSERT(!can_access("http://test.opendap.wrong.org/opendap/data/nc/fnoc1.nc"));
         CPPUNIT_ASSERT(can_access("https://s3.amazonaws.com/somewhereovertherainbow/data/nc/fnoc1.nc"));
         CPPUNIT_ASSERT(!can_access("http://s3.amazonaws.com/somewhereovertherainbow/data/nc/fnoc1.nc"));
         CPPUNIT_ASSERT(can_access("http://thredds.ucar.edu/thredds/dodsC/data/nc/fnoc1.nc"));
         CPPUNIT_ASSERT(!can_access("https://thredds.ucar.edu/thredds/dodsC/data/nc/fnoc1.nc"));
         CPPUNIT_ASSERT(
             can_access("http://cloudydap.opendap.org/opendap/Arch-2/ebs/samples/3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.h5"));
+
 
     }
     void do_file_test()
