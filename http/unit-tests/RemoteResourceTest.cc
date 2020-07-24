@@ -38,13 +38,10 @@
 #include <BESUtil.h>
 #include <BESCatalogList.h>
 #include <TheBESKeys.h>
+#include "RemoteResource.h"
+#include "HttpNames.h"
+
 #include "test_config.h"
-
-#include "../RemoteHttpResource.h"
-#include "../RemoteHttpResourceCache.h"
-#include "../HttpdDirScraper.h"
-#include "../HttpdCatalogNames.h"
-
 
 using namespace std;
 
@@ -56,9 +53,9 @@ static bool purge_cache = false;
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
 
-namespace httpd_catalog {
+namespace http {
 
-class RemoteHttpResourceTest: public CppUnit::TestFixture {
+class RemoteResourceTest: public CppUnit::TestFixture {
 private:
 
     /**
@@ -107,12 +104,13 @@ private:
      *
      */
     string get_data_file_url(string name){
+        string prolog = string(__func__) + "() - ";
         string data_file = BESUtil::assemblePath(d_data_dir,name);
-        if(debug) cerr << "data_file: " << data_file << endl;
+        if(debug) cerr << prolog << "data_file: " << data_file << endl;
         if(Debug) show_file(data_file);
 
         string data_file_url = "file://" + data_file;
-        if(debug) cerr << "data_file_url: " << data_file_url << endl;
+        if(debug) cerr << prolog << "data_file_url: " << data_file_url << endl;
         return data_file_url;
     }
 
@@ -120,15 +118,16 @@ private:
 
 public:
     string d_data_dir;
+
     // Called once before everything gets tested
-    RemoteHttpResourceTest()
+    RemoteResourceTest()
     {
         d_data_dir = TEST_DATA_DIR;;
         cerr << "data_dir: " << d_data_dir << endl;
     }
 
     // Called at the end of the test
-    ~RemoteHttpResourceTest()
+    ~RemoteResourceTest()
     {
     }
 
@@ -138,20 +137,19 @@ public:
         if(Debug) cerr << endl << "setUp() - BEGIN" << endl;
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
         if(Debug) cerr << "setUp() - Using BES configuration: " << bes_conf << endl;
-
+        if (bes_debug) show_file(bes_conf);
         TheBESKeys::ConfigFile = bes_conf;
 
-        if (bes_debug) BESDebug::SetUp("cerr,httpd_catalog");
+        if (bes_debug) BESDebug::SetUp("cerr,wl,bes,http");
 
-        if (bes_debug) show_file(bes_conf);
 
         if(purge_cache){
             if(Debug) cerr << "Purging cache!" << endl;
             string cache_dir;
             bool found;
-            TheBESKeys::TheKeys()->get_value(RemoteHttpResourceCache::DIR_KEY,cache_dir,found);
+            TheBESKeys::TheKeys()->get_value(HTTP_CACHE_DIR_KEY,cache_dir,found);
             if(found){
-                if(Debug) cerr << RemoteHttpResourceCache::DIR_KEY << ": " <<  cache_dir << endl;
+                if(Debug) cerr << HTTP_CACHE_DIR_KEY << ": " <<  cache_dir << endl;
                 if(Debug) cerr << "Purging " << cache_dir << endl;
                 string cmd = "exec rm -r "+ BESUtil::assemblePath(cache_dir,"/*");
                 system(cmd.c_str());
@@ -176,14 +174,13 @@ public:
 
         string url = "http://test.opendap.org/data/httpd_catalog/READTHIS";
         if(debug) cerr << __func__ << "() - url: " << url << endl;
-        RemoteHttpResource rhr(url);
+        http::RemoteResource rhr(url);
         try {
             rhr.retrieveResource();
-            vector<string> hdrs;
-            rhr.getResponseHeaders(hdrs);
+            vector<string> *hdrs = rhr.getResponseHeaders();
 
-            for(size_t i=0; i<hdrs.size() && debug ; i++){
-                cerr << __func__ << "() - hdr["<< i << "]: " << hdrs[i] << endl;
+            for(size_t i=0; i<hdrs->size() && debug ; i++){
+                cerr << __func__ << "() - hdr["<< i << "]: " << (*hdrs)[i] << endl;
             }
             string cache_filename = rhr.getCacheFileName();
             if(debug) cerr <<  __func__ << "() - cache_filename: " << cache_filename << endl;
@@ -210,14 +207,13 @@ public:
         if(debug) cerr << endl;
 
         string data_file_url = get_data_file_url("test_file");
-        RemoteHttpResource rhr(data_file_url);
+        http::RemoteResource rhr(data_file_url);
         try {
             rhr.retrieveResource();
-            vector<string> hdrs;
-            rhr.getResponseHeaders(hdrs);
+            vector<string> *hdrs = rhr.getResponseHeaders();
 
-            for(size_t i=0; i<hdrs.size() && debug ; i++){
-                cerr <<  __func__ << "() - hdr["<< i << "]: " << hdrs[i] << endl;
+            for(size_t i=0; i<hdrs->size() && debug ; i++){
+                cerr <<  __func__ << "() - hdr["<< i << "]: " << (*hdrs)[i] << endl;
             }
             string cache_filename = rhr.getCacheFileName();
             if(debug) cerr <<  __func__ << "() - cache_filename: " << cache_filename << endl;
@@ -241,7 +237,7 @@ public:
 /*##################################################################################################*/
 
 
-    CPPUNIT_TEST_SUITE( RemoteHttpResourceTest );
+    CPPUNIT_TEST_SUITE( RemoteResourceTest );
 
     CPPUNIT_TEST(get_http_url_test);
     CPPUNIT_TEST(get_file_url_test);
@@ -249,7 +245,7 @@ public:
     CPPUNIT_TEST_SUITE_END();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(RemoteHttpResourceTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(RemoteResourceTest);
 
 } // namespace httpd_catalog
 
@@ -292,7 +288,7 @@ int main(int argc, char*argv[])
     else {
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            test = httpd_catalog::RemoteHttpResourceTest::suite()->getName().append("::").append(argv[i]);
+            test = http::RemoteResourceTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
             ++i;
         }

@@ -1,12 +1,12 @@
-// GatewayResponseNames.h
+// NgapContainer.cc
 
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of gateway_module, A C++ module that can be loaded in to
+// This file is part of ngap_module, A C++ module that can be loaded in to
 // the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
 
-// Copyright (c) 2002,2003 OPeNDAP, Inc.
-// Author: Patrick West <pwest@ucar.edu>
+// Copyright (c) 2020 OPeNDAP, Inc.
+// Author: Nathan Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -23,23 +23,20 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+// Authors:
+//      ndp       Nathan Potter <ndp@opendap.org>
 
-#ifndef E_GatewayResponseNames_H
-#define E_GatewayResponseNames_H 1
+#ifndef E_DmrppNames_H
+#define E_DmrppNames_H 1
 
-#define Gateway_NAME "gateway"
+#define DMRPP_NAME "dmrpp"
 
-// These are the names of the be keys used to configure the handler.
+#define MODULE DMRPP_NAME
+#define PARSER "dmrpp:parser"
+#define CREDS  "dmrpp:creds"
+#define DMRPP_CURL  "dmrpp:curl"
 
-#define Gateway_WHITELIST "Gateway.Whitelist"
-#define Gateway_MIMELIST "Gateway.MimeTypes"
-#define Gateway_PROXYPROTOCOL "Gateway.ProxyProtocol"
-#define Gateway_PROXYHOST "Gateway.ProxyHost"
-#define Gateway_PROXYPORT "Gateway.ProxyPort"
-#define Gateway_PROXYAUTHTYPE "Gateway.ProxyAuthType"
-#define Gateway_PROXYUSER "Gateway.ProxyUser"
-#define Gateway_PROXYPASSWORD "Gateway.ProxyPassword"
-#define Gateway_PROXYUSERPW "Gateway.ProxyUserPW"
-#define Gateway_USE_INTERNAL_CACHE "Gateway.UseInternalCache"
+#endif // E_DmrppNames_H
 
-#endif // E_GatewayResponseNames_H
+
+

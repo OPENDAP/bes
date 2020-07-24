@@ -31,17 +31,12 @@
 #include <BESResponseHandler.h>
 #include <BESResponseNames.h>
 #include <BESVersionInfo.h>
-#include <BESTextInfo.h>
-#include "BESDapNames.h"
-#include "BESDataDDSResponse.h"
-#include "BESDDSResponse.h"
-#include "BESDASResponse.h"
 #include <BESConstraintFuncs.h>
 #include <BESServiceRegistry.h>
 #include <BESUtil.h>
 
 #include "GatewayRequestHandler.h"
-#include "GatewayResponseNames.h"
+#include "GatewayNames.h"
 
 using std::endl;
 using std::map;
@@ -68,7 +63,7 @@ bool GatewayRequestHandler::gateway_build_vers(BESDataHandlerInterface &dhi)
 #if 0
     info->add_module(PACKAGE_NAME, PACKAGE_VERSION);
 #endif
-    info->add_module(MODULE_NAME, MODULE_VERSION);
+    info->add_module(GATEWAY_MODULE, GATEWAY_MODULE_VERSION);
     return ret;
 }
 
@@ -81,14 +76,14 @@ bool GatewayRequestHandler::gateway_build_help(BESDataHandlerInterface &dhi)
     // This is an example. If you had a help file you could load it like
     // this and if your handler handled the following responses.
     map<string, string> attrs;
-    attrs["name"] = MODULE_NAME;
-    attrs["version"] = MODULE_VERSION;
+    attrs["name"] = GATEWAY_MODULE;
+    attrs["version"] = GATEWAY_MODULE_VERSION;
 #if 0
     attrs["name"] = PACKAGE_NAME;
     attrs["version"] = PACKAGE_VERSION;
 #endif
     list<string> services;
-    BESServiceRegistry::TheRegistry()->services_handled(Gateway_NAME, services);
+    BESServiceRegistry::TheRegistry()->services_handled(GATEWAY_MODULE, services);
     if (services.size() > 0) {
         string handles = BESUtil::implode(services, ',');
         attrs["handles"] = handles;

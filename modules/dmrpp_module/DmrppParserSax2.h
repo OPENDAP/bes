@@ -166,8 +166,6 @@ private:
     std::string char_data;  // char data in value elements; null after use
     std::string root_ns;     // What is the namespace of the root node (Group)
 
-    bool d_debug;
-    bool debug() const { return d_debug; }
 
     bool d_strict;
 
@@ -258,7 +256,7 @@ public:
         other_xml(""), other_xml_depth(0), unknown_depth(0),
         error_msg(""), context(0),
         dods_attr_name(""), dods_attr_type(""),
-        char_data(""), root_ns(""), d_debug(false), d_strict(true),
+        char_data(""), root_ns(""), d_strict(true),
         dmrpp_dataset_href("")
     {
         //xmlSAXHandler ddx_sax_parser;
@@ -278,9 +276,9 @@ public:
         dmrpp_sax_parser.endElementNs = &DmrppParserSax2::dmr_end_element;
     }
 
-    void intern(std::istream &f, libdap::DMR *dest_dmr, bool debug = false);
-    void intern(const std::string &document, libdap::DMR *dest_dmr, bool debug = false);
-    void intern(const char *buffer, int size, libdap::DMR *dest_dmr, bool debug = false);
+    void intern(std::istream &f, libdap::DMR *dest_dmr);
+    void intern(const std::string &document, libdap::DMR *dest_dmr);
+    void intern(const char *buffer, int size, libdap::DMR *dest_dmr);
 
     /**
      * @defgroup strict The 'strict' mode

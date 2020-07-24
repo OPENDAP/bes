@@ -26,7 +26,7 @@ if WITH_DEPENDENCIES
 AM_DISTCHECK_CONFIGURE_FLAGS += --with-dependencies=@ac_bes_dependencies_prefix@ --enable-developer
 endif
 
-SUBDIRS = dispatch xmlcommand ppt server cmdln standalone docs bin templates hello_world
+SUBDIRS = http dispatch xmlcommand ppt server cmdln standalone docs bin templates hello_world
 
 if LIBDAP
 SUBDIRS += dap dapreader

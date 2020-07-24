@@ -31,28 +31,8 @@
 
 #define NGAP_NAME "ngap"
 
-// #define NGAP_CATALOG_NAME "NGAP"
-
-// These are the names of the be keys used to configure the handler.
-// #define NGAP_COLLECTIONS "NGAP.Collections"
-// #define NGAP_FACETS "NGAP.Facets"
-
-#define NGAP_WHITELIST "NGAP.Whitelist"
-#define NGAP_MIMELIST "NGAP.MimeTypes"
-#define NGAP_PROXYPROTOCOL "NGAP.ProxyProtocol"
-#define NGAP_PROXYHOST "NGAP.ProxyHost"
-#define NGAP_PROXYPORT "NGAP.ProxyPort"
-#define NGAP_PROXYAUTHTYPE "NGAP.ProxyAuthType"
-#define NGAP_PROXYUSER "NGAP.ProxyUser"
-#define NGAP_PROXYPASSWORD "NGAP.ProxyPassword"
-#define NGAP_PROXYUSERPW "NGAP.ProxyUserPW"
-
-#define NGAP_COOKIES_KEY "NGAP.cookies"
-#define NGAP_COOKIES_DEFAULT_FILE "/tmp/.hyrax_cookies"
-
 #define NGAP_CACHE_TERMINAL_URLS_KEY "NGAP.cache.terminal.urls"
 
-#define NGAP_USE_INTERNAL_CACHE "NGAP.UseInternalCache"
 #define DATA_ACCESS_URL_KEY "OPeNDAP_DMRpp_DATA_ACCESS_URL"
 #define NGAP_INJECT_DATA_URL_KEY "NGAP.inject_data_urls"
 #define NGAP_CMR_HOSTNAME_KEY "NGAP.cmr_host_url"

@@ -40,13 +40,13 @@
 #include "xml2json/include/xml2json.hpp"
 
 #include "Chunk.h"
-#include "curl_utils.h"
+#include "CurlUtils.h"
 #include "CurlHandlePool.h"
 #include "DmrppRequestHandler.h"
+#include "DmrppNames.h"
 
 using namespace std;
 
-#define MODULE "dmrpp"
 #define prolog std::string("Chunk::").append(__func__).append("() - ")
 
 namespace dmrpp {

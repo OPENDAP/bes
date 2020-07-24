@@ -51,7 +51,6 @@
 
 #include "CmrApi.h"
 #include "CmrNames.h"
-#include "RemoteHttpResource.h"
 #include "CmrError.h"
 #include "rjson_utils.h"
 

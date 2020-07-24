@@ -36,7 +36,6 @@
 #include "NgapModule.h"
 #include "NgapRequestHandler.h"
 #include "NgapContainerStorage.h"
-#include "NgapUtils.h"
 
 using namespace std;
 using namespace ngap;
@@ -51,8 +50,10 @@ void NgapModule::initialize(const string &modname)
     BESDEBUG(modname, "    adding " << modname << " container storage" << endl);
     BESContainerStorageList::TheList()->add_persistence(new NgapContainerStorage(modname));
 
+#if 0
     BESDEBUG(modname, "    initialize the NGAP utilities and params" << endl);
     NgapUtils::Initialize();
+#endif
 
     BESDEBUG(modname, "    adding NGAP debug context" << endl);
     BESDebug::Register(modname);

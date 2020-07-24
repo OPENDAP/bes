@@ -188,9 +188,9 @@ static string getCurlAuthTypeName(const int authType) {
     }
 
     /**
- * libcurl call back function that is used to write data to a passed open file descriptor (that would
- * be instead of the default open FILE *)
- */
+     * libcurl call back function that is used to write data to a passed open file descriptor (that would
+     * be instead of the default open FILE *)
+     */
     static size_t writeNothing(char */* data */, size_t /* size */, size_t nmemb, void * /* userdata */) {
         return nmemb;
     }
@@ -656,12 +656,12 @@ long read_url(CURL *curl,
                      "status associated with the response from : " + url;
         throw BESInternalError(msg,__FILE__,__LINE__);
     }
-    if(status>400){
+    if(status>400 && BESDebug::IsSet(MODULE)){
         stringstream msg;
         msg << prolog << "The HTTP request for target URL:  " << url << " returned a status of: " << status << endl;
         char *last_url = 0;
         curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &last_url);
-        if(BESDebug::IsSet(MODULE)) msg << " Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << last_url << endl;
+        msg << " Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << last_url << endl;
         BESDEBUG(MODULE, msg.str());
     }
 
@@ -740,7 +740,7 @@ bool eval_get_response(CURL *eh) {
     /**
      * @brief Performs a small (4 byte) range get on the target URL. If successfull the value of  last_accessed_url will
      * be set to the value of the last accessed URL (CURLINFO_EFFECTIVE_URL), including the query string.
-     * are
+     *
      * @param url The URL to follow
      * @param last_accessed_url The last accessed URL (CURLINFO_EFFECTIVE_URL), including the query string
      */
