@@ -69,6 +69,9 @@
 #define READ_ATTRIBUTES_MACRO read_attributes_netcdf3
 #endif
 
+#define MODULE "nc"
+#define prolog std::string("ncdas::").append(__func__).append("() - ")
+
 using namespace libdap;
 
 /** Given the type, array index number and pointer to the associated attribute,
@@ -404,7 +407,7 @@ static void read_attributes_netcdf3(int ncid, int v, int natts, AttrTable *at)
  */
 static void read_attributes_netcdf4(int ncid, int varid, int natts, AttrTable *at)
 {
-    BESDEBUG("nc", "In read_attributes_netcdf4" << endl);
+    BESDEBUG(MODULE, prolog << "In read_attributes_netcdf4" << endl);
 
     for (int attr_num = 0; attr_num < natts; ++attr_num) {
         int errstat = NC_NOERR;
@@ -419,7 +422,7 @@ static void read_attributes_netcdf4(int ncid, int varid, int natts, AttrTable *a
         errstat = nc_inq_att(ncid, varid, attrname, &datatype, &len);
         if (errstat != NC_NOERR) throw Error(errstat, "Could not get the name for attribute '" + string(attrname) + "'");
 
-        BESDEBUG("nc", "nc_inq_att returned datatype = " << datatype << " for '" << attrname << "'" << endl);
+        BESDEBUG(MODULE, prolog << "nc_inq_att returned datatype = " << datatype << " for '" << attrname << "'" << endl);
 
         //if (is_user_defined_type(ncid, datatype)) {
         if (datatype >= NC_FIRSTUSERTYPEID) {
@@ -432,7 +435,7 @@ static void read_attributes_netcdf4(int ncid, int varid, int natts, AttrTable *a
             if (errstat != NC_NOERR)
                 throw(InternalErr(__FILE__, __LINE__, "Could not get information about a user-defined type (" + long_to_string(errstat) + ")."));
 
-            BESDEBUG("nc", "Before switch(class_type)" << endl);
+            BESDEBUG(MODULE, prolog << "Before switch(class_type)" << endl);
             switch (class_type) {
             case NC_COMPOUND: {
                 // Make recursive attrs work?
@@ -493,7 +496,7 @@ static void read_attributes_netcdf4(int ncid, int varid, int natts, AttrTable *a
                 throw InternalErr(__FILE__, __LINE__, "Expected one of NC_COMPOUND, NC_VLEN, NC_OPAQUE or NC_ENUM");
             }
 
-            BESDEBUG("nc", "After switch(class-type)" << endl);
+            BESDEBUG(MODULE, prolog << "After switch(class-type)" << endl);
         }
         else {
             switch (datatype) {
@@ -507,9 +510,9 @@ static void read_attributes_netcdf4(int ncid, int varid, int natts, AttrTable *a
             case NC_UBYTE:
             case NC_USHORT:
             case NC_UINT:
-                BESDEBUG("nc", "Before append_values ..." << endl);
+                BESDEBUG(MODULE, prolog << "Before append_values ..." << endl);
                 append_values(ncid, varid, len, datatype, attrname, at);
-                BESDEBUG("nc", "After append_values ..." << endl);
+                BESDEBUG(MODULE, prolog << "After append_values ..." << endl);
                 break;
 
             case NC_INT64:
@@ -531,7 +534,7 @@ static void read_attributes_netcdf4(int ncid, int varid, int natts, AttrTable *a
             }
         }
     }
-    BESDEBUG("nc", "Exiting read_attributes_netcdf4" << endl);
+    BESDEBUG(MODULE, prolog << "Exiting read_attributes_netcdf4" << endl);
 }
 #endif
 
@@ -546,7 +549,7 @@ static void read_attributes_netcdf4(int ncid, int varid, int natts, AttrTable *a
  */
 void nc_read_dataset_attributes(DAS &das, const string &filename)
 {
-    BESDEBUG("nc", "In nc_read_dataset_attributes" << endl);
+    BESDEBUG(MODULE, prolog << "In nc_read_dataset_attributes" << endl);
 
     int ncid, errstat;
     errstat = nc_open(filename.c_str(), NC_NOWRITE, &ncid);
@@ -562,7 +565,7 @@ void nc_read_dataset_attributes(DAS &das, const string &filename)
     int natts = 0;
     nc_type var_type;
     for (int varid = 0; varid < nvars; ++varid) {
-        BESDEBUG("nc", "Top of for loop; for each var..." << endl);
+        BESDEBUG(MODULE, prolog << "Top of for loop; for each var..." << endl);
 
         errstat = nc_inq_var(ncid, varid, varname, &var_type, (int*) 0, (int*) 0, &natts);
         if (errstat != NC_NOERR) throw Error(errstat, "Could not get information for variable: " + long_to_string(varid));
@@ -660,7 +663,7 @@ void nc_read_dataset_attributes(DAS &das, const string &filename)
 #endif // NETCDF_VERSION >= 4
     }
 
-    BESDEBUG("nc", "Starting global attributes" << endl);
+    BESDEBUG(MODULE, prolog << "Starting global attributes" << endl);
 
     // global attributes
     if (ngatts > 0) {
@@ -684,5 +687,5 @@ void nc_read_dataset_attributes(DAS &das, const string &filename)
 
     if (nc_close(ncid) != NC_NOERR) throw InternalErr(__FILE__, __LINE__, "NetCDF handler: Could not close the dataset!");
 
-    BESDEBUG("nc", "Exiting nc_read_dataset_attributes" << endl);
+    BESDEBUG(MODULE, prolog << "Exiting nc_read_dataset_attributes" << endl);
 }
