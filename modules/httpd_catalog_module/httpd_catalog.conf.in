@@ -39,8 +39,8 @@ BES.Catalog.RemoteResources.TypeMatch += unused:unused;
 
 Httpd_Catalog.Collections = test:http://test.opendap.org/data/
 
-# The hosts listed in Collections have to be on the AllowedHost of allowable
-# remote hosts this server may connect to. The AllowedHost should have hosts
+# The hosts listed in Collections have to be on the AllowedHosts list of allowable
+# remote hosts this server may connect to. The AllowedHosts should have hosts
 # added to is using '+=' because using '=' will remove all previous values.
 
-AllowedHost += ^http:\/\/test\.opendap\.org.*$
+AllowedHosts += ^http:\/\/test\.opendap\.org.*$

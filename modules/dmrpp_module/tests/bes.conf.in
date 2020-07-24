@@ -31,7 +31,7 @@ BES.UncompressCache.size=500
 
 AllowedHosts = *
 #BESRegex error: repetition-operator operand invalid
-AllowedHosts = ^https:\/\/s3\.amazonaws\.com\/.*$
+AllowedHosts = ^https:\/\/s3\.amazonaws\.com\/cloudy(open)?dap\/.*$
 
 # This is needed even if the tests are local because the whitelist check
 # if performed on local files too. Thus, the whitelist needs to be configured.

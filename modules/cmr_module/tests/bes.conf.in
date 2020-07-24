@@ -79,7 +79,7 @@ BES.DefaultResponseMethod=POST
 AllowedHosts=^https?:\/\/localhost(:8080)?\/.*$
 AllowedHosts+=^http:\/\/cloudydap\.opendap\.org\/.*$
 AllowedHosts+=^http:\/\/thredds\.ucar\.edu\/.*$
-AllowedHosts+=^https:\/\/s3\.amazonaws\.com\/.*$
+AllowedHosts+=^https?:\/\/s3\.amazonaws\.com\/somewhereovertherainbow\/.*$
 AllowedHosts +=^https:\/\/cmr\.(uat\.|sit\.)?earthdata\.nasa\.gov\/.*$
 
 BES.Catalog.CMR.RootDirectory=UNUSED
