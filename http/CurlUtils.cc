@@ -853,6 +853,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             curlErrorBuf[0] = 0; // clear the error buffer with a null termination at index 0.
             curl_code = curl_easy_perform(c_handle); // Do the thing...
             ++tries;
+            curlErrorBuf[0]=0; // Initialize to empty string
 
             if (CURLE_OK != curl_code) { // Failure here is not an HTTP error, but a cURL error.
                 throw BESInternalError(
@@ -864,9 +865,9 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             // if(debug) cout << ngap_curl::probe_easy_handle(c_handle) << endl;
             if (!success) {
                 if (tries == retry_limit) {
-                    throw BESInternalError(
-                            string("Data transfer error: Number of re-tries exceeded: ").append(
-                                    error_message(curl_code, curlErrorBuf)), __FILE__, __LINE__);
+                    string msg = prolog + "Data transfer error: Number of re-tries exceeded: "+ error_message(curl_code, curlErrorBuf);
+                    LOG(msg << endl);
+                    throw BESInternalError(msg, __FILE__, __LINE__);
                 }
                 else {
                     if (BESDebug::IsSet(MODULE)) {
@@ -1085,6 +1086,8 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             do {
                 bool do_retry = false;
                 ++tries;
+                error_buffer[0]=0; // Initialize to empty string
+
                 BESDEBUG(MODULE, prolog << "Requesting URL: " << url << " attempt: " << tries <<  endl);
                 CURLcode curl_code = curl_easy_perform(curl);
                 if( curl_code == CURLE_SSL_CONNECT_ERROR ){
@@ -1114,9 +1117,9 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
                     success = eval_get_response(curl);
                     if (!success) {
                         if (tries == retry_limit) {
-                            throw BESInternalError(
-                                    string("Data transfer error: Number of re-tries exceeded: ").append(
-                                            error_message(curl_code, error_buffer)), __FILE__, __LINE__);
+                            string msg = prolog + "Data transfer error: Number of re-tries exceeded: "+ error_message(curl_code, error_buffer);
+                            LOG(msg << endl);
+                            throw BESInternalError(msg, __FILE__, __LINE__);
                         }
                         else {
                             LOG(prolog << "HTTP Range-GET failed. Will retry (url: " << url <<

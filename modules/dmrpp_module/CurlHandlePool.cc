@@ -347,6 +347,7 @@ void dmrpp_easy_handle::read_data() {
             BESDEBUG(DMRPP_CURL, prolog << "Requesting URL: " << d_url << endl);
             CURLcode curl_code = curl_easy_perform(d_handle);
             ++tries;
+            d_errbuf[0]=0; // Initialize to empty string.
 
             if (CURLE_OK != curl_code) {
                 stringstream msg;
@@ -362,9 +363,9 @@ void dmrpp_easy_handle::read_data() {
 
             if (!success) {
                 if (tries == retry_limit) {
-                    throw BESInternalError(
-                            string("Data transfer error: Number of re-tries exceeded: ").append(
-                                    curl::error_message(curl_code, d_errbuf)), __FILE__, __LINE__);
+                    string msg = prolog + "Data transfer error: Number of re-tries exceeded: "+ curl::error_message(curl_code, d_errbuf);
+                    LOG(msg << endl);
+                    throw BESInternalError(msg, __FILE__, __LINE__);
                 }
                 else {
                     LOG(prolog << "HTTP transfer 500 error, will retry (trial " << tries << " for: " << d_url << ")." << endl);
