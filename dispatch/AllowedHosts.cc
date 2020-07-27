@@ -44,7 +44,8 @@
 using namespace std;
 using namespace bes;
 
-#define MODULE "wl"
+#define MODULE "ah"
+#define prolog string("AllowedHosts::").append(__func__).append("() - ")
 
 AllowedHosts *AllowedHosts::d_instance = 0;
 
@@ -64,11 +65,11 @@ AllowedHosts::theHosts()
 AllowedHosts::AllowedHosts()
 {
     bool found = false;
-    string key = REMOTE_ACCESS_WHITELIST;
-    TheBESKeys::TheKeys()->get_values(REMOTE_ACCESS_WHITELIST, d_white_list, found);
+    string key = ALLOWED_HOSTS_BES_KEY;
+    TheBESKeys::TheKeys()->get_values(ALLOWED_HOSTS_BES_KEY, d_white_list, found);
     if(!found){
-        throw BESInternalError(string("The remote access whitelist, '")+REMOTE_ACCESS_WHITELIST
-            +"' has not been configured.", __FILE__, __LINE__);
+        throw BESInternalError(string("The remote access whitelist, '") + ALLOWED_HOSTS_BES_KEY
+                               + "' has not been configured.", __FILE__, __LINE__);
     }
 }
 
@@ -78,7 +79,7 @@ AllowedHosts::AllowedHosts()
  * whitelist assembled from configuration. All file URLs are checked to be
  * sure that they reference a resource within the BES default catalog.
  *
- * @note RemoteAccess is a singleton. This method will instantiate the class
+ * @note AllowedHosts is a singleton. This method will instantiate the class
  * if that has not already been done. This method should only be called from
  * the main thread of a multi-threaded application.
  *
@@ -88,7 +89,7 @@ AllowedHosts::AllowedHosts()
  */
 bool AllowedHosts::is_allowed(const std::string &url)
 {
-    bool whitelisted = false;
+    bool isAllowed = false;
     const string file_url("file://");
     const string http_url("http://");
     const string https_url("https://");
@@ -99,20 +100,20 @@ bool AllowedHosts::is_allowed(const std::string &url)
 
         // Ensure that the file path starts with the catalog root dir.
         string file_path = url.substr(file_url.size());
-        BESDEBUG(MODULE, "AllowedHosts::Is_Whitelisted() - file_path: "<< file_path << endl);
+        BESDEBUG(MODULE, prolog << "file_path: "<< file_path << endl);
 
         BESCatalog *bcat = BESCatalogList::TheCatalogList()->find_catalog(BES_DEFAULT_CATALOG);
         if (bcat) {
-            BESDEBUG(MODULE, "AllowedHosts::Is_Whitelisted() - Found catalog: "<< bcat->get_catalog_name() << endl);
+            BESDEBUG(MODULE, prolog << "Found catalog: "<< bcat->get_catalog_name() << endl);
         }
         else {
             string msg = "OUCH! Unable to locate default catalog!";
-            BESDEBUG(MODULE, "AllowedHosts::Is_Whitelisted() - " << msg << endl);
+            BESDEBUG(MODULE, prolog << msg << endl);
             throw BESInternalError(msg, __FILE__, __LINE__);
         }
 
         string catalog_root = bcat->get_root();
-        BESDEBUG(MODULE, "AllowedHosts::Is_Whitelisted() - Catalog root: "<< catalog_root << endl);
+        BESDEBUG(MODULE, prolog << "Catalog root: "<< catalog_root << endl);
 
 
         // Never a relative path shall be accepted.
@@ -124,25 +125,25 @@ bool AllowedHosts::is_allowed(const std::string &url)
         string relative_path;
         if(file_path[0] == '/'){
             if(file_path.length() < catalog_root.length()) {
-                whitelisted = false;
+                isAllowed = false;
             }
             else {
                 int ret = file_path.compare(0, catalog_root.npos, catalog_root) == 0;
-                BESDEBUG(MODULE, "AllowedHosts::Is_Whitelisted() - file_path.compare(): " << ret << endl);
-                whitelisted = (ret==0);
+                BESDEBUG(MODULE, prolog << "file_path.compare(): " << ret << endl);
+                isAllowed = (ret==0);
                 relative_path = file_path.substr(catalog_root.length());
             }
         }
         else {
-            BESDEBUG(MODULE, "AllowedHosts::Is_Whitelisted() - relative path detected");
+            BESDEBUG(MODULE, prolog << "Relative path detected");
             relative_path = file_path;
-            whitelisted = true;
+            isAllowed = true;
         }
 
         // string::compare() returns 0 if the path strings match exactly.
         // And since we are just looking at the catalog.root as a prefix of the resource
         // name we only allow to be white-listed for an exact match.
-        if(whitelisted){
+        if(isAllowed){
             // If we stop adding a '/' to file_path values that don't begin with one
             // then we need to detect the use of the relative path here
             bool follow_sym_links = bcat->get_catalog_utils()->follow_sym_links();
@@ -150,27 +151,28 @@ bool AllowedHosts::is_allowed(const std::string &url)
                 BESUtil::check_path(relative_path, catalog_root, follow_sym_links);
             }
             catch (BESNotFoundError &e) {
-                whitelisted=false;
+                isAllowed=false;
             }
             catch (BESForbiddenError &e) {
-                whitelisted=false;
+                isAllowed=false;
             }
         }
 
 
-        BESDEBUG(MODULE, "AllowedHosts::Is_Whitelisted() - Is_Whitelisted: "<< (whitelisted?"true ":"false ") << endl);
+        BESDEBUG(MODULE, prolog << "File Access Allowed: "<< (isAllowed?"true ":"false ") << endl);
     }
     else {
         vector<string>::const_iterator i = d_white_list.begin();
         vector<string>::const_iterator e = d_white_list.end();
-        for (; i != e && !whitelisted; i++) {
+        for (; i != e && !isAllowed; i++) {
             string reg = *i;
             BESRegex reg_expr(reg.c_str());
             if (reg_expr.match(url.c_str(), url.length()) > 0 ) {
-                whitelisted = true;;
+                isAllowed = true;;
             }
         }
+        BESDEBUG(MODULE, prolog << "HTTP Access Allowed: "<< (isAllowed?"true ":"false ") << endl);
     }
-    return whitelisted;
+    return isAllowed;
 }
 

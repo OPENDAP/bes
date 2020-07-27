@@ -34,7 +34,7 @@
 #include <string>
 #include <vector>
 
-#define REMOTE_ACCESS_WHITELIST "AllowedHosts"
+#define ALLOWED_HOSTS_BES_KEY "AllowedHosts"
 
 namespace bes {
 
