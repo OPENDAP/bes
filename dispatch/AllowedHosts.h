@@ -60,9 +60,9 @@ protected:
 public:
     virtual ~AllowedHosts() {}
 
-    static AllowedHosts *get_white_list();
+    static AllowedHosts *theHosts();
 
-    bool is_white_listed(const std::string &url);
+    bool is_allowed(const std::string &url);
 };
 
 } // namespace bes

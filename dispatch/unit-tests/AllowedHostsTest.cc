@@ -121,7 +121,7 @@ public:
     bool can_access(string url)
     {
         if (debug) cout << "Checking remote access permission for url: '" << url << "' result: ";
-        bool result = bes::AllowedHosts::get_white_list()->is_white_listed(url);
+        bool result = bes::AllowedHosts::theHosts()->is_allowed(url);
         if (debug) cout << (result ? "true" : "false") << endl;
         return result;
     }

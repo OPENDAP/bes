@@ -54,7 +54,7 @@ AllowedHosts *AllowedHosts::d_instance = 0;
  * @return A pointer to the singleton instance
  */
 AllowedHosts *
-AllowedHosts::get_white_list()
+AllowedHosts::theHosts()
 {
     if (d_instance) return d_instance;
     d_instance = new AllowedHosts;
@@ -86,7 +86,7 @@ AllowedHosts::AllowedHosts()
  * @return True if the URL may be dereferenced, given the BES's configuration,
  * false otherwise.
  */
-bool AllowedHosts::is_white_listed(const std::string &url)
+bool AllowedHosts::is_allowed(const std::string &url)
 {
     bool whitelisted = false;
     const string file_url("file://");

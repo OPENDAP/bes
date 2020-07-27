@@ -587,7 +587,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
         // Before we do anything, make sure that the URL is OK to pursue.
-        if (!bes::AllowedHosts::get_white_list()->is_white_listed(url)) {
+        if (!bes::AllowedHosts::theHosts()->is_allowed(url)) {
             string err = (string) "The specified URL " + url
                          + " does not match any of the accessible services in"
                          + " the white list.";

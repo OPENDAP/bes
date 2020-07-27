@@ -656,7 +656,7 @@ dmrpp_easy_handle *
 CurlHandlePool::get_easy_handle(Chunk *chunk) {
     // Here we check to make sure that the we are only going to
     // access an approved location with this easy_handle
-    if (!AllowedHosts::get_white_list()->is_white_listed(chunk->get_data_url())) {
+    if (!AllowedHosts::theHosts()->is_allowed(chunk->get_data_url())) {
         string msg = "ERROR!! The chunk url " + chunk->get_data_url() + " does not match any white-list rule. ";
         throw BESForbiddenError(msg, __FILE__, __LINE__);
     }
