@@ -542,7 +542,7 @@ void Chunk::inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, u
     d_is_inflated = true;
 
 #if 0 // This was handy during development for debugging. Keep it for awhile (year or two) before we drop it ndp - 01/18/17
-    if(BESDebug::IsSet("dmrpp")) {
+    if(BESDebug::IsSet(MODULE)) {
         unsigned long long chunk_buf_size = get_rbuf_size();
         dods_float32 *vals = (dods_float32 *) get_rbuf();
         ostream *os = BESDebug::GetStrm();
@@ -567,7 +567,7 @@ void Chunk::inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, u
 void Chunk::read_chunk()
 {
     if (d_is_read) {
-        BESDEBUG("dmrpp", "Chunk::"<< __func__ <<"() - Already been read! Returning." << endl);
+        BESDEBUG(MODULE, prolog << "Already been read! Returning." << endl);
         return;
     }
 
@@ -575,7 +575,7 @@ void Chunk::read_chunk()
 
     dmrpp_easy_handle *handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(this);
     if (!handle)
-        throw BESInternalError("No more libcurl handles.", __FILE__, __LINE__);
+        throw BESInternalError(prolog + "No more libcurl handles.", __FILE__, __LINE__);
 
     handle->read_data();  // throws if error
 
