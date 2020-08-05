@@ -50,7 +50,7 @@ namespace curl {
     std::string error_message(const CURLcode response_code, char *error_buf);
     size_t c_write_data(void *buffer, size_t size, size_t nmemb, void *data);
     CURL *set_up_easy_handle(const std::string &target_url, const std::string &cookies_file, char *response_buff);
-    bool eval_get_response(CURL *eh);
+    bool eval_get_response(CURL *eh, const std::string &requested_url);
     void read_data(CURL *c_handle);
     std::string getCookieFileName();
     void find_last_redirect(const std::string &url, std::string &last_accessed_url);

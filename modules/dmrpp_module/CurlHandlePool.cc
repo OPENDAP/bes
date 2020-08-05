@@ -359,7 +359,7 @@ void dmrpp_easy_handle::read_data() {
                 throw BESInternalError(msg.str(), __FILE__, __LINE__);
             }
 
-            success = curl::eval_get_response(d_handle);
+            success = curl::eval_get_response(d_handle, d_url);
 
             if (!success) {
                 if (tries == retry_limit) {
@@ -527,7 +527,7 @@ void dmrpp_multi_handle::read_data() {
                 // HTTP status code. If the protocol is not HTTP, we assume since msg->data.result
                 // returned CURLE_OK, that the transfer worked. jhrg 5/1/18
                 if (dmrpp_easy_handle->d_url.find("http://") == 0 || dmrpp_easy_handle->d_url.find("https://") == 0) {
-                    bool success = curl::eval_get_response(eh);
+                    bool success = curl::eval_get_response(eh,dmrpp_easy_handle->d_url);
                 }
 
                 // If we are here, the request was successful.
